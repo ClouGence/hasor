@@ -1,0 +1,21 @@
+<html><body> 
+actionjs插件该插件提供了可以使用javascript直接无刷新的形式直接访问action。
+如果action返回了一个List对象或者其他任意object对象，actionjs将使用自己的格式自动序列化java对象并且返回给js调用者，js在将反序列化还原成js对象。 
+有关序列化方面的功能特性请参看org.more.core.serialization软件包。<br>
+在页面中引用actionjs<br>
+&lt;script language=&quot;javascript&quot; type=&quot;text/javascript&quot;&gt;<br>
+&lt;more:ActionTag process=&quot;mrmiAction.config&quot;/&gt;<br>
+&lt;/script&gt;<br>
+或者<br>
+&lt;script language=&quot;javascript&quot; type=&quot;text/javascript&quot; src="/post://mrmiAction.config"&gt;&lt;/script&gt;<br>
+其中/post://mrmiAction.config和&lt;more:ActionTag process=&quot;mrmiAction.config&quot;/&gt;都是获取actionjs提供的客户js。<br/>
+使用上述两种方法引用js之后可以使用如下方法直接调用名称为test的action方法login和execute并且输出action返回对象。<br/>
+var a=more.server.test.login({account:"account@1986",password:"password@1986"});<br/>
+alert(a);<br/>
+var b=more.server.test.execute({name:v});<br/>
+alert(b);<br/>
+当使用actionjs调用action时候可以任意的向js方法中传递参数。这些参数会按照顺序被传递到action的事件对象中，获取这些参数只需要按照传入的顺序进行get。详细查阅相关Demo。<br/>
+如果不想使用上述两个引用方法还可以直接将下面的js文件直接拷贝到web程序中。但是上述的js调用就不能生效。直接引用js文件需要配置一下服务器请求位置。
+如下：<br/>
+more.retain.serverCallURL="http://127.0.0.1:8080/post://mrmiAction.execute";<br/><a href="doc-files/JavaScriptSubmitManager.js">actionjs的js文件</a>
+</body></html>

@@ -1,0 +1,49 @@
+<html>
+	<body>
+		more框架的Log软件包。该软件包允许用户配置日志输出系统，其中日志输出方向用户可以无限扩展。
+		日志的输出格式也是用户无限扩展。该软件包采用3层过滤方式实现日志记录。第一层日志源，它负责接收
+		日志数据由ILog接口完成。第二层日志信息格式化由ILogFormater接口完成，格式化组建可以提供日志
+		信息输出的格式。最后一层组建是日志输出组建由ILogWrite接口负责。它的主要职责是负责日志最终输出。
+		<p align="center">下面是一个日志组建配置文件</p>
+		<pre>
+		//使用语法
+		// 组建类.组建名称.属性名 = 值 //注释
+		//声明
+		dim=SLog,file_format,file_write
+		logformater.file_format.class = org.more.log.objects.DefaultLogFormater
+		log.SLog.class        = org.mylog.log.DefaultLog
+		log.SLog.formater     = file_format
+		log.SLog.allwrite     = file_write
+		log.SLog.debugwrite   = file_write
+		log.SLog.infowrite    = file_write
+		log.SLog.errorwrite   = file_write
+		log.SLog.warningwrite = file_write
+		logwrite.file_write.filePath = {$0}\log\
+		logwrite.file_write.class    = org.more.log.objects.DefaultLogWrite
+		logwrite.file_write.class    = org.more.log.objects.FileLogWrite
+		</pre>
+		注意：如果组建在开头使用dim进行了定义则在配置时候可以在未对其初始化时候就指定其使用关系。
+		如果没有使用显示声明则组建的可见范围是在其第一次配置之后才可见。
+		<br>
+		<p align="center">
+			注意事项
+		</p>
+		<pre>
+		//组建类
+		//logformater  格式化程序
+		//log          日志源程序
+		//logwrite     日志输出程序
+		//
+		//公共属性
+		//  class 类位置[必须]
+		//  singleton 单态[可选，默认是true]
+		//ILog 特有属性
+		//  formater 格式化对象
+		//  allwrite 所有级别通用输出
+		//  debugwrite 调试级别输出
+		//  infowrite 信息级别输出
+		//  errorwrite 错误级别输出
+		//  warningwrite 警告级别输出
+		</pre>
+	</body>
+</html>
