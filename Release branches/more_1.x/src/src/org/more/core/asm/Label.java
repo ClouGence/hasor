@@ -30,7 +30,10 @@
 package org.more.core.asm;
 /**
  * A label represents a position in the bytecode of a method. Labels are used
- * for jump, goto, and switch instructions, and for try catch blocks.
+ * for jump, goto, and switch instructions, and for try catch blocks. A label
+ * designates the <i>instruction</i> that is just after. Note however that
+ * there can be other elements between a label and the instruction it 
+ * designates (such as other labels, stack map frames, line numbers, etc.).
  * 
  * @author Eric Bruneton
  */
@@ -202,7 +205,8 @@ public class Label {
     /**
      * The next basic block in the basic block stack. This stack is used in the
      * main loop of the fix point algorithm used in the second step of the
-     * control flow analysis algorithms.
+     * control flow analysis algorithms. It is also used in 
+     * {@link #visitSubroutine} to avoid using a recursive method.
      * 
      * @see MethodWriter#visitMaxs
      */
@@ -407,9 +411,9 @@ public class Label {
     }
     /**
      * Finds the basic blocks that belong to a given subroutine, and marks these
-     * blocks as belonging to this subroutine. This recursive method follows the
-     * control flow graph to find all the blocks that are reachable from the
-     * current block WITHOUT following any JSR target.
+     * blocks as belonging to this subroutine. This method follows the control
+     * flow graph to find all the blocks that are reachable from the current
+     * block WITHOUT following any JSR target.
      * 
      * @param JSR a JSR block that jumps to this subroutine. If this JSR is not
      *        null it is added to the successor of the RET blocks found in the
@@ -418,39 +422,52 @@ public class Label {
      * @param nbSubroutines the total number of subroutines in the method.
      */
     void visitSubroutine(final Label JSR, final long id, final int nbSubroutines) {
-        if (JSR != null) {
-            if ((status & VISITED) != 0) {
-                return;
-            }
-            status |= VISITED;
-            // adds JSR to the successors of this block, if it is a RET block
-            if ((status & RET) != 0) {
-                if (!inSameSubroutine(JSR)) {
-                    Edge e = new Edge();
-                    e.info = inputStackTop;
-                    e.successor = JSR.successors.successor;
-                    e.next = successors;
-                    successors = e;
+        // user managed stack of labels, to avoid using a recursive method
+        // (recursivity can lead to stack overflow with very large methods)
+        Label stack = this;
+        while (stack != null) {
+            // removes a label l from the stack
+            Label l = stack;
+            stack = l.next;
+            l.next = null;
+            if (JSR != null) {
+                if ((l.status & VISITED) != 0) {
+                    continue;
                 }
+                l.status |= VISITED;
+                // adds JSR to the successors of l, if it is a RET block
+                if ((l.status & RET) != 0) {
+                    if (!l.inSameSubroutine(JSR)) {
+                        Edge e = new Edge();
+                        e.info = l.inputStackTop;
+                        e.successor = JSR.successors.successor;
+                        e.next = l.successors;
+                        l.successors = e;
+                    }
+                }
+            } else {
+                // if the l block already belongs to subroutine 'id', continue
+                if (l.inSubroutine(id)) {
+                    continue;
+                }
+                // marks the l block as belonging to subroutine 'id'
+                l.addToSubroutine(id, nbSubroutines);
             }
-        } else {
-            // if this block already belongs to subroutine 'id', returns
-            if (inSubroutine(id)) {
-                return;
+            // pushes each successor of l on the stack, except JSR targets
+            Edge e = l.successors;
+            while (e != null) {
+                // if the l block is a JSR block, then 'l.successors.next' leads
+                // to the JSR target (see {@link #visitJumpInsn}) and must 
+                // therefore not be followed
+                if ((l.status & Label.JSR) == 0 || e != l.successors.next) {
+                    // pushes e.successor on the stack if it not already added
+                    if (e.successor.next == null) {
+                        e.successor.next = stack;
+                        stack = e.successor;
+                    }
+                }
+                e = e.next;
             }
-            // marks this block as belonging to subroutine 'id'
-            addToSubroutine(id, nbSubroutines);
-        }
-        // calls this method recursively on each successor, except JSR targets
-        Edge e = successors;
-        while (e != null) {
-            // if this block is a JSR block, then 'successors.next' leads
-            // to the JSR target (see {@link #visitJumpInsn}) and must therefore
-            // not be followed
-            if ((status & Label.JSR) == 0 || e != successors.next) {
-                e.successor.visitSubroutine(JSR, id, nbSubroutines);
-            }
-            e = e.next;
         }
     }
     // ------------------------------------------------------------------------

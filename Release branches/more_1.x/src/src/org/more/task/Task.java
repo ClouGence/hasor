@@ -16,7 +16,6 @@
 package org.more.task;
 import java.io.Serializable;
 import java.util.UUID;
-
 import org.more.log.ILog;
 import org.more.log.LogFactory;
 import org.more.util.attribute.AttBase;
@@ -27,16 +26,18 @@ import org.more.util.attribute.AttBase;
  * @author 赵永春
  */
 public abstract class Task extends AttBase implements Runnable, Serializable {
+    /**  */
+    private static final long serialVersionUID = -5330043409377797416L;
     /** 输出日志 */
-    protected ILog    log         = LogFactory.getLog("org_more_task");
+    protected ILog            log              = LogFactory.getLog("org_more_task");
     /** 标识任务的UUID */
-    private String    uuid        = null;
+    private String            uuid             = null;
     /** 任务名 */
-    private String    name        = null;
+    private String            name             = null;
     /** 任务说明 */
-    private String    description = null;
+    private String            description      = null;
     /** 当前任务的执行状态。 */
-    private TaskState state       = null;
+    private TaskState         state            = null;
     /** 创建任务项对象 */
     protected Task() {
         this.log.debug("create Task name=" + this.name + " class=" + this.getClass().getSimpleName());

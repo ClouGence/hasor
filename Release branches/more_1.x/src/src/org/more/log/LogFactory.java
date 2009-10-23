@@ -32,6 +32,9 @@ public class LogFactory {
     private static ComFactory       comFactory      = null;
     private static ComObjectFactory comCache        = null;
     private static boolean          init            = false;
+    public static final int         Mode_Debug      = 1;
+    public static final int         Mode_Run        = 2;
+    public static int               nowMode         = LogFactory.Mode_Run;
     // ===============================================================
     private static void init(CommandReader cr) throws IOException {
         if (comFactory == null)
@@ -86,9 +89,9 @@ public class LogFactory {
             if (obj instanceof ILog)
                 return (ILog) obj;
             else
-                return new NullLog();
+                return new NullLog(LogFactory.nowMode);
         } catch (Exception e) {
-            return new NullLog();
+            return new NullLog(LogFactory.nowMode);
         }
     }
     /**

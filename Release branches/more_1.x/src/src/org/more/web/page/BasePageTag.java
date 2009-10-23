@@ -23,7 +23,9 @@ import javax.servlet.jsp.tagext.Tag;
  * @author 赵永春
  */
 abstract class BasePageTag extends BodyTagSupport {
-    protected PageTag page = null; // 父标签
+    /**  */
+    private static final long serialVersionUID = -4320599597955866492L;
+    protected PageTag         page             = null;                 // 父标签
     //1
     //该方法负责在第一次循环时调用doFirstStartPageTag方法以后的所有循环调用doStartPageTag方法。
     @Override

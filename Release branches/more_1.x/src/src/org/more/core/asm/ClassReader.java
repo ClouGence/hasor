@@ -350,8 +350,13 @@ public class ClassReader {
             }
             len += n;
             if (len == b.length) {
+                int last = is.read();
+                if (last < 0) {
+                    return b;
+                }
                 byte[] c = new byte[b.length + 1000];
                 System.arraycopy(b, 0, c, 0, len);
+                c[len++] = (byte) last;
                 b = c;
             }
         }
@@ -811,7 +816,7 @@ public class ClassReader {
                     case ClassWriter.IINC_INSN:
                         v += 3;
                         break;
-                    case ClassWriter.ITFMETH_INSN:
+                    case ClassWriter.ITFDYNMETH_INSN:
                         v += 5;
                         break;
                     // case MANA_INSN:
@@ -1167,10 +1172,16 @@ public class ClassReader {
                         v += 3;
                         break;
                     case ClassWriter.FIELDORMETH_INSN:
-                    case ClassWriter.ITFMETH_INSN:
+                    case ClassWriter.ITFDYNMETH_INSN:
                         int cpIndex = items[readUnsignedShort(v + 1)];
-                        String iowner = readClass(cpIndex, c);
-                        cpIndex = items[readUnsignedShort(cpIndex + 2)];
+                        String iowner;
+                        // INVOKEDYNAMIC is receiverless
+                        if (opcode == Opcodes.INVOKEDYNAMIC) {
+                            iowner = Opcodes.INVOKEDYNAMIC_OWNER;
+                        } else {
+                            iowner = readClass(cpIndex, c);
+                            cpIndex = items[readUnsignedShort(cpIndex + 2)];
+                        }
                         String iname = readUTF8(cpIndex, c);
                         String idesc = readUTF8(cpIndex + 2, c);
                         if (opcode < Opcodes.INVOKEVIRTUAL) {
@@ -1178,7 +1189,7 @@ public class ClassReader {
                         } else {
                             mv.visitMethodInsn(opcode, iowner, iname, idesc);
                         }
-                        if (opcode == Opcodes.INVOKEINTERFACE) {
+                        if (opcode == Opcodes.INVOKEINTERFACE || opcode == Opcodes.INVOKEDYNAMIC) {
                             v += 5;
                         } else {
                             v += 3;
@@ -1663,32 +1674,31 @@ public class ClassReader {
         int endIndex = index + utfLen;
         byte[] b = this.b;
         int strLen = 0;
-        int c, d, e;
+        int c;
+        int st = 0;
+        char cc = 0;
         while (index < endIndex) {
-            c = b[index++] & 0xFF;
-            switch (c >> 4) {
+            c = b[index++];
+            switch (st) {
             case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-            case 7:
-                // 0xxxxxxx
-                buf[strLen++] = (char) c;
+                c = c & 0xFF;
+                if (c < 0x80) { // 0xxxxxxx
+                    buf[strLen++] = (char) c;
+                } else if (c < 0xE0 && c > 0xBF) { // 110x xxxx 10xx xxxx
+                    cc = (char) (c & 0x1F);
+                    st = 1;
+                } else { // 1110 xxxx 10xx xxxx 10xx xxxx
+                    cc = (char) (c & 0x0F);
+                    st = 2;
+                }
                 break;
-            case 12:
-            case 13:
-                // 110x xxxx 10xx xxxx
-                d = b[index++];
-                buf[strLen++] = (char) (((c & 0x1F) << 6) | (d & 0x3F));
+            case 1: // byte 2 of 2-byte char or byte 3 of 3-byte char 
+                buf[strLen++] = (char) ((cc << 6) | (c & 0x3F));
+                st = 0;
                 break;
-            default:
-                // 1110 xxxx 10xx xxxx 10xx xxxx
-                d = b[index++];
-                e = b[index++];
-                buf[strLen++] = (char) (((c & 0x0F) << 12) | ((d & 0x3F) << 6) | (e & 0x3F));
+            case 2: // byte 2 of 3-byte char
+                cc = (char) ((cc << 6) | (c & 0x3F));
+                st = 1;
                 break;
             }
         }

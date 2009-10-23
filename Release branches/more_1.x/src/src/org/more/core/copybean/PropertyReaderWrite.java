@@ -23,10 +23,12 @@ import java.io.Serializable;
  * @author 赵永春
  */
 public abstract class PropertyReaderWrite implements Serializable {
+    /**  */
+    private static final long serialVersionUID = -2738047086048993484L;
     /** 属性名 */
-    private String name   = null;
+    private String            name             = null;
     /** 存放属性的对象 */
-    private Object object = null;
+    private Object            object           = null;
     /**
      * 读取目标属性值，该方法应当由子类实现。
      * @return 返回目标属性值，该方法应当由子类实现。

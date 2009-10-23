@@ -40,7 +40,7 @@ final class Frame {
      * updated by simulating the action of the instruction on the previous state
      * of this so called "output frame". In visitMaxs, a fix point algorithm is
      * used to compute the "input frame" of each basic block, i.e. the stack map
-     * frame at the begining of the basic block, starting from the input frame
+     * frame at the beginning of the basic block, starting from the input frame
      * of the first basic block (which is computed from the method descriptor),
      * and by using the previously computed output frames to compute the input
      * state of the other blocks.
@@ -90,15 +90,15 @@ final class Frame {
      * Mask to get the dimension of a frame type. This dimension is a signed
      * integer between -8 and 7.
      */
-    static final int         DIM                = 0xF0000000;
+    static final int         DIM                   = 0xF0000000;
     /**
      * Constant to be added to a type to get a type with one more dimension.
      */
-    static final int         ARRAY_OF           = 0x10000000;
+    static final int         ARRAY_OF              = 0x10000000;
     /**
      * Constant to be added to a type to get a type with one less dimension.
      */
-    static final int         ELEMENT_OF         = 0xF0000000;
+    static final int         ELEMENT_OF            = 0xF0000000;
     /**
      * Mask to get the kind of a frame type.
      * 
@@ -106,89 +106,97 @@ final class Frame {
      * @see #LOCAL
      * @see #STACK
      */
-    static final int         KIND               = 0xF000000;
+    static final int         KIND                  = 0xF000000;
+    /**
+     * Flag used for LOCAL and STACK types. Indicates that if this type happens
+     * to be a long or double type (during the computations of input frames), 
+     * then it must be set to TOP because the second word of this value has
+     * been reused to store other data in the basic block. Hence the first word 
+     * no longer stores a valid long or double value.
+     */
+    static final int         TOP_IF_LONG_OR_DOUBLE = 0x800000;
     /**
      * Mask to get the value of a frame type.
      */
-    static final int         VALUE              = 0xFFFFFF;
+    static final int         VALUE                 = 0x7FFFFF;
     /**
      * Mask to get the kind of base types.
      */
-    static final int         BASE_KIND          = 0xFF00000;
+    static final int         BASE_KIND             = 0xFF00000;
     /**
      * Mask to get the value of base types.
      */
-    static final int         BASE_VALUE         = 0xFFFFF;
+    static final int         BASE_VALUE            = 0xFFFFF;
     /**
      * Kind of the types that are not relative to an input stack map frame.
      */
-    static final int         BASE               = 0x1000000;
+    static final int         BASE                  = 0x1000000;
     /**
      * Base kind of the base reference types. The BASE_VALUE of such types is an
      * index into the type table.
      */
-    static final int         OBJECT             = BASE | 0x700000;
+    static final int         OBJECT                = BASE | 0x700000;
     /**
      * Base kind of the uninitialized base types. The BASE_VALUE of such types
      * in an index into the type table (the Item at that index contains both an
      * instruction offset and an internal class name).
      */
-    static final int         UNINITIALIZED      = BASE | 0x800000;
+    static final int         UNINITIALIZED         = BASE | 0x800000;
     /**
      * Kind of the types that are relative to the local variable types of an
      * input stack map frame. The value of such types is a local variable index.
      */
-    private static final int LOCAL              = 0x2000000;
+    private static final int LOCAL                 = 0x2000000;
     /**
      * Kind of the the types that are relative to the stack of an input stack
      * map frame. The value of such types is a position relatively to the top of
      * this stack.
      */
-    private static final int STACK              = 0x3000000;
+    private static final int STACK                 = 0x3000000;
     /**
      * The TOP type. This is a BASE type.
      */
-    static final int         TOP                = BASE | 0;
+    static final int         TOP                   = BASE | 0;
     /**
      * The BOOLEAN type. This is a BASE type mainly used for array types.
      */
-    static final int         BOOLEAN            = BASE | 9;
+    static final int         BOOLEAN               = BASE | 9;
     /**
      * The BYTE type. This is a BASE type mainly used for array types.
      */
-    static final int         BYTE               = BASE | 10;
+    static final int         BYTE                  = BASE | 10;
     /**
      * The CHAR type. This is a BASE type mainly used for array types.
      */
-    static final int         CHAR               = BASE | 11;
+    static final int         CHAR                  = BASE | 11;
     /**
      * The SHORT type. This is a BASE type mainly used for array types.
      */
-    static final int         SHORT              = BASE | 12;
+    static final int         SHORT                 = BASE | 12;
     /**
      * The INTEGER type. This is a BASE type.
      */
-    static final int         INTEGER            = BASE | 1;
+    static final int         INTEGER               = BASE | 1;
     /**
      * The FLOAT type. This is a BASE type.
      */
-    static final int         FLOAT              = BASE | 2;
+    static final int         FLOAT                 = BASE | 2;
     /**
      * The DOUBLE type. This is a BASE type.
      */
-    static final int         DOUBLE             = BASE | 3;
+    static final int         DOUBLE                = BASE | 3;
     /**
      * The LONG type. This is a BASE type.
      */
-    static final int         LONG               = BASE | 4;
+    static final int         LONG                  = BASE | 4;
     /**
      * The NULL type. This is a BASE type.
      */
-    static final int         NULL               = BASE | 5;
+    static final int         NULL                  = BASE | 5;
     /**
      * The UNINITIALIZED_THIS type. This is a BASE type.
      */
-    static final int         UNINITIALIZED_THIS = BASE | 6;
+    static final int         UNINITIALIZED_THIS    = BASE | 6;
     /**
      * The stack size variation corresponding to each JVM instruction. This
      * stack variation is equal to the size of the values produced by an
@@ -397,7 +405,7 @@ final class Frame {
         // NA, //INVOKESPECIAL, // -
         // NA, //INVOKESTATIC, // -
         // NA, //INVOKEINTERFACE, // -
-        // NA, //UNUSED, // NOT VISITED
+        // NA, //INVOKEDYNAMIC, // -
         // 1, //NEW, // visitTypeInsn
         // 0, //NEWARRAY, // visitIntInsn
         // 0, //ANEWARRAY, // visitTypeInsn
@@ -663,7 +671,7 @@ final class Frame {
     private void pop(final String desc) {
         char c = desc.charAt(0);
         if (c == '(') {
-            pop((MethodWriter.getArgumentsAndReturnSizes(desc) >> 2) - 1);
+            pop((Type.getArgumentsAndReturnSizes(desc) >> 2) - 1);
         } else if (c == 'J' || c == 'D') {
             pop(2);
         } else {
@@ -875,6 +883,8 @@ final class Frame {
                 // if t2 is of kind STACK or LOCAL we cannot know its size!
                 if (t2 == LONG || t2 == DOUBLE) {
                     set(arg - 1, TOP);
+                } else if ((t2 & KIND) != BASE) {
+                    set(arg - 1, t2 | TOP_IF_LONG_OR_DOUBLE);
                 }
             }
             break;
@@ -889,6 +899,8 @@ final class Frame {
                 // if t2 is of kind STACK or LOCAL we cannot know its size!
                 if (t2 == LONG || t2 == DOUBLE) {
                     set(arg - 1, TOP);
+                } else if ((t2 & KIND) != BASE) {
+                    set(arg - 1, t2 | TOP_IF_LONG_OR_DOUBLE);
                 }
             }
             break;
@@ -1110,6 +1122,10 @@ final class Frame {
             }
             push(cw, item.strVal3);
             break;
+        case Opcodes.INVOKEDYNAMIC:
+            pop(item.strVal2);
+            push(cw, item.strVal2);
+            break;
         case Opcodes.NEW:
             push(UNINITIALIZED | cw.addUninitializedType(item.strVal1, arg));
             break;
@@ -1197,12 +1213,17 @@ final class Frame {
                 } else {
                     dim = s & DIM;
                     kind = s & KIND;
-                    if (kind == LOCAL) {
-                        t = dim + inputLocals[s & VALUE];
-                    } else if (kind == STACK) {
-                        t = dim + inputStack[nStack - (s & VALUE)];
-                    } else {
+                    if (kind == BASE) {
                         t = s;
+                    } else {
+                        if (kind == LOCAL) {
+                            t = dim + inputLocals[s & VALUE];
+                        } else {
+                            t = dim + inputStack[nStack - (s & VALUE)];
+                        }
+                        if ((s & TOP_IF_LONG_OR_DOUBLE) != 0 && (t == LONG || t == DOUBLE)) {
+                            t = TOP;
+                        }
                     }
                 }
             } else {
@@ -1241,12 +1262,17 @@ final class Frame {
             s = outputStack[i];
             dim = s & DIM;
             kind = s & KIND;
-            if (kind == LOCAL) {
-                t = dim + inputLocals[s & VALUE];
-            } else if (kind == STACK) {
-                t = dim + inputStack[nStack - (s & VALUE)];
-            } else {
+            if (kind == BASE) {
                 t = s;
+            } else {
+                if (kind == LOCAL) {
+                    t = dim + inputLocals[s & VALUE];
+                } else {
+                    t = dim + inputStack[nStack - (s & VALUE)];
+                }
+                if ((s & TOP_IF_LONG_OR_DOUBLE) != 0 && (t == LONG || t == DOUBLE)) {
+                    t = TOP;
+                }
             }
             if (initializations != null) {
                 t = init(cw, t);

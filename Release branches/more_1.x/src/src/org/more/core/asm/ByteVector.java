@@ -187,10 +187,10 @@ public class ByteVector {
      */
     public ByteVector putUTF8(final String s) {
         int charLength = s.length();
-        if (length + 2 + charLength > data.length) {
+        int len = length;
+        if (len + 2 + charLength > data.length) {
             enlarge(2 + charLength);
         }
-        int len = length;
         byte[] data = this.data;
         // optimistic algorithm: instead of computing the byte length and then
         // serializing the string (which requires two loops), we assume the byte

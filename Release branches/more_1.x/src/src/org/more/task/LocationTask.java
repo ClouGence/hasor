@@ -20,12 +20,14 @@ package org.more.task;
  * @author 赵永春
  */
 public abstract class LocationTask extends Task {
+    /**  */
+    private static final long serialVersionUID = 5140955177850271048L;
     /** 总共任务数 */
-    private int  count       = 0;
+    private int               count            = 0;
     /** 当前执行的任务编号 */
-    private int  index       = 0;
+    private int               index            = 0;
     /** 被缓存的任务正在执行的子任务对象。 */
-    private Task currentTask = null;
+    private Task              currentTask      = null;
     /**
      * 设置可定位任务的任务总数。如果设置的值小于 1 则newCount参数值会被 1 取代。
      * 同时如果当前getPosition()方法返回值大于最新设置的newCount参数值则系统自动采用

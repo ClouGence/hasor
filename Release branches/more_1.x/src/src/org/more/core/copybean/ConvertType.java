@@ -21,6 +21,8 @@ import java.io.Serializable;
  * @author 赵永春
  */
 public abstract class ConvertType implements Serializable {
+    /**  */
+    private static final long serialVersionUID = 3575928676067771750L;
     /**
      * 检查某对象是否可以通过该类型转换类进行转换。如果可以转换则返回true否则返回fale。
      * @param from 什么对象。

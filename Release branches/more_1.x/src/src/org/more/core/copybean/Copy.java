@@ -27,8 +27,10 @@ import java.util.Collection;
  * @author 赵永春
  */
 public abstract class Copy extends PropertyReaderWrite implements Serializable, Cloneable {
+    /**  */
+    private static final long serialVersionUID = -4040330892099587195L;
     /** 该字段是存放执行当前拷贝的CopyBeanUtil对象 */
-    protected CopyBeanUtil copyBeanUtil = null;
+    protected CopyBeanUtil    copyBeanUtil     = null;
     /**
      * 设置执行当前拷贝的CopyBeanUtil对象
      * @param copyBeanUtil 执行当前拷贝的CopyBeanUtil对象

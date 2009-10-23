@@ -18,7 +18,6 @@ import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
-
 import org.more.log.ILog;
 import org.more.log.LogFactory;
 /**
@@ -28,8 +27,10 @@ import org.more.log.LogFactory;
  * @author 赵永春
  */
 public abstract class BeanType implements Serializable {
+    /**  */
+    private static final long       serialVersionUID = -3782452387920328586L;
     /** 输出日志 */
-    protected static transient ILog log = LogFactory.getLog("org_more_core_copybean");
+    protected static transient ILog log              = LogFactory.getLog("org_more_core_copybean");
     /**
      * 获取类型中bean里面的所有可读或可写属性Map。
      * @param object 目标对象。
