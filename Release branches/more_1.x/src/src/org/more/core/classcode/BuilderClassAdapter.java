@@ -56,9 +56,11 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
     private ClassEngine                   engine          = null;
     /** 负责输出日志的日志接口。 */
     private static ILog                   log             = LogFactory.getLog("org_more_core_classcode");
-    /** 基类 */
+    /** 基类类名 */
     private String                        superClassByASM = null;
-    /** 生成的心类所要附加的接口实现 */
+    /** 当前类类名 */
+    private String                        thisClassByASM  = null;
+    /** 生成的新类所要附加的接口实现 */
     private Map<Class<?>, MethodDelegate> implsMap        = null;
     /** 本类中已经存在的方法 */
     private ArrayList<String>             methodList      = new ArrayList<String>(0);
@@ -67,7 +69,6 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
     public BuilderClassAdapter(ClassEngine engine, ClassVisitor cv, Class<?> superClass, Map<Class<?>, MethodDelegate> implsMap) {
         super(cv);
         this.engine = engine;
-        //this.superClass = superClass;
         this.superClassByASM = EngineToos.replaceClassName(superClass.getName());
         this.implsMap = implsMap;
     }
@@ -95,38 +96,54 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
         String[] ins = new String[al.size()];
         al.toArray(ins);
         //----------四、继承基类、修改新类类名
-        String newSuperClass = engine.getClassName().replace(".", "/");
-        super.visit(version, access, newSuperClass, signature, name, ins);
+        this.thisClassByASM = engine.getClassName().replace(".", "/");
+        super.visit(version, access, this.thisClassByASM, signature, name, ins);
     }
     /** 调用父类方法 */
     @Override
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-        //1.修改方法名为 _methodName
-        //2.输出代理方法
-        //3.增加本地方法集合
+        //1.如果工作在代理模式下则忽略所有私有方法和受保护的方法。
+        if (this.engine.getMode() == ClassEngine.BuilderMode.Propxy)
+            if (name.equals("<init>") || (access | ACC_PRIVATE) == access || (access | ACC_PROTECTED) == access)
+                return null;
+        //2.不处理私有方法保持原装
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
         if ((access | ACC_PRIVATE) == access)
-            return mv;
-        mv.visitCode();
-        //-----
+            return mv;//不处理私有方法的父类调用，维持原装
+        //3.准备输出方法数据
         Pattern p = Pattern.compile("\\((.*)\\)(.*)");
         Matcher m = p.matcher(desc);
         m.find();
         String[] asmParams = EngineToos.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
         String asmReturns = m.group(2);
-        //处理参数
-        mv.visitVarInsn(ALOAD, 0);
-        for (int i = 0; i < asmParams.length; i++)
-            mv.visitVarInsn(EngineToos.getLoad(asmParams[i]), i + 1);
-        mv.visitMethodInsn(INVOKESPECIAL, this.superClassByASM, name, desc);
-        //处理return
+        int maxLocals = 1;
+        //3.输出方法
+        mv.visitCode();
+        if (this.engine.getMode() == ClassEngine.BuilderMode.Super) {
+            //Super 如果是继承方式调用则使用super.invoke调用。
+            mv.visitVarInsn(ALOAD, 0);
+            for (int i = 0; i < asmParams.length; i++)
+                mv.visitVarInsn(EngineToos.getLoad(asmParams[i]), i + 1);
+            mv.visitMethodInsn(INVOKESPECIAL, this.superClassByASM, name, desc);
+            maxLocals += asmParams.length;
+        } else {
+            //Propxy 如果是代理方式则使用this.$propxyObject.invoke。
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitFieldInsn(GETFIELD, this.thisClassByASM, ClassEngine.PropxyModeObjectName, "L" + this.superClassByASM + ";");
+            for (int i = 0; i < asmParams.length; i++)
+                mv.visitVarInsn(EngineToos.getLoad(asmParams[i]), i + 1);
+            mv.visitMethodInsn(INVOKEVIRTUAL, this.superClassByASM, name, desc);
+            maxLocals += (asmParams.length + 1);
+        }
+        //4.处理方法调用的返回值return。
         if (asmReturns.equals("V") == true)
             mv.visitInsn(RETURN);
         else
             mv.visitInsn(EngineToos.getReturn(asmReturns));
-        //-----
-        mv.visitMaxs(1, asmParams.length + 1);
+        //5.结束方法输出，确定方法堆栈等信息。
+        mv.visitMaxs(1, maxLocals);
         mv.visitEnd();
+        //6.将已经处理的方法添加到本地方法表中并返回。
         methodList.add(name + desc);
         return null;
     }
@@ -134,9 +151,24 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
     @Override
     public void visitEnd() {
         try {
-            //1.输出代理方法调用Map
+            //1.输出代理字段
             FieldVisitor field = super.visitField(ACC_PUBLIC, ClassEngine.ObjectDelegateMapName, "Ljava/util/Map;", null, null);
             field.visitEnd();
+            if (this.engine.getMode() == ClassEngine.BuilderMode.Propxy) {
+                //Super 如果是继承方式调用则输出代理字段。
+                String superClassNyASMType = "L" + this.superClassByASM + ";";
+                FieldVisitor propxy = super.visitField(ACC_PRIVATE, ClassEngine.PropxyModeObjectName, superClassNyASMType, null, null);
+                propxy.visitEnd();
+                MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "<init>", "(" + superClassNyASMType + ")V", null, null);
+                mv.visitVarInsn(ALOAD, 0);//装载this
+                mv.visitMethodInsn(INVOKESPECIAL, this.superClassByASM, "<init>", "()V");
+                mv.visitVarInsn(ALOAD, 0);//装载this
+                mv.visitVarInsn(ALOAD, 1);//装载参数 
+                mv.visitFieldInsn(PUTFIELD, this.thisClassByASM, ClassEngine.PropxyModeObjectName, superClassNyASMType);
+                mv.visitInsn(RETURN);
+                mv.visitMaxs(1, 1);
+                mv.visitEnd();
+            }
             //2.附加接口实现
             log.debug("-impl 附加接口实现...");
             for (final Class<?> impl_type : this.implsMap.keySet()) {
@@ -157,6 +189,7 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
                     }
                 }, ClassReader.SKIP_DEBUG);
             }
+            //3.重写基类中的方法
             //4.继续
             super.visitEnd();
         } catch (Exception e) {

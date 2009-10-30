@@ -16,7 +16,7 @@
 package org.more.core.classcode;
 /**
  * 
- * Date : 2009-10-18
+ * Date : 2009-10-30
  * @author Administrator
  */
-public interface MethodInvokeFilter {}
+public interface AOPFilterChain {}

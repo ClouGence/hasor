@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 package org.more.core.classcode;
+import org.more.core.asm.ClassAdapter;
+import org.more.core.asm.ClassVisitor;
+import org.more.core.asm.MethodVisitor;
+import org.more.core.asm.Opcodes;
 /**
- * 生成的类如果有附加接口实现则附加实现的接口委托方法保存在该对象上。
- * 在生成的新类中会有一个public的Map类型的字段。该字段中保存了所有
- * 附加接口实现方法的代理对象信息。而这个信息对象就是Method类。
- * Date : 2009-10-19
+ * 完成AOP代理的字节码改写对象。
+ * Date : 2009-10-30
  * @author 赵永春
  */
-public class Method {
-    /** 索引方法的Map UUID值。 */
-    public String         uuid     = null;
-    /** 映射的委托对象。 */
-    public MethodDelegate delegate = null;
+class AOPClassAdapter extends ClassAdapter implements Opcodes {
+    public AOPClassAdapter(ClassVisitor cv) {
+        super(cv);
+    }
+    @Override
+    public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+        return super.visitMethod(access, name, desc, signature, exceptions);
+    }
 }
