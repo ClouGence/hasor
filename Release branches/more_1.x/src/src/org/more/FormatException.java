@@ -15,33 +15,33 @@
  */
 package org.more;
 /**
- * 类型错误，出现该异常通常是在操作某些数据时该类数据不支持某些操作或者类型转换发生异常。
- * Date : 2009-7-7
+ * 格式错误，出现该异常通常是在操作某些数据时该数据格式异常或者不被支持。
+ * Date : 2009-10-17
  * @author 赵永春
  */
-public class TypeException extends RuntimeException {
+public class FormatException extends RuntimeException {
     /**  */
-    private static final long serialVersionUID = -6286611015368846627L;
+    private static final long serialVersionUID = 6079652246835019946L;
     /**
-     * 类型错误，出现该异常通常是在操作某些数据时该类数据不支持某些操作或者类型转换发生异常。
+     * 格式错误，出现该异常通常是在操作某些数据时该数据格式异常或者不被支持。
      * @param string 异常的描述信息
      */
-    public TypeException(String string) {
+    public FormatException(String string) {
         super(string);
     }
     /**
-     * 类型错误，出现该异常通常是在操作某些数据时该类数据不支持某些操作或者类型转换发生异常。
-     * @param error 承接的上一个异常对象。
+     * 格式错误，出现该异常通常是在操作某些数据时该数据格式异常或者不被支持。
+     * @param error 异常的描述信息
      */
-    public TypeException(Throwable error) {
+    public FormatException(Throwable error) {
         super(error);
     }
     /**
-     * 类型错误，出现该异常通常是在操作某些数据时该类数据不支持某些操作或者类型转换发生异常。
+     * 格式错误，出现该异常通常是在操作某些数据时该数据格式异常或者不被支持。
      * @param string 异常的描述信息。
      * @param error 承接的上一个异常对象。
      */
-    public TypeException(String string, Throwable error) {
+    public FormatException(String string, Throwable error) {
         super(string, error);
     }
 }

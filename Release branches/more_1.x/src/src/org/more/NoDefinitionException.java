@@ -15,8 +15,7 @@
  */
 package org.more;
 /**
- * 未定义异常，通常出现该类异常是由于使用了未定义的属性或者策略，
- * 同时该异常也表示那些试图访问不存在的资源异常。
+ * 未定义异常，通常出现该类异常是由于使用了未定义的属性或者策略，同时该异常也表示那些试图访问不存在的资源异常。
  * Date : 2009-4-29
  * @author 赵永春
  */
@@ -24,19 +23,25 @@ public class NoDefinitionException extends RuntimeException {
     /**  */
     private static final long serialVersionUID = 3664651649094973500L;
     /**
-     * 未定义异常，通常出现该类异常是由于使用了未定义的属性或者策略，
-     * 同时该异常也表示那些试图访问不存在的资源异常。
+     * 未定义异常，通常出现该类异常是由于使用了未定义的属性或者策略，同时该异常也表示那些试图访问不存在的资源异常。
      * @param string 异常的描述信息
      */
     public NoDefinitionException(String string) {
         super(string);
     }
     /**
-     * 未定义异常，通常出现该类异常是由于使用了未定义的属性或者策略，
-     * 同时该异常也表示那些试图访问不存在的资源异常。
+     * 未定义异常，通常出现该类异常是由于使用了未定义的属性或者策略，同时该异常也表示那些试图访问不存在的资源异常。
      * @param error 异常的描述信息
      */
     public NoDefinitionException(Throwable error) {
         super(error);
+    }
+    /**
+     * 未定义异常，通常出现该类异常是由于使用了未定义的属性或者策略，同时该异常也表示那些试图访问不存在的资源异常。
+     * @param string 异常的描述信息。
+     * @param error 承接的上一个异常对象。
+     */
+    public NoDefinitionException(String string, Throwable error) {
+        super(string, error);
     }
 }

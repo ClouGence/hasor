@@ -36,4 +36,12 @@ public class RepeateException extends RuntimeException {
     public RepeateException(Throwable error) {
         super(error);
     }
+    /**
+     * 出现重复定义，出现该异常通常是对以存在的对象或属性进行了第二次重新定义。
+     * @param string 异常的描述信息。
+     * @param error 承接的上一个异常对象。
+     */
+    public RepeateException(String string, Throwable error) {
+        super(string, error);
+    }
 }

@@ -36,4 +36,12 @@ public class CopyException extends RuntimeException {
     public CopyException(Throwable error) {
         super(error);
     }
+    /**
+     * 拷贝资源时发生异常。
+     * @param string 异常的描述信息。
+     * @param error 承接的上一个异常对象。
+     */
+    public CopyException(String string, Throwable error) {
+        super(string, error);
+    }
 }

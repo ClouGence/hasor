@@ -36,4 +36,12 @@ public class InitializationException extends RuntimeException {
     public InitializationException(Throwable error) {
         super(error);
     }
+    /**
+     * 初始化异常，出现该异常通常是在对某些对象执行初始化或者要求某些对象或者环境进行初始化时发生异常。
+     * @param string 异常的描述信息。
+     * @param error 承接的上一个异常对象。
+     */
+    public InitializationException(String string, Throwable error) {
+        super(string, error);
+    }
 }

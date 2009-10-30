@@ -36,4 +36,12 @@ public class CastException extends Exception {
     public CastException(Throwable error) {
         super(error);
     }
+    /**
+     * 转换异常，当发生类型转换，数据转换或者任何转换操作时发生问题则抛出该异常。
+     * @param string 异常的描述信息。
+     * @param error 承接的上一个异常对象。
+     */
+    public CastException(String string, Throwable error) {
+        super(string, error);
+    }
 }

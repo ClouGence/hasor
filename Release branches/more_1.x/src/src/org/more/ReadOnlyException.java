@@ -36,4 +36,12 @@ public class ReadOnlyException extends RuntimeException {
     public ReadOnlyException(Throwable error) {
         super(error);
     }
+    /**
+     * 企图访问只读资源异常，当企图在某资源在只读期间对其进行设置值时引发。
+     * @param string 异常的描述信息。
+     * @param error 承接的上一个异常对象。
+     */
+    public ReadOnlyException(String string, Throwable error) {
+        super(string, error);
+    }
 }

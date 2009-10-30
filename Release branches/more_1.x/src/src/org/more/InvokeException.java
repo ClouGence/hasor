@@ -36,4 +36,12 @@ public class InvokeException extends RuntimeException {
     public InvokeException(Throwable error) {
         super(error);
     }
+    /**
+     * 当调用时，或者执行操作时发生异常。
+     * @param string 异常的描述信息。
+     * @param error 承接的上一个异常对象。
+     */
+    public InvokeException(String string, Throwable error) {
+        super(string, error);
+    }
 }
