@@ -15,6 +15,7 @@
  */
 package org.more.core.classcode;
 import java.io.InputStream;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
@@ -30,8 +31,6 @@ import org.more.core.asm.Label;
 import org.more.core.asm.MethodVisitor;
 import org.more.core.asm.Opcodes;
 import org.more.core.asm.Type;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
 /**
  * 该类负责修改类的字节码附加接口实现方法。
  * 生成类过程
@@ -54,8 +53,6 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
     //========================================================================================Field
     /** xxxx */
     private ClassEngine                   engine          = null;
-    /** 负责输出日志的日志接口。 */
-    private static ILog                   log             = LogFactory.getLog("org_more_core_classcode");
     /** 基类类名 */
     private String                        superClassByASM = null;
     /** 当前类类名 */
@@ -64,6 +61,7 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
     private Map<Class<?>, MethodDelegate> implsMap        = null;
     /** 本类中已经存在的方法 */
     private ArrayList<String>             methodList      = new ArrayList<String>(0);
+    private Class<?>                      superClassType;
     //==================================================================================Constructor
     /** ...... */
     public BuilderClassAdapter(ClassEngine engine, ClassVisitor cv, Class<?> superClass, Map<Class<?>, MethodDelegate> implsMap) {
@@ -71,6 +69,7 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
         this.engine = engine;
         this.superClassByASM = EngineToos.replaceClassName(superClass.getName());
         this.implsMap = implsMap;
+        this.superClassType = superClass;
     }
     //==========================================================================================Job
     /** 附加接口实现 */
@@ -85,14 +84,10 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
         //----------二、附加接口实现
         for (Class<?> i : this.implsMap.keySet()) {
             String implType = EngineToos.replaceClassName(i.getName());
-            if (al.contains(implType) == false) {
-                log.debug("-visit Additional Interface Name=" + i.getName());
+            if (al.contains(implType) == false)
                 al.add(implType);
-            } else
-                log.debug("-Existence of this interface, ignore it");
         }
         //----------三、转换List为Array
-        log.debug("-visit Additional Interface count=" + this.implsMap.size());
         String[] ins = new String[al.size()];
         al.toArray(ins);
         //----------四、继承基类、修改新类类名
@@ -151,45 +146,83 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
     @Override
     public void visitEnd() {
         try {
-            //1.输出代理字段
-            FieldVisitor field = super.visitField(ACC_PUBLIC, ClassEngine.ObjectDelegateMapName, "Ljava/util/Map;", null, null);
-            field.visitEnd();
-            if (this.engine.getMode() == ClassEngine.BuilderMode.Propxy) {
-                //Super 如果是继承方式调用则输出代理字段。
-                String superClassNyASMType = "L" + this.superClassByASM + ";";
-                FieldVisitor propxy = super.visitField(ACC_PRIVATE, ClassEngine.PropxyModeObjectName, superClassNyASMType, null, null);
-                propxy.visitEnd();
-                MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "<init>", "(" + superClassNyASMType + ")V", null, null);
-                mv.visitVarInsn(ALOAD, 0);//装载this
-                mv.visitMethodInsn(INVOKESPECIAL, this.superClassByASM, "<init>", "()V");
+            {
+                //1.输出代理字段
+                FieldVisitor field = super.visitField(ACC_PRIVATE, ClassEngine.ObjectDelegateMapName, "Ljava/util/Hashtable;", null, null);
+                field.visitEnd();
+                //2.输出代理字段的注入方法,方法名仅仅是代理字段的名称前面加上set代理字段首字母不需要大写。
+                MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "set" + ClassEngine.ObjectDelegateMapName, "(Ljava/util/Hashtable;)V", null, null);
                 mv.visitVarInsn(ALOAD, 0);//装载this
                 mv.visitVarInsn(ALOAD, 1);//装载参数 
-                mv.visitFieldInsn(PUTFIELD, this.thisClassByASM, ClassEngine.PropxyModeObjectName, superClassNyASMType);
+                mv.visitFieldInsn(PUTFIELD, this.thisClassByASM, ClassEngine.ObjectDelegateMapName, "Ljava/util/Hashtable;");
                 mv.visitInsn(RETURN);
                 mv.visitMaxs(1, 1);
                 mv.visitEnd();
             }
-            //2.附加接口实现
-            log.debug("-impl 附加接口实现...");
-            for (final Class<?> impl_type : this.implsMap.keySet()) {
-                InputStream inStream = EngineToos.getClassInputStream(impl_type);//获取输入流
-                ClassReader reader = new ClassReader(inStream);//创建ClassReader
-                final BuilderClassAdapter ca = this;
-                //扫描附加接口方法
-                reader.accept(new ClassAdapter(new ClassWriter(ClassWriter.COMPUTE_MAXS)) {
-                    @Override
-                    public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-                        if (ca.methodList.contains(name + desc) == true)
-                            //如果本地方法集合中存在该方法则忽略输出。
-                            return null;
-                        ca.methodList.add(name + desc);
-                        MethodVisitor mv = ca.cv.visitMethod(ACC_PUBLIC, name, desc, signature, exceptions);
-                        BuilderClassAdapter.visitInterfaceMethod(ca.engine, mv, impl_type, name, desc);//输出代理方法调用
-                        return mv;
-                    }
-                }, ClassReader.SKIP_DEBUG);
+            {
+                //3.如果工作在代理模式则输出代理对象相关方法。
+                if (this.engine.getMode() == ClassEngine.BuilderMode.Propxy) {
+                    //Super 如果是继承方式调用则输出代理字段。
+                    String superClassNyASMType = "L" + this.superClassByASM + ";";
+                    FieldVisitor propxy = super.visitField(ACC_PRIVATE, ClassEngine.PropxyModeObjectName, superClassNyASMType, null, null);
+                    propxy.visitEnd();
+                    MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "<init>", "(" + superClassNyASMType + ")V", null, null);
+                    mv.visitVarInsn(ALOAD, 0);//装载this
+                    mv.visitMethodInsn(INVOKESPECIAL, this.superClassByASM, "<init>", "()V");
+                    mv.visitVarInsn(ALOAD, 0);//装载this
+                    mv.visitVarInsn(ALOAD, 1);//装载参数 
+                    mv.visitFieldInsn(PUTFIELD, this.thisClassByASM, ClassEngine.PropxyModeObjectName, superClassNyASMType);
+                    mv.visitInsn(RETURN);
+                    mv.visitMaxs(1, 1);
+                    mv.visitEnd();
+                }
+            }
+            {
+                //2.附加接口实现
+                for (final Class<?> impl_type : this.implsMap.keySet()) {
+                    InputStream inStream = EngineToos.getClassInputStream(impl_type);//获取输入流
+                    ClassReader reader = new ClassReader(inStream);//创建ClassReader
+                    final BuilderClassAdapter ca = this;
+                    //扫描附加接口方法
+                    reader.accept(new ClassAdapter(new ClassWriter(ClassWriter.COMPUTE_MAXS)) {
+                        @Override
+                        public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+                            if (ca.methodList.contains(name + desc) == true)
+                                //如果本地方法集合中存在该方法则忽略输出。
+                                return null;
+                            ca.methodList.add(name + desc);
+                            MethodVisitor mv = ca.cv.visitMethod(ACC_PUBLIC, name, desc, signature, exceptions);
+                            BuilderClassAdapter.visitInterfaceMethod(ca.engine, mv, impl_type, name, desc);//输出代理方法调用
+                            return mv;
+                        }
+                    }, ClassReader.SKIP_DEBUG);
+                }
             }
             //3.重写基类中的方法
+            {
+                for (java.lang.reflect.Method m : this.superClassType.getMethods()) {
+                    String returnStr = EngineToos.toAsmType(m.getReturnType());
+                    //
+                    String desc = "(" + EngineToos.toAsmType(m.getParameterTypes()) + ")" + returnStr;
+                    String fullDesc = m.getName() + desc;
+                    //检测是否是已经存在的方法
+                    if (this.methodList.contains(fullDesc) == true)
+                        continue;
+                    String[] exceptions = EngineToos.splitAsmType(EngineToos.toAsmType(m.getExceptionTypes()));
+                    //处理类型
+                    for (int i = 0; i < exceptions.length; i++)
+                        exceptions[i] = exceptions[i].substring(1, exceptions[i].length() - 1);
+                    exceptions = (exceptions.length == 0) ? null : exceptions;
+                    //
+                    int access = m.getModifiers();
+                    if ((access | Modifier.FINAL) == access)
+                        continue;//忽略常方法
+                    else if ((access | Modifier.PUBLIC) == access)
+                        this.visitMethod(ACC_PUBLIC, m.getName(), desc, null, exceptions);
+                    else if ((access | Modifier.PROTECTED) == access)
+                        this.visitMethod(ACC_PROTECTED, m.getName(), desc, null, exceptions);
+                }
+            }
             //4.继续
             super.visitEnd();
         } catch (Exception e) {
@@ -212,11 +245,11 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
         Label try_begin = new Label();
         Label try_end = new Label();
         Label try_catch = new Label();
-        mv.visitTryCatchBlock(try_begin, try_end, try_catch, "java/lang/Exception");
+        mv.visitTryCatchBlock(try_begin, try_end, try_catch, "java/lang/Throwable");
         mv.visitLabel(try_begin);
         //-----------------------------------------------------------------------------------------------------------------------
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, replaceClassName, ClassEngine.ObjectDelegateMapName, "Ljava/util/Map;");
+        mv.visitFieldInsn(GETFIELD, replaceClassName, ClassEngine.ObjectDelegateMapName, "Ljava/util/Hashtable;");
         mv.visitLdcInsn(inplType.getName());
         mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "get", "(Ljava/lang/Object;)Ljava/lang/Object;");
         mv.visitTypeInsn(CHECKCAST, "org/more/core/classcode/Method");
@@ -355,5 +388,6 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
         mv.visitInsn(ATHROW);
         /* 输出堆栈列表 */
         mv.visitMaxs(maxStackSize, localVarSize + 1);
+        mv.visitEnd();
     }
 }

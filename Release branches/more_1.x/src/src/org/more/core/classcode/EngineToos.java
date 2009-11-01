@@ -22,7 +22,7 @@ import org.more.FormatException;
 import org.more.core.asm.Opcodes;
 import org.more.core.asm.Type;
 /**
- * 生成字节码时候使用的工具类
+ * 生成字节码时候使用的工具类。
  * Date : 2009-10-16
  * @author 赵永春
  */
@@ -136,21 +136,13 @@ public class EngineToos implements Opcodes {
         else if (classType.isArray() == true)
             return "[" + EngineToos.toAsmType(classType.getComponentType());
         else
-            return "L" + Type.getInternalName(classType);
+            return "L" + Type.getInternalName(classType) + ";";
     }
     /**将某一个类型转为asm形式的表述。 int 转为 I，String转为 Ljava/lang/String*/
     public static String toAsmType(Class<?>[] classType) {
         String returnString = "";
-        for (Class<?> c : classType) {
-            String t = EngineToos.toAsmType(c);
-            if (t.length() > 1) {
-                if (t.charAt(t.length() - 2) == '[')
-                    returnString += t;
-                else
-                    returnString += t + ";";
-            } else
-                returnString += t;
-        }
+        for (Class<?> c : classType)
+            returnString += EngineToos.toAsmType(c);;
         return returnString;
     }
     /** 将IIIILjava/lang/Integer;F形式的ASM类型表述分解为数组。测试字符串IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean; */

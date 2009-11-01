@@ -16,7 +16,6 @@
 package org.more.core.classcode;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
@@ -42,13 +41,12 @@ import org.more.log.LogFactory;
  * 在代理模式下只有公共方法参与AOP功能，私有方法和受保护的方法因访问权限问题不能参与AOP。<br/>
  * <b>AOP特性</b>--ClassEngine引擎的AOP特性是可以配置是否启用的。如果附加AOP相关功能则字节码在生成时除了经过了第一次接口附加操作之后
  * 还需要经过第二次AOP特性加入。所有本类方法包括可以继承的方法均被重写。启用AOP特性会少量增加字节码体积同时也比不使用AOP特性的运行效率要慢些。
- * 
  * <br/>Date : 2009-10-15
  * @author 赵永春
  */
 public class ClassEngine extends ClassLoader implements Opcodes {
     //=================================================================================Builder Type
-    /** ClassEngine引擎类生成 */
+    /** ClassEngine引擎类生成模式。 */
     public enum BuilderMode {
         /** 
          * 继承方式实现新类，这种生成模式下必须要求先有类型后有对象。生成的新类是继承原有类实现的，
@@ -67,10 +65,12 @@ public class ClassEngine extends ClassLoader implements Opcodes {
     }
     //================================================================================Builder Const
     static final String                             BuilderClassPrefix    = "$More_";                                      //生成类的类名后缀名
-    static final String                             ObjectDelegateMapName = "$delegateMap";                                //生成类中委托映射对象名
-    static final String                             DelegateMapUUIDPrefix = "$MoreDelegate_";                              //存放在委托映射中的KEY前缀
     static final String                             DefaultPackageName    = "org.more.core.classcode.test";                //默认类所属包名
-    static final String                             PropxyModeObjectName  = "$propxyObject";                               //默认类所属包名
+    static final String                             ObjectDelegateMapName = "$More_DelegateMap";                           //生成类中委托映射对象名
+    static final String                             DelegateMapUUIDPrefix = "$More_DelegatePrefix_";                       //存放在委托映射中的KEY前缀
+    static final String                             PropxyModeObjectName  = "$More_PropxyObject";                          //代理方式实现时代理对象在类中的名称
+    static final String                             AOPFilterChainName    = "$More_AOPFilterChain";                        //AOP过滤器对象名称
+    static final String                             AOPMethodNamePrefix   = "$More_";                                      //AOP方法的原始方法名前缀
     //========================================================================================Field
     /** 生成的新类类名 */
     private String                                  className             = null;
@@ -90,8 +90,8 @@ public class ClassEngine extends ClassLoader implements Opcodes {
     private static long                             builderClassNumber    = 0;
     /** 负责输出日志的日志接口。 */
     private static ILog                             log                   = LogFactory.getLog("org_more_core_classcode");
-    //AOP相关数据
-    private AOPInvokeFilter                         invokeFilter          = null;                                          //实现AOP的方法调用过滤器组合
+    /**实现AOP的方法调用过滤器组合。*/
+    private ImplAOPFilterChain                      invokeFilterChain     = null;
     //==================================================================================Constructor
     /** 创建一个ClassEngine类型对象，默认生成的类是Object的子类，使用的是当前线程的ClassLoader类装载对象作为父装载器。 */
     public ClassEngine() {
@@ -249,6 +249,19 @@ public class ClassEngine extends ClassLoader implements Opcodes {
         this.setNewClass(this.className, this.superClass);
         this.impls.put(appendInterface, delegate);
     }
+    /**
+     * 设置AOP回调方法链，参数是一个过滤器集合。在执行过滤器链的时候是依照如下顺序进行执行4321。
+     * 就是说越靠近数组前端的对象在过滤器链中的位置就越靠后。在过滤器执行完毕返回是否执行顺序是1234。
+     * @param filters 要设置的过滤器链数组。
+     */
+    public void setCallBacks(AOPInvokeFilter[] filters) {
+        if (filters == null)
+            return;
+        ImplAOPFilterChain filterChain = new ImplAOPFilterChain(null, null);
+        for (AOPInvokeFilter thisFilter : filters)
+            filterChain = new ImplAOPFilterChain(thisFilter, filterChain);
+        this.invokeFilterChain = filterChain;
+    }
     //==================================================================================newInstance
     /** 清空生成的字节码数据。 */
     public void resetByte() {
@@ -291,7 +304,7 @@ public class ClassEngine extends ClassLoader implements Opcodes {
             obj = this.toClass().newInstance();
         else
             obj = this.toClass().getConstructor(this.superClass).newInstance(superClassObject);
-        return obj;
+        return this.configuration(obj);
     }
     /**
      * 对某个新生成的类对象执行装配。ClassEngine生成的新类中可能存在附加接口。这些附加的接口委托在新的类中是不存在的。
@@ -314,11 +327,15 @@ public class ClassEngine extends ClassLoader implements Opcodes {
             m.delegate = this.impls.get(type);
             map.put(type.getName(), m);
         }
-        //4.执行注入
-        Field field = newAsmObject.getClass().getField(ClassEngine.ObjectDelegateMapName);
-        field.set(newAsmObject, map);
-        String className = newAsmObject.getClass().getName();
-        log.debug("configure object [" + className + "]" + newAsmObject);
+        //4.执行代理注入
+        java.lang.reflect.Method m1 = newAsmObject.getClass().getMethod("set" + ClassEngine.ObjectDelegateMapName, Hashtable.class);
+        m1.invoke(newAsmObject, map);
+        //5.装配AOP链
+        if (this.enableAOP == true && this.invokeFilterChain != null) {
+            java.lang.reflect.Method m2 = this.classType.getMethod("set" + ClassEngine.AOPFilterChainName, ImplAOPFilterChain.class);
+            m2.invoke(newAsmObject, this.invokeFilterChain);
+        }
+        log.debug("configure object [" + this.className + "]");
         return newAsmObject;
     }
     //=================================================================================BuilderClass
@@ -352,22 +369,17 @@ public class ClassEngine extends ClassLoader implements Opcodes {
             log.debug("ready [Error] method acceptClass return null!");
             acceptVisitor = new ClassAdapter(writer);
         }
+        //------------------------------三、对生成的类对象附加AOP功能
+        if (this.enableAOP == true && this.invokeFilterChain != null)
+            acceptVisitor = new AOPClassAdapter(acceptVisitor);
         log.debug("ready [OK]!");
-        //------------------------------三、使用代理拦截所有方法
+        //------------------------------四、使用代理拦截所有方法
         BuilderClassAdapter builderAdapter = new BuilderClassAdapter(this, acceptVisitor, this.superClass, this.impls);
-        //------------------------------四、调用ClassReader引擎解析原始类
+        //------------------------------五、调用ClassReader引擎解析原始类，并生成新对象
         ClassAdapter ca = new ClassAdapter(builderAdapter);
         reader.accept(ca, ClassReader.SKIP_DEBUG);
-        //------------------------------五、取得生成的字节码
         log.debug("generated Class [OK]! get ByteCode");
-        //------------------------------六、对生成的类对象附加AOP功能
-        if (this.enableAOP == true) {
-            reader = new ClassReader(writer.toByteArray());//创建ClassReader
-            writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-            acceptVisitor = new AOPClassAdapter(writer);
-            reader.accept(acceptVisitor, ClassReader.SKIP_DEBUG);
-        }
-        //------------------------------七、生成Class对象
+        //------------------------------六、取得生成的字节码
         this.classByte = writer.toByteArray();
         this.classType = this.loadClass(this.className);
     }
