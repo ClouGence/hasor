@@ -34,7 +34,6 @@ class AOPClassAdapter extends ClassAdapter implements Opcodes {
     //========================================================================================Field
     /** 当前类类名 */
     private String                                          thisClassByASM = null;
-    //  private LinkedList<String>                              aopMethods     = new LinkedList<String>();
     private LinkedHashMap<String, java.lang.reflect.Method> classMethods   = new LinkedHashMap<String, java.lang.reflect.Method>(0);
     private ClassEngine                                     engine         = null;
     //==================================================================================Constructor
@@ -76,6 +75,7 @@ class AOPClassAdapter extends ClassAdapter implements Opcodes {
         if (engine.acceptMethod(classMethods.get(fullDesc)) == false)
             return super.visitMethod(access, name, desc, signature, exceptions);
         //3.输出新方法
+        this.engine.aopMethods.put(fullDesc, null);
         String newMethodName = ClassEngine.AOPMethodNamePrefix + name;
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
         this.visitAOPMethod(mv, name, desc);
@@ -113,56 +113,10 @@ class AOPClassAdapter extends ClassAdapter implements Opcodes {
         int maxStackSize = 0;//方法最大堆栈大小
         //-----------------------------------------------------------------------------------------------------------------------
         mv.visitCode();
-        Label try_begin = new Label();
-        Label try_end = new Label();
-        Label try_catch = new Label();
-        mv.visitTryCatchBlock(try_begin, try_end, try_catch, "java/lang/Throwable");
-        mv.visitLabel(try_begin);
-        //-----------------------------------------------------------------------------------------------------------------------
-        mv.visitIntInsn(BIPUSH, paramCount);
-        mv.visitTypeInsn(ANEWARRAY, "java/lang/Class");
-        for (int i = 0; i < paramCount; i++) {
-            mv.visitInsn(DUP);
-            mv.visitIntInsn(BIPUSH, i);
-            if (asmParams[i].equals("B") == true)
-                mv.visitFieldInsn(GETSTATIC, "java/lang/Byte", "TYPE", "Ljava/lang/Class;");
-            else if (asmParams[i].equals("S") == true)
-                mv.visitFieldInsn(GETSTATIC, "java/lang/Short", "TYPE", "Ljava/lang/Class;");
-            else if (asmParams[i].equals("I") == true)
-                mv.visitFieldInsn(GETSTATIC, "java/lang/Integer", "TYPE", "Ljava/lang/Class;");
-            else if (asmParams[i].equals("J") == true)
-                mv.visitFieldInsn(GETSTATIC, "java/lang/Long", "TYPE", "Ljava/lang/Class;");
-            else if (asmParams[i].equals("F") == true)
-                mv.visitFieldInsn(GETSTATIC, "java/lang/Float", "TYPE", "Ljava/lang/Class;");
-            else if (asmParams[i].equals("D") == true)
-                mv.visitFieldInsn(GETSTATIC, "java/lang/Double", "TYPE", "Ljava/lang/Class;");
-            else if (asmParams[i].equals("C") == true)
-                mv.visitFieldInsn(GETSTATIC, "java/lang/Character", "TYPE", "Ljava/lang/Class;");
-            else if (asmParams[i].equals("Z") == true)
-                mv.visitFieldInsn(GETSTATIC, "java/lang/Boolean", "TYPE", "Ljava/lang/Class;");
-            else
-                mv.visitLdcInsn(Type.getObjectType(EngineToos.toClassType(asmParams[i])));
-            mv.visitInsn(AASTORE);
-            maxStackSize = (maxStackSize < 5 + i) ? 5 + i : maxStackSize;
-        }
-        mv.visitVarInsn(ASTORE, paramCount + 1);
-        localVarSize++;
-        //Class[] paramTypes = new Class[]{...}----------------------------------------------------------------------------------
-        mv.visitTypeInsn(NEW, "org/more/core/classcode/AOPMethods");
-        mv.visitInsn(DUP);
-        mv.visitLdcInsn(ClassEngine.AOPMethodNamePrefix + name);
-        mv.visitLdcInsn(name);
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKEVIRTUAL, this.thisClassByASM, "getClass", "()Ljava/lang/Class;");
-        mv.visitVarInsn(ALOAD, paramCount + 1);
-        mv.visitMethodInsn(INVOKESPECIAL, "org/more/core/classcode/AOPMethods", "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Class;[Ljava/lang/Class;)V");
-        mv.visitVarInsn(ASTORE, paramCount + 2);
-        localVarSize++;
-        //AOPMethods aop = new AOPMethods(m1,m2);--------------------------------------------------------------------------------
         mv.visitVarInsn(ALOAD, 0);
         mv.visitFieldInsn(GETFIELD, this.thisClassByASM, ClassEngine.AOPFilterChainName, "Lorg/more/core/classcode/ImplAOPFilterChain;");
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitVarInsn(ALOAD, paramCount + 2);
+        mv.visitLdcInsn(name + desc);
         mv.visitIntInsn(BIPUSH, paramCount);
         mv.visitTypeInsn(ANEWARRAY, "java/lang/Object");
         for (int i = 0; i < paramCount; i++) {
@@ -198,8 +152,8 @@ class AOPClassAdapter extends ClassAdapter implements Opcodes {
             mv.visitInsn(AASTORE);
             maxStackSize = (maxStackSize < 8 + i) ? 8 + i : maxStackSize;
         }
-        String desc2 = "Ljava/lang/Object;Lorg/more/core/classcode/AOPMethods;[Ljava/lang/Object;";
-        mv.visitMethodInsn(INVOKEINTERFACE, "org/more/core/classcode/AOPFilterChain", "doInvokeFilter", "(" + desc2 + ")Ljava/lang/Object;");
+        String desc2 = "Ljava/lang/Object;Ljava/lang/String;[Ljava/lang/Object;";
+        mv.visitMethodInsn(INVOKEVIRTUAL, "org/more/core/classcode/ImplAOPFilterChain", "doInvoke", "(" + desc2 + ")Ljava/lang/Object;");
         mv.visitVarInsn(ASTORE, paramCount + 3);
         localVarSize++;
         //obj = AOPFilterChainName.doInvokeFilter(this,thisMethod, new Object[] { methodCode });---------------------------------
@@ -242,15 +196,7 @@ class AOPClassAdapter extends ClassAdapter implements Opcodes {
             mv.visitTypeInsn(CHECKCAST, asmReturns);
             mv.visitInsn(ARETURN);
         }
-        mv.visitLabel(try_end);
         //return obj-------------------------------------------------------------------------------------------------------------
-        mv.visitLabel(try_catch);
-        mv.visitVarInsn(ASTORE, paramCount + 4);
-        mv.visitTypeInsn(NEW, "java/lang/RuntimeException");
-        mv.visitInsn(DUP);
-        mv.visitVarInsn(ALOAD, paramCount + 4);
-        mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", "<init>", "(Ljava/lang/Throwable;)V");
-        mv.visitInsn(ATHROW);
         /* 输出堆栈列表 */
         mv.visitMaxs(maxStackSize, localVarSize + 1);
         mv.visitEnd();

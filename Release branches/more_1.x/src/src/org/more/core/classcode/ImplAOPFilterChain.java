@@ -34,4 +34,12 @@ public class ImplAOPFilterChain implements AOPFilterChain {
         else
             return methods.getMethod().invoke(target, args);
     }
+    public Object doInvoke(Object target, String methodDesc, Object[] args) {
+        try {
+            ClassEngine ce = (ClassEngine) target.getClass().getClassLoader();
+            return this.thisFilter.doFilter(target, ce.aopMethods.get(methodDesc), args, this.nextFilterChain);
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

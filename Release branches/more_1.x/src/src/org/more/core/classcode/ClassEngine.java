@@ -92,6 +92,9 @@ public class ClassEngine extends ClassLoader implements Opcodes {
     private static ILog                             log                   = LogFactory.getLog("org_more_core_classcode");
     /**实现AOP的方法调用过滤器组合。*/
     private ImplAOPFilterChain                      invokeFilterChain     = null;
+    //
+    /**保存经过AOP代理之后的方法和代理方法。*/
+    LinkedHashMap<String, AOPMethods>               aopMethods            = new LinkedHashMap<String, AOPMethods>(0);
     //==================================================================================Constructor
     /** 创建一个ClassEngine类型对象，默认生成的类是Object的子类，使用的是当前线程的ClassLoader类装载对象作为父装载器。 */
     public ClassEngine() {
@@ -380,16 +383,18 @@ public class ClassEngine extends ClassLoader implements Opcodes {
         reader.accept(ca, ClassReader.SKIP_DEBUG);
         log.debug("generated Class [OK]! get ByteCode");
         //------------------------------六、取得生成的字节码
-        //        if (this.enableAOP == true && this.invokeFilterChain != null) {
-        //            this.classByte = writer.toByteArray();
-        //            this.classType = this.loadClass(this.className);
-        //            reader = new ClassReader(this.classByte);//创建ClassReader
-        //            writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        //            ca = new AOPClassAdapter(writer, this);
-        //            reader.accept(ca, ClassReader.SKIP_DEBUG);
-        //        }
         this.classByte = writer.toByteArray();
         this.classType = this.loadClass(this.className);
+        //
+        for (java.lang.reflect.Method m : this.classType.getDeclaredMethods()) {
+            String desc = EngineToos.toAsmType(m.getParameterTypes());
+            String returnDesc = EngineToos.toAsmType(m.getReturnType());
+            String fullName = m.getName() + "(" + desc + ")" + returnDesc;
+            if (this.aopMethods.containsKey(fullName) == true) {
+                java.lang.reflect.Method m1 = EngineToos.getMethod(this.classType, this.AOPMethodNamePrefix + m.getName(), m.getParameterTypes());
+                this.aopMethods.put(fullName, new AOPMethods(m1, m));
+            }
+        }
     }
     /** 子类决定最终的ClassAdapter，子类ClassAdapter可以更自由的控制字节码注意子类在重写该方法时一定要使用classWriter作为最终的字节码输出对象。*/
     protected ClassAdapter acceptClass(final ClassWriter classWriter) {
