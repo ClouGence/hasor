@@ -32,6 +32,6 @@ public class ImplAOPFilterChain implements AOPFilterChain {
         if (this.nextFilterChain != null)
             return this.thisFilter.doFilter(target, methods, args, this.nextFilterChain);
         else
-            return methods.method.invoke(target, args);
+            return methods.getMethod().invoke(target, args);
     }
 }

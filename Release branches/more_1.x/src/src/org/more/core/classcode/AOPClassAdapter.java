@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.more.core.classcode;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.more.core.asm.ClassAdapter;
@@ -31,11 +33,33 @@ import org.more.core.asm.Type;
 class AOPClassAdapter extends ClassAdapter implements Opcodes {
     //========================================================================================Field
     /** 当前类类名 */
-    private String   thisClassByASM = null;
-    private String[] ignoreMethod   = new String[] { "set" + ClassEngine.ObjectDelegateMapName, "set" + ClassEngine.AOPFilterChainName };
+    private String                                          thisClassByASM = null;
+    //  private LinkedList<String>                              aopMethods     = new LinkedList<String>();
+    private LinkedHashMap<String, java.lang.reflect.Method> classMethods   = new LinkedHashMap<String, java.lang.reflect.Method>(0);
+    private ClassEngine                                     engine         = null;
     //==================================================================================Constructor
-    public AOPClassAdapter(ClassVisitor cv) {
+    public AOPClassAdapter(ClassVisitor cv, ClassEngine engine) {
         super(cv);
+        this.engine = engine;
+        try {
+            LinkedList<java.lang.reflect.Method> listMethod = new LinkedList<java.lang.reflect.Method>();
+            for (java.lang.reflect.Method m : engine.getSuperClass().getDeclaredMethods())
+                listMethod.add(m);
+            for (java.lang.reflect.Method m : engine.getSuperClass().getMethods())
+                if (listMethod.contains(m) == false)
+                    listMethod.add(m);
+            for (Class<?> c : engine.getAppendImpls())
+                for (java.lang.reflect.Method m : c.getMethods())
+                    if (listMethod.contains(m) == false)
+                        listMethod.add(m);
+            //
+            for (java.lang.reflect.Method m : listMethod) {
+                String desc = EngineToos.toAsmType(m.getParameterTypes());
+                String returnDesc = EngineToos.toAsmType(m.getReturnType());
+                String fullName = m.getName() + "(" + desc + ")" + returnDesc;
+                this.classMethods.put(fullName, m);
+            }
+        } catch (Exception e) {}
     }
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
@@ -44,18 +68,18 @@ class AOPClassAdapter extends ClassAdapter implements Opcodes {
     }
     @Override
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-        //1.不处理构造方法
-        if (name.equals("<init>") == true)
+        String fullDesc = name + desc;
+        //1.内部决定忽略AOP方法。
+        if (this.engine.ignoreMethod(fullDesc) == false)
             return super.visitMethod(access, name, desc, signature, exceptions);
-        //2.忽略More注入方法
-        for (String n : this.ignoreMethod)
-            if (n.equals(name) == true)
-                return super.visitMethod(access, name, desc, signature, exceptions);
+        //2.忽略ClassEngine.acceptMethod决定忽略的AOP方法。
+        if (engine.acceptMethod(classMethods.get(fullDesc)) == false)
+            return super.visitMethod(access, name, desc, signature, exceptions);
         //3.输出新方法
         String newMethodName = ClassEngine.AOPMethodNamePrefix + name;
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
         this.visitAOPMethod(mv, name, desc);
-        //4.更改名称输出老方法
+        //5.更改名称输出老方法
         return super.visitMethod(ACC_PUBLIC, newMethodName, desc, signature, exceptions);
     }
     @Override
@@ -66,6 +90,7 @@ class AOPClassAdapter extends ClassAdapter implements Opcodes {
             field.visitEnd();
             //2.输出代理字段的注入方法,方法名仅仅是代理字段的名称前面加上set代理字段首字母不需要大写。
             MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "set" + ClassEngine.AOPFilterChainName, "(Lorg/more/core/classcode/ImplAOPFilterChain;)V", null, null);
+            mv.visitCode();
             mv.visitVarInsn(ALOAD, 0);//装载this
             mv.visitVarInsn(ALOAD, 1);//装载参数 
             mv.visitFieldInsn(PUTFIELD, this.thisClassByASM, ClassEngine.AOPFilterChainName, "Lorg/more/core/classcode/ImplAOPFilterChain;");
@@ -125,19 +150,12 @@ class AOPClassAdapter extends ClassAdapter implements Opcodes {
         //Class[] paramTypes = new Class[]{...}----------------------------------------------------------------------------------
         mv.visitTypeInsn(NEW, "org/more/core/classcode/AOPMethods");
         mv.visitInsn(DUP);
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKEVIRTUAL, this.thisClassByASM, "getClass", "()Ljava/lang/Class;");
         mv.visitLdcInsn(ClassEngine.AOPMethodNamePrefix + name);
-        mv.visitVarInsn(ALOAD, paramCount + 1);
-        mv.visitMethodInsn(INVOKESTATIC, "org/more/core/classcode/EngineToos", "getMethod", "(Ljava/lang/Class;Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;");
-        //m1 EngineToos.getMethod(getClass(),"xxx", paramTypes);-----------------------------------------------------------------
+        mv.visitLdcInsn(name);
         mv.visitVarInsn(ALOAD, 0);
         mv.visitMethodInsn(INVOKEVIRTUAL, this.thisClassByASM, "getClass", "()Ljava/lang/Class;");
-        mv.visitLdcInsn(name);
         mv.visitVarInsn(ALOAD, paramCount + 1);
-        mv.visitMethodInsn(INVOKESTATIC, "org/more/core/classcode/EngineToos", "getMethod", "(Ljava/lang/Class;Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;");
-        //m2 EngineToos.getMethod(getClass(),"xxx", paramTypes);-----------------------------------------------------------------
-        mv.visitMethodInsn(INVOKESPECIAL, "org/more/core/classcode/AOPMethods", "<init>", "(Ljava/lang/reflect/Method;Ljava/lang/reflect/Method;)V");
+        mv.visitMethodInsn(INVOKESPECIAL, "org/more/core/classcode/AOPMethods", "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Class;[Ljava/lang/Class;)V");
         mv.visitVarInsn(ASTORE, paramCount + 2);
         localVarSize++;
         //AOPMethods aop = new AOPMethods(m1,m2);--------------------------------------------------------------------------------

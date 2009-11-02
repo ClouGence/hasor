@@ -22,13 +22,28 @@ package org.more.core.classcode;
  * @author 赵永春
  */
 public class AOPMethods {
+    //========================================================================================Field
     /** 原始方法，原始方法中包含了有效的注解信息。 */
-    public final java.lang.reflect.Method method;
+    private final String     method;
     /** 代理方法，如果执行代理方法的invoke将会出现递归调用。 */
-    public final java.lang.reflect.Method propxyMethod;
+    private final String     propxyMethod;
+    /** 方法所处类。 */
+    private final Class<?>   thisClass;
+    /** 方法参数 */
+    private final Class<?>[] paramsType;
+    //==================================================================================Constructor
     /** 创建AOPMethods对象。第一个参数是原始方法对象第二个参数是代理方法对象。 */
-    public AOPMethods(java.lang.reflect.Method method, java.lang.reflect.Method propxyMethod) {
+    public AOPMethods(String method, String propxyMethod, Class<?> thisClass, Class<?>[] paramsType) {
         this.method = method;
         this.propxyMethod = propxyMethod;
+        this.thisClass = thisClass;
+        this.paramsType = paramsType;
+    }
+    //==========================================================================================JOB
+    public java.lang.reflect.Method getMethod() {
+        return EngineToos.getMethod(this.thisClass, this.method, this.paramsType);
+    }
+    public java.lang.reflect.Method getPropxyMethod() {
+        return EngineToos.getMethod(this.thisClass, this.propxyMethod, this.paramsType);
     }
 }

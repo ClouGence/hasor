@@ -371,7 +371,7 @@ public class ClassEngine extends ClassLoader implements Opcodes {
         }
         //------------------------------三、对生成的类对象附加AOP功能
         if (this.enableAOP == true && this.invokeFilterChain != null)
-            acceptVisitor = new AOPClassAdapter(acceptVisitor);
+            acceptVisitor = new AOPClassAdapter(acceptVisitor, this);
         log.debug("ready [OK]!");
         //------------------------------四、使用代理拦截所有方法
         BuilderClassAdapter builderAdapter = new BuilderClassAdapter(this, acceptVisitor, this.superClass, this.impls);
@@ -380,11 +380,36 @@ public class ClassEngine extends ClassLoader implements Opcodes {
         reader.accept(ca, ClassReader.SKIP_DEBUG);
         log.debug("generated Class [OK]! get ByteCode");
         //------------------------------六、取得生成的字节码
+        //        if (this.enableAOP == true && this.invokeFilterChain != null) {
+        //            this.classByte = writer.toByteArray();
+        //            this.classType = this.loadClass(this.className);
+        //            reader = new ClassReader(this.classByte);//创建ClassReader
+        //            writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        //            ca = new AOPClassAdapter(writer, this);
+        //            reader.accept(ca, ClassReader.SKIP_DEBUG);
+        //        }
         this.classByte = writer.toByteArray();
         this.classType = this.loadClass(this.className);
     }
     /** 子类决定最终的ClassAdapter，子类ClassAdapter可以更自由的控制字节码注意子类在重写该方法时一定要使用classWriter作为最终的字节码输出对象。*/
     protected ClassAdapter acceptClass(final ClassWriter classWriter) {
         return null;
+    };
+    /** 内部忽略方法*/
+    boolean ignoreMethod(String fullDesc) {
+        String[] ignoreMethod = new String[2];
+        ignoreMethod[0] = "set" + ClassEngine.ObjectDelegateMapName + "(Ljava/util/Hashtable;)V";
+        ignoreMethod[1] = "set" + ClassEngine.AOPFilterChainName + "(Lorg/more/core/classcode/ImplAOPFilterChain;)V";
+        for (String n : ignoreMethod)
+            if (n.equals(fullDesc) == true)
+                return false;
+        //构造方法
+        if (fullDesc.indexOf("<init>") != -1)
+            return false;
+        return true;
+    };
+    /** 子类决定发现的这个方法是否处于AOP方法。*/
+    protected boolean acceptMethod(java.lang.reflect.Method method) {
+        return true;
     };
 }
