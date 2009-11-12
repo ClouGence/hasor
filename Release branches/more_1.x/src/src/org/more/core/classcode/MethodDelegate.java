@@ -17,7 +17,7 @@ package org.more.core.classcode;
 import java.lang.reflect.Method;
 import org.more.InvokeException;
 /**
- * 方法委托，当使用ClassEngine类的addImpl方法附加接口实现时，附加的接口处理函数对象。
+ * 当使用ClassEngine类的addImpl方法附加接口实现时，附加的接口处理函数对象就是该接口对象。
  * 被委托的方法将会采用注册委托时传递的MethodDelegate接口对象作为回调对象。
  * Date : 2009-10-18
  * @author 赵永春

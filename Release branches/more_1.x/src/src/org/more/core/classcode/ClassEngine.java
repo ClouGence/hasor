@@ -27,19 +27,17 @@ import org.more.core.asm.ClassReader;
 import org.more.core.asm.ClassVisitor;
 import org.more.core.asm.ClassWriter;
 import org.more.core.asm.Opcodes;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
 /**
- * 字节码生成工具，该工具可以在已有类型上附加接口实现，使用ClassEngine还可以对类对象提供AOP的支持。ClassEngine提供了两种工作模式。<br/>
- * <b>继承方式</b>--继承方式实现新类，这种生成模式下必须要求先有类型后有对象。生成的新类是继承原有类实现的，
+ * 字节码生成工具，该工具可以在已有类型上附加接口实现，使用ClassEngine还可以对类对象提供AOP的支持，此外ClassEngine提供了两种工作模式。<br/>
+ * <br/><b>继承方式</b>--继承方式实现新类，这种生成模式下必须要求先有类型后有对象。生成的新类是继承原有类实现的，
  * 所有附加方法都写到新类中。原始类中的所有方法都被重写并且以super形式调用父类。私有方法不包括重写范畴。
  * 私有方法将不参与AOP功能。在继承模式下保护方法与公共方法参与AOP功能。<br/>
- * <b>代理方式</b>--代理方式实现新类，这种生成模式下可以在已有的对象上附加接口实现而不需要重新创建对象。同时生成的新对象
+ * <br/><b>代理方式</b>--代理方式实现新类，这种生成模式下可以在已有的对象上附加接口实现而不需要重新创建对象。同时生成的新对象
  * 不破坏原有对象。整个实现方式就是一个静态代理方式实现。注意这种生成方式会取消所有原始类中的构造方法。
  * 取而代之的是生成一个一个参数的构造方法，该参数类型就是基类类型。所有方法调用都使用这个注入的类型对象调用。
  * 同时该中生成方式的私有方法不包括重写范畴。<br/>
  * 在代理模式下只有公共方法参与AOP功能，私有方法和受保护的方法因访问权限问题不能参与AOP。<br/>
- * <b>AOP特性</b>--ClassEngine引擎的AOP特性是可以配置是否启用的。如果附加AOP相关功能则字节码在生成时除了经过了第一次接口附加操作之后
+ * <br/><b>AOP特性</b>--ClassEngine引擎的AOP特性是可以配置是否启用的。如果附加AOP相关功能则字节码在生成时除了经过了第一次接口附加操作之后
  * 还需要经过第二次AOP特性加入。所有本类方法包括可以继承的方法均被重写。启用AOP特性会少量增加字节码体积同时也比不使用AOP特性的运行效率要慢些。
  * <br/>Date : 2009-10-15
  * @author 赵永春
@@ -88,8 +86,6 @@ public class ClassEngine extends ClassLoader implements Opcodes {
     private boolean                                 enableAOP             = true;
     /** 生成的新类类名尾部的递增标识量 */
     private static long                             builderClassNumber    = 0;
-    /** 负责输出日志的日志接口。 */
-    private static ILog                             log                   = LogFactory.getLog("org_more_core_classcode");
     /**实现AOP的方法调用过滤器组合。*/
     private ImplAOPFilterChain                      invokeFilterChain     = null;
     //
@@ -104,11 +100,11 @@ public class ClassEngine extends ClassLoader implements Opcodes {
     public ClassEngine(String className, Class<?> superClass) {
         this(className, superClass, Thread.currentThread().getContextClassLoader());
     }
-    /** 创建一个ClassEngine类型对象，默认生成的类是Object的子类，同时指定类装载器。 */
+    /** 创建一个ClassEngine类型对象，默认生成的类是Object的子类，同时指定类装载器。*/
     public ClassEngine(ClassLoader parentLoader) {
         this(ClassEngine.DefaultPackageName + ".Object" + ClassEngine.getPrefix(), Object.class, parentLoader);
     }
-    /** 使用指定类名创建一个ClassEngine类型对象，如果指定的类名是空则采用Object作为父类，同时指定类装载器。 */
+    /** 使用指定类名创建一个ClassEngine类型对象，如果指定的类名是空则采用Object作为父类，同时指定类装载器。*/
     public ClassEngine(String className, Class<?> superClass, ClassLoader parentLoader) {
         super(parentLoader);
         if (className == null || className.equals("") || superClass == null)
@@ -116,7 +112,7 @@ public class ClassEngine extends ClassLoader implements Opcodes {
         this.setNewClass(className, superClass);
     }
     //======================================================================================Get/Set
-    /** 获取生成类名的后缀编号，每一次调用该方法都回返回一个新的后缀名。 */
+    /** 获取生成类名的后缀编号，每一次调用该方法都回返回一个新的后缀名。*/
     private static synchronized String getPrefix() {
         String prefix = ClassEngine.BuilderClassPrefix + ClassEngine.builderClassNumber;
         ClassEngine.builderClassNumber++;//全局类编号增加1
@@ -141,7 +137,6 @@ public class ClassEngine extends ClassLoader implements Opcodes {
         //2.确定基类
         this.superClass = newClass;
         this.className = newClassName;
-        log.debug("builderClass the superClass=" + this.superClass + " ,className=" + this.className);
         //3.初始化字节码信息
         if (this.classByte != null) {
             this.resetByte();
@@ -163,14 +158,14 @@ public class ClassEngine extends ClassLoader implements Opcodes {
         return this.className;
     }
     /**
-     * 获取生成类的超类(基类)
+     * 获取生成类的超类(基类)。
      * @return 返回生成类的超类(基类)
      */
     public Class<?> getSuperClass() {
         return this.superClass;
     }
     /**
-     * 设置生成类的基类类型。每次改变基类类型都会导致清空附加实现接口列表同时清空生成的字节码数据。
+     * 设置生成类的基类类型，每次改变基类类型都会导致清空附加实现接口列表同时清空生成的字节码数据。
      * @param type 生成类的基类类型
      */
     public void setSuperClass(Class<?> type) {
@@ -185,7 +180,7 @@ public class ClassEngine extends ClassLoader implements Opcodes {
         this.setNewClass(className, this.superClass);
     }
     /**
-     * 获取生成的类所附加实现的接口集合。appendImpl方法可以附加一个新的接口实现。
+     * 获取生成的类所附加实现的接口集合，appendImpl方法可以附加一个新的接口实现。
      * @return 返回生成的类所附加实现的接口集合。appendImpl方法可以附加一个新的接口实现。
      */
     public Class<?>[] getAppendImpls() {
@@ -194,14 +189,14 @@ public class ClassEngine extends ClassLoader implements Opcodes {
         return cl;
     }
     /**
-     * 获取当前引擎的生成模式。生成模式由ClassEngine.BuilderMode枚举决定。默认生成模式是ClassEngine.BuilderMode.Super
+     * 获取当前引擎的生成模式，生成模式由ClassEngine.BuilderMode枚举决定，默认生成模式是ClassEngine.BuilderMode.Super
      * @return 返回当前引擎的生成模式。生成模式由ClassEngine.BuilderMode枚举决定。
      */
     public ClassEngine.BuilderMode getMode() {
         return mode;
     }
     /**
-     * 设置当前引擎的生成模式，生成模式由ClassEngine.BuilderMode枚举定义。默认的生成模式是ClassEngine.BuilderMode.Super
+     * 设置当前引擎的生成模式，生成模式由ClassEngine.BuilderMode枚举定义，默认的生成模式是ClassEngine.BuilderMode.Super
      * 如果设置了新的生成模式则会引发ClassEngine的字节码初始化操作。引发了初始化操作字节码需要重新生成。
      * @param mode 设置的新生成模式。
      */
@@ -212,14 +207,14 @@ public class ClassEngine extends ClassLoader implements Opcodes {
         this.setNewClass(this.className, this.superClass);
     }
     /**
-     * 获取引擎当前是否在生成类时候将AOP特性加入。加入AOP特性会增加额外的字节码操作着会比没有AOP特性的新类运行效率要底。 默认是启用AOP特性的。
+     * 获取引擎当前是否在生成类时候将AOP特性加入，默认是启用AOP特性的。加入AOP特性会增加额外的字节码操作着会比没有AOP特性的新类运行效率要底。 
      * @return 返回引擎当前是否在生成类时候将AOP特性。
      */
     public boolean isEnableAOP() {
         return enableAOP;
     }
     /**
-     * 设置引擎当前是否在生成类时候将AOP特性加入。加入AOP特性会增加额外的字节码操作着会比没有AOP特性的新类运行效率要底。 默认是启用AOP特性的。
+     * 设置引擎当前是否在生成类时候将AOP特性加入，默认是启用AOP特性的。加入AOP特性会增加额外的字节码操作着会比没有AOP特性的新类运行效率要底。 
      * @param enableAOP true表示启用AOP特性(默认)，false表示不使用AOP特性。
      */
     public void setEnableAOP(boolean enableAOP) {
@@ -228,7 +223,7 @@ public class ClassEngine extends ClassLoader implements Opcodes {
     }
     //==========================================================================================Job
     /**
-     * 向类中附加一个接口实现。该接口中的所有方法均通过委托对象代理处理。如果附加的接口中有方法与基类的方法冲突时。
+     * 向类中附加一个接口实现，该接口中的所有方法均通过委托对象代理处理。如果附加的接口中有方法与基类的方法冲突时。
      * appendImpl会丢弃添加接口的冲突方法保留基类方法。这样做相当于基类的方法实现了接口的方法。
      * 如果多次输出一种签名的方法时ClassEngine只会保留最后一次的注册。被输出的方法在类生成时会保留其注解等信息。
      * 如果重复添加同一个接口则该接口将被置于最后一次添加。
@@ -294,19 +289,19 @@ public class ClassEngine extends ClassLoader implements Opcodes {
         return this.classType;
     };
     /**
-     * 使用默认构造方法创建新的类对象并且装配这个新对象。如果该类对象还没有生成则会引发生成操作。此外当ClassEngine工作在代理模式时
+     * 使用默认构造方法创建新的类对象并且装配这个新对象，如果该类对象还没有生成则会引发生成操作。此外当ClassEngine工作在代理模式时
      * 必须指定参数superClassObject，当运行在继承模式时该参数将被忽略。
      * @return 返回创建并且装配完的类对象。
      */
     public Object newInstance(Object superClassObject) throws Exception {
         //1.创建对象
-        log.debug("newInstance this class!");
+        this.builderClass();
         Object obj = null;
         if (this.mode == ClassEngine.BuilderMode.Super)
             //Super
-            obj = this.toClass().newInstance();
+            obj = this.classType.newInstance();
         else
-            obj = this.toClass().getConstructor(this.superClass).newInstance(superClassObject);
+            obj = this.classType.getConstructor(this.superClass).newInstance(superClassObject);
         return this.configuration(obj);
     }
     /**
@@ -315,13 +310,16 @@ public class ClassEngine extends ClassLoader implements Opcodes {
      * 对应的ClassEngine进行装配。装配过程就是将委托对象注入到新类对象中的过程。另外还需要注意的是如果ClassEngine在创建完第一批类对象
      * 之后修改了基类等信息重新生成了新的类对象。那么第一批类对象将永远不能在执行装配过程。
      * @param newAsmObject 要装配的类对象。
-     * @return 返回装配之后的类对象
+     * @return 返回装配之后的类对象，如果不能执行装配则直接返回原对象。
      * @throws Exception 如果在装配期间发生异常。
      */
     public Object configuration(Object newAsmObject) throws Exception {
-        //1.如果目标要装配的对象不属于当前引擎生成的类对象则取消装配过程并且返回null;
-        if (newAsmObject.getClass() != this.classType)
-            return null;
+        Class<?> newObjectClass = newAsmObject.getClass();
+        //1.如果目标要装配的对象不属于当前引擎生成的类对象则取消装配过程并且返回原对象;
+        if (newAsmObject != this.classType)
+            return newAsmObject;
+        if (newObjectClass == this.superClass)
+            return newAsmObject;
         //3.执行装配过程，准备注入数据
         Hashtable<String, Method> map = new Hashtable<String, Method>();
         for (Class<?> type : this.impls.keySet()) {
@@ -338,7 +336,6 @@ public class ClassEngine extends ClassLoader implements Opcodes {
             java.lang.reflect.Method m2 = this.classType.getMethod("set" + ClassEngine.AOPFilterChainName, ImplAOPFilterChain.class);
             m2.invoke(newAsmObject, this.invokeFilterChain);
         }
-        log.debug("configure object [" + this.className + "]");
         return newAsmObject;
     }
     //=================================================================================BuilderClass
@@ -350,38 +347,38 @@ public class ClassEngine extends ClassLoader implements Opcodes {
             return super.findClass(name);
     }
     /**
-     * 生成类的字节码
+     * 启动引擎生成类的字节码。
      * @throws IOException 通常发生IO异常是无法读取基类类型或者附加接口类型。
      * @throws ClassNotFoundException 通常该类型异常是生成的类格式出现错误或者无法装载新类。
      */
     public synchronized void builderClass() throws IOException, ClassNotFoundException {
         //------------------------------一、确认是否进行生成字节码 
-        if (this.classByte != null) {
+        if (this.classByte != null)
             //如果已经生成了类的字节码则返回生成的字节码
-            log.debug("Byte-code has been generated! return this method");
             return;
-        } else
-            log.debug("builderClass!");
+        if ((this.enableAOP == false || this.invokeFilterChain == null) || //
+                this.impls.isEmpty() == true) {
+            this.classType = this.superClass;
+            InputStream is = EngineToos.getClassInputStream(this.classType);
+            this.classByte = new byte[is.available()];
+            is.read(this.classByte);
+            return;
+        }
         //------------------------------二、准备生成字节码的相关数据
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        InputStream inStream = EngineToos.getClassInputStream(this.superClass);//获取输入流
+        InputStream inStream = this.findClassInputStream(this.superClass);//获取输入流
         ClassReader reader = new ClassReader(inStream);//创建ClassReader
-        log.debug("ready builderClass stream=" + inStream + ", reader=" + reader + ", writer=" + writer);
         ClassVisitor acceptVisitor = this.acceptClass(writer);
-        if (acceptVisitor == null) {
-            log.debug("ready [Error] method acceptClass return null!");
+        if (acceptVisitor == null)
             acceptVisitor = new ClassAdapter(writer);
-        }
         //------------------------------三、对生成的类对象附加AOP功能
         if (this.enableAOP == true && this.invokeFilterChain != null)
             acceptVisitor = new AOPClassAdapter(acceptVisitor, this);
-        log.debug("ready [OK]!");
         //------------------------------四、使用代理拦截所有方法
         BuilderClassAdapter builderAdapter = new BuilderClassAdapter(this, acceptVisitor, this.superClass, this.impls);
         //------------------------------五、调用ClassReader引擎解析原始类，并生成新对象
         ClassAdapter ca = new ClassAdapter(builderAdapter);
         reader.accept(ca, ClassReader.SKIP_DEBUG);
-        log.debug("generated Class [OK]! get ByteCode");
         //------------------------------六、取得生成的字节码
         this.classByte = writer.toByteArray();
         this.classType = this.loadClass(this.className);
@@ -391,7 +388,7 @@ public class ClassEngine extends ClassLoader implements Opcodes {
             String returnDesc = EngineToos.toAsmType(m.getReturnType());
             String fullName = m.getName() + "(" + desc + ")" + returnDesc;
             if (this.aopMethods.containsKey(fullName) == true) {
-                java.lang.reflect.Method m1 = EngineToos.getMethod(this.classType, this.AOPMethodNamePrefix + m.getName(), m.getParameterTypes());
+                java.lang.reflect.Method m1 = EngineToos.getMethod(this.classType, ClassEngine.AOPMethodNamePrefix + m.getName(), m.getParameterTypes());
                 this.aopMethods.put(fullName, new AOPMethods(m1, m));
             }
         }
@@ -400,7 +397,7 @@ public class ClassEngine extends ClassLoader implements Opcodes {
     protected ClassAdapter acceptClass(final ClassWriter classWriter) {
         return null;
     };
-    /** 内部忽略方法*/
+    /** 要内部忽略方法。*/
     boolean ignoreMethod(String fullDesc) {
         String[] ignoreMethod = new String[2];
         ignoreMethod[0] = "set" + ClassEngine.ObjectDelegateMapName + "(Ljava/util/Hashtable;)V";
@@ -413,8 +410,12 @@ public class ClassEngine extends ClassLoader implements Opcodes {
             return false;
         return true;
     };
-    /** 子类决定发现的这个方法是否处于AOP方法。*/
+    /** 子类决定发现的这个方法是否受到AOP的代理，返回true表示接受AOP代理。*/
     protected boolean acceptMethod(java.lang.reflect.Method method) {
         return true;
     };
+    /** 获取某个类型的输入流 */
+    protected InputStream findClassInputStream(Class<?> type) {
+        return EngineToos.getClassInputStream(type);
+    }
 }

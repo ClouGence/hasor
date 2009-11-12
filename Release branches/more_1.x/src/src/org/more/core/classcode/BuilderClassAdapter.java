@@ -180,7 +180,7 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
             {
                 //2.附加接口实现
                 for (final Class<?> impl_type : this.implsMap.keySet()) {
-                    InputStream inStream = EngineToos.getClassInputStream(impl_type);//获取输入流
+                    InputStream inStream = this.engine.findClassInputStream(impl_type);//获取输入流
                     ClassReader reader = new ClassReader(inStream);//创建ClassReader
                     final BuilderClassAdapter ca = this;
                     //扫描附加接口方法

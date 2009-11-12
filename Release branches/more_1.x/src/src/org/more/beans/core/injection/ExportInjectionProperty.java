@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.classcode;
+package org.more.beans.core.injection;
+import org.more.beans.BeanFactory;
+import org.more.beans.info.BeanDefinition;
 /**
- * 生成的类如果有附加接口实现则附加实现的接口委托方法保存在该对象上，在开发过程中开发人员不会碰触该类实例对象。
- * 在生成的新类中会有一个public的Map类型的字段。该字段中保存了所有附加接口实现方法的代理对象信息。
- * 而这个信息对象就是Method类。通常该对象只有生成的类中附加接口调用委托时才使用。
- * Date : 2009-10-19
+ * 属性注入请求处理接口，该接口负责对某个bean进行复杂注入请求的处理。
+ * Date : 2009-11-7
  * @author 赵永春
  */
-public class Method {
-    /** 索引方法的Map UUID值。 */
-    public String         uuid     = null;
-    /** 映射的委托对象。 */
-    public MethodDelegate delegate = null;
+public interface ExportInjectionProperty {
+    /**
+     * 处理bean注入方法。
+     * @param object 被请求注入的bean
+     * @param getBeanParam 在调用getbean时传递的参数。
+     * @param definition 被请求注入的bean定义。
+     * @param context 整个beans容器上下文。
+     */
+    public void injectionProperty(Object object, Object[] getBeanParam, BeanDefinition definition, BeanFactory context);
 }

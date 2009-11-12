@@ -141,7 +141,7 @@ public class ActionContext {
     }
     /**
      * 设置context所使用的过滤器工厂。
-     * @param magager 要设置过滤器工厂对象。
+     * @param factory 要设置过滤器工厂对象。
      */
     public void setFilterFactory(FilterFactory factory) {
         this.filterManager.setFactory(factory);

@@ -70,6 +70,9 @@ public class JavaScriptSubmitManager {
             else
                 str.append(str_read + "\n");
         }
+        //        //如果参数min为true表示输出最小化脚本，最小化脚本中不包含action的定义。
+        //        if ("true".equals(event.getParamString("min")) == true)
+        //            return str;
         //输出方法定义 org.more.web.submit.ROOT.Action
         HttpServletRequest request = (HttpServletRequest) event.getAttribute("request");
         String host = request.getServerName() + ":" + request.getLocalPort();

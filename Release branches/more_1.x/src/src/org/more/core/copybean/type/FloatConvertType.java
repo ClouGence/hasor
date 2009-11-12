@@ -33,6 +33,6 @@ public class FloatConvertType extends ConvertType {
         if (object == null)
             return 0;
         else
-            return StringConvert.parseFloat(object.toString(), 0);
+            return StringConvert.parseFloat(object.toString());
     }
 }

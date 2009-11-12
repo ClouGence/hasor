@@ -33,6 +33,6 @@ public class LongConvertType extends ConvertType {
         if (object == null)
             return 0;
         else
-            return StringConvert.parseLong(object.toString(), 0);
+            return StringConvert.parseLong(object.toString());
     }
 }

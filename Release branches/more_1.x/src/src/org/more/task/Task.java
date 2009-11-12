@@ -109,7 +109,9 @@ public abstract class Task extends AttBase implements Runnable, Serializable {
      * 子类可以重写该方法以实现返回任务正在执行的子任务Task对象。
      * @return 获得当前任务中正在执行的任务对象。
      */
-    public abstract Task getCurrent();
+    public Task getCurrent() {
+        return this;
+    };
     /**
      * 测试当前任务是否正在执行。如果返回true则表示正在执行。返回为false表示任务没有执行。
      * @return 返回测试当前任务是否正在执行。如果返回true则表示正在执行。返回为false表示任务没有执行。

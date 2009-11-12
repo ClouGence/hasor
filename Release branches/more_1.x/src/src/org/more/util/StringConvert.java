@@ -28,6 +28,13 @@ import java.util.Map;
  */
 @SuppressWarnings("unchecked")
 public final class StringConvert {
+    private static final Byte    DefaultValue_Byte    = 0;
+    private static final Short   DefaultValue_Short   = 0;
+    private static final Integer DefaultValue_Integer = 0;
+    private static final Long    DefaultValue_Long    = 0l;
+    private static final Float   DefaultValue_Float   = 0f;
+    private static final Double  DefaultValue_Double  = 0d;
+    private static final Boolean DefaultValue_Boolean = false;
     /**
      * 解析字符串为最小长度的数字类型。如果value保存的是0~255之间的数则该方法回返回byte类型，如果是256则返回short类型。
      * 在比方说字符串值为125.6则返回值为float。
@@ -35,7 +42,7 @@ public final class StringConvert {
      * @param defaultValue 如果数据错误取的默认值。
      * @return 返回解析的字符串，如果解吸失败则返回0或者默认值
      */
-    public static Number parseNumber(final String value, final int... defaultValue) {
+    public static Number parseNumber(final String value, final Number... defaultValue) {
         try {
             if (value.indexOf(".") != -1)
                 try {
@@ -113,11 +120,11 @@ public final class StringConvert {
      * @param defaultValue 如果数据错误取的默认值。
      * @return 返回int的转换结果。
      */
-    public static int parseInt(final String value, final int... defaultValue) {
+    public static Integer parseInt(final String value, final Integer... defaultValue) {
         try {
             return (value == null || value.equals("") == false) ? Integer.parseInt(value) : defaultValue[0];
         } catch (Exception e) {
-            return (defaultValue.length >= 1) ? defaultValue[0] : 0;
+            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Integer;
         }
     }
     /**
@@ -127,11 +134,11 @@ public final class StringConvert {
      * @param defaultValue 如果数据错误取的默认值。
      * @return 返回float的转换结果。
      */
-    public static float parseFloat(final String value, final float... defaultValue) {
+    public static Float parseFloat(final String value, final Float... defaultValue) {
         try {
             return (value == null || value.equals("") == false) ? Float.parseFloat(value) : defaultValue[0];
         } catch (Exception e) {
-            return (defaultValue.length >= 1) ? defaultValue[0] : 0;
+            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Float;
         }
     }
     /**
@@ -141,11 +148,11 @@ public final class StringConvert {
      * @param defaultValue 如果数据错误取的默认值。
      * @return 返回double的转换结果。
      */
-    public static double parseDouble(final String value, final double... defaultValue) {
+    public static Double parseDouble(final String value, final Double... defaultValue) {
         try {
             return (value == null || value.equals("") == false) ? Double.parseDouble(value) : defaultValue[0];
         } catch (Exception e) {
-            return (defaultValue.length >= 1) ? defaultValue[0] : 0;
+            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Double;
         }
     }
     /**
@@ -156,11 +163,11 @@ public final class StringConvert {
      * @param defaultValue 如果数据错误取的默认值。
      * @return 返回boolean的转换结果。
      */
-    public static boolean parseBoolean(final String value, final boolean... defaultValue) {
+    public static Boolean parseBoolean(final String value, final Boolean... defaultValue) {
         try {
             return (value == null || value.equals("") == false) ? Boolean.parseBoolean(value) : defaultValue[0];
         } catch (Exception e) {
-            return (defaultValue.length >= 1) ? defaultValue[0] : false;
+            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Boolean;
         }
     }
     /**
@@ -170,11 +177,11 @@ public final class StringConvert {
      * @param defaultValue 如果数据错误取的默认值。
      * @return 返回long的转换结果。
      */
-    public static long parseLong(final String value, final long... defaultValue) {
+    public static Long parseLong(final String value, final Long... defaultValue) {
         try {
             return (value == null || value.equals("") == false) ? Long.parseLong(value) : defaultValue[0];
         } catch (Exception e) {
-            return (defaultValue.length >= 1) ? defaultValue[0] : 0;
+            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Long;
         }
     }
     /**
@@ -184,11 +191,11 @@ public final class StringConvert {
      * @param defaultValue 如果数据错误取的默认值。
      * @return 返回byte的转换结果。
      */
-    public static byte parseByte(final String value, final byte... defaultValue) {
+    public static Byte parseByte(final String value, final Byte... defaultValue) {
         try {
             return (value == null || value.equals("") == false) ? Byte.parseByte(value) : defaultValue[0];
         } catch (Exception e) {
-            return (defaultValue.length >= 1) ? defaultValue[0] : 0;
+            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Byte;
         }
     }
     /**
@@ -198,11 +205,11 @@ public final class StringConvert {
      * @param defaultValue 如果数据错误取的默认值。
      * @return 返回short的转换结果。
      */
-    public static short parseShort(final String value, final short... defaultValue) {
+    public static Short parseShort(final String value, final Short... defaultValue) {
         try {
             return (value == null || value.equals("") == false) ? Short.parseShort(value) : defaultValue[0];
         } catch (Exception e) {
-            return (defaultValue.length >= 1) ? defaultValue[0] : 0;
+            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Short;
         }
     }
     /**

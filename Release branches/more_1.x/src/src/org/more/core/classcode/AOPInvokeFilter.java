@@ -15,10 +15,10 @@
  */
 package org.more.core.classcode;
 /**
- * 实现AOP的方法过滤器。通过过滤器中AOPFilterChain对象的方法可以执行过滤器节点的下一个节点。
+ * 实现AOP的方法过滤器，通过过滤器中AOPFilterChain对象的方法可以执行过滤器节点的下一个节点。
  * 当过滤器执行到最后一个节点时正式执行方法调用。如果过滤器想立即返回方法调用结果可以直接使用
- * callMethod对象的invoke函数直接调用目标方法产生方法返回值然后进行其他操作。多个AOPInvokeFilter
- * 可以组成过滤器链。
+ * callMethod对象的invoke函数直接调用目标方法产生方法返回值然后进行其他操作。
+ * 利用多个AOPInvokeFilter可以组成过滤器链。
  * Date : 2009-10-18
  * @author 赵永春
  */

@@ -15,16 +15,15 @@
  */
 package org.more.core.classcode;
 /**
- * 代表过滤器链的一个环节接口，当AOPInvokeFilter接口的doFilter方法被执行时
- * AOPFilterChain类型参数对象表示这个过滤器所处过滤器链的下一个过滤器资源。
- * 本接口的doInvokeFilter方法表示执行过滤器资源，下一个过滤器资源可能是过滤器
- * 链的下一个过滤器元素也可能是真实的资源方法。对于classcode最终资源就是目标方法。
+ * 代表过滤器链的一个环节接口，当AOPInvokeFilter接口的doFilter方法被执行时AOPFilterChain类型参数对象
+ * 表示这个过滤器所处过滤器链的下一个过滤器资源。本接口的doInvokeFilter方法表示执行过滤器资源，
+ * 下一个过滤器资源可能是过滤器链的下一个过滤器元素也可能是真实的资源方法。对于classcode最终资源就是目标方法。
  * Date : 2009-10-30
  * @author 赵永春
  */
 public interface AOPFilterChain {
     /**
-     * 执行过滤器下一个过滤器资源的方法。通过该方法继续调用过滤器链的动作。
+     * 执行过滤器下一个过滤器资源的方法，通过该方法继续调用过滤器链的动作。
      * @param target 执行方法的对象。
      * @param methods 被调用的方法该对象中包含了被调用的代理方法和原始方法。
      * @param args 调用方法所传递的参数。

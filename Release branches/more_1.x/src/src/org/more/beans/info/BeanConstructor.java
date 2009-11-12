@@ -13,26 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.copybean.type;
-import org.more.core.copybean.ConvertType;
-import org.more.util.StringConvert;
+package org.more.beans.info;
+import org.more.util.attribute.AttBase;
 /**
- * CopyBean处理Double类型转换的辅助类。
- * Date : 2009-5-23
- * @author 赵永春
+ * 
+ * Date : 2009-11-10
+ * @author Administrator
  */
-public class DoubleConvertType extends ConvertType {
+public class BeanConstructor extends AttBase {
     /**  */
-    private static final long serialVersionUID = -3992654676741781922L;
-    @Override
-    public boolean checkType(Object from, Class<?> to) {
-        return (to == Double.class || to == double.class) ? true : false;
+    private static final long      serialVersionUID = 3461453713657581453L;
+    //
+    private BeanConstructorParam[] paramTypes       = null;                //
+    //=================================================================
+    public BeanConstructorParam[] getParamTypes() {
+        return paramTypes;
     }
-    @Override
-    public Object convert(Object object) {
-        if (object == null)
-            return 0;
-        else
-            return StringConvert.parseDouble(object.toString());
+    public void setParamTypes(BeanConstructorParam[] paramTypes) {
+        this.paramTypes = paramTypes;
     }
 }

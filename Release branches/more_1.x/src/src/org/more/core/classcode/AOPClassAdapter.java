@@ -21,10 +21,8 @@ import java.util.regex.Pattern;
 import org.more.core.asm.ClassAdapter;
 import org.more.core.asm.ClassVisitor;
 import org.more.core.asm.FieldVisitor;
-import org.more.core.asm.Label;
 import org.more.core.asm.MethodVisitor;
 import org.more.core.asm.Opcodes;
-import org.more.core.asm.Type;
 /**
  * 完成AOP代理的字节码改写对象。
  * Date : 2009-10-30
@@ -60,6 +58,7 @@ class AOPClassAdapter extends ClassAdapter implements Opcodes {
             }
         } catch (Exception e) {}
     }
+    //==========================================================================================Job
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         this.thisClassByASM = name;

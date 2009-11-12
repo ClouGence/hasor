@@ -22,7 +22,7 @@ import org.more.FormatException;
 import org.more.core.asm.Opcodes;
 import org.more.core.asm.Type;
 /**
- * 生成字节码时候使用的工具类。
+ * 生成字节码时候使用的工具类，当重写ClassEngine的相关方法时候会用上此类。
  * Date : 2009-10-16
  * @author 赵永春
  */
@@ -39,7 +39,7 @@ public class EngineToos implements Opcodes {
             }
         }
     }
-    /**检测类名是否合法*/
+    /**检测类名是否合法。*/
     public static boolean checkClassName(String className) {
         if (className == null || className.equals(""))
             return false;
@@ -54,7 +54,7 @@ public class EngineToos implements Opcodes {
         //System.out.println("OK");
         return true;
     }
-    /**根据类型获取其Return指令*/
+    /**根据类型获取其Return指令。*/
     public static int getReturn(String asmType) {
         char t = asmType.charAt(0);
         switch (t) {
@@ -84,7 +84,7 @@ public class EngineToos implements Opcodes {
             throw new RuntimeException("不支持的类型装载请求");//
         }
     }
-    /**根据类型获取其Load指令*/
+    /**根据类型获取其Load指令。*/
     public static int getLoad(String asmType) {
         char t = asmType.charAt(0);
         switch (t) {
@@ -113,7 +113,7 @@ public class EngineToos implements Opcodes {
         }
     }
     //=======================================================================================================================
-    /**将某一个类型转为asm形式的表述。 int 转为 I，String转为 Ljava/lang/String*/
+    /**将某一个类型转为asm形式的表述， int 转为 I，String转为 Ljava/lang/String。*/
     public static String toAsmType(Class<?> classType) {
         if (classType == int.class)
             return "I";
@@ -138,7 +138,7 @@ public class EngineToos implements Opcodes {
         else
             return "L" + Type.getInternalName(classType) + ";";
     }
-    /**将某一个类型转为asm形式的表述。 int 转为 I，String转为 Ljava/lang/String*/
+    /**将某一个类型转为asm形式的表述， int 转为 I，String转为 Ljava/lang/String。*/
     public static String toAsmType(Class<?>[] classType) {
         String returnString = "";
         for (Class<?> c : classType)
@@ -208,7 +208,7 @@ public class EngineToos implements Opcodes {
             return asmType;
     }
     //=======================================================================================================================
-    /**获取一个类对象字节码的读取流*/
+    /**获取一个类对象字节码的读取流。*/
     public static InputStream getClassInputStream(Class<?> type) {
         ClassLoader cl = type.getClassLoader();
         if (cl == null)
@@ -228,21 +228,21 @@ public class EngineToos implements Opcodes {
         else
             return fullName;
     }
-    /**获取类完整限定名的包名部分。*/
+    /**获取类完整限定名的包名部分，参数格式是asm格式。*/
     public static String splitPackageNameByASM(String fullName) {
         if (fullName.lastIndexOf("/") > 0)
             return fullName.substring(0, fullName.lastIndexOf("/"));
         else
             return fullName;
     }
-    /**获取类完整限定名的类名部分。*/
+    /**获取类完整限定名的类名部分，参数格式是asm格式。*/
     public static String splitSimpleNameByASM(String fullName) {
         String[] ns = fullName.split("/");
         return ns[ns.length - 1];
     }
-    /**将类名转换为asm类名*/
-    public static String replaceClassName(String classAsmName) {
-        return classAsmName.replace(".", "/");
+    /**将类名转换为asm类名。*/
+    public static String replaceClassName(String className) {
+        return className.replace(".", "/");
     }
     /**根据asm类型获取其ASTORE指令。*/
     public static int getAstore(String asmType) {
@@ -272,7 +272,7 @@ public class EngineToos implements Opcodes {
             throw new RuntimeException("不支持的类型装载请求");//
         }
     }
-    /**通过位运算决定check是否在data里*/
+    /**通过位运算决定check是否在data里。*/
     public static boolean checkIn(int data, int check) {
         int or = data | check;
         return or == data;
