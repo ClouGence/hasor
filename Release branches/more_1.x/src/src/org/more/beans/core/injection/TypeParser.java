@@ -39,6 +39,7 @@ public class TypeParser {
     }
     /**解析一个属性类型为对象*/
     public static Object passerType(Object object, Object[] getBeanParam, BeanProperty prop, BeanFactory context) {
+        //object目标依赖注入的对象，getBeanParam调用getbean创建对象时传的参数，要解析的属性prop，context环境
         return null;
     }
 }

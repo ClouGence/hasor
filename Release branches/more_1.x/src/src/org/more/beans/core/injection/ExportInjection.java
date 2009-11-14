@@ -15,7 +15,6 @@
  */
 package org.more.beans.core.injection;
 import org.more.beans.BeanFactory;
-import org.more.beans.core.Injection;
 import org.more.beans.info.BeanDefinition;
 /**
  * 使用Export方式可以使开发人员参与属性注入过程，在Export方式下more.beans不会对属性做任何注入操作。

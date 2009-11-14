@@ -17,7 +17,6 @@ package org.more.beans.core.injection;
 import java.util.ArrayList;
 import java.util.Collections;
 import org.more.beans.BeanFactory;
-import org.more.beans.core.Injection;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.BeanProperty;
 import org.more.core.asm.ClassAdapter;

@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.lang.reflect.Modifier;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 import org.more.FormatException;
 import org.more.TypeException;
@@ -302,39 +303,58 @@ public class ClassEngine extends ClassLoader implements Opcodes {
             obj = this.classType.newInstance();
         else
             obj = this.classType.getConstructor(this.superClass).newInstance(superClassObject);
-        return this.configuration(obj);
+        return this.configuration(obj, null, null);
     }
     /**
      * 对某个新生成的类对象执行装配。ClassEngine生成的新类中可能存在附加接口。这些附加的接口委托在新的类中是不存在的。
      * 因此需要装配，否则当调用这些附加接口方法时会产生空指针异常。configuration就是装配这个新对象的方法。注意：生成的类对象应当使用
      * 对应的ClassEngine进行装配。装配过程就是将委托对象注入到新类对象中的过程。另外还需要注意的是如果ClassEngine在创建完第一批类对象
-     * 之后修改了基类等信息重新生成了新的类对象。那么第一批类对象将永远不能在执行装配过程。
+     * 之后修改了基类等信息重新生成了新的类对象。那么第一批类对象将永远不能在执行装配过程。<br/><br/>
+     * 在配置新对象时还有一个功能就是可以替换appendImpl方法所指定的接口处理委托，如果replaceDelegateMap参数中找不到替换的委托对象则使用
+     * appendImpl时候指定的委托对象。
      * @param newAsmObject 要装配的类对象。
+     * @param replaceDelegateMap 如果需要替换接口处理委托对象则请指定该参数，并且传递一个Map，Map中指定了接口类型与对应的新委托对象。
+     * 使用null将使用appendImpl方法所指定的接口处理委托。
+     * @param filters 在装配时候可以重新指定这个类对象的过滤器链。
      * @return 返回装配之后的类对象，如果不能执行装配则直接返回原对象。
-     * @throws Exception 如果在装配期间发生异常。
+     * @throws Exception 如果在装配期间发生异常，各种各样的异常。
      */
-    public Object configuration(Object newAsmObject) throws Exception {
+    public Object configuration(Object newAsmObject, Map<Class<?>, MethodDelegate> replaceDelegateMap, AOPInvokeFilter[] filters) throws Exception {
         Class<?> newObjectClass = newAsmObject.getClass();
         //1.如果目标要装配的对象不属于当前引擎生成的类对象则取消装配过程并且返回原对象;
-        if (newAsmObject != this.classType)
+        if (newObjectClass != this.classType)
             return newAsmObject;
         if (newObjectClass == this.superClass)
             return newAsmObject;
         //3.执行装配过程，准备注入数据
-        Hashtable<String, Method> map = new Hashtable<String, Method>();
-        for (Class<?> type : this.impls.keySet()) {
-            Method m = new Method();
-            m.uuid = ClassEngine.DelegateMapUUIDPrefix + UUID.randomUUID().toString().replace("-", "");
-            m.delegate = this.impls.get(type);
-            map.put(type.getName(), m);
+        if (this.impls.isEmpty() == false) {
+            Hashtable<String, Method> map = new Hashtable<String, Method>();
+            for (Class<?> type : this.impls.keySet()) {
+                Method m = new Method();
+                m.uuid = ClassEngine.DelegateMapUUIDPrefix + UUID.randomUUID().toString().replace("-", "");
+                MethodDelegate md = null;
+                if (replaceDelegateMap != null)
+                    md = replaceDelegateMap.get(type);
+                if (md == null)
+                    m.delegate = this.impls.get(type);
+                m.delegate = md;
+                map.put(type.getName(), m);
+            }
+            //4.执行代理注入
+            java.lang.reflect.Method m1 = newAsmObject.getClass().getMethod("set" + ClassEngine.ObjectDelegateMapName, Hashtable.class);
+            m1.invoke(newAsmObject, map);
         }
-        //4.执行代理注入
-        java.lang.reflect.Method m1 = newAsmObject.getClass().getMethod("set" + ClassEngine.ObjectDelegateMapName, Hashtable.class);
-        m1.invoke(newAsmObject, map);
         //5.装配AOP链
-        if (this.enableAOP == true && this.invokeFilterChain != null) {
+        ImplAOPFilterChain chain = this.invokeFilterChain;
+        if (filters != null) {
+            ImplAOPFilterChain filterChain = new ImplAOPFilterChain(null, null);
+            for (AOPInvokeFilter thisFilter : filters)
+                filterChain = new ImplAOPFilterChain(thisFilter, filterChain);
+            chain = filterChain;
+        }
+        if (this.enableAOP == true && chain != null) {
             java.lang.reflect.Method m2 = this.classType.getMethod("set" + ClassEngine.AOPFilterChainName, ImplAOPFilterChain.class);
-            m2.invoke(newAsmObject, this.invokeFilterChain);
+            m2.invoke(newAsmObject, chain);
         }
         return newAsmObject;
     }
@@ -356,8 +376,8 @@ public class ClassEngine extends ClassLoader implements Opcodes {
         if (this.classByte != null)
             //如果已经生成了类的字节码则返回生成的字节码
             return;
-        if ((this.enableAOP == false || this.invokeFilterChain == null) || //
-                this.impls.isEmpty() == true) {
+        if ((this.enableAOP == false || (this.invokeFilterChain == null) && //
+                this.impls.isEmpty() == true)) {
             this.classType = this.superClass;
             InputStream is = EngineToos.getClassInputStream(this.classType);
             this.classByte = new byte[is.available()];

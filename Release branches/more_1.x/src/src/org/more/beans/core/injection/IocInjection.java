@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.more.beans.BeanFactory;
-import org.more.beans.core.Injection;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.BeanProperty;
 import org.more.util.StringConvert;
@@ -39,6 +38,7 @@ public class IocInjection implements Injection {
     @Override
     public void ioc(Object object, Object[] params, BeanDefinition definition, BeanFactory context) throws Exception {
         BeanProperty[] bps = definition.getPropertys();
+        ClassLoader loader = context.getBeanClassLoader();
         for (int i = 0; i < bps.length; i++) {
             BeanProperty prop = bps[i];
             Method writeMethod = null;
@@ -51,7 +51,7 @@ public class IocInjection implements Injection {
                 firstChar = (char) ((firstChar >= 97) ? firstChar - 32 : firstChar);
                 sb.insert(0, firstChar);
                 sb.insert(0, "set");
-                writeMethod = object.getClass().getMethod(sb.toString(), this.getType(prop, context));
+                writeMethod = object.getClass().getMethod(sb.toString(), this.getType(prop, context, loader));
                 prop.setAttribute(this.propCatchName, writeMethod);
             } else
                 writeMethod = (Method) prop.get(this.propCatchName);
@@ -59,7 +59,7 @@ public class IocInjection implements Injection {
         }
     }
     /** 获取属性注入器 */
-    private Class<?> getType(BeanProperty prop, BeanFactory context) throws ClassNotFoundException {
+    private Class<?> getType(BeanProperty prop, BeanFactory context, ClassLoader loader) throws ClassNotFoundException {
         String propString = prop.getPropType();
         if (propString == BeanProperty.TS_Integer)
             return int.class;
@@ -88,7 +88,7 @@ public class IocInjection implements Injection {
         else if (propString == BeanProperty.TS_Set)
             return Set.class;
         else
-            return Class.forName(propString);
+            return loader.loadClass(propString);
     }
     /** 根据BeanProperty获得属性的值 */
     private Object getValue(Object object, Object[] params, BeanProperty prop, BeanFactory context) {

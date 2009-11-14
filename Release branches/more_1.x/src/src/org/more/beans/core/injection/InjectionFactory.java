@@ -16,7 +16,6 @@
 package org.more.beans.core.injection;
 import java.util.HashMap;
 import org.more.beans.BeanFactory;
-import org.more.beans.core.Injection;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.IocTypeEnum;
 import org.more.task.Task;
@@ -41,7 +40,7 @@ public class InjectionFactory extends Task implements Injection {
     public void ioc(Object object, Object[] params, BeanDefinition definition, BeanFactory context) throws Throwable {
         if (definition.getIocType() == IocTypeEnum.Export) {
             //Export方式，如果Export注入器配置了单态模式会有更好的运行效率。
-            String exportName = definition.getFactIocRefBean();
+            String exportName = definition.getExportIocRefBean();
             ExportInjection exp = null;
             if (this.exportMap.containsKey(exportName) == false) {
                 Object exportObj = context.getBean(exportName, params);
