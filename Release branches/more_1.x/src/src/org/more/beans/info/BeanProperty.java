@@ -74,9 +74,9 @@ public class BeanProperty extends AttBase {
             this.propType = BeanProperty.TS_Integer;
         else if (propType.equals("byte") == true)
             this.propType = BeanProperty.TS_Byte;
-        else if (propType.equals("char") == true) {
+        else if (propType.equals("char") == true)
             this.propType = BeanProperty.TS_Char;
-        } else if (propType.equals("double") == true)
+        else if (propType.equals("double") == true)
             this.propType = BeanProperty.TS_Double;
         else if (propType.equals("float") == true)
             this.propType = BeanProperty.TS_Float;

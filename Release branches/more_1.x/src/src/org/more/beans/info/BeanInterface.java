@@ -22,12 +22,11 @@ import org.more.util.attribute.AttBase;
  */
 public class BeanInterface extends AttBase {
     /**  */
-    private static final long serialVersionUID = -1660901774837550451L;
-    private String            id               = null;                 //
-    private int               index            = 0;                    //
-    private String            type             = null;                 //
-    private String            typeBean         = null;                 //
-    private String            implDelegateBean = null;                 //
+    private static final long serialVersionUID    = -1660901774837550451L;
+    private String            id                  = null;                 //
+    private String            type                = null;                 //
+    private String            typeRefBean         = null;                 //配置了typeRefBean属性之后可以不配置type属性，type属性要优先于typeRefBean
+    private String            implDelegateRefBean = null;                 //
     //=================================================================
     public String getId() {
         return id;
@@ -35,28 +34,22 @@ public class BeanInterface extends AttBase {
     public void setId(String id) {
         this.id = id;
     }
-    public int getIndex() {
-        return index;
-    }
-    public void setIndex(int index) {
-        this.index = index;
-    }
     public String getType() {
         return type;
     }
     public void setType(String type) {
         this.type = type;
     }
-    public String getTypeBean() {
-        return typeBean;
+    public String getTypeRefBean() {
+        return typeRefBean;
     }
-    public void setTypeBean(String typeBean) {
-        this.typeBean = typeBean;
+    public String getImplDelegateRefBean() {
+        return implDelegateRefBean;
     }
-    public String getImplDelegateBean() {
-        return implDelegateBean;
+    public void setTypeRefBean(String typeRefBean) {
+        this.typeRefBean = typeRefBean;
     }
-    public void setImplDelegateBean(String implDelegateBean) {
-        this.implDelegateBean = implDelegateBean;
+    public void setImplDelegateRefBean(String implDelegateRefBean) {
+        this.implDelegateRefBean = implDelegateRefBean;
     }
 }

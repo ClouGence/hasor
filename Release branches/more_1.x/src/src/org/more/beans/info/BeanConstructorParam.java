@@ -14,35 +14,20 @@
  * limitations under the License.
  */
 package org.more.beans.info;
-import org.more.util.attribute.AttBase;
 /**
  * 
  * Date : 2009-11-10
  * @author Administrator
  */
-public class BeanConstructorParam extends AttBase {
+public class BeanConstructorParam extends BeanProperty {
     /**  */
     private static final long serialVersionUID = 2758108121360635114L;
     private int               index            = 0;                   //
-    private String            paramType        = null;                //
-    private BeanDefinition    refBean          = null;                //
     //=================================================================
     public int getIndex() {
         return index;
     }
     public void setIndex(int index) {
         this.index = index;
-    }
-    public String getParamType() {
-        return paramType;
-    }
-    public void setParamType(String paramType) {
-        this.paramType = paramType;
-    }
-    public BeanDefinition getRefBean() {
-        return refBean;
-    }
-    public void setRefBean(BeanDefinition refBean) {
-        this.refBean = refBean;
     }
 }
