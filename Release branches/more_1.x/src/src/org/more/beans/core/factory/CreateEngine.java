@@ -28,9 +28,9 @@ import org.more.core.classcode.AOPInvokeFilter;
 import org.more.core.classcode.ClassEngine;
 import org.more.core.classcode.MethodDelegate;
 /**
- * 
- * Date : 2009-11-9
- * @author Administrator
+ * CreateEngine的子类分别实现了CreateTypeEnum枚举中定义的创建方式。
+ * Date : 2009-11-15
+ * @author 赵永春
  */
 public abstract class CreateEngine {
     /***/
@@ -44,17 +44,19 @@ public abstract class CreateEngine {
         {
             //---------------------------------------------------------------Impl
             BeanInterface[] implS = definition.getImplImplInterface();
-            for (int i = 0; i < implS.length; i++) {
-                BeanInterface beanI = implS[i];
-                Class<?> typeClass = null;
-                String type = beanI.getType();
-                //获取附加的类型，该段代码可以支持引用方式引用其他接口bean。
-                if (type != null)
-                    typeClass = this.toClass(type, loader);
-                else
-                    typeClass = context.getOriginalBeanType(beanI.getTypeRefBean());
-                //附加接口实现
-                engine.appendImpl(typeClass, (MethodDelegate) context.getBean(beanI.getImplDelegateRefBean(), params));
+            if (implS != null) {
+                for (int i = 0; i < implS.length; i++) {
+                    BeanInterface beanI = implS[i];
+                    Class<?> typeClass = null;
+                    String type = beanI.getType();
+                    //获取附加的类型，该段代码可以支持引用方式引用其他接口bean。
+                    if (type != null)
+                        typeClass = this.toClass(type, loader);
+                    else
+                        typeClass = context.getBeanType(beanI.getTypeRefBean());
+                    //附加接口实现
+                    engine.appendImpl(typeClass, (MethodDelegate) context.getBean(beanI.getImplDelegateRefBean(), params));
+                }
             }
         }
         {
@@ -69,7 +71,7 @@ public abstract class CreateEngine {
         }
         return engine.toClass();
     }
-    /** 配置这个新Bean对象，参数newDelegates暂时没用。如果ClassEngine支持在配置bean时提供新代理对象的创建根据 */
+    /** 配置这个新Bean对象，如果ClassEngine支持在配置bean时提供新代理对象的创建根据 */
     protected Object configurationBean(ClassLoader loader, Object newObject, BeanDefinition definition, Object[] params, BeanFactory context) throws Throwable {
         if (loader instanceof ClassEngine == false)
             return newObject;
@@ -105,7 +107,7 @@ public abstract class CreateEngine {
         ClassEngine loaderClassEngine = (ClassEngine) loader;
         return loaderClassEngine.configuration(newObject, replaceDelegateMap, filters); //AOP代理的
     }
-    /***/
+    /** 返回CreateEngine创建对象所使用的类型。 */
     protected Class<?> toClass(String propType, ClassLoader loader) throws ClassNotFoundException {
         if (propType == BeanProperty.TS_Integer)
             return int.class;

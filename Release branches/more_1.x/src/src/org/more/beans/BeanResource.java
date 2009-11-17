@@ -18,6 +18,7 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
+
 import org.more.DoesSupportException;
 import org.more.beans.info.BeanDefinition;
 /**
@@ -37,7 +38,7 @@ public interface BeanResource {
     /**获取资源的File表述形式，如果资源不支持该表述形式则返回null。*/
     public File getSourceFile();
     /**
-     * 获取bean的定义，在Bean的定义中只包括属于当前bean的元信息，该方法应当不会调用ClassLoader对这个类型进行载入。
+     * 获取bean的定义，在Bean的定义中只包括属于当前bean的元信息。
      * 如果当前bean的属性注入需要依赖其他bean则获取其他bean的定义需要重新调用getBeanDefinition方法进行获取。
      * @param name 要获取bean定义的bean名称。
      * @return 返回bean定义，如果获取不到指定的bean定义则返回null。

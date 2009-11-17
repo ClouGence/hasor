@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.more.beans.BeanFactory;
+import org.more.beans.core.TypeParser;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.BeanProperty;
 import org.more.util.StringConvert;
@@ -38,6 +39,8 @@ public class IocInjection implements Injection {
     @Override
     public void ioc(Object object, Object[] params, BeanDefinition definition, BeanFactory context) throws Exception {
         BeanProperty[] bps = definition.getPropertys();
+        if (bps == null)
+            return;
         ClassLoader loader = context.getBeanClassLoader();
         for (int i = 0; i < bps.length; i++) {
             BeanProperty prop = bps[i];

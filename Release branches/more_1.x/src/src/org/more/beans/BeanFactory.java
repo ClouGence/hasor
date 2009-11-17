@@ -44,23 +44,16 @@ public interface BeanFactory {
      * 如果这个bean有属性的依赖注入则依赖注入也会在创建时进行。
      * @param name 要获取的bean实例名称。
      * @param objects 在获取bean实例时可能会传递的参数信息。
-     * @return 返回或者返回创建的新实例。如果
+     * @return 返回或者返回创建的新实例。
      */
     public Object getBean(String name, Object... objects);
     /**
-     * 根据Bean名称获取其bean类型，如果这个bean已经配置了接口实现，或者配置了AOP相关策略。
+     * 根据Bean名称获取其bean类型，该方法将返回在bean定义中配置的bean类型。
      * 那么getBeanType方法将返回生成的新类类型对象。
      * @param name 要获取的Bean名称。
      * @return 返回要获取的bean类型对象，如果企图获取不存在的bean类型则返回 null。
      */
     public Class<?> getBeanType(String name);
-    /**
-     * 根据Bean名称获取其bean类型，该方法将忽略bean的接口实现配置以及AOP相关配置直接返回
-     * 这个bean的最最原始的bean类型。
-     * @param name 要获取的Bean名称。
-     * @return 返回要获取的bean类型对象，如果企图获取不存在的bean类型则返回 null。
-     */
-    public Class<?> getOriginalBeanType(String name);
     /**
      * 测试某名称Bean是否为原型模式创建，如果目标bean不存在则返回false。
      * @param name 要测试的Bean名称。

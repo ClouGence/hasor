@@ -59,7 +59,21 @@ public class FactInjection implements Injection {
             fact = (FactIoc) definition.get(this.factCatchName);
         else {
             //创建ClassEngine引擎
-            ClassEngine engine = new ClassEngine(context.getBeanClassLoader()) {
+            /*
+             * 下面三行代码用于解决配置了AOP情况下需要Fact方式执行Ioc，无法获取iocbean的Class对象问题。
+             * 下面由于ClassEngine使用的父类装载器是context.getBeanClassLoader()因此直接获取，需要ioc
+             * 的bean的ClassLoader就相当于获取到了context.getBeanClassLoader()。
+             * 他们的关系是如下的:
+             * systemClassLoader
+             *   context.getBeanClassLoader()
+             *     ClassEngine
+             * 有了这三行代码more.beans 提供了Fact方式注入下的AOP、impl方面支持。
+             */
+            ClassLoader beanLoader = object.getClass().getClassLoader();
+            if (beanLoader instanceof ClassEngine == false)
+                beanLoader = context.getBeanClassLoader();
+            //
+            ClassEngine engine = new ClassEngine(beanLoader) {
                 protected ClassAdapter acceptClass(ClassWriter classWriter) {
                     return new FactClassAdapter(classWriter, object.getClass().getName(), definition);
                 }
@@ -67,7 +81,7 @@ public class FactInjection implements Injection {
             //设置引擎基本信息
             engine.setSuperClass(FactIocObject.class);//由于不支持rt.jar中的类因此需要一个假Object对象。
             engine.setMode(BuilderMode.Super);
-            engine.setEnableAOP(false);
+            engine.forceBuilderClass();
             fact = (FactIoc) engine.newInstance(null);
             //缓存引擎生成对象
             definition.setAttribute(this.factCatchName, fact);

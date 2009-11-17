@@ -367,23 +367,37 @@ public class ClassEngine extends ClassLoader implements Opcodes {
             return super.findClass(name);
     }
     /**
-     * 启动引擎生成类的字节码。
+     * 启动引擎生成类的字节码，该方法不保证一定启动引擎生成新的字节码，当有如下条件满足时ClassEngine会忽略生成新的字节码。<br/>
+     * 1.enableAOP被设置为false。<br/>
+     * 2.当没有AOP过滤器配置，同时也没有配置接口实现时。<br/>
+     * 提示:使用forceBuilderClass可以强制生成新的字节码，忽略上述考证。<br/>
      * @throws IOException 通常发生IO异常是无法读取基类类型或者附加接口类型。
      * @throws ClassNotFoundException 通常该类型异常是生成的类格式出现错误或者无法装载新类。
      */
-    public synchronized void builderClass() throws IOException, ClassNotFoundException {
+    public void builderClass() throws IOException, ClassNotFoundException {
         //------------------------------一、确认是否进行生成字节码 
         if (this.classByte != null)
             //如果已经生成了类的字节码则返回生成的字节码
             return;
-        if ((this.enableAOP == false || (this.invokeFilterChain == null) && //
-                this.impls.isEmpty() == true)) {
+        if (this.enableAOP == false || (this.invokeFilterChain == null && this.impls.isEmpty() == true)) {
             this.classType = this.superClass;
             InputStream is = EngineToos.getClassInputStream(this.classType);
             this.classByte = new byte[is.available()];
             is.read(this.classByte);
             return;
         }
+        this.forceBuilderClass();
+    }
+    /**
+     * 强制启动引擎生成类的字节码，builderClass方法不保证一定启动引擎生成新的字节码，
+     * 当有如下条件满足时ClassEngine会忽略生成新的字节码。<br/>
+     * 1.enableAOP被设置为false。<br/>
+     * 2.当没有AOP过滤器配置，同时也没有配置接口实现时。<br/>
+     * 而该方法将忽略上述考证直接强制性质的生成新的字节码。
+     * @throws IOException 通常发生IO异常是无法读取基类类型或者附加接口类型。
+     * @throws ClassNotFoundException 通常该类型异常是生成的类格式出现错误或者无法装载新类。
+     */
+    public synchronized void forceBuilderClass() throws IOException, ClassNotFoundException {
         //------------------------------二、准备生成字节码的相关数据
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         InputStream inStream = this.findClassInputStream(this.superClass);//获取输入流

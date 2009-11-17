@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import org.more.beans.BeanFactory;
-import org.more.beans.core.injection.TypeParser;
+import org.more.beans.core.TypeParser;
 import org.more.beans.info.BeanConstructorParam;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.BeanInterface;
@@ -29,7 +29,10 @@ import org.more.core.classcode.MethodDelegate;
 import org.more.core.classcode.ClassEngine.BuilderMode;
 import org.more.util.StringConvert;
 /**
- * 
+ * 使用工厂方式创建一个Bean对象这种方式需要指定工厂类以及工厂方法相关参数，Factory方式中aop所能拦截到的方法与classcode工具的Propxt方式相同。
+ * <br/><br/>该方式需要beans配置CreateType属性为Factory，并且提供对象创建工厂时所依赖的工厂对象以及工厂方法。
+ * 如果bean配置了aop或者附加接口实现则工厂bean返回的对象将由这个子系统创建一个这个对象的子类，并且以静态代理方式在代理类上实现aop以及附加接口实现。
+ * 此时aop所能拦截到的方法与classcode工具的Propxt方式相同（私有和保护方法将不受到aop影响，如果是new方式则可以受到影响）。
  * Date : 2009-11-12
  * @author 赵永春
  */
@@ -82,6 +85,7 @@ public class FactoryCreateEngine extends CreateEngine {
         }
         return fmParamTypes;
     }
+    /**启动创建过程调用工厂类的方法创建对象，并且将创建的bean对象进行静态代理以实现AOP和附加接口方法功能。*/
     @Override
     public Object newInstance(BeanDefinition definition, Object[] params, BeanFactory context) throws Throwable {
         Method factoryMethod;
@@ -92,14 +96,17 @@ public class FactoryCreateEngine extends CreateEngine {
             String refBeanMethod = definition.getFactoryMethodName();
             //准备方法参数类型列表
             BeanProperty[] refBeanMethodParam = definition.getFactoryMethodParams();
-            Class<?>[] refBeanMethodTypes = new Class[refBeanMethodParam.length];
-            for (int i = 0; i < refBeanMethodParam.length; i++) {
-                BeanProperty beanP = refBeanMethodParam[i];
-                String paramType = beanP.getPropType();
-                if (paramType != null)
-                    refBeanMethodTypes[i] = this.toClass(paramType, loader);
-                else
-                    refBeanMethodTypes[i] = context.getOriginalBeanType(beanP.getRefBean());
+            Class<?>[] refBeanMethodTypes = null;
+            if (refBeanMethodParam != null) {
+                refBeanMethodTypes = new Class[refBeanMethodParam.length];
+                for (int i = 0; i < refBeanMethodParam.length; i++) {
+                    BeanProperty beanP = refBeanMethodParam[i];
+                    String paramType = beanP.getPropType();
+                    if (paramType != null)
+                        refBeanMethodTypes[i] = this.toClass(paramType, loader);
+                    else
+                        refBeanMethodTypes[i] = context.getBeanType(beanP.getRefBean());
+                }
             }
             //获取工厂方法
             Class<?> factoryType = context.getBeanType(refBean);
@@ -134,7 +141,7 @@ public class FactoryCreateEngine extends CreateEngine {
                 propxyConstructor = (Constructor<?>) definition.get(catchFactoryObjectPropxy);
             //
             Object propxy = propxyConstructor.newInstance(newObject);
-            return this.configurationBean(loader, propxy, definition, params, context);
+            return this.configurationBean(propxy.getClass().getClassLoader(), propxy, definition, params, context);
         }
     }
     /** 配置ClassEngine，的接口实现以及AOP。 */
@@ -143,18 +150,21 @@ public class FactoryCreateEngine extends CreateEngine {
         {
             //---------------------------------------------------------------Impl
             BeanInterface[] implS = definition.getImplImplInterface();
-            for (int i = 0; i < implS.length; i++) {
-                BeanInterface beanI = implS[i];
-                Class<?> typeClass = null;
-                String type = beanI.getType();
-                //获取附加的类型，该段代码可以支持引用方式引用其他接口bean。
-                if (type != null)
-                    typeClass = this.toClass(type, loader);
-                else
-                    typeClass = context.getOriginalBeanType(beanI.getTypeRefBean());
-                //附加接口实现
-                engine.appendImpl(typeClass, (MethodDelegate) context.getBean(beanI.getImplDelegateRefBean(), params));
+            if (implS != null) {
+                for (int i = 0; i < implS.length; i++) {
+                    BeanInterface beanI = implS[i];
+                    Class<?> typeClass = null;
+                    String type = beanI.getType();
+                    //获取附加的类型，该段代码可以支持引用方式引用其他接口bean。
+                    if (type != null)
+                        typeClass = this.toClass(type, loader);
+                    else
+                        typeClass = context.getBeanType(beanI.getTypeRefBean());
+                    //附加接口实现
+                    engine.appendImpl(typeClass, (MethodDelegate) context.getBean(beanI.getImplDelegateRefBean(), params));
+                }
             }
+            //
         }
         {
             //---------------------------------------------------------------AOP
