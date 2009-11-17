@@ -20,7 +20,7 @@ import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.CreateTypeEnum;
 /**
  * more.beans的一个可独立运行子系统，它提供了【Factory、New】两种创建方式。<br/>
- * 该系统是more.beans所有bean的创建器件，Factory创建方式是由FactoryCreateEngine类实现的、New方式则是由ConstructorCreateEngine类实现的。
+ * 该系统是more.beans所有bean的创建器件，Factory创建方式是由{@link FactoryCreateEngine}类实现的、New方式则是由{@link ConstructorCreateEngine}类实现的。
  * 在more.beans中预定义了Factory、New两种对象创建方式。<br/>
  * CreateFactory的功能是根据bean的配置自动选择Factory方式创建还是使用New方式创建。<br/>
  * Date : 2009-11-14

@@ -16,34 +16,6 @@ new方式是常规的执行构造方法来创建对象，如果bean没有配置构造方法则系统会调用Class
 寻找相关构造方法并且执行其构造方法（注意：默认不带参的构造方法可以不配置）。在首次找到相关类和构造方法之后这些信息会被缓存在BeanDefinition对象中。<br/>
 有关AOP或者附加接口实现。如果New方式创建的类配置了AOP或者接口实现则性能会大大下降，但是这个是在10万~100万个不同Class类对象上的测试结果，测试数据
 在下面会有介绍。在AOP或者附加接口配置下新的类对象与classcode工具的Super方式相同（私有和保护方法将不受到aop影响，如果是new方式则可以受到影响）。
-<br/><br/>
-
-性能测试：
-根据测试结果Factory与New两种创建方式最快的是Factory方式，因为New在创建完毕对象之后将大量的时间消耗在查找构造方法上。
-开发人员可以不理会这个性能测试结果，因为这个测试结果是在使用Factory方式创建10万~100万个不同Class类对象上的测试结果。在实际项目应用中很少有超过10万的
-不同Action类需要经过Aop切面这样的业务请求。
-
-
-
-以下是两组测试数据，单位毫秒。<a href="doc-files/test.zip">测试源程序</a><br/>
-<table>
-  <tr>
-  	<td>
-1000万次注入<br/>
-time:719	Export<br/>
-time:843	Fact<br/>
-time:18313	Ioc<br/>
-time:312	Get/Set<br/>
-  	</td>
-  	<td>
-100万次注入<br/>
-time:78	Export<br/>
-time:125	Fact<br/>
-time:1843	Ioc<br/>
-time:32	Get/Set<br/>
-  	</td>
-  </tr>
-</table>
-友情提示：如果绕过InjectionFactory类直接使用Injection接口的子类则会得到更高的运行效率。
+<br/>
 </body>
 </html>

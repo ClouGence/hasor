@@ -17,7 +17,8 @@ fact方式的运行速度与原始get/set运行速度相当接近，100万次进行基本类型属性注入速度
 这也就是说在fact方式下会比ioc方式增加少量内存消耗。生成的注入器被保存在BeanDefinition的属性中。
 只有BeanDefinition对象被缓存才有上述运行效率，否则fact的效率可能远远不足ioc。<br/><br/>
 
-Ioc方式：<br/>传统的注入方式，使用java.lang.reflect包中的类进行反射调用来实现依赖注入。Ioc方式比较Fact方式运行效率要慢的多。<br/><br/>
+Ioc方式：<br/>
+传统的注入方式，使用java.lang.reflect包中的类进行反射调用来实现依赖注入。Ioc方式比较Fact方式运行效率要慢的多。<br/><br/>
 
 以下是两组测试数据，单位毫秒。<a href="doc-files/test.zip">测试源程序</a><br/>
 <table>

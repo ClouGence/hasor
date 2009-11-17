@@ -35,8 +35,8 @@ import org.more.util.StringConvert;
  * fact方式的运行速度与原始get/set运行速度相当接近，100万次进行基本类型属性注入速度只相差15毫秒落后。
  * 在1000万次注入测试下get/set消耗了312毫秒而fact消耗了843毫秒，ioc方式则需要消耗18.3秒。
  * 这可以证明在Fact方式下会有很好的属性注入运行效率，但是Fact也会对每个要求Fact的bean生成一个注入器。
- * 这也就是说在fact方式下会比ioc方式增加少量内存消耗。生成的注入器被保存在BeanDefinition的属性中。
- * 只有BeanDefinition对象被缓存才有上述运行效率，否则fact的效率可能远远不足ioc。
+ * 这也就是说在fact方式下会比ioc方式增加少量内存消耗。生成的注入器被保存在{@link BeanDefinition}的属性中。
+ * 只有{@link BeanDefinition}对象被缓存才有上述运行效率，否则fact的效率可能远远不足ioc。
  * Date : 2009-11-7
  * @author 赵永春
  */
@@ -48,8 +48,7 @@ public class FactInjection implements Injection {
     /**
      * 取得缓存的fact注入代理类生成引擎，如果不存在缓存则创建这个引擎并且生成代理类。
      * 根据代理类引擎创建一个代理类对象并且执行代理类对象的代理注入方法。注入方法会使用最原始的get/set方式进行注入。
-     * 如果注入的属性请求引用对象则会引起对context的getBean调用。代理类方法名为$org_more_beans_core_injection_FactIoc_iocMethod
-     * 如此复杂的方法名是为了确保代理的类中不会出现这个方法名。在fact注入模式下代理类只会生成。
+     * 如果注入的属性请求引用对象则会引起对context的getBean调用。在fact注入模式下代理类只会生成。
      */
     @Override
     public void ioc(final Object object, final Object[] params, final BeanDefinition definition, final BeanFactory context) throws Throwable {

@@ -17,7 +17,7 @@ package org.more.core.classcode;
 import java.lang.reflect.Method;
 import org.more.InvokeException;
 /**
- * 当使用ClassEngine类的addImpl方法附加接口实现时，附加的接口处理函数对象就是该接口对象。
+ * 当使用{@link ClassEngine}类的addImpl方法附加接口实现时，附加的接口处理函数对象就是该接口对象。
  * 被委托的方法将会采用注册委托时传递的MethodDelegate接口对象作为回调对象。
  * Date : 2009-10-18
  * @author 赵永春
@@ -30,7 +30,7 @@ public interface MethodDelegate {
      * @param callMethod 被调用的函数。
      * @param target 调用委托方法的类对象。
      * @param params 当调用方法时方法的参数，如果没有参数传入则是一个空数组。
-     * @return 返回方法执行结果，注意依照相关接口方法的返回值进行返回ClassEngine不会自动转换起格式。
+     * @return 返回方法执行结果，注意依照相关接口方法的返回值进行返回{@link ClassEngine}不会自动转换起格式。
      * 如果方法返回类型是java基本类型请务必按照附加的接口方法返回相关返回值否则将产生类型转换异常。
      * @throws InvokeException 当调用过程中发生的异常。
      */

@@ -28,14 +28,14 @@ import org.more.core.classcode.AOPInvokeFilter;
 import org.more.core.classcode.ClassEngine;
 import org.more.core.classcode.MethodDelegate;
 /**
- * CreateEngine的子类分别实现了CreateTypeEnum枚举中定义的创建方式。
+ * CreateEngine的子类分别实现了{@link org.more.beans.info.CreateTypeEnum}枚举中定义的创建方式。
  * Date : 2009-11-15
  * @author 赵永春
  */
 public abstract class CreateEngine {
     /***/
     public abstract Object newInstance(BeanDefinition definition, Object[] params, BeanFactory context) throws Throwable;
-    /** 根据BeanDefinition获取其类的Class对象，如果配置了AOP或者附加接口。则返回编译之后的Class对象。 */
+    /** 根据{@link BeanDefinition}获取其类的Class对象，如果配置了AOP或者附加接口。则返回编译之后的Class对象。 */
     protected Class<?> getClassType(BeanDefinition definition, Object[] params, BeanFactory context) throws ClassNotFoundException, IOException {
         ClassLoader loader = context.getBeanClassLoader();
         ClassEngine engine = new ClassEngine(loader);
@@ -71,7 +71,7 @@ public abstract class CreateEngine {
         }
         return engine.toClass();
     }
-    /** 配置这个新Bean对象，如果ClassEngine支持在配置bean时提供新代理对象的创建根据 */
+    /** 配置这个新Bean对象，如果{@link ClassEngine}支持在配置bean时提供新代理对象的创建根据 */
     protected Object configurationBean(ClassLoader loader, Object newObject, BeanDefinition definition, Object[] params, BeanFactory context) throws Throwable {
         if (loader instanceof ClassEngine == false)
             return newObject;

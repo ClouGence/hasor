@@ -18,8 +18,8 @@ import org.more.beans.BeanFactory;
 import org.more.beans.info.BeanDefinition;
 /**
  * 使用Export方式可以使开发人员参与属性注入过程，在Export方式下more.beans不会对属性做任何注入操作。
- * more.bean会委托ExportInjectionProperty接口进行注入请求。决定对属性的注入类必须实现
- * ExportInjectionProperty接口。如果外部注入处理对象为空则Export将忽略注入请求。
+ * more.bean会委托{@link ExportInjectionProperty}接口进行注入请求。决定对属性的注入类必须实现
+ * {@link ExportInjectionProperty}接口。如果外部注入处理对象为空则Export将忽略注入请求。
  * <br/>Export方式注入可以使开发人员参与属性注入过程从而提供更高级的属性注入业务逻辑。这与aop不同，
  * aop专注于对方法进行切面编程，而ioc则专注于属性注入。Export是提供一种更灵活更自由的高级注入方式。<br/>
  * Date : 2009-11-7
@@ -35,7 +35,7 @@ public class ExportInjection implements Injection {
         this.injectionProperty = injectionProperty;
     }
     //==========================================================================================Job
-    /** 执行ExportInjectionProperty接口方法请求注入属性。 */
+    /** 执行{@link ExportInjectionProperty}接口方法请求注入属性。 */
     @Override
     public void ioc(Object object, Object[] params, BeanDefinition definition, BeanFactory context) {
         if (this.injectionProperty != null)

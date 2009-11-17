@@ -25,8 +25,8 @@ import org.more.beans.info.BeanProperty;
 import org.more.util.StringConvert;
 /**
  * 传统的Ioc反射注入方式，这种方式使用java.lang.reflect包中的类进行反射调用来实现依赖注入。
- * 在IocInjection类中属性是通过PropertyDescriptor对象并且获取其属性写入方法来执行注入的。
- * bean的每个属性PropertyDescriptor对象被缓存在BeanProperty中。<br/>
+ * 在IocInjection类中属性写入方法是由set + 属性名(首字母大写) 定义的这个方法当被查找到之后会
+ * 被缓存在{@link BeanProperty}中。<br/>
  * Date : 2009-11-7
  * @author 赵永春
  */
@@ -35,7 +35,7 @@ public class IocInjection implements Injection {
     /** 属性缓存对象，缓存属性名。 */
     private String propCatchName = "$more_Injection_Ioc";
     //==========================================================================================Job
-    /** 调用BeanDefinition的属性迭代器，使用PropertyDescriptor对象对每个属性进行反射注入。 */
+    /** 使用set + 属性名(首字母大写)名称来查找目标反射注入方法。 */
     @Override
     public void ioc(Object object, Object[] params, BeanDefinition definition, BeanFactory context) throws Exception {
         BeanProperty[] bps = definition.getPropertys();

@@ -20,8 +20,8 @@ import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.IocTypeEnum;
 import org.more.task.Task;
 /**
- * 根据bean定义自动选择注入方式并且执行注入。Export注入器如果配置了单态模式其对应的ExportInjection对象会被缓存。
- * InjectionFactory也是一个任务对象,它的任务是清空已经被缓存的ExportInjection对象。注意任务执行方法doRun是同步方法。
+ * 根据bean定义自动选择注入方式并且执行注入。Export注入器如果配置了单态模式其对应的{@link ExportInjection}对象会被缓存。
+ * InjectionFactory也是一个任务({@link Task})对象,它的任务是清空已经被缓存的{@link ExportInjection}对象。注意任务执行方法doRun是同步方法。
  * Date : 2009-11-9
  * @author 赵永春
  */
@@ -35,7 +35,7 @@ public class InjectionFactory extends Task implements Injection {
     /** Ioc方式注入 */
     private IocInjection                     ioc              = new IocInjection();
     //====================================================================================================
-    /** 根据bean定义自动选择注入方式并且执行注入。Export注入器如果配置了单态模式其对应的ExportInjection对象会被缓存。 */
+    /** 根据bean定义自动选择注入方式并且执行注入。Export注入器如果配置了单态模式其对应的{@link ExportInjection}对象会被缓存。 */
     @Override
     public void ioc(Object object, Object[] params, BeanDefinition definition, BeanFactory context) throws Throwable {
         if (definition.getIocType() == IocTypeEnum.Export) {
@@ -61,7 +61,10 @@ public class InjectionFactory extends Task implements Injection {
         else
             throw new InjectionException("未知注入方式，无法执行注入！");
     }
-    /** 负责清理InjectionFactory缓存的ExportInjection对象，被缓存的ExportInjection对象其bean定义都是单态对象，注意该方法是同步方法。 */
+    /**
+     * 负责清理InjectionFactory缓存的{@link ExportInjection}对象，被缓存的{@link ExportInjection}对象其bean定义都是单态对象，
+     * 注意该方法是同步方法。当{@link org.more.beans.core.ResourceBeanFactory}调用了clearBeanCache方法时也会激发doRun的执行。
+     *  */
     @Override
     protected synchronized void doRun() throws Exception {
         this.exportMap.clear();
