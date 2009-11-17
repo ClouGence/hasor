@@ -28,8 +28,8 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.more.core.asm;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 /**
  * A Java class parser to make a {@link ClassVisitor} visit an existing class.
  * This class parses a byte array conforming to the Java class file format and

@@ -139,7 +139,6 @@ public final class TableType extends BaseType {
         return returnS;
     }
     //获取目标对象的属性名集合。
-    @SuppressWarnings("unchecked")
     private Object[] getNS(Object obj) {
         if (obj instanceof Map) {
             Map obj_map = (Map) obj;
@@ -152,7 +151,6 @@ public final class TableType extends BaseType {
         }
     }
     //从目标读取某个属性
-    @SuppressWarnings( { "unused", "unchecked" })
     private Object getValue(Object object, String ns) {
         if (object instanceof Map) {
             return ((Map) object).get(ns);
@@ -165,7 +163,6 @@ public final class TableType extends BaseType {
             }
     }
     //向目标设置某个属性
-    @SuppressWarnings( { "unused", "unchecked" })
     private void setValue(Object object, String name, Object value) {
         if (object instanceof Map) {
             ((Map) object).put(name, value);

@@ -16,7 +16,6 @@
 package org.more.core.copybean.ext;
 import java.util.Iterator;
 import javax.servlet.ServletRequest;
-
 import org.more.core.copybean.BeanType;
 import org.more.core.copybean.PropertyReaderWrite;
 /**

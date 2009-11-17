@@ -17,7 +17,6 @@ package org.more.web.page.info;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
-
 import org.more.core.copybean.CopyBeanUtil;
 import org.more.util.StringConvert;
 import org.more.web.page.PageInfo;
