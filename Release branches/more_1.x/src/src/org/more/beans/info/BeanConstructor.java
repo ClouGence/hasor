@@ -16,19 +16,20 @@
 package org.more.beans.info;
 import org.more.util.attribute.AttBase;
 /**
- * 
- * Date : 2009-11-10
- * @author Administrator
+ * 该bean是用于配置构造方法的bean。
+ * Date : 2009-11-18
+ * @author 赵永春
  */
 public class BeanConstructor extends AttBase {
     /**  */
     private static final long      serialVersionUID = 3461453713657581453L;
-    //
-    private BeanConstructorParam[] paramTypes       = null;                //
-    //=================================================================
+    private BeanConstructorParam[] paramTypes       = null;                //参数列表
+    //=========================================================================
+    /**获取创建bean时使用的构造参数列表。*/
     public BeanConstructorParam[] getParamTypes() {
         return paramTypes;
     }
+    /**设置创建bean时使用的构造参数列表。*/
     public void setParamTypes(BeanConstructorParam[] paramTypes) {
         this.paramTypes = paramTypes;
     }

@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.task.task;
-import org.more.task.Task;
+package org.more.core.task.task;
+import org.more.core.task.Task;
 /**
  * 单项可执行的任务，该类任务中不包含子任务创建该对象可以将任何任务Task类型或者Runnable接口的
  * 任务，如果被包含的Task类型任务是一个拥有子任务集合的任务，那么这些子任务将会作为一个独立的任务执行。

@@ -27,7 +27,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.more.CopyException;
-import org.more.core.io.input.AutoCloseInputStream;
+import org.more.core.io.AutoCloseInputStream;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
 /**

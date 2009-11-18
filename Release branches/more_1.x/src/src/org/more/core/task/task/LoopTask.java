@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.task.task;
+package org.more.core.task.task;
 /**
  * 循环执行任务，当有需要重复执行的需求就可以使用LoopTask类型任务。LoopTask可以创建执行指定次数的任务
  * 也可以用于创建无限循环的任务，LoopTask通过灵活的配置任务执行次数来达到这些目的。当不希望任务被执行时

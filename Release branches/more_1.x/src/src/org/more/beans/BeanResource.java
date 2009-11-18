@@ -22,7 +22,7 @@ import java.util.List;
 import org.more.DoesSupportException;
 import org.more.beans.info.BeanDefinition;
 /**
- * 这个接口是more.beans组建的基本接口之一，该接口用于提供BeanDefinition的索引获取功能。
+ * 这个接口是more.beans组建的基本接口之一，该接口用于提供{@link BeanDefinition}的索引获取功能。
  * 接口实现类决定bean数据是以什么形式存在（DBMS、LDAP、XML这些都是数据提供形式）。
  * 更甚者可以使用Spring的getMergedBeanDefinition方法使用Spring作为bean数据提供者。
  * Date : 2009-11-3
@@ -51,7 +51,7 @@ public interface BeanResource {
      */
     public boolean containsBeanDefinition(String name);
     /**
-     * 获取BeanResource中可以索引到的所有bean定义名称集合，如果获取不到任何名称则需要返回一个空集合。
+     * 获取{@link BeanResource}中可以索引到的所有bean定义名称集合，如果获取不到任何名称则需要返回一个空集合。
      * @return 返回获取到的所有bean定义名称集合。
      */
     public List<String> getBeanDefinitionNames();
@@ -68,13 +68,13 @@ public interface BeanResource {
      */
     public Object getAttribute(String key) throws DoesSupportException;
     /**
-     * 获取BeanResource接口对Bean资源的描述。
-     * @return 获取BeanResource接口对Bean资源的描述。
+     * 获取{@link BeanResource}接口对Bean资源的描述。
+     * @return 获取{@link BeanResource}接口对Bean资源的描述。
      */
     public String getResourceDescription();
     /**
-     * 获取一个boolean该值表示BeanResource对象是否对Bean的定义信息做缓存。如果实现类提供了缓存功能则返回true，否则返回false。
-     * @return 获取一个boolean该值表示BeanResource对象是否对Bean的定义信息做缓存。
+     * 获取一个boolean该值表示{@link BeanResource}对象是否对Bean的定义信息做缓存。如果实现类提供了缓存功能则返回true，否则返回false。
+     * @return 获取一个boolean该值表示{@link BeanResource}对象是否对Bean的定义信息做缓存。
      */
     public boolean isCacheBeanMetadata();
     /** 

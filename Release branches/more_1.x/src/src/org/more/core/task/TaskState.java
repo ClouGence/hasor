@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.info;
+package org.more.core.task;
 /**
- * 该bean是用于配置构造方法参数的bean。
- * Date : 2009-11-18
+ * 任务处理器的运行状态。
+ * Date : 2009-5-16
  * @author 赵永春
  */
-public class BeanConstructorParam extends BeanProperty {
-    /**  */
-    private static final long serialVersionUID = 2758108121360635114L;
-    private int               index            = 0;                   //构造方法参数顺序，从0开始。
-    //=========================================================================
-    /**获取构造方法参数顺序，从0开始。*/
-    public int getIndex() {
-        return index;
-    }
-    /**设置构造方法参数顺序，从0开始。*/
-    public void setIndex(int index) {
-        this.index = index;
-    }
+public enum TaskState {
+    /** 新的任务，没有进行过任何执行。 */
+    New,
+    /** 正在执行。 */
+    Run,
+    /** 已经执行完毕。 */
+    RunEnd
 }

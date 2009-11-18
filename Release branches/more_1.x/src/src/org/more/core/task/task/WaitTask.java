@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.task.task;
-import org.more.task.Task;
+package org.more.core.task.task;
+import org.more.core.task.Task;
 /**
  * 等待任务，该任务被执行时会自动调用Thread.sleep方法以睡眠当前线程。
  * 该类型任务是可以用来优化CPU资源和控制任务执行间隔。

@@ -18,7 +18,7 @@ import java.util.HashMap;
 import org.more.beans.BeanFactory;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.IocTypeEnum;
-import org.more.task.Task;
+import org.more.core.task.Task;
 /**
  * 根据bean定义自动选择注入方式并且执行注入。Export注入器如果配置了单态模式其对应的{@link ExportInjection}对象会被缓存。
  * InjectionFactory也是一个任务({@link Task})对象,它的任务是清空已经被缓存的{@link ExportInjection}对象。注意任务执行方法doRun是同步方法。
