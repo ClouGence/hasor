@@ -15,21 +15,11 @@
  */
 package org.more.beans.info;
 /**
- * 该bean是用于配置构造方法参数的bean。
+ * 该类用于BeanProperty对象value属性，该的实际作用是用于区分不同{@link Prop Prop}对象。
  * Date : 2009-11-18
  * @author 赵永春
  */
-public class BeanConstructorParam extends BeanProperty {
+public abstract class BeanProp extends Prop {
     /**  */
-    private static final long serialVersionUID = 2758108121360635114L;
-    private int               index            = 0;                   //构造方法参数顺序，从0开始。
-    //=========================================================================
-    /**获取构造方法参数顺序，从0开始。*/
-    public int getIndex() {
-        return index;
-    }
-    /**设置构造方法参数顺序，从0开始。*/
-    public void setIndex(int index) {
-        this.index = index;
-    }
+    private static final long serialVersionUID = 5907558362552415426L;
 }

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.more.beans.info;
+import org.more.beans.core.ResourceBeanFactory;
+import org.more.beans.core.injection.ExportInjectionProperty;
 import org.more.util.attribute.AttBase;
 /**
  * 一个Bean的完整定义信息，这个类是一个标准的pojo，more.beans可以通过不同方式提供这个bean定义。有了bean定义整个
@@ -21,34 +23,34 @@ import org.more.util.attribute.AttBase;
  * 它们分别是【基本数据、ioc依赖数据、create依赖数据、aop依赖数据、附带数据、属性数据】下面分别介绍着六种数据。
  * <br/><br/>一、基本数据:<br/>
  * 基本数据中定义了bean的名字，类型是否延迟初始化，以及作用域和描述信息。其中name和type必须设置。lazyInit属性默认为true，
- * lazyInit的支持是在ResourceBeanFactory中实现的。
+ * lazyInit的支持是在{@link ResourceBeanFactory}中实现的。
  * <br/><br/>二、ioc依赖数据:<br/>
  * ioc依赖数据中提供了对属性依赖注入的配置信息，iocType是指定的注入类型它是根据{@link IocTypeEnum}枚举定义。
- * 属性exportIocRefBean是当iocType类型为Export方式时所依赖的数据表示导出的属性注入器，属性注入器必须是ExportInjectionProperty接口对象。
- * propertys则是需要注入的属性数组，所有对属性的配置都在这个数组中。使用Export方式时一切注入过程由ExportInjectionProperty接口 决定。
- * iocType的默认值是Ioc。
+ * 属性exportIocRefBean是当iocType类型为{@link IocTypeEnum#Export Export}方式时所依赖的数据表示导出的属性注入器，属性注入器必须是
+ * {@link ExportInjectionProperty}接口对象。propertys则是需要注入的属性数组，所有对属性的配置都在这个数组中。
+ * 使用Export方式时一切注入过程由{@link ExportInjectionProperty}接口 决定。iocType的默认值是{@link IocTypeEnum#Ioc Ioc}。
  * <br/><br/>三、create依赖数据:<br/>
  * 所有有关创建方面的数据都在这里它们包括了createType创建类型(默认是New)、constructor创建对象时调用的构造方法定义、factoryRefBean该属性是
- * 当createType为Factory时所依赖，表示了使用的工厂bean名称、factoryIsStaticMethod所使用的工厂方法是否为静态方法，针对静态工厂方法Factory方式
- * Factory不会去创建Factory对象、factoryMethodName工厂方法名、factoryMethodParams调用工厂方法时需要传递的参数信息。
+ * 当createType为{@link CreateTypeEnum#Factory Factory}时所依赖，表示了使用的工厂bean名称、factoryIsStaticMethod表示所使用的工厂方法是否为静态方法。
+ * 针对静态工厂方法，在Factory方式中不会去创建Factory对象但这需要给定factoryIsStaticMethod属性、factoryMethodName工厂方法名、
+ * factoryMethodParams调用工厂方法时需要传递的参数信息。
  * <br/><br/>四、aop依赖数据:<br/>
  * 配置了aop链相关信息。同时这类数据中还包含了附加接口实现相关数据。aopFilterRefBean代表AOP方法过滤器bean名称。
  * 而implImplInterface则是附加接口实现相关数据。
  * <br/><br/>五、附带数据:<br/>
- * 附带数据中有一个最重要的属性就是isSingleton它决定了ResourceBeanFactory是否对其进行缓存。
+ * 附带数据中有一个最重要的属性就是isSingleton它决定了{@link ResourceBeanFactory ResourceBeanFactory}是否对其进行缓存。
  * <br/><br/>六、属性数据:<br/>
- * 属性数据是由BeanDefinition继承的AttBase类提供支持，通常这些属性都是配置的附加属性信息。注意所有属性请不要使用“$more_”作为属性开头。
+ * 属性数据是由BeanDefinition继承的{@link AttBase AttBase}类提供支持，通常这些属性都是配置的附加属性信息。注意所有属性请不要使用“$more_”作为属性开头。
  * “$more_”是more.beans属性名称的保留区域，有些用于提升性能的缓存数据都是使用这个保留区域的名称存放的。
- * Date : 2009-11-17
+ * <br/>Date : 2009-11-17
  * @author 赵永春
  */
-public class BeanDefinition extends AttBase {
+public class BeanDefinition extends Prop {
+    //========================================================================================Field
     /**  */
     private static final long serialVersionUID      = 75468455223536954L;
     //基本数据
-    private String            id                    = null;              //唯一的Bean ID。
-    private String            name                  = null;              //在一个beanFactory中的唯一名称
-    private String            type                  = null;              //定义这个bean的原始类型，该类型应该可以通过BeanFactory.getBeanClassLoader().loadClass()获取。
+    private String            name                  = null;              //在一个beanFactory中的唯一名称。
     private boolean           lazyInit              = true;              //是否延迟初始化这个bean，只有当bean是单态模式下才生效。
     private String            description           = null;              //bean描述信息。
     //ioc依赖数据
@@ -57,7 +59,7 @@ public class BeanDefinition extends AttBase {
     private BeanProperty[]    propertys             = null;              //bean中注册的属性这些属性需要依赖注入。
     //create依赖数据
     private CreateTypeEnum    createType            = CreateTypeEnum.New; //创建方式，默认为New。
-    private BeanConstructor   constructor           = null;              //当创建方式为工厂方式时，构造方法将失效，一切创建代码委托给工厂方法。
+    private BeanConstructor   constructor           = null;              //配置的构造方法。当创建方式为工厂方式时，构造方法将失效，一切创建代码委托给工厂方法。
     private String            factoryRefBean        = null;              //使用工厂方式创建时的工厂bean名称。
     private boolean           factoryIsStaticMethod = false;             //调用工厂类的方法是否为一个静态方法。
     private String            factoryMethodName     = null;              //调用工厂类的方法名
@@ -67,15 +69,7 @@ public class BeanDefinition extends AttBase {
     private BeanInterface[]   implImplInterface     = null;              //要附加实现的接口
     //附带数据
     private boolean           isSingleton           = false;             //是否为单态模式
-    //=========================================================================
-    /**获取唯一的Bean ID。*/
-    public String getId() {
-        return id;
-    }
-    /**设置唯一的Bean ID。*/
-    public void setId(String id) {
-        this.id = id;
-    }
+    //==========================================================================================Job
     /**获取在一个beanFactory中的唯一名称。*/
     public String getName() {
         return name;
@@ -83,14 +77,6 @@ public class BeanDefinition extends AttBase {
     /**设置在一个beanFactory中的唯一名称。*/
     public void setName(String name) {
         this.name = name;
-    }
-    /**获取定义这个bean的原始类型，该类型应该可以通过BeanFactory.getBeanClassLoader().loadClass()获取。*/
-    public String getType() {
-        return type;
-    }
-    /**设置定义这个bean的原始类型，该类型应该可以通过BeanFactory.getBeanClassLoader().loadClass()获取。*/
-    public void setType(String type) {
-        this.type = type;
     }
     /**获取是否延迟初始化这个bean，只有当bean是单态模式下才生效。*/
     public boolean isLazyInit() {

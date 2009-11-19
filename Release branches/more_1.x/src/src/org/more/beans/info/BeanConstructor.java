@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 package org.more.beans.info;
-import org.more.util.attribute.AttBase;
 /**
- * 该bean是用于配置构造方法的bean。
- * Date : 2009-11-18
+ * 该bean是用于配置构造方法的bean，注意对于BeanConstructor类型对象其propType属性是不起任何作用的。
+ * <br/>Date : 2009-11-18
  * @author 赵永春
  */
-public class BeanConstructor extends AttBase {
+public class BeanConstructor extends Prop {
     /**  */
-    private static final long      serialVersionUID = 3461453713657581453L;
-    private BeanConstructorParam[] paramTypes       = null;                //参数列表
+    private static final long serialVersionUID  = 3461453713657581453L;
+    private BeanProperty[]    constructorParams = null;                //构造方法参数表。
     //=========================================================================
     /**获取创建bean时使用的构造参数列表。*/
-    public BeanConstructorParam[] getParamTypes() {
-        return paramTypes;
+    public BeanProperty[] getConstructorParams() {
+        return constructorParams;
     }
     /**设置创建bean时使用的构造参数列表。*/
-    public void setParamTypes(BeanConstructorParam[] paramTypes) {
-        this.paramTypes = paramTypes;
+    public void setConstructorParams(BeanProperty[] constructorParams) {
+        this.constructorParams = constructorParams;
     }
 }

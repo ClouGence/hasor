@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 package org.more.beans.info;
-import org.more.util.attribute.AttBase;
+import java.lang.reflect.Array;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 /**
- * BeanProperty是用于表示属性的bean定义。在该类中定了一些基本类型，这些基本类型的定义有助于优化性能。
- * 但是基本类型的包装类型例如int的包装类型Integer则不属于基本类型范畴。除了java常见的八个基本类型之外
- * BeanProperty还针对java.lang.String、Array(一维Object数组)、List接口、Map接口、Set接口做了定义。
- * Date : 2009-11-18
+ * BeanProperty是用于表示属性的bean定义。在该类中定了一些基本类型，这些基本类型的定义有助于优化性能。但是基本类型的
+ * 包装类型例如int的包装类型Integer则不属于基本类型范畴。除了java常见的八个基本类型之外BeanProperty还针对
+ * java.lang.String、Array(一维数组)、List接口、Map接口、Set接口做了定义。BeanProperty作为属性对象必须设置propType属性。
+ * propType有一些预定义的值请查看BeanProperty的静态字段。
+ * <br/>Date : 2009-11-18
  * @author 赵永春
  */
-public class BeanProperty extends AttBase {
+public class BeanProperty extends Prop {
     /**基本类型int。*/
     public static final String TS_Integer       = "int";
     /**基本类型byte。*/
@@ -40,7 +44,7 @@ public class BeanProperty extends AttBase {
     /**基本类型boolean。*/
     public static final String TS_Boolean       = "boolean";
     /**基本类型String。*/
-    public static final String TS_String        = "java.lang.String";
+    public static final String TS_String        = "String";
     /**基本类型Array。*/
     public static final String TS_Array         = "Array";
     /**基本类型List。*/
@@ -51,20 +55,9 @@ public class BeanProperty extends AttBase {
     public static final String TS_Set           = "Set";
     /**  */
     private static final long  serialVersionUID = -3492072515778133870L;
-    private String             id               = null;                 //唯一的ID值。
     private String             name             = null;                 //属性名，对于构造方法参数配置该值无效。
-    private String             propType         = null;                 //属性的类型（必须配置）部分属性类型由TS_常量定义。
-    private String             refBean          = null;                 //bean在进行依赖注入时所依赖的其他bean。
-    private String             value            = null;                 //属性值，该值可能是一个XML片段。
+    private BeanProp           value            = null;                 //属性值。
     //=========================================================================
-    /**获取唯一的ID值。*/
-    public String getId() {
-        return id;
-    }
-    /**设置唯一的ID值。*/
-    public void setId(String id) {
-        this.id = id;
-    }
     /**获取属性名，对于构造方法参数配置该值无效。*/
     public String getName() {
         return name;
@@ -73,55 +66,84 @@ public class BeanProperty extends AttBase {
     public void setName(String name) {
         this.name = name;
     }
-    /**获取bean在进行依赖注入时所依赖的其他bean。*/
-    public String getRefBean() {
-        return refBean;
-    }
-    /**设置bean在进行依赖注入时所依赖的其他bean。*/
-    public void setRefBean(String refBean) {
-        this.refBean = refBean;
-    }
-    /**获取属性值，该值可能是一个XML片段。*/
-    public String getValue() {
+    /**获取属性值。*/
+    public BeanProp getValue() {
         return value;
     }
-    /**设置属性值，该值可能是一个XML片段。*/
-    public void setValue(String value) {
+    /**设置属性值。*/
+    public void setValue(BeanProp value) {
         this.value = value;
     }
     /**获取属性的类型（必须配置）部分属性类型由TS_常量定义。*/
     public String getPropType() {
-        return propType;
+        return super.getPropType();
     }
     /**设置属性的类型（必须配置）部分属性类型由TS_常量定义。*/
     public void setPropType(String propType) {
         if (propType.equals("int") == true)
-            this.propType = BeanProperty.TS_Integer;
+            super.setPropType(BeanProperty.TS_Integer);
         else if (propType.equals("byte") == true)
-            this.propType = BeanProperty.TS_Byte;
+            super.setPropType(BeanProperty.TS_Byte);
         else if (propType.equals("char") == true)
-            this.propType = BeanProperty.TS_Char;
+            super.setPropType(BeanProperty.TS_Char);
         else if (propType.equals("double") == true)
-            this.propType = BeanProperty.TS_Double;
+            super.setPropType(BeanProperty.TS_Double);
         else if (propType.equals("float") == true)
-            this.propType = BeanProperty.TS_Float;
+            super.setPropType(BeanProperty.TS_Float);
         else if (propType.equals("long") == true)
-            this.propType = BeanProperty.TS_Long;
+            super.setPropType(BeanProperty.TS_Long);
         else if (propType.equals("short") == true)
-            this.propType = BeanProperty.TS_Short;
+            super.setPropType(BeanProperty.TS_Short);
         else if (propType.equals("boolean") == true)
-            this.propType = BeanProperty.TS_Boolean;
+            super.setPropType(BeanProperty.TS_Boolean);
         else if (propType.equals("java.lang.String") == true)
-            this.propType = BeanProperty.TS_String;
+            super.setPropType(BeanProperty.TS_String);
         else if (propType.equals("Array") == true)
-            this.propType = BeanProperty.TS_Array;
+            super.setPropType(BeanProperty.TS_Array);
         else if (propType.equals("List") == true)
-            this.propType = BeanProperty.TS_List;
+            super.setPropType(BeanProperty.TS_List);
         else if (propType.equals("Map") == true)
-            this.propType = BeanProperty.TS_Map;
+            super.setPropType(BeanProperty.TS_Map);
         else if (propType.equals("Set") == true)
-            this.propType = BeanProperty.TS_Set;
+            super.setPropType(BeanProperty.TS_Set);
         else
-            this.propType = propType;
+            super.setPropType(propType);
+    }
+    /** 返回CreateEngine创建对象所使用的类型。 */
+    public static Class<?> toClass(Prop prop, ClassLoader loader) throws ClassNotFoundException {
+        String propType = prop.getPropType();
+        if (propType == BeanProperty.TS_Integer)
+            return int.class;
+        else if (propType == BeanProperty.TS_Byte)
+            return byte.class;
+        else if (propType == BeanProperty.TS_Char)
+            return char.class;
+        else if (propType == BeanProperty.TS_Double)
+            return double.class;
+        else if (propType == BeanProperty.TS_Float)
+            return float.class;
+        else if (propType == BeanProperty.TS_Long)
+            return long.class;
+        else if (propType == BeanProperty.TS_Short)
+            return short.class;
+        else if (propType == BeanProperty.TS_Boolean)
+            return boolean.class;
+        else if (propType == BeanProperty.TS_String)
+            return String.class;
+        else if (propType == BeanProperty.TS_Array) {
+            Class<?> element;
+            if (prop instanceof BeanProperty)
+                element = BeanProperty.toClass(((BeanProperty) prop).getValue(), loader);
+            else
+                element = BeanProperty.toClass(prop, loader);
+            return Array.newInstance(element, 1).getClass();
+        } else if (propType == BeanProperty.TS_List)
+            return List.class;
+        else if (propType == BeanProperty.TS_Map)
+            return Map.class;
+        else if (propType == BeanProperty.TS_Set)
+            return Set.class;
+        else
+            return loader.loadClass(propType);
     }
 }

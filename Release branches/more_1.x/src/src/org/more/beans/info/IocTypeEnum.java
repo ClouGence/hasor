@@ -16,7 +16,7 @@
 package org.more.beans.info;
 import org.more.beans.core.injection.ExportInjectionProperty;
 /**
- * 注入类型枚举。定义了Export、Fact、Ioc三种属性注入方式。
+ * 注入类型枚举，定义了【Export、Fact、Ioc】三种属性注入方式。
  * <br/><br/>Export方式：<br/>使用Export方式可以使开发人员参与属性注入过程，在Export方式下more.beans不会对属性做任何注入操作。
  * more.bean会委托{@link ExportInjectionProperty}接口进行注入请求。决定对属性的注入类必须实现{@link ExportInjectionProperty}接口。
  * 如果外部注入处理对象为空则Export将忽略注入请求。
@@ -28,8 +28,8 @@ import org.more.beans.core.injection.ExportInjectionProperty;
  * 这可以证明在Fact方式下会有很好的属性注入运行效率，但是Fact也会对每个要求Fact的bean生成一个注入器。
  * 这也就是说在fact方式下会比ioc方式增加少量内存消耗。生成的注入器被保存在{@link BeanDefinition}的属性中。
  * 只有{@link BeanDefinition}对象被缓存才有上述运行效率，否则fact的效率可能远远不足ioc。
- * <br/><br/>Ioc方式：<br/>传统的注入方式，使用java.lang.reflect包中的类进行反射调用来实现依赖注入。Ioc方式比较Fact方式运行效率要慢的多。<br/>
- * Date : 2009-11-9
+ * <br/><br/>Ioc方式：<br/>传统的注入方式，使用java.lang.reflect包中的类进行反射调用来实现依赖注入。Ioc方式比较Fact方式运行效率要慢的多。
+ * <br/>Date : 2009-11-9
  * @author 赵永春
  */
 public enum IocTypeEnum {
