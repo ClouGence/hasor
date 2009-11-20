@@ -17,18 +17,18 @@ package org.more.beans.core.factory;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+
 import org.more.beans.BeanFactory;
-import org.more.beans.core.TypeParser;
-import org.more.beans.info.BeanConstructorParam;
+import org.more.beans.core.propparser.MainPropertyParser;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.BeanInterface;
+import org.more.beans.info.BeanProp;
 import org.more.beans.info.BeanProperty;
 import org.more.beans.info.CreateTypeEnum;
 import org.more.core.classcode.AOPInvokeFilter;
 import org.more.core.classcode.ClassEngine;
 import org.more.core.classcode.MethodDelegate;
 import org.more.core.classcode.ClassEngine.BuilderMode;
-import org.more.util.StringConvert;
 /**
  * 使用工厂方式创建一个Bean对象这种方式需要指定工厂类以及工厂方法相关参数，Factory方式中aop所能拦截到的方法与classcode工具的Propxt方式相同。
  * <br/><br/>该方式需要beans配置{@link CreateTypeEnum}属性为Factory，并且提供对象创建工厂时所依赖的工厂对象以及工厂方法。
@@ -40,58 +40,35 @@ import org.more.util.StringConvert;
 public class FactoryCreateEngine extends CreateEngine {
     //========================================================================================Field
     /** 属性缓存对象，缓存属性名。 */
-    private String catchFactoryMethodName   = "$more_CreateEngine_Factory";
+    private String             catchFactoryMethodName   = "$more_CreateEngine_Factory";
     /** 代理对象属性缓存对象，缓存属性名。 */
-    private String catchFactoryObjectPropxy = "$more_CreateEngine_Factory_PropxyConstructor";
+    private String             catchFactoryObjectPropxy = "$more_CreateEngine_Factory_PropxyConstructor";
+    /**属性解析器*/
+    private MainPropertyParser propParser               = null;
+    //==================================================================================Constructor
+    /**创建一个FactoryCreateEngine对象，创建时必须指定属性解析器。*/
+    public FactoryCreateEngine(MainPropertyParser propParser) {
+        if (propParser == null)
+            throw new NullPointerException("必须指定propParser参数对象，FactoryCreateEngine使用这个属性解析器解析属性。");
+        this.propParser = propParser;
+    }
     //==========================================================================================Job
     /**查找并获取工厂方法参数*/
-    private Object[] findMethodParamObject(BeanDefinition definition, Object[] params, BeanFactory context) {
+    private Object[] findMethodParamObject(BeanDefinition definition, Object[] params, BeanFactory context) throws Exception {
         BeanProperty[] fmParams = definition.getFactoryMethodParams();
         Object[] fmParamTypes = new Object[fmParams.length];
         for (int i = 0; i < fmParams.length; i++) {
             BeanProperty beanP = fmParams[i];
-            String propType = beanP.getPropType();
-            String propValue = beanP.getValue();
-            if (propType == BeanConstructorParam.TS_Boolean)
-                fmParamTypes[i] = StringConvert.parseBoolean(propValue);
-            else if (propType == BeanConstructorParam.TS_Byte)
-                fmParamTypes[i] = StringConvert.parseByte(propValue);
-            else if (propType == BeanConstructorParam.TS_Char)
-                if (propValue == null)
-                    fmParamTypes[i] = (char) 0;
-                else
-                    fmParamTypes[i] = propValue.charAt(0);
-            else if (propType == BeanConstructorParam.TS_Double)
-                fmParamTypes[i] = StringConvert.parseDouble(propValue);
-            else if (propType == BeanConstructorParam.TS_Float)
-                fmParamTypes[i] = StringConvert.parseFloat(propValue);
-            else if (propType == BeanConstructorParam.TS_Integer)
-                fmParamTypes[i] = StringConvert.parseInt(propValue);
-            else if (propType == BeanConstructorParam.TS_Long)
-                fmParamTypes[i] = StringConvert.parseLong(propValue);
-            else if (propType == BeanConstructorParam.TS_Short)
-                fmParamTypes[i] = StringConvert.parseShort(propValue);
-            else if (propType == BeanConstructorParam.TS_String)
-                fmParamTypes[i] = propValue;
-            else if (propType == BeanConstructorParam.TS_List)
-                fmParamTypes[i] = TypeParser.passerList(null, params, beanP, context);
-            else if (propType == BeanConstructorParam.TS_Set)
-                fmParamTypes[i] = TypeParser.passerSet(null, params, beanP, context);
-            else if (propType == BeanConstructorParam.TS_Map)
-                fmParamTypes[i] = TypeParser.passerMap(null, params, beanP, context);
-            else if (propType == BeanConstructorParam.TS_Array)
-                fmParamTypes[i] = TypeParser.passerArray(null, params, beanP, context);
-            else
-                fmParamTypes[i] = TypeParser.passerType(null, params, beanP, context);
+            BeanProp propValue = beanP.getValue();
+            fmParamTypes[i] = propParser.parser(null, params, propValue, beanP, definition);
         }
         return fmParamTypes;
     }
     /**启动创建过程调用工厂类的方法创建对象，并且将创建的bean对象进行静态代理以实现AOP和附加接口方法功能。*/
     @Override
-    public Object newInstance(BeanDefinition definition, Object[] params, BeanFactory context) throws Throwable {
+    public Object newInstance(BeanDefinition definition, Object[] params, BeanFactory context) throws Exception {
         Method factoryMethod;
         String refBean = definition.getFactoryRefBean();
-        ClassLoader loader = context.getBeanClassLoader();
         //一、获取工厂方法。
         if (definition.containsKey(catchFactoryMethodName) == false) {
             String refBeanMethod = definition.getFactoryMethodName();
@@ -102,11 +79,7 @@ public class FactoryCreateEngine extends CreateEngine {
                 refBeanMethodTypes = new Class[refBeanMethodParam.length];
                 for (int i = 0; i < refBeanMethodParam.length; i++) {
                     BeanProperty beanP = refBeanMethodParam[i];
-                    String paramType = beanP.getPropType();
-                    if (paramType != null)
-                        refBeanMethodTypes[i] = this.toClass(paramType, loader);
-                    else
-                        refBeanMethodTypes[i] = context.getBeanType(beanP.getRefBean());
+                    refBeanMethodTypes[i] = this.propParser.parserType(null, params, beanP.getValue(), beanP, definition);
                 }
             }
             //获取工厂方法
@@ -155,10 +128,10 @@ public class FactoryCreateEngine extends CreateEngine {
                 for (int i = 0; i < implS.length; i++) {
                     BeanInterface beanI = implS[i];
                     Class<?> typeClass = null;
-                    String type = beanI.getType();
+                    String type = beanI.getPropType();
                     //获取附加的类型，该段代码可以支持引用方式引用其他接口bean。
                     if (type != null)
-                        typeClass = this.toClass(type, loader);
+                        typeClass = loader.loadClass(beanI.getPropType());
                     else
                         typeClass = context.getBeanType(beanI.getTypeRefBean());
                     //附加接口实现

@@ -20,11 +20,12 @@ package org.more.beans.info;
  * @author 赵永春
  */
 public class BeanInterface extends Prop {
+    //========================================================================================Field
     /**  */
     private static final long serialVersionUID    = -1660901774837550451L;
     private String            typeRefBean         = null;                 //接口类型引用Bean名，配置了typeRefBean属性则可以不配置type属性。
     private String            implDelegateRefBean = null;                 //附加接口实现时接口处理委托bean名。
-    //=========================================================================
+    //==========================================================================================Job
     /**获取接口类型引用Bean名，配置了typeRefBean属性则可以不配置type属性。*/
     public String getTypeRefBean() {
         return typeRefBean;

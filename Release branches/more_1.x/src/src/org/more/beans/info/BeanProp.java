@@ -16,10 +16,11 @@
 package org.more.beans.info;
 /**
  * 该类用于BeanProperty对象value属性，该的实际作用是用于区分不同{@link Prop Prop}对象。
- * Date : 2009-11-18
+ * <br/>Date : 2009-11-18
  * @author 赵永春
  */
 public abstract class BeanProp extends Prop {
+    //========================================================================================Field
     /**  */
     private static final long serialVersionUID = 5907558362552415426L;
 }

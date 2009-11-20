@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 package org.more.beans.core.injection;
-import org.more.beans.BeanFactory;
+import org.more.beans.core.ResourceBeanFactory;
 import org.more.beans.info.BeanDefinition;
+import org.more.beans.info.IocTypeEnum;
 /**FactIoc
- * bean注入处理器，more.beans是通过该接口实现对属性进行注入控制。在more.beans中预定义了Export、Fact、Ioc三种属性注入方式。
+ * bean注入处理器，more.beans是通过该接口实现对属性进行注入控制。在more.beans中预定义了
+ * {@link IocTypeEnum#Export Export}、{@link IocTypeEnum#Fact Fact}、{@link IocTypeEnum#Ioc Ioc}三种属性注入方式。
  * <br/><br/>Export方式：<br/>使用Export方式可以使开发人员参与属性注入过程，在Export方式下more.beans不会对属性做任何注入操作。
  * more.bean会委托{@link ExportInjectionProperty}接口进行注入请求。决定对属性的注入类必须实现{@link ExportInjectionProperty}接口。
  * 如果外部注入处理对象为空则Export将忽略注入请求。
@@ -30,7 +32,7 @@ import org.more.beans.info.BeanDefinition;
  * 这也就是说在fact方式下会比ioc方式增加少量内存消耗。生成的注入器被保存在{@link BeanDefinition}的属性中。
  * 只有{@link BeanDefinition}对象被缓存才有上述运行效率，否则fact的效率可能远远不足ioc。
  * <br/><br/>Ioc方式：<br/>传统的注入方式，使用java.lang.reflect包中的类进行反射调用来实现依赖注入。Ioc方式比较Fact方式运行效率要慢的多。<br/>
- * Date : 2009-11-7
+ * <br/>Date : 2009-11-7
  * @author 赵永春
  */
 public interface Injection {
@@ -41,7 +43,8 @@ public interface Injection {
      * @param params 当编程方式调用getbean时传递的参数对象
      * @param definition 等待被注入的对象定义。
      * @param context 注入对象所处的Bean工厂。
-     * @throws Throwable 如果在注入期间发生异常。
+     * @return 返回注入完毕的对象。
+     * @throws Exception 如果在注入期间发生异常。
      */
-    public void ioc(Object object, Object[] params, BeanDefinition definition, BeanFactory context) throws Throwable;
+    public Object ioc(Object object, Object[] params, BeanDefinition definition, ResourceBeanFactory context) throws Exception;
 }

@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 package org.more.beans.info;
-import java.lang.reflect.Array;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 /**
  * BeanProperty是用于表示属性的bean定义。在该类中定了一些基本类型，这些基本类型的定义有助于优化性能。但是基本类型的
- * 包装类型例如int的包装类型Integer则不属于基本类型范畴。除了java常见的八个基本类型之外BeanProperty还针对
- * java.lang.String、Array(一维数组)、List接口、Map接口、Set接口做了定义。BeanProperty作为属性对象必须设置propType属性。
- * propType有一些预定义的值请查看BeanProperty的静态字段。
+ * 包装类型例如int的包装类型Integer则不属于基本类型范畴。除了java常见的八个基本类型之外BeanProperty还针对java.lang.String做了定义。
+ * BeanProperty作为属性对象必须设置propType属性，propType有一些预定义的值请查看BeanProperty的静态字段。
  * <br/>Date : 2009-11-18
  * @author 赵永春
  */
@@ -45,14 +40,6 @@ public class BeanProperty extends Prop {
     public static final String TS_Boolean       = "boolean";
     /**基本类型String。*/
     public static final String TS_String        = "String";
-    /**基本类型Array。*/
-    public static final String TS_Array         = "Array";
-    /**基本类型List。*/
-    public static final String TS_List          = "List";
-    /**基本类型Map。*/
-    public static final String TS_Map           = "Map";
-    /**基本类型Set。*/
-    public static final String TS_Set           = "Set";
     /**  */
     private static final long  serialVersionUID = -3492072515778133870L;
     private String             name             = null;                 //属性名，对于构造方法参数配置该值无效。
@@ -96,54 +83,9 @@ public class BeanProperty extends Prop {
             super.setPropType(BeanProperty.TS_Short);
         else if (propType.equals("boolean") == true)
             super.setPropType(BeanProperty.TS_Boolean);
-        else if (propType.equals("java.lang.String") == true)
+        else if (propType.equals("String") == true)
             super.setPropType(BeanProperty.TS_String);
-        else if (propType.equals("Array") == true)
-            super.setPropType(BeanProperty.TS_Array);
-        else if (propType.equals("List") == true)
-            super.setPropType(BeanProperty.TS_List);
-        else if (propType.equals("Map") == true)
-            super.setPropType(BeanProperty.TS_Map);
-        else if (propType.equals("Set") == true)
-            super.setPropType(BeanProperty.TS_Set);
         else
             super.setPropType(propType);
-    }
-    /** 返回CreateEngine创建对象所使用的类型。 */
-    public static Class<?> toClass(Prop prop, ClassLoader loader) throws ClassNotFoundException {
-        String propType = prop.getPropType();
-        if (propType == BeanProperty.TS_Integer)
-            return int.class;
-        else if (propType == BeanProperty.TS_Byte)
-            return byte.class;
-        else if (propType == BeanProperty.TS_Char)
-            return char.class;
-        else if (propType == BeanProperty.TS_Double)
-            return double.class;
-        else if (propType == BeanProperty.TS_Float)
-            return float.class;
-        else if (propType == BeanProperty.TS_Long)
-            return long.class;
-        else if (propType == BeanProperty.TS_Short)
-            return short.class;
-        else if (propType == BeanProperty.TS_Boolean)
-            return boolean.class;
-        else if (propType == BeanProperty.TS_String)
-            return String.class;
-        else if (propType == BeanProperty.TS_Array) {
-            Class<?> element;
-            if (prop instanceof BeanProperty)
-                element = BeanProperty.toClass(((BeanProperty) prop).getValue(), loader);
-            else
-                element = BeanProperty.toClass(prop, loader);
-            return Array.newInstance(element, 1).getClass();
-        } else if (propType == BeanProperty.TS_List)
-            return List.class;
-        else if (propType == BeanProperty.TS_Map)
-            return Map.class;
-        else if (propType == BeanProperty.TS_Set)
-            return Set.class;
-        else
-            return loader.loadClass(propType);
     }
 }

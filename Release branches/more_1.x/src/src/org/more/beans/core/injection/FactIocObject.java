@@ -17,7 +17,7 @@ package org.more.beans.core.injection;
 /**
  * 由于classcode工具不支持使用rt.jar中的类作为基类因此需要一个临时的Object对象。
  * 该对象的存在就是充当一个Object对象。
- * Date : 2009-11-8
+ * <br/>Date : 2009-11-8
  * @author 赵永春
  */
 public class FactIocObject {}

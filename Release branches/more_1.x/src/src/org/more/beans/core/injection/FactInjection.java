@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 package org.more.beans.core.injection;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import org.more.beans.BeanFactory;
+import org.more.beans.core.ResourceBeanFactory;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.BeanProperty;
+import org.more.beans.info.PropVarValue;
 import org.more.core.asm.ClassAdapter;
 import org.more.core.asm.ClassVisitor;
 import org.more.core.asm.ClassWriter;
@@ -37,7 +39,7 @@ import org.more.util.StringConvert;
  * 这可以证明在Fact方式下会有很好的属性注入运行效率，但是Fact也会对每个要求Fact的bean生成一个注入器。
  * 这也就是说在fact方式下会比ioc方式增加少量内存消耗。生成的注入器被保存在{@link BeanDefinition}的属性中。
  * 只有{@link BeanDefinition}对象被缓存才有上述运行效率，否则fact的效率可能远远不足ioc。
- * Date : 2009-11-7
+ * <br/>Date : 2009-11-7
  * @author 赵永春
  */
 public class FactInjection implements Injection {
@@ -51,7 +53,7 @@ public class FactInjection implements Injection {
      * 如果注入的属性请求引用对象则会引起对context的getBean调用。在fact注入模式下代理类只会生成。
      */
     @Override
-    public void ioc(final Object object, final Object[] params, final BeanDefinition definition, final BeanFactory context) throws Throwable {
+    public Object ioc(final Object object, final Object[] params, final BeanDefinition definition, final ResourceBeanFactory context) throws Exception {
         FactIoc fact = null;
         if (definition.containsKey(this.factCatchName) == true)
             //获取代理注入类生成引擎
@@ -81,12 +83,17 @@ public class FactInjection implements Injection {
             engine.setSuperClass(FactIocObject.class);//由于不支持rt.jar中的类因此需要一个假Object对象。
             engine.setMode(BuilderMode.Super);
             engine.forceBuilderClass();
+            FileOutputStream fos = new FileOutputStream(engine.getSimpleName() + ".class");
+            fos.write(engine.toBytes());
+            fos.flush();
+            fos.close();
             fact = (FactIoc) engine.newInstance(null);
             //缓存引擎生成对象
             definition.setAttribute(this.factCatchName, fact);
         }
         /*执行fact注入*/
-        fact.ioc(object, params, context, definition);
+        fact.ioc(object, params, definition, context);
+        return object;
     }
 }
 /** 负责改写ioc方法以实现fact方式注入。*/
@@ -113,7 +120,7 @@ class FactClassAdapter extends ClassAdapter implements Opcodes {
     }
     @Override
     public void visitEnd() {
-        String desc = EngineToos.toAsmType(new Class<?>[] { Object.class, Object[].class, BeanFactory.class, BeanDefinition.class });
+        String desc = EngineToos.toAsmType(new Class<?>[] { Object.class, Object[].class, BeanDefinition.class, ResourceBeanFactory.class });
         MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "ioc", "(" + desc + ")V", null, new String[] { "java/lang/Throwable" });
         //生成注入方法
         mv.visitVarInsn(ALOAD, 1);
@@ -122,123 +129,87 @@ class FactClassAdapter extends ClassAdapter implements Opcodes {
         BeanProperty[] bps = this.definition.getPropertys();
         for (int i = 0; i < bps.length; i++) {
             mv.visitVarInsn(ALOAD, 5);
-            String propTypeByASM = null;
+            //String propTypeByASM = null;
             BeanProperty prop = bps[i];
             //
             String propType = prop.getPropType();
             if (propType == BeanProperty.TS_Integer) {
-                mv.visitIntInsn(BIPUSH, StringConvert.parseInt(prop.getValue()));
-                propTypeByASM = "I";
+                PropVarValue var = (PropVarValue) prop.getValue();
+                mv.visitIntInsn(BIPUSH, StringConvert.parseInt(var.getValue()));
+                this.invokeMethod(mv, prop, "I");
             } else if (propType == BeanProperty.TS_Byte) {
-                mv.visitIntInsn(BIPUSH, StringConvert.parseByte(prop.getValue()));
-                propTypeByASM = "B";
+                PropVarValue var = (PropVarValue) prop.getValue();
+                mv.visitIntInsn(BIPUSH, StringConvert.parseByte(var.getValue()));
+                this.invokeMethod(mv, prop, "B");
             } else if (propType == BeanProperty.TS_Char) {
-                if (prop.getValue() == null)
+                PropVarValue var = (PropVarValue) prop.getValue();
+                if (var.getValue() == null)
                     mv.visitIntInsn(BIPUSH, 0);
                 else
-                    mv.visitIntInsn(BIPUSH, prop.getValue().charAt(0));
-                propTypeByASM = "C";
+                    mv.visitIntInsn(BIPUSH, var.getValue().charAt(0));
+                this.invokeMethod(mv, prop, "C");
             } else if (propType == BeanProperty.TS_Double) {
-                mv.visitLdcInsn(StringConvert.parseDouble(prop.getValue()));
-                propTypeByASM = "D";
+                PropVarValue var = (PropVarValue) prop.getValue();
+                mv.visitLdcInsn(StringConvert.parseDouble(var.getValue()));
+                this.invokeMethod(mv, prop, "D");
             } else if (propType == BeanProperty.TS_Float) {
-                mv.visitLdcInsn(StringConvert.parseFloat(prop.getValue()));
-                propTypeByASM = "F";
+                PropVarValue var = (PropVarValue) prop.getValue();
+                mv.visitLdcInsn(StringConvert.parseFloat(var.getValue()));
+                this.invokeMethod(mv, prop, "F");
             } else if (propType == BeanProperty.TS_Long) {
-                mv.visitLdcInsn(StringConvert.parseLong(prop.getValue()));
-                propTypeByASM = "J";
+                PropVarValue var = (PropVarValue) prop.getValue();
+                mv.visitLdcInsn(StringConvert.parseLong(var.getValue()));
+                this.invokeMethod(mv, prop, "J");
             } else if (propType == BeanProperty.TS_Short) {
-                mv.visitIntInsn(BIPUSH, StringConvert.parseShort(prop.getValue()));
-                propTypeByASM = "S";
+                PropVarValue var = (PropVarValue) prop.getValue();
+                mv.visitIntInsn(BIPUSH, StringConvert.parseShort(var.getValue()));
+                this.invokeMethod(mv, prop, "S");
             } else if (propType == BeanProperty.TS_Boolean) {
-                boolean bool = StringConvert.parseBoolean(prop.getValue());
+                PropVarValue var = (PropVarValue) prop.getValue();
+                boolean bool = StringConvert.parseBoolean(var.getValue());
                 mv.visitInsn((bool == true) ? ICONST_1 : ICONST_0);
-                propTypeByASM = "Z";
+                this.invokeMethod(mv, prop, "Z");
             } else if (propType == BeanProperty.TS_String) {
-                mv.visitLdcInsn(prop.getValue());
-                propTypeByASM = "Ljava/lang/String;";
-            } else if (propType == BeanProperty.TS_Array) {
-                mv.visitVarInsn(ALOAD, 1);
-                mv.visitVarInsn(ALOAD, 2);
-                mv.visitVarInsn(ALOAD, 4);
-                mv.visitMethodInsn(INVOKEVIRTUAL, "org/more/beans/info/BeanDefinition", "getPropertys", "()[Lorg/more/beans/info/BeanProperty;");
-                mv.visitIntInsn(BIPUSH, i);
-                mv.visitInsn(AALOAD);
-                mv.visitVarInsn(ALOAD, 3);
-                String descStr = EngineToos.toAsmType(new Class<?>[] { Object.class, Object[].class, BeanProperty.class, BeanFactory.class });
-                mv.visitMethodInsn(INVOKESTATIC, "org/more/beans/core/injection/TypeParser", "passerArray", "(" + descStr + ")Ljava/lang/Object;");
-                mv.visitTypeInsn(CHECKCAST, "[Ljava/lang/Object;");
-                propTypeByASM = "[Ljava/lang/Object;";
-            } else if (propType == BeanProperty.TS_List) {
-                mv.visitVarInsn(ALOAD, 1);
-                mv.visitVarInsn(ALOAD, 2);
-                mv.visitVarInsn(ALOAD, 4);
-                mv.visitMethodInsn(INVOKEVIRTUAL, "org/more/beans/info/BeanDefinition", "getPropertys", "()[Lorg/more/beans/info/BeanProperty;");
-                mv.visitIntInsn(BIPUSH, i);
-                mv.visitInsn(AALOAD);
-                mv.visitVarInsn(ALOAD, 3);
-                String descStr = EngineToos.toAsmType(new Class<?>[] { Object.class, Object[].class, BeanProperty.class, BeanFactory.class });
-                mv.visitMethodInsn(INVOKESTATIC, "org/more/beans/core/injection/TypeParser", "passerList", "(" + descStr + ")Ljava/util/List;");
-                propTypeByASM = "Ljava/util/List;";
-            } else if (propType == BeanProperty.TS_Map) {
-                mv.visitVarInsn(ALOAD, 1);
-                mv.visitVarInsn(ALOAD, 2);
-                mv.visitVarInsn(ALOAD, 4);
-                mv.visitMethodInsn(INVOKEVIRTUAL, "org/more/beans/info/BeanDefinition", "getPropertys", "()[Lorg/more/beans/info/BeanProperty;");
-                mv.visitIntInsn(BIPUSH, i);
-                mv.visitInsn(AALOAD);
-                mv.visitVarInsn(ALOAD, 3);
-                String descStr = EngineToos.toAsmType(new Class<?>[] { Object.class, Object[].class, BeanProperty.class, BeanFactory.class });
-                mv.visitMethodInsn(INVOKESTATIC, "org/more/beans/core/injection/TypeParser", "passerMap", "(" + descStr + ")Ljava/util/Map;");
-                propTypeByASM = "Ljava/util/Map;";
-            } else if (propType == BeanProperty.TS_Set) {
-                mv.visitVarInsn(ALOAD, 1);
-                mv.visitVarInsn(ALOAD, 2);
-                mv.visitVarInsn(ALOAD, 4);
-                mv.visitMethodInsn(INVOKEVIRTUAL, "org/more/beans/info/BeanDefinition", "getPropertys", "()[Lorg/more/beans/info/BeanProperty;");
-                mv.visitIntInsn(BIPUSH, i);
-                mv.visitInsn(AALOAD);
-                mv.visitVarInsn(ALOAD, 3);
-                String descStr = EngineToos.toAsmType(new Class<?>[] { Object.class, Object[].class, BeanProperty.class, BeanFactory.class });
-                mv.visitMethodInsn(INVOKESTATIC, "org/more/beans/core/injection/TypeParser", "passerSet", "(" + descStr + ")Ljava/util/Set;");
-                propTypeByASM = "Ljava/util/Set;";
-            } else if (prop.getRefBean() != null) {
-                //refBean
-                mv.visitVarInsn(ALOAD, 3);
-                mv.visitLdcInsn(prop.getRefBean());
-                mv.visitVarInsn(ALOAD, 2);
-                String descStr = EngineToos.toAsmType(new Class<?>[] { String.class, Object[].class });
-                mv.visitMethodInsn(INVOKEINTERFACE, "org/more/beans/BeanFactory", "getBean", "(" + descStr + ")Ljava/lang/Object;");
-                String propTypeASM = prop.getPropType().replace(".", "/");
-                mv.visitTypeInsn(CHECKCAST, propTypeASM);
-                propTypeByASM = "L" + propTypeASM + ";";
+                PropVarValue var = (PropVarValue) prop.getValue();
+                mv.visitLdcInsn(var.getValue());
+                this.invokeMethod(mv, prop, "Ljava/lang/String;");
             } else {
+                /*in          Object[]、BeanDefinition、ResourceBeanFactory */
+                /*out Object、Object[]、BeanDefinition、ResourceBeanFactory、BeanProperty*/
+                StringBuffer sb = new StringBuffer(prop.getName());
+                char firstChar = sb.charAt(0);
+                sb.delete(0, 1);
+                firstChar = (char) ((firstChar >= 97) ? firstChar - 32 : firstChar);
+                sb.insert(0, firstChar);
+                sb.insert(0, "set");
+                mv.visitLdcInsn(sb.toString());
                 mv.visitVarInsn(ALOAD, 1);
                 mv.visitVarInsn(ALOAD, 2);
+                mv.visitVarInsn(ALOAD, 3);
                 mv.visitVarInsn(ALOAD, 4);
+                mv.visitVarInsn(ALOAD, 3);
                 mv.visitMethodInsn(INVOKEVIRTUAL, "org/more/beans/info/BeanDefinition", "getPropertys", "()[Lorg/more/beans/info/BeanProperty;");
                 mv.visitIntInsn(BIPUSH, i);
                 mv.visitInsn(AALOAD);
-                mv.visitVarInsn(ALOAD, 3);
-                String descStr = EngineToos.toAsmType(new Class<?>[] { Object.class, Object[].class, BeanProperty.class, BeanFactory.class });
-                mv.visitMethodInsn(INVOKESTATIC, "org/more/beans/core/injection/TypeParser", "passerType", "(" + descStr + ")Ljava/lang/Object;");
-                String propTypeASM = prop.getPropType().replace(".", "/");
-                propTypeByASM = "L" + propTypeASM + ";";
-                mv.visitTypeInsn(CHECKCAST, propTypeASM);
+                String descStr = EngineToos.toAsmType(new Class<?>[] { String.class, Object.class, Object[].class, BeanDefinition.class, ResourceBeanFactory.class, BeanProperty.class });
+                mv.visitMethodInsn(INVOKESTATIC, "org/more/beans/core/TypeParser", "passerType", "(" + descStr + ")Ljava/lang/Object;");
+                mv.visitInsn(POP);
             }
-            //转换首字母大写
-            StringBuffer sb = new StringBuffer(prop.getName());
-            char firstChar = sb.charAt(0);
-            sb.delete(0, 1);
-            firstChar = (char) ((firstChar >= 97) ? firstChar - 32 : firstChar);
-            sb.insert(0, firstChar);
-            sb.insert(0, "set");
-            mv.visitMethodInsn(INVOKEVIRTUAL, this.className, sb.toString(), "(" + propTypeByASM + ")V");
-            //this.setMeyhodName(...);
         }
         mv.visitInsn(RETURN);
         mv.visitMaxs(5, 4);
         mv.visitEnd();
         super.visitEnd();
+    }
+    private void invokeMethod(MethodVisitor mv, BeanProperty prop, String propTypeByASM) {
+        //转换首字母大写
+        StringBuffer sb = new StringBuffer(prop.getName());
+        char firstChar = sb.charAt(0);
+        sb.delete(0, 1);
+        firstChar = (char) ((firstChar >= 97) ? firstChar - 32 : firstChar);
+        sb.insert(0, firstChar);
+        sb.insert(0, "set");
+        mv.visitMethodInsn(INVOKEVIRTUAL, this.className, sb.toString(), "(" + propTypeByASM + ")V");
+        //this.setMeyhodName(...);
     }
 }

@@ -23,6 +23,7 @@ import org.more.beans.BeanFactory;
 import org.more.beans.BeanResource;
 import org.more.beans.core.factory.CreateFactory;
 import org.more.beans.core.injection.InjectionFactory;
+import org.more.beans.core.propparser.MainPropertyParser;
 import org.more.beans.info.BeanDefinition;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
@@ -49,9 +50,11 @@ public class ResourceBeanFactory implements BeanFactory, IAttribute {
     private HashMap<String, Object> singletonBeanCache = new HashMap<String, Object>(); //用于保存单态bean
     private ClassLoader             loader             = null;                         //类装载
     /**负责对象创建*/
-    protected CreateFactory         createFactory      = new CreateFactory();
+    protected CreateFactory         createFactory      = null;
     /**负责对象依赖注入*/
-    protected InjectionFactory      injectionFactory   = new InjectionFactory();
+    protected InjectionFactory      injectionFactory   = null;
+    /**属性解析器，专门负责解析BeanProperty属性对象。*/
+    protected MainPropertyParser    propParser         = null;
     /**
      * 环境属性集合，ResourceBeanFactory在构造方法中会自动将this加入属性集合中，
      * 并且配置this为保持属性，作为保持属性不可以被覆写，有关保持属性请参阅
@@ -71,6 +74,11 @@ public class ResourceBeanFactory implements BeanFactory, IAttribute {
         if (loader == null)
             this.loader = Thread.currentThread().getContextClassLoader();
         this.resource = resource;
+        //
+        this.propParser = new MainPropertyParser(this);//属性解析器，专门负责解析BeanProperty属性对象。
+        this.createFactory = new CreateFactory(this.propParser);//负责对象创建
+        this.injectionFactory = new InjectionFactory(this.propParser);//负责对象依赖注入
+        //
         KeepAttDecorator kad = new KeepAttDecorator(new AttBase());
         this.attribute = kad;
         kad.setAttribute("this", this);
@@ -78,6 +86,10 @@ public class ResourceBeanFactory implements BeanFactory, IAttribute {
         init();
     }
     //==========================================================================================Job
+    /**该方法主要用于Factory方式处理Ioc时候无法获取属性类型解析器对象而设立。*/
+    MainPropertyParser getPropParser() {
+        return propParser;
+    }
     /**清空所有Bean缓存，并且重新装载lazyInit属性为false的bean。*/
     public void reload() {
         clearBeanCache();
@@ -109,23 +121,26 @@ public class ResourceBeanFactory implements BeanFactory, IAttribute {
         else
             return this.resource.containsBeanDefinition(name);
     }
-    @Override
-    public Object getBean(String name, Object... objects) {
-        Object obj = null;
-        if (singletonBeanCache.containsKey(name) == true)
-            return singletonBeanCache.get(name);
-        //
-        BeanDefinition definition = this.resource.getBeanDefinition(name);
+    /**该方法用于忽略对bean的单态设置而强制创建一个bean的新实例。*/
+    private Object getBeanForciblyo(String name, BeanDefinition definition, Object... objects) throws Exception {
         if (definition == null)
             throw new NoDefinitionException("没有定义名称为[" + name + "]的bean。");
+        Object obj = this.createFactory.newInstance(definition, objects, this);//创建对象
+        this.injectionFactory.ioc(obj, objects, definition, this);//执行依赖注入
+        return obj;
+    }
+    @Override
+    public Object getBean(String name, Object... objects) {
         try {
-            obj = this.createFactory.newInstance(definition, objects, this);//创建对象
-            this.injectionFactory.ioc(obj, objects, definition, this);//执行依赖注入
-            if (definition.isSingleton() == true && obj != null)
+            if (singletonBeanCache.containsKey(name) == true)
+                return singletonBeanCache.get(name);
+            BeanDefinition definition = this.resource.getBeanDefinition(name);
+            Object obj = getBeanForciblyo(name, definition, objects);
+            if (definition.isSingleton() == true)
                 this.singletonBeanCache.put(name, obj);
             return obj;
-        } catch (Throwable e) {
-            throw new InvokeException("无法创建[" + name + "]，在创建过程中发生异常。或者在执行注入时发生异常", e);
+        } catch (Exception e) {
+            throw new InvokeException(e);
         }
     }
     @Override
@@ -133,7 +148,7 @@ public class ResourceBeanFactory implements BeanFactory, IAttribute {
         BeanDefinition definition = this.resource.getBeanDefinition(name);
         if (definition == null)
             throw new NoDefinitionException("没有定义名称为[" + name + "]的bean。");
-        String type = definition.getType();
+        String type = definition.getPropType();
         try {
             return this.loader.loadClass(type);
         } catch (Exception e) {

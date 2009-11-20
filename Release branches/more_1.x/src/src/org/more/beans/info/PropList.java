@@ -15,7 +15,10 @@
  */
 package org.more.beans.info;
 /**
- * 负责封装bean定义中有关List集合属性的信息，新建的集合对象如果没有指定类型则默认是:java.util.ArrayList对象。
+ * 负责封装bean定义中有关List集合属性的信息，新建的集合对象如果没有指定类型则默认是:java.util.List对象。
+ * propType属性规则。
+ * 1.如果PropList配置了propType属性则直接返回，否则返回propContext的propType属性。
+ * 2.如果propContext也没有配置propType属性则返回java.util.List。
  * <br/>Date : 2009-11-18
  * @author 赵永春
  */
@@ -27,19 +30,24 @@ public class PropList extends BeanProp {
     //==================================================================================Constructor
     /**创建一个java.util.ArrayList类型的空集合。*/
     public PropList() {
-        this(null, "java.util.ArrayList");
+        this.listElements = new BeanProp[0];
+        this.setPropType("java.util.List");
     }
     /**创建一个java.util.ArrayList类型的集合，集合元素由参数elements决定。*/
     public PropList(BeanProp[] elements) {
-        this(elements, "java.util.ArrayList");
-    }
-    /**创建一个PropList集合定义对象，集合元素由参数elements决定，集合类型由listType决定。*/
-    public PropList(BeanProp[] elements, String listType) {
         if (elements == null)
             this.listElements = new BeanProp[0];
         else
             this.listElements = elements;
-        this.setPropType(listType);
+        this.setPropType("java.util.List");
+    }
+    /**创建一个PropList集合定义对象，集合元素由参数elements决定，集合类型由listType决定。*/
+    public PropList(BeanProp[] elements, String arrayType) {
+        if (elements == null)
+            this.listElements = new BeanProp[0];
+        else
+            this.listElements = elements;
+        this.setPropType(arrayType);
     }
     //==========================================================================================Job
     /**获取集合元素。*/

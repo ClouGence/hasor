@@ -15,29 +15,41 @@
  */
 package org.more.beans.core.injection;
 import java.util.HashMap;
-import org.more.beans.BeanFactory;
+import org.more.beans.core.ResourceBeanFactory;
+import org.more.beans.core.propparser.MainPropertyParser;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.IocTypeEnum;
 import org.more.core.task.Task;
 /**
  * 根据bean定义自动选择注入方式并且执行注入。Export注入器如果配置了单态模式其对应的{@link ExportInjection}对象会被缓存。
  * InjectionFactory也是一个任务({@link Task})对象,它的任务是清空已经被缓存的{@link ExportInjection}对象。注意任务执行方法doRun是同步方法。
- * Date : 2009-11-9
+ * <br/>Date : 2009-11-9
  * @author 赵永春
  */
 public class InjectionFactory extends Task implements Injection {
+    //========================================================================================Field
     /**  */
     private static final long                serialVersionUID = 7265406116749265174L;
     /** 被缓存的Export注入 */
     private HashMap<String, ExportInjection> exportMap        = new HashMap<String, ExportInjection>();
     /** Fact方式注入 */
-    private FactInjection                    fact             = new FactInjection();
+    private FactInjection                    fact;
     /** Ioc方式注入 */
-    private IocInjection                     ioc              = new IocInjection();
-    //====================================================================================================
+    private IocInjection                     ioc;
+    //==================================================================================Constructor
+    /**创建一个IocInjection对象，创建时必须指定属性解析器。*/
+    public InjectionFactory(MainPropertyParser propParser) {
+        if (propParser == null)
+            throw new NullPointerException("必须指定propParser参数对象，IocInjection使用这个属性解析器解析属性。");
+        /** Fact方式注入 */
+        this.fact = new FactInjection();
+        /** Ioc方式注入 */
+        this.ioc = new IocInjection(propParser);
+    }
+    //==========================================================================================Job
     /** 根据bean定义自动选择注入方式并且执行注入。Export注入器如果配置了单态模式其对应的{@link ExportInjection}对象会被缓存。 */
     @Override
-    public void ioc(Object object, Object[] params, BeanDefinition definition, BeanFactory context) throws Throwable {
+    public Object ioc(Object object, Object[] params, BeanDefinition definition, ResourceBeanFactory context) throws Exception {
         if (definition.getIocType() == IocTypeEnum.Export) {
             //Export方式，如果Export注入器配置了单态模式会有更好的运行效率。
             String exportName = definition.getExportIocRefBean();
@@ -51,13 +63,13 @@ public class InjectionFactory extends Task implements Injection {
                     this.exportMap.put(exportName, exp);
             } else
                 exp = this.exportMap.get(exportName);
-            exp.ioc(object, params, definition, context);
+            return exp.ioc(object, params, definition, context);
         } else if (definition.getIocType() == IocTypeEnum.Fact)
             //Fact方式，如果想得到运行效率必须支持BeanDefinition缓存。
-            this.fact.ioc(object, params, definition, context);
+            return this.fact.ioc(object, params, definition, context);
         else if (definition.getIocType() == IocTypeEnum.Ioc)
             //传统Ioc，如果想得到运行效率必须支持BeanDefinition缓存。
-            this.ioc.ioc(object, params, definition, context);
+            return this.ioc.ioc(object, params, definition, context);
         else
             throw new InjectionException("未知注入方式，无法执行注入！");
     }

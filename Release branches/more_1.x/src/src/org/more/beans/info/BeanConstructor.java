@@ -20,10 +20,11 @@ package org.more.beans.info;
  * @author 赵永春
  */
 public class BeanConstructor extends Prop {
+    //========================================================================================Field
     /**  */
     private static final long serialVersionUID  = 3461453713657581453L;
     private BeanProperty[]    constructorParams = null;                //构造方法参数表。
-    //=========================================================================
+    //==========================================================================================Job
     /**获取创建bean时使用的构造参数列表。*/
     public BeanProperty[] getConstructorParams() {
         return constructorParams;

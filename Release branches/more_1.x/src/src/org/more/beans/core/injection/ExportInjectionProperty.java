@@ -18,7 +18,7 @@ import org.more.beans.BeanFactory;
 import org.more.beans.info.BeanDefinition;
 /**
  * 属性注入请求处理接口，该接口负责对某个bean进行复杂注入请求的处理。
- * Date : 2009-11-7
+ * <br/>Date : 2009-11-7
  * @author 赵永春
  */
 public interface ExportInjectionProperty {
@@ -28,6 +28,7 @@ public interface ExportInjectionProperty {
      * @param getBeanParam 在调用getbean时传递的参数。
      * @param definition 被请求注入的bean定义。
      * @param context 整个beans容器上下文。
+     * @return 返回注入完毕的对象
      */
-    public void injectionProperty(Object object, Object[] getBeanParam, BeanDefinition definition, BeanFactory context);
+    public Object injectionProperty(Object object, Object[] getBeanParam, BeanDefinition definition, BeanFactory context);
 }

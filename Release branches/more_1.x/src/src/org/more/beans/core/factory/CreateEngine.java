@@ -16,14 +16,9 @@
 package org.more.beans.core.factory;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.more.beans.BeanFactory;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.BeanInterface;
-import org.more.beans.info.BeanProperty;
 import org.more.core.classcode.AOPInvokeFilter;
 import org.more.core.classcode.ClassEngine;
 import org.more.core.classcode.MethodDelegate;
@@ -34,12 +29,12 @@ import org.more.core.classcode.MethodDelegate;
  */
 public abstract class CreateEngine {
     /***/
-    public abstract Object newInstance(BeanDefinition definition, Object[] params, BeanFactory context) throws Throwable;
+    public abstract Object newInstance(BeanDefinition definition, Object[] params, BeanFactory context) throws Exception;
     /** 根据{@link BeanDefinition}获取其类的Class对象，如果配置了AOP或者附加接口。则返回编译之后的Class对象。 */
     protected Class<?> getClassType(BeanDefinition definition, Object[] params, BeanFactory context) throws ClassNotFoundException, IOException {
         ClassLoader loader = context.getBeanClassLoader();
         ClassEngine engine = new ClassEngine(loader);
-        engine.setSuperClass(loader.loadClass(definition.getType()));
+        engine.setSuperClass(loader.loadClass(definition.getPropType()));
         engine.setEnableAOP(true);
         {
             //---------------------------------------------------------------Impl
@@ -48,10 +43,10 @@ public abstract class CreateEngine {
                 for (int i = 0; i < implS.length; i++) {
                     BeanInterface beanI = implS[i];
                     Class<?> typeClass = null;
-                    String type = beanI.getType();
+                    String type = beanI.getPropType();
                     //获取附加的类型，该段代码可以支持引用方式引用其他接口bean。
                     if (type != null)
-                        typeClass = this.toClass(type, loader);
+                        typeClass = loader.loadClass(beanI.getPropType());
                     else
                         typeClass = context.getBeanType(beanI.getTypeRefBean());
                     //附加接口实现
@@ -72,11 +67,10 @@ public abstract class CreateEngine {
         return engine.toClass();
     }
     /** 配置这个新Bean对象，如果{@link ClassEngine}支持在配置bean时提供新代理对象的创建根据 */
-    protected Object configurationBean(ClassLoader loader, Object newObject, BeanDefinition definition, Object[] params, BeanFactory context) throws Throwable {
+    protected Object configurationBean(ClassLoader loader, Object newObject, BeanDefinition definition, Object[] params, BeanFactory context) throws Exception {
         if (loader instanceof ClassEngine == false)
             return newObject;
         //=====================================================================
-        ClassLoader contextLoader = context.getBeanClassLoader();
         BeanInterface[] implS = definition.getImplImplInterface();
         String[] aopFilters = definition.getAopFilterRefBean();
         HashMap<Class<?>, MethodDelegate> replaceDelegateMap = null;
@@ -89,9 +83,9 @@ public abstract class CreateEngine {
                 BeanInterface beanI = implS[i];
                 MethodDelegate delegate = (MethodDelegate) context.getBean(beanI.getImplDelegateRefBean(), params);
                 Class<?> typeClass = null;
-                String type = beanI.getType();
+                String type = beanI.getPropType();
                 if (type != null)
-                    typeClass = this.toClass(beanI.getType(), contextLoader);
+                    typeClass = loader.loadClass(beanI.getPropType());
                 else
                     typeClass = context.getBeanType(beanI.getTypeRefBean());
                 replaceDelegateMap.put(typeClass, delegate);
@@ -106,36 +100,5 @@ public abstract class CreateEngine {
         //三、装配
         ClassEngine loaderClassEngine = (ClassEngine) loader;
         return loaderClassEngine.configuration(newObject, replaceDelegateMap, filters); //AOP代理的
-    }
-    /** 返回CreateEngine创建对象所使用的类型。 */
-    protected Class<?> toClass(String propType, ClassLoader loader) throws ClassNotFoundException {
-        if (propType == BeanProperty.TS_Integer)
-            return int.class;
-        else if (propType == BeanProperty.TS_Byte)
-            return byte.class;
-        else if (propType == BeanProperty.TS_Char)
-            return char.class;
-        else if (propType == BeanProperty.TS_Double)
-            return double.class;
-        else if (propType == BeanProperty.TS_Float)
-            return float.class;
-        else if (propType == BeanProperty.TS_Long)
-            return long.class;
-        else if (propType == BeanProperty.TS_Short)
-            return short.class;
-        else if (propType == BeanProperty.TS_Boolean)
-            return boolean.class;
-        else if (propType == BeanProperty.TS_String)
-            return String.class;
-        else if (propType == BeanProperty.TS_Array)
-            return Object[].class;
-        else if (propType == BeanProperty.TS_List)
-            return List.class;
-        else if (propType == BeanProperty.TS_Map)
-            return Map.class;
-        else if (propType == BeanProperty.TS_Set)
-            return Set.class;
-        else
-            return loader.loadClass(propType);
     }
 }

@@ -19,8 +19,6 @@ fact方式的运行速度与原始get/set运行速度相当接近，100万次进行基本类型属性注入速度
 
 Ioc方式：<br/>
 传统的注入方式，使用java.lang.reflect包中的类进行反射调用来实现依赖注入。Ioc方式比较Fact方式运行效率要慢的多。<br/><br/>
-
-以下是两组测试数据，单位毫秒。<a href="doc-files/test.zip">测试源程序</a><br/>
 <table>
   <tr>
   	<td>
@@ -39,6 +37,7 @@ time:32	Get/Set<br/>
   	</td>
   </tr>
 </table>
-友情提示：如果绕过InjectionFactory类直接使用Injection接口的子类则会得到更高的运行效率。
+友情提示：如果绕过InjectionFactory类直接使用Injection接口的子类则会得到更高的运行效率。<br/>
+<img src="doc-files/class_struts.png"/>
 </body>
 </html>

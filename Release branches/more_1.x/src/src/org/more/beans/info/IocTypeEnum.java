@@ -21,10 +21,9 @@ import org.more.beans.core.injection.ExportInjectionProperty;
  * more.bean会委托{@link ExportInjectionProperty}接口进行注入请求。决定对属性的注入类必须实现{@link ExportInjectionProperty}接口。
  * 如果外部注入处理对象为空则Export将忽略注入请求。
  * <br/><br/>Fact方式：<br/>在Fact方式下首次请求装载类时more.beans会生成一个属性注入类，并且使用这个属性注入类进行注入。
- * 这个属性注入类的代码是完全由more.classcode工具生成，生成的类代码使用最原始的方式对bean进行get/set。
- * Fact方式比较Ioc方式省略了反射注入的过程，Fact采用直接调用方法进行属性注入，从而增加运行速度。经过测试
- * fact方式的运行速度与原始get/set运行速度相当接近，100万次进行基本类型属性注入速度只相差15毫秒落后。
- * 在1000万次注入测试下get/set消耗了312毫秒而fact消耗了843毫秒，ioc方式则需要消耗18.3秒。
+ * 这个属性注入类的代码是完全由more.classcode工具生成，生成的类代码使用最原始的方式对bean进行get/set。Fact方式比较Ioc方式
+ * 省略了反射注入的过程，Fact采用直接调用方法进行属性注入，从而增加运行速度。根据FactInjection类的实现Fact方式在注入基本类型时速度惊人。
+ * 如果配置了PropRefValue或者PropBean则运行速度不及Ioc。
  * 这可以证明在Fact方式下会有很好的属性注入运行效率，但是Fact也会对每个要求Fact的bean生成一个注入器。
  * 这也就是说在fact方式下会比ioc方式增加少量内存消耗。生成的注入器被保存在{@link BeanDefinition}的属性中。
  * 只有{@link BeanDefinition}对象被缓存才有上述运行效率，否则fact的效率可能远远不足ioc。

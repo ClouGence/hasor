@@ -15,7 +15,10 @@
  */
 package org.more.beans.info;
 /**
- * 负责封装bean定义中有关Set集合属性的信息，新建的集合对象如果没有指定类型则默认是:java.util.HashSet对象。
+ * 负责封装bean定义中有关Set集合属性的信息，新建的集合对象如果没有指定类型则默认是:java.util.Set类型。
+ * propType属性规则。
+ * 1.如果PropSet配置了propType属性则直接返回，否则返回propContext的propType属性。
+ * 2.如果propContext也没有配置propType属性则返回java.util.Set。
  * <br/>Date : 2009-11-18
  * @author 赵永春
  */
@@ -25,13 +28,18 @@ public class PropSet extends BeanProp {
     private static final long serialVersionUID = -194590250590692070L;
     private BeanProp[]        setElements      = null;                //集合元素。
     //==================================================================================Constructor
-    /**创建一个java.util.HashSet类型的空Set集合。*/
+    /**创建一个PropSet集合定义对象。*/
     public PropSet() {
-        this(null, "java.util.HashSet");
+        this.setElements = new BeanProp[0];
+        this.setPropType("java.util.Set");
     }
-    /**创建一个java.util.HashSet类型的集合，集合元素由参数elements决定。*/
+    /**创建一个PropSet集合定义对象，集合元素由参数elements决定。*/
     public PropSet(BeanProp[] elements) {
-        this(elements, "java.util.HashSet");
+        if (elements == null)
+            this.setElements = new BeanProp[0];
+        else
+            this.setElements = elements;
+        this.setPropType("java.util.Set");
     }
     /**创建一个PropSet集合定义对象，集合元素由参数elements决定，集合类型由setType决定。*/
     public PropSet(BeanProp[] elements, String setType) {

@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 package org.more.beans.core.injection;
-import org.more.beans.BeanFactory;
+import org.more.beans.core.ResourceBeanFactory;
 import org.more.beans.info.BeanDefinition;
+import org.more.beans.info.IocTypeEnum;
 /**
- * 属性注入器接口，当使用fact模式注入bean属性时。more.beans会生成一个专门负责注入属性的属性注入器。
- * 这个属性注入器是继承了即将注入属性的bean类型，同时实现了该接口，因此必须确保在fact模式下bean中不能存在该接口的方法或者标志实现该接口。
- * FactIoc是more.beans用于fact方式注入的接口，该接口开发人员不会接触到它。仅当bean要求fact方式注入时more.beans会自动调用它。<br/>
- * 此外bean对象及时使用fact方式注入仍然不能强制类型转换bean对象类型为FactIoc，因为more.beans使用代理方式执行的注入原始对象不会被破坏。
- * Date : 2009-11-8
+ * 属性注入器接口，当使用{@link IocTypeEnum#Fact fact}模式注入bean属性时。more.beans会生成一个专门负责注入属性的属性注入器。
+ * 这个属性注入器是继承了即将注入属性的bean类型，同时实现了该接口，因此必须确保在{@link IocTypeEnum#Fact fact}模式下bean
+ * 中不能存在该接口的方法或者标志实现该接口。FactIoc是more.beans用于{@link IocTypeEnum#Fact fact}方式注入的接口，
+ * 该接口开发人员不会接触到它。仅当bean要求fact方式注入时more.beans会自动调用它。<br/>
+ * 此外bean对象及时使用{@link IocTypeEnum#Fact fact}方式注入仍然不能强制类型转换bean对象类型为FactIoc，
+ * 因为more.beans使用代理方式执行的注入原始对象不会被破坏。
+ * <br/>Date : 2009-11-8
  * @author 赵永春
  */
 public interface FactIoc {
     /** 该方法的实现方法是生成的，生成的代码为原始的get/set方法调用。 */
-    public void ioc(Object obj, Object[] params, BeanFactory context, BeanDefinition definition) throws Throwable;
+    public void ioc(Object object, Object[] getBeanParam, BeanDefinition definition, ResourceBeanFactory context) throws Exception;
 }

@@ -69,9 +69,9 @@ more.beansµÄºËĞÄĞÅÏ¢°ü£¬¿ÉÒÔÍ¨¹ıÊµÏÖ{@link org.more.beans.BeanResource}½Ó¿ÚÀ´¾ö¶
   </tr>
   <tr>
     <td>iocType</td>
-    <td>{@link IocTypeEnum}</td>
+    <td>{@link org.more.beans.info.IocTypeEnum IocTypeEnum}</td>
     <td>IocTypeEnum.Ioc</td>
-    <td>ÒÀÀµ×¢Èë·½Ê½£¬{@link InjectionFactory}ÒÀÀµÕâ¸öÊôĞÔ£¬Ä¬ÈÏÖµÎªIoc¡£</td>
+    <td>ÒÀÀµ×¢Èë·½Ê½£¬{@link org.more.beans.core.injection.InjectionFactory InjectionFactory}ÒÀÀµÕâ¸öÊôĞÔ£¬Ä¬ÈÏÖµÎªIoc¡£</td>
   </tr>
   <tr>
     <td>exportIocRefBean</td>
@@ -81,19 +81,19 @@ more.beansµÄºËĞÄĞÅÏ¢°ü£¬¿ÉÒÔÍ¨¹ıÊµÏÖ{@link org.more.beans.BeanResource}½Ó¿ÚÀ´¾ö¶
   </tr>
   <tr>
     <td>propertys</td>
-    <td>{@link BeanProperty}[]</td>
+    <td>{@link org.more.beans.info.BeanProperty BeanProperty}[]</td>
     <td>null</td>
     <td>beanÖĞ×¢²áµÄÊôĞÔÕâĞ©ÊôĞÔĞèÒªÒÀÀµ×¢Èë¡£</td>
   </tr>
   <tr>
     <td>createType</td>
-    <td>{@link CreateTypeEnum}</td>
-    <td>CreateTypeEnum.New</td>
+    <td>{@link org.more.beans.info.CreateTypeEnum CreateTypeEnum}</td>
+    <td>{@link org.more.beans.info.CreateTypeEnum#New CreateTypeEnum.New}</td>
     <td>´´½¨·½Ê½£¬Ä¬ÈÏÎªNew¡£</td>
   </tr>
   <tr>
     <td>constructor</td>
-    <td>{@link BeanConstructor}</td>
+    <td>{@link org.more.beans.info.BeanConstructor BeanConstructor}</td>
     <td>null</td>
     <td>ÅäÖÃµÄ¹¹Ôì·½·¨¡£µ±´´½¨·½Ê½Îª¹¤³§·½Ê½Ê±£¬¹¹Ôì·½·¨½«Ê§Ğ§£¬Ò»ÇĞ´´½¨´úÂëÎ¯ÍĞ¸ø¹¤³§·½·¨¡£</td>
   </tr>
@@ -117,7 +117,7 @@ more.beansµÄºËĞÄĞÅÏ¢°ü£¬¿ÉÒÔÍ¨¹ıÊµÏÖ{@link org.more.beans.BeanResource}½Ó¿ÚÀ´¾ö¶
   </tr>
   <tr>
     <td>factoryMethodParams</td>
-    <td>{@link BeanProperty}[]</td>
+    <td>{@link org.more.beans.info.BeanProperty BeanProperty}[]</td>
     <td>null</td>
     <td>µ÷ÓÃ¹¤³§ÀàµÄ·½·¨Ê±ĞèÒª´«µİµÄ²ÎÊı£¬²ÎÊıÒÀÕÕÊı×éÖĞÔªËØË³Ğò¡£</td>
   </tr>
@@ -125,11 +125,12 @@ more.beansµÄºËĞÄĞÅÏ¢°ü£¬¿ÉÒÔÍ¨¹ıÊµÏÖ{@link org.more.beans.BeanResource}½Ó¿ÚÀ´¾ö¶
     <td>aopFilterRefBean</td>
     <td>String[]</td>
     <td>null</td>
-    <td>AOP¹ıÂËÆ÷bean£¬CreateTypeEnumÈç¹ûÎªFactory·½Ê½ÔòAOPÊ¹ÓÃ´úÀí·½Ê½´´½¨£¬Èç¹ûÊÇNew·½Ê½´´½¨Ôò´´½¨Ä£Ê½Ê¹ÓÃSuper</td>
+    <td>AOP¹ıÂËÆ÷bean£¬CreateTypeEnumÈç¹ûÎª{@link org.more.beans.info.CreateTypeEnum#Factory Factory}·½Ê½ÔòAOPÊ¹ÓÃ{@link org.more.core.classcode.ClassEngine.BuilderMode#Propxy Propxy}´úÀí·½Ê½´´½¨£¬
+    	Èç¹ûÊÇ{@link org.more.beans.info.CreateTypeEnum#New New}·½Ê½´´½¨Ôò´´½¨Ä£Ê½Ê¹ÓÃ{@link org.more.core.classcode.ClassEngine.BuilderMode#Super Super}·½Ê½´´½¨¡£</td>
   </tr>
   <tr>
     <td>implImplInterface</td>
-    <td>{@link BeanInterface}[]</td>
+    <td>{@link org.more.beans.info.BeanInterface BeanInterface}[]</td>
     <td>null</td>
     <td>Òª¸½¼ÓÊµÏÖµÄ½Ó¿Ú</td>
   </tr>
@@ -165,7 +166,7 @@ more.beansµÄºËĞÄĞÅÏ¢°ü£¬¿ÉÒÔÍ¨¹ıÊµÏÖ{@link org.more.beans.BeanResource}½Ó¿ÚÀ´¾ö¶
   </tr>
   <tr>
     <td>constructorParams</td>
-    <td>{@link BeanProperty}[]</td>
+    <td>{@link org.more.beans.info.BeanProperty BeanProperty}[]</td>
     <td>null</td>
     <td>¹¹Ôì·½·¨²ÎÊı±í¡£</td>
   </tr>
@@ -237,7 +238,7 @@ more.beansµÄºËĞÄĞÅÏ¢°ü£¬¿ÉÒÔÍ¨¹ıÊµÏÖ{@link org.more.beans.BeanResource}½Ó¿ÚÀ´¾ö¶
   </tr>
   <tr>
     <td>value</td>
-    <td>{@link BeanProp}</td>
+    <td>{@link org.more.beans.info.BeanProp BeanProp}</td>
     <td>null</td>
     <td>ÊôĞÔÖµ¡£</td>
   </tr>

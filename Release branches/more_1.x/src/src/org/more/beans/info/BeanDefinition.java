@@ -59,7 +59,7 @@ public class BeanDefinition extends Prop {
     private BeanProperty[]    propertys             = null;              //bean中注册的属性这些属性需要依赖注入。
     //create依赖数据
     private CreateTypeEnum    createType            = CreateTypeEnum.New; //创建方式，默认为New。
-    private BeanConstructor   constructor           = null;              //配置的构造方法。当创建方式为工厂方式时，构造方法将失效，一切创建代码委托给工厂方法。
+    private BeanProperty[]    constructorParams     = null;              //构造方法参数表，当创建方式为工厂方式时，构造方法将失效，一切创建代码委托给工厂方法。
     private String            factoryRefBean        = null;              //使用工厂方式创建时的工厂bean名称。
     private boolean           factoryIsStaticMethod = false;             //调用工厂类的方法是否为一个静态方法。
     private String            factoryMethodName     = null;              //调用工厂类的方法名
@@ -127,12 +127,12 @@ public class BeanDefinition extends Prop {
         this.createType = createType;
     }
     /**获取Bean在New模式下创建的构造方法配置。*/
-    public BeanConstructor getConstructor() {
-        return constructor;
+    public BeanProperty[] getConstructorParams() {
+        return constructorParams;
     }
     /**设置Bean在New模式下创建的构造方法配置。*/
-    public void setConstructor(BeanConstructor constructor) {
-        this.constructor = constructor;
+    public void setConstructorParams(BeanProperty[] constructorParams) {
+        this.constructorParams = constructorParams;
     }
     /**获取使用工厂方式创建时的工厂bean名称。*/
     public String getFactoryRefBean() {

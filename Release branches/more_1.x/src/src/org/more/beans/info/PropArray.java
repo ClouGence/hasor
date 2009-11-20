@@ -28,11 +28,20 @@ public class PropArray extends BeanProp {
     //==================================================================================Constructor
     /**使用默认java.lang.Object类型创建一个数组零长度的对象。*/
     public PropArray() {
-        this(null, "java.lang.Object");
+        this.arrayElements = new BeanProp[0];
+        this.length = 0;
+        this.setPropType("java.lang.Object");
     }
     /**创建一个数组对象，该对象的元素内容由参数elements决定，同时数组类型是java.lang.Object。*/
     public PropArray(BeanProp[] elements) {
-        this(elements, "java.lang.Object");
+        if (elements == null) {
+            this.arrayElements = new BeanProp[0];
+            this.length = 0;
+        } else {
+            this.arrayElements = elements;
+            this.length = elements.length;
+        }
+        this.setPropType("java.lang.Object");
     }
     /**创建一个数组对象，该对象的元素内容由参数elements决定，同时数组类型由参数arrayType指定。*/
     public PropArray(BeanProp[] elements, String arrayType) {

@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 package org.more.beans;
+import org.more.util.attribute.IAttribute;
 /**
  * 
  * Date : 2009-11-3
  * @author 赵永春
  */
-public interface BeanContext extends BeanFactory {
+public interface BeanContext extends BeanFactory, IAttribute {
     /**
      * 获取Context的名称。
      * @return 返回Context的名称。

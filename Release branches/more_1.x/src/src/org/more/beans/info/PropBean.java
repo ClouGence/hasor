@@ -16,6 +16,7 @@
 package org.more.beans.info;
 /**
  * 表示定义的一个属性中的Bean这类bean定义通常不会被其他bean引用到，这类bean有一个特点就是它们的单态模式通常是失效的。
+ * PropBean是引用类型的一种它的propType属性是随着引用对象变化的，因此PropBean不需要配置propType属性。
  * <br/>Date : 2009-11-18
  * @author 赵永春
  */
@@ -25,7 +26,12 @@ public class PropBean extends BeanProp {
     private static final long serialVersionUID = -194590250590692070L;
     private BeanDefinition    beanDefinition   = null;                //属性中的bean定义。
     //==================================================================================Constructor
-    public PropBean(BeanDefinition beanDefinition) {}
+    /**创建一个PropBean对象。*/
+    public PropBean(BeanDefinition beanDefinition) {
+        if (beanDefinition == null)
+            throw new NullPointerException("必须指定beanDefinition参数。");
+        this.beanDefinition = beanDefinition;
+    }
     //==========================================================================================Job
     /**获取属性中的bean定义。*/
     public BeanDefinition getBeanDefinition() {

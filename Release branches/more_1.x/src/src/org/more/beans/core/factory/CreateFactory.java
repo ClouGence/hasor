@@ -16,6 +16,7 @@
 package org.more.beans.core.factory;
 import org.more.DoesSupportException;
 import org.more.beans.BeanFactory;
+import org.more.beans.core.propparser.MainPropertyParser;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.CreateTypeEnum;
 /**
@@ -27,11 +28,21 @@ import org.more.beans.info.CreateTypeEnum;
  * @author 赵永春
  */
 public class CreateFactory extends CreateEngine {
-    private ConstructorCreateEngine constructor = new ConstructorCreateEngine(); //New方式
-    private FactoryCreateEngine     factory     = new FactoryCreateEngine();    //Factory方式
+    //========================================================================================Field
+    private ConstructorCreateEngine constructor; //New方式
+    private FactoryCreateEngine     factory;    //Factory方式
+    //==================================================================================Constructor
+    /**创建一个CreateFactory对象，创建时必须指定属性解析器。*/
+    public CreateFactory(MainPropertyParser propParser) {
+        if (propParser == null)
+            throw new NullPointerException("必须指定propParser参数对象，CreateFactory使用这个属性解析器解析属性。");
+        this.constructor = new ConstructorCreateEngine(propParser); //New方式
+        this.factory = new FactoryCreateEngine(propParser); //Factory方式
+    }
+    //==========================================================================================Job
     /** 自动选择创建类型来创建bean对象。 */
     @Override
-    public Object newInstance(BeanDefinition definition, Object[] createParams, BeanFactory context) throws Throwable {
+    public Object newInstance(BeanDefinition definition, Object[] createParams, BeanFactory context) throws Exception {
         if (definition.getCreateType() == CreateTypeEnum.New)
             return this.constructor.newInstance(definition, createParams, context);
         else if (definition.getCreateType() == CreateTypeEnum.Factory)

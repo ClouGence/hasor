@@ -16,6 +16,10 @@
 package org.more.beans.info;
 /**
  * 表示BeanProperty属性配置的值是一个基本数据类型(在more.beans中除了八个java基本类型之外还增加了字符串类型)。
+ * <pre>
+ * propType属性规则。
+ * 1.如果没有配置propType属性则使用value所处的BeanProperty的属性作为配置。
+ * </pre>
  * <br/>Date : 2009-11-18
  * @author 赵永春
  */
@@ -26,12 +30,10 @@ public class PropVarValue extends BeanProp {
     private String            value            = null;                //属性值
     //==================================================================================Constructor
     /**创建一个表示基本数据的bean定义属性数据，默认值是null，默认数据类型是String。*/
-    public PropVarValue() {
-        this(null, "String");
-    }
-    /**创建一个表示基本数据的bean定义属性数据，默认数据类型是String。*/
+    public PropVarValue() {}
+    /**创建一个表示基本数据的bean定义属性数据。*/
     public PropVarValue(String value) {
-        this(value, "String");
+        this.value = value;
     }
     /**创建一个表示基本数据的bean定义属性数据。*/
     public PropVarValue(String value, String valueType) {
