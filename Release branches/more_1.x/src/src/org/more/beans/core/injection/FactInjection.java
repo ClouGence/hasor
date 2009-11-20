@@ -83,10 +83,6 @@ public class FactInjection implements Injection {
             engine.setSuperClass(FactIocObject.class);//由于不支持rt.jar中的类因此需要一个假Object对象。
             engine.setMode(BuilderMode.Super);
             engine.forceBuilderClass();
-            FileOutputStream fos = new FileOutputStream(engine.getSimpleName() + ".class");
-            fos.write(engine.toBytes());
-            fos.flush();
-            fos.close();
             fact = (FactIoc) engine.newInstance(null);
             //缓存引擎生成对象
             definition.setAttribute(this.factCatchName, fact);
