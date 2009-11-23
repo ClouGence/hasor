@@ -20,18 +20,17 @@ import org.more.beans.core.propparser.MainPropertyParser;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.BeanProperty;
 /**
- * 集合类型属性解析器。
- * {#name}、{$name}、name、{@number}
+ * 属性解析器，当bean以fact方式执行注入时候注入过程可能会执行该类方法，开发人员不会碰触这个类。
  * Date : 2009-11-8
  * @author 赵永春
  */
 public class TypeParser {
-    /**解析一个属性类型为对象*/
+    /**解析一个属性类型为对象。*/
     public static Object passerType(String methodName, Object object, Object[] getBeanParam, BeanDefinition definition, ResourceBeanFactory context, BeanProperty prop) throws Throwable {
         MainPropertyParser parser = context.getPropParser();
-        Class<?> type = parser.parserType(object, getBeanParam, prop.getValue(), prop, definition);
+        Class<?> type = parser.parserType(object, getBeanParam, prop.getRefValue(), prop, definition);
         Method method = object.getClass().getMethod(methodName, type);
-        Object value = parser.parser(object, getBeanParam, prop.getValue(), prop, definition);
+        Object value = parser.parser(object, getBeanParam, prop.getRefValue(), prop, definition);
         return method.invoke(object, value);
     }
 }

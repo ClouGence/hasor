@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 /**
@@ -34,6 +35,16 @@ public class ReaderInputStream extends InputStream {
     private byte[]                buffer       = null;
     private int                   index, length = 0;
     //========================================================================================
+    /**
+     * 带Reader参数构造函数
+     * @param readerString - 要阅读的字符串。
+     */
+    public ReaderInputStream(String readerString) {
+        this.reader = new StringReader(readerString);
+        byteArrayOut = new ByteArrayOutputStream();
+        writer = new OutputStreamWriter(byteArrayOut);
+        chars = new char[1024];
+    }
     /**
      * 带Reader参数构造函数
      * @param reader - InputStream使用的Reader

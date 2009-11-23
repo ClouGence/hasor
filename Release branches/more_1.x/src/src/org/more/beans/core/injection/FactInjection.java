@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.more.beans.core.injection;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import org.more.beans.core.ResourceBeanFactory;
@@ -130,43 +129,43 @@ class FactClassAdapter extends ClassAdapter implements Opcodes {
             //
             String propType = prop.getPropType();
             if (propType == BeanProperty.TS_Integer) {
-                PropVarValue var = (PropVarValue) prop.getValue();
+                PropVarValue var = (PropVarValue) prop.getRefValue();
                 mv.visitIntInsn(BIPUSH, StringConvert.parseInt(var.getValue()));
                 this.invokeMethod(mv, prop, "I");
             } else if (propType == BeanProperty.TS_Byte) {
-                PropVarValue var = (PropVarValue) prop.getValue();
+                PropVarValue var = (PropVarValue) prop.getRefValue();
                 mv.visitIntInsn(BIPUSH, StringConvert.parseByte(var.getValue()));
                 this.invokeMethod(mv, prop, "B");
             } else if (propType == BeanProperty.TS_Char) {
-                PropVarValue var = (PropVarValue) prop.getValue();
+                PropVarValue var = (PropVarValue) prop.getRefValue();
                 if (var.getValue() == null)
                     mv.visitIntInsn(BIPUSH, 0);
                 else
                     mv.visitIntInsn(BIPUSH, var.getValue().charAt(0));
                 this.invokeMethod(mv, prop, "C");
             } else if (propType == BeanProperty.TS_Double) {
-                PropVarValue var = (PropVarValue) prop.getValue();
+                PropVarValue var = (PropVarValue) prop.getRefValue();
                 mv.visitLdcInsn(StringConvert.parseDouble(var.getValue()));
                 this.invokeMethod(mv, prop, "D");
             } else if (propType == BeanProperty.TS_Float) {
-                PropVarValue var = (PropVarValue) prop.getValue();
+                PropVarValue var = (PropVarValue) prop.getRefValue();
                 mv.visitLdcInsn(StringConvert.parseFloat(var.getValue()));
                 this.invokeMethod(mv, prop, "F");
             } else if (propType == BeanProperty.TS_Long) {
-                PropVarValue var = (PropVarValue) prop.getValue();
+                PropVarValue var = (PropVarValue) prop.getRefValue();
                 mv.visitLdcInsn(StringConvert.parseLong(var.getValue()));
                 this.invokeMethod(mv, prop, "J");
             } else if (propType == BeanProperty.TS_Short) {
-                PropVarValue var = (PropVarValue) prop.getValue();
+                PropVarValue var = (PropVarValue) prop.getRefValue();
                 mv.visitIntInsn(BIPUSH, StringConvert.parseShort(var.getValue()));
                 this.invokeMethod(mv, prop, "S");
             } else if (propType == BeanProperty.TS_Boolean) {
-                PropVarValue var = (PropVarValue) prop.getValue();
+                PropVarValue var = (PropVarValue) prop.getRefValue();
                 boolean bool = StringConvert.parseBoolean(var.getValue());
                 mv.visitInsn((bool == true) ? ICONST_1 : ICONST_0);
                 this.invokeMethod(mv, prop, "Z");
             } else if (propType == BeanProperty.TS_String) {
-                PropVarValue var = (PropVarValue) prop.getValue();
+                PropVarValue var = (PropVarValue) prop.getRefValue();
                 mv.visitLdcInsn(var.getValue());
                 this.invokeMethod(mv, prop, "Ljava/lang/String;");
             } else {

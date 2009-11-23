@@ -20,7 +20,6 @@ import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.BeanProp;
 import org.more.beans.info.BeanProperty;
 import org.more.beans.info.PropArray;
-import org.more.beans.info.PropBean;
 import org.more.beans.info.PropList;
 import org.more.beans.info.PropMap;
 import org.more.beans.info.PropRefValue;
@@ -40,7 +39,6 @@ public class MainPropertyParser implements PropertyParser {
     private MapParser           mapParser       = new MapParser();      //
     private SetParser           setParser       = new SetParser();      //
     private ArrayParser         arrayParser     = new ArrayParser();    //
-    private BeanParser          beanParser      = new BeanParser();     //
     private ResourceBeanFactory factory         = null;                 //
     //==================================================================================Constructor
     /**创建MainPropertyParser对象，必须指定ResourceBeanFactory对象。*/
@@ -94,8 +92,6 @@ public class MainPropertyParser implements PropertyParser {
             return setParser.parser(context, contextParams, prop, propContext, definition, factory, this);
         else if (prop instanceof PropArray)
             return arrayParser.parser(context, contextParams, prop, propContext, definition, factory, this);
-        else if (prop instanceof PropBean)
-            return beanParser.parser(context, contextParams, prop, propContext, definition, factory, this);
         else
             throw new DoesSupportException("目前暂不支持[" + prop.getClass() + "]属性类型解析器的支持。");
     }
@@ -115,8 +111,6 @@ public class MainPropertyParser implements PropertyParser {
             return setParser.parserType(context, contextParams, prop, propContext, definition, factory, this);
         else if (prop instanceof PropArray)
             return arrayParser.parserType(context, contextParams, prop, propContext, definition, factory, this);
-        else if (prop instanceof PropBean)
-            return beanParser.parserType(context, contextParams, prop, propContext, definition, factory, this);
         else
             throw new DoesSupportException("目前暂不支持自定义属性类型解析器的支持。");
     }

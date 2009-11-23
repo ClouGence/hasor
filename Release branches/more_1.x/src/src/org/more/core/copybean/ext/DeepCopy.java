@@ -27,6 +27,7 @@ import org.more.core.copybean.PropertyReaderWrite;
  * Date : 2009-5-15
  * @author ’‘”¿¥∫
  */
+@SuppressWarnings("unchecked")
 public class DeepCopy extends Copy {
     /**  */
     private static final long serialVersionUID = 3577120677124915374L;

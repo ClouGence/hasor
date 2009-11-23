@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<beans>
+	<!-- 最简化Bean配置 -->
+	<bean name="" type=""/>
+	
+	
+	<!-- 类型引用 -->
+	<bean id="" name="" refType=""/>
+	
+	
+	<!-- 单态配置 -->
+	<bean name="" type="" singleton="true|false"/>
+	
+	
+	<!-- 注入方式配置 -->
+	<bean name="" type="" iocType="Ioc"/>
+	<bean name="" type="" iocType="Fact"/>
+	<bean name="" type="" iocType="Export" exportBean=""/>
+	
+	
+	<!-- 在启动时初始化配置 -->
+	<bean name="" type="" lazyInit="true|false"/>
+	
+	
+	<!-- 附加接口实现配置 -->
+	<bean name="" type="">
+		<addImpl id="" type="" delegateBean=""/>
+			<!-- 或 -->
+		<addImpl refType="" delegateBean=""/>
+	</bean>
+	
+	
+	<!-- AOP配置 -->
+	<bean name="" type="" aopFilters="xxx,xxx,xxx"/>
+	
+	
+	<!-- 构造方法注入配置，constructor-arg配法与配置属性一样只是name属性的配置失效，需要注意顺序问题 -->
+	<bean name="" type="">
+		<constructor-arg id="" value="12.5" type="float"/>
+		<!-- 或 -->
+		<constructor-arg id="" value="12.0" type="int">
+			......
+		</constructor-arg>
+	</bean>
+	
+	
+	
+	<!-- 构造方法注入配置，param配法与配置属性一样只是name属性的配置失效，需要注意顺序问题 -->
+	<bean name="" type="">
+		<factoryConfig factoryRefBean="" factoryIsStaticMethod="false|true" factoryMethodName="">
+			<param name="a" value="12" type=""/>
+			<param name="a" value="12" type=""/>
+			<param name="a" value="12" type=""/>
+		</factoryConfig>
+	</bean>
+	
+	
+	<!-- 基本属性注入配置 -->
+	<bean name="" type="">
+		<property name="" value="" type="int|byte|char|double|float|long|short|boolean|String"/>
+	</bean>
+	
+	
+	<!-- 基本类型数组属性注入配置（配置了一个int类型的数组） -->
+	<bean name="" type="">
+		<!-- 如果没有配置type则数组类型为Object对象数组 -->
+		<property name="" value="" type="int|byte|char|double|float|long|short|boolean|String">
+			<array>
+				<value value=""/>
+			</array>
+		</property>
+	</bean>
+	
+	
+	<!-- 引用类型数组属性注入配置（配置了一个bean作为数组元素） -->
+	<bean name="" type="">
+		<property name="" value="" refType="refBeanName">
+			<array>
+				<value refBean=""/>
+			</array>
+		</property>
+	</bean>
+	
+	
+	<!-- List类型属性注入配置（多个类型元素） -->
+	<bean name="" type="">
+		<!-- 如果没有配置type则集合类型为java.util.ArrayList对象 -->
+		<property name="" value="">
+			<list>
+				<value value="" type="int"/>
+				<value value="" type="String"/>
+			</list>
+		</property>
+	</bean>
+	
+	
+	<!-- Set类型属性注入配置（多个类型元素） -->
+	<bean name="" type="">
+		<!-- 如果没有配置type则集合类型为java.util.HashSet对象 -->
+		<property name="" value="">
+			<set>
+				<value value="" type="int"/>
+				<value value="" type="String"/>
+			</set>
+		</property>
+	</bean>
+	
+	
+	<!-- Map类型属性注入配置（多个类型元素） -->
+	<bean name="" type="">
+		<!-- 如果没有配置type则集合类型为java.util.HashMap对象 -->
+		<property name="" value="">
+			<map>
+				<entry key="" value="" keyType="" valueType="" />
+				<entry refKey="" refValue=""/>
+			</map>
+		</property>
+	</bean>
+	
+	
+	<!-- Map类型中包含List对象的注入配置（多个类型元素） -->
+	<bean name="" type="">
+		<!-- 如果没有配置type则集合类型为java.util.HashMap对象 -->
+		<property name="" value="">
+			<map>
+				<entry key="" value="" keyType="" valueType="" />
+				<entry>
+					<mapKey>
+						<map/>
+					</mapKey>
+					<mapValue>
+						<list>
+							<value value="" type="String"/>
+						</list>
+					</mapValue>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+	
+	<!-- 属性注入是一个私有的Bean配置 -->
+	<bean name="" type="">
+		<!-- 如果没有配置type则集合类型为java.util.HashMap对象 -->
+		<property name="" value="">
+			<map>
+				<entry key="" value="" keyType="" valueType="" />
+				<entry>
+					<mapKey>
+						<map/>
+					</mapKey>
+					<mapValue>
+						<list>
+							<value value="" type="String"/>
+						</list>
+					</mapValue>
+				</entry>
+			</map>
+		</property>
+	</bean>
+</beans>

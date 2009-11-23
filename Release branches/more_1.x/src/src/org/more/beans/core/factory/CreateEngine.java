@@ -48,15 +48,15 @@ public abstract class CreateEngine {
                     if (type != null)
                         typeClass = loader.loadClass(beanI.getPropType());
                     else
-                        typeClass = context.getBeanType(beanI.getTypeRefBean());
+                        typeClass = context.getBeanType(beanI.getRefType());
                     //附加接口实现
-                    engine.appendImpl(typeClass, (MethodDelegate) context.getBean(beanI.getImplDelegateRefBean(), params));
+                    engine.appendImpl(typeClass, (MethodDelegate) context.getBean(beanI.getDelegateRefBean(), params));
                 }
             }
         }
         {
             //---------------------------------------------------------------AOP
-            String[] aopFilters = definition.getAopFilterRefBean();
+            String[] aopFilters = definition.getAopFiltersRefBean();
             if (aopFilters != null) {
                 AOPInvokeFilter[] filters = new AOPInvokeFilter[aopFilters.length];
                 for (int i = 0; i < aopFilters.length; i++)
@@ -72,7 +72,7 @@ public abstract class CreateEngine {
             return newObject;
         //=====================================================================
         BeanInterface[] implS = definition.getImplImplInterface();
-        String[] aopFilters = definition.getAopFilterRefBean();
+        String[] aopFilters = definition.getAopFiltersRefBean();
         HashMap<Class<?>, MethodDelegate> replaceDelegateMap = null;
         AOPInvokeFilter[] filters = null;
         //
@@ -81,13 +81,13 @@ public abstract class CreateEngine {
             replaceDelegateMap = new HashMap<Class<?>, MethodDelegate>();
             for (int i = 0; i < implS.length; i++) {
                 BeanInterface beanI = implS[i];
-                MethodDelegate delegate = (MethodDelegate) context.getBean(beanI.getImplDelegateRefBean(), params);
+                MethodDelegate delegate = (MethodDelegate) context.getBean(beanI.getDelegateRefBean(), params);
                 Class<?> typeClass = null;
                 String type = beanI.getPropType();
                 if (type != null)
                     typeClass = loader.loadClass(beanI.getPropType());
                 else
-                    typeClass = context.getBeanType(beanI.getTypeRefBean());
+                    typeClass = context.getBeanType(beanI.getRefType());
                 replaceDelegateMap.put(typeClass, delegate);
             }
         }

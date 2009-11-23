@@ -59,7 +59,7 @@ public class FactoryCreateEngine extends CreateEngine {
         Object[] fmParamTypes = new Object[fmParams.length];
         for (int i = 0; i < fmParams.length; i++) {
             BeanProperty beanP = fmParams[i];
-            BeanProp propValue = beanP.getValue();
+            BeanProp propValue = beanP.getRefValue();
             fmParamTypes[i] = propParser.parser(null, params, propValue, beanP, definition);
         }
         return fmParamTypes;
@@ -79,7 +79,7 @@ public class FactoryCreateEngine extends CreateEngine {
                 refBeanMethodTypes = new Class[refBeanMethodParam.length];
                 for (int i = 0; i < refBeanMethodParam.length; i++) {
                     BeanProperty beanP = refBeanMethodParam[i];
-                    refBeanMethodTypes[i] = this.propParser.parserType(null, params, beanP.getValue(), beanP, definition);
+                    refBeanMethodTypes[i] = this.propParser.parserType(null, params, beanP.getRefValue(), beanP, definition);
                 }
             }
             //获取工厂方法
@@ -96,7 +96,7 @@ public class FactoryCreateEngine extends CreateEngine {
         else
             newObject = factoryMethod.invoke(context.getBean(refBean, params), invokeMethodParams); //对象工厂方法
         //三、决定是否通过AOP代理，工厂方法模式下不支持Super类型AOP
-        String[] aopFilters = definition.getAopFilterRefBean();
+        String[] aopFilters = definition.getAopFiltersRefBean();
         BeanInterface[] implsFilters = definition.getImplImplInterface();
         if (aopFilters == null && implsFilters == null)
             return newObject; //没有代理要求
@@ -133,16 +133,16 @@ public class FactoryCreateEngine extends CreateEngine {
                     if (type != null)
                         typeClass = loader.loadClass(beanI.getPropType());
                     else
-                        typeClass = context.getBeanType(beanI.getTypeRefBean());
+                        typeClass = context.getBeanType(beanI.getRefType());
                     //附加接口实现
-                    engine.appendImpl(typeClass, (MethodDelegate) context.getBean(beanI.getImplDelegateRefBean(), params));
+                    engine.appendImpl(typeClass, (MethodDelegate) context.getBean(beanI.getDelegateRefBean(), params));
                 }
             }
             //
         }
         {
             //---------------------------------------------------------------AOP
-            String[] aopFilters = definition.getAopFilterRefBean();
+            String[] aopFilters = definition.getAopFiltersRefBean();
             if (aopFilters != null) {
                 AOPInvokeFilter[] filters = new AOPInvokeFilter[aopFilters.length];
                 for (int i = 0; i < aopFilters.length; i++)

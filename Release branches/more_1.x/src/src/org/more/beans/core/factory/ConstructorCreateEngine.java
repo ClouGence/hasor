@@ -49,7 +49,7 @@ public class ConstructorCreateEngine extends CreateEngine {
         Object[] classConParams = new Object[beanConParams.length];
         for (int i = 0; i < beanConParams.length; i++) {
             BeanProperty beanP = beanConParams[i];
-            classConParams[i] = this.propParser.parser(null, params, beanP.getValue(), beanP, definition);
+            classConParams[i] = this.propParser.parser(null, params, beanP.getRefValue(), beanP, definition);
         }
         return classConParams;
     }
@@ -65,7 +65,7 @@ public class ConstructorCreateEngine extends CreateEngine {
         Class<?>[] classConParams = new Class<?>[beanConParams.length];
         for (int i = 0; i < beanConParams.length; i++) {
             BeanProperty beanCP = beanConParams[i];
-            classConParams[i] = this.propParser.parserType(null, params, beanCP.getValue(), beanCP, definition);;
+            classConParams[i] = this.propParser.parserType(null, params, beanCP.getRefValue(), beanCP, definition);;
         }
         return type.getConstructor(classConParams);
     }
@@ -82,7 +82,7 @@ public class ConstructorCreateEngine extends CreateEngine {
             ClassLoader contextLoader = context.getBeanClassLoader();
             createEngineData = new ConstructorCreateEngineData();
             //缓存之前的基本信息
-            String[] aopFilters = definition.getAopFilterRefBean();
+            String[] aopFilters = definition.getAopFiltersRefBean();
             BeanInterface[] implsFilters = definition.getImplImplInterface();
             //确定类型
             if (aopFilters == null && implsFilters == null)

@@ -55,7 +55,7 @@ public class BeanDefinition extends Prop {
     private String            description           = null;              //bean描述信息。
     //ioc依赖数据
     private IocTypeEnum       iocType               = IocTypeEnum.Ioc;   //依赖注入方式，InjectionFactory依赖这个属性，默认值为Ioc。
-    private String            exportIocRefBean      = null;              //依赖注入方式为export时导出的属性注入器bean名。
+    private String            exportRefBean         = null;              //依赖注入方式为export时导出的属性注入器bean名。
     private BeanProperty[]    propertys             = null;              //bean中注册的属性这些属性需要依赖注入。
     //create依赖数据
     private CreateTypeEnum    createType            = CreateTypeEnum.New; //创建方式，默认为New。
@@ -65,10 +65,10 @@ public class BeanDefinition extends Prop {
     private String            factoryMethodName     = null;              //调用工厂类的方法名
     private BeanProperty[]    factoryMethodParams   = null;              //调用工厂类的方法时需要传递的参数，参数依照数组中元素顺序。
     //aop依赖数据
-    private String[]          aopFilterRefBean      = null;              //AOP过滤器bean，CreateTypeEnum如果为Factory方式则AOP使用代理方式创建，如果是New方式创建则创建模式使用Super
+    private String[]          aopFiltersRefBean     = null;              //AOP过滤器bean，CreateTypeEnum如果为Factory方式则AOP使用代理方式创建，如果是New方式创建则创建模式使用Super
     private BeanInterface[]   implImplInterface     = null;              //要附加实现的接口
     //附带数据
-    private boolean           isSingleton           = false;             //是否为单态模式
+    private boolean           isSingleton           = true;              //是否为单态模式
     //==========================================================================================Job
     /**获取在一个beanFactory中的唯一名称。*/
     public String getName() {
@@ -103,12 +103,12 @@ public class BeanDefinition extends Prop {
         this.iocType = iocType;
     }
     /**获取依赖注入方式为export时导出的属性注入器bean名。*/
-    public String getExportIocRefBean() {
-        return exportIocRefBean;
+    public String getExportRefBean() {
+        return exportRefBean;
     }
     /**设置依赖注入方式为export时导出的属性注入器bean名。*/
-    public void setExportIocRefBean(String exportIocRefBean) {
-        this.exportIocRefBean = exportIocRefBean;
+    public void setExportRefBean(String exportRefBean) {
+        this.exportRefBean = exportRefBean;
     }
     /**获取bean中注册的属性这些属性需要依赖注入。*/
     public BeanProperty[] getPropertys() {
@@ -167,12 +167,12 @@ public class BeanDefinition extends Prop {
         this.factoryMethodParams = factoryMethodParams;
     }
     /**获取AOP过滤器bean名称数组。*/
-    public String[] getAopFilterRefBean() {
-        return aopFilterRefBean;
+    public String[] getAopFiltersRefBean() {
+        return aopFiltersRefBean;
     }
     /**设置AOP过滤器bean名称数组。*/
-    public void setAopFilterRefBean(String[] aopFilterRefBean) {
-        this.aopFilterRefBean = aopFilterRefBean;
+    public void setAopFiltersRefBean(String[] aopFiltersRefBean) {
+        this.aopFiltersRefBean = aopFiltersRefBean;
     }
     /**获取要附加实现的接口。*/
     public BeanInterface[] getImplImplInterface() {

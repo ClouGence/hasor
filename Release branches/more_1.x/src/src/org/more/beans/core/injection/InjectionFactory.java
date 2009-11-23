@@ -52,7 +52,7 @@ public class InjectionFactory extends Task implements Injection {
     public Object ioc(Object object, Object[] params, BeanDefinition definition, ResourceBeanFactory context) throws Exception {
         if (definition.getIocType() == IocTypeEnum.Export) {
             //Export方式，如果Export注入器配置了单态模式会有更好的运行效率。
-            String exportName = definition.getExportIocRefBean();
+            String exportName = definition.getExportRefBean();
             ExportInjection exp = null;
             if (this.exportMap.containsKey(exportName) == false) {
                 Object exportObj = context.getBean(exportName, params);

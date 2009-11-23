@@ -43,7 +43,7 @@ public class BeanProperty extends Prop {
     /**  */
     private static final long  serialVersionUID = -3492072515778133870L;
     private String             name             = null;                 //属性名，对于构造方法参数配置该值无效。
-    private BeanProp           value            = null;                 //属性值。
+    private BeanProp           refValue         = null;                 //属性值。
     //=========================================================================
     /**获取属性名，对于构造方法参数配置该值无效。*/
     public String getName() {
@@ -54,12 +54,12 @@ public class BeanProperty extends Prop {
         this.name = name;
     }
     /**获取属性值。*/
-    public BeanProp getValue() {
-        return value;
+    public BeanProp getRefValue() {
+        return refValue;
     }
     /**设置属性值。*/
-    public void setValue(BeanProp value) {
-        this.value = value;
+    public void setRefValue(BeanProp refValue) {
+        this.refValue = refValue;
     }
     /**获取属性的类型（必须配置）部分属性类型由TS_常量定义。*/
     public String getPropType() {

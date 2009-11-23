@@ -59,13 +59,13 @@ public class IocInjection implements Injection {
                 firstChar = (char) ((firstChar >= 97) ? firstChar - 32 : firstChar);
                 sb.insert(0, firstChar);
                 sb.insert(0, "set");
-                Class<?> mt = this.propParser.parserType(context, params, prop.getValue(), prop, definition);
+                Class<?> mt = this.propParser.parserType(context, params, prop.getRefValue(), prop, definition);
                 writeMethod = object.getClass().getMethod(sb.toString(), mt);
                 prop.setAttribute(this.propCatchName, writeMethod);
             } else
                 writeMethod = (Method) prop.get(this.propCatchName);
             //
-            Object obj = propParser.parser(object, params, prop.getValue(), prop, definition);
+            Object obj = propParser.parser(object, params, prop.getRefValue(), prop, definition);
             writeMethod.invoke(object, obj);
         }
         return object;

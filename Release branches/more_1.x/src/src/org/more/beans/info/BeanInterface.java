@@ -22,24 +22,24 @@ package org.more.beans.info;
 public class BeanInterface extends Prop {
     //========================================================================================Field
     /**  */
-    private static final long serialVersionUID    = -1660901774837550451L;
-    private String            typeRefBean         = null;                 //接口类型引用Bean名，配置了typeRefBean属性则可以不配置type属性。
-    private String            implDelegateRefBean = null;                 //附加接口实现时接口处理委托bean名。
+    private static final long serialVersionUID = -1660901774837550451L;
+    private String            refType          = null;                 //接口类型引用Bean名，配置了typeRefBean属性则可以不配置type属性。
+    private String            delegateRefBean  = null;                 //附加接口实现时接口处理委托bean名。
     //==========================================================================================Job
     /**获取接口类型引用Bean名，配置了typeRefBean属性则可以不配置type属性。*/
-    public String getTypeRefBean() {
-        return typeRefBean;
+    public String getRefType() {
+        return refType;
     }
     /**设置接口类型引用Bean名，配置了typeRefBean属性则可以不配置type属性。*/
-    public void setTypeRefBean(String typeRefBean) {
-        this.typeRefBean = typeRefBean;
+    public void setRefType(String refType) {
+        this.refType = refType;
     }
     /**获取附加接口实现时接口处理委托bean名。*/
-    public String getImplDelegateRefBean() {
-        return implDelegateRefBean;
+    public String getDelegateRefBean() {
+        return delegateRefBean;
     }
     /**设置附加接口实现时接口处理委托bean名。*/
-    public void setImplDelegateRefBean(String implDelegateRefBean) {
-        this.implDelegateRefBean = implDelegateRefBean;
+    public void setDelegateRefBean(String delegateRefBean) {
+        this.delegateRefBean = delegateRefBean;
     }
 }
