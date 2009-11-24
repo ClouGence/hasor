@@ -1,0 +1,66 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.more.beans.resource.xml.core;
+import java.util.Map;
+import javax.xml.stream.XMLStreamReader;
+import org.more.beans.info.BeanDefinition;
+import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.TagProcess;
+import org.more.beans.resource.xml.TaskProcess;
+/**
+ * （findBean）查找某个bean，参数findName确定查找的bean名如果找不到则返回null。
+ * <br/>Date : 2009-11-24
+ * @author 赵永春
+ */
+@SuppressWarnings("unchecked")
+public class Task_FindBeanDefinition implements TaskProcess {
+    private String findName = null;
+    private Object result   = null;
+    //
+    @Override
+    public void setConfig(Map params) {
+        this.findName = (String) params.get("findName");
+    }
+    @Override
+    public Object getResult() {
+        return result;
+    }
+    @Override
+    public void onEvent(ContextStack elementStack, String onXPath, int eventType, XMLStreamReader reader, Map<String, TagProcess> tagProcessMap) {
+        String tagName = elementStack.getTagName();
+        TagProcess process = tagProcessMap.get(tagName);
+        /*------------*/
+        switch (eventType) {
+        case START_ELEMENT:
+            process.doStartEvent(onXPath, reader, elementStack);
+            break;
+        case END_ELEMENT:
+            process.doEndEvent(onXPath, reader, elementStack);
+            if (tagName.equals("bean") == true) {
+                BeanDefinition bean = (BeanDefinition) elementStack.context;
+                if (bean.getName().equals(this.findName) == true)
+                    this.result = elementStack.context;
+            }
+            break;
+        case CDATA:
+            process.doCharEvent(onXPath, reader, elementStack);
+            break;
+        case CHARACTERS:
+            process.doCharEvent(onXPath, reader, elementStack);
+            break;
+        }
+    }
+}

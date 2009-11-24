@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.resource.xml;
+package org.more.beans.resource.xml.core;
 import javax.xml.stream.XMLStreamReader;
 import org.more.NoDefinitionException;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.CreateTypeEnum;
+import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.TagProcess;
 import org.more.util.StringConvert;
 /**
- * 负责处理factoryConfig标签。<br/>
+ * 该类负责处理factoryConfig标签。<br/>
  * refBean="factoryRefBean" isStaticMethod="true" methodName="create"
  * Date : 2009-11-21
  * @author 赵永春
  */
-class Tag_FactoryConfig extends DoTagEvent {
+public class Tag_FactoryConfig extends TagProcess {
     @Override
     public void doStartEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
         //refBean="factoryRefBean" isStaticMethod="true" methodName="create"

@@ -13,33 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.resource.xml;
+package org.more.beans.resource.xml.core;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import javax.xml.stream.XMLStreamReader;
 import org.more.NoDefinitionException;
 import org.more.beans.info.BeanProp;
-import org.more.beans.info.PropArray;
+import org.more.beans.info.PropSet;
+import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.TagProcess;
 /**
- * 解析array标签。
+ * 该类负责解析set标签。
  * <br/>Date : 2009-11-23
  * @author 赵永春
  */
 @SuppressWarnings("unchecked")
-class Tag_Array extends DoTagEvent {
+public class Tag_Set extends TagProcess {
     @Override
     public void doStartEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
-        PropArray array = new PropArray();
+        PropSet list = new PropSet();
         int attCount = xmlReader.getAttributeCount();
         for (int i = 0; i < attCount; i++) {
             String key = xmlReader.getAttributeLocalName(i);
             String var = xmlReader.getAttributeValue(i);
             if (key.equals("type") == true)
-                array.setPropType(var);
+                list.setPropType(var);
             else
-                throw new NoDefinitionException("array标签出现未定义属性[" + key + "]");
+                throw new NoDefinitionException("set标签出现未定义属性[" + key + "]");
         }
-        context.context = array;
+        context.context = list;
     }
     @Override
     public void doEndEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
@@ -55,9 +57,8 @@ class Tag_Array extends DoTagEvent {
         elementList = (ArrayList) context.get("tag_element");
         if (elementList != null) {
             Object[] objs = this.toArray(elementList, BeanProp.class);
-            PropArray array = (PropArray) context.context;
-            array.setArrayElements((BeanProp[]) objs);
-            array.setLength(objs.length);
+            PropSet set = (PropSet) context.context;
+            set.setSetElements((BeanProp[]) objs);
         }
     }
     private Object[] toArray(ArrayList al, Class<?> toType) {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.resource.xml;
+package org.more.beans.resource.xml.core;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,14 +23,16 @@ import org.more.beans.info.BeanProp;
 import org.more.beans.info.BeanProperty;
 import org.more.beans.info.PropRefValue;
 import org.more.beans.info.PropVarValue;
+import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.TagProcess;
 /**
- * 负责解析property标签<br/>
+ * 该类负责解析property标签<br/>
  * id="" name="a" value="12" refValue="refBean|{#attName}|{@number}|{$mime}" type="int|byte|char|double|float|long|short|boolean|String"
  * Date : 2009-11-22
  * @author 赵永春
  */
 @SuppressWarnings("unchecked")
-class Tag_Property extends DoTagEvent {
+public class Tag_Property extends TagProcess {
     protected String tagName = "property";
     protected BeanProperty createProperty() {
         return new BeanProperty();

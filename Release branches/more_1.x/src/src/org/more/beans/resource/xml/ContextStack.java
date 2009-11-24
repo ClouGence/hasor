@@ -16,7 +16,8 @@
 package org.more.beans.resource.xml;
 import org.more.util.attribute.AttBase;
 /**
- * 处理XML节点时的节点堆栈，从处理文档开始创建根堆栈往下每一层节点都创建一个新的堆栈。
+ * 处理XML节点时的节点堆栈，从处理文档开始创建根堆栈往下每一层节点都创建一个新的堆栈（注意：解析属性不创建新的堆栈）。<br/>
+ * 通过堆栈可以向父节点传递主要的数据和一些附带数据。
  * <br/>Date : 2009-11-21
  * @author 赵永春
  */
@@ -28,6 +29,8 @@ public class ContextStack extends AttBase {
     private String            xpath            = null;                //当前堆栈标签所处的xpath位置。
     /**当前堆栈中保存的重要数据对象。*/
     public Object             context          = null;
+    /**可能附加的属性值*/
+    public String             attValue         = null;
     ContextStack(ContextStack parent, String tagName, String xpath) {
         this.parent = parent;
         this.tagName = tagName;

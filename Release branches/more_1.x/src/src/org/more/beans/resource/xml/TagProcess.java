@@ -17,15 +17,15 @@ package org.more.beans.resource.xml;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 /**
- * 在解析XML时用于表示即将需要处理的一个标签事件。
+ * 在解析XML时用于表示即将需要处理的一个标签事件，如果开发人员需要在配置文件中自定义一个标签则这个自定义的标签解析器需要继承该类。
  * <br/>Date : 2009-11-21
  * @author 赵永春
  */
-public class DoTagEvent implements XMLStreamConstants {
-    /**当发现标签开始*/
+public class TagProcess implements XMLStreamConstants {
+    /**当发现标签开始。*/
     public void doStartEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {};
-    /**当解析标签文本内容，注意CDATA和CDATA外层的文本视作两个文本内容。*/
+    /**当发现标签结束。*/
     public void doEndEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {}
-    /**当发现标签结束*/
-    public void doCharEvent(String xPath, XMLStreamReader reader, ContextStack stack) {};
+    /**当解析标签文本内容，注意CDATA和CDATA外层的文本视作两个文本内容。*/
+    public void doCharEvent(String xPath, XMLStreamReader reader, ContextStack context) {};
 }

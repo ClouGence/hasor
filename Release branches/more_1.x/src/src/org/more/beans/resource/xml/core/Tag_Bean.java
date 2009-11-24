@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.resource.xml;
+package org.more.beans.resource.xml.core;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -25,15 +25,17 @@ import org.more.beans.info.BeanInterface;
 import org.more.beans.info.BeanProperty;
 import org.more.beans.info.CreateTypeEnum;
 import org.more.beans.info.IocTypeEnum;
+import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.TagProcess;
 import org.more.util.StringConvert;
 /**
- * 处理bean标签<br/>
+ * 该类负责处理bean标签<br/>
  * id="" name="test_1" refType="refType" type="int" singleton="true" iocType="Export" export-refBean="abc" lazyInit="true" aopFilters-refBean="xxx,xxx,xxx"
  * Date : 2009-11-21
  * @author 赵永春
  */
 @SuppressWarnings("unchecked")
-class Tag_Bean extends DoTagEvent {
+public class Tag_Bean extends TagProcess {
     @Override
     public void doStartEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
         //
@@ -103,24 +105,24 @@ class Tag_Bean extends DoTagEvent {
             BeanInterface[] propertys = (BeanInterface[]) this.toArray(al, BeanInterface.class);
             bean.setImplImplInterface(propertys);
         }
-        /*------------------*/
-        ContextStack parent = context.getParent();
-        //保存所有bean的名称
-        ArrayList allBeanNS = (ArrayList) parent.get("allBeanNS");
-        allBeanNS.add(bean.getName());
-        //保存配置lazy属性为false，并且配置了单态为true的bean名称。
-        ArrayList initBeanNS = (ArrayList) parent.get("initBeanNS");
-        if (bean.isLazyInit() == false && bean.isSingleton() == true)
-            initBeanNS.add(bean.getName());
-        //如果静态缓存中还有地方就保存一份。
-        Integer staticCatch = (Integer) parent.get("staticCatch");
-        Integer staticCatchCurrent = (Integer) parent.get("staticCatchCurrent");
-        if (staticCatchCurrent < staticCatch) {
-            ArrayList al = (ArrayList) parent.context;
-            al.add(context.context);
-            staticCatchCurrent++;
-            parent.setAttribute("staticCatchCurrent", staticCatchCurrent);
-        }
+        //        /*------------------*/
+        //        ContextStack parent = context.getParent();
+        //        //保存所有bean的名称
+        //        ArrayList allBeanNS = (ArrayList) parent.get("allBeanNS");
+        //        allBeanNS.add(bean.getName());
+        //        //保存配置lazy属性为false，并且配置了单态为true的bean名称。
+        //        ArrayList initBeanNS = (ArrayList) parent.get("initBeanNS");
+        //        if (bean.isLazyInit() == false && bean.isSingleton() == true)
+        //            initBeanNS.add(bean.getName());
+        //        //如果静态缓存中还有地方就保存一份。
+        //        Integer staticCatch = (Integer) parent.get("staticCatch");
+        //        Integer staticCatchCurrent = (Integer) parent.get("staticCatchCurrent");
+        //        if (staticCatchCurrent < staticCatch) {
+        //            ArrayList al = (ArrayList) parent.context;
+        //            al.add(context.context);
+        //            staticCatchCurrent++;
+        //            parent.setAttribute("staticCatchCurrent", staticCatchCurrent);
+        //        }
     }
     private Object[] toArray(ArrayList al, Class<?> toType) {
         Object array = Array.newInstance(toType, al.size());

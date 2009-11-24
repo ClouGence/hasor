@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.resource.xml;
+package org.more.beans.resource.xml.core;
 import javax.xml.stream.XMLStreamReader;
 import org.more.DoesSupportException;
+import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.TagProcess;
 import org.more.util.attribute.IAttribute;
 /**
- * 负责处理meta标签。
+ * 该类负责处理meta标签。
  * <br/>Date : 2009-11-23
  * @author 赵永春
  */
-class Tag_Meta extends DoTagEvent {
+public class Tag_Meta extends TagProcess {
     @Override
     public void doStartEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
         ContextStack parent = context.getParent();

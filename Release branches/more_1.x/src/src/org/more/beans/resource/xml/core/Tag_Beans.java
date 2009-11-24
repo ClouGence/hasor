@@ -13,35 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.resource.xml;
-import java.util.ArrayList;
+package org.more.beans.resource.xml.core;
 import javax.xml.stream.XMLStreamReader;
+
+import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.TagProcess;
 import org.more.util.StringConvert;
 /**
- * 负责处理beans标签
+ * 该类负责处理beans标签
  * Date : 2009-11-21
  * @author 赵永春
  */
-@SuppressWarnings("unchecked")
-class Tag_Beans extends DoTagEvent {
+public class Tag_Beans extends TagProcess {
     @Override
     public void doStartEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
-        context.context = new ArrayList();
         String staticCacheSize = xmlReader.getAttributeValue(null, "staticCatch");
         String dynamicCacheSize = xmlReader.getAttributeValue(null, "dynamicCache");
         context.setAttribute("staticCatch", StringConvert.parseInt(staticCacheSize, 10));
-        context.setAttribute("dynamicCache", StringConvert.parseInt(dynamicCacheSize, 10));
-        context.setAttribute("initBeanNS", new ArrayList());
-        context.setAttribute("allBeanNS", new ArrayList());
-        context.setAttribute("staticCatchCurrent", 0);
-    }
-    @Override
-    public void doEndEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
-        ContextStack parent = context.getParent();
-        parent.setAttribute("staticCatch", context.get("staticCatch"));
-        parent.setAttribute("dynamicCache", context.get("dynamicCache"));
-        parent.setAttribute("initBeanNS", context.get("initBeanNS"));
-        parent.setAttribute("allBeanNS", context.get("allBeanNS"));
-        parent.context = context.context;
+        context.setAttribute("dynamicCache", StringConvert.parseInt(dynamicCacheSize, 50));
     }
 }

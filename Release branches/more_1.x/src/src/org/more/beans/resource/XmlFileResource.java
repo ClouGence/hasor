@@ -18,9 +18,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
@@ -37,20 +37,25 @@ import org.more.util.attribute.AttBase;
 //三、解析工厂方法配置
 //四、解析属性配置
  * <br/>Date : 2009-11-21
- * @author Administrator
+ * @author 赵永春
  */
 @SuppressWarnings("unchecked")
 public class XmlFileResource extends AttBase implements BeanResource {
     //========================================================================================Field
     /**  */
     private static final long                 serialVersionUID = 5085542182667236561L;
-    protected XMLEngine                       xmlEngine        = null;                                 //
-    protected int                             staticCacheSize  = 10;                                   //
-    protected HashMap<String, BeanDefinition> staticCache      = new HashMap<String, BeanDefinition>(); //静态缓存
-    protected int                             dynamicCacheSize = 50;                                   //
-    protected HashMap<String, BeanDefinition> dynamicCache     = new HashMap<String, BeanDefinition>(); //动态缓存
-    protected ArrayList                       initBeanNS       = null;                                 //要求初始化的bean名称。
-    protected ArrayList                       allBeanNS        = null;                                 //所有bean名称。
+    private URI                               xmlFile          = null;                                 //配置文件
+    /*---------------------*/
+    /** XML解析引擎 */
+    protected XMLEngine                       xmlEngine        = null;
+    /**静态缓存对象数目。*/
+    protected int                             staticCacheSize  = 10;
+    /**静态缓存对象。*/
+    protected HashMap<String, BeanDefinition> staticCache      = new HashMap<String, BeanDefinition>();
+    /**动态缓存对象数目。*/
+    protected int                             dynamicCacheSize = 50;
+    /**动态缓存对象。*/
+    protected HashMap<String, BeanDefinition> dynamicCache     = new HashMap<String, BeanDefinition>();
     //==================================================================================Constructor
     /**创建XmlFileResource对象。*/
     public XmlFileResource() {
@@ -59,29 +64,12 @@ public class XmlFileResource extends AttBase implements BeanResource {
     /**创建XmlFileResource对象，参数filePath是配置文件位置。*/
     public XmlFileResource(String filePath) throws FileNotFoundException {
         this();
-        try {
-            this.xmlEngine.scanningXML(new FileInputStream(filePath), ".*");
-        } catch (XMLStreamException e) {
-            throw new InitializationException("在读取XML数据时发生异常，信息:" + e.getMessage());
-        }
+        this.xmlFile = new File(filePath).toURI();
     }
     /**创建XmlFileResource对象，参数file是配置文件位置。*/
     public XmlFileResource(File file) throws FileNotFoundException {
         this();
-        try {
-            this.xmlEngine.scanningXML(new FileInputStream(file), ".*");
-        } catch (XMLStreamException e) {
-            throw new InitializationException("在读取XML数据时发生异常，信息:" + e.getMessage());
-        }
-    }
-    /**创建XmlFileResource对象，参数in是配置文件流。*/
-    public XmlFileResource(InputStream in) {
-        this();
-        try {
-            this.xmlEngine.scanningXML(in, ".*");
-        } catch (XMLStreamException e) {
-            throw new InitializationException("在读取XML数据时发生异常，信息:" + e.getMessage());
-        }
+        this.xmlFile = file.toURI();
     }
     //=========================================================================================Impl
     @Override
@@ -91,7 +79,7 @@ public class XmlFileResource extends AttBase implements BeanResource {
     }
     @Override
     public boolean containsBeanDefinition(String name) {
-        return this.xmlEngine.testPath("/beans/bean/@name=" + name);
+        return this.xmlEngine.runTask("", processXPath, params)testPath("/beans/bean/@name=" + name);
     }
     @Override
     public BeanDefinition getBeanDefinition(String name) {
@@ -107,7 +95,8 @@ public class XmlFileResource extends AttBase implements BeanResource {
     }
     @Override
     public List<String> getBeanDefinitionNames() {
-        return (List<String>) this.allBeanNS.clone();
+        // TODO Auto-generated method stub
+        return null;
     }
     @Override
     public String getResourceDescription() {
@@ -126,17 +115,17 @@ public class XmlFileResource extends AttBase implements BeanResource {
     }
     @Override
     public URI getSourceURI() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.xmlFile;
     }
     @Override
-    public URL getSourceURL() {
+    public URL getSourceURL() throws MalformedURLException {
         // TODO Auto-generated method stub
-        return null;
+        return this.xmlFile.toURL();
     }
     @Override
     public List<String> getStrartInitBeanDefinitionNames() {
-        return (List<String>) this.initBeanNS.clone();
+        // TODO Auto-generated method stub
+        return null;
     }
     @Override
     public boolean isCacheBeanMetadata() {
@@ -144,7 +133,6 @@ public class XmlFileResource extends AttBase implements BeanResource {
     }
     @Override
     public boolean isFactory(String name) {
-        String isFactory = this.xmlEngine.getPath("");
         // TODO Auto-generated method stub
         return false;
     }

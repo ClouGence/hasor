@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.resource.xml;
+package org.more.beans.resource.xml.core;
 import java.util.ArrayList;
 import javax.xml.stream.XMLStreamReader;
 import org.more.NoDefinitionException;
 import org.more.beans.info.BeanInterface;
+import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.TagProcess;
 /**
- * 负责处理addImpl标签，单标记标签。<br/>
+ * 该类负责处理addImpl标签，单标记标签。<br/>
  * id="1" type="java.util.List" delegate-refBean="a" refType="refType"
  * Date : 2009-11-21
  * @author 赵永春
  */
 @SuppressWarnings("unchecked")
-class Tag_AddImpl extends DoTagEvent {
+public class Tag_AddImpl extends TagProcess {
     @Override
     public void doStartEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
         // id="1" type="java.util.List" delegate-refBean="a" refType="refType"
