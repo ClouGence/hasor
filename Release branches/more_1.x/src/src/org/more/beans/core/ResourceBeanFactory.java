@@ -107,12 +107,8 @@ public class ResourceBeanFactory implements BeanFactory, IAttribute {
         List<String> initBeanNames = this.resource.getStrartInitBeanDefinitionNames();
         if (initBeanNames == null)
             return;
-        for (String initBN : initBeanNames) {
-            BeanDefinition bd = this.resource.getBeanDefinition(initBN);
-            if (bd.isSingleton() == false || bd.isLazyInit() == true)
-                continue;
+        for (String initBN : initBeanNames)
             this.singletonBeanCache.put(initBN, this.getBean(initBN));
-        }
     }
     @Override
     public boolean containsBean(String name) {

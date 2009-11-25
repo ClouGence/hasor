@@ -21,18 +21,21 @@ import org.more.beans.resource.xml.ContextStack;
 import org.more.beans.resource.xml.TagProcess;
 import org.more.beans.resource.xml.TaskProcess;
 /**
- * （findBean）查找某个bean，参数findName确定查找的bean名如果找不到则返回null。
+ * 查找某个bean，如果找不到则返回null。
+ * 测试是否存在某个bean的任务。<br/>
+ * 任务名：findBean<br/>
+ * 任务参数：1.String要查找的bean名<br/>
+ * 返回值：属性值<br/>
  * <br/>Date : 2009-11-24
  * @author 赵永春
  */
-@SuppressWarnings("unchecked")
 public class Task_FindBeanDefinition implements TaskProcess {
     private String findName = null;
     private Object result   = null;
     //
     @Override
-    public void setConfig(Map params) {
-        this.findName = (String) params.get("findName");
+    public void setConfig(Object[] params) {
+        this.findName = (String) params[0];
     }
     @Override
     public Object getResult() {

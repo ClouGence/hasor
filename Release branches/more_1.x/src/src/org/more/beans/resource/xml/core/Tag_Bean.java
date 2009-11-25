@@ -30,7 +30,7 @@ import org.more.beans.resource.xml.TagProcess;
 import org.more.util.StringConvert;
 /**
  * 该类负责处理bean标签<br/>
- * id="" name="test_1" refType="refType" type="int" singleton="true" iocType="Export" export-refBean="abc" lazyInit="true" aopFilters-refBean="xxx,xxx,xxx"
+ * id="" name="test_1" type="int" singleton="true" iocType="Export" export-refBean="abc" lazyInit="true" aopFilters-refBean="xxx,xxx,xxx"
  * Date : 2009-11-21
  * @author 赵永春
  */
@@ -52,9 +52,7 @@ public class Tag_Bean extends TagProcess {
                 bean.setName(var);
             else if (key.equals("type") == true)
                 bean.setPropType(var);
-            else if (key.equals("refType") == true) {
-                //*******************************************************************************
-            } else if (key.equals("singleton") == true)
+            else if (key.equals("singleton") == true)
                 bean.setSingleton(StringConvert.parseBoolean(var, true));//默认单态开启
             else if (key.equals("iocType") == true)
                 /* ---------- */

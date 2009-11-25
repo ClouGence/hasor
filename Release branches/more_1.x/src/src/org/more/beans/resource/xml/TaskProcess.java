@@ -15,6 +15,7 @@
  */
 package org.more.beans.resource.xml;
 import java.util.Map;
+
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -23,7 +24,6 @@ import javax.xml.stream.XMLStreamReader;
  * <br/>Date : 2009-11-24
  * @author 赵永春
  */
-@SuppressWarnings("unchecked")
 public interface TaskProcess extends XMLStreamConstants {
     /**
      * xml解析引擎使用的是stax解析方式，当系统阅读到一个事件时将产生一次onEvent方法调用，eventType的值决定了是什么具体什么事件。
@@ -39,5 +39,5 @@ public interface TaskProcess extends XMLStreamConstants {
     /**获取返回值。*/
     public Object getResult();
     /**设置参数配置对象。*/
-    public void setConfig(Map params);
+    public void setConfig(Object[] params);
 }

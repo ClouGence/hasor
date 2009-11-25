@@ -21,18 +21,20 @@ import org.more.beans.resource.xml.ContextStack;
 import org.more.beans.resource.xml.TagProcess;
 import org.more.beans.resource.xml.TaskProcess;
 /**
- * （getAttribute）该任务是负责查找指定bean中的属性，并且返回属性值。<br/>
- * 参数beanName用于确定要查找的类名，参数attName用于确定要查找的属性名。
+ * 该任务是负责查找指定bean中的属性，并且返回属性值。<br/>
+ * 测试是否存在某个bean的任务。<br/>
+ * 任务名：getAttribute<br/>
+ * 任务参数：1.String要查找的bean名，2.String要查找的属性名<br/>
+ * 返回值：属性值<br/>
  * <br/>Date : 2009-11-24
  * @author 赵永春
  */
-@SuppressWarnings("unchecked")
 public class Task_GetBeanAttribute implements TaskProcess {
     private String beanName, attName, result = null;
     @Override
-    public void setConfig(Map params) {
-        this.beanName = (String) params.get("beanName");
-        this.attName = (String) params.get("attName");
+    public void setConfig(Object[] params) {
+        this.beanName = (String) params[0];
+        this.attName = (String) params[1];
     }
     @Override
     public Object getResult() {

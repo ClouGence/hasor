@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.beans.resource.xml.core;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.xml.stream.XMLStreamReader;
@@ -23,24 +24,30 @@ import org.more.beans.resource.xml.TagProcess;
 import org.more.beans.resource.xml.TaskProcess;
 import org.more.util.attribute.AttBase;
 /**
- * （init）执行初始化扫描XML，本任务是装载静态缓存以及阅读beans配置属性。<br/>
- * (int)staticCatch默认值10，表示静态缓存大小。
- * (HashMap<String, BeanDefinition>)beanMap，表示静态缓存。
+ * 执行初始化扫描XML，本任务是装载静态缓存以及阅读beans配置属性。<br/>
+ * 测试是否存在某个bean的任务。<br/>
+ * 任务名：init<br/>
+ * 任务参数：无<br/>
+ * 返回值：<br/>
+ * (int)staticCache默认值10，表示静态缓存大小。<br/>
+ * (HashMap<String, BeanDefinition>)beanMap，表示静态缓存。<br/>
  * (int)dynamicCache默认值50，表示动态缓存大小。
  * <br/>Date : 2009-11-24
  * @author 赵永春
  */
-@SuppressWarnings("unchecked")
 public class Task_Init implements TaskProcess {
     private AttBase                         result             = new AttBase();
     private int                             currentStaticCatch = 0;
     private Integer                         maxStaticCatch     = 10;
     private HashMap<String, BeanDefinition> beanMap            = new HashMap<String, BeanDefinition>();
+    private ArrayList<String>               initBean           = new ArrayList<String>(0);
+    private ArrayList<String>               allNames           = new ArrayList<String>(0);
     @Override
-    public void setConfig(Map params) {}
+    public void setConfig(Object[] params) {}
     @Override
     public Object getResult() {
         result.setAttribute("beanList", beanMap);
+        result.setAttribute("initBean", initBean);
         return result;
     }
     @Override
@@ -52,8 +59,9 @@ public class Task_Init implements TaskProcess {
         case START_ELEMENT:
             process.doStartEvent(onXPath, reader, elementStack);
             if (tagName.equals("beans") == true) {
-                maxStaticCatch = (Integer) elementStack.get("staticCatch");
-                result.setAttribute("staticCatch", maxStaticCatch);
+                maxStaticCatch = (Integer) elementStack.get("staticCache");
+                maxStaticCatch = (maxStaticCatch == null) ? 50 : maxStaticCatch;
+                result.setAttribute("staticCache", maxStaticCatch);
                 result.setAttribute("dynamicCache", elementStack.get("dynamicCache"));
             }
             break;
@@ -61,10 +69,15 @@ public class Task_Init implements TaskProcess {
             process.doEndEvent(onXPath, reader, elementStack);
             if (tagName.equals("bean") == true && maxStaticCatch > currentStaticCatch) {
                 BeanDefinition bean = (BeanDefinition) elementStack.context;
-                if (bean.isLazyInit() == false && bean.isSingleton() == true) {
+                //initBeans
+                if (bean.isLazyInit() == false && bean.isSingleton() == true)
+                    initBean.add(bean.getName());
+                //静态缓存
+                if (currentStaticCatch < maxStaticCatch) {
                     beanMap.put(bean.getName(), bean);
                     currentStaticCatch++;
                 }
+                allNames.add(bean.getName());
             }
             break;
         case CDATA:

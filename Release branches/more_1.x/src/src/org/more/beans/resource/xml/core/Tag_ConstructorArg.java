@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.more.beans.info.BeanProp;
 import org.more.beans.info.BeanProperty;
 import org.more.beans.resource.xml.ContextStack;
 /**
@@ -35,13 +36,19 @@ public class Tag_ConstructorArg extends Tag_Property {
     @Override
     public void doEndEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
         //一、获取堆栈的父堆栈，bean标签堆栈。
-        ContextStack parent = context.getParent();
-        ArrayList propList = (ArrayList) parent.get("tag_ConstructorArg");
-        if (propList == null) {
-            propList = new ArrayList();
-            parent.put("tag_ConstructorArg", propList);
+        ArrayList elementList = (ArrayList) context.get("tag_element");
+        if (elementList == null || elementList.size() == 0) {} else {
+            BeanProp bp = (BeanProp) elementList.get(0);
+            BeanProperty prop = (BeanProperty) context.context;
+            prop.setRefValue(bp);
         }
-        //二、添加属性
-        propList.add((BeanProperty) context.context);
+        //二、加入到bean的属性中。
+        ContextStack parent = context.getParent();
+        ArrayList propertyList = (ArrayList) parent.get("tag_ConstructorArg");
+        if (propertyList == null) {
+            propertyList = new ArrayList();
+            parent.put("tag_ConstructorArg", propertyList);
+        }
+        propertyList.add(context.context);
     }
 }

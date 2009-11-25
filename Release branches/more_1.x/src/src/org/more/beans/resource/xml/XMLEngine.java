@@ -16,7 +16,6 @@
 package org.more.beans.resource.xml;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 import javax.xml.stream.StreamFilter;
 import javax.xml.stream.XMLInputFactory;
@@ -126,12 +125,12 @@ public class XMLEngine extends AttBase {
     }
     //==========================================================================================Job
     /**执行XML任务。*/
-    public Object runTask(InputStream xmlStream, TaskProcess task, String processXPath) throws Exception {
+    public Object runTask(InputStream xmlStream, TaskProcess task, String processXPath, Object... params) throws Exception {
+        task.setConfig(params);
         return this.scanningXML(xmlStream, processXPath, task);
     }
     /**执行XML任务。*/
-    @SuppressWarnings("unchecked")
-    public Object runTask(InputStream xmlStream, String taskName, String processXPath, Map params) throws Exception {
+    public Object runTask(InputStream xmlStream, String taskName, String processXPath, Object... params) throws Exception {
         TaskProcess task = (TaskProcess) this.taskProcessMap.get(taskName).newInstance();
         task.setConfig(params);
         return this.scanningXML(xmlStream, processXPath, task);
