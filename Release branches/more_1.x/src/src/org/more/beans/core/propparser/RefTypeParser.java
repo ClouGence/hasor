@@ -19,6 +19,7 @@ import org.more.beans.core.ResourceBeanFactory;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.BeanProp;
 import org.more.beans.info.BeanProperty;
+import org.more.beans.info.Prop;
 import org.more.beans.info.PropRefValue;
 import org.more.util.StringConvert;
 /**
@@ -65,6 +66,12 @@ public class RefTypeParser implements PropertyParser {
     public Class<?> parserType(Object context, Object[] contextParams, BeanProp prop, BeanProperty propContext, BeanDefinition definition, ResourceBeanFactory factory, PropertyParser contextParser) throws Exception {
         PropRefValue p = (PropRefValue) prop;
         String refType = p.getRefType();
+        String propType = p.getPropType();
+        if (propType == null)
+            propType = propContext.getPropType();
+        if (propType != null)
+            return Prop.getType(propType, factory.getBeanClassLoader());
+        /*---------------*/
         if (refType == PropRefValue.PRV_Bean)
             //引用其他bean定义（PRV_Bean）
             return factory.getBeanType(p.getRefValue());

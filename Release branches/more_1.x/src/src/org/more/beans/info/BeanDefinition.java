@@ -61,7 +61,7 @@ public class BeanDefinition extends Prop {
     private CreateTypeEnum    createType            = CreateTypeEnum.New; //创建方式，默认为New。
     private BeanProperty[]    constructorParams     = null;              //构造方法参数表，当创建方式为工厂方式时，构造方法将失效，一切创建代码委托给工厂方法。
     private String            factoryRefBean        = null;              //使用工厂方式创建时的工厂bean名称。
-    private boolean           factoryIsStaticMethod = false;             //调用工厂类的方法是否为一个静态方法。
+    private boolean           factoryIsStaticMethod = true;              //调用工厂类的方法是否为一个静态方法。
     private String            factoryMethodName     = null;              //调用工厂类的方法名
     private BeanProperty[]    factoryMethodParams   = null;              //调用工厂类的方法时需要传递的参数，参数依照数组中元素顺序。
     //aop依赖数据

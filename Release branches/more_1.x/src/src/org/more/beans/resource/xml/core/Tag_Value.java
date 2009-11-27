@@ -75,7 +75,8 @@ public class Tag_Value extends TagProcess {
         }
         //==============================================================
         p.setId(var_id);
-        p.setPropType(var_type);
+        if (var_type != null)
+            p.setPropType(var_type);
         //==============================================================
         context.context = p;
     }
@@ -87,7 +88,6 @@ public class Tag_Value extends TagProcess {
             if (prop.getValue() == null)
                 prop.setValue(reader.getText());
         }
-        //System.out.println(reader.getText());
     }
     @Override
     public void doEndEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {

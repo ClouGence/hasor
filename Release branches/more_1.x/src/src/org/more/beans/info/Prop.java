@@ -83,4 +83,27 @@ public abstract class Prop extends AttBase {
         else
             this.propType = propType;
     }
+    /***/
+    public static Class<?> getType(String propType, ClassLoader loader) throws Exception {
+        if (propType == BeanProperty.TS_Integer)
+            return int.class;
+        else if (propType == BeanProperty.TS_Byte)
+            return byte.class;
+        else if (propType == BeanProperty.TS_Char)
+            return char.class;
+        else if (propType == BeanProperty.TS_Double)
+            return double.class;
+        else if (propType == BeanProperty.TS_Float)
+            return float.class;
+        else if (propType == BeanProperty.TS_Long)
+            return long.class;
+        else if (propType == BeanProperty.TS_Short)
+            return short.class;
+        else if (propType == BeanProperty.TS_Boolean)
+            return boolean.class;
+        else if (propType == BeanProperty.TS_String)
+            return String.class;
+        else
+            return loader.loadClass(propType);
+    }
 }

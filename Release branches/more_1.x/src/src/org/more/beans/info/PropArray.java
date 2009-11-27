@@ -15,7 +15,7 @@
  */
 package org.more.beans.info;
 /**
- * 负责封装bean定义中有关数组属性的信息，新建的数组对象如果没有指定数组类型则默认是:java.lang.Object对象。
+ * 负责封装bean定义中有关数组属性的信息。
  * <br/>Date : 2009-11-18
  * @author 赵永春
  */
@@ -30,9 +30,9 @@ public class PropArray extends BeanProp {
     public PropArray() {
         this.arrayElements = new BeanProp[0];
         this.length = 0;
-        this.setPropType("java.lang.Object");
+        //this.setPropType("java.lang.Object");
     }
-    /**创建一个数组对象，该对象的元素内容由参数elements决定，同时数组类型是java.lang.Object。*/
+    /**创建一个数组对象，该对象的元素内容由参数elements决定。*/
     public PropArray(BeanProp[] elements) {
         if (elements == null) {
             this.arrayElements = new BeanProp[0];
@@ -41,9 +41,9 @@ public class PropArray extends BeanProp {
             this.arrayElements = elements;
             this.length = elements.length;
         }
-        this.setPropType("java.lang.Object");
+        //this.setPropType("java.lang.Object");
     }
-    /**创建一个数组对象，该对象的元素内容由参数elements决定，同时数组类型由参数arrayType指定。*/
+    /**创建一个数组对象，该对象的元素内容由参数elements决定。*/
     public PropArray(BeanProp[] elements, String arrayType) {
         if (elements == null) {
             this.arrayElements = new BeanProp[0];

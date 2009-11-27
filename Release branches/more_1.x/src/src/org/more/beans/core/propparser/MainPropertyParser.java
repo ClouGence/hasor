@@ -19,6 +19,7 @@ import org.more.beans.core.ResourceBeanFactory;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.BeanProp;
 import org.more.beans.info.BeanProperty;
+import org.more.beans.info.Prop;
 import org.more.beans.info.PropArray;
 import org.more.beans.info.PropList;
 import org.more.beans.info.PropMap;
@@ -97,6 +98,10 @@ public class MainPropertyParser implements PropertyParser {
     }
     @Override
     public Class<?> parserType(Object context, Object[] contextParams, BeanProp prop, BeanProperty propContext, BeanDefinition definition, ResourceBeanFactory factory, PropertyParser contextParser) throws Exception {
+        String propType = propContext.getPropType();
+        if (propType != null)
+            return Prop.getType(propType, factory.getBeanClassLoader());
+        //
         if (prop == null)
             return factory.getBeanClassLoader().loadClass(propContext.getPropType());
         else if (prop instanceof PropVarValue)

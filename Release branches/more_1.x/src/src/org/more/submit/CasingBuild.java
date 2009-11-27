@@ -23,7 +23,7 @@ import org.more.InvokeException;
  * @author 赵永春
  */
 public abstract class CasingBuild {
-    private Config config = null; //配置信息
+    protected Config config = null; //配置信息
     /**
      * 初始化生成器并且传递初始化参数。
      * @param config 初始化参数对象。

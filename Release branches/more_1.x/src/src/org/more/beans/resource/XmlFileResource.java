@@ -34,7 +34,7 @@ import org.more.beans.info.CreateTypeEnum;
 import org.more.beans.resource.xml.XMLEngine;
 import org.more.util.attribute.AttBase;
 /**
- * 
+ * 提供了以XML作为数据源提供bean数据的支持。
  * <br/>Date : 2009-11-25
  * @author 赵永春
  */
@@ -67,32 +67,32 @@ public class XmlFileResource extends AttBase implements BeanResource {
         this.xmlEngine = new XMLEngine();
     }
     /**创建XmlFileResource对象，参数filePath是配置文件位置。*/
-    public XmlFileResource(String filePath) throws Exception {
+    public XmlFileResource(String filePath) throws InvokeException {
         this();
         this.xmlFile = new File(filePath);
         this.reload();
     }
     /**创建XmlFileResource对象，参数file是配置文件位置。*/
-    public XmlFileResource(File file) throws Exception {
+    public XmlFileResource(File file) throws InvokeException {
         this();
         this.xmlFile = file;
         this.reload();
     }
     /**创建XmlFileResource对象，参数xmlURI是配置文件位置。*/
-    public XmlFileResource(URI xmlURI) throws Exception {
+    public XmlFileResource(URI xmlURI) throws InvokeException {
         this();
         this.xmlURI = xmlURI;
         this.reload();
     }
     /**创建XmlFileResource对象，参数xmlURL是配置文件位置。*/
-    public XmlFileResource(URL xmlURL) throws Exception {
+    public XmlFileResource(URL xmlURL) throws InvokeException {
         this();
         this.xmlURL = xmlURL;
         this.reload();
     }
     //=========================================================================================Impl
     @SuppressWarnings("unchecked")
-    private void reload() throws Exception {
+    private void reload() throws InvokeException {
         this.clearCache();
         AttBase att = (AttBase) this.xmlEngine.runTask(this.getXmlInputStream(), "init", ".*");
         this.dynamicCacheSize = (Integer) att.get("dynamicCache");

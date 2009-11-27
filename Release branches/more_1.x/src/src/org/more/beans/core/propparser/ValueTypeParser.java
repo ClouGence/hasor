@@ -19,6 +19,7 @@ import org.more.beans.core.ResourceBeanFactory;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.BeanProp;
 import org.more.beans.info.BeanProperty;
+import org.more.beans.info.Prop;
 import org.more.beans.info.PropVarValue;
 import org.more.util.StringConvert;
 /**
@@ -61,23 +62,23 @@ public class ValueTypeParser implements PropertyParser {
     @Override
     public Class<?> parserType(Object context, Object[] contextParams, BeanProp prop, BeanProperty propContext, BeanDefinition definition, ResourceBeanFactory factory, PropertyParser contextParser) throws Exception {
         String propType = this.propType(prop, propContext);
-        if (propType == BeanProperty.TS_Integer)
+        if (propType == Prop.TS_Integer)
             return int.class;
-        else if (propType == BeanProperty.TS_Byte)
+        else if (propType == Prop.TS_Byte)
             return byte.class;
-        else if (propType == BeanProperty.TS_Char)
+        else if (propType == Prop.TS_Char)
             return char.class;
-        else if (propType == BeanProperty.TS_Double)
+        else if (propType == Prop.TS_Double)
             return double.class;
-        else if (propType == BeanProperty.TS_Float)
+        else if (propType == Prop.TS_Float)
             return float.class;
-        else if (propType == BeanProperty.TS_Long)
+        else if (propType == Prop.TS_Long)
             return long.class;
-        else if (propType == BeanProperty.TS_Short)
+        else if (propType == Prop.TS_Short)
             return short.class;
-        else if (propType == BeanProperty.TS_Boolean)
+        else if (propType == Prop.TS_Boolean)
             return boolean.class;
-        else if (propType == BeanProperty.TS_String)
+        else if (propType == Prop.TS_String)
             return String.class;
         else
             throw new DoesSupportException(propType + "不是一个有效的基本类型，ValueTypeParser可以处理的基本类型包括: int、byte、char、double、float、long、short、boolean、String。");

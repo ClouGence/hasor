@@ -48,6 +48,7 @@ public class Task_Init implements TaskProcess {
     public Object getResult() {
         result.setAttribute("beanList", beanMap);
         result.setAttribute("initBean", initBean);
+        result.setAttribute("allNames", allNames);
         return result;
     }
     @Override
@@ -67,16 +68,15 @@ public class Task_Init implements TaskProcess {
             break;
         case END_ELEMENT:
             process.doEndEvent(onXPath, reader, elementStack);
-            if (tagName.equals("bean") == true && maxStaticCatch > currentStaticCatch) {
+            if (tagName.equals("bean") == true) {
                 BeanDefinition bean = (BeanDefinition) elementStack.context;
-                //initBeans
+                if (maxStaticCatch > currentStaticCatch)
+                    if (currentStaticCatch < maxStaticCatch) {
+                        beanMap.put(bean.getName(), bean);//¾²Ì¬»º´æ
+                        currentStaticCatch++;
+                    }
                 if (bean.isLazyInit() == false && bean.isSingleton() == true)
-                    initBean.add(bean.getName());
-                //¾²Ì¬»º´æ
-                if (currentStaticCatch < maxStaticCatch) {
-                    beanMap.put(bean.getName(), bean);
-                    currentStaticCatch++;
-                }
+                    initBean.add(bean.getName());//initBeans
                 allNames.add(bean.getName());
             }
             break;

@@ -23,6 +23,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import org.more.InitializationException;
+import org.more.InvokeException;
 import org.more.core.io.AutoCloseInputStream;
 import org.more.util.attribute.AttBase;
 /**
@@ -41,7 +42,7 @@ public class XMLEngine extends AttBase {
     public XMLEngine() {
         try {
             Class<?> type = XMLEngine.class;
-            InputStream in = type.getResourceAsStream("/org/more/beans/resource/xml/tagProcess.properties");
+            InputStream in = type.getResourceAsStream("/org/more/beans/resource/xml/core/tagProcess.properties");
             Properties pro = new Properties();
             pro.load(new AutoCloseInputStream(in));//装载属性文件
             for (Object key : pro.keySet()) {
@@ -50,7 +51,7 @@ public class XMLEngine extends AttBase {
                 tagProcessMap.put(kn, (TagProcess) Class.forName(classType).newInstance());
             }
             /*---------------*/
-            in = type.getResourceAsStream("/org/more/beans/resource/xml/taskProcess.properties");
+            in = type.getResourceAsStream("/org/more/beans/resource/xml/core/taskProcess.properties");
             pro = new Properties();
             pro.load(new AutoCloseInputStream(in));//装载属性文件
             for (Object key : pro.keySet()) {
@@ -64,7 +65,7 @@ public class XMLEngine extends AttBase {
     }
     //========================================================================================Event
     /**扫描XML，processXPath是要处理的xpath匹配正则表达式。*/
-    protected Object scanningXML(InputStream in, String processXPath, TaskProcess doEventIteration) throws XMLStreamException {
+    protected Object scanningXML(InputStream in, String processXPath, TaskProcess doEventIteration) throws Exception {
         XMLStreamReader reader = this.getXMLStreamReader(in);
         ContextStack stack = null;//当前堆栈
         String onTag = null;//当前标签
@@ -125,14 +126,22 @@ public class XMLEngine extends AttBase {
     }
     //==========================================================================================Job
     /**执行XML任务。*/
-    public Object runTask(InputStream xmlStream, TaskProcess task, String processXPath, Object... params) throws Exception {
-        task.setConfig(params);
-        return this.scanningXML(xmlStream, processXPath, task);
+    public Object runTask(InputStream xmlStream, TaskProcess task, String processXPath, Object... params) throws InvokeException {
+        try {
+            task.setConfig(params);
+            return this.scanningXML(xmlStream, processXPath, task);
+        } catch (Exception e) {
+            throw new InvokeException(e);
+        }
     }
     /**执行XML任务。*/
-    public Object runTask(InputStream xmlStream, String taskName, String processXPath, Object... params) throws Exception {
-        TaskProcess task = (TaskProcess) this.taskProcessMap.get(taskName).newInstance();
-        task.setConfig(params);
-        return this.scanningXML(xmlStream, processXPath, task);
+    public Object runTask(InputStream xmlStream, String taskName, String processXPath, Object... params) throws InvokeException {
+        try {
+            TaskProcess task = (TaskProcess) this.taskProcessMap.get(taskName).newInstance();
+            task.setConfig(params);
+            return this.scanningXML(xmlStream, processXPath, task);
+        } catch (Exception e) {
+            throw new InvokeException(e);
+        }
     }
 }

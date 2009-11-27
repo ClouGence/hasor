@@ -15,11 +15,11 @@
  */
 package org.more.beans.core.propparser;
 import java.lang.reflect.Array;
-
 import org.more.beans.core.ResourceBeanFactory;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.BeanProp;
 import org.more.beans.info.BeanProperty;
+import org.more.beans.info.Prop;
 import org.more.beans.info.PropArray;
 /**
  * 对类型为{@link PropArray}的属性定义提供解析支持，如果{@link PropArray}没有配置具体数组类型则使用{@link Object}作为数组类型。
@@ -57,7 +57,7 @@ public class ArrayParser implements PropertyParser {
             propType = propContext.getPropType();
         if (propType == null)
             propType = "java.lang.Object";
-        Class<?> arrayType = factory.getBeanClassLoader().loadClass(propType);
+        Class<?> arrayType = Prop.getType(propType, factory.getBeanClassLoader());
         return Array.newInstance(arrayType, 1).getClass();
     }
 }

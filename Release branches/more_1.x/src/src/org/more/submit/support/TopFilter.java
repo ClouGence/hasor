@@ -85,7 +85,10 @@ public class TopFilter extends HttpServlet implements Filter {
             ActionManager am = (ActionManager) sc.getAttribute("org.more.web.submit.ROOT");
             if (am == null) {
                 CasingDirector director = new CasingDirector(config);//创建生成器
-                CasingBuild build = (CasingBuild) Class.forName(config.getInitParameter("buildClass")).newInstance();
+                String buildClassString = config.getInitParameter("buildClass");
+                if (buildClassString == null)
+                    buildClassString = "org.more.submit.casing.more.WebMoreCasingBuilder";
+                CasingBuild build = (CasingBuild) Class.forName(buildClassString).newInstance();
                 director.buildManager(build);//通过CasingDirector生成manager
                 this.actionManager = director.getResult();
                 sc.setAttribute("org.more.web.submit.ROOT", this.actionManager);
