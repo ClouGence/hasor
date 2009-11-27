@@ -20,7 +20,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
-
 import org.more.core.copybean.BeanType;
 import org.more.core.copybean.PropertyReaderWrite;
 /**

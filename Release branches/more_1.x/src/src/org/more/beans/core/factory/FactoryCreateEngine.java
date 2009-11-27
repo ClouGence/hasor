@@ -17,7 +17,6 @@ package org.more.beans.core.factory;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-
 import org.more.beans.BeanFactory;
 import org.more.beans.core.propparser.MainPropertyParser;
 import org.more.beans.info.BeanDefinition;

@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
-
 import org.more.dbpool.exception.ConnLevelException;
 import org.more.dbpool.exception.CreateConnectionException;
 import org.more.dbpool.exception.KeyException;
@@ -805,7 +804,7 @@ public class ConnectionPool {
      *   };<br>
      * 在示例中使用匿名类来确定如何连接到数据库以及在每次创建数据库连接时要执行的方法，在实际使用当中您可以继承该类以重写该方法达到该目的
      *
-     * @param conn String 连接字符串，该值可以由set_String方法设置
+     * @param connString String 连接字符串，该值可以由set_String方法设置
      * @param driveString String 驱动字符串，该值可以由set_String方法设置
      * @param userID String 登陆数据库使用的帐号，该值可以由set_DataBaseUser方法设置
      * @param password String 登陆数据库使用的帐号密码，该值可以由set_DataBaseUser方法设置

@@ -16,7 +16,6 @@
 package org.more.core.copybean.ext;
 import java.util.ArrayList;
 import java.util.Iterator;
-
 import org.more.core.copybean.BeanType;
 import org.more.core.copybean.PropertyReaderWrite;
 import org.more.util.attribute.IAttribute;

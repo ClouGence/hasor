@@ -18,7 +18,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
-
 import org.more.log.objects.DefaultLog;
 import org.more.log.objects.DefaultLogFormater;
 import org.more.log.objects.DefaultLogWrite;

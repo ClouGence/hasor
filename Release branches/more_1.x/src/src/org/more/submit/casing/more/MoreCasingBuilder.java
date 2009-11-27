@@ -15,7 +15,6 @@
  */
 package org.more.submit.casing.more;
 import java.io.File;
-
 import org.more.beans.BeanFactory;
 import org.more.beans.BeanResource;
 import org.more.beans.core.ResourceBeanFactory;

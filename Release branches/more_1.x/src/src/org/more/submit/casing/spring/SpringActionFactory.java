@@ -15,7 +15,6 @@
  */
 package org.more.submit.casing.spring;
 import java.util.ArrayList;
-
 import org.more.submit.ActionFactory;
 import org.more.util.StringConvert;
 import org.springframework.beans.factory.config.BeanDefinition;

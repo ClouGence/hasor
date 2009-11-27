@@ -15,7 +15,6 @@
  */
 package org.more.beans.resource.xml.core;
 import javax.xml.stream.XMLStreamReader;
-
 import org.more.beans.resource.xml.ContextStack;
 import org.more.beans.resource.xml.TagProcess;
 import org.more.util.StringConvert;

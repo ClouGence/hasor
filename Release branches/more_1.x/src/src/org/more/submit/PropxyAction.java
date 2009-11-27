@@ -16,7 +16,6 @@
 package org.more.submit;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
 import org.more.InvokeException;
 /**
  * 该类是代理Action类的代理类。该类的功能是增加一个可以通过name来决定调用哪个方法的处理对象。

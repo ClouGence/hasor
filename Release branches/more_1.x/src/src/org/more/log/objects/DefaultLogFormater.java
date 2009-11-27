@@ -15,7 +15,6 @@
  */
 package org.more.log.objects;
 import java.util.Date;
-
 import org.more.log.ILogFormater;
 /**
  * 默认格式化数据,输出时间+线程号+时间

@@ -16,7 +16,6 @@
 package org.more.beans.resource.xml.core;
 import java.util.Map;
 import javax.xml.stream.XMLStreamReader;
-
 import org.more.beans.resource.xml.ContextStack;
 import org.more.beans.resource.xml.TagProcess;
 import org.more.beans.resource.xml.TaskProcess;

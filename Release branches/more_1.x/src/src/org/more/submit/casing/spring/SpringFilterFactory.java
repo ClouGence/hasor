@@ -15,7 +15,6 @@
  */
 package org.more.submit.casing.spring;
 import java.util.ArrayList;
-
 import org.more.submit.ActionFilter;
 import org.more.submit.FilterFactory;
 import org.more.util.StringConvert;

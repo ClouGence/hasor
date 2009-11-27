@@ -22,7 +22,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import org.more.log.ILogWrite;
 /**
  * 日志系统-向文件输出；默认缓存512B

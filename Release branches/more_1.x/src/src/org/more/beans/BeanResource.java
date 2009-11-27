@@ -18,7 +18,6 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
-
 import org.more.DoesSupportException;
 import org.more.beans.info.BeanDefinition;
 /**

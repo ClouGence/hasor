@@ -16,7 +16,6 @@
 package org.more.core.task.task;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.more.core.task.LocationTask;
 import org.more.core.task.Task;
 import org.more.core.task.TaskState;

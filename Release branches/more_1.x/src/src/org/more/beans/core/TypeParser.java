@@ -15,7 +15,6 @@
  */
 package org.more.beans.core;
 import java.lang.reflect.Method;
-
 import org.more.beans.core.propparser.MainPropertyParser;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.BeanProperty;

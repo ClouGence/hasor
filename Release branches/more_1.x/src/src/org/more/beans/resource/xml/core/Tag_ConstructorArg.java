@@ -15,9 +15,7 @@
  */
 package org.more.beans.resource.xml.core;
 import java.util.ArrayList;
-
 import javax.xml.stream.XMLStreamReader;
-
 import org.more.beans.info.BeanProp;
 import org.more.beans.info.BeanProperty;
 import org.more.beans.resource.xml.ContextStack;

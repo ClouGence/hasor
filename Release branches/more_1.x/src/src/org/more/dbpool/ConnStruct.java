@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 package org.more.dbpool;
-import java.util.Date;
 import java.sql.Connection;
-
-import org.more.dbpool.exception.*;
+import java.util.Date;
+import org.more.dbpool.exception.AllotAndRepeatException;
+import org.more.dbpool.exception.AllotException;
+import org.more.dbpool.exception.RepeatIsZeroException;
+import org.more.dbpool.exception.ResLostnException;
 /**
  * 连接池中的一个连接类型
  * Date : 2009-5-17

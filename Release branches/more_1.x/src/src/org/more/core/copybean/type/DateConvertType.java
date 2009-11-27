@@ -17,7 +17,6 @@ package org.more.core.copybean.type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import org.more.core.copybean.ConvertType;
 /**
  * CopyBean处理Date类型转换的辅助类。

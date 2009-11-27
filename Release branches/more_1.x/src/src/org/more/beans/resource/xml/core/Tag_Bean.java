@@ -16,9 +16,7 @@
 package org.more.beans.resource.xml.core;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-
 import javax.xml.stream.XMLStreamReader;
-
 import org.more.NoDefinitionException;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.BeanInterface;

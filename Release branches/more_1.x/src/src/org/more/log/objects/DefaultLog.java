@@ -16,7 +16,6 @@
 package org.more.log.objects;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.more.log.ILog;
 import org.more.log.ILogFormater;
 import org.more.log.ILogWrite;
