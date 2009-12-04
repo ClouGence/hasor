@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.support;
+package org.more.submit.support.web;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,13 +29,14 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import org.more.core.copybean.CopyBeanUtil;
-import org.more.submit.ActionManager;
 import org.more.submit.CasingBuild;
 import org.more.submit.CasingDirector;
 import org.more.submit.Config;
+import org.more.submit.SubmitContext;
 /**
- * submit2.0组建对Web部分的支持，该类已经实现了Filter接口并且继承自HttpServlet类。
+ * submit3.0组建对Web部分的支持，该类已经实现了Filter接口并且继承自HttpServlet类。
  * 该web支持的配置只有一个参数buildClass，表示生成器的具体类型。action参数表示请求的协议名
  * 或者action表达试参数名。默认是action。<br/>
  * TopFilter会反射的形式创建生成器。过滤器递交方式action://test.tesy?aaa=aaa
@@ -44,23 +45,24 @@ import org.more.submit.Config;
  */
 @SuppressWarnings("unchecked")
 public class TopFilter extends HttpServlet implements Filter {
-    /**  */
+    //========================================================================================Field
     private static final long serialVersionUID = -9157250446565992949L;
-    private ActionManager     actionManager    = null;                 //action管理器。
+    private SubmitContext     actionManager    = null;                 //action管理器。
     private String            actionName       = "action";             //servlet存放表达试的参数名。filter用于解析action的协议前缀
-    //==================================================================
+    //==========================================================================================Job
     /** 执行调用 */
     private Object doAction(String exp, ServletRequest request, ServletResponse response) throws ServletException, IOException {
         try {
-            //添加线程环境参数
-            this.actionManager.addThreadContextParams("request", request);
-            this.actionManager.addThreadContextParams("response", response);
+            //添加参数
+            Map map = this.getParams(request);
+            map.put("request", request);
+            map.put("response", response);
+            //获取Session，利用SessionSynchronize负责建立HttpSession与Session之间的桥。
+            HttpSession session = ((HttpServletRequest) request).getSession(true);
             //执行调用
-            Object obj = this.actionManager.doAction(exp, this.getParams(request));
-            this.actionManager.clearThreadContextParams();//清空线程环境参数
+            Object obj = this.actionManager.doAction(exp, new SessionSynchronize(session), this.getParams(request));
             return obj;
-        } catch (Exception e) {
-            this.actionManager.clearThreadContextParams();//清空线程环境参数
+        } catch (Throwable e) {
             if (e instanceof ServletException)
                 throw (ServletException) e;
             else if (e instanceof IOException)
@@ -82,7 +84,7 @@ public class TopFilter extends HttpServlet implements Filter {
                 this.actionName = tem_actionName;
             // 2.初始化ActionManager
             ServletContext sc = (ServletContext) config.getContext();
-            ActionManager am = (ActionManager) sc.getAttribute("org.more.web.submit.ROOT");
+            SubmitContext am = (SubmitContext) sc.getAttribute("org.more.web.submit.ROOT");
             if (am == null) {
                 CasingDirector director = new CasingDirector(config);//创建生成器
                 String buildClassString = config.getInitParameter("buildClass");
@@ -91,6 +93,8 @@ public class TopFilter extends HttpServlet implements Filter {
                 CasingBuild build = (CasingBuild) Class.forName(buildClassString).newInstance();
                 director.buildManager(build);//通过CasingDirector生成manager
                 this.actionManager = director.getResult();
+                //替换属性保存器，使用ContextSynchronize类负责建立ServletContext与SubmitContext之间的桥梁
+                this.actionManager.setContextAtt(new ContextSynchronize(sc));
                 sc.setAttribute("org.more.web.submit.ROOT", this.actionManager);
                 sc.setAttribute("org.more.web.submit.ROOT.Action", this.actionName);
             }

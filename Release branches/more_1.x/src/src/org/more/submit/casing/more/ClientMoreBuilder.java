@@ -15,49 +15,50 @@
  */
 package org.more.submit.casing.more;
 import java.io.File;
+import org.more.InitializationException;
 import org.more.beans.BeanFactory;
-import org.more.beans.BeanResource;
 import org.more.beans.core.ResourceBeanFactory;
 import org.more.beans.resource.XmlFileResource;
-import org.more.submit.ActionFactory;
+import org.more.submit.ActionContext;
 import org.more.submit.CasingBuild;
-import org.more.submit.FilterFactory;
+import org.more.submit.Config;
 /**
- * 
+ * 提供以beans软件包为容器的submit3.0支撑环境，并且提供了一些常见创建方法。
+ * 当使用默认构造方法创建ClientMoreBuilder之后可以使用init方法传递参数configFile来指定配置文件位置从而初始化ClientMoreBuilder。
  * <br/>Date : 2009-11-21
  * @author 赵永春
  */
-public class MoreCasingBuilder extends CasingBuild {
+public class ClientMoreBuilder extends CasingBuild {
     //========================================================================================Field
-    private MoreActionFactory actionFactory = null;
-    private MoreFilterFactory filterFactory = null;
-    private BeanFactory       factory       = null;
+    protected BeanFactory factory = null;
     //==================================================================================Constructor
-    public MoreCasingBuilder(BeanFactory factory) {
+    public ClientMoreBuilder() {}
+    /**创建submit3.0支撑环境，使用指定的more.beans容器来创建它。*/
+    public ClientMoreBuilder(BeanFactory factory) {
         if (factory == null)
             throw new NullPointerException("factory参数不能为空。");
         this.factory = factory;
     }
-    public MoreCasingBuilder(String configFile) throws Exception {
+    /**创建submit3.0支撑环境，使用指定的more.beans配置文件初始化more.beans容器。*/
+    public ClientMoreBuilder(String configFile) {
         this.factory = new ResourceBeanFactory(new XmlFileResource(configFile), null);
     }
-    public MoreCasingBuilder(File configFile) throws Exception {
+    /**创建submit3.0支撑环境，使用指定的more.beans配置文件初始化more.beans容器。*/
+    public ClientMoreBuilder(File configFile) {
         this.factory = new ResourceBeanFactory(new XmlFileResource(configFile), null);
-    }
-    public MoreCasingBuilder(BeanResource resource, ClassLoader loader) throws Exception {
-        this.factory = new ResourceBeanFactory(resource, loader);
     }
     //==========================================================================================Job
+    /**该方法紧当使用ClientMoreBuilder构造方法创建对象时有效。*/
     @Override
-    public ActionFactory getActionFactory() {
-        if (this.actionFactory == null)
-            this.actionFactory = new MoreActionFactory(factory);
-        return actionFactory;
+    public void init(Config config) {
+        super.init(config);
+        if (this.factory == null)
+            this.factory = new ResourceBeanFactory(new XmlFileResource(config.getInitParameter("configFile")), null);
     }
     @Override
-    public FilterFactory getFilterFactory() {
-        if (this.filterFactory == null)
-            this.filterFactory = new MoreFilterFactory(factory);
-        return filterFactory;
+    public ActionContext getActionFactory() {
+        if (factory == null)
+            throw new InitializationException("没有执行初始化操作。");
+        return new MoreActionContext(this.factory);
     }
 }

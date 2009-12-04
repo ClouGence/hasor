@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 package org.more.submit;
-import org.more.InvokeException;
 /**
- * action过滤器，同时这个过滤器也叫做拦截器。
- * Date : 2009-6-29
+ * submit3.0的action执行过滤器，同时这个过滤器也叫做action拦截器。
+ * <br/>Date : 2009-11-28
  * @author 赵永春
  */
 public interface ActionFilter {
     /**
      * 当action请求被拦截之后拦截器的doActionFilter方法会被自动调用。如果向继续执行拦截器那么就调用chain方法的execute方法既可。
-     * @param method 要调用的目标方法名。
-     * @param event 当调用目标方法时希望给目标方法传递的事件对象。
+     * @param stack 当调用目标方法时希望给目标方法传递的事件对象。
      * @param chain 当执行过滤器时该参数可以用于决定是否继续执行过滤器。
      * @return 返回执行过滤器之后的执行结果。
-     * @throws InvokeException 当执行时发生异常
+     * @throws Throwable 当执行时发生异常
      */
-    public Object doActionFilter(String method, ActionMethodEvent event, ActionFilterChain chain) throws InvokeException;
+    public Object doActionFilter(ActionStack stack, FilterChain chain) throws Throwable;
 }

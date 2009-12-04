@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.support;
+package org.more.submit.support.web;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.Tag;
@@ -23,9 +23,11 @@ import javax.servlet.jsp.tagext.Tag;
  * @author ’‘”¿¥∫
  */
 public class ActionParamTag extends BodyTagSupport {
+    //========================================================================================Field
     private static final long serialVersionUID = 5847549188323147281L;
     private String            key              = null;
     private Object            value            = null;
+    //==========================================================================================Job
     @Override
     public int doStartTag() throws JspException {
         ActionTag aTag = (ActionTag) this.getParent();

@@ -22,6 +22,7 @@ package org.more.util.attribute;
  * @author 赵永春
  */
 public abstract class AbstractAttDecorator implements IAttribute {
+    //========================================================================================Field
     /** 原始的属性类 */
     private IAttribute source = null;
     /**
@@ -35,6 +36,7 @@ public abstract class AbstractAttDecorator implements IAttribute {
         else
             this.source = source;
     }
+    //==================================================================================Constructor
     /**
      * 获得装饰器装饰的原始属性对象。
      * @return 返回装饰器装饰的原始属性对象。

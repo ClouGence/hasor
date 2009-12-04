@@ -1,14 +1,18 @@
 <html><body><pre> 
-submit系统v2.0 
+submit系统v3.0 
 说明： 
- submit系统v2.0。submit系统当前版本重写了系统底层架构并且不在必须依赖web服务器。submit系统可以应用在普通桌面程序。 
- 控制台程序。如果你想在程序中使用请求转发器那么就可以使用submit2.0组建。submit2.0组建是一个完全独立的mvc框架。它的
- 工作是对一个action请求反复拦截进行处理，而拦截器的编写完全由用户自己开发。作为action只需要编写任意方法。方法中只能
- 有一个ActionMethodEvent类型的参数既可。根据外壳接口实现不同submit2.0可以自定义action源和过滤器源。这些扩展在casing软件包
- 中会有全面介绍。
- 不仅如此，submit2.0还有灵活的支撑环境，甚至你也可以简单的编写一个它的支撑环境，所谓submit2.0支撑环境就是在某个项目
- 中如何使用submit2.0的转发功能类。由于submit2.0不在依赖web因此对于web需要一个支撑环境。submit2.0在编写时候提供了
- filter方式、servlet方式、JSP标签方式。通过actionjs插件目前submit2.0也支持了javascript无刷新方式调用转发功能。
- submit2.0小巧，它只有12个核心类构成主要结构。并配合外壳扩展来完成自己的集成丰富。<br/>
- <a href="doc-files/submit_v2_0_struct.png">submit2.0系统结构图</a>
-</pre></body></html>
+submit系统v3.0。submit系统当前版本重写了整个submit2.0系统并且发生重大底层架构更新，本次改动如下：
+  1.增加了submit的Session支持。使action调用时需要保存的临时信息可以保存到session中用于缓存。
+  2.提供了Session接口用来保存Action范围之外的临时数据。
+  3.保留不依赖J2EE的特性，submit3.0系统仍然可以应用在普通桌面程序。submit3.0组建仍然是一个完全独立的mvc框架。
+  4.提供了Action调用堆栈的支持，如果Action再次调用了其他action则堆栈会自动创建子堆栈。
+  5.更改submit2.0系统中的action标记类型参数ActionMethodEvent为ActionStack。
+  6.减少了扩展submit3.0时候所提供的Factory数量。
+  7.删除了2.0版本中线程参数对象的特性，取代的是SubmitContext属性、Session属性、ActionStack属性。
+  8.更清晰的内核结构。
+  9.提供SubmitContext、Session、ActionStack的属性监听器功能。
+  10.在使用Spring做容器时候不必在必须配置Spring监听器，submit3.0提供通过参数传递Spring配置文件。
+  11.在集成Spring时可以配置Spring监听器，同时submit3.0的配置文件参数就会失效。
+</pre>
+<a href="doc-files/submit_v2_0_struct.png">submit2.0系统结构图</a>
+</body></html>

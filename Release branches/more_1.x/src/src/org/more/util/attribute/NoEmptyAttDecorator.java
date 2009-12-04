@@ -20,6 +20,7 @@ package org.more.util.attribute;
  * @author 赵永春
  */
 public class NoEmptyAttDecorator extends AbstractAttDecorator {
+    //==================================================================================Constructor
     /**
      * 创建属性装饰器，该装饰器的目的是限制属性值必须不能为空。
      * @param source 要装饰的目标属性对象。
@@ -28,6 +29,7 @@ public class NoEmptyAttDecorator extends AbstractAttDecorator {
     public NoEmptyAttDecorator(IAttribute source) throws NullPointerException {
         super(source);
     }
+    //==========================================================================================Job
     /**
      * 设置属性，该方法装饰了原有属性设置方法，并且限制了属性值必须不能为空。
      * @param name 要保存的属性名。

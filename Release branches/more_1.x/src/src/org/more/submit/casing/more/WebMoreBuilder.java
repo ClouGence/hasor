@@ -16,43 +16,27 @@
 package org.more.submit.casing.more;
 import javax.servlet.ServletContext;
 import org.more.InvokeException;
-import org.more.beans.BeanFactory;
 import org.more.beans.core.ResourceBeanFactory;
 import org.more.beans.resource.XmlFileResource;
-import org.more.submit.ActionFactory;
-import org.more.submit.CasingBuild;
 import org.more.submit.Config;
-import org.more.submit.FilterFactory;
 /**
- * 
- * <br/>Date : 2009-11-26
- * @author Administrator
+ * WebMoreBuilder类扩展了ClientMoreBuilder提供了web的支持，init方法传入configFile参数WebMoreBuilder类会自动使用
+ * ServletContext对象转换其路径然后创建ResourceBeanFactory以完成初始化。
+ * <br/>Date : 2009-12-2
+ * @author 赵永春
  */
-public class WebMoreCasingBuilder extends CasingBuild {
-    //========================================================================================Field
-    private MoreActionFactory actionFactory = null;
-    private MoreFilterFactory filterFactory = null;
-    private BeanFactory       factory       = null;
+public class WebMoreBuilder extends ClientMoreBuilder {
     //==================================================================================Constructor
     /** 使用Web形式构建More的ActionManager，如果在构造方法中没有指定任何参数则当ActionManager在初始化时候回用过init方法获取，SpringContext */
-    public WebMoreCasingBuilder() {}
+    public WebMoreBuilder() {}
+    //==========================================================================================Job
     @Override
     public void init(Config config) throws InvokeException {
-        super.init(config);
-        System.out.println("init WebMoreCasingBuilder...");
+        this.config = config;
+        System.out.println("init WebMoreBuilder...");
         ServletContext sc = (ServletContext) this.getConfig().getContext();
-        String configFile = sc.getRealPath(config.getInitParameter("config"));
+        String configFile = sc.getRealPath(config.getInitParameter("configFile"));
         this.factory = new ResourceBeanFactory(new XmlFileResource(configFile), null); //创建对象
-        this.actionFactory = new MoreActionFactory(factory);
-        this.filterFactory = new MoreFilterFactory(factory);
-        System.out.println("init WebMoreCasingBuilder OK");
-    }
-    @Override
-    public ActionFactory getActionFactory() {
-        return this.actionFactory;
-    }
-    @Override
-    public FilterFactory getFilterFactory() {
-        return this.filterFactory;
+        System.out.println("init WebMoreBuilder OK");
     }
 }

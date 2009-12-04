@@ -13,21 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.support;
+package org.more.submit.support.web;
 import java.util.Enumeration;
-import javax.servlet.ServletConfig;
+import javax.servlet.FilterConfig;
 import org.more.submit.Config;
 /**
- * ServletConfig对象到Config接口的转换类
+ * FilterConfig对象到Config接口的转换类
  * Date : 2009-6-30
  * @author 赵永春
  */
 @SuppressWarnings("unchecked")
-class ServletSubmitConfig implements Config {
-    private ServletConfig config = null;
-    public ServletSubmitConfig(ServletConfig config) {
+class FilterSubmitConfig implements Config {
+    //========================================================================================Field
+    private FilterConfig config = null;
+    //==================================================================================Constructor
+    public FilterSubmitConfig(FilterConfig config) {
         this.config = config;
     }
+    //==========================================================================================Job
     @Override
     public Object getContext() {
         return this.config.getServletContext();

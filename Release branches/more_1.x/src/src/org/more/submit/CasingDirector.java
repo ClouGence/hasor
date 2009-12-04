@@ -17,14 +17,15 @@ package org.more.submit;
 import java.util.Hashtable;
 import org.more.submit.support.MapSubmitConfig;
 /**
- * submit2.0框架外壳扩展生成器管理器。该部件是组合CasingBuild生成器生成的各个对象的工具。
- * 通过CasingBuild组合之后可以获得ActionManager对象。
- * Date : 2009-6-30
+ * submit3.0框架外壳扩展生成器管理器，通过CasingBuild组合之后可以获得SubmitContext对象。
+ * <br/>Date : 2009-12-1
  * @author 赵永春
  */
 public class CasingDirector {
-    private ActionManager manager = null; //组合之后生成的ActionManager对象。
+    //========================================================================================Field
+    private SubmitContext manager = null; //组合之后生成的SubmitContext对象。
     private Config        config  = null;
+    //==================================================================================Constructor
     /**
      * 创建一个submit2.0框架外壳扩展生成器管理器。
      * @param config 该生成器在buildManager时需要的配置对象。
@@ -34,26 +35,20 @@ public class CasingDirector {
             this.config = new MapSubmitConfig(new Hashtable<String, Object>(), null);
         this.config = config;
     }
+    //==========================================================================================Job
     /**
-     * 调用生成器生成ActionManager对象，生成的ActionManager的对象可以需要通过getResult方法获取。
-     * @param build 生成ActionManager对象时需要用到的生成器。
+     * 调用生成器生成SubmitContext对象，生成的SubmitContext的对象可以需要通过getResult方法获取。
+     * @param build 生成SubmitContext对象时需要用到的生成器。
      */
     public void buildManager(CasingBuild build) {
         build.init(this.config);//初始化生成器
-        ActionFactory saf = build.getActionFactory();
-        FilterFactory sff = build.getFilterFactory();
-        //
-        ActionContext ac = ActionContext.newInstance(saf);
-        ac.setFilterFactory(sff);
-        ActionManager am = new ActionManager();
-        am.setContext(ac);
-        this.manager = am;
+        this.manager = new SubmitContext(build.getActionFactory());
     }
     /**
-     * 获取组合之后生成的ActionManager对象。
-     * @return 返回组合之后生成的ActionManager对象。
+     * 获取组合之后生成的SubmitContext对象。
+     * @return 返回组合之后生成的SubmitContext对象。
      */
-    public ActionManager getResult() {
+    public SubmitContext getResult() {
         return manager;
     }
 }
