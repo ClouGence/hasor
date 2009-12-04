@@ -1,7 +1,18 @@
 <html><body><pre> 
-submit系统v3.0 
-说明： 
-submit系统v3.0。submit系统当前版本重写了整个submit2.0系统并且发生重大底层架构更新，本次改动如下：
+submit2.0：
+  1.独立的MVC框架，它没有自己的配置文件需要集成使用。
+  2.提供了以spring作为action容器的支持。
+  3.提供了以beans作为action容器的支持。
+  4.可以配置全局action过滤器。
+  5.可以独立配置每个action过滤器。
+  6.在action处理中可以通过event对象来直接调用另外的一个action并且获取其返回值。
+  7.action可以返回任意类型对象。
+  8.可以在ActionManager上绑定全局属性，让每个action都可以访问到。也可以传递私有属性到某一个acion中。
+  9.提供了submit2.0对web环境和非web环境的支持。
+  10.web环境中提供了Servlet方式配置和Filter方式部署的支持。
+  11.web环境中提供了页面预处理标签的支持。类似asp的include功能，只不过包含的是action代码。使一个jsp页中可以支持多个action的调用。页面预处理可以获取action返回值。
+
+submit系统v3.0更新说明：
   1.增加了submit的Session支持。使action调用时需要保存的临时信息可以保存到session中用于缓存。
   2.提供了Session接口用来保存Action范围之外的临时数据。
   3.保留不依赖J2EE的特性，submit3.0系统仍然可以应用在普通桌面程序。submit3.0组建仍然是一个完全独立的mvc框架。
