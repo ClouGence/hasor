@@ -24,7 +24,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import org.more.DoesSupportException;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import org.more.FormatException;
 import org.more.InvokeException;
 import org.more.NoDefinitionException;
 import org.more.ResourceException;
@@ -61,38 +66,71 @@ public class XmlFileResource extends AttBase implements BeanResource {
     private HashMap<String, BeanDefinition> dynamicCache        = new HashMap<String, BeanDefinition>();
     /***/
     private LinkedList<String>              dynamicCacheNames   = new LinkedList<String>();
+    /***/
+    private boolean                         validatorXML        = true;                                 //是否开启XSD验证。
     //==================================================================================Constructor
     /**创建XmlFileResource对象。*/
     public XmlFileResource() {
         this.xmlEngine = new XMLEngine();
     }
     /**创建XmlFileResource对象，参数filePath是配置文件位置。*/
-    public XmlFileResource(String filePath) throws InvokeException {
+    public XmlFileResource(String filePath) {
         this();
         this.xmlFile = new File(filePath);
         this.reload();
     }
     /**创建XmlFileResource对象，参数file是配置文件位置。*/
-    public XmlFileResource(File file) throws InvokeException {
+    public XmlFileResource(File file) {
         this();
         this.xmlFile = file;
         this.reload();
     }
     /**创建XmlFileResource对象，参数xmlURI是配置文件位置。*/
-    public XmlFileResource(URI xmlURI) throws InvokeException {
+    public XmlFileResource(URI xmlURI) {
         this();
         this.xmlURI = xmlURI;
         this.reload();
     }
     /**创建XmlFileResource对象，参数xmlURL是配置文件位置。*/
-    public XmlFileResource(URL xmlURL) throws InvokeException {
+    public XmlFileResource(URL xmlURL) {
         this();
         this.xmlURL = xmlURL;
         this.reload();
     }
     //=========================================================================================Impl
+    /**是否开启Schema验证XML配置正确性，默认值是true开启验证。*/
+    public boolean isValidatorXML() {
+        return validatorXML;
+    }
+    /**设置是否开启Schema验证XML配置正确性。*/
+    public void setValidatorXML(boolean validatorXML) {
+        this.validatorXML = validatorXML;
+    }
+    /** 通过Schema验证XML配置是否正确，返回null表示验证通过，否则返回错误信息。 */
+    public String validatorConfigXML() {
+        if (this.validatorXML == false)
+            return null;
+        //----
+        try {
+            SchemaFactory schemaFactory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");//建立schema工厂
+            Source xsdSource = new StreamSource(XmlFileResource.class.getResourceAsStream("/META-INF/beans-schema.xsd"));
+            Schema schema = schemaFactory.newSchema(xsdSource); //利用schema工厂，接收验证文档文件对象生成Schema对象
+            Validator validator = schema.newValidator();//通过Schema产生针对于此Schema的验证器，利用students.xsd进行验证
+            Source source = new StreamSource(this.getXmlInputStream());//得到验证的数据源
+            //开始验证，成功输出success!!!，失败输出fail
+            validator.validate(source);
+            System.out.println("XmlFileResource validatorConfigXML 校验XML成功 OK！");
+            return null;
+        } catch (Exception ex) {
+            System.out.println("XmlFileResource validatorConfigXML 校验XML失败 Error！");
+            return "validator error[" + ex.getLocalizedMessage() + "]";
+        }
+    }
     @SuppressWarnings("unchecked")
-    private void reload() throws InvokeException {
+    private void reload() {
+        String str = this.validatorConfigXML();
+        if (str != null)
+            throw new FormatException("Schema验证失败：" + str);
         this.clearCache();
         AttBase att = (AttBase) this.xmlEngine.runTask(this.getXmlInputStream(), "init", ".*");
         this.dynamicCacheSize = (Integer) att.get("dynamicCache");
@@ -102,7 +140,7 @@ public class XmlFileResource extends AttBase implements BeanResource {
         this.allNames = (ArrayList<String>) att.get("allNames");
     }
     /**获取XML输入流。*/
-    private InputStream getXmlInputStream() {
+    private InputStream getXmlInputStream() throws ResourceException {
         try {
             if (this.xmlFile != null)
                 return new FileInputStream(this.xmlFile);
@@ -116,7 +154,7 @@ public class XmlFileResource extends AttBase implements BeanResource {
         }
     }
     @Override
-    public void clearCache() throws DoesSupportException {
+    public void clearCache() {
         this.staticCache.clear();
         this.dynamicCache.clear();
     }
@@ -125,7 +163,7 @@ public class XmlFileResource extends AttBase implements BeanResource {
         return this.allNames.contains(name);
     }
     @Override
-    public BeanDefinition getBeanDefinition(String name) {
+    public BeanDefinition getBeanDefinition(String name) throws InvokeException {
         try {
             if (this.staticCache.containsKey(name) == true)
                 return this.staticCache.get(name);
@@ -188,7 +226,7 @@ public class XmlFileResource extends AttBase implements BeanResource {
      * @return 返回测试结果，如果是以原型模式创建则返回true,否则返回false。
      */
     @Override
-    public boolean isFactory(String name) {
+    public boolean isFactory(String name) throws InvokeException {
         try {
             if (this.staticCache.containsKey(name) == true)
                 return (this.staticCache.get(name).getCreateType() == CreateTypeEnum.Factory) ? true : false;

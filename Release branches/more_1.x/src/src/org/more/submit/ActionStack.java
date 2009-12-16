@@ -24,14 +24,16 @@ import org.more.util.attribute.IAttribute;
  */
 public class ActionStack implements IAttribute {
     //========================================================================================Field
-    private static final long serialVersionUID = 5001483997344333143L;
-    private IAttribute        stackAtt         = new AttBase();
-    private ActionStack       parent           = null;                //
-    private String            actionName       = null;                //
-    private String            actionMethod     = null;                //
-    private String            invokeString     = null;                //
-    private Session           session          = null;                //
-    private SubmitContext     context          = null;
+    private static final long serialVersionUID    = 5001483997344333143L;
+    private IAttribute        stackAtt            = new AttBase();       //保存当前堆栈的属性集合
+    private ActionStack       parent              = null;                //堆栈的父级
+    private String            actionName          = null;                //调用的action名
+    private String            actionMethod        = null;                //调用的action方法名
+    private String            invokeString        = null;                //调用字符串
+    private Session           session             = null;                //会话
+    private SubmitContext     context             = null;                //上下文
+    private String            resultsScript       = null;                //当完成action调用之后执行的JS脚本
+    private Object[]          resultsScriptParams = null;                //当完成action调用之后执行的JS脚本
     //==================================================================================Constructor
     ActionStack(ActionStack parent, Session session, SubmitContext context) {
         this.parent = parent;
@@ -71,7 +73,7 @@ public class ActionStack implements IAttribute {
         if (obj == null && this.parent != null)
             obj = this.parent.getParam(key);
         //
-        if (this.session != null)
+        if (obj == null && this.session != null)
             obj = this.session.getAttribute(key);
         if (obj == null)
             obj = this.context.getAttribute(key);
@@ -107,6 +109,18 @@ public class ActionStack implements IAttribute {
      */
     public SubmitContext getContext() {
         return context;
+    }
+    /** 返回当本次Action调用结束之后进行回调的脚本处理。 */
+    public String getResultsScript() {
+        return resultsScript;
+    }
+    /** 设置当本次Action调用结束之后进行回调的脚本名称。这些脚本存放在/META-INF/submit_scripts/目录中 */
+    public void setResultsScript(String resultsScript, Object... params) {
+        this.resultsScript = resultsScript;
+        this.resultsScriptParams = params;
+    }
+    Object[] getResultsScriptParams() {
+        return resultsScriptParams;
     }
     //==========================================================================================Job
     void setParent(ActionStack parent) {

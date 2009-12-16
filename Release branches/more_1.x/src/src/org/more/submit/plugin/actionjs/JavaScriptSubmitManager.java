@@ -41,7 +41,7 @@ public class JavaScriptSubmitManager {
         Map params = (Map) MoreSerialization.toObject(event.getParam("args").toString());//获取参数列表
         Object result = event.getContext().doActionOnStack(callName, event, params);//Action方式调用
         //======================================================================================
-        HttpServletResponse response = (HttpServletResponse) event.getAttribute("response");
+        HttpServletResponse response = (HttpServletResponse) event.getParam("response");
         try {
             response.getWriter().print(MoreSerialization.toString(result));
             response.getWriter().flush();
@@ -52,10 +52,10 @@ public class JavaScriptSubmitManager {
         //获取输出对象
         Writer write = null;
         if (event.contains("ActionTag") == true) {
-            ActionTag tag = (ActionTag) event.getAttribute("ActionTag");
+            ActionTag tag = (ActionTag) event.getParam("ActionTag");
             write = tag.getOut();
         } else {
-            HttpServletResponse response = (HttpServletResponse) event.getAttribute("response");
+            HttpServletResponse response = (HttpServletResponse) event.getParam("response");
             write = response.getWriter();
         }
         //输出核心脚本
@@ -69,11 +69,11 @@ public class JavaScriptSubmitManager {
             else
                 str.append(str_read + "\n");
         }
-        //        //如果参数min为true表示输出最小化脚本，最小化脚本中不包含action的定义。
-        //        if ("true".equals(event.getParamString("min")) == true)
-        //            return str;
+        //如果参数min为true表示输出最小化脚本，最小化脚本中不包含action的定义。
+        if ("true".equals(event.getParamString("min")) == true)
+            return str;
         //输出方法定义 org.more.web.submit.ROOT.Action
-        HttpServletRequest request = (HttpServletRequest) event.getAttribute("request");
+        HttpServletRequest request = (HttpServletRequest) event.getParam("request");
         String host = request.getServerName() + ":" + request.getLocalPort();
         str.append("more.retain.serverCallURL=\"http://" + host + "/post://" + event.getActionName() + ".execute\";");
         str.append("more.server={};");

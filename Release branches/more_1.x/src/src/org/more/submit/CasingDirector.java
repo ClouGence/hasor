@@ -40,7 +40,7 @@ public class CasingDirector {
      * 调用生成器生成SubmitContext对象，生成的SubmitContext的对象可以需要通过getResult方法获取。
      * @param build 生成SubmitContext对象时需要用到的生成器。
      */
-    public void buildManager(CasingBuild build) {
+    public void build(CasingBuild build) {
         build.init(this.config);//初始化生成器
         this.manager = new SubmitContext(build.getActionFactory());
     }

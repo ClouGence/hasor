@@ -42,7 +42,7 @@ import org.more.util.attribute.KeepAttDecorator;
  * Date : 2009-11-17
  * @author ’‘”¿¥∫
  */
-public class ResourceBeanFactory implements BeanFactory, IAttribute {
+public class ResourceBeanFactory implements BeanFactory {
     /**  */
     private static final long       serialVersionUID   = -2164352693306612896L;
     //========================================================================================Field

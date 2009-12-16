@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.beans;
+import org.more.util.attribute.IAttribute;
 /**
  * 这个接口是More的Bean容器的根接口，BeanFactory的子接口可以用于特定目的进行实现。<br/><br/>
  * 在BeanFactory中所有Bean都有唯一的一个名称。该工厂将返回一个包含对象的一个独立实例(原型设计模式)，或单个
@@ -22,7 +23,7 @@ package org.more.beans;
  * Date : 2009-11-3
  * @author 赵永春
  */
-public interface BeanFactory {
+public interface BeanFactory extends IAttribute {
     /**
      * 获取BeanFactory所使用的Bean定义资源，该资源对象可以提供有关Bean定义信息。
      * @return 返回BeanFactory所使用的Bean定义资源，该资源对象可以提供有关Bean定义信息。

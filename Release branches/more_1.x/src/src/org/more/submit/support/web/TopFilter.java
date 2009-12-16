@@ -60,7 +60,7 @@ public class TopFilter extends HttpServlet implements Filter {
             //获取Session，利用SessionSynchronize负责建立HttpSession与Session之间的桥。
             HttpSession session = ((HttpServletRequest) request).getSession(true);
             //执行调用
-            Object obj = this.actionManager.doAction(exp, new SessionSynchronize(session), this.getParams(request));
+            Object obj = this.actionManager.doAction(exp, new SessionSynchronize(session), map);
             return obj;
         } catch (Throwable e) {
             if (e instanceof ServletException)
@@ -84,14 +84,14 @@ public class TopFilter extends HttpServlet implements Filter {
                 this.actionName = tem_actionName;
             // 2.初始化ActionManager
             ServletContext sc = (ServletContext) config.getContext();
-            SubmitContext am = (SubmitContext) sc.getAttribute("org.more.web.submit.ROOT");
-            if (am == null) {
+            actionManager = (SubmitContext) sc.getAttribute("org.more.web.submit.ROOT");
+            if (actionManager == null) {
                 CasingDirector director = new CasingDirector(config);//创建生成器
                 String buildClassString = config.getInitParameter("buildClass");
                 if (buildClassString == null)
-                    buildClassString = "org.more.submit.casing.more.WebMoreCasingBuilder";
+                    buildClassString = "org.more.submit.casing.more.WebMoreBuilder";
                 CasingBuild build = (CasingBuild) Class.forName(buildClassString).newInstance();
-                director.buildManager(build);//通过CasingDirector生成manager
+                director.build(build);//通过CasingDirector生成manager
                 this.actionManager = director.getResult();
                 //替换属性保存器，使用ContextSynchronize类负责建立ServletContext与SubmitContext之间的桥梁
                 this.actionManager.setContextAtt(new ContextSynchronize(sc));

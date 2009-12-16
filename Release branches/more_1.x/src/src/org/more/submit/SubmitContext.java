@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 package org.more.submit;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import org.more.FormatException;
 import org.more.NoDefinitionException;
 import org.more.util.attribute.AttBase;
@@ -103,7 +109,8 @@ public class SubmitContext implements IAttribute {
         //三、配置共有过滤器
         invoke = this.actionContext.configPublicFilter(actionName, invoke);
         //四、执行调用
-        return invoke.invoke(stack);
+        Object res = invoke.invoke(stack);
+        return this.shellCallBack(stack, res);
     };
     /**
      * 调用action被调用的action是传承自event的，这包括了传承堆栈和会话信息。注意：该方法只有当在action执行期间调用才会发挥作用。
@@ -144,7 +151,8 @@ public class SubmitContext implements IAttribute {
         //三、配置私有过滤器
         invoke = this.actionContext.configPrivateFilter(actionName, invoke);
         //四、执行调用
-        return invoke.invoke(newStack);
+        Object res = invoke.invoke(newStack);
+        return this.shellCallBack(newStack, res);
     };
     /***/
     private ActionStack parseInvokeString(String invokeString, ActionStack stack) throws FormatException {
@@ -162,6 +170,21 @@ public class SubmitContext implements IAttribute {
         stack.setActionName(actionName);
         stack.setActionMethod(actionMethod);
         return stack;
+    }
+    /** */
+    private Object shellCallBack(ActionStack stack, Object results) throws Exception {
+        ScriptEngineManager manager = new ScriptEngineManager();
+        ScriptEngine engine = manager.getEngineByName("JavaScript");
+        String scriptIn = "/META-INF/submit_scripts/" + stack.getResultsScript() + ".js";
+        InputStream in = SubmitContext.class.getResourceAsStream(scriptIn);
+        if (stack.getResultsScript() == null)
+            return results;
+        if (in == null)
+            throw new ScriptException("找不到脚本资源[" + scriptIn + "]");
+        // 
+        engine.eval(new InputStreamReader(in));
+        Invocable inv = (Invocable) engine;
+        return inv.invokeFunction("callBack", stack, results, stack.getResultsScriptParams());
     }
     //==========================================================================================Att
     @Override
