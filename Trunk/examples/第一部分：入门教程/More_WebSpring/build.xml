@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="javascriptBank" default="run" basedir=".">
+	<description>生成项目，并将项目打包到jar中</description>
+	<!-- ================================================================ -->
+	<property name="src" value="src" />
+	<property name="webContent" value="WebContent" />
+	<property name="classes" value="WebContent/WEB-INF/classes" />
+	<property name="WebRunDir" value="c:/webroot" />
+	<!-- ================================================================ -->
+	<target name="clear">
+		<delete includeemptydirs="true">
+			<fileset dir="${WebRunDir}" includes="**/*" />
+		</delete>
+	</target>
+	<target name="run">
+		<copydir dest="${WebRunDir}" src="${webContent}" />
+	</target>
+</project>
