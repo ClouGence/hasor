@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="javascriptBank" default="run" basedir=".">
-	<description>生成项目，并将项目打包到jar中</description>
+<project name="More_WebActionJS" default="run">
+	<description>部署例子项目。</description>
 	<!-- ================================================================ -->
+	<!-- 如果需要将该web项目部署到其他地方运行，修改workDir为要部署的目标位置即可。 -->
+	<property name="workDir" value="work" />
 	<property name="src" value="src" />
-	<property name="webContent" value="WebContent" />
-	<property name="classes" value="WebContent/WEB-INF/classes" />
-	<property name="WebRunDir" value="c:/webroot" />
+	<property name="webRoot" location="WebContent" />
+	<property name="libDir" location="lib" />
 	<!-- ================================================================ -->
-	<target name="clear">
-		<delete includeemptydirs="true">
-			<fileset dir="${WebRunDir}" includes="**/*" />
-		</delete>
-	</target>
 	<target name="run">
-		<copydir dest="${WebRunDir}" src="${webContent}" />
+		<copydir dest="${workDir}" src="${webRoot}" />
+		<copydir dest="${workDir}/WEB-INF/lib" src="${libDir}/more" />
 	</target>
 </project>
