@@ -13,41 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.support;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.Vector;
-import org.more.submit.Config;
+package org.more.submit;
+import java.lang.reflect.Method;
 /**
- * Map对象到Config接口的转换类
- * Date : 2009-6-30
+ * 该类负责提供目标对象方法的ActionInvoke接口形式。
+ * <br/>Date : 2009-12-1
  * @author 赵永春
  */
-@SuppressWarnings("unchecked")
-public class MapSubmitConfig implements Config {
+class PropxyActionInvoke implements ActionInvoke {
     //========================================================================================Field
-    private Object context = null;
-    private Map    params  = null;
+    /** 被代理的目标对象。 */
+    private Object target = null;
+    /** 要调用的目标方法名。 */
+    private String invoke = null;
     //==================================================================================Constructor
-    public MapSubmitConfig(Map params, Object context) {
-        this.context = context;
-        this.params = params;
+    public PropxyActionInvoke(Object target, String invoke) {
+        this.target = target;
+        this.invoke = invoke;
     }
     //==========================================================================================Job
     @Override
-    public Object getContext() {
-        return this.context;
-    }
-    @Override
-    public String getInitParameter(String name) {
-        Object v = params.get(name);
-        if (v == null)
-            return null;
-        else
-            return v.toString();
-    }
-    @Override
-    public Enumeration getInitParameterNames() {
-        return new Vector(params.keySet()).elements();
+    public Object invoke(ActionStack stack) throws Throwable {
+        Method method = this.target.getClass().getMethod(this.invoke, ActionStack.class);
+        return method.invoke(target, stack);
     }
 }

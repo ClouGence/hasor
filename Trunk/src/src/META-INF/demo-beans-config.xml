@@ -1,4 +1,4 @@
-<beans staticCache="0" dynamicCache="1">
+<beans staticCache="0" dynamicCache="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="beansContext.xsd">
 <!-- 
 只引用Bean对象	：refBean
 支持四种引用		：refValue
@@ -40,13 +40,9 @@
 	<bean name="test_Const_3" type="a.beanContextTest.testBeans.ConstructorBean">
 		<meta key="msg" value="附带的甜点信息字符串" />
 		<constructor-arg type="String" refValue="{@0}" />
-		<!--
-			@0意在在执行getBean()时候第二个附带参数数组中将下标为0的对象作为数据注入
-		-->
+		<!--@0意在在执行getBean()时候第二个附带参数数组中将下标为0的对象作为数据注入-->
 		<constructor-arg type="java.lang.Object" refValue="{#this}" />
-		<!--
-			#this意在将ioc容器BeanFactory作为数据注入
-		-->
+		<!--#this意在将ioc容器BeanFactory作为数据注入-->
 		<constructor-arg refValue="{$msg}" /><!-- 注入meta数据 -->
 	</bean>
 	<!-- ===============================================================================================-->
@@ -66,13 +62,9 @@
 	<bean name="test_prop_3" type="a.beanContextTest.testBeans.PropBean">
 		<meta key="msg" value="附带的甜点信息字符串" />
 		<property name="arg_0" type="String" refValue="{@0}" />
-		<!--
-			@0意在在执行getBean()时候第二个附带参数数组中将下标为0的对象作为数据注入
-		-->
+		<!--@0意在在执行getBean()时候第二个附带参数数组中将下标为0的对象作为数据注入-->
 		<property name="arg_1" type="java.lang.Object" refValue="{#this}" />
-		<!--
-			#this意在将ioc容器BeanFactory作为数据注入
-		-->
+		<!--#this意在将ioc容器BeanFactory作为数据注入-->
 		<property name="arg_2" refValue="{$msg}" /><!-- 注入meta数据 -->
 	</bean>
 
@@ -230,17 +222,7 @@ id="" refValue="refBean|{#attName}|{@number}|{$mime}" type="int|byte|char|double
 	<!-- {$msg}类型注入仅支持标签property、bean、constructor-arg -->
 	
 
-
-
-
-
-	
-	
-	
-	
 	<!--
-	
-	
 	<bean 	id="beanID_0"
 			name="test_1"
 			type="int|byte|char|double|float|long|short|boolean|String|java.lang.Object"
@@ -308,6 +290,7 @@ id="" refValue="refBean|{#attName}|{@number}|{$mime}" type="int|byte|char|double
 		<addImpl
 			id="1"
 			type="java.util.List"
+			refType=""
 			delegate-refBean="a"/>
 	</bean>
 	-->

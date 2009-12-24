@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.support;
+package org.more.submit.support.web;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -22,15 +22,16 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.Tag;
-import org.more.InvokeException;
 import org.more.core.copybean.CopyBeanUtil;
-import org.more.submit.ActionManager;
+import org.more.submit.SubmitContext;
 /**
  * 页面预处理标签。注意：如果页面预处理中使用了jsp包含页，在包含页中也使用了页面预处理标签将可能引发问题。
  * Date : 2009-5-11
  * @author 赵永春
  */
+@SuppressWarnings("unchecked")
 public class ActionTag extends BodyTagSupport {
+    //========================================================================================Field
     private static final long serialVersionUID = 5847549188323147281L;
     /** 要调用的目标类和方法，例test.testMethod */
     private String            process;
@@ -53,30 +54,31 @@ public class ActionTag extends BodyTagSupport {
     }
     @Override
     public int doEndTag() throws JspException {
-        ActionManager am = null;
+        SubmitContext am = null;
         Object resultObject = null;
         //获取请求以及响应参数
         HttpServletRequest request = (HttpServletRequest) this.pageContext.getRequest();
         HttpServletResponse response = (HttpServletResponse) this.pageContext.getResponse();
-        am = (ActionManager) this.pageContext.getServletContext().getAttribute("org.more.web.submit.ROOT");
+        am = (SubmitContext) this.pageContext.getServletContext().getAttribute("org.more.web.submit.ROOT");
         //设置环境参数并调用
         try {
-            //设置环境参数
+            //添加参数
+            Map map = new HashMap<String, Object>();
             for (String key : this.params.keySet())
-                am.addThreadContextParams(key, this.params.get(key));
-            am.addThreadContextParams("request", request);
-            am.addThreadContextParams("response", response);
-            am.addThreadContextParams("ActionTag", this);
-            //调用
-            resultObject = am.doAction(this.process, this.params);
-        } catch (InvokeException e) {
-            if (e.getCause() instanceof JspException)
+                map.put(key, this.params.get(key));
+            map.put("request", request);
+            map.put("response", response);
+            map.put("ActionTag", this);
+            //调用 
+            resultObject = am.doAction(this.process, new SessionSynchronize(request.getSession(true)), this.params);
+        } catch (Throwable e) {
+            if (e instanceof JspException == true)
+                throw (JspException) e;
+            else if (e.getCause() instanceof JspException)
                 throw (JspException) e.getCause();
             else
                 throw new JspException(e);
         }
-        //清空线程环境参数
-        am.clearThreadContextParams();
         //执行结果保存
         if (this.result == null || this.result.equals("")) {} else {
             if (this.scope.equals("page") == true)

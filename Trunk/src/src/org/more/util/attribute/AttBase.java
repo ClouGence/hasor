@@ -27,9 +27,11 @@ import java.util.Set;
  * @author 赵永春
  */
 public class AttBase implements IAttribute, IAttTransform, Map<String, Object>, Serializable {
+    //========================================================================================Field
     private static final long   serialVersionUID = 5330675593787806813L;
     /** 存放属性的集合 */
     private Map<String, Object> prop             = null;
+    //==================================================================================Constructor
     //
     /** 
      * 创建一个基本属性对象，属性的存放使用HashMap作为属性盛装器。基本属性接口实现类。
@@ -51,6 +53,7 @@ public class AttBase implements IAttribute, IAttTransform, Map<String, Object>, 
         else
             this.prop = prop;
     }
+    //==========================================================================================Job
     /**
      * 获取BaseAtt的属性盛装器。
      * @return 返回获取BaseAtt的属性盛装器。

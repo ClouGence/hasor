@@ -13,41 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.support;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.Vector;
-import org.more.submit.Config;
+package org.more.submit;
 /**
- * Map对象到Config接口的转换类
- * Date : 2009-6-30
+ * 该类负责提供ActionFilter接口的ActionInvoke接口形式。
+ * <br/>Date : 2009-12-1
  * @author 赵永春
  */
-@SuppressWarnings("unchecked")
-public class MapSubmitConfig implements Config {
+class FilterActionInvoke implements ActionInvoke {
     //========================================================================================Field
-    private Object context = null;
-    private Map    params  = null;
+    private FilterChain filterChain = null;
     //==================================================================================Constructor
-    public MapSubmitConfig(Map params, Object context) {
-        this.context = context;
-        this.params = params;
+    public FilterActionInvoke(FilterChain filterChain) {
+        this.filterChain = filterChain;
     }
     //==========================================================================================Job
     @Override
-    public Object getContext() {
-        return this.context;
-    }
-    @Override
-    public String getInitParameter(String name) {
-        Object v = params.get(name);
-        if (v == null)
-            return null;
-        else
-            return v.toString();
-    }
-    @Override
-    public Enumeration getInitParameterNames() {
-        return new Vector(params.keySet()).elements();
+    public Object invoke(ActionStack stack) throws Throwable {
+        return filterChain.doInvokeFilter(stack);
     }
 }

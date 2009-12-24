@@ -14,28 +14,23 @@
  * limitations under the License.
  */
 package org.more.submit;
-import java.util.Enumeration;
+import java.io.Serializable;
+import org.more.util.attribute.IAttribute;
 /**
- * submit3.0配置接口
- * <br/>Date : 2009-12-1
+ * 使用Session接口保存数据可以保证当下一个Action请求到达时仍然可以访问到存放到Session中的数据。
+ * 根据SessionManager的实现不同可以完成远程Session，序列化Session、等形式的Session。
+ * <br/>Date : 2009-11-27
  * @author 赵永春
  */
-@SuppressWarnings("unchecked")
-public interface Config {
+public interface Session extends IAttribute, Serializable {
     /**
-     * 获取上下文对象。
-     * @return 返回上下文对象。
+     * 获取Session在SessionManager中的唯一标识号。
+     * @return 返回Session在SessionManager中的唯一标识号。
      */
-    public Object getContext();
+    public String getSessionID();
     /**
-     * 根据参数名获取参数。如果不存在这个参数则返回null。
-     * @param name 要获取的参数名。
-     * @return 根据参数名获取参数。如果不存在这个参数则返回null。
+     * 获得创建这个Session时的创建时间。
+     * @return 返回创建这个Session时的时间。
      */
-    public String getInitParameter(String name);
-    /**
-     * 获取配置属性名称集合。
-     * @return 返回配置属性名称集合。
-     */
-    public Enumeration getInitParameterNames();
+    public long getCreateTime();
 }

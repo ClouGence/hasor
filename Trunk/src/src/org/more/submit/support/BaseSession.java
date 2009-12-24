@@ -14,40 +14,27 @@
  * limitations under the License.
  */
 package org.more.submit.support;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.Vector;
-import org.more.submit.Config;
+import java.util.Date;
+import java.util.UUID;
+import org.more.submit.Session;
+import org.more.util.attribute.AttBase;
 /**
- * Map对象到Config接口的转换类
- * Date : 2009-6-30
+ * 简单Session接口实现。
+ * Date : 2009-12-4
  * @author 赵永春
  */
-@SuppressWarnings("unchecked")
-public class MapSubmitConfig implements Config {
+public class BaseSession extends AttBase implements Session {
     //========================================================================================Field
-    private Object context = null;
-    private Map    params  = null;
-    //==================================================================================Constructor
-    public MapSubmitConfig(Map params, Object context) {
-        this.context = context;
-        this.params = params;
-    }
+    private static final long serialVersionUID = 3400815924288633711L;
+    private long              createTime       = new Date().getTime();
+    private String            sessionID        = UUID.randomUUID().toString();
     //==========================================================================================Job
     @Override
-    public Object getContext() {
-        return this.context;
+    public long getCreateTime() {
+        return createTime;
     }
     @Override
-    public String getInitParameter(String name) {
-        Object v = params.get(name);
-        if (v == null)
-            return null;
-        else
-            return v.toString();
-    }
-    @Override
-    public Enumeration getInitParameterNames() {
-        return new Vector(params.keySet()).elements();
+    public String getSessionID() {
+        return sessionID;
     }
 }

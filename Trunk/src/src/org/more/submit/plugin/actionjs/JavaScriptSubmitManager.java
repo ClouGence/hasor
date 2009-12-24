@@ -26,9 +26,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.more.CastException;
 import org.more.core.copybean.CopyBeanUtil;
 import org.more.core.serialization.MoreSerialization;
-import org.more.submit.ActionContext;
-import org.more.submit.ActionMethodEvent;
-import org.more.submit.support.ActionTag;
+import org.more.submit.ActionStack;
+import org.more.submit.SubmitContext;
+import org.more.submit.support.web.ActionTag;
 /**
  * Submit插件actionjs。该插件使javascript调用action并且action的返回值使用javascript操作成为可能。
  * Date : 2009-7-2
@@ -36,27 +36,26 @@ import org.more.submit.support.ActionTag;
  */
 @SuppressWarnings("unchecked")
 public class JavaScriptSubmitManager {
-    /** s */
-    public Object execute(ActionMethodEvent event) throws CastException, IOException {
+    public Object execute(ActionStack event) throws Throwable {
         String callName = event.getParam("callName").toString();//调用表达试
         Map params = (Map) MoreSerialization.toObject(event.getParam("args").toString());//获取参数列表
-        Object result = event.getContext().doAction(callName, params);//Action方式调用
+        Object result = event.getContext().doActionOnStack(callName, event, params);//Action方式调用
         //======================================================================================
-        HttpServletResponse response = (HttpServletResponse) event.getAttribute("response");
+        HttpServletResponse response = (HttpServletResponse) event.getParam("response");
         try {
             response.getWriter().print(MoreSerialization.toString(result));
             response.getWriter().flush();
         } catch (Exception e) {}
         return result;
     }
-    public Object config(ActionMethodEvent event) throws IOException, CastException {
+    public Object config(ActionStack event) throws IOException, CastException {
         //获取输出对象
         Writer write = null;
         if (event.contains("ActionTag") == true) {
-            ActionTag tag = (ActionTag) event.getAttribute("ActionTag");
+            ActionTag tag = (ActionTag) event.getParam("ActionTag");
             write = tag.getOut();
         } else {
-            HttpServletResponse response = (HttpServletResponse) event.getAttribute("response");
+            HttpServletResponse response = (HttpServletResponse) event.getParam("response");
             write = response.getWriter();
         }
         //输出核心脚本
@@ -70,20 +69,20 @@ public class JavaScriptSubmitManager {
             else
                 str.append(str_read + "\n");
         }
-        //        //如果参数min为true表示输出最小化脚本，最小化脚本中不包含action的定义。
-        //        if ("true".equals(event.getParamString("min")) == true)
-        //            return str;
+        //如果参数min为true表示输出最小化脚本，最小化脚本中不包含action的定义。
+        if ("true".equals(event.getParamString("min")) == true)
+            return str;
         //输出方法定义 org.more.web.submit.ROOT.Action
-        HttpServletRequest request = (HttpServletRequest) event.getAttribute("request");
+        HttpServletRequest request = (HttpServletRequest) event.getParam("request");
         String host = request.getServerName() + ":" + request.getLocalPort();
         str.append("more.retain.serverCallURL=\"http://" + host + "/post://" + event.getActionName() + ".execute\";");
         str.append("more.server={};");
-        ActionContext context = event.getContext().getContext();
+        SubmitContext context = event.getContext();
         String[] ns = context.getActionNames();
         for (String n : ns) {
             boolean haveActionMethod = false;/* Bug 111 当目标代理action不存在任何action方法时输出的js脚本在处理最后一个逗号时会将上一个大括号处理掉从而产生javascript语法异常*/
             str.append("more.server." + n + "={");
-            Class<?> type = context.getType(n);
+            Class<?> type = context.getActionType(n);
             Method[] ms = type.getMethods();
             for (Method m : ms) {
                 //1.目标方法参数列表个数与types字段中存放的个数不一样的忽略。
@@ -91,7 +90,7 @@ public class JavaScriptSubmitManager {
                 if (paramTypes.length != 1)
                     continue;
                 //2.如果有参数类型不一样的也忽略
-                if (ActionMethodEvent.class.isAssignableFrom(paramTypes[0]) == false)
+                if (ActionStack.class.isAssignableFrom(paramTypes[0]) == false)
                     continue;
                 //输出函数
                 str.append(m.getName() + ":function(){");

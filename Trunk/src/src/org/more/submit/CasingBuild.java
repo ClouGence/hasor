@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 package org.more.submit;
-import org.more.InvokeException;
 /**
- * 扩展外壳生成器，submit2.0的任何外壳扩展都需要继承这个生成器用于生成新的外壳所使用。
- * 这个生成器中生成的ActionFactory对象是用于管理action的容器。而FilterFactory是
- * 用于管理action的过滤器容器。
- * Date : 2009-6-30
+ * 扩展外壳生成器，submit3.0的任何外壳扩展都需要继承这个生成器用于生成新的外壳所使用。
+ * 这个生成器中生成的ActionContext对象。
+ * <br/>Date : 2009-12-2
  * @author 赵永春
  */
 public abstract class CasingBuild {
+    //========================================================================================Field
     protected Config config = null; //配置信息
+    //==========================================================================================Job
     /**
      * 初始化生成器并且传递初始化参数。
      * @param config 初始化参数对象。
-     * @throws InvokeException 如果在初始化过程中出现异常则炮出该类异常。
      */
-    public void init(Config config) throws InvokeException {
+    public void init(Config config) {
         this.config = config;
     }
     /**
@@ -40,13 +39,8 @@ public abstract class CasingBuild {
         return config;
     }
     /**
-     * 创建submit2.0外壳扩展的一个必须组建Action管理器。sbumit通过ActionFactory查找获取action对象。
-     * @return 返回创建submit2.0外壳扩展的一个必须组建Action管理器。
+     * 创建submit3.0外壳扩展的一个必须组建Action管理器。sbumit通过ActionContext查找获取action对象。
+     * @return 返回创建submit3.0外壳扩展的一个必须组建Action管理器。
      */
-    public abstract ActionFactory getActionFactory();
-    /**
-     * 创建submit2.0外壳扩展的一个必须组建Action过滤器管理器。sbumit通过FilterFactory查找获取action对象的装配过滤器。
-     * @return 返回创建submit2.0外壳扩展的一个必须组建Action过滤器管理器。
-     */
-    public abstract FilterFactory getFilterFactory();
+    public abstract ActionContext getActionFactory();
 }

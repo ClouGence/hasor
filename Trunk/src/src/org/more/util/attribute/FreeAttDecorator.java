@@ -16,11 +16,12 @@
 package org.more.util.attribute;
 import org.more.NoDefinitionException;
 /**
- * 自由的属性装饰器，该装饰器实现了IFreeAttribute接口的功能。
- * Date : 2009-4-30
+ * 自由的属性访问器。该接口进一步扩展了ExtAttribute接口，并支持属性替换模式的更换操作。使得在使用属性的过程中可以自由的切换属性替换策略。
+ * <br/>Date : 2009-12-3
  * @author 赵永春
  */
-public class FreeAttDecorator extends ExtAttDecorator implements IFreeAttribute {
+public class FreeAttDecorator extends ExtAttDecorator {
+    //==================================================================================Constructor
     /**
      * 构造一个自由的属性装饰器，该装饰器实现了IFreeAttribute接口的功能。
      * 该方法将采用默认策略IExtAttribute.ReplaceMode_Replace。
@@ -40,16 +41,17 @@ public class FreeAttDecorator extends ExtAttDecorator implements IFreeAttribute 
         super(source);
         this.setReplacMode(replaceMode);
     }
-    @Override
+    //==========================================================================================Job
+    /** 将属性替换策略切换到ReplaceMode_Original模式 */
     public void changeOriginal() {
-        this.setReplacMode(IFreeAttribute.ReplaceMode_Original);
+        this.setReplacMode(ReplaceMode_Original);
     }
-    @Override
+    /** 将属性替换策略切换到ReplaceMode_Replace模式 */
     public void changeReplace() {
-        this.setReplacMode(IFreeAttribute.ReplaceMode_Replace);
+        this.setReplacMode(ReplaceMode_Replace);
     }
-    @Override
+    /** 将属性替换策略切换到ReplaceMode_Throw模式 */
     public void changeThrow() {
-        this.setReplacMode(IFreeAttribute.ReplaceMode_Throw);
+        this.setReplacMode(ReplaceMode_Throw);
     }
 }
