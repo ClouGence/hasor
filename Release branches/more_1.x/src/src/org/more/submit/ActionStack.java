@@ -63,20 +63,24 @@ public class ActionStack implements IAttribute {
         return actionMethod;
     };
     /**
-     * 从当前堆栈中获取指定名称的堆栈参数，如果当前堆栈参数表中检索不到则自动向父级堆栈检索一直到顶层堆栈为止，
-     * 当顶层堆栈也无法索引该参数时，查找顶层栈的session然后查找顶层栈的context直至都返回null。
+     * 先以getAttribute方式查找参数如果找不到则到父级ActionStack中getAttribute中查找属性。
+     * 当查找到顶层栈中仍然没有参数时则到session中查找，如果找不到则到SubmitContext中查找。
+     * 如果还找不到则返回null。
      * @param key 要获取的参数名称。
      * @return 返回获取的堆栈参数。
      */
     public Object getParam(String key) {
-        Object obj = this.getAttribute(key);
-        if (obj == null && this.parent != null)
-            obj = this.parent.getParam(key);
-        //
+        Object obj = this.getParamPrivate(key);
         if (obj == null && this.session != null)
             obj = this.session.getAttribute(key);
         if (obj == null)
             obj = this.context.getAttribute(key);
+        return obj;
+    };
+    private Object getParamPrivate(String key) {
+        Object obj = this.getAttribute(key);
+        if (obj == null && this.parent != null)
+            obj = this.parent.getParamPrivate(key);
         return obj;
     };
     /**

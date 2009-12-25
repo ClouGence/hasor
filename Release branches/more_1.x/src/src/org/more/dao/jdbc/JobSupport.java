@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.dao.jdbc;
+import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 /**
@@ -41,6 +42,10 @@ public class JobSupport {
         if (jdbcDaoSupport == null)
             jdbcDaoSupport = new JdbcDaoSupport(this.dataSource.getConnection());
         return jdbcDaoSupport;
+    }
+    /** 获取数据库连接 */
+    protected Connection getConnection() throws SQLException {
+        return this.getJdbcDaoSupport().connection;
     }
     /**设置jdbc工具*/
     void setJdbcDaoSupport(JdbcDaoSupport jdbcDaoSupport) {

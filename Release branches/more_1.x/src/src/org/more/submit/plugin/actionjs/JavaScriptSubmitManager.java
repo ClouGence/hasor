@@ -36,6 +36,10 @@ import org.more.submit.support.web.ActionTag;
  */
 @SuppressWarnings("unchecked")
 public class JavaScriptSubmitManager {
+    private boolean min = true;
+    public void setMin(boolean min) {
+        this.min = min;
+    }
     public Object execute(ActionStack event) throws Throwable {
         String callName = event.getParam("callName").toString();//调用表达试
         Map params = (Map) MoreSerialization.toObject(event.getParam("args").toString());//获取参数列表
@@ -69,14 +73,24 @@ public class JavaScriptSubmitManager {
             else
                 str.append(str_read + "\n");
         }
-        //如果参数min为true表示输出最小化脚本，最小化脚本中不包含action的定义。
-        if ("true".equals(event.getParamString("min")) == true)
-            return str;
         //输出方法定义 org.more.web.submit.ROOT.Action
         HttpServletRequest request = (HttpServletRequest) event.getParam("request");
         String host = request.getServerName() + ":" + request.getLocalPort();
-        str.append("more.retain.serverCallURL=\"http://" + host + "/post://" + event.getActionName() + ".execute\";");
+        Object protocol = request.getSession().getServletContext().getAttribute("org.more.web.submit.ROOT.Action");
+        str.append("more.retain.serverCallURL=\"http://" + host + "/" + protocol + "://" + event.getActionName() + ".execute\";");
         str.append("more.server={};");
+        //如果参数min为true表示输出最小化脚本，最小化脚本中不包含action的定义。
+        String minParam = event.getParamString("min");
+        if (minParam == null) {
+            if (this.min == false)
+                this.putAllJS(event, str);
+        } else if (minParam.equals("false"))
+            this.putAllJS(event, str);
+        write.write(str + "\n");
+        write.flush();
+        return str;
+    }
+    private void putAllJS(ActionStack event, StringBuffer str) {
         SubmitContext context = event.getContext();
         String[] ns = context.getActionNames();
         for (String n : ns) {
@@ -102,8 +116,5 @@ public class JavaScriptSubmitManager {
                 str.deleteCharAt(str.length() - 1);
             str.append("};");
         }
-        write.write(str + "\n");
-        write.flush();
-        return str;
     }
 }
