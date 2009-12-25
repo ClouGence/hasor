@@ -1,9 +1,7 @@
-/*======================================================================*/
 var more=more;
 if (typeof(more)=="undefined")
   more={util:{}};
-/*======================================================================*/
-/*时间对象的格式化*/
+/*=====================================================================*/
 more.util.formatData = function(formatData,formater){
   /*eg:new Data()*/
   var type=Object.prototype.toString.call(formatData);
@@ -11,14 +9,12 @@ more.util.formatData = function(formatData,formater){
     var data=new Date();
   else
     var data=formatData;
-  //==================================================
   /*eg:format="yyyy-MM-dd hh:mm:ss";*/
   var type=Object.prototype.toString.call(formater);
   if (formater==null || type=="undefined")
     var format="yyyy-MM-dd hh:mm:ss";
   else
     var format=formater;
-  //========================
   var o = {
     "M+" :  data.getMonth()+1,  //month
     "d+" :  data.getDate(),     //day
@@ -37,11 +33,6 @@ more.util.formatData = function(formatData,formater){
 }
 more.util.base64 = {
   Base64Chars:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@*-",
-  /**
-  * Encode a string to a Base64 string follow Bse64 regular.
-  * @param s, a normal string
-  * @return a Base64 string
-  */
   encode64: function(s){
 	if(!s || s.length == 0) return s;
 	var d = "";
@@ -72,11 +63,6 @@ more.util.base64 = {
 	}
 	return d;
   },
-  /**
-  * Decode a Base64 string to a string follow Base64 regular.
-  * @param s, a Base64 string
-  * @return a normal string
-  */
   uncoded64: function(s){
 	if(!s) return null;
 	var len = s.length;
@@ -111,11 +97,6 @@ more.util.base64 = {
 	b.splice(b.length-e, e);
 	return more.util.base64.utf8_ucs2(b);
   },
-  /** 
-  * Encodes a ucs2 string to a utf8 integer array. 
-  * @param s, a string
-  * @return an integer array
-  */
   ucs2_utf8: function(s){
 	if (!s) return null;
 	var d = new Array();
@@ -140,11 +121,6 @@ more.util.base64 = {
 	}//end whil
 	return d;
   },
-  /** 
-  * Encodes a utf8 integer array to a ucs2 string.
-  * @param s, an integer array
-  * @return a string
-  */
   utf8_ucs2: function(s){
 	if(!s) return null;
 	var len = s.length;
@@ -173,10 +149,10 @@ more.util.base64 = {
 	return d;
   }
 };
-/* Ajax回调对象 */
+/*=====================================================================*/
 more.util.AjaxCall=function(obj){
   if (typeof(obj)!="object")
-	throw "obj参数非法！";
+	throw "param error!";
   else
 	var construction=obj;
   //============================
@@ -195,19 +171,16 @@ more.util.AjaxCall=function(obj){
 	else
 	  return xmlHttp;
   };
-  //============================
   this.call=function(args){
 	var arg="";
 	for (var k in args)
 	  arg+=k+"="+encodeURI(args[k])+"&";
 	if (arg.substr(arg.length-1,arg.length)=="&")
 	  arg=arg.substr(0,arg.length-1);
-	//创建ajax对象
 	var ajax=this.CreateXmlHttpRequestObject();
-	ajax.open("post",construction.url, construction.synchronize);//post方式递交
-	ajax.setRequestHeader("Content-Type","application/x-www-form-urlencoded; charset=UTF-8");//设置请求格式
-  	ajax.setRequestHeader("Content-Length",arg.length);//设置请求参数数据长度
-	//绑顶参数回掉函数
+	ajax.open("post",construction.url, construction.synchronize);
+	ajax.setRequestHeader("Content-Type","application/x-www-form-urlencoded; charset=UTF-8");
+  	ajax.setRequestHeader("Content-Length",arg.length);
 	ajax.onreadystatechange=function(){
 	  if (ajax.readyState==4){
 		if (ajax.status==200)
@@ -216,11 +189,11 @@ more.util.AjaxCall=function(obj){
 		  construction.failure(ajax);
 	  }
 	};
-	ajax.send(arg);//ajax方式调用
-	return ajax.responseText;//如果是同步方式递交则等待执行完成获取返回值以返回
+	ajax.send(arg);
+	return ajax.responseText;
   };//end function call
 };
-/* toString函数 */
+/*=====================================================================*/
 more.util.toString=function(o){
   var type=Object.prototype.toString.call(o);
   if (o==null || type=="undefined")
@@ -242,7 +215,6 @@ more.util.toString=function(o){
 	var s="["; // A|[ssss,sssss,sssss]
 	for (var i=0;i<o.length;i++)
 	  s+=more.util.toString(o[i])+",";
-	//去除末尾逗号
 	if (s.substr(s.length-1,s.length)==",")
 	  s=s.substr(0,s.length-1);
 	return "A|"+s+"]";
@@ -250,18 +222,15 @@ more.util.toString=function(o){
 	var s="{";// T|{k=v,k=[ssss,ssss,sss]}
 	for (var key in o)
 	  s+=key+"="+more.util.toString(o[key])+",";
-	//去除末尾逗
 	if (s.substr(s.length-1,s.length)==",")
 	  s=s.substr(0,s.length-1);
 	return "T|"+s+"}";
   }
 };
-/* toObject函数 */
 more.util.toObject=function(str){
   function readString(str,i){
 	var returnS="";
 	var depth=0;
-	//获取最近的一个属性值
 	for(i;i<str.length;i++){
 	  var s_temp=str.charAt(i);
 	  if (s_temp=="," && depth==0)
@@ -274,26 +243,19 @@ more.util.toObject=function(str){
 	}
 	return [returnS,i];
   };
-  //---------------------------------------
-  //第一个元素是类型，第二个元素是值
   if ((new RegExp("^V\|void$","gi")).test(str)==true)
-	//空值
 	return null;
   else if ((new RegExp("^S\\|\".*\"$","gi")).test(str)==true){
-	//字符串
 	var re= new RegExp("^S\\|\"(.*)\"$","gi");
 	re.exec(str);	
 	return more.util.base64.uncoded64(RegExp.$1);
   }else if ((new RegExp("^N\\|(\\+|-)?\\d{0,}(\\.\\d+){0,}$","gi")).test(str)==true){
-	//数字
 	var re= new RegExp("^N\\|(.*)$","gi");
 	re.exec(str);
 	return new Number(RegExp.$1);
   }else if ((new RegExp("^B\\|(true|false)$","gi")).test(str)==true)
-	//布尔
 	return (str.indexOf("false")!=-1)?false:true;
   else if ((new RegExp("^U\|\{.*\}:DataTime$","gi")).test(str)==true){
-	//时间
 	var re= new RegExp("^U\|\{(\\d+)-(\\d+)-(\\d+) (\\d+):(\\d+):(\\d+)\}:DataTime","gi");
 	re.exec(str);
 	var data=new Date();
@@ -301,53 +263,48 @@ more.util.toObject=function(str){
 	data.setHours(RegExp.$4,RegExp.$5,RegExp.$6);
 	return data;
   }else if ((new RegExp("^A\|\[.*\](:.*)?$","gi")).test(str)==true){
-	//数组
 	var re= new RegExp("^A\\|\\[(.*)\\](:.*)?$","gi");
 	re.exec(str);
-	var context_str=RegExp.$1;//属性集合上下文，while通过循环处理上下文来分离属性。
-	var context_index=0;//循环属性上文时标记循环到当前第几个字符
-	var value_array=new Array();//保存分离开的属性
+	var context_str=RegExp.$1;
+	var context_index=0;
+	var value_array=new Array();
 	while(true){
 	  if (context_str.length <= context_index)
 		break;
-	  var res=readString(context_str, context_index);//分离属性
+	  var res=readString(context_str, context_index);
 	  context_index=res[1]+1;
 	  value_array.push(more.util.toObject(res[0]));
 	}
 	return value_array;
   }else if ((new RegExp("^T\\|\{.*\}(:.*)?$","gi")).test(str)==true){
-	//对象  T\\|\{.*\}(:.*)?
 	var re= new RegExp("^T\\|\{(.*)\}(:.*)?$","gi");
 	re.exec(str);
-	var context_str=RegExp.$1;//属性集合上下文，while通过循环处理上下文来分离属性。
-	var context_index=0;//循环属性上文时标记循环到当前第几个字符
-	var value_array={};//保存分离开的属性
+	var context_str=RegExp.$1;
+	var context_index=0;
+	var value_array={};
 	while(true){
 	  if (context_str.length <= context_index)
 		break;
-	  var res=readString(context_str, context_index);//分离属性
+	  var res=readString(context_str, context_index);
 	  context_index=res[1]+1;
-	  //获取key,value
 	  var k=res[0].substring(0,res[0].indexOf("="));
 	  var v=res[0].substring(k.length+1,res[0].length);
-	  value_array[k]=more.util.toObject(v);//压入属性
+	  value_array[k]=more.util.toObject(v);
 	}
 	return value_array;
   }
 };
-// 以windows 为上下文，执行一段脚本;
 more.util.runScript = function(s) {
   try {
 	window.eval(s);
   } catch (e) {
-	alert("执行脚本期间出现错误:"+e);
+	alert("run script error:"+e);
   }
 };
-/*======================================================================*/
+/*=====================================================================*/
 more.retain=more.retain;
 if (typeof(more.retain)=="undefined")
-  more.retain={serverCallURL:""};//保留方法、内部方法
-/* 该该函数功能是调用服务器端方法。 */
+  more.retain={serverCallURL:""};
 more.retain.callServerFunction=function(callName,funArray){
   var type=Object.prototype.toString.call(funArray);
   var argsArray=null;
@@ -360,18 +317,15 @@ more.retain.callServerFunction=function(callName,funArray){
 	    argsArray[i]=funArray[i];
   }else
 	argsArray=funArray;
-  //=====================================================
   var ajax = new more.util.AjaxCall({
 	url		 : more.retain.serverCallURL,
 	synchronize: false,
 	success	 : function(ajax){},
-	failure	 : function(ajax){throw "more请求失败。";}
+	failure	 : function(ajax){throw "more request error.";}
   });
-  //=====================================================
   var argsString=more.util.toString(argsArray);
-  //alert(argsString)
-  var result=ajax.call({callName:callName,args:argsString});//调用
+  var result=ajax.call({callName:callName,args:argsString});
   var result_return=more.util.toObject(result);
   return (typeof(result_return)=="undefined")?result:more.util.toObject(result);
 };
-/*======================================================================*/
+/*=====================================================================*/

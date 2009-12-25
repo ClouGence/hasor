@@ -51,7 +51,7 @@ public class JdbcTransactionManager implements AOPInvokeFilter {
             return chain.doInvokeFilter(target, methods, args);
         //----------
         if (target instanceof JobSupport == false)
-            throw new CastException("类型" + target.getClass() + "没有继承DaoSupport父类无法实现事务控制。");
+            throw new CastException("类型" + target.getClass() + "没有继承JobSupport父类无法实现事务控制。");
         JobSupport ds = (JobSupport) target;
         //
         Boolean isRunning = this.running.get();
