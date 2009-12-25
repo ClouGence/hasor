@@ -1,0 +1,11 @@
+<html><body>提供了一组增强的属性访问接口和实现类，同时这套接口可以很好的与Properties类互融。<pre>
+说明：
+  1.attribute大量使用了装饰器模式，来扩展基本属性的功能。
+  2.属性主要针对于String与Object的键值对。
+  3.提供了基本的属性对象AttBase和基本属性接口IAttribute。
+  4.提供了IAttribute接口对象与Properties对象的相互转换功能。
+  5.扩展属性操作装饰器ExtAttDecorator，提供了当设置属性时如果出现重复名称属性的替换原则设置。
+  6.提供了比ExtAttDecorator设置替换规则更自由的装饰器ExtAttDecorator它提供了三种替换策略的切换功能支持。
+  7.属性保持装饰器KeepAttDecorator提供了针对某些属性的常量保持策略和必须保持策略，详细参看KeepAttDecorator描述。
+  8.提供了不允许出现空值的装饰器NoEmptyAttDecorator。
+</pre></body></html>
