@@ -119,10 +119,10 @@ public class XmlFileResource extends AttBase implements BeanResource {
             Source source = new StreamSource(this.getXmlInputStream());//得到验证的数据源
             //开始验证，成功输出success!!!，失败输出fail
             validator.validate(source);
-            System.out.println("XmlFileResource validatorConfigXML 校验XML成功 OK！");
+            System.out.println("XmlFileResource validatorConfigXML OK!");
             return null;
         } catch (Exception ex) {
-            System.out.println("XmlFileResource validatorConfigXML 校验XML失败 Error！");
+            System.out.println("XmlFileResource validatorConfigXML Error!");
             return "validator error[" + ex.getLocalizedMessage() + "]";
         }
     }

@@ -70,7 +70,7 @@ public class ActionTag extends BodyTagSupport {
             map.put("response", response);
             map.put("ActionTag", this);
             //µ÷ÓÃ 
-            resultObject = am.doAction(this.process, new SessionSynchronize(request.getSession(true)), this.params);
+            resultObject = am.doAction(this.process, new SessionSynchronize(request.getSession(true)), map);
         } catch (Throwable e) {
             if (e instanceof JspException == true)
                 throw (JspException) e;
