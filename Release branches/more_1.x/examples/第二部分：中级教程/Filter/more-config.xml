@@ -1,0 +1,16 @@
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="beans-schema.xsd">
+	<bean name="filter" type="org.moretest.filter.TestFilter" />
+	<bean name="publicFilter" type="org.moretest.filter.PublicFilter">
+		<meta key="isPublicFilter" value="true"/>
+	</bean>
+	
+	
+	<bean name="action" type="org.moretest.filter.TestAction">
+		<meta key="isAction" value="true" />
+		<meta key="actionFilters" value="filter" />
+	</bean>
+	<bean name="action-filterLink" type="org.moretest.filter.TestAction">
+		<meta key="isAction" value="true" />
+		<meta key="actionFilters" value="filter,filter" />
+	</bean>
+</beans>
