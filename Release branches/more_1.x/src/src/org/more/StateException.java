@@ -19,7 +19,7 @@ package org.more;
  * Date : 2009-7-8
  * @author ’‘”¿¥∫
  */
-public class StateException extends Exception {
+public class StateException extends RuntimeException {
     /**  */
     private static final long serialVersionUID = 5032345759263916241L;
     /**

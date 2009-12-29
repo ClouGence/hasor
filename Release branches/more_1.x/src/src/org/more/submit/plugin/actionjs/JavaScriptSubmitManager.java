@@ -29,6 +29,7 @@ import org.more.core.serialization.MoreSerialization;
 import org.more.submit.ActionStack;
 import org.more.submit.SubmitContext;
 import org.more.submit.support.web.ActionTag;
+import org.more.submit.support.web.WebActionStack;
 /**
  * Submit插件actionjs。该插件使javascript调用action并且action的返回值使用javascript操作成为可能。
  * Date : 2009-7-2
@@ -40,26 +41,26 @@ public class JavaScriptSubmitManager {
     public void setMin(boolean min) {
         this.min = min;
     }
-    public Object execute(ActionStack event) throws Throwable {
+    public Object execute(WebActionStack event) throws Throwable {
         String callName = event.getParam("callName").toString();//调用表达试
         Map params = (Map) MoreSerialization.toObject(event.getParam("args").toString());//获取参数列表
         Object result = event.getContext().doActionOnStack(callName, event, params);//Action方式调用
         //======================================================================================
-        HttpServletResponse response = (HttpServletResponse) event.getParam("response");
+        HttpServletResponse response = event.getResponse();
         try {
             response.getWriter().print(MoreSerialization.toString(result));
             response.getWriter().flush();
         } catch (Exception e) {}
         return result;
     }
-    public Object config(ActionStack event) throws IOException, CastException {
+    public Object config(WebActionStack event) throws IOException, CastException {
         //获取输出对象
         Writer write = null;
-        if (event.contains("ActionTag") == true) {
-            ActionTag tag = (ActionTag) event.getParam("ActionTag");
+        if (event.contains("tag") == true) {
+            ActionTag tag = (ActionTag) event.getParam("tag");
             write = tag.getOut();
         } else {
-            HttpServletResponse response = (HttpServletResponse) event.getParam("response");
+            HttpServletResponse response = event.getResponse();
             write = response.getWriter();
         }
         //输出核心脚本
@@ -74,9 +75,9 @@ public class JavaScriptSubmitManager {
                 str.append(str_read + "\n");
         }
         //输出方法定义 org.more.web.submit.ROOT.Action
-        HttpServletRequest request = (HttpServletRequest) event.getParam("request");
+        HttpServletRequest request = event.getRequest();
         String host = request.getServerName() + ":" + request.getLocalPort();
-        Object protocol = request.getSession().getServletContext().getAttribute("org.more.web.submit.ROOT.Action");
+        Object protocol = event.getServletContext().getAttribute("org.more.web.submit.ROOT.Action");
         str.append("more.retain.serverCallURL=\"http://" + host + "/" + protocol + "://" + event.getActionName() + ".execute\";");
         str.append("more.server={};");
         //如果参数min为true表示输出最小化脚本，最小化脚本中不包含action的定义。
@@ -90,7 +91,7 @@ public class JavaScriptSubmitManager {
         write.flush();
         return str;
     }
-    private void putAllJS(ActionStack event, StringBuffer str) {
+    private void putAllJS(WebActionStack event, StringBuffer str) {
         SubmitContext context = event.getContext();
         String[] ns = context.getActionNames();
         for (String n : ns) {
@@ -107,8 +108,8 @@ public class JavaScriptSubmitManager {
                 if (ActionStack.class.isAssignableFrom(paramTypes[0]) == false)
                     continue;
                 //输出函数
-                str.append(m.getName() + ":function(){");
-                str.append("return more.retain.callServerFunction(\"" + n + "." + m.getName() + "\",more.server." + n + "." + m.getName() + ".arguments);");
+                str.append(m.getName() + ":function(param){");
+                str.append("return more.retain.callServerFunction(\"" + n + "." + m.getName() + "\",param);");
                 str.append("},");
                 haveActionMethod = true;//BUG 111
             }

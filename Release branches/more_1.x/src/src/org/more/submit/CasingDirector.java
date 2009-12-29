@@ -17,7 +17,8 @@ package org.more.submit;
 import java.util.Hashtable;
 import org.more.submit.support.MapSubmitConfig;
 /**
- * submit3.0框架外壳扩展生成器管理器，通过CasingBuild组合之后可以获得SubmitContext对象。
+ * submit3.0利用build模式创建SubmitContext对象的最后阶段，CasingDirector类主要负责从CasingBuild中获取返回值然后创建SubmitContext对象。
+ * 通过扩展CasingDirector类可以改变创建SubmitContext的类型。
  * <br/>Date : 2009-12-1
  * @author 赵永春
  */
@@ -42,7 +43,11 @@ public class CasingDirector {
      */
     public void build(CasingBuild build) {
         build.init(this.config);//初始化生成器
-        this.manager = new SubmitContext(build.getActionFactory());
+        this.manager = this.buildContext(build, config);
+    }
+    /**子类可以通过扩展该方法来决定具体SubmitContext的创建过程。此阶段build.init方法已经被调用。*/
+    protected SubmitContext buildContext(CasingBuild build, Config config) {
+        return new ImplSubmitContext(build.getActionFactory());
     }
     /**
      * 获取组合之后生成的SubmitContext对象。

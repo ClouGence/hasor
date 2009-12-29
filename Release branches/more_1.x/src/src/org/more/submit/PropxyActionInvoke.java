@@ -15,6 +15,7 @@
  */
 package org.more.submit;
 import java.lang.reflect.Method;
+import org.more.NoDefinitionException;
 /**
  * 该类负责提供目标对象方法的ActionInvoke接口形式。
  * <br/>Date : 2009-12-1
@@ -34,7 +35,21 @@ class PropxyActionInvoke implements ActionInvoke {
     //==========================================================================================Job
     @Override
     public Object invoke(ActionStack stack) throws Throwable {
-        Method method = this.target.getClass().getMethod(this.invoke, ActionStack.class);
+        Class<?> type = this.target.getClass();
+        Method[] m = type.getMethods();
+        Method method = null;
+        for (int i = 0; i < m.length; i++) {
+            if (m[i].getName().equals(invoke) == false)
+                continue;
+            if (m[i].getParameterTypes().length != 1)
+                continue;
+            if (ActionStack.class.isAssignableFrom(m[i].getParameterTypes()[0]) == true) {
+                method = m[i];
+                break;
+            }
+        }
+        if (method == null)
+            throw new NoDefinitionException("无法在类[" + type + "]中找到方法" + this.invoke);
         return method.invoke(target, stack);
     }
 }

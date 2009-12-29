@@ -1,6 +1,6 @@
 function callBack(actionStack, results, paramArray) {
-	var request = actionStack.getParam("request");
-	var response = actionStack.getParam("response");
+	var request = actionStack.getRequest();
+	var response = actionStack.getResponse();
 	if (paramArray.length == 2 && paramArray[1] == "server")
 		request.getRequestDispatcher(paramArray[0]).forward(request, response);
 	else

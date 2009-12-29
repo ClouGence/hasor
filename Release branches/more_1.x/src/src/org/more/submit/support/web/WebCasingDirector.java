@@ -14,30 +14,27 @@
  * limitations under the License.
  */
 package org.more.submit.support.web;
-import javax.servlet.http.HttpSession;
-import org.more.submit.Session;
-import org.more.submit.support.web.scope.HttpSessionScope;
+import javax.servlet.ServletContext;
+import org.more.submit.CasingBuild;
+import org.more.submit.CasingDirector;
+import org.more.submit.Config;
+import org.more.submit.SubmitContext;
 /**
- * 负责与HttpSession同步的桥梁。
- * Date : 2009-12-4
+ * 该类是负责创建web外壳环境的SubmitContext对象。
+ * <br/>Date : 2009-12-28
  * @author 赵永春
  */
-class SessionSynchronize extends HttpSessionScope implements Session {
+public class WebCasingDirector extends CasingDirector {
     //========================================================================================Field
-    private static final long serialVersionUID = -7195947568750693895L;
-    private HttpSession       session;
+    private ServletContext servletContext;
     //==================================================================================Constructor
-    public SessionSynchronize(HttpSession session) {
-        super(session);
-        this.session = session;
+    public WebCasingDirector(Config config, ServletContext servletContext) {
+        super(config);
+        this.servletContext = servletContext;
     }
     //==========================================================================================Job
     @Override
-    public long getCreateTime() {
-        return this.session.getCreationTime();
-    }
-    @Override
-    public String getSessionID() {
-        return this.session.getId();
+    protected SubmitContext buildContext(CasingBuild build, Config config) {
+        return new WebSubmitContext(build.getActionFactory(), this.servletContext);
     }
 }
