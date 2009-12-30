@@ -105,19 +105,19 @@ public class WebActionStack extends ActionStack implements WebScopeEnum {
     /** 根据stack->jspPage->request->session->httpSession->servletContext->context->cookie这个顺序依次查找属性，在stack中查找时是在整个stack树中查找。*/
     public Object getParam(String key) {
         Object obj = this.getByStackTree(key);
-        if (obj == null)
+        if (obj == null && this.httpPageContext != null)
             obj = this.getScopeAttribute(Scope_JspPage).getAttribute(key);
-        if (obj == null)
+        if (obj == null && this.httpRequest != null)
             obj = this.getScopeAttribute(Scope_HttpRequest).getAttribute(key);
-        if (obj == null)
+        if (obj == null && this.moreSessionScope != null)
             obj = this.getScopeAttribute(Scope_Session).getAttribute(key);
-        if (obj == null)
+        if (obj == null && this.httpRequest != null)
             obj = this.getScopeAttribute(Scope_HttpSession).getAttribute(key);
-        if (obj == null)
+        if (obj == null && this.getServletContext() != null)
             obj = this.getScopeAttribute(Scope_ServletContext).getAttribute(key);
-        if (obj == null)
+        if (obj == null && this.moreContextScope != null)
             obj = this.getScopeAttribute(Scope_Context).getAttribute(key);
-        if (obj == null)
+        if (obj == null && this.httpRequest != null && this.httpResponse != null)
             obj = this.getScopeAttribute(Scope_Cookie).getAttribute(key);
         return obj;
     };
