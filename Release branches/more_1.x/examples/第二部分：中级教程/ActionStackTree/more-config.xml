@@ -1,0 +1,11 @@
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="beans-schema.xsd">
+	<bean name="a_1" type="org.stacktree.Action_1">
+		<meta key="isAction" value="true" />
+	</bean>
+	<bean name="a_2" type="org.stacktree.Action_2">
+		<meta key="isAction" value="true" />
+	</bean>
+	<bean name="a_3" type="org.stacktree.Action_3">
+		<meta key="isAction" value="true" />
+	</bean>
+</beans>
