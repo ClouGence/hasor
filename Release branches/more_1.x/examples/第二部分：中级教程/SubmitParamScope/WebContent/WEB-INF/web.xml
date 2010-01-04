@@ -5,7 +5,7 @@
 	id="WebApp_ID" version="2.5">
 	<filter>
 		<filter-name>moreContext</filter-name>
-		<filter-class>org.more.submit.support.web.TopFilter</filter-class>
+		<filter-class>org.more.submit.support.web.SubmitRoot</filter-class>
 		<init-param>
 			<!-- 指定配置文件位置 -->
 			<param-name>configFile</param-name>
@@ -18,7 +18,7 @@
 	</filter-mapping>
 	<servlet>
 		<servlet-name>moreContext</servlet-name>
-		<servlet-class>org.more.submit.support.web.TopFilter</servlet-class>
+		<servlet-class>org.more.submit.support.web.SubmitRoot</servlet-class>
 		<init-param>
 			<!-- 指定配置文件位置 -->
 			<param-name>configFile</param-name>
