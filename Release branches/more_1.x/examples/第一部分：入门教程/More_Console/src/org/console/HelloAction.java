@@ -31,10 +31,4 @@ public class HelloAction {
         System.out.println(args);//输出参数
         return "return " + args;
     }
-    /**该方法演示的是，如何获得传递给Action的参数。*/
-    public Object params_0(ActionStack stack) {
-        Object args = stack.getParam("0");
-        System.out.println(args);//输出参数
-        return "return " + args;
-    }
 }
