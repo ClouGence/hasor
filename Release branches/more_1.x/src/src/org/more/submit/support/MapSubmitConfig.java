@@ -19,17 +19,16 @@ import java.util.Map;
 import java.util.Vector;
 import org.more.submit.Config;
 /**
- * Map对象到Config接口的转换类
- * Date : 2009-6-30
+ * Map对象到{@link Config Config接口}的转换类。
+ * <br/>Date : 2009-6-30
  * @author 赵永春
  */
-@SuppressWarnings("unchecked")
 public class MapSubmitConfig implements Config {
     //========================================================================================Field
-    private Object context = null;
-    private Map    params  = null;
+    private Object         context = null;
+    private Map<String, ?> params  = null;
     //==================================================================================Constructor
-    public MapSubmitConfig(Map params, Object context) {
+    public MapSubmitConfig(Map<String, ?> params, Object context) {
         this.context = context;
         this.params = params;
     }
@@ -47,7 +46,7 @@ public class MapSubmitConfig implements Config {
             return v.toString();
     }
     @Override
-    public Enumeration getInitParameterNames() {
-        return new Vector(params.keySet()).elements();
+    public Enumeration<String> getInitParameterNames() {
+        return new Vector<String>(params.keySet()).elements();
     }
 }

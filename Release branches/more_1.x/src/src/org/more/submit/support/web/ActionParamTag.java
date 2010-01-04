@@ -18,8 +18,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.Tag;
 /**
- * 页面预处理标签的参数标签，该参数标签作用是向页面预处理标签中ActionManager传递环境参数变量。
- * Date : 2009-8-10
+ * 页面预处理标签的参数标签，该参数标签作用是向页面预处理标签中传递环境参数变量。
+ * <br/>Date : 2009-8-10
  * @author 赵永春
  */
 public class ActionParamTag extends BodyTagSupport {
@@ -31,7 +31,7 @@ public class ActionParamTag extends BodyTagSupport {
     @Override
     public int doStartTag() throws JspException {
         ActionTag aTag = (ActionTag) this.getParent();
-        aTag.params.put(key, value);
+        aTag.addParam(key, value);
         return Tag.SKIP_BODY;
     }
     @Override

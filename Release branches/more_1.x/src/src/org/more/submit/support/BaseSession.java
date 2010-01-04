@@ -19,8 +19,8 @@ import java.util.UUID;
 import org.more.submit.Session;
 import org.more.util.attribute.AttBase;
 /**
- * 简单Session接口实现。
- * Date : 2009-12-4
+ * 简单{@link Session Session接口}实现。
+ * <br/>Date : 2009-12-4
  * @author 赵永春
  */
 public class BaseSession extends AttBase implements Session {

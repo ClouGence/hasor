@@ -19,12 +19,12 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import org.more.util.attribute.IAttribute;
 /**
- * 负责提供HttpServletRequest到IAttribute接口的代理。
+ * 负责提供HttpServletRequest到{@link IAttribute IAttribute接口}的代理。
  * <br/>Date : 2009-12-28
  * @author 赵永春
  */
 public class RequestScope implements IAttribute {
-    private HttpServletRequest request = null; //
+    private HttpServletRequest request;
     public RequestScope(HttpServletRequest request) {
         this.request = request;
     }

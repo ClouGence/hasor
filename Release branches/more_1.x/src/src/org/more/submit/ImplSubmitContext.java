@@ -28,7 +28,7 @@ import org.more.FormatException;
 import org.more.NoDefinitionException;
 import org.more.util.attribute.AttBase;
 /**
- * submit3.0的核心接口，任何action的调用都是通过这个接口进行的。
+ * SubmitContext接口的实现类。ImplSubmitContext的createActionStack方法可以改变Action参数的具体类型。
  * <br/>Date : 2009-12-1
  * @author 赵永春
  */

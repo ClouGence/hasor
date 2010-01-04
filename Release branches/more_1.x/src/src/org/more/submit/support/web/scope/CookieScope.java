@@ -20,14 +20,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.more.util.attribute.IAttribute;
 /**
- * 负责提供Cookie到IAttribute接口的代理。
+ * 负责提供Cookie到{@link IAttribute IAttribute接口}的代理。
  * <br/>Date : 2009-12-28
  * @author 赵永春
  */
 public class CookieScope implements IAttribute {
-    private HttpServletRequest  request  = null;    //
-    private HttpServletResponse response = null;    //
-    private int                 maxAge   = 31536000;
+    private HttpServletRequest  request;
+    private HttpServletResponse response;
+    private int                 maxAge = 31536000; //365天
     public CookieScope(HttpServletRequest request, HttpServletResponse response) {
         this.request = request;
         this.response = response;

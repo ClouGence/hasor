@@ -19,7 +19,7 @@ import org.more.submit.Session;
 import org.more.submit.support.web.scope.HttpSessionScope;
 /**
  * 负责与HttpSession同步的桥梁。
- * Date : 2009-12-4
+ * <br/>Date : 2009-12-4
  * @author 赵永春
  */
 class SessionSynchronize extends HttpSessionScope implements Session {

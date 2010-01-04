@@ -33,21 +33,20 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.more.core.copybean.CopyBeanUtil;
 import org.more.submit.CasingBuild;
-import org.more.submit.CasingDirector;
 import org.more.submit.Config;
 /**
  * submit3.0组建对Web部分的支持，该类已经实现了Filter接口并且继承自HttpServlet类。
  * 该web支持的配置只有一个参数buildClass，表示生成器的具体类型。action参数表示请求的协议名
  * 或者action表达试参数名。默认是action。<br/>
- * TopFilter会反射的形式创建生成器。过滤器递交方式action://test.tesy?aaa=aaa
- * Date : 2009-6-29
+ * SubmitRoot会反射的形式创建生成器。过滤器递交方式action://test.tesy?aaa=aaa
+ * <br/>Date : 2009-6-29
  * @author 赵永春
  */
 @SuppressWarnings("unchecked")
-public class TopFilter extends HttpServlet implements Filter {
+public class SubmitRoot extends HttpServlet implements Filter {
     //========================================================================================Field
     private static final long serialVersionUID = -9157250446565992949L;
-    private WebSubmitContext  actionManager    = null;                 //action管理器。
+    private WebSubmitContext  submitContext;                           //action管理器。
     private String            actionName       = "action";             //servlet存放表达试的参数名。filter用于解析action的协议前缀
     //==========================================================================================Job
     /** 执行调用 */
@@ -58,7 +57,7 @@ public class TopFilter extends HttpServlet implements Filter {
             HttpServletResponse httpResponse = (HttpServletResponse) response;
             HttpSession session = httpRequest.getSession(true);
             //执行调用
-            Object obj = this.actionManager.doAction(exp, new SessionSynchronize(session), this.getParams(request), httpRequest, httpResponse, null);
+            Object obj = this.submitContext.doAction(exp, new SessionSynchronize(session), this.getParams(request), httpRequest, httpResponse, null);
             return obj;
         } catch (Throwable e) {
             if (e instanceof ServletException)
@@ -77,28 +76,28 @@ public class TopFilter extends HttpServlet implements Filter {
     private void init(Config config) throws ServletException {
         try {
             // 1.获得请求协议名
-            String tem_actionName = config.getInitParameter("action");
+            Object tem_actionName = config.getInitParameter("action");
             if (tem_actionName != null && tem_actionName.equals("") == false)
-                this.actionName = tem_actionName;
-            // 2.初始化ActionManager
+                this.actionName = tem_actionName.toString();
+            // 2.初始化WebSubmitContext
             ServletContext sc = (ServletContext) config.getContext();
-            actionManager = (WebSubmitContext) sc.getAttribute("org.more.web.submit.ROOT");
-            if (actionManager == null) {
-                CasingDirector director = new WebCasingDirector(config, sc);//创建Web生成器
-                String buildClassString = config.getInitParameter("buildClass");
+            this.submitContext = (WebSubmitContext) sc.getAttribute("org.more.web.submit.ROOT");
+            if (this.submitContext == null) {
+                WebCasingDirector director = new WebCasingDirector(config, sc);//创建Web生成器
+                Object buildClassString = config.getInitParameter("buildClass");
                 if (buildClassString == null)
                     buildClassString = "org.more.submit.casing.more.WebMoreBuilder";
-                CasingBuild build = (CasingBuild) Class.forName(buildClassString).newInstance();
+                CasingBuild build = (CasingBuild) Class.forName(buildClassString.toString()).newInstance();
                 director.build(build);//通过CasingDirector生成manager
-                this.actionManager = (WebSubmitContext) director.getResult();
-                sc.setAttribute("org.more.web.submit.ROOT", this.actionManager);
+                this.submitContext = (WebSubmitContext) director.getResult();
+                sc.setAttribute("org.more.web.submit.ROOT", this.submitContext);
                 sc.setAttribute("org.more.web.submit.ROOT.Action", this.actionName);
             }
         } catch (Exception e) {
             throw new ServletException(e);
         }
     }
-    // ============================================================================
+    /*-----------------------------------------------------------------*/
     /** 过滤器初始化方法，该方法调用init(InitParameter param) */
     @Override
     public void init(final FilterConfig config) throws ServletException {
@@ -110,7 +109,7 @@ public class TopFilter extends HttpServlet implements Filter {
         final ServletConfig config = this.getServletConfig();
         this.init(new ServletSubmitConfig(config));
     }
-    // ============================================================================
+    /*-----------------------------------------------------------------*/
     /** 中央调度过滤器 */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {

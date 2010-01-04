@@ -15,7 +15,7 @@
  */
 package org.more.submit;
 /**
- * 该类负责提供ActionFilter接口的ActionInvoke接口形式。
+ * 该类负责提供{@link ActionFilter ActionFilter接口}的ActionInvoke接口形式。
  * <br/>Date : 2009-12-1
  * @author 赵永春
  */

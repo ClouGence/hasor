@@ -30,7 +30,7 @@ public class AttBase implements IAttribute, IAttTransform, Map<String, Object>, 
     //========================================================================================Field
     private static final long   serialVersionUID = 5330675593787806813L;
     /** 存放属性的集合 */
-    private Map<String, Object> prop             = null;
+    private Map<String, Object> prop;
     //==================================================================================Constructor
     //
     /** 

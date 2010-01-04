@@ -32,15 +32,16 @@ import org.more.submit.support.web.ActionTag;
 import org.more.submit.support.web.WebActionStack;
 /**
  * Submit插件actionjs。该插件使javascript调用action并且action的返回值使用javascript操作成为可能。
- * Date : 2009-7-2
+ * <br/>Date : 2009-7-2
  * @author 赵永春
  */
-@SuppressWarnings("unchecked")
 public class JavaScriptSubmitManager {
     private boolean min = true;
     public void setMin(boolean min) {
         this.min = min;
     }
+    /**客户端JS请求执行某个action时调用这个action方法。*/
+    @SuppressWarnings("unchecked")
     public Object execute(WebActionStack event) throws Throwable {
         String callName = event.getParam("callName").toString();//调用表达试
         Map params = (Map) MoreSerialization.toObject(event.getParam("args").toString());//获取参数列表
@@ -53,6 +54,7 @@ public class JavaScriptSubmitManager {
         } catch (Exception e) {}
         return result;
     }
+    /**获取客户端JS的action方法。*/
     public Object config(WebActionStack event) throws IOException, CastException {
         //获取输出对象
         Writer write = null;

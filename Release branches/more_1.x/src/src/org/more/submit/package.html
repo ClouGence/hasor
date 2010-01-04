@@ -1,5 +1,5 @@
 <html><body><pre> 
-submit2.0：
+submit2.0(版本alpha)：
   1.独立的MVC框架，它没有自己的配置文件需要集成使用。
   2.提供了以spring作为action容器的支持。
   3.提供了以beans作为action容器的支持。
@@ -12,7 +12,7 @@ submit2.0：
   10.web环境中提供了Servlet方式配置和Filter方式部署的支持。
   11.web环境中提供了页面预处理标签的支持。类似asp的include功能，只不过包含的是action代码。使一个jsp页中可以支持多个action的调用。页面预处理可以获取action返回值。
 
-submit系统v3.0更新说明：
+submitv3.0(版本alpha2)：
   1.增加了submit的Session支持。使action调用时需要保存的临时信息可以保存到session中用于缓存。
   2.提供了Session接口用来保存Action范围之外的临时数据。
   3.保留不依赖J2EE的特性，submit3.0系统仍然可以应用在普通桌面程序。submit3.0组建仍然是一个完全独立的mvc框架。
@@ -25,6 +25,16 @@ submit系统v3.0更新说明：
   10.在使用Spring做容器时候不必在必须配置Spring监听器，submit3.0提供通过参数传递Spring配置文件。
   11.在集成Spring时可以配置Spring监听器，同时submit3.0的配置文件参数就会失效。
   12.增加了当SubmitContext完成Action过滤器调用之后的返回结果脚本处理的支持，该脚本存放在META-INF/submit_scripts目录中，并且以js语法编写。
+
+submitv3.1(版本alpha3)：
+  1.TopFilter类更名为SubmitRoot。
+  2.优化submit代码，减少了代码中new的操作。
+  3.修改submit的Config接口getInitParameter相关方法返回值为Object类型。
+  4.重写了submit的more和spring外壳提供环境使其更简化和直观。同时more和spring外壳支撑中加入了默认配置文件位置。
+	其中more支撑环境默认配置文件位置：/WEB-INF/more-config.xml
+	其中spring支撑环境默认配置文件位置：/WEB-INF/applicationContext.xml
+  5.CasingBuild增加缓存功能，可以通过cacheContext属性控制是否开启缓存，默认是开启的。
+
 </pre>
 <a href="doc-files/submit_v3_0_struct.png">submit3.0系统结构图</a><br/>
 <a href="doc-files/submit_v3_0_invoke.png">submit3.0简易调用结构图</a>

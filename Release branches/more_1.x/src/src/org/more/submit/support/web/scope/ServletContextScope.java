@@ -19,12 +19,12 @@ import java.util.Vector;
 import javax.servlet.ServletContext;
 import org.more.util.attribute.IAttribute;
 /**
- * 负责提供ServletContext到IAttribute接口的代理。
+ * 负责提供ServletContext到{@link IAttribute IAttribute接口}的代理。
  * <br/>Date : 2009-12-28
  * @author 赵永春
  */
 public class ServletContextScope implements IAttribute {
-    private ServletContext servletContext = null; //
+    private ServletContext servletContext;
     public ServletContextScope(ServletContext servletContext) {
         this.servletContext = servletContext;
     }

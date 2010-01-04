@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 package org.more.submit.casing.spring;
-import org.more.InitializationException;
-import org.more.InvokeException;
+import java.io.File;
+import java.io.IOException;
 import org.more.submit.ActionContext;
 import org.more.submit.CasingBuild;
 import org.more.submit.Config;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 /**
- * 提供以spring为容器的submit3.0支撑环境，并且提供了一些常见创建方法。
- * 当使用默认构造方法创建ClientSpringBuilder之后可以使用init方法传递参数configFile来指定配置文件位置从而初始化ClientSpringBuilder。
+ * ClientSpringBuilder提供了beans软件包为容器的submit支撑环境，并且提供了一些常见创建方法。<br/>
+ * 如果不指定配置文件名称ClientSpringBuilder会自动在当前路径下寻找名称为applicationContext.xml的配置文件。<br/>
+ * init：<br/>
+ * 参数beanFactory优先级：高，AbstractApplicationContext类型对象。<br/>
+ * 参数configFile优先级：底，String类型对象。
  * <br/>Date : 2009-11-21
  * @author 赵永春
  */
@@ -31,31 +34,61 @@ public class ClientSpringBuilder extends CasingBuild {
     //========================================================================================Field
     protected AbstractApplicationContext springContext = null;
     //==================================================================================Constructor
-    public ClientSpringBuilder() {}
-    /**通过一个SpringContext对象创建SpringCasingBuilder。*/
-    public ClientSpringBuilder(AbstractApplicationContext springContext) {
-        if (springContext == null)
-            throw new NullPointerException("springContext参数不能为空。");
-        this.springContext = springContext;
+    /**创建ClientSpringBuilder，同时初始化ClientSpringBuilder对象使用默认配置文件名为applicationContext.xml其文件保存在当前路径下。*/
+    public ClientSpringBuilder() throws IOException {
+        this.init(new File("applicationContext.xml"));
     }
-    /**通过一个SpringContext对象创建SpringCasingBuilder。*/
-    public ClientSpringBuilder(String configLocation) {
-        this.springContext = new FileSystemXmlApplicationContext(configLocation);
-        if (this.springContext == null)
-            throw new InvokeException("无法创建FileSystemXmlApplicationContext对象，请检查配置文件位置。");
+    /**
+     * 创建ClientSpringBuilder，但是通过isInit参数决定是否初始化ClientSpringBuilder对象。true表示创建并且初始化,false表示仅创建。<br/>
+     * 使用默认配置文件名为applicationContext.xml其文件保存在当前路径下。
+     */
+    public ClientSpringBuilder(boolean isInit) throws IOException {
+        if (isInit == true)
+            this.init(new File("applicationContext.xml"));
+    }
+    /**创建ClientSpringBuilder，通过configFile参数来决定使用那个配置文件初始化ClientSpringBuilder对象。*/
+    public ClientSpringBuilder(String configFile) throws IOException {
+        this.init(new File(configFile));
+    }
+    /**创建ClientSpringBuilder，通过configFile参数来决定使用那个配置文件初始化ClientSpringBuilder对象。*/
+    public ClientSpringBuilder(File configFile) throws IOException {
+        this.init(configFile);
+    }
+    /**提供一个更高级的方式创建ClientSpringBuilder对象，该构造方法将使用指定的AbstractApplicationContext类型对象作为创建ActionContext而使用的数据源。*/
+    public ClientSpringBuilder(AbstractApplicationContext springContext) {
+        this.init(springContext);
     }
     //==========================================================================================Job
-    /**该方法紧当使用ClientMoreBuilder构造方法创建对象时有效。*/
+    protected void init(File configFile) throws IOException {
+        if (configFile.exists() == false || configFile.canRead() == false)
+            throw new IOException("配置文件[" + configFile.getAbsolutePath() + "]不存在，或者无法读取。");
+        this.springContext = new FileSystemXmlApplicationContext(configFile.getAbsolutePath());
+    }
+    private void init(AbstractApplicationContext springContext) {
+        if (springContext == null)
+            throw new NullPointerException("springContext不能为空。");
+        this.springContext = springContext;
+    }
+    /**该方法紧当使用ClientSpringBuilder构造方法创建对象时有效。*/
     @Override
-    public void init(Config config) {
+    public void init(Config config) throws Exception {
+        //参数beanFactory优先级：高
+        //参数configFile优先级：底
         super.init(config);
-        if (this.springContext == null)
-            this.springContext = new FileSystemXmlApplicationContext(config.getInitParameter("configFile"));
+        //检测beanFactory参数。
+        Object beanFactory = config.getInitParameter("beanFactory");
+        boolean noFactory = (beanFactory == null || beanFactory instanceof AbstractApplicationContext == false);//如果没有正确配置noFactory值为true；
+        if (noFactory == false) {
+            this.init((AbstractApplicationContext) beanFactory);
+            return;
+        }
+        //检测configFile参数。
+        Object configFile = config.getInitParameter("configFile");
+        if (configFile != null)
+            this.init(new File(configFile.toString()));
     }
     @Override
-    public ActionContext getActionFactory() {
-        if (springContext == null)
-            throw new InitializationException("没有执行初始化操作。");
+    protected ActionContext createActionContext() {
         return new SpringActionContext(this.springContext);
     }
 }

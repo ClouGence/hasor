@@ -22,7 +22,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.support.AbstractApplicationContext;
 /**
- * AbstractActionContext接口Spring的支持。
+* 提供ActionContext接口的Spring支持。
  * <br/>Date : 2009-12-2
  * @author 赵永春
  */

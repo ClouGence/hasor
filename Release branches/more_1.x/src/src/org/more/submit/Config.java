@@ -16,11 +16,10 @@
 package org.more.submit;
 import java.util.Enumeration;
 /**
- * submit3.0配置接口
+ * submit配置接口
  * <br/>Date : 2009-12-1
  * @author 赵永春
  */
-@SuppressWarnings("unchecked")
 public interface Config {
     /**
      * 获取上下文对象。
@@ -32,10 +31,10 @@ public interface Config {
      * @param name 要获取的参数名。
      * @return 根据参数名获取参数。如果不存在这个参数则返回null。
      */
-    public String getInitParameter(String name);
+    public Object getInitParameter(String name);
     /**
      * 获取配置属性名称集合。
      * @return 返回配置属性名称集合。
      */
-    public Enumeration getInitParameterNames();
+    public Enumeration<String> getInitParameterNames();
 }

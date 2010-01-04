@@ -19,15 +19,16 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
+import org.more.InitializationException;
 import org.more.submit.ActionContext;
 import org.more.submit.ActionStack;
 import org.more.submit.ImplSubmitContext;
 import org.more.submit.Session;
 /**临时数据*/
 class WebSubmitContext_Temp {
-    HttpServletRequest  request     = null; //
-    HttpServletResponse response    = null; //
-    PageContext         pageContext = null; //
+    HttpServletRequest  request;
+    HttpServletResponse response;
+    PageContext         pageContext;
 }
 /**
  * 该类提供了SubmitContext接口，并且保证了SubmitContext的属性与ServletContext属性的同步。
@@ -35,10 +36,12 @@ class WebSubmitContext_Temp {
  * @author 赵永春
  */
 public class WebSubmitContext extends ImplSubmitContext {
+    //========================================================================================Field
     /**  */
     private static final long     serialVersionUID = -1892482332470385149L;
-    private ServletContext        context          = null;
-    private WebSubmitContext_Temp tempData         = null;
+    private ServletContext        context;
+    private WebSubmitContext_Temp tempData;
+    //==================================================================================Constructor
     /***/
     public WebSubmitContext(ActionContext actionContext, ServletContext sc) {
         super(actionContext);
@@ -48,7 +51,7 @@ public class WebSubmitContext extends ImplSubmitContext {
     @Override
     protected ActionStack createActionStack(ActionStack parent, Session session, ImplSubmitContext context) {
         if (tempData == null)
-            return super.createActionStack(parent, session, context);
+            throw new InitializationException("严重错误request,response缓存丢失！");
         WebActionStack stack = new WebActionStack(parent, session, context);
         stack.setPageContext(tempData.pageContext);
         stack.setRequest(tempData.request);

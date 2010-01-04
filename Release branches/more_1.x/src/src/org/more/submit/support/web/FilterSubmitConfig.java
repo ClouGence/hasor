@@ -18,11 +18,10 @@ import java.util.Enumeration;
 import javax.servlet.FilterConfig;
 import org.more.submit.Config;
 /**
- * FilterConfig对象到Config接口的转换类
- * Date : 2009-6-30
+ * FilterConfig对象到{@link Config Config接口}的转换类
+ * <br/>Date : 2009-6-30
  * @author 赵永春
  */
-@SuppressWarnings("unchecked")
 class FilterSubmitConfig implements Config {
     //========================================================================================Field
     private FilterConfig config = null;
@@ -40,7 +39,8 @@ class FilterSubmitConfig implements Config {
         return this.config.getInitParameter(name);
     }
     @Override
-    public Enumeration getInitParameterNames() {
+    @SuppressWarnings("unchecked")
+    public Enumeration<String> getInitParameterNames() {
         return this.config.getInitParameterNames();
     }
 }

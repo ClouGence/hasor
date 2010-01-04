@@ -19,28 +19,29 @@ import org.more.StateException;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**
- * 当执行Action方法时候submit3.0自动创建一个调用堆栈，ActionStack对象提供了属性作用域的支持。通过扩展该类还可以自定义属性作用域。
+ * 代表一个action执行时的参数堆栈，每当请求执行Action方法时候submit都会自动创建一个新的堆栈，
+ * 此外ActionStack对象提供了属性作用域的支持。通过扩展该类还可以自定义属性作用域。
  * <br/>Date : 2009-12-2
  * @author 赵永春
  */
 public class ActionStack implements IAttribute, ScopeEnum {
     //========================================================================================Field
-    private static final long     serialVersionUID    = 5001483997344333143L;
-    private String                actionName          = null;                //调用的action名
-    private String                actionMethod        = null;                //调用的action方法名
-    private String                invokeString        = null;                //调用字符串
+    private static final long     serialVersionUID = 5001483997344333143L;
+    private String                actionName;                             //调用的action名
+    private String                actionMethod;                           //调用的action方法名
+    private String                invokeString;                           //调用字符串
     //作用域数据
-    private final ActionStack     parent;                                    //堆栈父级，只读
-    protected final IAttribute    moreStackScope;                            //Stack作用域，只读
-    protected final Session       moreSessionScope;                          //Session作用域，只读
-    protected final SubmitContext moreContextScope;                          //Context作用域，只读
+    private final ActionStack     parent;                                 //堆栈父级，只读
+    protected final IAttribute    moreStackScope;                         //Stack作用域，只读
+    protected final Session       moreSessionScope;                       //Session作用域，只读
+    protected final SubmitContext moreContextScope;                       //Context作用域，只读
     //返回脚本处理器
-    private String                resultsScript       = null;                //返回action结果之前执行的JS脚本。
-    private Object[]              resultsScriptParams = null;                //返回action结果之前执行的JS脚本所传递的参数。
+    private String                resultsScript;                          //返回action结果之前执行的JS脚本。
+    private Object[]              resultsScriptParams;                    //返回action结果之前执行的JS脚本所传递的参数。
     //作用域操作相关字段
-    private String                currentScope;                              //当前属性作用域标记。
-    private IAttribute            attributeForScope   = null;                //当前属性作用域操作接口。
-    private boolean               synchronizeStack    = true;                //如果当前作用域不是Stack是否同步作用域操作到Stack，默认启用(true)。
+    private String                currentScope;                           //当前属性作用域标记。
+    private IAttribute            attributeForScope;                      //当前属性作用域操作接口。
+    private boolean               synchronizeStack = true;                //如果当前作用域不是Stack是否同步作用域操作到Stack，默认启用(true)。
     //==================================================================================Constructor
     public ActionStack(ActionStack parent, Session moreSessionScope, SubmitContext moreContextScope) {
         this.parent = parent;

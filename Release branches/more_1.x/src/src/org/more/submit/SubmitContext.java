@@ -17,7 +17,7 @@ package org.more.submit;
 import java.util.Map;
 import org.more.util.attribute.IAttribute;
 /**
- * submit3.0的核心接口，任何action的调用都是通过这个接口进行的。
+ * submit的核心接口，任何action的调用都是通过这个接口进行的。
  * <br/>Date : 2009-12-1
  * @author 赵永春
  */

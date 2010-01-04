@@ -32,18 +32,17 @@ import org.more.submit.support.web.scope.RequestScope;
 import org.more.submit.support.web.scope.ServletContextScope;
 import org.more.util.attribute.IAttribute;
 /**
- * 提供了Web特性的ActionStack对象，该类还提供了五个属性作用域的支持。这些作用域在
- * org.more.submit.support.web.scope软件包中提供。
+ * 提供了Web特性的ActionStack对象，该类还提供了五个属性作用域的支持。
  * <br/>Date : 2009-12-28
  * @author 赵永春
  */
 public class WebActionStack extends ActionStack implements WebScopeEnum {
-    private static final long           serialVersionUID        = 5001483997344333143L;
+    private static final long           serialVersionUID = 5001483997344333143L;
     //========================================================================================Field
-    private HttpServletRequest          httpRequest             = null;
-    private HttpServletResponse         httpResponse            = null;
-    private PageContext                 httpPageContext         = null;
-    private HashMap<String, IAttribute> attributeForScopeForMap = null;                //当前属性作用域操作接口。
+    private HttpServletRequest          httpRequest;
+    private HttpServletResponse         httpResponse;
+    private PageContext                 httpPageContext;
+    private HashMap<String, IAttribute> attributeForScopeForMap;                //当前属性作用域操作接口。
     //==================================================================================Constructor
     public WebActionStack(ActionStack parent, Session session, ImplSubmitContext context) {
         super(parent, session, context);

@@ -17,33 +17,35 @@ package org.more.submit;
 import java.util.Hashtable;
 import org.more.submit.support.MapSubmitConfig;
 /**
- * submit3.0利用build模式创建SubmitContext对象的最后阶段，CasingDirector类主要负责从CasingBuild中获取返回值然后创建SubmitContext对象。
- * 通过扩展CasingDirector类可以改变创建SubmitContext的类型。
+ * submit利用build模式创建{@link SubmitContext SubmitContext接口}的最后阶段，
+ * CasingDirector类主要负责从{@link CasingBuild CasingBuild}中获取返回值然后创建SubmitContext接口对象。
+ * 通过扩展CasingDirector类可以改变创建SubmitContext的方式从而扩展more的支撑外壳。
  * <br/>Date : 2009-12-1
  * @author 赵永春
  */
 public class CasingDirector {
     //========================================================================================Field
-    private SubmitContext manager = null; //组合之后生成的SubmitContext对象。
+    private SubmitContext context = null; //组合之后生成的SubmitContext对象。
     private Config        config  = null;
     //==================================================================================Constructor
     /**
-     * 创建一个submit2.0框架外壳扩展生成器管理器。
-     * @param config 该生成器在buildManager时需要的配置对象。
+     * 创建一个submit框架外壳扩展生成器管理器。
+     * @param config 该生成器在build时需要的配置对象。
      */
     public CasingDirector(Config config) {
         if (config == null)
             this.config = new MapSubmitConfig(new Hashtable<String, Object>(), null);
-        this.config = config;
+        else
+            this.config = config;
     }
     //==========================================================================================Job
     /**
      * 调用生成器生成SubmitContext对象，生成的SubmitContext的对象可以需要通过getResult方法获取。
      * @param build 生成SubmitContext对象时需要用到的生成器。
      */
-    public void build(CasingBuild build) {
+    public void build(CasingBuild build) throws Exception {
         build.init(this.config);//初始化生成器
-        this.manager = this.buildContext(build, config);
+        this.context = this.buildContext(build, config);
     }
     /**子类可以通过扩展该方法来决定具体SubmitContext的创建过程。此阶段build.init方法已经被调用。*/
     protected SubmitContext buildContext(CasingBuild build, Config config) {
@@ -54,6 +56,6 @@ public class CasingDirector {
      * @return 返回组合之后生成的SubmitContext对象。
      */
     public SubmitContext getResult() {
-        return manager;
+        return context;
     }
 }

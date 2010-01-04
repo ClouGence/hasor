@@ -23,7 +23,7 @@ import org.more.submit.AbstractActionContext;
 import org.more.submit.ActionFilter;
 import org.more.util.StringConvert;
 /**
-* AbstractActionContext接口More的支持。
+* 提供ActionContext接口的More支持。
 * <br/>Date : 2009-11-26
 * @author 赵永春
 */
