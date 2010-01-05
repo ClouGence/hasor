@@ -1,0 +1,5 @@
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="beans-schema.xsd">
+	<bean name="action" type="org.web.Action">
+		<meta key="isAction" value="true" />
+	</bean>
+</beans>

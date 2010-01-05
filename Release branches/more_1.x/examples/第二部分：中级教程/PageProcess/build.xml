@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<project name="More_SubmitParamScope" default="run">
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="More_PageProcess" default="run">
 	<description>部署例子项目。</description>
 	<!-- ================================================================ -->
 	<!-- 如果需要将该web项目部署到其他地方运行，修改workDir为要部署的目标位置即可。 -->
