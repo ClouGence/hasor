@@ -21,6 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
+/**
+ * 
+ * @version 2010-1-7
+ * @author ’‘”¿¥∫ (zyc@byshell.org)
+ */
 public class PackageUtil {
     private static String[]   CLASS_PATH_PROP  = { "java.class.path", "java.ext.dirs", "sun.boot.class.path" };
     private static List<File> CLASS_PATH_ARRAY = getClassPath();

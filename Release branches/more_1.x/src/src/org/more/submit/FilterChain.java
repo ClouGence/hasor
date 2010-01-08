@@ -16,8 +16,8 @@
 package org.more.submit;
 /**
  * action过滤器链传递类，使用该接口的方法可以执行action过滤器链的下一个环节直至最终的Action调用。
- * <br/>Date : 2009-11-27
- * @author 赵永春
+ * @version 2009-11-27
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class FilterChain {
     //========================================================================================Field

@@ -21,15 +21,15 @@ import javax.servlet.ServletContext;
 import org.more.InvokeException;
 import org.more.submit.Config;
 import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.web.context.support.XmlWebApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 /**
  * WebSpringBuilder类扩展了ClientSpringBuilder提供了web的支持，该类所使用的configFile参数是一个相对于站点的web相对路径。<br/>
  * 如果没有指定configFile参数，则configFile默认将表示为“/WEB-INF/applicationContext.xml”配置文件。<br/>
  * 首先，如果配置了spring的监听器WebSpringBuilder则会自动到ServletContext中查找AbstractApplicationContext类型对象<br/>
  * 其次，如果传递了beanFactory参数则使用beanFactory参数所指定的AbstractApplicationContext类型对象。
  * 然后，会查找configFile参数配置来装载Spring配置文件。
- * <br/>Date : 2009-12-2
- * @author 赵永春
+ * @version 2010-1-5
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class WebSpringBuilder extends ClientSpringBuilder implements Config {
     public static final String Default_ConfigXML = "/WEB-INF/applicationContext.xml";
@@ -58,9 +58,10 @@ public class WebSpringBuilder extends ClientSpringBuilder implements Config {
     protected void init(File configFile) throws IOException {
         if (configFile.exists() == false || configFile.canRead() == false)
             throw new IOException("配置文件[" + configFile.getAbsolutePath() + "]不存在，或者无法读取。");
-        XmlWebApplicationContext webApp = new XmlWebApplicationContext();
-        webApp.setServletContext((ServletContext) this.config.getContext());
+        FileSystemXmlApplicationContext webApp = new FileSystemXmlApplicationContext();
+        //webApp.setServletContext((ServletContext) this.config.getContext());
         webApp.setConfigLocation(configFile.getAbsolutePath());
+        webApp.refresh();
         this.springContext = webApp;
     }
     /**负责从ServletContext中获取Spring工厂对象。 */

@@ -18,8 +18,8 @@ import java.lang.reflect.Method;
 import org.more.InvokeException;
 /**
  * 代理方法的空实现。
- * Date : 2009-11-8
- * @author 赵永春
+ * @version 2009-11-8
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class DefaultMethodDelegate implements MethodDelegate {
     @Override

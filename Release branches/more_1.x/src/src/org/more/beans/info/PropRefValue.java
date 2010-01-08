@@ -31,8 +31,8 @@ import org.more.util.attribute.IAttribute;
  *   元信息属性引用的数据来源是在info配置中可以获得的最贴近的属性值，这些属性值都存放在{@link AttBase}对象中。info软件包中的所有类都已经继承了{@link AttBase}类型。
  *   如果在最近的{@link AttBase}中没有找到相关元信息则系统会自动向上一级结构中查找属性。如果还没找到则再次向上寻找一直寻找到<b>上下文属性</b>为止。
  *   <br/>提示：BeanDefinition的层次结构参看info软件包概述。
- * <br/>Date : 2009-11-18
- * @author 赵永春
+ * @version 2009-11-18
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class PropRefValue extends BeanProp {
     //========================================================================================Field

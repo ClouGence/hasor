@@ -23,8 +23,8 @@ import org.more.core.asm.Opcodes;
 import org.more.core.asm.Type;
 /**
  * 生成字节码时候使用的工具类，当重写{@link ClassEngine}的相关方法时候会用上此类。
- * Date : 2009-10-16
- * @author 赵永春
+ * @version 2009-10-16
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class EngineToos implements Opcodes {
     /** 在类型中获取某个方法，首先在类定义的方法中找(包括私有方法)，随后在起共有方法中以及继承的方法中找。 */

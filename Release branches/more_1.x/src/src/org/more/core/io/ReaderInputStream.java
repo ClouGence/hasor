@@ -24,8 +24,8 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 /**
  * 使用InputStream读取Reader的工具类
- * Date : 2009-5-13
- * @author 网络搜集
+ * @version 2009-5-13
+ * @author 网络收集
  */
 public class ReaderInputStream extends InputStream {
     private Reader                reader       = null;

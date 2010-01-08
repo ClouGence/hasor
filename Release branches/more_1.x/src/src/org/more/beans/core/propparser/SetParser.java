@@ -24,8 +24,8 @@ import org.more.beans.info.PropList;
 import org.more.beans.info.PropSet;
 /**
  * 对类型为{@link PropSet}的属性定义提供解析支持，如果{@link PropSet}没有配置具体set类型则使用{@link HashSet}作为{@link Set}对象。 
- * <br/>Date : 2009-11-18
- * @author 赵永春
+ * @version 2009-11-18
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class SetParser implements PropertyParser {
     @Override

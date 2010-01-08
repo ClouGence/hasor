@@ -29,8 +29,8 @@ import org.more.util.StringConvert;
 /**
  * 该类负责处理bean标签<br/>
  * id="" name="test_1" type="int" singleton="true" iocType="Export" export-refBean="abc" lazyInit="true" aopFilters-refBean="xxx,xxx,xxx"
- * Date : 2009-11-21
- * @author 赵永春
+ * @version 2009-11-21
+ * @author 赵永春 (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
 public class Tag_Bean extends TagProcess {

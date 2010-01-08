@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 /**
  * 字符串数据类型转换工具类
- * Date : 2009-4-29
- * @author 赵永春
+ * @version 2009-4-29
+ * @author 赵永春 (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
 public final class StringConvert {

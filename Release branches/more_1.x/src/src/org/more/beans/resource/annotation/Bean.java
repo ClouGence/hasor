@@ -20,8 +20,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
  * 
- * Date : 2009-11-5
- * @author Administrator
+ * @version 2010-1-7
+ * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.TYPE })

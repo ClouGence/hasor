@@ -25,15 +25,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.more.CastException;
 import org.more.core.copybean.CopyBeanUtil;
-import org.more.core.serialization.MoreSerialization;
+import org.more.core.json.JsonUtil;
 import org.more.submit.ActionStack;
 import org.more.submit.SubmitContext;
 import org.more.submit.support.web.ActionTag;
 import org.more.submit.support.web.WebActionStack;
 /**
  * Submit插件actionjs。该插件使javascript调用action并且action的返回值使用javascript操作成为可能。
- * <br/>Date : 2009-7-2
- * @author 赵永春
+ * @version 2010-1-7
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class JavaScriptSubmitManager {
     private boolean min = true;
@@ -44,12 +44,12 @@ public class JavaScriptSubmitManager {
     @SuppressWarnings("unchecked")
     public Object execute(WebActionStack event) throws Throwable {
         String callName = event.getParam("callName").toString();//调用表达试
-        Map params = (Map) MoreSerialization.toObject(event.getParam("args").toString());//获取参数列表
+        Map params = (Map) new JsonUtil().toMap(event.getParamString("args"));//获取参数列表
         Object result = event.getContext().doActionOnStack(callName, event, params);//Action方式调用
         //======================================================================================
         HttpServletResponse response = event.getResponse();
         try {
-            response.getWriter().print(MoreSerialization.toString(result));
+            response.getWriter().print(new JsonUtil().toString(result));
             response.getWriter().flush();
         } catch (Exception e) {}
         return result;

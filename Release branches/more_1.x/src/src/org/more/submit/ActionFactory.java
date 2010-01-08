@@ -15,10 +15,9 @@
  */
 package org.more.submit;
 /**
- * Action工厂接口，该接口的实现类应当负责对action对象的创建，
- * 以及负责action对象的filter装载。该类在submit中还是一个action容器。
- * <br/>Date : 2009-6-25
- * @author 赵永春
+ * Action工厂接口，该接口的实现类应当负责对action对象的创建，以及负责action对象的filter装载。该类在submit中还是一个action容器。
+ * @version 2009-6-25
+ * @author 赵永春 (zyc@byshell.org)
  */
 public interface ActionFactory {
     /**

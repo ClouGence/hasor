@@ -16,8 +16,8 @@
 package org.more.submit;
 /**
  * 该接口定义了Submit默认支持的变量作用域。
- * <br/>Date : 2009-12-28
- * @author 赵永春
+ * @version 2009-12-28
+ * @author 赵永春 (zyc@byshell.org)
  */
 public interface ScopeEnum {
     /**ActionStack范围*/

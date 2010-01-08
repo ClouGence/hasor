@@ -23,9 +23,9 @@ import org.more.beans.info.IocTypeEnum;
 /**
  * 该类是实现了{@link IocTypeEnum#Ioc Ioc}反射注入方式，这种方式使用java.lang.reflect包中的类进行反射调用来实现依赖注入。
  * 在IocInjection类中属性写入方法是由set + 属性名(首字母大写) 定义的这个方法当被查找到之后会
- * 被缓存在{@link BeanProperty}中。<br/>
- * <br/>Date : 2009-11-7
- * @author 赵永春
+ * 被缓存在{@link BeanProperty}中。
+ * @version 2009-11-7
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class IocInjection implements Injection {
     //========================================================================================Field
@@ -56,8 +56,7 @@ public class IocInjection implements Injection {
                 StringBuffer sb = new StringBuffer(prop.getName());
                 char firstChar = sb.charAt(0);
                 sb.delete(0, 1);
-                firstChar = (char) ((firstChar >= 97) ? firstChar - 32 : firstChar);
-                sb.insert(0, firstChar);
+                sb.insert(0, (char) ((firstChar >= 97) ? firstChar - 32 : firstChar));
                 sb.insert(0, "set");
                 Class<?> mt = this.propParser.parserType(context, params, prop.getRefValue(), prop, definition);
                 writeMethod = object.getClass().getMethod(sb.toString(), mt);

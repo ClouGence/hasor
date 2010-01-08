@@ -16,8 +16,8 @@
 package org.more;
 /**
  * 未定义异常，通常出现该类异常是由于使用了未定义的属性或者策略，同时该异常也表示那些试图访问不存在的资源异常。
- * Date : 2009-4-29
- * @author 赵永春
+ * @version 2009-4-29
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class NoDefinitionException extends RuntimeException {
     /**  */

@@ -24,8 +24,8 @@ import org.more.beans.info.CreateTypeEnum;
  * 该系统是more.beans所有bean的创建器件，Factory创建方式是由{@link FactoryCreateEngine}类实现的、New方式则是由{@link ConstructorCreateEngine}类实现的。
  * 在more.beans中预定义了Factory、New两种对象创建方式。<br/>
  * CreateFactory的功能是根据bean的配置自动选择Factory方式创建还是使用New方式创建。<br/>
- * Date : 2009-11-14
- * @author 赵永春
+ * @version 2009-11-14
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class CreateFactory extends CreateEngine {
     //========================================================================================Field

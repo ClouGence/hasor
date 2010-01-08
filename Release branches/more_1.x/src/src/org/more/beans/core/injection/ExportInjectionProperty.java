@@ -18,8 +18,8 @@ import org.more.beans.BeanFactory;
 import org.more.beans.info.BeanDefinition;
 /**
  * 属性注入请求处理接口，该接口负责对某个bean进行复杂注入请求的处理。
- * <br/>Date : 2009-11-7
- * @author 赵永春
+ * @version 2009-11-7
+ * @author 赵永春 (zyc@byshell.org)
  */
 public interface ExportInjectionProperty {
     /**

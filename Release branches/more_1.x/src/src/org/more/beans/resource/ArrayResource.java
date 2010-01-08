@@ -28,16 +28,16 @@ import org.more.beans.info.CreateTypeEnum;
 import org.more.util.attribute.AttBase;
 /**
  * 
- * <br/>Date : 2009-11-21
- * @author ’‘”¿¥∫
+ * @version 2009-11-21
+ * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class ArrayResource extends AttBase implements BeanResource {
     //========================================================================================Field
     /**  */
-    private static final long               serialVersionUID    = -1650492842757900558L;                //
-    private HashMap<String, BeanDefinition> beans               = new HashMap<String, BeanDefinition>(); //
-    private String                          resourceDescription = null;                                 //
-    private String                          sourceName          = null;                                 //
+    private static final long               serialVersionUID    = -1650492842757900558L;
+    private HashMap<String, BeanDefinition> beans               = new HashMap<String, BeanDefinition>();
+    private String                          resourceDescription = null;
+    private String                          sourceName          = null;
     private LinkedList<String>              strartInitBeans     = new LinkedList<String>();
     //==================================================================================Constructor
     public ArrayResource(BeanDefinition[] definition) {

@@ -17,8 +17,8 @@ package org.more.log.objects;
 import org.more.log.ILogWrite;
 /**
  * 默认日志输出，控制台输出
- * Date : 2009-5-13
- * @author 赵永春
+ * @version 2009-5-13
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class DefaultLogWrite implements ILogWrite {
     public boolean writeLog(String msg) {

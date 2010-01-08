@@ -40,8 +40,8 @@ import org.more.core.asm.Opcodes;
  * 在代理模式下只有公共方法参与AOP功能，私有方法和受保护的方法因访问权限问题不能参与AOP。<br/>
  * <br/><b>AOP特性</b>--ClassEngine引擎的AOP特性是可以配置是否启用的。如果附加AOP相关功能则字节码在生成时除了经过了第一次接口附加操作之后
  * 还需要经过第二次AOP特性加入。所有本类方法包括可以继承的方法均被重写。启用AOP特性会少量增加字节码体积同时也比不使用AOP特性的运行效率要慢些。
- * <br/>Date : 2009-10-15
- * @author 赵永春
+ * @version 2009-10-15
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class ClassEngine extends ClassLoader implements Opcodes {
     //=================================================================================Builder Type
@@ -431,7 +431,7 @@ public class ClassEngine extends ClassLoader implements Opcodes {
     protected ClassAdapter acceptClass(final ClassWriter classWriter) {
         return null;
     };
-    /** 要内部忽略方法。*/
+    /** 要忽略的内部方法，AOPClassAdapter类在装配AOP时候会调用它。*/
     boolean ignoreMethod(String fullDesc) {
         String[] ignoreMethod = new String[2];
         ignoreMethod[0] = "set" + ClassEngine.ObjectDelegateMapName + "(Ljava/util/Hashtable;)V";

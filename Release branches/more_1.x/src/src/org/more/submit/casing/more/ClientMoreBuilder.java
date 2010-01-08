@@ -28,8 +28,8 @@ import org.more.submit.Config;
  * init：<br/>
  * 参数beanFactory优先级：高，BeanFactory类型对象。<br/>
  * 参数configFile优先级：底，String类型对象。
- * <br/>Date : 2009-11-21
- * @author 赵永春
+ * @version 2010-1-5
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class ClientMoreBuilder extends CasingBuild {
     //========================================================================================Field

@@ -23,8 +23,8 @@ import org.more.log.objects.DefaultLogFormater;
 import org.more.log.objects.DefaultLogWrite;
 /**
  * 日志系统,默认配置文件名mylog.config
- * Date : 2009-5-13
- * @author 赵永春
+ * @version 2009-5-13
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class LogFactory {
     private static final String     Log_Config_File = "mylog.config";

@@ -39,8 +39,8 @@ import org.more.submit.Config;
  * 该web支持的配置只有一个参数buildClass，表示生成器的具体类型。action参数表示请求的协议名
  * 或者action表达试参数名。默认是action。<br/>
  * SubmitRoot会反射的形式创建生成器。过滤器递交方式action://test.tesy?aaa=aaa
- * <br/>Date : 2009-6-29
- * @author 赵永春
+ * @version 2009-6-29
+ * @author 赵永春 (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
 public class SubmitRoot extends HttpServlet implements Filter {

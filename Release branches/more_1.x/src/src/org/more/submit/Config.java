@@ -17,8 +17,8 @@ package org.more.submit;
 import java.util.Enumeration;
 /**
  * submit≈‰÷√Ω”ø⁄
- * <br/>Date : 2009-12-1
- * @author ’‘”¿¥∫
+ * @version 2009-12-1
+ * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public interface Config {
     /**

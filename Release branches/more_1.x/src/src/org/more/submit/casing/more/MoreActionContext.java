@@ -24,9 +24,9 @@ import org.more.submit.ActionFilter;
 import org.more.util.StringConvert;
 /**
 * 提供ActionContext接口的More支持。
-* <br/>Date : 2009-11-26
-* @author 赵永春
-*/
+ * @version 2009-11-26
+ * @author 赵永春 (zyc@byshell.org)
+ */
 public class MoreActionContext extends AbstractActionContext {
     //========================================================================================Field
     private BeanFactory  factory  = null;

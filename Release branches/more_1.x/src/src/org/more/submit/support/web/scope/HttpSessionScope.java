@@ -20,8 +20,8 @@ import javax.servlet.http.HttpSession;
 import org.more.util.attribute.IAttribute;
 /**
  * 负责提供HttpSession到{@link IAttribute IAttribute接口}的代理。
- * <br/>Date : 2009-12-28
- * @author 赵永春
+ * @version 2009-12-28
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class HttpSessionScope implements IAttribute {
     private HttpSession session;

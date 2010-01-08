@@ -18,8 +18,8 @@ package org.more.core.classcode;
  * 生成的类如果有附加接口实现则附加实现的接口委托方法保存在该对象上，在开发过程中开发人员不会碰触该类实例对象。
  * 在生成的新类中会有一个public的Map类型的字段。该字段中保存了所有附加接口实现方法的代理对象信息。
  * 而这个信息对象就是Method类。通常该对象只有生成的类中附加接口调用委托时才使用。
- * Date : 2009-10-19
- * @author 赵永春
+ * @version 2009-10-19
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class Method {
     /** 索引方法的Map UUID值。 */

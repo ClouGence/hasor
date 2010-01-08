@@ -19,8 +19,8 @@ import org.more.core.copybean.Copy;
 import org.more.core.copybean.PropertyReaderWrite;
 /**
  * ƒ≥“ª∏ˆ Ù–‘µƒ«≥øΩ±¥°£
- * Date : 2009-5-15
- * @author ’‘”¿¥∫
+ * @version 2009-5-15
+ * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class ShallowCopy extends Copy {
     /**  */

@@ -20,8 +20,8 @@ import java.io.Reader;
 import java.io.StringReader;
 /**
  * ÃüÁî¶ÁÈ¡Æ÷
- * Date : 2009-5-13
- * @author ÕÔÓÀ´º
+ * @version 2009-5-13
+ * @author ÕÔÓÀ´º (zyc@byshell.org)
  */
 class CommandReader extends BufferedReader {
     public CommandReader(Reader in) {

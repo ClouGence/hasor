@@ -19,8 +19,8 @@ import javax.servlet.FilterConfig;
 import org.more.submit.Config;
 /**
  * FilterConfig对象到{@link Config Config接口}的转换类
- * <br/>Date : 2009-6-30
- * @author 赵永春
+ * @version  2009-6-30
+ * @author 赵永春 (zyc@byshell.org)
  */
 class FilterSubmitConfig implements Config {
     //========================================================================================Field

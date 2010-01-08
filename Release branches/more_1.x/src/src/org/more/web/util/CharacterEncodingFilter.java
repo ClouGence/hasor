@@ -8,8 +8,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 /**
  * 字符过滤器，负责对请求资源的，请求和响应设置其编码格式，该过滤器使用utf-8作为默认编码格式。
- * Date : 2009-5-6
- * @author 赵永春
+ * @version 2009-5-6
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class CharacterEncodingFilter implements Filter {
     /** 请求编码 */

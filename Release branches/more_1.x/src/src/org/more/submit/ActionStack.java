@@ -21,8 +21,8 @@ import org.more.util.attribute.IAttribute;
 /**
  * 代表一个action执行时的参数堆栈，每当请求执行Action方法时候submit都会自动创建一个新的堆栈，
  * 此外ActionStack对象提供了属性作用域的支持。通过扩展该类还可以自定义属性作用域。
- * <br/>Date : 2009-12-2
- * @author 赵永春
+ * @version 2009-12-2
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class ActionStack implements IAttribute, ScopeEnum {
     //========================================================================================Field

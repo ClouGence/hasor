@@ -18,8 +18,8 @@ import javax.servlet.jsp.JspException;
 import org.more.util.StringConvert;
 /**
  * 分页标签负责处理当前页的标签，标签类型是C类标签。
- * Date : 2009-6-17
- * @author 赵永春
+ * @version 2009-6-17
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class CurrentPageTag extends BasePageTag {
     /**  */

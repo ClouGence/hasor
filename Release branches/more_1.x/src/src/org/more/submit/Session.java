@@ -18,8 +18,8 @@ import java.io.Serializable;
 import org.more.util.attribute.IAttribute;
 /**
  * 使用Session接口保存数据可以保证当下一个Action请求到达时仍然可以访问到存放到Session中的数据。
- * <br/>Date : 2009-11-27
- * @author 赵永春
+ * @version 2009-11-27
+ * @author 赵永春 (zyc@byshell.org)
  */
 public interface Session extends IAttribute, Serializable {
     /**

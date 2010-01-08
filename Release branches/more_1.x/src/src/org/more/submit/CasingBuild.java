@@ -17,8 +17,8 @@ package org.more.submit;
 /**
  * 扩展外壳生成器，submit的任何外壳扩展都需要继承这个生成器用于生成新的外壳所使用。
  * 这个抽象类的子类通过实现getActionFactory方法来生成{@link ActionContext ActionContext接口}对象。
- * <br/>Date : 2009-12-2
- * @author 赵永春
+ * @version 2009-12-2
+ * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class CasingBuild {
     //========================================================================================Field

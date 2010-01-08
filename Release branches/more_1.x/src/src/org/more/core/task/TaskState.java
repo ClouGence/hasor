@@ -16,8 +16,8 @@
 package org.more.core.task;
 /**
  * 任务处理器的运行状态。
- * Date : 2009-5-16
- * @author 赵永春
+ * @version 2009-5-16
+ * @author 赵永春 (zyc@byshell.org)
  */
 public enum TaskState {
     /** 新的任务，没有进行过任何执行。 */

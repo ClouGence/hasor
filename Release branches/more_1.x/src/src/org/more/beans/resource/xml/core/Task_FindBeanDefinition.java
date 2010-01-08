@@ -25,9 +25,9 @@ import org.more.beans.resource.xml.TaskProcess;
  * 测试是否存在某个bean的任务。<br/>
  * 任务名：findBean<br/>
  * 任务参数：1.String要查找的bean名<br/>
- * 返回值：属性值<br/>
- * <br/>Date : 2009-11-24
- * @author 赵永春
+ * 返回值：属性值
+ * @version 2009-11-24
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class Task_FindBeanDefinition implements TaskProcess {
     private String findName = null;

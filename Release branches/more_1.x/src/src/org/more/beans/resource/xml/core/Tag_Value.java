@@ -26,8 +26,8 @@ import org.more.beans.resource.xml.TagProcess;
 /**
  * 该类负责解析value标签。<br/>
  * id="" value="12" refValue="refBean|{#attName}|{@number}|{$mime}" type="int|byte|char|double|float|long|short|boolean|String"
- * <br/>Date : 2009-11-23
- * @author 赵永春
+ * @version 2009-11-23
+ * @author 赵永春 (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
 public class Tag_Value extends TagProcess {

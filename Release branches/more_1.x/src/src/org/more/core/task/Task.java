@@ -22,8 +22,8 @@ import org.more.util.attribute.AttBase;
 /**
  * 任务项的基类，任何任务对象都必须继承该接口，在more.task系统中任务拥有独立的唯一标识ID。
  * 这个ID的标识格式是 任务类名 + | + UUID。开发人员可以通过这个ID在系统环境中对任务进行操作。
- * Date : 2009-5-15
- * @author 赵永春
+ * @version 2009-5-15
+ * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class Task extends AttBase implements Runnable, Serializable {
     /**  */

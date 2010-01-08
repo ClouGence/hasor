@@ -16,8 +16,8 @@
 package org.more;
 /**
  * 不支持的异常。引发该异常的原因通常是执行了某些方法，但是这些方法不被支持。或者一些操作不被支持。
- * Date : 2009-7-7
- * @author 赵永春
+ * @version 2009-7-7
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class DoesSupportException extends RuntimeException {
     /**  */

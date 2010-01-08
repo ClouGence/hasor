@@ -23,8 +23,8 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.support.AbstractApplicationContext;
 /**
 * 提供ActionContext接口的Spring支持。
- * <br/>Date : 2009-12-2
- * @author 赵永春
+ * @version 2009-12-2
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class SpringActionContext extends AbstractActionContext {
     //========================================================================================Field

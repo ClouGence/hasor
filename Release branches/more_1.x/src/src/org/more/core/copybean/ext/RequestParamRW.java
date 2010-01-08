@@ -20,8 +20,8 @@ import org.more.core.copybean.BeanType;
 import org.more.core.copybean.PropertyReaderWrite;
 /**
  * request类读写器。使用该类作为读写器可以实现从request中拷贝属性或者向request中拷贝属性。
- * Date : 2009-5-15
- * @author 赵永春
+ * @version 2009-5-15
+ * @author 赵永春 (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
 public class RequestParamRW extends BeanType {

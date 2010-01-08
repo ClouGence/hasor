@@ -25,8 +25,8 @@ import javax.servlet.jsp.tagext.Tag;
 import org.more.core.copybean.CopyBeanUtil;
 /**
  * 页面预处理标签。注意：如果页面预处理中使用了jsp包含页，在包含页中也使用了页面预处理标签将可能引发问题。
- * <br/>Date : 2009-5-11
- * @author 赵永春
+ * @version 2009-5-11
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class ActionTag extends BodyTagSupport {
     //========================================================================================Field
@@ -34,7 +34,7 @@ public class ActionTag extends BodyTagSupport {
     /** 要调用的目标类和方法，例test.testMethod */
     private String              process;
     /** ActionTag当执行完action之后将action返回结果存放到某个环境中的名称。 */
-    private String              result           = "result";
+    private String              result;
     /** ActionTag当执行完action之后将action返回结果存放到哪个环境。默认是request可选项有page,request,session,context */
     private String              scope            = "request";
     /**Action的环境参数*/

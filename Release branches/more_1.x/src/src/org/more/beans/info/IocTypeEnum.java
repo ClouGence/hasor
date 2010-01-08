@@ -28,8 +28,8 @@ import org.more.beans.core.injection.ExportInjectionProperty;
  * 这也就是说在fact方式下会比ioc方式增加少量内存消耗。生成的注入器被保存在{@link BeanDefinition}的属性中。
  * 只有{@link BeanDefinition}对象被缓存才有上述运行效率，否则fact的效率可能远远不足ioc。
  * <br/><br/>Ioc方式：<br/>传统的注入方式，使用java.lang.reflect包中的类进行反射调用来实现依赖注入。Ioc方式比较Fact方式运行效率要慢的多。
- * <br/>Date : 2009-11-9
- * @author 赵永春
+ * @version 2009-11-9
+ * @author 赵永春 (zyc@byshell.org)
  */
 public enum IocTypeEnum {
     /** Export方式注入。 */

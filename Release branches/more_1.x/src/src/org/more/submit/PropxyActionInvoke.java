@@ -18,8 +18,8 @@ import java.lang.reflect.Method;
 import org.more.NoDefinitionException;
 /**
  * 该类负责提供目标对象方法的{@link ActionInvoke ActionInvoke接口}形式。
- * <br/>Date : 2009-12-1
- * @author 赵永春
+ * @version 2009-12-1
+ * @author 赵永春 (zyc@byshell.org)
  */
 class PropxyActionInvoke implements ActionInvoke {
     //========================================================================================Field

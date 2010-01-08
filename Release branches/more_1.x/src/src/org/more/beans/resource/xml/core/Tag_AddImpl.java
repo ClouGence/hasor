@@ -23,8 +23,8 @@ import org.more.beans.resource.xml.TagProcess;
 /**
  * 该类负责处理addImpl标签，单标记标签。<br/>
  * id="1" type="java.util.List" delegate-refBean="a" refType="refType"
- * Date : 2009-11-21
- * @author 赵永春
+ * @version 2009-11-21
+ * @author 赵永春 (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
 public class Tag_AddImpl extends TagProcess {

@@ -17,8 +17,8 @@ package org.more.beans.core.injection;
 import org.more.InvokeException;
 /**
  * 当执行ioc注入时发生异常。
- * <br/>Date : 2009-11-9
- * @author 赵永春
+ * @version 2009-11-9
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class InjectionException extends InvokeException {
     /**  */

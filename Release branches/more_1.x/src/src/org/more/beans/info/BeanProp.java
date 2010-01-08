@@ -16,8 +16,8 @@
 package org.more.beans.info;
 /**
  * 该类用于BeanProperty对象value属性，该的实际作用是用于区分不同{@link Prop Prop}对象。
- * <br/>Date : 2009-11-18
- * @author 赵永春
+ * @version 2009-11-18
+ * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class BeanProp extends Prop {
     //========================================================================================Field

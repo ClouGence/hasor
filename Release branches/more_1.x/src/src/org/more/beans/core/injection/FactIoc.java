@@ -24,8 +24,8 @@ import org.more.beans.info.IocTypeEnum;
  * 该接口开发人员不会接触到它。仅当bean要求fact方式注入时more.beans会自动调用它。<br/>
  * 此外bean对象及时使用{@link IocTypeEnum#Fact fact}方式注入仍然不能强制类型转换bean对象类型为FactIoc，
  * 因为more.beans使用代理方式执行的注入原始对象不会被破坏。
- * <br/>Date : 2009-11-8
- * @author 赵永春
+ * @version 2009-11-8
+ * @author 赵永春 (zyc@byshell.org)
  */
 public interface FactIoc {
     /** 该方法的实现方法是生成的，生成的代码为原始的get/set方法调用。 */

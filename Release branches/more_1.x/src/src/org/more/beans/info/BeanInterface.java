@@ -16,8 +16,8 @@
 package org.more.beans.info;
 /**
  * 所要附加实现的接口及其代理bean名称配置。
- * <br/>Date : 2009-11-18
- * @author 赵永春
+ * @version 2009-11-18
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class BeanInterface extends Prop {
     //========================================================================================Field

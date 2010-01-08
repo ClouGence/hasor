@@ -38,9 +38,9 @@ import org.more.util.attribute.KeepAttDecorator;
  * 那么这些已经生成的新类类型由于它们被缓存在BeanResource接口中当再次调用它们时他们的类装载器层次结构已经不包含BeanFactory的新的类装载。因此在
  * 接下来的create或者ioc过程我不确定一定会安全执行。另外在more中所有类型的装载（包括属性类型的装载）都是通过BeanFactory的类装载器进行。
  * 使用这个特性我们的bean可以完全来源于网络或者其他地方而不必在当前系统的ClassPath中。
- * </font><br/>
- * Date : 2009-11-17
- * @author 赵永春
+ * </font>
+ * @version 2009-11-17
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class ResourceBeanFactory implements BeanFactory {
     /**  */

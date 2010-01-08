@@ -22,8 +22,8 @@ import org.more.core.classcode.AOPInvokeFilter;
 import org.more.core.classcode.AOPMethods;
 /**
  * JobSupport的事务控制器。
- * <br/>Date : 2009-12-15
- * @author 赵永春
+ * @version 2009-12-15
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class JdbcTransactionManager implements AOPInvokeFilter {
     //========================================================================================Field

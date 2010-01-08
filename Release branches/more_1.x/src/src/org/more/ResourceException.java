@@ -16,8 +16,8 @@
 package org.more;
 /**
  * 资源方面异常。
- * Date : 2009-4-29
- * @author 赵永春
+ * @version 2009-4-29
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class ResourceException extends RuntimeException {
     /**  */

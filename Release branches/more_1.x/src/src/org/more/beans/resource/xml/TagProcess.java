@@ -18,8 +18,8 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 /**
  * 在解析XML时用于表示即将需要处理的一个标签事件，如果开发人员需要在配置文件中自定义一个标签则这个自定义的标签解析器需要继承该类。
- * <br/>Date : 2009-11-21
- * @author 赵永春
+ * @version 2009-11-21
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class TagProcess implements XMLStreamConstants {
     /**当发现标签开始。*/

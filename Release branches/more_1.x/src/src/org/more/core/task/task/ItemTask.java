@@ -20,8 +20,8 @@ import org.more.core.task.Task;
  * 任务，如果被包含的Task类型任务是一个拥有子任务集合的任务，那么这些子任务将会作为一个独立的任务执行。
  * 提示：Task类型已经实现了Runnable接口因此Task也可以看作是Runnable接口对象。
  * 通过ItemTask任务不可以获得有关TaskLocation接口的功能支持。
- * Date : 2009-5-15
- * @author 赵永春
+ * @version 2009-5-15
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class ItemTask extends Task {
     /**  */

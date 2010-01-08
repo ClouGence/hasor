@@ -24,8 +24,8 @@ import org.more.beans.info.PropVarValue;
 import org.more.util.StringConvert;
 /**
  * 解析{@link PropVarValue}类型的属性解析器，ValueTypeParser可以处理的基本类型包括: int、byte、char、double、float、long、short、boolean、String。
- * <br/>Date : 2009-11-18
- * @author 赵永春
+ * @version 2009-11-18
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class ValueTypeParser implements PropertyParser {
     @Override

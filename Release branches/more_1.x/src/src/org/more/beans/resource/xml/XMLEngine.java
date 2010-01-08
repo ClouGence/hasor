@@ -28,8 +28,8 @@ import org.more.core.io.AutoCloseInputStream;
 import org.more.util.attribute.AttBase;
 /**
  * XML解析引擎，开发人员可以通过实现DoEventIteration接口使用runTask方法来执行扩展的xml任务。
- * <br/>Date : 2009-11-23
- * @author 赵永春
+ * @version 2009-11-23
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class XMLEngine extends AttBase {
     /**  */

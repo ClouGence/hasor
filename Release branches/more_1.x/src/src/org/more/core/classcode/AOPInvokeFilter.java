@@ -19,8 +19,8 @@ package org.more.core.classcode;
  * 当过滤器执行到最后一个节点时正式执行方法调用。如果过滤器想立即返回方法调用结果可以直接使用
  * callMethod对象的invoke函数直接调用目标方法产生方法返回值然后进行其他操作。
  * 利用多个{@link AOPInvokeFilter}可以组成过滤器链。
- * Date : 2009-10-18
- * @author 赵永春
+ * @version 2009-10-18
+ * @author 赵永春 (zyc@byshell.org)
  */
 public interface AOPInvokeFilter {
     /**

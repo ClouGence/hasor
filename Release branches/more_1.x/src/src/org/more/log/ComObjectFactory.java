@@ -26,8 +26,8 @@ import java.util.regex.Pattern;
 import org.more.util.StringConvert;
 /**
  * ◊ÈΩ®ª∫¥Ê£¨ππ‘Ï∆˜
- * Date : 2009-5-13
- * @author ’‘”¿¥∫
+ * @version 2009-5-13
+ * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class ComObjectFactory {
     private Map<String, Object> comCache   = new Hashtable<String, Object>(0);

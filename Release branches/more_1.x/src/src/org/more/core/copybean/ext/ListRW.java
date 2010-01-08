@@ -21,8 +21,8 @@ import org.more.core.copybean.BeanType;
 import org.more.core.copybean.PropertyReaderWrite;
 /**
  * List类读写器。使用该类作为读写器可以实现从List对象中拷贝属性或者向List中拷贝属性。
- * Date : 2009-5-15
- * @author 赵永春
+ * @version 2009-5-15
+ * @author 赵永春 (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
 public class ListRW extends BeanType {

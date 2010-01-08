@@ -20,8 +20,8 @@ import org.more.submit.support.MapSubmitConfig;
  * submit利用build模式创建{@link SubmitContext SubmitContext接口}的最后阶段，
  * CasingDirector类主要负责从{@link CasingBuild CasingBuild}中获取返回值然后创建SubmitContext接口对象。
  * 通过扩展CasingDirector类可以改变创建SubmitContext的方式从而扩展more的支撑外壳。
- * <br/>Date : 2009-12-1
- * @author 赵永春
+ * @version 2009-12-1
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class CasingDirector {
     //========================================================================================Field

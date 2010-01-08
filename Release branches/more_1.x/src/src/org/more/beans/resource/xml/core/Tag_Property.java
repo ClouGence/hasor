@@ -28,8 +28,8 @@ import org.more.beans.resource.xml.TagProcess;
 /**
  * 该类负责解析property标签<br/>
  * id="" name="a" value="12" refValue="refBean|{#attName}|{@number}|{$mime}" type="int|byte|char|double|float|long|short|boolean|String"
- * Date : 2009-11-22
- * @author 赵永春
+ * @version 2009-11-22
+ * @author 赵永春 (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
 public class Tag_Property extends TagProcess {

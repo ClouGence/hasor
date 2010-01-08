@@ -37,8 +37,8 @@ import org.more.log.LogFactory;
  * 提示：默认的拷贝方式是深拷贝(value)，如果需要浅拷贝则需要调用changeDefaultCopy方法
  * 改变其拷贝类型。可选的拷贝类型有两个一个是深拷贝(value)，一个是浅拷贝(ref)。
  * 实际上深拷贝会处理java8个基本类型加上string以及date。一共10个类型。这10个类型会在深拷贝中以浅拷贝方式执行。
- * Date : 2009-5-20
- * @author 赵永春
+ * @version 2009-5-20
+ * @author 赵永春 (zyc@byshell.org)
  */
 public final class CopyBeanUtil implements Serializable, Cloneable {
     /**  */

@@ -16,8 +16,8 @@
 package org.more;
 /**
  * 当调用时，或者执行操作时发生异常。
- * Date : 2009-6-26
- * @author 赵永春
+ * @version 2009-6-26
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class InvokeException extends RuntimeException {
     /**  */

@@ -18,8 +18,8 @@ import java.util.Map;
 import org.more.util.attribute.IAttribute;
 /**
  * submit的核心接口，任何action的调用都是通过这个接口进行的。
- * <br/>Date : 2009-12-1
- * @author 赵永春
+ * @version 2009-12-1
+ * @author 赵永春 (zyc@byshell.org)
  */
 public interface SubmitContext extends IAttribute {
     /** 获取已经定义的Action名集合。*/

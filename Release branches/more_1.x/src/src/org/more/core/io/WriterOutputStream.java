@@ -19,8 +19,8 @@ import java.io.OutputStream;
 import java.io.Writer;
 /**
  * 使用OutputStream输出Writer的工具类
- * Date : 2009-5-13
- * @author 网络搜集
+ * @version 2009-5-13
+ * @author 网络收集
  */
 public class WriterOutputStream extends OutputStream {
     private Writer writer   = null;

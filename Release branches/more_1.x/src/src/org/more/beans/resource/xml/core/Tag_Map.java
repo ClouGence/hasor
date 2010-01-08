@@ -24,8 +24,8 @@ import org.more.beans.resource.xml.ContextStack;
 import org.more.beans.resource.xml.TagProcess;
 /**
  * 该类负责解析map标签。
- * <br/>Date : 2009-11-23
- * @author 赵永春
+ * @version 2009-11-23
+ * @author 赵永春 (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
 public class Tag_Map extends TagProcess {

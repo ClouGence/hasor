@@ -18,8 +18,8 @@ import org.more.NoDefinitionException;
 /**
  * 该类负责创建并且返回{@link ActionInvoke action调用对象}，action调用对象可以是{@link ActionFilter action过滤器}
  * 也可以是目标action对象。同时也负责查找并且返回action的过滤器对象，此外如果有获取action属性的要求也通过该接口实现。
- * <br/>Date : 2009-11-28
- * @author 赵永春
+ * @version 2009-11-28
+ * @author 赵永春 (zyc@byshell.org)
  */
 public interface ActionContext {
     /**

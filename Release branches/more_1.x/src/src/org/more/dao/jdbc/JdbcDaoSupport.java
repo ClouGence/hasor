@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 /**
  * 
- * <br/>Date : 2009-12-16
- * @author ’‘”¿¥∫
+ * @version 2009-12-16
+ * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
 public class JdbcDaoSupport {

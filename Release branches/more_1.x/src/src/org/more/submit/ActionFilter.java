@@ -16,8 +16,8 @@
 package org.more.submit;
 /**
  * submit3.0的action执行过滤器，同时这个过滤器也叫做action拦截器。
- * <br/>Date : 2009-11-28
- * @author 赵永春
+ * @version 2009-11-28
+ * @author 赵永春 (zyc@byshell.org)
  */
 public interface ActionFilter {
     /**

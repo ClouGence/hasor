@@ -19,8 +19,8 @@ import java.util.Iterator;
 import java.util.List;
 /**
  * 分页标签组建所使用的数据对象。可以通过扩展该对象以达到不同的分页分配策略。
- * Date : 2009-6-17
- * @author 赵永春
+ * @version 2009-6-17
+ * @author 赵永春 (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
 public class PageInfo {

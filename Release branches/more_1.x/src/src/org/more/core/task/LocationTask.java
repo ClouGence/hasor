@@ -16,8 +16,8 @@
 package org.more.core.task;
 /**
  * 该接口是用于定位任务已经执行的步骤数量和还有多少没有执行。通过该接口的getRatio方法还可以获得指定精度的比率值。
- * Date : 2009-5-16
- * @author 赵永春
+ * @version 2009-5-16
+ * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class LocationTask extends Task {
     /**  */

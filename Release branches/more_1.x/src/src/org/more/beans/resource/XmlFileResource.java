@@ -40,8 +40,8 @@ import org.more.beans.resource.xml.XMLEngine;
 import org.more.util.attribute.AttBase;
 /**
  * 提供了以XML作为数据源提供bean数据的支持。
- * <br/>Date : 2009-11-25
- * @author 赵永春
+ * @version 2009-11-25
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class XmlFileResource extends AttBase implements BeanResource {
     //========================================================================================Field

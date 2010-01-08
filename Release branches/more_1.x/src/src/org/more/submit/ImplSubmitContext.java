@@ -29,8 +29,8 @@ import org.more.NoDefinitionException;
 import org.more.util.attribute.AttBase;
 /**
  * SubmitContext接口的实现类。ImplSubmitContext的createActionStack方法可以改变Action参数的具体类型。
- * <br/>Date : 2009-12-1
- * @author 赵永春
+ * @version 2009-12-1
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class ImplSubmitContext extends AttBase implements SubmitContext {
     //========================================================================================Field

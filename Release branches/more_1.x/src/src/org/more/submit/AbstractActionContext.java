@@ -18,8 +18,8 @@ import org.more.NoDefinitionException;
 /**
  * ActionContext接口的基本实现，其子类负责提供返回action对象以及action对象的过滤器对象获取。
  * 详细功能参看{@link ActionContext ActionContext接口}
- * <br/>Date : 2009-12-1
- * @author 赵永春
+ * @version 2009-12-1
+ * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractActionContext implements ActionContext {
     /**根据Action名称获取Action对象。*/

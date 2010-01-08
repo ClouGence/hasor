@@ -29,8 +29,8 @@ import org.more.beans.info.PropVarValue;
 /**
  * 该类是整个属性解析器的入口，它也实现了{@link PropertyParser}接口但是使用MainPropertyParser对象时使用它的简化parser方法的重载方法。
  * 重载方法减少了一些不必要的参数提供，这些参数已经被封装在MainPropertyParser对象中。
- * <br/>Date : 2009-11-18
- * @author 赵永春
+ * @version 2009-11-18
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class MainPropertyParser implements PropertyParser {
     //========================================================================================Field

@@ -16,8 +16,8 @@
 package org.more.beans.info;
 /**
  * BeanProperty是用于表示属性的bean定义。
- * <br/>Date : 2009-11-18
- * @author 赵永春
+ * @version 2009-11-18
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class BeanProperty extends Prop {
     /**  */

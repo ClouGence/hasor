@@ -19,8 +19,8 @@ package org.more.beans.info;
  * propType属性规则。
  * 1.如果PropMap配置了propType属性则直接返回，否则返回propContext的propType属性。
  * 2.如果propContext也没有配置propType属性则返回java.util.Map。
- * <br/>Date : 2009-11-18
- * @author 赵永春
+ * @version 2009-11-18
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class PropMap extends BeanProp {
     //========================================================================================Field

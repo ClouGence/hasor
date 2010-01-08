@@ -13,24 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.copybean.type;
-import org.more.core.copybean.ConvertType;
+package org.more.core.json;
+import org.more.util.StringConvert;
 /**
- * CopyBean处理Array类型转换的辅助类。
- * Date : 2009-5-23
- * @author 赵永春
+ * 负责处理Number类型的json格式互转。
+ * @version 2010-1-7
+ * @author 赵永春 (zyc@byshell.org)
  */
-public class ArrayConvertType extends ConvertType {
-    /**  */
-    private static final long serialVersionUID = -5864989968961653320L;
+public class JsonNumber extends JsonType {
     @Override
-    public boolean checkType(Object from, Class<?> to) {
-        // TODO Auto-generated method stub
-        return false;
+    public Object toObject(String str) {
+        return StringConvert.parseNumber(str, 0);
     }
     @Override
-    public Object convert(Object object) {
-        // TODO Auto-generated method stub
-        return null;
+    public String toString(Object bean) {
+        if (bean instanceof Number == true)
+            return bean.toString();
+        else
+            throw new JsonException("JsonNumber不能将一个非数字类型对象转换为JSON对应格式。");
     }
 }

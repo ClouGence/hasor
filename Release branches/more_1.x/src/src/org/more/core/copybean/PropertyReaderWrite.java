@@ -19,8 +19,8 @@ import java.io.Serializable;
  * 对象属性读写器。该类可以将某个属性保存到另外的一个对象上或者将某个属性从某个对象上读取出来。
  * 该类是一个抽象类，其子类决定具体应该如何读写属性。如果子类不支持读或者写该属性则应当重写父类
  * canReader和canWrite方法。canReader和canWrite方法在父类中始终返回true。
- * Date : 2009-5-15
- * @author 赵永春
+ * @version 2009-5-15
+ * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class PropertyReaderWrite implements Serializable {
     /**  */

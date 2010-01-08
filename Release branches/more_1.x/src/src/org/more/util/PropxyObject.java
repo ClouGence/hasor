@@ -20,8 +20,8 @@ import org.more.InvokeException;
 /**
  * 创建代理调用对象。通过该类提供的方法可以使调用者无视java的反射机制。直接向对象的参数栈输出参数，
  * 然后直接调用指定方法完成调用。最终在通过getResult方法返回返回值。该类是一个工具类
- * Date : 2009-7-11
- * @author 赵永春
+ * @version 2009-7-11
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class PropxyObject {
     /** 存放准备调用方法时传递的参数列表数据，有顺序 */

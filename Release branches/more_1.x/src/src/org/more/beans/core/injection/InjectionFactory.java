@@ -22,9 +22,10 @@ import org.more.beans.info.IocTypeEnum;
 import org.more.core.task.Task;
 /**
  * 根据bean定义自动选择注入方式并且执行注入。Export注入器如果配置了单态模式其对应的{@link ExportInjection}对象会被缓存。
- * InjectionFactory也是一个任务({@link Task})对象,它的任务是清空已经被缓存的{@link ExportInjection}对象。注意任务执行方法doRun是同步方法。
- * <br/>Date : 2009-11-9
- * @author 赵永春
+ * InjectionFactory也是一个任务({@link Task})对象,它的任务是清空已经被缓存的{@link ExportInjection}对象。
+ * 注意任务执行方法doRun是同步方法。
+ * @version 2009-11-9
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class InjectionFactory extends Task implements Injection {
     //========================================================================================Field

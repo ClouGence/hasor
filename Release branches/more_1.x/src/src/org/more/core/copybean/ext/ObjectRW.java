@@ -26,8 +26,8 @@ import org.more.core.copybean.PropertyReaderWrite;
  * 对象类读写器。使用该类作为读写器可以实现从对象中拷贝属性或者向对象中拷贝属性。
  * 对象属性读写时只支持标准get/set方法，对于Boolean类型(包装类型)只支持get/set。
  * 如果是boolean类型(数据类型)则只支持is,setis。
- * Date : 2009-5-15
- * @author 赵永春
+ * @version 2009-5-15
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class ObjectRW extends BeanType {
     /**  */

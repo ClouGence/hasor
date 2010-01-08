@@ -32,8 +32,8 @@ import org.more.util.attribute.AttBase;
  * (int)staticCache默认值10，表示静态缓存大小。<br/>
  * (HashMap<String, BeanDefinition>)beanMap，表示静态缓存。<br/>
  * (int)dynamicCache默认值50，表示动态缓存大小。
- * <br/>Date : 2009-11-24
- * @author 赵永春
+ * @version 2009-11-24
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class Task_Init implements TaskProcess {
     private AttBase                         result             = new AttBase();

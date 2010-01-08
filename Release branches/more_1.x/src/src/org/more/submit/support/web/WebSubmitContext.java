@@ -32,8 +32,8 @@ class WebSubmitContext_Temp {
 }
 /**
  * 该类提供了SubmitContext接口，并且保证了SubmitContext的属性与ServletContext属性的同步。
- * <br/>Date : 2009-12-28
- * @author 赵永春
+ * @version 2009-12-28
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class WebSubmitContext extends ImplSubmitContext {
     //========================================================================================Field

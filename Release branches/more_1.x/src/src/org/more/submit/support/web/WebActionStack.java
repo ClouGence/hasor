@@ -33,8 +33,8 @@ import org.more.submit.support.web.scope.ServletContextScope;
 import org.more.util.attribute.IAttribute;
 /**
  * 提供了Web特性的ActionStack对象，该类还提供了五个属性作用域的支持。
- * <br/>Date : 2009-12-28
- * @author 赵永春
+ * @version 2009-12-28
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class WebActionStack extends ActionStack implements WebScopeEnum {
     private static final long           serialVersionUID = 5001483997344333143L;

@@ -19,9 +19,9 @@ import javax.xml.stream.XMLStreamReader;
 import org.more.beans.info.BeanProperty;
 import org.more.beans.resource.xml.ContextStack;
 /**
- * 该类负责解析methodParam标签
- * Date : 2009-11-22
- * @author 赵永春
+ * 该类负责解析methodParam标签。
+ * @version 2009-11-22
+ * @author 赵永春 (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
 public class Tag_MethodParam extends Tag_Property {

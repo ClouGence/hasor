@@ -24,8 +24,8 @@ import org.more.core.classcode.ClassEngine;
 import org.more.core.classcode.MethodDelegate;
 /**
  * CreateEngine的子类分别实现了{@link org.more.beans.info.CreateTypeEnum}枚举中定义的创建方式。
- * Date : 2009-11-15
- * @author 赵永春
+ * @version 2009-11-15
+ * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class CreateEngine {
     /***/

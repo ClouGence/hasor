@@ -21,8 +21,8 @@ import org.more.submit.Config;
 import org.more.submit.SubmitContext;
 /**
  * 该类是负责创建web外壳环境的SubmitContext对象。
- * <br/>Date : 2009-12-28
- * @author 赵永春
+ * @version 2009-12-28
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class WebCasingDirector extends CasingDirector {
     //========================================================================================Field

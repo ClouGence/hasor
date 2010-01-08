@@ -17,8 +17,8 @@ package org.more.beans;
 import org.more.util.attribute.IAttribute;
 /**
  * 
- * Date : 2009-11-3
- * @author ’‘”¿¥∫
+ * @version 2009-11-3
+ * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public interface BeanContext extends BeanFactory, IAttribute {
     /**

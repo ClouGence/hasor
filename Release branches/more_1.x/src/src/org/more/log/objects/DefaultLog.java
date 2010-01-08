@@ -21,8 +21,8 @@ import org.more.log.ILogFormater;
 import org.more.log.ILogWrite;
 /**
  * д╛хохуж╬т╢
- * Date : 2009-5-13
- * @author утсю╢╨
+ * @version 2009-5-13
+ * @author утсю╢╨ (zyc@byshell.org)
  */
 public class DefaultLog implements ILog {
     private List<ILogWrite> all_list     = new ArrayList<ILogWrite>(0);

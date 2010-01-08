@@ -19,9 +19,9 @@ import org.more.beans.resource.xml.ContextStack;
 import org.more.beans.resource.xml.TagProcess;
 import org.more.util.StringConvert;
 /**
- * 该类负责处理beans标签
- * Date : 2009-11-21
- * @author 赵永春
+ * 该类负责处理beans标签。
+ * @version 2009-11-21
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class Tag_Beans extends TagProcess {
     @Override

@@ -17,8 +17,8 @@ package org.more.core.copybean;
 import java.io.Serializable;
 /**
  * CopyBean处理类型转换的辅助类基类。
- * Date : 2009-5-23
- * @author 赵永春
+ * @version 2009-5-23
+ * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class ConvertType implements Serializable {
     /**  */

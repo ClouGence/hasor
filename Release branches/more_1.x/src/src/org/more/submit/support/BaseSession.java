@@ -20,8 +20,8 @@ import org.more.submit.Session;
 import org.more.util.attribute.AttBase;
 /**
  * 简单{@link Session Session接口}实现。
- * <br/>Date : 2009-12-4
- * @author 赵永春
+ * @version 2009-12-4
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class BaseSession extends AttBase implements Session {
     //========================================================================================Field

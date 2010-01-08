@@ -19,8 +19,8 @@ import org.more.submit.Session;
 import org.more.submit.support.web.scope.HttpSessionScope;
 /**
  * 负责与HttpSession同步的桥梁。
- * <br/>Date : 2009-12-4
- * @author 赵永春
+ * @version 2009-12-4
+ * @author 赵永春 (zyc@byshell.org)
  */
 class SessionSynchronize extends HttpSessionScope implements Session {
     //========================================================================================Field

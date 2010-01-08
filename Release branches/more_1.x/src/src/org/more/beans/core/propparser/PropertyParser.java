@@ -20,8 +20,8 @@ import org.more.beans.info.BeanProp;
 import org.more.beans.info.BeanProperty;
 /**
  * 属性解析器接口，其实现类决定解析那种属性类型（{@link BeanProp}类的子类）。在软件包propparser中已经针对info软件包已经定义的属性定义类型进行了一对一实现。
- * <br/>Date : 2009-11-18
- * @author 赵永春
+ * @version 2009-11-18
+ * @author 赵永春 (zyc@byshell.org)
  */
 public interface PropertyParser {
     /**

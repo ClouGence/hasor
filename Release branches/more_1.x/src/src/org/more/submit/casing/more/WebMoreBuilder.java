@@ -21,8 +21,8 @@ import org.more.submit.Config;
 /**
  * WebMoreBuilder类扩展了ClientMoreBuilder提供了web的支持，该类所使用的configFile参数是一个相对于站点的web相对路径。<br/>
  * 如果没有指定configFile参数，则configFile默认将表示为“/WEB-INF/more-config.xml”配置文件。
- * <br/>Date : 2009-12-2
- * @author 赵永春
+ * @version 2010-1-5
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class WebMoreBuilder extends ClientMoreBuilder implements Config {
     public static final String Default_ConfigXML = "/WEB-INF/more-config.xml";

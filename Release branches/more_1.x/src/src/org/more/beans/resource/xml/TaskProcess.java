@@ -20,8 +20,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 /**
  * 该接口是用于表示一个XML处理任务，查找beans、执行xpath等等任务都是DoEventIteration接口的实现类。
- * <br/>Date : 2009-11-24
- * @author 赵永春
+ * @version 2009-11-24
+ * @author 赵永春 (zyc@byshell.org)
  */
 public interface TaskProcess extends XMLStreamConstants {
     /**

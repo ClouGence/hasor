@@ -24,8 +24,8 @@ import org.more.util.StringConvert;
 /**
  * 该类负责处理factoryConfig标签。<br/>
  * refBean="factoryRefBean" isStaticMethod="true" methodName="create"
- * Date : 2009-11-21
- * @author 赵永春
+ * @version 2009-11-21
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class Tag_FactoryConfig extends TagProcess {
     @Override

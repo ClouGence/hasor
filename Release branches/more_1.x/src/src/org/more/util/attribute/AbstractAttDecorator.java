@@ -18,8 +18,8 @@ package org.more.util.attribute;
  *    抽象的属性装饰器，所有属性装饰器类必须继承自该类或者其子类。抽象的装饰器类中提供
  * 了对原始属性对象的一套get/set方法。通过装饰器的get/set方法可以方便的在不同的装饰
  * 器上进行切换或者采用装饰器嵌套。注意：调用装饰器中的保护方法不会影响到装饰的目标类。
- * Date : 2009-4-30
- * @author 赵永春
+ * @version 2009-4-30
+ * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractAttDecorator implements IAttribute {
     //========================================================================================Field

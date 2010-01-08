@@ -24,8 +24,8 @@ import org.more.beans.info.BeanDefinition;
  * 这个接口是more.beans组建的基本接口之一，该接口用于提供{@link BeanDefinition}的索引获取功能。
  * 接口实现类决定bean数据是以什么形式存在（DBMS、LDAP、XML这些都是数据提供形式）。
  * 更甚者可以使用Spring的getMergedBeanDefinition方法使用Spring作为bean数据提供者。
- * Date : 2009-11-3
- * @author 赵永春
+ * @version 2009-11-3
+ * @author 赵永春 (zyc@byshell.org)
  */
 public interface BeanResource {
     /**获取资源名。*/

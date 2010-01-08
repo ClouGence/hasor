@@ -17,8 +17,8 @@ package org.more.submit.support.web;
 import org.more.submit.ScopeEnum;
 /**
  * 该接口定义了WebActionStack所能支持的作用域。
- * <br/>Date : 2009-12-28
- * @author 赵永春
+ * @version 2009-12-28
+ * @author 赵永春 (zyc@byshell.org)
  */
 public interface WebScopeEnum extends ScopeEnum {
     /**页面上下文*/
