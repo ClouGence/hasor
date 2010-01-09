@@ -50,13 +50,16 @@ public abstract class AbstractActionContext implements ActionContext {
         //1.名字检测 NoDefinitionException
         if (this.testActionName(actionName) == false)
             throw new NoDefinitionException("找不到名称为[" + actionName + "]的Action。");
-        //2.类型检测 FormatException
+        //2.Action标记检测 NoDefinitionException
         Class<?> actionType = this.getActionType(actionName);
         Action action = actionType.getAnnotation(Action.class);
         if (action == null || action.isAction() == false)
-            if (this.testActionType(actionType) == false)
-                throw new FormatException("[" + actionName + "]不是一个有效的的Action类型。");
-        //3.对象检测 CastException        
+            if (this.testActionMark(actionName) == false)
+                throw new NoDefinitionException("找不到名称为[" + actionName + "]的Action。");
+        //3.类型检测 FormatException
+        if (this.testActionType(actionType) == false)
+            throw new FormatException("[" + actionName + "]不是一个有效的的Action类型。");
+        //4.对象检测 CastException
         Object actionObject = this.getActionBean(actionName);
         if (actionObject == null)
             throw new NullPointerException("错误Action[" + actionName + "]对象不能为null。");
@@ -65,15 +68,25 @@ public abstract class AbstractActionContext implements ActionContext {
         //返回对象
         return new PropxyActionInvoke(actionObject, invoke);
     }
-    /**1.名字检测 NoDefinitionException*/
-    protected boolean testActionName(String actionName) throws NoDefinitionException {
+    /**
+     * 1.名字检测，抛出NoDefinitionException<br/>
+     * 该方法主要为了检测是否可以查找到name参数的对象。
+     */
+    protected boolean testActionName(String name) throws NoDefinitionException {
         return true;
     };
-    /**2.类型检测 FormatException，当目标类型配置了Action注解并且没有指定isAction注解属性为false时，该方法将不会被调用。*/
+    /**
+     * 2.Action标记检测，抛出NoDefinitionException<br/>
+     * 该方法主要为了检测testActionName检测的对象是否是一个action，凡是action都是应该有标记的无论是注解还是配置文件。
+     */
+    protected boolean testActionMark(String actionName) throws NoDefinitionException {
+        return true;
+    };
+    /**3.类型检测，抛出FormatException，当目标类型配置了Action注解并且没有指定isAction注解属性为false时，该方法将不会被调用。*/
     protected boolean testActionType(Class<?> actionType) throws FormatException {
         return true;
     };
-    /**3.对象检测 CastException，如果创建的目标对象为null则不会调用该方法。*/
+    /**4.对象检测，抛出CastException，如果创建的目标对象为null则不会调用该方法。*/
     protected boolean testActionObject(Object actionObject) throws CastException {
         return true;
     };

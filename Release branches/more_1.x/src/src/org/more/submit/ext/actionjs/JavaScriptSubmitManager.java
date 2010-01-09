@@ -28,6 +28,7 @@ import org.more.core.copybean.CopyBeanUtil;
 import org.more.core.json.JsonUtil;
 import org.more.submit.ActionStack;
 import org.more.submit.SubmitContext;
+import org.more.submit.annotation.Action;
 import org.more.submit.support.web.ActionTag;
 import org.more.submit.support.web.WebActionStack;
 /**
@@ -35,6 +36,7 @@ import org.more.submit.support.web.WebActionStack;
  * @version 2010-1-7
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
+@Action()
 public class JavaScriptSubmitManager {
     private boolean min = true;
     public void setMin(boolean min) {

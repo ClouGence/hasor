@@ -39,10 +39,6 @@ public class MoreActionContext extends AbstractActionContext {
     }
     //==========================================================================================Job
     @Override
-    protected Object getActionBean(String actionName) {
-        return this.factory.getBean(actionName);
-    }
-    @Override
     protected ActionFilter[] getPrivateFilterBean(String actionName) {
         BeanDefinition beanDefinition = this.resource.getBeanDefinition(actionName);
         Object privateFilters = beanDefinition.getAttribute("actionFilters");
@@ -76,16 +72,16 @@ public class MoreActionContext extends AbstractActionContext {
         return n;
     }
     @Override
-    public Class<?> getActionType(String actionName) {
-        if (this.containsAction(actionName) == true)
-            return this.factory.getBeanType(actionName);
-        return null;
+    protected Object getActionBean(String actionName) {
+        return this.factory.getBean(actionName);
     }
-    /**检测more beans的bean定义中指定bean是否配置了isAction属性为true，如果配置true则返回true否则返回false。*/
     @Override
-    protected boolean testActionName(String actionName) throws NoDefinitionException {
-        if (this.resource.containsBeanDefinition(actionName) == false)
-            return false;
+    public Class<?> getActionType(String actionName) {
+        return this.factory.getBeanType(actionName);
+    }
+    /*--------------------------------*/
+    @Override
+    protected boolean testActionMark(String actionName) throws NoDefinitionException {
         BeanDefinition bd = this.resource.getBeanDefinition(actionName);
         Object objs = bd.getAttribute("isAction");
         String is = (objs == null) ? "false" : objs.toString();
@@ -95,7 +91,7 @@ public class MoreActionContext extends AbstractActionContext {
             return true;
     }
     @Override
-    public boolean containsAction(String actionName) {
-        return this.resource.containsBeanDefinition(actionName);
+    protected boolean testActionName(String name) throws NoDefinitionException {
+        return this.resource.containsBeanDefinition(name);
     }
 }

@@ -20,17 +20,11 @@ import org.more.NoDefinitionException;
 /**
  * 该类负责创建并且返回{@link ActionInvoke action调用对象}，action调用对象可以是{@link ActionFilter action过滤器}
  * 也可以是目标action对象。同时也负责查找并且返回action的过滤器对象，此外如果有获取action属性的要求也通过该接口实现。
- * 检测一个action的过程如下：1.名字检测 NoDefinitionException，2.类型检测 FormatException，3.对象检测 CastException
+ * 检测一个action的过程如下：1.名字检测 NoDefinitionException，2.Action标记检测  NoDefinitionException，3.类型检测 FormatException，4.对象检测 CastException
  * @version 2009-11-28
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface ActionContext {
-    /**
-     * 检测指定的action调用字符串是否可以被支持，如果被支持则返回true否则返回false。
-     * @param actionName 要查找的action名。
-     * @return 检测指定的action调用字符串是否可以被支持，如果被支持则返回true否则返回false。
-     */
-    public boolean containsAction(String actionName);
     /**
      * 查找并且返回invokeString字符串所表示的那个action调用封装，findAction方法并不会装配其action过滤器。
      * 如果无法查找或者查找action调用目标失败则会引发NoDefinitionException异常。

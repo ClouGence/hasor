@@ -38,10 +38,6 @@ public class SpringActionContext extends AbstractActionContext {
     }
     //==========================================================================================Job
     @Override
-    protected Object getActionBean(String actionName) {
-        return this.springContext.getBean(actionName);
-    }
-    @Override
     protected ActionFilter[] getPrivateFilterBean(String actionName) {
         BeanDefinition beanDefinition = this.configContext.getBeanDefinition(actionName);
         Object privateFilters = beanDefinition.getAttribute("actionFilters");
@@ -68,18 +64,6 @@ public class SpringActionContext extends AbstractActionContext {
         return nsArray;
     }
     @Override
-    protected boolean testActionName(String actionName) throws NoDefinitionException {
-        if (this.springContext.containsBeanDefinition(actionName) == false)
-            return false;
-        BeanDefinition bd = this.configContext.getBeanDefinition(actionName);
-        Object objs = bd.getAttribute("isAction");
-        String is = (objs == null) ? "false" : objs.toString();
-        if (StringConvert.parseBoolean(is, false) == false)
-            return false;
-        else
-            return true;
-    }
-    @Override
     public String[] getActionNames() {
         ArrayList<String> ns = new ArrayList<String>(0);
         String[] beanNames = this.springContext.getBeanDefinitionNames();
@@ -94,11 +78,26 @@ public class SpringActionContext extends AbstractActionContext {
         return nsArray;
     }
     @Override
+    protected Object getActionBean(String actionName) {
+        return this.springContext.getBean(actionName);
+    }
+    @Override
     public Class<?> getActionType(String actionName) {
         return this.springContext.getType(actionName);
     }
+    /*--------------------------------*/
     @Override
-    public boolean containsAction(String actionName) {
-        return this.configContext.containsBean(actionName);
+    protected boolean testActionMark(String actionName) throws NoDefinitionException {
+        BeanDefinition bd = this.configContext.getBeanDefinition(actionName);
+        Object objs = bd.getAttribute("isAction");
+        String is = (objs == null) ? "false" : objs.toString();
+        if (StringConvert.parseBoolean(is, false) == false)
+            return false;
+        else
+            return true;
+    }
+    @Override
+    protected boolean testActionName(String name) throws NoDefinitionException {
+        return this.configContext.containsBean(name);
     }
 }
