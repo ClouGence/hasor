@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.plugin.actionjs;
+package org.more.submit.ext.actionjs;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -67,7 +67,7 @@ public class JavaScriptSubmitManager {
         }
         //Êä³öºËÐÄ½Å±¾
         StringBuffer str = new StringBuffer();
-        InputStream core = CopyBeanUtil.class.getResourceAsStream("/org/more/submit/plugin/actionjs/JavaScriptSubmitManager.js");
+        InputStream core = CopyBeanUtil.class.getResourceAsStream("/org/more/submit/ext/actionjs/JavaScriptSubmitManager.js");
         BufferedReader reader = new BufferedReader(new InputStreamReader(core, "utf-8"));
         while (true) {
             String str_read = reader.readLine();

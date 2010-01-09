@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package org.more.submit;
+import org.more.CastException;
+import org.more.FormatException;
 import org.more.NoDefinitionException;
+import org.more.submit.annotation.Action;
 /**
  * ActionContext接口的基本实现，其子类负责提供返回action对象以及action对象的过滤器对象获取。
  * 详细功能参看{@link ActionContext ActionContext接口}
@@ -22,12 +25,6 @@ import org.more.NoDefinitionException;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractActionContext implements ActionContext {
-    /**根据Action名称获取Action对象。*/
-    protected abstract Object getActionBean(String actionName);
-    /**获取指定名称action的私有过滤器对象数组。*/
-    protected abstract ActionFilter[] getPrivateFilterBean(String actionName);
-    /**获取指定名称action的共有过滤器对象数组。*/
-    protected abstract ActionFilter[] getPublicFilterBean(String actionName);
     @Override
     public ActionInvoke configPrivateFilter(String actionName, ActionInvoke invokeObject) {
         ActionFilter[] afList = this.getPrivateFilterBean(actionName);
@@ -49,10 +46,41 @@ public abstract class AbstractActionContext implements ActionContext {
         return new FilterActionInvoke(chain);
     }
     @Override
-    public ActionInvoke findAction(String actionName, String invoke) throws NoDefinitionException {
-        if (this.containsAction(actionName) == false)
+    public ActionInvoke findAction(String actionName, String invoke) throws NoDefinitionException, FormatException, CastException {
+        //1.名字检测 NoDefinitionException
+        if (this.testActionName(actionName) == false)
             throw new NoDefinitionException("找不到名称为[" + actionName + "]的Action。");
-        PropxyActionInvoke pai = new PropxyActionInvoke(this.getActionBean(actionName), invoke);
-        return pai;
+        //2.类型检测 FormatException
+        Class<?> actionType = this.getActionType(actionName);
+        Action action = actionType.getAnnotation(Action.class);
+        if (action == null || action.isAction() == false)
+            if (this.testActionType(actionType) == false)
+                throw new FormatException("[" + actionName + "]不是一个有效的的Action类型。");
+        //3.对象检测 CastException        
+        Object actionObject = this.getActionBean(actionName);
+        if (actionObject == null)
+            throw new NullPointerException("错误Action[" + actionName + "]对象不能为null。");
+        else if (this.testActionObject(actionObject) == false)
+            throw new CastException("[" + actionName + "]不是一个有效的的Action对象");
+        //返回对象
+        return new PropxyActionInvoke(actionObject, invoke);
     }
+    /**1.名字检测 NoDefinitionException*/
+    protected boolean testActionName(String actionName) throws NoDefinitionException {
+        return true;
+    };
+    /**2.类型检测 FormatException，当目标类型配置了Action注解并且没有指定isAction注解属性为false时，该方法将不会被调用。*/
+    protected boolean testActionType(Class<?> actionType) throws FormatException {
+        return true;
+    };
+    /**3.对象检测 CastException，如果创建的目标对象为null则不会调用该方法。*/
+    protected boolean testActionObject(Object actionObject) throws CastException {
+        return true;
+    };
+    /**获取指定名称action对象。*/
+    protected abstract Object getActionBean(String actionName);
+    /**获取指定名称action的私有过滤器对象数组。*/
+    protected abstract ActionFilter[] getPrivateFilterBean(String actionName);
+    /**获取指定名称action的共有过滤器对象数组。*/
+    protected abstract ActionFilter[] getPublicFilterBean(String actionName);
 }

@@ -16,6 +16,7 @@
 package org.more.submit.casing.more;
 import java.util.ArrayList;
 import java.util.List;
+import org.more.NoDefinitionException;
 import org.more.beans.BeanFactory;
 import org.more.beans.BeanResource;
 import org.more.beans.info.BeanDefinition;
@@ -68,7 +69,21 @@ public class MoreActionContext extends AbstractActionContext {
         return nsArray;
     }
     @Override
-    public boolean containsAction(String actionName) {
+    public String[] getActionNames() {
+        List<String> ns = this.resource.getBeanDefinitionNames();
+        String[] n = new String[ns.size()];
+        ns.toArray(n);
+        return n;
+    }
+    @Override
+    public Class<?> getActionType(String actionName) {
+        if (this.containsAction(actionName) == true)
+            return this.factory.getBeanType(actionName);
+        return null;
+    }
+    /**检测more beans的bean定义中指定bean是否配置了isAction属性为true，如果配置true则返回true否则返回false。*/
+    @Override
+    protected boolean testActionName(String actionName) throws NoDefinitionException {
         if (this.resource.containsBeanDefinition(actionName) == false)
             return false;
         BeanDefinition bd = this.resource.getBeanDefinition(actionName);
@@ -80,14 +95,7 @@ public class MoreActionContext extends AbstractActionContext {
             return true;
     }
     @Override
-    public String[] getActionNames() {
-        List<String> ns = this.resource.getBeanDefinitionNames();
-        String[] n = new String[ns.size()];
-        ns.toArray(n);
-        return n;
-    }
-    @Override
-    public Class<?> getActionType(String actionName) {
-        return this.factory.getBeanType(actionName);
+    public boolean containsAction(String actionName) {
+        return this.resource.containsBeanDefinition(actionName);
     }
 }

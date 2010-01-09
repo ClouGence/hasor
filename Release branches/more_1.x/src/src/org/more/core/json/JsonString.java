@@ -18,7 +18,7 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 /**
- * 
+ * 负责处理字符类型的json格式互转。
  * @version 2010-1-7
  * @author 赵永春 (zyc@byshell.org)
  */

@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 package org.more.submit;
+import org.more.CastException;
+import org.more.FormatException;
 import org.more.NoDefinitionException;
 /**
  * 该类负责创建并且返回{@link ActionInvoke action调用对象}，action调用对象可以是{@link ActionFilter action过滤器}
  * 也可以是目标action对象。同时也负责查找并且返回action的过滤器对象，此外如果有获取action属性的要求也通过该接口实现。
+ * 检测一个action的过程如下：1.名字检测 NoDefinitionException，2.类型检测 FormatException，3.对象检测 CastException
  * @version 2009-11-28
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -34,9 +37,11 @@ public interface ActionContext {
      * @param actionName 要调用的action名。
      * @param invoke 要调用的action服务名。
      * @return 返回查找到的action调用对象。
-     * @throws NoDefinitionException 如果发生未定义异常。
+     * @throws NoDefinitionException 名字检测期间发生异常。
+     * @throws CastException 类型检测期间发生异常。
+     * @throws FormatException 对象检测期间发生异常。
      */
-    public ActionInvoke findAction(String actionName, String invoke) throws NoDefinitionException;
+    public ActionInvoke findAction(String actionName, String invoke) throws NoDefinitionException, FormatException, CastException;
     /**
      * 配置ActionInvoke调用对象的私有过滤器，如果没有装配私有过滤器则原样返回调用对象。
      * @param actionName 要装配的action过滤器配置。

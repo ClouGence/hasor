@@ -25,7 +25,6 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import org.more.FormatException;
-import org.more.NoDefinitionException;
 import org.more.util.attribute.AttBase;
 /**
  * SubmitContext接口的实现类。ImplSubmitContext的createActionStack方法可以改变Action参数的具体类型。
@@ -79,9 +78,6 @@ public class ImplSubmitContext extends AttBase implements SubmitContext {
         //一、创建并获取堆栈对象。
         ActionStack stack = this.parseInvokeString(invokeString, this.createActionStack(null, session, this));
         String actionName = stack.getActionName();
-        if (this.actionContext.containsAction(actionName) == false)
-            throw new NoDefinitionException("找不到action[" + actionName + "]的定义。");
-        //
         if (params != null)
             for (String key : params.keySet())
                 stack.setAttribute(key, params.get(key));
@@ -109,9 +105,6 @@ public class ImplSubmitContext extends AttBase implements SubmitContext {
         //一、创建并获取堆栈对象。
         ActionStack newStack = this.parseInvokeString(invokeString, this.createActionStack(stack, stack.getSession(), this));
         String actionName = newStack.getActionName();
-        if (this.actionContext.containsAction(actionName) == false)
-            throw new NoDefinitionException("找不到action[" + actionName + "]的定义。");
-        //
         if (params != null)
             for (String key : params.keySet())
                 newStack.setAttribute(key, params.get(key));

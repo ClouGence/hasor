@@ -15,6 +15,7 @@
  */
 package org.more.submit.casing.spring;
 import java.util.ArrayList;
+import org.more.NoDefinitionException;
 import org.more.submit.AbstractActionContext;
 import org.more.submit.ActionFilter;
 import org.more.util.StringConvert;
@@ -67,7 +68,7 @@ public class SpringActionContext extends AbstractActionContext {
         return nsArray;
     }
     @Override
-    public boolean containsAction(String actionName) {
+    protected boolean testActionName(String actionName) throws NoDefinitionException {
         if (this.springContext.containsBeanDefinition(actionName) == false)
             return false;
         BeanDefinition bd = this.configContext.getBeanDefinition(actionName);
@@ -95,5 +96,9 @@ public class SpringActionContext extends AbstractActionContext {
     @Override
     public Class<?> getActionType(String actionName) {
         return this.springContext.getType(actionName);
+    }
+    @Override
+    public boolean containsAction(String actionName) {
+        return this.configContext.containsBean(actionName);
     }
 }
