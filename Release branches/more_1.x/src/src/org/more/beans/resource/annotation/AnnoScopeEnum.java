@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 package org.more.beans.resource.annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 /**
- * 
- * @version 2010-1-7
+ * 该枚举中定义了beans注解引擎会扫描到的注解出现位置。
+ * @version 2010-1-10
  * @author 赵永春 (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.TYPE })
-public @interface Bean {
-    public String name(); //
-    public boolean lazyInit() default true; //
-    public String scope() default ""; //
-    public String iocType() default ""; //
-    public String description() default ""; //
+public enum AnnoScopeEnum {
+    /**类型上的注解。*/
+    Anno_Type,
+    /**字段上的注解。*/
+    Anno_Field,
+    /**构造方法上的注解*/
+    Anno_Constructor,
+    /**普通方法的注解*/
+    Anno_Method,
+    /**方法参数的注解*/
+    Anno_Param,
 }

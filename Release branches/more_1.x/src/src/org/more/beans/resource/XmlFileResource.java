@@ -24,12 +24,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
+import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import org.more.FormatException;
+import org.more.InitializationException;
 import org.more.InvokeException;
 import org.more.NoDefinitionException;
 import org.more.ResourceException;
@@ -37,6 +40,7 @@ import org.more.beans.BeanResource;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.CreateTypeEnum;
 import org.more.beans.resource.xml.XMLEngine;
+import org.more.core.io.AutoCloseInputStream;
 import org.more.util.attribute.AttBase;
 /**
  * 提供了以XML作为数据源提供bean数据的支持。
@@ -69,31 +73,49 @@ public class XmlFileResource extends AttBase implements BeanResource {
     /***/
     private boolean                         validatorXML        = true;                                 //是否开启XSD验证。
     //==================================================================================Constructor
-    /**创建XmlFileResource对象。*/
-    public XmlFileResource() {
-        this.xmlEngine = new XMLEngine();
+    protected String getTagPropertiesConfig() {
+        return "/org/more/beans/resource/xml/core/tagProcess.properties";
     }
-    /**创建XmlFileResource对象，参数filePath是配置文件位置。*/
-    public XmlFileResource(String filePath) {
-        this();
+    protected String getTaskPropertiesConfig() {
+        return "/org/more/beans/resource/xml/core/taskProcess.properties";
+    }
+    /**创建XmlFileResource对象。validatorXML表示是否开启验证。*/
+    public XmlFileResource(boolean validatorXML) {
+        this.validatorXML = validatorXML;
+        try {
+            Class<?> type = XmlFileResource.class;
+            Properties tag = new Properties();
+            tag.load(new AutoCloseInputStream(type.getResourceAsStream(getTagPropertiesConfig())));//装载标签处理属性配置
+            Properties task = new Properties();
+            task.load(new AutoCloseInputStream(type.getResourceAsStream(getTaskPropertiesConfig())));//装载任务属性配置
+            /*------*/
+            this.xmlEngine = new XMLEngine(tag, task);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InitializationException("无法初始化XmlFileResource对象，在装载或处理资源文件时发生异常。msg=" + e.getMessage());
+        }
+    }
+    /**创建XmlFileResource对象，参数filePath是配置文件位置。validatorXML表示是否开启验证。*/
+    public XmlFileResource(String filePath, boolean validatorXML) {
+        this(validatorXML);
         this.xmlFile = new File(filePath);
         this.reload();
     }
-    /**创建XmlFileResource对象，参数file是配置文件位置。*/
-    public XmlFileResource(File file) {
-        this();
+    /**创建XmlFileResource对象，参数file是配置文件位置。validatorXML表示是否开启验证。*/
+    public XmlFileResource(File file, boolean validatorXML) {
+        this(validatorXML);
         this.xmlFile = file;
         this.reload();
     }
-    /**创建XmlFileResource对象，参数xmlURI是配置文件位置。*/
-    public XmlFileResource(URI xmlURI) {
-        this();
+    /**创建XmlFileResource对象，参数xmlURI是配置文件位置。validatorXML表示是否开启验证。*/
+    public XmlFileResource(URI xmlURI, boolean validatorXML) {
+        this(validatorXML);
         this.xmlURI = xmlURI;
         this.reload();
     }
-    /**创建XmlFileResource对象，参数xmlURL是配置文件位置。*/
-    public XmlFileResource(URL xmlURL) {
-        this();
+    /**创建XmlFileResource对象，参数xmlURL是配置文件位置。validatorXML表示是否开启验证。*/
+    public XmlFileResource(URL xmlURL, boolean validatorXML) {
+        this(validatorXML);
         this.xmlURL = xmlURL;
         this.reload();
     }
@@ -112,9 +134,10 @@ public class XmlFileResource extends AttBase implements BeanResource {
             return null;
         //----
         try {
-            SchemaFactory schemaFactory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");//建立schema工厂
-            Source xsdSource = new StreamSource(XmlFileResource.class.getResourceAsStream("/META-INF/beans-schema.xsd"));
-            Schema schema = schemaFactory.newSchema(xsdSource); //利用schema工厂，接收验证文档文件对象生成Schema对象
+            SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);//建立schema工厂
+            Source beansXSD = new StreamSource(XmlFileResource.class.getResourceAsStream("/META-INF/beans-schema.xsd"));
+            Source annoXSD = new StreamSource(XmlFileResource.class.getResourceAsStream("/META-INF/anno-schema.xsd"));
+            Schema schema = schemaFactory.newSchema(new Source[] { beansXSD, annoXSD }); //利用schema工厂，接收验证文档文件对象生成Schema对象
             Validator validator = schema.newValidator();//通过Schema产生针对于此Schema的验证器，利用students.xsd进行验证
             Source source = new StreamSource(this.getXmlInputStream());//得到验证的数据源
             //开始验证，成功输出success!!!，失败输出fail

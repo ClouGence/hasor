@@ -71,6 +71,7 @@ public class ResourceBeanFactory implements BeanFactory {
     public ResourceBeanFactory(BeanResource resource, ClassLoader loader) {
         if (resource == null)
             throw new NullPointerException("参数resource不能为空。");
+        //确定使用哪个loader。
         if (loader == null)
             this.loader = Thread.currentThread().getContextClassLoader();
         this.resource = resource;
@@ -78,12 +79,12 @@ public class ResourceBeanFactory implements BeanFactory {
         this.propParser = new MainPropertyParser(this);//属性解析器，专门负责解析BeanProperty属性对象。
         this.createFactory = new CreateFactory(this.propParser);//负责对象创建
         this.injectionFactory = new InjectionFactory(this.propParser);//负责对象依赖注入
-        //
+        //创建环境属性对象，并且加装保持装饰器。
         KeepAttDecorator kad = new KeepAttDecorator(new AttBase());
         this.attribute = kad;
-        kad.setAttribute("this", this);
-        kad.setKeep("this", true);
-        init();
+        kad.setAttribute("this", this);//设置关键字this。
+        kad.setKeep("this", true);//设置关键字this为保持属性，不可更改。
+        init();//执行初始化方法调用。
     }
     //==========================================================================================Job
     /**该方法主要用于Factory方式处理Ioc时候无法获取属性类型解析器对象而设立。*/
@@ -92,15 +93,15 @@ public class ResourceBeanFactory implements BeanFactory {
     }
     /**清空所有Bean缓存，并且重新装载lazyInit属性为false的bean。*/
     public void reload() {
-        clearBeanCache();
-        this.init();
+        clearBeanCache();//清空缓存
+        this.init();//重新初始化
     }
     /**清空所有Bean缓存并且通知resource对象清空缓存，该方法不会导致重新装载配置了lazyInit属性的bean。*/
     public void clearBeanCache() {
-        this.singletonBeanCache.clear();
-        injectionFactory.run();
+        this.singletonBeanCache.clear();//清空单态缓存
+        injectionFactory.run();//执行InjectionFactory对象的任务，它的任务功能是清理缓存。
         if (this.resource.isCacheBeanMetadata() == true)
-            this.resource.clearCache();
+            this.resource.clearCache();//清理元信息缓存
     }
     /**初始化设置了lazyInit属性为false的bean并且这些bean一定是单态的。*/
     protected void init() {

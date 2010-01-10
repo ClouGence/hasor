@@ -15,7 +15,7 @@
  */
 package org.more.beans.resource.xml.core;
 import javax.xml.stream.XMLStreamReader;
-import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.XmlContextStack;
 import org.more.beans.resource.xml.TagProcess;
 import org.more.util.StringConvert;
 /**
@@ -25,7 +25,7 @@ import org.more.util.StringConvert;
  */
 public class Tag_Beans extends TagProcess {
     @Override
-    public void doStartEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
+    public void doStartEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
         String staticCacheSize = xmlReader.getAttributeValue(null, "staticCache");
         String dynamicCacheSize = xmlReader.getAttributeValue(null, "dynamicCache");
         context.setAttribute("staticCache", StringConvert.parseInt(staticCacheSize, 10));

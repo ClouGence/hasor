@@ -22,9 +22,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import org.more.InitializationException;
 import org.more.InvokeException;
-import org.more.core.io.AutoCloseInputStream;
 import org.more.util.attribute.AttBase;
 /**
  * XML解析引擎，开发人员可以通过实现DoEventIteration接口使用runTask方法来执行扩展的xml任务。
@@ -38,42 +36,31 @@ public class XMLEngine extends AttBase {
     protected HashMap<String, TagProcess> tagProcessMap    = new HashMap<String, TagProcess>(); //标签处理对象。
     protected HashMap<String, Class<?>>   taskProcessMap   = new HashMap<String, Class<?>>();  //任务处理对象
     //==================================================================================Constructor
-    /**创建XMLEngine对象。*/
-    public XMLEngine() {
-        try {
-            Class<?> type = XMLEngine.class;
-            InputStream in = type.getResourceAsStream("/org/more/beans/resource/xml/core/tagProcess.properties");
-            Properties pro = new Properties();
-            pro.load(new AutoCloseInputStream(in));//装载属性文件
-            for (Object key : pro.keySet()) {
-                String kn = key.toString();
-                String classType = pro.getProperty(kn);
-                tagProcessMap.put(kn, (TagProcess) Class.forName(classType).newInstance());
-            }
-            /*---------------*/
-            in = type.getResourceAsStream("/org/more/beans/resource/xml/core/taskProcess.properties");
-            pro = new Properties();
-            pro.load(new AutoCloseInputStream(in));//装载属性文件
-            for (Object key : pro.keySet()) {
-                String kn = key.toString();
-                String classType = pro.getProperty(kn);
-                taskProcessMap.put(kn, Class.forName(classType));
-            }
-        } catch (Exception e) {
-            throw new InitializationException("无法初始化XMLEngine对象，在装载或处理资源文件时发生异常。msg=" + e.getMessage());
+    /**创建XMLEngine对象。tagProcess参数表示标签处理程序配置集合，taskProcess表示任务配置集合*/
+    public XMLEngine(Properties tagProcess, Properties taskProcess) throws Exception {
+        for (Object key : tagProcess.keySet()) {
+            String kn = key.toString();
+            String classType = tagProcess.getProperty(kn);
+            tagProcessMap.put(kn, (TagProcess) Class.forName(classType).newInstance());
+        }
+        /*---------------*/
+        for (Object key : taskProcess.keySet()) {
+            String kn = key.toString();
+            String classType = taskProcess.getProperty(kn);
+            taskProcessMap.put(kn, Class.forName(classType));
         }
     }
     //========================================================================================Event
     /**扫描XML，processXPath是要处理的xpath匹配正则表达式。*/
     protected Object scanningXML(InputStream in, String processXPath, TaskProcess doEventIteration) throws Exception {
         XMLStreamReader reader = this.getXMLStreamReader(in);
-        ContextStack stack = null;//当前堆栈
+        XmlContextStack stack = null;//当前堆栈
         String onTag = null;//当前标签
         int event = reader.getEventType();//当前事件对象
         while (true) {
             switch (event) {
             case XMLStreamConstants.START_DOCUMENT://文档开始
-                stack = new ContextStack(null, null, "/");
+                stack = new XmlContextStack(null, null, "/");
                 doEventIteration.onEvent(stack, stack.getXPath(), event, reader, tagProcessMap);
                 break;
             case XMLStreamConstants.END_DOCUMENT://文档结束
@@ -81,7 +68,7 @@ public class XMLEngine extends AttBase {
                 break;
             case XMLStreamConstants.START_ELEMENT://元素开始
                 onTag = reader.getLocalName();
-                stack = new ContextStack(stack, onTag, stack.getXPath() + onTag + "/");
+                stack = new XmlContextStack(stack, onTag, stack.getXPath() + onTag + "/");
                 doEventIteration.onEvent(stack, stack.getXPath(), event, reader, tagProcessMap);
                 int attCount = reader.getAttributeCount();
                 for (int i = 0; i < attCount; i++) {//遇到属性

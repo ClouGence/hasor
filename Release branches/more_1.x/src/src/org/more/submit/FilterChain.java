@@ -19,7 +19,7 @@ package org.more.submit;
  * @version 2009-11-27
  * @author 赵永春 (zyc@byshell.org)
  */
-class FilterChain {
+public class FilterChain {
     //========================================================================================Field
     private ActionFilter thisFilter      = null; //表示过滤器链的当前过滤器。
     private FilterChain  nextFilterChain = null; //过滤器链的下一个过滤器。

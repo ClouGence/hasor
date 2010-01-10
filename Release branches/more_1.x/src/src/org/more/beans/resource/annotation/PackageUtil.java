@@ -18,12 +18,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 /**
- * 
- * @version 2010-1-7
+ * classpath扫描工具。
+ * @version 2010-1-10
  * @author 赵永春 (zyc@byshell.org)
  */
 public class PackageUtil {
@@ -41,46 +42,43 @@ public class PackageUtil {
         }
         return ret;
     }
-    public static List<String> getClassInPackage(String pkgName) {
-        List<String> ret = new ArrayList<String>();
-        String rPath = pkgName.replace('.', '/') + "/";
-        try {
-            for (File classPath : CLASS_PATH_ARRAY) {
-                if (!classPath.exists())
-                    continue;
-                if (classPath.isDirectory()) {
-                    File dir = new File(classPath, rPath);
-                    if (!dir.exists())
-                        continue;
-                    for (File file : dir.listFiles()) {
-                        if (file.isFile()) {
-                            String clsName = file.getName();
-                            clsName = pkgName + "." + clsName.substring(0, clsName.length() - 6);
-                            ret.add(clsName);
-                        }
-                    }
-                } else {
-                    FileInputStream fis = new FileInputStream(classPath);
-                    JarInputStream jis = new JarInputStream(fis, false);
-                    JarEntry e = null;
-                    while ((e = jis.getNextJarEntry()) != null) {
-                        String eName = e.getName();
-                        if (eName.startsWith(rPath) && !eName.endsWith("/"))
-                            ret.add(eName.replace('/', '.').substring(0, eName.length() - 6));
-                        jis.closeEntry();
-                    }
-                    jis.close();
-                }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+    /**对某一个目录执行扫描。*/
+    private LinkedList<String> scanDir(File dirFile, String prefix, PackageUtilExclude exclude) {
+        LinkedList<String> classNames = new LinkedList<String>();
+        for (File f : dirFile.listFiles()) {
+            String pn = prefix + File.pathSeparator + f.getName();
+            if (f.exists() == false || exclude.exclude(pn, f.isFile()) == true)
+                continue;
+            if (f.isFile())
+                classNames.add(pn);
+            else
+                classNames.addAll(scanDir(f, pn, exclude));
         }
-        return ret;
+        return classNames;
     }
-    public static void main(String[] args) throws IOException {
-        List<String> cls = getClassInPackage("net.sf.cglib.beans");
-        for (String s : cls) {
-            System.out.println(s);
+    /**对某一个jar文件执行扫描。*/
+    public LinkedList<String> scanJar(File jarFile, PackageUtilExclude exclude) throws IOException {
+        LinkedList<String> classNames = new LinkedList<String>();
+        FileInputStream fis = new FileInputStream(jarFile);
+        JarInputStream jis = new JarInputStream(fis, false);
+        JarEntry e = null;
+        while ((e = jis.getNextJarEntry()) != null) {
+            String eName = e.getName();
+            if (exclude.exclude(eName, true) == false)
+                classNames.addLast(eName);
+            jis.closeEntry();
         }
+        jis.close();
+        return classNames;
+    }
+    /**扫描classpath*/
+    public LinkedList<String> scanClassPath(PackageUtilExclude exclude) throws IOException {
+        LinkedList<String> ret = new LinkedList<String>();
+        for (File classPath : CLASS_PATH_ARRAY)
+            if (classPath.isFile() == true)
+                ret.addAll(scanJar(classPath, exclude));
+            else if (classPath.isDirectory() == true)
+                ret.addAll(scanDir(classPath, "", exclude));
+        return ret;
     }
 }

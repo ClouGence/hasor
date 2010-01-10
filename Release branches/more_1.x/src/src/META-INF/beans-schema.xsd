@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified" attributeFormDefault="unqualified">
 	<!-- beans标签 -->
 	<xs:element name="beans">
 		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="bean" type="element_bean_Type" minOccurs="0" maxOccurs="unbounded"/>
-			</xs:sequence>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:any namespace="##other" processContents="strict"/>
+				<xs:element name="bean" type="element_bean_Type"/>
+			</xs:choice>
 			<xs:attribute name="staticCache" type="xs:integer" default="10"/>
 			<xs:attribute name="dynamicCache" type="xs:integer" default="50"/>
 		</xs:complexType>

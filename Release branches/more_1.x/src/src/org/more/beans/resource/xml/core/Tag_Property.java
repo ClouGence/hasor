@@ -23,7 +23,7 @@ import org.more.beans.info.BeanProp;
 import org.more.beans.info.BeanProperty;
 import org.more.beans.info.PropRefValue;
 import org.more.beans.info.PropVarValue;
-import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.XmlContextStack;
 import org.more.beans.resource.xml.TagProcess;
 /**
  * 该类负责解析property标签<br/>
@@ -43,7 +43,7 @@ public class Tag_Property extends TagProcess {
         return ma_tem.group(1);
     }
     @Override
-    public void doStartEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
+    public void doStartEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
         //一、解析property标签属性。
         BeanProperty bp = this.createProperty();
         int attCount = xmlReader.getAttributeCount();
@@ -88,7 +88,7 @@ public class Tag_Property extends TagProcess {
         context.context = bp;
     }
     @Override
-    public void doEndEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
+    public void doEndEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
         //一、获取堆栈的父堆栈，bean标签堆栈。
         ArrayList elementList = (ArrayList) context.get("tag_element");
         if (elementList == null || elementList.size() == 0) {} else {
@@ -97,7 +97,7 @@ public class Tag_Property extends TagProcess {
             prop.setRefValue(bp);
         }
         //二、加入到bean的属性中。
-        ContextStack parent = context.getParent();
+        XmlContextStack parent = context.getParent();
         ArrayList propertyList = (ArrayList) parent.get("tag_Property");
         if (propertyList == null) {
             propertyList = new ArrayList();

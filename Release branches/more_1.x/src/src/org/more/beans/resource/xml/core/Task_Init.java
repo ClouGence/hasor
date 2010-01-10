@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.xml.stream.XMLStreamReader;
 import org.more.beans.info.BeanDefinition;
-import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.XmlContextStack;
 import org.more.beans.resource.xml.TagProcess;
 import org.more.beans.resource.xml.TaskProcess;
 import org.more.util.attribute.AttBase;
@@ -52,7 +52,7 @@ public class Task_Init implements TaskProcess {
         return result;
     }
     @Override
-    public void onEvent(ContextStack elementStack, String onXPath, int eventType, XMLStreamReader reader, Map<String, TagProcess> tagProcessMap) {
+    public void onEvent(XmlContextStack elementStack, String onXPath, int eventType, XMLStreamReader reader, Map<String, TagProcess> tagProcessMap) {
         String tagName = elementStack.getTagName();
         TagProcess process = tagProcessMap.get(tagName);
         /*------------*/

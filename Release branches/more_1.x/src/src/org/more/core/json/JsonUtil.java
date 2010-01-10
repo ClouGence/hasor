@@ -24,9 +24,6 @@ import java.util.Map;
  */
 @SuppressWarnings("unchecked")
 public class JsonUtil {
-    //    public Object toObject(String str) {
-    //        return null;
-    //    }
     //    /**将json数据转换为指定的类型结构。*/
     //    public Object toObject(String str, Class<?> superType) {
     //        return null;

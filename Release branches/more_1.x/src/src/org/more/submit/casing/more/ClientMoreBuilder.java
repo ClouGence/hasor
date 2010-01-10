@@ -18,7 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import org.more.beans.BeanFactory;
 import org.more.beans.core.ResourceBeanFactory;
-import org.more.beans.resource.XmlFileResource;
+import org.more.beans.resource.AnnoXmlFileResource;
 import org.more.submit.ActionContext;
 import org.more.submit.CasingBuild;
 import org.more.submit.Config;
@@ -63,7 +63,7 @@ public class ClientMoreBuilder extends CasingBuild {
     private void init(File configFile) throws IOException {
         if (configFile.exists() == false || configFile.canRead() == false)
             throw new IOException("配置文件[" + configFile.getAbsolutePath() + "]不存在，或者无法读取。");
-        this.init(new ResourceBeanFactory(new XmlFileResource(configFile), null));
+        this.init(new ResourceBeanFactory(new AnnoXmlFileResource(configFile, true), null));
     }
     private void init(BeanFactory beanFactory) {
         if (beanFactory == null)

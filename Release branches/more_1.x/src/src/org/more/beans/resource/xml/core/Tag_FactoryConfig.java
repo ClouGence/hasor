@@ -18,7 +18,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.more.NoDefinitionException;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.CreateTypeEnum;
-import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.XmlContextStack;
 import org.more.beans.resource.xml.TagProcess;
 import org.more.util.StringConvert;
 /**
@@ -29,7 +29,7 @@ import org.more.util.StringConvert;
  */
 public class Tag_FactoryConfig extends TagProcess {
     @Override
-    public void doStartEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
+    public void doStartEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
         //refBean="factoryRefBean" isStaticMethod="true" methodName="create"
         BeanDefinition bean = (BeanDefinition) context.getParent().context;
         bean.setCreateType(CreateTypeEnum.Factory);

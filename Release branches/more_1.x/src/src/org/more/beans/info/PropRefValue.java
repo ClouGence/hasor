@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 package org.more.beans.info;
-import org.more.beans.BeanContext;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**
  * 代表一个引用对象类型属性的定义。引用类型一共分为四类它们是【上下文属性、引用其他bean定义、引用创建参数、元信息属性】。
  * 引用类型的的propType属性值是随着引用对象变化的，因此PropRefValue不需要配置propType属性。
  * <br/><br/>一、上下文属性（PRV_ContextAtt）：<br/>
- *   bean环境对象只有实现了{@link IAttribute}接口或者是{@link BeanContext}接口的实现类时候才具有上下文属性，
+ *   bean环境对象只有实现了{@link IAttribute}接口时候才具有上下文属性，
  *   使用上下文属性注入时意味着在注入属性时属性值的寻找是到上下文对象的{@link IAttribute}接口中寻找。
  * <br/><br/>二、引用其他bean定义（PRV_Bean）：<br/>
  *   引用类型定义，该类注入主要用于注入一个由其他{@link BeanDefinition}定义的对象。而这个对象通常可以再次被其他{@link BeanDefinition}所引用。

@@ -21,17 +21,17 @@ import org.more.util.attribute.AttBase;
  * @version 2009-11-21
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ContextStack extends AttBase {
+public class XmlContextStack extends AttBase {
     /**  */
     private static final long serialVersionUID = 4300339262589765696L;
     private String            tagName          = null;                //当前标签处理堆栈所处理的标签名。
-    private ContextStack      parent           = null;                //当前堆栈的父级堆栈。
+    private XmlContextStack   parent           = null;                //当前堆栈的父级堆栈。
     private String            xpath            = null;                //当前堆栈标签所处的xpath位置。
     /**当前堆栈中保存的重要数据对象。*/
     public Object             context          = null;
-    /**可能附加的属性值*/
+    /**如果解析的是属性则该值保存的是属性值否则一直为空。*/
     public String             attValue         = null;
-    ContextStack(ContextStack parent, String tagName, String xpath) {
+    XmlContextStack(XmlContextStack parent, String tagName, String xpath) {
         this.parent = parent;
         this.tagName = tagName;
         this.xpath = xpath;
@@ -45,7 +45,7 @@ public class ContextStack extends AttBase {
         return this.xpath;
     }
     /**获取当前堆栈的父级堆栈。*/
-    public ContextStack getParent() {
+    public XmlContextStack getParent() {
         return this.parent;
     }
 }

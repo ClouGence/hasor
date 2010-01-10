@@ -13,27 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans;
-import org.more.util.attribute.IAttribute;
+package org.more.beans.resource.annotation;
 /**
- * 
- * @version 2009-11-3
+ * classpath扫描工具，在扫描过程中需要通过该接口确定排除哪些不需要的资源。
+ * @version 2010-1-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface BeanContext extends BeanFactory, IAttribute {
+public interface PackageUtilExclude {
     /**
-     * 获取Context的名称。
-     * @return 返回Context的名称。
+     * 确定是否排除这个资源，如果排除返回true否则返回false。
+     * @param name 查找到的资源名称，如果是目录则是目录名。
+     * @param isFile 用于确定找到的资源是否是一个文件。
      */
-    public String getName();
-    /**
-     * 获取Context所处的上下文。
-     * @return 返回Context所处的上下文。
-     */
-    public Object getContext();
-    /**
-     * 获取Context的父级BeanContext，如果当前BeanContext就是顶层该方法返回null。
-     * @return 返回Context的父级BeanContext，如果当前BeanContext就是顶层该方法返回null。
-     */
-    public BeanContext getParent();
+    public boolean exclude(String name, boolean isFile);
 }

@@ -28,13 +28,14 @@ public interface TaskProcess extends XMLStreamConstants {
      * xml解析引擎使用的是stax解析方式，当系统阅读到一个事件时将产生一次onEvent方法调用，eventType的值决定了是什么具体什么事件。
      * eventType值是由XMLStreamConstants接口定义的该接口是jdk1.6自带的一个接口(本接口已经继承了这个接口)。
      * 解析器使用堆栈方式来表示每一个元素节点，只有进入标签和离开标签时才会引发堆栈变动属性事件不会影响堆栈变动。
+     * 你可以在解析标签时操作堆栈来保存数据，注意堆栈层级顺序是单向的。
      * @param elementStack 当前事件所处堆栈。
      * @param onXPath 当前事件发生所在的xpath路径。
      * @param eventType 事件类型。
      * @param reader 阅读器。
      * @param tagProcessMap 已经注册的标签处理器集合。
      */
-    public void onEvent(ContextStack elementStack, String onXPath, int eventType, XMLStreamReader reader, Map<String, TagProcess> tagProcessMap) throws XMLStreamException;
+    public void onEvent(XmlContextStack elementStack, String onXPath, int eventType, XMLStreamReader reader, Map<String, TagProcess> tagProcessMap) throws XMLStreamException;
     /**获取返回值。*/
     public Object getResult();
     /**设置参数配置对象。*/

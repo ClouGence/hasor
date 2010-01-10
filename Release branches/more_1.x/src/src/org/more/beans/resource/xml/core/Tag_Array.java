@@ -20,7 +20,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.more.NoDefinitionException;
 import org.more.beans.info.BeanProp;
 import org.more.beans.info.PropArray;
-import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.XmlContextStack;
 import org.more.beans.resource.xml.TagProcess;
 /**
  * 该类负责解析array标签。
@@ -30,7 +30,7 @@ import org.more.beans.resource.xml.TagProcess;
 @SuppressWarnings("unchecked")
 public class Tag_Array extends TagProcess {
     @Override
-    public void doStartEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
+    public void doStartEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
         PropArray array = new PropArray();
         int attCount = xmlReader.getAttributeCount();
         for (int i = 0; i < attCount; i++) {
@@ -44,8 +44,8 @@ public class Tag_Array extends TagProcess {
         context.context = array;
     }
     @Override
-    public void doEndEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
-        ContextStack parent = context.getParent();
+    public void doEndEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
+        XmlContextStack parent = context.getParent();
         //一、向父容器增加自身对象
         ArrayList elementList = (ArrayList) parent.get("tag_element");
         if (elementList == null) {

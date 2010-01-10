@@ -16,7 +16,7 @@
 package org.more.beans.resource.xml.core;
 import java.util.Map;
 import javax.xml.stream.XMLStreamReader;
-import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.XmlContextStack;
 import org.more.beans.resource.xml.TagProcess;
 import org.more.beans.resource.xml.TaskProcess;
 /**
@@ -40,7 +40,7 @@ public class Task_GetBeanAttribute implements TaskProcess {
         return result;
     }
     @Override
-    public void onEvent(ContextStack elementStack, String onXPath, int eventType, XMLStreamReader reader, Map<String, TagProcess> tagProcessMap) {
+    public void onEvent(XmlContextStack elementStack, String onXPath, int eventType, XMLStreamReader reader, Map<String, TagProcess> tagProcessMap) {
         if (eventType != ATTRIBUTE)
             return;
         if (elementStack.getTagName().equals("bean") == false)

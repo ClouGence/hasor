@@ -23,9 +23,9 @@ import javax.xml.stream.XMLStreamReader;
  */
 public class TagProcess implements XMLStreamConstants {
     /**当发现标签开始。*/
-    public void doStartEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {};
+    public void doStartEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {};
     /**当发现标签结束。*/
-    public void doEndEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {}
+    public void doEndEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {}
     /**当解析标签文本内容，注意CDATA和CDATA外层的文本视作两个文本内容。*/
-    public void doCharEvent(String xPath, XMLStreamReader reader, ContextStack context) {};
+    public void doCharEvent(String xPath, XMLStreamReader reader, XmlContextStack context) {};
 }

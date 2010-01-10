@@ -16,7 +16,7 @@
 package org.more.beans.resource.xml.core;
 import javax.xml.stream.XMLStreamReader;
 import org.more.DoesSupportException;
-import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.XmlContextStack;
 import org.more.beans.resource.xml.TagProcess;
 import org.more.util.attribute.IAttribute;
 /**
@@ -26,8 +26,8 @@ import org.more.util.attribute.IAttribute;
  */
 public class Tag_Meta extends TagProcess {
     @Override
-    public void doStartEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
-        ContextStack parent = context.getParent();
+    public void doStartEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
+        XmlContextStack parent = context.getParent();
         if (parent.context instanceof IAttribute == true) {
             IAttribute att = (IAttribute) parent.context;
             String key = xmlReader.getAttributeValue(null, "key");

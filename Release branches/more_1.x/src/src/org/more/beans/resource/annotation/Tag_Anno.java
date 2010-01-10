@@ -13,25 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.resource.xml.core;
-import java.util.ArrayList;
+package org.more.beans.resource.annotation;
+import java.lang.annotation.Annotation;
 import javax.xml.stream.XMLStreamReader;
-import org.more.ResourceException;
-import org.more.beans.resource.xml.XmlContextStack;
+import org.more.beans.resource.annotation.core.Main;
 import org.more.beans.resource.xml.TagProcess;
+import org.more.beans.resource.xml.XmlContextStack;
 /**
- * 该类负责解析mapKey标签。
- * @version 2009-11-23
+ * 
+ * @version 2010-1-10
  * @author 赵永春 (zyc@byshell.org)
  */
-@SuppressWarnings("unchecked")
-public class Tag_MapKey extends TagProcess {
+public class Tag_Anno extends TagProcess implements AnnoProcess {
+    private PackageUtil util = new PackageUtil();
     @Override
-    public void doEndEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
-        ArrayList elementList = (ArrayList) context.get("tag_element");
-        if (elementList == null || elementList.size() == 0)
-            throw new ResourceException("没有配置map数据的key");
-        else
-            context.getParent().put("map_key", elementList.get(0));
+    public void doStartEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
+        AnnoEngine ae = new AnnoEngine();
+        ae.runTask(Main.class, new Tag_Anno());
+    }
+    @Override
+    public void doAnnotation(Annotation anno, Object atObject, AnnoScopeEnum annoScope, AnnoContextStack context) {
+        System.out.println(anno);
     }
 }
