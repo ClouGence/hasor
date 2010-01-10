@@ -33,6 +33,7 @@ class PropxyActionInvoke implements ActionInvoke {
         this.invoke = invoke;
     }
     //==========================================================================================Job
+    /**该方法会查找执行名称的方法，其方法参数必须是ActionStack或者其子类类型*/
     @Override
     public Object invoke(ActionStack stack) throws Throwable {
         Class<?> type = this.target.getClass();
@@ -40,15 +41,15 @@ class PropxyActionInvoke implements ActionInvoke {
         Method method = null;
         for (int i = 0; i < m.length; i++) {
             if (m[i].getName().equals(invoke) == false)
-                continue;
+                continue; //名称不一致忽略
             if (m[i].getParameterTypes().length != 1)
-                continue;
+                continue; //参数长度不一致忽略
             if (ActionStack.class.isAssignableFrom(m[i].getParameterTypes()[0]) == true) {
-                method = m[i];
+                method = m[i];//符合条件
                 break;
             }
         }
-        if (method == null)
+        if (method == null)//如果找不到方法则引发异常
             throw new NoDefinitionException("无法在类[" + type + "]中找到方法" + this.invoke);
         return method.invoke(target, stack);
     }

@@ -22,10 +22,8 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface SubmitContext extends IAttribute {
-    /** 获取已经定义的Action名集合。*/
-    public String[] getActionNames();
-    /** 获取一个指定的Action类型，参数为action名。*/
-    public Class<?> getActionType(String actionName);
+    /** 获取ActionContext对象。*/
+    public ActionContext getActionContext();
     /**
      * 执行调用action的处理过程，如果action配置了过滤器则装配其过滤器之后在执行。
      * @param invokeString 调用action所使用的调用字符串。

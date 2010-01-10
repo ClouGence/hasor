@@ -35,6 +35,6 @@ public class WebCasingDirector extends CasingDirector {
     //==========================================================================================Job
     @Override
     protected SubmitContext buildContext(CasingBuild build, Config config) {
-        return new WebSubmitContext(build.getActionFactory(), this.servletContext);
+        return new WebSubmitContext(build.getActionContext(), this.servletContext);
     }
 }

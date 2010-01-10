@@ -19,13 +19,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * 
+ * 配置当前Action的过滤器过滤器链。注意如果在配置文件中也配置了过滤器链那么两个配置将同时生效，ActionFilters的优先级高于配置文件。
  * @version 2010-1-9
  * @author 赵永春 (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.TYPE })
-public @interface ActionFilter {
-    /** */
+public @interface ActionFilters {
+    /** 当前Action的过滤器过滤器链 */
     public String[] value() default {};
 }

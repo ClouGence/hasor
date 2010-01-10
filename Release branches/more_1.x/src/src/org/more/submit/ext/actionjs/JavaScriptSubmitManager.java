@@ -20,14 +20,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Writer;
 import java.lang.reflect.Method;
+import java.util.Iterator;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.more.CastException;
 import org.more.core.copybean.CopyBeanUtil;
 import org.more.core.json.JsonUtil;
+import org.more.submit.ActionContext;
 import org.more.submit.ActionStack;
-import org.more.submit.SubmitContext;
 import org.more.submit.annotation.Action;
 import org.more.submit.support.web.ActionTag;
 import org.more.submit.support.web.WebActionStack;
@@ -96,9 +97,10 @@ public class JavaScriptSubmitManager {
         return str;
     }
     private void putAllJS(WebActionStack event, StringBuffer str) {
-        SubmitContext context = event.getContext();
-        String[] ns = context.getActionNames();
-        for (String n : ns) {
+        ActionContext context = event.getContext().getActionContext();
+        Iterator<String> ns = context.getActionNameIterator();
+        while (ns.hasNext()) {
+            String n = ns.next();
             boolean haveActionMethod = false;/* Bug 111 当目标代理action不存在任何action方法时输出的js脚本在处理最后一个逗号时会将上一个大括号处理掉从而产生javascript语法异常*/
             str.append("more.server." + n + "={");
             Class<?> type = context.getActionType(n);

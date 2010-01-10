@@ -19,7 +19,7 @@ package org.more.submit;
  * @version 2009-11-27
  * @author 赵永春 (zyc@byshell.org)
  */
-public class FilterChain {
+class FilterChain {
     //========================================================================================Field
     private ActionFilter thisFilter      = null; //表示过滤器链的当前过滤器。
     private FilterChain  nextFilterChain = null; //过滤器链的下一个过滤器。
@@ -43,8 +43,8 @@ public class FilterChain {
      */
     public Object doInvokeFilter(ActionStack stack) throws Throwable {
         if (this.nextFilterChain != null)
-            return this.thisFilter.doActionFilter(stack, nextFilterChain);
+            return this.thisFilter.doActionFilter(stack, nextFilterChain);//如果是action过滤器链中间的一个环节则执行下一个环节。
         else
-            return this.targetInvoke.invoke(stack);
+            return this.targetInvoke.invoke(stack);//如果是过滤器链的最后一个环节则执行目标action方法。
     }
 }

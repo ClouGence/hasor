@@ -49,7 +49,11 @@ public class CasingDirector {
     }
     /**子类可以通过扩展该方法来决定具体SubmitContext的创建过程。此阶段build.init方法已经被调用。*/
     protected SubmitContext buildContext(CasingBuild build, Config config) {
-        return new ImplSubmitContext(build.getActionFactory());
+        ActionContext context = build.getActionContext();
+        if (context instanceof AbstractActionContext == true)
+            //如果ActionContext类型是AbstractActionContext的子类则执行AbstractActionContext类型的初始化方法以启动AbstractActionContext类型的初始化过程。
+            ((AbstractActionContext) context).init();
+        return new ImplSubmitContext(context);
     }
     /**
      * 获取组合之后生成的SubmitContext对象。

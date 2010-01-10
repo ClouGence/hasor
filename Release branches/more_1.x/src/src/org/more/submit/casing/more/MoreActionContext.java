@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 package org.more.submit.casing.more;
-import java.util.ArrayList;
-import java.util.List;
 import org.more.NoDefinitionException;
 import org.more.beans.BeanFactory;
 import org.more.beans.BeanResource;
 import org.more.beans.info.BeanDefinition;
 import org.more.submit.AbstractActionContext;
-import org.more.submit.ActionFilter;
+import org.more.submit.ActionObjectFactory;
 import org.more.util.StringConvert;
 /**
-* 提供ActionContext接口的More支持。
+ * 提供ActionContext接口的More支持。
  * @version 2009-11-26
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -39,48 +37,6 @@ public class MoreActionContext extends AbstractActionContext {
     }
     //==========================================================================================Job
     @Override
-    protected ActionFilter[] getPrivateFilterBean(String actionName) {
-        BeanDefinition beanDefinition = this.resource.getBeanDefinition(actionName);
-        Object privateFilters = beanDefinition.getAttribute("actionFilters");
-        if (privateFilters == null)
-            return null;
-        String[] privateFiltersStr = privateFilters.toString().split(",");
-        ActionFilter[] pFilter = new ActionFilter[privateFiltersStr.length];
-        for (int i = 0; i < privateFiltersStr.length; i++)
-            pFilter[i] = (ActionFilter) this.factory.getBean(privateFiltersStr[i]);
-        return pFilter;
-    }
-    @Override
-    protected ActionFilter[] getPublicFilterBean(String actionName) {
-        ArrayList<ActionFilter> ns = new ArrayList<ActionFilter>(0);
-        List<String> beanNames = this.resource.getBeanDefinitionNames();
-        for (String n : beanNames) {
-            Object strIsPublicFilter = this.resource.getBeanDefinition(n).getAttribute("isPublicFilter");
-            if (strIsPublicFilter == null || strIsPublicFilter.toString().equals("true") == false) {} else
-                ns.add((ActionFilter) this.factory.getBean(n));
-        }
-        //
-        ActionFilter[] nsArray = new ActionFilter[ns.size()];
-        ns.toArray(nsArray);
-        return nsArray;
-    }
-    @Override
-    public String[] getActionNames() {
-        List<String> ns = this.resource.getBeanDefinitionNames();
-        String[] n = new String[ns.size()];
-        ns.toArray(n);
-        return n;
-    }
-    @Override
-    protected Object getActionBean(String actionName) {
-        return this.factory.getBean(actionName);
-    }
-    @Override
-    public Class<?> getActionType(String actionName) {
-        return this.factory.getBeanType(actionName);
-    }
-    /*--------------------------------*/
-    @Override
     protected boolean testActionMark(String actionName) throws NoDefinitionException {
         BeanDefinition bd = this.resource.getBeanDefinition(actionName);
         Object objs = bd.getAttribute("isAction");
@@ -94,4 +50,13 @@ public class MoreActionContext extends AbstractActionContext {
     protected boolean testActionName(String name) throws NoDefinitionException {
         return this.resource.containsBeanDefinition(name);
     }
+    private MoreActionObjectFactory objectFactory;
+    @Override
+    protected ActionObjectFactory createActionObjectFactory() {
+        if (this.objectFactory == null)
+            this.objectFactory = new MoreActionObjectFactory(factory);
+        return this.objectFactory;
+    }
+    @Override
+    protected void initContext() {}
 }

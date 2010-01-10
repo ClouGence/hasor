@@ -20,10 +20,10 @@ package org.more.submit;
  * @author ÕÔÓÀ´º (zyc@byshell.org)
  */
 public interface ScopeEnum {
-    /**ActionStack·¶Î§*/
+    /**ActionStack¶ÔÏó·¶Î§*/
     public static final String Scope_Stack   = "Stack";
-    /**Session·¶Î§*/
+    /**Session½Ó¿Ú·¶Î§*/
     public static final String Scope_Session = "Session";
-    /**SubmitContext·¶Î§*/
+    /**SubmitContext½Ó¿Ú·¶Î§*/
     public static final String Scope_Context = "Context";
 }

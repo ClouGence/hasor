@@ -44,9 +44,11 @@ public abstract class CasingBuild {
      * 创建submit外壳扩展的一个必须组建Action管理器。sbumit通过ActionContext查找获取action对象。
      * @return 返回创建submit外壳扩展的一个必须组建Action管理器。
      */
-    public ActionContext getActionFactory() {
+    public ActionContext getActionContext() {
+        //如果ActionContext没有要求缓存则直接创建一个新的返回。
         if (cacheContext == false)
             return this.createActionContext();
+        //返回缓存的ActionContext对象，如果缓存为空则创建一个新的作为缓存内容同时返回
         if (this.cacheActionContext == null)
             this.cacheActionContext = this.createActionContext();
         return this.cacheActionContext;
@@ -59,5 +61,6 @@ public abstract class CasingBuild {
     public void setCacheContext(boolean cacheContext) {
         this.cacheContext = cacheContext;
     }
+    /**留给子类实现的方法，子类通过该方法来自由扩展ActionContext的创建逻辑。*/
     protected abstract ActionContext createActionContext();
 }

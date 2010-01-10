@@ -19,7 +19,7 @@ package org.more;
  * @version 2009-7-8
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class CastException extends Exception {
+public class CastException extends RuntimeException {
     /**  */
     private static final long serialVersionUID = 5032345759263916241L;
     /**

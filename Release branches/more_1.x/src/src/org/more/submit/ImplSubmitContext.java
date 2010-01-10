@@ -43,10 +43,10 @@ public class ImplSubmitContext extends AttBase implements SubmitContext {
         this.actionContext = actionContext;
     }
     //==========================================================================================Job
-    /** 获取已经定义的Action名集合。*/
-    public String[] getActionNames() {
-        return actionContext.getActionNames();
-    };
+    @Override
+    public ActionContext getActionContext() {
+        return actionContext;
+    }
     /** 获取一个指定的Action类型，参数为action名。*/
     public Class<?> getActionType(String actionName) {
         return actionContext.getActionType(actionName);
@@ -127,7 +127,7 @@ public class ImplSubmitContext extends AttBase implements SubmitContext {
         m.find();
         String actionName = m.group(1);
         String actionMethod = m.group(2);
-        //
+        //设置各个部分参数
         stack.setInvokeString(invokeString);
         stack.setActionName(actionName);
         stack.setActionMethod(actionMethod);
@@ -135,15 +135,18 @@ public class ImplSubmitContext extends AttBase implements SubmitContext {
     }
     /** 指定调用Action返回之后的脚本处理请求。 */
     private Object shellCallBack(ActionStack stack, Object results) throws Exception {
-        ScriptEngineManager manager = new ScriptEngineManager();
-        ScriptEngine engine = manager.getEngineByName("JavaScript");
-        String scriptIn = "/META-INF/submit_scripts/" + stack.getResultsScript() + ".js";
-        InputStream in = ImplSubmitContext.class.getResourceAsStream(scriptIn);
+        //一、如果没有设置回调脚本则直接返回结果
         if (stack.getResultsScript() == null)
             return results;
+        //二、创建脚本执行环境
+        ScriptEngineManager manager = new ScriptEngineManager();
+        ScriptEngine engine = manager.getEngineByName("JavaScript");
+        //三、获取脚本文件输入流
+        String scriptIn = "/META-INF/submit_scripts/" + stack.getResultsScript() + ".js";
+        InputStream in = ImplSubmitContext.class.getResourceAsStream(scriptIn);
         if (in == null)
             throw new ScriptException("找不到脚本资源[" + scriptIn + "]");
-        // 
+        //四、执行脚本方法callBack，并且获取返回值返回
         engine.eval(new InputStreamReader(in));
         Invocable inv = (Invocable) engine;
         return inv.invokeFunction("callBack", stack, results, stack.getResultsScriptParams());
