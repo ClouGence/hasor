@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 package org.more.beans.resource;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -134,14 +136,24 @@ public class XmlFileResource extends AttBase implements BeanResource {
             return null;
         //----
         try {
+            InputStream in = new AutoCloseInputStream(XmlFileResource.class.getResourceAsStream("/META-INF/xsl-list"));
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String str = null;
+            ArrayList<Source> sourceList = new ArrayList<Source>();
+            while ((str = br.readLine()) != null) {
+                InputStream xsdIn = XmlFileResource.class.getResourceAsStream(str);
+                if (xsdIn != null)
+                    sourceList.add(new StreamSource(xsdIn));
+            }
+            Source[] source = new Source[sourceList.size()];
+            sourceList.toArray(source);
+            //
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);//建立schema工厂
-            Source beansXSD = new StreamSource(XmlFileResource.class.getResourceAsStream("/META-INF/beans-schema.xsd"));
-            Source annoXSD = new StreamSource(XmlFileResource.class.getResourceAsStream("/META-INF/anno-schema.xsd"));
-            Schema schema = schemaFactory.newSchema(new Source[] { beansXSD, annoXSD }); //利用schema工厂，接收验证文档文件对象生成Schema对象
+            Schema schema = schemaFactory.newSchema(source); //利用schema工厂，接收验证文档文件对象生成Schema对象
             Validator validator = schema.newValidator();//通过Schema产生针对于此Schema的验证器，利用students.xsd进行验证
-            Source source = new StreamSource(this.getXmlInputStream());//得到验证的数据源
+            Source xmlSource = new StreamSource(this.getXmlInputStream());//得到验证的数据源
             //开始验证，成功输出success!!!，失败输出fail
-            validator.validate(source);
+            validator.validate(xmlSource);
             System.out.println("XmlFileResource validatorConfigXML OK!");
             return null;
         } catch (Exception ex) {
