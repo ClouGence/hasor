@@ -29,7 +29,7 @@ import org.more.util.attribute.AttBase;
  * @version 2009-11-23
  * @author 赵永春 (zyc@byshell.org)
  */
-public class XMLEngine extends AttBase {
+public class XmlEngine extends AttBase {
     /**  */
     private static final long             serialVersionUID = 2880738501389974190L;
     //========================================================================================Field
@@ -37,7 +37,7 @@ public class XMLEngine extends AttBase {
     protected HashMap<String, Class<?>>   taskProcessMap   = new HashMap<String, Class<?>>();  //任务处理对象
     //==================================================================================Constructor
     /**创建XMLEngine对象。tagProcess参数表示标签处理程序配置集合，taskProcess表示任务配置集合*/
-    public XMLEngine(Properties tagProcess, Properties taskProcess) throws Exception {
+    public XmlEngine(Properties tagProcess, Properties taskProcess) throws Exception {
         for (Object key : tagProcess.keySet()) {
             String kn = key.toString();
             String classType = tagProcess.getProperty(kn);

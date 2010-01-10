@@ -41,7 +41,7 @@ import org.more.ResourceException;
 import org.more.beans.BeanResource;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.CreateTypeEnum;
-import org.more.beans.resource.xml.XMLEngine;
+import org.more.beans.resource.xml.XmlEngine;
 import org.more.core.io.AutoCloseInputStream;
 import org.more.util.attribute.AttBase;
 /**
@@ -61,7 +61,7 @@ public class XmlFileResource extends AttBase implements BeanResource {
     private ArrayList<String>               allNames            = null;                                 //要求启动时装载的bean
     /*---------------------*/
     /** XML解析引擎 */
-    protected XMLEngine                     xmlEngine           = null;
+    protected XmlEngine                     xmlEngine           = null;
     /**静态缓存对象数目。*/
     protected int                           staticCacheSize     = 10;
     /**静态缓存对象。*/
@@ -91,7 +91,7 @@ public class XmlFileResource extends AttBase implements BeanResource {
             Properties task = new Properties();
             task.load(new AutoCloseInputStream(type.getResourceAsStream(getTaskPropertiesConfig())));//装载任务属性配置
             /*------*/
-            this.xmlEngine = new XMLEngine(tag, task);
+            this.xmlEngine = new XmlEngine(tag, task);
         } catch (Exception e) {
             e.printStackTrace();
             throw new InitializationException("无法初始化XmlFileResource对象，在装载或处理资源文件时发生异常。msg=" + e.getMessage());
