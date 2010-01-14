@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 package org.more.beans.resource.annotation.core;
-import org.more.beans.resource.annotation.AnnoEngine;
-import org.more.beans.resource.annotation.Tag_Anno;
+import java.net.URI;
+import java.net.URISyntaxException;
+import org.more.beans.resource.ArrayResource;
 import org.more.submit.annotation.Action;
 import org.more.submit.annotation.Filter;
 @Action
@@ -26,10 +27,17 @@ public class Main {
     private static final long serialVersionUID = -780028127861834511L;
     /**
      * @param args
+     * @throws URISyntaxException 
      */
     @AppendInterface(value = "main")
-    public static void main(@AppendInterface(value = "args") String[] args) {
-        AnnoEngine ae = new AnnoEngine();
-        ae.runTask(Main.class, new Tag_Anno());
+    public static void main(@AppendInterface(value = "args") String[] args) throws URISyntaxException {
+        
+        ArrayResource ar;
+        
+        
+        URI uri = new URI("file:///c://file.xml");
+        System.out.println(uri.toString());
+        //  AnnoEngine ae = new AnnoEngine();
+        //  ae.runTask(Main.class, new Tag_Anno());
     }
 }

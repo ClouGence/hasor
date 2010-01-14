@@ -16,12 +16,11 @@
 package org.more.beans.resource;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -33,106 +32,68 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
+import org.more.DoesSupportException;
 import org.more.FormatException;
-import org.more.InitializationException;
-import org.more.InvokeException;
-import org.more.NoDefinitionException;
-import org.more.ResourceException;
 import org.more.beans.BeanResource;
 import org.more.beans.info.BeanDefinition;
-import org.more.beans.info.CreateTypeEnum;
+import org.more.beans.resource.xml.TagProcess;
+import org.more.beans.resource.xml.TaskProcess;
 import org.more.beans.resource.xml.XmlEngine;
 import org.more.core.io.AutoCloseInputStream;
 import org.more.util.attribute.AttBase;
 /**
- * 提供了以XML作为数据源提供bean数据的支持。
- * @version 2009-11-25
+ * 提供了以XML作为数据源提供bean数据的支持。如果使用无参的构造方法XmlFileResource类将使用字段
+ * defaultConfigFile所表示的文件名作为默认配置文件位置，该配置文件位置相对于程序启动目录下。
+ * @version 2010-1-11
  * @author 赵永春 (zyc@byshell.org)
  */
-public class XmlFileResource extends AttBase implements BeanResource {
+@SuppressWarnings("unchecked")
+public class XmlFileResource extends ArrayResource implements BeanResource {
     //========================================================================================Field
     /**  */
-    private static final long               serialVersionUID    = 5085542182667236561L;
-    private File                            xmlFile             = null;                                 //配置文件
-    private URI                             xmlURI              = null;                                 //配置文件
-    private URL                             xmlURL              = null;                                 //配置文件
-    private String                          resourceDescription = null;                                 //说明
-    private ArrayList<String>               initNames           = null;                                 //要求启动时装载的bean
-    private ArrayList<String>               allNames            = null;                                 //要求启动时装载的bean
-    /*---------------------*/
-    /** XML解析引擎 */
-    protected XmlEngine                     xmlEngine           = null;
-    /**静态缓存对象数目。*/
-    protected int                           staticCacheSize     = 10;
-    /**静态缓存对象。*/
-    private HashMap<String, BeanDefinition> staticCache         = new HashMap<String, BeanDefinition>();
-    /**动态缓存对象数目。*/
-    protected int                           dynamicCacheSize    = 50;
-    /**动态缓存对象。*/
-    private HashMap<String, BeanDefinition> dynamicCache        = new HashMap<String, BeanDefinition>();
-    /***/
-    private LinkedList<String>              dynamicCacheNames   = new LinkedList<String>();
-    /***/
-    private boolean                         validatorXML        = true;                                 //是否开启XSD验证。
+    private static final long  serialVersionUID  = 5085542182667236561L;
+    /**默认配置文件名*/
+    public final static String defaultConfigFile = "more-config.xml";
+    /**是否开启XSD验证*/
+    private boolean            validator         = true;
+    /**配置文件位置URI，字符串*/
+    private URI                sourceURI;
     //==================================================================================Constructor
-    protected String getTagPropertiesConfig() {
-        return "/org/more/beans/resource/xml/core/tagProcess.properties";
-    }
-    protected String getTaskPropertiesConfig() {
-        return "/org/more/beans/resource/xml/core/taskProcess.properties";
-    }
-    /**创建XmlFileResource对象。validatorXML表示是否开启验证。*/
-    public XmlFileResource(boolean validatorXML) {
-        this.validatorXML = validatorXML;
-        try {
-            Class<?> type = XmlFileResource.class;
-            Properties tag = new Properties();
-            tag.load(new AutoCloseInputStream(type.getResourceAsStream(getTagPropertiesConfig())));//装载标签处理属性配置
-            Properties task = new Properties();
-            task.load(new AutoCloseInputStream(type.getResourceAsStream(getTaskPropertiesConfig())));//装载任务属性配置
-            /*------*/
-            this.xmlEngine = new XmlEngine(tag, task);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new InitializationException("无法初始化XmlFileResource对象，在装载或处理资源文件时发生异常。msg=" + e.getMessage());
-        }
-    }
-    /**创建XmlFileResource对象，参数filePath是配置文件位置。validatorXML表示是否开启验证。*/
-    public XmlFileResource(String filePath, boolean validatorXML) {
-        this(validatorXML);
-        this.xmlFile = new File(filePath);
-        this.reload();
-    }
-    /**创建XmlFileResource对象，参数file是配置文件位置。validatorXML表示是否开启验证。*/
-    public XmlFileResource(File file, boolean validatorXML) {
-        this(validatorXML);
-        this.xmlFile = file;
-        this.reload();
-    }
-    /**创建XmlFileResource对象，参数xmlURI是配置文件位置。validatorXML表示是否开启验证。*/
-    public XmlFileResource(URI xmlURI, boolean validatorXML) {
-        this(validatorXML);
-        this.xmlURI = xmlURI;
-        this.reload();
-    }
-    /**创建XmlFileResource对象，参数xmlURL是配置文件位置。validatorXML表示是否开启验证。*/
-    public XmlFileResource(URL xmlURL, boolean validatorXML) {
-        this(validatorXML);
-        this.xmlURL = xmlURL;
-        this.reload();
-    }
-    //=========================================================================================Impl
+    /**创建XmlFileResource对象，该对象使用XmlFileResource.defaultConfigFile作为默认配置文件位置。 */
+    public XmlFileResource(String sourceName) {
+        super(sourceName, null);
+        this.sourceURI = new File(XmlFileResource.defaultConfigFile).toURI();
+    };
+    /**创建XmlFileResource对象，参数xmlResourceURI是配置文件位置。*/
+    public XmlFileResource(URI xmlResourceURI) {
+        this(xmlResourceURI.toString());
+        this.sourceURI = xmlResourceURI;
+    };
+    /**创建XmlFileResource对象，参数xmlResourceFile是配置文件位置。*/
+    public XmlFileResource(File xmlResourceFile) {
+        this(xmlResourceFile.toString());
+        this.sourceURI = xmlResourceFile.toURI();
+    };
+    //==========================================================================================Job
     /**是否开启Schema验证XML配置正确性，默认值是true开启验证。*/
-    public boolean isValidatorXML() {
-        return validatorXML;
-    }
+    public boolean isValidator() {
+        return validator;
+    };
     /**设置是否开启Schema验证XML配置正确性。*/
-    public void setValidatorXML(boolean validatorXML) {
-        this.validatorXML = validatorXML;
-    }
+    public void setValidator(boolean validator) {
+        this.validator = validator;
+    };
+    @Override
+    public URI getSourceURI() {
+        return this.sourceURI;
+    };
+    @Override
+    public boolean isCacheBeanMetadata() {
+        return true;
+    };
     /** 通过Schema验证XML配置是否正确，返回null表示验证通过，否则返回错误信息。 */
-    public String validatorConfigXML() {
-        if (this.validatorXML == false)
+    public Exception validatorXML() {
+        if (this.validator == false)
             return null;
         //----
         try {
@@ -154,138 +115,148 @@ public class XmlFileResource extends AttBase implements BeanResource {
             Source xmlSource = new StreamSource(this.getXmlInputStream());//得到验证的数据源
             //开始验证，成功输出success!!!，失败输出fail
             validator.validate(xmlSource);
-            System.out.println("XmlFileResource validatorConfigXML OK!");
             return null;
         } catch (Exception ex) {
-            System.out.println("XmlFileResource validatorConfigXML Error!");
-            return "validator error[" + ex.getLocalizedMessage() + "]";
+            return ex;
         }
+    };
+    /**获取XML输入流*/
+    protected InputStream getXmlInputStream() throws MalformedURLException, IOException {
+        return this.sourceURI.toURL().openStream();
+    };
+    /*-------------------------------------------------------------------------------------------*/
+    /**/
+    /**/
+    //=====================================================================================Override
+    /**/
+    /**/
+    /*-------------------------------------------------------------------------------------------*/
+    /**XML解析引擎*/
+    protected XmlEngine                     xmlEngine;
+    /*-------------------------------------------------------*/
+    /**所有的bean名称*/
+    private List<String>                    xmlBeanNames;
+    /**所有要求启动装载的bean名称*/
+    private List<String>                    xmlStrartInitBeans;
+    /*-------------------------------------------------------*/
+    /**动态缓存对象数目。*/
+    private int                             dynamicCacheSize;
+    /**动态缓存对象。*/
+    private HashMap<String, BeanDefinition> dynamicCache;
+    /**动态缓存对象名称集合*/
+    private LinkedList<String>              dynamicCacheNames;
+    //=======================================================Protected
+    protected void putDynamicCache(BeanDefinition bean) {
+        if (dynamicCacheNames.size() >= this.dynamicCacheSize)
+            this.dynamicCache.remove(dynamicCacheNames.removeFirst());
+        this.dynamicCache.put(bean.getName(), bean);//缓存
     }
-    @SuppressWarnings("unchecked")
-    private void reload() {
-        String str = this.validatorConfigXML();
-        if (str != null)
-            throw new FormatException("Schema验证失败：" + str);
-        this.clearCache();
-        AttBase att = (AttBase) this.xmlEngine.runTask(this.getXmlInputStream(), "init", ".*");
+    // (TaskProcess)tasks.getAttribute(value)
+    protected void anotherXmlEngine(XmlEngine engine) {};
+    /**执行XML任务*/
+    protected Object runTask(TaskProcess task, String processXPath, Object[] params) throws Exception {
+        return this.xmlEngine.runTask(this.getXmlInputStream(), task, processXPath, params);
+    };
+    //=============================================================Job
+    /** 如果已经初始化则执行销毁在执行初始化。*/
+    public synchronized void reload() throws Exception {
+        if (this.isInit() == true)
+            this.destroy();
+        this.init();
+    }
+    public synchronized void init() throws Exception {
+        if (this.isInit() == true)
+            return;
+        super.init();
+        /*----------------------------------------------一、验证XML*/
+        Exception validator = this.validatorXML();
+        if (validator != null)
+            throw new FormatException("Schema验证失败", validator);
+        /*----------------------------------------------二、初始化必要属性*/
+        this.dynamicCache = new HashMap<String, BeanDefinition>();//动态缓存对象。
+        this.dynamicCacheNames = new LinkedList<String>();//动态缓存对象名称集合
+        this.setSourceName(this.sourceURI.toString());
+        /*----------------------------------------------三、读取标签配置*/
+        Properties tag = new Properties();
+        tag.load(new AutoCloseInputStream(XmlFileResource.class.getResourceAsStream("/org/more/beans/resource/xml/core/tagProcess.properties")));//装载标签处理属性配置
+        this.xmlEngine = new XmlEngine();
+        for (Object tagName : tag.keySet()) {
+            Class<?> tagProcessType = Class.forName(tag.getProperty((String) tagName));
+            this.xmlEngine.regeditTag((String) tagName, (TagProcess) tagProcessType.newInstance());
+        }
+        //
+        Properties task = new Properties();
+        task.load(new AutoCloseInputStream(XmlFileResource.class.getResourceAsStream("/org/more/beans/resource/xml/core/taskProcess.properties")));//装载任务处理配置
+        for (Object taskName : task.keySet()) {
+            Class<?> taskType = Class.forName(task.getProperty((String) taskName));
+            xmlEngine.setAttribute((String) taskName, (TaskProcess) taskType.newInstance());
+        }
+        this.anotherXmlEngine(xmlEngine);
+        /*----------------------------------------------四、处理任务执行结果。*/
+        TaskProcess init_task = (TaskProcess) xmlEngine.getAttribute("init");
+        AttBase att = (AttBase) this.runTask(init_task, ".*", null);
         this.dynamicCacheSize = (Integer) att.get("dynamicCache");
-        this.staticCacheSize = (Integer) att.get("staticCache");
-        this.staticCache = (HashMap<String, BeanDefinition>) att.get("beanList");
-        this.initNames = (ArrayList<String>) att.get("initBean");
-        this.allNames = (ArrayList<String>) att.get("allNames");
-    }
-    /**获取XML输入流。*/
-    private InputStream getXmlInputStream() throws ResourceException {
-        try {
-            if (this.xmlFile != null)
-                return new FileInputStream(this.xmlFile);
-            if (this.xmlURL != null)
-                this.xmlURL.openConnection().getInputStream();
-            if (this.xmlURI != null)
-                this.xmlURI.toURL().openConnection().getInputStream();
-            throw new NoDefinitionException("没有定义任何XML数据源信息。");
-        } catch (IOException e) {
-            throw new ResourceException("无法获取XML数据输入流，msg=" + e.getMessage());
-        }
-    }
+        HashMap<String, BeanDefinition> staticCache = (HashMap<String, BeanDefinition>) att.get("beanList");//获取静态bean缓存
+        for (BeanDefinition b : staticCache.values())
+            this.addBeanDefinition(b);
+        this.xmlBeanNames = (List<String>) att.get("allNames");//获取所有bean名。
+        this.xmlStrartInitBeans = (List<String>) att.get("initBean");//获取所有要求初始化的bean名。
+    };
     @Override
-    public void clearCache() {
-        this.staticCache.clear();
+    public synchronized void destroy() {
+        this.clearCache();
+        this.clearAttribute();
+        this.xmlEngine = null;//XML解析引擎
+        this.xmlBeanNames.clear();//所有的bean名称
+        this.xmlBeanNames = null;//所有的bean名称
+        this.dynamicCacheSize = 50;//动态缓存对象数目。
+        this.dynamicCache.clear();//动态缓存对象。
+        this.dynamicCache = null;//动态缓存对象。
+        this.dynamicCacheNames.clear();//动态缓存对象名称集合
+        this.dynamicCacheNames = null;//动态缓存对象名称集合
+        this.xmlStrartInitBeans.clear();
+        this.xmlStrartInitBeans = null;;
+        super.destroy();
+    };
+    @Override
+    public synchronized void clearCache() throws DoesSupportException {
+        this.dynamicCacheNames.clear();
         this.dynamicCache.clear();
+        super.clearCache();
     }
     @Override
     public boolean containsBeanDefinition(String name) {
-        return this.allNames.contains(name);
+        if (super.containsBeanDefinition(name) == true)
+            return true;
+        else
+            return this.xmlBeanNames.contains(name);
     }
     @Override
-    public BeanDefinition getBeanDefinition(String name) throws InvokeException {
-        try {
-            if (this.staticCache.containsKey(name) == true)
-                return this.staticCache.get(name);
-            if (this.dynamicCache.containsKey(name) == true)
-                return this.dynamicCache.get(name);
-            BeanDefinition bean = (BeanDefinition) this.xmlEngine.runTask(this.getXmlInputStream(), "findBean", ".*", name);
-            if (bean != null) {
-                if (dynamicCacheNames.size() >= this.dynamicCacheSize)
-                    this.dynamicCache.remove(dynamicCacheNames.removeFirst());
-                else
-                    this.dynamicCache.put(bean.getName(), bean);//缓存
-            }
-            return bean;
-        } catch (Exception e) {
-            throw new InvokeException("执行findBean任务期间发生异常。", e);
-        }
+    protected BeanDefinition findBeanDefinition(String name) throws Exception {
+        if (this.dynamicCacheNames.contains(name) == true)
+            return this.dynamicCache.get(name);
+        /*--------------*/
+        TaskProcess find_task = (TaskProcess) xmlEngine.getAttribute("findBean");
+        BeanDefinition bean = (BeanDefinition) this.runTask(find_task, ".*", new Object[] { name });;
+        if (bean != null)
+            this.putDynamicCache(bean);
+        return bean;
     }
-    @SuppressWarnings("unchecked")
     @Override
     public List<String> getBeanDefinitionNames() {
-        return (List<String>) this.allNames.clone();
-    }
-    @Override
-    public String getResourceDescription() {
-        return resourceDescription;
-    }
-    @Override
-    public File getSourceFile() {
-        return this.xmlFile;
-    }
-    @Override
-    public String getSourceName() {
-        if (this.xmlFile != null)
-            return this.xmlFile.getName();
-        if (this.xmlURL != null)
-            this.xmlURL.getFile();
-        if (this.xmlURI != null)
-            this.xmlURI.getPath();
-        return null;
-    }
-    @Override
-    public URI getSourceURI() {
-        return this.xmlURI;
-    }
-    @Override
-    public URL getSourceURL() {
-        return this.xmlURL;
+        List<String> staticCache = super.getBeanDefinitionNames();
+        ArrayList<String> al = new ArrayList<String>(staticCache.size() + this.xmlBeanNames.size());
+        al.addAll(staticCache);
+        al.addAll(this.xmlBeanNames);
+        return al;
     }
     @Override
     public List<String> getStrartInitBeanDefinitionNames() {
-        return initNames;
+        List<String> start_1 = super.getBeanDefinitionNames();
+        List<String> start_2 = this.xmlStrartInitBeans;
+        ArrayList<String> al = new ArrayList<String>(start_1.size() + start_2.size());
+        al.addAll(start_1);
+        al.addAll(start_2);
+        return al;
     }
-    @Override
-    public boolean isCacheBeanMetadata() {
-        return true;
-    }
-    /**
-     * 测试某名称Bean是否为工厂模式创建，如果目标bean不存在则返回false。
-     * @param name 要测试的Bean名称。
-     * @return 返回测试结果，如果是以原型模式创建则返回true,否则返回false。
-     */
-    @Override
-    public boolean isFactory(String name) throws InvokeException {
-        try {
-            if (this.staticCache.containsKey(name) == true)
-                return (this.staticCache.get(name).getCreateType() == CreateTypeEnum.Factory) ? true : false;
-            if (this.dynamicCache.containsKey(name) == true)
-                return (this.dynamicCache.get(name).getCreateType() == CreateTypeEnum.Factory) ? true : false;
-            BeanDefinition bean = (BeanDefinition) this.xmlEngine.runTask(this.getXmlInputStream(), "findBean", ".*", name);
-            if (bean == null)
-                return false;
-            return (bean.getCreateType() == CreateTypeEnum.Factory) ? true : false;
-        } catch (Exception e) {
-            throw new InvokeException("执行findBean任务期间发生异常。", e);
-        }
-    }
-    @Override
-    public boolean isPrototype(String name) {
-        return !isSingleton(name);
-    }
-    @Override
-    public boolean isSingleton(String name) {
-        try {
-            String str = (String) this.xmlEngine.runTask(this.getXmlInputStream(), "getAttribute", ".*", name, "singleton");
-            return str.equals("true") ? true : false;
-        } catch (Exception e) {
-            throw new InvokeException("执行getAttribute任务期间发生异常。", e);
-        }
-    }
-}
+};

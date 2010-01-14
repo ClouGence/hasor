@@ -13,16 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.resource.annotation;
+package org.more.beans.resource.annotation.core;
+import java.lang.annotation.Annotation;
+import org.more.beans.resource.annotation.AnnoContextStack;
+import org.more.beans.resource.annotation.AnnoProcess;
+import org.more.beans.resource.annotation.AnnoScopeEnum;
 /**
- * classpath扫描工具，在扫描过程中需要通过该接口确定排除哪些不需要的资源。
- * @version 2010-1-10
+ * 扫描一个class并且解析它的注解配置。以生成BeanDefinition对象
+ * @version 2010-1-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface PackageUtilExclude {
-    /**
-     * 确定是否排除这个资源，如果排除返回true否则返回false。
-     * @param className 查找到的资源名称，如果是目录则是目录名。
-     */
-    public boolean exclude(String className);
+public class Scan_ClassAnno implements AnnoProcess {
+    @Override
+    public void doAnnotation(Annotation anno, Object atObject, AnnoScopeEnum annoScope, AnnoContextStack context) {
+        System.out.println(anno);
+    }
 }

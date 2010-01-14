@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.more.submit.casing.more;
-import java.io.IOException;
 import java.util.Enumeration;
 import javax.servlet.ServletContext;
 import org.more.submit.Config;
@@ -28,7 +27,7 @@ public class WebMoreBuilder extends ClientMoreBuilder implements Config {
     public static final String Default_ConfigXML = "/WEB-INF/more-config.xml";
     //==================================================================================Constructor
     /** WebMoreBuilder类扩展了ClientMoreBuilder提供了web的支持，该类将configFile参数所表示的路径从web相对路径转换为绝对路径。*/
-    public WebMoreBuilder() throws IOException {
+    public WebMoreBuilder() throws Exception {
         super(false);
     }
     //==========================================================================================Abs

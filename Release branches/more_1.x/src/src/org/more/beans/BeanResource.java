@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 package org.more.beans;
-import java.io.File;
 import java.net.URI;
-import java.net.URL;
 import java.util.List;
 import org.more.DoesSupportException;
 import org.more.beans.info.BeanDefinition;
@@ -32,10 +30,6 @@ public interface BeanResource {
     public String getSourceName();
     /**获取资源的URI表述形式，如果资源不支持该表述形式则返回null。*/
     public URI getSourceURI();
-    /**获取资源的URL表述形式，如果资源不支持该表述形式则返回null。*/
-    public URL getSourceURL();
-    /**获取资源的File表述形式，如果资源不支持该表述形式则返回null。*/
-    public File getSourceFile();
     /**
      * 获取bean的定义，在Bean的定义中只包括属于当前bean的元信息。
      * 如果当前bean的属性注入需要依赖其他bean则获取其他bean的定义需要重新调用getBeanDefinition方法进行获取。
@@ -99,4 +93,8 @@ public interface BeanResource {
      * @return 返回测试结果，如果是以原型模式创建则返回true,否则返回false。
      */
     public boolean isFactory(String name);
+    /**初始化BeanResource接口。*/
+    public void init() throws Exception;
+    /**销毁BeanResource接口。*/
+    public void destroy();
 }

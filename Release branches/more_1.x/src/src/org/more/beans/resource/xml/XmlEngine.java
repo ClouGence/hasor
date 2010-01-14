@@ -16,65 +16,58 @@
 package org.more.beans.resource.xml;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Properties;
 import javax.xml.stream.StreamFilter;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import org.more.InvokeException;
 import org.more.util.attribute.AttBase;
 /**
  * XML解析引擎，开发人员可以通过实现DoEventIteration接口使用runTask方法来执行扩展的xml任务。
- * @version 2009-11-23
+ * @version 2010-1-11
  * @author 赵永春 (zyc@byshell.org)
  */
 public class XmlEngine extends AttBase {
     /**  */
-    private static final long             serialVersionUID = 2880738501389974190L;
+    private static final long           serialVersionUID = 2880738501389974190L;
     //========================================================================================Field
-    protected HashMap<String, TagProcess> tagProcessMap    = new HashMap<String, TagProcess>(); //标签处理对象。
-    protected HashMap<String, Class<?>>   taskProcessMap   = new HashMap<String, Class<?>>();  //任务处理对象
-    //==================================================================================Constructor
-    /**创建XMLEngine对象。tagProcess参数表示标签处理程序配置集合，taskProcess表示任务配置集合*/
-    public XmlEngine(Properties tagProcess, Properties taskProcess) throws Exception {
-        for (Object key : tagProcess.keySet()) {
-            String kn = key.toString();
-            String classType = tagProcess.getProperty(kn);
-            tagProcessMap.put(kn, (TagProcess) Class.forName(classType).newInstance());
-        }
-        /*---------------*/
-        for (Object key : taskProcess.keySet()) {
-            String kn = key.toString();
-            String classType = taskProcess.getProperty(kn);
-            taskProcessMap.put(kn, Class.forName(classType));
-        }
-    }
+    private HashMap<String, TagProcess> tagProcessMap    = new HashMap<String, TagProcess>(); //标签处理对象。 ns:tagname
     //========================================================================================Event
     /**扫描XML，processXPath是要处理的xpath匹配正则表达式。*/
     protected Object scanningXML(InputStream in, String processXPath, TaskProcess doEventIteration) throws Exception {
         XMLStreamReader reader = this.getXMLStreamReader(in);
         XmlContextStack stack = null;//当前堆栈
-        String onTag = null;//当前标签
+        String tagPrefix = null;//当前标签命名空间
+        String tagName = null;//当前标签
         int event = reader.getEventType();//当前事件对象
         while (true) {
             switch (event) {
             case XMLStreamConstants.START_DOCUMENT://文档开始
-                stack = new XmlContextStack(null, null, "/");
+                stack = new XmlContextStack(null, null, null, "/");
                 doEventIteration.onEvent(stack, stack.getXPath(), event, reader, tagProcessMap);
                 break;
             case XMLStreamConstants.END_DOCUMENT://文档结束
                 doEventIteration.onEvent(stack, stack.getXPath(), event, reader, tagProcessMap);
                 break;
             case XMLStreamConstants.START_ELEMENT://元素开始
-                onTag = reader.getLocalName();
-                stack = new XmlContextStack(stack, onTag, stack.getXPath() + onTag + "/");
+                tagPrefix = reader.getPrefix();
+                tagName = reader.getLocalName();
+                if (tagPrefix == null || tagPrefix.equals(""))
+                    stack = new XmlContextStack(stack, tagPrefix, tagName, stack.getXPath() + tagName + "/");
+                else
+                    stack = new XmlContextStack(stack, tagPrefix, tagName, stack.getXPath() + tagPrefix + ":" + tagName + "/");
                 doEventIteration.onEvent(stack, stack.getXPath(), event, reader, tagProcessMap);
                 int attCount = reader.getAttributeCount();
                 for (int i = 0; i < attCount; i++) {//遇到属性
-                    String key = reader.getAttributeLocalName(i);
+                    String attPrefix = reader.getAttributeNamespace(i);
+                    String attName = reader.getAttributeLocalName(i);
                     stack.attValue = reader.getAttributeValue(i);
-                    doEventIteration.onEvent(stack, stack.getXPath() + "@" + key, XMLStreamConstants.ATTRIBUTE, reader, tagProcessMap);
+                    String xpath_temp;
+                    if (attPrefix == null || attPrefix.equals(""))
+                        xpath_temp = stack.getXPath() + "@" + attName;
+                    else
+                        xpath_temp = stack.getXPath() + "@" + attPrefix + ":" + attName;
+                    doEventIteration.onEvent(stack, xpath_temp, XMLStreamConstants.ATTRIBUTE, reader, tagProcessMap);
                     stack.attValue = null;
                 }
                 break;
@@ -94,7 +87,7 @@ public class XmlEngine extends AttBase {
             event = reader.next();
         }
         return doEventIteration.getResult();
-    }
+    };
     /**获取Stax阅读器，该阅读器忽略所有COMMENT节点。*/
     private XMLStreamReader getXMLStreamReader(InputStream in) throws XMLStreamException {
         XMLInputFactory factory = XMLInputFactory.newInstance();
@@ -110,25 +103,19 @@ public class XmlEngine extends AttBase {
             }
         });
         return reader;
-    }
+    };
     //==========================================================================================Job
     /**执行XML任务。*/
-    public Object runTask(InputStream xmlStream, TaskProcess task, String processXPath, Object... params) throws InvokeException {
-        try {
-            task.setConfig(params);
-            return this.scanningXML(xmlStream, processXPath, task);
-        } catch (Exception e) {
-            throw new InvokeException(e);
-        }
+    public Object runTask(InputStream xmlStream, TaskProcess task, String processXPath, Object[] params) throws Exception {
+        task.setConfig(params);
+        return this.scanningXML(xmlStream, processXPath, task);
+    };
+    /**注册一个标签处理程序*/
+    public void regeditTag(String tagName, TagProcess tag) {
+        if (this.tagProcessMap.containsKey(tagName) == false)
+            this.tagProcessMap.put(tagName, tag);
     }
-    /**执行XML任务。*/
-    public Object runTask(InputStream xmlStream, String taskName, String processXPath, Object... params) throws InvokeException {
-        try {
-            TaskProcess task = (TaskProcess) this.taskProcessMap.get(taskName).newInstance();
-            task.setConfig(params);
-            return this.scanningXML(xmlStream, processXPath, task);
-        } catch (Exception e) {
-            throw new InvokeException(e);
-        }
+    public TagProcess getTagProcess(String tagName) {
+        return this.tagProcessMap.get(tagName);
     }
 }

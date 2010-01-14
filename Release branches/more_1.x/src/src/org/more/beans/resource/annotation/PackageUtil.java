@@ -22,6 +22,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 /**
  * classpath…®√Ëπ§æﬂ°£
  * @version 2010-1-10
@@ -46,13 +48,24 @@ public class PackageUtil {
     private LinkedList<String> scanDir(File dirFile, String prefix, PackageUtilExclude exclude) {
         LinkedList<String> classNames = new LinkedList<String>();
         for (File f : dirFile.listFiles()) {
-            String pn = prefix + File.pathSeparator + f.getName();
-            if (f.exists() == false || exclude.exclude(pn, f.isFile()) == true)
+            String pn = (prefix == null || prefix.equals("")) ? f.getName() : prefix + File.separator + f.getName();
+            if (f.exists() == false)
                 continue;
-            if (f.isFile())
-                classNames.add(pn);
-            else
+            if (f.isDirectory() == true)
                 classNames.addAll(scanDir(f, pn, exclude));
+            else {
+                String regex = "(.*)\\.class";
+                String pn_temp = pn.replace(File.separator, ".");
+                if (Pattern.matches(regex, pn_temp) == false) {
+                    if (exclude.exclude(pn) == false)
+                        classNames.add(pn);
+                } else {
+                    Matcher m = Pattern.compile(regex).matcher(pn_temp);
+                    m.find();
+                    if (exclude.exclude(m.group(1)) == false)
+                        classNames.add(m.group(1));
+                }
+            }
         }
         return classNames;
     }
@@ -64,7 +77,7 @@ public class PackageUtil {
         JarEntry e = null;
         while ((e = jis.getNextJarEntry()) != null) {
             String eName = e.getName();
-            if (exclude.exclude(eName, true) == false)
+            if (exclude.exclude(eName) == false)
                 classNames.addLast(eName);
             jis.closeEntry();
         }

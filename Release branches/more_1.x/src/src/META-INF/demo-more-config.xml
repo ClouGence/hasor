@@ -1,10 +1,10 @@
 <beans staticCache="0" dynamicCache="1"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:noNamespaceSchemaLocation="beans-schema.xsd"
-xsi:schemaLocation="http://more.byshell.org/schema/anno anno-schema.xsd"
-xmlns:anno="http://more.byshell.org/schema/anno">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="beans-schema.xsd"
+	xsi:schemaLocation="http://more.byshell.org/schema/anno anno-schema.xsd"
+	xmlns:anno="http://more.byshell.org/schema/anno">
 
-<anno:anno/>
+	<anno:anno enable="true" package="org.package.package.*,org.package.package.*"/>
 <!-- 
 只引用Bean对象	：refBean
 支持四种引用		：refValue

@@ -36,23 +36,23 @@ public class ClientMoreBuilder extends CasingBuild {
     protected BeanFactory factory = null;
     //==================================================================================Constructor
     /**创建ClientMoreBuilder，同时初始化ClientMoreBuilder对象使用默认配置文件名为more-config.xml其文件保存在当前路径下。*/
-    public ClientMoreBuilder() throws IOException {
+    public ClientMoreBuilder() throws Exception {
         this.init(new File("more-config.xml"));
     }
     /**
      * 创建ClientMoreBuilder，但是通过isInit参数决定是否初始化ClientMoreBuilder对象。true表示创建并且初始化,false表示仅创建。<br/>
      * 使用默认配置文件名为more-config.xml其文件保存在当前路径下。
      */
-    public ClientMoreBuilder(boolean isInit) throws IOException {
+    public ClientMoreBuilder(boolean isInit) throws Exception {
         if (isInit == true)
             this.init(new File("more-config.xml"));
     }
     /**创建ClientMoreBuilder，通过configFile参数来决定使用那个配置文件初始化ClientMoreBuilder对象。*/
-    public ClientMoreBuilder(String configFile) throws IOException {
+    public ClientMoreBuilder(String configFile) throws Exception {
         this.init(new File(configFile));
     }
     /**创建ClientMoreBuilder，通过configFile参数来决定使用那个配置文件初始化ClientMoreBuilder对象。*/
-    public ClientMoreBuilder(File configFile) throws IOException {
+    public ClientMoreBuilder(File configFile) throws Exception {
         this.init(configFile);
     }
     /**提供一个更高级的方式创建ClientMoreBuilder对象，该构造方法将使用指定的BeanFactory类型对象作为创建ActionContext而使用的数据源。*/
@@ -60,10 +60,12 @@ public class ClientMoreBuilder extends CasingBuild {
         this.init(beanFactory);
     }
     //==========================================================================================Job
-    private void init(File configFile) throws IOException {
+    private void init(File configFile) throws Exception {
         if (configFile.exists() == false || configFile.canRead() == false)
             throw new IOException("配置文件[" + configFile.getAbsolutePath() + "]不存在，或者无法读取。");
-        this.init(new ResourceBeanFactory(new AnnoXmlFileResource(configFile, true), null));
+        AnnoXmlFileResource anno = new AnnoXmlFileResource(configFile);
+        anno.reload();
+        this.init(new ResourceBeanFactory(anno, null));
     }
     private void init(BeanFactory beanFactory) {
         if (beanFactory == null)

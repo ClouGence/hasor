@@ -34,8 +34,9 @@ public interface TaskProcess extends XMLStreamConstants {
      * @param eventType 事件类型。
      * @param reader 阅读器。
      * @param tagProcessMap 已经注册的标签处理器集合。
+     * @throws Exception 如果在解析期间发生异常
      */
-    public void onEvent(XmlContextStack elementStack, String onXPath, int eventType, XMLStreamReader reader, Map<String, TagProcess> tagProcessMap) throws XMLStreamException;
+    public void onEvent(XmlContextStack elementStack, String onXPath, int eventType, XMLStreamReader reader, Map<String, TagProcess> tagProcessMap) throws XMLStreamException, Exception;
     /**获取返回值。*/
     public Object getResult();
     /**设置参数配置对象。*/

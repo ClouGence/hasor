@@ -165,7 +165,7 @@ public final class StringConvert {
      */
     public static Boolean parseBoolean(final String value, final Boolean... defaultValue) {
         try {
-            return (value == null || value.equals("") == false) ? Boolean.parseBoolean(value) : defaultValue[0];
+            return (value == null || value.equals("") == true) ? defaultValue[0] : Boolean.parseBoolean(value);
         } catch (Exception e) {
             return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Boolean;
         }

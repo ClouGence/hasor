@@ -33,7 +33,7 @@ public class AnnoEngine {
     private static final long serialVersionUID = -780028127861834511L;
     //==========================================================================================Job
     /**执行扫描任务。*/
-    public Object runTask(Class<?> type, AnnoProcess process) throws InvokeException {
+    public AnnoContextStack runTask(Class<?> type, AnnoProcess process) throws InvokeException {
         /*扫描过程Class->Field->Constructor->Param->Method->Param*/
         Class<?> atType = type;
         Annotation[] annos = null;
@@ -103,6 +103,6 @@ public class AnnoEngine {
                     process.doAnnotation(pAnnos[i], p, AnnoScopeEnum.Anno_Param, new AnnoContextStack(m_stack, atType));
             }
         }
-        return stack.context;
+        return stack;
     }
 }

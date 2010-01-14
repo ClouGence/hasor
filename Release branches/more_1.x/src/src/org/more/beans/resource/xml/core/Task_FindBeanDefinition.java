@@ -42,7 +42,7 @@ public class Task_FindBeanDefinition implements TaskProcess {
         return result;
     }
     @Override
-    public void onEvent(XmlContextStack elementStack, String onXPath, int eventType, XMLStreamReader reader, Map<String, TagProcess> tagProcessMap) {
+    public void onEvent(XmlContextStack elementStack, String onXPath, int eventType, XMLStreamReader reader, Map<String, TagProcess> tagProcessMap) throws Exception {
         String tagName = elementStack.getTagName();
         TagProcess process = tagProcessMap.get(tagName);
         /*------------*/

@@ -22,10 +22,11 @@ import javax.xml.stream.XMLStreamReader;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class TagProcess implements XMLStreamConstants {
-    /**当发现标签开始。*/
-    public void doStartEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {};
+    /**当发现标签开始。
+     * @throws Exception */
+    public void doStartEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) throws Exception {};
     /**当发现标签结束。*/
-    public void doEndEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {}
+    public void doEndEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) throws Exception {}
     /**当解析标签文本内容，注意CDATA和CDATA外层的文本视作两个文本内容。*/
-    public void doCharEvent(String xPath, XMLStreamReader reader, XmlContextStack context) {};
+    public void doCharEvent(String xPath, XMLStreamReader reader, XmlContextStack context) throws Exception {};
 }

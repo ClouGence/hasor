@@ -68,7 +68,7 @@ public class ResourceBeanFactory implements BeanFactory {
      * @param resource ResourceBeanFactory所使用的bean资源。
      * @param loader ResourceBeanFactory所使用的ClassLoader，如果给定null则采取Thread.currentThread().getContextClassLoader();
      */
-    public ResourceBeanFactory(BeanResource resource, ClassLoader loader) {
+    public ResourceBeanFactory(BeanResource resource, ClassLoader loader) throws Exception {
         if (resource == null)
             throw new NullPointerException("参数resource不能为空。");
         //确定使用哪个loader。
@@ -92,7 +92,7 @@ public class ResourceBeanFactory implements BeanFactory {
         return propParser;
     }
     /**清空所有Bean缓存，并且重新装载lazyInit属性为false的bean。*/
-    public void reload() {
+    public void reload() throws Exception {
         clearBeanCache();//清空缓存
         this.init();//重新初始化
     }
@@ -104,7 +104,7 @@ public class ResourceBeanFactory implements BeanFactory {
             this.resource.clearCache();//清理元信息缓存
     }
     /**初始化设置了lazyInit属性为false的bean并且这些bean一定是单态的。*/
-    protected void init() {
+    protected void init() throws Exception {
         List<String> initBeanNames = this.resource.getStrartInitBeanDefinitionNames();
         if (initBeanNames == null)
             return;
@@ -137,6 +137,8 @@ public class ResourceBeanFactory implements BeanFactory {
                 this.singletonBeanCache.put(name, obj);
             return obj;
         } catch (Exception e) {
+            if (e instanceof RuntimeException == true)
+                throw (RuntimeException) e;
             throw new InvokeException(e);
         }
     }
