@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.resource.annotation;
+package org.more.beans.resource.annotation.util;
 /**
  * classpath扫描工具，在扫描过程中需要通过该接口确定排除哪些不需要的资源。
  * @version 2010-1-10

@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 package org.more.beans.resource.annotation;
-import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 注解的处理，beans的所有注解解析都是通过该类的子类实现的。子类需要关注注解出现的在类的哪个层次中然后在对应AnnoContextStack层次进行操作。
- * @version 2010-1-10
+ * 配置beans中参数的注入数据，该参数只支持基本数据类型和四种引用类型，不支持List,Map,Set,Array数据类型。
+ * @version 2010-1-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AnnoProcess {
-    /** 遇到一个注解时 */
-    public void doAnnotation(Annotation anno, Object atObject, AnnoScopeEnum annoScope, AnnoContextStack context);
+@Retention(RetentionPolicy.RUNTIME)
+@Target( { ElementType.PARAMETER })
+public @interface Param {
+    /**基本数据类型的值*/
+    public String value() default "";
+    /**引用类型：PRV_ContextAtt{#name}、PRV_Mime{$name}、PRV_Bean.name、PRV_Param{@number}*/
+    public String refValue() default "";
 }

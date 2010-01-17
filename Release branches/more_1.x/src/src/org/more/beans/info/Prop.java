@@ -78,7 +78,7 @@ public abstract class Prop extends AttBase {
             this.propType = Prop.TS_Short;
         else if (propType.equals("boolean") == true)
             this.propType = Prop.TS_Boolean;
-        else if (propType.equals("String") == true)
+        else if (propType.equals("String") == true || propType.equals("java.lang.String") == true)
             this.propType = Prop.TS_String;
         else
             this.propType = propType;
@@ -105,5 +105,27 @@ public abstract class Prop extends AttBase {
             return String.class;
         else
             return loader.loadClass(propType);
+    }
+    public static boolean isBaseType(Class<?> type) {
+        if (type == int.class)
+            return true;
+        else if (type == byte.class)
+            return true;
+        else if (type == char.class)
+            return true;
+        else if (type == double.class)
+            return true;
+        else if (type == float.class)
+            return true;
+        else if (type == long.class)
+            return true;
+        else if (type == short.class)
+            return true;
+        else if (type == boolean.class)
+            return true;
+        else if (type == String.class)
+            return true;
+        else
+            return false;
     }
 }

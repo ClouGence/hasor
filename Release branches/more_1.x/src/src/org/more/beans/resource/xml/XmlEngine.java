@@ -118,4 +118,7 @@ public class XmlEngine extends AttBase {
     public TagProcess getTagProcess(String tagName) {
         return this.tagProcessMap.get(tagName);
     }
+    public void destroy() {
+        this.tagProcessMap.clear();
+    }
 }

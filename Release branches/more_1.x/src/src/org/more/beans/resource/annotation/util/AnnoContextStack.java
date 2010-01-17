@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.resource.annotation;
+package org.more.beans.resource.annotation.util;
 import org.more.util.attribute.AttBase;
 /**
  * 处理注解的节点堆栈，从处理类的注解开始创建根堆栈往下每一层类元素都创建一个新的堆栈。<br/>
@@ -29,9 +29,12 @@ public class AnnoContextStack extends AttBase {
     public Object             context          = null;
     /**正在被扫描的类*/
     private Class<?>          atClass          = null;
-    AnnoContextStack(AnnoContextStack parent, Class<?> atClass) {
+    /**当前堆栈所处作用域*/
+    private AnnoScopeEnum     scope            = null;
+    AnnoContextStack(AnnoContextStack parent, Class<?> atClass, AnnoScopeEnum scope) {
         this.parent = parent;
         this.atClass = atClass;
+        this.scope = scope;
     }
     /**获取当前堆栈的父级堆栈。*/
     public AnnoContextStack getParent() {
@@ -40,5 +43,9 @@ public class AnnoContextStack extends AttBase {
     /**正在被扫描的类*/
     public Class<?> getAtClass() {
         return atClass;
+    }
+    /**当前堆栈所处作用域*/
+    public AnnoScopeEnum getScope() {
+        return scope;
     }
 }

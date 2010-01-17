@@ -13,18 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.resource.annotation.core;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package org.more.beans.resource.annotation.util;
+import java.lang.annotation.Annotation;
 /**
- * 
- * @version 2010-1-7
+ * 注解的处理，beans的所有注解解析都是通过该类的子类实现的。子类需要关注注解出现的在类的哪个层次中然后在对应AnnoContextStack层次进行操作。
+ * @version 2010-1-10
  * @author 赵永春 (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.TYPE, ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })
-public @interface AppendInterface {
-    public String value();
+public interface AnnoProcess {
+    /** 遇到一个注解时 */
+    public void beginAnnotation(Annotation anno, Object atObject, AnnoContextStack context);
+    public void endAnnotation(Annotation anno, Object atObject, AnnoContextStack context);
 }

@@ -132,7 +132,7 @@ public class XmlFileResource extends ArrayResource implements BeanResource {
     /**/
     /*-------------------------------------------------------------------------------------------*/
     /**XML解析引擎*/
-    protected XmlEngine                     xmlEngine;
+    protected XmlEngine                     xmlEngine = new XmlEngine();
     /*-------------------------------------------------------*/
     /**所有的bean名称*/
     private List<String>                    xmlBeanNames;
@@ -179,7 +179,6 @@ public class XmlFileResource extends ArrayResource implements BeanResource {
         /*----------------------------------------------三、读取标签配置*/
         Properties tag = new Properties();
         tag.load(new AutoCloseInputStream(XmlFileResource.class.getResourceAsStream("/org/more/beans/resource/xml/core/tagProcess.properties")));//装载标签处理属性配置
-        this.xmlEngine = new XmlEngine();
         for (Object tagName : tag.keySet()) {
             Class<?> tagProcessType = Class.forName(tag.getProperty((String) tagName));
             this.xmlEngine.regeditTag((String) tagName, (TagProcess) tagProcessType.newInstance());
@@ -206,7 +205,6 @@ public class XmlFileResource extends ArrayResource implements BeanResource {
     public synchronized void destroy() {
         this.clearCache();
         this.clearAttribute();
-        this.xmlEngine = null;//XML解析引擎
         this.xmlBeanNames.clear();//所有的bean名称
         this.xmlBeanNames = null;//所有的bean名称
         this.dynamicCacheSize = 50;//动态缓存对象数目。
@@ -215,7 +213,8 @@ public class XmlFileResource extends ArrayResource implements BeanResource {
         this.dynamicCacheNames.clear();//动态缓存对象名称集合
         this.dynamicCacheNames = null;//动态缓存对象名称集合
         this.xmlStrartInitBeans.clear();
-        this.xmlStrartInitBeans = null;;
+        this.xmlStrartInitBeans = null;
+        this.xmlEngine.destroy();
         super.destroy();
     };
     @Override

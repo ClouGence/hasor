@@ -15,9 +15,10 @@
  */
 package org.more.beans.resource.annotation.core;
 import java.lang.annotation.Annotation;
-import org.more.beans.resource.annotation.AnnoContextStack;
-import org.more.beans.resource.annotation.AnnoProcess;
-import org.more.beans.resource.annotation.AnnoScopeEnum;
+import org.more.beans.resource.annotation.Bean;
+import org.more.beans.resource.annotation.util.AnnoContextStack;
+import org.more.beans.resource.annotation.util.AnnoProcess;
+import org.more.beans.resource.annotation.util.AnnoScopeEnum;
 /**
  * 扫描类获取类名称
  * @version 2010-1-13
@@ -28,23 +29,29 @@ public class Scan_ClassName implements AnnoProcess {
     private Class<?> beanClass;
     private boolean  init;
     @Override
-    public void doAnnotation(Annotation anno, Object atObject, AnnoScopeEnum annoScope, AnnoContextStack context) {
-        if (AnnoScopeEnum.Anno_Type == annoScope && anno instanceof Bean) {
-            Bean beanAnno = (Bean) anno;
-            bean = true;
-            beanClass = (Class<?>) atObject;
-            init = beanAnno.lazyInit();//是否默认装载
-            beanName = beanAnno.name();
-            if (beanName.equals("") == true) {
-                //转换首字母小写
-                StringBuffer sb = new StringBuffer(beanClass.getSimpleName());
-                char firstChar = sb.charAt(0);
-                sb.delete(0, 1);
-                sb.insert(0, (char) ((firstChar <= 90) ? firstChar + 32 : firstChar));
-                this.beanName = sb.toString();
-            }
+    public void beginAnnotation(Annotation anno, Object atObject, AnnoContextStack context) {
+        if (context.getScope() != AnnoScopeEnum.Anno_Type)
+            return;
+        Class<?> atClass = (Class<?>) atObject;
+        Bean beanAnno = (Bean) atClass.getAnnotation(Bean.class);
+        if (beanAnno == null)
+            return;
+        /*-----------------------*/
+        bean = true;
+        beanClass = atClass;
+        init = beanAnno.lazyInit();//是否默认装载
+        beanName = beanAnno.name();
+        if (beanName.equals("") == true) {
+            //转换首字母小写
+            StringBuffer sb = new StringBuffer(atClass.getSimpleName());
+            char firstChar = sb.charAt(0);
+            sb.delete(0, 1);
+            sb.insert(0, (char) ((firstChar <= 90) ? firstChar + 32 : firstChar));
+            this.beanName = sb.toString();
         }
     }
+    @Override
+    public void endAnnotation(Annotation anno, Object atObject, AnnoContextStack context) {}
     public void reset() {
         beanName = null;
         beanClass = null;

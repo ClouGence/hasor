@@ -15,15 +15,19 @@
  */
 package org.more.beans.resource;
 import java.io.File;
+import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import org.more.beans.info.BeanDefinition;
-import org.more.beans.resource.annotation.AnnoEngine;
-import org.more.beans.resource.annotation.Tag_Anno;
 import org.more.beans.resource.annotation.core.Scan_ClassAnno;
+import org.more.beans.resource.annotation.core.Tag_Anno;
+import org.more.beans.resource.annotation.util.AnnoEngine;
+import org.more.beans.resource.annotation.util.AnnoProcess;
 import org.more.beans.resource.xml.XmlEngine;
+import org.more.core.io.AutoCloseInputStream;
 /**
  * 扩展XmlFileResource类提供注解配置方式的支持，配置文件中的配置比较注解有优先权。
  * @version 2010-1-10
@@ -47,18 +51,21 @@ public class AnnoXmlFileResource extends XmlFileResource {
         super(xmlURI);
     };
     //=====================================================================================Job Core
-    private Tag_Anno            annoTag = new Tag_Anno();
+    private Tag_Anno            annoTag  = new Tag_Anno();
+    private Scan_ClassAnno      annoScan = new Scan_ClassAnno();
     /**所有的bean名称*/
     private Map<String, String> annoBeanNameMap;
     /**所有要求启动装载的bean名称*/
     private List<String>        annoStrartInitBeans;
     /*-------------------------------------------------*/
+    protected void anotherClassAnnoEngine(Scan_ClassAnno annoEngine) {}
     @Override
     protected void anotherXmlEngine(XmlEngine engine) {
         super.anotherXmlEngine(engine);
         engine.regeditTag("anno", annoTag);
     };
     @Override
+    @SuppressWarnings("unchecked")
     public synchronized void init() throws Exception {
         if (this.isInit() == true)
             return;
@@ -66,6 +73,15 @@ public class AnnoXmlFileResource extends XmlFileResource {
         this.annoBeanNameMap = this.annoTag.getScanBeansResult();//获取扫描到的bean名称与类名映射结果
         this.annoStrartInitBeans = this.annoTag.getScanInitBeansResult();//获取要求初始化的bean名结果。
         this.annoTag.lockScan();//锁定扫描结果，在解锁前不在处理anno:anno扫描标签的扫描操作。
+        this.annoScan.init();
+        Properties tag = new Properties();
+        tag.load(new AutoCloseInputStream(XmlFileResource.class.getResourceAsStream("/org/more/beans/resource/annotation/core/anno.properties")));//装载标签处理属性配置
+        for (Object key : tag.keySet()) {
+            Class<? extends Annotation> forAnno = (Class<? extends Annotation>) Class.forName((String) key);
+            Class<?> forProcess = Class.forName(tag.getProperty((String) key));
+            this.annoScan.regeditAnno(forAnno, (AnnoProcess) forProcess.newInstance());
+        }
+        this.anotherClassAnnoEngine(this.annoScan);
     };
     @Override
     public synchronized void destroy() {
@@ -75,6 +91,7 @@ public class AnnoXmlFileResource extends XmlFileResource {
         this.annoStrartInitBeans.clear();
         this.annoStrartInitBeans = null;
         this.annoTag.destroy();//启动标签销毁
+        this.annoScan.destroy();
         super.destroy();
     };
     @Override
@@ -92,7 +109,7 @@ public class AnnoXmlFileResource extends XmlFileResource {
         if (this.annoBeanNameMap.containsKey(name) == false)
             return null;
         AnnoEngine ae = new AnnoEngine();
-        return (BeanDefinition) ae.runTask(Class.forName(this.annoBeanNameMap.get(name)), new Scan_ClassAnno()).context;
+        return (BeanDefinition) ae.runTask(Class.forName(this.annoBeanNameMap.get(name)), annoScan, new BeanDefinition()).context;
     }
     @Override
     public List<String> getBeanDefinitionNames() {

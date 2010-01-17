@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.resource.annotation;
+package org.more.beans.resource.annotation.core;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.xml.stream.XMLStreamReader;
-import org.more.beans.resource.annotation.core.Scan_ClassName;
+import org.more.beans.resource.annotation.util.AnnoEngine;
+import org.more.beans.resource.annotation.util.PackageUtil;
+import org.more.beans.resource.annotation.util.PackageUtilExclude;
 import org.more.beans.resource.xml.TagProcess;
 import org.more.beans.resource.xml.XmlContextStack;
 import org.more.util.StringConvert;
@@ -61,6 +63,7 @@ public class Tag_Anno extends TagProcess {
             else if (key.equals("package") == true) {
                 xml_package = xmlReader.getAttributeValue(i);
                 xml_package = (xml_package == null) ? "*" : xml_package.replace(",", ")|(");
+                //替换字符以实现支持 “*”，“?”通配符。
                 xml_package = xml_package.replace(".", "\\.");
                 xml_package = xml_package.replace("*", ".*");
                 xml_package = xml_package.replace("?", ".");
@@ -87,7 +90,7 @@ public class Tag_Anno extends TagProcess {
         for (String className : classNames) {
             try {
                 scanName.reset();
-                ae.runTask(Class.forName(className), scanName);
+                ae.runTask(Class.forName(className), scanName, null);
                 if (scanName.isBean() == true) {
                     this.names.put(scanName.getBeanName(), className);
                     if (scanName.isInit() == true)

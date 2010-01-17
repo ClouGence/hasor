@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.resource.annotation;
+package org.more.beans.resource.annotation.util;
 /**
  * 该枚举中定义了beans注解引擎会扫描到的注解出现位置。
  * @version 2010-1-10

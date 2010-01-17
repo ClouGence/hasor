@@ -42,6 +42,8 @@ public class ImplAOPFilterChain implements AOPFilterChain {
             ClassEngine ce = (ClassEngine) target.getClass().getClassLoader();
             return this.thisFilter.doFilter(target, ce.aopMethods.get(methodDesc), args, this.nextFilterChain);
         } catch (Throwable e) {
+            if (e instanceof RuntimeException == true)
+                throw (RuntimeException) e;
             throw new RuntimeException(e);
         }
     }

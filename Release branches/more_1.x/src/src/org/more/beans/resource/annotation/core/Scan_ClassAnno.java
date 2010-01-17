@@ -15,17 +15,37 @@
  */
 package org.more.beans.resource.annotation.core;
 import java.lang.annotation.Annotation;
-import org.more.beans.resource.annotation.AnnoContextStack;
-import org.more.beans.resource.annotation.AnnoProcess;
-import org.more.beans.resource.annotation.AnnoScopeEnum;
+import java.util.HashMap;
+import org.more.beans.resource.annotation.util.AnnoContextStack;
+import org.more.beans.resource.annotation.util.AnnoProcess;
 /**
  * 扫描一个class并且解析它的注解配置。以生成BeanDefinition对象
  * @version 2010-1-14
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Scan_ClassAnno implements AnnoProcess {
+    private HashMap<Class<? extends Annotation>, AnnoProcess> annoProcess;
     @Override
-    public void doAnnotation(Annotation anno, Object atObject, AnnoScopeEnum annoScope, AnnoContextStack context) {
-        System.out.println(anno);
+    public void beginAnnotation(Annotation anno, Object atObject, AnnoContextStack context) {
+        AnnoProcess ap = this.annoProcess.get(anno.annotationType());
+        if (ap != null)
+            ap.beginAnnotation(anno, atObject, context);
+    }
+    @Override
+    public void endAnnotation(Annotation anno, Object atObject, AnnoContextStack context) {
+        AnnoProcess ap = this.annoProcess.get(anno.annotationType());
+        if (ap != null)
+            ap.endAnnotation(anno, atObject, context);
+    }
+    public void init() {
+        this.annoProcess = new HashMap<Class<? extends Annotation>, AnnoProcess>();
+    }
+    public void destroy() {
+        this.annoProcess.clear();
+        this.annoProcess = null;
+    }
+    public void regeditAnno(Class<? extends Annotation> forAnno, AnnoProcess process) {
+        if (this.annoProcess.containsKey(forAnno) == false)
+            annoProcess.put(forAnno, process);
     }
 }
