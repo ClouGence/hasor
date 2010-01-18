@@ -1,4 +1,9 @@
-<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="beans-schema.xsd">
+<beans staticCache="10" dynamicCache="50"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="beans-schema.xsd"
+	xsi:schemaLocation="http://more.byshell.org/schema/anno anno-schema.xsd"
+	xmlns:anno="http://more.byshell.org/schema/anno">
+
 	<bean name="filter" type="org.moretest.filter.TestFilter" />
 	<bean name="publicFilter" type="org.moretest.filter.PublicFilter">
 		<meta key="isPublicFilter" value="true"/>

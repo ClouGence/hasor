@@ -2,6 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/more/more_1.0.0.091223_alpha2.jar"/>
+	<classpathentry kind="lib" path="lib/more/more_1.0.0.091223_alpha3.jar" sourcepath="/More"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
