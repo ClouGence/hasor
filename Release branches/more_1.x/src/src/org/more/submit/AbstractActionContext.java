@@ -30,7 +30,7 @@ import org.more.util.MergeIterator;
 public abstract class AbstractActionContext implements ActionContext {
     private ActionObjectFactory objectFactory;
     /**≥ı ºªØ*/
-    void init() {
+    public void init() {
         this.initContext();
         this.objectFactory = this.createActionObjectFactory();
         if (this.objectFactory == null)

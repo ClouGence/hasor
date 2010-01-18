@@ -1,4 +1,4 @@
-<beans staticCache="0" dynamicCache="1"
+<beans staticCache="10" dynamicCache="50"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="beans-schema.xsd"
 	xsi:schemaLocation="http://more.byshell.org/schema/anno anno-schema.xsd"

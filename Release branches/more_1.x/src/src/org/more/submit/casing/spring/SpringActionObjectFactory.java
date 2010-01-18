@@ -17,6 +17,7 @@ package org.more.submit.casing.spring;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import org.more.CastException;
 import org.more.submit.ActionFilter;
 import org.more.submit.ActionObjectFactory;
@@ -62,7 +63,8 @@ class SpringActionObjectFactory implements ActionObjectFactory {
     @Override
     public Iterator<String> getPublicFilterNames(String actionName) {
         String[] beans = this.configContext.getBeanDefinitionNames();//获取所有bean名称集合
-        ArrayList<String> ns = (ArrayList<String>) Arrays.asList(beans);//新建名称集合，并且同步内容在beans。
+        List<String> ns = (List<String>) Arrays.asList(beans);//新建名称集合，并且同步内容在beans。
+        ns = new ArrayList<String>(ns);
         for (String n : beans) {
             //循环遍历删除所有没有配置为共有过滤器的名称
             Class<?> type = this.springContext.getType(n);

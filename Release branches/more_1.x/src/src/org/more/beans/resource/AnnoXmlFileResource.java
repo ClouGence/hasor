@@ -18,6 +18,8 @@ import java.io.File;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -72,6 +74,10 @@ public class AnnoXmlFileResource extends XmlFileResource {
         super.init();//执行初始化方法，在初始化时会自动调用到anno标签处理函数。
         this.annoBeanNameMap = this.annoTag.getScanBeansResult();//获取扫描到的bean名称与类名映射结果
         this.annoStrartInitBeans = this.annoTag.getScanInitBeansResult();//获取要求初始化的bean名结果。
+        if (this.annoBeanNameMap == null)
+            this.annoBeanNameMap = new HashMap<String, String>();
+        if (this.annoStrartInitBeans == null)
+            this.annoStrartInitBeans = new LinkedList<String>();
         this.annoTag.lockScan();//锁定扫描结果，在解锁前不在处理anno:anno扫描标签的扫描操作。
         this.annoScan.init();
         Properties tag = new Properties();

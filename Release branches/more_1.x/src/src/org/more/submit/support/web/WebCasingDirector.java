@@ -15,6 +15,8 @@
  */
 package org.more.submit.support.web;
 import javax.servlet.ServletContext;
+import org.more.submit.AbstractActionContext;
+import org.more.submit.ActionContext;
 import org.more.submit.CasingBuild;
 import org.more.submit.CasingDirector;
 import org.more.submit.Config;
@@ -35,6 +37,10 @@ public class WebCasingDirector extends CasingDirector {
     //==========================================================================================Job
     @Override
     protected SubmitContext buildContext(CasingBuild build, Config config) {
-        return new WebSubmitContext(build.getActionContext(), this.servletContext);
+        ActionContext context = build.getActionContext();
+        if (context instanceof AbstractActionContext == true)
+            //如果ActionContext类型是AbstractActionContext的子类则执行AbstractActionContext类型的初始化方法以启动AbstractActionContext类型的初始化过程。
+            ((AbstractActionContext) context).init();
+        return new WebSubmitContext(context, this.servletContext);
     }
 }
