@@ -236,7 +236,7 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
         Matcher m = p.matcher(desc);
         m.find();
         String[] asmParams = EngineToos.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
-        String asmReturns = m.group(2);
+        String asmReturns = EngineToos.toClassType(m.group(2));
         int paramCount = asmParams.length;
         int localVarSize = paramCount;//方法变量表大小
         int maxStackSize = 0;//方法最大堆栈大小

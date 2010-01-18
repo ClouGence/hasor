@@ -68,8 +68,8 @@ public class AnnoEngine {
                 if (field_anno != null)
                     for (Annotation a : field_anno) {
                         stack = new AnnoContextStack(stack, atType, AnnoScopeEnum.Anno_Field);
-                        process.beginAnnotation(a, f, stack);
-                        process.endAnnotation(a, f, stack);
+                        process.beginAnnotation(a, new Object[] { atType, f }, stack);
+                        process.endAnnotation(a, new Object[] { atType, f }, stack);
                         stack = stack.getParent();
                     }
             }
