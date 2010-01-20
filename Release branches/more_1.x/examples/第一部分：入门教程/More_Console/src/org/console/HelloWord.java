@@ -29,17 +29,18 @@ public class HelloWord {
      * @throws Throwable 
      */
     public static void main(String[] args) throws Throwable {
-        //第一步、获得SubmitContext环境
-        CasingDirector cd = new CasingDirector(null);//创建SubmitContext生成器，该类负责生成SubmitContext类对象。
-        cd.build(new ClientMoreBuilder());//调用build方法生成SubmitContext对象，ClientMoreBuilder对象是专注于桌面程序的生成器。
-        SubmitContext submitContext = cd.getResult();//获得生成的SubmitContext对象
-        //第二步、调用我们的HelloWord Action方法，并且获得返回值。
+        CasingDirector cd = new CasingDirector(null);//创建SubmitContext生成器。
+        cd.build(new ClientMoreBuilder());//调用build方法生成SubmitContext对象。
+        SubmitContext submitContext = cd.getResult();//获得生成的SubmitContext对象。
+        //
+        //
+        //=================================================================调用XML配置文件中的Action配置。
         Object res = submitContext.doAction("action.hello");
-        //第三步、输出返回值
         System.out.println(res);
-        //=================================================================
-        //下面演示向Action传递参数。并且输出返回值
         res = submitContext.doAction("action.params", null, StringConvert.parseMap("arg=参数;"));
+        System.out.println(res);
+        //=================================================================调用注解配置的Action。
+        res = submitContext.doAction("annoAction.hello");
         System.out.println(res);
     }
 }

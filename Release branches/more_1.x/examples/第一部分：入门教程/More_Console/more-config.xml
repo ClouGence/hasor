@@ -4,6 +4,8 @@
 	xsi:schemaLocation="http://more.byshell.org/schema/anno anno-schema.xsd"
 	xmlns:anno="http://more.byshell.org/schema/anno">
 	
+	<anno:anno package="org.console.*"/>
+	
 	<bean name="action" type="org.console.HelloAction">
 		<meta key="isAction" value="true"/>
 	</bean>
