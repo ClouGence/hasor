@@ -16,8 +16,8 @@
 package org.more.util.attribute;
 /**
  * 属性装饰器，该装饰器的目的是限制属性值必须不能为空。
- * Date : 2009-5-1
- * @author 赵永春
+ * @version 2009-5-1
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class NoEmptyAttDecorator extends AbstractAttDecorator {
     //==================================================================================Constructor

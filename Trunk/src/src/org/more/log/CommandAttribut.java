@@ -16,8 +16,8 @@
 package org.more.log;
 /**
  * 属性条目Bean
- * Date : 2009-5-13
- * @author 赵永春
+ * @version 2009-5-13
+ * @author 赵永春 (zyc@byshell.org)
  */
 class CommandAttribut {
     private String name     = null; // 属性名

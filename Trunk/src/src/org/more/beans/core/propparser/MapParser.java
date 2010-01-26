@@ -23,8 +23,8 @@ import org.more.beans.info.BeanProperty;
 import org.more.beans.info.PropMap;
 /**
  * 对类型为{@link PropMap}的属性定义提供解析支持，如果{@link PropMap}没有配置具体map类型则使用{@link HashMap}作为{@link Map}对象。
- * <br/>Date : 2009-11-18
- * @author 赵永春
+ * @version 2009-11-18
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class MapParser implements PropertyParser {
     @Override

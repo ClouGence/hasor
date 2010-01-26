@@ -21,16 +21,16 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 /**
- * 基本属性接口实现类。注意：IAttribute接口特性及其子接口的功能将不会作用到Map接口上。开发人员仍然可以通过Map接口操作AttBase中的数据。
- * 但是Map接口将不会支持IAttribute接口的所有装饰器接口特性。
- * Date : 2009-4-29
- * @author 赵永春
+ * 基本属性接口实现类。注意：IAttribute接口特性及其子接口的功能将不会作用到Map接口上。
+ * 开发人员仍然可以通过Map接口操作AttBase中的数据。但是Map接口将不会支持IAttribute接口的所有装饰器接口特性。
+ * @version 2009-4-29
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class AttBase implements IAttribute, IAttTransform, Map<String, Object>, Serializable {
     //========================================================================================Field
     private static final long   serialVersionUID = 5330675593787806813L;
     /** 存放属性的集合 */
-    private Map<String, Object> prop             = null;
+    private Map<String, Object> prop;
     //==================================================================================Constructor
     //
     /** 

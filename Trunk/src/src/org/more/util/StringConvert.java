@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 /**
  * 字符串数据类型转换工具类
- * Date : 2009-4-29
- * @author 赵永春
+ * @version 2009-4-29
+ * @author 赵永春 (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
 public final class StringConvert {
@@ -165,7 +165,7 @@ public final class StringConvert {
      */
     public static Boolean parseBoolean(final String value, final Boolean... defaultValue) {
         try {
-            return (value == null || value.equals("") == false) ? Boolean.parseBoolean(value) : defaultValue[0];
+            return (value == null || value.equals("") == true) ? defaultValue[0] : Boolean.parseBoolean(value);
         } catch (Exception e) {
             return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Boolean;
         }

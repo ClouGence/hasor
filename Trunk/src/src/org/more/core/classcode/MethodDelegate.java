@@ -19,8 +19,8 @@ import org.more.InvokeException;
 /**
  * 当使用{@link ClassEngine}类的addImpl方法附加接口实现时，附加的接口处理函数对象就是该接口对象。
  * 被委托的方法将会采用注册委托时传递的MethodDelegate接口对象作为回调对象。
- * Date : 2009-10-18
- * @author 赵永春
+ * @version 2009-10-18
+ * @author 赵永春 (zyc@byshell.org)
  */
 public interface MethodDelegate {
     /**

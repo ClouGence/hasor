@@ -16,8 +16,8 @@
 package org.more;
 /**
  * 企图访问只读资源异常，当企图在某资源在只读期间对其进行设置值时引发。
- * Date : 2009-4-29
- * @author 赵永春
+ * @version 2009-4-29
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class ReadOnlyException extends RuntimeException {
     /**  */

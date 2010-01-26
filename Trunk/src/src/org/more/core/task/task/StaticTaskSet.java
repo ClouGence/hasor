@@ -21,8 +21,8 @@ import org.more.core.task.Task;
 import org.more.core.task.TaskState;
 /**
  * 包含其他任务的任务项，ListTask类型任务。该类型任务的存在目的是为了使任务可以包含其他子任务。
- * Date : 2009-5-15
- * @author 赵永春
+ * @version 2009-5-15
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class StaticTaskSet extends LocationTask {
     /**  */

@@ -17,8 +17,8 @@ package org.more.util;
 import java.io.UnsupportedEncodingException;
 /**
  * 简单编码类，该类提供了Base64的编码和解码以及MD5加密串提取的方法。注意该类不适宜将大数据进行编码操作。
- * Date : 2009-4-28
- * @author 赵永春
+ * @version 2009-4-28
+ * @author 赵永春 (zyc@byshell.org)
  */
 public final class SimpleCode {
     // ===============================================================

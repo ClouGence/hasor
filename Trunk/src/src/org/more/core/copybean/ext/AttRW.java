@@ -21,8 +21,8 @@ import org.more.core.copybean.PropertyReaderWrite;
 import org.more.util.attribute.IAttribute;
 /**
  * IAttribute类读写器。使用该类作为读写器可以实现从IAttribute对象中拷贝属性或者向IAttribute中拷贝属性。
- * Date : 2009-5-15
- * @author 赵永春
+ * @version 2009-5-15
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class AttRW extends BeanType {
     /**  */

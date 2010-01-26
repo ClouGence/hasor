@@ -16,10 +16,10 @@
 package org.more;
 /**
  * 转换异常，当发生类型转换，数据转换或者任何转换操作时发生问题则抛出该异常。
- * Date : 2009-7-8
- * @author 赵永春
+ * @version 2009-7-8
+ * @author 赵永春 (zyc@byshell.org)
  */
-public class CastException extends Exception {
+public class CastException extends RuntimeException {
     /**  */
     private static final long serialVersionUID = 5032345759263916241L;
     /**

@@ -4,26 +4,27 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	id="WebApp_ID" version="2.5">
 	<filter>
+		<filter-name>characterEncoding</filter-name>
+		<filter-class>org.more.web.util.CharacterEncodingFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>characterEncoding</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	
+	<filter>
 		<filter-name>moreContext</filter-name>
-		<filter-class>org.more.submit.support.web.TopFilter</filter-class>
-		<init-param>
-			<!-- 指定配置文件位置 -->
-			<param-name>configFile</param-name>
-			<param-value>/WEB-INF/more-config.xml</param-value>
-		</init-param>
+		<filter-class>org.more.submit.support.web.SubmitRoot</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>moreContext</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+	<!-- ==================================================== -->
 	<servlet>
 		<servlet-name>moreContext</servlet-name>
-		<servlet-class>org.more.submit.support.web.TopFilter</servlet-class>
-		<init-param>
-			<!-- 指定配置文件位置 -->
-			<param-name>configFile</param-name>
-			<param-value>/WEB-INF/more-config.xml</param-value>
-		</init-param>
+		<servlet-class>org.more.submit.support.web.SubmitRoot</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>moreContext</servlet-name>

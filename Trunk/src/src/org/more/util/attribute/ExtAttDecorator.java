@@ -21,9 +21,9 @@ import org.more.RepeateException;
  * 当设置的新属性与原有属性发生重名冲突时可以使用“属性的替换原则”进行替换。具体有如下几个替换原则:
  * ReplaceMode_Replace  (无条件替换)该原则是默认替换原则<br/>
  * ReplaceMode_Original(忽略新属性值保留原始属性)<br/>
- * ReplaceMode_Throw   (如果出现重名则替换过程中抛出异常)。<br/>
- * <br/>Date : 2009-4-30
- * @author 赵永春
+ * ReplaceMode_Throw   (如果出现重名则替换过程中抛出异常)。
+ * @version 2009-4-30
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class ExtAttDecorator extends AbstractAttDecorator {
     //========================================================================================Field

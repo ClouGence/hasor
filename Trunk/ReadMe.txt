@@ -1,9 +1,8 @@
 发布说明：
-	名称：more_1.0.0.091223_alpha2
+	名称：more_1.0.0.20100126_alpha3
 	开发：赵永春。
 	说明：
-		本次发布增加6个相关例子，着6个例子是《第一部分：入门教程》的例子同时也是提供的more学习例子。
-		虽然简单但是覆盖了more的基本使用。利用初级教程已经可以开发常见项目。下一个alpha版本将继续与wiki同步发出。
+		本次发布增加4个《第二部分：中级教程》例子，同时对《第一部分：入门教程》的例子做一些调整和修复。在第一部分中增加MoreBeans例子。
 
 编译说明：
 	在编译时候需要引入j2ee相关包，和spring的核心jar。
@@ -14,26 +13,27 @@
 	1.整个项目使用GBK编码编写，js文件使用utf-8编写。
 	2.submit的返回值脚本回调处理目前版本不支持脚本编译缓存机制。
 
-补充说明：
-	beans
-		1.拥有bean定义的静态缓存和动态缓存。利用这两个缓存可以优化bean定义的访问速度。
-
 更新说明：
-	submit3.0(更新说明)
-		1.增加了submit的Session支持。使action调用时需要保存的临时信息可以保存到session中用于缓存。
-		2.提供了Session接口用来保存Action范围之外的临时数据。
-		3.保留不依赖J2EE的特性，submit3.0系统仍然可以应用在普通桌面程序。submit3.0组建仍然是一个完全独立的mvc框架。
-		4.提供了Action调用堆栈的支持，如果Action再次调用了其他action则堆栈会自动创建子堆栈。
-		5.更改submit2.0系统中的action标记类型参数ActionMethodEvent为ActionStack。
-		6.减少了扩展submit3.0时候所提供的Factory数量。
-		7.删除了2.0版本中线程参数对象的特性，取代的是SubmitContext属性、Session属性、ActionStack属性。
-		8.更清晰的内核结构。
-		9.提供SubmitContext、Session、ActionStack的属性监听器功能。
-		10.在使用Spring做容器时候不必在必须配置Spring监听器，submit3.0提供通过参数传递Spring配置文件。
-		11.在集成Spring时可以配置Spring监听器，同时submit3.0的配置文件参数就会失效。
-  	actionjs：
-		1.解决了actionjs在服务端无法获取参数的bug。
-		2.增加了min属性，通过min属性可以决定是否启用自动生成简易action调用代码。min的配置拥有作用域。
-  	dao.jdbc
-		1.新增的功能，一个JDBC操作环境这个环境类似于Spring的JDBC框架，至此more可以独立操作数据库。
-		2.具备了一个简单的事务管理器，它可以保证业务方法的事务原子性。
+beans v1.2(版本alpha3)：
+  1.增加注解配置支持，至此xml配置与注解支持可以同时进行。xml的优先级高于注解。
+  2.可以注解配置Bean。
+  3.可以注解配置Bean的构造方法参数注入
+  4.可以注解配置Bean的Aop链。
+  5.可以注解配置附加接口实现，但是所有附加接口都使用一个接口处理委托。如果要一个接口对应一个委托只有xml配置支持。
+  6.可以注解配置属性注入。
+  7.注解配置支持以定义的基本类型和四种引用类型。
+  8.注解配置需要通过xml配置anno:anno标签。
+  9.通过anno标签可以开启注解配置以及配置beans的扫描路径。
+  10.重写了Resource接口的实现类。
+  11.修复了大量Bug。
+
+submit v3.1(版本alpha3)：
+  1.TopFilter类更名为SubmitRoot。
+  2.优化submit代码，减少了代码中new的操作。
+  3.修改submit的Config接口getInitParameter相关方法返回值为Object类型。
+  4.重写了submit的more和spring外壳提供环境使其更简化和直观。同时more和spring外壳支撑中加入了默认配置文件位置。
+	其中more支撑环境默认配置文件位置：/WEB-INF/more-config.xml
+	其中spring支撑环境默认配置文件位置：/WEB-INF/applicationContext.xml
+  5.CasingBuild增加缓存功能，可以通过cacheContext属性控制是否开启缓存，默认是开启的。
+  6.增加ActionObjectFactory核心接口，该接口负责创建、查找一切Action相关资源，同时该负责解析Filter注解。
+  7.支持注解化配置Action所有配置。

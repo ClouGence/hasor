@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.more.beans.core.factory;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import org.more.beans.BeanFactory;
@@ -33,8 +32,8 @@ import org.more.core.classcode.ClassEngine.BuilderMode;
  * <br/><br/>该方式需要beans配置{@link CreateTypeEnum}属性为Factory，并且提供对象创建工厂时所依赖的工厂对象以及工厂方法。
  * 如果bean配置了aop或者附加接口实现则工厂bean返回的对象将由这个子系统创建一个这个对象的子类，并且以静态代理方式在代理类上实现aop以及附加接口实现。
  * 此时aop所能拦截到的方法与classcode工具的Propxt方式相同（私有和保护方法将不受到aop影响，如果是new方式则可以受到影响）。
- * Date : 2009-11-12
- * @author 赵永春
+ * @version 2009-11-12
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class FactoryCreateEngine extends CreateEngine {
     //========================================================================================Field
@@ -118,7 +117,7 @@ public class FactoryCreateEngine extends CreateEngine {
         }
     }
     /** 配置ClassEngine，的接口实现以及AOP。 */
-    private void configurationImpl_AOP(ClassEngine engine, BeanDefinition definition, Object[] params, BeanFactory context) throws ClassNotFoundException, IOException {
+    private void configurationImpl_AOP(ClassEngine engine, BeanDefinition definition, Object[] params, BeanFactory context) throws Exception {
         ClassLoader loader = context.getBeanClassLoader();
         {
             //---------------------------------------------------------------Impl

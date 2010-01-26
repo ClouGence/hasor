@@ -16,14 +16,14 @@
 package org.more.beans.info;
 /**
  * 所要附加实现的接口及其代理bean名称配置。
- * <br/>Date : 2009-11-18
- * @author 赵永春
+ * @version 2009-11-18
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class BeanInterface extends Prop {
     //========================================================================================Field
     /**  */
     private static final long serialVersionUID = -1660901774837550451L;
-    private String            refType          = null;                 //接口类型引用Bean名，配置了typeRefBean属性则可以不配置type属性。
+    private String            refType          = null;                 //接口类型引用Bean名，配置了refType属性则可以不配置type属性。
     private String            delegateRefBean  = null;                 //附加接口实现时接口处理委托bean名。
     //==========================================================================================Job
     /**获取接口类型引用Bean名，配置了typeRefBean属性则可以不配置type属性。*/

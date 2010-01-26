@@ -23,19 +23,19 @@ import org.more.beans.info.BeanInterface;
 import org.more.beans.info.BeanProperty;
 import org.more.beans.info.CreateTypeEnum;
 import org.more.beans.info.IocTypeEnum;
-import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.XmlContextStack;
 import org.more.beans.resource.xml.TagProcess;
 import org.more.util.StringConvert;
 /**
  * 该类负责处理bean标签<br/>
  * id="" name="test_1" type="int" singleton="true" iocType="Export" export-refBean="abc" lazyInit="true" aopFilters-refBean="xxx,xxx,xxx"
- * Date : 2009-11-21
- * @author 赵永春
+ * @version 2009-11-21
+ * @author 赵永春 (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
 public class Tag_Bean extends TagProcess {
     @Override
-    public void doStartEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
+    public void doStartEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
         //
         BeanDefinition bean = new BeanDefinition();
         bean.setCreateType(CreateTypeEnum.New);
@@ -75,7 +75,7 @@ public class Tag_Bean extends TagProcess {
         context.context = bean;
     }
     @Override
-    public void doEndEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
+    public void doEndEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
         BeanDefinition bean = (BeanDefinition) context.context;
         /* 属性配置：tag_Property*/
         if (context.containsKey("tag_Property") == true) {
@@ -101,24 +101,6 @@ public class Tag_Bean extends TagProcess {
             BeanInterface[] propertys = (BeanInterface[]) this.toArray(al, BeanInterface.class);
             bean.setImplImplInterface(propertys);
         }
-        //        /*------------------*/
-        //        ContextStack parent = context.getParent();
-        //        //保存所有bean的名称
-        //        ArrayList allBeanNS = (ArrayList) parent.get("allBeanNS");
-        //        allBeanNS.add(bean.getName());
-        //        //保存配置lazy属性为false，并且配置了单态为true的bean名称。
-        //        ArrayList initBeanNS = (ArrayList) parent.get("initBeanNS");
-        //        if (bean.isLazyInit() == false && bean.isSingleton() == true)
-        //            initBeanNS.add(bean.getName());
-        //        //如果静态缓存中还有地方就保存一份。
-        //        Integer staticCatch = (Integer) parent.get("staticCatch");
-        //        Integer staticCatchCurrent = (Integer) parent.get("staticCatchCurrent");
-        //        if (staticCatchCurrent < staticCatch) {
-        //            ArrayList al = (ArrayList) parent.context;
-        //            al.add(context.context);
-        //            staticCatchCurrent++;
-        //            parent.setAttribute("staticCatchCurrent", staticCatchCurrent);
-        //        }
     }
     private Object[] toArray(ArrayList al, Class<?> toType) {
         Object array = Array.newInstance(toType, al.size());

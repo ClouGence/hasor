@@ -15,9 +15,9 @@
  */
 package org.more.submit;
 /**
- * action过滤器链传递接口，使用该接口的方法可以执行action过滤器链的下一个环节直至最终的Action调用。
- * <br/>Date : 2009-11-27
- * @author 赵永春
+ * action过滤器链传递类，使用该接口的方法可以执行action过滤器链的下一个环节直至最终的Action调用。
+ * @version 2009-11-27
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class FilterChain {
     //========================================================================================Field
@@ -43,8 +43,8 @@ public class FilterChain {
      */
     public Object doInvokeFilter(ActionStack stack) throws Throwable {
         if (this.nextFilterChain != null)
-            return this.thisFilter.doActionFilter(stack, nextFilterChain);
+            return this.thisFilter.doActionFilter(stack, nextFilterChain);//如果是action过滤器链中间的一个环节则执行下一个环节。
         else
-            return this.targetInvoke.invoke(stack);
+            return this.targetInvoke.invoke(stack);//如果是过滤器链的最后一个环节则执行目标action方法。
     }
 }

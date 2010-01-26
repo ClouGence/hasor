@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.xml.stream.XMLStreamReader;
 import org.more.beans.info.BeanDefinition;
-import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.XmlContextStack;
 import org.more.beans.resource.xml.TagProcess;
 import org.more.beans.resource.xml.TaskProcess;
 import org.more.util.attribute.AttBase;
@@ -32,8 +32,8 @@ import org.more.util.attribute.AttBase;
  * (int)staticCache默认值10，表示静态缓存大小。<br/>
  * (HashMap<String, BeanDefinition>)beanMap，表示静态缓存。<br/>
  * (int)dynamicCache默认值50，表示动态缓存大小。
- * <br/>Date : 2009-11-24
- * @author 赵永春
+ * @version 2009-11-24
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class Task_Init implements TaskProcess {
     private AttBase                         result             = new AttBase();
@@ -45,6 +45,15 @@ public class Task_Init implements TaskProcess {
     @Override
     public void setConfig(Object[] params) {}
     @Override
+    public void init() {
+        this.result = new AttBase();
+        currentStaticCatch = 0;
+        maxStaticCatch = 10;
+        beanMap = new HashMap<String, BeanDefinition>();
+        initBean = new ArrayList<String>(0);
+        allNames = new ArrayList<String>(0);
+    }
+    @Override
     public Object getResult() {
         result.setAttribute("beanList", beanMap);
         result.setAttribute("initBean", initBean);
@@ -52,7 +61,7 @@ public class Task_Init implements TaskProcess {
         return result;
     }
     @Override
-    public void onEvent(ContextStack elementStack, String onXPath, int eventType, XMLStreamReader reader, Map<String, TagProcess> tagProcessMap) {
+    public void onEvent(XmlContextStack elementStack, String onXPath, int eventType, XMLStreamReader reader, Map<String, TagProcess> tagProcessMap) throws Exception {
         String tagName = elementStack.getTagName();
         TagProcess process = tagProcessMap.get(tagName);
         /*------------*/
@@ -75,7 +84,7 @@ public class Task_Init implements TaskProcess {
                         beanMap.put(bean.getName(), bean);//静态缓存
                         currentStaticCatch++;
                     }
-                if (bean.isLazyInit() == false && bean.isSingleton() == true)
+                if (bean.isLazyInit() == false)
                     initBean.add(bean.getName());//initBeans
                 allNames.add(bean.getName());
             }

@@ -17,8 +17,8 @@ package org.more.core.copybean.type;
 import org.more.core.copybean.ConvertType;
 /**
  * CopyBean处理Object类型转换的辅助类。
- * Date : 2009-5-23
- * @author 赵永春
+ * @version 2009-5-23
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class ObjectConvertType extends ConvertType {
     /**  */

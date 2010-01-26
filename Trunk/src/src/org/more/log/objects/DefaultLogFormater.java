@@ -18,8 +18,8 @@ import java.util.Date;
 import org.more.log.ILogFormater;
 /**
  * 默认格式化数据,输出时间+线程号+时间
- * Date : 2009-5-13
- * @author 赵永春
+ * @version 2009-5-13
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class DefaultLogFormater implements ILogFormater {
     public String getFormatMessage(String level, String msg) {

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.more.beans.core.factory;
-import java.io.IOException;
 import java.util.HashMap;
 import org.more.beans.BeanFactory;
 import org.more.beans.info.BeanDefinition;
@@ -24,14 +23,14 @@ import org.more.core.classcode.ClassEngine;
 import org.more.core.classcode.MethodDelegate;
 /**
  * CreateEngine的子类分别实现了{@link org.more.beans.info.CreateTypeEnum}枚举中定义的创建方式。
- * Date : 2009-11-15
- * @author 赵永春
+ * @version 2009-11-15
+ * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class CreateEngine {
     /***/
     public abstract Object newInstance(BeanDefinition definition, Object[] params, BeanFactory context) throws Exception;
     /** 根据{@link BeanDefinition}获取其类的Class对象，如果配置了AOP或者附加接口。则返回编译之后的Class对象。 */
-    protected Class<?> getClassType(BeanDefinition definition, Object[] params, BeanFactory context) throws ClassNotFoundException, IOException {
+    protected Class<?> getClassType(BeanDefinition definition, Object[] params, BeanFactory context) throws Exception {
         ClassLoader loader = context.getBeanClassLoader();
         ClassEngine engine = new ClassEngine(loader);
         engine.setSuperClass(loader.loadClass(definition.getPropType()));

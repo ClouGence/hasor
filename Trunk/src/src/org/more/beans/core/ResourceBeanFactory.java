@@ -16,7 +16,6 @@
 package org.more.beans.core;
 import java.util.HashMap;
 import java.util.List;
-import org.more.InvokeException;
 import org.more.NoDefinitionException;
 import org.more.TypeException;
 import org.more.beans.BeanFactory;
@@ -38,9 +37,9 @@ import org.more.util.attribute.KeepAttDecorator;
  * 那么这些已经生成的新类类型由于它们被缓存在BeanResource接口中当再次调用它们时他们的类装载器层次结构已经不包含BeanFactory的新的类装载。因此在
  * 接下来的create或者ioc过程我不确定一定会安全执行。另外在more中所有类型的装载（包括属性类型的装载）都是通过BeanFactory的类装载器进行。
  * 使用这个特性我们的bean可以完全来源于网络或者其他地方而不必在当前系统的ClassPath中。
- * </font><br/>
- * Date : 2009-11-17
- * @author 赵永春
+ * </font>
+ * @version 2009-11-17
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class ResourceBeanFactory implements BeanFactory {
     /**  */
@@ -66,11 +65,21 @@ public class ResourceBeanFactory implements BeanFactory {
     /**
      * 创建ResourceBeanFactory类型对象，创建该对象必须指定resource参数否则回引发NullPointerException异常。
      * @param resource ResourceBeanFactory所使用的bean资源。
+     */
+    public ResourceBeanFactory(BeanResource resource) throws Exception {
+        this(resource, null);
+    }
+    /**
+     * 创建ResourceBeanFactory类型对象，创建该对象必须指定resource参数否则回引发NullPointerException异常。
+     * @param resource ResourceBeanFactory所使用的bean资源。
      * @param loader ResourceBeanFactory所使用的ClassLoader，如果给定null则采取Thread.currentThread().getContextClassLoader();
      */
-    public ResourceBeanFactory(BeanResource resource, ClassLoader loader) {
+    public ResourceBeanFactory(BeanResource resource, ClassLoader loader) throws Exception {
         if (resource == null)
             throw new NullPointerException("参数resource不能为空。");
+        else if (resource.isInit() == false)
+            resource.init();
+        //确定使用哪个loader。
         if (loader == null)
             this.loader = Thread.currentThread().getContextClassLoader();
         this.resource = resource;
@@ -78,12 +87,12 @@ public class ResourceBeanFactory implements BeanFactory {
         this.propParser = new MainPropertyParser(this);//属性解析器，专门负责解析BeanProperty属性对象。
         this.createFactory = new CreateFactory(this.propParser);//负责对象创建
         this.injectionFactory = new InjectionFactory(this.propParser);//负责对象依赖注入
-        //
+        //创建环境属性对象，并且加装保持装饰器。
         KeepAttDecorator kad = new KeepAttDecorator(new AttBase());
         this.attribute = kad;
-        kad.setAttribute("this", this);
-        kad.setKeep("this", true);
-        init();
+        kad.setAttribute("this", this);//设置关键字this。
+        kad.setKeep("this", true);//设置关键字this为保持属性，不可更改。
+        init();//执行初始化方法调用。
     }
     //==========================================================================================Job
     /**该方法主要用于Factory方式处理Ioc时候无法获取属性类型解析器对象而设立。*/
@@ -91,24 +100,25 @@ public class ResourceBeanFactory implements BeanFactory {
         return propParser;
     }
     /**清空所有Bean缓存，并且重新装载lazyInit属性为false的bean。*/
-    public void reload() {
-        clearBeanCache();
-        this.init();
+    public void reload() throws Exception {
+        clearBeanCache();//清空缓存
+        this.init();//重新初始化
     }
     /**清空所有Bean缓存并且通知resource对象清空缓存，该方法不会导致重新装载配置了lazyInit属性的bean。*/
     public void clearBeanCache() {
-        this.singletonBeanCache.clear();
-        injectionFactory.run();
+        this.singletonBeanCache.clear();//清空单态缓存
+        injectionFactory.run();//执行InjectionFactory对象的任务，它的任务功能是清理缓存。
         if (this.resource.isCacheBeanMetadata() == true)
-            this.resource.clearCache();
+            this.resource.clearCache();//清理元信息缓存
     }
     /**初始化设置了lazyInit属性为false的bean并且这些bean一定是单态的。*/
-    protected void init() {
+    protected void init() throws Exception {
         List<String> initBeanNames = this.resource.getStrartInitBeanDefinitionNames();
         if (initBeanNames == null)
             return;
         for (String initBN : initBeanNames)
-            this.singletonBeanCache.put(initBN, this.getBean(initBN));
+            if (this.resource.isSingleton(initBN) == true)
+                this.singletonBeanCache.put(initBN, this.getBean(initBN));
     }
     @Override
     public boolean containsBean(String name) {
@@ -126,18 +136,14 @@ public class ResourceBeanFactory implements BeanFactory {
         return obj;
     }
     @Override
-    public Object getBean(String name, Object... objects) {
-        try {
-            if (singletonBeanCache.containsKey(name) == true)
-                return singletonBeanCache.get(name);
-            BeanDefinition definition = this.resource.getBeanDefinition(name);
-            Object obj = getBeanForciblyo(name, definition, objects);
-            if (definition.isSingleton() == true)
-                this.singletonBeanCache.put(name, obj);
-            return obj;
-        } catch (Exception e) {
-            throw new InvokeException(e);
-        }
+    public Object getBean(String name, Object... objects) throws Exception {
+        if (singletonBeanCache.containsKey(name) == true)
+            return singletonBeanCache.get(name);
+        BeanDefinition definition = this.resource.getBeanDefinition(name);
+        Object obj = getBeanForciblyo(name, definition, objects);
+        if (definition.isSingleton() == true)
+            this.singletonBeanCache.put(name, obj);
+        return obj;
     }
     @Override
     public Class<?> getBeanType(String name) {

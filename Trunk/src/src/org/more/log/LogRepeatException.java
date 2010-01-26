@@ -16,8 +16,8 @@
 package org.more.log;
 /**
  * 日志对象重复定义
- * Date : 2009-5-13
- * @author 赵永春
+ * @version 2009-5-13
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class LogRepeatException extends LogException {
     private static final long serialVersionUID = 8629440806807181417L;

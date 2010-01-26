@@ -22,8 +22,8 @@ import org.more.util.StringConvert;
 import org.more.web.page.PageInfo;
 /**
  * 
- * Date : 2009-6-19
- * @author 赵永春
+ * @version 2009-6-19
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class AutoPageInfo extends PageInfo {
     //下面5个属性是作为分页的每项必须包含的数据

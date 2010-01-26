@@ -19,10 +19,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * 
- * Date : 2009-11-5
- * @author Administrator
+ * 配置该属性的注入数据。该参数只支持基本数据类型和四种引用类型，不支持List,Map,Set,Array数据类型。
+ * @version 2010-1-18
+ * @author 赵永春 (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.TYPE })
-public @interface Property {}
+@Target( { ElementType.FIELD })
+public @interface Property {
+    /**基本数据类型的值*/
+    public String value() default "";
+    /**引用类型：PRV_ContextAtt{#name}、PRV_Mime{$name}、PRV_Bean.name、PRV_Param{@number}*/
+    public String refValue() default "";
+}

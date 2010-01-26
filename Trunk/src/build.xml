@@ -4,8 +4,9 @@
 	<!-- ================================================================ -->
 	<property name="src" location="src" />
 	<property name="bin" location="bin" />
-	<property name="varsion" value="1.0.0.091223_alpha2" />
-	<property name="outjar" location="../bin/more_${varsion}.jar" />
+	<!-- 1.0.0.091223_alpha3 -->
+	<property name="varsion" value="1.0.x_alpha" />
+	<property name="outjar" location="more_${varsion}.jar" />
 	<property name="outDoc" location="../docs/api" />
 	<!-- ================================================================ -->
 	<path id="class_path">
@@ -29,9 +30,11 @@
 			<exclude name="**/doc-files/*.*" />
 			<exclude name="**/package.html" />
 		</jar>
+		<!--
 		<echo>导出源代码中的Doc...【${outDoc}】</echo>
 		<javadoc destdir="${outDoc}" encoding="gbk" docencoding="gbk" doctitle="More API">
 			<packageset dir="${src}" />
 		</javadoc>
+		-->
 	</target>
 </project>

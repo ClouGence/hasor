@@ -18,8 +18,8 @@ package org.more.core.task.task;
  * 循环执行任务，当有需要重复执行的需求就可以使用LoopTask类型任务。LoopTask可以创建执行指定次数的任务
  * 也可以用于创建无限循环的任务，LoopTask通过灵活的配置任务执行次数来达到这些目的。当不希望任务被执行时
  * 可以设置任务执行次数为0。LoopTask类的默认执行次数是无限次。
- * Date : 2009-5-15
- * @author 赵永春
+ * @version 2009-5-15
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class LoopTask extends ItemTask {
     /**  */

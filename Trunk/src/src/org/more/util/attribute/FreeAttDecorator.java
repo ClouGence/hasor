@@ -17,8 +17,8 @@ package org.more.util.attribute;
 import org.more.NoDefinitionException;
 /**
  * 自由的属性访问器。该接口进一步扩展了ExtAttribute接口，并支持属性替换模式的更换操作。使得在使用属性的过程中可以自由的切换属性替换策略。
- * <br/>Date : 2009-12-3
- * @author 赵永春
+ * @version 2009-12-3
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class FreeAttDecorator extends ExtAttDecorator {
     //==================================================================================Constructor

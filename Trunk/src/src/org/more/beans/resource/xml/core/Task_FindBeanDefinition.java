@@ -17,7 +17,7 @@ package org.more.beans.resource.xml.core;
 import java.util.Map;
 import javax.xml.stream.XMLStreamReader;
 import org.more.beans.info.BeanDefinition;
-import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.XmlContextStack;
 import org.more.beans.resource.xml.TagProcess;
 import org.more.beans.resource.xml.TaskProcess;
 /**
@@ -25,14 +25,17 @@ import org.more.beans.resource.xml.TaskProcess;
  * 测试是否存在某个bean的任务。<br/>
  * 任务名：findBean<br/>
  * 任务参数：1.String要查找的bean名<br/>
- * 返回值：属性值<br/>
- * <br/>Date : 2009-11-24
- * @author 赵永春
+ * 返回值：属性值
+ * @version 2009-11-24
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class Task_FindBeanDefinition implements TaskProcess {
     private String findName = null;
     private Object result   = null;
-    //
+    @Override
+    public void init() {
+        this.result = null;
+    }
     @Override
     public void setConfig(Object[] params) {
         this.findName = (String) params[0];
@@ -42,7 +45,7 @@ public class Task_FindBeanDefinition implements TaskProcess {
         return result;
     }
     @Override
-    public void onEvent(ContextStack elementStack, String onXPath, int eventType, XMLStreamReader reader, Map<String, TagProcess> tagProcessMap) {
+    public void onEvent(XmlContextStack elementStack, String onXPath, int eventType, XMLStreamReader reader, Map<String, TagProcess> tagProcessMap) throws Exception {
         String tagName = elementStack.getTagName();
         TagProcess process = tagProcessMap.get(tagName);
         /*------------*/

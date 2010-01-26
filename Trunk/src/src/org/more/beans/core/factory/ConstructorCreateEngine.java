@@ -26,8 +26,8 @@ import org.more.core.classcode.ClassEngine;
  * 寻找相关构造方法并且执行其构造方法（注意：默认不带参的构造方法可以不配置）。在首次找到相关类和构造方法之后这些信息会被缓存在{@link BeanDefinition}对象中。<br/>
  * 有关AOP或者附加接口实现。如果New方式创建的类配置了AOP或者接口实现则性能会大大下降，但是这个是在10万~100万个不同Class类对象上的测试结果，测试数据
  * 在下面会有介绍。在AOP或者附加接口配置下新的类对象与classcode工具的Super方式相同（私有和保护方法将不受到aop影响，如果是new方式则可以受到影响）。
- * Date : 2009-11-14
- * @author 赵永春
+ * @version 2009-11-14
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class ConstructorCreateEngine extends CreateEngine {
     //========================================================================================Field

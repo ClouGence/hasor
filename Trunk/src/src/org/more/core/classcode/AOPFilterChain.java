@@ -18,8 +18,8 @@ package org.more.core.classcode;
  * 代表过滤器链的一个环节接口，当{@link AOPInvokeFilter}接口的doFilter方法被执行时{@link AOPFilterChain}类型参数对象
  * 表示这个过滤器所处过滤器链的下一个过滤器资源。本接口的doInvokeFilter方法表示执行过滤器资源，
  * 下一个过滤器资源可能是过滤器链的下一个过滤器元素也可能是真实的资源方法。对于classcode最终资源就是目标方法。
- * Date : 2009-10-30
- * @author 赵永春
+ * @version 2009-10-30
+ * @author 赵永春 (zyc@byshell.org)
  */
 public interface AOPFilterChain {
     /**

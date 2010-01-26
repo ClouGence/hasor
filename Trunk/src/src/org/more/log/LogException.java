@@ -16,8 +16,8 @@
 package org.more.log;
 /**
  * »’÷æ“Ï≥£
- * Date : 2009-5-13
- * @author ’‘”¿¥∫
+ * @version 2009-5-13
+ * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class LogException extends RuntimeException {
     private static final long serialVersionUID = 8222826886737695884L;

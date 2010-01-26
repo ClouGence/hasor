@@ -15,9 +15,9 @@
  */
 package org.more.submit;
 /**
- * 该类负责提供ActionFilter接口的ActionInvoke接口形式。
- * <br/>Date : 2009-12-1
- * @author 赵永春
+ * 该类负责提供{@link ActionFilter ActionFilter接口}的ActionInvoke接口形式。
+ * @version 2009-12-1
+ * @author 赵永春 (zyc@byshell.org)
  */
 class FilterActionInvoke implements ActionInvoke {
     //========================================================================================Field
@@ -29,6 +29,6 @@ class FilterActionInvoke implements ActionInvoke {
     //==========================================================================================Job
     @Override
     public Object invoke(ActionStack stack) throws Throwable {
-        return filterChain.doInvokeFilter(stack);
+        return filterChain.doInvokeFilter(stack);//执行过滤器
     }
 }

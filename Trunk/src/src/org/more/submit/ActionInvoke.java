@@ -16,8 +16,8 @@
 package org.more.submit;
 /**
  * 用于表示一个可以调用的submit3.0对象，可以调用的对象一般分为两类一类是action过滤器，另一类是action所代表的目标方法。
- * <br/>Date : 2009-12-1
- * @author 赵永春
+ * @version 2009-12-1
+ * @author 赵永春 (zyc@byshell.org)
  */
 public interface ActionInvoke {
     /**

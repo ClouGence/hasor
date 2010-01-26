@@ -17,7 +17,8 @@ package org.more.beans.core.injection;
 import org.more.beans.core.ResourceBeanFactory;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.IocTypeEnum;
-/**FactIoc
+/**
+ * FactIoc
  * bean注入处理器，more.beans是通过该接口实现对属性进行注入控制。在more.beans中预定义了
  * {@link IocTypeEnum#Export Export}、{@link IocTypeEnum#Fact Fact}、{@link IocTypeEnum#Ioc Ioc}三种属性注入方式。
  * <br/><br/>Export方式：<br/>使用Export方式可以使开发人员参与属性注入过程，在Export方式下more.beans不会对属性做任何注入操作。
@@ -31,9 +32,9 @@ import org.more.beans.info.IocTypeEnum;
  * 这可以证明在Fact方式下会有很好的属性注入运行效率，但是Fact也会对每个要求Fact的bean生成一个注入器。
  * 这也就是说在fact方式下会比ioc方式增加少量内存消耗。生成的注入器被保存在{@link BeanDefinition}的属性中。
  * 只有{@link BeanDefinition}对象被缓存才有上述运行效率，否则fact的效率可能远远不足ioc。
- * <br/><br/>Ioc方式：<br/>传统的注入方式，使用java.lang.reflect包中的类进行反射调用来实现依赖注入。Ioc方式比较Fact方式运行效率要慢的多。<br/>
- * <br/>Date : 2009-11-7
- * @author 赵永春
+ * <br/><br/>Ioc方式：<br/>传统的注入方式，使用java.lang.reflect包中的类进行反射调用来实现依赖注入。Ioc方式比较Fact方式运行效率要慢的多。
+ * @version 2009-11-7
+ * @author 赵永春 (zyc@byshell.org)
  */
 public interface Injection {
     /**

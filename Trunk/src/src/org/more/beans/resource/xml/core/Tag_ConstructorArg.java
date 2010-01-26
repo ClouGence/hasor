@@ -18,21 +18,21 @@ import java.util.ArrayList;
 import javax.xml.stream.XMLStreamReader;
 import org.more.beans.info.BeanProp;
 import org.more.beans.info.BeanProperty;
-import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.XmlContextStack;
 /**
- * 该类负责解析constructor-arg标签
- * Date : 2009-11-22
- * @author 赵永春
+ * 该类负责解析constructor-arg标签。
+ * @version 2009-11-22
+ * @author 赵永春 (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
 public class Tag_ConstructorArg extends Tag_Property {
     @Override
-    public void doStartEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
+    public void doStartEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
         this.tagName = "constructor-arg";
         super.doStartEvent(xPath, xmlReader, context);
     }
     @Override
-    public void doEndEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
+    public void doEndEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
         //一、获取堆栈的父堆栈，bean标签堆栈。
         ArrayList elementList = (ArrayList) context.get("tag_element");
         if (elementList == null || elementList.size() == 0) {} else {
@@ -41,7 +41,7 @@ public class Tag_ConstructorArg extends Tag_Property {
             prop.setRefValue(bp);
         }
         //二、加入到bean的属性中。
-        ContextStack parent = context.getParent();
+        XmlContextStack parent = context.getParent();
         ArrayList propertyList = (ArrayList) parent.get("tag_ConstructorArg");
         if (propertyList == null) {
             propertyList = new ArrayList();

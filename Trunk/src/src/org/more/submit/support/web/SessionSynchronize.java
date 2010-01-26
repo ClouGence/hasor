@@ -14,41 +14,24 @@
  * limitations under the License.
  */
 package org.more.submit.support.web;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import javax.servlet.http.HttpSession;
 import org.more.submit.Session;
+import org.more.submit.support.web.scope.HttpSessionScope;
 /**
  * 负责与HttpSession同步的桥梁。
- * Date : 2009-12-4
- * @author 赵永春
+ * @version 2009-12-4
+ * @author 赵永春 (zyc@byshell.org)
  */
-class SessionSynchronize implements Session {
+class SessionSynchronize extends HttpSessionScope implements Session {
     //========================================================================================Field
     private static final long serialVersionUID = -7195947568750693895L;
     private HttpSession       session;
     //==================================================================================Constructor
     public SessionSynchronize(HttpSession session) {
+        super(session);
         this.session = session;
     }
     //==========================================================================================Job
-    @Override
-    public void clearAttribute() {
-        String[] ns = this.getAttributeNames();
-        for (int i = 0; i < ns.length; i++)
-            this.removeAttribute(ns[i]);
-    }
-    @Override
-    public String[] getAttributeNames() {
-        ArrayList<String> al = new ArrayList<String>(0);
-        Enumeration<?> attEnum = this.session.getAttributeNames();
-        while (attEnum.hasMoreElements())
-            al.add(attEnum.nextElement().toString());
-        //
-        String[] ns = new String[al.size()];
-        al.toArray(ns);
-        return ns;
-    }
     @Override
     public long getCreateTime() {
         return this.session.getCreationTime();
@@ -56,21 +39,5 @@ class SessionSynchronize implements Session {
     @Override
     public String getSessionID() {
         return this.session.getId();
-    }
-    @Override
-    public boolean contains(String name) {
-        return (this.session.getAttribute(name) == null) ? false : true;
-    }
-    @Override
-    public Object getAttribute(String name) {
-        return this.session.getAttribute(name);
-    }
-    @Override
-    public void removeAttribute(String name) {
-        this.session.removeAttribute(name);
-    }
-    @Override
-    public void setAttribute(String name, Object value) {
-        this.session.setAttribute(name, value);
     }
 }

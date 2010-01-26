@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 package org.more.submit.casing.spring;
-import java.util.ArrayList;
+import org.more.NoDefinitionException;
 import org.more.submit.AbstractActionContext;
-import org.more.submit.ActionFilter;
+import org.more.submit.ActionObjectFactory;
 import org.more.util.StringConvert;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.support.AbstractApplicationContext;
 /**
- * AbstractActionContext接口Spring的支持。
- * <br/>Date : 2009-12-2
- * @author 赵永春
+* 提供ActionContext接口的Spring支持。
+ * @version 2009-12-2
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class SpringActionContext extends AbstractActionContext {
     //========================================================================================Field
-    private AbstractApplicationContext      springContext = null;
-    private ConfigurableListableBeanFactory configContext = null;
+    private AbstractApplicationContext      springContext;
+    private ConfigurableListableBeanFactory configContext;
     //==================================================================================Constructor
     public SpringActionContext(AbstractApplicationContext springContext) {
         this.springContext = springContext;
@@ -37,39 +37,11 @@ public class SpringActionContext extends AbstractActionContext {
     }
     //==========================================================================================Job
     @Override
-    protected Object getActionBean(String actionName) {
-        return this.springContext.getBean(actionName);
+    protected boolean testActionName(String name) throws NoDefinitionException {
+        return this.configContext.containsBean(name);
     }
     @Override
-    protected ActionFilter[] getPrivateFilterBean(String actionName) {
-        BeanDefinition beanDefinition = this.configContext.getBeanDefinition(actionName);
-        Object privateFilters = beanDefinition.getAttribute("actionFilters");
-        if (privateFilters == null)
-            return null;
-        String[] privateFiltersStr = privateFilters.toString().split(",");
-        ActionFilter[] pFilter = new ActionFilter[privateFiltersStr.length];
-        for (int i = 0; i < privateFiltersStr.length; i++)
-            pFilter[i] = (ActionFilter) this.springContext.getBean(privateFiltersStr[i]);
-        return pFilter;
-    }
-    @Override
-    protected ActionFilter[] getPublicFilterBean(String actionName) {
-        ArrayList<ActionFilter> ns = new ArrayList<ActionFilter>(0);
-        String[] beanNames = this.springContext.getBeanDefinitionNames();
-        for (String n : beanNames) {
-            Object strIsPublicFilter = this.configContext.getBeanDefinition(n).getAttribute("isPublicFilter");
-            if (strIsPublicFilter == null || strIsPublicFilter.toString().equals("true") == false) {} else
-                ns.add((ActionFilter) this.springContext.getBean(n));
-        }
-        //
-        ActionFilter[] nsArray = new ActionFilter[ns.size()];
-        ns.toArray(nsArray);
-        return nsArray;
-    }
-    @Override
-    public boolean containsAction(String actionName) {
-        if (this.springContext.containsBeanDefinition(actionName) == false)
-            return false;
+    protected boolean testActionMark(String actionName) throws NoDefinitionException {
         BeanDefinition bd = this.configContext.getBeanDefinition(actionName);
         Object objs = bd.getAttribute("isAction");
         String is = (objs == null) ? "false" : objs.toString();
@@ -79,21 +51,9 @@ public class SpringActionContext extends AbstractActionContext {
             return true;
     }
     @Override
-    public String[] getActionNames() {
-        ArrayList<String> ns = new ArrayList<String>(0);
-        String[] beanNames = this.springContext.getBeanDefinitionNames();
-        for (String n : beanNames) {
-            Object strIsAction = this.configContext.getBeanDefinition(n).getAttribute("isAction");
-            if (strIsAction == null || strIsAction.toString().equals("true") == false) {} else
-                ns.add(n);
-        }
-        //
-        String[] nsArray = new String[ns.size()];
-        ns.toArray(nsArray);
-        return nsArray;
+    protected ActionObjectFactory createActionObjectFactory() {
+        return new SpringActionObjectFactory(this.springContext, this.configContext);
     }
     @Override
-    public Class<?> getActionType(String actionName) {
-        return this.springContext.getType(actionName);
-    }
+    protected void initContext() {}
 }

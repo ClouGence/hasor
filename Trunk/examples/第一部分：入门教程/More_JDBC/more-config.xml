@@ -1,4 +1,9 @@
-<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="beans-schema.xsd">
+<beans staticCache="10" dynamicCache="50"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="beans-schema.xsd"
+	xsi:schemaLocation="http://more.byshell.org/schema/anno anno-schema.xsd"
+	xmlns:anno="http://more.byshell.org/schema/anno">
+
 	<!-- c3p0数据源 -->
 	<bean name="sys_databaseSource" type="com.mchange.v2.c3p0.ComboPooledDataSource">
 		<property name="driverClass" type="String" value="net.sourceforge.jtds.jdbc.Driver"/>

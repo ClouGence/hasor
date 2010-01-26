@@ -16,18 +16,18 @@
 package org.more.beans.resource.xml.core;
 import javax.xml.stream.XMLStreamReader;
 import org.more.DoesSupportException;
-import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.XmlContextStack;
 import org.more.beans.resource.xml.TagProcess;
 import org.more.util.attribute.IAttribute;
 /**
  * 该类负责处理meta标签。
- * <br/>Date : 2009-11-23
- * @author 赵永春
+ * @version 2009-11-23
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class Tag_Meta extends TagProcess {
     @Override
-    public void doStartEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
-        ContextStack parent = context.getParent();
+    public void doStartEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
+        XmlContextStack parent = context.getParent();
         if (parent.context instanceof IAttribute == true) {
             IAttribute att = (IAttribute) parent.context;
             String key = xmlReader.getAttributeValue(null, "key");

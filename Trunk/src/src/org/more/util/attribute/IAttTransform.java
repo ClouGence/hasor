@@ -17,8 +17,8 @@ package org.more.util.attribute;
 import java.util.Properties;
 /**
  * 属性类型转换接口，如果属性接口实现类实现了该接口就具备了与其他属性类型进行转换的功能。
- * Date : 2009-5-1
- * @author 赵永春
+ * @version 2009-5-1
+ * @author 赵永春 (zyc@byshell.org)
  */
 public interface IAttTransform {
     /**

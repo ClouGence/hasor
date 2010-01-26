@@ -16,8 +16,8 @@
 package org.more.beans.info;
 /**
  * 负责封装bean定义中有关数组属性的信息。
- * <br/>Date : 2009-11-18
- * @author 赵永春
+ * @version 2009-11-18
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class PropArray extends BeanProp {
     //========================================================================================Field

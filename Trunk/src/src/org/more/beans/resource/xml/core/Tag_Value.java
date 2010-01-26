@@ -21,13 +21,13 @@ import javax.xml.stream.XMLStreamReader;
 import org.more.beans.info.BeanProp;
 import org.more.beans.info.PropRefValue;
 import org.more.beans.info.PropVarValue;
-import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.XmlContextStack;
 import org.more.beans.resource.xml.TagProcess;
 /**
  * 该类负责解析value标签。<br/>
  * id="" value="12" refValue="refBean|{#attName}|{@number}|{$mime}" type="int|byte|char|double|float|long|short|boolean|String"
- * <br/>Date : 2009-11-23
- * @author 赵永春
+ * @version 2009-11-23
+ * @author 赵永春 (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
 public class Tag_Value extends TagProcess {
@@ -37,7 +37,7 @@ public class Tag_Value extends TagProcess {
         return ma_tem.group(1);
     }
     @Override
-    public void doStartEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
+    public void doStartEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
         String var_id = xmlReader.getAttributeValue(null, "id");
         String var_type = xmlReader.getAttributeValue(null, "type");
         String refValue = xmlReader.getAttributeValue(null, "refValue");
@@ -81,7 +81,7 @@ public class Tag_Value extends TagProcess {
         context.context = p;
     }
     @Override
-    public void doCharEvent(String xPath, XMLStreamReader reader, ContextStack context) {
+    public void doCharEvent(String xPath, XMLStreamReader reader, XmlContextStack context) {
         Boolean bool = (Boolean) context.get("isValue");
         if (bool == null || bool == false) {} else {
             PropVarValue prop = (PropVarValue) context.context;
@@ -90,9 +90,9 @@ public class Tag_Value extends TagProcess {
         }
     }
     @Override
-    public void doEndEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
+    public void doEndEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
         /*---------------------*/
-        ContextStack parent = context.getParent();
+        XmlContextStack parent = context.getParent();
         //一、向父容器增加自身对象
         ArrayList elementList = (ArrayList) parent.get("tag_element");
         if (elementList == null) {

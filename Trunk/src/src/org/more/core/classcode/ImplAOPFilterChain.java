@@ -18,9 +18,9 @@ package org.more.core.classcode;
 * 过滤器链，生成的新类中所有AOP代理方法都会调用该类的doInvoke以触发方法调用动作。
 * 通过doInvoke方法进行AOP过滤器链的调用。
 * <br/><br/>在开发过程中开发人员不会碰触该类实例对象。
-* Date : 2009-10-30
-* @author 赵永春
-*/
+ * @version 2009-10-30
+ * @author 赵永春 (zyc@byshell.org)
+ */
 public class ImplAOPFilterChain implements AOPFilterChain {
     private AOPInvokeFilter thisFilter      = null; //表示过滤器链的当前过滤器。
     private AOPFilterChain  nextFilterChain = null; //过滤器链的下一个过滤器。
@@ -42,6 +42,8 @@ public class ImplAOPFilterChain implements AOPFilterChain {
             ClassEngine ce = (ClassEngine) target.getClass().getClassLoader();
             return this.thisFilter.doFilter(target, ce.aopMethods.get(methodDesc), args, this.nextFilterChain);
         } catch (Throwable e) {
+            if (e instanceof RuntimeException == true)
+                throw (RuntimeException) e;
             throw new RuntimeException(e);
         }
     }

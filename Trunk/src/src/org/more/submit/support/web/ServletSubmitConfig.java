@@ -18,11 +18,10 @@ import java.util.Enumeration;
 import javax.servlet.ServletConfig;
 import org.more.submit.Config;
 /**
- * ServletConfig对象到Config接口的转换类
- * Date : 2009-6-30
- * @author 赵永春
+ * ServletConfig对象到{@link Config Config接口}的转换类
+ * @version 2009-6-30
+ * @author 赵永春 (zyc@byshell.org)
  */
-@SuppressWarnings("unchecked")
 class ServletSubmitConfig implements Config {
     //========================================================================================Field
     private ServletConfig config = null;
@@ -40,7 +39,8 @@ class ServletSubmitConfig implements Config {
         return this.config.getInitParameter(name);
     }
     @Override
-    public Enumeration getInitParameterNames() {
+    @SuppressWarnings("unchecked")
+    public Enumeration<String> getInitParameterNames() {
         return this.config.getInitParameterNames();
     }
 }

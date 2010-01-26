@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 package org.more.beans.info;
-import org.more.beans.BeanContext;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**
  * 代表一个引用对象类型属性的定义。引用类型一共分为四类它们是【上下文属性、引用其他bean定义、引用创建参数、元信息属性】。
  * 引用类型的的propType属性值是随着引用对象变化的，因此PropRefValue不需要配置propType属性。
  * <br/><br/>一、上下文属性（PRV_ContextAtt）：<br/>
- *   bean环境对象只有实现了{@link IAttribute}接口或者是{@link BeanContext}接口的实现类时候才具有上下文属性，
+ *   bean环境对象只有实现了{@link IAttribute}接口时候才具有上下文属性，
  *   使用上下文属性注入时意味着在注入属性时属性值的寻找是到上下文对象的{@link IAttribute}接口中寻找。
  * <br/><br/>二、引用其他bean定义（PRV_Bean）：<br/>
  *   引用类型定义，该类注入主要用于注入一个由其他{@link BeanDefinition}定义的对象。而这个对象通常可以再次被其他{@link BeanDefinition}所引用。
@@ -31,8 +32,8 @@ import org.more.util.attribute.IAttribute;
  *   元信息属性引用的数据来源是在info配置中可以获得的最贴近的属性值，这些属性值都存放在{@link AttBase}对象中。info软件包中的所有类都已经继承了{@link AttBase}类型。
  *   如果在最近的{@link AttBase}中没有找到相关元信息则系统会自动向上一级结构中查找属性。如果还没找到则再次向上寻找一直寻找到<b>上下文属性</b>为止。
  *   <br/>提示：BeanDefinition的层次结构参看info软件包概述。
- * <br/>Date : 2009-11-18
- * @author 赵永春
+ * @version 2009-11-18
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class PropRefValue extends BeanProp {
     //========================================================================================Field
@@ -59,6 +60,48 @@ public class PropRefValue extends BeanProp {
         this.setRefType(refType);
     }
     //==========================================================================================Job
+    private static String find(String pStr, String string) {
+        Matcher ma_tem = Pattern.compile(pStr).matcher(string);
+        ma_tem.find();
+        return ma_tem.group(1);
+    }
+    public static PropRefValue getPropRefValue(String refValueString) {
+        //refBean|{#attName}|{@number}|{$mime}
+        String pStr_1 = "\\x20*\\{#(\\w+)\\}\\x20*";// 1.{#PRV_ContextAtt}
+        String pStr_2 = "\\x20*\\{@(\\d+)\\}\\x20*";// 2.{@PRV_Param}
+        String pStr_3 = "\\x20*\\{\\$(\\w+)\\}\\x20*";// 3.{$PRV_Mime}
+        PropRefValue propRef = new PropRefValue();
+        String var = refValueString;
+        if (isPRV_ContextAtt(refValueString) == true) {
+            propRef.setRefType(PropRefValue.PRV_ContextAtt);
+            var = find(pStr_1, var);
+        } else if (isPRV_Param(refValueString) == true) {
+            propRef.setRefType(PropRefValue.PRV_Param);
+            var = find(pStr_2, var);
+        } else if (isPRV_Mime(refValueString) == true) {
+            propRef.setRefType(PropRefValue.PRV_Mime);
+            var = find(pStr_3, var);
+        } else {
+            propRef.setRefType(PropRefValue.PRV_Bean);
+        }
+        propRef.setRefValue(var);
+        return propRef;
+    }
+    //{#PRV_ContextAtt}
+    public static boolean isPRV_ContextAtt(String refValueString) {
+        return refValueString.matches("\\x20*\\{#(\\w+)\\}\\x20*");
+    }
+    //{@PRV_Param}
+    public static boolean isPRV_Param(String refValueString) {
+        return refValueString.matches("\\x20*\\{@(\\d+)\\}\\x20*");
+    }
+    //{$PRV_Mime}
+    public static boolean isPRV_Mime(String refValueString) {
+        return refValueString.matches("\\x20*\\{\\$(\\w+)\\}\\x20*");
+    }
+    public static boolean isPRV_Bean(String refValueString) {
+        return !(isPRV_ContextAtt(refValueString) | isPRV_Param(refValueString) | isPRV_Mime(refValueString));
+    }
     /**获取引用值。*/
     public String getRefValue() {
         return refValue;

@@ -20,17 +20,17 @@ import javax.xml.stream.XMLStreamReader;
 import org.more.NoDefinitionException;
 import org.more.beans.info.BeanProp;
 import org.more.beans.info.PropSet;
-import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.XmlContextStack;
 import org.more.beans.resource.xml.TagProcess;
 /**
  * 该类负责解析set标签。
- * <br/>Date : 2009-11-23
- * @author 赵永春
+ * @version 2009-11-23
+ * @author 赵永春 (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
 public class Tag_Set extends TagProcess {
     @Override
-    public void doStartEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
+    public void doStartEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
         PropSet list = new PropSet();
         int attCount = xmlReader.getAttributeCount();
         for (int i = 0; i < attCount; i++) {
@@ -44,8 +44,8 @@ public class Tag_Set extends TagProcess {
         context.context = list;
     }
     @Override
-    public void doEndEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
-        ContextStack parent = context.getParent();
+    public void doEndEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
+        XmlContextStack parent = context.getParent();
         //一、向父容器增加自身对象
         ArrayList elementList = (ArrayList) parent.get("tag_element");
         if (elementList == null) {

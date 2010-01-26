@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 /**
  * ◊ÈΩ®Bean
- * Date : 2009-5-13
- * @author ’‘”¿¥∫
+ * @version 2009-5-13
+ * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class ComBean {
     private Map<String, CommandAttribut> command = new Hashtable<String, CommandAttribut>(0);

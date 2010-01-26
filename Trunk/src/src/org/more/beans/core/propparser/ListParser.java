@@ -23,8 +23,8 @@ import org.more.beans.info.BeanProperty;
 import org.more.beans.info.PropList;
 /**
  * 对类型为{@link PropList}的属性定义提供解析支持，如果{@link PropList}没有配置具体list类型则使用{@link ArrayList}作为{@link List}对象。 
- * <br/>Date : 2009-11-18
- * @author 赵永春
+ * @version 2009-11-18
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class ListParser implements PropertyParser {
     @Override

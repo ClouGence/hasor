@@ -26,8 +26,8 @@ import java.nio.channels.FileChannel.MapMode;
 import java.util.Date;
 /**
  * 文件拷贝类
- * Date : 2009-4-29(08年开发，09年整理)
- * @author 赵永春
+ * @version 2009-4-29(08年开发，09年整理)
+ * @author 赵永春 (zyc@byshell.org)
  */
 public final class FileCopy {
     /**

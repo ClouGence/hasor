@@ -18,8 +18,8 @@ import javax.servlet.jsp.JspException;
 import org.more.util.StringConvert;
 /**
  * 处理上一页的标签
- * Date : 2009-6-22
- * @author 赵永春
+ * @version 2009-6-22
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class PreviousPageTag extends BasePageTag {
     /**  */

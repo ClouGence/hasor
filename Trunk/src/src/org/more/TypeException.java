@@ -16,8 +16,8 @@
 package org.more;
 /**
  * 类型错误，出现该异常通常是在操作某些数据时该类数据不支持某些操作或者类型转换发生异常。
- * Date : 2009-7-7
- * @author 赵永春
+ * @version 2009-7-7
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class TypeException extends RuntimeException {
     /**  */

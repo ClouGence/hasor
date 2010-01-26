@@ -24,9 +24,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.more.log.ILogWrite;
 /**
- * 日志系统-向文件输出；默认缓存512B
- * Date : 2009-5-13
- * @author 赵永春
+ * 日志系统-向文件输出；默认缓存512B。
+ * @version 2009-5-13
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class FileLogWrite implements ILogWrite {
     private String               filename = "mylog"; // 文件名1073741824L

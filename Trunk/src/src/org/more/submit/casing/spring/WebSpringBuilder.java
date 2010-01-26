@@ -14,42 +14,57 @@
  * limitations under the License.
  */
 package org.more.submit.casing.spring;
+import java.io.File;
+import java.io.IOException;
+import java.util.Enumeration;
 import javax.servlet.ServletContext;
 import org.more.InvokeException;
 import org.more.submit.Config;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 /**
- * WebSpringBuilder类扩展了ClientSpringBuilder提供了web的支持，init方法传入configFile参数WebSpringBuilder类
- * 首先从ServletContext中查找Spring使用监听器装载的Spring上下文，如果找不到则使用FileSystemXmlApplicationContext创建它，
- * 同时参数configFile回被转换为相对站点目录。
- * <br/>Date : 2009-12-2
- * @author 赵永春
+ * WebSpringBuilder类扩展了ClientSpringBuilder提供了web的支持，该类所使用的configFile参数是一个相对于站点的web相对路径。<br/>
+ * 如果没有指定configFile参数，则configFile默认将表示为“/WEB-INF/applicationContext.xml”配置文件。<br/>
+ * 首先，如果配置了spring的监听器WebSpringBuilder则会自动到ServletContext中查找AbstractApplicationContext类型对象<br/>
+ * 其次，如果传递了beanFactory参数则使用beanFactory参数所指定的AbstractApplicationContext类型对象。
+ * 然后，会查找configFile参数配置来装载Spring配置文件。
+ * @version 2010-1-5
+ * @author 赵永春 (zyc@byshell.org)
  */
-public class WebSpringBuilder extends ClientSpringBuilder {
+public class WebSpringBuilder extends ClientSpringBuilder implements Config {
+    public static final String Default_ConfigXML = "/WEB-INF/applicationContext.xml";
     //==================================================================================Constructor
-    /** 使用Web形式构建More的ActionManager，如果在构造方法中没有指定任何参数则当ActionManager在初始化时候回用过init方法获取，SpringContext */
-    public WebSpringBuilder() {}
-    /** 该构造方法可以使开发人员通过指定ServletContext来获取SpringContext。如果在该构造方法中获取到了SpringContext则在init方法时将忽略获取SpringContext的过程。如果该方法中没有获取到SpringContext则回引发InvokeException异常*/
-    public WebSpringBuilder(ServletContext sc) {
-        this.springContext = this.getSpringContext(sc);//获取spring上下文,该方法会确保获取到对象，如果获取不到或者类型错误将会引发异常。
+    /** WebSpringBuilder类扩展了ClientSpringBuilder提供了web的支持，该类将configFile参数所表示的路径从web相对路径转换为绝对路径。*/
+    public WebSpringBuilder() throws IOException {
+        super(false);
     }
-    //==========================================================================================Job
-    /**首先从ServletContext中查找Spring使用监听器装载的Spring上下文，如果找不到则使用FileSystemXmlApplicationContext创建它，同时参数configFile回被转换为相对站点目录。*/
+    //==========================================================================================Abs
+    /**总体初始化入口*/
     @Override
-    public void init(Config config) throws InvokeException {
-        this.config = config;
-        System.out.println("init WebMoreBuilder...");
-        ServletContext sc = (ServletContext) this.getConfig().getContext();
-        if (this.springContext == null)
-            this.springContext = this.getSpringContext(sc);//该方法会确保获取到对象，如果获取不到或者类型错误将会引发异常。
-        if (this.springContext == null) {
-            String configFile = sc.getRealPath(config.getInitParameter("configFile"));
-            this.springContext = new FileSystemXmlApplicationContext(configFile);
-        }
-        System.out.println("init WebMoreBuilder OK");
+    public void init(Config config) throws Exception {
+        //优先级：spring监听器->beanFactory参数->configFile参数
+        System.out.println("init WebSpringBuilder...");
+        ServletContext sc = (ServletContext) config.getContext();
+        this.springContext = this.getSpringContext(sc);
+        if (this.springContext != null) {
+            this.config = config;
+            return;
+        } else
+            super.init(this.getWebSpringBuilderConfig(config));
+        System.out.println("init WebSpringBuilder OK");
     }
-    /** 该方法负责从ServletContext中获取Spring工厂对象。 */
+    /**创建XmlWebApplicationContext对象。*/
+    @Override
+    protected void init(File configFile) throws IOException {
+        if (configFile.exists() == false || configFile.canRead() == false)
+            throw new IOException("配置文件[" + configFile.getAbsolutePath() + "]不存在，或者无法读取。");
+        FileSystemXmlApplicationContext webApp = new FileSystemXmlApplicationContext();
+        //webApp.setServletContext((ServletContext) this.config.getContext());
+        webApp.setConfigLocation(configFile.getAbsolutePath());
+        webApp.refresh();
+        this.springContext = webApp;
+    }
+    /**负责从ServletContext中获取Spring工厂对象。 */
     private AbstractApplicationContext getSpringContext(ServletContext sc) {
         //获取spring上下文
         Object context = sc.getAttribute("org.springframework.web.context.WebApplicationContext.ROOT");
@@ -58,5 +73,32 @@ public class WebSpringBuilder extends ClientSpringBuilder {
         else if (context instanceof AbstractApplicationContext == false)
             throw new InvokeException("无法读取org.springframework.web.context.WebApplicationContext.ROOT属性对象，该属性对象没有继承spring的AbstractApplicationContext抽象类");
         return (AbstractApplicationContext) context;
+    }
+    //=========================================================================================Impl
+    private Config propxyConfig;
+    protected Config getWebSpringBuilderConfig(Config config) {
+        this.propxyConfig = config;
+        return this;
+    }
+    /**负责处理beanFactory和configFile参数*/
+    @Override
+    public Object getInitParameter(String name) {
+        if ("configFile".equals(name) == true) {
+            ServletContext sc = (ServletContext) this.propxyConfig.getContext();
+            Object obj = this.propxyConfig.getInitParameter(name);
+            if (obj == null)
+                return sc.getRealPath(WebSpringBuilder.Default_ConfigXML);
+            else
+                return sc.getRealPath(obj.toString());
+        } else
+            return this.propxyConfig.getInitParameter(name);
+    }
+    @Override
+    public Object getContext() {
+        return this.propxyConfig.getContext();
+    }
+    @Override
+    public Enumeration<String> getInitParameterNames() {
+        return this.propxyConfig.getInitParameterNames();
     }
 }

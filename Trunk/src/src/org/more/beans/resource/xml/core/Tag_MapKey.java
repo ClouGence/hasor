@@ -17,17 +17,17 @@ package org.more.beans.resource.xml.core;
 import java.util.ArrayList;
 import javax.xml.stream.XMLStreamReader;
 import org.more.ResourceException;
-import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.XmlContextStack;
 import org.more.beans.resource.xml.TagProcess;
 /**
  * 该类负责解析mapKey标签。
- * <br/>Date : 2009-11-23
- * @author 赵永春
+ * @version 2009-11-23
+ * @author 赵永春 (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
 public class Tag_MapKey extends TagProcess {
     @Override
-    public void doEndEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
+    public void doEndEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
         ArrayList elementList = (ArrayList) context.get("tag_element");
         if (elementList == null || elementList.size() == 0)
             throw new ResourceException("没有配置map数据的key");

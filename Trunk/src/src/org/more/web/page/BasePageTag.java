@@ -19,8 +19,8 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.Tag;
 /**
  * 分页标签项的基类，该类中定义了标签首次执行的方法，和执行方法。
- * Date : 2009-6-17
- * @author 赵永春
+ * @version 2009-6-17
+ * @author 赵永春 (zyc@byshell.org)
  */
 abstract class BasePageTag extends BodyTagSupport {
     /**  */

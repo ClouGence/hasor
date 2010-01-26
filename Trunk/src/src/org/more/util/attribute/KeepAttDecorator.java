@@ -28,8 +28,8 @@ import org.more.ReadOnlyException;
  *    必须属性：必须属性是指该属性可以被任意设置但是不可以被删除。利用必须属性可以保证某些情况下
  * 系统必须能够访问到某些属性，而且这些属性必须不能不存在。
  *    提示：保持特性和必须特性可以同时作用到一个属性上。
- * <br/>Date : 2009-12-3
- * @author 赵永春
+ * @version 2009-12-3
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class KeepAttDecorator extends AbstractAttDecorator {
     //========================================================================================Field

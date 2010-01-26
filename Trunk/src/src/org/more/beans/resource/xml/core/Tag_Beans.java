@@ -15,17 +15,17 @@
  */
 package org.more.beans.resource.xml.core;
 import javax.xml.stream.XMLStreamReader;
-import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.XmlContextStack;
 import org.more.beans.resource.xml.TagProcess;
 import org.more.util.StringConvert;
 /**
- * 该类负责处理beans标签
- * Date : 2009-11-21
- * @author 赵永春
+ * 该类负责处理beans标签。
+ * @version 2009-11-21
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class Tag_Beans extends TagProcess {
     @Override
-    public void doStartEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
+    public void doStartEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
         String staticCacheSize = xmlReader.getAttributeValue(null, "staticCache");
         String dynamicCacheSize = xmlReader.getAttributeValue(null, "dynamicCache");
         context.setAttribute("staticCache", StringConvert.parseInt(staticCacheSize, 10));

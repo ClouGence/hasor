@@ -21,8 +21,8 @@ import javax.sql.DataSource;
  * 用于在业务层中使用Dao的支撑环境，该环境中可以获得JdbcDaoSupport对象以操作数据库。
  * 同时如果TransactionManager拦截器负责拦截DaoSupport那么还可以获得事务控制的功能。
  * finalize方法会调用releaseJdbcDaoSupport方法以释放资源。
- * <br/>Date : 2009-12-16
- * @author 赵永春
+ * @version 2009-12-16
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class JobSupport {
     //========================================================================================Field

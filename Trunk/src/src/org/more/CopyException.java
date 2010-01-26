@@ -16,8 +16,8 @@
 package org.more;
 /**
  * 拷贝资源时发生异常。
- * Date : 2009-5-21
- * @author 赵永春
+ * @version 2009-5-21
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class CopyException extends RuntimeException {
     /**  */

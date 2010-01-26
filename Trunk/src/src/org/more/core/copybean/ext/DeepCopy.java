@@ -23,8 +23,8 @@ import org.more.core.copybean.Copy;
 import org.more.core.copybean.PropertyReaderWrite;
 /**
  * 某一个属性的深拷贝。
- * Date : 2009-5-15
- * @author 赵永春
+ * @version 2009-5-15
+ * @author 赵永春 (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
 public class DeepCopy extends Copy {

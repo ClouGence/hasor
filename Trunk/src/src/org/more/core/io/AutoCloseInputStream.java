@@ -18,8 +18,8 @@ import java.io.IOException;
 import java.io.InputStream;
 /**
  * 具有自动关闭的输入流
- * Date : 2009-5-13
- * @author 赵永春
+ * @version 2009-5-13
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class AutoCloseInputStream extends InputStream {
     /** 目标读取的流 */

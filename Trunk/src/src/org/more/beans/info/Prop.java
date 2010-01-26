@@ -20,8 +20,8 @@ import org.more.util.attribute.AttBase;
  * 在该类中定了一些基本类型，这些基本类型的定义有助于优化性能。但是基本类型的
  * 包装类型例如int的包装类型Integer则不属于基本类型范畴。除了java常见的八个基本类型之外BeanProperty还针对java.lang.String做了定义。
  * BeanProperty作为属性对象必须设置propType属性，propType有一些预定义的值请查看BeanProperty的静态字段。
- * <br/>Date : 2009-11-18
- * @author 赵永春
+ * @version 2009-11-18
+ * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class Prop extends AttBase {
     //========================================================================================Field
@@ -105,5 +105,27 @@ public abstract class Prop extends AttBase {
             return String.class;
         else
             return loader.loadClass(propType);
+    }
+    public static boolean isBaseType(Class<?> type) {
+        if (type == int.class)
+            return true;
+        else if (type == byte.class)
+            return true;
+        else if (type == char.class)
+            return true;
+        else if (type == double.class)
+            return true;
+        else if (type == float.class)
+            return true;
+        else if (type == long.class)
+            return true;
+        else if (type == short.class)
+            return true;
+        else if (type == boolean.class)
+            return true;
+        else if (type == String.class)
+            return true;
+        else
+            return false;
     }
 }

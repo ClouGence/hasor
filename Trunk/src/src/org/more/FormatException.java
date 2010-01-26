@@ -16,8 +16,8 @@
 package org.more;
 /**
  * 格式错误，出现该异常通常是在操作某些数据时该数据格式异常或者不被支持。
- * Date : 2009-10-17
- * @author 赵永春
+ * @version 2009-10-17
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class FormatException extends RuntimeException {
     /**  */

@@ -18,18 +18,18 @@ import java.util.ArrayList;
 import javax.xml.stream.XMLStreamReader;
 import org.more.NoDefinitionException;
 import org.more.beans.info.BeanInterface;
-import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.XmlContextStack;
 import org.more.beans.resource.xml.TagProcess;
 /**
  * 该类负责处理addImpl标签，单标记标签。<br/>
  * id="1" type="java.util.List" delegate-refBean="a" refType="refType"
- * Date : 2009-11-21
- * @author 赵永春
+ * @version 2009-11-21
+ * @author 赵永春 (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
 public class Tag_AddImpl extends TagProcess {
     @Override
-    public void doStartEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
+    public void doStartEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
         // id="1" type="java.util.List" delegate-refBean="a" refType="refType"
         BeanInterface bi = new BeanInterface();
         int attCount = xmlReader.getAttributeCount();
@@ -50,9 +50,9 @@ public class Tag_AddImpl extends TagProcess {
         context.context = bi;
     }
     @Override
-    public void doEndEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
+    public void doEndEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
         //一、获取堆栈的父堆栈，bean标签堆栈。
-        ContextStack parent = context.getParent();
+        XmlContextStack parent = context.getParent();
         ArrayList propList = (ArrayList) parent.get("tag_AddImpl");
         if (propList == null) {
             propList = new ArrayList();

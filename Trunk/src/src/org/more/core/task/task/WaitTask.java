@@ -18,8 +18,8 @@ import org.more.core.task.Task;
 /**
  * 等待任务，该任务被执行时会自动调用Thread.sleep方法以睡眠当前线程。
  * 该类型任务是可以用来优化CPU资源和控制任务执行间隔。
- * Date : 2009-5-15
- * @author 赵永春
+ * @version 2009-5-15
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class WaitTask extends Task {
     /**  */

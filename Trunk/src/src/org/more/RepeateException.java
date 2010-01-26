@@ -16,8 +16,8 @@
 package org.more;
 /**
  * 出现重复定义，出现该异常通常是对以存在的对象或属性进行了第二次重新定义。
- * Date : 2009-4-29
- * @author 赵永春
+ * @version 2009-4-29
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class RepeateException extends RuntimeException {
     /**  */

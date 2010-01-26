@@ -16,8 +16,8 @@
 package org.more.log;
 /**
  * д╛хохуж╬т╢
- * Date : 2009-5-13
- * @author утсю╢╨
+ * @version 2009-5-13
+ * @author утсю╢╨ (zyc@byshell.org)
  */
 public class NullLog implements ILog {
     private int mode = 0;

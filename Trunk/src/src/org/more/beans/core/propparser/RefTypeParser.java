@@ -24,12 +24,12 @@ import org.more.beans.info.PropRefValue;
 import org.more.util.StringConvert;
 /**
  * 对PropRefValue类型引用对象提供了解析支持。
- * <br/>Date : 2009-11-18
- * @author 赵永春
+ * @version 2009-11-18
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class RefTypeParser implements PropertyParser {
     @Override
-    public Object parser(Object context, Object[] contextParams, BeanProp prop, BeanProperty propContext, BeanDefinition definition, ResourceBeanFactory factory, PropertyParser contextParser) {
+    public Object parser(Object context, Object[] contextParams, BeanProp prop, BeanProperty propContext, BeanDefinition definition, ResourceBeanFactory factory, PropertyParser contextParser) throws Exception {
         PropRefValue p = (PropRefValue) prop;
         String refType = p.getRefType();
         if (refType == PropRefValue.PRV_Bean)

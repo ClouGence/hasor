@@ -16,8 +16,8 @@
 package org.more.web.page.info;
 /**
  * 
- * Date : 2009-6-19
- * @author 赵永春
+ * @version 2009-6-19
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class AutoPageInfoBean {
     //下面5个属性是要求与AutoPageInfo对象中数据保持一致的。

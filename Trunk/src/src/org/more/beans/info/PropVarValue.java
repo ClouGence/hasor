@@ -20,8 +20,8 @@ package org.more.beans.info;
  * propType属性规则。
  * 1.如果没有配置propType属性则使用value所处的BeanProperty的属性作为配置。
  * </pre>
- * <br/>Date : 2009-11-18
- * @author 赵永春
+ * @version 2009-11-18
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class PropVarValue extends BeanProp {
     //========================================================================================Field

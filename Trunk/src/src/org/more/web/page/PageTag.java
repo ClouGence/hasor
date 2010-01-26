@@ -22,8 +22,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 /**
  * ∑÷“≥±Í«©¥¶¿Ì≥Ã–Ú°£
- * Date : 2009-6-17
- * @author ’‘”¿¥∫
+ * @version 2009-6-17
+ * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class PageTag extends BodyTagSupport {
     /**  */

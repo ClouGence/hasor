@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 package org.more.beans;
-import java.io.File;
 import java.net.URI;
-import java.net.URL;
 import java.util.List;
 import org.more.DoesSupportException;
 import org.more.beans.info.BeanDefinition;
@@ -24,18 +22,14 @@ import org.more.beans.info.BeanDefinition;
  * 这个接口是more.beans组建的基本接口之一，该接口用于提供{@link BeanDefinition}的索引获取功能。
  * 接口实现类决定bean数据是以什么形式存在（DBMS、LDAP、XML这些都是数据提供形式）。
  * 更甚者可以使用Spring的getMergedBeanDefinition方法使用Spring作为bean数据提供者。
- * Date : 2009-11-3
- * @author 赵永春
+ * @version 2009-11-3
+ * @author 赵永春 (zyc@byshell.org)
  */
 public interface BeanResource {
     /**获取资源名。*/
     public String getSourceName();
     /**获取资源的URI表述形式，如果资源不支持该表述形式则返回null。*/
     public URI getSourceURI();
-    /**获取资源的URL表述形式，如果资源不支持该表述形式则返回null。*/
-    public URL getSourceURL();
-    /**获取资源的File表述形式，如果资源不支持该表述形式则返回null。*/
-    public File getSourceFile();
     /**
      * 获取bean的定义，在Bean的定义中只包括属于当前bean的元信息。
      * 如果当前bean的属性注入需要依赖其他bean则获取其他bean的定义需要重新调用getBeanDefinition方法进行获取。
@@ -99,4 +93,12 @@ public interface BeanResource {
      * @return 返回测试结果，如果是以原型模式创建则返回true,否则返回false。
      */
     public boolean isFactory(String name);
+    /**初始化BeanResource接口。*/
+    public void init() throws Exception;
+    /**销毁BeanResource接口。*/
+    public void destroy() throws Exception;
+    /** 如果已经初始化则执行销毁在执行初始化。*/
+    public void reload() throws Exception;
+    /**是否已经进行初始化*/
+    public boolean isInit();
 }

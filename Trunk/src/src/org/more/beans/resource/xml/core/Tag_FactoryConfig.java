@@ -18,18 +18,18 @@ import javax.xml.stream.XMLStreamReader;
 import org.more.NoDefinitionException;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.CreateTypeEnum;
-import org.more.beans.resource.xml.ContextStack;
+import org.more.beans.resource.xml.XmlContextStack;
 import org.more.beans.resource.xml.TagProcess;
 import org.more.util.StringConvert;
 /**
  * 该类负责处理factoryConfig标签。<br/>
  * refBean="factoryRefBean" isStaticMethod="true" methodName="create"
- * Date : 2009-11-21
- * @author 赵永春
+ * @version 2009-11-21
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class Tag_FactoryConfig extends TagProcess {
     @Override
-    public void doStartEvent(String xPath, XMLStreamReader xmlReader, ContextStack context) {
+    public void doStartEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
         //refBean="factoryRefBean" isStaticMethod="true" methodName="create"
         BeanDefinition bean = (BeanDefinition) context.getParent().context;
         bean.setCreateType(CreateTypeEnum.Factory);

@@ -20,8 +20,8 @@ import org.more.beans.info.BeanDefinition;
 import org.more.beans.info.BeanProperty;
 /**
  * 属性解析器，当bean以fact方式执行注入时候注入过程可能会执行该类方法，开发人员不会碰触这个类。
- * Date : 2009-11-8
- * @author 赵永春
+ * @version 2009-11-8
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class TypeParser {
     /**解析一个属性类型为对象。*/

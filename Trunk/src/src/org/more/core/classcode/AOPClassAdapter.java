@@ -25,8 +25,8 @@ import org.more.core.asm.MethodVisitor;
 import org.more.core.asm.Opcodes;
 /**
  * 完成AOP代理的字节码改写对象。
- * Date : 2009-10-30
- * @author 赵永春
+ * @version 2009-10-30
+ * @author 赵永春 (zyc@byshell.org)
  */
 class AOPClassAdapter extends ClassAdapter implements Opcodes {
     //========================================================================================Field
@@ -67,10 +67,10 @@ class AOPClassAdapter extends ClassAdapter implements Opcodes {
     @Override
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         String fullDesc = name + desc;
-        //1.内部决定忽略AOP方法。
+        //1.忽略内部决定忽略的方法。
         if (this.engine.ignoreMethod(fullDesc) == false)
             return super.visitMethod(access, name, desc, signature, exceptions);
-        //2.忽略ClassEngine.acceptMethod决定忽略的AOP方法。
+        //2.忽略ClassEngine.acceptMethod决定忽略的方法。
         if (engine.acceptMethod(classMethods.get(fullDesc)) == false)
             return super.visitMethod(access, name, desc, signature, exceptions);
         //3.输出新方法

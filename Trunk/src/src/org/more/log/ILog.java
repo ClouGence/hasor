@@ -16,8 +16,8 @@
 package org.more.log;
 /**
  * 日志源接口。
- * Date : 2009-5-13
- * @author 赵永春
+ * @version 2009-5-13
+ * @author 赵永春 (zyc@byshell.org)
  */
 public interface ILog {
     /** 调试级别 */

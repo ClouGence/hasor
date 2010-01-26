@@ -23,8 +23,8 @@ import java.util.Collection;
 /**
  * 执行属性拷贝的类，该类扩充了PropertyReaderWrite类的功能增加了对属性拷贝到另外一个
  * PropertyReaderWrite对象的方法。使属性拷贝成为可能。其子类决定是如何进行属性拷贝的。
- * Date : 2009-5-15
- * @author 赵永春
+ * @version 2009-5-15
+ * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class Copy extends PropertyReaderWrite implements Serializable, Cloneable {
     /**  */

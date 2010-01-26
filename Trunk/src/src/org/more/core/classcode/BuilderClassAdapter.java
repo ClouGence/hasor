@@ -46,8 +46,8 @@ import org.more.core.asm.Type;
  *   1.扫描附加接口方法
  *   2.如果本地方法集合中存在该方法则忽略输出。如果该方法是被保护的或者私有的抛出异常
  *   3.输出代理方法调用
- * Date : 2009-10-22
- * @author 赵永春
+ * @version 2009-10-22
+ * @author 赵永春 (zyc@byshell.org)
  */
 class BuilderClassAdapter extends ClassAdapter implements Opcodes {
     //========================================================================================Field
@@ -236,7 +236,7 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
         Matcher m = p.matcher(desc);
         m.find();
         String[] asmParams = EngineToos.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
-        String asmReturns = m.group(2);
+        String asmReturns = EngineToos.toClassType(m.group(2));
         int paramCount = asmParams.length;
         int localVarSize = paramCount;//方法变量表大小
         int maxStackSize = 0;//方法最大堆栈大小

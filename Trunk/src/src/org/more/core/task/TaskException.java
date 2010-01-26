@@ -1,8 +1,8 @@
 package org.more.core.task;
 /**
  * Task“Ï≥£
- * Date : 2009-5-15
- * @author ’‘”¿¥∫
+ * @version 2009-5-15
+ * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class TaskException extends RuntimeException {
     private static final long serialVersionUID = -5825306826820187090L;

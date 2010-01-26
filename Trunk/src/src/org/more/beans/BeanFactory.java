@@ -20,8 +20,8 @@ import org.more.util.attribute.IAttribute;
  * 在BeanFactory中所有Bean都有唯一的一个名称。该工厂将返回一个包含对象的一个独立实例(原型设计模式)，或单个
  * 共享实例(Singleton设计模式，该实例是在当前工厂中的一个单态）。返回哪种类型的实例取决于bean的配置。<br/><br/>
  * 处于工厂中的bean通常是存在于XML文件中。但不排除bean的来源于DBMS或者LDAP，这都取决于BeanFactory中bean数据源的提供者。
- * Date : 2009-11-3
- * @author 赵永春
+ * @version 2009-11-3
+ * @author 赵永春 (zyc@byshell.org)
  */
 public interface BeanFactory extends IAttribute {
     /**
@@ -47,7 +47,7 @@ public interface BeanFactory extends IAttribute {
      * @param objects 在获取bean实例时可能会传递的参数信息。
      * @return 返回或者返回创建的新实例。
      */
-    public Object getBean(String name, Object... objects);
+    public Object getBean(String name, Object... objects) throws Exception;
     /**
      * 根据Bean名称获取其bean类型，该方法将返回在bean定义中配置的bean类型。
      * 那么getBeanType方法将返回生成的新类类型对象。

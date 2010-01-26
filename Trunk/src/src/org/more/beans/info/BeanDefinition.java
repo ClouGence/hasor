@@ -42,8 +42,8 @@ import org.more.util.attribute.AttBase;
  * <br/><br/>六、属性数据:<br/>
  * 属性数据是由BeanDefinition继承的{@link AttBase AttBase}类提供支持，通常这些属性都是配置的附加属性信息。注意所有属性请不要使用“$more_”作为属性开头。
  * “$more_”是more.beans属性名称的保留区域，有些用于提升性能的缓存数据都是使用这个保留区域的名称存放的。
- * <br/>Date : 2009-11-17
- * @author 赵永春
+ * @version 2009-11-17
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class BeanDefinition extends Prop {
     //========================================================================================Field

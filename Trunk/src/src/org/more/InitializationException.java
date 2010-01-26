@@ -16,8 +16,8 @@
 package org.more;
 /**
  * 初始化异常，出现该异常通常是在对某些对象执行初始化或者要求某些对象或者环境进行初始化时发生异常。
- * Date : 2009-7-7
- * @author 赵永春
+ * @version 2009-7-7
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class InitializationException extends RuntimeException {
     /**  */

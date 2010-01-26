@@ -18,8 +18,8 @@ import org.more.core.copybean.ConvertType;
 import org.more.util.StringConvert;
 /**
  * CopyBean处理Long类型转换的辅助类。
- * Date : 2009-5-23
- * @author 赵永春
+ * @version 2009-5-23
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class LongConvertType extends ConvertType {
     /**  */

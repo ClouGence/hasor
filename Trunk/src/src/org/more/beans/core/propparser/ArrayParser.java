@@ -23,8 +23,8 @@ import org.more.beans.info.Prop;
 import org.more.beans.info.PropArray;
 /**
  * 对类型为{@link PropArray}的属性定义提供解析支持，如果{@link PropArray}没有配置具体数组类型则使用{@link Object}作为数组类型。
- * <br/>Date : 2009-11-18
- * @author 赵永春
+ * @version 2009-11-18
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class ArrayParser implements PropertyParser {
     @Override
