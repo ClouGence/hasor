@@ -110,12 +110,16 @@ public class JdbcDaoSupport {
         return tableData;
     }
     private Map resultSetToMap(ResultSet res) throws SQLException {
+        if (res.isBeforeFirst() == true)
+            res.next();
         Map<String, Object> data = new LinkedHashMap<String, Object>();
         for (int i = 1; i <= res.getMetaData().getColumnCount(); i++)
             data.put(res.getMetaData().getColumnName(i), res.getObject(i));
         return data;
     }
     private Object resultSetToObject(ResultSet res, Class<?> type) throws Exception {
+        if (res.isBeforeFirst() == true)
+            res.next();
         Object data = type.newInstance();
         Field[] fs = type.getFields();
         for (int i = 1; i < fs.length; i++) {

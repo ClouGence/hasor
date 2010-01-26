@@ -41,4 +41,6 @@ public interface TaskProcess extends XMLStreamConstants {
     public Object getResult();
     /**设置参数配置对象。*/
     public void setConfig(Object[] params);
+    /**初始化*/
+    public void init();
 }

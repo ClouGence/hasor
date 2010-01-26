@@ -55,7 +55,7 @@ public class Scan_ClassName implements AnnoProcess {
     public void reset() {
         beanName = null;
         beanClass = null;
-        init = true;
+        init = false;
         bean = false;
     }
     private boolean bean = false;

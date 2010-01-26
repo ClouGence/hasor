@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import org.more.CastException;
+import org.more.NoDefinitionException;
 import org.more.beans.BeanFactory;
 import org.more.beans.info.BeanDefinition;
 import org.more.submit.ActionFilter;
@@ -39,8 +40,12 @@ class MoreActionObjectFactory implements ActionObjectFactory {
         return this.factory.contains(name);
     };
     @Override
-    public Object findObject(String name) {
-        return factory.getBean(name);
+    public Object findObject(String name) throws NoDefinitionException {
+        try {
+            return factory.getBean(name);
+        } catch (Exception e) {
+            throw new NoDefinitionException("在查找对象[" + name + "]时发生异常", e);
+        }
     };
     @Override
     public Iterator<String> getObjectNameIterator() {
@@ -52,10 +57,14 @@ class MoreActionObjectFactory implements ActionObjectFactory {
     };
     @Override
     public ActionFilter getActionFilter(String filterName) {
-        Object filter = factory.getBean(filterName);
-        if (filter instanceof ActionFilter == false)
-            throw new CastException("成功获取到对象[" + filterName + "]但是该对象不是有效的ActionFilter类型。");
-        return (ActionFilter) filter;
+        try {
+            Object filter = factory.getBean(filterName);
+            if (filter instanceof ActionFilter == false)
+                throw new CastException("成功获取到对象[" + filterName + "]但是该对象不是有效的ActionFilter类型。");
+            return (ActionFilter) filter;
+        } catch (Exception e) {
+            throw new NoDefinitionException("在查找过滤器对象[" + filterName + "]时发生异常", e);
+        }
     };
     @Override
     public Iterator<String> getPublicFilterNames(String actionName) {

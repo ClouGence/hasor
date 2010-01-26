@@ -15,16 +15,14 @@
  */
 package org.more.beans.resource.xml.core;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.xml.stream.XMLStreamReader;
 import org.more.NoDefinitionException;
 import org.more.beans.info.BeanProp;
 import org.more.beans.info.BeanProperty;
 import org.more.beans.info.PropRefValue;
 import org.more.beans.info.PropVarValue;
-import org.more.beans.resource.xml.XmlContextStack;
 import org.more.beans.resource.xml.TagProcess;
+import org.more.beans.resource.xml.XmlContextStack;
 /**
  * 该类负责解析property标签<br/>
  * id="" name="a" value="12" refValue="refBean|{#attName}|{@number}|{$mime}" type="int|byte|char|double|float|long|short|boolean|String"
@@ -36,11 +34,6 @@ public class Tag_Property extends TagProcess {
     protected String tagName = "property";
     protected BeanProperty createProperty() {
         return new BeanProperty();
-    }
-    private String find(String pStr, String string) {
-        Matcher ma_tem = Pattern.compile(pStr).matcher(string);
-        ma_tem.find();
-        return ma_tem.group(1);
     }
     @Override
     public void doStartEvent(String xPath, XMLStreamReader xmlReader, XmlContextStack context) {
@@ -61,25 +54,7 @@ public class Tag_Property extends TagProcess {
             } else if (key.equals("type") == true)
                 bp.setPropType(var);
             else if (key.equals("refValue") == true) {
-                PropRefValue propRef = new PropRefValue();
-                //refBean|{#attName}|{@number}|{$mime}
-                String pStr_1 = "\\x20*\\{#(\\w+)\\}\\x20*";// 1.{#PRV_ContextAtt}
-                String pStr_2 = "\\x20*\\{@(\\d+)\\}\\x20*";// 2.{@PRV_Param}
-                String pStr_3 = "\\x20*\\{\\$(\\w+)\\}\\x20*";// 3.{$PRV_Mime}
-                //判断是何种引用方式
-                if (var.matches(pStr_1) == true) {
-                    propRef.setRefType(PropRefValue.PRV_ContextAtt);
-                    var = this.find(pStr_1, var);
-                } else if (var.matches(pStr_2) == true) {
-                    propRef.setRefType(PropRefValue.PRV_Param);
-                    var = this.find(pStr_2, var);
-                } else if (var.matches(pStr_3) == true) {
-                    propRef.setRefType(PropRefValue.PRV_Mime);
-                    var = this.find(pStr_3, var);
-                } else
-                    propRef.setRefType(PropRefValue.PRV_Bean);
-                //
-                propRef.setRefValue(var);
+                PropRefValue propRef = PropRefValue.getPropRefValue(var);
                 bp.setRefValue(propRef);
             } else
                 throw new NoDefinitionException(tagName + "标签出现未定义属性[" + key + "]");

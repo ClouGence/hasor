@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.more.beans.core.factory;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import org.more.beans.BeanFactory;
@@ -118,7 +117,7 @@ public class FactoryCreateEngine extends CreateEngine {
         }
     }
     /** 配置ClassEngine，的接口实现以及AOP。 */
-    private void configurationImpl_AOP(ClassEngine engine, BeanDefinition definition, Object[] params, BeanFactory context) throws ClassNotFoundException, IOException {
+    private void configurationImpl_AOP(ClassEngine engine, BeanDefinition definition, Object[] params, BeanFactory context) throws Exception {
         ClassLoader loader = context.getBeanClassLoader();
         {
             //---------------------------------------------------------------Impl

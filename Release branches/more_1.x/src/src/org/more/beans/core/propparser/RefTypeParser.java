@@ -29,7 +29,7 @@ import org.more.util.StringConvert;
  */
 public class RefTypeParser implements PropertyParser {
     @Override
-    public Object parser(Object context, Object[] contextParams, BeanProp prop, BeanProperty propContext, BeanDefinition definition, ResourceBeanFactory factory, PropertyParser contextParser) {
+    public Object parser(Object context, Object[] contextParams, BeanProp prop, BeanProperty propContext, BeanDefinition definition, ResourceBeanFactory factory, PropertyParser contextParser) throws Exception {
         PropRefValue p = (PropRefValue) prop;
         String refType = p.getRefType();
         if (refType == PropRefValue.PRV_Bean)

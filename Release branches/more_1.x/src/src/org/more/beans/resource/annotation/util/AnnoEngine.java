@@ -91,7 +91,7 @@ public class AnnoEngine {
                         for (Annotation a : paramType_Anno) {
                             stack = new AnnoContextStack(stack, atType, AnnoScopeEnum.Anno_Param);
                             process.beginAnnotation(a, new Object[] { c, paramType }, stack);
-                            process.beginAnnotation(a, new Object[] { c, paramType }, stack);
+                            process.endAnnotation(a, new Object[] { c, paramType }, stack);
                             stack = stack.getParent();
                         }
                     }

@@ -236,7 +236,7 @@ public class XmlFileResource extends ArrayResource implements BeanResource {
             return this.dynamicCache.get(name);
         /*--------------*/
         TaskProcess find_task = (TaskProcess) xmlEngine.getAttribute("findBean");
-        BeanDefinition bean = (BeanDefinition) this.runTask(find_task, ".*", new Object[] { name });;
+        BeanDefinition bean = (BeanDefinition) this.runTask(find_task, ".*", new Object[] { name });
         if (bean != null)
             this.putDynamicCache(bean);
         return bean;
@@ -246,16 +246,19 @@ public class XmlFileResource extends ArrayResource implements BeanResource {
         List<String> staticCache = super.getBeanDefinitionNames();
         ArrayList<String> al = new ArrayList<String>(staticCache.size() + this.xmlBeanNames.size());
         al.addAll(staticCache);
-        al.addAll(this.xmlBeanNames);
+        for (String str : this.xmlBeanNames)
+            if (al.contains(str) == false)
+                al.add(str);
         return al;
     }
     @Override
     public List<String> getStrartInitBeanDefinitionNames() {
-        List<String> start_1 = super.getBeanDefinitionNames();
-        List<String> start_2 = this.xmlStrartInitBeans;
-        ArrayList<String> al = new ArrayList<String>(start_1.size() + start_2.size());
+        List<String> start_1 = super.getStrartInitBeanDefinitionNames();
+        ArrayList<String> al = new ArrayList<String>(start_1.size() + this.xmlStrartInitBeans.size());
         al.addAll(start_1);
-        al.addAll(start_2);
+        for (String str : this.xmlStrartInitBeans)
+            if (al.contains(str) == false)
+                al.add(str);
         return al;
     }
 };

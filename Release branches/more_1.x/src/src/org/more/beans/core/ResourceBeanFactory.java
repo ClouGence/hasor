@@ -16,7 +16,6 @@
 package org.more.beans.core;
 import java.util.HashMap;
 import java.util.List;
-import org.more.InvokeException;
 import org.more.NoDefinitionException;
 import org.more.TypeException;
 import org.more.beans.BeanFactory;
@@ -66,11 +65,20 @@ public class ResourceBeanFactory implements BeanFactory {
     /**
      * 创建ResourceBeanFactory类型对象，创建该对象必须指定resource参数否则回引发NullPointerException异常。
      * @param resource ResourceBeanFactory所使用的bean资源。
+     */
+    public ResourceBeanFactory(BeanResource resource) throws Exception {
+        this(resource, null);
+    }
+    /**
+     * 创建ResourceBeanFactory类型对象，创建该对象必须指定resource参数否则回引发NullPointerException异常。
+     * @param resource ResourceBeanFactory所使用的bean资源。
      * @param loader ResourceBeanFactory所使用的ClassLoader，如果给定null则采取Thread.currentThread().getContextClassLoader();
      */
     public ResourceBeanFactory(BeanResource resource, ClassLoader loader) throws Exception {
         if (resource == null)
             throw new NullPointerException("参数resource不能为空。");
+        else if (resource.isInit() == false)
+            resource.init();
         //确定使用哪个loader。
         if (loader == null)
             this.loader = Thread.currentThread().getContextClassLoader();
@@ -109,7 +117,8 @@ public class ResourceBeanFactory implements BeanFactory {
         if (initBeanNames == null)
             return;
         for (String initBN : initBeanNames)
-            this.singletonBeanCache.put(initBN, this.getBean(initBN));
+            if (this.resource.isSingleton(initBN) == true)
+                this.singletonBeanCache.put(initBN, this.getBean(initBN));
     }
     @Override
     public boolean containsBean(String name) {
@@ -127,20 +136,14 @@ public class ResourceBeanFactory implements BeanFactory {
         return obj;
     }
     @Override
-    public Object getBean(String name, Object... objects) {
-        try {
-            if (singletonBeanCache.containsKey(name) == true)
-                return singletonBeanCache.get(name);
-            BeanDefinition definition = this.resource.getBeanDefinition(name);
-            Object obj = getBeanForciblyo(name, definition, objects);
-            if (definition.isSingleton() == true)
-                this.singletonBeanCache.put(name, obj);
-            return obj;
-        } catch (Exception e) {
-            if (e instanceof RuntimeException == true)
-                throw (RuntimeException) e;
-            throw new InvokeException(e);
-        }
+    public Object getBean(String name, Object... objects) throws Exception {
+        if (singletonBeanCache.containsKey(name) == true)
+            return singletonBeanCache.get(name);
+        BeanDefinition definition = this.resource.getBeanDefinition(name);
+        Object obj = getBeanForciblyo(name, definition, objects);
+        if (definition.isSingleton() == true)
+            this.singletonBeanCache.put(name, obj);
+        return obj;
     }
     @Override
     public Class<?> getBeanType(String name) {

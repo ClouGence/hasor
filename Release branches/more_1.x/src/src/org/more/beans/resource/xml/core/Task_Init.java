@@ -45,6 +45,15 @@ public class Task_Init implements TaskProcess {
     @Override
     public void setConfig(Object[] params) {}
     @Override
+    public void init() {
+        this.result = new AttBase();
+        currentStaticCatch = 0;
+        maxStaticCatch = 10;
+        beanMap = new HashMap<String, BeanDefinition>();
+        initBean = new ArrayList<String>(0);
+        allNames = new ArrayList<String>(0);
+    }
+    @Override
     public Object getResult() {
         result.setAttribute("beanList", beanMap);
         result.setAttribute("initBean", initBean);
@@ -75,7 +84,7 @@ public class Task_Init implements TaskProcess {
                         beanMap.put(bean.getName(), bean);//¾²Ì¬»º´æ
                         currentStaticCatch++;
                     }
-                if (bean.isLazyInit() == false && bean.isSingleton() == true)
+                if (bean.isLazyInit() == false)
                     initBean.add(bean.getName());//initBeans
                 allNames.add(bean.getName());
             }

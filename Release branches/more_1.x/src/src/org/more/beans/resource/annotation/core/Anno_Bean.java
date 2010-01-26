@@ -90,8 +90,8 @@ public class Anno_Bean implements AnnoProcess {
             Class<?> c_param = c_params[i];
             Annotation[] c_annos = c_annoss[i];
             if (c_annos.length != 0) {
-                j++;
                 bps[i] = constructorProp.get(j);
+                j++;
             } else {
                 /*Ä¬ÈÏ²ßÂÔ*/
                 bps[i] = new BeanProperty();

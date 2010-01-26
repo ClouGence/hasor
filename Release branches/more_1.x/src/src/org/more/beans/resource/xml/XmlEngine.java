@@ -108,6 +108,7 @@ public class XmlEngine extends AttBase {
     /**执行XML任务。*/
     public Object runTask(InputStream xmlStream, TaskProcess task, String processXPath, Object[] params) throws Exception {
         task.setConfig(params);
+        task.init();
         return this.scanningXML(xmlStream, processXPath, task);
     };
     /**注册一个标签处理程序*/

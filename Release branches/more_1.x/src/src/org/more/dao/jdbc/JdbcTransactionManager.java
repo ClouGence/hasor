@@ -76,6 +76,7 @@ public class JdbcTransactionManager implements AOPInvokeFilter {
                 this.rollBack(conn);
                 throw e;
             } finally {
+                ds.getConnection().close();
                 ds.setJdbcDaoSupport(null);
                 this.running.remove();
             }

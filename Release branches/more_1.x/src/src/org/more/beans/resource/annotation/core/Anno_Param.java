@@ -35,7 +35,7 @@ public class Anno_Param implements AnnoProcess {
     public void beginAnnotation(Annotation anno, Object atObject, AnnoContextStack context) {
         Object[] obj = (Object[]) atObject;
         Class<?> p_type = (Class<?>) obj[1];
-        String p_typeName = p_type.getName();
+        String p_typeName = (p_type == String.class) ? "String" : p_type.getName();
         Param p_anno = (Param) anno;
         /*---------------Param---------------*/
         BeanProperty property = new BeanProperty();
@@ -44,9 +44,11 @@ public class Anno_Param implements AnnoProcess {
         if (Prop.isBaseType(p_type) == true)
             /*---value---*/
             property.setRefValue(new PropVarValue(p_anno.value(), p_typeName));
-        else
+        else {
             /*---refValue---*/
-            property.setRefValue(new PropRefValue(p_anno.refValue(), p_typeName));
+            PropRefValue propRef = PropRefValue.getPropRefValue(p_anno.refValue());
+            property.setRefValue(propRef);
+        }
         /*-------------Param End-------------*/
         AnnoContextStack parent = context.getParent();
         if (parent.getScope() == AnnoScopeEnum.Anno_Constructor) {

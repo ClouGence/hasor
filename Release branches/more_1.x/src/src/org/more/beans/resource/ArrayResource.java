@@ -44,7 +44,7 @@ public class ArrayResource implements BeanResource, IAttribute {
     private IAttribute                      prop                = null;                 //
     private boolean                         isInit              = false;                //
     /**当执行了init方法之后该值是true，当执行了destroy之后该值就是false。*/
-    protected boolean isInit() {
+    public boolean isInit() {
         return isInit;
     }
     //==================================================================================Constructor
@@ -180,5 +180,10 @@ public class ArrayResource implements BeanResource, IAttribute {
     @Override
     public void setAttribute(String name, Object value) {
         this.prop.setAttribute(name, value);
+    }
+    @Override
+    public void reload() throws Exception {
+        this.destroy();
+        this.init();
     }
 }

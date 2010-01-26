@@ -36,7 +36,7 @@ public class Anno_Property implements AnnoProcess {
         Object[] obj = (Object[]) atObject;
         Field p_field = (Field) obj[1];
         Class<?> p_fieldType = p_field.getType();
-        String p_fieldTypeName = p_fieldType.getName();
+        String p_fieldTypeName = (p_fieldType == String.class) ? "String" : p_fieldType.getName();
         Property p_anno = (Property) anno;
         /*---------------Param---------------*/
         BeanProperty property = new BeanProperty();
@@ -45,10 +45,11 @@ public class Anno_Property implements AnnoProcess {
         if (Prop.isBaseType(p_fieldType) == true)
             /*---value---*/
             property.setRefValue(new PropVarValue(p_anno.value(), p_fieldTypeName));
-        else
+        else {
             /*---refValue---*/
-            property.setRefValue(new PropRefValue(p_anno.refValue(), p_fieldTypeName));
-        /*-------------Param End-------------*/
+            PropRefValue propRef = PropRefValue.getPropRefValue(p_anno.refValue());
+            property.setRefValue(propRef);
+        } /*-------------Param End-------------*/
         AnnoContextStack parent = context.getParent();
         ArrayList<BeanProperty> propertyProp = (ArrayList<BeanProperty>) parent.getAttribute("property");
         propertyProp.add(property);

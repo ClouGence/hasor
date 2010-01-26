@@ -47,7 +47,7 @@ public interface BeanFactory extends IAttribute {
      * @param objects 在获取bean实例时可能会传递的参数信息。
      * @return 返回或者返回创建的新实例。
      */
-    public Object getBean(String name, Object... objects);
+    public Object getBean(String name, Object... objects) throws Exception;
     /**
      * 根据Bean名称获取其bean类型，该方法将返回在bean定义中配置的bean类型。
      * 那么getBeanType方法将返回生成的新类类型对象。

@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import org.more.beans.info.BeanDefinition;
 import org.more.beans.resource.annotation.core.Scan_ClassAnno;
 import org.more.beans.resource.annotation.core.Tag_Anno;
@@ -120,16 +121,21 @@ public class AnnoXmlFileResource extends XmlFileResource {
     @Override
     public List<String> getBeanDefinitionNames() {
         List<String> superCache = super.getBeanDefinitionNames();
-        ArrayList<String> al = new ArrayList<String>(superCache.size() + this.annoBeanNameMap.size());
+        Set<String> annoNS = this.annoBeanNameMap.keySet();
+        ArrayList<String> al = new ArrayList<String>(superCache.size() + annoNS.size());
         al.addAll(superCache);
-        al.addAll(this.annoBeanNameMap.keySet());
+        for (String str : annoNS)
+            if (al.contains(str) == false)
+                al.add(str);
         return al;
     };
     public List<String> getStrartInitBeanDefinitionNames() {
         List<String> superCache = super.getStrartInitBeanDefinitionNames();
         ArrayList<String> al = new ArrayList<String>(superCache.size() + this.annoStrartInitBeans.size());
         al.addAll(superCache);
-        al.addAll(this.annoStrartInitBeans);
+        for (String str : this.annoStrartInitBeans)
+            if (al.contains(str) == false)
+                al.add(str);
         return al;
     };
 }

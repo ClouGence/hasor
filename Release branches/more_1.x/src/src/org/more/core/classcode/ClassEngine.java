@@ -415,7 +415,7 @@ public class ClassEngine extends ClassLoader implements Opcodes {
         reader.accept(ca, ClassReader.SKIP_DEBUG);
         //------------------------------六、取得生成的字节码
         this.classByte = writer.toByteArray();
-        //        FileOutputStream fo = new FileOutputStream(this.className, false);
+        //        FileOutputStream fo = new FileOutputStream(this.className + ".class", false);
         //        fo.write(classByte);
         //        fo.flush();
         //        fo.close();

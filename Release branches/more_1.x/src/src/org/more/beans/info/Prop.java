@@ -78,7 +78,7 @@ public abstract class Prop extends AttBase {
             this.propType = Prop.TS_Short;
         else if (propType.equals("boolean") == true)
             this.propType = Prop.TS_Boolean;
-        else if (propType.equals("String") == true || propType.equals("java.lang.String") == true)
+        else if (propType.equals("String") == true)
             this.propType = Prop.TS_String;
         else
             this.propType = propType;

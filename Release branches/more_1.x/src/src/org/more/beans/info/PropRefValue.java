@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.more.beans.info;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**
@@ -58,6 +60,48 @@ public class PropRefValue extends BeanProp {
         this.setRefType(refType);
     }
     //==========================================================================================Job
+    private static String find(String pStr, String string) {
+        Matcher ma_tem = Pattern.compile(pStr).matcher(string);
+        ma_tem.find();
+        return ma_tem.group(1);
+    }
+    public static PropRefValue getPropRefValue(String refValueString) {
+        //refBean|{#attName}|{@number}|{$mime}
+        String pStr_1 = "\\x20*\\{#(\\w+)\\}\\x20*";// 1.{#PRV_ContextAtt}
+        String pStr_2 = "\\x20*\\{@(\\d+)\\}\\x20*";// 2.{@PRV_Param}
+        String pStr_3 = "\\x20*\\{\\$(\\w+)\\}\\x20*";// 3.{$PRV_Mime}
+        PropRefValue propRef = new PropRefValue();
+        String var = refValueString;
+        if (isPRV_ContextAtt(refValueString) == true) {
+            propRef.setRefType(PropRefValue.PRV_ContextAtt);
+            var = find(pStr_1, var);
+        } else if (isPRV_Param(refValueString) == true) {
+            propRef.setRefType(PropRefValue.PRV_Param);
+            var = find(pStr_2, var);
+        } else if (isPRV_Mime(refValueString) == true) {
+            propRef.setRefType(PropRefValue.PRV_Mime);
+            var = find(pStr_3, var);
+        } else {
+            propRef.setRefType(PropRefValue.PRV_Bean);
+        }
+        propRef.setRefValue(var);
+        return propRef;
+    }
+    //{#PRV_ContextAtt}
+    public static boolean isPRV_ContextAtt(String refValueString) {
+        return refValueString.matches("\\x20*\\{#(\\w+)\\}\\x20*");
+    }
+    //{@PRV_Param}
+    public static boolean isPRV_Param(String refValueString) {
+        return refValueString.matches("\\x20*\\{@(\\d+)\\}\\x20*");
+    }
+    //{$PRV_Mime}
+    public static boolean isPRV_Mime(String refValueString) {
+        return refValueString.matches("\\x20*\\{\\$(\\w+)\\}\\x20*");
+    }
+    public static boolean isPRV_Bean(String refValueString) {
+        return !(isPRV_ContextAtt(refValueString) | isPRV_Param(refValueString) | isPRV_Mime(refValueString));
+    }
     /**获取引用值。*/
     public String getRefValue() {
         return refValue;

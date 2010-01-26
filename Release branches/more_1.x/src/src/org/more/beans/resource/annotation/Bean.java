@@ -38,6 +38,6 @@ public @interface Bean {
     public String exportRefBean() default "";
     /**AOP过滤器bean，CreateTypeEnum如果为Factory方式则AOP使用代理方式创建，如果是New方式创建则创建模式使用Super*/
     public String[] aopFiltersRefBean() default {};
-    /**是否为单态模式*/
+    /**是否为单态模式，默认为true*/
     public boolean isSingleton() default true;
 }

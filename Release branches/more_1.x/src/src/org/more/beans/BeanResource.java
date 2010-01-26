@@ -96,5 +96,9 @@ public interface BeanResource {
     /**初始化BeanResource接口。*/
     public void init() throws Exception;
     /**销毁BeanResource接口。*/
-    public void destroy();
+    public void destroy() throws Exception;
+    /** 如果已经初始化则执行销毁在执行初始化。*/
+    public void reload() throws Exception;
+    /**是否已经进行初始化*/
+    public boolean isInit();
 }

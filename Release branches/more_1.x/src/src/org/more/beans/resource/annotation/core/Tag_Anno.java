@@ -93,7 +93,7 @@ public class Tag_Anno extends TagProcess {
                 ae.runTask(Class.forName(className), scanName, null);
                 if (scanName.isBean() == true) {
                     this.names.put(scanName.getBeanName(), className);
-                    if (scanName.isInit() == true)
+                    if (scanName.isInit() == false)
                         this.initNames.add(scanName.getBeanName());
                 }
             } catch (Exception e) {}

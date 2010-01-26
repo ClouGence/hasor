@@ -99,7 +99,7 @@ public class MainPropertyParser implements PropertyParser {
     @Override
     public Class<?> parserType(Object context, Object[] contextParams, BeanProp prop, BeanProperty propContext, BeanDefinition definition, ResourceBeanFactory factory, PropertyParser contextParser) throws Exception {
         String propType = propContext.getPropType();
-        if (propType != null)
+        if (propType != null && prop instanceof PropArray == false)
             return Prop.getType(propType, factory.getBeanClassLoader());
         //
         if (prop == null)

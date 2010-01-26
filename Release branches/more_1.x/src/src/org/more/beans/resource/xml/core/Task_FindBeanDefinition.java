@@ -32,7 +32,10 @@ import org.more.beans.resource.xml.TaskProcess;
 public class Task_FindBeanDefinition implements TaskProcess {
     private String findName = null;
     private Object result   = null;
-    //
+    @Override
+    public void init() {
+        this.result = null;
+    }
     @Override
     public void setConfig(Object[] params) {
         this.findName = (String) params[0];
