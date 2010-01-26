@@ -1,0 +1,16 @@
+<beans staticCache="10" dynamicCache="50"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="beans-schema.xsd"
+	xsi:schemaLocation="http://more.byshell.org/schema/anno anno-schema.xsd"
+	xmlns:anno="http://more.byshell.org/schema/anno">
+	
+	<!-- javascript调用请求管理器 -->
+	<bean name="sys_actionjs" type="org.more.submit.ext.actionjs.JavaScriptSubmitManager">
+		<!-- min属性默认值是true，表示是否最简化输出引用JS库。 -->
+		<property name="min" type="boolean" value="true"/>
+		<meta key="isAction" value="true" />
+	</bean>
+	<bean name="safety" type="org.web.LoginAction">
+		<meta key="isAction" value="true" />
+	</bean>
+</beans>

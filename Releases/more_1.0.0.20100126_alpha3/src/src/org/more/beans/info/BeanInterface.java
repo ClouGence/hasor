@@ -1,0 +1,45 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.more.beans.info;
+/**
+ * 所要附加实现的接口及其代理bean名称配置。
+ * @version 2009-11-18
+ * @author 赵永春 (zyc@byshell.org)
+ */
+public class BeanInterface extends Prop {
+    //========================================================================================Field
+    /**  */
+    private static final long serialVersionUID = -1660901774837550451L;
+    private String            refType          = null;                 //接口类型引用Bean名，配置了refType属性则可以不配置type属性。
+    private String            delegateRefBean  = null;                 //附加接口实现时接口处理委托bean名。
+    //==========================================================================================Job
+    /**获取接口类型引用Bean名，配置了typeRefBean属性则可以不配置type属性。*/
+    public String getRefType() {
+        return refType;
+    }
+    /**设置接口类型引用Bean名，配置了typeRefBean属性则可以不配置type属性。*/
+    public void setRefType(String refType) {
+        this.refType = refType;
+    }
+    /**获取附加接口实现时接口处理委托bean名。*/
+    public String getDelegateRefBean() {
+        return delegateRefBean;
+    }
+    /**设置附加接口实现时接口处理委托bean名。*/
+    public void setDelegateRefBean(String delegateRefBean) {
+        this.delegateRefBean = delegateRefBean;
+    }
+}

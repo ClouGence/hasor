@@ -1,0 +1,43 @@
+<beans staticCache="10" dynamicCache="50"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="beans-schema.xsd"
+	xsi:schemaLocation="http://more.byshell.org/schema/anno anno-schema.xsd"
+	xmlns:anno="http://more.byshell.org/schema/anno">
+
+	<!-- c3p0数据源 -->
+	<bean name="sys_databaseSource" type="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" type="String" value="net.sourceforge.jtds.jdbc.Driver"/>
+		<property name="jdbcUrl" type="String" value="jdbc:jtds:sqlserver://127.0.0.1:1433;databasename=test"/>
+		<property name="user" type="String" value="sa"/>
+		<property name="password" type="String" value="sa"/>
+		<property name="maxPoolSize" type="int" value="500" />
+		<property name="minPoolSize" type="int" value="10" />
+		<property name="initialPoolSize" type="int" value="1" />
+		<property name="maxIdleTime" type="int" value="10" />
+	</bean>
+	<!-- jdbc事务控制拦截器 -->
+	<bean name="sys_transactionManager" type="org.more.dao.jdbc.JdbcTransactionManager">
+		<property name="dataSource" refValue="sys_databaseSource" type="javax.sql.DataSource"/>
+		<property name="autoCommit" type="boolean" value="false"/>
+	</bean>
+	
+	
+	<!-- Action中使用jdbc -->
+	<bean name="testJDBCAction" type="org.console.JDBCAction" aopFilters-refBean="sys_transactionManager">
+		<meta key="isAction" value="true"/>
+	</bean>
+	<!-- 业务层使用jdbc -->
+	<bean name="jobJDBC" type="org.console.JobJDBC" aopFilters-refBean="sys_transactionManager"/>
+	<bean name="testJobAction" type="org.console.JobAction">
+		<property name="jobJDBC" refValue="jobJDBC" type="org.console.JobJDBC"/>
+		<meta key="isAction" value="true"/>
+	</bean>
+
+
+
+	<!-- 不具备事务管理的 -->
+	<bean name="testJDBC_2" type="org.console.JDBCAction">
+		<property name="dataSource" refValue="sys_databaseSource" type="javax.sql.DataSource"/>
+		<meta key="isAction" value="true"/>
+	</bean>
+</beans>
