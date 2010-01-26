@@ -27,7 +27,11 @@ public class LoginAction {
         stack.setAttribute("var", "StackValue", WebActionStack.Scope_Stack);
         stack.setAttribute("var", "CookieValue", WebActionStack.Scope_Cookie);
         stack.setAttribute("var", "HttpSessionValue", WebActionStack.Scope_HttpSession);
-        //  stack.setAttribute("var", "JspPageValue", WebActionStack.Scope_JspPage);
+        try {
+            stack.setAttribute("var", "JspPageValue", WebActionStack.Scope_JspPage);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         stack.setAttribute("var", "RequestValue", WebActionStack.Scope_HttpRequest);
         stack.setAttribute("var", "ServletContextValue", WebActionStack.Scope_ServletContext);
     }
