@@ -25,7 +25,7 @@ import java.util.jar.JarInputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 /**
- * classpath扫描工具。
+ * 扫描classpath中的类工具。
  * @version 2010-1-10
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -47,6 +47,7 @@ public class PackageUtil {
     /**对某一个目录执行扫描。*/
     private LinkedList<String> scanDir(File dirFile, String prefix, PackageUtilExclude exclude) {
         LinkedList<String> classNames = new LinkedList<String>();
+        String regex = "(.*)\\.class";
         for (File f : dirFile.listFiles()) {
             String pn = (prefix == null || prefix.equals("")) ? f.getName() : prefix + File.separator + f.getName();
             if (f.exists() == false)
@@ -54,12 +55,8 @@ public class PackageUtil {
             if (f.isDirectory() == true)
                 classNames.addAll(scanDir(f, pn, exclude));
             else {
-                String regex = "(.*)\\.class";
                 String pn_temp = pn.replace(File.separator, ".");
-                if (Pattern.matches(regex, pn_temp) == false) {
-                    if (exclude.exclude(pn) == false)
-                        classNames.add(pn);
-                } else {
+                if (Pattern.matches(regex, pn_temp) == true) {
                     Matcher m = Pattern.compile(regex).matcher(pn_temp);
                     m.find();
                     if (exclude.exclude(m.group(1)) == false)
@@ -75,10 +72,16 @@ public class PackageUtil {
         FileInputStream fis = new FileInputStream(jarFile);
         JarInputStream jis = new JarInputStream(fis, false);
         JarEntry e = null;
+        String regex = "(.*)\\.class";
         while ((e = jis.getNextJarEntry()) != null) {
-            String eName = e.getName();
-            if (exclude.exclude(eName) == false)
-                classNames.addLast(eName);
+            String eName = e.getName().replace('/', '.');
+            if (Pattern.matches(regex, eName) == true) {
+                Matcher m = Pattern.compile(regex).matcher(eName);
+                m.find();
+                eName = m.group(1);
+                if (exclude.exclude(eName) == false)
+                    classNames.addLast(eName);
+            }
             jis.closeEntry();
         }
         jis.close();

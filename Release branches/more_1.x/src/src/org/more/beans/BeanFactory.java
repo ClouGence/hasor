@@ -80,4 +80,8 @@ public interface BeanFactory extends IAttribute {
      * @return 返回测试结果，如果被测试的目标类型可以转换为指定类型对象则返回true,否则返回false。
      */
     public boolean isTypeMatch(String name, Class<?> targetType);
+    /**初始化 */
+    public void init() throws Exception;
+    /**销毁*/
+    public void destroy() throws Exception;
 }

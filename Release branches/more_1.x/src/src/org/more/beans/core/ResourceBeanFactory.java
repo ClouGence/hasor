@@ -83,16 +83,7 @@ public class ResourceBeanFactory implements BeanFactory {
         if (loader == null)
             this.loader = Thread.currentThread().getContextClassLoader();
         this.resource = resource;
-        //
-        this.propParser = new MainPropertyParser(this);//属性解析器，专门负责解析BeanProperty属性对象。
-        this.createFactory = new CreateFactory(this.propParser);//负责对象创建
-        this.injectionFactory = new InjectionFactory(this.propParser);//负责对象依赖注入
-        //创建环境属性对象，并且加装保持装饰器。
-        KeepAttDecorator kad = new KeepAttDecorator(new AttBase());
-        this.attribute = kad;
-        kad.setAttribute("this", this);//设置关键字this。
-        kad.setKeep("this", true);//设置关键字this为保持属性，不可更改。
-        init();//执行初始化方法调用。
+        this.init();
     }
     //==========================================================================================Job
     /**该方法主要用于Factory方式处理Ioc时候无法获取属性类型解析器对象而设立。*/
@@ -112,13 +103,33 @@ public class ResourceBeanFactory implements BeanFactory {
             this.resource.clearCache();//清理元信息缓存
     }
     /**初始化设置了lazyInit属性为false的bean并且这些bean一定是单态的。*/
-    protected void init() throws Exception {
+    @Override
+    public void init() throws Exception {
+        this.propParser = new MainPropertyParser(this);//属性解析器，专门负责解析BeanProperty属性对象。
+        this.createFactory = new CreateFactory(this.propParser);//负责对象创建
+        this.injectionFactory = new InjectionFactory(this.propParser);//负责对象依赖注入
+        //创建环境属性对象，并且加装保持装饰器。
+        KeepAttDecorator kad = new KeepAttDecorator(new AttBase());
+        kad.setAttribute("this", this);//设置关键字this。
+        kad.setKeep("this", true);//设置关键字this为保持属性，不可更改。
+        this.attribute = kad;
+        //初始化设置了lazyInit属性为false的bean并且这些bean一定是单态的。
         List<String> initBeanNames = this.resource.getStrartInitBeanDefinitionNames();
         if (initBeanNames == null)
             return;
         for (String initBN : initBeanNames)
             if (this.resource.isSingleton(initBN) == true)
                 this.singletonBeanCache.put(initBN, this.getBean(initBN));
+    }
+    @Override
+    public void destroy() throws Exception {
+        this.attribute.clearAttribute();
+        this.clearBeanCache();
+        this.resource.destroy();
+        this.propParser = null;
+        this.createFactory = null;
+        this.injectionFactory = null;
+        this.attribute = null;
     }
     @Override
     public boolean containsBean(String name) {

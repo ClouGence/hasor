@@ -17,7 +17,6 @@ package org.more.beans.resource;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import org.more.DoesSupportException;
 import org.more.InvokeException;
@@ -38,7 +37,7 @@ public class ArrayResource implements BeanResource, IAttribute {
     /**  */
     private static final long               serialVersionUID    = -1650492842757900558L;
     private HashMap<String, BeanDefinition> caheBeans           = null;
-    private LinkedList<String>              strartInitBeans     = null;                 //
+    private ArrayList<String>               strartInitBeans     = null;                 //
     private String                          resourceDescription = null;                 //
     private String                          sourceName          = null;                 //
     private IAttribute                      prop                = null;                 //
@@ -113,7 +112,7 @@ public class ArrayResource implements BeanResource, IAttribute {
     public synchronized void init() throws Exception {
         this.isInit = true;
         this.caheBeans = new HashMap<String, BeanDefinition>();
-        this.strartInitBeans = new LinkedList<String>(); //
+        this.strartInitBeans = new ArrayList<String>(); //
         this.prop = new AttBase(); //
     }
     @Override
@@ -182,7 +181,7 @@ public class ArrayResource implements BeanResource, IAttribute {
         this.prop.setAttribute(name, value);
     }
     @Override
-    public void reload() throws Exception {
+    public synchronized void reload() throws Exception {
         this.destroy();
         this.init();
     }

@@ -16,9 +16,9 @@
 package org.more.submit.casing.more;
 import java.io.File;
 import java.io.IOException;
+import org.more.beans.BeanContext;
 import org.more.beans.BeanFactory;
-import org.more.beans.core.ResourceBeanFactory;
-import org.more.beans.resource.AnnoXmlFileResource;
+import org.more.beans.core.ContextFactory;
 import org.more.submit.ActionContext;
 import org.more.submit.CasingBuild;
 import org.more.submit.Config;
@@ -63,9 +63,9 @@ public class ClientMoreBuilder extends CasingBuild {
     private void init(File configFile) throws Exception {
         if (configFile.exists() == false || configFile.canRead() == false)
             throw new IOException("配置文件[" + configFile.getAbsolutePath() + "]不存在，或者无法读取。");
-        AnnoXmlFileResource anno = new AnnoXmlFileResource(configFile);
-        anno.reload();
-        this.init(new ResourceBeanFactory(anno, null));
+        BeanContext resource = ContextFactory.create(configFile);//使用ResourceFactory创建一个BeanResource
+        resource.init();
+        this.init(resource);
     }
     private void init(BeanFactory beanFactory) {
         if (beanFactory == null)

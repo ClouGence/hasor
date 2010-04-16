@@ -97,7 +97,7 @@ public class XmlFileResource extends ArrayResource implements BeanResource {
             return null;
         //----
         try {
-            InputStream in = new AutoCloseInputStream(XmlFileResource.class.getResourceAsStream("/META-INF/xsl-list"));
+            InputStream in = new AutoCloseInputStream(XmlFileResource.class.getResourceAsStream("/META-INF/beans-xsl-list"));
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             String str = null;
             ArrayList<Source> sourceList = new ArrayList<Source>();

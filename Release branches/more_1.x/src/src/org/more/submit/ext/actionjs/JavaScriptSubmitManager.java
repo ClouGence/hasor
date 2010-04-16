@@ -38,7 +38,7 @@ import org.more.submit.support.web.WebActionStack;
  * @version 2010-1-7
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@Bean(name = "more_actionjs")
+@Bean(name = "$more_actionjs")
 @Action()
 public class JavaScriptSubmitManager {
     private boolean min = true;
