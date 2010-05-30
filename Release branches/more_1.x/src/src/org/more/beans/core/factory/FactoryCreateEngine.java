@@ -77,6 +77,8 @@ public class FactoryCreateEngine extends CreateEngine {
                 refBeanMethodTypes = new Class[refBeanMethodParam.length];
                 for (int i = 0; i < refBeanMethodParam.length; i++) {
                     BeanProperty beanP = refBeanMethodParam[i];
+                    if (beanP == null)
+                        continue;//ºöÂÔ¿ÕµÄ
                     refBeanMethodTypes[i] = this.propParser.parserType(null, params, beanP.getRefValue(), beanP, definition);
                 }
             }

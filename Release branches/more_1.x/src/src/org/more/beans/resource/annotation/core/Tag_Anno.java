@@ -104,9 +104,11 @@ public class Tag_Anno extends TagProcess {
     }
     public void destroy() {
         this.unLockScan();
-        this.names.clear();
+        if (this.names != null)
+            this.names.clear();
         this.names = null;
-        this.initNames.clear();
+        if (this.initNames != null)
+            this.initNames.clear();
         this.initNames = null;
     }
     public List<String> getScanInitBeansResult() {

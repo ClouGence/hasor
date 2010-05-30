@@ -49,6 +49,8 @@ public class ConstructorCreateEngine extends CreateEngine {
         Object[] classConParams = new Object[beanConParams.length];
         for (int i = 0; i < beanConParams.length; i++) {
             BeanProperty beanP = beanConParams[i];
+            if (beanP == null)
+                continue;//ºöÂÔ¿ÕµÄ
             classConParams[i] = this.propParser.parser(null, params, beanP.getRefValue(), beanP, definition);
         }
         return classConParams;

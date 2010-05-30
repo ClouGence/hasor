@@ -28,6 +28,24 @@ import org.more.util.attribute.IAttribute;
  */
 @SuppressWarnings("unchecked")
 public class JsonObject extends JsonMixed {
+    protected JsonObject(JsonUtil currentContext) {
+        super(currentContext);
+    };
+    /**分离KV，这个函数是专门分离 {}:{}类型的或者[]:{}等组合*/
+    protected int kvIndex(String str) {
+        int depth = 0;
+        //获取最近的一个属性值
+        for (int i = 0; i < str.length(); i++) {
+            char s_temp = str.charAt(i);
+            if (s_temp == ':' && depth == 0)
+                return i;
+            else if (s_temp == '[' || s_temp == '{')
+                depth++;
+            else if (s_temp == ']' || s_temp == '}')
+                depth--;
+        }
+        return -1;
+    }
     @Override
     public Object toObject(String str) {
         StringBuffer sb = new StringBuffer(str);
@@ -49,18 +67,18 @@ public class JsonObject extends JsonMixed {
                 sb = sb.delete(0, readStr.length());
             else
                 sb = sb.delete(0, readStr.length() + 1);
-            //分离key-Value
-            int firstIndex = readStr.indexOf(':');
+            //分离key-Value,如果在分离KV时候返回了-1则会引发数组下标越界异常
+            int firstIndex = this.kvIndex(readStr);
             String key = readStr.substring(0, firstIndex);
             String value = readStr.substring(firstIndex + 1);
             //处理这个字符串数据的类型进行处理。
-            map.put(key, this.passJsonObject(value));
+            map.put(this.passJsonObject(key), this.passJsonObject(value));
         }
         return map;
     }
     @Override
     public String toString(Object bean) {
-        StringBuffer json = new StringBuffer("{");
+        StringBuffer json = new StringBuffer('{');
         if (bean instanceof IAttribute) {
             IAttribute att = (IAttribute) bean;
             String[] ns = att.getAttributeNames();
@@ -73,34 +91,46 @@ public class JsonObject extends JsonMixed {
                 this.appendObject(json, key, map.get(key));
         } else {
             Class<?> type = bean.getClass();
-            Field[] fs = type.getFields();
-            for (int i = 0; i < fs.length; i++) {
-                Field f = fs[i];
-                try {
-                    int access = f.getModifiers();
-                    if ((access | Modifier.PUBLIC) == access)
-                        this.appendObject(json, f.getName(), f.get(i)); //直接访问字段
-                    else {
-                        //转换首字母大写
-                        StringBuffer sb = new StringBuffer(f.getName());
-                        char firstChar = sb.charAt(0);
-                        sb.delete(0, 1);
-                        sb.insert(0, (char) ((firstChar >= 97) ? firstChar - 32 : firstChar));
-                        sb.insert(0, "get");
-                        //通过get/set访问
-                        Method m = type.getMethod(sb.toString());
-                        this.appendObject(json, f.getName(), m.invoke(bean));
-                    }
-                } catch (Exception e) {}
-            }
+            Map<String, Field> fields = new HashMap<String, Field>();
+            //
+            for (Field f : type.getFields())
+                fields.put(f.getName(), f);
+            for (Field f : type.getDeclaredFields())
+                fields.put(f.getName(), f);
+            //
+            for (Field f : fields.values())
+                this.appendField(bean, f, json);
         }
         /*-----*/
-        json.append("}");
+        int index = json.length() - 1;
+        if (json.charAt(index) == ',')
+            json.deleteCharAt(index);
+        json.append('}');
         return json.toString();
     }
+    private void appendField(Object bean, Field field, StringBuffer json) {
+        Class<?> type = bean.getClass();
+        try {
+            int access = field.getModifiers();
+            if ((access | Modifier.PUBLIC) == access)
+                this.appendObject(json, field.getName(), field.get(bean)); //直接访问字段
+            else {
+                //转换首字母大写
+                StringBuffer sb = new StringBuffer(field.getName());
+                char firstChar = sb.charAt(0);
+                sb.delete(0, 1);
+                sb.insert(0, (char) ((firstChar >= 97) ? firstChar - 32 : firstChar));
+                sb.insert(0, "get");
+                //通过get/set访问
+                Method m = type.getMethod(sb.toString());
+                this.appendObject(json, field.getName(), m.invoke(bean));
+            }
+        } catch (Exception e) {}
+    };
     private void appendObject(StringBuffer json, Object key, Object var) {
         json.append(this.passJsonString(key));
-        json.append(":");
+        json.append(':');
         json.append(this.passJsonString(var));
+        json.append(',');
     }
 }

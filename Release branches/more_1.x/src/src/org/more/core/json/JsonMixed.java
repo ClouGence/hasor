@@ -20,6 +20,9 @@ package org.more.core.json;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class JsonMixed extends JsonType {
+    protected JsonMixed(JsonUtil currentContext) {
+        super(currentContext);
+    };
     /**读取第一个属性条目*/
     protected String readJSONString(String str) {
         StringBuffer returnS = new StringBuffer();

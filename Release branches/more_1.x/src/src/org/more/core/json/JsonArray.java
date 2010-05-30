@@ -25,6 +25,9 @@ import java.util.List;
  */
 @SuppressWarnings("unchecked")
 public class JsonArray extends JsonMixed {
+    protected JsonArray(JsonUtil currentContext) {
+        super(currentContext);
+    };
     @Override
     public Object toObject(String str) {
         StringBuffer sb = new StringBuffer(str);
@@ -53,21 +56,28 @@ public class JsonArray extends JsonMixed {
     }
     @Override
     public String toString(Object bean) {
-        StringBuffer json = new StringBuffer("[");
+        StringBuffer json = new StringBuffer('[');
         if (bean instanceof Collection == true) {
             //Collection类型
             Collection coll = (Collection) bean;
             for (Object obj : coll)
-                json.append(this.passJsonString(obj));
+                this.appendObject(json, obj);
         } else if (bean.getClass().isArray() == true) {
             //Array类型
             int length = Array.getLength(bean);
             for (int i = 0; i < length; i++)
-                json.append(this.passJsonString(Array.get(bean, i)));
+                this.appendObject(json, Array.get(bean, i));
         } else
             throw new JsonException("JsonArray不能将一个非Collection类型或者数组类型对象转换为JSON格式array值。");
         /*-----*/
-        json.append("]");
+        int index = json.length() - 1;
+        if (json.charAt(index) == ',')
+            json.deleteCharAt(index);
+        json.append(']');
         return json.toString();
+    }
+    private void appendObject(StringBuffer json, Object var) {
+        json.append(this.passJsonString(var));
+        json.append(',');
     }
 }

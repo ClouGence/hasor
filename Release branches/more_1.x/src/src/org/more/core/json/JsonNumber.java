@@ -21,6 +21,9 @@ import org.more.util.StringConvert;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class JsonNumber extends JsonType {
+    protected JsonNumber(JsonUtil currentContext) {
+        super(currentContext);
+    };
     @Override
     public Object toObject(String str) {
         return StringConvert.parseNumber(str, 0);

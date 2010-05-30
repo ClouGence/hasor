@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.core.json;
+import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,26 +36,35 @@ public class JsonString extends JsonType {
         JsonString.charset.put('\r', "\\\r");
         JsonString.charset.put('\t', "\\\t");
     }
+    protected JsonString(JsonUtil currentContext) {
+        super(currentContext);
+    };
     @Override
     public Object toObject(String str) {
-        StringBuffer sb = new StringBuffer(str);
-        int length = sb.length();
-        sb.substring(1, length - 1);
-        return sb.toString();
+        if (str.charAt(0) == 34 || str.charAt(0) == 39) {
+            StringBuffer sb = new StringBuffer(str);
+            sb.deleteCharAt(0);
+            sb.deleteCharAt(sb.length() - 1);
+            return sb.toString();
+        } else
+            return str;
     }
     @Override
     public String toString(Object bean) {
-        StringReader sr;
+        Reader sr;
         if (bean instanceof String)
             sr = new StringReader((String) bean);
         else if (bean instanceof Character)
             sr = new StringReader(String.valueOf((Character) bean));
         else if (bean instanceof CharSequence)
             sr = new StringReader(((CharSequence) bean).toString());
+        else if (bean instanceof Reader)
+            sr = (Reader) bean;
         else
-            throw new JsonException("无效字符串对象。");
+            throw new JsonException("字符串对象不属于下面类型之一String、Character、CharSequence、Reader");
         //
-        StringBuffer sb = new StringBuffer("\"");
+        StringBuffer sb = new StringBuffer();
+        sb.append(this.getCurrentContext().getStringBorder());
         try {
             while (true) {
                 int c_read = sr.read();
@@ -67,7 +77,7 @@ public class JsonString extends JsonType {
                     sb.append(c);
             }
         } catch (Exception e) {}
-        sb.append("\"");
+        sb.append(this.getCurrentContext().getStringBorder());
         return sb.toString();
     }
 }

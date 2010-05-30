@@ -22,6 +22,13 @@ import java.util.Collection;
  */
 @SuppressWarnings("unchecked")
 public abstract class JsonType {
+    private JsonUtil currentContext;
+    protected JsonUtil getCurrentContext() {
+        return currentContext;
+    };
+    protected JsonType(JsonUtil currentContext) {
+        this.currentContext = currentContext;
+    };
     /***/
     public abstract String toString(Object bean);
     /***/
@@ -37,17 +44,19 @@ public abstract class JsonType {
                 return true;
             else if (readStr.equals("false"))
                 return false;
-            else if (readStr.charAt(0) == '\"' || readStr.charAt(0) == '\'')
-                return new JsonString().toObject(readStr);
+            else if (readStr.charAt(0) == 34 || readStr.charAt(0) == 39)
+                return new JsonString(this.currentContext).toObject(readStr);
             else if (readStr.charAt(0) == '[')
-                return new JsonArray().toObject(readStr);
+                return new JsonArray(this.currentContext).toObject(readStr);
             else if (readStr.charAt(0) == '{')
-                return new JsonObject().toObject(readStr);
+                return new JsonObject(this.currentContext).toObject(readStr);
+            else if (readStr.charAt(0) >= 30 && readStr.charAt(0) <= 39)
+                return new JsonNumber(this.currentContext).toObject(readStr);
             else
-                return new JsonNumber().toObject(readStr);
+                return new JsonString(this.currentContext).toObject(readStr);
         } else
             throw new JsonException("json数据字符串不能为空。");
-    }
+    };
     /***/
     protected String passJsonString(Object object) {
         //处理这个字符串数据的类型进行处理。
@@ -56,12 +65,12 @@ public abstract class JsonType {
         else if (object instanceof Boolean)
             return (((Boolean) object) == true) ? "true" : "false";
         else if (object instanceof String || object instanceof Character || object instanceof CharSequence)
-            return new JsonString().toString(object);
+            return new JsonString(this.currentContext).toString(object);
         else if (object instanceof Collection || object.getClass().isArray() == true)
-            return new JsonArray().toString(object);
+            return new JsonArray(this.currentContext).toString(object);
         else if (object instanceof Number)
-            return new JsonNumber().toString(object);
+            return new JsonNumber(this.currentContext).toString(object);
         else
-            return new JsonObject().toString(object);
-    }
-}
+            return new JsonObject(this.currentContext).toString(object);
+    };
+};

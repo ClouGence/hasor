@@ -50,7 +50,7 @@ class PropxyActionInvoke implements ActionInvoke {
             }
         }
         if (method == null)//如果找不到方法则引发异常
-            throw new NoDefinitionException("无法在类[" + type + "]中找到方法" + this.invoke);
+            throw new NoDefinitionException("无法在类[" + type + "]中找到Action方法" + this.invoke);
         return method.invoke(target, stack);
     }
 }

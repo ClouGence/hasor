@@ -36,12 +36,12 @@ public class ArrayResource implements BeanResource, IAttribute {
     //========================================================================================Field
     /**  */
     private static final long               serialVersionUID    = -1650492842757900558L;
-    private HashMap<String, BeanDefinition> caheBeans           = null;
-    private ArrayList<String>               strartInitBeans     = null;                 //
-    private String                          resourceDescription = null;                 //
-    private String                          sourceName          = null;                 //
-    private IAttribute                      prop                = null;                 //
-    private boolean                         isInit              = false;                //
+    private HashMap<String, BeanDefinition> caheBeans           = new HashMap<String, BeanDefinition>();
+    private ArrayList<String>               strartInitBeans     = new ArrayList<String>();              //
+    private String                          resourceDescription = null;                                 //
+    private String                          sourceName          = null;                                 //
+    private IAttribute                      prop                = new AttBase();                        //
+    private boolean                         isInit              = false;                                //
     /**当执行了init方法之后该值是true，当执行了destroy之后该值就是false。*/
     public boolean isInit() {
         return isInit;

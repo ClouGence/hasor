@@ -54,12 +54,12 @@ public class AnnoXmlFileResource extends XmlFileResource {
         super(xmlURI);
     };
     //=====================================================================================Job Core
-    private Tag_Anno            annoTag  = new Tag_Anno();
-    private Scan_ClassAnno      annoScan = new Scan_ClassAnno();
+    private final Tag_Anno       annoTag             = new Tag_Anno();
+    private final Scan_ClassAnno annoScan            = new Scan_ClassAnno();
     /**所有的bean名称*/
-    private Map<String, String> annoBeanNameMap;
+    private Map<String, String>  annoBeanNameMap     = null;
     /**所有要求启动装载的bean名称*/
-    private List<String>        annoStrartInitBeans;
+    private List<String>         annoStrartInitBeans = null;
     /*-------------------------------------------------*/
     protected void anotherClassAnnoEngine(Scan_ClassAnno annoEngine) {}
     @Override
