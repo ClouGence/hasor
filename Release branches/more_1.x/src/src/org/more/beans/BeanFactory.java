@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.more.beans;
+import java.util.List;
+import org.more.beans.info.BeanDefinition;
 import org.more.util.attribute.IAttribute;
 /**
  * 这个接口是More的Bean容器的根接口，BeanFactory的子接口可以用于特定目的进行实现。<br/><br/>
@@ -24,6 +26,18 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface BeanFactory extends IAttribute {
+    /**
+     * 获取{@link BeanFactory}中可以索引到的所有bean定义名称集合，如果获取不到任何名称则需要返回一个空集合。
+     * @return 返回获取到的所有bean定义名称集合。
+     */
+    public List<String> getBeanDefinitionNames();
+    /**
+     * 获取bean的定义，在Bean的定义中只包括属于当前bean的元信息。
+     * 如果当前bean的属性注入需要依赖其他bean则获取其他bean的定义需要重新调用getBeanDefinition方法进行获取。
+     * @param name 要获取bean定义的bean名称。
+     * @return 返回bean定义，如果获取不到指定的bean定义则返回null。
+     */
+    public BeanDefinition getBeanDefinition(String name);
     /**
      * 获取BeanFactory所使用的Bean定义资源，该资源对象可以提供有关Bean定义信息。
      * @return 返回BeanFactory所使用的Bean定义资源，该资源对象可以提供有关Bean定义信息。

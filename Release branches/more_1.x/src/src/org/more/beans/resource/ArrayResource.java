@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import org.more.DoesSupportException;
 import org.more.InvokeException;
-import org.more.NoDefinitionException;
 import org.more.RepeateException;
 import org.more.beans.BeanResource;
 import org.more.beans.info.BeanDefinition;
@@ -35,17 +34,12 @@ import org.more.util.attribute.IAttribute;
 public class ArrayResource implements BeanResource, IAttribute {
     //========================================================================================Field
     /**  */
-    private static final long               serialVersionUID    = -1650492842757900558L;
-    private HashMap<String, BeanDefinition> caheBeans           = new HashMap<String, BeanDefinition>();
-    private ArrayList<String>               strartInitBeans     = new ArrayList<String>();              //
-    private String                          resourceDescription = null;                                 //
-    private String                          sourceName          = null;                                 //
-    private IAttribute                      prop                = new AttBase();                        //
-    private boolean                         isInit              = false;                                //
-    /**当执行了init方法之后该值是true，当执行了destroy之后该值就是false。*/
-    public boolean isInit() {
-        return isInit;
-    }
+    private static final long                     serialVersionUID    = -1650492842757900558L;
+    private final HashMap<String, BeanDefinition> caheBeans           = new HashMap<String, BeanDefinition>();
+    private final ArrayList<String>               strartInitBeans     = new ArrayList<String>();              //
+    private String                                resourceDescription = null;                                 //
+    private String                                sourceName          = null;                                 //
+    private final IAttribute                      prop                = new AttBase();                        //
     //==================================================================================Constructor
     public ArrayResource(String sourceName, BeanDefinition[] definition) {
         if (definition != null)
@@ -62,7 +56,7 @@ public class ArrayResource implements BeanResource, IAttribute {
         return this.caheBeans.containsKey(name);
     }
     @Override
-    public BeanDefinition getBeanDefinition(String name) {
+    public final BeanDefinition getBeanDefinition(String name) {
         if (this.caheBeans.containsKey(name) == true)
             return this.caheBeans.get(name);
         try {
@@ -74,14 +68,15 @@ public class ArrayResource implements BeanResource, IAttribute {
                 throw (RuntimeException) e;
             throw new InvokeException(e);
         }
-        throw new NoDefinitionException("不存在名称为[" + name + "]的bean定义。");
+        return null;
     }
     @Override
     public List<String> getBeanDefinitionNames() {
         return new ArrayList<String>(caheBeans.keySet());
     }
+    /**子类可以通过重写该方法来决定寻找Bean定义的具体代码。*/
     protected BeanDefinition findBeanDefinition(String name) throws Exception {
-        return null;
+        return this.caheBeans.get(name);
     }
     //==========================================================================================Job
     @Override
@@ -91,39 +86,40 @@ public class ArrayResource implements BeanResource, IAttribute {
     /**增加一个bean定义到bean定义静态缓存区，该方法不会检查bean名称重复问题。*/
     public void addBeanDefinition(BeanDefinition beanDef) {
         String name = beanDef.getName();
-        if (this.caheBeans.containsKey(name) == true) {
+        if (this.caheBeans.containsKey(name) == true)
             throw new RepeateException("无法新增名称为[" + name + "]的bean定义，原因是已经存在了一个同样名称的bean定义。");
-        } else
+        else
             this.caheBeans.put(beanDef.getName(), beanDef);
     }
     /**从静态缓存区删除一个bean定义。*/
     public void removeBeanDefinition(String beanDefName) {
         this.caheBeans.remove(beanDefName);
     }
+    private boolean init = false;
+    protected boolean isInit() {
+        return init;
+    }
     @Override
     public synchronized void destroy() {
-        this.prop.clearAttribute();
         this.caheBeans.clear();
         this.strartInitBeans.clear();
+        this.prop.clearAttribute();
         this.resourceDescription = null;
-        this.isInit = false;
+        this.init = false;
     }
     @Override
     public synchronized void init() throws Exception {
-        this.isInit = true;
-        this.caheBeans = new HashMap<String, BeanDefinition>();
-        this.strartInitBeans = new ArrayList<String>(); //
-        this.prop = new AttBase(); //
-    }
+        this.init = true;
+    };
     @Override
     public synchronized void clearCache() throws DoesSupportException {
         throw new DoesSupportException("ArrayResource类型资源对象不支持该方法。");
-    }
+    };
     @Override
     public boolean isFactory(String name) {
         BeanDefinition b = this.getBeanDefinition(name);
         return (b.getCreateType() == CreateTypeEnum.Factory) ? true : false;
-    }
+    };
     @Override
     public boolean isPrototype(String name) {
         BeanDefinition b = this.getBeanDefinition(name);

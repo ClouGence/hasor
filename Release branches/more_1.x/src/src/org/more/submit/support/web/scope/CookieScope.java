@@ -52,9 +52,10 @@ public class CookieScope implements IAttribute {
     @Override
     public Object getAttribute(String name) {
         Cookie[] cs = this.request.getCookies();
-        for (int i = 0; i < cs.length; i++)
-            if (cs[i].equals(name) == true)
-                return cs[i].getValue();
+        if (cs != null)
+            for (int i = 0; i < cs.length; i++)
+                if (cs[i].equals(name) == true)
+                    return cs[i].getValue();
         return null;
     }
     @Override

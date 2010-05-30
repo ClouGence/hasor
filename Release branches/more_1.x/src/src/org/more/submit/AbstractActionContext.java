@@ -75,7 +75,7 @@ public abstract class AbstractActionContext implements ActionContext {
     }
     @Override
     public ActionInvoke findAction(String actionName, String invoke) throws NoDefinitionException, CastException {
-        if (containsAction(actionName) == false)
+        if (this.containsAction(actionName) == false)
             throw new NoDefinitionException("找不到名称为[" + actionName + "]的Action。");
         //3.对象检测 CastException
         Object actionObject = this.objectFactory.findObject(actionName);

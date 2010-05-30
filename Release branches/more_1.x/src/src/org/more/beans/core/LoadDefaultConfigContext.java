@@ -23,17 +23,9 @@ import org.more.beans.resource.ResourceFactory;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class LoadDefaultConfigContext extends AbstractBeanContext {
-    //==================================================================================Constructor
     public LoadDefaultConfigContext() throws Exception {
-        this.init();
-    }
-    //=============================================================================Impl BeanContext
-    @Override
-    public void init() throws Exception {
         URL configURL = LoadDefaultConfigContext.class.getResource("/META-INF/default-more-config.xml");
         BeanResource resource = ResourceFactory.create(configURL.toURI());
-        resource.reload();
-        defaultBeanFactory = new ResourceBeanFactory(resource);
-        super.init();
+        this.defaultBeanFactory = new ResourceBeanFactory(resource);
     }
 }

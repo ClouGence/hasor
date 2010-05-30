@@ -16,7 +16,6 @@
 package org.more.submit.casing.more;
 import org.more.NoDefinitionException;
 import org.more.beans.BeanFactory;
-import org.more.beans.BeanResource;
 import org.more.beans.info.BeanDefinition;
 import org.more.submit.AbstractActionContext;
 import org.more.submit.ActionObjectFactory;
@@ -28,17 +27,15 @@ import org.more.util.StringConvert;
  */
 public class MoreActionContext extends AbstractActionContext {
     //========================================================================================Field
-    private BeanFactory  factory  = null;
-    private BeanResource resource = null;
+    private BeanFactory factory = null;
     //==================================================================================Constructor
     public MoreActionContext(BeanFactory factory) {
         this.factory = factory;
-        this.resource = factory.getBeanResource();
     }
     //==========================================================================================Job
     @Override
     protected boolean testActionMark(String actionName) throws NoDefinitionException {
-        BeanDefinition bd = this.resource.getBeanDefinition(actionName);
+        BeanDefinition bd = this.factory.getBeanDefinition(actionName);
         Object objs = bd.getAttribute("isAction");
         String is = (objs == null) ? "false" : objs.toString();
         if (StringConvert.parseBoolean(is, false) == false)
@@ -48,7 +45,7 @@ public class MoreActionContext extends AbstractActionContext {
     }
     @Override
     protected boolean testActionName(String name) throws NoDefinitionException {
-        return this.resource.containsBeanDefinition(name);
+        return this.factory.contains(name);
     }
     private MoreActionObjectFactory objectFactory;
     @Override

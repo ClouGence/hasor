@@ -132,19 +132,19 @@ public class XmlFileResource extends ArrayResource implements BeanResource {
     /**/
     /*-------------------------------------------------------------------------------------------*/
     /**XML解析引擎*/
-    protected XmlEngine                     xmlEngine = new XmlEngine();
+    protected XmlEngine                           xmlEngine          = new XmlEngine();
     /*-------------------------------------------------------*/
     /**所有的bean名称*/
-    private List<String>                    xmlBeanNames;
+    private final List<String>                    xmlBeanNames       = new ArrayList<String>();
     /**所有要求启动装载的bean名称*/
-    private List<String>                    xmlStrartInitBeans;
+    private final List<String>                    xmlStrartInitBeans = new ArrayList<String>();
     /*-------------------------------------------------------*/
     /**动态缓存对象数目。*/
-    private int                             dynamicCacheSize;
+    private int                                   dynamicCacheSize   = 50;
     /**动态缓存对象。*/
-    private HashMap<String, BeanDefinition> dynamicCache;
+    private final HashMap<String, BeanDefinition> dynamicCache       = new HashMap<String, BeanDefinition>(); //动态缓存对象。
     /**动态缓存对象名称集合*/
-    private LinkedList<String>              dynamicCacheNames;
+    private final LinkedList<String>              dynamicCacheNames  = new LinkedList<String>();             //动态缓存对象名称集合
     //=======================================================Protected
     protected void putDynamicCache(BeanDefinition bean) {
         if (dynamicCacheNames.size() >= this.dynamicCacheSize)
@@ -158,12 +158,6 @@ public class XmlFileResource extends ArrayResource implements BeanResource {
         return this.xmlEngine.runTask(this.getXmlInputStream(), task, processXPath, params);
     };
     //=============================================================Job
-    /** 如果已经初始化则执行销毁在执行初始化。*/
-    public synchronized void reload() throws Exception {
-        if (this.isInit() == true)
-            this.destroy();
-        this.init();
-    }
     public synchronized void init() throws Exception {
         if (this.isInit() == true)
             return;
@@ -173,8 +167,6 @@ public class XmlFileResource extends ArrayResource implements BeanResource {
         if (validator != null)
             throw new FormatException("Schema验证失败", validator);
         /*----------------------------------------------二、初始化必要属性*/
-        this.dynamicCache = new HashMap<String, BeanDefinition>();//动态缓存对象。
-        this.dynamicCacheNames = new LinkedList<String>();//动态缓存对象名称集合
         this.setSourceName(this.sourceURI.toString());
         /*----------------------------------------------三、读取标签配置*/
         Properties tag = new Properties();
@@ -198,30 +190,27 @@ public class XmlFileResource extends ArrayResource implements BeanResource {
         HashMap<String, BeanDefinition> staticCache = (HashMap<String, BeanDefinition>) att.get("beanList");//获取静态bean缓存
         for (BeanDefinition b : staticCache.values())
             this.addBeanDefinition(b);
-        this.xmlBeanNames = (List<String>) att.get("allNames");//获取所有bean名。
-        this.xmlStrartInitBeans = (List<String>) att.get("initBean");//获取所有要求初始化的bean名。
+        this.xmlBeanNames.addAll((List<String>) att.get("allNames"));//获取所有bean名。
+        this.xmlStrartInitBeans.addAll((List<String>) att.get("initBean"));//获取所有要求初始化的bean名。
     };
     @Override
     public synchronized void destroy() {
+        if (this.isInit() == false)
+            return;
         this.clearCache();
         this.clearAttribute();
+        this.xmlEngine.destroy();
+        this.xmlStrartInitBeans.clear();
         this.xmlBeanNames.clear();//所有的bean名称
-        this.xmlBeanNames = null;//所有的bean名称
         this.dynamicCacheSize = 50;//动态缓存对象数目。
         this.dynamicCache.clear();//动态缓存对象。
-        this.dynamicCache = null;//动态缓存对象。
         this.dynamicCacheNames.clear();//动态缓存对象名称集合
-        this.dynamicCacheNames = null;//动态缓存对象名称集合
-        this.xmlStrartInitBeans.clear();
-        this.xmlStrartInitBeans = null;
-        this.xmlEngine.destroy();
         super.destroy();
     };
     @Override
     public synchronized void clearCache() throws DoesSupportException {
         this.dynamicCacheNames.clear();
         this.dynamicCache.clear();
-        super.clearCache();
     }
     @Override
     public boolean containsBeanDefinition(String name) {

@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 package org.more.beans.core;
+import java.util.ArrayList;
+import java.util.List;
 import org.more.beans.BeanContext;
 import org.more.beans.BeanFactory;
 import org.more.beans.BeanResource;
+import org.more.beans.info.BeanDefinition;
 /**
  * 基本的BeanContext接口实现。
  * @version 2010-2-26
@@ -42,6 +45,22 @@ public abstract class AbstractBeanContext implements BeanContext {
     }
     public void setParent(BeanContext parent) {
         this.parent = parent;
+    }
+    @Override
+    public List<String> getBeanDefinitionNames() {
+        ArrayList<String> al = new ArrayList<String>();
+        al.addAll(this.defaultBeanFactory.getBeanDefinitionNames());
+        if (this.parent != null)
+            al.addAll(this.parent.getBeanDefinitionNames());
+        return al;
+    }
+    @Override
+    public BeanDefinition getBeanDefinition(String name) {
+        BeanDefinition bd = this.defaultBeanFactory.getBeanDefinition(name);
+        if (bd == null && parent != null)
+            return this.parent.getBeanDefinition(name);
+        else
+            return bd;
     }
     @Override
     public boolean containsBean(String name) {
@@ -102,7 +121,7 @@ public abstract class AbstractBeanContext implements BeanContext {
     }
     @Override
     public boolean contains(String name) {
-        return this.defaultBeanFactory.contains(name);
+        return this.containsBean(name);
     }
     @Override
     public void clearAttribute() {

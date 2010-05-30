@@ -27,34 +27,41 @@ import org.more.beans.resource.ResourceFactory;
  */
 public class ResourceFactoryContext extends AbstractBeanContext {
     //==================================================================================Constructor
+    public ResourceFactoryContext() throws Exception {
+        this.setParent(new LoadDefaultConfigContext());
+    }
     /**创建ResourceFactoryContext对象。*/
     public ResourceFactoryContext(BeanFactory beanFactory) throws Exception {
+        this();
         defaultBeanFactory = beanFactory;
-        this.init();
     }
     /**创建ResourceFactoryContext对象。*/
     public ResourceFactoryContext(BeanResource beanResource) throws Exception {
-        beanResource.reload();
+        this();
         defaultBeanFactory = new ResourceBeanFactory(beanResource);
-        this.init();
     }
     /**创建ResourceFactoryContext对象。*/
     public ResourceFactoryContext(File configFile) throws Exception {
+        this();
         BeanResource beanResource = ResourceFactory.create(configFile);
-        beanResource.reload();
         defaultBeanFactory = new ResourceBeanFactory(beanResource);
-        this.init();
     }
     /**创建ResourceFactoryContext对象。*/
     public ResourceFactoryContext(URI configURI) throws Exception {
+        this();
         BeanResource beanResource = ResourceFactory.create(configURI);
-        beanResource.reload();
         defaultBeanFactory = new ResourceBeanFactory(beanResource);
-        this.init();
+    }
+    @Override
+    public void destroy() throws Exception {
+        if (this.getParent() instanceof LoadDefaultConfigContext)
+            this.getParent().destroy();
+        super.destroy();
     }
     @Override
     public void init() throws Exception {
-        this.setParent(new LoadDefaultConfigContext());
+        if (this.getParent() instanceof LoadDefaultConfigContext)
+            this.getParent().init();
         super.init();
     }
 }

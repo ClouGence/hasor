@@ -49,7 +49,7 @@ class MoreActionObjectFactory implements ActionObjectFactory {
     };
     @Override
     public Iterator<String> getObjectNameIterator() {
-        return this.factory.getBeanResource().getBeanDefinitionNames().iterator();
+        return this.factory.getBeanDefinitionNames().iterator();
     }
     @Override
     public Class<?> getObjectType(String name) {
@@ -68,7 +68,7 @@ class MoreActionObjectFactory implements ActionObjectFactory {
     };
     @Override
     public Iterator<String> getPublicFilterNames(String actionName) {
-        List<String> beans = this.factory.getBeanResource().getBeanDefinitionNames();//获取所有bean名称集合
+        List<String> beans = this.factory.getBeanDefinitionNames();//获取所有bean名称集合
         ArrayList<String> ns = new ArrayList<String>(beans);//新建名称集合，并且同步内容在beans。
         for (String n : beans) {
             //循环遍历删除所有没有配置为共有过滤器的名称
@@ -76,7 +76,7 @@ class MoreActionObjectFactory implements ActionObjectFactory {
             if (filter != null)
                 if (filter.isPublic() == true)
                     continue;
-            Object strIsPublicFilter = this.factory.getBeanResource().getBeanDefinition(n).getAttribute("isPublicFilter");
+            Object strIsPublicFilter = this.factory.getBeanDefinition(n).getAttribute("isPublicFilter");
             if (strIsPublicFilter == null || strIsPublicFilter.toString().equals("true") == false)
                 ns.remove(n);
         }
@@ -84,7 +84,7 @@ class MoreActionObjectFactory implements ActionObjectFactory {
     };
     @Override
     public Iterator<String> getPrivateFilterNames(String actionName) {
-        BeanDefinition beanDefinition = this.factory.getBeanResource().getBeanDefinition(actionName);
+        BeanDefinition beanDefinition = this.factory.getBeanDefinition(actionName);
         Object privateFilters = beanDefinition.getAttribute("actionFilters");
         if (privateFilters == null)
             return new ArrayList<String>(0).iterator();

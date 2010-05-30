@@ -57,9 +57,9 @@ public class AnnoXmlFileResource extends XmlFileResource {
     private final Tag_Anno       annoTag             = new Tag_Anno();
     private final Scan_ClassAnno annoScan            = new Scan_ClassAnno();
     /**所有的bean名称*/
-    private Map<String, String>  annoBeanNameMap     = null;
+    private Map<String, String>  annoBeanNameMap     = new HashMap<String, String>();
     /**所有要求启动装载的bean名称*/
-    private List<String>         annoStrartInitBeans = null;
+    private List<String>         annoStrartInitBeans = new LinkedList<String>();
     /*-------------------------------------------------*/
     protected void anotherClassAnnoEngine(Scan_ClassAnno annoEngine) {}
     @Override
@@ -73,12 +73,8 @@ public class AnnoXmlFileResource extends XmlFileResource {
         if (this.isInit() == true)
             return;
         super.init();//执行初始化方法，在初始化时会自动调用到anno标签处理函数。
-        this.annoBeanNameMap = this.annoTag.getScanBeansResult();//获取扫描到的bean名称与类名映射结果
-        this.annoStrartInitBeans = this.annoTag.getScanInitBeansResult();//获取要求初始化的bean名结果。
-        if (this.annoBeanNameMap == null)
-            this.annoBeanNameMap = new HashMap<String, String>();
-        if (this.annoStrartInitBeans == null)
-            this.annoStrartInitBeans = new LinkedList<String>();
+        this.annoBeanNameMap.putAll(this.annoTag.getScanBeansResult());//获取扫描到的bean名称与类名映射结果
+        this.annoStrartInitBeans.addAll(this.annoTag.getScanInitBeansResult());//获取要求初始化的bean名结果。
         this.annoTag.lockScan();//锁定扫描结果，在解锁前不在处理anno:anno扫描标签的扫描操作。
         this.annoScan.init();
         Properties tag = new Properties();
@@ -92,11 +88,11 @@ public class AnnoXmlFileResource extends XmlFileResource {
     };
     @Override
     public synchronized void destroy() {
+        if (this.isInit() == false)
+            return;
         this.annoTag.unLockScan();//解锁扫描结果锁定。
         this.annoBeanNameMap.clear();
-        this.annoBeanNameMap = null;
         this.annoStrartInitBeans.clear();
-        this.annoStrartInitBeans = null;
         this.annoTag.destroy();//启动标签销毁
         this.annoScan.destroy();
         super.destroy();

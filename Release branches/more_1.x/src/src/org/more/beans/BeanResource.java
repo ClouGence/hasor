@@ -93,12 +93,10 @@ public interface BeanResource {
      * @return 返回测试结果，如果是以原型模式创建则返回true,否则返回false。
      */
     public boolean isFactory(String name);
-    /**初始化BeanResource接口。*/
+    /**初始化BeanResource接口，如果重复调用init可能引发一些意外异常。*/
     public void init() throws Exception;
     /**销毁BeanResource接口。*/
     public void destroy() throws Exception;
     /** 如果已经初始化则执行销毁在执行初始化。*/
     public void reload() throws Exception;
-    /**是否已经进行初始化*/
-    public boolean isInit();
-}
+};

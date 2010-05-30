@@ -43,24 +43,24 @@ import org.more.util.attribute.KeepAttDecorator;
  */
 public class ResourceBeanFactory implements BeanFactory {
     /**  */
-    private static final long       serialVersionUID   = -2164352693306612896L;
+    private static final long             serialVersionUID   = -2164352693306612896L;
     //========================================================================================Field
-    private BeanResource            resource           = null;                         //Bean资源
-    private HashMap<String, Object> singletonBeanCache = new HashMap<String, Object>(); //用于保存单态bean
-    private ClassLoader             loader             = null;                         //类装载
-    /**负责对象创建*/
-    protected CreateFactory         createFactory      = null;
-    /**负责对象依赖注入*/
-    protected InjectionFactory      injectionFactory   = null;
+    private BeanResource                  resource           = null;                                 //Bean资源
+    private final HashMap<String, Object> singletonBeanCache = new HashMap<String, Object>();        //用于保存单态bean
+    private ClassLoader                   loader             = null;                                 //类装载
     /**属性解析器，专门负责解析BeanProperty属性对象。*/
-    protected MainPropertyParser    propParser         = null;
+    protected MainPropertyParser          propParser         = new MainPropertyParser(this);
+    /**负责对象创建*/
+    protected CreateFactory               createFactory      = new CreateFactory(this.propParser);
+    /**负责对象依赖注入*/
+    protected InjectionFactory            injectionFactory   = new InjectionFactory(this.propParser);
     /**
      * 环境属性集合，ResourceBeanFactory在构造方法中会自动将this加入属性集合中，
      * 并且配置this为保持属性，作为保持属性不可以被覆写，有关保持属性请参阅
      *  {@link org.more.util.attribute.KeepAttDecorator}。
      * 环境属性使用{#name}可以注入这个属性
      */
-    protected IAttribute            attribute          = null;
+    protected IAttribute                  attribute          = null;
     //==================================================================================Constructor
     /**
      * 创建ResourceBeanFactory类型对象，创建该对象必须指定resource参数否则回引发NullPointerException异常。
@@ -77,14 +77,11 @@ public class ResourceBeanFactory implements BeanFactory {
     public ResourceBeanFactory(BeanResource resource, ClassLoader loader) throws Exception {
         if (resource == null)
             throw new NullPointerException("参数resource不能为空。");
-        else if (resource.isInit() == false)
-            resource.init();
         //确定使用哪个loader。
         if (loader == null)
             this.loader = Thread.currentThread().getContextClassLoader();
         this.resource = resource;
-        this.init();
-    }
+    };
     //==========================================================================================Job
     /**该方法主要用于Factory方式处理Ioc时候无法获取属性类型解析器对象而设立。*/
     MainPropertyParser getPropParser() {
@@ -92,7 +89,7 @@ public class ResourceBeanFactory implements BeanFactory {
     }
     /**清空所有Bean缓存，并且重新装载lazyInit属性为false的bean。*/
     public void reload() throws Exception {
-        clearBeanCache();//清空缓存
+        this.clearBeanCache();//清空缓存
         this.init();//重新初始化
     }
     /**清空所有Bean缓存并且通知resource对象清空缓存，该方法不会导致重新装载配置了lazyInit属性的bean。*/
@@ -105,14 +102,15 @@ public class ResourceBeanFactory implements BeanFactory {
     /**初始化设置了lazyInit属性为false的bean并且这些bean一定是单态的。*/
     @Override
     public void init() throws Exception {
-        this.propParser = new MainPropertyParser(this);//属性解析器，专门负责解析BeanProperty属性对象。
-        this.createFactory = new CreateFactory(this.propParser);//负责对象创建
-        this.injectionFactory = new InjectionFactory(this.propParser);//负责对象依赖注入
+        this.resource.init();
         //创建环境属性对象，并且加装保持装饰器。
         KeepAttDecorator kad = new KeepAttDecorator(new AttBase());
         kad.setAttribute("this", this);//设置关键字this。
         kad.setKeep("this", true);//设置关键字this为保持属性，不可更改。
         this.attribute = kad;
+        this.createFactory = new CreateFactory(this.propParser); //负责对象创建
+        this.injectionFactory = new InjectionFactory(this.propParser); //负责对象依赖注入
+        this.propParser = new MainPropertyParser(this); //属性解析器，专门负责解析BeanProperty属性对象。
         //初始化设置了lazyInit属性为false的bean并且这些bean一定是单态的。
         List<String> initBeanNames = this.resource.getStrartInitBeanDefinitionNames();
         if (initBeanNames == null)
@@ -123,17 +121,24 @@ public class ResourceBeanFactory implements BeanFactory {
     }
     @Override
     public void destroy() throws Exception {
-        this.attribute.clearAttribute();
         this.clearBeanCache();
         this.resource.destroy();
-        this.propParser = null;
+        this.attribute.clearAttribute();
         this.createFactory = null;
         this.injectionFactory = null;
-        this.attribute = null;
+        this.propParser = null;
+    }
+    @Override
+    public List<String> getBeanDefinitionNames() {
+        return this.resource.getBeanDefinitionNames();
+    }
+    @Override
+    public BeanDefinition getBeanDefinition(String name) {
+        return this.resource.getBeanDefinition(name);
     }
     @Override
     public boolean containsBean(String name) {
-        if (singletonBeanCache.containsKey(name) == true)
+        if (this.singletonBeanCache.containsKey(name) == true)
             return true;
         else
             return this.resource.containsBeanDefinition(name);
@@ -176,8 +181,10 @@ public class ResourceBeanFactory implements BeanFactory {
     public ClassLoader getBeanClassLoader() {
         return this.loader;
     }
+    /**当设置为null时自动使用当前上下文的ClassLoader作为替换。*/
     public void setLoader(ClassLoader loader) {
-        this.loader = loader;
+        if (loader != null)
+            this.loader = Thread.currentThread().getContextClassLoader();
     }
     @Override
     public BeanResource getBeanResource() {

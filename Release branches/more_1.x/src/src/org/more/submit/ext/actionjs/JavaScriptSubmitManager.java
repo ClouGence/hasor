@@ -25,12 +25,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.more.CastException;
-import org.more.beans.resource.annotation.Bean;
 import org.more.core.copybean.CopyBeanUtil;
 import org.more.core.json.JsonUtil;
 import org.more.submit.ActionContext;
 import org.more.submit.ActionStack;
-import org.more.submit.annotation.Action;
 import org.more.submit.support.web.ActionTag;
 import org.more.submit.support.web.WebActionStack;
 /**
@@ -38,8 +36,6 @@ import org.more.submit.support.web.WebActionStack;
  * @version 2010-1-7
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@Bean(name = "$more_actionjs")
-@Action()
 public class JavaScriptSubmitManager {
     private boolean min = true;
     public void setMin(boolean min) {

@@ -10,5 +10,4 @@
 		<property name="min" type="boolean" value="false" />
 		<meta key="isAction" value="true" />
 	</bean>
-
 </beans>
