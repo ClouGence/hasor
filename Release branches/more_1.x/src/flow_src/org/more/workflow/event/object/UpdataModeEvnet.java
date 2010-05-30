@@ -15,6 +15,8 @@
  */
 package org.more.workflow.event.object;
 import org.more.workflow.event.Event;
+import org.more.workflow.event.EventPhase;
+import org.more.workflow.metadata.AbstractMetadata;
 /**
  * 当模型被更新时。
  * Date : 2010-5-21
@@ -23,8 +25,17 @@ import org.more.workflow.event.Event;
 public class UpdataModeEvnet extends Event {
     /**  */
     private static final long serialVersionUID = 5010075302608463391L;
+    private AbstractMetadata  metadata;
     /**当模型被更新时。*/
-    public UpdataModeEvnet(String eventID, Object target) {
-        super(eventID, target);
+    public UpdataModeEvnet(Object targetMode, AbstractMetadata metadata) {
+        super("UpdataModeEvnet", targetMode);
+        this.metadata = metadata;
+    };
+    @Override
+    protected EventPhase[] createEventPhase() {
+        return null;
+    };
+    public AbstractMetadata getMetadata() {
+        return metadata;
     };
 };

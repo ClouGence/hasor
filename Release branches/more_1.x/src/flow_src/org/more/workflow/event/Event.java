@@ -19,19 +19,21 @@ import java.util.Date;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**
- * 事件对象，用于标记一个特定时间发生的事情，处理该事件时将会分为处理前，处理中，处理后。
- * Date : 2010-5-16
+ * 事件对象workflow系统中的所有事件都必须实现该接口，其子类可以决定事件具体有哪些。
+ * 提示：事件和事件阶段都可以携带属性，它们之间的属性不会互相影响。
+ * Date : 2010-5-24
  * @author 赵永春
  */
 public abstract class Event implements Serializable, IAttribute {
     //========================================================================================Field
-    private static final long serialVersionUID = 8851774714640209392L;
+    private static final long  serialVersionUID = 8851774714640209392L;
     /**  */
-    private final String      eventID;                                //事件ID
-    private String            eventMessage;                           //事件信息
-    private final Object      target;                                 //事件源对象
-    private final Date        atTime           = new Date();          //发生时间
-    private final AttBase     attMap           = new AttBase();       //用于保存事件的属性对象。
+    private final String       eventID;                                //事件ID
+    private String             eventMessage;                           //事件信息
+    private final Object       target;                                 //事件源对象
+    private final AttBase      attMap           = new AttBase();
+    private final Date         atTime           = new Date();          //发生时间
+    private final EventPhase[] eventPhase;
     //==================================================================================Constructor
     /**
      * 创建Event对象。
@@ -39,9 +41,7 @@ public abstract class Event implements Serializable, IAttribute {
      * @param target 事件源对象
      */
     public Event(String eventID, Object target) {
-        this.eventID = eventID;
-        this.target = target;
-        this.eventMessage = null;
+        this(eventID, target, null);
     };
     /**
      * 创建Event对象。
@@ -53,26 +53,59 @@ public abstract class Event implements Serializable, IAttribute {
         this.eventID = eventID;
         this.target = target;
         this.eventMessage = eventMessage;
+        EventPhase[] tempPhase = this.createEventPhase();
+        if (tempPhase == null)
+            this.eventPhase = new EventPhase[] { new ProcessEventPhase() };
+        else
+            this.eventPhase = tempPhase;
+        for (EventPhase phase : this.eventPhase)
+            phase.setEvent(this);
+    };
+    //=========================================================================================Type
+    /**事件处理之前阶段对象。*/
+    protected class BeforeEventPhase extends EventPhase implements BeforePhase {
+        public BeforeEventPhase() {
+            super(BeforePhase.class);
+        };
+    };
+    /**事件处理时阶段对象。*/
+    protected class ProcessEventPhase extends EventPhase implements ProcessPhase {
+        public ProcessEventPhase() {
+            super(ProcessPhase.class);
+        };
+    };
+    /**事件处理之后阶段对象。*/
+    protected class AfterEventPhase extends EventPhase implements AfterPhase {
+        public AfterEventPhase() {
+            super(AfterPhase.class);
+        };
     };
     //==========================================================================================Job
+    /**
+     * 继承Event的子类需要决定子类型Event拥有哪些阶段。
+     * 如果子类实现该方法的返回值是null则Event使用Event.ProcessEventPhase类型作为默认值
+     */
+    protected abstract EventPhase[] createEventPhase();
+    /**获取当前事件所具备的事件阶段。*/
+    public EventPhase[] getEventPhase() {
+        return this.eventPhase;
+    };
     /** 获取事件ID。 */
     public String getEventID() {
-        return eventID;
+        return this.eventID;
     };
     /** 获取事件的描述信息。 */
     public String getEventMessage() {
-        return eventMessage;
+        return this.eventMessage;
     };
     /** 获取事件发生的对象。 */
     public Object getTarget() {
-        return target;
+        return this.target;
     };
     /** 获取事件发生时间。 */
     public Date getAtTime() {
-        return (Date) atTime.clone();
-    }
-    //==========================================================================================Job
-    @Override
+        return (Date) this.atTime.clone();
+    };
     public void clearAttribute() {
         this.attMap.clearAttribute();
     };

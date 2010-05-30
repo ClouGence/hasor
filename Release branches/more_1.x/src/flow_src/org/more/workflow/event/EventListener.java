@@ -16,10 +16,11 @@
 package org.more.workflow.event;
 /**
  * Event事件监听器，通过实现该接口可以监听目标对象发出的事件。并且在事件的指定阶段处理事件。
+ * 对于一个事件他可能有不同阶段，对于每个阶段都将会引发Listener的doListener处理方法。
  * Date : 2010-5-16
  * @author 赵永春
  */
 public interface EventListener {
     /**处理事件。*/
-    public void onEvent(Event event);
+    public void doListener(EventPhase event);
 };

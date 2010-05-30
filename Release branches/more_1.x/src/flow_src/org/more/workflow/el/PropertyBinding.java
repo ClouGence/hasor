@@ -20,14 +20,14 @@ import org.more.core.ognl.Ognl;
 import org.more.core.ognl.OgnlContext;
 import org.more.core.ognl.OgnlException;
 import org.more.workflow.event.AbstractHolderListener;
-import org.more.workflow.event.EventType;
 import org.more.workflow.event.ListenerHolder;
 import org.more.workflow.event.object.GetValueEvent;
 import org.more.workflow.event.object.SetValueEvent;
 import org.more.workflow.form.FormMetadata;
 /**
  * 属性绑定器，{@link FormMetadata}通过该类读取或设置属性。当有getValue方法和setValue方法被调用时
- * 会引发GetValueEvent和SetValueEvent事件。
+ * 会引发GetValueEvent和SetValueEvent事件。提示：如果在PropertyBinding对象上注册事件监听器，这个监听器
+ * 会监听到针对这个属性的所有RW事件。
  * Date : 2010-5-20
  * @author 赵永春
  */
@@ -49,11 +49,9 @@ public class PropertyBinding extends AbstractHolderListener implements ListenerH
     /**解析属性EL，并且获取解析之后的属性值。*/
     public synchronized Object getValue() throws OgnlException {
         Object result = this.propertyNode.getValue(this.ognlContext, this.object);
-        //----------
-        GetValueEvent event = new GetValueEvent(EventType.GetValueEvent, this);
-        event.setAttribute("value", result);
-        this.event(event);
-        return result;
+        GetValueEvent event = new GetValueEvent(this, result);
+        this.event(event.getEventPhase()[0]);
+        return event.getResult();
     };
     /**
      * 解析属性EL，将一个新的值替换原有属性值。该方法被调用无论成功与否都将
@@ -61,12 +59,10 @@ public class PropertyBinding extends AbstractHolderListener implements ListenerH
      */
     public synchronized void setValue(Object value) throws OgnlException {
         try {
-            this.propertyNode.setValue(this.ognlContext, this.object, value);
+            SetValueEvent event = new SetValueEvent(this, value);
+            this.event(event.getEventPhase()[0]);
+            this.propertyNode.setValue(this.ognlContext, this.object, event.getNewValue());
             this.changeReadOnly(false);
-            //----------
-            SetValueEvent event = new SetValueEvent(EventType.SetValueEvent, this);
-            event.setAttribute("value", value);
-            this.event(event);
         } catch (OgnlException e) {
             this.changeReadOnly(true);
             throw e;

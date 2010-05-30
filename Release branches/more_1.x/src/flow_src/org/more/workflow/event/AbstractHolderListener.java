@@ -38,8 +38,8 @@ public abstract class AbstractHolderListener implements ListenerHolder {
             this.listeners.remove(listener);
     };
     /**处理当前对象身上所有事件监听器的onEvent阶段。*/
-    protected void event(Event event) {
+    protected void event(EventPhase event) {
         for (EventListener listener : this.listeners)
-            listener.onEvent(event);
+            listener.doListener(event);
     };
 };

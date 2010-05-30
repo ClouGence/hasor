@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package org.more.workflow.event.object;
+import org.more.workflow.context.FlashSession;
 import org.more.workflow.event.Event;
+import org.more.workflow.event.EventPhase;
 /**
  * 将运行状态从闪存状态恢复时。
  * Date : 2010-5-21
@@ -22,9 +24,18 @@ import org.more.workflow.event.Event;
  */
 public class LoadStateEvent extends Event {
     /**  */
-    private static final long serialVersionUID = 5010075302608463391L;
+    private static final long serialVersionUID = -7074329255747484645L;
+    private FlashSession      flashSession     = null;
     /**将运行状态从闪存状态恢复时。*/
-    public LoadStateEvent(String eventID, Object target) {
-        super(eventID, target);
+    public LoadStateEvent(Object targetMode, FlashSession flashSession) {
+        super("LoadStateEvent", targetMode);
+        this.flashSession = flashSession;
+    };
+    @Override
+    protected EventPhase[] createEventPhase() {
+        return null;
+    };
+    public FlashSession getFlashSession() {
+        return flashSession;
     };
 };

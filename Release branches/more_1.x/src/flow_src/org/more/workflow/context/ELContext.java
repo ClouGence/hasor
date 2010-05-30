@@ -21,8 +21,17 @@ import org.more.core.ognl.OgnlContext;
  * @author Administrator
  */
 public class ELContext {
+    private Object      thisValue   = null;
+    private OgnlContext ognlContext = new OgnlContext();
     public OgnlContext getOgnlContext() {
-        // TODO Auto-generated method stub
-        return new OgnlContext();
+        this.ognlContext.put("this", this.thisValue);
+        return this.ognlContext;
     };
+    /**将一个对象加入到计算表达式中，如果这个对象名在ELContext中重复则由putLocal方法输出的对象优先级大于ELContext。*/
+    public void putLocalThis(Object value) {
+        this.thisValue = value;
+    };
+    public Object getLocalThis() {
+        return thisValue;
+    }
 };

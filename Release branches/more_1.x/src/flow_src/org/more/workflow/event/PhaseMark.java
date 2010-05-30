@@ -15,21 +15,8 @@
  */
 package org.more.workflow.event;
 /**
- * 事件类型表。
- * Date : 2010-5-21
+ * 事件所处阶段的标记，任何事件阶段标记接口都需要继承该接口。在workflow系统中事件的处理阶段使用标记接口来表示。
+ * Date : 2010-5-24
  * @author 赵永春
  */
-public interface EventType {
-    /**当有属性被读取时时引发。*/
-    public final static String GetValueEvent    = "GetValueEvent";
-    /**当有属性被设置时引发。*/
-    public final static String SetValueEvent    = "SetValueEvent";
-    /**当企图创建元信息所表示的模型对象时。*/
-    public final static String NewInstanceEvent = "NewInstanceEvent";
-    /**当模型被更新时。*/
-    public final static String UpdataModeEvnet  = "UpdataModeEvnet";
-    /**将运行状态闪存时。*/
-    public final static String SaveStateEvent   = "SaveStateEvent";
-    /**将运行状态从闪存状态恢复时。*/
-    public final static String LoadStateEvent   = "LoadStateEvent";
-};
+public interface PhaseMark {};

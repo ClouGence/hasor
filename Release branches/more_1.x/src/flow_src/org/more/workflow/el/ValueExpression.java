@@ -15,7 +15,6 @@
  */
 package org.more.workflow.el;
 import org.more.core.ognl.Ognl;
-import org.more.core.ognl.OgnlContext;
 import org.more.core.ognl.OgnlException;
 import org.more.workflow.context.ELContext;
 /**
@@ -27,7 +26,6 @@ import org.more.workflow.context.ELContext;
 public class ValueExpression {
     //========================================================================================Field
     private String expressionString = null;
-    private Object thisValue        = null;
     //==================================================================================Constructor
     /**创建一个表达式计算器。*/
     public ValueExpression(String expressionString) throws OgnlException {
@@ -42,15 +40,6 @@ public class ValueExpression {
     public Object eval(ELContext elContext) throws OgnlException, NullPointerException {
         if (elContext == null)
             throw new NullPointerException("请指定ELContext类型参数。");
-        //
-        OgnlContext ognlContext = elContext.getOgnlContext();
-        ognlContext.setCurrentObject(this.thisValue);
-        Object result = Ognl.getValue(this.expressionString, ognlContext);
-        ognlContext.setCurrentObject(null);
-        return result;
-    };
-    /**将一个对象加入到计算表达式中，如果这个对象名在ELContext中重复则由putLocal方法输出的对象优先级大于ELContext。*/
-    public void putLocalThis(Object value) {
-        this.thisValue = value;
+        return Ognl.getValue(this.expressionString, elContext.getOgnlContext());
     };
 };

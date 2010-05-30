@@ -17,8 +17,8 @@ package org.more.workflow.state;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 import org.more.workflow.context.ELContext;
+import org.more.workflow.context.RunContext;
 import org.more.workflow.event.AbstractHolderListener;
-import org.more.workflow.event.EventType;
 import org.more.workflow.event.object.LoadStateEvent;
 import org.more.workflow.event.object.SaveStateEvent;
 import org.more.workflow.metadata.AbstractMetadata;
@@ -50,12 +50,14 @@ public abstract class AbstractStateHolder extends AbstractHolderListener impleme
         this.metadataObject.updataMode(mode, elContext);
     };
     /**从临时持久化数据中，装载模型状态。子类在重写该方法时候一定要调用父类的相应方法，AbstractStateHolder类负责事件的引发。*/
-    public void loadState(Object mode) {
-        this.event(new LoadStateEvent(EventType.LoadStateEvent, mode));
+    public void loadState(Object mode, RunContext runContext) {
+        LoadStateEvent event = new LoadStateEvent(mode, runContext.getApplication().getFlashSession());
+        this.event(event.getEventPhase()[0]);
     };
     /**像临时持久化数据中，保存模型状态。子类在重写该方法时候一定要调用父类的相应方法，AbstractStateHolder类负责事件的引发。*/
-    public void saveState(Object mode) {
-        this.event(new SaveStateEvent(EventType.SaveStateEvent, mode));
+    public void saveState(Object mode, RunContext runContext) {
+        SaveStateEvent event = new SaveStateEvent(mode, runContext.getApplication().getFlashSession());
+        this.event(event.getEventPhase()[0]);
     };
     //==========================================================================================Job
     @Override

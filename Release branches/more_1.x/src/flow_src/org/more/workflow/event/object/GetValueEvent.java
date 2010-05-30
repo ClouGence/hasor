@@ -15,15 +15,31 @@
  */
 package org.more.workflow.event.object;
 import org.more.workflow.event.Event;
+import org.more.workflow.event.EventPhase;
 /**
- * 当有属性被读取时时引发。可以通过该对象的getAttribute("value")方法获取获取的属性值。
+ * 当有属性被读取时时引发。读取到的属性可以通过getResult方法获得到。
+ * 如果想改变获取到的值内容则可以通过setResult方法来替换返回值。
  * Date : 2010-5-21
  * @author 赵永春
  */
 public class GetValueEvent extends Event {
     /**  */
     private static final long serialVersionUID = 5010075302608463391L;
-    public GetValueEvent(String eventID, Object target) {
-        super(eventID, target);
+    private Object            result           = null;                 ;
+    public GetValueEvent(Object target, Object result) {
+        super("GetValueEvent", target);
+        this.result = result;
+    }
+    @Override
+    protected EventPhase[] createEventPhase() {
+        return null;
+    };
+    /**读取到的属性可以通过getResult方法获得到。*/
+    public Object getResult() {
+        return this.result;
+    };
+    /**如果想改变获取到的值内容则可以通过setResult方法来替换返回值。*/
+    public void setResult(Object result) {
+        this.result = result;
     };
 };

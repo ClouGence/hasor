@@ -20,12 +20,13 @@ package org.more.workflow.context;
  * @author Administrator
  */
 public class RunContext {
-    private ELContext   elContext;
-    private FlowContext flowContext;
     public ELContext getElContext() {
-        return elContext;
-    }
+        return null;
+    };
     public FlowContext getFlowContext() {
-        return flowContext;
-    }
+        return null;
+    };
+    public ApplicationContext getApplication() {
+        return null;
+    };
 };

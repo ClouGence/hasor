@@ -15,15 +15,31 @@
  */
 package org.more.workflow.event.object;
 import org.more.workflow.event.Event;
+import org.more.workflow.event.EventPhase;
 /**
- * 当有属性被设置时引发。可以通过该对象的getAttribute("value")方法获取获取的属性值。
+ * 当有属性被设置时引发。如果要获取设置的新值可以通过getNewValue方法来获取。
+ * 如果想替换将要设置的新值则可以通过setNewValue方法来替换。
  * Date : 2010-5-21
  * @author 赵永春
  */
 public class SetValueEvent extends Event {
     /**  */
     private static final long serialVersionUID = 5010075302608463391L;
-    public SetValueEvent(String eventID, Object target) {
-        super(eventID, target);
+    private Object            newValue;
+    public SetValueEvent(Object target, Object newValue) {
+        super("SetValueEvent", target);
+        this.newValue = newValue;
+    }
+    @Override
+    protected EventPhase[] createEventPhase() {
+        return null;
+    };
+    /**要获取设置的新值可以通过getNewValue方法来获取。*/
+    public Object getNewValue() {
+        return newValue;
+    };
+    /**替换将要设置的新值则可以通过setNewValue方法来替换。*/
+    public void setNewValue(Object newValue) {
+        this.newValue = newValue;
     };
 };

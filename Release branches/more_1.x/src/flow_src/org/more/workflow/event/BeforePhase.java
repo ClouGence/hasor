@@ -13,24 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.workflow.event.object;
-import org.more.workflow.event.Event;
-import org.more.workflow.event.EventPhase;
-import org.more.workflow.metadata.AbstractMetadata;
+package org.more.workflow.event;
 /**
- * 当企图创建元信息所表示的模型对象时。该事件只会
- * Date : 2010-5-21
+ * 该接口是一个标记接口，它派生于PhaseMark是用来标记事件处理之前的阶段。
+ * 在该阶段可以准备一些配置或参数以便在事件处理时使用。
+ * Date : 2010-5-24
  * @author 赵永春
  */
-public class NewInstanceEvent extends Event {
-    /**  */
-    private static final long serialVersionUID = 5010075302608463391L;
-    /**当企图创建元信息所表示的模型对象时。*/
-    public NewInstanceEvent(AbstractMetadata targetMetadata) {
-        super("NewInstanceEvent", targetMetadata);
-    };
-    @Override
-    protected EventPhase[] createEventPhase() {
-        return null;
-    };
-};
+public interface BeforePhase extends PhaseMark {};
