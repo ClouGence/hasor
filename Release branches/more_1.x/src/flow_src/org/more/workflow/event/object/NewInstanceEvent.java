@@ -18,19 +18,23 @@ import org.more.workflow.event.Event;
 import org.more.workflow.event.EventPhase;
 import org.more.workflow.metadata.AbstractMetadata;
 /**
- * 当企图创建元信息所表示的模型对象时。该事件只会
+ * 当企图创建元信息所表示的模型对象时。
  * Date : 2010-5-21
  * @author 赵永春
  */
 public class NewInstanceEvent extends Event {
     /**  */
     private static final long serialVersionUID = 5010075302608463391L;
+    private Object            target;
     /**当企图创建元信息所表示的模型对象时。*/
-    public NewInstanceEvent(AbstractMetadata targetMetadata) {
+    public NewInstanceEvent(Object targetObject, AbstractMetadata targetMetadata) {
         super("NewInstanceEvent", targetMetadata);
     };
     @Override
     protected EventPhase[] createEventPhase() {
         return null;
+    };
+    public Object getTarget() {
+        return this.target;
     };
 };

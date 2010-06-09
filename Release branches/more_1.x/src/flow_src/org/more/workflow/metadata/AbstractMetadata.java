@@ -66,9 +66,10 @@ public abstract class AbstractMetadata extends AbstractHolderListener implements
     @Override
     public void updataMode(Object mode, ELContext elContext) throws Throwable {
         UpdataModeEvnet event = new UpdataModeEvnet(mode, this);
-        this.event(event.getEventPhase()[0]);
+        this.event(event.getEventPhase()[0]);//before
         for (PropertyMetadata item : this.propertyMap.values())
             item.updataMode(mode, elContext);
+        this.event(event.getEventPhase()[1]);//after
     };
     /**创建元信息所描述的对象，其子类决定了创建的具体类型对象。用户可以通过扩展该方法来自定义对象创建过程。 */
     public abstract Object newInstance(RunContext runContext) throws Throwable;

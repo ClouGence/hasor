@@ -79,9 +79,11 @@ public class JavaScriptSubmitManager {
         }
         //输出方法定义 org.more.web.submit.ROOT.Action
         HttpServletRequest request = event.getRequest();
-        String host = request.getServerName() + ":" + request.getLocalPort();
         Object protocol = event.getServletContext().getAttribute("org.more.web.submit.ROOT.Action");
-        str.append("more.retain.serverCallURL=\"http://" + host + "/" + protocol + "://" + event.getActionName() + ".execute\";");
+        str.append("more.retain.serverCallURL=");
+        String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getLocalPort() + request.getContextPath();
+        str.append("'" + url + "/");
+        str.append(protocol + "!" + event.getActionName() + ".execute';");
         str.append("more.server={};");
         //如果参数min为true表示输出最小化脚本，最小化脚本中不包含action的定义。
         String minParam = event.getParamString("min");
@@ -99,6 +101,8 @@ public class JavaScriptSubmitManager {
         Iterator<String> ns = context.getActionNameIterator();
         while (ns.hasNext()) {
             String n = ns.next();
+            if (n == null)
+                break;
             boolean haveActionMethod = false;/* Bug 111 当目标代理action不存在任何action方法时输出的js脚本在处理最后一个逗号时会将上一个大括号处理掉从而产生javascript语法异常*/
             str.append("more.server." + n + "={");
             Class<?> type = context.getActionType(n);

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.workflow.context;
+import java.util.Map;
 /**
  * 
  * Date : 2010-5-17
@@ -27,6 +28,12 @@ public class RunContext {
         return null;
     };
     public ApplicationContext getApplication() {
+        return null;
+    };
+    public Object getParam(String key) {
+        return null;
+    };
+    public Map<String, Object> getParamMap() {
         return null;
     };
 };

@@ -19,8 +19,6 @@ import org.more.util.attribute.IAttribute;
 import org.more.workflow.context.ELContext;
 import org.more.workflow.context.RunContext;
 import org.more.workflow.event.AbstractHolderListener;
-import org.more.workflow.event.object.LoadStateEvent;
-import org.more.workflow.event.object.SaveStateEvent;
 import org.more.workflow.metadata.AbstractMetadata;
 import org.more.workflow.metadata.MetadataHolder;
 import org.more.workflow.metadata.ModeUpdataHolder;
@@ -49,16 +47,10 @@ public abstract class AbstractStateHolder extends AbstractHolderListener impleme
     public void updataMode(Object mode, ELContext elContext) throws Throwable {
         this.metadataObject.updataMode(mode, elContext);
     };
-    /**从临时持久化数据中，装载模型状态。子类在重写该方法时候一定要调用父类的相应方法，AbstractStateHolder类负责事件的引发。*/
-    public void loadState(Object mode, RunContext runContext) {
-        LoadStateEvent event = new LoadStateEvent(mode, runContext.getApplication().getFlashSession());
-        this.event(event.getEventPhase()[0]);
-    };
-    /**像临时持久化数据中，保存模型状态。子类在重写该方法时候一定要调用父类的相应方法，AbstractStateHolder类负责事件的引发。*/
-    public void saveState(Object mode, RunContext runContext) {
-        SaveStateEvent event = new SaveStateEvent(mode, runContext.getApplication().getFlashSession());
-        this.event(event.getEventPhase()[0]);
-    };
+    /**从临时持久化数据中，装载模型状态。*/
+    public abstract void loadState(Object mode, RunContext runContext);
+    /**像临时持久化数据中，保存模型状态。*/
+    public abstract void saveState(Object mode, RunContext runContext);
     //==========================================================================================Job
     @Override
     public void clearAttribute() {

@@ -21,7 +21,12 @@ package org.more.workflow.context;
  */
 public class ApplicationContext {
     private FlashSession flashSession;
-    public FlashSession getFlashSession() {
+    /**获取硬Session，硬Session是将数据存放在磁盘文件。*/
+    public FlashSession getHardSession() {
         return flashSession;
-    }
+    };
+    /**获取软Session，软Session是将数据存放在内存。*/
+    public FlashSession getSoftSession() {
+        return flashSession;
+    };
 };

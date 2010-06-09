@@ -21,11 +21,11 @@ import org.more.workflow.state.AbstractStateHolder;
  * Date : 2010-5-21
  * @author ’‘”¿¥∫
  */
-public class Form extends AbstractObject implements FormBean {
+class Form extends AbstractObject implements FormBean {
     //========================================================================================Field
     private FormBean formBean = null;
     //==================================================================================Constructor
-    Form(String objectID, FormBean formBean, AbstractStateHolder objectStateHolder) {
+    public Form(String objectID, FormBean formBean, AbstractStateHolder objectStateHolder) {
         super(objectID, objectStateHolder);
         this.formBean = formBean;
     };

@@ -18,7 +18,7 @@ import org.more.workflow.event.Event;
 import org.more.workflow.event.EventPhase;
 import org.more.workflow.metadata.AbstractMetadata;
 /**
- * 当模型被更新时。
+ * 当模型被更新时。该事件将会分为两个阶段一个是before另一个是after。
  * Date : 2010-5-21
  * @author 赵永春
  */
@@ -33,7 +33,7 @@ public class UpdataModeEvnet extends Event {
     };
     @Override
     protected EventPhase[] createEventPhase() {
-        return null;
+        return new EventPhase[] { new Event.BeforeEventPhase(), new Event.AfterEventPhase() };
     };
     public AbstractMetadata getMetadata() {
         return metadata;

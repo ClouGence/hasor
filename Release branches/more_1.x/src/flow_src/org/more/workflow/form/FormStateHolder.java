@@ -15,6 +15,7 @@
  */
 package org.more.workflow.form;
 import org.more.workflow.context.ApplicationContext;
+import org.more.workflow.context.RunContext;
 import org.more.workflow.state.AbstractStateHolder;
 /**
  * 
@@ -25,6 +26,10 @@ public class FormStateHolder extends AbstractStateHolder {
     protected FormStateHolder(FormMetadata metadataObject) {
         super(metadataObject);
     };
+    @Override
+    public void loadState(Object mode, RunContext runContext) {};
+    @Override
+    public void saveState(Object mode, RunContext runContext) {};
     public void loadForm(ApplicationContext applicationContext, String formID) {};
     public void loadForm(ApplicationContext applicationContext, Form formObject) {};
     public void saveForm(ApplicationContext applicationContext, Form formObject) {};

@@ -56,7 +56,7 @@ public class JsonArray extends JsonMixed {
     }
     @Override
     public String toString(Object bean) {
-        StringBuffer json = new StringBuffer('[');
+        StringBuffer json = new StringBuffer("[");
         if (bean instanceof Collection == true) {
             //Collection¿‡–Õ
             Collection coll = (Collection) bean;
@@ -73,11 +73,11 @@ public class JsonArray extends JsonMixed {
         int index = json.length() - 1;
         if (json.charAt(index) == ',')
             json.deleteCharAt(index);
-        json.append(']');
+        json.append("]");
         return json.toString();
     }
     private void appendObject(StringBuffer json, Object var) {
         json.append(this.passJsonString(var));
-        json.append(',');
+        json.append(",");
     }
 }

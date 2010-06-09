@@ -78,7 +78,7 @@ public class JsonObject extends JsonMixed {
     }
     @Override
     public String toString(Object bean) {
-        StringBuffer json = new StringBuffer('{');
+        StringBuffer json = new StringBuffer("{");
         if (bean instanceof IAttribute) {
             IAttribute att = (IAttribute) bean;
             String[] ns = att.getAttributeNames();
@@ -105,7 +105,7 @@ public class JsonObject extends JsonMixed {
         int index = json.length() - 1;
         if (json.charAt(index) == ',')
             json.deleteCharAt(index);
-        json.append('}');
+        json.append("}");
         return json.toString();
     }
     private void appendField(Object bean, Field field, StringBuffer json) {
@@ -129,8 +129,8 @@ public class JsonObject extends JsonMixed {
     };
     private void appendObject(StringBuffer json, Object key, Object var) {
         json.append(this.passJsonString(key));
-        json.append(':');
+        json.append(":");
         json.append(this.passJsonString(var));
-        json.append(',');
+        json.append(",");
     }
 }

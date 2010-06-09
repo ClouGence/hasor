@@ -36,7 +36,7 @@ more.util.formatData = function(formatData, formater) {
 					: ("00" + o[k]).substr(("" + o[k]).length));
 	return format;
 }
-/* toStringº¯Êý */
+/* toString */
 more.util.toString = function(o) {
 	var type = Object.prototype.toString.call(o);
 	if (o == null || type == "undefined")
@@ -59,7 +59,7 @@ more.util.toString = function(o) {
 		var s = "";
 		for ( var i = 0; i < o.length; i++)
 			s += more.util.toString(o[i]) + ",";
-		// È¥³ýÄ©Î²¶ººÅ
+		// ,
 		if (s.substr(s.length - 1, s.length) == ",")
 			s = s.substr(0, s.length - 1);
 		return "[" + s + "]";
@@ -68,13 +68,13 @@ more.util.toString = function(o) {
 		var s = "";
 		for ( var key in o)
 			s += key + ":" + more.util.toString(o[key]) + ",";
-		// È¥³ýÄ©Î²¶º
+		// ,
 		if (s.substr(s.length - 1, s.length) == ",")
 			s = s.substr(0, s.length - 1);
 		return "{" + s + "}";
 	}
 };
-/* toObjectº¯Êý */
+/* toObject */
 more.util.toObject = function(json) {
 	return eval(json);
 }

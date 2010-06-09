@@ -47,10 +47,11 @@ public class FormMetadata extends AbstractMetadata {
      */
     @Override
     public FormBean newInstance(RunContext runContext) throws Throwable {
-        NewInstanceEvent event = new NewInstanceEvent(this);
         FormBean obj = this.formType.newInstance();
+        obj = new Form(null, obj, new FormStateHolder(this));
+        NewInstanceEvent event = new NewInstanceEvent(obj, this);
         this.event(event.getEventPhase()[0]);
-        return new Form(null, obj, new FormStateHolder(this));
+        return obj;
     };
     /**更新Bean的属性，该方法会依次更新propertyMap中对应的属性。 */
     @Override
