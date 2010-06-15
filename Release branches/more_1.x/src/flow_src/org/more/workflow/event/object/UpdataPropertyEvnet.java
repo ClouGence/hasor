@@ -16,29 +16,43 @@
 package org.more.workflow.event.object;
 import org.more.workflow.event.Event;
 import org.more.workflow.event.EventPhase;
+import org.more.workflow.metadata.PropertyMetadata;
 /**
- * 当有属性被设置时引发。如果要获取设置的新值可以通过getNewValue方法来获取。
- * 如果想替换将要设置的新值则可以通过setNewValue方法来替换。
+ * 当模型属性被更新时。该事件将会分为两个阶段一个是before另一个是after。
  * Date : 2010-5-21
  * @author 赵永春
  */
-public class SetValueEvent extends Event {
+public class UpdataPropertyEvnet extends Event {
     /**  */
     private static final long serialVersionUID = 5010075302608463391L;
-    private Object            newValue;
-    public SetValueEvent(Object target, Object newValue) {
-        super("SetValueEvent", target);
+    private PropertyMetadata  propertyMetadata = null;
+    private String            propertyEL       = null;
+    private Object            oldValue         = null;
+    private Object            newValue         = null;
+    /**当模型属性被更新时。*/
+    public UpdataPropertyEvnet(Object targetMode, String propertyEL, Object oldValue, Object newValue, PropertyMetadata propertyMetadata) {
+        super("UpdataPropertyEvnet", targetMode);
+        this.propertyEL = propertyEL;
+        this.oldValue = oldValue;
         this.newValue = newValue;
-    }
+        this.propertyMetadata = propertyMetadata;
+    };
     @Override
     protected EventPhase[] createEventPhase() {
-        return null;
+        return new EventPhase[] { new Event.BeforeEventPhase(), new Event.AfterEventPhase() };
     };
-    /**要获取设置的新值可以通过getNewValue方法来获取。*/
+    public PropertyMetadata getPropertyMetadata() {
+        return propertyMetadata;
+    };
+    public String getPropertyEL() {
+        return this.propertyEL;
+    };
+    public Object getOldValue() {
+        return this.oldValue;
+    };
     public Object getNewValue() {
-        return newValue;
+        return this.newValue;
     };
-    /**替换将要设置的新值则可以通过setNewValue方法来替换。*/
     public void setNewValue(Object newValue) {
         this.newValue = newValue;
     };

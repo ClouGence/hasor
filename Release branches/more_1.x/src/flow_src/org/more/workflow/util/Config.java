@@ -13,27 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.workflow.context;
-import java.util.Map;
+package org.more.workflow.util;
+import org.more.workflow.context.ApplicationContext;
 /**
- * 
- * Date : 2010-5-17
- * @author Administrator
+ * 在初始化时会使用到该接口，用于向目标接口传递初始化参数和流程系统上下文。
+ * Date : 2010-6-14
+ * @author 赵永春
  */
-public class RunContext {
-    public ELContext getElContext() {
-        return null;
-    };
-    public FlowContext getFlowContext() {
-        return null;
-    };
-    public ApplicationContext getApplication() {
-        return new ApplicationContext();
-    };
-    public Object getParam(String key) {
-        return null;
-    };
-    public Map<String, Object> getParamMap() {
-        return null;
-    };
+public interface Config {
+    /**获取可以使用的参数名称集合，并且以迭代器方式返回。*/
+    public Iterable<String> getParamNamesIterable();
+    /**根据key值获取一个初始化参数。key值必须是getParamNamesIterable方法返回的迭代器中存在的属性。否则该方法将返回null。*/
+    public Object getParam(String key);
+    /**获取流程系统的ApplicationContext对象。*/
+    public ApplicationContext getContext();
 };

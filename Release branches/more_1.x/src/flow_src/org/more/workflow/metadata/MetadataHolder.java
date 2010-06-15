@@ -16,12 +16,12 @@
 package org.more.workflow.metadata;
 /**
  * 该接口用于获取其元信息对象，提供获取其元信息对象则需要实现该接口。
- * 在workflow系统中元信息对象需要继承{@link AbstractMetadata}类型对象。
+ * 在workflow系统中元信息对象需要继承{@link ObjectMetadata}类型对象。
  * 泛型参数T可以决定实现MetadataHolder接口的类可以返回的具体元信息对象类型。
  * Date : 2010-5-16
  * @author 赵永春
  */
 public interface MetadataHolder {
     /** 获取模型的元信息对象。 */
-    public AbstractMetadata getMetadata();
+    public ObjectMetadata getMetadata();
 };

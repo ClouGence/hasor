@@ -14,26 +14,14 @@
  * limitations under the License.
  */
 package org.more.workflow.context;
-import java.util.Map;
+import org.more.workflow.form.FormBean;
+import org.more.workflow.form.FormMetadata;
 /**
  * 
- * Date : 2010-5-17
+ * Date : 2010-6-14
  * @author Administrator
  */
-public class RunContext {
-    public ELContext getElContext() {
-        return null;
-    };
-    public FlowContext getFlowContext() {
-        return null;
-    };
-    public ApplicationContext getApplication() {
-        return new ApplicationContext();
-    };
-    public Object getParam(String key) {
-        return null;
-    };
-    public Map<String, Object> getParamMap() {
-        return null;
-    };
+public interface FormFactory {
+    public FormBean getFormBean(RunContext runContext, FormMetadata formMetadata);
+    public String generateID(RunContext runContext, FormBean formBean);
 };

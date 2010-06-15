@@ -15,20 +15,16 @@
  */
 package org.more.workflow.metadata;
 import org.more.workflow.context.ELContext;
-import org.more.workflow.state.StateHolder;
+import org.more.workflow.state.AbstractStateHolder;
 /**
  * 更新模型接口，该接口允许模型对象将一些新值更新到自身上。<br/>
  * 所有模型都直接或间接继承{@link AbstractObject}抽象类，模型可以通过该类提供的getMetadata方法
- * 获取到模型metadata对象。这个模型{@link AbstractMetadata metadata}中保存了所有属性映射信息而且
- * {@link AbstractMetadata metadata}对象提供了{@link ModeUpdataHolder}接口的具体实现。<br/>
- * 当然你也可以通过获取模型的{@link StateHolder}然后在{@link StateHolder}上调用updataMode。
- * 无论是{@link StateHolder}对象的updataMode还是{@link AbstractMetadata metadata}的updataMode
- * 它们的作用是一样的。只不过{@link StateHolder}的updataMode使用的是metadata的updataMode方法实现。<br/>
+ * 获取到模型metadata对象。这个模型{@link AbstractMetadata metadata}中保存了所有属性映射信息。
+ * {@link AbstractStateHolder}类通过获取模型元信息来更新模型属性。重而实现该接口。
  * Date : 2010-5-16
  * @author 赵永春
  */
 public interface ModeUpdataHolder {
-    /**更新模型的信息，mode参数决定了要更新的模型对象，而elContext参数则决定了当更新模型时所依赖的elContext。
-     * @throws Throwable */
+    /**更新模型的信息，mode参数决定了要更新的模型对象，在更新模型时el的解析需要依赖elContext。*/
     public void updataMode(Object mode, ELContext elContext) throws Throwable;
 };

@@ -14,4 +14,13 @@
  * limitations under the License.
  */
 package org.more.workflow.context;
-public interface FlashSession {};
+import org.more.util.attribute.IAttribute;
+/**
+ * 
+ * Date : 2010-6-12
+ * @author Administrator
+ */
+public interface FlashSession {
+    public IAttribute getFlash(String flashID);
+    public void setFlash(String flashID, IAttribute states);
+};

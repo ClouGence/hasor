@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.workflow.event.object;
-import org.more.workflow.context.FlashSession;
+import org.more.util.attribute.IAttribute;
 import org.more.workflow.event.Event;
 import org.more.workflow.event.EventPhase;
 /**
@@ -25,17 +25,17 @@ import org.more.workflow.event.EventPhase;
 public class SaveStateEvent extends Event {
     /**  */
     private static final long serialVersionUID = -4046949021700949565L;
-    private FlashSession      flashSession     = null;
+    private IAttribute        flash            = null;
     /**将运行状态闪存时。*/
-    public SaveStateEvent(Object targetMode, FlashSession flashSession) {
+    public SaveStateEvent(Object targetMode, IAttribute flash) {
         super("SaveStateEvent", targetMode);
-        this.flashSession = flashSession;
+        this.flash = flash;
     };
     @Override
     protected EventPhase[] createEventPhase() {
-        return null;
+        return new EventPhase[] { new Event.BeforeEventPhase(), new Event.AfterEventPhase() };
     };
-    public FlashSession getFlashSession() {
-        return flashSession;
+    public IAttribute getFlash() {
+        return this.flash;
     };
 };

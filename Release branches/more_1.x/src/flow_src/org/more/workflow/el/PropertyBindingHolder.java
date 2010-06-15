@@ -20,6 +20,6 @@ package org.more.workflow.el;
  * @author 赵永春
  */
 public interface PropertyBindingHolder {
-    /**根据属性EL获取其属性绑定器。*/
+    /**根据属性EL获取其属性绑定器。object是一个任意对象propertyEL参数用于描述这个对象的一个属性。其表述形式为一个el。*/
     public PropertyBinding getPropertyBinding(String propertyEL, Object object) throws Throwable;
 };

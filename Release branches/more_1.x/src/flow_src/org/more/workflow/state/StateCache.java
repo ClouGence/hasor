@@ -13,27 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.workflow.context;
-import java.util.Map;
+package org.more.workflow.state;
+import org.more.util.attribute.IAttribute;
 /**
  * 
- * Date : 2010-5-17
- * @author Administrator
+ * Date : 2010-6-15
+ * @author ’‘”¿¥∫
  */
-public class RunContext {
-    public ELContext getElContext() {
-        return null;
-    };
-    public FlowContext getFlowContext() {
-        return null;
-    };
-    public ApplicationContext getApplication() {
-        return new ApplicationContext();
-    };
-    public Object getParam(String key) {
-        return null;
-    };
-    public Map<String, Object> getParamMap() {
-        return null;
-    };
+public interface StateCache {
+    public void saveState(IAttribute states);
+    public void recoverState(IAttribute states);
 };

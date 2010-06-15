@@ -16,7 +16,7 @@
 package org.more.workflow.event.object;
 import org.more.workflow.event.Event;
 import org.more.workflow.event.EventPhase;
-import org.more.workflow.metadata.AbstractMetadata;
+import org.more.workflow.state.AbstractStateHolder;
 /**
  * 当企图创建元信息所表示的模型对象时。
  * Date : 2010-5-21
@@ -24,17 +24,19 @@ import org.more.workflow.metadata.AbstractMetadata;
  */
 public class NewInstanceEvent extends Event {
     /**  */
-    private static final long serialVersionUID = 5010075302608463391L;
-    private Object            target;
+    private static final long   serialVersionUID = 5010075302608463391L;
+    private AbstractStateHolder stateHolder;
     /**当企图创建元信息所表示的模型对象时。*/
-    public NewInstanceEvent(Object targetObject, AbstractMetadata targetMetadata) {
-        super("NewInstanceEvent", targetMetadata);
+    public NewInstanceEvent(Object targetMode, AbstractStateHolder stateHolder) {
+        super("NewInstanceEvent", targetMode);
+        this.stateHolder = stateHolder;
     };
     @Override
     protected EventPhase[] createEventPhase() {
         return null;
-    };
-    public Object getTarget() {
-        return this.target;
+    }
+    /**获取引发NewInstanceEvent事件的AbstractStateHolder。*/
+    public AbstractStateHolder getStateHolder() {
+        return stateHolder;
     };
 };

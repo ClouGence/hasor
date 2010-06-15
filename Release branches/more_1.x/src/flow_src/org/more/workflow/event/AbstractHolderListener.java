@@ -23,7 +23,7 @@ import java.util.List;
  * @author 赵永春
  */
 public abstract class AbstractHolderListener implements ListenerHolder {
-    private final List<EventListener> listeners = new ArrayList<EventListener>(); //保存的事件监听器集合
+    protected final List<EventListener> listeners = new ArrayList<EventListener>(); //保存的事件监听器集合
     @Override
     public Iterator<EventListener> getListeners() {
         return this.listeners.iterator();
@@ -37,7 +37,7 @@ public abstract class AbstractHolderListener implements ListenerHolder {
         if (this.listeners.contains(listener) == true)
             this.listeners.remove(listener);
     };
-    /**处理当前对象身上所有事件监听器的onEvent阶段。*/
+    /**在当前对象身上引发一个事件。*/
     protected void event(EventPhase event) {
         for (EventListener listener : this.listeners)
             listener.doListener(event);

@@ -16,7 +16,7 @@
 package org.more.workflow.event.object;
 import org.more.workflow.event.Event;
 import org.more.workflow.event.EventPhase;
-import org.more.workflow.metadata.AbstractMetadata;
+import org.more.workflow.state.AbstractStateHolder;
 /**
  * 当模型被更新时。该事件将会分为两个阶段一个是before另一个是after。
  * Date : 2010-5-21
@@ -24,18 +24,19 @@ import org.more.workflow.metadata.AbstractMetadata;
  */
 public class UpdataModeEvnet extends Event {
     /**  */
-    private static final long serialVersionUID = 5010075302608463391L;
-    private AbstractMetadata  metadata;
+    private static final long   serialVersionUID = 5010075302608463391L;
+    private AbstractStateHolder stateHolder;
     /**当模型被更新时。*/
-    public UpdataModeEvnet(Object targetMode, AbstractMetadata metadata) {
+    public UpdataModeEvnet(Object targetMode, AbstractStateHolder stateHolder) {
         super("UpdataModeEvnet", targetMode);
-        this.metadata = metadata;
+        this.stateHolder = stateHolder;
     };
     @Override
     protected EventPhase[] createEventPhase() {
         return new EventPhase[] { new Event.BeforeEventPhase(), new Event.AfterEventPhase() };
     };
-    public AbstractMetadata getMetadata() {
-        return metadata;
+    /**获取被更新模型的状态操作对象。*/
+    public AbstractStateHolder getStateHolder() {
+        return this.stateHolder;
     };
 };
