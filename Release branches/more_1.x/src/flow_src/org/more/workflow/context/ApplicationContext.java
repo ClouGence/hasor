@@ -15,6 +15,8 @@
  */
 package org.more.workflow.context;
 import java.util.UUID;
+import org.more.util.attribute.AttBase;
+import org.more.util.attribute.IAttribute;
 import org.more.workflow.form.FormBean;
 import org.more.workflow.form.FormMetadata;
 import org.more.workflow.runtime.Runtime;
@@ -25,7 +27,17 @@ import org.more.workflow.runtime.RuntimeMetadata;
  * @author Administrator
  */
 public class ApplicationContext {
-    private FlashSession flashSession;
+    private FlashSession flashSession = new FlashSession() {
+                                          private IAttribute att = null;
+                                          @Override
+                                          public void setFlash(String flashID, IAttribute states) {
+                                              att = states;
+                                          }
+                                          @Override
+                                          public IAttribute getFlash(String flashID) {
+                                              return att;
+                                          }
+                                      };
     /**获取硬Session，硬Session是将数据存放在磁盘文件。*/
     public FlashSession getHardSession() {
         return flashSession;

@@ -1,4 +1,5 @@
 package org.test.workflow.form;
+import org.more.workflow.context.ApplicationContext;
 import org.more.workflow.context.ELContext;
 import org.more.workflow.context.RunContext;
 import org.more.workflow.event.EventListener;
@@ -22,7 +23,7 @@ import org.more.workflow.metadata.PropertyMetadata;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class MetadataMain {
+public class StateMain {
     /**
      * @param args
      * @throws Throwable 
@@ -32,24 +33,18 @@ public class MetadataMain {
         fm.addProperty("account", "'testAccount'");
         fm.addProperty(new PropertyMetadata("role.name", "this.account + '≤‚ ‘ ˝æ›'"));
         fm.addProperty(new PropertyMetadata("password", "this.account+',password'"));
-        fm.getProperty("role.name").addListener(new EventListener() {
-            @Override
-            public void doListener(EventPhase event) {
-                System.out.println("prop [role.name]\t" + event.getEvent());
-            }
-        });
-        fm.addListener(new EventListener() {
-            @Override
-            public void doListener(EventPhase event) {
-                System.out.println(event.getEventPhaseType() + "---" + event.getEvent());
-            }
-        });
         //
         FormStateHolder formState = new FormStateHolder(fm);
         //
-        User fb = (User) ((Form) formState.newInstance(new RunContext())).getFormBean();
+        Form form = (Form) formState.newInstance(new RunContext());
+        User fb = (User) form.getFormBean();
         formState.updataMode(fb, new ELContext());
         System.out.println(fb.getPassword());
         System.out.println(fb.getRole().getName());
+        //
+        ApplicationContext app = new ApplicationContext();
+        formState.loadState(form.getID(), fb, app);
+        formState.saveState(form.getID(), fb, app);
+        System.out.println(app);
     };
 };

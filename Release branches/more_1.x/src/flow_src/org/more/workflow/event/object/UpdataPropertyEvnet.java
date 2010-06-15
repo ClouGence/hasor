@@ -41,18 +41,23 @@ public class UpdataPropertyEvnet extends Event {
     protected EventPhase[] createEventPhase() {
         return new EventPhase[] { new Event.BeforeEventPhase(), new Event.AfterEventPhase() };
     };
+    /**获取属性元信息对象。*/
     public PropertyMetadata getPropertyMetadata() {
         return propertyMetadata;
     };
+    /**获取属性的EL索引*/
     public String getPropertyEL() {
         return this.propertyEL;
     };
+    /**获取原有属性值*/
     public Object getOldValue() {
         return this.oldValue;
     };
+    /**获取要更新的属性值*/
     public Object getNewValue() {
         return this.newValue;
     };
+    /**设置新值，可以通过该方法来改变最终更新的新属性值。*/
     public void setNewValue(Object newValue) {
         this.newValue = newValue;
     };

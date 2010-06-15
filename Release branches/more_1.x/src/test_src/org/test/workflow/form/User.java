@@ -1,5 +1,7 @@
 package org.test.workflow.form;
+import org.more.util.attribute.IAttribute;
 import org.more.workflow.form.FormBean;
+import org.more.workflow.state.StateCache;
 /*
  * Copyright 2008-2009 the original author or authors.
  *
@@ -15,7 +17,7 @@ import org.more.workflow.form.FormBean;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class User implements FormBean {
+public class User implements FormBean, StateCache {
     private String account  = "account";
     private String password = "password";
     private Role   role     = new Role();
@@ -36,5 +38,13 @@ public class User implements FormBean {
     }
     public void setPassword(String password) {
         this.password = password;
+    }
+    @Override
+    public void recoverState(IAttribute states) {
+        this.account = (String) states.getAttribute("account");
+    }
+    @Override
+    public void saveState(IAttribute states) {
+        states.setAttribute("account", account);
     }
 };

@@ -35,6 +35,7 @@ public class SaveStateEvent extends Event {
     protected EventPhase[] createEventPhase() {
         return new EventPhase[] { new Event.BeforeEventPhase(), new Event.AfterEventPhase() };
     };
+    /**获取用于保存状态的Flash接口对象。*/
     public IAttribute getFlash() {
         return this.flash;
     };
