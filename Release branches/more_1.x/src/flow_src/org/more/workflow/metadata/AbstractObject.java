@@ -18,7 +18,6 @@ import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 import org.more.workflow.event.AbstractHolderListener;
 import org.more.workflow.state.AbstractStateHolder;
-import org.more.workflow.state.StateCache;
 import org.more.workflow.state.StateHolder;
 /**
  * 抽象基本类型，该类型对象是流程系统的抽象基类，作为模型对象的基类它还提供了{@link StateHolder}接口
@@ -27,7 +26,7 @@ import org.more.workflow.state.StateHolder;
  * Date : 2010-5-16
  * @author 赵永春
  */
-public abstract class AbstractObject extends AbstractHolderListener implements IAttribute, StateHolder, MetadataHolder, StateCache {
+public abstract class AbstractObject extends AbstractHolderListener implements IAttribute, StateHolder, MetadataHolder {
     private String              objectID     = null;         //对象ID
     private AbstractStateHolder stateHolder  = null;         //状态操作接口
     private final AttBase       attributeMap = new AttBase(); //用于保存对象的属性集合。
@@ -46,6 +45,8 @@ public abstract class AbstractObject extends AbstractHolderListener implements I
     public String getID() {
         return this.objectID;
     };
+    /** 获取到当前表单AbstractObject所代理的那个对象实体类。*/
+    public abstract Object getTargetBean();
     public AbstractStateHolder getStateHolder() {
         return this.stateHolder;
     };

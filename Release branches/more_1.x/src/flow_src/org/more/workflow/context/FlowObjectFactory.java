@@ -16,17 +16,7 @@
 package org.more.workflow.context;
 /**
  * 
- * Date : 2010-5-17
- * @author Administrator
+ * Date : 2010-6-19
+ * @author ’‘”¿¥∫
  */
-public class RunContext {
-    public ELContext getElContext() {
-        return new ELContext();
-    };
-    public FlowContext getFlowContext() {
-        return new FlowContext();
-    };
-    public ApplicationContext getApplication() {
-        return new ApplicationContext();
-    };
-};
+public interface FlowObjectFactory {}

@@ -26,5 +26,5 @@ import org.more.workflow.state.AbstractStateHolder;
  */
 public interface ModeUpdataHolder {
     /**更新模型的信息，mode参数决定了要更新的模型对象，在更新模型时el的解析需要依赖elContext。*/
-    public void updataMode(Object mode, ELContext elContext) throws Throwable;
+    public void updataMode(AbstractObject object, ELContext elContext) throws Throwable;
 };

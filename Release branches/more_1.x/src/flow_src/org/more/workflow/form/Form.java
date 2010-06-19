@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 package org.more.workflow.form;
-import org.more.util.attribute.IAttribute;
 import org.more.workflow.metadata.AbstractObject;
-import org.more.workflow.state.StateCache;
 /**
  * 该类是{@link FormBean}接口的一个实现，主要用于代理{@link FormBean}对象，
  * 并且提供元信息和{@link FormStateHolder}的绑定。
@@ -35,17 +33,7 @@ public class Form extends AbstractObject implements FormBean {
     };
     //==========================================================================================Job
     /** 获取Form表单对象所代表的那个具体表单实体类。*/
-    public FormBean getFormBean() {
+    public FormBean getTargetBean() {
         return this.formBean;
     }
-    @Override
-    public void recoverState(IAttribute states) {
-        if (formBean instanceof StateCache == true)
-            ((StateCache) this.formBean).recoverState(states);
-    }
-    @Override
-    public void saveState(IAttribute states) {
-        if (formBean instanceof StateCache == true)
-            ((StateCache) this.formBean).saveState(states);
-    };
 };

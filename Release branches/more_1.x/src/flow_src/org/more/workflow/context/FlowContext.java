@@ -19,4 +19,8 @@ package org.more.workflow.context;
  * Date : 2010-5-17
  * @author Administrator
  */
-public class FlowContext {};
+public class FlowContext {
+    public ClassLoader getLoader() {
+        return null;
+    };
+};

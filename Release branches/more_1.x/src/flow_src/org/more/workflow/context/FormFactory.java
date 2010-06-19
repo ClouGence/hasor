@@ -22,6 +22,9 @@ import org.more.workflow.form.FormMetadata;
  * @author Administrator
  */
 public interface FormFactory {
-    public FormBean getFormBean(RunContext runContext, FormMetadata formMetadata);
-    public String generateID(RunContext runContext, FormBean formBean);
+    public FormBean createForm(FormMetadata formMetadata);
+    public FormBean getForm(String formID, FormMetadata formMetadata);
+    public String generateID(FormBean formBean);
+    public void saveForm(String formID, FormBean formBean);
+    public void deleteForm(String formID);
 };

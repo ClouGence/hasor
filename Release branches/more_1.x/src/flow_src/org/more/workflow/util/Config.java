@@ -25,6 +25,4 @@ public interface Config {
     public Iterable<String> getParamNamesIterable();
     /**根据key值获取一个初始化参数。key值必须是getParamNamesIterable方法返回的迭代器中存在的属性。否则该方法将返回null。*/
     public Object getParam(String key);
-    /**获取流程系统的ApplicationContext对象。*/
-    public ApplicationContext getContext();
 };

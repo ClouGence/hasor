@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.workflow.context;
+package org.more.workflow.runtime;
+import org.more.workflow.metadata.ObjectMetadata;
 /**
- * 
- * Date : 2010-5-17
- * @author Administrator
+ * 该类用于描述一个{@link Runtime}的元信息，通过RuntimeMetadata类型可以创建一个{@link Runtime}对象。
+ * Date : 2010-6-16
+ * @author 赵永春
  */
-public class RunContext {
-    public ELContext getElContext() {
-        return new ELContext();
+public class RuntimeMetadata extends ObjectMetadata {
+    private final Class<? extends Runtime> runtimeType; //FormBean的具体类型
+    public RuntimeMetadata(String metadataID, Class<? extends Runtime> runtimeType) {
+        super(metadataID);
+        this.runtimeType = runtimeType;
     };
-    public FlowContext getFlowContext() {
-        return new FlowContext();
-    };
-    public ApplicationContext getApplication() {
-        return new ApplicationContext();
+    /**获取runtimeType的具体类型。*/
+    public Class<? extends Runtime> getRuntimeType() {
+        return this.runtimeType;
     };
 };

@@ -15,7 +15,6 @@
  */
 package org.more.workflow.state;
 import java.util.Iterator;
-import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 import org.more.workflow.context.ApplicationContext;
 import org.more.workflow.context.ELContext;
@@ -27,6 +26,7 @@ import org.more.workflow.event.ListenerHolder;
 import org.more.workflow.event.object.LoadStateEvent;
 import org.more.workflow.event.object.SaveStateEvent;
 import org.more.workflow.event.object.UpdataModeEvnet;
+import org.more.workflow.metadata.AbstractObject;
 import org.more.workflow.metadata.MetadataHolder;
 import org.more.workflow.metadata.ModeUpdataHolder;
 import org.more.workflow.metadata.ObjectMetadata;
@@ -56,43 +56,46 @@ public abstract class AbstractStateHolder implements ListenerHolder, ModeUpdataH
             iterator.next().doListener(event);
     };
     @Override
-    public void updataMode(Object object, ELContext elContext) throws Throwable {
+    public void updataMode(AbstractObject object, ELContext elContext) throws Throwable {
         ObjectMetadata am = this.getMetadata();
         if (am == null)
             throw new NullPointerException("通过getMetadata方法获取元信息时意外的返回null。");
         //
-        UpdataModeEvnet event = new UpdataModeEvnet(object, this);
+        Object obj = object.getTargetBean();
+        UpdataModeEvnet event = new UpdataModeEvnet(obj, this);
         this.event(event.getEventPhase()[0]);//before
         for (PropertyMetadata property : am.getPropertys())
-            property.updataProperty(object, elContext);
+            property.updataProperty(obj, elContext);
         this.event(event.getEventPhase()[1]);//after
     };
     /**从软缓存中装载模型状态。*/
-    public void loadState(String objectID, Object object, ApplicationContext appContext) {
-        if (object instanceof StateCache == false)
+    public void loadState(AbstractObject object, ApplicationContext appContext) {
+        Object obj = object.getTargetBean();
+        if (obj instanceof StateCache == false)
             return;
         FlashSession flashSession = appContext.getSoftSession();
-        IAttribute states = flashSession.getFlash(objectID);
+        IAttribute states = flashSession.getFlash(object.getID());
         if (states == null)
             return;
-        StateCache chache = (StateCache) object;
+        StateCache chache = (StateCache) obj;
         //
-        LoadStateEvent event = new LoadStateEvent(object, states);
+        LoadStateEvent event = new LoadStateEvent(obj, states);
         this.event(event.getEventPhase()[0]);//before
         chache.recoverState(states);
         this.event(event.getEventPhase()[1]);//after
     };
     /**将模型状态保存到软缓存中。*/
-    public void saveState(String objectID, Object object, ApplicationContext appContext) {
-        if (object instanceof StateCache == false)
+    public void saveState(AbstractObject object, ApplicationContext appContext) {
+        Object obj = object.getTargetBean();
+        if (obj instanceof StateCache == false)
             return;
-        IAttribute states = new AttBase();
-        StateCache chache = (StateCache) object;
+        StateCache chache = (StateCache) obj;
+        IAttribute flash = appContext.getSoftSession().getFlash(object.getID());
         //
-        SaveStateEvent event = new SaveStateEvent(object, states);
+        SaveStateEvent event = new SaveStateEvent(chache, flash);
         this.event(event.getEventPhase()[0]);//before
-        chache.saveState(states);
-        appContext.getSoftSession().setFlash(objectID, states);
+        chache.saveState(flash);
+        appContext.getSoftSession().setFlash(object.getID(), flash);
         this.event(event.getEventPhase()[1]);//after
     };
 };

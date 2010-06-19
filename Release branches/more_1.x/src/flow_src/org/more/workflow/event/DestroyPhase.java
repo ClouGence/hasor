@@ -13,20 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.workflow.context;
+package org.more.workflow.event;
 /**
- * 
- * Date : 2010-5-17
- * @author Administrator
+ * 该接口是一个标记接口，它派生于PhaseMark是用来标记对象销毁阶段事件。
+ * Date : 2010-6-19
+ * @author 赵永春
  */
-public class RunContext {
-    public ELContext getElContext() {
-        return new ELContext();
-    };
-    public FlowContext getFlowContext() {
-        return new FlowContext();
-    };
-    public ApplicationContext getApplication() {
-        return new ApplicationContext();
-    };
-};
+public interface DestroyPhase extends PhaseMark {};

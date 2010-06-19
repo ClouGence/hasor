@@ -62,6 +62,12 @@ public abstract class Event implements Serializable, IAttribute {
             phase.setEvent(this);
     };
     //=========================================================================================Type
+    /**初始化阶段事件。*/
+    protected class InitEventPhase extends EventPhase implements InitPhase {
+        public InitEventPhase() {
+            super(InitPhase.class);
+        };
+    };
     /**事件处理之前阶段对象。*/
     protected class BeforeEventPhase extends EventPhase implements BeforePhase {
         public BeforeEventPhase() {
@@ -78,6 +84,12 @@ public abstract class Event implements Serializable, IAttribute {
     protected class AfterEventPhase extends EventPhase implements AfterPhase {
         public AfterEventPhase() {
             super(AfterPhase.class);
+        };
+    };
+    /**销毁阶段。*/
+    protected class DestroyEventPhase extends EventPhase implements DestroyPhase {
+        public DestroyEventPhase() {
+            super(DestroyPhase.class);
         };
     };
     //==========================================================================================Job

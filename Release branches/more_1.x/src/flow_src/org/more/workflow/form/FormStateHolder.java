@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package org.more.workflow.form;
-import org.more.CastException;
-import org.more.workflow.context.ELContext;
 import org.more.workflow.context.FormFactory;
 import org.more.workflow.context.RunContext;
 import org.more.workflow.event.object.NewInstanceEvent;
@@ -44,35 +42,35 @@ public class FormStateHolder extends AbstractStateHolder {
      * 如果想要完成属性更新请执行updataMode方法。
      */
     @Override
-    public Object newInstance(RunContext runContext) throws Throwable {
+    public FormBean newInstance(RunContext runContext) throws Throwable {
         FormFactory factory = runContext.getApplication().getFormFactory();
-        FormBean obj = factory.getFormBean(runContext, this.formMetadata);
-        String beanID = factory.generateID(runContext, obj);
+        FormBean obj = factory.createForm(this.formMetadata);
+        String beanID = factory.generateID(obj);
         //
         obj = new Form(beanID, obj, this);
         NewInstanceEvent event = new NewInstanceEvent(obj, this);
         this.event(event.getEventPhase()[0]);
         return obj;
     };
-    /**更新Bean的属性，该方法会依次更新propertyMap中对应的属性。 */
-    @Override
-    public void updataMode(Object mode, ELContext elContext) throws Throwable {
-        if (mode instanceof FormBean == false)
-            throw new CastException("无法更新非FormBean类型的模型");
-        //------------
-        FormBean bean = (FormBean) mode;
-        if (mode instanceof Form == true)
-            bean = ((Form) mode).getFormBean();
-        super.updataMode(bean, elContext);
+    /**根据表单ID从持久化系统中装载表单。*/
+    public FormBean loadForm(String formID, RunContext runContext) {
+        FormFactory factory = runContext.getApplication().getFormFactory();
+        FormBean obj = factory.getForm(formID, this.formMetadata);
+        //
+        obj = new Form(formID, obj, this);
+        NewInstanceEvent event = new NewInstanceEvent(obj, this);
+        this.event(event.getEventPhase()[0]);
+        return obj;
     };
-    /**根据表单ID装载表单。*/
-    public Form loadForm(RunContext runContext, String formID) {
-        return null;
-    };
-    /**刷新表单对象，该方法系统会从持久化层直接重新载入所有数据到formObject中。*/
-    public void refreshForm(RunContext runContext, Form formObject) {};
     /**保存表单信息，如果该表单对象已经处于持久化层则该方法将会导致更新操作。*/
-    public void saveForm(RunContext runContext, Form formObject) {};
+    public void saveForm(Form formObject, RunContext runContext) {
+        FormBean bean = formObject.getTargetBean();
+        String formID = formObject.getID();
+        runContext.getApplication().getFormFactory().saveForm(formID, bean);
+    };
     /**根据表单ID删除表单，该方法只能删除当前FormMetadata定义的表单对象。*/
-    public void deleteFrom(RunContext runContext, String formID) {}
+    public void deleteFrom(Form formObject, RunContext runContext) {
+        String formID = formObject.getID();
+        runContext.getApplication().getFormFactory().deleteForm(formID);
+    };
 };

@@ -15,6 +15,7 @@
  */
 package org.more.workflow.context;
 import java.util.UUID;
+import org.more.submit.SubmitContext;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 import org.more.workflow.form.FormBean;
@@ -28,7 +29,7 @@ import org.more.workflow.runtime.RuntimeMetadata;
  */
 public class ApplicationContext {
     private FlashSession flashSession = new FlashSession() {
-                                          private IAttribute att = null;
+                                          private IAttribute att = new AttBase();
                                           @Override
                                           public void setFlash(String flashID, IAttribute states) {
                                               att = states;
@@ -49,16 +50,24 @@ public class ApplicationContext {
     public FormFactory getFormFactory() {
         return new FormFactory() {
             @Override
-            public FormBean getFormBean(RunContext runContext, FormMetadata formMetadata) {
+            public FormBean createForm(FormMetadata formMetadata) {
                 try {
                     return formMetadata.getFormType().newInstance();
                 } catch (Exception e) {}
                 return null;
             }
             @Override
-            public String generateID(RunContext runContext, FormBean formBean) {
+            public String generateID(FormBean formBean) {
                 return UUID.randomUUID().toString();
             }
+            @Override
+            public FormBean getForm(String formID, FormMetadata formMetadata) {
+                return null;
+            }
+            @Override
+            public void deleteForm(String formID) {}
+            @Override
+            public void saveForm(String formID, FormBean formBean) {}
         };
     };
     public NodeFactory getNodeFactory() {
@@ -78,5 +87,11 @@ public class ApplicationContext {
                 return UUID.randomUUID().toString();
             }
         };
+    };
+    public SubmitContext getSubmitContext() {
+        return null;
+    };
+    public ClassLoader getContextLoader() {
+        return null;
     };
 };
