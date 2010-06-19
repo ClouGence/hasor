@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.test.workflow.form;
-import javax.xml.crypto.Data;
-import org.more.workflow.form.FormBean;
-public class Role implements FormBean {
-    private String name = "namefafds";
-    public void setName(String name) {
-        this.name = name;
-    }
-    public void setCreateTime(Data createTime) {
-        this.createTime = createTime;
-    }
-    private Data createTime = null;
-    public String getName() {
-        return name;
-    }
-    public Data getCreateTime() {
-        return createTime;
-    }
-};
+package org.test.more.beans.spring;
+/**
+ * 
+ * Date : 2009-11-17
+ * @author Administrator
+ */
+public interface TestBeanInterface {
+    public int getA();
+    public void setA(int a);
+    public float getB();
+    public void setB(float b);
+    public String getC();
+    public void setC(String c);
+    public Object[] getD();
+    public void setD(Object[] d);
+}

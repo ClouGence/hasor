@@ -1,0 +1,13 @@
+<beans staticCache="0" dynamicCache="1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="beans-schema.xsd">
+
+	<bean name="test" type="org.test.more.submit.TestAction">
+		<meta key="isAction" value="true" />
+		<meta key="actionFilters" value="private" />
+	</bean>
+	<bean name="private" type="org.test.more.submit.ActionPF" />
+	<bean name="public" type="org.test.more.submit.ActionF">
+		<meta key="isPublicFilter" value="true" />
+	</bean>
+</beans>

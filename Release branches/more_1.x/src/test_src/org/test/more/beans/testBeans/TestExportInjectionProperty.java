@@ -13,22 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.test.workflow.form;
-import javax.xml.crypto.Data;
-import org.more.workflow.form.FormBean;
-public class Role implements FormBean {
-    private String name = "namefafds";
-    public void setName(String name) {
-        this.name = name;
+package org.test.more.beans.testBeans;
+import org.more.beans.BeanFactory;
+import org.more.beans.core.injection.ExportInjectionProperty;
+import org.more.beans.info.BeanDefinition;
+public class TestExportInjectionProperty implements ExportInjectionProperty {
+    @Override
+    public Object injectionProperty(Object object, Object[] getBeanParam, BeanDefinition definition, BeanFactory context) {
+        return object;
     }
-    public void setCreateTime(Data createTime) {
-        this.createTime = createTime;
-    }
-    private Data createTime = null;
-    public String getName() {
-        return name;
-    }
-    public Data getCreateTime() {
-        return createTime;
-    }
-};
+}

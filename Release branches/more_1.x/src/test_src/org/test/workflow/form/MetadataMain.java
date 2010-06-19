@@ -1,12 +1,3 @@
-package org.test.workflow.form;
-import org.more.workflow.context.ELContext;
-import org.more.workflow.context.RunContext;
-import org.more.workflow.event.EventListener;
-import org.more.workflow.event.EventPhase;
-import org.more.workflow.form.Form;
-import org.more.workflow.form.FormMetadata;
-import org.more.workflow.form.FormStateHolder;
-import org.more.workflow.metadata.PropertyMetadata;
 /*
  * Copyright 2008-2009 the original author or authors.
  *
@@ -22,6 +13,15 @@ import org.more.workflow.metadata.PropertyMetadata;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.test.workflow.form;
+import org.more.workflow.context.ELContext;
+import org.more.workflow.context.RunContext;
+import org.more.workflow.event.EventListener;
+import org.more.workflow.event.EventPhase;
+import org.more.workflow.form.Form;
+import org.more.workflow.form.FormMetadata;
+import org.more.workflow.form.FormStateHolder;
+import org.more.workflow.metadata.PropertyMetadata;
 public class MetadataMain {
     /**
      * @param args
@@ -46,9 +46,10 @@ public class MetadataMain {
         });
         //
         FormStateHolder formState = new FormStateHolder(fm);
+        Form formBean = (Form) formState.newInstance(new RunContext());
+        formState.updataMode(formBean, new ELContext());
         //
-        User fb = (User) ((Form) formState.newInstance(new RunContext())).getFormBean();
-        formState.updataMode(fb, new ELContext());
+        User fb = (User) ((Form) formState.newInstance(new RunContext())).getTargetBean();
         System.out.println(fb.getPassword());
         System.out.println(fb.getRole().getName());
     };

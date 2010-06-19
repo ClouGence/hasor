@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.test.workflow.form;
-import javax.xml.crypto.Data;
-import org.more.workflow.form.FormBean;
-public class Role implements FormBean {
-    private String name = "namefafds";
-    public void setName(String name) {
-        this.name = name;
+package org.test.more.beans.testBeans;
+import java.lang.reflect.Method;
+import org.more.InvokeException;
+import org.more.core.classcode.MethodDelegate;
+/**
+ * 
+ * <br/>Date : 2009-11-26
+ * @author Administrator
+ */
+public class ImplDelegate implements MethodDelegate {
+    @Override
+    public Object invoke(Method callMethod, Object target, Object[] params) throws InvokeException {
+        System.out.println(params[0]);
+        return null;
     }
-    public void setCreateTime(Data createTime) {
-        this.createTime = createTime;
-    }
-    private Data createTime = null;
-    public String getName() {
-        return name;
-    }
-    public Data getCreateTime() {
-        return createTime;
-    }
-};
+}

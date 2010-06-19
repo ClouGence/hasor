@@ -1,13 +1,3 @@
-package org.test.workflow.form;
-import org.more.workflow.context.ApplicationContext;
-import org.more.workflow.context.ELContext;
-import org.more.workflow.context.RunContext;
-import org.more.workflow.event.EventListener;
-import org.more.workflow.event.EventPhase;
-import org.more.workflow.form.Form;
-import org.more.workflow.form.FormMetadata;
-import org.more.workflow.form.FormStateHolder;
-import org.more.workflow.metadata.PropertyMetadata;
 /*
  * Copyright 2008-2009 the original author or authors.
  *
@@ -23,6 +13,14 @@ import org.more.workflow.metadata.PropertyMetadata;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.test.workflow.form;
+import org.more.workflow.context.ApplicationContext;
+import org.more.workflow.context.ELContext;
+import org.more.workflow.context.RunContext;
+import org.more.workflow.form.Form;
+import org.more.workflow.form.FormMetadata;
+import org.more.workflow.form.FormStateHolder;
+import org.more.workflow.metadata.PropertyMetadata;
 public class StateMain {
     /**
      * @param args
@@ -37,14 +35,18 @@ public class StateMain {
         FormStateHolder formState = new FormStateHolder(fm);
         //
         Form form = (Form) formState.newInstance(new RunContext());
-        User fb = (User) form.getFormBean();
-        formState.updataMode(fb, new ELContext());
+        formState.updataMode(form, new ELContext());
+        //
+        User fb = (User) form.getTargetBean();
         System.out.println(fb.getPassword());
         System.out.println(fb.getRole().getName());
+        System.out.println();
         //
         ApplicationContext app = new ApplicationContext();
-        formState.loadState(form.getID(), fb, app);
-        formState.saveState(form.getID(), fb, app);
-        System.out.println(app);
+        formState.saveState(form, app);
+        System.out.println(fb.getAccount());
+        app.getSoftSession().getFlash(form.getID()).setAttribute("account", "can i help you?");
+        formState.loadState(form, app);
+        System.out.println(fb.getAccount());
     };
 };

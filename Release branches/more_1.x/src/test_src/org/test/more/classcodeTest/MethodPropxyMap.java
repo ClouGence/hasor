@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.test.workflow.form;
-import javax.xml.crypto.Data;
-import org.more.workflow.form.FormBean;
-public class Role implements FormBean {
-    private String name = "namefafds";
-    public void setName(String name) {
-        this.name = name;
+package org.test.more.classcodeTest;
+/*
+ * 1.所有This方法调用更改
+ * 2.改写所有当前类方法
+ * 3.输出所有可以重写的方法
+ * 
+ */
+@SuppressWarnings("serial")
+public class MethodPropxyMap implements java.io.Serializable {
+    public void aaa() {
+        this.a();
     }
-    public void setCreateTime(Data createTime) {
-        this.createTime = createTime;
+    protected long a() {
+        long j = 0;
+        for (int i = 0; i < 10000; i++)
+            j = j * i;
+        return j;
     }
-    private Data createTime = null;
-    public String getName() {
-        return name;
-    }
-    public Data getCreateTime() {
-        return createTime;
-    }
-};
+}

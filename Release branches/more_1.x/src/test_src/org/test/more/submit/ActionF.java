@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.test.workflow.form;
-import javax.xml.crypto.Data;
-import org.more.workflow.form.FormBean;
-public class Role implements FormBean {
-    private String name = "namefafds";
-    public void setName(String name) {
-        this.name = name;
+package org.test.more.submit;
+import org.more.submit.ActionFilter;
+import org.more.submit.ActionStack;
+import org.more.submit.FilterChain;
+/**
+ * 
+ * <br/>Date : 2009-12-2
+ * @author Administrator
+ */
+public class ActionF implements ActionFilter {
+    @Override
+    public Object doActionFilter(ActionStack stack, FilterChain chain) throws Throwable {
+        System.out.println("public");
+        return chain.doInvokeFilter(stack);
     }
-    public void setCreateTime(Data createTime) {
-        this.createTime = createTime;
-    }
-    private Data createTime = null;
-    public String getName() {
-        return name;
-    }
-    public Data getCreateTime() {
-        return createTime;
-    }
-};
+}

@@ -1,18 +1,3 @@
-package org.test.more.beans.schema;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import javax.xml.XMLConstants;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
-import org.more.beans.resource.XmlFileResource;
-import org.more.core.io.AutoCloseInputStream;
-import org.xml.sax.SAXException;
 /*
  * Copyright 2008-2009 the original author or authors.
  *
@@ -28,6 +13,21 @@ import org.xml.sax.SAXException;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.test.more.beans.schema;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import javax.xml.XMLConstants;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import org.more.beans.resource.XmlFileResource;
+import org.more.core.io.AutoCloseInputStream;
+import org.xml.sax.SAXException;
 public class TestXML {
     /**
      * @param args

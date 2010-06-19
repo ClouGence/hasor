@@ -1,7 +1,3 @@
-package org.test.workflow.form;
-import org.more.util.attribute.IAttribute;
-import org.more.workflow.form.FormBean;
-import org.more.workflow.state.StateCache;
 /*
  * Copyright 2008-2009 the original author or authors.
  *
@@ -17,6 +13,10 @@ import org.more.workflow.state.StateCache;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.test.workflow.form;
+import org.more.util.attribute.IAttribute;
+import org.more.workflow.form.FormBean;
+import org.more.workflow.state.StateCache;
 public class User implements FormBean, StateCache {
     private String account  = "account";
     private String password = "password";
