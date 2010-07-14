@@ -36,7 +36,7 @@ more.util.formatData = function(formatData, formater) {
 					: ("00" + o[k]).substr(("" + o[k]).length));
 	return format;
 }
-/* toString */
+/* toStringº¯Êý */
 more.util.toString = function(o) {
 	var type = Object.prototype.toString.call(o);
 	if (o == null || type == "undefined")
@@ -59,7 +59,7 @@ more.util.toString = function(o) {
 		var s = "";
 		for ( var i = 0; i < o.length; i++)
 			s += more.util.toString(o[i]) + ",";
-		// ,
+		// È¥³ýÄ©Î²¶ººÅ
 		if (s.substr(s.length - 1, s.length) == ",")
 			s = s.substr(0, s.length - 1);
 		return "[" + s + "]";
@@ -68,13 +68,13 @@ more.util.toString = function(o) {
 		var s = "";
 		for ( var key in o)
 			s += key + ":" + more.util.toString(o[key]) + ",";
-		// ,
+		// È¥³ýÄ©Î²¶º
 		if (s.substr(s.length - 1, s.length) == ",")
 			s = s.substr(0, s.length - 1);
 		return "{" + s + "}";
 	}
 };
-/* toObject */
+/* toObjectº¯Êý */
 more.util.toObject = function(json) {
 	return eval(json);
 }
@@ -111,7 +111,7 @@ more.util.AjaxCall = function(obj) {
 		if (arg.substr(arg.length - 1, arg.length) == "&")
 			arg = arg.substr(0, arg.length - 1);
 		var ajax = this.CreateXmlHttpRequestObject();
-		ajax.open("post", construction.url, construction.synchronize);
+		ajax.open("post", construction.url, !construction.synchronize);
 		ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 		ajax.setRequestHeader("Content-Length", arg.length);
 		ajax.onreadystatechange = function() {
@@ -146,7 +146,7 @@ more.retain.callServerFunction = function(callName, funArray) {
 		argsArray = funArray;
 	var ajax = new more.util.AjaxCall( {
 		url : more.retain.serverCallURL,
-		synchronize : false,
+		synchronize : true,
 		success : function(ajax) {
 		},
 		failure : function(ajax) {
