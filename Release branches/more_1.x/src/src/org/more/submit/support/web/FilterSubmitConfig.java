@@ -22,7 +22,7 @@ import org.more.submit.Config;
  * @version  2009-6-30
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-class FilterSubmitConfig implements Config {
+public class FilterSubmitConfig implements Config {
     //========================================================================================Field
     private FilterConfig config = null;
     //==================================================================================Constructor

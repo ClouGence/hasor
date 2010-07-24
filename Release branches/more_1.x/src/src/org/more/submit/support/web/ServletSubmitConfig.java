@@ -22,7 +22,7 @@ import org.more.submit.Config;
  * @version 2009-6-30
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-class ServletSubmitConfig implements Config {
+public class ServletSubmitConfig implements Config {
     //========================================================================================Field
     private ServletConfig config = null;
     //==================================================================================Constructor

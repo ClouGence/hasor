@@ -22,7 +22,7 @@ import org.more.submit.support.web.scope.HttpSessionScope;
  * @version 2009-12-4
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-class SessionSynchronize extends HttpSessionScope implements Session {
+public class SessionSynchronize extends HttpSessionScope implements Session {
     //========================================================================================Field
     private static final long serialVersionUID = -7195947568750693895L;
     private HttpSession       session;
