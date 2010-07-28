@@ -15,17 +15,22 @@
  */
 package org.more.submit;
 /**
- * 该接口定义了Submit默认支持的变量作用域。
- * @version 2009-12-28
+ * SubmitContext接口的实现类。ImplSubmitContext的createActionStack方法可以改变Action参数的具体类型。
+ * @version 2009-12-1
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ScopeEnum {
-    /**ActionStack对象的父级范围*/
-    public static final String Scope_Parent  = "Parent";
-    /**ActionStack对象范围*/
-    public static final String Scope_Stack   = "Stack";
-    /**Session接口范围*/
-    public static final String Scope_Session = "Session";
-    /**SubmitContext接口范围*/
-    public static final String Scope_Context = "Context";
+public class SubmitContextImpl extends AbstractSubmitContextImpl {
+    /**  */
+    private static final long serialVersionUID = 5057959033615801491L;
+    public SubmitContextImpl(ActionContext actionContext) {
+        this.setActionContext(actionContext);
+    }
+    @Override
+    public boolean isWebContext() {
+        return false;
+    }
+    @Override
+    protected ActionStack createStack(String actionName, String actionMethod, ActionStack parent, Session session) {
+        return new ActionStack(actionName, actionMethod, parent, session, this);
+    }
 }

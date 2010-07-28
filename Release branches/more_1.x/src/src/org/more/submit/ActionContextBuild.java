@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 package org.more.submit;
+import org.more.util.Config;
 /**
- * 该接口定义了Submit默认支持的变量作用域。
- * @version 2009-12-28
+ * 
+ * @version 2010-7-26
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ScopeEnum {
-    /**ActionStack对象的父级范围*/
-    public static final String Scope_Parent  = "Parent";
-    /**ActionStack对象范围*/
-    public static final String Scope_Stack   = "Stack";
-    /**Session接口范围*/
-    public static final String Scope_Session = "Session";
-    /**SubmitContext接口范围*/
-    public static final String Scope_Context = "Context";
+public abstract class ActionContextBuild {
+    public abstract void init(Config config) throws Exception;
+    public abstract ActionContext getActionContext();
 }

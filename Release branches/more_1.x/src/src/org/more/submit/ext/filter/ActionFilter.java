@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit;
+package org.more.submit.ext.filter;
+import org.more.submit.ActionStack;
 /**
- * 该接口定义了Submit默认支持的变量作用域。
- * @version 2009-12-28
+ * submit3.0的action执行过滤器，同时这个过滤器也叫做action拦截器。
+ * @version 2009-11-28
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ScopeEnum {
-    /**ActionStack对象的父级范围*/
-    public static final String Scope_Parent  = "Parent";
-    /**ActionStack对象范围*/
-    public static final String Scope_Stack   = "Stack";
-    /**Session接口范围*/
-    public static final String Scope_Session = "Session";
-    /**SubmitContext接口范围*/
-    public static final String Scope_Context = "Context";
+public interface ActionFilter {
+    /**
+     * 当action请求被拦截之后拦截器的doActionFilter方法会被自动调用。如果向继续执行拦截器那么就调用chain方法的execute方法既可。
+     * @param stack 当调用目标方法时希望给目标方法传递的事件对象。
+     * @param chain 当执行过滤器时该参数可以用于决定是否继续执行过滤器。
+     * @return 返回执行过滤器之后的执行结果。
+     * @throws Throwable 当执行时发生异常
+     */
+    public Object doActionFilter(ActionStack stack, FilterChain chain) throws Throwable;
 }

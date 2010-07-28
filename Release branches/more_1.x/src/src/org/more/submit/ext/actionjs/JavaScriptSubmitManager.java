@@ -29,11 +29,9 @@ import org.more.core.copybean.CopyBeanUtil;
 import org.more.core.json.JsonUtil;
 import org.more.submit.ActionContext;
 import org.more.submit.ActionStack;
-import org.more.submit.support.web.ActionTag;
-import org.more.submit.support.web.WebActionStack;
+import org.more.submit.web.WebActionStack;
 /**
  * Submit插件actionjs。该插件使javascript调用action并且action的返回值使用javascript操作成为可能。
- * 
  * @version 2010-1-7
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -49,7 +47,7 @@ public class JavaScriptSubmitManager {
         Map params = (Map) new JsonUtil().toMap(event.getParamString("args"));// 获取参数列表
         Object result = event.getContext().doActionOnStack(callName, event, params);// Action方式调用
         // ======================================================================================
-        HttpServletResponse response = event.getResponse();
+        HttpServletResponse response = event.getHttpResponse();
         try {
             response.getWriter().print(new JsonUtil().toString(result));
             response.getWriter().flush();
@@ -60,16 +58,15 @@ public class JavaScriptSubmitManager {
     public Object config(WebActionStack event) throws IOException, CastException {
         // 获取输出对象
         Writer write = null;
-        if (event.contains("tag") == true) {
-            ActionTag tag = (ActionTag) event.getParam("tag");
-            write = tag.getOut();
-        } else {
-            HttpServletResponse response = event.getResponse();
+        if (event.getPageContext() != null)
+            write = event.getPageContext().getOut();
+        else {
+            HttpServletResponse response = event.getHttpResponse();
             write = response.getWriter();
         }
         // 输出核心脚本
         StringBuffer str = new StringBuffer();
-        InputStream core = CopyBeanUtil.class.getResourceAsStream("/org/more/submit/ext/actionjs/JavaScriptSubmitManager.js");
+        InputStream core = CopyBeanUtil.class.getResourceAsStream("/META-INF/resource/submit/ext/actionjs/JavaScriptSubmitManager.js");
         BufferedReader reader = new BufferedReader(new InputStreamReader(core, "utf-8"));
         while (true) {
             String str_read = reader.readLine();
@@ -79,7 +76,7 @@ public class JavaScriptSubmitManager {
                 str.append(str_read + "\n");
         }
         // 输出方法定义 org.more.web.submit.ROOT.Action
-        HttpServletRequest request = event.getRequest();
+        HttpServletRequest request = event.getHttpRequest();
         String host = request.getServerName() + ":" + request.getLocalPort();
         Object protocol = event.getServletContext().getAttribute("org.more.web.submit.ROOT.Action");
         str.append("more.retain.serverCallURL=\"http://" + host + "/" + protocol + "://" + event.getActionName() + ".execute\";");

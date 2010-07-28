@@ -21,7 +21,7 @@ import org.more.NoDefinitionException;
  * @version 2009-12-1
  * @author 赵永春 (zyc@byshell.org)
  */
-class PropxyActionInvoke implements ActionInvoke {
+public class PropxyActionInvoke implements ActionInvoke {
     //========================================================================================Field
     /** 被代理的目标对象。 */
     private Object target = null;

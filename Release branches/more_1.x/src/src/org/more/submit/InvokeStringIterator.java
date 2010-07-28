@@ -17,21 +17,20 @@ package org.more.submit;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 /**
- * Action资源迭代器，该迭代器会扫描每一个action对象的方法。以迭代出所有可调用的action  invokeString。
- * @version 2010-1-9
- * @author 赵永春 (zyc@byshell.org)
+ * Action资源迭代器，该迭代器会扫描每一个action对象的方法。以迭代出所有可调用的action invokeString。
+ * @version : 2010-7-27
+ * @author 赵永春(zyc@byshell.org)
  */
 class InvokeStringIterator implements Iterator<String> {
-    private Iterator<String>    actionNameIterator;
-    private ActionObjectFactory objectFactory;
+    private Iterator<String> actionNameIterator  = null;
+    private ActionContext    actionContext       = null;
     //
-    private String              currentActionName;
-    private Method[]            actionObjectMethods;
-    private int                 currentMethodIndex;
+    private String           currentActionName   = null;
+    private Method[]         actionObjectMethods = null;
+    private int              currentMethodIndex  = 0;
     /*----------------------------------------------*/
-    public InvokeStringIterator(Iterator<String> actionNameIterator, ActionObjectFactory objectFactory) {
-        this.actionNameIterator = actionNameIterator;
-        this.objectFactory = objectFactory;
+    public InvokeStringIterator(ActionContext actionContext) {
+        this.actionContext = actionContext;
     }
     @Override
     public boolean hasNext() {
@@ -55,7 +54,7 @@ class InvokeStringIterator implements Iterator<String> {
         if (this.actionNameIterator.hasNext() == true) {
             //如果存在则读取这个action的所有方法列表并且重置方法指针为-1。
             this.currentActionName = this.actionNameIterator.next();
-            Class<?> type = this.objectFactory.getObjectType(this.currentActionName);
+            Class<?> type = this.actionContext.getActionType(this.currentActionName);
             this.actionObjectMethods = type.getMethods();
         } else {
             //如果已经迭代到最后一个action名称，则重置所有数据。

@@ -13,19 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit;
+package org.more.submit.web;
+
+import org.more.submit.ScopeEnum;
+
 /**
- * 该接口定义了Submit默认支持的变量作用域。
+ * 该接口定义了WebActionStack所能支持的作用域。
  * @version 2009-12-28
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ScopeEnum {
-    /**ActionStack对象的父级范围*/
-    public static final String Scope_Parent  = "Parent";
-    /**ActionStack对象范围*/
-    public static final String Scope_Stack   = "Stack";
-    /**Session接口范围*/
-    public static final String Scope_Session = "Session";
-    /**SubmitContext接口范围*/
-    public static final String Scope_Context = "Context";
+public interface WebScopeEnum extends ScopeEnum {
+    /**页面上下文*/
+    public static final String Scope_JspPage        = "JspPage";
+    /**Request范围*/
+    public static final String Scope_HttpRequest    = "HttpRequest";
+    /**HttpSession范围*/
+    public static final String Scope_HttpSession    = "HttpSession";
+    /**Cookie范围*/
+    public static final String Scope_Cookie         = "Cookie";
+    /**ServletContext范围*/
+    public static final String Scope_ServletContext = "ServletContext";
 }

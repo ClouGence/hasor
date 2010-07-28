@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 package org.more.submit;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 该接口定义了Submit默认支持的变量作用域。
- * @version 2009-12-28
+ * 标记这个类为一个action。
+ * @version 2010-1-9
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ScopeEnum {
-    /**ActionStack对象的父级范围*/
-    public static final String Scope_Parent  = "Parent";
-    /**ActionStack对象范围*/
-    public static final String Scope_Stack   = "Stack";
-    /**Session接口范围*/
-    public static final String Scope_Session = "Session";
-    /**SubmitContext接口范围*/
-    public static final String Scope_Context = "Context";
+@Retention(RetentionPolicy.RUNTIME)
+@Target( { ElementType.TYPE })
+public @interface Action {
+    /**该配置可以通知submit系统这个类是否是一个action。*/
+    public boolean isAction() default true;
 }

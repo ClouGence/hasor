@@ -15,17 +15,15 @@
  */
 package org.more.submit;
 /**
- * 该接口定义了Submit默认支持的变量作用域。
- * @version 2009-12-28
- * @author 赵永春 (zyc@byshell.org)
+ * session管理器，submit通过这个管理器来管理session。其实现类可以扩展它提供生命周期的管理。
+ * @version : 2010-7-27
+ * @author 赵永春(zyc@byshell.org)
  */
-public interface ScopeEnum {
-    /**ActionStack对象的父级范围*/
-    public static final String Scope_Parent  = "Parent";
-    /**ActionStack对象范围*/
-    public static final String Scope_Stack   = "Stack";
-    /**Session接口范围*/
-    public static final String Scope_Session = "Session";
-    /**SubmitContext接口范围*/
-    public static final String Scope_Context = "Context";
+public interface SessionManager {
+    /**创建一个Session*/
+    public Session createSession();
+    /**试图恢复一个指定id的session。*/
+    public Session getSession(String sessionID);
+    /**测试某个session是否属于这个sessio管理器。*/
+    public boolean isBelong(Session session);
 }

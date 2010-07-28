@@ -70,7 +70,7 @@ public abstract class AbstractBeanContext implements BeanContext {
             return true;
     }
     @Override
-    public Object getBean(String name, Object... objects) throws Exception {
+    public Object getBean(String name, Object... objects) {
         if (this.defaultBeanFactory.containsBean(name) == false && parent != null)
             return this.parent.getBean(name, objects);
         else

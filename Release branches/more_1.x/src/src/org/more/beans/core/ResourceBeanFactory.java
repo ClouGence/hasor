@@ -144,15 +144,19 @@ public class ResourceBeanFactory implements BeanFactory {
             return this.resource.containsBeanDefinition(name);
     }
     /**该方法用于忽略对bean的单态设置而强制创建一个bean的新实例。*/
-    private Object getBeanForciblyo(String name, BeanDefinition definition, Object... objects) throws Exception {
+    private Object getBeanForciblyo(String name, BeanDefinition definition, Object... objects) {
         if (definition == null)
             throw new NoDefinitionException("没有定义名称为[" + name + "]的bean。");
-        Object obj = this.createFactory.newInstance(definition, objects, this);//创建对象
-        this.injectionFactory.ioc(obj, objects, definition, this);//执行依赖注入
-        return obj;
+        try {
+            Object obj = this.createFactory.newInstance(definition, objects, this);//创建对象
+            this.injectionFactory.ioc(obj, objects, definition, this);//执行依赖注入
+            return obj;
+        } catch (Exception e) {
+            throw new RuntimeException("获取bean时发生异常", e);
+        }
     }
     @Override
-    public Object getBean(String name, Object... objects) throws Exception {
+    public Object getBean(String name, Object... objects) {
         if (singletonBeanCache.containsKey(name) == true)
             return singletonBeanCache.get(name);
         BeanDefinition definition = this.resource.getBeanDefinition(name);
