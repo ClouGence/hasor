@@ -4,11 +4,13 @@
 	xsi:schemaLocation="http://more.byshell.org/schema/anno anno-schema.xsd"
 	xmlns:anno="http://more.byshell.org/schema/anno">
 
-	<bean name="filter" type="org.moretest.filter.TestFilter" />
+	<bean name="filter" type="org.moretest.filter.TestFilter">
+		<meta key="isFilter" value="true"/>
+	</bean>
 	<bean name="publicFilter" type="org.moretest.filter.PublicFilter">
+		<meta key="isFilter" value="true"/>
 		<meta key="isPublicFilter" value="true"/>
 	</bean>
-	
 	
 	<bean name="action" type="org.moretest.filter.TestAction">
 		<meta key="isAction" value="true" />

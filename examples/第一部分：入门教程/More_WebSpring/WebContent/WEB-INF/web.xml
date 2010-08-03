@@ -3,17 +3,17 @@
 	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	id="WebApp_ID" version="2.5">
-	<!--
-		<listener>
-			<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-		</listener>
-	-->
+	<!-- 如果不配置listener则applicationContext.xml需要放置在classpath下。 -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	
 	<filter>
 		<filter-name>moreContext</filter-name>
-		<filter-class>org.more.submit.support.web.SubmitRoot</filter-class>
+		<filter-class>org.more.submit.web.support.SubmitRoot</filter-class>
 		<init-param>
 			<param-name>buildClass</param-name>
-			<param-value>org.more.submit.casing.spring.WebSpringBuilder</param-value>
+			<param-value>org.more.submit.casing.spring.SpringBuilder</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>
@@ -23,10 +23,10 @@
 	<!-- ================================================================ -->
 	<servlet>
 		<servlet-name>moreContext</servlet-name>
-		<servlet-class>org.more.submit.support.web.SubmitRoot</servlet-class>
+		<servlet-class>org.more.submit.web.support.SubmitRoot</servlet-class>
 		<init-param>
 			<param-name>buildClass</param-name>
-			<param-value>org.more.submit.casing.spring.WebSpringBuilder</param-value>
+			<param-value>org.more.submit.casing.spring.SpringBuilder</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>

@@ -6,7 +6,7 @@
 <title></title>
 </head>
 <body>
-<a href="/action:safety.goshow"/>GoShow</a>
+<a href="action!safety.goshow"/>GoShow</a>
 <a href="/show.jsp"/>show.jsp</a>
 </body>
 </html>

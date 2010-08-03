@@ -14,9 +14,9 @@ package org.moretest.filter;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import org.more.submit.CasingDirector;
+import org.more.submit.SubmitBuild;
 import org.more.submit.SubmitContext;
-import org.more.submit.casing.more.ClientMoreBuilder;
+import org.more.submit.casing.more.MoreBuilder;
 /**
  * 
  * Date : 2009-12-11
@@ -29,9 +29,8 @@ public class Main {
      */
     public static void main(String[] args) throws Throwable {
         //第一步、获得SubmitContext环境
-        CasingDirector cd = new CasingDirector(null);//创建SubmitContext生成器，该类负责生成SubmitContext类对象。
-        cd.build(new ClientMoreBuilder("more-config.xml"));//调用build方法生成SubmitContext对象，ClientMoreBuilder对象是专注于桌面程序的生成器。
-        SubmitContext submitContext = cd.getResult();//获得生成的SubmitContext对象
+        SubmitBuild cd = new SubmitBuild();//创建SubmitContext生成器，该类负责生成SubmitContext类对象。
+        SubmitContext submitContext = cd.build(new MoreBuilder());//调用build方法生成SubmitContext对象，ClientMoreBuilder对象是专注于桌面程序的生成器。
         System.out.println(submitContext.doAction("action.hello"));
         System.out.println("----");
         System.out.println(submitContext.doAction("action-filterLink.hello"));

@@ -24,6 +24,7 @@ public class Main {
      */
     public static void main(String[] args) throws Exception {
         BeanFactory factory = new ResourceBeanFactory(new AnnoXmlFileResource());
+        factory.init();
         //
         XmlArrayBean xmlArrayBean = (XmlArrayBean) factory.getBean("xmlArrayBean", "参数字符数据");
         XmlConstructorArrayBean xmlConstructorArrayBean = (XmlConstructorArrayBean) factory.getBean("xmlConstructorArrayBean", "参数字符数据");

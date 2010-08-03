@@ -25,6 +25,7 @@ public class Main {
      */
     public static void main(String[] args) throws Exception {
         BeanFactory factory = new ResourceBeanFactory(new AnnoXmlFileResource());
+        factory.init();
         //
         factory.setAttribute("apple", new Date());
         //

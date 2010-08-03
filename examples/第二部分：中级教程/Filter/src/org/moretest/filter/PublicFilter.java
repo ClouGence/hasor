@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.moretest.filter;
-import org.more.submit.ActionFilter;
 import org.more.submit.ActionStack;
-import org.more.submit.FilterChain;
+import org.more.submit.ext.filter.ActionFilter;
+import org.more.submit.ext.filter.FilterChain;
 /**
  * 
  * <br/>Date : 2009-12-28

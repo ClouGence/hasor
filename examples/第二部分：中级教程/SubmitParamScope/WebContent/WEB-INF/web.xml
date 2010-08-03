@@ -5,12 +5,7 @@
 	id="WebApp_ID" version="2.5">
 	<filter>
 		<filter-name>moreContext</filter-name>
-		<filter-class>org.more.submit.support.web.SubmitRoot</filter-class>
-		<init-param>
-			<!-- 指定配置文件位置 -->
-			<param-name>configFile</param-name>
-			<param-value>/WEB-INF/more-config.xml</param-value>
-		</init-param>
+		<filter-class>org.more.submit.web.support.SubmitRoot</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>moreContext</filter-name>
@@ -18,12 +13,7 @@
 	</filter-mapping>
 	<servlet>
 		<servlet-name>moreContext</servlet-name>
-		<servlet-class>org.more.submit.support.web.SubmitRoot</servlet-class>
-		<init-param>
-			<!-- 指定配置文件位置 -->
-			<param-name>configFile</param-name>
-			<param-value>/WEB-INF/more-config.xml</param-value>
-		</init-param>
+		<servlet-class>org.more.submit.web.support.SubmitRoot</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>moreContext</servlet-name>

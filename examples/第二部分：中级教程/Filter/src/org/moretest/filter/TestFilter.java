@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.moretest.filter;
-import org.more.submit.ActionFilter;
 import org.more.submit.ActionStack;
-import org.more.submit.FilterChain;
+import org.more.submit.ext.filter.ActionFilter;
+import org.more.submit.ext.filter.FilterChain;
 /**
  * 
  * <br/>Date : 2009-12-28
@@ -24,9 +24,9 @@ import org.more.submit.FilterChain;
  */
 public class TestFilter implements ActionFilter {
     @Override
-    public Object doActionFilter(ActionStack arg0, FilterChain arg1) throws Throwable {
+    public Object doActionFilter(ActionStack stack, FilterChain chain) throws Throwable {
         System.out.println("before...");
-        Object res = arg1.doInvokeFilter(arg0);
+        Object res = chain.doInvokeFilter(stack);
         System.out.println("return...");
         return "String:" + res;
     }

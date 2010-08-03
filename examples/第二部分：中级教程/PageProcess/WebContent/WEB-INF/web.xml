@@ -5,6 +5,6 @@
 	id="WebApp_ID" version="2.5">
 	<filter>
 		<filter-name>moreContext</filter-name>
-		<filter-class>org.more.submit.support.web.SubmitRoot</filter-class>
+		<filter-class>org.more.submit.web.support.SubmitRoot</filter-class>
 	</filter>
 </web-app>

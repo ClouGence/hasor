@@ -24,6 +24,7 @@ public class Main {
      */
     public static void main(String[] args) throws Exception {
         BeanFactory factory = new ResourceBeanFactory(new AnnoXmlFileResource());
+        factory.init();
         //
         XmlBigStringBean xmlBigStringBean_1 = (XmlBigStringBean) factory.getBean("xmlBigStringBean_1");
         XmlBigStringBean xmlBigStringBean_2 = (XmlBigStringBean) factory.getBean("xmlBigStringBean_2");

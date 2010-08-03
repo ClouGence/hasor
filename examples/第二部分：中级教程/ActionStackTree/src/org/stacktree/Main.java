@@ -15,9 +15,9 @@
  */
 package org.stacktree;
 import java.util.Map;
-import org.more.submit.CasingDirector;
+import org.more.submit.SubmitBuild;
 import org.more.submit.SubmitContext;
-import org.more.submit.casing.more.ClientMoreBuilder;
+import org.more.submit.casing.more.MoreBuilder;
 import org.more.util.StringConvert;
 public class Main {
     /**
@@ -26,16 +26,16 @@ public class Main {
      */
     @SuppressWarnings("unchecked")
     public static void main(String[] args) throws Throwable {
-        CasingDirector cd = new CasingDirector(null);//创建SubmitContext生成器，该类负责生成SubmitContext类对象。
-        cd.build(new ClientMoreBuilder("more-config.xml"));//调用build方法生成SubmitContext对象，ClientMoreBuilder对象是专注于桌面程序的生成器。
+        SubmitBuild cd = new SubmitBuild();//创建SubmitContext生成器，该类负责生成SubmitContext类对象。
+        cd.build(new MoreBuilder("more-config.xml"));//调用build方法生成SubmitContext对象，ClientMoreBuilder对象是专注于桌面程序的生成器。
         SubmitContext submitContext = cd.getResult();//获得生成的SubmitContext对象
         Map var = StringConvert.parseMap("var=value");
         System.out.println("var=" + var.get("var"));
         System.out.println("-------------");
-        submitContext.doAction("a_1.invoke", null, var);//a_1会调用a_2，同时传入var参数。
+        submitContext.doAction("a_1.invoke", var);//a_1会调用a_2，同时传入var参数。
         System.out.println("-------------");
-        submitContext.doAction("a_2.invoke", null, var);//a_2会调用a_3，输出var参数。
+        submitContext.doAction("a_2.invoke", var);//a_2会调用a_3，输出var参数。
         System.out.println("-------------");
-        submitContext.doAction("a_3.invoke", null, var);//输出 var参数。
+        submitContext.doAction("a_3.invoke", var);//输出 var参数。
     }
 }

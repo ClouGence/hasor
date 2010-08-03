@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.console;
-import org.more.submit.CasingDirector;
+import org.more.submit.SubmitBuild;
 import org.more.submit.SubmitContext;
-import org.more.submit.casing.spring.ClientSpringBuilder;
+import org.more.submit.casing.spring.SpringBuilder;
 /**
  * 
  * Date : 2009-12-11
@@ -28,8 +28,8 @@ public class HelloWord {
      * @throws Throwable 
      */
     public static void main(String[] args) throws Throwable {
-        CasingDirector cd = new CasingDirector(null);//创建SubmitContext生成器，该类负责生成SubmitContext类对象。
-        cd.build(new ClientSpringBuilder());//调用build方法生成SubmitContext对象。
+        SubmitBuild cd = new SubmitBuild();//创建SubmitContext生成器，该类负责生成SubmitContext类对象。
+        cd.build(new SpringBuilder());//调用build方法生成SubmitContext对象。
         SubmitContext submitContext = cd.getResult();//获得生成的SubmitContext对象
         //第二步、调用我们的HelloWord Action方法，并且获得返回值。
         Object res = submitContext.doAction("action.hello");

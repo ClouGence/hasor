@@ -5,7 +5,11 @@
 	id="WebApp_ID" version="2.5">
 	<filter>
 		<filter-name>moreContext</filter-name>
-		<filter-class>org.more.submit.support.web.SubmitRoot</filter-class>
+		<filter-class>org.more.submit.web.support.SubmitRoot</filter-class>
+		<init-param>
+			<param-name>configFile</param-name>
+			<param-value>../more-config.xml</param-value>
+		</init-param>
 	</filter>
 	<filter-mapping>
 		<filter-name>moreContext</filter-name>
@@ -14,7 +18,7 @@
 	<!-- =================================================== -->
 	<servlet>
 		<servlet-name>moreContext</servlet-name>
-		<servlet-class>org.more.submit.support.web.SubmitRoot</servlet-class>
+		<servlet-class>org.more.submit.web.support.SubmitRoot</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>moreContext</servlet-name>

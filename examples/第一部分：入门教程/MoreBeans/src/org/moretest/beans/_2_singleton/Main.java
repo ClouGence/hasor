@@ -24,6 +24,7 @@ public class Main {
      */
     public static void main(String[] args) throws Exception {
         BeanFactory factory = new ResourceBeanFactory(new AnnoXmlFileResource());
+        factory.init();
         //
         Object obj_1 = null;
         Object obj_2 = null;

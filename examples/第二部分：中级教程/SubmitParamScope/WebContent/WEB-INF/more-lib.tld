@@ -108,7 +108,7 @@
 	<!-- =====================================================Submit页面预处理 -->
 	<tag>
 		<name>ActionTag</name>
-		<tag-class>org.more.submit.support.web.ActionTag</tag-class>
+		<tag-class>org.more.submit.web.support.ActionTag</tag-class>
 		<description>使用该标签库时可以使用页面预处理功能，所谓页面预处理功能是指在页面中以标签的形式调用后台Action方法。</description>
 		<attribute>
 			<name>process</name>
@@ -128,7 +128,7 @@
 	</tag>
 	<tag>
 		<name>ActionParamTag</name>
-		<tag-class>org.more.submit.support.web.ActionParamTag</tag-class>
+		<tag-class>org.more.submit.web.support.ActionParamTag</tag-class>
 		<description>页面预处理标签的参数标签，该参数标签作用是向页面预处理标签中ActionManager传递环境参数变量。</description>
 		<attribute>
 			<name>key</name>

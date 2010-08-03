@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.console;
-import org.more.submit.CasingDirector;
+import org.more.submit.SubmitBuild;
 import org.more.submit.SubmitContext;
-import org.more.submit.casing.more.ClientMoreBuilder;
+import org.more.submit.casing.more.MoreBuilder;
 /**
  * 
  * Date : 2009-12-11
@@ -29,8 +29,8 @@ public class HelloWord {
      */
     public static void main(String[] args) throws Throwable {
         //第一步、获得SubmitContext环境
-        CasingDirector cd = new CasingDirector(null);//创建SubmitContext生成器，该类负责生成SubmitContext类对象。
-        cd.build(new ClientMoreBuilder("more-config.xml"));//调用build方法生成SubmitContext对象，ClientMoreBuilder对象是专注于桌面程序的生成器。
+        SubmitBuild cd = new SubmitBuild();//创建SubmitContext生成器，该类负责生成SubmitContext类对象。
+        cd.build(new MoreBuilder("more-config.xml"));//调用build方法生成SubmitContext对象，ClientMoreBuilder对象是专注于桌面程序的生成器。
         SubmitContext submitContext = cd.getResult();//获得生成的SubmitContext对象
         //第二步、调用我们的 Action方法，并且获得返回值。
         submitContext.doAction("testJDBCAction.all");

@@ -3,7 +3,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<script type="text/javascript" src="/action:sys_actionjs.config?min=${param.min}"></script>
+<script type="text/javascript" src="action!sys_actionjs.config?min=${param.min}"></script>
 <title>Insert title here</title>
 </head>
 <body>

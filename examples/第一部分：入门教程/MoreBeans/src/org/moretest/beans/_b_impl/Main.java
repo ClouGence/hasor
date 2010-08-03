@@ -24,6 +24,7 @@ public class Main {
      */
     public static void main(String[] args) throws Exception {
         BeanFactory factory = new ResourceBeanFactory(new AnnoXmlFileResource());
+        factory.init();
         //目前不支持rt.jar包中的接口，但如果是标记性接口会受到支持。注：以继承方式实现rt.jar中的接口也是无效的。
         XmlImplBean xmlImplBean = (XmlImplBean) factory.getBean("xmlImplBean");
         ((XmlUserFace1) xmlImplBean).println("附加接口实现测试");

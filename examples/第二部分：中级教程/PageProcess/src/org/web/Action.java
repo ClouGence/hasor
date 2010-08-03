@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.web;
-import org.more.submit.support.web.WebActionStack;
+import org.more.submit.web.WebActionStack;
 public class Action {
     public String hello(WebActionStack stack) {
         System.out.println(stack.getParam("msg"));

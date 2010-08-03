@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.web;
-import org.more.submit.support.web.WebActionStack;
+import org.more.submit.web.WebActionStack;
 /**
  * 作为Action类必须是共有的非抽象的，同时也不能是接口。
  * Date : 2009-12-11
@@ -23,7 +23,6 @@ public class LoginAction {
     /**当帐号和密码一致时登陆成功*/
     public void go(WebActionStack stack) {
         stack.setScope(WebActionStack.Scope_Stack);
-        stack.setSynchronizeStack(false);//关闭同步到stack作用域的属性操作。
         stack.setAttribute("var", "StackValue", WebActionStack.Scope_Stack);
         stack.setAttribute("var", "CookieValue", WebActionStack.Scope_Cookie);
         stack.setAttribute("var", "HttpSessionValue", WebActionStack.Scope_HttpSession);

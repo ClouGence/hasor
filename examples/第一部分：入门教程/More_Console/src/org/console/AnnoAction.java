@@ -15,8 +15,8 @@
  */
 package org.console;
 import org.more.beans.resource.annotation.Bean;
+import org.more.submit.Action;
 import org.more.submit.ActionStack;
-import org.more.submit.annotation.Action;
 /**
  * 作为Action类必须是共有的非抽象的，同时也不能是接口。
  * Date : 2009-12-11

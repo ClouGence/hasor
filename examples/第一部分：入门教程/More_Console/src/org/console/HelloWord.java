@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.console;
-import org.more.submit.CasingDirector;
+import org.more.submit.SubmitBuild;
 import org.more.submit.SubmitContext;
-import org.more.submit.casing.more.ClientMoreBuilder;
+import org.more.submit.casing.more.MoreBuilder;
 import org.more.util.StringConvert;
 /**
  * 
@@ -29,15 +29,14 @@ public class HelloWord {
      * @throws Throwable 
      */
     public static void main(String[] args) throws Throwable {
-        CasingDirector cd = new CasingDirector(null);//创建SubmitContext生成器。
-        cd.build(new ClientMoreBuilder());//调用build方法生成SubmitContext对象。
-        SubmitContext submitContext = cd.getResult();//获得生成的SubmitContext对象。
+        SubmitBuild sb = new SubmitBuild();
+        SubmitContext submitContext = sb.build(new MoreBuilder());
         //
         //
         //=================================================================调用XML配置文件中的Action配置。
         Object res = submitContext.doAction("action.hello");
         System.out.println(res);
-        res = submitContext.doAction("action.params", null, StringConvert.parseMap("arg=参数;"));
+        res = submitContext.doAction("action.params", StringConvert.parseMap("arg=参数;"));
         System.out.println(res);
         //=================================================================调用注解配置的Action。
         res = submitContext.doAction("annoAction.hello");
