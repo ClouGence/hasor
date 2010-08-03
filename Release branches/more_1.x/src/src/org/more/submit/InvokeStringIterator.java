@@ -31,20 +31,20 @@ class InvokeStringIterator implements Iterator<String> {
     /*----------------------------------------------*/
     public InvokeStringIterator(ActionContext actionContext) {
         this.actionContext = actionContext;
-    }
+    };
     @Override
     public boolean hasNext() {
         if (actionNameIterator.hasNext() == false && actionObjectMethods.length > currentMethodIndex)
             return false;
         else
             return true;
-    }
+    };
     private Method readNextMethod_2() {
         if (this.actionObjectMethods == null || this.currentMethodIndex > actionObjectMethods.length)
             return null;
         this.currentMethodIndex++;
         return this.actionObjectMethods[this.currentMethodIndex];
-    }
+    };
     private Method readNextMethod() {
         //1.尝试读取一次
         Method m = readNextMethod_2();
@@ -64,7 +64,7 @@ class InvokeStringIterator implements Iterator<String> {
         this.currentMethodIndex = -1;
         //4.再次尝试
         return readNextMethod_2();
-    }
+    };
     @Override
     public String next() {
         while (true) {
@@ -77,9 +77,9 @@ class InvokeStringIterator implements Iterator<String> {
                 continue;
             return this.currentActionName + m.getName();
         }
-    }
+    };
     @Override
     public void remove() {
         throw new UnsupportedOperationException("ActionInvokeStringIterator不支持该操作。");
-    }
-}
+    };
+};

@@ -31,7 +31,7 @@ public class CookieScope implements IAttribute {
     public CookieScope(HttpServletRequest request, HttpServletResponse response) {
         this.request = request;
         this.response = response;
-    }
+    };
     @Override
     public void clearAttribute() {
         Cookie[] cs = this.request.getCookies();
@@ -40,7 +40,7 @@ public class CookieScope implements IAttribute {
             c.setMaxAge(0);
             this.response.addCookie(c);
         }
-    }
+    };
     @Override
     public boolean contains(String name) {
         Cookie[] cs = this.request.getCookies();
@@ -48,7 +48,7 @@ public class CookieScope implements IAttribute {
             if (cs[i].equals(name) == true)
                 return true;
         return false;
-    }
+    };
     @Override
     public Object getAttribute(String name) {
         Cookie[] cs = this.request.getCookies();
@@ -57,7 +57,7 @@ public class CookieScope implements IAttribute {
                 if (cs[i].equals(name) == true)
                     return cs[i].getValue();
         return null;
-    }
+    };
     @Override
     public String[] getAttributeNames() {
         Vector<String> v = new Vector<String>(0);
@@ -67,7 +67,7 @@ public class CookieScope implements IAttribute {
         String[] ns = new String[v.size()];
         v.toArray(ns);
         return ns;
-    }
+    };
     @Override
     public void removeAttribute(String name) {
         Cookie[] cs = this.request.getCookies();
@@ -77,26 +77,26 @@ public class CookieScope implements IAttribute {
                 c.setMaxAge(0);
                 this.response.addCookie(c);
             }
-    }
+    };
     public void setAttribute(String name, Object value) {
         //Cookie∑∂Œß
         Cookie c = new Cookie(name, value.toString());
         c.setMaxAge(maxAge);//365ÃÏ ß–ß
         this.response.addCookie(c);
-    }
+    };
     public void setCookieAttribute(String name, String value, int age) {
         Cookie c = new Cookie(name, value);
         c.setMaxAge(age);
         this.response.addCookie(c);
-    }
+    };
     public void setCookieAttribute(Cookie cookie) {
         this.response.addCookie(cookie);
-    }
+    };
     public Cookie getCookieAttribute(String name) {
         Cookie[] cs = this.request.getCookies();
         for (int i = 0; i < cs.length; i++)
             if (cs[i].equals(name) == true)
                 return cs[i];
         return null;
-    }
-}
+    };
+};

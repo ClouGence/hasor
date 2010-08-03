@@ -40,4 +40,4 @@ public interface ActionContext {
     public Iterator<String> getActionNameIterator();
     /**根据属性名和action名获取指定的Action。*/
     public Object getActionProperty(String actionName, String property);
-}
+};

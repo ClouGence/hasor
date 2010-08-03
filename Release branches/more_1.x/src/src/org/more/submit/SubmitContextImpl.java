@@ -24,13 +24,13 @@ public class SubmitContextImpl extends AbstractSubmitContextImpl {
     private static final long serialVersionUID = 5057959033615801491L;
     public SubmitContextImpl(ActionContext actionContext) {
         this.setActionContext(actionContext);
-    }
+    };
     @Override
     public boolean isWebContext() {
         return false;
-    }
+    };
     @Override
     protected ActionStack createStack(String actionName, String actionMethod, ActionStack parent, Session session) {
         return new ActionStack(actionName, actionMethod, parent, session, this);
-    }
-}
+    };
+};

@@ -32,4 +32,4 @@ public interface Session extends IAttribute, Serializable {
      * @return 返回创建这个Session时的时间。
      */
     public long getCreateTime();
-}
+};

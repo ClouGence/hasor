@@ -33,27 +33,27 @@ public class ActionTag extends BodyTagSupport {
     //========================================================================================Field
     private static final long   serialVersionUID = 5847549188323147281L;
     /** 要调用的目标类和方法，例test.testMethod */
-    private String              process;
+    private String              process          = null;
     /** ActionTag当执行完action之后将action返回结果存放到某个环境中的名称。 */
-    private String              result;
+    private String              result           = null;
     /** ActionTag当执行完action之后将action返回结果存放到哪个环境。默认是request可选项有page,request,session,context */
     private String              scope            = "request";
     /**Action的环境参数*/
-    private Map<String, Object> params;
+    private Map<String, Object> params           = null;
     //==========================================================================================Job
     public void addParam(String key, Object value) {
         params.put(key, value);
-    }
+    };
     @Override
     public int doStartTag() throws JspException {
         this.params = new HashMap<String, Object>();
         CopyBeanUtil.newInstance().copy(this.pageContext.getRequest(), params);
         return Tag.EVAL_BODY_INCLUDE;
-    }
+    };
     /** 获得标签的输出对象 */
     public JspWriter getOut() {
         return this.pageContext.getOut();
-    }
+    };
     @Override
     @SuppressWarnings("unchecked")
     public int doEndTag() throws JspException {
@@ -77,7 +77,7 @@ public class ActionTag extends BodyTagSupport {
                 throw (JspException) e.getCause();
             else
                 throw new JspException(e);
-        }
+        };
         //执行结果保存
         if (this.result == null || this.result.equals("")) {} else {
             if (this.scope.equals("page") == true)
@@ -92,23 +92,23 @@ public class ActionTag extends BodyTagSupport {
                 throw new JspException("无法将执行结果对象设置到不明确的域中，合法的域有page,request,session,context");
         }
         return Tag.EVAL_PAGE;
-    }
+    };
     public String getProcess() {
         return this.process;
-    }
+    };
     public void setProcess(String process) {
         this.process = process;
-    }
+    };
     public String getScope() {
         return scope;
-    }
+    };
     public void setScope(String scope) {
         this.scope = scope;
-    }
+    };
     public String getResult() {
         return result;
-    }
+    };
     public void setResult(String result) {
         this.result = result;
-    }
-}
+    };
+};

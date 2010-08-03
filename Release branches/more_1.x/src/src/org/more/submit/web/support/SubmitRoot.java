@@ -48,33 +48,32 @@ public class SubmitRoot extends HttpServlet implements Filter {
             Object buildClassString = config.getInitParameter("buildClass");
             if (buildClassString == null)
                 buildClassString = "org.more.submit.casing.more.MoreBuilder";
-            Object protocol = config.getInitParameter("action"); // 获得请求协议名
             ActionContextBuild build = (ActionContextBuild) Class.forName(buildClassString.toString()).newInstance();
             SubmitBuild sb = new SubmitBuild();
+            sb.setConfig(config);
             this.submitContext = sb.buildWeb(build, (ServletContext) config.getContext());
-            if (protocol != null)
-                this.submitContext.setProtocol(protocol.toString());
-            this.submitContext.setAttribute("org.more.web.submit.ROOT", this.submitContext);
-            this.submitContext.setAttribute("org.more.web.submit.ROOT.Action", this.submitContext.getProtocol());
+            ServletContext sc = this.submitContext.getServletContext();
+            sc.setAttribute("org.more.web.submit.ROOT", this.submitContext);
+            sc.setAttribute("org.more.web.submit.ROOT.Action", this.submitContext.getProtocol());
         } catch (Throwable e) {
             if (e instanceof ServletException)
                 throw (ServletException) e;
             else
                 throw new ServletException(e);
         }
-    }
+    };
     /*-----------------------------------------------------------------*/
     /** 过滤器初始化方法，该方法调用init(InitParameter param) */
     @Override
     public void init(final FilterConfig config) throws ServletException {
         this.init(new FilterSubmitConfig(config));
-    }
+    };
     /** Servlet初始化方法，该方法调用init(InitParameter param) */
     @Override
     public void init() throws ServletException {
         final ServletConfig config = this.getServletConfig();
         this.init(new ServletSubmitConfig(config));
-    }
+    };
     /*-----------------------------------------------------------------*/
     /** 执行调用 */
     private Object doAction(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -90,7 +89,7 @@ public class SubmitRoot extends HttpServlet implements Filter {
             else
                 throw new ServletException(e);
         }
-    }
+    };
     /** 中央调度过滤器 */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -100,12 +99,12 @@ public class SubmitRoot extends HttpServlet implements Filter {
             chain.doFilter(req, res);
         else
             this.doAction(req, res);
-    }
+    };
     /** 中央调度Servlet */
     public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         if (this.submitContext.isActionRequest(req) == true)
             this.doAction(req, res);
-    }
-}
+    };
+};

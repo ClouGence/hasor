@@ -27,7 +27,7 @@ public class JspPageScope implements IAttribute {
     private PageContext pageContext;
     public JspPageScope(PageContext pageContext) {
         this.pageContext = pageContext;
-    }
+    };
     public boolean contains(String name) {
         return this.pageContext.getAttribute(name, PageContext.PAGE_SCOPE) != null;
     };
@@ -54,4 +54,4 @@ public class JspPageScope implements IAttribute {
         for (int i = 0; i < ns.length; i++)
             this.removeAttribute(ns[i]);
     };
-}
+};

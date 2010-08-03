@@ -21,6 +21,7 @@ import org.more.FormatException;
  * @author 赵永春(zyc@byshell.org)
  */
 public class Util {
+    /**格式化调用字符串，如果调用字符串没有指定要调用的目标方法则格式化之后将使用execute作为默认方法。*/
     public static String formatInvokeString(String invokeString) {
         String[] is = invokeString.split("\\.");
         String actionName = null;
@@ -38,13 +39,13 @@ public class Util {
     /**解析调用字符串并且将解析之后的数据注入到ActionStack参数中，最后返回。actionName, actionMethod*/
     public static String[] splitInvokeString(String invokeString) {
         return formatInvokeString(invokeString).split("\\.");
-    }
+    };
     /**解析调用字符串并且将解析之后的数据注入到ActionStack参数中，最后返回。actionName, actionMethod*/
     public static String getActionString(String invokeString) {
         return splitInvokeString(invokeString)[0];
-    }
+    };
     /**解析调用字符串并且将解析之后的数据注入到ActionStack参数中，最后返回。actionName, actionMethod*/
     public static String getMethodString(String invokeString) {
         return splitInvokeString(invokeString)[1];
-    }
+    };
 };

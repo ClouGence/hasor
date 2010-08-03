@@ -27,7 +27,7 @@ public class ServletContextScope implements IAttribute {
     private ServletContext servletContext;
     public ServletContextScope(ServletContext servletContext) {
         this.servletContext = servletContext;
-    }
+    };
     public boolean contains(String name) {
         return this.servletContext.getAttribute(name) != null;
     };
@@ -54,4 +54,4 @@ public class ServletContextScope implements IAttribute {
         for (int i = 0; i < ns.length; i++)
             this.removeAttribute(ns[i]);
     };
-}
+};

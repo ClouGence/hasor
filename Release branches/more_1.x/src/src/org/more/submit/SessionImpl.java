@@ -32,9 +32,9 @@ public class SessionImpl extends AttBase implements Session {
     @Override
     public long getCreateTime() {
         return createTime;
-    }
+    };
     @Override
     public String getSessionID() {
         return sessionID;
-    }
-}
+    };
+};

@@ -36,6 +36,31 @@ submit v3.1(版本alpha3)：
   5.CasingBuild增加缓存功能，可以通过cacheContext属性控制是否开启缓存，默认是开启的。
   6.增加ActionObjectFactory核心接口，该接口负责创建、查找一切Action相关资源，同时该负责解析Filter注解。
   7.支持注解化配置Action所有配置。
+
+submit v3.2(版本alpha4)：
+  1.重新构建了Submit3.1的内核结构，目前升级为Submit3.2。
+  2.所有submit资源都移动到META-INF目录中。
+  3.几乎重写了整个Submit的代码，代码重写率达到80%以上。
+  4.从核心功能中分离Filter部分，使其成为一个扩展，默认的more和spring外壳实现上都已经实现了filter部分的支持。如果有支撑环境在实现ActionContext时需要支持filter那么需要在额外实现FilterContext接口即可，SubmitBuild会自动为其装饰Filter的支持。
+  5.取消了当在web模式下的WEB-INF下配置文件位置，配置文件位置被统一到classes目录下。
+  6.更换more支撑环境为BeanContext接口对象。
+  7.JavaScriptSubmitManager增加到内置more-config.xml配置文件中定义名称为$more_actionjs。
+  8.改变了一些异常文字信息。
+  9.action递交协议变更，目前支持以下格式action访问字符串。C代表API方式，S代表WEB方式。
+  	C actionName.methodName
+  	C actionName (调用默认ececute方法)
+  	S action!actionName.methodName (建议使用)
+  	S action!actionName (调用默认execute方法)
+  10.修复actionjs的js中more.util.AjaxCall对象的错误的逻辑意义参数synchronize的表述.目前更改为同步使用true异步使用false.
+  11.公开了Submit的一些类.
+  12.新版本Submit支持了SubmitContext和ActionContext两个核心接口的装饰器，通过这个装饰器可以扩展Submit的功能。
+  13.增加了一个parentStack作用域的支持，可以指定作用域在Stack的父级上。
+  14.参数作用域可以通过扩展方式注册。
+  15.增加了ActionContextDecorator和SubmitContextDecorator两个装饰器用于扩展功能，装饰器需要通过SubmitBuild在build之前进行注册。
+      优化：
+    1.简化了casing的代码量，去除了ObjectFactory类。casing只需要实现ActionContext接口和FilterContext接口即可完成casing。
+    2.不在设立独立的web支撑环境，web支撑已经融入到submit的设计一部分中。
+    3.简化了SubmitBuild的代码量，目前无论是build一个console还是web环境上的SubmitContext都只需要经过SubmitBuild的build方法即可完成，回避了以前那种web复杂的支撑。
 </pre>
 <a href="doc-files/submit_v2_0_struct.png">submit2.0系统结构图</a><br/>
 <a href="doc-files/submit_v3_0_struct.png">submit3.0系统结构图</a><br/>

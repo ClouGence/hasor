@@ -28,4 +28,4 @@ import java.lang.annotation.Target;
 public @interface ActionFilters {
     /** 当前Action的过滤器过滤器链 */
     public String[] value() default {};
-}
+};

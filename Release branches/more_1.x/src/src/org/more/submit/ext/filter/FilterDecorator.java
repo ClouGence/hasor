@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.more.submit.ext.filter;
+import java.util.Iterator;
+import java.util.LinkedList;
 import org.more.NoDefinitionException;
 import org.more.submit.ActionContext;
 import org.more.submit.ActionContextDecorator;
@@ -27,6 +29,7 @@ import org.more.util.StringConvert;
  */
 public class FilterDecorator extends ActionContextDecorator {
     private FilterContext filterContext;
+    private String[]      publicFilters = null;
     @Override
     public boolean initDecorator(ActionContext actionContext) {
         super.initDecorator(actionContext);
@@ -38,21 +41,45 @@ public class FilterDecorator extends ActionContextDecorator {
     @Override
     public ActionInvoke findAction(String actionName, String invoke) throws NoDefinitionException {
         ActionInvoke ai = super.findAction(actionName, invoke);
-        //
+        LinkedList<String> ns = new LinkedList<String>();
+        //1.添加全局过滤器链
+        if (this.publicFilters == null) {
+            Iterator<String> filterNS = this.filterContext.getFilterNameIterator();
+            while (filterNS.hasNext()) {
+                String fName = filterNS.next();
+                if (fName == null)
+                    break;
+                Class<?> filterType = this.filterContext.getFilterType(fName);
+                Filter fts = filterType.getAnnotation(Filter.class);
+                boolean isPublic = false;
+                if (fts == null) {
+                    String isPublicStr = (String) this.filterContext.getFilterProperty(fName, "isPublicFilter");
+                    isPublic = StringConvert.parseBoolean(isPublicStr, false);
+                } else
+                    isPublic = fts.isPublic();
+                //
+                if (isPublic == true)
+                    ns.add(fName);
+            };
+            this.publicFilters = new String[ns.size()];
+            ns.toArray(this.publicFilters);
+        } else
+            for (String fn : this.publicFilters)
+                ns.add(fn);
+        //2.解析注解中的过滤器链
         Class<?> actionType = this.getActionType(actionName);
         ActionFilters ats = actionType.getAnnotation(ActionFilters.class);
-        String[] ns = null;
         if (ats != null)
-            ns = ats.value();
-        if (ns == null) {
-            String obj = (String) super.getActionProperty(actionName, "actionFilters");
-            if (obj == null || obj.equals("") == true) {} else
-                ns = obj.split(",");
-        }
-        //
-        if (ns == null || ns.length == 0)
+            for (String n : ats.value())
+                ns.add(n);
+        //3.追加配置文件中的过滤器链
+        String obj = (String) super.getActionProperty(actionName, "actionFilters");
+        if (obj == null || obj.equals("") == true) {} else
+            for (String n : obj.split(","))
+                ns.add(n);
+        if (ns.size() == 0)
             return ai;
-        //装配过滤器
+        //4.装配过滤器
         FilterChain chain = null;
         for (String filterName : ns) {
             if (this.filterContext.containsFilter(filterName) == false)
@@ -63,7 +90,7 @@ public class FilterDecorator extends ActionContextDecorator {
             if (ft == null) {
                 String mark = (String) this.filterContext.getFilterProperty(filterName, "isFilter");
                 if (StringConvert.parseBoolean(mark) == false)
-                    throw new NoDefinitionException("过滤器" + filterName + "没有被标记成为一个有效的过滤器。");
+                    throw new NoDefinitionException("过滤器" + filterName + "没有被标记成为一个有效的过滤器，可能没有配置isFilter参数或者没有标记注解。");
             }
             //
             if (chain == null)

@@ -16,8 +16,8 @@
 package org.more.submit;
 /**
  * 该接口定义了Submit默认支持的变量作用域。
- * @version 2009-12-28
- * @author 赵永春 (zyc@byshell.org)
+ * @version : 2010-8-2
+ * @author 赵永春(zyc@byshell.org)
  */
 public interface ScopeEnum {
     /**ActionStack对象的父级范围*/
@@ -28,4 +28,4 @@ public interface ScopeEnum {
     public static final String Scope_Session = "Session";
     /**SubmitContext接口范围*/
     public static final String Scope_Context = "Context";
-}
+};

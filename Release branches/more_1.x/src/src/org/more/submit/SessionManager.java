@@ -26,4 +26,4 @@ public interface SessionManager {
     public Session getSession(String sessionID);
     /**测试某个session是否属于这个sessio管理器。*/
     public boolean isBelong(Session session);
-}
+};

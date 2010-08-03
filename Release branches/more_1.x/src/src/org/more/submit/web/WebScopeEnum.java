@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 package org.more.submit.web;
-
 import org.more.submit.ScopeEnum;
-
 /**
  * 该接口定义了WebActionStack所能支持的作用域。
  * @version 2009-12-28
@@ -33,4 +31,4 @@ public interface WebScopeEnum extends ScopeEnum {
     public static final String Scope_Cookie         = "Cookie";
     /**ServletContext范围*/
     public static final String Scope_ServletContext = "ServletContext";
-}
+};

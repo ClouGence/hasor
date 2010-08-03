@@ -43,7 +43,7 @@ public abstract class SubmitContextDecorator implements SubmitContext, WebSubmit
     @Override
     public Object doAction(String invokeString, Map<String, ?> params) throws Throwable {
         return this.submitContext.doAction(invokeString, params);
-    }
+    };
     @Override
     public Object doAction(String invokeString, Session session, Map<String, ?> params) throws Throwable {
         return this.submitContext.doAction(invokeString, session, params);
@@ -172,4 +172,4 @@ public abstract class SubmitContextDecorator implements SubmitContext, WebSubmit
     public void setAttribute(String name, Object value) {
         this.submitContext.setAttribute(name, value);
     };
-}
+};

@@ -48,4 +48,4 @@ public interface WebSubmitContext extends SubmitContext {
     public Object doAction(String actionInvoke, PageContext pageContext, HttpServletRequest request, HttpServletResponse response) throws Throwable;
     /**执行调用action的处理过程，并且返回执行结果。*/
     public Object doAction(String actionInvoke, PageContext pageContext, HttpServletRequest request, HttpServletResponse response, Map<String, Object> params) throws Throwable;
-}
+};

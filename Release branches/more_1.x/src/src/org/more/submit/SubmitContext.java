@@ -76,4 +76,4 @@ public interface SubmitContext extends IAttribute {
      * @throws Throwable 如果在执行action期间发生异常。
      */
     public Object doActionOnStack(String invokeString, ActionStack stack, Map<String, ?> params) throws Throwable;
-}
+};

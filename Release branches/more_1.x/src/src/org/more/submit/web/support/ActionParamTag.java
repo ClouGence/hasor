@@ -33,21 +33,21 @@ public class ActionParamTag extends BodyTagSupport {
         ActionTag aTag = (ActionTag) this.getParent();
         aTag.addParam(key, value);
         return Tag.SKIP_BODY;
-    }
+    };
     @Override
     public int doEndTag() {
         return Tag.EVAL_PAGE;
-    }
+    };
     public String getKey() {
         return key;
-    }
+    };
     public void setKey(String key) {
         this.key = key;
-    }
+    };
     public Object getValue() {
         return value;
-    }
+    };
     public void setValue(Object value) {
         this.value = value;
-    }
-}
+    };
+};

@@ -27,21 +27,23 @@ import org.more.util.attribute.IAttribute;
  */
 public class ActionStack implements IAttribute, ScopeEnum {
     //========================================================================================Field
-    private static final long       serialVersionUID = 5001483997344333143L;
-    private String                  actionName       = null;                             //调用的action名
-    private String                  actionMethod     = null;                             //调用的action方法名
-    private String                  invokeString     = null;                             //调用字符串
+    private static final long       serialVersionUID    = 5001483997344333143L;
+    private String                  actionName          = null;                             //调用的action名
+    private String                  actionMethod        = null;                             //调用的action方法名
+    private String                  invokeString        = null;                             //调用字符串
     //作用域数据
-    private String                  currentMark      = null;                             //当前作用域标记。
-    private IAttribute              currentScope;                                        //当前堆栈对象的数据存储器。
-    private Map<String, IAttribute> scopeMap         = new HashMap<String, IAttribute>();
+    private String                  currentMark         = null;                             //当前作用域标记。
+    private IAttribute              currentScope;                                           //当前堆栈对象的数据存储器。
+    private Map<String, IAttribute> scopeMap            = new HashMap<String, IAttribute>();
     //返回脚本处理器
-    private String                  resultsScript;                                       //返回action结果之前执行的JS脚本。
-    private Object[]                resultsScriptParams;                                 //返回action结果之前执行的JS脚本所传递的参数。
+    private String                  resultsScript       = null;                             //返回action结果之前执行的JS脚本。
+    private Object[]                resultsScriptParams = null;                             //返回action结果之前执行的JS脚本所传递的参数。
     //作用域操作相关字段
     //==================================================================================Constructor
     public ActionStack(String actionName, String actionMethod, ActionStack parent, Session moreSessionScope, SubmitContext moreContextScope) {
         this.invokeString = actionName + "." + actionMethod;
+        this.actionName = actionName;
+        this.actionMethod = actionMethod;
         this.putScope(Scope_Stack, this.createStackScope());//Stack作用域
         this.putScope(Scope_Parent, parent);//Parent作用域
         this.putScope(Scope_Session, moreSessionScope);//Session作用域
@@ -88,7 +90,7 @@ public class ActionStack implements IAttribute, ScopeEnum {
      */
     public IAttribute getScopeAttribute(String scope) {
         if (this.scopeMap.containsKey(scope) == false)
-            throw new NoDefinitionException("无法获得到未定义的作用域，这个作用域可能没有注册。");
+            throw new NoDefinitionException("无法获得“" + scope + "”作用域，这个作用域可能没有注册。");
         return this.scopeMap.get(scope);
     };
     /*--------------------------------------------------------------------*/
@@ -219,5 +221,5 @@ public class ActionStack implements IAttribute, ScopeEnum {
         IAttribute att = this.getScopeAttribute(scope);
         for (String key : params.keySet())
             att.setAttribute(key, params.get(key));
-    }
-}
+    };
+};

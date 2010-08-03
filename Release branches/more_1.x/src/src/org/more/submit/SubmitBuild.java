@@ -15,16 +15,19 @@
  */
 package org.more.submit;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import javax.servlet.ServletContext;
 import org.more.submit.ext.filter.FilterDecorator;
 import org.more.submit.web.WebSubmitContext;
 import org.more.submit.web.WebSubmitContextImpl;
 import org.more.util.AttributeConfigBridge;
+import org.more.util.Config;
 import org.more.util.attribute.AttBase;
 /**
  * submit利用build模式创建{@link SubmitContext SubmitContext接口}的最后阶段，
  * CasingDirector类主要负责从{@link CasingBuild CasingBuild}中获取返回值然后创建SubmitContext接口对象。
- * 通过扩展CasingDirector类可以改变创建SubmitContext的方式从而扩展more的支撑外壳。
+ * 通过扩展CasingDirector类可以改变创建SubmitContext的方式从而扩展more的支撑外壳。<br/>
+ * 可以通过给SubmitBuild添加protocol属性(String类型)来确定协议前缀，默认值是action。
  * @version 2009-12-1
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -37,6 +40,14 @@ public class SubmitBuild extends AttBase {
     //==========================================================================================Job
     public SubmitBuild() {
         this.actionDecoratorList.add(FilterDecorator.class);
+    };
+    /**将config的参数添加到SubmitBuild的环境中。*/
+    public void setConfig(Config config) {
+        Enumeration<String> e = config.getInitParameterNames();
+        while (e.hasMoreElements()) {
+            String name = e.nextElement();
+            this.setAttribute(name, config.getInitParameter(name));
+        }
     };
     /**调用生成器生成SubmitContext对象，生成的SubmitContext的对象可以需要通过getResult方法获取。*/
     public SubmitContext build(ActionContextBuild build) throws Exception {
@@ -54,7 +65,12 @@ public class SubmitBuild extends AttBase {
     public WebSubmitContext buildWeb(ActionContextBuild build, ServletContext context) throws Exception {
         build.init(new AttributeConfigBridge(this, context));
         ActionContext actionContext = this.decorator(build.getActionContext());
-        this.result = new WebSubmitContextImpl(actionContext, context);
+        WebSubmitContextImpl webContext = new WebSubmitContextImpl(actionContext, context);
+        Object protocol = this.getAttribute("protocol");// 获得请求协议名
+        if (protocol != null)
+            webContext.setProtocol(protocol.toString());
+        //
+        this.result = webContext;
         this.result.setSessionManager(new SimpleSessionManager());
         this.result = this.decorator(this.result);
         return (WebSubmitContext) this.result;
@@ -90,4 +106,4 @@ public class SubmitBuild extends AttBase {
     public SubmitContext getResult() {
         return result;
     };
-}
+};

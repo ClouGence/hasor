@@ -29,16 +29,16 @@ public class SimpleSessionManager implements SessionManager {
             this.sessionPool.set(session);
         }
         return session;
-    }
+    };
     /**试图恢复一个指定id的session。*/
     public Session getSession(String sessionID) {
         Session session = sessionPool.get();
         if (session == null)
             session = this.createSession();
         return session;
-    }
+    };
     /**测试某个session是否属于这个sessio管理器。*/
     public boolean isBelong(Session session) {
         return true;
-    }
-}
+    };
+};

@@ -45,13 +45,14 @@ public class WebActionStack extends ActionStack implements WebScopeEnum {
         this.httpResponse = httpResponse;
         this.httpSession = httpRequest.getSession(true);
         this.servletContext = httpSession.getServletContext();
+        //注册新的作用域。
         this.putScope(Scope_Cookie, new CookieScope(this.httpRequest, this.httpResponse));
         this.putScope(Scope_HttpSession, new HttpSessionScope(this.httpSession));
         if (httpPageContext != null)
             this.putScope(Scope_JspPage, new JspPageScope(this.httpPageContext));
         this.putScope(Scope_HttpRequest, new RequestScope(this.httpRequest));
         this.putScope(Scope_ServletContext, new ServletContextScope(this.servletContext));
-    }
+    };
     //==========================================================================================针对属性的get/set方法
     /**获取PageContext对象。*/
     public PageContext getPageContext() {
@@ -74,10 +75,22 @@ public class WebActionStack extends ActionStack implements WebScopeEnum {
         return this.servletContext;
     };
     //==========================================================================================request查询参数专用方法
-    /** 根据stack->parent->jspPage->request->session->httpSession->context->servletContext->cookie这个顺序依次查找属性，在stack中查找时是在整个stack树中查找。*/
+    /** 根据requestParam->stack->parent->jspPage->request->session->httpSession->context->servletContext->cookie这个顺序依次查找属性，在stack中查找时是在整个stack树中查找。*/
     public Object getParam(String key) {
+        //requestParam
+        Object obj = (String[]) this.getRequestParams(key);
+        if (obj != null) {
+            String[] paramMap = (String[]) obj;
+            if (paramMap.length == 0)
+                obj = null;
+            else if (paramMap.length == 1)
+                obj = paramMap[0];
+            else
+                obj = paramMap;
+        }
         //stack->parent
-        Object obj = this.getByStackTree(key);
+        if (obj == null)
+            obj = this.getByStackTree(key);
         //jspPage
         if (obj == null && this.containsScopeKEY(Scope_JspPage) == true)
             obj = this.getPageContext().getAttribute(key);
@@ -105,19 +118,19 @@ public class WebActionStack extends ActionStack implements WebScopeEnum {
     /**获取request请求参数中所有参数名称。*/
     @SuppressWarnings("unchecked")
     public String[] getRequestParamNames() {
-        Set keys = this.httpRequest.getParameterMap().keySet();
+        Set<String> keys = this.httpRequest.getParameterMap().keySet();
         String[] ns = new String[keys.size()];
         keys.toArray(ns);
         return ns;
-    }
+    };
     /**仅从request请求参数中查找指定属性。*/
     public String[] getRequestParams(String attName) {
         return this.httpRequest.getParameterValues(attName);
-    }
+    };
     /**仅从request请求参数中查找指定属性。*/
     public String getRequestParam(String attName) {
         return this.httpRequest.getParameter(attName);
-    }
+    };
     //==========================================================================================Cookie作用域下的快速操作。
     /**向cookie作用域输出一个cookie对象。*/
     public void setCookieAttribute(String name, String value, int age) {
@@ -134,4 +147,4 @@ public class WebActionStack extends ActionStack implements WebScopeEnum {
         CookieScope cs = (CookieScope) this.getScopeAttribute(Scope_Cookie);
         return cs.getCookieAttribute(name);
     };
-}
+};

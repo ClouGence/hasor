@@ -41,6 +41,7 @@ public class WebSubmitContextImpl extends SubmitContextImpl implements WebSubmit
     private String            protocol         = "action";
     public WebSubmitContextImpl(ActionContext actionContext, ServletContext context) {
         super(actionContext);
+        this.servletContext = context;
     };
     @Override
     public boolean isWebContext() {
@@ -51,13 +52,13 @@ public class WebSubmitContextImpl extends SubmitContextImpl implements WebSubmit
     };
     public String getProtocol() {
         return protocol;
-    }
+    };
     public void setProtocol(String protocol) {
         if (protocol == null || protocol.equals(""))
             this.protocol = WebSubmitContext.Default_Protocol;
         else
             this.protocol = protocol;
-    }
+    };
     public ServletContext getServletContext() {
         return this.servletContext;
     };
@@ -78,7 +79,7 @@ public class WebSubmitContextImpl extends SubmitContextImpl implements WebSubmit
         if (actionInvoke == null)
             return false;
         return true;
-    }
+    };
     public Object doActionOnStack(String invokeString, ActionStack stack, Map<String, ?> params) throws Throwable {
         Session session = stack.getSession();
         if (this.getSessionManager().isBelong(session) == false)

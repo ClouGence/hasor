@@ -28,4 +28,4 @@ import java.lang.annotation.Target;
 public @interface Action {
     /**该配置可以通知submit系统这个类是否是一个action。*/
     public boolean isAction() default true;
-}
+};

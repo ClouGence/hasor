@@ -39,7 +39,7 @@ public class JavaScriptSubmitManager {
     private boolean min = true;
     public void setMin(boolean min) {
         this.min = min;
-    }
+    };
     /** 客户端JS请求执行某个action时调用这个action方法。 */
     @SuppressWarnings("unchecked")
     public Object execute(WebActionStack event) throws Throwable {
@@ -53,7 +53,7 @@ public class JavaScriptSubmitManager {
             response.getWriter().flush();
         } catch (Exception e) {}
         return result;
-    }
+    };
     /** 获取客户端JS的action方法。 */
     public Object config(WebActionStack event) throws IOException, CastException {
         // 获取输出对象
@@ -79,7 +79,7 @@ public class JavaScriptSubmitManager {
         HttpServletRequest request = event.getHttpRequest();
         String host = request.getServerName() + ":" + request.getLocalPort();
         Object protocol = event.getServletContext().getAttribute("org.more.web.submit.ROOT.Action");
-        str.append("more.retain.serverCallURL=\"http://" + host + "/" + protocol + "://" + event.getActionName() + ".execute\";");
+        str.append("more.retain.serverCallURL=\"http://" + host + "/" + protocol + "!" + event.getActionName() + ".execute\";");
         str.append("more.server={};");
         // 如果参数min为true表示输出最小化脚本，最小化脚本中不包含action的定义。
         String minParam = event.getParamString("min");
@@ -91,7 +91,7 @@ public class JavaScriptSubmitManager {
         write.write(str + "\n");
         write.flush();
         return str;
-    }
+    };
     private void putAllJS(WebActionStack event, StringBuffer str) {
         ActionContext context = event.getContext().getActionContext();
         Iterator<String> ns = context.getActionNameIterator();
@@ -123,5 +123,5 @@ public class JavaScriptSubmitManager {
                 str.deleteCharAt(str.length() - 1);
             str.append("};");
         }
-    }
-}
+    };
+};

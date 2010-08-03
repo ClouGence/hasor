@@ -26,8 +26,8 @@ import org.more.submit.ext.filter.ActionFilter;
 import org.more.submit.ext.filter.FilterContext;
 /**
  * 提供ActionContext接口的More支持。
- * @version 2009-11-26
- * @author 赵永春 (zyc@byshell.org)
+ * @version : 2010-8-2
+ * @author 赵永春(zyc@byshell.org)
  */
 public class MoreContext extends AbstractActionContext implements FilterContext {
     //========================================================================================Field
@@ -48,7 +48,7 @@ public class MoreContext extends AbstractActionContext implements FilterContext 
     @Override
     public Iterator<String> getActionNameIterator() {
         ArrayList<String> names = new ArrayList<String>();
-        for (String n : this.factory.getAttributeNames())
+        for (String n : this.factory.getBeanDefinitionNames())
             names.add(n);
         return names.iterator();
     };
@@ -63,6 +63,7 @@ public class MoreContext extends AbstractActionContext implements FilterContext 
         return this.factory.getBeanType(actionName);
     };
     //==========================================================================================Job
+    /**这是一个关键方法。*/
     @Override
     public boolean containsFilter(String filterName) {
         Class<?> type = this.factory.getBeanType(filterName);
@@ -78,7 +79,7 @@ public class MoreContext extends AbstractActionContext implements FilterContext 
     };
     @Override
     public Iterator<String> getFilterNameIterator() {
-        return null;//TODO sd
+        return new FilterNameIterator(this, this.factory.getBeanDefinitionNames().iterator());
     };
     @Override
     public Class<?> getFilterType(String filterName) {
@@ -92,4 +93,34 @@ public class MoreContext extends AbstractActionContext implements FilterContext 
             return null;
         return this.factory.getBeanDefinition(filterName).getAttribute(property);
     };
-}
+};
+/**
+ * Filter名称的迭代器
+ * @version 2010-7-29
+ * @author 赵永春 (zyc@byshell.org)
+ */
+class FilterNameIterator implements Iterator<String> {
+    private MoreContext      moreContext = null;
+    private Iterator<String> beanNames   = null;
+    public FilterNameIterator(MoreContext moreContext, Iterator<String> beanNames) {
+        this.moreContext = moreContext;
+        this.beanNames = beanNames;
+    };
+    @Override
+    public boolean hasNext() {
+        return this.beanNames.hasNext();
+    };
+    @Override
+    public String next() {
+        while (this.beanNames.hasNext()) {
+            String ns = this.beanNames.next();
+            if (this.moreContext.containsFilter(ns) == true)
+                return ns;
+        }
+        return null;
+    };
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException("ActionInvokeStringIterator不支持该操作。");
+    };
+};

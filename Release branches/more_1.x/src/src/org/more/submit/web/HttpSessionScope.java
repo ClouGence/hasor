@@ -27,7 +27,7 @@ public class HttpSessionScope implements IAttribute {
     private HttpSession session;
     public HttpSessionScope(HttpSession session) {
         this.session = session;
-    }
+    };
     public boolean contains(String name) {
         return this.session.getAttribute(name) != null;
     };
@@ -54,4 +54,4 @@ public class HttpSessionScope implements IAttribute {
         for (int i = 0; i < ns.length; i++)
             this.removeAttribute(ns[i]);
     };
-}
+};

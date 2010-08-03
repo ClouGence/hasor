@@ -31,7 +31,7 @@ public class PropxyActionInvoke implements ActionInvoke {
     public PropxyActionInvoke(Object target, String invoke) {
         this.target = target;
         this.invoke = invoke;
-    }
+    };
     //==========================================================================================Job
     /**该方法会查找执行名称的方法，其方法参数必须是ActionStack或者其子类类型*/
     @Override
@@ -52,5 +52,5 @@ public class PropxyActionInvoke implements ActionInvoke {
         if (method == null)//如果找不到方法则引发异常
             throw new NoDefinitionException("无法在类[" + type + "]中找到Action方法" + this.invoke);
         return method.invoke(target, stack);
-    }
-}
+    };
+};

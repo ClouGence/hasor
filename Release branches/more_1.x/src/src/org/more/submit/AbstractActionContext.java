@@ -17,8 +17,8 @@ package org.more.submit;
 import org.more.NoDefinitionException;
 import org.more.util.StringConvert;
 /**
- * 该类是{@link ActionContext}接口的一个基本实现。该类只是实现了findAction方法。
- * 其子类可以管理actionbean对象的创建和生命周期。
+ * 该类是{@link ActionContext}接口的一个基本实现。该类只是实现了findAction方法。其子类可以管理actionbean对象的创建和生命周期。
+ * 此外AbstractActionContext类还在findAction方法中实现了注解的支持。
  * @version 2010-7-26
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -42,5 +42,6 @@ public abstract class AbstractActionContext implements ActionContext {
             throw new NoDefinitionException("名称为[" + actionName + "]的对象不是一个Action对象");
         return this.getAction(actionName, invoke);
     }
+    /***/
     protected abstract ActionInvoke getAction(String actionName, String invoke);
 }

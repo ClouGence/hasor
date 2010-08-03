@@ -27,7 +27,7 @@ public class RequestScope implements IAttribute {
     private HttpServletRequest request;
     public RequestScope(HttpServletRequest request) {
         this.request = request;
-    }
+    };
     public boolean contains(String name) {
         return this.request.getAttribute(name) != null;
     };
@@ -54,4 +54,4 @@ public class RequestScope implements IAttribute {
         for (int i = 0; i < ns.length; i++)
             this.removeAttribute(ns[i]);
     };
-}
+};

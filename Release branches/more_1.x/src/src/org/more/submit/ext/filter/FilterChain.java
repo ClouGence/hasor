@@ -17,7 +17,7 @@ package org.more.submit.ext.filter;
 import org.more.submit.ActionInvoke;
 import org.more.submit.ActionStack;
 /**
- * action过滤器链传递类，使用该接口的方法可以执行action过滤器链的下一个环节直至最终的Action调用。
+ * action过滤器链传递类，使用该类的方法可以执行action过滤器链的下一个环节直至最终的Action调用。
  * @version 2009-11-27
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -31,11 +31,11 @@ public class FilterChain {
     FilterChain(FilterChain nextFilterChain, ActionFilter thisFilter) {
         this.thisFilter = thisFilter;
         this.nextFilterChain = nextFilterChain;
-    }
+    };
     /**创建过滤器第一层*/
     FilterChain(ActionInvoke targetInvoke) {
         this.targetInvoke = targetInvoke;
-    }
+    };
     //==========================================================================================Job
     /**
      * 执行下一个Action调用链的环节并且返回执行结果，如果执行期间发生异常则引发Throwable类型异常。
@@ -48,5 +48,5 @@ public class FilterChain {
             return this.thisFilter.doActionFilter(stack, nextFilterChain);//如果是action过滤器链中间的一个环节则执行下一个环节。
         else
             return this.targetInvoke.invoke(stack);//如果是过滤器链的最后一个环节则执行目标action方法。
-    }
-}
+    };
+};

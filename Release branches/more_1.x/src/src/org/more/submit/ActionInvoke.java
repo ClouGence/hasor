@@ -27,4 +27,4 @@ public interface ActionInvoke {
      * @throws Throwable 如果产生异常。
      */
     public Object invoke(ActionStack stack) throws Throwable;
-}
+};

@@ -16,11 +16,14 @@
 package org.more.submit;
 import org.more.util.Config;
 /**
- * 
+ * ActionContextBuild是提供给外壳支撑环境生成器的接口，
+ * 任何more的外壳支撑环境通过SubmitBuild生成时都需要实现该接口。
  * @version 2010-7-26
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class ActionContextBuild {
-    public abstract void init(Config config) throws Exception;
-    public abstract ActionContext getActionContext();
-}
+public interface ActionContextBuild {
+    /**初始化这个生成器，参数configFile，String类型对象表示配置文件位置。*/
+    public void init(Config config) throws Exception;
+    /**调用生成器生成ActionContext对象，ActionContext会经过SubmitBuild再次生成为SubmitContext*/
+    public ActionContext getActionContext();
+};
