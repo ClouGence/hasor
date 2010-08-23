@@ -55,7 +55,6 @@ public class ActionTag extends BodyTagSupport {
         return this.pageContext.getOut();
     };
     @Override
-    @SuppressWarnings("unchecked")
     public int doEndTag() throws JspException {
         Object resultObject = null;
         //获取请求以及响应参数
@@ -65,7 +64,7 @@ public class ActionTag extends BodyTagSupport {
         //设置环境参数并调用
         try {
             //添加参数
-            Map map = new HashMap<String, Object>();
+            Map<String, Object> map = new HashMap<String, Object>();
             for (String key : this.params.keySet())
                 map.put(key, this.params.get(key));
             //调用 

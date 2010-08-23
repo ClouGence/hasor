@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.submit;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import javax.servlet.ServletContext;
@@ -51,6 +52,9 @@ public class SubmitBuild extends AttBase {
     };
     /**调用生成器生成SubmitContext对象，生成的SubmitContext的对象可以需要通过getResult方法获取。*/
     public SubmitContext build(ActionContextBuild build) throws Exception {
+        if (this.contains("baseDir") == true)
+            build.setBaseDir(new File((String) this.getAttribute("baseDir")));
+        //
         build.init(new AttributeConfigBridge(this, null));
         ActionContext actionContext = this.decorator(build.getActionContext());
         this.result = new SubmitContextImpl(actionContext);
@@ -63,6 +67,11 @@ public class SubmitBuild extends AttBase {
      * @param context 生成SubmitContext对象时需要用到的生成器。
      */
     public WebSubmitContext buildWeb(ActionContextBuild build, ServletContext context) throws Exception {
+        if (this.contains("baseDir") == false)
+            build.setBaseDir(new File(context.getRealPath("/WEB-INF/classes")));
+        else
+            build.setBaseDir(new File((String) this.getAttribute("baseDir")));
+        //
         build.init(new AttributeConfigBridge(this, context));
         ActionContext actionContext = this.decorator(build.getActionContext());
         WebSubmitContextImpl webContext = new WebSubmitContextImpl(actionContext, context);

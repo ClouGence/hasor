@@ -43,7 +43,6 @@ public class WebSubmitContextImpl extends SubmitContextImpl implements WebSubmit
         super(actionContext);
         this.servletContext = context;
     };
-    @Override
     public boolean isWebContext() {
         return true;
     };
@@ -94,35 +93,28 @@ public class WebSubmitContextImpl extends SubmitContextImpl implements WebSubmit
         ActionInvoke ai = this.getActionContext().findAction(ss[0], ss[1]);
         return this.invokeAction(ai, as, params);
     };
-    @Override
     public Object doAction(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         String headInfo = ((HttpServletRequest) request).getRequestURL().toString();
         String actionInvoke = analyticURL(headInfo);
         return this.doAction(actionInvoke, null, request, response, null);
     };
-    @Override
     public Object doAction(String actionInvoke, HttpServletRequest request, HttpServletResponse response) throws Throwable {
         return this.doAction(actionInvoke, null, request, response, null);
     };
-    @Override
     public Object doAction(String actionInvoke, HttpServletRequest request, HttpServletResponse response, Map<String, Object> params) throws Throwable {
         return this.doAction(actionInvoke, null, request, response, params);
     };
-    @Override
     public Object doAction(PageContext pageContext) throws Throwable {
         return doAction(pageContext, (HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse());
     };
-    @Override
     public Object doAction(PageContext pageContext, HttpServletRequest request, HttpServletResponse response) throws Throwable {
         String headInfo = ((HttpServletRequest) request).getRequestURL().toString();
         String actionInvoke = analyticURL(headInfo);
         return this.doAction(actionInvoke, pageContext, request, response, null);
     };
-    @Override
     public Object doAction(String actionInvoke, PageContext pageContext, HttpServletRequest request, HttpServletResponse response) throws Throwable {
         return this.doAction(actionInvoke, pageContext, request, response, null);
     };
-    @Override
     public Object doAction(String actionInvoke, PageContext pageContext, HttpServletRequest request, HttpServletResponse response, Map<String, Object> params) throws Throwable {
         if (actionInvoke == null || actionInvoke.equals(""))
             throw new FormatException("请指定actionInvoke调用字符串。");

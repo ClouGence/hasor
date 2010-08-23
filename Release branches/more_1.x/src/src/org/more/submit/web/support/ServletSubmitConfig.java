@@ -30,15 +30,12 @@ public class ServletSubmitConfig implements Config {
         this.config = config;
     };
     //==========================================================================================Job
-    @Override
     public Object getContext() {
         return this.config.getServletContext();
     };
-    @Override
     public String getInitParameter(String name) {
         return this.config.getInitParameter(name);
     };
-    @Override
     @SuppressWarnings("unchecked")
     public Enumeration<String> getInitParameterNames() {
         return this.config.getInitParameterNames();

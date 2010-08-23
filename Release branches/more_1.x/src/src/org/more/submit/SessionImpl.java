@@ -29,11 +29,9 @@ public class SessionImpl extends AttBase implements Session {
     private long              createTime       = new Date().getTime();
     private String            sessionID        = UUID.randomUUID().toString();
     //==========================================================================================Job
-    @Override
     public long getCreateTime() {
         return createTime;
     };
-    @Override
     public String getSessionID() {
         return sessionID;
     };

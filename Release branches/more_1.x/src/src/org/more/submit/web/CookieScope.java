@@ -32,7 +32,6 @@ public class CookieScope implements IAttribute {
         this.request = request;
         this.response = response;
     };
-    @Override
     public void clearAttribute() {
         Cookie[] cs = this.request.getCookies();
         for (int i = 0; i < cs.length; i++) {
@@ -41,7 +40,6 @@ public class CookieScope implements IAttribute {
             this.response.addCookie(c);
         }
     };
-    @Override
     public boolean contains(String name) {
         Cookie[] cs = this.request.getCookies();
         for (int i = 0; i < cs.length; i++)
@@ -49,7 +47,6 @@ public class CookieScope implements IAttribute {
                 return true;
         return false;
     };
-    @Override
     public Object getAttribute(String name) {
         Cookie[] cs = this.request.getCookies();
         if (cs != null)
@@ -58,7 +55,6 @@ public class CookieScope implements IAttribute {
                     return cs[i].getValue();
         return null;
     };
-    @Override
     public String[] getAttributeNames() {
         Vector<String> v = new Vector<String>(0);
         Cookie[] cs = this.request.getCookies();
@@ -68,7 +64,6 @@ public class CookieScope implements IAttribute {
         v.toArray(ns);
         return ns;
     };
-    @Override
     public void removeAttribute(String name) {
         Cookie[] cs = this.request.getCookies();
         for (int i = 0; i < cs.length; i++)

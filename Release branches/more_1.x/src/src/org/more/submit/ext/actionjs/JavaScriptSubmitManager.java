@@ -41,10 +41,9 @@ public class JavaScriptSubmitManager {
         this.min = min;
     };
     /** 客户端JS请求执行某个action时调用这个action方法。 */
-    @SuppressWarnings("unchecked")
     public Object execute(WebActionStack event) throws Throwable {
         String callName = event.getParam("callName").toString();// 调用表达试
-        Map params = (Map) new JsonUtil().toMap(event.getParamString("args"));// 获取参数列表
+        Map<String, ?> params = new JsonUtil().toMap(event.getParamString("args"));// 获取参数列表
         Object result = event.getContext().doActionOnStack(callName, event, params);// Action方式调用
         // ======================================================================================
         HttpServletResponse response = event.getHttpResponse();

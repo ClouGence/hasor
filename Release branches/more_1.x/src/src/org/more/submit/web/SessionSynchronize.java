@@ -31,11 +31,9 @@ public class SessionSynchronize extends HttpSessionScope implements Session {
         this.session = session;
     };
     //==========================================================================================Job
-    @Override
     public long getCreateTime() {
         return this.session.getCreationTime();
     };
-    @Override
     public String getSessionID() {
         return this.session.getId();
     };

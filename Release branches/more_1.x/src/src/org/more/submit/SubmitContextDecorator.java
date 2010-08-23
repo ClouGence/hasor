@@ -40,135 +40,108 @@ public abstract class SubmitContextDecorator implements SubmitContext, WebSubmit
         return true;
     };
     //===================================================================================
-    @Override
     public Object doAction(String invokeString, Map<String, ?> params) throws Throwable {
         return this.submitContext.doAction(invokeString, params);
     };
-    @Override
     public Object doAction(String invokeString, Session session, Map<String, ?> params) throws Throwable {
         return this.submitContext.doAction(invokeString, session, params);
     };
-    @Override
     public Object doAction(String invokeString, String sessionID, Map<String, ?> params) throws Throwable {
         return this.submitContext.doAction(invokeString, sessionID, params);
     };
-    @Override
     public Object doAction(String invokeString) throws Throwable {
         return this.submitContext.doAction(invokeString);
     };
-    @Override
     public Object doActionOnStack(String invokeString, ActionStack stack, Map<String, ?> params) throws Throwable {
         return this.submitContext.doActionOnStack(invokeString, stack, params);
     };
-    @Override
     public ActionContext getActionContext() {
         return this.submitContext.getActionContext();
     };
-    @Override
     public Iterator<String> getActionInvokeStringIterator() {
         return this.submitContext.getActionInvokeStringIterator();
     };
-    @Override
     public SessionManager getSessionManager() {
         return this.submitContext.getSessionManager();
     };
-    @Override
     public boolean isWebContext() {
         return this.submitContext.isWebContext();
     };
-    @Override
     public void setSessionManager(SessionManager sessionManager) {
         this.submitContext.setSessionManager(sessionManager);
     };
     //===================================================================================
-    @Override
     public Object doAction(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         if (this.webSubmitContext == null)
             throw new DoesSupportException("被装饰的submitContext不是一个webSubmitContext。");
         return this.webSubmitContext.doAction(request, response);
     };
-    @Override
     public Object doAction(PageContext pageContext, HttpServletRequest request, HttpServletResponse response) throws Throwable {
         if (this.webSubmitContext == null)
             throw new DoesSupportException("被装饰的submitContext不是一个webSubmitContext。");
         return this.webSubmitContext.doAction(pageContext, request, response);
     };
-    @Override
     public Object doAction(PageContext pageContext) throws Throwable {
         if (this.webSubmitContext == null)
             throw new DoesSupportException("被装饰的submitContext不是一个webSubmitContext。");
         return this.webSubmitContext.doAction(pageContext);
     };
-    @Override
     public Object doAction(String actionInvoke, HttpServletRequest request, HttpServletResponse response, Map<String, Object> params) throws Throwable {
         if (this.webSubmitContext == null)
             throw new DoesSupportException("被装饰的submitContext不是一个webSubmitContext。");
         return this.webSubmitContext.doAction(actionInvoke, request, response, params);
     };
-    @Override
     public Object doAction(String actionInvoke, HttpServletRequest request, HttpServletResponse response) throws Throwable {
         if (this.webSubmitContext == null)
             throw new DoesSupportException("被装饰的submitContext不是一个webSubmitContext。");
         return this.webSubmitContext.doAction(actionInvoke, request, response);
     };
-    @Override
     public Object doAction(String actionInvoke, PageContext pageContext, HttpServletRequest request, HttpServletResponse response, Map<String, Object> params) throws Throwable {
         if (this.webSubmitContext == null)
             throw new DoesSupportException("被装饰的submitContext不是一个webSubmitContext。");
         return this.webSubmitContext.doAction(actionInvoke, pageContext, request, response, params);
     };
-    @Override
     public Object doAction(String actionInvoke, PageContext pageContext, HttpServletRequest request, HttpServletResponse response) throws Throwable {
         if (this.webSubmitContext == null)
             throw new DoesSupportException("被装饰的submitContext不是一个webSubmitContext。");
         return this.webSubmitContext.doAction(actionInvoke, pageContext, request, response);
     };
-    @Override
     public String getProtocol() {
         if (this.webSubmitContext == null)
             throw new DoesSupportException("被装饰的submitContext不是一个webSubmitContext。");
         return this.webSubmitContext.getProtocol();
     };
-    @Override
     public ServletContext getServletContext() {
         if (this.webSubmitContext == null)
             throw new DoesSupportException("被装饰的submitContext不是一个webSubmitContext。");
         return this.webSubmitContext.getServletContext();
     };
-    @Override
     public boolean isActionRequest(HttpServletRequest request) {
         if (this.webSubmitContext == null)
             throw new DoesSupportException("被装饰的submitContext不是一个webSubmitContext。");
         return this.webSubmitContext.isActionRequest(request);
     };
-    @Override
     public void setProtocol(String protocol) {
         if (this.webSubmitContext == null)
             throw new DoesSupportException("被装饰的submitContext不是一个webSubmitContext。");
         this.webSubmitContext.setProtocol(protocol);
     };
     //===================================================================================
-    @Override
     public void clearAttribute() {
         this.submitContext.clearAttribute();
     };
-    @Override
     public boolean contains(String name) {
         return this.submitContext.contains(name);
     };
-    @Override
     public Object getAttribute(String name) {
         return this.submitContext.getAttribute(name);
     };
-    @Override
     public String[] getAttributeNames() {
         return this.submitContext.getAttributeNames();
     };
-    @Override
     public void removeAttribute(String name) {
         this.submitContext.removeAttribute(name);
     };
-    @Override
     public void setAttribute(String name, Object value) {
         this.submitContext.setAttribute(name, value);
     };

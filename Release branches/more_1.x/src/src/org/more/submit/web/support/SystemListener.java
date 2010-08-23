@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit;
-import java.io.File;
-import org.more.util.Config;
+package org.more.submit.web.support;
+import javax.servlet.ServletContext;
+import org.more.submit.SubmitContext;
 /**
- * ActionContextBuild是提供给外壳支撑环境生成器的接口，
- * 任何more的外壳支撑环境通过SubmitBuild生成时都需要实现该接口。
- * @version 2010-7-26
+ * more工作在web模式上的时通过参数配置的消息通知器，由于more的启动是延迟的。因此通过这个监听器可以在filter延迟启动more时得到通知。
+ * @version 2010-8-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ActionContextBuild {
-    /**初始化这个生成器，参数configFile，String类型对象表示配置文件位置。*/
-    public void init(Config config) throws Exception;
-    /**调用生成器生成ActionContext对象，ActionContext会经过SubmitBuild再次生成为SubmitContext*/
-    public ActionContext getActionContext();
-    /**设置基本目录。如果使用相对路径则是相对这个路径的。*/
-    public void setBaseDir(File baseDir);
-};
+public interface SystemListener {
+    /**启动时*/
+    public void start(ServletContext servletContext, SubmitContext context);
+    /**停止时*/
+    public void stop(ServletContext servletContext, SubmitContext context);
+}

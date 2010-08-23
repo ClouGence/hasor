@@ -23,7 +23,6 @@ import org.more.util.StringConvert;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractActionContext implements ActionContext {
-    @Override
     public ActionInvoke findAction(String actionName, String invoke) throws NoDefinitionException {
         if (this.containsAction(actionName) == false)
             throw new NoDefinitionException("不存在名称为[" + actionName + "]的对象");

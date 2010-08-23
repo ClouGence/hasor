@@ -30,23 +30,18 @@ public abstract class ActionContextDecorator implements ActionContext {
         this.actionContext = actionContext;
         return true;
     };
-    @Override
     public boolean containsAction(String actionName) {
         return this.actionContext.containsAction(actionName);
     };
-    @Override
     public ActionInvoke findAction(String actionName, String invoke) throws NoDefinitionException {
         return this.actionContext.findAction(actionName, invoke);
     };
-    @Override
     public Iterator<String> getActionNameIterator() {
         return this.actionContext.getActionNameIterator();
     };
-    @Override
     public Object getActionProperty(String actionName, String property) {
         return this.actionContext.getActionProperty(actionName, property);
     };
-    @Override
     public Class<?> getActionType(String actionName) {
         return this.actionContext.getActionType(actionName);
     };

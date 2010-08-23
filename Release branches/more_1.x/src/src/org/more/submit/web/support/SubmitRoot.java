@@ -35,16 +35,23 @@ import org.more.util.Config;
  * 该web支持的配置只有一个参数buildClass，表示生成器的具体类型。action参数表示请求的协议名
  * 或者action表达试参数名。默认是action。<br/>
  * SubmitRoot会反射的形式创建生成器。过滤器递交方式action://test.tesy?aaa=aaa，上述例子中“:”可以使用“!”代替
+ * 参数systemListener表示可以监听的启动和停止事件。
  * @version 2009-6-29
  * @author 赵永春 (zyc@byshell.org)
  */
 public class SubmitRoot extends HttpServlet implements Filter {
     //========================================================================================Field
     private static final long serialVersionUID = -9157250446565992949L;
-    private WebSubmitContext  submitContext;                           //action管理器。
+    private WebSubmitContext  submitContext    = null;                 //action管理器。
+    private SystemListener    listener         = null;
+    private ServletContext    servletContext   = null;
     //==========================================================================================Job
     private void init(Config config) throws ServletException {
         try {
+            Object listener = config.getInitParameter("listener");
+            if (listener != null)
+                this.listener = (SystemListener) Class.forName(listener.toString()).newInstance();
+            //
             Object buildClassString = config.getInitParameter("buildClass");
             if (buildClassString == null)
                 buildClassString = "org.more.submit.casing.more.MoreBuilder";
@@ -52,24 +59,31 @@ public class SubmitRoot extends HttpServlet implements Filter {
             SubmitBuild sb = new SubmitBuild();
             sb.setConfig(config);
             this.submitContext = sb.buildWeb(build, (ServletContext) config.getContext());
-            ServletContext sc = this.submitContext.getServletContext();
-            sc.setAttribute("org.more.web.submit.ROOT", this.submitContext);
-            sc.setAttribute("org.more.web.submit.ROOT.Action", this.submitContext.getProtocol());
+            this.servletContext = this.submitContext.getServletContext();
+            this.servletContext.setAttribute("org.more.web.submit.ROOT", this.submitContext);
+            this.servletContext.setAttribute("org.more.web.submit.ROOT.Action", this.submitContext.getProtocol());
         } catch (Throwable e) {
             if (e instanceof ServletException)
                 throw (ServletException) e;
             else
                 throw new ServletException(e);
         }
+        //-----------------------------------------------
+        if (this.listener != null)
+            this.listener.start(this.servletContext, this.submitContext);
     };
+    public void destroy() {
+        //-----------------------------------------------
+        if (this.listener != null)
+            this.listener.stop(this.servletContext, this.submitContext);
+        super.destroy();
+    }
     /*-----------------------------------------------------------------*/
     /** 过滤器初始化方法，该方法调用init(InitParameter param) */
-    @Override
     public void init(final FilterConfig config) throws ServletException {
         this.init(new FilterSubmitConfig(config));
     };
     /** Servlet初始化方法，该方法调用init(InitParameter param) */
-    @Override
     public void init() throws ServletException {
         final ServletConfig config = this.getServletConfig();
         this.init(new ServletSubmitConfig(config));
@@ -91,7 +105,6 @@ public class SubmitRoot extends HttpServlet implements Filter {
         }
     };
     /** 中央调度过滤器 */
-    @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;

@@ -34,7 +34,6 @@ public class PropxyActionInvoke implements ActionInvoke {
     };
     //==========================================================================================Job
     /**该方法会查找执行名称的方法，其方法参数必须是ActionStack或者其子类类型*/
-    @Override
     public Object invoke(ActionStack stack) throws Throwable {
         Class<?> type = this.target.getClass();
         Method[] m = type.getMethods();

@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
+import org.more.FormatException;
 import org.more.beans.BeanFactory;
 import org.more.beans.core.ContextFactory;
 import org.more.submit.ActionContext;
@@ -36,6 +37,7 @@ public class MoreBuilder implements ActionContextBuild {
     public static final String DefaultConfig = "more-config.xml";
     protected BeanFactory      factory       = null;
     protected String           config        = null;
+    private File               baseDir       = null;
     //==================================================================================Constructor
     /**创建MoreBuilder，使用默认配置文件{@link MoreBuilder#DefaultConfig}。*/
     public MoreBuilder() throws Exception {
@@ -65,9 +67,9 @@ public class MoreBuilder implements ActionContextBuild {
                 this.setConfig(configParam.toString());
         };
         //
-        File configFile = new File(this.config);
+        File configFile = new File(this.baseDir, this.config);
         if (configFile.isAbsolute() == false) {
-            URL url = Thread.currentThread().getContextClassLoader().getResource(this.config);
+            URL url = ClassLoader.getSystemResource(this.config);
             if (url != null)
                 configFile = new File(URLDecoder.decode(url.getFile(), "utf-8"));
         }
@@ -85,8 +87,12 @@ public class MoreBuilder implements ActionContextBuild {
     public void setConfig(String config) {
         this.config = config;
     };
-    @Override
     public ActionContext getActionContext() {
         return new MoreContext(this.factory);
     };
+    public void setBaseDir(File baseDir) {
+        if (baseDir.isAbsolute() == false)
+            throw new FormatException("baseDir必须是一个绝对路径。");
+        this.baseDir = baseDir;
+    }
 };

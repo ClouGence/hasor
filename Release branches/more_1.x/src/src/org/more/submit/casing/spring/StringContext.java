@@ -42,58 +42,48 @@ public class StringContext extends AbstractActionContext implements FilterContex
         this.configContext = springContext.getBeanFactory();
     };
     //==========================================================================================Job
-    @Override
     protected ActionInvoke getAction(String actionName, String invoke) {
         return new PropxyActionInvoke(this.springContext.getBean(actionName), invoke);
     };
-    @Override
     public boolean containsAction(String actionName) {
         return this.springContext.containsBeanDefinition(actionName);
     };
-    @Override
     public Iterator<String> getActionNameIterator() {
         ArrayList<String> names = new ArrayList<String>();
         for (String n : this.configContext.getBeanDefinitionNames())
             names.add(n);
         return names.iterator();
     };
-    @Override
     public Object getActionProperty(String actionName, String property) {
         if (this.configContext.containsBeanDefinition(actionName) == false)
             return null;
         return this.configContext.getBeanDefinition(actionName).getAttribute(property);
     };
-    @Override
     public Class<?> getActionType(String actionName) {
         return this.springContext.getType(actionName);
     };
     //==========================================================================================Job
     /**这是一个关键方法。*/
-    @Override
     public boolean containsFilter(String filterName) {
         Class<?> type = this.configContext.getType(filterName);
         if (type == null)
             return false;
         return ActionFilter.class.isAssignableFrom(type);
     };
-    @Override
     public ActionFilter findFilter(String filterName) throws NoDefinitionException, CastException {
         if (this.containsFilter(filterName) == false)
             return null;
         return (ActionFilter) this.springContext.getBean(filterName);
     };
-    @Override
     public Iterator<String> getFilterNameIterator() {
         List<String> ns = Arrays.asList(this.configContext.getBeanDefinitionNames());
         return new FilterNameIterator(this, ns.iterator());
     };
-    @Override
     public Class<?> getFilterType(String filterName) {
         if (this.containsFilter(filterName) == false)
             return null;
         return this.configContext.getType(filterName);
     };
-    @Override
     public Object getFilterProperty(String filterName, String property) {
         if (this.containsFilter(filterName) == false)
             return null;
@@ -112,11 +102,9 @@ class FilterNameIterator implements Iterator<String> {
         this.springContext = springContext;
         this.beanNames = beanNames;
     };
-    @Override
     public boolean hasNext() {
         return this.beanNames.hasNext();
     };
-    @Override
     public String next() {
         while (this.beanNames.hasNext()) {
             String ns = this.beanNames.next();
@@ -125,7 +113,6 @@ class FilterNameIterator implements Iterator<String> {
         }
         return null;
     };
-    @Override
     public void remove() {
         throw new UnsupportedOperationException("ActionInvokeStringIterator不支持该操作。");
     };

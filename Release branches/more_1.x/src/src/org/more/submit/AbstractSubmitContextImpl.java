@@ -36,22 +36,18 @@ public abstract class AbstractSubmitContextImpl extends AttBase implements Submi
     private static final long serialVersionUID = -7237602016830547578L;
     private ActionContext     actionContext    = null;
     private SessionManager    sessionManager   = null;
-    @Override
     public Object doAction(String invokeString) throws Throwable {
         Session session = sessionManager.createSession();
         return this.doAction(invokeString, session, null);
     }
-    @Override
     public Object doAction(String invokeString, Map<String, ?> params) throws Throwable {
         Session session = sessionManager.createSession();
         return this.doAction(invokeString, session, params);
     }
-    @Override
     public Object doAction(String invokeString, String sessionID, Map<String, ?> params) throws Throwable {
         Session session = sessionManager.getSession(sessionID);
         return this.doAction(invokeString, session, params);
     }
-    @Override
     public Object doAction(String invokeString, Session session, Map<String, ?> params) throws Throwable {
         if (this.sessionManager.isBelong(session) == false)
             throw new StateException("session " + session.getSessionID() + " 不属于当前sessionManager管理的session");
@@ -60,7 +56,6 @@ public abstract class AbstractSubmitContextImpl extends AttBase implements Submi
         ActionInvoke ai = this.actionContext.findAction(ss[0], ss[1]);
         return this.invokeAction(ai, as, params);
     }
-    @Override
     public Object doActionOnStack(String invokeString, ActionStack stack, Map<String, ?> params) throws Throwable {
         Session session = stack.getSession();
         if (this.sessionManager.isBelong(session) == false)
@@ -77,22 +72,18 @@ public abstract class AbstractSubmitContextImpl extends AttBase implements Submi
     }
     /**创建一个即将使用的ActionStack对象。子类可以通过改写该方法来扩展ActionStack对象。*/
     protected abstract ActionStack createStack(String actionName, String actionMethod, ActionStack parent, Session session);
-    @Override
     public ActionContext getActionContext() {
         return this.actionContext;
     }
     protected void setActionContext(ActionContext actionContext) {
         this.actionContext = actionContext;
     }
-    @Override
     public Iterator<String> getActionInvokeStringIterator() {
         return new InvokeStringIterator(this.actionContext);
     }
-    @Override
     public SessionManager getSessionManager() {
         return this.sessionManager;
     }
-    @Override
     public void setSessionManager(SessionManager sessionManager) {
         if (sessionManager != null)
             this.sessionManager = sessionManager;

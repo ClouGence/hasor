@@ -30,7 +30,6 @@ import org.more.util.StringConvert;
 public class FilterDecorator extends ActionContextDecorator {
     private FilterContext filterContext;
     private String[]      publicFilters = null;
-    @Override
     public boolean initDecorator(ActionContext actionContext) {
         super.initDecorator(actionContext);
         if (actionContext instanceof FilterContext == false)
@@ -38,7 +37,6 @@ public class FilterDecorator extends ActionContextDecorator {
         filterContext = (FilterContext) actionContext;
         return true;
     }
-    @Override
     public ActionInvoke findAction(String actionName, String invoke) throws NoDefinitionException {
         ActionInvoke ai = super.findAction(actionName, invoke);
         LinkedList<String> ns = new LinkedList<String>();
@@ -113,7 +111,6 @@ class FilterActionInvoke implements ActionInvoke {
         this.filterChain = filterChain;
     }
     //==========================================================================================Job
-    @Override
     public Object invoke(ActionStack stack) throws Throwable {
         return filterChain.doInvokeFilter(stack);//Ö´ÐÐ¹ýÂËÆ÷
     }

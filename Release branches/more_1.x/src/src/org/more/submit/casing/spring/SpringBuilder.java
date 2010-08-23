@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
 import javax.servlet.ServletContext;
+import org.more.FormatException;
 import org.more.submit.ActionContext;
 import org.more.submit.ActionContextBuild;
 import org.more.util.Config;
@@ -37,6 +38,7 @@ public class SpringBuilder implements ActionContextBuild {
     public static final String           DefaultConfig = "applicationContext.xml";
     protected AbstractApplicationContext springContext = null;
     protected String                     config        = null;
+    private File                         baseDir       = null;
     //==================================================================================Constructor
     /**创建ClientMoreBuilder，同时初始化ClientMoreBuilder对象使用默认配置文件名为more-config.xml其文件保存在当前路径下。*/
     public SpringBuilder() throws Exception {
@@ -93,9 +95,9 @@ public class SpringBuilder implements ActionContextBuild {
                 this.setConfig(configParam.toString());
         };
         //
-        File configFile = new File(this.config);
+        File configFile = new File(this.baseDir, this.config);
         if (configFile.isAbsolute() == false) {
-            URL url = Thread.currentThread().getContextClassLoader().getResource(this.config);
+            URL url = ClassLoader.getSystemResource(this.config);
             if (url != null)
                 configFile = new File(URLDecoder.decode(url.getFile(), "utf-8"));
         }
@@ -105,8 +107,12 @@ public class SpringBuilder implements ActionContextBuild {
         this.springContext = new FileSystemXmlApplicationContext(configFile.getAbsolutePath());
         this.springContext.refresh();
     };
-    @Override
     public ActionContext getActionContext() {
         return new StringContext(this.springContext);
+    }
+    public void setBaseDir(File baseDir) {
+        if (baseDir.isAbsolute() == false)
+            throw new FormatException("baseDir必须是一个绝对路径。");
+        this.baseDir = baseDir;
     }
 }
