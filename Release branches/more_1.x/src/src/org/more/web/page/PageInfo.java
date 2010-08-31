@@ -22,16 +22,15 @@ import java.util.List;
  * @version 2009-6-17
  * @author 赵永春 (zyc@byshell.org)
  */
-@SuppressWarnings("unchecked")
 public class PageInfo {
-    private List     list                = new ArrayList(); //保存项目的集合对象
-    private Iterator iterator            = null;           //列表执行的迭代器
-    private Object   iteratorCurrentItem = null;           //迭代器正在迭代的当前项目对象
+    private List<Object> list                = new ArrayList<Object>(); //保存项目的集合对象
+    private Iterator<?>  iterator            = null;                   //列表执行的迭代器
+    private Object       iteratorCurrentItem = null;                   //迭代器正在迭代的当前项目对象
     //=========================================================================
     //初始化数据
     public void initData() {
         if (this.list == null)
-            this.list = new ArrayList();
+            this.list = new ArrayList<Object>();
     }
     /**
      * 获取项总数。
@@ -110,7 +109,7 @@ public class PageInfo {
         this.iterator = null;
         this.iterator = this.list.iterator();
     }
-    List getList() {
+    List<Object> getList() {
         return list;
     }
 }

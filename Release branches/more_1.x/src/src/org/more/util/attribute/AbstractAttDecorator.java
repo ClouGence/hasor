@@ -55,27 +55,21 @@ public abstract class AbstractAttDecorator implements IAttribute {
         else
             this.source = source;
     }
-    @Override
     public void clearAttribute() {
         this.source.clearAttribute();
     }
-    @Override
     public boolean contains(String name) {
         return this.source.contains(name);
     }
-    @Override
     public Object getAttribute(String name) {
         return this.source.getAttribute(name);
     }
-    @Override
     public String[] getAttributeNames() {
         return this.source.getAttributeNames();
     }
-    @Override
     public void removeAttribute(String name) {
         this.source.removeAttribute(name);
     }
-    @Override
     public void setAttribute(String name, Object value) {
         this.source.setAttribute(name, value);
     }

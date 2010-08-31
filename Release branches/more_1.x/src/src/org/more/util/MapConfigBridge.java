@@ -43,15 +43,12 @@ public class MapConfigBridge implements Map<String, Object>, Config {
         this.context = context;
     }
     //=========================================================================================Impl
-    @Override
     public Object getContext() {
         return this.context;
     }
-    @Override
     public Object getInitParameter(String name) {
         return this.attMap.get(name);
     }
-    @Override
     public Enumeration<String> getInitParameterNames() {
         Vector<String> v = new Vector<String>();
         for (String key : this.attMap.keySet())
@@ -59,51 +56,39 @@ public class MapConfigBridge implements Map<String, Object>, Config {
         return v.elements();
     }
     //==========================================================================================Job
-    @Override
     public void clear() {
         this.attMap.clear();
     }
-    @Override
     public boolean containsKey(Object key) {
         return this.attMap.containsKey(key);
     }
-    @Override
     public boolean containsValue(Object value) {
         return this.attMap.containsValue(value);
     }
-    @Override
     public Set<java.util.Map.Entry<String, Object>> entrySet() {
         return this.attMap.entrySet();
     }
-    @Override
     public Object get(Object key) {
         return this.attMap.get(key);
     }
-    @Override
     public boolean isEmpty() {
         return this.attMap.isEmpty();
     }
-    @Override
     public Set<String> keySet() {
         return this.attMap.keySet();
     }
-    @Override
     public Object put(String key, Object value) {
         return this.attMap.put(key, value);
     }
-    @Override
     public void putAll(Map<? extends String, ? extends Object> m) {
         this.attMap.putAll(m);
     }
-    @Override
     public Object remove(Object key) {
         return this.attMap.remove(key);
     }
-    @Override
     public int size() {
         return this.attMap.size();
     }
-    @Override
     public Collection<Object> values() {
         return this.attMap.values();
     }

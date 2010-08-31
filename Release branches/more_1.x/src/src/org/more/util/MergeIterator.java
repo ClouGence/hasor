@@ -29,17 +29,14 @@ public class MergeIterator<T> implements Iterator<T> {
         twoIterators = second;
         temp_Iterators = first;
     }
-    @Override
     public boolean hasNext() {
         return (oneIterators.hasNext() || twoIterators.hasNext()) ? true : false;
     }
-    @Override
     public T next() {
         if (temp_Iterators.hasNext() == false)
             temp_Iterators = twoIterators;
         return temp_Iterators.next();
     }
-    @Override
     public void remove() {
         throw new UnsupportedOperationException("MergeIterator不支持该操作。");
     }

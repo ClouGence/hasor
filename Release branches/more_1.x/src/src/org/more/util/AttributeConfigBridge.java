@@ -40,15 +40,12 @@ public class AttributeConfigBridge implements IAttribute, Config {
         this.context = context;
     }
     //=========================================================================================Impl
-    @Override
     public Object getContext() {
         return this.context;
     }
-    @Override
     public Object getInitParameter(String name) {
         return this.getAttribute(name);
     }
-    @Override
     public Enumeration<String> getInitParameterNames() {
         Vector<String> v = new Vector<String>();
         for (String key : this.getAttributeNames())
@@ -56,27 +53,21 @@ public class AttributeConfigBridge implements IAttribute, Config {
         return v.elements();
     }
     //==========================================================================================Job
-    @Override
     public void clearAttribute() {
         this.attMap.clearAttribute();
     }
-    @Override
     public boolean contains(String name) {
         return this.attMap.contains(name);
     }
-    @Override
     public Object getAttribute(String name) {
         return this.attMap.getAttribute(name);
     }
-    @Override
     public String[] getAttributeNames() {
         return this.attMap.getAttributeNames();
     }
-    @Override
     public void removeAttribute(String name) {
         this.attMap.removeAttribute(name);
     }
-    @Override
     public void setAttribute(String name, Object value) {
         this.attMap.setAttribute(name, value);
     }

@@ -33,7 +33,7 @@ public class AttBase implements IAttribute, IAttTransform, Map<String, Object>, 
     private Map<String, Object> prop;
     //==================================================================================Constructor
     //
-    /** 
+    /**
      * 创建一个基本属性对象，属性的存放使用HashMap作为属性盛装器。基本属性接口实现类。
      * 注意：IAttribute接口特性及其子接口的功能将不会作用到Map接口上。开发人员仍然可以通过Map接口操作AttBase中的数据。
      * 但是Map接口将不会支持IAttribute接口的所有装饰器接口特性。
@@ -68,38 +68,30 @@ public class AttBase implements IAttribute, IAttTransform, Map<String, Object>, 
     protected void setProp(HashMap<String, Object> prop) {
         this.prop = prop;
     }
-    @Override
     public void clearAttribute() {
         this.prop.clear();
     }
-    @Override
     public boolean contains(String name) {
         return this.prop.containsKey(name);
     }
-    @Override
     public Object getAttribute(String name) {
         return this.prop.get(name);
     }
-    @Override
     public String[] getAttributeNames() {
         String[] keys = new String[this.prop.size()];
         this.prop.keySet().toArray(keys);
         return keys;
     }
-    @Override
     public void removeAttribute(String name) {
         this.prop.remove(name);
     }
-    @Override
     public void setAttribute(String name, Object value) {
         this.prop.put(name, value);
     }
-    @Override
     public void fromProperties(Properties prop) {
         for (Object ks : prop.keySet())
             this.prop.put(ks.toString(), prop.get(ks));
     }
-    @Override
     public Properties toProperties() {
         Properties prop = new Properties();
         for (String ks : this.prop.keySet()) {
@@ -109,51 +101,39 @@ public class AttBase implements IAttribute, IAttTransform, Map<String, Object>, 
         return prop;
     }
     //==================================================================================Map接口实现
-    @Override
     public void clear() {
         this.prop.clear();
     }
-    @Override
     public boolean containsKey(Object key) {
         return this.prop.containsKey(key);
     }
-    @Override
     public boolean containsValue(Object value) {
         return this.prop.containsValue(value);
     }
-    @Override
     public Set<java.util.Map.Entry<String, Object>> entrySet() {
         return this.prop.entrySet();
     }
-    @Override
     public Object get(Object key) {
         return this.prop.get(key);
     }
-    @Override
     public boolean isEmpty() {
         return this.prop.isEmpty();
     }
-    @Override
     public Set<String> keySet() {
         return this.prop.keySet();
     }
-    @Override
     public Object put(String key, Object value) {
         return this.prop.put(key, value);
     }
-    @Override
     public void putAll(Map<? extends String, ? extends Object> m) {
         this.prop.putAll(m);
     }
-    @Override
     public Object remove(Object key) {
         return this.prop.remove(key);
     }
-    @Override
     public int size() {
         return this.prop.size();
     }
-    @Override
     public Collection<Object> values() {
         return this.prop.values();
     }
