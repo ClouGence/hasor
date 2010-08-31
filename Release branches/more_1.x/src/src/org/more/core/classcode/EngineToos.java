@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 package org.more.core.classcode;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import org.more.FormatException;
 import org.more.core.asm.Opcodes;
 import org.more.core.asm.Type;
@@ -27,18 +31,6 @@ import org.more.core.asm.Type;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class EngineToos implements Opcodes {
-    /** 在类型中获取某个方法，首先在类定义的方法中找(包括私有方法)，随后在起共有方法中以及继承的方法中找。 */
-    public static java.lang.reflect.Method getMethod(Class<?> atClass, String name, Class<?>... types) {
-        try {
-            return atClass.getDeclaredMethod(name, types);
-        } catch (Exception e) {
-            try {
-                return atClass.getMethod(name, types);
-            } catch (Exception e1) {
-                return null;
-            }
-        }
-    }
     /**检测类名是否合法。*/
     public static boolean checkClassName(String className) {
         if (className == null || className.equals(""))
@@ -51,7 +43,6 @@ public class EngineToos implements Opcodes {
             return false;
         if (className.indexOf(".", className.length()) == className.length())
             return false;
-        //System.out.println("OK");
         return true;
     }
     /**根据类型获取其Return指令。*/
@@ -112,6 +103,34 @@ public class EngineToos implements Opcodes {
             throw new RuntimeException("不支持的类型装载请求");//
         }
     }
+    /**根据asm类型获取其ASTORE指令。*/
+    public static int getAstore(String asmType) {
+        char t = asmType.charAt(0);
+        switch (t) {
+        case 'B':
+            return IASTORE;//Byte
+        case 'C':
+            return IASTORE;//Char
+        case 'D':
+            return DASTORE;//Double
+        case 'F':
+            return FASTORE;//Float
+        case 'I':
+            return IASTORE;//Integer
+        case 'J':
+            return LASTORE;//Long
+        case 'L':
+            return AASTORE;//Ref
+        case 'S':
+            return IASTORE;//Short
+        case 'Z':
+            return IASTORE;//Boolean
+        case '[':
+            return AASTORE;//Array
+        default:
+            throw new RuntimeException("不支持的类型装载请求");//
+        }
+    }
     //=======================================================================================================================
     /**将某一个类型转为asm形式的表述， int 转为 I，String转为 Ljava/lang/String。*/
     public static String toAsmType(Class<?> classType) {
@@ -138,12 +157,104 @@ public class EngineToos implements Opcodes {
         else
             return "L" + Type.getInternalName(classType) + ";";
     }
-    /**将某一个类型转为asm形式的表述， int 转为 I，String转为 Ljava/lang/String。*/
+    /**将某一个类型转为asm形式的表述， int,int 转为 II，String,int转为 Ljava/lang/String;I。*/
     public static String toAsmType(Class<?>[] classType) {
         String returnString = "";
         for (Class<?> c : classType)
             returnString += EngineToos.toAsmType(c);;
         return returnString;
+    }
+    public static Class<?> toJavaType(String asmClassType, ClassLoader loader) throws ClassNotFoundException {
+        if (asmClassType.equals("I") == true)
+            return int.class;
+        else if (asmClassType.equals("B") == true)
+            return byte.class;
+        else if (asmClassType.equals("C") == true)
+            return char.class;
+        else if (asmClassType.equals("D") == true)
+            return double.class;
+        else if (asmClassType.equals("F") == true)
+            return float.class;
+        else if (asmClassType.equals("J") == true)
+            return long.class;
+        else if (asmClassType.equals("I") == true)
+            return short.class;
+        else if (asmClassType.equals("Z") == true)
+            return boolean.class;
+        else if (asmClassType.equals("V") == true)
+            return void.class;
+        else if (asmClassType.charAt(0) == '[') {
+            int length = 0;
+            while (true) {
+                if (asmClassType.charAt(length) != '[')
+                    break;
+                length++;
+            }
+            String arrayType = asmClassType.substring(length, asmClassType.length());
+            arrayType = arrayType.replace("/", ".");
+            Class<?> returnType = toJavaType(arrayType, loader);
+            for (int i = 0; i < length; i++) {
+                Object obj = Array.newInstance(returnType, length);
+                returnType = obj.getClass();
+            }
+            return returnType;
+        } else
+            return loader.loadClass(asmTypeToType(asmClassType).replace("/", "."));
+    }
+    public static Class<?>[] toJavaType(String[] asmClassType, ClassLoader loader) throws ClassNotFoundException {
+        Class<?>[] types = new Class<?>[asmClassType.length];
+        for (int i = 0; i < asmClassType.length; i++)
+            types[i] = toJavaType(asmClassType[i], loader);
+        return types;
+    }
+    public static Method findMethod(Class<?> atClass, String name, Class<?>[] paramType) throws SecurityException, NoSuchMethodException {
+        try {
+            return atClass.getMethod(name, paramType);
+        } catch (Exception e) {
+            return atClass.getDeclaredMethod(name, paramType);
+        }
+    }
+    public static ArrayList<Method> findAllMethod(Class<?> atClass) throws SecurityException, NoSuchMethodException {
+        ArrayList<Method> al = new ArrayList<Method>();
+        Method[] m1 = atClass.getDeclaredMethods();
+        Collections.addAll(al, m1);
+        for (Method m : atClass.getMethods())
+            if (al.contains(m) == false)
+                al.add(m);
+        return al;
+    }
+    /***/
+    public static String asmTypeToType(String asmType) {
+        if (asmType.charAt(0) == 'L')
+            return asmType.substring(1, asmType.length() - 1);
+        else
+            return asmType;
+    }
+    //=======================================================================================================================
+    /**获取一个类对象字节码的读取流。*/
+    public static InputStream getClassInputStream(Class<?> type) {
+        ClassLoader loader = type.getClassLoader();
+        if (loader instanceof ClassEngine) {
+            byte[] data = ((ClassEngine) loader).toBytes();
+            return new ByteArrayInputStream(data);
+        }
+        String classResourceName = type.getName().replace(".", "/") + ".class";
+        if (loader != null)
+            return loader.getResourceAsStream(classResourceName);
+        else
+            return ClassLoader.getSystemResourceAsStream(classResourceName);
+    };
+    /**判断某个类是否为一个lang包的类。*/
+    public static boolean isLangClass(Class<?> type) {
+        return type.getName().startsWith("java.lang.");
+    };
+    /**转换首字母大写*/
+    public static String toUpperCase(String value) {
+        StringBuffer sb = new StringBuffer(value);
+        char firstChar = sb.charAt(0);
+        sb.delete(0, 1);
+        sb.insert(0, (char) ((firstChar >= 97) ? firstChar - 32 : firstChar));
+        return sb.toString();
     }
     /** 将IIIILjava/lang/Integer;F形式的ASM类型表述分解为数组。测试字符串IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean; */
     public static String[] splitAsmType(String asmTypes) {
@@ -200,22 +311,6 @@ public class EngineToos implements Opcodes {
             throw new FormatException("不合法的ASM类型desc。");
         }
     }
-    /***/
-    public static String toClassType(String asmType) {
-        if (asmType.charAt(0) == 'L')
-            return asmType.substring(1, asmType.length() - 1);
-        else
-            return asmType;
-    }
-    //=======================================================================================================================
-    /**获取一个类对象字节码的读取流。*/
-    public static InputStream getClassInputStream(Class<?> type) {
-        ClassLoader cl = type.getClassLoader();
-        if (cl == null)
-            throw new RuntimeException("当前版本无法装载 rt.jar中的类。");
-        else
-            return cl.getResourceAsStream(type.getName().replace(".", "/") + ".class");
-    }
     /**获取类完整限定名的类名部分。*/
     public static String splitSimpleName(String fullName) {
         String[] ns = fullName.split("\\.");
@@ -228,49 +323,9 @@ public class EngineToos implements Opcodes {
         else
             return fullName;
     }
-    /**获取类完整限定名的包名部分，参数格式是asm格式。*/
-    public static String splitPackageNameByASM(String fullName) {
-        if (fullName.lastIndexOf("/") > 0)
-            return fullName.substring(0, fullName.lastIndexOf("/"));
-        else
-            return fullName;
-    }
-    /**获取类完整限定名的类名部分，参数格式是asm格式。*/
-    public static String splitSimpleNameByASM(String fullName) {
-        String[] ns = fullName.split("/");
-        return ns[ns.length - 1];
-    }
     /**将类名转换为asm类名。*/
     public static String replaceClassName(String className) {
         return className.replace(".", "/");
-    }
-    /**根据asm类型获取其ASTORE指令。*/
-    public static int getAstore(String asmType) {
-        char t = asmType.charAt(0);
-        switch (t) {
-        case 'B':
-            return IASTORE;//Byte
-        case 'C':
-            return IASTORE;//Char
-        case 'D':
-            return DASTORE;//Double
-        case 'F':
-            return FASTORE;//Float
-        case 'I':
-            return IASTORE;//Integer
-        case 'J':
-            return LASTORE;//Long
-        case 'L':
-            return AASTORE;//Ref
-        case 'S':
-            return IASTORE;//Short
-        case 'Z':
-            return IASTORE;//Boolean
-        case '[':
-            return AASTORE;//Array
-        default:
-            throw new RuntimeException("不支持的类型装载请求");//
-        }
     }
     /**通过位运算决定check是否在data里。*/
     public static boolean checkIn(int data, int check) {

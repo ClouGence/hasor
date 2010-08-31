@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 package org.more.core.classcode;
-import java.io.InputStream;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.more.InvokeException;
@@ -27,10 +25,8 @@ import org.more.core.asm.ClassReader;
 import org.more.core.asm.ClassVisitor;
 import org.more.core.asm.ClassWriter;
 import org.more.core.asm.FieldVisitor;
-import org.more.core.asm.Label;
 import org.more.core.asm.MethodVisitor;
 import org.more.core.asm.Opcodes;
-import org.more.core.asm.Type;
 /**
  * 该类负责修改类的字节码附加接口实现方法。
  * 生成类过程
@@ -39,270 +35,349 @@ import org.more.core.asm.Type;
  *   2.继承基类
  *   3.修改新类类名
  * visitMethod
- *   1.修改方法名为 _methodName
+ *   1.修改方法名为
  *   2.输出代理方法
  *   3.增加本地方法集合
  * visitEnd
- *   1.扫描附加接口方法
- *   2.如果本地方法集合中存在该方法则忽略输出。如果该方法是被保护的或者私有的抛出异常
- *   3.输出代理方法调用
- * @version 2009-10-22
+ *   1.输出Propxy的构造方法
+ *   2.输出简单属性
+ *   3.输出委托属性
+ *   4.输出委托方法
+ * @version 2010-8-12
  * @author 赵永春 (zyc@byshell.org)
  */
 class BuilderClassAdapter extends ClassAdapter implements Opcodes {
-    //========================================================================================Field
-    /** xxxx */
-    private ClassEngine                   engine          = null;
-    /** 基类类名 */
-    private String                        superClassByASM = null;
-    /** 当前类类名 */
-    private String                        thisClassByASM  = null;
-    /** 生成的新类所要附加的接口实现 */
-    private Map<Class<?>, MethodDelegate> implsMap        = null;
-    /** 本类中已经存在的方法 */
-    private ArrayList<String>             methodList      = new ArrayList<String>(0);
-    private Class<?>                      superClassType;
-    //==================================================================================Constructor
-    /** ...... */
-    public BuilderClassAdapter(ClassEngine engine, ClassVisitor cv, Class<?> superClass, Map<Class<?>, MethodDelegate> implsMap) {
+    private ClassBuilder        classBuilder              = null;
+    private ClassEngine         classEngine               = null;
+    private String              asmClassName              = null;
+    private ArrayList<String>   localMethodList           = null;
+    //
+    private ArrayList<String>   renderMethodList          = null;
+    private ArrayList<String>   renderDelegateList        = null;
+    private ArrayList<String>   renderDelegatePropxyList  = null;
+    //
+    public final static String  SuperPropxyName           = "$propxyObject";
+    //
+    public final static String  DelegateArrayName         = "$delegateArray";
+    private final static String DelegateArrayType         = EngineToos.toAsmType(MethodDelegate[].class);
+    public final static String  DelegateMethodArrayName   = "$delegateMethodArray";
+    private final static String DelegateMethodArrayType   = EngineToos.toAsmType(Method[].class);
+    //
+    public final static String  PropertyArrayName         = "$propertyArray";
+    private final static String PropertyDelegateArrayType = EngineToos.toAsmType(PropertyDelegate[].class);
+    //
+    public BuilderClassAdapter(ClassVisitor cv, ClassBuilder classBuilder) {
         super(cv);
-        this.engine = engine;
-        this.superClassByASM = EngineToos.replaceClassName(superClass.getName());
-        this.implsMap = implsMap;
-        this.superClassType = superClass;
+        this.classBuilder = classBuilder;
+        this.classEngine = classBuilder.getClassEngine();
+        this.localMethodList = new ArrayList<String>();
+        this.renderMethodList = new ArrayList<String>();
+        this.renderDelegateList = new ArrayList<String>();
+        this.renderDelegatePropxyList = new ArrayList<String>();
+        this.asmClassName = this.classBuilder.getAsmClassName();
     }
-    //==========================================================================================Job
-    /** 附加接口实现 */
+    public ArrayList<String> getRenderMethodList() {
+        return this.renderMethodList;
+    }
+    public ArrayList<String> getRenderDelegateList() {
+        return this.renderDelegateList;
+    }
+    public ArrayList<String> getRenderDelegatePropxyList() {
+        return this.renderDelegatePropxyList;
+    }
+    //
+    //1.附加实现接口
+    //2.继承基类
+    //3.修改新类类名
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-        //1.附加实现接口
-        //2.继承基类
-        //3.修改新类类名/
-        ArrayList<String> al = new ArrayList<String>(0);
-        //----------一、已经实现的接口
-        Collections.addAll(al, interfaces);
-        //----------二、附加接口实现
-        for (Class<?> i : this.implsMap.keySet()) {
-            String implType = EngineToos.replaceClassName(i.getName());
-            if (al.contains(implType) == false)
-                al.add(implType);
+        //1.附加接口实现
+        if (this.classBuilder.isAddDelegate() == true) {
+            this.putSetMethod(DelegateArrayName, DelegateArrayType);
+            this.putSetMethod(DelegateMethodArrayName, DelegateMethodArrayType);
+            ArrayList<String> al = new ArrayList<String>(interfaces.length + 10);
+            Collections.addAll(al, interfaces);//已经实现的接口
+            Collections.addAll(al, this.classBuilder.getDelegateString());//附加接口实现
+            Collections.addAll(renderDelegateList, this.classBuilder.getDelegateString());//附加接口实现
+            //转换List为Array
+            interfaces = new String[al.size()];
+            al.toArray(interfaces);
         }
-        //----------三、转换List为Array
-        String[] ins = new String[al.size()];
-        al.toArray(ins);
-        //----------四、继承基类、修改新类类名
-        this.thisClassByASM = engine.getClassName().replace(".", "/");
-        super.visit(version, access, this.thisClassByASM, signature, name, ins);
+        //2.继承基类
+        superName = name;
+        //3.修改新类类名
+        name = this.asmClassName;
+        super.visit(version, ACC_PUBLIC, name, signature, superName, interfaces);
     }
-    /** 调用父类方法 */
+    //
+    //当是Propxy模式下时候就忽略字段的输出。
+    @Override
+    public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
+        if (this.classEngine.getBuilderMode() == BuilderMode.Propxy)
+            return null;
+        return super.visitField(access, name, desc, signature, value);
+    }
+    //
+    //1.方法忽略策略
+    //2.输出已有方法，Super和Propxy。
     @Override
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-        //1.如果工作在代理模式下则忽略所有私有方法和受保护的方法。
-        if (this.engine.getMode() == ClassEngine.BuilderMode.Propxy)
-            if (name.equals("<init>") || (access | ACC_PRIVATE) == access || (access | ACC_PROTECTED) == access)
+        BuilderMode builderMode = this.classEngine.getBuilderMode();
+        String asmSuperClassName = this.classBuilder.getAsmSuperClassName();
+        String fullDesc = name + desc;
+        MethodStrategy methodStrategy = this.classEngine.getMethodStrategy();
+        //
+        //1.忽略特定描述方法
+        if ((access | ACC_PRIVATE) == access) //忽略private方法。
+            return null;
+        if ((access | ACC_STATIC) == access)//忽略static描述方法。
+            return null;
+        if ((access | ACC_FINAL) == access)//忽略final描述方法。
+            return null;
+        if ((access | ACC_NATIVE) == access)//忽略native描述方法。
+            if (fullDesc.equals("hashCode()I") == false && fullDesc.equals("clone()Ljava/lang/Object;") == false)
                 return null;
-        //2.不处理私有方法保持原装
-        MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
-        if ((access | ACC_PRIVATE) == access)
-            return mv;//不处理私有方法的父类调用，维持原装
-        //3.准备输出方法数据
+            else
+                access = access - ACC_NATIVE;
+        if (builderMode == BuilderMode.Propxy) {//当在Propxy。
+            if (name.equals("<init>") == true)//忽略Propxy下的所有构造方法。
+                return null;
+            if ((access | ACC_PROTECTED) == access)//忽略Propxy下的保护方法。
+                return null;
+        }
+        //2.准备输出方法数据
         Pattern p = Pattern.compile("\\((.*)\\)(.*)");
         Matcher m = p.matcher(desc);
         m.find();
         String[] asmParams = EngineToos.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
         String asmReturns = m.group(2);
+        //
+        //3.执行方法忽略策略
+        try {
+            Class<?> superClass = this.classEngine.getSuperClass();
+            boolean isConstructor = false;
+            if (name.equals("<init>") == true)
+                isConstructor = true;
+            Class<?>[] paramTypes = EngineToos.toJavaType(asmParams, this.classEngine);
+            Object method = null;
+            if (isConstructor == true)
+                method = superClass.getConstructor(paramTypes);
+            else
+                method = EngineToos.findMethod(superClass, name, paramTypes);
+            if (methodStrategy.isIgnore(fullDesc, superClass, method, isConstructor) == true)//其他策略
+                return null;
+        } catch (Exception e) {
+            throw new InvokeException(e);
+        }
+        //
+        //4.输出方法
         int maxLocals = 1;
-        //3.输出方法
+        MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
         mv.visitCode();
-        if (this.engine.getMode() == ClassEngine.BuilderMode.Super) {
+        if (builderMode == BuilderMode.Super) {
             //Super 如果是继承方式调用则使用super.invoke调用。
             mv.visitVarInsn(ALOAD, 0);
             for (int i = 0; i < asmParams.length; i++)
                 mv.visitVarInsn(EngineToos.getLoad(asmParams[i]), i + 1);
-            mv.visitMethodInsn(INVOKESPECIAL, this.superClassByASM, name, desc);
+            mv.visitMethodInsn(INVOKESPECIAL, asmSuperClassName, name, desc);
             maxLocals += asmParams.length;
         } else {
             //Propxy 如果是代理方式则使用this.$propxyObject.invoke。
             mv.visitVarInsn(ALOAD, 0);
-            mv.visitFieldInsn(GETFIELD, this.thisClassByASM, ClassEngine.PropxyModeObjectName, "L" + this.superClassByASM + ";");
+            mv.visitFieldInsn(GETFIELD, asmClassName, SuperPropxyName, "L" + asmSuperClassName + ";");
             for (int i = 0; i < asmParams.length; i++)
                 mv.visitVarInsn(EngineToos.getLoad(asmParams[i]), i + 1);
-            mv.visitMethodInsn(INVOKEVIRTUAL, this.superClassByASM, name, desc);
+            mv.visitMethodInsn(INVOKEVIRTUAL, asmSuperClassName, name, desc);
             maxLocals += (asmParams.length + 1);
         }
-        //4.处理方法调用的返回值return。
+        //5.处理方法调用的返回值return。
         if (asmReturns.equals("V") == true)
             mv.visitInsn(RETURN);
         else
             mv.visitInsn(EngineToos.getReturn(asmReturns));
-        //5.结束方法输出，确定方法堆栈等信息。
+        //6.结束方法输出，确定方法堆栈等信息。
         mv.visitMaxs(1, maxLocals);
         mv.visitEnd();
-        //6.将已经处理的方法添加到本地方法表中并返回。
-        methodList.add(name + desc);
+        //7.将已经处理的方法添加到本地方法表中并返回，在visitInterfaceMethod方法中会需要这个信息。
+        localMethodList.add(name + desc);
         return null;
     }
-    /** 输出接口附加方法 */
+    //
+    //1.输出Propxy的构造方法
+    //2.输出简单属性
+    //3.输出委托属性
+    //4.输出委托方法
     @Override
     public void visitEnd() {
-        try {
-            {
-                //1.输出代理字段
-                FieldVisitor field = super.visitField(ACC_PRIVATE, ClassEngine.ObjectDelegateMapName, "Ljava/util/Hashtable;", null, null);
-                field.visitEnd();
-                //2.输出代理字段的注入方法,方法名仅仅是代理字段的名称前面加上set代理字段首字母不需要大写。
-                MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "set" + ClassEngine.ObjectDelegateMapName, "(Ljava/util/Hashtable;)V", null, null);
-                mv.visitVarInsn(ALOAD, 0);//装载this
-                mv.visitVarInsn(ALOAD, 1);//装载参数 
-                mv.visitFieldInsn(PUTFIELD, this.thisClassByASM, ClassEngine.ObjectDelegateMapName, "Ljava/util/Hashtable;");
-                mv.visitInsn(RETURN);
-                mv.visitMaxs(1, 1);
-                mv.visitEnd();
-            }
-            {
-                //3.如果工作在代理模式则输出代理对象相关方法。
-                if (this.engine.getMode() == ClassEngine.BuilderMode.Propxy) {
-                    //Super 如果是继承方式调用则输出代理字段。
-                    String superClassNyASMType = "L" + this.superClassByASM + ";";
-                    FieldVisitor propxy = super.visitField(ACC_PRIVATE, ClassEngine.PropxyModeObjectName, superClassNyASMType, null, null);
-                    propxy.visitEnd();
-                    MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "<init>", "(" + superClassNyASMType + ")V", null, null);
-                    mv.visitVarInsn(ALOAD, 0);//装载this
-                    mv.visitMethodInsn(INVOKESPECIAL, this.superClassByASM, "<init>", "()V");
-                    mv.visitVarInsn(ALOAD, 0);//装载this
-                    mv.visitVarInsn(ALOAD, 1);//装载参数 
-                    mv.visitFieldInsn(PUTFIELD, this.thisClassByASM, ClassEngine.PropxyModeObjectName, superClassNyASMType);
-                    mv.visitInsn(RETURN);
-                    mv.visitMaxs(1, 1);
-                    mv.visitEnd();
+        //
+        //1.输出Propxy的构造方法。
+        if (this.classEngine.getBuilderMode() == BuilderMode.Propxy) {
+            String asmSuperName = EngineToos.toAsmType(this.classEngine.getSuperClass());
+            String asmSuperName2 = EngineToos.asmTypeToType(asmSuperName);
+            //
+            FieldVisitor fv = super.visitField(ACC_PRIVATE, SuperPropxyName, asmSuperName, null, null);
+            fv.visitEnd();
+            MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "<init>", "(" + asmSuperName + ")V", null, null);
+            mv.visitCode();
+            mv.visitVarInsn(ALOAD, 0);//装载this
+            mv.visitMethodInsn(INVOKESPECIAL, asmSuperName2, "<init>", "()V");
+            mv.visitVarInsn(ALOAD, 0);//装载this
+            mv.visitVarInsn(ALOAD, 1);//装载参数
+            mv.visitFieldInsn(PUTFIELD, EngineToos.asmTypeToType(asmClassName), SuperPropxyName, asmSuperName);
+            mv.visitInsn(RETURN);
+            mv.visitMaxs(1, 1);
+            mv.visitEnd();
+        }
+        //
+        //2.输出属性
+        if (this.classBuilder.isAddFields() == true) {
+            PropertyStrategy propertyStrategy = this.classEngine.getPropertyStrategy();
+            //简单属性。
+            String[] simpleFields = this.classBuilder.getSimpleFields();
+            if (simpleFields != null)
+                for (String field : simpleFields) {
+                    Class<?> fieldType = this.classEngine.getSimplePropertyType(field);
+                    if (propertyStrategy.isIgnore(field, fieldType, false) == true)
+                        continue;
+                    boolean readOnly = propertyStrategy.isReadOnly(field, fieldType, false);
+                    this.putSimpleProperty(field, fieldType, readOnly);
+                }
+            //委托属性。
+            String[] delegateFields = this.classBuilder.getDelegateFields();
+            if (delegateFields != null) {
+                super.visitField(ACC_PRIVATE, PropertyArrayName, PropertyDelegateArrayType, null, null);
+                this.putSetMethod(PropertyArrayName, PropertyDelegateArrayType);
+                for (int i = 0; i < delegateFields.length; i++) {
+                    String field = delegateFields[i];
+                    PropertyDelegate<?> fieldDelegate = this.classEngine.getDelegateProperty(field);
+                    Class<?> delegateType = fieldDelegate.getType();
+                    if (propertyStrategy.isIgnore(field, delegateType, true) == true)
+                        continue;
+                    boolean readOnly = propertyStrategy.isReadOnly(field, delegateType, true);
+                    this.renderDelegatePropxyList.add(field);
+                    this.putDelegateProperty(i, field, fieldDelegate, readOnly);
                 }
             }
-            {
-                //2.附加接口实现
-                for (final Class<?> impl_type : this.implsMap.keySet()) {
-                    InputStream inStream = this.engine.findClassInputStream(impl_type);//获取输入流
-                    ClassReader reader = new ClassReader(inStream);//创建ClassReader
-                    final BuilderClassAdapter ca = this;
+        }
+        //PropertyArrayName
+        //3.输出委托方法。
+        if (this.classBuilder.isAddDelegate() == true) {
+            //
+            super.visitField(ACC_PRIVATE, DelegateArrayName, DelegateArrayType, null, null);
+            super.visitField(ACC_PRIVATE, DelegateMethodArrayName, DelegateMethodArrayType, null, null);
+            //
+            Class<?>[] delegateType = this.classBuilder.getDelegateType();
+            for (int i = 0; i < delegateType.length; i++) {
+                final Class<?> type = delegateType[i];
+                final int classIndex = i;
+                try {
+                    ClassReader reader = new ClassReader(EngineToos.getClassInputStream(type));//创建ClassReader
+                    final BuilderClassAdapter adapter = this;
                     //扫描附加接口方法
                     reader.accept(new ClassAdapter(new ClassWriter(ClassWriter.COMPUTE_MAXS)) {
+                        private int methodIndex = 0;
                         @Override
                         public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-                            if (ca.methodList.contains(name + desc) == true)
-                                //如果本地方法集合中存在该方法则忽略输出。
-                                return null;
-                            ca.methodList.add(name + desc);
-                            MethodVisitor mv = ca.cv.visitMethod(ACC_PUBLIC, name, desc, signature, exceptions);
-                            BuilderClassAdapter.visitInterfaceMethod(ca.engine, mv, impl_type, name, desc);//输出代理方法调用
+                            if (adapter.localMethodList.contains(name + desc) == true)
+                                return null;//如果本地方法集合中存在该方法则忽略输出。
+                            String fullDesc = name + desc;
+                            MethodVisitor mv = adapter.cv.visitMethod(ACC_PUBLIC, name, desc, signature, exceptions);
+                            adapter.visitInterfaceMethod(classIndex, methodIndex, adapter, mv, type, name, desc);//输出代理方法调用
+                            adapter.localMethodList.add(fullDesc);//加入以处理方法表
+                            adapter.renderMethodList.add(fullDesc);//加入需要ioc其Method类型的方法表
+                            methodIndex++;
                             return mv;
                         }
                     }, ClassReader.SKIP_DEBUG);
+                    //try end
+                } catch (Exception e) {
+                    throw new InvokeException("在扫描输出委托[" + type.getName() + "]时候发生异常。");
                 }
             }
-            //3.重写基类中的方法
-            {
-                for (java.lang.reflect.Method m : this.superClassType.getMethods()) {
-                    String returnStr = EngineToos.toAsmType(m.getReturnType());
-                    //
-                    String desc = "(" + EngineToos.toAsmType(m.getParameterTypes()) + ")" + returnStr;
-                    String fullDesc = m.getName() + desc;
-                    //检测是否是已经存在的方法
-                    if (this.methodList.contains(fullDesc) == true)
-                        continue;
-                    String[] exceptions = EngineToos.splitAsmType(EngineToos.toAsmType(m.getExceptionTypes()));
-                    //处理类型
-                    for (int i = 0; i < exceptions.length; i++)
-                        exceptions[i] = exceptions[i].substring(1, exceptions[i].length() - 1);
-                    exceptions = (exceptions.length == 0) ? null : exceptions;
-                    //
-                    int access = m.getModifiers();
-                    if ((access | Modifier.FINAL) == access)
-                        continue;//忽略常方法
-                    else if ((access | Modifier.PUBLIC) == access)
-                        this.visitMethod(ACC_PUBLIC, m.getName(), desc, null, exceptions);
-                    else if ((access | Modifier.PROTECTED) == access)
-                        this.visitMethod(ACC_PROTECTED, m.getName(), desc, null, exceptions);
-                }
-            }
-            //4.继续
-            super.visitEnd();
-        } catch (Exception e) {
-            throw new InvokeException("执行附加接口方法期间发生异常：" + e.getMessage(), e);
+            //
+        }
+        super.visitEnd();
+    }
+    //
+    //输出简单属性
+    private void putSimpleProperty(String propertyName, Class<?> propertyType, boolean isReadOnly) {
+        String asmFieldType = EngineToos.toAsmType(propertyType);
+        super.visitField(ACC_PRIVATE, propertyName, asmFieldType, null, null);
+        this.putGetMethod(propertyName, asmFieldType);//get
+        if (isReadOnly == false)
+            this.putSetMethod(propertyName, asmFieldType);//set
+    }
+    //
+    //输出委托属性
+    private void putDelegateProperty(int index, String propertyName, PropertyDelegate<?> fieldDelegate, boolean isReadOnly) {
+        String asmDelegateType2 = EngineToos.replaceClassName(PropertyDelegate.class.getName());
+        //
+        Class<?> javaFieldType = fieldDelegate.getType();
+        String asmFieldType = EngineToos.toAsmType(javaFieldType);
+        String asmFieldType2 = EngineToos.replaceClassName(javaFieldType.getName());
+        {
+            //get
+            MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "get" + EngineToos.toUpperCase(propertyName), "()" + asmFieldType, null, null);
+            mv.visitCode();
+            mv.visitVarInsn(ALOAD, 0);//装载this
+            mv.visitFieldInsn(GETFIELD, this.asmClassName, PropertyArrayName, PropertyDelegateArrayType);
+            mv.visitIntInsn(BIPUSH, index);
+            mv.visitInsn(AALOAD);
+            mv.visitVarInsn(ALOAD, 0);//装载this
+            mv.visitMethodInsn(INVOKEINTERFACE, asmDelegateType2, "get", "(Ljava/lang/Object;)Ljava/lang/Object;");
+            mv.visitTypeInsn(CHECKCAST, asmFieldType2);
+            mv.visitInsn(EngineToos.getReturn(asmFieldType));
+            mv.visitMaxs(2, 1);
+            mv.visitEnd();
+        }
+        if (isReadOnly == false) {
+            //set
+            MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "set" + EngineToos.toUpperCase(propertyName), "(" + asmFieldType + ")V", null, null);
+            mv.visitCode();
+            mv.visitVarInsn(ALOAD, 0);//装载this
+            mv.visitFieldInsn(GETFIELD, this.asmClassName, PropertyArrayName, PropertyDelegateArrayType);
+            mv.visitIntInsn(BIPUSH, index);
+            mv.visitInsn(AALOAD);
+            mv.visitVarInsn(ALOAD, 0);//装载this
+            mv.visitVarInsn(ALOAD, 1);//装载param1
+            mv.visitTypeInsn(CHECKCAST, asmFieldType2);
+            mv.visitMethodInsn(INVOKEINTERFACE, asmDelegateType2, "set", "(Ljava/lang/Object;Ljava/lang/Object;)V");
+            mv.visitInsn(RETURN);
+            mv.visitMaxs(1, 1);
+            mv.visitEnd();
         }
     }
-    /** 实现接口附加 */
-    public static void visitInterfaceMethod(final ClassEngine engine, final MethodVisitor mv, Class<?> inplType, String name, String desc) {//, final Method method) {
-        String replaceClassName = EngineToos.replaceClassName(engine.getClassName());
+    //
+    //实现接口附加
+    private void visitInterfaceMethod(int classIndex, int methodIndex, BuilderClassAdapter adapter, MethodVisitor mv, Class<?> type, String name, String desc) {
         Pattern p = Pattern.compile("\\((.*)\\)(.*)");
         Matcher m = p.matcher(desc);
         m.find();
         String[] asmParams = EngineToos.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
-        String asmReturns = EngineToos.toClassType(m.group(2));
+        String asmReturns = EngineToos.asmTypeToType(m.group(2));
         int paramCount = asmParams.length;
         int localVarSize = paramCount;//方法变量表大小
         int maxStackSize = 0;//方法最大堆栈大小
         //-----------------------------------------------------------------------------------------------------------------------
         mv.visitCode();
-        Label try_begin = new Label();
-        Label try_end = new Label();
-        Label try_catch = new Label();
-        mv.visitTryCatchBlock(try_begin, try_end, try_catch, "java/lang/Throwable");
-        mv.visitLabel(try_begin);
-        //-----------------------------------------------------------------------------------------------------------------------
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, replaceClassName, ClassEngine.ObjectDelegateMapName, "Ljava/util/Hashtable;");
-        mv.visitLdcInsn(inplType.getName());
-        mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "get", "(Ljava/lang/Object;)Ljava/lang/Object;");
-        mv.visitTypeInsn(CHECKCAST, "org/more/core/classcode/Method");
-        mv.visitVarInsn(ASTORE, paramCount + 1);//0=this 1=param1
-        localVarSize++;
-        maxStackSize = (maxStackSize < 2) ? 2 : maxStackSize;
-        //Method localMethod=this.$delegateMap.get("xxxxxxx");-------------------------------------------------------------------
+        mv.visitFieldInsn(GETFIELD, this.asmClassName, DelegateArrayName, DelegateArrayType);
+        mv.visitIntInsn(BIPUSH, classIndex);
+        mv.visitInsn(AALOAD);
+        //参数1
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKEVIRTUAL, replaceClassName, "getClass", "()Ljava/lang/Class;");
-        //this.getClass();
-        mv.visitLdcInsn(name);
-        mv.visitIntInsn(BIPUSH, paramCount);
-        mv.visitTypeInsn(ANEWARRAY, "java/lang/Class");
-        for (int i = 0; i < paramCount; i++) {
-            mv.visitInsn(DUP);
-            mv.visitIntInsn(BIPUSH, i);
-            if (asmParams[i].equals("B") == true)
-                mv.visitFieldInsn(GETSTATIC, "java/lang/Byte", "TYPE", "Ljava/lang/Class;");
-            else if (asmParams[i].equals("S") == true)
-                mv.visitFieldInsn(GETSTATIC, "java/lang/Short", "TYPE", "Ljava/lang/Class;");
-            else if (asmParams[i].equals("I") == true)
-                mv.visitFieldInsn(GETSTATIC, "java/lang/Integer", "TYPE", "Ljava/lang/Class;");
-            else if (asmParams[i].equals("J") == true)
-                mv.visitFieldInsn(GETSTATIC, "java/lang/Long", "TYPE", "Ljava/lang/Class;");
-            else if (asmParams[i].equals("F") == true)
-                mv.visitFieldInsn(GETSTATIC, "java/lang/Float", "TYPE", "Ljava/lang/Class;");
-            else if (asmParams[i].equals("D") == true)
-                mv.visitFieldInsn(GETSTATIC, "java/lang/Double", "TYPE", "Ljava/lang/Class;");
-            else if (asmParams[i].equals("C") == true)
-                mv.visitFieldInsn(GETSTATIC, "java/lang/Character", "TYPE", "Ljava/lang/Class;");
-            else if (asmParams[i].equals("Z") == true)
-                mv.visitFieldInsn(GETSTATIC, "java/lang/Boolean", "TYPE", "Ljava/lang/Class;");
-            else
-                mv.visitLdcInsn(Type.getObjectType(EngineToos.toClassType(asmParams[i])));
-            mv.visitInsn(AASTORE);
-            maxStackSize = (maxStackSize < 5 + i) ? 5 + i : maxStackSize;
-        }
-        //new Class[]{....,....}
-        mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Class", "getMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;");
-        mv.visitVarInsn(ASTORE, paramCount + 2);
-        localVarSize++;
-        // Method localMethod1 = getClass().getMethod("xxx", new Class[]{Integer.Type,Data.class......});------------------------
-        mv.visitVarInsn(ALOAD, paramCount + 1);
-        mv.visitFieldInsn(GETFIELD, "org/more/core/classcode/Method", "delegate", "Lorg/more/core/classcode/MethodDelegate;");
-        mv.visitVarInsn(ALOAD, paramCount + 2);//参数1
-        mv.visitVarInsn(ALOAD, 0); //参数3
-        //参数4
+        mv.visitFieldInsn(GETFIELD, this.asmClassName, DelegateMethodArrayName, DelegateMethodArrayType);
+        mv.visitIntInsn(BIPUSH, methodIndex);
+        mv.visitInsn(AALOAD);
+        //参数2
+        mv.visitVarInsn(ALOAD, 0);
+        //参数3
         mv.visitIntInsn(BIPUSH, paramCount);
         mv.visitTypeInsn(ANEWARRAY, "java/lang/Object");
         for (int i = 0; i < paramCount; i++) {
-            String asmType = asmParams[i];
             mv.visitInsn(DUP);
             mv.visitIntInsn(BIPUSH, i);
+            String asmType = asmParams[i];
             if (asmParams[i].equals("B")) {
                 mv.visitVarInsn(EngineToos.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;");
@@ -330,15 +405,12 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
             } else
                 mv.visitVarInsn(ALOAD, i + 1);
             mv.visitInsn(AASTORE);
-            maxStackSize = (maxStackSize < 8 + i) ? 8 + i : maxStackSize;
+            maxStackSize = (maxStackSize < 5 + i) ? 5 + i : maxStackSize;
         }
-        //localMethod1, localMethod.originalMethod, this, new Object[]{xxx,xxx}
-        String desc2 = "Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;";
-        mv.visitMethodInsn(INVOKEINTERFACE, "org/more/core/classcode/MethodDelegate", "invoke", "(" + desc2 + ")Ljava/lang/Object;");
-        mv.visitVarInsn(ASTORE, paramCount + 3);
-        localVarSize++;
-        //obj = localMethod.delegate.invoke(localMethod1, this, new Object[] { methodCode });--------
-        mv.visitVarInsn(ALOAD, paramCount + 3);
+        //调用
+        String delegateType2 = EngineToos.replaceClassName(MethodDelegate.class.getName());
+        mv.visitMethodInsn(INVOKEINTERFACE, delegateType2, "invoke", "(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+        //return
         if (asmReturns.equals("B") == true) {
             mv.visitTypeInsn(CHECKCAST, "java/lang/Byte");
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Byte", "byteValue", "()B");
@@ -372,22 +444,38 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Boolean", "booleanValue", "()Z");
             mv.visitInsn(EngineToos.getReturn("Z"));
         } else if (asmReturns.equals("V") == true) {
+            mv.visitInsn(POP);
             mv.visitInsn(RETURN);
         } else {
             mv.visitTypeInsn(CHECKCAST, asmReturns);
             mv.visitInsn(ARETURN);
         }
-        mv.visitLabel(try_end);
-        //return obj-------------------------------------------------------------------------------------------------------------
-        mv.visitLabel(try_catch);
-        mv.visitVarInsn(ASTORE, 4);
-        mv.visitTypeInsn(NEW, "java/lang/RuntimeException");
-        mv.visitInsn(DUP);
-        mv.visitVarInsn(ALOAD, 4);
-        mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", "<init>", "(Ljava/lang/Throwable;)V");
-        mv.visitInsn(ATHROW);
         /* 输出堆栈列表 */
         mv.visitMaxs(maxStackSize, localVarSize + 1);
+        mv.visitEnd();
+    }
+    //
+    //公开某个字段的set方法
+    private void putSetMethod(String propertyName, String asmFieldType) {
+        MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "set" + EngineToos.toUpperCase(propertyName), "(" + asmFieldType + ")V", null, null);
+        mv.visitCode();
+        mv.visitVarInsn(ALOAD, 0);//装载this
+        mv.visitVarInsn(ALOAD, 1);//装载参数
+        mv.visitFieldInsn(PUTFIELD, this.asmClassName, propertyName, asmFieldType);
+        mv.visitInsn(RETURN);
+        mv.visitMaxs(1, 1);
+        mv.visitEnd();
+    }
+    //
+    //公开某个字段的get方法
+    private void putGetMethod(String propertyName, String asmFieldType) {
+        //get
+        MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "get" + EngineToos.toUpperCase(propertyName), "()" + asmFieldType, null, null);
+        mv.visitCode();
+        mv.visitVarInsn(ALOAD, 0);//装载this
+        mv.visitFieldInsn(GETFIELD, this.asmClassName, propertyName, asmFieldType);
+        mv.visitInsn(EngineToos.getReturn(asmFieldType));
+        mv.visitMaxs(1, 1);
         mv.visitEnd();
     }
 }

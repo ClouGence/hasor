@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.classcode;
+package org.more.core.classcode.objects;
 import java.lang.reflect.Method;
 import org.more.InvokeException;
+import org.more.core.classcode.MethodDelegate;
 /**
  * 代理方法的空实现。
  * @version 2009-11-8
  * @author 赵永春 (zyc@byshell.org)
  */
 public class DefaultMethodDelegate implements MethodDelegate {
-    @Override
     public Object invoke(Method callMethod, Object target, Object[] params) throws InvokeException {
         Class<?> returnType = callMethod.getReturnType();
         if (returnType == int.class)
