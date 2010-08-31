@@ -55,22 +55,22 @@ public class JsonUtil {
     /**将json数据转换为指定的类型结构。*/
     public Object toObject(String str, Class<?> superType) throws Throwable {
         Object obj = superType.newInstance();
-        Map data = this.toMap(str);
+        Map<?, ?> data = this.toMap(str);
         return CopyBeanUtil.newInstance().copy(data, obj, "value");
     }
     /**将json数据转换为map形式，如果json数据仅仅表示一个对象而非json Object类型则这个json对象将被封装到返回的map中它的key是空字符串*/
-    public Map toMap(String str) {
+    public Map<String, ?> toMap(String str) {
         String readStr = str.trim();
         if (readStr == null || readStr.equals(""))
             return null;
         /*----------------------------*/
         Object obj = this.passJsonString(readStr);
         if (obj instanceof Map == false) {
-            HashMap map = new HashMap();
+            HashMap<String, Object> map = new HashMap<String, Object>();
             map.put("", obj);
             obj = map;
         }
-        return (Map) obj;
+        return (HashMap<String, Object>) obj;
     }
     /**将对象转换为json格式数据，注意如果对象中出现递归引用则会引发堆栈溢出异常。*/
     public String toString(Object object) {

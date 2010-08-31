@@ -20,7 +20,6 @@ import java.util.Collection;
  * @version 2010-1-7
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@SuppressWarnings("unchecked")
 public abstract class JsonType {
     private JsonUtil currentContext;
     protected JsonUtil getCurrentContext() {

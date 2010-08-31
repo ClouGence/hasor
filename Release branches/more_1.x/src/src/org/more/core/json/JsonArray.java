@@ -23,7 +23,6 @@ import java.util.List;
  * @version 2010-1-7
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@SuppressWarnings("unchecked")
 public class JsonArray extends JsonMixed {
     protected JsonArray(JsonUtil currentContext) {
         super(currentContext);
@@ -59,7 +58,7 @@ public class JsonArray extends JsonMixed {
         StringBuffer json = new StringBuffer("[");
         if (bean instanceof Collection == true) {
             //Collection¿‡–Õ
-            Collection coll = (Collection) bean;
+            Collection<?> coll = (Collection<?>) bean;
             for (Object obj : coll)
                 this.appendObject(json, obj);
         } else if (bean.getClass().isArray() == true) {

@@ -26,7 +26,6 @@ import org.more.util.attribute.IAttribute;
  * @version 2010-1-7
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@SuppressWarnings("unchecked")
 public class JsonObject extends JsonMixed {
     protected JsonObject(JsonUtil currentContext) {
         super(currentContext);
@@ -85,7 +84,7 @@ public class JsonObject extends JsonMixed {
             for (int i = 0; i < ns.length; i++)
                 this.appendObject(json, ns[i], att.getAttribute(ns[i]));
         } else if (bean instanceof Map) {
-            Map map = (Map) bean;
+            Map<?, ?> map = (Map<?, ?>) bean;
             Set<?> ns = map.keySet();
             for (Object key : ns)
                 this.appendObject(json, key, map.get(key));

@@ -90,7 +90,6 @@ public abstract class Task extends AttBase implements Runnable, Serializable {
     public TaskState getState() {
         return state;
     }
-    @Override
     public void run() {
         //通知开始执行
         this.beginRun();

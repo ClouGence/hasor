@@ -24,26 +24,20 @@ public class NullLog implements ILog {
     public NullLog(int nowMode) {
         this.mode = nowMode;
     }
-    @Override
     public void addWrite(ILogWrite logwrite, String level) {}
-    @Override
     public void debug(String msg) {
         if (mode == 1)
             System.out.println(msg);
     }
-    @Override
     public void error(String msg) {
         if (mode == 1)
             System.err.println("error:" + msg);
     }
-    @Override
     public void info(String msg) {
         if (mode == 1)
             System.out.println(msg);
     }
-    @Override
     public void setFormater(ILogFormater formater) {}
-    @Override
     public void warning(String msg) {
         if (mode == 1)
             System.err.println("warning:" + msg);
