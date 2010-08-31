@@ -93,12 +93,16 @@ public abstract class AbstractSubmitContextImpl extends AttBase implements Submi
     //------------------------------------------------------------------------------------------
     /** 指定调用Action返回之后的脚本处理请求。 */
     private Object callBack(ActionStack stack, Object results) throws Exception {
+        String scriptEngine = stack.getResultsScriptEngine();
+        String resultsScript = stack.getResultsScript();
         //一、如果没有设置回调脚本则直接返回结果
-        if (stack.getResultsScript() == null)
+        if (scriptEngine == null || resultsScript == null)
             return results;
         //二、创建脚本执行环境
         ScriptEngineManager manager = new ScriptEngineManager();
-        ScriptEngine engine = manager.getEngineByName("JavaScript");
+        ScriptEngine engine = manager.getEngineByName(scriptEngine);
+        if (engine == null)
+            throw new ScriptException("无法创建脚本引擎[" + scriptEngine + "]");
         //三、获取脚本文件输入流
         String scriptIn = "/META-INF/resource/submit/submit_scripts/" + stack.getResultsScript() + ".js";
         InputStream in = SubmitContextImpl.class.getResourceAsStream(scriptIn);

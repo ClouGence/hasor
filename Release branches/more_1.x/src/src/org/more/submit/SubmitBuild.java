@@ -67,11 +67,14 @@ public class SubmitBuild extends AttBase {
      * @param context 生成SubmitContext对象时需要用到的生成器。
      */
     public WebSubmitContext buildWeb(ActionContextBuild build, ServletContext context) throws Exception {
+        File baseDir = null;
         if (this.contains("baseDir") == false)
-            build.setBaseDir(new File(context.getRealPath("/WEB-INF/classes")));
+            baseDir = new File(context.getRealPath("/WEB-INF/classes"));
         else
-            build.setBaseDir(new File((String) this.getAttribute("baseDir")));
+            baseDir = new File((String) this.getAttribute("baseDir"));
         //
+        build.setBaseDir(baseDir);
+        System.out.println("buildWeb More WebContext BaseDir=" + baseDir.getAbsolutePath());
         build.init(new AttributeConfigBridge(this, context));
         ActionContext actionContext = this.decorator(build.getActionContext());
         WebSubmitContextImpl webContext = new WebSubmitContextImpl(actionContext, context);

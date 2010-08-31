@@ -36,6 +36,7 @@ public class ActionStack implements IAttribute, ScopeEnum {
     private IAttribute              currentScope;                                           //当前堆栈对象的数据存储器。
     private Map<String, IAttribute> scopeMap            = new HashMap<String, IAttribute>();
     //返回脚本处理器
+    private String                  resultsScriptEngine = "JavaScript";                     //执行脚本引擎名。
     private String                  resultsScript       = null;                             //返回action结果之前执行的JS脚本。
     private Object[]                resultsScriptParams = null;                             //返回action结果之前执行的JS脚本所传递的参数。
     //作用域操作相关字段
@@ -116,6 +117,14 @@ public class ActionStack implements IAttribute, ScopeEnum {
         return obj;
     };
     /*--------------------------------------------------------------------*/
+    /**获取当执行回调脚本时使用的脚本引擎名。*/
+    public String getResultsScriptEngine() {
+        return resultsScriptEngine;
+    }
+    /**设置当执行回调脚本时使用的脚本引擎名。*/
+    public void setResultsScriptEngine(String resultsScriptEngine) {
+        this.resultsScriptEngine = resultsScriptEngine;
+    }
     /** 返回当本次Action调用结束之后进行回调的脚本处理。 */
     public String getResultsScript() {
         return resultsScript;

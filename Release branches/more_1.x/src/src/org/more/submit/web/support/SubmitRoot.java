@@ -63,10 +63,11 @@ public class SubmitRoot extends HttpServlet implements Filter {
             this.servletContext.setAttribute("org.more.web.submit.ROOT", this.submitContext);
             this.servletContext.setAttribute("org.more.web.submit.ROOT.Action", this.submitContext.getProtocol());
         } catch (Throwable e) {
+            e.printStackTrace();
             if (e instanceof ServletException)
                 throw (ServletException) e;
             else
-                throw new ServletException(e);
+                throw new ServletException(e.getLocalizedMessage(), e);
         }
         //-----------------------------------------------
         if (this.listener != null)
