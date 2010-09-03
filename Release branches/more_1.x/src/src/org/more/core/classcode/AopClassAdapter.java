@@ -25,39 +25,42 @@ import org.more.core.asm.Label;
 import org.more.core.asm.MethodVisitor;
 import org.more.core.asm.Opcodes;
 /**
- *
- * @version 2010-8-26
+ *该类的作用是在生成的类中加入aop的支持。
+ * @version 2010-9-2
  * @author 赵永春 (zyc@byshell.org)
  */
 class AopClassAdapter extends ClassAdapter implements Opcodes {
     private ClassBuilder       classBuilder        = null;
     private String             asmClassName        = null;
     //
-    public final static String AopMethodPrefix     = "$method_";             //生成的Aop方法前缀
-    public final static String AopMethodArrayName  = "$aopMethods";          //生成的字段名
-    public final static String AopFilterChainName  = "$aopfilterChain";      //生成的字段名
+    /**生成的Aop方法前缀*/
+    public final static String AopMethodPrefix     = "$method_";
+    /**生成的字段名*/
+    public final static String AopMethodArrayName  = "$aopMethods";
+    /**生成的字段名*/
+    public final static String AopFilterChainName  = "$aopfilterChain";
+    /**具有aop特性的方法特定描述*/
     private ArrayList<String>  renderAopMethodList = new ArrayList<String>();
-    /***/
+    //==================================================================================Constructor
     public AopClassAdapter(ClassVisitor visitor, ClassBuilder classBuilder) {
         super(visitor);
         this.classBuilder = classBuilder;
     }
-    /***/
+    /**获取具有aop特性的方法集合。*/
     public ArrayList<String> getRenderAopMethodList() {
         return this.renderAopMethodList;
     }
-    /***/
+    /**asm.visit，用于保存类名。*/
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         this.asmClassName = name;
         super.visit(version, access, name, signature, superName, interfaces);
     }
-    /***/
+    /**asm.visitMethod，遇到一个方法。*/
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         ClassEngine ce = this.classBuilder.getClassEngine();
-        String fullDesc = name + desc;
-        AopStrategy aopStrategy = ce.getAopStrategy();
+        AopStrategy aopStrategy = ce.getAopStrategy();//获取Aop策略对象。
         //
-        //1.准备输出方法数据
+        //1.准备输出方法数据，该方法的主要目的是从desc中拆分出参数表和返回值。
         Pattern p = Pattern.compile("\\((.*)\\)(.*)");
         Matcher m = p.matcher(desc);
         m.find();
@@ -65,16 +68,16 @@ class AopClassAdapter extends ClassAdapter implements Opcodes {
         String asmReturns = m.group(2);
         asmReturns = (asmReturns.charAt(0) == 'L') ? asmReturns.substring(1, asmReturns.length() - 1) : asmReturns;
         //
-        //2.忽略构造方法
+        //2.忽略构造方法，aop包装不会考虑构造方法。
         if (name.equals("<init>") == true)
             return super.visitMethod(access, name, desc, signature, exceptions);
         //
-        //3.执行方法忽略策略
+        //3.执行方法忽略策略，根据aop策略对象来决定忽略的方法列表。
         try {
             Class<?> superClass = ce.getSuperClass();
             Class<?>[] paramTypes = EngineToos.toJavaType(asmParams, ce);
             Method method = EngineToos.findMethod(superClass, name, paramTypes);
-            if (aopStrategy.isIgnore(fullDesc, superClass, method) == true)
+            if (aopStrategy.isIgnore(superClass, method) == true)
                 return super.visitMethod(access, name, desc, signature, exceptions);//忽略方法
         } catch (Exception e) {
             throw new InvokeException(e);
@@ -83,23 +86,25 @@ class AopClassAdapter extends ClassAdapter implements Opcodes {
         //4.输出Aop代理方法。
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
         mv.visitCode();
-        String aopMethod = AopMethodPrefix + name + desc;
+        String aopMethod = AopMethodPrefix + name + desc;//合成新方法的完整描述
         this.renderAopMethodList.add(aopMethod);
-        int index = this.renderAopMethodList.indexOf(aopMethod);
-        this.visitAOPMethod(index, mv, name, desc);
+        int index = this.renderAopMethodList.indexOf(aopMethod);//确定新方法的输出索引用于输出新方法。
+        this.visitAOPMethod(index, mv, name, desc);//输出新方法。
         mv.visitEnd();
         //
         //5.更改名称输出老方法
         String newMethodName = AopMethodPrefix + name;
         return super.visitMethod(access, newMethodName, desc, signature, exceptions);
     }
-    /***/
+    /**asm.visitEnd，输出aop需要的特定属性。*/
     public void visitEnd() {
+        //输出FilterChain的数组，是进入Aop的过滤器链。
         this.putSimpleProperty(AopFilterChainName, AopFilterChain_Start[].class);
+        //输出Method的数组，Method保存的是Aop方法。
         this.putSimpleProperty(AopMethodArrayName, Method[].class);
         super.visitEnd();
     }
-    /**输出简单属性*/
+    /**输出简单属性，visitEnd方法调用，用于输出某一个属性的set方法和其字段。*/
     private void putSimpleProperty(String propertyName, Class<?> propertyType) {
         String asmFieldType = EngineToos.toAsmType(propertyType);
         super.visitField(ACC_PRIVATE, propertyName, asmFieldType, null, null);
@@ -112,7 +117,7 @@ class AopClassAdapter extends ClassAdapter implements Opcodes {
         mv.visitMaxs(1, 1);
         mv.visitEnd();
     }
-    /**实现AOP方法 ，下面是生成的方法样例。*/
+    /**实现AOP方法的输出，其中指令详见ASM3.2的{@link Opcodes}接口定义。 */
     public void visitAOPMethod(final int index, final MethodVisitor mv, final String originalMethodName, final String desc) {//, final Method method) {
         //
         //1.准备输出方法数据

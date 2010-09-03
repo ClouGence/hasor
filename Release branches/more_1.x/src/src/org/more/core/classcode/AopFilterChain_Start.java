@@ -16,6 +16,7 @@
 package org.more.core.classcode;
 import java.lang.reflect.Method;
 import org.more.InvokeException;
+import org.more.LostException;
 /**
 * 过滤器链的第一个，负责在生成的aop类中调用。以产生aop链调用。
  * @version 2009-10-30
@@ -23,11 +24,12 @@ import org.more.InvokeException;
  */
 public class AopFilterChain_Start {
     private AopFilterChain         nextFilterChain      = null; //过滤器链的下一个过滤器。
-    private AopBeforeListener[]    aopBeforeListener    = null;
-    private AopReturningListener[] aopReturningListener = null;
-    private AopThrowingListener[]  aopThrowingListener  = null;
+    //
+    private AopBeforeListener[]    aopBeforeListener    = null; //before切面事件接受者。
+    private AopReturningListener[] aopReturningListener = null; //returning切面事件接受者。
+    private AopThrowingListener[]  aopThrowingListener  = null; //throwing切面事件接受者。
     /***/
-    public AopFilterChain_Start(AopFilterChain nextFilterChain, AopBeforeListener[] aopBeforeListener, AopReturningListener[] aopReturningListener, AopThrowingListener[] aopThrowingListener) {
+    AopFilterChain_Start(AopFilterChain nextFilterChain, AopBeforeListener[] aopBeforeListener, AopReturningListener[] aopReturningListener, AopThrowingListener[] aopThrowingListener) {
         this.nextFilterChain = nextFilterChain;
         this.aopBeforeListener = aopBeforeListener;
         this.aopReturningListener = aopReturningListener;
@@ -35,21 +37,28 @@ public class AopFilterChain_Start {
     }
     public Object doInvokeFilter(Object target, Method method, Object[] args) {
         try {
+            //1.下一环节检测，除非发生内部错误否则不会出现环节丢失。
             if (this.nextFilterChain == null)
-                throw new InvokeException("丢失Aop链第一环节。");
-            //
+                throw new LostException("丢失Aop链第一环节。");
+            //2.通知before切面。
             for (int i = 0; i < this.aopBeforeListener.length; i++)
                 this.aopBeforeListener[i].beforeInvoke(target, method, args);
+            //3.执行调用。
             Object result = this.nextFilterChain.doInvokeFilter(target, method, args);
+            //4.通知returning切面。
             for (int i = 0; i < this.aopReturningListener.length; i++)
                 this.aopReturningListener[i].returningInvoke(target, method, args, result);
+            //5.返回结果。
             return result;
         } catch (Throwable e) {
+            //6.通知throwing切面。
             for (int i = 0; i < this.aopThrowingListener.length; i++)
                 this.aopThrowingListener[i].throwsException(target, method, args, e);
+            //7.如果抛出的异常属于RuntimeException那么直接转类型抛出。
             if (e instanceof RuntimeException == true)
                 throw (RuntimeException) e;
-            throw new InvokeException(e);
+            else
+                throw new InvokeException(e);
         }
     }
 }

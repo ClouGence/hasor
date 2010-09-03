@@ -16,10 +16,19 @@
 package org.more.core.classcode;
 import java.lang.reflect.Method;
 /**
- *
- * @version 2010-8-12
+ * Aop的throwing切面，当收到throwing切面的事件通知时会自动调用该接口。该接口方法会在生成aop链的第一个环节发出调用。下面这张图中Throwing就是这个接口的工作点。
+ * 但是由于throwing是当filter_start调用完成之后在进行的。因此throwing的消息是在{@link AopInvokeFilter}过滤器链调用之后。其结果也受到过滤器链的影响。
+ * <br/><img width="400" src="doc-files/classcode_struct.png"/>
+ * @version 2010-9-2
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AopThrowingListener {
+public interface AopThrowingListener extends AopListener {
+    /**
+     * 用于接收returning切面的事件的方法。
+     * @param target 被调用的对象。
+     * @param method 被调用的方法。
+     * @param args 调用这个方法传递的参数。
+     * @param e 接受发生的异常
+     */
     public void throwsException(Object target, Method method, Object[] args, Throwable e);
 }

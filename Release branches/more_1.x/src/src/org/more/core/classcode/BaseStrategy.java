@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 package org.more.core.classcode;
-import java.lang.reflect.Method;
-import org.more.LostException;
 /**
- * 过滤器链的最终一层，该类负责在aop调用链的最后环节执行方法调用。如果在执行最终调用时method参数无法定位其方法那么将会导致NoSuchMethodException异常
- * @version 2010-9-2
+ * 策略基接口，该接口中定义了初始化策略和重置策略两个方法。每当{@link ClassEngine#builderClass()}方法被调用时
+ * 都会先初始化所有策略，按后在生成类之后重置它。
+ * @version 2010-9-3
  * @author 赵永春 (zyc@byshell.org)
  */
-class AopFilterChain_End implements AopFilterChain {
-    public Object doInvokeFilter(Object target, Method method, Object[] args) throws Throwable {
-        if (method == null)
-            throw new LostException("在Aop链最终环节丢失方法。");
-        return method.invoke(target, args);
-    }
+public interface BaseStrategy {
+    /**初始化策略。*/
+    public void initStrategy(ClassEngine classEngine);
+    /**重置策略。*/
+    public void reset();
 }

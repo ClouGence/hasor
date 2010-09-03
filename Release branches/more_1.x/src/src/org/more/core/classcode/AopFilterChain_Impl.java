@@ -15,17 +15,17 @@
  */
 package org.more.core.classcode;
 import java.lang.reflect.Method;
-import org.more.InvokeException;
+import org.more.LostException;
 /**
-* 过滤器链的中间环节
- * @version 2009-10-30
+ * 过滤器链的中间环节，该类的目的是传递过滤器的调用。但是如果在传递调用期间发生无法找到下一个传递点则会引发aop链断开的异常。
+ * @version 2010-9-2
  * @author 赵永春 (zyc@byshell.org)
  */
 class AopFilterChain_Impl implements AopFilterChain {
     private AopInvokeFilter thisFilter      = null; //表示过滤器链的当前过滤器。
     private AopFilterChain  nextFilterChain = null; //过滤器链的下一个过滤器。
     /** */
-    public AopFilterChain_Impl(AopInvokeFilter thisFilter, AopFilterChain nextFilterChain) {
+    AopFilterChain_Impl(AopInvokeFilter thisFilter, AopFilterChain nextFilterChain) {
         this.thisFilter = thisFilter;
         this.nextFilterChain = nextFilterChain;
     }
@@ -33,6 +33,6 @@ class AopFilterChain_Impl implements AopFilterChain {
         if (this.nextFilterChain != null)
             return this.thisFilter.doFilter(target, method, args, this.nextFilterChain);
         else
-            throw new InvokeException("调用失败，方法Aop链断开。");
+            throw new LostException("调用失败，方法Aop链丢失。");
     }
 }

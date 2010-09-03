@@ -47,22 +47,23 @@ import org.more.core.asm.Opcodes;
  * @author 赵永春 (zyc@byshell.org)
  */
 class BuilderClassAdapter extends ClassAdapter implements Opcodes {
+    //1.ClassAdapter使用的类对象。
     private ClassBuilder        classBuilder              = null;
     private ClassEngine         classEngine               = null;
     private String              asmClassName              = null;
     private ArrayList<String>   localMethodList           = null;
-    //
+    //2.用于保存渲染字节码的结果
     private ArrayList<String>   renderMethodList          = null;
     private ArrayList<String>   renderDelegateList        = null;
     private ArrayList<String>   renderDelegatePropxyList  = null;
-    //
+    //3.当工作在代理模式下代理字段的名称。
     public final static String  SuperPropxyName           = "$propxyObject";
-    //
+    //4.定义了代理属性，代理方法的字段名称和类型。
     public final static String  DelegateArrayName         = "$delegateArray";
     private final static String DelegateArrayType         = EngineToos.toAsmType(MethodDelegate[].class);
     public final static String  DelegateMethodArrayName   = "$delegateMethodArray";
     private final static String DelegateMethodArrayType   = EngineToos.toAsmType(Method[].class);
-    //
+    //5.定义了代理属性的字段名称。
     public final static String  PropertyArrayName         = "$propertyArray";
     private final static String PropertyDelegateArrayType = EngineToos.toAsmType(PropertyDelegate[].class);
     //

@@ -16,10 +16,17 @@
 package org.more.core.classcode;
 import java.lang.reflect.Method;
 /**
- *
- * @version 2010-8-12
+ * Aop的before切面，当收到before切面的事件通知时会自动调用该接口。该接口方法会在生成aop链的第一个环节发出调用。下面这张图中Before就是这个接口的工作点。
+ * <br/><img width="400" src="doc-files/classcode_struct.png"/>
+ * @version 2010-9-2
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AopBeforeListener {
-    public void beforeInvoke(Object target, Method method, Object[] args);
+public interface AopBeforeListener extends AopListener {
+    /**
+     * 用于接收before切面的事件的方法。
+     * @param target 被调用的对象。
+     * @param method 被调用的方法。
+     * @param args 调用这个方法传递的参数。
+     */
+    public void beforeInvoke(final Object target, final Method method, final Object[] args);
 }
