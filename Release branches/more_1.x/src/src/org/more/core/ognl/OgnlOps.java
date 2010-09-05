@@ -38,7 +38,7 @@ import java.util.Enumeration;
  * @author Luke Blanshard (blanshlu@netscape.net)
  * @author Drew Davidson (drew@ognl.org)
  */
-@SuppressWarnings( { "unchecked", "unused" })
+@SuppressWarnings({ "unchecked", "unused", "rawtypes" })
 public abstract class OgnlOps implements NumericTypes {
     /**
      * Compares two objects for equality, even if it has to convert
@@ -102,11 +102,9 @@ public abstract class OgnlOps implements NumericTypes {
      * Returns true if object1 is equal to object2 in either the
      * sense that they are the same object or, if both are non-null
      * if they are equal in the <CODE>equals()</CODE> sense.
-     *
-     * @param v1 First object to compare
-     * @param v2 Second object to compare
-     *
-     * @return true if v1 == v2
+     * @param object1 First object to compare
+     * @param object2 Second object to compare
+     * @return true if object1 == object2
      */
     public static boolean isEqual(Object object1, Object object2) {
         boolean result = false;

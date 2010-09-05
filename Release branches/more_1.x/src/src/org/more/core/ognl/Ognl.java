@@ -93,7 +93,7 @@ import java.util.Map;
  * @author Drew Davidson (drew@ognl.org)
  * @version 27 June 1999
  */
-@SuppressWarnings( { "unchecked" })
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public abstract class Ognl {
     /**
      * Parses the given OGNL expression and returns a tree representation of the

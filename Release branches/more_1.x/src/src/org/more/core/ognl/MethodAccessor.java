@@ -37,7 +37,6 @@ import java.util.Map;
  * @author Luke Blanshard (blanshlu@netscape.net)
  * @author Drew Davidson (drew@ognl.org)
  */
-@SuppressWarnings("unchecked")
 public interface MethodAccessor {
     /**
      * Calls the static method named with the arguments given on the class given.
@@ -45,7 +44,7 @@ public interface MethodAccessor {
      * @param targetClass the object in which the method exists
      * @param methodName  the name of the method
      * @param args        the arguments to the method
-     * @result            result of calling the method
+     * @return            result of calling the method
      * @exception MethodFailedException if there is an error calling the method
      */
     Object callStaticMethod(Map context, Class targetClass, String methodName, Object[] args) throws MethodFailedException;
@@ -55,7 +54,7 @@ public interface MethodAccessor {
      * @param target      the object in which the method exists
      * @param methodName  the name of the method
      * @param args        the arguments to the method
-     * @result            result of calling the method
+     * @return            result of calling the method
      * @exception MethodFailedException if there is an error calling the method
      */
     Object callMethod(Map context, Object target, String methodName, Object[] args) throws MethodFailedException;

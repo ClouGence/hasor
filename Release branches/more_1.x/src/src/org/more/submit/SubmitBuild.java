@@ -25,11 +25,8 @@ import org.more.util.AttributeConfigBridge;
 import org.more.util.Config;
 import org.more.util.attribute.AttBase;
 /**
- * submit利用build模式创建{@link SubmitContext SubmitContext接口}的最后阶段，
- * CasingDirector类主要负责从{@link CasingBuild CasingBuild}中获取返回值然后创建SubmitContext接口对象。
- * 通过扩展CasingDirector类可以改变创建SubmitContext的方式从而扩展more的支撑外壳。<br/>
- * 可以通过给SubmitBuild添加protocol属性(String类型)来确定协议前缀，默认值是action。
- * @version 2009-12-1
+ * submit利用build模式创建{@link SubmitContext}该类可以build出WebSubmitContext和SubmitContext两种接口。
+ * @version 2010-9-5
  * @author 赵永春 (zyc@byshell.org)
  */
 public class SubmitBuild extends AttBase {

@@ -37,6 +37,7 @@ package org.more.core.asm;
  *
  * @author Eric Bruneton
  */
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class ClassWriter implements ClassVisitor {
     /**
      * Flag to automatically compute the maximum stack size and the maximum
@@ -1105,7 +1106,6 @@ public class ClassWriter implements ClassVisitor {
      * @return the internal name of the common super class of the two given
      *         classes.
      */
-    @SuppressWarnings("unchecked")
     protected String getCommonSuperClass(final String type1, final String type2) {
         Class c, d;
         try {

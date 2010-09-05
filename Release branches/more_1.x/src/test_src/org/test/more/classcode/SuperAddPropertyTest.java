@@ -28,6 +28,7 @@ import org.more.core.classcode.PropertyDelegate;
  * @version 2010-8-25
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class SuperAddPropertyTest {
     @Test
     public void addPropertyBase() throws Exception {

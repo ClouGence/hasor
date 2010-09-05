@@ -43,7 +43,6 @@ public interface SubmitContext extends IAttribute {
     /**
     * 执行调用action的处理过程，该方法提供了一个向action传递参数的支持。
     * @param invokeString 调用action所使用的调用字符串。
-    * @param sessionID action调用时使用的会话id，会话类似一个数据缓存器。
     * @param params 调用action目标所给action传递的参数，该参数在堆栈中保存。
     * @return 返回处理结果。
     * @throws Throwable 如果在执行action期间发生异常。
