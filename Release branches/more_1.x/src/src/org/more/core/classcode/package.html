@@ -32,15 +32,15 @@ classcode提供了下面5个种策略来控制字节码的生成，
 </div>
 <b>五、委托属性：</b><div style=" margin-left: 20px;">
 这是一个高级的属性生成方式传统的属性在get/set方法中只是对某一个属性字段做读写属性。而委托属性的工作原理是通过导出get/set方法到一个接口中来增强对某一个属性的行为。
-生成的委托属性在其类中不会保存一个属性相关的字段，而是换做一个<a href="{@link org.more.core.classcode.PropertyDelegate">PropertyDelegate</a>接口。
+生成的委托属性在其类中不会保存一个属性相关的字段，而是换做一个<a href="{@link org.more.core.classcode.PropertyDelegate}">PropertyDelegate</a>接口。
 该接口上定义了两个主要方法分别对应属性的get/set行为，属性类型由getType方法确定。
 </div>
 <b>六、AOP支持：</b><div style=" margin-left: 20px;">
 在classcode v2.0中新增了三个切面的事件通知接口，这三个切面分别是
-<a href="{@link org.more.core.classcode.AopBeforeListener">before</a>、
-<a href="{@link org.more.core.classcode.AopReturningListener">returning</a>、
-<a href="{@link org.more.core.classcode.AopThrowingListener">throwing</a>。
-这三个切面可以用于Aop通知。classcode在v1.0版本中就开始提供<a href="{@link org.more.core.classcode.AopInvokeFilter">AopInvokeFilter</a>接口
+<a href="{@link org.more.core.classcode.AopBeforeListener}">before</a>、
+<a href="{@link org.more.core.classcode.AopReturningListener}">returning</a>、
+<a href="{@link org.more.core.classcode.AopThrowingListener}">throwing</a>。
+这三个切面可以用于Aop通知。classcode在v1.0版本中就开始提供<a href="{@link org.more.core.classcode.AopInvokeFilter}">AopInvokeFilter</a>接口
 通过这个接口除了可以完成上述三个切面的功能之外还可以影响aop方法的返回结果。由于其原理是Filter方式因此aop链可以无限制的挂载。下图是Aop的示意图：<br/>
 <img width="400" src="doc-files/classcode_struct.png"/>
 </div>

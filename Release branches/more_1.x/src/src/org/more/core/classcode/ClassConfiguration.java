@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * @version 2010-9-3
  * @author 赵永春 (zyc@byshell.org)
  */
-class ClassConfiguration {
+public class ClassConfiguration {
     private ClassBuilder      classBuilder             = null;
     //
     private ArrayList<String> renderMethodList         = null; //所有委托接口的方法数组，是具有顺序的。

@@ -29,7 +29,7 @@ public interface AopInvokeFilter {
      * 当调用受AOP拦截的方法时执行该方法，chain参数对象可以用来继续执行过滤器链。如果直接调用
      * callMethod对象的invoke函数则可以跳过过滤器链直接执行目标方法，并获取返回值。
      * @param target 目标对象。
-     * @param methods 被调用的方法该对象中包含了被调用的代理方法和原始方法。
+     * @param method 被调用的方法该对象中包含了被调用的代理方法和原始方法。
      * @param args 调用AOP拦截方法时的方法参数。
      * @param chain AOP过滤器链对象。
      * @return 返回方法返回值。交付上一个调用过滤器或者直接返回方法回调。

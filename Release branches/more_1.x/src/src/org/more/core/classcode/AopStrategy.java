@@ -44,7 +44,7 @@ public interface AopStrategy extends BaseStrategy {
      * 该方法在配置bean的时候会被调用。通过该方法可以决定方法的最终生效{@link AopReturningListener}集合。
      * @param target 被装备对象。
      * @param method 需要aop切面的方法。
-     * @param beforeListener 即将生效的{@link AopReturningListener}集合，通过该方法可以将改变这个即将生效的对象集。
+     * @param returningListener 即将生效的{@link AopReturningListener}集合，通过该方法可以将改变这个即将生效的对象集。
      * @return 返回最终生效的{@link AopReturningListener}对象集合。
      */
     public AopReturningListener[] filterAopReturningListener(Object target, Method method, AopReturningListener[] returningListener);
@@ -52,7 +52,7 @@ public interface AopStrategy extends BaseStrategy {
      * 该方法在配置bean的时候会被调用。通过该方法可以决定方法的最终生效{@link AopThrowingListener}集合。
      * @param target 被装备对象。
      * @param method 需要aop切面的方法。
-     * @param beforeListener 即将生效的{@link AopThrowingListener}集合，通过该方法可以将改变这个即将生效的对象集。
+     * @param throwingListener 即将生效的{@link AopThrowingListener}集合，通过该方法可以将改变这个即将生效的对象集。
      * @return 返回最终生效的{@link AopThrowingListener}对象集合。
      */
     public AopThrowingListener[] filterAopThrowingListener(Object target, Method method, AopThrowingListener[] throwingListener);
@@ -60,7 +60,7 @@ public interface AopStrategy extends BaseStrategy {
      * 该方法在配置bean的时候会被调用。通过该方法可以决定方法的最终生效{@link AopInvokeFilter}集合。
      * @param target 被装备对象。
      * @param method 需要aop切面的方法。
-     * @param beforeListener 即将生效的{@link AopInvokeFilter}集合，通过该方法可以将改变这个即将生效的对象集。
+     * @param invokeFilter 即将生效的{@link AopInvokeFilter}集合，通过该方法可以将改变这个即将生效的对象集。
      * @return 返回最终生效的{@link AopInvokeFilter}对象集合。
      */
     public AopInvokeFilter[] filterAopInvokeFilter(Object target, Method method, AopInvokeFilter[] invokeFilter);
