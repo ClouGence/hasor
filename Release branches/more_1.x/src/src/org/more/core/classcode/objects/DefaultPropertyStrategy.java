@@ -17,17 +17,20 @@ package org.more.core.classcode.objects;
 import org.more.core.classcode.ClassEngine;
 import org.more.core.classcode.PropertyStrategy;
 /**
- * 该策略在生成字节码期间会调用。
- * @version 2010-8-13
+ * 接口{@link PropertyStrategy}的默认实现，策略实现不会忽略任何属性，并且生成其读写属性。
+ * @version 2010-9-3
  * @author 赵永春 (zyc@byshell.org)
  */
 public class DefaultPropertyStrategy implements PropertyStrategy {
+    public void initStrategy(ClassEngine classEngine) {}
+    public void reset() {}
     public boolean isIgnore(String name, Class<?> type, boolean isDelegate) {
         return false;
     }
     public boolean isReadOnly(String name, Class<?> type, boolean isDelegate) {
         return false;
     }
-    public void initStrategy(ClassEngine classEngine) {}
-    public void reset() {}
+    public boolean isWriteOnly(String name, Class<?> type, boolean isDelegate) {
+        return false;
+    }
 }

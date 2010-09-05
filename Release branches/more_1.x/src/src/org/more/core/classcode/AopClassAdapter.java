@@ -75,7 +75,7 @@ class AopClassAdapter extends ClassAdapter implements Opcodes {
         //3.执行方法忽略策略，根据aop策略对象来决定忽略的方法列表。
         try {
             Class<?> superClass = ce.getSuperClass();
-            Class<?>[] paramTypes = EngineToos.toJavaType(asmParams, ce);
+            Class<?>[] paramTypes = EngineToos.toJavaType(asmParams, ce.getRootClassLoader());
             Method method = EngineToos.findMethod(superClass, name, paramTypes);
             if (aopStrategy.isIgnore(superClass, method) == true)
                 return super.visitMethod(access, name, desc, signature, exceptions);//忽略方法

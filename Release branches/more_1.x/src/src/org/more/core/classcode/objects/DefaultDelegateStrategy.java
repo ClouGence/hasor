@@ -17,14 +17,14 @@ package org.more.core.classcode.objects;
 import org.more.core.classcode.ClassEngine;
 import org.more.core.classcode.DelegateStrategy;
 /**
- * 该策略在ClassBuilder的initBuilder期间调用。
- * @version 2010-8-12
+ * 接口{@link DelegateStrategy}的默认实现，该策略实现不会忽略任何委托。
+ * @version 2010-9-3
  * @author 赵永春 (zyc@byshell.org)
  */
 public class DefaultDelegateStrategy implements DelegateStrategy {
+    public void initStrategy(ClassEngine classEngine) {}
+    public void reset() {}
     public boolean isIgnore(Class<?> delegateType) {
         return false;
     }
-    public void initStrategy(ClassEngine classEngine) {}
-    public void reset() {}
 }

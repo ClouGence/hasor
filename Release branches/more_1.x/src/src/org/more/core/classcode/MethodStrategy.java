@@ -15,12 +15,14 @@
  */
 package org.more.core.classcode;
 /**
- *
- * @version 2010-8-12
+ * 方法忽略策略接口，可以确定这个方法是否忽略，如果被忽略则生成的新类中不会包含该方法的定义。
+ * @version 2010-9-3
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface MethodStrategy {
-    public void initStrategy(ClassEngine classEngine);
-    public boolean isIgnore(String fullDesc, Class<?> superClass, Object ignoreMethod, boolean isConstructor);
-    public void reset();
+public interface MethodStrategy extends BaseStrategy {
+    /**
+     * 该方法可以确定这个方法是否忽略，如果被忽略则生成的新类中不会包含该方法的定义。
+     * 通过{@link MethodStrategy}接口可以忽略处理。
+     */
+    public boolean isIgnore(Class<?> superClass, Object ignoreMethod, boolean isConstructor);
 }

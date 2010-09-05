@@ -27,23 +27,14 @@ import org.more.core.classcode.objects.DefaultDelegateStrategy;
 import org.more.core.classcode.objects.DefaultMethodStrategy;
 import org.more.core.classcode.objects.DefaultPropertyStrategy;
 /**
- * 字节码生成工具，该工具可以在已有类型上附加接口实现，使用ClassEngine还可以对类对象提供AOP的支持，此外ClassEngine提供了两种工作模式。<br/>
- * <br/><b>继承方式</b>--继承方式实现新类，这种生成模式下必须要求先有类型后有对象。生成的新类是继承原有类实现的，
- * 所有附加方法都写到新类中。原始类中的所有方法都被重写并且以super形式调用父类。私有方法不包括重写范畴。
- * 私有方法将不参与AOP功能。在继承模式下保护方法与公共方法参与AOP功能。<br/>
- * <br/><b>代理方式</b>--代理方式实现新类，这种生成模式下可以在已有的对象上附加接口实现而不需要重新创建对象。同时生成的新对象
- * 不破坏原有对象。整个实现方式就是一个静态代理方式实现。注意这种生成方式会取消所有原始类中的构造方法。
- * 取而代之的是生成一个一个参数的构造方法，该参数类型就是基类类型。所有方法调用都使用这个注入的类型对象调用。
- * 同时该中生成方式的私有方法不包括重写范畴。<br/>
- * 在代理模式下只有公共方法参与AOP功能，私有方法和受保护的方法因访问权限问题不能参与AOP。<br/>
- * <br/><b>AOP特性</b>--ClassEngine引擎的AOP特性是可以配置是否启用的。如果附加AOP相关功能则字节码在生成时除了经过了第一次接口附加操作之后
- * 还需要经过第二次AOP特性加入。所有本类方法包括可以继承的方法均被重写。启用AOP特性会少量增加字节码体积同时也比不使用AOP特性的运行效率要慢些。
- * @version 2009-10-15
+ * classcode v2.0引擎。新引擎增加了debug模式，在debug模式下{@link ClassEngine#builderClass()}方法在装载生成的新类 时不会抛出。
+ * 如果没有指定类装载引擎会使用ClassLoader.getSystemClassLoader()方法返回的类装载器来装载类。
+ * @version 2010-9-5
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ClassEngine extends ClassLoader {
+public class ClassEngine {
     //Engine配置信息，默认信息
-    public static final String               DefaultSuperClass        = "java.lang.Object";            //超类
+    public static final String               DefaultSuperClass        = "java.lang.Object";            //默认超类
     public static final BuilderMode          DefaultBuilderMode       = BuilderMode.Super;             //默认生成模式
     public static final ClassNameStrategy    DefaultClassNameStrategy = new DefaultClassNameStrategy(); //类名策略
     public static final DelegateStrategy     DefaultDelegateStrategy  = new DefaultDelegateStrategy(); //委托策略
@@ -52,7 +43,7 @@ public class ClassEngine extends ClassLoader {
     public static final PropertyStrategy     DefaultPropertyStrategy  = new DefaultPropertyStrategy(); //属性策略。
     private boolean                          debug                    = false;                         //调试模式，如果开启调试模式则只生成字节码不装载它
     //
-    static {}
+    //    static {}
     //
     //策略信息
     private ClassNameStrategy                classNameStrategy        = DefaultClassNameStrategy;      //类名策略，负责生成类名的管理。
@@ -76,36 +67,65 @@ public class ClassEngine extends ClassLoader {
     private Class<?>                         newClass                 = null;                          //新类
     private byte[]                           newClassBytes            = null;                          //新类的字节码。
     private ClassConfiguration               configuration            = null;
+    private RootClassLoader                  rootClassLoader          = null;                          //处理来自类新类装载请求的类装载器。
     //==================================================================================Constructor
+    /**创建classcode v2.0引擎，如果参数为true表示使用debug模式，在debug模式下{@link ClassEngine#builderClass()}方法在装载生成的新类 时不会抛出。*/
     public ClassEngine(boolean debug) throws ClassNotFoundException {
         this();
         this.debug = debug;
     }
-    /** 创建一个ClassEngine类型对象，默认生成的类是Object的子类，使用的是当前线程的ClassLoader类装载对象作为父装载器。 */
+    /** 创建一个ClassEngine类型对象，默认生成的类是Object的子类， */
     public ClassEngine() throws ClassNotFoundException {
         this(ClassLoader.getSystemClassLoader().loadClass(DefaultSuperClass));
     }
-    /** 使用指定类名创建一个ClassEngine类型对象，如果指定的类名是空则采用Object作为父类，使用的是当前线程的ClassLoader类装载对象作为父装载器。 */
+    /** 创建一个ClassEngine类型对象，可以通过参数指定新类的名称。 */
     public ClassEngine(String className) throws ClassNotFoundException {
-        this(className, DefaultSuperClass, ClassLoader.getSystemClassLoader());
+        this(className, ClassLoader.getSystemClassLoader().loadClass(DefaultSuperClass), ClassLoader.getSystemClassLoader());
     }
-    /** 使用指定类名创建一个ClassEngine类型对象，如果指定的类名是空则采用Object作为父类，使用的是当前线程的ClassLoader类装载对象作为父装载器。 */
+    /**
+     * 创建一个ClassEngine类型对象，该构造参数指定了新类类名、新类的基类以类装载器。<br/>
+     * 类装载的设定会遵循如下规则，如果parentLoader参数为空则会使用当前线程的类装载器作为引擎类装载器的父类装载器。
+     * 如果指定的是{@link RootClassLoader}类型装载器，则引擎直接使用该类装载器作为引擎的类装载器。如果指定的是一个
+     * {@link ClassLoader}类型参数则引擎的类装载器会使用这个类装载器作为其父类装载器。     * @param className 新类的类名，如果类名为空则使用默认生成策略生成。
+     * @param superClass 父类类型字符串，该类型最终使用parentLoader参数的类装载器装载。
+     * @param parentLoader ClassEngine类装载器。
+     */
     public ClassEngine(String className, String superClass, ClassLoader parentLoader) throws ClassNotFoundException {
-        this(className, parentLoader.loadClass(superClass));
+        this(className, parentLoader.loadClass(superClass), parentLoader);
     }
+    /** 创建一个ClassEngine类型对象，参数指定的是新类的父类类型。*/
     public ClassEngine(Class<?> superClass) {
-        this(null, superClass);
+        this(null, superClass, Thread.currentThread().getContextClassLoader());
     }
-    /** 使用指定类名创建一个ClassEngine类型对象，如果指定的类名是空则采用Object作为父类，使用的是当前线程的ClassLoader类装载对象作为父装载器。 */
-    public ClassEngine(String className, Class<?> superClass) {
-        super(Thread.currentThread().getContextClassLoader());
+    /**
+     * 创建一个ClassEngine类型对象，该构造参数指定了新类类名、新类的基类以类装载器。<br/>
+     * 类装载的设定会遵循如下规则，如果parentLoader参数为空则会使用当前线程的类装载器作为引擎类装载器的父类装载器。
+     * 如果指定的是{@link RootClassLoader}类型装载器，则引擎直接使用该类装载器作为引擎的类装载器。如果指定的是一个
+     * {@link ClassLoader}类型参数则引擎的类装载器会使用这个类装载器作为其父类装载器。
+     * @param className 新类的类名，如果类名为空则使用默认生成策略生成。
+     * @param superClass 基类类型。
+     * @param parentLoader 父类装载器，的父类装载器。
+     */
+    public ClassEngine(String className, Class<?> superClass, ClassLoader parentLoader) {
+        //1.参数className
         if (className == null || className.equals("") == true) {
             String packageName = this.classNameStrategy.generatePackageName();
             String simpleName = this.classNameStrategy.generateSimpleName();
             this.className = packageName + "." + simpleName;
         } else
             this.className = className;
-        this.superClass = superClass;
+        //2.参数superClass
+        if (superClass != null)
+            this.superClass = superClass;
+        else
+            this.superClass = Object.class;
+        //3.参数parentLoader
+        if (parentLoader == null)
+            this.rootClassLoader = new RootClassLoader(Thread.currentThread().getContextClassLoader());
+        else if (parentLoader instanceof RootClassLoader)
+            this.rootClassLoader = (RootClassLoader) parentLoader;
+        else
+            this.rootClassLoader = new RootClassLoader(parentLoader);
     }
     //======================================================================================Get/Set
     /**获取类名的生成策略。*/
@@ -182,11 +202,13 @@ public class ClassEngine extends ClassLoader {
     public String getClassName() {
         return this.className;
     }
+    /**设置新类的类名和其所属包。如果包名为null则引擎会调用名称生成策略返回生成的包名。类名也同理。*/
     public void setClassName(String className, String packageName) {
         String _className = (className == null || className.equals("")) ? this.classNameStrategy.generateSimpleName() : className;
         String _packageName = (packageName == null || packageName.equals("")) ? this.classNameStrategy.generatePackageName() : packageName;
         this.className = _packageName + "." + _className;
     }
+    /**该方法是调用类名生成策略生成一个包名以及类名，其原理就是通过设置空类名和空包名来实现。可以通过调用setClassName方法传递两个null来完成。*/
     public void generateName() {
         this.setClassName(null, null);
     }
@@ -204,19 +226,27 @@ public class ClassEngine extends ClassLoader {
     public void setSuperClass(String superClass, ClassLoader parentLoader) throws ClassNotFoundException {
         this.setSuperClass(parentLoader.loadClass(superClass));
     }
+    /**获取当前引擎正在使用的父类装载器。*/
+    public ClassLoader getRootClassLoader() {
+        return this.rootClassLoader;
+    };
+    /**设置当前引擎使用的父类装载器，设置新的父类装载器会导致，引擎解除在原有类装载器上的注册，并且重新在新的类装载器上进行注册。*/
+    public void setRootClassLoader(RootClassLoader rootClassLoader) {
+        this.rootClassLoader.unRegeditEngine(this);
+        this.rootClassLoader = rootClassLoader;
+        this.rootClassLoader.regeditEngine(this);
+    }
     /**
-     * 向类中附加一个接口实现，该接口中的所有方法均通过委托对象代理处理。如果附加的接口中有方法与基类的方法冲突时。
-     * appendImpl会丢弃添加接口的冲突方法保留基类方法。这样做相当于基类的方法实现了接口的方法。
-     * 如果多次输出一种签名的方法时ClassEngine只会保留最后一次的注册。被输出的方法在类生成时会保留其注解等信息。
-     * 如果重复添加同一个接口则该接口将被置于最后一次添加。
-     * 注意：如果试图添加一个非接口类型则会引发异常。
+     * 向新类中添加一个委托接口实现，该委托接口中的所有方法均通过委托对象代理处理。如果委托接口中有方法与基类的方法冲突时。
+     * 新生成的委托方法则会丢弃委托接口中的方法去保留基类方法。这在java中也是相当于实现，但是更重要的是保护了基类。
+     * 如果重复添加同一个接口则该接口将被置于最后一次添加。注意：如果试图添加一个非接口类型则会引发异常。
      * @param appendInterface 要附加的接口。
-     * @param delegate 附加接口的方法处理委托。
+     * @param delegate 委托接口的方法处理委托。
      */
     public void addDelegate(Class<?> appendInterface, MethodDelegate delegate) {
         //1.参数判断
         if (appendInterface.isInterface() == false || delegate == null)
-            throw new FormatException("参数appendInterface不是一个有效的接口，或者参数delegate为空。");
+            throw new FormatException("委托不是一个有效的接口类型，或者MethodDelegate类型参数为空。");
         //2.测试该接口是否已经得到实现
         try {
             this.superClass.asSubclass(appendInterface);
@@ -236,7 +266,7 @@ public class ClassEngine extends ClassLoader {
             this.aopFilters = new ArrayList<AopInvokeFilter>();
         this.aopFilters.add(filter);
     };
-    /**添加一个AOP监听器，该监听器可以重复添加。*/
+    /**添加一个{@link AopBeforeListener}监听器，该监听器可以重复添加。*/
     public void addListener(AopBeforeListener listener) {
         if (listener == null)
             return;
@@ -244,7 +274,7 @@ public class ClassEngine extends ClassLoader {
             this.aopBeforeListeners = new ArrayList<AopBeforeListener>();
         this.aopBeforeListeners.add(listener);
     };
-    /**添加一个AOP监听器，该监听器可以重复添加。*/
+    /**添加一个{@link AopReturningListener}监听器，该监听器可以重复添加。*/
     public void addListener(AopReturningListener listener) {
         if (listener == null)
             return;
@@ -252,7 +282,7 @@ public class ClassEngine extends ClassLoader {
             this.aopReturningListeners = new ArrayList<AopReturningListener>();
         this.aopReturningListeners.add(listener);
     };
-    /**添加一个AOP监听器，该监听器可以重复添加。*/
+    /**添加一个{@link AopThrowingListener}监听器，该监听器可以重复添加。*/
     public void addListener(AopThrowingListener listener) {
         if (listener == null)
             return;
@@ -260,7 +290,7 @@ public class ClassEngine extends ClassLoader {
             this.aopThrowingListeners = new ArrayList<AopThrowingListener>();
         this.aopThrowingListeners.add(listener);
     };
-    /**添加一个属性。*/
+    /**在新生成的类中添加一个属性字段，并且依据属性策略生成其get/set方法。*/
     public void addProperty(String name, Class<?> type) {
         if (name == null || name.equals("") || type == null)
             throw new NullPointerException("参数name或type为空。");
@@ -268,7 +298,7 @@ public class ClassEngine extends ClassLoader {
             this.addPropertyMap = new LinkedHashMap<String, Class<?>>();
         this.addPropertyMap.put(name, type);
     };
-    /**添加一个属性。*/
+    /**在新生成的类中添加一个委托属性，并且依据属性策略生成其get/set方法。*/
     public void addProperty(String name, PropertyDelegate<?> delegate) {
         if (name == null || name.equals("") || delegate == null)
             throw new NullPointerException("参数name或delegate为空。");
@@ -330,10 +360,7 @@ public class ClassEngine extends ClassLoader {
             return null;
         return this.addPropertyDelMap.get(name);
     }
-    /**
-     * 获取生成的类所附加实现的接口集合，appendImpl方法可以附加一个新的接口实现。
-     * @return 返回生成的类所附加实现的接口集合。appendImpl方法可以附加一个新的接口实现。
-     */
+    /** 获取生成的新类所添加的所有委托接口数组。*/
     public Class<?>[] getDelegates() {
         if (this.addDelegateMap == null || this.addDelegateMap.size() == 0)
             return null;
@@ -349,7 +376,7 @@ public class ClassEngine extends ClassLoader {
         this.aopFilters.toArray(aops);
         return aops;
     }
-    /**获取before事件监听器。*/
+    /**获取before切面监听器。*/
     public AopBeforeListener[] getAopBeforeListeners() {
         if (this.aopBeforeListeners == null || this.aopBeforeListeners.size() == 0)
             return null;
@@ -357,7 +384,7 @@ public class ClassEngine extends ClassLoader {
         this.aopBeforeListeners.toArray(listeners);
         return listeners;
     }
-    /**获取returning事件监听器。*/
+    /**获取returning切面监听器。*/
     public AopReturningListener[] getAopReturningListeners() {
         if (this.aopReturningListeners == null || this.aopReturningListeners.size() == 0)
             return null;
@@ -365,7 +392,7 @@ public class ClassEngine extends ClassLoader {
         this.aopReturningListeners.toArray(listeners);
         return listeners;
     }
-    /**获取throwing事件监听器。*/
+    /**获取throwing切面监听器。*/
     public AopThrowingListener[] getAopThrowingListeners() {
         if (this.aopThrowingListeners == null || this.aopThrowingListeners.size() == 0)
             return null;
@@ -373,13 +400,19 @@ public class ClassEngine extends ClassLoader {
         this.aopThrowingListeners.toArray(listeners);
         return listeners;
     }
+    /**返回一个boolean值，该值表明了引擎是否处在debug模式。如果返回true则表明引擎运行在debug模式。*/
     public boolean isDebug() {
         return debug;
     }
+    /**设置一个boolean值，该值表明了引擎是否处在debug模式。如果设置true则表明引擎运行在debug模式。*/
     public void setDebug(boolean debug) {
         this.debug = debug;
     }
     //=======================================================================================Method
+    /**
+     * 完全重置，该重置方法将会清除新生成的类同时也会清除添加的委托接口以及新属性。<br/>
+     * 对于新类的类装载器该方法也会解除在其身上的注册。
+     */
     public void reset() {
         this.newClass = null;
         this.newClassBytes = null;
@@ -390,11 +423,16 @@ public class ClassEngine extends ClassLoader {
         this.aopBeforeListeners = null; //开始调用，消息监听器
         this.aopReturningListeners = null; //调用返回，消息监听器
         this.aopThrowingListeners = null; //抛出异常，消息监听器
+        this.rootClassLoader.unRegeditEngine(this);//
     };
-    /**取消生成状态当再次调用生成时将会启动class构建过程。*/
+    /**
+     * 重置生成状态当再次调用生成时将会启动class构建过程，该方法不会影响到已经注册的aop，新属性等信息。
+     * 但是该方法会解除在新类装载上的注册这样以助于从新装载新类。
+     */
     public void resetBuilder() {
         this.newClass = null;
         this.newClassBytes = null;
+        this.rootClassLoader.unRegeditEngine(this);//
     };
     /**获取已经生成的类对象*/
     public Class<?> toClass() {
@@ -408,13 +446,14 @@ public class ClassEngine extends ClassLoader {
     public ClassEngine builderClass() throws ClassNotFoundException, IOException, FormatException {
         if (newClassBytes != null)
             return this;
-        //初始化策略
+        //1.初始化策略
         this.classNameStrategy.initStrategy(this);
         this.delegateStrategy.initStrategy(this);
         this.aopStrategy.initStrategy(this);
         this.propertyStrategy.initStrategy(this);
         this.methodStrategy.initStrategy(this);
-        //
+        this.rootClassLoader.regeditEngine(this);//注册类装载
+        //2.
         if (EngineToos.checkClassName(this.className) == false)
             throw new FormatException("在生成类的时，检测类名不通过。");
         if (className == null || className.equals("") == true) {
@@ -422,36 +461,35 @@ public class ClassEngine extends ClassLoader {
             String simpleName = this.classNameStrategy.generateSimpleName();
             this.className = packageName + simpleName;
         }
-        //
+        //3.
         ClassBuilder cb = this.createBuilder(this.builderMode);
         cb.initBuilder(this);
         this.configuration = cb.builderClass();
         if (this.configuration == null)
             throw new StateException("builderClass失败。");
         this.newClassBytes = cb.getClassBytes();
-        if (this.debug == false)
-            this.newClass = this.loadClass(this.className);//TODO
-        //重置策略
+        //4.重置策略
         this.classNameStrategy.reset();
         this.delegateStrategy.reset();
         this.aopStrategy.reset();
         this.propertyStrategy.reset();
         this.methodStrategy.reset();
-        //
+        //5.
+        try {
+            this.newClass = this.rootClassLoader.loadClass(this.className);//TODO
+        } catch (ClassNotFoundException e) {
+            if (this.debug == false)
+                throw e;
+        }
         return this;
     }
     //======================================================================================Builder
+    /**子类可以通过重写该方法来返回一个新的ClassBuilder对象，在ClassBuilder对象中开发人员可以使用classcode扩展功能，同时也可以使用asm框架来扩展。*/
     protected ClassBuilder createBuilder(BuilderMode builderMode) {
         return new ClassBuilder();
     }
-    @Override
-    protected Class<?> findClass(String name) throws ClassNotFoundException {
-        if (name.equals(this.className) == true)
-            return this.defineClass(name, this.newClassBytes, 0, this.newClassBytes.length);
-        else
-            return super.findClass(name);
-    }
     //==========================================================================================New
+    /**装载并且创建这个新类的一个实例，如果新类是Propxy模式下的，需要指定代理的父类类型。如果是Super则给null即可。*/
     public Object newInstance(Object propxyBean) throws FormatException, ClassNotFoundException, IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, SecurityException, InvocationTargetException, NoSuchMethodException {
         this.builderClass();
         Object obj = null;
@@ -460,5 +498,5 @@ public class ClassEngine extends ClassLoader {
         else
             obj = this.newClass.getConstructor(this.superClass).newInstance(propxyBean);
         return this.configuration.configBean(obj);
-    };
+    }
 }

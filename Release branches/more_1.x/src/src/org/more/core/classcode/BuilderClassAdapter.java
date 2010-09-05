@@ -159,13 +159,13 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
             boolean isConstructor = false;
             if (name.equals("<init>") == true)
                 isConstructor = true;
-            Class<?>[] paramTypes = EngineToos.toJavaType(asmParams, this.classEngine);
+            Class<?>[] paramTypes = EngineToos.toJavaType(asmParams, this.classEngine.getRootClassLoader());
             Object method = null;
             if (isConstructor == true)
                 method = superClass.getConstructor(paramTypes);
             else
                 method = EngineToos.findMethod(superClass, name, paramTypes);
-            if (methodStrategy.isIgnore(fullDesc, superClass, method, isConstructor) == true)//其他策略
+            if (methodStrategy.isIgnore(superClass, method, isConstructor) == true)//其他策略
                 return null;
         } catch (Exception e) {
             throw new InvokeException(e);
@@ -241,7 +241,8 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
                     if (propertyStrategy.isIgnore(field, fieldType, false) == true)
                         continue;
                     boolean readOnly = propertyStrategy.isReadOnly(field, fieldType, false);
-                    this.putSimpleProperty(field, fieldType, readOnly);
+                    boolean writeOnly = propertyStrategy.isWriteOnly(field, fieldType, false);
+                    this.putSimpleProperty(field, fieldType, writeOnly, readOnly);
                 }
             //委托属性。
             String[] delegateFields = this.classBuilder.getDelegateFields();
@@ -254,9 +255,10 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
                     Class<?> delegateType = fieldDelegate.getType();
                     if (propertyStrategy.isIgnore(field, delegateType, true) == true)
                         continue;
-                    boolean readOnly = propertyStrategy.isReadOnly(field, delegateType, true);
                     this.renderDelegatePropxyList.add(field);
-                    this.putDelegateProperty(i, field, fieldDelegate, readOnly);
+                    boolean readOnly = propertyStrategy.isReadOnly(field, delegateType, false);
+                    boolean writeOnly = propertyStrategy.isWriteOnly(field, delegateType, false);
+                    this.putDelegateProperty(i, field, fieldDelegate, writeOnly, readOnly);
                 }
             }
         }
@@ -301,22 +303,23 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
     }
     //
     //输出简单属性
-    private void putSimpleProperty(String propertyName, Class<?> propertyType, boolean isReadOnly) {
+    private void putSimpleProperty(String propertyName, Class<?> propertyType, boolean isWriteOnly, boolean isReadOnly) {
         String asmFieldType = EngineToos.toAsmType(propertyType);
         super.visitField(ACC_PRIVATE, propertyName, asmFieldType, null, null);
-        this.putGetMethod(propertyName, asmFieldType);//get
+        if (isWriteOnly == false)
+            this.putGetMethod(propertyName, asmFieldType);//get
         if (isReadOnly == false)
             this.putSetMethod(propertyName, asmFieldType);//set
     }
     //
     //输出委托属性
-    private void putDelegateProperty(int index, String propertyName, PropertyDelegate<?> fieldDelegate, boolean isReadOnly) {
+    private void putDelegateProperty(int index, String propertyName, PropertyDelegate<?> fieldDelegate, boolean isWriteOnly, boolean isReadOnly) {
         String asmDelegateType2 = EngineToos.replaceClassName(PropertyDelegate.class.getName());
         //
         Class<?> javaFieldType = fieldDelegate.getType();
         String asmFieldType = EngineToos.toAsmType(javaFieldType);
         String asmFieldType2 = EngineToos.replaceClassName(javaFieldType.getName());
-        {
+        if (isWriteOnly == false) {
             //get
             MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "get" + EngineToos.toUpperCase(propertyName), "()" + asmFieldType, null, null);
             mv.visitCode();

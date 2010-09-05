@@ -15,12 +15,15 @@
  */
 package org.more.core.classcode;
 /**
- * 委托策略ClassBuilder.initBuilder调用
- * @version 2010-8-12
+ * 委托策略，该接口方法在{@link ClassBuilder#initBuilder(ClassEngine)}调用期间调用。
+ * 用于决定委托接口是否生效。
+ * @version 2010-9-3
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface DelegateStrategy {
-    public void initStrategy(ClassEngine classEngine);
+public interface DelegateStrategy extends BaseStrategy {
+    /**
+     * 该方法可以确定这个委托接口类型是否被忽略，如果被忽略则新生成的类不可以转换成该类型。
+     * 如果确定需要忽略这个委托接口则需要返回true，返回false表示不忽略这个委托。
+     */
     public boolean isIgnore(Class<?> delegateType);
-    public void reset();
 }

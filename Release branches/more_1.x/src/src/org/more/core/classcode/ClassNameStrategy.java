@@ -15,15 +15,13 @@
  */
 package org.more.core.classcode;
 /**
- * 类名生成策略ClassEngine.builderClass调用
- * @version 2010-8-12
+ * 类名生成策略，该接口在ClassEngine.builderClass期间调用。用于决定新类的类名和所属包。
+ * @version 2010-9-3
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ClassNameStrategy {
+public interface ClassNameStrategy extends BaseStrategy {
+    /**获取新类的所属包。*/
     public String generatePackageName();
+    /**获取新类的类名。*/
     public String generateSimpleName();
-    /**进入ClassEngine的builderClass方法时候调用*/
-    public void initStrategy(ClassEngine classEngine);
-    /**离开ClassEngine的builderClass方法时候调用*/
-    public void reset();
 };

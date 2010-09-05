@@ -22,26 +22,31 @@ import org.more.core.classcode.AopStrategy;
 import org.more.core.classcode.AopThrowingListener;
 import org.more.core.classcode.ClassEngine;
 /**
- *
- * @version 2010-8-12
+ * 接口{@link AopStrategy}的默认实现。
+ * @version 2010-9-3
  * @author 赵永春 (zyc@byshell.org)
  */
 public class DefaultAopStrategy implements AopStrategy {
     public void initStrategy(ClassEngine classEngine) {}
-    public boolean isIgnore(String fullDesc, Class<?> superClass, Method ignoreMethod) {
+    public void reset() {}
+    /**不忽略Aop。*/
+    public boolean isIgnore(Class<?> superClass, Method ignoreMethod) {
         return false;
     }
-    public void reset() {}
-    public AopBeforeListener[] filterAopBeforeListener(AopBeforeListener[] beforeListener) {
+    /**将类型参数{@link AopBeforeListener}如数返回。*/
+    public AopBeforeListener[] filterAopBeforeListener(Object target, Method method, AopBeforeListener[] beforeListener) {
         return beforeListener;
     }
-    public AopReturningListener[] filterAopReturningListener(AopReturningListener[] returningListener) {
+    /**将类型参数{@link AopReturningListener}如数返回。*/
+    public AopReturningListener[] filterAopReturningListener(Object target, Method method, AopReturningListener[] returningListener) {
         return returningListener;
     }
-    public AopThrowingListener[] filterAopThrowingListener(AopThrowingListener[] throwingListener) {
+    /**将类型参数{@link AopThrowingListener}如数返回。*/
+    public AopThrowingListener[] filterAopThrowingListener(Object target, Method method, AopThrowingListener[] throwingListener) {
         return throwingListener;
     }
-    public AopInvokeFilter[] filterAopInvokeFilter(AopInvokeFilter[] invokeFilter) {
+    /**将类型参数{@link AopInvokeFilter}如数返回。*/
+    public AopInvokeFilter[] filterAopInvokeFilter(Object target, Method method, AopInvokeFilter[] invokeFilter) {
         return invokeFilter;
     }
 }

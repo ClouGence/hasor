@@ -164,6 +164,7 @@ public class EngineToos implements Opcodes {
             returnString += EngineToos.toAsmType(c);;
         return returnString;
     }
+    /**使用指定的ClassLoader将一个asm类型转化为Class对象。*/
     public static Class<?> toJavaType(String asmClassType, ClassLoader loader) throws ClassNotFoundException {
         if (asmClassType.equals("I") == true)
             return int.class;
@@ -201,12 +202,14 @@ public class EngineToos implements Opcodes {
         } else
             return loader.loadClass(asmTypeToType(asmClassType).replace("/", "."));
     }
+    /**使用指定的ClassLoader将一组asm类型转化为一组Class对象。*/
     public static Class<?>[] toJavaType(String[] asmClassType, ClassLoader loader) throws ClassNotFoundException {
         Class<?>[] types = new Class<?>[asmClassType.length];
         for (int i = 0; i < asmClassType.length; i++)
             types[i] = toJavaType(asmClassType[i], loader);
         return types;
     }
+    /**在一个类中查找某个方法。*/
     public static Method findMethod(Class<?> atClass, String name, Class<?>[] paramType) throws SecurityException, NoSuchMethodException {
         try {
             return atClass.getMethod(name, paramType);
@@ -214,6 +217,7 @@ public class EngineToos implements Opcodes {
             return atClass.getDeclaredMethod(name, paramType);
         }
     }
+    /**返回一个类的多有方法，其中包含了父类方法。*/
     public static ArrayList<Method> findAllMethod(Class<?> atClass) throws SecurityException, NoSuchMethodException {
         ArrayList<Method> al = new ArrayList<Method>();
         Method[] m1 = atClass.getDeclaredMethods();
@@ -223,7 +227,7 @@ public class EngineToos implements Opcodes {
                 al.add(m);
         return al;
     }
-    /***/
+    /**将一个Ljava/lang/Object;形式的字符串转化为java/lang/Object形式。*/
     public static String asmTypeToType(String asmType) {
         if (asmType.charAt(0) == 'L')
             return asmType.substring(1, asmType.length() - 1);
@@ -234,8 +238,8 @@ public class EngineToos implements Opcodes {
     /**获取一个类对象字节码的读取流。*/
     public static InputStream getClassInputStream(Class<?> type) {
         ClassLoader loader = type.getClassLoader();
-        if (loader instanceof ClassEngine) {
-            byte[] data = ((ClassEngine) loader).toBytes();
+        if (loader instanceof RootClassLoader) {
+            byte[] data = ((RootClassLoader) loader).toBytes(type);
             return new ByteArrayInputStream(data);
         }
         String classResourceName = type.getName().replace(".", "/") + ".class";

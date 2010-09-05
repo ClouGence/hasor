@@ -19,7 +19,7 @@ import org.more.InvokeException;
 import org.more.core.classcode.MethodDelegate;
 /**
  * 代理方法的空实现。
- * @version 2009-11-8
+ * @version 2010-9-3
  * @author 赵永春 (zyc@byshell.org)
  */
 public class DefaultMethodDelegate implements MethodDelegate {

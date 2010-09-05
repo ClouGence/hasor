@@ -17,13 +17,15 @@ package org.more.core.classcode.objects;
 import org.more.core.classcode.ClassEngine;
 import org.more.core.classcode.ClassNameStrategy;
 /**
- *
- * @version 2010-8-12
+ * 该类是{@link ClassNameStrategy}的默认实现，其类名是“_DynamicObject$”名且所属“org.more.core.classcode”包。
+ * @version 2010-9-3
  * @author 赵永春 (zyc@byshell.org)
  */
 public class DefaultClassNameStrategy implements ClassNameStrategy {
     private static long         generateID  = 0;
     private static final String ClassPrefix = "_DynamicObject$"; //生成类的类名后缀名
+    public void initStrategy(ClassEngine classEngine) {}
+    public void reset() {}
     public String generatePackageName() {
         return "org.more.core.classcode";
     }
@@ -31,6 +33,4 @@ public class DefaultClassNameStrategy implements ClassNameStrategy {
         generateID++;
         return ClassPrefix + generateID;
     }
-    public void initStrategy(ClassEngine classEngine) {}
-    public void reset() {}
 }

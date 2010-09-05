@@ -17,14 +17,14 @@ package org.more.core.classcode.objects;
 import org.more.core.classcode.ClassEngine;
 import org.more.core.classcode.MethodStrategy;
 /**
- * 该策略在生成字节码期间会调用。
- * @version 2010-8-13
+ * 该策略在生成字节码期间会调用，该策略不会忽略任何方法。
+ * @version 2010-9-3
  * @author 赵永春 (zyc@byshell.org)
  */
 public class DefaultMethodStrategy implements MethodStrategy {
-    public boolean isIgnore(String fullDesc, Class<?> superClass, Object ignoreMethod, boolean isConstructor) {
-        return false;
-    }
     public void initStrategy(ClassEngine classEngine) {}
     public void reset() {}
+    public boolean isIgnore(Class<?> superClass, Object ignoreMethod, boolean isConstructor) {
+        return false;
+    }
 }
