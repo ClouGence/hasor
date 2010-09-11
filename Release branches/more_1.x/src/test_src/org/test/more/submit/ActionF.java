@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 package org.test.more.submit;
-import org.more.submit.ActionFilter;
 import org.more.submit.ActionStack;
-import org.more.submit.FilterChain;
+import org.more.submit.ext.filter.ActionFilter;
+import org.more.submit.ext.filter.Filter;
+import org.more.submit.ext.filter.FilterChain;
 /**
- * 
+ *
  * <br/>Date : 2009-12-2
  * @author Administrator
  */
+@Filter
 public class ActionF implements ActionFilter {
-    @Override
     public Object doActionFilter(ActionStack stack, FilterChain chain) throws Throwable {
         System.out.println("public");
         return chain.doInvokeFilter(stack);

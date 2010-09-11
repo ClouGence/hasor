@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 package org.test.more.submit;
-import org.more.submit.CasingDirector;
+import org.more.submit.SubmitBuild;
 import org.more.submit.SubmitContext;
-import org.more.submit.casing.more.ClientMoreBuilder;
+import org.more.submit.casing.more.MoreBuilder;
 import org.more.util.StringConvert;
 public class MoreSubmit30Test {
     /**
      * @param args
-     * @throws Throwable 
-     * @throws Exception 
+     * @throws Throwable
+     * @throws Exception
      */
     public static void main(String[] args) throws Throwable {
-        CasingDirector dire = new CasingDirector(null);
-        dire.build(new ClientMoreBuilder("test_src/org/test/more/submit/demo-beans-config.xml"));
+        SubmitBuild dire = new SubmitBuild();
+        dire.build(new MoreBuilder("test_src/org/test/more/submit/demo-beans-config.xml"));
         SubmitContext context = dire.getResult();
-        context.doAction("test.xml", null, StringConvert.parseMap("\"\', 11, 33, false"));
+        context.doAction("test.xml", StringConvert.parseMap("\"\', 11, 33, false"));
     }
 }

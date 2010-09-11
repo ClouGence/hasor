@@ -429,7 +429,7 @@ public final class StringConvert {
     /**
      * 此方法用于字符串转换成时间类型。默认格式：yyyy/MM/dd-hh:mm:ss 默认时间：系统当前时间 时间格式表示说明：yyyy:表示年
      * MM：表示月 dd 表示天 hh:表示时mm:表示分 ss：表示秒
-     * 示例：Convert.parseDate("2007/05/05",null,"yyyy/MM/dd");
+     * 示例：Convert.parseDate("2007/05/05","yyyy/MM/dd");
      * @param value 数据字符串。
      * @param patam 时间格式化格式字符串。
      * @return 返回Date的转换结果。
@@ -445,9 +445,6 @@ public final class StringConvert {
         } else if (patam.length == 1) {
             defaultValue = (patam[0] == null) ? new Date() : (Date) patam[0];
             formatString = "yyyy/MM/dd-hh:mm:ss";
-        } else if (patam.length == 2) {
-            defaultValue = (patam[0] == null) ? new Date() : (Date) patam[0];
-            formatString = (String) patam[1];
         }
         // -------------------
         if (value == null || value.equals(""))

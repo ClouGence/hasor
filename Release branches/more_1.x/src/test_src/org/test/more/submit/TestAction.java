@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package org.test.more.submit;
+import org.more.submit.Action;
 import org.more.submit.ActionStack;
+@Action
 public class TestAction {
     public Object xml(ActionStack stack) throws Throwable {
         System.out.println("hello word");
