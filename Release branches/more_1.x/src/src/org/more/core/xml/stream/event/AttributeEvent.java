@@ -16,6 +16,7 @@
 package org.more.core.xml.stream.event;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
+import org.more.core.xml.stream.XmlReader;
 import org.more.core.xml.stream.XmlStreamEvent;
 /**
  * 当遇到一个属性声明时。
@@ -23,13 +24,13 @@ import org.more.core.xml.stream.XmlStreamEvent;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class AttributeEvent extends XmlStreamEvent {
-    private QName attQName = null;
-    private int   index    = 0;
-    public AttributeEvent(String currentXPath, XMLStreamReader reader, int index) {
-        super(currentXPath, reader);
+    public AttributeEvent(String xpath, XmlReader xmlReader, XMLStreamReader reader, int index) {
+        super(xpath, xmlReader, reader);
         this.attQName = reader.getAttributeName(index);
         this.index = index;
     }
+    private QName attQName = null;
+    private int   index    = 0;
     /**获取属性名称{@link QName}对象。*/
     public QName getName() {
         return this.attQName;

@@ -117,41 +117,41 @@ public class XmlReader {
             switch (xmlEvent) {
             case XMLStreamConstants.START_DOCUMENT:
                 //开始文档
-                event = new StartDocumentEvent(currentXPath.toString(), reader);
+                event = new StartDocumentEvent(currentXPath.toString(), this, reader);
                 break;
             case XMLStreamConstants.END_DOCUMENT:
                 //结束文档
-                event = new EndDocumentEvent(currentXPath.toString(), reader);
+                event = new EndDocumentEvent(currentXPath.toString(), this, reader);
                 break;
             case XMLStreamConstants.START_ELEMENT:
                 //开始元素
                 if (currentXPath.indexOf("/") != currentXPath.length() - 1)
                     currentXPath.append("/");
                 currentXPath.append(this.getName(reader.getName()));
-                event = new StartElementEvent(currentXPath.toString(), reader);
+                event = new StartElementEvent(currentXPath.toString(), this, reader);
                 break;
             case XMLStreamConstants.END_ELEMENT:
                 //结束元素
-                event = new EndElementEvent(currentXPath.toString(), reader);
+                event = new EndElementEvent(currentXPath.toString(), this, reader);
                 int index = currentXPath.lastIndexOf("/");
                 currentXPath = currentXPath.delete(index, currentXPath.length());
                 break;
             case XMLStreamConstants.COMMENT:
                 //注释
-                event = new TextEvent(currentXPath.toString(), reader, Type.Comment);
+                event = new TextEvent(currentXPath.toString(), this, reader, Type.Comment);
                 break;
             case XMLStreamConstants.CDATA:
                 //CDATA数据
-                event = new TextEvent(currentXPath.toString(), reader, Type.CDATA);
+                event = new TextEvent(currentXPath.toString(), this, reader, Type.CDATA);
                 break;
             //---------------------------------------------
             case XMLStreamConstants.SPACE:
                 //可以忽略的空格
-                event = new TextEvent(currentXPath.toString(), reader, Type.Space);
+                event = new TextEvent(currentXPath.toString(), this, reader, Type.Space);
                 break;
             case XMLStreamConstants.CHARACTERS:
                 //字符数据
-                event = new TextEvent(currentXPath.toString(), reader, Type.Chars);
+                event = new TextEvent(currentXPath.toString(), this, reader, Type.Chars);
                 break;
             }
             //(3).执行忽略
@@ -182,7 +182,7 @@ public class XmlReader {
                     StringBuffer currentXPathTemp = new StringBuffer(currentXPath.toString());
                     currentXPathTemp.append("/@");
                     currentXPathTemp.append(this.getName(qn));
-                    event = new AttributeEvent(currentXPathTemp.toString(), reader, i);
+                    event = new AttributeEvent(currentXPathTemp.toString(), this, reader, i);
                     this.pushEvent(accept, event, ignoreXPath);
                 }
             }

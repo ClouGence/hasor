@@ -15,6 +15,7 @@
  */
 package org.more.core.xml.stream.event;
 import javax.xml.stream.XMLStreamReader;
+import org.more.core.xml.stream.XmlReader;
 import org.more.core.xml.stream.XmlStreamEvent;
 /**
  * µ±‘ƒ∂¡xmlΩ· ¯ ±°£
@@ -22,7 +23,7 @@ import org.more.core.xml.stream.XmlStreamEvent;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class EndDocumentEvent extends XmlStreamEvent {
-    public EndDocumentEvent(String xpath, XMLStreamReader reader) {
-        super(xpath, reader);
+    public EndDocumentEvent(String xpath, XmlReader xmlReader, XMLStreamReader reader) {
+        super(xpath, xmlReader, reader);
     }
 }

@@ -34,13 +34,20 @@ import org.more.core.classcode.objects.DefaultPropertyStrategy;
  */
 public class ClassEngine {
     //Engine配置信息，默认信息
-    public static final String               DefaultSuperClass        = "java.lang.Object";            //默认超类
-    public static final BuilderMode          DefaultBuilderMode       = BuilderMode.Super;             //默认生成模式
-    public static final ClassNameStrategy    DefaultClassNameStrategy = new DefaultClassNameStrategy(); //类名策略
-    public static final DelegateStrategy     DefaultDelegateStrategy  = new DefaultDelegateStrategy(); //委托策略
-    public static final AopStrategy          DefaultAopStrategy       = new DefaultAopStrategy();      //AOP策略
-    public static final MethodStrategy       DefaultMethodStrategy    = new DefaultMethodStrategy();   //方法策略，负责方法的管理。
-    public static final PropertyStrategy     DefaultPropertyStrategy  = new DefaultPropertyStrategy(); //属性策略。
+    /**默认超类java.lang.Object。*/
+    public static final String               DefaultSuperClass        = "java.lang.Object";
+    /**默认生成模式{@link BuilderMode#Super}。*/
+    public static final BuilderMode          DefaultBuilderMode       = BuilderMode.Super;
+    /**默认类名策略{@link DefaultClassNameStrategy}。*/
+    public static final ClassNameStrategy    DefaultClassNameStrategy = new DefaultClassNameStrategy();
+    /**默认委托策略{@link DefaultDelegateStrategy}*/
+    public static final DelegateStrategy     DefaultDelegateStrategy  = new DefaultDelegateStrategy();
+    /**默认的Aop策略{@link DefaultAopStrategy}。*/
+    public static final AopStrategy          DefaultAopStrategy       = new DefaultAopStrategy();
+    /**默认方法策略{@link DefaultMethodStrategy}，负责方法的管理。*/
+    public static final MethodStrategy       DefaultMethodStrategy    = new DefaultMethodStrategy();
+    /**默认属性策略{@link DefaultPropertyStrategy}。*/
+    public static final PropertyStrategy     DefaultPropertyStrategy  = new DefaultPropertyStrategy();
     private boolean                          debug                    = false;                         //调试模式，如果开启调试模式则只生成字节码不装载它
     //
     //    static {}

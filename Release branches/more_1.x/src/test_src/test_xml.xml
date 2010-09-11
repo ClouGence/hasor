@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <beans xmlns="http://www.test.org/schema/config" xmlns:config="http://www.test.org/schema/config" xmlns:bean="http://www.test.org/schema/beans">
 	<config name="a" type="a.b.c">
-
+	a
+	b
+	c
+	adf
+	d
+	e
 	</config>
 
 	<config:config name="b">

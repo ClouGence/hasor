@@ -16,6 +16,7 @@
 package org.more.core.xml.stream.event;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import org.more.core.xml.stream.XmlReader;
 import org.more.core.xml.stream.XmlStreamEvent;
 /**
  *
@@ -24,8 +25,8 @@ import org.more.core.xml.stream.XmlStreamEvent;
  */
 public class TextEvent extends XmlStreamEvent {
     private Type type = null;
-    public TextEvent(String xpath, XMLStreamReader reader, Type type) {
-        super(xpath, reader);
+    public TextEvent(String xpath, XmlReader xmlReader, XMLStreamReader reader, Type type) {
+        super(xpath, xmlReader, reader);
         this.type = type;
     }
     /**
@@ -62,6 +63,14 @@ public class TextEvent extends XmlStreamEvent {
     /** 如果光标指向由所有空格组成的字符数据事件，则返回 true。*/
     public boolean isWhiteSpace() {
         return this.getReader().isWhiteSpace();
+    }
+    /**以字符串的形式返回去掉前后空格和回车的getText()值。 */
+    public String getTrimText() {
+        String value = getText();
+        if (value != null)
+            return value.trim();
+        else
+            return null;
     }
     /**以字符串的形式返回解析事件的当前值，此方法返回 CHARACTERS 事件的字符串值，返回 COMMENT 的值、CDATA 节的字符串值、SPACE 事件的字符串值。 */
     public String getText() {

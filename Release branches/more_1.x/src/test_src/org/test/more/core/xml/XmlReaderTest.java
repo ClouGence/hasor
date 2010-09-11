@@ -20,8 +20,7 @@ import org.junit.Test;
 import org.more.core.xml.stream.XmlAccept;
 import org.more.core.xml.stream.XmlReader;
 import org.more.core.xml.stream.XmlStreamEvent;
-import org.more.core.xml.stream.event.AttributeEvent;
-import org.more.core.xml.stream.event.StartElementEvent;
+import org.more.core.xml.stream.event.TextEvent;
 /**
  *
  * @version 2010-9-8
@@ -35,15 +34,17 @@ public class XmlReaderTest {
         reader.setIgnoreSpace(true);
         reader.reader(new XmlAccept() {
             public void sendEvent(XmlStreamEvent e) {
-                System.out.println(e.getClass() + "\t\t" + e.getXpath().toString());
+                //                System.out.println(e.getClass() + "\t\t" + e.getXpath().toString());
                 //
-                if (e instanceof AttributeEvent)
-                    System.out.println(((AttributeEvent) e).getValue());
-                if (e instanceof StartElementEvent) {
-                    StartElementEvent ee = (StartElementEvent) e;
-                    if (ee.getAttributeCount() != 0)
-                        System.out.println(((StartElementEvent) e).getAttributeValue(0));
-                }
+                if (e instanceof TextEvent)
+                    System.out.print(((TextEvent) e).getTrimText());
+                //                if (e instanceof AttributeEvent)
+                //                    System.out.println(((AttributeEvent) e).getValue());
+                //                if (e instanceof StartElementEvent) {
+                //                    StartElementEvent ee = (StartElementEvent) e;
+                //                    if (ee.getAttributeCount() != 0)
+                //                        System.out.println(((StartElementEvent) e).getAttributeValue(0));
+                //                }
             }
         }, null);//"/beans/config:config");
     }

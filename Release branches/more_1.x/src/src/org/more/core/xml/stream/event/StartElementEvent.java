@@ -17,6 +17,7 @@ package org.more.core.xml.stream.event;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import org.more.core.xml.stream.XmlReader;
 import org.more.core.xml.stream.XmlStreamEvent;
 /**
  * 当遇到一个开始标签时。
@@ -24,8 +25,8 @@ import org.more.core.xml.stream.XmlStreamEvent;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class StartElementEvent extends XmlStreamEvent {
-    public StartElementEvent(String xpath, XMLStreamReader reader) {
-        super(xpath, reader);
+    public StartElementEvent(String xpath, XmlReader xmlReader, XMLStreamReader reader) {
+        super(xpath, xmlReader, reader);
     }
     /**获取元素名称{@link QName}对象。*/
     public QName getName() {

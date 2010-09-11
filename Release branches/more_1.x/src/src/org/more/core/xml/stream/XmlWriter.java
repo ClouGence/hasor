@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import org.more.core.xml.stream.event.TextEvent;
 /**
  *
  * @version 2010-9-7
@@ -61,6 +62,16 @@ public class XmlWriter implements XmlAccept {
     }
     //--------------------------------------------------------------------
     public void sendEvent(XmlStreamEvent e) {
+        //1.Ö´ÐÐºöÂÔ¡£
+        if (e instanceof TextEvent == true) {
+            TextEvent textE = (TextEvent) e;
+            if (textE.isCommentEvent() == true && this.ignoreComment == true)
+                return;
+            if (textE.isSpaceEvent() == true && this.ignoreSpace == true)
+                return;
+        }
+
+        javax.xml.stream.XMLOutputFactory.newInstance().createXMLEventWriter("", "");
         // TODO Auto-generated method stub
     }
 }

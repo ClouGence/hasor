@@ -20,6 +20,7 @@ package org.more.core.xml.stream;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface XmlAccept {
-    /**该方法是用于接受{@link XmlReader}类扫描的事件结果。*/
+    /**该方法是用于接受{@link XmlReader}类扫描的事件结果。
+     * @param xmlReader */
     public void sendEvent(XmlStreamEvent e);
 }

@@ -15,6 +15,7 @@
  */
 package org.more.core.xml.stream.event;
 import javax.xml.stream.XMLStreamReader;
+import org.more.core.xml.stream.XmlReader;
 import org.more.core.xml.stream.XmlStreamEvent;
 /**
  * 当开始阅读xml文档时。
@@ -22,8 +23,8 @@ import org.more.core.xml.stream.XmlStreamEvent;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class StartDocumentEvent extends XmlStreamEvent {
-    public StartDocumentEvent(String xpath, XMLStreamReader reader) {
-        super(xpath, reader);
+    public StartDocumentEvent(String xpath, XmlReader xmlReader, XMLStreamReader reader) {
+        super(xpath, xmlReader, reader);
     }
     /**如果输入编码已知，则返回输入编码；如果未知，则返回 null。*/
     public String getEncoding() {

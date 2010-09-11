@@ -22,12 +22,14 @@ import javax.xml.stream.XMLStreamReader;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class XmlStreamEvent {
-    private String          xpath  = null; //当前事件所处的xpath
-    private XMLStreamReader reader = null; //底层的XMLStreamReader
+    private String          xpath     = null; //当前事件所处的xpath
+    private XMLStreamReader reader    = null; //底层的XMLStreamReader
+    private XmlReader       xmlReader = null;
     //-----------------------------------------------------
-    public XmlStreamEvent(String xpath, XMLStreamReader reader) {
+    public XmlStreamEvent(String xpath, XmlReader xmlReader, XMLStreamReader reader) {
         this.xpath = xpath;
         this.reader = reader;
+        this.xmlReader = xmlReader;
     }
     //-----------------------------------------------------
     /**获取当前事件所处的xpath。*/
@@ -41,5 +43,9 @@ public abstract class XmlStreamEvent {
     /**提供有关事件位置的信息。Location 提供的所有信息都是可选的。例如，应用程序可以只报告行号。*/
     public Location getLocation() {
         return this.reader.getLocation();
+    }
+    /**获取产生该事件的{@link XmlReader}对象*/
+    public XmlReader getXmlReader() {
+        return xmlReader;
     }
 }

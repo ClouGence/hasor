@@ -15,6 +15,7 @@
  */
 package org.more.core.xml.stream.event;
 import javax.xml.stream.XMLStreamReader;
+import org.more.core.xml.stream.XmlReader;
 import org.more.core.xml.stream.XmlStreamEvent;
 /**
  * 当遇到标签结束时。
@@ -22,7 +23,7 @@ import org.more.core.xml.stream.XmlStreamEvent;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class EndElementEvent extends XmlStreamEvent {
-    public EndElementEvent(String xpath, XMLStreamReader reader) {
-        super(xpath, reader);
+    public EndElementEvent(String xpath, XmlReader xmlReader, XMLStreamReader reader) {
+        super(xpath, xmlReader, reader);
     }
 }
