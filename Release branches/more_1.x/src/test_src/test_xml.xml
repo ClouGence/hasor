@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<beans xmlns="http://www.test.org/schema/config" xmlns:config="http://www.test.org/schema/config" xmlns:bean="http://www.test.org/schema/beans">
+	<config name="a" type="a.b.c">
+
+	</config>
+
+	<config:config name="b">
+	</config:config>
+	<bean:bean xmlns:aop="http://www.test.org/schema/aop" xmlns:config="http://www.test.org/schema/config2">
+		<aop:before config:name="cn" bean:name="bn" />
+		<config:param />
+	</bean:bean>
+</beans>
