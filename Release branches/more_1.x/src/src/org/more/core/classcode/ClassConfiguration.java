@@ -96,7 +96,7 @@ public class ClassConfiguration {
         if (this.classBuilder.isRenderAop() == true) {
             AopStrategy aopStrategy = classEngine.getAopStrategy();
             //(1)准备数据
-            Method[] aopMethodArray = new Method[this.renderAopMethodList.size()];//根据实际渲染的aop方法数目来创建数组。
+            org.more.core.classcode.Method[] aopMethodArray = new org.more.core.classcode.Method[this.renderAopMethodList.size()];//根据实际渲染的aop方法数目来创建数组。
             AopFilterChain_Start[] aopFilterChain = new AopFilterChain_Start[this.renderAopMethodList.size()];//根据实际渲染的aop方法数目来创建数组。
             //
             AopBeforeListener[] aopBeforeListener = classEngine.getAopBeforeListeners();
@@ -113,7 +113,10 @@ public class ClassConfiguration {
                     String fullDesc = m_name + "(" + m_desc + ")" + m_return;
                     int index = this.renderAopMethodList.indexOf(fullDesc);
                     if (index != -1) {
-                        aopMethodArray[index] = m;
+                        final int nameStart = AopClassAdapter.AopMethodPrefix.length();
+                        Method proxyMethod = EngineToos.findMethod(beanClass, m.getName().substring(nameStart), m.getParameterTypes());
+                        org.more.core.classcode.Method method = new org.more.core.classcode.Method(proxyMethod, m);
+                        aopMethodArray[index] = method;
                         //执行方法的aop策略。
                         AopBeforeListener[] _aopBeforeListener = aopStrategy.filterAopBeforeListener(obj, m, aopBeforeListener);
                         AopReturningListener[] _aopReturningListener = aopStrategy.filterAopReturningListener(obj, m, aopReturningListener);
@@ -133,7 +136,7 @@ public class ClassConfiguration {
             //(4)注入
             Method method_1 = beanClass.getMethod("set" + AopClassAdapter.AopFilterChainName, AopFilterChain_Start[].class);
             method_1.invoke(obj, new Object[] { aopFilterChain });//注入代理
-            Method method_2 = beanClass.getMethod("set" + AopClassAdapter.AopMethodArrayName, Method[].class);
+            Method method_2 = beanClass.getMethod("set" + AopClassAdapter.AopMethodArrayName, org.more.core.classcode.Method[].class);
             method_2.invoke(obj, new Object[] { aopMethodArray });//注入方法
         }
         return obj;

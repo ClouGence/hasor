@@ -44,6 +44,22 @@ public class StartElementEvent extends XmlStreamEvent {
     public String getNamespaceURI() {
         return this.getName().getNamespaceURI();
     }
+    /**获取在这个元素上定义的命名空间总数。*/
+    public int getNamespaceCount() {
+        return this.getReader().getNamespaceCount();
+    }
+    /**获取在这个元素上定义的指定索引的命名空间前缀。*/
+    public String getNamespacePrefix(int index) {
+        return this.getReader().getNamespacePrefix(index);
+    }
+    /**获取在这个元素上定义的指定索引的命名空间URI。*/
+    public String getNamespaceURI(int index) {
+        return this.getReader().getNamespaceURI(index);
+    }
+    /**使用指定的命名空间前缀获取命名空间URI。*/
+    public String getNamespaceURI(String prefix) {
+        return this.getReader().getNamespaceURI(prefix);
+    }
     /**获取在该元素上定义的属性总数。*/
     public int getAttributeCount() {
         return this.getReader().getAttributeCount();

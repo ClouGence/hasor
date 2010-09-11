@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.test.more.classcode;
-import java.lang.reflect.Method;
+import java.lang.annotation.Annotation;
 import org.junit.Test;
 import org.more.core.classcode.AopBeforeListener;
 import org.more.core.classcode.AopFilterChain;
@@ -22,6 +22,7 @@ import org.more.core.classcode.AopInvokeFilter;
 import org.more.core.classcode.AopReturningListener;
 import org.more.core.classcode.AopThrowingListener;
 import org.more.core.classcode.ClassEngine;
+import org.more.core.classcode.Method;
 /**
  *
  * @version 2010-8-25
@@ -40,6 +41,7 @@ public class AopTest {
         AopTest obj = (AopTest) ce.newInstance(null);
         obj.print();
     };
+    @Test
     public void print() {
         System.out.println("print method");
     }
@@ -57,6 +59,8 @@ class Test_Filter implements AopInvokeFilter {
 class Test_BeforeListener implements AopBeforeListener {
     public void beforeInvoke(Object target, Method method, Object[] args) {
         System.out.println("beforeInvoke");
+        Annotation annos = method.getTargetMeyhod().getAnnotation(Test.class);
+        System.out.println(annos);
     }
 }
 class Test_ReturningListener implements AopReturningListener {

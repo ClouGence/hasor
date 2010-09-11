@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.core.xml.stream;
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 /**
@@ -47,5 +48,9 @@ public abstract class XmlStreamEvent {
     /**获取产生该事件的{@link XmlReader}对象*/
     public XmlReader getXmlReader() {
         return xmlReader;
+    }
+    /**获取{@link NamespaceContext}对象。*/
+    public NamespaceContext getNamespaceContext() {
+        return this.reader.getNamespaceContext();
     }
 }

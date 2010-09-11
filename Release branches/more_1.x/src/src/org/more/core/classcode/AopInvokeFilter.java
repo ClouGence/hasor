@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 package org.more.core.classcode;
-import java.lang.reflect.Method;
 /**
- * 实现AOP的方法过滤器，通过过滤器中{@link AopFilterChain}对象的方法可以执行过滤器节点的下一个节点。
- * 当过滤器执行到最后一个节点时正式执行方法调用。如果过滤器想立即返回方法调用结果可以直接使用
- * callMethod对象的invoke函数直接调用目标方法产生方法返回值然后进行其他操作。
- * 利用多个{@link AopInvokeFilter}可以组成过滤器链。
- * <br/><img width="400" src="doc-files/classcode_struct.png"/>
- * @version 2010-9-3
- * @author 赵永春 (zyc@byshell.org)
- */
+* 实现AOP的方法过滤器，通过过滤器中{@link AopFilterChain}对象的方法可以执行过滤器节点的下一个节点。
+* 当过滤器执行到最后一个节点时正式执行方法调用。如果过滤器想立即返回方法调用结果可以直接使用
+* callMethod对象的invoke函数直接调用目标方法产生方法返回值然后进行其他操作。
+* 利用多个{@link AopInvokeFilter}可以组成过滤器链。
+* <br/><img width="400" src="doc-files/classcode_struct.png"/>
+* @version 2010-9-3
+* @author 赵永春 (zyc@byshell.org)
+*/
 public interface AopInvokeFilter {
     /**
      * 当调用受AOP拦截的方法时执行该方法，chain参数对象可以用来继续执行过滤器链。如果直接调用

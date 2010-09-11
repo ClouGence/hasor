@@ -49,7 +49,7 @@ public abstract class AbstractAttDecorator implements IAttribute {
      * @param source 准备替换的属性对象。
      * @throws NullPointerException 如果企图设置一个空值到装饰器将引发该异常。
      */
-    public void setSource(AttBase source) throws NullPointerException {
+    public void setSource(IAttribute source) throws NullPointerException {
         if (source == null)
             throw new NullPointerException("装饰目标属性对象为空。");
         else

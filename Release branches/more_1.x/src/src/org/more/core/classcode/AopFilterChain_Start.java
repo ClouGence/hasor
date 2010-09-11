@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.more.core.classcode;
-import java.lang.reflect.Method;
 import org.more.InvokeException;
 import org.more.LostException;
 /**

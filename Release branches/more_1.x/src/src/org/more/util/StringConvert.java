@@ -26,7 +26,7 @@ import java.util.Map;
  * @version 2009-4-29
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public final class StringConvert {
     private static final Byte    DefaultValue_Byte    = 0;
     private static final Short   DefaultValue_Short   = 0;

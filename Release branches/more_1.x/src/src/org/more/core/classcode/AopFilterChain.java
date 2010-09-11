@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 package org.more.core.classcode;
-import java.lang.reflect.Method;
 /**
- * 代表过滤器链的一个环节接口，当{@link AopInvokeFilter}接口的doInvokeFilter方法被执行时{@link AopFilterChain}类型参数对象
- * 表示这个过滤器所处过滤器链的下一个过滤器资源。本接口的doInvokeFilter方法表示执行过滤器资源，
- * 下一个过滤器资源可能是过滤器链的下一个过滤器元素也可能是真实的资源方法。对于classcode最终资源就是目标方法。
- * @version 2009-10-30
- * @author 赵永春 (zyc@byshell.org)
- */
+* 代表过滤器链的一个环节接口，当{@link AopInvokeFilter}接口的doInvokeFilter方法被执行时{@link AopFilterChain}类型参数对象
+* 表示这个过滤器所处过滤器链的下一个过滤器资源。本接口的doInvokeFilter方法表示执行过滤器资源，
+* 下一个过滤器资源可能是过滤器链的下一个过滤器元素也可能是真实的资源方法。对于classcode最终资源就是目标方法。
+* @version 2009-10-30
+* @author 赵永春 (zyc@byshell.org)
+*/
 public interface AopFilterChain {
     /**
      * 执行过滤器下一个过滤器资源的方法，通过该方法继续调用过滤器链的动作。

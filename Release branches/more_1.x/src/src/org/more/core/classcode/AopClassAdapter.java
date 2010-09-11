@@ -30,17 +30,19 @@ import org.more.core.asm.Opcodes;
  * @author 赵永春 (zyc@byshell.org)
  */
 class AopClassAdapter extends ClassAdapter implements Opcodes {
-    private ClassBuilder       classBuilder        = null;
-    private String             asmClassName        = null;
+    private ClassBuilder        classBuilder        = null;
+    private String              asmClassName        = null;
     //
     /**生成的Aop方法前缀*/
-    public final static String AopMethodPrefix     = "$method_";
+    public final static String  AopMethodPrefix     = "$method_";
     /**生成的字段名*/
-    public final static String AopMethodArrayName  = "$aopMethods";
+    public final static String  AopMethodArrayName  = "$aopMethods";
+    private final static String AopMethodType       = EngineToos.toAsmType(org.more.core.classcode.Method.class);
+    private final static String AopMethodArrayType  = EngineToos.toAsmType(org.more.core.classcode.Method[].class);
     /**生成的字段名*/
-    public final static String AopFilterChainName  = "$aopfilterChain";
+    public final static String  AopFilterChainName  = "$aopfilterChain";
     /**具有aop特性的方法特定描述*/
-    private ArrayList<String>  renderAopMethodList = new ArrayList<String>();
+    private ArrayList<String>   renderAopMethodList = new ArrayList<String>();
     //==================================================================================Constructor
     public AopClassAdapter(ClassVisitor visitor, ClassBuilder classBuilder) {
         super(visitor);
@@ -101,7 +103,7 @@ class AopClassAdapter extends ClassAdapter implements Opcodes {
         //输出FilterChain的数组，是进入Aop的过滤器链。
         this.putSimpleProperty(AopFilterChainName, AopFilterChain_Start[].class);
         //输出Method的数组，Method保存的是Aop方法。
-        this.putSimpleProperty(AopMethodArrayName, Method[].class);
+        this.putSimpleProperty(AopMethodArrayName, org.more.core.classcode.Method[].class);
         super.visitEnd();
     }
     /**输出简单属性，visitEnd方法调用，用于输出某一个属性的set方法和其字段。*/
@@ -151,7 +153,7 @@ class AopClassAdapter extends ClassAdapter implements Opcodes {
         mv.visitVarInsn(ALOAD, 0);
         //param 2 $aopMethod[6]
         mv.visitVarInsn(ALOAD, 0);//
-        mv.visitFieldInsn(GETFIELD, this.asmClassName, AopMethodArrayName, EngineToos.toAsmType(Method[].class));
+        mv.visitFieldInsn(GETFIELD, this.asmClassName, AopMethodArrayName, AopMethodArrayType);
         mv.visitIntInsn(BIPUSH, index);
         mv.visitInsn(AALOAD);
         //param 3 new Object[] { param }
@@ -190,7 +192,8 @@ class AopClassAdapter extends ClassAdapter implements Opcodes {
             mv.visitInsn(AASTORE);
         }
         //chain.doInvokeFilter(this, $aopMethod[6], new Object[] { param })
-        mv.visitMethodInsn(INVOKEVIRTUAL, EngineToos.replaceClassName(AopFilterChain_Start.class.getName()), "doInvokeFilter", "(Ljava/lang/Object;Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;");
+        String aop_desc = "(Ljava/lang/Object;" + AopMethodType + "[Ljava/lang/Object;)Ljava/lang/Object;";
+        mv.visitMethodInsn(INVOKEVIRTUAL, EngineToos.replaceClassName(AopFilterChain_Start.class.getName()), "doInvokeFilter", aop_desc);
         //return (String)a;
         if (asmReturns.equals("B") == true) {
             mv.visitTypeInsn(CHECKCAST, "java/lang/Byte");
