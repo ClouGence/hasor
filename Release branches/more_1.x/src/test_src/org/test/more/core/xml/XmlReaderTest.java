@@ -46,6 +46,7 @@ public class XmlReaderTest {
                 //                        System.out.println(((StartElementEvent) e).getAttributeValue(0));
                 //                }
             }
+            public void reset() {}
         }, null);//"/beans/config:config");
     }
 }

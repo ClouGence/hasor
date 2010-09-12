@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<beans xmlns="http://www.test.org/schema/config" xmlns:config="http://www.test.org/schema/config" xmlns:bean="http://www.test.org/schema/beans">
+<beans xmlns="http://www.test.org/schema/beans" xmlns:config="http://www.test.org/schema/config" xmlns:bean="http://www.test.org/schema/b">
 	<config name="a" type="a.b.c">
 	a
 	b
@@ -11,8 +11,11 @@
 
 	<config:config name="b">
 	</config:config>
-	<bean:bean xmlns:aop="http://www.test.org/schema/aop" xmlns:config="http://www.test.org/schema/config2">
-		<aop:before config:name="cn" bean:name="bn" />
+	<bean:bean xmlns:aop="http://www.test.org/schema/aop" xmlns:config="http://www.test.org/schema/config2" xmlns:att="http://www.test.org/schema/att">
+		<aop:before config:name="cn" bean:name="bn" att:name="aaa">
+			<aop:point name="aaaaa" class="bbbb"/>
+			<!-- sgdsf -->
+		</aop:before>
 		<config:param />
 	</bean:bean>
 </beans>

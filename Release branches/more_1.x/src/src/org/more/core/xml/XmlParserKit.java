@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.xml.stream;
+package org.more.core.xml;
+import org.more.core.xml.stream.XmlStreamEvent;
 /**
- * 该接口的功能是用于接收{@link XmlReader}类扫描的xml事件流。
+ *
  * @version 2010-9-11
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface XmlAccept {
-    /**重置该接收器的状态。*/
-    public void reset();
-    /**该方法是用于接受{@link XmlReader}类扫描的事件结果。*/
-    public void sendEvent(XmlStreamEvent e);
+public class XmlParserKit {
+    public void sendEvent(String xpath, XmlStreamEvent rootEvent) {
+        System.out.println(rootEvent.getClass().getSimpleName() + "\t\t\t" + rootEvent.getXpath() + "\t\t\t" + xpath);
+    }
 }

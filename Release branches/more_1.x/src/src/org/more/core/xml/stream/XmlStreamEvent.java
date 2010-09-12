@@ -15,6 +15,7 @@
  */
 package org.more.core.xml.stream;
 import javax.xml.namespace.NamespaceContext;
+import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 /**
@@ -23,9 +24,10 @@ import javax.xml.stream.XMLStreamReader;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class XmlStreamEvent {
-    private String          xpath     = null; //当前事件所处的xpath
-    private XMLStreamReader reader    = null; //底层的XMLStreamReader
-    private XmlReader       xmlReader = null;
+    private String          xpath          = null; //当前事件所处的xpath
+    private XMLStreamReader reader         = null; //底层的XMLStreamReader
+    private XmlReader       xmlReader      = null;
+    private QName           currentElement = null;
     //-----------------------------------------------------
     public XmlStreamEvent(String xpath, XmlReader xmlReader, XMLStreamReader reader) {
         this.xpath = xpath;
@@ -33,6 +35,14 @@ public abstract class XmlStreamEvent {
         this.xmlReader = xmlReader;
     }
     //-----------------------------------------------------
+    /**获取当前事件发生时所处的元素。*/
+    public QName getCurrentElement() {
+        return currentElement;
+    }
+    void setCurrentElement(ElementTree currentElementTree) {
+        if (currentElementTree != null)
+            this.currentElement = currentElementTree.getQname();
+    }
     /**获取当前事件所处的xpath。*/
     public String getXpath() {
         return this.xpath;

@@ -18,6 +18,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.more.core.xml.stream.event.TextEvent;
 /**
  *
@@ -61,6 +65,9 @@ public class XmlWriter implements XmlAccept {
         this.ignoreSpace = ignoreSpace;
     }
     //--------------------------------------------------------------------
+    public void reset() {
+        // TODO Auto-generated method stub
+    }
     public void sendEvent(XmlStreamEvent e) {
         //1.Ö´ÐÐºöÂÔ¡£
         if (e instanceof TextEvent == true) {
@@ -70,8 +77,9 @@ public class XmlWriter implements XmlAccept {
             if (textE.isSpaceEvent() == true && this.ignoreSpace == true)
                 return;
         }
+        XMLOutputFactory factory = XMLOutputFactory.newInstance();
+        XMLStreamWriter writer = factory.createXMLStreamWriter(this.xmlStrema);
 
-        javax.xml.stream.XMLOutputFactory.newInstance().createXMLEventWriter("", "");
         // TODO Auto-generated method stub
     }
 }

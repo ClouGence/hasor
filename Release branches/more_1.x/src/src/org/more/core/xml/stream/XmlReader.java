@@ -101,6 +101,7 @@ public class XmlReader {
     public void reader(XmlAccept accept, String ignoreXPath) throws XMLStreamException {
         if (accept == null)
             return;
+        accept.reset();
         //1.准备扫描的引擎。
         XMLInputFactory factory = XMLInputFactory.newInstance();
         XMLStreamReader reader = factory.createXMLStreamReader(this.xmlStrema);
@@ -108,6 +109,7 @@ public class XmlReader {
         reader = factory.createFilteredReader(reader, filter);
         //2.准备数据XPath
         StringBuffer currentXPath = new StringBuffer("/");
+        ElementTree currentElement = null;//设置当前事件所属的元素
         //3.轮询推送事件流
         while (true) {
             //(1).拉出事件类型
@@ -118,10 +120,12 @@ public class XmlReader {
             case XMLStreamConstants.START_DOCUMENT:
                 //开始文档
                 event = new StartDocumentEvent(currentXPath.toString(), this, reader);
+                event.setCurrentElement(currentElement);//设置当前元素
                 break;
             case XMLStreamConstants.END_DOCUMENT:
                 //结束文档
                 event = new EndDocumentEvent(currentXPath.toString(), this, reader);
+                event.setCurrentElement(currentElement);//设置当前元素
                 break;
             case XMLStreamConstants.START_ELEMENT:
                 //开始元素
@@ -129,29 +133,38 @@ public class XmlReader {
                     currentXPath.append("/");
                 currentXPath.append(this.getName(reader.getName()));
                 event = new StartElementEvent(currentXPath.toString(), this, reader);
+                currentElement = new ElementTree(reader.getName(), currentElement);
+                event.setCurrentElement(currentElement);//设置当前元素
                 break;
             case XMLStreamConstants.END_ELEMENT:
                 //结束元素
                 event = new EndElementEvent(currentXPath.toString(), this, reader);
+                event.setCurrentElement(currentElement);//设置当前元素
                 int index = currentXPath.lastIndexOf("/");
+                index = (index == 0) ? 1 : index;
                 currentXPath = currentXPath.delete(index, currentXPath.length());
+                currentElement = currentElement.getParent();
                 break;
             case XMLStreamConstants.COMMENT:
                 //注释
                 event = new TextEvent(currentXPath.toString(), this, reader, Type.Comment);
+                event.setCurrentElement(currentElement);//设置当前元素
                 break;
             case XMLStreamConstants.CDATA:
                 //CDATA数据
                 event = new TextEvent(currentXPath.toString(), this, reader, Type.CDATA);
+                event.setCurrentElement(currentElement);//设置当前元素
                 break;
             //---------------------------------------------
             case XMLStreamConstants.SPACE:
                 //可以忽略的空格
                 event = new TextEvent(currentXPath.toString(), this, reader, Type.Space);
+                event.setCurrentElement(currentElement);//设置当前元素
                 break;
             case XMLStreamConstants.CHARACTERS:
                 //字符数据
                 event = new TextEvent(currentXPath.toString(), this, reader, Type.Chars);
+                event.setCurrentElement(currentElement);//设置当前元素
                 break;
             }
             //(3).执行忽略
@@ -182,7 +195,10 @@ public class XmlReader {
                     StringBuffer currentXPathTemp = new StringBuffer(currentXPath.toString());
                     currentXPathTemp.append("/@");
                     currentXPathTemp.append(this.getName(qn));
+                    currentElement = new ElementTree(qn, currentElement);
                     event = new AttributeEvent(currentXPathTemp.toString(), this, reader, i);
+                    event.setCurrentElement(currentElement);
+                    currentElement = currentElement.getParent();
                     this.pushEvent(accept, event, ignoreXPath);
                 }
             }
@@ -235,5 +251,19 @@ class NullStreamFilter implements StreamFilter {
         if (this.parentFilter != null)
             accept = this.parentFilter.accept(reader);
         return accept;
+    }
+}
+class ElementTree {
+    private QName       qname  = null;
+    private ElementTree parent = null;
+    public ElementTree(QName qname, ElementTree parent) {
+        this.qname = qname;
+        this.parent = parent;
+    }
+    public QName getQname() {
+        return qname;
+    }
+    public ElementTree getParent() {
+        return parent;
     }
 }
