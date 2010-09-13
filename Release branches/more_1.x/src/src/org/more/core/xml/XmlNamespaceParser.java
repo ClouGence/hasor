@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.xml.stream;
+package org.more.core.xml;
+import org.more.core.xml.stream.XmlStreamEvent;
+import org.more.util.attribute.StackDecorator;
 /**
- * 该接口的功能是用于接收{@link XmlReader}类扫描的xml事件流。如果在解析期间由sendEvent方法抛出异常那么endAccept方法很可能不会被调用。
- * @version 2010-9-11
+ * Level 2：级别的事件接收者。经过{@link XmlParserKitManager}工具进行细分的xml事件分流之后都发送到了该接口中。
+ * @version 2010-9-13
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface XmlAccept {
-    /**开始{@link XmlAccept}接口的调用，该方法主要用于重置状态。*/
+public interface XmlNamespaceParser {
+    /**当收到开始解析的信号时，该方法主要用于初始化解析器。*/
     public void beginAccept();
-    /**结束{@link XmlAccept}接口的调用。*/
+    /**当收到停止解析的信号时，该方法主要用于做解析器的后续处理工作。*/
     public void endAccept();
-    /**该方法是用于接受{@link XmlReader}类扫描的事件结果。如果在解析期间由sendEvent方法抛出异常那么endAccept方法很可能不会被调用。*/
-    public void sendEvent(XmlStreamEvent e);
+    /**该方法在beginAccept和endAccept方法调用期间反复调用，每当Level 1发现一个事件都会通知给Level 2，然后由Level 2进行分发。*/
+    public void sendEvent(StackDecorator context, String xpath, XmlStreamEvent event);
 }

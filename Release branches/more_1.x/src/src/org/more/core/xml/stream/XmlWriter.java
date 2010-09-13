@@ -22,7 +22,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import org.more.core.xml.stream.event.TextEvent;
 /**
  *
  * @version 2010-9-7

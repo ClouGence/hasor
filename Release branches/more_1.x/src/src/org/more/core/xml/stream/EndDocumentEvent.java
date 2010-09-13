@@ -13,29 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.xml.stream.event;
+package org.more.core.xml.stream;
 import javax.xml.stream.XMLStreamReader;
-import org.more.core.xml.stream.XmlReader;
-import org.more.core.xml.stream.XmlStreamEvent;
 /**
- * 当开始阅读xml文档时。
+ * 当阅读xml结束时。
  * @version 2010-9-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public class StartDocumentEvent extends XmlStreamEvent {
-    public StartDocumentEvent(String xpath, XmlReader xmlReader, XMLStreamReader reader) {
+public class EndDocumentEvent extends XmlStreamEvent {
+    public EndDocumentEvent(String xpath, XmlReader xmlReader, XMLStreamReader reader) {
         super(xpath, xmlReader, reader);
-    }
-    /**如果输入编码已知，则返回输入编码；如果未知，则返回 null。*/
-    public String getEncoding() {
-        return this.getReader().getEncoding();
-    }
-    /**获取在 xml 声明中声明的 xml 版本，如果没有声明版本，则返回 null。*/
-    public String getVersion() {
-        return this.getReader().getVersion();
-    }
-    /**返回 xml 声明中声明的字符编码。*/
-    public String getCharacterEncoding() {
-        return this.getReader().getCharacterEncodingScheme();
     }
 }

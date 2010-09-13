@@ -17,24 +17,26 @@ package org.test.more.core.xml;
 import java.io.FileNotFoundException;
 import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
+import org.more.core.xml.stream.TextEvent;
 import org.more.core.xml.stream.XmlAccept;
 import org.more.core.xml.stream.XmlReader;
 import org.more.core.xml.stream.XmlStreamEvent;
-import org.more.core.xml.stream.event.TextEvent;
 /**
  *
  * @version 2010-9-8
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class XmlReaderTest {
+public class Level1_Test {
     @Test
     public void reader() throws FileNotFoundException, XMLStreamException {
         XmlReader reader = new XmlReader("bin/test_xml.xml");
         reader.setIgnoreComment(true);
         reader.setIgnoreSpace(true);
         reader.reader(new XmlAccept() {
+            public void beginAccept() {}
+            public void endAccept() {}
             public void sendEvent(XmlStreamEvent e) {
-                //                System.out.println(e.getClass() + "\t\t" + e.getXpath().toString());
+                                System.out.println(e.getClass() + "\t\t" + e.getXpath().toString());
                 //
                 if (e instanceof TextEvent)
                     System.out.print(((TextEvent) e).getTrimText());
@@ -46,7 +48,6 @@ public class XmlReaderTest {
                 //                        System.out.println(((StartElementEvent) e).getAttributeValue(0));
                 //                }
             }
-            public void reset() {}
         }, null);//"/beans/config:config");
     }
 }

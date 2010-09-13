@@ -18,7 +18,7 @@ import org.more.DoesSupportException;
 /**
  * 堆属性装饰器，利用该属性装饰器可以在属性集上增加另一个属性堆。其数据结构与堆相似。
  * 当在该装饰器上获取某个属性时，StackDecorator类型对象会首先在当前属性堆中寻找如果找不到则去上一个堆中去寻找。
- * 通过createStack方法可以创建一个新的属性堆。而dropStack方法可以销毁最上层的属性堆。
+ * 通过createStack方法可以创建一个新的属性堆。而dropStack方法可以销毁位于属性堆最上层。
  * @version 2010-9-11
  * @author 赵永春 (zyc@byshell.org)
  */

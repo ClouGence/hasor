@@ -17,54 +17,81 @@ package org.more.core.xml;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.xml.namespace.QName;
+import org.more.RepeateException;
 import org.more.StateException;
+import org.more.core.xml.stream.AttributeEvent;
+import org.more.core.xml.stream.EndDocumentEvent;
+import org.more.core.xml.stream.EndElementEvent;
+import org.more.core.xml.stream.StartDocumentEvent;
+import org.more.core.xml.stream.StartElementEvent;
+import org.more.core.xml.stream.TextEvent;
 import org.more.core.xml.stream.XmlAccept;
 import org.more.core.xml.stream.XmlStreamEvent;
-import org.more.core.xml.stream.event.AttributeEvent;
-import org.more.core.xml.stream.event.EndDocumentEvent;
-import org.more.core.xml.stream.event.EndElementEvent;
-import org.more.core.xml.stream.event.StartDocumentEvent;
-import org.more.core.xml.stream.event.StartElementEvent;
-import org.more.core.xml.stream.event.TextEvent;
 import org.more.util.attribute.AttBase;
+import org.more.util.attribute.IAttribute;
 import org.more.util.attribute.StackDecorator;
 /**
- *
+ * <b>Level 2</b>：该级别的xml访问策略关注于xml元素或属性与命名空间的对应性，使用XmlParserKitManager
+ * 可以专门用于访问某个命名空间下的元素。每个命名空间的解析器都是一个{@link XmlParserKit}类型对象。
+ * 在使用Level 2级别访问xml的时，需要将命名空间与解析器对应起来。并且借助Level 1的工具进行扫描xml。
  * @version 2010-9-8
  * @author 赵永春 (zyc@byshell.org)
  */
 public class XmlParserKitManager implements XmlAccept {
-    private HashMap<String, ArrayList<XmlParserKit>> regeditXmlParserKit = new HashMap<String, ArrayList<XmlParserKit>>(); //注册的命名空间解析工具集
-    private StackDecorator                           activateStack       = null;                                          //活动的前缀与命名空间映射。
+    /**注册的命名空间解析工具集*/
+    private HashMap<String, ArrayList<XmlNamespaceParser>> regeditXmlParserKit = new HashMap<String, ArrayList<XmlNamespaceParser>>();
+    /**活动的前缀与命名空间映射*/
+    private StackDecorator                                 activateStack       = null;
+    /**一个在分发xml事件流过程中一致存在的环境。*/
+    private StackDecorator                                 context             = new StackDecorator(new AttBase());
+    /**获取环境对象，的{@link IAttribute}属性接口。*/
+    public IAttribute getContext() {
+        return context.getSource();
+    }
     /**
-     *
-     * @param namespace
-     * @param kit
+     * 绑定某个命名空间处理器到一个解析器上。绑定的解析器可以用于监听到xml事件流信息。
+     * 如果企图重复关联某个解析器与命名空间的对应关系则会引发{@link RepeateException}异常。
+     * @param namespace 要绑定的命名空间。
+     * @param kit 要关联的解析器。
      */
-    public void regeditKit(String namespace, XmlParserKit kit) {
-        ArrayList<XmlParserKit> list = null;
+    public void regeditKit(String namespace, XmlNamespaceParser kit) throws RepeateException {
+        ArrayList<XmlNamespaceParser> list = null;
         if (this.regeditXmlParserKit.containsKey(namespace) == true)
             list = this.regeditXmlParserKit.get(namespace);
         else
-            list = new ArrayList<XmlParserKit>();
+            list = new ArrayList<XmlNamespaceParser>();
+        if (list.contains(kit) == true)
+            throw new RepeateException("命名空间[" + namespace + "]与解析器" + kit + "重复注册。");
         list.add(kit);
         this.regeditXmlParserKit.put(namespace, list);
     }
     /**
-     *
-     * @param namespace
-     * @param kit
+     * 解除注册使用regeditKit方法注册的namespace与{@link XmlParserKit}关联关系。
+     * @param namespace 要解除绑定的命名空间。
+     * @param kit 要解除关联的解析器。
      */
-    public void unRegeditKit(String namespace, XmlParserKit kit) {
+    public void unRegeditKit(String namespace, XmlNamespaceParser kit) {
         if (this.regeditXmlParserKit.containsKey(namespace) == false)
             return;
-        ArrayList<XmlParserKit> list = this.regeditXmlParserKit.get(namespace);
-        list.remove(kit);
+        ArrayList<XmlNamespaceParser> list = this.regeditXmlParserKit.get(namespace);
+        if (list.contains(kit) == true)
+            list.remove(kit);
     }
-    public void reset() {
+    /**开始{@link XmlAccept}接口的调用，该方法主要用于重置状态。*/
+    public void beginAccept() {
         this.activateStack = new StackDecorator(new AttBase());
+        for (ArrayList<XmlNamespaceParser> alList : this.regeditXmlParserKit.values())
+            for (XmlNamespaceParser xnp : alList)
+                xnp.beginAccept();
     }
-    /***/
+    /**结束{@link XmlAccept}接口的调用。*/
+    public void endAccept() {
+        this.activateStack = null;
+        for (ArrayList<XmlNamespaceParser> alList : this.regeditXmlParserKit.values())
+            for (XmlNamespaceParser xnp : alList)
+                xnp.endAccept();
+    }
+    /**实现{@link XmlAccept}接口用于接受事件的方法。*/
     public void sendEvent(XmlStreamEvent e) {
         //1.创建堆栈，激活命名空间处理器。
         if (e instanceof StartElementEvent) {
@@ -84,13 +111,13 @@ public class XmlParserKitManager implements XmlAccept {
             //(2).合成NameSpace专有的XPath
             String prefix = ee.getPrefix();
             NameSpace ns = (NameSpace) this.activateStack.getAttribute(prefix);
-            ns.appendXPath(ee.getName(), false);
+            ns.appendXPath(ee.getElementName(), false);
         } else if (e instanceof AttributeEvent) {
             AttributeEvent ee = (AttributeEvent) e;
             //(2).合成NameSpace专有的XPath
             String prefix = ee.getPrefix();
             NameSpace ns = (NameSpace) this.activateStack.getAttribute(prefix);
-            ns.appendXPath(ee.getName(), true);
+            ns.appendXPath(ee.getElementName(), true);
         }
         //3.确定事件传播的范围.
         boolean isPublic = false;
@@ -110,7 +137,7 @@ public class XmlParserKitManager implements XmlAccept {
             prefix = (prefix == null) ? "" : prefix;
             NameSpace atNS = (NameSpace) this.activateStack.getAttribute(prefix);
             if (atNS != null) {
-                ArrayList<XmlParserKit> kitList = this.regeditXmlParserKit.get(atNS.getUri());
+                ArrayList<XmlNamespaceParser> kitList = this.regeditXmlParserKit.get(atNS.getUri());
                 if (kitList != null)
                     this.issueEvent(e, atNS.getXpath(), kitList);
             }
@@ -129,7 +156,7 @@ public class XmlParserKitManager implements XmlAccept {
                         throw new StateException("解析错误，前缀[" + prefix + "]代表的命名空间没有被激活。");
                     xpath = atNS.getXpath();
                 }
-                ArrayList<XmlParserKit> kitList = this.regeditXmlParserKit.get(namespace);
+                ArrayList<XmlNamespaceParser> kitList = this.regeditXmlParserKit.get(namespace);
                 this.issueEvent(e, xpath, kitList);
             }
         }
@@ -150,14 +177,9 @@ public class XmlParserKitManager implements XmlAccept {
         if (e instanceof EndElementEvent)
             this.activateStack.dropStack();//销毁堆栈
     }
-    /**
-     *
-     * @param rootEvent
-     * @param xpath
-     * @param parserKitList
-     */
-    protected void issueEvent(XmlStreamEvent rootEvent, String xpath, ArrayList<XmlParserKit> parserKitList) {
-        for (XmlParserKit kit : parserKitList)
-            kit.sendEvent(xpath, rootEvent);
+    /**该方法是用于分发事件到{@link XmlParserKit}解析器上。*/
+    private void issueEvent(XmlStreamEvent rootEvent, String xpath, ArrayList<XmlNamespaceParser> parserKitList) {
+        for (XmlNamespaceParser kit : parserKitList)
+            kit.sendEvent(this.context, xpath, rootEvent);
     }
 }

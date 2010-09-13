@@ -24,15 +24,9 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import org.more.core.xml.stream.event.AttributeEvent;
-import org.more.core.xml.stream.event.EndDocumentEvent;
-import org.more.core.xml.stream.event.EndElementEvent;
-import org.more.core.xml.stream.event.StartDocumentEvent;
-import org.more.core.xml.stream.event.StartElementEvent;
-import org.more.core.xml.stream.event.TextEvent;
-import org.more.core.xml.stream.event.TextEvent.Type;
+import org.more.core.xml.stream.TextEvent.Type;
 /**
- * xml读取器，该类的功能是将xml数据流转换成为xml事件流。并且可以在扫描xml时执行xml的忽略策略。
+ * <b>Level 1</b>：数据访问策略。该类的功能是将xml数据流转换成为xml事件流。并且可以在扫描xml时执行xml的忽略策略。
  * @version 2010-9-8
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -101,7 +95,7 @@ public class XmlReader {
     public void reader(XmlAccept accept, String ignoreXPath) throws XMLStreamException {
         if (accept == null)
             return;
-        accept.reset();
+        accept.beginAccept();
         //1.准备扫描的引擎。
         XMLInputFactory factory = XMLInputFactory.newInstance();
         XMLStreamReader reader = factory.createXMLStreamReader(this.xmlStrema);
@@ -208,6 +202,7 @@ public class XmlReader {
                 break;
         }
         //
+        accept.endAccept();
     }
     private int readEvent(XMLStreamReader reader) throws XMLStreamException {
         if (reader.hasNext() == false)

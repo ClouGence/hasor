@@ -17,24 +17,32 @@ package org.test.more.core.xml;
 import java.io.FileNotFoundException;
 import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
-import org.more.core.xml.XmlParserKit;
+import org.more.core.xml.XmlNamespaceParser;
 import org.more.core.xml.XmlParserKitManager;
 import org.more.core.xml.stream.XmlReader;
+import org.more.core.xml.stream.XmlStreamEvent;
+import org.more.util.attribute.StackDecorator;
 /**
  *
  * @version 2010-9-8
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class XmlParserKitTest {
+public class Level2_Test {
     @Test
     public void reader() throws FileNotFoundException, XMLStreamException {
         XmlReader reader = new XmlReader("bin/test_xml.xml");
-        reader.setIgnoreComment(true);
-        reader.setIgnoreSpace(true);
+        //        reader.setIgnoreComment(true);
+        //        reader.setIgnoreSpace(true);
         XmlParserKitManager manager = new XmlParserKitManager();
-        manager.regeditKit("http://www.test.org/schema/att", new XmlParserKit());
         //        manager.regeditKit("http://www.test.org/schema/beans", new XmlParserKit());
         //        manager.regeditKit("http://www.test.org/schema/config", new XmlParserKit());
+        manager.regeditKit("http://www.test.org/schema/b", new XmlNamespaceParser() {
+            public void endAccept() {}
+            public void beginAccept() {}
+            public void sendEvent(StackDecorator context, String xpath, XmlStreamEvent event) {
+                System.out.println(event.getClass().getSimpleName() + "\t\t\t" + event.getXpath() + "\t\t\t" + xpath);
+            }
+        });
         reader.reader(manager, null);//"/beans/config:config");
     }
 }

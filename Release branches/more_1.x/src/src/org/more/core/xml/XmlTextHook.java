@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.xml.stream.event;
-import javax.xml.stream.XMLStreamReader;
-import org.more.core.xml.stream.XmlReader;
-import org.more.core.xml.stream.XmlStreamEvent;
+package org.more.core.xml;
+import org.more.core.xml.stream.TextEvent;
+import org.more.util.attribute.StackDecorator;
 /**
- * 当阅读xml结束时。
- * @version 2010-9-8
+ * 当遇到字符数据时使用该接口解析，字符数据类型包括了CDATA，Chars，space。
+ * @version 2010-9-13
  * @author 赵永春 (zyc@byshell.org)
  */
-public class EndDocumentEvent extends XmlStreamEvent {
-    public EndDocumentEvent(String xpath, XmlReader xmlReader, XMLStreamReader reader) {
-        super(xpath, xmlReader, reader);
-    }
+public interface XmlTextHook extends XmlParserHook {
+    /**
+     * 当发生一个字符数据事件时，字符数据类型包括了CDATA，Chars，space。
+     * @param context 环境上下文。
+     * @param xpath 当前标签在所定义的命名空间中的xpath。
+     * @param event 事件。
+     */
+    public void text(StackDecorator context, String xpath, TextEvent event);
 }

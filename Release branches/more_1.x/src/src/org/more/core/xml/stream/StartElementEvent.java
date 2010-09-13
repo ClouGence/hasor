@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.xml.stream.event;
+package org.more.core.xml.stream;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import org.more.core.xml.stream.XmlReader;
-import org.more.core.xml.stream.XmlStreamEvent;
 /**
  * 当遇到一个开始标签时。
  * @version 2010-9-8

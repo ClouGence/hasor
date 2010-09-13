@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.more.core.xml;
-import javax.xml.namespace.QName;
 /**
  * 该类在{@link XmlParserKitManager}类，用于标记命名空间和xpath的对应关系。
  * @version 2010-9-12
@@ -37,26 +36,17 @@ class NameSpace {
         return this.xpath.toString();
     }
     /**追加xpath一个节点。*/
-    public void appendXPath(QName name, boolean isAttribute) {
+    public void appendXPath(String name, boolean isAttribute) {
         if (this.xpath.indexOf("/") != this.xpath.length() - 1)
             this.xpath.append("/");
         if (isAttribute == true)
             this.xpath.append("@");
-        this.xpath.append(this.getName(name));
+        this.xpath.append(name);
     }
     /**删除xpath的最后一个节点。*/
     public void removeXPath() {
         int index = this.xpath.lastIndexOf("/");
         index = (index == 0) ? 1 : index;
         this.xpath = this.xpath.delete(index, this.xpath.length());
-    }
-    private String getName(QName qname) {
-        String prefix = qname.getPrefix();
-        StringBuffer sb = new StringBuffer();
-        if (prefix == null || prefix.equals("") == true) {} else {
-            sb.append(prefix);
-            sb.append(":");
-        }
-        return sb.append(qname.getLocalPart()).toString();
     }
 }

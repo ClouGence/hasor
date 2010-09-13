@@ -13,17 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.xml.stream;
+package org.more.core.xml;
 /**
- * 该接口的功能是用于接收{@link XmlReader}类扫描的xml事件流。如果在解析期间由sendEvent方法抛出异常那么endAccept方法很可能不会被调用。
- * @version 2010-9-11
+ * 该接口是一个标记接口，Level 3级别中用于处理xml的hook接口全部实现了该接口。
+ * @version 2010-9-13
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface XmlAccept {
-    /**开始{@link XmlAccept}接口的调用，该方法主要用于重置状态。*/
-    public void beginAccept();
-    /**结束{@link XmlAccept}接口的调用。*/
-    public void endAccept();
-    /**该方法是用于接受{@link XmlReader}类扫描的事件结果。如果在解析期间由sendEvent方法抛出异常那么endAccept方法很可能不会被调用。*/
-    public void sendEvent(XmlStreamEvent e);
-}
+public interface XmlParserHook {}
