@@ -55,6 +55,7 @@ public class Level3_Test {
                 int index = event.getAttributeCount();
                 if (index != 0)
                     System.out.println(event.getAttributeName(index - 1) + "=" + event.getAttributeValue(index - 1));
+                System.out.println(event.getAttributeValue("name"));
                 System.out.println(event.getName());
             }
         });
