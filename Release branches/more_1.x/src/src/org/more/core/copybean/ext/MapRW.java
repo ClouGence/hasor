@@ -23,20 +23,17 @@ import org.more.core.copybean.PropertyReaderWrite;
  * @version 2009-5-15
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class MapRW extends BeanType {
     /**  */
     private static final long serialVersionUID = -3987939968587042522L;
-    @Override
     public boolean checkObject(Object object) {
         return object instanceof Map;
     }
-    @Override
     protected Iterator<String> iteratorNames(Object obj) {
         Map map = (Map) obj;
         return map.keySet().iterator();
     }
-    @Override
     protected PropertyReaderWrite getPropertyRW(Object obj, String name) {
         MapReaderWrite prw = new MapReaderWrite();
         prw.setName(name);
@@ -49,21 +46,18 @@ public class MapRW extends BeanType {
  * Date : 2009-5-21
  * @author ’‘”¿¥∫
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "rawtypes" })
 class MapReaderWrite extends PropertyReaderWrite {
     /**  */
     private static final long serialVersionUID = 2185263906672697512L;
-    @Override
     public Object get() {
         Map att = (Map) this.getObject();
         return att.get(this.getName());
     }
-    @Override
     public void set(Object value) {
         Map att = (Map) this.getObject();
         att.put(this.getName(), value);
     }
-    @Override
     public Class<?> getPropertyClass() {
         return Object.class;
     }

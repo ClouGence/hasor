@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.more.CastException;
 /**
  * 字符串数据类型转换工具类
  * @version 2009-4-29
@@ -28,20 +29,20 @@ import java.util.Map;
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public final class StringConvert {
-    private static final Byte    DefaultValue_Byte    = 0;
-    private static final Short   DefaultValue_Short   = 0;
-    private static final Integer DefaultValue_Integer = 0;
-    private static final Long    DefaultValue_Long    = 0l;
-    private static final Float   DefaultValue_Float   = 0f;
-    private static final Double  DefaultValue_Double  = 0d;
-    private static final Boolean DefaultValue_Boolean = false;
+    private static final Character DefaultValue_Character = ' ';
+    private static final Byte      DefaultValue_Byte      = 0;
+    private static final Short     DefaultValue_Short     = 0;
+    private static final Integer   DefaultValue_Integer   = 0;
+    private static final Long      DefaultValue_Long      = 0l;
+    private static final Float     DefaultValue_Float     = 0f;
+    private static final Double    DefaultValue_Double    = 0d;
     /**
-     * 解析字符串为最小长度的数字类型。如果value保存的是0~255之间的数则该方法回返回byte类型，如果是256则返回short类型。
-     * 在比方说字符串值为125.6则返回值为float。
-     * @param value 要解析为数字的字符串
-     * @param defaultValue 如果数据错误取的默认值。
-     * @return 返回解析的字符串，如果解吸失败则返回0或者默认值
-     */
+    * 解析字符串为最小长度的数字类型。如果value保存的是0~255之间的数则该方法回返回byte类型，如果是256则返回short类型。
+    * 在比方说字符串值为125.6则返回值为float。
+    * @param value 要解析为数字的字符串
+    * @param defaultValue 如果数据错误取的默认值。
+    * @return 返回解析的字符串，如果解吸失败则返回0或者默认值
+    */
     public static Number parseNumber(final String value, final Number... defaultValue) {
         try {
             if (value.indexOf(".") != -1)
@@ -69,49 +70,60 @@ public final class StringConvert {
         }
     }
     /**
-     * 数据类型转换，只支持如下数据类型：String，Integer，Byte，Character，Short，Long，Float，Double，Boolean，Date。
+     * 数据类型转换，只支持如下数据类型：String，StringBuffer，Integer，Byte，Character，Short，Long，Float，Double，Boolean，Date。
      * 示例：DataType.changeType("12",Integer.class,-1);返回值为12。DataType.changeType("aa",Integer.class,-1);返回值为-1。
      * 注意：如果不指定转换类型默认类型是转换到String类型。并且默认值是null。
      * @param value 要转换的数据类型。
      * @param param 可变的参数第一个参数是要转换的类型， 第二个参数是转换到目标类型时如果失败采用的默认值。
      * @return 返回转换之后的值。
      */
-    public static Object changeType(final String value, final Object... param) {
-        if (value == null)
+    public static Object changeType(final Object value, final Class<?> toType, final Object... defaultValue) {
+        if (value == null || toType == null)
             return null;
-        Class<?> type = String.class;
-        Object defaultValue = null;
-        // -----------
-        if (param.length == 1) {
-            type = (Class<?>) param[0];
-        } else if (param.length == 2) {
-            type = (Class<?>) param[0];
-            defaultValue = param[1];
-        }
-        defaultValue = (defaultValue == null) ? "0" : defaultValue;
-        // -----------
-        if (Integer.class == type || int.class == type) {
-            return StringConvert.parseInt(value, Integer.parseInt(defaultValue.toString()));
-        } else if (String.class == type) {
-            return value.toString();
-        } else if (Byte.class == type || byte.class == type) {
-            return StringConvert.parseByte(value, Byte.parseByte(defaultValue.toString()));
-        } else if (Character.class == type || char.class == type) {
-            return Character.valueOf(value.charAt(0));
-        } else if (Short.class == type || short.class == type) {
-            return StringConvert.parseShort(value, Short.parseShort(defaultValue.toString()));
-        } else if (Long.class == type || long.class == type) {
-            return StringConvert.parseLong(value, Long.parseLong(defaultValue.toString()));
-        } else if (Float.class == type || float.class == type) {
-            return StringConvert.parseFloat(value, Float.parseFloat(defaultValue.toString()));
-        } else if (Double.class == type || double.class == type) {
-            return StringConvert.parseDouble(value, Double.parseDouble(defaultValue.toString()));
-        } else if (Boolean.class == type || boolean.class == type) {
-            return StringConvert.parseBoolean(value, Boolean.parseBoolean(defaultValue.toString()));
-        } else if (Date.class == type) {
-            return StringConvert.parseDate(value, new Date());
-        } else
+        String valueString = value.toString();
+        Object defaultVar = (defaultValue.length >= 1) ? defaultValue[0] : null;
+        // -----------可以直接转换
+        if (toType.isAssignableFrom(value.getClass()) == true)
             return value;
+        // -----------String形式
+        else if (String.class == toType)
+            return valueString;
+        else if (StringBuffer.class == toType)
+            return new StringBuffer(valueString);
+        else if (Integer.class == toType || int.class == toType)
+            return StringConvert.parseInt(valueString, (Integer) defaultVar);
+        else if (Byte.class == toType || byte.class == toType)
+            return StringConvert.parseByte(valueString, (Byte) defaultVar);
+        else if (Character.class == toType || char.class == toType) {
+            if (valueString.equals("") == true)
+                return DefaultValue_Character;
+            return Character.valueOf(valueString.charAt(0));
+        } else if (Short.class == toType || short.class == toType)
+            return StringConvert.parseShort(valueString, (Short) defaultVar);
+        else if (Long.class == toType || long.class == toType)
+            return StringConvert.parseLong(valueString, (Long) defaultVar);
+        else if (Float.class == toType || float.class == toType)
+            return StringConvert.parseFloat(valueString, (Float) defaultVar);
+        else if (Double.class == toType || double.class == toType)
+            return StringConvert.parseDouble(valueString, (Double) defaultVar);
+        else if (Boolean.class == toType || boolean.class == toType)
+            return StringConvert.parseBoolean(valueString);
+        else if (Date.class.isAssignableFrom(toType) == true) {
+            if (value instanceof Date == true)
+                return value;
+            return StringConvert.parseDate(valueString);
+        }
+        // -----------处理枚举
+        else if (Enum.class.isAssignableFrom(toType) == true) {
+            Class<Enum<?>> e = (Class<Enum<?>>) toType;
+            for (Enum<?> item : e.getEnumConstants()) {
+                String enumValue = item.name().toLowerCase();
+                if (enumValue.equals(valueString.toLowerCase()) == true)
+                    return item;
+            }
+            return null;
+        } else
+            throw new CastException("from [" + value.getClass() + "] to [" + toType + "]不支持的转换类型。");
     }
     /**
      * 将字符类型数据转换成int类型数据。如果字符串格式非法其默认值为0。示例：
@@ -122,7 +134,7 @@ public final class StringConvert {
      */
     public static Integer parseInt(final String value, final Integer... defaultValue) {
         try {
-            return (value == null || value.equals("") == false) ? Integer.parseInt(value) : defaultValue[0];
+            return (value == null || value.equals("") == false) ? Integer.valueOf(value) : defaultValue[0];
         } catch (Exception e) {
             return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Integer;
         }
@@ -136,7 +148,10 @@ public final class StringConvert {
      */
     public static Float parseFloat(final String value, final Float... defaultValue) {
         try {
-            return (value == null || value.equals("") == false) ? Float.parseFloat(value) : defaultValue[0];
+            float var = (value == null || value.equals("") == false) ? Float.valueOf(value) : defaultValue[0];
+            if (Float.isNaN(var) == true || Float.isInfinite(var) == true)
+                return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Float;
+            return var;
         } catch (Exception e) {
             return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Float;
         }
@@ -150,25 +165,25 @@ public final class StringConvert {
      */
     public static Double parseDouble(final String value, final Double... defaultValue) {
         try {
-            return (value == null || value.equals("") == false) ? Double.parseDouble(value) : defaultValue[0];
+            return (value == null || value.equals("") == false) ? Double.valueOf(value) : defaultValue[0];
         } catch (Exception e) {
             return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Double;
         }
     }
     /**
-     * 将字符类型数据转换成boolean类型数据。如果字符串格式非法其默认值为false。示例：
-     * DataType.getBoolean("aa",0);返回false或者DataType.getBoolean("true",0);返回true
-     * 参数0返回false，参数非0数字返回true
+     * 将字符类型数据转换成boolean类型数据。(0,no,N)表示false，(1,yes,Y)表示yes
      * @param value 数据字符串。
-     * @param defaultValue 如果数据错误取的默认值。
      * @return 返回boolean的转换结果。
      */
-    public static Boolean parseBoolean(final String value, final Boolean... defaultValue) {
-        try {
-            return (value == null || value.equals("") == true) ? defaultValue[0] : Boolean.parseBoolean(value);
-        } catch (Exception e) {
-            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Boolean;
-        }
+    public static Boolean parseBoolean(final String value) {
+        if (value == null)
+            return false;
+        else if (value.equals("0") == true || value.equals("no") == true || value.equals("N") == true)
+            return false;
+        else if (value.equals("1") == true || value.equals("yes") == true || value.equals("Y") == true)
+            return true;
+        else
+            return Boolean.parseBoolean(value);
     }
     /**
      * 将字符类型数据转换成long类型数据。如果字符串格式非法其默认值为0。示例：
@@ -179,7 +194,7 @@ public final class StringConvert {
      */
     public static Long parseLong(final String value, final Long... defaultValue) {
         try {
-            return (value == null || value.equals("") == false) ? Long.parseLong(value) : defaultValue[0];
+            return (value == null || value.equals("") == false) ? Long.valueOf(value) : defaultValue[0];
         } catch (Exception e) {
             return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Long;
         }
@@ -193,7 +208,7 @@ public final class StringConvert {
      */
     public static Byte parseByte(final String value, final Byte... defaultValue) {
         try {
-            return (value == null || value.equals("") == false) ? Byte.parseByte(value) : defaultValue[0];
+            return (value == null || value.equals("") == false) ? Byte.valueOf(value) : defaultValue[0];
         } catch (Exception e) {
             return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Byte;
         }
@@ -207,7 +222,7 @@ public final class StringConvert {
      */
     public static Short parseShort(final String value, final Short... defaultValue) {
         try {
-            return (value == null || value.equals("") == false) ? Short.parseShort(value) : defaultValue[0];
+            return (value == null || value.equals("") == false) ? Short.valueOf(value) : defaultValue[0];
         } catch (Exception e) {
             return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Short;
         }
@@ -270,7 +285,7 @@ public final class StringConvert {
             toType = (Class<?>) param[1];
             defaultValue = param[2];
             array = (List<?>) param[3];
-            replay = StringConvert.parseBoolean(param[4].toString(), true);
+            replay = StringConvert.parseBoolean(param[4].toString());
         }
         // -------------------
         String[] temp_split = value.split(split);
@@ -406,7 +421,7 @@ public final class StringConvert {
             toType_val = (Class<?>) param[2];
             defaultValue = param[3];
             array = (Map) param[4];
-            replay = StringConvert.parseBoolean(param[4].toString(), true);
+            replay = StringConvert.parseBoolean(param[4].toString());
         }
         // -------------------
         String[] temp_split = value.split(split_val);// key=value
@@ -435,17 +450,15 @@ public final class StringConvert {
      * @return 返回Date的转换结果。
      * @throws ParseException
      */
-    public static Date parseDate(String value, Object... patam) {
+    public static Date parseDate(String value, String... patam) {
         String formatString = null;
         Date defaultValue = null;
         // -------------------
         if (patam.length == 0) {
             defaultValue = new Date();
             formatString = "yyyy/MM/dd-hh:mm:ss";
-        } else if (patam.length == 1) {
-            defaultValue = (patam[0] == null) ? new Date() : (Date) patam[0];
-            formatString = "yyyy/MM/dd-hh:mm:ss";
-        }
+        } else if (patam.length == 1)
+            formatString = (patam[0] == null) ? "yyyy/MM/dd-hh:mm:ss" : (String) patam[0];
         // -------------------
         if (value == null || value.equals(""))
             return defaultValue;
@@ -456,5 +469,20 @@ public final class StringConvert {
         } catch (Exception e) {
             return defaultValue;
         }
+    }
+    /**
+     * 将字符类型数据转换成指定的Enum类型数据，如果转换失败则返回null。
+     * @param value 数据字符串。
+     * @param forEnum 要转换的枚举类型。
+     * @param defaultValue 默认值
+     * @return 返回enum的转换结果。
+     */
+    public static Enum<?> parseEnum(final String value, final Class<? extends Enum<?>> forEnum, Enum<?>... defaultValue) {
+        for (Enum<?> item : forEnum.getEnumConstants()) {
+            String enumValue = item.name().toLowerCase();
+            if (enumValue.equals(value.toLowerCase()) == true)
+                return item;
+        }
+        return (defaultValue.length >= 1) ? defaultValue[0] : null;
     }
 }

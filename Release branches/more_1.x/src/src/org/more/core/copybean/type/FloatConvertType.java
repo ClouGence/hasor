@@ -24,11 +24,9 @@ import org.more.util.StringConvert;
 public class FloatConvertType extends ConvertType {
     /**  */
     private static final long serialVersionUID = 1L;
-    @Override
     public boolean checkType(Object from, Class<?> to) {
         return (to == Float.class || to == float.class) ? true : false;
     }
-    @Override
     public Object convert(Object object) {
         if (object == null)
             return 0;

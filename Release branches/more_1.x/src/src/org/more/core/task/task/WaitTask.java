@@ -62,7 +62,6 @@ public class WaitTask extends Task {
      * 获得当前任务中正在执行的任务对象，返回自己(this)
      * @return 获得当前任务中正在执行的任务对象，返回自己(this)
      */
-    @Override
     public Task getCurrent() {
         return this;
     }

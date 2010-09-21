@@ -63,7 +63,6 @@ public class KeepAttDecorator extends AbstractAttDecorator {
      * @param value 要保存的属性值。
      * @throws ReadOnlyException 如果被设置的属性拥有保持特性则引发该异常。
      */
-    @Override
     public void setAttribute(String name, Object value) throws ReadOnlyException {
         if (this.getSource().contains(name) == true)
             if (this.map.get(name).keep == true)
@@ -76,7 +75,6 @@ public class KeepAttDecorator extends AbstractAttDecorator {
      * @param name 要删除的属性名称。
      * @throws UnsupportedOperationException 如果被删除的属性拥有必须特性则引发该异常。
      */
-    @Override
     public void removeAttribute(String name) throws UnsupportedOperationException {
         if (this.getSource().contains(name) == true)
             if (this.map.get(name).master == true)

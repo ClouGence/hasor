@@ -39,7 +39,6 @@ public class JsonString extends JsonType {
     protected JsonString(JsonUtil currentContext) {
         super(currentContext);
     };
-    @Override
     public Object toObject(String str) {
         if (str.charAt(0) == 34 || str.charAt(0) == 39) {
             StringBuffer sb = new StringBuffer(str);
@@ -49,7 +48,6 @@ public class JsonString extends JsonType {
         } else
             return str;
     }
-    @Override
     public String toString(Object bean) {
         Reader sr;
         if (bean instanceof String)

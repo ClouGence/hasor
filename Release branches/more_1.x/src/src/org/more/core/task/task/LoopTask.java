@@ -33,7 +33,6 @@ public class LoopTask extends ItemTask {
     public LoopTask(Runnable runnable) {
         super(runnable);
     }
-    @Override
     protected void doRun() throws Exception {
         while (this.doRunCount != 0) {
             if (this.doRunCount > 0)
@@ -42,7 +41,6 @@ public class LoopTask extends ItemTask {
             super.doRun();
         }
     }
-    @Override
     protected void onException(Exception e) {
         this.doRunCount = 0;
         super.onException(e);

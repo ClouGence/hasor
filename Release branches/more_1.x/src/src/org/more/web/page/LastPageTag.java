@@ -29,13 +29,12 @@ public class LastPageTag extends BasePageTag {
     protected void doFirstStartPageTag() throws JspException {
         Object item = page.info.getItem(page.info.getSize() - 1); //获得最后一条
         //获得是否占领页码部分的最后一条
-        boolean occupyLastB = StringConvert.parseBoolean(this.occupyLast.toString(), false);
+        boolean occupyLastB = StringConvert.parseBoolean(this.occupyLast.toString());
         //first如果决定霸占最后一条则最后一条将被添加到after集合中标志着条已经被处理。
         if (occupyLastB == true && item != null)
             this.page.after.add(item);
         this.page.childTags.add(this);//在大环境中注册自己。
     }
-    @Override
     protected int doStartPageTag() throws JspException {
         Object item = page.info.getItem(page.info.getSize() - 1); //获得最后一条
         //如果不是最后一条则不执行

@@ -68,7 +68,6 @@ public abstract class Copy extends PropertyReaderWrite implements Serializable, 
      * @return 如果拷贝成功则返回true否则返回fale。
      */
     public abstract boolean copyTo(PropertyReaderWrite toObject);
-    @Override
     protected Object clone() throws CloneNotSupportedException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -82,35 +81,27 @@ public abstract class Copy extends PropertyReaderWrite implements Serializable, 
             throw new CloneNotSupportedException("在克隆时发生异常 msg=" + e.getMessage());
         }
     }
-    @Override
     public boolean canReader() {
         return this.rw.canReader();
     }
-    @Override
     public boolean canWrite() {
         return this.rw.canWrite();
     }
-    @Override
     public Object get() {
         return this.rw.get();
     }
-    @Override
     public String getName() {
         return this.rw.getName();
     }
-    @Override
     public Object getObject() {
         return this.rw.getObject();
     }
-    @Override
     public void set(Object value) {
         this.rw.set(value);
     }
-    @Override
     public void setName(String name) {
         this.rw.setName(name);
     }
-    @Override
     public void setObject(Object object) {
         this.rw.setObject(object);
     }
@@ -120,7 +111,6 @@ public abstract class Copy extends PropertyReaderWrite implements Serializable, 
     public void setRw(PropertyReaderWrite rw) {
         this.rw = rw;
     }
-    @Override
     public Class<?> getPropertyClass() {
         return this.rw.getPropertyClass();
     }

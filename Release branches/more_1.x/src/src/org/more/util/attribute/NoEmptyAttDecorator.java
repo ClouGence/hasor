@@ -36,7 +36,6 @@ public class NoEmptyAttDecorator extends AbstractAttDecorator {
      * @param value 要保存的属性值。
      * @throws NullPointerException 发生该异常表示企图设置一个空属性值到属性集合中。
      */
-    @Override
     public void setAttribute(String name, Object value) throws NullPointerException {
         if (value == null)
             throw new NullPointerException("不允许空属性值。");

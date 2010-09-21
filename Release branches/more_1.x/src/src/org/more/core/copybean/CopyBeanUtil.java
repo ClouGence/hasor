@@ -211,7 +211,6 @@ public final class CopyBeanUtil implements Serializable, Cloneable {
                 return type;
         return null;
     }
-    @Override
     protected Object clone() throws CloneNotSupportedException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();

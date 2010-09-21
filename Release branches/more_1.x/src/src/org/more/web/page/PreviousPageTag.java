@@ -27,11 +27,9 @@ public class PreviousPageTag extends BasePageTag {
     //出现位置 正数为前面的第几项，负数为后面，0则代表两边。
     private String            first            = null;                //当前页部分是距第一页的间隔数。
     private String            last             = null;                //当前页部分是距最后一页的间隔数。
-    @Override
     protected void doFirstStartPageTag() throws JspException {
         this.page.childTags.add(this);//在大环境中注册自己。
     }
-    @Override
     protected int doStartPageTag() throws JspException {
         Object item_c = this.page.info.getCurrentItem();
         //

@@ -23,11 +23,9 @@ import org.more.core.copybean.ConvertType;
 public class ObjectConvertType extends ConvertType {
     /**  */
     private static final long serialVersionUID = -3992654676741781922L;
-    @Override
     public boolean checkType(Object from, Class<?> to) {
         return (to == Object.class) ? true : false;
     }
-    @Override
     public Object convert(Object object) {
         return object;
     }

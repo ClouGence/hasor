@@ -45,7 +45,6 @@ public class JsonObject extends JsonMixed {
         }
         return -1;
     }
-    @Override
     public Object toObject(String str) {
         StringBuffer sb = new StringBuffer(str);
         if (sb.charAt(0) == '{') {} else
@@ -75,7 +74,6 @@ public class JsonObject extends JsonMixed {
         }
         return map;
     }
-    @Override
     public String toString(Object bean) {
         StringBuffer json = new StringBuffer("{");
         if (bean instanceof IAttribute) {

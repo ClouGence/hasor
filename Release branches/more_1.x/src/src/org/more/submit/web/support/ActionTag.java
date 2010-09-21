@@ -44,7 +44,6 @@ public class ActionTag extends BodyTagSupport {
     public void addParam(String key, Object value) {
         params.put(key, value);
     };
-    @Override
     public int doStartTag() throws JspException {
         this.params = new HashMap<String, Object>();
         CopyBeanUtil.newInstance().copy(this.pageContext.getRequest(), params);
@@ -54,7 +53,6 @@ public class ActionTag extends BodyTagSupport {
     public JspWriter getOut() {
         return this.pageContext.getOut();
     };
-    @Override
     public int doEndTag() throws JspException {
         Object resultObject = null;
         //获取请求以及响应参数

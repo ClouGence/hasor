@@ -27,7 +27,6 @@ public class JsonArray extends JsonMixed {
     protected JsonArray(JsonUtil currentContext) {
         super(currentContext);
     };
-    @Override
     public Object toObject(String str) {
         StringBuffer sb = new StringBuffer(str);
         if (sb.charAt(0) == '[') {} else
@@ -53,7 +52,6 @@ public class JsonArray extends JsonMixed {
         }
         return al.toArray();
     }
-    @Override
     public String toString(Object bean) {
         StringBuffer json = new StringBuffer("[");
         if (bean instanceof Collection == true) {

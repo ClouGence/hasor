@@ -24,11 +24,9 @@ import org.more.util.StringConvert;
 public class DoubleConvertType extends ConvertType {
     /**  */
     private static final long serialVersionUID = -3992654676741781922L;
-    @Override
     public boolean checkType(Object from, Class<?> to) {
         return (to == Double.class || to == double.class) ? true : false;
     }
-    @Override
     public Object convert(Object object) {
         if (object == null)
             return 0;

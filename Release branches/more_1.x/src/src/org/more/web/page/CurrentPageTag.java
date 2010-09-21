@@ -24,11 +24,9 @@ import org.more.util.StringConvert;
 public class CurrentPageTag extends BasePageTag {
     /**  */
     private static final long serialVersionUID = -2131953397444450076L;
-    @Override
     protected void doFirstStartPageTag() throws JspException {
         this.page.childTags.add(this);//在大环境中注册自己。
     }
-    @Override
     protected int doStartPageTag() throws JspException {
         Object item = this.page.info.getCurrentItem();
         //如果当前循环的项不是当前项那么忽略
@@ -40,7 +38,7 @@ public class CurrentPageTag extends BasePageTag {
             BasePageTag[] fTag = this.page.getTagByClass(FirstPageTag.class);
             if (fTag.length == 1) {
                 FirstPageTag ft = (FirstPageTag) fTag[0];
-                boolean occupyFirst = StringConvert.parseBoolean(ft.occupyFirst.toString(), false);
+                boolean occupyFirst = StringConvert.parseBoolean(ft.occupyFirst.toString());
                 if (occupyFirst == true)
                     return SKIP_BODY;
             }
@@ -50,7 +48,7 @@ public class CurrentPageTag extends BasePageTag {
             BasePageTag[] fTag = this.page.getTagByClass(LastPageTag.class);
             if (fTag.length == 1) {
                 LastPageTag ft = (LastPageTag) fTag[0];
-                boolean occupyLast = StringConvert.parseBoolean(ft.occupyLast.toString(), false);
+                boolean occupyLast = StringConvert.parseBoolean(ft.occupyLast.toString());
                 if (occupyLast == true)
                     return SKIP_BODY;
             }

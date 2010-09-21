@@ -26,7 +26,6 @@ import org.more.core.copybean.PropertyReaderWrite;
  * @version 2009-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
-@SuppressWarnings("unchecked")
 public class DeepCopy extends Copy {
     /**  */
     private static final long serialVersionUID = 3577120677124915374L;
@@ -36,7 +35,6 @@ public class DeepCopy extends Copy {
      * @return 如果拷贝成功则返回true否则返回fale。
      * @throws Exception  如果拷贝中发生异常
      */
-    @Override
     public boolean copyTo(PropertyReaderWrite toObject) {
         Object obj = this.get();
         if (obj == null) {

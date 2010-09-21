@@ -90,7 +90,6 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
     //1.附加实现接口
     //2.继承基类
     //3.修改新类类名
-    @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         //1.附加接口实现
         if (this.classBuilder.isAddDelegate() == true) {
@@ -112,7 +111,6 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
     }
     //
     //当是Propxy模式下时候就忽略字段的输出。
-    @Override
     public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
         if (this.classEngine.getBuilderMode() == BuilderMode.Propxy)
             return null;
@@ -121,7 +119,6 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
     //
     //1.方法忽略策略
     //2.输出已有方法，Super和Propxy。
-    @Override
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         BuilderMode builderMode = this.classEngine.getBuilderMode();
         String asmSuperClassName = this.classBuilder.getAsmSuperClassName();
@@ -208,7 +205,6 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
     //2.输出简单属性
     //3.输出委托属性
     //4.输出委托方法
-    @Override
     public void visitEnd() {
         //
         //1.输出Propxy的构造方法。
@@ -279,7 +275,6 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
                     //扫描附加接口方法
                     reader.accept(new ClassAdapter(new ClassWriter(ClassWriter.COMPUTE_MAXS)) {
                         private int methodIndex = 0;
-                        @Override
                         public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
                             if (adapter.localMethodList.contains(name + desc) == true)
                                 return null;//如果本地方法集合中存在该方法则忽略输出。

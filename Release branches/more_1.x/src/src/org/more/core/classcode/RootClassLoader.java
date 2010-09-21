@@ -29,7 +29,6 @@ public class RootClassLoader extends ClassLoader {
         this.classEngineList = new LinkedList<ClassEngine>();
     }
     /**负责装载新类。*/
-    @Override
     protected final Class<?> findClass(String name) throws ClassNotFoundException {
         for (ClassEngine engine : this.classEngineList)
             if (engine.getClassName().equals(name) == true) {

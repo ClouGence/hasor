@@ -148,7 +148,7 @@ class ComObjectFactory {
             throw new LogException("成功调用目标，但目标抛出异常，" + e.getMessage());
         }
         //
-        if (cb.getCommand("singleton") == null || StringConvert.parseBoolean(cb.getCommand("singleton").getValue(), true) == true)
+        if (cb.getCommand("singleton") == null || StringConvert.parseBoolean(cb.getCommand("singleton").getValue()) == true)
             this.comCache.put(name, obj);
         //
         return obj;

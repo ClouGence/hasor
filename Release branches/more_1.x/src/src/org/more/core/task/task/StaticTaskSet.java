@@ -65,7 +65,6 @@ public class StaticTaskSet extends LocationTask {
             else
                 this.addTaskItem(i);
     }
-    @Override
     protected void doRun() throws Exception {
         this.log.debug("Task doRun...");
         //设置静态集合任务中任务数是多少。
@@ -78,7 +77,6 @@ public class StaticTaskSet extends LocationTask {
         }
         this.currentTaskCache = null;
     }
-    @Override
     public Task getCurrent() {
         if (this.currentTaskCache == null)
             return this;

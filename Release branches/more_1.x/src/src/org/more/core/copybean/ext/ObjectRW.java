@@ -32,11 +32,9 @@ import org.more.core.copybean.PropertyReaderWrite;
 public class ObjectRW extends BeanType {
     /**  */
     private static final long serialVersionUID = -7254414264895159995L;
-    @Override
     public boolean checkObject(Object object) {
         return true;
     }
-    @Override
     protected Iterator<String> iteratorNames(Object obj) {
         Field[] fields = obj.getClass().getDeclaredFields();
         ArrayList<String> ns = new ArrayList<String>(0);
@@ -44,7 +42,6 @@ public class ObjectRW extends BeanType {
             ns.add(n.getName());
         return ns.iterator();
     }
-    @Override
     protected PropertyReaderWrite getPropertyRW(Object obj, String name) {
         ObjectReaderWrite prw = new ObjectReaderWrite();
         prw.setName(name);
@@ -77,7 +74,6 @@ class ObjectReaderWrite extends PropertyReaderWrite {
             this.type = null;
         }
     }
-    @Override
     public Object get() {
         try {
             return this.read_method.invoke(this.getObject());
@@ -85,7 +81,6 @@ class ObjectReaderWrite extends PropertyReaderWrite {
             return null;
         }
     }
-    @Override
     public void set(Object value) {
         if (value == null)
             return;
@@ -103,15 +98,12 @@ class ObjectReaderWrite extends PropertyReaderWrite {
             this.write_method.invoke(this.getObject(), inObject);
         } catch (Exception e) {}
     }
-    @Override
     public boolean canWrite() {
         return (this.write_method == null) ? false : true;
     }
-    @Override
     public boolean canReader() {
         return (this.read_method == null) ? false : true;
     }
-    @Override
     public Class<?> getPropertyClass() {
         return this.type;
     }

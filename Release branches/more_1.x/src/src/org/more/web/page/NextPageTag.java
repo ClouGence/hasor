@@ -26,7 +26,6 @@ public class NextPageTag extends BasePageTag {
     private static final long serialVersionUID = 9093745696928091335L;
     private String            first            = null;                //当前页部分是距第一页的间隔数。
     private String            last             = null;                //当前页部分是距最后一页的间隔数。
-    @Override
     protected void doFirstStartPageTag() throws JspException {
         //如果不存在不用继续考虑其他，因为不存在的分页项不会被执行
         if (this.page.info.hasNext() == false)
@@ -52,7 +51,6 @@ public class NextPageTag extends BasePageTag {
         if (this.page.after.contains(lastItem) == false && lastItem != null)
             this.page.after.add(lastItem); //占领lastItem
     }
-    @Override
     protected int doStartPageTag() throws JspException {
         Object item = page.info.getCurrentItem();
         //计算firstIndex，lastIndex
@@ -81,7 +79,6 @@ public class NextPageTag extends BasePageTag {
                 return this.doTag();
         return SKIP_BODY;
     }
-    @Override
     protected int doTag() throws JspException {
         Object item = page.info.getCurrentItem();
         //
@@ -90,7 +87,7 @@ public class NextPageTag extends BasePageTag {
             BasePageTag[] fTag = this.page.getTagByClass(FirstPageTag.class);
             if (fTag.length == 1) {
                 FirstPageTag ft = (FirstPageTag) fTag[0];
-                boolean occupyFirst = StringConvert.parseBoolean(ft.occupyFirst.toString(), false);
+                boolean occupyFirst = StringConvert.parseBoolean(ft.occupyFirst.toString());
                 if (occupyFirst == true)
                     return SKIP_BODY;
             }
@@ -100,7 +97,7 @@ public class NextPageTag extends BasePageTag {
             BasePageTag[] fTag = this.page.getTagByClass(LastPageTag.class);
             if (fTag.length == 1) {
                 LastPageTag ft = (LastPageTag) fTag[0];
-                boolean occupyLast = StringConvert.parseBoolean(ft.occupyLast.toString(), false);
+                boolean occupyLast = StringConvert.parseBoolean(ft.occupyLast.toString());
                 if (occupyLast == true)
                     return SKIP_BODY;
             }
@@ -113,7 +110,6 @@ public class NextPageTag extends BasePageTag {
         }
         return super.doTag();
     }
-    @Override
     public int doEndTag() throws JspException {
         return super.doEndTag();
     }

@@ -52,11 +52,9 @@ public class DateConvertType extends ConvertType {
     public void setDefaultType(int defaultType) {
         this.defaultType = defaultType;
     }
-    @Override
     public boolean checkType(Object from, Class<?> to) {
         return (to == Date.class) ? true : false;
     }
-    @Override
     public Object convert(Object object) {
         if (object == null)
             return getDefaultValue();

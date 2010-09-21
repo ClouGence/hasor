@@ -64,11 +64,35 @@ public class StartElementEvent extends XmlStreamEvent {
     }
     /**获取该元素上定义的指定属性名。*/
     public QName getAttributeName(int index) {
+        if (index > this.getAttributeCount())
+            return null;
         return this.getReader().getAttributeName(index);
     }
     /**获取该元素上定义的指定属性值。*/
     public String getAttributeValue(int index) {
+        if (index > this.getAttributeCount())
+            return null;
         return this.getReader().getAttributeValue(index);
+    }
+    /**获取该元素上定义的指定属性类型。*/
+    public String getAttributeType(int index) {
+        if (index > this.getAttributeCount())
+            return null;
+        return this.getReader().getAttributeType(index);
+    }
+    /**获取该元素上定义的指定属性类型。*/
+    public String getAttributeType(String name) {
+        for (int i = 0; i < this.getAttributeCount(); i++)
+            if (name.equals(this.getAttributeName(i).getLocalPart()) == true)
+                return this.getAttributeType(i);
+        return null;
+    }
+    /**获取该元素上定义的指定属性值。*/
+    public String getAttributeValue(String name) {
+        for (int i = 0; i < this.getAttributeCount(); i++)
+            if (name.equals(this.getAttributeName(i).getLocalPart()) == true)
+                return this.getAttributeValue(i);
+        return null;
     }
     /**读取纯文本元素的内容，如果不是纯文本元素，则抛出异常。*/
     public String getElementText() throws XMLStreamException {

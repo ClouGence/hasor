@@ -85,7 +85,6 @@ public class PageTag extends BodyTagSupport {
         return false;
     }
     /** 当遇到标签page时执行该方法，该方法将初始化info对象的迭代器用于迭代处理分页项。 */
-    @Override
     public int doStartTag() throws JspException {
         this.info.release();
         //测试迭代器中当前项是否为当前分页项
@@ -105,7 +104,6 @@ public class PageTag extends BodyTagSupport {
             return SKIP_BODY;
     }
     //2
-    @Override
     public int doAfterBody() throws JspException {
         if (this.info == null)
             throw new JspException("page标签必须设置info属性，该属性类型是PageInfo类型。");
@@ -124,7 +122,6 @@ public class PageTag extends BodyTagSupport {
             return SKIP_BODY;
     }
     //3清理临时数据
-    @Override
     public int doEndTag() throws JspException {
         this.info = null;
         this.childTags.clear();

@@ -28,18 +28,15 @@ import org.more.core.copybean.PropertyReaderWrite;
 public class ListRW extends BeanType {
     /**  */
     private static final long serialVersionUID = -3987939968587042522L;
-    @Override
     public boolean checkObject(Object object) {
         return object instanceof List;
     }
-    @Override
     protected Iterator<String> iteratorNames(Object obj) {
         //al没有任何作用只是为了得到一个迭代器，并且可以进入到getPropertyRW方法
         ArrayList al = new ArrayList();
         al.add("1");
         return al.iterator();
     }
-    @Override
     protected PropertyReaderWrite getPropertyRW(Object obj, String name) {
         ListReaderWrite prw = new ListReaderWrite();
         prw.setName(name);
@@ -56,18 +53,16 @@ public class ListRW extends BeanType {
 class ListReaderWrite extends PropertyReaderWrite {
     /**  */
     private static final long serialVersionUID = 2185263906672697512L;
-    @Override
     public Object get() {
         List att = (List) this.getObject();
         return att;
     }
-    @Override
+    @SuppressWarnings("rawtypes")
     public void set(Object value) {
         List att = (List) this.getObject();
         List fromList = (List) value;//准备将value的值设置到att中
         att.addAll(fromList);
     }
-    @Override
     public Class<?> getPropertyClass() {
         return Object.class;
     }

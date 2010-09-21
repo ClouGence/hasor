@@ -56,9 +56,23 @@ public class XmlParserKit implements XmlNamespaceParser {
     //----------------------------------------------------
     public void beginAccept() {}
     public void endAccept() {}
+    private ArrayList<XmlParserHook> getHooks(String xpath) {
+        String xpath2 = xpath;
+        for (String xp : this.hooks.keySet()) {
+            String matches = xp;
+            matches = matches.replace("\\", "\\\\");
+            matches = matches.replace("?", ".");
+            matches = matches.replace("*", ".*");
+            if (xpath.matches(matches) == true) {
+                xpath2 = xp;
+                break;
+            }
+        }
+        return this.hooks.get(xpath2);
+    };
     /** */
     public void sendEvent(StackDecorator context, String xpath, XmlStreamEvent event) {
-        ArrayList<XmlParserHook> hooks = this.hooks.get(xpath);
+        ArrayList<XmlParserHook> hooks = this.getHooks(xpath);
         if (hooks == null)
             return;
         //-----------

@@ -31,7 +31,6 @@ public class ShallowCopy extends Copy {
      * @return 如果拷贝成功则返回true否则返回fale。
      * @throws Exception  如果拷贝中发生异常
      */
-    @Override
     public boolean copyTo(PropertyReaderWrite toObject) {
         if (this.canReader() == true && toObject.canWrite() == true) {
             //from -> to

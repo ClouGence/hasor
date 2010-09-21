@@ -24,11 +24,9 @@ public class JsonNumber extends JsonType {
     protected JsonNumber(JsonUtil currentContext) {
         super(currentContext);
     };
-    @Override
     public Object toObject(String str) {
         return StringConvert.parseNumber(str, 0);
     }
-    @Override
     public String toString(Object bean) {
         if (bean instanceof Number == true)
             return bean.toString();

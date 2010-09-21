@@ -26,17 +26,15 @@ public class FirstPageTag extends BasePageTag {
     private static final long serialVersionUID = -9201682684698198985L;
     /** 标签属性，指出First标签是否占领页码部分的第一条，如果占领则页码从第二条开始，否则页码从第一条开始。true表示占领，false表示不占领。 */
     Object                    occupyFirst      = "false";
-    @Override
     protected void doFirstStartPageTag() throws JspException {
         Object item = page.info.getItem(0); //获得第一条
         //获得是否占领页码部分的第一条
-        boolean occupyFirstB = StringConvert.parseBoolean(this.occupyFirst.toString(), false);
+        boolean occupyFirstB = StringConvert.parseBoolean(this.occupyFirst.toString());
         //first如果决定霸占第一条则第一条将被添加到after集合中标志着条已经被处理。
         if (occupyFirstB == true && item != null)
             this.page.after.add(item);
         this.page.childTags.add(this);//在大环境中注册自己。
     }
-    @Override
     protected int doStartPageTag() throws JspException {
         Object item = page.info.getItem(0); //获得第一条
         //如果不是第一条则不执行

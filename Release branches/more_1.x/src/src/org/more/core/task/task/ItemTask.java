@@ -36,7 +36,6 @@ public class ItemTask extends Task {
         this.runnable = runnable;
     }
     /** 执行调用目标的run方法。 */
-    @Override
     protected void doRun() throws Exception {
         this.runnable.run();
     }
@@ -51,7 +50,6 @@ public class ItemTask extends Task {
      * 获得当前任务中正在执行的任务对象，返回自己(this)
      * @return 获得当前任务中正在执行的任务对象，返回自己(this)
      */
-    @Override
     public Task getCurrent() {
         return this;
     }

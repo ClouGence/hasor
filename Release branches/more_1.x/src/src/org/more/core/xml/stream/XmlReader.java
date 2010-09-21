@@ -80,8 +80,12 @@ public class XmlReader {
     protected boolean ignoreXPath(String currentXPath, String testXPath) {
         if (testXPath == null)
             return false;
-        //TODO XPath比较算法，比较currentXPath是否属于testXPath范围内的
-        if (currentXPath.startsWith(testXPath) == true)
+        //TODO XPath比较算法，比较currentXPath是否属于testXPath范围内的，目前使用的是?和*通配符。
+        String matches = testXPath;
+        matches = matches.replace("\\", "\\\\");
+        matches = matches.replace("?", ".");
+        matches = matches.replace("*", ".*");
+        if (currentXPath.matches(matches) == true)
             return true;
         else
             return false;

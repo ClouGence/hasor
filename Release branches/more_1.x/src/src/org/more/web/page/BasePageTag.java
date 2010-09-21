@@ -28,7 +28,6 @@ abstract class BasePageTag extends BodyTagSupport {
     protected PageTag         page             = null;                 // 父标签
     //1
     //该方法负责在第一次循环时调用doFirstStartPageTag方法以后的所有循环调用doStartPageTag方法。
-    @Override
     public int doStartTag() throws JspException {
         //检查父标签
         Tag tag = this.getParent();
@@ -47,7 +46,6 @@ abstract class BasePageTag extends BodyTagSupport {
         return this.doStartPageTag();
     }
     //3
-    @Override
     public int doEndTag() throws JspException {
         this.page = null;
         return super.doEndTag();

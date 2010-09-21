@@ -24,15 +24,13 @@ import org.more.util.StringConvert;
 public class BooleanConvertType extends ConvertType {
     /**  */
     private static final long serialVersionUID = 1L;
-    @Override
     public boolean checkType(Object from, Class<?> to) {
         return (to == Boolean.class || to == boolean.class) ? true : false;
     }
-    @Override
     public Object convert(Object object) {
         if (object == null)
             return 0;
         else
-            return StringConvert.parseBoolean(object.toString(), false);
+            return StringConvert.parseBoolean(object.toString());
     }
 }

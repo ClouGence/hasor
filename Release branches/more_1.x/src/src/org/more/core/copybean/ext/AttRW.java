@@ -27,11 +27,9 @@ import org.more.util.attribute.IAttribute;
 public class AttRW extends BeanType {
     /**  */
     private static final long serialVersionUID = 5550209216691841191L;
-    @Override
     public boolean checkObject(Object object) {
         return object instanceof IAttribute;
     }
-    @Override
     protected Iterator<String> iteratorNames(Object obj) {
         IAttribute att = (IAttribute) obj;
         ArrayList<String> ns = new ArrayList<String>(0);
@@ -39,7 +37,6 @@ public class AttRW extends BeanType {
             ns.add(n);
         return ns.iterator();
     }
-    @Override
     protected PropertyReaderWrite getPropertyRW(Object obj, String name) {
         AttReaderWrite prw = new AttReaderWrite();
         prw.setName(name);
@@ -55,17 +52,14 @@ public class AttRW extends BeanType {
 class AttReaderWrite extends PropertyReaderWrite {
     /**  */
     private static final long serialVersionUID = -2857886652147342020L;
-    @Override
     public Object get() {
         IAttribute att = (IAttribute) this.getObject();
         return att.getAttribute(this.getName());
     }
-    @Override
     public void set(Object value) {
         IAttribute att = (IAttribute) this.getObject();
         att.setAttribute(this.getName(), value);
     }
-    @Override
     public Class<?> getPropertyClass() {
         return Object.class;
     }

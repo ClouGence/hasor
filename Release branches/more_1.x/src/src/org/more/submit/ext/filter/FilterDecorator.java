@@ -52,7 +52,7 @@ public class FilterDecorator extends ActionContextDecorator {
                 boolean isPublic = false;
                 if (fts == null) {
                     String isPublicStr = (String) this.filterContext.getFilterProperty(fName, "isPublicFilter");
-                    isPublic = StringConvert.parseBoolean(isPublicStr, false);
+                    isPublic = StringConvert.parseBoolean(isPublicStr);
                 } else
                     isPublic = fts.isPublic();
                 //
