@@ -13,14 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.info;
+package org.more.beans.define;
 /**
- * 该类用于BeanProperty对象value属性，该的实际作用是用于区分不同{@link Prop Prop}对象。
- * @version 2009-11-18
+ * ClassBeanDefine类用于定义一个常规的bean，这个bean有一个具体的class类对象。
+ * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class BeanProp extends Prop {
-    //========================================================================================Field
-    /**  */
-    private static final long serialVersionUID = 5907558362552415426L;
+public class ClassBeanDefine extends TemplateBeanDefine {
+    private Class<?> source = null; //class类
+    /**获取类的class完整限定名。*/
+    public Class<?> getSource() {
+        return source;
+    }
+    /**设置类完整限定名。*/
+    public void setSource(Class<?> source) {
+        this.source = source;
+    }
 }
