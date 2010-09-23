@@ -14,22 +14,27 @@
  * limitations under the License.
  */
 package org.more.beans.resource.namespace;
+import org.more.beans.resource.AbstractXmlConfiguration;
 import org.more.core.xml.XmlElementHook;
+import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.util.attribute.StackDecorator;
 /**
  * 用于解析/beans标签
  * @version 2010-9-16
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TagBeans_Beans implements XmlElementHook {
+public class TagBeans_Beans extends Tag_Abstract implements XmlElementHook {
     /**保存于上下文中的Bean管理器。*/
     public static final String BeanDefineManager = "$more_BeanDefineManager";
-    public void beginElement(StackDecorator context, String xpath, StartElementEvent event) {
+    /**创建{@link TagBeans_Beans}对象*/
+    public TagBeans_Beans(AbstractXmlConfiguration configuration) {
+        super(configuration);
+    }
+    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
         context.createStack();
     }
-    public void endElement(StackDecorator context, String xpath, EndElementEvent event) {
+    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
         context.dropStack();
     }
 }

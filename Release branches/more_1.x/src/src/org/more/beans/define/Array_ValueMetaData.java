@@ -22,7 +22,7 @@ import org.more.beans.ValueMetaData.PropertyMetaTypeEnum;
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Array_ValueMetaData extends Collection_ValueMetaData {
+public class Array_ValueMetaData extends Collection_ValueMetaData<ValueMetaData> {
     private ArrayList<ValueMetaData> valueData = new ArrayList<ValueMetaData>(); //数据
     /**该方法将会返回{@link PropertyMetaTypeEnum#ArrayCollection}。*/
     public PropertyMetaTypeEnum getPropertyType() {
@@ -30,7 +30,8 @@ public class Array_ValueMetaData extends Collection_ValueMetaData {
     }
     /**以数组形式返回集合中的数据。*/
     public ValueMetaData[] getCollectionValue() {
-        ValueMetaData[] values = (ValueMetaData[]) this.valueData.toArray();
+        ValueMetaData[] values = new ValueMetaData[this.valueData.size()];
+        this.valueData.toArray(values);
         return values;
     }
     /**添加一个元素。*/

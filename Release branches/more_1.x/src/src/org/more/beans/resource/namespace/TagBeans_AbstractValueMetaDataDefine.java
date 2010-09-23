@@ -16,26 +16,44 @@
 package org.more.beans.resource.namespace;
 import org.more.beans.ValueMetaData;
 import org.more.beans.define.AbstractPropertyDefine;
+import org.more.beans.define.Collection_ValueMetaData;
+import org.more.beans.resource.AbstractXmlConfiguration;
+import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
-import org.more.util.attribute.StackDecorator;
 /**
- * 负责解析属性元信息标签的基类。
+ * 负责解析属性元信息标签的基类，该类考虑了值元信息的描述处于对另外一个值元信息的描述之中的情况。
  * @version 2010-9-19
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class TagBeans_AbstractValueMetaDataDefine extends TagBeans_AbstractDefine {
+public abstract class TagBeans_AbstractValueMetaDataDefine<T extends ValueMetaData> extends TagBeans_AbstractDefine<T> {
     /**属性值元信息.*/
-    private static final String ValueMetaDataDefine = "$more_ValueMetaDataDefine";
+    public static final String ValueMetaDataDefine = "$more_ValueMetaDataDefine";
+    /**创建{@link TagBeans_AbstractValueMetaDataDefine}对象*/
+    public TagBeans_AbstractValueMetaDataDefine(AbstractXmlConfiguration configuration) {
+        super(configuration);
+    }
     /**属性的定义名称*/
-    protected String getDefineName() {
+    protected String getAttributeName() {
         return ValueMetaDataDefine;
     }
+    /**只在当前栈中寻找*/
+    protected boolean isSpanStack() {
+        return false;
+    }
     /**负责将解析出来的ValueMetaData设置到属性中*/
-    public void endElement(StackDecorator context, String xpath, EndElementEvent event) {
-        ValueMetaData metaData = (ValueMetaData) context.getAttribute(ValueMetaDataDefine);
-        AbstractPropertyDefine pdefine = (AbstractPropertyDefine) context.getAttribute(TagBeans_AbstractPropertyDefine.PropertyDefine);
-        if (metaData != null)
-            pdefine.setValueMetaData(metaData);
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
+        //1.获取当前元信息描述对象，如果当前值元信息描述是否处于另外一个值信息描述之下还要获取父级值元信息描述对象。
+        ValueMetaData currentMetaData = this.getDefine(context);
+        ValueMetaData parentMetaData = (ValueMetaData) context.getParentStack().getAttribute(ValueMetaDataDefine);
+        //
+        if (parentMetaData != null && parentMetaData instanceof Collection_ValueMetaData)
+            ((Collection_ValueMetaData) parentMetaData).addObject(currentMetaData);
+        else {
+            AbstractPropertyDefine pdefine = (AbstractPropertyDefine) context.getAttribute(TagBeans_AbstractPropertyDefine.PropertyDefine);
+            if (currentMetaData != null)
+                pdefine.setValueMetaData(currentMetaData);
+        }
         super.endElement(context, xpath, event);
     };
 }

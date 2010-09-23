@@ -20,24 +20,15 @@ import org.more.beans.ValueMetaData;
  * @version 2010-9-18
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class Collection_ValueMetaData extends ValueMetaData {
-    private String collectionValueType = null; //集合的数据类型
-    private String collectionType      = null; //集合对象类型，如果是数组则该值与属性collectionValueType一致。
-    private int    initSize            = 0;   //表示集合初始化大小
-    /**获取集合的数据类型*/
-    public String getCollectionValueType() {
-        return this.collectionValueType;
-    }
-    /**设置集合的数据类型*/
-    public void setCollectionValueType(String collectionValueType) {
-        this.collectionValueType = collectionValueType;
-    }
+public abstract class Collection_ValueMetaData<T extends ValueMetaData> extends ValueMetaData {
+    private Class<?> collectionType = null; //集合对象类型，如果是数组则该值与属性collectionValueType一致。
+    private int      initSize       = 0;   //表示集合初始化大小
     /**获取集合对象类型，如果是数组则该值与属性collectionValueType一致。*/
-    public String getCollectionType() {
+    public Class<?> getCollectionType() {
         return this.collectionType;
     }
     /**设置集合对象类型，如果是数组则该值与属性collectionValueType一致。*/
-    public void setCollectionType(String collectionType) {
+    public void setCollectionType(Class<?> collectionType) {
         this.collectionType = collectionType;
     }
     /**获取集合初始化大小*/
@@ -48,6 +39,8 @@ public abstract class Collection_ValueMetaData extends ValueMetaData {
     public void setInitSize(int initSize) {
         this.initSize = initSize;
     }
+    /**添加一个属性值到当前集合中。*/
+    public abstract void addObject(T value);
     /**获取集合当前数据内容条数数。*/
     public abstract int size();
 }

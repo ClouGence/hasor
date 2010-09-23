@@ -14,32 +14,33 @@
  * limitations under the License.
  */
 package org.more.beans.resource.namespace;
+import java.util.HashMap;
 import java.util.Map;
-import org.more.beans.define.RelationBeanDefine;
+import org.more.beans.define.Date_ValueMetaData;
 import org.more.beans.resource.AbstractXmlConfiguration;
 /**
- * 用于解析/beans/refBean标签
- * @version 2010-9-16
+ * 用于解析date标签
+ * @version 2010-9-23
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TagBeans_RefBean extends TagBeans_AbstractBeanDefine<RelationBeanDefine> {
-    /**创建{@link TagBeans_RefBean}对象*/
-    public TagBeans_RefBean(AbstractXmlConfiguration configuration) {
+public class TagBeans_Date extends TagBeans_AbstractValueMetaDataDefine<Date_ValueMetaData> {
+    /**创建{@link TagBeans_Date}对象*/
+    public TagBeans_Date(AbstractXmlConfiguration configuration) {
         super(configuration);
     }
-    /**创建{@link RelationBeanDefine}对象。*/
-    protected RelationBeanDefine createDefine() {
-        return new RelationBeanDefine();
+    /**创建{@link Date_ValueMetaData}对象。*/
+    protected Date_ValueMetaData createDefine() {
+        return new Date_ValueMetaData();
     }
-    /**定义引用类型Bean的属性*/
+    /**定义模板属性。*/
     public enum PropertyKey {
-        ref, refScope
-    };
+        dateString, formatString
+    }
     /**关联属性与xml的属性对应关系。*/
     protected Map<Enum<?>, String> getPropertyMappings() {
-        Map<Enum<?>, String> propertys = super.getPropertyMappings();
-        propertys.put(PropertyKey.ref, "ref");
-        propertys.put(PropertyKey.refScope, "refScope");
+        HashMap<Enum<?>, String> propertys = new HashMap<Enum<?>, String>();
+        propertys.put(PropertyKey.dateString, "date");
+        propertys.put(PropertyKey.formatString, "format");
         return propertys;
     }
 }

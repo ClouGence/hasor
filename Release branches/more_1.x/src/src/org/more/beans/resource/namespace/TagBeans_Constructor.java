@@ -17,16 +17,21 @@ package org.more.beans.resource.namespace;
 import java.util.Map;
 import org.more.beans.define.ConstructorDefine;
 import org.more.beans.define.TemplateBeanDefine;
+import org.more.beans.resource.AbstractXmlConfiguration;
+import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
-import org.more.util.attribute.StackDecorator;
 /**
- * 用于解析property标签
+ * 用于解析constructor-arg标签
  * @version 2010-9-16
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TagBeans_Constructor extends TagBeans_AbstractPropertyDefine {
+public class TagBeans_Constructor extends TagBeans_AbstractPropertyDefine<ConstructorDefine> {
+    /**创建{@link TagBeans_Constructor}对象*/
+    public TagBeans_Constructor(AbstractXmlConfiguration configuration) {
+        super(configuration);
+    }
     /**创建{@link ConstructorDefine}对象。*/
-    protected Object createDefine(StackDecorator context) {
+    protected ConstructorDefine createDefine() {
         return new ConstructorDefine();
     }
     /**定义构造方法特有属性。*/
@@ -40,8 +45,8 @@ public class TagBeans_Constructor extends TagBeans_AbstractPropertyDefine {
         return propertys;
     }
     /**将属性注册到Bean中。*/
-    public void endElement(StackDecorator context, String xpath, EndElementEvent event) {
-        ConstructorDefine property = (ConstructorDefine) this.getDefine(context);
+    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
+        ConstructorDefine property = this.getDefine(context);
         TemplateBeanDefine define = (TemplateBeanDefine) context.getAttribute(TagBeans_TemplateBean.BeanDefine);
         if (property.getIndex() == -1)
             property.setIndex(define.getInitParams().length + 1);

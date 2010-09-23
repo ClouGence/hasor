@@ -34,13 +34,27 @@ public class StackDecorator extends AbstractAttDecorator {
     public void setSource(IAttribute source) throws DoesSupportException {
         throw new DoesSupportException("StackDecorator装饰器不支持该方法。");
     }
+    /**获取源*/
+    public IAttribute getSource() {
+        IAttribute att = super.getSource();
+        if (depth == 0)
+            return att;
+        return ((ParentDecorator) att).getSource();
+    }
     /** 该方法与getSource()方法返回值一样。 */
     public IAttribute getCurrentStack() {
-        return this.getSource();
+        return super.getSource();
+    }
+    /** 获取当前堆的父堆。 */
+    public IAttribute getParentStack() {
+        if (depth == 0)
+            return null;
+        IAttribute att = super.getSource();
+        return ((ParentDecorator) att).getParent();
     }
     /**在现有属性堆上创建一个堆。*/
     public synchronized void createStack() {
-        IAttribute source = this.getSource();
+        IAttribute source = super.getSource();
         super.setSource(new ParentDecorator(new AttBase(), source));
         depth++;
     }
@@ -49,7 +63,7 @@ public class StackDecorator extends AbstractAttDecorator {
         if (depth == 0)
             return false;
         //
-        IAttribute source = this.getSource();
+        IAttribute source = super.getSource();
         if (source instanceof ParentDecorator) {
             super.setSource(((ParentDecorator) source).getParent());
             depth--;

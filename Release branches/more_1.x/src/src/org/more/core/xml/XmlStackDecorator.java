@@ -14,18 +14,24 @@
  * limitations under the License.
  */
 package org.more.core.xml;
-import org.more.core.xml.stream.AttributeEvent;
+import org.more.util.attribute.IAttribute;
+import org.more.util.attribute.StackDecorator;
 /**
- * 当遇到一个属性需要解析时使用该接口，使用该接口可以用于解析特定的属性。
- * @version 2010-9-13
+ * 该类继承自{@link StackDecorator}装饰器，作用是提供了一个context对象的支持。
+ * @version 2010-9-23
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface XmlAttributeHook extends XmlParserHook {
-    /**
-     * 当遇到一个属性时。
-     * @param context 环境上下文。
-     * @param xpath 当前标签在所定义的命名空间中的xpath。
-     * @param event 事件。
-     */
-    public void attribute(XmlStackDecorator context, String xpath, AttributeEvent event);
+public class XmlStackDecorator extends StackDecorator {
+    private Object context = null;
+    public XmlStackDecorator(IAttribute source) throws NullPointerException {
+        super(source);
+    }
+    /**获取Context*/
+    public Object getContext() {
+        return context;
+    }
+    /**设置Context*/
+    public void setContext(Object context) {
+        this.context = context;
+    }
 }

@@ -14,32 +14,24 @@
  * limitations under the License.
  */
 package org.more.beans.resource.namespace;
-import java.util.Map;
-import org.more.beans.define.RelationBeanDefine;
+import java.util.ArrayList;
+import org.more.beans.define.List_ValueMetaData;
 import org.more.beans.resource.AbstractXmlConfiguration;
 /**
- * 用于解析/beans/refBean标签
+ * 用于解析list标签
  * @version 2010-9-16
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TagBeans_RefBean extends TagBeans_AbstractBeanDefine<RelationBeanDefine> {
-    /**创建{@link TagBeans_RefBean}对象*/
-    public TagBeans_RefBean(AbstractXmlConfiguration configuration) {
+public class TagBeans_List extends TagBeans_AbstractCollection<List_ValueMetaData> {
+    /**创建{@link TagBeans_List}对象*/
+    public TagBeans_List(AbstractXmlConfiguration configuration) {
         super(configuration);
     }
-    /**创建{@link RelationBeanDefine}对象。*/
-    protected RelationBeanDefine createDefine() {
-        return new RelationBeanDefine();
+    /**创建{@link List_ValueMetaData}对象*/
+    protected List_ValueMetaData createDefine() {
+        return new List_ValueMetaData();
     }
-    /**定义引用类型Bean的属性*/
-    public enum PropertyKey {
-        ref, refScope
-    };
-    /**关联属性与xml的属性对应关系。*/
-    protected Map<Enum<?>, String> getPropertyMappings() {
-        Map<Enum<?>, String> propertys = super.getPropertyMappings();
-        propertys.put(PropertyKey.ref, "ref");
-        propertys.put(PropertyKey.refScope, "refScope");
-        return propertys;
+    protected Class<?> getDefaultCollectionType() {
+        return ArrayList.class;
     }
 }

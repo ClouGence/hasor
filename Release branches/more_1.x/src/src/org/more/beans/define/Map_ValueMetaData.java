@@ -23,7 +23,7 @@ import org.more.beans.ValueMetaData.PropertyMetaTypeEnum;
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Map_ValueMetaData extends Collection_ValueMetaData {
+public class Map_ValueMetaData extends Collection_ValueMetaData<MapEntity_ValueMetaData> {
     private HashMap<ValueMetaData, ValueMetaData> valueData = new HashMap<ValueMetaData, ValueMetaData>(); //数据
     /**该方法将会返回{@link PropertyMetaTypeEnum#MapCollection}。*/
     public PropertyMetaTypeEnum getPropertyType() {
@@ -36,6 +36,10 @@ public class Map_ValueMetaData extends Collection_ValueMetaData {
     /**添加一个元素。*/
     public void addObject(ValueMetaData key, ValueMetaData value) {
         this.valueData.put(key, value);
+    };
+    /**添加一个元素。*/
+    public void addObject(MapEntity_ValueMetaData mapEntity) {
+        this.valueData.put(mapEntity.getKey(), mapEntity.getValue());
     };
     /**删除一个元素。*/
     public void removeObject(ValueMetaData key) {

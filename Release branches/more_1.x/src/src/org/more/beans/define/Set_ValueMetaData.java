@@ -23,7 +23,7 @@ import org.more.beans.ValueMetaData.PropertyMetaTypeEnum;
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Set_ValueMetaData extends Collection_ValueMetaData {
+public class Set_ValueMetaData extends Collection_ValueMetaData<ValueMetaData> {
     private HashSet<ValueMetaData> valueData = new HashSet<ValueMetaData>(); //数据
     /**该方法将会返回{@link PropertyMetaTypeEnum#SetCollection}。*/
     public PropertyMetaTypeEnum getPropertyType() {

@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 package org.more.beans.resource.namespace;
-import org.more.beans.define.TemplateBeanDefine;
-import org.more.beans.resource.AbstractXmlConfiguration;
+import org.more.beans.ValueMetaData;
+import org.more.beans.define.Date_ValueMetaData;
+import org.more.beans.define.QuickProperty_ValueMetaData;
+import org.more.beans.resource.QuickParserEvent;
+import org.more.beans.resource.QuickPropertyParser;
 /**
- * 用于解析/beans/templateBean标签
- * @version 2010-9-16
+ * 时间类型属性值解析器。
+ * @version 2010-9-23
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TagBeans_TemplateBean extends TagBeans_AbstractBeanDefine<TemplateBeanDefine> {
-    /**创建{@link TagBeans_TemplateBean}对象*/
-    public TagBeans_TemplateBean(AbstractXmlConfiguration configuration) {
-        super(configuration);
-    }
-    /**创建{@link TemplateBeanDefine}对象。*/
-    protected TemplateBeanDefine createDefine() {
-        return new TemplateBeanDefine();
+public class QPP_Date implements QuickPropertyParser {
+    public ValueMetaData parser(QuickParserEvent event) {
+        QuickProperty_ValueMetaData meta = event.getOldMetaData();
+        if (meta.getDate() == null)
+            return null;
+        Date_ValueMetaData newMETA = new Date_ValueMetaData();
+        newMETA.setDateString(meta.getDate());
+        newMETA.setFormatString(meta.getFormat());
+        return newMETA;
     }
 }

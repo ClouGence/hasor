@@ -15,7 +15,6 @@
  */
 package org.more.core.xml;
 import org.more.core.xml.stream.XmlStreamEvent;
-import org.more.util.attribute.StackDecorator;
 /**
  * Level 2：级别的事件接收者。经过{@link XmlParserKitManager}工具进行细分的xml事件分流之后都发送到了该接口中。
  * @version 2010-9-13
@@ -27,5 +26,5 @@ public interface XmlNamespaceParser {
     /**当收到停止解析的信号时，该方法主要用于做解析器的后续处理工作。*/
     public void endAccept();
     /**该方法在beginAccept和endAccept方法调用期间反复调用，每当Level 1发现一个事件都会通知给Level 2，然后由Level 2进行分发。*/
-    public void sendEvent(StackDecorator context, String xpath, XmlStreamEvent event);
+    public void sendEvent(XmlStackDecorator context, String xpath, XmlStreamEvent event);
 }

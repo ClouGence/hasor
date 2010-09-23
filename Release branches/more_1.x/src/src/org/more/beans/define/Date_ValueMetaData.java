@@ -32,7 +32,10 @@ public class Date_ValueMetaData extends ValueMetaData {
     }
     /**返回时间日期字符形式的数据*/
     public Date getDate() {
-        return StringConvert.parseDate(this.dateString, this.formatString);
+        if (this.formatString != null)
+            return StringConvert.parseDate(this.dateString, this.formatString);
+        else
+            return StringConvert.parseDate(this.dateString);
     }
     /**设置时间日期字符形式的数据*/
     public void setDateString(String dateString) {

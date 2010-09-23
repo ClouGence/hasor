@@ -16,7 +16,6 @@
 package org.more.core.xml;
 import org.more.core.xml.stream.EndDocumentEvent;
 import org.more.core.xml.stream.StartDocumentEvent;
-import org.more.util.attribute.StackDecorator;
 /**
  * 该钩子用于处理文档开始和文档结束事件。
  * @version 2010-9-13
@@ -24,7 +23,7 @@ import org.more.util.attribute.StackDecorator;
  */
 public interface XmlDocumentHook extends XmlParserHook {
     /**当遇到文档开始时。context参数是共用的环境对象。*/
-    public void beginDocument(StackDecorator context, StartDocumentEvent event);
+    public void beginDocument(XmlStackDecorator context, StartDocumentEvent event);
     /**当遇到文档结束时。context参数是共用的环境对象。*/
-    public void endDocument(StackDecorator context, EndDocumentEvent event);
+    public void endDocument(XmlStackDecorator context, EndDocumentEvent event);
 }

@@ -16,15 +16,19 @@
 package org.more.beans.resource.namespace;
 import java.util.Map;
 import org.more.beans.define.GenerateBeanDefine;
-import org.more.util.attribute.StackDecorator;
+import org.more.beans.resource.AbstractXmlConfiguration;
 /**
  * 用于解析/beans/generateBean标签
  * @version 2010-9-16
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TagBeans_GenerateBean extends TagBeans_TemplateBean {
+public class TagBeans_GenerateBean extends TagBeans_AbstractBeanDefine<GenerateBeanDefine> {
+    /**创建{@link TagBeans_GenerateBean}对象*/
+    public TagBeans_GenerateBean(AbstractXmlConfiguration configuration) {
+        super(configuration);
+    }
     /**创建{@link GenerateBeanDefine}对象。*/
-    protected Object createDefine(StackDecorator context) {
+    protected GenerateBeanDefine createDefine() {
         return new GenerateBeanDefine();
     }
     /**定义生成Bean的属性。*/

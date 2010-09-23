@@ -29,7 +29,6 @@ import org.more.core.xml.stream.XmlAccept;
 import org.more.core.xml.stream.XmlStreamEvent;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
-import org.more.util.attribute.StackDecorator;
 /**
  * <b>Level 2</b>：该级别的xml访问策略关注于xml元素或属性与命名空间的对应性，使用XmlParserKitManager
  * 可以专门用于访问某个命名空间下的元素。每个命名空间的解析器都是一个{@link XmlParserKit}类型对象。
@@ -41,9 +40,9 @@ public class XmlParserKitManager implements XmlAccept {
     /**注册的命名空间解析工具集*/
     private HashMap<String, ArrayList<XmlNamespaceParser>> regeditXmlParserKit = new HashMap<String, ArrayList<XmlNamespaceParser>>();
     /**活动的前缀与命名空间映射*/
-    private StackDecorator                                 activateStack       = null;
+    private XmlStackDecorator                              activateStack       = null;
     /**一个在分发xml事件流过程中一致存在的环境。*/
-    private StackDecorator                                 context             = new StackDecorator(new AttBase());
+    private XmlStackDecorator                              context             = new XmlStackDecorator(new AttBase());
     /**获取环境对象，的{@link IAttribute}属性接口。*/
     public IAttribute getContext() {
         return context.getSource();
@@ -55,6 +54,8 @@ public class XmlParserKitManager implements XmlAccept {
      * @param kit 要关联的解析器。
      */
     public void regeditKit(String namespace, XmlNamespaceParser kit) throws RepeateException {
+        if (namespace == null || kit == null)
+            throw new NullPointerException("namespace，kit参数不能为空。");
         ArrayList<XmlNamespaceParser> list = null;
         if (this.regeditXmlParserKit.containsKey(namespace) == true)
             list = this.regeditXmlParserKit.get(namespace);
@@ -71,6 +72,8 @@ public class XmlParserKitManager implements XmlAccept {
      * @param kit 要解除关联的解析器。
      */
     public void unRegeditKit(String namespace, XmlNamespaceParser kit) {
+        if (namespace == null || kit == null)
+            throw new NullPointerException("namespace，kit参数不能为空。");
         if (this.regeditXmlParserKit.containsKey(namespace) == false)
             return;
         ArrayList<XmlNamespaceParser> list = this.regeditXmlParserKit.get(namespace);
@@ -79,7 +82,7 @@ public class XmlParserKitManager implements XmlAccept {
     }
     /**开始{@link XmlAccept}接口的调用，该方法主要用于重置状态。*/
     public void beginAccept() {
-        this.activateStack = new StackDecorator(new AttBase());
+        this.activateStack = new XmlStackDecorator(new AttBase());
         for (ArrayList<XmlNamespaceParser> alList : this.regeditXmlParserKit.values())
             for (XmlNamespaceParser xnp : alList)
                 xnp.beginAccept();

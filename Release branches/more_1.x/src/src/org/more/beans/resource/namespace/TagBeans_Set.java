@@ -13,19 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.xml;
-import org.more.core.xml.stream.AttributeEvent;
+package org.more.beans.resource.namespace;
+import java.util.HashSet;
+import org.more.beans.define.Set_ValueMetaData;
+import org.more.beans.resource.AbstractXmlConfiguration;
 /**
- * 当遇到一个属性需要解析时使用该接口，使用该接口可以用于解析特定的属性。
- * @version 2010-9-13
+ * 用于解析set标签
+ * @version 2010-9-16
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface XmlAttributeHook extends XmlParserHook {
-    /**
-     * 当遇到一个属性时。
-     * @param context 环境上下文。
-     * @param xpath 当前标签在所定义的命名空间中的xpath。
-     * @param event 事件。
-     */
-    public void attribute(XmlStackDecorator context, String xpath, AttributeEvent event);
+public class TagBeans_Set extends TagBeans_AbstractCollection<Set_ValueMetaData> {
+    /**创建{@link TagBeans_Set}对象*/
+    public TagBeans_Set(AbstractXmlConfiguration configuration) {
+        super(configuration);
+    }
+    /**创建{@link Set_ValueMetaData}对象*/
+    protected Set_ValueMetaData createDefine() {
+        return new Set_ValueMetaData();
+    }
+    protected Class<?> getDefaultCollectionType() {
+        return HashSet.class;
+    }
 }

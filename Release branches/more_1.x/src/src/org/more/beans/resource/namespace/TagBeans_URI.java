@@ -19,16 +19,21 @@ import java.net.URISyntaxException;
 import java.util.Map;
 import org.more.FormatException;
 import org.more.beans.define.URI_ValueMetaData;
+import org.more.beans.resource.AbstractXmlConfiguration;
+import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.util.attribute.StackDecorator;
 /**
  * 用于解析uri标签
  * @version 2010-9-22
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TagBeans_URI extends TagBeans_AbstractValueMetaDataDefine {
+public class TagBeans_URI extends TagBeans_AbstractValueMetaDataDefine<URI_ValueMetaData> {
+    /**创建{@link TagBeans_URI}对象*/
+    public TagBeans_URI(AbstractXmlConfiguration configuration) {
+        super(configuration);
+    }
     /**创建{@link URI_ValueMetaData}对象。*/
-    protected Object createDefine(StackDecorator context) {
+    protected URI_ValueMetaData createDefine() {
         return new URI_ValueMetaData();
     }
     /**定义模板属性。*/
@@ -40,12 +45,12 @@ public class TagBeans_URI extends TagBeans_AbstractValueMetaDataDefine {
         return null;
     }
     /**解析属性*/
-    public void beginElement(StackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
         super.beginElement(context, xpath, event);
         String uriLocation = event.getAttributeValue("uriLocation");
         if (uriLocation == null)
             return;
-        URI_ValueMetaData metaData = (URI_ValueMetaData) this.getDefine(context);
+        URI_ValueMetaData metaData = this.getDefine(context);
         try {
             metaData.setUriObject(new URI(uriLocation));
         } catch (URISyntaxException e) {

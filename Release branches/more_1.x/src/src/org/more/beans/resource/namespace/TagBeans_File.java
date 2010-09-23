@@ -17,16 +17,21 @@ package org.more.beans.resource.namespace;
 import java.io.File;
 import java.util.Map;
 import org.more.beans.define.File_ValueMetaData;
+import org.more.beans.resource.AbstractXmlConfiguration;
+import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.util.attribute.StackDecorator;
 /**
  * 用于解析file标签
  * @version 2010-9-22
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TagBeans_File extends TagBeans_AbstractValueMetaDataDefine {
+public class TagBeans_File extends TagBeans_AbstractValueMetaDataDefine<File_ValueMetaData> {
+    /**创建{@link TagBeans_File}对象*/
+    public TagBeans_File(AbstractXmlConfiguration configuration) {
+        super(configuration);
+    }
     /**创建{@link File_ValueMetaData}对象。*/
-    protected Object createDefine(StackDecorator context) {
+    protected File_ValueMetaData createDefine() {
         File_ValueMetaData metaData = new File_ValueMetaData();
         metaData.setDir(false);
         return metaData;
@@ -40,12 +45,12 @@ public class TagBeans_File extends TagBeans_AbstractValueMetaDataDefine {
         return null;
     }
     /**解析属性*/
-    public void beginElement(StackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
         super.beginElement(context, xpath, event);
         String path = event.getAttributeValue("path");
         if (path == null)
             return;
-        File_ValueMetaData metaData = (File_ValueMetaData) this.getDefine(context);
+        File_ValueMetaData metaData = this.getDefine(context);
         metaData.setFileObject(new File(path));
     }
 }

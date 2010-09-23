@@ -15,7 +15,6 @@
  */
 package org.more.core.xml;
 import org.more.core.xml.stream.TextEvent;
-import org.more.util.attribute.StackDecorator;
 /**
  * 当遇到字符数据时使用该接口解析，字符数据类型包括了CDATA，Chars，space。
  * @version 2010-9-13
@@ -28,5 +27,5 @@ public interface XmlTextHook extends XmlParserHook {
      * @param xpath 当前标签在所定义的命名空间中的xpath。
      * @param event 事件。
      */
-    public void text(StackDecorator context, String xpath, TextEvent event);
+    public void text(XmlStackDecorator context, String xpath, TextEvent event);
 }

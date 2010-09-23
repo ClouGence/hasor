@@ -17,16 +17,21 @@ package org.more.beans.resource.namespace;
 import java.util.Map;
 import org.more.beans.define.PropertyDefine;
 import org.more.beans.define.TemplateBeanDefine;
+import org.more.beans.resource.AbstractXmlConfiguration;
+import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
-import org.more.util.attribute.StackDecorator;
 /**
  * 用于解析property标签
  * @version 2010-9-16
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TagBeans_Property extends TagBeans_AbstractPropertyDefine {
+public class TagBeans_Property extends TagBeans_AbstractPropertyDefine<PropertyDefine> {
+    /**创建{@link TagBeans_Property}对象*/
+    public TagBeans_Property(AbstractXmlConfiguration configuration) {
+        super(configuration);
+    }
     /**创建{@link PropertyDefine}对象。*/
-    protected Object createDefine(StackDecorator context) {
+    protected PropertyDefine createDefine() {
         return new PropertyDefine();
     }
     /**定义属性标签特有的属性*/
@@ -41,8 +46,8 @@ public class TagBeans_Property extends TagBeans_AbstractPropertyDefine {
         return propertys;
     }
     /**将属性注册到Bean中。*/
-    public void endElement(StackDecorator context, String xpath, EndElementEvent event) {
-        PropertyDefine property = (PropertyDefine) this.getDefine(context);
+    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
+        PropertyDefine property = this.getDefine(context);
         TemplateBeanDefine define = (TemplateBeanDefine) context.getAttribute(TagBeans_TemplateBean.BeanDefine);
         define.addProperty(property);
         super.endElement(context, xpath, event);

@@ -24,7 +24,6 @@ import org.more.core.xml.stream.StartDocumentEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.core.xml.stream.TextEvent;
 import org.more.core.xml.stream.XmlStreamEvent;
-import org.more.util.attribute.StackDecorator;
 /**
  *  <b>Level 3</b>：该级别是基于级别2的增强，该级别的特点是可以将某个xpath所表示元素与其处理器{@link XmlParserHook}进行绑定。
  *  这个绑定由于是基于Level 2因此不会与其他命名空间的同名元素相混淆。
@@ -71,7 +70,7 @@ public class XmlParserKit implements XmlNamespaceParser {
         return this.hooks.get(xpath2);
     };
     /** */
-    public void sendEvent(StackDecorator context, String xpath, XmlStreamEvent event) {
+    public void sendEvent(XmlStackDecorator context, String xpath, XmlStreamEvent event) {
         ArrayList<XmlParserHook> hooks = this.getHooks(xpath);
         if (hooks == null)
             return;

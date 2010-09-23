@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.more.beans.define;
-import org.more.beans.AbstractPropertyDefine;
 import org.more.beans.ValueMetaData;
 import org.more.beans.ValueMetaData.PropertyMetaTypeEnum;
 /**
@@ -23,28 +22,56 @@ import org.more.beans.ValueMetaData.PropertyMetaTypeEnum;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Simple_ValueMetaData extends ValueMetaData {
-    /** 用于描述{@link AbstractPropertyDefine}定义的属性的属性类型是哪种，如果属性的类型是比较复杂的比如Map,List那么统统使用Object。*/
+    /**当检测到value有值但是又没有定义type时候值类型采用的默认数据类型。*/
+    public static final Class<?> DefaultValueType = String.class;
+    /**该枚举中定义了{@link Simple_ValueMetaData}类可以表示的基本类型。*/
     public enum PropertyType {
-        /**表示属性的值类型是一个null。*/
+        /**null数据。*/
         Null,
-        /**表示属性的值类型是一个boolean类型，或者{@link Boolean}类型。*/
+        /**布尔类型。*/
         Boolean,
-        /**表示属性的值类型是一个byte类型，或者{@link Byte}类型。*/
+        /**字节类型。*/
         Byte,
-        /**表示属性的值类型是一个short类型，或者{@link Short}类型。*/
+        /**短整数类型。*/
         Short,
-        /**表示属性的值类型是一个int类型，或者{@link Integer}类型。*/
-        Integer,
-        /**表示属性的值类型是一个long类型，或者{@link Long}类型。*/
+        /**整数类型。*/
+        Int,
+        /**长整数类型。*/
         Long,
-        /**表示属性的值类型是一个float类型，或者{@link Float}类型。*/
+        /**单精度浮点数类型。*/
         Float,
-        /**表示属性的值类型是一个double类型，或者{@link Double}类型。*/
+        /**双精度浮点数类型。*/
         Double,
-        /**表示属性的值类型是一个char类型，或者{@link Character}类型。*/
+        /**字符类型。*/
         Char,
-        /**表示属性的值类型是一个string类型，或者{@link String}类型。*/
+        /**字符串类型。*/
         String,
+    }
+    /**根据枚举获取其基本类型Class。*/
+    public static PropertyType getPropertyType(Class<?> type) {
+        if (type == null)
+            return PropertyType.Null;
+        if (type == boolean.class || type == Boolean.class)
+            return PropertyType.Boolean;
+        else if (type == byte.class || type == Byte.class)
+            return PropertyType.Byte;
+        else if (type == short.class || type == Short.class)
+            return PropertyType.Short;
+        else if (type == int.class || type == Integer.class)
+            return PropertyType.Int;
+        else if (type == long.class || type == Long.class)
+            return PropertyType.Long;
+        else if (type == float.class || type == Float.class)
+            return PropertyType.Float;
+        else if (type == double.class || type == Double.class)
+            return PropertyType.Double;
+        else if (type == char.class || type == Character.class)
+            return PropertyType.Char;
+        else if (type == String.class)
+            return PropertyType.String;
+        else
+            //转换默认值
+            return getPropertyType(DefaultValueType);
     }
     private PropertyType valueMetaType = PropertyType.Null; //值类型
     private Object       value         = null;             //值

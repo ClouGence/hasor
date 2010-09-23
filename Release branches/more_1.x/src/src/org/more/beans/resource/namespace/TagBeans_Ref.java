@@ -17,15 +17,19 @@ package org.more.beans.resource.namespace;
 import java.util.HashMap;
 import java.util.Map;
 import org.more.beans.define.Relation_ValueMetaData;
-import org.more.util.attribute.StackDecorator;
+import org.more.beans.resource.AbstractXmlConfiguration;
 /**
  * 用于解析ref标签
  * @version 2010-9-22
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TagBeans_Ref extends TagBeans_AbstractValueMetaDataDefine {
+public class TagBeans_Ref extends TagBeans_AbstractValueMetaDataDefine<Relation_ValueMetaData> {
+    /**创建{@link TagBeans_Ref}对象*/
+    public TagBeans_Ref(AbstractXmlConfiguration configuration) {
+        super(configuration);
+    }
     /**创建{@link Relation_ValueMetaData}对象。*/
-    protected Object createDefine(StackDecorator context) {
+    protected Relation_ValueMetaData createDefine() {
         return new Relation_ValueMetaData();
     }
     /**定义模板属性。*/
