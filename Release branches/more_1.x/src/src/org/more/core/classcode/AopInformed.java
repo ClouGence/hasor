@@ -15,9 +15,9 @@
  */
 package org.more.core.classcode;
 /**
- *该接口是一个标记接口，{@link AopBeforeListener}、{@link AopReturningListener}、{@link AopThrowingListener}这三个aop切面接口都是该接口的子接口。
- *除此之外可以利用该接口用来标记所有Aop切面。
- * @version 2010-9-2
+ * 一个标记接口用来标记哪些可以作为aop被通知的对象，这其中包括了{@link AopListener}接口和其子接口
+ * 以及{@link AopInvokeFilter}接口。
+ * @version 2010-9-24
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AopListener extends AopInformed {}
+public interface AopInformed {}

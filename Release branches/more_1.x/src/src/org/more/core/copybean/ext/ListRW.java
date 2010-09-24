@@ -24,7 +24,7 @@ import org.more.core.copybean.PropertyReaderWrite;
  * @version 2009-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class ListRW extends BeanType {
     /**  */
     private static final long serialVersionUID = -3987939968587042522L;
@@ -49,7 +49,7 @@ public class ListRW extends BeanType {
  * Date : 2009-5-21
  * @author 赵永春
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "rawtypes" })
 class ListReaderWrite extends PropertyReaderWrite {
     /**  */
     private static final long serialVersionUID = 2185263906672697512L;
@@ -57,7 +57,6 @@ class ListReaderWrite extends PropertyReaderWrite {
         List att = (List) this.getObject();
         return att;
     }
-    @SuppressWarnings("rawtypes")
     public void set(Object value) {
         List att = (List) this.getObject();
         List fromList = (List) value;//准备将value的值设置到att中
