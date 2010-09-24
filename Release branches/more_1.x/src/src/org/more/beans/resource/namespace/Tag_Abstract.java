@@ -14,23 +14,28 @@
  * limitations under the License.
  */
 package org.more.beans.resource.namespace;
+import java.lang.reflect.Method;
 import java.util.Date;
+import org.more.DoesSupportException;
+import org.more.PropertyException;
 import org.more.beans.define.VariableBeanDefine;
-import org.more.beans.resource.AbstractXmlConfiguration;
+import org.more.beans.resource.XmlConfiguration;
+import org.more.util.StringConvert;
+import org.more.util.StringUtil;
 /**
  * namespace包中凡是涉及解析xml的类都需要集成的类，该类目的是为了提供一个统一的
- * {@link AbstractXmlConfiguration}对象获取接口。
+ * {@link XmlConfiguration}对象获取接口。
  * @version 2010-9-23
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Tag_Abstract {
-    private AbstractXmlConfiguration configuration = null;
+    private XmlConfiguration configuration = null;
     /**创建Tag_Abstract类型*/
-    public Tag_Abstract(AbstractXmlConfiguration configuration) {
+    public Tag_Abstract(XmlConfiguration configuration) {
         this.configuration = configuration;
     }
-    /**获取{@link AbstractXmlConfiguration}类型*/
-    protected AbstractXmlConfiguration getConfiguration() {
+    /**获取{@link XmlConfiguration}类型*/
+    protected XmlConfiguration getConfiguration() {
         return this.configuration;
     }
     //================================================================================================================工具性方法
@@ -86,4 +91,31 @@ public class Tag_Abstract {
         else
             return null;
     }
+    /**查找某个名称的方法，该方法必须有一个参数。*/
+    private Method findMethod(String methodName, Class<?> type) {
+        for (Method m : type.getMethods())
+            if (m.getName().equals(methodName) == true)
+                if (m.getParameterTypes().length == 1)
+                    return m;
+        return null;
+    }
+    /**执行属性注入，除了注入int,short,long,等基本类型之外该方法还支持注入枚举类型。*/
+    protected final void putAttribute(Object define, String attName, Object value) {
+        if (define == null || attName == null)
+            throw new NullPointerException("定义对象或者要注入的属性名为空。");
+        //1.查找方法
+        String methodName = "set" + StringUtil.toUpperCase(attName);
+        Method writeMethod = this.findMethod(methodName, define.getClass());
+        if (writeMethod == null)
+            throw new DoesSupportException(define.getClass().getSimpleName() + "：对象中不存在[" + methodName + "]方法。");
+        //2.执行属性转换
+        Class<?> toType = writeMethod.getParameterTypes()[0];
+        Object attValueObject = StringConvert.changeType(value, toType);
+        //3.执行属性注入
+        try {
+            writeMethod.invoke(define, attValueObject);
+        } catch (Exception e) {
+            throw new PropertyException("无法将" + attName + ",属性写入[" + define + "]对象.", e);
+        }
+    };
 }
