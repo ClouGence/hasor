@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package org.test.more.beans.define;
+import java.io.IOException;
 import java.io.InputStream;
 import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
 import org.more.beans.AbstractBeanDefine;
-import org.more.beans.resource.AbstractXmlConfiguration;
-import org.more.beans.resource.XmlBeansConfiguration;
+import org.more.beans.resource.XmlConfiguration;
 /**
  * ²âÊÔÁËnamespace°ü,define°ü
  * @version 2010-9-21
@@ -27,10 +27,10 @@ import org.more.beans.resource.XmlBeansConfiguration;
  */
 public class XmlTest {
     @Test
-    public void test() throws XMLStreamException {
-        InputStream in = AbstractXmlConfiguration.class.getResourceAsStream("/org/test/more/beans/define/collection-test-config.xml");
-        AbstractXmlConfiguration con = new XmlBeansConfiguration().passerXml(in);
-        AbstractBeanDefine define = con.getBeanDefine("2.testCollection");
+    public void test() throws XMLStreamException, IOException {
+        InputStream in = XmlConfiguration.class.getResourceAsStream("/org/test/more/beans/define/beans-test-config.xml");
+        XmlConfiguration con = new XmlConfiguration(in);
+        AbstractBeanDefine define = con.getBeanDefine("testTemplateBean");
         System.out.println(define.getName());
     }
 }

@@ -7,94 +7,15 @@
 	<include resource="classpath:.;file:.;url:.;contextpath:."/>
 
 	<!--一、模板Bean，该Bean不能直接被使用，但是可以作为其他bean的基础模板。-->
-	<templateBean name="testTemplateBean" singleton="true" interface="true" abstract="true" lazy="true" iocType="Fact" description="描述性文字...">
-		<description/>
-		<constructor-arg index="0" type="float" description="描述性文字..."/>
+	<templateBean name="testTemplateBean">
+		<constructor-arg>
+			<date date="2010/12/12" format="YYYY/mm/DD">
+				<meta key="m_1" value="true" />
+			</date>
+			<meta key="m_2" value="true" />
+		</constructor-arg>
 		<meta key="isAction" value="true" />
 	</templateBean>
-	<templateBean name="propTest" useTemplate="testTemplateBean">
-		<property name="test" lazy="true" type="int" description="描述性文字..."/>
-		<!-- ========快捷属性注入配置======== -->
-		<!-- ==SimpleType== -->
-		<property name="p_null"/>
-		<property name="p_boolean" value="true"/>
-		<property name="p_byte" value="125"/>
-		<property name="p_short" value="12234"/>
-		<property name="p_integer" value="321"/>
-		<property name="p_long" value="54321"/>
-		<property name="p_float" value="12.45"/>
-		<property name="p_double" value="34.45343"/>
-		<property name="p_char" value="{"/>
-		<property name="p_string" value="你们好...."/>
-		<!-- ==RelationBean== -->
-		<property name="p_ref_1" refBean="gb_1"/>
-		<!-- ==File== -->
-		<property name="p_file" dir="c:\windows\aa.bpm"/>
-		<!-- ==URL== -->
-		<property name="p_url" url="http://www.google.com"/>
-	</templateBean>
-	<templateBean name="propTest2">
-		<!-- ==RelationBean== -->
-		<property name="p_ref_2">
-			<ref refBean="gb_1"/>
-		</property>
-
-		<!-- ==BigText== -->
-		<property name="p_bigText">
-			<bigText><![CDATA[  script.... ]]></bigText>
-		</property>
-		<!-- ==Date== -->
-		<property name="p_date">
-			<date value="2010/12/12" format="YYYY/mm/DD"/>
-		</property>
-		<!-- ==ArrayCollection== -->
-		<property name="p_array">
-			<array>
-				<value value="123"/>
-				<value value="321"/>
-			</array>
-		</property>
-		<!-- ==ListCollection== -->
-		<property name="p_list">
-			<list>
-				<value value="123"/>
-				<value value="321"/>
-			</list>
-		</property>
-		<!-- ==SetCollection== -->
-		<property name="p_set">
-			<set>
-				<value value="123"/>
-				<value value="321"/>
-			</set>
-		</property>
-		<!-- ==MapCollection== -->
-		<property name="p_map">
-			<map>
-				<value key="" value="123"/>
-				<value key="" value="123"/>
-			</map>
-		</property>
-	</templateBean>
-
-	<templateBean name="propTest3">
-		<!-- ==SimpleType== -->
-		<property name="p_null"						type="null"/>
-		<property name="p_boolean" value="true"		type="boolean"/>
-		<property name="p_byte" value="125"			type="byte"/>
-		<property name="p_short" value="12234"		type="short"/>
-		<property name="p_integer" value="321"		type="int"/>
-		<property name="p_long" value="54321"		type="long"/>
-		<property name="p_float" value="12.45"		type="float"/>
-		<property name="p_double" value="4.453"		type="double"/>
-		<property name="p_char" value="{"			type="char"/>
-		<property name="p_str" value="你们好."		type="string"/>
-		<property name="p_date" value="2009/10/12"	type="date"/>
-		<property name="p_enum" value="你们好."		type="enum"/>
-	</templateBean>
-
-
-
 
 	<!--二、脚本Bean，定义和执行代码全部在脚本中描述-->
 	<scriptBean name="sb_1" language="JavaScript" implements="org.more.impl.Inteface"><![CDATA[  script.... ]]></scriptBean>
@@ -102,11 +23,11 @@
 	<!--三、变量Bean，Bean就是一个值-->
 	<varBean name="vb_1" value="" type="int" format="xxxx"/>
 	<!--四、类型Bean，将一个类对象映射为Bean-->
-	<classBean name="cb_1" class="java.lang.String" useTemplate="propTest"/>
+	<classBean name="cb_1" class="java.lang.String" useTemplate="testTemplateBean"/>
 	<!--五、引用Bean，引用已有的一个Bean。相当于Bean娶了个别名-->
 	<refBean name="rb_1" ref="ref_a" refScope="refScope" />
 	<!--六、生成Bean，该Bean没有实际的类。整个Bean是在运行时生成的。-->
-	<generateBean name="gb_1" useTemplate="propTest" nameStrategy="n_st" aopStrategy="a_st" delegateStrategy="d_st" methodStrategy="m_st" propertyStrategy="p_st"/>
+	<generateBean name="gb_1" useTemplate="testTemplateBean" nameStrategy="n_st" aopStrategy="a_st" delegateStrategy="d_st" methodStrategy="m_st" propertyStrategy="p_st"/>
 
 
 </beans>
