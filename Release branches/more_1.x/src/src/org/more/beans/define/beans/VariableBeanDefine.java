@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.define;
+package org.more.beans.define.beans;
 /**
  * VariableBeanDefine类用于定义一个值作为bean。
  * @version 2010-9-15
@@ -23,6 +23,10 @@ public class VariableBeanDefine extends TemplateBeanDefine {
     //------------------------------------------------------------------
     private Class<?> type  = null; //值类型
     private Object   value = null; //值
+    /**返回“VariableBean”。*/
+    public String getBeanType() {
+        return "VariableBean";
+    }
     /**获取值类型。*/
     public Class<?> getType() {
         return this.type;

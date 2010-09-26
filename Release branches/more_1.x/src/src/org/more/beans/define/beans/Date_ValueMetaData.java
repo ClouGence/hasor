@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.define;
+package org.more.beans.define.beans;
 import java.util.Date;
-import org.more.beans.ValueMetaData;
-import org.more.beans.ValueMetaData.PropertyMetaTypeEnum;
+import org.more.beans.define.ValueMetaData.PropertyMetaTypeEnum;
 import org.more.util.StringConvert;
 /**
  * 表示一个时间日期类型数据，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#Date}。
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Date_ValueMetaData extends ValueMetaData {
+public class Date_ValueMetaData extends AbstractValueMetaData {
     private String dateString   = null; //时间日期字符形式的数据
     private String formatString = null; //date属性的格式化字符串
     /**该方法将会返回{@link PropertyMetaTypeEnum#Date}。*/

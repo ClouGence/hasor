@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 package org.more.beans.define;
-import org.more.util.attribute.IAttribute;
+import org.more.beans.ApplicationContext;
 /**
- * 该接口用于定义一个bean声明中的一个属性或参数信息。
- * @version 2010-9-15
+ * 属性注入请求处理接口，该接口负责对某个bean进行复杂注入请求的处理。
+ * @version 2010-9-18
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AbstractPropertyDefine extends ExpandDefineSet, IAttribute {
-    /**返回这个属性的Java类型。*/
-    public Class<?> getClassType();
-    /**返回属性的描述信息。*/
-    public String getDescription();
-    /**获取对该属性的值信息描述。*/
-    public ValueMetaData getMetaData();
-    /**返回具有特征的字符串。*/
-    public String toString();
+public interface ExportIoc {
+    /**
+     * 执行注入的方法，在该接口中完成属性注入的过程。
+     * @param object 要注入的目标属性。
+     * @param initParam 创建bean的启动参数。
+     * @param define bean的定义信息。
+     * @param context 应用环境
+     */
+    public Object iocProcess(Object object, Object[] initParam, AbstractBeanDefine define, ApplicationContext context);
 }

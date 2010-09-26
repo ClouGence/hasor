@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.define;
+package org.more.beans.define.beans;
 /**
  * 表示一个bean定义中的一种属性或参数
  * @version 2010-9-15
@@ -30,5 +30,5 @@ public class ConstructorDefine extends AbstractPropertyDefine {
     /**返回具有特征的字符串。*/
     public String toString() {
         return this.getClass().getSimpleName() + "@" + this.hashCode() + " index=" + this.getIndex();
-    };
+    }
 }

@@ -14,25 +14,13 @@
  * limitations under the License.
  */
 package org.more.beans.define;
-import java.net.URI;
-import org.more.beans.ValueMetaData;
-import org.more.beans.ValueMetaData.PropertyMetaTypeEnum;
 /**
- * 表示一个连接数据，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#URI}。
- * @version 2010-9-17
+ * 定义如果想要支持扩展的配置策略则需要实现该接口，
+ * 可以通过该接口的getDefineConfig来获取有关定义上的一些额外扩展属性设置。
+ * @version 2010-9-24
  * @author 赵永春 (zyc@byshell.org)
  */
-public class URI_ValueMetaData extends ValueMetaData {
-    private URI uriObject = null; //表示连接的url字符数据
-    /**该方法将会返回{@link PropertyMetaTypeEnum#URI}。*/
-    public PropertyMetaTypeEnum getPropertyType() {
-        return PropertyMetaTypeEnum.URI;
-    }
-    public URI getUriObject() {
-        return this.uriObject;
-    }
-    /**设置表示连接的uri数据*/
-    public void setUriObject(URI uriObject) {
-        this.uriObject = uriObject;
-    }
+public interface ExpandDefine {
+    /**获取被扩展的目标对象。*/
+    public Object getTarget();
 }

@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.define;
-import org.more.beans.ValueMetaData;
-import org.more.beans.ValueMetaData.PropertyMetaTypeEnum;
+package org.more.beans.define.beans;
+import org.more.beans.define.ValueMetaData.PropertyMetaTypeEnum;
 import org.more.util.StringConvert;
 /**
  * 表示一个大文本数据段，通常使用CDATA来描述对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#Enum}。
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Enum_ValueMetaData extends ValueMetaData {
+public class Enum_ValueMetaData extends AbstractValueMetaData {
     private String   enumValue = null; //枚举表述的字符串形式
     private Class<?> enumType  = null; //枚举类型
     /**该方法将会返回{@link PropertyMetaTypeEnum#Enum}。*/

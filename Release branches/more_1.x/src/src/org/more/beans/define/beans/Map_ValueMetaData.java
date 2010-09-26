@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.define;
+package org.more.beans.define.beans;
 import java.util.HashMap;
 import java.util.Map;
-import org.more.beans.ValueMetaData;
-import org.more.beans.ValueMetaData.PropertyMetaTypeEnum;
+import org.more.beans.define.ValueMetaData;
+import org.more.beans.define.ValueMetaData.PropertyMetaTypeEnum;
 /**
  * 表示一个{@link Map}类型的值元信息描述，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#MapCollection}。
  * @version 2010-9-17

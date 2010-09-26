@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.define;
+package org.more.beans.define.beans;
 import java.util.Map;
 import org.more.StateException;
-import org.more.beans.ValueMetaData;
+import org.more.beans.define.ValueMetaData;
 /**
  * 表示一个{@link Map}类型的一个key value键值对的元信息描述。
  * @version 2010-9-17

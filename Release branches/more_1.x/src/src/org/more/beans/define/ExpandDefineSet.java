@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 package org.more.beans.define;
-import org.more.util.attribute.IAttribute;
 /**
- * 该接口用于定义一个bean声明中的一个属性或参数信息。
- * @version 2010-9-15
+ * 定义如果想要支持扩展的配置策略则需要实现该接口，
+ * 可以通过该接口的getExpandDefine来获取有关定义上的一些额外扩展属性设置。
+ * @version 2010-9-24
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AbstractPropertyDefine extends ExpandDefineSet, IAttribute {
-    /**返回这个属性的Java类型。*/
-    public Class<?> getClassType();
-    /**返回属性的描述信息。*/
-    public String getDescription();
-    /**获取对该属性的值信息描述。*/
-    public ValueMetaData getMetaData();
-    /**返回具有特征的字符串。*/
-    public String toString();
+public interface ExpandDefineSet {
+    /**根据扩展名获取扩展目标对象。*/
+    public ExpandDefine getExpandDefine(String name);
 }

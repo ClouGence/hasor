@@ -13,29 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.define;
+package org.more.beans.define.aop;
 /**
- * RelationBeanDefine类用于定义一个对另外一个bean的引用。
- * @version 2010-9-15
+ * 负责连接切点配置和aop监听器的Bean
+ * @version 2010-9-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public class RelationBeanDefine extends TemplateBeanDefine {
-    private String ref      = null; //所引用的Bean名
-    private String refScope = null; //所引用的Bean作用域
-    /**获取引用的Bean名。*/
-    public String getRef() {
-        return this.ref;
+public class LinkBean {
+    private AbstractPointcutDefine refPointcut = null; //连接的切点
+    private String                 refBean     = null; //连接的aopBean名
+    /**创建{@link LinkBean}对象*/
+    public LinkBean(AbstractPointcutDefine refPointcut, String refBean) {
+        this.refPointcut = refPointcut;
+        this.refBean = refBean;
     }
-    /**设置引用的Bean名。*/
-    public void setRef(String ref) {
-        this.ref = ref;
+    /**获取连接的切点。*/
+    public AbstractPointcutDefine getRefPointcut() {
+        return refPointcut;
     }
-    /**获取引用的Bean所属作用域。*/
-    public String getRefScope() {
-        return this.refScope;
-    }
-    /**设置引用的Bean所属作用域。*/
-    public void setRefScope(String refScope) {
-        this.refScope = refScope;
+    /**获取连接的aopBean名。*/
+    public String getRefBean() {
+        return refBean;
     }
 }

@@ -13,22 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.define;
+package org.more.beans.define.beans;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import org.more.RepeateException;
-import org.more.beans.AbstractBeanDefine;
-import org.more.beans.AbstractPropertyDefine;
-import org.more.beans.IocTypeEnum;
-import org.more.util.attribute.AttBase;
-import org.more.util.attribute.IAttribute;
+import org.more.beans.define.AbstractBeanDefine;
+import org.more.beans.define.AbstractDefine;
+import org.more.beans.define.IocTypeEnum;
 /**
  * TemplateBeanDefine类用于定义一个bean的模板。
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TemplateBeanDefine implements AbstractBeanDefine {
+public class TemplateBeanDefine extends AbstractDefine implements AbstractBeanDefine {
     private String                            name          = null;                                   //名称
     private IocTypeEnum                       iocType       = null;                                   //默认属性注入方式
     private String                            scope         = null;                                   //bean作用域
@@ -42,9 +40,11 @@ public class TemplateBeanDefine implements AbstractBeanDefine {
     private TemplateBeanDefine                useTemplate   = null;                                   //应用的模板
     private ArrayList<AbstractPropertyDefine> initParams    = new ArrayList<AbstractPropertyDefine>(); //初始化参数
     private ArrayList<AbstractPropertyDefine> propertys     = new ArrayList<AbstractPropertyDefine>(); //属性
-    private IAttribute                        attribute     = new AttBase();                          //元信息描述
-    private IAttribute                        defineconfig  = new AttBase();                          //扩展配置描述
     //-------------------------------------------------------------
+    /**返回“TemplateBean”。*/
+    public String getBeanType() {
+        return "TemplateBean";
+    }
     /**返回bean的名称，在同一个Factory中name是唯一的。*/
     public String getName() {
         return this.name;
@@ -101,10 +101,6 @@ public class TemplateBeanDefine implements AbstractBeanDefine {
         this.propertys.toArray(define);
         return define;
     };
-    /**返回扩展Define配置描述。*/
-    public IAttribute getDefineConfig() {
-        return this.defineconfig;
-    }
     /**返回具有特征的字符串。*/
     public String toString() {
         return this.getClass().getSimpleName() + "@" + this.hashCode() + " name=" + this.getName();
@@ -174,24 +170,5 @@ public class TemplateBeanDefine implements AbstractBeanDefine {
     /**设置bean使用的模板。*/
     public void setUseTemplate(TemplateBeanDefine useTemplate) {
         this.useTemplate = useTemplate;
-    }
-    //-------------------------------------------------------------
-    public boolean contains(String name) {
-        return this.attribute.contains(name);
-    };
-    public void setAttribute(String name, Object value) {
-        this.attribute.setAttribute(name, value);
-    };
-    public Object getAttribute(String name) {
-        return this.attribute.getAttribute(name);
-    };
-    public void removeAttribute(String name) {
-        this.attribute.removeAttribute(name);
-    };
-    public String[] getAttributeNames() {
-        return this.attribute.getAttributeNames();
-    };
-    public void clearAttribute() {
-        this.attribute.clearAttribute();
     }
 }

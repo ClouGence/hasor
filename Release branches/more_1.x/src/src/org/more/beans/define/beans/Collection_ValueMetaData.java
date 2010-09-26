@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.define;
-import org.more.beans.ValueMetaData;
+package org.more.beans.define.beans;
+import org.more.beans.define.ValueMetaData;
 /**
  * 表示一个集合类型的抽象类其子类决定具体可以表述的集合类型。
  * @version 2010-9-18
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class Collection_ValueMetaData<T extends ValueMetaData> extends ValueMetaData {
+public abstract class Collection_ValueMetaData<T extends ValueMetaData> extends AbstractValueMetaData {
     private Class<?> collectionType = null; //集合对象类型，如果是数组则该值与属性collectionValueType一致。
     private int      initSize       = 0;   //表示集合初始化大小
     /**获取集合对象类型，如果是数组则该值与属性collectionValueType一致。*/

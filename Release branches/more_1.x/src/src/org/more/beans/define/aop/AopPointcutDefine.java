@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.define;
-import org.more.util.attribute.IAttribute;
+package org.more.beans.define.aop;
+import java.lang.reflect.Method;
 /**
- * 该接口用于定义一个bean声明中的一个属性或参数信息。
- * @version 2010-9-15
+ * 
+ * @version 2010-9-24
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AbstractPropertyDefine extends ExpandDefineSet, IAttribute {
-    /**返回这个属性的Java类型。*/
-    public Class<?> getClassType();
-    /**返回属性的描述信息。*/
-    public String getDescription();
-    /**获取对该属性的值信息描述。*/
-    public ValueMetaData getMetaData();
-    /**返回具有特征的字符串。*/
-    public String toString();
+public class AopPointcutDefine extends AbstractPointcutDefine {
+    public boolean isMatch(Class<?> type) {
+        return true;
+    }
+    public boolean isMatch(Method method) {
+        return true;
+    }
 }

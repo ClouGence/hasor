@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.define;
+package org.more.beans.define.beans;
 /**
  * GenerateBeanDefine类用于定义一个自动生成的bean。
  * @version 2010-9-15
@@ -25,6 +25,10 @@ public class GenerateBeanDefine extends TemplateBeanDefine {
     private String delegateStrategy = null; //委托生成策略Bean名
     private String methodStrategy   = null; //方法生成策略Bean名
     private String propertyStrategy = null; //属性生成策略Bean名
+    /**返回“GenerateBean”。*/
+    public String getBeanType() {
+        return "GenerateBean";
+    }
     /**获取类名称生成策略。*/
     public String getNameStrategy() {
         return this.nameStrategy;

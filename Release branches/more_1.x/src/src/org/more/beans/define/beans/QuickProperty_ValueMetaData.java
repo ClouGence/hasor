@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.define;
-import org.more.beans.ValueMetaData;
+package org.more.beans.define.beans;
 /**
 * ValueMetaData的一个临时实现
 * @version 2010-9-21
 * @author 赵永春 (zyc@byshell.org)
 */
-public class QuickProperty_ValueMetaData extends ValueMetaData {
+public class QuickProperty_ValueMetaData extends AbstractValueMetaData {
     private String value       = null; //value
     private String enumeration = null; //enum
     private String date        = null; //date

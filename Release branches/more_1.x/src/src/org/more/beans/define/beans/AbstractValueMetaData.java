@@ -13,20 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.define;
+package org.more.beans.define.beans;
+import org.more.beans.define.AbstractDefine;
+import org.more.beans.define.ValueMetaData;
 /**
- * ClassBeanDefine类用于定义一个常规的bean，这个bean有一个具体的class类对象。
+ * 表示一个属性值的抽象类
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ClassBeanDefine extends TemplateBeanDefine {
-    private Class<?> source = null; //class类
-    /**获取类的class完整限定名。*/
-    public Class<?> getSource() {
-        return source;
-    }
-    /**设置类完整限定名。*/
-    public void setSource(Class<?> source) {
-        this.source = source;
-    }
-}
+public abstract class AbstractValueMetaData extends AbstractDefine implements ValueMetaData {}

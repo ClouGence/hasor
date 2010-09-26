@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.define;
-import org.more.beans.ValueMetaData;
-import org.more.beans.ValueMetaData.PropertyMetaTypeEnum;
+package org.more.beans.define.beans;
+import org.more.beans.define.ValueMetaData.PropertyMetaTypeEnum;
 /**
  * 表示一个基本类型数据，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#SimpleType}。
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Simple_ValueMetaData extends ValueMetaData {
+public class Simple_ValueMetaData extends AbstractValueMetaData {
     /**当检测到value有值但是又没有定义type时候值类型采用的默认数据类型。*/
     public static final Class<?> DefaultValueType = String.class;
     /**该枚举中定义了{@link Simple_ValueMetaData}类可以表示的基本类型。*/

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.define;
+package org.more.beans.define.beans;
 /**
  * 表示一个bean定义中的一种属性或参数
  * @version 2010-9-15

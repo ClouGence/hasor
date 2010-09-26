@@ -13,26 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.define;
+package org.more.beans.define.beans;
 import java.util.ArrayList;
-import org.more.beans.ValueMetaData;
-import org.more.beans.ValueMetaData.PropertyMetaTypeEnum;
+import java.util.List;
+import org.more.beans.define.ValueMetaData;
+import org.more.beans.define.ValueMetaData.PropertyMetaTypeEnum;
 /**
- * 表示一个数组集合类型的值元信息描述，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#ArrayCollection}。
+ * 表示一个{@link List}类型的值元信息描述，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#ListCollection}。
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Array_ValueMetaData extends Collection_ValueMetaData<ValueMetaData> {
+public class List_ValueMetaData extends Collection_ValueMetaData<ValueMetaData> {
     private ArrayList<ValueMetaData> valueData = new ArrayList<ValueMetaData>(); //数据
-    /**该方法将会返回{@link PropertyMetaTypeEnum#ArrayCollection}。*/
+    /**该方法将会返回{@link PropertyMetaTypeEnum#ListCollection}。*/
     public PropertyMetaTypeEnum getPropertyType() {
-        return PropertyMetaTypeEnum.ArrayCollection;
+        return PropertyMetaTypeEnum.ListCollection;
     }
-    /**以数组形式返回集合中的数据。*/
-    public ValueMetaData[] getCollectionValue() {
-        ValueMetaData[] values = new ValueMetaData[this.valueData.size()];
-        this.valueData.toArray(values);
-        return values;
+    /**以List形式返回集合中的数据。*/
+    public List<ValueMetaData> getCollectionValue() {
+        return this.valueData;
     }
     /**添加一个元素。*/
     public void addObject(ValueMetaData value) {

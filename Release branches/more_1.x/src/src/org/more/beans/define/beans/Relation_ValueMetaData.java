@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.define;
-import org.more.beans.ValueMetaData;
-import org.more.beans.ValueMetaData.PropertyMetaTypeEnum;
+package org.more.beans.define.beans;
+import org.more.beans.define.ValueMetaData.PropertyMetaTypeEnum;
 /**
  * 表示对另外一个bean的引用，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#RelationBean}。
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Relation_ValueMetaData extends ValueMetaData {
+public class Relation_ValueMetaData extends AbstractValueMetaData {
     private String refBean  = null; //引用的Bean名称
     private String refScope = null; //引用的Bean所处作用域
     /**该方法将会返回{@link PropertyMetaTypeEnum#RelationBean}。*/

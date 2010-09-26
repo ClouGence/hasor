@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.define;
+package org.more.beans.define.beans;
 import java.util.ArrayList;
 /**
  * ScriptBeanDefine类用于定义一个脚本中的bean的引用。
@@ -25,6 +25,10 @@ public class ScriptBeanDefine extends TemplateBeanDefine {
     private String            sourcePath    = null;                   //脚本文件位置
     private String            language      = "JavaScript";           //脚本引擎名
     private ArrayList<String> implementList = new ArrayList<String>(); //该bean对应的接口名
+    /**返回“ScriptBean”。*/
+    public String getBeanType() {
+        return "ScriptBean";
+    }
     /**获取脚本内容*/
     public String getScriptText() {
         return scriptText;

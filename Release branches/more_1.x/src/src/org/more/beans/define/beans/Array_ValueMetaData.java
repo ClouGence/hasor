@@ -13,25 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.beans.define;
-import java.util.HashSet;
-import java.util.Set;
-import org.more.beans.ValueMetaData;
-import org.more.beans.ValueMetaData.PropertyMetaTypeEnum;
+package org.more.beans.define.beans;
+import java.util.ArrayList;
+import org.more.beans.define.ValueMetaData;
+import org.more.beans.define.ValueMetaData.PropertyMetaTypeEnum;
 /**
- * 表示一个{@link Set}类型的值元信息描述，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#SetCollection}。
+ * 表示一个数组集合类型的值元信息描述，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#ArrayCollection}。
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Set_ValueMetaData extends Collection_ValueMetaData<ValueMetaData> {
-    private HashSet<ValueMetaData> valueData = new HashSet<ValueMetaData>(); //数据
-    /**该方法将会返回{@link PropertyMetaTypeEnum#SetCollection}。*/
+public class Array_ValueMetaData extends Collection_ValueMetaData<ValueMetaData> {
+    private ArrayList<ValueMetaData> valueData = new ArrayList<ValueMetaData>(); //数据
+    /**该方法将会返回{@link PropertyMetaTypeEnum#ArrayCollection}。*/
     public PropertyMetaTypeEnum getPropertyType() {
-        return PropertyMetaTypeEnum.SetCollection;
+        return PropertyMetaTypeEnum.ArrayCollection;
     }
-    /**以Set形式返回集合中的数据。*/
-    public Set<ValueMetaData> getCollectionValue() {
-        return this.valueData;
+    /**以数组形式返回集合中的数据。*/
+    public ValueMetaData[] getCollectionValue() {
+        ValueMetaData[] values = new ValueMetaData[this.valueData.size()];
+        this.valueData.toArray(values);
+        return values;
     }
     /**添加一个元素。*/
     public void addObject(ValueMetaData value) {
