@@ -62,7 +62,7 @@ public class TagBeans_Value extends TagBeans_AbstractValueMetaDataDefine<Simple_
                     ClassLoader loader = Thread.currentThread().getContextClassLoader();
                     propType = loader.loadClass(propTypeString);
                     pdefine.setClassType(propType);
-                } catch (Exception e) {
+                } catch (ClassNotFoundException e) {
                     throw new LostException("ClassNotFoundException,ÊôÐÔÀàÐÍ[" + propTypeString + "]¶ªÊ§.", e);
                 }
         } else

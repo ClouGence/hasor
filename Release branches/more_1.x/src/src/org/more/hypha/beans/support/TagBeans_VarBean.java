@@ -15,7 +15,7 @@
  */
 package org.more.hypha.beans.support;
 import java.util.Map;
-import org.more.DoesSupportException;
+import org.more.LostException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.beans.define.VariableBeanDefine;
@@ -57,7 +57,7 @@ public class TagBeans_VarBean extends TagBeans_AbstractBeanDefine<VariableBeanDe
                 ClassLoader loader = Thread.currentThread().getContextClassLoader();
                 classType = loader.loadClass(_type);
             } catch (Exception e) {
-                throw new DoesSupportException("属性类型[" + _type + "]丢失.", e);
+                throw new LostException("[" + _type + "]类型属性丢失。", e);
             }
         //3.取得值
         Object value = null;

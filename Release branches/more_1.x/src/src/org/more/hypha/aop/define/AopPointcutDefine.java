@@ -13,17 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.support;
-import org.more.hypha.beans.ValueMetaData;
-import org.more.hypha.beans.define.QuickProperty_ValueMetaData;
+package org.more.hypha.aop.define;
+import java.lang.reflect.Method;
 /**
- * 属性值解析器。负责将{@link QuickProperty_ValueMetaData}解析成对应的值描述。
- * 该接口的目的是为了辅助{@link TagBeans_AbstractPropertyDefine}解析器解析属性值元信息。
- * 属性值元信息的解析分为两个部分一个是由标签解析直接生成另一个是由{@link QuickPropertyParser}接口完成。
- * @version 2010-9-22
+ * 切入点定义
+ * @version 2010-9-24
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface QuickPropertyParser {
-    /** 当遇到一个{@link QuickProperty_ValueMetaData}描述时。*/
-    public ValueMetaData parser(QuickParserEvent event);
+public class AopPointcutDefine extends AbstractPointcutDefine {
+    private String expression = null;
+    /**获取匹配字符串。*/
+    public String getExpression() {
+        return expression;
+    }
+    /**设置表达式*/
+    public void setExpression(String expression) {
+        this.expression = expression;
+    }
+    /**测试方法是否被包含在切入点*/
+    public boolean isMatch(Method method) {
+        //TODO 实现匹配 
+        return true;
+    }
 }

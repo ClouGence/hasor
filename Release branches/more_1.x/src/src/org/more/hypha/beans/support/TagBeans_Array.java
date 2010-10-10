@@ -40,6 +40,7 @@ public class TagBeans_Array extends TagBeans_AbstractCollection<Array_ValueMetaD
         Array_ValueMetaData array = this.getDefine(context);
         Class<?> collectionType = array.getCollectionType();
         for (ValueMetaData var : array.getCollectionValue())
+            //矫正一下集合中Simple_ValueMetaData类型数据的value值类型。
             if (var instanceof Simple_ValueMetaData == true) {
                 Simple_ValueMetaData simple = (Simple_ValueMetaData) var;
                 PropertyType propertyType = Simple_ValueMetaData.getPropertyType(collectionType);
@@ -51,6 +52,7 @@ public class TagBeans_Array extends TagBeans_AbstractCollection<Array_ValueMetaD
             }
         super.endElement(context, xpath, event);
     }
+    /**返回默认集合数据类型*/
     protected Class<?> getDefaultCollectionType() {
         return Object.class;
     }

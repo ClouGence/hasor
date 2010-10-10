@@ -35,7 +35,7 @@ public interface DefineResource extends DefineResourcePluginSet, IAttribute {
      * @param name 要获取bean定义的bean名称。
      * @return 返回bean定义，如果获取不到指定的bean定义则返回null。
      */
-    public AbstractBeanDefine getBeanDefine(String name);
+    public AbstractBeanDefine getBeanDefine(String name) throws NoDefinitionException;
     /**
      * 检测是否存在某个名称的Bean定义，如果存在目标bean定义则返回true，否则返回false。
      * @param name 要检测的Bean定义名称。

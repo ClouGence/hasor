@@ -15,7 +15,7 @@
  */
 package org.more.hypha.beans.support;
 import java.util.Map;
-import org.more.DoesSupportException;
+import org.more.LostException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.beans.define.ClassBeanDefine;
@@ -52,7 +52,7 @@ public class TagBeans_ClassBean extends TagBeans_AbstractBeanDefine<ClassBeanDef
         try {
             define.setSource(loader.loadClass(source));
         } catch (Exception e) {
-            throw new DoesSupportException("Bean类型[" + source + "]丢失.", e);
+            throw new LostException("[" + source + "]类型Bean丢失。", e);
         }
     }
 }

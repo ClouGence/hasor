@@ -53,7 +53,6 @@ public class XmlConfiguration extends AttBase implements DefineResource {
     private InputStream                       sourceStream     = null;
     private Map<String, DefineResourcePlugin> pluginList       = null;
     //
-    private ArrayList<String>                 defineNames      = new ArrayList<String>();
     private Map<String, AbstractBeanDefine>   defineMap        = new HashMap<String, AbstractBeanDefine>();
     private ArrayList<QuickPropertyParser>    quickParser      = new ArrayList<QuickPropertyParser>();
     private XmlParserKitManager               manager          = new XmlParserKitManager();
@@ -110,7 +109,9 @@ public class XmlConfiguration extends AttBase implements DefineResource {
     };
     //========================================================================================
     /**获取一个{@link AbstractBeanDefine}定义。*/
-    public AbstractBeanDefine getBeanDefine(String name) {
+    public AbstractBeanDefine getBeanDefine(String name) throws NoDefinitionException {
+        if (this.defineMap.containsKey(name) == false)
+            throw new NoDefinitionException("不存在名称为[" + name + "]的Bean定义。");
         return this.defineMap.get(name);
     };
     /**测试某个名称的bean定义是否存在。*/
@@ -120,9 +121,8 @@ public class XmlConfiguration extends AttBase implements DefineResource {
     /**添加一个Bean定义，被添加的Bean定义会被执行检测。*/
     public void addBeanDefine(AbstractBeanDefine define) {
         if (this.defineMap.containsKey(define.getName()) == true)
-            throw new RepeateException("Bean定义名称[" + define.getName() + "]重复");
+            throw new RepeateException("[" + define.getName() + "]Bean定义重复。");
         this.defineMap.put(define.getName(), define);
-        this.defineNames.add(define.getName());
     };
     /**使用指定的输入流解析*/
     public XmlConfiguration passerXml(InputStream in) throws XMLStreamException {
@@ -140,14 +140,14 @@ public class XmlConfiguration extends AttBase implements DefineResource {
     /**注册一个快速属性值解析器。*/
     public void regeditQuickParser(QuickPropertyParser parser) {
         if (parser == null)
-            throw new NullPointerException("参数不能为空.");
+            throw new NullPointerException("QuickPropertyParser类型参数不能为空。");
         if (this.quickParser.contains(parser) == false)
             this.quickParser.add(parser);
     }
     /**取消一个快速属性值解析器的注册。*/
     public void unRegeditQuickParser(QuickPropertyParser parser) {
         if (parser == null)
-            throw new NullPointerException("参数不能为空.");
+            throw new NullPointerException("QuickPropertyParser类型参数不能为空。");
         if (this.quickParser.contains(parser) == true)
             this.quickParser.remove(parser);
     }
@@ -179,7 +179,6 @@ public class XmlConfiguration extends AttBase implements DefineResource {
     };
     /**清空所有注册的Bean定义*/
     public void destroy() {
-        this.defineNames.clear();
         this.defineMap.clear();
     }
     //========================================================================================
@@ -194,23 +193,17 @@ public class XmlConfiguration extends AttBase implements DefineResource {
         return this.sourceURI;
     }
     public List<String> getBeanDefineNames() {
-        return this.defineNames;
+        return new ArrayList<String>(this.defineMap.keySet());
     }
-    public boolean isPrototype(String name) {
-        if (this.containsBeanDefine(name) == false)
-            throw new NoDefinitionException("找不到名称为[" + name + "]的Bean定义。");
+    public boolean isPrototype(String name) throws NoDefinitionException {
         AbstractBeanDefine define = this.getBeanDefine(name);
         return (define.factoryName() == null) ? false : true;
     }
-    public boolean isSingleton(String name) {
-        if (this.containsBeanDefine(name) == false)
-            throw new NoDefinitionException("找不到名称为[" + name + "]的Bean定义。");
+    public boolean isSingleton(String name) throws NoDefinitionException {
         AbstractBeanDefine define = this.getBeanDefine(name);
         return define.isSingleton();
     }
-    public boolean isFactory(String name) {
-        if (this.containsBeanDefine(name) == false)
-            throw new NoDefinitionException("找不到名称为[" + name + "]的Bean定义。");
+    public boolean isFactory(String name) throws NoDefinitionException {
         AbstractBeanDefine define = this.getBeanDefine(name);
         return (define.factoryName() == null) ? false : true;
     }

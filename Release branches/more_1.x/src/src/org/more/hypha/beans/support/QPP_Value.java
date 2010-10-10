@@ -26,9 +26,11 @@ import org.more.util.StringConvert;
 public class QPP_Value implements QuickPropertyParser {
     /**试图解析成为{@link Simple_ValueMetaData}如果解析失败返回null。*/
     public ValueMetaData parser(QuickParserEvent event) {
+        //1.检查是否可以解析
         QuickProperty_ValueMetaData meta = event.getOldMetaData();
         if (meta.getValue() == null)
             return null;
+        //2.进行解析
         Class<?> propType = event.getProperty().getClassType();
         if (propType == null)
             //当检测到value有值但是又没有定义type时候值类型采用的默认数据类型。

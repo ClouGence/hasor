@@ -16,6 +16,7 @@
 package org.more.hypha.beans.support;
 import java.net.URI;
 import java.net.URISyntaxException;
+import org.more.FormatException;
 import org.more.hypha.beans.ValueMetaData;
 import org.more.hypha.beans.define.QuickProperty_ValueMetaData;
 import org.more.hypha.beans.define.URI_ValueMetaData;
@@ -26,12 +27,18 @@ import org.more.hypha.beans.define.URI_ValueMetaData;
  */
 public class QPP_URILocation implements QuickPropertyParser {
     /**试图解析成为{@link URI_ValueMetaData}如果解析失败返回null。*/
-    public ValueMetaData parser(QuickParserEvent event) throws URISyntaxException {
+    public ValueMetaData parser(QuickParserEvent event) {
+        //1.检查是否可以解析
         QuickProperty_ValueMetaData meta = event.getOldMetaData();
         if (meta.getUriLocation() == null)
             return null;
+        //2.进行解析
         URI_ValueMetaData newMETA = new URI_ValueMetaData();
-        newMETA.setUriObject(new URI(meta.getUriLocation()));
-        return newMETA;
+        try {
+            newMETA.setUriObject(new URI(meta.getUriLocation()));
+            return newMETA;
+        } catch (URISyntaxException e) {
+            throw new FormatException("解析uri类型数据发生异常，错误的uri格式数据：[" + meta.getUriLocation() + "]");
+        }
     }
 }

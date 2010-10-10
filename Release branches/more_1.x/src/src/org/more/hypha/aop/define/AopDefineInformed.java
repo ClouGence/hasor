@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.support;
-import org.more.hypha.beans.ValueMetaData;
-import org.more.hypha.beans.define.QuickProperty_ValueMetaData;
+package org.more.hypha.aop.define;
+import org.more.hypha.beans.AbstractBeanDefine;
 /**
- * 属性值解析器。负责将{@link QuickProperty_ValueMetaData}解析成对应的值描述。
- * 该接口的目的是为了辅助{@link TagBeans_AbstractPropertyDefine}解析器解析属性值元信息。
- * 属性值元信息的解析分为两个部分一个是由标签解析直接生成另一个是由{@link QuickPropertyParser}接口完成。
- * @version 2010-9-22
+ * 引用已注册的bean定义aop类型
+ * @version 2010-9-27
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface QuickPropertyParser {
-    /** 当遇到一个{@link QuickProperty_ValueMetaData}描述时。*/
-    public ValueMetaData parser(QuickParserEvent event);
+public class AopDefineInformed extends AbstractInformed {
+    private AbstractBeanDefine refBean = null; //连接的aopBean
+    /**获取关联的refBean。*/
+    public AbstractBeanDefine getRefBean() {
+        return refBean;
+    }
+    /**设置关联的RefBean。*/
+    public void setRefBean(AbstractBeanDefine refBean) {
+        this.refBean = refBean;
+    }
 }

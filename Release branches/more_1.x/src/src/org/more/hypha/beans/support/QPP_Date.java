@@ -25,9 +25,11 @@ import org.more.hypha.beans.define.QuickProperty_ValueMetaData;
 public class QPP_Date implements QuickPropertyParser {
     /**试图解析成为{@link Date_ValueMetaData}如果解析失败返回null。*/
     public ValueMetaData parser(QuickParserEvent event) {
+        //1.检查是否可以解析
         QuickProperty_ValueMetaData meta = event.getOldMetaData();
         if (meta.getDate() == null)
             return null;
+        //2.进行解析
         Date_ValueMetaData newMETA = new Date_ValueMetaData();
         newMETA.setDateString(meta.getDate());
         newMETA.setFormatString(meta.getFormat());

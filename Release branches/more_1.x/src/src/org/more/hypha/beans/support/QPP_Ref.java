@@ -25,9 +25,11 @@ import org.more.hypha.beans.define.Relation_ValueMetaData;
 public class QPP_Ref implements QuickPropertyParser {
     /**试图解析成为{@link Relation_ValueMetaData}如果解析失败返回null。*/
     public ValueMetaData parser(QuickParserEvent event) {
+        //1.检查是否可以解析
         QuickProperty_ValueMetaData meta = event.getOldMetaData();
         if (meta.getRefBean() == null)
             return null;
+        //2.进行解析
         Relation_ValueMetaData newMETA = new Relation_ValueMetaData();
         newMETA.setRefBean(meta.getRefBean());
         newMETA.setRefBean(meta.getRefScope());

@@ -105,7 +105,7 @@ public abstract class Tag_Abstract {
         String methodName = "set" + StringUtil.toUpperCase(attName);
         Method writeMethod = this.findMethod(methodName, define.getClass());
         if (writeMethod == null)
-            throw new DoesSupportException(define.getClass().getSimpleName() + "：对象中不存在[" + methodName + "]方法。");
+            throw new DoesSupportException(define.getClass().getSimpleName() + "：对象不支持写属性[" + attName + "]操作(不存在[" + methodName + "]方法。)");
         //2.执行属性转换
         Class<?> toType = writeMethod.getParameterTypes()[0];
         Object attValueObject = StringConvert.changeType(value, toType);
@@ -113,7 +113,7 @@ public abstract class Tag_Abstract {
         try {
             writeMethod.invoke(define, attValueObject);
         } catch (Exception e) {
-            throw new PropertyException("无法将" + attName + ",属性写入[" + define + "]对象.", e);
+            throw new PropertyException("在Method.invoke期间发生异常，无法将" + attName + ",属性写入[" + define + "]对象：" + e.getMessage());
         }
     };
 }

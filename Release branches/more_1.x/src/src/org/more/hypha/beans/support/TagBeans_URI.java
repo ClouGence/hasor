@@ -54,7 +54,7 @@ public class TagBeans_URI extends TagBeans_AbstractValueMetaDataDefine<URI_Value
         try {
             metaData.setUriObject(new URI(uriLocation));
         } catch (URISyntaxException e) {
-            throw new FormatException("错误的URI格式内容：", e);
+            throw new FormatException("解析uri类型数据发生异常，错误的uri格式数据：[" + uriLocation + "]");
         }
     }
 }

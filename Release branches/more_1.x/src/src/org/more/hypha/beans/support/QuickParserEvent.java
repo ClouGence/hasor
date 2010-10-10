@@ -36,18 +36,18 @@ public class QuickParserEvent {
     }
     /**获取当前解析到的{@link XmlConfiguration}对象。*/
     public XmlConfiguration getConfiguration() {
-        return configuration;
+        return this.configuration;
     }
     /**获取当前解析到的{@link AbstractBeanDefine}对象。*/
     public AbstractBeanDefine getDefine() {
-        return define;
+        return this.define;
     }
     /**获取当前解析到的{@link AbstractPropertyDefine}对象。*/
     public AbstractPropertyDefine getProperty() {
-        return property;
+        return this.property;
     }
     /**获取等待解析的ValueMetaData信息。*/
     public QuickProperty_ValueMetaData getOldMetaData() {
-        return oldMetaData;
+        return this.oldMetaData;
     }
 }

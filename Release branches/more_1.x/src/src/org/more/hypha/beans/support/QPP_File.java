@@ -26,9 +26,11 @@ import org.more.hypha.beans.define.QuickProperty_ValueMetaData;
 public class QPP_File implements QuickPropertyParser {
     /**试图解析成为{@link File_ValueMetaData}如果解析失败返回null。*/
     public ValueMetaData parser(QuickParserEvent event) {
+        //1.检查是否可以解析
         QuickProperty_ValueMetaData meta = event.getOldMetaData();
         if (meta.getFile() == null)
             return null;
+        //2.进行解析
         File_ValueMetaData newMETA = new File_ValueMetaData();
         newMETA.setFileObject(new File(meta.getFile()));
         newMETA.setDir(false);

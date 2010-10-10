@@ -17,7 +17,6 @@ package org.more.hypha.beans.support;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.more.CheckException;
 import org.more.LostException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
@@ -79,7 +78,7 @@ public abstract class TagBeans_AbstractPropertyDefine<T extends AbstractProperty
                     ClassLoader loader = Thread.currentThread().getContextClassLoader();
                     propType = loader.loadClass(classType);
                 } catch (Exception e) {
-                    throw new LostException("ClassNotFoundException,属性类型[" + classType + "]丢失.", e);
+                    throw new LostException("ClassNotFoundException,属性类型[" + classType + "]无法被装载.", e);
                 }
             pdefine.setClassType(propType);
         }
@@ -101,11 +100,7 @@ public abstract class TagBeans_AbstractPropertyDefine<T extends AbstractProperty
         QuickParserEvent quickEvent = new QuickParserEvent(this.getConfiguration(), define, pdefine, quickMETA);
         ValueMetaData valueMETADATA = null;
         for (QuickPropertyParser parser : quickList) {
-            try {
-                valueMETADATA = parser.parser(quickEvent);
-            } catch (Throwable e) {
-                throw new CheckException("[" + define.getName() + "]在执行二次解析过程发生异常", e);
-            }
+            valueMETADATA = parser.parser(quickEvent);
             if (valueMETADATA != null)
                 break;
         }
