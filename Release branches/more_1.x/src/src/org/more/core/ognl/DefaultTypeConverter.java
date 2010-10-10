@@ -36,7 +36,7 @@ import java.util.Map;
  * @author Luke Blanshard (blanshlu@netscape.net)
  * @author Drew Davidson (drew@ognl.org)
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public class DefaultTypeConverter implements TypeConverter {
     public DefaultTypeConverter() {
         super();

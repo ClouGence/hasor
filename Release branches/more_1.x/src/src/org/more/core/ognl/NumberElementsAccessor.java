@@ -36,7 +36,7 @@ import java.util.*;
  * @author Luke Blanshard (blanshlu@netscape.net)
  * @author Drew Davidson (drew@ognl.org)
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public class NumberElementsAccessor implements ElementsAccessor, NumericTypes {
     public Enumeration getElements(final Object target) {
         return new Enumeration() {

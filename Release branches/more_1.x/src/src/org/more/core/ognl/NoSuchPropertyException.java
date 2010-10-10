@@ -35,7 +35,6 @@ package org.more.core.ognl;
  * @author Luke Blanshard (blanshlu@netscape.net)
  * @author Drew Davidson (drew@ognl.org)
  */
-@SuppressWarnings("unchecked")
 public class NoSuchPropertyException extends OgnlException {
     /**  */
     private static final long serialVersionUID = 7849483835179494684L;

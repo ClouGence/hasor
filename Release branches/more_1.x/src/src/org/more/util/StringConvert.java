@@ -121,7 +121,7 @@ public final class StringConvert {
                 if (enumValue.equals(valueString.toLowerCase()) == true)
                     return item;
             }
-            return null;
+            return defaultVar;
         } else
             throw new CastException("from [" + value.getClass() + "] to [" + toType + "]不支持的转换类型。");
     }

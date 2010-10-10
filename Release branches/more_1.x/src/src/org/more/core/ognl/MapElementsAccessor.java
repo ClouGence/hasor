@@ -36,7 +36,7 @@ import java.util.Map;
 * @author Luke Blanshard (blanshlu@netscape.net)
 * @author Drew Davidson (drew@ognl.org)
 */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public class MapElementsAccessor implements ElementsAccessor {
     public Enumeration getElements(Object target) {
         return new IteratorEnumeration(((Map) target).values().iterator());

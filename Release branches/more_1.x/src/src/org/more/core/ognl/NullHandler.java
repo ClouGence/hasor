@@ -37,11 +37,9 @@ import java.util.Map;
  * @author Luke Blanshard (blanshlu@netscape.net)
  * @author Drew Davidson (drew@ognl.org)
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public interface NullHandler {
-    /**
-        Method called on target returned null.
-     */
+    /** Method called on target returned null. */
     public Object nullMethodResult(Map context, Object target, String methodName, Object[] args);
     /**
         Property in target evaluated to null.  Property can be a constant

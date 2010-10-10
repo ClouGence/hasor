@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
 import org.more.FormatException;
-import org.more.beans.BeanFactory;
 import org.more.beans.core.ContextFactory;
+import org.more.hypha.ApplicationContext;
 import org.more.submit.ActionContext;
 import org.more.submit.ActionContextBuild;
 import org.more.util.Config;
@@ -35,7 +35,7 @@ import org.more.util.Config;
 public class MoreBuilder implements ActionContextBuild {
     //========================================================================================Field
     public static final String DefaultConfig = "more-config.xml";
-    protected BeanFactory      factory       = null;
+    protected ApplicationContext      factory       = null;
     protected String           config        = null;
     private File               baseDir       = null;
     //==================================================================================Constructor

@@ -30,9 +30,9 @@ public class SessionImpl extends AttBase implements Session {
     private String            sessionID        = UUID.randomUUID().toString();
     //==========================================================================================Job
     public long getCreateTime() {
-        return createTime;
+        return this.createTime;
     };
     public String getSessionID() {
-        return sessionID;
+        return this.sessionID;
     };
 };

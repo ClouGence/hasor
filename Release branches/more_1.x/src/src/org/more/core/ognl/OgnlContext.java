@@ -39,7 +39,7 @@ import java.util.Set;
 * @author Luke Blanshard (blanshlu@netscape.net)
 * @author Drew Davidson (drew@ognl.org)
 */
-@SuppressWarnings( { "unchecked" })
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class OgnlContext extends Object implements Map {
     public static final String        CONTEXT_CONTEXT_KEY              = "context";
     public static final String        ROOT_CONTEXT_KEY                 = "root";

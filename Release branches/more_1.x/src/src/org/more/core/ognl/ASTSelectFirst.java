@@ -34,7 +34,7 @@ import java.util.*;
  * @author Luke Blanshard (blanshlu@netscape.net)
  * @author Drew Davidson (drew@ognl.org)
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "rawtypes" })
 class ASTSelectFirst extends SimpleNode {
     /**  */
     private static final long serialVersionUID = 7363957376242272849L;

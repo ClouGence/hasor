@@ -113,6 +113,6 @@ public class SubmitBuild extends AttBase {
      * @return 返回组合之后生成的SubmitContext对象。
      */
     public SubmitContext getResult() {
-        return result;
+        return this.result;
     };
 };

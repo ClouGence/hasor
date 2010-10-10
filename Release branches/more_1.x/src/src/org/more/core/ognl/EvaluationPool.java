@@ -31,7 +31,7 @@
 package org.more.core.ognl;
 import java.util.ArrayList;
 import java.util.List;
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public final class EvaluationPool extends Object {
     private List evaluations = new ArrayList();
     private int  size        = 0;
@@ -74,9 +74,7 @@ public final class EvaluationPool extends Object {
         }
         return result;
     }
-    /**
-        Recycles an Evaluation
-     */
+    /** Recycles an Evaluation */
     public synchronized void recycle(Evaluation value) {
         if (value != null) {
             value.reset();
@@ -85,10 +83,7 @@ public final class EvaluationPool extends Object {
             recycled++;
         }
     }
-    /**
-        Recycles an of Evaluation and all of it's siblings
-        and children.
-     */
+    /** Recycles an of Evaluation and all of it's siblings and children. */
     public void recycleAll(Evaluation value) {
         if (value != null) {
             recycleAll(value.getNext());
@@ -96,40 +91,25 @@ public final class EvaluationPool extends Object {
             recycle(value);
         }
     }
-    /**
-        Recycles a List of Evaluation objects
-     */
+    /** Recycles a List of Evaluation objects */
     public void recycleAll(List value) {
-        if (value != null) {
-            for (int i = 0, icount = value.size(); i < icount; i++) {
+        if (value != null)
+            for (int i = 0, icount = value.size(); i < icount; i++)
                 recycle((Evaluation) value.get(i));
-            }
-        }
     }
-    /**
-        Returns the number of items in the pool
-     */
+    /** Returns the number of items in the pool */
     public int getSize() {
         return size;
     }
-    /**
-        Returns the number of items this pool has created since
-        it's construction.
-     */
+    /** Returns the number of items this pool has created since it's construction. */
     public int getCreatedCount() {
         return created;
     }
-    /**
-        Returns the number of items this pool has recovered from
-        the pool since its construction.
-     */
+    /** Returns the number of items this pool has recovered from the pool since its construction. */
     public int getRecoveredCount() {
         return recovered;
     }
-    /**
-        Returns the number of items this pool has recycled since
-        it's construction.
-     */
+    /** Returns the number of items this pool has recycled since it's construction. */
     public int getRecycledCount() {
         return recycled;
     }

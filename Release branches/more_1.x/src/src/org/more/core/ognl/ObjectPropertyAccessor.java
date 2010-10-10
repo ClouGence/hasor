@@ -37,11 +37,9 @@ import java.util.Map;
  * @author Luke Blanshard (blanshlu@netscape.net)
  * @author Drew Davidson (drew@ognl.org)
  */
-@SuppressWarnings( { "unchecked" })
+@SuppressWarnings("rawtypes")
 public class ObjectPropertyAccessor implements PropertyAccessor {
-    /**
-        Returns OgnlRuntime.NotFound if the property does not exist.
-     */
+    /** Returns OgnlRuntime.NotFound if the property does not exist. */
     public Object getPossibleProperty(Map context, Object target, String name) throws OgnlException {
         Object result;
         OgnlContext ognlContext = (OgnlContext) context;
@@ -58,16 +56,13 @@ public class ObjectPropertyAccessor implements PropertyAccessor {
         }
         return result;
     }
-    /**
-        Returns OgnlRuntime.NotFound if the property does not exist.
-     */
+    /** Returns OgnlRuntime.NotFound if the property does not exist. */
     public Object setPossibleProperty(Map context, Object target, String name, Object value) throws OgnlException {
         Object result = null;
         OgnlContext ognlContext = (OgnlContext) context;
         try {
-            if (!OgnlRuntime.setMethodValue(ognlContext, target, name, value, true)) {
+            if (!OgnlRuntime.setMethodValue(ognlContext, target, name, value, true))
                 result = OgnlRuntime.setFieldValue(ognlContext, target, name, value) ? null : OgnlRuntime.NotFound;
-            }
         } catch (IntrospectionException ex) {
             throw new OgnlException(name, ex);
         } catch (OgnlException ex) {

@@ -37,9 +37,9 @@ import java.util.Map;
 * @author Luke Blanshard (blanshlu@netscape.net)
 * @author Drew Davidson (drew@ognl.org)
 */
-@SuppressWarnings("unchecked")
-public class IteratorPropertyAccessor extends ObjectPropertyAccessor implements PropertyAccessor // This is here to make javadoc show this class as an implementor
-{
+@SuppressWarnings("rawtypes")
+public class IteratorPropertyAccessor extends ObjectPropertyAccessor implements PropertyAccessor {
+    // This is here to make javadoc show this class as an implementor
     public Object getProperty(Map context, Object target, Object name) throws OgnlException {
         Object result;
         Iterator iterator = (Iterator) target;

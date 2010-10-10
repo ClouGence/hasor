@@ -15,33 +15,33 @@
  */
 package org.more;
 /**
- * 未定义异常，通常出现该类异常是由于使用了未定义的属性或者策略，同时该异常也表示那些试图访问不存在的资源异常。
+ * 找不到异常，通常出现该类异常时通常是要请求的目标资源不存在。这种情况可能目标资源已经定义，也可能是未定义。
  * @version 2009-4-29
  * @author 赵永春 (zyc@byshell.org)
  */
-public class NoDefinitionException extends NotFoundException {
+public class NotFoundException extends RuntimeException {
     /**  */
     private static final long serialVersionUID = 3664651649094973500L;
     /**
-     * 未定义异常，通常出现该类异常是由于使用了未定义的属性或者策略，同时该异常也表示那些试图访问不存在的资源异常。
+    * 找不到异常，通常出现该类异常时通常是要请求的目标资源不存在。这种情况可能目标资源已经定义，也可能是未定义。
      * @param string 异常的描述信息
      */
-    public NoDefinitionException(String string) {
+    public NotFoundException(String string) {
         super(string);
     }
     /**
-     * 未定义异常，通常出现该类异常是由于使用了未定义的属性或者策略，同时该异常也表示那些试图访问不存在的资源异常。
+    * 找不到异常，通常出现该类异常时通常是要请求的目标资源不存在。这种情况可能目标资源已经定义，也可能是未定义。
      * @param error 异常的描述信息
      */
-    public NoDefinitionException(Throwable error) {
+    public NotFoundException(Throwable error) {
         super(error);
     }
     /**
-     * 未定义异常，通常出现该类异常是由于使用了未定义的属性或者策略，同时该异常也表示那些试图访问不存在的资源异常。
+    * 找不到异常，通常出现该类异常时通常是要请求的目标资源不存在。这种情况可能目标资源已经定义，也可能是未定义。
      * @param string 异常的描述信息。
      * @param error 承接的上一个异常对象。
      */
-    public NoDefinitionException(String string, Throwable error) {
+    public NotFoundException(String string, Throwable error) {
         super(string, error);
     }
 }

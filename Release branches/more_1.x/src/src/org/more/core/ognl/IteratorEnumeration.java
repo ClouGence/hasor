@@ -35,7 +35,7 @@ import java.util.*;
  * @author Luke Blanshard (blanshlu@netscape.net)
  * @author Drew Davidson (drew@ognl.org)
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public class IteratorEnumeration extends Object implements Enumeration {
     private Iterator it;
     public IteratorEnumeration(Iterator it) {

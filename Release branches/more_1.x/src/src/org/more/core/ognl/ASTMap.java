@@ -35,7 +35,7 @@ import java.util.Map;
 * @author Luke Blanshard (blanshlu@netscape.net)
 * @author Drew Davidson (drew@ognl.org)
 */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "rawtypes" })
 class ASTMap extends SimpleNode {
     /**  */
     private static final long serialVersionUID = -4251878057334724986L;

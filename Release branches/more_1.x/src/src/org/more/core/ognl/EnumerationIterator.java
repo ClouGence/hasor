@@ -36,7 +36,7 @@ import java.util.Iterator;
 * @author Luke Blanshard (blanshlu@netscape.net)
 * @author Drew Davidson (drew@ognl.org)
 */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public class EnumerationIterator implements Iterator {
     private Enumeration e;
     public EnumerationIterator(Enumeration e) {

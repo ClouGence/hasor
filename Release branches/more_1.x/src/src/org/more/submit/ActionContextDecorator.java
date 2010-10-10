@@ -15,9 +15,7 @@
  */
 package org.more.submit;
 import java.util.Iterator;
-import org.more.NoDefinitionException;
-import org.more.submit.ActionContext;
-import org.more.submit.ActionInvoke;
+import org.more.NotFoundException;
 /**
  * ActionContext接口装饰器，该类仅仅是一个无任何附加功能的空装饰器，可以通过其子类可以重写某些方法以扩充其功能的目的。
  * @version : 2010-7-26
@@ -33,7 +31,7 @@ public abstract class ActionContextDecorator implements ActionContext {
     public boolean containsAction(String actionName) {
         return this.actionContext.containsAction(actionName);
     };
-    public ActionInvoke findAction(String actionName, String invoke) throws NoDefinitionException {
+    public ActionInvoke findAction(String actionName, String invoke) throws NotFoundException {
         return this.actionContext.findAction(actionName, invoke);
     };
     public Iterator<String> getActionNameIterator() {

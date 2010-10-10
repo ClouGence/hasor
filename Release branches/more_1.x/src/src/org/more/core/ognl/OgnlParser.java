@@ -4,7 +4,7 @@ package org.more.core.ognl;
  * OgnlParser is a JavaCC parser class; it translates OGNL expressions into abstract
  * syntax trees (ASTs) that can then be interpreted by the getValue and setValue methods.
  */
-@SuppressWarnings( { "unchecked", "unused" })
+@SuppressWarnings({ "unchecked", "unused", "rawtypes" })
 public class OgnlParser/*@bgen(jjtree)*/implements OgnlParserTreeConstants, OgnlParserConstants {/*@bgen(jjtree)*/
     protected JJTOgnlParserState jjtree = new JJTOgnlParserState();
     /**
@@ -3449,7 +3449,9 @@ public class OgnlParser/*@bgen(jjtree)*/implements OgnlParserTreeConstants, Ognl
         jj_kind = kind;
         throw generateParseException();
     }
-    static private final class LookaheadSuccess extends java.lang.Error {}
+    static private final class LookaheadSuccess extends java.lang.Error {
+        private static final long serialVersionUID = -3443307753645899061L;
+    }
     final private LookaheadSuccess jj_ls = new LookaheadSuccess();
     final private boolean jj_scan_token(int kind) {
         if (jj_scanpos == jj_lastpos) {
@@ -3519,7 +3521,7 @@ public class OgnlParser/*@bgen(jjtree)*/implements OgnlParserTreeConstants, Ognl
                 jj_expentry[i] = jj_lasttokens[i];
             }
             boolean exists = false;
-            for (java.util.Enumeration e = jj_expentries.elements(); e.hasMoreElements();) {
+            for (java.util.Enumeration<?> e = jj_expentries.elements(); e.hasMoreElements();) {
                 int[] oldentry = (int[]) (e.nextElement());
                 if (oldentry.length == jj_expentry.length) {
                     exists = true;

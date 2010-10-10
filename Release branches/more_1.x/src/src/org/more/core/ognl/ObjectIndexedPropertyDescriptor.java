@@ -91,7 +91,7 @@ import java.lang.reflect.Method;
  * @author Luke Blanshard (blanshlu@netscape.net)
  * @author Drew Davidson (drew@ognl.org)
  */
-@SuppressWarnings( { "unchecked" })
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class ObjectIndexedPropertyDescriptor extends PropertyDescriptor {
     private Method indexedReadMethod;
     private Method indexedWriteMethod;

@@ -38,7 +38,7 @@ import java.util.Map;
 * @author Luke Blanshard (blanshlu@netscape.net)
 * @author Drew Davidson (drew@ognl.org)
 */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class DefaultClassResolver extends Object implements ClassResolver {
     private Map classes = new HashMap(101);
     public DefaultClassResolver() {

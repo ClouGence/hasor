@@ -36,7 +36,7 @@ import java.util.Map;
 * @author Luke Blanshard (blanshlu@netscape.net)
 * @author Drew Davidson (drew@ognl.org)
 */
-@SuppressWarnings( { "unchecked" })
+@SuppressWarnings("rawtypes")
 public class ObjectNullHandler implements NullHandler {
     /* NullHandler interface */
     public Object nullMethodResult(Map context, Object target, String methodName, Object[] args) {

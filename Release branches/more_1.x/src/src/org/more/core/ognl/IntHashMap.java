@@ -47,7 +47,7 @@ import java.util.Set;
 * @see java.util.HashMap
 * @see java.util.Map
 */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class IntHashMap extends Object implements Map {
     private Entry table[];
     private int   count;
@@ -71,22 +71,18 @@ public class IntHashMap extends Object implements Map {
             Iterator interface
           ===================================================================*/
         public boolean hasNext() {
-            if (entry != null) {
+            if (entry != null)
                 return true;
-            }
-            while (index-- > 0) {
-                if ((entry = table[index]) != null) {
+            while (index-- > 0)
+                if ((entry = table[index]) != null)
                     return true;
-                }
-            }
             return false;
         }
         public Object next() {
-            if (entry == null) {
+            if (entry == null)
                 while ((index-- > 0) && ((entry = table[index]) == null)) {
                     /* do nothing */
                 }
-            }
             if (entry != null) {
                 Entry e = entry;
                 entry = e.next;
@@ -115,9 +111,8 @@ public class IntHashMap extends Object implements Map {
       ===================================================================*/
     public IntHashMap(int initialCapacity, float loadFactor) {
         super();
-        if (initialCapacity <= 0 || loadFactor <= 0.0) {
+        if (initialCapacity <= 0 || loadFactor <= 0.0)
             throw new IllegalArgumentException();
-        }
         this.loadFactor = loadFactor;
         table = new Entry[initialCapacity];
         threshold = (int) (initialCapacity * loadFactor);
@@ -138,7 +133,7 @@ public class IntHashMap extends Object implements Map {
         Entry newTable[] = new Entry[newCapacity];
         threshold = (int) (newCapacity * loadFactor);
         table = newTable;
-        for (int i = oldCapacity; i-- > 0;) {
+        for (int i = oldCapacity; i-- > 0;)
             for (Entry old = oldTable[i]; old != null;) {
                 Entry e = old;
                 int index = (e.hash & 0x7FFFFFFF) % newCapacity;
@@ -146,41 +141,34 @@ public class IntHashMap extends Object implements Map {
                 e.next = newTable[index];
                 newTable[index] = e;
             }
-        }
     }
     /*===================================================================
         Public methods
       ===================================================================*/
     public final boolean containsKey(int key) {
         int index = (key & 0x7FFFFFFF) % table.length;
-        for (Entry e = table[index]; e != null; e = e.next) {
-            if ((e.hash == key) && (e.key == key)) {
+        for (Entry e = table[index]; e != null; e = e.next)
+            if ((e.hash == key) && (e.key == key))
                 return true;
-            }
-        }
         return false;
     }
     public final Object get(int key) {
         int index = (key & 0x7FFFFFFF) % table.length;
-        for (Entry e = table[index]; e != null; e = e.next) {
-            if ((e.hash == key) && (e.key == key)) {
+        for (Entry e = table[index]; e != null; e = e.next)
+            if ((e.hash == key) && (e.key == key))
                 return e.value;
-            }
-        }
         return null;
     }
     public final Object put(int key, Object value) {
         int index = (key & 0x7FFFFFFF) % table.length;
-        if (value == null) {
+        if (value == null)
             throw new IllegalArgumentException();
-        }
-        for (Entry e = table[index]; e != null; e = e.next) {
+        for (Entry e = table[index]; e != null; e = e.next)
             if ((e.hash == key) && (e.key == key)) {
                 Object old = e.value;
                 e.value = value;
                 return old;
             }
-        }
         if (count >= threshold) {
             // Rehash the table if the threshold is exceeded.
             rehash();
@@ -197,17 +185,15 @@ public class IntHashMap extends Object implements Map {
     }
     public final Object remove(int key) {
         int index = (key & 0x7FFFFFFF) % table.length;
-        for (Entry e = table[index], prev = null; e != null; prev = e, e = e.next) {
+        for (Entry e = table[index], prev = null; e != null; prev = e, e = e.next)
             if ((e.hash == key) && (e.key == key)) {
-                if (prev != null) {
+                if (prev != null)
                     prev.next = e.next;
-                } else {
+                else
                     table[index] = e.next;
-                }
                 --count;
                 return e.value;
             }
-        }
         return null;
     }
     /*===================================================================
@@ -220,15 +206,13 @@ public class IntHashMap extends Object implements Map {
         return count == 0;
     }
     public Object get(Object key) {
-        if (!(key instanceof Number)) {
+        if (!(key instanceof Number))
             throw new IllegalArgumentException("key is not an Number subclass");
-        }
         return get(((Number) key).intValue());
     }
     public Object put(Object key, Object value) {
-        if (!(key instanceof Number)) {
+        if (!(key instanceof Number))
             throw new IllegalArgumentException("key cannot be null");
-        }
         return put(((Number) key).intValue(), value);
     }
     public void putAll(Map otherMap) {
@@ -238,50 +222,41 @@ public class IntHashMap extends Object implements Map {
         }
     }
     public Object remove(Object key) {
-        if (!(key instanceof Number)) {
+        if (!(key instanceof Number))
             throw new IllegalArgumentException("key cannot be null");
-        }
         return remove(((Number) key).intValue());
     }
     public void clear() {
         Entry tab[] = table;
-        for (int index = tab.length; --index >= 0;) {
+        for (int index = tab.length; --index >= 0;)
             tab[index] = null;
-        }
         count = 0;
     }
     public boolean containsKey(Object key) {
-        if (!(key instanceof Number)) {
+        if (!(key instanceof Number))
             throw new InternalError("key is not an Number subclass");
-        }
         return containsKey(((Number) key).intValue());
     }
     public boolean containsValue(Object value) {
         Entry tab[] = table;
-        if (value == null) {
+        if (value == null)
             throw new IllegalArgumentException();
-        }
-        for (int i = tab.length; i-- > 0;) {
-            for (Entry e = tab[i]; e != null; e = e.next) {
-                if (e.value.equals(value)) {
+        for (int i = tab.length; i-- > 0;)
+            for (Entry e = tab[i]; e != null; e = e.next)
+                if (e.value.equals(value))
                     return true;
-                }
-            }
-        }
         return false;
     }
     public Set keySet() {
         Set result = new HashSet();
-        for (Iterator it = new IntHashMapIterator(table, true); it.hasNext();) {
+        for (Iterator it = new IntHashMapIterator(table, true); it.hasNext();)
             result.add(it.next());
-        }
         return result;
     }
     public Collection values() {
         List result = new ArrayList();
-        for (Iterator it = new IntHashMapIterator(table, false); it.hasNext();) {
+        for (Iterator it = new IntHashMapIterator(table, false); it.hasNext();)
             result.add(it.next());
-        }
         return result;
     }
     public Set entrySet() {

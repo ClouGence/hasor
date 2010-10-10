@@ -45,7 +45,7 @@ import java.util.Map;
  * @author Drew Davidson (drew@ognl.org)
  * @version 15 October 1999
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public class DefaultMemberAccess implements MemberAccess {
     public boolean allowPrivateAccess          = false;
     public boolean allowProtectedAccess        = false;

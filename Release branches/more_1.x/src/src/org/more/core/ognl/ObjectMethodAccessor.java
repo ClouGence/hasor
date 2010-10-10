@@ -37,7 +37,7 @@ import java.util.Map;
 * @author Luke Blanshard (blanshlu@netscape.net)
 * @author Drew Davidson (drew@ognl.org)
 */
-@SuppressWarnings( { "unchecked", "unused" })
+@SuppressWarnings({ "unused", "rawtypes" })
 public class ObjectMethodAccessor implements MethodAccessor {
     /* MethodAccessor interface */
     public Object callStaticMethod(Map context, Class targetClass, String methodName, Object[] args) throws MethodFailedException {

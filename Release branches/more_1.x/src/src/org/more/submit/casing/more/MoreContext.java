@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import org.more.CastException;
 import org.more.NoDefinitionException;
-import org.more.beans.BeanFactory;
+import org.more.hypha.ApplicationContext;
 import org.more.submit.AbstractActionContext;
 import org.more.submit.ActionInvoke;
 import org.more.submit.PropxyActionInvoke;
@@ -31,9 +31,9 @@ import org.more.submit.ext.filter.FilterContext;
  */
 public class MoreContext extends AbstractActionContext implements FilterContext {
     //========================================================================================Field
-    private BeanFactory factory = null;
+    private ApplicationContext factory = null;
     //==================================================================================Constructor
-    public MoreContext(BeanFactory factory) {
+    public MoreContext(ApplicationContext factory) {
         this.factory = factory;
     };
     //==========================================================================================Job

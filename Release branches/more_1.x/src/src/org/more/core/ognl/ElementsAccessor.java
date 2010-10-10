@@ -42,7 +42,7 @@ import java.util.Enumeration;
  * @author Luke Blanshard (blanshlu@netscape.net)
  * @author Drew Davidson (drew@ognl.org)
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public interface ElementsAccessor {
     /**
      * Returns an iterator over the elements of the given target object.

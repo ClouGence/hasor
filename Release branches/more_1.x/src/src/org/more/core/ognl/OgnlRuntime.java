@@ -60,7 +60,7 @@ import java.util.Set;
  * @author Luke Blanshard (blanshlu@netscape.net)
  * @author Drew Davidson (drew@ognl.org)
  */
-@SuppressWarnings( { "unchecked", "unused" })
+@SuppressWarnings({ "unchecked", "unused", "rawtypes" })
 public abstract class OgnlRuntime extends Object {
     public static final Object     NotFound                  = new Object();
     public static final List       NotFoundList              = new ArrayList();

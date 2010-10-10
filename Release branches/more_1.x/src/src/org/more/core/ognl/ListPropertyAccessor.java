@@ -39,9 +39,9 @@ import java.util.Map;
 * @author Luke Blanshard (blanshlu@netscape.net)
 * @author Drew Davidson (drew@ognl.org)
 */
-@SuppressWarnings("unchecked")
-public class ListPropertyAccessor extends ObjectPropertyAccessor implements PropertyAccessor // This is here to make javadoc show this class as an implementor
-{
+@SuppressWarnings({ "unchecked", "rawtypes" })
+public class ListPropertyAccessor extends ObjectPropertyAccessor implements PropertyAccessor {
+    // This is here to make javadoc show this class as an implementor
     public Object getProperty(Map context, Object target, Object name) throws OgnlException {
         List list = (List) target;
         if (name instanceof String) {

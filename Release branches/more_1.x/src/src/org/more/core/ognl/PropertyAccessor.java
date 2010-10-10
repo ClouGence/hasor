@@ -50,7 +50,7 @@ import java.util.Map;
  * @author Luke Blanshard (blanshlu@netscape.net)
  * @author Drew Davidson (drew@ognl.org)
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public interface PropertyAccessor {
     /**
      * Extracts and returns the property of the given name from the given target object.

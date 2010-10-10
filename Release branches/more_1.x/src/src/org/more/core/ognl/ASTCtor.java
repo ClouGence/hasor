@@ -35,7 +35,7 @@ import java.util.List;
  * @author Luke Blanshard (blanshlu@netscape.net)
  * @author Drew Davidson (drew@ognl.org)
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 class ASTCtor extends SimpleNode {
     /**  */
     private static final long serialVersionUID = -4754417771507895102L;

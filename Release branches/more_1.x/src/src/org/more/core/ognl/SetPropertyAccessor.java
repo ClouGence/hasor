@@ -37,7 +37,7 @@ import java.util.Set;
  * @author Luke Blanshard (blanshlu@netscape.net)
  * @author Drew Davidson (drew@ognl.org)
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public class SetPropertyAccessor extends ObjectPropertyAccessor implements PropertyAccessor // This is here to make javadoc show this class as an implementor
 {
     public Object getProperty(Map context, Object target, Object name) throws OgnlException {

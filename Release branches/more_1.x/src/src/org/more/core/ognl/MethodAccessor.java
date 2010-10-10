@@ -37,6 +37,7 @@ import java.util.Map;
  * @author Luke Blanshard (blanshlu@netscape.net)
  * @author Drew Davidson (drew@ognl.org)
  */
+@SuppressWarnings("rawtypes")
 public interface MethodAccessor {
     /**
      * Calls the static method named with the arguments given on the class given.

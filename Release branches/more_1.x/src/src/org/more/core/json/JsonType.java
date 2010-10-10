@@ -28,11 +28,11 @@ public abstract class JsonType {
     protected JsonType(JsonUtil currentContext) {
         this.currentContext = currentContext;
     };
-    /***/
+    /**转换对象为json字符串*/
     public abstract String toString(Object bean);
-    /***/
+    /**将字符串转换为json对象*/
     public abstract Object toObject(String str);
-    /***/
+    /**将字符串变换为object*/
     protected Object passJsonObject(String readStr) {
         //处理这个字符串数据的类型进行处理。
         if (readStr != null) {
@@ -56,7 +56,7 @@ public abstract class JsonType {
         } else
             throw new JsonException("json数据字符串不能为空。");
     };
-    /***/
+    /**将对象变换为json数据*/
     protected String passJsonString(Object object) {
         //处理这个字符串数据的类型进行处理。
         if (object == null)

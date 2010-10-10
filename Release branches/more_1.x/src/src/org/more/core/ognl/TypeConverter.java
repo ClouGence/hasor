@@ -36,7 +36,7 @@ import java.util.Map;
  * @author Luke Blanshard (blanshlu@netscape.net)
  * @author Drew Davidson (drew@ognl.org)
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public interface TypeConverter {
     /**
        * Converts the given value to a given type.  The OGNL context, target, member and

@@ -32,7 +32,7 @@ package org.more.core.ognl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public final class ObjectArrayPool extends Object {
     private IntHashMap pools = new IntHashMap(23);
     public static class SizePool extends Object {

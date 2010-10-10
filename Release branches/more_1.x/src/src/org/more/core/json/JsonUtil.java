@@ -72,6 +72,11 @@ public class JsonUtil {
         }
         return (HashMap<String, Object>) obj;
     }
+    /**将对象数据转换为map形式，该方法首先将对象转换为json然后在转换成map*/
+    public Map<String, ?> toMap(Object value) {
+        String readStr = this.toString(value);
+        return this.toMap(readStr);
+    }
     /**将对象转换为json格式数据，注意如果对象中出现递归引用则会引发堆栈溢出异常。*/
     public String toString(Object object) {
         //处理这个字符串数据的类型进行处理。

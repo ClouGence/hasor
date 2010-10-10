@@ -36,7 +36,7 @@ import java.util.Enumeration;
  * @author Luke Blanshard (blanshlu@netscape.net)
  * @author Drew Davidson (drew@ognl.org)
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public class EnumerationElementsAccessor implements ElementsAccessor {
     public Enumeration getElements(Object target) {
         return (Enumeration) target;

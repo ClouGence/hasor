@@ -37,7 +37,7 @@ import java.util.Iterator;
 * @author Luke Blanshard (blanshlu@netscape.net)
 * @author Drew Davidson (drew@ognl.org)
 */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public class IteratorElementsAccessor implements ElementsAccessor {
     public Enumeration getElements(Object target) {
         return new IteratorEnumeration((Iterator) target);
