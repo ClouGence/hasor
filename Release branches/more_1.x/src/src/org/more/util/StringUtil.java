@@ -15,7 +15,7 @@
  */
 package org.more.util;
 /**
- * 
+ * ×Ö·û´®¹¤¾ß¡£
  * @version 2010-9-19
  * @author ÕÔÓÀ´º (zyc@byshell.org)
  */
@@ -35,5 +35,26 @@ public class StringUtil {
         sb.delete(0, 1);
         sb.insert(0, (char) ((firstChar <= 90) ? firstChar + 32 : firstChar));
         return sb.toString();
+    }
+    /**Ê¹ÓÃÍ¨Åä·ûÆ¥Åä×Ö·û´®¡£*/
+    public static boolean matchWild(String pattern, String str) {
+        StringBuffer result = new StringBuffer("^");
+        char metachar[] = { '$', '^', '[', ']', '(', ')', '{', '|', '+', '.', '\\' };
+        for (int i = 0; i < pattern.length(); i++) {
+            char ch = pattern.charAt(i);
+            for (int j = 0; j < metachar.length; j++)
+                if (ch == metachar[j]) {
+                    result.append("\\");
+                    result.append(ch);
+                }
+            if (ch == '*')
+                result.append(".*");
+            else if (ch == '?')
+                result.append(".");
+            else
+                result.append(ch);
+        }
+        result.append("$");
+        return str.matches(result.toString());
     }
 }

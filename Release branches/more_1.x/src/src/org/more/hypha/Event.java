@@ -13,30 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.aop;
-import org.more.hypha.aop.define.AopConfigDefine;
-import org.more.hypha.beans.BeanDefinePlugin;
+package org.more.hypha;
 /**
- * 创建{@link AopBeanDefinePlugin}对象。
- * @version 2010-9-25
+ * 该接口表示的是一个{@link EventManager}可以被识别处理的事件。
+ * @version 2010-10-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public class AopBeanDefinePlugin implements BeanDefinePlugin {
-    /**要注册的插件名*/
-    public static final String AopPluginName = "$more_aop_plugin";
-    private Object             target        = null;              //扩展目标
-    private AopConfigDefine    aopConfig     = null;              //扩展的aop策略
-    /***/
-    public AopBeanDefinePlugin(Object target, AopConfigDefine aopConfig) {
+public abstract class Event {
+    private Object target = null;
+    /**创建{@link Event}对象*/
+    public Event(Object target) {
         this.target = target;
-        this.aopConfig = aopConfig;
     }
-    /**获取扩展的aop策略。*/
-    public AopConfigDefine getAopConfig() {
-        return aopConfig;
-    }
-    /**获取扩展目标。*/
+    /**获取抛出事件的目标对象。*/
     public Object getTarget() {
         return this.target;
-    }
+    };
 }

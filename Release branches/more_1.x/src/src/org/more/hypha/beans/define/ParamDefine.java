@@ -15,22 +15,13 @@
  */
 package org.more.hypha.beans.define;
 /**
- * 表示一个bean定义中的一种属性
+ * 表示一个bean定义中的一种参数
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class PropertyDefine extends AbstractPropertyDefine {
-    private String  name         = null; //属性名
-    private boolean boolLazyInit = false; //是否延迟注入该属性。
+public class ParamDefine extends AbstractPropertyDefine {
+    private String name = null; //参数名
     //-------------------------------------------------------------
-    /**设置是否延迟初始化该属性*/
-    public void setBoolLazyInit(boolean boolLazyInit) {
-        this.boolLazyInit = boolLazyInit;
-    }
-    /**返回一个boolean值，表示这个bean是否为延迟注入的。*/
-    public boolean isLazyInit() {
-        return this.boolLazyInit;
-    };
     /**返回bean的名称，在同一个Factory中name是唯一的。*/
     public String getName() {
         return this.name;

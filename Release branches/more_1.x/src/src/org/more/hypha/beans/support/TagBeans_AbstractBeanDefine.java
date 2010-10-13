@@ -40,13 +40,14 @@ public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBeanDefine> 
     };
     /**定义模板属性。*/
     public enum PropertyKey {
-        name, iocType, scope, boolAbstract, boolInterface, boolSingleton, boolLazyInit, description, factoryName, factoryMethod, useTemplate
+        id, name, logicPackage, scope, boolAbstract, boolInterface, boolSingleton, boolLazyInit, description, factoryName, factoryMethod, useTemplate
     }
     /**关联属性与xml的属性对应关系。*/
     protected Map<Enum<?>, String> getPropertyMappings() {
         HashMap<Enum<?>, String> propertys = new HashMap<Enum<?>, String>();
+        propertys.put(PropertyKey.id, "id");
         propertys.put(PropertyKey.name, "name");
-        propertys.put(PropertyKey.iocType, "iocType");
+        propertys.put(PropertyKey.logicPackage, "package");
         propertys.put(PropertyKey.scope, "scope");
         propertys.put(PropertyKey.boolAbstract, "abstract");
         propertys.put(PropertyKey.boolInterface, "interface");
@@ -62,19 +63,33 @@ public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBeanDefine> 
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
         super.beginElement(context, xpath, event);
         String useTemplate = event.getAttributeValue("useTemplate");
+        AbstractBeanDefine define = this.getDefine(context);
         if (useTemplate != null) {
             XmlConfiguration beanDefineManager = (XmlConfiguration) context.getAttribute(TagBeans_Beans.BeanDefineManager);
-            AbstractBeanDefine define = this.getDefine(context);
-            AbstractBeanDefine template = beanDefineManager.getBeanDefine(useTemplate);
+            AbstractBeanDefine template = null;
+            if (beanDefineManager.containsBeanDefine(useTemplate) == true)
+                template = beanDefineManager.getBeanDefine(useTemplate);
+            else
+                /**从bean定义所在包中找。*/
+                template = beanDefineManager.getBeanDefine(define.getPackage() + "." + useTemplate);
+            //
             if (template == null)
                 throw new NoDefinitionException("[" + define.getName() + "]找不到[" + useTemplate + "]的Bean模板定义.");
             this.putAttribute(define, "useTemplate", template);
+        }
+        /*应用默认包和包定义*/
+        if (define.getPackage() == null) {
+            String logicPackage = (String) context.getAttribute(TagBeans_Package.LogicPackage);
+            if (logicPackage == null)
+                logicPackage = TagBeans_DefaultPackage.DefaultPackage;
+            this.putAttribute(define, "logicPackage", logicPackage);
         }
     }
     /**结束解析标签。*/
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
         AbstractBeanDefine define = this.getDefine(context);
-        //context.removeAttribute(this.getAttributeName());//TODO 不需要remove的原因是super.endElement方法会销毁当前栈
+        //context.removeAttribute(this.getAttributeName());
+        //TODO 不需要remove的原因是super.endElement方法会销毁当前栈
         XmlConfiguration beanDefineManager = (XmlConfiguration) context.getAttribute(TagBeans_Beans.BeanDefineManager);
         if (define != null)
             beanDefineManager.addBeanDefine(define);

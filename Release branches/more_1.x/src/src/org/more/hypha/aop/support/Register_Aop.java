@@ -30,18 +30,20 @@ public class Register_Aop implements NameSpaceRegister {
     /**执行初始化注册。*/
     public void initRegister(String namespaceURL, XmlConfiguration config) {
         //1.添加Aop插件
-        config.setPlugin(AopDefineResourcePlugin.AopPluginName, new AopDefineResourcePlugin_Impl(config));
+        config.setPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName, new AopDefineResourcePlugin_Impl(config));
         //2.注册标签解析器
         XmlParserKit kit = new XmlParserKit();
         kit.regeditHook("/config", new TagAop_Config(config));
         kit.regeditHook("*/pointcut", new TagAop_Pointcut(config));
         kit.regeditHook("*/pointGroup", new TagAop_PointGroup(config));
         kit.regeditHook("/useConfig", new TagAop_UseConfig(config));
+        kit.regeditHook("/@useConfig", new TagAop_UseConfig(config));
         kit.regeditHook("/config/filter", new TagAop_Filter(config));
         kit.regeditHook("/config/informed", new TagAop_Informed(config));
         kit.regeditHook("/config/before", new TagAop_Before(config));
         kit.regeditHook("/config/returning", new TagAop_Returning(config));
         kit.regeditHook("/config/throwing", new TagAop_Throwing(config));
+        kit.regeditHook("/apply", new TagAop_Apply(config));
         //3.注册命名空间
         if (namespaceURL == null)
             namespaceURL = DefaultNameSpaceURL;

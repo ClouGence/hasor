@@ -62,7 +62,7 @@ public abstract class TagAop_AbstractInformed<T extends AopDefineInformed> exten
         String pointcutRef = event.getAttributeValue("pointcut-ref");
         //3.将Informed添加到父类的config中。
         if (pointcutRef != null) {
-            AopDefineResourcePlugin plugin = (AopDefineResourcePlugin) this.getConfiguration().getPlugin(AopDefineResourcePlugin.AopPluginName);
+            AopDefineResourcePlugin plugin = (AopDefineResourcePlugin) this.getConfiguration().getPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName);
             AbstractPointcutDefine pointcutDefine = plugin.getPointcutDefine(pointcutRef);
             config.addInformed(define, pointcutDefine);
         } else

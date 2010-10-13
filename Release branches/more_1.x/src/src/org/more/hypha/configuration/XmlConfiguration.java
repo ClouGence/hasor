@@ -29,34 +29,45 @@ import org.more.RepeateException;
 import org.more.core.xml.XmlParserKit;
 import org.more.core.xml.XmlParserKitManager;
 import org.more.core.xml.stream.XmlReader;
+import org.more.hypha.AbstractEventManager;
 import org.more.hypha.DefineResource;
 import org.more.hypha.DefineResourcePlugin;
+import org.more.hypha.EventManager;
 import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.beans.support.QuickPropertyParser;
 import org.more.hypha.beans.support.TagBeans_Beans;
+import org.more.hypha.event.AddBeanDefineEvent;
+import org.more.hypha.event.AddPluginEvent;
+import org.more.hypha.event.BeginInitEvent;
+import org.more.hypha.event.DestroyEvent;
+import org.more.hypha.event.EndInitEvent;
+import org.more.hypha.event.ReloadEvent;
 import org.more.util.ClassPathUtil;
 import org.more.util.attribute.AttBase;
+import org.more.util.attribute.IAttribute;
 /**
  * xml解析器，该类已经完成了xml解析所需要的所有功能子类需要根据特定要求注册相应的命名空间解析器。
  * 以及属性值元信息解析器即可。
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class XmlConfiguration extends AttBase implements DefineResource {
+public class XmlConfiguration implements DefineResource {
     /**  */
     private static final long                 serialVersionUID = -2907262416329013610L;
     //
-    private static final String               ResourcePath     = "/META-INF/resource/hypha/regedit.xml";
+    private static final String               ResourcePath     = "/META-INF/resource/hypha/register.xml";  //
     //
-    private String                            sourceName       = null;
-    private URI                               sourceURI        = null;
-    private InputStream                       sourceStream     = null;
-    private Map<String, DefineResourcePlugin> pluginList       = null;
+    private String                            sourceName       = null;                                     //资源名
+    private URI                               sourceURI        = null;                                     //xml URI描述
+    private InputStream                       sourceStream     = null;                                     //xml 输入流
+    private Map<String, DefineResourcePlugin> pluginList       = null;                                     //插件集合
+    private Map<String, AbstractBeanDefine>   defineMap        = new HashMap<String, AbstractBeanDefine>(); //bean定义Map
+    private EventManager                      eventManager     = new AbstractEventManager() {};            //事件管理器
+    private IAttribute                        attributeManager = null;                                     //属性管理器
     //
-    private Map<String, AbstractBeanDefine>   defineMap        = new HashMap<String, AbstractBeanDefine>();
-    private ArrayList<QuickPropertyParser>    quickParser      = new ArrayList<QuickPropertyParser>();
-    private XmlParserKitManager               manager          = new XmlParserKitManager();
-    //========================================================================================
+    private ArrayList<QuickPropertyParser>    quickParser      = new ArrayList<QuickPropertyParser>();     //属性快速解析器定义
+    private XmlParserKitManager               manager          = new XmlParserKitManager();                //xml解析器
+    //========================================================================================构造方法
     /**创建{@link XmlConfiguration}对象，init过程需要手动进行。*/
     public XmlConfiguration() throws IOException, XMLStreamException {
         this.initRegedit(this);
@@ -90,7 +101,7 @@ public class XmlConfiguration extends AttBase implements DefineResource {
         for (InputStream is : ins)
             new XmlReader(is).reader(ns, null);
     }
-    //========================================================================================
+    //========================================================================================DefineResourcePluginSet接口
     /**返回扩展Define配置描述。*/
     public DefineResourcePlugin getPlugin(String name) {
         if (this.pluginList == null)
@@ -101,6 +112,7 @@ public class XmlConfiguration extends AttBase implements DefineResource {
     public void setPlugin(String name, DefineResourcePlugin plugin) {
         if (this.pluginList == null)
             this.pluginList = new HashMap<String, DefineResourcePlugin>();
+        this.getEventManager().pushEvent(new AddPluginEvent(this, plugin));//TODO 新插件
         this.pluginList.put(name, plugin);
     };
     /**删除一个已有的插件注册。*/
@@ -120,13 +132,13 @@ public class XmlConfiguration extends AttBase implements DefineResource {
     }
     /**添加一个Bean定义，被添加的Bean定义会被执行检测。*/
     public void addBeanDefine(AbstractBeanDefine define) {
+        this.getEventManager().pushEvent(new AddBeanDefineEvent(this, define));//TODO 新Bean定义
         if (this.defineMap.containsKey(define.getName()) == true)
             throw new RepeateException("[" + define.getName() + "]Bean定义重复。");
-        this.defineMap.put(define.getName(), define);
+        this.defineMap.put(define.getID(), define);
     };
     /**使用指定的输入流解析*/
-    public XmlConfiguration passerXml(InputStream in) throws XMLStreamException {
-        //1.启动扫描，进行第一次解析。
+    private XmlConfiguration passerXml(InputStream in) throws XMLStreamException {
         XmlReader reader = new XmlReader(in);
         this.manager.getContext().setAttribute(TagBeans_Beans.BeanDefineManager, this);
         reader.reader(this.manager, null);
@@ -165,6 +177,7 @@ public class XmlConfiguration extends AttBase implements DefineResource {
     }
     /**重载{@link XmlConfiguration}如果创建{@link XmlConfiguration}时使用的是流方式那么流需要支持reset否则会引发异常。*/
     public void reload() throws XMLStreamException, MalformedURLException, IOException {
+        this.getEventManager().pushEvent(new ReloadEvent(this));//TODO 重载
         this.destroy();
         this.init();
     }
@@ -175,19 +188,33 @@ public class XmlConfiguration extends AttBase implements DefineResource {
         try {
             this.sourceStream.reset();
         } catch (Exception e) {}
+        this.getEventManager().pushEvent(new BeginInitEvent(this));//TODO 开始初始化
+        this.getEventManager().popEvent(BeginInitEvent.class);
         this.passerXml(this.sourceStream);
+        this.getEventManager().pushEvent(new EndInitEvent(this));//TODO 结束初始化
+        this.getEventManager().popEvent(EndInitEvent.class);
+        //
+        this.getEventManager().popEvent();
     };
     /**清空所有注册的Bean定义*/
     public void destroy() {
+        this.getEventManager().pushEvent(new DestroyEvent(this));//TODO 销毁
         this.defineMap.clear();
-    }
-    //========================================================================================
-    public String getSourceName() {
-        return this.sourceName;
     }
     /**设置资源名*/
     public void setSourceName(String sourceName) {
         this.sourceName = sourceName;
+    }
+    public String getSourceName() {
+        return this.sourceName;
+    }
+    public IAttribute getAttribute() {
+        if (this.attributeManager == null)
+            this.attributeManager = new AttBase();
+        return this.attributeManager;
+    }
+    public EventManager getEventManager() {
+        return this.eventManager;
     }
     public URI getSourceURI() {
         return this.sourceURI;

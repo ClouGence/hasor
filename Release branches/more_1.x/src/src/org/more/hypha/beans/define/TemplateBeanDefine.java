@@ -17,42 +17,57 @@ package org.more.hypha.beans.define;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import org.more.RepeateException;
 import org.more.hypha.AbstractDefine;
 import org.more.hypha.beans.AbstractBeanDefine;
-import org.more.hypha.beans.IocTypeEnum;
+import org.more.hypha.beans.AbstractMethodDefine;
 /**
  * TemplateBeanDefine类用于定义一个bean的模板。
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
 public class TemplateBeanDefine extends AbstractDefine implements AbstractBeanDefine {
-    private String                            name          = null;                                   //名称
-    private IocTypeEnum                       iocType       = null;                                   //默认属性注入方式
-    private String                            scope         = null;                                   //bean作用域
-    private boolean                           boolAbstract  = false;                                  //抽象标志
-    private boolean                           boolInterface = false;                                  //接口标志
-    private boolean                           boolSingleton = false;                                  //单态标志
-    private boolean                           boolLazyInit  = false;                                  //延迟装载标志
-    private String                            description   = null;                                   //描述信息
-    private String                            factoryName   = null;                                   //创建工厂名
-    private String                            factoryMethod = null;                                   //创建工厂方法名
-    private TemplateBeanDefine                useTemplate   = null;                                   //应用的模板
-    private ArrayList<AbstractPropertyDefine> initParams    = new ArrayList<AbstractPropertyDefine>(); //初始化参数
-    private ArrayList<AbstractPropertyDefine> propertys     = new ArrayList<AbstractPropertyDefine>(); //属性
+    private String                                id            = null;                                       //id
+    private String                                name          = null;                                       //名称
+    private String                                logicPackage  = null;                                       //逻辑包
+    private String                                scope         = null;                                       //bean作用域
+    private boolean                               boolAbstract  = false;                                      //抽象标志
+    private boolean                               boolInterface = false;                                      //接口标志
+    private boolean                               boolSingleton = false;                                      //单态标志
+    private boolean                               boolLazyInit  = false;                                      //延迟装载标志
+    private String                                description   = null;                                       //描述信息
+    private String                                factoryName   = null;                                       //创建工厂名
+    private String                                factoryMethod = null;                                       //创建工厂方法描述
+    private TemplateBeanDefine                    useTemplate   = null;                                       //应用的模板
+    private ArrayList<ConstructorDefine>          initParams    = new ArrayList<ConstructorDefine>();         //初始化参数
+    private HashMap<String, PropertyDefine>       propertys     = new HashMap<String, PropertyDefine>();      //属性
+    private HashMap<String, AbstractMethodDefine> methods       = new HashMap<String, AbstractMethodDefine>(); //方法
     //-------------------------------------------------------------
     /**返回“TemplateBean”。*/
     public String getBeanType() {
         return "TemplateBean";
     }
-    /**返回bean的名称，在同一个Factory中name是唯一的。*/
+    /**返回bean的唯一编号，如果没有指定id属性则id值将是fullName属性值。*/
+    public String getID() {
+        if (this.id == null)
+            return this.getFullName();
+        return this.id;
+    };
+    /**返回bean的名称，如果指定了package属性那么name的值可以出现重复。*/
     public String getName() {
         return this.name;
     };
-    /**获取bean的各种属性是如何注入到Bean中的。*/
-    public IocTypeEnum getIocType() {
-        return this.iocType;
+    /**获取Bean的逻辑包定义，这个包定义与类的实际所处包不同。它表现为一个外在的逻辑管理形式。*/
+    public String getPackage() {
+        return this.logicPackage;
     };
+    public String getFullName() {
+        if (this.logicPackage != null)
+            return this.logicPackage + "." + this.name;
+        else
+            return this.getName();
+    }
     /**获取bean的作用域，如果容器支持多种作用域。*/
     public String getScope() {
         return this.scope;
@@ -81,9 +96,15 @@ public class TemplateBeanDefine extends AbstractDefine implements AbstractBeanDe
     public String factoryName() {
         return this.factoryName;
     };
-    /**表明目标方法的方法名称描述。*/
+    /**该方法与factoryName()方法是成对出现的，该方法表明目标方法的代理名称。*/
     public String factoryMethod() {
         return this.factoryMethod;
+    };
+    /**该属性是用来定义在bean上的一些方法。*/
+    public AbstractMethodDefine[] getMethods() {
+        AbstractMethodDefine[] define = new AbstractMethodDefine[this.methods.size()];
+        this.methods.values().toArray(define);
+        return define;
     };
     /**获取bean使用的模板。*/
     public TemplateBeanDefine getUseTemplate() {
@@ -98,7 +119,7 @@ public class TemplateBeanDefine extends AbstractDefine implements AbstractBeanDe
     /**获取当创建这个bean时候需要的启动参数。*/
     public AbstractPropertyDefine[] getPropertys() {
         AbstractPropertyDefine[] define = new AbstractPropertyDefine[this.propertys.size()];
-        this.propertys.toArray(define);
+        this.propertys.values().toArray(define);
         return define;
     };
     /**返回具有特征的字符串。*/
@@ -106,8 +127,8 @@ public class TemplateBeanDefine extends AbstractDefine implements AbstractBeanDe
         return this.getClass().getSimpleName() + "@" + this.hashCode() + " name=" + this.getName();
     };
     /**添加一个启动参数。*/
-    public void addInitParam(AbstractPropertyDefine property) {
-        this.initParams.add(property);
+    public void addInitParam(ConstructorDefine constructorParam) {
+        this.initParams.add(constructorParam);
         final TemplateBeanDefine define = this;
         Collections.sort(this.initParams, new Comparator<AbstractPropertyDefine>() {
             public int compare(AbstractPropertyDefine arg0, AbstractPropertyDefine arg1) {
@@ -123,17 +144,25 @@ public class TemplateBeanDefine extends AbstractDefine implements AbstractBeanDe
         });
     };
     /**添加一个属性。*/
-    public void addProperty(AbstractPropertyDefine property) {
-        this.propertys.add(property);
+    public void addProperty(PropertyDefine property) {
+        this.propertys.put(property.getName(), property);
+    };
+    /**添加一个方法描述。*/
+    public void addMethod(AbstractMethodDefine method) {
+        this.methods.put(method.getName(), method);
     };
     //-------------------------------------------------------------
+    /**设置id。*/
+    public void setId(String id) {
+        this.id = id;
+    }
     /**设置Bean名。*/
     public void setName(String name) {
         this.name = name;
     }
-    /**设置Bean属性的Ioc方式。*/
-    public void setIocType(IocTypeEnum iocType) {
-        this.iocType = iocType;
+    /**设置逻辑包名称*/
+    public void setLogicPackage(String logicPackage) {
+        this.logicPackage = logicPackage;
     }
     /**设置bean有效作用域。*/
     public void setScope(String scope) {
@@ -147,7 +176,7 @@ public class TemplateBeanDefine extends AbstractDefine implements AbstractBeanDe
     public void setFactoryName(String factoryName) {
         this.factoryName = factoryName;
     }
-    /**设置创建该Bean时使用的工厂bean的方法名。*/
+    /**设置创建该Bean时使用的工厂bean的方法描述。*/
     public void setFactoryMethod(String factoryMethod) {
         this.factoryMethod = factoryMethod;
     }

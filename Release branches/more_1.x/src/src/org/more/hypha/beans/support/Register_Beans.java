@@ -30,16 +30,23 @@ public class Register_Beans implements NameSpaceRegister {
         //1.注册标签解析器
         XmlParserKit kit = new XmlParserKit();
         kit.regeditHook("/beans", new TagBeans_Beans(config));
-        kit.regeditHook("/beans/classBean", new TagBeans_ClassBean(config));
-        kit.regeditHook("/beans/generateBean", new TagBeans_GenerateBean(config));
-        kit.regeditHook("/beans/refBean", new TagBeans_RefBean(config));
-        kit.regeditHook("/beans/scriptBean", new TagBeans_ScriptBean(config));//同时具备text和element
-        kit.regeditHook("/beans/templateBean", new TagBeans_TemplateBean(config));
-        kit.regeditHook("/beans/varBean", new TagBeans_VarBean(config));
+        kit.regeditHook("/beans/meta", new TagBeans_MetaData(config));
+        kit.regeditHook("/beans/defaultPackage", new TagBeans_DefaultPackage(config));
+        kit.regeditHook(new String[] { "/beans/package", "/beans/*/package" }, new TagBeans_Package(config));
+        //
+        kit.regeditHook(new String[] { "/beans/classBean", "/beans/*/classBean" }, new TagBeans_ClassBean(config));
+        kit.regeditHook(new String[] { "/beans/generateBean", "/beans/*/generateBean" }, new TagBeans_GenerateBean(config));
+        kit.regeditHook(new String[] { "/beans/refBean", "/beans/*/refBean" }, new TagBeans_RefBean(config));
+        kit.regeditHook(new String[] { "/beans/scriptBean", "/beans/*/scriptBean" }, new TagBeans_ScriptBean(config));//同时具备text和element
+        kit.regeditHook(new String[] { "/beans/templateBean", "/beans/*/templateBean" }, new TagBeans_TemplateBean(config));
+        kit.regeditHook(new String[] { "/beans/varBean", "/beans/*/varBean" }, new TagBeans_VarBean(config));
+        //
         kit.regeditHook("/beans/*Bean/constructor-arg", new TagBeans_Constructor(config));
         kit.regeditHook("/beans/*Bean/property", new TagBeans_Property(config));
         kit.regeditHook("/beans/*Bean/meta", new TagBeans_MetaData(config));
         kit.regeditHook("/beans/*Bean/*/meta", new TagBeans_MetaData(config));
+        kit.regeditHook("/beans/*Bean/method", new TagBeans_Method(config));
+        kit.regeditHook("/beans/*Bean/method/param", new TagBeans_Param(config));
         //
         kit.regeditHook("/beans/*Bean/*/value", new TagBeans_Value(config));
         kit.regeditHook("/beans/*Bean/*/date", new TagBeans_Date(config));

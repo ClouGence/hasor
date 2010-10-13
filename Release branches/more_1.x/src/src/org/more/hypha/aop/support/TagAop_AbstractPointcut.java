@@ -76,7 +76,7 @@ public abstract class TagAop_AbstractPointcut<T extends AbstractPointcutDefine> 
         }
         //3.注册到环境中
         if (isReg == false && define.getName() != null) {
-            AopDefineResourcePlugin plugin = (AopDefineResourcePlugin) this.getConfiguration().getPlugin(AopDefineResourcePlugin.AopPluginName);
+            AopDefineResourcePlugin plugin = (AopDefineResourcePlugin) this.getConfiguration().getPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName);
             if (plugin.containPointcutDefine(define.getName()) == true)
                 throw new RepeateException("不能重复定义[" + define.getName() + "]切入点对象。");
             plugin.addPointcutDefine(define);

@@ -54,6 +54,9 @@ public class TagBeans_MetaData extends Tag_Abstract implements XmlElementHook {
             bean_Define.setAttribute(key, value);
             return;
         }
+        //4.config∂®“Â
+        if (xpath.contains("/beans") == true)
+            this.getConfiguration().getAttribute().setAttribute(key, value);
     }
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
 }

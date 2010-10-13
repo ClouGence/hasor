@@ -23,6 +23,8 @@ import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.aop.AopBeanDefinePlugin;
 import org.more.hypha.aop.AopDefineResourcePlugin;
+import org.more.hypha.aop.define.AbstractInformed;
+import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.beans.support.TagBeans_AbstractBeanDefine;
@@ -51,7 +53,7 @@ public class TagAop_Config extends Tag_Abstract implements XmlElementHook {
         BuilderMode mode = (BuilderMode) StringConvert.changeType(aopMode, BuilderMode.class, BuilderMode.Super);
         config.setAopMode(mode);
         //att :useTemplate
-        AopDefineResourcePlugin plugin = (AopDefineResourcePlugin) this.getConfiguration().getPlugin(AopDefineResourcePlugin.AopPluginName);
+        AopDefineResourcePlugin plugin = (AopDefineResourcePlugin) this.getConfiguration().getPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName);
         String useTemplate = event.getAttributeValue("useTemplate");
         if (useTemplate != null) {
             AopConfigDefine templateConfig = plugin.getAopDefine(useTemplate);
@@ -65,13 +67,18 @@ public class TagAop_Config extends Tag_Abstract implements XmlElementHook {
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
         AbstractBeanDefine bean = (AbstractBeanDefine) context.getAttribute(TagBeans_AbstractBeanDefine.BeanDefine);
         AopConfigDefine config = (AopConfigDefine) context.getAttribute(ConfigDefine);
-        //1.携带到Bean上。
+        //1.检查内部的Informed
+        AbstractPointcutDefine defaultPointcutDefine = config.getDefaultPointcutDefine();
+        for (AbstractInformed informed : config.getAopInformedList())
+            if (informed.getRefPointcut() == null)
+                informed.setRefPointcut(defaultPointcutDefine);
+        //2.携带到Bean上。
         if (bean != null) {
             bean.setPlugin(AopBeanDefinePlugin.AopPluginName, new AopBeanDefinePlugin(bean, config));
             return;
         }
-        //2.注册到AopDefineResourcePlugin中。
-        AopDefineResourcePlugin plugin = (AopDefineResourcePlugin) this.getConfiguration().getPlugin(AopDefineResourcePlugin.AopPluginName);
+        //3.注册到AopDefineResourcePlugin中。
+        AopDefineResourcePlugin plugin = (AopDefineResourcePlugin) this.getConfiguration().getPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName);
         String name = config.getName();
         if (name != null)
             if (plugin.containAopDefine(name) == false)

@@ -27,7 +27,7 @@ import org.more.hypha.beans.AbstractBeanDefine;
  */
 public interface AopDefineResourcePlugin extends DefineResourcePlugin {
     /**要注册的插件名*/
-    public static final String AopPluginName = "$more_aop_Plugin";
+    public static final String AopDefineResourcePluginName = "$more_aop_ResourcePlugin";
     /**获取一个定义的切入点，如果找不到则会引发{@link NoDefinitionException}异常。*/
     public AbstractPointcutDefine getPointcutDefine(String name) throws NoDefinitionException;
     /**添加切点定义。*/

@@ -25,7 +25,13 @@ import org.more.util.attribute.IAttribute;
  * @version 2010-9-24
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface DefineResource extends DefineResourcePluginSet, IAttribute {
+public interface DefineResource extends DefineResourcePluginSet {
+    ///**根据当前配置信息生成一个{@link ApplicationContext}服务接口。*/
+    //public ApplicationContext buildApplication();
+    /**获取{@link DefineResource}的属性访问接口。*/
+    public IAttribute getAttribute();
+    /**获取事件管理器。*/
+    public EventManager getEventManager();
     /**获取资源名。*/
     public String getSourceName();
     /**获取资源的URI表述形式，如果资源不支持该表述形式则返回null。*/

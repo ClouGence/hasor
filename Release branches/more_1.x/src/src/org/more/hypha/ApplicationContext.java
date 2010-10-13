@@ -26,7 +26,7 @@ import org.more.util.attribute.IAttribute;
  * @version 2009-11-3
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ApplicationContext extends IAttribute {
+public interface ApplicationContext extends EventManager, IAttribute {
     /**
      * 获取{@link ApplicationContext}中可以索引到的所有bean定义名称集合，如果获取不到任何名称则需要返回一个空集合。
      * @return 返回获取到的所有bean定义名称集合。

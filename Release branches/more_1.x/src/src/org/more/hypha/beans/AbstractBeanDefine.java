@@ -20,13 +20,17 @@ import org.more.util.attribute.IAttribute;
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AbstractBeanDefine extends BeanDefinePluginSet, IAttribute{
-    /**返回bean的名称，在同一个Factory中name是唯一的。*/
+public interface AbstractBeanDefine extends BeanDefinePluginSet, IAttribute {
+    /**返回bean的唯一编号，如果没有指定id属性则id值将是fullName属性值。*/
+    public String getID();
+    /**返回bean的名称，如果指定了package属性那么name的值可以出现重复。*/
     public String getName();
+    /**获取Bean的逻辑包定义，这个包定义与类的实际所处包不同。它表现为一个外在的逻辑管理形式。*/
+    public String getPackage();
+    /**获取包含package和bean名的虚拟类完整限定名。*/
+    public String getFullName();
     /**获取bean被定义的bean的类型该类型与class类型是有区分的，class类型可以表述一个具体类型但是无法表述大分类。*/
     public String getBeanType();
-    /**获取bean的各种属性是如何注入到Bean中的。*/
-    public IocTypeEnum getIocType();
     /**获取bean的作用域，如果容器支持多种作用域。*/
     public String getScope();
     /**返回一个boolean值，表示类是否为一个抽象类。*/
@@ -41,8 +45,10 @@ public interface AbstractBeanDefine extends BeanDefinePluginSet, IAttribute{
     public String getDescription();
     /**创建bean的工厂名，如果bean定义时没有指定工厂则该方法返回null。*/
     public String factoryName();
-    /**该方法与factoryName()方法是成对出现的，该方法表明目标方法的方法名称描述。*/
+    /**该方法与factoryName()方法是成对出现的，该方法表明目标方法的代理名称。*/
     public String factoryMethod();
+    /**该属性是用来定义在bean上的一些方法。*/
+    public AbstractMethodDefine[] getMethods();
     /**该属性定义了当创建这个bean时候需要的启动参数。启动参数通常是指构造方法参数，对于工厂形式创建启动参数代表了工厂方法的参数列表。*/
     public AbstractPropertyDefine[] getInitParams();
     /**返回bean的定义属性集合。*/
