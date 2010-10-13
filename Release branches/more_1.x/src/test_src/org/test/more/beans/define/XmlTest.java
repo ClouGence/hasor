@@ -18,8 +18,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
-import org.more.beans.AbstractBeanDefine;
-import org.more.beans.resource.XmlConfiguration;
+import org.more.hypha.beans.AbstractBeanDefine;
+import org.more.hypha.configuration.XmlConfiguration;
 /**
  * ²âÊÔÁËnamespace°ü,define°ü
  * @version 2010-9-21
@@ -30,7 +30,10 @@ public class XmlTest {
     public void test() throws XMLStreamException, IOException {
         InputStream in = XmlConfiguration.class.getResourceAsStream("/org/test/more/beans/define/beans-test-config.xml");
         XmlConfiguration con = new XmlConfiguration(in);
-        AbstractBeanDefine define = con.getBeanDefine("testTemplateBean");
-        System.out.println(define.getName());
+        AbstractBeanDefine define = con.getBeanDefine("org.more.testTemplateBean");
+        //
+        //        AopBeanDefinePlugin aopDefine = (AopBeanDefinePlugin) define.getPlugin(AopBeanDefinePlugin.AopPluginName);
+        //        System.out.println(aopDefine.getAopConfig().getName());
+        System.out.println(define.getMethods());
     }
 }

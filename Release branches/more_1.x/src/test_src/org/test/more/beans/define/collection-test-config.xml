@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<beans xmlns="http://project.byshell.org/more/schema/beans"
-	xmlns:config="http://project.byshell.org/more/schema/config">
+<beans xmlns="http://project.byshell.org/more/schema/beans">
 
 	<templateBean name="1.testCollection">
 		<!-- ==ArrayCollection== -->

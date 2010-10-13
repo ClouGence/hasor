@@ -1,22 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <beans
 	xmlns="http://project.byshell.org/more/schema/beans"
-	xmlns:aop="http://project.byshell.org/more/schema/aop">
+	xmlns:aop="http://project.byshell.org/more/schema/beans-aop"
+	xmlns:anno="http://project.byshell.org/more/schema/annotation">
 	
+	<anno:anno package=""/>
+	
+	<templateBean name="listener_1"/>
+	<templateBean name="before_1"/>
+	<templateBean name="returning_1"/>
+	<templateBean name="throwing_1"/>
+	<templateBean name="filter_1"/>
+
 	<!-- =========================================================== -->
 	<!-- 注册切点，注册不会起到任何作用 -->
 	<!-- 
 		expression 用法：
-			char		= w+
+			char		= w?
 			pattern		= * | ?
 			not			= !
-			chars		= char pattern*
+			chars		= char* pattern* char*
 			package		= (chars.)* chars
 			param		= pattern | package
 			params		= (param,)* param
 			name		= not? chars
 			method		= name(params);
-			expression	= (method |)* method;			
+			expression	= (method |)* method;
 	-->
 	<aop:pointcut name="point_1" expression="toString();"/>					<!-- toString()方法 -->
 	<aop:pointcut name="point_2" expression="addUser(int,org.User)"/>		<!-- addUser(int,org.test.User)方法 -->
@@ -25,7 +34,7 @@
 	<aop:pointcut name="point_5" expression="*(?,?)|*(?)"/>					<!-- 带有1个或2个任意类型参数的任意方法 -->
 	<aop:pointcut name="point_6" expression="*User(*,org.User)"/>			<!-- 以User结尾的，任意数量参数，但是最后一个参数必须是org.User -->
 	<aop:pointcut name="point_7" expression="!*User(*)"/>					<!-- 排除任意方法名以User结尾的方法。 -->
-	<aop:pointGroup name="point_4">
+	<aop:pointGroup name="point_8" rel="and|or|not">
 		<aop:pointcut expression="!*User(*)"/>
 		<aop:pointcut expression="*(?,?)"/>
 	</aop:pointGroup>
@@ -35,12 +44,21 @@
 	<!-- 内部pointcut -->
 	<aop:config name="config_1" useTemplate="config_0" aopMode="Super|Propxy">
 		<aop:pointcut expression="*(*)"/>
-		<aop:before refBean="before_1"/>
+		<!-- 根据类实现的接口决定 -->
+		<aop:informed	refBean="listener_1"/>
+		<aop:before		refBean="before_1"/>
+		<aop:returning	refBean="returning_1"/>
+		<aop:throwing	refBean="throwing_1"/>
+		<aop:filter		refBean="filter_1"/>
 	</aop:config>
 	<!-- 外部pointcut -->
 	<aop:config name="config_2">
-		<aop:before refBean="before_1" pointcut-ref="point_2"/>
-		<aop:filter refBean="filter_1" pointcut-ref="point_5"/>
+		<!-- 根据类实现的接口决定 -->
+		<aop:informed	refBean="listener_1"	pointcut-ref="point_2"/>
+		<aop:before		refBean="before_1"		pointcut-ref="point_2"/>
+		<aop:returning	refBean="returning_1"	pointcut-ref="point_2"/>
+		<aop:throwing	refBean="throwing_1"	pointcut-ref="point_2"/>
+		<aop:filter		refBean="filter_1"		pointcut-ref="point_2"/>
 	</aop:config>
 	<!-- 混合pointcut -->
 	<aop:config name="config_3">
@@ -48,20 +66,47 @@
 			<aop:pointcut expression="!*User(*)"/>
 			<aop:pointcut expression="*(?,?)"/>
 		</aop:pointGroup>
-		<aop:before refBean="before_1"/>
+		<!-- 根据类实现的接口决定 -->
+		<aop:informed	refBean="listener_1"/>
+		<aop:before		refBean="before_1"/>
+		<aop:returning	refBean="returning_1"/>
+		<aop:throwing	refBean="throwing_1"	pointcut-ref="point_2"/>
+		<aop:filter		refBean="filter_1"		pointcut-ref="point_2"/>
+	</aop:config>
+	<!-- =========================================================== -->
+	<!-- 混合pointcut -->
+	<aop:config name="config_4">
+		<aop:pointGroup>
+			<aop:pointcut expression="!*User(*)"/>
+			<aop:pointcut expression="*(?,?)"/>
+		</aop:pointGroup>
+		<aop:before refBean="before_1" method=""/>
 		<aop:filter refBean="filter_1" pointcut-ref="point_5"/>
 	</aop:config>
-	
+
 	<!-- =========================================================== -->
 	<!-- 将config配置应用到指定目标上，如果不指定则是应用到所有bean上 。toBean是指应用到指定bean上，toPackage是指应用到指定包上。-->
 	<!-- 使用通配符即可 -->
-	<aop:apply toBeanExp="" config=""/>
-	<aop:apply toPackageExp="" config=""/>
-	
-	<templateBean name="testAop1"/>
-	
-	<templateBean name="testAop2" aop:useConfig=""/>
-	<templateBean name="testAop3">
-		<aop:useConfig name=""/>
+	<aop:apply toBeanExp="testAop1" config="config_4"/>
+	<aop:apply toPackageExp="user.*" config="config_2"/>
+
+	<templateBean name="testAop1" package="org.more.test.package">
+		<aop:config>
+			<aop:pointGroup>
+				<aop:pointcut expression="!*User(*)"/>
+				<aop:pointcut expression="*(?,?)"/>
+			</aop:pointGroup>
+			<aop:before refBean="before_1" method=""/>
+			<aop:filter refBean="filter_1" pointcut-ref="point_5"/>
+		</aop:config>
 	</templateBean>
+	
+	<package package="user">
+		<templateBean name="testAop2" aop:useConfig="config_4"/>
+		<!-- 如果name和id同时出现则name属性将会失去getBean时的索引效果。 -->
+		<templateBean id="testAop3" name="testAop3"/>
+		<templateBean name="testAop4">
+			<aop:useConfig name="config_3"/>
+		</templateBean>
+	</package>
 </beans>
