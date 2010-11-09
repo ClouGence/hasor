@@ -20,7 +20,7 @@ import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.beans.define.AbstractPropertyDefine;
 import org.more.hypha.beans.define.Enum_ValueMetaData;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析enum标签
  * @version 2010-9-22
@@ -28,7 +28,7 @@ import org.more.hypha.configuration.XmlConfiguration;
  */
 public class TagBeans_Enum extends TagBeans_AbstractValueMetaDataDefine<Enum_ValueMetaData> {
     /**创建{@link TagBeans_Enum}对象*/
-    public TagBeans_Enum(XmlConfiguration configuration) {
+    public TagBeans_Enum(DefineResourceImpl configuration) {
         super(configuration);
     }
     /**创建{@link Enum_ValueMetaData}对象。*/

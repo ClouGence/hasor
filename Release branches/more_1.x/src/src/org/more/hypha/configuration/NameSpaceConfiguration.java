@@ -28,9 +28,9 @@ import org.more.util.StringConvert;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class NameSpaceConfiguration implements XmlAccept {
-    private XmlConfiguration  config     = null;
-    private ArrayList<String> schemaList = new ArrayList<String>();
-    public NameSpaceConfiguration(XmlConfiguration config) {
+    private DefineResourceImpl config     = null;
+    private ArrayList<String>  schemaList = new ArrayList<String>();
+    public NameSpaceConfiguration(DefineResourceImpl config) {
         this.config = config;
     }
     public void beginAccept() {}

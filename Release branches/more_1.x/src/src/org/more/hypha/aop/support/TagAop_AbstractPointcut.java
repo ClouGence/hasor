@@ -24,7 +24,7 @@ import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.aop.define.AopPointcutGroupDefine;
 import org.more.hypha.configuration.Tag_Abstract;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析切点标签的基类，该类会解析name属性。
  * @version 2010-9-24
@@ -34,7 +34,7 @@ import org.more.hypha.configuration.XmlConfiguration;
 public abstract class TagAop_AbstractPointcut<T extends AbstractPointcutDefine> extends Tag_Abstract implements XmlElementHook {
     private static final String PointcutDefine = "$more_Aop_PointcutDefine";
     /**创建{@link TagAop_AbstractPointcut}类型对象。*/
-    public TagAop_AbstractPointcut(XmlConfiguration configuration) {
+    public TagAop_AbstractPointcut(DefineResourceImpl configuration) {
         super(configuration);
     }
     /**创建一个{@link AbstractPointcutDefine}定义对象。*/

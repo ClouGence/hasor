@@ -17,7 +17,7 @@ package org.more.hypha.aop.support;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.aop.define.AopPointcutDefine;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析aop:pointcut标签
  * @version 2010-9-22
@@ -25,7 +25,7 @@ import org.more.hypha.configuration.XmlConfiguration;
  */
 public class TagAop_Pointcut extends TagAop_AbstractPointcut<AopPointcutDefine> {
     /**创建{@link TagAop_Pointcut}对象*/
-    public TagAop_Pointcut(XmlConfiguration configuration) {
+    public TagAop_Pointcut(DefineResourceImpl configuration) {
         super(configuration);
     }
     /**返回{@link AopPointcutDefine}类型对象。*/

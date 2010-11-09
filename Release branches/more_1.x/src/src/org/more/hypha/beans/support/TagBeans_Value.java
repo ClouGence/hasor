@@ -20,7 +20,7 @@ import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.beans.define.AbstractPropertyDefine;
 import org.more.hypha.beans.define.Simple_ValueMetaData;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 import org.more.util.StringConvert;
 /**
  * 用于解析value标签
@@ -29,7 +29,7 @@ import org.more.util.StringConvert;
  */
 public class TagBeans_Value extends TagBeans_AbstractValueMetaDataDefine<Simple_ValueMetaData> {
     /**创建{@link TagBeans_Value}对象*/
-    public TagBeans_Value(XmlConfiguration configuration) {
+    public TagBeans_Value(DefineResourceImpl configuration) {
         super(configuration);
     }
     protected Simple_ValueMetaData createDefine() {

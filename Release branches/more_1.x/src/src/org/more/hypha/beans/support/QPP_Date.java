@@ -14,25 +14,30 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.support;
+import org.more.hypha.beans.AbstractPropertyDefine;
+import org.more.hypha.beans.TypeParser;
 import org.more.hypha.beans.ValueMetaData;
 import org.more.hypha.beans.define.Date_ValueMetaData;
-import org.more.hypha.beans.define.QuickProperty_ValueMetaData;
+import org.more.util.attribute.IAttribute;
 /**
  * 时间类型属性值解析器。
  * @version 2010-9-23
  * @author 赵永春 (zyc@byshell.org)
  */
-public class QPP_Date implements QuickPropertyParser {
+public class QPP_Date implements TypeParser {
     /**试图解析成为{@link Date_ValueMetaData}如果解析失败返回null。*/
-    public ValueMetaData parser(QuickParserEvent event) {
+    @Override
+    public ValueMetaData parser(String value, IAttribute attribute, AbstractPropertyDefine property) {
         //1.检查是否可以解析
-        QuickProperty_ValueMetaData meta = event.getOldMetaData();
-        if (meta.getDate() == null)
+        if (value == null)
+            value = (String) attribute.getAttribute("date");
+        if (value == null)
             return null;
+        String format = (String) attribute.getAttribute("format");
         //2.进行解析
         Date_ValueMetaData newMETA = new Date_ValueMetaData();
-        newMETA.setDateString(meta.getDate());
-        newMETA.setFormatString(meta.getFormat());
+        newMETA.setDateString(value);
+        newMETA.setFormatString(format);
         return newMETA;
     }
 }

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans;
+import java.util.Collection;
 import org.more.util.attribute.IAttribute;
 /**
  * 该接口用于定义一个beans组建中的bean声明。
@@ -47,12 +48,16 @@ public interface AbstractBeanDefine extends BeanDefinePluginSet, IAttribute {
     public String factoryName();
     /**该方法与factoryName()方法是成对出现的，该方法表明目标方法的代理名称。*/
     public String factoryMethod();
-    /**该属性是用来定义在bean上的一些方法。*/
-    public AbstractMethodDefine[] getMethods();
-    /**该属性定义了当创建这个bean时候需要的启动参数。启动参数通常是指构造方法参数，对于工厂形式创建启动参数代表了工厂方法的参数列表。*/
-    public AbstractPropertyDefine[] getInitParams();
-    /**返回bean的定义属性集合。*/
-    public AbstractPropertyDefine[] getPropertys();
+    /**该属性是用来定义在bean上的一些方法，返回的集合是一个只读集合。*/
+    public Collection<? extends AbstractMethodDefine> getMethods();
+    /**
+     * 该属性定义了当创建这个bean时候需要的启动参数。
+     * 启动参数通常是指构造方法参数，对于工厂形式创建启动参数代表了工厂方法的参数列表。
+     * 返回的集合是一个只读集合。
+     */
+    public Collection<? extends AbstractPropertyDefine> getInitParams();
+    /**返回bean的定义属性集合，返回的集合是一个只读集合。*/
+    public Collection<? extends AbstractPropertyDefine> getPropertys();
     /**返回具有特征的字符串。*/
     public String toString();
 }

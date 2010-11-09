@@ -20,7 +20,7 @@ import org.more.core.xml.XmlTextHook;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.TextEvent;
 import org.more.hypha.beans.define.BigText_ValueMetaData;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析bigText标签
  * @version 2010-9-22
@@ -30,7 +30,7 @@ public class TagBeans_BigText extends TagBeans_AbstractValueMetaDataDefine<BigTe
     /**保存于上下文中的脚本值对象*/
     private static final String BigText = "$more_Beans_BigText";
     /**创建{@link TagBeans_BigText}对象*/
-    public TagBeans_BigText(XmlConfiguration configuration) {
+    public TagBeans_BigText(DefineResourceImpl configuration) {
         super(configuration);
     }
     /**创建{@link BigText_ValueMetaData}对象。*/

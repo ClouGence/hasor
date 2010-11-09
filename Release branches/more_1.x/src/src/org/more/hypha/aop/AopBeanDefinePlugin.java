@@ -15,6 +15,7 @@
  */
 package org.more.hypha.aop;
 import org.more.hypha.aop.define.AopConfigDefine;
+import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.beans.BeanDefinePlugin;
 /**
  * 创建{@link AopBeanDefinePlugin}对象。
@@ -24,10 +25,10 @@ import org.more.hypha.beans.BeanDefinePlugin;
 public class AopBeanDefinePlugin implements BeanDefinePlugin {
     /**要注册的插件名*/
     public static final String AopPluginName = "$more_aop_plugin";
-    private Object             target        = null;              //扩展目标
+    private AbstractBeanDefine target        = null;              //扩展目标
     private AopConfigDefine    aopConfig     = null;              //扩展的aop策略
     /***/
-    public AopBeanDefinePlugin(Object target, AopConfigDefine aopConfig) {
+    public AopBeanDefinePlugin(AbstractBeanDefine target, AopConfigDefine aopConfig) {
         this.target = target;
         this.aopConfig = aopConfig;
     }
@@ -36,7 +37,7 @@ public class AopBeanDefinePlugin implements BeanDefinePlugin {
         return aopConfig;
     }
     /**获取扩展目标。*/
-    public Object getTarget() {
+    public AbstractBeanDefine getTarget() {
         return this.target;
     }
 }

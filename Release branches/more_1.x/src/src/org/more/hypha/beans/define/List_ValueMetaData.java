@@ -16,29 +16,28 @@
 package org.more.hypha.beans.define;
 import java.util.ArrayList;
 import java.util.List;
-import org.more.hypha.beans.ValueMetaData;
 import org.more.hypha.beans.ValueMetaData.PropertyMetaTypeEnum;
 /**
  * 表示一个{@link List}类型的值元信息描述，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#ListCollection}。
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class List_ValueMetaData extends Collection_ValueMetaData<ValueMetaData> {
-    private ArrayList<ValueMetaData> valueData = new ArrayList<ValueMetaData>(); //数据
+public class List_ValueMetaData extends Collection_ValueMetaData<AbstractValueMetaData> {
+    private ArrayList<AbstractValueMetaData> valueData = new ArrayList<AbstractValueMetaData>(); //数据
     /**该方法将会返回{@link PropertyMetaTypeEnum#ListCollection}。*/
     public PropertyMetaTypeEnum getPropertyType() {
         return PropertyMetaTypeEnum.ListCollection;
     }
     /**以List形式返回集合中的数据。*/
-    public List<ValueMetaData> getCollectionValue() {
+    public List<AbstractValueMetaData> getCollectionValue() {
         return this.valueData;
     }
     /**添加一个元素。*/
-    public void addObject(ValueMetaData value) {
+    public void addObject(AbstractValueMetaData value) {
         this.valueData.add(value);
     };
     /**删除一个元素。*/
-    public void removeObject(ValueMetaData value) {
+    public void removeObject(AbstractValueMetaData value) {
         this.valueData.remove(value);
     };
     /**获取集合当前数据内容条数数。*/

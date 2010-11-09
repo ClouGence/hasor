@@ -16,13 +16,13 @@
 package org.more.hypha.event;
 import org.more.hypha.Event;
 /**
- * 当遇到销毁动作时候引发该事件。
+ * 当清空Bean定义时候引发该事件。
  * @version 2010-10-11
  * @author 赵永春 (zyc@byshell.org)
  */
-public class DestroyEvent extends Event {
-    /**创建{@link DestroyEvent}对象。*/
-    public DestroyEvent(Object target) {
+public class ClearDefineEvent extends Event {
+    /**创建{@link ClearDefineEvent}对象。*/
+    public ClearDefineEvent(Object target) {
         super(target);
     }
 }

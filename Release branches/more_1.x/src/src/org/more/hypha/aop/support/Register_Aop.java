@@ -15,10 +15,11 @@
  */
 package org.more.hypha.aop.support;
 import org.more.core.xml.XmlParserKit;
+import org.more.hypha.DefineResource;
 import org.more.hypha.aop.AopDefineResourcePlugin;
 import org.more.hypha.aop.assembler.AopDefineResourcePlugin_Impl;
 import org.more.hypha.configuration.NameSpaceRegister;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 该类实现了{@link NameSpaceRegister}接口并且提供了对命名空间“http://project.byshell.org/more/schema/aop”的解析支持。
  * @version 2010-9-15
@@ -28,7 +29,8 @@ public class Register_Aop implements NameSpaceRegister {
     /**提供支持的命名空间*/
     public static final String DefaultNameSpaceURL = "http://project.byshell.org/more/schema/aop";
     /**执行初始化注册。*/
-    public void initRegister(String namespaceURL, XmlConfiguration config) {
+    public void initRegister(String namespaceURL, DefineResource resource) {
+        DefineResourceImpl config = (DefineResourceImpl) resource;
         //1.添加Aop插件
         config.setPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName, new AopDefineResourcePlugin_Impl(config));
         //2.注册标签解析器

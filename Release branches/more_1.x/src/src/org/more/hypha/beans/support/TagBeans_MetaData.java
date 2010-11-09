@@ -22,7 +22,7 @@ import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.beans.AbstractPropertyDefine;
 import org.more.hypha.beans.ValueMetaData;
 import org.more.hypha.configuration.Tag_Abstract;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析meta标签
  * @version 2010-9-16
@@ -30,7 +30,7 @@ import org.more.hypha.configuration.XmlConfiguration;
  */
 public class TagBeans_MetaData extends Tag_Abstract implements XmlElementHook {
     /**创建{@link TagBeans_MetaData}对象*/
-    public TagBeans_MetaData(XmlConfiguration configuration) {
+    public TagBeans_MetaData(DefineResourceImpl configuration) {
         super(configuration);
     }
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {

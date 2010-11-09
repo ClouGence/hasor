@@ -15,19 +15,16 @@
  */
 package org.more.hypha.beans.support;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.more.LostException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.beans.AbstractBeanDefine;
+import org.more.hypha.beans.TypeManager;
 import org.more.hypha.beans.ValueMetaData;
 import org.more.hypha.beans.define.AbstractPropertyDefine;
-import org.more.hypha.beans.define.QuickProperty_ValueMetaData;
-import org.more.hypha.beans.define.Simple_ValueMetaData;
-import org.more.hypha.beans.define.Simple_ValueMetaData.PropertyType;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 import org.more.util.StringConvert;
+import org.more.util.attribute.AttBase;
 /**
  * beans命名空间的属性标签解析基类。该类不会处理属性值元信息的解析这部分信息的解析交给其专有标签解析器或者由{@link QuickPropertyParser}接口负责处理。
  * @version 2010-9-19
@@ -37,7 +34,7 @@ public abstract class TagBeans_AbstractPropertyDefine<T extends AbstractProperty
     /**属性元信息.*/
     public static final String PropertyDefine = "$more_Beans_PropertyDefine";
     /**创建{@link TagBeans_AbstractPropertyDefine}对象*/
-    public TagBeans_AbstractPropertyDefine(XmlConfiguration configuration) {
+    public TagBeans_AbstractPropertyDefine(DefineResourceImpl configuration) {
         super(configuration);
     }
     /**属性的定义名称*/
@@ -82,35 +79,15 @@ public abstract class TagBeans_AbstractPropertyDefine<T extends AbstractProperty
                 }
             pdefine.setClassType(propType);
         }
-        //3.负责生成临时属性值元信息
-        QuickProperty_ValueMetaData quickMETA = new QuickProperty_ValueMetaData();
-        quickMETA.setValue(event.getAttributeValue("value"));
-        quickMETA.setEnumeration(event.getAttributeValue("enum"));
-        quickMETA.setRefBean(event.getAttributeValue("refBean"));
-        quickMETA.setRefScope(event.getAttributeValue("refScope"));
-        quickMETA.setFile(event.getAttributeValue("file"));
-        quickMETA.setDirectory(event.getAttributeValue("directory"));
-        quickMETA.setUriLocation(event.getAttributeValue("uriLocation"));
-        quickMETA.setDate(event.getAttributeValue("date"));
-        quickMETA.setFormat(event.getAttributeValue("format"));
-        //4.负责解析临时属性值元信息
-        List<QuickPropertyParser> quickList = this.getConfiguration().getQuickList();
-        /**调用快速属性解析器解析属性值元信息*/
-        AbstractBeanDefine define = (AbstractBeanDefine) context.getAttribute(TagBeans_AbstractBeanDefine.BeanDefine);
-        QuickParserEvent quickEvent = new QuickParserEvent(this.getConfiguration(), define, pdefine, quickMETA);
-        ValueMetaData valueMETADATA = null;
-        for (QuickPropertyParser parser : quickList) {
-            valueMETADATA = parser.parser(quickEvent);
-            if (valueMETADATA != null)
-                break;
-        }
-        /**使用默认值null*/
-        if (valueMETADATA == null) {
-            Simple_ValueMetaData simple = new Simple_ValueMetaData();
-            simple.setValueMetaType(PropertyType.Null);
-            simple.setValue(null);
-            valueMETADATA = simple;
-        }
+        //3.将元素定义的所有属性都添加到att中。
+        AttBase att = new AttBase();
+        for (int i = 0; i < event.getAttributeCount(); i++)
+            att.put(event.getAttributeName(i).getLocalPart(), event.getAttributeValue(i));
+        //4.负责解析属性值元信息
+        TypeManager typeManager = this.getConfiguration().getTypeManager();
+        ValueMetaData valueMETADATA = typeManager.parserType(event.getAttributeValue("value"), att, pdefine);
+        if (valueMETADATA == null)
+            throw new NullPointerException("通过TypeManager解析属性元信息类型失败，返回值为空。");
         pdefine.setValueMetaData(valueMETADATA);
     }
 }

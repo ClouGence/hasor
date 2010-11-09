@@ -16,7 +16,7 @@
 package org.more.hypha.beans.support;
 import java.util.ArrayList;
 import org.more.hypha.beans.define.List_ValueMetaData;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析list标签
  * @version 2010-9-16
@@ -24,7 +24,7 @@ import org.more.hypha.configuration.XmlConfiguration;
  */
 public class TagBeans_List extends TagBeans_AbstractCollection<List_ValueMetaData> {
     /**创建{@link TagBeans_List}对象*/
-    public TagBeans_List(XmlConfiguration configuration) {
+    public TagBeans_List(DefineResourceImpl configuration) {
         super(configuration);
     }
     /**创建{@link List_ValueMetaData}对象*/

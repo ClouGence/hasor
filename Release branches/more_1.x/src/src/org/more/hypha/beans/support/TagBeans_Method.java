@@ -21,7 +21,7 @@ import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.hypha.beans.define.MethodDefine;
 import org.more.hypha.beans.define.TemplateBeanDefine;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 
  * @version 2010-10-13
@@ -31,7 +31,7 @@ public class TagBeans_Method extends TagBeans_AbstractDefine<MethodDefine> {
     /**属性元信息.*/
     public static final String MethodDefine = "$more_Beans_MethodDefine";
     /**创建{@link TagBeans_Method}对象。*/
-    public TagBeans_Method(XmlConfiguration configuration) {
+    public TagBeans_Method(DefineResourceImpl configuration) {
         super(configuration);
     }
     /**创建{@link MethodDefine}对象*/

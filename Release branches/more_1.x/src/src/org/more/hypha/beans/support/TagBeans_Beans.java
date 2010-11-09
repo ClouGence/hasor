@@ -19,7 +19,7 @@ import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.configuration.Tag_Abstract;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析/beans标签
  * @version 2010-9-16
@@ -29,7 +29,7 @@ public class TagBeans_Beans extends Tag_Abstract implements XmlElementHook {
     /**保存于上下文中的Bean管理器。*/
     public static final String BeanDefineManager = "$more_Beans_BeanDefineManager";
     /**创建{@link TagBeans_Beans}对象*/
-    public TagBeans_Beans(XmlConfiguration configuration) {
+    public TagBeans_Beans(DefineResourceImpl configuration) {
         super(configuration);
     }
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {

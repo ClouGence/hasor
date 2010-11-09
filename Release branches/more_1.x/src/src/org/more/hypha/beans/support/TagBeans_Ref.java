@@ -17,7 +17,7 @@ package org.more.hypha.beans.support;
 import java.util.HashMap;
 import java.util.Map;
 import org.more.hypha.beans.define.Relation_ValueMetaData;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析ref标签
  * @version 2010-9-22
@@ -25,7 +25,7 @@ import org.more.hypha.configuration.XmlConfiguration;
  */
 public class TagBeans_Ref extends TagBeans_AbstractValueMetaDataDefine<Relation_ValueMetaData> {
     /**创建{@link TagBeans_Ref}对象*/
-    public TagBeans_Ref(XmlConfiguration configuration) {
+    public TagBeans_Ref(DefineResourceImpl configuration) {
         super(configuration);
     }
     /**创建{@link Relation_ValueMetaData}对象。*/

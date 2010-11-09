@@ -19,7 +19,7 @@ import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.configuration.Tag_Abstract;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析/defaultPackage标签
  * @version 2010-9-16
@@ -29,7 +29,7 @@ public class TagBeans_DefaultPackage extends Tag_Abstract implements XmlElementH
     /**默认包位置*/
     public static String DefaultPackage = null;
     /**创建{@link TagBeans_DefaultPackage}对象*/
-    public TagBeans_DefaultPackage(XmlConfiguration configuration) {
+    public TagBeans_DefaultPackage(DefineResourceImpl configuration) {
         super(configuration);
     }
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {

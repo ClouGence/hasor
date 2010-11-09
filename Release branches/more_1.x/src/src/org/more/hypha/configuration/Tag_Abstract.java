@@ -22,18 +22,18 @@ import org.more.hypha.beans.define.VariableBeanDefine;
 import org.more.util.StringConvert;
 import org.more.util.StringUtil;
 /**
- * namespace包中凡是涉及解析xml的类都需要集成的类，该类目的是为了提供一个统一的{@link XmlConfiguration}对象获取接口和一些Tag解析时的公共方法。
+ * namespace包中凡是涉及解析xml的类都需要集成的类，该类目的是为了提供一个统一的{@link DefineResourceImpl}对象获取接口和一些Tag解析时的公共方法。
  * @version 2010-9-23
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class Tag_Abstract {
-    private XmlConfiguration configuration = null;
+    private DefineResourceImpl configuration = null;
     /**创建Tag_Abstract类型*/
-    public Tag_Abstract(XmlConfiguration configuration) {
+    public Tag_Abstract(DefineResourceImpl configuration) {
         this.configuration = configuration;
     }
-    /**获取{@link XmlConfiguration}类型*/
-    protected XmlConfiguration getConfiguration() {
+    /**获取{@link DefineResourceImpl}类型*/
+    protected DefineResourceImpl getConfiguration() {
         return this.configuration;
     }
     //================================================================================================================工具性方法

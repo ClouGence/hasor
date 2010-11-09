@@ -14,27 +14,30 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.support;
+import org.more.hypha.beans.AbstractPropertyDefine;
+import org.more.hypha.beans.TypeParser;
 import org.more.hypha.beans.ValueMetaData;
 import org.more.hypha.beans.define.Enum_ValueMetaData;
-import org.more.hypha.beans.define.QuickProperty_ValueMetaData;
+import org.more.util.attribute.IAttribute;
 /**
  * 枚举属性值解析器，默认值是null。
  * @version 2010-9-22
  * @author 赵永春 (zyc@byshell.org)
  */
-public class QPP_Enum implements QuickPropertyParser {
+public class QPP_Enum implements TypeParser {
     /**试图解析成为{@link Enum_ValueMetaData}如果解析失败返回null。*/
-    public ValueMetaData parser(QuickParserEvent event) {
+    public ValueMetaData parser(String value, IAttribute attribute, AbstractPropertyDefine property) {
         //1.检查是否可以解析
-        QuickProperty_ValueMetaData meta = event.getOldMetaData();
-        if (meta.getEnumeration() == null)
+        if (value == null)
+            value = (String) attribute.getAttribute("enum");
+        if (value == null)
             return null;
         //2.进行解析
-        Class<?> propType = event.getProperty().getClassType();
+        Class<?> propType = property.getClassType();
         if (propType == null || Enum.class.isAssignableFrom(propType) == false)
             propType = null;
         Enum_ValueMetaData newMEDATA = new Enum_ValueMetaData();
-        newMEDATA.setEnumValue(meta.getEnumeration());
+        newMEDATA.setEnumValue(value);
         newMEDATA.setEnumType(propType);
         return newMEDATA;
     }

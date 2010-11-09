@@ -17,28 +17,31 @@ package org.more.hypha.beans.support;
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.more.FormatException;
+import org.more.hypha.beans.AbstractPropertyDefine;
+import org.more.hypha.beans.TypeParser;
 import org.more.hypha.beans.ValueMetaData;
-import org.more.hypha.beans.define.QuickProperty_ValueMetaData;
 import org.more.hypha.beans.define.URI_ValueMetaData;
+import org.more.util.attribute.IAttribute;
 /**
  * 连接属性值解析器，默认值是null。
  * @version 2010-9-22
  * @author 赵永春 (zyc@byshell.org)
  */
-public class QPP_URILocation implements QuickPropertyParser {
+public class QPP_URILocation implements TypeParser {
     /**试图解析成为{@link URI_ValueMetaData}如果解析失败返回null。*/
-    public ValueMetaData parser(QuickParserEvent event) {
+    public ValueMetaData parser(String value, IAttribute attribute, AbstractPropertyDefine property) {
         //1.检查是否可以解析
-        QuickProperty_ValueMetaData meta = event.getOldMetaData();
-        if (meta.getUriLocation() == null)
+        if (value == null)
+            value = (String) attribute.getAttribute("uriLocation");
+        if (value == null)
             return null;
         //2.进行解析
         URI_ValueMetaData newMETA = new URI_ValueMetaData();
         try {
-            newMETA.setUriObject(new URI(meta.getUriLocation()));
+            newMETA.setUriObject(new URI(value));
             return newMETA;
         } catch (URISyntaxException e) {
-            throw new FormatException("解析uri类型数据发生异常，错误的uri格式数据：[" + meta.getUriLocation() + "]");
+            throw new FormatException("解析uri类型数据发生异常，错误的uri格式数据：[" + value + "]");
         }
     }
 }

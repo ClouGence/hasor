@@ -26,7 +26,7 @@ import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.beans.support.TagBeans_AbstractBeanDefine;
 import org.more.hypha.configuration.Tag_Abstract;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析aop:useConfig标签和useConfig属性
  * @version 2010-10-9
@@ -34,7 +34,7 @@ import org.more.hypha.configuration.XmlConfiguration;
  */
 public class TagAop_UseConfig extends Tag_Abstract implements XmlElementHook, XmlAttributeHook {
     /**创建{@link TagAop_UseConfig}对象*/
-    public TagAop_UseConfig(XmlConfiguration configuration) {
+    public TagAop_UseConfig(DefineResourceImpl configuration) {
         super(configuration);
     }
     /**处理标签形式。*/

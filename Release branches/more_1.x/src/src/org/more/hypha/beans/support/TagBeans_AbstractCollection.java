@@ -20,7 +20,7 @@ import org.more.LostException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.beans.define.Collection_ValueMetaData;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 import org.more.util.StringConvert;
 /**
  * 用于解析集合类型标签的基类。
@@ -29,7 +29,7 @@ import org.more.util.StringConvert;
  */
 public abstract class TagBeans_AbstractCollection<T extends Collection_ValueMetaData<?>> extends TagBeans_AbstractValueMetaDataDefine<T> {
     /**创建{@link TagBeans_AbstractCollection}对象*/
-    public TagBeans_AbstractCollection(XmlConfiguration configuration) {
+    public TagBeans_AbstractCollection(DefineResourceImpl configuration) {
         super(configuration);
     }
     /**定义模板属性。*/

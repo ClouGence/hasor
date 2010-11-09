@@ -21,7 +21,7 @@ import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.beans.AbstractBeanDefine;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析/beans/*Bean标签的基类
  * @version 2010-9-16
@@ -29,7 +29,7 @@ import org.more.hypha.configuration.XmlConfiguration;
  */
 public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBeanDefine> extends TagBeans_AbstractDefine<T> {
     /**创建{@link TagBeans_AbstractBeanDefine}对象*/
-    public TagBeans_AbstractBeanDefine(XmlConfiguration configuration) {
+    public TagBeans_AbstractBeanDefine(DefineResourceImpl configuration) {
         super(configuration);
     }
     /**保存于上下文中的bean对象。*/
@@ -65,7 +65,7 @@ public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBeanDefine> 
         String useTemplate = event.getAttributeValue("useTemplate");
         AbstractBeanDefine define = this.getDefine(context);
         if (useTemplate != null) {
-            XmlConfiguration beanDefineManager = (XmlConfiguration) context.getAttribute(TagBeans_Beans.BeanDefineManager);
+            DefineResourceImpl beanDefineManager = (DefineResourceImpl) context.getAttribute(TagBeans_Beans.BeanDefineManager);
             AbstractBeanDefine template = null;
             if (beanDefineManager.containsBeanDefine(useTemplate) == true)
                 template = beanDefineManager.getBeanDefine(useTemplate);
@@ -90,7 +90,7 @@ public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBeanDefine> 
         AbstractBeanDefine define = this.getDefine(context);
         //context.removeAttribute(this.getAttributeName());
         //TODO 不需要remove的原因是super.endElement方法会销毁当前栈
-        XmlConfiguration beanDefineManager = (XmlConfiguration) context.getAttribute(TagBeans_Beans.BeanDefineManager);
+        DefineResourceImpl beanDefineManager = (DefineResourceImpl) context.getAttribute(TagBeans_Beans.BeanDefineManager);
         if (define != null)
             beanDefineManager.addBeanDefine(define);
         super.endElement(context, xpath, event);

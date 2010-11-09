@@ -15,7 +15,7 @@
  */
 package org.more.hypha.aop.support;
 import org.more.hypha.aop.define.PointcutType;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析aop:before标签
  * @version 2010-10-10
@@ -23,7 +23,7 @@ import org.more.hypha.configuration.XmlConfiguration;
  */
 public class TagAop_Before extends TagAop_AbstractListener {
     /**创建{@link TagAop_Before}对象*/
-    public TagAop_Before(XmlConfiguration configuration) {
+    public TagAop_Before(DefineResourceImpl configuration) {
         super(configuration);
     }
     /**返回{@link PointcutType#Before}*/

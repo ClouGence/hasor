@@ -43,7 +43,7 @@ public class VariableBeanDefine extends TemplateBeanDefine {
     public void setValue(Object value) {
         this.value = value;
     }
-    public TemplateBeanDefine getUseTemplate() {
+    public String getUseTemplate() {
         return null;
     }
     public void setUseTemplate(TemplateBeanDefine useTemplate) {}

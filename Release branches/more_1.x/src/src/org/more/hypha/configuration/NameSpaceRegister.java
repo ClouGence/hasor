@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 package org.more.hypha.configuration;
+import org.more.hypha.DefineResource;
 /**
- * 为了{@link XmlConfiguration}类提供的一个注册器接口，如果要注册新的xml配置支持则需要实现这个接口并且
+ * 为了{@link DefineResourceImpl}类提供的一个注册器接口，如果要注册新的xml配置支持则需要实现这个接口并且
  * 留下一个无参的构造方法，同时在“/META-INF/resource/beans/regedit.xml”位置编写配置文件。
  * 配置文件格式参考more相关文档。
  * @version 2010-9-24
@@ -23,5 +24,5 @@ package org.more.hypha.configuration;
  */
 public interface NameSpaceRegister {
     /**执行注册*/
-    public void initRegister(String namespaceURL, XmlConfiguration config);
+    public void initRegister(String namespaceURL, DefineResource resource);
 }

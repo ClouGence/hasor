@@ -23,16 +23,16 @@ package org.more.hypha;
 public interface EventManager {
     /**添加一种类型事件的事件监听器。*/
     public void addEventListener(Class<? extends Event> eventType, EventListener listener);
-    /**将事件压入到队列中等待执行。*/
-    public void pushEvent(Event event);
-    /**清空所有在队列中等待处理的事件。*/
-    public void clearEvent();
-    /**清空队列中指定类型的事件。*/
-    public void clearEvent(Class<? extends Event> eventType);
-    /**弹出所有类型事件，在弹出过程中依次激活每个事件的事件处理器，如果一些事件没有相应的事件处理器那么这些事的处理将被忽略。*/
-    public void popEvent();
-    /**弹出某种特定类型的事件，在弹出过程中依次激活每个事件的事件处理器，如果这些事件没有相应的事件处理器那么这些事的处理将被忽略。*/
-    public void popEvent(Class<? extends Event> eventType);
+    //    /**将事件压入到队列中等待执行。*/
+    //    public void pushEvent(Event event);
+    //    /**清空所有在队列中等待处理的事件。*/
+    //    public void clearEvent();
+    //    /**清空队列中指定类型的事件。*/
+    //    public void clearEvent(Class<? extends Event> eventType);
+    //    /**弹出所有类型事件，在弹出过程中依次激活每个事件的事件处理器，如果一些事件没有相应的事件处理器那么这些事的处理将被忽略。*/
+    //    public void popEvent();
+    //    /**弹出某种特定类型的事件，在弹出过程中依次激活每个事件的事件处理器，如果这些事件没有相应的事件处理器那么这些事的处理将被忽略。*/
+    //    public void popEvent(Class<? extends Event> eventType);
     /**绕过事件队列直接通知事件处理器处理这个事件。*/
     public void doEvent(Event event);
 }

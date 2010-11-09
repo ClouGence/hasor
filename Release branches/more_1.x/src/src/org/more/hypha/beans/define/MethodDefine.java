@@ -17,7 +17,6 @@ package org.more.hypha.beans.define;
 import java.util.ArrayList;
 import org.more.hypha.AbstractDefine;
 import org.more.hypha.beans.AbstractMethodDefine;
-import org.more.hypha.beans.AbstractPropertyDefine;
 /**
  * 该类是表示一个方法的描述，它实现了{@link AbstractMethodDefine}。
  * @version 2010-10-13
@@ -35,11 +34,11 @@ public class MethodDefine extends AbstractDefine implements AbstractMethodDefine
     public String getCodeName() {
         return this.codeName;
     };
-    /**返回方法的参数列表描述。*/
-    public AbstractPropertyDefine[] getParams() {
-        AbstractPropertyDefine[] define = new AbstractPropertyDefine[this.params.size()];
-        this.params.toArray(define);
-        return define;
+    /**返回方法的参数列表描述，返回的集合是只读的。*/
+    public ParamDefine[] getParams() {
+        ParamDefine[] pd = new ParamDefine[this.params.size()];
+        this.params.toArray(pd);
+        return pd;
     }
     /**添加参数*/
     public void addParam(ParamDefine param) {

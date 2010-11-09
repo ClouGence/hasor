@@ -29,7 +29,7 @@ import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.beans.support.TagBeans_AbstractBeanDefine;
 import org.more.hypha.configuration.Tag_Abstract;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 import org.more.util.StringConvert;
 /**
  * 用于解析aop:config标签
@@ -39,7 +39,7 @@ import org.more.util.StringConvert;
 public class TagAop_Config extends Tag_Abstract implements XmlElementHook {
     public static final String ConfigDefine = "$more_Aop_Config";
     /**创建{@link TagAop_Config}对象。*/
-    public TagAop_Config(XmlConfiguration configuration) {
+    public TagAop_Config(DefineResourceImpl configuration) {
         super(configuration);
     }
     /**开始标签处理。*/

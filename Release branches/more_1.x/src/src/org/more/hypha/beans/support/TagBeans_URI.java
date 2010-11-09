@@ -21,7 +21,7 @@ import org.more.FormatException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.beans.define.URI_ValueMetaData;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析uri标签
  * @version 2010-9-22
@@ -29,7 +29,7 @@ import org.more.hypha.configuration.XmlConfiguration;
  */
 public class TagBeans_URI extends TagBeans_AbstractValueMetaDataDefine<URI_ValueMetaData> {
     /**创建{@link TagBeans_URI}对象*/
-    public TagBeans_URI(XmlConfiguration configuration) {
+    public TagBeans_URI(DefineResourceImpl configuration) {
         super(configuration);
     }
     /**创建{@link URI_ValueMetaData}对象。*/

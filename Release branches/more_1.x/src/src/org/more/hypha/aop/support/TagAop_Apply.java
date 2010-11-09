@@ -22,19 +22,17 @@ import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.EventManager;
 import org.more.hypha.aop.AopDefineResourcePlugin;
-import org.more.hypha.aop.assembler.Tag_ToBeanApplyListener;
-import org.more.hypha.aop.assembler.Tag_ToPackageApplyListener;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.configuration.Tag_Abstract;
-import org.more.hypha.configuration.XmlConfiguration;
-import org.more.hypha.event.EndInitEvent;
+import org.more.hypha.configuration.DefineResourceImpl;
+import org.more.hypha.event.EndBuildEvent;
 /**
  * ”√”⁄Ω‚Œˆaop:apply±Í«©
  * @version 2010-9-22
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class TagAop_Apply extends Tag_Abstract implements XmlElementHook {
-    public TagAop_Apply(XmlConfiguration configuration) {
+    public TagAop_Apply(DefineResourceImpl configuration) {
         super(configuration);
     }
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
@@ -52,9 +50,9 @@ public class TagAop_Apply extends Tag_Abstract implements XmlElementHook {
         //3.◊¢≤·º‡Ã˝∆˜ 
         EventManager manager = this.getConfiguration().getEventManager();
         if (toBeanExp != null)
-            manager.addEventListener(EndInitEvent.class, new Tag_ToBeanApplyListener(config, toBeanExp));
+            manager.addEventListener(EndBuildEvent.class, new TagAop_ToBeanApplyListener(config, toBeanExp));
         else
-            manager.addEventListener(EndInitEvent.class, new Tag_ToPackageApplyListener(config, toPackageExp));
+            manager.addEventListener(EndBuildEvent.class, new TagAop_ToPackageApplyListener(config, toPackageExp));
     }
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
 }

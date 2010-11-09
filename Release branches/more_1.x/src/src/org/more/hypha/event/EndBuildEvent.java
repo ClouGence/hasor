@@ -16,13 +16,13 @@
 package org.more.hypha.event;
 import org.more.hypha.Event;
 /**
- * 开始初始化过程事件。
+ * 构建过程结束。
  * @version 2010-10-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public class BeginInitEvent extends Event {
-    /**创建{@link BeginInitEvent}对象。*/
-    public BeginInitEvent(Object target) {
+public class EndBuildEvent extends Event {
+    /**创建{@link EndBuildEvent}对象。*/
+    public EndBuildEvent(Object target) {
         super(target);
     }
 }

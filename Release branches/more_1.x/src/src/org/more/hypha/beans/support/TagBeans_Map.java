@@ -17,7 +17,7 @@ package org.more.hypha.beans.support;
 import java.util.HashMap;
 import org.more.hypha.beans.define.List_ValueMetaData;
 import org.more.hypha.beans.define.Map_ValueMetaData;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析map标签
  * @version 2010-9-16
@@ -25,7 +25,7 @@ import org.more.hypha.configuration.XmlConfiguration;
  */
 public class TagBeans_Map extends TagBeans_AbstractCollection<Map_ValueMetaData> {
     /**创建{@link TagBeans_Map}对象*/
-    public TagBeans_Map(XmlConfiguration configuration) {
+    public TagBeans_Map(DefineResourceImpl configuration) {
         super(configuration);
     }
     /**创建{@link List_ValueMetaData}对象*/

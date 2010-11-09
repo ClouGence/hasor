@@ -15,7 +15,7 @@
  */
 package org.more.hypha.aop.support;
 import org.more.hypha.aop.define.PointcutType;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析aop:returning标签
  * @version 2010-10-10
@@ -23,7 +23,7 @@ import org.more.hypha.configuration.XmlConfiguration;
  */
 public class TagAop_Returning extends TagAop_AbstractListener {
     /**创建{@link TagAop_Returning}对象*/
-    public TagAop_Returning(XmlConfiguration configuration) {
+    public TagAop_Returning(DefineResourceImpl configuration) {
         super(configuration);
     }
     /**返回{@link PointcutType#Returning}*/

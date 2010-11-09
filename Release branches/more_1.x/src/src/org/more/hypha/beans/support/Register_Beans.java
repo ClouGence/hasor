@@ -15,8 +15,10 @@
  */
 package org.more.hypha.beans.support;
 import org.more.core.xml.XmlParserKit;
+import org.more.hypha.DefineResource;
+import org.more.hypha.beans.TypeManager;
+import org.more.hypha.configuration.DefineResourceImpl;
 import org.more.hypha.configuration.NameSpaceRegister;
-import org.more.hypha.configuration.XmlConfiguration;
 /**
  * 该类实现了{@link NameSpaceRegister}接口并且提供了对命名空间“http://project.byshell.org/more/schema/beans”的解析支持。
  * @version 2010-9-15
@@ -26,7 +28,8 @@ public class Register_Beans implements NameSpaceRegister {
     /**提供支持的命名空间*/
     public static final String DefaultNameSpaceURL = "http://project.byshell.org/more/schema/beans";
     /**执行初始化注册。*/
-    public void initRegister(String namespaceURL, XmlConfiguration config) {
+    public void initRegister(String namespaceURL, DefineResource resource) {
+        DefineResourceImpl config = (DefineResourceImpl) resource;
         //1.注册标签解析器
         XmlParserKit kit = new XmlParserKit();
         kit.regeditHook("/beans", new TagBeans_Beans(config));
@@ -68,12 +71,12 @@ public class Register_Beans implements NameSpaceRegister {
         config.regeditXmlParserKit(namespaceURL, kit);
         //3.注册快速属性值解析器，顺序就是优先级。
         /*当xml中试图配置了多种属性类别值时候优先级将会起到作用，列如同时配置了value 和 refBean属性。那么value的优先级比refBean高。*/
-        config.regeditQuickParser(new QPP_Value());
-        config.regeditQuickParser(new QPP_Date());
-        config.regeditQuickParser(new QPP_Enum());
-        config.regeditQuickParser(new QPP_Ref());
-        config.regeditQuickParser(new QPP_File());
-        config.regeditQuickParser(new QPP_Directory());
-        config.regeditQuickParser(new QPP_URILocation());
+        TypeManager typeManager = config.getTypeManager();
+        typeManager.regeditTypeParser(new QPP_Value());
+        typeManager.regeditTypeParser(new QPP_Date());
+        typeManager.regeditTypeParser(new QPP_Enum());
+        typeManager.regeditTypeParser(new QPP_Ref());
+        typeManager.regeditTypeParser(new QPP_File());
+        typeManager.regeditTypeParser(new QPP_URILocation());
     }
 }

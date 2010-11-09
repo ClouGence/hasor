@@ -13,31 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.aop.assembler;
+package org.more.hypha.aop.support;
 import org.more.hypha.Event;
 import org.more.hypha.EventListener;
 import org.more.hypha.aop.AopBeanDefinePlugin;
 import org.more.hypha.aop.AopDefineResourcePlugin;
 import org.more.hypha.beans.AbstractBeanDefine;
-import org.more.hypha.configuration.XmlConfiguration;
-import org.more.hypha.event.EndInitEvent;
+import org.more.hypha.configuration.DefineResourceImpl;
+import org.more.hypha.event.EndBuildEvent;
 import org.more.util.StringUtil;
 /**
- * 该类是当{@link XmlConfiguration}触发{@link EndInitEvent}类型事件时处理anno:apply标签配置的应用Bean级别操作。
+ * 该类是当{@link DefineResourceImpl}触发{@link EndBuildEvent}类型事件时处理anno:apply标签配置的应用Bean级别操作。
  * @version 2010-10-11
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Tag_ToBeanApplyListener implements EventListener {
+public class TagAop_ToBeanApplyListener implements EventListener {
     private String config = null, toBeanExp = "*";
     //----------------------------------------------
-    /**创建{@link Tag_ToBeanApplyListener}对象。*/
-    public Tag_ToBeanApplyListener(String config, String toBeanExp) {
+    /**创建{@link TagAop_ToBeanApplyListener}对象。*/
+    public TagAop_ToBeanApplyListener(String config, String toBeanExp) {
         this.config = config;
         this.toBeanExp = toBeanExp;
     }
     /**执行Bean应用。*/
     public void onEvent(Event event) {
-        XmlConfiguration config = (XmlConfiguration) event.getTarget();
+        DefineResourceImpl config = (DefineResourceImpl) event.getTarget();
         AopDefineResourcePlugin aopPlugin = (AopDefineResourcePlugin) config.getPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName);
         for (String defineName : config.getBeanDefineNames())
             if (StringUtil.matchWild(this.toBeanExp, defineName) == true) {

@@ -19,7 +19,7 @@ import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.hypha.beans.define.ConstructorDefine;
 import org.more.hypha.beans.define.TemplateBeanDefine;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析constructor-arg标签
  * @version 2010-9-16
@@ -27,7 +27,7 @@ import org.more.hypha.configuration.XmlConfiguration;
  */
 public class TagBeans_Constructor extends TagBeans_AbstractPropertyDefine<ConstructorDefine> {
     /**创建{@link TagBeans_Constructor}对象*/
-    public TagBeans_Constructor(XmlConfiguration configuration) {
+    public TagBeans_Constructor(DefineResourceImpl configuration) {
         super(configuration);
     }
     /**创建{@link ConstructorDefine}对象。*/
@@ -49,7 +49,7 @@ public class TagBeans_Constructor extends TagBeans_AbstractPropertyDefine<Constr
         ConstructorDefine property = this.getDefine(context);
         TemplateBeanDefine define = (TemplateBeanDefine) context.getAttribute(TagBeans_TemplateBean.BeanDefine);
         if (property.getIndex() == -1)
-            property.setIndex(define.getInitParams().length + 1);
+            property.setIndex(define.getInitParams().size());
         define.addInitParam(property);
         super.endElement(context, xpath, event);
     }

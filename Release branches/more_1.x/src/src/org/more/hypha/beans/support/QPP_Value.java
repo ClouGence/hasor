@@ -14,30 +14,31 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.support;
+import org.more.hypha.beans.AbstractPropertyDefine;
+import org.more.hypha.beans.TypeParser;
 import org.more.hypha.beans.ValueMetaData;
-import org.more.hypha.beans.define.QuickProperty_ValueMetaData;
 import org.more.hypha.beans.define.Simple_ValueMetaData;
 import org.more.util.StringConvert;
+import org.more.util.attribute.IAttribute;
 /**
  * 默认属性值解析器，默认属性类型是String
  * @version 2010-9-22
  * @author 赵永春 (zyc@byshell.org)
  */
-public class QPP_Value implements QuickPropertyParser {
+public class QPP_Value implements TypeParser {
     /**试图解析成为{@link Simple_ValueMetaData}如果解析失败返回null。*/
-    public ValueMetaData parser(QuickParserEvent event) {
+    public ValueMetaData parser(String value, IAttribute attribute, AbstractPropertyDefine property) {
         //1.检查是否可以解析
-        QuickProperty_ValueMetaData meta = event.getOldMetaData();
-        if (meta.getValue() == null)
+        if (value == null)
             return null;
         //2.进行解析
-        Class<?> propType = event.getProperty().getClassType();
+        Class<?> propType = property.getClassType();
         if (propType == null)
             //当检测到value有值但是又没有定义type时候值类型采用的默认数据类型。
             propType = Simple_ValueMetaData.DefaultValueType;
-        Object value = StringConvert.changeType(meta.getValue(), propType);
+        Object var = StringConvert.changeType(value, propType);
         Simple_ValueMetaData newMEDATA = new Simple_ValueMetaData();
-        newMEDATA.setValue(value);
+        newMEDATA.setValue(var);
         newMEDATA.setValueMetaType(Simple_ValueMetaData.getPropertyType(propType));
         return newMEDATA;
     }

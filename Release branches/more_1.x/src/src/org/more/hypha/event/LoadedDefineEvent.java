@@ -16,13 +16,13 @@
 package org.more.hypha.event;
 import org.more.hypha.Event;
 /**
- * 结束初始化过程事件。
+ * 装载Bean定义配置。
  * @version 2010-10-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public class EndInitEvent extends Event {
-    /**创建{@link EndInitEvent}类型异常。*/
-    public EndInitEvent(Object target) {
+public class LoadedDefineEvent extends Event {
+    /**创建{@link LoadedDefineEvent}对象。*/
+    public LoadedDefineEvent(Object target) {
         super(target);
     }
 }

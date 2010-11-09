@@ -19,7 +19,7 @@ import org.more.LostException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.beans.define.ClassBeanDefine;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析/beans/classBean标签
  * @version 2010-9-16
@@ -27,7 +27,7 @@ import org.more.hypha.configuration.XmlConfiguration;
  */
 public class TagBeans_ClassBean extends TagBeans_AbstractBeanDefine<ClassBeanDefine> {
     /**创建{@link TagBeans_ClassBean}对象*/
-    public TagBeans_ClassBean(XmlConfiguration configuration) {
+    public TagBeans_ClassBean(DefineResourceImpl configuration) {
         super(configuration);
     }
     /**创建{@link ClassBeanDefine}对象。*/

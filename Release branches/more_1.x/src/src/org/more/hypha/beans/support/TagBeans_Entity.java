@@ -21,7 +21,7 @@ import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.beans.define.MapEntity_ValueMetaData;
 import org.more.hypha.beans.define.Simple_ValueMetaData;
 import org.more.hypha.beans.define.Simple_ValueMetaData.PropertyType;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析entity标签
  * @version 2010-9-23
@@ -29,7 +29,7 @@ import org.more.hypha.configuration.XmlConfiguration;
  */
 public class TagBeans_Entity extends TagBeans_AbstractValueMetaDataDefine<MapEntity_ValueMetaData> {
     /**创建{@link TagBeans_Entity}对象*/
-    public TagBeans_Entity(XmlConfiguration configuration) {
+    public TagBeans_Entity(DefineResourceImpl configuration) {
         super(configuration);
     }
     /**创建{@link MapEntity_ValueMetaData}对象。*/

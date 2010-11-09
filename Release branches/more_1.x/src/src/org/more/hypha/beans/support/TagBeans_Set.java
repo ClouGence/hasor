@@ -16,7 +16,7 @@
 package org.more.hypha.beans.support;
 import java.util.HashSet;
 import org.more.hypha.beans.define.Set_ValueMetaData;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析set标签
  * @version 2010-9-16
@@ -24,7 +24,7 @@ import org.more.hypha.configuration.XmlConfiguration;
  */
 public class TagBeans_Set extends TagBeans_AbstractCollection<Set_ValueMetaData> {
     /**创建{@link TagBeans_Set}对象*/
-    public TagBeans_Set(XmlConfiguration configuration) {
+    public TagBeans_Set(DefineResourceImpl configuration) {
         super(configuration);
     }
     /**创建{@link Set_ValueMetaData}对象*/

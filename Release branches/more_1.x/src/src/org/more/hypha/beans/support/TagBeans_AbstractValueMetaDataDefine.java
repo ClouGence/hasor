@@ -16,11 +16,10 @@
 package org.more.hypha.beans.support;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
-import org.more.hypha.beans.ValueMetaData;
 import org.more.hypha.beans.define.AbstractPropertyDefine;
 import org.more.hypha.beans.define.AbstractValueMetaData;
 import org.more.hypha.beans.define.Collection_ValueMetaData;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 负责解析属性元信息标签的基类，该类考虑了值元信息的描述处于对另外一个值元信息的描述之中的情况。
  * @version 2010-9-19
@@ -30,7 +29,7 @@ public abstract class TagBeans_AbstractValueMetaDataDefine<T extends AbstractVal
     /**属性值元信息.*/
     public static final String ValueMetaDataDefine = "$more_Beans_ValueMetaDataDefine";
     /**创建{@link TagBeans_AbstractValueMetaDataDefine}对象*/
-    public TagBeans_AbstractValueMetaDataDefine(XmlConfiguration configuration) {
+    public TagBeans_AbstractValueMetaDataDefine(DefineResourceImpl configuration) {
         super(configuration);
     }
     /**属性的定义名称*/
@@ -45,8 +44,8 @@ public abstract class TagBeans_AbstractValueMetaDataDefine<T extends AbstractVal
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
         //1.获取当前元信息描述对象，如果当前值元信息描述是否处于另外一个值信息描述之下还要获取父级值元信息描述对象。
-        ValueMetaData currentMetaData = this.getDefine(context);
-        ValueMetaData parentMetaData = (ValueMetaData) context.getParentStack().getAttribute(ValueMetaDataDefine);
+        AbstractValueMetaData currentMetaData = this.getDefine(context);
+        AbstractValueMetaData parentMetaData = (AbstractValueMetaData) context.getParentStack().getAttribute(ValueMetaDataDefine);
         //
         if (parentMetaData != null && parentMetaData instanceof Collection_ValueMetaData)
             ((Collection_ValueMetaData) parentMetaData).addObject(currentMetaData);

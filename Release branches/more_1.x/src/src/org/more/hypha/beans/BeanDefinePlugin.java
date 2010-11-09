@@ -22,5 +22,5 @@ package org.more.hypha.beans;
  */
 public interface BeanDefinePlugin {
     /**获取被扩展的目标对象。*/
-    public Object getTarget();
+    public AbstractBeanDefine getTarget();
 }

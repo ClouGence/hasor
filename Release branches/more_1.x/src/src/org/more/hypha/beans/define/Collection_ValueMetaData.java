@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.define;
-import org.more.hypha.beans.ValueMetaData;
 /**
  * 表示一个集合类型的抽象类其子类决定具体可以表述的集合类型。
  * @version 2010-9-18
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class Collection_ValueMetaData<T extends ValueMetaData> extends AbstractValueMetaData {
+public abstract class Collection_ValueMetaData<T extends AbstractValueMetaData> extends AbstractValueMetaData {
     private Class<?> collectionType = null; //集合对象类型，如果是数组则该值与属性collectionValueType一致。
     private int      initSize       = 0;   //表示集合初始化大小
     /**获取集合对象类型，如果是数组则该值与属性collectionValueType一致。*/

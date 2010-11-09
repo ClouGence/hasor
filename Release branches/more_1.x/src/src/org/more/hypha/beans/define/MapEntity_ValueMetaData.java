@@ -16,29 +16,28 @@
 package org.more.hypha.beans.define;
 import java.util.Map;
 import org.more.StateException;
-import org.more.hypha.beans.ValueMetaData;
 /**
  * 表示一个{@link Map}类型的一个key value键值对的元信息描述。
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class MapEntity_ValueMetaData extends Collection_ValueMetaData<ValueMetaData> {
-    private ValueMetaData key   = null; //Key
-    private ValueMetaData value = null; //Value
+public class MapEntity_ValueMetaData extends Collection_ValueMetaData<AbstractValueMetaData> {
+    private AbstractValueMetaData key   = null; //Key
+    private AbstractValueMetaData value = null; //Value
     /**该方法将会返回null*/
     public PropertyMetaTypeEnum getPropertyType() {
         return null;
     }
     /**设置KEY*/
-    public void setKeyObject(ValueMetaData key) {
+    public void setKeyObject(AbstractValueMetaData key) {
         this.key = key;
     }
     /**设置VAR*/
-    public void setVarObject(ValueMetaData value) {
+    public void setVarObject(AbstractValueMetaData value) {
         this.value = value;
     }
     /**添加一个值到当前集合中，首次添加为key，二次添加为var，三次添加抛异常。*/
-    public void addObject(ValueMetaData value) {
+    public void addObject(AbstractValueMetaData value) {
         if (this.key == null) {
             this.key = value;
             return;
@@ -59,19 +58,19 @@ public class MapEntity_ValueMetaData extends Collection_ValueMetaData<ValueMetaD
         return 0;
     }
     /**获取key*/
-    public ValueMetaData getKey() {
+    public AbstractValueMetaData getKey() {
         return this.key;
     }
     /**设置key*/
-    public void setKey(ValueMetaData key) {
+    public void setKey(AbstractValueMetaData key) {
         this.key = key;
     }
     /**获取value*/
-    public ValueMetaData getValue() {
+    public AbstractValueMetaData getValue() {
         return this.value;
     }
     /**设置value*/
-    public void setValue(ValueMetaData value) {
+    public void setValue(AbstractValueMetaData value) {
         this.value = value;
     }
 }

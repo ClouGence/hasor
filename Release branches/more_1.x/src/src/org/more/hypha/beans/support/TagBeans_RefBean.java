@@ -16,7 +16,7 @@
 package org.more.hypha.beans.support;
 import java.util.Map;
 import org.more.hypha.beans.define.RelationBeanDefine;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析/beans/refBean标签
  * @version 2010-9-16
@@ -24,7 +24,7 @@ import org.more.hypha.configuration.XmlConfiguration;
  */
 public class TagBeans_RefBean extends TagBeans_AbstractBeanDefine<RelationBeanDefine> {
     /**创建{@link TagBeans_RefBean}对象*/
-    public TagBeans_RefBean(XmlConfiguration configuration) {
+    public TagBeans_RefBean(DefineResourceImpl configuration) {
         super(configuration);
     }
     /**创建{@link RelationBeanDefine}对象。*/

@@ -20,7 +20,7 @@ import org.more.hypha.beans.ValueMetaData;
 import org.more.hypha.beans.define.Array_ValueMetaData;
 import org.more.hypha.beans.define.Simple_ValueMetaData;
 import org.more.hypha.beans.define.Simple_ValueMetaData.PropertyType;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.configuration.DefineResourceImpl;
 import org.more.util.StringConvert;
 /**
  * 用于解析array标签
@@ -29,7 +29,7 @@ import org.more.util.StringConvert;
  */
 public class TagBeans_Array extends TagBeans_AbstractCollection<Array_ValueMetaData> {
     /**创建{@link TagBeans_Array}对象*/
-    public TagBeans_Array(XmlConfiguration configuration) {
+    public TagBeans_Array(DefineResourceImpl configuration) {
         super(configuration);
     }
     /**创建{@link Array_ValueMetaData}对象。*/

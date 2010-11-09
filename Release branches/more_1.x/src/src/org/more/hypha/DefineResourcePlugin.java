@@ -15,12 +15,11 @@
  */
 package org.more.hypha;
 /**
- * 定义如果想要支持扩展的配置策略则需要实现该接口，
- * 可以通过该接口的getDefineConfig来获取有关定义上的一些额外扩展属性设置。
+ * 定义如果想要支持扩展的配置策略则需要实现该接口，不同的扩展支持在实现或者集成该接口时会增加不同的方法。
  * @version 2010-9-24
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface DefineResourcePlugin {
     /**获取被扩展的目标对象。*/
-    public Object getTarget();
+    public DefineResource getTarget();
 }
