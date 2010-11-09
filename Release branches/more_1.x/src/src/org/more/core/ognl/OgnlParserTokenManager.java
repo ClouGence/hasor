@@ -2,7 +2,7 @@
 package org.more.core.ognl;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-@SuppressWarnings( { "unused" })
+@SuppressWarnings({ "unused" })
 public class OgnlParserTokenManager implements OgnlParserConstants {
     /** Holds the last value computed by a constant token. */
     Object               literalValue;

@@ -78,7 +78,6 @@ public class XmlWriter implements XmlAccept {
         }
         XMLOutputFactory factory = XMLOutputFactory.newInstance();
         XMLStreamWriter writer = factory.createXMLStreamWriter(this.xmlStrema);
-
         // TODO Auto-generated method stub
     }
 }

@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 import org.more.InvokeException;
 import org.more.core.asm.ClassAdapter;
 import org.more.core.asm.ClassVisitor;
+import org.more.core.asm.FieldVisitor;
 import org.more.core.asm.Label;
 import org.more.core.asm.MethodVisitor;
 import org.more.core.asm.Opcodes;
@@ -109,7 +110,8 @@ class AopClassAdapter extends ClassAdapter implements Opcodes {
     /**输出简单属性，visitEnd方法调用，用于输出某一个属性的set方法和其字段。*/
     private void putSimpleProperty(String propertyName, Class<?> propertyType) {
         String asmFieldType = EngineToos.toAsmType(propertyType);
-        super.visitField(ACC_PRIVATE, propertyName, asmFieldType, null, null);
+        FieldVisitor fv = super.visitField(ACC_PRIVATE, propertyName, asmFieldType, null, null);
+        fv.visitEnd();
         MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "set" + EngineToos.toUpperCase(propertyName), "(" + asmFieldType + ")V", null, null);
         mv.visitCode();
         mv.visitVarInsn(ALOAD, 0);//装载this

@@ -335,5 +335,30 @@ public class EngineToos implements Opcodes {
     public static boolean checkIn(int data, int check) {
         int or = data | check;
         return or == data;
-    }
+    };
+    /**获取指定类型的默认值。*/
+    public static Object getDefaultValue(Class<?> returnType) {
+        if (returnType == int.class)
+            return 0;
+        else if (returnType == byte.class)
+            return 0;
+        else if (returnType == char.class)
+            return ' ';
+        else if (returnType == double.class)
+            return 0d;
+        else if (returnType == float.class)
+            return 0f;
+        else if (returnType == long.class)
+            return 0l;
+        else if (returnType == short.class)
+            return 0;
+        else if (returnType == boolean.class)
+            return false;
+        else if (returnType == void.class)
+            return null;
+        else if (returnType.isArray() == true)
+            return null;
+        else
+            return null;
+    };
 }

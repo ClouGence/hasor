@@ -95,7 +95,7 @@ public class XmlParserKitManager implements XmlAccept {
                 xnp.endAccept();
     }
     /**实现{@link XmlAccept}接口用于接受事件的方法。*/
-    public void sendEvent(XmlStreamEvent e) {
+    public synchronized void sendEvent(XmlStreamEvent e) {
         //1.创建堆栈，激活命名空间处理器。
         if (e instanceof StartElementEvent) {
             StartElementEvent ee = (StartElementEvent) e;

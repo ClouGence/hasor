@@ -16,6 +16,7 @@
 package org.more.core.classcode.objects;
 import java.lang.reflect.Method;
 import org.more.InvokeException;
+import org.more.core.classcode.EngineToos;
 import org.more.core.classcode.MethodDelegate;
 /**
  * 代理方法的空实现。
@@ -25,27 +26,6 @@ import org.more.core.classcode.MethodDelegate;
 public class DefaultMethodDelegate implements MethodDelegate {
     public Object invoke(Method callMethod, Object target, Object[] params) throws InvokeException {
         Class<?> returnType = callMethod.getReturnType();
-        if (returnType == int.class)
-            return 0;
-        else if (returnType == byte.class)
-            return 0;
-        else if (returnType == char.class)
-            return ' ';
-        else if (returnType == double.class)
-            return 0d;
-        else if (returnType == float.class)
-            return 0f;
-        else if (returnType == long.class)
-            return 0l;
-        else if (returnType == short.class)
-            return 0;
-        else if (returnType == boolean.class)
-            return false;
-        else if (returnType == void.class)
-            return null;
-        else if (returnType.isArray() == true)
-            return null;
-        else
-            return null;
+        return EngineToos.getDefaultValue(returnType);
     }
 }

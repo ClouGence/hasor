@@ -24,6 +24,7 @@ import org.more.core.xml.stream.StartDocumentEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.core.xml.stream.TextEvent;
 import org.more.core.xml.stream.XmlStreamEvent;
+import org.more.util.StringUtil;
 /**
  *  <b>Level 3</b>：该级别是基于级别2的增强，该级别的特点是可以将某个xpath所表示元素与其处理器{@link XmlParserHook}进行绑定。
  *  这个绑定由于是基于Level 2因此不会与其他命名空间的同名元素相混淆。
@@ -33,6 +34,11 @@ import org.more.core.xml.stream.XmlStreamEvent;
 public class XmlParserKit implements XmlNamespaceParser {
     private HashMap<String, ArrayList<XmlParserHook>> hooks = new HashMap<String, ArrayList<XmlParserHook>>();
     //----------------------------------------------------
+    /**注册一组{@link XmlParserHook}接口对象到一个指定的Xpath上，如果注册的是{@link XmlDocumentHook}接口对象则务必将xpath填写为"/"否则可能导致接收不到事件的现象。*/
+    public void regeditHook(String[] xpath, XmlParserHook hook) throws RepeateException {
+        for (String s : xpath)
+            this.regeditHook(s, hook);
+    }
     /**注册一个{@link XmlParserHook}接口对象到一个指定的Xpath上，如果注册的是{@link XmlDocumentHook}接口对象则务必将xpath填写为"/"否则可能导致接收不到事件的现象。*/
     public void regeditHook(String xpath, XmlParserHook hook) throws RepeateException {
         //2.检查是否已经存在的注册。
@@ -44,6 +50,11 @@ public class XmlParserKit implements XmlNamespaceParser {
         arrayList.add(hook);
         this.hooks.put(xpath, arrayList);
     };
+    /**该方法是解除使用regeditHook()方法注册的一组关联。*/
+    public void unRegeditHook(String[] xpath, XmlParserHook hook) {
+        for (String s : xpath)
+            this.unRegeditHook(s, hook);
+    }
     /**该方法是解除使用regeditHook()方法注册的关联。*/
     public void unRegeditHook(String xpath, XmlParserHook hook) {
         ArrayList<XmlParserHook> arrayList = this.hooks.get(xpath);
@@ -58,11 +69,7 @@ public class XmlParserKit implements XmlNamespaceParser {
     private ArrayList<XmlParserHook> getHooks(String xpath) {
         String xpath2 = xpath;
         for (String xp : this.hooks.keySet()) {
-            String matches = xp;
-            matches = matches.replace("\\", "\\\\");
-            matches = matches.replace("?", ".");
-            matches = matches.replace("*", ".*");
-            if (xpath.matches(matches) == true) {
+            if (StringUtil.matchWild(xp, xpath2) == true) {
                 xpath2 = xp;
                 break;
             }

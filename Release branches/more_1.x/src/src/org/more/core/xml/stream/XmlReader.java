@@ -25,6 +25,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import org.more.core.xml.stream.TextEvent.Type;
+import org.more.util.StringUtil;
 /**
  * <b>Level 1</b>：数据访问策略。该类的功能是将xml数据流转换成为xml事件流。并且可以在扫描xml时执行xml的忽略策略。
  * @version 2010-9-8
@@ -81,14 +82,7 @@ public class XmlReader {
         if (testXPath == null)
             return false;
         //TODO XPath比较算法，比较currentXPath是否属于testXPath范围内的，目前使用的是?和*通配符。
-        String matches = testXPath;
-        matches = matches.replace("\\", "\\\\");
-        matches = matches.replace("?", ".");
-        matches = matches.replace("*", ".*");
-        if (currentXPath.matches(matches) == true)
-            return true;
-        else
-            return false;
+        return StringUtil.matchWild(testXPath, currentXPath);
     }
     /**
      * 执行解析Xml文件，并且形成xml事件流。这些事件流被输入到{@link XmlAccept}类型对象中。
@@ -96,7 +90,7 @@ public class XmlReader {
      * @param accept 指定事件流接收对象。
      * @param ignoreXPath 指定要忽略的XPath路径。
      */
-    public void reader(XmlAccept accept, String ignoreXPath) throws XMLStreamException {
+    public synchronized void reader(XmlAccept accept, String ignoreXPath) throws XMLStreamException {
         if (accept == null)
             return;
         accept.beginAccept();

@@ -300,7 +300,8 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
     // ‰≥ˆºÚµ• Ù–‘
     private void putSimpleProperty(String propertyName, Class<?> propertyType, boolean isWriteOnly, boolean isReadOnly) {
         String asmFieldType = EngineToos.toAsmType(propertyType);
-        super.visitField(ACC_PRIVATE, propertyName, asmFieldType, null, null);
+        FieldVisitor fv = super.visitField(ACC_PRIVATE, propertyName, asmFieldType, null, null);
+        fv.visitEnd();
         if (isWriteOnly == false)
             this.putGetMethod(propertyName, asmFieldType);//get
         if (isReadOnly == false)
