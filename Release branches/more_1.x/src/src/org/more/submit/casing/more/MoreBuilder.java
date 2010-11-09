@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
 import org.more.FormatException;
-import org.more.beans.core.ContextFactory;
 import org.more.hypha.ApplicationContext;
+import org.more.hypha.configuration.XmlConfiguration;
 import org.more.submit.ActionContext;
 import org.more.submit.ActionContextBuild;
 import org.more.util.Config;
@@ -34,10 +34,10 @@ import org.more.util.Config;
  */
 public class MoreBuilder implements ActionContextBuild {
     //========================================================================================Field
-    public static final String DefaultConfig = "more-config.xml";
-    protected ApplicationContext      factory       = null;
-    protected String           config        = null;
-    private File               baseDir       = null;
+    public static final String   DefaultConfig = "more-config.xml";
+    protected ApplicationContext factory       = null;
+    protected String             config        = null;
+    private File                 baseDir       = null;
     //==================================================================================Constructor
     /**创建MoreBuilder，使用默认配置文件{@link MoreBuilder#DefaultConfig}。*/
     public MoreBuilder() throws Exception {
@@ -76,8 +76,9 @@ public class MoreBuilder implements ActionContextBuild {
         //
         if (configFile.exists() == false || configFile.canRead() == false)
             throw new IOException("配置文件[" + configFile.getAbsolutePath() + "]不存在，或者无法读取。");
-        factory = ContextFactory.create(configFile);//使用ResourceFactory创建一个BeanResource
-        factory.init();
+        XmlConfiguration xmlConfig = new XmlConfiguration();
+        xmlConfig.addSource(configFile);
+        this.factory = xmlConfig.buildApp(config.getContext());
     };
     /**获取配置文件位置。*/
     public String getConfig() {

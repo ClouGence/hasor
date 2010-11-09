@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * @author 赵永春(zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.TYPE })
+@Target({ ElementType.TYPE })
 public @interface Filter {
     /**表明当前这个Submit过滤器是否是一个全局过滤器(如果配置了Filter注解那么配置文件的中的isPublic配置将会失效)。*/
     public boolean isPublic() default false;

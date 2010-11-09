@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.TYPE })
+@Target({ ElementType.TYPE })
 public @interface ActionFilters {
     /** 当前Action的过滤器过滤器链 */
     public String[] value() default {};

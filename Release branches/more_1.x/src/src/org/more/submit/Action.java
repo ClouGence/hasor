@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.TYPE })
+@Target({ ElementType.TYPE })
 public @interface Action {
     /**该配置可以通知submit系统这个类是否是一个action。*/
     public boolean isAction() default true;

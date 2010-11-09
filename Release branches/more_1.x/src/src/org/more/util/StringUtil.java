@@ -36,12 +36,11 @@ public class StringUtil {
         sb.insert(0, (char) ((firstChar <= 90) ? firstChar + 32 : firstChar));
         return sb.toString();
     }
-    /**Ê¹ÓÃÍ¨Åä·ûÆ¥Åä×Ö·û´®¡£*/
-    public static boolean matchWild(String pattern, String str) {
+    public static String wildToRegex(String wild) {
         StringBuffer result = new StringBuffer("^");
         char metachar[] = { '$', '^', '[', ']', '(', ')', '{', '|', '+', '.', '\\' };
-        for (int i = 0; i < pattern.length(); i++) {
-            char ch = pattern.charAt(i);
+        for (int i = 0; i < wild.length(); i++) {
+            char ch = wild.charAt(i);
             for (int j = 0; j < metachar.length; j++)
                 if (ch == metachar[j]) {
                     result.append("\\");
@@ -55,6 +54,10 @@ public class StringUtil {
                 result.append(ch);
         }
         result.append("$");
-        return str.matches(result.toString());
+        return result.toString();
+    }
+    /**Ê¹ÓÃÍ¨Åä·ûÆ¥Åä×Ö·û´®¡£*/
+    public static boolean matchWild(String pattern, String str) {
+        return str.matches(wildToRegex(pattern));
     }
 }
