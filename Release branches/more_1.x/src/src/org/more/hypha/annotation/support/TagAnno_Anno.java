@@ -18,24 +18,24 @@ import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.annotation.assembler.Tag_AnnoListener;
+import org.more.hypha.annotation.assembler.TagListener;
+import org.more.hypha.configuration.DefineResourceImpl;
 import org.more.hypha.configuration.Tag_Abstract;
-import org.more.hypha.configuration.XmlConfiguration;
-import org.more.hypha.event.EndInitEvent;
+import org.more.hypha.event.EndBuildEvent;
 /**
- * 用于解析anno标签
+ * 用于解析anno标签，负责注册{@link TagListener}类型对象。
  * @version 2010-9-22
  * @author 赵永春 (zyc@byshell.org)
  */
 public class TagAnno_Anno extends Tag_Abstract implements XmlElementHook {
     /**创建{@link TagAnno_Anno}对象*/
-    public TagAnno_Anno(XmlConfiguration configuration) {
+    public TagAnno_Anno(DefineResourceImpl configuration) {
         super(configuration);
     }
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
         String packageText = event.getAttributeValue("package");
-        Tag_AnnoListener annoListener = new Tag_AnnoListener(packageText);
-        this.getConfiguration().getEventManager().addEventListener(EndInitEvent.class, annoListener);
+        TagListener annoListener = new TagListener(packageText);
+        this.getConfiguration().getEventManager().addEventListener(EndBuildEvent.class, annoListener);
     }
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
 }

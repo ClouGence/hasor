@@ -18,19 +18,14 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.more.hypha.aop.define.PointcutType;
 /**
- * 该类的一个aop通知者，通过该注解配置aop的一个具体切入点。
- * @version 2010-10-13
+ * 将当前方法注册到容器中。
+ * @version 2010-10-14
  * @author 赵永春 (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.ANNOTATION_TYPE)
-public @interface AopInformed {
-    /**定义该通知上的切入点，该切入点需要使用切入点表达式，默认值是*。*/
-    public String pointcut() default "*";
-    /**切入点处理bean的名称或id引用。*/
-    public String refBean();
-    /**切入点类型，默认使用{@link PointcutType#Auto}。*/
-    public PointcutType type() default PointcutType.Auto;
+@Target(ElementType.METHOD)
+public @interface Method {
+    /**该名称是对方法的一个命名默认该值与方法名相同，但是如果配置同名的重载方法由于方法名相同就需要使用该属性来区分不同的重载方法。*/
+    public String name() default "";
 }

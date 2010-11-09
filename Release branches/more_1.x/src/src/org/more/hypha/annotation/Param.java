@@ -20,14 +20,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
  * 标记当前字段是一个需要注入的属性，如果属性没有指定任何属性值描述则“菌丝”不会理会这个属性的注入要求。
+ * 被描述的参数如果是
  * @version 2010-10-13
  * @author 赵永春 (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.PARAMETER })
+@Target(ElementType.PARAMETER)
 public @interface Param {
-    /**文本形式的属性值描述，通常这种类型的描述可以表示常用的基本类型。复杂的描述注入注入一个bean则需要使用el注入。*/
-    public String textValue() default "";
+    /**文本形式的属性值描述，通常这种类型的描述可以表示常用的基本类型。复杂的描述注入注入一个bean则需要使用el描述。*/
+    public String value() default "";
     /**对el进行解析然后将解析结果注入到该字段上。*/
     public String elValue() default "";
+    /**注释*/
+    public String desc() default "";
 }

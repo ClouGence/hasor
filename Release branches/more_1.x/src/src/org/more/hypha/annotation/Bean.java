@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
+@Target(ElementType.TYPE)
 public @interface Bean {
     /**配置bean的id，如果配置了没有特殊配置id属性则id属性等同name。*/
     public String id() default "";
@@ -35,7 +35,7 @@ public @interface Bean {
     /**该Bean所支持的作用域。*/
     public String scope() default "";
     /**是否为单态模式，默认为true*/
-    public boolean isSingleton() default true;
+    public boolean singleton() default true;
     /**是否延迟初始化这个bean，只有当bean是单态模式下才生效。默认该配置是true。*/
     public boolean lazyInit() default true;
     /**如果需要使用工厂方式初始化该Bean，则咋该处需要指明工厂的Bean名称或ID。*/

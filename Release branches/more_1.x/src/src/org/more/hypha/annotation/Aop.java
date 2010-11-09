@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
+@Target(ElementType.TYPE)
 public @interface Aop {
     /**确定该bean使用的aop配置是哪个，如果配置了该参数那么pointcut属性和informeds属性将会失效。aop的配置请参考配置文件相关说明。*/
     public String useConfig() default "";

@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.annotation.assembler;
-import org.more.hypha.Event;
-import org.more.hypha.EventListener;
+package org.more.hypha.annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 创建{@link Tag_AnnoListener}对象。
- * @version 2010-10-13
+ * 将当前构造方法注册到Bean定义中，该构造方法应当是具有public标记的，当前类只能注册一个构造方法。如果重复使用{@link Constructor}
+ * 注解修饰该类只能有一个生效，这需要依赖扫描器的扫描顺序。
+ * @version 2010-10-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Tag_AnnoListener implements EventListener {
-    private String packageText = null;
-    /**创建{@link Tag_AnnoListener}对象。*/
-    public Tag_AnnoListener(String packageText) {
-        this.packageText = packageText;
-    }
-    /**处理注解解析。*/
-    public void onEvent(Event event) {
-        System.out.println("start ANNO \t" + this.packageText);
-        // TODO Auto-generated method stub
-    }
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.CONSTRUCTOR)
+public @interface Constructor {}
