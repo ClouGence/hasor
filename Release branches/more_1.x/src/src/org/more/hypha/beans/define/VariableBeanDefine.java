@@ -15,7 +15,7 @@
  */
 package org.more.hypha.beans.define;
 /**
- * VariableBeanDefine类用于定义一个值作为bean。
+ * VariableBeanDefine类用于定义一个值作为bean。该bean可以描述基本类型和
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */

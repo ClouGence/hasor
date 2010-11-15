@@ -1,0 +1,615 @@
+<class-diagram version="0.9.86" icons="true" always-add-relationships="true" generalizations="true" realizations="true" 
+  associations="true" dependencies="true" nesting-relationships="true">  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_AbstractBeanDefine" 
+    project="More" file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractBeanDefine.java" binary="false">    
+    <position x="1510" y="299" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_AbstractCollection" 
+    project="More" file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractCollection.java" binary="false">    
+    <position x="825" y="588" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_AbstractDefine" 
+    project="More" file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractDefine.java" binary="false">    
+    <position x="956" y="178" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_AbstractPropertyDefine" 
+    project="More" file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractPropertyDefine.java" binary="false">    
+    <position x="135" y="299" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_AbstractValueMetaDataDefine" 
+    project="More" file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractValueMetaDataDefine.java" 
+    binary="false">    
+    <position x="826" y="300" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_Array" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_Array.java" binary="false">    
+    <position x="754" y="674" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_Beans" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_Beans.java" binary="false">    
+    <position x="312" y="176" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_BigText" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_BigText.java" binary="false">    
+    <position x="751" y="485" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_ClassBean" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_ClassBean.java" binary="false">    
+    <position x="1678" y="498" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_Constructor" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_Constructor.java" binary="false">    
+    <position x="48" y="484" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_Date" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_Date.java" binary="false">    
+    <position x="599" y="485" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_DefaultPackage" 
+    project="More" file="/More/src/org/more/hypha/beans/support/TagBeans_DefaultPackage.java" binary="false">    
+    <position x="560" y="178" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_Directory" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_Directory.java" binary="false">    
+    <position x="674" y="537" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_Entity" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_Entity.java" binary="false">    
+    <position x="900" y="483" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_Enum" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_Enum.java" binary="false">    
+    <position x="371" y="537" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_File" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_File.java" binary="false">    
+    <position x="523" y="537" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_GenerateBean" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_GenerateBean.java" binary="false">    
+    <position x="1338" y="499" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_List" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_List.java" binary="false">    
+    <position x="608" y="676" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_Map" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_Map.java" binary="false">    
+    <position x="894" y="675" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_MetaData" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_MetaData.java" binary="false">    
+    <position x="1489" y="177" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_Method" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_Method.java" binary="false">    
+    <position x="1139" y="299" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_Package" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_Package.java" binary="false">    
+    <position x="1279" y="177" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_Param" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_Param.java" binary="false">    
+    <position x="211" y="483" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_Property" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_Property.java" binary="false">    
+    <position x="135" y="539" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_Ref" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_Ref.java" binary="false">    
+    <position x="446" y="485" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_RefBean" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_RefBean.java" binary="false">    
+    <position x="1255" y="447" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_ScriptBean" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_ScriptBean.java" binary="false">    
+    <position x="1593" y="446" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_Set" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_Set.java" binary="false">    
+    <position x="1037" y="676" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_TemplateBean" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_TemplateBean.java" binary="false">    
+    <position x="1510" y="498" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_URI" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_URI.java" binary="false">    
+    <position x="980" y="536" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_Value" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_Value.java" binary="false">    
+    <position x="1055" y="482" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_VarBean" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_VarBean.java" binary="false">    
+    <position x="1422" y="447" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.configuration.Tag_Abstract" project="More" 
+    file="/More/src/org/more/hypha/configuration/Tag_Abstract.java" binary="false">    
+    <position x="956" y="42" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.TagBeans_EL" project="More" 
+    file="/More/src/org/more/hypha/beans/support/TagBeans_EL.java" binary="false">    
+    <position x="1135" y="537" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.TypeParser" project="More" 
+    file="/More/src/org/more/hypha/beans/TypeParser.java" binary="false">    
+    <position x="1467" y="634" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </interface>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.QPP_File" project="More" 
+    file="/More/src/org/more/hypha/beans/support/QPP_File.java" binary="false">    
+    <position x="1260" y="633" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.QPP_Directory" project="More" 
+    file="/More/src/org/more/hypha/beans/support/QPP_Directory.java" binary="false">    
+    <position x="1261" y="681" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.QPP_EL" project="More" 
+    file="/More/src/org/more/hypha/beans/support/QPP_EL.java" binary="false">    
+    <position x="1261" y="729" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.QPP_Enum" project="More" 
+    file="/More/src/org/more/hypha/beans/support/QPP_Enum.java" binary="false">    
+    <position x="1401" y="730" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.QPP_URILocation" project="More" 
+    file="/More/src/org/more/hypha/beans/support/QPP_URILocation.java" binary="false">    
+    <position x="1675" y="682" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.QPP_Ref" project="More" 
+    file="/More/src/org/more/hypha/beans/support/QPP_Ref.java" binary="false">    
+    <position x="1676" y="729" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.QPP_Date" project="More" 
+    file="/More/src/org/more/hypha/beans/support/QPP_Date.java" binary="false">    
+    <position x="1538" y="730" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.support.QPP_Value" project="More" 
+    file="/More/src/org/more/hypha/beans/support/QPP_Value.java" binary="false">    
+    <position x="1674" y="634" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <generalization>    
+    <bendpoint x="1056" y="436"/>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_Value" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_Value.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractValueMetaDataDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractValueMetaDataDefine.java" binary="false"/>  
+  </generalization>  
+  <realization>    
+    <source project="More" name="org.more.hypha.beans.support.QPP_Ref" 
+      file="/More/src/org/more/hypha/beans/support/QPP_Ref.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.TypeParser" file="/More/src/org/more/hypha/beans/TypeParser.java" 
+      binary="false"/>  
+  </realization>  
+  <generalization>    
+    <bendpoint x="599" y="440"/>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_Date" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_Date.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractValueMetaDataDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractValueMetaDataDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <bendpoint x="1255" y="398"/>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_RefBean" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_RefBean.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractBeanDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractBeanDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_Constructor" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_Constructor.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractPropertyDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractPropertyDefine.java" binary="false"/>  
+  </generalization>  
+  <realization>    
+    <source project="More" name="org.more.hypha.beans.support.QPP_URILocation" 
+      file="/More/src/org/more/hypha/beans/support/QPP_URILocation.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.TypeParser" file="/More/src/org/more/hypha/beans/TypeParser.java" 
+      binary="false"/>  
+  </realization>  
+  <generalization>    
+    <bendpoint x="1422" y="394"/>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_VarBean" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_VarBean.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractBeanDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractBeanDefine.java" binary="false"/>  
+  </generalization>  
+  <realization>    
+    <source project="More" name="org.more.hypha.beans.support.QPP_Enum" 
+      file="/More/src/org/more/hypha/beans/support/QPP_Enum.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.TypeParser" file="/More/src/org/more/hypha/beans/TypeParser.java" 
+      binary="false"/>  
+  </realization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_Array" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_Array.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractCollection" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractCollection.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <bendpoint x="1338" y="396"/>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_GenerateBean" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_GenerateBean.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractBeanDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractBeanDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_AbstractValueMetaDataDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractValueMetaDataDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractDefine.java" binary="false"/>  
+  </generalization>  
+  <realization>    
+    <source project="More" name="org.more.hypha.beans.support.QPP_EL" 
+      file="/More/src/org/more/hypha/beans/support/QPP_EL.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.TypeParser" file="/More/src/org/more/hypha/beans/TypeParser.java" 
+      binary="false"/>  
+  </realization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_DefaultPackage" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_DefaultPackage.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.configuration.Tag_Abstract" 
+      file="/More/src/org/more/hypha/configuration/Tag_Abstract.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <bendpoint x="1136" y="438"/>    
+    <bendpoint x="1137" y="437"/>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_EL" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_EL.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractValueMetaDataDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractValueMetaDataDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_Property" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_Property.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractPropertyDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractPropertyDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_List" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_List.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractCollection" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractCollection.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_Package" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_Package.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.configuration.Tag_Abstract" 
+      file="/More/src/org/more/hypha/configuration/Tag_Abstract.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_Set" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_Set.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractCollection" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractCollection.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_Map" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_Map.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractCollection" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractCollection.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_TemplateBean" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_TemplateBean.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractBeanDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractBeanDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_Param" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_Param.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractPropertyDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractPropertyDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_AbstractPropertyDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractPropertyDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <bendpoint x="1593" y="393"/>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_ScriptBean" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_ScriptBean.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractBeanDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractBeanDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <bendpoint x="674" y="440"/>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_Directory" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_Directory.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractValueMetaDataDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractValueMetaDataDefine.java" binary="false"/>  
+  </generalization>  
+  <realization>    
+    <source project="More" name="org.more.hypha.beans.support.QPP_Date" 
+      file="/More/src/org/more/hypha/beans/support/QPP_Date.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.TypeParser" file="/More/src/org/more/hypha/beans/TypeParser.java" 
+      binary="false"/>  
+  </realization>  
+  <realization>    
+    <source project="More" name="org.more.hypha.beans.support.QPP_Value" 
+      file="/More/src/org/more/hypha/beans/support/QPP_Value.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.TypeParser" file="/More/src/org/more/hypha/beans/TypeParser.java" 
+      binary="false"/>  
+  </realization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_AbstractBeanDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractBeanDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_AbstractDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.configuration.Tag_Abstract" 
+      file="/More/src/org/more/hypha/configuration/Tag_Abstract.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_Beans" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_Beans.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.configuration.Tag_Abstract" 
+      file="/More/src/org/more/hypha/configuration/Tag_Abstract.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <bendpoint x="1678" y="399"/>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_ClassBean" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_ClassBean.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractBeanDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractBeanDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <bendpoint x="900" y="435"/>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_Entity" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_Entity.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractValueMetaDataDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractValueMetaDataDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_AbstractCollection" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractCollection.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractValueMetaDataDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractValueMetaDataDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <bendpoint x="523" y="450"/>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_File" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_File.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractValueMetaDataDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractValueMetaDataDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <bendpoint x="372" y="447"/>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_Enum" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_Enum.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractValueMetaDataDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractValueMetaDataDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_Method" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_Method.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <bendpoint x="980" y="437"/>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_URI" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_URI.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractValueMetaDataDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractValueMetaDataDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <bendpoint x="444" y="446"/>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_Ref" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_Ref.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractValueMetaDataDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractValueMetaDataDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <bendpoint x="750" y="436"/>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_BigText" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_BigText.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.support.TagBeans_AbstractValueMetaDataDefine" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_AbstractValueMetaDataDefine.java" binary="false"/>  
+  </generalization>  
+  <realization>    
+    <source project="More" name="org.more.hypha.beans.support.QPP_Directory" 
+      file="/More/src/org/more/hypha/beans/support/QPP_Directory.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.TypeParser" file="/More/src/org/more/hypha/beans/TypeParser.java" 
+      binary="false"/>  
+  </realization>  
+  <realization>    
+    <source project="More" name="org.more.hypha.beans.support.QPP_File" 
+      file="/More/src/org/more/hypha/beans/support/QPP_File.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.TypeParser" file="/More/src/org/more/hypha/beans/TypeParser.java" 
+      binary="false"/>  
+  </realization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.support.TagBeans_MetaData" 
+      file="/More/src/org/more/hypha/beans/support/TagBeans_MetaData.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.configuration.Tag_Abstract" 
+      file="/More/src/org/more/hypha/configuration/Tag_Abstract.java" binary="false"/>  
+  </generalization>  
+  <classifier-display autosize="true" package="true" initial-value="true" signature="true" visibility="true">    
+    <attributes public="false" package="false" protected="false" private="false"/>    
+    <operations public="false" package="false" protected="false" private="false"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

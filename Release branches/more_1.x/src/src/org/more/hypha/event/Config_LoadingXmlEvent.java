@@ -14,15 +14,22 @@
  * limitations under the License.
  */
 package org.more.hypha.event;
+import org.more.hypha.DefineResource;
 import org.more.hypha.Event;
 /**
  * 装载Bean定义配置。
  * @version 2010-10-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public class LoadingDefineEvent extends Event {
-    /**创建{@link LoadingDefineEvent}对象。*/
-    public LoadingDefineEvent(Object target) {
+public class Config_LoadingXmlEvent extends Event {
+    private DefineResource resource = null;
+    /**创建{@link Config_LoadingXmlEvent}对象。*/
+    public Config_LoadingXmlEvent(Object target, DefineResource resource) {
         super(target);
+        this.resource = resource;
+    }
+    /**获取相关联的{@link DefineResource}对象。*/
+    public DefineResource getResource() {
+        return this.resource;
     }
 }

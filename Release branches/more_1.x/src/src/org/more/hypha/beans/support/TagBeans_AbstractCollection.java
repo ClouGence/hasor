@@ -19,9 +19,8 @@ import java.util.Map;
 import org.more.LostException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
+import org.more.hypha.DefineResource;
 import org.more.hypha.beans.define.Collection_ValueMetaData;
-import org.more.hypha.configuration.DefineResourceImpl;
-import org.more.util.StringConvert;
 /**
  * 用于解析集合类型标签的基类。
  * @version 2010-9-23
@@ -29,7 +28,7 @@ import org.more.util.StringConvert;
  */
 public abstract class TagBeans_AbstractCollection<T extends Collection_ValueMetaData<?>> extends TagBeans_AbstractValueMetaDataDefine<T> {
     /**创建{@link TagBeans_AbstractCollection}对象*/
-    public TagBeans_AbstractCollection(DefineResourceImpl configuration) {
+    public TagBeans_AbstractCollection(DefineResource configuration) {
         super(configuration);
     }
     /**定义模板属性。*/
@@ -51,18 +50,13 @@ public abstract class TagBeans_AbstractCollection<T extends Collection_ValueMeta
         String arrayTypeString = event.getAttributeValue("collectionType");
         Class<?> arrayType = null;
         // 1.转换collectionType属性类型
-        if (arrayTypeString != null) {
-            VariableType typeEnum = (VariableType) StringConvert.changeType(arrayTypeString, VariableType.class);
-            if (typeEnum != null)
-                arrayType = getBaseType(typeEnum);
-            else
-                try {
-                    ClassLoader loader = Thread.currentThread().getContextClassLoader();
-                    arrayType = loader.loadClass(arrayTypeString);
-                } catch (Exception e) {
-                    throw new LostException("ClassNotFoundException,属性类型[" + arrayTypeString + "]丢失.", e);
-                }
-        } else
+        if (arrayTypeString != null)
+            try {
+                arrayType = Util.getType(arrayTypeString, this.getDefineResource().getClassLoader());
+            } catch (Exception e) {
+                throw new LostException("无法装载集合的元素类型[" + arrayTypeString + "].", e);
+            }
+        else
             arrayType = this.getDefaultCollectionType();
         //2.设置值
         valueMetaData.setCollectionType(arrayType);

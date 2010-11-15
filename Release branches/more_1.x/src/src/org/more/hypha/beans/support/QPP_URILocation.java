@@ -28,11 +28,8 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class QPP_URILocation implements TypeParser {
-    /**试图解析成为{@link URI_ValueMetaData}如果解析失败返回null。*/
-    public ValueMetaData parser(String value, IAttribute attribute, AbstractPropertyDefine property) {
-        //1.检查是否可以解析
-        if (value == null)
-            value = (String) attribute.getAttribute("uriLocation");
+    public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
+        String value = (String) attribute.getAttribute("uriLocation");
         if (value == null)
             return null;
         //2.进行解析

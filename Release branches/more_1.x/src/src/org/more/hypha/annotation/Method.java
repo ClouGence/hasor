@@ -28,4 +28,6 @@ import java.lang.annotation.Target;
 public @interface Method {
     /**该名称是对方法的一个命名默认该值与方法名相同，但是如果配置同名的重载方法由于方法名相同就需要使用该属性来区分不同的重载方法。*/
     public String name() default "";
+    /**携带的附加信息描述*/
+    public MetaData[] metaData() default {};
 }

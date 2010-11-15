@@ -19,36 +19,35 @@ import org.more.hypha.DefineResource;
 import org.more.hypha.aop.AopDefineResourcePlugin;
 import org.more.hypha.aop.assembler.AopDefineResourcePlugin_Impl;
 import org.more.hypha.configuration.NameSpaceRegister;
-import org.more.hypha.configuration.DefineResourceImpl;
+import org.more.hypha.configuration.XmlConfiguration;
 /**
  * 该类实现了{@link NameSpaceRegister}接口并且提供了对命名空间“http://project.byshell.org/more/schema/aop”的解析支持。
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Register_Aop implements NameSpaceRegister {
-    /**提供支持的命名空间*/
+    /**如果没有指定namespaceURL参数则该常量将会指定默认的命名空间。*/
     public static final String DefaultNameSpaceURL = "http://project.byshell.org/more/schema/aop";
     /**执行初始化注册。*/
-    public void initRegister(String namespaceURL, DefineResource resource) {
-        DefineResourceImpl config = (DefineResourceImpl) resource;
+    public void initRegister(String namespaceURL, XmlConfiguration configuration, DefineResource resource) {
         //1.添加Aop插件
-        config.setPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName, new AopDefineResourcePlugin_Impl(config));
+        resource.setPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName, new AopDefineResourcePlugin_Impl(resource));
         //2.注册标签解析器
         XmlParserKit kit = new XmlParserKit();
-        kit.regeditHook("/config", new TagAop_Config(config));
-        kit.regeditHook("*/pointcut", new TagAop_Pointcut(config));
-        kit.regeditHook("*/pointGroup", new TagAop_PointGroup(config));
-        kit.regeditHook("/useConfig", new TagAop_UseConfig(config));
-        kit.regeditHook("/@useConfig", new TagAop_UseConfig(config));
-        kit.regeditHook("/config/filter", new TagAop_Filter(config));
-        kit.regeditHook("/config/informed", new TagAop_Informed(config));
-        kit.regeditHook("/config/before", new TagAop_Before(config));
-        kit.regeditHook("/config/returning", new TagAop_Returning(config));
-        kit.regeditHook("/config/throwing", new TagAop_Throwing(config));
-        kit.regeditHook("/apply", new TagAop_Apply(config));
+        kit.regeditHook("/config", new TagAop_Config(resource));
+        kit.regeditHook("*/pointcut", new TagAop_Pointcut(resource));
+        kit.regeditHook("*/pointGroup", new TagAop_PointGroup(resource));
+        kit.regeditHook("/useConfig", new TagAop_UseConfig(resource));
+        kit.regeditHook("/@useConfig", new TagAop_UseConfig(resource));
+        kit.regeditHook("/config/filter", new TagAop_Filter(resource));
+        kit.regeditHook("/config/informed", new TagAop_Informed(resource));
+        kit.regeditHook("/config/before", new TagAop_Before(resource));
+        kit.regeditHook("/config/returning", new TagAop_Returning(resource));
+        kit.regeditHook("/config/throwing", new TagAop_Throwing(resource));
+        kit.regeditHook("/apply", new TagAop_Apply(resource));
         //3.注册命名空间
         if (namespaceURL == null)
             namespaceURL = DefaultNameSpaceURL;
-        config.regeditXmlParserKit(namespaceURL, kit);
+        configuration.regeditXmlParserKit(namespaceURL, kit);
     }
 }

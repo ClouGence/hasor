@@ -18,8 +18,8 @@ import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
+import org.more.hypha.DefineResource;
 import org.more.hypha.configuration.Tag_Abstract;
-import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析/beans/package标签
  * @version 2010-9-16
@@ -29,7 +29,7 @@ public class TagBeans_Package extends Tag_Abstract implements XmlElementHook {
     /**保存于上下文中的package变量名。*/
     public static final String LogicPackage = "$more_Beans_LogicPackage";
     /**创建{@link TagBeans_Package}对象*/
-    public TagBeans_Package(DefineResourceImpl configuration) {
+    public TagBeans_Package(DefineResource configuration) {
         super(configuration);
     }
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {

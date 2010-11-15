@@ -18,11 +18,11 @@ import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
+import org.more.hypha.DefineResource;
 import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.beans.AbstractPropertyDefine;
 import org.more.hypha.beans.ValueMetaData;
 import org.more.hypha.configuration.Tag_Abstract;
-import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析meta标签
  * @version 2010-9-16
@@ -30,7 +30,7 @@ import org.more.hypha.configuration.DefineResourceImpl;
  */
 public class TagBeans_MetaData extends Tag_Abstract implements XmlElementHook {
     /**创建{@link TagBeans_MetaData}对象*/
-    public TagBeans_MetaData(DefineResourceImpl configuration) {
+    public TagBeans_MetaData(DefineResource configuration) {
         super(configuration);
     }
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
@@ -56,7 +56,7 @@ public class TagBeans_MetaData extends Tag_Abstract implements XmlElementHook {
         }
         //4.config定义
         if (xpath.contains("/beans") == true)
-            this.getConfiguration().getAttribute().setAttribute(key, value);
+            this.getDefineResource().getAttribute().setAttribute(key, value);
     }
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
 }

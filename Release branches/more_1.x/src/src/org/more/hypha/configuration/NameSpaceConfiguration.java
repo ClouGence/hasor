@@ -15,7 +15,9 @@
  */
 package org.more.hypha.configuration;
 import java.util.ArrayList;
-import org.more.InitializationException;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.core.xml.stream.TextEvent;
@@ -28,10 +30,21 @@ import org.more.util.StringConvert;
  * @author 赵永春 (zyc@byshell.org)
  */
 class NameSpaceConfiguration implements XmlAccept {
-    private DefineResourceImpl config     = null;
-    private ArrayList<String>  schemaList = new ArrayList<String>();
-    public NameSpaceConfiguration(DefineResourceImpl config) {
-        this.config = config;
+    private ArrayList<NameSpaceRegister> registerList = new ArrayList<NameSpaceRegister>();
+    public List<NameSpaceRegister> getRegister() {
+        Collections.sort(this.registerList, new Comparator<NameSpaceRegister>() {
+            public int compare(NameSpaceRegister o1, NameSpaceRegister o2) {
+                NameSpaceRegisterPropxy oo1 = (NameSpaceRegisterPropxy) o1;
+                NameSpaceRegisterPropxy oo2 = (NameSpaceRegisterPropxy) o2;
+                if (oo1.getInitSequence() > oo2.getInitSequence())
+                    return 1;
+                else if (oo1.getInitSequence() == oo2.getInitSequence())
+                    return 0;
+                else
+                    return -1;
+            }
+        });
+        return this.registerList;
     }
     public void beginAccept() {}
     public void endAccept() {}
@@ -40,6 +53,7 @@ class NameSpaceConfiguration implements XmlAccept {
     private StringBuffer currentFactory      = null;
     private StringBuffer currentSchema       = null;
     private String       currentSchemaEnable = null;
+    private int          currentSequence     = 0;
     //
     public void sendEvent(XmlStreamEvent e) {
         if (e.getXpath().equals("/Configuration/regedit") == true)
@@ -58,16 +72,16 @@ class NameSpaceConfiguration implements XmlAccept {
             this.currentFactory = new StringBuffer();
             this.currentSchema = new StringBuffer();
             this.currentSchemaEnable = null;
-        } else if (e instanceof EndElementEvent)
-            try {
-                Class<?> factory = Class.forName(this.currentFactory.toString());
-                NameSpaceRegister obj = (NameSpaceRegister) factory.newInstance();
-                obj.initRegister(this.currentNamespace.toString(), this.config);
-                if (StringConvert.parseBoolean(this.currentSchemaEnable) == true)
-                    this.schemaList.add(this.schemaList.toString());
-            } catch (Exception err) {
-                throw new InitializationException("执行regedit.xm配置文件出错.[" + this.currentFactory.toString() + "]不能被正确执行", err);
-            }
+            String sequence = ((StartElementEvent) e).getAttributeValue("initSequence");
+            this.currentSequence = StringConvert.parseInt(sequence, 0);
+        } else if (e instanceof EndElementEvent) {
+            NameSpaceRegisterPropxy obj = new NameSpaceRegisterPropxy(this.currentFactory.toString());
+            obj.setInitSequence(this.currentSequence);
+            obj.setNamespace(this.currentNamespace.toString());
+            obj.setSchema(this.currentSchema.toString());
+            obj.setSchemaEnable(StringConvert.parseBoolean(this.currentSchemaEnable));
+            this.registerList.add(obj);
+        }
     }
     /**解析namespace标签*/
     private void p_namespace(XmlStreamEvent e) {
@@ -87,7 +101,7 @@ class NameSpaceConfiguration implements XmlAccept {
     private void p_schema(XmlStreamEvent e) {
         if (e instanceof StartElementEvent == true) {
             StartElementEvent ee = (StartElementEvent) e;
-            currentSchemaEnable = ee.getAttributeValue("enable");
+            this.currentSchemaEnable = ee.getAttributeValue("enable");
         }
         if (e instanceof TextEvent == false)
             return;

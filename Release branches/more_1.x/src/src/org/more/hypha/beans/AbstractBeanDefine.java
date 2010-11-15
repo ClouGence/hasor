@@ -32,8 +32,6 @@ public interface AbstractBeanDefine extends BeanDefinePluginSet, IAttribute {
     public String getFullName();
     /**获取bean被定义的bean的类型该类型与class类型是有区分的，class类型可以表述一个具体类型但是无法表述大分类。*/
     public String getBeanType();
-    /**获取bean的作用域，如果容器支持多种作用域。*/
-    public String getScope();
     /**返回一个boolean值，表示类是否为一个抽象类。*/
     public boolean isAbstract();
     /**返回一个boolean值，表示类是否为一个接口。*/

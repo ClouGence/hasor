@@ -15,9 +15,9 @@
  */
 package org.more.hypha.aop.support;
 import org.more.core.xml.stream.StartElementEvent;
+import org.more.hypha.DefineResource;
 import org.more.hypha.aop.define.AopDefineInformed;
 import org.more.hypha.aop.define.PointcutType;
-import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析aop:filter标签
  * @version 2010-9-22
@@ -25,7 +25,7 @@ import org.more.hypha.configuration.DefineResourceImpl;
  */
 public class TagAop_Filter extends TagAop_AbstractInformed<AopDefineInformed> {
     /**创建{@link TagAop_Filter}对象*/
-    public TagAop_Filter(DefineResourceImpl configuration) {
+    public TagAop_Filter(DefineResource configuration) {
         super(configuration);
     }
     /**返回AopDefineInformed类型对象，该对象的pointcutType属性值为{@link PointcutType#Filter}。*/

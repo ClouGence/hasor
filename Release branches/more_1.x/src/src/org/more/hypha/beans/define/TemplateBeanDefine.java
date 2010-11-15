@@ -32,7 +32,6 @@ public class TemplateBeanDefine extends AbstractDefine implements AbstractBeanDe
     private String                          id            = null;                                 //id
     private String                          name          = null;                                 //名称
     private String                          logicPackage  = null;                                 //逻辑包
-    private String                          scope         = null;                                 //bean作用域
     private boolean                         boolAbstract  = false;                                //抽象标志
     private boolean                         boolInterface = false;                                //接口标志
     private boolean                         boolSingleton = false;                                //单态标志
@@ -72,10 +71,6 @@ public class TemplateBeanDefine extends AbstractDefine implements AbstractBeanDe
         else
             return this.getName();
     }
-    /**获取bean的作用域，如果容器支持多种作用域。*/
-    public String getScope() {
-        return this.scope;
-    };
     /**返回一个boolean值，表示类是否为一个抽象类。*/
     public boolean isAbstract() {
         return this.boolAbstract;
@@ -167,10 +162,6 @@ public class TemplateBeanDefine extends AbstractDefine implements AbstractBeanDe
     /**设置逻辑包名称*/
     public void setLogicPackage(String logicPackage) {
         this.logicPackage = logicPackage;
-    }
-    /**设置bean有效作用域。*/
-    public void setScope(String scope) {
-        this.scope = scope;
     }
     /**设置描述信息。*/
     public void setDescription(String description) {

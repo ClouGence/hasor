@@ -23,8 +23,9 @@ import org.more.util.Config;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface ActionContextBuild {
-    /**初始化这个生成器，参数configFile，String类型对象表示配置文件位置。*/
-    public void init(Config config) throws Exception;
+    /**初始化这个生成器，参数configFile，String类型对象表示配置文件位置。
+     * @throws Throwable */
+    public void init(Config config) throws Throwable;
     /**调用生成器生成ActionContext对象，ActionContext会经过SubmitBuild再次生成为SubmitContext*/
     public ActionContext getActionContext();
     /**设置基本目录。如果使用相对路径则是相对这个路径的。*/

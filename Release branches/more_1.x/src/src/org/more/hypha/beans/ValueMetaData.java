@@ -50,6 +50,8 @@ public interface ValueMetaData extends BeanDefinePluginSet, IAttribute {
         BigText,
         /**表示一个日期对象。*/
         Date,
+        /**表示一个el执行。*/
+        EL
     };
     /**返回这个属性的属性类型，该类型用于描述属性的类型特征。*/
     public PropertyMetaTypeEnum getPropertyType();

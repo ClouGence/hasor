@@ -19,12 +19,12 @@ import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
+import org.more.hypha.DefineResource;
 import org.more.hypha.aop.AopDefineResourcePlugin;
 import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.aop.define.AopPointcutGroupDefine;
 import org.more.hypha.configuration.Tag_Abstract;
-import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析切点标签的基类，该类会解析name属性。
  * @version 2010-9-24
@@ -34,7 +34,7 @@ import org.more.hypha.configuration.DefineResourceImpl;
 public abstract class TagAop_AbstractPointcut<T extends AbstractPointcutDefine> extends Tag_Abstract implements XmlElementHook {
     private static final String PointcutDefine = "$more_Aop_PointcutDefine";
     /**创建{@link TagAop_AbstractPointcut}类型对象。*/
-    public TagAop_AbstractPointcut(DefineResourceImpl configuration) {
+    public TagAop_AbstractPointcut(DefineResource configuration) {
         super(configuration);
     }
     /**创建一个{@link AbstractPointcutDefine}定义对象。*/
@@ -76,7 +76,7 @@ public abstract class TagAop_AbstractPointcut<T extends AbstractPointcutDefine> 
         }
         //3.注册到环境中
         if (isReg == false && define.getName() != null) {
-            AopDefineResourcePlugin plugin = (AopDefineResourcePlugin) this.getConfiguration().getPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName);
+            AopDefineResourcePlugin plugin = (AopDefineResourcePlugin) this.getDefineResource().getPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName);
             if (plugin.containPointcutDefine(define.getName()) == true)
                 throw new RepeateException("不能重复定义[" + define.getName() + "]切入点对象。");
             plugin.addPointcutDefine(define);

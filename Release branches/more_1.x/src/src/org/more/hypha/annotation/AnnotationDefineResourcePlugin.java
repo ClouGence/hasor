@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.more.hypha.annotation;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import org.more.hypha.DefineResource;
@@ -36,4 +38,8 @@ public interface AnnotationDefineResourcePlugin extends DefineResourcePlugin {
     public boolean containsKeepWatchParser(String annoType);
     /**根据Anno类型定义确定获取注册在其类型上的解析器。*/
     public Collection<KeepWatchParser> getAnnoKeepWatch(String annoType);
+    /**通知aop解析器解析这个类，className参数表示的是预解析的类名。该类是通过{@link DefineResource}中的ClassLoader装载的。*/
+    public void parserClass(String className) throws ClassNotFoundException, IOException;
+    /**通知aop解析器解析这个类，classInputStream参数表示的是预解析的类输入流。*/
+    public void parserClass(InputStream classInputStream) throws ClassNotFoundException, IOException;
 }

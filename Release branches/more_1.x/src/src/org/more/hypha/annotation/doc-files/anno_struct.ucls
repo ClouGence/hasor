@@ -1,0 +1,215 @@
+<class-diagram version="0.9.86" icons="true" always-add-relationships="true" generalizations="true" realizations="true" 
+  associations="true" dependencies="true" nesting-relationships="true">  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.annotation.assembler.EV_Anno" project="More" 
+    file="/More/src/org/more/hypha/annotation/assembler/EV_Anno.java" binary="false">    
+    <position x="327" y="331" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.annotation.assembler.TagListener" project="More" 
+    file="/More/src/org/more/hypha/annotation/assembler/TagListener.java" binary="false">    
+    <position x="113" y="112" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.annotation.assembler.EV_Field" project="More" 
+    file="/More/src/org/more/hypha/annotation/assembler/EV_Field.java" binary="false">    
+    <position x="126" y="332" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.annotation.assembler.Watch_Aop" project="More" 
+    file="/More/src/org/more/hypha/annotation/assembler/Watch_Aop.java" binary="false">    
+    <position x="541" y="187" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.annotation.assembler.EV_Method" project="More" 
+    file="/More/src/org/more/hypha/annotation/assembler/EV_Method.java" binary="false">    
+    <position x="527" y="331" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.annotation.assembler.Watch_Bean" project="More" 
+    file="/More/src/org/more/hypha/annotation/assembler/Watch_Bean.java" binary="false">    
+    <position x="712" y="187" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" 
+    name="org.more.hypha.annotation.assembler.AnnotationDefineResourcePluginImpl" project="More" 
+    file="/More/src/org/more/hypha/annotation/assembler/AnnotationDefineResourcePluginImpl.java" binary="false">    
+    <position x="328" y="187" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.annotation.assembler.EV_Class" project="More" 
+    file="/More/src/org/more/hypha/annotation/assembler/EV_Class.java" binary="false">    
+    <position x="327" y="258" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.annotation.KeepWatchParser" project="More" 
+    file="/More/src/org/more/hypha/annotation/KeepWatchParser.java" binary="false">    
+    <position x="627" y="114" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </interface>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.annotation.support.TagAnno_Anno" project="More" 
+    file="/More/src/org/more/hypha/annotation/support/TagAnno_Anno.java" binary="false">    
+    <position x="114" y="47" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.annotation.assembler.EV_Mark" project="More" 
+    file="/More/src/org/more/hypha/annotation/assembler/EV_Mark.java" binary="false">    
+    <position x="328" y="424" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </interface>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.annotation.AnnotationDefineResourcePlugin" 
+    project="More" file="/More/src/org/more/hypha/annotation/AnnotationDefineResourcePlugin.java" binary="false">    
+    <position x="329" y="113" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </interface>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.annotation.assembler.EV_Class" 
+      file="/More/src/org/more/hypha/annotation/assembler/EV_Class.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.annotation.assembler.EV_Field" 
+      file="/More/src/org/more/hypha/annotation/assembler/EV_Field.java" binary="false"/>  
+  </dependency>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.annotation.support.TagAnno_Anno" 
+      file="/More/src/org/more/hypha/annotation/support/TagAnno_Anno.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.annotation.assembler.TagListener" 
+      file="/More/src/org/more/hypha/annotation/assembler/TagListener.java" binary="false"/>  
+  </dependency>  
+  <realization>    
+    <source project="More" name="org.more.hypha.annotation.assembler.Watch_Aop" 
+      file="/More/src/org/more/hypha/annotation/assembler/Watch_Aop.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.annotation.KeepWatchParser" 
+      file="/More/src/org/more/hypha/annotation/KeepWatchParser.java" binary="false"/>  
+  </realization>  
+  <association>    
+    <source project="More" name="org.more.hypha.annotation.assembler.EV_Field" 
+      file="/More/src/org/more/hypha/annotation/assembler/EV_Field.java" binary="false" navigable="false">      
+      <attribute name="mark"/>      
+      <multiplicity minimum="0" maximum="1"/>    
+    </source>    
+    <target project="More" name="org.more.hypha.annotation.assembler.EV_Mark" 
+      file="/More/src/org/more/hypha/annotation/assembler/EV_Mark.java" binary="false" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.annotation.assembler.EV_Class" 
+      file="/More/src/org/more/hypha/annotation/assembler/EV_Class.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.annotation.assembler.EV_Method" 
+      file="/More/src/org/more/hypha/annotation/assembler/EV_Method.java" binary="false"/>  
+  </dependency>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.annotation.assembler.EV_Class" 
+      file="/More/src/org/more/hypha/annotation/assembler/EV_Class.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.annotation.assembler.EV_Anno" 
+      file="/More/src/org/more/hypha/annotation/assembler/EV_Anno.java" binary="false"/>  
+  </dependency>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.annotation.assembler.EV_Field" 
+      file="/More/src/org/more/hypha/annotation/assembler/EV_Field.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.annotation.assembler.EV_Anno" 
+      file="/More/src/org/more/hypha/annotation/assembler/EV_Anno.java" binary="false"/>  
+  </dependency>  
+  <association>    
+    <source project="More" name="org.more.hypha.annotation.assembler.EV_Anno" 
+      file="/More/src/org/more/hypha/annotation/assembler/EV_Anno.java" binary="false" navigable="false">      
+      <attribute name="mark"/>      
+      <multiplicity minimum="0" maximum="1"/>    
+    </source>    
+    <target project="More" name="org.more.hypha.annotation.assembler.EV_Mark" 
+      file="/More/src/org/more/hypha/annotation/assembler/EV_Mark.java" binary="false" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.annotation.assembler.EV_Method" 
+      file="/More/src/org/more/hypha/annotation/assembler/EV_Method.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.annotation.assembler.EV_Anno" 
+      file="/More/src/org/more/hypha/annotation/assembler/EV_Anno.java" binary="false"/>  
+  </dependency>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.annotation.assembler.TagListener" 
+      file="/More/src/org/more/hypha/annotation/assembler/TagListener.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.annotation.AnnotationDefineResourcePlugin" 
+      file="/More/src/org/more/hypha/annotation/AnnotationDefineResourcePlugin.java" binary="false"/>  
+  </dependency>  
+  <realization>    
+    <bendpoint x="624" y="297"/>    
+    <bendpoint x="624" y="424"/>    
+    <source project="More" name="org.more.hypha.annotation.assembler.EV_Class" 
+      file="/More/src/org/more/hypha/annotation/assembler/EV_Class.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.annotation.assembler.EV_Mark" 
+      file="/More/src/org/more/hypha/annotation/assembler/EV_Mark.java" binary="false"/>  
+  </realization>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.annotation.assembler.AnnotationDefineResourcePluginImpl" 
+      file="/More/src/org/more/hypha/annotation/assembler/AnnotationDefineResourcePluginImpl.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.annotation.assembler.EV_Class" 
+      file="/More/src/org/more/hypha/annotation/assembler/EV_Class.java" binary="false"/>  
+  </dependency>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.annotation.AnnotationDefineResourcePlugin" 
+      file="/More/src/org/more/hypha/annotation/AnnotationDefineResourcePlugin.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.annotation.KeepWatchParser" 
+      file="/More/src/org/more/hypha/annotation/KeepWatchParser.java" binary="false"/>  
+  </dependency>  
+  <realization>    
+    <source project="More" name="org.more.hypha.annotation.assembler.Watch_Bean" 
+      file="/More/src/org/more/hypha/annotation/assembler/Watch_Bean.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.annotation.KeepWatchParser" 
+      file="/More/src/org/more/hypha/annotation/KeepWatchParser.java" binary="false"/>  
+  </realization>  
+  <realization>    
+    <source project="More" name="org.more.hypha.annotation.assembler.AnnotationDefineResourcePluginImpl" 
+      file="/More/src/org/more/hypha/annotation/assembler/AnnotationDefineResourcePluginImpl.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.annotation.AnnotationDefineResourcePlugin" 
+      file="/More/src/org/more/hypha/annotation/AnnotationDefineResourcePlugin.java" binary="false"/>  
+  </realization>  
+  <association>    
+    <source project="More" name="org.more.hypha.annotation.assembler.EV_Method" 
+      file="/More/src/org/more/hypha/annotation/assembler/EV_Method.java" binary="false" navigable="false">      
+      <attribute name="mark"/>      
+      <multiplicity minimum="0" maximum="1"/>    
+    </source>    
+    <target project="More" name="org.more.hypha.annotation.assembler.EV_Mark" 
+      file="/More/src/org/more/hypha/annotation/assembler/EV_Mark.java" binary="false" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <classifier-display autosize="true" package="true" initial-value="true" signature="true" visibility="true">    
+    <attributes public="false" package="false" protected="false" private="false"/>    
+    <operations public="false" package="false" protected="false" private="false"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

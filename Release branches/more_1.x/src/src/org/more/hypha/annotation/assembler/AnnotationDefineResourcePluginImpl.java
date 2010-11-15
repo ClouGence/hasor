@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.more.hypha.annotation.assembler;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,6 +23,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import org.more.core.asm.ClassReader;
+import org.more.core.asm.ClassWriter;
 import org.more.hypha.DefineResource;
 import org.more.hypha.annotation.AnnotationDefineResourcePlugin;
 import org.more.hypha.annotation.KeepWatchParser;
@@ -67,8 +71,24 @@ public class AnnotationDefineResourcePluginImpl implements AnnotationDefineResou
     public Collection<KeepWatchParser> getAnnoKeepWatch(String annoType) {
         return this.parserMap.get(annoType);
     }
-    /**正式解析类，className表示要解析的类名。annoTypes表示这个类中声明的所有注解。*/
-    public synchronized void parserClass(String className, List<String> annoTypes) throws ClassNotFoundException {
+    /**通知aop解析器解析这个类，className参数表示的是预解析的类名。该类是通过{@link DefineResource}中的ClassLoader装载的。*/
+    public synchronized void parserClass(String className) throws ClassNotFoundException, IOException {
+        String classPath = className.replace(".", "/") + ".class";
+        InputStream is = this.config.getClassLoader().getResourceAsStream(classPath);
+        this.parserClass(is);
+    }
+    /**通知aop解析器解析这个类，classInputStream参数表示的是预解析的类输入流。*/
+    public synchronized void parserClass(InputStream classInputStream) throws ClassNotFoundException, IOException {
+        //2.通知引擎扫描这个类，确定是否有必要解析。使用ASM进行扫描增加速度。
+        ClassReader reader = new ClassReader(classInputStream);
+        EV_Class ev = new EV_Class(this, new ClassWriter(ClassWriter.COMPUTE_MAXS));
+        reader.accept(ev, ClassReader.SKIP_DEBUG);
+        //3.通知引擎执行解析，这个类中包含具备解析条件的注解。
+        if (ev.isMark() == true)
+            this.parserClass(ev.getClassName(), ev.getAnnos());
+    }
+    /**正式解析类。*/
+    private void parserClass(String className, List<String> annoTypes) throws ClassNotFoundException {
         //1.按照注册顺序排序
         Collections.sort(annoTypes, new Comparator<String>() {
             public int compare(String o1, String o2) {

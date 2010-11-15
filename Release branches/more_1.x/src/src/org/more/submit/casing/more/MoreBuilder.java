@@ -58,7 +58,7 @@ public class MoreBuilder implements ActionContextBuild {
             this.config = configFile.getAbsolutePath();
     };
     //==========================================================================================Job
-    public void init(Config config) throws Exception {
+    public void init(Config config) throws Throwable {
         if (this.factory != null)
             return;
         if (config != null) {

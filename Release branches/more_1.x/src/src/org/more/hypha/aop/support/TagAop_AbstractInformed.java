@@ -20,14 +20,13 @@ import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
+import org.more.hypha.DefineResource;
 import org.more.hypha.aop.AopDefineResourcePlugin;
 import org.more.hypha.aop.define.AbstractInformed;
 import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.aop.define.AopDefineInformed;
-import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.configuration.Tag_Abstract;
-import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 处理informed类型标签的refBean属性。
  * @version 2010-10-9
@@ -36,7 +35,7 @@ import org.more.hypha.configuration.DefineResourceImpl;
 @SuppressWarnings("unchecked")
 public abstract class TagAop_AbstractInformed<T extends AopDefineInformed> extends Tag_Abstract implements XmlElementHook {
     public static final String AopInformedDefine = "$more_aop_AopInformedDefine";
-    public TagAop_AbstractInformed(DefineResourceImpl configuration) {
+    public TagAop_AbstractInformed(DefineResource configuration) {
         super(configuration);
     }
     /**创建一个{@link AbstractInformed}定义对象。*/
@@ -55,14 +54,13 @@ public abstract class TagAop_AbstractInformed<T extends AopDefineInformed> exten
         String refBean = event.getAttributeValue("refBean");
         if (refBean == null)
             throw new NoDefinitionException("[" + config.getName() + "]解析informed、before、returning、throwing、filter标签时没有定义refBean属性。");
-        AbstractBeanDefine beanDefine = this.getConfiguration().getBeanDefine(refBean);
-        if (beanDefine == null)
+        if (this.getDefineResource().containsBeanDefine(refBean) == false)
             throw new NotFoundException("[" + config.getName() + "]解析informed、before、returning、throwing、filter标签时无法找到定义的[" + refBean + "]Bean。");
-        define.setRefBean(beanDefine);
+        define.setRefBean(refBean);
         String pointcutRef = event.getAttributeValue("pointcut-ref");
         //3.将Informed添加到父类的config中。
         if (pointcutRef != null) {
-            AopDefineResourcePlugin plugin = (AopDefineResourcePlugin) this.getConfiguration().getPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName);
+            AopDefineResourcePlugin plugin = (AopDefineResourcePlugin) this.getDefineResource().getPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName);
             AbstractPointcutDefine pointcutDefine = plugin.getPointcutDefine(pointcutRef);
             config.addInformed(define, pointcutDefine);
         } else

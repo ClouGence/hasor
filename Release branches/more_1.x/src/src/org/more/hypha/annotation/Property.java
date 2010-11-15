@@ -29,9 +29,11 @@ public @interface Property {
     /**表明该属性是否延迟注入，如果延迟注入当只有试图访问该属性时才会对属性进行初始化。*/
     public boolean lazyInit() default true;
     /**属性的注释*/
-    public String description() default "";
+    public String desc() default "";
     /**文本形式的属性值描述，通常这种类型的描述可以表示常用的基本类型。复杂的描述注入注入一个bean则需要使用el注入。*/
-    public String textValue() default "";
+    public String value() default "";
     /**对el进行解析然后将解析结果注入到该字段上。*/
-    public String elValue() default "";
+    public String el() default "";
+    /**携带的附加信息描述*/
+    public MetaData[] metaData() default {};
 }

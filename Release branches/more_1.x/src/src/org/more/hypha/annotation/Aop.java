@@ -18,6 +18,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.more.core.classcode.BuilderMode;
 /**
  * 该bean使用aop增强。
  * @version 2010-10-13
@@ -26,10 +27,12 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Aop {
-    /**确定该bean使用的aop配置是哪个，如果配置了该参数那么pointcut属性和informeds属性将会失效。aop的配置请参考配置文件相关说明。*/
+    /**确定该bean使用的aop配置是哪个，如果配置了该属性那么其他配置将全部失效。*/
     public String useConfig() default "";
     /**该属性可以通来定义informeds属性所表示的切入点集合所使用的默认aop切入点表达式，默认值是*。*/
     public String defaultPointcut() default "*";
     /**该类描述作用于这些切点*/
-    public AopInformed[] informeds();
+    public AopInformed[] informeds() default {};
+    /**生成类时候使用的生成模式。*/
+    public BuilderMode mode() default BuilderMode.Super;
 }

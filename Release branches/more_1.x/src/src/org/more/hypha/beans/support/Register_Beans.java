@@ -17,62 +17,63 @@ package org.more.hypha.beans.support;
 import org.more.core.xml.XmlParserKit;
 import org.more.hypha.DefineResource;
 import org.more.hypha.beans.TypeManager;
-import org.more.hypha.configuration.DefineResourceImpl;
 import org.more.hypha.configuration.NameSpaceRegister;
+import org.more.hypha.configuration.XmlConfiguration;
 /**
  * 该类实现了{@link NameSpaceRegister}接口并且提供了对命名空间“http://project.byshell.org/more/schema/beans”的解析支持。
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Register_Beans implements NameSpaceRegister {
-    /**提供支持的命名空间*/
+    /**如果没有指定namespaceURL参数则该常量将会指定默认的命名空间。*/
     public static final String DefaultNameSpaceURL = "http://project.byshell.org/more/schema/beans";
     /**执行初始化注册。*/
-    public void initRegister(String namespaceURL, DefineResource resource) {
-        DefineResourceImpl config = (DefineResourceImpl) resource;
+    public void initRegister(String namespaceURL, XmlConfiguration configuration, DefineResource resource) {
         //1.注册标签解析器
         XmlParserKit kit = new XmlParserKit();
-        kit.regeditHook("/beans", new TagBeans_Beans(config));
-        kit.regeditHook("/beans/meta", new TagBeans_MetaData(config));
-        kit.regeditHook("/beans/defaultPackage", new TagBeans_DefaultPackage(config));
-        kit.regeditHook(new String[] { "/beans/package", "/beans/*/package" }, new TagBeans_Package(config));
+        kit.regeditHook("/beans", new TagBeans_Beans(resource));
+        kit.regeditHook("/beans/meta", new TagBeans_MetaData(resource));
+        kit.regeditHook("/beans/defaultPackage", new TagBeans_DefaultPackage(resource));
+        kit.regeditHook(new String[] { "/beans/package", "/beans/*/package" }, new TagBeans_Package(resource));
         //
-        kit.regeditHook(new String[] { "/beans/classBean", "/beans/*/classBean" }, new TagBeans_ClassBean(config));
-        kit.regeditHook(new String[] { "/beans/generateBean", "/beans/*/generateBean" }, new TagBeans_GenerateBean(config));
-        kit.regeditHook(new String[] { "/beans/refBean", "/beans/*/refBean" }, new TagBeans_RefBean(config));
-        kit.regeditHook(new String[] { "/beans/scriptBean", "/beans/*/scriptBean" }, new TagBeans_ScriptBean(config));//同时具备text和element
-        kit.regeditHook(new String[] { "/beans/templateBean", "/beans/*/templateBean" }, new TagBeans_TemplateBean(config));
-        kit.regeditHook(new String[] { "/beans/varBean", "/beans/*/varBean" }, new TagBeans_VarBean(config));
+        kit.regeditHook(new String[] { "/beans/classBean", "/beans/*/classBean" }, new TagBeans_ClassBean(resource));
+        kit.regeditHook(new String[] { "/beans/generateBean", "/beans/*/generateBean" }, new TagBeans_GenerateBean(resource));
+        kit.regeditHook(new String[] { "/beans/refBean", "/beans/*/refBean" }, new TagBeans_RefBean(resource));
+        kit.regeditHook(new String[] { "/beans/scriptBean", "/beans/*/scriptBean" }, new TagBeans_ScriptBean(resource));//同时具备text和element
+        kit.regeditHook(new String[] { "/beans/templateBean", "/beans/*/templateBean" }, new TagBeans_TemplateBean(resource));
+        kit.regeditHook(new String[] { "/beans/varBean", "/beans/*/varBean" }, new TagBeans_VarBean(resource));
         //
-        kit.regeditHook("/beans/*Bean/constructor-arg", new TagBeans_Constructor(config));
-        kit.regeditHook("/beans/*Bean/property", new TagBeans_Property(config));
-        kit.regeditHook("/beans/*Bean/meta", new TagBeans_MetaData(config));
-        kit.regeditHook("/beans/*Bean/*/meta", new TagBeans_MetaData(config));
-        kit.regeditHook("/beans/*Bean/method", new TagBeans_Method(config));
-        kit.regeditHook("/beans/*Bean/method/param", new TagBeans_Param(config));
+        kit.regeditHook("/beans/*Bean/constructor-arg", new TagBeans_Constructor(resource));
+        kit.regeditHook("/beans/*Bean/property", new TagBeans_Property(resource));
+        kit.regeditHook("/beans/*Bean/meta", new TagBeans_MetaData(resource));
+        kit.regeditHook("/beans/*Bean/*/meta", new TagBeans_MetaData(resource));
+        kit.regeditHook("/beans/*Bean/method", new TagBeans_Method(resource));
+        kit.regeditHook("/beans/*Bean/method/param", new TagBeans_Param(resource));
         //
-        kit.regeditHook("/beans/*Bean/*/value", new TagBeans_Value(config));
-        kit.regeditHook("/beans/*Bean/*/date", new TagBeans_Date(config));
-        kit.regeditHook("/beans/*Bean/*/enum", new TagBeans_Enum(config));
-        kit.regeditHook("/beans/*Bean/*/bigText", new TagBeans_BigText(config));
-        kit.regeditHook("/beans/*Bean/*/ref", new TagBeans_Ref(config));
-        kit.regeditHook("/beans/*Bean/*/file", new TagBeans_File(config));
-        kit.regeditHook("/beans/*Bean/*/directory", new TagBeans_Directory(config));
-        kit.regeditHook("/beans/*Bean/*/uri", new TagBeans_URI(config));
-        kit.regeditHook("/beans/*Bean/*/array", new TagBeans_Array(config));
-        kit.regeditHook("/beans/*Bean/*/set", new TagBeans_Set(config));
-        kit.regeditHook("/beans/*Bean/*/list", new TagBeans_List(config));
-        kit.regeditHook("/beans/*Bean/*/map", new TagBeans_Map(config));
-        kit.regeditHook("/beans/*Bean/*/map/entity", new TagBeans_Entity(config));
+        kit.regeditHook("/beans/*Bean/*/value", new TagBeans_Value(resource));
+        kit.regeditHook("/beans/*Bean/*/date", new TagBeans_Date(resource));
+        kit.regeditHook("/beans/*Bean/*/enum", new TagBeans_Enum(resource));
+        kit.regeditHook("/beans/*Bean/*/bigText", new TagBeans_BigText(resource));
+        kit.regeditHook("/beans/*Bean/*/ref", new TagBeans_Ref(resource));
+        kit.regeditHook("/beans/*Bean/*/file", new TagBeans_File(resource));
+        kit.regeditHook("/beans/*Bean/*/directory", new TagBeans_Directory(resource));
+        kit.regeditHook("/beans/*Bean/*/uri", new TagBeans_URI(resource));
+        kit.regeditHook("/beans/*Bean/*/el", new TagBeans_EL(resource));
+        kit.regeditHook("/beans/*Bean/*/array", new TagBeans_Array(resource));
+        kit.regeditHook("/beans/*Bean/*/set", new TagBeans_Set(resource));
+        kit.regeditHook("/beans/*Bean/*/list", new TagBeans_List(resource));
+        kit.regeditHook("/beans/*Bean/*/map", new TagBeans_Map(resource));
+        kit.regeditHook("/beans/*Bean/*/map/entity", new TagBeans_Entity(resource));
         //
         //2.注册命名空间
         if (namespaceURL == null)
             namespaceURL = DefaultNameSpaceURL;
-        config.regeditXmlParserKit(namespaceURL, kit);
+        configuration.regeditXmlParserKit(namespaceURL, kit);
         //3.注册快速属性值解析器，顺序就是优先级。
         /*当xml中试图配置了多种属性类别值时候优先级将会起到作用，列如同时配置了value 和 refBean属性。那么value的优先级比refBean高。*/
-        TypeManager typeManager = config.getTypeManager();
+        TypeManager typeManager = configuration.getTypeManager();
         typeManager.regeditTypeParser(new QPP_Value());
+        typeManager.regeditTypeParser(new QPP_EL());
         typeManager.regeditTypeParser(new QPP_Date());
         typeManager.regeditTypeParser(new QPP_Enum());
         typeManager.regeditTypeParser(new QPP_Ref());

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -217,14 +218,24 @@ public class EngineToos implements Opcodes {
             return atClass.getDeclaredMethod(name, paramType);
         }
     }
-    /**返回一个类的多有方法，其中包含了父类方法。*/
-    public static ArrayList<Method> findAllMethod(Class<?> atClass) throws SecurityException, NoSuchMethodException {
+    /**返回一个类的多个方法，其中包含了类定义的私有方法和父类中可见的方法。*/
+    public static ArrayList<Method> findAllMethod(Class<?> atClass) {
         ArrayList<Method> al = new ArrayList<Method>();
         Method[] m1 = atClass.getDeclaredMethods();
         Collections.addAll(al, m1);
         for (Method m : atClass.getMethods())
             if (al.contains(m) == false)
                 al.add(m);
+        return al;
+    }
+    /**返回一个类的多个字段，其中包含了类定义的私有字段和父类中可见的字段。*/
+    public static ArrayList<Field> findAllField(Class<?> atClass) {
+        ArrayList<Field> al = new ArrayList<Field>();
+        Field[] m1 = atClass.getDeclaredFields();
+        Collections.addAll(al, m1);
+        for (Field f : atClass.getFields())
+            if (al.contains(f) == false)
+                al.add(f);
         return al;
     }
     /**将一个Ljava/lang/Object;形式的字符串转化为java/lang/Object形式。*/
@@ -361,4 +372,26 @@ public class EngineToos implements Opcodes {
         else
             return null;
     };
+    /**检查类型是否为一个基本类型或其包装类型，基本类型包括了boolean, byte, char, short, int, long, float, 和 double*/
+    public static boolean isBaseType(Class<?> type) {
+        if (type.isPrimitive() == true)
+            return true;
+        if (type == Boolean.class)
+            return true;
+        if (type == Byte.class)
+            return true;
+        if (type == Character.class)
+            return true;
+        if (type == Short.class)
+            return true;
+        if (type == Integer.class)
+            return true;
+        if (type == Long.class)
+            return true;
+        if (type == Float.class)
+            return true;
+        if (type == Double.class)
+            return true;
+        return false;
+    }
 }

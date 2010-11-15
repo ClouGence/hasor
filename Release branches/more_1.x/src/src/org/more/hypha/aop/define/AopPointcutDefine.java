@@ -24,7 +24,7 @@ public class AopPointcutDefine extends AbstractPointcutDefine {
     private String expression = null;
     /**获取匹配字符串。*/
     public String getExpression() {
-        return expression;
+        return this.expression;
     }
     /**设置表达式*/
     public void setExpression(String expression) {

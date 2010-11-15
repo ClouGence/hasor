@@ -22,11 +22,11 @@ import org.more.hypha.beans.ValueMetaData;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractPropertyDefine extends AbstractDefine implements org.more.hypha.beans.AbstractPropertyDefine {
-    private Class<?>      classType     = null; //属性类型
+    private Class<?>      classType     = null; //当执行属性注入时需要执行的类型转换类型
     private String        description   = null; //属性描述
     private ValueMetaData valueMetaData = null; //值描述
     //-------------------------------------------------------------
-    /**返回这个属性的Java类型。*/
+    /**返回当执行属性注入时需要执行的类型转换类型。*/
     public Class<?> getClassType() {
         return this.classType;
     };
@@ -38,7 +38,7 @@ public abstract class AbstractPropertyDefine extends AbstractDefine implements o
     public ValueMetaData getMetaData() {
         return this.valueMetaData;
     };
-    //------------------------------------------------------------- 
+    //-------------------------------------------------------------
     /**设置属性值的描述信息*/
     public void setValueMetaData(ValueMetaData valueMetaData) {
         this.valueMetaData = valueMetaData;

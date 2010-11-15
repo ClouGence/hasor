@@ -32,8 +32,6 @@ public @interface Bean {
     public String name() default "";
     /**逻辑包名，该配置允许在不影响bean已所属某个包的情况下去分配它属于另外一个包的权利。如果没有指定该属性值那么该值将会采用当前类所属的真实包名作为值。*/
     public String logicPackage() default "";
-    /**该Bean所支持的作用域。*/
-    public String scope() default "";
     /**是否为单态模式，默认为true*/
     public boolean singleton() default true;
     /**是否延迟初始化这个bean，只有当bean是单态模式下才生效。默认该配置是true。*/
@@ -46,4 +44,6 @@ public @interface Bean {
     public String useTemplate() default "";
     /**注释。*/
     public String description() default "";
+    /**携带的附加信息描述*/
+    public MetaData[] metaData() default {};
 }

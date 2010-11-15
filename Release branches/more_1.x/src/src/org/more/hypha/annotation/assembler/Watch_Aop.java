@@ -14,22 +14,29 @@
  * limitations under the License.
  */
 package org.more.hypha.annotation.assembler;
+import org.more.LostException;
 import org.more.hypha.DefineResource;
 import org.more.hypha.annotation.AnnotationDefineResourcePlugin;
 import org.more.hypha.annotation.Aop;
+import org.more.hypha.annotation.AopInformed;
 import org.more.hypha.annotation.Bean;
 import org.more.hypha.annotation.KeepWatchParser;
+import org.more.hypha.aop.AopBeanDefinePlugin;
+import org.more.hypha.aop.AopDefineResourcePlugin;
+import org.more.hypha.aop.define.AopConfigDefine;
+import org.more.hypha.aop.define.AopDefineInformed;
+import org.more.hypha.aop.define.AopPointcutDefine;
+import org.more.hypha.aop.define.PointcutType;
 import org.more.hypha.beans.AbstractBeanDefine;
-import org.more.hypha.configuration.DefineResourceImpl;
 /**
- * 
+ * 该bean用于解析aop的注解配置。
  * @version 2010-10-14
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Watch_Aop implements KeepWatchParser {
     public void process(Class<?> beanType, DefineResource resource, AnnotationDefineResourcePlugin plugin) {
-        DefineResourceImpl resourceImpl = (DefineResourceImpl) resource;
         Bean bean = beanType.getAnnotation(Bean.class);
+        AopDefineResourcePlugin aopPlugin = (AopDefineResourcePlugin) resource.getPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName);
         // ID
         String id = bean.id();
         if (id.equals("") == true) {
@@ -45,9 +52,47 @@ public class Watch_Aop implements KeepWatchParser {
             idb.append(name);
             id = idb.toString();
         }
-        //
-        AbstractBeanDefine define = resourceImpl.getBeanDefine(id);
+        //1.获取aop注解
+        AbstractBeanDefine define = resource.getBeanDefine(id);
         Aop aop = beanType.getAnnotation(Aop.class);
-        System.out.println("解析Aop:" + define + "\t\t" + aop);
+        if (aop == null)
+            return;
+        //2.检查useConfig属性。
+        AopConfigDefine aopConfig = null;
+        String var = aop.useConfig();
+        if (var.equals("") == false) {
+            aopConfig = aopPlugin.getAopDefine(var);
+            if (aopConfig == null)
+                throw new LostException("找不到名称为[" + var + "]的Aop配置。");
+            AopBeanDefinePlugin beanPlugin = new AopBeanDefinePlugin(define, aopConfig);
+            define.setPlugin(AopBeanDefinePlugin.AopPluginName, beanPlugin);
+            return;
+        }
+        //3.解析aop注解
+        aopConfig = new AopConfigDefine();
+        AopBeanDefinePlugin beanPlugin = new AopBeanDefinePlugin(define, aopConfig);
+        define.setPlugin(AopBeanDefinePlugin.AopPluginName, beanPlugin);
+        aopConfig.setAopMode(aop.mode());
+        //defaultPointcut
+        AopPointcutDefine aoppoint = new AopPointcutDefine();
+        aoppoint.setExpression(aop.defaultPointcut());
+        aopConfig.setDefaultPointcutDefine(aoppoint);
+        //informeds
+        AopInformed[] informeds = aop.informeds();
+        for (AopInformed informed : informeds) {
+            String refBean = informed.refBean();
+            String pointcut = informed.pointcut();
+            PointcutType pointType = informed.type();
+            //切入点定义
+            AopPointcutDefine aoppoint_item = new AopPointcutDefine();
+            aoppoint.setExpression(pointcut);
+            //监听器定义
+            AopDefineInformed informedDefine = new AopDefineInformed();
+            informedDefine.setRefBean(refBean);
+            informedDefine.setPointcutType(pointType);
+            informedDefine.setRefPointcut(aoppoint_item);
+            //
+            aopConfig.addInformed(informedDefine);
+        }
     }
 }

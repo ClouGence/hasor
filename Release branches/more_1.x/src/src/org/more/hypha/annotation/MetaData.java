@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.event;
-import org.more.hypha.Event;
+package org.more.hypha.annotation;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 /**
- * 装载Bean定义配置。
- * @version 2010-10-10
+ * 元信息描述
+ * @version 2010-11-11
  * @author 赵永春 (zyc@byshell.org)
  */
-public class LoadedDefineEvent extends Event {
-    /**创建{@link LoadedDefineEvent}对象。*/
-    public LoadedDefineEvent(Object target) {
-        super(target);
-    }
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MetaData {
+    /**键*/
+    public String key();
+    /**值*/
+    public String value();
 }

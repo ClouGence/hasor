@@ -15,12 +15,11 @@
  */
 package org.more.hypha.beans.support;
 import java.util.Map;
-import org.more.LostException;
+import org.more.NotFoundException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.beans.define.AbstractPropertyDefine;
+import org.more.hypha.DefineResource;
 import org.more.hypha.beans.define.Simple_ValueMetaData;
-import org.more.hypha.configuration.DefineResourceImpl;
 import org.more.util.StringConvert;
 /**
  * 用于解析value标签
@@ -29,7 +28,7 @@ import org.more.util.StringConvert;
  */
 public class TagBeans_Value extends TagBeans_AbstractValueMetaDataDefine<Simple_ValueMetaData> {
     /**创建{@link TagBeans_Value}对象*/
-    public TagBeans_Value(DefineResourceImpl configuration) {
+    public TagBeans_Value(DefineResource configuration) {
         super(configuration);
     }
     protected Simple_ValueMetaData createDefine() {
@@ -46,32 +45,19 @@ public class TagBeans_Value extends TagBeans_AbstractValueMetaDataDefine<Simple_
     /**开始标签*/
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
         super.beginElement(context, xpath, event);
-        AbstractPropertyDefine pdefine = (AbstractPropertyDefine) context.getAttribute(TagBeans_AbstractPropertyDefine.PropertyDefine);
         //1.准备数据
         String propTypeString = event.getAttributeValue("type");
         String propValueString = event.getAttributeValue("value");
         Class<?> propType = null;
         Object propValue = null;
         //2.解析type
-        if (propTypeString != null) {
-            VariableType typeEnum = (VariableType) StringConvert.changeType(propTypeString, VariableType.class);
-            if (typeEnum != null)
-                propType = getBaseType(typeEnum);
-            else
-                try {
-                    ClassLoader loader = Thread.currentThread().getContextClassLoader();
-                    propType = loader.loadClass(propTypeString);
-                    pdefine.setClassType(propType);
-                } catch (ClassNotFoundException e) {
-                    throw new LostException("ClassNotFoundException,属性类型[" + propTypeString + "]丢失.", e);
-                }
-        } else
-            propType = pdefine.getClassType();
-        //
-        if (propValueString != null)
-            if (propType == null)
-                /*当检测到value有值但是又没有定义type时候值类型采用的默认数据类型。*/
-                propType = Simple_ValueMetaData.DefaultValueType;
+        if (propTypeString != null)
+            propType = Util.getType(propTypeString);//这里决定的value标签不支持除基本类型之外的其他类型。
+        else
+            propType = Simple_ValueMetaData.DefaultValueType;
+        //3.不存在的或未定义的基本类型
+        if (propType == null)
+            throw new NotFoundException("不存在或未定义的基本类型：" + propTypeString);
         //3.转换属性值
         propValue = StringConvert.changeType(propValueString, propType);
         //4.设置属性值

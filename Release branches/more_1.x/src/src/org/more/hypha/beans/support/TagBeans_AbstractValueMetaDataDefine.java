@@ -16,10 +16,10 @@
 package org.more.hypha.beans.support;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
+import org.more.hypha.DefineResource;
 import org.more.hypha.beans.define.AbstractPropertyDefine;
 import org.more.hypha.beans.define.AbstractValueMetaData;
 import org.more.hypha.beans.define.Collection_ValueMetaData;
-import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 负责解析属性元信息标签的基类，该类考虑了值元信息的描述处于对另外一个值元信息的描述之中的情况。
  * @version 2010-9-19
@@ -29,7 +29,7 @@ public abstract class TagBeans_AbstractValueMetaDataDefine<T extends AbstractVal
     /**属性值元信息.*/
     public static final String ValueMetaDataDefine = "$more_Beans_ValueMetaDataDefine";
     /**创建{@link TagBeans_AbstractValueMetaDataDefine}对象*/
-    public TagBeans_AbstractValueMetaDataDefine(DefineResourceImpl configuration) {
+    public TagBeans_AbstractValueMetaDataDefine(DefineResource configuration) {
         super(configuration);
     }
     /**属性的定义名称*/
@@ -48,10 +48,13 @@ public abstract class TagBeans_AbstractValueMetaDataDefine<T extends AbstractVal
         AbstractValueMetaData parentMetaData = (AbstractValueMetaData) context.getParentStack().getAttribute(ValueMetaDataDefine);
         //
         if (parentMetaData != null && parentMetaData instanceof Collection_ValueMetaData)
+            //这点代码的意思是如果当前描述信息处于另外一个Collection_ValueMetaData之下那么将这个描述信息添加到这个集合中。
+            //Map标签之所以不用注册key和var标签是因为这里，map也是Collection_ValueMetaData一种。
             ((Collection_ValueMetaData) parentMetaData).addObject(currentMetaData);
         else {
             AbstractPropertyDefine pdefine = (AbstractPropertyDefine) context.getAttribute(TagBeans_AbstractPropertyDefine.PropertyDefine);
             if (currentMetaData != null)
+                /**属性值描述标签解析出的属性值具有比属性描述标签优先的特征。*/
                 pdefine.setValueMetaData(currentMetaData);
         }
         super.endElement(context, xpath, event);

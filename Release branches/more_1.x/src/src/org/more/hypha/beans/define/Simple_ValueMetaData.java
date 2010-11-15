@@ -23,30 +23,7 @@ import org.more.hypha.beans.ValueMetaData.PropertyMetaTypeEnum;
 public class Simple_ValueMetaData extends AbstractValueMetaData {
     /**当检测到value有值但是又没有定义type时候值类型采用的默认数据类型。*/
     public static final Class<?> DefaultValueType = String.class;
-    /**该枚举中定义了{@link Simple_ValueMetaData}类可以表示的基本类型。*/
-    public enum PropertyType {
-        /**null数据。*/
-        Null,
-        /**布尔类型。*/
-        Boolean,
-        /**字节类型。*/
-        Byte,
-        /**短整数类型。*/
-        Short,
-        /**整数类型。*/
-        Int,
-        /**长整数类型。*/
-        Long,
-        /**单精度浮点数类型。*/
-        Float,
-        /**双精度浮点数类型。*/
-        Double,
-        /**字符类型。*/
-        Char,
-        /**字符串类型。*/
-        String,
-    }
-    /**根据枚举获取其基本类型Class。*/
+    /**根据类型获取其枚举类型，当目标类型无法转换成PropertyType表述的基本类型枚举时返回null。*/
     public static PropertyType getPropertyType(Class<?> type) {
         if (type == null)
             return PropertyType.Null;
@@ -70,8 +47,35 @@ public class Simple_ValueMetaData extends AbstractValueMetaData {
             return PropertyType.String;
         else
             //转换默认值
-            return getPropertyType(DefaultValueType);
+            return null;
     }
+    /**根据枚举获取其基本类型Class，*/
+    public static Class<?> getPropertyType(PropertyType type) {
+        if (type == null)
+            throw new NullPointerException("参数type，不能为空。");
+        if (type == PropertyType.Null)
+            return null;
+        if (type == PropertyType.Boolean)
+            return boolean.class;
+        else if (type == PropertyType.Byte)
+            return byte.class;
+        else if (type == PropertyType.Short)
+            return short.class;
+        else if (type == PropertyType.Int)
+            return int.class;
+        else if (type == PropertyType.Long)
+            return long.class;
+        else if (type == PropertyType.Float)
+            return float.class;
+        else if (type == PropertyType.Double)
+            return double.class;
+        else if (type == PropertyType.Char)
+            return char.class;
+        else if (type == PropertyType.String)
+            return String.class;
+        return null;//永远不会调用这段代码
+    }
+    //---------------------------------------------------------------------------------------
     private PropertyType valueMetaType = PropertyType.Null; //值类型
     private Object       value         = null;             //值
     /**该方法将会返回{@link PropertyMetaTypeEnum#SimpleType}。*/

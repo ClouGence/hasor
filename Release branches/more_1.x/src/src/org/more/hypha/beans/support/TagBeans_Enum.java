@@ -18,17 +18,17 @@ import java.util.HashMap;
 import java.util.Map;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
+import org.more.hypha.DefineResource;
 import org.more.hypha.beans.define.AbstractPropertyDefine;
 import org.more.hypha.beans.define.Enum_ValueMetaData;
-import org.more.hypha.configuration.DefineResourceImpl;
 /**
- * 用于解析enum标签
+ * 用于解析enum标签，该标签使用的枚举类型与属性定义类型一致。
  * @version 2010-9-22
  * @author 赵永春 (zyc@byshell.org)
  */
 public class TagBeans_Enum extends TagBeans_AbstractValueMetaDataDefine<Enum_ValueMetaData> {
     /**创建{@link TagBeans_Enum}对象*/
-    public TagBeans_Enum(DefineResourceImpl configuration) {
+    public TagBeans_Enum(DefineResource configuration) {
         super(configuration);
     }
     /**创建{@link Enum_ValueMetaData}对象。*/

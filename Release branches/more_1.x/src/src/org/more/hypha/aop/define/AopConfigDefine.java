@@ -25,7 +25,6 @@ import org.more.hypha.AbstractDefine;
  */
 public class AopConfigDefine extends AbstractDefine {
     private String                      name                  = null; //配置名
-    private AopConfigDefine             useTemplate           = null; //使用的模板
     private BuilderMode                 aopMode               = null; //aop的生成策略
     private AbstractPointcutDefine      defaultPointcutDefine = null; //默认切点
     //
@@ -52,14 +51,6 @@ public class AopConfigDefine extends AbstractDefine {
     /**设置默认aop切点配置*/
     public void setDefaultPointcutDefine(AbstractPointcutDefine defaultPointcutDefine) {
         this.defaultPointcutDefine = defaultPointcutDefine;
-    }
-    /**获取aop配置所使用的配置模板。*/
-    public AopConfigDefine getUseTemplate() {
-        return this.useTemplate;
-    }
-    /**设置aop配置所使用的配置模板。*/
-    public void setUseTemplate(AopConfigDefine useTemplate) {
-        this.useTemplate = useTemplate;
     }
     /**获取aop切点执行器*/
     public List<AbstractInformed> getAopInformedList() {

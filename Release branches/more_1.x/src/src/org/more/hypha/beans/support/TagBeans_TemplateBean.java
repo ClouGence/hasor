@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.support;
+import org.more.hypha.DefineResource;
 import org.more.hypha.beans.define.TemplateBeanDefine;
-import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析/beans/templateBean标签
  * @version 2010-9-16
@@ -23,7 +23,7 @@ import org.more.hypha.configuration.DefineResourceImpl;
  */
 public class TagBeans_TemplateBean extends TagBeans_AbstractBeanDefine<TemplateBeanDefine> {
     /**创建{@link TagBeans_TemplateBean}对象*/
-    public TagBeans_TemplateBean(DefineResourceImpl configuration) {
+    public TagBeans_TemplateBean(DefineResource configuration) {
         super(configuration);
     }
     /**创建{@link TemplateBeanDefine}对象。*/

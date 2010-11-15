@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.support;
+import org.more.core.classcode.EngineToos;
 import org.more.hypha.beans.AbstractPropertyDefine;
 import org.more.hypha.beans.TypeParser;
 import org.more.hypha.beans.ValueMetaData;
@@ -21,21 +22,24 @@ import org.more.hypha.beans.define.Simple_ValueMetaData;
 import org.more.util.StringConvert;
 import org.more.util.attribute.IAttribute;
 /**
- * 默认属性值解析器，默认属性类型是String
- * @version 2010-9-22
+ * {@link QPP_Value}不处理boolean,byte,short,int,long,float,double,char,string
+ * 之外的任何类型，但其包装类型属于处理范畴。如果取不到value属性则也不会处理。
+ * @version 2010-11-11
  * @author 赵永春 (zyc@byshell.org)
  */
 public class QPP_Value implements TypeParser {
-    /**试图解析成为{@link Simple_ValueMetaData}如果解析失败返回null。*/
-    public ValueMetaData parser(String value, IAttribute attribute, AbstractPropertyDefine property) {
-        //1.检查是否可以解析
+    public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
+        String value = (String) attribute.getAttribute("value");
         if (value == null)
             return null;
-        //2.进行解析
+        //2.不处理boolean,byte,short,int,long,float,double,char,string之外的任何类型。
         Class<?> propType = property.getClassType();
-        if (propType == null)
-            //当检测到value有值但是又没有定义type时候值类型采用的默认数据类型。
+        if (propType != null)
+            if (EngineToos.isBaseType(propType) == true || propType == String.class) {} else
+                return null;
+        else
             propType = Simple_ValueMetaData.DefaultValueType;
+        //2.解析
         Object var = StringConvert.changeType(value, propType);
         Simple_ValueMetaData newMEDATA = new Simple_ValueMetaData();
         newMEDATA.setValue(var);

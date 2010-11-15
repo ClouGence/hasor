@@ -22,29 +22,29 @@ import org.more.hypha.annotation.Bean;
 import org.more.hypha.annotation.assembler.AnnotationDefineResourcePluginImpl;
 import org.more.hypha.annotation.assembler.Watch_Aop;
 import org.more.hypha.annotation.assembler.Watch_Bean;
-import org.more.hypha.configuration.DefineResourceImpl;
 import org.more.hypha.configuration.NameSpaceRegister;
+import org.more.hypha.configuration.XmlConfiguration;
 /**
  * 该类实现了{@link NameSpaceRegister}接口并且提供了对命名空间“http://project.byshell.org/more/schema/annotation”的解析支持。
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Register_Anno implements NameSpaceRegister {
+    /**如果没有指定namespaceURL参数则该常量将会指定默认的命名空间。*/
     public static final String DefaultNameSpaceURL = "http://project.byshell.org/more/schema/annotation";
     /**执行初始化注册。*/
-    public void initRegister(String namespaceURL, DefineResource resource) {
-        DefineResourceImpl config = (DefineResourceImpl) resource;
+    public void initRegister(String namespaceURL, XmlConfiguration configuration, DefineResource resource) {
         //1.注册注解监视器
-        AnnotationDefineResourcePlugin plugin = new AnnotationDefineResourcePluginImpl(config);
+        AnnotationDefineResourcePlugin plugin = new AnnotationDefineResourcePluginImpl(resource);
         plugin.registerAnnoKeepWatch(Bean.class, new Watch_Bean());//解析Bean
         plugin.registerAnnoKeepWatch(Aop.class, new Watch_Aop());//解析Aop
-        config.setPlugin(AnnotationDefineResourcePlugin.AnnoDefineResourcePluginName, plugin);
+        resource.setPlugin(AnnotationDefineResourcePlugin.AnnoDefineResourcePluginName, plugin);
         //2.注册标签解析器
         XmlParserKit kit = new XmlParserKit();
-        kit.regeditHook("/anno", new TagAnno_Anno(config));
+        kit.regeditHook("/anno", new TagAnno_Anno(resource));
         //3.注册命名空间
         if (namespaceURL == null)
             namespaceURL = DefaultNameSpaceURL;
-        config.regeditXmlParserKit(namespaceURL, kit);
+        configuration.regeditXmlParserKit(namespaceURL, kit);
     }
 }

@@ -20,21 +20,17 @@ import org.more.hypha.beans.ValueMetaData;
 import org.more.hypha.beans.define.Date_ValueMetaData;
 import org.more.util.attribute.IAttribute;
 /**
- * 时间类型属性值解析器。
+ * 将value的值转换为Date类型表述。<br/>
  * @version 2010-9-23
  * @author 赵永春 (zyc@byshell.org)
  */
 public class QPP_Date implements TypeParser {
-    /**试图解析成为{@link Date_ValueMetaData}如果解析失败返回null。*/
-    @Override
-    public ValueMetaData parser(String value, IAttribute attribute, AbstractPropertyDefine property) {
-        //1.检查是否可以解析
-        if (value == null)
-            value = (String) attribute.getAttribute("date");
+    public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
+        String value = (String) attribute.getAttribute("date");
         if (value == null)
             return null;
-        String format = (String) attribute.getAttribute("format");
         //2.进行解析
+        String format = (String) attribute.getAttribute("format");
         Date_ValueMetaData newMETA = new Date_ValueMetaData();
         newMETA.setDateString(value);
         newMETA.setFormatString(format);

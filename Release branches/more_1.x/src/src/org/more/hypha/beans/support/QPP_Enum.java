@@ -26,10 +26,9 @@ import org.more.util.attribute.IAttribute;
  */
 public class QPP_Enum implements TypeParser {
     /**试图解析成为{@link Enum_ValueMetaData}如果解析失败返回null。*/
-    public ValueMetaData parser(String value, IAttribute attribute, AbstractPropertyDefine property) {
+    public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
         //1.检查是否可以解析
-        if (value == null)
-            value = (String) attribute.getAttribute("enum");
+        String value = (String) attribute.getAttribute("enum");
         if (value == null)
             return null;
         //2.进行解析

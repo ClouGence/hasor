@@ -18,8 +18,8 @@ import java.util.Map;
 import org.more.LostException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
+import org.more.hypha.DefineResource;
 import org.more.hypha.beans.define.ClassBeanDefine;
-import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析/beans/classBean标签
  * @version 2010-9-16
@@ -27,7 +27,7 @@ import org.more.hypha.configuration.DefineResourceImpl;
  */
 public class TagBeans_ClassBean extends TagBeans_AbstractBeanDefine<ClassBeanDefine> {
     /**创建{@link TagBeans_ClassBean}对象*/
-    public TagBeans_ClassBean(DefineResourceImpl configuration) {
+    public TagBeans_ClassBean(DefineResource configuration) {
         super(configuration);
     }
     /**创建{@link ClassBeanDefine}对象。*/
@@ -46,7 +46,7 @@ public class TagBeans_ClassBean extends TagBeans_AbstractBeanDefine<ClassBeanDef
     }
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
         super.beginElement(context, xpath, event);
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        ClassLoader loader = this.getDefineResource().getClassLoader();
         String source = event.getAttributeValue("class");
         ClassBeanDefine define = this.getDefine(context);
         try {

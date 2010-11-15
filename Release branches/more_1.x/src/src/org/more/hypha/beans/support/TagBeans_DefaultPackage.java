@@ -18,8 +18,8 @@ import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
+import org.more.hypha.DefineResource;
 import org.more.hypha.configuration.Tag_Abstract;
-import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析/defaultPackage标签
  * @version 2010-9-16
@@ -29,14 +29,15 @@ public class TagBeans_DefaultPackage extends Tag_Abstract implements XmlElementH
     /**默认包位置*/
     public static String DefaultPackage = null;
     /**创建{@link TagBeans_DefaultPackage}对象*/
-    public TagBeans_DefaultPackage(DefineResourceImpl configuration) {
+    public TagBeans_DefaultPackage(DefineResource configuration) {
         super(configuration);
     }
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
         String logicPackage = event.getAttributeValue("package");
         if (logicPackage == null || logicPackage.equals("") == true)
-            throw new NullPointerException("解析器解析到defaultPackage标签未定义有效的pakcage属性。");
-        DefaultPackage = logicPackage;
+            DefaultPackage = null;
+        else
+            DefaultPackage = logicPackage;
     }
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
 }

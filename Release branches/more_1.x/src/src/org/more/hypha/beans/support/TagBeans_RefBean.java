@@ -15,8 +15,8 @@
  */
 package org.more.hypha.beans.support;
 import java.util.Map;
+import org.more.hypha.DefineResource;
 import org.more.hypha.beans.define.RelationBeanDefine;
-import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析/beans/refBean标签
  * @version 2010-9-16
@@ -24,7 +24,7 @@ import org.more.hypha.configuration.DefineResourceImpl;
  */
 public class TagBeans_RefBean extends TagBeans_AbstractBeanDefine<RelationBeanDefine> {
     /**创建{@link TagBeans_RefBean}对象*/
-    public TagBeans_RefBean(DefineResourceImpl configuration) {
+    public TagBeans_RefBean(DefineResource configuration) {
         super(configuration);
     }
     /**创建{@link RelationBeanDefine}对象。*/
@@ -33,13 +33,12 @@ public class TagBeans_RefBean extends TagBeans_AbstractBeanDefine<RelationBeanDe
     }
     /**定义引用类型Bean的属性*/
     public enum PropertyKey {
-        ref, refScope
+        ref
     };
     /**关联属性与xml的属性对应关系。*/
     protected Map<Enum<?>, String> getPropertyMappings() {
         Map<Enum<?>, String> propertys = super.getPropertyMappings();
         propertys.put(PropertyKey.ref, "ref");
-        propertys.put(PropertyKey.refScope, "refScope");
         return propertys;
     }
 }

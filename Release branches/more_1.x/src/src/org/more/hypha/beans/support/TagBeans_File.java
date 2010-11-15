@@ -18,8 +18,8 @@ import java.io.File;
 import java.util.Map;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
+import org.more.hypha.DefineResource;
 import org.more.hypha.beans.define.File_ValueMetaData;
-import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析file标签
  * @version 2010-9-22
@@ -27,7 +27,7 @@ import org.more.hypha.configuration.DefineResourceImpl;
  */
 public class TagBeans_File extends TagBeans_AbstractValueMetaDataDefine<File_ValueMetaData> {
     /**创建{@link TagBeans_File}对象*/
-    public TagBeans_File(DefineResourceImpl configuration) {
+    public TagBeans_File(DefineResource configuration) {
         super(configuration);
     }
     /**创建{@link File_ValueMetaData}对象。*/

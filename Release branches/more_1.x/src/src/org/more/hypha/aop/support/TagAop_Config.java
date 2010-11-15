@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package org.more.hypha.aop.support;
-import org.more.NotFoundException;
 import org.more.RepeateException;
 import org.more.core.classcode.BuilderMode;
 import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
+import org.more.hypha.DefineResource;
 import org.more.hypha.aop.AopBeanDefinePlugin;
 import org.more.hypha.aop.AopDefineResourcePlugin;
 import org.more.hypha.aop.define.AbstractInformed;
@@ -29,7 +29,6 @@ import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.beans.support.TagBeans_AbstractBeanDefine;
 import org.more.hypha.configuration.Tag_Abstract;
-import org.more.hypha.configuration.DefineResourceImpl;
 import org.more.util.StringConvert;
 /**
  * 用于解析aop:config标签
@@ -39,7 +38,7 @@ import org.more.util.StringConvert;
 public class TagAop_Config extends Tag_Abstract implements XmlElementHook {
     public static final String ConfigDefine = "$more_Aop_Config";
     /**创建{@link TagAop_Config}对象。*/
-    public TagAop_Config(DefineResourceImpl configuration) {
+    public TagAop_Config(DefineResource configuration) {
         super(configuration);
     }
     /**开始标签处理。*/
@@ -52,15 +51,6 @@ public class TagAop_Config extends Tag_Abstract implements XmlElementHook {
         config.setName(name);
         BuilderMode mode = (BuilderMode) StringConvert.changeType(aopMode, BuilderMode.class, BuilderMode.Super);
         config.setAopMode(mode);
-        //att :useTemplate
-        AopDefineResourcePlugin plugin = (AopDefineResourcePlugin) this.getConfiguration().getPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName);
-        String useTemplate = event.getAttributeValue("useTemplate");
-        if (useTemplate != null) {
-            AopConfigDefine templateConfig = plugin.getAopDefine(useTemplate);
-            if (templateConfig == null)
-                throw new NotFoundException("不存在名称为[" + useTemplate + "]的aop配置可作为模板。");
-            config.setUseTemplate(templateConfig);
-        }
         context.setAttribute(ConfigDefine, config);
     }
     /**结束标签处理。*/
@@ -78,7 +68,7 @@ public class TagAop_Config extends Tag_Abstract implements XmlElementHook {
             return;
         }
         //3.注册到AopDefineResourcePlugin中。
-        AopDefineResourcePlugin plugin = (AopDefineResourcePlugin) this.getConfiguration().getPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName);
+        AopDefineResourcePlugin plugin = (AopDefineResourcePlugin) this.getDefineResource().getPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName);
         String name = config.getName();
         if (name != null)
             if (plugin.containAopDefine(name) == false)

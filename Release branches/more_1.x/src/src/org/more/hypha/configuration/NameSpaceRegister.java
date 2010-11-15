@@ -23,6 +23,11 @@ import org.more.hypha.DefineResource;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface NameSpaceRegister {
-    /**执行注册*/
-    public void initRegister(String namespaceURL, DefineResource resource);
+    /**
+     * 执行注册
+     * @param namespaceURL 配置文件配置的命名空间。
+     * @param configuration {@link XmlConfiguration}对象。
+     * @param resource {@link DefineResource}接口对象。
+     */
+    public void initRegister(String namespaceURL, XmlConfiguration configuration, DefineResource resource) throws Throwable;
 }

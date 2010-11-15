@@ -20,9 +20,8 @@ package org.more.hypha.beans.define;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class ParamDefine extends AbstractPropertyDefine {
-    private String name = null; //参数名
-    //-------------------------------------------------------------
-    /**返回bean的名称，在同一个Factory中name是唯一的。*/
+    private String name = null; //属性名
+    /**返回属性名。*/
     public String getName() {
         return this.name;
     }

@@ -14,36 +14,37 @@
  * limitations under the License.
  */
 package org.more.hypha.aop.support;
+import org.more.hypha.DefineResource;
 import org.more.hypha.Event;
 import org.more.hypha.EventListener;
 import org.more.hypha.aop.AopBeanDefinePlugin;
 import org.more.hypha.aop.AopDefineResourcePlugin;
 import org.more.hypha.beans.AbstractBeanDefine;
-import org.more.hypha.configuration.DefineResourceImpl;
-import org.more.hypha.event.EndBuildEvent;
+import org.more.hypha.event.Config_EndBuildEvent;
 import org.more.util.StringUtil;
 /**
- * 该类是当{@link DefineResourceImpl}触发{@link EndBuildEvent}类型事件时处理anno:apply标签配置的应用Package级别操作。
+ * 该类是当{@link DefineResourceImpl}触发{@link Config_EndBuildEvent}类型事件时处理anno:apply标签配置的应用Bean级别操作。
  * @version 2010-10-11
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TagAop_ToPackageApplyListener implements EventListener {
-    private String config = null, toPackageExp = "*";
+public class Listener_ToBeanApply implements EventListener {
+    private String config = null, toBeanExp = "*";
     //----------------------------------------------
-    /**创建{@link TagAop_ToPackageApplyListener}对象。*/
-    public TagAop_ToPackageApplyListener(String config, String toPackageExp) {
+    /**创建{@link Listener_ToBeanApply}对象。*/
+    public Listener_ToBeanApply(String config, String toBeanExp) {
         this.config = config;
-        this.toPackageExp = toPackageExp;
+        this.toBeanExp = toBeanExp;
     }
-    /**执行Package应用。*/
+    /**执行Bean应用。*/
     public void onEvent(Event event) {
-        DefineResourceImpl config = (DefineResourceImpl) event.getTarget();
+        Config_EndBuildEvent eve = (Config_EndBuildEvent) event;
+        DefineResource config = eve.getResource();
         AopDefineResourcePlugin aopPlugin = (AopDefineResourcePlugin) config.getPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName);
-        for (String defineName : config.getBeanDefineNames()) {
-            AbstractBeanDefine define = config.getBeanDefine(defineName);
-            if (StringUtil.matchWild(this.toPackageExp, define.getFullName()) == true)
+        for (String defineName : config.getBeanDefineNames())
+            if (StringUtil.matchWild(this.toBeanExp, defineName) == true) {
+                AbstractBeanDefine define = config.getBeanDefine(defineName);
                 if (define.getPlugin(AopBeanDefinePlugin.AopPluginName) == null)
                     aopPlugin.setAop(define, this.config);
-        }
+            }
     }
 }

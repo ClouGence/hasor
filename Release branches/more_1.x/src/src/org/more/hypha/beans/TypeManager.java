@@ -15,9 +15,9 @@
  */
 package org.more.hypha.beans;
 import java.util.ArrayList;
+import org.more.hypha.beans.define.PropertyType;
 import org.more.hypha.beans.define.Simple_ValueMetaData;
-import org.more.hypha.beans.define.Simple_ValueMetaData.PropertyType;
-import org.more.util.attribute.AttBase;
+import org.more.util.attribute.IAttribute;
 /**
  * 类型解析器，将字符串值解析为指定的类型。
  * @version 2010-10-10
@@ -39,11 +39,11 @@ public class TypeManager {
         if (this.parserList.contains(parser) == true)
             this.parserList.remove(parser);
     }
-    /**将属性值解析为某一特定类型的值，将value表述的值转换成指定的元信息描述。如果toType参数为空则使用String.class代替。*/
-    public synchronized ValueMetaData parserType(String value, AttBase att, AbstractPropertyDefine property) {
+    /**将属性值解析为某一特定类型的值，将value表述的值转换成指定的元信息描述。*/
+    public synchronized ValueMetaData parserType(IAttribute att, AbstractPropertyDefine property) {
         ValueMetaData valueMETADATA = null;
         for (TypeParser tp : parserList) {
-            valueMETADATA = tp.parser(value, att, property);
+            valueMETADATA = tp.parser(att, property);
             if (valueMETADATA != null)
                 return valueMETADATA;
         }

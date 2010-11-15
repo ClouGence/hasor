@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
-	<regedit>
+	<!-- initSequence应当大于零，小于零的属于more预留。 -->
+	<regedit initSequence="-10">
 		<namespace>http://project.byshell.org/more/schema/beans</namespace>
 		<factory>org.more.hypha.beans.support.Register_Beans</factory>
 		<schema enable="false">/META-INF/resource/beans/beans-schema.xsd</schema>
 	</regedit>
-	<regedit>
+	<regedit initSequence="-10">
 		<namespace>http://project.byshell.org/more/schema/beans-aop</namespace>
 		<factory>org.more.hypha.aop.support.Register_Aop</factory>
 		<schema enable="false">/META-INF/resource/beans/beans-aop-schema.xsd</schema>
 	</regedit>
-	<regedit>
+	<regedit initSequence="-10">
 		<namespace>http://project.byshell.org/more/schema/annotation</namespace>
 		<factory>org.more.hypha.annotation.support.Register_Anno</factory>
 		<schema enable="false">/META-INF/resource/beans/annotation-schema.xsd</schema>

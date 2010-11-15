@@ -21,7 +21,7 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface AbstractPropertyDefine extends BeanDefinePluginSet, IAttribute {
-    /**返回这个属性的Java类型。*/
+    /**返回当执行属性注入时需要执行的类型转换类型。*/
     public Class<?> getClassType();
     /**返回属性的描述信息。*/
     public String getDescription();

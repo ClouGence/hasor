@@ -18,13 +18,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.more.InitializationException;
-import org.more.core.asm.ClassReader;
-import org.more.core.asm.ClassWriter;
+import org.more.hypha.DefineResource;
 import org.more.hypha.Event;
 import org.more.hypha.EventListener;
 import org.more.hypha.annotation.AnnotationDefineResourcePlugin;
 import org.more.hypha.beans.AbstractBeanDefine;
-import org.more.hypha.configuration.DefineResourceImpl;
+import org.more.hypha.event.Config_EndBuildEvent;
 import org.more.util.ClassPathUtil;
 import org.more.util.ClassPathUtil.ScanItem;
 import org.more.util.ScanEvent;
@@ -44,27 +43,22 @@ public class TagListener implements EventListener {
     }
     /**处理注解解析。*/
     public void onEvent(final Event event) {
+        final Config_EndBuildEvent eve = (Config_EndBuildEvent) event;
         System.out.println("start ANNO at package:" + this.packageText);
         StringBuffer buffer = new StringBuffer(this.packageText.replace(".", "/"));
         if (buffer.charAt(0) != '/')
             buffer.insert(0, '/');
         try {
-            final DefineResourceImpl config = (DefineResourceImpl) event.getTarget();
-            final AnnotationDefineResourcePluginImpl engine = (AnnotationDefineResourcePluginImpl) config.getPlugin(AnnotationDefineResourcePlugin.AnnoDefineResourcePluginName);
+            final DefineResource config = eve.getResource();
+            final AnnotationDefineResourcePlugin engine = (AnnotationDefineResourcePlugin) config.getPlugin(AnnotationDefineResourcePlugin.AnnoDefineResourcePluginName);
             //
             ClassPathUtil.scan(buffer.toString(), new ScanItem() {
                 public boolean goFind(ScanEvent event, boolean isInJar, File context) throws FileNotFoundException, IOException, ClassNotFoundException {
                     //1.排除一切非Class数据
                     if (event.getName().endsWith(".class") == false)
                         return false;
-                    //2.通知引擎扫描这个类，确定是否有必要解析。使用ASM进行扫描增加速度。
-                    ClassReader reader = new ClassReader(event.getStream());
-                    EV_Class ev = new EV_Class(engine, new ClassWriter(ClassWriter.COMPUTE_MAXS));
-                    reader.accept(ev, ClassReader.SKIP_DEBUG);
-                    String className = ev.getClassName();
-                    //3.通知引擎执行解析，这个类中包含具备解析条件的注解。
-                    if (ev.isMark() == true)
-                        engine.parserClass(className, ev.getAnnos());
+                    //2.通知引擎扫描这个类，确定是否有必要解析。引擎会使用ASM进行扫描增加速度。
+                    engine.parserClass(event.getStream());
                     return false;
                 }
             });

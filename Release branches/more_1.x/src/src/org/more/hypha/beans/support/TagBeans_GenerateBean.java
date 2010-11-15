@@ -15,8 +15,8 @@
  */
 package org.more.hypha.beans.support;
 import java.util.Map;
+import org.more.hypha.DefineResource;
 import org.more.hypha.beans.define.GenerateBeanDefine;
-import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析/beans/generateBean标签
  * @version 2010-9-16
@@ -24,7 +24,7 @@ import org.more.hypha.configuration.DefineResourceImpl;
  */
 public class TagBeans_GenerateBean extends TagBeans_AbstractBeanDefine<GenerateBeanDefine> {
     /**创建{@link TagBeans_GenerateBean}对象*/
-    public TagBeans_GenerateBean(DefineResourceImpl configuration) {
+    public TagBeans_GenerateBean(DefineResource configuration) {
         super(configuration);
     }
     /**创建{@link GenerateBeanDefine}对象。*/

@@ -15,9 +15,9 @@
  */
 package org.more.hypha.configuration;
 import java.lang.reflect.Method;
-import java.util.Date;
 import org.more.DoesSupportException;
 import org.more.PropertyException;
+import org.more.hypha.DefineResource;
 import org.more.hypha.beans.define.VariableBeanDefine;
 import org.more.util.StringConvert;
 import org.more.util.StringUtil;
@@ -27,13 +27,13 @@ import org.more.util.StringUtil;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class Tag_Abstract {
-    private DefineResourceImpl configuration = null;
+    private DefineResource configuration = null;
     /**创建Tag_Abstract类型*/
-    public Tag_Abstract(DefineResourceImpl configuration) {
+    public Tag_Abstract(DefineResource configuration) {
         this.configuration = configuration;
     }
     /**获取{@link DefineResourceImpl}类型*/
-    protected DefineResourceImpl getConfiguration() {
+    protected DefineResource getDefineResource() {
         return this.configuration;
     }
     //================================================================================================================工具性方法
@@ -61,33 +61,6 @@ public abstract class Tag_Abstract {
         String,
         /**时间类型*/
         Date,
-    }
-    /**根据枚举获取其基本类型Class。*/
-    protected static Class<?> getBaseType(VariableType typeEnum) {
-        if (typeEnum == null)
-            return null;
-        else if (typeEnum == VariableType.Boolean)
-            return boolean.class;
-        else if (typeEnum == VariableType.Byte)
-            return byte.class;
-        else if (typeEnum == VariableType.Short)
-            return short.class;
-        else if (typeEnum == VariableType.Int)
-            return int.class;
-        else if (typeEnum == VariableType.Long)
-            return long.class;
-        else if (typeEnum == VariableType.Float)
-            return float.class;
-        else if (typeEnum == VariableType.Double)
-            return double.class;
-        else if (typeEnum == VariableType.Char)
-            return char.class;
-        else if (typeEnum == VariableType.String)
-            return String.class;
-        else if (typeEnum == VariableType.Date)
-            return Date.class;
-        else
-            return null;
     }
     /**查找某个名称的方法，该方法必须有一个参数。*/
     private Method findMethod(String methodName, Class<?> type) {

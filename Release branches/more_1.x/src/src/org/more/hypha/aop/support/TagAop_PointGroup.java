@@ -16,9 +16,9 @@
 package org.more.hypha.aop.support;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
+import org.more.hypha.DefineResource;
 import org.more.hypha.aop.define.AopPointcutGroupDefine;
 import org.more.hypha.aop.define.AopPointcutGroupDefine.RelEnum;
-import org.more.hypha.configuration.DefineResourceImpl;
 import org.more.util.StringConvert;
 /**
  * 用于解析aop:pointGroup标签
@@ -27,7 +27,7 @@ import org.more.util.StringConvert;
  */
 public class TagAop_PointGroup extends TagAop_AbstractPointcut<AopPointcutGroupDefine> {
     /**创建{@link TagAop_PointGroup}对象*/
-    public TagAop_PointGroup(DefineResourceImpl configuration) {
+    public TagAop_PointGroup(DefineResource configuration) {
         super(configuration);
     }
     /**返回{@link AopPointcutGroupDefine}类型对象。*/

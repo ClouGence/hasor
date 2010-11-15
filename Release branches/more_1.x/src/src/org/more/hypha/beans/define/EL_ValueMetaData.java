@@ -13,16 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.event;
-import org.more.hypha.Event;
+package org.more.hypha.beans.define;
+import org.more.hypha.beans.ValueMetaData.PropertyMetaTypeEnum;
 /**
- * 构建过程结束。
- * @version 2010-10-10
+ * 表示EL字符串类型数据，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#EL}。
+ * @version 2010-11-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public class BeginBuildEvent extends Event {
-    /**创建{@link BeginBuildEvent}对象。*/
-    public BeginBuildEvent(Object target) {
-        super(target);
+public class EL_ValueMetaData extends AbstractValueMetaData {
+    private String elText = null; //表示EL字符串
+    /**该方法将会返回{@link PropertyMetaTypeEnum#EL}。*/
+    public PropertyMetaTypeEnum getPropertyType() {
+        return PropertyMetaTypeEnum.EL;
+    }
+    /**获取EL字符串*/
+    public String getElText() {
+        return elText;
+    }
+    /**设置EL字符串*/
+    public void setElText(String elText) {
+        this.elText = elText;
     }
 }

@@ -14,15 +14,22 @@
  * limitations under the License.
  */
 package org.more.hypha.event;
+import org.more.hypha.DefineResource;
 import org.more.hypha.Event;
 /**
  * 构建过程结束。
  * @version 2010-10-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public class EndBuildEvent extends Event {
-    /**创建{@link EndBuildEvent}对象。*/
-    public EndBuildEvent(Object target) {
+public class Config_BeginBuildEvent extends Event {
+    private DefineResource resource = null;
+    /**创建{@link Config_BeginBuildEvent}对象。*/
+    public Config_BeginBuildEvent(Object target, DefineResource resource) {
         super(target);
+        this.resource = resource;
+    }
+    /**获取相关联的{@link DefineResource}对象。*/
+    public DefineResource getResource() {
+        return this.resource;
     }
 }

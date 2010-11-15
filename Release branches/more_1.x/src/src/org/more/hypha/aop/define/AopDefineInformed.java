@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 package org.more.hypha.aop.define;
-import org.more.hypha.beans.AbstractBeanDefine;
 /**
  * 引用已注册的bean定义aop类型
  * @version 2010-9-27
  * @author 赵永春 (zyc@byshell.org)
  */
 public class AopDefineInformed extends AbstractInformed {
-    private AbstractBeanDefine refBean = null; //连接的aopBean
+    private String refBean = null; //连接的aopBean
     /**获取关联的refBean。*/
-    public AbstractBeanDefine getRefBean() {
-        return refBean;
+    public String getRefBean() {
+        return this.refBean;
     }
     /**设置关联的RefBean。*/
-    public void setRefBean(AbstractBeanDefine refBean) {
+    public void setRefBean(String refBean) {
         this.refBean = refBean;
     }
 }

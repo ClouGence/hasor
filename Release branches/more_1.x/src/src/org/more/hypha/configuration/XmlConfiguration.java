@@ -23,15 +23,17 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
+import org.more.core.xml.XmlParserKit;
+import org.more.core.xml.XmlParserKitManager;
 import org.more.core.xml.stream.XmlReader;
-import org.more.hypha.AbstractEventManager;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.DefineResource;
-import org.more.hypha.EventManager;
-import org.more.hypha.event.BeginBuildEvent;
-import org.more.hypha.event.EndBuildEvent;
-import org.more.hypha.event.LoadedDefineEvent;
-import org.more.hypha.event.LoadingDefineEvent;
+import org.more.hypha.beans.TypeManager;
+import org.more.hypha.beans.support.TagBeans_Beans;
+import org.more.hypha.event.Config_BeginBuildEvent;
+import org.more.hypha.event.Config_EndBuildEvent;
+import org.more.hypha.event.Config_LoadedXmlEvent;
+import org.more.hypha.event.Config_LoadingXmlEvent;
 import org.more.util.ClassPathUtil;
 /**
  * 该类是用于生成{@link DefineResource}接口的类。该类的职责是收集任何可以解析的配置数据源，
@@ -43,13 +45,10 @@ import org.more.util.ClassPathUtil;
 public class XmlConfiguration {
     /**  */
     private static final long   serialVersionUID = -2907262416329013610L;
-    //
-    private static final String ResourcePath     = "/META-INF/resource/hypha/register.xml"; //
+    private static final String ResourcePath     = "/META-INF/resource/hypha/register.xml";
     private ArrayList<Object>   sourceArray      = new ArrayList<Object>();
-    private EventManager        eventManager     = new AbstractEventManager() {};          //事件管理器
-    public EventManager getEventManager() {
-        return this.eventManager;
-    }
+    private TypeManager         typeManager      = new TypeManager();                      //类型解析
+    private XmlParserKitManager manager          = new XmlParserKitManager();              //xml解析器
     //========================================================================================构造方法
     /**创建{@link XmlConfiguration}对象。*/
     public XmlConfiguration() {}
@@ -126,30 +125,54 @@ public class XmlConfiguration {
         this.addSourceArray(source);
     }
     //========================================================================================
-    public ApplicationContext buildApp(Object context) {
+    /**解析配置文件流。*/
+    protected void passerXml(InputStream in, DefineResource conf) throws XMLStreamException {
+        XmlReader reader = new XmlReader(in);
+        this.manager.getContext().setAttribute(TagBeans_Beans.BeanDefineManager, this);
+        reader.reader(this.manager, null);
+    };
+    /**获取{@link XmlParserKitManager}*/
+    protected XmlParserKitManager getManager() {
+        return this.manager;
+    }
+    /**注册一个标签解析工具集。*/
+    public void regeditXmlParserKit(String namespace, XmlParserKit kit) {
+        this.manager.regeditKit(namespace, kit);
+    }
+    /**取消一个标签解析工具集的注册。*/
+    public void unRegeditXmlParserKit(String namespace, XmlParserKit kit) {
+        this.manager.unRegeditKit(namespace, kit);
+    }
+    //========================================================================================
+    public ApplicationContext buildApp(Object context) throws Throwable {
         return null;//TODO
     }
     /**生成{@link DefineResourceImpl}对象。注意：构建过程包含了配置文件装载。*/
-    public DefineResource build(String sourceName, ClassLoader loader) throws IOException, XMLStreamException {
+    public DefineResource build(String sourceName, ClassLoader loader) throws Throwable {
         //1.创建
         DefineResourceImpl conf = new DefineResourceImpl(this);
-        conf.getEventManager().doEvent(new BeginBuildEvent(conf));//TODO 开始构建
+        conf.getEventManager().doEvent(new Config_BeginBuildEvent(this, conf));//开始构建
         if (loader == null)
             loader = ClassLoader.getSystemClassLoader();
         conf.setClassLoader(loader);
         conf.setSourceName(sourceName);
         //2.初始化
         List<InputStream> ins = ClassPathUtil.getResource(ResourcePath);
-        NameSpaceConfiguration ns = new NameSpaceConfiguration(conf);
+        NameSpaceConfiguration ns = new NameSpaceConfiguration();
         for (InputStream is : ins)
             new XmlReader(is).reader(ns, null);
+        List<NameSpaceRegister> registers = ns.getRegister();
+        for (NameSpaceRegister reg : registers)
+            /**第一个参数会在{@link NameSpaceRegisterPropxy}对象中得到*/
+            reg.initRegister(null, this, conf);
+        //
         conf.loadDefine();
-        conf.getEventManager().doEvent(new EndBuildEvent(conf));//TODO 结束构建
+        conf.getEventManager().doEvent(new Config_EndBuildEvent(this, conf));//结束构建
         return conf;
     }
-    /**使用当前的配置信息装载{@link DefineResourceImpl}对象。*/
-    public synchronized DefineResource loadConfig(DefineResourceImpl conf) throws IOException, XMLStreamException {
-        conf.getEventManager().doEvent(new LoadingDefineEvent(conf));//TODO 开始装载Beans
+    /**使用当前的配置信息装载{@link DefineResource}对象。*/
+    public synchronized DefineResource loadConfig(DefineResource conf) throws IOException, XMLStreamException {
+        conf.getEventManager().doEvent(new Config_LoadingXmlEvent(this, conf));//开始装载Beans
         for (Object obj : this.sourceArray)
             if (obj instanceof InputStream) {
                 InputStream is = (InputStream) obj;
@@ -157,27 +180,31 @@ public class XmlConfiguration {
                     //注意这里有一个试图重置输入流的尝试
                     is.reset();
                 } catch (Exception e) {}
-                conf.passerXml(is);
+                this.passerXml(is, conf);
             } else if (obj instanceof URL) {
                 InputStream is = ((URL) obj).openStream();
-                conf.passerXml(is);
+                this.passerXml(is, conf);
                 is.close();
             } else if (obj instanceof URI) {
                 InputStream is = ((URI) obj).toURL().openStream();
-                conf.passerXml(is);
+                this.passerXml(is, conf);
                 is.close();
             } else if (obj instanceof File) {
                 FileInputStream is = new FileInputStream((File) obj);
-                conf.passerXml(is);
+                this.passerXml(is, conf);
                 is.close();
             } else if (obj instanceof String) {
                 List<InputStream> xmlINS = ClassPathUtil.getResource((String) obj);
                 for (InputStream is : xmlINS) {
-                    conf.passerXml(is);
+                    this.passerXml(is, conf);
                     is.close();
                 }
             }
-        conf.getEventManager().doEvent(new LoadedDefineEvent(conf));//TODO 装载Beans结束
+        conf.getEventManager().doEvent(new Config_LoadedXmlEvent(this, conf));//装载Beans结束
         return conf;
+    }
+    /**获取类型解析器*/
+    public TypeManager getTypeManager() {
+        return this.typeManager;
     }
 }

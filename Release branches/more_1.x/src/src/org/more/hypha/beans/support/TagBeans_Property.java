@@ -17,9 +17,9 @@ package org.more.hypha.beans.support;
 import java.util.Map;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
+import org.more.hypha.DefineResource;
 import org.more.hypha.beans.define.PropertyDefine;
 import org.more.hypha.beans.define.TemplateBeanDefine;
-import org.more.hypha.configuration.DefineResourceImpl;
 /**
  * 用于解析property标签
  * @version 2010-9-16
@@ -27,7 +27,7 @@ import org.more.hypha.configuration.DefineResourceImpl;
  */
 public class TagBeans_Property extends TagBeans_AbstractPropertyDefine<PropertyDefine> {
     /**创建{@link TagBeans_Property}对象*/
-    public TagBeans_Property(DefineResourceImpl configuration) {
+    public TagBeans_Property(DefineResource configuration) {
         super(configuration);
     }
     /**创建{@link PropertyDefine}对象。*/
