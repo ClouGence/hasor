@@ -19,8 +19,8 @@ import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.DefineResource;
-import org.more.hypha.configuration.Tag_Abstract;
+import org.more.hypha.context.Tag_Abstract;
+import org.more.hypha.context.XmlDefineResource;
 /**
  * bases命名空间解析器的基类，在该类中定义了一些工具性的方法。
  * @version 2010-9-16
@@ -29,7 +29,7 @@ import org.more.hypha.configuration.Tag_Abstract;
 @SuppressWarnings("unchecked")
 public abstract class TagBeans_AbstractDefine<T> extends Tag_Abstract implements XmlElementHook {
     /**创建{@link TagBeans_AbstractDefine}对象*/
-    public TagBeans_AbstractDefine(DefineResource configuration) {
+    public TagBeans_AbstractDefine(XmlDefineResource configuration) {
         super(configuration);
     }
     /**如果isPutAttribute方法返回true则设置到{@link XmlStackDecorator}属性范围中的属性名由该方法确定。*/

@@ -20,7 +20,6 @@ import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.DefineResource;
 import org.more.hypha.aop.AopBeanDefinePlugin;
 import org.more.hypha.aop.AopDefineResourcePlugin;
 import org.more.hypha.aop.define.AbstractInformed;
@@ -28,7 +27,8 @@ import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.beans.support.TagBeans_AbstractBeanDefine;
-import org.more.hypha.configuration.Tag_Abstract;
+import org.more.hypha.context.Tag_Abstract;
+import org.more.hypha.context.XmlDefineResource;
 import org.more.util.StringConvert;
 /**
  * 用于解析aop:config标签
@@ -38,7 +38,7 @@ import org.more.util.StringConvert;
 public class TagAop_Config extends Tag_Abstract implements XmlElementHook {
     public static final String ConfigDefine = "$more_Aop_Config";
     /**创建{@link TagAop_Config}对象。*/
-    public TagAop_Config(DefineResource configuration) {
+    public TagAop_Config(XmlDefineResource configuration) {
         super(configuration);
     }
     /**开始标签处理。*/

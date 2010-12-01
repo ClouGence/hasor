@@ -19,8 +19,8 @@ import java.util.Map;
 import org.more.LostException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.DefineResource;
 import org.more.hypha.beans.define.Collection_ValueMetaData;
+import org.more.hypha.context.XmlDefineResource;
 /**
  * 用于解析集合类型标签的基类。
  * @version 2010-9-23
@@ -28,7 +28,7 @@ import org.more.hypha.beans.define.Collection_ValueMetaData;
  */
 public abstract class TagBeans_AbstractCollection<T extends Collection_ValueMetaData<?>> extends TagBeans_AbstractValueMetaDataDefine<T> {
     /**创建{@link TagBeans_AbstractCollection}对象*/
-    public TagBeans_AbstractCollection(DefineResource configuration) {
+    public TagBeans_AbstractCollection(XmlDefineResource configuration) {
         super(configuration);
     }
     /**定义模板属性。*/

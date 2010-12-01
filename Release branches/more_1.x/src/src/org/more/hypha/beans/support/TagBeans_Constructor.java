@@ -17,9 +17,9 @@ package org.more.hypha.beans.support;
 import java.util.Map;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
-import org.more.hypha.DefineResource;
 import org.more.hypha.beans.define.ConstructorDefine;
 import org.more.hypha.beans.define.TemplateBeanDefine;
+import org.more.hypha.context.XmlDefineResource;
 /**
  * 用于解析constructor-arg标签
  * @version 2010-9-16
@@ -27,7 +27,7 @@ import org.more.hypha.beans.define.TemplateBeanDefine;
  */
 public class TagBeans_Constructor extends TagBeans_AbstractPropertyDefine<ConstructorDefine> {
     /**创建{@link TagBeans_Constructor}对象*/
-    public TagBeans_Constructor(DefineResource configuration) {
+    public TagBeans_Constructor(XmlDefineResource configuration) {
         super(configuration);
     }
     /**创建{@link ConstructorDefine}对象。*/

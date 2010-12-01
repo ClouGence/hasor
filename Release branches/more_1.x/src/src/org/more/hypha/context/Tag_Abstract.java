@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.configuration;
+package org.more.hypha.context;
 import java.lang.reflect.Method;
 import org.more.DoesSupportException;
 import org.more.PropertyException;
-import org.more.hypha.DefineResource;
 import org.more.hypha.beans.define.VariableBeanDefine;
 import org.more.util.StringConvert;
 import org.more.util.StringUtil;
@@ -27,13 +26,13 @@ import org.more.util.StringUtil;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class Tag_Abstract {
-    private DefineResource configuration = null;
+    private XmlDefineResource configuration = null;
     /**创建Tag_Abstract类型*/
-    public Tag_Abstract(DefineResource configuration) {
+    public Tag_Abstract(XmlDefineResource configuration) {
         this.configuration = configuration;
     }
     /**获取{@link DefineResourceImpl}类型*/
-    protected DefineResource getDefineResource() {
+    protected XmlDefineResource getDefineResource() {
         return this.configuration;
     }
     //================================================================================================================工具性方法

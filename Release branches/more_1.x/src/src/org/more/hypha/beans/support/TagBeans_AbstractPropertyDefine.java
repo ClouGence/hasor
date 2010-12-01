@@ -19,10 +19,10 @@ import java.util.Map;
 import org.more.LostException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.DefineResource;
 import org.more.hypha.beans.TypeManager;
 import org.more.hypha.beans.ValueMetaData;
 import org.more.hypha.beans.define.AbstractPropertyDefine;
+import org.more.hypha.context.XmlDefineResource;
 import org.more.util.attribute.AttBase;
 /**
  * beans命名空间的属性标签解析基类。该类不会处理属性值元信息的解析这部分信息的解析交给其专有标签解析器或者由{@link QuickPropertyParser}接口负责处理。
@@ -33,7 +33,7 @@ public abstract class TagBeans_AbstractPropertyDefine<T extends AbstractProperty
     /**属性元信息.*/
     public static final String PropertyDefine = "$more_Beans_PropertyDefine";
     /**创建{@link TagBeans_AbstractPropertyDefine}对象*/
-    public TagBeans_AbstractPropertyDefine(DefineResource configuration) {
+    public TagBeans_AbstractPropertyDefine(XmlDefineResource configuration) {
         super(configuration);
     }
     /**属性的定义名称*/
@@ -75,7 +75,7 @@ public abstract class TagBeans_AbstractPropertyDefine<T extends AbstractProperty
         for (int i = 0; i < event.getAttributeCount(); i++)
             att.put(event.getAttributeName(i).getLocalPart(), event.getAttributeValue(i));
         //4.负责解析属性值元信息，当具有value、date、bigText、ref、file、directory、uri、el等标签对属性进行描述时会自动覆盖这里的解析。
-        TypeManager typeManager = this.getDefineResource().getConfiguration().getTypeManager();
+        TypeManager typeManager = this.getDefineResource().getTypeManager();
         ValueMetaData valueMETADATA = typeManager.parserType(att, pdefine);
         if (valueMETADATA == null)
             throw new NullPointerException("通过TypeManager解析属性值元信息失败！返回值为空。");

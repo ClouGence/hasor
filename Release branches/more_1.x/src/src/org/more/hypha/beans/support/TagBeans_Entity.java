@@ -18,10 +18,10 @@ import java.util.HashMap;
 import java.util.Map;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.DefineResource;
 import org.more.hypha.beans.define.MapEntity_ValueMetaData;
 import org.more.hypha.beans.define.PropertyType;
 import org.more.hypha.beans.define.Simple_ValueMetaData;
+import org.more.hypha.context.XmlDefineResource;
 /**
  * 用于解析entity标签
  * @version 2010-9-23
@@ -29,7 +29,7 @@ import org.more.hypha.beans.define.Simple_ValueMetaData;
  */
 public class TagBeans_Entity extends TagBeans_AbstractValueMetaDataDefine<MapEntity_ValueMetaData> {
     /**创建{@link TagBeans_Entity}对象*/
-    public TagBeans_Entity(DefineResource configuration) {
+    public TagBeans_Entity(XmlDefineResource configuration) {
         super(configuration);
     }
     /**创建{@link MapEntity_ValueMetaData}对象。*/

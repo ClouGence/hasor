@@ -21,12 +21,12 @@ import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.AttributeEvent;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.DefineResource;
 import org.more.hypha.aop.AopDefineResourcePlugin;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.beans.support.TagBeans_AbstractBeanDefine;
-import org.more.hypha.configuration.Tag_Abstract;
+import org.more.hypha.context.Tag_Abstract;
+import org.more.hypha.context.XmlDefineResource;
 /**
  * 用于解析aop:useConfig标签和useConfig属性
  * @version 2010-10-9
@@ -34,7 +34,7 @@ import org.more.hypha.configuration.Tag_Abstract;
  */
 public class TagAop_UseConfig extends Tag_Abstract implements XmlElementHook, XmlAttributeHook {
     /**创建{@link TagAop_UseConfig}对象*/
-    public TagAop_UseConfig(DefineResource configuration) {
+    public TagAop_UseConfig(XmlDefineResource configuration) {
         super(configuration);
     }
     /**处理标签形式。*/

@@ -20,7 +20,7 @@ import org.more.hypha.EventListener;
 import org.more.hypha.aop.AopBeanDefinePlugin;
 import org.more.hypha.aop.AopDefineResourcePlugin;
 import org.more.hypha.beans.AbstractBeanDefine;
-import org.more.hypha.event.Config_EndBuildEvent;
+import org.more.hypha.event.Config_LoadedXmlEvent;
 import org.more.util.StringUtil;
 /**
  * 该类是当{@link DefineResourceImpl}触发{@link Config_EndBuildEvent}类型事件时处理anno:apply标签配置的应用Package级别操作。
@@ -37,7 +37,7 @@ public class Listener_ToPackageApply implements EventListener {
     }
     /**执行Package应用。*/
     public void onEvent(Event event) {
-        Config_EndBuildEvent eve = (Config_EndBuildEvent) event;
+        Config_LoadedXmlEvent eve = (Config_LoadedXmlEvent) event;
         DefineResource config = eve.getResource();
         AopDefineResourcePlugin aopPlugin = (AopDefineResourcePlugin) config.getPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName);
         for (String defineName : config.getBeanDefineNames()) {

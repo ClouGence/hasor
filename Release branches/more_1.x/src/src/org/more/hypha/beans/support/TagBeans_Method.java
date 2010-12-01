@@ -19,11 +19,11 @@ import java.util.Map;
 import org.more.NoDefinitionException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
-import org.more.hypha.DefineResource;
 import org.more.hypha.beans.define.MethodDefine;
 import org.more.hypha.beans.define.TemplateBeanDefine;
+import org.more.hypha.context.XmlDefineResource;
 /**
- * 
+ * 解析method标签。
  * @version 2010-10-13
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -31,7 +31,7 @@ public class TagBeans_Method extends TagBeans_AbstractDefine<MethodDefine> {
     /**属性元信息.*/
     public static final String MethodDefine = "$more_Beans_MethodDefine";
     /**创建{@link TagBeans_Method}对象。*/
-    public TagBeans_Method(DefineResource configuration) {
+    public TagBeans_Method(XmlDefineResource configuration) {
         super(configuration);
     }
     /**创建{@link MethodDefine}对象*/

@@ -18,18 +18,18 @@ import org.more.NoDefinitionException;
 import org.more.NotFoundException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.DefineResource;
 import org.more.hypha.aop.define.AbstractInformed;
 import org.more.hypha.aop.define.AopDefineInformed;
 import org.more.hypha.aop.define.AopMethodInformed;
 import org.more.hypha.aop.define.PointcutType;
+import org.more.hypha.context.XmlDefineResource;
 /**
  * 该类是解析Informed类型标签的基类。
  * @version 2010-10-9
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class TagAop_AbstractListener extends TagAop_AbstractInformed<AopDefineInformed> {
-    public TagAop_AbstractListener(DefineResource configuration) {
+    public TagAop_AbstractListener(XmlDefineResource configuration) {
         super(configuration);
     }
     /**返回Informed类型。*/

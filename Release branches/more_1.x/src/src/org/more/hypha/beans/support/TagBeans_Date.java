@@ -16,8 +16,8 @@
 package org.more.hypha.beans.support;
 import java.util.HashMap;
 import java.util.Map;
-import org.more.hypha.DefineResource;
 import org.more.hypha.beans.define.Date_ValueMetaData;
+import org.more.hypha.context.XmlDefineResource;
 /**
  * 用于解析date标签
  * @version 2010-9-23
@@ -25,7 +25,7 @@ import org.more.hypha.beans.define.Date_ValueMetaData;
  */
 public class TagBeans_Date extends TagBeans_AbstractValueMetaDataDefine<Date_ValueMetaData> {
     /**创建{@link TagBeans_Date}对象*/
-    public TagBeans_Date(DefineResource configuration) {
+    public TagBeans_Date(XmlDefineResource configuration) {
         super(configuration);
     }
     /**创建{@link Date_ValueMetaData}对象。*/

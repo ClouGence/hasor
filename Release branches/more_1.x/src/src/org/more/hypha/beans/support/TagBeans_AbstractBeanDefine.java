@@ -22,6 +22,7 @@ import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.DefineResource;
 import org.more.hypha.beans.AbstractBeanDefine;
+import org.more.hypha.context.XmlDefineResource;
 /**
  * 用于解析/beans/*Bean标签的基类
  * @version 2010-9-16
@@ -29,7 +30,7 @@ import org.more.hypha.beans.AbstractBeanDefine;
  */
 public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBeanDefine> extends TagBeans_AbstractDefine<T> {
     /**创建{@link TagBeans_AbstractBeanDefine}对象*/
-    public TagBeans_AbstractBeanDefine(DefineResource configuration) {
+    public TagBeans_AbstractBeanDefine(XmlDefineResource configuration) {
         super(configuration);
     }
     /**保存于上下文中的bean对象。*/

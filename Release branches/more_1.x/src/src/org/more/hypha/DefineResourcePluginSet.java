@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha;
+import java.util.List;
 /**
  * 定义如果想要支持扩展的配置策略则需要实现该接口，
  * 可以通过该接口的getExpandDefine来获取有关定义上的一些额外扩展属性设置。
@@ -27,4 +28,6 @@ public interface DefineResourcePluginSet {
     public void setPlugin(String name, DefineResourcePlugin plugin);
     /**删除一个已有的插件注册。*/
     public void removePlugin(String name);
+    /**获取已注册插件的名称集合。*/
+    public List<String> getPluginNames();
 }

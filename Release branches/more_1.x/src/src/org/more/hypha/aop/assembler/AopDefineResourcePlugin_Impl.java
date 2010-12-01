@@ -24,6 +24,7 @@ import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.beans.BeanDefinePlugin;
+import org.more.hypha.context.XmlDefineResource;
 /**
  * 该类的目的是为了扩展{@link DefineResource}接口对象以将aop信息附加到定义资源接口中。
  * @version 2010-10-8
@@ -31,15 +32,15 @@ import org.more.hypha.beans.BeanDefinePlugin;
  */
 public class AopDefineResourcePlugin_Impl implements AopDefineResourcePlugin {
     /***/
-    private DefineResource                      target       = null;
+    private XmlDefineResource                   target       = null;
     private Map<String, AbstractPointcutDefine> pointcutList = new HashMap<String, AbstractPointcutDefine>();
     private Map<String, AopConfigDefine>        configList   = new HashMap<String, AopConfigDefine>();
     /**创建{@link AopDefineResourcePlugin_Impl}对象。*/
-    public AopDefineResourcePlugin_Impl(DefineResource target) {
+    public AopDefineResourcePlugin_Impl(XmlDefineResource target) {
         this.target = target;
     }
     //======================================================接口实现
-    public DefineResource getTarget() {
+    public XmlDefineResource getTarget() {
         return this.target;
     }
     /**测试一个{@link AbstractBeanDefine}定义对象是否包含Aop配置。*/

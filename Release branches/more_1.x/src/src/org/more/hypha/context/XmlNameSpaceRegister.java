@@ -13,23 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.event;
-import org.more.hypha.DefineResource;
-import org.more.hypha.Event;
+package org.more.hypha.context;
 /**
- * 构建过程结束。
- * @version 2010-10-10
+ * 为了{@link DefineResourceImpl}类提供的一个注册器接口，如果要注册新的xml配置支持则需要实现这个接口并且
+ * 留下一个无参的构造方法，同时在“/META-INF/resource/beans/regedit.xml”位置编写配置文件。
+ * 配置文件格式参考more相关文档。
+ * @version 2010-9-24
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Config_BeginBuildEvent extends Event {
-    private DefineResource resource = null;
-    /**创建{@link Config_BeginBuildEvent}对象。*/
-    public Config_BeginBuildEvent(Object target, DefineResource resource) {
-        super(target);
-        this.resource = resource;
-    }
-    /**获取相关联的{@link DefineResource}对象。*/
-    public DefineResource getResource() {
-        return this.resource;
-    }
+public interface XmlNameSpaceRegister {
+    /**
+     * 执行注册
+     * @param namespaceURL 配置文件配置的命名空间。
+     * @param resource {@link XmlDefineResource}对象。
+     */
+    public void initRegister(String namespaceURL, XmlDefineResource resource) throws Throwable;
 }

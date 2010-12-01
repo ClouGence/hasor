@@ -23,7 +23,7 @@ import org.more.hypha.Event;
 import org.more.hypha.EventListener;
 import org.more.hypha.annotation.AnnotationDefineResourcePlugin;
 import org.more.hypha.beans.AbstractBeanDefine;
-import org.more.hypha.event.Config_EndBuildEvent;
+import org.more.hypha.event.Config_LoadedXmlEvent;
 import org.more.util.ClassPathUtil;
 import org.more.util.ClassPathUtil.ScanItem;
 import org.more.util.ScanEvent;
@@ -43,7 +43,7 @@ public class TagListener implements EventListener {
     }
     /**处理注解解析。*/
     public void onEvent(final Event event) {
-        final Config_EndBuildEvent eve = (Config_EndBuildEvent) event;
+        final Config_LoadedXmlEvent eve = (Config_LoadedXmlEvent) event;
         System.out.println("start ANNO at package:" + this.packageText);
         StringBuffer buffer = new StringBuffer(this.packageText.replace(".", "/"));
         if (buffer.charAt(0) != '/')

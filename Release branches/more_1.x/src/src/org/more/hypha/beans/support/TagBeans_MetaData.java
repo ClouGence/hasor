@@ -18,11 +18,11 @@ import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.DefineResource;
 import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.beans.AbstractPropertyDefine;
 import org.more.hypha.beans.ValueMetaData;
-import org.more.hypha.configuration.Tag_Abstract;
+import org.more.hypha.context.Tag_Abstract;
+import org.more.hypha.context.XmlDefineResource;
 /**
  * 用于解析meta标签
  * @version 2010-9-16
@@ -30,7 +30,7 @@ import org.more.hypha.configuration.Tag_Abstract;
  */
 public class TagBeans_MetaData extends Tag_Abstract implements XmlElementHook {
     /**创建{@link TagBeans_MetaData}对象*/
-    public TagBeans_MetaData(DefineResource configuration) {
+    public TagBeans_MetaData(XmlDefineResource configuration) {
         super(configuration);
     }
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {

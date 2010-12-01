@@ -19,8 +19,8 @@ import java.util.Map;
 import org.more.LostException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.DefineResource;
 import org.more.hypha.beans.define.VariableBeanDefine;
+import org.more.hypha.context.XmlDefineResource;
 import org.more.util.StringConvert;
 /**
  * 用于解析/beans/varBean标签
@@ -29,7 +29,7 @@ import org.more.util.StringConvert;
  */
 public class TagBeans_VarBean extends TagBeans_AbstractBeanDefine<VariableBeanDefine> {
     /**创建{@link TagBeans_VarBean}对象*/
-    public TagBeans_VarBean(DefineResource configuration) {
+    public TagBeans_VarBean(XmlDefineResource configuration) {
         super(configuration);
     }
     /**根据枚举获取其基本类型Class。*/

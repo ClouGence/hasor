@@ -104,8 +104,8 @@
       <operations public="false" package="false" protected="false" private="false"/>    
     </display>  
   </class>  
-  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.configuration.Tag_Abstract" project="More" 
-    file="/More/src/org/more/hypha/configuration/Tag_Abstract.java" binary="false">    
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.context.Tag_Abstract" project="More" 
+    file="/More/src/org/more/hypha/context/Tag_Abstract.java" binary="false">    
     <position x="469" y="47" width="-1" height="-1"/>    
     <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
       <attributes public="false" package="false" protected="false" private="false"/>      
@@ -129,28 +129,58 @@
     </display>  
   </class>  
   <generalization>    
+    <source project="More" name="org.more.hypha.aop.support.TagAop_Informed" 
+      file="/More/src/org/more/hypha/aop/support/TagAop_Informed.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.aop.support.TagAop_AbstractListener" 
+      file="/More/src/org/more/hypha/aop/support/TagAop_AbstractListener.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
     <source project="More" name="org.more.hypha.aop.support.TagAop_PointGroup" 
       file="/More/src/org/more/hypha/aop/support/TagAop_PointGroup.java" binary="false"/>    
     <target project="More" name="org.more.hypha.aop.support.TagAop_AbstractPointcut" 
       file="/More/src/org/more/hypha/aop/support/TagAop_AbstractPointcut.java" binary="false"/>  
   </generalization>  
   <generalization>    
-    <source project="More" name="org.more.hypha.aop.support.TagAop_AbstractPointcut" 
-      file="/More/src/org/more/hypha/aop/support/TagAop_AbstractPointcut.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.configuration.Tag_Abstract" 
-      file="/More/src/org/more/hypha/configuration/Tag_Abstract.java" binary="false"/>  
+    <source project="More" name="org.more.hypha.aop.support.TagAop_Pointcut" 
+      file="/More/src/org/more/hypha/aop/support/TagAop_Pointcut.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.aop.support.TagAop_AbstractPointcut" 
+      file="/More/src/org/more/hypha/aop/support/TagAop_AbstractPointcut.java" binary="false"/>  
   </generalization>  
   <generalization>    
-    <source project="More" name="org.more.hypha.aop.support.TagAop_Returning" 
-      file="/More/src/org/more/hypha/aop/support/TagAop_Returning.java" binary="false"/>    
+    <source project="More" name="org.more.hypha.aop.support.TagAop_Before" 
+      file="/More/src/org/more/hypha/aop/support/TagAop_Before.java" binary="false"/>    
     <target project="More" name="org.more.hypha.aop.support.TagAop_AbstractListener" 
       file="/More/src/org/more/hypha/aop/support/TagAop_AbstractListener.java" binary="false"/>  
   </generalization>  
   <generalization>    
+    <source project="More" name="org.more.hypha.aop.support.TagAop_AbstractPointcut" 
+      file="/More/src/org/more/hypha/aop/support/TagAop_AbstractPointcut.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.context.Tag_Abstract" 
+      file="/More/src/org/more/hypha/context/Tag_Abstract.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.aop.support.TagAop_Filter" 
+      file="/More/src/org/more/hypha/aop/support/TagAop_Filter.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.aop.support.TagAop_AbstractInformed" 
+      file="/More/src/org/more/hypha/aop/support/TagAop_AbstractInformed.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.aop.support.TagAop_Apply" 
+      file="/More/src/org/more/hypha/aop/support/TagAop_Apply.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.context.Tag_Abstract" 
+      file="/More/src/org/more/hypha/context/Tag_Abstract.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.aop.support.TagAop_AbstractInformed" 
+      file="/More/src/org/more/hypha/aop/support/TagAop_AbstractInformed.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.context.Tag_Abstract" 
+      file="/More/src/org/more/hypha/context/Tag_Abstract.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
     <source project="More" name="org.more.hypha.aop.support.TagAop_UseConfig" 
       file="/More/src/org/more/hypha/aop/support/TagAop_UseConfig.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.configuration.Tag_Abstract" 
-      file="/More/src/org/more/hypha/configuration/Tag_Abstract.java" binary="false"/>  
+    <target project="More" name="org.more.hypha.context.Tag_Abstract" 
+      file="/More/src/org/more/hypha/context/Tag_Abstract.java" binary="false"/>  
   </generalization>  
   <dependency>    
     <source project="More" name="org.more.hypha.aop.support.TagAop_Apply" 
@@ -159,17 +189,17 @@
       file="/More/src/org/more/hypha/aop/support/Listener_ToPackageApply.java" binary="false"/>  
   </dependency>  
   <generalization>    
-    <source project="More" name="org.more.hypha.aop.support.TagAop_Informed" 
-      file="/More/src/org/more/hypha/aop/support/TagAop_Informed.java" binary="false"/>    
+    <source project="More" name="org.more.hypha.aop.support.TagAop_Returning" 
+      file="/More/src/org/more/hypha/aop/support/TagAop_Returning.java" binary="false"/>    
     <target project="More" name="org.more.hypha.aop.support.TagAop_AbstractListener" 
       file="/More/src/org/more/hypha/aop/support/TagAop_AbstractListener.java" binary="false"/>  
   </generalization>  
-  <generalization>    
-    <source project="More" name="org.more.hypha.aop.support.TagAop_Filter" 
-      file="/More/src/org/more/hypha/aop/support/TagAop_Filter.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.aop.support.TagAop_AbstractInformed" 
-      file="/More/src/org/more/hypha/aop/support/TagAop_AbstractInformed.java" binary="false"/>  
-  </generalization>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.aop.support.TagAop_Apply" 
+      file="/More/src/org/more/hypha/aop/support/TagAop_Apply.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.aop.support.Listener_ToBeanApply" 
+      file="/More/src/org/more/hypha/aop/support/Listener_ToBeanApply.java" binary="false"/>  
+  </dependency>  
   <generalization>    
     <source project="More" name="org.more.hypha.aop.support.TagAop_Throwing" 
       file="/More/src/org/more/hypha/aop/support/TagAop_Throwing.java" binary="false"/>    
@@ -185,38 +215,8 @@
   <generalization>    
     <source project="More" name="org.more.hypha.aop.support.TagAop_Config" 
       file="/More/src/org/more/hypha/aop/support/TagAop_Config.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.configuration.Tag_Abstract" 
-      file="/More/src/org/more/hypha/configuration/Tag_Abstract.java" binary="false"/>  
-  </generalization>  
-  <generalization>    
-    <source project="More" name="org.more.hypha.aop.support.TagAop_Apply" 
-      file="/More/src/org/more/hypha/aop/support/TagAop_Apply.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.configuration.Tag_Abstract" 
-      file="/More/src/org/more/hypha/configuration/Tag_Abstract.java" binary="false"/>  
-  </generalization>  
-  <dependency>    
-    <source project="More" name="org.more.hypha.aop.support.TagAop_Apply" 
-      file="/More/src/org/more/hypha/aop/support/TagAop_Apply.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.aop.support.Listener_ToBeanApply" 
-      file="/More/src/org/more/hypha/aop/support/Listener_ToBeanApply.java" binary="false"/>  
-  </dependency>  
-  <generalization>    
-    <source project="More" name="org.more.hypha.aop.support.TagAop_Before" 
-      file="/More/src/org/more/hypha/aop/support/TagAop_Before.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.aop.support.TagAop_AbstractListener" 
-      file="/More/src/org/more/hypha/aop/support/TagAop_AbstractListener.java" binary="false"/>  
-  </generalization>  
-  <generalization>    
-    <source project="More" name="org.more.hypha.aop.support.TagAop_Pointcut" 
-      file="/More/src/org/more/hypha/aop/support/TagAop_Pointcut.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.aop.support.TagAop_AbstractPointcut" 
-      file="/More/src/org/more/hypha/aop/support/TagAop_AbstractPointcut.java" binary="false"/>  
-  </generalization>  
-  <generalization>    
-    <source project="More" name="org.more.hypha.aop.support.TagAop_AbstractInformed" 
-      file="/More/src/org/more/hypha/aop/support/TagAop_AbstractInformed.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.configuration.Tag_Abstract" 
-      file="/More/src/org/more/hypha/configuration/Tag_Abstract.java" binary="false"/>  
+    <target project="More" name="org.more.hypha.context.Tag_Abstract" 
+      file="/More/src/org/more/hypha/context/Tag_Abstract.java" binary="false"/>  
   </generalization>  
   <classifier-display autosize="true" package="true" initial-value="true" signature="true" visibility="true">    
     <attributes public="false" package="false" protected="false" private="false"/>    

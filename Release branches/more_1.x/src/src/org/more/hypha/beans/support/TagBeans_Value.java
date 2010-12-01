@@ -18,8 +18,8 @@ import java.util.Map;
 import org.more.NotFoundException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.DefineResource;
 import org.more.hypha.beans.define.Simple_ValueMetaData;
+import org.more.hypha.context.XmlDefineResource;
 import org.more.util.StringConvert;
 /**
  * 用于解析value标签
@@ -28,7 +28,7 @@ import org.more.util.StringConvert;
  */
 public class TagBeans_Value extends TagBeans_AbstractValueMetaDataDefine<Simple_ValueMetaData> {
     /**创建{@link TagBeans_Value}对象*/
-    public TagBeans_Value(DefineResource configuration) {
+    public TagBeans_Value(XmlDefineResource configuration) {
         super(configuration);
     }
     protected Simple_ValueMetaData createDefine() {

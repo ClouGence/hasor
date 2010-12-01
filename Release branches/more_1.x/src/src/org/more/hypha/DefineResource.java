@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 package org.more.hypha;
-import java.io.IOException;
 import java.util.List;
-import javax.xml.stream.XMLStreamException;
 import org.more.NoDefinitionException;
 import org.more.hypha.beans.AbstractBeanDefine;
-import org.more.hypha.configuration.XmlConfiguration;
 import org.more.hypha.event.ClearDefineEvent;
-import org.more.hypha.event.Config_LoadingXmlEvent;
-import org.more.hypha.event.ReloadDefineEvent;
+import org.more.hypha.event.AddBeanDefineEvent;
 import org.more.util.attribute.IAttribute;
 /**
  * 这个接口是more.hypha组建的基本接口之一，该接口用于提供{@link AbstractBeanDefine}的索引获取功能。
@@ -31,10 +27,6 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface DefineResource extends DefineResourcePluginSet {
-    ///**根据当前配置信息生成一个{@link ApplicationContext}服务接口。*/
-    //public ApplicationContext buildApplication(Object context);
-    /**获取创建这个{@link DefineResource}接口对象的解析器。*/
-    public XmlConfiguration getConfiguration();
     /**获取{@link DefineResource}接口使用的类装载器。*/
     public ClassLoader getClassLoader();
     /**获取{@link DefineResource}的属性访问接口。*/
@@ -51,6 +43,7 @@ public interface DefineResource extends DefineResourcePluginSet {
     public AbstractBeanDefine getBeanDefine(String id) throws NoDefinitionException;
     /**
      * 添加一个bean定义。使用该方法添加的定义在{@link DefineResource}接口重载时会丢失。
+     * 请注意该方法将会引发{@link AddBeanDefineEvent}事件。
      * @param define 要添加的bean定义。
      */
     public void addBeanDefine(AbstractBeanDefine define) throws NoDefinitionException;
@@ -84,10 +77,6 @@ public interface DefineResource extends DefineResourcePluginSet {
      * @return 返回测试结果，如果是以原型模式创建则返回true,否则返回false。
      */
     public boolean isFactory(String id) throws NoDefinitionException;
-    /**手动执行配置装载动作，如果重复装载可能产生异常。该动作将会引发{@link Config_LoadingXmlEvent}事件*/
-    public void loadDefine() throws IOException, XMLStreamException;
     /**清空所有装载的Bean定义对象，该方法将会引发{@link ClearDefineEvent}事件。*/
     public void clearDefine();
-    /**重新装载配置，该方法会首先执行clearDefine()方法其次在执行loadDefine()。在执行之前该方法会引发{@link ReloadDefineEvent}事件。*/
-    public void reloadDefine() throws IOException, XMLStreamException;
 };

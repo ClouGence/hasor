@@ -15,20 +15,19 @@
  */
 package org.more.hypha.beans.support;
 import org.more.core.xml.XmlParserKit;
-import org.more.hypha.DefineResource;
 import org.more.hypha.beans.TypeManager;
-import org.more.hypha.configuration.NameSpaceRegister;
-import org.more.hypha.configuration.XmlConfiguration;
+import org.more.hypha.context.XmlDefineResource;
+import org.more.hypha.context.XmlNameSpaceRegister;
 /**
- * 该类实现了{@link NameSpaceRegister}接口并且提供了对命名空间“http://project.byshell.org/more/schema/beans”的解析支持。
+ * 该类实现了{@link XmlNameSpaceRegister}接口并且提供了对命名空间“http://project.byshell.org/more/schema/beans”的解析支持。
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Register_Beans implements NameSpaceRegister {
+public class Register_Beans implements XmlNameSpaceRegister {
     /**如果没有指定namespaceURL参数则该常量将会指定默认的命名空间。*/
     public static final String DefaultNameSpaceURL = "http://project.byshell.org/more/schema/beans";
     /**执行初始化注册。*/
-    public void initRegister(String namespaceURL, XmlConfiguration configuration, DefineResource resource) {
+    public void initRegister(String namespaceURL, XmlDefineResource resource) {
         //1.注册标签解析器
         XmlParserKit kit = new XmlParserKit();
         kit.regeditHook("/beans", new TagBeans_Beans(resource));
@@ -68,10 +67,10 @@ public class Register_Beans implements NameSpaceRegister {
         //2.注册命名空间
         if (namespaceURL == null)
             namespaceURL = DefaultNameSpaceURL;
-        configuration.regeditXmlParserKit(namespaceURL, kit);
+        resource.regeditXmlParserKit(namespaceURL, kit);
         //3.注册快速属性值解析器，顺序就是优先级。
         /*当xml中试图配置了多种属性类别值时候优先级将会起到作用，列如同时配置了value 和 refBean属性。那么value的优先级比refBean高。*/
-        TypeManager typeManager = configuration.getTypeManager();
+        TypeManager typeManager = resource.getTypeManager();
         typeManager.regeditTypeParser(new QPP_Value());
         typeManager.regeditTypeParser(new QPP_EL());
         typeManager.regeditTypeParser(new QPP_Date());

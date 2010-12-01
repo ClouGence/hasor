@@ -20,13 +20,13 @@ import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.DefineResource;
 import org.more.hypha.aop.AopDefineResourcePlugin;
 import org.more.hypha.aop.define.AbstractInformed;
 import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.aop.define.AopDefineInformed;
-import org.more.hypha.configuration.Tag_Abstract;
+import org.more.hypha.context.Tag_Abstract;
+import org.more.hypha.context.XmlDefineResource;
 /**
  * 处理informed类型标签的refBean属性。
  * @version 2010-10-9
@@ -35,7 +35,7 @@ import org.more.hypha.configuration.Tag_Abstract;
 @SuppressWarnings("unchecked")
 public abstract class TagAop_AbstractInformed<T extends AopDefineInformed> extends Tag_Abstract implements XmlElementHook {
     public static final String AopInformedDefine = "$more_aop_AopInformedDefine";
-    public TagAop_AbstractInformed(DefineResource configuration) {
+    public TagAop_AbstractInformed(XmlDefineResource configuration) {
         super(configuration);
     }
     /**创建一个{@link AbstractInformed}定义对象。*/

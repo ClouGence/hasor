@@ -20,8 +20,8 @@ import org.more.core.xml.XmlTextHook;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.core.xml.stream.TextEvent;
-import org.more.hypha.DefineResource;
 import org.more.hypha.beans.define.ScriptBeanDefine;
+import org.more.hypha.context.XmlDefineResource;
 /**
  * 用于解析/beans/scriptBean标签
  * @version 2010-9-16
@@ -31,7 +31,7 @@ public class TagBeans_ScriptBean extends TagBeans_AbstractBeanDefine<ScriptBeanD
     /**保存于上下文中的脚本值对象*/
     private static final String ScriptText = "$more_Beans_ScriptText";
     /**创建{@link TagBeans_ScriptBean}对象*/
-    public TagBeans_ScriptBean(DefineResource configuration) {
+    public TagBeans_ScriptBean(XmlDefineResource configuration) {
         super(configuration);
     }
     /**创建ScriptBeanDefine类型对象。*/

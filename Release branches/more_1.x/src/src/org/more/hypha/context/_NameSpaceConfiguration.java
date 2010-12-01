@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.configuration;
+package org.more.hypha.context;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,13 +29,13 @@ import org.more.util.StringConvert;
  * @version 2010-9-24
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-class NameSpaceConfiguration implements XmlAccept {
-    private ArrayList<NameSpaceRegister> registerList = new ArrayList<NameSpaceRegister>();
-    public List<NameSpaceRegister> getRegister() {
-        Collections.sort(this.registerList, new Comparator<NameSpaceRegister>() {
-            public int compare(NameSpaceRegister o1, NameSpaceRegister o2) {
-                NameSpaceRegisterPropxy oo1 = (NameSpaceRegisterPropxy) o1;
-                NameSpaceRegisterPropxy oo2 = (NameSpaceRegisterPropxy) o2;
+class _NameSpaceConfiguration implements XmlAccept {
+    private ArrayList<XmlNameSpaceRegister> registerList = new ArrayList<XmlNameSpaceRegister>();
+    public List<XmlNameSpaceRegister> getRegister() {
+        Collections.sort(this.registerList, new Comparator<XmlNameSpaceRegister>() {
+            public int compare(XmlNameSpaceRegister o1, XmlNameSpaceRegister o2) {
+                _NameSpaceRegisterPropxy oo1 = (_NameSpaceRegisterPropxy) o1;
+                _NameSpaceRegisterPropxy oo2 = (_NameSpaceRegisterPropxy) o2;
                 if (oo1.getInitSequence() > oo2.getInitSequence())
                     return 1;
                 else if (oo1.getInitSequence() == oo2.getInitSequence())
@@ -75,7 +75,7 @@ class NameSpaceConfiguration implements XmlAccept {
             String sequence = ((StartElementEvent) e).getAttributeValue("initSequence");
             this.currentSequence = StringConvert.parseInt(sequence, 0);
         } else if (e instanceof EndElementEvent) {
-            NameSpaceRegisterPropxy obj = new NameSpaceRegisterPropxy(this.currentFactory.toString());
+            _NameSpaceRegisterPropxy obj = new _NameSpaceRegisterPropxy(this.currentFactory.toString());
             obj.setInitSequence(this.currentSequence);
             obj.setNamespace(this.currentNamespace.toString());
             obj.setSchema(this.currentSchema.toString());

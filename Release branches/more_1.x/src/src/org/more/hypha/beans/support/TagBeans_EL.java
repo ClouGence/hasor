@@ -17,8 +17,8 @@ package org.more.hypha.beans.support;
 import java.util.Map;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.DefineResource;
 import org.more.hypha.beans.define.EL_ValueMetaData;
+import org.more.hypha.context.XmlDefineResource;
 /**
  * 用于解析el标签
  * @version 2010-11-10
@@ -26,7 +26,7 @@ import org.more.hypha.beans.define.EL_ValueMetaData;
  */
 public class TagBeans_EL extends TagBeans_AbstractValueMetaDataDefine<EL_ValueMetaData> {
     /**创建{@link TagBeans_EL}对象*/
-    public TagBeans_EL(DefineResource resource) {
+    public TagBeans_EL(XmlDefineResource resource) {
         super(resource);
     }
     /**创建{@link EL_ValueMetaData}对象。*/

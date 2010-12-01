@@ -17,10 +17,10 @@ package org.more.hypha.beans.support;
 import java.util.Map;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
-import org.more.hypha.DefineResource;
 import org.more.hypha.beans.define.MethodDefine;
 import org.more.hypha.beans.define.ParamDefine;
 import org.more.hypha.beans.define.PropertyDefine;
+import org.more.hypha.context.XmlDefineResource;
 /**
  * 用于解析param标签
  * @version 2010-9-16
@@ -28,7 +28,7 @@ import org.more.hypha.beans.define.PropertyDefine;
  */
 public class TagBeans_Param extends TagBeans_AbstractPropertyDefine<ParamDefine> {
     /**创建{@link TagBeans_Param}对象*/
-    public TagBeans_Param(DefineResource configuration) {
+    public TagBeans_Param(XmlDefineResource configuration) {
         super(configuration);
     }
     /**创建{@link PropertyDefine}对象。*/

@@ -13,29 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.configuration;
-import org.more.hypha.DefineResource;
+package org.more.hypha.context;
 /**
- * 接口{@link NameSpaceRegister}的代理，用于保存所有来自于regedit.xml配置文件的信息。
+ * 接口{@link XmlNameSpaceRegister}的代理，用于保存所有来自于regedit.xml配置文件的信息。
  * @version 2010-11-12
  * @author 赵永春 (zyc@byshell.org)
  */
-class NameSpaceRegisterPropxy implements NameSpaceRegister {
-    private int               initSequence  = 0;
-    private String            namespace     = null;
-    private String            schema        = null;
-    private boolean           schemaEnable  = false;
-    private NameSpaceRegister register      = null;
-    private String            registerClass = null;
+class _NameSpaceRegisterPropxy implements XmlNameSpaceRegister {
+    private int                initSequence  = 0;
+    private String             namespace     = null;
+    private String             schema        = null;
+    private boolean            schemaEnable  = false;
+    private XmlNameSpaceRegister register      = null;
+    private String             registerClass = null;
     //
-    public NameSpaceRegisterPropxy(String registerClass) {
+    public _NameSpaceRegisterPropxy(String registerClass) {
         this.registerClass = registerClass;
     }
     //
-    public void initRegister(String namespaceURL, XmlConfiguration configuration, DefineResource resource) throws Throwable {
+    public void initRegister(String namespaceURL, XmlDefineResource resource) throws Throwable {
         Class<?> factory = Class.forName(this.registerClass);
-        this.register = (NameSpaceRegister) factory.newInstance();
-        this.register.initRegister(this.namespace, configuration, resource);
+        this.register = (XmlNameSpaceRegister) factory.newInstance();
+        this.register.initRegister(this.namespace, resource);
     }
     public int getInitSequence() {
         return initSequence;
