@@ -27,6 +27,8 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface DefineResource extends DefineResourcePluginSet {
+    /**获取一个状态该状态表述是否已经准备好。*/
+    public boolean isReady();
     /**获取{@link DefineResource}接口使用的类装载器。*/
     public ClassLoader getClassLoader();
     /**获取{@link DefineResource}的属性访问接口。*/

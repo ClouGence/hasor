@@ -43,6 +43,7 @@ public class XmlDefineResource extends ArrayDefineResource {
     private ArrayList<Object>                 sourceArray  = new ArrayList<Object>();
     private TypeManager                       typeManager  = new TypeManager();                      //类型解析
     private XmlParserKitManager               manager      = new XmlParserKitManager();              //xml解析器
+    private boolean                           loadMark     = false;                                  //是否已经执行过装载.
     //
     //========================================================================================静态方法
     private static List<XmlNameSpaceRegister> registers    = null;
@@ -166,6 +167,10 @@ public class XmlDefineResource extends ArrayDefineResource {
         this.addSourceArray(source);
     }
     //========================================================================================
+    /**获取一个状态该状态表述是否已经准备好，{@link XmlDefineResource}类型中当执行了装载方法之后该方法返回true否则返回false。*/
+    public boolean isReady() {
+        return this.loadMark;
+    };
     /**获取{@link XmlParserKitManager}*/
     protected XmlParserKitManager getManager() {
         return this.manager;
@@ -219,6 +224,7 @@ public class XmlDefineResource extends ArrayDefineResource {
                 }
             }
         this.getEventManager().doEvent(new Config_LoadedXmlEvent(this, this));//装载Beans结束
+        this.loadMark = true;
     };
     /**重新装载配置，该方法会首先执行clearDefine()方法其次在执行loadDefine()。在执行之前该方法会引发{@link ReloadDefineEvent}事件。*/
     public synchronized void reloadDefine() throws IOException, XMLStreamException {
@@ -226,5 +232,9 @@ public class XmlDefineResource extends ArrayDefineResource {
         this.clearDefine();
         this.clearPlugin();
         this.loadDefine();
+    }
+    public synchronized void clearDefine() {
+        super.clearDefine();
+        this.loadMark = false;
     }
 }

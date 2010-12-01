@@ -16,116 +16,103 @@
 package org.more.hypha.context;
 import java.util.List;
 import org.more.NoDefinitionException;
+import org.more.hypha.AbstractEventManager;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.DefineResource;
 import org.more.hypha.Event;
 import org.more.hypha.EventListener;
+import org.more.hypha.EventManager;
 import org.more.hypha.beans.AbstractBeanDefine;
+import org.more.util.attribute.AttBase;
+import org.more.util.attribute.IAttribute;
 /**
  * 
  * @version 2010-11-30
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class HyphaApplicationContext implements ApplicationContext {
-    public HyphaApplicationContext(ArrayDefineResource arrayDefineResource, Object context) {
-        // TODO Auto-generated constructor stub
-    }
-    @Override
-    public void addEventListener(Class<? extends Event> eventType, EventListener listener) {
-        // TODO Auto-generated method stub
-    }
-    @Override
-    public void doEvent(Event event) {
-        // TODO Auto-generated method stub
-    }
-    @Override
-    public boolean contains(String name) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-    @Override
-    public void setAttribute(String name, Object value) {
-        // TODO Auto-generated method stub
-    }
-    @Override
-    public Object getAttribute(String name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public void removeAttribute(String name) {
-        // TODO Auto-generated method stub
-    }
-    @Override
-    public String[] getAttributeNames() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public void clearAttribute() {
-        // TODO Auto-generated method stub
-    }
-    @Override
+    private DefineResource defineResource = null;
+    private Object         context        = null;
+    private EventManager   eventManager   = new AbstractEventManager() {};
+    /*------------------------------------------------------------*/
+    public HyphaApplicationContext(DefineResource defineResource, Object context) {
+        this.defineResource = defineResource;
+        this.context = context;
+    };
     public List<String> getBeanDefinitionNames() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public AbstractBeanDefine getBeanDefinition(String name) throws NoDefinitionException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
+        return this.defineResource.getBeanDefineNames();
+    };
+    public AbstractBeanDefine getBeanDefinition(String id) throws NoDefinitionException {
+        return this.defineResource.getBeanDefine(id);
+    };
     public DefineResource getBeanResource() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
+        return this.defineResource;
+    };
     public ClassLoader getBeanClassLoader() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public boolean containsBean(String name) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-    @Override
-    public Object getBean(String name, Object... objects) throws NoDefinitionException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public Class<?> getBeanType(String name) throws NoDefinitionException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public boolean isPrototype(String name) throws NoDefinitionException {
-        // TODO Auto-generated method stub
-        return false;
-    }
-    @Override
-    public boolean isSingleton(String name) throws NoDefinitionException {
-        // TODO Auto-generated method stub
-        return false;
-    }
-    @Override
-    public boolean isFactory(String name) throws NoDefinitionException {
-        // TODO Auto-generated method stub
-        return false;
-    }
-    @Override
-    public boolean isTypeMatch(String name, Class<?> targetType) throws NoDefinitionException {
-        // TODO Auto-generated method stub
-        return false;
-    }
-    @Override
+        return this.defineResource.getClassLoader();
+    };
+    public boolean containsBean(String id) {
+        return this.defineResource.containsBeanDefine(id);
+    };
+    public boolean isPrototype(String id) throws NoDefinitionException {
+        return this.defineResource.isPrototype(id);
+    };
+    public boolean isSingleton(String id) throws NoDefinitionException {
+        return this.defineResource.isSingleton(id);
+    };
+    public boolean isFactory(String id) throws NoDefinitionException {
+        return this.defineResource.isFactory(id);
+    };
+    public boolean isTypeMatch(String id, Class<?> targetType) throws NoDefinitionException {
+        return false;//TODO
+    };
     public void init() throws Exception {
-        // TODO Auto-generated method stub
-    }
-    @Override
+        if (this.defineResource.isReady() == false)
+            System.out.println();
+        //TODO
+    };
     public void destroy() throws Exception {
-        // TODO Auto-generated method stub
+        //TODO
+    };
+    public Object getBean(String id, Object... objects) throws NoDefinitionException {
+        return null;//TODO
+    };
+    public Class<?> getBeanType(String id) throws NoDefinitionException {
+        return null;//TODO
+    };
+    public Object getContext() {
+        return this.context;
+    };
+    /*------------------------------------------------------------*/
+    private AttBase attBase = null;
+    protected IAttribute getAttribute() {
+        if (this.attBase == null)
+            this.attBase = new AttBase();
+        return this.attBase;
     }
+    public boolean contains(String name) {
+        return this.getAttribute().contains(name);
+    };
+    public void setAttribute(String name, Object value) {
+        this.getAttribute().setAttribute(name, value);
+    };
+    public Object getAttribute(String name) {
+        return this.getAttribute().getAttribute(name);
+    };
+    public void removeAttribute(String name) {
+        this.getAttribute().removeAttribute(name);
+    };
+    public String[] getAttributeNames() {
+        return this.getAttribute().getAttributeNames();
+    };
+    public void clearAttribute() {
+        this.getAttribute().clearAttribute();
+    }
+    /*------------------------------------------------------------*/
+    public void addEventListener(Class<? extends Event> eventType, EventListener listener) {
+        this.eventManager.addEventListener(eventType, listener);
+    }
+    public void doEvent(Event event) {
+        this.eventManager.doEvent(event);
+    };
 }

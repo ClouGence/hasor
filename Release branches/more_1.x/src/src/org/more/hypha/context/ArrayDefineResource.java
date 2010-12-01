@@ -79,6 +79,10 @@ public class ArrayDefineResource implements DefineResource {
         this.pluginNames.clear();
     }
     //========================================================================================
+    /**获取一个状态该状态表述是否已经准备好，{@link ArrayDefineResource}类型中该方法始终返回true。*/
+    public boolean isReady() {
+        return true;
+    };
     public ClassLoader getClassLoader() {
         if (this.classLoader == null)
             return ClassLoader.getSystemClassLoader();
