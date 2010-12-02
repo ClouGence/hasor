@@ -21,8 +21,8 @@ import org.more.hypha.beans.ValueMetaData.PropertyMetaTypeEnum;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Relation_ValueMetaData extends AbstractValueMetaData {
-    private String refBean  = null; //引用的Bean名称
-    private String refScope = null; //引用的Bean所处作用域
+    private String refBean    = null; //引用的Bean名称
+    private String refPackage = null; //引用的Bean所处作用域
     /**该方法将会返回{@link PropertyMetaTypeEnum#RelationBean}。*/
     public PropertyMetaTypeEnum getPropertyType() {
         return PropertyMetaTypeEnum.RelationBean;
@@ -35,12 +35,12 @@ public class Relation_ValueMetaData extends AbstractValueMetaData {
     public void setRefBean(String refBean) {
         this.refBean = refBean;
     }
-    /**获取引用的Bean所处作用域。*/
-    public String getRefScope() {
-        return this.refScope;
+    /**获取引用的Bean所处包。*/
+    public String getRefPackage() {
+        return this.refPackage;
     }
-    /**设置引用的Bean所处作用域。*/
-    public void setRefScope(String refScope) {
-        this.refScope = refScope;
+    /**设置引用的Bean所处包。*/
+    public void setRefPackage(String refPackage) {
+        this.refPackage = refPackage;
     }
 }

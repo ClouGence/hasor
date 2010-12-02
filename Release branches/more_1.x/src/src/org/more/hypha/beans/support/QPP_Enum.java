@@ -32,12 +32,9 @@ public class QPP_Enum implements TypeParser {
         if (value == null)
             return null;
         //2.½øÐÐ½âÎö
-        Class<?> propType = property.getClassType();
-        if (propType == null || Enum.class.isAssignableFrom(propType) == false)
-            propType = null;
         Enum_ValueMetaData newMEDATA = new Enum_ValueMetaData();
         newMEDATA.setEnumValue(value);
-        newMEDATA.setEnumType(propType);
+        newMEDATA.setEnumType(property.getClassType());
         return newMEDATA;
     }
 }

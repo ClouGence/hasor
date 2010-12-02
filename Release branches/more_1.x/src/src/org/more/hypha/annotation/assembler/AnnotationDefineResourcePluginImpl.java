@@ -74,7 +74,7 @@ public class AnnotationDefineResourcePluginImpl implements AnnotationDefineResou
     /**通知aop解析器解析这个类，className参数表示的是预解析的类名。该类是通过{@link DefineResource}中的ClassLoader装载的。*/
     public synchronized void parserClass(String className) throws ClassNotFoundException, IOException {
         String classPath = className.replace(".", "/") + ".class";
-        InputStream is = this.config.getClassLoader().getResourceAsStream(classPath);
+        InputStream is = ClassLoader.getSystemResourceAsStream(classPath);
         this.parserClass(is);
     }
     /**通知aop解析器解析这个类，classInputStream参数表示的是预解析的类输入流。*/
@@ -104,7 +104,7 @@ public class AnnotationDefineResourcePluginImpl implements AnnotationDefineResou
         //2.解析
         for (String anno : annoTypes) {
             for (KeepWatchParser p : this.parserMap.get(anno))
-                p.process(this.config.getClassLoader().loadClass(className), this.config, this);
+                p.process(ClassLoader.getSystemClassLoader().loadClass(className), this.config, this);
         }
     }
 }

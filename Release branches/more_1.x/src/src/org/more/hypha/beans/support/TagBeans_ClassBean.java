@@ -15,9 +15,6 @@
  */
 package org.more.hypha.beans.support;
 import java.util.Map;
-import org.more.LostException;
-import org.more.core.xml.XmlStackDecorator;
-import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.beans.define.ClassBeanDefine;
 import org.more.hypha.context.XmlDefineResource;
 /**
@@ -41,18 +38,7 @@ public class TagBeans_ClassBean extends TagBeans_AbstractBeanDefine<ClassBeanDef
     /**关联属性与xml的属性对应关系。*/
     protected Map<Enum<?>, String> getPropertyMappings() {
         Map<Enum<?>, String> propertys = super.getPropertyMappings();
-        //propertys.put(PropertyKey.source, "class");
+        propertys.put(PropertyKey.source, "class");
         return propertys;
-    }
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
-        super.beginElement(context, xpath, event);
-        ClassLoader loader = this.getDefineResource().getClassLoader();
-        String source = event.getAttributeValue("class");
-        ClassBeanDefine define = this.getDefine(context);
-        try {
-            define.setSource(loader.loadClass(source));
-        } catch (Exception e) {
-            throw new LostException("[" + source + "]类型Bean丢失。", e);
-        }
     }
 }

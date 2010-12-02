@@ -46,7 +46,6 @@ public class ArrayDefineResource implements DefineResource {
     //
     private EventManager                      eventManager     = new AbstractEventManager() {};            //事件管理器
     private IAttribute                        attributeManager = null;                                     //属性管理器
-    private ClassLoader                       classLoader      = null;
     //========================================================================================DefineResourcePluginSet接口
     /**根据扩展名获取扩展目标对象。*/
     public DefineResourcePlugin getPlugin(String name) {
@@ -83,15 +82,6 @@ public class ArrayDefineResource implements DefineResource {
     public boolean isReady() {
         return true;
     };
-    public ClassLoader getClassLoader() {
-        if (this.classLoader == null)
-            return ClassLoader.getSystemClassLoader();
-        return this.classLoader;
-    };
-    /**设置ClassLoader，通常在初始化之前进行设置。*/
-    public void setClassLoader(ClassLoader classLoader) {
-        this.classLoader = classLoader;
-    }
     public IAttribute getAttribute() {
         if (this.attributeManager == null)
             this.attributeManager = new AttBase();

@@ -15,22 +15,18 @@
  */
 package org.more.hypha.event;
 import org.more.hypha.Event;
-import org.more.hypha.beans.AbstractBeanDefine;
-import org.more.hypha.DefineResource;
 /**
- * 开始初始化过程事件，该事件是{@link DefineResource}。收到一个新{@link AbstractBeanDefine}定义添加时引发。
- * @version 2010-10-10
+ * 当开始装载某个资源时发生
+ * @version 2010-12-2
  * @author 赵永春 (zyc@byshell.org)
  */
-public class AddBeanDefineEvent extends Event {
-    private AbstractBeanDefine define = null;
-    /**创建{@link AddBeanDefineEvent}对象。*/
-    public AddBeanDefineEvent(Object target, AbstractBeanDefine define) {
+public class Config_LoadResourceEvent extends Event {
+    private Object resource = null;
+    public Config_LoadResourceEvent(Object target, Object resource) {
         super(target);
-        this.define = define;
+        this.resource = resource;
     }
-    /**获取添加的新{@link AbstractBeanDefine}定义。*/
-    public AbstractBeanDefine getDefine() {
-        return define;
+    public Object getResource() {
+        return this.resource;
     }
 }

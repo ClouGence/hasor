@@ -16,7 +16,6 @@
 package org.more.hypha.beans.support;
 import java.util.HashMap;
 import java.util.Map;
-import org.more.LostException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.beans.define.Collection_ValueMetaData;
@@ -48,17 +47,10 @@ public abstract class TagBeans_AbstractCollection<T extends Collection_ValueMeta
         super.beginElement(context, xpath, event);
         Collection_ValueMetaData<?> valueMetaData = this.getDefine(context);
         String arrayTypeString = event.getAttributeValue("collectionType");
-        Class<?> arrayType = null;
         // 1.转换collectionType属性类型
-        if (arrayTypeString != null)
-            try {
-                arrayType = Util.getType(arrayTypeString, this.getDefineResource().getClassLoader());
-            } catch (Exception e) {
-                throw new LostException("无法装载集合的元素类型[" + arrayTypeString + "].", e);
-            }
-        else
-            arrayType = this.getDefaultCollectionType();
+        if (arrayTypeString == null)
+            arrayTypeString = this.getDefaultCollectionType().getName();
         //2.设置值
-        valueMetaData.setCollectionType(arrayType);
+        valueMetaData.setCollectionType(arrayTypeString);
     }
 }

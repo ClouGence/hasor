@@ -16,7 +16,6 @@
 package org.more.hypha.beans.support;
 import java.util.HashMap;
 import java.util.Map;
-import org.more.LostException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.beans.TypeManager;
@@ -49,7 +48,7 @@ public abstract class TagBeans_AbstractPropertyDefine<T extends AbstractProperty
     /**关联属性与xml的属性对应关系。*/
     protected Map<Enum<?>, String> getPropertyMappings() {
         HashMap<Enum<?>, String> propertys = new HashMap<Enum<?>, String>();
-        //propertys.put(PropertyKey.classType, "type");
+        propertys.put(PropertyKey.classType, "type");
         propertys.put(PropertyKey.description, "description");
         return propertys;
     }
@@ -59,17 +58,6 @@ public abstract class TagBeans_AbstractPropertyDefine<T extends AbstractProperty
         super.beginElement(context, xpath, event);
         //2.处理特殊属性classType。
         AbstractPropertyDefine pdefine = this.getDefine(context);
-        //1).试图将type转换为VariableType枚举.
-        String classType = event.getAttributeValue("type");
-        if (classType == null)
-            classType = "null";
-        //2).装载属性转换类型. 
-        try {
-            Class<?> propType = Util.getType(classType, this.getDefineResource().getClassLoader());
-            pdefine.setClassType(propType);
-        } catch (Exception e) {
-            throw new LostException("无法装载属性在注入时的强制转换类型[" + classType + "].", e);
-        }
         //3.将元素定义的所有属性都添加到att中。
         AttBase att = new AttBase();
         for (int i = 0; i < event.getAttributeCount(); i++)

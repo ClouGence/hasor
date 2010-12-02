@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.support;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
-import org.more.LostException;
+import org.more.FormatException;
 import org.more.core.xml.XmlStackDecorator;
-import org.more.core.xml.stream.StartElementEvent;
+import org.more.core.xml.stream.EndElementEvent;
 import org.more.hypha.beans.define.VariableBeanDefine;
 import org.more.hypha.context.XmlDefineResource;
-import org.more.util.StringConvert;
 /**
  * 用于解析/beans/varBean标签
  * @version 2010-9-16
@@ -32,70 +31,25 @@ public class TagBeans_VarBean extends TagBeans_AbstractBeanDefine<VariableBeanDe
     public TagBeans_VarBean(XmlDefineResource configuration) {
         super(configuration);
     }
-    /**根据枚举获取其基本类型Class。*/
-    protected Class<?> getBaseType(VariableType typeEnum) {
-        if (typeEnum == null)
-            return null;
-        else if (typeEnum == VariableType.Boolean)
-            return boolean.class;
-        else if (typeEnum == VariableType.Byte)
-            return byte.class;
-        else if (typeEnum == VariableType.Short)
-            return short.class;
-        else if (typeEnum == VariableType.Int)
-            return int.class;
-        else if (typeEnum == VariableType.Long)
-            return long.class;
-        else if (typeEnum == VariableType.Float)
-            return float.class;
-        else if (typeEnum == VariableType.Double)
-            return double.class;
-        else if (typeEnum == VariableType.Char)
-            return char.class;
-        else if (typeEnum == VariableType.String)
-            return String.class;
-        else if (typeEnum == VariableType.Date)
-            return Date.class;
-        else
-            return null;
-    }
     /**创建VariableBeanDefine类型对象。*/
     protected VariableBeanDefine createDefine() {
         return new VariableBeanDefine();
     }
     /**定义值Bean的属性*/
     public enum PropertyKey {
-        value, type, format
+        value, type
     };
     /**关联属性与xml的属性对应关系。*/
     protected Map<Enum<?>, String> getPropertyMappings() {
-        return null;
+        HashMap<Enum<?>, String> propertys = new HashMap<Enum<?>, String>();
+        propertys.put(PropertyKey.value, "value");
+        propertys.put(PropertyKey.type, "type");
+        return propertys;
     }
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
-        super.beginElement(context, xpath, event);
-        //1.取得属性
-        String _value = event.getAttributeValue("value");
-        String _type = event.getAttributeValue("type");
-        String _format = event.getAttributeValue("format");
-        //2.转换type
-        VariableType typeEnum = (VariableType) StringConvert.changeType(_type, VariableType.class, VariableType.Null);
-        Class<?> classType = this.getBaseType(typeEnum);
-        if (classType == null && _type != null)
-            try {
-                ClassLoader loader = this.getDefineResource().getClassLoader();
-                classType = loader.loadClass(_type);
-            } catch (Exception e) {
-                throw new LostException("[" + _type + "]类型属性丢失。", e);
-            }
-        //3.取得值
-        Object value = null;
-        if (typeEnum == VariableType.Date)
-            value = StringConvert.parseDate(_value, _format);
-        else
-            value = StringConvert.changeType(_value, classType);
-        //4.设置值
+    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
         VariableBeanDefine define = this.getDefine(context);
-        define.setType(classType);
-        define.setValue(value);
+        if (define.getType() == null)
+            throw new FormatException("解析VariableBeanDefine类型Bean错误，无法解析其类型。");
+        super.endElement(context, xpath, event);
     }
 }

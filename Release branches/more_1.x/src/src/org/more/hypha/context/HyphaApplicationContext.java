@@ -34,11 +34,16 @@ public class HyphaApplicationContext implements ApplicationContext {
     private DefineResource defineResource = null;
     private Object         context        = null;
     private EventManager   eventManager   = new AbstractEventManager() {};
+    private ClassLoader    classLoader    = null;
     /*------------------------------------------------------------*/
     public HyphaApplicationContext(DefineResource defineResource, Object context) {
         this.defineResource = defineResource;
         this.context = context;
     };
+    /**设置ClassLoader，通常在初始化之前进行设置。*/
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
     public List<String> getBeanDefinitionNames() {
         return this.defineResource.getBeanDefineNames();
     };
@@ -49,7 +54,9 @@ public class HyphaApplicationContext implements ApplicationContext {
         return this.defineResource;
     };
     public ClassLoader getBeanClassLoader() {
-        return this.defineResource.getClassLoader();
+        if (this.classLoader == null)
+            return ClassLoader.getSystemClassLoader();
+        return this.classLoader;
     };
     public boolean containsBean(String id) {
         return this.defineResource.containsBeanDefine(id);
@@ -70,6 +77,13 @@ public class HyphaApplicationContext implements ApplicationContext {
         if (this.defineResource.isReady() == false)
             System.out.println();
         //TODO
+        /*
+         * 类装载器
+         * 对象创造器
+         * 属性注入器
+         * 对象装饰器
+         * 缓存器
+         */
     };
     public void destroy() throws Exception {
         //TODO

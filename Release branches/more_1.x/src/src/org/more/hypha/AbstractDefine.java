@@ -26,8 +26,8 @@ import org.more.util.attribute.IAttribute;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public abstract class AbstractDefine implements IAttribute, BeanDefinePluginSet {
-    private IAttribute                    attribute  = new AttBase(); // Ù–‘
-    private Map<String, BeanDefinePlugin> pluginList = null;         //¿©’π≈‰÷√√Ë ˆ
+    private IAttribute                    attribute  = null; // Ù–‘
+    private Map<String, BeanDefinePlugin> pluginList = null; //¿©’π≈‰÷√√Ë ˆ
     //========================================================================================
     /**∑µªÿ¿©’πDefine≈‰÷√√Ë ˆ°£*/
     public BeanDefinePlugin getPlugin(String name) {
@@ -46,22 +46,27 @@ public abstract class AbstractDefine implements IAttribute, BeanDefinePluginSet 
         this.pluginList.remove(name);
     };
     //========================================================================================
+    protected IAttribute getAttribute() {
+        if (this.attribute == null)
+            this.attribute = new AttBase();
+        return this.attribute;
+    }
     public boolean contains(String name) {
-        return this.attribute.contains(name);
+        return this.getAttribute().contains(name);
     };
     public void setAttribute(String name, Object value) {
-        this.attribute.setAttribute(name, value);
+        this.getAttribute().setAttribute(name, value);
     };
     public Object getAttribute(String name) {
-        return this.attribute.getAttribute(name);
+        return this.getAttribute().getAttribute(name);
     };
     public void removeAttribute(String name) {
-        this.attribute.removeAttribute(name);
+        this.getAttribute().removeAttribute(name);
     };
     public String[] getAttributeNames() {
-        return this.attribute.getAttributeNames();
+        return this.getAttribute().getAttributeNames();
     };
     public void clearAttribute() {
-        this.attribute.clearAttribute();
+        this.getAttribute().clearAttribute();
     };
 }

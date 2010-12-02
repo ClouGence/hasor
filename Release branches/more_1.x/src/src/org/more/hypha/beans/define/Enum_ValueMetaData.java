@@ -22,15 +22,16 @@ import org.more.util.StringConvert;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Enum_ValueMetaData extends AbstractValueMetaData {
-    private String   enumValue = null; //枚举表述的字符串形式
-    private Class<?> enumType  = null; //枚举类型
+    private String enumValue = null; //枚举表述的字符串形式
+    private String enumType  = null; //枚举类型
     /**该方法将会返回{@link PropertyMetaTypeEnum#Enum}。*/
     public PropertyMetaTypeEnum getPropertyType() {
         return PropertyMetaTypeEnum.Enum;
     }
     /**直接返回解析之后的枚举，如果没有设置enumType将会引发异常。*/
-    public Enum<?> getEnum() {
-        return (Enum<?>) StringConvert.changeType(enumValue, enumType);
+    public Enum<?> getEnumType(ClassLoader enumLoader) throws ClassNotFoundException {
+        Class<?> eType = enumLoader.loadClass(this.enumType);
+        return this.getEnum(eType);
     }
     /**使用一个枚举类型返回属于这个枚举类型中的枚举值。*/
     public Enum<?> getEnum(Class<?> enumType) {
@@ -49,11 +50,11 @@ public class Enum_ValueMetaData extends AbstractValueMetaData {
         this.enumValue = enumValue;
     }
     /**获取枚举类型*/
-    public Class<?> getEnumType() {
+    public String getEnumType() {
         return this.enumType;
     }
     /**设置枚举类型*/
-    public void setEnumType(Class<?> enumType) {
+    public void setEnumType(String enumType) {
         this.enumType = enumType;
     }
 }

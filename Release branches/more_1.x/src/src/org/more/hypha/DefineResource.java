@@ -29,8 +29,6 @@ import org.more.util.attribute.IAttribute;
 public interface DefineResource extends DefineResourcePluginSet {
     /**获取一个状态该状态表述是否已经准备好。*/
     public boolean isReady();
-    /**获取{@link DefineResource}接口使用的类装载器。*/
-    public ClassLoader getClassLoader();
     /**获取{@link DefineResource}的属性访问接口。*/
     public IAttribute getAttribute();
     /**获取事件管理器。*/

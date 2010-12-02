@@ -29,6 +29,7 @@ import org.more.core.xml.stream.XmlReader;
 import org.more.hypha.DefineResource;
 import org.more.hypha.beans.TypeManager;
 import org.more.hypha.beans.support.TagBeans_Beans;
+import org.more.hypha.event.Config_LoadResourceEvent;
 import org.more.hypha.event.Config_LoadedXmlEvent;
 import org.more.hypha.event.Config_LoadingXmlEvent;
 import org.more.hypha.event.ReloadDefineEvent;
@@ -196,7 +197,8 @@ public class XmlDefineResource extends ArrayDefineResource {
     /**手动执行配置装载动作，如果重复装载可能产生异常。该动作将会引发{@link Config_LoadingXmlEvent}事件*/
     public synchronized void loadDefine() throws IOException, XMLStreamException {
         this.getEventManager().doEvent(new Config_LoadingXmlEvent(this, this));//开始装载Beans
-        for (Object obj : this.sourceArray)
+        for (Object obj : this.sourceArray) {
+            this.getEventManager().doEvent(new Config_LoadResourceEvent(this, obj));
             if (obj instanceof InputStream) {
                 InputStream is = (InputStream) obj;
                 try {
@@ -223,6 +225,7 @@ public class XmlDefineResource extends ArrayDefineResource {
                     is.close();
                 }
             }
+        }
         this.getEventManager().doEvent(new Config_LoadedXmlEvent(this, this));//装载Beans结束
         this.loadMark = true;
     };

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.define;
-import java.net.URI;
 import org.more.hypha.beans.ValueMetaData.PropertyMetaTypeEnum;
 /**
  * 表示一个连接数据，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#URI}。
@@ -22,16 +21,16 @@ import org.more.hypha.beans.ValueMetaData.PropertyMetaTypeEnum;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class URI_ValueMetaData extends AbstractValueMetaData {
-    private URI uriObject = null; //表示连接的url字符数据
+    private String uriObject = null; //表示连接的url字符数据
     /**该方法将会返回{@link PropertyMetaTypeEnum#URI}。*/
     public PropertyMetaTypeEnum getPropertyType() {
         return PropertyMetaTypeEnum.URI;
     }
-    public URI getUriObject() {
+    public String getUriObject() {
         return this.uriObject;
     }
     /**设置表示连接的uri数据*/
-    public void setUriObject(URI uriObject) {
+    public void setUriObject(String uriObject) {
         this.uriObject = uriObject;
     }
 }

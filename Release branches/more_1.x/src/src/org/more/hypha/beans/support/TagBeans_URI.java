@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.support;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.Map;
-import org.more.FormatException;
-import org.more.core.xml.XmlStackDecorator;
-import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.beans.define.URI_ValueMetaData;
 import org.more.hypha.context.XmlDefineResource;
 /**
@@ -38,23 +34,12 @@ public class TagBeans_URI extends TagBeans_AbstractValueMetaDataDefine<URI_Value
     }
     /**定义模板属性。*/
     public enum PropertyKey {
-        uriLocation
+        uriObject
     }
     /**关联属性与xml的属性对应关系。*/
     protected Map<Enum<?>, String> getPropertyMappings() {
-        return null;
-    }
-    /**解析属性*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
-        super.beginElement(context, xpath, event);
-        String uriLocation = event.getAttributeValue("uriLocation");
-        if (uriLocation == null)
-            return;
-        URI_ValueMetaData metaData = this.getDefine(context);
-        try {
-            metaData.setUriObject(new URI(uriLocation));
-        } catch (URISyntaxException e) {
-            throw new FormatException("解析uri类型数据发生异常，错误的uri格式数据：[" + uriLocation + "]");
-        }
+        HashMap<Enum<?>, String> propertys = new HashMap<Enum<?>, String>();
+        propertys.put(PropertyKey.uriObject, "uriLocation");
+        return propertys;
     }
 }

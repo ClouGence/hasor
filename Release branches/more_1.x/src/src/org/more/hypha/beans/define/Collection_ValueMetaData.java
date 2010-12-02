@@ -20,14 +20,14 @@ package org.more.hypha.beans.define;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class Collection_ValueMetaData<T extends AbstractValueMetaData> extends AbstractValueMetaData {
-    private Class<?> collectionType = null; //集合对象类型，如果是数组则该值与属性collectionValueType一致。
-    private int      initSize       = 0;   //表示集合初始化大小
+    private String collectionType = null; //集合对象类型，如果是数组则该值与属性collectionValueType一致。
+    private int    initSize       = 0;   //表示集合初始化大小
     /**获取集合对象类型，如果是数组则该值与属性collectionValueType一致。*/
-    public Class<?> getCollectionType() {
+    public String getCollectionType() {
         return this.collectionType;
     }
     /**设置集合对象类型，如果是数组则该值与属性collectionValueType一致。*/
-    public void setCollectionType(Class<?> collectionType) {
+    public void setCollectionType(String collectionType) {
         this.collectionType = collectionType;
     }
     /**获取集合初始化大小*/

@@ -33,7 +33,7 @@ public class QPP_Ref implements TypeParser {
         //2.½øÐÐ½âÎö
         Relation_ValueMetaData newMETA = new Relation_ValueMetaData();
         newMETA.setRefBean((String) value);
-        newMETA.setRefScope((String) attribute.getAttribute("refScope"));
+        newMETA.setRefPackage((String) attribute.getAttribute("refPackage"));
         return newMETA;
     }
 }

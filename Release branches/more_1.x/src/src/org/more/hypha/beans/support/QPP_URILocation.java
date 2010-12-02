@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.support;
-import java.net.URI;
-import java.net.URISyntaxException;
-import org.more.FormatException;
 import org.more.hypha.beans.AbstractPropertyDefine;
 import org.more.hypha.beans.TypeParser;
 import org.more.hypha.beans.ValueMetaData;
@@ -34,11 +31,7 @@ public class QPP_URILocation implements TypeParser {
             return null;
         //2.进行解析
         URI_ValueMetaData newMETA = new URI_ValueMetaData();
-        try {
-            newMETA.setUriObject(new URI(value));
-            return newMETA;
-        } catch (URISyntaxException e) {
-            throw new FormatException("解析uri类型数据发生异常，错误的uri格式数据：[" + value + "]");
-        }
+        newMETA.setUriObject(value);
+        return newMETA;
     }
 }

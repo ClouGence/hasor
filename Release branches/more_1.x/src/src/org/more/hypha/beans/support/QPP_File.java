@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.support;
-import java.io.File;
 import org.more.hypha.beans.AbstractPropertyDefine;
 import org.more.hypha.beans.TypeParser;
 import org.more.hypha.beans.ValueMetaData;
@@ -34,7 +33,7 @@ public class QPP_File implements TypeParser {
             return null;
         //2.½øÐÐ½âÎö
         File_ValueMetaData newMETA = new File_ValueMetaData();
-        newMETA.setFileObject(new File(value));
+        newMETA.setFileObject(value);
         newMETA.setDir(false);
         return newMETA;
     }

@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.support;
+import java.util.HashMap;
 import java.util.Map;
-import org.more.core.xml.XmlStackDecorator;
-import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.beans.define.EL_ValueMetaData;
 import org.more.hypha.context.XmlDefineResource;
 /**
@@ -39,15 +38,8 @@ public class TagBeans_EL extends TagBeans_AbstractValueMetaDataDefine<EL_ValueMe
     }
     /**关联属性与xml的属性对应关系。*/
     protected Map<Enum<?>, String> getPropertyMappings() {
-        return null;
-    }
-    /**解析属性*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
-        super.beginElement(context, xpath, event);
-        String elText = event.getAttributeValue("elText");
-        if (elText == null)
-            return;
-        EL_ValueMetaData metaData = this.getDefine(context);
-        metaData.setElText(elText);
+        HashMap<Enum<?>, String> propertys = new HashMap<Enum<?>, String>();
+        propertys.put(PropertyKey.elText, "elText");
+        return propertys;
     }
 }

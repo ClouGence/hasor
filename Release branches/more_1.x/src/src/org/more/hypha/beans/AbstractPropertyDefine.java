@@ -22,7 +22,7 @@ import org.more.util.attribute.IAttribute;
  */
 public interface AbstractPropertyDefine extends BeanDefinePluginSet, IAttribute {
     /**返回当执行属性注入时需要执行的类型转换类型。*/
-    public Class<?> getClassType();
+    public String getClassType();
     /**返回属性的描述信息。*/
     public String getDescription();
     /**获取对该属性的值信息描述。*/

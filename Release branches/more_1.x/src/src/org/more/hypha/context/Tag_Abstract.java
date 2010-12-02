@@ -17,7 +17,6 @@ package org.more.hypha.context;
 import java.lang.reflect.Method;
 import org.more.DoesSupportException;
 import org.more.PropertyException;
-import org.more.hypha.beans.define.VariableBeanDefine;
 import org.more.util.StringConvert;
 import org.more.util.StringUtil;
 /**
@@ -36,31 +35,6 @@ public abstract class Tag_Abstract {
         return this.configuration;
     }
     //================================================================================================================工具性方法
-    /**该枚举中定义了{@link VariableBeanDefine}类可以表示的基本类型。*/
-    protected enum VariableType {
-        /**null数据。*/
-        Null,
-        /**布尔类型。*/
-        Boolean,
-        /**字节类型。*/
-        Byte,
-        /**短整数类型。*/
-        Short,
-        /**整数类型。*/
-        Int,
-        /**长整数类型。*/
-        Long,
-        /**单精度浮点数类型。*/
-        Float,
-        /**双精度浮点数类型。*/
-        Double,
-        /**字符类型。*/
-        Char,
-        /**字符串类型。*/
-        String,
-        /**时间类型*/
-        Date,
-    }
     /**查找某个名称的方法，该方法必须有一个参数。*/
     private Method findMethod(String methodName, Class<?> type) {
         for (Method m : type.getMethods())

@@ -43,13 +43,16 @@ public class TagBeans_Enum extends TagBeans_AbstractValueMetaDataDefine<Enum_Val
     protected Map<Enum<?>, String> getPropertyMappings() {
         HashMap<Enum<?>, String> propertys = new HashMap<Enum<?>, String>();
         propertys.put(PropertyKey.enumValue, "enum");
+        propertys.put(PropertyKey.enumValue, "type");
         return propertys;
     }
     /**Ω‚Œˆ Ù–‘*/
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
         super.beginElement(context, xpath, event);
         Enum_ValueMetaData metaData = this.getDefine(context);
-        AbstractPropertyDefine pdefine = (AbstractPropertyDefine) context.getAttribute(TagBeans_AbstractPropertyDefine.PropertyDefine);
-        metaData.setEnumType(pdefine.getClassType());
+        if (metaData.getEnumType() == null) {
+            AbstractPropertyDefine pdefine = (AbstractPropertyDefine) context.getAttribute(TagBeans_AbstractPropertyDefine.PropertyDefine);
+            metaData.setEnumType(pdefine.getClassType());
+        }
     }
 }

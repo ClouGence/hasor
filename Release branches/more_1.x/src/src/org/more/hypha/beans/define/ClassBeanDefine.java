@@ -20,17 +20,17 @@ package org.more.hypha.beans.define;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class ClassBeanDefine extends TemplateBeanDefine {
-    private Class<?> source = null; //class类
+    private String source = null; //class类
     /**返回“ClassBean”。*/
     public String getBeanType() {
         return "ClassBean";
     }
     /**获取类的class完整限定名。*/
-    public Class<?> getSource() {
+    public String getSource() {
         return source;
     }
     /**设置类完整限定名。*/
-    public void setSource(Class<?> source) {
+    public void setSource(String source) {
         this.source = source;
     }
 }

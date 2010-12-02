@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.support;
-import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
-import org.more.core.xml.XmlStackDecorator;
-import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.beans.define.File_ValueMetaData;
 import org.more.hypha.context.XmlDefineResource;
 /**
@@ -38,19 +36,12 @@ public class TagBeans_Directory extends TagBeans_AbstractValueMetaDataDefine<Fil
     }
     /**定义模板属性。*/
     public enum PropertyKey {
-        path
+        fileObject
     }
     /**关联属性与xml的属性对应关系。*/
     protected Map<Enum<?>, String> getPropertyMappings() {
-        return null;
-    }
-    /**解析属性*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
-        super.beginElement(context, xpath, event);
-        String path = event.getAttributeValue("path");
-        if (path == null)
-            return;
-        File_ValueMetaData metaData = this.getDefine(context);
-        metaData.setFileObject(new File(path));
+        HashMap<Enum<?>, String> propertys = new HashMap<Enum<?>, String>();
+        propertys.put(PropertyKey.fileObject, "path");
+        return propertys;
     }
 }

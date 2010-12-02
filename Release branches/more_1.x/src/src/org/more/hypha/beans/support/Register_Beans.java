@@ -77,6 +77,7 @@ public class Register_Beans implements XmlNameSpaceRegister {
         typeManager.regeditTypeParser(new QPP_Enum());
         typeManager.regeditTypeParser(new QPP_Ref());
         typeManager.regeditTypeParser(new QPP_File());
+        typeManager.regeditTypeParser(new QPP_Directory());
         typeManager.regeditTypeParser(new QPP_URILocation());
     }
 }

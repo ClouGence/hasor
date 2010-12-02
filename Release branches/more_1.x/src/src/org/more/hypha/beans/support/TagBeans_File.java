@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.support;
-import java.io.File;
 import java.util.Map;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
@@ -51,6 +50,6 @@ public class TagBeans_File extends TagBeans_AbstractValueMetaDataDefine<File_Val
         if (path == null)
             return;
         File_ValueMetaData metaData = this.getDefine(context);
-        metaData.setFileObject(new File(path));
+        metaData.setFileObject(path);
     }
 }

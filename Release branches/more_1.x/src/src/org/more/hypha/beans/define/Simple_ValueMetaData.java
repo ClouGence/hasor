@@ -15,6 +15,7 @@
  */
 package org.more.hypha.beans.define;
 import org.more.hypha.beans.ValueMetaData.PropertyMetaTypeEnum;
+import org.more.util.StringConvert;
 /**
  * 表示一个基本类型数据，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#SimpleType}。
  * @version 2010-9-17
@@ -22,33 +23,14 @@ import org.more.hypha.beans.ValueMetaData.PropertyMetaTypeEnum;
  */
 public class Simple_ValueMetaData extends AbstractValueMetaData {
     /**当检测到value有值但是又没有定义type时候值类型采用的默认数据类型。*/
-    public static final Class<?> DefaultValueType = String.class;
-    /**根据类型获取其枚举类型，当目标类型无法转换成PropertyType表述的基本类型枚举时返回null。*/
-    public static PropertyType getPropertyType(Class<?> type) {
-        if (type == null)
-            return PropertyType.Null;
-        if (type == boolean.class || type == Boolean.class)
-            return PropertyType.Boolean;
-        else if (type == byte.class || type == Byte.class)
-            return PropertyType.Byte;
-        else if (type == short.class || type == Short.class)
-            return PropertyType.Short;
-        else if (type == int.class || type == Integer.class)
-            return PropertyType.Int;
-        else if (type == long.class || type == Long.class)
-            return PropertyType.Long;
-        else if (type == float.class || type == Float.class)
-            return PropertyType.Float;
-        else if (type == double.class || type == Double.class)
-            return PropertyType.Double;
-        else if (type == char.class || type == Character.class)
-            return PropertyType.Char;
-        else if (type == String.class)
-            return PropertyType.String;
-        else
-            //转换默认值
+    public static final PropertyType DefaultValueType = PropertyType.String;
+    //---------------------------------------------------------------------------------------工具方法
+    /**根据字符串类型描述取其{@link PropertyType}枚举对应的类型。*/
+    public static PropertyType getPropertyType(String typeString) {
+        if (typeString == null)
             return null;
-    }
+        return (PropertyType) StringConvert.parseEnum(typeString, PropertyType.class);
+    };
     /**根据枚举获取其基本类型Class，*/
     public static Class<?> getPropertyType(PropertyType type) {
         if (type == null)
@@ -74,6 +56,32 @@ public class Simple_ValueMetaData extends AbstractValueMetaData {
         else if (type == PropertyType.String)
             return String.class;
         return null;//永远不会调用这段代码
+    }
+    /**根据类型获取其枚举类型，当目标类型无法转换成PropertyType表述的基本类型枚举时返回null。*/
+    public static PropertyType getPropertyType(Class<?> type) {
+        if (type == null)
+            return PropertyType.Null;
+        if (type == boolean.class || type == Boolean.class)
+            return PropertyType.Boolean;
+        else if (type == byte.class || type == Byte.class)
+            return PropertyType.Byte;
+        else if (type == short.class || type == Short.class)
+            return PropertyType.Short;
+        else if (type == int.class || type == Integer.class)
+            return PropertyType.Int;
+        else if (type == long.class || type == Long.class)
+            return PropertyType.Long;
+        else if (type == float.class || type == Float.class)
+            return PropertyType.Float;
+        else if (type == double.class || type == Double.class)
+            return PropertyType.Double;
+        else if (type == char.class || type == Character.class)
+            return PropertyType.Char;
+        else if (type == String.class)
+            return PropertyType.String;
+        else
+            //转换默认值
+            return null;
     }
     //---------------------------------------------------------------------------------------
     private PropertyType valueMetaType = PropertyType.Null; //值类型

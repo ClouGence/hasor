@@ -98,7 +98,7 @@ public class Watch_Bean implements KeepWatchParser {
         // MetaData
         this.addMetaData(define, bean.metaData());
         // Source
-        define.setSource(beanType);
+        define.setSource(beanType.getName());
         //-----------------------------------------------------------------------------------------------------构造方法
         Constructor<?>[] cs = beanType.getConstructors();
         for (Constructor<?> c : cs) {
@@ -122,7 +122,7 @@ public class Watch_Bean implements KeepWatchParser {
                 //2)创建ConstructorDefine
                 ConstructorDefine cDefine = new ConstructorDefine();
                 cDefine.setIndex(i);
-                cDefine.setClassType(cpt);
+                cDefine.setClassType(cpt.getName());
                 //3)解析并添加
                 cDefine = (ConstructorDefine) getPropertyDefine(cpa, define, cDefine, resource);
                 define.addInitParam(cDefine);
@@ -159,7 +159,7 @@ public class Watch_Bean implements KeepWatchParser {
                 //2)创建ParamDefine
                 ParamDefine pDefine = new ParamDefine();
                 pDefine.setName(varAtt.variableName(i + 1));
-                pDefine.setClassType(cpt);
+                pDefine.setClassType(cpt.getName());
                 //3)解析并添加
                 pDefine = (ParamDefine) getPropertyDefine(cpa, define, pDefine, resource);
                 define.addMethod(mDefine);
@@ -173,7 +173,7 @@ public class Watch_Bean implements KeepWatchParser {
                 continue;
             PropertyDefine pDefine = new PropertyDefine();
             pDefine.setBoolLazyInit(fa.lazyInit());
-            pDefine.setClassType(f.getType());
+            pDefine.setClassType(f.getType().getName());
             pDefine.setDescription(fa.desc());
             pDefine.setName(f.getName());
             this.addMetaData(pDefine, fa.metaData());
@@ -184,7 +184,7 @@ public class Watch_Bean implements KeepWatchParser {
         resource.addBeanDefine(define);
     }
     private AbstractPropertyDefine getPropertyDefine(Property anno, ClassBeanDefine define, AbstractPropertyDefine propDefine, DefineResource resource) {
-        Class<?> cpt = propDefine.getClassType();
+        String cpt = propDefine.getClassType();
         //3)解析Param注解
         ValueMetaData valueMetaData = null;
         if (anno != null) {
@@ -202,7 +202,8 @@ public class Watch_Bean implements KeepWatchParser {
                 if (propType == null)
                     throw new NotFoundException(define.getID() + "：解析注解Param期间发现无法将[" + cpt + "]作为基本类型处理。");
                 Simple_ValueMetaData temp = new Simple_ValueMetaData();
-                temp.setValue(StringConvert.changeType(txtVar, cpt));
+                Class<?> propClass = Simple_ValueMetaData.getPropertyType(propType);
+                temp.setValue(StringConvert.changeType(txtVar, propClass));
                 temp.setValueMetaType(propType);
                 valueMetaData = temp;
             } else if (elVar.equals("") == false) {
@@ -219,7 +220,7 @@ public class Watch_Bean implements KeepWatchParser {
         return propDefine;
     }
     private AbstractPropertyDefine getPropertyDefine(Param anno, ClassBeanDefine define, AbstractPropertyDefine propDefine, DefineResource resource) {
-        Class<?> cpt = propDefine.getClassType();
+        String cpt = propDefine.getClassType();
         //3)解析Param注解
         ValueMetaData valueMetaData = null;
         if (anno != null) {
@@ -237,7 +238,8 @@ public class Watch_Bean implements KeepWatchParser {
                 if (propType == null)
                     throw new NotFoundException(define.getID() + "：解析注解Param期间发现无法将[" + cpt + "]作为基本类型处理。");
                 Simple_ValueMetaData temp = new Simple_ValueMetaData();
-                temp.setValue(StringConvert.changeType(txtVar, cpt));
+                Class<?> propClass = Simple_ValueMetaData.getPropertyType(propType);
+                temp.setValue(StringConvert.changeType(txtVar, propClass));
                 temp.setValueMetaType(propType);
                 valueMetaData = temp;
             } else if (elVar.equals("") == false) {
@@ -254,22 +256,19 @@ public class Watch_Bean implements KeepWatchParser {
         return propDefine;
     }
     /**根据类型获取与其相关的默认ValueMetaData对象。*/
-    private ValueMetaData getDefaultValueMetaData(Class<?> cpt) {
+    private ValueMetaData getDefaultValueMetaData(String stringType) {
+        PropertyType propType = Simple_ValueMetaData.getPropertyType(stringType);
         //没标记注解
         Simple_ValueMetaData simpleMetaData = new Simple_ValueMetaData();
         Object defaultValue = null;//
-        PropertyType enumType = null;//
-        if (cpt.isPrimitive() == true) {
-            //处理基础类型
-            defaultValue = EngineToos.getDefaultValue(cpt);//
-            enumType = Simple_ValueMetaData.getPropertyType(cpt);//
-        } else {
-            //空值
-            enumType = PropertyType.Null;
-            defaultValue = null;
+        if (propType == null)
+            defaultValue = null;//
+        else {
+            Class<?> cpt = Simple_ValueMetaData.getPropertyType(propType);
+            defaultValue = EngineToos.getDefaultValue(cpt);
         }
         //设置类型和默认值
-        simpleMetaData.setValueMetaType(enumType);
+        simpleMetaData.setValueMetaType(propType);
         simpleMetaData.setValue(defaultValue);
         return simpleMetaData;
     }

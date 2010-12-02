@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.support;
-import org.more.core.classcode.EngineToos;
 import org.more.hypha.beans.AbstractPropertyDefine;
 import org.more.hypha.beans.TypeParser;
 import org.more.hypha.beans.ValueMetaData;
+import org.more.hypha.beans.define.PropertyType;
 import org.more.hypha.beans.define.Simple_ValueMetaData;
 import org.more.util.StringConvert;
 import org.more.util.attribute.IAttribute;
@@ -33,17 +33,15 @@ public class QPP_Value implements TypeParser {
         if (value == null)
             return null;
         //2.不处理boolean,byte,short,int,long,float,double,char,string之外的任何类型。
-        Class<?> propType = property.getClassType();
-        if (propType != null)
-            if (EngineToos.isBaseType(propType) == true || propType == String.class) {} else
-                return null;
-        else
+        PropertyType propType = Simple_ValueMetaData.getPropertyType(property.getClassType());
+        if (propType == null)
             propType = Simple_ValueMetaData.DefaultValueType;
         //2.解析
-        Object var = StringConvert.changeType(value, propType);
+        Class<?> propClass = Simple_ValueMetaData.getPropertyType(propType);
+        Object var = StringConvert.changeType(value, propClass);
         Simple_ValueMetaData newMEDATA = new Simple_ValueMetaData();
         newMEDATA.setValue(var);
-        newMEDATA.setValueMetaType(Simple_ValueMetaData.getPropertyType(propType));
+        newMEDATA.setValueMetaType(propType);
         return newMEDATA;
     }
 }

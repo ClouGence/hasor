@@ -34,13 +34,13 @@ public class TagBeans_Ref extends TagBeans_AbstractValueMetaDataDefine<Relation_
     }
     /**定义模板属性。*/
     public enum PropertyKey {
-        refBean, refScope
+        refBean, refPackage
     }
     /**关联属性与xml的属性对应关系。*/
     protected Map<Enum<?>, String> getPropertyMappings() {
         HashMap<Enum<?>, String> propertys = new HashMap<Enum<?>, String>();
         propertys.put(PropertyKey.refBean, "refBean");
-        propertys.put(PropertyKey.refScope, "refScope");
+        propertys.put(PropertyKey.refPackage, "refPackage");
         return propertys;
     }
 }
