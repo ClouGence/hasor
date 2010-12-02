@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <beans
 	xmlns="http://project.byshell.org/more/schema/beans">
-
 	<templateBean name="baseTemplate"/>
+	
 	<templateBean name="0.propertyTest" useTemplate="baseTemplate">
 		<constructor-arg value="565656" type="int"    description="1描述性文字..." index="0"/>
 		<constructor-arg value="565656" type="float"  description="2描述性文字..." index="2"/>
@@ -25,8 +25,9 @@
 		<!-- char	--><constructor-arg value="{"		type="char"/>
 		<!-- string	--><constructor-arg value="你们好."	type="string"/>
 		<!-- ======特殊类型====== -->
+		<!-- el		--><constructor-arg elText="123"/>
 		<!-- enum	--><constructor-arg enum="one"		type="org.test.more.beans.define.TestEnum"/>
-		<!-- ref	--><constructor-arg refBean="ref_1"	type="java.util.List" refScope="refScope"/>
+		<!-- ref	--><constructor-arg refBean="ref_1" refPackage="aaa.aaa" type="java.util.List"/>
 		<!-- file	--><constructor-arg file="c:\windows\aa\"/>
 		<!-- dir	--><constructor-arg directory="c:\windows\aa.bpm"/>
 		<!-- uri	--><constructor-arg uriLocation="http://www.google.com"/>
@@ -44,8 +45,9 @@
 		<property name="p_char" value="{"		type="char"/>
 		<property name="p_str" value="你们好."	type="string"/>
 		<!-- ======特殊类型====== -->
+		<property name="p_el" elText="this.p_str"/>
 		<property name="p_enum" enum="one"		type="org.test.more.beans.define.TestEnum"/>
-		<property name="p_ref" refBean="ref_1"	type="java.util.List" refScope="refScope"/>
+		<property name="p_ref" refBean="ref_1"	type="java.util.List"/>
 		<property name="p_file" file="c:\windows\aa\"/>
 		<property name="p_dir" directory="c:\windows\aa.bpm"/>
 		<property name="p_uri" uriLocation="http://www.google.com"/>
@@ -63,9 +65,10 @@
 		<!-- double		--><constructor-arg value="4.453"/>
 		<!-- char		--><constructor-arg value="{"/>
 		<!-- string		--><constructor-arg value="你们好."/>
+		<!-- el			--><constructor-arg elText="'abc'"/>
 		<!-- ======特殊类型====== -->
 		<!-- enum	--><constructor-arg enum="one"/>
-		<!-- ref	--><constructor-arg refBean="ref_1" refScope="refScope"/>
+		<!-- ref	--><constructor-arg refBean="ref_1"/>
 		<!-- file	--><constructor-arg file="c:\windows\aa\"/>
 		<!-- dir	--><constructor-arg directory="c:\windows\aa.bpm"/>
 		<!-- uri	--><constructor-arg uriLocation="http://www.google.com"/>
@@ -82,17 +85,18 @@
 		<property name="p_double" value="4.453"/>
 		<property name="p_char" value="{"/>
 		<property name="p_str" value="你们好."/>
+		<property name="p_el" elText="this.p_str"/>
 		<!-- ======特殊类型====== -->
 		<property name="p_enum" enum="one"/>
-		<property name="p_ref" refBean="ref_1" refScope="refScope"/>
+		<property name="p_ref" refBean="ref_1"/>
 		<property name="p_file" file="c:\windows\aa\"/>
 		<property name="p_dir" directory="c:\windows\aa.bpm"/>
 		<property name="p_uri" uriLocation="http://www.google.com"/>
 		<property name="p_date" date="2010/12/12" format="YYYY/mm/DD"/>
 	</templateBean>
 	
-	<!--===============================================================特殊类型-->
-	<templateBean name="4.test_constructor">
+	<!--===============================================================特殊类型,不带Type-->
+	<templateBean name="3.test_constructor">
 		<constructor-arg>
 			<date date="2010/12/12" format="YYYY/mm/DD"/>
 		</constructor-arg>
@@ -100,7 +104,7 @@
 			<bigText><![CDATA[ script.... ]]></bigText>
 		</constructor-arg>
 		<constructor-arg>
-			<ref refBean="ref_1" refScope="refScope"/>
+			<ref refBean="ref_1"/>
 		</constructor-arg>
 		<constructor-arg>
 			<file path="c:\windows\aa.bpm"/>
@@ -111,8 +115,11 @@
 		<constructor-arg>
 			<uri uriLocation="http://www.google.com"/>
 		</constructor-arg>
+		<constructor-arg>
+			<el elText="context[abc]"/>
+		</constructor-arg>
 	</templateBean>
-	<templateBean name="4.test_property">
+	<templateBean name="3.test_property">
 		<property name="p_date">
 			<date date="2010/12/12" format="YYYY/mm/DD"/>
 		</property>
@@ -120,7 +127,7 @@
 			<bigText><![CDATA[ script.... ]]></bigText>
 		</property>
 		<property name="p_ref">
-			<ref refBean="ref_1" refScope="refScope"/>
+			<ref refBean="ref_1"/>
 		</property>
 		<property name="p_file1">
 			<file path="c:\windows\aa.bpm"/>
@@ -131,10 +138,13 @@
 		<property name="p_uri">
 			<uri uriLocation="http://www.google.com"/>
 		</property>
+		<property name="p_el">
+			<el elText="this.p_uri"/>
+		</property>
 	</templateBean>
 
-	<!--===============================================================-->
-	<templateBean name="5.test_type">
+	<!--===============================================================特殊类型,带Type-->
+	<templateBean name="4.test_type">
 		<constructor-arg type="org.test.more.beans.define.TestEnum">
 			<enum enum="two"/>
 		</constructor-arg>
@@ -150,6 +160,9 @@
 		<constructor-arg type="string">
 			<value value="文字测试..."/>
 		</constructor-arg>
+		<constructor-arg type="string">
+			<el elText="context[abc]"/>
+		</constructor-arg>
 		<property name="p_enum" type="org.test.more.beans.define.TestEnum">
 			<enum enum="two"/>
 		</property>
@@ -161,6 +174,9 @@
 		</property>
 		<property name="p_value_3" type="string">
 			<value value="文字测试..."/>
+		</property>
+		<property name="p_el" type="string">
+			<el elText="this.p_value_3"/>
 		</property>
 	</templateBean>
 	

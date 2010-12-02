@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <beans
 	xmlns="http://project.byshell.org/more/schema/beans">
-
-	<!-- 包含另外的一个bean定义xml -->
-	<include resource="classpath:.;file:.;url:.;contextpath:."/>
-	
 	<defaultPackage package="org.more"/>
-	
 
 	<!--一、模板Bean，该Bean不能直接被使用，但是可以作为其他bean的基础模板。-->
 	<templateBean name="testTemplateBean">
@@ -23,14 +18,13 @@
 	<scriptBean name="sb_1" language="JavaScript" package="org.more.package.2" implements="org.more.impl.Inteface"><![CDATA[  script.... ]]></scriptBean>
 	<scriptBean name="sb_2" language="JavaScript" implements="org.more.impl.Inteface" sourcePath="classpath:.;file:.;url:.;contextpath:."/>
 	<!--三、变量Bean，Bean就是一个值-->
-	<varBean name="vb_1" value="" type="int" package="org.more.package.3" format="xxxx"/>
+	<varBean name="vb_1" value="" type="int" package="org.more.package.3"/>
 	<!--四、类型Bean，将一个类对象映射为Bean-->
 	<classBean name="cb_1" class="java.lang.String" package="org.more.package.4" useTemplate="org.more.testTemplateBean"/>
 	<!--五、引用Bean，引用已有的一个Bean。相当于Bean娶了个别名-->
-	<refBean name="rb_1" ref="ref_a" refScope="refScope"/>
+	<refBean name="rb_1" ref="ref_a"/>
 	<!--六、生成Bean，该Bean没有实际的类。整个Bean是在运行时生成的。-->
 	<generateBean name="gb_1" useTemplate="org.more.testTemplateBean" package="org.more.package.5" nameStrategy="n_st" aopStrategy="a_st" delegateStrategy="d_st" methodStrategy="m_st" propertyStrategy="p_st"/>
-
 
 	<package package="user">
 		<templateBean name="tp_1">

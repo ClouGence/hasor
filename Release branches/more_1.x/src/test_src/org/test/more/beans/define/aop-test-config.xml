@@ -4,7 +4,8 @@
 	xmlns:aop="http://project.byshell.org/more/schema/beans-aop"
 	xmlns:anno="http://project.byshell.org/more/schema/annotation">
 	
-	<anno:anno package=""/>
+	<defaultPackage/>
+	<anno:anno package="org.test.more.beans.define.*"/>
 	
 	<templateBean name="listener_1"/>
 	<templateBean name="before_1"/>
@@ -42,7 +43,7 @@
 	<!-- =========================================================== -->
 	<aop:config name="config_0"/>
 	<!-- 内部pointcut -->
-	<aop:config name="config_1" useTemplate="config_0" aopMode="Super|Propxy">
+	<aop:config name="config_1" aopMode="Super|Propxy">
 		<aop:pointcut expression="*(*)"/>
 		<!-- 根据类实现的接口决定 -->
 		<aop:informed	refBean="listener_1"/>
