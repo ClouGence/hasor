@@ -18,7 +18,7 @@ import org.more.core.asm.AnnotationVisitor;
 import org.more.core.asm.Attribute;
 import org.more.core.asm.FieldVisitor;
 import org.more.core.classcode.EngineToos;
-import org.more.hypha.annotation.AnnotationDefineResourcePlugin;
+import org.more.hypha.annotation.AnnoResourceExpand;
 /**
  * 该类负责确定字段级别中是否有必要惊动解析解析类。
  * @version 2010-10-19
@@ -27,9 +27,9 @@ import org.more.hypha.annotation.AnnotationDefineResourcePlugin;
 class EV_Field implements FieldVisitor {
     private EV_Mark                        mark    = null;
     private FieldVisitor                   visitor = null;
-    private AnnotationDefineResourcePlugin plugin  = null;
+    private AnnoResourceExpand plugin  = null;
     //----------
-    public EV_Field(AnnotationDefineResourcePlugin plugin, EV_Mark mark, FieldVisitor visitor) {
+    public EV_Field(AnnoResourceExpand plugin, EV_Mark mark, FieldVisitor visitor) {
         this.plugin = plugin;
         this.mark = mark;
         this.visitor = visitor;

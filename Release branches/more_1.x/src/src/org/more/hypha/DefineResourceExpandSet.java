@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.context;
-import org.more.util.attribute.IAttribute;
+package org.more.hypha;
+import java.util.List;
 /**
- * 为了{@link DefineResourceImpl}类提供的一个注册器接口，如果要注册新的xml配置支持则需要实现这个接口并且
- * 留下一个无参的构造方法，同时在“/META-INF/resource/beans/regedit.xml”位置编写配置文件。
- * 配置文件格式参考more相关文档。
+ * 定义如果想要支持扩展的配置策略则需要实现该接口，
+ * 可以通过该接口的getExpandDefine来获取有关定义上的一些额外扩展属性设置。
  * @version 2010-9-24
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface XmlNameSpaceRegister {
-    /**
-     * 执行注册
-     * @param namespaceURL 配置文件配置的命名空间。
-     * @param resource {@link XmlDefineResource}对象。
-     * @param flash flash。
-     */
-    public void initRegister(String namespaceURL, XmlDefineResource resource, IAttribute flash) throws Throwable;
+public interface DefineResourceExpandSet {
+    /**根据扩展名获取扩展目标对象。*/
+    public DefineResourceExpand getPlugin(String name);
+    /**设置一个扩展，如果扩展重名则替换重名的扩展注册。*/
+    public void setPlugin(String name, DefineResourceExpand plugin);
+    /**删除一个已有的扩展注册。*/
+    public void removePlugin(String name);
+    /**获取已注册扩展的名称集合。*/
+    public List<String> getPluginNames();
 }

@@ -48,11 +48,11 @@ public class XmlDefineResource extends ArrayDefineResource {
     //
     //========================================================================================静态方法
     private static List<XmlNameSpaceRegister> registers    = null;
-    private static synchronized void r_s_init(XmlDefineResource resource) throws Throwable {
+    private static void r_s_init(XmlDefineResource resource) throws Throwable {
         XmlDefineResource.registers = null;
         XmlDefineResource.s_init(resource);
     }
-    private static synchronized void s_init(XmlDefineResource resource) throws Throwable {
+    private static void s_init(XmlDefineResource resource) throws Throwable {
         //关键-初始化
         if (XmlDefineResource.registers == null) {
             List<InputStream> ins = ClassPathUtil.getResource(ResourcePath);
@@ -63,7 +63,7 @@ public class XmlDefineResource extends ArrayDefineResource {
         }
         for (XmlNameSpaceRegister reg : registers)
             /**第一个参数会在{@link NameSpaceRegisterPropxy}对象中得到*/
-            reg.initRegister(null, resource);
+            reg.initRegister(null, resource, resource.getFlash());
     }
     /**创建{@link XmlDefineResource}对象，该方法将不会重新扫描ClassPath中的命名空间注册。*/
     public static XmlDefineResource newInstance() throws Throwable {

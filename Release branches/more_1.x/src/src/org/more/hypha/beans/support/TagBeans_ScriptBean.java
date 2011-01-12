@@ -35,7 +35,7 @@ public class TagBeans_ScriptBean extends TagBeans_AbstractBeanDefine<ScriptBeanD
         super(configuration);
     }
     /**创建ScriptBeanDefine类型对象。*/
-    protected ScriptBeanDefine createDefine() {
+    protected ScriptBeanDefine createDefine(XmlStackDecorator context) {
         return new ScriptBeanDefine();
     }
     /**定义脚本Bean属性*/

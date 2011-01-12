@@ -20,7 +20,7 @@ import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.aop.AopDefineResourcePlugin;
+import org.more.hypha.aop.AopResourceExpand;
 import org.more.hypha.aop.define.AbstractInformed;
 import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
@@ -60,7 +60,7 @@ public abstract class TagAop_AbstractInformed<T extends AopDefineInformed> exten
         String pointcutRef = event.getAttributeValue("pointcut-ref");
         //3.将Informed添加到父类的config中。
         if (pointcutRef != null) {
-            AopDefineResourcePlugin plugin = (AopDefineResourcePlugin) this.getDefineResource().getPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName);
+            AopResourceExpand plugin = (AopResourceExpand) this.getDefineResource().getPlugin(AopResourceExpand.AopDefineResourcePluginName);
             AbstractPointcutDefine pointcutDefine = plugin.getPointcutDefine(pointcutRef);
             config.addInformed(define, pointcutDefine);
         } else

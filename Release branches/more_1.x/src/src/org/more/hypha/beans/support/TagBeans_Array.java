@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.support;
+import org.more.core.xml.XmlStackDecorator;
 import org.more.hypha.beans.define.Array_ValueMetaData;
 import org.more.hypha.context.XmlDefineResource;
 /**
@@ -27,7 +28,7 @@ public class TagBeans_Array extends TagBeans_AbstractCollection<Array_ValueMetaD
         super(configuration);
     }
     /**创建{@link Array_ValueMetaData}对象。*/
-    protected Array_ValueMetaData createDefine() {
+    protected Array_ValueMetaData createDefine(XmlStackDecorator context) {
         return new Array_ValueMetaData();
     }
     /**返回默认集合数据类型*/

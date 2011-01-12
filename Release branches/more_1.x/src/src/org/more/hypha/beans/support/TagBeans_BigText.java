@@ -34,7 +34,7 @@ public class TagBeans_BigText extends TagBeans_AbstractValueMetaDataDefine<BigTe
         super(configuration);
     }
     /**创建{@link BigText_ValueMetaData}对象。*/
-    protected BigText_ValueMetaData createDefine() {
+    protected BigText_ValueMetaData createDefine(XmlStackDecorator context) {
         return new BigText_ValueMetaData();
     }
     /**返回null。*/

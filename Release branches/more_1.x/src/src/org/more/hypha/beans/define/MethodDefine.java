@@ -15,7 +15,10 @@
  */
 package org.more.hypha.beans.define;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import org.more.hypha.AbstractDefine;
+import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.beans.AbstractMethodDefine;
 /**
  * 该类是表示一个方法的描述，它实现了{@link AbstractMethodDefine}。
@@ -23,9 +26,18 @@ import org.more.hypha.beans.AbstractMethodDefine;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class MethodDefine extends AbstractDefine implements AbstractMethodDefine {
-    private String                 name     = null;
-    private String                 codeName = null;
-    private ArrayList<ParamDefine> params   = new ArrayList<ParamDefine>(); //属性
+    private String                 name          = null;
+    private String                 codeName      = null;
+    private ArrayList<ParamDefine> params        = new ArrayList<ParamDefine>(); //属性
+    private AbstractBeanDefine     forBeanDefine = null;
+    /**创建{@link MethodDefine}类型对象，参数表明该方法的所属bean定义。*/
+    public MethodDefine(AbstractBeanDefine forBeanDefine) {
+        this.forBeanDefine = forBeanDefine;
+    }
+    /**获取这个方法所属的bean定义*/
+    public AbstractBeanDefine getForBeanDefine() {
+        return this.forBeanDefine;
+    }
     /**返回方法的代理名称，代理名称是用于索引方法的目的。*/
     public String getName() {
         return this.name;
@@ -35,10 +47,8 @@ public class MethodDefine extends AbstractDefine implements AbstractMethodDefine
         return this.codeName;
     };
     /**返回方法的参数列表描述，返回的集合是只读的。*/
-    public ParamDefine[] getParams() {
-        ParamDefine[] pd = new ParamDefine[this.params.size()];
-        this.params.toArray(pd);
-        return pd;
+    public Collection<? extends ParamDefine> getParams() {
+        return Collections.unmodifiableCollection(this.params);
     }
     /**添加参数*/
     public void addParam(ParamDefine param) {

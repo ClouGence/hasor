@@ -35,8 +35,9 @@ public class TagBeans_Method extends TagBeans_AbstractDefine<MethodDefine> {
         super(configuration);
     }
     /**创建{@link MethodDefine}对象*/
-    protected MethodDefine createDefine() {
-        return new MethodDefine();
+    protected MethodDefine createDefine(XmlStackDecorator context) {
+        TemplateBeanDefine define = (TemplateBeanDefine) context.getAttribute(TagBeans_TemplateBean.BeanDefine);
+        return new MethodDefine(define);
     }
     /**属性的定义名称*/
     protected String getAttributeName() {

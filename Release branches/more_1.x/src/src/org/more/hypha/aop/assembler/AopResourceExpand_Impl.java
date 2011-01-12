@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.more.NoDefinitionException;
 import org.more.hypha.DefineResource;
-import org.more.hypha.aop.AopBeanDefinePlugin;
-import org.more.hypha.aop.AopDefineResourcePlugin;
+import org.more.hypha.aop.AopDefineExpand_Impl;
+import org.more.hypha.aop.AopResourceExpand;
 import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.beans.AbstractBeanDefine;
@@ -30,13 +30,13 @@ import org.more.hypha.context.XmlDefineResource;
  * @version 2010-10-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public class AopDefineResourcePlugin_Impl implements AopDefineResourcePlugin {
+public class AopResourceExpand_Impl implements AopResourceExpand {
     /***/
     private XmlDefineResource                   target       = null;
     private Map<String, AbstractPointcutDefine> pointcutList = new HashMap<String, AbstractPointcutDefine>();
     private Map<String, AopConfigDefine>        configList   = new HashMap<String, AopConfigDefine>();
-    /**创建{@link AopDefineResourcePlugin_Impl}对象。*/
-    public AopDefineResourcePlugin_Impl(XmlDefineResource target) {
+    /**创建{@link AopResourceExpand_Impl}对象。*/
+    public AopResourceExpand_Impl(XmlDefineResource target) {
         this.target = target;
     }
     //======================================================接口实现
@@ -45,28 +45,28 @@ public class AopDefineResourcePlugin_Impl implements AopDefineResourcePlugin {
     }
     /**测试一个{@link AbstractBeanDefine}定义对象是否包含Aop配置。*/
     public boolean containAop(AbstractBeanDefine define) {
-        return define.getPlugin(AopBeanDefinePlugin.AopPluginName) != null;
+        return define.getPlugin(AopDefineExpand_Impl.AopPluginName) != null;
     }
     /**将一个aop配置携带到{@link AbstractBeanDefine}对象上，该方法可以在代码级上修改aop配置。*/
     public void setAop(AbstractBeanDefine define, String config) {
         AopConfigDefine configDefine = this.configList.get(config);
         if (configDefine != null)
-            define.setPlugin(AopBeanDefinePlugin.AopPluginName, new AopBeanDefinePlugin(define, configDefine));
+            define.setPlugin(AopDefineExpand_Impl.AopPluginName, new AopDefineExpand_Impl(define, configDefine));
     }
     /**将一个aop配置携带到{@link AbstractBeanDefine}对象上，该方法可以在代码级上修改aop配置。*/
     public void setAop(AbstractBeanDefine define, AopConfigDefine config) {
         if (config != null)
-            define.setPlugin(AopBeanDefinePlugin.AopPluginName, new AopBeanDefinePlugin(define, config));
+            define.setPlugin(AopDefineExpand_Impl.AopPluginName, new AopDefineExpand_Impl(define, config));
     }
     /**移除{@link AbstractBeanDefine}对象上的aop配置，如果{@link AbstractBeanDefine}没有配置aop那么移除操作将被忽略。*/
     public void removeAop(AbstractBeanDefine define) {
-        define.removePlugin(AopBeanDefinePlugin.AopPluginName);
+        define.removePlugin(AopDefineExpand_Impl.AopPluginName);
     }
     /**获取{@link AbstractBeanDefine}对象上的aop配置，如果目标没有配置aop则返回null。*/
     public AopConfigDefine getAopDefine(AbstractBeanDefine define) {
-        BeanDefinePlugin plugin = define.getPlugin(AopBeanDefinePlugin.AopPluginName);
-        if (plugin instanceof AopBeanDefinePlugin)
-            return ((AopBeanDefinePlugin) plugin).getAopConfig();
+        BeanDefinePlugin plugin = define.getPlugin(AopDefineExpand_Impl.AopPluginName);
+        if (plugin instanceof AopDefineExpand_Impl)
+            return ((AopDefineExpand_Impl) plugin).getAopConfig();
         return null;
     }
     /**获取aop配置定义。*/

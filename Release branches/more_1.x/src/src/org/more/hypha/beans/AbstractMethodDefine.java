@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans;
+import java.util.Collection;
 import org.more.util.attribute.IAttribute;
 /**
  * 该接口用于定义在bean上的方法。
@@ -26,5 +27,7 @@ public interface AbstractMethodDefine extends BeanDefinePluginSet, IAttribute {
     /**返回方法的真实名称，该属性是表示方法的真实方法名。*/
     public String getCodeName();
     /**返回方法的参数列表描述，返回的集合是只读的。*/
-    public AbstractPropertyDefine[] getParams();
+    public Collection<? extends AbstractPropertyDefine> getParams();
+    /**获取这个方法所属的bean定义*/
+    public AbstractBeanDefine getForBeanDefine();
 }

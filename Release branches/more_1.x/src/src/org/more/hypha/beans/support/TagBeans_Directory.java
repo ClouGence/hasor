@@ -16,6 +16,7 @@
 package org.more.hypha.beans.support;
 import java.util.HashMap;
 import java.util.Map;
+import org.more.core.xml.XmlStackDecorator;
 import org.more.hypha.beans.define.File_ValueMetaData;
 import org.more.hypha.context.XmlDefineResource;
 /**
@@ -29,7 +30,7 @@ public class TagBeans_Directory extends TagBeans_AbstractValueMetaDataDefine<Fil
         super(configuration);
     }
     /**创建{@link File_ValueMetaData}对象。*/
-    protected File_ValueMetaData createDefine() {
+    protected File_ValueMetaData createDefine(XmlStackDecorator context) {
         File_ValueMetaData metaData = new File_ValueMetaData();
         metaData.setDir(true);
         return metaData;

@@ -42,10 +42,12 @@ public interface AbstractBeanDefine extends BeanDefinePluginSet, IAttribute {
     public boolean isLazyInit();
     /**返回bean的描述信息。*/
     public String getDescription();
-    /**创建bean的工厂名，如果bean定义时没有指定工厂则该方法返回null。*/
-    public String factoryName();
-    /**该方法与factoryName()方法是成对出现的，该方法表明目标方法的代理名称。*/
-    public String factoryMethod();
+    /**获取该类型bean的工厂方法。*/
+    public AbstractMethodDefine factoryMethod();
+    /**获取初始化方法名。*/
+    public String getInitMethod();
+    /**获取销毁方法名。*/
+    public String getDestroyMethod();
     /**该属性是用来定义在bean上的一些方法，返回的集合是一个只读集合。*/
     public Collection<? extends AbstractMethodDefine> getMethods();
     /**

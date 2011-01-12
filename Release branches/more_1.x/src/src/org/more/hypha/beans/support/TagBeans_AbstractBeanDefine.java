@@ -22,6 +22,8 @@ import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.DefineResource;
 import org.more.hypha.beans.AbstractBeanDefine;
+import org.more.hypha.beans.AbstractMethodDefine;
+import org.more.hypha.beans.define.TemplateBeanDefine;
 import org.more.hypha.context.XmlDefineResource;
 /**
  * 用于解析/beans/*Bean标签的基类
@@ -41,7 +43,7 @@ public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBeanDefine> 
     };
     /**定义模板属性。*/
     public enum PropertyKey {
-        id, name, logicPackage, boolAbstract, boolInterface, boolSingleton, boolLazyInit, description, factoryName, factoryMethod, useTemplate
+        id, name, logicPackage, boolAbstract, boolInterface, boolSingleton, boolLazyInit, description, factoryName, factoryMethod, useTemplate, initMethod, destroyMethod
     }
     /**关联属性与xml的属性对应关系。*/
     protected Map<Enum<?>, String> getPropertyMappings() {
@@ -54,18 +56,21 @@ public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBeanDefine> 
         propertys.put(PropertyKey.boolSingleton, "singleton");
         propertys.put(PropertyKey.boolLazyInit, "lazy");
         propertys.put(PropertyKey.description, "description");
-        propertys.put(PropertyKey.factoryName, "factoryName");
-        propertys.put(PropertyKey.factoryMethod, "factoryMethod");
+        //propertys.put(PropertyKey.factoryName, "factoryName");
+        //propertys.put(PropertyKey.factoryMethod, "factoryMethod");
+        propertys.put(PropertyKey.initMethod, "init");
+        propertys.put(PropertyKey.destroyMethod, "destroy");
         //propertys.put(PropertyKey.useTemplate, "useTemplate");
         return propertys;
     }
     /**特殊处理下useTemplate属性的注入*/
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
         super.beginElement(context, xpath, event);
+        /*1.useTemplate属性*/
         String useTemplate = event.getAttributeValue("useTemplate");
         AbstractBeanDefine define = this.getDefine(context);
+        DefineResource beanDefineManager = this.getDefineResource();
         if (useTemplate != null) {
-            DefineResource beanDefineManager = this.getDefineResource();
             AbstractBeanDefine template = null;
             if (beanDefineManager.containsBeanDefine(useTemplate) == true)
                 template = beanDefineManager.getBeanDefine(useTemplate);
@@ -80,12 +85,22 @@ public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBeanDefine> 
                 throw new NoDefinitionException("[" + define.getName() + "]找不到[" + useTemplate + "]的Bean模板定义.");
             this.putAttribute(define, "useTemplate", template);
         }
-        /*应用默认包和包定义*/
+        /*2.logicPackage属性*/
         if (define.getPackage() == null) {
             String logicPackage = (String) context.getAttribute(TagBeans_Package.LogicPackage);
             if (logicPackage == null)
                 logicPackage = TagBeans_DefaultPackage.DefaultPackage;
             this.putAttribute(define, "logicPackage", logicPackage);
+        }
+        /*3.factoryName和factoryMethod*/
+        String factoryName = event.getAttributeValue("factoryName");
+        if (factoryName != null) {
+            if (beanDefineManager.containsBeanDefine(factoryName) == false)
+                throw new NoDefinitionException("[" + define.getName() + "]找不到关联的工厂[" + factoryName + "]Bean定义");
+            TemplateBeanDefine factoryBean = (TemplateBeanDefine) beanDefineManager.getBeanDefine(factoryName);
+            String factoryMethod = event.getAttributeValue("factoryMethod");
+            AbstractMethodDefine methodDefine = factoryBean.getMethod(factoryMethod);
+            this.putAttribute(define, "factoryMethod", methodDefine);
         }
     }
     /**结束解析标签。*/

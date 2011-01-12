@@ -16,6 +16,7 @@
 package org.more.hypha.beans.support;
 import java.util.HashMap;
 import java.util.Map;
+import org.more.core.xml.XmlStackDecorator;
 import org.more.hypha.beans.define.Relation_ValueMetaData;
 import org.more.hypha.context.XmlDefineResource;
 /**
@@ -29,7 +30,7 @@ public class TagBeans_Ref extends TagBeans_AbstractValueMetaDataDefine<Relation_
         super(configuration);
     }
     /**创建{@link Relation_ValueMetaData}对象。*/
-    protected Relation_ValueMetaData createDefine() {
+    protected Relation_ValueMetaData createDefine(XmlStackDecorator context) {
         return new Relation_ValueMetaData();
     }
     /**定义模板属性。*/

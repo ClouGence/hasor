@@ -32,7 +32,7 @@ public class TagBeans_VarBean extends TagBeans_AbstractBeanDefine<VariableBeanDe
         super(configuration);
     }
     /**创建VariableBeanDefine类型对象。*/
-    protected VariableBeanDefine createDefine() {
+    protected VariableBeanDefine createDefine(XmlStackDecorator context) {
         return new VariableBeanDefine();
     }
     /**定义值Bean的属性*/

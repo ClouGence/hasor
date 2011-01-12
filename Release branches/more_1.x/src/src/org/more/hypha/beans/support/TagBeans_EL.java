@@ -16,6 +16,7 @@
 package org.more.hypha.beans.support;
 import java.util.HashMap;
 import java.util.Map;
+import org.more.core.xml.XmlStackDecorator;
 import org.more.hypha.beans.define.EL_ValueMetaData;
 import org.more.hypha.context.XmlDefineResource;
 /**
@@ -29,7 +30,7 @@ public class TagBeans_EL extends TagBeans_AbstractValueMetaDataDefine<EL_ValueMe
         super(resource);
     }
     /**创建{@link EL_ValueMetaData}对象。*/
-    protected EL_ValueMetaData createDefine() {
+    protected EL_ValueMetaData createDefine(XmlStackDecorator context) {
         return new EL_ValueMetaData();
     }
     /**定义模板属性。*/

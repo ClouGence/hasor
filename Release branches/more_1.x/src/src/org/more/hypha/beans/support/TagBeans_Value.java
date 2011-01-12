@@ -30,7 +30,7 @@ public class TagBeans_Value extends TagBeans_AbstractValueMetaDataDefine<Simple_
     public TagBeans_Value(XmlDefineResource configuration) {
         super(configuration);
     }
-    protected Simple_ValueMetaData createDefine() {
+    protected Simple_ValueMetaData createDefine(XmlStackDecorator context) {
         return new Simple_ValueMetaData();
     }
     /**¶¨ÒåÊôÐÔ¡£*/

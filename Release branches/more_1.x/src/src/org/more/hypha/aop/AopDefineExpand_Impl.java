@@ -18,17 +18,17 @@ import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.beans.BeanDefinePlugin;
 /**
- * 创建{@link AopBeanDefinePlugin}对象。
+ * 创建{@link AopDefineExpand_Impl}对象。
  * @version 2010-9-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public class AopBeanDefinePlugin implements BeanDefinePlugin {
+public class AopDefineExpand_Impl implements BeanDefinePlugin {
     /**要注册的插件名*/
     public static final String AopPluginName = "$more_aop_plugin";
     private AbstractBeanDefine target        = null;              //扩展目标
     private AopConfigDefine    aopConfig     = null;              //扩展的aop策略
     /***/
-    public AopBeanDefinePlugin(AbstractBeanDefine target, AopConfigDefine aopConfig) {
+    public AopDefineExpand_Impl(AbstractBeanDefine target, AopConfigDefine aopConfig) {
         this.target = target;
         this.aopConfig = aopConfig;
     }

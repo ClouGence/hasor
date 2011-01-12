@@ -17,8 +17,8 @@ package org.more.hypha.aop.support;
 import org.more.hypha.DefineResource;
 import org.more.hypha.Event;
 import org.more.hypha.EventListener;
-import org.more.hypha.aop.AopBeanDefinePlugin;
-import org.more.hypha.aop.AopDefineResourcePlugin;
+import org.more.hypha.aop.AopDefineExpand_Impl;
+import org.more.hypha.aop.AopResourceExpand;
 import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.event.Config_LoadedXmlEvent;
 import org.more.util.StringUtil;
@@ -39,11 +39,11 @@ public class Listener_ToPackageApply implements EventListener {
     public void onEvent(Event event) {
         Config_LoadedXmlEvent eve = (Config_LoadedXmlEvent) event;
         DefineResource config = eve.getResource();
-        AopDefineResourcePlugin aopPlugin = (AopDefineResourcePlugin) config.getPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName);
+        AopResourceExpand aopPlugin = (AopResourceExpand) config.getPlugin(AopResourceExpand.AopDefineResourcePluginName);
         for (String defineName : config.getBeanDefineNames()) {
             AbstractBeanDefine define = config.getBeanDefine(defineName);
             if (StringUtil.matchWild(this.toPackageExp, define.getFullName()) == true)
-                if (define.getPlugin(AopBeanDefinePlugin.AopPluginName) == null)
+                if (define.getPlugin(AopDefineExpand_Impl.AopPluginName) == null)
                     aopPlugin.setAop(define, this.config);
         }
     }

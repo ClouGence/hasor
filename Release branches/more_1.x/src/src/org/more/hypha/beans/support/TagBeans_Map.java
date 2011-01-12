@@ -15,6 +15,7 @@
  */
 package org.more.hypha.beans.support;
 import java.util.HashMap;
+import org.more.core.xml.XmlStackDecorator;
 import org.more.hypha.beans.define.List_ValueMetaData;
 import org.more.hypha.beans.define.Map_ValueMetaData;
 import org.more.hypha.context.XmlDefineResource;
@@ -29,7 +30,7 @@ public class TagBeans_Map extends TagBeans_AbstractCollection<Map_ValueMetaData>
         super(configuration);
     }
     /**创建{@link List_ValueMetaData}对象*/
-    protected Map_ValueMetaData createDefine() {
+    protected Map_ValueMetaData createDefine(XmlStackDecorator context) {
         return new Map_ValueMetaData();
     }
     protected Class<?> getDefaultCollectionType() {

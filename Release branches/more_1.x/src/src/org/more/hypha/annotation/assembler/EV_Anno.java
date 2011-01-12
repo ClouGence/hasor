@@ -16,18 +16,18 @@
 package org.more.hypha.annotation.assembler;
 import org.more.core.asm.AnnotationVisitor;
 import org.more.core.classcode.EngineToos;
-import org.more.hypha.annotation.AnnotationDefineResourcePlugin;
+import org.more.hypha.annotation.AnnoResourceExpand;
 /**
  * 该类负责确定注解级别中是否有必要惊动解析解析类。
  * @version 2010-10-19
  * @author 赵永春 (zyc@byshell.org)
  */
 class EV_Anno implements AnnotationVisitor {
-    private AnnotationDefineResourcePlugin plugin  = null;
+    private AnnoResourceExpand plugin  = null;
     private EV_Mark                        mark    = null;
     private AnnotationVisitor              visitor = null;
     //----------
-    public EV_Anno(AnnotationDefineResourcePlugin plugin, EV_Mark mark, AnnotationVisitor visitor) {
+    public EV_Anno(AnnoResourceExpand plugin, EV_Mark mark, AnnotationVisitor visitor) {
         this.plugin = plugin;
         this.mark = mark;
         this.visitor = visitor;

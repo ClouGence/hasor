@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 package org.more.hypha.context;
+import java.util.ArrayList;
 import java.util.List;
 import org.more.NoDefinitionException;
+import org.more.core.ognl.OgnlContext;
 import org.more.hypha.AbstractEventManager;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.DefineResource;
 import org.more.hypha.Event;
 import org.more.hypha.EventListener;
 import org.more.hypha.EventManager;
+import org.more.hypha.a.BeanEngine;
+import org.more.hypha.a.ExpandPoint;
 import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
@@ -31,10 +35,13 @@ import org.more.util.attribute.IAttribute;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class HyphaApplicationContext implements ApplicationContext {
-    private DefineResource defineResource = null;
-    private Object         context        = null;
-    private EventManager   eventManager   = new AbstractEventManager() {};
-    private ClassLoader    classLoader    = null;
+    private DefineResource    defineResource = null;
+    private Object            context        = null;
+    private EventManager      eventManager   = new AbstractEventManager() {};
+    private ClassLoader       classLoader    = null;
+    private List<ExpandPoint> expandList     = new ArrayList<ExpandPoint>();
+    private BeanEngine        engine         = null;
+    private OgnlContext       elContext      = null;
     /*------------------------------------------------------------*/
     public HyphaApplicationContext(DefineResource defineResource, Object context) {
         this.defineResource = defineResource;

@@ -18,6 +18,7 @@ import org.more.core.xml.XmlParserKit;
 import org.more.hypha.beans.TypeManager;
 import org.more.hypha.context.XmlDefineResource;
 import org.more.hypha.context.XmlNameSpaceRegister;
+import org.more.util.attribute.IAttribute;
 /**
  * 该类实现了{@link XmlNameSpaceRegister}接口并且提供了对命名空间“http://project.byshell.org/more/schema/beans”的解析支持。
  * @version 2010-9-15
@@ -27,7 +28,7 @@ public class Register_Beans implements XmlNameSpaceRegister {
     /**如果没有指定namespaceURL参数则该常量将会指定默认的命名空间。*/
     public static final String DefaultNameSpaceURL = "http://project.byshell.org/more/schema/beans";
     /**执行初始化注册。*/
-    public void initRegister(String namespaceURL, XmlDefineResource resource) {
+    public void initRegister(String namespaceURL, XmlDefineResource resource, IAttribute flash) throws Throwable {
         //1.注册标签解析器
         XmlParserKit kit = new XmlParserKit();
         kit.regeditHook("/beans", new TagBeans_Beans(resource));

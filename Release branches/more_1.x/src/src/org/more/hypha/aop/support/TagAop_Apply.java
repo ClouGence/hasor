@@ -21,7 +21,7 @@ import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.EventManager;
-import org.more.hypha.aop.AopDefineResourcePlugin;
+import org.more.hypha.aop.AopResourceExpand;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.context.Tag_Abstract;
 import org.more.hypha.context.XmlDefineResource;
@@ -43,7 +43,7 @@ public class TagAop_Apply extends Tag_Abstract implements XmlElementHook {
         //2.检测
         if (config == null)
             throw new NoDefinitionException("apply标签，检测到未定义config属性或者属性值为空。");
-        AopDefineResourcePlugin plugin = (AopDefineResourcePlugin) this.getDefineResource().getPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName);
+        AopResourceExpand plugin = (AopResourceExpand) this.getDefineResource().getPlugin(AopResourceExpand.AopDefineResourcePluginName);
         AopConfigDefine aopConfig = plugin.getAopDefine(config);
         if (aopConfig == null)
             throw new NotFoundException("apply标签在应用[" + config + "]aop配置时无法找到其定义的AopConfigDefine类型对象。");

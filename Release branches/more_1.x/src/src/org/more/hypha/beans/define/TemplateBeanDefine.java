@@ -23,29 +23,31 @@ import java.util.List;
 import org.more.RepeateException;
 import org.more.hypha.AbstractDefine;
 import org.more.hypha.beans.AbstractBeanDefine;
+import org.more.hypha.beans.AbstractMethodDefine;
 /**
  * TemplateBeanDefine类用于定义一个bean的模板。
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
 public class TemplateBeanDefine extends AbstractDefine implements AbstractBeanDefine {
-    private String                          id            = null;                                 //id
-    private String                          name          = null;                                 //名称
-    private String                          logicPackage  = null;                                 //逻辑包
-    private boolean                         boolAbstract  = false;                                //抽象标志
-    private boolean                         boolInterface = false;                                //接口标志
-    private boolean                         boolSingleton = false;                                //单态标志
-    private boolean                         boolLazyInit  = false;                                //延迟装载标志
-    private String                          description   = null;                                 //描述信息
-    private String                          factoryName   = null;                                 //创建工厂名
-    private String                          factoryMethod = null;                                 //创建工厂方法描述
-    private String                          useTemplate   = null;                                 //应用的模板
+    private String                                id            = null;                                       //id
+    private String                                name          = null;                                       //名称
+    private String                                logicPackage  = null;                                       //逻辑包
+    private boolean                               boolAbstract  = false;                                      //抽象标志
+    private boolean                               boolInterface = false;                                      //接口标志
+    private boolean                               boolSingleton = false;                                      //单态标志
+    private boolean                               boolLazyInit  = false;                                      //延迟装载标志
+    private String                                description   = null;                                       //描述信息
+    private AbstractMethodDefine                  factoryMethod = null;                                       //创建工厂方法描述
+    private String                                useTemplate   = null;                                       //应用的模板
     //
-    private ArrayList<ConstructorDefine>    initParams    = new ArrayList<ConstructorDefine>();   //初始化参数
-    private List<String>                    propertyNames = new ArrayList<String>();
-    private HashMap<String, PropertyDefine> propertys     = new HashMap<String, PropertyDefine>(); //属性
-    private List<String>                    methodNames   = new ArrayList<String>();
-    private HashMap<String, MethodDefine>   methods       = new HashMap<String, MethodDefine>();  //方法
+    private ArrayList<ConstructorDefine>          initParams    = new ArrayList<ConstructorDefine>();         //初始化参数
+    private List<String>                          propertyNames = new ArrayList<String>();
+    private HashMap<String, PropertyDefine>       propertys     = new HashMap<String, PropertyDefine>();      //属性
+    private List<String>                          methodNames   = new ArrayList<String>();
+    private HashMap<String, AbstractMethodDefine> methods       = new HashMap<String, AbstractMethodDefine>(); //方法
+    private String                                initMethod    = null;                                       //初始化方法
+    private String                                destroyMethod = null;                                       //销毁方法
     //-------------------------------------------------------------
     /**返回“TemplateBean”。*/
     public String getBeanType() {
@@ -91,22 +93,30 @@ public class TemplateBeanDefine extends AbstractDefine implements AbstractBeanDe
     public String getDescription() {
         return this.description;
     };
-    /**创建bean的工厂名。*/
-    public String factoryName() {
-        return this.factoryName;
-    };
     /**该方法与factoryName()方法是成对出现的，该方法表明目标方法的代理名称。*/
-    public String factoryMethod() {
+    public AbstractMethodDefine factoryMethod() {
         return this.factoryMethod;
     };
     /**该属性是用来定义在bean上的一些方法，返回的集合是一个只读集合。*/
-    public Collection<? extends MethodDefine> getMethods() {
-        return Collections.unmodifiableCollection((Collection<MethodDefine>) this.methods.values());
+    public Collection<? extends AbstractMethodDefine> getMethods() {
+        return Collections.unmodifiableCollection((Collection<AbstractMethodDefine>) this.methods.values());
     };
+    /**根据方法的声明名称获取其方法定义。*/
+    public AbstractMethodDefine getMethod(String name) {
+        return this.methods.get(name);
+    }
     /**获取bean使用的模板。*/
     public String getUseTemplate() {
         return this.useTemplate;
-    }
+    };
+    /**获取初始化方法名。*/
+    public String getInitMethod() {
+        return this.initMethod;
+    };
+    /**获取销毁方法名。*/
+    public String getDestroyMethod() {
+        return this.destroyMethod;
+    };
     /**
      * 该属性定义了当创建这个bean时候需要的启动参数。
      * 启动参数通常是指构造方法参数，对于工厂形式创建启动参数代表了工厂方法的参数列表。
@@ -167,12 +177,8 @@ public class TemplateBeanDefine extends AbstractDefine implements AbstractBeanDe
     public void setDescription(String description) {
         this.description = description;
     }
-    /**设置创建该Bean时使用的工厂bean名。*/
-    public void setFactoryName(String factoryName) {
-        this.factoryName = factoryName;
-    }
     /**设置创建该Bean时使用的工厂bean的方法描述。*/
-    public void setFactoryMethod(String factoryMethod) {
+    public void setFactoryMethod(AbstractMethodDefine factoryMethod) {
         this.factoryMethod = factoryMethod;
     }
     /**设置该bean是否为一个抽象的。*/
@@ -194,5 +200,13 @@ public class TemplateBeanDefine extends AbstractDefine implements AbstractBeanDe
     /**设置bean使用的模板。*/
     public void setUseTemplate(String useTemplate) {
         this.useTemplate = useTemplate;
+    }
+    /**设置bean初始化方法。*/
+    public void setInitMethod(String initMethod) {
+        this.initMethod = initMethod;
+    }
+    /**设置bean销毁方法。*/
+    public void setDestroyMethod(String destroyMethod) {
+        this.destroyMethod = destroyMethod;
     }
 }

@@ -31,7 +31,7 @@ public class TagBeans_Property extends TagBeans_AbstractPropertyDefine<PropertyD
         super(configuration);
     }
     /**创建{@link PropertyDefine}对象。*/
-    protected PropertyDefine createDefine() {
+    protected PropertyDefine createDefine(XmlStackDecorator context) {
         return new PropertyDefine();
     }
     /**定义属性标签特有的属性*/

@@ -15,6 +15,7 @@
  */
 package org.more.hypha.beans.support;
 import java.util.HashSet;
+import org.more.core.xml.XmlStackDecorator;
 import org.more.hypha.beans.define.Set_ValueMetaData;
 import org.more.hypha.context.XmlDefineResource;
 /**
@@ -28,7 +29,7 @@ public class TagBeans_Set extends TagBeans_AbstractCollection<Set_ValueMetaData>
         super(configuration);
     }
     /**创建{@link Set_ValueMetaData}对象*/
-    protected Set_ValueMetaData createDefine() {
+    protected Set_ValueMetaData createDefine(XmlStackDecorator context) {
         return new Set_ValueMetaData();
     }
     protected Class<?> getDefaultCollectionType() {

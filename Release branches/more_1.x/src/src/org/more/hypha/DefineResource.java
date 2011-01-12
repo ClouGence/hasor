@@ -26,7 +26,7 @@ import org.more.util.attribute.IAttribute;
  * @version 2010-9-24
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface DefineResource extends DefineResourcePluginSet {
+public interface DefineResource extends DefineResourceExpandSet {
     /**获取一个状态该状态表述是否已经准备好。*/
     public boolean isReady();
     /**获取{@link DefineResource}的属性访问接口。*/
@@ -60,7 +60,7 @@ public interface DefineResource extends DefineResourcePluginSet {
      */
     public List<String> getBeanDefineNames();
     /**
-     * 测试某名称Bean是否为原型模式创建，如果目标bean不存在则会引发{@link NoDefinitionException}异常。
+     * 测试某名称Bean是否为原型模式创建，原型模式是指bean即不属于工厂方式创建也没有配置单态特性。
      * @param id 要测试的Bean id。
      * @return 返回测试结果，如果是以原型模式创建则返回true,否则返回false。
      */

@@ -35,7 +35,7 @@ public abstract class TagBeans_AbstractDefine<T> extends Tag_Abstract implements
     /**如果isPutAttribute方法返回true则设置到{@link XmlStackDecorator}属性范围中的属性名由该方法确定。*/
     protected abstract String getAttributeName();
     /**创建定义类型对象。*/
-    protected abstract T createDefine();
+    protected abstract T createDefine(XmlStackDecorator context);
     /**
      * 每个标签在beginElement开始执行时都会创建一个自己的堆，当遇到endElement方法调用时候会销毁这个堆。
      * 该方法的返回值可以确定是否跨越{@link XmlStackDecorator}的当前堆去上一层中寻找{@link T},默认值是true。
@@ -54,7 +54,7 @@ public abstract class TagBeans_AbstractDefine<T> extends Tag_Abstract implements
             define = (T) context.getSource().getAttribute(defineName);
         //
         if (define == null) {
-            define = this.createDefine();
+            define = this.createDefine(context);
             context.setAttribute(defineName, define);
         }
         return define;

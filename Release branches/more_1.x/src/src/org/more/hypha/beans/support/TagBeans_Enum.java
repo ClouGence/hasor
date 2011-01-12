@@ -32,7 +32,7 @@ public class TagBeans_Enum extends TagBeans_AbstractValueMetaDataDefine<Enum_Val
         super(configuration);
     }
     /**创建{@link Enum_ValueMetaData}对象。*/
-    protected Enum_ValueMetaData createDefine() {
+    protected Enum_ValueMetaData createDefine(XmlStackDecorator context) {
         return new Enum_ValueMetaData();
     }
     /**定义模板属性。*/

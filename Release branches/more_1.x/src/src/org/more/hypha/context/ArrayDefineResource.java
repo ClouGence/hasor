@@ -24,7 +24,7 @@ import org.more.RepeateException;
 import org.more.hypha.AbstractEventManager;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.DefineResource;
-import org.more.hypha.DefineResourcePlugin;
+import org.more.hypha.DefineResourceExpand;
 import org.more.hypha.EventManager;
 import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.event.AddBeanDefineEvent;
@@ -40,15 +40,16 @@ import org.more.util.attribute.IAttribute;
 public class ArrayDefineResource implements DefineResource {
     private String                            sourceName       = null;                                     //资源名
     private ArrayList<String>                 pluginNames      = new ArrayList<String>();                  //插件名称集合
-    private Map<String, DefineResourcePlugin> pluginList       = null;                                     //插件集合
+    private Map<String, DefineResourceExpand> pluginList       = null;                                     //插件集合
     private ArrayList<String>                 defineNames      = new ArrayList<String>();                  //bean定义名称集合
     private Map<String, AbstractBeanDefine>   defineMap        = new HashMap<String, AbstractBeanDefine>(); //bean定义Map
     //
     private EventManager                      eventManager     = new AbstractEventManager() {};            //事件管理器
     private IAttribute                        attributeManager = null;                                     //属性管理器
+    private IAttribute                        flashContext     = null;                                     //
     //========================================================================================DefineResourcePluginSet接口
     /**根据扩展名获取扩展目标对象。*/
-    public DefineResourcePlugin getPlugin(String name) {
+    public DefineResourceExpand getPlugin(String name) {
         if (this.pluginList == null)
             return null;
         if (this.pluginNames.contains(name) == false)
@@ -56,9 +57,9 @@ public class ArrayDefineResource implements DefineResource {
         return this.pluginList.get(name);
     };
     /**设置一个插件，如果插件重名则替换重名的插件注册。*/
-    public synchronized void setPlugin(String name, DefineResourcePlugin plugin) {
+    public synchronized void setPlugin(String name, DefineResourceExpand plugin) {
         if (this.pluginList == null)
-            this.pluginList = new HashMap<String, DefineResourcePlugin>();
+            this.pluginList = new HashMap<String, DefineResourceExpand>();
         this.getEventManager().doEvent(new AddPluginEvent(this, plugin));//新插件
         this.pluginNames.add(name);
         this.pluginList.put(name, plugin);
@@ -117,7 +118,10 @@ public class ArrayDefineResource implements DefineResource {
     }
     public boolean isPrototype(String id) throws NoDefinitionException {
         AbstractBeanDefine define = this.getBeanDefine(id);
-        return (define.factoryName() == null) ? false : true;
+        if (define.factoryMethod() == null && define.isSingleton() == false)
+            return true;
+        else
+            return false;
     }
     public boolean isSingleton(String id) throws NoDefinitionException {
         AbstractBeanDefine define = this.getBeanDefine(id);
@@ -125,14 +129,28 @@ public class ArrayDefineResource implements DefineResource {
     }
     public boolean isFactory(String id) throws NoDefinitionException {
         AbstractBeanDefine define = this.getBeanDefine(id);
-        return (define.factoryName() == null) ? false : true;
+        return (define.factoryMethod() == null) ? false : true;
     }
     public synchronized void clearDefine() {
         this.getEventManager().doEvent(new ClearDefineEvent(this));//销毁
         this.defineNames.clear();
         this.defineMap.clear();
     }
-    public ApplicationContext buildApp(Object context) {
-        return new HyphaApplicationContext(this, context);
+    /**获取Flash，这个flash是一个内部信息携带体。它可以贯穿整个hypha的所有阶段。得到flash有两种办法一种是主动获取。另外一种是在特定的位置由hypha提供。*/
+    protected IAttribute getFlash() {
+        synchronized (this) {
+            if (this.flashContext == null)
+                this.flashContext = new AttBase();
+        }
+        return this.flashContext;
     };
+    public final synchronized ApplicationContext buildApp(Object context) throws Exception {
+        ApplicationContext appContext = this.createApplicationContext(context, this.getFlash());
+        appContext.init();
+        return appContext;
+    };
+    /**该方法是由buildApp方法直接调用。用于确定子类使用何种类型的ApplicationContext实现。*/
+    protected ApplicationContext createApplicationContext(Object context, IAttribute flash) {
+        return new HyphaApplicationContext(this, context);
+    }
 }

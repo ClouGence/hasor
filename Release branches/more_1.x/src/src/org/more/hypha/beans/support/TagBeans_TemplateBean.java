@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.support;
+import org.more.core.xml.XmlStackDecorator;
 import org.more.hypha.beans.define.TemplateBeanDefine;
 import org.more.hypha.context.XmlDefineResource;
 /**
@@ -27,7 +28,7 @@ public class TagBeans_TemplateBean extends TagBeans_AbstractBeanDefine<TemplateB
         super(configuration);
     }
     /**创建{@link TemplateBeanDefine}对象。*/
-    protected TemplateBeanDefine createDefine() {
+    protected TemplateBeanDefine createDefine(XmlStackDecorator context) {
         return new TemplateBeanDefine();
     }
 }

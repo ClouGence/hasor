@@ -30,7 +30,7 @@ public class TagBeans_File extends TagBeans_AbstractValueMetaDataDefine<File_Val
         super(configuration);
     }
     /**创建{@link File_ValueMetaData}对象。*/
-    protected File_ValueMetaData createDefine() {
+    protected File_ValueMetaData createDefine(XmlStackDecorator context) {
         File_ValueMetaData metaData = new File_ValueMetaData();
         metaData.setDir(false);
         return metaData;

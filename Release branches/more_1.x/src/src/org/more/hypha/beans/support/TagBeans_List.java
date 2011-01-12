@@ -15,6 +15,7 @@
  */
 package org.more.hypha.beans.support;
 import java.util.ArrayList;
+import org.more.core.xml.XmlStackDecorator;
 import org.more.hypha.beans.define.List_ValueMetaData;
 import org.more.hypha.context.XmlDefineResource;
 /**
@@ -28,7 +29,7 @@ public class TagBeans_List extends TagBeans_AbstractCollection<List_ValueMetaDat
         super(configuration);
     }
     /**创建{@link List_ValueMetaData}对象*/
-    protected List_ValueMetaData createDefine() {
+    protected List_ValueMetaData createDefine(XmlStackDecorator context) {
         return new List_ValueMetaData();
     }
     protected Class<?> getDefaultCollectionType() {

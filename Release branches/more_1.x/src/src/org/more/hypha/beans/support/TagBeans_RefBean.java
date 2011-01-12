@@ -15,6 +15,7 @@
  */
 package org.more.hypha.beans.support;
 import java.util.Map;
+import org.more.core.xml.XmlStackDecorator;
 import org.more.hypha.beans.define.RelationBeanDefine;
 import org.more.hypha.context.XmlDefineResource;
 /**
@@ -28,7 +29,7 @@ public class TagBeans_RefBean extends TagBeans_AbstractBeanDefine<RelationBeanDe
         super(configuration);
     }
     /**创建{@link RelationBeanDefine}对象。*/
-    protected RelationBeanDefine createDefine() {
+    protected RelationBeanDefine createDefine(XmlStackDecorator context) {
         return new RelationBeanDefine();
     }
     /**定义引用类型Bean的属性*/

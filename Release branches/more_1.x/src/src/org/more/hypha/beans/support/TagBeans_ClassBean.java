@@ -15,6 +15,7 @@
  */
 package org.more.hypha.beans.support;
 import java.util.Map;
+import org.more.core.xml.XmlStackDecorator;
 import org.more.hypha.beans.define.ClassBeanDefine;
 import org.more.hypha.context.XmlDefineResource;
 /**
@@ -28,7 +29,7 @@ public class TagBeans_ClassBean extends TagBeans_AbstractBeanDefine<ClassBeanDef
         super(configuration);
     }
     /**创建{@link ClassBeanDefine}对象。*/
-    protected ClassBeanDefine createDefine() {
+    protected ClassBeanDefine createDefine(XmlStackDecorator context) {
         return new ClassBeanDefine();
     }
     /**定义类型Bean特有属性。*/

@@ -16,7 +16,7 @@
 package org.more.hypha.annotation;
 import org.more.hypha.DefineResource;
 /**
- * 注解注册解析器。该接口的功能是负责接收并处理由{@link AnnotationDefineResourcePlugin}接口注册的注解监视。
+ * 注解注册解析器。该接口的功能是负责接收并处理由{@link AnnoResourceExpand}接口注册的注解监视。
  * @version 2010-10-26
  * @author 赵永春 (zyc@byshell.org) 
  */
@@ -25,7 +25,7 @@ public interface KeepWatchParser {
      * 处理注解监视器。
      * @param beanType 被监视到的Bean。
      * @param resource {@link DefineResource}对象。
-     * @param plugin {@link AnnotationDefineResourcePlugin}对象。
+     * @param plugin {@link AnnoResourceExpand}对象。
      */
-    public void process(Class<?> beanType, DefineResource resource, AnnotationDefineResourcePlugin plugin);
+    public void process(Class<?> beanType, DefineResource resource, AnnoResourceExpand plugin);
 }

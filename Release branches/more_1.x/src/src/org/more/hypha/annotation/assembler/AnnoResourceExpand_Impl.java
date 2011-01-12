@@ -26,27 +26,27 @@ import java.util.List;
 import org.more.core.asm.ClassReader;
 import org.more.core.asm.ClassWriter;
 import org.more.hypha.DefineResource;
-import org.more.hypha.annotation.AnnotationDefineResourcePlugin;
+import org.more.hypha.annotation.AnnoResourceExpand;
 import org.more.hypha.annotation.KeepWatchParser;
-import org.more.hypha.aop.AopDefineResourcePlugin;
+import org.more.hypha.aop.AopResourceExpand;
 /**
- * 注解插件接口{@link AnnotationDefineResourcePlugin}的实现类。
+ * 注解插件接口{@link AnnoResourceExpand_Impl}的实现类。
  * @version 2010-10-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public class AnnotationDefineResourcePluginImpl implements AnnotationDefineResourcePlugin {
+public class AnnoResourceExpand_Impl implements AnnoResourceExpand {
     private DefineResource                         config      = null;
     private ArrayList<String>                      parserTypes = new ArrayList<String>();
     private HashMap<String, List<KeepWatchParser>> parserMap   = new HashMap<String, List<KeepWatchParser>>();
     //
-    public AnnotationDefineResourcePluginImpl(DefineResource config) {
+    public AnnoResourceExpand_Impl(DefineResource config) {
         this.config = config;
     }
     public DefineResource getTarget() {
         return this.config;
     }
-    public AopDefineResourcePlugin getAopDefineResourcePlugin() {
-        return (AopDefineResourcePlugin) this.config.getPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName);
+    public AopResourceExpand getAopDefineResourcePlugin() {
+        return (AopResourceExpand) this.config.getPlugin(AopResourceExpand.AopDefineResourcePluginName);
     }
     /**
      * 注册一个注解解析器，该方法会通知注解解析系统，当遇到某个特定的注解时这个类交付这个注解处理器进行处理。
@@ -92,8 +92,8 @@ public class AnnotationDefineResourcePluginImpl implements AnnotationDefineResou
         //1.按照注册顺序排序
         Collections.sort(annoTypes, new Comparator<String>() {
             public int compare(String o1, String o2) {
-                int a = AnnotationDefineResourcePluginImpl.this.parserTypes.indexOf(o1);
-                int b = AnnotationDefineResourcePluginImpl.this.parserTypes.indexOf(o2);
+                int a = AnnoResourceExpand_Impl.this.parserTypes.indexOf(o1);
+                int b = AnnoResourceExpand_Impl.this.parserTypes.indexOf(o2);
                 if (a > b)
                     return 1;
                 else if (a == b)

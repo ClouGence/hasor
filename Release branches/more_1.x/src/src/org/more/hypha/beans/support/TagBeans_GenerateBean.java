@@ -15,6 +15,7 @@
  */
 package org.more.hypha.beans.support;
 import java.util.Map;
+import org.more.core.xml.XmlStackDecorator;
 import org.more.hypha.beans.define.GenerateBeanDefine;
 import org.more.hypha.context.XmlDefineResource;
 /**
@@ -28,7 +29,7 @@ public class TagBeans_GenerateBean extends TagBeans_AbstractBeanDefine<GenerateB
         super(configuration);
     }
     /**创建{@link GenerateBeanDefine}对象。*/
-    protected GenerateBeanDefine createDefine() {
+    protected GenerateBeanDefine createDefine(XmlStackDecorator context) {
         return new GenerateBeanDefine();
     }
     /**定义生成Bean的属性。*/

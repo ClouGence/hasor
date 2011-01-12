@@ -16,13 +16,13 @@
 package org.more.hypha.annotation.assembler;
 import org.more.LostException;
 import org.more.hypha.DefineResource;
-import org.more.hypha.annotation.AnnotationDefineResourcePlugin;
+import org.more.hypha.annotation.AnnoResourceExpand;
 import org.more.hypha.annotation.Aop;
 import org.more.hypha.annotation.AopInformed;
 import org.more.hypha.annotation.Bean;
 import org.more.hypha.annotation.KeepWatchParser;
-import org.more.hypha.aop.AopBeanDefinePlugin;
-import org.more.hypha.aop.AopDefineResourcePlugin;
+import org.more.hypha.aop.AopDefineExpand_Impl;
+import org.more.hypha.aop.AopResourceExpand;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.aop.define.AopDefineInformed;
 import org.more.hypha.aop.define.AopPointcutDefine;
@@ -34,9 +34,9 @@ import org.more.hypha.beans.AbstractBeanDefine;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Watch_Aop implements KeepWatchParser {
-    public void process(Class<?> beanType, DefineResource resource, AnnotationDefineResourcePlugin plugin) {
+    public void process(Class<?> beanType, DefineResource resource, AnnoResourceExpand plugin) {
         Bean bean = beanType.getAnnotation(Bean.class);
-        AopDefineResourcePlugin aopPlugin = (AopDefineResourcePlugin) resource.getPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName);
+        AopResourceExpand aopPlugin = (AopResourceExpand) resource.getPlugin(AopResourceExpand.AopDefineResourcePluginName);
         // ID
         String id = bean.id();
         if (id.equals("") == true) {
@@ -64,14 +64,14 @@ public class Watch_Aop implements KeepWatchParser {
             aopConfig = aopPlugin.getAopDefine(var);
             if (aopConfig == null)
                 throw new LostException("找不到名称为[" + var + "]的Aop配置。");
-            AopBeanDefinePlugin beanPlugin = new AopBeanDefinePlugin(define, aopConfig);
-            define.setPlugin(AopBeanDefinePlugin.AopPluginName, beanPlugin);
+            AopDefineExpand_Impl beanPlugin = new AopDefineExpand_Impl(define, aopConfig);
+            define.setPlugin(AopDefineExpand_Impl.AopPluginName, beanPlugin);
             return;
         }
         //3.解析aop注解
         aopConfig = new AopConfigDefine();
-        AopBeanDefinePlugin beanPlugin = new AopBeanDefinePlugin(define, aopConfig);
-        define.setPlugin(AopBeanDefinePlugin.AopPluginName, beanPlugin);
+        AopDefineExpand_Impl beanPlugin = new AopDefineExpand_Impl(define, aopConfig);
+        define.setPlugin(AopDefineExpand_Impl.AopPluginName, beanPlugin);
         aopConfig.setAopMode(aop.mode());
         //defaultPointcut
         AopPointcutDefine aoppoint = new AopPointcutDefine();

@@ -32,7 +32,7 @@ public class TagBeans_Param extends TagBeans_AbstractPropertyDefine<ParamDefine>
         super(configuration);
     }
     /**创建{@link PropertyDefine}对象。*/
-    protected ParamDefine createDefine() {
+    protected ParamDefine createDefine(XmlStackDecorator context) {
         return new ParamDefine();
     }
     /**定义属性标签特有的属性*/

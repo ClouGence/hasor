@@ -16,6 +16,7 @@
 package org.more.hypha.beans.support;
 import java.util.HashMap;
 import java.util.Map;
+import org.more.core.xml.XmlStackDecorator;
 import org.more.hypha.beans.define.Date_ValueMetaData;
 import org.more.hypha.context.XmlDefineResource;
 /**
@@ -29,7 +30,7 @@ public class TagBeans_Date extends TagBeans_AbstractValueMetaDataDefine<Date_Val
         super(configuration);
     }
     /**创建{@link Date_ValueMetaData}对象。*/
-    protected Date_ValueMetaData createDefine() {
+    protected Date_ValueMetaData createDefine(XmlStackDecorator context) {
         return new Date_ValueMetaData();
     }
     /**定义模板属性。*/

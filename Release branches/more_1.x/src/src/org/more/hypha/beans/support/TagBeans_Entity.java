@@ -33,7 +33,7 @@ public class TagBeans_Entity extends TagBeans_AbstractValueMetaDataDefine<MapEnt
         super(configuration);
     }
     /**创建{@link MapEntity_ValueMetaData}对象。*/
-    protected MapEntity_ValueMetaData createDefine() {
+    protected MapEntity_ValueMetaData createDefine(XmlStackDecorator context) {
         return new MapEntity_ValueMetaData();
     }
     /**定义模板属性。*/

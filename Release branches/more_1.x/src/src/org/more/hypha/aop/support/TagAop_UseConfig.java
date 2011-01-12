@@ -21,7 +21,7 @@ import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.AttributeEvent;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.aop.AopDefineResourcePlugin;
+import org.more.hypha.aop.AopResourceExpand;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.beans.support.TagBeans_AbstractBeanDefine;
@@ -50,7 +50,7 @@ public class TagAop_UseConfig extends Tag_Abstract implements XmlElementHook, Xm
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
     /**¥¶¿Ìaop:useConfig*/
     private void processElement(XmlStackDecorator context, String name) {
-        AopDefineResourcePlugin plugin = (AopDefineResourcePlugin) this.getDefineResource().getPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName);
+        AopResourceExpand plugin = (AopResourceExpand) this.getDefineResource().getPlugin(AopResourceExpand.AopDefineResourcePluginName);
         AbstractBeanDefine bean = (AbstractBeanDefine) context.getAttribute(TagBeans_AbstractBeanDefine.BeanDefine);
         //
         AopConfigDefine aopConfig = plugin.getAopDefine(name);

@@ -14,27 +14,28 @@
  * limitations under the License.
  */
 package org.more.hypha.context;
+import org.more.util.attribute.IAttribute;
 /**
  * 接口{@link XmlNameSpaceRegister}的代理，用于保存所有来自于regedit.xml配置文件的信息。
  * @version 2010-11-12
  * @author 赵永春 (zyc@byshell.org)
  */
 class _NameSpaceRegisterPropxy implements XmlNameSpaceRegister {
-    private int                initSequence  = 0;
-    private String             namespace     = null;
-    private String             schema        = null;
-    private boolean            schemaEnable  = false;
+    private int                  initSequence  = 0;
+    private String               namespace     = null;
+    private String               schema        = null;
+    private boolean              schemaEnable  = false;
     private XmlNameSpaceRegister register      = null;
-    private String             registerClass = null;
+    private String               registerClass = null;
     //
     public _NameSpaceRegisterPropxy(String registerClass) {
         this.registerClass = registerClass;
     }
     //
-    public void initRegister(String namespaceURL, XmlDefineResource resource) throws Throwable {
+    public void initRegister(String namespaceURL, XmlDefineResource resource, IAttribute flash) throws Throwable {
         Class<?> factory = Class.forName(this.registerClass);
         this.register = (XmlNameSpaceRegister) factory.newInstance();
-        this.register.initRegister(this.namespace, resource);
+        this.register.initRegister(this.namespace, resource, flash);
     }
     public int getInitSequence() {
         return initSequence;

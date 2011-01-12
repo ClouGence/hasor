@@ -31,7 +31,7 @@ public class TagBeans_Constructor extends TagBeans_AbstractPropertyDefine<Constr
         super(configuration);
     }
     /**创建{@link ConstructorDefine}对象。*/
-    protected ConstructorDefine createDefine() {
+    protected ConstructorDefine createDefine(XmlStackDecorator context) {
         return new ConstructorDefine();
     }
     /**定义构造方法特有属性。*/

@@ -16,6 +16,7 @@
 package org.more.hypha.beans.support;
 import java.util.HashMap;
 import java.util.Map;
+import org.more.core.xml.XmlStackDecorator;
 import org.more.hypha.beans.define.URI_ValueMetaData;
 import org.more.hypha.context.XmlDefineResource;
 /**
@@ -29,7 +30,7 @@ public class TagBeans_URI extends TagBeans_AbstractValueMetaDataDefine<URI_Value
         super(configuration);
     }
     /**创建{@link URI_ValueMetaData}对象。*/
-    protected URI_ValueMetaData createDefine() {
+    protected URI_ValueMetaData createDefine(XmlStackDecorator context) {
         return new URI_ValueMetaData();
     }
     /**定义模板属性。*/

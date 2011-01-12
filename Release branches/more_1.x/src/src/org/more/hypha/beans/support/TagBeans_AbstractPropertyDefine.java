@@ -40,7 +40,7 @@ public abstract class TagBeans_AbstractPropertyDefine<T extends AbstractProperty
         return PropertyDefine;
     }
     /**创建定义类型对象。*/
-    protected abstract T createDefine();
+    protected abstract T createDefine(XmlStackDecorator context);
     /**定义通用的属性。*/
     public enum PropertyKey {
         value, boolLazyInit, classType, description

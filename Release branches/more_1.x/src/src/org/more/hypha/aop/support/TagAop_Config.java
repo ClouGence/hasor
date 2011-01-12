@@ -20,8 +20,8 @@ import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.aop.AopBeanDefinePlugin;
-import org.more.hypha.aop.AopDefineResourcePlugin;
+import org.more.hypha.aop.AopDefineExpand_Impl;
+import org.more.hypha.aop.AopResourceExpand;
 import org.more.hypha.aop.define.AbstractInformed;
 import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
@@ -64,11 +64,11 @@ public class TagAop_Config extends Tag_Abstract implements XmlElementHook {
                 informed.setRefPointcut(defaultPointcutDefine);
         //2.携带到Bean上。
         if (bean != null) {
-            bean.setPlugin(AopBeanDefinePlugin.AopPluginName, new AopBeanDefinePlugin(bean, config));
+            bean.setPlugin(AopDefineExpand_Impl.AopPluginName, new AopDefineExpand_Impl(bean, config));
             return;
         }
         //3.注册到AopDefineResourcePlugin中。
-        AopDefineResourcePlugin plugin = (AopDefineResourcePlugin) this.getDefineResource().getPlugin(AopDefineResourcePlugin.AopDefineResourcePluginName);
+        AopResourceExpand plugin = (AopResourceExpand) this.getDefineResource().getPlugin(AopResourceExpand.AopDefineResourcePluginName);
         String name = config.getName();
         if (name != null)
             if (plugin.containAopDefine(name) == false)

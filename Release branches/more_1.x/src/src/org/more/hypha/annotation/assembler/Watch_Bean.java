@@ -28,12 +28,13 @@ import org.more.NoDefinitionException;
 import org.more.NotFoundException;
 import org.more.core.classcode.EngineToos;
 import org.more.hypha.DefineResource;
-import org.more.hypha.annotation.AnnotationDefineResourcePlugin;
+import org.more.hypha.annotation.AnnoResourceExpand;
 import org.more.hypha.annotation.Bean;
 import org.more.hypha.annotation.KeepWatchParser;
 import org.more.hypha.annotation.MetaData;
 import org.more.hypha.annotation.Param;
 import org.more.hypha.annotation.Property;
+import org.more.hypha.beans.AbstractMethodDefine;
 import org.more.hypha.beans.ValueMetaData;
 import org.more.hypha.beans.define.AbstractPropertyDefine;
 import org.more.hypha.beans.define.ClassBeanDefine;
@@ -44,6 +45,7 @@ import org.more.hypha.beans.define.ParamDefine;
 import org.more.hypha.beans.define.PropertyDefine;
 import org.more.hypha.beans.define.PropertyType;
 import org.more.hypha.beans.define.Simple_ValueMetaData;
+import org.more.hypha.beans.define.TemplateBeanDefine;
 import org.more.util.StringConvert;
 import org.more.util.attribute.IAttribute;
 /**
@@ -52,7 +54,7 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Watch_Bean implements KeepWatchParser {
-    public void process(Class<?> beanType, DefineResource resource, AnnotationDefineResourcePlugin plugin) {
+    public void process(Class<?> beanType, DefineResource resource, AnnoResourceExpand plugin) {
         Bean bean = beanType.getAnnotation(Bean.class);
         ClassBeanDefine define = new ClassBeanDefine();
         //-----------------------------------------------------------------------------------------------------类信息
@@ -78,11 +80,14 @@ public class Watch_Bean implements KeepWatchParser {
         define.setBoolInterface(Modifier.isInterface(beanType.getModifiers()));
         // Factory
         var = bean.factoryName();
-        if (var.equals("") == false)
-            define.setFactoryName(var);
-        var = bean.factoryMethod();
-        if (var.equals("") == false)
-            define.setFactoryMethod(var);
+        if (var != null && var.equals("") == false) {
+            if (resource.containsBeanDefine(var) == false)
+                throw new NoDefinitionException("[" + define.getName() + "]找不到关联的工厂[" + var + "]Bean定义");
+            TemplateBeanDefine factoryBean = (TemplateBeanDefine) resource.getBeanDefine(var);
+            var = bean.factoryName();
+            AbstractMethodDefine methodDefine = factoryBean.getMethod(var);
+            factoryBean.setFactoryMethod(methodDefine);
+        }
         // Desc
         var = bean.description();
         if (var.equals("") == false)
@@ -136,7 +141,7 @@ public class Watch_Bean implements KeepWatchParser {
             if (ma == null)
                 continue;
             //1.方法
-            MethodDefine mDefine = new MethodDefine();
+            MethodDefine mDefine = new MethodDefine(define);
             mDefine.setCodeName(m.getName());
             mDefine.setName(ma.name());
             this.addMetaData(mDefine, ma.metaData());
