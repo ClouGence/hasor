@@ -16,7 +16,7 @@
 package org.more.core.json;
 import java.util.Collection;
 /**
- * 为提供Json格式数据互转的基类。
+ * 为提供Json格式数据互转的基类。该类可以直接处理null类型。
  * @version 2010-1-7
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -39,10 +39,8 @@ public abstract class JsonType {
             readStr = readStr.trim();
             if (readStr.equals("null"))
                 return null;
-            else if (readStr.equals("true"))
-                return true;
-            else if (readStr.equals("false"))
-                return false;
+            else if (readStr.equals("true") || readStr.equals("false"))
+                return new JsonBoolean(this.currentContext).toObject(readStr);
             else if (readStr.charAt(0) == 34 || readStr.charAt(0) == 39)
                 return new JsonString(this.currentContext).toObject(readStr);
             else if (readStr.charAt(0) == '[')
@@ -62,7 +60,7 @@ public abstract class JsonType {
         if (object == null)
             return "null";
         else if (object instanceof Boolean)
-            return (((Boolean) object) == true) ? "true" : "false";
+            return new JsonBoolean(this.currentContext).toString(object);
         else if (object instanceof String || object instanceof Character || object instanceof CharSequence)
             return new JsonString(this.currentContext).toString(object);
         else if (object instanceof Collection || object.getClass().isArray() == true)

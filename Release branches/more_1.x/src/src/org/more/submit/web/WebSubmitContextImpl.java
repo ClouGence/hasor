@@ -38,7 +38,7 @@ public class WebSubmitContextImpl extends SubmitContextImpl implements WebSubmit
     /**  */
     private static final long serialVersionUID = -7968875552670171988L;
     private ServletContext    servletContext   = null;
-    private String            protocol         = "action";
+    private String            protocol         = WebSubmitContext.Default_Protocol;
     public WebSubmitContextImpl(ActionContext actionContext, ServletContext context) {
         super(actionContext);
         this.servletContext = context;
@@ -61,7 +61,7 @@ public class WebSubmitContextImpl extends SubmitContextImpl implements WebSubmit
     public ServletContext getServletContext() {
         return this.servletContext;
     };
-    /**解析请求url并且分离出ActionInvoke字符串。*/
+    /**解析请求url并且分离出ActionInvoke字符串，action!a.bbbbb//*/
     protected String analyticURL(String headInfo) {
         if (headInfo == null)
             return null;

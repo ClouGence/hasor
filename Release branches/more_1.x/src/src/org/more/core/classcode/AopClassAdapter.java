@@ -165,28 +165,28 @@ class AopClassAdapter extends ClassAdapter implements Opcodes {
             String asmType = asmParams[i];
             mv.visitInsn(DUP);
             mv.visitIntInsn(BIPUSH, i);
-            if (asmParams[i].equals("B")) {
+            if (asmParams[i].equals("B") == true) {
                 mv.visitVarInsn(EngineToos.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;");
-            } else if (asmParams[i].equals("S")) {
+            } else if (asmParams[i].equals("S") == true) {
                 mv.visitVarInsn(EngineToos.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(INVOKESTATIC, "java/lang/Short", "valueOf", "(S)Ljava/lang/Short;");
-            } else if (asmParams[i].equals("I")) {
+            } else if (asmParams[i].equals("I") == true) {
                 mv.visitVarInsn(EngineToos.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;");
-            } else if (asmParams[i].equals("J")) {
+            } else if (asmParams[i].equals("J") == true) {
                 mv.visitVarInsn(EngineToos.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;");
-            } else if (asmParams[i].equals("F")) {
+            } else if (asmParams[i].equals("F") == true) {
                 mv.visitVarInsn(EngineToos.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;");
-            } else if (asmParams[i].equals("D")) {
+            } else if (asmParams[i].equals("D") == true) {
                 mv.visitVarInsn(EngineToos.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
-            } else if (asmParams[i].equals("C")) {
+            } else if (asmParams[i].equals("C") == true) {
                 mv.visitVarInsn(EngineToos.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(INVOKESTATIC, "java/lang/Character", "valueOf", "(C)Ljava/lang/Character;");
-            } else if (asmParams[i].equals("Z")) {
+            } else if (asmParams[i].equals("Z") == true) {
                 mv.visitVarInsn(EngineToos.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;");
             } else

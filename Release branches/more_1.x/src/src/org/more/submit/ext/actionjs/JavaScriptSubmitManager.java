@@ -78,7 +78,7 @@ public class JavaScriptSubmitManager {
         HttpServletRequest request = event.getHttpRequest();
         String host = request.getServerName() + ":" + request.getLocalPort();
         Object protocol = event.getServletContext().getAttribute("org.more.web.submit.ROOT.Action");
-        str.append("more.retain.serverCallURL=\"http://" + host + "/" + protocol + "!" + event.getActionName() + ".execute\";");
+        str.append("more.retain.serverCallURL='" + request.getProtocol() + "://" + host + "/" + request.getContextPath() + "/" + protocol + "!" + event.getActionName() + ".execute';");
         str.append("more.server={};");
         // 如果参数min为true表示输出最小化脚本，最小化脚本中不包含action的定义。
         String minParam = event.getParamString("min");

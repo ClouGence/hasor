@@ -26,6 +26,7 @@ import org.more.util.Config;
 import org.more.util.attribute.AttBase;
 /**
  * submit利用build模式创建{@link SubmitContext}该类可以build出WebSubmitContext和SubmitContext两种接口。
+ * 设置base属性可以用于修改submit在读取配置文件时的相对目录。
  * @version 2010-9-5
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -49,8 +50,8 @@ public class SubmitBuild extends AttBase {
     };
     /**调用生成器生成SubmitContext对象，生成的SubmitContext的对象可以需要通过getResult方法获取。*/
     public SubmitContext build(ActionContextBuild build) throws Throwable {
-        if (this.contains("baseDir") == true)
-            build.setBaseDir(new File((String) this.getAttribute("baseDir")));
+        if (this.contains("base") == true)//base是一个目录，more在读取配置文件时会在这个目录下寻找配置文件。
+            build.setBaseDir(new File((String) this.getAttribute("base")));
         //
         build.init(new AttributeConfigBridge(this, null));
         ActionContext actionContext = this.decorator(build.getActionContext());
@@ -65,13 +66,14 @@ public class SubmitBuild extends AttBase {
      */
     public WebSubmitContext buildWeb(ActionContextBuild build, ServletContext context) throws Throwable {
         File baseDir = null;
-        if (this.contains("baseDir") == false)
+        if (this.contains("base") == false)//base是一个目录，more在读取配置文件时会在这个目录下寻找配置文件。
             baseDir = new File(context.getRealPath("/WEB-INF/classes"));
         else
-            baseDir = new File((String) this.getAttribute("baseDir"));
+            baseDir = new File((String) this.getAttribute("base"));
         //
         build.setBaseDir(baseDir);
-        System.out.println("buildWeb More WebContext BaseDir=" + baseDir.getAbsolutePath());
+        System.out.println("");
+        System.out.println("buildWeb More WebContext Base=" + baseDir.getAbsolutePath());
         build.init(new AttributeConfigBridge(this, context));
         ActionContext actionContext = this.decorator(build.getActionContext());
         WebSubmitContextImpl webContext = new WebSubmitContextImpl(actionContext, context);

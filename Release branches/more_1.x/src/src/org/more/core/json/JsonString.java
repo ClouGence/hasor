@@ -35,7 +35,7 @@ public class JsonString extends JsonType {
         JsonString.charset.put('\n', "\\\n");
         JsonString.charset.put('\r', "\\\r");
         JsonString.charset.put('\t', "\\\t");
-    }
+    };
     protected JsonString(JsonUtil currentContext) {
         super(currentContext);
     };
@@ -47,7 +47,7 @@ public class JsonString extends JsonType {
             return sb.toString();
         } else
             return str;
-    }
+    };
     public String toString(Object bean) {
         Reader sr;
         if (bean instanceof String)
@@ -77,5 +77,5 @@ public class JsonString extends JsonType {
         } catch (Exception e) {}
         sb.append(this.getCurrentContext().getStringBorder());
         return sb.toString();
-    }
+    };
 }

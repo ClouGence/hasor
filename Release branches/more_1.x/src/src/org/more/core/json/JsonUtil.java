@@ -27,7 +27,9 @@ import org.more.core.copybean.CopyBeanUtil;
  */
 @SuppressWarnings("unchecked")
 public class JsonUtil {
-    private char stringBorder = 34; //34:", 39:'
+    /**默认字符串，*/
+    public static char StringBorder = '"';                  //34:", 39:'
+    private char       stringBorder = JsonUtil.StringBorder; //34:", 39:'
     /**创建JsonUtil对象，字符串序列化使用双引号环抱。*/
     public JsonUtil() {};
     /**创建JsonUtil对象，字符串序列化使用参数决定。只有当设置了单引号“'”或者双引号“"”时候才有效，如果设置其他字符则会使用默认字符。*/
@@ -83,7 +85,7 @@ public class JsonUtil {
         if (object == null)
             return "null";
         else if (object instanceof Boolean)
-            return (((Boolean) object) == true) ? "true" : "false";
+            return new JsonBoolean(this).toString(object);
         else if (object instanceof String || object instanceof Character || object instanceof CharSequence)
             return new JsonString(this).toString(object);
         else if (object instanceof Collection || object.getClass().isArray() == true)
@@ -97,10 +99,8 @@ public class JsonUtil {
     private Object passJsonString(String readStr) {
         if (readStr.equals("null"))
             return null;
-        else if (readStr.equals("true"))
-            return true;
-        else if (readStr.equals("false"))
-            return false;
+        else if (readStr.equals("true") || readStr.equals("false"))
+            return new JsonBoolean(this).toObject(readStr);
         else if (readStr.charAt(0) == 34 || readStr.charAt(0) == 39)
             return new JsonString(this).toObject(readStr);
         else if (readStr.charAt(0) == '[')
