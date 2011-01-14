@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans;
+package org.more.hypha;
+import java.util.List;
 /**
- * 定义如果想要支持扩展的配置策略则需要实现该接口，
- * 可以通过该接口的getExpandDefine来获取有关定义上的一些额外扩展属性设置。
+ * 插件集合，插件用于挂接一些额外的功能。该接口是用于管理要挂接的插件集合。
+ * 可以通过该接口的getPlugin来获取有关定义上的一些额外扩展属性设置。
  * @version 2010-9-24
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface BeanDefinePluginSet {
+public interface PluginSet<T> {
     /**根据扩展名获取扩展目标对象。*/
-    public BeanDefinePlugin getPlugin(String name);
-    /**设置一个插件，如果插件重名则替换重名的插件注册。*/
-    public void setPlugin(String name, BeanDefinePlugin plugin);
-    /**删除一个已有的插件注册。*/
+    public Plugin<T> getPlugin(String name);
+    /**设置一个扩展，如果扩展重名则替换重名的扩展注册。*/
+    public void setPlugin(String name, Plugin<T> plugin);
+    /**删除一个已有的扩展注册。*/
     public void removePlugin(String name);
+    /**获取已注册扩展的名称集合。*/
+    public List<String> getPluginNames();
 }

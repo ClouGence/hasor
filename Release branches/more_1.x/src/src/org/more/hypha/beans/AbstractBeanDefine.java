@@ -15,13 +15,14 @@
  */
 package org.more.hypha.beans;
 import java.util.Collection;
+import org.more.hypha.PluginSet;
 import org.more.util.attribute.IAttribute;
 /**
  * 该接口用于定义一个beans组建中的bean声明。
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AbstractBeanDefine extends BeanDefinePluginSet, IAttribute {
+public interface AbstractBeanDefine extends PluginSet<AbstractBeanDefine>, IAttribute {
     /**返回bean的唯一编号，如果没有指定id属性则id值将是fullName属性值。*/
     public String getID();
     /**返回bean的名称，如果指定了package属性那么name的值可以出现重复。*/

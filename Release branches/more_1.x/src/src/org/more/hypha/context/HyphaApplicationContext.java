@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 package org.more.hypha.context;
-import java.util.ArrayList;
 import java.util.List;
+import org.more.InitializationException;
 import org.more.NoDefinitionException;
 import org.more.core.ognl.OgnlContext;
-import org.more.hypha.AbstractEventManager;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.DefineResource;
-import org.more.hypha.Event;
-import org.more.hypha.EventListener;
 import org.more.hypha.EventManager;
-import org.more.hypha.a.BeanEngine;
-import org.more.hypha.a.ExpandPoint;
+import org.more.hypha.ExpandPointManager;
 import org.more.hypha.beans.AbstractBeanDefine;
+import org.more.hypha.beans.assembler.factory.BeanEngine;
+import org.more.hypha.beans.assembler.factory.BeanFactory;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**
@@ -35,13 +33,12 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class HyphaApplicationContext implements ApplicationContext {
-    private DefineResource    defineResource = null;
-    private Object            context        = null;
-    private EventManager      eventManager   = new AbstractEventManager() {};
-    private ClassLoader       classLoader    = null;
-    private List<ExpandPoint> expandList     = new ArrayList<ExpandPoint>();
-    private BeanEngine        engine         = null;
-    private OgnlContext       elContext      = null;
+    private DefineResource defineResource = null;
+    private ClassLoader    classLoader    = null;
+    //
+    private BeanFactory    factory        = null;
+    private OgnlContext    elContext      = null;
+    private Object         context        = null;
     /*------------------------------------------------------------*/
     public HyphaApplicationContext(DefineResource defineResource, Object context) {
         this.defineResource = defineResource;
@@ -50,9 +47,9 @@ public class HyphaApplicationContext implements ApplicationContext {
     /**设置ClassLoader，通常在初始化之前进行设置。*/
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
-    }
-    public List<String> getBeanDefinitionNames() {
-        return this.defineResource.getBeanDefineNames();
+    };
+    public List<String> getBeanDefinitionIDs() {
+        return this.defineResource.getBeanDefinitionIDs();
     };
     public AbstractBeanDefine getBeanDefinition(String id) throws NoDefinitionException {
         return this.defineResource.getBeanDefine(id);
@@ -77,32 +74,54 @@ public class HyphaApplicationContext implements ApplicationContext {
     public boolean isFactory(String id) throws NoDefinitionException {
         return this.defineResource.isFactory(id);
     };
-    public boolean isTypeMatch(String id, Class<?> targetType) throws NoDefinitionException {
-        return false;//TODO
+    public boolean isTypeMatch(String id, Class<?> targetType) throws NoDefinitionException, NullPointerException {
+        //Object.class.isAssignableFrom(XmlTest.class); return true
+        if (targetType == null)
+            throw new NullPointerException("参数targetType不能为空.");
+        Class<?> beanType = this.getBeanType(id);
+        return targetType.isAssignableFrom(beanType);
     };
-    public void init() throws Exception {
+    public synchronized void init() throws Exception {
+        //1.环境初始化
         if (this.defineResource.isReady() == false)
             System.out.println();
+        this.factory = new BeanFactory(new BeanEngine());
+        this.elContext = new OgnlContext();
+        //2.初始化el属性。
+        ////this
+        ////$context
+        ////$att
+        ////$beans
         //TODO
-        /*
-         * 类装载器
-         * 对象创造器
-         * 属性注入器
-         * 对象装饰器
-         * 缓存器
-         */
+        //this.elContext.put("context", this.getAttribute());
+        //this.elContext.put("this", this);
+        //3.初始化bean
+        for (String id : this.getBeanDefinitionIDs()) {
+            AbstractBeanDefine define = this.getBeanDefinition(id);
+            if (define.isLazyInit() == false)
+                this.getBean(id);
+        }
     };
     public void destroy() throws Exception {
-        //TODO
+        this.factory = null;
+        this.elContext = null;
+        this.getAttribute().clearAttribute();
+        this.defineResource.clearDefine();
     };
-    public Object getBean(String id, Object... objects) throws NoDefinitionException {
-        return null;//TODO
+    public Object getBean(String id, Object... objects) throws NoDefinitionException, InitializationException {
+        AbstractBeanDefine define = this.getBeanDefinition(id);
+        return this.factory.getBean(define, this, objects);
     };
     public Class<?> getBeanType(String id) throws NoDefinitionException {
-        return null;//TODO
+        AbstractBeanDefine define = this.getBeanDefinition(id);
+        return this.factory.getBeanType(define, this);
     };
     public Object getContext() {
         return this.context;
+    };
+    /**获取el上下文环境。*/
+    protected OgnlContext getElContext() {
+        return this.elContext;
     };
     /*------------------------------------------------------------*/
     private AttBase attBase = null;
@@ -110,7 +129,7 @@ public class HyphaApplicationContext implements ApplicationContext {
         if (this.attBase == null)
             this.attBase = new AttBase();
         return this.attBase;
-    }
+    };
     public boolean contains(String name) {
         return this.getAttribute().contains(name);
     };
@@ -128,12 +147,12 @@ public class HyphaApplicationContext implements ApplicationContext {
     };
     public void clearAttribute() {
         this.getAttribute().clearAttribute();
-    }
+    };
     /*------------------------------------------------------------*/
-    public void addEventListener(Class<? extends Event> eventType, EventListener listener) {
-        this.eventManager.addEventListener(eventType, listener);
-    }
-    public void doEvent(Event event) {
-        this.eventManager.doEvent(event);
+    public EventManager getEventManager() {
+        return this.defineResource.getEventManager();
+    };
+    public ExpandPointManager getExpandPointManager() {
+        return this.defineResource.getExpandPointManager();
     };
 }

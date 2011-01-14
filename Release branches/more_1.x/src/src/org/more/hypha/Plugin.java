@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.define;
-import org.more.hypha.AbstractDefine;
-import org.more.hypha.beans.ValueMetaData;
+package org.more.hypha;
 /**
- * 表示一个属性值的抽象类
- * @version 2010-9-15
+ * 插件，插件用于挂接一些额外的功能。可以通过该接口定义想要支持扩展的功能或方法。
+ * @version 2011-1-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractValueMetaData extends AbstractDefine<ValueMetaData> implements ValueMetaData {}
+public interface Plugin<T> {
+    /**获取被扩展的目标对象。*/
+    public T getTarget();
+}

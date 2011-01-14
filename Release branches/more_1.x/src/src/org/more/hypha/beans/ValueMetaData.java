@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans;
+import org.more.hypha.PluginSet;
 import org.more.util.attribute.IAttribute;
 /**
 * 该类用于表示{@link AbstractPropertyDefine}属性中定义的属性值描述信息。
@@ -22,7 +23,7 @@ import org.more.util.attribute.IAttribute;
 * @version 2010-9-17
 * @author 赵永春 (zyc@byshell.org)
 */
-public interface ValueMetaData extends BeanDefinePluginSet, IAttribute {
+public interface ValueMetaData extends PluginSet<ValueMetaData>, IAttribute {
     /**该枚举定义了{@link ValueMetaData}属性元信息表述的属性类型范畴，该类型中包含了基本类型范畴各种集合类型范畴以及一些其他类型范畴。*/
     public enum PropertyMetaTypeEnum {
         /**

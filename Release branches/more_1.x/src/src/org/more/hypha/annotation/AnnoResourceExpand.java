@@ -19,13 +19,13 @@ import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import org.more.hypha.DefineResource;
-import org.more.hypha.DefineResourceExpand;
+import org.more.hypha.Plugin;
 /**
  * 增强了{@link DefineResource}接口，以提供了更为丰富的anno相关方法。
  * @version 2010-10-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AnnoResourceExpand extends DefineResourceExpand {
+public interface AnnoResourceExpand extends Plugin<DefineResource> {
     /**要注册的插件名*/
     public static final String AnnoDefineResourcePluginName = "$more_anno_ResourcePlugin";
     /**

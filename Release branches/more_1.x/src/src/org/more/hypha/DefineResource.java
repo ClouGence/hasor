@@ -26,13 +26,11 @@ import org.more.util.attribute.IAttribute;
  * @version 2010-9-24
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface DefineResource extends DefineResourceExpandSet {
+public interface DefineResource extends PluginSet<DefineResource> {
     /**获取一个状态该状态表述是否已经准备好。*/
     public boolean isReady();
     /**获取{@link DefineResource}的属性访问接口。*/
     public IAttribute getAttribute();
-    /**获取事件管理器。*/
-    public EventManager getEventManager();
     /**获取资源名。*/
     public String getSourceName();
     /**
@@ -58,7 +56,7 @@ public interface DefineResource extends DefineResourceExpandSet {
      * 如果获取不到任何名称则需要返回一个空集合。返回的集合是一个只读集合。
      * @return 返回获取到的所有bean定义名称集合。
      */
-    public List<String> getBeanDefineNames();
+    public List<String> getBeanDefinitionIDs();
     /**
      * 测试某名称Bean是否为原型模式创建，原型模式是指bean即不属于工厂方式创建也没有配置单态特性。
      * @param id 要测试的Bean id。
@@ -79,4 +77,8 @@ public interface DefineResource extends DefineResourceExpandSet {
     public boolean isFactory(String id) throws NoDefinitionException;
     /**清空所有装载的Bean定义对象，该方法将会引发{@link ClearDefineEvent}事件。*/
     public void clearDefine();
+    /**获取事件管理器，通过该管理器可以发送事件，事件的监听也是通过这个接口对象完成的。*/
+    public EventManager getEventManager();
+    /**获取扩展点管理器，通过扩展点管理器可以检索、注册或者解除注册扩展点。有关扩展点的功能请参见{@link ExpandPoint}*/
+    public ExpandPointManager getExpandPointManager();
 };

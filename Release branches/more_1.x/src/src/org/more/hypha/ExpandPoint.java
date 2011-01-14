@@ -13,14 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans;
+package org.more.hypha;
 /**
- * 定义如果想要支持扩展的配置策略则需要实现该接口，
- * 可以通过该接口的getDefineConfig来获取有关定义上的一些额外扩展属性设置。
- * @version 2010-9-24
+ * 扩展点，用于开放框架内部的流程。使外面程序可以参与或控制执行。{@link ExpandPoint}类型是所有其他扩展点的基类。
+ * @version 2010-12-28
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface BeanDefinePlugin {
-    /**获取被扩展的目标对象。*/
-    public AbstractBeanDefine getTarget();
-}
+public interface ExpandPoint {};

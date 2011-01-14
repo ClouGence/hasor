@@ -15,6 +15,7 @@
  */
 package org.more.hypha;
 import java.util.List;
+import org.more.InitializationException;
 import org.more.NoDefinitionException;
 import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.util.attribute.IAttribute;
@@ -26,19 +27,19 @@ import org.more.util.attribute.IAttribute;
  * @version 2009-11-3
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ApplicationContext extends EventManager, IAttribute {
+public interface ApplicationContext extends IAttribute {
     /**
      * 获取{@link ApplicationContext}中可以索引到的所有bean定义名称集合，如果获取不到任何名称则需要返回一个空集合。
      * @return 返回获取到的所有bean定义名称集合。
      */
-    public List<String> getBeanDefinitionNames();
+    public List<String> getBeanDefinitionIDs();
     /**
      * 获取bean的定义，在Bean的定义中只包括属于当前bean的元信息。
      * 如果当前bean的属性注入需要依赖其他bean则获取其他bean的定义需要重新调用getBeanDefinition方法进行获取。
      * @param id 要获取bean定义的bean名称。
      * @return 返回bean定义，如果获取不到指定的bean定义则返回null。
      */
-    public AbstractBeanDefine getBeanDefinition(String id) throws NoDefinitionException;
+    public AbstractBeanDefine getBeanDefinition(String id) throws NoDefinitionException, InitializationException;
     /**
      * 获取BeanFactory所使用的Bean定义资源，该资源对象可以提供有关Bean定义信息。
      * @return 返回BeanFactory所使用的Bean定义资源，该资源对象可以提供有关Bean定义信息。
@@ -89,10 +90,10 @@ public interface ApplicationContext extends EventManager, IAttribute {
      */
     public boolean isFactory(String id) throws NoDefinitionException;
     /**
-     * 测试某个Bean的类型是否为指定类型，或者其子类型。如果目标bean不存在则返回false。
+     * 测试指定id的bean类型是否可以转换成为targetType参数表示的类型。如果可以则返回true，否则返回false。
      * @param id 要测试的Bean id。
      * @param targetType 要测试的类型名。
-     * @return 返回测试结果，如果被测试的目标类型可以转换为指定类型对象则返回true,否则返回false。
+     * @return 返回测试结果，如果指定的类型是被测试的bean的父类则返回true,否则返回false。
      */
     public boolean isTypeMatch(String id, Class<?> targetType) throws NoDefinitionException;
     /**初始化 */
@@ -101,4 +102,8 @@ public interface ApplicationContext extends EventManager, IAttribute {
     public void destroy() throws Exception;
     /**获取应用的上下文环境对象。*/
     public Object getContext();
+    /**获取事件管理器，通过该管理器可以发送事件，事件的监听也是通过这个接口对象完成的。*/
+    public EventManager getEventManager();
+    /**获取扩展点管理器，通过扩展点管理器可以检索、注册或者解除注册扩展点。有关扩展点的功能请参见{@link ExpandPoint}*/
+    public ExpandPointManager getExpandPointManager();
 }

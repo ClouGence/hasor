@@ -21,12 +21,14 @@ import java.util.List;
 import java.util.Map;
 import org.more.NoDefinitionException;
 import org.more.RepeateException;
-import org.more.hypha.AbstractEventManager;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.DefineResource;
-import org.more.hypha.DefineResourceExpand;
 import org.more.hypha.EventManager;
+import org.more.hypha.ExpandPointManager;
+import org.more.hypha.Plugin;
 import org.more.hypha.beans.AbstractBeanDefine;
+import org.more.hypha.beans.assembler.AbstractEventManager;
+import org.more.hypha.beans.assembler.AbstractExpandPointManager;
 import org.more.hypha.event.AddBeanDefineEvent;
 import org.more.hypha.event.AddPluginEvent;
 import org.more.hypha.event.ClearDefineEvent;
@@ -38,18 +40,20 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class ArrayDefineResource implements DefineResource {
-    private String                            sourceName       = null;                                     //资源名
-    private ArrayList<String>                 pluginNames      = new ArrayList<String>();                  //插件名称集合
-    private Map<String, DefineResourceExpand> pluginList       = null;                                     //插件集合
-    private ArrayList<String>                 defineNames      = new ArrayList<String>();                  //bean定义名称集合
-    private Map<String, AbstractBeanDefine>   defineMap        = new HashMap<String, AbstractBeanDefine>(); //bean定义Map
+    private String                              sourceName         = null;                                     //资源名
+    private ArrayList<String>                   pluginNames        = new ArrayList<String>();                  //插件名称集合
+    private Map<String, Plugin<DefineResource>> pluginList         = null;                                     //插件集合
+    private ArrayList<String>                   defineNames        = new ArrayList<String>();                  //bean定义名称集合
+    private Map<String, AbstractBeanDefine>     defineMap          = new HashMap<String, AbstractBeanDefine>(); //bean定义Map
     //
-    private EventManager                      eventManager     = new AbstractEventManager() {};            //事件管理器
-    private IAttribute                        attributeManager = null;                                     //属性管理器
-    private IAttribute                        flashContext     = null;                                     //
+    private IAttribute                          flashContext       = null;                                     //闪存
+    //
+    private EventManager                        eventManager       = new AbstractEventManager() {};            //事件管理器
+    private ExpandPointManager                  expandPointManager = new AbstractExpandPointManager() {};      //扩展点管理器
+    private IAttribute                          attributeManager   = null;                                     //属性管理器
     //========================================================================================DefineResourcePluginSet接口
     /**根据扩展名获取扩展目标对象。*/
-    public DefineResourceExpand getPlugin(String name) {
+    public Plugin<DefineResource> getPlugin(String name) {
         if (this.pluginList == null)
             return null;
         if (this.pluginNames.contains(name) == false)
@@ -57,9 +61,9 @@ public class ArrayDefineResource implements DefineResource {
         return this.pluginList.get(name);
     };
     /**设置一个插件，如果插件重名则替换重名的插件注册。*/
-    public synchronized void setPlugin(String name, DefineResourceExpand plugin) {
+    public synchronized void setPlugin(String name, Plugin<DefineResource> plugin) {
         if (this.pluginList == null)
-            this.pluginList = new HashMap<String, DefineResourceExpand>();
+            this.pluginList = new HashMap<String, Plugin<DefineResource>>();
         this.getEventManager().doEvent(new AddPluginEvent(this, plugin));//新插件
         this.pluginNames.add(name);
         this.pluginList.put(name, plugin);
@@ -91,6 +95,9 @@ public class ArrayDefineResource implements DefineResource {
     public EventManager getEventManager() {
         return this.eventManager;
     }
+    public ExpandPointManager getExpandPointManager() {
+        return this.expandPointManager;
+    }
     /**设置资源名。*/
     public void setSourceName(String sourceName) {
         this.sourceName = sourceName;
@@ -113,7 +120,7 @@ public class ArrayDefineResource implements DefineResource {
     public boolean containsBeanDefine(String id) {
         return this.defineNames.contains(id);
     };
-    public synchronized List<String> getBeanDefineNames() {
+    public synchronized List<String> getBeanDefinitionIDs() {
         return Collections.unmodifiableList((List<String>) this.defineNames);
     }
     public boolean isPrototype(String id) throws NoDefinitionException {

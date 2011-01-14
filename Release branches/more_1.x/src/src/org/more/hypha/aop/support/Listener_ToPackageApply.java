@@ -40,7 +40,7 @@ public class Listener_ToPackageApply implements EventListener {
         Config_LoadedXmlEvent eve = (Config_LoadedXmlEvent) event;
         DefineResource config = eve.getResource();
         AopResourceExpand aopPlugin = (AopResourceExpand) config.getPlugin(AopResourceExpand.AopDefineResourcePluginName);
-        for (String defineName : config.getBeanDefineNames()) {
+        for (String defineName : config.getBeanDefinitionIDs()) {
             AbstractBeanDefine define = config.getBeanDefine(defineName);
             if (StringUtil.matchWild(this.toPackageExp, define.getFullName()) == true)
                 if (define.getPlugin(AopDefineExpand_Impl.AopPluginName) == null)

@@ -21,7 +21,7 @@ import org.more.hypha.AbstractDefine;
  * @version 2010-9-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractPointcutDefine extends AbstractDefine {
+public abstract class AbstractPointcutDefine extends AbstractDefine<AbstractPointcutDefine> {
     private String name = null;
     /**获取切入点名称*/
     public String getName() {

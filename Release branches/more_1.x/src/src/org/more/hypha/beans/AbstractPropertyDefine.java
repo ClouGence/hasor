@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 package org.more.hypha.beans;
+import org.more.hypha.PluginSet;
 import org.more.util.attribute.IAttribute;
 /**
  * 该接口用于定义一个bean声明中的一个属性或参数信息。
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AbstractPropertyDefine extends BeanDefinePluginSet, IAttribute {
+public interface AbstractPropertyDefine extends PluginSet<AbstractPropertyDefine>, IAttribute {
     /**返回当执行属性注入时需要执行的类型转换类型。*/
     public String getClassType();
     /**返回属性的描述信息。*/

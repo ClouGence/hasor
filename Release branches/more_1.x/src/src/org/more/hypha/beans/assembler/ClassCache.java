@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.define;
-import org.more.hypha.AbstractDefine;
-import org.more.hypha.beans.ValueMetaData;
+package org.more.hypha.beans.assembler;
 /**
- * 表示一个属性值的抽象类
- * @version 2010-9-15
+ * 
+ * @version 2010-12-29
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractValueMetaData extends AbstractDefine<ValueMetaData> implements ValueMetaData {}
+public interface ClassCache {
+    public void clearCache();
+    public int cacheSize();
+    public void saveClassCode(String classID, byte[] classCode);
+    public byte[] loadClassCode(String classID);
+};

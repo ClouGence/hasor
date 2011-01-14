@@ -16,16 +16,16 @@
 package org.more.hypha.aop;
 import org.more.NoDefinitionException;
 import org.more.hypha.DefineResource;
-import org.more.hypha.DefineResourceExpand;
+import org.more.hypha.Plugin;
 import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.beans.AbstractBeanDefine;
 /**
- * 该接口通过{@link DefineResourceExpand}插件形式增强了{@link DefineResource}接口，以提供了更为丰富的aop相关方法。
+ * 该接口通过{@link Plugin}插件形式增强了{@link DefineResource}接口，以提供了更为丰富的aop相关方法。
  * @version 2010-10-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AopResourceExpand extends DefineResourceExpand {
+public interface AopResourceExpand extends Plugin<DefineResource> {
     /**要注册的插件名*/
     public static final String AopDefineResourcePluginName = "$more_aop_ResourcePlugin";
     /**获取一个定义的切入点，如果找不到则会引发{@link NoDefinitionException}异常。*/

@@ -41,7 +41,7 @@ public class Listener_ToBeanApply implements EventListener {
         Config_LoadedXmlEvent eve = (Config_LoadedXmlEvent) event;
         DefineResource config = eve.getResource();
         AopResourceExpand aopPlugin = (AopResourceExpand) config.getPlugin(AopResourceExpand.AopDefineResourcePluginName);
-        for (String defineName : config.getBeanDefineNames())
+        for (String defineName : config.getBeanDefinitionIDs())
             if (StringUtil.matchWild(this.toBeanExp, defineName) == true) {
                 AbstractBeanDefine define = config.getBeanDefine(defineName);
                 if (define.getPlugin(AopDefineExpand_Impl.AopPluginName) == null)

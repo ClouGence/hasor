@@ -29,14 +29,14 @@ import org.more.hypha.beans.AbstractMethodDefine;
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TemplateBeanDefine extends AbstractDefine implements AbstractBeanDefine {
+public class TemplateBeanDefine extends AbstractDefine<AbstractBeanDefine> implements AbstractBeanDefine {
     private String                                id            = null;                                       //id
     private String                                name          = null;                                       //名称
     private String                                logicPackage  = null;                                       //逻辑包
     private boolean                               boolAbstract  = false;                                      //抽象标志
     private boolean                               boolInterface = false;                                      //接口标志
     private boolean                               boolSingleton = false;                                      //单态标志
-    private boolean                               boolLazyInit  = false;                                      //延迟装载标志
+    private boolean                               boolLazyInit  = true;                                       //延迟装载标志
     private String                                description   = null;                                       //描述信息
     private AbstractMethodDefine                  factoryMethod = null;                                       //创建工厂方法描述
     private String                                useTemplate   = null;                                       //应用的模板

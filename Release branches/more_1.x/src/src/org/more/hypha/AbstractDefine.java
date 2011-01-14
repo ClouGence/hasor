@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 package org.more.hypha;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import org.more.hypha.beans.BeanDefinePlugin;
-import org.more.hypha.beans.BeanDefinePluginSet;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**
@@ -25,26 +26,29 @@ import org.more.util.attribute.IAttribute;
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractDefine implements IAttribute, BeanDefinePluginSet {
-    private IAttribute                    attribute  = null; //属性
-    private Map<String, BeanDefinePlugin> pluginList = null; //扩展配置描述
+public abstract class AbstractDefine<T> implements IAttribute, PluginSet<T> {
+    private IAttribute             attribute       = null; //属性
+    private Map<String, Plugin<T>> pluginList      = null; //扩展配置描述
+    private ArrayList<String>      pluginNamesList = null; //扩展配置描述
     //========================================================================================
-    /**返回扩展Define配置描述。*/
-    public BeanDefinePlugin getPlugin(String name) {
+    public Plugin<T> getPlugin(String name) {
         if (this.pluginList == null)
             return null;
         return this.pluginList.get(name);
     };
-    /**设置一个插件，如果插件重名则替换重名的插件注册。*/
-    public void setPlugin(String name, BeanDefinePlugin plugin) {
+    public void setPlugin(String name, Plugin<T> plugin) {
         if (this.pluginList == null)
-            this.pluginList = new HashMap<String, BeanDefinePlugin>();
+            this.pluginList = new HashMap<String, Plugin<T>>();
         this.pluginList.put(name, plugin);
+        this.pluginNamesList.add(name);
     };
-    /**删除一个已有的插件注册。*/
     public void removePlugin(String name) {
         this.pluginList.remove(name);
+        this.pluginNamesList.remove(name);
     };
+    public List<String> getPluginNames() {
+        return Collections.unmodifiableList(this.pluginNamesList);
+    }
     //========================================================================================
     protected IAttribute getAttribute() {
         if (this.attribute == null)

@@ -18,12 +18,12 @@ import java.util.HashMap;
 import java.util.Map;
 import org.more.NoDefinitionException;
 import org.more.hypha.DefineResource;
+import org.more.hypha.Plugin;
 import org.more.hypha.aop.AopDefineExpand_Impl;
 import org.more.hypha.aop.AopResourceExpand;
 import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.beans.AbstractBeanDefine;
-import org.more.hypha.beans.BeanDefinePlugin;
 import org.more.hypha.context.XmlDefineResource;
 /**
  * 该类的目的是为了扩展{@link DefineResource}接口对象以将aop信息附加到定义资源接口中。
@@ -64,7 +64,7 @@ public class AopResourceExpand_Impl implements AopResourceExpand {
     }
     /**获取{@link AbstractBeanDefine}对象上的aop配置，如果目标没有配置aop则返回null。*/
     public AopConfigDefine getAopDefine(AbstractBeanDefine define) {
-        BeanDefinePlugin plugin = define.getPlugin(AopDefineExpand_Impl.AopPluginName);
+        Plugin<AbstractBeanDefine> plugin = define.getPlugin(AopDefineExpand_Impl.AopPluginName);
         if (plugin instanceof AopDefineExpand_Impl)
             return ((AopDefineExpand_Impl) plugin).getAopConfig();
         return null;

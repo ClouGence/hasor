@@ -20,7 +20,7 @@ import org.more.hypha.AbstractDefine;
  * @version 2010-9-27
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractInformed extends AbstractDefine {
+public abstract class AbstractInformed extends AbstractDefine<AbstractInformed> {
     private AbstractPointcutDefine refPointcut  = null; //连接的切点声明
     private PointcutType           pointcutType = null; //aop切点类型
     /**获取连接的切点*/

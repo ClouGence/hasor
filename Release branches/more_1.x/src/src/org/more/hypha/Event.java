@@ -15,6 +15,7 @@
  */
 package org.more.hypha;
 /**
+ * 事件是一种通知机制，使用事件不能控制主控流程的执行。不过却可以通过事件得知内部的工作状态。
  * 该接口表示的是一个{@link EventManager}可以被识别处理的事件。
  * @version 2010-10-10
  * @author 赵永春 (zyc@byshell.org)
@@ -24,9 +25,9 @@ public abstract class Event {
     /**创建{@link Event}对象*/
     public Event(Object target) {
         this.target = target;
-    }
+    };
     /**获取抛出事件的目标对象。*/
     public Object getTarget() {
         return this.target;
     };
-}
+};

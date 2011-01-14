@@ -23,7 +23,7 @@ import org.more.hypha.AbstractDefine;
  * @version 2010-9-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public class AopConfigDefine extends AbstractDefine {
+public class AopConfigDefine extends AbstractDefine<AopConfigDefine> {
     private String                      name                  = null; //配置名
     private BuilderMode                 aopMode               = null; //aop的生成策略
     private AbstractPointcutDefine      defaultPointcutDefine = null; //默认切点

@@ -21,7 +21,7 @@ import org.more.hypha.beans.ValueMetaData;
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractPropertyDefine extends AbstractDefine implements org.more.hypha.beans.AbstractPropertyDefine {
+public abstract class AbstractPropertyDefine extends AbstractDefine<org.more.hypha.beans.AbstractPropertyDefine> implements org.more.hypha.beans.AbstractPropertyDefine {
     private String        classType     = null; //当执行属性注入时需要执行的类型转换类型
     private String        description   = null; //属性描述
     private ValueMetaData valueMetaData = null; //值描述

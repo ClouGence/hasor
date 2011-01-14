@@ -25,7 +25,7 @@ import org.more.hypha.beans.AbstractMethodDefine;
  * @version 2010-10-13
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class MethodDefine extends AbstractDefine implements AbstractMethodDefine {
+public class MethodDefine extends AbstractDefine<AbstractMethodDefine> implements AbstractMethodDefine {
     private String                 name          = null;
     private String                 codeName      = null;
     private ArrayList<ParamDefine> params        = new ArrayList<ParamDefine>(); // Ù–‘
