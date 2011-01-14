@@ -45,7 +45,7 @@ public class MoreContext extends AbstractActionContext implements FilterContext 
     };
     public Iterator<String> getActionNameIterator() {
         ArrayList<String> names = new ArrayList<String>();
-        for (String n : this.factory.getBeanDefinitionNames())
+        for (String n : this.factory.getBeanDefinitionIDs())
             names.add(n);
         return names.iterator();
     };
@@ -71,7 +71,7 @@ public class MoreContext extends AbstractActionContext implements FilterContext 
         return (ActionFilter) this.factory.getBean(filterName);
     };
     public Iterator<String> getFilterNameIterator() {
-        return new FilterNameIterator(this, this.factory.getBeanDefinitionNames().iterator());
+        return new FilterNameIterator(this, this.factory.getBeanDefinitionIDs().iterator());
     };
     public Class<?> getFilterType(String filterName) {
         if (this.containsFilter(filterName) == false)
