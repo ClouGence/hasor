@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.define;
-import org.more.hypha.beans.ValueMetaData.PropertyMetaTypeEnum;
+import org.more.hypha.beans.PropertyMetaTypeEnum;
 import org.more.util.StringConvert;
 /**
  * 表示一个基本类型数据，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#SimpleType}。
@@ -87,7 +87,7 @@ public class Simple_ValueMetaData extends AbstractValueMetaData {
     private PropertyType valueMetaType = PropertyType.Null; //值类型
     private Object       value         = null;             //值
     /**该方法将会返回{@link PropertyMetaTypeEnum#SimpleType}。*/
-    public PropertyMetaTypeEnum getPropertyType() {
+    public String getPropertyType() {
         return PropertyMetaTypeEnum.SimpleType;
     }
     /**获取一个枚举这个枚举值表明了当前ValueMetaData试图描述的属性类型。*/

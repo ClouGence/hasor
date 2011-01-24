@@ -19,7 +19,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * 标记这个类为一个action。
+ * 标记这个类为一个action，已知在与Spring集成时，并且配置了aop。该注解将失效。
+ * 其原因是由于Spring在生成新类时会自动忽略掉所有携带的注解信息。
  * @version 2010-1-9
  * @author 赵永春 (zyc@byshell.org)
  */

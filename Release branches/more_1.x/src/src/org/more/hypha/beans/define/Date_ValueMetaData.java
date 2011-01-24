@@ -15,7 +15,7 @@
  */
 package org.more.hypha.beans.define;
 import java.util.Date;
-import org.more.hypha.beans.ValueMetaData.PropertyMetaTypeEnum;
+import org.more.hypha.beans.PropertyMetaTypeEnum;
 import org.more.util.StringConvert;
 /**
  * 表示一个时间日期类型数据，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#Date}。
@@ -26,7 +26,7 @@ public class Date_ValueMetaData extends AbstractValueMetaData {
     private String dateString   = null; //时间日期字符形式的数据
     private String formatString = null; //date属性的格式化字符串
     /**该方法将会返回{@link PropertyMetaTypeEnum#Date}。*/
-    public PropertyMetaTypeEnum getPropertyType() {
+    public String getPropertyType() {
         return PropertyMetaTypeEnum.Date;
     }
     /**返回时间日期字符形式的数据*/

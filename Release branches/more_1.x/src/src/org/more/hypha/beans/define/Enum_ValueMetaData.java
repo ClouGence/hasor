@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.define;
-import org.more.hypha.beans.ValueMetaData.PropertyMetaTypeEnum;
+import org.more.hypha.beans.PropertyMetaTypeEnum;
 import org.more.util.StringConvert;
 /**
  * 表示一个大文本数据段，通常使用CDATA来描述对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#Enum}。
@@ -25,7 +25,7 @@ public class Enum_ValueMetaData extends AbstractValueMetaData {
     private String enumValue = null; //枚举表述的字符串形式
     private String enumType  = null; //枚举类型
     /**该方法将会返回{@link PropertyMetaTypeEnum#Enum}。*/
-    public PropertyMetaTypeEnum getPropertyType() {
+    public String getPropertyType() {
         return PropertyMetaTypeEnum.Enum;
     }
     /**直接返回解析之后的枚举，如果没有设置enumType将会引发异常。*/

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.submit;
+import java.lang.reflect.Field;
 import org.more.NoDefinitionException;
 import org.more.NotFoundException;
 import org.more.util.StringConvert;
@@ -29,15 +30,24 @@ public abstract class AbstractActionContext implements ActionContext {
             throw new NotFoundException("找不到名称为[" + actionName + "]的对象");
         //
         boolean isAction = true;
+        //-----------1.注解配置
         Class<?> actionType = this.getActionType(actionName);
         Action act = actionType.getAnnotation(Action.class);
         if (act == null || act.isAction() == false)
             isAction = false;
+        //-----------2.元信息属性配置
         if (isAction == false) {
             Object obj = this.getActionProperty(actionName, "isAction");
             if (obj != null)
                 isAction = StringConvert.parseBoolean(obj.toString());
         }
+        //-----------3.字段配置, public boolean isAction=true;
+        try {
+            Field field = actionType.getField("isAction");
+            if (field.getType() == Boolean.class)
+                isAction = (Boolean) field.get(null);
+        } catch (Exception e) {}
+        //-----------
         if (isAction == false)
             throw new NoDefinitionException("名称为[" + actionName + "]的对象不是一个Action对象");
         return this.getAction(actionName, invoke);

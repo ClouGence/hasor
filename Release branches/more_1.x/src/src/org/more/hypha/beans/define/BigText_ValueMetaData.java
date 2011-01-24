@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.define;
-import org.more.hypha.beans.ValueMetaData.PropertyMetaTypeEnum;
+
+import org.more.hypha.beans.PropertyMetaTypeEnum;
+
 /**
  * 表示一个大文本数据段，通常使用CDATA来描述对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#BigText}。
  * @version 2010-9-17
@@ -23,7 +25,7 @@ import org.more.hypha.beans.ValueMetaData.PropertyMetaTypeEnum;
 public class BigText_ValueMetaData extends AbstractValueMetaData {
     private String textValue = null; //CDATA内容
     /**该方法将会返回{@link PropertyMetaTypeEnum#BigText}。*/
-    public PropertyMetaTypeEnum getPropertyType() {
+    public String getPropertyType() {
         return PropertyMetaTypeEnum.BigText;
     }
     /**获取CDATA值*/
