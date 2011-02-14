@@ -26,7 +26,7 @@ import org.more.hypha.beans.ValueMetaData;
 public class Map_ValueMetaData extends Collection_ValueMetaData<MapEntity_ValueMetaData> {
     private HashMap<ValueMetaData, ValueMetaData> valueData = new HashMap<ValueMetaData, ValueMetaData>(); //数据
     /**该方法将会返回{@link PropertyMetaTypeEnum#MapCollection}。*/
-    public String getPropertyType() {
+    public String getMetaDataType() {
         return PropertyMetaTypeEnum.MapCollection;
     }
     /**以Map形式返回集合中的数据。*/

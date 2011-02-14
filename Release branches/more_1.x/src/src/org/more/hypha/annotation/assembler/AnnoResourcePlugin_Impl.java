@@ -26,20 +26,20 @@ import java.util.List;
 import org.more.core.asm.ClassReader;
 import org.more.core.asm.ClassWriter;
 import org.more.hypha.DefineResource;
-import org.more.hypha.annotation.AnnoResourceExpand;
+import org.more.hypha.annotation.AnnoResourcePlugin;
 import org.more.hypha.annotation.KeepWatchParser;
 import org.more.hypha.aop.AopResourceExpand;
 /**
- * 注解插件接口{@link AnnoResourceExpand_Impl}的实现类。
+ * 注解插件接口{@link AnnoResourcePlugin_Impl}的实现类。
  * @version 2010-10-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public class AnnoResourceExpand_Impl implements AnnoResourceExpand {
+public class AnnoResourcePlugin_Impl implements AnnoResourcePlugin {
     private DefineResource                         config      = null;
     private ArrayList<String>                      parserTypes = new ArrayList<String>();
     private HashMap<String, List<KeepWatchParser>> parserMap   = new HashMap<String, List<KeepWatchParser>>();
     //
-    public AnnoResourceExpand_Impl(DefineResource config) {
+    public AnnoResourcePlugin_Impl(DefineResource config) {
         this.config = config;
     }
     public DefineResource getTarget() {
@@ -92,8 +92,8 @@ public class AnnoResourceExpand_Impl implements AnnoResourceExpand {
         //1.按照注册顺序排序
         Collections.sort(annoTypes, new Comparator<String>() {
             public int compare(String o1, String o2) {
-                int a = AnnoResourceExpand_Impl.this.parserTypes.indexOf(o1);
-                int b = AnnoResourceExpand_Impl.this.parserTypes.indexOf(o2);
+                int a = AnnoResourcePlugin_Impl.this.parserTypes.indexOf(o1);
+                int b = AnnoResourcePlugin_Impl.this.parserTypes.indexOf(o2);
                 if (a > b)
                     return 1;
                 else if (a == b)

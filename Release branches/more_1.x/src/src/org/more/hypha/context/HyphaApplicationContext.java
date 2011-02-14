@@ -24,7 +24,6 @@ import org.more.hypha.EventManager;
 import org.more.hypha.ExpandPointManager;
 import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.beans.assembler.factory.BeanEngine;
-import org.more.hypha.beans.assembler.factory.BeanFactory;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**
@@ -33,16 +32,19 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class HyphaApplicationContext implements ApplicationContext {
-    private DefineResource defineResource = null;
-    private ClassLoader    classLoader    = null;
+    private DefineResource defineResource = null; //
+    private ClassLoader    classLoader    = null; //Context的类装载器
     //
-    private BeanFactory    factory        = null;
-    private OgnlContext    elContext      = null;
-    private Object         context        = null;
+    private IAttribute     flashContext   = null; //Hypha的全局FLASH，如果是来自于ArrayDefineResource的FLASH则是经过代理的以确保与DefineResource中的保持一致。
+    //
+    private BeanEngine     engine         = null; //类创建引擎
+    private OgnlContext    elContext      = null; //el上下文
+    private Object         context        = null; //绑定到Context上的上下文。
     /*------------------------------------------------------------*/
-    public HyphaApplicationContext(DefineResource defineResource, Object context) {
+    public HyphaApplicationContext(DefineResource defineResource, Object context, IAttribute flashContext) {
         this.defineResource = defineResource;
         this.context = context;
+        this.flashContext = flashContext;
     };
     /**设置ClassLoader，通常在初始化之前进行设置。*/
     public void setClassLoader(ClassLoader classLoader) {
@@ -82,10 +84,13 @@ public class HyphaApplicationContext implements ApplicationContext {
         return targetType.isAssignableFrom(beanType);
     };
     public synchronized void init() throws Exception {
-        //1.环境初始化
-        if (this.defineResource.isReady() == false)
-            System.out.println();
-        this.factory = new BeanFactory(new BeanEngine());
+        //1.环境初始化，如果defineResource没有准备好就一直等待
+        while (!this.defineResource.isReady())
+            Thread.sleep(1000);
+        //2.
+        System.out.println();
+        this.engine = new BeanEngine(this, this.flashContext);
+        this.engine.init();
         this.elContext = new OgnlContext();
         //2.初始化el属性。
         ////this
@@ -103,18 +108,18 @@ public class HyphaApplicationContext implements ApplicationContext {
         }
     };
     public void destroy() throws Exception {
-        this.factory = null;
+        this.engine = null;
         this.elContext = null;
         this.getAttribute().clearAttribute();
         this.defineResource.clearDefine();
     };
     public Object getBean(String id, Object... objects) throws NoDefinitionException, InitializationException {
         AbstractBeanDefine define = this.getBeanDefinition(id);
-        return this.factory.getBean(define, this, objects);
+        return this.engine.builderBean(define, objects);
     };
     public Class<?> getBeanType(String id) throws NoDefinitionException {
         AbstractBeanDefine define = this.getBeanDefinition(id);
-        return this.factory.getBeanType(define, this);
+        return this.engine.builderType(define);
     };
     public Object getContext() {
         return this.context;

@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.define;
-
 import org.more.hypha.beans.PropertyMetaTypeEnum;
-
 /**
  * 表示对另外一个bean的引用，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#RelationBean}。
  * @version 2010-9-17
@@ -26,7 +24,7 @@ public class Relation_ValueMetaData extends AbstractValueMetaData {
     private String refBean    = null; //引用的Bean名称
     private String refPackage = null; //引用的Bean所处作用域
     /**该方法将会返回{@link PropertyMetaTypeEnum#RelationBean}。*/
-    public String getPropertyType() {
+    public String getMetaDataType() {
         return PropertyMetaTypeEnum.RelationBean;
     }
     /**获取引用的bean*/

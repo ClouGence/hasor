@@ -87,7 +87,7 @@ public class Simple_ValueMetaData extends AbstractValueMetaData {
     private PropertyType valueMetaType = PropertyType.Null; //值类型
     private Object       value         = null;             //值
     /**该方法将会返回{@link PropertyMetaTypeEnum#SimpleType}。*/
-    public String getPropertyType() {
+    public String getMetaDataType() {
         return PropertyMetaTypeEnum.SimpleType;
     }
     /**获取一个枚举这个枚举值表明了当前ValueMetaData试图描述的属性类型。*/

@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.define;
-
 import org.more.hypha.beans.PropertyMetaTypeEnum;
-
 /**
  * 表示一个文件或文件夹类型数据，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#File}。
  * @version 2010-9-17
@@ -26,7 +24,7 @@ public class File_ValueMetaData extends AbstractValueMetaData {
     private String  fileObject = null; //表示文件或目录的字符串
     private boolean isDir      = false; //表示是否是一个目录
     /**该方法将会返回{@link PropertyMetaTypeEnum#File}。*/
-    public String getPropertyType() {
+    public String getMetaDataType() {
         return PropertyMetaTypeEnum.File;
     }
     /**获取表示文件或目录的字符串*/

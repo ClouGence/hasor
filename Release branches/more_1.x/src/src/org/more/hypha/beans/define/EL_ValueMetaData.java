@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.define;
-
 import org.more.hypha.beans.PropertyMetaTypeEnum;
-
 /**
  * 表示EL字符串类型数据，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#EL}。
  * @version 2010-11-10
@@ -25,7 +23,7 @@ import org.more.hypha.beans.PropertyMetaTypeEnum;
 public class EL_ValueMetaData extends AbstractValueMetaData {
     private String elText = null; //表示EL字符串
     /**该方法将会返回{@link PropertyMetaTypeEnum#EL}。*/
-    public String getPropertyType() {
+    public String getMetaDataType() {
         return PropertyMetaTypeEnum.EL;
     }
     /**获取EL字符串*/

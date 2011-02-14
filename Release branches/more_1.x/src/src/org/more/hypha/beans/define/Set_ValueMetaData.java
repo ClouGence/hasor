@@ -25,7 +25,7 @@ import org.more.hypha.beans.PropertyMetaTypeEnum;
 public class Set_ValueMetaData extends Collection_ValueMetaData<AbstractValueMetaData> {
     private HashSet<AbstractValueMetaData> valueData = new HashSet<AbstractValueMetaData>(); //数据
     /**该方法将会返回{@link PropertyMetaTypeEnum#SetCollection}。*/
-    public String getPropertyType() {
+    public String getMetaDataType() {
         return PropertyMetaTypeEnum.SetCollection;
     }
     /**以Set形式返回集合中的数据。*/

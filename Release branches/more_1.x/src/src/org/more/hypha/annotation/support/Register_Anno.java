@@ -15,10 +15,10 @@
  */
 package org.more.hypha.annotation.support;
 import org.more.core.xml.XmlParserKit;
-import org.more.hypha.annotation.AnnoResourceExpand;
+import org.more.hypha.annotation.AnnoResourcePlugin;
 import org.more.hypha.annotation.Aop;
 import org.more.hypha.annotation.Bean;
-import org.more.hypha.annotation.assembler.AnnoResourceExpand_Impl;
+import org.more.hypha.annotation.assembler.AnnoResourcePlugin_Impl;
 import org.more.hypha.annotation.assembler.Watch_Aop;
 import org.more.hypha.annotation.assembler.Watch_Bean;
 import org.more.hypha.context.XmlDefineResource;
@@ -35,10 +35,10 @@ public class Register_Anno implements XmlNameSpaceRegister {
     /**执行初始化注册。*/
     public void initRegister(String namespaceURL, XmlDefineResource resource, IAttribute flash) throws Throwable {
         //1.注册注解监视器
-        AnnoResourceExpand plugin = new AnnoResourceExpand_Impl(resource);
+        AnnoResourcePlugin plugin = new AnnoResourcePlugin_Impl(resource);
         plugin.registerAnnoKeepWatch(Bean.class, new Watch_Bean());//解析Bean
         plugin.registerAnnoKeepWatch(Aop.class, new Watch_Aop());//解析Aop
-        resource.setPlugin(AnnoResourceExpand.AnnoDefineResourcePluginName, plugin);
+        resource.setPlugin(AnnoResourcePlugin.AnnoDefineResourcePluginName, plugin);
         //2.注册标签解析器
         XmlParserKit kit = new XmlParserKit();
         kit.regeditHook("/anno", new TagAnno_Anno(resource));

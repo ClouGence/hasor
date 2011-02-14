@@ -19,17 +19,17 @@ import org.more.core.asm.Attribute;
 import org.more.core.asm.MethodAdapter;
 import org.more.core.asm.MethodVisitor;
 import org.more.core.classcode.EngineToos;
-import org.more.hypha.annotation.AnnoResourceExpand;
+import org.more.hypha.annotation.AnnoResourcePlugin;
 /**
  * 该类负责确定方法级别中是否有必要惊动解析解析类。
  * @version 2010-10-19
  * @author 赵永春 (zyc@byshell.org)
  */
 class EV_Method extends MethodAdapter {
-    private AnnoResourceExpand plugin = null;
+    private AnnoResourcePlugin plugin = null;
     private EV_Mark                        mark   = null;
     //----------
-    public EV_Method(AnnoResourceExpand plugin, EV_Mark mark, MethodVisitor mv) {
+    public EV_Method(AnnoResourcePlugin plugin, EV_Mark mark, MethodVisitor mv) {
         super(mv);
         this.plugin = plugin;
         this.mark = mark;

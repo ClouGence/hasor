@@ -21,15 +21,16 @@ import java.util.Map;
 import org.more.hypha.ExpandPoint;
 import org.more.hypha.ExpandPointManager;
 /**
- * {@link ExpandPointManager}接口的一个基础实现。
+ * {@link ExpandPointManager}接口的一个基础实现，该类负责调用并且执行扩展点。
  * @version 2011-1-14
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractExpandPointManager implements ExpandPointManager {
     private Map<Class<?>, List<ExpandPoint>> expandMap  = new HashMap<Class<?>, List<ExpandPoint>>();
     private List<ExpandPoint>                expandList = new ArrayList<ExpandPoint>();
+    /** */
     public Object exePoint(Class<? extends ExpandPoint> type, Object[] params) {
         // TODO Auto-generated method stub
         return null;
-    }
-}
+    };
+};

@@ -73,6 +73,28 @@
       file="/More/src/org/more/hypha/aop/define/AbstractInformed.java" binary="false"/>  
   </generalization>  
   <generalization>    
+    <source project="More" name="org.more.hypha.aop.define.AopPointcutGroupDefine" 
+      file="/More/src/org/more/hypha/aop/define/AopPointcutGroupDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.aop.define.AbstractPointcutDefine" 
+      file="/More/src/org/more/hypha/aop/define/AbstractPointcutDefine.java" binary="false"/>  
+  </generalization>  
+  <association>    
+    <source project="More" name="org.more.hypha.aop.define.AopPointcutGroupDefine" 
+      file="/More/src/org/more/hypha/aop/define/AopPointcutGroupDefine.java" binary="false" navigable="false">      
+      <attribute name="defineList"/>      
+      <multiplicity minimum="0" maximum="2147483647"/>    
+    </source>    
+    <target project="More" name="org.more.hypha.aop.define.AbstractPointcutDefine" 
+      file="/More/src/org/more/hypha/aop/define/AbstractPointcutDefine.java" binary="false" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.aop.define.AopMethodInformed" 
+      file="/More/src/org/more/hypha/aop/define/AopMethodInformed.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.aop.define.AopDefineInformed" 
+      file="/More/src/org/more/hypha/aop/define/AopDefineInformed.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
     <source project="More" name="org.more.hypha.aop.define.AopPointcutDefine" 
       file="/More/src/org/more/hypha/aop/define/AopPointcutDefine.java" binary="false"/>    
     <target project="More" name="org.more.hypha.aop.define.AbstractPointcutDefine" 
@@ -98,18 +120,6 @@
       file="/More/src/org/more/hypha/aop/define/AbstractInformed.java" binary="false" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization>    
-    <source project="More" name="org.more.hypha.aop.define.AopMethodInformed" 
-      file="/More/src/org/more/hypha/aop/define/AopMethodInformed.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.aop.define.AopDefineInformed" 
-      file="/More/src/org/more/hypha/aop/define/AopDefineInformed.java" binary="false"/>  
-  </generalization>  
-  <generalization>    
-    <source project="More" name="org.more.hypha.aop.define.AopPointcutGroupDefine" 
-      file="/More/src/org/more/hypha/aop/define/AopPointcutGroupDefine.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.aop.define.AbstractPointcutDefine" 
-      file="/More/src/org/more/hypha/aop/define/AbstractPointcutDefine.java" binary="false"/>  
-  </generalization>  
   <classifier-display autosize="true" package="true" initial-value="true" signature="true" visibility="true">    
     <attributes public="false" package="false" protected="false" private="false"/>    
     <operations public="false" package="false" protected="false" private="false"/>  

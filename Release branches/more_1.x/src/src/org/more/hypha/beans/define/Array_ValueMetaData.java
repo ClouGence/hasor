@@ -24,7 +24,7 @@ import org.more.hypha.beans.PropertyMetaTypeEnum;
 public class Array_ValueMetaData extends Collection_ValueMetaData<AbstractValueMetaData> {
     private ArrayList<AbstractValueMetaData> valueData = new ArrayList<AbstractValueMetaData>(); //数据
     /**该方法将会返回{@link PropertyMetaTypeEnum#ArrayCollection}。*/
-    public String getPropertyType() {
+    public String getMetaDataType() {
         return ArrayCollection;
     }
     /**以数组形式返回集合中的数据。*/

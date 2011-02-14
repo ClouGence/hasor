@@ -28,7 +28,7 @@ import org.more.NoDefinitionException;
 import org.more.NotFoundException;
 import org.more.core.classcode.EngineToos;
 import org.more.hypha.DefineResource;
-import org.more.hypha.annotation.AnnoResourceExpand;
+import org.more.hypha.annotation.AnnoResourcePlugin;
 import org.more.hypha.annotation.Bean;
 import org.more.hypha.annotation.KeepWatchParser;
 import org.more.hypha.annotation.MetaData;
@@ -54,7 +54,7 @@ import org.more.util.attribute.IAttribute;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class Watch_Bean implements KeepWatchParser {
-    public void process(Class<?> beanType, DefineResource resource, AnnoResourceExpand plugin) {
+    public void process(Class<?> beanType, DefineResource resource, AnnoResourcePlugin plugin) {
         Bean bean = beanType.getAnnotation(Bean.class);
         ClassBeanDefine define = new ClassBeanDefine();
         //-----------------------------------------------------------------------------------------------------¿‡–≈œ¢

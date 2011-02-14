@@ -25,7 +25,7 @@ public class Enum_ValueMetaData extends AbstractValueMetaData {
     private String enumValue = null; //枚举表述的字符串形式
     private String enumType  = null; //枚举类型
     /**该方法将会返回{@link PropertyMetaTypeEnum#Enum}。*/
-    public String getPropertyType() {
+    public String getMetaDataType() {
         return PropertyMetaTypeEnum.Enum;
     }
     /**直接返回解析之后的枚举，如果没有设置enumType将会引发异常。*/

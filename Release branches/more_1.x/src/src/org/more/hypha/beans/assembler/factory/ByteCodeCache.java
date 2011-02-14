@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.annotation;
-import org.more.hypha.DefineResource;
+package org.more.hypha.beans.assembler.factory;
 /**
- * 注解注册解析器。该接口的功能是负责接收并处理由{@link AnnoResourcePlugin}接口注册的注解监视。
- * 可以将这个监视器注册到{@link AnnoResourcePlugin}插件中。
- * @version 2010-10-26
- * @author 赵永春 (zyc@byshell.org) 
+ * 字节码缓存器，该接口的职责是负责缓存那些动态生成或者装载的字节码信息。
+ * 缓存的字节码不代表可以单独在另外一个新的环境中正常的运行。这是由于类的引用依赖特征。
+ * 但是缓存的确可以给字节码生成器减少相当大的压力。
+ * @version 2010-12-29
+ * @author 赵永春 (zyc@byshell.org)
  */
-public interface KeepWatchParser {
-    /**
-     * 处理注解监视器。
-     * @param beanType 被监视到的Bean。
-     * @param resource {@link DefineResource}对象。
-     * @param plugin {@link AnnoResourcePlugin}对象。
-     */
-    public void process(Class<?> beanType, DefineResource resource, AnnoResourcePlugin plugin);
-}
+public interface ByteCodeCache {
+    /**清空缓存*/
+    public void clearCache();
+    /**获取缓存大小*/
+    public int cacheSize();
+    /**保存字节码*/
+    public void saveCode(String classID, byte[] code);
+    /**装载字节码*/
+    public byte[] loadCode(String classID);
+};

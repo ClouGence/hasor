@@ -25,14 +25,14 @@ public class AopPointcutDefine extends AbstractPointcutDefine {
     /**获取匹配字符串。*/
     public String getExpression() {
         return this.expression;
-    }
+    };
     /**设置表达式*/
     public void setExpression(String expression) {
         this.expression = expression;
-    }
+    };
     /**测试方法是否被包含在切入点*/
     public boolean isMatch(Method method) {
         //TODO 实现匹配 
         return true;
-    }
-}
+    };
+};

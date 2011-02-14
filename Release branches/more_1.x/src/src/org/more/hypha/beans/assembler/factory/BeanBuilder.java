@@ -26,7 +26,7 @@ public abstract class BeanBuilder {
     private ApplicationContext context = null;
     public BeanBuilder(ApplicationContext context) {
         this.context = context;
-    }
+    };
     /**是否装载缓存中的字节码*/
     public boolean canCache() {
         return false;
@@ -38,8 +38,9 @@ public abstract class BeanBuilder {
     /**获取应用上下文*/
     protected ApplicationContext getApplicationContext() {
         return this.context;
-    }
+    };
     /**装载BeanDefine定义，并获取其Class对象的字节码数据。*/
     public abstract byte[] loadBeanBytes(AbstractBeanDefine define);
-    public abstract Class<?> loadClass(AbstractBeanDefine define, byte[] classCode);
+    /**对原始新创建的Bean进行一次初始builder。*/
+    public abstract Object builderBean(Object obj, AbstractBeanDefine define);
 }

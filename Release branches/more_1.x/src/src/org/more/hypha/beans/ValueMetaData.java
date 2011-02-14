@@ -25,5 +25,5 @@ import org.more.util.attribute.IAttribute;
 */
 public interface ValueMetaData extends PluginSet<ValueMetaData>, IAttribute, PropertyMetaTypeEnum {
     /**返回这个属性的属性类型，该类型用于描述属性的类型特征。*/
-    public String getPropertyType();
+    public String getMetaDataType();
 }

@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha;
+package org.more.hypha.beans.assembler.a;
+import org.more.hypha.ApplicationContext;
+import org.more.hypha.ExpandPoint;
+import org.more.hypha.beans.AbstractBeanDefine;
 /**
- * 定义如果想要支持扩展的配置策略则需要实现该接口，不同的扩展支持在实现或者集成该接口时会增加不同的方法。
- * @version 2010-9-24
+ * 
+ * @version 2010-12-28
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface DefineResourceExpand {
-    /**获取被扩展的目标对象。*/
-    public DefineResource getTarget();
+public interface ClassByteExpandPoint extends ExpandPoint {
+    public byte[] decorateBytes(byte[] beanBytes, AbstractBeanDefine define, ApplicationContext context);
 }

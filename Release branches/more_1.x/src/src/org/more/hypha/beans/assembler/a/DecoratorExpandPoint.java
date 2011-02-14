@@ -13,20 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.annotation;
-import org.more.hypha.DefineResource;
+package org.more.hypha.beans.assembler.a;
+import org.more.hypha.ApplicationContext;
+import org.more.hypha.ExpandPoint;
+import org.more.hypha.beans.AbstractBeanDefine;
 /**
- * 注解注册解析器。该接口的功能是负责接收并处理由{@link AnnoResourcePlugin}接口注册的注解监视。
- * 可以将这个监视器注册到{@link AnnoResourcePlugin}插件中。
- * @version 2010-10-26
- * @author 赵永春 (zyc@byshell.org) 
+ * 
+ * @version 2010-12-28
+ * @author 赵永春 (zyc@byshell.org)
  */
-public interface KeepWatchParser {
-    /**
-     * 处理注解监视器。
-     * @param beanType 被监视到的Bean。
-     * @param resource {@link DefineResource}对象。
-     * @param plugin {@link AnnoResourcePlugin}对象。
-     */
-    public void process(Class<?> beanType, DefineResource resource, AnnoResourcePlugin plugin);
+public interface DecoratorExpandPoint extends ExpandPoint {
+    public Object decorator(Object bean, Object[] params, AbstractBeanDefine define, ApplicationContext context);
 }

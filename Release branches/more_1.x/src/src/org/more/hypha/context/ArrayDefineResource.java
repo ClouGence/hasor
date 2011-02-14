@@ -144,20 +144,51 @@ public class ArrayDefineResource implements DefineResource {
         this.defineMap.clear();
     }
     /**获取Flash，这个flash是一个内部信息携带体。它可以贯穿整个hypha的所有阶段。得到flash有两种办法一种是主动获取。另外一种是在特定的位置由hypha提供。*/
-    protected IAttribute getFlash() {
+    protected final IAttribute getFlash() {
         synchronized (this) {
+            if (this.flashContext == null)
+                this.flashContext = this.createFlash();
             if (this.flashContext == null)
                 this.flashContext = new AttBase();
         }
         return this.flashContext;
     };
+    /**创建一个用于贯穿整个hypha的flash。getFlash方法会企图从该方法中创建，本方法没有成功创建flash将会采用默认的方式创建flash。*/
+    protected IAttribute createFlash() {
+        return null;
+    };
     public final synchronized ApplicationContext buildApp(Object context) throws Exception {
-        ApplicationContext appContext = this.createApplicationContext(context, this.getFlash());
+        ApplicationContext appContext = this.createApplicationContext(context, new TempAtt(this));
         appContext.init();
         return appContext;
     };
     /**该方法是由buildApp方法直接调用。用于确定子类使用何种类型的ApplicationContext实现。*/
     protected ApplicationContext createApplicationContext(Object context, IAttribute flash) {
-        return new HyphaApplicationContext(this, context);
+        return new HyphaApplicationContext(this, context, flash);
+    };
+};
+/**是用来代理访问FLASH的类。*/
+class TempAtt implements IAttribute {
+    private ArrayDefineResource arrayDefineResource = null;
+    public TempAtt(ArrayDefineResource arrayDefineResource) {
+        this.arrayDefineResource = arrayDefineResource;
+    }
+    public boolean contains(String name) {
+        return this.arrayDefineResource.getFlash().contains(name);
+    }
+    public void setAttribute(String name, Object value) {
+        this.arrayDefineResource.getFlash().setAttribute(name, value);
+    }
+    public Object getAttribute(String name) {
+        return this.arrayDefineResource.getFlash().getAttribute(name);
+    }
+    public void removeAttribute(String name) {
+        this.arrayDefineResource.getFlash().removeAttribute(name);
+    }
+    public String[] getAttributeNames() {
+        return this.arrayDefineResource.getFlash().getAttributeNames();
+    }
+    public void clearAttribute() {
+        this.arrayDefineResource.getFlash().clearAttribute();
     }
 }

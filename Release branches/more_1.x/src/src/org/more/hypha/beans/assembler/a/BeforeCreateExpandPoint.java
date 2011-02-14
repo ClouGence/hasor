@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.assembler;
+package org.more.hypha.beans.assembler.a;
+import org.more.hypha.ApplicationContext;
+import org.more.hypha.ExpandPoint;
+import org.more.hypha.beans.AbstractBeanDefine;
 /**
  * 
- * @version 2010-12-29
+ * @version 2011-1-11
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public interface ClassCache {
-    public void clearCache();
-    public int cacheSize();
-    public void saveClassCode(String classID, byte[] classCode);
-    public byte[] loadClassCode(String classID);
-};
+public interface BeforeCreateExpandPoint extends ExpandPoint {
+    public Object beforeCreate(Class<?> beanType, Object[] params, AbstractBeanDefine define, ApplicationContext context);
+}

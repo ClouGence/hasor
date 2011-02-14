@@ -13,21 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha;
-import java.util.List;
+package org.more.hypha.beans.assembler.a;
+import org.more.hypha.ApplicationContext;
+import org.more.hypha.ExpandPoint;
+import org.more.hypha.beans.AbstractBeanDefine;
 /**
- * 定义如果想要支持扩展的配置策略则需要实现该接口，
- * 可以通过该接口的getExpandDefine来获取有关定义上的一些额外扩展属性设置。
- * @version 2010-9-24
+ * 
+ * @version 2011-1-11
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface DefineResourceExpandSet {
-    /**根据扩展名获取扩展目标对象。*/
-    public DefineResourceExpand getPlugin(String name);
-    /**设置一个扩展，如果扩展重名则替换重名的扩展注册。*/
-    public void setPlugin(String name, DefineResourceExpand plugin);
-    /**删除一个已有的扩展注册。*/
-    public void removePlugin(String name);
-    /**获取已注册扩展的名称集合。*/
-    public List<String> getPluginNames();
+public interface AfterCreateExpandPoint extends ExpandPoint {
+    public Object afterCreate(Object obj, Object[] params, AbstractBeanDefine define, ApplicationContext context);
 }

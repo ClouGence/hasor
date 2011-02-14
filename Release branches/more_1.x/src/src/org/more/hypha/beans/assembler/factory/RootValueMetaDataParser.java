@@ -14,30 +14,28 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.assembler.factory;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
+import org.more.RepeateException;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.beans.AbstractBeanDefine;
+import org.more.hypha.beans.ValueMetaData;
+import org.more.hypha.beans.ValueMetaDataParser;
 /**
- * 该类负责处理
- * @version 2011-1-14
+ * 
+ * @version 2011-1-21
  * @author 赵永春 (zyc@byshell.org)
  */
-public class BeanFactory {
-    private ApplicationContext    context       = null;
-    private BeanEngine            engine        = null;
+class RootValueMetaDataParser implements ValueMetaDataParser<ValueMetaData> {
+    private Map<String, ValueMetaDataParser<ValueMetaData>> metaDataParserMap = new HashMap<String, ValueMetaDataParser<ValueMetaData>>();
     //
-    //
-    private Map<String, Class<?>> beanTypeCatch = new Hashtable<String, Class<?>>();
-    private Map<String, Object>   beanType      = new Hashtable<String, Object>();
-    /** */
-    public BeanFactory(BeanEngine engine) {
-        this.engine = engine;
-    }
-    public Object getBean(AbstractBeanDefine define, ApplicationContext applicationContext, Object[] objects) {
-        return objects;
-    };
-    public Class<?> getBeanType(AbstractBeanDefine define, ApplicationContext applicationContext) {
+    public Object parser(ValueMetaData data, ValueMetaDataParser<?> rootParser, ApplicationContext context) {
+        // TODO Auto-generated method stub
         return null;
     };
-}
+    public void addParser(String propertyType, ValueMetaDataParser<?> parser) throws RepeateException {
+        // TODO Auto-generated method stub
+    };
+    public void removeParser(String metaDataType) {
+        // TODO Auto-generated method stub
+    };
+};

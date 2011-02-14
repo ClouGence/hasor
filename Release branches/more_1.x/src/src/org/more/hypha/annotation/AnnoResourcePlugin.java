@@ -25,7 +25,7 @@ import org.more.hypha.Plugin;
  * @version 2010-10-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AnnoResourceExpand extends Plugin<DefineResource> {
+public interface AnnoResourcePlugin extends Plugin<DefineResource> {
     /**要注册的插件名*/
     public static final String AnnoDefineResourcePluginName = "$more_anno_ResourcePlugin";
     /**

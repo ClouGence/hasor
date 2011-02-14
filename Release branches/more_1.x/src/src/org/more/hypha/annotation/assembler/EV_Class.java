@@ -22,7 +22,7 @@ import org.more.core.asm.ClassVisitor;
 import org.more.core.asm.FieldVisitor;
 import org.more.core.asm.MethodVisitor;
 import org.more.core.classcode.EngineToos;
-import org.more.hypha.annotation.AnnoResourceExpand;
+import org.more.hypha.annotation.AnnoResourcePlugin;
 /**
  * 该类负责确定类级别中是否有必要惊动解析解析类。
  * @version 2010-10-19
@@ -30,11 +30,11 @@ import org.more.hypha.annotation.AnnoResourceExpand;
  */
 class EV_Class extends ClassAdapter implements EV_Mark {
     private String                         className = null;
-    private AnnoResourceExpand plugin    = null;
+    private AnnoResourcePlugin plugin    = null;
     private boolean                        mark      = false;                  //标记TagListener类是否忽略解析这个类。
     private ArrayList<String>              markList  = new ArrayList<String>();
     /**创建{@link EV_Class}对象。*/
-    public EV_Class(AnnoResourceExpand plugin, ClassVisitor cv) {
+    public EV_Class(AnnoResourcePlugin plugin, ClassVisitor cv) {
         super(cv);
         this.plugin = plugin;
     }

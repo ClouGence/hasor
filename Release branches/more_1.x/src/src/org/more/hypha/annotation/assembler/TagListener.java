@@ -21,7 +21,7 @@ import org.more.InitializationException;
 import org.more.hypha.DefineResource;
 import org.more.hypha.Event;
 import org.more.hypha.EventListener;
-import org.more.hypha.annotation.AnnoResourceExpand;
+import org.more.hypha.annotation.AnnoResourcePlugin;
 import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.event.Config_LoadedXmlEvent;
 import org.more.util.ClassPathUtil;
@@ -50,7 +50,7 @@ public class TagListener implements EventListener {
             buffer.insert(0, '/');
         try {
             final DefineResource config = eve.getResource();
-            final AnnoResourceExpand engine = (AnnoResourceExpand) config.getPlugin(AnnoResourceExpand.AnnoDefineResourcePluginName);
+            final AnnoResourcePlugin engine = (AnnoResourcePlugin) config.getPlugin(AnnoResourcePlugin.AnnoDefineResourcePluginName);
             //
             ClassPathUtil.scan(buffer.toString(), new ScanItem() {
                 public boolean goFind(ScanEvent event, boolean isInJar, File context) throws FileNotFoundException, IOException, ClassNotFoundException {

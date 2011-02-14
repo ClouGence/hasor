@@ -25,7 +25,7 @@ public class MapEntity_ValueMetaData extends Collection_ValueMetaData<AbstractVa
     private AbstractValueMetaData key   = null; //Key
     private AbstractValueMetaData value = null; //Value
     /**该方法将会返回null*/
-    public String getPropertyType() {
+    public String getMetaDataType() {
         return null;
     }
     /**设置KEY*/
