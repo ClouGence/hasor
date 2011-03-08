@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 package org.more.hypha;
+import java.io.IOException;
 import java.util.List;
-import org.more.InitializationException;
+import org.more.ClassFormatException;
+import org.more.DoesSupportException;
 import org.more.NoDefinitionException;
 import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.util.attribute.IAttribute;
@@ -24,7 +26,7 @@ import org.more.util.attribute.IAttribute;
  * 在BeanFactory中所有Bean都有唯一的一个名称。该工厂将返回一个包含对象的一个独立实例(原型设计模式)，或单个
  * 共享实例(Singleton设计模式，该实例是在当前工厂中的一个单态）。返回哪种类型的实例取决于bean的配置。<br/><br/>
  * 处于工厂中的bean通常是存在于XML文件中。但不排除bean的来源于DBMS或者LDAP，这都取决于BeanFactory中bean数据源的提供者。
- * @version 2009-11-3
+ * @version 2011-2-25
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface ApplicationContext extends IAttribute {
@@ -38,8 +40,9 @@ public interface ApplicationContext extends IAttribute {
      * 如果当前bean的属性注入需要依赖其他bean则获取其他bean的定义需要重新调用getBeanDefinition方法进行获取。
      * @param id 要获取bean定义的bean名称。
      * @return 返回bean定义，如果获取不到指定的bean定义则返回null。
+     * @throws NoDefinitionException 如果要获取的bean定义不存在则会引发{@link NoDefinitionException}异常。
      */
-    public AbstractBeanDefine getBeanDefinition(String id) throws NoDefinitionException, InitializationException;
+    public AbstractBeanDefine getBeanDefinition(String id) throws NoDefinitionException;
     /**
      * 获取BeanFactory所使用的Bean定义资源，该资源对象可以提供有关Bean定义信息。
      * @return 返回BeanFactory所使用的Bean定义资源，该资源对象可以提供有关Bean定义信息。
@@ -63,14 +66,14 @@ public interface ApplicationContext extends IAttribute {
      * @param objects 在获取bean实例时可能会传递的参数信息。
      * @return 返回或者返回创建的新实例。
      */
-    public Object getBean(String id, Object... objects) throws NoDefinitionException;
+    public Object getBean(String id, Object... objects) throws Throwable;
     /**
      * 根据Bean名称获取其bean类型，该方法将返回在bean定义中配置的bean类型。
      * 那么getBeanType方法将返回生成的新类类型对象。
      * @param id 要获取的Bean id。
      * @return 返回要获取的bean类型对象，如果企图获取不存在的bean类型则返回 null。
      */
-    public Class<?> getBeanType(String id) throws NoDefinitionException;
+    public Class<?> getBeanType(String id) throws DoesSupportException, IOException, ClassFormatException, ClassNotFoundException;
     /**
      * 测试某名称Bean是否为原型模式创建，如果目标bean不存在则返回false。
      * @param id 要测试的Bean id。
@@ -95,15 +98,15 @@ public interface ApplicationContext extends IAttribute {
      * @param targetType 要测试的类型名。
      * @return 返回测试结果，如果指定的类型是被测试的bean的父类则返回true,否则返回false。
      */
-    public boolean isTypeMatch(String id, Class<?> targetType) throws NoDefinitionException;
+    public boolean isTypeMatch(String id, Class<?> targetType) throws Throwable;
     /**初始化 */
-    public void init() throws Exception;
+    public void init() throws Throwable;
     /**销毁*/
-    public void destroy() throws Exception;
+    public void destroy() throws Throwable;
     /**获取应用的上下文环境对象。*/
     public Object getContext();
     /**获取事件管理器，通过该管理器可以发送事件，事件的监听也是通过这个接口对象完成的。*/
-    public EventManager getEventManager();
+    public AbstractEventManager getEventManager();
     /**获取扩展点管理器，通过扩展点管理器可以检索、注册或者解除注册扩展点。有关扩展点的功能请参见{@link ExpandPoint}*/
-    public ExpandPointManager getExpandPointManager();
+    public AbstractExpandPointManager getExpandPointManager();
 }

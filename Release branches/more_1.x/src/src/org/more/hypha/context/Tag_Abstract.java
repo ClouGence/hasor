@@ -59,7 +59,7 @@ public abstract class Tag_Abstract {
         try {
             writeMethod.invoke(define, attValueObject);
         } catch (Exception e) {
-            throw new PropertyException("在Method.invoke期间发生异常，无法将" + attName + ",属性写入[" + define + "]对象：" + e.getMessage());
+            throw new PropertyException(value + "值，无法写入到属性" + attName + "，中[" + define + "]对象：" + e.getMessage());
         }
     };
 }

@@ -37,12 +37,12 @@ public class TagBeans_Param extends TagBeans_AbstractPropertyDefine<ParamDefine>
     }
     /**定义属性标签特有的属性*/
     public enum PropertyKey {
-        name
+        index
     };
     /**关联属性与xml的属性对应关系。*/
     protected Map<Enum<?>, String> getPropertyMappings() {
         Map<Enum<?>, String> propertys = super.getPropertyMappings();
-        propertys.put(PropertyKey.name, "name");
+        propertys.put(PropertyKey.index, "index");
         return propertys;
     }
     /**将属性注册到Bean中。*/

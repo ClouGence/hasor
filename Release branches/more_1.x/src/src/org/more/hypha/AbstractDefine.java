@@ -39,6 +39,9 @@ public abstract class AbstractDefine<T> implements IAttribute, PluginSet<T> {
     public void setPlugin(String name, Plugin<T> plugin) {
         if (this.pluginList == null)
             this.pluginList = new HashMap<String, Plugin<T>>();
+        if (this.pluginNamesList == null)
+            this.pluginNamesList = new ArrayList<String>();
+        //
         this.pluginList.put(name, plugin);
         this.pluginNamesList.add(name);
     };

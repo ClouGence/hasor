@@ -17,8 +17,8 @@ package org.more.hypha;
 import java.util.List;
 import org.more.NoDefinitionException;
 import org.more.hypha.beans.AbstractBeanDefine;
-import org.more.hypha.event.ClearDefineEvent;
 import org.more.hypha.event.AddBeanDefineEvent;
+import org.more.hypha.event.ClearDefineEvent;
 import org.more.util.attribute.IAttribute;
 /**
  * 这个接口是more.hypha组建的基本接口之一，该接口用于提供{@link AbstractBeanDefine}的索引获取功能。
@@ -78,7 +78,7 @@ public interface DefineResource extends PluginSet<DefineResource> {
     /**清空所有装载的Bean定义对象，该方法将会引发{@link ClearDefineEvent}事件。*/
     public void clearDefine();
     /**获取事件管理器，通过该管理器可以发送事件，事件的监听也是通过这个接口对象完成的。*/
-    public EventManager getEventManager();
+    public AbstractEventManager getEventManager();
     /**获取扩展点管理器，通过扩展点管理器可以检索、注册或者解除注册扩展点。有关扩展点的功能请参见{@link ExpandPoint}*/
-    public ExpandPointManager getExpandPointManager();
+    public AbstractExpandPointManager getExpandPointManager();
 };

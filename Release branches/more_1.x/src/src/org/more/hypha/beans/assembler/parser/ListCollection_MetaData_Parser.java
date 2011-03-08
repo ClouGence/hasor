@@ -13,29 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.assembler.factory;
-import java.util.HashMap;
-import java.util.Map;
-import org.more.RepeateException;
+package org.more.hypha.beans.assembler.parser;
+import java.util.List;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.beans.ValueMetaData;
 import org.more.hypha.beans.ValueMetaDataParser;
+import org.more.hypha.beans.define.List_ValueMetaData;
 /**
  * 
- * @version 2011-1-21
+ * @version 2011-2-15
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-class RootValueMetaDataParser implements ValueMetaDataParser<ValueMetaData> {
-    private Map<String, ValueMetaDataParser<ValueMetaData>> metaDataParserMap = new HashMap<String, ValueMetaDataParser<ValueMetaData>>();
-    //
-    public Object parser(ValueMetaData data, ValueMetaDataParser<?> rootParser, ApplicationContext context) {
+public class ListCollection_MetaData_Parser implements ValueMetaDataParser<List_ValueMetaData> {
+    public List<?> parser(List_ValueMetaData data, ValueMetaDataParser<List_ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
         // TODO Auto-generated method stub
         return null;
-    };
-    public void addParser(String propertyType, ValueMetaDataParser<?> parser) throws RepeateException {
+    }
+    public Class<?> parserType(List_ValueMetaData data, ValueMetaDataParser<List_ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
         // TODO Auto-generated method stub
-    };
-    public void removeParser(String metaDataType) {
-        // TODO Auto-generated method stub
-    };
+        return null;
+    }
 };

@@ -13,18 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha;
+package org.more.hypha.event;
+import org.more.hypha.ApplicationContext;
+import org.more.hypha.Event;
 /**
- * 扩展点管理器，所有扩展点都需要注册在{@link ExpandPointManager}接口中。
- * @version 2011-1-14
+ * {@link ApplicationContext}遇到的卸载调用而引发事件。
+ * @version 2011-2-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ExpandPointManager {
-    /**
-     * 执行扩展点方法，并且并且按照扩展点执行逻辑进行执行。当执行完毕之后返回执行结果。
-     * @param type 要执行的扩展点类型。
-     * @param params 在执行期间传递的参数。
-     * @return 返回执行扩展点之后的执行结果。
-     */
-    public Object exePoint(Class<? extends ExpandPoint> type, Object[] params);
+public class DestroyEvent extends Event {
+    private ApplicationContext applicationContext = null;
+    /**{@link ApplicationContext}遇到的卸载调用而引发事件。*/
+    public DestroyEvent(Object target, ApplicationContext applicationContext) {
+        super(target);
+        this.applicationContext = applicationContext;
+    };
+    /**{@link ApplicationContext}遇到的卸载调用而引发事件。*/
+    public ApplicationContext getResource() {
+        return this.applicationContext;
+    };
 };

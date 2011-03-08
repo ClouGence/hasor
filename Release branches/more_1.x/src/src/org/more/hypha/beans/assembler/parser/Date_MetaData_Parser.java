@@ -13,15 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.assembler.a;
+package org.more.hypha.beans.assembler.parser;
+import java.util.Date;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.ExpandPoint;
-import org.more.hypha.beans.AbstractBeanDefine;
+import org.more.hypha.beans.ValueMetaDataParser;
+import org.more.hypha.beans.define.Date_ValueMetaData;
 /**
  * 
- * @version 2011-1-11
+ * @version 2011-2-15
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public interface AfterCreateExpandPoint extends ExpandPoint {
-    public Object afterCreate(Object obj, Object[] params, AbstractBeanDefine define, ApplicationContext context);
-}
+public class Date_MetaData_Parser implements ValueMetaDataParser<Date_ValueMetaData> {
+    public Date parser(Date_ValueMetaData data, ValueMetaDataParser<Date_ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    public Class<?> parserType(Date_ValueMetaData data, ValueMetaDataParser<Date_ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
+        return Date.class;
+    }
+};

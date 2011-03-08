@@ -26,9 +26,9 @@ public class AddPluginEvent extends Event {
     public AddPluginEvent(Object target, Object plugin) {
         super(target);
         this.plugin = plugin;
-    }
+    };
     /**获取添加的新插件。*/
     public Object getPlugin() {
         return this.plugin;
-    }
-}
+    };
+};

@@ -19,7 +19,7 @@ import org.more.hypha.beans.define.PropertyType;
 import org.more.hypha.beans.define.Simple_ValueMetaData;
 import org.more.util.attribute.IAttribute;
 /**
- * 类型解析器，将字符串值解析为指定的类型。
+ * 属性快速解析器，将字符串值解析为指定的类型。
  * @version 2010-10-10
  * @author 赵永春 (zyc@byshell.org)
  */

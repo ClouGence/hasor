@@ -21,14 +21,12 @@ import java.util.List;
 import java.util.Map;
 import org.more.NoDefinitionException;
 import org.more.RepeateException;
+import org.more.hypha.AbstractEventManager;
+import org.more.hypha.AbstractExpandPointManager;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.DefineResource;
-import org.more.hypha.EventManager;
-import org.more.hypha.ExpandPointManager;
 import org.more.hypha.Plugin;
 import org.more.hypha.beans.AbstractBeanDefine;
-import org.more.hypha.beans.assembler.AbstractEventManager;
-import org.more.hypha.beans.assembler.AbstractExpandPointManager;
 import org.more.hypha.event.AddBeanDefineEvent;
 import org.more.hypha.event.AddPluginEvent;
 import org.more.hypha.event.ClearDefineEvent;
@@ -48,8 +46,8 @@ public class ArrayDefineResource implements DefineResource {
     //
     private IAttribute                          flashContext       = null;                                     //闪存
     //
-    private EventManager                        eventManager       = new AbstractEventManager() {};            //事件管理器
-    private ExpandPointManager                  expandPointManager = new AbstractExpandPointManager() {};      //扩展点管理器
+    private AbstractEventManager                eventManager       = new AbstractEventManager() {};            //事件管理器
+    private AbstractExpandPointManager          expandPointManager = new AbstractExpandPointManager() {};      //扩展点管理器
     private IAttribute                          attributeManager   = null;                                     //属性管理器
     //========================================================================================DefineResourcePluginSet接口
     /**根据扩展名获取扩展目标对象。*/
@@ -92,10 +90,10 @@ public class ArrayDefineResource implements DefineResource {
             this.attributeManager = new AttBase();
         return this.attributeManager;
     }
-    public EventManager getEventManager() {
+    public AbstractEventManager getEventManager() {
         return this.eventManager;
     }
-    public ExpandPointManager getExpandPointManager() {
+    public AbstractExpandPointManager getExpandPointManager() {
         return this.expandPointManager;
     }
     /**设置资源名。*/
@@ -157,7 +155,7 @@ public class ArrayDefineResource implements DefineResource {
     protected IAttribute createFlash() {
         return null;
     };
-    public final synchronized ApplicationContext buildApp(Object context) throws Exception {
+    public final synchronized ApplicationContext buildApp(Object context) throws Throwable {
         ApplicationContext appContext = this.createApplicationContext(context, new TempAtt(this));
         appContext.init();
         return appContext;

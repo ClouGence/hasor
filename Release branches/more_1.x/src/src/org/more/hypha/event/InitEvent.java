@@ -13,24 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.define;
+package org.more.hypha.event;
+import org.more.hypha.ApplicationContext;
+import org.more.hypha.Event;
 /**
- * ClassBeanDefine类用于定义一个常规的bean，这个bean有一个具体的class类对象。
- * @version 2010-9-15
+ * {@link ApplicationContext}遇到初始化调用而引发事件。
+ * @version 2011-2-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ClassBeanDefine extends TemplateBeanDefine {
-    private String source = null; //class类
-    /**返回“ClassBean”。*/
-    public String getBeanType() {
-        return "ClassBean";
-    }
-    /**获取类的class完整限定名。*/
-    public String getSource() {
-        return source;
-    }
-    /**设置类完整限定名。*/
-    public void setSource(String source) {
-        this.source = source;
-    }
-}
+public class InitEvent extends Event {
+    private ApplicationContext applicationContext = null;
+    /**{@link ApplicationContext}遇到初始化调用而引发事件。*/
+    public InitEvent(Object target, ApplicationContext applicationContext) {
+        super(target);
+        this.applicationContext = applicationContext;
+    };
+    /**{@link ApplicationContext}遇到初始化调用而引发事件。*/
+    public ApplicationContext getResource() {
+        return this.applicationContext;
+    };
+};

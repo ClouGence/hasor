@@ -133,7 +133,7 @@ public class TemplateBeanDefine extends AbstractDefine<AbstractBeanDefine> imple
     public String toString() {
         return this.getClass().getSimpleName() + "@" + this.hashCode() + " name=" + this.getName();
     };
-    /**添加一个启动参数。*/
+    /**添加一个启动参数，被添加的启动参数会自动进行排序。*/
     public void addInitParam(ConstructorDefine constructorParam) {
         this.initParams.add(constructorParam);
         final TemplateBeanDefine define = this;

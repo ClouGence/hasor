@@ -22,4 +22,4 @@ package org.more.hypha;
 public interface Plugin<T> {
     /**获取被扩展的目标对象。*/
     public T getTarget();
-}
+};

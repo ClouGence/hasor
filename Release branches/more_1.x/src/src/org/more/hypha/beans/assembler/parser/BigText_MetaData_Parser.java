@@ -13,15 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.assembler.a;
+package org.more.hypha.beans.assembler.parser;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.ExpandPoint;
-import org.more.hypha.beans.AbstractBeanDefine;
+import org.more.hypha.beans.ValueMetaDataParser;
+import org.more.hypha.beans.define.BigText_ValueMetaData;
 /**
  * 
- * @version 2010-12-28
+ * @version 2011-2-15
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public interface DecoratorExpandPoint extends ExpandPoint {
-    public Object decorator(Object bean, Object[] params, AbstractBeanDefine define, ApplicationContext context);
-}
+public class BigText_MetaData_Parser implements ValueMetaDataParser<BigText_ValueMetaData> {
+    public Object parser(BigText_ValueMetaData data, ValueMetaDataParser<BigText_ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    public Class<?> parserType(BigText_ValueMetaData data, ValueMetaDataParser<BigText_ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
+        return String.class;
+    }
+};

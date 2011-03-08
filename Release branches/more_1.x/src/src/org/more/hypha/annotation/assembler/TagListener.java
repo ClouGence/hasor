@@ -40,7 +40,7 @@ public class TagListener implements EventListener {
             this.packageText = "*";
         else
             this.packageText = packageText;
-    }
+    };
     /**处理注解解析。*/
     public void onEvent(final Event event) {
         final Config_LoadedXmlEvent eve = (Config_LoadedXmlEvent) event;
@@ -63,7 +63,7 @@ public class TagListener implements EventListener {
                 }
             });
         } catch (Throwable e) {
-            throw new InitializationException("在执行注解扫描时发生异常。", e);
+            throw new InitializationException(e.getMessage(), e);
         }
-    }
-}
+    };
+};

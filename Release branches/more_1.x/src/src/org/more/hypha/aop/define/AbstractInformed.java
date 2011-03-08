@@ -26,17 +26,17 @@ public abstract class AbstractInformed extends AbstractDefine<AbstractInformed> 
     /**获取连接的切点*/
     public AbstractPointcutDefine getRefPointcut() {
         return this.refPointcut;
-    }
+    };
     /**设置连接的切点*/
     public void setRefPointcut(AbstractPointcutDefine refPointcut) {
         this.refPointcut = refPointcut;
-    }
+    };
     /**获取aop切点类型*/
     public PointcutType getPointcutType() {
         return this.pointcutType;
-    }
+    };
     /**设置aop切点类型*/
     public void setPointcutType(PointcutType pointcutType) {
         this.pointcutType = pointcutType;
-    }
-}
+    };
+};

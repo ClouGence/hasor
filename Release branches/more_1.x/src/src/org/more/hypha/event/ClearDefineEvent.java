@@ -24,5 +24,5 @@ public class ClearDefineEvent extends Event {
     /**创建{@link ClearDefineEvent}对象。*/
     public ClearDefineEvent(Object target) {
         super(target);
-    }
-}
+    };
+};

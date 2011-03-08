@@ -20,10 +20,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import javassist.ClassPool;
-import javassist.CtMethod;
-import javassist.bytecode.CodeAttribute;
-import javassist.bytecode.LocalVariableAttribute;
 import org.more.NoDefinitionException;
 import org.more.NotFoundException;
 import org.more.core.classcode.EngineToos;
@@ -37,7 +33,7 @@ import org.more.hypha.annotation.Property;
 import org.more.hypha.beans.AbstractMethodDefine;
 import org.more.hypha.beans.ValueMetaData;
 import org.more.hypha.beans.define.AbstractPropertyDefine;
-import org.more.hypha.beans.define.ClassBeanDefine;
+import org.more.hypha.beans.define.ClassPathBeanDefine;
 import org.more.hypha.beans.define.ConstructorDefine;
 import org.more.hypha.beans.define.EL_ValueMetaData;
 import org.more.hypha.beans.define.MethodDefine;
@@ -56,7 +52,7 @@ import org.more.util.attribute.IAttribute;
 public class Watch_Bean implements KeepWatchParser {
     public void process(Class<?> beanType, DefineResource resource, AnnoResourcePlugin plugin) {
         Bean bean = beanType.getAnnotation(Bean.class);
-        ClassBeanDefine define = new ClassBeanDefine();
+        ClassPathBeanDefine define = new ClassPathBeanDefine();
         //-----------------------------------------------------------------------------------------------------类信息
         String var = null;
         // ID
@@ -73,6 +69,11 @@ public class Watch_Bean implements KeepWatchParser {
             define.setLogicPackage(var);
         else
             define.setLogicPackage(beanType.getPackage().getName());
+        //--插曲
+        if (resource.containsBeanDefine(define.getID()) == true) {
+            System.out.println("warning : [" + define.getID() + "]定义出现重复名称定义，因此被忽略。");
+            return;
+        }
         // Boolean
         define.setBoolSingleton(bean.singleton());
         define.setBoolLazyInit(bean.lazyInit());
@@ -150,7 +151,7 @@ public class Watch_Bean implements KeepWatchParser {
             Annotation[][] mparamAnno = m.getParameterAnnotations();
             int length = mparamType.length;
             /*-----------------------------------------*/
-            LocalVariableAttribute varAtt = this.getLocalVariableAttribute(m);
+            //LocalVariableAttribute varAtt = this.getLocalVariableAttribute(m);
             /*-----------------------------------------*/
             for (int i = 0; i < length; i++) {
                 //1)准备一个参数的数据
@@ -163,7 +164,7 @@ public class Watch_Bean implements KeepWatchParser {
                     }
                 //2)创建ParamDefine
                 ParamDefine pDefine = new ParamDefine();
-                pDefine.setName(varAtt.variableName(i + 1));
+                pDefine.setIndex(i);
                 pDefine.setClassType(cpt.getName());
                 //3)解析并添加
                 pDefine = (ParamDefine) getPropertyDefine(cpa, define, pDefine, resource);
@@ -188,7 +189,7 @@ public class Watch_Bean implements KeepWatchParser {
         }
         resource.addBeanDefine(define);
     }
-    private AbstractPropertyDefine getPropertyDefine(Property anno, ClassBeanDefine define, AbstractPropertyDefine propDefine, DefineResource resource) {
+    private AbstractPropertyDefine getPropertyDefine(Property anno, ClassPathBeanDefine define, AbstractPropertyDefine propDefine, DefineResource resource) {
         String cpt = propDefine.getClassType();
         //3)解析Param注解
         ValueMetaData valueMetaData = null;
@@ -224,7 +225,7 @@ public class Watch_Bean implements KeepWatchParser {
         propDefine.setValueMetaData(valueMetaData);
         return propDefine;
     }
-    private AbstractPropertyDefine getPropertyDefine(Param anno, ClassBeanDefine define, AbstractPropertyDefine propDefine, DefineResource resource) {
+    private AbstractPropertyDefine getPropertyDefine(Param anno, ClassPathBeanDefine define, AbstractPropertyDefine propDefine, DefineResource resource) {
         String cpt = propDefine.getClassType();
         //3)解析Param注解
         ValueMetaData valueMetaData = null;
@@ -284,20 +285,19 @@ public class Watch_Bean implements KeepWatchParser {
         for (MetaData meta : data)
             att.setAttribute(meta.key(), meta.value());
     }
-    //
-    private static ClassPool classPool = ClassPool.getDefault();
-    private LocalVariableAttribute getLocalVariableAttribute(Method m) {
-        /*-----------------------------------------*/
-        try {
-            StringBuffer s = new StringBuffer("(");
-            s.append(EngineToos.toAsmType(m.getParameterTypes()));
-            s.append(")");
-            s.append(EngineToos.toAsmType(m.getReturnType()));
-            CtMethod cmethod = classPool.getCtClass(m.getDeclaringClass().getName()).getMethod(m.getName(), s.toString());
-            CodeAttribute codeAtt = cmethod.getMethodInfo().getCodeAttribute();
-            return (LocalVariableAttribute) codeAtt.getAttribute(LocalVariableAttribute.tag);
-        } catch (javassist.NotFoundException e) {}
-        return null;
-        /*-----------------------------------------*/
-    }
+    //private static ClassPool classPool = ClassPool.getDefault();
+    //private LocalVariableAttribute getLocalVariableAttribute(Method m) {
+    //    /*-----------------------------------------*/
+    //    try {
+    //        StringBuffer s = new StringBuffer("(");
+    //        s.append(EngineToos.toAsmType(m.getParameterTypes()));
+    //        s.append(")");
+    //        s.append(EngineToos.toAsmType(m.getReturnType()));
+    //        CtMethod cmethod = classPool.getCtClass(m.getDeclaringClass().getName()).getMethod(m.getName(), s.toString());
+    //        CodeAttribute codeAtt = cmethod.getMethodInfo().getCodeAttribute();
+    //        return (LocalVariableAttribute) codeAtt.getAttribute(LocalVariableAttribute.tag);
+    //    } catch (javassist.NotFoundException e) {}
+    //    return null;
+    //    /*-----------------------------------------*/
+    //}
 }

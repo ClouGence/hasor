@@ -35,7 +35,7 @@ public class Listener_ToBeanApply implements EventListener {
     public Listener_ToBeanApply(String config, String toBeanExp) {
         this.config = config;
         this.toBeanExp = toBeanExp;
-    }
+    };
     /**÷¥––Bean”¶”√°£*/
     public void onEvent(Event event) {
         Config_LoadedXmlEvent eve = (Config_LoadedXmlEvent) event;
@@ -47,5 +47,5 @@ public class Listener_ToBeanApply implements EventListener {
                 if (define.getPlugin(AopDefineExpand_Impl.AopPluginName) == null)
                     aopPlugin.setAop(define, this.config);
             }
-    }
-}
+    };
+};

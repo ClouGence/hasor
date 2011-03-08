@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.assembler;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.more.hypha.ExpandPoint;
-import org.more.hypha.ExpandPointManager;
+package org.more.hypha.beans.assembler.parser;
+import java.net.URI;
+import org.more.hypha.ApplicationContext;
+import org.more.hypha.beans.ValueMetaDataParser;
+import org.more.hypha.beans.define.URI_ValueMetaData;
 /**
- * {@link ExpandPointManager}接口的一个基础实现，该类负责调用并且执行扩展点。
- * @version 2011-1-14
+ * 
+ * @version 2011-2-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractExpandPointManager implements ExpandPointManager {
-    private Map<Class<?>, List<ExpandPoint>> expandMap  = new HashMap<Class<?>, List<ExpandPoint>>();
-    private List<ExpandPoint>                expandList = new ArrayList<ExpandPoint>();
-    /** */
-    public Object exePoint(Class<? extends ExpandPoint> type, Object[] params) {
+public class URI_MetaData_Parser implements ValueMetaDataParser<URI_ValueMetaData> {
+    public URI parser(URI_ValueMetaData data, ValueMetaDataParser<URI_ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
         // TODO Auto-generated method stub
         return null;
-    };
+    }
+    public Class<?> parserType(URI_ValueMetaData data, ValueMetaDataParser<URI_ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
+        return URI.class;
+    }
 };

@@ -35,19 +35,20 @@ import org.more.hypha.event.Config_LoadingXmlEvent;
 import org.more.hypha.event.ReloadDefineEvent;
 import org.more.util.ClassPathUtil;
 /**
- * 
+ * 该类是继承自{@link ArrayDefineResource}类，通过该类可以读取存在于配置文件中的类定义信息。
  * @version 2010-11-30
  * @author 赵永春 (zyc@byshell.org)
  */
 public class XmlDefineResource extends ArrayDefineResource {
-    private static final String               ResourcePath = "/META-INF/resource/hypha/register.xml";
-    private ArrayList<Object>                 sourceArray  = new ArrayList<Object>();
-    private TypeManager                       typeManager  = new TypeManager();                      //类型解析
-    private XmlParserKitManager               manager      = new XmlParserKitManager();              //xml解析器
-    private boolean                           loadMark     = false;                                  //是否已经执行过装载.
+    private static final String               ResourcePath        = "/META-INF/resource/hypha/register.xml";            //标签注册器
+    private static final String               DefaultResourcePath = "/META-INF/resource/hypha/default-hypha-config.xml"; //默认配置文件
+    private ArrayList<Object>                 sourceArray         = new ArrayList<Object>();
+    private TypeManager                       typeManager         = new TypeManager();                                  //类型解析
+    private XmlParserKitManager               manager             = new XmlParserKitManager();                          //xml解析器
+    private boolean                           loadMark            = false;                                              //是否已经执行过装载.
     //
     //========================================================================================静态方法
-    private static List<XmlNameSpaceRegister> registers    = null;
+    private static List<XmlNameSpaceRegister> registers           = null;
     private static void r_s_init(XmlDefineResource resource) throws Throwable {
         XmlDefineResource.registers = null;
         XmlDefineResource.s_init(resource);
@@ -64,6 +65,10 @@ public class XmlDefineResource extends ArrayDefineResource {
         for (XmlNameSpaceRegister reg : registers)
             /**第一个参数会在{@link NameSpaceRegisterPropxy}对象中得到*/
             reg.initRegister(null, resource, resource.getFlash());
+        //装载所有位于默认配置位置的配置文件
+        List<InputStream> ins = ClassPathUtil.getResource(DefaultResourcePath);
+        for (InputStream source : ins)
+            resource.addSource(source);
     }
     /**创建{@link XmlDefineResource}对象，该方法将不会重新扫描ClassPath中的命名空间注册。*/
     public static XmlDefineResource newInstance() throws Throwable {

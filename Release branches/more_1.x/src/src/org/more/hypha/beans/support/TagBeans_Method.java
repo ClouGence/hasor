@@ -45,13 +45,14 @@ public class TagBeans_Method extends TagBeans_AbstractDefine<MethodDefine> {
     }
     /**定义方法的属性。*/
     public enum PropertyKey {
-        name, codeName
+        name, codeName, boolStatic
     };
     /**关联属性与xml的属性对应关系。*/
     protected Map<Enum<?>, String> getPropertyMappings() {
         HashMap<Enum<?>, String> propertys = new HashMap<Enum<?>, String>();
         propertys.put(PropertyKey.name, "name");
         propertys.put(PropertyKey.codeName, "codeName");
+        propertys.put(PropertyKey.boolStatic, "static");
         return propertys;
     }
     /**将属性注册到Bean中。*/

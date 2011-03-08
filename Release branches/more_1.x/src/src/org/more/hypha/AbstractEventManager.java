@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.assembler;
+package org.more.hypha;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import org.more.hypha.Event;
-import org.more.hypha.EventListener;
-import org.more.hypha.EventManager;
 /**
  * 该类是{@link EventManager}接口的一个基本实现。
  * @version 2010-10-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractEventManager implements EventManager {
+public abstract class AbstractEventManager {
     private LinkedList<Event>                                    eventQueue = new LinkedList<Event>();
     private HashMap<Class<? extends Event>, List<EventListener>> listener   = new HashMap<Class<? extends Event>, List<EventListener>>();
     //

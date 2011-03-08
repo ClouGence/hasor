@@ -23,11 +23,19 @@ import org.more.hypha.ApplicationContext;
  */
 public interface ValueMetaDataParser<T extends ValueMetaData> {
     /**
-     * 解析值元信息，并且将值元信息解析的结果返回。
+     * 解析元信息，并且将解析的对象结果返回。
+     * @param data 要解析的元信息对象。
+     * @param rootParser 根解析器。
+     * @param context {@link ApplicationContext}接口对象。
+     * @return 返回解析的结果。
+     */
+    public Object parser(T data, ValueMetaDataParser<T> rootParser, ApplicationContext context) throws Throwable;
+    /**
+     * 解析元信息，并且将解析的对象类型返回。
      * @param data 要解析的值元信息对象。
      * @param rootParser 根解析器。
      * @param context {@link ApplicationContext}接口对象。
      * @return 返回解析的结果。
      */
-    public Object parser(T data, ValueMetaDataParser<?> rootParser, ApplicationContext context);
+    public Class<?> parserType(T data, ValueMetaDataParser<T> rootParser, ApplicationContext context) throws Throwable;
 };

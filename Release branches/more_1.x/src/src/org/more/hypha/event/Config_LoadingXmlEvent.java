@@ -27,9 +27,9 @@ public class Config_LoadingXmlEvent extends Event {
     public Config_LoadingXmlEvent(Object target, DefineResource resource) {
         super(target);
         this.resource = resource;
-    }
+    };
     /**获取相关联的{@link DefineResource}对象。*/
     public DefineResource getResource() {
         return this.resource;
-    }
-}
+    };
+};

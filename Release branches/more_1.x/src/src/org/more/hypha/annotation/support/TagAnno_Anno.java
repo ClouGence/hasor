@@ -22,6 +22,7 @@ import org.more.hypha.annotation.assembler.TagListener;
 import org.more.hypha.context.Tag_Abstract;
 import org.more.hypha.context.XmlDefineResource;
 import org.more.hypha.event.Config_LoadedXmlEvent;
+import org.more.util.StringConvert;
 /**
  * 用于解析anno标签，负责注册{@link TagListener}类型对象。
  * @version 2010-9-22
@@ -31,11 +32,14 @@ public class TagAnno_Anno extends Tag_Abstract implements XmlElementHook {
     /**创建{@link TagAnno_Anno}对象*/
     public TagAnno_Anno(XmlDefineResource configuration) {
         super(configuration);
-    }
+    };
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
         String packageText = event.getAttributeValue("package");
-        TagListener annoListener = new TagListener(packageText);
-        this.getDefineResource().getEventManager().addEventListener(Config_LoadedXmlEvent.class, annoListener);
-    }
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
-}
+        String enable = event.getAttributeValue("enable");
+        if (StringConvert.parseBoolean(enable, true) == true) {
+            TagListener annoListener = new TagListener(packageText);
+            this.getDefineResource().getEventManager().addEventListener(Config_LoadedXmlEvent.class, annoListener);
+        }
+    };
+    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {};
+};

@@ -28,9 +28,9 @@ public class AddBeanDefineEvent extends Event {
     public AddBeanDefineEvent(Object target, AbstractBeanDefine define) {
         super(target);
         this.define = define;
-    }
+    };
     /**获取添加的新{@link AbstractBeanDefine}定义。*/
     public AbstractBeanDefine getDefine() {
-        return define;
-    }
-}
+        return this.define;
+    };
+};

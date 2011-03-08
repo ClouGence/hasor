@@ -20,17 +20,15 @@ package org.more.hypha.beans.define;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class ParamDefine extends AbstractPropertyDefine {
-    private String name = null; //属性名
-    /**返回属性名。*/
-    public String getName() {
-        return this.name;
+    private int index = -1; //属性索引
+    public int getIndex() {
+        return this.index;
     }
-    /**设置属性名*/
-    public void setName(String name) {
-        this.name = name;
-    };
+    public void setIndex(int index) {
+        this.index = index;
+    }
     /**返回具有特征的字符串。*/
     public String toString() {
-        return this.getClass().getSimpleName() + "@" + this.hashCode() + " name=" + this.getName();
-    };
+        return this.getClass().getSimpleName() + "@" + this.hashCode() + " index=" + this.getIndex();
+    }
 }

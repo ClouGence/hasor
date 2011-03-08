@@ -26,11 +26,11 @@ public abstract class AbstractPointcutDefine extends AbstractDefine<AbstractPoin
     /**获取切入点名称*/
     public String getName() {
         return name;
-    }
+    };
     /**匹配一个方法是否符合表达式的要求。*/
     public abstract boolean isMatch(Method method);
     /**设置切点名*/
     public void setName(String name) {
         this.name = name;
-    }
-}
+    };
+};

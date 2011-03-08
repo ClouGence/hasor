@@ -34,7 +34,7 @@ public class Listener_ToPackageApply implements EventListener {
     public Listener_ToPackageApply(String config, String toPackageExp) {
         this.config = config;
         this.toPackageExp = toPackageExp;
-    }
+    };
     /**÷¥––Package”¶”√°£*/
     public void onEvent(Event event) {
         Config_LoadedXmlEvent eve = (Config_LoadedXmlEvent) event;
@@ -46,5 +46,5 @@ public class Listener_ToPackageApply implements EventListener {
                 if (define.getPlugin(AopDefineExpand_Impl.AopPluginName) == null)
                     aopPlugin.setAop(define, this.config);
         }
-    }
-}
+    };
+};

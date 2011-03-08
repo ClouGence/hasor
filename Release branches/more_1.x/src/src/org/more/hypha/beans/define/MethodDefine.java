@@ -17,6 +17,8 @@ package org.more.hypha.beans.define;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import org.more.RepeateException;
 import org.more.hypha.AbstractDefine;
 import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.beans.AbstractMethodDefine;
@@ -29,10 +31,15 @@ public class MethodDefine extends AbstractDefine<AbstractMethodDefine> implement
     private String                 name          = null;
     private String                 codeName      = null;
     private ArrayList<ParamDefine> params        = new ArrayList<ParamDefine>(); //属性
+    private boolean                boolStatic    = false;
     private AbstractBeanDefine     forBeanDefine = null;
     /**创建{@link MethodDefine}类型对象，参数表明该方法的所属bean定义。*/
     public MethodDefine(AbstractBeanDefine forBeanDefine) {
         this.forBeanDefine = forBeanDefine;
+    }
+    /**用于返回一个boolean值，该值表明位于bean上的方法是否为一个静态方法。*/
+    public boolean isStatic() {
+        return this.boolStatic;
     }
     /**获取这个方法所属的bean定义*/
     public AbstractBeanDefine getForBeanDefine() {
@@ -53,6 +60,19 @@ public class MethodDefine extends AbstractDefine<AbstractMethodDefine> implement
     /**添加参数*/
     public void addParam(ParamDefine param) {
         this.params.add(param);
+        final MethodDefine define = this;
+        Collections.sort(this.params, new Comparator<ParamDefine>() {
+            public int compare(ParamDefine arg0, ParamDefine arg1) {
+                int cdefine_1 = arg0.getIndex();
+                int cdefine_2 = arg1.getIndex();
+                if (cdefine_1 > cdefine_2)
+                    return 1;
+                else if (cdefine_1 < cdefine_2)
+                    return -1;
+                else
+                    throw new RepeateException(define + "[" + arg0 + "]与[" + arg1 + "]方法参数索引重复.");
+            }
+        });
     }
     /**设置name属性*/
     public void setName(String name) {
@@ -61,5 +81,9 @@ public class MethodDefine extends AbstractDefine<AbstractMethodDefine> implement
     /**设置codeName属性*/
     public void setCodeName(String codeName) {
         this.codeName = codeName;
+    }
+    /**设置该方法是否为一个静态方法。*/
+    public void setBoolStatic(boolean boolStatic) {
+        this.boolStatic = boolStatic;
     }
 }

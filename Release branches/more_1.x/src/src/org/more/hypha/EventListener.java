@@ -22,4 +22,4 @@ package org.more.hypha;
 public interface EventListener {
     /**处理事件的处理方法，参数是要处理的事件。*/
     public void onEvent(Event event);
-}
+};

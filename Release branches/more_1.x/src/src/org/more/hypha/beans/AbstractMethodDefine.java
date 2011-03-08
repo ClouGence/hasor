@@ -29,6 +29,8 @@ public interface AbstractMethodDefine extends PluginSet<AbstractMethodDefine>, I
     public String getCodeName();
     /**返回方法的参数列表描述，返回的集合是只读的。*/
     public Collection<? extends AbstractPropertyDefine> getParams();
+    /**用于返回一个boolean值，该值表明位于bean上的方法是否为一个静态方法。*/
+    public boolean isStatic();
     /**获取这个方法所属的bean定义*/
     public AbstractBeanDefine getForBeanDefine();
 }

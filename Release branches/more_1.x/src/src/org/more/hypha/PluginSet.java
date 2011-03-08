@@ -30,4 +30,4 @@ public interface PluginSet<T> {
     public void removePlugin(String name);
     /**获取已注册扩展的名称集合。*/
     public List<String> getPluginNames();
-}
+};

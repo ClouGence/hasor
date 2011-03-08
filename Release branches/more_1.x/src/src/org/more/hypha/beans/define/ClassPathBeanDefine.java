@@ -13,21 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.assembler.factory;
+package org.more.hypha.beans.define;
 /**
- * 字节码缓存器，该接口的职责是负责缓存那些动态生成或者装载的字节码信息。
- * 缓存的字节码不代表可以单独在另外一个新的环境中正常的运行。这是由于类的引用依赖特征。
- * 但是缓存的确可以给字节码生成器减少相当大的压力。
- * @version 2010-12-29
+ * ClassPathBeanDefine类用于定义一个常规的bean，这个bean有一个具体的class类对象。
+ * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ByteCodeCache {
-    /**清空缓存*/
-    public void clearCache();
-    /**获取缓存大小*/
-    public int cacheSize();
-    /**保存字节码*/
-    public void saveCode(String classID, byte[] code);
-    /**装载字节码*/
-    public byte[] loadCode(String classID);
-};
+public class ClassPathBeanDefine extends TemplateBeanDefine {
+    private String source = null; //class类
+    /**返回“ClassBean”。*/
+    public String getBeanType() {
+        return "ClassPathBean";
+    }
+    /**获取类的class完整限定名。*/
+    public String getSource() {
+        return source;
+    }
+    /**设置类完整限定名。*/
+    public void setSource(String source) {
+        this.source = source;
+    }
+}

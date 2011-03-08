@@ -24,5 +24,5 @@ public class ReloadDefineEvent extends Event {
     /**创建{@link ReloadDefineEvent}对象。*/
     public ReloadDefineEvent(Object target) {
         super(target);
-    }
-}
+    };
+};

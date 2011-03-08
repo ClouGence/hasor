@@ -20,7 +20,7 @@ import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.EventManager;
+import org.more.hypha.AbstractEventManager;
 import org.more.hypha.aop.AopResourceExpand;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.context.Tag_Abstract;
@@ -48,7 +48,7 @@ public class TagAop_Apply extends Tag_Abstract implements XmlElementHook {
         if (aopConfig == null)
             throw new NotFoundException("apply标签在应用[" + config + "]aop配置时无法找到其定义的AopConfigDefine类型对象。");
         //3.注册监听器 
-        EventManager manager = this.getDefineResource().getEventManager();
+        AbstractEventManager manager = this.getDefineResource().getEventManager();
         if (toBeanExp != null)
             manager.addEventListener(Config_LoadedXmlEvent.class, new Listener_ToBeanApply(config, toBeanExp));
         else
