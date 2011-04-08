@@ -15,7 +15,6 @@
  */
 package org.more.hypha.beans.assembler.builder;
 import java.io.IOException;
-import org.more.hypha.ApplicationContext;
 import org.more.hypha.beans.assembler.AbstractBeanBuilder;
 import org.more.hypha.beans.define.RelationBeanDefine;
 /**
@@ -24,9 +23,6 @@ import org.more.hypha.beans.define.RelationBeanDefine;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class RelationBeanBuilder extends AbstractBeanBuilder<RelationBeanDefine> {
-    public RelationBeanBuilder(ApplicationContext context) {
-        super(context);
-    };
     public boolean canCache() {
         return true;
     };

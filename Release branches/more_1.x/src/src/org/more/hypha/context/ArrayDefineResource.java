@@ -44,11 +44,12 @@ public class ArrayDefineResource implements DefineResource {
     private ArrayList<String>                   defineNames        = new ArrayList<String>();                  //bean定义名称集合
     private Map<String, AbstractBeanDefine>     defineMap          = new HashMap<String, AbstractBeanDefine>(); //bean定义Map
     //
-    private IAttribute                          flashContext       = null;                                     //闪存
-    //
-    private AbstractEventManager                eventManager       = new AbstractEventManager() {};            //事件管理器
-    private AbstractExpandPointManager          expandPointManager = new AbstractExpandPointManager() {};      //扩展点管理器
+    //以下字段都可以通过重写相应方法达到重写的目的。
+    private AbstractEventManager                eventManager       = null;                                     //事件管理器
+    private AbstractExpandPointManager          expandPointManager = null;                                     //扩展点管理器
     private IAttribute                          attributeManager   = null;                                     //属性管理器
+    /**全局闪存，通过重写受保护的方法createFlash来达到植入的目的。*/
+    private IAttribute                          flashContext       = null;
     //========================================================================================DefineResourcePluginSet接口
     /**根据扩展名获取扩展目标对象。*/
     public Plugin<DefineResource> getPlugin(String name) {
@@ -81,21 +82,28 @@ public class ArrayDefineResource implements DefineResource {
         this.pluginNames.clear();
     }
     //========================================================================================
-    /**获取一个状态该状态表述是否已经准备好，{@link ArrayDefineResource}类型中该方法始终返回true。*/
-    public boolean isReady() {
-        return true;
-    };
+    /**获取DefineResource的属性访问接口。子类可以通过重写该方法来改变属性管理器。*/
     public IAttribute getAttribute() {
         if (this.attributeManager == null)
             this.attributeManager = new AttBase();
         return this.attributeManager;
     }
+    /**获取事件管理器，通过该管理器可以发送事件，事件的监听也是通过这个接口对象完成的。子类可以通过重写该方法来改变事件管理器。*/
     public AbstractEventManager getEventManager() {
+        if (this.eventManager == null)
+            this.eventManager = new AbstractEventManager() {};
         return this.eventManager;
     }
+    /**获取扩展点管理器，通过扩展点管理器可以检索、注册或者解除注册扩展点。有关扩展点的功能请参见{@link ExpandPoint}。子类可以通过重写该方法来改变扩展点管理器。*/
     public AbstractExpandPointManager getExpandPointManager() {
+        if (this.expandPointManager == null)
+            this.expandPointManager = new AbstractExpandPointManager() {};
         return this.expandPointManager;
     }
+    /**获取一个状态该状态表述是否已经准备好，{@link ArrayDefineResource}类型中该方法始终返回true。*/
+    public boolean isReady() {
+        return true;
+    };
     /**设置资源名。*/
     public void setSourceName(String sourceName) {
         this.sourceName = sourceName;
@@ -156,37 +164,19 @@ public class ArrayDefineResource implements DefineResource {
         return null;
     };
     public final synchronized ApplicationContext buildApp(Object context) throws Throwable {
-        ApplicationContext appContext = this.createApplicationContext(context, new TempAtt(this));
+        ApplicationContext appContext = this.createApplicationContext(context);
         appContext.init();
         return appContext;
     };
     /**该方法是由buildApp方法直接调用。用于确定子类使用何种类型的ApplicationContext实现。*/
-    protected ApplicationContext createApplicationContext(Object context, IAttribute flash) {
-        return new HyphaApplicationContext(this, context, flash);
+    protected ApplicationContext createApplicationContext(final Object context) {
+        return new HyphaApplicationContext(this, context) {
+            protected IAttribute getFlash() {
+                return ArrayDefineResource.this.getFlash();/*统一FLASH缓存*/
+            }
+            protected IAttribute getAttribute() {
+                return ArrayDefineResource.this.getAttribute();/*统一属性管理器*/
+            }
+        };
     };
 };
-/**是用来代理访问FLASH的类。*/
-class TempAtt implements IAttribute {
-    private ArrayDefineResource arrayDefineResource = null;
-    public TempAtt(ArrayDefineResource arrayDefineResource) {
-        this.arrayDefineResource = arrayDefineResource;
-    }
-    public boolean contains(String name) {
-        return this.arrayDefineResource.getFlash().contains(name);
-    }
-    public void setAttribute(String name, Object value) {
-        this.arrayDefineResource.getFlash().setAttribute(name, value);
-    }
-    public Object getAttribute(String name) {
-        return this.arrayDefineResource.getFlash().getAttribute(name);
-    }
-    public void removeAttribute(String name) {
-        this.arrayDefineResource.getFlash().removeAttribute(name);
-    }
-    public String[] getAttributeNames() {
-        return this.arrayDefineResource.getFlash().getAttributeNames();
-    }
-    public void clearAttribute() {
-        this.arrayDefineResource.getFlash().clearAttribute();
-    }
-}

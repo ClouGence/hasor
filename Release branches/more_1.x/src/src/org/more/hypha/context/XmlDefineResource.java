@@ -181,7 +181,7 @@ public class XmlDefineResource extends ArrayDefineResource {
     protected XmlParserKitManager getManager() {
         return this.manager;
     };
-    /**获取类型解析器*/
+    /**获取类型解析器(xml专用)*/
     public TypeManager getTypeManager() {
         return this.typeManager;
     };

@@ -25,10 +25,7 @@ import org.more.hypha.beans.AbstractBeanDefine;
 */
 public abstract class AbstractBeanBuilder<T extends AbstractBeanDefine> {
     /**应用上下文*/
-    private ApplicationContext context = null;
-    public AbstractBeanBuilder(ApplicationContext context) {
-        this.context = context;
-    };
+    private ApplicationContext applicationContext = null;
     /**是否可以被装载成类对象，默认返回值false。*/
     public boolean canBuilder() {
         return false;
@@ -41,9 +38,13 @@ public abstract class AbstractBeanBuilder<T extends AbstractBeanDefine> {
     public boolean ifDefaultBeanCreateMode() {
         return true;
     };
+    /**设置{@link ApplicationContext}接口对象。*/
+    void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
     /**获取应用上下文*/
     protected ApplicationContext getApplicationContext() {
-        return this.context;
+        return this.applicationContext;
     };
     /**
      * 装载BeanDefine定义，并获取其Class对象的字节码数据。在执行该方法之前{@link BeanEngine}类

@@ -9,7 +9,7 @@
 	<regedit initSequence="-10">
 		<namespace>http://project.byshell.org/more/schema/beans-aop</namespace>
 		<factory>org.more.hypha.aop.support.Register_Aop</factory>
-		<schema enable="false">/META-INF/resource/beans/beans-aop-schema.xsd</schema>
+		<schema enable="false">/META-INF/resource/beans/aop-schema.xsd</schema>
 	</regedit>
 	<regedit initSequence="-10">
 		<namespace>http://project.byshell.org/more/schema/annotation</namespace>

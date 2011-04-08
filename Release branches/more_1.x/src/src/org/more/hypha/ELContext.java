@@ -13,20 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans;
-import org.more.hypha.ApplicationContext;
+package org.more.hypha;
 /**
- * 属性注入请求处理接口，该接口负责对某个bean进行复杂注入请求的处理。
- * @version 2010-9-18
- * @author 赵永春 (zyc@byshell.org)
+ * EL执行器，hypha的el支持接口。
+ * Date : 2011-4-8
+ * @author 赵永春
  */
-public interface ExportIoc {
-    /**
-     * 执行注入的方法，在该接口中完成属性注入的过程。
-     * @param object 要注入的目标属性。
-     * @param initParam 创建bean的启动参数。
-     * @param define bean的定义信息。
-     * @param context 应用环境
-     */
-    public Object iocProcess(Object object, Object[] initParam, AbstractBeanDefine define, ApplicationContext context);
-}
+public interface ELContext {
+    public ValueExpression createExpression(String elString);
+    public ValueExpression createExpression(String elString);
+};

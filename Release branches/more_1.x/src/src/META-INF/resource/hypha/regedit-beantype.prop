@@ -1,0 +1,8 @@
+#####
+TemplateBean=org.more.hypha.beans.assembler.builder.TemplateBeanBuilder
+ClassPathBean=org.more.hypha.beans.assembler.builder.ClassBeanBuilder
+GenerateBean=org.more.hypha.beans.assembler.builder.GenerateBeanBuilder
+RelationBean=org.more.hypha.beans.assembler.builder.RelationBeanBuilder
+ScriptBean=org.more.hypha.beans.assembler.builder.ScriptBeanBuilder
+VariableBean=org.more.hypha.beans.assembler.builder.VariableBeanBuilder
+#####

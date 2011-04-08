@@ -1,0 +1,12 @@
+<beans xmlns="http://project.byshell.org/more/schema/beans"
+	xmlns:aop="http://project.byshell.org/more/schema/beans-aop"
+	xmlns:anno="http://project.byshell.org/more/schema/annotation">
+
+	<defaultPackage />
+	<anno:anno package="org.more.*" />
+
+	<classBean name="$more_actionjs" class="org.more.submit.ext.actionjs.JavaScriptSubmitManager">
+		<property name="min" type="boolean" value="false" />
+		<meta key="isAction" value="true" />
+	</classBean>
+</beans>

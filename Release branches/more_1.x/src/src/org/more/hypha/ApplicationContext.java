@@ -22,10 +22,10 @@ import org.more.NoDefinitionException;
 import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.util.attribute.IAttribute;
 /**
- * 这个接口是More的Bean容器的根接口，BeanFactory的子接口可以用于特定目的进行实现。<br/><br/>
- * 在BeanFactory中所有Bean都有唯一的一个名称。该工厂将返回一个包含对象的一个独立实例(原型设计模式)，或单个
+ * 这个接口是More的Bean容器的核心接口，{@link ApplicationContext}的特定接口实现类可以用于某些情形。<br/><br/>
+ * 在{@link ApplicationContext}中所有Bean都有唯一的一个名称。该工厂将返回一个包含对象的一个独立实例(原型设计模式)，或单个
  * 共享实例(Singleton设计模式，该实例是在当前工厂中的一个单态）。返回哪种类型的实例取决于bean的配置。<br/><br/>
- * 处于工厂中的bean通常是存在于XML文件中。但不排除bean的来源于DBMS或者LDAP，这都取决于BeanFactory中bean数据源的提供者。
+ * 处于工厂中的bean通常是存在于XML文件中。但不排除bean的来源于DBMS或者LDAP，这都取决于{@link ApplicationContext}中bean数据源接口是如何提供数据的。
  * @version 2011-2-25
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -44,13 +44,13 @@ public interface ApplicationContext extends IAttribute {
      */
     public AbstractBeanDefine getBeanDefinition(String id) throws NoDefinitionException;
     /**
-     * 获取BeanFactory所使用的Bean定义资源，该资源对象可以提供有关Bean定义信息。
-     * @return 返回BeanFactory所使用的Bean定义资源，该资源对象可以提供有关Bean定义信息。
+     * 获取{@link ApplicationContext}所使用的Bean定义资源，该资源对象可以提供有关Bean定义信息。
+     * @return 返回{@link ApplicationContext}所使用的Bean定义资源，该资源对象可以提供有关Bean定义信息。
      */
     public DefineResource getBeanResource();
     /**
-    * 获取一个类装载器，more.beans中的类装载均是通过这个类装载器进行装载的。
-    * @return 返回一个类装载器，more.beans中的类装载均是通过这个类装载器进行装载的。
+    * 获取一个类装载器，org.more.hypha中的类装载均是通过这个类装载器进行装载的。
+    * @return 返回一个类装载器，org.more.hypha中的类装载均是通过这个类装载器进行装载的。
     */
     public ClassLoader getBeanClassLoader();
     /**
@@ -99,9 +99,9 @@ public interface ApplicationContext extends IAttribute {
      * @return 返回测试结果，如果指定的类型是被测试的bean的父类则返回true,否则返回false。
      */
     public boolean isTypeMatch(String id, Class<?> targetType) throws Throwable;
-    /**初始化 */
+    /**初始化{@link ApplicationContext}接口。 */
     public void init() throws Throwable;
-    /**销毁*/
+    /**销毁{@link ApplicationContext}接口。*/
     public void destroy() throws Throwable;
     /**获取应用的上下文环境对象。*/
     public Object getContext();
@@ -109,4 +109,6 @@ public interface ApplicationContext extends IAttribute {
     public AbstractEventManager getEventManager();
     /**获取扩展点管理器，通过扩展点管理器可以检索、注册或者解除注册扩展点。有关扩展点的功能请参见{@link ExpandPoint}*/
     public AbstractExpandPointManager getExpandPointManager();
+    /**获取EL执行器。*/
+    public ELContext getELContext();
 }

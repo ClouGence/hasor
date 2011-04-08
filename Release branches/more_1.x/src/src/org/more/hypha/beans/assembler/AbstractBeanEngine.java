@@ -15,13 +15,17 @@
  */
 package org.more.hypha.beans.assembler;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import org.more.ClassFormatException;
 import org.more.DoesSupportException;
 import org.more.RepeateException;
@@ -32,31 +36,27 @@ import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.beans.AbstractMethodDefine;
 import org.more.hypha.beans.AbstractPropertyDefine;
 import org.more.hypha.beans.ValueMetaData;
-import org.more.hypha.beans.ValueMetaDataParser;
+import org.more.util.ClassPathUtil;
 import org.more.util.attribute.IAttribute;
 /**
 * 该类的职责是负责将{@link AbstractBeanDefine}转换成类型或者Bean实体对象。
+* 该类是一个抽象类，在使用时需要通过子类给定其{@link AbstractExpandPointManager}对象。
+* 该类会处理“regedit-beantype.prop”配置文件。
 * @version 2011-1-13
 * @author 赵永春 (zyc@byshell.org)
 */
-public class BeanEngine {
-    //0.公共
-    private Map<String, AbstractBeanBuilder<AbstractBeanDefine>> beanBuilderMap     = new HashMap<String, AbstractBeanBuilder<AbstractBeanDefine>>();
-    private IAttribute                                           flashContext       = null;
+public abstract class AbstractBeanEngine {
+    public static final String                                   BeanTypeConfig     = "/META-INF/resource/hypha/regedit-beantype.prop";              //HyphaApplicationContext的配置信息
     private ApplicationContext                                   applicationContext = null;
-    private AbstractExpandPointManager                           epManager          = null;
-    //1.类型创建或获取
-    private EngineClassLoader                                    classLoader        = null;
-    //2.对象创建
-    private Map<String, Object>                                  singleBeanCache    = new Hashtable<String, Object>();
-    private RootValueMetaDataParser                              rootMetaDataParser = new RootValueMetaDataParser();
-    //3.装饰
+    private Map<String, AbstractBeanBuilder<AbstractBeanDefine>> beanBuilderMap     = new HashMap<String, AbstractBeanBuilder<AbstractBeanDefine>>();
     //
+    private EngineClassLoader                                    classLoader        = null;
+    private Map<String, Object>                                  singleBeanCache    = new Hashtable<String, Object>();
     //----------------------------------------------------------------------------------------------------------
-    public BeanEngine(ApplicationContext applicationContext, IAttribute flashContext) {
-        this.flashContext = flashContext;
+    /** 该类的职责是负责将{@link AbstractBeanDefine}转换成类型或者Bean实体对象。该类是一个抽象类，在使用时需要通过子类给定其{@link AbstractExpandPointManager}对象。*/
+    public AbstractBeanEngine(ApplicationContext applicationContext, IAttribute flashContext) {
         this.applicationContext = applicationContext;
-        this.init(flashContext);
+        this.classLoader = new EngineClassLoader(this.applicationContext.getBeanClassLoader());//使用EngineClassLoader装载构造的字节码
     };
     //----------------------------------------------------------------------------------------------------------
     class EngineClassLoader extends ClassLoader {
@@ -69,10 +69,25 @@ public class BeanEngine {
         };
     };
     //----------------------------------------------------------------------------------------------------------
-    /**类{@link BeanEngine}的初始化方法。*/
-    protected void init(IAttribute flashContext) {
+    /**获取扩展点管理器，子类需要重写该方法来提供引擎扩展点管理器。*/
+    protected abstract AbstractExpandPointManager getExpandPointManager();
+    /**解析{@link BeanEngine#BeanTypeConfig}常量所表示的配置文件，并且装载其中所定义的对象类型。*/
+    public void loadConfig() throws IOException, IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
+        List<InputStream> ins = ClassPathUtil.getResource(BeanTypeConfig);
+        Properties prop = new Properties();
+        for (InputStream is : ins)
+            prop.load(is);
+        for (Object key : prop.keySet()) {
+            String beanBuilderClass = prop.getProperty((String) key);
+            Object builder = Class.forName(beanBuilderClass).getConstructor().newInstance();
+            AbstractBeanBuilder abb = (AbstractBeanBuilder) builder;
+            abb.setApplicationContext(this.applicationContext);
+            this.regeditBeanBuilder((String) key, abb);
+        }
+    };
+    /**清空单态池中的单例Bean。*/
+    public void clearSingleBean() {
         this.singleBeanCache.clear();
-        this.classLoader = new EngineClassLoader(this.applicationContext.getBeanClassLoader());//使用EngineClassLoader装载构造的字节码
     };
     /**
      * 注册一种bean定义类型，使之可以被引擎解析。如果重复注册同一种bean类型将会引发{@link RepeateException}类型异常。
@@ -98,18 +113,6 @@ public class BeanEngine {
     public int getCacheBeanCount() {
         return this.singleBeanCache.size();
     };
-    /**
-     * 注册一种{@link ValueMetaData}元信息解析器，使之可以被属性解析器解析。如果重复注册同一种元信息解析器将会引发{@link RepeateException}类型异常。
-     * @param metaDataType 要注册的元信息类型，该值可以从{@link ValueMetaData#getMetaDataType}接口方法获得。
-     * @param parser 解析器
-     */
-    public void regeditMetaDataParser(String metaDataType, ValueMetaDataParser<ValueMetaData> parser) throws RepeateException {
-        this.rootMetaDataParser.addParser(metaDataType, parser);
-    };
-    /**解除一种属性解析器的注册，该值可以从{@link ValueMetaData#getMetaDataType}接口方法获得。*/
-    public void unRegeditMetaDataParser(String metaDataType) {
-        this.rootMetaDataParser.removeParser(metaDataType);
-    };
     //----------------------------------------------------------------------------------------------------------
     /**
      * 将{@link AbstractBeanDefine}定义对象解析并且装载成为Class类型对象，期间会一次引发{@link ClassByteExpandPoint}和{@link ClassTypeExpandPoint}两个扩展点。
@@ -120,7 +123,7 @@ public class BeanEngine {
      * @throws ClassFormatException 在执行扩展点{@link ClassTypeExpandPoint}如果不能成功装载字节码则引发该异常。
      * @throws ClassNotFoundException 如果整个装载过程结束没有得到Class类型则会引发该类异常。
      */
-    public synchronized Class<?> builderType(AbstractBeanDefine define) throws DoesSupportException, IOException, ClassFormatException, ClassNotFoundException {
+    public final synchronized Class<?> builderType(AbstractBeanDefine define) throws DoesSupportException, IOException, ClassFormatException, ClassNotFoundException {
         String defineType = define.getBeanType();
         String defineID = define.getID();
         String defineLogStr = defineID + "[" + defineType + "]";//log前缀
@@ -131,8 +134,8 @@ public class BeanEngine {
         //--------------------------------------------------------------------------------------------------------------准备阶段
         //2.通过Builder装载class
         byte[] beanBytes = builder.loadBeanBytes(define);
-        beanBytes = (byte[]) this.epManager.exePoint(ClassByteExpandPoint.class, define, new Object[] { beanBytes, define, this.applicationContext });
-        Class<?> beanType = (Class<?>) this.epManager.exePoint(ClassTypeExpandPoint.class, define, new Object[] { beanBytes, define, this.applicationContext });
+        beanBytes = (byte[]) this.getExpandPointManager().exePoint(ClassByteExpandPoint.class, define, new Object[] { beanBytes, define, this.applicationContext });
+        Class<?> beanType = (Class<?>) this.getExpandPointManager().exePoint(ClassTypeExpandPoint.class, define, new Object[] { beanBytes, define, this.applicationContext });
         //3.
         if (beanType == null)
             beanType = this.classLoader.loadClass(beanBytes, define);
@@ -146,7 +149,7 @@ public class BeanEngine {
      * @param params 生成bean时传递的参数。
      * @return 返回创建的bean对象。
      */
-    public synchronized Object builderBean(AbstractBeanDefine define, Object[] params) throws Throwable {
+    public final synchronized Object builderBean(AbstractBeanDefine define, Object[] params) throws Throwable {
         String defineID = define.getID();
         //--------------------------------------------------------------------------------------------------------------检查单态
         //0.单态
@@ -156,7 +159,7 @@ public class BeanEngine {
         AbstractBeanBuilder<AbstractBeanDefine> builder = this.beanBuilderMap.get(define.getBeanType());
         Class<?> beanType = this.builderType(define);
         //1.创建
-        Object obj = this.epManager.exePoint(BeforeCreateExpandPoint.class, define, new Object[] { beanType, params, define, this.applicationContext }); //预创建Bean
+        Object obj = this.getExpandPointManager().exePoint(BeforeCreateExpandPoint.class, define, new Object[] { beanType, params, define, this.applicationContext }); //预创建Bean
         if (obj == null)
             if (builder.ifDefaultBeanCreateMode() == false)
                 //------------------------（不用默认策略）
@@ -211,7 +214,7 @@ public class BeanEngine {
             //TODO  obj = ce.newInstance(obj);
         }
         //5.执行扩展点
-        obj = this.epManager.exePoint(AfterCreateExpandPoint.class, define, new Object[] { obj, params, define, this.applicationContext });//Bean装饰
+        obj = this.getExpandPointManager().exePoint(AfterCreateExpandPoint.class, define, new Object[] { obj, params, define, this.applicationContext });//Bean装饰
         //6.执行生命周期init方法
         {
             Class<?> objType = obj.getClass();
@@ -243,7 +246,7 @@ public class BeanEngine {
         for (AbstractPropertyDefine pd : pds)
             vms.add(pd.getMetaData());
         return vms;
-    };
+    }
 };
 //class ProxyFinalizeClassEngine extends ClassEngine {
 //    private final ProxyFinalizeClassBuilder builder = new ProxyFinalizeClassBuilder();

@@ -16,7 +16,6 @@
 package org.more.hypha.beans.assembler.builder;
 import java.io.IOException;
 import java.io.InputStream;
-import org.more.hypha.ApplicationContext;
 import org.more.hypha.beans.assembler.AbstractBeanBuilder;
 import org.more.hypha.beans.define.ClassPathBeanDefine;
 /**
@@ -25,9 +24,6 @@ import org.more.hypha.beans.define.ClassPathBeanDefine;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class ClassBeanBuilder extends AbstractBeanBuilder<ClassPathBeanDefine> {
-    public ClassBeanBuilder(ApplicationContext context) {
-        super(context);
-    };
     public boolean canCache() {
         return true;
     };
