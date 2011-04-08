@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.more.CastException;
 import org.more.core.copybean.CopyBeanUtil;
 import org.more.core.json.JsonUtil;
+import org.more.submit.Action;
 import org.more.submit.ActionContext;
 import org.more.submit.ActionStack;
 import org.more.submit.web.WebActionStack;
@@ -35,8 +36,10 @@ import org.more.submit.web.WebActionStack;
  * @version 2010-1-7
  * @author 赵永春 (zyc@byshell.org)
  */
+@Action()
 public class JavaScriptSubmitManager {
-    private boolean min = true;
+    public final static boolean isAction = true; //Action标志
+    private boolean             min      = true; //是否使用最小配置
     public void setMin(boolean min) {
         this.min = min;
     };

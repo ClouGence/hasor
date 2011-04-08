@@ -30,6 +30,7 @@ import org.more.CastException;
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public final class StringConvert {
     private static final Character DefaultValue_Character = ' ';
+    private static final Boolean   DefaultValue_Boolean   = false;
     private static final Byte      DefaultValue_Byte      = 0;
     private static final Short     DefaultValue_Short     = 0;
     private static final Integer   DefaultValue_Integer   = 0;
@@ -175,13 +176,13 @@ public final class StringConvert {
      * @param value 数据字符串。
      * @return 返回boolean的转换结果。
      */
-    public static Boolean parseBoolean(final String value) {
+    public static Boolean parseBoolean(final String value, final Boolean... defaultValue) {
         if (value == null)
-            return false;
+            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Boolean; //false;
         else if (value.equals("0") == true || value.equals("no") == true || value.equals("N") == true)
-            return false;
+            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Boolean; //false;
         else if (value.equals("1") == true || value.equals("yes") == true || value.equals("Y") == true)
-            return true;
+            return (defaultValue.length >= 1) ? defaultValue[0] : !StringConvert.DefaultValue_Boolean; //true;
         else
             return Boolean.parseBoolean(value);
     }

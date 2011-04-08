@@ -34,7 +34,7 @@ import org.more.core.asm.ClassWriter;
  * {@link ClassBuilder#acceptClass(ClassVisitor)}方法是一个较为优雅的扩展方式。该方法会在builderClass()方法
  * 构造visitor环调用期间发生。builderClass在生成字节码时使用的是ASM3.2提供的visitor模式，该方法的参数是最终要
  * 写入的visitor。注意使用该扩展方式必须要熟悉ASM3.2框架。visitor环的层次关系是这样的：<br/>
- * <b>第一环</b>，ASM Write；<b>第二环</b>，用户扩展；<b>第三环</b>，Aop；<b>第四环</b>，ASM Read
+ * <b>第一环</b>，ASM Write；<b>第二环</b>，用户扩展；<b>第三环</b>，ClassBuilder；<b>第四环</b>，ASM Read
  * @version 2010-9-3
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -132,6 +132,19 @@ public class ClassBuilder {
     //======================================================================================Builder
     /**初始化构造器。*/
     public final void initBuilder(ClassEngine classEngine) {
+        this.newClassBytes = null; //新类的字节码。
+        this.classEngine = null; //Class引擎。
+        this.asmClassName = null; //新类的字节码名。
+        this.asmSuperClassName = null; //父类的字节码名。
+        this.delegateString = null; //委托类型By ASM
+        this.delegateType = null; //委托类型By Class
+        this.simpleFields = null; //简单属性
+        this.delegateFields = null; //委托属性
+        this.aopFilter = null; //aop过滤器对象集合。
+        this.aopBeforeListeners = null; //before切面事件监听器。
+        this.aopReturningListeners = null; //returning切面事件监听器。
+        this.aopThrowingListeners = null; //throwing切面事件监听器。
+        //---------------------------------------------------------
         this.classEngine = classEngine;
         //1.config
         this.asmClassName = EngineToos.replaceClassName(classEngine.getClassName());

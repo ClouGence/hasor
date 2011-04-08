@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import org.more.CastException;
 import org.more.NoDefinitionException;
+import org.more.NotFoundException;
 import org.more.hypha.ApplicationContext;
 import org.more.submit.AbstractActionContext;
 import org.more.submit.ActionInvoke;
@@ -37,8 +38,23 @@ public class MoreContext extends AbstractActionContext implements FilterContext 
         this.factory = factory;
     };
     //==========================================================================================Job
-    protected ActionInvoke getAction(String actionName, String invoke) {
-        return new PropxyActionInvoke(this.factory.getBean(actionName), invoke);
+    private Object getBean(String actionName) {
+        try {
+            return this.factory.getBean(actionName);
+        } catch (Throwable e) {
+            throw new NotFoundException(e);
+        }
+    }
+    private Class<?> getType(String actionName) {
+        try {
+            return this.factory.getBeanType(actionName);
+        } catch (Throwable e) {
+            throw new NotFoundException(e);
+        }
+    }
+    //---------------------
+    protected ActionInvoke getAction(String actionName, String invoke) throws NotFoundException {
+        return new PropxyActionInvoke(this.getBean(actionName), invoke);
     };
     public boolean containsAction(String actionName) {
         return this.factory.containsBean(actionName);
@@ -55,12 +71,12 @@ public class MoreContext extends AbstractActionContext implements FilterContext 
         return this.factory.getBeanDefinition(actionName).getAttribute(property);
     };
     public Class<?> getActionType(String actionName) {
-        return this.factory.getBeanType(actionName);
+        return this.getType(actionName);
     };
     //==========================================================================================Job
     /**这是一个关键方法。*/
     public boolean containsFilter(String filterName) {
-        Class<?> type = this.factory.getBeanType(filterName);
+        Class<?> type = this.getType(filterName);
         if (type == null)
             return false;
         return ActionFilter.class.isAssignableFrom(type);
@@ -68,7 +84,7 @@ public class MoreContext extends AbstractActionContext implements FilterContext 
     public ActionFilter findFilter(String filterName) throws NoDefinitionException, CastException {
         if (this.containsFilter(filterName) == false)
             return null;
-        return (ActionFilter) this.factory.getBean(filterName);
+        return (ActionFilter) this.getBean(filterName);
     };
     public Iterator<String> getFilterNameIterator() {
         return new FilterNameIterator(this, this.factory.getBeanDefinitionIDs().iterator());
@@ -76,7 +92,7 @@ public class MoreContext extends AbstractActionContext implements FilterContext 
     public Class<?> getFilterType(String filterName) {
         if (this.containsFilter(filterName) == false)
             return null;
-        return this.factory.getBeanType(filterName);
+        return this.getType(filterName);
     };
     public Object getFilterProperty(String filterName, String property) {
         if (this.containsFilter(filterName) == false)
