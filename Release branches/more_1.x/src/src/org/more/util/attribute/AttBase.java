@@ -18,7 +18,6 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 /**
  * 基本属性接口实现类。注意：IAttribute接口特性及其子接口的功能将不会作用到Map接口上。
@@ -26,7 +25,7 @@ import java.util.Set;
  * @version 2009-4-29
  * @author 赵永春 (zyc@byshell.org)
  */
-public class AttBase implements IAttribute, IAttTransform, Map<String, Object>, Serializable {
+public class AttBase implements IAttribute, Map<String, Object>, Serializable {
     //========================================================================================Field
     private static final long   serialVersionUID = 5330675593787806813L;
     /** 存放属性的集合 */
@@ -87,18 +86,6 @@ public class AttBase implements IAttribute, IAttTransform, Map<String, Object>, 
     }
     public void setAttribute(String name, Object value) {
         this.prop.put(name, value);
-    }
-    public void fromProperties(Properties prop) {
-        for (Object ks : prop.keySet())
-            this.prop.put(ks.toString(), prop.get(ks));
-    }
-    public Properties toProperties() {
-        Properties prop = new Properties();
-        for (String ks : this.prop.keySet()) {
-            if (this.prop.get(ks) != null)
-                prop.put(ks, this.prop.get(ks));
-        }
-        return prop;
     }
     //==================================================================================Map接口实现
     public void clear() {
