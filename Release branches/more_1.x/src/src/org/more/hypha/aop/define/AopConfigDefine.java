@@ -17,7 +17,7 @@ package org.more.hypha.aop.define;
 import java.util.ArrayList;
 import java.util.List;
 import org.more.core.classcode.BuilderMode;
-import org.more.hypha.AbstractDefine;
+import org.more.hypha.commons.AbstractDefine;
 /**
  * aop≈‰÷√
  * @version 2010-9-25

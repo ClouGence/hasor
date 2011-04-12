@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package org.more.hypha.beans;
+
+import org.more.hypha.ValueMetaData;
+
 /**
  * 该枚举定义了{@link ValueMetaData}属性元信息表述的属性类型范畴，
  * 该类型中包含了基本类型范畴各种集合类型范畴以及一些其他类型范畴。

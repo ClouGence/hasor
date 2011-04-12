@@ -20,9 +20,9 @@ import org.more.NoDefinitionException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
+import org.more.hypha.AbstractBeanDefine;
+import org.more.hypha.AbstractMethodDefine;
 import org.more.hypha.DefineResource;
-import org.more.hypha.beans.AbstractBeanDefine;
-import org.more.hypha.beans.AbstractMethodDefine;
 import org.more.hypha.beans.define.TemplateBeanDefine;
 import org.more.hypha.context.XmlDefineResource;
 /**

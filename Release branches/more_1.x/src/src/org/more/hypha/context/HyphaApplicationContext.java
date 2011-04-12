@@ -15,21 +15,23 @@
  */
 package org.more.hypha.context;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import org.more.ClassFormatException;
 import org.more.DoesSupportException;
 import org.more.NoDefinitionException;
+import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.AbstractEventManager;
 import org.more.hypha.AbstractExpandPointManager;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.DefineResource;
 import org.more.hypha.ELContext;
-import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.beans.assembler.AbstractBeanEngine;
-import org.more.hypha.beans.assembler.AbstractELContext;
-import org.more.hypha.beans.assembler.RootValueMetaDataParser;
+import org.more.hypha.beans.assembler.AbstractRootValueMetaDataParser;
+import org.more.hypha.el.AbstractELContext;
 import org.more.hypha.event.DestroyEvent;
 import org.more.hypha.event.InitEvent;
+import org.more.util.ClassPathUtil;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**
@@ -38,16 +40,20 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class HyphaApplicationContext implements ApplicationContext {
-    private DefineResource          defineResource     = null;
-    private ClassLoader             classLoader        = null; //Context的类装载器
-    private Object                  context            = null; //绑定到Context上的上下文。
+    public static final String              ELConfig           = "/META-INF/resource/hypha/regedit-el.prop";      //HyphaApplicationContext的配置信息
+    public static final String              MetaDataConfig     = "/META-INF/resource/hypha/regedit-metadata.prop"; //HyphaApplicationContext的配置信息
+    public static final String              BeanTypeConfig     = "/META-INF/resource/hypha/regedit-beantype.prop"; //HyphaApplicationContext的配置信息
+    //
+    private DefineResource                  defineResource     = null;
+    private ClassLoader                     classLoader        = null;                                            //Context的类装载器
+    private Object                          context            = null;                                            //绑定到Context上的上下文。
     //可延迟可替换
-    private IAttribute              attributeContext   = null; //属性集
-    private IAttribute              flashContext       = null; //全局FLASH
+    private IAttribute                      attributeContext   = null;                                            //属性集
+    private IAttribute                      flashContext       = null;                                            //全局FLASH
     //init期间必须构建
-    private RootValueMetaDataParser rootMetaDataParser = null; //元信息解析器
-    private AbstractBeanEngine      engine             = null; //Bean构造引擎
-    private AbstractELContext       elContext          = null; //EL管理器
+    private AbstractRootValueMetaDataParser rootMetaDataParser = null;                                            //元信息解析器
+    private AbstractBeanEngine              engine             = null;                                            //Bean构造引擎
+    private AbstractELContext               elContext          = null;                                            //EL管理器
     /**
      * 构造{@link HyphaApplicationContext}对象，这个构造方法会导致{@link HyphaApplicationContext}内部创建一个{@link ArrayDefineResource}对象。
      * @param context 构造方法中有一个参数该参数表示一个上下文 。通过el可以访问到这个对象。
@@ -113,17 +119,28 @@ public class HyphaApplicationContext implements ApplicationContext {
             Thread.sleep(500);
         //----------------------------------------
         //2.构造RootValueMetaDataParser
-        this.rootMetaDataParser = new RootValueMetaDataParser(this, this.getFlash());
+        this.rootMetaDataParser = new AbstractRootValueMetaDataParser(this, this.getFlash()) {
+            protected List<InputStream> getConfigStreams() throws IOException {
+                return ClassPathUtil.getResource(HyphaApplicationContext.MetaDataConfig);
+            }
+        };
         this.rootMetaDataParser.loadConfig();//处理“regedit-metadata.prop”配置文件。
         //3.构造AbstractBeanEngine
         this.engine = new AbstractBeanEngine(this, this.getFlash()) {
             protected AbstractExpandPointManager getExpandPointManager() {
                 return HyphaApplicationContext.this.defineResource.getExpandPointManager();
             }
+            protected List<InputStream> getConfigStreams() throws IOException {
+                return ClassPathUtil.getResource(HyphaApplicationContext.BeanTypeConfig);
+            }
         };
         this.engine.loadConfig();//处理“regedit-beantype.prop”配置文件。
         //4.构造AbstractELContext
-        this.elContext = new AbstractELContext() {};
+        this.elContext = new AbstractELContext() {
+            protected List<InputStream> getConfigStreams() throws IOException {
+                return ClassPathUtil.getResource(HyphaApplicationContext.ELConfig);
+            }
+        };
         this.elContext.loadConfig();//处理“regedit-el.prop”配置文件。
         //----------------------------------------
         //5.初始化bean

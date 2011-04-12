@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package org.more.hypha.aop.support;
+import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.DefineResource;
 import org.more.hypha.Event;
 import org.more.hypha.EventListener;
 import org.more.hypha.aop.AopDefineExpand_Impl;
 import org.more.hypha.aop.AopResourceExpand;
-import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.event.Config_LoadedXmlEvent;
 import org.more.util.StringUtil;
 /**

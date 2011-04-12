@@ -17,13 +17,13 @@ package org.more.hypha.aop.assembler;
 import java.util.HashMap;
 import java.util.Map;
 import org.more.NoDefinitionException;
+import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.DefineResource;
 import org.more.hypha.Plugin;
 import org.more.hypha.aop.AopDefineExpand_Impl;
 import org.more.hypha.aop.AopResourceExpand;
 import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
-import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.context.XmlDefineResource;
 /**
  * 该类的目的是为了扩展{@link DefineResource}接口对象以将aop信息附加到定义资源接口中。

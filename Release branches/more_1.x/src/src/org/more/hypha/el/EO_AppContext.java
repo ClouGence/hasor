@@ -13,12 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.define;
-import org.more.hypha.ValueMetaData;
-import org.more.hypha.commons.AbstractDefine;
+package org.more.hypha.el;
+import org.more.DoesSupportException;
+import org.more.hypha.ApplicationContext;
+import org.more.hypha.ELObject;
 /**
- * 表示一个属性值的抽象类
- * @version 2010-9-15
+ * EL中对应为{@link ApplicationContext $context}EL对象。
+ * Date : 2011-4-11
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractValueMetaData extends AbstractDefine<ValueMetaData> implements ValueMetaData {}
+public class EO_AppContext implements ELObject {
+    private ApplicationContext context = null;
+    public void init(ApplicationContext context) {
+        this.context = context;
+    };
+    public boolean isReadOnly() {
+        return true;
+    };
+    public void setValue(Object value) {
+        throw new DoesSupportException("不允许替换context对象。");
+    };
+    public Object getValue() {
+        return this.context;
+    };
+};

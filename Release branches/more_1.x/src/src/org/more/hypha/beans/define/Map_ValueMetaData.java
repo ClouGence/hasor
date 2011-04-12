@@ -16,8 +16,8 @@
 package org.more.hypha.beans.define;
 import java.util.HashMap;
 import java.util.Map;
+import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.PropertyMetaTypeEnum;
-import org.more.hypha.beans.ValueMetaData;
 /**
  * 表示一个{@link Map}类型的值元信息描述，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#MapCollection}。
  * @version 2010-9-17

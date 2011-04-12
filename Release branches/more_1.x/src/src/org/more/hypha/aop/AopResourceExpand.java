@@ -15,11 +15,11 @@
  */
 package org.more.hypha.aop;
 import org.more.NoDefinitionException;
+import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.DefineResource;
 import org.more.hypha.Plugin;
 import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
-import org.more.hypha.beans.AbstractBeanDefine;
 /**
  * 该接口通过{@link Plugin}插件形式增强了{@link DefineResource}接口，以提供了更为丰富的aop相关方法。
  * @version 2010-10-8

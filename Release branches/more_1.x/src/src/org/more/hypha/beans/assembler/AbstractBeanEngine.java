@@ -30,23 +30,20 @@ import org.more.ClassFormatException;
 import org.more.DoesSupportException;
 import org.more.RepeateException;
 import org.more.core.ognl.OgnlContext;
+import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.AbstractExpandPointManager;
+import org.more.hypha.AbstractMethodDefine;
+import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.beans.AbstractBeanDefine;
-import org.more.hypha.beans.AbstractMethodDefine;
-import org.more.hypha.beans.AbstractPropertyDefine;
-import org.more.hypha.beans.ValueMetaData;
-import org.more.util.ClassPathUtil;
+import org.more.hypha.ValueMetaData;
 import org.more.util.attribute.IAttribute;
 /**
 * 该类的职责是负责将{@link AbstractBeanDefine}转换成类型或者Bean实体对象。
 * 该类是一个抽象类，在使用时需要通过子类给定其{@link AbstractExpandPointManager}对象。
-* 该类会处理“regedit-beantype.prop”配置文件。
 * @version 2011-1-13
 * @author 赵永春 (zyc@byshell.org)
 */
 public abstract class AbstractBeanEngine {
-    public static final String                                   BeanTypeConfig     = "/META-INF/resource/hypha/regedit-beantype.prop";              //HyphaApplicationContext的配置信息
     private ApplicationContext                                   applicationContext = null;
     private Map<String, AbstractBeanBuilder<AbstractBeanDefine>> beanBuilderMap     = new HashMap<String, AbstractBeanBuilder<AbstractBeanDefine>>();
     //
@@ -69,11 +66,13 @@ public abstract class AbstractBeanEngine {
         };
     };
     //----------------------------------------------------------------------------------------------------------
+    /**返回配置文件的输入流列表。*/
+    protected abstract List<InputStream> getConfigStreams() throws IOException;
     /**获取扩展点管理器，子类需要重写该方法来提供引擎扩展点管理器。*/
     protected abstract AbstractExpandPointManager getExpandPointManager();
-    /**解析{@link BeanEngine#BeanTypeConfig}常量所表示的配置文件，并且装载其中所定义的对象类型。*/
+    /**解析配置文件，并且装载其中所定义的对象类型。*/
     public void loadConfig() throws IOException, IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
-        List<InputStream> ins = ClassPathUtil.getResource(BeanTypeConfig);
+        List<InputStream> ins = this.getConfigStreams();
         Properties prop = new Properties();
         for (InputStream is : ins)
             prop.load(is);

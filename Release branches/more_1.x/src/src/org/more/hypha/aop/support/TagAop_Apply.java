@@ -23,7 +23,7 @@ import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.AbstractEventManager;
 import org.more.hypha.aop.AopResourceExpand;
 import org.more.hypha.aop.define.AopConfigDefine;
-import org.more.hypha.context.Tag_Abstract;
+import org.more.hypha.commons.Tag_Abstract;
 import org.more.hypha.context.XmlDefineResource;
 import org.more.hypha.event.Config_LoadedXmlEvent;
 /**

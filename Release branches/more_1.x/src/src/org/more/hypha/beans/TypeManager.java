@@ -15,6 +15,8 @@
  */
 package org.more.hypha.beans;
 import java.util.ArrayList;
+import org.more.hypha.AbstractPropertyDefine;
+import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.define.PropertyType;
 import org.more.hypha.beans.define.Simple_ValueMetaData;
 import org.more.util.attribute.IAttribute;

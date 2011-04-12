@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha;
+package org.more.hypha.commons;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.more.hypha.Plugin;
+import org.more.hypha.PluginSet;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**

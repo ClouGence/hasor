@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.more.hypha.beans;
+import org.more.hypha.AbstractPropertyDefine;
+import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.support.TagBeans_AbstractPropertyDefine;
 import org.more.util.attribute.IAttribute;
 /**

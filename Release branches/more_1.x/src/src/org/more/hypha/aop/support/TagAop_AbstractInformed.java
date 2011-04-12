@@ -25,7 +25,7 @@ import org.more.hypha.aop.define.AbstractInformed;
 import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.aop.define.AopDefineInformed;
-import org.more.hypha.context.Tag_Abstract;
+import org.more.hypha.commons.Tag_Abstract;
 import org.more.hypha.context.XmlDefineResource;
 /**
  * 处理informed类型标签的refBean属性。

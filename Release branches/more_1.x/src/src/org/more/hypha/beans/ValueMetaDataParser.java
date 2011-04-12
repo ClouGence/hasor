@@ -15,6 +15,7 @@
  */
 package org.more.hypha.beans;
 import org.more.hypha.ApplicationContext;
+import org.more.hypha.ValueMetaData;
 /**
  * {@link ValueMetaData}值元信息解析器，其实类可以决定如何解析这个元信息，并且将解析的结果返回。
  * 如果在解析期间需要递归调用值元信息解析器或者调用其他类型值元信息解析器那么可以通过rootParser参数对象进行调用。

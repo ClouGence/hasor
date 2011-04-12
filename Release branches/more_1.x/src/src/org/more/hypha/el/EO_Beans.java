@@ -13,25 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.assembler;
-import org.more.core.ognl.OgnlContext;
-import org.more.hypha.ELContext;
-import org.more.hypha.ValueExpression;
+package org.more.hypha.el;
+import org.more.hypha.ApplicationContext;
+import org.more.hypha.ELObject;
 /**
  * 
- * Date : 2011-4-8
- * @author ’‘”¿¥∫
+ * Date : 2011-4-11
+ * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class AbstractELContext implements ELContext {
-    private OgnlContext ognlContext = null;
-    /* this°¢$context°¢$att°¢$beans */
-    //this.elContext.put("context", this.getAttribute()); TODO
-    //this.elContext.put("this", this);
-    public void loadConfig() {
-        // TODO Auto-generated method stub
+public class EO_Beans implements ELObject {
+    public void init(ApplicationContext context) {}
+    public boolean isReadOnly() {
+        return false;
     }
-    public ValueExpression createExpression(String elString) {
-        // TODO Auto-generated method stub
+    public void setValue(Object value) {}
+    public Object getValue() {
         return null;
-    };
+    }
 }

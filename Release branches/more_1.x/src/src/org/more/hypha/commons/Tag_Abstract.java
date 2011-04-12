@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.context;
+package org.more.hypha.commons;
 import java.lang.reflect.Method;
 import org.more.DoesSupportException;
 import org.more.PropertyException;
+import org.more.hypha.context.XmlDefineResource;
 import org.more.util.StringConvert;
 import org.more.util.StringUtil;
 /**

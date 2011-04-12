@@ -19,7 +19,7 @@ import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.annotation.assembler.TagListener;
-import org.more.hypha.context.Tag_Abstract;
+import org.more.hypha.commons.Tag_Abstract;
 import org.more.hypha.context.XmlDefineResource;
 import org.more.hypha.event.Config_LoadedXmlEvent;
 import org.more.util.StringConvert;

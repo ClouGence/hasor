@@ -23,25 +23,25 @@ import java.util.Properties;
 import org.more.DoesSupportException;
 import org.more.RepeateException;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.beans.ValueMetaData;
+import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.ValueMetaDataParser;
-import org.more.util.ClassPathUtil;
 import org.more.util.attribute.IAttribute;
 /**
- * 属性元信息解析器的根，{@link ValueMetaDataParser}解析器入口。该类会处理“regedit-metadata.prop”配置文件。
+ * 属性元信息解析器的根，{@link ValueMetaDataParser}解析器入口。
  * @version 2011-1-21
  * @author 赵永春 (zyc@byshell.org)
  */
-public class RootValueMetaDataParser implements ValueMetaDataParser<ValueMetaData> {
-    public static final String                              MetaDataConfig    = "/META-INF/resource/hypha/regedit-metadata.prop";         //HyphaApplicationContext的配置信息
+public abstract class AbstractRootValueMetaDataParser implements ValueMetaDataParser<ValueMetaData> {
     private Map<String, ValueMetaDataParser<ValueMetaData>> metaDataParserMap = new HashMap<String, ValueMetaDataParser<ValueMetaData>>();
     //----------------------------------------------------------------------------------------------------------
     /**创建属性元信息解析器的根对象。*/
-    public RootValueMetaDataParser(ApplicationContext applicationContext, IAttribute flashContext) {};
+    public AbstractRootValueMetaDataParser(ApplicationContext applicationContext, IAttribute flashContext) {};
+    /**返回配置文件的输入流列表。*/
+    protected abstract List<InputStream> getConfigStreams() throws IOException;
     /**解析{@link RootValueMetaDataParser#MetaDataConfig}常量所表示的配置文件，并且装载其中所定义的{@link ValueMetaData}类型。*/
     public void loadConfig() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
         //装载regedit-metadata.prop属性文件。------------------------------------
-        List<InputStream> ins = ClassPathUtil.getResource(MetaDataConfig);
+        List<InputStream> ins = this.getConfigStreams();
         Properties prop = new Properties();
         for (InputStream is : ins)
             prop.load(is);

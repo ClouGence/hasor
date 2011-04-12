@@ -15,6 +15,7 @@
  */
 package org.more.hypha.annotation.assembler;
 import org.more.LostException;
+import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.DefineResource;
 import org.more.hypha.annotation.AnnoResourcePlugin;
 import org.more.hypha.annotation.Aop;
@@ -27,7 +28,6 @@ import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.aop.define.AopDefineInformed;
 import org.more.hypha.aop.define.AopPointcutDefine;
 import org.more.hypha.aop.define.PointcutType;
-import org.more.hypha.beans.AbstractBeanDefine;
 /**
  * 该bean用于解析aop的注解配置。
  * @version 2010-10-14

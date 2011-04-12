@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.support;
-import org.more.hypha.beans.AbstractPropertyDefine;
+import org.more.hypha.AbstractPropertyDefine;
+import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.TypeParser;
-import org.more.hypha.beans.ValueMetaData;
 import org.more.hypha.beans.define.PropertyType;
 import org.more.hypha.beans.define.Simple_ValueMetaData;
 import org.more.util.StringConvert;

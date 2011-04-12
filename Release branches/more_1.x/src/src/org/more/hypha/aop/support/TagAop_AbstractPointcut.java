@@ -23,7 +23,7 @@ import org.more.hypha.aop.AopResourceExpand;
 import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.aop.define.AopPointcutGroupDefine;
-import org.more.hypha.context.Tag_Abstract;
+import org.more.hypha.commons.Tag_Abstract;
 import org.more.hypha.context.XmlDefineResource;
 /**
  * 用于解析切点标签的基类，该类会解析name属性。

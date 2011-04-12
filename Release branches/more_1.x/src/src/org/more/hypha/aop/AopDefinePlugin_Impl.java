@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.more.hypha.aop;
+import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.Plugin;
 import org.more.hypha.aop.define.AopConfigDefine;
-import org.more.hypha.beans.AbstractBeanDefine;
 /**
  * 创建{@link AopDefinePlugin_Impl}对象。
  * @version 2010-9-25

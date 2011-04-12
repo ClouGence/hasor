@@ -20,14 +20,14 @@ import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
+import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.aop.AopDefineExpand_Impl;
 import org.more.hypha.aop.AopResourceExpand;
 import org.more.hypha.aop.define.AbstractInformed;
 import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
-import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.beans.support.TagBeans_AbstractBeanDefine;
-import org.more.hypha.context.Tag_Abstract;
+import org.more.hypha.commons.Tag_Abstract;
 import org.more.hypha.context.XmlDefineResource;
 import org.more.util.StringConvert;
 /**

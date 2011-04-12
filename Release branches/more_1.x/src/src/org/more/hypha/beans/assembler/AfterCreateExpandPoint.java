@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.assembler;
+import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ExpandPoint;
-import org.more.hypha.beans.AbstractBeanDefine;
 /**
  * 预创建扩展点：该扩展点位于<b>对象创建阶段</b>。该扩展点的可以提供一个使外部程序参与Bean类型构造的切口，如果预创建成功则会取消<b>默认创建过程</b>。
  * <br/>注意：1.该扩展点在如果挂载了多个{@link BeforeCreateExpandPoint}扩展点，则扩展点将被依次执行。 

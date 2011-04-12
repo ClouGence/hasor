@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.define;
-import org.more.hypha.AbstractDefine;
-import org.more.hypha.beans.ValueMetaData;
+import org.more.hypha.ValueMetaData;
+import org.more.hypha.commons.AbstractDefine;
 /**
  * 表示一个bean定义中的一种属性或参数
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractPropertyDefine extends AbstractDefine<org.more.hypha.beans.AbstractPropertyDefine> implements org.more.hypha.beans.AbstractPropertyDefine {
+public abstract class AbstractPropertyDefine extends AbstractDefine<org.more.hypha.AbstractPropertyDefine> implements org.more.hypha.AbstractPropertyDefine {
     private String        classType     = null; //当执行属性注入时需要执行的类型转换类型
     private String        description   = null; //属性描述
     private ValueMetaData valueMetaData = null; //值描述

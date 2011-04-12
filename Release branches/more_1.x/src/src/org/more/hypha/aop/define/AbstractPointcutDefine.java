@@ -15,7 +15,7 @@
  */
 package org.more.hypha.aop.define;
 import java.lang.reflect.Method;
-import org.more.hypha.AbstractDefine;
+import org.more.hypha.commons.AbstractDefine;
 /**
  * 切入点，该类的职责是负责对类或方法进行匹配。
  * @version 2010-9-25

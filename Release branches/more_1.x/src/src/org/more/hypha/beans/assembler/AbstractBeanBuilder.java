@@ -15,8 +15,8 @@
  */
 package org.more.hypha.beans.assembler;
 import java.io.IOException;
+import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.beans.AbstractBeanDefine;
 /**
 * 该类的子类可以对不同类型的{@link AbstractBeanDefine}分开进行字节码装载和对象创建之后的第一次初始化。假如ejb作为{@link AbstractBeanDefine}配置在系统中。
 * 由于真正的实现存在于远程，所以本地会通过某种方式与远程ebj建立一个对象用来代理远程对象。那么这个代理对象的创建需要通过hypha的ioc机制进行，但

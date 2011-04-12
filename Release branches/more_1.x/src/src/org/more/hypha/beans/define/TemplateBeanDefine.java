@@ -21,9 +21,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import org.more.RepeateException;
-import org.more.hypha.AbstractDefine;
-import org.more.hypha.beans.AbstractBeanDefine;
-import org.more.hypha.beans.AbstractMethodDefine;
+import org.more.hypha.AbstractBeanDefine;
+import org.more.hypha.AbstractMethodDefine;
+import org.more.hypha.commons.AbstractDefine;
 /**
  * TemplateBeanDefine类用于定义一个bean的模板。
  * @version 2010-9-15

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.more.hypha.event;
+import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.Event;
-import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.DefineResource;
 /**
  * 开始初始化过程事件，该事件是{@link DefineResource}。收到一个新{@link AbstractBeanDefine}定义添加时引发。

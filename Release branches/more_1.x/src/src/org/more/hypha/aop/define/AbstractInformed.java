@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.aop.define;
-import org.more.hypha.AbstractDefine;
+import org.more.hypha.commons.AbstractDefine;
 /**
  * 抽象的informed，无论是何种形式的informed他们都只能绑定一个切入点。这个切入点可是以组的形式存在也可以单体存在。
  * @version 2010-9-27

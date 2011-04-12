@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans;
-import org.more.hypha.PluginSet;
-import org.more.util.attribute.IAttribute;
+package org.more.hypha.el;
+import org.more.hypha.ApplicationContext;
+import org.more.hypha.ELObject;
 /**
-* 该类用于表示{@link AbstractPropertyDefine}属性中定义的属性值描述信息。
-* {@link PropertyMetaTypeEnum}枚举可以更详细的描述{@link ValueMetaData}
-* 类所描述的数据内容。
-* @version 2010-9-17
-* @author 赵永春 (zyc@byshell.org)
-*/
-public interface ValueMetaData extends PluginSet<ValueMetaData>, IAttribute, PropertyMetaTypeEnum {
-    /**返回这个属性的属性类型，该类型用于描述属性的类型特征。*/
-    public String getMetaDataType();
+ * 
+ * Date : 2011-4-11
+ * @author 赵永春 (zyc@byshell.org)
+ */
+public class EO_EL implements ELObject {
+    public void init(ApplicationContext context) {}
+    public boolean isReadOnly() {
+        return false;
+    }
+    public void setValue(Object value) {}
+    public Object getValue() {
+        return null;
+    }
 }

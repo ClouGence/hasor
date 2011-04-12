@@ -19,9 +19,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import org.more.RepeateException;
-import org.more.hypha.AbstractDefine;
-import org.more.hypha.beans.AbstractBeanDefine;
-import org.more.hypha.beans.AbstractMethodDefine;
+import org.more.hypha.AbstractBeanDefine;
+import org.more.hypha.AbstractMethodDefine;
+import org.more.hypha.commons.AbstractDefine;
 /**
  * 该类是表示一个方法的描述，它实现了{@link AbstractMethodDefine}。
  * @version 2010-10-13

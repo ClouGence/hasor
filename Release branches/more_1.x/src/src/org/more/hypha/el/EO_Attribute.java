@@ -13,12 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.define;
-import org.more.hypha.ValueMetaData;
-import org.more.hypha.commons.AbstractDefine;
+package org.more.hypha.el;
+import org.more.hypha.ApplicationContext;
+import org.more.hypha.ELObject;
 /**
- * 表示一个属性值的抽象类
- * @version 2010-9-15
+ * 
+ * Date : 2011-4-11
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractValueMetaData extends AbstractDefine<ValueMetaData> implements ValueMetaData {}
+public class EO_Attribute implements ELObject {
+    public void init(ApplicationContext context) {}
+    public boolean isReadOnly() {
+        return false;
+    }
+    public void setValue(Object value) {}
+    public Object getValue() {
+        return null;
+    }
+}
