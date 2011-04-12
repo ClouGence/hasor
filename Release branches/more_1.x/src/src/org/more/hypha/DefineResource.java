@@ -16,7 +16,6 @@
 package org.more.hypha;
 import java.util.List;
 import org.more.NoDefinitionException;
-import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.hypha.event.AddBeanDefineEvent;
 import org.more.hypha.event.ClearDefineEvent;
 import org.more.util.attribute.IAttribute;

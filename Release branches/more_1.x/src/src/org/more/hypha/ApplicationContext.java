@@ -19,7 +19,6 @@ import java.util.List;
 import org.more.ClassFormatException;
 import org.more.DoesSupportException;
 import org.more.NoDefinitionException;
-import org.more.hypha.beans.AbstractBeanDefine;
 import org.more.util.attribute.IAttribute;
 /**
  * 这个接口是More的Bean容器的核心接口，{@link ApplicationContext}的特定接口实现类可以用于某些情形。<br/><br/>
