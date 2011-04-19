@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 package org.more.hypha;
-import org.more.hypha.beans.PropertyMetaTypeEnum;
 import org.more.util.attribute.IAttribute;
 /**
 * 该类用于表示{@link AbstractPropertyDefine}属性中定义的属性值描述信息。
-* {@link PropertyMetaTypeEnum}枚举可以更详细的描述{@link ValueMetaData}
 * 类所描述的数据内容。
 * @version 2010-9-17
 * @author 赵永春 (zyc@byshell.org)
 */
-public interface ValueMetaData extends PluginSet<ValueMetaData>, IAttribute, PropertyMetaTypeEnum {
+public interface ValueMetaData extends IAttribute {
     /**返回这个属性的属性类型，该类型用于描述属性的类型特征。*/
     public String getMetaDataType();
 }

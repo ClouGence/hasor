@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package org.more.hypha;
+import java.util.HashMap;
+import org.more.hypha.EventManager.Params;
+import org.more.hypha.EventManager.Sequence;
 /**
  * 事件是一种通知机制，使用事件不能控制主控流程的执行。不过却可以通过事件得知内部的工作状态。
  * 该接口表示的是一个{@link EventManager}可以被识别处理的事件。
@@ -21,13 +24,14 @@ package org.more.hypha;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class Event {
-    private Object target = null;
-    /**创建{@link Event}对象*/
-    public Event(Object target) {
-        this.target = target;
-    };
-    /**获取抛出事件的目标对象。*/
-    public Object getTarget() {
-        return this.target;
-    };
+    private static HashMap<Class<?>, Event> eventMap = new HashMap<Class<?>, Event>();
+    public Event() {
+        if (eventMap.containsKey(this.getClass()) == false)
+            eventMap.put(this.getClass(), this);
+    }
+    public static Event getEvent(Class<? extends Event> eventType) {
+        return eventMap.get(eventType);
+    }
+    /**将事件序列转换为{@link Params}类型对象。*/
+    public abstract Params toParams(Sequence eventSequence);
 };

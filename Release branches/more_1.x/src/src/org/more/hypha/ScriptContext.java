@@ -14,22 +14,13 @@
  * limitations under the License.
  */
 package org.more.hypha;
-import java.util.Collection;
 import org.more.util.attribute.IAttribute;
 /**
- * 该接口用于定义在bean上的方法。
- * @version 2010-9-15
+ * 脚本执行上下文。
+ * @version : 2011-4-19
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AbstractMethodDefine extends IAttribute {
-    /**返回方法的代理名称，代理名称是用于索引方法的目的。*/
-    public String getName();
-    /**返回方法的真实名称，该属性是表示方法的真实方法名。*/
-    public String getCodeName();
-    /**返回方法的参数列表描述，返回的集合是只读的。*/
-    public Collection<? extends AbstractPropertyDefine> getParams();
-    /**用于返回一个boolean值，该值表明位于bean上的方法是否为一个静态方法。*/
-    public boolean isStatic();
-    /**获取这个方法所属的bean定义*/
-    public AbstractBeanDefine getForBeanDefine();
+public interface ScriptContext {
+    /**初始化方法，参数是一个flash。*/
+    public void init(IAttribute flash) throws Throwable;
 }

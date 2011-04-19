@@ -16,25 +16,27 @@
 package org.more.hypha;
 import org.more.util.attribute.IAttribute;
 /**
- * EL执行环境，EL在执行期间的运行环境和环境对象均通过该接口实现。
- * @version : 2011-4-19
+ * 该类负责管理并调用并且执行扩展点的基类。
+ * @version 2011-1-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ELContext extends IAttribute {
+public interface ExpandPointManager {
     /**初始化方法，参数是一个flash。*/
     public void init(IAttribute flash) throws Throwable;
-    /** 计算一段字符串的EL值，并且返回计算结果。 */
-    public Object evalExpression(String elString) throws Throwable;
     /**
-     * 根据属性访问符获取一个属性读写器。使用这个属性读写器可以方便的设置一个属性或者读写该属性。
-     * @param propertyEL 属性访问符可以是简单的java字段名或者“abc.def”形式的属性描述。
-     * @param object 属性所在的宿主对象。
+     * 顺序执行所有已注册的扩展点对象，直到执行完毕所有匹配类型的扩展点为止。
+     * @param type 扩展点类型。
+     * @param params 执行的参数。
+     * @return 返回执行结果。
      */
-    public PropertyBinding getPropertyBinding(String propertyEL, Object object) throws Throwable;
+    public Object exePointOnSequence(Class<? extends ExpandPoint> type, Object[] params);
     /**
-     * 添加一个EL对象，当视图对该对象读或者写的时候会调用特定的接口方法。
-     * @param name EL表达式通过该参数所表示的名称来访问这个EL对象。注意名称不能重复。
-     * @param elObject 要添加的{@link ELObject}对象。
+     * 顺序执行所有已注册的扩展点对象，当遇到一个返回值时结束执行扩展点，否则直到执行完毕所有扩展点返回。
+     * @param type 扩展点类型。
+     * @param params 执行的参数。
+     * @return 返回执行结果。
      */
-    public void addELObject(String name, ELObject elObject);
+    public Object exePointOnReturn(Class<? extends ExpandPoint> type, Object[] params);
+    /** 注册一个可执行的扩展点。 */
+    public void regeditExpandPoint(ExpandPoint point);
 };

@@ -21,13 +21,13 @@ import org.more.DoesSupportException;
 import org.more.NoDefinitionException;
 import org.more.util.attribute.IAttribute;
 /**
- * 这个接口是More的Bean容器的核心接口，{@link ApplicationContext}的特定接口实现类可以用于某些情形。<br/><br/>
- * 在{@link ApplicationContext}中所有Bean都有唯一的一个名称。该工厂将返回一个包含对象的一个独立实例(原型设计模式)，或单个
- * 共享实例(Singleton设计模式，该实例是在当前工厂中的一个单态）。返回哪种类型的实例取决于bean的配置。<br/><br/>
- * 处于工厂中的bean通常是存在于XML文件中。但不排除bean的来源于DBMS或者LDAP，这都取决于{@link ApplicationContext}中bean数据源接口是如何提供数据的。
- * @version 2011-2-25
- * @author 赵永春 (zyc@byshell.org)
- */
+* 这个接口是More的Bean容器的核心接口，{@link ApplicationContext}的特定接口实现类可以用于某些情形。<br/><br/>
+* 在{@link ApplicationContext}中所有Bean都有唯一的一个名称。该工厂将返回一个包含对象的一个独立实例(原型设计模式)，或单个
+* 共享实例(Singleton设计模式，该实例是在当前工厂中的一个单态）。返回哪种类型的实例取决于bean的配置。<br/><br/>
+* 处于工厂中的bean通常是存在于XML文件中。但不排除bean的来源于DBMS或者LDAP，这都取决于{@link ApplicationContext}中bean数据源接口是如何提供数据的。
+* @version 2011-2-25
+* @author 赵永春 (zyc@byshell.org)
+*/
 public interface ApplicationContext extends IAttribute {
     /**
      * 获取{@link ApplicationContext}中可以索引到的所有bean定义名称集合，如果获取不到任何名称则需要返回一个空集合。
@@ -102,12 +102,19 @@ public interface ApplicationContext extends IAttribute {
     public void init() throws Throwable;
     /**销毁{@link ApplicationContext}接口。*/
     public void destroy() throws Throwable;
+    //--------------------------------------------------------------
     /**获取应用的上下文环境对象。*/
-    public Object getContext();
+    public Object getContextObject();
     /**获取事件管理器，通过该管理器可以发送事件，事件的监听也是通过这个接口对象完成的。*/
-    public AbstractEventManager getEventManager();
+    public EventManager getEventManager();
     /**获取扩展点管理器，通过扩展点管理器可以检索、注册或者解除注册扩展点。有关扩展点的功能请参见{@link ExpandPoint}*/
-    public AbstractExpandPointManager getExpandPointManager();
+    public ExpandPointManager getExpandPointManager();
     /**获取EL执行器。*/
     public ELContext getELContext();
-}
+    /**作用域管理器。*/
+    public ScopeContext getScopeContext();
+    /**脚本执行管理器。*/
+    public ScriptContext getScriptContext();
+    /**获取某个类型的服务扩展。*/
+    public Object getServices(Class<?> servicesType);
+};
