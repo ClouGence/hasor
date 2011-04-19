@@ -1,0 +1,540 @@
+<class-diagram version="0.9.86" icons="true" always-add-relationships="true" generalizations="true" realizations="true" 
+  associations="true" dependencies="true" nesting-relationships="true">  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.define.AbstractPropertyDefine" project="More" 
+    file="/More/src/org/more/hypha/beans/define/AbstractPropertyDefine.java" binary="false">    
+    <position x="300" y="234" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.define.beans.ConstructorDefine" project="More" 
+    file="/More/src/org/more/hypha/define/beans/ConstructorDefine.java" binary="false">    
+    <position x="234" y="319" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.define.beans.ParamDefine" project="More" 
+    file="/More/src/org/more/hypha/define/beans/ParamDefine.java" binary="false">    
+    <position x="97" y="319" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.define.PropertyDefine" project="More" 
+    file="/More/src/org/more/hypha/beans/define/PropertyDefine.java" binary="false">    
+    <position x="369" y="319" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.ValueMetaData" project="More" 
+    file="/More/src/org/more/hypha/beans/ValueMetaData.java" binary="false">    
+    <position x="847" y="235" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </interface>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.define.beans.AbstractValueMetaData" project="More" 
+    file="/More/src/org/more/hypha/define/beans/AbstractValueMetaData.java" binary="false">    
+    <position x="848" y="342" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.define.BigText_ValueMetaData" project="More" 
+    file="/More/src/org/more/hypha/beans/define/BigText_ValueMetaData.java" binary="false">    
+    <position x="1053" y="318" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.define.beans.Collection_ValueMetaData" 
+    project="More" file="/More/src/org/more/hypha/define/beans/Collection_ValueMetaData.java" binary="false">    
+    <position x="848" y="477" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.define.beans.Date_ValueMetaData" project="More" 
+    file="/More/src/org/more/hypha/define/beans/Date_ValueMetaData.java" binary="false">    
+    <position x="645" y="365" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.define.Enum_ValueMetaData" project="More" 
+    file="/More/src/org/more/hypha/beans/define/Enum_ValueMetaData.java" binary="false">    
+    <position x="641" y="317" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.define.beans.File_ValueMetaData" project="More" 
+    file="/More/src/org/more/hypha/define/beans/File_ValueMetaData.java" binary="false">    
+    <position x="648" y="412" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.define.beans.Relation_ValueMetaData" project="More" 
+    file="/More/src/org/more/hypha/define/beans/Relation_ValueMetaData.java" binary="false">    
+    <position x="1055" y="271" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.define.Simple_ValueMetaData" project="More" 
+    file="/More/src/org/more/hypha/beans/define/Simple_ValueMetaData.java" binary="false">    
+    <position x="637" y="269" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.define.beans.URI_ValueMetaData" project="More" 
+    file="/More/src/org/more/hypha/define/beans/URI_ValueMetaData.java" binary="false">    
+    <position x="1041" y="365" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.define.Array_ValueMetaData" project="More" 
+    file="/More/src/org/more/hypha/beans/define/Array_ValueMetaData.java" binary="false">    
+    <position x="1046" y="551" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.define.List_ValueMetaData" project="More" 
+    file="/More/src/org/more/hypha/beans/define/List_ValueMetaData.java" binary="false">    
+    <position x="647" y="479" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.define.beans.Map_ValueMetaData" project="More" 
+    file="/More/src/org/more/hypha/define/beans/Map_ValueMetaData.java" binary="false">    
+    <position x="651" y="553" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.define.beans.MapEntity_ValueMetaData" project="More" 
+    file="/More/src/org/more/hypha/define/beans/MapEntity_ValueMetaData.java" binary="false">    
+    <position x="847" y="552" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.define.Set_ValueMetaData" project="More" 
+    file="/More/src/org/more/hypha/beans/define/Set_ValueMetaData.java" binary="false">    
+    <position x="1047" y="477" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.define.ScriptBeanDefine" project="More" 
+    file="/More/src/org/more/hypha/beans/define/ScriptBeanDefine.java" binary="false">    
+    <position x="166" y="530" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.define.ClassPathBeanDefine" project="More" 
+    file="/More/src/org/more/hypha/beans/define/ClassPathBeanDefine.java" binary="false">    
+    <position x="227" y="579" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.define.beans.GenerateBeanDefine" project="More" 
+    file="/More/src/org/more/hypha/define/beans/GenerateBeanDefine.java" binary="false">    
+    <position x="435" y="531" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.define.RelationBeanDefine" project="More" 
+    file="/More/src/org/more/hypha/beans/define/RelationBeanDefine.java" binary="false">    
+    <position x="484" y="482" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.define.VariableBeanDefine" project="More" 
+    file="/More/src/org/more/hypha/beans/define/VariableBeanDefine.java" binary="false">    
+    <position x="369" y="579" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.define.beans.MethodDefine" project="More" 
+    file="/More/src/org/more/hypha/define/beans/MethodDefine.java" binary="false">    
+    <position x="97" y="408" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.AbstractMethodDefine" project="More" 
+    file="/More/src/org/more/hypha/beans/AbstractMethodDefine.java" binary="false">    
+    <position x="111" y="102" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </interface>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.AbstractPropertyDefine" project="More" 
+    file="/More/src/org/more/hypha/beans/AbstractPropertyDefine.java" binary="false">    
+    <position x="300" y="166" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </interface>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.AbstractBeanDefine" project="More" 
+    file="/More/src/org/more/hypha/beans/AbstractBeanDefine.java" binary="false">    
+    <position x="442" y="103" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </interface>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.define.TemplateBeanDefine" project="More" 
+    file="/More/src/org/more/hypha/beans/define/TemplateBeanDefine.java" binary="false">    
+    <position x="296" y="410" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.define.EL_ValueMetaData" project="More" 
+    file="/More/src/org/more/hypha/beans/define/EL_ValueMetaData.java" binary="false">    
+    <position x="1038" y="412" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.Plugin" project="More" 
+    file="/More/src/org/more/hypha/Plugin.java" binary="false">    
+    <position x="118" y="31" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </interface>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.PluginSet" project="More" 
+    file="/More/src/org/more/hypha/PluginSet.java" binary="false">    
+    <position x="300" y="30" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </interface>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.beans.AbstractBeanDefine" 
+      file="/More/src/org/more/hypha/beans/AbstractBeanDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.AbstractMethodDefine" 
+      file="/More/src/org/more/hypha/beans/AbstractMethodDefine.java" binary="false"/>  
+  </dependency>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.define.BigText_ValueMetaData" 
+      file="/More/src/org/more/hypha/beans/define/BigText_ValueMetaData.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.define.beans.AbstractValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/AbstractValueMetaData.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.define.RelationBeanDefine" 
+      file="/More/src/org/more/hypha/beans/define/RelationBeanDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.define.TemplateBeanDefine" 
+      file="/More/src/org/more/hypha/beans/define/TemplateBeanDefine.java" binary="false"/>  
+  </generalization>  
+  <association>    
+    <source project="More" name="org.more.hypha.define.beans.MethodDefine" 
+      file="/More/src/org/more/hypha/define/beans/MethodDefine.java" binary="false" navigable="false">      
+      <attribute name="params"/>      
+      <multiplicity minimum="0" maximum="2147483647"/>    
+    </source>    
+    <target project="More" name="org.more.hypha.define.beans.ParamDefine" 
+      file="/More/src/org/more/hypha/define/beans/ParamDefine.java" binary="false" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.PluginSet" file="/More/src/org/more/hypha/PluginSet.java" 
+      binary="false"/>    
+    <target project="More" name="org.more.hypha.Plugin" file="/More/src/org/more/hypha/Plugin.java" binary="false"/>  
+  </dependency>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.define.beans.Map_ValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/Map_ValueMetaData.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.define.beans.Collection_ValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/Collection_ValueMetaData.java" binary="false"/>  
+  </generalization>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.beans.AbstractMethodDefine" 
+      file="/More/src/org/more/hypha/beans/AbstractMethodDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.AbstractPropertyDefine" 
+      file="/More/src/org/more/hypha/beans/AbstractPropertyDefine.java" binary="false"/>  
+  </dependency>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.define.List_ValueMetaData" 
+      file="/More/src/org/more/hypha/beans/define/List_ValueMetaData.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.define.beans.Collection_ValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/Collection_ValueMetaData.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.define.beans.MapEntity_ValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/MapEntity_ValueMetaData.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.define.beans.Collection_ValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/Collection_ValueMetaData.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.define.beans.GenerateBeanDefine" 
+      file="/More/src/org/more/hypha/define/beans/GenerateBeanDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.define.TemplateBeanDefine" 
+      file="/More/src/org/more/hypha/beans/define/TemplateBeanDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.define.VariableBeanDefine" 
+      file="/More/src/org/more/hypha/beans/define/VariableBeanDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.define.TemplateBeanDefine" 
+      file="/More/src/org/more/hypha/beans/define/TemplateBeanDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.define.beans.URI_ValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/URI_ValueMetaData.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.define.beans.AbstractValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/AbstractValueMetaData.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.define.beans.ConstructorDefine" 
+      file="/More/src/org/more/hypha/define/beans/ConstructorDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.define.AbstractPropertyDefine" 
+      file="/More/src/org/more/hypha/beans/define/AbstractPropertyDefine.java" binary="false"/>  
+  </generalization>  
+  <realization>    
+    <source project="More" name="org.more.hypha.beans.define.AbstractPropertyDefine" 
+      file="/More/src/org/more/hypha/beans/define/AbstractPropertyDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.AbstractPropertyDefine" 
+      file="/More/src/org/more/hypha/beans/AbstractPropertyDefine.java" binary="false"/>  
+  </realization>  
+  <association>    
+    <source project="More" name="org.more.hypha.beans.define.TemplateBeanDefine" 
+      file="/More/src/org/more/hypha/beans/define/TemplateBeanDefine.java" binary="false" navigable="false">      
+      <attribute name="initParams"/>      
+      <multiplicity minimum="0" maximum="2147483647"/>    
+    </source>    
+    <target project="More" name="org.more.hypha.define.beans.ConstructorDefine" 
+      file="/More/src/org/more/hypha/define/beans/ConstructorDefine.java" binary="false" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.define.beans.Date_ValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/Date_ValueMetaData.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.define.beans.AbstractValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/AbstractValueMetaData.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.define.Array_ValueMetaData" 
+      file="/More/src/org/more/hypha/beans/define/Array_ValueMetaData.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.define.beans.Collection_ValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/Collection_ValueMetaData.java" binary="false"/>  
+  </generalization>  
+  <dependency>    
+    <bendpoint x="711" y="166"/>    
+    <source project="More" name="org.more.hypha.beans.AbstractPropertyDefine" 
+      file="/More/src/org/more/hypha/beans/AbstractPropertyDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.ValueMetaData" 
+      file="/More/src/org/more/hypha/beans/ValueMetaData.java" binary="false"/>  
+  </dependency>  
+  <realization>    
+    <source project="More" name="org.more.hypha.define.beans.AbstractValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/AbstractValueMetaData.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.ValueMetaData" 
+      file="/More/src/org/more/hypha/beans/ValueMetaData.java" binary="false"/>  
+  </realization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.define.ScriptBeanDefine" 
+      file="/More/src/org/more/hypha/beans/define/ScriptBeanDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.define.TemplateBeanDefine" 
+      file="/More/src/org/more/hypha/beans/define/TemplateBeanDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.define.Set_ValueMetaData" 
+      file="/More/src/org/more/hypha/beans/define/Set_ValueMetaData.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.define.beans.Collection_ValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/Collection_ValueMetaData.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.AbstractMethodDefine" 
+      file="/More/src/org/more/hypha/beans/AbstractMethodDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.PluginSet" file="/More/src/org/more/hypha/PluginSet.java" 
+      binary="false"/>  
+  </generalization>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.define.beans.Map_ValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/Map_ValueMetaData.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.define.beans.MapEntity_ValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/MapEntity_ValueMetaData.java" binary="false"/>  
+  </dependency>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.AbstractPropertyDefine" 
+      file="/More/src/org/more/hypha/beans/AbstractPropertyDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.PluginSet" file="/More/src/org/more/hypha/PluginSet.java" 
+      binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <bendpoint x="740" y="412"/>    
+    <source project="More" name="org.more.hypha.define.beans.File_ValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/File_ValueMetaData.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.define.beans.AbstractValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/AbstractValueMetaData.java" binary="false"/>  
+  </generalization>  
+  <association>    
+    <source project="More" name="org.more.hypha.beans.define.TemplateBeanDefine" 
+      file="/More/src/org/more/hypha/beans/define/TemplateBeanDefine.java" binary="false" navigable="false">      
+      <attribute name="propertys"/>      
+      <multiplicity minimum="0" maximum="2147483647"/>    
+    </source>    
+    <target project="More" name="org.more.hypha.beans.define.PropertyDefine" 
+      file="/More/src/org/more/hypha/beans/define/PropertyDefine.java" binary="false" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.beans.AbstractBeanDefine" 
+      file="/More/src/org/more/hypha/beans/AbstractBeanDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.AbstractPropertyDefine" 
+      file="/More/src/org/more/hypha/beans/AbstractPropertyDefine.java" binary="false"/>  
+  </dependency>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.define.beans.ParamDefine" 
+      file="/More/src/org/more/hypha/define/beans/ParamDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.define.AbstractPropertyDefine" 
+      file="/More/src/org/more/hypha/beans/define/AbstractPropertyDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.define.beans.Collection_ValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/Collection_ValueMetaData.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.define.beans.AbstractValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/AbstractValueMetaData.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <bendpoint x="950" y="271"/>    
+    <source project="More" name="org.more.hypha.define.beans.Relation_ValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/Relation_ValueMetaData.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.define.beans.AbstractValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/AbstractValueMetaData.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.define.PropertyDefine" 
+      file="/More/src/org/more/hypha/beans/define/PropertyDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.define.AbstractPropertyDefine" 
+      file="/More/src/org/more/hypha/beans/define/AbstractPropertyDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <bendpoint x="947" y="409"/>    
+    <source project="More" name="org.more.hypha.beans.define.EL_ValueMetaData" 
+      file="/More/src/org/more/hypha/beans/define/EL_ValueMetaData.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.define.beans.AbstractValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/AbstractValueMetaData.java" binary="false"/>  
+  </generalization>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.beans.define.TemplateBeanDefine" 
+      file="/More/src/org/more/hypha/beans/define/TemplateBeanDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.define.beans.MethodDefine" 
+      file="/More/src/org/more/hypha/define/beans/MethodDefine.java" binary="false"/>  
+  </dependency>  
+  <realization>    
+    <bendpoint x="18" y="405"/>    
+    <bendpoint x="18" y="178"/>    
+    <source project="More" name="org.more.hypha.define.beans.MethodDefine" 
+      file="/More/src/org/more/hypha/define/beans/MethodDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.AbstractMethodDefine" 
+      file="/More/src/org/more/hypha/beans/AbstractMethodDefine.java" binary="false"/>  
+  </realization>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.beans.AbstractMethodDefine" 
+      file="/More/src/org/more/hypha/beans/AbstractMethodDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.AbstractBeanDefine" 
+      file="/More/src/org/more/hypha/beans/AbstractBeanDefine.java" binary="false"/>  
+  </dependency>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.define.Enum_ValueMetaData" 
+      file="/More/src/org/more/hypha/beans/define/Enum_ValueMetaData.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.define.beans.AbstractValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/AbstractValueMetaData.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.define.ClassPathBeanDefine" 
+      file="/More/src/org/more/hypha/beans/define/ClassPathBeanDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.define.TemplateBeanDefine" 
+      file="/More/src/org/more/hypha/beans/define/TemplateBeanDefine.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <bendpoint x="847" y="31"/>    
+    <source project="More" name="org.more.hypha.beans.ValueMetaData" 
+      file="/More/src/org/more/hypha/beans/ValueMetaData.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.PluginSet" file="/More/src/org/more/hypha/PluginSet.java" 
+      binary="false"/>  
+  </generalization>  
+  <realization>    
+    <bendpoint x="440" y="412"/>    
+    <source project="More" name="org.more.hypha.beans.define.TemplateBeanDefine" 
+      file="/More/src/org/more/hypha/beans/define/TemplateBeanDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.AbstractBeanDefine" 
+      file="/More/src/org/more/hypha/beans/AbstractBeanDefine.java" binary="false"/>  
+  </realization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.AbstractBeanDefine" 
+      file="/More/src/org/more/hypha/beans/AbstractBeanDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.PluginSet" file="/More/src/org/more/hypha/PluginSet.java" 
+      binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <bendpoint x="743" y="269"/>    
+    <source project="More" name="org.more.hypha.beans.define.Simple_ValueMetaData" 
+      file="/More/src/org/more/hypha/beans/define/Simple_ValueMetaData.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.define.beans.AbstractValueMetaData" 
+      file="/More/src/org/more/hypha/define/beans/AbstractValueMetaData.java" binary="false"/>  
+  </generalization>  
+  <association>    
+    <source project="More" name="org.more.hypha.beans.define.AbstractPropertyDefine" 
+      file="/More/src/org/more/hypha/beans/define/AbstractPropertyDefine.java" binary="false" navigable="false">      
+      <attribute name="valueMetaData"/>      
+      <multiplicity minimum="0" maximum="1"/>    
+    </source>    
+    <target project="More" name="org.more.hypha.beans.ValueMetaData" 
+      file="/More/src/org/more/hypha/beans/ValueMetaData.java" binary="false" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <classifier-display autosize="true" package="true" initial-value="true" signature="true" visibility="true">    
+    <attributes public="false" package="false" protected="false" private="false"/>    
+    <operations public="false" package="false" protected="false" private="false"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>
