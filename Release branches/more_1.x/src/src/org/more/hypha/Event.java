@@ -15,8 +15,6 @@
  */
 package org.more.hypha;
 import java.util.HashMap;
-import org.more.hypha.EventManager.Params;
-import org.more.hypha.EventManager.Sequence;
 /**
  * 事件是一种通知机制，使用事件不能控制主控流程的执行。不过却可以通过事件得知内部的工作状态。
  * 该接口表示的是一个{@link EventManager}可以被识别处理的事件。
@@ -24,6 +22,18 @@ import org.more.hypha.EventManager.Sequence;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class Event {
+    /**该类是，标志事件被压入事件管理器之后的顺序位置。*/
+    public static abstract class Sequence {
+        /**返回事件所处的索引位置。*/
+        public abstract int getIndex();
+        /**获取事件的类型。*/
+        public abstract Event getEventType();
+        /**获取事件的参数。*/
+        public abstract Object[] getParams();
+    };
+    /**代表事件中参数的抽象类。*/
+    public static abstract class Params {};
+    //----------------------------------------
     private static HashMap<Class<?>, Event> eventMap = new HashMap<Class<?>, Event>();
     public Event() {
         if (eventMap.containsKey(this.getClass()) == false)

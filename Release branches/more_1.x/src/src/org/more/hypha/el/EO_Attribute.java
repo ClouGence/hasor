@@ -14,20 +14,39 @@
  * limitations under the License.
  */
 package org.more.hypha.el;
+import org.more.DoesSupportException;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ELObject;
+import org.more.util.attribute.IAttribute;
+import org.more.util.attribute.TransformToMap;
 /**
- * 
+ * EL中对应为{@link ApplicationContext context}对象的Map形式，不支持赋值操作。
  * Date : 2011-4-11
  * @author 赵永春 (zyc@byshell.org)
  */
 public class EO_Attribute implements ELObject {
-    public void init(ApplicationContext context) {}
+    private ApplicationContext context = null;
+    public void init(ApplicationContext context, IAttribute flash) {
+        this.context = context;
+    };
     public boolean isReadOnly() {
-        return false;
-    }
-    public void setValue(Object value) {}
+        return true;
+    };
+    public void setValue(Object value) {
+        throw new DoesSupportException("不支持的赋值操作。");
+    };
     public Object getValue() {
-        return null;
+        return new ContextObject(this.context);//将Context转换为map对象
+    };
+};
+class ContextObject extends TransformToMap {
+    public ContextObject(ApplicationContext context) {
+        super(context);
     }
-}
+    public Object get(Object key) {
+        return super.get(key);
+    }
+    public Object put(String key, Object value) {
+        return super.put(key, value);
+    };
+};

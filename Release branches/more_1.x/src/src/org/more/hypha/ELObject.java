@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha;
+import org.more.util.attribute.IAttribute;
 /**
  * EL对象，该接口可以明确分界。执行el表达式时对对象的读或者写操作。
  * Date : 2011-4-11
@@ -21,7 +22,7 @@ package org.more.hypha;
  */
 public interface ELObject {
     /**初始化{@link ELObject}对象。*/
-    public void init(ApplicationContext context);
+    public void init(ApplicationContext context, IAttribute flash);
     /**如果该对象是不可写的则可以在实现该接口时返回true。*/
     public boolean isReadOnly();
     /**改变这个el对象值（或引用）。*/

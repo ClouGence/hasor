@@ -17,21 +17,22 @@ package org.more.hypha.el;
 import org.more.DoesSupportException;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ELObject;
+import org.more.util.attribute.IAttribute;
 /**
- * EL中对应为{@link ApplicationContext $context}EL对象。
+ * EL中对应为{@link ApplicationContext context}对象，不支持赋值操作。
  * Date : 2011-4-11
  * @author 赵永春 (zyc@byshell.org)
  */
 public class EO_AppContext implements ELObject {
     private ApplicationContext context = null;
-    public void init(ApplicationContext context) {
+    public void init(ApplicationContext context, IAttribute flash) {
         this.context = context;
     };
     public boolean isReadOnly() {
         return true;
     };
     public void setValue(Object value) {
-        throw new DoesSupportException("不允许替换context对象。");
+        throw new DoesSupportException("不支持的赋值操作。");
     };
     public Object getValue() {
         return this.context;

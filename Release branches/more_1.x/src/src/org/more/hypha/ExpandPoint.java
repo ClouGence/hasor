@@ -19,4 +19,7 @@ package org.more.hypha;
  * @version 2010-12-28
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ExpandPoint {};
+public interface ExpandPoint {
+    /**该方法是执行扩展点的综合入口方法，各子类在重写该方法时来再次确认调用的扩展点本体方法。*/
+    public Object doIt(Object returnObj, Object[] params);
+};

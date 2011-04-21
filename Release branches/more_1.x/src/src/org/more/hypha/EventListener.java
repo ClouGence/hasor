@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha;
-import org.more.hypha.EventManager.Sequence;
+import org.more.hypha.Event.Sequence;
 /**
  * 用于处理事件的事件监听器。
  * @version 2010-10-10

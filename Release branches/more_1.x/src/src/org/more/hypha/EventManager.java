@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha;
+import org.more.hypha.Event.Sequence;
 import org.more.util.attribute.IAttribute;
 /**
  * 事件处理器接口，该接口的目的是为了处理{@link Event}类型事件。该接口提供的是一种先进先出的队列的方式处理事件。
@@ -22,17 +23,6 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface EventManager {
-    /**该类是，标志事件被压入事件管理器之后的顺序位置。*/
-    public static abstract class Sequence {
-        /**返回事件所处的索引位置。*/
-        public abstract int getIndex();
-        /**获取事件的类型。*/
-        public abstract Event getEventType();
-        /**获取事件的参数。*/
-        public abstract Object[] getParams();
-    };
-    /**代表事件中参数的抽象类。*/
-    public static abstract class Params {};
     /**初始化方法，参数是一个flash。*/
     public void init(IAttribute flash) throws Throwable;
     /**添加一种类型事件的事件监听器。*/

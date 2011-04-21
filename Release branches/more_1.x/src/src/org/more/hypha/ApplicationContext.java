@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha;
-import java.io.IOException;
 import java.util.List;
-import org.more.ClassFormatException;
-import org.more.DoesSupportException;
 import org.more.NoDefinitionException;
 import org.more.util.attribute.IAttribute;
 /**
@@ -70,9 +67,10 @@ public interface ApplicationContext extends IAttribute {
      * 根据Bean名称获取其bean类型，该方法将返回在bean定义中配置的bean类型。
      * 那么getBeanType方法将返回生成的新类类型对象。
      * @param id 要获取的Bean id。
+     * @param objects 在获取bean类型时可能会传递的参数信息。
      * @return 返回要获取的bean类型对象，如果企图获取不存在的bean类型则返回 null。
      */
-    public Class<?> getBeanType(String id) throws DoesSupportException, IOException, ClassFormatException, ClassNotFoundException;
+    public Class<?> getBeanType(String id, Object... objects) throws Throwable;
     /**
      * 测试某名称Bean是否为原型模式创建，如果目标bean不存在则返回false。
      * @param id 要测试的Bean id。
@@ -105,6 +103,8 @@ public interface ApplicationContext extends IAttribute {
     //--------------------------------------------------------------
     /**获取应用的上下文环境对象。*/
     public Object getContextObject();
+    /**设置应用的上下文环境对象。*/
+    public void setContextObject(Object contextObject);
     /**获取事件管理器，通过该管理器可以发送事件，事件的监听也是通过这个接口对象完成的。*/
     public EventManager getEventManager();
     /**获取扩展点管理器，通过扩展点管理器可以检索、注册或者解除注册扩展点。有关扩展点的功能请参见{@link ExpandPoint}*/

@@ -37,6 +37,6 @@ public interface ExpandPointManager {
      * @return 返回执行结果。
      */
     public Object exePointOnReturn(Class<? extends ExpandPoint> type, Object[] params);
-    /** 注册一个可执行的扩展点。 */
+    /** 注册一个可执行的扩展点，可以重复注册同一个扩展点。 */
     public void regeditExpandPoint(ExpandPoint point);
 };

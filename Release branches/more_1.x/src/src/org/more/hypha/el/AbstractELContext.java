@@ -14,69 +14,95 @@
  * limitations under the License.
  */
 package org.more.hypha.el;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.Properties;
-import org.more.core.ognl.OgnlContext;
+import java.util.Map;
 import org.more.core.ognl.OgnlException;
+import org.more.hypha.ApplicationContext;
 import org.more.hypha.ELContext;
-import org.more.hypha.ELMethod;
 import org.more.hypha.ELObject;
-import org.more.workflow.el.PropertyBinding;
+import org.more.hypha.EvalExpression;
+import org.more.hypha.PropertyBinding;
+import org.more.util.attribute.AttBase;
+import org.more.util.attribute.IAttribute;
 /**
- * 
+ * 接口{@link ELContext}的实现类。
  * Date : 2011-4-8
  * @author 赵永春
  */
-public abstract class AbstractELContext extends OgnlContext implements ELContext {
-    private static final long serialVersionUID = 3969623095960649450L;
-    /***/
-    protected abstract List<InputStream> getConfigStreams() throws IOException;
-    /**解析配置文件，并且装载其中所定义的对象类型。*/
-    public void loadConfig() throws IOException, IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
-        List<InputStream> ins = this.getConfigStreams();
-        Properties prop = new Properties();
-        for (InputStream is : ins)
-            prop.load(is);
-        for (Object key : prop.keySet()) {
-            String k = (String) key;
-            String beanBuilderClass = prop.getProperty(k);
-            Object builder = Class.forName(beanBuilderClass).getConstructor().newInstance();
-            this.addEL(k, builder);
-        }
+public abstract class AbstractELContext implements ELContext {
+    private ApplicationContext applicationContext = null;
+    private IAttribute         flash              = null;
+    private InnerOgnlContext   elContext          = new InnerOgnlContext();
+    private class InnerOgnlContext extends AttBase {
+        private static final long serialVersionUID = 8423446527838340104L;
+        public Object get(Object key) {
+            Object obj = super.get(key);
+            if (obj instanceof ELObject)
+                return ((ELObject) obj).getValue();
+            return obj;
+        };
+        public Object put(String key, Object value) {
+            Object obj = super.get(key);
+            if (obj instanceof ELObject) {
+                ((ELObject) obj).setValue(value);
+                return value;
+            } else
+                return super.put(key, value);
+        };
     };
-    public EvalExpression evalExpression(String expressionString) throws OgnlException {
-        return new EvalExpression(this, expressionString);
+    //----------------------------------------------------------------------------------------------------------
+    /***/
+    public AbstractELContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
+    public void init(IAttribute flash) throws Throwable {
+        this.flash = flash;
+    }
+    /**返回{@link ApplicationContext}对象。*/
+    protected ApplicationContext getApplicationContext() {
+        return this.applicationContext;
+    }
+    /**返回{@link IAttribute}类型的FLASH。*/
+    protected IAttribute getFlash() {
+        return this.flash;
+    }
+    //----------------------------------------------------------------------------------------------------------
+    public EvalExpression getExpression(String elString) throws OgnlException {
+        return new EvalExpressionImpl(this, elString);
+    };
+    public Object evalExpression(String elString) throws Throwable {
+        return this.getExpression(elString).eval(null);
     };
     public PropertyBinding getPropertyBinding(String propertyEL, Object object) throws OgnlException {
-        return new PropertyBinding(propertyEL, object);
+        return new PropertyBindingImpl(this, propertyEL, object);
     };
-    public void addEL(String name, Object elObject) {};
-    public void addELObject(String name, ELObject elObject) {};
-    public void addELMethod(String name, ELMethod elObject) {}
-    //------------------------------------------------------------------------------
-    public Object get(Object key) {
-        return super.get(key);
-    }
-    public Object put(Object key, Object value) {
-        // TODO Auto-generated method stub
-        return super.put(key, value);
-    }
-    //------------------------------------------------------------------------------
+    public void addELObject(String name, ELObject elObject) {
+        elObject.init(this.getApplicationContext(), this.getFlash());
+        this.getThisAttribute().setAttribute(name, elObject);
+    };
+    //----------------------------------------------------------------------------------------------------------
+    /**获取一个{@link IAttribute}接口对象，还对象可以以{@link IAttribute}接口形式访问{@link AbstractELContext}中的属性。*/
+    protected IAttribute getThisAttribute() {
+        return this.elContext;
+    };
     public boolean contains(String name) {
-        return this.containsKey(name);
-    }
-    public void setAttribute(String name, Object value) {}
-    public Object getAttribute(String name) {
-        return null;
-    }
-    public void removeAttribute(String name) {}
-    public String[] getAttributeNames() {
-        return this.keySet().toArray();
-    }
-    public void clearAttribute() {
-        this.clear();
+        return this.getThisAttribute().contains(name);
     };
-}
+    public void setAttribute(String name, Object value) {
+        this.getThisAttribute().setAttribute(name, value);
+    };
+    public Object getAttribute(String name) {
+        return this.getThisAttribute().getAttribute(name);
+    };
+    public void removeAttribute(String name) {
+        this.getThisAttribute().removeAttribute(name);
+    };
+    public String[] getAttributeNames() {
+        return this.getThisAttribute().getAttributeNames();
+    };
+    public void clearAttribute() {
+        this.getThisAttribute().clearAttribute();
+    }
+    public Map<String, Object> toMap() {
+        return this.getThisAttribute().toMap();
+    }
+};
