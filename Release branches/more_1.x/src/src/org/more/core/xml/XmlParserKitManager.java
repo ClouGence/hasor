@@ -107,6 +107,7 @@ public class XmlParserKitManager implements XmlAccept {
                 prefix = (prefix == null) ? "" : prefix;
                 this.activateStack.setAttribute(prefix, new NameSpace(uri, "/"));
             }
+            this.activateStack.setAttribute("QName", ee.getName());
         }
         //2.合成NameSpace专有的XPath
         if (e instanceof StartElementEvent) {
@@ -119,6 +120,10 @@ public class XmlParserKitManager implements XmlAccept {
             AttributeEvent ee = (AttributeEvent) e;
             //(2).合成NameSpace专有的XPath
             String prefix = ee.getPrefix();
+            if (prefix == null || prefix.equals("") == true) {
+                QName qn = (QName) this.activateStack.getAttribute("QName");
+                prefix = qn.getPrefix();
+            }
             NameSpace ns = (NameSpace) this.activateStack.getAttribute(prefix);
             ns.appendXPath(ee.getElementName(), true);
         }
@@ -164,15 +169,18 @@ public class XmlParserKitManager implements XmlAccept {
             }
         }
         //5.合成NameSpace专有的XPath
-        String prefix = null;
         if (e instanceof EndElementEvent) {
             EndElementEvent ee = (EndElementEvent) e;
-            prefix = ee.getPrefix();
+            String prefix = ee.getPrefix();
+            NameSpace ns = (NameSpace) this.activateStack.getAttribute(prefix);
+            ns.removeXPath();
         } else if (e instanceof AttributeEvent) {
             AttributeEvent ee = (AttributeEvent) e;
-            prefix = ee.getPrefix();
-        }
-        if (prefix != null) {
+            String prefix = ee.getPrefix();
+            if (prefix == null || prefix.equals("") == true) {
+                QName qn = (QName) this.activateStack.getAttribute("QName");
+                prefix = qn.getPrefix();
+            }
             NameSpace ns = (NameSpace) this.activateStack.getAttribute(prefix);
             ns.removeXPath();
         }
