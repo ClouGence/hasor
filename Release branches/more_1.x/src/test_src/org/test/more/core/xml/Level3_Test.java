@@ -21,12 +21,12 @@ import org.more.core.xml.XmlDocumentHook;
 import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlParserKit;
 import org.more.core.xml.XmlParserKitManager;
+import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndDocumentEvent;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartDocumentEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.core.xml.stream.XmlReader;
-import org.more.util.attribute.StackDecorator;
 /**
  *
  * @version 2010-9-8
@@ -35,23 +35,24 @@ import org.more.util.attribute.StackDecorator;
 public class Level3_Test {
     @Test
     public void reader() throws FileNotFoundException, XMLStreamException {
-        XmlReader reader = new XmlReader("bin/test_xml.xml");
+        String url = "/META-INF/resource/hypha/default-hypha-config.xml";
+        XmlReader reader = new XmlReader(Level3_Test.class.getResourceAsStream(url));
         XmlParserKitManager manager = new XmlParserKitManager();
         XmlParserKit kit = new XmlParserKit();
         //-----------------------
         kit.regeditHook("/", new XmlDocumentHook() {
-            public void endDocument(StackDecorator context, EndDocumentEvent event) {
+            public void endDocument(XmlStackDecorator context, EndDocumentEvent event) {
                 System.out.println(event);
             }
-            public void beginDocument(StackDecorator context, StartDocumentEvent event) {
+            public void beginDocument(XmlStackDecorator context, StartDocumentEvent event) {
                 System.out.println(event);
             }
         });
         kit.regeditHook("/beans/bean", new XmlElementHook() {
-            public void endElement(StackDecorator context, String xpath, EndElementEvent event) {
+            public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
                 System.out.println(event.getName());
             }
-            public void beginElement(StackDecorator context, String xpath, StartElementEvent event) {
+            public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
                 int index = event.getAttributeCount();
                 if (index != 0)
                     System.out.println(event.getAttributeName(index - 1) + "=" + event.getAttributeValue(index - 1));
@@ -60,7 +61,7 @@ public class Level3_Test {
             }
         });
         //-----------------------
-        manager.regeditKit("http://www.test.org/schema/bb", kit);
+        manager.regeditKit("http://www.test.org/schema/bean", kit);
         reader.reader(manager, null);//"/beans/config:config");
     }
 }

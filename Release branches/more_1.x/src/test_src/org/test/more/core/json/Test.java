@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package org.test.more.core.json;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.more.core.json.JsonUtil;
 import org.test.workflow.form.User;
@@ -22,13 +25,21 @@ public class Test {
      * @param args
      */
     public static void main(String[] args) {
-        User us = new User();
+        ArrayList aa = new ArrayList();
+        aa.add("aaa");
+//        aa.add(new User());
+        HashMap a = new HashMap();
+//        a.put(false, aa);
+        a.put("aa", aa);
+//        a.put(1, aa);
+//        a.put(3, aa);
+        //
         JsonUtil ju = new JsonUtil('\'');
-        System.out.println(ju.toString(us));
-        String json = "{12:{sex:'дя',aaa:true}}";
+        System.out.println(ju.toString(a));
+        //String json = "{12:{sex:'дя',aaa:true}}";
         // String json = "''";
-        Map m = ju.toMap(json);
-        System.out.println(m);
+        //Map<?, ?> m = ju.toMap(json);
+        // System.out.println(m);
         // TODO Auto-generated method stub
     }
 }

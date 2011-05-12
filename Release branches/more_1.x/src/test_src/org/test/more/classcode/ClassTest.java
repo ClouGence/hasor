@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.test.more.classcode;
+import java.io.InputStream;
 import java.util.HashMap;
 import org.junit.Test;
 import org.more.core.classcode.BuilderMode;
@@ -68,5 +69,15 @@ public class ClassTest {
         ClassEngine ce = new ClassEngine("aaa");
         ce.setBuilderMode(BuilderMode.Propxy);
         System.out.println(ce.newInstance(new HashMap<Object, Object>()));
+    }
+    @Test
+    public void test_9() throws Exception {
+        //生称一个类，然后获取这个生成类型的字节码。
+        ClassEngine ce = new ClassEngine("org.aaa.Test", ClassTest.class, null);
+        Class<?> type = ce.builderClass().toClass();
+        InputStream is1 = type.getClassLoader().getResourceAsStream("/" + type.getName().replace(".", "/") + ".class");
+        InputStream is2 = type.getClassLoader().getResourceAsStream(type.getName());
+        System.out.println("is1:\t" + is1);
+        System.out.println("is2:\t" + is2);
     }
 }

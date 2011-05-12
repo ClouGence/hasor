@@ -19,9 +19,9 @@ import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
 import org.more.core.xml.XmlNamespaceParser;
 import org.more.core.xml.XmlParserKitManager;
+import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.XmlReader;
 import org.more.core.xml.stream.XmlStreamEvent;
-import org.more.util.attribute.StackDecorator;
 /**
  *
  * @version 2010-9-8
@@ -39,7 +39,7 @@ public class Level2_Test {
         manager.regeditKit("http://www.test.org/schema/b", new XmlNamespaceParser() {
             public void endAccept() {}
             public void beginAccept() {}
-            public void sendEvent(StackDecorator context, String xpath, XmlStreamEvent event) {
+            public void sendEvent(XmlStackDecorator context, String xpath, XmlStreamEvent event) {
                 System.out.println(event.getClass().getSimpleName() + "\t\t\t" + event.getXpath() + "\t\t\t" + xpath);
             }
         });
