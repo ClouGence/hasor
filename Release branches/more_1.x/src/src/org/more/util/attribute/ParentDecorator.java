@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 /**
  * ParentDecorator类型装饰器，该装饰器的作用是基于原有{@link IAttribute}属性集之外在套一层父属性集。
- * 这样当遇到设置同名属性时新的属性集不会影响父属性集。
+ * 这样当遇到设置同名属性时新的属性集不会影响父属性集。（所有{@link IAttribute}接口操作都不会影响到父属性集）
  * @version 2010-9-11
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -27,7 +27,7 @@ public class ParentDecorator extends AbstractAttDecorator {
     private IAttribute parent = null;
     //==================================================================================Constructor
     /**
-     * 创建一个ParentDecorator类型装饰器，使用该方法创建的装饰器其父属性集就是源(source)。
+     * 创建一个ParentDecorator类型装饰器，使用该方法创建的装饰器其父属性集为空。
      * @param source 指定装饰器要装饰的属性集。
      * @throws NullPointerException 如果source参数为空则会引发该异常。
      */
@@ -35,7 +35,7 @@ public class ParentDecorator extends AbstractAttDecorator {
         super(source);
     }
     /**
-     * 创建一个ParentDecorator类型装饰器，使用该方法创建的装饰器其父属性集就是源(source)。
+     * 创建一个ParentDecorator类型装饰器。
      * @param source 指定装饰器要装饰的属性集。
      * @param parent 所使用的父属性集。
      * @throws NullPointerException 如果source参数为空则会引发该异常。

@@ -20,7 +20,8 @@ import java.net.URL;
 import java.net.URLDecoder;
 import org.more.FormatException;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.context.XmlDefineResource;
+import org.more.hypha.context.app.HyphaApplicationContext;
+import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.submit.ActionContext;
 import org.more.submit.ActionContextBuild;
 import org.more.util.Config;
@@ -78,7 +79,8 @@ public class MoreBuilder implements ActionContextBuild {
             throw new IOException("配置文件[" + configFile.getAbsolutePath() + "]不存在，或者无法读取。");
         XmlDefineResource xmlConfig = new XmlDefineResource();
         xmlConfig.addSource(configFile);
-        this.factory = xmlConfig.buildApp(config.getContext());
+        this.factory = new HyphaApplicationContext(xmlConfig);
+        this.factory.init();
     };
     /**获取配置文件位置。*/
     public String getConfig() {

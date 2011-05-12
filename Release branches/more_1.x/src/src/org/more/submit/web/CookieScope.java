@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 package org.more.submit.web;
+import java.util.Map;
 import java.util.Vector;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.more.util.attribute.IAttribute;
+import org.more.util.attribute.TransformToMap;
 /**
  * 负责提供Cookie到{@link IAttribute IAttribute接口}的代理。
  * @version 2009-12-28
@@ -93,5 +95,8 @@ public class CookieScope implements IAttribute {
             if (cs[i].equals(name) == true)
                 return cs[i];
         return null;
-    };
+    }
+    public Map<String, Object> toMap() {
+        return new TransformToMap(this);
+    }
 };

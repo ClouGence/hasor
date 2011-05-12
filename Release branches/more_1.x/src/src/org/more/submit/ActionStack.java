@@ -193,6 +193,9 @@ public class ActionStack implements IAttribute, ScopeEnum {
     public void clearAttribute() {
         this.currentScope.clearAttribute();
     };
+    public Map<String, Object> toMap() {
+        return this.currentScope.toMap();
+    };
     /**将Map中所有参数输出到当前参数作用域中。*/
     public void putALL(Map<String, ?> params) {
         if (params == null)
@@ -231,5 +234,5 @@ public class ActionStack implements IAttribute, ScopeEnum {
         IAttribute att = this.getScopeAttribute(scope);
         for (String key : params.keySet())
             att.setAttribute(key, params.get(key));
-    };
+    }
 };

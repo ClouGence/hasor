@@ -15,9 +15,11 @@
  */
 package org.more.submit.web;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.Vector;
 import javax.servlet.ServletContext;
 import org.more.util.attribute.IAttribute;
+import org.more.util.attribute.TransformToMap;
 /**
  * 负责提供ServletContext到{@link IAttribute IAttribute接口}的代理。
  * @version 2009-12-28
@@ -53,5 +55,8 @@ public class ServletContextScope implements IAttribute {
         String[] ns = this.getAttributeNames();
         for (int i = 0; i < ns.length; i++)
             this.removeAttribute(ns[i]);
+    };
+    public Map<String, Object> toMap() {
+        return new TransformToMap(this);
     };
 };

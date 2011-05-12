@@ -15,6 +15,7 @@
  */
 package org.more.util;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.Vector;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
@@ -70,5 +71,8 @@ public class AttributeConfigBridge implements IAttribute, Config {
     }
     public void setAttribute(String name, Object value) {
         this.attMap.setAttribute(name, value);
+    }
+    public Map<String, Object> toMap() {
+        return this.attMap.toMap();
     }
 }

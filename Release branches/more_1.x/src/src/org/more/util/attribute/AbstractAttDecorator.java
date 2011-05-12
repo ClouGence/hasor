@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.util.attribute;
+import java.util.Map;
 /**
  *    抽象的属性装饰器，所有属性装饰器类必须继承自该类或者其子类。抽象的装饰器类中提供
  * 了对原始属性对象的一套get/set方法。通过装饰器的get/set方法可以方便的在不同的装饰
@@ -72,5 +73,8 @@ public abstract class AbstractAttDecorator implements IAttribute {
     }
     public void setAttribute(String name, Object value) {
         this.source.setAttribute(name, value);
+    }
+    public Map<String, Object> toMap() {
+        return this.source.toMap();
     }
 }

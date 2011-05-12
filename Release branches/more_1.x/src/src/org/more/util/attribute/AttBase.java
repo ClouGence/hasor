@@ -124,4 +124,7 @@ public class AttBase implements IAttribute, Map<String, Object>, Serializable {
     public Collection<Object> values() {
         return this.prop.values();
     }
+    public Map<String, Object> toMap() {
+        return this.prop;
+    }
 }

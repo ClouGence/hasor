@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.util.attribute;
+import java.util.Map;
 /**
  * 属性访问接口，该接口的功能是提供一组常用的属性设置读取方法。
  * @version 2009-4-28
@@ -47,4 +48,6 @@ public interface IAttribute {
     public String[] getAttributeNames();
     /** 清空所有属性。 */
     public void clearAttribute();
+    /**将{@link IAttribute}转换为Map形式。*/
+    public Map<String, Object> toMap();
 }
