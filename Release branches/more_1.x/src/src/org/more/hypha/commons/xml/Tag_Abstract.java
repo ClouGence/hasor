@@ -22,7 +22,7 @@ import org.more.util.StringConvert;
 import org.more.util.StringUtil;
 import org.more.util.attribute.IAttribute;
 /**
- * namespace包中凡是涉及解析xml的类都需要集成的类，该类目的是为了提供一个统一的{@link DefineResourceImpl}对象获取接口和一些Tag解析时的公共方法。
+ * namespace包中凡是涉及解析xml的类都需要集成的类，该类目的是为了提供一个统一的{@link XmlDefineResource}对象获取接口和一些Tag解析时的公共方法。
  * @version 2010-9-23
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -32,7 +32,7 @@ public abstract class Tag_Abstract {
     public Tag_Abstract(XmlDefineResource configuration) {
         this.configuration = configuration;
     }
-    /**获取{@link DefineResourceImpl}类型*/
+    /**获取{@link XmlDefineResource}类型*/
     protected XmlDefineResource getDefineResource() {
         return this.configuration;
     }

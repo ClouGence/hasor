@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.event;
+package org.more.hypha.commons;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -40,7 +40,7 @@ public class AbstractEventManager implements EventManager {
     public AbstractEventManager(DefineResource defineResource) {
         this.defineResource = defineResource;
     }
-    public void init(IAttribute flash) throws Throwable {
+    public void init(IAttribute flash) {
         this.flash = flash;
     }
     /**ªÒ»°{@link DefineResource}°£*/
@@ -81,12 +81,12 @@ public class AbstractEventManager implements EventManager {
         this.eventQueueMap.remove(sequence);
         return this.eventQueue.remove(sequence);
     }
-    public synchronized void popEvent() {
+    public synchronized void popEvent() throws Throwable {
         for (Sequence si : this.eventQueue)
             this.doEvent(si.getEventType(), si.getParams());
         this.clearEvent();
     }
-    public synchronized void popEvent(Event eventType) {
+    public synchronized void popEvent(Event eventType) throws Throwable {
         ArrayList<Sequence> als = new ArrayList<Sequence>();
         for (Sequence si : this.eventQueue)
             if (si.getEventType() == eventType)
@@ -94,7 +94,7 @@ public class AbstractEventManager implements EventManager {
         for (Sequence si : als)
             this.removeEvent(si);
     }
-    public synchronized void popEvent(Sequence sequence) {
+    public synchronized void popEvent(Sequence sequence) throws Throwable {
         if (this.removeEvent(sequence) == true)
             this.doEvent(sequence.getEventType(), sequence.getParams());
     }
@@ -113,7 +113,7 @@ class SequenceImpl extends Sequence {
     private Event                eventType  = null;
     private Object[]             objects    = null;
     //
-    public SequenceImpl(LinkedList<Sequence> eventQueue, Event eventType, Object[] objects) {
+    SequenceImpl(LinkedList<Sequence> eventQueue, Event eventType, Object[] objects) {
         this.eventQueue = eventQueue;
         this.eventType = eventType;
         this.objects = objects;

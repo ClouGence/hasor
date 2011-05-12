@@ -15,12 +15,13 @@
  */
 package org.more.hypha.context;
 import java.util.Map;
+import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.DefineResource;
+import org.more.hypha.Event;
 import org.more.hypha.EventManager;
-import org.more.hypha.ExpandPoint;
 import org.more.hypha.ExpandPointManager;
-import org.more.hypha.event.AbstractEventManager;
-import org.more.hypha.expandpoint.AbstractExpandPointManager;
+import org.more.hypha.commons.AbstractEventManager;
+import org.more.hypha.commons.AbstractExpandPointManager;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**
@@ -29,13 +30,14 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractDefineResource implements DefineResource {
-    private static final long  serialVersionUID   = 1420351981612281917L;
-    private String             sourceName         = null;                //资源名
-    private IAttribute         flashContext       = null;                //全局闪存，通过重写受保护的方法createFlash来达到植入的目的。
-    private IAttribute         attributeManager   = null;                //属性管理器
+    private static final long          serialVersionUID   = 1420351981612281917L;
+    private String                     sourceName         = null;                //资源名
+    private IAttribute                 flashContext       = null;                //全局闪存，通过重写受保护的方法createFlash来达到植入的目的。
+    private ThreadLocal<IAttribute>    threadFlash        = null;                //全局闪存，通过重写受保护的方法createFlash来达到植入的目的。
+    private IAttribute                 attributeManager   = null;                //属性管理器
     //以下字段都可以通过重写相应方法达到重写的目的。
-    private EventManager       eventManager       = null;                //事件管理器
-    private ExpandPointManager expandPointManager = null;                //扩展点管理器
+    private AbstractEventManager       eventManager       = null;                //事件管理器
+    private AbstractExpandPointManager expandPointManager = null;                //扩展点管理器
     //========================================================================================================================IAttribute
     public boolean contains(String name) {
         return this.getAttribute().contains(name);
@@ -75,55 +77,67 @@ public abstract class AbstractDefineResource implements DefineResource {
     public final IAttribute getAttribute() {
         if (this.attributeManager == null)
             this.attributeManager = this.createAttribute();
-        if (this.attributeManager == null)
-            this.attributeManager = new AttBase();
         return this.attributeManager;
     }
-    /**获取Flash，这个flash是一个内部信息携带体。它可以贯穿整个hypha的所有阶段。得到flash有两种办法一种是主动获取。另外一种是在特定的位置由hypha提供。*/
+    /**获取Flash，这个flash是一个内部信息携带体。它可以贯穿整个hypha的所有阶段。
+     * 得到flash有两种办法一种是主动获取。另外一种是在特定的位置由hypha提供。不受线程限制。*/
     public final IAttribute getFlash() {
         if (this.flashContext == null)
-            this.flashContext = this.createFlash();
-        if (this.flashContext == null)
-            this.flashContext = new AttBase();
+            this.flashContext = this.createFlash("Public");
         return this.flashContext;
     };
-    /**获取事件管理器，通过该管理器可以发送事件，事件的监听也是通过这个接口对象完成的。子类可以通过重写该方法来改变事件管理器。*/
+    /**获取Flash，这个flash是一个内部信息携带体。它可以贯穿整个hypha的所有阶段。
+     * 得到flash有两种办法一种是主动获取。另外一种是在特定的位置由hypha提供。线程间独立。*/
+    public final IAttribute getThreadFlash() {
+        if (this.threadFlash == null) {
+            this.threadFlash = new ThreadLocal<IAttribute>();
+            IAttribute flash = this.createFlash("Thread");
+            this.threadFlash.set(flash);
+            return flash;
+        } else {
+            IAttribute flash = this.threadFlash.get();
+            if (flash == null) {
+                flash = this.createFlash("Thread");
+                this.threadFlash.set(flash);
+            }
+            return flash;
+        }
+    }
     public final EventManager getEventManager() {
         if (this.eventManager == null)
-            this.eventManager = this.getEventManager();
-        if (this.eventManager == null)
-            try {
-                this.eventManager = new AbstractEventManager(this) {};
-                this.eventManager.init(this.getFlash());
-            } catch (Throwable e) {/*TODO 不会引发任何异常*/}
+            this.eventManager = this.createEventManager();
         return this.eventManager;
     }
-    /**获取扩展点管理器，通过扩展点管理器可以检索、注册或者解除注册扩展点。有关扩展点的功能请参见{@link ExpandPoint}。子类可以通过重写该方法来改变扩展点管理器。*/
     public final ExpandPointManager getExpandPointManager() {
         if (this.expandPointManager == null)
             this.expandPointManager = this.createExpandPointManager();
-        if (this.expandPointManager == null)
-            try {
-                this.expandPointManager = new AbstractExpandPointManager(this) {};
-                this.expandPointManager.init(this.getFlash());
-            } catch (Throwable e) {/*TODO 不会引发任何异常*/}
         return this.expandPointManager;
     }
+    /**抛出一个事件，如果事件中断会引发执行错误会引发*/
+    protected void throwEvent(Event event, Object... params) {
+        this.getEventManager().doEvent(event, params);
+    }
     //========================================================================================================================
-    /**创建一个属性管理器，如果返回空则创建默认的一个属性管理器。*/
+    /**创建一个属性管理器，重新该方法可以替换{@link DefineResource}接口使用的Attribute对象。*/
     protected IAttribute createAttribute() {
-        return null;
+        return new AttBase();
     };
-    /**创建一个Flash，如果返回空则创建默认的一个Flash。*/
-    protected IAttribute createFlash() {
-        return null;
+    /**创建一个Flash，重新该方法可以替换{@link DefineResource}接口使用的Flash对象。
+     * 如果参数值为‘Public’则表示创建是一个可以跨越所有线程的FLASH。
+     * 如果为‘Thread’则表示创建的是一个只在当前线程里有效的FLASH*/
+    protected IAttribute createFlash(String type) {
+        return new AttBase();
     };
-    /**创建一个{@link EventManager}，如果返回空则创建默认的一个管理器。*/
-    protected EventManager createEventManager() {
-        return null;
+    /**创建一个{@link EventManager}，重新该方法可以替换{@link DefineResource}接口使用的{@link EventManager}对象。*/
+    protected AbstractEventManager createEventManager() {
+        AbstractEventManager em = new AbstractEventManager(this) {};
+        em.init(this.getFlash());
+        return em;
     };
-    /**创建一个{@link ExpandPointManager}，如果返回空则创建默认的一个管理器。*/
-    protected ExpandPointManager createExpandPointManager() {
-        return null;
+    /**创建一个{@link ExpandPointManager}，重新该方法可以替换{@link DefineResource}接口使用的{@link ExpandPointManager}对象。*/
+    protected AbstractExpandPointManager createExpandPointManager() {
+        AbstractExpandPointManager epm = new AbstractExpandPointManager(this) {};
+        epm.init(this.getFlash());
+        return epm;
     };
 };

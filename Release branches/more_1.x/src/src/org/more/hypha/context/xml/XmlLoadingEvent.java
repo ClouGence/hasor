@@ -13,30 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.event;
-import org.more.hypha.AbstractBeanDefine;
-import org.more.hypha.DefineResource;
+package org.more.hypha.context.xml;
 import org.more.hypha.Event;
-import org.more.hypha.context.xml.XmlDefineResource;
 /**
- * 开始初始化过程事件，该事件是{@link DefineResource}。收到一个新{@link AbstractBeanDefine}定义添加时引发。
+ * 装载中。
  * @version 2010-10-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public class AddBeanDefineEvent extends Event {
+public class XmlLoadingEvent extends Event {
     public class Params extends Event.Params {
-        public DefineResource     defineResource = null;
-        public AbstractBeanDefine define         = null;
+        public XmlDefineResource xmlDefineResource = null;
+        public Object            source            = null;
     };
-    private AddBeanDefineEvent() {};
-    static {
-        new AddBeanDefineEvent();
-    }
     public Params toParams(Sequence eventSequence) {
         Object[] params = eventSequence.getParams();
         Params p = new Params();
-        p.defineResource = (XmlDefineResource) params[0];
-        p.define = (AbstractBeanDefine) params[1];
+        p.xmlDefineResource = (XmlDefineResource) params[0];
+        p.source = params[1];
         return p;
     }
 };

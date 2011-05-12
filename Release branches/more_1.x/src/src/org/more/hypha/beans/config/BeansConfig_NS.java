@@ -13,27 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.event;
-import org.more.hypha.DefineResource;
-import org.more.hypha.Event;
+package org.more.hypha.beans.config;
+import org.more.hypha.commons.xml.Tag_Abstract;
 import org.more.hypha.context.xml.XmlDefineResource;
 /**
- * 当清空Bean定义时候引发该事件。
- * @version 2010-10-11
+ * 用于解析beans-config命名空间标签解析器基类，主要用于区分不同命名空间。
+ * @version : 2011-4-22
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ClearALLDefineEvent extends Event {
-    public class Params extends Event.Params {
-        public DefineResource defineResource = null;
+public abstract class BeansConfig_NS extends Tag_Abstract {
+    public BeansConfig_NS(XmlDefineResource configuration) {
+        super(configuration);
     };
-    private ClearALLDefineEvent() {};
-    static {
-        new ClearALLDefineEvent();
-    }
-    public Params toParams(Sequence eventSequence) {
-        Object[] params = eventSequence.getParams();
-        Params p = new Params();
-        p.defineResource = (XmlDefineResource) params[0];
-        return p;
-    }
 };

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.assembler;
+package org.more.hypha.commons.engine;
 import java.io.IOException;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;

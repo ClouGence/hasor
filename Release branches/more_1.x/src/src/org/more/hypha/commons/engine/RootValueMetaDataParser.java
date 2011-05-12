@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.assembler;
+package org.more.hypha.commons.engine;
 import java.util.HashMap;
 import java.util.Map;
 import org.more.DoesSupportException;
@@ -25,10 +25,9 @@ import org.more.hypha.ValueMetaData;
  * @version 2011-1-21
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractRootValueMetaDataParser implements ValueMetaDataParser<ValueMetaData> {
+public abstract class RootValueMetaDataParser implements ValueMetaDataParser<ValueMetaData> {
     private Map<String, ValueMetaDataParser<ValueMetaData>> metaDataParserMap = new HashMap<String, ValueMetaDataParser<ValueMetaData>>();
     //----------------------------------------------------------------------------------------------------------
-    //    
     /**第二个参数无效，因为{@link RootValueMetaDataParser}就是根。*/
     public Object parser(ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser/*该参数无效*/, ApplicationContext context) throws Throwable {
         String metaDataType = data.getMetaDataType();

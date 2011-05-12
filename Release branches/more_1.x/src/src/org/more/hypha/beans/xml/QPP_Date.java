@@ -16,7 +16,6 @@
 package org.more.hypha.beans.xml;
 import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ValueMetaData;
-import org.more.hypha.beans.BeansTypeParser;
 import org.more.hypha.beans.define.Date_ValueMetaData;
 import org.more.util.attribute.IAttribute;
 /**
@@ -24,7 +23,7 @@ import org.more.util.attribute.IAttribute;
  * @version 2010-9-23
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class QPP_Date implements BeansTypeParser {
+public class QPP_Date implements QPP {
     public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
         String value = (String) attribute.getAttribute("date");
         if (value == null)

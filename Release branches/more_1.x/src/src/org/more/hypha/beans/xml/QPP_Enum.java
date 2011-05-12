@@ -16,7 +16,6 @@
 package org.more.hypha.beans.xml;
 import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ValueMetaData;
-import org.more.hypha.beans.BeansTypeParser;
 import org.more.hypha.beans.define.Enum_ValueMetaData;
 import org.more.util.attribute.IAttribute;
 /**
@@ -24,7 +23,7 @@ import org.more.util.attribute.IAttribute;
  * @version 2010-9-22
  * @author 赵永春 (zyc@byshell.org)
  */
-public class QPP_Enum implements BeansTypeParser {
+public class QPP_Enum implements QPP {
     /**试图解析成为{@link Enum_ValueMetaData}如果解析失败返回null。*/
     public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
         //1.检查是否可以解析

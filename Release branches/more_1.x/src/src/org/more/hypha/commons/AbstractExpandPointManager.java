@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.expandpoint;
+package org.more.hypha.commons;
 import java.util.ArrayList;
 import java.util.List;
 import org.more.hypha.DefineResource;
@@ -33,7 +33,7 @@ public abstract class AbstractExpandPointManager implements ExpandPointManager {
     public AbstractExpandPointManager(DefineResource defineResource) {
         this.defineResource = defineResource;
     }
-    public void init(IAttribute flash) throws Throwable {
+    public void init(IAttribute flash) {
         this.flash = flash;
     }
     /**∑µªÿ{@link DefineResource}∂‘œÛ°£*/

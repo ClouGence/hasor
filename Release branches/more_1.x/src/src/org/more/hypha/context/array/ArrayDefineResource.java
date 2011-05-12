@@ -25,8 +25,6 @@ import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.DefineResource;
 import org.more.hypha.Event;
 import org.more.hypha.context.AbstractDefineResource;
-import org.more.hypha.event.AddBeanDefineEvent;
-import org.more.hypha.event.ClearALLDefineEvent;
 /**
  * 集合形式的{@link DefineResource}接口实现类，该类将所有Bean定义数据都存放在内存中。
  * @version 2010-11-30
@@ -41,17 +39,10 @@ public class ArrayDefineResource extends AbstractDefineResource {
             throw new NoDefinitionException("不存在id为[" + id + "]的Bean定义。");
         return this.defineMap.get(id);
     };
-    public synchronized void addBeanDefine(AbstractBeanDefine define) throws NoDefinitionException {
-        if (this.defineNames.contains(define.getID()) == true)
-            throw new RepeateException("[" + define.getID() + "]Bean定义重复。");
-        this.getEventManager().doEvent(Event.getEvent(AddBeanDefineEvent.class), this, define);//新Bean定义，使用队列形式。
-        this.defineNames.add(define.getID());
-        this.defineMap.put(define.getID(), define);
-    };
     public boolean containsBeanDefine(String id) {
         return this.defineNames.contains(id);
     };
-    public synchronized List<String> getBeanDefinitionIDs() {
+    public List<String> getBeanDefinitionIDs() {
         return Collections.unmodifiableList((List<String>) this.defineNames);
     }
     public boolean isPrototype(String id) throws NoDefinitionException {
@@ -69,8 +60,15 @@ public class ArrayDefineResource extends AbstractDefineResource {
         AbstractBeanDefine define = this.getBeanDefine(id);
         return (define.factoryMethod() == null) ? false : true;
     }
+    public synchronized void addBeanDefine(AbstractBeanDefine define) throws NoDefinitionException {
+        if (this.defineNames.contains(define.getID()) == true)
+            throw new RepeateException("[" + define.getID() + "]Bean定义重复。");
+        this.throwEvent(Event.getEvent(AddDefineEvent.class), this, define);//新Bean定义，使用队列形式。
+        this.defineNames.add(define.getID());
+        this.defineMap.put(define.getID(), define);
+    };
     public synchronized void clearDefine() {
-        this.getEventManager().doEvent(Event.getEvent(ClearALLDefineEvent.class), this);//销毁
+        this.throwEvent(Event.getEvent(ClearDefineEvent.class), this);//销毁
         this.defineNames.clear();
         this.defineMap.clear();
     }

@@ -16,21 +16,14 @@
 package org.more.hypha.beans.xml;
 import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ValueMetaData;
-import org.more.hypha.beans.define.URI_ValueMetaData;
 import org.more.util.attribute.IAttribute;
 /**
- * 连接属性值解析器，默认值是null。
+ * 属性值解析器。负责将可表述的字符串信息解析成相应的类型数据。该接口的目的是为了
+ * 辅助{@link TagBeans_AbstractPropertyDefine}解析器解析属性值元信息。
  * @version 2010-9-22
  * @author 赵永春 (zyc@byshell.org)
  */
-public class QPP_URILocation implements QPP {
-    public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
-        String value = (String) attribute.getAttribute("uriLocation");
-        if (value == null)
-            return null;
-        //2.进行解析
-        URI_ValueMetaData newMETA = new URI_ValueMetaData();
-        newMETA.setUriObject(value);
-        return newMETA;
-    }
+public interface QPP {
+    /** 解析一个字符串值类型。*/
+    public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property);
 }

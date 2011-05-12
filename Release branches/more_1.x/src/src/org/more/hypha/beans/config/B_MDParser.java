@@ -13,26 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.event;
-import org.more.hypha.ApplicationContext;
-import org.more.hypha.Event;
+package org.more.hypha.beans.config;
 /**
- * {@link ApplicationContext}遇到初始化调用而引发事件。
- * @version 2011-2-25
+ * 该类是封装c:parser标签用的。
+ * @version : 2011-4-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public class InitEvent extends Event {
-    public class Params extends Event.Params {
-        public ApplicationContext applicationContext = null;
-    };
-    private InitEvent() {};
-    static {
-        new InitEvent();
+public class B_MDParser {
+    private String mdType    = null;
+    private String className = null;
+    public String getMdType() {
+        return mdType;
     }
-    public Params toParams(Sequence eventSequence) {
-        Object[] params = eventSequence.getParams();
-        Params p = new Params();
-        p.applicationContext = (ApplicationContext) params[0];
-        return p;
+    public void setMdType(String mdType) {
+        this.mdType = mdType;
     }
-};
+    public String getClassName() {
+        return className;
+    }
+    public void setClassName(String className) {
+        this.className = className;
+    }
+}

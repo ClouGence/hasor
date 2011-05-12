@@ -13,26 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.event;
-import org.more.hypha.Event;
-import org.more.hypha.context.xml.XmlDefineResource;
+package org.more.hypha.beans;
+import org.more.hypha.Event.Sequence;
+import org.more.hypha.EventListener;
+import org.more.hypha.context.xml.XmlLoadedEvent;
 /**
- * 重新装载事件，当环境被请求重新装载时会引发该事件。
- * @version 2010-10-10
+ * 
+ * @version : 2011-4-22
  * @author 赵永春 (zyc@byshell.org)
  */
-public class XmlReloadDefineEvent extends Event {
-    public class Params extends Event.Params {
-        public XmlDefineResource xmlDefineResource = null;
-    };
-    private XmlReloadDefineEvent() {};
-    static {
-        new XmlReloadDefineEvent();
+class OnXmlLoaded implements EventListener<XmlLoadedEvent> {
+    public void onEvent(XmlLoadedEvent event, Sequence sequence) {
+        // TODO Auto-generated method stub
     }
-    public Params toParams(Sequence eventSequence) {
-        Object[] params = eventSequence.getParams();
-        Params p = new Params();
-        p.xmlDefineResource = (XmlDefineResource) params[0];
-        return p;
-    }
-};
+}

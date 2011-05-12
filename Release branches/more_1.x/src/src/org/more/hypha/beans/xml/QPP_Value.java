@@ -16,7 +16,6 @@
 package org.more.hypha.beans.xml;
 import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ValueMetaData;
-import org.more.hypha.beans.BeansTypeParser;
 import org.more.hypha.beans.define.PropertyType;
 import org.more.hypha.beans.define.Simple_ValueMetaData;
 import org.more.util.StringConvert;
@@ -27,7 +26,7 @@ import org.more.util.attribute.IAttribute;
  * @version 2010-11-11
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class QPP_Value implements BeansTypeParser {
+public class QPP_Value implements QPP {
     public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
         String value = (String) attribute.getAttribute("value");
         if (value == null)

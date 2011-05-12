@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.xml;
+package org.more.hypha.beans.config;
+import java.util.ArrayList;
+import java.util.List;
 import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.context.xml.XmlDefineResource;
 /**
- * 用于解析/beans标签
- * @version 2010-9-16
+ * 用于解析bc:mdParser-config标签
+ * @version : 2011-4-22
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TagBeans_Beans extends TagBeans_NS implements XmlElementHook {
-    /**创建{@link TagBeans_Beans}对象*/
-    public TagBeans_Beans(XmlDefineResource configuration) {
+public class BeansConfig_MDParserConfig extends BeansConfig_NS implements XmlElementHook {
+    public static final String MDParserConfigList = "$more_BeansConfig_mdConfigList";
+    public BeansConfig_MDParserConfig(XmlDefineResource configuration) {
         super(configuration);
     }
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
-        context.createStack();
+        List<B_MDParser> btList = new ArrayList<B_MDParser>();
+        context.setAttribute(MDParserConfigList, btList);
+        this.getFlash().setAttribute(MDParserConfigList, btList);
     }
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
-        context.dropStack();
-    }
+    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
 }

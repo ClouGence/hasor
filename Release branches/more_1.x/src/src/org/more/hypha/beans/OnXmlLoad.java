@@ -13,24 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.xml;
-import org.more.hypha.AbstractPropertyDefine;
-import org.more.hypha.ValueMetaData;
-import org.more.hypha.beans.define.URI_ValueMetaData;
-import org.more.util.attribute.IAttribute;
+package org.more.hypha.beans;
+import org.more.hypha.Event.Sequence;
+import org.more.hypha.EventListener;
+import org.more.hypha.context.xml.XmlLoadEvent;
 /**
- * 连接属性值解析器，默认值是null。
- * @version 2010-9-22
+ * 
+ * @version : 2011-4-22
  * @author 赵永春 (zyc@byshell.org)
  */
-public class QPP_URILocation implements QPP {
-    public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
-        String value = (String) attribute.getAttribute("uriLocation");
-        if (value == null)
-            return null;
-        //2.进行解析
-        URI_ValueMetaData newMETA = new URI_ValueMetaData();
-        newMETA.setUriObject(value);
-        return newMETA;
+class OnXmlLoad implements EventListener<XmlLoadEvent> {
+    public void onEvent(XmlLoadEvent event, Sequence sequence) {
+        // TODO Auto-generated method stub
     }
 }

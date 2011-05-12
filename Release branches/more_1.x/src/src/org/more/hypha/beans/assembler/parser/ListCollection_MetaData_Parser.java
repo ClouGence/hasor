@@ -16,8 +16,8 @@
 package org.more.hypha.beans.assembler.parser;
 import java.util.List;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.beans.assembler.ValueMetaDataParser;
 import org.more.hypha.beans.define.List_ValueMetaData;
+import org.more.hypha.commons.engine.ValueMetaDataParser;
 /**
  * 
  * @version 2011-2-15

@@ -13,26 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.event;
+package org.more.hypha.context.xml;
 import org.more.hypha.Event;
-import org.more.hypha.context.xml.XmlDefineResource;
 /**
- * 开始执行装载动作。
- * @version 2010-12-2
+ * 装载动作执行完毕。
+ * @version 2010-10-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public class XmlLoadEvent extends Event {
+public class XmlLoadedEvent extends Event {
     public class Params extends Event.Params {
         public XmlDefineResource xmlDefineResource = null;
     };
-    private XmlLoadEvent() {};
-    static {
-        new XmlLoadEvent();
-    }
     public Params toParams(Sequence eventSequence) {
         Object[] params = eventSequence.getParams();
         Params p = new Params();
         p.xmlDefineResource = (XmlDefineResource) params[0];
         return p;
     }
-}
+};

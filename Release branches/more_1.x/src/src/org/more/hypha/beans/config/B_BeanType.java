@@ -13,26 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.event;
-import org.more.hypha.Event;
-import org.more.hypha.context.xml.XmlDefineResource;
+package org.more.hypha.beans.config;
 /**
- * 装载动作执行完毕。
- * @version 2010-10-10
+ * 该类是封装c:beanType标签用的。
+ * @version : 2011-4-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public class XmlLoadedEvent extends Event {
-    public class Params extends Event.Params {
-        public XmlDefineResource xmlDefineResource = null;
-    };
-    private XmlLoadedEvent() {};
-    static {
-        new XmlLoadedEvent();
+public class B_BeanType {
+    private String tName     = null;
+    private String className = null;
+    public String gettName() {
+        return tName;
     }
-    public Params toParams(Sequence eventSequence) {
-        Object[] params = eventSequence.getParams();
-        Params p = new Params();
-        p.xmlDefineResource = (XmlDefineResource) params[0];
-        return p;
+    public void settName(String tName) {
+        this.tName = tName;
     }
-};
+    public String getClassName() {
+        return className;
+    }
+    public void setClassName(String className) {
+        this.className = className;
+    }
+}

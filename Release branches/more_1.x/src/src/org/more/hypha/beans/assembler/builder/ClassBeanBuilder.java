@@ -16,8 +16,8 @@
 package org.more.hypha.beans.assembler.builder;
 import java.io.IOException;
 import java.io.InputStream;
-import org.more.hypha.beans.assembler.AbstractBeanBuilder;
 import org.more.hypha.beans.define.ClassPathBeanDefine;
+import org.more.hypha.commons.engine.AbstractBeanBuilder;
 /**
  * 
  * @version 2011-2-15

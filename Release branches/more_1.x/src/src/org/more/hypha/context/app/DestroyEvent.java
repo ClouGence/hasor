@@ -13,18 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans;
-import org.more.hypha.AbstractPropertyDefine;
-import org.more.hypha.ValueMetaData;
-import org.more.hypha.beans.xml.TagBeans_AbstractPropertyDefine;
-import org.more.util.attribute.IAttribute;
+package org.more.hypha.context.app;
+import org.more.hypha.ApplicationContext;
+import org.more.hypha.Event;
 /**
- * 属性值解析器。负责将可表述的字符串信息解析成相应的类型数据。该接口的目的是为了
- * 辅助{@link TagBeans_AbstractPropertyDefine}解析器解析属性值元信息。
- * @version 2010-9-22
+ * {@link ApplicationContext}遇到的卸载调用而引发事件。
+ * @version 2011-2-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface BeansTypeParser {
-    /** 解析一个字符串值类型。*/
-    public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property);
-}
+public class DestroyEvent extends Event {
+    public class Params extends Event.Params {
+        public ApplicationContext applicationContext = null;
+    };
+    public Params toParams(Sequence eventSequence) {
+        Object[] params = eventSequence.getParams();
+        Params p = new Params();
+        p.applicationContext = (ApplicationContext) params[0];
+        return p;
+    }
+};

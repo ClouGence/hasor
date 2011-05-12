@@ -13,8 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.xml;
+package org.more.hypha.beans;
 import org.more.core.xml.XmlParserKit;
+import org.more.hypha.beans.xml.QPP_Date;
+import org.more.hypha.beans.xml.QPP_Directory;
+import org.more.hypha.beans.xml.QPP_EL;
+import org.more.hypha.beans.xml.QPP_Enum;
+import org.more.hypha.beans.xml.QPP_File;
+import org.more.hypha.beans.xml.QPP_ROOT;
+import org.more.hypha.beans.xml.QPP_Ref;
+import org.more.hypha.beans.xml.QPP_URILocation;
+import org.more.hypha.beans.xml.QPP_Value;
+import org.more.hypha.beans.xml.TagBeans_Array;
+import org.more.hypha.beans.xml.TagBeans_Beans;
+import org.more.hypha.beans.xml.TagBeans_BigText;
+import org.more.hypha.beans.xml.TagBeans_ClassBean;
+import org.more.hypha.beans.xml.TagBeans_Constructor;
+import org.more.hypha.beans.xml.TagBeans_Date;
+import org.more.hypha.beans.xml.TagBeans_DefaultPackage;
+import org.more.hypha.beans.xml.TagBeans_Directory;
+import org.more.hypha.beans.xml.TagBeans_EL;
+import org.more.hypha.beans.xml.TagBeans_Entity;
+import org.more.hypha.beans.xml.TagBeans_Enum;
+import org.more.hypha.beans.xml.TagBeans_File;
+import org.more.hypha.beans.xml.TagBeans_GenerateBean;
+import org.more.hypha.beans.xml.TagBeans_List;
+import org.more.hypha.beans.xml.TagBeans_Map;
+import org.more.hypha.beans.xml.TagBeans_MetaData;
+import org.more.hypha.beans.xml.TagBeans_Method;
+import org.more.hypha.beans.xml.TagBeans_Package;
+import org.more.hypha.beans.xml.TagBeans_Param;
+import org.more.hypha.beans.xml.TagBeans_Property;
+import org.more.hypha.beans.xml.TagBeans_Ref;
+import org.more.hypha.beans.xml.TagBeans_RefBean;
+import org.more.hypha.beans.xml.TagBeans_ScriptBean;
+import org.more.hypha.beans.xml.TagBeans_Set;
+import org.more.hypha.beans.xml.TagBeans_TemplateBean;
+import org.more.hypha.beans.xml.TagBeans_URI;
+import org.more.hypha.beans.xml.TagBeans_Value;
+import org.more.hypha.beans.xml.TagBeans_VarBean;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.hypha.context.xml.XmlNameSpaceRegister;
 import org.more.util.attribute.IAttribute;
@@ -23,7 +60,7 @@ import org.more.util.attribute.IAttribute;
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Register_Beans implements XmlNameSpaceRegister {
+public class TagRegister_Beans implements XmlNameSpaceRegister {
     /**如果没有指定namespaceURL参数则该常量将会指定默认的命名空间。*/
     public static final String DefaultNameSpaceURL = "http://project.byshell.org/more/schema/beans";
     /**执行初始化注册。*/
@@ -70,7 +107,7 @@ public class Register_Beans implements XmlNameSpaceRegister {
         resource.regeditXmlParserKit(namespaceURL, kit);
         //3.注册快速属性值解析器，顺序就是优先级。
         /*当xml中试图配置了多种属性类别值时候优先级将会起到作用，列如同时配置了value 和 refBean属性。那么value的优先级比refBean高。*/
-        QPP_ROOT typeManager = resource.getTypeManager();
+        QPP_ROOT typeManager = new QPP_ROOT();
         typeManager.regeditTypeParser(new QPP_Value());
         typeManager.regeditTypeParser(new QPP_EL());
         typeManager.regeditTypeParser(new QPP_Date());
@@ -79,5 +116,6 @@ public class Register_Beans implements XmlNameSpaceRegister {
         typeManager.regeditTypeParser(new QPP_File());
         typeManager.regeditTypeParser(new QPP_Directory());
         typeManager.regeditTypeParser(new QPP_URILocation());
+        flash.setAttribute("org.more.hypha.beans.xml.QPP_ROOT", typeManager);
     }
 }

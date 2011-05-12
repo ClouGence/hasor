@@ -28,14 +28,8 @@ import org.more.core.xml.XmlParserKitManager;
 import org.more.core.xml.stream.XmlReader;
 import org.more.hypha.DefineResource;
 import org.more.hypha.Event;
-import org.more.hypha.beans.xml.QPP_ROOT;
-import org.more.hypha.beans.xml.TagBeans_Beans;
 import org.more.hypha.context.array.ArrayDefineResource;
 import org.more.hypha.context.xml._NameSpaceConfiguration.RegisterBean;
-import org.more.hypha.event.XmlLoadEvent;
-import org.more.hypha.event.XmlLoadedEvent;
-import org.more.hypha.event.XmlLoadingEvent;
-import org.more.hypha.event.XmlReloadDefineEvent;
 import org.more.util.ClassPathUtil;
 import org.more.util.attribute.IAttribute;
 /**
@@ -47,7 +41,6 @@ public class XmlDefineResource extends ArrayDefineResource {
     private static final String               ResourcePath        = "/META-INF/resource/hypha/register.xml";            //标签注册器
     private static final String               DefaultResourcePath = "/META-INF/resource/hypha/default-hypha-config.xml"; //默认配置文件
     private ArrayList<Object>                 sourceArray         = new ArrayList<Object>();
-    private QPP_ROOT                          typeManager         = new QPP_ROOT();                                     //类型解析
     private XmlParserKitManager               manager             = new XmlParserKitManager();                          //xml解析器
     private boolean                           loadMark            = false;                                              //是否已经执行过装载.
     //========================================================================================静态方法
@@ -73,6 +66,7 @@ public class XmlDefineResource extends ArrayDefineResource {
     private static void s_init(XmlDefineResource resource) throws Throwable {
         //关键-初始化
         if (XmlDefineResource.registerObjects == null) {
+            XmlDefineResource.registerObjects = new ArrayList<XmlNameSpaceRegister>();
             List<InputStream> ins = ClassPathUtil.getResource(ResourcePath);
             _NameSpaceConfiguration ns = new _NameSpaceConfiguration();
             for (InputStream is : ins)
@@ -199,10 +193,6 @@ public class XmlDefineResource extends ArrayDefineResource {
     protected XmlParserKitManager getManager() {
         return this.manager;
     };
-    /**获取类型解析器(xml专用)*/
-    public QPP_ROOT getTypeManager() {
-        return this.typeManager;
-    };
     /**注册一个标签解析工具集。*/
     public synchronized void regeditXmlParserKit(String namespace, XmlParserKit kit) {
         this.manager.regeditKit(namespace, kit);
@@ -213,15 +203,13 @@ public class XmlDefineResource extends ArrayDefineResource {
     };
     /**解析配置文件流。*/
     protected synchronized void passerXml(InputStream in, DefineResource conf) throws XMLStreamException {
-        XmlReader reader = new XmlReader(in);
-        this.manager.getContext().setAttribute(TagBeans_Beans.BeanDefineManager, this);
-        reader.reader(this.manager, null);
+        new XmlReader(in).reader(this.manager, null);
     };
     /**手动执行配置装载动作，如果重复装载可能产生异常。该动作将会引发{@link XmlLoadingEvent}事件*/
     public synchronized void loadDefine() throws IOException, XMLStreamException {
-        this.getEventManager().doEvent(Event.getEvent(XmlLoadEvent.class), this);//开始装载Beans
+        this.throwEvent(Event.getEvent(XmlLoadEvent.class), this);//开始装载Beans
         for (Object obj : this.sourceArray) {
-            this.getEventManager().doEvent(Event.getEvent(XmlLoadingEvent.class), this, obj);
+            this.throwEvent(Event.getEvent(XmlLoadingEvent.class), this, obj);
             if (obj instanceof InputStream) {
                 InputStream is = (InputStream) obj;
                 try {
@@ -249,12 +237,12 @@ public class XmlDefineResource extends ArrayDefineResource {
                 }
             }
         }
-        this.getEventManager().doEvent(Event.getEvent(XmlLoadedEvent.class), this);//装载Beans结束
+        this.throwEvent(Event.getEvent(XmlLoadedEvent.class), this);//装载Beans结束
         this.loadMark = true;
     };
     /**重新装载配置，该方法会首先执行clearDefine()方法其次在执行loadDefine()。在执行之前该方法会引发{@link XmlReloadDefineEvent}事件。*/
     public synchronized void reloadDefine() throws IOException, XMLStreamException {
-        this.getEventManager().doEvent(Event.getEvent(XmlReloadDefineEvent.class), this);//重载Beans
+        this.throwEvent(Event.getEvent(XmlReloadDefineEvent.class), this);//重载Beans
         this.clearDefine();
         this.getFlash().clearAttribute();
         this.loadDefine();

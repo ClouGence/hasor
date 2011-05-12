@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.xml;
-import org.more.hypha.beans.BeansTypeParser;
 import org.more.hypha.commons.xml.Tag_Abstract;
 import org.more.hypha.context.xml.XmlDefineResource;
 /**
@@ -23,12 +22,13 @@ import org.more.hypha.context.xml.XmlDefineResource;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public abstract class TagBeans_NS extends Tag_Abstract {
-    private BeansTypeParser parserRoot = null;
+    private QPP parserRoot = null;
     public TagBeans_NS(XmlDefineResource configuration) {
         super(configuration);
-        this.parserRoot = configuration.getTypeManager();
     };
-    protected BeansTypeParser getRootTypeParser() {
+    protected QPP getRootTypeParser() {
+        if (this.parserRoot == null)
+            this.parserRoot = (QPP) this.getFlash().getAttribute("org.more.hypha.beans.xml.QPP_ROOT");
         return this.parserRoot;
     }
 };

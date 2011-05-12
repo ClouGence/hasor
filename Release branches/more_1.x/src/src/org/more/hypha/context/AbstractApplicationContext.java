@@ -14,174 +14,203 @@
  * limitations under the License.
  */
 package org.more.hypha.context;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.more.NoDefinitionException;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ELContext;
+import org.more.hypha.Event;
 import org.more.hypha.EventManager;
-import org.more.hypha.ExpandPoint;
 import org.more.hypha.ExpandPointManager;
 import org.more.hypha.ScopeContext;
 import org.more.hypha.ScriptContext;
+import org.more.hypha.commons.AbstractELContext;
 import org.more.hypha.commons.AbstractScopeContext;
 import org.more.hypha.commons.AbstractScriptContext;
-import org.more.hypha.el.AbstractELContext;
-import org.more.hypha.event.AbstractEventManager;
-import org.more.hypha.expandpoint.AbstractExpandPointManager;
-import org.more.util.attribute.AttBase;
+import org.more.hypha.commons.engine.BeanEngine;
+import org.more.hypha.context.app.DestroyEvent;
+import org.more.hypha.context.app.InitEvent;
 import org.more.util.attribute.IAttribute;
 /**
- * 简单的{@link ApplicationContext}接口实现类。
+ * 简单的{@link ApplicationContext}接口实现类，该类只是提供了一个平台。
  * Date : 2011-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractApplicationContext implements ApplicationContext {
-    private ClassLoader        classLoader        = null; //Context的类装载器
-    //可延迟可替换
-    private IAttribute         attributeContext   = null; //属性集
-    private IAttribute         flashContext       = null; //全局FLASH
+    private PropxyClassLoader       classLoader     = null;
     //init期间必须构建的六大基础对象
-    private Object             contextObject      = null;
-    private EventManager       eventManager       = null;
-    private ExpandPointManager expandPointManager = null;
-    private ELContext          elContext          = null;
-    private ScopeContext       scopeContext       = null;
-    private ScriptContext      scriptContext      = null;
+    private Object                  contextObject   = null;
+    private ELContext               elContext       = null;
+    private ScopeContext            scopeContext    = null;
+    private ScriptContext           scriptContext   = null;
+    //
+    private Map<String, Object>     singleBeanCache = null;
+    private Map<String, Class<?>>   singleTypeCache = null;
+    private Map<String, BeanEngine> engineMap       = null;
     /*------------------------------------------------------------*/
+    public AbstractApplicationContext(ClassLoader classLoader) {
+        this.classLoader = new PropxyClassLoader();
+        this.classLoader.setLoader(classLoader);
+    };
     public Object getContextObject() {
         return this.contextObject;
-    }
+    };
     public void setContextObject(Object contextObject) {
         this.contextObject = contextObject;
-    }
-    /**获取事件管理器，通过该管理器可以发送事件，事件的监听也是通过这个接口对象完成的。*/
-    public final EventManager getEventManager() {
-        if (this.eventManager == null)
-            this.eventManager = this.createEventManager();
-        if (this.eventManager == null)
-            try {
-                this.eventManager = new AbstractEventManager(this.getBeanResource()) {};
-                this.eventManager.init(this.getFlash());
-            } catch (Throwable e) {/*TODO 不会引发任何异常*/}
-        return this.eventManager;
-    }
-    /**获取扩展点管理器，通过扩展点管理器可以检索、注册或者解除注册扩展点。有关扩展点的功能请参见{@link ExpandPoint}*/
-    public final ExpandPointManager getExpandPointManager() {
-        if (this.expandPointManager == null)
-            this.expandPointManager = this.createExpandPointManager();
-        if (this.expandPointManager == null)
-            try {
-                this.expandPointManager = new AbstractExpandPointManager(this.getBeanResource()) {};
-                this.expandPointManager.init(this.getFlash());
-            } catch (Throwable e) {/*TODO 不会引发任何异常*/}
-        return this.expandPointManager;
-    }
-    /**获取EL执行器。*/
-    public final ELContext getELContext() {
-        if (this.elContext == null)
-            this.elContext = this.createELContext();
-        if (this.elContext == null)
-            try {
-                this.elContext = new AbstractELContext(this) {};
-                this.elContext.init(this.getFlash());
-            } catch (Throwable e) {/*TODO 不会引发任何异常*/}
-        return this.elContext;
-    }
-    /**作用域管理器。*/
-    public final ScopeContext getScopeContext() {
-        if (this.scopeContext == null)
-            this.scopeContext = this.createScopeContext();
-        if (this.scopeContext == null)
-            try {
-                this.scopeContext = new AbstractScopeContext(this) {};
-                this.scopeContext.init(this.getFlash());
-            } catch (Throwable e) {/*TODO 不会引发任何异常*/}
-        return this.scopeContext;
-    }
-    /**脚本执行管理器。*/
-    public final ScriptContext getScriptContext() {
-        if (this.scriptContext == null)
-            this.scriptContext = this.createScriptContext();
-        if (this.scriptContext == null)
-            try {
-                this.scriptContext = new AbstractScriptContext(this) {};
-                this.scriptContext.init(this.getFlash());
-            } catch (Throwable e) {/*TODO 不会引发任何异常*/}
-        return this.scriptContext;
-    }
-    /*------------------------------------------------------------*/
-    protected EventManager createEventManager() {
+    };
+    public EventManager getEventManager() {
         return this.getBeanResource().getEventManager();
     };
-    private ExpandPointManager createExpandPointManager() {
+    public ExpandPointManager getExpandPointManager() {
         return this.getBeanResource().getExpandPointManager();
     };
-    protected ELContext createELContext() {
-        return null;
+    public ELContext getELContext() {
+        return this.elContext;
     };
-    private ScopeContext createScopeContext() {
-        return null;
+    public ScopeContext getScopeContext() {
+        return this.scopeContext;
     };
-    private ScriptContext createScriptContext() {
-        return null;
+    public ScriptContext getScriptContext() {
+        return this.scriptContext;
     };
-    /**获取全局属性闪存，子类可以通过重写该方法来替换FLASH。*/
-    protected IAttribute getFlash() {
-        if (this.flashContext == null)
-            this.flashContext = new AttBase();
-        return this.flashContext;
+    public ClassLoader getBeanClassLoader() {
+        return this.classLoader;
+    };
+    /**替换当前的ClassLoader。*/
+    public void setBeanClassLoader(ClassLoader loader) {
+        this.classLoader.setLoader(loader);
+    };
+    /**获取{@link AbstractApplicationContext}用于生成Bean的生成器。*/
+    protected BeanEngine getEngine(String key) throws Throwable {
+        return this.engineMap.get(key);
+    };
+    /**添加一个bean创建引擎，每个bean都有一个getBuildFactory()方法该方法会决定bean使用的生成器引擎。
+     * 而那个引擎就是在这里注册上的。*/
+    public void addBeanEngine(String key, BeanEngine engine) throws Throwable {
+        engine.init(this, this.getFlash());
+        this.engineMap.put(key, engine);
+    };
+    /*------------------------------------------------------------*/
+    /**清理掉{@link AbstractApplicationContext}对象中所缓存的单例Bean对象。*/
+    public void clearSingleBean() {
+        this.singleBeanCache.clear();
+    };
+    /**获取一个int该int表示了{@link AbstractApplicationContext}对象中已经缓存了的单例对象数目。*/
+    public int getCacheBeanCount() {
+        return this.singleBeanCache.size();
+    };
+    public abstract AbstractDefineResource getBeanResource();
+    /**在init期间被调用，子类可以重写它用来替换EL上下文。*/
+    protected AbstractELContext createELContext() {
+        return new AbstractELContext(this) {};
+    };
+    /**在init期间被调用，子类可以重写它用来替换作用域管理器。*/
+    protected AbstractScopeContext createScopeContext() {
+        return new AbstractScopeContext(this) {};
+    };
+    /**在init期间被调用，子类可以重写它用来替换默认的脚本引擎管理器。*/
+    protected AbstractScriptContext createScriptContext() {
+        return new AbstractScriptContext(this) {};
     };
     /**该方法可以获取{@link AbstractApplicationContext}接口对象所使用的属性管理器。子类可以通过重写该方法以来控制属性管理器对象。*/
     protected IAttribute getAttribute() {
-        if (this.attributeContext == null)
-            this.attributeContext = this.getBeanResource();
-        return this.attributeContext;
+        return this.getBeanResource();
     };
-    /**设置属性管理器对象。*/
-    protected void setAttributeContext(IAttribute attributeContext) {
-        this.attributeContext = attributeContext;
-    }
-    /**设置flash管理器对象。*/
-    protected void setFlashContext(IAttribute flashContext) {
-        this.flashContext = flashContext;
-    }
+    /**获取Flash，这个flash是一个内部信息携带体。它可以贯穿整个hypha的所有阶段。而且不受跨线程限制。*/
+    public IAttribute getFlash() {
+        return this.getBeanResource().getFlash();
+    };
+    /**获取Flash，这个flash是一个内部信息携带体。它可以贯穿整个hypha的所有阶段。但是这个FLASH受跨线程限制。*/
+    public IAttribute getThreadFlash() {
+        return this.getBeanResource().getThreadFlash();
+    };
     /*------------------------------------------------------------*/
-    /**该方法由子类决定如何创建目标Bean。*/
-    protected abstract Object builderBean(AbstractBeanDefine define, Object[] params) throws Throwable;
-    protected abstract Class<?> builderType(AbstractBeanDefine define, Object[] params) throws Throwable;
-    //
-    public final Object getBean(String id, Object... objects) throws Throwable {
+    public void init() throws Throwable {
+        this.elContext = this.createELContext();
+        this.scopeContext = this.createScopeContext();
+        this.scriptContext = this.createScriptContext();
+        this.engineMap = new HashMap<String, BeanEngine>();
+        this.singleBeanCache = new HashMap<String, Object>();
+        //
+        this.getEventManager().doEvent(Event.getEvent(InitEvent.class), this);
+    };
+    /**当JVM回收该对象时自动调用销毁方法。*/
+    protected void finalize() throws Throwable {
+        try {
+            this.destroy();
+        } catch (Exception e) {}
+        super.finalize();
+    };
+    public void destroy() throws Throwable {
+        /**销毁事件*/
+        this.getEventManager().doEvent(Event.getEvent(DestroyEvent.class), this);
+        this.getEventManager().popEvent();//弹出所有事件
+        //
+        this.elContext = null;
+        this.scopeContext = null;
+        this.scriptContext = null;
+        this.engineMap = null;
+        this.singleBeanCache = null;
+    };
+    public <T> T getBean(String defineID, Object... objects) throws Throwable {
+        //-------------------------------------------------------------------检查单态
+        if (this.singleBeanCache.containsKey(defineID) == true)
+            return (T) this.singleBeanCache.get(defineID);
+        //-------------------------------------------------------------------获取
         final String KEY = "GETBEAN_PARAM";
         try {
-            this.getFlash().setAttribute(KEY, objects);
-            AbstractBeanDefine define = this.getBeanDefinition(id);
-            return this.builderBean(define, objects);
+            this.getThreadFlash().setAttribute(KEY, objects);
+            AbstractBeanDefine define = this.getBeanDefinition(defineID);
+            if (define == null)
+                throw new NoDefinitionException("不存在id为[" + defineID + "]的Bean定义。");
+            String beName = define.getBuildFactory();
+            BeanEngine be = this.getEngine(beName);
+            if (be == null)
+                throw new NoDefinitionException("id为[" + defineID + "]的Bean定义，无法使用未定义的[" + beName + "]引擎构建。");
+            //
+            Object bean = be.builderBean(define, objects);
+            if (define.isSingleton() == true)
+                this.singleBeanCache.put(defineID, bean);
+            return (T) bean;
         } catch (Throwable e) {
             throw e;
         } finally {
-            this.getFlash().removeAttribute(KEY);
+            this.getThreadFlash().removeAttribute(KEY);
         }
     };
-    public final Class<?> getBeanType(String id, Object... objects) throws Throwable {
-        AbstractBeanDefine define = this.getBeanDefinition(id);
-        return this.builderType(define, objects);
-    };
-    /**设置ClassLoader，通常在初始化之前进行设置。*/
-    public void setClassLoader(ClassLoader classLoader) {
-        this.classLoader = classLoader;
+    public Class<?> getBeanType(String defineID, Object... objects) throws Throwable {
+        //-------------------------------------------------------------------检查单态
+        if (this.singleTypeCache.containsKey(defineID) == true)
+            return this.singleTypeCache.get(defineID);
+        //-------------------------------------------------------------------获取
+        final String KEY = "GETBEAN_PARAM";
+        try {
+            this.getThreadFlash().setAttribute(KEY, objects);
+            AbstractBeanDefine define = this.getBeanDefinition(defineID);
+            if (define == null)
+                throw new NoDefinitionException("不存在id为[" + defineID + "]的Bean定义。");
+            String beName = define.getBuildFactory();
+            BeanEngine be = this.getEngine(beName);
+            if (be == null)
+                throw new NoDefinitionException("id为[" + defineID + "]的Bean定义，无法使用未定义的[" + beName + "]引擎构建。");
+            //
+            Class<?> beanType = be.builderType(define, objects);
+            if (define.isSingleton() == true)
+                this.singleTypeCache.put(defineID, beanType);
+            return beanType;
+        } catch (Throwable e) {
+            throw e;
+        } finally {
+            this.getThreadFlash().removeAttribute(KEY);
+        }
     };
     public List<String> getBeanDefinitionIDs() {
         return this.getBeanResource().getBeanDefinitionIDs();
     };
     public AbstractBeanDefine getBeanDefinition(String id) throws NoDefinitionException {
         return this.getBeanResource().getBeanDefine(id);
-    };
-    public ClassLoader getBeanClassLoader() {
-        if (this.classLoader == null)
-            return ClassLoader.getSystemClassLoader();
-        return this.classLoader;
     };
     public boolean containsBean(String id) {
         return this.getBeanResource().containsBeanDefine(id);
@@ -225,4 +254,8 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         return this.getAttribute().toMap();
     };
     /*------------------------------------------------------------*/
+    public Object getServices(Class<?> servicesType) {
+        // TODO Auto-generated method stub
+        return null;
+    };
 };

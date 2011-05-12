@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.context.xml;
-import org.more.util.attribute.IAttribute;
+package org.more.hypha.commons;
 /**
- * 为了{@link XmlDefineResource}类提供的一个注册器接口，如果要注册新的xml配置支持则需要实现这个接口并且
- * 留下一个无参的构造方法，同时在“/META-INF/resource/beans/regedit.xml”位置编写配置文件。
- * 配置文件格式参考more相关文档。
- * @version 2010-9-24
+ * 发生EL错误。
+ * Date : 2011-4-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface XmlNameSpaceRegister {
-    /**
-     * 执行注册
-     * @param namespaceURL 配置文件配置的命名空间。
-     * @param resource {@link XmlDefineResource}对象。
-     * @param flash flash。
-     */
-    public void initRegister(String namespaceURL, XmlDefineResource resource, IAttribute flash) throws Throwable;
+public class EL_Exception extends RuntimeException {
+    /**  */
+    private static final long serialVersionUID = 7599280857661044510L;
+    public EL_Exception(String string, Throwable e) {
+        super(string, e);
+    };
 }
