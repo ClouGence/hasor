@@ -28,7 +28,7 @@ import org.more.util.attribute.TransformToMap;
  * Date : 2011-4-12
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class EL_EvalExpressionImpl implements EvalExpression {
+class EL_EvalExpressionImpl implements EvalExpression {
     private String     expressionString = null;
     private Node       expressionNode   = null;
     private IAttribute attribute        = null;

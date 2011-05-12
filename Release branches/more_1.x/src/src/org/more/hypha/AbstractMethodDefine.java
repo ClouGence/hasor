@@ -17,7 +17,7 @@ package org.more.hypha;
 import java.util.Collection;
 import org.more.util.attribute.IAttribute;
 /**
- * 该接口用于定义在bean上的方法。
+ * 该接口用于定义{@link AbstractBeanDefine}上的一个方法。
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */

@@ -113,8 +113,6 @@ public interface ApplicationContext extends IAttribute {
     public ELContext getELContext();
     /**作用域管理器。*/
     public ScopeContext getScopeContext();
-    /**脚本执行管理器。*/
-    public ScriptContext getScriptContext();
-    /**获取某个类型的服务扩展。*/
-    public Object getServices(Class<?> servicesType);
+    //    /**获取某个类型的服务扩展。*/
+    //    public Object getServices(Class<?> servicesType);
 };

@@ -16,33 +16,24 @@
 package org.more.hypha.commons;
 import java.util.ArrayList;
 import java.util.List;
-import org.more.hypha.DefineResource;
 import org.more.hypha.ExpandPoint;
 import org.more.hypha.ExpandPointManager;
-import org.more.util.attribute.IAttribute;
+import org.more.hypha.context.AbstractDefineResource;
 /**
  * 该类负责管理并调用并且执行扩展点的基类。
  * @version 2011-1-14
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractExpandPointManager implements ExpandPointManager {
-    private DefineResource    defineResource = null;
-    private IAttribute        flash          = null;
-    private List<ExpandPoint> expandList     = new ArrayList<ExpandPoint>();
-    /***/
-    public AbstractExpandPointManager(DefineResource defineResource) {
+    private AbstractDefineResource defineResource = null;
+    private List<ExpandPoint>      expandList     = new ArrayList<ExpandPoint>();
+    //
+    public void init(AbstractDefineResource defineResource) {
         this.defineResource = defineResource;
     }
-    public void init(IAttribute flash) {
-        this.flash = flash;
-    }
-    /**返回{@link DefineResource}对象。*/
-    protected DefineResource getDefineResource() {
+    /**返回{@link AbstractDefineResource}对象。*/
+    protected AbstractDefineResource getDefineResource() {
         return this.defineResource;
-    }
-    /**返回{@link IAttribute}类型的FLASH。*/
-    protected IAttribute getFlash() {
-        return this.flash;
     }
     public Object exePointOnSequence(Class<? extends ExpandPoint> type, Object[] params) {
         Object returnObj = null;

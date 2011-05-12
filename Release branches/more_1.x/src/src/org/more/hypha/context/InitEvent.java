@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.commons;
+package org.more.hypha.context;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.ScriptContext;
-import org.more.util.attribute.IAttribute;
+import org.more.hypha.Event;
 /**
- * 
- * Date : 2011-4-18
+ * {@link ApplicationContext}遇到初始化调用而引发事件。
+ * @version 2011-2-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractScriptContext implements ScriptContext {
-    private ApplicationContext applicationContext = null;
-    private IAttribute         flash              = null;
-    /***/
-    public AbstractScriptContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
-    public void init(IAttribute flash) throws Throwable {
-        // TODO Auto-generated method stub
+public class InitEvent extends Event {
+    public class Params extends Event.Params {
+        public ApplicationContext applicationContext = null;
+    };
+    public Params toParams(Sequence eventSequence) {
+        Object[] params = eventSequence.getParams();
+        Params p = new Params();
+        p.applicationContext = (ApplicationContext) params[0];
+        return p;
     }
 };

@@ -18,38 +18,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import org.more.hypha.DefineResource;
 import org.more.hypha.Event;
 import org.more.hypha.Event.Sequence;
 import org.more.hypha.EventListener;
 import org.more.hypha.EventManager;
-import org.more.util.attribute.IAttribute;
+import org.more.hypha.context.AbstractDefineResource;
 /**
  * 该类管理事件分发的基类，该类是{@link EventManager}接口的实现类。
  * @version 2010-10-10
  * @author 赵永春 (zyc@byshell.org)
  */
 public class AbstractEventManager implements EventManager {
-    private DefineResource                         defineResource = null;
-    private IAttribute                             flash          = null;
+    private AbstractDefineResource                 defineResource = null;
     private HashMap<Event, List<EventListener<?>>> listener       = new HashMap<Event, List<EventListener<?>>>();
     //
     private LinkedList<Sequence>                   eventQueue     = new LinkedList<Sequence>();
     private HashMap<Sequence, Event>               eventQueueMap  = new HashMap<Sequence, Event>();
-    /***/
-    public AbstractEventManager(DefineResource defineResource) {
+    //
+    public void init(AbstractDefineResource defineResource) {
         this.defineResource = defineResource;
     }
-    public void init(IAttribute flash) {
-        this.flash = flash;
-    }
-    /**获取{@link DefineResource}。*/
-    protected DefineResource getDefineResource() {
+    /**获取{@link AbstractDefineResource}。*/
+    protected AbstractDefineResource getDefineResource() {
         return this.defineResource;
-    }
-    /**获取FLASH。*/
-    protected IAttribute getFlash() {
-        return this.flash;
     }
     public synchronized void addEventListener(Event eventType, EventListener<?> listener) {
         List<EventListener<?>> listeners = this.listener.get(eventType);

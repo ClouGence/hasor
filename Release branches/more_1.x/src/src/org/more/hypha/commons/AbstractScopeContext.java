@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 package org.more.hypha.commons;
-import org.more.hypha.ApplicationContext;
 import org.more.hypha.ScopeContext;
-import org.more.util.attribute.IAttribute;
+import org.more.hypha.context.AbstractApplicationContext;
 /**
  * 
  * Date : 2011-4-18
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public abstract class AbstractScopeContext implements ScopeContext {
-    private ApplicationContext applicationContext = null;
-    private IAttribute         flash              = null;
-    /***/
-    public AbstractScopeContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
-    public void init(IAttribute flash) throws Throwable {
+    private AbstractApplicationContext applicationContext = null;
+    //
+    public void init(AbstractApplicationContext applicationContext) throws Throwable {
         // TODO Auto-generated method stub
     }
 };

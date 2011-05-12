@@ -25,7 +25,7 @@ import org.more.hypha.ValueMetaData;
  * @version 2011-1-21
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class RootValueMetaDataParser implements ValueMetaDataParser<ValueMetaData> {
+abstract class RootValueMetaDataParser implements ValueMetaDataParser<ValueMetaData> {
     private Map<String, ValueMetaDataParser<ValueMetaData>> metaDataParserMap = new HashMap<String, ValueMetaDataParser<ValueMetaData>>();
     //----------------------------------------------------------------------------------------------------------
     /**第二个参数无效，因为{@link RootValueMetaDataParser}就是根。*/

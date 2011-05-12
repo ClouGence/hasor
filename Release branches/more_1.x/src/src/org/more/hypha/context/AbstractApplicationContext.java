@@ -25,13 +25,9 @@ import org.more.hypha.Event;
 import org.more.hypha.EventManager;
 import org.more.hypha.ExpandPointManager;
 import org.more.hypha.ScopeContext;
-import org.more.hypha.ScriptContext;
 import org.more.hypha.commons.AbstractELContext;
 import org.more.hypha.commons.AbstractScopeContext;
-import org.more.hypha.commons.AbstractScriptContext;
-import org.more.hypha.commons.engine.BeanEngine;
-import org.more.hypha.context.app.DestroyEvent;
-import org.more.hypha.context.app.InitEvent;
+import org.more.hypha.commons.engine.EngineLogic;
 import org.more.util.attribute.IAttribute;
 /**
  * 简单的{@link ApplicationContext}接口实现类，该类只是提供了一个平台。
@@ -39,16 +35,16 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractApplicationContext implements ApplicationContext {
-    private PropxyClassLoader       classLoader     = null;
+    private PropxyClassLoader     classLoader     = null;
     //init期间必须构建的六大基础对象
-    private Object                  contextObject   = null;
-    private ELContext               elContext       = null;
-    private ScopeContext            scopeContext    = null;
-    private ScriptContext           scriptContext   = null;
+    private Object                contextObject   = null;
+    private AbstractELContext     elContext       = null;
+    private AbstractScopeContext  scopeContext    = null;
     //
-    private Map<String, Object>     singleBeanCache = null;
-    private Map<String, Class<?>>   singleTypeCache = null;
-    private Map<String, BeanEngine> engineMap       = null;
+    private Map<String, Object>   singleBeanCache = null;
+    private Map<String, Class<?>> singleTypeCache = null;
+    //
+    private EngineLogic           engineLogic     = null;
     /*------------------------------------------------------------*/
     public AbstractApplicationContext(ClassLoader classLoader) {
         this.classLoader = new PropxyClassLoader();
@@ -72,25 +68,12 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     public ScopeContext getScopeContext() {
         return this.scopeContext;
     };
-    public ScriptContext getScriptContext() {
-        return this.scriptContext;
-    };
     public ClassLoader getBeanClassLoader() {
         return this.classLoader;
     };
     /**替换当前的ClassLoader。*/
     public void setBeanClassLoader(ClassLoader loader) {
         this.classLoader.setLoader(loader);
-    };
-    /**获取{@link AbstractApplicationContext}用于生成Bean的生成器。*/
-    protected BeanEngine getEngine(String key) throws Throwable {
-        return this.engineMap.get(key);
-    };
-    /**添加一个bean创建引擎，每个bean都有一个getBuildFactory()方法该方法会决定bean使用的生成器引擎。
-     * 而那个引擎就是在这里注册上的。*/
-    public void addBeanEngine(String key, BeanEngine engine) throws Throwable {
-        engine.init(this, this.getFlash());
-        this.engineMap.put(key, engine);
     };
     /*------------------------------------------------------------*/
     /**清理掉{@link AbstractApplicationContext}对象中所缓存的单例Bean对象。*/
@@ -104,15 +87,11 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     public abstract AbstractDefineResource getBeanResource();
     /**在init期间被调用，子类可以重写它用来替换EL上下文。*/
     protected AbstractELContext createELContext() {
-        return new AbstractELContext(this) {};
+        return new AbstractELContext() {};
     };
     /**在init期间被调用，子类可以重写它用来替换作用域管理器。*/
     protected AbstractScopeContext createScopeContext() {
-        return new AbstractScopeContext(this) {};
-    };
-    /**在init期间被调用，子类可以重写它用来替换默认的脚本引擎管理器。*/
-    protected AbstractScriptContext createScriptContext() {
-        return new AbstractScriptContext(this) {};
+        return new AbstractScopeContext() {};
     };
     /**该方法可以获取{@link AbstractApplicationContext}接口对象所使用的属性管理器。子类可以通过重写该方法以来控制属性管理器对象。*/
     protected IAttribute getAttribute() {
@@ -130,9 +109,15 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     public void init() throws Throwable {
         this.elContext = this.createELContext();
         this.scopeContext = this.createScopeContext();
-        this.scriptContext = this.createScriptContext();
-        this.engineMap = new HashMap<String, BeanEngine>();
+        //
         this.singleBeanCache = new HashMap<String, Object>();
+        this.singleTypeCache = new HashMap<String, Class<?>>();
+        //
+        this.engineLogic = new EngineLogic();
+        //
+        this.elContext.init(this);
+        this.scopeContext.init(this);
+        this.engineLogic.init(this);
         //
         this.getEventManager().doEvent(Event.getEvent(InitEvent.class), this);
     };
@@ -150,10 +135,13 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         //
         this.elContext = null;
         this.scopeContext = null;
-        this.scriptContext = null;
-        this.engineMap = null;
+        //
         this.singleBeanCache = null;
+        this.singleTypeCache = null;
+        //
+        this.engineLogic = null;
     };
+    @SuppressWarnings("unchecked")
     public <T> T getBean(String defineID, Object... objects) throws Throwable {
         //-------------------------------------------------------------------检查单态
         if (this.singleBeanCache.containsKey(defineID) == true)
@@ -165,12 +153,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
             AbstractBeanDefine define = this.getBeanDefinition(defineID);
             if (define == null)
                 throw new NoDefinitionException("不存在id为[" + defineID + "]的Bean定义。");
-            String beName = define.getBuildFactory();
-            BeanEngine be = this.getEngine(beName);
-            if (be == null)
-                throw new NoDefinitionException("id为[" + defineID + "]的Bean定义，无法使用未定义的[" + beName + "]引擎构建。");
-            //
-            Object bean = be.builderBean(define, objects);
+            Object bean = this.engineLogic.builderBean(define, objects);
             if (define.isSingleton() == true)
                 this.singleBeanCache.put(defineID, bean);
             return (T) bean;
@@ -191,12 +174,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
             AbstractBeanDefine define = this.getBeanDefinition(defineID);
             if (define == null)
                 throw new NoDefinitionException("不存在id为[" + defineID + "]的Bean定义。");
-            String beName = define.getBuildFactory();
-            BeanEngine be = this.getEngine(beName);
-            if (be == null)
-                throw new NoDefinitionException("id为[" + defineID + "]的Bean定义，无法使用未定义的[" + beName + "]引擎构建。");
-            //
-            Class<?> beanType = be.builderType(define, objects);
+            Class<?> beanType = this.engineLogic.builderType(define, objects);
             if (define.isSingleton() == true)
                 this.singleTypeCache.put(defineID, beanType);
             return beanType;
@@ -252,10 +230,5 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     };
     public Map<String, Object> toMap() {
         return this.getAttribute().toMap();
-    };
-    /*------------------------------------------------------------*/
-    public Object getServices(Class<?> servicesType) {
-        // TODO Auto-generated method stub
-        return null;
     };
 };

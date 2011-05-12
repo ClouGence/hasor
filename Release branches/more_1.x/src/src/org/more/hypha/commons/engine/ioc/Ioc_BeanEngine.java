@@ -14,94 +14,25 @@
  * limitations under the License.
  */
 package org.more.hypha.commons.engine.ioc;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import org.more.ClassFormatException;
-import org.more.DoesSupportException;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.AbstractMethodDefine;
 import org.more.hypha.AbstractPropertyDefine;
-import org.more.hypha.ApplicationContext;
 import org.more.hypha.PropertyBinding;
 import org.more.hypha.ValueMetaData;
-import org.more.hypha.beans.define.PropertyDefine;
 import org.more.hypha.commons.AbstractExpandPointManager;
 import org.more.hypha.commons.engine.AbstractBeanBuilder;
-import org.more.hypha.commons.engine.BeanEngine;
-import org.more.hypha.context.AbstractApplicationContext;
-import org.more.util.attribute.IAttribute;
 /**
 * 该类的职责是负责将{@link AbstractBeanDefine}转换成类型或者Bean实体对象。
 * 该类是一个抽象类，在使用时需要通过子类给定其{@link AbstractExpandPointManager}对象。
 * @version 2011-1-13
 * @author 赵永春 (zyc@byshell.org)
 */
-public class Ioc_BeanEngine extends BeanEngine {
-    public static final String         EngineName         = "Ioc";
-    private AbstractApplicationContext applicationContext = null;
-    private IAttribute                 flash              = null;
-    //
-    private EngineClassLoader          classLoader        = null;
-    //----------------------------------------------------------------------------------------------------------
-    private class EngineClassLoader extends ClassLoader {
-        public EngineClassLoader(AbstractApplicationContext applicationContext) {
-            super(applicationContext.getBeanClassLoader());
-        };
-        public Class<?> loadClass(byte[] beanBytes, AbstractBeanDefine define) throws ClassFormatException {
-            //如果不传递要装载的类名JVM就不会调用本地的类检查器去检查这个类是否存在。
-            return this.defineClass(beanBytes, 0, beanBytes.length);
-        };
-    };
-    /***/
-    public Ioc_BeanEngine(AbstractApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
-    /***/
-    public void init(IAttribute flash) throws Throwable {
-        this.flash = flash;
-        this.classLoader = new EngineClassLoader(this.applicationContext);//使用EngineClassLoader装载构造的字节码
-    }
-    /***/
-    public ApplicationContext getApplicationContext() {
-        return this.applicationContext;
-    }
-    //----------------------------------------------------------------------------------------------------------
-    /**
-     * 将{@link AbstractBeanDefine}定义对象解析并且装载成为Class类型对象，期间会一次引发{@link ClassBytePoint}和{@link ClassTypePoint}两个扩展点。
-     * @param define 要装载类型的bean定义。
-     * @param params 
-     * @return 返回装载的bean类型。
-     * @throws DoesSupportException 如果{@link Ioc_BeanEngine}遇到一个不支持的Bean定义类型则会引发该异常。
-     * @throws IOException 在将字节码转换成Class类的时候如果发问题常则会该引发。
-     * @throws ClassFormatException 在执行扩展点{@link ClassTypePoint}如果不能成功装载字节码则引发该异常。
-     * @throws ClassNotFoundException 如果整个装载过程结束没有得到Class类型则会引发该类异常。
-     */
-    public final synchronized Class<?> builderType(AbstractBeanDefine define, Object[] params) throws DoesSupportException, IOException, ClassFormatException, ClassNotFoundException {
-        String defineType = define.getBeanType();
-        String defineID = define.getID();
-        String defineLogStr = defineID + "[" + defineType + "]";//log前缀
-        //1.
-        AbstractBeanBuilder<AbstractBeanDefine> builder = this.beanBuilderMap.get(defineType);
-        if (builder == null || builder.canBuilder() == false)
-            throw new DoesSupportException(defineLogStr + "，该Bean不是一个hypha所支持的Bean类型或者该类型的Bean不支持Builder。");
-        //--------------------------------------------------------------------------------------------------------------准备阶段
-        //2.通过Builder装载class
-        byte[] beanBytes = builder.loadBeanBytes(define);
-        beanBytes = (byte[]) this.applicationContext.getExpandPointManager().exePointOnSequence(ClassBytePoint.class, //
-                new Object[] { beanBytes, define, this.applicationContext });//Param
-        Class<?> beanType = null;
-        beanType = (Class<?>) this.applicationContext.getExpandPointManager().exePointOnSequence(ClassTypePoint.class,//
-                new Object[] { beanType, define, this.applicationContext });//Param
-        //3.
-        if (beanType == null)
-            beanType = this.classLoader.loadClass(beanBytes, define);
-        if (beanType == null)
-            throw new ClassNotFoundException(defineLogStr + "，该Bean类型无法被装载或装载失败。");
-        return beanType;
-    };
+public class Ioc_BeanEngine extends IocEngine {
+    public static final String EngineName = "Ioc";
     /**
      * 调用引擎创建过程去生成bean代码。
      * @param define 要装载类型的bean定义。
@@ -211,28 +142,3 @@ public class Ioc_BeanEngine extends BeanEngine {
         return vms;
     }
 };
-//class ProxyFinalizeClassEngine extends ClassEngine {
-//    private final ProxyFinalizeClassBuilder builder = new ProxyFinalizeClassBuilder();
-//    public ProxyFinalizeClassEngine(BeanEngine beanEngine) throws ClassNotFoundException {
-//        super(false);
-//    };
-//    protected ClassBuilder createBuilder(BuilderMode builderMode) {
-//        return this.builder;
-//    };
-//    public Object newInstance(Object propxyBean) throws FormatException, ClassNotFoundException, IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, SecurityException, InvocationTargetException, NoSuchMethodException {
-//        Object obj = super.newInstance(propxyBean);
-//        //this.toClass().getMethod("", parameterTypes);
-//        return obj;
-//    };
-//};
-//class ProxyFinalizeClassBuilder extends ClassBuilder {
-//    protected ClassAdapter acceptClass(ClassWriter classVisitor) {
-//        return new ClassAdapter(classVisitor) {
-//            public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-//                if (name.equals("finalize()V") == true)
-//                    System.out.println();
-//                return super.visitMethod(access, name, desc, signature, exceptions);
-//            }
-//        };
-//    }
-//};

@@ -130,14 +130,14 @@ public abstract class AbstractDefineResource implements DefineResource {
     };
     /**创建一个{@link EventManager}，重新该方法可以替换{@link DefineResource}接口使用的{@link EventManager}对象。*/
     protected AbstractEventManager createEventManager() {
-        AbstractEventManager em = new AbstractEventManager(this) {};
-        em.init(this.getFlash());
+        AbstractEventManager em = new AbstractEventManager() {};
+        em.init(this);
         return em;
     };
     /**创建一个{@link ExpandPointManager}，重新该方法可以替换{@link DefineResource}接口使用的{@link ExpandPointManager}对象。*/
     protected AbstractExpandPointManager createExpandPointManager() {
-        AbstractExpandPointManager epm = new AbstractExpandPointManager(this) {};
-        epm.init(this.getFlash());
+        AbstractExpandPointManager epm = new AbstractExpandPointManager() {};
+        epm.init(this);
         return epm;
     };
 };

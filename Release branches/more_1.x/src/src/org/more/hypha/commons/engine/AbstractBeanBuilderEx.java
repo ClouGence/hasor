@@ -13,22 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.context.app;
-import org.more.hypha.ApplicationContext;
-import org.more.hypha.Event;
+package org.more.hypha.commons.engine;
+import org.more.hypha.AbstractBeanDefine;
 /**
- * {@link ApplicationContext}遇到的卸载调用而引发事件。
- * @version 2011-2-25
+ * 该接口扩展了{@link AbstractBeanBuilder}接口并且提供了两个新方法。值得注意的是如果使用该接口则父接口的
+ * loadType方法将会失效。取而代之的是本接口中的loadType重载方法会生效。
+ * @version : 2011-5-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public class DestroyEvent extends Event {
-    public class Params extends Event.Params {
-        public ApplicationContext applicationContext = null;
-    };
-    public Params toParams(Sequence eventSequence) {
-        Object[] params = eventSequence.getParams();
-        Params p = new Params();
-        p.applicationContext = (ApplicationContext) params[0];
-        return p;
-    }
+public interface AbstractBeanBuilderEx<T extends AbstractBeanDefine> extends AbstractBeanBuilder<T> {
+    /**执行扩展注入，通过该方法可以对bean进行注入*/
+    public byte[] loadBytes(AbstractBeanDefine define, Object[] params);
+    /***/
+    public Class<?> loadType(byte[] bytes, AbstractBeanDefine define, Object[] params);
 };

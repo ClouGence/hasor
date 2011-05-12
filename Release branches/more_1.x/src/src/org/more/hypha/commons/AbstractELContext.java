@@ -16,11 +16,11 @@
 package org.more.hypha.commons;
 import java.util.Map;
 import org.more.core.ognl.OgnlException;
-import org.more.hypha.ApplicationContext;
 import org.more.hypha.ELContext;
 import org.more.hypha.ELObject;
 import org.more.hypha.EvalExpression;
 import org.more.hypha.PropertyBinding;
+import org.more.hypha.context.AbstractApplicationContext;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**
@@ -29,9 +29,8 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春
  */
 public abstract class AbstractELContext implements ELContext {
-    private ApplicationContext applicationContext = null;
-    private IAttribute         flash              = null;
-    private InnerOgnlContext   ognlContext        = new InnerOgnlContext();
+    private AbstractApplicationContext applicationContext = null;
+    private InnerOgnlContext           ognlContext        = new InnerOgnlContext();
     private class InnerOgnlContext extends AttBase {
         private static final long serialVersionUID = 8423446527838340104L;
         public Object get(Object key) {
@@ -50,20 +49,12 @@ public abstract class AbstractELContext implements ELContext {
         };
     };
     //----------------------------------------------------------------------------------------------------------
-    /***/
-    public AbstractELContext(ApplicationContext applicationContext) {
+    public void init(AbstractApplicationContext applicationContext) throws Throwable {
         this.applicationContext = applicationContext;
     }
-    public void init(IAttribute flash) throws Throwable {
-        this.flash = flash;
-    }
-    /**返回{@link ApplicationContext}对象。*/
-    protected ApplicationContext getApplicationContext() {
+    /**返回{@link AbstractApplicationContext}对象。*/
+    protected AbstractApplicationContext getApplicationContext() {
         return this.applicationContext;
-    }
-    /**返回{@link IAttribute}类型的FLASH。*/
-    protected IAttribute getFlash() {
-        return this.flash;
     }
     //----------------------------------------------------------------------------------------------------------
     public EvalExpression getExpression(String elString) throws OgnlException {
@@ -76,7 +67,7 @@ public abstract class AbstractELContext implements ELContext {
         return new EL_PropertyBindingImpl(this, propertyEL, object);
     };
     public void addELObject(String name, ELObject elObject) {
-        elObject.init(this.getApplicationContext(), this.getFlash());
+        elObject.init(this.getApplicationContext(), this.getApplicationContext().getBeanResource().getFlash());
         this.getOgnlContext().setAttribute(name, elObject);
     };
     //----------------------------------------------------------------------------------------------------------

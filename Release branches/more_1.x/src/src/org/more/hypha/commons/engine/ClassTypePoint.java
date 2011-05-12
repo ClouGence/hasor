@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.commons.engine.ioc;
+package org.more.hypha.commons.engine;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ExpandPoint;
+import org.more.hypha.commons.engine.ioc.AfterCreatePoint;
+import org.more.hypha.commons.engine.ioc.BeforeCreatePoint;
 /**
- * 字节码信息获取扩展点：该扩展点位于<b>类型创建或获取阶段</b>。该扩展点可以让外部程序有控制Bean字节码的全力，重而可以在字节码级别上完成对类的修改。
- * <br/>注意：1.如果挂载了多个{@link ClassBytePoint}扩展点，则扩展点将被依次执行。并且每次执行之后的新字节码数据会被传入第二个扩展点。
- * <br/>注意：2.假如扩展点返回了一个null，那么在下一个扩展点中将不会得到来自于上一个扩展点的字节码数据。
- * <br/>扩展点顺序：<i><b>{@link ClassBytePoint}</b></i>-&gt{@link ClassTypePoint}-&gt{@link BeforeCreatePoint}-&gt{@link AfterCreatePoint}
- * @version 2011-3-7
+ * 字节码装载扩展点：该扩展点位于<b>类型创建或获取阶段</b>。该扩展点的功能是将字节码对象装载成为Class类型对象。
+ * <br/>注意：1.该扩展点在如果挂载了多个{@link ClassBytePoint}扩展点，则扩展点将被依次执行。并且每次执行之后的新类型和字节码数据会被传入第二个扩展点。 
+ * <br/>注意：2.假如{@link ClassBytePoint}类型扩展点执行结果返回了一个null，则hypha系统会使用内置的classLoader装载字节码。
+ * <br/>扩展点执行顺序：{@link ClassBytePoint}-&gt<i><b>{@link ClassTypePoint}</b></i>-&gt{@link BeforeCreatePoint}-&gt{@link AfterCreatePoint}
+ * @version 2011-3-1
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ClassBytePoint extends ExpandPoint {
+public interface ClassTypePoint extends ExpandPoint {
     /**
      * 执行扩展方法。第一个参数是上一个扩展点执行的返回结果，第二个参数如下表示。<br/>
-     * param[0] 系统通过BeanBuilder 或者来自于上一个{@link ClassBytePoint}扩展点的字节码数据。字节数组类型。<br/>
+     * param[0] 装载的bean类型{@link Class}类型，注意如果该扩展点不做任何事，必须返回该参数数据。<br/>
      * param[1] {@link AbstractBeanDefine}当前所处的bean定义对象。<br/>
      * param[2] {@link ApplicationContext}扩展点所处的上下文。
      */

@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.commons.engine;
-import org.more.hypha.AbstractBeanDefine;
+package org.more.hypha.context;
 import org.more.hypha.ApplicationContext;
+import org.more.hypha.Event;
 /**
- * 该接口是针对某个{@link AbstractBeanDefine}类型的特定支持。
- * @version : 2011-5-12
+ * {@link ApplicationContext}遇到的卸载调用而引发事件。
+ * @version 2011-2-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AbstractBeanBuilder<T extends AbstractBeanDefine> {
-    /**设置当前{@link AbstractBeanBuilder}使用的{@link ApplicationContext}环境对象。*/
-    public void setApplicationContext(ApplicationContext applicationContext);
-    /**装载bean定义的类型。*/
-    public Class<?> loadType(AbstractBeanDefine define, Object[] params);
-    /**创建Bean对象。*/
-    public Object createBean(AbstractBeanDefine define, Object[] params);
+public class DestroyEvent extends Event {
+    public class Params extends Event.Params {
+        public ApplicationContext applicationContext = null;
+    };
+    public Params toParams(Sequence eventSequence) {
+        Object[] params = eventSequence.getParams();
+        Params p = new Params();
+        p.applicationContext = (ApplicationContext) params[0];
+        return p;
+    }
 };

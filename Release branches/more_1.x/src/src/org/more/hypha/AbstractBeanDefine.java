@@ -17,7 +17,7 @@ package org.more.hypha;
 import java.util.Collection;
 import org.more.util.attribute.IAttribute;
 /**
- * 该接口用于定义一个beans组建中的bean声明。
+ * 该接口用于定义一个bean，无论是什么类型的Bean都需要实现该接口。
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
