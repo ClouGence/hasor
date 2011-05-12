@@ -17,6 +17,8 @@ package org.more.log;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import org.more.log.objects.DefaultLog;
 import org.more.log.objects.DefaultLogFormater;
@@ -98,11 +100,8 @@ public class LogFactory {
      * @throws IOException 如果发生I/O异常
      */
     public static void lookUp() throws IOException {
-        File file = new File(LogFactory.Log_Config_File);
-        if (!file.canRead())
-            init(new CommandReader(new StringReader("")));// 初始化
-        else
-            init(new CommandReader(new FileReader(file)));// 初始化
+        InputStream is = LogFactory.class.getClassLoader().getResourceAsStream(LogFactory.Log_Config_File);
+        init(new CommandReader(new InputStreamReader(is, "utf-8")));// 初始化
     }
     /**
      * 使用指定日志文件，初始化日志系统。
