@@ -16,8 +16,8 @@
 package org.more.hypha;
 import java.util.List;
 import org.more.NoDefinitionException;
-import org.more.hypha.event.AddBeanDefineEvent;
-import org.more.hypha.event.ClearALLDefineEvent;
+import org.more.hypha.context.array.AddDefineEvent;
+import org.more.hypha.context.array.ClearDefineEvent;
 import org.more.util.attribute.IAttribute;
 /**
  * 这个接口是more.hypha组建的基本接口之一，该接口用于提供{@link AbstractBeanDefine}的索引获取功能。
@@ -38,7 +38,7 @@ public interface DefineResource extends IAttribute {
     public AbstractBeanDefine getBeanDefine(String id) throws NoDefinitionException;
     /**
      * 添加一个bean定义。使用该方法添加的定义在{@link DefineResource}接口重载时会丢失。
-     * 提示：该方法会引发{@link AddBeanDefineEvent}事件。
+     * 提示：该方法会引发{@link AddDefineEvent}事件。
      * @param define 要添加的bean定义。
      */
     public void addBeanDefine(AbstractBeanDefine define) throws NoDefinitionException;
@@ -72,7 +72,7 @@ public interface DefineResource extends IAttribute {
      * @return 返回测试结果，如果是以原型模式创建则返回true,否则返回false。
      */
     public boolean isFactory(String id) throws NoDefinitionException;
-    /**清空所有装载的Bean定义对象，提示：该方法会引发{@link ClearALLDefineEvent}事件。*/
+    /**清空所有装载的Bean定义对象，提示：该方法会引发{@link ClearDefineEvent}事件。*/
     public void clearDefine();
     /**获取事件管理器，通过该管理器可以发送事件，事件的监听也是通过这个接口对象完成的。*/
     public EventManager getEventManager();

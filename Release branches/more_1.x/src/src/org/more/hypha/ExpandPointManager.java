@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 package org.more.hypha;
-import org.more.util.attribute.IAttribute;
 /**
  * 该类负责管理并调用并且执行扩展点的基类。
  * @version 2011-1-14
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface ExpandPointManager {
-    /**初始化方法，参数是一个flash。*/
-    public void init(IAttribute flash) throws Throwable;
     /**
      * 顺序执行所有已注册的扩展点对象，直到执行完毕所有匹配类型的扩展点为止。
      * @param type 扩展点类型。

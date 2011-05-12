@@ -21,8 +21,6 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface ELContext extends IAttribute {
-    /**初始化方法，参数是一个flash。*/
-    public void init(IAttribute flash) throws Throwable;
     /** 计算一段字符串的EL值，并且返回计算结果。 */
     public Object evalExpression(String elString) throws Throwable;
     /**

@@ -32,6 +32,8 @@ public interface AbstractBeanDefine extends IAttribute {
     public String getFullName();
     /**获取bean被定义的bean的类型该类型与class类型是有区分的，class类型可以表述一个具体类型但是无法表述大分类。*/
     public String getBeanType();
+    /**生成Bean所使用的生成器名，Fact，Ioc，User*/
+    public String getBuildFactory();
     /**返回一个boolean值，表示类是否为一个抽象类。*/
     public boolean isAbstract();
     /**返回一个boolean值，表示类是否为一个接口。*/

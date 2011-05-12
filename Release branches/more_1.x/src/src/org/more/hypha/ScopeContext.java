@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 package org.more.hypha;
-import org.more.util.attribute.IAttribute;
 /**
  * 作用域管理器。
  * @version : 2011-4-19
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ScopeContext {
-    /**初始化方法，参数是一个flash。*/
-    public void init(IAttribute flash) throws Throwable;
-}
+public interface ScopeContext {}

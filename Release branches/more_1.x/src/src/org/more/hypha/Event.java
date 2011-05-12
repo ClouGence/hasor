@@ -40,6 +40,12 @@ public abstract class Event {
             eventMap.put(this.getClass(), this);
     }
     public static Event getEvent(Class<? extends Event> eventType) {
+        if (eventMap.containsKey(eventType) == false)
+            try {
+                eventType.newInstance();
+            } catch (Exception e) {
+                throw new RuntimeException("不能注册事件类型" + eventType);
+            }
         return eventMap.get(eventType);
     }
     /**将事件序列转换为{@link Params}类型对象。*/

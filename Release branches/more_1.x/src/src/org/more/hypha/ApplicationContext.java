@@ -62,7 +62,7 @@ public interface ApplicationContext extends IAttribute {
      * @param objects 在获取bean实例时可能会传递的参数信息。
      * @return 返回或者返回创建的新实例。
      */
-    public Object getBean(String id, Object... objects) throws Throwable;
+    public <T> T getBean(String id, Object... objects) throws Throwable;
     /**
      * 根据Bean名称获取其bean类型，该方法将返回在bean定义中配置的bean类型。
      * 那么getBeanType方法将返回生成的新类类型对象。
@@ -96,9 +96,9 @@ public interface ApplicationContext extends IAttribute {
      * @return 返回测试结果，如果指定的类型是被测试的bean的父类则返回true,否则返回false。
      */
     public boolean isTypeMatch(String id, Class<?> targetType) throws Throwable;
-    /**初始化{@link ApplicationContext}接口。 */
+    /**初始化{@link ApplicationContext}接口，该方法一定要在destroy之前执行。 */
     public void init() throws Throwable;
-    /**销毁{@link ApplicationContext}接口。*/
+    /**销毁{@link ApplicationContext}接口，销毁之后不可以再次执行init。*/
     public void destroy() throws Throwable;
     //--------------------------------------------------------------
     /**获取应用的上下文环境对象。*/

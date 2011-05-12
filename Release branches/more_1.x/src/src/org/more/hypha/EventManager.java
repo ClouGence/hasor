@@ -15,7 +15,6 @@
  */
 package org.more.hypha;
 import org.more.hypha.Event.Sequence;
-import org.more.util.attribute.IAttribute;
 /**
  * 事件处理器接口，该接口的目的是为了处理{@link Event}类型事件。该接口提供的是一种先进先出的队列的方式处理事件。
  * 事件并不是当压入队列时就得到处理，需要明显的调用弹出事件驱动事件处理。也可以通过doEvent方法明确处理这个事件。
@@ -23,8 +22,6 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface EventManager {
-    /**初始化方法，参数是一个flash。*/
-    public void init(IAttribute flash) throws Throwable;
     /**添加一种类型事件的事件监听器。*/
     public void addEventListener(Event eventType, EventListener<?> listener);
     /**
@@ -41,11 +38,11 @@ public interface EventManager {
     /**删除队列中的某一个待执行的事件。*/
     public boolean removeEvent(Sequence sequence);
     /**弹出所有类型事件，在弹出过程中依次激活每个事件的事件处理器，如果一些事件没有相应的事件处理器那么这些事的处理将被忽略。*/
-    public void popEvent();
+    public void popEvent() throws Throwable;
     /**弹出某种特定类型的事件，在弹出过程中依次激活每个事件的事件处理器，如果这些事件没有相应的事件处理器那么这些事的处理将被忽略。*/
-    public void popEvent(Event eventType);
+    public void popEvent(Event eventType) throws Throwable;
     /**弹出特定顺序位置的事件，在弹出过程中依次激活每个事件的事件处理器，如果这些事件没有相应的事件处理器那么这些事的处理将被忽略。*/
-    public void popEvent(Sequence sequence);
+    public void popEvent(Sequence sequence) throws Throwable;
     /**绕过事件队列直接通知事件处理器处理这个事件。*/
-    public void doEvent(Event eventType, Object... objects);
+    public void doEvent(Event eventType, Object... objects) throws RuntimeException;
 }
