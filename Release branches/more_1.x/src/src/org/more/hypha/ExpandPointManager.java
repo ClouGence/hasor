@@ -26,14 +26,14 @@ public interface ExpandPointManager {
      * @param params 执行的参数。
      * @return 返回执行结果。
      */
-    public Object exePointOnSequence(Class<? extends ExpandPoint> type, Object[] params);
+    public Object exePointOnSequence(Class<? extends ExpandPoint> type, Object... params);
     /**
      * 顺序执行所有已注册的扩展点对象，当遇到一个返回值时结束执行扩展点，否则直到执行完毕所有扩展点返回。
      * @param type 扩展点类型。
      * @param params 执行的参数。
      * @return 返回执行结果。
      */
-    public Object exePointOnReturn(Class<? extends ExpandPoint> type, Object[] params);
+    public Object exePointOnReturn(Class<? extends ExpandPoint> type, Object... params);
     /** 注册一个可执行的扩展点，可以重复注册同一个扩展点。 */
     public void regeditExpandPoint(ExpandPoint point);
 };

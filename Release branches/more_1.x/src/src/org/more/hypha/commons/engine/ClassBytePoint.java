@@ -17,8 +17,6 @@ package org.more.hypha.commons.engine;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ExpandPoint;
-import org.more.hypha.commons.engine.ioc.AfterCreatePoint;
-import org.more.hypha.commons.engine.ioc.BeforeCreatePoint;
 /**
  * 字节码信息获取扩展点：该扩展点位于<b>类型创建或获取阶段</b>。该扩展点可以让外部程序有控制Bean字节码的全力，重而可以在字节码级别上完成对类的修改。
  * <br/>注意：1.如果挂载了多个{@link ClassBytePoint}扩展点，则扩展点将被依次执行。并且每次执行之后的新字节码数据会被传入第二个扩展点。

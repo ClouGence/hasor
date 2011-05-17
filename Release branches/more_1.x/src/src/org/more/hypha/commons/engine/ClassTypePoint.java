@@ -17,8 +17,6 @@ package org.more.hypha.commons.engine;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ExpandPoint;
-import org.more.hypha.commons.engine.ioc.AfterCreatePoint;
-import org.more.hypha.commons.engine.ioc.BeforeCreatePoint;
 /**
  * 字节码装载扩展点：该扩展点位于<b>类型创建或获取阶段</b>。该扩展点的功能是将字节码对象装载成为Class类型对象。
  * <br/>注意：1.该扩展点在如果挂载了多个{@link ClassBytePoint}扩展点，则扩展点将被依次执行。并且每次执行之后的新类型和字节码数据会被传入第二个扩展点。 

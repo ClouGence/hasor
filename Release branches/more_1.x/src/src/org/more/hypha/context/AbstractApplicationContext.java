@@ -75,6 +75,9 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     public void setBeanClassLoader(ClassLoader loader) {
         this.classLoader.setLoader(loader);
     };
+    public EngineLogic getEngineLogic() {
+        return this.engineLogic;
+    };
     /*------------------------------------------------------------*/
     /**清理掉{@link AbstractApplicationContext}对象中所缓存的单例Bean对象。*/
     public void clearSingleBean() {
@@ -141,7 +144,6 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         //
         this.engineLogic = null;
     };
-    @SuppressWarnings("unchecked")
     public <T> T getBean(String defineID, Object... objects) throws Throwable {
         //-------------------------------------------------------------------检查单态
         if (this.singleBeanCache.containsKey(defineID) == true)
@@ -153,7 +155,11 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
             AbstractBeanDefine define = this.getBeanDefinition(defineID);
             if (define == null)
                 throw new NoDefinitionException("不存在id为[" + defineID + "]的Bean定义。");
-            Object bean = this.engineLogic.builderBean(define, objects);
+            //1.获取bean以及bean类型。
+            Class<?> beanType = this.getBeanType(defineID, objects);//获取类型
+            Object bean = this.engineLogic.builderBean(define, objects);//生成Bean
+            //3.单态缓存&类型匹配
+            bean = this.cast(beanType, bean);
             if (define.isSingleton() == true)
                 this.singleBeanCache.put(defineID, bean);
             return (T) bean;
@@ -162,6 +168,12 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         } finally {
             this.getThreadFlash().removeAttribute(KEY);
         }
+    };
+    /**检测对象类型是否匹配定义类型，如果没有指定beanType参数则直接返回。*/
+    private Object cast(Class<?> beanType, Object obj) throws ClassCastException {
+        if (beanType != null)
+            return beanType.cast(obj);
+        return obj;
     };
     public Class<?> getBeanType(String defineID, Object... objects) throws Throwable {
         //-------------------------------------------------------------------检查单态

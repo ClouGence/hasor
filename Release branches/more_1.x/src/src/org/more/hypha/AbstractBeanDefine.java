@@ -32,8 +32,8 @@ public interface AbstractBeanDefine extends IAttribute {
     public String getFullName();
     /**获取bean被定义的bean的类型该类型与class类型是有区分的，class类型可以表述一个具体类型但是无法表述大分类。*/
     public String getBeanType();
-    /**生成Bean所使用的生成器名，Fact，Ioc，User*/
-    public String getBuildFactory();
+    /**属性注入所使用的注入方式，Fact，Ioc，User*/
+    public String getIocEngine();
     /**返回一个boolean值，表示类是否为一个抽象类。*/
     public boolean isAbstract();
     /**返回一个boolean值，表示类是否为一个接口。*/
@@ -46,7 +46,7 @@ public interface AbstractBeanDefine extends IAttribute {
     public String getDescription();
     /**获取该类型bean的工厂方法。*/
     public AbstractMethodDefine factoryMethod();
-    /**获取初始化方法名。*/
+    /**获取初始化方法名，该方法是一个无参的非静态方法。*/
     public String getInitMethod();
     /**获取销毁方法名。*/
     public String getDestroyMethod();

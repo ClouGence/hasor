@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.commons.engine.ioc;
+package org.more.hypha.commons.engine;
+import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.commons.engine.ValueMetaDataParser;
 /**
  * 该接口是基本的bean获取接口，该接口的职责是给定bean定义并且将这个bean定义创建出来。
  * @version : 2011-4-22
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class IocEngine {
+    public static final String EngineName = "Ioc";
     //----------------------------------------------------------------------------------------------------------
     /**初始化方法。 */
-    public abstract void init(ApplicationContext context, ValueMetaDataParser rootParser) throws Throwable;
+    public void init(ApplicationContext context, ValueMetaDataParser<?> rootParser) throws Throwable {}
     /**销毁方法。*/
     public void destroy() throws Throwable {}
+    /**执行注入。*/
+    public abstract void ioc(Object obj, AbstractBeanDefine define, Object[] params);
 };

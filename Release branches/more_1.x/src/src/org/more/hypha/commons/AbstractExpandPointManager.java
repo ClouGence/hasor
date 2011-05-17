@@ -35,14 +35,14 @@ public abstract class AbstractExpandPointManager implements ExpandPointManager {
     protected AbstractDefineResource getDefineResource() {
         return this.defineResource;
     }
-    public Object exePointOnSequence(Class<? extends ExpandPoint> type, Object[] params) {
+    public Object exePointOnSequence(Class<? extends ExpandPoint> type, Object... params) {
         Object returnObj = null;
         for (ExpandPoint ep : expandList)
             if (type.isInstance(ep) == true)
                 returnObj = ep.doIt(returnObj, params);
         return returnObj;
     }
-    public Object exePointOnReturn(Class<? extends ExpandPoint> type, Object[] params) {
+    public Object exePointOnReturn(Class<? extends ExpandPoint> type, Object... params) {
         Object returnObj = null;
         for (ExpandPoint ep : expandList)
             if (type.isInstance(ep) == true) {

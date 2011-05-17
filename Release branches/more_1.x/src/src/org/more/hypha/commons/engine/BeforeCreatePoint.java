@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.commons.engine.ioc;
+package org.more.hypha.commons.engine;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ExpandPoint;
-import org.more.hypha.commons.engine.ClassBytePoint;
-import org.more.hypha.commons.engine.ClassTypePoint;
 /**
  * 预创建扩展点：该扩展点位于<b>对象创建阶段</b>。该扩展点的可以提供一个使外部程序参与Bean类型构造的切口，如果预创建成功则会取消<b>默认创建过程</b>。
  * <br/>注意：1.该扩展点在如果挂载了多个{@link BeforeCreatePoint}扩展点，则扩展点将被依次执行。 直至遇到一个不为空的执行结果。
@@ -30,7 +28,7 @@ import org.more.hypha.commons.engine.ClassTypePoint;
 public interface BeforeCreatePoint extends ExpandPoint {
     /**
      * 执行扩展方法。第一个参数是上一个扩展点执行的返回结果，第二个参数如下表示。<br/>
-     * param[0] bean定义执行之后所装载的Bean类型,{@link Class}类型。<br/>
+     * param[0] bean定义<br/>
      * param[1] getBean方法所传入的动态参数。<br/>
      * param[2] {@link AbstractBeanDefine}当前所处的bean定义对象。<br/>
      * param[3] {@link ApplicationContext}扩展点所处的上下文。

@@ -17,7 +17,7 @@ package org.more.hypha.commons.engine;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
 /**
- * 该接口是针对某个{@link AbstractBeanDefine}类型的特定支持。
+ * 该接口是针对某个{@link AbstractBeanDefine}类型的特定支持。该接口的功能是负责创建某种类型的Bean。
  * @version : 2011-5-12
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -27,5 +27,5 @@ public interface AbstractBeanBuilder<T extends AbstractBeanDefine> {
     /**装载bean定义的类型。*/
     public Class<?> loadType(AbstractBeanDefine define, Object[] params);
     /**创建Bean对象。*/
-    public Object createBean(AbstractBeanDefine define, Object[] params);
+    public <O> O createBean(AbstractBeanDefine define, Object[] params);
 };
