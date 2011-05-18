@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 package org.more.hypha;
-import org.more.util.attribute.IAttribute;
+import org.more.core.ognl.OgnlException;
 /**
- * EL对象，该接口可以明确分界。执行el表达式时对对象的读或者写操作。
- * Date : 2011-4-11
+ * 
+ * @version : 2011-5-18
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ELObject {
-    /**初始化{@link ELObject}对象。*/
-    public void init(ApplicationContext context, IAttribute flash);
-    /**如果该对象是不可写的则可以在实现该接口时返回true。*/
-    public boolean isReadOnly();
-    /**改变这个el对象值（或引用）。*/
-    public void setValue(Object value) throws ELException;
-    /**获取这个el对象。*/
-    public Object getValue() throws ELException;
-};
+public class ELException extends OgnlException {
+    public ELException(String string) {
+        // TODO Auto-generated constructor stub 
+    }
+    public ELException(String string, Throwable e) {
+        // TODO Auto-generated constructor stub
+    }
+    /**  */
+    private static final long serialVersionUID = -4461522998522312897L;
+}

@@ -19,7 +19,10 @@ import org.more.core.ognl.Node;
 import org.more.core.ognl.Ognl;
 import org.more.core.ognl.OgnlContext;
 import org.more.core.ognl.OgnlException;
+import org.more.hypha.ELException;
 import org.more.hypha.EvalExpression;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 import org.more.util.attribute.IAttribute;
 import org.more.util.attribute.ParentDecorator;
 import org.more.util.attribute.TransformToMap;
@@ -29,24 +32,40 @@ import org.more.util.attribute.TransformToMap;
  * @author 赵永春 (zyc@byshell.org)
  */
 class EL_EvalExpressionImpl implements EvalExpression {
-    private String     expressionString = null;
-    private Node       expressionNode   = null;
-    private IAttribute attribute        = null;
-    /***/
-    public EL_EvalExpressionImpl(AbstractELContext abstractELContext, String expressionString) throws OgnlException {
-        this.attribute = new ParentDecorator(abstractELContext);
+    private static ILog log              = LogFactory.getLog(EL_EvalExpressionImpl.class);
+    private String      expressionString = null;
+    private Node        expressionNode   = null;
+    private IAttribute  attribute        = null;
+    /*------------------------------------------------------------------------------*/
+    public EL_EvalExpressionImpl(AbstractELContext abstractELContext, String expressionString) throws ELException {
+        this.attribute = new ParentDecorator(abstractELContext.getELAttribute());//创建一个父级，以隔离来自elContext的属性。
+        log.debug("init el attribute elString = {%0}, Set = {%1}", expressionString, this.attribute);
         this.expressionString = expressionString;
-        this.expressionNode = (Node) Ognl.parseExpression(expressionString);
+        try {
+            this.expressionNode = (Node) Ognl.parseExpression(expressionString);
+            log.debug("init expressionNode OK!");
+        } catch (OgnlException e) {
+            log.error("init expressionNode ERROR! , message = {%0}", e);
+            throw new ELException("parseExpression " + expressionString + " error.");
+        }
     };
-    public Object eval(Object thisObject) throws OgnlException {
+    /*------------------------------------------------------------------------------*/
+    public Object eval(Object thisObject) throws ELException {
         OgnlContext oc = new OgnlContext(this.toMap());
         oc.setCurrentObject(thisObject);
-        return this.expressionNode.getValue(oc, thisObject);
+        try {
+            Object obj = this.expressionNode.getValue(oc, thisObject);
+            log.debug("eval succeed! elString = {%0} , value = {%1}", expressionString, obj);
+            return obj;
+        } catch (OgnlException e) {
+            log.error("eval error! elString = {%0} , error = {%1}", expressionString, e);
+            throw new ELException("eval ‘" + expressionString + "’ error!", e);
+        }
     }
     public String getExpressionString() {
         return this.expressionString;
     }
-    //--------------------------------------------------------
+    /*------------------------------------------------------------------------------*/
     public boolean contains(String name) {
         return this.attribute.contains(name);
     }

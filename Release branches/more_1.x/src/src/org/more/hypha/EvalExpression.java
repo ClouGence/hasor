@@ -24,5 +24,5 @@ public interface EvalExpression extends IAttribute {
     /**获取这个el表达式的字符串形式。*/
     public String getExpressionString();
     /**执行el表达式，参数表示了在执行el表达式时候使用的this是谁。 */
-    public Object eval(Object thisObject) throws Throwable;
+    public Object eval(Object thisObject) throws ELException;;
 };

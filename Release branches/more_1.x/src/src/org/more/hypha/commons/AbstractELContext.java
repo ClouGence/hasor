@@ -15,85 +15,150 @@
  */
 package org.more.hypha.commons;
 import java.util.Map;
-import org.more.core.ognl.OgnlException;
 import org.more.hypha.ELContext;
+import org.more.hypha.ELException;
 import org.more.hypha.ELObject;
 import org.more.hypha.EvalExpression;
 import org.more.hypha.PropertyBinding;
 import org.more.hypha.context.AbstractApplicationContext;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**
- * 接口{@link ELContext}的实现类。
+ * 接口{@link ELContext}的实现类，该类{@link IAttribute}接口实现方法所使用的属性集合是由{@link #getOgnlContext()}方法提供的。
  * Date : 2011-4-8
  * @author 赵永春
  */
-public abstract class AbstractELContext implements ELContext {
+public class AbstractELContext implements ELContext {
+    private static ILog                log                = LogFactory.getLog(AbstractELContext.class);
     private AbstractApplicationContext applicationContext = null;
-    private InnerOgnlContext           ognlContext        = new InnerOgnlContext();
+    private InnerOgnlContext           elAttribute        = null;
+    /*------------------------------------------------------------------------------*/
+    /**该类的目的是为了支持{@link ELObject}类型对象，该对象是以{@link IAttribute}接口形式向外提供。*/
     private class InnerOgnlContext extends AttBase {
         private static final long serialVersionUID = 8423446527838340104L;
+        private ILog              log              = LogFactory.getLog(InnerOgnlContext.class);
         public Object get(Object key) {
             Object obj = super.get(key);
-            if (obj instanceof ELObject)
-                return ((ELObject) obj).getValue();
+            if (obj != null) {
+                //begin...
+                if (obj instanceof ELObject)
+                    try {
+                        obj = ((ELObject) obj).getValue();
+                        log.debug("get {%0} ELObject value {%1}", key, obj);
+                    } catch (ELException e) {
+                        obj = null;
+                        log.error("invoke {%0} ELObject.getValue() an error. error = {%1}", key, e);
+                    }
+                //...end
+            } else
+                log.debug("get {%0} Object. value = {%1}", key, obj);
             return obj;
         };
-        public Object put(String key, Object value) {
+        public Object put(String key, Object newValue) {
             Object obj = super.get(key);
-            if (obj instanceof ELObject) {
-                ((ELObject) obj).setValue(value);
-                return value;
-            } else
-                return super.put(key, value);
+            if (obj != null) {
+                //begin...
+                if (obj instanceof ELObject)
+                    try {
+                        ((ELObject) obj).setValue(newValue);
+                        log.debug("set {%0} ELObject newValue, newValue = {%1}", key, newValue);
+                    } catch (ELException e) {
+                        log.error("invoke {%0} ELObject.setValue() an error. newValue = {%1} , oldValue = {%2} ,error = {%3}", key, newValue, obj, e);
+                    }
+                //...end
+            } else {
+                super.put(key, newValue);
+                obj = newValue;
+                log.debug("set {%0} Object. value = {%1}", key, newValue);
+            }
+            return obj;
         };
     };
-    //----------------------------------------------------------------------------------------------------------
+    /*------------------------------------------------------------------------------*/
     public void init(AbstractApplicationContext applicationContext) throws Throwable {
+        if (applicationContext != null)
+            log.info("init ELContext, applicationContext = {%0}", applicationContext);
+        else
+            log.warning("init ELContext, applicationContext is null.");
         this.applicationContext = applicationContext;
-    }
+    };
     /**返回{@link AbstractApplicationContext}对象。*/
     protected AbstractApplicationContext getApplicationContext() {
         return this.applicationContext;
-    }
-    //----------------------------------------------------------------------------------------------------------
-    public EvalExpression getExpression(String elString) throws OgnlException {
+    };
+    /**获取一个{@link IAttribute}接口对象，还对象可以以{@link IAttribute}接口形式访问{@link AbstractELContext}中的属性。*/
+    IAttribute getELAttribute() {
+        if (this.elAttribute == null) {
+            this.elAttribute = new InnerOgnlContext();
+            log.debug("created ognlContext ,{%0}", this.elAttribute);
+        }
+        return this.elAttribute;
+    };
+    /*------------------------------------------------------------------------------*/
+    public EvalExpression getExpression(String elString) throws ELException {
+        if (elString == null) {
+            log.warning("make expression an error elString is null.");
+            return null;
+        }
+        log.debug("make expression EL = '{%0}'", elString);
         return new EL_EvalExpressionImpl(this, elString);
     };
-    public Object evalExpression(String elString) throws Throwable {
-        return this.getExpression(elString).eval(null);
+    public Object evalExpression(String elString) throws ELException {
+        if (elString == null) {
+            log.warning("eval expression an error elString is null.");
+            return null;
+        }
+        EvalExpression exp = this.getExpression(elString);
+        Object obj = exp.eval(null);
+        log.debug("eval expression EL = '{%0}' result = {%1}", elString, obj);
+        return obj;
     };
-    public PropertyBinding getPropertyBinding(String propertyEL, Object object) throws OgnlException {
+    public PropertyBinding getPropertyBinding(String propertyEL, Object object) throws ELException {
+        if (propertyEL == null || object == null) {
+            log.warning("make propertyEL an error propertyEL or object is null.");
+            return null;
+        }
+        log.debug("make propertyEL property= '{%0}' , propertyObject = {%1}", propertyEL, object);
         return new EL_PropertyBindingImpl(this, propertyEL, object);
     };
     public void addELObject(String name, ELObject elObject) {
-        elObject.init(this.getApplicationContext(), this.getApplicationContext().getBeanResource().getFlash());
-        this.getOgnlContext().setAttribute(name, elObject);
+        if (name == null) {
+            log.warning("add el Object an error , name is null");
+            return;
+        }
+        if (elObject == null) {
+            //remove
+            log.info("remove el Object name = '{%0}'", name);
+            this.getELAttribute().removeAttribute(name);
+        } else {
+            //add
+            log.info("add el Object name = '{%0}' , object = {%1}", name, elObject);
+            elObject.init(this.getApplicationContext(), this.getApplicationContext().getBeanResource().getFlash());
+            this.getELAttribute().setAttribute(name, elObject);
+        }
     };
-    //----------------------------------------------------------------------------------------------------------
-    /**获取一个{@link IAttribute}接口对象，还对象可以以{@link IAttribute}接口形式访问{@link AbstractELContext}中的属性。*/
-    public IAttribute getOgnlContext() {
-        return this.ognlContext;
-    };
+    /*------------------------------------------------------------------------------*/
     public boolean contains(String name) {
-        return this.getOgnlContext().contains(name);
+        return this.getELAttribute().contains(name);
     };
     public void setAttribute(String name, Object value) {
-        this.getOgnlContext().setAttribute(name, value);
+        this.getELAttribute().setAttribute(name, value);
     };
     public Object getAttribute(String name) {
-        return this.getOgnlContext().getAttribute(name);
+        return this.getELAttribute().getAttribute(name);
     };
     public void removeAttribute(String name) {
-        this.getOgnlContext().removeAttribute(name);
+        this.getELAttribute().removeAttribute(name);
     };
     public String[] getAttributeNames() {
-        return this.getOgnlContext().getAttributeNames();
+        return this.getELAttribute().getAttributeNames();
     };
     public void clearAttribute() {
-        this.getOgnlContext().clearAttribute();
+        this.getELAttribute().clearAttribute();
     }
     public Map<String, Object> toMap() {
-        return this.getOgnlContext().toMap();
+        return this.getELAttribute().toMap();
     }
 };

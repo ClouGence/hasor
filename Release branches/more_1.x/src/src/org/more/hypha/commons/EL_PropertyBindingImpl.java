@@ -14,37 +14,66 @@
  * limitations under the License.
  */
 package org.more.hypha.commons;
+import java.util.Map;
 import org.more.core.ognl.Node;
 import org.more.core.ognl.Ognl;
 import org.more.core.ognl.OgnlContext;
 import org.more.core.ognl.OgnlException;
+import org.more.hypha.ELException;
 import org.more.hypha.PropertyBinding;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 /**
  * 属性绑操作器，通过该类可以对属性进行读写操作。
  * Date : 2011-4-11
  * @author 赵永春 (zyc@byshell.org)
  */
 class EL_PropertyBindingImpl implements PropertyBinding {
-    private String      propertyEL   = null; //属性EL
-    private Node        propertyNode = null; //编译的属性读取器
+    private static ILog log          = LogFactory.getLog(EL_PropertyBindingImpl.class);
+    private String      propertyEL   = null;                                           //属性EL
+    private Node        propertyNode = null;                                           //编译的属性读取器
     /**子类可以通过该字段来改变属性的可读写状态，如果滞空该字段当setValue或者isReadOnly被调用时都会重新初始化它。*/
     protected Boolean   readOnly     = null;
     private OgnlContext ognlContext  = null;
-    private Object      object       = null; //属性所属的对象
-    public EL_PropertyBindingImpl(AbstractELContext elContext, String propertyEL, Object object) throws OgnlException {
-        this.ognlContext = new OgnlContext(elContext.getOgnlContext().toMap());
+    private Object      object       = null;                                           //属性所属的对象
+    /*------------------------------------------------------------------------------*/
+    public EL_PropertyBindingImpl(AbstractELContext elContext, String propertyEL, Object object) throws ELException {
+        Map<?, ?> attMap = elContext.getELAttribute().toMap();
+        log.debug("init property attribute elString = , rootObject = {%0} ,Set = {%1}", object, attMap);
+        //
+        this.ognlContext = new OgnlContext(attMap);
         this.ognlContext.setCurrentObject(object);//this
         this.object = object;
         this.propertyEL = propertyEL;
-        this.propertyNode = (Node) Ognl.parseExpression(propertyEL);//编译属性
+        try {
+            this.propertyNode = (Node) Ognl.parseExpression(propertyEL);//编译属性
+            log.debug("init propertyNode OK!");
+        } catch (OgnlException e) {
+            log.error("init propertyNode ERROR! , message = {%0}", e);
+            throw new ELException("parseExpression " + propertyEL + " error.");
+        }
     };
+    /*------------------------------------------------------------------------------*/
     public String getPropertyEL() {
         return this.propertyEL;
     };
-    public synchronized Object getValue() throws OgnlException {
-        return this.propertyNode.getValue(this.ognlContext, this.object);
+    public synchronized Object getValue() throws ELException {
+        try {
+            Object res = this.propertyNode.getValue(this.ognlContext, this.object);
+            log.debug("getValue succeed! propertyEL = {%0} , value = {%1}", this.propertyEL, res);
+            return res;
+        } catch (OgnlException e) {
+            log.error("getValue error! propertyEL = {%0} , error = {%1}", this.propertyEL, e);
+            throw new ELException("get propertyEL ‘" + this.propertyEL + "’ error!", e);
+        }
     };
-    public synchronized void setValue(Object value) throws OgnlException {
-        this.propertyNode.setValue(ognlContext, this.object, value);
+    public synchronized void setValue(Object value) throws ELException {
+        try {
+            this.propertyNode.setValue(ognlContext, this.object, value);
+            log.debug("eval succeed! elString = {%0} , value = {%1}", this.propertyEL, value);
+        } catch (OgnlException e) {
+            log.error("setValue error! propertyEL = {%0} , error = {%1}", this.propertyEL, e);
+            throw new ELException("set propertyEL ‘" + this.propertyEL + "’ error!", e);
+        }
     };
 };

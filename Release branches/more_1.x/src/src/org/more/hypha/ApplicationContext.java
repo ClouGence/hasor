@@ -15,7 +15,6 @@
  */
 package org.more.hypha;
 import java.util.List;
-import org.more.NoDefinitionException;
 import org.more.util.attribute.IAttribute;
 /**
 * 这个接口是More的Bean容器的核心接口，{@link ApplicationContext}的特定接口实现类可以用于某些情形。<br/><br/>
@@ -36,9 +35,8 @@ public interface ApplicationContext extends IAttribute {
      * 如果当前bean的属性注入需要依赖其他bean则获取其他bean的定义需要重新调用getBeanDefinition方法进行获取。
      * @param id 要获取bean定义的bean名称。
      * @return 返回bean定义，如果获取不到指定的bean定义则返回null。
-     * @throws NoDefinitionException 如果要获取的bean定义不存在则会引发{@link NoDefinitionException}异常。
      */
-    public AbstractBeanDefine getBeanDefinition(String id) throws NoDefinitionException;
+    public AbstractBeanDefine getBeanDefinition(String id);
     /**
      * 获取{@link ApplicationContext}所使用的Bean定义资源，该资源对象可以提供有关Bean定义信息。
      * @return 返回{@link ApplicationContext}所使用的Bean定义资源，该资源对象可以提供有关Bean定义信息。
@@ -75,31 +73,36 @@ public interface ApplicationContext extends IAttribute {
      * 测试某名称Bean是否为原型模式创建，如果目标bean不存在则返回false。
      * @param id 要测试的Bean id。
      * @return 返回测试结果，如果是以原型模式创建则返回true,否则返回false。
+     * @throws NoDefineBeanException 如果要测试的目标bean不存在则引发该异常。
      */
-    public boolean isPrototype(String id) throws NoDefinitionException;
+    public boolean isPrototype(String id) throws NoDefineBeanException;
     /**
      * 测试某名称Bean是否为单态模式创建，如果目标bean不存在则返回false。
      * @param id 要测试的Bean id。
      * @return 返回测试结果，如果是以原型模式创建则返回true,否则返回false。
+     * @throws NoDefineBeanException 如果要测试的目标bean不存在则引发该异常。
      */
-    public boolean isSingleton(String id) throws NoDefinitionException;
+    public boolean isSingleton(String id) throws NoDefineBeanException;
     /**
      * 测试某名称Bean是否为工厂模式创建，如果目标bean不存在则返回false。
      * @param id 要测试的Bean id。
      * @return 返回测试结果，如果是以原型模式创建则返回true,否则返回false。
+     * @throws NoDefineBeanException 如果要测试的目标bean不存在则引发该异常。
      */
-    public boolean isFactory(String id) throws NoDefinitionException;
+    public boolean isFactory(String id) throws NoDefineBeanException;
     /**
      * 测试指定id的bean类型是否可以转换成为targetType参数表示的类型。如果可以则返回true，否则返回false。
      * @param id 要测试的Bean id。
      * @param targetType 要测试的类型名。
      * @return 返回测试结果，如果指定的类型是被测试的bean的父类则返回true,否则返回false。
+     * @throws NoDefineBeanException 如果要测试的目标bean不存在则引发该异常。
+     * @throws NullPointerException 如果targetType参数指定为空则引发该异常。
      */
-    public boolean isTypeMatch(String id, Class<?> targetType) throws Throwable;
+    public boolean isTypeMatch(String id, Class<?> targetType) throws NoDefineBeanException, NullPointerException;
     /**初始化{@link ApplicationContext}接口，该方法一定要在destroy之前执行。 */
     public void init() throws Throwable;
-    /**销毁{@link ApplicationContext}接口，销毁之后不可以再次执行init。*/
-    public void destroy() throws Throwable;
+    /**销毁{@link ApplicationContext}接口。*/
+    public void destroy();
     //--------------------------------------------------------------
     /**获取应用的上下文环境对象。*/
     public Object getContextObject();
@@ -111,8 +114,8 @@ public interface ApplicationContext extends IAttribute {
     public ExpandPointManager getExpandPointManager();
     /**获取EL执行器。*/
     public ELContext getELContext();
-    /**作用域管理器。*/
-    public ScopeContext getScopeContext();
+    //    /**作用域管理器。*/
+    //    public ScopeContext getScopeContext();
     //    /**获取某个类型的服务扩展。*/
     //    public Object getServices(Class<?> servicesType);
 };

@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 package org.more.hypha;
-import org.more.util.attribute.IAttribute;
+import org.more.hypha.Event.Sequence;
 /**
- * EL对象，该接口可以明确分界。执行el表达式时对对象的读或者写操作。
- * Date : 2011-4-11
+ * 
+ * @version : 2011-5-18
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ELObject {
-    /**初始化{@link ELObject}对象。*/
-    public void init(ApplicationContext context, IAttribute flash);
-    /**如果该对象是不可写的则可以在实现该接口时返回true。*/
-    public boolean isReadOnly();
-    /**改变这个el对象值（或引用）。*/
-    public void setValue(Object value) throws ELException;
-    /**获取这个el对象。*/
-    public Object getValue() throws ELException;
-};
+public interface EventExceptionHandler<T extends Event> {
+    /**处理该事件异常。*/
+    public void processException(EventException exception, Sequence sequence, EventListener<T> listener);
+}

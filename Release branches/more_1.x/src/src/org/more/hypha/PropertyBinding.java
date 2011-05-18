@@ -21,12 +21,12 @@ package org.more.hypha;
  */
 public interface PropertyBinding {
     /**解析属性EL，并且获取解析之后的属性值。*/
-    public Object getValue() throws Throwable;
+    public Object getValue() throws ELException;
     /**
      * 解析属性EL，将一个新的值替换原有属性值。该方法被调用无论成功与否都将
      * 缓存只读属性特征，如果写入成功则isReadOnly方法返回为false，否则返回true。
      */
-    public void setValue(Object value) throws Throwable;
+    public void setValue(Object value) throws ELException;
     /**获取用于表示属性的EL表达式。*/
     public String getPropertyEL();
 };

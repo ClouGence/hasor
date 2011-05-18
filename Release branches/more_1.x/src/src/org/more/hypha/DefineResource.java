@@ -15,9 +15,6 @@
  */
 package org.more.hypha;
 import java.util.List;
-import org.more.NoDefinitionException;
-import org.more.hypha.context.array.AddDefineEvent;
-import org.more.hypha.context.array.ClearDefineEvent;
 import org.more.util.attribute.IAttribute;
 /**
  * 这个接口是more.hypha组建的基本接口之一，该接口用于提供{@link AbstractBeanDefine}的索引获取功能。
@@ -35,13 +32,14 @@ public interface DefineResource extends IAttribute {
      * @param id 要获取bean定义的id。
      * @return 返回bean定义，如果获取不到指定的bean定义则返回null。
      */
-    public AbstractBeanDefine getBeanDefine(String id) throws NoDefinitionException;
+    public AbstractBeanDefine getBeanDefine(String id);
     /**
      * 添加一个bean定义。使用该方法添加的定义在{@link DefineResource}接口重载时会丢失。
-     * 提示：该方法会引发{@link AddDefineEvent}事件。
      * @param define 要添加的bean定义。
+     * @throws NullPointerException 如果参数为空则引发该异常。
+     * @throws RepeateBeanException 如果企图添加一个同id的Bean定义则引发该异常。
      */
-    public void addBeanDefine(AbstractBeanDefine define) throws NoDefinitionException;
+    public void addBeanDefine(AbstractBeanDefine define) throws NullPointerException, RepeateBeanException;
     /**
      * 检测是否存在某个名称的Bean定义，如果存在目标bean定义则返回true，否则返回false。
      * @param id 要检测的Bean定义id。
@@ -58,21 +56,24 @@ public interface DefineResource extends IAttribute {
      * 测试某名称Bean是否为原型模式创建，原型模式是指bean即不属于工厂方式创建也没有配置单态特性。
      * @param id 要测试的Bean id。
      * @return 返回测试结果，如果是以原型模式创建则返回true,否则返回false。
+     * @throws NoDefineBeanException 如果要测试的目标bean不存在则引发该异常。
      */
-    public boolean isPrototype(String id) throws NoDefinitionException;
+    public boolean isPrototype(String id) throws NoDefineBeanException;
     /**
-     * 测试某名称Bean是否为单态模式创建，如果目标bean不存在则会引发{@link NoDefinitionException}异常。
+     * 测试某名称Bean是否为单态模式创建，如果目标bean不存在则会引发{@link NoDefineBeanException}异常。
      * @param id 要测试的Bean id。
      * @return 返回测试结果，如果是以原型模式创建则返回true,否则返回false。
+     * @throws NoDefineBeanException 如果要测试的目标bean不存在则引发该异常。
      */
-    public boolean isSingleton(String id) throws NoDefinitionException;
+    public boolean isSingleton(String id) throws NoDefineBeanException;
     /**
-     * 测试某名称Bean是否为工厂模式创建，如果目标bean不存在则会引发{@link NoDefinitionException}异常。
+     * 测试某名称Bean是否为工厂模式创建，如果目标bean不存在则会引发{@link NoDefineBeanException}异常。
      * @param id 要测试的Bean id。
      * @return 返回测试结果，如果是以原型模式创建则返回true,否则返回false。
+     * @throws NoDefineBeanException 如果要测试的目标bean不存在则引发该异常。
      */
-    public boolean isFactory(String id) throws NoDefinitionException;
-    /**清空所有装载的Bean定义对象，提示：该方法会引发{@link ClearDefineEvent}事件。*/
+    public boolean isFactory(String id) throws NoDefineBeanException;
+    /**清空所有装载的Bean定义对象。*/
     public void clearDefine();
     /**获取事件管理器，通过该管理器可以发送事件，事件的监听也是通过这个接口对象完成的。*/
     public EventManager getEventManager();
