@@ -16,17 +16,18 @@
 package org.more.hypha;
 import org.more.core.ognl.OgnlException;
 /**
- * 
+ * hypha的el异常。
  * @version : 2011-5-18
  * @author 赵永春 (zyc@byshell.org)
  */
 public class ELException extends OgnlException {
+    private static final long serialVersionUID = 4226135960558522394L;
+    /** hypha的el异常。*/
     public ELException(String string) {
-        // TODO Auto-generated constructor stub 
-    }
-    public ELException(String string, Throwable e) {
-        // TODO Auto-generated constructor stub
-    }
-    /**  */
-    private static final long serialVersionUID = -4461522998522312897L;
+        super(string);
+    };
+    /** hypha的el异常。*/
+    public ELException(String string, Throwable error) {
+        super(string, error);
+    };
 }

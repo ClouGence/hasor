@@ -103,7 +103,7 @@ public interface ApplicationContext extends IAttribute {
     public void init() throws Throwable;
     /**销毁{@link ApplicationContext}接口。*/
     public void destroy();
-    //--------------------------------------------------------------
+    /*------------------------------------------------------------------------------*/
     /**获取应用的上下文环境对象。*/
     public Object getContextObject();
     /**设置应用的上下文环境对象。*/

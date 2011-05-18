@@ -16,7 +16,7 @@
 package org.more.hypha;
 import org.more.hypha.Event.Sequence;
 /**
- * 
+ * 异常处理器，该接口是为了处理{@link EventListener}事件在执行过程中引发的异常。
  * @version : 2011-5-18
  * @author 赵永春 (zyc@byshell.org)
  */

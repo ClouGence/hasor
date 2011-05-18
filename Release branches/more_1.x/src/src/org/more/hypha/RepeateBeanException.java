@@ -16,33 +16,22 @@
 package org.more.hypha;
 import org.more.RepeateException;
 /**
- * 出现重复定义，出现该异常通常是对以存在的对象或属性进行了第二次重新定义。
- * @version 2009-4-29
+ * 出现重复定义Bean。
+ * @version : 2011-5-18
  * @author 赵永春 (zyc@byshell.org)
  */
 public class RepeateBeanException extends RepeateException {
-    /**  */
-    private static final long serialVersionUID = 2377606123252842745L;
-    /**
-     * 出现重复定义，出现该异常通常是对以存在的对象或属性进行了第二次重新定义。
-     * @param string 异常的描述信息
-     */
+    private static final long serialVersionUID = 286676982412332508L;
+    /** 出现重复定义Bean。*/
     public RepeateBeanException(String string) {
         super(string);
-    }
-    /**
-     * 出现重复定义，出现该异常通常是对以存在的对象或属性进行了第二次重新定义。
-     * @param error 异常的描述信息
-     */
+    };
+    /** 出现重复定义Bean。*/
     public RepeateBeanException(Throwable error) {
         super(error);
-    }
-    /**
-     * 出现重复定义，出现该异常通常是对以存在的对象或属性进行了第二次重新定义。
-     * @param string 异常的描述信息。
-     * @param error 承接的上一个异常对象。
-     */
+    };
+    /** 出现重复定义Bean。*/
     public RepeateBeanException(String string, Throwable error) {
         super(string, error);
-    }
-}
+    };
+};

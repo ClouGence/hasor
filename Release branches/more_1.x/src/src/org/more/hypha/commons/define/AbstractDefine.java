@@ -15,6 +15,8 @@
  */
 package org.more.hypha.commons.define;
 import java.util.Map;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**
@@ -25,21 +27,28 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractDefine<T> implements IAttribute {
-    private IAttribute attribute = null; //属性，为了提供IAttribute接口功能。
-    private IAttribute fungi     = null; //附加属性
-    //
-    /**获取用于存放临时定义属性的附加的属性集，该对象化名为‘真菌’与FLASH不同的是，
-     * 真菌只存在于个体对象上而FLASH是贯穿于整个系统中。*/
+    private static final ILog log       = LogFactory.getLog(AbstractDefine.class);
+    private IAttribute        attribute = null;                                   //属性，为了提供IAttribute接口功能。
+    private IAttribute        fungi     = null;                                   //附加属性
+    /*------------------------------------------------------------------------------*/
+    /**获取用于存放临时定义属性的附加的属性集，该对象化名为‘真菌’与attribute不同的是，
+     * 真菌只存在于个体对象上而且这个对象是供应系统内部使用，而attribute是程序对外提供的属性扩展接口。*/
     public IAttribute getFungi() {
-        if (this.fungi == null)
+        if (this.fungi == null) {
             this.fungi = new AttBase();
+            log.info("create fungi OK!");
+        }
         return this.fungi;
     };
+    /**获取定义的属性对象，并且以{@link IAttribute}接口形式返回。*/
     protected IAttribute getAttribute() {
-        if (this.attribute == null)
+        if (this.attribute == null) {
             this.attribute = new AttBase();
+            log.info("create attribute OK!");
+        }
         return this.attribute;
     }
+    /*------------------------------------------------------------------------------*/
     public boolean contains(String name) {
         return this.getAttribute().contains(name);
     };

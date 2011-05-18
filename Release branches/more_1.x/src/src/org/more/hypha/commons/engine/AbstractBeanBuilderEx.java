@@ -21,9 +21,22 @@ import org.more.hypha.AbstractBeanDefine;
  * @version : 2011-5-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AbstractBeanBuilderEx<T extends AbstractBeanDefine> extends AbstractBeanBuilder<T> {
-    /**执行扩展注入，通过该方法可以对bean进行注入*/
-    public byte[] loadBytes(AbstractBeanDefine define, Object[] params);
-    /***/
-    public Class<?> loadType(byte[] bytes, AbstractBeanDefine define, Object[] params);
+public abstract class AbstractBeanBuilderEx<T extends AbstractBeanDefine> extends AbstractBeanBuilder<T> {
+    /**
+     * 获取目标bean定义的字节码数据。
+     * @param define 要装载字节码的Bean定义。
+     * @param params 获取bean时候getBean方法传入的参数。
+     */
+    public abstract byte[] loadBytes(AbstractBeanDefine define, Object[] params);
+    /**
+     * 将字节码数据装载成类型对象。
+     * @param bytes 已经装载的字节码数据，只需将该字节码转换为类型即可。
+     * @param define 要装载类型的Bean定义。
+     * @param params 获取bean时候getBean方法传入的参数。
+     */
+    public abstract Class<?> loadType(byte[] bytes, AbstractBeanDefine define, Object[] params);
+    /**失效方法。*/
+    public Class<?> loadType(AbstractBeanDefine define, Object[] params) {
+        return null;/*如果启用了扩展则,该方法将不在被调用。*/
+    }
 };

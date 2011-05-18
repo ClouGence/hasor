@@ -26,18 +26,22 @@ import org.more.hypha.AbstractMethodDefine;
 import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.context.AbstractApplicationContext;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 /**
  * 该类负责hypha的整个bean创建流程，是一个非常重要的核心类。
  * @version : 2011-5-12
  * @author 赵永春 (zyc@byshell.org)
  */
 public class EngineLogic {
+    private static ILog                                          log                = LogFactory.getLog(EngineLogic.class);
     private Map<String, AbstractBeanBuilder<AbstractBeanDefine>> builderMap         = null;
     private RootValueMetaDataParser                              rootParser         = null;
     private AbstractApplicationContext                           applicationContext = null;
     //
     private Map<String, IocEngine>                               engineMap          = null;
     private EngineClassLoader                                    classLoader        = null;
+    /*------------------------------------------------------------------------------*/
     private class EngineClassLoader extends ClassLoader {
         public EngineClassLoader(AbstractApplicationContext applicationContext) {
             super(applicationContext.getBeanClassLoader());
@@ -47,57 +51,81 @@ public class EngineLogic {
             return this.defineClass(beanBytes, 0, beanBytes.length);
         };
     };
-    //----------------------------------------------------------------------------------------------------------
-    /*
-    *
-    * 基本功能
-    */
-    /**初始化*/
+    /*------------------------------------------------------------------------------*/
+    /**初始化，参数不能为空。*/
     public void init(AbstractApplicationContext applicationContext) throws Throwable {
+        if (applicationContext != null)
+            log.info("init EngineLogic, applicationContext = {%0}", applicationContext);
+        else {
+            log.error("init EngineLogic, applicationContext is null.");
+            throw new NullPointerException("applicationContext param is null.");
+        }
+        //
         this.applicationContext = applicationContext;
-        this.classLoader = new EngineClassLoader(this.applicationContext);//使用EngineClassLoader装载构造的字节码
         this.builderMap = new HashMap<String, AbstractBeanBuilder<AbstractBeanDefine>>();
-        this.rootParser = new RootValueMetaDataParser() {};
         this.engineMap = new HashMap<String, IocEngine>();
+        //
+        log.debug("init EngineLogic, applicationContext = {%0}", applicationContext);
+        this.rootParser = new RootValueMetaDataParser() {};
+        this.classLoader = new EngineClassLoader(this.applicationContext);//使用EngineClassLoader装载构造的字节码
     }
     /**获取{@link AbstractApplicationContext}用于生成Bean的生成器。*/
-    protected IocEngine getEngine(String key) throws Throwable {
-        return this.engineMap.get(key);
+    protected IocEngine getEngine(String key) {
+        if (key != null) {
+            IocEngine ioc = this.engineMap.get(key);
+            log.debug("getEngine key = {%0} , return Engine {%1}.", key, ioc);
+            return ioc;
+        }
+        log.info("can`t getEngine key is null.");
+        return null;
     };
     /**添加一个bean注入引擎，注意重复注册将会导致替换。*/
     public void addIocEngine(String key, IocEngine engine) throws Throwable {
+        if (key == null || engine == null) {
+            log.warning("addIocEngine an error , key or IocEngine is null.");
+            return;
+        }
         engine.init(this.applicationContext, this.rootParser);
+        if (this.engineMap.containsKey(key) == true)
+            log.info("addIocEngine {%0} is exist,use new engine Repeate it OK!", key);
+        else
+            log.info("addIocEngine {%0} OK!", key);
         this.engineMap.put(key, engine);
     };
     /**注册{@link ValueMetaDataParser}，如果注册的解析器出现重复则会引发{@link RepeateException}异常。*/
     public void regeditValueMetaDataParser(String metaDataType, ValueMetaDataParser<ValueMetaData> parser) {
+        log.debug("regeditValueMetaDataParser, metaDataType = {%0}, ValueMetaDataParser = {%1}", metaDataType, parser);
         this.rootParser.addParser(metaDataType, parser);
     };
     /**解除注册{@link ValueMetaDataParser}，如果要移除的解析器如果不存在也不会抛出异常。*/
     public void unRegeditValueMetaDataParser(String metaDataType) {
+        log.debug("unRegeditValueMetaDataParser, metaDataType = {%0}", metaDataType);
         this.rootParser.removeParser(metaDataType);
     };
     /**
-     * 注册一种bean定义类型，使之可以被引擎解析。如果重复注册同一种bean类型将会引发{@link RepeateException}类型异常。
+     * 注册一种bean定义类型，使之可以被引擎解析。重复注册会导致覆盖。
      * @param beanType 注册的bean定义类型。
      * @param builder 要注册的bean定义生成器。
      */
-    public void regeditBeanBuilder(String beanType, AbstractBeanBuilder<AbstractBeanDefine> builder) throws RepeateException {
-        if (this.builderMap.containsKey(beanType) == false)
-            this.builderMap.put(beanType, builder);
+    public void regeditBeanBuilder(String beanType, AbstractBeanBuilder<AbstractBeanDefine> builder) {
+        if (beanType == null || builder == null) {
+            log.warning("regeditBeanBuilder an error , beanType or AbstractBeanBuilder is null.");
+            return;
+        }
+        if (this.engineMap.containsKey(beanType) == true)
+            log.info("addIocEngine {%0} is exist,use new engine Repeate it OK!", beanType);
         else
-            throw new RepeateException("不能重复注册[" + beanType + "]类型的BeanBuilder。");
+            log.info("addIocEngine {%0} OK!", beanType);
+        this.builderMap.put(beanType, builder);
     };
     /**解除指定类型bean的解析支持，无论要接触注册的bean类型是否存在该方法都会被正确执行。*/
     public void unRegeditBeanBuilder(String beanType) {
-        if (this.builderMap.containsKey(beanType) == true)
+        if (this.builderMap.containsKey(beanType) == true) {
+            log.info("unRegeditBeanBuilder {%0} OK!", beanType);
             this.builderMap.remove(beanType);
+        }
     };
-    /*
-     *
-     *类型生成
-     */
-    //----------------------------------------------------------------------------------------------------------
+    /*------------------------------------------------------------------------------*/
     /**
      * 将{@link AbstractBeanDefine}定义对象解析并且装载成为Class类型对象，期间会依次引发{@link ClassBytePoint}和{@link ClassTypePoint}两个扩展点。
      * 如果解析bean的是{@link AbstractBeanBuilder}类型则只会执行{@link ClassTypePoint}扩展点。
@@ -106,13 +134,20 @@ public class EngineLogic {
      * @param params getBean时候传入的参数。
      */
     public Class<?> builderType(AbstractBeanDefine define, Object[] params) {
+        if (define == null) {
+            log.error("builderType an error param AbstractBeanDefine is null.");
+            throw new NullPointerException("builderType an error param AbstractBeanDefine is null.");
+        }
         String defineType = define.getBeanType();
         String defineID = define.getID();
         String defineLogStr = defineID + "[" + defineType + "]";//log前缀
+        log.info("builder bean Type defineID is {%0} ...", defineID);
         //1.
         AbstractBeanBuilder<AbstractBeanDefine> builder = this.builderMap.get(defineType);
-        if (builder == null)
+        if (builder == null) {
+            log.error("bean {%0} Type {%1} is doesn`t support!", defineID, defineType);
             throw new DoesSupportException(defineLogStr + "，该Bean不是一个hypha所支持的Bean类型或者该类型的Bean不支持Builder。");
+        }
         //2.
         if (builder instanceof AbstractBeanBuilderEx == true)
             return this.doBuilderExForType((AbstractBeanBuilderEx<AbstractBeanDefine>) builder, define, params);
@@ -121,70 +156,91 @@ public class EngineLogic {
     }
     /**执行{@link AbstractBeanBuilder}生成器过程。*/
     private Class<?> doBuilderForType(AbstractBeanBuilder<AbstractBeanDefine> builder, AbstractBeanDefine define, Object[] params) {
+        String defineID = define.getID();
+        log.info("defineID {%0} loadType By Builder...", defineID);
         Class<?> beanType = builder.loadType(define, params);
         //执行ClassTypePoint扩展点。
         beanType = (Class<?>) this.applicationContext.getExpandPointManager().exePointOnSequence(ClassTypePoint.class,//
                 beanType, define, this.applicationContext);//Param
+        log.info("defineID {%0} loadType OK! type = {%1}", defineID, beanType);
         return beanType;
     };
     /**执行{@link AbstractBeanBuilderEx}生成器过程。*/
     private Class<?> doBuilderExForType(AbstractBeanBuilderEx<AbstractBeanDefine> builderEx, AbstractBeanDefine define, Object[] params) {
+        String defineID = define.getID();
+        log.info("defineID {%0} loadBytes By BuilderEx...", defineID);
         byte[] beanBytes = builderEx.loadBytes(define, params);
         //执行ClassBytePoint扩展点
         beanBytes = (byte[]) this.applicationContext.getExpandPointManager().exePointOnSequence(ClassBytePoint.class, //
                 beanBytes, define, this.applicationContext);//Param
+        log.info("defineID {%0} loadBytes OK! beanBytes = {%1}", defineID, beanBytes);
         Class<?> beanType = null;
         //执行ClassTypePoint扩展点。
         beanType = (Class<?>) this.applicationContext.getExpandPointManager().exePointOnSequence(ClassTypePoint.class,//
                 beanType, define, this.applicationContext);//Param
-        //
-        if (beanType != null)
-            return beanType;
-        return this.classLoader.loadClass(beanBytes, define);
+        if (beanType == null) {
+            beanType = this.classLoader.loadClass(beanBytes, define);
+        }
+        log.info("defineID {%0} loadType OK! type = {%1}", defineID, beanType);
+        return beanType;
     };
-    //----------------------------------------------------------------------------------------------------------
-    /*
-     *
-     *生成Bean
-     */
+    /*------------------------------------------------------------------------------*/
     public <T> T builderBean(AbstractBeanDefine define, Object[] params) throws Throwable {
+        if (define == null) {
+            log.error("builderBean an error param AbstractBeanDefine is null.");
+            throw new NullPointerException("builderBean an error param AbstractBeanDefine is null.");
+        }
         String defineType = define.getBeanType();
         String defineID = define.getID();
-        String defineLogStr = defineID + "[" + defineType + "]";//log前缀
+        log.info("builder bean Object defineID is {%0} ...", defineID);
         //1.
         AbstractBeanBuilder<AbstractBeanDefine> builder = this.builderMap.get(defineType);
-        if (builder == null)
-            throw new DoesSupportException(defineLogStr + "，该Bean不是一个hypha所支持的Bean类型或者该类型的Bean不支持Builder。");
+        if (builder == null) {
+            log.error("bean {%0} Type {%1} is doesn`t support!", defineID, defineType);
+            throw new DoesSupportException("bean " + defineID + " Type " + defineType + " is doesn`t support!");
+        }
         //2.创建bean
         Object obj = this.applicationContext.getExpandPointManager().exePointOnReturn(BeforeCreatePoint.class, //预创建Bean
                 define, params, this.applicationContext);
+        log.info("beforeCreate defineID = {%0}, return = {%1}.", defineID, obj);
         if (obj == null) {
             AbstractMethodDefine factory = define.factoryMethod();
             if (factory != null) {
                 String factoryBeanID = factory.getForBeanDefine().getID();
+                log.info("use factoryBean create {%0}, factoryBeanID = {%1}...", defineID, factoryBeanID);
                 Collection<? extends AbstractPropertyDefine> initParamDefine = factory.getParams();
                 Class<?>[] initParam_Types = transform_toTypes(initParamDefine, params);
                 Object[] initParam_objects = transform_toObjects(initParamDefine, params);
                 if (factory.isStatic() == true) {
                     //静态工厂方法创建
+                    log.debug("invoke factoryMethod ,function is static....");
                     Class<?> factoryType = this.applicationContext.getBeanType(factoryBeanID);
                     Method factoryMethod = factoryType.getMethod(factory.getCodeName(), initParam_Types);
                     obj = factoryMethod.invoke(null, initParam_objects);
+                    log.info("invoke factoryMethod {%0}, defineID = {%1}, return = {%2}.", factoryMethod, defineID, obj);
                 } else {
                     //工厂方法创建
+                    log.debug("invoke factoryMethod ....");
                     Object factoryObject = this.applicationContext.getBean(factoryBeanID, params);/*params参数会被顺势传入工厂bean中。*/
                     Method factoryMethod = factoryObject.getClass().getMethod(factory.getCodeName(), initParam_Types);
                     obj = factoryMethod.invoke(factoryObject, initParam_objects);
+                    log.info("invoke factoryMethod {%0}, defineID = {%1}, return = {%2}.", factoryMethod, defineID, obj);
                 }
-            } else
+            } else {
                 //使用builder创建。
+                log.debug("use builder create {%0}...", defineID);
                 obj = builder.createBean(define, params);
+                log.info("use builder create {%0}, return .", defineID, obj);
+            }
         }
         //3.属性注入
         String iocEngineName = define.getIocEngine();
-        if (iocEngineName == null)
-            throw new DoesSupportException(defineLogStr + "，指定的属性注入器为空。");
+        if (iocEngineName == null) {
+            log.error("{%0} ioc engine name is null.", defineID);
+            throw new DoesSupportException(defineID + " ioc engine name is null.");
+        }
         IocEngine iocEngine = this.getEngine(iocEngineName);
+        log.info("ioc defineID = {%0} ,engine name is {%1}.", defineID, iocEngineName);
         iocEngine.ioc(obj, define, params);
         //--------------------------------------------------------------------------------------------------------------初始化阶段
         //4.代理销毁方法
@@ -200,7 +256,14 @@ public class EngineLogic {
         //6.执行生命周期init方法
         String initMethodName = define.getInitMethod();
         if (initMethodName != null)
-            obj.getClass().getMethod(initMethodName).invoke(obj);
+            try {
+                Method m = obj.getClass().getMethod(initMethodName);
+                m.invoke(obj);
+                log.info("{%0} invoke init Method, method = {%1}.", defineID, m);
+            } catch (Exception e) {
+                log.error("{%0} invoke init Method an error, method = {%1}, error = {%2}.", defineID, initMethodName, e);
+                throw e;
+            }
         return (T) obj;
     };
     /*将一组属性转换成类型。*/

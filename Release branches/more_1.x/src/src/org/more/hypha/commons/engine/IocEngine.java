@@ -22,8 +22,6 @@ import org.more.hypha.ApplicationContext;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class IocEngine {
-    public static final String EngineName = "Ioc";
-    //----------------------------------------------------------------------------------------------------------
     /**初始化方法。 */
     public void init(ApplicationContext context, ValueMetaDataParser<?> rootParser) throws Throwable {}
     /**销毁方法。*/

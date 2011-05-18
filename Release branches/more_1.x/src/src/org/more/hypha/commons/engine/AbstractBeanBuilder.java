@@ -16,16 +16,28 @@
 package org.more.hypha.commons.engine;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
+import org.more.hypha.commons.xml.Tag_Abstract;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 /**
- * 该接口是针对某个{@link AbstractBeanDefine}类型的特定支持。该接口的功能是负责创建某种类型的Bean。
+ * 该抽象类是针对某个{@link AbstractBeanDefine}类型的特定支持。该接口的功能是负责创建某种类型的Bean。
  * @version : 2011-5-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AbstractBeanBuilder<T extends AbstractBeanDefine> {
+public abstract class AbstractBeanBuilder<T extends AbstractBeanDefine> {
+    private static final ILog  log                = LogFactory.getLog(Tag_Abstract.class);
+    private ApplicationContext applicationContext = null;
+    /*------------------------------------------------------------------------------*/
     /**设置当前{@link AbstractBeanBuilder}使用的{@link ApplicationContext}环境对象。*/
-    public void setApplicationContext(ApplicationContext applicationContext);
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        log.debug("set ApplicationContext {%0}", applicationContext);
+        this.applicationContext = applicationContext;
+    }
+    protected ApplicationContext getApplicationContext() {
+        return this.applicationContext;
+    }
     /**装载bean定义的类型。*/
-    public Class<?> loadType(AbstractBeanDefine define, Object[] params);
+    public abstract Class<?> loadType(AbstractBeanDefine define, Object[] params);
     /**创建Bean对象。*/
-    public <O> O createBean(AbstractBeanDefine define, Object[] params);
+    public abstract <O> O createBean(AbstractBeanDefine define, Object[] params);
 };

@@ -20,35 +20,63 @@ import org.more.DoesSupportException;
 import org.more.RepeateException;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 /**
  * 属性元信息解析器的根，{@link ValueMetaDataParser}解析器入口。
  * @version 2011-1-21
  * @author 赵永春 (zyc@byshell.org)
  */
 abstract class RootValueMetaDataParser implements ValueMetaDataParser<ValueMetaData> {
+    private static ILog                                     log               = LogFactory.getLog(RootValueMetaDataParser.class);
     private Map<String, ValueMetaDataParser<ValueMetaData>> metaDataParserMap = new HashMap<String, ValueMetaDataParser<ValueMetaData>>();
-    //----------------------------------------------------------------------------------------------------------
+    /*------------------------------------------------------------------------------*/
     /**第二个参数无效，因为{@link RootValueMetaDataParser}就是根。*/
     public Object parser(ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser/*该参数无效*/, ApplicationContext context) throws Throwable {
+        if (data == null) {
+            log.error("parser ValueMetaData to Object happen an error , ValueMetaData params is null, please check it.");
+            return null;
+        }
         String metaDataType = data.getMetaDataType();
-        if (this.metaDataParserMap.containsKey(metaDataType) == false)
-            throw new DoesSupportException("不支持的ValueMetaData数据描述：" + metaDataType);
+        if (this.metaDataParserMap.containsKey(metaDataType) == false) {
+            log.error("{%0} MetaData is doesn`t Support.", metaDataType);
+            throw new DoesSupportException(metaDataType + " MetaData is doesn`t Support.");
+        }
         return this.metaDataParserMap.get(metaDataType).parser(data, this, context);
     };
-    public Class<?> parserType(ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
+    public Class<?> parserType(ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser/*该参数无效*/, ApplicationContext context) throws Throwable {
+        if (data == null) {
+            log.error("parser ValueMetaData to Type happen an error , ValueMetaData params is null, please check it.");
+            return null;
+        }
         String metaDataType = data.getMetaDataType();
-        if (this.metaDataParserMap.containsKey(metaDataType) == false)
-            throw new DoesSupportException("不支持的ValueMetaData数据描述：" + metaDataType);
+        if (this.metaDataParserMap.containsKey(metaDataType) == false) {
+            log.error("{%0} MetaData is doesn`t Support.", metaDataType);
+            throw new DoesSupportException(metaDataType + " MetaData is doesn`t Support.");
+        }
         return this.metaDataParserMap.get(metaDataType).parserType(data, this, context);
     };
     /**注册{@link ValueMetaDataParser}，如果注册的解析器出现重复则会引发{@link RepeateException}异常。*/
     public void addParser(String metaDataType, ValueMetaDataParser<ValueMetaData> parser) throws RepeateException {
-        if (this.metaDataParserMap.containsKey(metaDataType) == false)
-            this.metaDataParserMap.put(metaDataType, parser);
+        if (metaDataType == null || parser == null) {
+            log.warning("addParser error metaDataType or parser is null.");
+            return;
+        }
+        if (this.metaDataParserMap.containsKey(metaDataType) == true)
+            log.info("addParser {%0} is exist,use new engine Repeate it OK!", metaDataType);
+        else
+            log.info("addParser {%0} OK!", metaDataType);
+        this.metaDataParserMap.put(metaDataType, parser);
     };
     /**解除注册{@link ValueMetaDataParser}，如果要移除的解析器如果不存在也不会抛出异常。*/
     public void removeParser(String metaDataType) {
-        if (this.metaDataParserMap.containsKey(metaDataType) == true)
+        if (metaDataType == null) {
+            log.warning("addParser error metaDataType is null.");
+            return;
+        }
+        if (this.metaDataParserMap.containsKey(metaDataType) == true) {
+            log.info("removeParser {%0}.", metaDataType);
             this.metaDataParserMap.remove(metaDataType);
+        }
     };
 };

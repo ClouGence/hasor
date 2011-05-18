@@ -15,12 +15,22 @@
  */
 package org.more.hypha;
 /**
- * 
+ * 执行事件处理期间发生异常。
  * @version : 2011-5-18
  * @author 赵永春 (zyc@byshell.org)
  */
 public class EventException extends Exception {
-    /**  */
-    private static final long serialVersionUID = -8448915025818231792L;
-    //Event event, Sequence sequence,
+    private static final long serialVersionUID = 2713643142641891738L;
+    /** 执行事件处理期间发生异常。*/
+    public EventException(String string) {
+        super(string);
+    };
+    /** 执行事件处理期间发生异常。*/
+    public EventException(Throwable error) {
+        super(error);
+    };
+    /** 执行事件处理期间发生异常。*/
+    public EventException(String string, Throwable error) {
+        super(string, error);
+    };
 }

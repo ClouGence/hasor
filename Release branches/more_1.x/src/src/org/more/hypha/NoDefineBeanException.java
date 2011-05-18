@@ -16,33 +16,22 @@
 package org.more.hypha;
 import org.more.NotFoundException;
 /**
- * 未定义异常，通常出现该类异常是由于使用了未定义的属性或者策略，同时该异常也表示那些试图访问不存在的资源异常。
+ * 不存在的Bean定义。
  * @version 2009-4-29
  * @author 赵永春 (zyc@byshell.org)
  */
 public class NoDefineBeanException extends NotFoundException {
-    /**  */
-    private static final long serialVersionUID = 3664651649094973500L;
-    /**
-     * 未定义异常，通常出现该类异常是由于使用了未定义的属性或者策略，同时该异常也表示那些试图访问不存在的资源异常。
-     * @param string 异常的描述信息
-     */
+    private static final long serialVersionUID = 3254479748206568531L;
+    /** 不存在的Bean定义。*/
     public NoDefineBeanException(String string) {
         super(string);
-    }
-    /**
-     * 未定义异常，通常出现该类异常是由于使用了未定义的属性或者策略，同时该异常也表示那些试图访问不存在的资源异常。
-     * @param error 异常的描述信息
-     */
+    };
+    /** 不存在的Bean定义。*/
     public NoDefineBeanException(Throwable error) {
         super(error);
-    }
-    /**
-     * 未定义异常，通常出现该类异常是由于使用了未定义的属性或者策略，同时该异常也表示那些试图访问不存在的资源异常。
-     * @param string 异常的描述信息。
-     * @param error 承接的上一个异常对象。
-     */
+    };
+    /** 不存在的Bean定义。*/
     public NoDefineBeanException(String string, Throwable error) {
         super(string, error);
-    }
+    };
 }
