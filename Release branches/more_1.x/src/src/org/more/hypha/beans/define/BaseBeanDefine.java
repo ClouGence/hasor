@@ -33,7 +33,7 @@ public abstract class BaseBeanDefine extends AbstractDefine<AbstractBeanDefine> 
     private String                                id            = null;                                       //id
     private String                                name          = null;                                       //名称
     private String                                logicPackage  = null;                                       //逻辑包
-    private String                                buildFactory  = "Ioc";                                      //生成Bean所使用的生成器名
+    private String                                iocEngine     = "Ioc";                                      //生成Bean所使用的生成器名
     private boolean                               boolAbstract  = false;                                      //抽象标志
     private boolean                               boolInterface = false;                                      //接口标志
     private boolean                               boolSingleton = false;                                      //单态标志
@@ -69,13 +69,13 @@ public abstract class BaseBeanDefine extends AbstractDefine<AbstractBeanDefine> 
         else
             return this.getName();
     }
-    /**生成Bean所使用的生成器，Fact，Ioc，User*/
-    public String getBuildFactory() {
-        return this.buildFactory;
+    /**属性注入所使用的注入方式，Fact，Ioc，User*/
+    public String getIocEngine() {
+        return this.iocEngine;
     }
-    /**设置生成Bean所使用的生成器，Fact，Ioc，User*/
-    public void setBuildFactory(String buildFactory) {
-        this.buildFactory = buildFactory;
+    /**设置注入所使用的注入方式，Fact，Ioc，User*/
+    public void setIocEngine(String iocEngine) {
+        this.iocEngine = iocEngine;
     }
     /**返回一个boolean值，表示类是否为一个抽象类。*/
     public boolean isAbstract() {

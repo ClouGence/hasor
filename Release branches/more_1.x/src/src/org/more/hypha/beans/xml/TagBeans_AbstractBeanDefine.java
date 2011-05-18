@@ -44,7 +44,7 @@ public abstract class TagBeans_AbstractBeanDefine<T extends BaseBeanDefine> exte
     };
     /**定义模板属性。*/
     public enum PropertyKey {
-        id, name, logicPackage, buildFactory, boolAbstract, boolInterface, boolSingleton, boolLazyInit, description, factoryName, factoryMethod, useTemplate, initMethod, destroyMethod
+        id, name, logicPackage, iocEngine, boolAbstract, boolInterface, boolSingleton, boolLazyInit, description, factoryName, factoryMethod, useTemplate, initMethod, destroyMethod
     }
     /**关联属性与xml的属性对应关系。*/
     protected Map<Enum<?>, String> getPropertyMappings() {
@@ -52,7 +52,7 @@ public abstract class TagBeans_AbstractBeanDefine<T extends BaseBeanDefine> exte
         propertys.put(PropertyKey.id, "id");
         propertys.put(PropertyKey.name, "name");
         propertys.put(PropertyKey.logicPackage, "package");
-        propertys.put(PropertyKey.buildFactory, "build");
+        propertys.put(PropertyKey.iocEngine, "iocType");
         propertys.put(PropertyKey.boolAbstract, "abstract");
         propertys.put(PropertyKey.boolInterface, "interface");
         propertys.put(PropertyKey.boolSingleton, "singleton");
