@@ -49,6 +49,8 @@ public class EngineLogic {
         };
         @SuppressWarnings("deprecation")
         public Class<?> loadClass(byte[] beanBytes, AbstractBeanDefine define) throws ClassFormatException {
+            if (beanBytes == null)
+                throw new NullPointerException("loadClass error beanBytes is null.");
             //如果不传递要装载的类名JVM就不会调用本地的类检查器去检查这个类是否存在。
             return this.defineClass(beanBytes, 0, beanBytes.length);
         };
@@ -170,17 +172,18 @@ public class EngineLogic {
     /**执行{@link AbstractBeanBuilderEx}生成器过程。*/
     private Class<?> doBuilderExForType(AbstractBeanBuilderEx<AbstractBeanDefine> builderEx, AbstractBeanDefine define, Object[] params) {
         String defineID = define.getID();
-        log.info("defineID {%0} loadBytes By BuilderEx...", defineID);
+        log.debug("defineID {%0} loadBytes By BuilderEx...", defineID);
         byte[] beanBytes = builderEx.loadBytes(define, params);
         //执行ClassBytePoint扩展点
         beanBytes = (byte[]) this.applicationContext.getExpandPointManager().exePointOnSequence(ClassBytePoint.class, //
                 beanBytes, define, this.applicationContext);//Param
-        log.info("defineID {%0} loadBytes OK! beanBytes = {%1}", defineID, beanBytes);
+        log.debug("defineID {%0} loadBytes OK! beanBytes = {%1}", defineID, beanBytes);
         Class<?> beanType = null;
         //执行ClassTypePoint扩展点。
         beanType = (Class<?>) this.applicationContext.getExpandPointManager().exePointOnSequence(ClassTypePoint.class,//
                 beanType, define, this.applicationContext);//Param
         if (beanType == null) {
+            log.debug("loading {%0} bytes transform to Type!", defineID);
             beanType = this.classLoader.loadClass(beanBytes, define);
         }
         log.info("defineID {%0} loadType OK! type = {%1}", defineID, beanType);
@@ -194,7 +197,7 @@ public class EngineLogic {
         }
         String defineType = define.getBeanType();
         String defineID = define.getID();
-        log.info("builder bean Object defineID is {%0} ...", defineID);
+        log.debug("builder bean Object defineID is {%0} ...", defineID);
         //1.
         AbstractBeanBuilder<AbstractBeanDefine> builder = this.builderMap.get(defineType);
         if (builder == null) {
@@ -204,12 +207,12 @@ public class EngineLogic {
         //2.创建bean
         Object obj = this.applicationContext.getExpandPointManager().exePointOnReturn(BeforeCreatePoint.class, //预创建Bean
                 define, params, this.applicationContext);
-        log.info("beforeCreate defineID = {%0}, return = {%1}.", defineID, obj);
+        log.debug("beforeCreate defineID = {%0}, return = {%1}.", defineID, obj);
         if (obj == null) {
             AbstractMethodDefine factory = define.factoryMethod();
             if (factory != null) {
                 String factoryBeanID = factory.getForBeanDefine().getID();
-                log.info("use factoryBean create {%0}, factoryBeanID = {%1}...", defineID, factoryBeanID);
+                log.debug("use factoryBean create {%0}, factoryBeanID = {%1}...", defineID, factoryBeanID);
                 Collection<? extends AbstractPropertyDefine> initParamDefine = factory.getParams();
                 Class<?>[] initParam_Types = transform_toTypes(initParamDefine, params);
                 Object[] initParam_objects = transform_toObjects(initParamDefine, params);
