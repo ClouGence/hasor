@@ -18,17 +18,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 /**
 * 
 * @version : 2011-5-9
 * @author ’‘”¿¥∫ (zyc@byshell.org)
 */
 class PropxyClassLoader extends ClassLoader {
+    private static ILog log    = LogFactory.getLog(PropxyClassLoader.class);
     private ClassLoader loader = null;
     //
     public ClassLoader getLoader() {
-        if (this.loader == null)
+        if (this.loader == null) {
             this.loader = ClassLoader.getSystemClassLoader();
+            log.info("propxy is null, use ClassLoader.getSystemClassLoader().");
+        }
         return this.loader;
     }
     public void setLoader(ClassLoader loader) {

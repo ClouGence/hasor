@@ -18,6 +18,8 @@ import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.define.EL_ValueMetaData;
 import org.more.hypha.beans.define.File_ValueMetaData;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 import org.more.util.attribute.IAttribute;
 /**
  * EL属性值解析器。
@@ -25,6 +27,7 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class QPP_EL implements QPP {
+    private static ILog log = LogFactory.getLog(QPP_EL.class);
     /**试图解析成为{@link File_ValueMetaData}如果解析失败返回null。*/
     public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
         //1.检查是否可以解析
@@ -34,6 +37,7 @@ public class QPP_EL implements QPP {
         //2.进行解析
         EL_ValueMetaData newMETA = new EL_ValueMetaData();
         newMETA.setElText(value);
+        log.debug("parser EL elText = {%0}.", value);
         return newMETA;
     }
 }

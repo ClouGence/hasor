@@ -33,6 +33,7 @@ import org.more.log.LogFactory;
  * @version : 2011-5-12
  * @author 赵永春 (zyc@byshell.org)
  */
+@SuppressWarnings("unchecked")
 public class EngineLogic {
     private static ILog                                          log                = LogFactory.getLog(EngineLogic.class);
     private Map<String, AbstractBeanBuilder<AbstractBeanDefine>> builderMap         = null;
@@ -46,6 +47,7 @@ public class EngineLogic {
         public EngineClassLoader(AbstractApplicationContext applicationContext) {
             super(applicationContext.getBeanClassLoader());
         };
+        @SuppressWarnings("deprecation")
         public Class<?> loadClass(byte[] beanBytes, AbstractBeanDefine define) throws ClassFormatException {
             //如果不传递要装载的类名JVM就不会调用本地的类检查器去检查这个类是否存在。
             return this.defineClass(beanBytes, 0, beanBytes.length);
@@ -82,24 +84,24 @@ public class EngineLogic {
     /**添加一个bean注入引擎，注意重复注册将会导致替换。*/
     public void addIocEngine(String key, IocEngine engine) throws Throwable {
         if (key == null || engine == null) {
-            log.warning("addIocEngine an error , key or IocEngine is null.");
+            log.warning("add IocEngine an error , key or IocEngine is null.");
             return;
         }
         engine.init(this.applicationContext, this.rootParser);
         if (this.engineMap.containsKey(key) == true)
-            log.info("addIocEngine {%0} is exist,use new engine Repeate it OK!", key);
+            log.info("add IocEngine {%0} is exist,use new engine Repeate it OK!", key);
         else
-            log.info("addIocEngine {%0} OK!", key);
+            log.info("add IocEngine {%0} OK!", key);
         this.engineMap.put(key, engine);
     };
     /**注册{@link ValueMetaDataParser}，如果注册的解析器出现重复则会引发{@link RepeateException}异常。*/
     public void regeditValueMetaDataParser(String metaDataType, ValueMetaDataParser<ValueMetaData> parser) {
-        log.debug("regeditValueMetaDataParser, metaDataType = {%0}, ValueMetaDataParser = {%1}", metaDataType, parser);
+        log.debug("regedit ValueMetaDataParser, metaDataType = {%0}, ValueMetaDataParser = {%1}", metaDataType, parser);
         this.rootParser.addParser(metaDataType, parser);
     };
     /**解除注册{@link ValueMetaDataParser}，如果要移除的解析器如果不存在也不会抛出异常。*/
     public void unRegeditValueMetaDataParser(String metaDataType) {
-        log.debug("unRegeditValueMetaDataParser, metaDataType = {%0}", metaDataType);
+        log.debug("unRegedit ValueMetaDataParser, metaDataType = {%0}", metaDataType);
         this.rootParser.removeParser(metaDataType);
     };
     /**
@@ -109,19 +111,19 @@ public class EngineLogic {
      */
     public void regeditBeanBuilder(String beanType, AbstractBeanBuilder<AbstractBeanDefine> builder) {
         if (beanType == null || builder == null) {
-            log.warning("regeditBeanBuilder an error , beanType or AbstractBeanBuilder is null.");
+            log.warning("regedit bean Builder an error , beanType or AbstractBeanBuilder is null.");
             return;
         }
         if (this.engineMap.containsKey(beanType) == true)
-            log.info("addIocEngine {%0} is exist,use new engine Repeate it OK!", beanType);
+            log.info("regedit bean Builder {%0} is exist,use new engine Repeate it OK!", beanType);
         else
-            log.info("addIocEngine {%0} OK!", beanType);
+            log.info("regedit bean Builder {%0} OK!", beanType);
         this.builderMap.put(beanType, builder);
     };
     /**解除指定类型bean的解析支持，无论要接触注册的bean类型是否存在该方法都会被正确执行。*/
     public void unRegeditBeanBuilder(String beanType) {
         if (this.builderMap.containsKey(beanType) == true) {
-            log.info("unRegeditBeanBuilder {%0} OK!", beanType);
+            log.info("unRegedit bean Builder {%0} OK!", beanType);
             this.builderMap.remove(beanType);
         }
     };
@@ -133,7 +135,7 @@ public class EngineLogic {
      * @param define 要装载类型的bean定义。
      * @param params getBean时候传入的参数。
      */
-    public Class<?> builderType(AbstractBeanDefine define, Object[] params) {
+    public Class<?> builderType(AbstractBeanDefine define, Object[] params) throws Throwable {
         if (define == null) {
             log.error("builderType an error param AbstractBeanDefine is null.");
             throw new NullPointerException("builderType an error param AbstractBeanDefine is null.");
@@ -155,7 +157,7 @@ public class EngineLogic {
             return this.doBuilderForType(builder, define, params);
     }
     /**执行{@link AbstractBeanBuilder}生成器过程。*/
-    private Class<?> doBuilderForType(AbstractBeanBuilder<AbstractBeanDefine> builder, AbstractBeanDefine define, Object[] params) {
+    private Class<?> doBuilderForType(AbstractBeanBuilder<AbstractBeanDefine> builder, AbstractBeanDefine define, Object[] params) throws Throwable {
         String defineID = define.getID();
         log.info("defineID {%0} loadType By Builder...", defineID);
         Class<?> beanType = builder.loadType(define, params);

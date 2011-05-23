@@ -15,19 +15,30 @@
  */
 package org.more.hypha.beans.assembler.parser;
 import org.more.hypha.ApplicationContext;
+import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.define.Enum_ValueMetaData;
 import org.more.hypha.commons.engine.ValueMetaDataParser;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 /**
- * 
+ * 枚举类型解析。
  * @version 2011-2-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Enum_MetaData_Parser implements ValueMetaDataParser<Enum_ValueMetaData> {
-    public Enum<?> parser(Enum_ValueMetaData data, ValueMetaDataParser<Enum_ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
-        // TODO Auto-generated method stub
-        return null;
+public class Enum_MetaData_Parser extends AbstractBase_Parser implements ValueMetaDataParser<Enum_ValueMetaData> {
+    private static ILog log = LogFactory.getLog(Enum_MetaData_Parser.class);
+    /*------------------------------------------------------------------------------*/
+    public Enum<?> parser(Enum_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
+        Enum<?> eValue = data.getEnumType(context.getBeanClassLoader());
+        log.debug("parser Enum = {%0}.", eValue);
+        return eValue;
     }
-    public Class<?> parserType(Enum_ValueMetaData data, ValueMetaDataParser<Enum_ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
-        return Enum.class;
+    public Class<?> parserType(Enum_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
+        Class<?> eType = super.getTypeForCache(data);
+        if (eType == null) {
+            eType = data.getEnumClass(context.getBeanClassLoader());
+            super.putTypeToCache(data, eType);
+        }
+        return eType;
     }
 };

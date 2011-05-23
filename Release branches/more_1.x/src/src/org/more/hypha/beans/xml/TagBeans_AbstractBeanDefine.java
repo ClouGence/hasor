@@ -78,9 +78,9 @@ public abstract class TagBeans_AbstractBeanDefine<T extends BaseBeanDefine> exte
                 template = beanDefineManager.getBeanDefine(useTemplate);
             else {
                 /**从bean定义所在包中找。*/
-                String id = define.getPackage();
-                id = (id == null) ? useTemplate : id + "." + useTemplate;
-                template = beanDefineManager.getBeanDefine(id);
+                String packageStr = define.getPackage();
+                packageStr = (packageStr == null) ? useTemplate : packageStr + "." + useTemplate;
+                template = beanDefineManager.getBeanDefine(packageStr);
             }
             //
             if (template == null)

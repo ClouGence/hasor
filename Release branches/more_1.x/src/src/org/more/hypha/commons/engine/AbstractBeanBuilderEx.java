@@ -27,16 +27,16 @@ public abstract class AbstractBeanBuilderEx<T extends AbstractBeanDefine> extend
      * @param define 要装载字节码的Bean定义。
      * @param params 获取bean时候getBean方法传入的参数。
      */
-    public abstract byte[] loadBytes(AbstractBeanDefine define, Object[] params);
+    public abstract byte[] loadBytes(T define, Object[] params);
     /**
      * 将字节码数据装载成类型对象。
      * @param bytes 已经装载的字节码数据，只需将该字节码转换为类型即可。
      * @param define 要装载类型的Bean定义。
      * @param params 获取bean时候getBean方法传入的参数。
      */
-    public abstract Class<?> loadType(byte[] bytes, AbstractBeanDefine define, Object[] params);
+    public abstract Class<?> loadType(byte[] bytes, T define, Object[] params);
     /**失效方法。*/
-    public Class<?> loadType(AbstractBeanDefine define, Object[] params) {
+    public Class<?> loadType(T define, Object[] params) {
         return null;/*如果启用了扩展则,该方法将不在被调用。*/
     }
 };

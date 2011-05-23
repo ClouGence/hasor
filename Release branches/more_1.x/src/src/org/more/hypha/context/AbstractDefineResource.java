@@ -22,6 +22,8 @@ import org.more.hypha.EventManager;
 import org.more.hypha.ExpandPointManager;
 import org.more.hypha.commons.AbstractEventManager;
 import org.more.hypha.commons.AbstractExpandPointManager;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**
@@ -31,14 +33,15 @@ import org.more.util.attribute.IAttribute;
  */
 public abstract class AbstractDefineResource implements DefineResource {
     private static final long          serialVersionUID   = 1420351981612281917L;
-    private String                     sourceName         = null;                //资源名
-    private IAttribute                 flashContext       = null;                //全局闪存，通过重写受保护的方法createFlash来达到植入的目的。
-    private ThreadLocal<IAttribute>    threadFlash        = null;                //全局闪存，通过重写受保护的方法createFlash来达到植入的目的。
-    private IAttribute                 attributeManager   = null;                //属性管理器
+    private static ILog                log                = LogFactory.getLog(AbstractDefineResource.class);
+    private String                     sourceName         = null;                                           //资源名
+    private IAttribute                 flashContext       = null;                                           //全局闪存，通过重写受保护的方法createFlash来达到植入的目的。
+    private ThreadLocal<IAttribute>    threadFlash        = null;                                           //全局闪存，通过重写受保护的方法createFlash来达到植入的目的。
+    private IAttribute                 attributeManager   = null;                                           //属性管理器
     //以下字段都可以通过重写相应方法达到重写的目的。
-    private AbstractEventManager       eventManager       = null;                //事件管理器
-    private AbstractExpandPointManager expandPointManager = null;                //扩展点管理器
-    //========================================================================================================================IAttribute
+    private AbstractEventManager       eventManager       = null;                                           //事件管理器
+    private AbstractExpandPointManager expandPointManager = null;                                           //扩展点管理器
+    /*------------------------------------------------------------------------------*/
     public boolean contains(String name) {
         return this.getAttribute().contains(name);
     }
@@ -60,64 +63,75 @@ public abstract class AbstractDefineResource implements DefineResource {
     public Map<String, Object> toMap() {
         return this.getAttribute().toMap();
     };
-    //========================================================================================================================Base
-    /**获取一个状态该状态表述是否已经准备好，{@link AbstractDefineResource}类型中该方法始终返回true。*/
-    public boolean isReady() {
-        return true;
-    };
+    /*------------------------------------------------------------------------------*/
     /**设置资源名。*/
     public void setSourceName(String sourceName) {
+        log.info("change sourceName form '{%0}' to '{%1}'", this.sourceName, sourceName);
         this.sourceName = sourceName;
     }
     public String getSourceName() {
         return this.sourceName;
     }
-    //========================================================================================================================GET
+    /*------------------------------------------------------------------------------*/
     /**获取DefineResource的属性访问接口。子类可以通过重写该方法来改变属性管理器。*/
     public final IAttribute getAttribute() {
-        if (this.attributeManager == null)
+        if (this.attributeManager == null) {
+            log.info("create attributeManager...");
             this.attributeManager = this.createAttribute();
+        }
+        log.debug("getAttribute , att = {%0}", this.attributeManager);
         return this.attributeManager;
     }
     /**获取Flash，这个flash是一个内部信息携带体。它可以贯穿整个hypha的所有阶段。
      * 得到flash有两种办法一种是主动获取。另外一种是在特定的位置由hypha提供。不受线程限制。*/
     public final IAttribute getFlash() {
-        if (this.flashContext == null)
+        if (this.flashContext == null) {
+            log.info("create flashContext By Public...");
             this.flashContext = this.createFlash("Public");
+        }
+        log.debug("getFlash , flash = {%0}", this.flashContext);
         return this.flashContext;
     };
     /**获取Flash，这个flash是一个内部信息携带体。它可以贯穿整个hypha的所有阶段。
      * 得到flash有两种办法一种是主动获取。另外一种是在特定的位置由hypha提供。线程间独立。*/
     public final IAttribute getThreadFlash() {
+        IAttribute att = null;
         if (this.threadFlash == null) {
             this.threadFlash = new ThreadLocal<IAttribute>();
-            IAttribute flash = this.createFlash("Thread");
-            this.threadFlash.set(flash);
-            return flash;
+            att = this.createFlash("Thread");
+            this.threadFlash.set(att);
+            log.info("create flashContext By Thread...");
         } else {
-            IAttribute flash = this.threadFlash.get();
-            if (flash == null) {
-                flash = this.createFlash("Thread");
-                this.threadFlash.set(flash);
+            att = this.threadFlash.get();
+            if (att == null) {
+                att = this.createFlash("Thread");
+                log.info("create flashContext By Thread...");
+                this.threadFlash.set(att);
             }
-            return flash;
         }
+        log.debug("getThreadFlash , flash = {%0}", att);
+        return att;
     }
     public final EventManager getEventManager() {
-        if (this.eventManager == null)
+        if (this.eventManager == null) {
+            log.info("create EventManager ...");
             this.eventManager = this.createEventManager();
+        }
         return this.eventManager;
     }
     public final ExpandPointManager getExpandPointManager() {
-        if (this.expandPointManager == null)
+        if (this.expandPointManager == null) {
+            log.info("create ExpandPointManager ...");
             this.expandPointManager = this.createExpandPointManager();
+        }
         return this.expandPointManager;
     }
     /**抛出一个事件，如果事件中断会引发执行错误会引发*/
     protected void throwEvent(Event event, Object... params) {
+        log.debug("throwEvent , event = {%0}, params = {%1}", event, params);
         this.getEventManager().doEvent(event, params);
     }
-    //========================================================================================================================
+    /*------------------------------------------------------------------------------*/
     /**创建一个属性管理器，重新该方法可以替换{@link DefineResource}接口使用的Attribute对象。*/
     protected IAttribute createAttribute() {
         return new AttBase();
@@ -128,15 +142,17 @@ public abstract class AbstractDefineResource implements DefineResource {
     protected IAttribute createFlash(String type) {
         return new AttBase();
     };
-    /**创建一个{@link EventManager}，重新该方法可以替换{@link DefineResource}接口使用的{@link EventManager}对象。*/
+    /**创建一个{@link EventManager}并且负责初始化它，重新该方法可以替换{@link DefineResource}接口使用的{@link EventManager}对象。*/
     protected AbstractEventManager createEventManager() {
         AbstractEventManager em = new AbstractEventManager() {};
+        log.info("init EventManager , manager = {%0} , initparam = {%1}.", em, this);
         em.init(this);
         return em;
     };
-    /**创建一个{@link ExpandPointManager}，重新该方法可以替换{@link DefineResource}接口使用的{@link ExpandPointManager}对象。*/
+    /**创建一个{@link ExpandPointManager}并且负责初始化它，重新该方法可以替换{@link DefineResource}接口使用的{@link ExpandPointManager}对象。*/
     protected AbstractExpandPointManager createExpandPointManager() {
         AbstractExpandPointManager epm = new AbstractExpandPointManager() {};
+        log.info("init ExpandPointManager , manager = {%0} , initparam = {%1}.", epm, this);
         epm.init(this);
         return epm;
     };

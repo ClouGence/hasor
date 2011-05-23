@@ -17,6 +17,8 @@ package org.more.hypha.beans.xml;
 import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.define.Date_ValueMetaData;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 import org.more.util.attribute.IAttribute;
 /**
  * 将value的值转换为Date类型表述。<br/>
@@ -24,6 +26,7 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class QPP_Date implements QPP {
+    private static ILog log = LogFactory.getLog(QPP_Date.class);
     public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
         String value = (String) attribute.getAttribute("date");
         if (value == null)
@@ -33,6 +36,7 @@ public class QPP_Date implements QPP {
         Date_ValueMetaData newMETA = new Date_ValueMetaData();
         newMETA.setDateString(value);
         newMETA.setFormatString(format);
+        log.debug("parser Date type value = {%0} , format = {%1}.", value, format);
         return newMETA;
     }
 }

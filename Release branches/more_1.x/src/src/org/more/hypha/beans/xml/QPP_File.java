@@ -17,6 +17,8 @@ package org.more.hypha.beans.xml;
 import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.define.File_ValueMetaData;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 import org.more.util.attribute.IAttribute;
 /**
  * 文件类型属性值解析器。
@@ -24,6 +26,7 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class QPP_File implements QPP {
+    private static ILog log = LogFactory.getLog(QPP_File.class);
     /**试图解析成为{@link File_ValueMetaData}如果解析失败返回null。*/
     public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
         //1.检查是否可以解析
@@ -34,6 +37,7 @@ public class QPP_File implements QPP {
         File_ValueMetaData newMETA = new File_ValueMetaData();
         newMETA.setFileObject(value);
         newMETA.setDir(false);
+        log.debug("parser File path = {%0}.", value);
         return newMETA;
     }
 }

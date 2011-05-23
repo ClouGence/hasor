@@ -28,7 +28,7 @@ public abstract class TagBeans_NS extends Tag_Abstract {
     };
     protected QPP getRootTypeParser() {
         if (this.parserRoot == null)
-            this.parserRoot = (QPP) this.getFlash().getAttribute("org.more.hypha.beans.xml.QPP_ROOT");
+            this.parserRoot = (QPP) this.getDefineResource().getFlash().getAttribute("org.more.hypha.beans.xml.QPP_ROOT");
         return this.parserRoot;
     }
 };

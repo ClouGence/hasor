@@ -22,7 +22,7 @@ import org.more.hypha.commons.engine.ValueMetaDataParser;
  * @version 2011-2-15
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class ArrayCollection_MetaData_Parser implements ValueMetaDataParser<Array_ValueMetaData> {
+public class ArrayCollection_MetaData_Parser extends AbstractBase_Parser implements ValueMetaDataParser<Array_ValueMetaData> {
     public Object parser(Array_ValueMetaData data, ValueMetaDataParser<Array_ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
         // TODO Auto-generated method stub
         return null;

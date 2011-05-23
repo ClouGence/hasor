@@ -237,14 +237,14 @@ public class AbstractEventManager implements EventManager {
                 for (EventListener listener : listeners)
                     try {
                         listener.onEvent(eventType, sequence);
-                        log.info("listener {%0} run , eventType= {%1}, sequence = {%2}", listener, eventType, sequence);
+                        log.debug("listener {%0} run , eventType= {%1}, sequence = {%2}", listener, eventType, sequence);
                     } catch (EventException e1) {
                         if (handler == null)
                             handler = sequence.getHandler();
                         if (handler == null)
                             handler = this.defaultEventExceptionHandler;
                         if (handler != null) {
-                            log.info("listener {%0} run an error , use handler = {%1} , eventType= {%2}, sequence = {%3}", listener, handler, eventType, sequence);
+                            log.info("exeSequence listener {%0}, error , use handler = {%1} , eventType= {%2}, sequence = {%3}", listener, handler, eventType, sequence);
                             handler.processException(e1, sequence, listener);
                         }
                     }

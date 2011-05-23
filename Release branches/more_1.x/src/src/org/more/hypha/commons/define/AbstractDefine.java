@@ -36,7 +36,7 @@ public abstract class AbstractDefine<T> implements IAttribute {
     public IAttribute getFungi() {
         if (this.fungi == null) {
             this.fungi = new AttBase();
-            log.info("create fungi OK!");
+            log.debug("create fungi OK!");
         }
         return this.fungi;
     };
@@ -44,7 +44,7 @@ public abstract class AbstractDefine<T> implements IAttribute {
     protected IAttribute getAttribute() {
         if (this.attribute == null) {
             this.attribute = new AttBase();
-            log.info("create attribute OK!");
+            log.debug("create attribute OK!");
         }
         return this.attribute;
     }

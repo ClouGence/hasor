@@ -45,16 +45,21 @@ abstract class RootValueMetaDataParser implements ValueMetaDataParser<ValueMetaD
         return this.metaDataParserMap.get(metaDataType).parser(data, this, context);
     };
     public Class<?> parserType(ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser/*该参数无效*/, ApplicationContext context) throws Throwable {
+        //1.参数检查
         if (data == null) {
             log.error("parser ValueMetaData to Type happen an error , ValueMetaData params is null, please check it.");
             return null;
         }
+        //3.获取指定的解析器
         String metaDataType = data.getMetaDataType();
         if (this.metaDataParserMap.containsKey(metaDataType) == false) {
             log.error("{%0} MetaData is doesn`t Support.", metaDataType);
             throw new DoesSupportException(metaDataType + " MetaData is doesn`t Support.");
         }
-        return this.metaDataParserMap.get(metaDataType).parserType(data, this, context);
+        //4.返回
+        Class<?> eType = this.metaDataParserMap.get(metaDataType).parserType(data, this, context);
+        log.debug("parser Type = {%0}.", eType);
+        return eType;
     };
     /**注册{@link ValueMetaDataParser}，如果注册的解析器出现重复则会引发{@link RepeateException}异常。*/
     public void addParser(String metaDataType, ValueMetaDataParser<ValueMetaData> parser) throws RepeateException {

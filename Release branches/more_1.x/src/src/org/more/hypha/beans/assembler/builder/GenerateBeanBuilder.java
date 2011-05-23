@@ -14,36 +14,29 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.assembler.builder;
-import java.io.IOException;
 import org.more.hypha.beans.define.GenerateBeanDefine;
-import org.more.hypha.commons.engine.AbstractBeanBuilder;
+import org.more.hypha.commons.engine.AbstractBeanBuilderEx;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 /**
  * 
  * @version 2011-2-15
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class GenerateBeanBuilder extends AbstractBeanBuilder<GenerateBeanDefine> {
-    public boolean canCache() {
-        return true;
-    };
-    public boolean canBuilder() {
-        return true;
-    };
-    public boolean ifDefaultBeanCreateMode() {
-        return true;
-    };
-    //---------------------------------------------------------
-    public byte[] loadBeanBytes(GenerateBeanDefine define) throws IOException {
+public class GenerateBeanBuilder extends AbstractBeanBuilderEx<GenerateBeanDefine> {
+    private static ILog log = LogFactory.getLog(GenerateBeanBuilder.class);
+    /*------------------------------------------------------------------------------*/
+    public byte[] loadBytes(GenerateBeanDefine define, Object[] params) {
+        // TODO Auto-generated method stub
+        a
+        return null;
+    }
+    public Class<?> loadType(byte[] bytes, GenerateBeanDefine define, Object[] params) {
         // TODO Auto-generated method stub
         return null;
-    };
-    public Object createBean(GenerateBeanDefine define, Object[] params) throws Throwable {
+    }
+    public <O> O createBean(GenerateBeanDefine define, Object[] params) {
         // TODO Auto-generated method stub
         return null;
-    };
-    public Object builderBean(Object obj, GenerateBeanDefine define) throws Throwable {
-        // TODO Auto-generated method stub
-        return null;
-    };
-    //---------------------------------------------------------
+    }
 };

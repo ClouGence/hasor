@@ -16,12 +16,17 @@
 package org.more.hypha.beans;
 import org.more.hypha.Event.Sequence;
 import org.more.hypha.EventListener;
-import org.more.hypha.context.app.DestroyEvent;
+import org.more.hypha.context.DestroyEvent;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 /**
  * 该事件的目的是清除创建Bean的引擎。
  * @version : 2011-4-22
  * @author 赵永春 (zyc@byshell.org)
  */
 class OnDestroy implements EventListener<DestroyEvent> {
-    public void onEvent(DestroyEvent event, Sequence sequence) {}
+    private static ILog log = LogFactory.getLog(OnDestroy.class);
+    public void onEvent(DestroyEvent event, Sequence sequence) {
+        log.debug("hypha.beans On Destroy!");
+    }
 }

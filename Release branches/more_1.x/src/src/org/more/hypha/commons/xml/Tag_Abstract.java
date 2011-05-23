@@ -74,7 +74,7 @@ public abstract class Tag_Abstract {
         //3.执行属性注入
         try {
             writeMethod.invoke(define, attValueObject);
-            log.debug("putAttribute OK! newValue is {%0}.", attValueObject);
+            log.debug("putAttribute OK! name = {%0} , newValue = {%1}.", attName, attValueObject);
         } catch (Exception e) {
             log.error("putAttribute {%0} an error! error = {%1}", attName, e);
             throw new PropertyException(attName + "属性不能被写入到" + define + "中。", e);

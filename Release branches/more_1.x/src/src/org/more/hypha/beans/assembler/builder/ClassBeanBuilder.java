@@ -14,38 +14,29 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.assembler.builder;
-import java.io.IOException;
-import java.io.InputStream;
 import org.more.hypha.beans.define.ClassPathBeanDefine;
-import org.more.hypha.commons.engine.AbstractBeanBuilder;
+import org.more.hypha.commons.engine.AbstractBeanBuilderEx;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 /**
  * 
  * @version 2011-2-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ClassBeanBuilder extends AbstractBeanBuilder<ClassPathBeanDefine> {
-    public boolean canCache() {
-        return true;
-    };
-    public boolean canBuilder() {
-        return true;
-    };
-    public boolean ifDefaultBeanCreateMode() {
-        return true;
-    };
-    //---------------------------------------------------------
-    public byte[] loadBeanBytes(ClassPathBeanDefine define) throws IOException {
-        String classpath = define.getSource();
-        InputStream is = this.getApplicationContext().getBeanClassLoader().getResourceAsStream(classpath.replace(".", "/"));
+public class ClassBeanBuilder extends AbstractBeanBuilderEx<ClassPathBeanDefine> {
+    private static ILog log = LogFactory.getLog(ClassBeanBuilder.class);
+    /*------------------------------------------------------------------------------*/
+    public <O> O createBean(ClassPathBeanDefine define, Object[] params) {
+        // TODO Auto-generated method stub
+        a
+        return null;
+    }
+    public byte[] loadBytes(ClassPathBeanDefine define, Object[] params) {
         // TODO Auto-generated method stub
         return null;
-    };
-    public Object createBean(ClassPathBeanDefine define, Object[] params) throws Throwable {
-        return null;//由于ifDefaultBeanCreateMode()方法返回true则该方法不会被调用。
-    };
-    public Object builderBean(Object obj, ClassPathBeanDefine define) throws Throwable {
+    }
+    public Class<?> loadType(byte[] bytes, ClassPathBeanDefine define, Object[] params) {
         // TODO Auto-generated method stub
         return null;
-    };
-    //---------------------------------------------------------
+    }
 };

@@ -18,6 +18,8 @@ import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.define.PropertyType;
 import org.more.hypha.beans.define.Simple_ValueMetaData;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 import org.more.util.StringConvert;
 import org.more.util.attribute.IAttribute;
 /**
@@ -27,6 +29,7 @@ import org.more.util.attribute.IAttribute;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class QPP_Value implements QPP {
+    private static ILog log = LogFactory.getLog(QPP_Value.class);
     public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
         String value = (String) attribute.getAttribute("value");
         if (value == null)
@@ -41,6 +44,7 @@ public class QPP_Value implements QPP {
         Simple_ValueMetaData newMEDATA = new Simple_ValueMetaData();
         newMEDATA.setValue(var);
         newMEDATA.setValueMetaType(propType);
+        log.debug("parser value = {%0} , type = {%1}", value, propClass);
         return newMEDATA;
     }
 }

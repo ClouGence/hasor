@@ -95,10 +95,8 @@ public interface ApplicationContext extends IAttribute {
      * @param id 要测试的Bean id。
      * @param targetType 要测试的类型名。
      * @return 返回测试结果，如果指定的类型是被测试的bean的父类则返回true,否则返回false。
-     * @throws NoDefineBeanException 如果要测试的目标bean不存在则引发该异常。
-     * @throws NullPointerException 如果targetType参数指定为空则引发该异常。
      */
-    public boolean isTypeMatch(String id, Class<?> targetType) throws NoDefineBeanException, NullPointerException;
+    public boolean isTypeMatch(String id, Class<?> targetType) throws Throwable;
     /**初始化{@link ApplicationContext}接口，该方法一定要在destroy之前执行。 */
     public void init() throws Throwable;
     /**销毁{@link ApplicationContext}接口。*/

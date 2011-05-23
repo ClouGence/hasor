@@ -14,22 +14,55 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.assembler.parser;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.more.hypha.ApplicationContext;
+import org.more.hypha.ValueMetaData;
+import org.more.hypha.beans.define.AbstractValueMetaData;
 import org.more.hypha.beans.define.List_ValueMetaData;
 import org.more.hypha.commons.engine.ValueMetaDataParser;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 /**
- * 
+ * 解析列表类型。
  * @version 2011-2-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ListCollection_MetaData_Parser implements ValueMetaDataParser<List_ValueMetaData> {
-    public List<?> parser(List_ValueMetaData data, ValueMetaDataParser<List_ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
-        // TODO Auto-generated method stub
-        return null;
+@SuppressWarnings({ "unused", "unchecked", "rawtypes" })
+public class ListCollection_MetaData_Parser extends AbstractBase_Parser implements ValueMetaDataParser<List_ValueMetaData> {
+    private static ILog           log             = LogFactory.getLog(ListCollection_MetaData_Parser.class);
+    private static final Class<?> DefaultListType = ArrayList.class;
+    /*------------------------------------------------------------------------------*/
+    public List<?> parser(List_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
+        Class<List> listType = this.parserType(data, rootParser, context);
+        List<Object> listObject = listType.newInstance();
+        log.debug("create List value = {%0}, type = {%1}.", listObject, listType);
+        //
+        List<AbstractValueMetaData> mData = data.getCollectionValue();
+        int count = mData.size();
+        int index = 0;
+        if (mData != null)
+            for (AbstractValueMetaData avmd : mData) {
+                Object obj = rootParser.parser(avmd, rootParser, context);
+                log.debug("list parser item {%0} of {%1} , value = {%2}", index, count, obj);
+                listObject.add(obj);
+                index++;
+            }
+        log.debug("finish parser List value = {%0}.", listObject);
+        return listObject;
     }
-    public Class<?> parserType(List_ValueMetaData data, ValueMetaDataParser<List_ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
-        // TODO Auto-generated method stub
-        return null;
+    public Class<List> parserType(List_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
+        Class<?> eType = super.getTypeForCache(data);
+        if (eType == null) {
+            String setTypeString = data.getCollectionType();
+            if (eType != null)
+                eType = context.getBeanClassLoader().loadClass(setTypeString);
+            if (eType == null)
+                eType = DefaultListType;
+            super.putTypeToCache(data, eType);
+        }
+        log.debug("parser Type = {%0}.", eType);
+        return (Class<List>) eType;
     }
 };

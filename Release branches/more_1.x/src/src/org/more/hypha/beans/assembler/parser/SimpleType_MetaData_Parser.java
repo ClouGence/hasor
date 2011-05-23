@@ -15,19 +15,31 @@
  */
 package org.more.hypha.beans.assembler.parser;
 import org.more.hypha.ApplicationContext;
+import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.define.Simple_ValueMetaData;
 import org.more.hypha.commons.engine.ValueMetaDataParser;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
+import org.more.util.StringConvert;
 /**
- * 
+ * 简单类型解析器，类型返回null表示可能其值就是null.
  * @version 2011-2-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class SimpleType_MetaData_Parser implements ValueMetaDataParser<Simple_ValueMetaData> {
-    public Object parser(Simple_ValueMetaData data, ValueMetaDataParser<Simple_ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
-        // TODO Auto-generated method stub
-        return null;
+public class SimpleType_MetaData_Parser extends AbstractBase_Parser implements ValueMetaDataParser<Simple_ValueMetaData> {
+    private static ILog log = LogFactory.getLog(SimpleType_MetaData_Parser.class);
+    /*------------------------------------------------------------------------------*/
+    public Object parser(Simple_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
+        Object value = super.getValueForCache(data);
+        if (value == null) {
+            Class<?> sType = Simple_ValueMetaData.getPropertyType(data.getValueMetaType());
+            value = StringConvert.changeType(data.getValue(), sType);
+            super.putValueToCache(data, value);
+        }
+        log.debug("parser SimpleType value = {%0}.", value);
+        return value;
     }
-    public Class<?> parserType(Simple_ValueMetaData data, ValueMetaDataParser<Simple_ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
+    public Class<?> parserType(Simple_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
         return Simple_ValueMetaData.getPropertyType(data.getValueMetaType());
     }
 };

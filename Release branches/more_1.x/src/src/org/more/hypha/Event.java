@@ -25,7 +25,7 @@ import org.more.log.LogFactory;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class Event {
-    private static ILog log = LogFactory.getLog(Event.class);
+    protected static ILog log = LogFactory.getLog(Event.class);
     /**该类是，标志事件被压入事件管理器之后的顺序位置。*/
     public static abstract class Sequence {
         /**返回事件所处的索引位置。*/
@@ -58,10 +58,9 @@ public abstract class Event {
             } catch (Exception e) {
                 log.warning("create Event {%0} error :", eventType, e);
             }
-        else
-            event = eventMap.get(eventType);
+        event = eventMap.get(eventType);
         //返回
-        log.info("return {%0} Event Object.", event);
+        log.debug("return {%0} Event Object.", event);
         return event;
     }
     /**将事件序列转换为{@link Params}类型对象。*/

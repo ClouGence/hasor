@@ -25,6 +25,7 @@ import org.more.hypha.context.xml.XmlDefineResource;
  * @version : 2011-4-22
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
+@SuppressWarnings("unchecked")
 public class BeansConfig_BeanType extends BeansConfig_NS implements XmlElementHook {
     public BeansConfig_BeanType(XmlDefineResource configuration) {
         super(configuration);

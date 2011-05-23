@@ -54,7 +54,6 @@ import org.more.hypha.beans.xml.TagBeans_Value;
 import org.more.hypha.beans.xml.TagBeans_VarBean;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.hypha.context.xml.XmlNameSpaceRegister;
-import org.more.util.attribute.IAttribute;
 /**
  * 该类实现了{@link XmlNameSpaceRegister}接口并且提供了对命名空间“http://project.byshell.org/more/schema/beans”的解析支持。
  * @version 2010-9-15
@@ -64,7 +63,7 @@ public class TagRegister_Beans implements XmlNameSpaceRegister {
     /**如果没有指定namespaceURL参数则该常量将会指定默认的命名空间。*/
     public static final String DefaultNameSpaceURL = "http://project.byshell.org/more/schema/beans";
     /**执行初始化注册。*/
-    public void initRegister(String namespaceURL, XmlDefineResource resource, IAttribute flash) throws Throwable {
+    public void initRegister(String namespaceURL, XmlDefineResource resource) {
         //1.注册标签解析器
         XmlParserKit kit = new XmlParserKit();
         kit.regeditHook("/beans", new TagBeans_Beans(resource));
@@ -116,6 +115,6 @@ public class TagRegister_Beans implements XmlNameSpaceRegister {
         typeManager.regeditTypeParser(new QPP_File());
         typeManager.regeditTypeParser(new QPP_Directory());
         typeManager.regeditTypeParser(new QPP_URILocation());
-        flash.setAttribute("org.more.hypha.beans.xml.QPP_ROOT", typeManager);
+        resource.getFlash().setAttribute("org.more.hypha.beans.xml.QPP_ROOT", typeManager);
     }
 }

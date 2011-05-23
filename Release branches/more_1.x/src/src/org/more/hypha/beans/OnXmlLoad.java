@@ -17,13 +17,16 @@ package org.more.hypha.beans;
 import org.more.hypha.Event.Sequence;
 import org.more.hypha.EventListener;
 import org.more.hypha.context.xml.XmlLoadEvent;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 /**
  * 
  * @version : 2011-4-22
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class OnXmlLoad implements EventListener<XmlLoadEvent> {
+    private static ILog log = LogFactory.getLog(OnXmlLoad.class);
     public void onEvent(XmlLoadEvent event, Sequence sequence) {
-        // TODO Auto-generated method stub
+        log.debug("hypha.beans On XmlLoad!");
     }
 }

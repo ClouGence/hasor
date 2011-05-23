@@ -14,36 +14,27 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.assembler.builder;
-import java.io.IOException;
+import org.more.DoesSupportException;
 import org.more.hypha.beans.define.TemplateBeanDefine;
 import org.more.hypha.commons.engine.AbstractBeanBuilder;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 /**
- * 
+ * TemplateBeanDefine类型bean解析，该类型bean啥也不支持。
  * @version 2011-2-15
  * @author 赵永春 (zyc@byshell.org)
  */
 public class TemplateBeanBuilder extends AbstractBeanBuilder<TemplateBeanDefine> {
-    public boolean canCache() {
-        return true;
-    };
-    public boolean canBuilder() {
-        return true;
-    };
-    public boolean ifDefaultBeanCreateMode() {
-        return true;
-    };
-    //---------------------------------------------------------
-    public byte[] loadBeanBytes(TemplateBeanDefine define) throws IOException {
-        // TODO Auto-generated method stub
-        return null;
-    };
-    public Object createBean(TemplateBeanDefine define, Object[] params) throws Throwable {
-        // TODO Auto-generated method stub
-        return null;
-    };
-    public Object builderBean(Object obj, TemplateBeanDefine define) throws Throwable {
-        // TODO Auto-generated method stub
-        return null;
-    };
-    //---------------------------------------------------------
+    private static ILog log = LogFactory.getLog(TemplateBeanBuilder.class);
+    /*------------------------------------------------------------------------------*/
+    public Class<?> loadType(TemplateBeanDefine define, Object[] params) {
+        String defineID = define.getID();
+        log.error("TemplateBean {%0} doesn`t Support this method.", defineID);
+        throw new DoesSupportException("TemplateBean " + defineID + " doesn`t Support this method.");
+    }
+    public <O> O createBean(TemplateBeanDefine define, Object[] params) {
+        String defineID = define.getID();
+        log.error("TemplateBean {%0} doesn`t Support this method.", defineID);
+        throw new DoesSupportException("TemplateBean " + defineID + " doesn`t Support this method.");
+    }
 };

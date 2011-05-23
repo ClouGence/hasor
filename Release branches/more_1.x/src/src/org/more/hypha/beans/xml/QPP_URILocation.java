@@ -17,6 +17,8 @@ package org.more.hypha.beans.xml;
 import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.define.URI_ValueMetaData;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 import org.more.util.attribute.IAttribute;
 /**
  * 连接属性值解析器，默认值是null。
@@ -24,6 +26,7 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class QPP_URILocation implements QPP {
+    private static ILog log = LogFactory.getLog(QPP_URILocation.class);
     public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
         String value = (String) attribute.getAttribute("uriLocation");
         if (value == null)
@@ -31,6 +34,7 @@ public class QPP_URILocation implements QPP {
         //2.进行解析
         URI_ValueMetaData newMETA = new URI_ValueMetaData();
         newMETA.setUriObject(value);
+        log.debug("parser URI = {%0}", value);
         return newMETA;
     }
 }

@@ -20,7 +20,7 @@ package org.more.hypha.beans.define;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class RelationBeanDefine extends TemplateBeanDefine {
-    private String ref        = null; //所引用的Bean名
+    private String ref        = null; //所引用的Bean名或id
     private String refPackage = null; //所引用的Bean作用域
     /**返回“RelationBean”。*/
     public String getBeanType() {

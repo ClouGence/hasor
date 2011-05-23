@@ -16,24 +16,23 @@
 package org.more.hypha.beans.define;
 import java.util.HashMap;
 import java.util.Map;
-import org.more.hypha.ValueMetaData;
 /**
  * 表示一个{@link Map}类型的值元信息描述，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#MapCollection}。
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Map_ValueMetaData extends Collection_ValueMetaData<MapEntity_ValueMetaData> {
-    private HashMap<ValueMetaData, ValueMetaData> valueData = new HashMap<ValueMetaData, ValueMetaData>(); //数据
+    private HashMap<AbstractValueMetaData, AbstractValueMetaData> valueData = new HashMap<AbstractValueMetaData, AbstractValueMetaData>(); //数据
     /**该方法将会返回{@link PropertyMetaTypeEnum#MapCollection}。*/
     public String getMetaDataType() {
         return PropertyMetaTypeEnum.MapCollection;
     }
     /**以Map形式返回集合中的数据。*/
-    public Map<ValueMetaData, ValueMetaData> getCollectionValue() {
+    public Map<AbstractValueMetaData, AbstractValueMetaData> getCollectionValue() {
         return this.valueData;
     }
     /**添加一个元素。*/
-    public void addObject(ValueMetaData key, ValueMetaData value) {
+    public void addObject(AbstractValueMetaData key, AbstractValueMetaData value) {
         this.valueData.put(key, value);
     };
     /**添加一个元素。*/
@@ -41,7 +40,7 @@ public class Map_ValueMetaData extends Collection_ValueMetaData<MapEntity_ValueM
         this.valueData.put(mapEntity.getKey(), mapEntity.getValue());
     };
     /**删除一个元素。*/
-    public void removeObject(ValueMetaData key) {
+    public void removeObject(AbstractValueMetaData key) {
         this.valueData.remove(key);
     };
     /**获取集合当前数据内容条数数。*/

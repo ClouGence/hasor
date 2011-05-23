@@ -15,19 +15,33 @@
  */
 package org.more.hypha.beans.assembler.parser;
 import org.more.hypha.ApplicationContext;
+import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.define.BigText_ValueMetaData;
 import org.more.hypha.commons.engine.ValueMetaDataParser;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 /**
- * 
+ * 负责解析大文本类型。
  * @version 2011-2-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class BigText_MetaData_Parser implements ValueMetaDataParser<BigText_ValueMetaData> {
-    public Object parser(BigText_ValueMetaData data, ValueMetaDataParser<BigText_ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
-        // TODO Auto-generated method stub
-        return null;
+public class BigText_MetaData_Parser extends AbstractBase_Parser implements ValueMetaDataParser<BigText_ValueMetaData> {
+    private static ILog log = LogFactory.getLog(BigText_MetaData_Parser.class);
+    /*------------------------------------------------------------------------------*/
+    public Object parser(BigText_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
+        String bigText = data.getTextValue();
+        if (bigText != null)
+            log.debug("parser BigText length = {%0}.", bigText.length());
+        else
+            log.debug("parser BigText is null.");
+        return bigText;
     }
-    public Class<?> parserType(BigText_ValueMetaData data, ValueMetaDataParser<BigText_ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
-        return String.class;
+    public Class<?> parserType(BigText_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
+        Class<?> eType = super.getTypeForCache(data);
+        if (eType == null) {
+            eType = String.class;
+            super.putTypeToCache(data, eType);
+        }
+        return eType;
     }
 };

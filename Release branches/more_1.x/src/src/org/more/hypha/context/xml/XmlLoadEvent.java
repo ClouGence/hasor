@@ -15,17 +15,21 @@
  */
 package org.more.hypha.context.xml;
 import org.more.hypha.Event;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 /**
  * 开始执行装载动作。
  * @version 2010-12-2
  * @author 赵永春 (zyc@byshell.org)
  */
 public class XmlLoadEvent extends Event {
+    private static ILog log = LogFactory.getLog(XmlLoadEvent.class);
     public class Params extends Event.Params {
         public XmlDefineResource xmlDefineResource = null;
     };
     public Params toParams(Sequence eventSequence) {
         Object[] params = eventSequence.getParams();
+        log.debug("Sequence to Params ,params = {%0}", params);
         Params p = new Params();
         p.xmlDefineResource = (XmlDefineResource) params[0];
         return p;

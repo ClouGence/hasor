@@ -17,48 +17,70 @@ package org.more.hypha.beans;
 import java.util.List;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.Event.Sequence;
+import org.more.hypha.EventException;
 import org.more.hypha.EventListener;
 import org.more.hypha.beans.config.B_BeanType;
 import org.more.hypha.beans.config.B_MDParser;
 import org.more.hypha.beans.config.BeansConfig_BeanTypeConfig;
 import org.more.hypha.beans.config.BeansConfig_MDParserConfig;
 import org.more.hypha.commons.engine.AbstractBeanBuilder;
+import org.more.hypha.commons.engine.EngineLogic;
 import org.more.hypha.commons.engine.ValueMetaDataParser;
-import org.more.hypha.commons.engine.ioc.Ioc_BeanEngine;
 import org.more.hypha.context.AbstractApplicationContext;
-import org.more.hypha.context.app.InitEvent;
+import org.more.hypha.context.InitEvent;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 /**
  * 
  * @version : 2011-4-22
  * @author 赵永春 (zyc@byshell.org)
  */
+@SuppressWarnings({ "unchecked", "rawtypes" })
 class OnInit implements EventListener<InitEvent> {
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void onEvent(InitEvent event, Sequence sequence) {
+    private static ILog log = LogFactory.getLog(OnInit.class);
+    private <T> T newInstance(String classname) throws EventException {
+        try {
+            return (T) Class.forName(classname).newInstance();
+        } catch (InstantiationException e) {
+            throw new EventException("newInstance InstantiationException!", e);
+        } catch (IllegalAccessException e) {
+            throw new EventException("newInstance IllegalAccessException!", e);
+        } catch (ClassNotFoundException e) {
+            throw new EventException("newInstance ClassNotFoundException!", e);
+        }
+    };
+    public void onEvent(InitEvent event, Sequence sequence) throws EventException {
         AbstractApplicationContext context = (AbstractApplicationContext) event.toParams(sequence).applicationContext;
-        //1.注册引擎到
-        Ioc_BeanEngine engine = new Ioc_BeanEngine(context);
-        context.addBeanEngine(Ioc_BeanEngine.EngineName, engine);
+        //1.获取引擎
+        EngineLogic engine = context.getEngineLogic();
         //2.注册Bean类型
         List<B_BeanType> btList = (List<B_BeanType>) context.getFlash().getAttribute(BeansConfig_BeanTypeConfig.BTConfigList);
-        for (B_BeanType bt : btList) {
-            AbstractBeanBuilder builder = (AbstractBeanBuilder) Class.forName(bt.getClassName()).newInstance();
-            engine.regeditBeanBuilder(bt.gettName(), builder);
-        }
+        if (btList != null)
+            for (B_BeanType bt : btList) {
+                AbstractBeanBuilder builder = this.newInstance(bt.getClassName());
+                engine.regeditBeanBuilder(bt.gettName(), builder);
+            }
         //3.注册元信息解析器
         List<B_MDParser> mdList = (List<B_MDParser>) context.getFlash().getAttribute(BeansConfig_MDParserConfig.MDParserConfigList);
-        for (B_MDParser mdp : mdList) {
-            ValueMetaDataParser parser = (ValueMetaDataParser) Class.forName(mdp.getClassName()).newInstance();
-            engine.regeditValueMetaDataParser(mdp.getMdType(), parser);
-        }
+        if (mdList != null)
+            for (B_MDParser mdp : mdList) {
+                ValueMetaDataParser parser = this.newInstance(mdp.getClassName());
+                engine.regeditValueMetaDataParser(mdp.getMdType(), parser);
+            }
         //String beanBuilderClass = prop.getProperty(k);
         //Object builder = Class.forName(beanBuilderClass).getConstructor().newInstance();
         //context.getELContext().addELObject(name, elObject);
         //1.初始化bean
-        for (String id : context.getBeanDefinitionIDs()) {
+        List<String> ns = context.getBeanDefinitionIDs();
+        log.info("loadding init bean names = [{%0}].", ns);
+        for (String id : ns) {
             AbstractBeanDefine define = context.getBeanDefinition(id);
             if (define.isLazyInit() == false)
-                context.getBean(id);
+                try {
+                    context.getBean(id);
+                } catch (Throwable e) {
+                    log.warning("load Bean {%0} error! ,message = {%1}", id, e);
+                }
         }
     }
 }

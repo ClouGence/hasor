@@ -17,6 +17,8 @@ package org.more.hypha.beans.xml;
 import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.define.Enum_ValueMetaData;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 import org.more.util.attribute.IAttribute;
 /**
  * 枚举属性值解析器，默认值是null。
@@ -24,6 +26,7 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class QPP_Enum implements QPP {
+    private static ILog log = LogFactory.getLog(QPP_Enum.class);
     /**试图解析成为{@link Enum_ValueMetaData}如果解析失败返回null。*/
     public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
         //1.检查是否可以解析
@@ -34,6 +37,7 @@ public class QPP_Enum implements QPP {
         Enum_ValueMetaData newMEDATA = new Enum_ValueMetaData();
         newMEDATA.setEnumValue(value);
         newMEDATA.setEnumType(property.getClassType());
+        log.debug("parser Enum type = {%0} value= {%1}.", property.getClassType(), value);
         return newMEDATA;
     }
 }

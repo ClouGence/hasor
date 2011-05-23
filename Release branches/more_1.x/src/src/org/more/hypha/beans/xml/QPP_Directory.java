@@ -17,6 +17,8 @@ package org.more.hypha.beans.xml;
 import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.define.File_ValueMetaData;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 import org.more.util.attribute.IAttribute;
 /**
  * 目录类型属性值解析器。
@@ -24,6 +26,7 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class QPP_Directory implements QPP {
+    private static ILog log = LogFactory.getLog(QPP_Directory.class);
     public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
         String value = (String) attribute.getAttribute("directory");
         if (value == null)
@@ -32,6 +35,7 @@ public class QPP_Directory implements QPP {
         File_ValueMetaData newMETA = new File_ValueMetaData();
         newMETA.setFileObject(value);
         newMETA.setDir(true);
+        log.debug("parser Directory path = {%0}.", value);
         return newMETA;
     }
 }

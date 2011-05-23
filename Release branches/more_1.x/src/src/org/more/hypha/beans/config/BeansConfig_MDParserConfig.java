@@ -34,7 +34,7 @@ public class BeansConfig_MDParserConfig extends BeansConfig_NS implements XmlEle
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
         List<B_MDParser> btList = new ArrayList<B_MDParser>();
         context.setAttribute(MDParserConfigList, btList);
-        this.getFlash().setAttribute(MDParserConfigList, btList);
+        this.getDefineResource().getFlash().setAttribute(MDParserConfigList, btList);
     }
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
 }

@@ -18,18 +18,22 @@ import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.DefineResource;
 import org.more.hypha.Event;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 /**
  * 开始初始化过程事件，该事件是{@link DefineResource}。收到一个新{@link AbstractBeanDefine}定义添加时引发。
  * @version 2010-10-10
  * @author 赵永春 (zyc@byshell.org)
  */
 public class AddDefineEvent extends Event {
+    private static ILog log = LogFactory.getLog(AddDefineEvent.class);
     public class Params extends Event.Params {
         public DefineResource     defineResource = null;
         public AbstractBeanDefine define         = null;
     };
     public Params toParams(Sequence eventSequence) {
         Object[] params = eventSequence.getParams();
+        log.debug("Sequence to Params ,params = {%0}", params);
         Params p = new Params();
         p.defineResource = (XmlDefineResource) params[0];
         p.define = (AbstractBeanDefine) params[1];

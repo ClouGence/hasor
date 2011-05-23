@@ -14,36 +14,34 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.assembler.builder;
-import java.io.IOException;
 import org.more.hypha.beans.define.VariableBeanDefine;
+import org.more.hypha.beans.define.VariableBeanDefine.VariableType;
 import org.more.hypha.commons.engine.AbstractBeanBuilder;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
+import org.more.util.StringConvert;
 /**
- * 
+ * 变量类型bean，该类型bean不能支持aop。
  * @version 2011-2-15
  * @author 赵永春 (zyc@byshell.org)
  */
 public class VariableBeanBuilder extends AbstractBeanBuilder<VariableBeanDefine> {
-    public boolean canCache() {
-        return true;
-    };
-    public boolean canBuilder() {
-        return true;
-    };
-    public boolean ifDefaultBeanCreateMode() {
-        return true;
-    };
-    //---------------------------------------------------------
-    public byte[] loadBeanBytes(VariableBeanDefine define) throws IOException {
-        // TODO Auto-generated method stub
-        return null;
-    };
-    public Object createBean(VariableBeanDefine define, Object[] params) throws Throwable {
-        // TODO Auto-generated method stub
-        return null;
-    };
-    public Object builderBean(Object obj, VariableBeanDefine define) throws Throwable {
-        // TODO Auto-generated method stub
-        return null;
-    };
-    //---------------------------------------------------------
+    private static ILog log = LogFactory.getLog(VariableBeanBuilder.class);
+    /*------------------------------------------------------------------------------*/
+    public Class<?> loadType(VariableBeanDefine define, Object[] params) {
+        VariableType vt = define.getType();
+        Class<?> vtClass = VariableBeanDefine.getType(vt);
+        log.debug("Variable Bean type = {%0}", vtClass);
+        return vtClass;
+    }
+    @SuppressWarnings("unchecked")
+    public <O> O createBean(VariableBeanDefine define, Object[] params) {
+        VariableType vt = define.getType();
+        Class<?> vtClass = VariableBeanDefine.getType(vt);
+        String vValye = define.getValue();
+        //
+        Object value = StringConvert.changeType(vValye, vtClass);
+        log.debug("Variable Bean value = {%0}", value);
+        return (O) value;
+    }
 };

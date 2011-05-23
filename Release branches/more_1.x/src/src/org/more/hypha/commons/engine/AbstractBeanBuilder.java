@@ -37,7 +37,7 @@ public abstract class AbstractBeanBuilder<T extends AbstractBeanDefine> {
         return this.applicationContext;
     }
     /**装载bean定义的类型。*/
-    public abstract Class<?> loadType(AbstractBeanDefine define, Object[] params);
+    public abstract Class<?> loadType(T define, Object[] params) throws Throwable;
     /**创建Bean对象。*/
-    public abstract <O> O createBean(AbstractBeanDefine define, Object[] params);
+    public abstract <O> O createBean(T define, Object[] params) throws Throwable;
 };

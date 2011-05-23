@@ -24,10 +24,10 @@ import org.more.hypha.ELContext;
 import org.more.hypha.Event;
 import org.more.hypha.EventManager;
 import org.more.hypha.ExpandPointManager;
-import org.more.hypha.ScopeContext;
 import org.more.hypha.commons.AbstractELContext;
-import org.more.hypha.commons.AbstractScopeContext;
 import org.more.hypha.commons.engine.EngineLogic;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 import org.more.util.attribute.IAttribute;
 /**
  * 简单的{@link ApplicationContext}接口实现类，该类只是提供了一个平台。
@@ -35,14 +35,14 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractApplicationContext implements ApplicationContext {
+    private static ILog           log             = LogFactory.getLog(AbstractApplicationContext.class);
     private PropxyClassLoader     classLoader     = null;
     //init期间必须构建的六大基础对象
     private Object                contextObject   = null;
     private AbstractELContext     elContext       = null;
-    private AbstractScopeContext  scopeContext    = null;
     //
     private Map<String, Object>   singleBeanCache = null;
-    private Map<String, Class<?>> singleTypeCache = null;
+    private Map<String, Class<?>> typeCache       = null;
     //
     private EngineLogic           engineLogic     = null;
     /*------------------------------------------------------------*/
@@ -54,6 +54,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         return this.contextObject;
     };
     public void setContextObject(Object contextObject) {
+        log.info("change contextObject form '{%0}' to '{%1}'", this.contextObject, contextObject);
         this.contextObject = contextObject;
     };
     public EventManager getEventManager() {
@@ -65,14 +66,12 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     public ELContext getELContext() {
         return this.elContext;
     };
-    public ScopeContext getScopeContext() {
-        return this.scopeContext;
-    };
     public ClassLoader getBeanClassLoader() {
         return this.classLoader;
     };
     /**替换当前的ClassLoader。*/
     public void setBeanClassLoader(ClassLoader loader) {
+        log.info("change ParentClassLoader form '{%0}' to '{%1}'", this.classLoader.getLoader(), loader);
         this.classLoader.setLoader(loader);
     };
     public EngineLogic getEngineLogic() {
@@ -81,6 +80,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     /*------------------------------------------------------------*/
     /**清理掉{@link AbstractApplicationContext}对象中所缓存的单例Bean对象。*/
     public void clearSingleBean() {
+        log.info("clear all Single Bean!");
         this.singleBeanCache.clear();
     };
     /**获取一个int该int表示了{@link AbstractApplicationContext}对象中已经缓存了的单例对象数目。*/
@@ -91,10 +91,6 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     /**在init期间被调用，子类可以重写它用来替换EL上下文。*/
     protected AbstractELContext createELContext() {
         return new AbstractELContext() {};
-    };
-    /**在init期间被调用，子类可以重写它用来替换作用域管理器。*/
-    protected AbstractScopeContext createScopeContext() {
-        return new AbstractScopeContext() {};
     };
     /**该方法可以获取{@link AbstractApplicationContext}接口对象所使用的属性管理器。子类可以通过重写该方法以来控制属性管理器对象。*/
     protected IAttribute getAttribute() {
@@ -110,62 +106,87 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     };
     /*------------------------------------------------------------*/
     public void init() throws Throwable {
-        this.elContext = this.createELContext();
-        this.scopeContext = this.createScopeContext();
-        //
+        log.info("starting init ApplicationContext...");
         this.singleBeanCache = new HashMap<String, Object>();
-        this.singleTypeCache = new HashMap<String, Class<?>>();
+        this.typeCache = new HashMap<String, Class<?>>();
+        log.info("created cache, singleBeanCache = {%0}, typeCache = {%1}.", singleBeanCache, typeCache);
         //
+        this.elContext = this.createELContext();
         this.engineLogic = new EngineLogic();
+        log.info("created elContext = {%0}, engineLogic = {%1}", elContext, engineLogic);
         //
         this.elContext.init(this);
-        this.scopeContext.init(this);
         this.engineLogic.init(this);
+        log.info("inited elContext and engineLogic OK!");
         //
+        log.info("sending event...");
         this.getEventManager().doEvent(Event.getEvent(InitEvent.class), this);
+        log.info("started!");
     };
     /**当JVM回收该对象时自动调用销毁方法。*/
     protected void finalize() throws Throwable {
-        try {
-            this.destroy();
-        } catch (Exception e) {}
+        if (this.engineLogic != null)
+            try {
+                log.info("use finalize destroy ApplicationContext...");
+                this.destroy();
+            } catch (Exception e) {
+                log.warning("use finalize destroy ApplicationContext an error , error = {%0}", e);
+            }
         super.finalize();
     };
-    public void destroy() throws Throwable {
+    public void destroy() {
         /**销毁事件*/
+        log.info("sending Context Destroy event...");
         this.getEventManager().doEvent(Event.getEvent(DestroyEvent.class), this);
+        log.info("popEvent all event...");
         this.getEventManager().popEvent();//弹出所有事件
         //
+        log.info("set null...");
         this.elContext = null;
-        this.scopeContext = null;
-        //
         this.singleBeanCache = null;
-        this.singleTypeCache = null;
-        //
+        this.typeCache = null;
         this.engineLogic = null;
+        log.info("destroy is OK!");
     };
+    @SuppressWarnings("unchecked")
     public <T> T getBean(String defineID, Object... objects) throws Throwable {
-        //-------------------------------------------------------------------检查单态
-        if (this.singleBeanCache.containsKey(defineID) == true)
-            return (T) this.singleBeanCache.get(defineID);
+        if (defineID == null || defineID.equals("") == true) {
+            log.error("error , defineID is null or empty.");
+            throw new NullPointerException("error , defineID is null or empty.");
+        }
+        if (this.singleBeanCache.containsKey(defineID) == true) {
+            Object obj = this.singleBeanCache.get(defineID);
+            log.info("{%0} bean form cache return.", defineID);
+            return (T) obj;
+        }
+        AbstractBeanDefine define = this.getBeanDefinition(defineID);
+        if (define == null) {
+            log.error("{%0} define is not exist.", defineID);
+            throw new NoDefinitionException(defineID + " define is not exist.");
+        }
         //-------------------------------------------------------------------获取
+        log.info("start building {%0} bean , params is {%1}", defineID, objects);
         final String KEY = "GETBEAN_PARAM";
         try {
             this.getThreadFlash().setAttribute(KEY, objects);
-            AbstractBeanDefine define = this.getBeanDefinition(defineID);
-            if (define == null)
-                throw new NoDefinitionException("不存在id为[" + defineID + "]的Bean定义。");
+            log.debug("put params to ThreadFlash key is {%0}", KEY);
             //1.获取bean以及bean类型。
             Class<?> beanType = this.getBeanType(defineID, objects);//获取类型
             Object bean = this.engineLogic.builderBean(define, objects);//生成Bean
+            log.info("finish build!, object = {%0}", bean);
             //3.单态缓存&类型匹配
             bean = this.cast(beanType, bean);
-            if (define.isSingleton() == true)
+            log.debug("bean cast type {%0} OK!", beanType);
+            if (define.isSingleton() == true) {
+                log.info("{%0} bean is Singleton!", defineID);
                 this.singleBeanCache.put(defineID, bean);
+            }
             return (T) bean;
         } catch (Throwable e) {
+            log.error("get bean is error, error = {%0}", e);
             throw e;
         } finally {
+            log.debug("remove params from ThreadFlash key is {%0}", KEY);
             this.getThreadFlash().removeAttribute(KEY);
         }
     };
@@ -176,30 +197,42 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         return obj;
     };
     public Class<?> getBeanType(String defineID, Object... objects) throws Throwable {
-        //-------------------------------------------------------------------检查单态
-        if (this.singleTypeCache.containsKey(defineID) == true)
-            return this.singleTypeCache.get(defineID);
+        if (defineID == null || defineID.equals("") == true) {
+            log.error("error , defineID is null or empty.");
+            throw new NullPointerException("error , defineID is null or empty.");
+        }
+        if (this.typeCache.containsKey(defineID) == true) {
+            Class<?> type = this.typeCache.get(defineID);
+            log.info("{%0} bean type form cache return.", defineID);
+            return type;
+        }
+        AbstractBeanDefine define = this.getBeanDefinition(defineID);
+        if (define == null) {
+            log.error("{%0} define is not exist.", defineID);
+            throw new NoDefinitionException(defineID + " define is not exist.");
+        }
         //-------------------------------------------------------------------获取
+        log.info("start building {%0} bean type , params is {%1}", defineID, objects);
         final String KEY = "GETBEAN_PARAM";
         try {
             this.getThreadFlash().setAttribute(KEY, objects);
-            AbstractBeanDefine define = this.getBeanDefinition(defineID);
-            if (define == null)
-                throw new NoDefinitionException("不存在id为[" + defineID + "]的Bean定义。");
+            log.debug("put params to ThreadFlash key is {%0}", KEY);
             Class<?> beanType = this.engineLogic.builderType(define, objects);
-            if (define.isSingleton() == true)
-                this.singleTypeCache.put(defineID, beanType);
+            log.info("finish build! type = {%0}", beanType);
+            this.typeCache.put(defineID, beanType);
             return beanType;
         } catch (Throwable e) {
+            log.error("get BeanType is error, error = {%0}", e);
             throw e;
         } finally {
+            log.debug("remove params from ThreadFlash key is {%0}", KEY);
             this.getThreadFlash().removeAttribute(KEY);
         }
     };
     public List<String> getBeanDefinitionIDs() {
         return this.getBeanResource().getBeanDefinitionIDs();
     };
-    public AbstractBeanDefine getBeanDefinition(String id) throws NoDefinitionException {
+    public AbstractBeanDefine getBeanDefinition(String id) {
         return this.getBeanResource().getBeanDefine(id);
     };
     public boolean containsBean(String id) {
@@ -216,8 +249,8 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     };
     public boolean isTypeMatch(String id, Class<?> targetType) throws Throwable {
         //Object.class.isAssignableFrom(XmlTest.class); return true;
-        if (targetType == null)
-            throw new NullPointerException("参数targetType不能为空.");
+        if (id == null || targetType == null)
+            throw new NullPointerException("参数id或targetType不能为空.");
         Class<?> beanType = this.getBeanType(id);
         return targetType.isAssignableFrom(beanType);
     };

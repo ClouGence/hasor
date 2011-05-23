@@ -19,6 +19,8 @@ import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.define.PropertyType;
 import org.more.hypha.beans.define.Simple_ValueMetaData;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 import org.more.util.attribute.IAttribute;
 /**
  * 属性快速解析器，将字符串值解析为指定的类型。
@@ -26,20 +28,31 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class QPP_ROOT implements QPP {
-    private ArrayList<QPP> parserList = new ArrayList<QPP>(); //属性快速解析器定义
+    private static ILog    log        = LogFactory.getLog(QPP_ROOT.class);
+    private ArrayList<QPP> parserList = new ArrayList<QPP>();             //属性快速解析器定义
     /**注册一个快速属性值解析器。*/
     public synchronized void regeditTypeParser(QPP parser) {
-        if (parser == null)
-            throw new NullPointerException("参数不能为空。");
-        if (this.parserList.contains(parser) == false)
+        if (parser == null) {
+            log.warning("regedit TypeParser error , parser is null.");
+            return;
+        }
+        if (this.parserList.contains(parser) == false) {
+            log.info("{%0} parser regedit OK!", parser);
             this.parserList.add(parser);
+        } else
+            log.error("{%0} parser is exist.", parser);
     }
     /**取消一个快速属性值解析器的注册。*/
     public synchronized void unRegeditTypeParser(QPP parser) {
-        if (parser == null)
-            throw new NullPointerException("参数不能为空。");
-        if (this.parserList.contains(parser) == true)
+        if (parser == null) {
+            log.warning("unRegedit TypeParser error , parser is null.");
+            return;
+        }
+        if (this.parserList.contains(parser) == true) {
+            log.info("{%0} parser unRegedit OK!", parser);
             this.parserList.remove(parser);
+        } else
+            log.error("unRegedit error {%0} is not exist.", parser);
     }
     /**将属性值解析为某一特定类型的值，将value表述的值转换成指定的元信息描述。*/
     public synchronized ValueMetaData parser(IAttribute att, AbstractPropertyDefine property) {
@@ -49,6 +62,7 @@ public class QPP_ROOT implements QPP {
             if (valueMETADATA != null)
                 return valueMETADATA;
         }
+        log.debug("parser use null.");
         /**使用默认值null*/
         Simple_ValueMetaData simple = new Simple_ValueMetaData();
         simple.setValueMetaType(PropertyType.Null);

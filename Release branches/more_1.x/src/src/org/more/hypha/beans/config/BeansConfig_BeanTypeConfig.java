@@ -34,7 +34,7 @@ public class BeansConfig_BeanTypeConfig extends BeansConfig_NS implements XmlEle
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
         List<B_BeanType> btList = new ArrayList<B_BeanType>();
         context.setAttribute(BTConfigList, btList);
-        this.getFlash().setAttribute(BTConfigList, btList);
+        this.getDefineResource().getFlash().setAttribute(BTConfigList, btList);
     }
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
 }
