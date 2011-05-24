@@ -16,6 +16,7 @@
 package org.more.hypha.commons.engine;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
+import org.more.hypha.ValueMetaData;
 /**
  * 该接口是基本的bean获取接口，该接口的职责是给定bean定义并且将这个bean定义创建出来。
  * @version : 2011-4-22
@@ -27,5 +28,5 @@ public abstract class IocEngine {
     /**销毁方法。*/
     public void destroy() throws Throwable {}
     /**执行注入。*/
-    public abstract void ioc(Object obj, AbstractBeanDefine define, Object[] params);
+    public abstract void ioc(Object obj, AbstractBeanDefine define, ValueMetaDataParser<ValueMetaData> rootParser, Object[] params);
 };

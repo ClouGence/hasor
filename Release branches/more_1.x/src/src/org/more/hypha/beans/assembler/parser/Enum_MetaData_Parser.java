@@ -25,20 +25,12 @@ import org.more.log.LogFactory;
  * @version 2011-2-15
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class Enum_MetaData_Parser extends AbstractBase_Parser implements ValueMetaDataParser<Enum_ValueMetaData> {
+public class Enum_MetaData_Parser implements ValueMetaDataParser<Enum_ValueMetaData> {
     private static ILog log = LogFactory.getLog(Enum_MetaData_Parser.class);
     /*------------------------------------------------------------------------------*/
-    public Enum<?> parser(Enum_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
+    public Enum<?> parser(Object targetObject, Enum_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
         Enum<?> eValue = data.getEnumType(context.getBeanClassLoader());
         log.debug("parser Enum = {%0}.", eValue);
         return eValue;
-    }
-    public Class<?> parserType(Enum_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
-        Class<?> eType = super.getTypeForCache(data);
-        if (eType == null) {
-            eType = data.getEnumClass(context.getBeanClassLoader());
-            super.putTypeToCache(data, eType);
-        }
-        return eType;
     }
 };

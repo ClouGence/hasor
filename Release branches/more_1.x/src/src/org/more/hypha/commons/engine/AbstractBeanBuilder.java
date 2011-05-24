@@ -32,10 +32,12 @@ public abstract class AbstractBeanBuilder<T extends AbstractBeanDefine> {
     public void setApplicationContext(ApplicationContext applicationContext) {
         log.debug("set ApplicationContext {%0}", applicationContext);
         this.applicationContext = applicationContext;
-    }
+    };
+    /**获取{@link ApplicationContext}*/
     protected ApplicationContext getApplicationContext() {
         return this.applicationContext;
-    }
+    };
+    /*------------------------------------------------------------------------------*/
     /**装载bean定义的类型。*/
     public abstract Class<?> loadType(T define, Object[] params) throws Throwable;
     /**创建Bean对象。*/

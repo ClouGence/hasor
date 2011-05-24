@@ -21,25 +21,25 @@ import org.more.hypha.commons.engine.ValueMetaDataParser;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
 import org.more.util.StringConvert;
+import org.more.util.attribute.IAttribute;
 /**
  * 简单类型解析器，类型返回null表示可能其值就是null.
  * @version 2011-2-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class SimpleType_MetaData_Parser extends AbstractBase_Parser implements ValueMetaDataParser<Simple_ValueMetaData> {
-    private static ILog log = LogFactory.getLog(SimpleType_MetaData_Parser.class);
+public class SimpleType_MetaData_Parser implements ValueMetaDataParser<Simple_ValueMetaData> {
+    private static ILog         log            = LogFactory.getLog(SimpleType_MetaData_Parser.class);
+    private static final String FungiCacheName = "$FungiCacheName_Value";
     /*------------------------------------------------------------------------------*/
-    public Object parser(Simple_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
-        Object value = super.getValueForCache(data);
+    public Object parser(Object targetObject, Simple_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
+        IAttribute fungiAtt = data.getFungi();
+        Object value = fungiAtt.getAttribute(FungiCacheName);
         if (value == null) {
             Class<?> sType = Simple_ValueMetaData.getPropertyType(data.getValueMetaType());
             value = StringConvert.changeType(data.getValue(), sType);
-            super.putValueToCache(data, value);
+            fungiAtt.setAttribute(FungiCacheName, value);
         }
         log.debug("parser SimpleType value = {%0}.", value);
         return value;
-    }
-    public Class<?> parserType(Simple_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
-        return Simple_ValueMetaData.getPropertyType(data.getValueMetaType());
     }
 };

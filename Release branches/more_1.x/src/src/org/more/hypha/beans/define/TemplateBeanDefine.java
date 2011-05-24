@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.define;
+
+
 /**
  * TemplateBeanDefine类用于定义一个bean的模板。
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TemplateBeanDefine extends BaseBeanDefine {
+public class TemplateBeanDefine extends AbstractBaseBeanDefine {
     private String useTemplate = null; //应用的模板
     //-------------------------------------------------------------
     /**返回“TemplateBean”。*/

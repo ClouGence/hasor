@@ -23,7 +23,7 @@ import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.AbstractMethodDefine;
 import org.more.hypha.DefineResource;
-import org.more.hypha.beans.define.BaseBeanDefine;
+import org.more.hypha.beans.define.AbstractBaseBeanDefine;
 import org.more.hypha.beans.define.TemplateBeanDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
 /**
@@ -31,7 +31,7 @@ import org.more.hypha.context.xml.XmlDefineResource;
  * @version 2010-9-16
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class TagBeans_AbstractBeanDefine<T extends BaseBeanDefine> extends TagBeans_AbstractDefine<T> {
+public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBaseBeanDefine> extends TagBeans_AbstractDefine<T> {
     /**创建{@link TagBeans_AbstractBeanDefine}对象*/
     public TagBeans_AbstractBeanDefine(XmlDefineResource configuration) {
         super(configuration);

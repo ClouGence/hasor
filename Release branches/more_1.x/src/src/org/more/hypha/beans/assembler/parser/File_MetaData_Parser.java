@@ -25,20 +25,13 @@ import org.more.log.LogFactory;
  * @version 2011-2-15
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class File_MetaData_Parser extends AbstractBase_Parser implements ValueMetaDataParser<File_ValueMetaData> {
+public class File_MetaData_Parser implements ValueMetaDataParser<File_ValueMetaData> {
     private static ILog log = LogFactory.getLog(File_MetaData_Parser.class);
+    /*------------------------------------------------------------------------------*/
     public File parser(File_ValueMetaData data, ValueMetaDataParser<File_ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
         // TODO Auto-generated method stub
         log.debug("parser File = {%0}.", eValue);
         // data.ge
         return null;
     }
-    public Class<?> parserType(File_ValueMetaData data, ValueMetaDataParser<File_ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
-        Class<?> eType = super.getCache(data);
-        if (eType == null) {
-            eType = File.class;
-            super.putCache(data, eType);
-        }
-        return eType;
-    };
 };

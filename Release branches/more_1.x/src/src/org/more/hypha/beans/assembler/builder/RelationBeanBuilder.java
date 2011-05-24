@@ -16,60 +16,52 @@
 package org.more.hypha.beans.assembler.builder;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.NoDefineBeanException;
+import org.more.hypha.beans.assembler.MetaDataUtil;
 import org.more.hypha.beans.define.RelationBeanDefine;
 import org.more.hypha.commons.engine.AbstractBeanBuilder;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
-import org.more.util.attribute.IAttribute;
 /**
  * 引用类型bean。
  * @version 2011-2-15
  * @author 赵永春 (zyc@byshell.org)
  */
 public class RelationBeanBuilder extends AbstractBeanBuilder<RelationBeanDefine> {
-    private static ILog         log       = LogFactory.getLog(RelationBeanBuilder.class);
-    private static final String CacheName = "RelationBeanBuilder_CacheType";
+    private static ILog log = LogFactory.getLog(RelationBeanBuilder.class);
     /*------------------------------------------------------------------------------*/
-    public Class<?> loadType(RelationBeanDefine define, Object[] params) throws Throwable {
-        IAttribute fungiAtt = define.getFungi();
-        //1.测试缓存。
-        if (fungiAtt.contains(CacheName) == true) {
-            Class<?> fungiClass = (Class<?>) fungiAtt.getAttribute(CacheName);
-            log.debug("return from fungi cache ,cacheName is {%0}, type = {%1}", CacheName, fungiClass);
-            return fungiClass;
-        }
-        //2.确定bean。
+    private String getName(RelationBeanDefine define) {
         String ref = define.getRef();
         String refPackage = define.getRefPackage();
         ApplicationContext app = this.getApplicationContext();
         if (app.containsBean(ref) == false) {
-            log.warning("ref bean {%0} bean is not exist", CacheName, ref);
+            log.warning("ref bean {%0} bean is not exist", ref);
             ref = refPackage + "." + ref;
             if (app.containsBean(ref) == false) {
-                log.error("ref bean {%0} is not exist", CacheName, ref);
+                log.error("ref bean {%0} is not exist", ref);
                 throw new NoDefineBeanException("ref bean " + ref + " is not exist");
             }
         }
+        return ref;
+    }
+    public Class<?> loadType(RelationBeanDefine define, Object[] params) throws Throwable {
+        Class<?> fungiClass = MetaDataUtil.getTypeForFungi(define, log);
+        //1.测试缓存。
+        if (fungiClass != null)
+            return fungiClass;
+        //2.确定bean。
+        String ref = getName(define);
         //3.获取ref
-        Class<?> bType = app.getBeanType(ref, params);
-        fungiAtt.setAttribute(CacheName, bType);
+        Class<?> bType = this.getApplicationContext().getBeanType(ref, params);
+        MetaDataUtil.putTypeToFungi(define, bType, log);
         log.debug("ref bean type is {%0}.", bType);
         return bType;
     }
     @SuppressWarnings("unchecked")
     public <O> O createBean(RelationBeanDefine define, Object[] params) throws Throwable {
-        String ref = define.getRef();
-        String refPackage = define.getRefPackage();
-        ApplicationContext app = this.getApplicationContext();
-        if (app.containsBean(ref) == false) {
-            log.warning("ref bean {%0} bean is not exist", CacheName, ref);
-            ref = refPackage + "." + ref;
-            if (app.containsBean(ref) == false) {
-                log.error("ref bean {%0} is not exist", CacheName, ref);
-                throw new NoDefineBeanException("ref bean " + ref + " is not exist");
-            }
-        }
-        Object obj = app.getBean(ref, params);
+        //1.确定bean名称。
+        String ref = getName(define);
+        //2.获取bean。
+        Object obj = this.getApplicationContext().getBean(ref, params);
         log.debug("ref bean value = {%0}", obj);
         return (O) obj;
     }

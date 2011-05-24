@@ -27,10 +27,10 @@ import org.more.util.StringConvert;
  * @version 2011-2-15
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class Date_MetaData_Parser extends AbstractBase_Parser implements ValueMetaDataParser<Date_ValueMetaData> {
+public class Date_MetaData_Parser implements ValueMetaDataParser<Date_ValueMetaData> {
     private static ILog log = LogFactory.getLog(Date_MetaData_Parser.class);
     /*------------------------------------------------------------------------------*/
-    public Date parser(Date_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
+    public Date parser(Object targetObject, Date_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
         String dateString = data.getDateString();
         String formatString = data.getFormatString();
         Date date = null;
@@ -40,13 +40,5 @@ public class Date_MetaData_Parser extends AbstractBase_Parser implements ValueMe
             date = StringConvert.parseDate(dateString);
         log.debug("parser Date dateString = {%0} ,formater = {%1}.", dateString, formatString);
         return date;
-    }
-    public Class<?> parserType(Date_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
-        Class<?> eType = super.getTypeForCache(data);
-        if (eType == null) {
-            eType = Date.class;
-            super.putTypeToCache(data, eType);
-        }
-        return eType;
     }
 };

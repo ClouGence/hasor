@@ -25,23 +25,15 @@ import org.more.log.LogFactory;
  * @version 2011-2-15
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class BigText_MetaData_Parser extends AbstractBase_Parser implements ValueMetaDataParser<BigText_ValueMetaData> {
+public class BigText_MetaData_Parser implements ValueMetaDataParser<BigText_ValueMetaData> {
     private static ILog log = LogFactory.getLog(BigText_MetaData_Parser.class);
     /*------------------------------------------------------------------------------*/
-    public Object parser(BigText_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
+    public Object parser(Object targetObject, BigText_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
         String bigText = data.getTextValue();
         if (bigText != null)
             log.debug("parser BigText length = {%0}.", bigText.length());
         else
             log.debug("parser BigText is null.");
         return bigText;
-    }
-    public Class<?> parserType(BigText_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
-        Class<?> eType = super.getTypeForCache(data);
-        if (eType == null) {
-            eType = String.class;
-            super.putTypeToCache(data, eType);
-        }
-        return eType;
     }
 };

@@ -15,20 +15,25 @@
  */
 package org.more.hypha.beans.assembler.parser;
 import org.more.hypha.ApplicationContext;
+import org.more.hypha.EvalExpression;
+import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.define.EL_ValueMetaData;
 import org.more.hypha.commons.engine.ValueMetaDataParser;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 /**
- * 
+ * 解析EL表达式。
  * @version 2011-2-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class EL_MetaData_Parser extends AbstractBase_Parser implements ValueMetaDataParser<EL_ValueMetaData> {
-    public Object parser(EL_ValueMetaData data, ValueMetaDataParser<EL_ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    public Class<?> parserType(EL_ValueMetaData data, ValueMetaDataParser<EL_ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
-        // TODO Auto-generated method stub
-        return null;
+public class EL_MetaData_Parser implements ValueMetaDataParser<EL_ValueMetaData> {
+    private static ILog log = LogFactory.getLog(EL_MetaData_Parser.class);
+    /*------------------------------------------------------------------------------*/
+    public Object parser(Object targetObject, EL_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
+        String elText = data.getElText();
+        EvalExpression eval = context.getELContext().getExpression(elText);
+        Object res = eval.eval(targetObject);
+        log.debug("parser EL elText = '{%0}' , evalValue = {%1}", elText, res);
+        return res;
     }
 };

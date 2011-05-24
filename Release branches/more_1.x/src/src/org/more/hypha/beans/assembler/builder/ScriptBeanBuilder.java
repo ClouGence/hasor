@@ -15,7 +15,7 @@
  */
 package org.more.hypha.beans.assembler.builder;
 import org.more.hypha.beans.define.ScriptBeanDefine;
-import org.more.hypha.commons.engine.AbstractBeanBuilderEx;
+import org.more.hypha.commons.engine.AbstractBeanBuilder;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
 /**
@@ -23,19 +23,15 @@ import org.more.log.LogFactory;
  * @version 2011-2-15
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class ScriptBeanBuilder extends AbstractBeanBuilderEx<ScriptBeanDefine> {
+public class ScriptBeanBuilder extends AbstractBeanBuilder<ScriptBeanDefine> {
     private static ILog log = LogFactory.getLog(ScriptBeanBuilder.class);
     /*------------------------------------------------------------------------------*/
-    public byte[] loadBytes(ScriptBeanDefine define, Object[] params) {
+    public Class<?> loadType(ScriptBeanDefine define, Object[] params) throws Throwable {
         // TODO Auto-generated method stub
         a
         return null;
     }
-    public Class<?> loadType(byte[] bytes, ScriptBeanDefine define, Object[] params) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    public <O> O createBean(ScriptBeanDefine define, Object[] params) {
+    public <O> O createBean(ScriptBeanDefine define, Object[] params) throws Throwable {
         // TODO Auto-generated method stub
         return null;
     }

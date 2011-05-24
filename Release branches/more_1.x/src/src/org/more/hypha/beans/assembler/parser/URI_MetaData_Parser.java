@@ -26,23 +26,15 @@ import org.more.log.LogFactory;
  * @version 2011-2-15
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class URI_MetaData_Parser extends AbstractBase_Parser implements ValueMetaDataParser<URI_ValueMetaData> {
+public class URI_MetaData_Parser implements ValueMetaDataParser<URI_ValueMetaData> {
     private static ILog log = LogFactory.getLog(URI_MetaData_Parser.class);
     /*------------------------------------------------------------------------------*/
-    public URI parser(URI_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
+    public URI parser(Object targetObject, URI_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
         String uriString = data.getUriObject();
         if (uriString == null)
             return null;
         URI uri = new URI(uriString);
         log.debug("parser URI uriString = {%0}.", uriString);
         return uri;
-    }
-    public Class<?> parserType(URI_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
-        Class<?> eType = super.getTypeForCache(data);
-        if (eType == null) {
-            eType = URI.class;
-            super.putTypeToCache(data, eType);
-        }
-        return eType;
     }
 };

@@ -33,7 +33,6 @@ import org.more.log.LogFactory;
  * @version : 2011-5-12
  * @author 赵永春 (zyc@byshell.org)
  */
-@SuppressWarnings("unchecked")
 public class EngineLogic {
     private static ILog                                          log                = LogFactory.getLog(EngineLogic.class);
     private Map<String, AbstractBeanBuilder<AbstractBeanDefine>> builderMap         = null;
@@ -47,7 +46,6 @@ public class EngineLogic {
         public EngineClassLoader(AbstractApplicationContext applicationContext) {
             super(applicationContext.getBeanClassLoader());
         };
-        @SuppressWarnings("deprecation")
         public Class<?> loadClass(byte[] beanBytes, AbstractBeanDefine define) throws ClassFormatException {
             if (beanBytes == null)
                 throw new NullPointerException("loadClass error beanBytes is null.");
@@ -214,8 +212,7 @@ public class EngineLogic {
                 String factoryBeanID = factory.getForBeanDefine().getID();
                 log.debug("use factoryBean create {%0}, factoryBeanID = {%1}...", defineID, factoryBeanID);
                 Collection<? extends AbstractPropertyDefine> initParamDefine = factory.getParams();
-                Class<?>[] initParam_Types = transform_toTypes(initParamDefine, params);
-                Object[] initParam_objects = transform_toObjects(initParamDefine, params);
+                Object[] initParam_objects = transform_toObjects(null, initParamDefine, params);//null此时还没有建立对象。
                 if (factory.isStatic() == true) {
                     //静态工厂方法创建
                     log.debug("invoke factoryMethod ,function is static....");
@@ -246,7 +243,7 @@ public class EngineLogic {
         }
         IocEngine iocEngine = this.getEngine(iocEngineName);
         log.info("ioc defineID = {%0} ,engine name is {%1}.", defineID, iocEngineName);
-        iocEngine.ioc(obj, define, params);
+        iocEngine.ioc(obj, define, this.rootParser, params);
         //--------------------------------------------------------------------------------------------------------------初始化阶段
         //4.代理销毁方法
         {
@@ -271,22 +268,8 @@ public class EngineLogic {
             }
         return (T) obj;
     };
-    /*将一组属性转换成类型。*/
-    private Class<?>[] transform_toTypes(Collection<? extends AbstractPropertyDefine> pds, Object[] params) throws Throwable {
-        if (pds == null)
-            return null;
-        //
-        int size = pds.size();
-        int index = 0;
-        Class<?>[] res = new Class<?>[size];
-        for (AbstractPropertyDefine apd : pds) {
-            res[index] = this.rootParser.parserType(apd.getMetaData(), null/*该参数无效*/, this.applicationContext);
-            index++;
-        }
-        return res;
-    };
     /*将一组属性转换成对象。*/
-    private Object[] transform_toObjects(Collection<? extends AbstractPropertyDefine> pds, Object[] params) throws Throwable {
+    private Object[] transform_toObjects(Object object, Collection<? extends AbstractPropertyDefine> pds, Object[] params) throws Throwable {
         if (pds == null)
             return null;
         //
@@ -294,7 +277,7 @@ public class EngineLogic {
         int index = 0;
         Object[] res = new Object[size];
         for (AbstractPropertyDefine apd : pds) {
-            res[index] = this.rootParser.parser(apd.getMetaData(), null/*该参数无效*/, this.applicationContext);
+            res[index] = this.rootParser.parser(object, apd.getMetaData(), null/*该参数无效*/, this.applicationContext);
             index++;
         }
         return res;

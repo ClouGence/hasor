@@ -148,6 +148,8 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         this.engineLogic = null;
         log.info("destroy is OK!");
     };
+    /*------------------------------------------------------------*/
+    private final String KEY = "GETBEAN_PARAM";
     @SuppressWarnings("unchecked")
     public <T> T getBean(String defineID, Object... objects) throws Throwable {
         if (defineID == null || defineID.equals("") == true) {
@@ -166,7 +168,6 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         }
         //-------------------------------------------------------------------获取
         log.info("start building {%0} bean , params is {%1}", defineID, objects);
-        final String KEY = "GETBEAN_PARAM";
         try {
             this.getThreadFlash().setAttribute(KEY, objects);
             log.debug("put params to ThreadFlash key is {%0}", KEY);
@@ -175,7 +176,9 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
             Object bean = this.engineLogic.builderBean(define, objects);//生成Bean
             log.info("finish build!, object = {%0}", bean);
             //3.单态缓存&类型匹配
-            bean = this.cast(beanType, bean);
+            if (beanType != null)
+                /**检测对象类型是否匹配定义类型，如果没有指定beanType参数则直接返回。*/
+                bean = beanType.cast(bean);
             log.debug("bean cast type {%0} OK!", beanType);
             if (define.isSingleton() == true) {
                 log.info("{%0} bean is Singleton!", defineID);
@@ -189,12 +192,6 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
             log.debug("remove params from ThreadFlash key is {%0}", KEY);
             this.getThreadFlash().removeAttribute(KEY);
         }
-    };
-    /**检测对象类型是否匹配定义类型，如果没有指定beanType参数则直接返回。*/
-    private Object cast(Class<?> beanType, Object obj) throws ClassCastException {
-        if (beanType != null)
-            return beanType.cast(obj);
-        return obj;
     };
     public Class<?> getBeanType(String defineID, Object... objects) throws Throwable {
         if (defineID == null || defineID.equals("") == true) {
@@ -213,7 +210,6 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         }
         //-------------------------------------------------------------------获取
         log.info("start building {%0} bean type , params is {%1}", defineID, objects);
-        final String KEY = "GETBEAN_PARAM";
         try {
             this.getThreadFlash().setAttribute(KEY, objects);
             log.debug("put params to ThreadFlash key is {%0}", KEY);
@@ -229,6 +225,33 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
             this.getThreadFlash().removeAttribute(KEY);
         }
     };
+    /**返回当前线程getBean时传入的所有参数，如果在getBean返回之后使用该方法。将会返回一个null。*/
+    public Object[] getGetBeanParams() {
+        Object[] params = null;
+        IAttribute tflash = this.getThreadFlash();
+        if (tflash.contains(KEY) == false)
+            return null;
+        params = (Object[]) tflash.getAttribute(KEY);
+        log.debug("GetBean params KEY = {%0}, params = {%1}", KEY, params);
+        return params.clone();//使用克隆以防止外部操作数组对象。
+    }
+    /**返回当前线程getBean时传入的指定位置参数，如果在getBean返回之后使用该方法。将会返回一个null。*/
+    public Object getGetBeanParam(int index) {
+        IAttribute tflash = this.getThreadFlash();
+        Object[] params = (Object[]) tflash.getAttribute(KEY);
+        if (params == null) {
+            log.debug("GetBean params {%0} is null.");
+            return null;
+        }
+        if (index < 0 || index > params.length) {
+            log.debug("GetBean params [{%0}] index out of bounds.", index);
+            return null;
+        }
+        Object obj = params[index];
+        log.debug("GetBean params index = {%0}, value = {%1}", index, obj);
+        return obj;
+    }
+    /*------------------------------------------------------------*/
     public List<String> getBeanDefinitionIDs() {
         return this.getBeanResource().getBeanDefinitionIDs();
     };

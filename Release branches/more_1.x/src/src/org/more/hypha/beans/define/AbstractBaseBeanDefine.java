@@ -29,7 +29,7 @@ import org.more.hypha.commons.define.AbstractDefine;
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class BaseBeanDefine extends AbstractDefine<AbstractBeanDefine> implements AbstractBeanDefine {
+public abstract class AbstractBaseBeanDefine extends AbstractDefine<AbstractBeanDefine> implements AbstractBeanDefine {
     private String                                id            = null;                                       //id
     private String                                name          = null;                                       //名称
     private String                                logicPackage  = null;                                       //逻辑包
@@ -136,7 +136,7 @@ public abstract class BaseBeanDefine extends AbstractDefine<AbstractBeanDefine> 
     /**添加一个启动参数，被添加的启动参数会自动进行排序。*/
     public void addInitParam(ConstructorDefine constructorParam) {
         this.initParams.add(constructorParam);
-        final BaseBeanDefine define = this;
+        final AbstractBaseBeanDefine define = this;
         Collections.sort(this.initParams, new Comparator<ConstructorDefine>() {
             public int compare(ConstructorDefine arg0, ConstructorDefine arg1) {
                 int cdefine_1 = arg0.getIndex();

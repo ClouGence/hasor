@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.assembler.parser;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
+import org.more.hypha.beans.assembler.MetaDataUtil;
 import org.more.hypha.beans.define.AbstractValueMetaData;
 import org.more.hypha.beans.define.Map_ValueMetaData;
 import org.more.hypha.commons.engine.ValueMetaDataParser;
@@ -28,16 +29,17 @@ import org.more.log.LogFactory;
  * @version 2011-2-15
  * @author 赵永春 (zyc@byshell.org)
  */
-@SuppressWarnings({ "unused", "unchecked", "rawtypes" })
-public class MapCollection_MetaData_Parser extends AbstractBase_Parser implements ValueMetaDataParser<Map_ValueMetaData> {
-    private static ILog           log             = LogFactory.getLog(MapCollection_MetaData_Parser.class);
-    private static final Class<?> DefaultListType = ArrayList.class;
+public class MapCollection_MetaData_Parser implements ValueMetaDataParser<Map_ValueMetaData> {
+    private static ILog           log               = LogFactory.getLog(MapCollection_MetaData_Parser.class);
+    private static final Class<?> DefaultCollection = HashMap.class;
     /*------------------------------------------------------------------------------*/
-    public Map<?, ?> parser(Map_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
-        Class<Map> mapType = this.parserType(data, rootParser, context);
-        Map<Object, Object> mapObject = mapType.newInstance();
+    @SuppressWarnings("unchecked")
+    public Map<?, ?> parser(Object targetObject, Map_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
+        //1.创建类型对象。
+        Class<?> mapType = MetaDataUtil.pass(data, context, log, DefaultCollection);
+        Map<Object, Object> mapObject = (Map<Object, Object>) mapType.newInstance();
         log.debug("create Map value = {%0}, type = {%1}.", mapObject, mapType);
-        //
+        //2.输出map值。
         Map<AbstractValueMetaData, AbstractValueMetaData> mData = data.getCollectionValue();
         int count = mData.size();
         int index = 0;
@@ -45,26 +47,13 @@ public class MapCollection_MetaData_Parser extends AbstractBase_Parser implement
             for (AbstractValueMetaData avmdK : mData.keySet()) {
                 AbstractValueMetaData avmdV = mData.get(avmdK);
                 //
-                Object k = rootParser.parser(avmdK, rootParser, context);
-                Object v = rootParser.parser(avmdV, rootParser, context);
+                Object k = rootParser.parser(targetObject, avmdK, rootParser, context);
+                Object v = rootParser.parser(targetObject, avmdV, rootParser, context);
                 log.debug("list parser item {%0} of {%1} , k = {%2}, v = {%3}", index, count, k, v);
                 mapObject.put(k, v);
                 index++;
             }
         log.debug("finish parser List value = {%0}.", mapObject);
         return mapObject;
-    }
-    public Class<Map> parserType(Map_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
-        Class<?> eType = super.getTypeForCache(data);
-        if (eType == null) {
-            String setTypeString = data.getCollectionType();
-            if (eType != null)
-                eType = context.getBeanClassLoader().loadClass(setTypeString);
-            if (eType == null)
-                eType = DefaultListType;
-            super.putTypeToCache(data, eType);
-        }
-        log.debug("parser Type = {%0}.", eType);
-        return (Class<Map>) eType;
     }
 };
