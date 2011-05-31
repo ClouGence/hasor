@@ -13,19 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.classcode.objects;
-import java.lang.reflect.Method;
-import org.more.core.classcode.EngineToos;
-import org.more.core.classcode.MethodDelegate;
-import org.more.core.error.InvokeException;
+package org.more.core.error;
 /**
- * 代理方法的空实现。
- * @version 2010-9-3
+ * more状态性异常，该类型异常是指在某个时间片段下的异常，该类型异常定义具有名词和动词双重特性，但是该类型异常是受到时间片段限制。
+ * 例如：读写状态、重复、多出、缺少、时间片段性的。
+ * @version 2009-7-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public class DefaultMethodDelegate implements MethodDelegate {
-    public Object invoke(Method callMethod, Object target, Object[] params) throws InvokeException {
-        Class<?> returnType = callMethod.getReturnType();
-        return EngineToos.getDefaultValue(returnType);
+public class MoreStateException extends MoreException {
+    private static final long serialVersionUID = 5032345759263916241L;
+    /**状态性异常*/
+    public MoreStateException(String string) {
+        super(string);
+    }
+    /**状态性异常*/
+    public MoreStateException(Throwable error) {
+        super(error);
+    }
+    /**状态性异常*/
+    public MoreStateException(String string, Throwable error) {
+        super(string, error);
     }
 }

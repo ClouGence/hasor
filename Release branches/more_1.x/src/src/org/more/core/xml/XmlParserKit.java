@@ -16,7 +16,7 @@
 package org.more.core.xml;
 import java.util.ArrayList;
 import java.util.HashMap;
-import org.more.RepeateException;
+import org.more.core.error.RepeateException;
 import org.more.core.xml.stream.AttributeEvent;
 import org.more.core.xml.stream.EndDocumentEvent;
 import org.more.core.xml.stream.EndElementEvent;
@@ -35,12 +35,13 @@ public class XmlParserKit implements XmlNamespaceParser {
     private HashMap<String, ArrayList<XmlParserHook>> hooks = new HashMap<String, ArrayList<XmlParserHook>>();
     //----------------------------------------------------
     /**注册一组{@link XmlParserHook}接口对象到一个指定的Xpath上，如果注册的是{@link XmlDocumentHook}接口对象则务必将xpath填写为"/"否则可能导致接收不到事件的现象。*/
-    public void regeditHook(String[] xpath, XmlParserHook hook) throws RepeateException {
-        for (String s : xpath)
-            this.regeditHook(s, hook);
+    public void regeditHook(String[] xpath, XmlParserHook hook) {
+        if (xpath != null && hook != null)
+            for (String s : xpath)
+                this.regeditHook(s, hook);
     }
     /**注册一个{@link XmlParserHook}接口对象到一个指定的Xpath上，如果注册的是{@link XmlDocumentHook}接口对象则务必将xpath填写为"/"否则可能导致接收不到事件的现象。*/
-    public void regeditHook(String xpath, XmlParserHook hook) throws RepeateException {
+    public void regeditHook(String xpath, XmlParserHook hook) {
         //2.检查是否已经存在的注册。
         ArrayList<XmlParserHook> arrayList = this.hooks.get(xpath);
         if (arrayList == null)
@@ -68,12 +69,11 @@ public class XmlParserKit implements XmlNamespaceParser {
     public void endAccept() {}
     private ArrayList<XmlParserHook> getHooks(String xpath) {
         String xpath2 = xpath;
-        for (String xp : this.hooks.keySet()) {
+        for (String xp : this.hooks.keySet())
             if (StringUtil.matchWild(xp, xpath2) == true) {
                 xpath2 = xp;
                 break;
             }
-        }
         return this.hooks.get(xpath2);
     };
     /** */

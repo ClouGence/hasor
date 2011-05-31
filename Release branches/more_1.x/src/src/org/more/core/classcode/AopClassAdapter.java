@@ -18,7 +18,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.more.InvokeException;
 import org.more.core.asm.ClassAdapter;
 import org.more.core.asm.ClassVisitor;
 import org.more.core.asm.FieldVisitor;
@@ -76,15 +75,12 @@ class AopClassAdapter extends ClassAdapter implements Opcodes {
             return super.visitMethod(access, name, desc, signature, exceptions);
         //
         //3.执行方法忽略策略，根据aop策略对象来决定忽略的方法列表。
-        try {
-            Class<?> superClass = ce.getSuperClass();
-            Class<?>[] paramTypes = EngineToos.toJavaType(asmParams, ce.getRootClassLoader());
-            Method method = EngineToos.findMethod(superClass, name, paramTypes);
+        Class<?> superClass = ce.getSuperClass();
+        Class<?>[] paramTypes = EngineToos.toJavaType(asmParams, ce.getRootClassLoader());
+        Method method = EngineToos.findMethod(superClass, name, paramTypes);
+        if (method != null)
             if (aopStrategy.isIgnore(superClass, method) == true)
                 return super.visitMethod(access, name, desc, signature, exceptions);//忽略方法
-        } catch (Exception e) {
-            throw new InvokeException(e);
-        }
         //
         //4.输出Aop代理方法。
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);

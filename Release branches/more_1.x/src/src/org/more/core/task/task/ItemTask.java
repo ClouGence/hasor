@@ -24,7 +24,6 @@ import org.more.core.task.Task;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class ItemTask extends Task {
-    /**  */
     private static final long serialVersionUID = 1573066209349130377L;
     /** 任务目标 */
     private Runnable          runnable         = null;
@@ -36,7 +35,7 @@ public class ItemTask extends Task {
         this.runnable = runnable;
     }
     /** 执行调用目标的run方法。 */
-    protected void doRun() throws Exception {
+    protected void doRun() throws Throwable {
         this.runnable.run();
     }
     /**

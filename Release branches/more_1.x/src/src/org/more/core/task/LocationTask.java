@@ -20,7 +20,6 @@ package org.more.core.task;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class LocationTask extends Task {
-    /**  */
     private static final long serialVersionUID = 5140955177850271048L;
     /** 总共任务数 */
     private int               count            = 0;

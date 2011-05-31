@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.more.InvokeException;
 import org.more.core.asm.ClassAdapter;
 import org.more.core.asm.ClassReader;
 import org.more.core.asm.ClassVisitor;
@@ -27,6 +26,7 @@ import org.more.core.asm.ClassWriter;
 import org.more.core.asm.FieldVisitor;
 import org.more.core.asm.MethodVisitor;
 import org.more.core.asm.Opcodes;
+import org.more.core.error.InvokeException;
 /**
  * 该类负责修改类的字节码附加接口实现方法。
  * 生成类过程
@@ -151,22 +151,21 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
         String asmReturns = m.group(2);
         //
         //3.执行方法忽略策略
-        try {
-            Class<?> superClass = this.classEngine.getSuperClass();
-            boolean isConstructor = false;
-            if (name.equals("<init>") == true)
-                isConstructor = true;
-            Class<?>[] paramTypes = EngineToos.toJavaType(asmParams, this.classEngine.getRootClassLoader());
-            Object method = null;
-            if (isConstructor == true)
+        Class<?> superClass = this.classEngine.getSuperClass();
+        boolean isConstructor = false;
+        if (name.equals("<init>") == true)
+            isConstructor = true;
+        Class<?>[] paramTypes = EngineToos.toJavaType(asmParams, this.classEngine.getRootClassLoader());
+        Object method = null;
+        if (isConstructor == true)
+            try {
                 method = superClass.getConstructor(paramTypes);
-            else
-                method = EngineToos.findMethod(superClass, name, paramTypes);
+            } catch (Exception e) {/*忽略*/}
+        else
+            method = EngineToos.findMethod(superClass, name, paramTypes);
+        if (method != null)
             if (methodStrategy.isIgnore(superClass, method, isConstructor) == true)//其他策略
                 return null;
-        } catch (Exception e) {
-            throw new InvokeException(e);
-        }
         //
         //4.输出方法
         int maxLocals = 1;

@@ -25,7 +25,6 @@ import org.more.core.task.TaskState;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class StaticTaskSet extends LocationTask {
-    /**  */
     private static final long serialVersionUID = -6342672748568848797L;
     /** 存放子任务集合 */
     private List<Task>        list             = new LinkedList<Task>();
@@ -65,7 +64,7 @@ public class StaticTaskSet extends LocationTask {
             else
                 this.addTaskItem(i);
     }
-    protected void doRun() throws Exception {
+    protected void doRun() throws Throwable {
         this.log.debug("Task doRun...");
         //设置静态集合任务中任务数是多少。
         super.setCountTask(this.list.size());

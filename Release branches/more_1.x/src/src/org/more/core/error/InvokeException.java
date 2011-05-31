@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.classcode.objects;
-import java.lang.reflect.Method;
-import org.more.core.classcode.EngineToos;
-import org.more.core.classcode.MethodDelegate;
-import org.more.core.error.InvokeException;
+package org.more.core.error;
 /**
- * 代理方法的空实现。
- * @version 2010-9-3
+ * 调用异常。
+ * @version 2009-6-26
  * @author 赵永春 (zyc@byshell.org)
  */
-public class DefaultMethodDelegate implements MethodDelegate {
-    public Object invoke(Method callMethod, Object target, Object[] params) throws InvokeException {
-        Class<?> returnType = callMethod.getReturnType();
-        return EngineToos.getDefaultValue(returnType);
+public class InvokeException extends MoreActionException {
+    private static final long serialVersionUID = -7774988512856603877L;
+    /**调用异常*/
+    public InvokeException(String string) {
+        super(string);
+    }
+    /**调用异常*/
+    public InvokeException(Throwable error) {
+        super(error);
     }
 }

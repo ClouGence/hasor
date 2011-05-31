@@ -15,17 +15,17 @@
  */
 package org.more.core.classcode;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.more.FormatException;
-import org.more.StateException;
 import org.more.core.classcode.objects.DefaultAopStrategy;
 import org.more.core.classcode.objects.DefaultClassNameStrategy;
 import org.more.core.classcode.objects.DefaultDelegateStrategy;
 import org.more.core.classcode.objects.DefaultMethodStrategy;
 import org.more.core.classcode.objects.DefaultPropertyStrategy;
+import org.more.core.error.FormatException;
+import org.more.core.error.InitializationException;
+import org.more.core.error.MoreStateException;
 /**
  * classcode v2.0引擎。新引擎增加了debug模式，在debug模式下{@link ClassEngine#builderClass()}方法在装载生成的新类 时不会抛出。
  * 如果没有指定类装载引擎会使用ClassLoader.getSystemClassLoader()方法返回的类装载器来装载类。
@@ -450,7 +450,7 @@ public class ClassEngine {
         return this.newClassBytes;
     };
     /**启动生成过程生成新类。*/
-    public ClassEngine builderClass() throws ClassNotFoundException, IOException, FormatException {
+    public ClassEngine builderClass() throws ClassNotFoundException, IOException {
         if (newClassBytes != null)
             return this;
         //1.初始化策略
@@ -473,7 +473,7 @@ public class ClassEngine {
         cb.initBuilder(this);
         this.configuration = cb.builderClass();
         if (this.configuration == null)
-            throw new StateException("builderClass失败。");
+            throw new MoreStateException("builderClass失败。");
         this.newClassBytes = cb.getClassBytes();
         //4.重置策略
         this.classNameStrategy.reset();
@@ -497,13 +497,17 @@ public class ClassEngine {
     }
     //==========================================================================================New
     /**装载并且创建这个新类的一个实例，如果新类是Propxy模式下的，需要指定代理的父类类型。如果是Super则给null即可。*/
-    public Object newInstance(Object propxyBean) throws FormatException, ClassNotFoundException, IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, SecurityException, InvocationTargetException, NoSuchMethodException {
+    public Object newInstance(Object propxyBean) throws ClassNotFoundException, IOException {
         this.builderClass();
         Object obj = null;
-        if (this.builderMode == BuilderMode.Super)
-            obj = this.newClass.newInstance();
-        else
-            obj = this.newClass.getConstructor(this.superClass).newInstance(propxyBean);
+        try {
+            if (this.builderMode == BuilderMode.Super)
+                obj = this.newClass.newInstance();
+            else
+                obj = this.newClass.getConstructor(this.superClass).newInstance(propxyBean);
+        } catch (Exception e) {
+            throw new InitializationException("初始化创建新类[" + this.newClass.getName() + "]错误," + e.getMessage());
+        }
         return this.configuration.configBean(obj);
     }
 }

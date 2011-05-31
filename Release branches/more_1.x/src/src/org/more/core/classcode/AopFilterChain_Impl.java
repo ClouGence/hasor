@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.core.classcode;
-import org.more.LostException;
+import org.more.core.error.LostException;
 /**
  * 过滤器链的中间环节，该类的目的是传递过滤器的调用。但是如果在传递调用期间发生无法找到下一个传递点则会引发aop链断开的异常。
  * @version 2010-9-2

@@ -13,19 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.classcode.objects;
-import java.lang.reflect.Method;
-import org.more.core.classcode.EngineToos;
-import org.more.core.classcode.MethodDelegate;
-import org.more.core.error.InvokeException;
+package org.more.core.error;
 /**
- * 代理方法的空实现。
- * @version 2010-9-3
+ * more动作性异常，该类型异常是指某个过程中发生异常。通常异常定义是动词性质的。
+ * 例如：转换、初始化、执行、检查、时间性的。
+ * @version 2009-10-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class DefaultMethodDelegate implements MethodDelegate {
-    public Object invoke(Method callMethod, Object target, Object[] params) throws InvokeException {
-        Class<?> returnType = callMethod.getReturnType();
-        return EngineToos.getDefaultValue(returnType);
+public class MoreActionException extends MoreException {
+    private static final long serialVersionUID = 4235042411000290872L;
+    /** more动作类异常。*/
+    public MoreActionException(String string) {
+        super(string);
+    }
+    /** more动作类异常。*/
+    public MoreActionException(Throwable error) {
+        super(error);
+    }
+    /** more动作类异常。*/
+    public MoreActionException(String string, Throwable error) {
+        super(string, error);
     }
 }

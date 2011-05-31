@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.more.core.classcode;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import org.more.core.error.InitializationException;
 /**
  * 该类的作用是用于配置{@link ClassBuilder}生成的新类。
  * @version 2010-9-3
@@ -42,7 +42,7 @@ public class ClassConfiguration {
             this.renderAopMethodList = aopAdapter.getRenderAopMethodList();
     }
     /**配置Bean对象。*/
-    public Object configBean(Object obj) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+    public Object configBean(Object obj) throws InitializationException {
         ClassEngine classEngine = classBuilder.getClassEngine();
         Class<?> beanClass = obj.getClass();
         //
@@ -73,10 +73,14 @@ public class ClassConfiguration {
                 }
             }
             //3.执行注入
-            Method method_1 = beanClass.getMethod("set" + BuilderClassAdapter.DelegateArrayName, MethodDelegate[].class);
-            method_1.invoke(obj, new Object[] { methodDelegates });//注入代理
-            Method method_2 = beanClass.getMethod("set" + BuilderClassAdapter.DelegateMethodArrayName, Method[].class);
-            method_2.invoke(obj, new Object[] { methods });//注入方法
+            try {
+                Method method_1 = beanClass.getMethod("set" + BuilderClassAdapter.DelegateArrayName, MethodDelegate[].class);
+                method_1.invoke(obj, new Object[] { methodDelegates });//注入代理
+                Method method_2 = beanClass.getMethod("set" + BuilderClassAdapter.DelegateMethodArrayName, Method[].class);
+                method_2.invoke(obj, new Object[] { methods });//注入方法      
+            } catch (Exception e) {
+                throw new InitializationException("初始化代理方法错误...");
+            }
         }
         //2.注入字段
         if (this.classBuilder.isAddFields() == true) {
@@ -88,8 +92,12 @@ public class ClassConfiguration {
                     if (index != -1)
                         delegateProperty[index] = classEngine.getDelegateProperty(field);
                 }
-                Method method = beanClass.getMethod("set" + BuilderClassAdapter.PropertyArrayName, PropertyDelegate[].class);
-                method.invoke(obj, new Object[] { delegateProperty });//注入代理属性
+                try {
+                    Method method = beanClass.getMethod("set" + BuilderClassAdapter.PropertyArrayName, PropertyDelegate[].class);
+                    method.invoke(obj, new Object[] { delegateProperty });//注入代理属性
+                } catch (Exception e) {
+                    throw new InitializationException("初始化代理字段错误...");
+                }
             }//end if
         }
         //3.注入AOP
@@ -115,6 +123,8 @@ public class ClassConfiguration {
                     if (index != -1) {
                         final int nameStart = AopClassAdapter.AopMethodPrefix.length();
                         Method proxyMethod = EngineToos.findMethod(beanClass, m.getName().substring(nameStart), m.getParameterTypes());
+                        if (proxyMethod == null)
+                            throw new InitializationException("配置aop链错误，目标方法无效...");
                         org.more.core.classcode.Method method = new org.more.core.classcode.Method(proxyMethod, m);
                         aopMethodArray[index] = method;
                         //执行方法的aop策略。
@@ -134,10 +144,14 @@ public class ClassConfiguration {
                 //
             }
             //(4)注入
-            Method method_1 = beanClass.getMethod("set" + AopClassAdapter.AopFilterChainName, AopFilterChain_Start[].class);
-            method_1.invoke(obj, new Object[] { aopFilterChain });//注入代理
-            Method method_2 = beanClass.getMethod("set" + AopClassAdapter.AopMethodArrayName, org.more.core.classcode.Method[].class);
-            method_2.invoke(obj, new Object[] { aopMethodArray });//注入方法
+            try {
+                Method method_1 = beanClass.getMethod("set" + AopClassAdapter.AopFilterChainName, AopFilterChain_Start[].class);
+                method_1.invoke(obj, new Object[] { aopFilterChain });//注入代理
+                Method method_2 = beanClass.getMethod("set" + AopClassAdapter.AopMethodArrayName, org.more.core.classcode.Method[].class);
+                method_2.invoke(obj, new Object[] { aopMethodArray });//注入方法
+            } catch (Exception e) {
+                throw new InitializationException("初始化aop代理注入错误,", e);
+            }
         }
         return obj;
     }

@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.more.CopyException;
 import org.more.core.io.AutoCloseInputStream;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
@@ -149,49 +148,50 @@ public final class CopyBeanUtil implements Serializable, Cloneable {
         if (mode != null && mode.length >= 1)
             this.changeDefaultCopy(mode[0]);
         //
-        try {
-            //来源Bean属性集合引用
-            Map<String, PropertyReaderWrite> o_1 = null;
-            BeanType o_2_type = null;
-            //将拷贝和被拷贝的对象中获取出其需要拷贝的属性集合
-            CopyBeanUtil.log.debug("copybean obj=" + object + " to=" + to + " begin find BeanType");
-            for (BeanType type : this.typeList) {
-                //检查来源Bean是否被支持
-                if (type.checkObject(object) == true)
-                    if (o_1 == null)
-                        o_1 = type.getPropertys(object);//from
-                //检查拷贝目标Bean是否被支持
-                if (type.checkObject(to) == true)
-                    if (o_2_type == null)
-                        o_2_type = type; //to
-                if (o_1 != null && o_2_type != null)
-                    break;
-            }
-            CopyBeanUtil.log.debug("copybean end find BeanType objType=" + o_1);
-            //如果属性集合中有空则返回-1
-            if (o_1 == null)
-                return -1;
-            //
-            CopyBeanUtil.log.debug("copybean begin copy ...");
-            int i = 0;
-            for (String key : o_1.keySet()) {
-                PropertyReaderWrite prw = o_2_type.getPropertyRW(to, key);
-                Copy copy_1 = (Copy) this.defaultCopy.clone();
-                copy_1.setCopyBeanUtil(this);
-                copy_1.setRw(o_1.get(key));
-                //
-                if (prw.canWrite() == true && copy_1.canReader() == true) {
-                    copy_1.copyTo(prw);
-                    i++;
-                    CopyBeanUtil.log.debug("copybean copy name=" + key);
-                } else
-                    CopyBeanUtil.log.debug("copybean copy Ignore name=" + key);
-            }
-            CopyBeanUtil.log.debug("copybean end copy copy count =" + i);
-            return i;
-        } catch (Exception e) {
-            throw new CopyException(e.getMessage());
+        //来源Bean属性集合引用
+        Map<String, PropertyReaderWrite> o_1 = null;
+        BeanType o_2_type = null;
+        //将拷贝和被拷贝的对象中获取出其需要拷贝的属性集合
+        CopyBeanUtil.log.debug("copybean obj=" + object + " to=" + to + " begin find BeanType");
+        for (BeanType type : this.typeList) {
+            //检查来源Bean是否被支持
+            if (type.checkObject(object) == true)
+                if (o_1 == null)
+                    o_1 = type.getPropertys(object);//from
+            //检查拷贝目标Bean是否被支持
+            if (type.checkObject(to) == true)
+                if (o_2_type == null)
+                    o_2_type = type; //to
+            if (o_1 != null && o_2_type != null)
+                break;
         }
+        CopyBeanUtil.log.debug("copybean end find BeanType objType=" + o_1);
+        //如果属性集合中有空则返回-1
+        if (o_1 == null)
+            return -1;
+        //
+        CopyBeanUtil.log.debug("copybean begin copy ...");
+        int i = 0;
+        for (String key : o_1.keySet()) {
+            PropertyReaderWrite prw = o_2_type.getPropertyRW(to, key);
+            Copy copy_1 = null;
+            try {
+                copy_1 = (Copy) this.defaultCopy.clone();
+            } catch (CloneNotSupportedException e) {
+                continue;
+            }
+            copy_1.setCopyBeanUtil(this);
+            copy_1.setRw(o_1.get(key));
+            //
+            if (prw.canWrite() == true && copy_1.canReader() == true) {
+                copy_1.copyTo(prw);
+                i++;
+                CopyBeanUtil.log.debug("copybean copy name=" + key);
+            } else
+                CopyBeanUtil.log.debug("copybean copy Ignore name=" + key);
+        }
+        CopyBeanUtil.log.debug("copybean end copy copy count =" + i);
+        return i;
     }
     /**
      * 注册一个新的Bean拷贝所支持的类型，新注册的Bean类型要比系统内置的优先级高。通过该方法注册的类型只有当前实例中得到支持。

@@ -17,8 +17,8 @@ package org.more.core.xml;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.xml.namespace.QName;
-import org.more.RepeateException;
-import org.more.StateException;
+import org.more.core.error.MoreStateException;
+import org.more.core.error.RepeateException;
 import org.more.core.xml.stream.AttributeEvent;
 import org.more.core.xml.stream.EndDocumentEvent;
 import org.more.core.xml.stream.EndElementEvent;
@@ -53,7 +53,7 @@ public class XmlParserKitManager implements XmlAccept {
      * @param namespace 要绑定的命名空间。
      * @param kit 要关联的解析器。
      */
-    public void regeditKit(String namespace, XmlNamespaceParser kit) throws RepeateException {
+    public void regeditKit(String namespace, XmlNamespaceParser kit) {
         if (namespace == null || kit == null)
             throw new NullPointerException("namespace，kit参数不能为空。");
         ArrayList<XmlNamespaceParser> list = null;
@@ -161,7 +161,7 @@ public class XmlParserKitManager implements XmlAccept {
                     String prefix = currentElement.getPrefix();
                     NameSpace atNS = (NameSpace) this.activateStack.getAttribute(prefix);
                     if (atNS == null)
-                        throw new StateException("解析错误，前缀[" + prefix + "]代表的命名空间没有被激活。");
+                        throw new MoreStateException("解析错误，前缀[" + prefix + "]代表的命名空间没有被激活。");
                     xpath = atNS.getXpath();
                 }
                 ArrayList<XmlNamespaceParser> kitList = this.regeditXmlParserKit.get(namespace);

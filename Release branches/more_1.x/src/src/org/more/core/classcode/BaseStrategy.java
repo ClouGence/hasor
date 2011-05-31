@@ -20,7 +20,7 @@ package org.more.core.classcode;
  * @version 2010-9-3
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface BaseStrategy {
+interface BaseStrategy {
     /**初始化策略。*/
     public void initStrategy(ClassEngine classEngine);
     /**重置策略。*/

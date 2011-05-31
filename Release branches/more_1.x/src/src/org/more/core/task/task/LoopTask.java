@@ -33,7 +33,7 @@ public class LoopTask extends ItemTask {
     public LoopTask(Runnable runnable) {
         super(runnable);
     }
-    protected void doRun() throws Exception {
+    protected void doRun() throws Throwable {
         while (this.doRunCount != 0) {
             if (this.doRunCount > 0)
                 //大于 0 减少循环次数

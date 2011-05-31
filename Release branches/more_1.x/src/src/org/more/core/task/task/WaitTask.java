@@ -22,7 +22,6 @@ import org.more.core.task.Task;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class WaitTask extends Task {
-    /**  */
     private static final long serialVersionUID = 8058549358582784372L;
     /** 当前等待任务执行时的等待时间 */
     private int               wait             = 50;
@@ -36,7 +35,7 @@ public class WaitTask extends Task {
         this.wait = wait;
     }
     /** 执行等待 */
-    protected void doRun() throws Exception {
+    protected void doRun() throws Throwable {
         this.log.debug("Task doRun... wait " + this.wait);
         Thread.sleep(this.wait);
     }

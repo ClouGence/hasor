@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 package org.more.core.json;
-import org.more.FormatException;
+import org.more.core.error.FormatException;
 /**
  * 解析json数据错误，通常是当解析json数据或者将对象序列化为json数据引发的该类异常。
  * @version 2010-1-7
  * @author 赵永春 (zyc@byshell.org)
  */
 public class JsonException extends FormatException {
-    /**  */
     private static final long serialVersionUID = 6079652246835019946L;
     /**
      * 解析json数据错误，通常是当解析json数据或者将对象序列化为json数据引发的该类异常。

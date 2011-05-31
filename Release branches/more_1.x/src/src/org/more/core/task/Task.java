@@ -96,7 +96,7 @@ public abstract class Task extends AttBase implements Runnable, Serializable {
         try {
             //执行
             this.doRun();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             //在执行时发生异常
             this.onException(e);
         }
@@ -125,14 +125,14 @@ public abstract class Task extends AttBase implements Runnable, Serializable {
     };
     /**
      * 任务方法体，子类实现该方法以完成某项特定的任务。
-     * @throws Exception 如果在执行过程中发生异常。
+     * @throws Throwable 如果在执行过程中发生异常。
      */
-    protected abstract void doRun() throws Exception;
+    protected abstract void doRun() throws Throwable;
     /**
      * 在执行doRun方法时发生异常。
      * @param e 执行doRun方法发生的异常对象。
      */
-    protected void onException(Exception e) {
+    protected void onException(Throwable e) {
         this.log.debug("Task[" + this.name + "] : onException message = " + e.getMessage());
     };
     /** 修改状态为执行完毕。 */

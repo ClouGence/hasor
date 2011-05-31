@@ -23,9 +23,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
-import org.more.FormatException;
 import org.more.core.asm.Opcodes;
 import org.more.core.asm.Type;
+import org.more.core.error.FormatException;
 /**
  * 生成字节码时候使用的工具类，当重写{@link ClassEngine}的相关方法时候会用上此类。
  * @version 2009-10-16
@@ -166,7 +166,7 @@ public class EngineToos implements Opcodes {
         return returnString;
     }
     /**使用指定的ClassLoader将一个asm类型转化为Class对象。*/
-    public static Class<?> toJavaType(String asmClassType, ClassLoader loader) throws ClassNotFoundException {
+    public static Class<?> toJavaType(String asmClassType, ClassLoader loader) {
         if (asmClassType.equals("I") == true)
             return int.class;
         else if (asmClassType.equals("B") == true)
@@ -200,22 +200,32 @@ public class EngineToos implements Opcodes {
                 returnType = obj.getClass();
             }
             return returnType;
-        } else
-            return loader.loadClass(asmTypeToType(asmClassType).replace("/", "."));
+        } else {
+            String cs = asmTypeToType(asmClassType).replace("/", ".");
+            try {
+                return loader.loadClass(cs);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(cs + "类不能被装载," + e.getMessage());
+            }
+        }
     }
     /**使用指定的ClassLoader将一组asm类型转化为一组Class对象。*/
-    public static Class<?>[] toJavaType(String[] asmClassType, ClassLoader loader) throws ClassNotFoundException {
+    public static Class<?>[] toJavaType(String[] asmClassType, ClassLoader loader) {
         Class<?>[] types = new Class<?>[asmClassType.length];
         for (int i = 0; i < asmClassType.length; i++)
             types[i] = toJavaType(asmClassType[i], loader);
         return types;
     }
     /**在一个类中查找某个方法。*/
-    public static Method findMethod(Class<?> atClass, String name, Class<?>[] paramType) throws SecurityException, NoSuchMethodException {
+    public static Method findMethod(Class<?> atClass, String name, Class<?>[] paramType) {
         try {
             return atClass.getMethod(name, paramType);
         } catch (Exception e) {
-            return atClass.getDeclaredMethod(name, paramType);
+            try {
+                return atClass.getDeclaredMethod(name, paramType);
+            } catch (Exception e1) {
+                return null;
+            }
         }
     }
     /**返回一个类的多个方法，其中包含了类定义的私有方法和父类中可见的方法。*/
