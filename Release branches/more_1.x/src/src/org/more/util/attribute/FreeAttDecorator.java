@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.util.attribute;
-import org.more.NoDefinitionException;
+import org.more.core.error.DefineException;
 /**
  * 自由的属性访问器。该接口进一步扩展了ExtAttribute接口，并支持属性替换模式的更换操作。使得在使用属性的过程中可以自由的切换属性替换策略。
  * @version 2009-12-3
@@ -35,9 +35,9 @@ public class FreeAttDecorator extends ExtAttDecorator {
      * @param source 要装饰的目标属性对象。
      * @param replaceMode 要更改的替换策略策略值，该值必须是IExtAttribute.ReplaceMode所定义的。
      *                   如果使用了一个不存在的值进行定义则会引发NoDefinitionException异常。
-     * @throws NoDefinitionException 定义了一个不存在的属性策略。
+     * @throws DefineException 定义了一个不存在的属性策略。
      */
-    public FreeAttDecorator(IAttribute source, int replaceMode) throws NoDefinitionException {
+    public FreeAttDecorator(IAttribute source, int replaceMode) throws DefineException {
         super(source);
         this.setReplacMode(replaceMode);
     }

@@ -41,7 +41,7 @@ public class SubmitBuild extends AttBase {
         this.actionDecoratorList.add(FilterDecorator.class);
     };
     /**将config的参数添加到SubmitBuild的环境中。*/
-    public void setConfig(Config config) {
+    public void setConfig(Config<?> config) {
         Enumeration<String> e = config.getInitParameterNames();
         while (e.hasMoreElements()) {
             String name = e.nextElement();

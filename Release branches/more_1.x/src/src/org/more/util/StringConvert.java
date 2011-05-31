@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.more.CastException;
+import org.more.core.error.TransformException;
 /**
  * 字符串数据类型转换工具类
  * @version 2009-4-29
@@ -124,7 +124,7 @@ public final class StringConvert {
             }
             return defaultVar;
         } else
-            throw new CastException("from [" + value.getClass() + "] to [" + toType + "]不支持的转换类型。");
+            throw new TransformException("from [" + value.getClass() + "] to [" + toType + "]不支持的转换类型。");
     }
     /**
      * 将字符类型数据转换成int类型数据。如果字符串格式非法其默认值为0。示例：

@@ -22,7 +22,7 @@ import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import org.more.StateException;
+import org.more.core.error.MoreStateException;
 import org.more.util.attribute.AttBase;
 /**
  * 该类是submit的核心类，该类实现了SubmitContext接口但是只是一个抽象实现。
@@ -50,7 +50,7 @@ public abstract class AbstractSubmitContextImpl extends AttBase implements Submi
     }
     public Object doAction(String invokeString, Session session, Map<String, ?> params) throws Throwable {
         if (this.sessionManager.isBelong(session) == false)
-            throw new StateException("session " + session.getSessionID() + " 不属于当前sessionManager管理的session");
+            throw new MoreStateException("session " + session.getSessionID() + " 不属于当前sessionManager管理的session");
         String[] ss = Util.splitInvokeString(invokeString);
         ActionStack as = this.createStack(ss[0], ss[1], null, session);
         ActionInvoke ai = this.actionContext.findAction(ss[0], ss[1]);
@@ -59,7 +59,7 @@ public abstract class AbstractSubmitContextImpl extends AttBase implements Submi
     public Object doActionOnStack(String invokeString, ActionStack stack, Map<String, ?> params) throws Throwable {
         Session session = stack.getSession();
         if (this.sessionManager.isBelong(session) == false)
-            throw new StateException("session " + session.getSessionID() + " 不属于当前sessionManager管理的session");
+            throw new MoreStateException("session " + session.getSessionID() + " 不属于当前sessionManager管理的session");
         String[] ss = Util.splitInvokeString(invokeString);
         ActionStack as = this.createStack(ss[0], ss[1], stack, session);
         ActionInvoke ai = this.actionContext.findAction(ss[0], ss[1]);

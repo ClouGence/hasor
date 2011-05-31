@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 package org.more.util;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.LinkedList;
-import org.more.InvokeException;
+import org.more.core.error.InvokeException;
 /**
  * 创建代理调用对象。通过该类提供的方法可以使调用者无视java的反射机制。直接向对象的参数栈输出参数，
  * 然后直接调用指定方法完成调用。最终在通过getResult方法返回返回值。该类是一个工具类
@@ -25,27 +27,36 @@ import org.more.InvokeException;
  */
 public class PropxyObject {
     /** 存放准备调用方法时传递的参数列表数据，有顺序 */
-    private LinkedList<Object> list   = new LinkedList<Object>();
+    private LinkedList<Object> list       = new LinkedList<Object>();
     /** 被代理的目标对象。 */
-    private Object             target = null;
+    private Object             target     = null;
+    private Class<?>           targetType = null;
     /** 方法调用的返回值 */
-    private Object             result = null;
+    private Object             result     = null;
     /**
      * 创建MRMI代理调用对象。通过该类提供的方法可以使调用者无视java的反射机智。
      * 直接向对象的参数栈输出参数，然后直接调用指定方法完成调用。最终在通过getResult方法返回返回值。
      */
     public PropxyObject(Object target) {
         this.target = target;
+        this.targetType = target.getClass();
+    }
+    /**
+     * 创建MRMI代理调用对象。通过该类提供的方法可以使调用者无视java的反射机智。
+     * 直接向对象的参数栈输出参数，然后直接调用指定方法完成调用。最终在通过getResult方法返回返回值。
+     */
+    public PropxyObject(Class<?> target) {
+        this.targetType = target;
     }
     /**
      * 该方法的作用是反射的形式调用目标的方法。
      * @param methodName 要调用的反射方法名。
      * @throws InvokeException 在方法调用期间发生异常。 
      */
-    public void invokeMethod(String methodName) throws InvokeException {
+    public Object invokeMethod(String methodName) throws InvokeException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
         Method invokeMethod = null;
         //反射调用方法
-        Method[] ms = this.target.getClass().getMethods();
+        Method[] ms = this.targetType.getMethods();
         for (Method m : ms) {
             //1.名字不相等的忽略
             if (m.getName().equals(methodName) == false)
@@ -77,13 +88,17 @@ public class PropxyObject {
             //调用方法为空
             throw new InvokeException("无法调用目标方法[" + methodName + "]！");
         else {
-            try {
-                //正常调用
+            //正常调用
+            if (this.target == null) {
+                //判断是否为静态的
+                int mm = invokeMethod.getModifiers();
+                if ((mm | Modifier.STATIC) != mm)
+                    throw new InvokeException("目标方法[" + invokeMethod + "]，不是静态方法不能调用。");
+                this.result = invokeMethod.invoke(null, this.list.toArray());
+            } else
                 this.result = invokeMethod.invoke(this.target, this.list.toArray());
-            } catch (Exception e) {
-                throw new InvokeException("无法调用目标方法[" + methodName + "]。");
-            }
         }
+        return this.result;
     }
     public Object getResult() {
         return this.result;

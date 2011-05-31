@@ -41,25 +41,32 @@ public class ClassPathUtil {
          */
         public boolean goFind(ScanEvent event, boolean isInJar, File context) throws Throwable;
     };
-    private static String[]   CLASS_PATH_PROP  = { "java.class.path", "java.ext.dirs", "sun.boot.class.path" };
-    private static List<File> CLASS_PATH_ARRAY = getClassPath();
-    private static List<File> getClassPath() {
-        List<File> ret = new ArrayList<File>();
+    /*------------------------------------------------------------------------------*/
+    private static String[]    CLASS_PATH_PROP    = { "java.class.path", "java.ext.dirs", "sun.boot.class.path" };
+    /**ClassPath目录列表。*/
+    public static List<File>   CLASS_PATH_Files   = null;
+    /**ClassPath目录列表。*/
+    public static List<String> CLASS_PATH_Strings = null;
+    /*------------------------------------------------------------------------------*/
+    static {
+        CLASS_PATH_Files = new ArrayList<File>();
+        CLASS_PATH_Strings = new ArrayList<String>();
         String delim = ":";
         if (System.getProperty("os.name").indexOf("Windows") != -1)
             delim = ";";
         for (String pro : CLASS_PATH_PROP) {
             String[] pathes = System.getProperty(pro).split(delim);
-            for (String path : pathes)
-                ret.add(new File(path));
+            for (String path : pathes) {
+                CLASS_PATH_Files.add(new File(path));
+                CLASS_PATH_Strings.add(path);
+            }
         }
-        return ret;
     }
-    //-----------------------------------------------------------------------------
+    /*------------------------------------------------------------------------------*/
     /**获得classpath中所有JAR文件*/
     public static List<File> getJars() {
         LinkedList<File> jars = new LinkedList<File>();
-        for (File classPath : CLASS_PATH_ARRAY)
+        for (File classPath : CLASS_PATH_Files)
             if (classPath.isFile() == true)
                 jars.add(classPath);
         return jars;
@@ -67,7 +74,7 @@ public class ClassPathUtil {
     /**获取classpath中可能存在的资源列表，以流的形式返回。*/
     public static List<InputStream> getResource(String resourcePath) throws IOException {
         LinkedList<InputStream> ins = new LinkedList<InputStream>();
-        for (File classPath : CLASS_PATH_ARRAY) {
+        for (File classPath : CLASS_PATH_Files) {
             InputStream is = null;
             if (classPath.isFile() == true)
                 //1.Jar文件
@@ -159,7 +166,7 @@ public class ClassPathUtil {
      * @param item 当找到资源时执行回调的接口。
      */
     public static void scan(String wild, ScanItem item) throws Throwable {
-        for (File classPath : CLASS_PATH_ARRAY) {
+        for (File classPath : CLASS_PATH_Files) {
             boolean res = false;
             if (classPath.isFile() == true)
                 res = scanJar(classPath, wild, item);

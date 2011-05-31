@@ -24,7 +24,7 @@ import org.more.util.attribute.IAttribute;
  * @version : 2010-7-27
  * @author ’‘”¿¥∫(zyc@byshell.org)
  */
-public class AttributeConfigBridge implements IAttribute, Config {
+public class AttributeConfigBridge implements IAttribute, Config<Object> {
     //========================================================================================Field
     private static final long serialVersionUID = 5340008420422363045L;
     private Object            context          = null;

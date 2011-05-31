@@ -46,7 +46,7 @@ public class SubmitRoot extends HttpServlet implements Filter {
     private SystemListener    listener         = null;
     private ServletContext    servletContext   = null;
     //==========================================================================================Job
-    private void init(Config config) throws ServletException {
+    private void init(Config<ServletContext> config) throws ServletException {
         try {
             Object listener = config.getInitParameter("listener");
             if (listener != null)
@@ -58,7 +58,7 @@ public class SubmitRoot extends HttpServlet implements Filter {
             ActionContextBuild build = (ActionContextBuild) Class.forName(buildClassString.toString()).newInstance();
             SubmitBuild sb = new SubmitBuild();
             sb.setConfig(config);
-            this.submitContext = sb.buildWeb(build, (ServletContext) config.getContext());
+            this.submitContext = sb.buildWeb(build, config.getContext());
             this.servletContext = this.submitContext.getServletContext();
             this.servletContext.setAttribute("org.more.web.submit.ROOT", this.submitContext);
             this.servletContext.setAttribute("org.more.web.submit.ROOT.Action", this.submitContext.getProtocol());

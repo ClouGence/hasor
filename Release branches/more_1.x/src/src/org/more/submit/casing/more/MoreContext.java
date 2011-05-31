@@ -16,9 +16,9 @@
 package org.more.submit.casing.more;
 import java.util.ArrayList;
 import java.util.Iterator;
-import org.more.CastException;
-import org.more.NoDefinitionException;
-import org.more.NotFoundException;
+import org.more.core.error.DefineException;
+import org.more.core.error.ExistException;
+import org.more.core.error.TransformException;
 import org.more.hypha.ApplicationContext;
 import org.more.submit.AbstractActionContext;
 import org.more.submit.ActionInvoke;
@@ -42,18 +42,18 @@ public class MoreContext extends AbstractActionContext implements FilterContext 
         try {
             return this.factory.getBean(actionName);
         } catch (Throwable e) {
-            throw new NotFoundException(e);
+            throw new ExistException(e);
         }
     }
     private Class<?> getType(String actionName) {
         try {
             return this.factory.getBeanType(actionName);
         } catch (Throwable e) {
-            throw new NotFoundException(e);
+            throw new ExistException(e);
         }
     }
     //---------------------
-    protected ActionInvoke getAction(String actionName, String invoke) throws NotFoundException {
+    protected ActionInvoke getAction(String actionName, String invoke) throws ExistException {
         return new PropxyActionInvoke(this.getBean(actionName), invoke);
     };
     public boolean containsAction(String actionName) {
@@ -81,7 +81,7 @@ public class MoreContext extends AbstractActionContext implements FilterContext 
             return false;
         return ActionFilter.class.isAssignableFrom(type);
     };
-    public ActionFilter findFilter(String filterName) throws NoDefinitionException, CastException {
+    public ActionFilter findFilter(String filterName) throws DefineException, TransformException {
         if (this.containsFilter(filterName) == false)
             return null;
         return (ActionFilter) this.getBean(filterName);

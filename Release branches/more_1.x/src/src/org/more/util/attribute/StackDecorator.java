@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.util.attribute;
-import org.more.DoesSupportException;
+import org.more.core.error.SupportException;
 /**
  * 堆属性装饰器，利用该属性装饰器可以在属性集上增加另一个属性堆。其数据结构与堆相似。
  * 当在该装饰器上获取某个属性时，StackDecorator类型对象会首先在当前属性堆中寻找如果找不到则去上一个堆中去寻找。
@@ -31,8 +31,8 @@ public class StackDecorator extends AbstractAttDecorator {
     }
     //==========================================================================================JOB
     /**由于StackDecorator类型在createStack和dropStack方法中都需要改变创建source因此为了避免滥用setSource，所以StackDecorator装饰器不支持该方法。*/
-    public void setSource(IAttribute source) throws DoesSupportException {
-        throw new DoesSupportException("StackDecorator装饰器不支持该方法。");
+    public void setSource(IAttribute source) throws SupportException {
+        throw new SupportException("StackDecorator装饰器不支持该方法。");
     }
     /**获取源*/
     public IAttribute getSource() {

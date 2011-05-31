@@ -20,7 +20,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
-import org.more.DoesSupportException;
+import org.more.core.error.SupportException;
 import org.more.submit.web.WebSubmitContext;
 /**
  * SubmitContext接口装饰器，该类仅仅是一个无任何附加功能的空装饰器，可以通过其子类可以重写某些方法以扩充其功能的目的。
@@ -73,57 +73,57 @@ public abstract class SubmitContextDecorator implements SubmitContext, WebSubmit
     //===================================================================================
     public Object doAction(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         if (this.webSubmitContext == null)
-            throw new DoesSupportException("被装饰的submitContext不是一个webSubmitContext。");
+            throw new SupportException("被装饰的submitContext不是一个webSubmitContext。");
         return this.webSubmitContext.doAction(request, response);
     };
     public Object doAction(PageContext pageContext, HttpServletRequest request, HttpServletResponse response) throws Throwable {
         if (this.webSubmitContext == null)
-            throw new DoesSupportException("被装饰的submitContext不是一个webSubmitContext。");
+            throw new SupportException("被装饰的submitContext不是一个webSubmitContext。");
         return this.webSubmitContext.doAction(pageContext, request, response);
     };
     public Object doAction(PageContext pageContext) throws Throwable {
         if (this.webSubmitContext == null)
-            throw new DoesSupportException("被装饰的submitContext不是一个webSubmitContext。");
+            throw new SupportException("被装饰的submitContext不是一个webSubmitContext。");
         return this.webSubmitContext.doAction(pageContext);
     };
     public Object doAction(String actionInvoke, HttpServletRequest request, HttpServletResponse response, Map<String, Object> params) throws Throwable {
         if (this.webSubmitContext == null)
-            throw new DoesSupportException("被装饰的submitContext不是一个webSubmitContext。");
+            throw new SupportException("被装饰的submitContext不是一个webSubmitContext。");
         return this.webSubmitContext.doAction(actionInvoke, request, response, params);
     };
     public Object doAction(String actionInvoke, HttpServletRequest request, HttpServletResponse response) throws Throwable {
         if (this.webSubmitContext == null)
-            throw new DoesSupportException("被装饰的submitContext不是一个webSubmitContext。");
+            throw new SupportException("被装饰的submitContext不是一个webSubmitContext。");
         return this.webSubmitContext.doAction(actionInvoke, request, response);
     };
     public Object doAction(String actionInvoke, PageContext pageContext, HttpServletRequest request, HttpServletResponse response, Map<String, Object> params) throws Throwable {
         if (this.webSubmitContext == null)
-            throw new DoesSupportException("被装饰的submitContext不是一个webSubmitContext。");
+            throw new SupportException("被装饰的submitContext不是一个webSubmitContext。");
         return this.webSubmitContext.doAction(actionInvoke, pageContext, request, response, params);
     };
     public Object doAction(String actionInvoke, PageContext pageContext, HttpServletRequest request, HttpServletResponse response) throws Throwable {
         if (this.webSubmitContext == null)
-            throw new DoesSupportException("被装饰的submitContext不是一个webSubmitContext。");
+            throw new SupportException("被装饰的submitContext不是一个webSubmitContext。");
         return this.webSubmitContext.doAction(actionInvoke, pageContext, request, response);
     };
     public String getProtocol() {
         if (this.webSubmitContext == null)
-            throw new DoesSupportException("被装饰的submitContext不是一个webSubmitContext。");
+            throw new SupportException("被装饰的submitContext不是一个webSubmitContext。");
         return this.webSubmitContext.getProtocol();
     };
     public ServletContext getServletContext() {
         if (this.webSubmitContext == null)
-            throw new DoesSupportException("被装饰的submitContext不是一个webSubmitContext。");
+            throw new SupportException("被装饰的submitContext不是一个webSubmitContext。");
         return this.webSubmitContext.getServletContext();
     };
     public boolean isActionRequest(HttpServletRequest request) {
         if (this.webSubmitContext == null)
-            throw new DoesSupportException("被装饰的submitContext不是一个webSubmitContext。");
+            throw new SupportException("被装饰的submitContext不是一个webSubmitContext。");
         return this.webSubmitContext.isActionRequest(request);
     };
     public void setProtocol(String protocol) {
         if (this.webSubmitContext == null)
-            throw new DoesSupportException("被装饰的submitContext不是一个webSubmitContext。");
+            throw new SupportException("被装饰的submitContext不是一个webSubmitContext。");
         this.webSubmitContext.setProtocol(protocol);
     };
     //===================================================================================

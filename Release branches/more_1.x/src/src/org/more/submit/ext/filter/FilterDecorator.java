@@ -16,7 +16,7 @@
 package org.more.submit.ext.filter;
 import java.util.Iterator;
 import java.util.LinkedList;
-import org.more.NotFoundException;
+import org.more.core.error.ExistException;
 import org.more.submit.ActionContext;
 import org.more.submit.ActionContextDecorator;
 import org.more.submit.ActionInvoke;
@@ -37,7 +37,7 @@ public class FilterDecorator extends ActionContextDecorator {
         filterContext = (FilterContext) actionContext;
         return true;
     }
-    public ActionInvoke findAction(String actionName, String invoke) throws NotFoundException {
+    public ActionInvoke findAction(String actionName, String invoke) throws ExistException {
         ActionInvoke ai = super.findAction(actionName, invoke);
         LinkedList<String> ns = new LinkedList<String>();
         //1.添加全局过滤器链
@@ -81,14 +81,14 @@ public class FilterDecorator extends ActionContextDecorator {
         FilterChain chain = null;
         for (String filterName : ns) {
             if (this.filterContext.containsFilter(filterName) == false)
-                throw new NotFoundException("无法装配过滤器" + filterName + "因为filterContext中找不到它的定义。");
+                throw new ExistException("无法装配过滤器" + filterName + "因为filterContext中找不到它的定义。");
             //
             Class<?> filterType = this.filterContext.getFilterType(filterName);
             Filter ft = filterType.getAnnotation(Filter.class);
             if (ft == null) {
                 String mark = (String) this.filterContext.getFilterProperty(filterName, "isFilter");
                 if (StringConvert.parseBoolean(mark) == false)
-                    throw new NotFoundException("过滤器" + filterName + "没有被标记成为一个有效的过滤器，可能没有配置isFilter参数或者没有标记注解。");
+                    throw new ExistException("过滤器" + filterName + "没有被标记成为一个有效的过滤器，可能没有配置isFilter参数或者没有标记注解。");
             }
             //
             if (chain == null)

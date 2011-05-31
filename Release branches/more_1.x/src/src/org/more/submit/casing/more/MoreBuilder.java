@@ -18,7 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
-import org.more.FormatException;
+import org.more.core.error.FormatException;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.context.app.HyphaApplicationContext;
 import org.more.hypha.context.xml.XmlDefineResource;
@@ -59,7 +59,7 @@ public class MoreBuilder implements ActionContextBuild {
             this.config = configFile.getAbsolutePath();
     };
     //==========================================================================================Job
-    public void init(Config config) throws Throwable {
+    public void init(Config<?> config) throws Throwable {
         if (this.factory != null)
             return;
         if (config != null) {

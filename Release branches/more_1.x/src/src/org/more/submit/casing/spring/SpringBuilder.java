@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
 import javax.servlet.ServletContext;
-import org.more.FormatException;
+import org.more.core.error.FormatException;
 import org.more.submit.ActionContext;
 import org.more.submit.ActionContextBuild;
 import org.more.util.Config;
@@ -76,7 +76,7 @@ public class SpringBuilder implements ActionContextBuild {
         this.springContext = springContext;
     };
     /**初始化springContext对象。*/
-    public void init(Config config) throws Exception {
+    public void init(Config<?> config) throws Exception {
         if (config != null)
             //考虑下WEB的情况
             if (config.getContext() instanceof ServletContext) {

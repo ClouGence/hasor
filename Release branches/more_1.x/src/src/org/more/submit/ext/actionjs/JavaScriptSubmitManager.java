@@ -24,8 +24,8 @@ import java.util.Iterator;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.more.CastException;
 import org.more.core.copybean.CopyBeanUtil;
+import org.more.core.error.TransformException;
 import org.more.core.json.JsonUtil;
 import org.more.submit.Action;
 import org.more.submit.ActionContext;
@@ -57,7 +57,7 @@ public class JavaScriptSubmitManager {
         return result;
     };
     /** 获取客户端JS的action方法。 */
-    public Object config(WebActionStack event) throws IOException, CastException {
+    public Object config(WebActionStack event) throws IOException, TransformException {
         // 获取输出对象
         Writer write = null;
         if (event.getPageContext() != null)

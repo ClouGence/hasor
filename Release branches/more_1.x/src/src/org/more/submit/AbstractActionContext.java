@@ -15,8 +15,8 @@
  */
 package org.more.submit;
 import java.lang.reflect.Field;
-import org.more.NoDefinitionException;
-import org.more.NotFoundException;
+import org.more.core.error.DefineException;
+import org.more.core.error.ExistException;
 import org.more.util.StringConvert;
 /**
  * 该类是{@link ActionContext}接口的一个基本实现。该类只是实现了findAction方法。其子类可以管理actionbean对象的创建和生命周期。
@@ -25,9 +25,9 @@ import org.more.util.StringConvert;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractActionContext implements ActionContext {
-    public ActionInvoke findAction(String actionName, String invoke) throws NotFoundException {
+    public ActionInvoke findAction(String actionName, String invoke) throws ExistException {
         if (this.containsAction(actionName) == false)
-            throw new NotFoundException("找不到名称为[" + actionName + "]的对象");
+            throw new ExistException("找不到名称为[" + actionName + "]的对象");
         //
         boolean isAction = true;
         //-----------1.注解配置
@@ -49,7 +49,7 @@ public abstract class AbstractActionContext implements ActionContext {
         } catch (Exception e) {}
         //-----------
         if (isAction == false)
-            throw new NoDefinitionException("名称为[" + actionName + "]的对象不是一个Action对象");
+            throw new DefineException("名称为[" + actionName + "]的对象不是一个Action对象");
         return this.getAction(actionName, invoke);
     }
     /**该方法指出当{@link AbstractActionContext}类的具体查找{@link ActionInvoke}的方式。*/

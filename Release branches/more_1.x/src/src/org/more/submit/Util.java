@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.submit;
-import org.more.FormatException;
+import org.more.core.error.FormatException;
 /**
  * submit的工具类。
  * @version : 2010-7-27

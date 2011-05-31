@@ -15,7 +15,7 @@
  */
 package org.more.submit;
 import java.lang.reflect.Method;
-import org.more.NotFoundException;
+import org.more.core.error.ExistException;
 /**
  * 该类负责提供目标对象方法的{@link ActionInvoke ActionInvoke接口}形式。
  * @version 2009-12-1
@@ -49,7 +49,7 @@ public class PropxyActionInvoke implements ActionInvoke {
             }
         }
         if (method == null)//如果找不到方法则引发异常
-            throw new NotFoundException("无法在类[" + type + "]中找到Action方法" + this.invoke);
+            throw new ExistException("无法在类[" + type + "]中找到Action方法" + this.invoke);
         return method.invoke(target, stack);
     };
 };

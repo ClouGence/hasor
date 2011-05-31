@@ -16,21 +16,21 @@
 package org.more.util.attribute;
 import java.util.HashMap;
 import java.util.Map;
-import org.more.NoDefinitionException;
-import org.more.ReadOnlyException;
+import org.more.core.error.DefineException;
+import org.more.core.error.MoreStateException;
 /**
- *    保持属性接口。该接口扩展了Attribute接口，并且解决了属性保留的问题。使得属性在被删除或者
- * 被替换时可以确定其行为。通过该接口可以将属性设置为保持属性或必须属性。
- *    保持属性：保持属性是指被设置成保持的属性是否可以更改其属性值。这一点与ExtAttribute接口的
- * ReplaceMode_Throw策略很像。不同的是ExtAttribute接口是针对所有属性，而KeepAttribute接口
- * 是针对一个属性。被设置成为保持的属性可以通过removeAttribute方法删除掉。当删除一个拥有保持
- * 特性的属性时，会同时删除其保持特性。
- *    必须属性：必须属性是指该属性可以被任意设置但是不可以被删除。利用必须属性可以保证某些情况下
- * 系统必须能够访问到某些属性，而且这些属性必须不能不存在。
- *    提示：保持特性和必须特性可以同时作用到一个属性上。
- * @version 2009-12-3
- * @author 赵永春 (zyc@byshell.org)
- */
+*    保持属性接口。该接口扩展了Attribute接口，并且解决了属性保留的问题。使得属性在被删除或者
+* 被替换时可以确定其行为。通过该接口可以将属性设置为保持属性或必须属性。
+*    保持属性：保持属性是指被设置成保持的属性是否可以更改其属性值。这一点与ExtAttribute接口的
+* ReplaceMode_Throw策略很像。不同的是ExtAttribute接口是针对所有属性，而KeepAttribute接口
+* 是针对一个属性。被设置成为保持的属性可以通过removeAttribute方法删除掉。当删除一个拥有保持
+* 特性的属性时，会同时删除其保持特性。
+*    必须属性：必须属性是指该属性可以被任意设置但是不可以被删除。利用必须属性可以保证某些情况下
+* 系统必须能够访问到某些属性，而且这些属性必须不能不存在。
+*    提示：保持特性和必须特性可以同时作用到一个属性上。
+* @version 2009-12-3
+* @author 赵永春 (zyc@byshell.org)
+*/
 public class KeepAttDecorator extends AbstractAttDecorator {
     //========================================================================================Field
     /** 保存属性特性的Map */
@@ -58,15 +58,14 @@ public class KeepAttDecorator extends AbstractAttDecorator {
     }
     //==========================================================================================Job
     /**
-     * 设置属性，如果属性已经被设置为保持特性则会引发ReadOnlyException异常。
+     * 设置属性，如果属性已经被设置为保持特性则会引发{@link MoreStateException}异常。
      * @param name 要保存的属性名。
      * @param value 要保存的属性值。
-     * @throws ReadOnlyException 如果被设置的属性拥有保持特性则引发该异常。
      */
-    public void setAttribute(String name, Object value) throws ReadOnlyException {
+    public void setAttribute(String name, Object value) {
         if (this.getSource().contains(name) == true)
             if (this.map.get(name).keep == true)
-                throw new ReadOnlyException("属性 " + name + " 具备保持特性不能接受新的属性值。");
+                throw new MoreStateException("属性 " + name + " 具备保持特性不能接受新的属性值。");
         this.getSource().setAttribute(name, value);
         this.map.put(name, new KeepAttStruct());
     }
@@ -86,11 +85,11 @@ public class KeepAttDecorator extends AbstractAttDecorator {
      * 设置属性是否是保持的。如果试图向一个不存在的属性设置保持属性时引发NoDefinitionException异常。
      * @param attName 要设置保持特性的属性名。
      * @param isKeep 如果设置值为true则表示设置其保持特性，否则就取消其保持特性。
-     * @throws NoDefinitionException 未定义异常，如果试图向一个不存在的属性设置保持属性时引发。
+     * @throws DefineException 未定义异常，如果试图向一个不存在的属性设置保持属性时引发。
      */
-    public void setKeep(String attName, boolean isKeep) throws NoDefinitionException {
+    public void setKeep(String attName, boolean isKeep) throws DefineException {
         if (this.getSource().contains(attName) == false)
-            throw new NoDefinitionException("不能给不存在的属性 " + attName + " 设置保持特性");
+            throw new DefineException("不能给不存在的属性 " + attName + " 设置保持特性");
         else
             this.map.get(attName).keep = isKeep;
     }
@@ -106,11 +105,11 @@ public class KeepAttDecorator extends AbstractAttDecorator {
      * 设置属性是否是必须的。如果试图向一个不存在的属性设置保持属性时引发NoDefinitionException异常。
      * @param attName 要设置必须特性的属性名。
      * @param isMaster 如果设置值为true则表示设置其必须特性，否则就取消其必须特性。
-     * @throws NoDefinitionException 未定义异常，如果试图向一个不存在的属性设置必须属性时引发。
+     * @throws DefineException 未定义异常，如果试图向一个不存在的属性设置必须属性时引发。
      */
-    public void setMaster(String attName, boolean isMaster) throws NoDefinitionException {
+    public void setMaster(String attName, boolean isMaster) throws DefineException {
         if (this.getSource().contains(attName) == false)
-            throw new NoDefinitionException("不能给不存在的属性 " + attName + " 设置必须特性");
+            throw new DefineException("不能给不存在的属性 " + attName + " 设置必须特性");
         else
             this.map.get(attName).master = isMaster;
     }

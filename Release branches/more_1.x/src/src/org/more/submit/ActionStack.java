@@ -16,8 +16,8 @@
 package org.more.submit;
 import java.util.HashMap;
 import java.util.Map;
-import org.more.NoDefinitionException;
-import org.more.NotFoundException;
+import org.more.core.error.DefineException;
+import org.more.core.error.ExistException;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**
@@ -88,11 +88,11 @@ public class ActionStack implements IAttribute, ScopeEnum {
     };
     /**
      * 获取指定的作用域的操作接口。不同于getCurrentScopeAtt方法这个方法可以获取到你想要的作用域并且无需切换作用域。
-     * 如果企图获取不存在的作用域则会引发{@link NotFoundException}异常。
+     * 如果企图获取不存在的作用域则会引发{@link ExistException}异常。
      */
     public IAttribute getScopeAttribute(String scope) {
         if (this.scopeMap.containsKey(scope) == false)
-            throw new NotFoundException("无法获得“" + scope + "”作用域，这个作用域可能没有注册。");
+            throw new ExistException("无法获得“" + scope + "”作用域，这个作用域可能没有注册。");
         return this.scopeMap.get(scope);
     };
     /*--------------------------------------------------------------------*/
@@ -143,10 +143,10 @@ public class ActionStack implements IAttribute, ScopeEnum {
     public String getScope() {
         return this.currentMark;
     };
-    /**设置当前操作的作用域，如果企图设置为未定义的作用域则会引发{@link NotFoundException}异常。注意scope参数可以是ScopeEnum接口的常量定义。*/
-    public void setScope(String scope) throws NoDefinitionException {
+    /**设置当前操作的作用域，如果企图设置为未定义的作用域则会引发{@link ExistException}异常。注意scope参数可以是ScopeEnum接口的常量定义。*/
+    public void setScope(String scope) throws DefineException {
         if (this.scopeMap.containsKey(scope) == false)
-            throw new NotFoundException("不能设置到未定义的作用域，这个作用域可能没有注册。");
+            throw new ExistException("不能设置到未定义的作用域，这个作用域可能没有注册。");
         this.currentScope = this.scopeMap.get(scope);
         this.currentMark = scope;
     };

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.more.util.attribute;
-import org.more.NoDefinitionException;
-import org.more.RepeateException;
+import org.more.core.error.DefineException;
+import org.more.core.error.RepeateException;
 /**
  * 扩展的属性操作接口，该接口增强了Attribute接口。该接口解决了属性在设置时重名冲突的问题。
  * 当设置的新属性与原有属性发生重名冲突时可以使用“属性的替换原则”进行替换。具体有如下几个替换原则:
@@ -52,9 +52,9 @@ public class ExtAttDecorator extends AbstractAttDecorator {
      * 如果使用了一个不存在的值进行定义则会引发NoDefinitionException异常。
      * @param source 要装饰的目标属性对象。
      * @param replaceMode 要更改的替换策略策略值，该值必须是ReplaceMode所定义的。
-     * @throws NoDefinitionException 定义了一个不存在的属性策略。
+     * @throws DefineException 定义了一个不存在的属性策略。
      */
-    public ExtAttDecorator(IAttribute source, int replaceMode) throws NoDefinitionException {
+    public ExtAttDecorator(IAttribute source, int replaceMode) throws DefineException {
         super(source);
         this.setReplacMode(replaceMode);
     }
@@ -69,13 +69,13 @@ public class ExtAttDecorator extends AbstractAttDecorator {
     /**
      * 改变扩展属性实现类中属性替换策略，如果使用了一个不存在的值进行定义则会引发NoDefinitionException异常。
      * @param replaceMode 要更改的替换策略策略值，该值必须是ReplaceMode所定义的。
-     * @throws NoDefinitionException 定义了一个不存在的属性策略。
+     * @throws DefineException 定义了一个不存在的属性策略。
      */
-    protected void setReplacMode(int replaceMode) throws NoDefinitionException {
+    protected void setReplacMode(int replaceMode) throws DefineException {
         if (replaceMode == ReplaceMode_Original || replaceMode == ReplaceMode_Replace || replaceMode == ReplaceMode_Throw)
             this.replaceMode = replaceMode;
         else
-            throw new NoDefinitionException("不支持的属性替换策略 " + replaceMode);
+            throw new DefineException("不支持的属性替换策略 " + replaceMode);
     }
     /**
      * 设置属性，当替换模式(replaceMode属性)处于ReplaceMode_Replace时，如果出现重名属性则替换原有属性。<br/>

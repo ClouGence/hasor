@@ -20,12 +20,12 @@ import java.util.Enumeration;
  * Date : 2010-7-26
  * @author 赵永春(zyc@byshell.org)
  */
-public interface Config {
+public interface Config<T> {
     /**
      * 获取上下文对象。
      * @return 返回上下文对象。
      */
-    public Object getContext();
+    public T getContext();
     /**
      * 根据参数名获取参数。如果不存在这个参数则返回null。
      * @param name 要获取的参数名。

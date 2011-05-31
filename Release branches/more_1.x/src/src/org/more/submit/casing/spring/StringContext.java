@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import org.more.CastException;
-import org.more.NoDefinitionException;
+import org.more.core.error.DefineException;
+import org.more.core.error.TransformException;
 import org.more.submit.AbstractActionContext;
 import org.more.submit.ActionInvoke;
 import org.more.submit.PropxyActionInvoke;
@@ -70,7 +70,7 @@ public class StringContext extends AbstractActionContext implements FilterContex
             return false;
         return ActionFilter.class.isAssignableFrom(type);
     };
-    public ActionFilter findFilter(String filterName) throws NoDefinitionException, CastException {
+    public ActionFilter findFilter(String filterName) throws DefineException, TransformException {
         if (this.containsFilter(filterName) == false)
             return null;
         return (ActionFilter) this.springContext.getBean(filterName);

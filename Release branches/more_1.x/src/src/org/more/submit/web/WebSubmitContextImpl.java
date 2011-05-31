@@ -21,8 +21,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
-import org.more.FormatException;
-import org.more.StateException;
+import org.more.core.error.FormatException;
+import org.more.core.error.MoreStateException;
 import org.more.submit.ActionContext;
 import org.more.submit.ActionInvoke;
 import org.more.submit.ActionStack;
@@ -82,7 +82,7 @@ public class WebSubmitContextImpl extends SubmitContextImpl implements WebSubmit
     public Object doActionOnStack(String invokeString, ActionStack stack, Map<String, ?> params) throws Throwable {
         Session session = stack.getSession();
         if (this.getSessionManager().isBelong(session) == false)
-            throw new StateException("session " + session.getSessionID() + " 不属于当前sessionManager管理的session");
+            throw new MoreStateException("session " + session.getSessionID() + " 不属于当前sessionManager管理的session");
         String[] ss = Util.splitInvokeString(invokeString);
         ActionStack as = null;
         if (stack instanceof WebActionStack == true) {

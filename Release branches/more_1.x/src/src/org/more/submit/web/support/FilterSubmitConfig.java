@@ -16,13 +16,14 @@
 package org.more.submit.web.support;
 import java.util.Enumeration;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import org.more.util.Config;
 /**
  * FilterConfig对象到{@link Config Config接口}的转换类
  * @version  2009-6-30
  * @author 赵永春 (zyc@byshell.org)
  */
-public class FilterSubmitConfig implements Config {
+public class FilterSubmitConfig implements Config<ServletContext> {
     //========================================================================================Field
     private FilterConfig config = null;
     //==================================================================================Constructor
@@ -30,7 +31,7 @@ public class FilterSubmitConfig implements Config {
         this.config = config;
     };
     //==========================================================================================Job
-    public Object getContext() {
+    public ServletContext getContext() {
         return this.config.getServletContext();
     };
     public String getInitParameter(String name) {

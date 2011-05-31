@@ -25,7 +25,7 @@ import org.more.util.attribute.AttBase;
  * @version : 2010-7-27
  * @author ’‘”¿¥∫(zyc@byshell.org)
  */
-public class MapConfigBridge implements Map<String, Object>, Config {
+public class MapConfigBridge implements Map<String, Object>, Config<Object> {
     //========================================================================================Field
     private static final long   serialVersionUID = 5340008420422363045L;
     private Object              context          = null;
