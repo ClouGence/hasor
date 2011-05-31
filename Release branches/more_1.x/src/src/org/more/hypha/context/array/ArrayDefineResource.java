@@ -19,8 +19,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.more.NoDefinitionException;
-import org.more.RepeateException;
+import org.more.core.error.DefineException;
+import org.more.core.error.RepeateException;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.DefineResource;
 import org.more.hypha.Event;
@@ -37,7 +37,7 @@ public class ArrayDefineResource extends AbstractDefineResource {
     private ArrayList<String>               defineNames = new ArrayList<String>();                     //bean定义名称集合
     private Map<String, AbstractBeanDefine> defineMap   = new HashMap<String, AbstractBeanDefine>();   //bean定义Map
     //
-    public AbstractBeanDefine getBeanDefine(String id) throws NoDefinitionException {
+    public AbstractBeanDefine getBeanDefine(String id) throws DefineException {
         if (id == null) {
             log.error("param id is null.");
             return null;
@@ -60,24 +60,24 @@ public class ArrayDefineResource extends AbstractDefineResource {
     public List<String> getBeanDefinitionIDs() {
         return Collections.unmodifiableList((List<String>) this.defineNames);
     }
-    public boolean isPrototype(String id) throws NoDefinitionException {
+    public boolean isPrototype(String id) throws DefineException {
         if (this.containsBeanDefine(id) == false)
-            throw new NoDefinitionException("bean " + id + " is not exist.");
+            throw new DefineException("bean " + id + " is not exist.");
         AbstractBeanDefine define = this.getBeanDefine(id);
         if (define.factoryMethod() == null && define.isSingleton() == false)
             return true;
         else
             return false;
     }
-    public boolean isSingleton(String id) throws NoDefinitionException {
+    public boolean isSingleton(String id) throws DefineException {
         if (this.containsBeanDefine(id) == false)
-            throw new NoDefinitionException("bean " + id + " is not exist.");
+            throw new DefineException("bean " + id + " is not exist.");
         AbstractBeanDefine define = this.getBeanDefine(id);
         return define.isSingleton();
     }
-    public boolean isFactory(String id) throws NoDefinitionException {
+    public boolean isFactory(String id) throws DefineException {
         if (this.containsBeanDefine(id) == false)
-            throw new NoDefinitionException("bean " + id + " is not exist.");
+            throw new DefineException("bean " + id + " is not exist.");
         AbstractBeanDefine define = this.getBeanDefine(id);
         return (define.factoryMethod() == null) ? false : true;
     }
@@ -105,5 +105,4 @@ public class ArrayDefineResource extends AbstractDefineResource {
     public boolean isReady() {
         return true;
     }
-    public void toReady() throws Throwable {};
 };

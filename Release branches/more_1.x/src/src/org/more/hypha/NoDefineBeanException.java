@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package org.more.hypha;
-import org.more.NotFoundException;
+import org.more.core.error.DefineException;
 /**
  * 不存在的Bean定义。
  * @version 2009-4-29
  * @author 赵永春 (zyc@byshell.org)
  */
-public class NoDefineBeanException extends NotFoundException {
+public class NoDefineBeanException extends DefineException {
     private static final long serialVersionUID = 3254479748206568531L;
     /** 不存在的Bean定义。*/
     public NoDefineBeanException(String string) {

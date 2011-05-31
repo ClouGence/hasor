@@ -15,7 +15,7 @@
  */
 package org.more.hypha;
 import java.util.HashMap;
-import org.more.InitializationException;
+import org.more.core.error.InitializationException;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
 /**

@@ -30,10 +30,13 @@ public abstract class Collection_ValueMetaData<T extends AbstractValueMetaData> 
     public void setCollectionType(String collectionType) {
         this.collectionType = collectionType;
     }
-    /**获取集合初始化大小*/
+    /**返回最大的，*/
     public int getInitSize() {
-        return this.initSize;
-    }
+        int size = this.size();
+        if (size > initSize)
+            return size;
+        return initSize;
+    };
     /**设置集合初始化大小*/
     public void setInitSize(int initSize) {
         this.initSize = initSize;

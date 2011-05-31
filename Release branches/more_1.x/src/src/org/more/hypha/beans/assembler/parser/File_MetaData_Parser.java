@@ -16,22 +16,32 @@
 package org.more.hypha.beans.assembler.parser;
 import java.io.File;
 import org.more.hypha.ApplicationContext;
+import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.define.File_ValueMetaData;
 import org.more.hypha.commons.engine.ValueMetaDataParser;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
+import org.more.util.ClassPathUtil;
 /**
- * 
+ * 解析文件类型
  * @version 2011-2-15
  * @author 赵永春 (zyc@byshell.org)
  */
 public class File_MetaData_Parser implements ValueMetaDataParser<File_ValueMetaData> {
     private static ILog log = LogFactory.getLog(File_MetaData_Parser.class);
     /*------------------------------------------------------------------------------*/
-    public File parser(File_ValueMetaData data, ValueMetaDataParser<File_ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
-        // TODO Auto-generated method stub
-        log.debug("parser File = {%0}.", eValue);
-        // data.ge
-        return null;
+    public File parser(Object targetObject, File_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
+        String matchString = data.getFileObject();
+        log.debug("parser File match string = {%0}.", matchString);
+        String sw = "classpath:";
+        File fileObject = null;
+        if (matchString.startsWith(sw) == true) {
+            String file = matchString.substring(sw.length());
+            //表示选择classpath目录下的。 
+            fileObject = new File(ClassPathUtil.CLASS_PATH_Strings.get(0), file);
+        } else
+            fileObject = new File(matchString);
+        log.debug("parser File = {%0}.", fileObject);
+        return fileObject;
     }
 };

@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.xml;
-import java.util.HashMap;
 import java.util.Map;
-import org.more.FormatException;
+import org.more.core.error.FormatException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.hypha.beans.define.VariableBeanDefine;
@@ -41,7 +40,7 @@ public class TagBeans_VarBean extends TagBeans_AbstractBeanDefine<VariableBeanDe
     };
     /**关联属性与xml的属性对应关系。*/
     protected Map<Enum<?>, String> getPropertyMappings() {
-        HashMap<Enum<?>, String> propertys = new HashMap<Enum<?>, String>();
+        Map<Enum<?>, String> propertys = super.getPropertyMappings();
         propertys.put(PropertyKey.value, "value");
         propertys.put(PropertyKey.type, "type");
         return propertys;

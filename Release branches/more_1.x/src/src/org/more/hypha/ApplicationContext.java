@@ -98,7 +98,7 @@ public interface ApplicationContext extends IAttribute {
      */
     public boolean isTypeMatch(String id, Class<?> targetType) throws Throwable;
     /**初始化{@link ApplicationContext}接口，该方法一定要在destroy之前执行。 */
-    public void init() throws Throwable;
+    public void init();
     /**销毁{@link ApplicationContext}接口。*/
     public void destroy();
     /*------------------------------------------------------------------------------*/

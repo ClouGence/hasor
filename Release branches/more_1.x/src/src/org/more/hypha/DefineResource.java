@@ -25,8 +25,6 @@ import org.more.util.attribute.IAttribute;
 public interface DefineResource extends IAttribute {
     /**获取一个状态该状态表述是否已经准备好。*/
     public boolean isReady();
-    /**将{@link DefineResource}的isReady状态转换至以准备。*/
-    public void toReady() throws Throwable;
     /**获取资源名。*/
     public String getSourceName();
     /**

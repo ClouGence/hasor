@@ -23,7 +23,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
-import org.more.LoadException;
+import org.more.core.error.LoadException;
 import org.more.core.xml.XmlParserKit;
 import org.more.core.xml.XmlParserKitManager;
 import org.more.core.xml.stream.XmlReader;
@@ -226,10 +226,6 @@ public class XmlDefineResource extends ArrayDefineResource {
     public boolean isReady() {
         return this.loadMark;
     }
-    public void toReady() throws Throwable {
-        if (this.loadMark == false)
-            this.loadDefine();
-    };
     /**ªÒ»°{@link XmlParserKitManager}*/
     protected XmlParserKitManager getManager() {
         return this.manager;

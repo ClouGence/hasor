@@ -77,7 +77,7 @@ public class AbstractELContext implements ELContext {
         };
     };
     /*------------------------------------------------------------------------------*/
-    public void init(AbstractApplicationContext applicationContext) throws Throwable {
+    public void init(AbstractApplicationContext applicationContext) {
         if (applicationContext != null)
             log.info("init ELContext, applicationContext = {%0}", applicationContext);
         else

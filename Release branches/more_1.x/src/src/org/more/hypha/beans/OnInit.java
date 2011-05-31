@@ -38,15 +38,15 @@ import org.more.log.LogFactory;
 @SuppressWarnings({ "unchecked", "rawtypes" })
 class OnInit implements EventListener<InitEvent> {
     private static ILog log = LogFactory.getLog(OnInit.class);
-    private <T> T newInstance(String classname) throws EventException {
+    private <T> T newInstance(String classname, Sequence eventSequence) throws EventException {
         try {
             return (T) Class.forName(classname).newInstance();
         } catch (InstantiationException e) {
-            throw new EventException("newInstance InstantiationException!", e);
+            throw new EventException(eventSequence, "newInstance InstantiationException!", e);
         } catch (IllegalAccessException e) {
-            throw new EventException("newInstance IllegalAccessException!", e);
+            throw new EventException(eventSequence, "newInstance IllegalAccessException!", e);
         } catch (ClassNotFoundException e) {
-            throw new EventException("newInstance ClassNotFoundException!", e);
+            throw new EventException(eventSequence, "newInstance ClassNotFoundException!", e);
         }
     };
     public void onEvent(InitEvent event, Sequence sequence) throws EventException {
@@ -57,14 +57,14 @@ class OnInit implements EventListener<InitEvent> {
         List<B_BeanType> btList = (List<B_BeanType>) context.getFlash().getAttribute(BeansConfig_BeanTypeConfig.BTConfigList);
         if (btList != null)
             for (B_BeanType bt : btList) {
-                AbstractBeanBuilder builder = this.newInstance(bt.getClassName());
+                AbstractBeanBuilder builder = this.newInstance(bt.getClassName(), sequence);
                 engine.regeditBeanBuilder(bt.gettName(), builder);
             }
         //3.注册元信息解析器
         List<B_MDParser> mdList = (List<B_MDParser>) context.getFlash().getAttribute(BeansConfig_MDParserConfig.MDParserConfigList);
         if (mdList != null)
             for (B_MDParser mdp : mdList) {
-                ValueMetaDataParser parser = this.newInstance(mdp.getClassName());
+                ValueMetaDataParser parser = this.newInstance(mdp.getClassName(), sequence);
                 engine.regeditValueMetaDataParser(mdp.getMdType(), parser);
             }
         //String beanBuilderClass = prop.getProperty(k);

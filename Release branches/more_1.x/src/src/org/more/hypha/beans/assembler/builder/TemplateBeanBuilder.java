@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.assembler.builder;
-import org.more.DoesSupportException;
+import org.more.core.error.SupportException;
 import org.more.hypha.beans.define.TemplateBeanDefine;
 import org.more.hypha.commons.engine.AbstractBeanBuilder;
 import org.more.log.ILog;
@@ -30,11 +30,11 @@ public class TemplateBeanBuilder extends AbstractBeanBuilder<TemplateBeanDefine>
     public Class<?> loadType(TemplateBeanDefine define, Object[] params) {
         String defineID = define.getID();
         log.error("TemplateBean {%0} doesn`t Support this method.", defineID);
-        throw new DoesSupportException("TemplateBean " + defineID + " doesn`t Support this method.");
+        throw new SupportException("TemplateBean " + defineID + " doesn`t Support this method.");
     }
     public <O> O createBean(TemplateBeanDefine define, Object[] params) {
         String defineID = define.getID();
         log.error("TemplateBean {%0} doesn`t Support this method.", defineID);
-        throw new DoesSupportException("TemplateBean " + defineID + " doesn`t Support this method.");
+        throw new SupportException("TemplateBean " + defineID + " doesn`t Support this method.");
     }
 };

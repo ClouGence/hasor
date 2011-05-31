@@ -15,7 +15,7 @@
  */
 package org.more.hypha.commons.xml;
 import java.lang.reflect.Method;
-import org.more.PropertyException;
+import org.more.core.error.PropertyException;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.log.ILog;
 import org.more.log.LogFactory;

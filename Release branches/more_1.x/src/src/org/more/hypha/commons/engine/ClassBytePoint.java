@@ -32,5 +32,5 @@ public interface ClassBytePoint extends ExpandPoint {
      * param[1] {@link AbstractBeanDefine}当前所处的bean定义对象。<br/>
      * param[2] {@link ApplicationContext}扩展点所处的上下文。
      */
-    public Object doIt(Object returnObj, Object[] params);
+    public byte[] doIt(Object returnObj, Object[] params);
 };

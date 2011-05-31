@@ -16,8 +16,8 @@
 package org.more.hypha.commons.engine;
 import java.util.HashMap;
 import java.util.Map;
-import org.more.DoesSupportException;
-import org.more.RepeateException;
+import org.more.core.error.RepeateException;
+import org.more.core.error.SupportException;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
 import org.more.log.ILog;
@@ -40,7 +40,7 @@ abstract class RootValueMetaDataParser implements ValueMetaDataParser<ValueMetaD
         String metaDataType = data.getMetaDataType();
         if (this.metaDataParserMap.containsKey(metaDataType) == false) {
             log.error("{%0} MetaData is doesn`t Support.", metaDataType);
-            throw new DoesSupportException(metaDataType + " MetaData is doesn`t Support.");
+            throw new SupportException(metaDataType + " MetaData is doesn`t Support.");
         }
         return this.metaDataParserMap.get(metaDataType).parser(targetObject, data, this, context);
     };

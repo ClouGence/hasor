@@ -17,7 +17,7 @@ package org.more.hypha.context;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.more.NoDefinitionException;
+import org.more.core.error.DefineException;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ELContext;
@@ -105,7 +105,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         return this.getBeanResource().getThreadFlash();
     };
     /*------------------------------------------------------------*/
-    public void init() throws Throwable {
+    public void init() {
         log.info("starting init ApplicationContext...");
         this.singleBeanCache = new HashMap<String, Object>();
         this.typeCache = new HashMap<String, Class<?>>();
@@ -164,7 +164,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         AbstractBeanDefine define = this.getBeanDefinition(defineID);
         if (define == null) {
             log.error("{%0} define is not exist.", defineID);
-            throw new NoDefinitionException(defineID + " define is not exist.");
+            throw new DefineException(defineID + " define is not exist.");
         }
         //-------------------------------------------------------------------获取
         log.info("start building {%0} bean , params is {%1}", defineID, objects);
@@ -206,7 +206,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         AbstractBeanDefine define = this.getBeanDefinition(defineID);
         if (define == null) {
             log.error("{%0} define is not exist.", defineID);
-            throw new NoDefinitionException(defineID + " define is not exist.");
+            throw new DefineException(defineID + " define is not exist.");
         }
         //-------------------------------------------------------------------获取
         log.info("start building {%0} bean type , params is {%1}", defineID, objects);
@@ -261,13 +261,13 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     public boolean containsBean(String id) {
         return this.getBeanResource().containsBeanDefine(id);
     };
-    public boolean isPrototype(String id) throws NoDefinitionException {
+    public boolean isPrototype(String id) throws DefineException {
         return this.getBeanResource().isPrototype(id);
     };
-    public boolean isSingleton(String id) throws NoDefinitionException {
+    public boolean isSingleton(String id) throws DefineException {
         return this.getBeanResource().isSingleton(id);
     };
-    public boolean isFactory(String id) throws NoDefinitionException {
+    public boolean isFactory(String id) throws DefineException {
         return this.getBeanResource().isFactory(id);
     };
     public boolean isTypeMatch(String id, Class<?> targetType) throws Throwable {

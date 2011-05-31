@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.context.app;
+import org.more.core.error.MoreStateException;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.context.AbstractApplicationContext;
 import org.more.hypha.context.AbstractDefineResource;
@@ -37,12 +38,12 @@ public class HyphaApplicationContext extends AbstractApplicationContext {
         this.defineResource = adr;
         log.info("init HyphaApplicationContext started!");
     }
-    public HyphaApplicationContext(AbstractDefineResource defineResource) throws Throwable {
+    public HyphaApplicationContext(AbstractDefineResource defineResource) throws NullPointerException, MoreStateException {
         super(null);
         if (defineResource == null)
             throw new NullPointerException("参数defineResource没有指定一个有效的值，该参数不可以为空。");
         if (defineResource.isReady() == false)
-            defineResource.toReady();
+            throw new MoreStateException("参数defineResource对象没有准备好。");
         this.defineResource = defineResource;
     }
     public AbstractDefineResource getBeanResource() {

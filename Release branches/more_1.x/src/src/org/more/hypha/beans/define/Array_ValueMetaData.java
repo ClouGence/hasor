@@ -43,5 +43,5 @@ public class Array_ValueMetaData extends Collection_ValueMetaData<AbstractValueM
     /**获取集合当前数据内容条数数。*/
     public int size() {
         return this.valueData.size();
-    };
+    }
 }

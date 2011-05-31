@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import org.more.RepeateException;
+import org.more.core.error.RepeateException;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.AbstractMethodDefine;
 import org.more.hypha.commons.define.AbstractDefine;

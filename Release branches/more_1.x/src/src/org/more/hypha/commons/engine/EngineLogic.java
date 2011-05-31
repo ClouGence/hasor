@@ -18,9 +18,8 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.more.ClassFormatException;
-import org.more.DoesSupportException;
-import org.more.RepeateException;
+import org.more.core.error.RepeateException;
+import org.more.core.error.SupportException;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.AbstractMethodDefine;
 import org.more.hypha.AbstractPropertyDefine;
@@ -28,6 +27,8 @@ import org.more.hypha.ValueMetaData;
 import org.more.hypha.context.AbstractApplicationContext;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
+import org.more.util.PropxyObject;
+import com.sun.org.apache.bcel.internal.classfile.ClassFormatException;
 /**
  * 该类负责hypha的整个bean创建流程，是一个非常重要的核心类。
  * @version : 2011-5-12
@@ -55,7 +56,7 @@ public class EngineLogic {
     };
     /*------------------------------------------------------------------------------*/
     /**初始化，参数不能为空。*/
-    public void init(AbstractApplicationContext applicationContext) throws Throwable {
+    public void init(AbstractApplicationContext applicationContext) {
         if (applicationContext != null)
             log.info("init EngineLogic, applicationContext = {%0}", applicationContext);
         else {
@@ -148,7 +149,7 @@ public class EngineLogic {
         AbstractBeanBuilder<AbstractBeanDefine> builder = this.builderMap.get(defineType);
         if (builder == null) {
             log.error("bean {%0} Type {%1} is doesn`t support!", defineID, defineType);
-            throw new DoesSupportException(defineLogStr + "，该Bean不是一个hypha所支持的Bean类型或者该类型的Bean不支持Builder。");
+            throw new SupportException(defineLogStr + "，该Bean不是一个hypha所支持的Bean类型或者该类型的Bean不支持Builder。");
         }
         //2.
         if (builder instanceof AbstractBeanBuilderEx == true)
@@ -193,6 +194,10 @@ public class EngineLogic {
             log.error("builderBean an error param AbstractBeanDefine is null.");
             throw new NullPointerException("builderBean an error param AbstractBeanDefine is null.");
         }
+        if (define.isAbstract() == true) {
+            log.error("builderBean an error define is Abstract.");
+            throw new NullPointerException("builderBean an error define is Abstract.");
+        }
         String defineType = define.getBeanType();
         String defineID = define.getID();
         log.debug("builder bean Object defineID is {%0} ...", defineID);
@@ -200,7 +205,7 @@ public class EngineLogic {
         AbstractBeanBuilder<AbstractBeanDefine> builder = this.builderMap.get(defineType);
         if (builder == null) {
             log.error("bean {%0} Type {%1} is doesn`t support!", defineID, defineType);
-            throw new DoesSupportException("bean " + defineID + " Type " + defineType + " is doesn`t support!");
+            throw new SupportException("bean " + defineID + " Type " + defineType + " is doesn`t support!");
         }
         //2.创建bean
         Object obj = this.applicationContext.getExpandPointManager().exePointOnReturn(BeforeCreatePoint.class, //预创建Bean
@@ -215,18 +220,18 @@ public class EngineLogic {
                 Object[] initParam_objects = transform_toObjects(null, initParamDefine, params);//null此时还没有建立对象。
                 if (factory.isStatic() == true) {
                     //静态工厂方法创建
-                    log.debug("invoke factoryMethod ,function is static....");
+                    log.debug("create by static ,function is static....");
                     Class<?> factoryType = this.applicationContext.getBeanType(factoryBeanID);
-                    Method factoryMethod = factoryType.getMethod(factory.getCodeName(), initParam_Types);
-                    obj = factoryMethod.invoke(null, initParam_objects);
-                    log.info("invoke factoryMethod {%0}, defineID = {%1}, return = {%2}.", factoryMethod, defineID, obj);
+                    PropxyObject op = this.findMethodByC(factoryType, initParam_objects);
+                    obj = op.invokeMethod(factory.getCodeName());
+                    log.info("create by static {%0}, defineID = {%1}, return = {%2}.", factory.getCodeName(), defineID, obj);
                 } else {
                     //工厂方法创建
-                    log.debug("invoke factoryMethod ....");
+                    log.debug("create by factory ....");
                     Object factoryObject = this.applicationContext.getBean(factoryBeanID, params);/*params参数会被顺势传入工厂bean中。*/
-                    Method factoryMethod = factoryObject.getClass().getMethod(factory.getCodeName(), initParam_Types);
-                    obj = factoryMethod.invoke(factoryObject, initParam_objects);
-                    log.info("invoke factoryMethod {%0}, defineID = {%1}, return = {%2}.", factoryMethod, defineID, obj);
+                    PropxyObject op = this.findMethodByO(factoryObject, initParam_objects);
+                    obj = op.invokeMethod(factory.getCodeName());
+                    log.info("create by factory {%0}, defineID = {%1}, return = {%2}.", factory.getCodeName(), defineID, obj);
                 }
             } else {
                 //使用builder创建。
@@ -239,7 +244,7 @@ public class EngineLogic {
         String iocEngineName = define.getIocEngine();
         if (iocEngineName == null) {
             log.error("{%0} ioc engine name is null.", defineID);
-            throw new DoesSupportException(defineID + " ioc engine name is null.");
+            throw new SupportException(defineID + " ioc engine name is null.");
         }
         IocEngine iocEngine = this.getEngine(iocEngineName);
         log.info("ioc defineID = {%0} ,engine name is {%1}.", defineID, iocEngineName);
@@ -268,6 +273,18 @@ public class EngineLogic {
             }
         return (T) obj;
     };
+    private PropxyObject findMethodByC(Class<?> parentClass, Object[] params) {
+        PropxyObject po = new PropxyObject(parentClass);
+        for (Object o : params)
+            po.put(o);
+        return po;
+    }
+    private PropxyObject findMethodByO(Object parent, Object[] params) {
+        PropxyObject po = new PropxyObject(parent);
+        for (Object o : params)
+            po.put(o);
+        return po;
+    }
     /*将一组属性转换成对象。*/
     private Object[] transform_toObjects(Object object, Collection<? extends AbstractPropertyDefine> pds, Object[] params) throws Throwable {
         if (pds == null)

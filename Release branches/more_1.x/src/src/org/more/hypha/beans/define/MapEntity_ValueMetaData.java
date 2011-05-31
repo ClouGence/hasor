@@ -15,7 +15,7 @@
  */
 package org.more.hypha.beans.define;
 import java.util.Map;
-import org.more.StateException;
+import org.more.core.error.MoreStateException;
 /**
  * 表示一个{@link Map}类型的一个key value键值对的元信息描述。
  * @version 2010-9-17
@@ -46,7 +46,7 @@ public class MapEntity_ValueMetaData extends Collection_ValueMetaData<AbstractVa
             this.value = value;
             return;
         }
-        throw new StateException("key，value都已经设置.");
+        throw new MoreStateException("key，value都已经设置.");
     }
     public int size() {
         if (this.key == null && this.value == null)

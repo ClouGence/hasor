@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha;
-import org.more.RepeateException;
+import org.more.core.error.RepeateException;
 /**
  * 出现重复定义Bean。
  * @version : 2011-5-18

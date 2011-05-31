@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package org.more.hypha;
-import org.more.core.ognl.OgnlException;
+import org.more.core.error.MoreActionException;
 /**
  * hypha的el异常。
  * @version : 2011-5-18
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ELException extends OgnlException {
+public class ELException extends MoreActionException {
     private static final long serialVersionUID = 4226135960558522394L;
     /** hypha的el异常。*/
     public ELException(String string) {

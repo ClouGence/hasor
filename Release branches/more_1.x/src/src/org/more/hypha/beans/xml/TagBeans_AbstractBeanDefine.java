@@ -16,7 +16,7 @@
 package org.more.hypha.beans.xml;
 import java.util.HashMap;
 import java.util.Map;
-import org.more.NoDefinitionException;
+import org.more.core.error.DefineException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
@@ -44,7 +44,9 @@ public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBaseBeanDefi
     };
     /**定义模板属性。*/
     public enum PropertyKey {
-        id, name, logicPackage, iocEngine, boolAbstract, boolInterface, boolSingleton, boolLazyInit, description, factoryName, factoryMethod, useTemplate, initMethod, destroyMethod
+        id, name, logicPackage, iocEngine, //
+        boolAbstract, boolInterface, boolSingleton, boolLazyInit, //
+        description, factoryName, factoryMethod, initMethod, destroyMethod, useTemplate
     }
     /**关联属性与xml的属性对应关系。*/
     protected Map<Enum<?>, String> getPropertyMappings() {
@@ -84,7 +86,7 @@ public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBaseBeanDefi
             }
             //
             if (template == null)
-                throw new NoDefinitionException("[" + define.getName() + "]找不到[" + useTemplate + "]的Bean模板定义.");
+                throw new DefineException("[" + define.getName() + "]找不到[" + useTemplate + "]的Bean模板定义.");
             this.putAttribute(define, "useTemplate", template);
         }
         /*2.logicPackage属性*/
@@ -98,7 +100,7 @@ public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBaseBeanDefi
         String factoryName = event.getAttributeValue("factoryName");
         if (factoryName != null) {
             if (beanDefineManager.containsBeanDefine(factoryName) == false)
-                throw new NoDefinitionException("[" + define.getName() + "]找不到关联的工厂[" + factoryName + "]Bean定义");
+                throw new DefineException("[" + define.getName() + "]找不到关联的工厂[" + factoryName + "]Bean定义");
             TemplateBeanDefine factoryBean = (TemplateBeanDefine) beanDefineManager.getBeanDefine(factoryName);
             String factoryMethod = event.getAttributeValue("factoryMethod");
             AbstractMethodDefine methodDefine = factoryBean.getMethod(factoryMethod);

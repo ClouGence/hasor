@@ -16,7 +16,7 @@
 package org.more.hypha.beans.xml;
 import java.util.HashMap;
 import java.util.Map;
-import org.more.NoDefinitionException;
+import org.more.core.error.DefineException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.hypha.beans.define.MethodDefine;
@@ -61,7 +61,7 @@ public class TagBeans_Method extends TagBeans_AbstractDefine<MethodDefine> {
         TemplateBeanDefine define = (TemplateBeanDefine) context.getAttribute(TagBeans_TemplateBean.BeanDefine);
         //
         if (method.getCodeName() == null)
-            throw new NoDefinitionException("[" + define.getName() + "]的方法定义未定义codeName属性。");
+            throw new DefineException("[" + define.getName() + "]的方法定义未定义codeName属性。");
         if (method.getName() == null)
             this.putAttribute(method, "name", method.getCodeName());
         //
