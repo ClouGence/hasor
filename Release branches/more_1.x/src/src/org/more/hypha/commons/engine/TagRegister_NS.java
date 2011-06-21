@@ -13,25 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.config;
+package org.more.hypha.commons.engine;
+import org.more.hypha.commons.xml.Tag_Abstract;
+import org.more.hypha.context.xml.XmlDefineResource;
 /**
- * 该类是封装c:beanType标签用的。
- * @version : 2011-4-25
+ * 用于解析e:engine命名空间标签解析器基类，主要用于区分不同命名空间。
+ * @version : 2011-6-3
  * @author 赵永春 (zyc@byshell.org)
  */
-public class B_BeanType {
-    private String tName     = null;
-    private String className = null;
-    public String gettName() {
-        return tName;
-    }
-    public void settName(String tName) {
-        this.tName = tName;
-    }
-    public String getClassName() {
-        return className;
-    }
-    public void setClassName(String className) {
-        this.className = className;
+public class TagRegister_NS extends Tag_Abstract {
+    public TagRegister_NS(XmlDefineResource configuration) {
+        super(configuration);
     }
 }

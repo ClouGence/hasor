@@ -15,7 +15,7 @@
  */
 package org.more.hypha.beans.assembler.builder;
 import org.more.hypha.beans.define.ScriptBeanDefine;
-import org.more.hypha.commons.engine.AbstractBeanBuilder;
+import org.more.hypha.commons.logic.AbstractBeanBuilder;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
 /**
@@ -31,7 +31,7 @@ public class ScriptBeanBuilder extends AbstractBeanBuilder<ScriptBeanDefine> {
         a
         return null;
     }
-    public <O> O createBean(ScriptBeanDefine define, Object[] params) throws Throwable {
+    public <O> O createBean(Class<?> classType, ScriptBeanDefine define, Object[] params) throws Throwable {
         // TODO Auto-generated method stub
         return null;
     }

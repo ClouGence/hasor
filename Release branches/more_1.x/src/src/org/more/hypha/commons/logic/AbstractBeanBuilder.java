@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.commons.engine;
+package org.more.hypha.commons.logic;
 import org.more.hypha.AbstractBeanDefine;
-import org.more.hypha.ApplicationContext;
 import org.more.hypha.commons.xml.Tag_Abstract;
+import org.more.hypha.context.AbstractApplicationContext;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
 /**
@@ -25,21 +25,21 @@ import org.more.log.LogFactory;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractBeanBuilder<T extends AbstractBeanDefine> {
-    private static final ILog  log                = LogFactory.getLog(Tag_Abstract.class);
-    private ApplicationContext applicationContext = null;
+    private static final ILog          log                = LogFactory.getLog(Tag_Abstract.class);
+    private AbstractApplicationContext applicationContext = null;
     /*------------------------------------------------------------------------------*/
-    /**设置当前{@link AbstractBeanBuilder}使用的{@link ApplicationContext}环境对象。*/
-    public void setApplicationContext(ApplicationContext applicationContext) {
+    /**设置当前{@link AbstractBeanBuilder}使用的{@link AbstractApplicationContext}环境对象。*/
+    public void setApplicationContext(AbstractApplicationContext applicationContext) {
         log.debug("set ApplicationContext {%0}", applicationContext);
         this.applicationContext = applicationContext;
     };
-    /**获取{@link ApplicationContext}*/
-    protected ApplicationContext getApplicationContext() {
+    /**获取{@link AbstractApplicationContext}*/
+    protected AbstractApplicationContext getApplicationContext() {
         return this.applicationContext;
     };
     /*------------------------------------------------------------------------------*/
-    /**装载bean定义的类型。*/
+    /**装载bean定义的类型，*/
     public abstract Class<?> loadType(T define, Object[] params) throws Throwable;
-    /**创建Bean对象。*/
-    public abstract <O> O createBean(T define, Object[] params) throws Throwable;
+    /**创建Bean对象，classType参数是可能经过加工之后的Ben类型与loadType方法不一样。*/
+    public abstract <O> O createBean(Class<?> classType, T define, Object[] params) throws Throwable;
 };

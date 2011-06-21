@@ -20,7 +20,7 @@ import org.more.hypha.beans.define.PropertyType;
 import org.more.hypha.beans.define.Simple_ValueMetaData;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
-import org.more.util.StringConvert;
+import org.more.util.StringConvertUtil;
 import org.more.util.attribute.IAttribute;
 /**
  * {@link QPP_Value}不处理boolean,byte,short,int,long,float,double,char,string
@@ -40,7 +40,7 @@ public class QPP_Value implements QPP {
             propType = Simple_ValueMetaData.DefaultValueType;
         //2.解析
         Class<?> propClass = Simple_ValueMetaData.getPropertyType(propType);
-        Object var = StringConvert.changeType(value, propClass);
+        Object var = StringConvertUtil.changeType(value, propClass);
         Simple_ValueMetaData newMEDATA = new Simple_ValueMetaData();
         newMEDATA.setValue(var);
         newMEDATA.setValueMetaType(propType);

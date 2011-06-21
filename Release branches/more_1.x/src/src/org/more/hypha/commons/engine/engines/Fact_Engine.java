@@ -13,23 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.define;
-import org.more.hypha.InitPropertyDefine;
+package org.more.hypha.commons.engine.engines;
+import org.more.hypha.AbstractBeanDefine;
+import org.more.hypha.ValueMetaData;
+import org.more.hypha.commons.logic.IocEngine;
+import org.more.hypha.commons.logic.ValueMetaDataParser;
 /**
- * 表示一个bean定义中的一种属性或参数
- * @version 2010-9-15
+ * 
+ * @version : 2011-6-3
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ConstructorDefine extends AbstractPropertyDefine implements InitPropertyDefine {
-    private int index = -1; //属性索引
-    public int getIndex() {
-        return this.index;
-    }
-    public void setIndex(int index) {
-        this.index = index;
-    }
-    /**返回具有特征的字符串。*/
-    public String toString() {
-        return this.getClass().getSimpleName() + "@" + this.hashCode() + " index=" + this.getIndex();
+public class Fact_Engine extends IocEngine {
+    public void ioc(Object obj, AbstractBeanDefine define, Object[] params) throws Throwable {
+        // TODO Auto-generated method stub
+        a
     }
 }

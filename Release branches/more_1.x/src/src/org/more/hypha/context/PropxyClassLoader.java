@@ -41,27 +41,27 @@ class PropxyClassLoader extends ClassLoader {
     }
     //
     public Class<?> loadClass(String name) throws ClassNotFoundException {
-        return this.loader.loadClass(name);
+        return this.getLoader().loadClass(name);
     }
     public URL getResource(String name) {
-        return this.loader.getResource(name);
+        return this.getLoader().getResource(name);
     }
     public Enumeration<URL> getResources(String name) throws IOException {
-        return this.loader.getResources(name);
+        return this.getLoader().getResources(name);
     }
     public InputStream getResourceAsStream(String name) {
-        return this.loader.getResourceAsStream(name);
+        return this.getLoader().getResourceAsStream(name);
     }
     public synchronized void setDefaultAssertionStatus(boolean enabled) {
-        this.loader.setDefaultAssertionStatus(enabled);
+        this.getLoader().setDefaultAssertionStatus(enabled);
     }
     public synchronized void setPackageAssertionStatus(String packageName, boolean enabled) {
-        this.loader.setPackageAssertionStatus(packageName, enabled);
+        this.getLoader().setPackageAssertionStatus(packageName, enabled);
     }
     public synchronized void setClassAssertionStatus(String className, boolean enabled) {
-        this.loader.setClassAssertionStatus(className, enabled);
+        this.getLoader().setClassAssertionStatus(className, enabled);
     }
     public synchronized void clearAssertionStatus() {
-        this.loader.clearAssertionStatus();
+        this.getLoader().clearAssertionStatus();
     }
 }

@@ -35,7 +35,6 @@ public abstract class AbstractBaseBeanDefine extends AbstractDefine<AbstractBean
     private String                                logicPackage  = null;                                       //逻辑包
     private String                                iocEngine     = "Ioc";                                      //生成Bean所使用的生成器名
     private boolean                               boolAbstract  = false;                                      //抽象标志
-    private boolean                               boolInterface = false;                                      //接口标志
     private boolean                               boolSingleton = false;                                      //单态标志
     private boolean                               boolLazyInit  = true;                                       //延迟装载标志
     private String                                description   = null;                                       //描述信息
@@ -81,10 +80,6 @@ public abstract class AbstractBaseBeanDefine extends AbstractDefine<AbstractBean
     public boolean isAbstract() {
         return this.boolAbstract;
     };
-    /**返回一个boolean值，表示类是否为一个接口。*/
-    public boolean isInterface() {
-        return this.boolInterface;
-    };
     /**返回一个boolean值，表示这个bean是否为单态的。*/
     public boolean isSingleton() {
         return this.boolSingleton;
@@ -102,7 +97,7 @@ public abstract class AbstractBaseBeanDefine extends AbstractDefine<AbstractBean
         return this.factoryMethod;
     };
     /**该属性是用来定义在bean上的一些方法，返回的集合是一个只读集合。*/
-    public Collection<? extends AbstractMethodDefine> getMethods() {
+    public Collection<AbstractMethodDefine> getMethods() {
         return Collections.unmodifiableCollection((Collection<AbstractMethodDefine>) this.methods.values());
     };
     /**根据方法的声明名称获取其方法定义。*/
@@ -184,10 +179,6 @@ public abstract class AbstractBaseBeanDefine extends AbstractDefine<AbstractBean
     /**设置该bean是否为一个抽象的。*/
     public void setBoolAbstract(boolean boolAbstract) {
         this.boolAbstract = boolAbstract;
-    }
-    /**设置该bean是否为一个接口。*/
-    public void setBoolInterface(boolean boolInterface) {
-        this.boolInterface = boolInterface;
     }
     /**设置该bean是否为一个单态的。*/
     public void setBoolSingleton(boolean boolSingleton) {

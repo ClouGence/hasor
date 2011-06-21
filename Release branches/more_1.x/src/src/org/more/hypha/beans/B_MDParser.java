@@ -13,23 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.define;
-import org.more.hypha.InitPropertyDefine;
+package org.more.hypha.beans;
 /**
- * 表示一个bean定义中的一种属性或参数
- * @version 2010-9-15
+ * 该类是封装c:parser标签用的。
+ * @version : 2011-4-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ConstructorDefine extends AbstractPropertyDefine implements InitPropertyDefine {
-    private int index = -1; //属性索引
-    public int getIndex() {
-        return this.index;
+public class B_MDParser {
+    private String mdType    = null;
+    private String className = null;
+    public String getMdType() {
+        return mdType;
     }
-    public void setIndex(int index) {
-        this.index = index;
+    public void setMdType(String mdType) {
+        this.mdType = mdType;
     }
-    /**返回具有特征的字符串。*/
-    public String toString() {
-        return this.getClass().getSimpleName() + "@" + this.hashCode() + " index=" + this.getIndex();
+    public String getClassName() {
+        return className;
+    }
+    public void setClassName(String className) {
+        this.className = className;
     }
 }

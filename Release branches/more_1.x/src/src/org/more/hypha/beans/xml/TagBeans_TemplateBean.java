@@ -31,4 +31,9 @@ public class TagBeans_TemplateBean extends TagBeans_AbstractBeanDefine<TemplateB
     protected TemplateBeanDefine createDefine(XmlStackDecorator context) {
         return new TemplateBeanDefine();
     }
+    protected Object getPropertyValue(TemplateBeanDefine define, Enum<?> propertyEnum, String xmlValue) {
+        if (propertyEnum == PropertyKey.boolAbstract)
+            return true;
+        return super.getPropertyValue(define, propertyEnum, xmlValue);
+    };
 }

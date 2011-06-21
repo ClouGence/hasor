@@ -25,7 +25,7 @@ import org.more.hypha.Event;
 import org.more.hypha.EventManager;
 import org.more.hypha.ExpandPointManager;
 import org.more.hypha.commons.AbstractELContext;
-import org.more.hypha.commons.engine.EngineLogic;
+import org.more.hypha.commons.logic.EngineLogic;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
 import org.more.util.attribute.IAttribute;
@@ -121,6 +121,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         //
         log.info("sending event...");
         this.getEventManager().doEvent(Event.getEvent(InitEvent.class), this);
+        this.getEventManager().doEvent(Event.getEvent(InitedEvent.class), this);
         log.info("started!");
     };
     /**当JVM回收该对象时自动调用销毁方法。*/

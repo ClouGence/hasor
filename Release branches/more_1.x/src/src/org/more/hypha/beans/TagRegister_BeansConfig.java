@@ -17,12 +17,13 @@ package org.more.hypha.beans;
 import org.more.core.xml.XmlParserKit;
 import org.more.hypha.Event;
 import org.more.hypha.EventManager;
-import org.more.hypha.beans.config.BeansConfig_BeanType;
-import org.more.hypha.beans.config.BeansConfig_BeanTypeConfig;
-import org.more.hypha.beans.config.BeansConfig_MDParserConfig;
-import org.more.hypha.beans.config.BeansConfig_Parser;
+import org.more.hypha.beans.xml.BeansConfig_BeanType;
+import org.more.hypha.beans.xml.BeansConfig_BeanTypeConfig;
+import org.more.hypha.beans.xml.BeansConfig_MDParserConfig;
+import org.more.hypha.beans.xml.BeansConfig_Parser;
 import org.more.hypha.context.DestroyEvent;
 import org.more.hypha.context.InitEvent;
+import org.more.hypha.context.InitedEvent;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.hypha.context.xml.XmlLoadEvent;
 import org.more.hypha.context.xml.XmlLoadedEvent;
@@ -53,6 +54,7 @@ public class TagRegister_BeansConfig implements XmlNameSpaceRegister {
         em.addEventListener(Event.getEvent(XmlLoadEvent.class), new OnXmlLoad());
         em.addEventListener(Event.getEvent(XmlLoadedEvent.class), new OnXmlLoaded());
         em.addEventListener(Event.getEvent(InitEvent.class), new OnInit());
+        em.addEventListener(Event.getEvent(InitedEvent.class), new OnInited());
         em.addEventListener(Event.getEvent(DestroyEvent.class), new OnDestroy());
     }
 }

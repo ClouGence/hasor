@@ -13,46 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans;
-import java.util.List;
+package org.more.hypha.commons.engine;
+import java.util.Map;
+import java.util.Set;
 import org.more.hypha.Event.Sequence;
 import org.more.hypha.EventListener;
-import org.more.hypha.beans.xml.BeansConfig_BeanTypeConfig;
-import org.more.hypha.beans.xml.BeansConfig_MDParserConfig;
-import org.more.hypha.commons.logic.AbstractBeanBuilder;
 import org.more.hypha.commons.logic.EngineLogic;
-import org.more.hypha.commons.logic.ValueMetaDataParser;
+import org.more.hypha.commons.logic.IocEngine;
 import org.more.hypha.context.AbstractApplicationContext;
 import org.more.hypha.context.InitEvent;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
 /**
- * beans的初始化EventException
+ * 引擎初始化
  * @version : 2011-4-22
  * @author 赵永春 (zyc@byshell.org)
  */
-@SuppressWarnings({ "unchecked", "rawtypes" })
+@SuppressWarnings("unchecked")
 class OnInit implements EventListener<InitEvent> {
     private static ILog log = LogFactory.getLog(OnInit.class);
     public void onEvent(InitEvent event, Sequence sequence) throws Throwable {
         AbstractApplicationContext context = (AbstractApplicationContext) event.toParams(sequence).applicationContext;
         ClassLoader loader = context.getBeanClassLoader();
-        //1.获取引擎
-        EngineLogic engine = context.getEngineLogic();
-        //2.注册Bean类型
-        List<B_BeanType> btList = (List<B_BeanType>) context.getFlash().getAttribute(BeansConfig_BeanTypeConfig.BTConfigList);
-        if (btList != null)
-            for (B_BeanType bt : btList) {
-                AbstractBeanBuilder builder = (AbstractBeanBuilder) loader.loadClass(bt.getClassName()).newInstance();
-                engine.regeditBeanBuilder(bt.gettName(), builder);
+        EngineLogic logic = context.getEngineLogic();
+        Map<String, String> mapping = (Map<String, String>) context.getFlash().getAttribute(TagEngine_Engine.ConfigList);
+        if (mapping != null) {
+            Set<String> keys = mapping.keySet();
+            int count = keys.size();
+            int index = 0;
+            for (String k : keys) {
+                IocEngine ioc = (IocEngine) loader.loadClass(mapping.get(k)).newInstance();
+                logic.addIocEngine(k, ioc);
+                log.debug("add engine {%0} of {%1} OK!", index, count);
+                index++;
             }
-        //3.注册元信息解析器
-        List<B_MDParser> mdList = (List<B_MDParser>) context.getFlash().getAttribute(BeansConfig_MDParserConfig.MDParserConfigList);
-        if (mdList != null)
-            for (B_MDParser mdp : mdList) {
-                ValueMetaDataParser parser = (ValueMetaDataParser) loader.loadClass(mdp.getClassName()).newInstance();
-                engine.regeditValueMetaDataParser(mdp.getMdType(), parser);
-            }
-        log.info("hypha.beans init OK!");
-    };
+        } else
+            log.debug("not load ioc engine!");
+    }
 }

@@ -13,29 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.config;
+package org.more.hypha.beans.xml;
+import java.util.ArrayList;
 import java.util.List;
 import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
+import org.more.hypha.beans.B_MDParser;
 import org.more.hypha.context.xml.XmlDefineResource;
 /**
- * 用于解析c:beanType标签
+ * 用于解析bc:mdParser-config标签
  * @version : 2011-4-22
  * @author 赵永春 (zyc@byshell.org)
  */
-@SuppressWarnings("unchecked")
-public class BeansConfig_BeanType extends BeansConfig_NS implements XmlElementHook {
-    public BeansConfig_BeanType(XmlDefineResource configuration) {
+public class BeansConfig_MDParserConfig extends BeansConfig_NS implements XmlElementHook {
+    public static final String MDParserConfigList = "$more_BeansConfig_mdConfigList";
+    public BeansConfig_MDParserConfig(XmlDefineResource configuration) {
         super(configuration);
     }
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
-        List<B_BeanType> btList = (List<B_BeanType>) context.getAttribute(BeansConfig_BeanTypeConfig.BTConfigList);
-        B_BeanType bt = new B_BeanType();
-        bt.settName(event.getAttributeValue("tName"));
-        bt.setClassName(event.getAttributeValue("class"));
-        btList.add(bt);
+        List<B_MDParser> btList = new ArrayList<B_MDParser>();
+        context.setAttribute(MDParserConfigList, btList);
+        this.getDefineResource().getFlash().setAttribute(MDParserConfigList, btList);
     }
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
 }

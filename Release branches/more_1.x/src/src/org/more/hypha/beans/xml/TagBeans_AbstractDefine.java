@@ -20,6 +20,7 @@ import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.util.BeanUtil;
 /**
  * bases命名空间解析器的基类，在该类中定义了一些工具性的方法。
  * @version 2010-9-16
@@ -30,7 +31,7 @@ public abstract class TagBeans_AbstractDefine<T> extends TagBeans_NS implements 
     /**创建{@link TagBeans_AbstractDefine}对象*/
     public TagBeans_AbstractDefine(XmlDefineResource configuration) {
         super(configuration);
-    }
+    };
     /**如果isPutAttribute方法返回true则设置到{@link XmlStackDecorator}属性范围中的属性名由该方法确定。*/
     protected abstract String getAttributeName();
     /**创建定义类型对象。*/
@@ -41,7 +42,7 @@ public abstract class TagBeans_AbstractDefine<T> extends TagBeans_NS implements 
      */
     protected boolean isSpanStack() {
         return true;
-    }
+    };
     /**获取一个定义，如果没有就调用createDefine方法创建它。*/
     protected final T getDefine(XmlStackDecorator context) {
         String defineName = this.getAttributeName();
@@ -57,14 +58,14 @@ public abstract class TagBeans_AbstractDefine<T> extends TagBeans_NS implements 
             context.setAttribute(defineName, define);
         }
         return define;
-    }
+    };
     /**该方法返回一个Map，Map的key定义的是定义中声明的属性，而Value中保存的是对应的XML元素属性名。*/
     protected abstract Map<Enum<?>, String> getPropertyMappings();
     /**开始解析标签，其中包括创建对应Bean和解析各个属性。*/
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
         context.createStack();
         //1.获取Define
-        Object define = this.getDefine(context);
+        T define = this.getDefine(context);
         //2.设置BeanDefine的值
         Map<Enum<?>, String> propertys = this.getPropertyMappings();
         if (propertys == null)
@@ -73,14 +74,25 @@ public abstract class TagBeans_AbstractDefine<T> extends TagBeans_NS implements 
             String definePropertyName = att.name();
             String xmlPropertyName = propertys.get(att);
             //
-            String xmlPropertyValue = event.getAttributeValue(xmlPropertyName);
-            if (xmlPropertyValue == null)
+            String xmlPropertyValue_s = event.getAttributeValue(xmlPropertyName);
+            Object xmlPropertyValue_o = this.getPropertyValue(define, att, xmlPropertyValue_s);
+            if (xmlPropertyValue_o == null)
                 continue;
-            this.putAttribute(define, definePropertyName, xmlPropertyValue);
+            BeanUtil.writeProperty(define, definePropertyName, xmlPropertyValue_o);
         }
+    };
+    /**
+     * 获取或转换指定属性枚举的属性值。
+     * @param define 所属定义
+     * @param propertyEnum 属性枚举。
+     * @param xmlValue 该属性XML中定义的属性值。
+     * @return 返回属性值。
+     */
+    protected Object getPropertyValue(T define, Enum<?> propertyEnum, String xmlValue) {
+        return xmlValue;
     };
     /**结束解析标签。*/
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
         context.dropStack();
-    }
+    };
 }

@@ -19,24 +19,19 @@ import org.more.hypha.ApplicationContext;
 import org.more.hypha.context.AbstractApplicationContext;
 import org.more.hypha.context.AbstractDefineResource;
 import org.more.hypha.context.xml.XmlDefineResource;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
 /**
  * 简单的{@link ApplicationContext}接口实现类。
  * Date : 2011-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
 public class HyphaApplicationContext extends AbstractApplicationContext {
-    private static ILog            log            = LogFactory.getLog(HyphaApplicationContext.class);
     private AbstractDefineResource defineResource = null;
     // 
     public HyphaApplicationContext() throws Throwable {
         super(null);
-        log.info("init HyphaApplicationContext start...");
         XmlDefineResource adr = new XmlDefineResource();//必须用XmlDefineResource否则beans可能无法被装载。
         adr.loadDefine();
         this.defineResource = adr;
-        log.info("init HyphaApplicationContext started!");
     }
     public HyphaApplicationContext(AbstractDefineResource defineResource) throws NullPointerException, MoreStateException {
         super(null);

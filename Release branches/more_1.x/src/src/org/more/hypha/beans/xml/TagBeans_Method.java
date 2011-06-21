@@ -22,6 +22,7 @@ import org.more.core.xml.stream.EndElementEvent;
 import org.more.hypha.beans.define.MethodDefine;
 import org.more.hypha.beans.define.TemplateBeanDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.util.BeanUtil;
 /**
  * 解析method标签。
  * @version 2010-10-13
@@ -63,7 +64,7 @@ public class TagBeans_Method extends TagBeans_AbstractDefine<MethodDefine> {
         if (method.getCodeName() == null)
             throw new DefineException("[" + define.getName() + "]的方法定义未定义codeName属性。");
         if (method.getName() == null)
-            this.putAttribute(method, "name", method.getCodeName());
+            BeanUtil.writeProperty(method, "name", method.getCodeName());
         //
         define.addMethod(method);
         super.endElement(context, xpath, event);

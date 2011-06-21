@@ -34,10 +34,8 @@ public interface AbstractBeanDefine extends IAttribute {
     public String getBeanType();
     /**属性注入所使用的注入方式，Fact，Ioc，User*/
     public String getIocEngine();
-    /**返回一个boolean值，表示类是否为一个抽象类。*/
+    /**返回一个boolean值，表示类是否为一个抽象的。*/
     public boolean isAbstract();
-    /**返回一个boolean值，表示类是否为一个接口。*/
-    public boolean isInterface();
     /**返回一个boolean值，表示这个bean是否为单态的。*/
     public boolean isSingleton();
     /**返回一个boolean值，表示这个bean是否为延迟装载的。*/
@@ -57,9 +55,9 @@ public interface AbstractBeanDefine extends IAttribute {
      * 启动参数通常是指构造方法参数，对于工厂形式创建启动参数代表了工厂方法的参数列表。
      * 返回的集合是一个只读集合。
      */
-    public Collection<? extends AbstractPropertyDefine> getInitParams();
+    public Collection<? extends InitPropertyDefine> getInitParams();
     /**返回bean的定义属性集合，返回的集合是一个只读集合。*/
-    public Collection<? extends AbstractPropertyDefine> getPropertys();
+    public Collection<? extends BeanPropertyDefine> getPropertys();
     /**返回具有特征的字符串。*/
     public String toString();
 }

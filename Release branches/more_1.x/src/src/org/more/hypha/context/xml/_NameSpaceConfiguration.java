@@ -23,7 +23,7 @@ import org.more.core.xml.stream.StartElementEvent;
 import org.more.core.xml.stream.TextEvent;
 import org.more.core.xml.stream.XmlAccept;
 import org.more.core.xml.stream.XmlStreamEvent;
-import org.more.util.StringConvert;
+import org.more.util.StringConvertUtil;
 /**
  * 该类是为了解析regedit.xml而设立的。
  * @version 2010-9-24
@@ -80,13 +80,13 @@ class _NameSpaceConfiguration implements XmlAccept {
             this.currentSchema = new StringBuffer();
             this.currentSchemaEnable = null;
             String sequence = ((StartElementEvent) e).getAttributeValue("initSequence");
-            this.currentSequence = StringConvert.parseInt(sequence, 0);
+            this.currentSequence = StringConvertUtil.parseInt(sequence, 0);
         } else if (e instanceof EndElementEvent) {
             RegisterBean obj = new RegisterBean();
             obj.initSequence = this.currentSequence;
             obj.namespace = this.currentNamespace.toString();
             obj.schema = this.currentSchema.toString();
-            obj.schemaEnable = StringConvert.parseBoolean(this.currentSchemaEnable);
+            obj.schemaEnable = StringConvertUtil.parseBoolean(this.currentSchemaEnable);
             obj.registerClass = this.currentFactory.toString();
             this.registerList.add(obj);
         }

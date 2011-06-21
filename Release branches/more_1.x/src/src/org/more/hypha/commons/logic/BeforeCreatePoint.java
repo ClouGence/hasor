@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.commons.engine;
+package org.more.hypha.commons.logic;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ExpandPoint;
@@ -25,7 +25,7 @@ import org.more.hypha.ExpandPoint;
  * @version 2011-3-7
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface BeforeCreatePoint extends ExpandPoint {
+public interface BeforeCreatePoint extends ExpandPoint<AbstractBeanDefine> {
     /**
      * 执行扩展方法。第一个参数是上一个扩展点执行的返回结果，第二个参数如下表示。<br/>
      * param[0] bean定义<br/>
@@ -33,5 +33,5 @@ public interface BeforeCreatePoint extends ExpandPoint {
      * param[2] {@link AbstractBeanDefine}当前所处的bean定义对象。<br/>
      * param[3] {@link ApplicationContext}扩展点所处的上下文。
      */
-    public Object doIt(Object returnObj, Object[] params);
+    public Object doIt(Object target, Object lastReturnObj, Object[] params);
 };

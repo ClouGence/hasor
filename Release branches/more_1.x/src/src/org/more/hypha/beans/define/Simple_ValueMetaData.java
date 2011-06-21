@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.define;
-import org.more.util.StringConvert;
+import org.more.util.StringConvertUtil;
 /**
  * 表示一个基本类型数据，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#SimpleType}。
  * @version 2010-9-17
@@ -28,7 +28,7 @@ public class Simple_ValueMetaData extends AbstractValueMetaData {
     public static PropertyType getPropertyType(String typeString) {
         if (typeString == null)
             return null;
-        return (PropertyType) StringConvert.parseEnum(typeString, PropertyType.class);
+        return (PropertyType) StringConvertUtil.parseEnum(typeString, PropertyType.class);
     };
     /**根据枚举获取其基本类型Class，*/
     public static Class<?> getPropertyType(PropertyType type) {

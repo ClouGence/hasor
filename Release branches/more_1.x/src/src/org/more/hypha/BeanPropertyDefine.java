@@ -13,23 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.define;
-import org.more.hypha.InitPropertyDefine;
+package org.more.hypha;
 /**
- * 表示一个bean定义中的一种属性或参数
+ * 该接口用于定义一个bean声明中的一个属性或参数信息。
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ConstructorDefine extends AbstractPropertyDefine implements InitPropertyDefine {
-    private int index = -1; //属性索引
-    public int getIndex() {
-        return this.index;
-    }
-    public void setIndex(int index) {
-        this.index = index;
-    }
-    /**返回具有特征的字符串。*/
-    public String toString() {
-        return this.getClass().getSimpleName() + "@" + this.hashCode() + " index=" + this.getIndex();
-    }
+public interface BeanPropertyDefine extends AbstractPropertyDefine {
+    /**返回属性名。*/
+    public String getName();
+    /**返回一个boolean值，表示这个bean是否为延迟注入的。*/
+    public boolean isLazyInit();
 }

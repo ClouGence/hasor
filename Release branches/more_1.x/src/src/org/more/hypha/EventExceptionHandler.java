@@ -22,5 +22,5 @@ import org.more.hypha.Event.Sequence;
  */
 public interface EventExceptionHandler<T extends Event> {
     /**处理该事件异常。*/
-    public void processException(EventException exception, Sequence sequence, EventListener<T> listener);
+    public void processException(Throwable exception, Sequence sequence, EventListener<T> listener);
 }

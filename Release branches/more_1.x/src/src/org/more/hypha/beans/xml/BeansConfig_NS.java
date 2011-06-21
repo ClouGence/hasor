@@ -13,23 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.define;
-import org.more.hypha.InitPropertyDefine;
+package org.more.hypha.beans.xml;
+import org.more.hypha.commons.xml.Tag_Abstract;
+import org.more.hypha.context.xml.XmlDefineResource;
 /**
- * 表示一个bean定义中的一种属性或参数
- * @version 2010-9-15
+ * 用于解析beans-config命名空间标签解析器基类，主要用于区分不同命名空间。
+ * @version : 2011-4-22
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ConstructorDefine extends AbstractPropertyDefine implements InitPropertyDefine {
-    private int index = -1; //属性索引
-    public int getIndex() {
-        return this.index;
-    }
-    public void setIndex(int index) {
-        this.index = index;
-    }
-    /**返回具有特征的字符串。*/
-    public String toString() {
-        return this.getClass().getSimpleName() + "@" + this.hashCode() + " index=" + this.getIndex();
-    }
-}
+public abstract class BeansConfig_NS extends Tag_Abstract {
+    public BeansConfig_NS(XmlDefineResource configuration) {
+        super(configuration);
+    };
+};

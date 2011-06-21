@@ -34,13 +34,20 @@ public class TagBeans_RefBean extends TagBeans_AbstractBeanDefine<RelationBeanDe
     }
     /**定义引用类型Bean的属性*/
     public enum PropertyKey {
-        refBean, refPackage
+        ref, refPackage, useTemplate
     };
     /**关联属性与xml的属性对应关系。*/
     protected Map<Enum<?>, String> getPropertyMappings() {
         Map<Enum<?>, String> propertys = super.getPropertyMappings();
-        propertys.put(PropertyKey.refBean, "refBean");
+        propertys.put(PropertyKey.ref, "refBean");
         propertys.put(PropertyKey.refPackage, "refPackage");
+        propertys.put(PropertyKey.useTemplate, "useTemplate");
         return propertys;
     }
+    protected Object getPropertyValue(RelationBeanDefine define, Enum<?> propertyEnum, String xmlValue) {
+        if (propertyEnum == PropertyKey.useTemplate)
+            return Util.passerUseTemplate(xmlValue, define, this.getDefineResource());
+        else
+            return super.getPropertyValue(define, propertyEnum, xmlValue);
+    };
 }

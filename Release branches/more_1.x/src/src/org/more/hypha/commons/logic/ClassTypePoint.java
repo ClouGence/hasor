@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.commons.engine;
+package org.more.hypha.commons.logic;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ExpandPoint;
@@ -25,12 +25,12 @@ import org.more.hypha.ExpandPoint;
  * @version 2011-3-1
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ClassTypePoint extends ExpandPoint {
+public interface ClassTypePoint extends ExpandPoint<Class<?>> {
     /**
      * 执行扩展方法。第一个参数是上一个扩展点执行的返回结果，第二个参数如下表示。<br/>
-     * param[0] 装载的bean类型{@link Class}类型，注意如果该扩展点不做任何事，必须返回该参数数据。<br/>
-     * param[1] {@link AbstractBeanDefine}当前所处的bean定义对象。<br/>
-     * param[2] {@link ApplicationContext}扩展点所处的上下文。
+     * target  装载的bean类型{@link Class}类型，注意如果该扩展点不做任何事，必须返回该参数数据。<br/>
+     * param[0] {@link AbstractBeanDefine}当前所处的bean定义对象。<br/>
+     * param[1] {@link ApplicationContext}扩展点所处的上下文。
      */
-    public Object doIt(Object returnObj, Object[] params);
+    public Class<?> doIt(Class<?> target, Object lastReturnObj, Object[] params);
 };

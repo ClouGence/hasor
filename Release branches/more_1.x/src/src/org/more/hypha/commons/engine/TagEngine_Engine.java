@@ -13,28 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.config;
-import java.util.ArrayList;
-import java.util.List;
+package org.more.hypha.commons.engine;
+import java.util.HashMap;
+import java.util.Map;
 import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.util.attribute.IAttribute;
 /**
- * 用于解析bc:mdParser-config标签
- * @version : 2011-4-22
+ * 解析e:engine
+ * @version : 2011-6-3
  * @author 赵永春 (zyc@byshell.org)
  */
-public class BeansConfig_MDParserConfig extends BeansConfig_NS implements XmlElementHook {
-    public static final String MDParserConfigList = "$more_BeansConfig_mdConfigList";
-    public BeansConfig_MDParserConfig(XmlDefineResource configuration) {
+public class TagEngine_Engine extends TagRegister_NS implements XmlElementHook {
+    public static final String ConfigList = "$more_Engine_List";
+    public TagEngine_Engine(XmlDefineResource configuration) {
         super(configuration);
     }
+    private Map<String, String> getMapping() {
+        Map<String, String> mapping = null;
+        IAttribute flash = this.getDefineResource().getFlash();
+        if (flash.contains(ConfigList) == false) {
+            mapping = new HashMap<String, String>();
+            flash.setAttribute(ConfigList, mapping);
+        } else
+            mapping = (Map<String, String>) flash.getAttribute(ConfigList);
+        return mapping;
+    }
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
-        List<B_MDParser> btList = new ArrayList<B_MDParser>();
-        context.setAttribute(MDParserConfigList, btList);
-        this.getDefineResource().getFlash().setAttribute(MDParserConfigList, btList);
+        Map<String, String> mapping = this.getMapping();
+        String name = event.getAttributeValue("name");
+        String classname = event.getAttributeValue("class");
+        mapping.put(name, classname);//重复注册会导致替换的作用。
     }
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
 }

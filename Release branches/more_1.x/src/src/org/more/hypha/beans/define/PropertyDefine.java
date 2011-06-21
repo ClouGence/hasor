@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.define;
+import org.more.hypha.BeanPropertyDefine;
 /**
  * 表示一个bean定义中的一种属性
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class PropertyDefine extends AbstractPropertyDefine {
+public class PropertyDefine extends AbstractPropertyDefine implements BeanPropertyDefine {
     private String  name         = null; //属性名
     private boolean boolLazyInit = false; //是否延迟注入该属性。
     //-------------------------------------------------------------

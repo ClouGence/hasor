@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.config;
+package org.more.hypha.beans.xml;
 import java.util.ArrayList;
 import java.util.List;
 import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
+import org.more.hypha.beans.B_BeanType;
 import org.more.hypha.context.xml.XmlDefineResource;
 /**
  * 用于解析bc:beanType-config标签

@@ -18,10 +18,10 @@ import java.util.Date;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.define.Date_ValueMetaData;
-import org.more.hypha.commons.engine.ValueMetaDataParser;
+import org.more.hypha.commons.logic.ValueMetaDataParser;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
-import org.more.util.StringConvert;
+import org.more.util.StringConvertUtil;
 /**
  * 解析文本时间日期类型。
  * @version 2011-2-15
@@ -35,9 +35,9 @@ public class Date_MetaData_Parser implements ValueMetaDataParser<Date_ValueMetaD
         String formatString = data.getFormatString();
         Date date = null;
         if (formatString != null)
-            date = StringConvert.parseDate(dateString, formatString);
+            date = StringConvertUtil.parseDate(dateString, formatString);
         else
-            date = StringConvert.parseDate(dateString);
+            date = StringConvertUtil.parseDate(dateString);
         log.debug("parser Date dateString = {%0} ,formater = {%1}.", dateString, formatString);
         return date;
     }

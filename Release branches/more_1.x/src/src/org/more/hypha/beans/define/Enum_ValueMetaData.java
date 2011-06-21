@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.define;
-import org.more.util.StringConvert;
+import org.more.util.StringConvertUtil;
 /**
  * 表示一个大文本数据段，通常使用CDATA来描述对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#Enum}。
  * @version 2010-9-17
@@ -35,11 +35,11 @@ public class Enum_ValueMetaData extends AbstractValueMetaData {
     }
     /**使用一个枚举类型返回属于这个枚举类型中的枚举值。*/
     public Enum<?> getEnum(Class<?> enumType) {
-        return (Enum<?>) StringConvert.changeType(enumValue, enumType);
+        return (Enum<?>) StringConvertUtil.changeType(enumValue, enumType);
     }
     /**使用一个枚举类型返回属于这个枚举类型中的枚举值。*/
     public Enum<?> getEnum(Class<?> enumType, Enum<?> defaultValue) {
-        return (Enum<?>) StringConvert.changeType(enumValue, enumType, defaultValue);
+        return (Enum<?>) StringConvertUtil.changeType(enumValue, enumType, defaultValue);
     }
     /**获取装载的枚举类型。*/
     public Class<?> getEnumClass(ClassLoader enumLoader) throws ClassNotFoundException {

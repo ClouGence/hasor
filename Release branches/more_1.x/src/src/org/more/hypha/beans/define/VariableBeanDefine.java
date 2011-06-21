@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.define;
-import org.more.util.StringConvert;
+import org.more.util.StringConvertUtil;
 /**
  * VariableBeanDefine类用于定义一个值作为bean。该bean可以描述基本类型和字符串类型。
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class VariableBeanDefine extends TemplateBeanDefine {
+public class VariableBeanDefine extends AbstractBaseBeanDefine {
     private VariableType type  = null; //值类型
     private String       value = null; //值
     /**返回“VariableBean”。*/
@@ -42,9 +42,6 @@ public class VariableBeanDefine extends TemplateBeanDefine {
     /**设置值*/
     public void setValue(String value) {
         this.value = value;
-    }
-    public String getUseTemplate() {
-        return null;
     }
     public void setUseTemplate(TemplateBeanDefine useTemplate) {}
     //------------------------------------------------------------------
@@ -73,7 +70,7 @@ public class VariableBeanDefine extends TemplateBeanDefine {
     };
     /**将字符串描述转换为{@link VariableType}枚举。*/
     public static VariableType getVariableType(String type) {
-        return (VariableType) StringConvert.parseEnum(type, VariableType.class);
+        return (VariableType) StringConvertUtil.parseEnum(type, VariableType.class);
     };
     /**根据枚举获取其基本类型Class。*/
     public static Class<?> getType(VariableType typeEnum) {

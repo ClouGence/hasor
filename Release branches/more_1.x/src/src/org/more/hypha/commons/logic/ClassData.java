@@ -13,25 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.beans.config;
+package org.more.hypha.commons.logic;
 /**
- * 该类是封装c:parser标签用的。
- * @version : 2011-4-25
+ * 用来封装{@link AbstractBeanBuilderEx}执行点的代码。
+ * @version : 2011-6-2
  * @author 赵永春 (zyc@byshell.org)
  */
-public class B_MDParser {
-    private String mdType    = null;
-    private String className = null;
-    public String getMdType() {
-        return mdType;
-    }
-    public void setMdType(String mdType) {
-        this.mdType = mdType;
-    }
-    public String getClassName() {
-        return className;
-    }
-    public void setClassName(String className) {
-        this.className = className;
-    }
-}
+public class ClassData {
+    /**字节码表示类，类名。*/
+    public String className = null;
+    /**类的字节码数据。*/
+    public byte[] bytes     = null;
+};

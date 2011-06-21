@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.commons.engine;
+package org.more.hypha.commons.logic;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
 /**

@@ -18,7 +18,7 @@ import java.net.URI;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.define.URI_ValueMetaData;
-import org.more.hypha.commons.engine.ValueMetaDataParser;
+import org.more.hypha.commons.logic.ValueMetaDataParser;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
 /**

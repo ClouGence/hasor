@@ -16,10 +16,10 @@
 package org.more.hypha.beans.assembler.builder;
 import org.more.hypha.beans.define.VariableBeanDefine;
 import org.more.hypha.beans.define.VariableBeanDefine.VariableType;
-import org.more.hypha.commons.engine.AbstractBeanBuilder;
+import org.more.hypha.commons.logic.AbstractBeanBuilder;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
-import org.more.util.StringConvert;
+import org.more.util.StringConvertUtil;
 /**
  * 变量类型bean，该类型bean不能支持aop。
  * @version 2011-2-15
@@ -35,12 +35,9 @@ public class VariableBeanBuilder extends AbstractBeanBuilder<VariableBeanDefine>
         return vtClass;
     }
     @SuppressWarnings("unchecked")
-    public <O> O createBean(VariableBeanDefine define, Object[] params) {
-        VariableType vt = define.getType();
-        Class<?> vtClass = VariableBeanDefine.getType(vt);
+    public <O> O createBean(Class<?> classType, VariableBeanDefine define, Object[] params) {
         String vValye = define.getValue();
-        //
-        Object value = StringConvert.changeType(vValye, vtClass);
+        Object value = StringConvertUtil.changeType(vValye, classType);
         log.debug("Variable Bean value = {%0}", value);
         return (O) value;
     }

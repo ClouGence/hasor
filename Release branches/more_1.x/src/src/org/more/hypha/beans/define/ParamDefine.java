@@ -14,19 +14,29 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.define;
+import org.more.hypha.ParamPropertyDefine;
 /**
  * 表示一个bean定义中的一种参数
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ParamDefine extends AbstractPropertyDefine {
-    private int index = -1; //属性索引
+public class ParamDefine extends AbstractPropertyDefine implements ParamPropertyDefine {
+    private int    index = -1;  //属性索引
+    private String name  = null; //属性名
     public int getIndex() {
         return this.index;
     }
     public void setIndex(int index) {
         this.index = index;
     }
+    /**返回属性名。*/
+    public String getName() {
+        return this.name;
+    }
+    /**设置属性名*/
+    public void setName(String name) {
+        this.name = name;
+    };
     /**返回具有特征的字符串。*/
     public String toString() {
         return this.getClass().getSimpleName() + "@" + this.hashCode() + " index=" + this.getIndex();

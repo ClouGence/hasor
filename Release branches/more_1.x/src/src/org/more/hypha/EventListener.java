@@ -22,5 +22,5 @@ import org.more.hypha.Event.Sequence;
 */
 public interface EventListener<T extends Event> {
     /**处理事件的处理方法，参数是要处理的事件。*/
-    public void onEvent(T event, Sequence sequence) throws EventException;
+    public void onEvent(T event, Sequence sequence) throws Throwable;
 };

@@ -45,6 +45,11 @@ public class TagBeans_VarBean extends TagBeans_AbstractBeanDefine<VariableBeanDe
         propertys.put(PropertyKey.type, "type");
         return propertys;
     }
+    protected Object getPropertyValue(VariableBeanDefine define, Enum<?> propertyEnum, String xmlValue) {
+        if (propertyEnum == TagBeans_AbstractBeanDefine.PropertyKey.boolAbstract)
+            return false;
+        return super.getPropertyValue(define, propertyEnum, xmlValue);
+    };
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
         VariableBeanDefine define = this.getDefine(context);
         if (define.getType() == null)

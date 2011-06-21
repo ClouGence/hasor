@@ -17,10 +17,10 @@ package org.more.hypha.beans.assembler.parser;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.define.Simple_ValueMetaData;
-import org.more.hypha.commons.engine.ValueMetaDataParser;
+import org.more.hypha.commons.logic.ValueMetaDataParser;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
-import org.more.util.StringConvert;
+import org.more.util.StringConvertUtil;
 import org.more.util.attribute.IAttribute;
 /**
  * 简单类型解析器，类型返回null表示可能其值就是null.
@@ -36,7 +36,7 @@ public class SimpleType_MetaData_Parser implements ValueMetaDataParser<Simple_Va
         Object value = fungiAtt.getAttribute(FungiCacheName);
         if (value == null) {
             Class<?> sType = Simple_ValueMetaData.getPropertyType(data.getValueMetaType());
-            value = StringConvert.changeType(data.getValue(), sType);
+            value = StringConvertUtil.changeType(data.getValue(), sType);
             fungiAtt.setAttribute(FungiCacheName, value);
         }
         log.debug("parser SimpleType value = {%0}.", value);

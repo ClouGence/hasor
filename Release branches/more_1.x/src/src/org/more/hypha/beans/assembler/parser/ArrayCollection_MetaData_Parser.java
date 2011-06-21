@@ -20,7 +20,7 @@ import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.assembler.MetaDataUtil;
 import org.more.hypha.beans.define.AbstractValueMetaData;
 import org.more.hypha.beans.define.Array_ValueMetaData;
-import org.more.hypha.commons.engine.ValueMetaDataParser;
+import org.more.hypha.commons.logic.ValueMetaDataParser;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
 /**

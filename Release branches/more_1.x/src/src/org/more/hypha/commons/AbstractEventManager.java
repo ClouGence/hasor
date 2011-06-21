@@ -30,10 +30,10 @@ import org.more.hypha.context.AbstractDefineResource;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
 /**
- * 该类管理事件分发的基类，该类是{@link EventManager}接口的实现类。
- * @version 2010-10-10
- * @author 赵永春 (zyc@byshell.org)
- */
+* 该类管理事件分发的基类，该类是{@link EventManager}接口的实现类。
+* @version 2010-10-10
+* @author 赵永春 (zyc@byshell.org)
+*/
 public class AbstractEventManager implements EventManager {
     private static final ILog                  log                          = LogFactory.getLog(AbstractEventManager.class);
     private AbstractDefineResource             defineResource               = null;
@@ -238,7 +238,7 @@ public class AbstractEventManager implements EventManager {
                     try {
                         listener.onEvent(eventType, sequence);
                         log.debug("listener {%0} run , eventType= {%1}, sequence = {%2}", listener, eventType, sequence);
-                    } catch (EventException e1) {
+                    } catch (Throwable e1) {
                         if (handler == null)
                             handler = sequence.getHandler();
                         if (handler == null)
@@ -246,7 +246,8 @@ public class AbstractEventManager implements EventManager {
                         if (handler != null) {
                             log.info("exeSequence listener {%0}, error , use handler = {%1} , eventType= {%2}, sequence = {%3}", listener, handler, eventType, sequence);
                             handler.processException(e1, sequence, listener);
-                        }
+                        } else
+                            throw new EventException(e1);
                     }
             }
         //end

@@ -18,7 +18,7 @@ import org.more.hypha.ApplicationContext;
 import org.more.hypha.NoDefineBeanException;
 import org.more.hypha.beans.assembler.MetaDataUtil;
 import org.more.hypha.beans.define.RelationBeanDefine;
-import org.more.hypha.commons.engine.AbstractBeanBuilder;
+import org.more.hypha.commons.logic.AbstractBeanBuilder;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
 /**
@@ -57,7 +57,7 @@ public class RelationBeanBuilder extends AbstractBeanBuilder<RelationBeanDefine>
         return bType;
     }
     @SuppressWarnings("unchecked")
-    public <O> O createBean(RelationBeanDefine define, Object[] params) throws Throwable {
+    public <O> O createBean(Class<?> classType, RelationBeanDefine define, Object[] params) throws Throwable {
         //1.确定bean名称。
         String ref = getName(define);
         //2.获取bean。

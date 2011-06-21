@@ -43,25 +43,29 @@ public abstract class AbstractExpandPointManager implements ExpandPointManager {
         return this.defineResource;
     };
     /*------------------------------------------------------------------------------*/
-    public Object exePointOnSequence(Class<? extends ExpandPoint> type, Object... params) {
-        Object returnObj = null;
+    public Object exePointOnSequence(Class<? extends ExpandPoint> type, Object target, Object... params) {
+        Object lastReturnObj = null;
         for (ExpandPoint ep : expandList)
             if (type.isInstance(ep) == true) {
-                returnObj = ep.doIt(returnObj, params);
-                log.info("run ExpandPoint OnSequence ,point = {%0} ,params = {%1} , return = {%2}", ep, params, returnObj);
+                lastReturnObj = ep.doIt(target, lastReturnObj, params);
+                log.info("run ExpandPoint OnSequence ,point = {%0} ,params = {%1} , return = {%2}", ep, params, lastReturnObj);
             }
-        return returnObj;
+        if (lastReturnObj == null)
+            lastReturnObj = target;
+        return lastReturnObj;
     };
-    public Object exePointOnReturn(Class<? extends ExpandPoint> type, Object... params) {
-        Object returnObj = null;
+    public Object exePointOnReturn(Class<? extends ExpandPoint> type, Object target, Object... params) {
+        Object lastReturnObj = null;
         for (ExpandPoint ep : expandList)
             if (type.isInstance(ep) == true) {
-                returnObj = ep.doIt(returnObj, params);
-                log.info("run ExpandPoint OnReturn ,point = {%0} ,params = {%1} , return = {%2}", ep, params, returnObj);
-                if (returnObj != null)
+                lastReturnObj = ep.doIt(target, lastReturnObj, params);
+                log.info("run ExpandPoint OnReturn ,point = {%0} ,params = {%1} , return = {%2}", ep, params, lastReturnObj);
+                if (lastReturnObj != null)
                     break;
             }
-        return returnObj;
+        if (lastReturnObj == null)
+            lastReturnObj = target;
+        return lastReturnObj;
     };
     public void regeditExpandPoint(ExpandPoint point) {
         if (point == null) {

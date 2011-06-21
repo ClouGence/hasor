@@ -39,6 +39,10 @@ public class EventException extends MoreActionException {
         super(string, error);
         this.sequence = sequence;
     }
+    /** 执行事件处理期间发生异常。*/
+    public EventException(Throwable error) {
+        super(error);
+    }
     public Sequence getSequence() {
         return sequence;
     };
