@@ -38,7 +38,7 @@ import org.more.core.asm.ClassWriter;
  * @version 2010-9-3
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ClassBuilder {
+public abstract class ClassBuilder {
     /**该字段会被getClassBytes()方法*/
     protected byte[]               newClassBytes         = null; //新类的字节码。
     private ClassEngine            classEngine           = null; //Class引擎。
@@ -219,14 +219,12 @@ public class ClassBuilder {
      * 写入的visitor。注意使用该扩展方式必须要熟悉ASM3.2框架。visitor环的层次关系是这样的：<br/>
      * <b>第一环</b>，ASM Write；<b>第二环</b>，用户扩展；<b>第三环</b>，Aop；<b>第四环</b>，ASM Read
      */
-    protected ClassAdapter acceptClass(final ClassWriter classVisitor) {
-        return null;
-    }
+    protected abstract ClassAdapter acceptClass(final ClassWriter classVisitor);
     /**
      * 当{@link ClassBuilder#initBuilder(ClassEngine)}方法被ClassEngine调用之后，在结束方法之前该方法会调用
      * {@link ClassBuilder#init(ClassEngine)}方法。这时子类可以通过重写该方法来初始化自己的相关数据。
      */
-    protected void init(final ClassEngine classEngine) {}
+    protected abstract void init(final ClassEngine classEngine);
     /**
      * 当{@link ClassBuilder#builderClass()}方法被ClassEngine调用之后，在结束方法返回{@link ClassConfiguration}
      * 之前该方法会调用{@link ClassBuilder#builder(ClassEngine)}方法。这时子类可以通过重写该方法来构造其它class或者改写原有字节码。

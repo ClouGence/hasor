@@ -21,7 +21,7 @@ import org.more.submit.ActionContext;
 import org.more.submit.ActionContextDecorator;
 import org.more.submit.ActionInvoke;
 import org.more.submit.ActionStack;
-import org.more.util.StringConvert;
+import org.more.util.StringConvertUtil;
 /**
  * 实现submit过滤器的装饰器。
  * @version : 2010-7-26
@@ -52,7 +52,7 @@ public class FilterDecorator extends ActionContextDecorator {
                 boolean isPublic = false;
                 if (fts == null) {
                     String isPublicStr = (String) this.filterContext.getFilterProperty(fName, "isPublicFilter");
-                    isPublic = StringConvert.parseBoolean(isPublicStr);
+                    isPublic = StringConvertUtil.parseBoolean(isPublicStr);
                 } else
                     isPublic = fts.isPublic();
                 //
@@ -87,7 +87,7 @@ public class FilterDecorator extends ActionContextDecorator {
             Filter ft = filterType.getAnnotation(Filter.class);
             if (ft == null) {
                 String mark = (String) this.filterContext.getFilterProperty(filterName, "isFilter");
-                if (StringConvert.parseBoolean(mark) == false)
+                if (StringConvertUtil.parseBoolean(mark) == false)
                     throw new ExistException("过滤器" + filterName + "没有被标记成为一个有效的过滤器，可能没有配置isFilter参数或者没有标记注解。");
             }
             //

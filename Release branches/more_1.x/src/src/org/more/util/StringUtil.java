@@ -19,8 +19,8 @@ package org.more.util;
  * @version 2010-9-19
  * @author 赵永春 (zyc@byshell.org)
  */
-public class StringUtil {
-    /**转换首字母大写*/
+public abstract class StringUtil {
+    /**转换首字母大写。*/
     public static String toUpperCase(String value) {
         StringBuffer sb = new StringBuffer(value);
         char firstChar = sb.charAt(0);
@@ -28,7 +28,7 @@ public class StringUtil {
         sb.insert(0, (char) ((firstChar >= 97) ? firstChar - 32 : firstChar));
         return sb.toString();
     }
-    /**转换首字母小写*/
+    /**转换首字母小写。*/
     public static String toLowerCase(String value) {
         StringBuffer sb = new StringBuffer(value);
         char firstChar = sb.charAt(0);
@@ -36,6 +36,7 @@ public class StringUtil {
         sb.insert(0, (char) ((firstChar <= 90) ? firstChar + 32 : firstChar));
         return sb.toString();
     }
+    /**将通配符转换成正则表达式。*/
     public static String wildToRegex(String wild) {
         StringBuffer result = new StringBuffer("^");
         char metachar[] = { '$', '^', '[', ']', '(', ')', '{', '|', '+', '.', '\\' };
@@ -60,4 +61,4 @@ public class StringUtil {
     public static boolean matchWild(String pattern, String str) {
         return str.matches(wildToRegex(pattern));
     }
-}
+};

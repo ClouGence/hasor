@@ -53,7 +53,7 @@ public class RootClassLoader extends ClassLoader {
         String cn = classEngine.getClassName();
         if (this.classMap.containsKey(cn) == false) {
             this.classMap.put(cn, classEngine);
-            cn = "/" + cn.replace(".", "/") + ".class";
+            cn = cn.replace(".", "/") + ".class";
             this.classMap2.put(cn, classEngine);
         }
     }
@@ -62,7 +62,7 @@ public class RootClassLoader extends ClassLoader {
         String cn = classEngine.getClassName();
         if (this.classMap.containsKey(cn) == true) {
             this.classMap.remove(cn);
-            cn = "/" + cn.replace(".", "/") + ".class";
+            cn = cn.replace(".", "/") + ".class";
             this.classMap2.put(cn, classEngine);
         }
     }

@@ -17,7 +17,7 @@ package org.more.util;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import org.more.core.error.InvokeException;
 /**
  * 创建代理调用对象。通过该类提供的方法可以使调用者无视java的反射机制。直接向对象的参数栈输出参数，
@@ -27,12 +27,12 @@ import org.more.core.error.InvokeException;
  */
 public class PropxyObject {
     /** 存放准备调用方法时传递的参数列表数据，有顺序 */
-    private LinkedList<Object> list       = new LinkedList<Object>();
+    private ArrayList<Object> list       = new ArrayList<Object>();
     /** 被代理的目标对象。 */
-    private Object             target     = null;
-    private Class<?>           targetType = null;
+    private Object            target     = null;
+    private Class<?>          targetType = null;
     /** 方法调用的返回值 */
-    private Object             result     = null;
+    private Object            result     = null;
     /**
      * 创建MRMI代理调用对象。通过该类提供的方法可以使调用者无视java的反射机智。
      * 直接向对象的参数栈输出参数，然后直接调用指定方法完成调用。最终在通过getResult方法返回返回值。

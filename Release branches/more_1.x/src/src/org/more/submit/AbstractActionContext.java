@@ -17,7 +17,7 @@ package org.more.submit;
 import java.lang.reflect.Field;
 import org.more.core.error.DefineException;
 import org.more.core.error.ExistException;
-import org.more.util.StringConvert;
+import org.more.util.StringConvertUtil;
 /**
  * 该类是{@link ActionContext}接口的一个基本实现。该类只是实现了findAction方法。其子类可以管理actionbean对象的创建和生命周期。
  * 此外AbstractActionContext类还在findAction方法中实现了注解的支持。
@@ -39,7 +39,7 @@ public abstract class AbstractActionContext implements ActionContext {
         if (isAction == false) {
             Object obj = this.getActionProperty(actionName, "isAction");
             if (obj != null)
-                isAction = StringConvert.parseBoolean(obj.toString());
+                isAction = StringConvertUtil.parseBoolean(obj.toString());
         }
         //-----------3.字段配置, public boolean isAction=true;
         try {

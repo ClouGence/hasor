@@ -15,7 +15,7 @@
  */
 package org.more.web.page;
 import javax.servlet.jsp.JspException;
-import org.more.util.StringConvert;
+import org.more.util.StringConvertUtil;
 /**
  * 分页标签负责处理页项的标签，标签类型是N类标签。
  * @version 2009-6-17
@@ -32,8 +32,8 @@ public class NextPageTag extends BasePageTag {
             return;
         this.page.childTags.add(this);//注册自己
         //计算firstIndex，lastIndex
-        int first = StringConvert.parseInt(this.first, -1);//默认值-1
-        int last = StringConvert.parseInt(this.last, -1);//默认值-1
+        int first = StringConvertUtil.parseInt(this.first, -1);//默认值-1
+        int last = StringConvertUtil.parseInt(this.last, -1);//默认值-1
         //没有配置first或last
         if (first == -1 && last == -1)
             return;
@@ -54,8 +54,8 @@ public class NextPageTag extends BasePageTag {
     protected int doStartPageTag() throws JspException {
         Object item = page.info.getCurrentItem();
         //计算firstIndex，lastIndex
-        int first = StringConvert.parseInt(this.first, -1);//默认值-1
-        int last = StringConvert.parseInt(this.last, -1);//默认值-1
+        int first = StringConvertUtil.parseInt(this.first, -1);//默认值-1
+        int last = StringConvertUtil.parseInt(this.last, -1);//默认值-1
         //没有配置first或last
         if (first == -1 && last == -1) {
             if (this.page.after.contains(item) == false && item != null) {
@@ -87,7 +87,7 @@ public class NextPageTag extends BasePageTag {
             BasePageTag[] fTag = this.page.getTagByClass(FirstPageTag.class);
             if (fTag.length == 1) {
                 FirstPageTag ft = (FirstPageTag) fTag[0];
-                boolean occupyFirst = StringConvert.parseBoolean(ft.occupyFirst.toString());
+                boolean occupyFirst = StringConvertUtil.parseBoolean(ft.occupyFirst.toString());
                 if (occupyFirst == true)
                     return SKIP_BODY;
             }
@@ -97,7 +97,7 @@ public class NextPageTag extends BasePageTag {
             BasePageTag[] fTag = this.page.getTagByClass(LastPageTag.class);
             if (fTag.length == 1) {
                 LastPageTag ft = (LastPageTag) fTag[0];
-                boolean occupyLast = StringConvert.parseBoolean(ft.occupyLast.toString());
+                boolean occupyLast = StringConvertUtil.parseBoolean(ft.occupyLast.toString());
                 if (occupyLast == true)
                     return SKIP_BODY;
             }

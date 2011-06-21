@@ -28,7 +28,7 @@ import org.more.core.error.TransformException;
  * @author ÕÔÓÀ´º (zyc@byshell.org)
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
-public final class StringConvert {
+public abstract class StringConvertUtil {
     private static final Character DefaultValue_Character = ' ';
     private static final Boolean   DefaultValue_Boolean   = false;
     private static final Byte      DefaultValue_Byte      = 0;
@@ -92,27 +92,27 @@ public final class StringConvert {
         else if (StringBuffer.class == toType)
             return new StringBuffer(valueString);
         else if (Integer.class == toType || int.class == toType)
-            return StringConvert.parseInt(valueString, (Integer) defaultVar);
+            return StringConvertUtil.parseInt(valueString, (Integer) defaultVar);
         else if (Byte.class == toType || byte.class == toType)
-            return StringConvert.parseByte(valueString, (Byte) defaultVar);
+            return StringConvertUtil.parseByte(valueString, (Byte) defaultVar);
         else if (Character.class == toType || char.class == toType) {
             if (valueString.equals("") == true)
                 return DefaultValue_Character;
             return Character.valueOf(valueString.charAt(0));
         } else if (Short.class == toType || short.class == toType)
-            return StringConvert.parseShort(valueString, (Short) defaultVar);
+            return StringConvertUtil.parseShort(valueString, (Short) defaultVar);
         else if (Long.class == toType || long.class == toType)
-            return StringConvert.parseLong(valueString, (Long) defaultVar);
+            return StringConvertUtil.parseLong(valueString, (Long) defaultVar);
         else if (Float.class == toType || float.class == toType)
-            return StringConvert.parseFloat(valueString, (Float) defaultVar);
+            return StringConvertUtil.parseFloat(valueString, (Float) defaultVar);
         else if (Double.class == toType || double.class == toType)
-            return StringConvert.parseDouble(valueString, (Double) defaultVar);
+            return StringConvertUtil.parseDouble(valueString, (Double) defaultVar);
         else if (Boolean.class == toType || boolean.class == toType)
-            return StringConvert.parseBoolean(valueString);
+            return StringConvertUtil.parseBoolean(valueString);
         else if (Date.class.isAssignableFrom(toType) == true) {
             if (value instanceof Date == true)
                 return value;
-            return StringConvert.parseDate(valueString);
+            return StringConvertUtil.parseDate(valueString);
         }
         // -----------´¦ÀíÃ¶¾Ù
         else if (Enum.class.isAssignableFrom(toType) == true) {
@@ -137,7 +137,7 @@ public final class StringConvert {
         try {
             return (value == null || value.equals("") == false) ? Integer.valueOf(value) : defaultValue[0];
         } catch (Exception e) {
-            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Integer;
+            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvertUtil.DefaultValue_Integer;
         }
     }
     /**
@@ -151,10 +151,10 @@ public final class StringConvert {
         try {
             float var = (value == null || value.equals("") == false) ? Float.valueOf(value) : defaultValue[0];
             if (Float.isNaN(var) == true || Float.isInfinite(var) == true)
-                return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Float;
+                return (defaultValue.length >= 1) ? defaultValue[0] : StringConvertUtil.DefaultValue_Float;
             return var;
         } catch (Exception e) {
-            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Float;
+            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvertUtil.DefaultValue_Float;
         }
     }
     /**
@@ -168,7 +168,7 @@ public final class StringConvert {
         try {
             return (value == null || value.equals("") == false) ? Double.valueOf(value) : defaultValue[0];
         } catch (Exception e) {
-            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Double;
+            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvertUtil.DefaultValue_Double;
         }
     }
     /**
@@ -178,11 +178,11 @@ public final class StringConvert {
      */
     public static Boolean parseBoolean(final String value, final Boolean... defaultValue) {
         if (value == null)
-            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Boolean; //false;
+            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvertUtil.DefaultValue_Boolean; //false;
         else if (value.equals("0") == true || value.equals("no") == true || value.equals("N") == true)
-            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Boolean; //false;
+            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvertUtil.DefaultValue_Boolean; //false;
         else if (value.equals("1") == true || value.equals("yes") == true || value.equals("Y") == true)
-            return (defaultValue.length >= 1) ? defaultValue[0] : !StringConvert.DefaultValue_Boolean; //true;
+            return (defaultValue.length >= 1) ? defaultValue[0] : !StringConvertUtil.DefaultValue_Boolean; //true;
         else
             return Boolean.parseBoolean(value);
     }
@@ -197,7 +197,7 @@ public final class StringConvert {
         try {
             return (value == null || value.equals("") == false) ? Long.valueOf(value) : defaultValue[0];
         } catch (Exception e) {
-            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Long;
+            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvertUtil.DefaultValue_Long;
         }
     }
     /**
@@ -211,7 +211,7 @@ public final class StringConvert {
         try {
             return (value == null || value.equals("") == false) ? Byte.valueOf(value) : defaultValue[0];
         } catch (Exception e) {
-            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Byte;
+            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvertUtil.DefaultValue_Byte;
         }
     }
     /**
@@ -225,7 +225,7 @@ public final class StringConvert {
         try {
             return (value == null || value.equals("") == false) ? Short.valueOf(value) : defaultValue[0];
         } catch (Exception e) {
-            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvert.DefaultValue_Short;
+            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvertUtil.DefaultValue_Short;
         }
     }
     /**
@@ -286,7 +286,7 @@ public final class StringConvert {
             toType = (Class<?>) param[1];
             defaultValue = param[2];
             array = (List<?>) param[3];
-            replay = StringConvert.parseBoolean(param[4].toString());
+            replay = StringConvertUtil.parseBoolean(param[4].toString());
         }
         // -------------------
         String[] temp_split = value.split(split);
@@ -294,10 +294,10 @@ public final class StringConvert {
             if (array.contains(var) == true)
                 if (replay == true) {
                     array.remove(var);
-                    array.add(StringConvert.changeType(var, toType, defaultValue));
+                    array.add(StringConvertUtil.changeType(var, toType, defaultValue));
                 } else {}
             else
-                array.add(StringConvert.changeType(var, toType, defaultValue));
+                array.add(StringConvertUtil.changeType(var, toType, defaultValue));
         return array;
     }
     /**
@@ -422,7 +422,7 @@ public final class StringConvert {
             toType_val = (Class<?>) param[2];
             defaultValue = param[3];
             array = (Map) param[4];
-            replay = StringConvert.parseBoolean(param[4].toString());
+            replay = StringConvertUtil.parseBoolean(param[4].toString());
         }
         // -------------------
         String[] temp_split = value.split(split_val);// key=value
@@ -430,8 +430,8 @@ public final class StringConvert {
             String[] over_split = var.split(split_key);
             if (over_split.length != 2)
                 continue;
-            Object ov_key = StringConvert.changeType(over_split[0], toType_key);
-            Object ov_var = StringConvert.changeType(over_split[1], toType_val, defaultValue);
+            Object ov_key = StringConvertUtil.changeType(over_split[0], toType_key);
+            Object ov_var = StringConvertUtil.changeType(over_split[1], toType_val, defaultValue);
             if (array.containsKey(ov_key) == true)
                 if (replay == true) {
                     array.remove(ov_key);

@@ -20,8 +20,6 @@ package org.more.core.classcode;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface ClassNameStrategy extends BaseStrategy {
-    /**获取新类的所属包。*/
-    public String generatePackageName();
     /**获取新类的类名。*/
-    public String generateSimpleName();
+    public String generateName(Class<?> superClass);
 };

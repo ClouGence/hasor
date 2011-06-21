@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.more.core.copybean.CopyBeanUtil;
-import org.more.util.StringConvert;
+import org.more.util.StringConvertUtil;
 import org.more.web.page.PageInfo;
 /**
  * 
@@ -89,9 +89,9 @@ public class AutoPageInfo extends PageInfo {
         //this.prefix + "_count"
         //this.prefix + "_prefix"
         //this.prefix + "_current"
-        this.start = StringConvert.parseInt(paramMap.get(this.prefix + "_start"), this.start);
-        this.step = StringConvert.parseInt(paramMap.get(this.prefix + "_step"), this.step);
-        this.count = StringConvert.parseInt(paramMap.get(this.prefix + "_count"), this.count);
+        this.start = StringConvertUtil.parseInt(paramMap.get(this.prefix + "_start"), this.start);
+        this.step = StringConvertUtil.parseInt(paramMap.get(this.prefix + "_step"), this.step);
+        this.count = StringConvertUtil.parseInt(paramMap.get(this.prefix + "_count"), this.count);
         this.prefix = paramMap.get(this.prefix + "_prefix");
         this.url = paramMap.get(this.prefix + "_url");
     }

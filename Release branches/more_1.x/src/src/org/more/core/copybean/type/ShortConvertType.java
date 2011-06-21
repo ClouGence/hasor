@@ -15,7 +15,7 @@
  */
 package org.more.core.copybean.type;
 import org.more.core.copybean.ConvertType;
-import org.more.util.StringConvert;
+import org.more.util.StringConvertUtil;
 /**
  * CopyBean处理Short类型转换的辅助类。
  * @version 2009-5-23
@@ -31,6 +31,6 @@ public class ShortConvertType extends ConvertType {
         if (object == null)
             return 0;
         else
-            return StringConvert.parseShort(object.toString(), (short) 0);
+            return StringConvertUtil.parseShort(object.toString(), (short) 0);
     }
 }

@@ -16,7 +16,6 @@
 package org.more.submit;
 import java.util.Date;
 import java.util.UUID;
-import org.more.submit.Session;
 import org.more.util.attribute.AttBase;
 /**
  * 简单{@link Session Session接口}实现。

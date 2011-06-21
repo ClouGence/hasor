@@ -29,7 +29,8 @@
 //  DAMAGE.
 //--------------------------------------------------------------------------
 package org.more.core.ognl;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 /**
  * @author Luke Blanshard (blanshlu@netscape.net)
  * @author Drew Davidson (drew@ognl.org)

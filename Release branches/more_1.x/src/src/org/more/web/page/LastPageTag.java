@@ -15,7 +15,7 @@
  */
 package org.more.web.page;
 import javax.servlet.jsp.JspException;
-import org.more.util.StringConvert;
+import org.more.util.StringConvertUtil;
 /**
  * 分页标签负责处理最后一页的标签，标签类型是L类标签。
  * @version 2009-6-17
@@ -29,7 +29,7 @@ public class LastPageTag extends BasePageTag {
     protected void doFirstStartPageTag() throws JspException {
         Object item = page.info.getItem(page.info.getSize() - 1); //获得最后一条
         //获得是否占领页码部分的最后一条
-        boolean occupyLastB = StringConvert.parseBoolean(this.occupyLast.toString());
+        boolean occupyLastB = StringConvertUtil.parseBoolean(this.occupyLast.toString());
         //first如果决定霸占最后一条则最后一条将被添加到after集合中标志着条已经被处理。
         if (occupyLastB == true && item != null)
             this.page.after.add(item);

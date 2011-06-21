@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.more.core.asm.ClassAdapter;
+import org.more.core.asm.ClassWriter;
 import org.more.core.classcode.objects.DefaultAopStrategy;
 import org.more.core.classcode.objects.DefaultClassNameStrategy;
 import org.more.core.classcode.objects.DefaultDelegateStrategy;
@@ -115,11 +117,9 @@ public class ClassEngine {
      */
     public ClassEngine(String className, Class<?> superClass, ClassLoader parentLoader) {
         //1.参数className
-        if (className == null || className.equals("") == true) {
-            String packageName = this.classNameStrategy.generatePackageName();
-            String simpleName = this.classNameStrategy.generateSimpleName();
-            this.className = packageName + "." + simpleName;
-        } else
+        if (className == null || className.equals("") == true)
+            this.className = this.classNameStrategy.generateName(superClass);
+        else
             this.className = className;
         //2.参数superClass
         if (superClass != null)
@@ -210,14 +210,15 @@ public class ClassEngine {
         return this.className;
     }
     /**设置新类的类名和其所属包。如果包名为null则引擎会调用名称生成策略返回生成的包名。类名也同理。*/
-    public void setClassName(String className, String packageName) {
-        String _className = (className == null || className.equals("")) ? this.classNameStrategy.generateSimpleName() : className;
-        String _packageName = (packageName == null || packageName.equals("")) ? this.classNameStrategy.generatePackageName() : packageName;
-        this.className = _packageName + "." + _className;
+    public void setClassName(String className) {
+        if (className == null || className.equals("") == true)
+            this.className = this.classNameStrategy.generateName(this.superClass);
+        else
+            this.className = className;
     }
     /**该方法是调用类名生成策略生成一个包名以及类名，其原理就是通过设置空类名和空包名来实现。可以通过调用setClassName方法传递两个null来完成。*/
     public void generateName() {
-        this.setClassName(null, null);
+        this.setClassName(null);
     }
     /** 获取生成类的超类(基类)。*/
     public Class<?> getSuperClass() {
@@ -463,11 +464,8 @@ public class ClassEngine {
         //2.
         if (EngineToos.checkClassName(this.className) == false)
             throw new FormatException("在生成类的时，检测类名不通过。");
-        if (className == null || className.equals("") == true) {
-            String packageName = this.classNameStrategy.generatePackageName();
-            String simpleName = this.classNameStrategy.generateSimpleName();
-            this.className = packageName + simpleName;
-        }
+        if (className == null || className.equals("") == true)
+            this.className = this.classNameStrategy.generateName(this.superClass);
         //3.
         ClassBuilder cb = this.createBuilder(this.builderMode);
         cb.initBuilder(this);
@@ -493,7 +491,13 @@ public class ClassEngine {
     //======================================================================================Builder
     /**子类可以通过重写该方法来返回一个新的ClassBuilder对象，在ClassBuilder对象中开发人员可以使用classcode扩展功能，同时也可以使用asm框架来扩展。*/
     protected ClassBuilder createBuilder(BuilderMode builderMode) {
-        return new ClassBuilder();
+        /*空实现*/
+        return new ClassBuilder() {
+            protected ClassAdapter acceptClass(ClassWriter classVisitor) {
+                return null;
+            }
+            protected void init(ClassEngine classEngine) {}
+        };
     }
     //==========================================================================================New
     /**装载并且创建这个新类的一个实例，如果新类是Propxy模式下的，需要指定代理的父类类型。如果是Super则给null即可。*/

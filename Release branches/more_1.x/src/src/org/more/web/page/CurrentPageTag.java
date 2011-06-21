@@ -15,7 +15,7 @@
  */
 package org.more.web.page;
 import javax.servlet.jsp.JspException;
-import org.more.util.StringConvert;
+import org.more.util.StringConvertUtil;
 /**
  * 分页标签负责处理当前页的标签，标签类型是C类标签。
  * @version 2009-6-17
@@ -38,7 +38,7 @@ public class CurrentPageTag extends BasePageTag {
             BasePageTag[] fTag = this.page.getTagByClass(FirstPageTag.class);
             if (fTag.length == 1) {
                 FirstPageTag ft = (FirstPageTag) fTag[0];
-                boolean occupyFirst = StringConvert.parseBoolean(ft.occupyFirst.toString());
+                boolean occupyFirst = StringConvertUtil.parseBoolean(ft.occupyFirst.toString());
                 if (occupyFirst == true)
                     return SKIP_BODY;
             }
@@ -48,7 +48,7 @@ public class CurrentPageTag extends BasePageTag {
             BasePageTag[] fTag = this.page.getTagByClass(LastPageTag.class);
             if (fTag.length == 1) {
                 LastPageTag ft = (LastPageTag) fTag[0];
-                boolean occupyLast = StringConvert.parseBoolean(ft.occupyLast.toString());
+                boolean occupyLast = StringConvertUtil.parseBoolean(ft.occupyLast.toString());
                 if (occupyLast == true)
                     return SKIP_BODY;
             }

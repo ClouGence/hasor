@@ -29,7 +29,8 @@
 //  DAMAGE.
 //--------------------------------------------------------------------------
 package org.more.core.ognl;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.NoSuchElementException;
 /**
  * Implementation of ElementsAccessor that returns an iterator over integers from 0 up to
  * the given target.

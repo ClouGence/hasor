@@ -23,14 +23,17 @@ import org.more.core.classcode.ClassNameStrategy;
  */
 public class DefaultClassNameStrategy implements ClassNameStrategy {
     private static long         generateID  = 0;
-    private static final String ClassPrefix = "_DynamicObject$"; //生成类的类名后缀名
+    private static final String ClassPrefix = "_Dynamic$";                     //生成类的类名后缀名
+    private static final String ClassName   = "org.more.core.classcode.Object"; //默认生成类的类名
     public void initStrategy(ClassEngine classEngine) {}
     public void reset() {}
-    public String generatePackageName() {
-        return "org.more.core.classcode";
-    }
-    public synchronized String generateSimpleName() {
+    public synchronized String generateName(Class<?> superClass) {
+        String cn = null;
+        if (superClass == null)
+            cn = ClassName;
+        else
+            cn = superClass.getName();
         generateID++;
-        return ClassPrefix + generateID;
+        return cn + ClassPrefix + generateID;
     }
 }

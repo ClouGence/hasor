@@ -15,7 +15,7 @@
  */
 package org.more.core.copybean.type;
 import org.more.core.copybean.ConvertType;
-import org.more.util.StringConvert;
+import org.more.util.StringConvertUtil;
 /**
  * CopyBean处理Double类型转换的辅助类。
  * @version 2009-5-23
@@ -31,6 +31,6 @@ public class DoubleConvertType extends ConvertType {
         if (object == null)
             return 0;
         else
-            return StringConvert.parseDouble(object.toString());
+            return StringConvertUtil.parseDouble(object.toString());
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.core.json;
-import org.more.util.StringConvert;
+import org.more.util.StringConvertUtil;
 /**
  * 负责处理Number类型的json格式互转。
  * @version 2010-1-7
@@ -25,7 +25,7 @@ public class JsonNumber extends JsonType {
         super(currentContext);
     };
     public Object toObject(String str) {
-        return StringConvert.parseNumber(str, 0);
+        return StringConvertUtil.parseNumber(str, 0);
     }
     public String toString(Object bean) {
         if (bean instanceof Number == true)

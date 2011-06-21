@@ -15,7 +15,7 @@
  */
 package org.more.web.page;
 import javax.servlet.jsp.JspException;
-import org.more.util.StringConvert;
+import org.more.util.StringConvertUtil;
 /**
  * 处理上一页的标签
  * @version 2009-6-22
@@ -34,8 +34,8 @@ public class PreviousPageTag extends BasePageTag {
         Object item_c = this.page.info.getCurrentItem();
         //
         //计算firstIndex，lastIndex
-        int first = StringConvert.parseInt(this.first, -1);//默认值-1
-        int last = StringConvert.parseInt(this.last, -1);//默认值-1
+        int first = StringConvertUtil.parseInt(this.first, -1);//默认值-1
+        int last = StringConvertUtil.parseInt(this.last, -1);//默认值-1
         //
         //要求在两边时候
         if (first <= -1 && last <= -1)

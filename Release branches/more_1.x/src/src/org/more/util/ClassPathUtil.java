@@ -30,7 +30,7 @@ import java.util.zip.ZipInputStream;
  * @version 2010-9-24
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ClassPathUtil {
+public abstract class ClassPathUtil {
     /**扫描classpath时找到资源的回调接口方法。*/
     public interface ScanItem {
         /**

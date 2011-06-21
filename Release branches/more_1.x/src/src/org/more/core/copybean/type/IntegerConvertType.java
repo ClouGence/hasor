@@ -15,7 +15,7 @@
  */
 package org.more.core.copybean.type;
 import org.more.core.copybean.ConvertType;
-import org.more.util.StringConvert;
+import org.more.util.StringConvertUtil;
 /**
  * CopyBean处理Integer类型转换的辅助类。
  * @version 2009-5-23
@@ -31,6 +31,6 @@ public class IntegerConvertType extends ConvertType {
         if (object == null)
             return 0;
         else
-            return StringConvert.parseInt(object.toString(), 0);
+            return StringConvertUtil.parseInt(object.toString(), 0);
     }
 }

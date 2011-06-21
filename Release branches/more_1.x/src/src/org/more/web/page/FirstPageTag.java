@@ -15,7 +15,7 @@
  */
 package org.more.web.page;
 import javax.servlet.jsp.JspException;
-import org.more.util.StringConvert;
+import org.more.util.StringConvertUtil;
 /**
  * 分页标签负责处理第一页的标签，标签类型是F类标签。
  * @version 2009-6-17
@@ -29,7 +29,7 @@ public class FirstPageTag extends BasePageTag {
     protected void doFirstStartPageTag() throws JspException {
         Object item = page.info.getItem(0); //获得第一条
         //获得是否占领页码部分的第一条
-        boolean occupyFirstB = StringConvert.parseBoolean(this.occupyFirst.toString());
+        boolean occupyFirstB = StringConvertUtil.parseBoolean(this.occupyFirst.toString());
         //first如果决定霸占第一条则第一条将被添加到after集合中标志着条已经被处理。
         if (occupyFirstB == true && item != null)
             this.page.after.add(item);
