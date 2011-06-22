@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<beans xmlns="http://project.byshell.org/more/schema/beans">
+<!-- 
+	<classBean
+		id="test_id_7" 		name="testClassBean"		package="org.more"		iocType="fact"
+	   	abstract="true"		singleton="true"			lazy="true"				description="说明"
+		factoryName="testBean0"	factoryMethod="method_0"
+		init="initMethod"		destroy="destroyMethod"	useTemplate="temp_0"
+		
+		class="test_id_4"/>
+ -->
+	<templateBean id="c_temp_0">
+		<!-- org.test.more.beans.xml.class_bean.TestBean_2 -->
+		<property name="p_null"					type="null"/>
+		<property name="p_boolean" value="true"	type="boolean"/>
+		<property name="p_byte" value="125"		type="byte"/>
+		<property name="p_short" value="12234"	type="short"/>
+		<property name="p_integer" value="321"	type="int"/>
+		<property name="p_long" value="54321"	type="long"/>
+		<property name="p_float" value="12.45"	type="float"/>
+		<property name="p_double" value="4.453"	type="double"/>
+		<property name="p_char" value="{"		type="char"/>
+		<property name="p_str" value="你们好."	type="string"/>
+	</templateBean>
+	
+	<package package="org.more">
+		<classBean name="c_bean_0" class="org.test.more.beans.xml.class_bean.TestBean_0"/>
+	</package>
+	<classBean id="c_bean_1" class="org.test.more.beans.xml.class_bean.TestBean_0" singleton="true"/>
+	
+	<classBean id="c_bean_2" class="org.test.more.beans.xml.class_bean.TestBean_0" lazy="false"/>
+	
+	<classBean id="c_bean_3" class="org.test.more.beans.xml.class_bean.TestBean_0" singleton="true" lazy="false"/>
+	
+	<classBean id="c_bean_4" class="org.test.more.beans.xml.class_bean.TestBean_1" init="initMethod" destroy="destroyMethod"/>
+	
+	<classBean id="c_bean_5" class="org.test.more.beans.xml.class_bean.TestBean_0" abstract="true"/>
+	
+	<classBean id="c_bean_6" class="org.test.more.beans.xml.class_bean.TestBean_0">
+		<method name="f" codeName="factoryMethod">
+			<param>
+				<date date="2010/12/12" format="yyyy/mm/DD"/>
+			</param>
+			<param>
+				<date date="2011/12/12" format="yyyy/mm/DD"/>
+			</param>
+		</method>
+	</classBean>
+	
+	<classBean id="c_bean_7" class="java.lang.Object" factoryName="c_bean_6"	factoryMethod="f"/>
+	
+	<classBean id="c_bean_8" useTemplate="c_temp_0" class="org.test.more.beans.xml.class_bean.TestBean_3">
+		<property name="p_el" elText="this.p_str"/>
+		<property name="p_enum" enum="one"			type="org.test.more.beans.xml.class_bean.TestEnum"/>
+		<property name="p_ref" refBean="c_bean_1"/>
+		<property name="p_file" file="c:\windows\aa\"/>
+		<property name="p_dir" directory="c:\windows\aa.bpm"/>
+		<property name="p_uri" uriLocation="http://www.google.com"/>
+		<property name="p_date" date="2010/12/12" format="yyyy/mm/DD"/>
+	</classBean>
+	
+	<classBean id="c_bean_9" class="org.test.more.beans.xml.class_bean.TestBean_3">
+		<property name="p_null"					type="null"/>
+		<property name="p_boolean" value="true"	type="boolean"/>
+		<property name="p_byte" value="125"		type="byte"/>
+		<property name="p_short" value="12234"	type="short"/>
+		<property name="p_integer" value="321"	type="int"/>
+		<property name="p_long" value="54321"	type="long"/>
+		<property name="p_float" value="12.45"	type="float"/>
+		<property name="p_double" value="4.453"	type="double"/>
+		<property name="p_char" value="{"		type="char"/>
+		<property name="p_str" value="你们好."	type="string"/>
+		<property name="p_el" elText="this.p_str"/>
+		<property name="p_enum" enum="one"			type="org.test.more.beans.xml.class_bean.TestEnum"/>
+		<property name="p_ref" refBean="c_bean_1"/>
+		<property name="p_file" file="c:\windows\aa\"/>
+		<property name="p_dir" directory="c:\windows\aa.bpm"/>
+		<property name="p_uri" uriLocation="http://www.google.com"/>
+		<property name="p_date" date="2010/12/12" format="yyyy/mm/DD"/>
+	</classBean>
+	
+	<classBean id="c_bean_10" class="org.test.more.beans.xml.class_bean.TestBean_3">
+		<property name="p_date">
+			<date date="2010/12/12" format="yyyy/mm/DD"/>
+		</property>
+		<property name="p_bigText">
+			<bigText><![CDATA[ script.... ]]></bigText>
+		</property>
+		<property name="p_ref">
+			<ref refBean="c_bean_1"/>
+		</property>
+		<property name="p_file">
+			<file path="c:\windows\aa.bpm"/>
+		</property>
+		<property name="p_dir">
+			<directory path="c:\windows\aa.bpm\"/>
+		</property>
+		<property name="p_uri">
+			<uri uriLocation="http://www.google.com"/>
+		</property>
+		<property name="p_enum">
+			<enum enum="two" type="org.test.more.beans.xml.class_bean.TestEnum"/>
+		</property>
+		<property name="p_el">
+			<el elText="this.p_uri"/>
+		</property>
+	</classBean>
+	
+	<classBean id="c_bean_11" class="org.test.more.beans.xml.class_bean.TestBean_4">
+		<!-- null 	--><constructor-arg/>
+		<!-- boolean--><constructor-arg value="true"	type="boolean"/>
+		<!-- byte	--><constructor-arg value="125"		type="byte"/>
+		<!-- short	--><constructor-arg value="12234"	type="short"/>
+		<!-- int	--><constructor-arg value="321"		type="int"/>
+		<!-- long	--><constructor-arg value="54321"	type="long"/>
+		<!-- float	--><constructor-arg value="12.45"	type="float"/>
+		<!-- double	--><constructor-arg value="4.453"	type="double"/>
+		<!-- char	--><constructor-arg value="{"		type="char"/>
+		<!-- string	--><constructor-arg value="你们好."	type="string"/>
+	</classBean>
+	
+	<classBean id="c_bean_12" class="org.test.more.beans.xml.class_bean.TestBean_4">
+		<!-- el		--><constructor-arg elText="123"/>
+		<!-- enum	--><constructor-arg enum="one"		type="org.test.more.beans.xml.class_bean.TestEnum"/>
+		<!-- ref	--><constructor-arg refBean="org.more.c_bean_0"/>
+		<!-- file	--><constructor-arg file="c:\windows\aa\"/>
+		<!-- dir	--><constructor-arg directory="c:\windows\aa.bpm"/>
+		<!-- uri	--><constructor-arg uriLocation="http://www.google.com"/>
+		<!-- date	--><constructor-arg date="2010/12/12" format="YYYY/mm/DD"/>
+		<!-- date	-->
+		<constructor-arg>
+			<bigText><![CDATA[ script.... ]]></bigText>
+		</constructor-arg>
+	</classBean>
+</beans>
