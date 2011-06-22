@@ -21,7 +21,7 @@ import org.more.hypha.ParamPropertyDefine;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class ParamDefine extends AbstractPropertyDefine implements ParamPropertyDefine {
-    private int    index = -1;  //属性索引
+    private int    index = -1;  //属性索引，负数为自动分配
     private String name  = null; //属性名
     public int getIndex() {
         return this.index;

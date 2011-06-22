@@ -43,7 +43,7 @@ public class TagBeans_Enum extends TagBeans_AbstractValueMetaDataDefine<Enum_Val
     protected Map<Enum<?>, String> getPropertyMappings() {
         HashMap<Enum<?>, String> propertys = new HashMap<Enum<?>, String>();
         propertys.put(PropertyKey.enumValue, "enum");
-        propertys.put(PropertyKey.enumValue, "type");
+        propertys.put(PropertyKey.enumType, "type");
         return propertys;
     }
     /**Ω‚Œˆ Ù–‘*/

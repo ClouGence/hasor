@@ -19,8 +19,8 @@ import java.util.Map;
 import org.more.core.error.DefineException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
+import org.more.hypha.beans.define.AbstractBaseBeanDefine;
 import org.more.hypha.beans.define.MethodDefine;
-import org.more.hypha.beans.define.TemplateBeanDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.util.BeanUtil;
 /**
@@ -37,8 +37,7 @@ public class TagBeans_Method extends TagBeans_AbstractDefine<MethodDefine> {
     }
     /**创建{@link MethodDefine}对象*/
     protected MethodDefine createDefine(XmlStackDecorator context) {
-        TemplateBeanDefine define = (TemplateBeanDefine) context.getAttribute(TagBeans_TemplateBean.BeanDefine);
-        return new MethodDefine(define);
+        return new MethodDefine();
     }
     /**属性的定义名称*/
     protected String getAttributeName() {
@@ -59,7 +58,7 @@ public class TagBeans_Method extends TagBeans_AbstractDefine<MethodDefine> {
     /**将属性注册到Bean中。*/
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
         MethodDefine method = this.getDefine(context);
-        TemplateBeanDefine define = (TemplateBeanDefine) context.getAttribute(TagBeans_TemplateBean.BeanDefine);
+        AbstractBaseBeanDefine define = (AbstractBaseBeanDefine) context.getAttribute(TagBeans_TemplateBean.BeanDefine);
         //
         if (method.getCodeName() == null)
             throw new DefineException("[" + define.getName() + "]的方法定义未定义codeName属性。");

@@ -20,20 +20,11 @@ package org.more.hypha.beans.define;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class RelationBeanDefine extends AbstractBaseBeanDefine {
-    private String useTemplate = null; //应用的模板
-    private String ref         = null; //所引用的Bean名或id
-    private String refPackage  = null; //所引用的Bean作用域
+    private String ref        = null; //所引用的Bean名或id
+    private String refPackage = null; //所引用的Bean作用域
     /**返回“RelationBean”。*/
     public String getBeanType() {
         return "RelationBean";
-    }
-    /**获取bean使用的模板。*/
-    public String getUseTemplate() {
-        return this.useTemplate;
-    };
-    /**设置bean使用的模板。*/
-    public void setUseTemplate(String useTemplate) {
-        this.useTemplate = useTemplate;
     }
     /**获取引用的Bean名。*/
     public String getRef() {

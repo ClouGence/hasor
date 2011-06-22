@@ -43,7 +43,10 @@ public class VariableBeanDefine extends AbstractBaseBeanDefine {
     public void setValue(String value) {
         this.value = value;
     }
-    public void setUseTemplate(TemplateBeanDefine useTemplate) {}
+    public AbstractBaseBeanDefine getUseTemplate() {
+        return null;
+    }
+    public void setUseTemplate(AbstractBaseBeanDefine useTemplate) {}
     //------------------------------------------------------------------
     /**该枚举中定义了{@link VariableBeanDefine}类可以表示的基本类型。*/
     public enum VariableType {

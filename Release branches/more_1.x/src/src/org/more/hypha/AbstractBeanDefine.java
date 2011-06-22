@@ -15,6 +15,7 @@
  */
 package org.more.hypha;
 import java.util.Collection;
+import org.more.hypha.beans.define.AbstractBaseBeanDefine;
 import org.more.util.attribute.IAttribute;
 /**
  * 该接口用于定义一个bean，无论是什么类型的Bean都需要实现该接口。
@@ -48,6 +49,8 @@ public interface AbstractBeanDefine extends IAttribute {
     public String getInitMethod();
     /**获取销毁方法名。*/
     public String getDestroyMethod();
+    /**获取bean使用的模板。*/
+    public AbstractBaseBeanDefine getUseTemplate();
     /**该属性是用来定义在bean上的一些方法，返回的集合是一个只读集合。*/
     public Collection<? extends AbstractMethodDefine> getMethods();
     /**

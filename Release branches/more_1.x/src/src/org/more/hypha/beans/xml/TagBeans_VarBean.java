@@ -48,6 +48,8 @@ public class TagBeans_VarBean extends TagBeans_AbstractBeanDefine<VariableBeanDe
     protected Object getPropertyValue(VariableBeanDefine define, Enum<?> propertyEnum, String xmlValue) {
         if (propertyEnum == TagBeans_AbstractBeanDefine.PropertyKey.boolAbstract)
             return false;
+        if (propertyEnum == TagBeans_AbstractBeanDefine.PropertyKey.useTemplate)
+            return null;
         return super.getPropertyValue(define, propertyEnum, xmlValue);
     };
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {

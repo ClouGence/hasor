@@ -24,7 +24,6 @@ import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.AbstractMethodDefine;
 import org.more.hypha.DefineResource;
 import org.more.hypha.beans.define.AbstractBaseBeanDefine;
-import org.more.hypha.beans.define.TemplateBeanDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.util.BeanUtil;
 /**
@@ -64,6 +63,7 @@ public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBaseBeanDefi
         //propertys.put(PropertyKey.factoryMethod, "factoryMethod");
         propertys.put(PropertyKey.initMethod, "init");
         propertys.put(PropertyKey.destroyMethod, "destroy");
+        //propertys.put(PropertyKey.useTemplate, "useTemplate");
         return propertys;
     }
     /**特殊处理下useTemplate属性的注入*/
@@ -83,10 +83,26 @@ public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBaseBeanDefi
         if (factoryName != null) {
             if (beanDefineManager.containsBeanDefine(factoryName) == false)
                 throw new DefineException("[" + define.getName() + "]找不到关联的工厂[" + factoryName + "]Bean定义");
-            TemplateBeanDefine factoryBean = (TemplateBeanDefine) beanDefineManager.getBeanDefine(factoryName);
+            AbstractBaseBeanDefine factoryBean = (AbstractBaseBeanDefine) beanDefineManager.getBeanDefine(factoryName);
             String factoryMethod = event.getAttributeValue("factoryMethod");
             AbstractMethodDefine methodDefine = factoryBean.getMethod(factoryMethod);
             BeanUtil.writeProperty(define, "factoryMethod", methodDefine);
+        }
+        /*3.useTemplate属性*/
+        String useTemplate = event.getAttributeValue("useTemplate");
+        if (useTemplate != null) {
+            AbstractBeanDefine template = null;
+            if (beanDefineManager.containsBeanDefine(useTemplate) == true)
+                template = beanDefineManager.getBeanDefine(useTemplate);
+            else {
+                /**从bean定义所在包中找。*/
+                String packageStr = define.getPackage();
+                packageStr = (packageStr == null) ? useTemplate : packageStr + "." + useTemplate;
+                template = beanDefineManager.getBeanDefine(packageStr);
+            }
+            if (template == null)
+                throw new DefineException("[" + define.getName() + "]找不到[" + useTemplate + "]的Bean模板定义.");
+            BeanUtil.writeProperty(define, "useTemplate", template);
         }
     }
     /**结束解析标签。*/

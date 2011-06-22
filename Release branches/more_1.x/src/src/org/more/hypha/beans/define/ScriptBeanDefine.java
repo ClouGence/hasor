@@ -21,7 +21,6 @@ import java.util.ArrayList;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class ScriptBeanDefine extends AbstractBaseBeanDefine {
-    private String            useTemplate   = null;                   //应用的模板
     private String            scriptText    = null;                   //脚本内容
     private String            sourcePath    = null;                   //脚本文件位置
     private String            language      = "JavaScript";           //脚本引擎名
@@ -29,14 +28,6 @@ public class ScriptBeanDefine extends AbstractBaseBeanDefine {
     /**返回“ScriptBean”。*/
     public String getBeanType() {
         return "ScriptBean";
-    }
-    /**获取bean使用的模板。*/
-    public String getUseTemplate() {
-        return this.useTemplate;
-    };
-    /**设置bean使用的模板。*/
-    public void setUseTemplate(String useTemplate) {
-        this.useTemplate = useTemplate;
     }
     /**获取脚本内容*/
     public String getScriptText() {

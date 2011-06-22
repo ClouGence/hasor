@@ -34,19 +34,12 @@ public class TagBeans_ClassBean extends TagBeans_AbstractBeanDefine<ClassPathBea
     }
     /**定义类型Bean特有属性。*/
     public enum PropertyKey {
-        source, useTemplate
+        source
     };
     /**关联属性与xml的属性对应关系。*/
     protected Map<Enum<?>, String> getPropertyMappings() {
         Map<Enum<?>, String> propertys = super.getPropertyMappings();
         propertys.put(PropertyKey.source, "class");
-        propertys.put(PropertyKey.useTemplate, "useTemplate");
         return propertys;
-    };
-    protected Object getPropertyValue(ClassPathBeanDefine define, Enum<?> propertyEnum, String xmlValue) {
-        if (propertyEnum == PropertyKey.useTemplate)
-            return Util.passerUseTemplate(xmlValue, define, this.getDefineResource());
-        else
-            return super.getPropertyValue(define, propertyEnum, xmlValue);
     };
 }

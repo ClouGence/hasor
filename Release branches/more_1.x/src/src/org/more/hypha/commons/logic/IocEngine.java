@@ -39,6 +39,6 @@ public abstract class IocEngine {
     }
     /**销毁方法。*/
     public void destroy() throws Throwable {}
-    /**执行注入。*/
+    /**执行注入，将define定义信息注入到obj中。*/
     public abstract void ioc(Object obj, AbstractBeanDefine define, Object[] params) throws Throwable;
 };

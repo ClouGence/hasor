@@ -214,7 +214,7 @@ public class EngineLogic {
         }
         if (define.isAbstract() == true) {
             log.error("builderBean an error define is Abstract.");
-            throw new NullPointerException("builderBean an error define is Abstract.");
+            throw new SupportException("builderBean an error define is Abstract.");
         }
         String defineType = define.getBeanType();
         String defineID = define.getID();
@@ -271,7 +271,7 @@ public class EngineLogic {
             throw new LostException("ioc Engine lost name is " + iocEngineName + ".");
         }
         log.info("ioc defineID = {%0} ,engine name is {%1}.", defineID, iocEngineName);
-        iocEngine.ioc(obj, define, params);
+        this.ioc(iocEngine, obj, define, params);
         //--------------------------------------------------------------------------------------------------------------初始化阶段
         //4.代理销毁方法
         if (define.getDestroyMethod() != null)
@@ -292,6 +292,12 @@ public class EngineLogic {
             }
         return (T) obj;
     };
+    private void ioc(IocEngine iocEngine, Object obj, AbstractBeanDefine define, Object[] params) throws Throwable {
+        AbstractBaseBeanDefine template = define.getUseTemplate();
+        if (template != null)
+            this.ioc(iocEngine, obj, template, params);
+        iocEngine.ioc(obj, define, params);
+    }
     private PropxyObject findMethodByC(Class<?> parentClass, Object[] params) {
         PropxyObject po = new PropxyObject(parentClass);
         for (Object o : params)

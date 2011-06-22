@@ -50,11 +50,23 @@ class EL_EvalExpressionImpl implements EvalExpression {
         }
     };
     /*------------------------------------------------------------------------------*/
-    public Object eval(Object thisObject) throws ELException {
+    public Object evalNode(Object thisObject) throws ELException {
         OgnlContext oc = new OgnlContext(this.toMap());
         oc.setCurrentObject(thisObject);
         try {
             Object obj = this.expressionNode.getValue(oc, thisObject);
+            log.debug("eval succeed! elString = {%0} , value = {%1}", expressionString, obj);
+            return obj;
+        } catch (OgnlException e) {
+            log.error("eval error! elString = {%0} , error = {%1}", expressionString, e);
+            throw new ELException("eval ¡®" + expressionString + "¡¯ error!", e);
+        }
+    }
+    public Object eval(Object thisObject) throws ELException {
+        OgnlContext oc = new OgnlContext(this.toMap());
+        oc.setCurrentObject(thisObject);
+        try {
+            Object obj = Ognl.getValue(expressionString, oc);
             log.debug("eval succeed! elString = {%0} , value = {%1}", expressionString, obj);
             return obj;
         } catch (OgnlException e) {

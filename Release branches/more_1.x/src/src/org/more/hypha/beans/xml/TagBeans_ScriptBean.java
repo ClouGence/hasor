@@ -51,12 +51,6 @@ public class TagBeans_ScriptBean extends TagBeans_AbstractBeanDefine<ScriptBeanD
         propertys.put(PropertyKey.useTemplate, "useTemplate");
         return propertys;
     }
-    protected Object getPropertyValue(ScriptBeanDefine define, Enum<?> propertyEnum, String xmlValue) {
-        if (propertyEnum == PropertyKey.useTemplate)
-            return Util.passerUseTemplate(xmlValue, define, this.getDefineResource());
-        else
-            return super.getPropertyValue(define, propertyEnum, xmlValue);
-    };
     /**开始解析标签，该方法用于读取implements属性。*/
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
         super.beginElement(context, xpath, event);

@@ -17,8 +17,8 @@ package org.more.hypha.beans.xml;
 import java.util.Map;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
+import org.more.hypha.beans.define.AbstractBaseBeanDefine;
 import org.more.hypha.beans.define.ConstructorDefine;
-import org.more.hypha.beans.define.TemplateBeanDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
 /**
  * 用于解析constructor-arg标签
@@ -47,7 +47,7 @@ public class TagBeans_Constructor extends TagBeans_AbstractPropertyDefine<Constr
     /**将属性注册到Bean中。*/
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
         ConstructorDefine property = this.getDefine(context);
-        TemplateBeanDefine define = (TemplateBeanDefine) context.getAttribute(TagBeans_TemplateBean.BeanDefine);
+        AbstractBaseBeanDefine define = (AbstractBaseBeanDefine) context.getAttribute(TagBeans_TemplateBean.BeanDefine);
         if (property.getIndex() == -1)
             property.setIndex(define.getInitParams().size());
         define.addInitParam(property);

@@ -20,19 +20,10 @@ package org.more.hypha.beans.define;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class ClassPathBeanDefine extends AbstractBaseBeanDefine {
-    private String useTemplate = null; //应用的模板
-    private String source      = null; //class类
+    private String source = null; //class类
     /**返回“ClassBean”。*/
     public String getBeanType() {
         return "ClassPathBean";
-    }
-    /**获取bean使用的模板。*/
-    public String getUseTemplate() {
-        return this.useTemplate;
-    };
-    /**设置bean使用的模板。*/
-    public void setUseTemplate(String useTemplate) {
-        this.useTemplate = useTemplate;
     }
     /**获取类的class完整限定名。*/
     public String getSource() {

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.assembler.builder;
-import java.lang.reflect.Constructor;
 import java.util.Collection;
 import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.beans.define.ClassPathBeanDefine;
@@ -24,6 +23,7 @@ import org.more.hypha.commons.logic.EngineLogic;
 import org.more.hypha.context.AbstractApplicationContext;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
+import org.more.util.ConstructorPropxy;
 /**
  * {@link ClassPathBeanDefine}类型定义的解析器。
  * @version 2011-2-15
@@ -42,32 +42,10 @@ public class ClassBeanBuilder extends AbstractBeanBuilder<ClassPathBeanDefine> {
     public <O> O createBean(Class<?> classType, ClassPathBeanDefine define, Object[] params) throws Throwable {
         Collection<ConstructorDefine> cdColl = define.getInitParams();
         Object[] objects = this.transform_toObjects(null, cdColl, params);
-        Constructor<?>[] cons = classType.getConstructors();
-        Constructor<?> invokeC = null;
-        for (Constructor<?> c : cons) {
-            Class<?>[] cparams = c.getParameterTypes();
-            if (cparams.length != objects.length)
-                continue;//参数长度不一致，排除
-            //3.如果有参数类型不一样的也忽略---1
-            boolean isFind = true;
-            for (int i = 0; i < cparams.length; i++) {
-                Object param_object = objects[i];
-                if (param_object == null)
-                    continue;
-                //
-                if (cparams[i].isAssignableFrom(param_object.getClass()) == false) {
-                    isFind = false;
-                    break;
-                }
-            }
-            //5.如果有参数类型不一样的也忽略---2
-            if (isFind == false)
-                continue;
-            //符合条件执行调用
-            invokeC = c;
-        }
-        log.debug("find Constructor is {%0}", invokeC);
-        return (O) invokeC.newInstance(params);
+        ConstructorPropxy cp = new ConstructorPropxy(classType);
+        for (Object obj : objects)
+            cp.put(obj);
+        return (O) cp.newInstance();
     };
     /*将一组属性转换成对象。*/
     private Object[] transform_toObjects(Object object, Collection<? extends AbstractPropertyDefine> pds, Object[] params) throws Throwable {

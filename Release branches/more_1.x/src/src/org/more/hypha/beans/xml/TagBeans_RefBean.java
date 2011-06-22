@@ -44,10 +44,4 @@ public class TagBeans_RefBean extends TagBeans_AbstractBeanDefine<RelationBeanDe
         propertys.put(PropertyKey.useTemplate, "useTemplate");
         return propertys;
     }
-    protected Object getPropertyValue(RelationBeanDefine define, Enum<?> propertyEnum, String xmlValue) {
-        if (propertyEnum == PropertyKey.useTemplate)
-            return Util.passerUseTemplate(xmlValue, define, this.getDefineResource());
-        else
-            return super.getPropertyValue(define, propertyEnum, xmlValue);
-    };
 }

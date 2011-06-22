@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import org.more.core.error.RepeateException;
 import org.more.hypha.AbstractBeanDefine;
@@ -38,15 +39,17 @@ public abstract class AbstractBaseBeanDefine extends AbstractDefine<AbstractBean
     private boolean                               boolSingleton = false;                                      //单态标志
     private boolean                               boolLazyInit  = true;                                       //延迟装载标志
     private String                                description   = null;                                       //描述信息
-    private AbstractMethodDefine                  factoryMethod = null;                                       //创建工厂方法描述
+    private AbstractMethodDefine                  factoryMethod = null;
+    //创建工厂方法描述
     //
     private ArrayList<ConstructorDefine>          initParams    = new ArrayList<ConstructorDefine>();         //初始化参数
     private List<String>                          propertyNames = new ArrayList<String>();
-    private HashMap<String, PropertyDefine>       propertys     = new HashMap<String, PropertyDefine>();      //属性
+    private HashMap<String, PropertyDefine>       propertys     = new LinkedHashMap<String, PropertyDefine>(); //属性
     private List<String>                          methodNames   = new ArrayList<String>();
     private HashMap<String, AbstractMethodDefine> methods       = new HashMap<String, AbstractMethodDefine>(); //方法
     private String                                initMethod    = null;                                       //初始化方法
     private String                                destroyMethod = null;                                       //销毁方法
+    private AbstractBaseBeanDefine                useTemplate   = null;                                       //应用的模板
     //-------------------------------------------------------------
     /**返回bean的唯一编号，如果没有指定id属性则id值将是fullName属性值。*/
     public String getID() {
@@ -112,6 +115,10 @@ public abstract class AbstractBaseBeanDefine extends AbstractDefine<AbstractBean
     public String getDestroyMethod() {
         return this.destroyMethod;
     };
+    /**获取bean使用的模板。*/
+    public AbstractBaseBeanDefine getUseTemplate() {
+        return this.useTemplate;
+    };
     /**
      * 该属性定义了当创建这个bean时候需要的启动参数。
      * 启动参数通常是指构造方法参数，对于工厂形式创建启动参数代表了工厂方法的参数列表。
@@ -130,6 +137,8 @@ public abstract class AbstractBaseBeanDefine extends AbstractDefine<AbstractBean
     };
     /**添加一个启动参数，被添加的启动参数会自动进行排序。*/
     public void addInitParam(ConstructorDefine constructorParam) {
+        if (constructorParam.getIndex() == -1)
+            constructorParam.setIndex(this.initParams.size());
         this.initParams.add(constructorParam);
         final AbstractBaseBeanDefine define = this;
         Collections.sort(this.initParams, new Comparator<ConstructorDefine>() {
@@ -153,6 +162,7 @@ public abstract class AbstractBaseBeanDefine extends AbstractDefine<AbstractBean
     /**添加一个方法描述。*/
     public void addMethod(MethodDefine method) {
         this.methodNames.add(method.getName());
+        method.setForBeanDefine(this);
         this.methods.put(method.getName(), method);
     };
     //-------------------------------------------------------------
@@ -195,5 +205,9 @@ public abstract class AbstractBaseBeanDefine extends AbstractDefine<AbstractBean
     /**设置bean销毁方法。*/
     public void setDestroyMethod(String destroyMethod) {
         this.destroyMethod = destroyMethod;
+    }
+    /**设置bean使用的模板。*/
+    public void setUseTemplate(AbstractBaseBeanDefine useTemplate) {
+        this.useTemplate = useTemplate;
     }
 }

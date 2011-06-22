@@ -33,10 +33,6 @@ public class MethodDefine extends AbstractDefine<AbstractMethodDefine> implement
     private ArrayList<ParamDefine> params        = new ArrayList<ParamDefine>(); //属性
     private boolean                boolStatic    = false;
     private AbstractBeanDefine     forBeanDefine = null;
-    /**创建{@link MethodDefine}类型对象，参数表明该方法的所属bean定义。*/
-    public MethodDefine(AbstractBeanDefine forBeanDefine) {
-        this.forBeanDefine = forBeanDefine;
-    }
     /**用于返回一个boolean值，该值表明位于bean上的方法是否为一个静态方法。*/
     public boolean isStatic() {
         return this.boolStatic;
@@ -44,6 +40,10 @@ public class MethodDefine extends AbstractDefine<AbstractMethodDefine> implement
     /**获取这个方法所属的bean定义*/
     public AbstractBeanDefine getForBeanDefine() {
         return this.forBeanDefine;
+    }
+    /**设置所属Bean*/
+    void setForBeanDefine(AbstractBeanDefine forBeanDefine) {
+        this.forBeanDefine = forBeanDefine;
     }
     /**返回方法的代理名称，代理名称是用于索引方法的目的。*/
     public String getName() {
@@ -59,6 +59,8 @@ public class MethodDefine extends AbstractDefine<AbstractMethodDefine> implement
     }
     /**添加参数*/
     public void addParam(ParamDefine param) {
+        if (param.getIndex() == -1)
+            param.setIndex(this.params.size());
         this.params.add(param);
         final MethodDefine define = this;
         Collections.sort(this.params, new Comparator<ParamDefine>() {
