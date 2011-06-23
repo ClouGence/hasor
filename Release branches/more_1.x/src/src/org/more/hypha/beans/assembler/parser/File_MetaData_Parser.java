@@ -21,7 +21,7 @@ import org.more.hypha.beans.define.File_ValueMetaData;
 import org.more.hypha.commons.logic.ValueMetaDataParser;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
-import org.more.util.ClassPathUtil;
+import org.more.util.ResourcesUtil;
 /**
  * 解析文件类型
  * @version 2011-2-15
@@ -33,15 +33,6 @@ public class File_MetaData_Parser implements ValueMetaDataParser<File_ValueMetaD
     public File parser(Object targetObject, File_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
         String matchString = data.getFileObject();
         log.debug("parser File match string = {%0}.", matchString);
-        String sw = "classpath:";
-        File fileObject = null;
-        if (matchString.startsWith(sw) == true) {
-            String file = matchString.substring(sw.length());
-            //表示选择classpath目录下的。 
-            fileObject = new File(ClassPathUtil.CLASS_PATH_Strings.get(0), file);
-        } else
-            fileObject = new File(matchString);
-        log.debug("parser File = {%0}.", fileObject);
-        return fileObject;
+        return ResourcesUtil.getResourceFile(matchString);
     }
 };

@@ -78,7 +78,7 @@ public abstract class TagBeans_AbstractDefine<T> extends TagBeans_NS implements 
             Object xmlPropertyValue_o = this.getPropertyValue(define, att, xmlPropertyValue_s);
             if (xmlPropertyValue_o == null)
                 continue;
-            BeanUtil.writeProperty(define, definePropertyName, xmlPropertyValue_o);
+            BeanUtil.writePropertyOrField(define, definePropertyName, xmlPropertyValue_o);
         }
     };
     /**

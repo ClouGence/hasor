@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.assembler.builder;
+import java.lang.reflect.Method;
+import org.more.core.classcode.BuilderMode;
+import org.more.core.classcode.ClassEngine;
+import org.more.core.classcode.MethodDelegate;
+import org.more.core.error.InvokeException;
+import org.more.hypha.beans.assembler.support.ScriptBean;
 import org.more.hypha.beans.define.ScriptBeanDefine;
 import org.more.hypha.commons.logic.AbstractBeanBuilder;
 import org.more.log.ILog;
@@ -27,12 +33,31 @@ public class ScriptBeanBuilder extends AbstractBeanBuilder<ScriptBeanDefine> {
     private static ILog log = LogFactory.getLog(ScriptBeanBuilder.class);
     /*------------------------------------------------------------------------------*/
     public Class<?> loadType(ScriptBeanDefine define, Object[] params) throws Throwable {
-        // TODO Auto-generated method stub
-        a
-        return null;
+        ClassLoader loader = this.getApplicationContext().getBeanClassLoader();
+        ClassEngine ce = new ClassEngine();
+        ce.setClassName("org.more.hypha.SB." + define.getID());
+        ce.setBuilderMode(BuilderMode.Super);
+        MethodDelegate delegate = new ScriptMethodDelegate();
+        for (String str : define.getImplementList()) {
+            log.debug("append Script delegate {%0}.", str);
+            ce.addDelegate(loader.loadClass(str), delegate);
+        }
+        return ce.builderClass().toClass();
     }
     public <O> O createBean(Class<?> classType, ScriptBeanDefine define, Object[] params) throws Throwable {
+        ScriptBean cb = new ScriptBean(define);
         // TODO Auto-generated method stub
         return null;
     }
 };
+class ScriptMethodDelegate implements MethodDelegate {
+    private static ILog log = LogFactory.getLog(ScriptMethodDelegate.class);
+    public Object invoke(Method callMethod, Object target, Object[] params) throws InvokeException {
+        try {
+            Method m = target.getClass().getMethod(callMethod.getName(), callMethod.getParameterTypes());
+            return m.invoke(target, params);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+    }
+}

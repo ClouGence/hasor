@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.define;
+import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.commons.define.AbstractDefine;
 /**
@@ -21,4 +22,12 @@ import org.more.hypha.commons.define.AbstractDefine;
  * @version 2010-9-15
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public abstract class AbstractValueMetaData extends AbstractDefine<ValueMetaData> implements ValueMetaData, PropertyMetaTypeEnum {}
+public abstract class AbstractValueMetaData extends AbstractDefine<ValueMetaData> implements ValueMetaData, PropertyMetaTypeEnum {
+    private AbstractPropertyDefine forPropertyDefine = null;
+    public AbstractPropertyDefine getFor() {
+        return this.forPropertyDefine;
+    }
+    public void setFor(AbstractPropertyDefine forPropertyDefine) {
+        this.forPropertyDefine = forPropertyDefine;
+    };
+}

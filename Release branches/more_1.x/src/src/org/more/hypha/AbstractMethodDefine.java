@@ -30,6 +30,4 @@ public interface AbstractMethodDefine extends IAttribute {
     public Collection<? extends ParamPropertyDefine> getParams();
     /**用于返回一个boolean值，该值表明位于bean上的方法是否为一个静态方法。*/
     public boolean isStatic();
-    /**获取这个方法所属的bean定义*/
-    public AbstractBeanDefine getForBeanDefine();
 }

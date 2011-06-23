@@ -43,6 +43,10 @@ public interface AbstractBeanDefine extends IAttribute {
     public boolean isLazyInit();
     /**返回bean的描述信息。*/
     public String getDescription();
+    /**是否要求强制类型检查*/
+    public boolean isCheck();
+    /**获取工厂bean。*/
+    public AbstractBeanDefine factoryBean();
     /**获取该类型bean的工厂方法。*/
     public AbstractMethodDefine factoryMethod();
     /**获取初始化方法名，该方法是一个无参的非静态方法。*/
@@ -51,8 +55,6 @@ public interface AbstractBeanDefine extends IAttribute {
     public String getDestroyMethod();
     /**获取bean使用的模板。*/
     public AbstractBaseBeanDefine getUseTemplate();
-    /**该属性是用来定义在bean上的一些方法，返回的集合是一个只读集合。*/
-    public Collection<? extends AbstractMethodDefine> getMethods();
     /**
      * 该属性定义了当创建这个bean时候需要的启动参数。
      * 启动参数通常是指构造方法参数，对于工厂形式创建启动参数代表了工厂方法的参数列表。
@@ -61,6 +63,16 @@ public interface AbstractBeanDefine extends IAttribute {
     public Collection<? extends InitPropertyDefine> getInitParams();
     /**返回bean的定义属性集合，返回的集合是一个只读集合。*/
     public Collection<? extends BeanPropertyDefine> getPropertys();
+    /*---------------*/
+    /**获取方法的定义，如果当前定义中没有声明则自动到使用的模板中查找。依次类推直到模板返回为空。*/
+    public AbstractMethodDefine getMethod(String name);
+    /**获取方法的定义，该方法只会在当前定义中查找。*/
+    public AbstractMethodDefine getDeclaredMethod(String name);
+    /**获取当前定义中可用的方法声明集合。*/
+    public Collection<? extends AbstractMethodDefine> getMethods();
+    /**获取当前定义中声明的方法列表，返回的结果不包括使用的模板中的方法声明。*/
+    public Collection<? extends AbstractMethodDefine> getDeclaredMethods();
+    /*---------------*/
     /**返回具有特征的字符串。*/
     public String toString();
 }

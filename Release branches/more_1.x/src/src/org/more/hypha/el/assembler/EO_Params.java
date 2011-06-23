@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.el;
-import org.more.DoesSupportException;
+package org.more.hypha.el.assembler;
+import org.more.core.error.DefineException;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ELObject;
 import org.more.util.attribute.IAttribute;
@@ -34,7 +34,7 @@ public class EO_Params implements ELObject {
         return false;
     }
     public void setValue(Object value) {
-        throw new DoesSupportException("不支持的赋值操作。");
+        throw new DefineException("不支持的赋值操作。");
     }
     public Object getValue() {
         return this.flash.getAttribute(KEY);

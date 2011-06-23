@@ -44,7 +44,10 @@ public class Enum_ValueMetaData extends AbstractValueMetaData {
     /**获取装载的枚举类型。*/
     public Class<?> getEnumClass(ClassLoader enumLoader) throws ClassNotFoundException {
         if (this.eType == null)
-            this.eType = enumLoader.loadClass(this.enumType);
+            if (this.enumType == null)
+                this.eType = enumLoader.loadClass(this.getFor().getClassType());
+            else
+                this.eType = enumLoader.loadClass(this.enumType);
         return this.eType;
     }
     /**获取枚举表述的字符串形式。*/

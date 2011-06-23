@@ -43,7 +43,7 @@ public class Ioc_Engine extends IocEngine {
             String name = bpd.getName();
             Object value = root.parser(target, bpd.getMetaData(), this.getRootParser(), this.getApplicationContext());
             log.debug("writeProperty {%0} of {%1} , name is '{%2}'", index, size, name);
-            BeanUtil.writeProperty(target, name, value);
+            BeanUtil.writePropertyOrField(target, name, value);
             index++;
         }
         log.debug("ioc finish!");

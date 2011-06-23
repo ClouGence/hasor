@@ -40,7 +40,7 @@ public class TagBeans_ScriptBean extends TagBeans_AbstractBeanDefine<ScriptBeanD
     }
     /**定义脚本Bean属性*/
     public enum PropertyKey {
-        language, scriptText, sourcePath, useTemplate
+        language, scriptText, sourcePath
     };
     /**关联属性与xml的属性对应关系。*/
     protected Map<Enum<?>, String> getPropertyMappings() {
@@ -48,7 +48,6 @@ public class TagBeans_ScriptBean extends TagBeans_AbstractBeanDefine<ScriptBeanD
         propertys.put(PropertyKey.language, "language");
         propertys.put(PropertyKey.scriptText, "scriptText");
         propertys.put(PropertyKey.sourcePath, "sourcePath");
-        propertys.put(PropertyKey.useTemplate, "useTemplate");
         return propertys;
     }
     /**开始解析标签，该方法用于读取implements属性。*/

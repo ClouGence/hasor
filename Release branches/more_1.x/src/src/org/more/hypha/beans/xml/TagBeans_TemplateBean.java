@@ -15,6 +15,7 @@
  */
 package org.more.hypha.beans.xml;
 import org.more.core.xml.XmlStackDecorator;
+import org.more.core.xml.stream.EndElementEvent;
 import org.more.hypha.beans.define.TemplateBeanDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
 /**
@@ -31,9 +32,18 @@ public class TagBeans_TemplateBean extends TagBeans_AbstractBeanDefine<TemplateB
     protected TemplateBeanDefine createDefine(XmlStackDecorator context) {
         return new TemplateBeanDefine();
     }
-    protected Object getPropertyValue(TemplateBeanDefine define, Enum<?> propertyEnum, String xmlValue) {
-        if (propertyEnum == PropertyKey.boolAbstract)
-            return true;
-        return super.getPropertyValue(define, propertyEnum, xmlValue);
+    @Override
+    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
+        TemplateBeanDefine define = this.getDefine(context);
+        define.setBoolAbstract(true);
+        define.setBoolSingleton(false);
+        define.setBoolLazyInit(true);
+        define.setIocEngine("Ioc");
+        define.setFactoryBean(null);
+        define.setFactoryMethod(null);
+        define.setInitMethod(null);
+        define.setDestroyMethod(null);
+        define.setBoolCheckType(false);
+        super.endElement(context, xpath, event);
     };
 }

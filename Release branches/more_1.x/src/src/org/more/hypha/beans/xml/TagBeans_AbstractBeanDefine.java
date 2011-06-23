@@ -45,7 +45,7 @@ public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBaseBeanDefi
     /**定义模板属性。*/
     public enum PropertyKey {
         id, name, logicPackage, iocEngine, //
-        boolAbstract, boolInterface, boolSingleton, boolLazyInit, //
+        boolAbstract, boolInterface, boolSingleton, boolLazyInit, boolCheckType, //
         description, factoryName, factoryMethod, initMethod, destroyMethod, useTemplate
     }
     /**关联属性与xml的属性对应关系。*/
@@ -58,6 +58,7 @@ public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBaseBeanDefi
         propertys.put(PropertyKey.boolAbstract, "abstract");
         propertys.put(PropertyKey.boolSingleton, "singleton");
         propertys.put(PropertyKey.boolLazyInit, "lazy");
+        propertys.put(PropertyKey.boolCheckType, "check");
         propertys.put(PropertyKey.description, "description");
         //propertys.put(PropertyKey.factoryName, "factoryName");
         //propertys.put(PropertyKey.factoryMethod, "factoryMethod");
@@ -76,7 +77,7 @@ public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBaseBeanDefi
             String logicPackage = (String) context.getAttribute(TagBeans_Package.LogicPackage);
             if (logicPackage == null)
                 logicPackage = TagBeans_DefaultPackage.DefaultPackage;
-            BeanUtil.writeProperty(define, "logicPackage", logicPackage);
+            BeanUtil.writePropertyOrField(define, "logicPackage", logicPackage);
         }
         /*2.factoryName和factoryMethod*/
         String factoryName = event.getAttributeValue("factoryName");
@@ -86,7 +87,8 @@ public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBaseBeanDefi
             AbstractBaseBeanDefine factoryBean = (AbstractBaseBeanDefine) beanDefineManager.getBeanDefine(factoryName);
             String factoryMethod = event.getAttributeValue("factoryMethod");
             AbstractMethodDefine methodDefine = factoryBean.getMethod(factoryMethod);
-            BeanUtil.writeProperty(define, "factoryMethod", methodDefine);
+            BeanUtil.writePropertyOrField(define, "factoryBean", factoryBean);
+            BeanUtil.writePropertyOrField(define, "factoryMethod", methodDefine);
         }
         /*3.useTemplate属性*/
         String useTemplate = event.getAttributeValue("useTemplate");
@@ -102,7 +104,7 @@ public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBaseBeanDefi
             }
             if (template == null)
                 throw new DefineException("[" + define.getName() + "]找不到[" + useTemplate + "]的Bean模板定义.");
-            BeanUtil.writeProperty(define, "useTemplate", template);
+            BeanUtil.writePropertyOrField(define, "useTemplate", template);
         }
     }
     /**结束解析标签。*/

@@ -45,17 +45,18 @@ public class TagBeans_VarBean extends TagBeans_AbstractBeanDefine<VariableBeanDe
         propertys.put(PropertyKey.type, "type");
         return propertys;
     }
-    protected Object getPropertyValue(VariableBeanDefine define, Enum<?> propertyEnum, String xmlValue) {
-        if (propertyEnum == TagBeans_AbstractBeanDefine.PropertyKey.boolAbstract)
-            return false;
-        if (propertyEnum == TagBeans_AbstractBeanDefine.PropertyKey.useTemplate)
-            return null;
-        return super.getPropertyValue(define, propertyEnum, xmlValue);
-    };
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
         VariableBeanDefine define = this.getDefine(context);
         if (define.getType() == null)
             throw new FormatException("解析VariableBeanDefine类型Bean错误，无法解析其类型。");
+        define.setBoolAbstract(false);
+        define.setIocEngine("Ioc");
+        define.setFactoryBean(null);
+        define.setFactoryMethod(null);
+        define.setInitMethod(null);
+        define.setDestroyMethod(null);
+        define.setUseTemplate(null);
+        define.setBoolCheckType(false);
         super.endElement(context, xpath, event);
     }
 }

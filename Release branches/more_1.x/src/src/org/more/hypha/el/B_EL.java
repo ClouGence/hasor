@@ -13,18 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.commons.engine.engines;
-import org.more.hypha.AbstractBeanDefine;
-import org.more.hypha.commons.logic.IocEngine;
+package org.more.hypha.el;
 /**
- * 
- * @version : 2011-6-3
+ * 该类是封装el:add标签用的。
+ * @version : 2011-4-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Fact_Engine extends IocEngine {
-    public void ioc(Object obj, AbstractBeanDefine define, Object[] params) throws Throwable {
-        // TODO Auto-generated method stub
-        System.out.println("adsf");
-        a
+public class B_EL {
+    private String name      = null;
+    private String className = null;
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getClassName() {
+        return className;
+    }
+    public void setClassName(String className) {
+        this.className = className;
     }
 }

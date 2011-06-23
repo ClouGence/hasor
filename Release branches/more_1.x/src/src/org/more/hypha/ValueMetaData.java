@@ -24,4 +24,6 @@ import org.more.util.attribute.IAttribute;
 public interface ValueMetaData extends IAttribute {
     /**返回这个属性的属性类型，该类型用于描述属性的类型特征。*/
     public String getMetaDataType();
+    /**获取该元信息所属的属性定义。*/
+    public AbstractPropertyDefine getFor();
 }

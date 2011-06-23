@@ -38,7 +38,10 @@ public abstract class AbstractBaseBeanDefine extends AbstractDefine<AbstractBean
     private boolean                               boolAbstract  = false;                                      //抽象标志
     private boolean                               boolSingleton = false;                                      //单态标志
     private boolean                               boolLazyInit  = true;                                       //延迟装载标志
+    private boolean                               boolCheckType = true;                                       //是否要求强制类型检查
     private String                                description   = null;                                       //描述信息
+    /**获取工厂bean。*/
+    private AbstractBeanDefine                    factoryBean   = null;
     private AbstractMethodDefine                  factoryMethod = null;
     //创建工厂方法描述
     //
@@ -91,22 +94,47 @@ public abstract class AbstractBaseBeanDefine extends AbstractDefine<AbstractBean
     public boolean isLazyInit() {
         return this.boolLazyInit;
     };
+    /**是否要求强制类型检查*/
+    public boolean isCheck() {
+        return this.boolCheckType;
+    };
     /**返回bean的描述信息。*/
     public String getDescription() {
         return this.description;
+    };
+    /**获取工厂bean。*/
+    public AbstractBeanDefine factoryBean() {
+        return this.factoryBean;
     };
     /**该方法与factoryName()方法是成对出现的，该方法表明目标方法的代理名称。*/
     public AbstractMethodDefine factoryMethod() {
         return this.factoryMethod;
     };
-    /**该属性是用来定义在bean上的一些方法，返回的集合是一个只读集合。*/
-    public Collection<AbstractMethodDefine> getMethods() {
+    /**获取方法的定义，如果当前定义中没有声明则自动到使用的模板中查找。依次类推直到模板返回为空。*/
+    public AbstractMethodDefine getMethod(String name) {
+        AbstractMethodDefine md = this.getDeclaredMethod(name);
+        if (md == null && this.useTemplate != null)
+            return this.useTemplate.getMethod(name);
+        return md;
+    };
+    /**获取方法的定义，该方法只会在当前定义中查找。*/
+    public AbstractMethodDefine getDeclaredMethod(String name) {
+        return this.methods.get(name);
+    };
+    /**获取当前定义中可用的方法声明集合。*/
+    public Collection<? extends AbstractMethodDefine> getMethods() {
+        HashMap<String, AbstractMethodDefine> ms = new HashMap<String, AbstractMethodDefine>();
+        ms.putAll(this.methods);
+        if (this.useTemplate != null)
+            for (AbstractMethodDefine m : this.useTemplate.getMethods())
+                if (ms.containsKey(m.getName()) == false)
+                    ms.put(m.getName(), m);
+        return Collections.unmodifiableCollection((Collection<AbstractMethodDefine>) ms.values());
+    };
+    /**获取当前定义中声明的方法列表，返回的结果不包括使用的模板中的方法声明。*/
+    public Collection<? extends AbstractMethodDefine> getDeclaredMethods() {
         return Collections.unmodifiableCollection((Collection<AbstractMethodDefine>) this.methods.values());
     };
-    /**根据方法的声明名称获取其方法定义。*/
-    public AbstractMethodDefine getMethod(String name) {
-        return this.methods.get(name);
-    }
     /**获取初始化方法名。*/
     public String getInitMethod() {
         return this.initMethod;
@@ -162,7 +190,6 @@ public abstract class AbstractBaseBeanDefine extends AbstractDefine<AbstractBean
     /**添加一个方法描述。*/
     public void addMethod(MethodDefine method) {
         this.methodNames.add(method.getName());
-        method.setForBeanDefine(this);
         this.methods.put(method.getName(), method);
     };
     //-------------------------------------------------------------
@@ -182,6 +209,9 @@ public abstract class AbstractBaseBeanDefine extends AbstractDefine<AbstractBean
     public void setDescription(String description) {
         this.description = description;
     }
+    public void setFactoryBean(AbstractBeanDefine factoryBean) {
+        this.factoryBean = factoryBean;
+    }
     /**设置创建该Bean时使用的工厂bean的方法描述。*/
     public void setFactoryMethod(AbstractMethodDefine factoryMethod) {
         this.factoryMethod = factoryMethod;
@@ -197,6 +227,10 @@ public abstract class AbstractBaseBeanDefine extends AbstractDefine<AbstractBean
     /**设置该bean是否为一个延迟初始化的。*/
     public void setBoolLazyInit(boolean boolLazyInit) {
         this.boolLazyInit = boolLazyInit;
+    }
+    /**设置是否执行强制检查。*/
+    public void setBoolCheckType(boolean boolCheckType) {
+        this.boolCheckType = boolCheckType;
     }
     /**设置bean初始化方法。*/
     public void setInitMethod(String initMethod) {

@@ -34,7 +34,6 @@ public class RelationBeanBuilder extends AbstractBeanBuilder<RelationBeanDefine>
         String refPackage = define.getRefPackage();
         ApplicationContext app = this.getApplicationContext();
         if (app.containsBean(ref) == false) {
-            log.warning("ref bean {%0} bean is not exist", ref);
             ref = refPackage + "." + ref;
             if (app.containsBean(ref) == false) {
                 log.error("ref bean {%0} is not exist", ref);

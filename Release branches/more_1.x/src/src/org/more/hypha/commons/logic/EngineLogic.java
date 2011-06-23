@@ -27,6 +27,7 @@ import org.more.core.classcode.BuilderMode;
 import org.more.core.classcode.ClassBuilder;
 import org.more.core.classcode.ClassEngine;
 import org.more.core.classcode.ClassNameStrategy;
+import org.more.core.classcode.RootClassLoader;
 import org.more.core.error.LostException;
 import org.more.core.error.RepeateException;
 import org.more.core.error.SupportException;
@@ -162,7 +163,7 @@ public class EngineLogic {
         String defineType = define.getBeanType();
         String defineID = define.getID();
         String defineLogStr = defineID + "[" + defineType + "]";//log前缀
-        log.info("builder bean Type defineID is {%0} ...", defineID);
+        log.debug("builder bean Type defineID is {%0} ...", defineID);
         //1.
         AbstractBeanBuilder<AbstractBeanDefine> builder = this.builderMap.get(defineType);
         if (builder == null) {
@@ -183,13 +184,13 @@ public class EngineLogic {
         //执行ClassTypePoint扩展点。
         beanType = (Class<?>) this.applicationContext.getExpandPointManager().exePointOnSequence(ClassTypePoint.class, beanType,//
                 define, this.applicationContext);//Param
-        log.info("defineID {%0} loadType OK! type = {%1}", defineID, beanType);
+        log.debug("defineID {%0} loadType OK! type = {%1}", defineID, beanType);
         return beanType;
     };
     /**执行{@link AbstractBeanBuilderEx}生成器过程。*/
     private Class<?> doBuilderExForType(AbstractBeanBuilderEx<AbstractBeanDefine> builderEx, AbstractBeanDefine define, Object[] params) throws Throwable {
         String defineID = define.getID();
-        log.debug("defineID {%0} loadBytes By BuilderEx...", defineID);
+        log.info("defineID {%0} loadBytes By BuilderEx...", defineID);
         ClassData classData = builderEx.loadBytes(define, params);
         //执行ClassBytePoint扩展点
         classData = (ClassData) this.applicationContext.getExpandPointManager().exePointOnSequence(ClassBytePoint.class, classData, //
@@ -203,7 +204,7 @@ public class EngineLogic {
             log.debug("loading {%0} bytes transform to Type!", defineID);
             beanType = this.classLoader.loadClass(classData, define);
         }
-        log.info("defineID {%0} loadType OK! type = {%1}", defineID, beanType);
+        log.debug("defineID {%0} loadType OK! type = {%1}", defineID, beanType);
         return beanType;
     };
     /*------------------------------------------------------------------------------*/
@@ -232,7 +233,7 @@ public class EngineLogic {
         if (obj == null) {
             AbstractMethodDefine factory = define.factoryMethod();
             if (factory != null) {
-                String factoryBeanID = factory.getForBeanDefine().getID();
+                String factoryBeanID = define.factoryBean().getID();
                 log.debug("use factoryBean create {%0}, factoryBeanID = {%1}...", defineID, factoryBeanID);
                 Collection<? extends AbstractPropertyDefine> initParamDefine = factory.getParams();
                 Object[] initParam_objects = transform_toObjects(null, initParamDefine, params);//null此时还没有建立对象。
@@ -242,21 +243,21 @@ public class EngineLogic {
                     Class<?> factoryType = this.applicationContext.getBeanType(factoryBeanID);
                     PropxyObject op = this.findMethodByC(factoryType, initParam_objects);
                     obj = op.invokeMethod(factory.getCodeName());
-                    log.info("create by static {%0}, defineID = {%1}, return = {%2}.", factory.getCodeName(), defineID, obj);
+                    log.debug("create by static {%0}, defineID = {%1}, return = {%2}.", factory.getCodeName(), defineID, obj);
                 } else {
                     //工厂方法创建
                     log.debug("create by factory ....");
                     Object factoryObject = this.applicationContext.getBean(factoryBeanID, params);/*params参数会被顺势传入工厂bean中。*/
                     PropxyObject op = this.findMethodByO(factoryObject, initParam_objects);
                     obj = op.invokeMethod(factory.getCodeName());
-                    log.info("create by factory {%0}, defineID = {%1}, return = {%2}.", factory.getCodeName(), defineID, obj);
+                    log.debug("create by factory {%0}, defineID = {%1}, return = {%2}.", factory.getCodeName(), defineID, obj);
                 }
             } else {
                 //使用builder创建。
                 log.debug("use builder create {%0}...", defineID);
-                Class<?> classType = this.builderType(define, params);
+                Class<?> classType = this.applicationContext.getBeanType(define.getID(), params);
                 obj = builder.createBean(classType, define, params);
-                log.info("use builder create {%0}, return .", defineID, obj);
+                log.debug("use builder create {%0}, return .", defineID, obj);
             }
         }
         //3.属性注入
@@ -270,7 +271,7 @@ public class EngineLogic {
             log.error("ioc Engine lost name is {%0}.", iocEngineName);
             throw new LostException("ioc Engine lost name is " + iocEngineName + ".");
         }
-        log.info("ioc defineID = {%0} ,engine name is {%1}.", defineID, iocEngineName);
+        log.debug("ioc defineID = {%0} ,engine name is {%1}.", defineID, iocEngineName);
         this.ioc(iocEngine, obj, define, params);
         //--------------------------------------------------------------------------------------------------------------初始化阶段
         //4.代理销毁方法
@@ -284,8 +285,8 @@ public class EngineLogic {
         if (initMethodName != null)
             try {
                 Method m = obj.getClass().getMethod(initMethodName);
+                log.info("{%0} invoke init Method...", defineID, m);
                 m.invoke(obj);
-                log.info("{%0} invoke init Method, method = {%1}.", defineID, m);
             } catch (Exception e) {
                 log.error("{%0} invoke init Method an error, {%1} method not found.", defineID, initMethodName);
                 throw e;
@@ -325,7 +326,12 @@ public class EngineLogic {
         return res;
     };
     /*代理销毁方法*/
+    private RootClassLoader propxyRootLoader = null;
     private Object propxyFinalize(AbstractBeanDefine define, Object object) throws ClassNotFoundException, IOException {
+        //使用统一的ClassLoader，来装载生成的 代理销毁方法类。
+        if (this.propxyRootLoader == null)
+            this.propxyRootLoader = new RootClassLoader(this.applicationContext.getBeanClassLoader());
+        //
         AbstractBaseBeanDefine attDefine = null;
         ProxyFinalizeClassEngine proxyEngine = null;//代理销毁方法生成器。
         //1.确定ProxyFinalizeClassEngine类型对象
@@ -334,13 +340,13 @@ public class EngineLogic {
         if (attDefine != null) //取得可能缓存的销毁方法生成器。
             proxyEngine = (ProxyFinalizeClassEngine) attDefine.getAttribute("ProxyFinalizeClassEngine");
         if (proxyEngine == null)
-            proxyEngine = new ProxyFinalizeClassEngine(define, object);
+            proxyEngine = new ProxyFinalizeClassEngine(define, object, this.propxyRootLoader);
         if (attDefine != null) //更新缓存的销毁方法生成器。
             attDefine.setAttribute("ProxyFinalizeClassEngine", proxyEngine);
-        //FileOutputStream fos = new FileOutputStream(proxyEngine.getSimpleName() + ".class");
-        //fos.write(proxyEngine.builderClass().toBytes());
-        //fos.flush();
-        //fos.close();
+        //        FileOutputStream fos = new FileOutputStream(proxyEngine.getSimpleName() + ".class");
+        //        fos.write(proxyEngine.builderClass().toBytes());
+        //        fos.flush();
+        //        fos.close();
         //2.生成代理对象
         return proxyEngine.newInstance(object);
     };
@@ -361,8 +367,9 @@ class ProxyClassNameStrategy implements ClassNameStrategy {
 class ProxyFinalizeClassEngine extends ClassEngine {
     private ProxyFinalizeClassBuilder builder      = null;
     private String                    finalizeName = null;
-    public ProxyFinalizeClassEngine(AbstractBeanDefine define, Object obj) throws ClassNotFoundException {
+    public ProxyFinalizeClassEngine(AbstractBeanDefine define, Object obj, RootClassLoader classLoader) throws ClassNotFoundException {
         super(false);
+        this.setRootClassLoader(classLoader);
         this.setBuilderMode(BuilderMode.Propxy);
         this.setClassNameStrategy(new ProxyClassNameStrategy());
         this.setSuperClass(obj.getClass());

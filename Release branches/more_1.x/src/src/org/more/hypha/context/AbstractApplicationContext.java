@@ -159,7 +159,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         }
         if (this.singleBeanCache.containsKey(defineID) == true) {
             Object obj = this.singleBeanCache.get(defineID);
-            log.info("{%0} bean form cache return.", defineID);
+            log.debug("{%0} bean form cache return.", defineID);
             return (T) obj;
         }
         AbstractBeanDefine define = this.getBeanDefinition(defineID);
@@ -168,21 +168,22 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
             throw new DefineException(defineID + " define is not exist.");
         }
         //-------------------------------------------------------------------获取
-        log.info("start building {%0} bean , params is {%1}", defineID, objects);
+        log.debug("start building {%0} bean , params is {%1}", defineID, objects);
         try {
             this.getThreadFlash().setAttribute(KEY, objects);
             log.debug("put params to ThreadFlash key is {%0}", KEY);
             //1.获取bean以及bean类型。
             Class<?> beanType = this.getBeanType(defineID, objects);//获取类型
             Object bean = this.engineLogic.builderBean(define, objects);//生成Bean
-            log.info("finish build!, object = {%0}", bean);
+            log.debug("finish build!, object = {%0}", bean);
             //3.单态缓存&类型匹配
             if (beanType != null)
                 /**检测对象类型是否匹配定义类型，如果没有指定beanType参数则直接返回。*/
-                bean = beanType.cast(bean);
+                if (define.isCheck() == true)
+                    bean = beanType.cast(bean);
             log.debug("bean cast type {%0} OK!", beanType);
             if (define.isSingleton() == true) {
-                log.info("{%0} bean is Singleton!", defineID);
+                log.debug("{%0} bean is Singleton!", defineID);
                 this.singleBeanCache.put(defineID, bean);
             }
             return (T) bean;
@@ -201,7 +202,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         }
         if (this.typeCache.containsKey(defineID) == true) {
             Class<?> type = this.typeCache.get(defineID);
-            log.info("{%0} bean type form cache return.", defineID);
+            log.debug("{%0} bean type form cache return.", defineID);
             return type;
         }
         AbstractBeanDefine define = this.getBeanDefinition(defineID);
@@ -210,12 +211,12 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
             throw new DefineException(defineID + " define is not exist.");
         }
         //-------------------------------------------------------------------获取
-        log.info("start building {%0} bean type , params is {%1}", defineID, objects);
+        log.debug("start building {%0} bean type , params is {%1}", defineID, objects);
         try {
             this.getThreadFlash().setAttribute(KEY, objects);
             log.debug("put params to ThreadFlash key is {%0}", KEY);
             Class<?> beanType = this.engineLogic.builderType(define, objects);
-            log.info("finish build! type = {%0}", beanType);
+            log.debug("finish build! type = {%0}", beanType);
             this.typeCache.put(defineID, beanType);
             return beanType;
         } catch (Throwable e) {

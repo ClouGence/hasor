@@ -16,6 +16,7 @@
 package org.more.hypha.beans.xml;
 import java.util.Map;
 import org.more.core.xml.XmlStackDecorator;
+import org.more.core.xml.stream.EndElementEvent;
 import org.more.hypha.beans.define.RelationBeanDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
 /**
@@ -34,14 +35,18 @@ public class TagBeans_RefBean extends TagBeans_AbstractBeanDefine<RelationBeanDe
     }
     /**定义引用类型Bean的属性*/
     public enum PropertyKey {
-        ref, refPackage, useTemplate
+        ref, refPackage
     };
     /**关联属性与xml的属性对应关系。*/
     protected Map<Enum<?>, String> getPropertyMappings() {
         Map<Enum<?>, String> propertys = super.getPropertyMappings();
         propertys.put(PropertyKey.ref, "refBean");
         propertys.put(PropertyKey.refPackage, "refPackage");
-        propertys.put(PropertyKey.useTemplate, "useTemplate");
         return propertys;
+    }
+    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
+        RelationBeanDefine define = this.getDefine(context);
+        define.setFactoryMethod(null);
+        super.endElement(context, xpath, event);
     }
 }

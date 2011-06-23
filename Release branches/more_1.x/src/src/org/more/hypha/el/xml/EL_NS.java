@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.el;
+package org.more.hypha.el.xml;
+import org.more.hypha.commons.xml.Tag_Abstract;
+import org.more.hypha.context.xml.XmlDefineResource;
 /**
- * 发生EL错误。
- * Date : 2011-4-15
+ * 用于解析el-config命名空间标签解析器基类，主要用于区分不同命名空间。
+ * @version : 2011-4-22
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ELException extends RuntimeException {
-    /**  */
-    private static final long serialVersionUID = 7599280857661044510L;
-    public ELException(String string, Throwable e) {
-        super(string, e);
+public abstract class EL_NS extends Tag_Abstract {
+    public static final String ELConfigList = "org.more.hypha.el.EL_LIST";
+    public EL_NS(XmlDefineResource configuration) {
+        super(configuration);
     };
-}
+};

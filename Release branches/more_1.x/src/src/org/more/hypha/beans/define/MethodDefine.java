@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import org.more.core.error.RepeateException;
-import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.AbstractMethodDefine;
 import org.more.hypha.commons.define.AbstractDefine;
 /**
@@ -28,22 +27,13 @@ import org.more.hypha.commons.define.AbstractDefine;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class MethodDefine extends AbstractDefine<AbstractMethodDefine> implements AbstractMethodDefine {
-    private String                 name          = null;
-    private String                 codeName      = null;
-    private ArrayList<ParamDefine> params        = new ArrayList<ParamDefine>(); //属性
-    private boolean                boolStatic    = false;
-    private AbstractBeanDefine     forBeanDefine = null;
+    private String                 name       = null;
+    private String                 codeName   = null;
+    private ArrayList<ParamDefine> params     = new ArrayList<ParamDefine>(); //属性
+    private boolean                boolStatic = false;
     /**用于返回一个boolean值，该值表明位于bean上的方法是否为一个静态方法。*/
     public boolean isStatic() {
         return this.boolStatic;
-    }
-    /**获取这个方法所属的bean定义*/
-    public AbstractBeanDefine getForBeanDefine() {
-        return this.forBeanDefine;
-    }
-    /**设置所属Bean*/
-    void setForBeanDefine(AbstractBeanDefine forBeanDefine) {
-        this.forBeanDefine = forBeanDefine;
     }
     /**返回方法的代理名称，代理名称是用于索引方法的目的。*/
     public String getName() {

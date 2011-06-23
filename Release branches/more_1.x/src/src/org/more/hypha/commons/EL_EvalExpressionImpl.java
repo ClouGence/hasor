@@ -51,7 +51,7 @@ class EL_EvalExpressionImpl implements EvalExpression {
     };
     /*------------------------------------------------------------------------------*/
     public Object evalNode(Object thisObject) throws ELException {
-        OgnlContext oc = new OgnlContext(this.toMap());
+        OgnlContext oc = new EL_OgnlContext(this.toMap());
         oc.setCurrentObject(thisObject);
         try {
             Object obj = this.expressionNode.getValue(oc, thisObject);
@@ -63,7 +63,7 @@ class EL_EvalExpressionImpl implements EvalExpression {
         }
     }
     public Object eval(Object thisObject) throws ELException {
-        OgnlContext oc = new OgnlContext(this.toMap());
+        OgnlContext oc = new EL_OgnlContext(this.toMap());
         oc.setCurrentObject(thisObject);
         try {
             Object obj = Ognl.getValue(expressionString, oc);

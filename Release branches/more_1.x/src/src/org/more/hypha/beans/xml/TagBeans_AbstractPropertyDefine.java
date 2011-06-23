@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.define.AbstractPropertyDefine;
+import org.more.hypha.beans.define.AbstractValueMetaData;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.util.attribute.AttBase;
 /**
@@ -62,7 +62,7 @@ public abstract class TagBeans_AbstractPropertyDefine<T extends AbstractProperty
         for (int i = 0; i < event.getAttributeCount(); i++)
             att.put(event.getAttributeName(i).getLocalPart(), event.getAttributeValue(i));
         //4.负责解析属性值元信息，当具有value、date、bigText、ref、file、directory、uri、el等标签对属性进行描述时会自动覆盖这里的解析。
-        ValueMetaData valueMETADATA = this.getRootTypeParser().parser(att, pdefine);
+        AbstractValueMetaData valueMETADATA = (AbstractValueMetaData) this.getRootTypeParser().parser(att, pdefine);
         if (valueMETADATA == null)
             throw new NullPointerException("通过TypeManager解析属性值元信息失败！返回值为空。");
         pdefine.setValueMetaData(valueMETADATA);

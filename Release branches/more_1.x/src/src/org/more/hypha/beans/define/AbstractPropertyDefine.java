@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.define;
-import org.more.hypha.ValueMetaData;
 import org.more.hypha.commons.define.AbstractDefine;
 /**
  * 表示一个bean定义中的一种属性或参数
@@ -22,9 +21,9 @@ import org.more.hypha.commons.define.AbstractDefine;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractPropertyDefine extends AbstractDefine<org.more.hypha.AbstractPropertyDefine> implements org.more.hypha.AbstractPropertyDefine {
-    private String        classType     = null; //当执行属性注入时需要执行的类型转换类型
-    private String        description   = null; //属性描述
-    private ValueMetaData valueMetaData = null; //值描述
+    private String                classType     = null; //当执行属性注入时需要执行的类型转换类型
+    private String                description   = null; //属性描述
+    private AbstractValueMetaData valueMetaData = null; //值描述
     //-------------------------------------------------------------
     /**返回当执行属性注入时需要执行的类型转换类型。*/
     public String getClassType() {
@@ -35,12 +34,13 @@ public abstract class AbstractPropertyDefine extends AbstractDefine<org.more.hyp
         return this.description;
     };
     /**获取对该属性的值信息描述。*/
-    public ValueMetaData getMetaData() {
+    public AbstractValueMetaData getMetaData() {
         return this.valueMetaData;
     };
     //-------------------------------------------------------------
     /**设置属性值的描述信息*/
-    public void setValueMetaData(ValueMetaData valueMetaData) {
+    public void setValueMetaData(AbstractValueMetaData valueMetaData) {
+        valueMetaData.setFor(this);
         this.valueMetaData = valueMetaData;
     }
     /**设置属性类型*/
