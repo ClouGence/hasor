@@ -1,7 +1,11 @@
 <b:beans xmlns:b="http://project.byshell.org/more/schema/beans"
 	xmlns:bc="http://project.byshell.org/more/schema/beans-config"
-	xmlns:aop="http://project.byshell.org/more/schema/aop" xmlns:anno="http://project.byshell.org/more/schema/annotation">
-
+	xmlns:e="http://project.byshell.org/more/schema/engine"
+	xmlns:el="http://project.byshell.org/more/schema/el-config"
+	xmlns:aop="http://project.byshell.org/more/schema/aop"
+	xmlns:anno="http://project.byshell.org/more/schema/annotation"
+	xmlns:p="http://project.byshell.org/more/schema/point">
+	
 	<bc:mdParser-config>
 		<bc:parser mdType="SimpleType" class="org.more.hypha.beans.assembler.parser.SimpleType_MetaData_Parser" />
 		<bc:parser mdType="Enum" class="org.more.hypha.beans.assembler.parser.Enum_MetaData_Parser" />
@@ -19,30 +23,25 @@
 	<bc:beanType-config>
 		<bc:beanType tName="TemplateBean" class="org.more.hypha.beans.assembler.builder.TemplateBeanBuilder" />
 		<bc:beanType tName="ClassPathBean" class="org.more.hypha.beans.assembler.builder.ClassBeanBuilder" />
-		<bc:beanType tName="GenerateBean" class="org.more.hypha.beans.assembler.builder.GenerateBeanBuilder" />
 		<bc:beanType tName="RelationBean" class="org.more.hypha.beans.assembler.builder.RelationBeanBuilder" />
 		<bc:beanType tName="ScriptBean" class="org.more.hypha.beans.assembler.builder.ScriptBeanBuilder" />
 		<bc:beanType tName="VariableBean" class="org.more.hypha.beans.assembler.builder.VariableBeanBuilder" />
 	</bc:beanType-config>
 
-
-	<!-- <c:appConfig> -->
-	<!-- <c:ep-config></c:ep-config> -->
-	<!-- <c:el-config> -->
-	<!-- <c:el name="params" class="org.more.hypha.el.EO_Params" /> -->
-	<!-- <c:el name="attribute" class="org.more.hypha.el.EO_Attribute" /> -->
-	<!-- <c:el name="context" class="org.more.hypha.el.EO_AppContext" /> -->
-	<!-- </c:el-config> -->
-	<!-- <c:scope-config></c:scope-config> -->
-	<!-- <c:script-config></c:script-config> -->
-	<!-- <c:event-config></c:event-config> -->
-	<!-- </c:appConfig> -->
+	<e:engine name="Ioc" class="org.more.hypha.commons.engine.engines.Ioc_Engine"/>
+	<!-- e:engine name="Fact" class="org.more.hypha.commons.engine.engines.Fact_Engine"/-->
+	
+	<p:point name="$moreAppCacheBeanType" class="org.more.hypha.commons.point_support.objs.CacheLoadClassPoint"/>
+	
+	<el:add name="$params" class="org.more.hypha.el.assembler.EO_Params" />
+	<el:add name="$attribute" class="org.more.hypha.el.assembler.EO_Attribute" />
+	<el:add name="$context" class="org.more.hypha.el.assembler.EO_AppContext" />
 
 	<b:defaultPackage />
-	<anno:anno package="org.more.*" />
-
-	<b:classBean name="$more_actionjs" build="Ioc" class="org.more.submit.ext.actionjs.JavaScriptSubmitManager">
+	<b:classBean name="$more_actionjs" class="org.more.submit.ext.actionjs.JavaScriptSubmitManager">
 		<b:property name="min" type="boolean" value="false" />
 		<b:meta key="isAction" value="true" />
 	</b:classBean>
+	
+	<anno:anno package="*" />
 </b:beans>
