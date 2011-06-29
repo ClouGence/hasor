@@ -33,7 +33,7 @@ public class MetaDataUtil {
         if (listType == null) {
             String listTypeString = vmd.getCollectionType();
             if (listTypeString != null) {
-                listType = (Class<?>) context.getBeanClassLoader().loadClass(listTypeString);
+                listType = (Class<?>) context.getClassLoader().loadClass(listTypeString);
                 log.debug("return load {%0} type.", listType);
             }
             if (listType == null) {

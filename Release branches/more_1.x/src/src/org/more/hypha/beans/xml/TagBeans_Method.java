@@ -58,7 +58,7 @@ public class TagBeans_Method extends TagBeans_AbstractDefine<MethodDefine> {
     /**将属性注册到Bean中。*/
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
         MethodDefine method = this.getDefine(context);
-        AbstractBaseBeanDefine define = (AbstractBaseBeanDefine) context.getAttribute(TagBeans_TemplateBean.BeanDefine);
+        AbstractBaseBeanDefine define = (AbstractBaseBeanDefine) context.getAttribute(TagBeans_AbstractBeanDefine.BeanDefine);
         //
         if (method.getCodeName() == null)
             throw new DefineException("[" + define.getName() + "]的方法定义未定义codeName属性。");

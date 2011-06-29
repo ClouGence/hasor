@@ -18,7 +18,7 @@ import java.util.List;
 import org.more.util.attribute.IAttribute;
 /**
  * 这个接口是more.hypha组建的基本接口之一，该接口用于提供{@link AbstractBeanDefine}的索引获取功能。
- * 接口实现类决定bean数据是以什么形式存在（DBMS、LDAP、XML这些都是数据提供形式）。
+ * 接口实现类决定bean数据是以什么形式存在（DBMS、LDAP、XML这些都是数据提供形式）。该接口只有事件支持。
  * @version 2010-9-24
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -77,6 +77,4 @@ public interface DefineResource extends IAttribute {
     public void clearDefine();
     /**获取事件管理器，通过该管理器可以发送事件，事件的监听也是通过这个接口对象完成的。*/
     public EventManager getEventManager();
-    /**获取扩展点管理器，通过扩展点管理器可以检索、注册或者解除注册扩展点。有关扩展点的功能请参见{@link ExpandPoint}*/
-    public ExpandPointManager getExpandPointManager();
 };

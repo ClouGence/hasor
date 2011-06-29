@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.aop.xml;
-import org.more.NoDefinitionException;
-import org.more.NotFoundException;
+import org.more.core.error.LostException;
 import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
@@ -25,7 +24,7 @@ import org.more.hypha.EventManager;
 import org.more.hypha.aop.AopInfoConfig;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
-import org.more.hypha.event.XmlLoadedEvent;
+import org.more.hypha.context.xml.XmlLoadedEvent;
 /**
  * 用于解析aop:apply标签
  * @version 2010-9-22
@@ -42,11 +41,11 @@ public class TagAop_Apply extends TagAop_NS implements XmlElementHook {
         String toPackageExp = event.getAttributeValue("toPackageExp");
         //2.检测
         if (config == null)
-            throw new NoDefinitionException("apply标签，检测到未定义config属性或者属性值为空。");
-        AopInfoConfig plugin = (AopInfoConfig) this.getFlash().getAttribute(AopInfoConfig.ServiceName);
-        AopConfigDefine aopConfig = plugin.getAopDefine(config);
+            throw new LostException("apply标签，检测到未定义config属性或者属性值为空。");
+        AopInfoConfig service = this.getAopConfig();
+        AopConfigDefine aopConfig = service.getAopDefine(config);
         if (aopConfig == null)
-            throw new NotFoundException("apply标签在应用[" + config + "]aop配置时无法找到其定义的AopConfigDefine类型对象。");
+            throw new LostException("apply标签在应用[" + config + "]aop配置时无法找到其定义的AopConfigDefine类型对象。");
         //3.注册监听器 
         EventManager manager = this.getDefineResource().getEventManager();
         Event e = Event.getEvent(XmlLoadedEvent.class);

@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.anno.xml;
-import org.more.LostException;
+package org.more.hypha.anno.assembler;
+import org.more.core.error.LostException;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.anno.AnnoServices;
 import org.more.hypha.anno.KeepWatchParser;
@@ -22,6 +22,7 @@ import org.more.hypha.anno.define.Aop;
 import org.more.hypha.anno.define.AopInformed;
 import org.more.hypha.anno.define.Bean;
 import org.more.hypha.aop.AopInfoConfig;
+import org.more.hypha.aop.assembler.AopInfoConfig_Impl;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.aop.define.AopDefineInformed;
 import org.more.hypha.aop.define.AopPointcutDefine;
@@ -35,7 +36,9 @@ import org.more.hypha.context.xml.XmlDefineResource;
 public class Watch_Aop implements KeepWatchParser {
     public void process(Class<?> beanType, XmlDefineResource resource, AnnoServices plugin) {
         Bean bean = beanType.getAnnotation(Bean.class);
-        AopInfoConfig aopPlugin = (AopInfoConfig) resource.getFlash().getAttribute(AopInfoConfig.ServiceName);
+        if (bean == null)
+            return;
+        AopInfoConfig aopPlugin = (AopInfoConfig) resource.getFlash().getAttribute(AopInfoConfig_Impl.ServiceName);
         // ID
         String id = bean.id();
         if (id.equals("") == true) {

@@ -37,11 +37,11 @@ public class QPP_ROOT implements QPP {
             return;
         }
         if (this.parserList.contains(parser) == false) {
-            log.info("{%0} parser regedit OK!", parser);
+            log.debug("{%0} parser regedit OK!", parser);
             this.parserList.add(parser);
         } else
             log.error("{%0} parser is exist.", parser);
-    }
+    };
     /**取消一个快速属性值解析器的注册。*/
     public synchronized void unRegeditTypeParser(QPP parser) {
         if (parser == null) {
@@ -49,11 +49,11 @@ public class QPP_ROOT implements QPP {
             return;
         }
         if (this.parserList.contains(parser) == true) {
-            log.info("{%0} parser unRegedit OK!", parser);
+            log.debug("{%0} parser unRegedit OK!", parser);
             this.parserList.remove(parser);
         } else
             log.error("unRegedit error {%0} is not exist.", parser);
-    }
+    };
     /**将属性值解析为某一特定类型的值，将value表述的值转换成指定的元信息描述。*/
     public synchronized ValueMetaData parser(IAttribute att, AbstractPropertyDefine property) {
         ValueMetaData valueMETADATA = null;
@@ -68,5 +68,5 @@ public class QPP_ROOT implements QPP {
         simple.setValueMetaType(PropertyType.Null);
         simple.setValue(null);
         return simple;
-    }
+    };
 }

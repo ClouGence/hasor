@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.aop.xml;
-import org.more.RepeateException;
+import org.more.core.error.RepeateException;
 import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
@@ -75,10 +75,10 @@ public abstract class TagAop_AbstractPointcut<T extends AbstractPointcutDefine> 
         }
         //3.注册到环境中
         if (isReg == false && define.getName() != null) {
-            AopInfoConfig plugin = (AopInfoConfig) this.getFlash().getAttribute(AopInfoConfig.ServiceName);
-            if (plugin.containPointcutDefine(define.getName()) == true)
+            AopInfoConfig service = this.getAopConfig();
+            if (service.containPointcutDefine(define.getName()) == true)
                 throw new RepeateException("不能重复定义[" + define.getName() + "]切入点对象。");
-            plugin.addPointcutDefine(define);
+            service.addPointcutDefine(define);
         }
         //
         context.removeAttribute(PointcutDefine);

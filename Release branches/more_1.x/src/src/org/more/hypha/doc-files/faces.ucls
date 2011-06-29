@@ -2,7 +2,15 @@
   associations="true" dependencies="true" nesting-relationships="true">  
   <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.ValueMetaData" project="More" 
     file="/More/src/org/more/hypha/ValueMetaData.java" binary="false">    
-    <position x="789" y="815" width="-1" height="-1"/>    
+    <position x="542" y="1798" width="148" height="67"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.ScriptContext" project="More" 
+    file="/More/src/org/more/hypha/ScriptContext.java" binary="false">    
+    <position x="15" y="826" width="113" height="67"/>    
     <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
@@ -10,111 +18,7 @@
   </interface>  
   <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.DefineResource" project="More" 
     file="/More/src/org/more/hypha/DefineResource.java" binary="false">    
-    <position x="618" y="580" width="-1" height="-1"/>    
-    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true"/>      
-      <operations public="true" package="true" protected="true" private="true"/>    
-    </display>  
-  </interface>  
-  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.AbstractEventManager" project="More" 
-    file="/More/src/org/more/hypha/AbstractEventManager.java" binary="false">    
-    <position x="1067" y="667" width="-1" height="-1"/>    
-    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true"/>      
-      <operations public="true" package="true" protected="true" private="true"/>    
-    </display>  
-  </class>  
-  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.ApplicationContext" project="More" 
-    file="/More/src/org/more/hypha/ApplicationContext.java" binary="false">    
-    <position x="618" y="261" width="-1" height="-1"/>    
-    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true"/>      
-      <operations public="true" package="true" protected="true" private="true"/>    
-    </display>  
-  </interface>  
-  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.AbstractPropertyDefine" project="More" 
-    file="/More/src/org/more/hypha/AbstractPropertyDefine.java" binary="false">    
-    <position x="578" y="816" width="-1" height="-1"/>    
-    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true"/>      
-      <operations public="true" package="true" protected="true" private="true"/>    
-    </display>  
-  </interface>  
-  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.ELObject" project="More" 
-    file="/More/src/org/more/hypha/ELObject.java" binary="false">    
-    <position x="235" y="67" width="-1" height="-1"/>    
-    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true"/>      
-      <operations public="true" package="true" protected="true" private="true"/>    
-    </display>  
-  </interface>  
-  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.AbstractExpandPointManager" project="More" 
-    file="/More/src/org/more/hypha/AbstractExpandPointManager.java" binary="false">    
-    <position x="1068" y="500" width="-1" height="-1"/>    
-    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true"/>      
-      <operations public="true" package="true" protected="true" private="true"/>    
-    </display>  
-  </class>  
-  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.ELContext" project="More" 
-    file="/More/src/org/more/hypha/ELContext.java" binary="false">    
-    <position x="618" y="8" width="-1" height="-1"/>    
-    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true"/>      
-      <operations public="true" package="true" protected="true" private="true"/>    
-    </display>  
-  </interface>  
-  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.Event" project="More" 
-    file="/More/src/org/more/hypha/Event.java" binary="false">    
-    <position x="1170" y="879" width="-1" height="-1"/>    
-    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true"/>      
-      <operations public="true" package="true" protected="true" private="true"/>    
-    </display>  
-  </class>  
-  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.ExpandPoint" project="More" 
-    file="/More/src/org/more/hypha/ExpandPoint.java" binary="false">    
-    <position x="1070" y="378" width="-1" height="-1"/>    
-    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true"/>      
-      <operations public="true" package="true" protected="true" private="true"/>    
-    </display>  
-  </interface>  
-  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.AbstractBeanDefine" project="More" 
-    file="/More/src/org/more/hypha/AbstractBeanDefine.java" binary="false">    
-    <position x="257" y="557" width="-1" height="-1"/>    
-    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true"/>      
-      <operations public="true" package="true" protected="true" private="true"/>    
-    </display>  
-  </interface>  
-  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.AbstractMethodDefine" project="More" 
-    file="/More/src/org/more/hypha/AbstractMethodDefine.java" binary="false">    
-    <position x="259" y="815" width="-1" height="-1"/>    
-    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true"/>      
-      <operations public="true" package="true" protected="true" private="true"/>    
-    </display>  
-  </interface>  
-  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.EventListener" project="More" 
-    file="/More/src/org/more/hypha/EventListener.java" binary="false">    
-    <position x="977" y="880" width="-1" height="-1"/>    
-    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true"/>      
-      <operations public="true" package="true" protected="true" private="true"/>    
-    </display>  
-  </interface>  
-  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.ELMethod" project="More" 
-    file="/More/src/org/more/hypha/ELMethod.java" binary="false">    
-    <position x="238" y="212" width="-1" height="-1"/>    
-    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true"/>      
-      <operations public="true" package="true" protected="true" private="true"/>    
-    </display>  
-  </interface>  
-  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.PropertyBinding" project="More" 
-    file="/More/src/org/more/hypha/PropertyBinding.java" binary="false">    
-    <position x="908" y="88" width="-1" height="-1"/>    
+    <position x="589" y="618" width="-1" height="-1"/>    
     <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
@@ -122,46 +26,178 @@
   </interface>  
   <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.EvalExpression" project="More" 
     file="/More/src/org/more/hypha/EvalExpression.java" binary="false">    
-    <position x="905" y="-32" width="-1" height="-1"/>    
+    <position x="45" y="89" width="162" height="83"/>    
     <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
     </display>  
   </interface>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.ApplicationContext" project="More" 
+    file="/More/src/org/more/hypha/ApplicationContext.java" binary="false">    
+    <position x="592" y="1384" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.AbstractPropertyDefine" project="More" 
+    file="/More/src/org/more/hypha/AbstractPropertyDefine.java" binary="false">    
+    <position x="542" y="1643" width="169" height="115"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.ScopeContext" project="More" 
+    file="/More/src/org/more/hypha/ScopeContext.java" binary="false">    
+    <position x="168" y="826" width="113" height="67"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.ELObject" project="More" 
+    file="/More/src/org/more/hypha/ELObject.java" binary="false">    
+    <position x="15" y="244" width="206" height="115"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.EventManager" project="More" 
+    file="/More/src/org/more/hypha/EventManager.java" binary="false">    
+    <position x="1033" y="1314" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.ELContext" project="More" 
+    file="/More/src/org/more/hypha/ELContext.java" binary="false">    
+    <position x="277" y="89" width="266" height="115"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.Event" project="More" 
+    file="/More/src/org/more/hypha/Event.java" binary="false">    
+    <position x="825" y="1643" width="223" height="99"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.PropertyBinding" project="More" 
+    file="/More/src/org/more/hypha/PropertyBinding.java" binary="false">    
+    <position x="261" y="244" width="133" height="99"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.Event.Sequence" project="More" 
+    file="/More/src/org/more/hypha/Event.java" binary="false">    
+    <position x="744" y="1798" width="130" height="99"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.ExpandPoint" project="More" 
+    file="/More/src/org/more/hypha/ExpandPoint.java" binary="false">    
+    <position x="15" y="1472" width="156" height="67"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.AbstractBeanDefine" project="More" 
+    file="/More/src/org/more/hypha/AbstractBeanDefine.java" binary="false">    
+    <position x="593" y="948" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.AbstractMethodDefine" project="More" 
+    file="/More/src/org/more/hypha/AbstractMethodDefine.java" binary="false">    
+    <position x="211" y="1472" width="310" height="131"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.ExpandPointManager" project="More" 
+    file="/More/src/org/more/hypha/ExpandPointManager.java" binary="false">    
+    <position x="39" y="1109" width="361" height="115"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.EventListener" project="More" 
+    file="/More/src/org/more/hypha/EventListener.java" binary="false">    
+    <position x="772" y="1472" width="153" height="67"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.Event.Params" project="More" 
+    file="/More/src/org/more/hypha/Event.java" binary="false">    
+    <position x="914" y="1798" width="84" height="51"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
   <dependency>    
-    <source project="More" name="org.more.hypha.ApplicationContext" 
-      file="/More/src/org/more/hypha/ApplicationContext.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.AbstractExpandPointManager" 
-      file="/More/src/org/more/hypha/AbstractExpandPointManager.java" binary="false"/>  
-  </dependency>  
-  <dependency>    
-    <source project="More" name="org.more.hypha.ELMethod" file="/More/src/org/more/hypha/ELMethod.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.ApplicationContext" 
-      file="/More/src/org/more/hypha/ApplicationContext.java" binary="false"/>  
-  </dependency>  
-  <dependency>    
+    <bendpoint x="424" y="244"/>    
     <source project="More" name="org.more.hypha.ApplicationContext" 
       file="/More/src/org/more/hypha/ApplicationContext.java" binary="false"/>    
     <target project="More" name="org.more.hypha.ELContext" file="/More/src/org/more/hypha/ELContext.java" 
       binary="false"/>  
   </dependency>  
+  <association>    
+    <source project="More" name="org.more.hypha.Event" file="/More/src/org/more/hypha/Event.java" binary="false" 
+      navigable="false">      
+      <attribute name="eventMap"/>      
+      <multiplicity minimum="0" maximum="2147483647"/>    
+    </source>    
+    <target project="More" name="org.more.hypha.Event" file="/More/src/org/more/hypha/Event.java" binary="false" 
+      navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting>    
+    <source project="More" name="org.more.hypha.Event" file="/More/src/org/more/hypha/Event.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.Event.Sequence" file="/More/src/org/more/hypha/Event.java" 
+      binary="false"/>  
+  </nesting>  
   <dependency>    
-    <source project="More" name="org.more.hypha.AbstractBeanDefine" 
-      file="/More/src/org/more/hypha/AbstractBeanDefine.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.AbstractMethodDefine" 
-      file="/More/src/org/more/hypha/AbstractMethodDefine.java" binary="false"/>  
-  </dependency>  
-  <dependency>    
-    <source project="More" name="org.more.hypha.AbstractExpandPointManager" 
-      file="/More/src/org/more/hypha/AbstractExpandPointManager.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.DefineResource" file="/More/src/org/more/hypha/DefineResource.java" 
+    <bendpoint x="767" y="1643"/>    
+    <source project="More" name="org.more.hypha.EventListener" file="/More/src/org/more/hypha/EventListener.java" 
+      binary="false"/>    
+    <target project="More" name="org.more.hypha.Event.Sequence" file="/More/src/org/more/hypha/Event.java" 
       binary="false"/>  
   </dependency>  
   <dependency>    
     <source project="More" name="org.more.hypha.ApplicationContext" 
       file="/More/src/org/more/hypha/ApplicationContext.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.AbstractEventManager" 
-      file="/More/src/org/more/hypha/AbstractEventManager.java" binary="false"/>  
+    <target project="More" name="org.more.hypha.DefineResource" file="/More/src/org/more/hypha/DefineResource.java" 
+      binary="false"/>  
+  </dependency>  
+  <dependency>    
+    <bendpoint x="955" y="1472"/>    
+    <source project="More" name="org.more.hypha.EventManager" file="/More/src/org/more/hypha/EventManager.java" 
+      binary="false"/>    
+    <target project="More" name="org.more.hypha.Event" file="/More/src/org/more/hypha/Event.java" binary="false"/>  
+  </dependency>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.ApplicationContext" 
+      file="/More/src/org/more/hypha/ApplicationContext.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.ScriptContext" file="/More/src/org/more/hypha/ScriptContext.java" 
+      binary="false"/>  
   </dependency>  
   <dependency>    
     <source project="More" name="org.more.hypha.AbstractPropertyDefine" 
@@ -170,22 +206,47 @@
       binary="false"/>  
   </dependency>  
   <dependency>    
-    <source project="More" name="org.more.hypha.ApplicationContext" 
-      file="/More/src/org/more/hypha/ApplicationContext.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.DefineResource" file="/More/src/org/more/hypha/DefineResource.java" 
-      binary="false"/>  
+    <source project="More" name="org.more.hypha.AbstractMethodDefine" 
+      file="/More/src/org/more/hypha/AbstractMethodDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.AbstractPropertyDefine" 
+      file="/More/src/org/more/hypha/AbstractPropertyDefine.java" binary="false"/>  
   </dependency>  
   <dependency>    
-    <source project="More" name="org.more.hypha.ELContext" file="/More/src/org/more/hypha/ELContext.java" 
+    <bendpoint x="551" y="1472"/>    
+    <source project="More" name="org.more.hypha.AbstractBeanDefine" 
+      file="/More/src/org/more/hypha/AbstractBeanDefine.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.AbstractPropertyDefine" 
+      file="/More/src/org/more/hypha/AbstractPropertyDefine.java" binary="false"/>  
+  </dependency>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.DefineResource" file="/More/src/org/more/hypha/DefineResource.java" 
       binary="false"/>    
-    <target project="More" name="org.more.hypha.EvalExpression" file="/More/src/org/more/hypha/EvalExpression.java" 
+    <target project="More" name="org.more.hypha.EventManager" file="/More/src/org/more/hypha/EventManager.java" 
       binary="false"/>  
   </dependency>  
   <dependency>    
     <source project="More" name="org.more.hypha.ApplicationContext" 
       file="/More/src/org/more/hypha/ApplicationContext.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.ScopeContext" file="/More/src/org/more/hypha/ScopeContext.java" 
+      binary="false"/>  
+  </dependency>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.ApplicationContext" 
+      file="/More/src/org/more/hypha/ApplicationContext.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.EventManager" file="/More/src/org/more/hypha/EventManager.java" 
+      binary="false"/>  
+  </dependency>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.DefineResource" file="/More/src/org/more/hypha/DefineResource.java" 
+      binary="false"/>    
     <target project="More" name="org.more.hypha.AbstractBeanDefine" 
       file="/More/src/org/more/hypha/AbstractBeanDefine.java" binary="false"/>  
+  </dependency>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.ExpandPointManager" 
+      file="/More/src/org/more/hypha/ExpandPointManager.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.ExpandPoint" file="/More/src/org/more/hypha/ExpandPoint.java" 
+      binary="false"/>  
   </dependency>  
   <dependency>    
     <source project="More" name="org.more.hypha.EventListener" file="/More/src/org/more/hypha/EventListener.java" 
@@ -193,33 +254,37 @@
     <target project="More" name="org.more.hypha.Event" file="/More/src/org/more/hypha/Event.java" binary="false"/>  
   </dependency>  
   <dependency>    
-    <source project="More" name="org.more.hypha.DefineResource" file="/More/src/org/more/hypha/DefineResource.java" 
-      binary="false"/>    
-    <target project="More" name="org.more.hypha.AbstractExpandPointManager" 
-      file="/More/src/org/more/hypha/AbstractExpandPointManager.java" binary="false"/>  
-  </dependency>  
-  <dependency>    
     <source project="More" name="org.more.hypha.AbstractBeanDefine" 
       file="/More/src/org/more/hypha/AbstractBeanDefine.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.AbstractPropertyDefine" 
-      file="/More/src/org/more/hypha/AbstractPropertyDefine.java" binary="false"/>  
+    <target project="More" name="org.more.hypha.AbstractMethodDefine" 
+      file="/More/src/org/more/hypha/AbstractMethodDefine.java" binary="false"/>  
   </dependency>  
   <dependency>    
-    <source project="More" name="org.more.hypha.AbstractEventManager" 
-      file="/More/src/org/more/hypha/AbstractEventManager.java" binary="false"/>    
+    <source project="More" name="org.more.hypha.EventManager" file="/More/src/org/more/hypha/EventManager.java" 
+      binary="false"/>    
     <target project="More" name="org.more.hypha.EventListener" file="/More/src/org/more/hypha/EventListener.java" 
       binary="false"/>  
   </dependency>  
   <dependency>    
-    <source project="More" name="org.more.hypha.ELContext" file="/More/src/org/more/hypha/ELContext.java" 
+    <source project="More" name="org.more.hypha.ELObject" file="/More/src/org/more/hypha/ELObject.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.ApplicationContext" 
+      file="/More/src/org/more/hypha/ApplicationContext.java" binary="false"/>  
+  </dependency>  
+  <nesting>    
+    <source project="More" name="org.more.hypha.Event" file="/More/src/org/more/hypha/Event.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.Event.Params" file="/More/src/org/more/hypha/Event.java" binary="false"/>  
+  </nesting>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.DefineResource" file="/More/src/org/more/hypha/DefineResource.java" 
       binary="false"/>    
-    <target project="More" name="org.more.hypha.ELMethod" file="/More/src/org/more/hypha/ELMethod.java" binary="false"/>  
+    <target project="More" name="org.more.hypha.ExpandPointManager" 
+      file="/More/src/org/more/hypha/ExpandPointManager.java" binary="false"/>  
   </dependency>  
   <dependency>    
-    <source project="More" name="org.more.hypha.AbstractMethodDefine" 
-      file="/More/src/org/more/hypha/AbstractMethodDefine.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.AbstractPropertyDefine" 
-      file="/More/src/org/more/hypha/AbstractPropertyDefine.java" binary="false"/>  
+    <source project="More" name="org.more.hypha.ApplicationContext" 
+      file="/More/src/org/more/hypha/ApplicationContext.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.AbstractBeanDefine" 
+      file="/More/src/org/more/hypha/AbstractBeanDefine.java" binary="false"/>  
   </dependency>  
   <dependency>    
     <source project="More" name="org.more.hypha.ELContext" file="/More/src/org/more/hypha/ELContext.java" 
@@ -227,59 +292,24 @@
     <target project="More" name="org.more.hypha.PropertyBinding" file="/More/src/org/more/hypha/PropertyBinding.java" 
       binary="false"/>  
   </dependency>  
-  <association>    
-    <source project="More" name="org.more.hypha.AbstractEventManager" 
-      file="/More/src/org/more/hypha/AbstractEventManager.java" binary="false" navigable="false">      
-      <attribute name="eventQueue"/>      
-      <multiplicity minimum="0" maximum="2147483647"/>    
-    </source>    
-    <target project="More" name="org.more.hypha.Event" file="/More/src/org/more/hypha/Event.java" binary="false" 
-      navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association>    
-    <source project="More" name="org.more.hypha.AbstractExpandPointManager" 
-      file="/More/src/org/more/hypha/AbstractExpandPointManager.java" binary="false" navigable="false">      
-      <attribute name="expandList"/>      
-      <multiplicity minimum="0" maximum="2147483647"/>    
-    </source>    
-    <target project="More" name="org.more.hypha.ExpandPoint" file="/More/src/org/more/hypha/ExpandPoint.java" 
-      binary="false" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <dependency>    
-    <source project="More" name="org.more.hypha.DefineResource" file="/More/src/org/more/hypha/DefineResource.java" 
-      binary="false"/>    
-    <target project="More" name="org.more.hypha.AbstractBeanDefine" 
-      file="/More/src/org/more/hypha/AbstractBeanDefine.java" binary="false"/>  
-  </dependency>  
   <dependency>    
     <source project="More" name="org.more.hypha.ELContext" file="/More/src/org/more/hypha/ELContext.java" 
       binary="false"/>    
     <target project="More" name="org.more.hypha.ELObject" file="/More/src/org/more/hypha/ELObject.java" binary="false"/>  
   </dependency>  
   <dependency>    
-    <source project="More" name="org.more.hypha.AbstractMethodDefine" 
-      file="/More/src/org/more/hypha/AbstractMethodDefine.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.AbstractBeanDefine" 
-      file="/More/src/org/more/hypha/AbstractBeanDefine.java" binary="false"/>  
-  </dependency>  
-  <dependency>    
-    <source project="More" name="org.more.hypha.ELObject" file="/More/src/org/more/hypha/ELObject.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.ApplicationContext" 
-      file="/More/src/org/more/hypha/ApplicationContext.java" binary="false"/>  
-  </dependency>  
-  <dependency>    
-    <source project="More" name="org.more.hypha.DefineResource" file="/More/src/org/more/hypha/DefineResource.java" 
+    <bendpoint x="741" y="1472"/>    
+    <bendpoint x="741" y="1643"/>    
+    <source project="More" name="org.more.hypha.EventManager" file="/More/src/org/more/hypha/EventManager.java" 
       binary="false"/>    
-    <target project="More" name="org.more.hypha.AbstractEventManager" 
-      file="/More/src/org/more/hypha/AbstractEventManager.java" binary="false"/>  
+    <target project="More" name="org.more.hypha.Event.Sequence" file="/More/src/org/more/hypha/Event.java" 
+      binary="false"/>  
   </dependency>  
   <dependency>    
-    <source project="More" name="org.more.hypha.AbstractEventManager" 
-      file="/More/src/org/more/hypha/AbstractEventManager.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.DefineResource" file="/More/src/org/more/hypha/DefineResource.java" 
-      binary="false"/>  
+    <source project="More" name="org.more.hypha.ApplicationContext" 
+      file="/More/src/org/more/hypha/ApplicationContext.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.ExpandPointManager" 
+      file="/More/src/org/more/hypha/ExpandPointManager.java" binary="false"/>  
   </dependency>  
   <classifier-display autosize="true" package="true" initial-value="false" signature="true" visibility="true">    
     <attributes public="true" package="true" protected="true" private="true"/>    

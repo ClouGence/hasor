@@ -55,13 +55,12 @@ public class RelationBeanBuilder extends AbstractBeanBuilder<RelationBeanDefine>
         log.debug("ref bean type is {%0}.", bType);
         return bType;
     }
-    @SuppressWarnings("unchecked")
-    public <O> O createBean(Class<?> classType, RelationBeanDefine define, Object[] params) throws Throwable {
+    public Object loadBean(RelationBeanDefine define, Object[] params) throws Throwable {
         //1.确定bean名称。
         String ref = getName(define);
         //2.获取bean。
         Object obj = this.getApplicationContext().getBean(ref, params);
         log.debug("ref bean value = {%0}", obj);
-        return (O) obj;
+        return obj;
     }
 };

@@ -13,13 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha;
+package org.more.hypha.commons.point_support;
 /**
- * 扩展点，用于开放框架内部的流程。使外面程序可以参与或控制执行。{@link ExpandPoint}类型是所有其他扩展点的基类。
- * @version 2010-12-28
+ * 该类是封装el:add标签用的。
+ * @version : 2011-4-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ExpandPoint<T> {
-    /**该方法是执行扩展点的综合入口方法，各子类在重写该方法时来再次确认调用的扩展点本体方法。*/
-    public Object doIt(T target, Object lastReturnObj, Object[] params);
-};
+public class B_Point {
+    private String name      = null;
+    private String className = null;
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getClassName() {
+        return className;
+    }
+    public void setClassName(String className) {
+        this.className = className;
+    }
+}

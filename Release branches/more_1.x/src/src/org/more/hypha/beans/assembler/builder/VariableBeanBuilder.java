@@ -34,11 +34,11 @@ public class VariableBeanBuilder extends AbstractBeanBuilder<VariableBeanDefine>
         log.debug("Variable Bean type = {%0}", vtClass);
         return vtClass;
     }
-    @SuppressWarnings("unchecked")
-    public <O> O createBean(Class<?> classType, VariableBeanDefine define, Object[] params) {
+    public Object loadBean(VariableBeanDefine define, Object[] params) throws Throwable {
         String vValye = define.getValue();
+        Class<?> classType = this.getApplicationContext().getBeanType(define.getID(), params);
         Object value = StringConvertUtil.changeType(vValye, classType);
         log.debug("Variable Bean value = {%0}", value);
-        return (O) value;
+        return value;
     }
 };

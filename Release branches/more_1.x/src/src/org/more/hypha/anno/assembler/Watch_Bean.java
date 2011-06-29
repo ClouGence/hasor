@@ -13,27 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.anno.xml;
+package org.more.hypha.anno.assembler;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import org.more.NoDefinitionException;
-import org.more.NotFoundException;
 import org.more.core.classcode.EngineToos;
+import org.more.core.error.LostException;
+import org.more.core.error.TypeException;
 import org.more.hypha.AbstractMethodDefine;
 import org.more.hypha.DefineResource;
-import org.more.hypha.ValueMetaData;
 import org.more.hypha.anno.AnnoServices;
 import org.more.hypha.anno.KeepWatchParser;
 import org.more.hypha.anno.define.Bean;
 import org.more.hypha.anno.define.MetaData;
 import org.more.hypha.anno.define.Param;
 import org.more.hypha.anno.define.Property;
+import org.more.hypha.beans.define.AbstractBaseBeanDefine;
 import org.more.hypha.beans.define.AbstractPropertyDefine;
-import org.more.hypha.beans.define.BaseBeanDefine;
+import org.more.hypha.beans.define.AbstractValueMetaData;
 import org.more.hypha.beans.define.ClassPathBeanDefine;
 import org.more.hypha.beans.define.ConstructorDefine;
 import org.more.hypha.beans.define.EL_ValueMetaData;
@@ -43,7 +43,9 @@ import org.more.hypha.beans.define.PropertyDefine;
 import org.more.hypha.beans.define.PropertyType;
 import org.more.hypha.beans.define.Simple_ValueMetaData;
 import org.more.hypha.context.xml.XmlDefineResource;
-import org.more.util.StringConvert;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
+import org.more.util.StringConvertUtil;
 import org.more.util.attribute.IAttribute;
 /**
  * 该类用于解析Bean的注解使其成为ClassBeanDefine定义对象。
@@ -51,6 +53,7 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Watch_Bean implements KeepWatchParser {
+    private static ILog log = LogFactory.getLog(Watch_Bean.class);
     public void process(Class<?> beanType, XmlDefineResource resource, AnnoServices plugin) {
         Bean bean = beanType.getAnnotation(Bean.class);
         ClassPathBeanDefine define = new ClassPathBeanDefine();
@@ -72,20 +75,19 @@ public class Watch_Bean implements KeepWatchParser {
             define.setLogicPackage(beanType.getPackage().getName());
         //--插曲
         if (resource.containsBeanDefine(define.getID()) == true) {
-            System.out.println("warning : [" + define.getID() + "]定义出现重复名称定义，因此被忽略。");
+            log.warning("define id is repeate!", define.getID());
             return;
         }
         // Boolean
         define.setBoolSingleton(bean.singleton());
         define.setBoolLazyInit(bean.lazyInit());
         define.setBoolAbstract(Modifier.isAbstract(beanType.getModifiers()));
-        define.setBoolInterface(Modifier.isInterface(beanType.getModifiers()));
         // Factory
         var = bean.factoryName();
         if (var != null && var.equals("") == false) {
             if (resource.containsBeanDefine(var) == false)
-                throw new NoDefinitionException("[" + define.getName() + "]找不到关联的工厂[" + var + "]Bean定义");
-            BaseBeanDefine factoryBean = (BaseBeanDefine) resource.getBeanDefine(var);
+                throw new LostException("[" + define.getName() + "]找不到关联的工厂[" + var + "]Bean定义");
+            AbstractBaseBeanDefine factoryBean = (AbstractBaseBeanDefine) resource.getBeanDefine(var);
             var = bean.factoryName();
             AbstractMethodDefine methodDefine = factoryBean.getMethod(var);
             factoryBean.setFactoryMethod(methodDefine);
@@ -98,9 +100,9 @@ public class Watch_Bean implements KeepWatchParser {
         var = bean.useTemplate();
         if (var.equals("") == false) {
             if (resource.containsBeanDefine(var) == true)
-                define.setUseTemplate(var);
+                define.setUseTemplate((AbstractBaseBeanDefine) resource.getBeanDefine(var));
             else
-                throw new NoDefinitionException("没有找到id为[" + var + "]的Bean定义作为模板。");
+                throw new LostException("没有找到id为[" + var + "]的Bean定义作为模板。");
         }
         // MetaData
         this.addMetaData(define, bean.metaData());
@@ -143,9 +145,10 @@ public class Watch_Bean implements KeepWatchParser {
             if (ma == null)
                 continue;
             //1.方法
-            MethodDefine mDefine = new MethodDefine(define);
+            MethodDefine mDefine = new MethodDefine();
             mDefine.setCodeName(m.getName());
             mDefine.setName(ma.name());
+            mDefine.setBoolStatic(EngineToos.checkIn(Modifier.STATIC, m.getModifiers()));
             this.addMetaData(mDefine, ma.metaData());
             //2.参数
             Class<?>[] mparamType = m.getParameterTypes();
@@ -193,7 +196,7 @@ public class Watch_Bean implements KeepWatchParser {
     private AbstractPropertyDefine getPropertyDefine(Property anno, ClassPathBeanDefine define, AbstractPropertyDefine propDefine, DefineResource resource) {
         String cpt = propDefine.getClassType();
         //3)解析Param注解
-        ValueMetaData valueMetaData = null;
+        AbstractValueMetaData valueMetaData = null;
         if (anno != null) {
             this.addMetaData(propDefine, anno.metaData());
             //1.注释
@@ -207,10 +210,10 @@ public class Watch_Bean implements KeepWatchParser {
                 //处理value
                 PropertyType propType = Simple_ValueMetaData.getPropertyType(cpt);
                 if (propType == null)
-                    throw new NotFoundException(define.getID() + "：解析注解Param期间发现无法将[" + cpt + "]作为基本类型处理。");
+                    throw new TypeException(define.getID() + "：解析注解Param期间发现无法将[" + cpt + "]作为基本类型处理。");
                 Simple_ValueMetaData temp = new Simple_ValueMetaData();
                 Class<?> propClass = Simple_ValueMetaData.getPropertyType(propType);
-                temp.setValue(StringConvert.changeType(txtVar, propClass));
+                temp.setValue(StringConvertUtil.changeType(txtVar, propClass));
                 temp.setValueMetaType(propType);
                 valueMetaData = temp;
             } else if (elVar.equals("") == false) {
@@ -229,7 +232,7 @@ public class Watch_Bean implements KeepWatchParser {
     private AbstractPropertyDefine getPropertyDefine(Param anno, ClassPathBeanDefine define, AbstractPropertyDefine propDefine, DefineResource resource) {
         String cpt = propDefine.getClassType();
         //3)解析Param注解
-        ValueMetaData valueMetaData = null;
+        AbstractValueMetaData valueMetaData = null;
         if (anno != null) {
             this.addMetaData(propDefine, anno.metaData());
             //1.注释
@@ -243,10 +246,10 @@ public class Watch_Bean implements KeepWatchParser {
                 //处理value
                 PropertyType propType = Simple_ValueMetaData.getPropertyType(cpt);
                 if (propType == null)
-                    throw new NotFoundException(define.getID() + "：解析注解Param期间发现无法将[" + cpt + "]作为基本类型处理。");
+                    throw new TypeException(define.getID() + "：解析注解Param期间发现无法将[" + cpt + "]作为基本类型处理。");
                 Simple_ValueMetaData temp = new Simple_ValueMetaData();
                 Class<?> propClass = Simple_ValueMetaData.getPropertyType(propType);
-                temp.setValue(StringConvert.changeType(txtVar, propClass));
+                temp.setValue(StringConvertUtil.changeType(txtVar, propClass));
                 temp.setValueMetaType(propType);
                 valueMetaData = temp;
             } else if (elVar.equals("") == false) {
@@ -263,7 +266,7 @@ public class Watch_Bean implements KeepWatchParser {
         return propDefine;
     }
     /**根据类型获取与其相关的默认ValueMetaData对象。*/
-    private ValueMetaData getDefaultValueMetaData(String stringType) {
+    private AbstractValueMetaData getDefaultValueMetaData(String stringType) {
         PropertyType propType = Simple_ValueMetaData.getPropertyType(stringType);
         //没标记注解
         Simple_ValueMetaData simpleMetaData = new Simple_ValueMetaData();

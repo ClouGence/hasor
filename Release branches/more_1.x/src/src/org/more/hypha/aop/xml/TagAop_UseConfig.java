@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.aop.xml;
-import org.more.NotFoundException;
+import org.more.core.error.LostException;
 import org.more.core.xml.XmlAttributeHook;
 import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
@@ -49,12 +49,12 @@ public class TagAop_UseConfig extends TagAop_NS implements XmlElementHook, XmlAt
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
     /**处理aop:useConfig*/
     private void processElement(XmlStackDecorator context, String name) {
-        AopInfoConfig service = (AopInfoConfig) this.getFlash().getAttribute(AopInfoConfig.ServiceName);
+        AopInfoConfig service = this.getAopConfig();
         AbstractBeanDefine bean = (AbstractBeanDefine) context.getAttribute(TagBeans_AbstractBeanDefine.BeanDefine);
         //
         AopConfigDefine aopConfig = service.getAopDefine(name);
         if (aopConfig == null)
-            throw new NotFoundException("useConfig 在[" + bean.getName() + "]上的[" + name + "]配置，无法在aop配置库中找到。");
+            throw new LostException("useConfig 在[" + bean.getName() + "]上的[" + name + "]配置，无法在aop配置库中找到。");
         service.setAop(bean, aopConfig);
     }
 }

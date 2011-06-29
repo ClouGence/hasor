@@ -61,8 +61,6 @@ public interface AbstractBeanDefine extends IAttribute {
      * 返回的集合是一个只读集合。
      */
     public Collection<? extends InitPropertyDefine> getInitParams();
-    /**返回bean的定义属性集合，返回的集合是一个只读集合。*/
-    public Collection<? extends BeanPropertyDefine> getPropertys();
     /*---------------*/
     /**获取方法的定义，如果当前定义中没有声明则自动到使用的模板中查找。依次类推直到模板返回为空。*/
     public AbstractMethodDefine getMethod(String name);
@@ -72,6 +70,15 @@ public interface AbstractBeanDefine extends IAttribute {
     public Collection<? extends AbstractMethodDefine> getMethods();
     /**获取当前定义中声明的方法列表，返回的结果不包括使用的模板中的方法声明。*/
     public Collection<? extends AbstractMethodDefine> getDeclaredMethods();
+    /*---------------*/
+    /**获取属性定义，如果当前定义中没有声明则自动到使用的模板中查找。依次类推直到模板返回为空。*/
+    public BeanPropertyDefine getProperty(String name);
+    /**获取属性定义，该方法只会在当前定义中查找。*/
+    public BeanPropertyDefine getDeclaredProperty(String name);
+    /**返回bean的定义属性集合，返回的集合是一个只读集合。*/
+    public Collection<? extends BeanPropertyDefine> getPropertys();
+    /**获取当前定义中声明的属性列表，返回的结果不包括使用的模板中的属性声明。*/
+    public Collection<? extends BeanPropertyDefine> getDeclaredPropertys();
     /*---------------*/
     /**返回具有特征的字符串。*/
     public String toString();

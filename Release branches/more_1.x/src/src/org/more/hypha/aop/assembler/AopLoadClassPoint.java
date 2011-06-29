@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.commons.engine.engines;
-import org.more.hypha.AbstractBeanDefine;
-import org.more.hypha.ValueMetaData;
-import org.more.hypha.commons.logic.IocEngine;
-import org.more.hypha.commons.logic.ValueMetaDataParser;
+package org.more.hypha.aop.assembler;
+import org.more.hypha.ApplicationContext;
+import org.more.hypha.PointChain;
+import org.more.hypha.commons.logic.LoadClassPoint;
 /**
- * 传统的ioc方式
- * @version : 2011-6-3
+ * 
+ * @version : 2011-6-28
  * @author 赵永春 (zyc@byshell.org)
  */
-public class User_Engine extends IocEngine {
-    public void ioc(Object obj, AbstractBeanDefine define, Object[] params) throws Throwable {
+public class AopLoadClassPoint implements LoadClassPoint {
+    public Object doFilter(ApplicationContext applicationContext, Object[] params, PointChain chain) throws Throwable {
         // TODO Auto-generated method stub
-        a
+        return chain.doChain(applicationContext, params);
     }
 }

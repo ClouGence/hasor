@@ -16,7 +16,6 @@
 package org.more.hypha.commons.logic;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.more.core.asm.ClassAdapter;
@@ -32,14 +31,13 @@ import org.more.core.error.LostException;
 import org.more.core.error.RepeateException;
 import org.more.core.error.SupportException;
 import org.more.hypha.AbstractBeanDefine;
-import org.more.hypha.AbstractMethodDefine;
-import org.more.hypha.AbstractPropertyDefine;
+import org.more.hypha.ApplicationContext;
+import org.more.hypha.PointCallBack;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.define.AbstractBaseBeanDefine;
 import org.more.hypha.context.AbstractApplicationContext;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
-import org.more.util.PropxyObject;
 /**
 * 该类负责hypha的整个bean创建流程，是一个非常重要的核心类。
 * @version : 2011-5-12
@@ -52,22 +50,6 @@ public class EngineLogic {
     private AbstractApplicationContext                           applicationContext = null;
     //
     private Map<String, IocEngine>                               engineMap          = null;
-    private EngineClassLoader                                    classLoader        = null;
-    /*------------------------------------------------------------------------------*/
-    private class EngineClassLoader extends ClassLoader {
-        public EngineClassLoader(AbstractApplicationContext applicationContext) {
-            super(applicationContext.getBeanClassLoader());
-        };
-        public Class<?> loadClass(ClassData classData, AbstractBeanDefine define) {
-            if (classData == null)
-                throw new NullPointerException("loadClass error ClassData is null.");
-            if (classData.bytes == null || classData.className == null)
-                throw new NullPointerException("loadClass error beanBytes or className is null.");
-            //如果不传递要装载的类名JVM就不会调用本地的类检查器去检查这个类是否存在。
-            byte[] b = classData.bytes;
-            return this.defineClass(classData.className, b, 0, b.length);
-        }
-    };
     /*------------------------------------------------------------------------------*/
     /**初始化，参数不能为空。*/
     public void init(AbstractApplicationContext applicationContext) {
@@ -84,7 +66,6 @@ public class EngineLogic {
         //
         log.debug("init EngineLogic, applicationContext = {%0}", applicationContext);
         this.rootParser = new RootValueMetaDataParser() {};
-        this.classLoader = new EngineClassLoader(this.applicationContext);//使用EngineClassLoader装载构造的字节码
     }
     /**获取{@link AbstractApplicationContext}用于生成Bean的生成器。*/
     protected IocEngine getEngine(String key) {
@@ -93,7 +74,7 @@ public class EngineLogic {
             log.debug("getEngine key = {%0} , return Engine {%1}.", key, ioc);
             return ioc;
         }
-        log.info("can`t getEngine key is null.");
+        log.warning("can`t getEngine key is null.");
         return null;
     };
     /**添加一个bean注入引擎，注意重复注册将会导致替换。*/
@@ -106,7 +87,7 @@ public class EngineLogic {
         if (this.engineMap.containsKey(key) == true)
             log.info("add IocEngine {%0} is exist,use new engine Repeate it OK!", key);
         else
-            log.info("add IocEngine {%0} OK!", key);
+            log.debug("add IocEngine {%0} OK!", key);
         this.engineMap.put(key, engine);
     };
     /**注册{@link ValueMetaDataParser}，如果注册的解析器出现重复则会引发{@link RepeateException}异常。*/
@@ -136,131 +117,69 @@ public class EngineLogic {
         if (this.engineMap.containsKey(beanType) == true)
             log.info("regedit bean Builder {%0} is exist,use new engine Repeate it OK!", beanType);
         else
-            log.info("regedit bean Builder {%0} OK!", beanType);
+            log.debug("regedit bean Builder {%0} OK!", beanType);
         builder.setApplicationContext(this.applicationContext);
         this.builderMap.put(beanType, builder);
     };
     /**解除指定类型bean的解析支持，无论要接触注册的bean类型是否存在该方法都会被正确执行。*/
     public void unRegeditBeanBuilder(String beanType) {
         if (this.builderMap.containsKey(beanType) == true) {
-            log.info("unRegedit bean Builder {%0} OK!", beanType);
+            log.debug("unRegedit bean Builder {%0} OK!", beanType);
             this.builderMap.remove(beanType);
         }
     };
     /*------------------------------------------------------------------------------*/
     /**
-     * 将{@link AbstractBaseBeanDefine}定义对象解析并且装载成为Class类型对象，期间会依次引发{@link ClassBytePoint}和{@link ClassTypePoint}两个扩展点。
-     * 如果解析bean的是{@link AbstractBeanBuilder}类型则只会执行{@link ClassTypePoint}扩展点。
-     * 如果解析bean的是{@link AbstractBeanBuilderEx}类型则只会执行两个扩展点。
+     * 执行bean相关的{@link AbstractBeanBuilder}并且执行生成class的动作。
      * @param define 要装载类型的bean定义。
      * @param params getBean时候传入的参数。
      */
-    public Class<?> builderType(AbstractBeanDefine define, Object[] params) throws Throwable {
+    public Class<?> loadType(final AbstractBeanDefine define, final Object[] params) throws Throwable {
         if (define == null) {
             log.error("builderType an error param AbstractBeanDefine is null.");
             throw new NullPointerException("builderType an error param AbstractBeanDefine is null.");
         }
         String defineType = define.getBeanType();
         String defineID = define.getID();
-        String defineLogStr = defineID + "[" + defineType + "]";//log前缀
         log.debug("builder bean Type defineID is {%0} ...", defineID);
-        //1.
-        AbstractBeanBuilder<AbstractBeanDefine> builder = this.builderMap.get(defineType);
-        if (builder == null) {
-            log.error("bean {%0} Type {%1} is doesn`t support!", defineID, defineType);
-            throw new SupportException(defineLogStr + "，该Bean不是一个hypha所支持的Bean类型或者该类型的Bean不支持Builder。");
-        }
-        //2.
-        if (builder instanceof AbstractBeanBuilderEx == true)
-            return this.doBuilderExForType((AbstractBeanBuilderEx<AbstractBeanDefine>) builder, define, params);
-        else
-            return this.doBuilderForType(builder, define, params);
+        final AbstractBeanBuilder<AbstractBeanDefine> builder = this.builderMap.get(defineType);
+        /*这里使用扩展点的方式来增强装载类型 */
+        return this.applicationContext.getExpandPointManager().exePoint(//执行LoadClassPoint扩展点
+                LoadClassPoint.class, new PointCallBack() {
+                    public Object call(ApplicationContext applicationContext, Object[] params) throws Throwable {
+                        return builder.loadType(define, params);
+                    }
+                }, define, params);
     }
-    /**执行{@link AbstractBeanBuilder}生成器过程。*/
-    private Class<?> doBuilderForType(AbstractBeanBuilder<AbstractBeanDefine> builder, AbstractBeanDefine define, Object[] params) throws Throwable {
-        String defineID = define.getID();
-        log.info("defineID {%0} loadType By Builder...", defineID);
-        Class<?> beanType = builder.loadType(define, params);
-        //执行ClassTypePoint扩展点。
-        beanType = (Class<?>) this.applicationContext.getExpandPointManager().exePointOnSequence(ClassTypePoint.class, beanType,//
-                define, this.applicationContext);//Param
-        log.debug("defineID {%0} loadType OK! type = {%1}", defineID, beanType);
-        return beanType;
-    };
-    /**执行{@link AbstractBeanBuilderEx}生成器过程。*/
-    private Class<?> doBuilderExForType(AbstractBeanBuilderEx<AbstractBeanDefine> builderEx, AbstractBeanDefine define, Object[] params) throws Throwable {
-        String defineID = define.getID();
-        log.info("defineID {%0} loadBytes By BuilderEx...", defineID);
-        ClassData classData = builderEx.loadBytes(define, params);
-        //执行ClassBytePoint扩展点
-        classData = (ClassData) this.applicationContext.getExpandPointManager().exePointOnSequence(ClassBytePoint.class, classData, //
-                define, this.applicationContext);//Param
-        log.debug("defineID {%0} loadBytes OK! beanBytes = {%1}", defineID, classData);
-        Class<?> beanType = builderEx.loadType(classData, define, params);//装载类型。
-        //执行ClassTypePoint扩展点。
-        beanType = (Class<?>) this.applicationContext.getExpandPointManager().exePointOnSequence(ClassTypePoint.class, beanType,//
-                define, this.applicationContext);//Param
-        if (beanType == null) {
-            log.debug("loading {%0} bytes transform to Type!", defineID);
-            beanType = this.classLoader.loadClass(classData, define);
-        }
-        log.debug("defineID {%0} loadType OK! type = {%1}", defineID, beanType);
-        return beanType;
-    };
     /*------------------------------------------------------------------------------*/
-    public <T> T builderBean(AbstractBeanDefine define, Object[] params) throws Throwable {
+    public <T> T loadBean(final AbstractBeanDefine define, final Object[] params) throws Throwable {
         if (define == null) {
-            log.error("builderBean an error param AbstractBeanDefine is null.");
-            throw new NullPointerException("builderBean an error param AbstractBeanDefine is null.");
+            log.error("loadBean an error param AbstractBeanDefine is null.");
+            throw new NullPointerException("loadBean an error param AbstractBeanDefine is null.");
         }
         if (define.isAbstract() == true) {
-            log.error("builderBean an error define is Abstract.");
-            throw new SupportException("builderBean an error define is Abstract.");
+            log.error("loadBean an error define is Abstract.");
+            throw new SupportException("loadBean an error define is Abstract.");
         }
-        String defineType = define.getBeanType();
-        String defineID = define.getID();
-        log.debug("builder bean Object defineID is {%0} ...", defineID);
+        final String defineType = define.getBeanType();
+        final String defineID = define.getID();
+        log.debug("loadBean Object defineID is {%0} ...", defineID);
         //1.
-        AbstractBeanBuilder<AbstractBeanDefine> builder = this.builderMap.get(defineType);
+        final AbstractBeanBuilder<AbstractBeanDefine> builder = this.builderMap.get(defineType);
         if (builder == null) {
-            log.error("bean {%0} Type {%1} is doesn`t support!", defineID, defineType);
-            throw new SupportException("bean " + defineID + " Type " + defineType + " is doesn`t support!");
+            log.error("loadBean {%0} Type {%1} is doesn`t support!", defineID, defineType);
+            throw new SupportException("loadBean " + defineID + " Type " + defineType + " is doesn`t support!");
         }
         //2.创建bean
-        Object obj = this.applicationContext.getExpandPointManager().exePointOnReturn(BeforeCreatePoint.class, null,//预创建Bean
-                define, params, this.applicationContext);
-        log.debug("beforeCreate defineID = {%0}, return = {%1}.", defineID, obj);
-        if (obj == null) {
-            AbstractMethodDefine factory = define.factoryMethod();
-            if (factory != null) {
-                String factoryBeanID = define.factoryBean().getID();
-                log.debug("use factoryBean create {%0}, factoryBeanID = {%1}...", defineID, factoryBeanID);
-                Collection<? extends AbstractPropertyDefine> initParamDefine = factory.getParams();
-                Object[] initParam_objects = transform_toObjects(null, initParamDefine, params);//null此时还没有建立对象。
-                if (factory.isStatic() == true) {
-                    //静态工厂方法创建
-                    log.debug("create by static ,function is static....");
-                    Class<?> factoryType = this.applicationContext.getBeanType(factoryBeanID);
-                    PropxyObject op = this.findMethodByC(factoryType, initParam_objects);
-                    obj = op.invokeMethod(factory.getCodeName());
-                    log.debug("create by static {%0}, defineID = {%1}, return = {%2}.", factory.getCodeName(), defineID, obj);
-                } else {
-                    //工厂方法创建
-                    log.debug("create by factory ....");
-                    Object factoryObject = this.applicationContext.getBean(factoryBeanID, params);/*params参数会被顺势传入工厂bean中。*/
-                    PropxyObject op = this.findMethodByO(factoryObject, initParam_objects);
-                    obj = op.invokeMethod(factory.getCodeName());
-                    log.debug("create by factory {%0}, defineID = {%1}, return = {%2}.", factory.getCodeName(), defineID, obj);
-                }
-            } else {
-                //使用builder创建。
-                log.debug("use builder create {%0}...", defineID);
-                Class<?> classType = this.applicationContext.getBeanType(define.getID(), params);
-                obj = builder.createBean(classType, define, params);
-                log.debug("use builder create {%0}, return .", defineID, obj);
-            }
-        }
-        //3.属性注入
+        log.debug("beforeCreate defineID = {%0}.", defineID);
+        Object obj = this.applicationContext.getExpandPointManager().exePoint(//执行CreateBeanPoint扩展点
+                CreateBeanPoint.class, new PointCallBack() {
+                    public Object call(ApplicationContext applicationContext, Object[] params) throws Throwable {
+                        return builder.loadBean(define, params);
+                    }
+                }, define, params);
+        log.debug("AfterCreate defineID = {%0}.", defineID);
+        //3.属性注入 
         String iocEngineName = define.getIocEngine();
         if (iocEngineName == null) {
             log.error("{%0} ioc engine name is null.", defineID);
@@ -272,14 +191,19 @@ public class EngineLogic {
             throw new LostException("ioc Engine lost name is " + iocEngineName + ".");
         }
         log.debug("ioc defineID = {%0} ,engine name is {%1}.", defineID, iocEngineName);
-        this.ioc(iocEngine, obj, define, params);
+        iocEngine.ioc(obj, define, params);
         //--------------------------------------------------------------------------------------------------------------初始化阶段
         //4.代理销毁方法
         if (define.getDestroyMethod() != null)
             obj = this.propxyFinalize(define, obj);
         //5.执行扩展点
-        obj = this.applicationContext.getExpandPointManager().exePointOnSequence(AfterCreatePoint.class, obj,//Bean装饰
-                params, define, this.applicationContext);
+        final Object _temp = obj;//便于扩展点中可以访问到这个对象。
+        obj = this.applicationContext.getExpandPointManager().exePoint(//执行CreatedBeanPoint扩展点
+                CreatedBeanPoint.class, new PointCallBack() {
+                    public Object call(ApplicationContext applicationContext, Object[] params) throws Throwable {
+                        return _temp;
+                    }
+                }, obj, define, params);
         //6.执行生命周期init方法
         String initMethodName = define.getInitMethod();
         if (initMethodName != null)
@@ -293,44 +217,12 @@ public class EngineLogic {
             }
         return (T) obj;
     };
-    private void ioc(IocEngine iocEngine, Object obj, AbstractBeanDefine define, Object[] params) throws Throwable {
-        AbstractBaseBeanDefine template = define.getUseTemplate();
-        if (template != null)
-            this.ioc(iocEngine, obj, template, params);
-        iocEngine.ioc(obj, define, params);
-    }
-    private PropxyObject findMethodByC(Class<?> parentClass, Object[] params) {
-        PropxyObject po = new PropxyObject(parentClass);
-        for (Object o : params)
-            po.put(o);
-        return po;
-    }
-    private PropxyObject findMethodByO(Object parent, Object[] params) {
-        PropxyObject po = new PropxyObject(parent);
-        for (Object o : params)
-            po.put(o);
-        return po;
-    }
-    /*将一组属性转换成对象。*/
-    private Object[] transform_toObjects(Object object, Collection<? extends AbstractPropertyDefine> pds, Object[] params) throws Throwable {
-        if (pds == null)
-            return new Object[0];
-        //
-        int size = pds.size();
-        int index = 0;
-        Object[] res = new Object[size];
-        for (AbstractPropertyDefine apd : pds) {
-            res[index] = this.rootParser.parser(object, apd.getMetaData(), null/*该参数无效*/, this.applicationContext);
-            index++;
-        }
-        return res;
-    };
     /*代理销毁方法*/
     private RootClassLoader propxyRootLoader = null;
     private Object propxyFinalize(AbstractBeanDefine define, Object object) throws ClassNotFoundException, IOException {
         //使用统一的ClassLoader，来装载生成的 代理销毁方法类。
         if (this.propxyRootLoader == null)
-            this.propxyRootLoader = new RootClassLoader(this.applicationContext.getBeanClassLoader());
+            this.propxyRootLoader = new RootClassLoader(this.applicationContext.getClassLoader());
         //
         AbstractBaseBeanDefine attDefine = null;
         ProxyFinalizeClassEngine proxyEngine = null;//代理销毁方法生成器。
@@ -361,8 +253,8 @@ class ProxyClassNameStrategy implements ClassNameStrategy {
         String cn = superClass.getName();
         generateID++;
         return cn + ClassPrefix + generateID;
-    }
-}
+    };
+};
 /**销毁类代理器*/
 class ProxyFinalizeClassEngine extends ClassEngine {
     private ProxyFinalizeClassBuilder builder      = null;
@@ -376,7 +268,7 @@ class ProxyFinalizeClassEngine extends ClassEngine {
         this.generateName();
         this.finalizeName = define.getDestroyMethod();
         this.builder = new ProxyFinalizeClassBuilder(this.finalizeName);
-    }
+    };
     protected ClassBuilder createBuilder(BuilderMode builderMode) {
         return this.builder;
     };
@@ -386,8 +278,8 @@ class ProxyFinalizeClassBuilder extends ClassBuilder {
     private String finalizeName = null;
     public ProxyFinalizeClassBuilder(String finalizeName) {
         this.finalizeName = finalizeName;
-    }
-    protected void init(ClassEngine classEngine) {}
+    };
+    protected void init(ClassEngine classEngine) {};
     protected ClassAdapter acceptClass(ClassWriter classVisitor) {
         final String _finalizeName = this.finalizeName;//销毁方法名
         return new ClassAdapter(classVisitor) {
@@ -427,5 +319,5 @@ class ProxyFinalizeClassBuilder extends ClassBuilder {
                 super.visitEnd();
             }
         };
-    }
+    };
 };

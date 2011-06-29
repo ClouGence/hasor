@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.more.hypha.aop;
-import org.more.NoDefinitionException;
 import org.more.hypha.AbstractBeanDefine;
+import org.more.hypha.Service;
 import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
 /**
@@ -23,10 +23,9 @@ import org.more.hypha.aop.define.AopConfigDefine;
  * @version 2010-10-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AopInfoConfig {
-    public static final String ServiceName = "$more_aop_service";
-    /**获取一个定义的切入点，如果找不到则会引发{@link NoDefinitionException}异常。*/
-    public AbstractPointcutDefine getPointcutDefine(String name) throws NoDefinitionException;
+public interface AopInfoConfig extends Service {
+    /**获取一个定义的切入点。*/
+    public AbstractPointcutDefine getPointcutDefine(String name);
     /**添加切点定义。*/
     public void addPointcutDefine(AbstractPointcutDefine define);
     /**删除切点定义。*/

@@ -46,7 +46,7 @@ public interface ApplicationContext extends IAttribute {
     * 获取一个类装载器，org.more.hypha中的类装载均是通过这个类装载器进行装载的。
     * @return 返回一个类装载器，org.more.hypha中的类装载均是通过这个类装载器进行装载的。
     */
-    public ClassLoader getBeanClassLoader();
+    public ClassLoader getClassLoader();
     /**
      * 检测是否存在某个名称的Bean。
      * @param id 要获取的Bean id。
@@ -114,6 +114,6 @@ public interface ApplicationContext extends IAttribute {
     public ELContext getELContext();
     //    /**作用域管理器。*/
     //    public ScopeContext getScopeContext();
-    //    /**获取某个类型的服务扩展。*/
-    //    public Object getServices(Class<?> servicesType);
+    /**获取某个类型的服务扩展。*/
+    public Object getService(Class<?> servicesType);
 };

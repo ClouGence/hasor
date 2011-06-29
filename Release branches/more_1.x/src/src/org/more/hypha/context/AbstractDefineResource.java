@@ -19,9 +19,7 @@ import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.DefineResource;
 import org.more.hypha.Event;
 import org.more.hypha.EventManager;
-import org.more.hypha.ExpandPointManager;
 import org.more.hypha.commons.AbstractEventManager;
-import org.more.hypha.commons.AbstractExpandPointManager;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
 import org.more.util.attribute.AttBase;
@@ -32,15 +30,14 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractDefineResource implements DefineResource {
-    private static final long          serialVersionUID   = 1420351981612281917L;
-    private static ILog                log                = LogFactory.getLog(AbstractDefineResource.class);
-    private String                     sourceName         = null;                                           //资源名
-    private IAttribute                 flashContext       = null;                                           //全局闪存，通过重写受保护的方法createFlash来达到植入的目的。
-    private ThreadLocal<IAttribute>    threadFlash        = null;                                           //全局闪存，通过重写受保护的方法createFlash来达到植入的目的。
-    private IAttribute                 attributeManager   = null;                                           //属性管理器
+    private static final long       serialVersionUID = 1420351981612281917L;
+    private static ILog             log              = LogFactory.getLog(AbstractDefineResource.class);
+    private String                  sourceName       = null;                                           //资源名
+    private IAttribute              flashContext     = null;                                           //全局闪存，通过重写受保护的方法createFlash来达到植入的目的。
+    private ThreadLocal<IAttribute> threadFlash      = null;                                           //全局闪存，通过重写受保护的方法createFlash来达到植入的目的。
+    private IAttribute              attributeManager = null;                                           //属性管理器
     //以下字段都可以通过重写相应方法达到重写的目的。
-    private AbstractEventManager       eventManager       = null;                                           //事件管理器
-    private AbstractExpandPointManager expandPointManager = null;                                           //扩展点管理器
+    private AbstractEventManager    eventManager     = null;                                           //事件管理器
     /*------------------------------------------------------------------------------*/
     public boolean contains(String name) {
         return this.getAttribute().contains(name);
@@ -119,13 +116,6 @@ public abstract class AbstractDefineResource implements DefineResource {
         }
         return this.eventManager;
     }
-    public final ExpandPointManager getExpandPointManager() {
-        if (this.expandPointManager == null) {
-            log.info("create ExpandPointManager ...");
-            this.expandPointManager = this.createExpandPointManager();
-        }
-        return this.expandPointManager;
-    }
     /**抛出一个事件，如果事件中断会引发执行错误会引发*/
     protected void throwEvent(Event event, Object... params) {
         log.debug("throwEvent , event = {%0}, params = {%1}", event, params);
@@ -148,12 +138,5 @@ public abstract class AbstractDefineResource implements DefineResource {
         log.info("init EventManager , manager = {%0} , initparam = {%1}.", em, this);
         em.init(this);
         return em;
-    };
-    /**创建一个{@link ExpandPointManager}并且负责初始化它，重新该方法可以替换{@link DefineResource}接口使用的{@link ExpandPointManager}对象。*/
-    protected AbstractExpandPointManager createExpandPointManager() {
-        AbstractExpandPointManager epm = new AbstractExpandPointManager() {};
-        log.info("init ExpandPointManager , manager = {%0} , initparam = {%1}.", epm, this);
-        epm.init(this);
-        return epm;
     };
 };

@@ -48,7 +48,7 @@ public class TagBeans_Property extends TagBeans_AbstractPropertyDefine<PropertyD
     /**将属性注册到Bean中。*/
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
         PropertyDefine property = this.getDefine(context);
-        AbstractBaseBeanDefine define = (AbstractBaseBeanDefine) context.getAttribute(TagBeans_TemplateBean.BeanDefine);
+        AbstractBaseBeanDefine define = (AbstractBaseBeanDefine) context.getAttribute(TagBeans_AbstractBeanDefine.BeanDefine);
         define.addProperty(property);
         super.endElement(context, xpath, event);
     }

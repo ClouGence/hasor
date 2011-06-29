@@ -24,6 +24,7 @@ import java.util.List;
 import org.more.core.error.RepeateException;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.AbstractMethodDefine;
+import org.more.hypha.BeanPropertyDefine;
 import org.more.hypha.commons.define.AbstractDefine;
 /**
  * TemplateBeanDefine类用于定义一个bean的模板。
@@ -135,6 +136,31 @@ public abstract class AbstractBaseBeanDefine extends AbstractDefine<AbstractBean
     public Collection<? extends AbstractMethodDefine> getDeclaredMethods() {
         return Collections.unmodifiableCollection((Collection<AbstractMethodDefine>) this.methods.values());
     };
+    /**获取属性定义，如果当前定义中没有声明则自动到使用的模板中查找。依次类推直到模板返回为空。*/
+    public BeanPropertyDefine getProperty(String name) {
+        BeanPropertyDefine define = this.getDeclaredProperty(name);
+        if (define == null && this.useTemplate != null)
+            return this.useTemplate.getProperty(name);
+        return define;
+    };
+    /**获取属性定义，该方法只会在当前定义中查找。*/
+    public BeanPropertyDefine getDeclaredProperty(String name) {
+        return this.propertys.get(name);
+    };
+    /**返回bean的定义属性集合，返回的集合是一个只读集合。*/
+    public Collection<? extends BeanPropertyDefine> getPropertys() {
+        HashMap<String, BeanPropertyDefine> ps = new HashMap<String, BeanPropertyDefine>();
+        ps.putAll(this.propertys);
+        if (this.useTemplate != null)
+            for (BeanPropertyDefine p : this.useTemplate.getPropertys())
+                if (ps.containsKey(p.getName()) == false)
+                    ps.put(p.getName(), p);
+        return Collections.unmodifiableCollection((Collection<BeanPropertyDefine>) ps.values());
+    };
+    /**获取当前定义中声明的属性列表，返回的结果不包括使用的模板中的属性声明。*/
+    public Collection<? extends BeanPropertyDefine> getDeclaredPropertys() {
+        return Collections.unmodifiableCollection((Collection<PropertyDefine>) this.propertys.values());
+    };
     /**获取初始化方法名。*/
     public String getInitMethod() {
         return this.initMethod;
@@ -154,10 +180,6 @@ public abstract class AbstractBaseBeanDefine extends AbstractDefine<AbstractBean
      */
     public Collection<ConstructorDefine> getInitParams() {
         return Collections.unmodifiableCollection((Collection<ConstructorDefine>) this.initParams);
-    };
-    /**返回bean的定义属性集合，返回的集合是一个只读集合。*/
-    public Collection<PropertyDefine> getPropertys() {
-        return Collections.unmodifiableCollection((Collection<PropertyDefine>) this.propertys.values());
     };
     /**返回具有特征的字符串。*/
     public String toString() {

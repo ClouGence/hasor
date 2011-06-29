@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.commons.engine.engines;
-import org.more.hypha.AbstractBeanDefine;
-import org.more.hypha.commons.logic.IocEngine;
+package org.more.hypha.commons.point_support.xml;
+import org.more.hypha.commons.xml.Tag_Abstract;
+import org.more.hypha.context.xml.XmlDefineResource;
 /**
- * 
- * @version : 2011-6-3
+ * 用于解析el-config命名空间标签解析器基类，主要用于区分不同命名空间。
+ * @version : 2011-4-22
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Fact_Engine extends IocEngine {
-    public void ioc(Object obj, AbstractBeanDefine define, Object[] params) throws Throwable {
-        // TODO Auto-generated method stub
-        System.out.println("adsf");
-        a
-    }
-}
+public abstract class Point_NS extends Tag_Abstract {
+    public static final String PointConfigList = "org.more.hypha.point.Point_LIST";
+    public Point_NS(XmlDefineResource configuration) {
+        super(configuration);
+    };
+};

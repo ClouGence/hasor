@@ -37,6 +37,8 @@ import org.more.hypha.context.xml.XmlDefineResource;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class AnnoServices_Impl implements AnnoServices {
+    /**要注册的插件名*/
+    public static final String                     ServiceName = "$more_anno_ResourcePlugin";
     private XmlDefineResource                      config      = null;
     private ArrayList<String>                      parserTypes = new ArrayList<String>();
     private HashMap<String, List<KeepWatchParser>> parserMap   = new HashMap<String, List<KeepWatchParser>>();
@@ -48,7 +50,7 @@ public class AnnoServices_Impl implements AnnoServices {
         return this.config;
     }
     public AopInfoConfig getAopDefineResourcePlugin() {
-        return (AopInfoConfig) this.config.getFlash().getAttribute(AopInfoConfig.ServiceName);
+        return (AopInfoConfig) this.config.getFlash().getAttribute(ServiceName);
     }
     /**
      * 注册一个注解解析器，该方法会通知注解解析系统，当遇到某个特定的注解时这个类交付这个注解处理器进行处理。

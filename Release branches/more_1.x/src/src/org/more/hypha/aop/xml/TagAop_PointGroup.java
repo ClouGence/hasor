@@ -19,7 +19,7 @@ import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.aop.define.AopPointcutGroupDefine;
 import org.more.hypha.aop.define.AopPointcutGroupDefine.RelEnum;
 import org.more.hypha.context.xml.XmlDefineResource;
-import org.more.util.StringConvert;
+import org.more.util.StringConvertUtil;
 /**
  * 用于解析aop:pointGroup标签
  * @version 2010-9-22
@@ -39,7 +39,7 @@ public class TagAop_PointGroup extends TagAop_AbstractPointcut<AopPointcutGroupD
         super.beginElement(context, xpath, event);
         AopPointcutGroupDefine define = this.getDefine(context);
         String rel = event.getAttributeValue("rel");
-        RelEnum relEnum = (RelEnum) StringConvert.changeType(rel, RelEnum.class, RelEnum.And);
+        RelEnum relEnum = (RelEnum) StringConvertUtil.changeType(rel, RelEnum.class, RelEnum.And);
         define.setRelation(relEnum);
     }
 }

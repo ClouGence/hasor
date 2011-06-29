@@ -29,7 +29,7 @@ public class Enum_MetaData_Parser implements ValueMetaDataParser<Enum_ValueMetaD
     private static ILog log = LogFactory.getLog(Enum_MetaData_Parser.class);
     /*------------------------------------------------------------------------------*/
     public Enum<?> parser(Object targetObject, Enum_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
-        Enum<?> eValue = data.getEnumType(context.getBeanClassLoader());
+        Enum<?> eValue = data.getEnumType(context.getClassLoader());
         log.debug("parser Enum = {%0}.", eValue);
         return eValue;
     }

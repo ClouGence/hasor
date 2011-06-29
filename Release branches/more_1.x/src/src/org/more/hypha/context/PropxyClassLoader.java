@@ -31,7 +31,7 @@ class PropxyClassLoader extends ClassLoader {
     //
     public ClassLoader getLoader() {
         if (this.loader == null) {
-            this.loader = ClassLoader.getSystemClassLoader();
+            this.loader = Thread.currentThread().getContextClassLoader();
             log.info("propxy is null, use ClassLoader.getSystemClassLoader().");
         }
         return this.loader;

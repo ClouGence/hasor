@@ -13,41 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.commons.engine;
-import java.util.Map;
-import java.util.Set;
+package org.more.hypha.commons.point_support;
+import java.util.List;
 import org.more.hypha.Event.Sequence;
 import org.more.hypha.EventListener;
-import org.more.hypha.commons.logic.EngineLogic;
-import org.more.hypha.commons.logic.IocEngine;
+import org.more.hypha.ExpandPointManager;
+import org.more.hypha.PointFilter;
+import org.more.hypha.commons.point_support.xml.Point_NS;
 import org.more.hypha.context.AbstractApplicationContext;
 import org.more.hypha.context.InitEvent;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
 /**
- * 引擎初始化
+ * point的初始化。
  * @version : 2011-4-22
  * @author 赵永春 (zyc@byshell.org)
  */
-@SuppressWarnings("unchecked")
 class OnInit implements EventListener<InitEvent> {
     private static ILog log = LogFactory.getLog(OnInit.class);
     public void onEvent(InitEvent event, Sequence sequence) throws Throwable {
         AbstractApplicationContext context = (AbstractApplicationContext) event.toParams(sequence).applicationContext;
         ClassLoader loader = context.getClassLoader();
-        EngineLogic logic = context.getEngineLogic();
-        Map<String, String> mapping = (Map<String, String>) context.getFlash().getAttribute(TagEngine_Engine.ConfigList);
-        if (mapping != null) {
-            Set<String> keys = mapping.keySet();
-            int count = keys.size();
-            int index = 0;
-            for (String k : keys) {
-                IocEngine ioc = (IocEngine) loader.loadClass(mapping.get(k)).newInstance();
-                logic.addIocEngine(k, ioc);
-                log.debug("add engine {%0} of {%1} OK!", index, count);
-                index++;
+        ExpandPointManager pointManager = context.getExpandPointManager();
+        //3.注册元信息解析器
+        List<B_Point> elList = (List<B_Point>) context.getFlash().getAttribute(Point_NS.PointConfigList);
+        if (elList != null)
+            for (B_Point el : elList) {
+                Class<?> elClass = loader.loadClass(el.getClassName());
+                PointFilter point = (PointFilter) elClass.newInstance();
+                pointManager.regeditExpandPoint(el.getName(), point);
             }
-        } else
-            log.debug("not load ioc engine!");
-    }
+        log.info("hypha.point init OK!");
+    };
 }

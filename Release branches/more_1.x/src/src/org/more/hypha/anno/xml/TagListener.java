@@ -17,14 +17,17 @@ package org.more.hypha.anno.xml;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import org.more.InitializationException;
+import org.more.core.error.InitializationException;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.Event.Sequence;
 import org.more.hypha.EventListener;
 import org.more.hypha.anno.AnnoServices;
+import org.more.hypha.anno.assembler.AnnoServices_Impl;
 import org.more.hypha.context.xml.XmlDefineResource;
-import org.more.hypha.event.XmlLoadedEvent;
-import org.more.hypha.event.XmlLoadedEvent.Params;
+import org.more.hypha.context.xml.XmlLoadedEvent;
+import org.more.hypha.context.xml.XmlLoadedEvent.Params;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 import org.more.util.ClassPathUtil;
 import org.more.util.ClassPathUtil.ScanItem;
 import org.more.util.ScanEvent;
@@ -34,7 +37,8 @@ import org.more.util.ScanEvent;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class TagListener implements EventListener<XmlLoadedEvent> {
-    private String packageText = null;
+    private static ILog log         = LogFactory.getLog(TagListener.class);
+    private String      packageText = null;
     /**创建{@link TagListener}对象。*/
     public TagListener(String packageText) {
         if (packageText == null || packageText.equals(""))
@@ -44,14 +48,14 @@ public class TagListener implements EventListener<XmlLoadedEvent> {
     };
     /**处理注解解析。*/
     public void onEvent(final XmlLoadedEvent event, final Sequence sequence) {
-        System.out.println("start ANNO at package:" + this.packageText);
+        log.info("start ANNO at package '{%0}'", this.packageText);
         StringBuffer buffer = new StringBuffer(this.packageText.replace(".", "/"));
         if (buffer.charAt(0) != '/')
             buffer.insert(0, '/');
         try {
             Params params = event.toParams(sequence);
             final XmlDefineResource config = params.xmlDefineResource;
-            final AnnoServices engine = (AnnoServices) config.getFlash().getAttribute(AnnoServices.AnnoDefineResourcePluginName);
+            final AnnoServices engine = (AnnoServices) config.getFlash().getAttribute(AnnoServices_Impl.ServiceName);
             //
             ClassPathUtil.scan(buffer.toString(), new ScanItem() {
                 public boolean goFind(ScanEvent event, boolean isInJar, File context) throws FileNotFoundException, IOException, ClassNotFoundException {

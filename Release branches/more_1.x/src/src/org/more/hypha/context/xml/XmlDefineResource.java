@@ -65,7 +65,7 @@ public class XmlDefineResource extends ArrayDefineResource {
                 } catch (Exception e) {
                     log.error("new XmlNameSpaceRegister error, errorType = {%0} , message = {%1}.", e.getClass(), e.getMessage());
                 }
-            log.info("init XmlNameSpaceRegister sequence = {%0}, namespace = [{%1}]", this.registerBean.initSequence, this.registerBean.namespace);
+            log.debug("init XmlNameSpaceRegister sequence = {%0}, namespace = [{%1}]", this.registerBean.initSequence, this.registerBean.namespace);
             this.registerObject.initRegister(this.registerBean.namespace, resource);
         };
     };
@@ -197,7 +197,7 @@ public class XmlDefineResource extends ArrayDefineResource {
             return;
         }
         if (this.sourceArray.contains(source) == false) {
-            log.info("addSource {%0}.", source);
+            log.debug("addSource {%0}.", source);
             this.sourceArray.add(source);
         } else
             log.warning("addSource source error ,exist source. {%0}", source);

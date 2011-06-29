@@ -38,6 +38,8 @@ public class QPP_Value implements QPP {
         PropertyType propType = Simple_ValueMetaData.getPropertyType(property.getClassType());
         if (propType == null)
             propType = Simple_ValueMetaData.DefaultValueType;
+        else if (propType == PropertyType.Null && value != null)
+            propType = PropertyType.String;
         //2.½âÎö
         Class<?> propClass = Simple_ValueMetaData.getPropertyType(propType);
         Object var = StringConvertUtil.changeType(value, propClass);

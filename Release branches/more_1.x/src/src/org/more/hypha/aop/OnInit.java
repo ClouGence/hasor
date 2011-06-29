@@ -13,41 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.commons.engine;
-import java.util.Map;
-import java.util.Set;
+package org.more.hypha.aop;
+import org.more.core.error.InitializationException;
 import org.more.hypha.Event.Sequence;
 import org.more.hypha.EventListener;
-import org.more.hypha.commons.logic.EngineLogic;
-import org.more.hypha.commons.logic.IocEngine;
+import org.more.hypha.aop.assembler.AopCreateBeanPoint;
+import org.more.hypha.aop.assembler.AopInfoConfig_Impl;
+import org.more.hypha.aop.assembler.AopLoadClassPoint;
 import org.more.hypha.context.AbstractApplicationContext;
 import org.more.hypha.context.InitEvent;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
 /**
- * 引擎初始化
+ * aop的初始化EventException
  * @version : 2011-4-22
  * @author 赵永春 (zyc@byshell.org)
  */
-@SuppressWarnings("unchecked")
 class OnInit implements EventListener<InitEvent> {
     private static ILog log = LogFactory.getLog(OnInit.class);
     public void onEvent(InitEvent event, Sequence sequence) throws Throwable {
         AbstractApplicationContext context = (AbstractApplicationContext) event.toParams(sequence).applicationContext;
-        ClassLoader loader = context.getClassLoader();
-        EngineLogic logic = context.getEngineLogic();
-        Map<String, String> mapping = (Map<String, String>) context.getFlash().getAttribute(TagEngine_Engine.ConfigList);
-        if (mapping != null) {
-            Set<String> keys = mapping.keySet();
-            int count = keys.size();
-            int index = 0;
-            for (String k : keys) {
-                IocEngine ioc = (IocEngine) loader.loadClass(mapping.get(k)).newInstance();
-                logic.addIocEngine(k, ioc);
-                log.debug("add engine {%0} of {%1} OK!", index, count);
-                index++;
-            }
-        } else
-            log.debug("not load ioc engine!");
-    }
+        AopInfoConfig config = (AopInfoConfig) context.getFlash().getAttribute(AopInfoConfig_Impl.ServiceName);
+        if (config == null)
+            throw new InitializationException("注册aop服务错误!");
+        context.regeditService(AopInfoConfig.class, config);
+        //注册扩展点
+        context.getExpandPointManager().regeditExpandPoint("moreAopSupport_1", new AopLoadClassPoint());
+        context.getExpandPointManager().regeditExpandPoint("moreAopSupport_2", new AopCreateBeanPoint());
+        log.info("hypha.aop init OK!");
+    };
 }

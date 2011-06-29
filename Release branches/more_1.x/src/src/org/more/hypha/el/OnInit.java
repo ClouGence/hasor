@@ -33,7 +33,7 @@ class OnInit implements EventListener<InitEvent> {
     private static ILog log = LogFactory.getLog(OnInit.class);
     public void onEvent(InitEvent event, Sequence sequence) throws Throwable {
         AbstractApplicationContext context = (AbstractApplicationContext) event.toParams(sequence).applicationContext;
-        ClassLoader loader = context.getBeanClassLoader();
+        ClassLoader loader = context.getClassLoader();
         ELContext elContext = context.getELContext();
         //3.注册元信息解析器
         List<B_EL> elList = (List<B_EL>) context.getFlash().getAttribute(EL_NS.ELConfigList);

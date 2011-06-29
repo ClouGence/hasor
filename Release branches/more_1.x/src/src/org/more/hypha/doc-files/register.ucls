@@ -1,55 +1,5 @@
 <class-diagram version="0.9.86" icons="true" always-add-relationships="true" generalizations="true" realizations="true" 
   associations="true" dependencies="true" nesting-relationships="true">  
-  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.xml.support.XmlNameSpaceRegister" project="More" 
-    file="/More/src/org/more/hypha/xml/support/XmlNameSpaceRegister.java" binary="false">    
-    <position x="233" y="61" width="-1" height="-1"/>    
-    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
-      <attributes public="false" package="false" protected="false" private="false"/>      
-      <operations public="false" package="false" protected="false" private="false"/>    
-    </display>  
-  </interface>  
-  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.xml.support.beans.Register_Beans" project="More" 
-    file="/More/src/org/more/hypha/xml/support/beans/Register_Beans.java" binary="false">    
-    <position x="379" y="146" width="-1" height="-1"/>    
-    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
-      <attributes public="false" package="false" protected="false" private="false"/>      
-      <operations public="false" package="false" protected="false" private="false"/>    
-    </display>  
-  </class>  
-  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.xml.support.aop.Register_Aop" project="More" 
-    file="/More/src/org/more/hypha/xml/support/aop/Register_Aop.java" binary="false">    
-    <position x="87" y="145" width="-1" height="-1"/>    
-    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
-      <attributes public="false" package="false" protected="false" private="false"/>      
-      <operations public="false" package="false" protected="false" private="false"/>    
-    </display>  
-  </class>  
-  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.xml.support.anno.Register_Anno" project="More" 
-    file="/More/src/org/more/hypha/xml/support/anno/Register_Anno.java" binary="false">    
-    <position x="231" y="146" width="-1" height="-1"/>    
-    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
-      <attributes public="false" package="false" protected="false" private="false"/>      
-      <operations public="false" package="false" protected="false" private="false"/>    
-    </display>  
-  </class>  
-  <realization>    
-    <source project="More" name="org.more.hypha.xml.support.anno.Register_Anno" 
-      file="/More/src/org/more/hypha/xml/support/anno/Register_Anno.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.xml.support.XmlNameSpaceRegister" 
-      file="/More/src/org/more/hypha/xml/support/XmlNameSpaceRegister.java" binary="false"/>  
-  </realization>  
-  <realization>    
-    <source project="More" name="org.more.hypha.xml.support.aop.Register_Aop" 
-      file="/More/src/org/more/hypha/xml/support/aop/Register_Aop.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.xml.support.XmlNameSpaceRegister" 
-      file="/More/src/org/more/hypha/xml/support/XmlNameSpaceRegister.java" binary="false"/>  
-  </realization>  
-  <realization>    
-    <source project="More" name="org.more.hypha.xml.support.beans.Register_Beans" 
-      file="/More/src/org/more/hypha/xml/support/beans/Register_Beans.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.xml.support.XmlNameSpaceRegister" 
-      file="/More/src/org/more/hypha/xml/support/XmlNameSpaceRegister.java" binary="false"/>  
-  </realization>  
   <classifier-display autosize="true" package="true" initial-value="true" signature="true" visibility="true">    
     <attributes public="false" package="false" protected="false" private="false"/>    
     <operations public="false" package="false" protected="false" private="false"/>  

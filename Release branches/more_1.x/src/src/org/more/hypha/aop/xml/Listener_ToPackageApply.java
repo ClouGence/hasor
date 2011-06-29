@@ -18,12 +18,13 @@ import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.Event.Sequence;
 import org.more.hypha.EventListener;
 import org.more.hypha.aop.AopInfoConfig;
+import org.more.hypha.aop.assembler.AopInfoConfig_Impl;
 import org.more.hypha.context.xml.XmlDefineResource;
-import org.more.hypha.event.XmlLoadedEvent;
+import org.more.hypha.context.xml.XmlLoadedEvent;
 import org.more.util.StringUtil;
 import org.more.util.attribute.IAttribute;
 /**
- * 该类是当{@link DefineResourceImpl}触发{@link Config_EndBuildEvent}类型事件时处理anno:apply标签配置的应用Package级别操作。
+ * 该类是当{@link XmlDefineResource}触发{@link XmlLoadedEvent}类型事件时处理anno:apply标签配置的应用Package级别操作。
  * @version 2010-10-11
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -39,10 +40,10 @@ public class Listener_ToPackageApply implements EventListener<XmlLoadedEvent> {
     public void onEvent(final XmlLoadedEvent event, final Sequence sequence) {
         XmlDefineResource config = event.toParams(sequence).xmlDefineResource;
         IAttribute flash = config.getFlash();
-        AopInfoConfig aopPlugin = (AopInfoConfig) flash.getAttribute(AopInfoConfig.ServiceName);
+        AopInfoConfig aopPlugin = (AopInfoConfig) flash.getAttribute(AopInfoConfig_Impl.ServiceName);
         for (String defineName : config.getBeanDefinitionIDs()) {
             AbstractBeanDefine define = config.getBeanDefine(defineName);
-            if (StringUtil.matchWild(this.toPackageExp, define.getFullName()) == true)
+            if (StringUtil.matchWild(this.toPackageExp, define.getID()) == true)
                 aopPlugin.setAop(define, this.config);
         }
     };

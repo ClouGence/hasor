@@ -19,14 +19,13 @@ import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import org.more.hypha.DefineResource;
+import org.more.hypha.Service;
 /**
  * 增强了{@link DefineResource}接口，以提供了更为丰富的anno相关方法。
  * @version 2010-10-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AnnoServices {
-    /**要注册的插件名*/
-    public static final String AnnoDefineResourcePluginName = "$more_anno_ResourcePlugin";
+public interface AnnoServices extends Service {
     /**
      * 注册注册一个注解解析器，该方法会通知注解解析系统，当遇到某个特定的注解时这个类交付这个注解处理器进行处理。
      * @param anno 注册的注解类型。

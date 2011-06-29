@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha;
+package org.more.hypha.commons.logic;
+import org.more.hypha.PointFilter;
 /**
- * 作用域管理器。
- * @version : 2011-4-19
+ * 在装载bean的类型的扩展点。
+ * @version : 2011-6-29
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ScopeContext {}
+public interface LoadClassPoint extends PointFilter {};

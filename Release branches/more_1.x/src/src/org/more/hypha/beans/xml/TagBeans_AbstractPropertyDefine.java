@@ -64,7 +64,7 @@ public abstract class TagBeans_AbstractPropertyDefine<T extends AbstractProperty
         //4.负责解析属性值元信息，当具有value、date、bigText、ref、file、directory、uri、el等标签对属性进行描述时会自动覆盖这里的解析。
         AbstractValueMetaData valueMETADATA = (AbstractValueMetaData) this.getRootTypeParser().parser(att, pdefine);
         if (valueMETADATA == null)
-            throw new NullPointerException("通过TypeManager解析属性值元信息失败！返回值为空。");
+            throw new NullPointerException("通过QPP解析属性值元信息失败！返回值为空。");
         pdefine.setValueMetaData(valueMETADATA);
     }
 }

@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.aop.xml;
-import org.more.NoDefinitionException;
-import org.more.NotFoundException;
+import org.more.core.error.LostException;
 import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
@@ -44,7 +43,7 @@ public abstract class TagAop_AbstractInformed<T extends AopDefineInformed> exten
         return (T) context.getAttribute(AopInformedDefine);
     };
     /**开始标签解析*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) throws NoDefinitionException, NotFoundException {
+    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
         T define = this.createDefine(event);
         context.setAttribute(AopInformedDefine, define);
         //1.获取所属config
@@ -52,15 +51,15 @@ public abstract class TagAop_AbstractInformed<T extends AopDefineInformed> exten
         //2.解析标签
         String refBean = event.getAttributeValue("refBean");
         if (refBean == null)
-            throw new NoDefinitionException("[" + config.getName() + "]解析informed、before、returning、throwing、filter标签时没有定义refBean属性。");
+            throw new LostException("[" + config.getName() + "]解析informed、before、returning、throwing、filter标签时没有定义refBean属性。");
         if (this.getDefineResource().containsBeanDefine(refBean) == false)
-            throw new NotFoundException("[" + config.getName() + "]解析informed、before、returning、throwing、filter标签时无法找到定义的[" + refBean + "]Bean。");
+            throw new LostException("[" + config.getName() + "]解析informed、before、returning、throwing、filter标签时无法找到定义的[" + refBean + "]Bean。");
         define.setRefBean(refBean);
         String pointcutRef = event.getAttributeValue("pointcut-ref");
         //3.将Informed添加到父类的config中。
         if (pointcutRef != null) {
-            AopInfoConfig plugin = (AopInfoConfig) this.getFlash().getAttribute(AopInfoConfig.ServiceName);
-            AbstractPointcutDefine pointcutDefine = plugin.getPointcutDefine(pointcutRef);
+            AopInfoConfig service = this.getAopConfig();
+            AbstractPointcutDefine pointcutDefine = service.getPointcutDefine(pointcutRef);
             config.addInformed(define, pointcutDefine);
         } else
             config.addInformed(define);

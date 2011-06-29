@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.more.hypha.aop.xml;
-import org.more.RepeateException;
 import org.more.core.classcode.BuilderMode;
+import org.more.core.error.RepeateException;
 import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
@@ -24,10 +24,10 @@ import org.more.hypha.aop.AopInfoConfig;
 import org.more.hypha.aop.define.AbstractInformed;
 import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
-import org.more.hypha.beans.define.BaseBeanDefine;
+import org.more.hypha.beans.define.AbstractBaseBeanDefine;
 import org.more.hypha.beans.xml.TagBeans_AbstractBeanDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
-import org.more.util.StringConvert;
+import org.more.util.StringConvertUtil;
 /**
  * 用于解析aop:config标签
  * @version 2010-10-9
@@ -47,26 +47,27 @@ public class TagAop_Config extends TagAop_NS implements XmlElementHook {
         //att :aopMode
         String aopMode = event.getAttributeValue("aopMode");
         config.setName(name);
-        BuilderMode mode = (BuilderMode) StringConvert.changeType(aopMode, BuilderMode.class, BuilderMode.Super);
+        BuilderMode mode = (BuilderMode) StringConvertUtil.changeType(aopMode, BuilderMode.class, BuilderMode.Super);
         config.setAopMode(mode);
         context.setAttribute(ConfigDefine, config);
     }
     /**结束标签处理。*/
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
-        BaseBeanDefine bean = (BaseBeanDefine) context.getAttribute(TagBeans_AbstractBeanDefine.BeanDefine);
+        AbstractBaseBeanDefine bean = (AbstractBaseBeanDefine) context.getAttribute(TagBeans_AbstractBeanDefine.BeanDefine);
         AopConfigDefine config = (AopConfigDefine) context.getAttribute(ConfigDefine);
         //1.检查内部的Informed
         AbstractPointcutDefine defaultPointcutDefine = config.getDefaultPointcutDefine();
         for (AbstractInformed informed : config.getAopInformedList())
             if (informed.getRefPointcut() == null)
                 informed.setRefPointcut(defaultPointcutDefine);
-        //3.注册到Bean上。
-        AopInfoConfig plugin = (AopInfoConfig) this.getDefineResource().getFlash().getAttribute(AopInfoConfig.ServiceName);
-        plugin.setAop(bean, config);
+        //3.注册
+        AopInfoConfig service = this.getAopConfig();
+        if (bean != null)
+            service.setAop(bean, config);
         String name = config.getName();
         if (name != null)
-            if (plugin.containAopDefine(name) == false)
-                plugin.addAopDefine(config);
+            if (service.containAopDefine(name) == false)
+                service.addAopDefine(config);
             else
                 throw new RepeateException("不能对同一个名称[" + name + "]AopConfigDefine进行重复定义。");
     }

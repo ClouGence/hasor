@@ -13,22 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.aop.xml;
-import org.more.hypha.aop.AopInfoConfig;
-import org.more.hypha.aop.assembler.AopInfoConfig_Impl;
-import org.more.hypha.commons.xml.Tag_Abstract;
-import org.more.hypha.context.xml.XmlDefineResource;
+package org.more.hypha;
 /**
- * 用于解析aop命名空间标签解析器基类，主要用于区分不同命名空间。
- * @version 2010-10-9
+ * 扩展点链的最终回调函数接口。
+ * @version : 2011-6-29
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TagAop_NS extends Tag_Abstract {
-    public TagAop_NS(XmlDefineResource configuration) {
-        super(configuration);
-    };
-    protected AopInfoConfig getAopConfig() {
-        AopInfoConfig plugin = (AopInfoConfig) this.getDefineResource().getFlash().getAttribute(AopInfoConfig_Impl.ServiceName);
-        return plugin;
-    }
+public interface PointCallBack {
+    /**执行回调*/
+    public Object call(ApplicationContext applicationContext, Object[] params) throws Throwable;
 }

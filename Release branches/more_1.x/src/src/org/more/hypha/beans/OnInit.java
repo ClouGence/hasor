@@ -36,7 +36,7 @@ class OnInit implements EventListener<InitEvent> {
     private static ILog log = LogFactory.getLog(OnInit.class);
     public void onEvent(InitEvent event, Sequence sequence) throws Throwable {
         AbstractApplicationContext context = (AbstractApplicationContext) event.toParams(sequence).applicationContext;
-        ClassLoader loader = context.getBeanClassLoader();
+        ClassLoader loader = context.getClassLoader();
         //1.获取引擎
         EngineLogic engine = context.getEngineLogic();
         //2.注册Bean类型

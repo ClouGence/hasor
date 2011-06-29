@@ -21,6 +21,7 @@ import org.more.log.ILog;
 import org.more.log.LogFactory;
 /**
  * 该抽象类是针对某个{@link AbstractBeanDefine}类型的特定支持。该接口的功能是负责创建某种类型的Bean。
+ * 该builder 会执行{@link CreateBeanPoint}、 {@link ClassTypePoint}、 {@link AfterCreatePoint}扩展点。
  * @version : 2011-5-12
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -38,8 +39,7 @@ public abstract class AbstractBeanBuilder<T extends AbstractBeanDefine> {
         return this.applicationContext;
     };
     /*------------------------------------------------------------------------------*/
-    /**装载bean定义的类型，*/
     public abstract Class<?> loadType(T define, Object[] params) throws Throwable;
     /**创建Bean对象，classType参数是可能经过加工之后的Ben类型与loadType方法不一样。*/
-    public abstract <O> O createBean(Class<?> classType, T define, Object[] params) throws Throwable;
+    public abstract Object loadBean(T define, Object[] params) throws Throwable;
 };

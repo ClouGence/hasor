@@ -24,7 +24,9 @@ import org.more.hypha.ELContext;
 import org.more.hypha.Event;
 import org.more.hypha.EventManager;
 import org.more.hypha.ExpandPointManager;
+import org.more.hypha.Service;
 import org.more.hypha.commons.AbstractELContext;
+import org.more.hypha.commons.AbstractExpandPointManager;
 import org.more.hypha.commons.logic.EngineLogic;
 import org.more.log.ILog;
 import org.more.log.LogFactory;
@@ -35,19 +37,24 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractApplicationContext implements ApplicationContext {
-    private static ILog           log             = LogFactory.getLog(AbstractApplicationContext.class);
-    private PropxyClassLoader     classLoader     = null;
-    //init期间必须构建的六大基础对象
-    private Object                contextObject   = null;
-    private AbstractELContext     elContext       = null;
+    private static ILog                log                = LogFactory.getLog(AbstractApplicationContext.class);
+    private PropxyClassLoader          classLoader        = null;
+    //init期间必须构建的基础对象
+    private Object                     contextObject      = null;
+    private AbstractELContext          elContext          = null;
+    private AbstractExpandPointManager expandPointManager = null;
     //
-    private Map<String, Object>   singleBeanCache = null;
-    private Map<String, Class<?>> typeCache       = null;
+    private Map<String, Object>        singleBeanCache    = null;
     //
-    private EngineLogic           engineLogic     = null;
+    private EngineLogic                engineLogic        = null;
+    private Map<Class<?>, Service>     servicesMap        = null;
     /*------------------------------------------------------------*/
+    public AbstractApplicationContext() {
+        this(null);
+    }
     public AbstractApplicationContext(ClassLoader classLoader) {
         this.classLoader = new PropxyClassLoader();
+        //如果设置为null则使用  Thread.currentThread().getContextClassLoader();
         this.classLoader.setLoader(classLoader);
     };
     public Object getContextObject() {
@@ -61,16 +68,16 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         return this.getBeanResource().getEventManager();
     };
     public ExpandPointManager getExpandPointManager() {
-        return this.getBeanResource().getExpandPointManager();
+        return this.expandPointManager;
     };
     public ELContext getELContext() {
         return this.elContext;
     };
-    public ClassLoader getBeanClassLoader() {
+    public ClassLoader getClassLoader() {
         return this.classLoader;
     };
     /**替换当前的ClassLoader。*/
-    public void setBeanClassLoader(ClassLoader loader) {
+    public void setClassLoader(ClassLoader loader) {
         log.info("change ParentClassLoader form '{%0}' to '{%1}'", this.classLoader.getLoader(), loader);
         this.classLoader.setLoader(loader);
     };
@@ -92,6 +99,10 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     protected AbstractELContext createELContext() {
         return new AbstractELContext() {};
     };
+    /**创建一个{@link ExpandPointManager}并且负责初始化它，重新该方法可以替换{@link ApplicationContext}接口使用的{@link ExpandPointManager}对象。*/
+    protected AbstractExpandPointManager createExpandPointManager() {
+        return new AbstractExpandPointManager() {};
+    };
     /**该方法可以获取{@link AbstractApplicationContext}接口对象所使用的属性管理器。子类可以通过重写该方法以来控制属性管理器对象。*/
     protected IAttribute getAttribute() {
         return this.getBeanResource();
@@ -108,18 +119,19 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     public void init() {
         log.info("starting init ApplicationContext...");
         this.singleBeanCache = new HashMap<String, Object>();
-        this.typeCache = new HashMap<String, Class<?>>();
-        log.info("created cache, singleBeanCache = {%0}, typeCache = {%1}.", singleBeanCache, typeCache);
         //
         this.elContext = this.createELContext();
+        this.expandPointManager = this.createExpandPointManager();
         this.engineLogic = new EngineLogic();
         log.info("created elContext = {%0}, engineLogic = {%1}", elContext, engineLogic);
         //
         this.elContext.init(this);
+        this.expandPointManager.init(this);
         this.engineLogic.init(this);
         log.info("inited elContext and engineLogic OK!");
         //
-        log.info("sending event...");
+        this.servicesMap = new HashMap<Class<?>, Service>();
+        //
         this.getEventManager().doEvent(Event.getEvent(InitEvent.class), this);
         this.getEventManager().doEvent(Event.getEvent(InitedEvent.class), this);
         log.info("started!");
@@ -144,9 +156,10 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         //
         log.info("set null...");
         this.elContext = null;
+        this.expandPointManager = null;
         this.singleBeanCache = null;
-        this.typeCache = null;
         this.engineLogic = null;
+        this.servicesMap = null;
         log.info("destroy is OK!");
     };
     /*------------------------------------------------------------*/
@@ -173,8 +186,8 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
             this.getThreadFlash().setAttribute(KEY, objects);
             log.debug("put params to ThreadFlash key is {%0}", KEY);
             //1.获取bean以及bean类型。
-            Class<?> beanType = this.getBeanType(defineID, objects);//获取类型
-            Object bean = this.engineLogic.builderBean(define, objects);//生成Bean
+            Class<?> beanType = this.getBeanType(defineID, objects);//获取类型，如果使用engineLogic.loadType则就失去了缓存的功能。
+            Object bean = this.engineLogic.loadBean(define, objects);//生成Bean
             log.debug("finish build!, object = {%0}", bean);
             //3.单态缓存&类型匹配
             if (beanType != null)
@@ -200,11 +213,6 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
             log.error("error , defineID is null or empty.");
             throw new NullPointerException("error , defineID is null or empty.");
         }
-        if (this.typeCache.containsKey(defineID) == true) {
-            Class<?> type = this.typeCache.get(defineID);
-            log.debug("{%0} bean type form cache return.", defineID);
-            return type;
-        }
         AbstractBeanDefine define = this.getBeanDefinition(defineID);
         if (define == null) {
             log.error("{%0} define is not exist.", defineID);
@@ -215,9 +223,8 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         try {
             this.getThreadFlash().setAttribute(KEY, objects);
             log.debug("put params to ThreadFlash key is {%0}", KEY);
-            Class<?> beanType = this.engineLogic.builderType(define, objects);
+            Class<?> beanType = this.engineLogic.loadType(define, objects);
             log.debug("finish build! type = {%0}", beanType);
-            this.typeCache.put(defineID, beanType);
             return beanType;
         } catch (Throwable e) {
             log.error("get BeanType is error, error = {%0}", e);
@@ -254,6 +261,13 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         return obj;
     }
     /*------------------------------------------------------------*/
+    public Service getService(Class<?> servicesType) {
+        return this.servicesMap.get(servicesType);
+    };
+    /**注册服务。*/
+    public void regeditService(Class<? extends Service> servicesType, Service service) {
+        this.servicesMap.put(servicesType, service);
+    }
     public List<String> getBeanDefinitionIDs() {
         return this.getBeanResource().getBeanDefinitionIDs();
     };

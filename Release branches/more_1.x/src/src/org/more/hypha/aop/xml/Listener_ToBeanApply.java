@@ -18,8 +18,9 @@ import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.Event.Sequence;
 import org.more.hypha.EventListener;
 import org.more.hypha.aop.AopInfoConfig;
+import org.more.hypha.aop.assembler.AopInfoConfig_Impl;
 import org.more.hypha.context.xml.XmlDefineResource;
-import org.more.hypha.event.XmlLoadedEvent;
+import org.more.hypha.context.xml.XmlLoadedEvent;
 import org.more.util.StringUtil;
 import org.more.util.attribute.IAttribute;
 /**
@@ -39,7 +40,7 @@ public class Listener_ToBeanApply implements EventListener<XmlLoadedEvent> {
     public void onEvent(final XmlLoadedEvent event, final Sequence sequence) {
         XmlDefineResource config = event.toParams(sequence).xmlDefineResource;
         IAttribute flash = config.getFlash();
-        AopInfoConfig aopPlugin = (AopInfoConfig) flash.getAttribute(AopInfoConfig.ServiceName);
+        AopInfoConfig aopPlugin = (AopInfoConfig) flash.getAttribute(AopInfoConfig_Impl.ServiceName);
         for (String defineName : config.getBeanDefinitionIDs())
             if (StringUtil.matchWild(this.toBeanExp, defineName) == true) {
                 AbstractBeanDefine define = config.getBeanDefine(defineName);

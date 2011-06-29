@@ -27,8 +27,11 @@ public class Simple_ValueMetaData extends AbstractValueMetaData {
     /**根据字符串类型描述取其{@link PropertyType}枚举对应的类型。*/
     public static PropertyType getPropertyType(String typeString) {
         if (typeString == null)
-            return null;
-        return (PropertyType) StringConvertUtil.parseEnum(typeString, PropertyType.class);
+            return PropertyType.Null;
+        if (typeString.equals("java.lang.String") == true)
+            return PropertyType.String;
+        PropertyType type = (PropertyType) StringConvertUtil.parseEnum(typeString, PropertyType.class);
+        return type == null ? PropertyType.Null : type;
     };
     /**根据枚举获取其基本类型Class，*/
     public static Class<?> getPropertyType(PropertyType type) {

@@ -13,34 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.anno.xml;
+package org.more.hypha.commons.point_support.xml;
+import java.util.ArrayList;
+import java.util.List;
 import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.Event;
-import org.more.hypha.commons.xml.Tag_Abstract;
+import org.more.hypha.commons.point_support.B_Point;
 import org.more.hypha.context.xml.XmlDefineResource;
-import org.more.hypha.context.xml.XmlLoadedEvent;
-import org.more.util.StringConvertUtil;
 /**
- * 用于解析anno标签，负责注册{@link TagListener}类型对象。
- * @version 2010-9-22
+ * 用于解析p:point标签
+ * @version : 2011-6-29
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TagAnno_Anno extends Tag_Abstract implements XmlElementHook {
-    /**创建{@link TagAnno_Anno}对象*/
-    public TagAnno_Anno(XmlDefineResource configuration) {
+public class Point_Point extends Point_NS implements XmlElementHook {
+    public Point_Point(XmlDefineResource configuration) {
         super(configuration);
-    };
+    }
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
-        String packageText = event.getAttributeValue("package");
-        String enable = event.getAttributeValue("enable");
-        if (StringConvertUtil.parseBoolean(enable, true) == true) {
-            TagListener annoListener = new TagListener(packageText);
-            Event e = Event.getEvent(XmlLoadedEvent.class);
-            this.getDefineResource().getEventManager().addEventListener(e, annoListener);
+        XmlDefineResource resource = this.getDefineResource();
+        List<B_Point> elList = (List<B_Point>) resource.getFlash().getAttribute(PointConfigList);
+        if (elList == null) {
+            elList = new ArrayList<B_Point>();
+            resource.getFlash().setAttribute(PointConfigList, elList);
         }
-    };
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {};
-};
+        B_Point el = new B_Point();
+        el.setName(event.getAttributeValue("name"));
+        el.setClassName(event.getAttributeValue("class"));
+        elList.add(el);
+    }
+    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
+}

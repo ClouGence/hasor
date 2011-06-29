@@ -77,7 +77,7 @@ public class AbstractEventManager implements EventManager {
             listeners = new ArrayList<EventListener<?>>();
             this.listener.put(eventType, listeners);
         }
-        log.info("add event listener, event = {%0}, listener = {%1}", eventType, listener);
+        log.debug("add event listener, event = {%0}, listener = {%1}", eventType, listener);
         listeners.add(listener);
     }
     public synchronized void clearEvent() {

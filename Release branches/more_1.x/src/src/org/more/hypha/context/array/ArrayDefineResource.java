@@ -92,7 +92,7 @@ public class ArrayDefineResource extends AbstractDefineResource {
             throw new RepeateException("define " + defineID + " is exist.");
         }
         this.throwEvent(Event.getEvent(AddDefineEvent.class), this, define);//新Bean定义，使用队列形式。
-        log.info("add define id = {%0} , type = {%1}.", defineID, define.getBeanType());
+        log.debug("add define id = {%0} , type = {%1}.", defineID, define.getBeanType());
         this.defineNames.add(defineID);
         this.defineMap.put(defineID, define);
     };

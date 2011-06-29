@@ -51,7 +51,7 @@ public class ScriptBean {
     }
     /**获取Bean定义*/
     public ScriptBeanDefine getDefine() {
-        return this.define;
+        return this.define;a
     }
     public Object invokeMethod(String name, Object... objects) throws ScriptException, NoSuchMethodException {
         Invocable inv = (Invocable) engine;

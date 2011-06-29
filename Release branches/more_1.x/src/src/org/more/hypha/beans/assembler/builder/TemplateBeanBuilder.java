@@ -32,7 +32,7 @@ public class TemplateBeanBuilder extends AbstractBeanBuilder<TemplateBeanDefine>
         log.error("TemplateBean {%0} doesn`t Support this method.", defineID);
         throw new SupportException("TemplateBean " + defineID + " doesn`t Support this method.");
     }
-    public <O> O createBean(Class<?> classType, TemplateBeanDefine define, Object[] params) {
+    public Object loadBean(TemplateBeanDefine define, Object[] params) throws Throwable {
         String defineID = define.getID();
         log.error("TemplateBean {%0} doesn`t Support this method.", defineID);
         throw new SupportException("TemplateBean " + defineID + " doesn`t Support this method.");

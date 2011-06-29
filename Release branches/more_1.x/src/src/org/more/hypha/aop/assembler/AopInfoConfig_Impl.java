@@ -16,13 +16,13 @@
 package org.more.hypha.aop.assembler;
 import java.util.HashMap;
 import java.util.Map;
-import org.more.NoDefinitionException;
+import org.more.core.error.DefineException;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.DefineResource;
 import org.more.hypha.aop.AopInfoConfig;
 import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
-import org.more.hypha.beans.define.BaseBeanDefine;
+import org.more.hypha.beans.define.AbstractBaseBeanDefine;
 import org.more.util.attribute.IAttribute;
 /**
  * 该类的目的是为了扩展{@link DefineResource}接口对象以将aop信息附加到定义资源接口中。
@@ -30,13 +30,14 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class AopInfoConfig_Impl implements AopInfoConfig {
+    public static final String                  ServiceName  = "$more_aop_service";
     private static final String                 AopInfoName  = "$more_aop_info";
     private Map<String, AbstractPointcutDefine> pointcutList = new HashMap<String, AbstractPointcutDefine>();
     private Map<String, AopConfigDefine>        configList   = new HashMap<String, AopConfigDefine>();
     //
     private IAttribute getFungi(AbstractBeanDefine define) {
-        if (define instanceof BaseBeanDefine)
-            return ((BaseBeanDefine) define).getFungi();
+        if (define instanceof AbstractBaseBeanDefine)
+            return ((AbstractBaseBeanDefine) define).getFungi();
         return null;
     }
     /**测试一个{@link AbstractBeanDefine}定义对象是否包含Aop配置。*/
@@ -51,6 +52,8 @@ public class AopInfoConfig_Impl implements AopInfoConfig {
     }
     /**将一个aop配置携带到{@link AbstractBeanDefine}对象上，该方法可以在代码级上修改aop配置。*/
     public void setAop(AbstractBeanDefine define, AopConfigDefine config) {
+        if (define == null || config == null)
+            throw new NullPointerException("define不能为空.");
         if (config != null)
             this.getFungi(define).setAttribute(AopInfoName, config);
     }
@@ -70,9 +73,9 @@ public class AopInfoConfig_Impl implements AopInfoConfig {
         return this.configList.get(name);
     }
     /**获取一个定义的切入点。*/
-    public AbstractPointcutDefine getPointcutDefine(String name) throws NoDefinitionException {
+    public AbstractPointcutDefine getPointcutDefine(String name) throws DefineException {
         if (this.pointcutList.containsKey(name) == false)
-            throw new NoDefinitionException("不存在名称为[" + name + "]的AbstractPointcutDefine定义。");
+            throw new DefineException("不存在名称为[" + name + "]的AbstractPointcutDefine定义。");
         return this.pointcutList.get(name);
     }
     /**添加切点定义。*/

@@ -53,7 +53,7 @@ abstract class RootValueMetaDataParser implements ValueMetaDataParser<ValueMetaD
         if (this.metaDataParserMap.containsKey(metaDataType) == true)
             log.info("addParser {%0} is exist,use new engine Repeate it OK!", metaDataType);
         else
-            log.info("addParser {%0} OK!", metaDataType);
+            log.debug("addParser {%0} OK!", metaDataType);
         this.metaDataParserMap.put(metaDataType, parser);
     };
     /**解除注册{@link ValueMetaDataParser}，如果要移除的解析器如果不存在也不会抛出异常。*/
@@ -63,7 +63,7 @@ abstract class RootValueMetaDataParser implements ValueMetaDataParser<ValueMetaD
             return;
         }
         if (this.metaDataParserMap.containsKey(metaDataType) == true) {
-            log.info("removeParser {%0}.", metaDataType);
+            log.debug("removeParser {%0}.", metaDataType);
             this.metaDataParserMap.remove(metaDataType);
         }
     };

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package org.more.hypha.aop.xml;
-import org.more.NoDefinitionException;
-import org.more.NotFoundException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.aop.define.AbstractInformed;
@@ -45,7 +43,7 @@ public abstract class TagAop_AbstractListener extends TagAop_AbstractInformed<Ao
             return new AopDefineInformed();
     }
     /**开始解析标签，确定PointcutType属性。*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) throws NoDefinitionException, NotFoundException {
+    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
         super.beginElement(context, xpath, event);
         AbstractInformed define = this.getDefine(context);
         define.setPointcutType(this.getPointcutType());

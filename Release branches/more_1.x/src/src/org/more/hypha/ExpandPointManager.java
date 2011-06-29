@@ -16,24 +16,23 @@
 package org.more.hypha;
 /**
  * 该类负责管理并调用并且执行扩展点的基类。
- * @version 2011-1-14
+ * @version : 2011-6-29
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface ExpandPointManager {
     /**
-     * 顺序执行所有已注册的扩展点对象，直到执行完毕所有匹配类型的扩展点为止。
-     * @param type 扩展点类型。
-     * @param params 执行的参数。
-     * @return 返回执行结果。
+     * 顺序扩展点对象。
+     * @param pointType 执行的扩展点类型
+     * @param callBack 执行的最终回调函数
+     * @param context 上下文对象。
+     * @param vars 参数对象
+     * @return 返回执行扩展点的结果。
      */
-    public Object exePointOnSequence(Class<? extends ExpandPoint> type, Object target, Object... params);
-    /**
-     * 顺序执行所有已注册的扩展点对象，当遇到一个返回值时结束执行扩展点，否则直到执行完毕所有扩展点返回。
-     * @param type 扩展点类型。
-     * @param params 执行的参数。
-     * @return 返回执行结果。
-     */
-    public Object exePointOnReturn(Class<? extends ExpandPoint> type, Object target, Object... params);
-    /** 注册一个可执行的扩展点，可以重复注册同一个扩展点。 */
-    public void regeditExpandPoint(ExpandPoint point);
+    public <O> O exePoint(Class<? extends PointFilter> pointType, PointCallBack callBack, Object... vars) throws Throwable;
+    /** 注册一个扩展点,第一个参数是注册的扩展点名，可以通过enablePoint和disablePoint方法启用禁用注册的扩展点。注册的名称不允许重名。 */
+    public void regeditExpandPoint(String pointName, PointFilter point);
+    /**启用扩展点。*/
+    public void enablePoint(String pointName);
+    /**禁用扩展点。*/
+    public void disablePoint(String pointName);
 };

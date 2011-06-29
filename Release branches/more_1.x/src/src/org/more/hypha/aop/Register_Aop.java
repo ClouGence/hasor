@@ -13,25 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.aop.xml;
+package org.more.hypha.aop;
 import org.more.core.xml.XmlParserKit;
-import org.more.hypha.aop.AopInfoConfig;
+import org.more.hypha.Event;
 import org.more.hypha.aop.assembler.AopInfoConfig_Impl;
+import org.more.hypha.aop.xml.TagAop_Apply;
+import org.more.hypha.aop.xml.TagAop_Before;
+import org.more.hypha.aop.xml.TagAop_Config;
+import org.more.hypha.aop.xml.TagAop_Filter;
+import org.more.hypha.aop.xml.TagAop_Informed;
+import org.more.hypha.aop.xml.TagAop_PointGroup;
+import org.more.hypha.aop.xml.TagAop_Pointcut;
+import org.more.hypha.aop.xml.TagAop_Returning;
+import org.more.hypha.aop.xml.TagAop_Throwing;
+import org.more.hypha.aop.xml.TagAop_UseConfig;
+import org.more.hypha.context.InitEvent;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.hypha.context.xml.XmlNameSpaceRegister;
-import org.more.util.attribute.IAttribute;
 /**
- * 该类实现了{@link XmlNameSpaceRegister}接口并且提供了对命名空间“http://project.byshell.org/more/schema/aop”的解析支持。
+ * 该类实现了{@link XmlNameSpaceRegister}接口并且提供了对命名空间“http://project.byshell.org/more/schema/beans-aop”的解析支持。
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Register_Aop implements XmlNameSpaceRegister {
     /**如果没有指定namespaceURL参数则该常量将会指定默认的命名空间。*/
-    public static final String DefaultNameSpaceURL = "http://project.byshell.org/more/schema/aop";
+    public static final String DefaultNameSpaceURL = "http://project.byshell.org/more/schema/beans-aop";
     /**执行初始化注册。*/
-    public void initRegister(String namespaceURL, XmlDefineResource resource, IAttribute flash) throws Throwable {
+    public void initRegister(String namespaceURL, XmlDefineResource resource) {
         //1.添加Aop插件
-        flash.setAttribute(AopInfoConfig.ServiceName, new AopInfoConfig_Impl());
+        resource.getFlash().setAttribute(AopInfoConfig_Impl.ServiceName, new AopInfoConfig_Impl());
         //2.注册标签解析器
         XmlParserKit kit = new XmlParserKit();
         kit.regeditHook("/config", new TagAop_Config(resource));
@@ -49,5 +59,7 @@ public class Register_Aop implements XmlNameSpaceRegister {
         if (namespaceURL == null)
             namespaceURL = DefaultNameSpaceURL;
         resource.regeditXmlParserKit(namespaceURL, kit);
+        //4.注册事件
+        resource.getEventManager().addEventListener(Event.getEvent(InitEvent.class), new OnInit());
     }
 }

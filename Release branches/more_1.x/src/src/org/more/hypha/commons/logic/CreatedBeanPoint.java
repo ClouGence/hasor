@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 package org.more.hypha.commons.logic;
+import org.more.hypha.PointFilter;
 /**
- * 用来封装{@link AbstractBeanBuilderEx}执行点的代码。
- * @version : 2011-6-2
+ * 在创建完成bean对象的扩展点。
+ * @version : 2011-6-29
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ClassData {
-    /**字节码表示类，类名。*/
-    public String className = null;
-    /**类的字节码数据。*/
-    public byte[] bytes     = null;
-};
+public interface CreatedBeanPoint extends PointFilter {};
