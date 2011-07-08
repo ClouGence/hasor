@@ -79,6 +79,7 @@ public class MoreBuilder implements ActionContextBuild {
             throw new IOException("配置文件[" + configFile.getAbsolutePath() + "]不存在，或者无法读取。");
         XmlDefineResource xmlConfig = new XmlDefineResource();
         xmlConfig.addSource(configFile);
+        xmlConfig.loadDefine();
         this.factory = new HyphaApplicationContext(xmlConfig);
         this.factory.init();
     };

@@ -359,7 +359,9 @@ public class EngineToos implements Opcodes {
     };
     /**获取指定类型的默认值。*/
     public static Object getDefaultValue(Class<?> returnType) {
-        if (returnType == int.class)
+        if (returnType == null)
+            return null;
+        else if (returnType == int.class)
             return 0;
         else if (returnType == byte.class)
             return 0;

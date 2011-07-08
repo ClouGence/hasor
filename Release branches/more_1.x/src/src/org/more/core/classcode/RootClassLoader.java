@@ -25,8 +25,8 @@ import java.util.Map;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class RootClassLoader extends ClassLoader {
-    private Map<String, ClassEngine> classMap2 = null;
-    private Map<String, ClassEngine> classMap  = null;
+    private Map<String, ClassEngine> classMap2 = null; // key is org.more.Test
+    private Map<String, ClassEngine> classMap  = null; // key is org/more.Test.class
     /**创建引擎类装载器，parentClassLoader参数是该装载器所使用的父类装载器。*/
     public RootClassLoader(ClassLoader parentClassLoader) {
         super(parentClassLoader);

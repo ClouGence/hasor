@@ -34,6 +34,8 @@ public class DefaultClassNameStrategy implements ClassNameStrategy {
         else
             cn = superClass.getName();
         generateID++;
+        if (cn.startsWith("java.lang") == true)
+            cn = "org.more";
         return cn + ClassPrefix + generateID;
     }
 }

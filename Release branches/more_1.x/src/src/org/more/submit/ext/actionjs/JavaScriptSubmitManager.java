@@ -39,10 +39,7 @@ import org.more.submit.web.WebActionStack;
 @Action()
 public class JavaScriptSubmitManager {
     public final static boolean isAction = true; //Action标志
-    private boolean             min      = true; //是否使用最小配置
-    public void setMin(boolean min) {
-        this.min = min;
-    };
+    public boolean              min      = true; //是否使用最小配置
     /** 客户端JS请求执行某个action时调用这个action方法。 */
     public Object execute(WebActionStack event) throws Throwable {
         String callName = event.getParam("callName").toString();// 调用表达试

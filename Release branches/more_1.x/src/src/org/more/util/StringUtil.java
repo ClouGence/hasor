@@ -43,10 +43,8 @@ public abstract class StringUtil {
         for (int i = 0; i < wild.length(); i++) {
             char ch = wild.charAt(i);
             for (int j = 0; j < metachar.length; j++)
-                if (ch == metachar[j]) {
+                if (ch == metachar[j])
                     result.append("\\");
-                    result.append(ch);
-                }
             if (ch == '*')
                 result.append(".*");
             else if (ch == '?')
