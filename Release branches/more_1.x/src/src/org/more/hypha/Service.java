@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 package org.more.hypha;
+import org.more.util.attribute.IAttribute;
 /**
  * 服务接口
  * @version 2011-6-23
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface Service {}
+public interface Service {
+    /**服务器启动在 inited事件之前调用。*/
+    public void start(ApplicationContext context, IAttribute flash);
+    /**服务停止在*/
+    public void stop(ApplicationContext context, IAttribute flash);
+}

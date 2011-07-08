@@ -21,5 +21,5 @@ package org.more.hypha;
  */
 public interface PointFilter {
     /**该方法是执行扩展点的综合入口方法，各子类在重写该方法时来再次确认调用的扩展点本体方法。*/
-    public Object doFilter(ApplicationContext applicationContext, Object[] params, PointChain chain) throws Throwable;
+    public Object doFilter(final ApplicationContext applicationContext, final Object[] params, final PointChain chain) throws Throwable;
 };

@@ -45,7 +45,6 @@ import org.more.hypha.beans.xml.TagBeans_Param;
 import org.more.hypha.beans.xml.TagBeans_Property;
 import org.more.hypha.beans.xml.TagBeans_Ref;
 import org.more.hypha.beans.xml.TagBeans_RefBean;
-import org.more.hypha.beans.xml.TagBeans_ScriptBean;
 import org.more.hypha.beans.xml.TagBeans_Set;
 import org.more.hypha.beans.xml.TagBeans_TemplateBean;
 import org.more.hypha.beans.xml.TagBeans_URI;
@@ -72,7 +71,6 @@ public class TagRegister_Beans implements XmlNameSpaceRegister {
         //
         kit.regeditHook(new String[] { "/beans/classBean", "/beans/*/classBean" }, new TagBeans_ClassBean(resource));
         kit.regeditHook(new String[] { "/beans/refBean", "/beans/*/refBean" }, new TagBeans_RefBean(resource));
-        kit.regeditHook(new String[] { "/beans/scriptBean", "/beans/*/scriptBean" }, new TagBeans_ScriptBean(resource));//同时具备text和element
         kit.regeditHook(new String[] { "/beans/templateBean", "/beans/*/templateBean" }, new TagBeans_TemplateBean(resource));
         kit.regeditHook(new String[] { "/beans/varBean", "/beans/*/varBean" }, new TagBeans_VarBean(resource));
         //

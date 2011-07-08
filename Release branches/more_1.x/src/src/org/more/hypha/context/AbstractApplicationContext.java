@@ -15,8 +15,11 @@
  */
 package org.more.hypha.context;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import org.more.core.error.DefineException;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
@@ -37,17 +40,21 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractApplicationContext implements ApplicationContext {
-    private static ILog                log                = LogFactory.getLog(AbstractApplicationContext.class);
-    private PropxyClassLoader          classLoader        = null;
+    private static ILog                            log                = LogFactory.getLog(AbstractApplicationContext.class);
+    private PropxyClassLoader                      classLoader        = null;
+    private final String                           id                 = UUID.randomUUID().toString().replace("-", "");
     //init期间必须构建的基础对象
-    private Object                     contextObject      = null;
-    private AbstractELContext          elContext          = null;
-    private AbstractExpandPointManager expandPointManager = null;
+    private Object                                 contextObject      = null;
+    private AbstractELContext                      elContext          = null;
+    private AbstractExpandPointManager             expandPointManager = null;
     //
-    private Map<String, Object>        singleBeanCache    = null;
+    private Map<String, Object>                    singleBeanCache    = null;
     //
-    private EngineLogic                engineLogic        = null;
-    private Map<Class<?>, Service>     servicesMap        = null;
+    private EngineLogic                            engineLogic        = null;
+    private LinkedHashMap<Class<?>, Service>       servicesMap        = null;
+    //
+    private static ThreadLocal<ApplicationContext> localContext       = new ThreadLocal<ApplicationContext>();
+    private static Map<String, ApplicationContext> mapContext         = new HashMap<String, ApplicationContext>();
     /*------------------------------------------------------------*/
     public AbstractApplicationContext() {
         this(null);
@@ -56,6 +63,26 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         this.classLoader = new PropxyClassLoader();
         //如果设置为null则使用  Thread.currentThread().getContextClassLoader();
         this.classLoader.setLoader(classLoader);
+        //
+        AbstractApplicationContext.localContext.set(this);
+        AbstractApplicationContext.mapContext.put(this.getID(), this);
+    };
+    /*------------------------------------------------------------*/
+    /**获取当前线程的Context对象。*/
+    public ApplicationContext getLocalContext() {
+        return AbstractApplicationContext.localContext.get();
+    };
+    /**获取指定ID的context对象。*/
+    public ApplicationContext getContext(String id) {
+        return AbstractApplicationContext.mapContext.get(id);
+    };
+    /**获取context对象，名称集合。*/
+    public Set<String> getContextNames() {
+        return AbstractApplicationContext.mapContext.keySet();
+    };
+    /*------------------------------------------------------------*/
+    public final String getID() {
+        return this.id;
     };
     public Object getContextObject() {
         return this.contextObject;
@@ -130,9 +157,14 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         this.engineLogic.init(this);
         log.info("inited elContext and engineLogic OK!");
         //
-        this.servicesMap = new HashMap<Class<?>, Service>();
+        this.servicesMap = new LinkedHashMap<Class<?>, Service>();
         //
         this.getEventManager().doEvent(Event.getEvent(InitEvent.class), this);
+        for (Class<?> st : this.servicesMap.keySet()) {
+            Service s = this.servicesMap.get(st);
+            s.start(this, this.getFlash());
+            log.info("service inited {%0} OK!", st);
+        }
         this.getEventManager().doEvent(Event.getEvent(InitedEvent.class), this);
         log.info("started!");
     };
@@ -159,6 +191,11 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         this.expandPointManager = null;
         this.singleBeanCache = null;
         this.engineLogic = null;
+        for (Class<?> st : this.servicesMap.keySet()) {
+            Service s = this.servicesMap.get(st);
+            s.stop(this, this.getFlash());
+            log.info("destroy {%0} OK!", st);
+        }
         this.servicesMap = null;
         log.info("destroy is OK!");
     };

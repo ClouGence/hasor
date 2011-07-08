@@ -25,12 +25,14 @@ import java.util.HashMap;
 import java.util.List;
 import org.more.core.asm.ClassReader;
 import org.more.core.asm.ClassWriter;
+import org.more.hypha.ApplicationContext;
 import org.more.hypha.DefineResource;
 import org.more.hypha.anno.AnnoServices;
 import org.more.hypha.anno.KeepWatchParser;
 import org.more.hypha.anno.xml.EV_Class;
-import org.more.hypha.aop.AopInfoConfig;
+import org.more.hypha.aop.AopService;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.util.attribute.IAttribute;
 /**
  * 注解插件接口{@link AnnoServices_Impl}的实现类。
  * @version 2010-10-14
@@ -46,11 +48,15 @@ public class AnnoServices_Impl implements AnnoServices {
     public AnnoServices_Impl(XmlDefineResource config) {
         this.config = config;
     }
+    //
+    public void start(ApplicationContext context, IAttribute flash) {};
+    public void stop(ApplicationContext context, IAttribute flash) {};
+    //
     public XmlDefineResource getTarget() {
         return this.config;
     }
-    public AopInfoConfig getAopDefineResourcePlugin() {
-        return (AopInfoConfig) this.config.getFlash().getAttribute(ServiceName);
+    public AopService getAopDefineResourcePlugin() {
+        return (AopService) this.config.getFlash().getAttribute(ServiceName);
     }
     /**
      * 注册一个注解解析器，该方法会通知注解解析系统，当遇到某个特定的注解时这个类交付这个注解处理器进行处理。
@@ -110,5 +116,5 @@ public class AnnoServices_Impl implements AnnoServices {
             for (KeepWatchParser p : this.parserMap.get(anno))
                 p.process(ClassLoader.getSystemClassLoader().loadClass(className), this.config, this);
         }
-    };
+    }
 }

@@ -21,8 +21,8 @@ import org.more.hypha.anno.KeepWatchParser;
 import org.more.hypha.anno.define.Aop;
 import org.more.hypha.anno.define.AopInformed;
 import org.more.hypha.anno.define.Bean;
-import org.more.hypha.aop.AopInfoConfig;
-import org.more.hypha.aop.assembler.AopInfoConfig_Impl;
+import org.more.hypha.aop.AopService;
+import org.more.hypha.aop.assembler.AopService_Impl;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.aop.define.AopDefineInformed;
 import org.more.hypha.aop.define.AopPointcutDefine;
@@ -38,7 +38,7 @@ public class Watch_Aop implements KeepWatchParser {
         Bean bean = beanType.getAnnotation(Bean.class);
         if (bean == null)
             return;
-        AopInfoConfig aopPlugin = (AopInfoConfig) resource.getFlash().getAttribute(AopInfoConfig_Impl.ServiceName);
+        AopService aopPlugin = (AopService) resource.getFlash().getAttribute(AopService_Impl.ServiceName);
         // ID
         String id = bean.id();
         if (id.equals("") == true) {
