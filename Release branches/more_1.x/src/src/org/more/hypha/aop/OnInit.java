@@ -18,8 +18,8 @@ import org.more.core.error.InitializationException;
 import org.more.hypha.Event.Sequence;
 import org.more.hypha.EventListener;
 import org.more.hypha.aop.assembler.AopCreateBeanPoint;
-import org.more.hypha.aop.assembler.AopInfoConfig_Impl;
 import org.more.hypha.aop.assembler.AopLoadClassPoint;
+import org.more.hypha.aop.assembler.AopService_Impl;
 import org.more.hypha.context.AbstractApplicationContext;
 import org.more.hypha.context.InitEvent;
 import org.more.log.ILog;
@@ -33,10 +33,10 @@ class OnInit implements EventListener<InitEvent> {
     private static ILog log = LogFactory.getLog(OnInit.class);
     public void onEvent(InitEvent event, Sequence sequence) throws Throwable {
         AbstractApplicationContext context = (AbstractApplicationContext) event.toParams(sequence).applicationContext;
-        AopInfoConfig config = (AopInfoConfig) context.getFlash().getAttribute(AopInfoConfig_Impl.ServiceName);
+        AopService config = (AopService) context.getFlash().getAttribute(AopService_Impl.ServiceName);
         if (config == null)
             throw new InitializationException("×¢²áaop·þÎñ´íÎó!");
-        context.regeditService(AopInfoConfig.class, config);
+        context.regeditService(AopService.class, config);
         //×¢²áÀ©Õ¹µã
         context.getExpandPointManager().regeditExpandPoint("moreAopSupport_1", new AopLoadClassPoint());
         context.getExpandPointManager().regeditExpandPoint("moreAopSupport_2", new AopCreateBeanPoint());

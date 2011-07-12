@@ -26,14 +26,14 @@ import org.more.hypha.context.xml.XmlDefineResource;
  * @version 2010-10-9
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class TagAop_AbstractListener extends TagAop_AbstractInformed<AopDefineInformed> {
+public abstract class TagAop_AbstractListener extends TagAop_AbstractInformed<AbstractInformed> {
     public TagAop_AbstractListener(XmlDefineResource configuration) {
         super(configuration);
     }
     /**返回Informed类型。*/
     protected abstract PointcutType getPointcutType();
     /**根据标签定义信息创建一个{@link AopDefineInformed}类型对象，如果标签中配置了method属性则创建{@link AopMethodInformed}返回。*/
-    protected AopDefineInformed createDefine(StartElementEvent event) {
+    protected AbstractInformed createDefine(StartElementEvent event) {
         String method = event.getAttributeValue("method");
         if (method != null) {
             AopMethodInformed informed = new AopMethodInformed();

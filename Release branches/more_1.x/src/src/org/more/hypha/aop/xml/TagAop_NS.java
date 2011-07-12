@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.more.hypha.aop.xml;
-import org.more.hypha.aop.AopInfoConfig;
-import org.more.hypha.aop.assembler.AopInfoConfig_Impl;
+import org.more.hypha.aop.AopService;
+import org.more.hypha.aop.assembler.AopService_Impl;
 import org.more.hypha.commons.xml.Tag_Abstract;
 import org.more.hypha.context.xml.XmlDefineResource;
 /**
@@ -27,8 +27,8 @@ public class TagAop_NS extends Tag_Abstract {
     public TagAop_NS(XmlDefineResource configuration) {
         super(configuration);
     };
-    protected AopInfoConfig getAopConfig() {
-        AopInfoConfig plugin = (AopInfoConfig) this.getDefineResource().getFlash().getAttribute(AopInfoConfig_Impl.ServiceName);
+    protected AopService getAopConfig() {
+        AopService plugin = (AopService) this.getDefineResource().getFlash().getAttribute(AopService_Impl.ServiceName);
         return plugin;
     }
 }

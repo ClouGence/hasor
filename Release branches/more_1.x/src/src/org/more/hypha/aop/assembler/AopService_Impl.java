@@ -18,8 +18,9 @@ import java.util.HashMap;
 import java.util.Map;
 import org.more.core.error.DefineException;
 import org.more.hypha.AbstractBeanDefine;
+import org.more.hypha.ApplicationContext;
 import org.more.hypha.DefineResource;
-import org.more.hypha.aop.AopInfoConfig;
+import org.more.hypha.aop.AopService;
 import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.beans.define.AbstractBaseBeanDefine;
@@ -29,17 +30,32 @@ import org.more.util.attribute.IAttribute;
  * @version 2010-10-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public class AopInfoConfig_Impl implements AopInfoConfig {
+public class AopService_Impl implements AopService {
     public static final String                  ServiceName  = "$more_aop_service";
     private static final String                 AopInfoName  = "$more_aop_info";
     private Map<String, AbstractPointcutDefine> pointcutList = new HashMap<String, AbstractPointcutDefine>();
     private Map<String, AopConfigDefine>        configList   = new HashMap<String, AopConfigDefine>();
+    //
+    private AopBuilder                          aopBuilder   = null;
     //
     private IAttribute getFungi(AbstractBeanDefine define) {
         if (define instanceof AbstractBaseBeanDefine)
             return ((AbstractBaseBeanDefine) define).getFungi();
         return null;
     }
+    //
+    public void start(ApplicationContext context, IAttribute flash) {
+        this.aopBuilder = new AopBuilder(context);
+        this.aopBuilder.init();
+    };
+    public void stop(ApplicationContext context, IAttribute flash) {
+        this.aopBuilder.destroy();//执行销毁
+        this.aopBuilder = null;
+    };
+    public AopBuilder getAopBuilder() {
+        return this.aopBuilder;
+    }
+    //
     /**测试一个{@link AbstractBeanDefine}定义对象是否包含Aop配置。*/
     public boolean containAop(AbstractBeanDefine define) {
         return this.getFungi(define).contains(AopInfoName);

@@ -19,11 +19,10 @@ import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.aop.AopInfoConfig;
+import org.more.hypha.aop.AopService;
 import org.more.hypha.aop.define.AbstractInformed;
 import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
-import org.more.hypha.aop.define.AopDefineInformed;
 import org.more.hypha.context.xml.XmlDefineResource;
 /**
  * 处理informed类型标签的refBean属性。
@@ -31,7 +30,7 @@ import org.more.hypha.context.xml.XmlDefineResource;
  * @author 赵永春 (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
-public abstract class TagAop_AbstractInformed<T extends AopDefineInformed> extends TagAop_NS implements XmlElementHook {
+public abstract class TagAop_AbstractInformed<T extends AbstractInformed> extends TagAop_NS implements XmlElementHook {
     public static final String AopInformedDefine = "$more_aop_AopInformedDefine";
     public TagAop_AbstractInformed(XmlDefineResource configuration) {
         super(configuration);
@@ -58,7 +57,7 @@ public abstract class TagAop_AbstractInformed<T extends AopDefineInformed> exten
         String pointcutRef = event.getAttributeValue("pointcut-ref");
         //3.将Informed添加到父类的config中。
         if (pointcutRef != null) {
-            AopInfoConfig service = this.getAopConfig();
+            AopService service = this.getAopConfig();
             AbstractPointcutDefine pointcutDefine = service.getPointcutDefine(pointcutRef);
             config.addInformed(define, pointcutDefine);
         } else

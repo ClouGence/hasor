@@ -21,7 +21,7 @@ import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.Event;
 import org.more.hypha.EventManager;
-import org.more.hypha.aop.AopInfoConfig;
+import org.more.hypha.aop.AopService;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.hypha.context.xml.XmlLoadedEvent;
@@ -42,7 +42,7 @@ public class TagAop_Apply extends TagAop_NS implements XmlElementHook {
         //2.检测
         if (config == null)
             throw new LostException("apply标签，检测到未定义config属性或者属性值为空。");
-        AopInfoConfig service = this.getAopConfig();
+        AopService service = this.getAopConfig();
         AopConfigDefine aopConfig = service.getAopDefine(config);
         if (aopConfig == null)
             throw new LostException("apply标签在应用[" + config + "]aop配置时无法找到其定义的AopConfigDefine类型对象。");

@@ -19,7 +19,7 @@ import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.aop.AopInfoConfig;
+import org.more.hypha.aop.AopService;
 import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.aop.define.AopPointcutGroupDefine;
@@ -75,7 +75,7 @@ public abstract class TagAop_AbstractPointcut<T extends AbstractPointcutDefine> 
         }
         //3.注册到环境中
         if (isReg == false && define.getName() != null) {
-            AopInfoConfig service = this.getAopConfig();
+            AopService service = this.getAopConfig();
             if (service.containPointcutDefine(define.getName()) == true)
                 throw new RepeateException("不能重复定义[" + define.getName() + "]切入点对象。");
             service.addPointcutDefine(define);

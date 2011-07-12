@@ -23,6 +23,15 @@ import org.more.hypha.commons.define.AbstractDefine;
 public abstract class AbstractInformed extends AbstractDefine<AbstractInformed> {
     private AbstractPointcutDefine refPointcut  = null; //连接的切点声明
     private PointcutType           pointcutType = null; //aop切点类型
+    private String                 refBean      = null; //连接的aopBean
+    /**获取关联的refBean。*/
+    public String getRefBean() {
+        return this.refBean;
+    }
+    /**设置关联的RefBean。*/
+    public void setRefBean(String refBean) {
+        this.refBean = refBean;
+    }
     /**获取连接的切点*/
     public AbstractPointcutDefine getRefPointcut() {
         return this.refPointcut;

@@ -16,7 +16,7 @@
 package org.more.hypha.aop;
 import org.more.core.xml.XmlParserKit;
 import org.more.hypha.Event;
-import org.more.hypha.aop.assembler.AopInfoConfig_Impl;
+import org.more.hypha.aop.assembler.AopService_Impl;
 import org.more.hypha.aop.xml.TagAop_Apply;
 import org.more.hypha.aop.xml.TagAop_Before;
 import org.more.hypha.aop.xml.TagAop_Config;
@@ -41,7 +41,7 @@ public class Register_Aop implements XmlNameSpaceRegister {
     /**执行初始化注册。*/
     public void initRegister(String namespaceURL, XmlDefineResource resource) {
         //1.添加Aop插件
-        resource.getFlash().setAttribute(AopInfoConfig_Impl.ServiceName, new AopInfoConfig_Impl());
+        resource.getFlash().setAttribute(AopService_Impl.ServiceName, new AopService_Impl());
         //2.注册标签解析器
         XmlParserKit kit = new XmlParserKit();
         kit.regeditHook("/config", new TagAop_Config(resource));

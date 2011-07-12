@@ -20,8 +20,17 @@ package org.more.hypha.aop.define;
  * @version 2010-9-27
  * @author 赵永春 (zyc@byshell.org)
  */
-public class AopMethodInformed extends AopDefineInformed {
-    private String method = null; //定义的方法名
+public class AopMethodInformed extends AbstractInformed {
+    private String method  = null; //定义的方法名
+    private String refBean = null; //连接的aopBean
+    /**获取关联的refBean。*/
+    public String getRefBean() {
+        return this.refBean;
+    }
+    /**设置关联的RefBean。*/
+    public void setRefBean(String refBean) {
+        this.refBean = refBean;
+    }
     /**获取定义的方法名。*/
     public String getMethod() {
         return this.method;

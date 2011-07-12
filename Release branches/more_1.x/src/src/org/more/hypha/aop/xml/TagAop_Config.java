@@ -20,7 +20,7 @@ import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.aop.AopInfoConfig;
+import org.more.hypha.aop.AopService;
 import org.more.hypha.aop.define.AbstractInformed;
 import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
@@ -61,7 +61,7 @@ public class TagAop_Config extends TagAop_NS implements XmlElementHook {
             if (informed.getRefPointcut() == null)
                 informed.setRefPointcut(defaultPointcutDefine);
         //3.зЂВс
-        AopInfoConfig service = this.getAopConfig();
+        AopService service = this.getAopConfig();
         if (bean != null)
             service.setAop(bean, config);
         String name = config.getName();

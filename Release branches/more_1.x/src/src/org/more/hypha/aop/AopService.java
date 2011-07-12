@@ -23,7 +23,7 @@ import org.more.hypha.aop.define.AopConfigDefine;
  * @version 2010-10-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AopInfoConfig extends Service {
+public interface AopService extends Service {
     /**获取一个定义的切入点。*/
     public AbstractPointcutDefine getPointcutDefine(String name);
     /**添加切点定义。*/

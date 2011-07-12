@@ -14,17 +14,46 @@
  * limitations under the License.
  */
 package org.more.hypha.aop.assembler;
+import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.PointChain;
+import org.more.hypha.aop.AopService;
+import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.commons.logic.CreateBeanPoint;
+import org.more.log.ILog;
+import org.more.log.LogFactory;
 /**
  * 
  * @version : 2011-6-28
  * @author 赵永春 (zyc@byshell.org)
  */
 public class AopCreateBeanPoint implements CreateBeanPoint {
+    private static ILog log = LogFactory.getLog(AopCreateBeanPoint.class);
     public Object doFilter(ApplicationContext applicationContext, Object[] params, PointChain chain) throws Throwable {
-        // TODO Auto-generated method stub
-        return chain.doChain(applicationContext, params);
+        //合法性判断
+        if (params == null || params.length == 0)
+            return chain.doChain(applicationContext, params);
+        Object obj = params[0];
+        if (obj != null && obj instanceof AbstractBeanDefine == true) {} else
+            return chain.doChain(applicationContext, params);
+        //处理Aop
+        AbstractBeanDefine define = (AbstractBeanDefine) params[0];
+        AopService_Impl aopConfig = (AopService_Impl) applicationContext.getService(AopService.class);
+        if (aopConfig == null) {
+            log.warning("app {%1} services not include AopServices!", applicationContext.getID());
+            return chain.doChain(applicationContext, params);
+        }
+        AopConfigDefine aopDefine = aopConfig.getAopDefine(define);
+        if (aopDefine == null)
+            return chain.doChain(applicationContext, params);
+        Object beanObject = chain.doChain(applicationContext, params);
+        /*---------------------------------------*/
+        //                包含AOP
+        /*---------------------------------------*/
+        AopBuilder aopBuilder = aopConfig.getAopBuilder();
+        Object aopBean = aopBuilder.builderBean(beanObject, aopDefine, define);
+        if (aopBean != null)
+            return aopBean;
+        return beanObject;
     }
 }

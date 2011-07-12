@@ -22,7 +22,7 @@ import org.more.core.xml.stream.AttributeEvent;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.AbstractBeanDefine;
-import org.more.hypha.aop.AopInfoConfig;
+import org.more.hypha.aop.AopService;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.beans.xml.TagBeans_AbstractBeanDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
@@ -49,7 +49,7 @@ public class TagAop_UseConfig extends TagAop_NS implements XmlElementHook, XmlAt
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
     /**¥¶¿Ìaop:useConfig*/
     private void processElement(XmlStackDecorator context, String name) {
-        AopInfoConfig service = this.getAopConfig();
+        AopService service = this.getAopConfig();
         AbstractBeanDefine bean = (AbstractBeanDefine) context.getAttribute(TagBeans_AbstractBeanDefine.BeanDefine);
         //
         AopConfigDefine aopConfig = service.getAopDefine(name);

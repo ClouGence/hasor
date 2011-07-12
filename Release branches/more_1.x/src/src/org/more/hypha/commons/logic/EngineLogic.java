@@ -66,7 +66,7 @@ public class EngineLogic {
         //
         log.debug("init EngineLogic, applicationContext = {%0}", applicationContext);
         this.rootParser = new RootValueMetaDataParser() {};
-    }
+    };
     /**获取{@link AbstractApplicationContext}用于生成Bean的生成器。*/
     protected IocEngine getEngine(String key) {
         if (key != null) {
@@ -103,7 +103,7 @@ public class EngineLogic {
     /**获取元信息解析器对象。*/
     public ValueMetaDataParser<ValueMetaData> getRootParser() {
         return this.rootParser;
-    }
+    };
     /**
      * 注册一种bean定义类型，使之可以被引擎解析。重复注册会导致覆盖。
      * @param beanType 注册的bean定义类型。
@@ -150,7 +150,7 @@ public class EngineLogic {
                         return builder.loadType(define, params);
                     }
                 }, define, params);
-    }
+    };
     /*------------------------------------------------------------------------------*/
     public <T> T loadBean(final AbstractBeanDefine define, final Object[] params) throws Throwable {
         if (define == null) {
@@ -242,7 +242,7 @@ public class EngineLogic {
         //2.生成代理对象
         return proxyEngine.newInstance(object);
     };
-}
+};
 /**类名生成器*/
 class ProxyClassNameStrategy implements ClassNameStrategy {
     private static long         generateID  = 0;
