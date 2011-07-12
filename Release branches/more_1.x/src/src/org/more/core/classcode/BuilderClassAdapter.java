@@ -66,6 +66,8 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
     //5.定义了代理属性的字段名称。
     public final static String  PropertyArrayName         = "$propertyArray";
     private final static String PropertyDelegateArrayType = EngineToos.toAsmType(PropertyDelegate[].class);
+    //6.是否配置的标记字段名
+    public final static String  ConfigMarkName            = "$configMark";
     //
     public BuilderClassAdapter(ClassVisitor cv, ClassBuilder classBuilder) {
         super(cv);
@@ -193,7 +195,7 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
         else
             mv.visitInsn(EngineToos.getReturn(asmReturns));
         //6.结束方法输出，确定方法堆栈等信息。
-        mv.visitMaxs(1, maxLocals);
+        mv.visitMaxs(maxLocals, maxLocals);
         mv.visitEnd();
         //7.将已经处理的方法添加到本地方法表中并返回，在visitInterfaceMethod方法中会需要这个信息。
         localMethodList.add(name + desc);
@@ -293,6 +295,9 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
             }
             //
         }
+        //4.输出配置标记
+        //输出是否经过配置的标记
+        this.putSimpleProperty(ConfigMarkName, Boolean.class, false, false);
         super.visitEnd();
     }
     //

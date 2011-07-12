@@ -15,6 +15,7 @@
  */
 package org.more.core.classcode;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -27,7 +28,9 @@ import org.more.core.classcode.objects.DefaultMethodStrategy;
 import org.more.core.classcode.objects.DefaultPropertyStrategy;
 import org.more.core.error.FormatException;
 import org.more.core.error.InitializationException;
+import org.more.core.error.InvokeException;
 import org.more.core.error.MoreStateException;
+import org.more.core.error.TypeException;
 /**
  * classcode v2.0引擎。新引擎增加了debug模式，在debug模式下{@link ClassEngine#builderClass()}方法在装载生成的新类 时不会抛出。
  * 如果没有指定类装载引擎会使用ClassLoader.getSystemClassLoader()方法返回的类装载器来装载类。
@@ -513,5 +516,34 @@ public class ClassEngine {
             throw new InitializationException("初始化创建新类[" + this.newClass.getName() + "]错误," + e.getMessage());
         }
         return this.configuration.configBean(obj);
+    }
+    /**配置bean，执行aop注入等操作，该参数接收任何ClassEngine创建的对象。*/
+    public Object configBean(Object bean) {
+        if (bean == null)
+            throw new NullPointerException("参数不能为空!");
+        ClassLoader loader = bean.getClass().getClassLoader();
+        if (loader instanceof RootClassLoader == false)
+            return bean;
+        RootClassLoader rootLoader = (RootClassLoader) loader;
+        ClassEngine engine = rootLoader.getRegeditEngine(bean.getClass().getName());
+        return engine.configuration.configBean(bean);
+    }
+    /**判断该bean是否已经经过配置。*/
+    public boolean isConfig(Object bean) {
+        if (bean == null)
+            throw new NullPointerException("参数不能为空!");
+        ClassLoader loader = bean.getClass().getClassLoader();
+        if (loader instanceof RootClassLoader == false)
+            throw new TypeException("参数所表示的bean不是一个有效的生成bean。");
+        //
+        try {
+            Method method_1 = bean.getClass().getMethod("get" + BuilderClassAdapter.ConfigMarkName);
+            Boolean res = (Boolean) method_1.invoke(bean);
+            if (res == null)
+                return false;
+            return res;
+        } catch (Exception e) {
+            throw new InvokeException("在执行调用期间发生异常。");
+        }
     }
 }

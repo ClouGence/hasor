@@ -40,19 +40,22 @@ public class AopFilterChain_Start {
             if (this.nextFilterChain == null)
                 throw new LostException("丢失Aop链第一环节。");
             //2.通知before切面。
-            for (int i = 0; i < this.aopBeforeListener.length; i++)
-                this.aopBeforeListener[i].beforeInvoke(target, method, args);
+            if (this.aopBeforeListener != null)
+                for (int i = 0; i < this.aopBeforeListener.length; i++)
+                    this.aopBeforeListener[i].beforeInvoke(target, method, args);
             //3.执行调用。
             Object result = this.nextFilterChain.doInvokeFilter(target, method, args);
             //4.通知returning切面。
-            for (int i = 0; i < this.aopReturningListener.length; i++)
-                this.aopReturningListener[i].returningInvoke(target, method, args, result);
+            if (this.aopReturningListener != null)
+                for (int i = 0; i < this.aopReturningListener.length; i++)
+                    this.aopReturningListener[i].returningInvoke(target, method, args, result);
             //5.返回结果。
             return result;
         } catch (Throwable e) {
             //6.通知throwing切面。
-            for (int i = 0; i < this.aopThrowingListener.length; i++)
-                this.aopThrowingListener[i].throwsException(target, method, args, e);
+            if (this.aopThrowingListener != null)
+                for (int i = 0; i < this.aopThrowingListener.length; i++)
+                    this.aopThrowingListener[i].throwsException(target, method, args, e);
             //7.如果抛出的异常属于RuntimeException那么直接转类型抛出。
             if (e instanceof RuntimeException == true)
                 throw (RuntimeException) e;

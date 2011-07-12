@@ -179,7 +179,7 @@ public class EngineToos implements Opcodes {
             return float.class;
         else if (asmClassType.equals("J") == true)
             return long.class;
-        else if (asmClassType.equals("I") == true)
+        else if (asmClassType.equals("S") == true)
             return short.class;
         else if (asmClassType.equals("Z") == true)
             return boolean.class;

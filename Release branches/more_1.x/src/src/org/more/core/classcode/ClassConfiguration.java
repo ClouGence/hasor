@@ -153,6 +153,11 @@ public class ClassConfiguration {
                 throw new InitializationException("初始化aop代理注入错误,", e);
             }
         }
+        //4.标记配置
+        try {
+            Method method_1 = beanClass.getMethod("set" + BuilderClassAdapter.ConfigMarkName, boolean.class);
+            method_1.invoke(obj, new Object[] { true });//注入代理
+        } catch (Exception e) {/*标记变量错误*/}
         return obj;
     }
 }
