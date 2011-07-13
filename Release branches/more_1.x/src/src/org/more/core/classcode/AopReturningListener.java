@@ -29,5 +29,5 @@ public interface AopReturningListener extends AopListener {
      * @param args 调用这个方法传递的参数。
      * @param result 该参数是执行调用之后的方法返回值。
      */
-    public void returningInvoke(Object target, Method method, Object[] args, Object result);
+    public void returningInvoke(Object target, Method method, Object[] args, Object result) throws Throwable;
 }

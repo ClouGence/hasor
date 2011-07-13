@@ -27,5 +27,5 @@ public interface AopBeforeListener extends AopListener {
      * @param method 被调用的方法。
      * @param args 调用这个方法传递的参数。
      */
-    public void beforeInvoke(final Object target, final Method method, final Object[] args);
+    public void beforeInvoke(final Object target, final Method method, final Object[] args) throws Throwable;
 }
