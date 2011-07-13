@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.test.more.submit;
-import org.more.submit.ActionStack;
-import org.more.submit.ext.filter.ActionFilter;
-import org.more.submit.ext.filter.Filter;
-import org.more.submit.ext.filter.FilterChain;
+package org.test.more.hypha.spring;
 /**
- *
- * <br/>Date : 2009-12-2
+ * 
+ * Date : 2009-11-17
  * @author Administrator
  */
-@Filter
-public class ActionF implements ActionFilter {
-    public Object doActionFilter(ActionStack stack, FilterChain chain) throws Throwable {
-        System.out.println("filter F");
-        return chain.doInvokeFilter(stack);
-    }
+public interface TestBeanInterface {
+    public int getA();
+    public void setA(int a);
+    public float getB();
+    public void setB(float b);
+    public String getC();
+    public void setC(String c);
+    public Object[] getD();
+    public void setD(Object[] d);
 }

@@ -17,17 +17,20 @@ package org.test.more.submit;
 import org.more.submit.SubmitBuild;
 import org.more.submit.SubmitContext;
 import org.more.submit.casing.more.MoreBuilder;
-import org.more.util.StringConvert;
+import org.more.util.StringConvertUtil;
 public class MoreSubmit30Test {
     /**
      * @param args
      * @throws Throwable
      * @throws Exception
      */
+    @SuppressWarnings("unchecked")
     public static void main(String[] args) throws Throwable {
         SubmitBuild dire = new SubmitBuild();
-        dire.build(new MoreBuilder("test_src/org/test/more/submit/demo-beans-config.xml"));
+        dire.build(new MoreBuilder("test_src/org/test/more/submit/submit-config.xml"));
         SubmitContext context = dire.getResult();
-        context.doAction("test.xml", StringConvert.parseMap("\"\', 11, 33, false"));
+        //
+        System.out.println("------------------------------------------");
+        context.doAction("test.test", StringConvertUtil.parseMap("\"\', 11, 33, false"));
     }
 }

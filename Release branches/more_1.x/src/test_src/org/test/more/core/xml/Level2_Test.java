@@ -30,7 +30,7 @@ import org.more.core.xml.stream.XmlStreamEvent;
 public class Level2_Test {
     @Test
     public void reader() throws FileNotFoundException, XMLStreamException {
-        XmlReader reader = new XmlReader("bin/test_xml.xml");
+        XmlReader reader = new XmlReader(Level1_Test.class.getResourceAsStream("/org/test/more/core/xml/test_xml.xml"));
         //        reader.setIgnoreComment(true);
         //        reader.setIgnoreSpace(true);
         XmlParserKitManager manager = new XmlParserKitManager();

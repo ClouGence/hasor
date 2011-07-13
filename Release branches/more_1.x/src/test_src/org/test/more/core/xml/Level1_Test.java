@@ -29,14 +29,14 @@ import org.more.core.xml.stream.XmlStreamEvent;
 public class Level1_Test {
     @Test
     public void reader() throws FileNotFoundException, XMLStreamException {
-        XmlReader reader = new XmlReader("bin/test_xml.xml");
+        XmlReader reader = new XmlReader(Level1_Test.class.getResourceAsStream("/org/test/more/core/xml/test_xml.xml"));
         reader.setIgnoreComment(true);
         reader.setIgnoreSpace(true);
         reader.reader(new XmlAccept() {
             public void beginAccept() {}
             public void endAccept() {}
             public void sendEvent(XmlStreamEvent e) {
-                                System.out.println(e.getClass() + "\t\t" + e.getXpath().toString());
+                System.out.println(e.getClass() + "\t\t" + e.getXpath().toString());
                 //
                 if (e instanceof TextEvent)
                     System.out.print(((TextEvent) e).getTrimText());

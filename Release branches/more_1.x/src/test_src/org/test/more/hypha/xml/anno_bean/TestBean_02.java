@@ -13,20 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.test.more.submit;
-import org.more.submit.ActionStack;
-import org.more.submit.ext.filter.ActionFilter;
-import org.more.submit.ext.filter.Filter;
-import org.more.submit.ext.filter.FilterChain;
+package org.test.more.hypha.xml.anno_bean;
+import org.more.hypha.anno.define.Aop;
+import org.more.hypha.anno.define.AopInformed;
+import org.more.hypha.anno.define.Bean;
+import org.more.hypha.aop.define.PointcutType;
 /**
- *
- * <br/>Date : 2009-12-2
- * @author Administrator
+ * 
+ * @version 2010-9-21
+ * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@Filter
-public class ActionF implements ActionFilter {
-    public Object doActionFilter(ActionStack stack, FilterChain chain) throws Throwable {
-        System.out.println("filter F");
-        return chain.doInvokeFilter(stack);
-    }
-}
+//@Bean
+@Aop(informeds = { @AopInformed(type = PointcutType.Before, refBean = "") })
+public class TestBean_02 {}

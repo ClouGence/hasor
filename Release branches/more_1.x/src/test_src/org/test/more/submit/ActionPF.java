@@ -26,7 +26,7 @@ import org.more.submit.ext.filter.FilterChain;
 @Filter(isPublic = true)
 public class ActionPF implements ActionFilter {
     public Object doActionFilter(ActionStack stack, FilterChain chain) throws Throwable {
-        System.out.println("private");
+        System.out.println("filter PF");
         return chain.doInvokeFilter(stack);
     }
 }
