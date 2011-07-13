@@ -62,6 +62,7 @@ public class AopBuilder {
         return new AopPropxyInformed(this.context, informed);
     };
     private void configAop(ClassEngine engine, AopConfigDefine aopDefine) {
+        engine.resetAop();
         for (AbstractInformed informed : aopDefine.getAopInformedList()) {
             PointcutType type = informed.getPointcutType();
             Object informedObject = this.passerInformed(informed);
@@ -94,7 +95,6 @@ public class AopBuilder {
         engine.setBuilderMode(BuilderMode.Super);
         engine.setSuperClass(beanType);
         engine.generateName();
-        this.configAop(engine, aopDefine);
         engineMap.put(beanType, engine);//缓存要生成aop的类型。
         //
         BeanUtil.writePropertyOrField(define, "boolCheckType", false);//关闭类型检查
@@ -111,6 +111,7 @@ public class AopBuilder {
             //1.Super方式aop
             RootClassLoader rootLoader = (RootClassLoader) loader;
             engine = rootLoader.getRegeditEngine(beanObject.getClass().getName());
+            this.configAop(engine, aopDefine);//每次都重新config为了保证每个Bean中间
             aopBean = beanObject;
         } else {
             //2.Propxy方式Aop
@@ -120,7 +121,7 @@ public class AopBuilder {
             engine.setBuilderMode(BuilderMode.Propxy);
             engine.setSuperClass(beanType);
             engine.generateName();
-            this.configAop(engine, aopDefine);
+            this.configAop(engine, aopDefine);//
             engineMap.put(beanType, engine);//缓存要生成aop的类型。
             aopBean = engine.newInstance(beanObject);
         }

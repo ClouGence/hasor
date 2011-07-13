@@ -27,6 +27,7 @@ import org.more.hypha.ELContext;
 import org.more.hypha.Event;
 import org.more.hypha.EventManager;
 import org.more.hypha.ExpandPointManager;
+import org.more.hypha.PointCallBack;
 import org.more.hypha.Service;
 import org.more.hypha.commons.AbstractELContext;
 import org.more.hypha.commons.AbstractExpandPointManager;
@@ -202,7 +203,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     /*------------------------------------------------------------*/
     private final String KEY = "GETBEAN_PARAM";
     @SuppressWarnings("unchecked")
-    public <T> T getBean(String defineID, Object... objects) throws Throwable {
+    public <T> T getBean(final String defineID, final Object... objects) throws Throwable {
         if (defineID == null || defineID.equals("") == true) {
             log.error("error , defineID is null or empty.");
             throw new NullPointerException("error , defineID is null or empty.");
@@ -212,7 +213,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
             log.debug("{%0} bean form cache return.", defineID);
             return (T) obj;
         }
-        AbstractBeanDefine define = this.getBeanDefinition(defineID);
+        final AbstractBeanDefine define = this.getBeanDefinition(defineID);
         if (define == null) {
             log.error("{%0} define is not exist.", defineID);
             throw new DefineException(defineID + " define is not exist.");
@@ -224,7 +225,15 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
             log.debug("put params to ThreadFlash key is {%0}", KEY);
             //1.获取bean以及bean类型。
             Class<?> beanType = this.getBeanType(defineID, objects);//获取类型，如果使用engineLogic.loadType则就失去了缓存的功能。
-            Object bean = this.engineLogic.loadBean(define, objects);//生成Bean
+            /*--------------------------------------------------*/
+            //执行扩展点
+            final EngineLogic thisEngineLogic = this.engineLogic;
+            Object bean = this.expandPointManager.exePoint(GetBeanPoint.class, new PointCallBack() {
+                public Object call(ApplicationContext applicationContext, Object[] params) throws Throwable {
+                    return thisEngineLogic.loadBean(define, objects);//生成Bean;
+                }
+            }, define, objects);
+            /*--------------------------------------------------*/
             log.debug("finish build!, object = {%0}", bean);
             //3.单态缓存&类型匹配
             if (beanType != null)
@@ -245,12 +254,12 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
             this.getThreadFlash().removeAttribute(KEY);
         }
     };
-    public Class<?> getBeanType(String defineID, Object... objects) throws Throwable {
+    public Class<?> getBeanType(final String defineID, final Object... objects) throws Throwable {
         if (defineID == null || defineID.equals("") == true) {
             log.error("error , defineID is null or empty.");
             throw new NullPointerException("error , defineID is null or empty.");
         }
-        AbstractBeanDefine define = this.getBeanDefinition(defineID);
+        final AbstractBeanDefine define = this.getBeanDefinition(defineID);
         if (define == null) {
             log.error("{%0} define is not exist.", defineID);
             throw new DefineException(defineID + " define is not exist.");
@@ -260,7 +269,15 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         try {
             this.getThreadFlash().setAttribute(KEY, objects);
             log.debug("put params to ThreadFlash key is {%0}", KEY);
-            Class<?> beanType = this.engineLogic.loadType(define, objects);
+            /*--------------------------------------------------*/
+            //执行扩展点
+            final EngineLogic thisEngineLogic = this.engineLogic;
+            Class<?> beanType = this.expandPointManager.exePoint(GetTypePoint.class, new PointCallBack() {
+                public Object call(ApplicationContext applicationContext, Object[] params) throws Throwable {
+                    return thisEngineLogic.loadType(define, objects);//生成Bean;
+                }
+            }, define, objects);
+            /*--------------------------------------------------*/
             log.debug("finish build! type = {%0}", beanType);
             return beanType;
         } catch (Throwable e) {
