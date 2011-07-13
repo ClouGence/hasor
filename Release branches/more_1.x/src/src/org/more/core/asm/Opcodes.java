@@ -69,7 +69,7 @@ public interface Opcodes {
     int     ACC_ANNOTATION      = 0x2000;                 // class
     int     ACC_ENUM            = 0x4000;                 // class(?) field inner
     // ASM specific pseudo access flags
-    int     ACC_DEPRECATED      = 131072;                 // class, field, method
+    int     ACC_DEPRECATED      = 0x20000;                // class, field, method
     // types for NEWARRAY
     int     T_BOOLEAN           = 4;
     int     T_CHAR              = 5;

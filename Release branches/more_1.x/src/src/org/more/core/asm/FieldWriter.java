@@ -148,7 +148,7 @@ final class FieldWriter implements FieldVisitor {
             cw.newUTF8("ConstantValue");
             size += 8;
         }
-        if ((access & Opcodes.ACC_SYNTHETIC) != 0 && (cw.version & 0xffff) < Opcodes.V1_5) {
+        if ((access & Opcodes.ACC_SYNTHETIC) != 0 && ((cw.version & 0xFFFF) < Opcodes.V1_5 || (access & ClassWriter.ACC_SYNTHETIC_ATTRIBUTE) != 0)) {
             cw.newUTF8("Synthetic");
             size += 6;
         }
@@ -179,12 +179,13 @@ final class FieldWriter implements FieldVisitor {
      * @param out where the content of this field must be put.
      */
     void put(final ByteVector out) {
-        out.putShort(access).putShort(name).putShort(desc);
+        int mask = Opcodes.ACC_DEPRECATED | ClassWriter.ACC_SYNTHETIC_ATTRIBUTE | ((access & ClassWriter.ACC_SYNTHETIC_ATTRIBUTE) / (ClassWriter.ACC_SYNTHETIC_ATTRIBUTE / Opcodes.ACC_SYNTHETIC));
+        out.putShort(access & ~mask).putShort(name).putShort(desc);
         int attributeCount = 0;
         if (value != 0) {
             ++attributeCount;
         }
-        if ((access & Opcodes.ACC_SYNTHETIC) != 0 && (cw.version & 0xffff) < Opcodes.V1_5) {
+        if ((access & Opcodes.ACC_SYNTHETIC) != 0 && ((cw.version & 0xFFFF) < Opcodes.V1_5 || (access & ClassWriter.ACC_SYNTHETIC_ATTRIBUTE) != 0)) {
             ++attributeCount;
         }
         if ((access & Opcodes.ACC_DEPRECATED) != 0) {
@@ -207,7 +208,7 @@ final class FieldWriter implements FieldVisitor {
             out.putShort(cw.newUTF8("ConstantValue"));
             out.putInt(2).putShort(value);
         }
-        if ((access & Opcodes.ACC_SYNTHETIC) != 0 && (cw.version & 0xffff) < Opcodes.V1_5) {
+        if ((access & Opcodes.ACC_SYNTHETIC) != 0 && ((cw.version & 0xFFFF) < Opcodes.V1_5 || (access & ClassWriter.ACC_SYNTHETIC_ATTRIBUTE) != 0)) {
             out.putShort(cw.newUTF8("Synthetic")).putInt(0);
         }
         if ((access & Opcodes.ACC_DEPRECATED) != 0) {

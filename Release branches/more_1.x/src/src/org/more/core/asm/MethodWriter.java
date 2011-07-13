@@ -483,6 +483,13 @@ class MethodWriter implements MethodVisitor {
                 delta = code.length;
             } else {
                 delta = code.length - previousFrameOffset - 1;
+                if (delta < 0) {
+                    if (type == Opcodes.F_SAME) {
+                        return;
+                    } else {
+                        throw new IllegalStateException();
+                    }
+                }
             }
             switch (type) {
             case Opcodes.F_FULL:
@@ -923,7 +930,7 @@ class MethodWriter implements MethodVisitor {
         // adds the instruction to the bytecode of the method
         int source = code.length;
         code.putByte(Opcodes.TABLESWITCH);
-        code.length += (4 - code.length % 4) % 4;
+        code.putByteArray(null, 0, (4 - code.length % 4) % 4);
         dflt.put(this, code, source, true);
         code.putInt(min).putInt(max);
         for (int i = 0; i < labels.length; ++i) {
@@ -936,7 +943,7 @@ class MethodWriter implements MethodVisitor {
         // adds the instruction to the bytecode of the method
         int source = code.length;
         code.putByte(Opcodes.LOOKUPSWITCH);
-        code.length += (4 - code.length % 4) % 4;
+        code.putByteArray(null, 0, (4 - code.length % 4) % 4);
         dflt.put(this, code, source, true);
         code.putInt(labels.length);
         for (int i = 0; i < labels.length; ++i) {
@@ -1190,7 +1197,7 @@ class MethodWriter implements MethodVisitor {
                     if ((l.status & Label.JSR) != 0) {
                         Label L = labels;
                         while (L != null) {
-                            L.status &= ~Label.VISITED;
+                            L.status &= ~Label.VISITED2;
                             L = L.successor;
                         }
                         // the subroutine is defined by l's TARGET, not by l
@@ -1583,7 +1590,7 @@ class MethodWriter implements MethodVisitor {
             cw.newUTF8("Exceptions");
             size += 8 + 2 * exceptionCount;
         }
-        if ((access & Opcodes.ACC_SYNTHETIC) != 0 && (cw.version & 0xffff) < Opcodes.V1_5) {
+        if ((access & Opcodes.ACC_SYNTHETIC) != 0 && ((cw.version & 0xFFFF) < Opcodes.V1_5 || (access & ClassWriter.ACC_SYNTHETIC_ATTRIBUTE) != 0)) {
             cw.newUTF8("Synthetic");
             size += 6;
         }
@@ -1634,7 +1641,8 @@ class MethodWriter implements MethodVisitor {
      *        copied.
      */
     final void put(final ByteVector out) {
-        out.putShort(access).putShort(name).putShort(desc);
+        int mask = Opcodes.ACC_DEPRECATED | ClassWriter.ACC_SYNTHETIC_ATTRIBUTE | ((access & ClassWriter.ACC_SYNTHETIC_ATTRIBUTE) / (ClassWriter.ACC_SYNTHETIC_ATTRIBUTE / Opcodes.ACC_SYNTHETIC));
+        out.putShort(access & ~mask).putShort(name).putShort(desc);
         if (classReaderOffset != 0) {
             out.putByteArray(cw.cr.b, classReaderOffset, classReaderLength);
             return;
@@ -1646,7 +1654,7 @@ class MethodWriter implements MethodVisitor {
         if (exceptionCount > 0) {
             ++attributeCount;
         }
-        if ((access & Opcodes.ACC_SYNTHETIC) != 0 && (cw.version & 0xffff) < Opcodes.V1_5) {
+        if ((access & Opcodes.ACC_SYNTHETIC) != 0 && ((cw.version & 0xFFFF) < Opcodes.V1_5 || (access & ClassWriter.ACC_SYNTHETIC_ATTRIBUTE) != 0)) {
             ++attributeCount;
         }
         if ((access & Opcodes.ACC_DEPRECATED) != 0) {
@@ -1751,7 +1759,7 @@ class MethodWriter implements MethodVisitor {
                 out.putShort(exceptions[i]);
             }
         }
-        if ((access & Opcodes.ACC_SYNTHETIC) != 0 && (cw.version & 0xffff) < Opcodes.V1_5) {
+        if ((access & Opcodes.ACC_SYNTHETIC) != 0 && ((cw.version & 0xFFFF) < Opcodes.V1_5 || (access & ClassWriter.ACC_SYNTHETIC_ATTRIBUTE) != 0)) {
             out.putShort(cw.newUTF8("Synthetic")).putInt(0);
         }
         if ((access & Opcodes.ACC_DEPRECATED) != 0) {
@@ -2032,7 +2040,7 @@ class MethodWriter implements MethodVisitor {
                 u = u + 4 - (v & 3);
                 // reads and copies instruction
                 newCode.putByte(Opcodes.TABLESWITCH);
-                newCode.length += (4 - newCode.length % 4) % 4;
+                newCode.putByteArray(null, 0, (4 - newCode.length % 4) % 4);
                 label = v + readInt(b, u);
                 u += 4;
                 newOffset = getNewOffset(allIndexes, allSizes, v, label);
@@ -2056,7 +2064,7 @@ class MethodWriter implements MethodVisitor {
                 u = u + 4 - (v & 3);
                 // reads and copies instruction
                 newCode.putByte(Opcodes.LOOKUPSWITCH);
-                newCode.length += (4 - newCode.length % 4) % 4;
+                newCode.putByteArray(null, 0, (4 - newCode.length % 4) % 4);
                 label = v + readInt(b, u);
                 u += 4;
                 newOffset = getNewOffset(allIndexes, allSizes, v, label);

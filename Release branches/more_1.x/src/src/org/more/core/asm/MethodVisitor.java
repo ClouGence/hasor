@@ -92,7 +92,7 @@ public interface MethodVisitor {
     /**
      * Visits the current state of the local variables and operand stack
      * elements. This method must(*) be called <i>just before</i> any
-     * instruction <b>i</b> that follows an unconditionnal branch instruction
+     * instruction <b>i</b> that follows an unconditional branch instruction
      * such as GOTO or THROW, that is the target of a jump instruction, or that
      * starts an exception handler block. The visited types must describe the
      * values of the local variables and of the operand stack elements <i>just
@@ -136,6 +136,9 @@ public interface MethodVisitor {
      * @param nStack the number of operand stack elements in the visited frame.
      * @param stack the operand stack types in this frame. This array must not
      *        be modified. Its content has the same format as the "local" array.
+     * @throw IllegalStateException if a frame is visited just after another
+     *        one, without any instruction between the two (unless this frame
+     *        is a Opcodes#F_SAME frame, in which case it is silently ignored).
      */
     void visitFrame(int type, int nLocal, Object[] local, int nStack, Object[] stack);
     // -------------------------------------------------------------------------
@@ -219,7 +222,7 @@ public interface MethodVisitor {
      *        INVOKEINTERFACE or INVOKEDYNAMIC.
      * @param owner the internal name of the method's owner class (see {@link
      *        Type#getInternalName() getInternalName})
-     *        or {@link org.more.core.asm.Opcodes#INVOKEDYNAMIC_OWNER}.
+     *        or {@link org.objectweb.asm.Opcodes#INVOKEDYNAMIC_OWNER}.
      * @param name the method's name.
      * @param desc the method's descriptor (see {@link Type Type}).
      */

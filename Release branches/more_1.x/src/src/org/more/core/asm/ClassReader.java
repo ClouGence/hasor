@@ -28,8 +28,8 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.more.core.asm;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 /**
  * A Java class parser to make a {@link ClassVisitor} visit an existing class.
  * This class parses a byte array conforming to the Java class file format and
@@ -476,7 +476,7 @@ public class ClassReader {
             } else if ("Deprecated".equals(attrName)) {
                 access |= Opcodes.ACC_DEPRECATED;
             } else if ("Synthetic".equals(attrName)) {
-                access |= Opcodes.ACC_SYNTHETIC;
+                access |= Opcodes.ACC_SYNTHETIC | ClassWriter.ACC_SYNTHETIC_ATTRIBUTE;
             } else if ("SourceDebugExtension".equals(attrName)) {
                 int len = readInt(v + 2);
                 sourceDebug = readUTF(v + 6, len, new char[len]);
@@ -557,7 +557,7 @@ public class ClassReader {
                 } else if ("Deprecated".equals(attrName)) {
                     access |= Opcodes.ACC_DEPRECATED;
                 } else if ("Synthetic".equals(attrName)) {
-                    access |= Opcodes.ACC_SYNTHETIC;
+                    access |= Opcodes.ACC_SYNTHETIC | ClassWriter.ACC_SYNTHETIC_ATTRIBUTE;
                 } else if (ANNOTATIONS && "RuntimeVisibleAnnotations".equals(attrName)) {
                     anns = u + 6;
                 } else if (ANNOTATIONS && "RuntimeInvisibleAnnotations".equals(attrName)) {
@@ -637,7 +637,7 @@ public class ClassReader {
                 } else if (ANNOTATIONS && "AnnotationDefault".equals(attrName)) {
                     dann = u;
                 } else if ("Synthetic".equals(attrName)) {
-                    access |= Opcodes.ACC_SYNTHETIC;
+                    access |= Opcodes.ACC_SYNTHETIC | ClassWriter.ACC_SYNTHETIC_ATTRIBUTE;
                 } else if (ANNOTATIONS && "RuntimeInvisibleAnnotations".equals(attrName)) {
                     ianns = u;
                 } else if (ANNOTATIONS && "RuntimeVisibleParameterAnnotations".equals(attrName)) {
@@ -845,6 +845,7 @@ public class ClassReader {
                 int varTable = 0;
                 int varTypeTable = 0;
                 int stackMap = 0;
+                int stackMapSize = 0;
                 int frameCount = 0;
                 int frameMode = 0;
                 int frameOffset = 0;
@@ -894,6 +895,7 @@ public class ClassReader {
                     } else if (FRAMES && "StackMapTable".equals(attrName)) {
                         if ((flags & SKIP_FRAMES) == 0) {
                             stackMap = v + 8;
+                            stackMapSize = readInt(v + 2);
                             frameCount = readUnsignedShort(v + 6);
                         }
                         /*
@@ -910,11 +912,15 @@ public class ClassReader {
                          * smaller than the offset of the current insn and for
                          * which no Label exist.
                          */
-                        // TODO true for frame offsets,
-                        // but for UNINITIALIZED type offsets?
+                        /*
+                         * This is not true for UNINITIALIZED type offsets. We
+                         * solve this by parsing the stack map table without a
+                         * full decoding (see below).
+                         */
                     } else if (FRAMES && "StackMap".equals(attrName)) {
                         if ((flags & SKIP_FRAMES) == 0) {
                             stackMap = v + 8;
+                            stackMapSize = readInt(v + 2);
                             frameCount = readUnsignedShort(v + 6);
                             zip = false;
                         }
@@ -1002,6 +1008,28 @@ public class ClassReader {
                      * "offset_delta + 1" rule in all cases
                      */
                     frameOffset = -1;
+                    /*
+                     * Finds labels for UNINITIALIZED frame types. Instead of
+                     * decoding each element of the stack map table, we look
+                     * for 3 consecutive bytes that "look like" an UNINITIALIZED
+                     * type (tag 8, offset within code bounds, NEW instruction
+                     * at this offset). We may find false positives (i.e. not 
+                     * real UNINITIALIZED types), but this should be rare, and 
+                     * the only consequence will be the creation of an unneeded 
+                     * label. This is better than creating a label for each NEW
+                     * instruction, and faster than fully decoding the whole 
+                     * stack map table.
+                     */
+                    for (j = stackMap; j < stackMap + stackMapSize - 2; ++j) {
+                        if (b[j] == 8) { // UNINITIALIZED FRAME TYPE
+                            k = readUnsignedShort(j + 1);
+                            if (k >= 0 && k < codeLength) { // potential offset
+                                if ((b[codeStart + k] & 0xFF) == Opcodes.NEW) { // NEW at this offset
+                                    readLabel(k, labels);
+                                }
+                            }
+                        }
+                    }
                 }
                 v = codeStart;
                 Label l;

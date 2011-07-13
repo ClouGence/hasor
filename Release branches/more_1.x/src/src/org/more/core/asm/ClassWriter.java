@@ -37,7 +37,6 @@ package org.more.core.asm;
  *
  * @author Eric Bruneton
  */
-@SuppressWarnings({ "unchecked", "rawtypes" })
 public class ClassWriter implements ClassVisitor {
     /**
      * Flag to automatically compute the maximum stack size and the maximum
@@ -49,7 +48,7 @@ public class ClassWriter implements ClassVisitor {
      *
      * @see #ClassWriter(int)
      */
-    public static final int  COMPUTE_MAXS     = 1;
+    public static final int  COMPUTE_MAXS            = 1;
     /**
      * Flag to automatically compute the stack map frames of methods from
      * scratch. If this flag is set, then the calls to the
@@ -61,75 +60,80 @@ public class ClassWriter implements ClassVisitor {
      *
      * @see #ClassWriter(int)
      */
-    public static final int  COMPUTE_FRAMES   = 2;
+    public static final int  COMPUTE_FRAMES          = 2;
+    /**
+     * Pseudo access flag to distinguish between the synthetic attribute and
+     * the synthetic access flag.
+     */
+    static final int         ACC_SYNTHETIC_ATTRIBUTE = 0x40000;
     /**
      * The type of instructions without any argument.
      */
-    static final int         NOARG_INSN       = 0;
+    static final int         NOARG_INSN              = 0;
     /**
      * The type of instructions with an signed byte argument.
      */
-    static final int         SBYTE_INSN       = 1;
+    static final int         SBYTE_INSN              = 1;
     /**
      * The type of instructions with an signed short argument.
      */
-    static final int         SHORT_INSN       = 2;
+    static final int         SHORT_INSN              = 2;
     /**
      * The type of instructions with a local variable index argument.
      */
-    static final int         VAR_INSN         = 3;
+    static final int         VAR_INSN                = 3;
     /**
      * The type of instructions with an implicit local variable index argument.
      */
-    static final int         IMPLVAR_INSN     = 4;
+    static final int         IMPLVAR_INSN            = 4;
     /**
      * The type of instructions with a type descriptor argument.
      */
-    static final int         TYPE_INSN        = 5;
+    static final int         TYPE_INSN               = 5;
     /**
      * The type of field and method invocations instructions.
      */
-    static final int         FIELDORMETH_INSN = 6;
+    static final int         FIELDORMETH_INSN        = 6;
     /**
      * The type of the INVOKEINTERFACE/INVOKEDYNAMIC instruction.
      */
-    static final int         ITFDYNMETH_INSN  = 7;
+    static final int         ITFDYNMETH_INSN         = 7;
     /**
      * The type of instructions with a 2 bytes bytecode offset label.
      */
-    static final int         LABEL_INSN       = 8;
+    static final int         LABEL_INSN              = 8;
     /**
      * The type of instructions with a 4 bytes bytecode offset label.
      */
-    static final int         LABELW_INSN      = 9;
+    static final int         LABELW_INSN             = 9;
     /**
      * The type of the LDC instruction.
      */
-    static final int         LDC_INSN         = 10;
+    static final int         LDC_INSN                = 10;
     /**
      * The type of the LDC_W and LDC2_W instructions.
      */
-    static final int         LDCW_INSN        = 11;
+    static final int         LDCW_INSN               = 11;
     /**
      * The type of the IINC instruction.
      */
-    static final int         IINC_INSN        = 12;
+    static final int         IINC_INSN               = 12;
     /**
      * The type of the TABLESWITCH instruction.
      */
-    static final int         TABL_INSN        = 13;
+    static final int         TABL_INSN               = 13;
     /**
      * The type of the LOOKUPSWITCH instruction.
      */
-    static final int         LOOK_INSN        = 14;
+    static final int         LOOK_INSN               = 14;
     /**
      * The type of the MULTIANEWARRAY instruction.
      */
-    static final int         MANA_INSN        = 15;
+    static final int         MANA_INSN               = 15;
     /**
      * The type of the WIDE instruction.
      */
-    static final int         WIDE_INSN        = 16;
+    static final int         WIDE_INSN               = 16;
     /**
      * The instruction types of all JVM opcodes.
      */
@@ -137,66 +141,66 @@ public class ClassWriter implements ClassVisitor {
     /**
      * The type of CONSTANT_Class constant pool items.
      */
-    static final int         CLASS            = 7;
+    static final int         CLASS                   = 7;
     /**
      * The type of CONSTANT_Fieldref constant pool items.
      */
-    static final int         FIELD            = 9;
+    static final int         FIELD                   = 9;
     /**
      * The type of CONSTANT_Methodref constant pool items.
      */
-    static final int         METH             = 10;
+    static final int         METH                    = 10;
     /**
      * The type of CONSTANT_InterfaceMethodref constant pool items.
      */
-    static final int         IMETH            = 11;
+    static final int         IMETH                   = 11;
     /**
      * The type of CONSTANT_String constant pool items.
      */
-    static final int         STR              = 8;
+    static final int         STR                     = 8;
     /**
      * The type of CONSTANT_Integer constant pool items.
      */
-    static final int         INT              = 3;
+    static final int         INT                     = 3;
     /**
      * The type of CONSTANT_Float constant pool items.
      */
-    static final int         FLOAT            = 4;
+    static final int         FLOAT                   = 4;
     /**
      * The type of CONSTANT_Long constant pool items.
      */
-    static final int         LONG             = 5;
+    static final int         LONG                    = 5;
     /**
      * The type of CONSTANT_Double constant pool items.
      */
-    static final int         DOUBLE           = 6;
+    static final int         DOUBLE                  = 6;
     /**
      * The type of CONSTANT_NameAndType constant pool items.
      */
-    static final int         NAME_TYPE        = 12;
+    static final int         NAME_TYPE               = 12;
     /**
      * The type of CONSTANT_Utf8 constant pool items.
      */
-    static final int         UTF8             = 1;
+    static final int         UTF8                    = 1;
     /**
      * Normal type Item stored in the ClassWriter {@link ClassWriter#typeTable},
      * instead of the constant pool, in order to avoid clashes with normal
      * constant pool items in the ClassWriter constant pool's hash table.
      */
-    static final int         TYPE_NORMAL      = 13;
+    static final int         TYPE_NORMAL             = 13;
     /**
      * Uninitialized type Item stored in the ClassWriter
      * {@link ClassWriter#typeTable}, instead of the constant pool, in order to
      * avoid clashes with normal constant pool items in the ClassWriter constant
      * pool's hash table.
      */
-    static final int         TYPE_UNINIT      = 14;
+    static final int         TYPE_UNINIT             = 14;
     /**
      * Merged type Item stored in the ClassWriter {@link ClassWriter#typeTable},
      * instead of the constant pool, in order to avoid clashes with normal
      * constant pool items in the ClassWriter constant pool's hash table.
      */
-    static final int         TYPE_MERGED      = 15;
+    static final int         TYPE_MERGED             = 15;
     /**
      * The class reader from which this class writer was constructed, if any.
      */
@@ -489,7 +493,10 @@ public class ClassWriter implements ClassVisitor {
      *        original class and also to copy other fragments of original
      *        bytecode where applicable.
      * @param flags option flags that can be used to modify the default behavior
-     *        of this class. See {@link #COMPUTE_MAXS}, {@link #COMPUTE_FRAMES}.
+     *        of this class. <i>These option flags do not affect methods that
+     *        are copied as is in the new class. This means that the maximum
+     *        stack size nor the stack frames will be computed for these
+     *        methods</i>. See {@link #COMPUTE_MAXS}, {@link #COMPUTE_FRAMES}.
      */
     public ClassWriter(final ClassReader classReader, final int flags) {
         this(flags);
@@ -619,7 +626,7 @@ public class ClassWriter implements ClassVisitor {
             size += 6;
             newUTF8("Deprecated");
         }
-        if ((access & Opcodes.ACC_SYNTHETIC) != 0 && (version & 0xffff) < Opcodes.V1_5) {
+        if ((access & Opcodes.ACC_SYNTHETIC) != 0 && ((version & 0xFFFF) < Opcodes.V1_5 || (access & ACC_SYNTHETIC_ATTRIBUTE) != 0)) {
             ++attributeCount;
             size += 6;
             newUTF8("Synthetic");
@@ -649,7 +656,8 @@ public class ClassWriter implements ClassVisitor {
         ByteVector out = new ByteVector(size);
         out.putInt(0xCAFEBABE).putInt(version);
         out.putShort(index).putByteArray(pool.data, 0, pool.length);
-        out.putShort(access).putShort(name).putShort(superName);
+        int mask = Opcodes.ACC_DEPRECATED | ClassWriter.ACC_SYNTHETIC_ATTRIBUTE | ((access & ClassWriter.ACC_SYNTHETIC_ATTRIBUTE) / (ClassWriter.ACC_SYNTHETIC_ATTRIBUTE / Opcodes.ACC_SYNTHETIC));
+        out.putShort(access & ~mask).putShort(name).putShort(superName);
         out.putShort(interfaceCount);
         for (int i = 0; i < interfaceCount; ++i) {
             out.putShort(interfaces[i]);
@@ -685,7 +693,7 @@ public class ClassWriter implements ClassVisitor {
         if ((access & Opcodes.ACC_DEPRECATED) != 0) {
             out.putShort(newUTF8("Deprecated")).putInt(0);
         }
-        if ((access & Opcodes.ACC_SYNTHETIC) != 0 && (version & 0xffff) < Opcodes.V1_5) {
+        if ((access & Opcodes.ACC_SYNTHETIC) != 0 && ((version & 0xFFFF) < Opcodes.V1_5 || (access & ACC_SYNTHETIC_ATTRIBUTE) != 0)) {
             out.putShort(newUTF8("Synthetic")).putInt(0);
         }
         if (innerClasses != null) {
