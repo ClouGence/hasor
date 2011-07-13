@@ -24,7 +24,6 @@
 		<bc:beanType tName="TemplateBean" class="org.more.hypha.beans.assembler.builder.TemplateBeanBuilder" />
 		<bc:beanType tName="ClassPathBean" class="org.more.hypha.beans.assembler.builder.ClassBeanBuilder" />
 		<bc:beanType tName="RelationBean" class="org.more.hypha.beans.assembler.builder.RelationBeanBuilder" />
-		<bc:beanType tName="ScriptBean" class="org.more.hypha.beans.assembler.builder.ScriptBeanBuilder" />
 		<bc:beanType tName="VariableBean" class="org.more.hypha.beans.assembler.builder.VariableBeanBuilder" />
 	</bc:beanType-config>
 
