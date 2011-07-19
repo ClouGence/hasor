@@ -19,7 +19,7 @@ import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.beans.B_BeanType;
+import org.more.hypha.beans.assembler.B_BeanType;
 import org.more.hypha.context.xml.XmlDefineResource;
 /**
  * 用于解析c:beanType标签

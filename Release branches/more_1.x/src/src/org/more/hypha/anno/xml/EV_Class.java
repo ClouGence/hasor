@@ -22,19 +22,19 @@ import org.more.core.asm.ClassVisitor;
 import org.more.core.asm.FieldVisitor;
 import org.more.core.asm.MethodVisitor;
 import org.more.core.classcode.EngineToos;
-import org.more.hypha.anno.AnnoServices;
+import org.more.hypha.anno.AnnoService;
 /**
  * 该类负责确定类级别中是否有必要惊动解析解析类。
  * @version 2010-10-19
  * @author 赵永春 (zyc@byshell.org)
  */
 public class EV_Class extends ClassAdapter implements EV_Mark {
-    private String             className = null;
-    private AnnoServices plugin    = null;
-    private boolean            mark      = false;                  //标记TagListener类是否忽略解析这个类。
-    private ArrayList<String>  markList  = new ArrayList<String>();
+    private String            className = null;
+    private AnnoService      plugin    = null;
+    private boolean           mark      = false;                  //标记TagListener类是否忽略解析这个类。
+    private ArrayList<String> markList  = new ArrayList<String>();
     /**创建{@link EV_Class}对象。*/
-    public EV_Class(AnnoServices plugin, ClassVisitor cv) {
+    public EV_Class(AnnoService plugin, ClassVisitor cv) {
         super(cv);
         this.plugin = plugin;
     }

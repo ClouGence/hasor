@@ -15,14 +15,14 @@
  */
 package org.more.hypha.commons;
 import java.util.Map;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 import org.more.hypha.ELContext;
 import org.more.hypha.ELException;
 import org.more.hypha.ELObject;
 import org.more.hypha.EvalExpression;
 import org.more.hypha.PropertyBinding;
 import org.more.hypha.context.AbstractApplicationContext;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**

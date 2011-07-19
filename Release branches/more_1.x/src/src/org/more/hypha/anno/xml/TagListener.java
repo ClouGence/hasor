@@ -17,17 +17,18 @@ package org.more.hypha.anno.xml;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import org.more.core.error.InitializationException;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
+import org.more.hypha.Event;
 import org.more.hypha.Event.Sequence;
 import org.more.hypha.EventListener;
-import org.more.hypha.anno.AnnoServices;
-import org.more.hypha.anno.assembler.AnnoServices_Impl;
+import org.more.hypha.anno.AnnoService;
+import org.more.hypha.anno.BeginScanEvent;
+import org.more.hypha.anno.EndScanEvent;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.hypha.context.xml.XmlLoadedEvent;
-import org.more.hypha.context.xml.XmlLoadedEvent.Params;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
+import org.more.hypha.context.xml.XmlLoadedEvent.XmlLoadedEvent_Params;
 import org.more.util.ClassPathUtil;
 import org.more.util.ClassPathUtil.ScanItem;
 import org.more.util.ScanEvent;
@@ -39,36 +40,37 @@ import org.more.util.ScanEvent;
 public class TagListener implements EventListener<XmlLoadedEvent> {
     private static ILog log         = LogFactory.getLog(TagListener.class);
     private String      packageText = null;
-    /**创建{@link TagListener}对象。*/
-    public TagListener(String packageText) {
+    private AnnoService annoService = null;
+    /**创建{@link TagListener}对象。 */
+    public TagListener(String packageText, AnnoService annoService) {
         if (packageText == null || packageText.equals(""))
             this.packageText = "*";
         else
             this.packageText = packageText;
+        this.annoService = annoService;
     };
-    /**处理注解解析。*/
-    public void onEvent(final XmlLoadedEvent event, final Sequence sequence) {
+    /**处理注解解析。 */
+    public void onEvent(final XmlLoadedEvent event, final Sequence sequence) throws Throwable {
         log.info("start ANNO at package '{%0}'", this.packageText);
         StringBuffer buffer = new StringBuffer(this.packageText.replace(".", "/"));
         if (buffer.charAt(0) != '/')
             buffer.insert(0, '/');
-        try {
-            Params params = event.toParams(sequence);
-            final XmlDefineResource config = params.xmlDefineResource;
-            final AnnoServices engine = (AnnoServices) config.getFlash().getAttribute(AnnoServices_Impl.ServiceName);
-            //
-            ClassPathUtil.scan(buffer.toString(), new ScanItem() {
-                public boolean goFind(ScanEvent event, boolean isInJar, File context) throws FileNotFoundException, IOException, ClassNotFoundException {
-                    //1.排除一切非Class数据
-                    if (event.getName().endsWith(".class") == false)
-                        return false;
-                    //2.通知引擎扫描这个类，确定是否有必要解析。引擎会使用ASM进行扫描增加速度。
-                    engine.parserClass(event.getStream());
+        XmlLoadedEvent_Params params = event.toParams(sequence);
+        final XmlDefineResource config = params.xmlDefineResource;
+        final AnnoService engine = this.annoService;
+        //
+        String scanPackage = buffer.toString();
+        config.getEventManager().doEvent(Event.getEvent(BeginScanEvent.class), config, scanPackage, this.annoService);
+        ClassPathUtil.scan(scanPackage, new ScanItem() {
+            public boolean goFind(ScanEvent event, boolean isInJar, File context) throws FileNotFoundException, IOException, ClassNotFoundException {
+                //1.排除一切非Class数据
+                if (event.getName().endsWith(".class") == false)
                     return false;
-                }
-            });
-        } catch (Throwable e) {
-            throw new InitializationException(e.getMessage(), e);
-        }
+                //2.通知引擎扫描这个类，确定是否有必要解析。引擎会使用ASM进行扫描增加速度。
+                engine.parserClass(event.getStream());
+                return false;
+            }
+        });
+        config.getEventManager().doEvent(Event.getEvent(EndScanEvent.class), config, scanPackage, this.annoService);
     }
 };

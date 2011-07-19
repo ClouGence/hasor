@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package org.more.hypha.context.array;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.DefineResource;
 import org.more.hypha.Event;
 import org.more.hypha.context.xml.XmlDefineResource;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
 /**
  * 开始初始化过程事件，该事件是{@link DefineResource}。收到一个新{@link AbstractBeanDefine}定义添加时引发。
  * @version 2010-10-10
@@ -27,14 +27,14 @@ import org.more.log.LogFactory;
  */
 public class AddDefineEvent extends Event {
     private static ILog log = LogFactory.getLog(AddDefineEvent.class);
-    public class Params extends Event.Params {
+    public class AddDefineEvent_Params extends Event.Params {
         public DefineResource     defineResource = null;
         public AbstractBeanDefine define         = null;
     };
-    public Params toParams(Sequence eventSequence) {
+    public AddDefineEvent_Params toParams(Sequence eventSequence) {
         Object[] params = eventSequence.getParams();
         log.debug("Sequence to Params ,params = {%0}", params);
-        Params p = new Params();
+        AddDefineEvent_Params p = new AddDefineEvent_Params();
         p.defineResource = (XmlDefineResource) params[0];
         p.define = (AbstractBeanDefine) params[1];
         return p;

@@ -16,8 +16,9 @@
 package org.more.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
+import java.util.ArrayList;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 /**
  * 
  * @version : 2011-6-3
@@ -25,6 +26,38 @@ import org.more.log.LogFactory;
  */
 public abstract class BeanUtil {
     private static final ILog log = LogFactory.getLog(BeanUtil.class);
+    /**获取定义的，和父类可以访问的所有字段。*/
+    public static Field[] getFields(Class<?> type) {
+        if (type == null) {
+            log.error("getFields an error , type is null, please check it.");
+            return null;
+        }
+        ArrayList<Field> fList = new ArrayList<Field>();
+        for (Field field : type.getDeclaredFields())
+            fList.add(field);
+        for (Field field : type.getFields())
+            if (fList.contains(field) == false)
+                fList.add(field);
+        Field[] fs = new Field[fList.size()];
+        fList.toArray(fs);
+        return fs;
+    }
+    /**获取定义的，和父类可以访问的所有方法。*/
+    public static Method[] getMethods(Class<?> type) {
+        if (type == null) {
+            log.error("getMethods an error , type is null, please check it.");
+            return null;
+        }
+        ArrayList<Method> mList = new ArrayList<Method>();
+        for (Method method : type.getDeclaredMethods())
+            mList.add(method);
+        for (Method method : type.getMethods())
+            if (mList.contains(method) == false)
+                mList.add(method);
+        Method[] ms = new Method[mList.size()];
+        mList.toArray(ms);
+        return ms;
+    }
     /**查找某个名称的共有字段，该方法必须有一个参数。*/
     public static Field findField(String fieldName, Class<?> type) {
         if (fieldName == null || type == null) {

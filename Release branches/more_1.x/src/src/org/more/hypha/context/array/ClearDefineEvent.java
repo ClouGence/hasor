@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package org.more.hypha.context.array;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 import org.more.hypha.DefineResource;
 import org.more.hypha.Event;
 import org.more.hypha.context.xml.XmlDefineResource;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
 /**
  * 当清空Bean定义时候引发该事件。
  * @version 2010-10-11
@@ -26,13 +26,13 @@ import org.more.log.LogFactory;
  */
 public class ClearDefineEvent extends Event {
     private static ILog log = LogFactory.getLog(ClearDefineEvent.class);
-    public class Params extends Event.Params {
+    public class ClearDefineEvent_Params extends Event.Params {
         public DefineResource defineResource = null;
     };
-    public Params toParams(Sequence eventSequence) {
+    public ClearDefineEvent_Params toParams(Sequence eventSequence) {
         Object[] params = eventSequence.getParams();
         log.debug("Sequence to Params ,params = {%0}", params);
-        Params p = new Params();
+        ClearDefineEvent_Params p = new ClearDefineEvent_Params();
         p.defineResource = (XmlDefineResource) params[0];
         return p;
     }

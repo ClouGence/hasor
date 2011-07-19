@@ -23,9 +23,10 @@ import java.util.ArrayList;
 import org.more.core.classcode.EngineToos;
 import org.more.core.error.LostException;
 import org.more.core.error.TypeException;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractMethodDefine;
 import org.more.hypha.DefineResource;
-import org.more.hypha.anno.AnnoServices;
 import org.more.hypha.anno.KeepWatchParser;
 import org.more.hypha.anno.define.Bean;
 import org.more.hypha.anno.define.MetaData;
@@ -43,18 +44,17 @@ import org.more.hypha.beans.define.PropertyDefine;
 import org.more.hypha.beans.define.PropertyType;
 import org.more.hypha.beans.define.Simple_ValueMetaData;
 import org.more.hypha.context.xml.XmlDefineResource;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
 import org.more.util.StringConvertUtil;
 import org.more.util.attribute.IAttribute;
 /**
- * 该类用于解析Bean的注解使其成为ClassBeanDefine定义对象。
+ * 该类用于解析Bean的注解使其成为ClassBeanDefine定义对象，取消该类不会影响到anno的服务提供。只不过会导致无法解析bean的注解声明。
  * @version 2010-10-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Watch_Bean implements KeepWatchParser {
+class Watch_Bean implements KeepWatchParser {
     private static ILog log = LogFactory.getLog(Watch_Bean.class);
-    public void process(Class<?> beanType, XmlDefineResource resource, AnnoServices plugin) {
+    public void process(Object target, Annotation annoData, XmlDefineResource resource) {
+        Class<?> beanType = (Class<?>) target;
         Bean bean = beanType.getAnnotation(Bean.class);
         ClassPathBeanDefine define = new ClassPathBeanDefine();
         //-----------------------------------------------------------------------------------------------------类信息

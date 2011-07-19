@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.more.hypha.anno.assembler;
+import java.lang.annotation.Annotation;
 import org.more.core.error.LostException;
 import org.more.hypha.AbstractBeanDefine;
-import org.more.hypha.anno.AnnoServices;
 import org.more.hypha.anno.KeepWatchParser;
 import org.more.hypha.anno.define.Aop;
 import org.more.hypha.anno.define.AopInformed;
@@ -29,12 +29,13 @@ import org.more.hypha.aop.define.AopPointcutDefine;
 import org.more.hypha.aop.define.PointcutType;
 import org.more.hypha.context.xml.XmlDefineResource;
 /**
- * 该bean用于解析aop的注解配置。
+ * 该bean用于解析aop的注解配置，取消该类不会影响到anno的服务提供。只不过会导致无法解析bean的aop注解声明。
  * @version 2010-10-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Watch_Aop implements KeepWatchParser {
-    public void process(Class<?> beanType, XmlDefineResource resource, AnnoServices plugin) {
+class Watch_Aop implements KeepWatchParser {
+    public void process(Object target, Annotation annoData, XmlDefineResource resource) {
+        Class<?> beanType = (Class<?>) target;
         Bean bean = beanType.getAnnotation(Bean.class);
         if (bean == null)
             return;

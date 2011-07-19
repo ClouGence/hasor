@@ -15,7 +15,6 @@
  */
 package org.more.hypha;
 import java.util.Collection;
-import org.more.hypha.beans.define.AbstractBaseBeanDefine;
 import org.more.util.attribute.IAttribute;
 /**
  * 该接口用于定义一个bean，无论是什么类型的Bean都需要实现该接口。
@@ -54,7 +53,7 @@ public interface AbstractBeanDefine extends IAttribute {
     /**获取销毁方法名。*/
     public String getDestroyMethod();
     /**获取bean使用的模板。*/
-    public AbstractBaseBeanDefine getUseTemplate();
+    public AbstractBeanDefine getUseTemplate();
     /**
      * 该属性定义了当创建这个bean时候需要的启动参数。
      * 启动参数通常是指构造方法参数，对于工厂形式创建启动参数代表了工厂方法的参数列表。

@@ -21,7 +21,6 @@ import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.context.xml.XmlDefineResource;
-import org.more.hypha.el.B_EL;
 /**
  * 用于解析el:add标签
  * @version 2011-6-23

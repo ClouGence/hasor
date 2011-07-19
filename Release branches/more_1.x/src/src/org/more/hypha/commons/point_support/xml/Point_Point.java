@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 package org.more.hypha.commons.point_support.xml;
-import java.util.ArrayList;
 import java.util.List;
 import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.commons.point_support.B_Point;
 import org.more.hypha.context.xml.XmlDefineResource;
 /**
  * 用于解析p:point标签
@@ -28,20 +26,16 @@ import org.more.hypha.context.xml.XmlDefineResource;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Point_Point extends Point_NS implements XmlElementHook {
-    public Point_Point(XmlDefineResource configuration) {
+    private List<B_Point> bList = null;
+    public Point_Point(XmlDefineResource configuration, List<B_Point> bList) {
         super(configuration);
+        this.bList = bList;
     }
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
-        XmlDefineResource resource = this.getDefineResource();
-        List<B_Point> elList = (List<B_Point>) resource.getFlash().getAttribute(PointConfigList);
-        if (elList == null) {
-            elList = new ArrayList<B_Point>();
-            resource.getFlash().setAttribute(PointConfigList, elList);
-        }
         B_Point el = new B_Point();
         el.setName(event.getAttributeValue("name"));
         el.setClassName(event.getAttributeValue("class"));
-        elList.add(el);
+        this.bList.add(el);
     }
     public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
 }

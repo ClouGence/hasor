@@ -1,7 +1,7 @@
 <class-diagram version="0.9.86" icons="true" always-add-relationships="true" generalizations="true" realizations="true" 
   associations="true" dependencies="true" nesting-relationships="true">  
-  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.anno.assembler.AnnoServices_Impl" project="More" 
-    file="/More/src/org/more/hypha/anno/assembler/AnnoServices_Impl.java" binary="false">    
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.anno.assembler.AnnoService_Impl" project="More" 
+    file="/More/src/org/more/hypha/anno/assembler/AnnoService_Impl.java" binary="false">    
     <position x="289" y="187" width="-1" height="-1"/>    
     <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
       <attributes public="false" package="false" protected="false" private="false"/>      
@@ -16,8 +16,8 @@
       <operations public="false" package="false" protected="false" private="false"/>    
     </display>  
   </interface>  
-  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.anno.AnnoServices" project="More" 
-    file="/More/src/org/more/hypha/anno/AnnoServices.java" binary="false">    
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.anno.AnnoService" project="More" 
+    file="/More/src/org/more/hypha/anno/AnnoService.java" binary="false">    
     <position x="290" y="113" width="-1" height="-1"/>    
     <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
       <attributes public="false" package="false" protected="false" private="false"/>      
@@ -32,7 +32,7 @@
       <operations public="false" package="false" protected="false" private="false"/>    
     </display>  
   </class>  
-  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.anno.assembler.Watch_Bean" project="More" 
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.assembler.Watch_Bean" project="More" 
     file="/More/src/org/more/hypha/anno/assembler/Watch_Bean.java" binary="false">    
     <position x="514" y="205" width="-1" height="-1"/>    
     <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
@@ -97,66 +97,26 @@
     </display>  
   </interface>  
   <dependency>    
-    <source project="More" name="org.more.hypha.anno.xml.EV_Method" 
-      file="/More/src/org/more/hypha/anno/xml/EV_Method.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.anno.xml.EV_Anno" file="/More/src/org/more/hypha/anno/xml/EV_Anno.java" 
-      binary="false"/>  
-  </dependency>  
-  <association>    
-    <source project="More" name="org.more.hypha.anno.xml.EV_Field" 
-      file="/More/src/org/more/hypha/anno/xml/EV_Field.java" binary="false" navigable="false">      
-      <attribute name="mark"/>      
-      <multiplicity minimum="0" maximum="1"/>    
-    </source>    
-    <target project="More" name="org.more.hypha.anno.xml.EV_Mark" file="/More/src/org/more/hypha/anno/xml/EV_Mark.java" 
-      binary="false" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <dependency>    
-    <source project="More" name="org.more.hypha.anno.assembler.AnnoServices_Impl" 
-      file="/More/src/org/more/hypha/anno/assembler/AnnoServices_Impl.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.anno.KeepWatchParser" 
-      file="/More/src/org/more/hypha/anno/KeepWatchParser.java" binary="false"/>  
-  </dependency>  
-  <association>    
-    <source project="More" name="org.more.hypha.anno.xml.EV_Anno" file="/More/src/org/more/hypha/anno/xml/EV_Anno.java" 
-      binary="false" navigable="false">      
-      <attribute name="mark"/>      
-      <multiplicity minimum="0" maximum="1"/>    
-    </source>    
-    <target project="More" name="org.more.hypha.anno.xml.EV_Mark" file="/More/src/org/more/hypha/anno/xml/EV_Mark.java" 
-      binary="false" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <dependency>    
     <source project="More" name="org.more.hypha.anno.xml.TagAnno_Anno" 
       file="/More/src/org/more/hypha/anno/xml/TagAnno_Anno.java" binary="false"/>    
     <target project="More" name="org.more.hypha.anno.xml.TagListener" 
       file="/More/src/org/more/hypha/anno/xml/TagListener.java" binary="false"/>  
   </dependency>  
-  <dependency>    
-    <source project="More" name="org.more.hypha.anno.assembler.AnnoServices_Impl" 
-      file="/More/src/org/more/hypha/anno/assembler/AnnoServices_Impl.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.anno.xml.EV_Class" 
-      file="/More/src/org/more/hypha/anno/xml/EV_Class.java" binary="false"/>  
-  </dependency>  
   <realization>    
-    <bendpoint x="518" y="276"/>    
-    <bendpoint x="518" y="484"/>    
-    <source project="More" name="org.more.hypha.anno.xml.EV_Class" 
-      file="/More/src/org/more/hypha/anno/xml/EV_Class.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.anno.xml.EV_Mark" file="/More/src/org/more/hypha/anno/xml/EV_Mark.java" 
-      binary="false"/>  
+    <source project="More" name="org.more.hypha.anno.assembler.Watch_Aop" 
+      file="/More/src/org/more/hypha/anno/assembler/Watch_Aop.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.anno.KeepWatchParser" 
+      file="/More/src/org/more/hypha/anno/KeepWatchParser.java" binary="false"/>  
   </realization>  
   <realization>    
-    <source project="More" name="org.more.hypha.anno.assembler.Watch_Bean" 
+    <source project="More" name="org.more.hypha.beans.assembler.Watch_Bean" 
       file="/More/src/org/more/hypha/anno/assembler/Watch_Bean.java" binary="false"/>    
     <target project="More" name="org.more.hypha.anno.KeepWatchParser" 
       file="/More/src/org/more/hypha/anno/KeepWatchParser.java" binary="false"/>  
   </realization>  
   <association>    
-    <source project="More" name="org.more.hypha.anno.xml.EV_Method" 
-      file="/More/src/org/more/hypha/anno/xml/EV_Method.java" binary="false" navigable="false">      
+    <source project="More" name="org.more.hypha.anno.xml.EV_Anno" file="/More/src/org/more/hypha/anno/xml/EV_Anno.java" 
+      binary="false" navigable="false">      
       <attribute name="mark"/>      
       <multiplicity minimum="0" maximum="1"/>    
     </source>    
@@ -171,20 +131,62 @@
       file="/More/src/org/more/hypha/anno/xml/EV_Method.java" binary="false"/>  
   </dependency>  
   <dependency>    
-    <source project="More" name="org.more.hypha.anno.xml.TagListener" 
-      file="/More/src/org/more/hypha/anno/xml/TagListener.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.anno.AnnoServices" 
-      file="/More/src/org/more/hypha/anno/AnnoServices.java" binary="false"/>  
-  </dependency>  
-  <realization>    
-    <source project="More" name="org.more.hypha.anno.assembler.Watch_Aop" 
-      file="/More/src/org/more/hypha/anno/assembler/Watch_Aop.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.anno.KeepWatchParser" 
-      file="/More/src/org/more/hypha/anno/KeepWatchParser.java" binary="false"/>  
-  </realization>  
-  <dependency>    
     <source project="More" name="org.more.hypha.anno.xml.EV_Class" 
       file="/More/src/org/more/hypha/anno/xml/EV_Class.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.anno.xml.EV_Anno" file="/More/src/org/more/hypha/anno/xml/EV_Anno.java" 
+      binary="false"/>  
+  </dependency>  
+  <association>    
+    <source project="More" name="org.more.hypha.anno.xml.EV_Field" 
+      file="/More/src/org/more/hypha/anno/xml/EV_Field.java" binary="false" navigable="false">      
+      <attribute name="mark"/>      
+      <multiplicity minimum="0" maximum="1"/>    
+    </source>    
+    <target project="More" name="org.more.hypha.anno.xml.EV_Mark" file="/More/src/org/more/hypha/anno/xml/EV_Mark.java" 
+      binary="false" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization>    
+    <source project="More" name="org.more.hypha.anno.assembler.AnnoService_Impl" 
+      file="/More/src/org/more/hypha/anno/assembler/AnnoService_Impl.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.anno.AnnoService" file="/More/src/org/more/hypha/anno/AnnoService.java" 
+      binary="false"/>  
+  </realization>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.anno.assembler.AnnoService_Impl" 
+      file="/More/src/org/more/hypha/anno/assembler/AnnoService_Impl.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.anno.KeepWatchParser" 
+      file="/More/src/org/more/hypha/anno/KeepWatchParser.java" binary="false"/>  
+  </dependency>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.anno.AnnoService" file="/More/src/org/more/hypha/anno/AnnoService.java" 
+      binary="false"/>    
+    <target project="More" name="org.more.hypha.anno.KeepWatchParser" 
+      file="/More/src/org/more/hypha/anno/KeepWatchParser.java" binary="false"/>  
+  </dependency>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.anno.xml.EV_Field" 
+      file="/More/src/org/more/hypha/anno/xml/EV_Field.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.anno.xml.EV_Anno" file="/More/src/org/more/hypha/anno/xml/EV_Anno.java" 
+      binary="false"/>  
+  </dependency>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.anno.xml.TagListener" 
+      file="/More/src/org/more/hypha/anno/xml/TagListener.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.anno.AnnoService" file="/More/src/org/more/hypha/anno/AnnoService.java" 
+      binary="false"/>  
+  </dependency>  
+  <realization>    
+    <bendpoint x="518" y="276"/>    
+    <bendpoint x="518" y="484"/>    
+    <source project="More" name="org.more.hypha.anno.xml.EV_Class" 
+      file="/More/src/org/more/hypha/anno/xml/EV_Class.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.anno.xml.EV_Mark" file="/More/src/org/more/hypha/anno/xml/EV_Mark.java" 
+      binary="false"/>  
+  </realization>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.anno.xml.EV_Method" 
+      file="/More/src/org/more/hypha/anno/xml/EV_Method.java" binary="false"/>    
     <target project="More" name="org.more.hypha.anno.xml.EV_Anno" file="/More/src/org/more/hypha/anno/xml/EV_Anno.java" 
       binary="false"/>  
   </dependency>  
@@ -194,24 +196,22 @@
     <target project="More" name="org.more.hypha.anno.xml.EV_Field" 
       file="/More/src/org/more/hypha/anno/xml/EV_Field.java" binary="false"/>  
   </dependency>  
+  <association>    
+    <source project="More" name="org.more.hypha.anno.xml.EV_Method" 
+      file="/More/src/org/more/hypha/anno/xml/EV_Method.java" binary="false" navigable="false">      
+      <attribute name="mark"/>      
+      <multiplicity minimum="0" maximum="1"/>    
+    </source>    
+    <target project="More" name="org.more.hypha.anno.xml.EV_Mark" file="/More/src/org/more/hypha/anno/xml/EV_Mark.java" 
+      binary="false" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
   <dependency>    
-    <source project="More" name="org.more.hypha.anno.xml.EV_Field" 
-      file="/More/src/org/more/hypha/anno/xml/EV_Field.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.anno.xml.EV_Anno" file="/More/src/org/more/hypha/anno/xml/EV_Anno.java" 
-      binary="false"/>  
+    <source project="More" name="org.more.hypha.anno.assembler.AnnoService_Impl" 
+      file="/More/src/org/more/hypha/anno/assembler/AnnoService_Impl.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.anno.xml.EV_Class" 
+      file="/More/src/org/more/hypha/anno/xml/EV_Class.java" binary="false"/>  
   </dependency>  
-  <dependency>    
-    <source project="More" name="org.more.hypha.anno.AnnoServices" 
-      file="/More/src/org/more/hypha/anno/AnnoServices.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.anno.KeepWatchParser" 
-      file="/More/src/org/more/hypha/anno/KeepWatchParser.java" binary="false"/>  
-  </dependency>  
-  <realization>    
-    <source project="More" name="org.more.hypha.anno.assembler.AnnoServices_Impl" 
-      file="/More/src/org/more/hypha/anno/assembler/AnnoServices_Impl.java" binary="false"/>    
-    <target project="More" name="org.more.hypha.anno.AnnoServices" 
-      file="/More/src/org/more/hypha/anno/AnnoServices.java" binary="false"/>  
-  </realization>  
   <classifier-display autosize="true" package="true" initial-value="true" signature="true" visibility="true">    
     <attributes public="false" package="false" protected="false" private="false"/>    
     <operations public="false" package="false" protected="false" private="false"/>  

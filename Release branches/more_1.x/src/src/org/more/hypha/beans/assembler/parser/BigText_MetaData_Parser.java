@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.assembler.parser;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.define.BigText_ValueMetaData;
 import org.more.hypha.commons.logic.ValueMetaDataParser;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
 /**
  * 负责解析大文本类型。
  * @version 2011-2-15

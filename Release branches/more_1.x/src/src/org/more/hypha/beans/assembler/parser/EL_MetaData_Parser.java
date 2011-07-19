@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.assembler.parser;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.EvalExpression;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.define.EL_ValueMetaData;
 import org.more.hypha.commons.logic.ValueMetaDataParser;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
 /**
  * 解析EL表达式。
  * @version 2011-2-15

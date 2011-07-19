@@ -30,14 +30,13 @@ import org.more.core.classcode.RootClassLoader;
 import org.more.core.error.LostException;
 import org.more.core.error.RepeateException;
 import org.more.core.error.SupportException;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.PointCallBack;
 import org.more.hypha.ValueMetaData;
-import org.more.hypha.beans.define.AbstractBaseBeanDefine;
 import org.more.hypha.context.AbstractApplicationContext;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
 /**
 * 该类负责hypha的整个bean创建流程，是一个非常重要的核心类。
 * @version : 2011-5-12
@@ -224,11 +223,11 @@ public class EngineLogic {
         if (this.propxyRootLoader == null)
             this.propxyRootLoader = new RootClassLoader(this.applicationContext.getClassLoader());
         //
-        AbstractBaseBeanDefine attDefine = null;
+        AbstractBeanDefine attDefine = null;
         ProxyFinalizeClassEngine proxyEngine = null;//代理销毁方法生成器。
         //1.确定ProxyFinalizeClassEngine类型对象
-        if (define instanceof AbstractBaseBeanDefine == true)
-            attDefine = (AbstractBaseBeanDefine) define;
+        if (define instanceof AbstractBeanDefine == true)
+            attDefine = (AbstractBeanDefine) define;
         if (attDefine != null) //取得可能缓存的销毁方法生成器。
             proxyEngine = (ProxyFinalizeClassEngine) attDefine.getAttribute("ProxyFinalizeClassEngine");
         if (proxyEngine == null)

@@ -15,8 +15,8 @@
  */
 package org.more.hypha.commons.define;
 import java.util.Map;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**

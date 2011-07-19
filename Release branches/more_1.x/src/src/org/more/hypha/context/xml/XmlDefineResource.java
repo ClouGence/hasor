@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import org.more.core.error.LoadException;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 import org.more.core.xml.XmlParserKit;
 import org.more.core.xml.XmlParserKitManager;
 import org.more.core.xml.stream.XmlReader;
@@ -31,8 +33,6 @@ import org.more.hypha.DefineResource;
 import org.more.hypha.Event;
 import org.more.hypha.context.array.ArrayDefineResource;
 import org.more.hypha.context.xml._NameSpaceConfiguration.RegisterBean;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
 import org.more.util.ClassPathUtil;
 /**
  * 该类是继承自{@link ArrayDefineResource}类，通过该类可以读取存在于配置文件中的类定义信息。

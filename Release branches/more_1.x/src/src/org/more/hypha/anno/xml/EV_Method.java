@@ -19,17 +19,17 @@ import org.more.core.asm.Attribute;
 import org.more.core.asm.MethodAdapter;
 import org.more.core.asm.MethodVisitor;
 import org.more.core.classcode.EngineToos;
-import org.more.hypha.anno.AnnoServices;
+import org.more.hypha.anno.AnnoService;
 /**
  * 该类负责确定方法级别中是否有必要惊动解析解析类。
  * @version 2010-10-19
  * @author 赵永春 (zyc@byshell.org)
  */
 class EV_Method extends MethodAdapter {
-    private AnnoServices plugin = null;
-    private EV_Mark            mark   = null;
+    private AnnoService plugin = null;
+    private EV_Mark      mark   = null;
     //----------
-    public EV_Method(AnnoServices plugin, EV_Mark mark, MethodVisitor mv) {
+    public EV_Method(AnnoService plugin, EV_Mark mark, MethodVisitor mv) {
         super(mv);
         this.plugin = plugin;
         this.mark = mark;
@@ -40,6 +40,13 @@ class EV_Method extends MethodAdapter {
         if (this.plugin.containsKeepWatchParser(annoType) == true)
             this.mark.mark(annoType);
         return new EV_Anno(this.plugin, this.mark, super.visitAnnotation(desc, visible));
+    }
+    public AnnotationVisitor visitParameterAnnotation(int parameter, String desc, boolean visible) {
+        //检查是否存在这个注解的解析器注册
+        String annoType = EngineToos.asmTypeToType(desc).replace("/", ".");
+        if (this.plugin.containsKeepWatchParser(annoType) == true)
+            this.mark.mark(annoType);
+        return new EV_Anno(this.plugin, this.mark, super.visitParameterAnnotation(parameter, desc, visible));
     }
     public void visitAttribute(Attribute attr) {
         super.visitAttribute(attr);

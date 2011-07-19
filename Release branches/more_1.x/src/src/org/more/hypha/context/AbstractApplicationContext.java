@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import org.more.core.error.DefineException;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ELContext;
@@ -32,8 +34,6 @@ import org.more.hypha.Service;
 import org.more.hypha.commons.AbstractELContext;
 import org.more.hypha.commons.AbstractExpandPointManager;
 import org.more.hypha.commons.logic.EngineLogic;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
 import org.more.util.attribute.IAttribute;
 /**
  * 简单的{@link ApplicationContext}接口实现类，该类只是提供了一个平台。
@@ -161,12 +161,15 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         this.servicesMap = new LinkedHashMap<Class<?>, Service>();
         //
         this.getEventManager().doEvent(Event.getEvent(InitEvent.class), this);
+        this.getEventManager().doEvent(Event.getEvent(InitedEvent.class), this);
+        //
+        this.getEventManager().doEvent(Event.getEvent(StartingServicesEvent.class), this);
         for (Class<?> st : this.servicesMap.keySet()) {
             Service s = this.servicesMap.get(st);
             s.start(this, this.getFlash());
             log.info("service inited {%0} OK!", st);
         }
-        this.getEventManager().doEvent(Event.getEvent(InitedEvent.class), this);
+        this.getEventManager().doEvent(Event.getEvent(StartedServicesEvent.class), this);
         log.info("started!");
     };
     /**当JVM回收该对象时自动调用销毁方法。*/
@@ -315,8 +318,8 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         return obj;
     }
     /*------------------------------------------------------------*/
-    public Service getService(Class<?> servicesType) {
-        return this.servicesMap.get(servicesType);
+    public <T extends Service> T getService(Class<T> servicesType) {
+        return (T) this.servicesMap.get(servicesType);
     };
     /**注册服务。*/
     public void regeditService(Class<? extends Service> servicesType, Service service) {
@@ -368,5 +371,5 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     };
     public Map<String, Object> toMap() {
         return this.getAttribute().toMap();
-    };
+    }
 };

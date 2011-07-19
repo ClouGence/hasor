@@ -16,8 +16,8 @@
 package org.more.hypha;
 import java.util.HashMap;
 import org.more.core.error.InitializationException;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 /**
  * 事件是一种通知机制，使用事件不能控制主控流程的执行。不过却可以通过事件得知内部的工作状态。
  * 该接口表示的是一个{@link EventManager}可以被识别处理的事件。

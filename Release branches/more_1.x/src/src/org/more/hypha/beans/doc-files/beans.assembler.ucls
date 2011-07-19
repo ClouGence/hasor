@@ -1,0 +1,357 @@
+<class-diagram version="0.9.86" icons="true" always-add-relationships="true" generalizations="true" realizations="true" 
+  associations="true" dependencies="true" nesting-relationships="true">  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.assembler.B_BeanType" project="More" 
+    file="/More/src/org/more/hypha/beans/assembler/B_BeanType.java" binary="false">    
+    <position x="477" y="214" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.assembler.OnDestroy" project="More" 
+    file="/More/src/org/more/hypha/beans/assembler/OnDestroy.java" binary="false">    
+    <position x="413" y="151" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.assembler.TagRegister_BeansConfig" 
+    project="More" file="/More/src/org/more/hypha/beans/assembler/TagRegister_BeansConfig.java" binary="false">    
+    <position x="496" y="74" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.assembler.OnInit" project="More" 
+    file="/More/src/org/more/hypha/beans/assembler/OnInit.java" binary="false">    
+    <position x="571" y="150" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.assembler.B_MDParser" project="More" 
+    file="/More/src/org/more/hypha/beans/assembler/B_MDParser.java" binary="false">    
+    <position x="664" y="214" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.assembler.OnInited" project="More" 
+    file="/More/src/org/more/hypha/beans/assembler/OnInited.java" binary="false">    
+    <position x="314" y="213" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.commons.logic.ValueMetaDataParser" 
+    project="More" file="/More/src/org/more/hypha/commons/logic/ValueMetaDataParser.java" binary="false">    
+    <position x="572" y="274" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </interface>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.assembler.parser.File_MetaData_Parser" 
+    project="More" file="/More/src/org/more/hypha/beans/assembler/parser/File_MetaData_Parser.java" binary="false">    
+    <position x="144" y="300" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" 
+    name="org.more.hypha.beans.assembler.parser.SetCollection_MetaData_Parser" project="More" 
+    file="/More/src/org/more/hypha/beans/assembler/parser/SetCollection_MetaData_Parser.java" binary="false">    
+    <position x="129" y="358" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.assembler.parser.RelationBean_MetaData_Parser" 
+    project="More" file="/More/src/org/more/hypha/beans/assembler/parser/RelationBean_MetaData_Parser.java" 
+    binary="false">    
+    <position x="362" y="448" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.assembler.parser.Enum_MetaData_Parser" 
+    project="More" file="/More/src/org/more/hypha/beans/assembler/parser/Enum_MetaData_Parser.java" binary="false">    
+    <position x="248" y="502" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.assembler.parser.Date_MetaData_Parser" 
+    project="More" file="/More/src/org/more/hypha/beans/assembler/parser/Date_MetaData_Parser.java" binary="false">    
+    <position x="145" y="449" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" 
+    name="org.more.hypha.beans.assembler.parser.MapCollection_MetaData_Parser" project="More" 
+    file="/More/src/org/more/hypha/beans/assembler/parser/MapCollection_MetaData_Parser.java" binary="false">    
+    <position x="475" y="500" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.assembler.parser.BigText_MetaData_Parser" 
+    project="More" file="/More/src/org/more/hypha/beans/assembler/parser/BigText_MetaData_Parser.java" binary="false">    
+    <position x="573" y="448" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.assembler.parser.URI_MetaData_Parser" 
+    project="More" file="/More/src/org/more/hypha/beans/assembler/parser/URI_MetaData_Parser.java" binary="false">    
+    <position x="680" y="499" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.assembler.parser.EL_MetaData_Parser" 
+    project="More" file="/More/src/org/more/hypha/beans/assembler/parser/EL_MetaData_Parser.java" binary="false">    
+    <position x="779" y="447" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.assembler.parser.SimpleType_MetaData_Parser" 
+    project="More" file="/More/src/org/more/hypha/beans/assembler/parser/SimpleType_MetaData_Parser.java" binary="false">    
+    <position x="881" y="499" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" 
+    name="org.more.hypha.beans.assembler.parser.ArrayCollection_MetaData_Parser" project="More" 
+    file="/More/src/org/more/hypha/beans/assembler/parser/ArrayCollection_MetaData_Parser.java" binary="false">    
+    <position x="1002" y="354" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" 
+    name="org.more.hypha.beans.assembler.parser.ListCollection_MetaData_Parser" project="More" 
+    file="/More/src/org/more/hypha/beans/assembler/parser/ListCollection_MetaData_Parser.java" binary="false">    
+    <position x="994" y="447" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.assembler.builder.VariableBeanBuilder" 
+    project="More" file="/More/src/org/more/hypha/beans/assembler/builder/VariableBeanBuilder.java" binary="false">    
+    <position x="1164" y="274" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.assembler.builder.RelationBeanBuilder" 
+    project="More" file="/More/src/org/more/hypha/beans/assembler/builder/RelationBeanBuilder.java" binary="false">    
+    <position x="865" y="215" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.assembler.builder.ClassBeanBuilder" 
+    project="More" file="/More/src/org/more/hypha/beans/assembler/builder/ClassBeanBuilder.java" binary="false">    
+    <position x="970" y="274" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.beans.assembler.builder.TemplateBeanBuilder" 
+    project="More" file="/More/src/org/more/hypha/beans/assembler/builder/TemplateBeanBuilder.java" binary="false">    
+    <position x="1069" y="216" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="org.more.hypha.commons.logic.AbstractBeanBuilder" project="More" 
+    file="/More/src/org/more/hypha/commons/logic/AbstractBeanBuilder.java" binary="false">    
+    <position x="969" y="151" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <realization>    
+    <bendpoint x="146" y="413"/>    
+    <source project="More" name="org.more.hypha.beans.assembler.parser.Date_MetaData_Parser" 
+      file="/More/src/org/more/hypha/beans/assembler/parser/Date_MetaData_Parser.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.commons.logic.ValueMetaDataParser" 
+      file="/More/src/org/more/hypha/commons/logic/ValueMetaDataParser.java" binary="false"/>  
+  </realization>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.beans.assembler.OnInit" 
+      file="/More/src/org/more/hypha/beans/assembler/OnInit.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.commons.logic.AbstractBeanBuilder" 
+      file="/More/src/org/more/hypha/commons/logic/AbstractBeanBuilder.java" binary="false"/>  
+  </dependency>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.assembler.builder.TemplateBeanBuilder" 
+      file="/More/src/org/more/hypha/beans/assembler/builder/TemplateBeanBuilder.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.commons.logic.AbstractBeanBuilder" 
+      file="/More/src/org/more/hypha/commons/logic/AbstractBeanBuilder.java" binary="false"/>  
+  </generalization>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.beans.assembler.OnInit" 
+      file="/More/src/org/more/hypha/beans/assembler/OnInit.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.assembler.B_BeanType" 
+      file="/More/src/org/more/hypha/beans/assembler/B_BeanType.java" binary="false"/>  
+  </dependency>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.beans.assembler.TagRegister_BeansConfig" 
+      file="/More/src/org/more/hypha/beans/assembler/TagRegister_BeansConfig.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.assembler.OnDestroy" 
+      file="/More/src/org/more/hypha/beans/assembler/OnDestroy.java" binary="false"/>  
+  </dependency>  
+  <realization>    
+    <source project="More" name="org.more.hypha.beans.assembler.parser.RelationBean_MetaData_Parser" 
+      file="/More/src/org/more/hypha/beans/assembler/parser/RelationBean_MetaData_Parser.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.commons.logic.ValueMetaDataParser" 
+      file="/More/src/org/more/hypha/commons/logic/ValueMetaDataParser.java" binary="false"/>  
+  </realization>  
+  <realization>    
+    <source project="More" name="org.more.hypha.beans.assembler.parser.SetCollection_MetaData_Parser" 
+      file="/More/src/org/more/hypha/beans/assembler/parser/SetCollection_MetaData_Parser.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.commons.logic.ValueMetaDataParser" 
+      file="/More/src/org/more/hypha/commons/logic/ValueMetaDataParser.java" binary="false"/>  
+  </realization>  
+  <realization>    
+    <source project="More" name="org.more.hypha.beans.assembler.parser.BigText_MetaData_Parser" 
+      file="/More/src/org/more/hypha/beans/assembler/parser/BigText_MetaData_Parser.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.commons.logic.ValueMetaDataParser" 
+      file="/More/src/org/more/hypha/commons/logic/ValueMetaDataParser.java" binary="false"/>  
+  </realization>  
+  <dependency>    
+    <bendpoint x="315" y="121"/>    
+    <source project="More" name="org.more.hypha.beans.assembler.TagRegister_BeansConfig" 
+      file="/More/src/org/more/hypha/beans/assembler/TagRegister_BeansConfig.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.assembler.OnInited" 
+      file="/More/src/org/more/hypha/beans/assembler/OnInited.java" binary="false"/>  
+  </dependency>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.beans.assembler.OnInit" 
+      file="/More/src/org/more/hypha/beans/assembler/OnInit.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.assembler.B_MDParser" 
+      file="/More/src/org/more/hypha/beans/assembler/B_MDParser.java" binary="false"/>  
+  </dependency>  
+  <realization>    
+    <source project="More" name="org.more.hypha.beans.assembler.parser.EL_MetaData_Parser" 
+      file="/More/src/org/more/hypha/beans/assembler/parser/EL_MetaData_Parser.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.commons.logic.ValueMetaDataParser" 
+      file="/More/src/org/more/hypha/commons/logic/ValueMetaDataParser.java" binary="false"/>  
+  </realization>  
+  <realization>    
+    <source project="More" name="org.more.hypha.beans.assembler.parser.ArrayCollection_MetaData_Parser" 
+      file="/More/src/org/more/hypha/beans/assembler/parser/ArrayCollection_MetaData_Parser.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.commons.logic.ValueMetaDataParser" 
+      file="/More/src/org/more/hypha/commons/logic/ValueMetaDataParser.java" binary="false"/>  
+  </realization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.assembler.builder.RelationBeanBuilder" 
+      file="/More/src/org/more/hypha/beans/assembler/builder/RelationBeanBuilder.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.commons.logic.AbstractBeanBuilder" 
+      file="/More/src/org/more/hypha/commons/logic/AbstractBeanBuilder.java" binary="false"/>  
+  </generalization>  
+  <realization>    
+    <bendpoint x="248" y="414"/>    
+    <source project="More" name="org.more.hypha.beans.assembler.parser.Enum_MetaData_Parser" 
+      file="/More/src/org/more/hypha/beans/assembler/parser/Enum_MetaData_Parser.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.commons.logic.ValueMetaDataParser" 
+      file="/More/src/org/more/hypha/commons/logic/ValueMetaDataParser.java" binary="false"/>  
+  </realization>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.beans.assembler.builder.ClassBeanBuilder" 
+      file="/More/src/org/more/hypha/beans/assembler/builder/ClassBeanBuilder.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.commons.logic.ValueMetaDataParser" 
+      file="/More/src/org/more/hypha/commons/logic/ValueMetaDataParser.java" binary="false"/>  
+  </dependency>  
+  <realization>    
+    <bendpoint x="680" y="408"/>    
+    <source project="More" name="org.more.hypha.beans.assembler.parser.URI_MetaData_Parser" 
+      file="/More/src/org/more/hypha/beans/assembler/parser/URI_MetaData_Parser.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.commons.logic.ValueMetaDataParser" 
+      file="/More/src/org/more/hypha/commons/logic/ValueMetaDataParser.java" binary="false"/>  
+  </realization>  
+  <realization>    
+    <bendpoint x="475" y="409"/>    
+    <source project="More" name="org.more.hypha.beans.assembler.parser.MapCollection_MetaData_Parser" 
+      file="/More/src/org/more/hypha/beans/assembler/parser/MapCollection_MetaData_Parser.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.commons.logic.ValueMetaDataParser" 
+      file="/More/src/org/more/hypha/commons/logic/ValueMetaDataParser.java" binary="false"/>  
+  </realization>  
+  <realization>    
+    <bendpoint x="994" y="409"/>    
+    <source project="More" name="org.more.hypha.beans.assembler.parser.ListCollection_MetaData_Parser" 
+      file="/More/src/org/more/hypha/beans/assembler/parser/ListCollection_MetaData_Parser.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.commons.logic.ValueMetaDataParser" 
+      file="/More/src/org/more/hypha/commons/logic/ValueMetaDataParser.java" binary="false"/>  
+  </realization>  
+  <realization>    
+    <bendpoint x="881" y="410"/>    
+    <source project="More" name="org.more.hypha.beans.assembler.parser.SimpleType_MetaData_Parser" 
+      file="/More/src/org/more/hypha/beans/assembler/parser/SimpleType_MetaData_Parser.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.commons.logic.ValueMetaDataParser" 
+      file="/More/src/org/more/hypha/commons/logic/ValueMetaDataParser.java" binary="false"/>  
+  </realization>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.beans.assembler.TagRegister_BeansConfig" 
+      file="/More/src/org/more/hypha/beans/assembler/TagRegister_BeansConfig.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.beans.assembler.OnInit" 
+      file="/More/src/org/more/hypha/beans/assembler/OnInit.java" binary="false"/>  
+  </dependency>  
+  <realization>    
+    <source project="More" name="org.more.hypha.beans.assembler.parser.File_MetaData_Parser" 
+      file="/More/src/org/more/hypha/beans/assembler/parser/File_MetaData_Parser.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.commons.logic.ValueMetaDataParser" 
+      file="/More/src/org/more/hypha/commons/logic/ValueMetaDataParser.java" binary="false"/>  
+  </realization>  
+  <generalization>    
+    <source project="More" name="org.more.hypha.beans.assembler.builder.ClassBeanBuilder" 
+      file="/More/src/org/more/hypha/beans/assembler/builder/ClassBeanBuilder.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.commons.logic.AbstractBeanBuilder" 
+      file="/More/src/org/more/hypha/commons/logic/AbstractBeanBuilder.java" binary="false"/>  
+  </generalization>  
+  <dependency>    
+    <source project="More" name="org.more.hypha.beans.assembler.OnInit" 
+      file="/More/src/org/more/hypha/beans/assembler/OnInit.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.commons.logic.ValueMetaDataParser" 
+      file="/More/src/org/more/hypha/commons/logic/ValueMetaDataParser.java" binary="false"/>  
+  </dependency>  
+  <generalization>    
+    <bendpoint x="1165" y="185"/>    
+    <source project="More" name="org.more.hypha.beans.assembler.builder.VariableBeanBuilder" 
+      file="/More/src/org/more/hypha/beans/assembler/builder/VariableBeanBuilder.java" binary="false"/>    
+    <target project="More" name="org.more.hypha.commons.logic.AbstractBeanBuilder" 
+      file="/More/src/org/more/hypha/commons/logic/AbstractBeanBuilder.java" binary="false"/>  
+  </generalization>  
+  <classifier-display autosize="true" package="true" initial-value="true" signature="true" visibility="true">    
+    <attributes public="false" package="false" protected="false" private="false"/>    
+    <operations public="false" package="false" protected="false" private="false"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

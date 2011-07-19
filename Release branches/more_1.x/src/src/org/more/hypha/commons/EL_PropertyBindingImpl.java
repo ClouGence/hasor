@@ -15,14 +15,14 @@
  */
 package org.more.hypha.commons;
 import java.util.Map;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 import org.more.core.ognl.Node;
 import org.more.core.ognl.Ognl;
 import org.more.core.ognl.OgnlContext;
 import org.more.core.ognl.OgnlException;
 import org.more.hypha.ELException;
 import org.more.hypha.PropertyBinding;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
 /**
  * 属性绑操作器，通过该类可以对属性进行读写操作。
  * Date : 2011-4-11

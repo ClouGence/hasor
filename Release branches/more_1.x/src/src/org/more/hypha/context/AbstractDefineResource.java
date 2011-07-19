@@ -15,13 +15,13 @@
  */
 package org.more.hypha.context;
 import java.util.Map;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.DefineResource;
 import org.more.hypha.Event;
 import org.more.hypha.EventManager;
 import org.more.hypha.commons.AbstractEventManager;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**

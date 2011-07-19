@@ -22,7 +22,6 @@ import org.more.hypha.context.xml.XmlDefineResource;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public abstract class Point_NS extends Tag_Abstract {
-    public static final String PointConfigList = "org.more.hypha.point.Point_LIST";
     public Point_NS(XmlDefineResource configuration) {
         super(configuration);
     };

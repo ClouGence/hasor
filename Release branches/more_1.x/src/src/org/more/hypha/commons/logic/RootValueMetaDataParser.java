@@ -18,10 +18,10 @@ import java.util.HashMap;
 import java.util.Map;
 import org.more.core.error.RepeateException;
 import org.more.core.error.SupportException;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
 /**
  * 属性元信息解析器的根，{@link ValueMetaDataParser}解析器入口。
  * @version 2011-1-21

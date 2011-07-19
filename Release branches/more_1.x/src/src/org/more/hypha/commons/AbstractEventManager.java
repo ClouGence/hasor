@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 import org.more.hypha.Event;
 import org.more.hypha.Event.Sequence;
 import org.more.hypha.EventException;
@@ -27,8 +29,6 @@ import org.more.hypha.EventExceptionHandler;
 import org.more.hypha.EventListener;
 import org.more.hypha.EventManager;
 import org.more.hypha.context.AbstractDefineResource;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
 /**
 * 该类管理事件分发的基类，该类是{@link EventManager}接口的实现类。
 * @version 2010-10-10

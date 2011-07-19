@@ -18,18 +18,18 @@ import org.more.core.asm.AnnotationVisitor;
 import org.more.core.asm.Attribute;
 import org.more.core.asm.FieldVisitor;
 import org.more.core.classcode.EngineToos;
-import org.more.hypha.anno.AnnoServices;
+import org.more.hypha.anno.AnnoService;
 /**
  * 该类负责确定字段级别中是否有必要惊动解析解析类。
  * @version 2010-10-19
  * @author 赵永春 (zyc@byshell.org)
  */
 class EV_Field implements FieldVisitor {
-    private EV_Mark            mark    = null;
-    private FieldVisitor       visitor = null;
-    private AnnoServices plugin  = null;
+    private EV_Mark      mark    = null;
+    private FieldVisitor visitor = null;
+    private AnnoService plugin  = null;
     //----------
-    public EV_Field(AnnoServices plugin, EV_Mark mark, FieldVisitor visitor) {
+    public EV_Field(AnnoService plugin, EV_Mark mark, FieldVisitor visitor) {
         this.plugin = plugin;
         this.mark = mark;
         this.visitor = visitor;

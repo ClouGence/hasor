@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package org.more.hypha.context;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.Event;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
 /**
  * {@link ApplicationContext}遇到初始化调用而引发事件。
  * @version 2011-2-25
@@ -25,13 +25,13 @@ import org.more.log.LogFactory;
  */
 public class InitEvent extends Event {
     private static ILog log = LogFactory.getLog(InitEvent.class);
-    public class Params extends Event.Params {
+    public class InitEvent_Params extends Event.Params {
         public ApplicationContext applicationContext = null;
     };
-    public Params toParams(Sequence eventSequence) {
+    public InitEvent_Params toParams(Sequence eventSequence) {
         Object[] params = eventSequence.getParams();
         log.debug("Sequence to Params ,params = {%0}", params);
-        Params p = new Params();
+        InitEvent_Params p = new InitEvent_Params();
         p.applicationContext = (ApplicationContext) params[0];
         return p;
     }

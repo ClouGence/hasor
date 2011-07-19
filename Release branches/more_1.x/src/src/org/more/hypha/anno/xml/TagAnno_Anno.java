@@ -19,6 +19,7 @@ import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.Event;
+import org.more.hypha.anno.AnnoService;
 import org.more.hypha.commons.xml.Tag_Abstract;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.hypha.context.xml.XmlLoadedEvent;
@@ -29,15 +30,17 @@ import org.more.util.StringConvertUtil;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class TagAnno_Anno extends Tag_Abstract implements XmlElementHook {
+    private AnnoService annoService = null;
     /**创建{@link TagAnno_Anno}对象*/
-    public TagAnno_Anno(XmlDefineResource configuration) {
+    public TagAnno_Anno(XmlDefineResource configuration, AnnoService annoService) {
         super(configuration);
+        this.annoService = annoService;
     };
     public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
         String packageText = event.getAttributeValue("package");
         String enable = event.getAttributeValue("enable");
         if (StringConvertUtil.parseBoolean(enable, true) == true) {
-            TagListener annoListener = new TagListener(packageText);
+            TagListener annoListener = new TagListener(packageText, this.annoService);
             Event e = Event.getEvent(XmlLoadedEvent.class);
             this.getDefineResource().getEventManager().addEventListener(e, annoListener);
         }

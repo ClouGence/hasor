@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.more.hypha.context.xml;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 import org.more.hypha.Event;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
 /**
  * 重新装载事件，当环境被请求重新装载时会引发该事件。
  * @version 2010-10-10
@@ -24,13 +24,13 @@ import org.more.log.LogFactory;
  */
 public class XmlReloadDefineEvent extends Event {
     private static ILog log = LogFactory.getLog(XmlReloadDefineEvent.class);
-    public class Params extends Event.Params {
+    public class XmlReloadDefineEvent_Params extends Event.Params {
         public XmlDefineResource xmlDefineResource = null;
     };
-    public Params toParams(Sequence eventSequence) {
+    public XmlReloadDefineEvent_Params toParams(Sequence eventSequence) {
         Object[] params = eventSequence.getParams();
         log.debug("Sequence to Params ,params = {%0}", params);
-        Params p = new Params();
+        XmlReloadDefineEvent_Params p = new XmlReloadDefineEvent_Params();
         p.xmlDefineResource = (XmlDefineResource) params[0];
         return p;
     }

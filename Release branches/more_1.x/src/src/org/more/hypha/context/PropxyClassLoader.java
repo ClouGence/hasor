@@ -18,8 +18,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 /**
 * 
 * @version : 2011-5-9

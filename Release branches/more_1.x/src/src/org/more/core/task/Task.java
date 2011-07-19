@@ -16,8 +16,8 @@
 package org.more.core.task;
 import java.io.Serializable;
 import java.util.UUID;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 import org.more.util.attribute.AttBase;
 /**
  * 任务项的基类，任何任务对象都必须继承该接口，在more.task系统中任务拥有独立的唯一标识ID。

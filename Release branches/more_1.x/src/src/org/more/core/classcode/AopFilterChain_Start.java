@@ -34,7 +34,7 @@ public class AopFilterChain_Start {
         this.aopReturningListener = aopReturningListener;
         this.aopThrowingListener = aopThrowingListener;
     }
-    public Object doInvokeFilter(Object target, Method method, Object[] args) {
+    public Object doInvokeFilter(Object target, Method method, Object[] args) throws Throwable {
         try {
             //1.下一环节检测，除非发生内部错误否则不会出现环节丢失。
             if (this.nextFilterChain == null)

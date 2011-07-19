@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package org.more.hypha.aop.assembler;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.PointChain;
 import org.more.hypha.aop.AopService;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.commons.logic.CreateBeanPoint;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
 /**
  * 
  * @version : 2011-6-28

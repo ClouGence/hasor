@@ -117,5 +117,5 @@ public interface ApplicationContext extends IAttribute {
     //    /**作用域管理器。*/
     //    public ScopeContext getScopeContext();
     /**获取某个类型的服务扩展。*/
-    public Object getService(Class<?> servicesType);
+    public <T extends Service> T getService(Class<T> servicesType);
 };

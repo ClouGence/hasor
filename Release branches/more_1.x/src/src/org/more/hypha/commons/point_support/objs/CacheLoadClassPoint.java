@@ -15,12 +15,12 @@
  */
 package org.more.hypha.commons.point_support.objs;
 import java.util.HashMap;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.PointChain;
 import org.more.hypha.commons.logic.LoadClassPoint;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
 /**
  * 该扩展点的作用是缓存已经装载的类型
  * @version : 2011-6-28

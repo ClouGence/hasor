@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.more.hypha.context.xml;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 import org.more.hypha.Event;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
 /**
  * 装载动作执行完毕。
  * @version 2010-10-10
@@ -24,13 +24,13 @@ import org.more.log.LogFactory;
  */
 public class XmlLoadedEvent extends Event {
     private static ILog log = LogFactory.getLog(XmlLoadedEvent.class);
-    public class Params extends Event.Params {
+    public class XmlLoadedEvent_Params extends Event.Params {
         public XmlDefineResource xmlDefineResource = null;
     };
-    public Params toParams(Sequence eventSequence) {
+    public XmlLoadedEvent_Params toParams(Sequence eventSequence) {
         Object[] params = eventSequence.getParams();
         log.debug("Sequence to Params ,params = {%0}", params);
-        Params p = new Params();
+        XmlLoadedEvent_Params p = new XmlLoadedEvent_Params();
         p.xmlDefineResource = (XmlDefineResource) params[0];
         return p;
     }

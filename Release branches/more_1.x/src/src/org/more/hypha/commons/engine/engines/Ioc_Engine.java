@@ -15,13 +15,13 @@
  */
 package org.more.hypha.commons.engine.engines;
 import java.util.Collection;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.BeanPropertyDefine;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.commons.logic.IocEngine;
 import org.more.hypha.commons.logic.ValueMetaDataParser;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
 import org.more.util.BeanUtil;
 /**
  * 使用传统方式进行ioc。

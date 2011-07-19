@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 package org.more.hypha.anno;
-import org.more.hypha.DefineResource;
+import java.lang.annotation.Annotation;
 import org.more.hypha.context.xml.XmlDefineResource;
 /**
- * 注解注册解析器。该接口的功能是负责接收并处理由{@link AnnoServices}接口注册的注解监视。
- * 可以将这个监视器注册到{@link AnnoServices}插件中。
+ * 注解注册解析器。该接口的功能是负责接收并处理由{@link AnnoService}接口注册的注解监视。
+ * 可以将这个监视器注册到{@link AnnoService}插件中。
  * @version 2010-10-26
  * @author 赵永春 (zyc@byshell.org) 
  */
 public interface KeepWatchParser {
     /**
      * 处理注解监视器。
-     * @param beanType 被监视到的Bean。
-     * @param resource {@link DefineResource}对象。
-     * @param plugin {@link AnnoServices}对象。
+     * @param target
+     * @param annoData
+     * @param resource
      */
-    public void process(Class<?> beanType, XmlDefineResource resource, AnnoServices plugin);
+    public void process(Object target, Annotation annoData, XmlDefineResource resource);
 };

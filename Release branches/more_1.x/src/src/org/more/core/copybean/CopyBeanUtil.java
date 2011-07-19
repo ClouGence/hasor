@@ -27,8 +27,8 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.more.core.io.AutoCloseInputStream;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 /**
  * Bean拷贝工具类，这个工具是实现了可以将Bean属性拷贝到其他bean中或者拷贝到map中。
  * 开发者可以通过扩展BeanType类以接受更多的bean类型。系统中已经支持了

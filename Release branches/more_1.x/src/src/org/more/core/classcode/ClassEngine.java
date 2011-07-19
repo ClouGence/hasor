@@ -85,15 +85,15 @@ public class ClassEngine {
     public ClassEngine(boolean debug) throws ClassNotFoundException {
         this();
         this.debug = debug;
-    }
+    };
     /** 创建一个ClassEngine类型对象，默认生成的类是Object的子类， */
     public ClassEngine() throws ClassNotFoundException {
         this(ClassLoader.getSystemClassLoader().loadClass(DefaultSuperClass));
-    }
+    };
     /** 创建一个ClassEngine类型对象，可以通过参数指定新类的名称。 */
     public ClassEngine(String className) throws ClassNotFoundException {
         this(className, ClassLoader.getSystemClassLoader().loadClass(DefaultSuperClass), ClassLoader.getSystemClassLoader());
-    }
+    };
     /**
      * 创建一个ClassEngine类型对象，该构造参数指定了新类类名、新类的基类以类装载器。<br/>
      * 类装载的设定会遵循如下规则，如果parentLoader参数为空则会使用当前线程的类装载器作为引擎类装载器的父类装载器。
@@ -104,11 +104,11 @@ public class ClassEngine {
      */
     public ClassEngine(String className, String superClass, ClassLoader parentLoader) throws ClassNotFoundException {
         this(className, parentLoader.loadClass(superClass), parentLoader);
-    }
+    };
     /** 创建一个ClassEngine类型对象，参数指定的是新类的父类类型。*/
     public ClassEngine(Class<?> superClass) {
         this(null, superClass, Thread.currentThread().getContextClassLoader());
-    }
+    };
     /**
      * 创建一个ClassEngine类型对象，该构造参数指定了新类类名、新类的基类以类装载器。<br/>
      * 类装载的设定会遵循如下规则，如果parentLoader参数为空则会使用当前线程的类装载器作为引擎类装载器的父类装载器。
@@ -136,107 +136,107 @@ public class ClassEngine {
             this.rootClassLoader = (RootClassLoader) parentLoader;
         else
             this.rootClassLoader = new RootClassLoader(parentLoader);
-    }
+    };
     //======================================================================================Get/Set
     /**获取类名的生成策略。*/
     public ClassNameStrategy getClassNameStrategy() {
         return this.classNameStrategy;
-    }
+    };
     /**设置类名生成策略，如果设置为空则使用默认类名生成策略。*/
     public void setClassNameStrategy(ClassNameStrategy classNameStrategy) {
         if (classNameStrategy == null)
             this.classNameStrategy = DefaultClassNameStrategy;
         else
             this.classNameStrategy = classNameStrategy;
-    }
+    };
     /**获取代理的生成策略。*/
     public DelegateStrategy getDelegateStrategy() {
         return this.delegateStrategy;
-    }
+    };
     /**设置代理生成策略，如果设置为空则使用默认代理生成策略。*/
     public void setDelegateStrategy(DelegateStrategy delegateStrategy) {
         if (delegateStrategy == null)
             this.delegateStrategy = DefaultDelegateStrategy;
         else
             this.delegateStrategy = delegateStrategy;
-    }
+    };
     /**获取Aop生成策略。*/
     public AopStrategy getAopStrategy() {
         return this.aopStrategy;
-    }
+    };
     /**设置aop生成策略，如果设置为空则使用默认aop生成策略。*/
     public void setAopStrategy(AopStrategy aopStrategy) {
         if (aopStrategy == null)
             this.aopStrategy = DefaultAopStrategy;
         else
             this.aopStrategy = aopStrategy;
-    }
+    };
     /**获取属性生成策略。*/
     public PropertyStrategy getPropertyStrategy() {
         return propertyStrategy;
-    }
+    };
     /**设置属性生成策略，如果设置为空则使用默认属性生成策略。*/
     public void setPropertyStrategy(PropertyStrategy propertyStrategy) {
         if (propertyStrategy == null)
             this.propertyStrategy = DefaultPropertyStrategy;
         else
             this.propertyStrategy = propertyStrategy;
-    }
+    };
     /**获取Method生成策略。*/
     public MethodStrategy getMethodStrategy() {
         return methodStrategy;
-    }
+    };
     /**设置Method生成策略，如果设置为空则使用默认Method生成策略。*/
     public void setMethodStrategy(MethodStrategy methodStrategy) {
         if (methodStrategy == null)
             this.methodStrategy = DefaultMethodStrategy;
         else
             this.methodStrategy = methodStrategy;
-    }
+    };
     /**获取新类生成方式，默认的生成方式{@link ClassEngine#DefaultBuilderMode Super}。*/
     public BuilderMode getBuilderMode() {
         return this.builderMode;
-    }
+    };
     /**设置新类生成方式，如果设置为空则使用默认生成方式{@link ClassEngine#DefaultBuilderMode Super}。*/
     public void setBuilderMode(BuilderMode builderMode) {
         if (builderMode == null)
             this.builderMode = DefaultBuilderMode;
         else
             this.builderMode = builderMode;
-    }
+    };
     /** 获取生成的类完整限定名中类名部分。*/
     public String getSimpleName() {
         return EngineToos.splitSimpleName(this.className);
-    }
+    };
     /** 获取生成类的完整类名。*/
     public String getClassName() {
         return this.className;
-    }
+    };
     /**设置新类的类名和其所属包。如果包名为null则引擎会调用名称生成策略返回生成的包名。类名也同理。*/
     public void setClassName(String className) {
         if (className == null || className.equals("") == true)
             this.className = this.classNameStrategy.generateName(this.superClass);
         else
             this.className = className;
-    }
+    };
     /**该方法是调用类名生成策略生成一个包名以及类名，其原理就是通过设置空类名和空包名来实现。可以通过调用setClassName方法传递两个null来完成。*/
     public void generateName() {
         this.setClassName(null);
-    }
+    };
     /** 获取生成类的超类(基类)。*/
     public Class<?> getSuperClass() {
         return this.superClass;
-    }
+    };
     /**设置生成类的基类类型。*/
     public void setSuperClass(Class<?> superClass) {
         if (superClass == null)
             throw new NullPointerException("参数为空。");
         this.superClass = superClass;
-    }
+    };
     /**设置生成类的基类类型，每次改变基类类型都会导致清空附加实现接口列表同时清空生成的字节码数据。*/
     public void setSuperClass(String superClass, ClassLoader parentLoader) throws ClassNotFoundException {
         this.setSuperClass(parentLoader.loadClass(superClass));
-    }
+    };
     /**获取当前引擎正在使用的父类装载器。*/
     public ClassLoader getRootClassLoader() {
         return this.rootClassLoader;
@@ -246,7 +246,7 @@ public class ClassEngine {
         this.rootClassLoader.unRegeditEngine(this);
         this.rootClassLoader = rootClassLoader;
         this.rootClassLoader.regeditEngine(this);
-    }
+    };
     /**
      * 向新类中添加一个委托接口实现，该委托接口中的所有方法均通过委托对象代理处理。如果委托接口中有方法与基类的方法冲突时。
      * 新生成的委托方法则会丢弃委托接口中的方法去保留基类方法。这在java中也是相当于实现，但是更重要的是保护了基类。
@@ -268,7 +268,7 @@ public class ClassEngine {
             this.addDelegateMap = new LinkedHashMap<Class<?>, MethodDelegate>();
         if (this.addDelegateMap.containsKey(appendInterface) == false)
             this.addDelegateMap.put(appendInterface, delegate);
-    }
+    };
     /**添加一个AOP过滤器，该过滤器可以重复添加。*/
     public void addAopFilter(AopInvokeFilter filter) {
         if (filter == null)
@@ -336,7 +336,7 @@ public class ClassEngine {
         for (int i = 0; i < simpleProp.length; i++)
             all[index + i] = simpleProp[i];
         return all;
-    }
+    };
     /**获取所有添加的简单属性名*/
     public String[] getAppendSimplePropertys() {
         if (this.addPropertyMap == null || this.addPropertyMap.size() == 0)
@@ -344,7 +344,7 @@ public class ClassEngine {
         String[] strs = new String[this.addPropertyMap.size()];
         this.addPropertyMap.keySet().toArray(strs);
         return strs;
-    }
+    };
     /**获取所有添加的代理属性名*/
     public String[] getAppendDelegatePropertys() {
         if (this.addPropertyDelMap == null || this.addPropertyDelMap.size() == 0)
@@ -352,25 +352,25 @@ public class ClassEngine {
         String[] strs = new String[this.addPropertyDelMap.size()];
         this.addPropertyDelMap.keySet().toArray(strs);
         return strs;
-    }
+    };
     /**根据要实现的代理接口获取其代理实现对象。*/
     public MethodDelegate getDelegate(Class<?> impl) {
         if (this.addDelegateMap == null)
             return null;
         return this.addDelegateMap.get(impl);
-    }
+    };
     /**根据属性名获取其属性类型。*/
     public Class<?> getSimplePropertyType(String name) {
         if (this.addPropertyMap == null)
             return null;
         return this.addPropertyMap.get(name);
-    }
+    };
     /**根据代理属性名，获取其属性代理类。*/
     public PropertyDelegate<?> getDelegateProperty(String name) {
         if (this.addPropertyDelMap == null)
             return null;
         return this.addPropertyDelMap.get(name);
-    }
+    };
     /** 获取生成的新类所添加的所有委托接口数组。*/
     public Class<?>[] getDelegates() {
         if (this.addDelegateMap == null || this.addDelegateMap.size() == 0)
@@ -378,7 +378,7 @@ public class ClassEngine {
         Class<?>[] cl = new Class<?>[this.addDelegateMap.size()];
         this.addDelegateMap.keySet().toArray(cl);
         return cl;
-    }
+    };
     /**获取其Aop过滤器集合。*/
     public AopInvokeFilter[] getAopFilters() {
         if (this.aopFilters == null || this.aopFilters.size() == 0)
@@ -386,7 +386,7 @@ public class ClassEngine {
         AopInvokeFilter[] aops = new AopInvokeFilter[this.aopFilters.size()];
         this.aopFilters.toArray(aops);
         return aops;
-    }
+    };
     /**获取before切面监听器。*/
     public AopBeforeListener[] getAopBeforeListeners() {
         if (this.aopBeforeListeners == null || this.aopBeforeListeners.size() == 0)
@@ -394,7 +394,7 @@ public class ClassEngine {
         AopBeforeListener[] listeners = new AopBeforeListener[this.aopBeforeListeners.size()];
         this.aopBeforeListeners.toArray(listeners);
         return listeners;
-    }
+    };
     /**获取returning切面监听器。*/
     public AopReturningListener[] getAopReturningListeners() {
         if (this.aopReturningListeners == null || this.aopReturningListeners.size() == 0)
@@ -402,7 +402,7 @@ public class ClassEngine {
         AopReturningListener[] listeners = new AopReturningListener[this.aopReturningListeners.size()];
         this.aopReturningListeners.toArray(listeners);
         return listeners;
-    }
+    };
     /**获取throwing切面监听器。*/
     public AopThrowingListener[] getAopThrowingListeners() {
         if (this.aopThrowingListeners == null || this.aopThrowingListeners.size() == 0)
@@ -410,15 +410,15 @@ public class ClassEngine {
         AopThrowingListener[] listeners = new AopThrowingListener[this.aopThrowingListeners.size()];
         this.aopThrowingListeners.toArray(listeners);
         return listeners;
-    }
+    };
     /**返回一个boolean值，该值表明了引擎是否处在debug模式。如果返回true则表明引擎运行在debug模式。*/
     public boolean isDebug() {
         return debug;
-    }
+    };
     /**设置一个boolean值，该值表明了引擎是否处在debug模式。如果设置true则表明引擎运行在debug模式。*/
     public void setDebug(boolean debug) {
         this.debug = debug;
-    }
+    };
     //=======================================================================================Method
     /**
      * 完全重置，该重置方法将会清除新生成的类同时也会清除添加的委托接口以及新属性。<br/>
@@ -435,6 +435,13 @@ public class ClassEngine {
         this.aopReturningListeners = null; //调用返回，消息监听器
         this.aopThrowingListeners = null; //抛出异常，消息监听器
         this.rootClassLoader.unRegeditEngine(this);//
+    };
+    /**清空所有aop配置。*/
+    public void resetAop() {
+        this.aopFilters = null; //aop拦截器表
+        this.aopBeforeListeners = null; //开始调用，消息监听器
+        this.aopReturningListeners = null; //调用返回，消息监听器
+        this.aopThrowingListeners = null; //抛出异常，消息监听器 
     };
     /**
      * 重置生成状态当再次调用生成时将会启动class构建过程，该方法不会影响到已经注册的aop，新属性等信息。
@@ -490,7 +497,7 @@ public class ClassEngine {
                 throw e;
         }
         return this;
-    }
+    };
     //======================================================================================Builder
     /**子类可以通过重写该方法来返回一个新的ClassBuilder对象，在ClassBuilder对象中开发人员可以使用classcode扩展功能，同时也可以使用asm框架来扩展。*/
     protected ClassBuilder createBuilder(BuilderMode builderMode) {
@@ -501,7 +508,7 @@ public class ClassEngine {
             }
             protected void init(ClassEngine classEngine) {}
         };
-    }
+    };
     //==========================================================================================New
     /**装载并且创建这个新类的一个实例，如果新类是Propxy模式下的，需要指定代理的父类类型。如果是Super则给null即可。*/
     public Object newInstance(Object propxyBean) throws ClassNotFoundException, IOException {
@@ -516,7 +523,7 @@ public class ClassEngine {
             throw new InitializationException("初始化创建新类[" + this.newClass.getName() + "]错误," + e.getMessage());
         }
         return this.configuration.configBean(obj);
-    }
+    };
     /**配置bean，执行aop注入等操作，该参数接收任何ClassEngine创建的对象。*/
     public Object configBean(Object bean) {
         if (bean == null)
@@ -527,7 +534,7 @@ public class ClassEngine {
         RootClassLoader rootLoader = (RootClassLoader) loader;
         ClassEngine engine = rootLoader.getRegeditEngine(bean.getClass().getName());
         return engine.configuration.configBean(bean);
-    }
+    };
     /**判断该bean是否已经经过配置。*/
     public boolean isConfig(Object bean) {
         if (bean == null)
@@ -545,5 +552,5 @@ public class ClassEngine {
         } catch (Exception e) {
             throw new InvokeException("在执行调用期间发生异常。");
         }
-    }
+    };
 }

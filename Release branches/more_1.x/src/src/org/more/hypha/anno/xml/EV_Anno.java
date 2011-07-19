@@ -16,18 +16,18 @@
 package org.more.hypha.anno.xml;
 import org.more.core.asm.AnnotationVisitor;
 import org.more.core.classcode.EngineToos;
-import org.more.hypha.anno.AnnoServices;
+import org.more.hypha.anno.AnnoService;
 /**
  * 该类负责确定注解级别中是否有必要惊动解析解析类。
  * @version 2010-10-19
  * @author 赵永春 (zyc@byshell.org)
  */
 class EV_Anno implements AnnotationVisitor {
-    private AnnoServices plugin  = null;
-    private EV_Mark            mark    = null;
-    private AnnotationVisitor  visitor = null;
+    private AnnoService      plugin  = null;
+    private EV_Mark           mark    = null;
+    private AnnotationVisitor visitor = null;
     //----------
-    public EV_Anno(AnnoServices plugin, EV_Mark mark, AnnotationVisitor visitor) {
+    public EV_Anno(AnnoService plugin, EV_Mark mark, AnnotationVisitor visitor) {
         this.plugin = plugin;
         this.mark = mark;
         this.visitor = visitor;

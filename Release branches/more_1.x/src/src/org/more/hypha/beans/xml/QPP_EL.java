@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.xml;
+import org.more.core.log.ILog;
+import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.define.EL_ValueMetaData;
 import org.more.hypha.beans.define.File_ValueMetaData;
-import org.more.log.ILog;
-import org.more.log.LogFactory;
 import org.more.util.attribute.IAttribute;
 /**
  * EL Ù–‘÷µΩ‚Œˆ∆˜°£
