@@ -24,6 +24,11 @@ import javax.servlet.jsp.PageContext;
 import org.more.submit.ActionStack;
 import org.more.submit.Session;
 import org.more.submit.SubmitContext;
+import org.more.submit.web.scope.CookieScope;
+import org.more.submit.web.scope.HttpSessionScope;
+import org.more.submit.web.scope.JspPageScope;
+import org.more.submit.web.scope.RequestScope;
+import org.more.submit.web.scope.ServletContextScope;
 /**
  * 提供了Web特性的ActionStack对象，该类还提供了五个属性作用域的支持。这五个作用域详见WebScopeEnum接口。
  * @version : 2010-7-27
@@ -38,8 +43,8 @@ public class WebActionStack extends ActionStack implements WebScopeEnum {
     private HttpSession         httpSession      = null;
     private ServletContext      servletContext   = null;
     //==================================================================================Constructor
-    public WebActionStack(String actionName, String actionMethod, ActionStack parent, Session session, SubmitContext context, HttpServletRequest httpRequest, HttpServletResponse httpResponse, PageContext httpPageContext) {
-        super(actionName, actionMethod, parent, session, context);
+    public WebActionStack(String actionName, String actionMethod, ActionStack parent, SubmitContext context, HttpServletRequest httpRequest, HttpServletResponse httpResponse, PageContext httpPageContext) {
+        super(actionName, actionMethod, parent , context);
         this.httpPageContext = httpPageContext;
         this.httpRequest = httpRequest;
         this.httpResponse = httpResponse;

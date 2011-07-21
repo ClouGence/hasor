@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit;
-import org.more.util.attribute.IAttribute;
+package org.more.submit.acs.hypha.xml;
 /**
- * 代表一个action执行时的参数堆栈，每当请求执行Action方法时候submit都会自动创建一个新的堆栈。
- * @version : 2011-7-14
+ * 该类的目的是将一个方法的定位字符串和一个地址进行映射，这样可以通过简单的地址访问复杂的方法路径。
+ * @version : 2011-7-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ActionStack extends IAttribute {
-    /**获取当前堆栈的父堆栈。*/
-    public ActionStack getParent();
-    
-    
-    
-    public Object getParam(String key);
-    public Object getParam(int index);
-    public String getParamString(String key);
-    public String getParamString(int index);
-    
-    public Object returnCall(String script,Object...objects);
-};
+public class B_AnnoActionInfo {
+    /**Action可能存在的包地址。*/
+    public String packageString = null;
+    /**Action的真实地址。*/
+    public String actionPath    = null;
+    /**Action映射出去的地址。*/
+    public String mappingPath   = null;
+}

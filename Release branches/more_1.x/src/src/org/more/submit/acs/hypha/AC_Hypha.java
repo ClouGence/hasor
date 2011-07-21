@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit;
-import org.more.util.attribute.IAttribute;
+package org.more.submit.acs.hypha;
+import org.more.hypha.ApplicationContext;
+import org.more.submit.ActionInvoke;
+import org.more.submit._.AbstractAC;
 /**
- * 代表一个action执行时的参数堆栈，每当请求执行Action方法时候submit都会自动创建一个新的堆栈。
+ * 
  * @version : 2011-7-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ActionStack extends IAttribute {
-    /**获取当前堆栈的父堆栈。*/
-    public ActionStack getParent();
-    
-    
-    
-    public Object getParam(String key);
-    public Object getParam(int index);
-    public String getParamString(String key);
-    public String getParamString(int index);
-    
-    public Object returnCall(String script,Object...objects);
+public class AC_Hypha extends AbstractAC {
+    public ApplicationContext applicationContext = null;
+    public String[] getActionNames() {
+        // TODO Auto-generated method stub
+        return null;
+    };
+    public ActionInvoke getAction(String name, String userInfo) {
+        // TODO Auto-generated method stub
+        return null;
+    };
 };

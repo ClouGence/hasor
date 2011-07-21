@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit;
-import org.more.util.attribute.IAttribute;
+package org.more.submit.acs.hypha.xml;
+import org.more.submit.ActionContext;
 /**
- * 代表一个action执行时的参数堆栈，每当请求执行Action方法时候submit都会自动创建一个新的堆栈。
- * @version : 2011-7-14
+ * 该类是表示一个由xml配置文件配置的{@link ActionContext}。
+ * @version : 2011-7-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ActionStack extends IAttribute {
-    /**获取当前堆栈的父堆栈。*/
-    public ActionStack getParent();
-    
-    
-    
-    public Object getParam(String key);
-    public Object getParam(int index);
-    public String getParamString(String key);
-    public String getParamString(int index);
-    
-    public Object returnCall(String script,Object...objects);
-};
+class B_AC {
+    private String namespace = null;
+    private String refBean   = null;
+    public B_AC(String namespace, String refBean) {
+        this.namespace = namespace;
+        this.refBean = refBean;
+    }
+    public String getNamespace() {
+        return this.namespace;
+    }
+    public String getRefBean() {
+        return this.refBean;
+    }
+}

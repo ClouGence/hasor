@@ -14,107 +14,67 @@
  * limitations under the License.
  */
 package org.more.submit;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import javax.servlet.ServletContext;
-import org.more.submit.ext.filter.FilterDecorator;
-import org.more.submit.web.WebSubmitContext;
-import org.more.submit.web.WebSubmitContextImpl;
+import java.util.List;
+import org.more.submit._.DefaultSubmitService;
 import org.more.util.AttributeConfigBridge;
 import org.more.util.Config;
 import org.more.util.attribute.AttBase;
 /**
- * submit利用build模式创建{@link SubmitContext}该类可以build出WebSubmitContext和SubmitContext两种接口。
- * 设置base属性可以用于修改submit在读取配置文件时的相对目录。
- * @version 2010-9-5
+ * submit利用build模式创建{@link SubmitService}。
+ * @version : 2011-7-15
  * @author 赵永春 (zyc@byshell.org)
  */
 public class SubmitBuild extends AttBase {
     //========================================================================================Field
-    private static final long                                  serialVersionUID    = 2922698361958221493L;
-    private SubmitContext                                      result              = null;                                                    //组合之后生成的SubmitContext对象。
-    private ArrayList<Class<? extends ActionContextDecorator>> actionDecoratorList = new ArrayList<Class<? extends ActionContextDecorator>>();
-    private ArrayList<Class<? extends SubmitContextDecorator>> submitDecoratorList = new ArrayList<Class<? extends SubmitContextDecorator>>();
+    private static final long          serialVersionUID = 2922698361958221493L;
+    private Object                     context          = null;
+    private String                     defaultNS        = null;
+    private List<ActionContextBuilder> config_acb       = new ArrayList<ActionContextBuilder>();
     //==========================================================================================Job
-    public SubmitBuild() {
-        this.actionDecoratorList.add(FilterDecorator.class);
+    public SubmitBuild() {};
+    public SubmitBuild(Object context) {
+        this.context = context;
     };
-    /**将config的参数添加到SubmitBuild的环境中。*/
+    /**将config的参数添加到SubmitBuild的环境中，config参数中如果指定了Context则会的替换构造方法传入的Context.*/
     public void setConfig(Config<?> config) {
         Enumeration<String> e = config.getInitParameterNames();
         while (e.hasMoreElements()) {
             String name = e.nextElement();
             this.setAttribute(name, config.getInitParameter(name));
         }
+        this.context = config.getContext();
+    };
+    public void setContext(Object context) {
+        this.context = context;
     };
     /**调用生成器生成SubmitContext对象，生成的SubmitContext的对象可以需要通过getResult方法获取。*/
-    public SubmitContext build(ActionContextBuild build) throws Throwable {
-        if (this.contains("base") == true)//base是一个目录，more在读取配置文件时会在这个目录下寻找配置文件。
-            build.setBaseDir(new File((String) this.getAttribute("base")));
-        //
-        build.init(new AttributeConfigBridge(this, null));
-        ActionContext actionContext = this.decorator(build.getActionContext());
-        this.result = new SubmitContextImpl(actionContext);
-        this.result.setSessionManager(new SimpleSessionManager());
-        this.result = this.decorator(this.result);
-        return this.result;
-    };
-    /**
-     * 调用生成器生成SubmitContext对象，生成的SubmitContext的对象可以需要通过getResult方法获取。
-     * @param context 生成SubmitContext对象时需要用到的生成器。
-     */
-    public WebSubmitContext buildWeb(ActionContextBuild build, ServletContext context) throws Throwable {
-        File baseDir = null;
-        if (this.contains("base") == false)//base是一个目录，more在读取配置文件时会在这个目录下寻找配置文件。
-            baseDir = new File(context.getRealPath("/WEB-INF/classes"));
+    public SubmitService build() throws Throwable {
+        //1.创建SubmitContext实例。        
+        SubmitService service = null;
+        Object serviceImplType = this.getAttribute(SubmitService.class.getName());
+        if (serviceImplType != null)
+            service = (SubmitService) Thread.currentThread().getContextClassLoader().loadClass(serviceImplType.toString()).newInstance();
         else
-            baseDir = new File((String) this.getAttribute("base"));
-        //
-        build.setBaseDir(baseDir);
-        System.out.println("");
-        System.out.println("buildWeb More WebContext Base=" + baseDir.getAbsolutePath());
-        build.init(new AttributeConfigBridge(this, context));
-        ActionContext actionContext = this.decorator(build.getActionContext());
-        WebSubmitContextImpl webContext = new WebSubmitContextImpl(actionContext, context);
-        Object protocol = this.getAttribute("protocol");// 获得请求协议名
-        if (protocol != null)
-            webContext.setProtocol(protocol.toString());
-        //
-        this.result = webContext;
-        this.result.setSessionManager(new SimpleSessionManager());
-        this.result = this.decorator(this.result);
-        return (WebSubmitContext) this.result;
-    };
-    /**装配ActionContext装饰器。*/
-    private ActionContext decorator(ActionContext ac) throws InstantiationException, IllegalAccessException {
-        ActionContext context = ac;
-        if (actionDecoratorList.isEmpty() == true)
-            return context;
-        for (Class<? extends ActionContextDecorator> decorator : this.actionDecoratorList) {
-            ActionContextDecorator acd = decorator.newInstance();
-            if (acd.initDecorator(context) == true)
-                context = acd;
+            service = new DefaultSubmitService();
+        //2.注册ActionContext
+        Config<?> config = new AttributeConfigBridge(this, this.context);
+        for (ActionContextBuilder builder : this.config_acb) {
+            builder.init(config);
+            service.regeditNameSpace(builder.getPrefix(), builder.builder());
         }
-        return context;
+        //4.设置默认命名空间
+        service.changeDefaultNameSpace(defaultNS);
+        return service;
+    }
+    /**设置默认命名空间*/
+    public void setDefaultNameSpace(String defaultNS) {
+        this.defaultNS = defaultNS;
     };
-    /**装配SubmitContext装饰器。*/
-    private SubmitContext decorator(SubmitContext sc) throws InstantiationException, IllegalAccessException {
-        SubmitContext context = sc;
-        if (submitDecoratorList.isEmpty() == true)
-            return context;
-        for (Class<? extends SubmitContextDecorator> decorator : this.submitDecoratorList) {
-            SubmitContextDecorator acd = decorator.newInstance();
-            if (acd.initDecorator(context) == true)
-                context = acd;
-        }
-        return context;
-    };
-    /**
-     * 获取组合之后生成的SubmitContext对象。
-     * @return 返回组合之后生成的SubmitContext对象。
-     */
-    public SubmitContext getResult() {
-        return this.result;
+    /**添加{@link ActionContextBuilder}*/
+    public void addActionContexBuilder(ActionContextBuilder acb) {
+        if (acb != null)
+            this.config_acb.add(acb);
     };
 };

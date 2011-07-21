@@ -20,6 +20,8 @@ package org.more.submit;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface ActionInvoke {
+    /**获取action地址。*/
+    public String getName();
     /**
      * 调用这个资源并且返回返回值，如果在调用期间发生异常则抛出Throwable异常。
      * @param stack 调用时传递的栈对象。

@@ -13,23 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit;
-import org.more.util.attribute.IAttribute;
+package org.more.submit.acs.hypha;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 代表一个action执行时的参数堆栈，每当请求执行Action方法时候submit都会自动创建一个新的堆栈。
- * @version : 2011-7-14
+ * 标记这个方法为一个action。
+ * @version 2010-1-9
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ActionStack extends IAttribute {
-    /**获取当前堆栈的父堆栈。*/
-    public ActionStack getParent();
-    
-    
-    
-    public Object getParam(String key);
-    public Object getParam(int index);
-    public String getParamString(String key);
-    public String getParamString(int index);
-    
-    public Object returnCall(String script,Object...objects);
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD })
+public @interface Action {
+    /**该属性是用于描述当前action的访问路径是什么，如果为空则是方法的全名限定。*/
+    public String value() default "";
 };
