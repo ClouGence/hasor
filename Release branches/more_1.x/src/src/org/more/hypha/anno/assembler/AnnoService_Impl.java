@@ -91,7 +91,7 @@ public class AnnoService_Impl implements AnnoService {
         EV_Class ev = new EV_Class(this, new ClassWriter(ClassWriter.COMPUTE_MAXS));
         reader.accept(ev, ClassReader.SKIP_DEBUG);
         //3.通知引擎执行解析，这个类中包含具备解析条件的注解。
-        ClassLoader loader = ClassLoader.getSystemClassLoader();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
         if (ev.isMark() == true)
             this.parser_Class(loader.loadClass(ev.getClassName()));
     };

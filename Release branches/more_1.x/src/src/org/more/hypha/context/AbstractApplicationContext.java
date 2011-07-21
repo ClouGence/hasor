@@ -70,15 +70,15 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     };
     /*------------------------------------------------------------*/
     /**获取当前线程的Context对象。*/
-    public ApplicationContext getLocalContext() {
+    public static ApplicationContext getLocalContext() {
         return AbstractApplicationContext.localContext.get();
     };
     /**获取指定ID的context对象。*/
-    public ApplicationContext getContext(String id) {
+    public static ApplicationContext getContext(String id) {
         return AbstractApplicationContext.mapContext.get(id);
     };
     /**获取context对象，名称集合。*/
-    public Set<String> getContextNames() {
+    public static Set<String> getContextNames() {
         return AbstractApplicationContext.mapContext.keySet();
     };
     /*------------------------------------------------------------*/

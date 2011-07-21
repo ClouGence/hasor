@@ -33,7 +33,7 @@ import org.more.core.error.MoreStateException;
 import org.more.core.error.TypeException;
 /**
  * classcode v2.0引擎。新引擎增加了debug模式，在debug模式下{@link ClassEngine#builderClass()}方法在装载生成的新类 时不会抛出。
- * 如果没有指定类装载引擎会使用ClassLoader.getSystemClassLoader()方法返回的类装载器来装载类。
+ * 如果没有指定类装载引擎会使用Thread.currentThread().getContextClassLoader()方法返回的类装载器来装载类。
  * @version 2010-9-5
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -88,11 +88,11 @@ public class ClassEngine {
     };
     /** 创建一个ClassEngine类型对象，默认生成的类是Object的子类， */
     public ClassEngine() throws ClassNotFoundException {
-        this(ClassLoader.getSystemClassLoader().loadClass(DefaultSuperClass));
+        this(Thread.currentThread().getContextClassLoader().loadClass(DefaultSuperClass));
     };
     /** 创建一个ClassEngine类型对象，可以通过参数指定新类的名称。 */
     public ClassEngine(String className) throws ClassNotFoundException {
-        this(className, ClassLoader.getSystemClassLoader().loadClass(DefaultSuperClass), ClassLoader.getSystemClassLoader());
+        this(className, Thread.currentThread().getContextClassLoader().loadClass(DefaultSuperClass), Thread.currentThread().getContextClassLoader());
     };
     /**
      * 创建一个ClassEngine类型对象，该构造参数指定了新类类名、新类的基类以类装载器。<br/>

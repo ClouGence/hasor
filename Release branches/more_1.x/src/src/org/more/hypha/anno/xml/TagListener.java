@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.more.hypha.anno.xml;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.more.core.log.ILog;
@@ -29,8 +28,8 @@ import org.more.hypha.anno.EndScanEvent;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.hypha.context.xml.XmlLoadedEvent;
 import org.more.hypha.context.xml.XmlLoadedEvent.XmlLoadedEvent_Params;
-import org.more.util.ClassPathUtil;
-import org.more.util.ClassPathUtil.ScanItem;
+import org.more.util.ResourcesUtil;
+import org.more.util.ResourcesUtil.ScanItem;
 import org.more.util.ScanEvent;
 /** 
  * 创建{@link TagListener}对象，该对象的目的是为了驱动类扫描程序扫描class，并且解析生成{@link AbstractBeanDefine}对象。
@@ -53,16 +52,18 @@ public class TagListener implements EventListener<XmlLoadedEvent> {
     public void onEvent(final XmlLoadedEvent event, final Sequence sequence) throws Throwable {
         log.info("start ANNO at package '{%0}'", this.packageText);
         StringBuffer buffer = new StringBuffer(this.packageText.replace(".", "/"));
-        if (buffer.charAt(0) != '/')
-            buffer.insert(0, '/');
+        //        if (buffer.charAt(0) != '/')
+        //            buffer.insert(0, "/");//.deleteCharAt(0);
+        if (buffer.charAt(0) == '/')
+            buffer.deleteCharAt(0);
         XmlLoadedEvent_Params params = event.toParams(sequence);
         final XmlDefineResource config = params.xmlDefineResource;
         final AnnoService engine = this.annoService;
         //
         String scanPackage = buffer.toString();
         config.getEventManager().doEvent(Event.getEvent(BeginScanEvent.class), config, scanPackage, this.annoService);
-        ClassPathUtil.scan(scanPackage, new ScanItem() {
-            public boolean goFind(ScanEvent event, boolean isInJar, File context) throws FileNotFoundException, IOException, ClassNotFoundException {
+        ResourcesUtil.scan(scanPackage, new ScanItem() {
+            public boolean goFind(ScanEvent event, boolean isInJar) throws FileNotFoundException, IOException, ClassNotFoundException {
                 //1.排除一切非Class数据
                 if (event.getName().endsWith(".class") == false)
                     return false;

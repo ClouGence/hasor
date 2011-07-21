@@ -15,6 +15,9 @@
  */
 package org.more.hypha.beans.assembler.parser;
 import java.io.File;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.util.List;
 import org.more.core.log.ILog;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
@@ -33,6 +36,15 @@ public class File_MetaData_Parser implements ValueMetaDataParser<File_ValueMetaD
     public File parser(Object targetObject, File_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
         String matchString = data.getFileObject();
         log.debug("parser File match string = {%0}.", matchString);
-        return ResourcesUtil.getResourceFile(matchString);
+        List<URL> urls = ResourcesUtil.getResource(matchString);
+        if (urls != null)
+            if (urls.size() != 0) {
+                URL url = urls.get(0);
+                if (url.getProtocol().equals("file") == true) {
+                    String filePath = URLDecoder.decode(url.getFile(), "utf-8");
+                    return new File(filePath);
+                }
+            }
+        return null;
     }
 };

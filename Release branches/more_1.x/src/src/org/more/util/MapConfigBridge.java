@@ -26,11 +26,9 @@ import org.more.util.attribute.AttBase;
  * @author ’‘”¿¥∫(zyc@byshell.org)
  */
 public class MapConfigBridge implements Map<String, Object>, Config<Object> {
-    //========================================================================================Field
     private static final long   serialVersionUID = 5340008420422363045L;
     private Object              context          = null;
     private Map<String, Object> attMap           = null;
-    //==================================================================================Constructor
     public MapConfigBridge() {
         this.attMap = new AttBase();
     }
@@ -42,7 +40,6 @@ public class MapConfigBridge implements Map<String, Object>, Config<Object> {
         this.attMap = attMap;
         this.context = context;
     }
-    //=========================================================================================Impl
     public Object getContext() {
         return this.context;
     }
