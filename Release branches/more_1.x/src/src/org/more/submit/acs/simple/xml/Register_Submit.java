@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.acs.hypha.xml;
+package org.more.submit.acs.simple.xml;
 import java.util.ArrayList;
 import org.more.core.xml.XmlParserKit;
 import org.more.hypha.Event;

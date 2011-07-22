@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.acs.hypha.xml;
+package org.more.submit.acs.simple.xml;
 import java.lang.annotation.Annotation;
 import org.more.hypha.anno.KeepWatchParser;
 import org.more.hypha.anno.define.Bean;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.submit.ActionContextBuilder;
-import org.more.submit.acs.hypha.propxy_acb.ACBuilder_ForAnno;
-import org.more.submit.acs.hypha.propxy_acb.ACBuilder_ForBean;
+import org.more.submit.acs.simple.propxy_acb.ACBuilder_ForAnno;
+import org.more.submit.acs.simple.propxy_acb.ACBuilder_ForBean;
 /**
  * 该类的目的是用于解析ACBuilder注解，该注解可以和Bean注解配合使用，达到不同的效果。
  * @version 2010-10-14

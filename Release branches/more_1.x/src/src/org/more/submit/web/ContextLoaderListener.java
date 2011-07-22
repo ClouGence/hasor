@@ -22,6 +22,7 @@ import org.more.core.error.InitializationException;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.context.app.DefaultApplicationContext;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.submit.SubmitService;
 import org.more.util.ResourcesUtil;
 import org.more.util.ResourcesUtil.ScanItem;
 import org.more.util.ScanEvent;
@@ -51,6 +52,11 @@ public class ContextLoaderListener implements ServletContextListener {
             String name = (String) enums.nextElement();
             this.context.setAttribute(name, sc.getInitParameter(name));
         }
+        // 
+        String attName = SubmitService.class.getName();
+        if (this.context.getAttribute(attName) == null)
+            this.context.setAttribute(attName, WebSubmitService.class.getName());
+        this.context.init();//初始化context
     };
     protected ApplicationContext createContext(ServletContextEvent event) throws Throwable {
         final XmlDefineResource xdr = new XmlDefineResource();
@@ -69,7 +75,6 @@ public class ContextLoaderListener implements ServletContextListener {
             });
         xdr.loadDefine();
         DefaultApplicationContext app = new DefaultApplicationContext(xdr);
-        app.init();//初始化context
         return app;
     };
 }

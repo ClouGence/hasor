@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit;
+package org.more.submit.acs.simple;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 用于表示一个可以调用的action对象。
- * @version 2009-12-1
+ * 标记该类是一个ActionContextBuilder，注册ACBuilder有两种方式，一种是通过配置文件。另外一种就是通过该注解。
+ * @version : 2011-7-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ActionInvoke {
-    /**
-     * 调用这个资源并且返回返回值，如果在调用期间发生异常则抛出Throwable异常。
-     * @param stack 调用时传递的栈对象。
-     * @return 返回调用资源之后产生的返回值。
-     * @throws Throwable 如果产生异常。
-     */
-    public Object invoke(ActionStack stack) throws Throwable;
-};
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface ACBuilder {}

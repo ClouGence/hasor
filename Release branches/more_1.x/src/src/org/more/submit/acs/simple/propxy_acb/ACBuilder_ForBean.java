@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.acs.hypha.propxy_acb;
+package org.more.submit.acs.simple.propxy_acb;
 import org.more.hypha.ApplicationContext;
+import org.more.hypha.anno.assembler.AnnoMetaDataUtil;
 import org.more.hypha.anno.define.Bean;
-import org.more.hypha.beans.assembler.MetaDataUtil;
 import org.more.submit.AbstractACBuilder;
 import org.more.submit.ActionContextBuilder;
 /**
@@ -33,6 +33,6 @@ public class ACBuilder_ForBean extends AbstractACBuilder {
     };
     protected ActionContextBuilder createBuilder() throws Throwable {
         ApplicationContext app = (ApplicationContext) this.getConfig().getContext();
-        return app.getBean(MetaDataUtil.getBeanID(annoBean, acBuilderType));
+        return app.getBean(AnnoMetaDataUtil.getBeanID(annoBean, acBuilderType));
     };
 };

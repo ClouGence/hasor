@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.acs.hypha.xml;
+package org.more.submit.acs.simple.xml;
 import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.context.xml.XmlDefineResource;
-import org.more.submit.acs.hypha.propxy_acb.ACBuilder_ForXml;
+import org.more.submit.acs.simple.propxy_acb.ACBuilder_ForXml;
 /**
  * 用于解析submit:acBuilder标签。
  * @version 2010-9-22

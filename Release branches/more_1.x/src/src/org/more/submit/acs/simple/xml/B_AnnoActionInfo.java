@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit;
+package org.more.submit.acs.simple.xml;
 /**
- * 用于表示一个可以调用的action对象。
- * @version 2009-12-1
+ * 该类的目的是将一个方法的定位字符串和一个地址进行映射，这样可以通过简单的地址访问复杂的方法路径。
+ * @version : 2011-7-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ActionInvoke {
-    /**
-     * 调用这个资源并且返回返回值，如果在调用期间发生异常则抛出Throwable异常。
-     * @param stack 调用时传递的栈对象。
-     * @return 返回调用资源之后产生的返回值。
-     * @throws Throwable 如果产生异常。
-     */
-    public Object invoke(ActionStack stack) throws Throwable;
-};
+public class B_AnnoActionInfo {
+    /**Action可能存在的包地址。*/
+    public String packageString = null;
+    /**Action的真实地址。*/
+    public String actionPath    = null;
+    /**Action映射出去的地址。*/
+    public String mappingPath   = null;
+}

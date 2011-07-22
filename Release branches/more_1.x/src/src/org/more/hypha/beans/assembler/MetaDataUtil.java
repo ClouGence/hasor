@@ -16,7 +16,6 @@
 package org.more.hypha.beans.assembler;
 import org.more.core.log.ILog;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.anno.define.Bean;
 import org.more.hypha.beans.define.Collection_ValueMetaData;
 import org.more.hypha.commons.define.AbstractDefine;
 import org.more.util.attribute.IAttribute;
@@ -62,19 +61,5 @@ public class MetaDataUtil {
         IAttribute fungiAtt = data.getFungi();
         log.debug("cache BeanBuilder = {%0}, type = {%1}.", data, type);
         fungiAtt.setAttribute(FungiCacheName, type);
-    };
-    /**确定注解形式下的Bean名称*/
-    public static String getBeanID(Bean annoBean, Class<?> beanType) {
-        String var = annoBean.id();
-        if (var.equals("") == true) {
-            var = annoBean.logicPackage();
-            if (var.equals("") == false)
-                var += ("." + annoBean.name());
-            else
-                var = annoBean.name();
-        }
-        if (var.equals("") == true)
-            var = beanType.getName();
-        return var;
     };
 }

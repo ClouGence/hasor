@@ -15,18 +15,31 @@
  */
 package org.more.submit.acs.hypha;
 import org.more.hypha.ApplicationContext;
-import org.more.submit.ActionInvoke;
-import org.more.submit.impl.AbstractAC;
+import org.more.hypha.anno.assembler.AnnoMetaDataUtil;
+import org.more.hypha.anno.define.Bean;
+import org.more.submit.acs.simple.AC_Simple;
 /**
- * 
+ * 该类扩展的{@link AC_Simple}类，如果配置了{@link Bean}子该类会自动解析bean名。
+ * 当hypha使用的是xml配置的bean时候，可以使用{@link HBean}注解来指定bean名。
+ * 但当两个注解都没有指定时候，使用{@link AC_Simple}的自有创建模式创建。
  * @version : 2011-7-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public class AC_Hypha extends AbstractAC {
+public class AC_Hypha extends AC_Simple {
     public ApplicationContext applicationContext = null;
     //
-    public ActionInvoke findAction(String name, String userInfo) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    protected Object getBean(Class<?> type) throws Throwable {
+        Bean annoBean = type.getAnnotation(Bean.class);
+        String beanID = null;
+        if (annoBean == null) {
+            HBean annoBean2 = type.getAnnotation(HBean.class);
+            if (annoBean2 != null)
+                beanID = annoBean2.beanID();
+        } else
+            beanID = AnnoMetaDataUtil.getBeanID(annoBean, type);
+        if (beanID != null)
+            return applicationContext.getBean(beanID);
+        else
+            return super.getBean(type);
+    };
 };

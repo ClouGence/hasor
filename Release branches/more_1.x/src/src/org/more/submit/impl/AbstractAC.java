@@ -42,7 +42,7 @@ public abstract class AbstractAC implements ActionContext {
         }
         return pack;
     };
-    public ActionInvoke getAction(URI uri) {
+    public ActionInvoke getAction(URI uri) throws Throwable {
         //先从默认包中获取actio路径。
         String name = uri.getAuthority();
         String actionPath = this.definePackage("").getActionPath(name);
@@ -54,5 +54,5 @@ public abstract class AbstractAC implements ActionContext {
         //
         return this.findAction(actionPath, uri.getQuery());
     };
-    public abstract ActionInvoke findAction(String actionPath, String queryInfo);
+    public abstract ActionInvoke findAction(String actionPath, String queryInfo) throws Throwable;
 };

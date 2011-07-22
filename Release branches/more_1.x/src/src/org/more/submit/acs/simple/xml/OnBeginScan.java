@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.acs.hypha.xml;
+package org.more.submit.acs.simple.xml;
 import org.more.core.log.ILog;
 import org.more.core.log.LogFactory;
 import org.more.hypha.Event.Sequence;
 import org.more.hypha.EventListener;
 import org.more.hypha.anno.BeginScanEvent;
 import org.more.hypha.anno.BeginScanEvent.BeginScanEvent_Params;
-import org.more.submit.acs.hypha.ACBuilder;
-import org.more.submit.acs.hypha.Action;
+import org.more.submit.acs.simple.ACBuilder;
+import org.more.submit.acs.simple.Action;
 /**
  * 该类负责注册注解扫描器。
  * @version : 2011-4-22

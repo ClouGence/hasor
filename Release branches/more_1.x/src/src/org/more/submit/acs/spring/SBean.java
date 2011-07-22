@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.acs.hypha.xml;
+package org.more.submit.acs.spring;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 该类的目的是将一个方法的定位字符串和一个地址进行映射，这样可以通过简单的地址访问复杂的方法路径。
- * @version : 2011-7-15
+ * 标记这个对象是一个guice可以识别的bean。
+ * @version 2010-1-9
  * @author 赵永春 (zyc@byshell.org)
  */
-public class B_AnnoActionInfo {
-    /**Action可能存在的包地址。*/
-    public String packageString = null;
-    /**Action的真实地址。*/
-    public String actionPath    = null;
-    /**Action映射出去的地址。*/
-    public String mappingPath   = null;
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface SBean {
+    /**说明spring中配置的beanID*/
+    public String beanID();
+};

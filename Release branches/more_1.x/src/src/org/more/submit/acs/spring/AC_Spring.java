@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.acs.hypha.xml;
-import org.more.hypha.commons.xml.Tag_Abstract;
-import org.more.hypha.context.xml.XmlDefineResource;
+package org.more.submit.acs.spring;
+import org.more.submit.acs.simple.AC_Simple;
 /**
- * 用于解析submit命名空间标签解析器基类，主要用于区分不同命名空间。
- * @version 2010-10-9
+ * 
+ * @version : 2011-7-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class TagSubmit_NS extends Tag_Abstract {
-    public TagSubmit_NS(XmlDefineResource configuration) {
-        super(configuration);
-    };
-}
+public class AC_Spring extends AC_Simple {
+    public Object application = null;
+    public String config      = null;
+    //
+    // 
+    a
+};

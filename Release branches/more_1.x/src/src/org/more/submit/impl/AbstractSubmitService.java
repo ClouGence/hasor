@@ -15,7 +15,6 @@
  */
 package org.more.submit.impl;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import org.more.core.error.ExistException;
@@ -61,10 +60,10 @@ public abstract class AbstractSubmitService extends AttBase implements SubmitSer
         return this.acList.get(prefix);
     };
     //
-    public ActionObject getActionObject(String url) throws URISyntaxException {
+    public ActionObject getActionObject(String url) throws Throwable {
         return this.getActionObject(new URI(url));
     };
-    public ActionObject getActionObject(URI uri) throws ExistException {
+    public ActionObject getActionObject(URI uri) throws Throwable {
         if (uri == null)
             return null;
         ActionContext ac = null;

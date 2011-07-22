@@ -13,16 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.acs.hypha.xml;
-import java.util.ArrayList;
-import org.more.submit.SubmitBuild;
+package org.more.submit.acs.hypha;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 
- * @version : 2011-7-18
+ * 标记这个对象是一个guice可以识别的bean。
+ * @version 2010-1-9
  * @author 赵永春 (zyc@byshell.org)
  */
-class B_Config {
-    public SubmitBuild                 build         = null;
-    public ArrayList<B_AnnoActionInfo> acMappingList = null;
-    public ArrayList<B_AC>             acList        = null;
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface HBean {
+    /**说明Hypha中配置的beanID*/
+    public String beanID();
+};

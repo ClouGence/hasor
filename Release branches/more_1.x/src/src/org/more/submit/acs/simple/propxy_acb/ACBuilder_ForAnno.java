@@ -13,23 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.acs.hypha.propxy_acb;
-import org.more.hypha.ApplicationContext;
+package org.more.submit.acs.simple.propxy_acb;
 import org.more.submit.AbstractACBuilder;
 import org.more.submit.ActionContextBuilder;
 /**
- * 该类是表示一个由xml配置文件配置的{@link ActionContextBuilder}生成器，但是该类属于一个代理类。
+ * 该类是表示一个由注解直接标记的类。
  * @version : 2011-7-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ACBuilder_ForXml extends AbstractACBuilder {
-    private String refBean = null;
-    //
-    public ACBuilder_ForXml(String refBean) {
-        this.refBean = refBean;
-    };
-    protected ActionContextBuilder createBuilder() throws Throwable {
-        ApplicationContext context = (ApplicationContext) this.getConfig().getContext();
-        return context.getBean(this.refBean);
-    };
-};
+public class ACBuilder_ForAnno extends AbstractACBuilder {
+    private Class<?> acClass = null;
+    public ACBuilder_ForAnno(Class<?> acClass) {
+        this.acClass = acClass;
+    }
+    protected ActionContextBuilder createBuilder() throws InstantiationException, IllegalAccessException {
+        return (ActionContextBuilder) acClass.newInstance();
+    }
+}

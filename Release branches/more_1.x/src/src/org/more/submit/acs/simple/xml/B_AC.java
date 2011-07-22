@@ -13,16 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.acs.hypha;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package org.more.submit.acs.simple.xml;
+import org.more.submit.ActionContext;
 /**
- * 标记该类是一个ActionContextBuilder，注册ACBuilder有两种方式，一种是通过配置文件。另外一种就是通过该注解。
+ * 该类是表示一个由xml配置文件配置的{@link ActionContext}。
  * @version : 2011-7-15
  * @author 赵永春 (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface ACBuilder {}
+class B_AC {
+    private String namespace = null;
+    private String refBean   = null;
+    public B_AC(String namespace, String refBean) {
+        this.namespace = namespace;
+        this.refBean = refBean;
+    }
+    public String getNamespace() {
+        return this.namespace;
+    }
+    public String getRefBean() {
+        return this.refBean;
+    }
+}

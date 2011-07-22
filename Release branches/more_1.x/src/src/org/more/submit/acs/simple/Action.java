@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.acs.hypha.propxy_acb;
-import org.more.submit.AbstractACBuilder;
-import org.more.submit.ActionContextBuilder;
+package org.more.submit.acs.simple;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 该类是表示一个由注解直接标记的类。
- * @version : 2011-7-15
+ * 标记这个方法为一个action。
+ * @version 2010-1-9
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ACBuilder_ForAnno extends AbstractACBuilder {
-    private Class<?> acClass = null;
-    public ACBuilder_ForAnno(Class<?> acClass) {
-        this.acClass = acClass;
-    }
-    protected ActionContextBuilder createBuilder() throws InstantiationException, IllegalAccessException {
-        return (ActionContextBuilder) acClass.newInstance();
-    }
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD })
+public @interface Action {
+    /**该属性是用于描述当前action的访问路径是什么，如果为空则是方法的全名限定。*/
+    public String value() default "";
+};

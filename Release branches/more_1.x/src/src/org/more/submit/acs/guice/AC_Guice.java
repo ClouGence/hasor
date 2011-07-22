@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.acs.hypha.xml;
-import org.more.submit.ActionContext;
+package org.more.submit.acs.guice;
+import org.more.submit.acs.simple.AC_Simple;
 /**
- * 该类是表示一个由xml配置文件配置的{@link ActionContext}。
- * @version : 2011-7-15
+ * 该类扩展了{@link AC_Simple}，首先判断是否是一个guice Bean，
+ * 如果是则使用guice创建，否则使用{@link AC_Simple}方式创建。
+ * @version : 2011-7-14
  * @author 赵永春 (zyc@byshell.org)
  */
-class B_AC {
-    private String namespace = null;
-    private String refBean   = null;
-    public B_AC(String namespace, String refBean) {
-        this.namespace = namespace;
-        this.refBean = refBean;
+public class AC_Guice extends AC_Simple {
+    public Object guiceInjector = null;
+    public Object modules       = null;
+    //
+    //  
+    protected Object getBean(Class<?> type) throws Throwable {
+        GBean annoBean = type.getAnnotation(GBean.class);
+        if (annoBean == null)
+            return super.getBean(type);
+        System.out.println("juice create");
+        return null;
     }
-    public String getNamespace() {
-        return this.namespace;
-    }
-    public String getRefBean() {
-        return this.refBean;
-    }
-}
+    a
+};

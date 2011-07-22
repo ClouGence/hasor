@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.acs.hypha;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package org.more.submit.acs.simple.xml;
+import org.more.hypha.commons.xml.Tag_Abstract;
+import org.more.hypha.context.xml.XmlDefineResource;
 /**
- * submit的包，action是保存在这个包下面。
- * @version : 2011-7-18
+ * 用于解析submit命名空间标签解析器基类，主要用于区分不同命名空间。
+ * @version 2010-10-9
  * @author 赵永春 (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.TYPE })
-public @interface ActionPack {
-    /**该属性是用于描述当前action的访问路径是什么，如果为空则是方法的全名限定。*/
-    public String value();
-};
+public abstract class TagSubmit_NS extends Tag_Abstract {
+    public TagSubmit_NS(XmlDefineResource configuration) {
+        super(configuration);
+    };
+}

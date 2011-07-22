@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.acs.hypha.xml;
+package org.more.submit.acs.simple.xml;
 import org.more.core.error.InitializationException;
 import org.more.core.log.ILog;
 import org.more.core.log.LogFactory;
@@ -40,17 +40,20 @@ class OnStartingServices implements EventListener<StartingServicesEvent> {
         AbstractApplicationContext context = (AbstractApplicationContext) event.toParams(sequence).applicationContext;
         //1.生成service
         this.config.build.setContext(context);//设置上下文
+        //2.拷贝环境变量
+        for (String arrName : context.getAttributeNames())
+            this.config.build.setAttribute(arrName, context.getAttribute(arrName));
         SubmitService service = this.config.build.build();
         if (service == null)
             throw new InitializationException("SubmitService 服务build结果为空!");
-        //2.注册AC
+        //3.注册AC
         if (this.config.acList != null)
             for (B_AC acb : this.config.acList) {
                 String prefix = acb.getNamespace();
                 ActionContext ac = context.getBean(acb.getRefBean());
                 service.regeditNameSpace(prefix, ac);
             }
-        //3.注册Mapping
+        //4.注册Mapping
         if (this.config.acMappingList != null)
             for (B_AnnoActionInfo am : this.config.acMappingList) {
                 ActionContext defaultAC = service.getDefaultNameSpace();
@@ -59,7 +62,7 @@ class OnStartingServices implements EventListener<StartingServicesEvent> {
                 ActionPackage pack = defaultAC.definePackage(am.packageString);
                 pack.addRouteMapping(am.mappingPath, am.actionPath);
             }
-        //4.注册服务
+        //5.注册服务
         context.regeditService(SubmitService.class, service);
         log.info("hypha.submit start OK!");
     };

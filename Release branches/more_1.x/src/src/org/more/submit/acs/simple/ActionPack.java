@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit;
+package org.more.submit.acs.simple;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 用于表示一个可以调用的action对象。
- * @version 2009-12-1
+ * submit的包，action是保存在这个包下面。
+ * @version : 2011-7-18
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ActionInvoke {
-    /**
-     * 调用这个资源并且返回返回值，如果在调用期间发生异常则抛出Throwable异常。
-     * @param stack 调用时传递的栈对象。
-     * @return 返回调用资源之后产生的返回值。
-     * @throws Throwable 如果产生异常。
-     */
-    public Object invoke(ActionStack stack) throws Throwable;
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD, ElementType.TYPE })
+public @interface ActionPack {
+    /**该属性是用于描述当前action的访问路径是什么，如果为空则是方法的全名限定。*/
+    public String value();
 };

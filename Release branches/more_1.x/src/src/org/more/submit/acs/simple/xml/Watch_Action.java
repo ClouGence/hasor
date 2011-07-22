@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.acs.hypha.xml;
+package org.more.submit.acs.simple.xml;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import org.more.hypha.anno.KeepWatchParser;
-import org.more.hypha.anno.define.Bean;
-import org.more.hypha.beans.assembler.MetaDataUtil;
 import org.more.hypha.context.xml.XmlDefineResource;
-import org.more.submit.acs.hypha.ActionPack;
-import org.more.submit.acs.hypha.Action;
+import org.more.submit.acs.simple.Action;
+import org.more.submit.acs.simple.ActionPack;
 /**
  * 该类检测Action注解使用。
  * @version : 2011-7-15
@@ -35,14 +33,10 @@ class Watch_Action implements KeepWatchParser {
     public void process(Object target, Annotation annoData, XmlDefineResource resource) {
         Method method = (Method) target;
         Class<?> type = method.getDeclaringClass();
-        Bean beanAnnoData = type.getAnnotation(Bean.class);
         //1.生称标记路径。
         StringBuffer mStr = new StringBuffer();
         StringBuffer _mStr = new StringBuffer();
-        if (beanAnnoData != null)
-            mStr.append(MetaDataUtil.getBeanID(beanAnnoData, type));
-        else
-            mStr.append(type.getName());
+        mStr.append(type.getName());
         mStr.append(".");
         mStr.append(method.getName());
         _mStr.append(mStr.toString());

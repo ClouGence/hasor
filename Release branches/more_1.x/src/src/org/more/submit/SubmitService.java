@@ -15,8 +15,6 @@
  */
 package org.more.submit;
 import java.net.URI;
-import java.net.URISyntaxException;
-import org.more.core.error.ExistException;
 import org.more.hypha.Service;
 import org.more.util.attribute.IAttribute;
 /**
@@ -37,10 +35,10 @@ public interface SubmitService extends IAttribute, Service {
     public String getDefaultNameSpaceString();
     /**获取默认命名空间对象。*/
     public ActionContext getDefaultNameSpace();
+    /**获取一个action对象，通过action对象可以执行action调用。该字符串格式类似如下：ac://package.package.package.action/param/param */
+    public ActionObject getActionObject(String url) throws Throwable;
     /**获取一个action对象，通过action对象可以执行action调用。该字符串格式类似如下：ac://package.package.package.action/param/param*/
-    public ActionObject getActionObject(String url) throws URISyntaxException, ExistException;
-    /**获取一个action对象，通过action对象可以执行action调用。该字符串格式类似如下：ac://package.package.package.action/param/param*/
-    public ActionObject getActionObject(URI uri) throws ExistException;
+    public ActionObject getActionObject(URI uri) throws Throwable;
     /**注册一个作用域，重复注册同一个名称的作用域则会产生替换。*/
     public void regeditScope(String scopeName, IAttribute scope);
     /**获取已经注册的作用域，如果不存在该作用域则返回一个null。*/

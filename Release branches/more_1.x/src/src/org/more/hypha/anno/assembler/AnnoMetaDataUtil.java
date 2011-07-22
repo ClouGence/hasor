@@ -13,19 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.acs.hypha;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package org.more.hypha.anno.assembler;
+import org.more.hypha.anno.define.Bean;
 /**
- * 标记这个方法为一个action。
- * @version 2010-1-9
+ * MetaData工具类
+ * @version : 2011-5-24
  * @author 赵永春 (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD })
-public @interface Action {
-    /**该属性是用于描述当前action的访问路径是什么，如果为空则是方法的全名限定。*/
-    public String value() default "";
-};
+public class AnnoMetaDataUtil {
+    /**确定注解形式下的Bean名称*/
+    public static String getBeanID(Bean annoBean, Class<?> beanType) {
+        String var = annoBean.id();
+        if (var.equals("") == true) {
+            var = annoBean.logicPackage();
+            if (var.equals("") == false)
+                var += ("." + annoBean.name());
+            else
+                var = annoBean.name();
+        }
+        if (var.equals("") == true)
+            var = beanType.getName();
+        return var;
+    };
+}
