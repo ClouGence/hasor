@@ -1,3 +1,6 @@
-function callBack(actionStack, results, paramArray) {
-	return results;
-}
+//Stack		ActionStack
+//Submit	SubmitService
+//Params	Object[]
+//Result	Object
+
+return Result;
