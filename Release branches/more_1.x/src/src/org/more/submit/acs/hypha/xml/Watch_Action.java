@@ -38,12 +38,14 @@ class Watch_Action implements KeepWatchParser {
         Bean beanAnnoData = type.getAnnotation(Bean.class);
         //1.生称标记路径。
         StringBuffer mStr = new StringBuffer();
+        StringBuffer _mStr = new StringBuffer();
         if (beanAnnoData != null)
             mStr.append(MetaDataUtil.getBeanID(beanAnnoData, type));
         else
             mStr.append(type.getName());
         mStr.append(".");
         mStr.append(method.getName());
+        _mStr.append(mStr.toString());
         mStr.append("(");
         for (Class<?> param : method.getParameterTypes())
             mStr.append(param.getName() + ",");
@@ -53,15 +55,18 @@ class Watch_Action implements KeepWatchParser {
         mStr.append(")");
         //2.注册Mapping
         Action ac = (Action) annoData;
-        if (ac.value().equals("") == true)
-            return;
+        String value = ac.value();
+        if (value.equals("") == true)
+            value = _mStr.toString();
         B_AnnoActionInfo mapping = new B_AnnoActionInfo();
         //3.确定是否定义了包
-        ActionPack pack = type.getAnnotation(ActionPack.class);
+        ActionPack pack = method.getAnnotation(ActionPack.class);
+        if (pack == null)
+            pack = type.getAnnotation(ActionPack.class);
         if (pack != null)
             mapping.packageString = pack.value();
         mapping.actionPath = mStr.toString();
-        mapping.mappingPath = ac.value();
+        mapping.mappingPath = value;
         this.config.acMappingList.add(mapping);
     };
 };

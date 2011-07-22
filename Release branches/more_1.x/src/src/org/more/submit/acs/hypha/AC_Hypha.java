@@ -16,7 +16,7 @@
 package org.more.submit.acs.hypha;
 import org.more.hypha.ApplicationContext;
 import org.more.submit.ActionInvoke;
-import org.more.submit._.AbstractAC;
+import org.more.submit.impl.AbstractAC;
 /**
  * 
  * @version : 2011-7-14
@@ -24,12 +24,9 @@ import org.more.submit._.AbstractAC;
  */
 public class AC_Hypha extends AbstractAC {
     public ApplicationContext applicationContext = null;
-    public String[] getActionNames() {
+    //
+    public ActionInvoke findAction(String name, String userInfo) {
         // TODO Auto-generated method stub
         return null;
-    };
-    public ActionInvoke getAction(String name, String userInfo) {
-        // TODO Auto-generated method stub
-        return null;
-    };
+    }
 };

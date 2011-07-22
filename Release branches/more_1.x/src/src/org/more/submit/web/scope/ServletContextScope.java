@@ -18,32 +18,35 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.Vector;
 import javax.servlet.ServletContext;
+import org.more.submit.web.WebHelper;
+import org.more.util.attribute.IAttribute;
 import org.more.util.attribute.TransformToMap;
 /**
- * 负责提供ServletContext到{@link Scope Scope接口}的代理。
+ * 负责提供ServletContext到{@link IAttribute IAttribute接口}的代理。
  * @version 2009-12-28
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ServletContextScope implements Scope {
-    private ServletContext servletContext;
-    public ServletContextScope(ServletContext servletContext) {
-        this.servletContext = servletContext;
+public class ServletContextScope implements IAttribute {
+    public static final String Name = "ServletContext";
+    //
+    protected ServletContext getServletContext() {
+        return WebHelper.getServletContext();
     };
     public boolean contains(String name) {
-        return this.servletContext.getAttribute(name) != null;
+        return this.getServletContext().getAttribute(name) != null;
     };
     public void setAttribute(String name, Object value) {
-        this.servletContext.setAttribute(name, value);
+        this.getServletContext().setAttribute(name, value);
     };
     public Object getAttribute(String name) {
-        return this.servletContext.getAttribute(name);
+        return this.getServletContext().getAttribute(name);
     };
     public void removeAttribute(String name) {
-        this.servletContext.removeAttribute(name);
+        this.getServletContext().removeAttribute(name);
     };
     public String[] getAttributeNames() {
         Vector<String> v = new Vector<String>(0);
-        Enumeration<?> attEnum = this.servletContext.getAttributeNames();
+        Enumeration<?> attEnum = this.getServletContext().getAttributeNames();
         while (attEnum.hasMoreElements())
             v.add(attEnum.nextElement().toString());
         String[] ns = new String[v.size()];

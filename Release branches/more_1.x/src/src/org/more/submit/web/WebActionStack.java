@@ -14,142 +14,108 @@
  * limitations under the License.
  */
 package org.more.submit.web;
+import java.io.IOException;
+import java.net.URI;
 import java.util.Set;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 import org.more.submit.ActionStack;
-import org.more.submit.Session;
-import org.more.submit.SubmitContext;
+import org.more.submit.impl.DefaultActionStack;
 import org.more.submit.web.scope.CookieScope;
-import org.more.submit.web.scope.HttpSessionScope;
-import org.more.submit.web.scope.JspPageScope;
-import org.more.submit.web.scope.RequestScope;
-import org.more.submit.web.scope.ServletContextScope;
 /**
  * 提供了Web特性的ActionStack对象，该类还提供了五个属性作用域的支持。这五个作用域详见WebScopeEnum接口。
  * @version : 2010-7-27
  * @author 赵永春(zyc@byshell.org)
  */
-public class WebActionStack extends ActionStack implements WebScopeEnum {
-    private static final long   serialVersionUID = 5001483997344333143L;
-    //========================================================================================Field
-    private PageContext         httpPageContext  = null;
-    private HttpServletRequest  httpRequest      = null;
-    private HttpServletResponse httpResponse     = null;
-    private HttpSession         httpSession      = null;
-    private ServletContext      servletContext   = null;
+public class WebActionStack extends DefaultActionStack {
+    private static final long serialVersionUID = 5001483997344333143L;
+    private WebSubmitService  submitContext    = null;
     //==================================================================================Constructor
-    public WebActionStack(String actionName, String actionMethod, ActionStack parent, SubmitContext context, HttpServletRequest httpRequest, HttpServletResponse httpResponse, PageContext httpPageContext) {
-        super(actionName, actionMethod, parent , context);
-        this.httpPageContext = httpPageContext;
-        this.httpRequest = httpRequest;
-        this.httpResponse = httpResponse;
-        this.httpSession = httpRequest.getSession(true);
-        this.servletContext = httpSession.getServletContext();
-        //注册新的作用域。
-        this.putScope(Scope_Cookie, new CookieScope(this.httpRequest, this.httpResponse));
-        this.putScope(Scope_HttpSession, new HttpSessionScope(this.httpSession));
-        if (httpPageContext != null)
-            this.putScope(Scope_JspPage, new JspPageScope(this.httpPageContext));
-        this.putScope(Scope_HttpRequest, new RequestScope(this.httpRequest));
-        this.putScope(Scope_ServletContext, new ServletContextScope(this.servletContext));
+    public WebActionStack(URI uri, ActionStack parent, WebSubmitService submitContext) {
+        super(uri, parent, submitContext);
+        this.submitContext = submitContext;
     };
     //==========================================================================================针对属性的get/set方法
     /**获取PageContext对象。*/
     public PageContext getPageContext() {
-        return this.httpPageContext;
+        return WebHelper.getPageContext();
     };
     /**获取HttpServletRequest对象。*/
     public HttpServletRequest getHttpRequest() {
-        return this.httpRequest;
+        return WebHelper.getHttpRequest();
     };
     /**获取HttpServletResponse对象。*/
     public HttpServletResponse getHttpResponse() {
-        return this.httpResponse;
+        return WebHelper.getHttpResponse();
     };
     /**获取HttpSession对象。*/
     public HttpSession getHttpSession() {
-        return this.httpSession;
+        return WebHelper.getHttpSession();
     };
     /**获取ServletContext对象。*/
     public ServletContext getServletContext() {
-        return this.servletContext;
+        return WebHelper.getServletContext();
     };
-    //==========================================================================================request查询参数专用方法
-    /** 根据requestParam->stack->parent->jspPage->request->session->httpSession->context->servletContext->cookie这个顺序依次查找属性，在stack中查找时是在整个stack树中查找。*/
-    public Object getParam(String key) {
-        //requestParam
-        Object obj = (String[]) this.getRequestParams(key);
-        if (obj != null) {
-            String[] paramMap = (String[]) obj;
-            if (paramMap.length == 0)
-                obj = null;
-            else if (paramMap.length == 1)
-                obj = paramMap[0];
-            else
-                obj = paramMap;
-        }
-        //stack->parent
-        if (obj == null)
-            obj = this.getByStackTree(key);
-        //jspPage
-        if (obj == null && this.containsScopeKEY(Scope_JspPage) == true)
-            obj = this.getPageContext().getAttribute(key);
-        //request
-        if (obj == null && this.containsScopeKEY(Scope_HttpRequest) == true)
-            obj = this.getHttpRequest().getAttribute(key);
-        //session
-        if (obj == null && this.containsScopeKEY(Scope_Session) == true)
-            obj = this.getSession().getAttribute(key);
-        //httpSession
-        if (obj == null && this.containsScopeKEY(Scope_HttpSession) == true)
-            obj = this.getHttpSession().getAttribute(key);
-        //context
-        if (obj == null && this.containsScopeKEY(Scope_Context) == true)
-            obj = this.getContext().getAttribute(key);
-        //servletContext
-        if (obj == null && this.containsScopeKEY(Scope_ServletContext) == true)
-            obj = this.getServletContext().getAttribute(key);
-        //cookie
-        if (obj == null && this.containsScopeKEY(Scope_Cookie) == true)
-            obj = this.getScopeAttribute(Scope_Cookie).getAttribute(key);
-        return obj;
+    public WebSubmitService getSubmitService() {
+        return this.submitContext;
     };
     //==========================================================================================request查询参数专用方法
     /**获取request请求参数中所有参数名称。*/
     @SuppressWarnings("unchecked")
     public String[] getRequestParamNames() {
-        Set<String> keys = this.httpRequest.getParameterMap().keySet();
+        Set<String> keys = this.getHttpRequest().getParameterMap().keySet();
         String[] ns = new String[keys.size()];
         keys.toArray(ns);
         return ns;
     };
     /**仅从request请求参数中查找指定属性。*/
     public String[] getRequestParams(String attName) {
-        return this.httpRequest.getParameterValues(attName);
+        return this.getHttpRequest().getParameterValues(attName);
     };
     /**仅从request请求参数中查找指定属性。*/
     public String getRequestParam(String attName) {
-        return this.httpRequest.getParameter(attName);
+        return this.getHttpRequest().getParameter(attName);
+    };
+    /**服务端转发。*/
+    public void forward(String url) throws ServletException, IOException {
+        HttpServletRequest request = WebHelper.getHttpRequest();
+        HttpServletResponse response = WebHelper.getHttpResponse();
+        request.getRequestDispatcher(url).forward(request, response);
+    };
+    /**发送重定向操作。*/
+    public void redirect(String url) throws IOException {
+        HttpServletResponse response = WebHelper.getHttpResponse();
+        response.sendRedirect(url);
+    };
+    /**发送错误。*/
+    public void error(int error, String message) throws IOException {
+        HttpServletResponse response = WebHelper.getHttpResponse();
+        response.sendError(error, message);
+    };
+    /**发送错误。*/
+    public void error(int error) throws IOException {
+        HttpServletResponse response = WebHelper.getHttpResponse();
+        response.sendError(error);
     };
     //==========================================================================================Cookie作用域下的快速操作。
     /**向cookie作用域输出一个cookie对象。*/
     public void setCookieAttribute(String name, String value, int age) {
-        CookieScope cs = (CookieScope) this.getScopeAttribute(Scope_Cookie);
+        CookieScope cs = (CookieScope) this.getSubmitService().getScope(CookieScope.Name);
         cs.setCookieAttribute(name, value, age);
     };
     /**向cookie作用域输出一个cookie对象。*/
     public void setCookieAttribute(Cookie cookie) {
-        CookieScope cs = (CookieScope) this.getScopeAttribute(Scope_Cookie);
+        CookieScope cs = (CookieScope) this.getSubmitService().getScope(CookieScope.Name);
         cs.setCookieAttribute(cookie);
     };
     /**获取一个cookie对象。*/
     public Cookie getCookieAttribute(String name) {
-        CookieScope cs = (CookieScope) this.getScopeAttribute(Scope_Cookie);
+        CookieScope cs = (CookieScope) this.getSubmitService().getScope(CookieScope.Name);
         return cs.getCookieAttribute(name);
     };
 };

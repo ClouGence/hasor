@@ -18,32 +18,35 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.Vector;
 import javax.servlet.http.HttpSession;
+import org.more.submit.web.WebHelper;
+import org.more.util.attribute.IAttribute;
 import org.more.util.attribute.TransformToMap;
 /**
- * 负责提供HttpSession到{@link Scope Scope接口}的代理。
+ * 负责提供HttpSession到{@link IAttribute IAttribute接口}的代理。
  * @version 2009-12-28
  * @author 赵永春 (zyc@byshell.org)
  */
-public class HttpSessionScope implements Scope {
-    private HttpSession session;
-    public HttpSessionScope(HttpSession session) {
-        this.session = session;
+public class HttpSessionScope implements IAttribute {
+    public static final String Name = "HttpSession";
+    //
+    protected HttpSession getHttpSession() {
+        return WebHelper.getHttpSession();
     };
     public boolean contains(String name) {
-        return this.session.getAttribute(name) != null;
+        return this.getHttpSession().getAttribute(name) != null;
     };
     public void setAttribute(String name, Object value) {
-        this.session.setAttribute(name, value);
+        this.getHttpSession().setAttribute(name, value);
     };
     public Object getAttribute(String name) {
-        return this.session.getAttribute(name);
+        return this.getHttpSession().getAttribute(name);
     };
     public void removeAttribute(String name) {
-        this.session.removeAttribute(name);
+        this.getHttpSession().removeAttribute(name);
     };
     public String[] getAttributeNames() {
         Vector<String> v = new Vector<String>(0);
-        Enumeration<?> attEnum = this.session.getAttributeNames();
+        Enumeration<?> attEnum = this.getHttpSession().getAttributeNames();
         while (attEnum.hasMoreElements())
             v.add(attEnum.nextElement().toString());
         String[] ns = new String[v.size()];

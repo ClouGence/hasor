@@ -22,6 +22,8 @@ package org.more.submit;
 public interface ActionPackage {
     /**获取包名称*/
     public String packageName();
-    /**向action包中添加一个路由映射，路由映射的目的是将action方法或路径映射到一个外部地址上。*/
-    public String addRouteMapping(String mappingPath, String actionPath);
+    /**向action包中添加一个路由映射，路由映射的目的是将action方法或路径映射到一个外部地址上。actionPath为action的内部地址。*/
+    public void addRouteMapping(String mappingPath, String actionPath);
+    /**通过外部地址获取action的内部地址。*/
+    public String getActionPath(String mappingPath);
 };

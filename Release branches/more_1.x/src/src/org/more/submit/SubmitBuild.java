@@ -17,7 +17,7 @@ package org.more.submit;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import org.more.submit._.DefaultSubmitService;
+import org.more.submit.impl.DefaultSubmitService;
 import org.more.util.AttributeConfigBridge;
 import org.more.util.Config;
 import org.more.util.attribute.AttBase;

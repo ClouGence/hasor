@@ -46,12 +46,11 @@ public class ContextLoaderListener implements ServletContextListener {
         ServletContext sc = event.getServletContext();
         sc.setAttribute("org.more.hypha.ROOT", this.context);
         //设置参数
-        Enumeration<String> enums = sc.getInitParameterNames();
+        Enumeration<?> enums = sc.getInitParameterNames();
         while (enums.hasMoreElements()) {
-            String name = enums.nextElement();
+            String name = (String) enums.nextElement();
             this.context.setAttribute(name, sc.getInitParameter(name));
         }
-        this.initApplicationContext(context);
     };
     protected ApplicationContext createContext(ServletContextEvent event) throws Throwable {
         final XmlDefineResource xdr = new XmlDefineResource();
@@ -70,9 +69,7 @@ public class ContextLoaderListener implements ServletContextListener {
             });
         xdr.loadDefine();
         DefaultApplicationContext app = new DefaultApplicationContext(xdr);
+        app.init();//初始化context
         return app;
-    };
-    protected void initApplicationContext(ApplicationContext context) {
-        this.context.init();//初始化context
     };
 }

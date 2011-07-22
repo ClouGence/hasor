@@ -61,12 +61,20 @@ public class ActionTag extends BodyTagSupport {
         SubmitService services = (SubmitService) this.pageContext.getServletContext().getAttribute("org.more.submit.ROOT");
         //设置环境参数并调用
         try {
+            //初始化WebHelper
+            WebHelper.reset();
+            WebHelper.setHttpRequest(request);
+            WebHelper.setHttpResponse(response);
+            WebHelper.setHttpSession(request.getSession(true));
+            WebHelper.setHttpContext(request.getSession(true).getServletContext());
+            WebHelper.setHttpPageContext(pageContext);
+            WebHelper.setSubmitContext(services);
             //添加参数
             Map<String, Object> map = new HashMap<String, Object>();
             for (String key : this.params.keySet())
                 map.put(key, this.params.get(key));
             //调用
-            resultObject = services.getActionObject(process).doAction(this.process, request, response, map);
+            resultObject = services.getActionObject(process).doAction(map);
         } catch (Throwable e) {
             if (e instanceof JspException == true)
                 throw (JspException) e;

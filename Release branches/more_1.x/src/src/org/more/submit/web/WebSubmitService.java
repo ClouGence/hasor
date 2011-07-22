@@ -14,19 +14,34 @@
  * limitations under the License.
  */
 package org.more.submit.web;
+import java.net.URI;
 import java.util.Map;
+import org.more.hypha.ApplicationContext;
 import org.more.submit.ActionStack;
-import org.more.submit._.DefaultSubmitService;
+import org.more.submit.impl.DefaultSubmitService;
+import org.more.submit.web.scope.CookieScope;
+import org.more.submit.web.scope.HttpSessionScope;
+import org.more.submit.web.scope.JspPageScope;
+import org.more.submit.web.scope.RequestScope;
+import org.more.submit.web.scope.ServletContextScope;
+import org.more.util.attribute.IAttribute;
 /**
  * 
  * @version : 2011-7-21
  * @author 赵永春 (zyc@byshell.org)
  */
 public class WebSubmitService extends DefaultSubmitService {
-    /**  */
     private static final long serialVersionUID = 5453676869981171561L;
-    protected ActionStack createStack(ActionStack stack, Map<String, ?> params) {
-        // TODO Auto-generated method stub
-        return super.createStack(stack, objects);
+    /**当服务启动时候注册一些作用域*/
+    public void start(ApplicationContext context, IAttribute flash) {
+        //注册顺序决定查找顺序。
+        this.regeditScope(ServletContextScope.Name, new ServletContextScope());
+        this.regeditScope(HttpSessionScope.Name, new HttpSessionScope());
+        this.regeditScope(CookieScope.Name, new CookieScope());
+        this.regeditScope(RequestScope.Name, new RequestScope());
+        this.regeditScope(JspPageScope.Name, new JspPageScope());
     }
-}
+    protected WebActionStack createStack(URI uri, ActionStack onStack, Map<String, ?> params) {
+        return new WebActionStack(uri, onStack, this);
+    }
+};

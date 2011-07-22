@@ -41,8 +41,12 @@ public interface SubmitService extends IAttribute, Service {
     public ActionObject getActionObject(String url) throws URISyntaxException, ExistException;
     /**获取一个action对象，通过action对象可以执行action调用。该字符串格式类似如下：ac://package.package.package.action/param/param*/
     public ActionObject getActionObject(URI uri) throws ExistException;
-    //
-    //
+    /**注册一个作用域，重复注册同一个名称的作用域则会产生替换。*/
+    public void regeditScope(String scopeName, IAttribute scope);
+    /**获取已经注册的作用域，如果不存在该作用域则返回一个null。*/
+    public IAttribute getScope(String scopeName);
+    /**获取一个{@link IAttribute}接口对象，该接口对象是一个封装了多个作用域的接口对象。*/
+    public IAttribute getScopeStack();
     /*-----------------------------------*/
     //    public Session getSession(String sessionID);
     //    public Session getSession();
@@ -51,9 +55,9 @@ public interface SubmitService extends IAttribute, Service {
     //    public Sate getState(String stateID);
     //    public Sate getState();
     //    public SateContext getStateContext();
-    //
+    // 
     //    public FormContext getFormContext();
-    //
+    // 
     //    public Route getRoute(String match);
     //    public Route setRoute(Route route, String match);
 }

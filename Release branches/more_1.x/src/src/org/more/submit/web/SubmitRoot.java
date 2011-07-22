@@ -15,7 +15,11 @@
  */
 package org.more.submit.web;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Enumeration;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -28,7 +32,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.more.hypha.ApplicationContext;
-import org.more.submit.ActionObject;
 import org.more.submit.SubmitService;
 import org.more.util.Config;
 /**
@@ -44,13 +47,17 @@ public class SubmitRoot extends HttpServlet implements Filter {
     private static final long serialVersionUID = -9157250446565992949L;
     private SubmitService     submitService    = null;
     private ServletContext    servletContext   = null;
-    private String            prefix           = null;
     private String            contextPath      = null;
+    private Pattern           actionURLPattern = null;
+    private String            defaultNS        = null;
     /*-----------------------------------------------------------------*/
     private void init(Config<ServletContext> config) throws ServletException {
         try {
+            /*      /([^/]+)?:/([^?]*)(?:\\?(.*))?      */
+            /*      /[ns]:/[actionpath][?info]          */
+            actionURLPattern = Pattern.compile("/([^/]+)?:/([^?]*)(?:\\?(.*))?");
             this.servletContext = config.getContext();
-            this.contextPath = config.getContext().getContextPath();
+            this.contextPath = this.servletContext.getContextPath();
             ApplicationContext context = (ApplicationContext) this.servletContext.getAttribute("org.more.hypha.ROOT");
             this.submitService = context.getService(SubmitService.class);
             {
@@ -60,9 +67,11 @@ public class SubmitRoot extends HttpServlet implements Filter {
                     String name = enums.nextElement();
                     this.submitService.setAttribute(name, config.getInitParameter(name));
                 }
-                Object dns = config.getInitParameter("defaultNS");
-                if (dns != null)
-                    this.prefix = dns.toString();
+                Object _defaultNS = config.getInitParameter("defaultNS");
+                if (_defaultNS != null)
+                    defaultNS = _defaultNS.toString();
+                else
+                    defaultNS = this.submitService.getDefaultNameSpaceString();
             }
             this.servletContext.setAttribute("org.more.submit.ROOT", this.submitService);
         } catch (Throwable e) {
@@ -84,29 +93,49 @@ public class SubmitRoot extends HttpServlet implements Filter {
         this.init(new ServletSubmitConfig(config));
     };
     /*-----------------------------------------------------------------*/
-    public String getActionURI(HttpServletRequest request) {
+    public URI getActionURI(HttpServletRequest request) {
         String requestURI = request.getRequestURI();
+        requestURI = requestURI.substring(this.contextPath.length());
         String userInfo = request.getQueryString();
-        StringBuffer actionURI = new StringBuffer();
-        if (this.prefix != null)
-            actionURI.append(this.prefix + "://");
+        if (userInfo == null || userInfo.equals("") == true) {} else
+            requestURI += ("?" + userInfo);
+        /*      /([^/]+)?:/([^?]*)(?:\\?(.*))?      */
+        /*      /[ns]:/[actionpath][?info]          */
+        Matcher m = this.actionURLPattern.matcher(requestURI);
+        if (m.find() == false)
+            return null;
+        //
+        String ns = m.group(1);
+        String path = m.group(2);
+        String info = m.group(3);
+        //
+        StringBuffer sb = new StringBuffer();
+        if (ns == null)
+            sb.append(defaultNS);
         else
-            actionURI.append(this.submitService.getDefaultNameSpaceString() + "://");
-        actionURI.append(requestURI.substring(this.contextPath.length()));
-        if (actionURI.charAt(0) == '/')
-            actionURI = actionURI.deleteCharAt(0);
-        if (userInfo == null || userInfo.equals("") == true)
-            return actionURI.toString();
-        else
-            return actionURI.toString() + "?" + userInfo;
+            sb.append(ns);
+        sb.append("://");
+        sb.append(path);
+        if (info != null) {
+            sb.append("?");
+            sb.append(info);
+        }
+        try {
+            return new URI(sb.toString());
+        } catch (URISyntaxException e) {
+            return null;
+        }
     }
     /** 执行调用 */
-    private Object doAction(ActionObject ao, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private Object doAction(URI uri, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            HttpServletRequest httpRequest = (HttpServletRequest) request;
-            HttpServletResponse httpResponse = (HttpServletResponse) response;
-            String uri = this.getActionURI(httpRequest);
-            return this.submitService.getActionObject(uri).doAction(httpRequest, httpResponse);//执行调用
+            //初始化WebHelper
+            WebHelper.reset();
+            WebHelper.setHttpRequest(request);
+            WebHelper.setHttpResponse(response);
+            WebHelper.setHttpSession(request.getSession(true));
+            WebHelper.setHttpContext(request.getSession(true).getServletContext());
+            return this.submitService.getActionObject(uri).doAction();//执行调用
         } catch (Throwable e) {
             if (e instanceof ServletException)
                 throw (ServletException) e;
@@ -121,14 +150,11 @@ public class SubmitRoot extends HttpServlet implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         //
-        try {
-            String uri = this.getActionURI(req);
-            ActionObject ao = this.submitService.getActionObject(uri);
-            if (ao != null) {
-                this.doAction(ao, req, res);
-                return;
-            }
-        } catch (Exception e) {}
+        URI uri = this.getActionURI(req);
+        if (uri != null) {
+            this.doAction(uri, req, res);
+            return;
+        }
         chain.doFilter(req, res);
     };
     /** 中央调度Servlet */
@@ -136,16 +162,15 @@ public class SubmitRoot extends HttpServlet implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         //
-        String uri = this.getActionURI(req);
-        try {
-            ActionObject ao = this.submitService.getActionObject(uri);
-            if (ao != null)
-                this.doAction(ao, req, res);
-        } catch (Exception e) {
-            res.sendError(404, "不存在的请求动作:<br/>" + uri);
+        URI uri = this.getActionURI(req);
+        if (uri != null) {
+            this.doAction(uri, req, res);
+            return;
         }
+        res.sendError(404, "不存在的请求动作:<br/>" + uri);
     };
 };
+@SuppressWarnings("unchecked")
 class FilterSubmitConfig implements Config<ServletContext> {
     private FilterConfig config = null;
     public FilterSubmitConfig(FilterConfig config) {
@@ -161,6 +186,7 @@ class FilterSubmitConfig implements Config<ServletContext> {
         return this.config.getInitParameterNames();
     };
 }
+@SuppressWarnings("unchecked")
 class ServletSubmitConfig implements Config<ServletContext> {
     private ServletConfig config = null;
     public ServletSubmitConfig(ServletConfig config) {

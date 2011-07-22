@@ -24,10 +24,8 @@ import java.lang.annotation.Target;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD })
+@Target({ ElementType.METHOD, ElementType.TYPE })
 public @interface ActionPack {
-    /**该属性是用于描述当前action的访问路径是什么，如果为空则是方法的全名限定。*/
-    public String ns() default "";
     /**该属性是用于描述当前action的访问路径是什么，如果为空则是方法的全名限定。*/
     public String value();
 };

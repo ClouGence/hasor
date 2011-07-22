@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 package org.more.submit;
+import java.net.URI;
 /**
  * 该接口为一个命名空间提供对象索引服务。
  * @version : 2011-7-14
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface ActionContext {
-    /** 获取所有Action的对象名。*/
-    public String[] getActionIDs();
-    /**获取Bean对象，第二个参数是携带的用户查询信息。*/
-    public ActionInvoke getAction(String name, String userInfo);
+    /**获取Action执行对象，第二个参数是携带的用户查询信息。*/
+    public ActionInvoke getAction(URI uri);
     /**定义一个action包，如果该包已经定义则返回定义的action包。*/
     public ActionPackage definePackage(String packageName);
 }

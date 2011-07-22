@@ -18,32 +18,35 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
+import org.more.submit.web.WebHelper;
+import org.more.util.attribute.IAttribute;
 import org.more.util.attribute.TransformToMap;
 /**
- * 负责提供HttpServletRequest到{@link Scope Scope接口}的代理。
+ * 负责提供HttpServletRequest到{@link IAttribute IAttribute接口}的代理。
  * @version 2009-12-28
  * @author 赵永春 (zyc@byshell.org)
  */
-public class RequestScope implements Scope {
-    private HttpServletRequest request;
-    public RequestScope(HttpServletRequest request) {
-        this.request = request;
+public class RequestScope implements IAttribute {
+    public static final String Name = "Request";
+    //
+    protected HttpServletRequest getHttpRequest() {
+        return WebHelper.getHttpRequest();
     };
     public boolean contains(String name) {
-        return this.request.getAttribute(name) != null;
+        return this.getHttpRequest().getAttribute(name) != null;
     };
     public void setAttribute(String name, Object value) {
-        this.request.setAttribute(name, value);
+        this.getHttpRequest().setAttribute(name, value);
     };
     public Object getAttribute(String name) {
-        return this.request.getAttribute(name);
+        return this.getHttpRequest().getAttribute(name);
     };
     public void removeAttribute(String name) {
-        this.request.removeAttribute(name);
+        this.getHttpRequest().removeAttribute(name);
     };
     public String[] getAttributeNames() {
         Vector<String> v = new Vector<String>(0);
-        Enumeration<?> attEnum = this.request.getAttributeNames();
+        Enumeration<?> attEnum = this.getHttpRequest().getAttributeNames();
         while (attEnum.hasMoreElements())
             v.add(attEnum.nextElement().toString());
         String[] ns = new String[v.size()];

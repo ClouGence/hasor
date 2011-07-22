@@ -19,6 +19,7 @@ import java.util.Vector;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.more.submit.web.WebHelper;
 import org.more.util.attribute.IAttribute;
 import org.more.util.attribute.TransformToMap;
 /**
@@ -26,31 +27,33 @@ import org.more.util.attribute.TransformToMap;
  * @version 2009-12-28
  * @author 赵永春 (zyc@byshell.org)
  */
-public class CookieScope implements Scope {
-    private HttpServletRequest  request;
-    private HttpServletResponse response;
-    private int                 maxAge = 31536000; //365天
-    public CookieScope(HttpServletRequest request, HttpServletResponse response) {
-        this.request = request;
-        this.response = response;
+public class CookieScope implements IAttribute {
+    public static final String Name   = "Cookie";
+    private int                maxAge = 31536000; //365天
+    //
+    protected HttpServletRequest getHttpRequest() {
+        return WebHelper.getHttpRequest();
+    };
+    protected HttpServletResponse getHttpResponse() {
+        return WebHelper.getHttpResponse();
     };
     public void clearAttribute() {
-        Cookie[] cs = this.request.getCookies();
+        Cookie[] cs = this.getHttpRequest().getCookies();
         for (int i = 0; i < cs.length; i++) {
             Cookie c = cs[i];
             c.setMaxAge(0);
-            this.response.addCookie(c);
+            this.getHttpResponse().addCookie(c);
         }
     };
     public boolean contains(String name) {
-        Cookie[] cs = this.request.getCookies();
+        Cookie[] cs = this.getHttpRequest().getCookies();
         for (int i = 0; i < cs.length; i++)
             if (cs[i].equals(name) == true)
                 return true;
         return false;
     };
     public Object getAttribute(String name) {
-        Cookie[] cs = this.request.getCookies();
+        Cookie[] cs = this.getHttpRequest().getCookies();
         if (cs != null)
             for (int i = 0; i < cs.length; i++)
                 if (cs[i].equals(name) == true)
@@ -59,7 +62,7 @@ public class CookieScope implements Scope {
     };
     public String[] getAttributeNames() {
         Vector<String> v = new Vector<String>(0);
-        Cookie[] cs = this.request.getCookies();
+        Cookie[] cs = this.getHttpRequest().getCookies();
         for (int i = 0; i < cs.length; i++)
             v.add(cs[i].getName());
         String[] ns = new String[v.size()];
@@ -67,30 +70,30 @@ public class CookieScope implements Scope {
         return ns;
     };
     public void removeAttribute(String name) {
-        Cookie[] cs = this.request.getCookies();
+        Cookie[] cs = this.getHttpRequest().getCookies();
         for (int i = 0; i < cs.length; i++)
             if (cs[i].equals(name) == true) {
                 Cookie c = cs[i];
                 c.setMaxAge(0);
-                this.response.addCookie(c);
+                this.getHttpResponse().addCookie(c);
             }
     };
     public void setAttribute(String name, Object value) {
         //Cookie范围
         Cookie c = new Cookie(name, value.toString());
         c.setMaxAge(maxAge);//365天失效
-        this.response.addCookie(c);
+        this.getHttpResponse().addCookie(c);
     };
     public void setCookieAttribute(String name, String value, int age) {
         Cookie c = new Cookie(name, value);
         c.setMaxAge(age);
-        this.response.addCookie(c);
+        this.getHttpResponse().addCookie(c);
     };
     public void setCookieAttribute(Cookie cookie) {
-        this.response.addCookie(cookie);
+        this.getHttpResponse().addCookie(cookie);
     };
     public Cookie getCookieAttribute(String name) {
-        Cookie[] cs = this.request.getCookies();
+        Cookie[] cs = this.getHttpRequest().getCookies();
         for (int i = 0; i < cs.length; i++)
             if (cs[i].equals(name) == true)
                 return cs[i];

@@ -23,13 +23,12 @@ import org.more.util.attribute.IAttribute;
 public interface ActionStack extends IAttribute {
     /**获取当前堆栈的父堆栈。*/
     public ActionStack getParent();
-    
-    
-    
+    /**获取{@link SubmitService}接口对象。*/
+    public SubmitService getSubmitService();
+    /**获取参数。*/
     public Object getParam(String key);
-    public Object getParam(int index);
+    /**获取参数。*/
     public String getParamString(String key);
-    public String getParamString(int index);
-    
-    public Object returnCall(String script,Object...objects);
+    /**当返回action的时候执行回调脚本。*/
+    public void returnCall(String script, Object... objects);
 };
