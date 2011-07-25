@@ -23,7 +23,7 @@ import org.more.util.attribute.IAttribute;
  * Date : 2011-4-11
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class EO_AppContext implements ELObject {
+public class EO_App implements ELObject {
     private ApplicationContext context = null;
     public void init(ApplicationContext context, IAttribute flash) {
         this.context = context;

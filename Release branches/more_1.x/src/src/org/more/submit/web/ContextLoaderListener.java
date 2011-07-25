@@ -75,6 +75,7 @@ public class ContextLoaderListener implements ServletContextListener {
             });
         xdr.loadDefine();
         DefaultApplicationContext app = new DefaultApplicationContext(xdr);
+        app.setContextObject(event.getServletContext());
         return app;
     };
 }

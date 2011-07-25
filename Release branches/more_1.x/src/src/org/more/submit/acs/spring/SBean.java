@@ -27,5 +27,5 @@ import java.lang.annotation.Target;
 @Target({ ElementType.TYPE })
 public @interface SBean {
     /**说明spring中配置的beanID*/
-    public String beanID();
+    public String refID();
 };
