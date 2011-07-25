@@ -18,7 +18,7 @@
 	</regedit>
 	<regedit initSequence="-10"> 
 		<namespace>http://project.byshell.org/more/schema/submit</namespace> 
-		<factory>org.more.submit.acs.hypha.xml.Register_Submit</factory> 
+		<factory>org.more.submit.acs.simple.xml.Register_Submit</factory> 
 		<schema enable="false">/META-INF/resource/hypha/submit-schema.xsd</schema> 
 	</regedit>
 	<!-- ===================================================================================== -->
