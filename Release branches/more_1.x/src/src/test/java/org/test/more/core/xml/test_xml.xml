@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<beans xmlns="http://www.test.org/schema/beans" xmlns:config="http://www.test.org/schema/config" xmlns:bean="http://www.test.org/schema/b">
+	<config name="a" type="a.b.c">
+	a
+	b
+	c
+	adf
+	d
+	e
+	f
+	</config>
+
+	<config:config name="b">
+	</config:config>
+	<a xmlns:bean="http://www.test.org/schema/bb" xmlns:b="http://www.test.org/schema/bb">
+		<bean:beans>
+			<bean:bean bean:name="222">
+	
+			</bean:bean>
+		</bean:beans>
+		<b:beans>
+			<b:bean bean:name="222">
+	
+			</b:bean>
+		</b:beans>
+	</a>
+	<bean:beans>
+	<bean:bean xmlns:aop="http://www.test.org/schema/aop" xmlns:config="http://www.test.org/schema/config2" xmlns:att="http://www.test.org/schema/att">
+		<aop:before config:name="cn" bean:name="bn" att:name="aaa">
+			<aop:point name="aaaaa" class="bbbb"/>
+			<!-- sgdsf -->
+		</aop:before>
+		<config:param />
+	</bean:bean>
+	<bean:bean bean:name="name">
+	
+	</bean:bean>
+	</bean:beans>
+	
+</beans>
