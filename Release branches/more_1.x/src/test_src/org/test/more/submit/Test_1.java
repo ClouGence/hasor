@@ -13,51 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.test.more.hypha.xml;
+package org.test.more.submit;
+import java.net.URI;
+import java.net.URL;
 import org.junit.Test;
-import org.more.hypha.aop.AopService;
 import org.more.hypha.context.app.DefaultApplicationContext;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.submit.ActionObject;
+import org.more.submit.SubmitService;
+import com.google.inject.Guice;
 /**
  * @version 2010-10-18
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class XmlTest {
+public class Test_1 {
     @Test
     public void test() throws Throwable {
-        test_0();
+        try {
+            test_0();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
     }
     public void test_0() throws Throwable {
         System.out.println("start...");
         XmlDefineResource xdr = new XmlDefineResource();
         //
-        xdr.addSource("org/test/more/hypha/xml/class-beans-test-config.xml");
-        xdr.addSource("/org/test/more/hypha/xml/ref-beans-test-config.xml");
-        xdr.addSource("/org/test/more/hypha/xml/template-beans-test-config.xml");
-        //xdr.addSource("/org/test/more/hypha/xml/script-beans-test-config.xml");
-        xdr.addSource("/org/test/more/hypha/xml/var-beans-test-config.xml");
-        xdr.addSource("/org/test/more/hypha/xml/aop-test-config.xml");
-        xdr.addSource("/org/test/more/hypha/xml/anno-test-config.xml");
+        xdr.addSource("org/test/more/submit/submit-config.xml");
         xdr.loadDefine();
         //
         DefaultApplicationContext app = new DefaultApplicationContext(xdr);
+        //
+        app.setAttribute("guice-injector", Guice.createInjector());
+        app.setAttribute("guice-modules", "SDASDASDF");
+        //
         app.init();
         System.out.println("----------------------------------");
         //
-        for (String n : app.getBeanDefinitionIDs()) {
-            System.out.println("\t" + n);
-            if (app.getBeanDefinition(n).isAbstract() == false) {
-                Object obj = app.getBean(n);
-                //if (obj != null)
-                //System.out.print(obj.getClass() + "\t");
-                //System.out.println(obj);
-                // System.out.println("***********************************");
-            }
-        }
+        SubmitService submit = app.getService(SubmitService.class);
+        ActionObject v_1 = submit.getActionObject("spring://org.test.more.submit.ActionBean_1.testAction_1/");
+        ActionObject v_2 = submit.getActionObject("guice://org.test.more.submit.ActionBean_1.testAction_2/");
+        ActionObject v_3 = submit.getActionObject("a://ta1/");
+        ActionObject v_4 = submit.getActionObject("a://ta2/");
         //
-        //
-        AopService aopConfig = (AopService) app.getService(AopService.class);
-        System.out.println(aopConfig);
         //
         System.gc();
     }

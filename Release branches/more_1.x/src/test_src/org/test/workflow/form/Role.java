@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package org.test.workflow.form;
-import javax.xml.crypto.Data;
+import java.util.Date;
 import org.more.workflow.form.FormBean;
 public class Role implements FormBean {
     private String name = "namefafds";
     public void setName(String name) {
         this.name = name;
     }
-    public void setCreateTime(Data createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
     private Data createTime = null;

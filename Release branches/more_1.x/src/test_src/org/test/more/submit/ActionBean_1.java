@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 package org.test.more.submit;
-import org.more.submit.ActionStack;
-import org.more.submit.ext.filter.ActionFilter;
-import org.more.submit.ext.filter.Filter;
-import org.more.submit.ext.filter.FilterChain;
+import org.more.hypha.anno.define.Bean;
+import org.more.submit.acs.simple.Action;
 /**
- *
- * <br/>Date : 2009-12-2
- * @author Administrator
+ * 
+ * @version : 2011-7-14
+ * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@Filter
-public class ActionF implements ActionFilter {
-    public Object doActionFilter(ActionStack stack, FilterChain chain) throws Throwable {
-        System.out.println("filter F");
-        return chain.doInvokeFilter(stack);
-    }
+@Bean(id = "actionBean")
+public class ActionBean_1 {
+    @Action()
+    public Object testAction_1() {
+        return null;
+    };
+    @Action()
+    public Object testAction_2() {
+        return null;
+    };
 }

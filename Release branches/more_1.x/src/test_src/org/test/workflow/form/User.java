@@ -39,11 +39,9 @@ public class User implements FormBean, StateCache {
     public void setPassword(String password) {
         this.password = password;
     }
-    @Override
     public void recoverState(IAttribute states) {
         this.account = (String) states.getAttribute("account");
     }
-    @Override
     public void saveState(IAttribute states) {
         states.setAttribute("account", account);
     }

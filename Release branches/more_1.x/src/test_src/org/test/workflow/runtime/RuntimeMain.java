@@ -25,7 +25,7 @@ import org.more.workflow.util.Config;
 public class RuntimeMain {
     /**
      * @param args
-     * @throws Throwable 
+     * @throws Throwable
      */
     public static void main(String[] args) throws Throwable {
         RuntimeMetadata fm = new RuntimeMetadata("Action", ActionRuntime.class);
@@ -38,7 +38,6 @@ public class RuntimeMain {
         System.out.println(runtime);
         //
         runtime.addListener(new EventListener() {
-            @Override
             public void doListener(EventPhase event) {
                 System.out.println(event.getEventPhaseType() + "---" + event.getEvent());
             }
@@ -52,14 +51,12 @@ public class RuntimeMain {
     };
 };
 class ActionParam implements Config {
-    @Override
     public Object getParam(String key) {
         if (key.equals("action"))
             return "test.action";
         else
             return null;
     }
-    @Override
     public Iterable<String> getParamNamesIterable() {
         return null;
     }

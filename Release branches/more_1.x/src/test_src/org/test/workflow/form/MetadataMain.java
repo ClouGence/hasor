@@ -25,7 +25,7 @@ import org.more.workflow.metadata.PropertyMetadata;
 public class MetadataMain {
     /**
      * @param args
-     * @throws Throwable 
+     * @throws Throwable
      */
     public static void main(String[] args) throws Throwable {
         FormMetadata fm = new FormMetadata("userMetadata", User.class);
@@ -33,13 +33,11 @@ public class MetadataMain {
         fm.addProperty(new PropertyMetadata("role.name", "this.account + '≤‚ ‘ ˝æ›'"));
         fm.addProperty(new PropertyMetadata("password", "this.account+',password'"));
         fm.getProperty("role.name").addListener(new EventListener() {
-            @Override
             public void doListener(EventPhase event) {
                 System.out.println("prop [role.name]\t" + event.getEvent());
             }
         });
         fm.addListener(new EventListener() {
-            @Override
             public void doListener(EventPhase event) {
                 System.out.println(event.getEventPhaseType() + "---" + event.getEvent());
             }

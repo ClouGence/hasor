@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 package org.test.more.submit;
-import org.more.submit.Action;
-import org.more.submit.ActionStack;
-@Action
-public class TestAction {
-    public Object xml(ActionStack stack) throws Throwable {
-        System.out.println("hello word");
-        return stack.getContext().doActionOnStack("test.test", stack, null);
-    }
-    public Object test(ActionStack stack) {
-        System.out.println("hello word");
-        return "hello";
-    }
+import org.more.submit.impl.DefaultSubmitService;
+/**
+ * 
+ * @version : 2011-7-15
+ * @author ’‘”¿¥∫ (zyc@byshell.org)
+ */
+public class TestSubmitServiceImpl extends DefaultSubmitService {
+    /**  */
+    private static final long serialVersionUID = 5194301197931734400L;
+    public TestSubmitServiceImpl() {
+        System.out.println("TestSubmitServiceImpl");
+    };
 }

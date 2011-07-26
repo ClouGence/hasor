@@ -24,12 +24,12 @@ public class Test {
     public static void main(String[] args) {
         ArrayList aa = new ArrayList();
         aa.add("aaa");
-//        aa.add(new User());
+        //        aa.add(new User());
         HashMap a = new HashMap();
-//        a.put(false, aa);
+        //        a.put(false, aa);
         a.put("aa", aa);
-//        a.put(1, aa);
-//        a.put(3, aa);
+        //        a.put(1, aa);
+        //        a.put(3, aa);
         //
         JsonUtil ju = new JsonUtil('\'');
         System.out.println(ju.toString(a));
