@@ -52,10 +52,12 @@ public class ContextLoaderListener implements ServletContextListener {
             String name = (String) enums.nextElement();
             this.context.setAttribute(name, sc.getInitParameter(name));
         }
-        // 
+        //2.设置必要属性
         String attName = SubmitService.class.getName();
         if (this.context.getAttribute(attName) == null)
             this.context.setAttribute(attName, WebSubmitService.class.getName());
+        if (this.context.getAttribute("rootPath") == null)
+            this.context.setAttribute("rootPath", sc.getRealPath(""));
         this.context.init();//初始化context
     };
     protected ApplicationContext createContext(ServletContextEvent event) throws Throwable {

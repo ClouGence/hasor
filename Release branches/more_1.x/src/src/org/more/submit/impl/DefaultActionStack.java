@@ -27,12 +27,10 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春(zyc@byshell.org)
  */
 public class DefaultActionStack implements ActionStack {
-    private AttBase       attBase    = new AttBase();
-    private ActionStack   parent     = null;
-    private SubmitService service    = null;
+    private AttBase       attBase = new AttBase();
+    private ActionStack   parent  = null;
+    private SubmitService service = null;
     //
-    private Object[]      callParams = null;
-    private String        callName   = null;
     /*--------*/
     public DefaultActionStack(URI uri, ActionStack parent, SubmitService service) {
         this.parent = parent;
@@ -59,16 +57,6 @@ public class DefaultActionStack implements ActionStack {
             obj = this.service.getScopeStack().getAttribute(key);
         return obj;
     };
-    public void returnCall(String script, Object... objects) {
-        this.callName = script;
-        this.callParams = objects;
-    };
-    Object[] getCallParams() {
-        return this.callParams;
-    }
-    String getCallName() {
-        return this.callName;
-    }
     /*--------*/
     /**从当前参数作用域中查找一个属性是否存在。*/
     public boolean contains(String name) {

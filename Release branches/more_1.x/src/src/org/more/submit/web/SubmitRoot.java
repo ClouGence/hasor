@@ -31,6 +31,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.more.core.json.JsonUtil;
 import org.more.hypha.ApplicationContext;
 import org.more.submit.SubmitService;
 import org.more.util.Config;
@@ -164,7 +165,9 @@ public class SubmitRoot extends HttpServlet implements Filter {
         //
         URI uri = this.getActionURI(req);
         if (uri != null) {
-            this.doAction(uri, req, res);
+            Object _res = this.doAction(uri, req, res);
+            if (res.isCommitted() == false)
+                res.getWriter().write(new JsonUtil().toString(_res));
             return;
         }
         res.sendError(404, "不存在的请求动作:<br/>" + uri);

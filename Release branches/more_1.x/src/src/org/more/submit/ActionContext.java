@@ -24,5 +24,5 @@ public interface ActionContext {
     /**获取Action执行对象，第二个参数是携带的用户查询信息。*/
     public ActionInvoke getAction(URI uri) throws Throwable;
     /**定义一个action包，如果该包已经定义则返回定义的action包。*/
-    public ActionPackage definePackage(String packageName);
+    public ActionPackage definePackage(String packageName) throws Throwable;
 }

@@ -29,7 +29,7 @@ import java.util.Map;
  * @version 2009-12-16
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class JdbcDaoSupport {
     Connection connection;
     public JdbcDaoSupport(Connection conn) {

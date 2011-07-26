@@ -16,16 +16,16 @@
 package org.more.dao.jdbc;
 import java.sql.Connection;
 import javax.sql.DataSource;
-import org.more.CastException;
-import org.more.core.classcode.AOPFilterChain;
-import org.more.core.classcode.AOPInvokeFilter;
-import org.more.core.classcode.AOPMethods;
+import org.more.core.classcode.AopFilterChain;
+import org.more.core.classcode.AopInvokeFilter;
+import org.more.core.classcode.Method;
+import org.more.core.error.TransformException;
 /**
  * JobSupport的事务控制器。
  * @version 2009-12-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class JdbcTransactionManager implements AOPInvokeFilter {
+public class JdbcTransactionManager implements AopInvokeFilter {
     //========================================================================================Field
     private DataSource           dataSource;
     private boolean              autoCommit = false;
@@ -43,15 +43,14 @@ public class JdbcTransactionManager implements AOPInvokeFilter {
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
-    @Override
-    public Object doFilter(Object target, AOPMethods methods, Object[] args, AOPFilterChain chain) throws Throwable {
-        String mn = methods.getPropxyMethod().getName();
+    public Object doFilter(Object target, Method method, Object[] args, AopFilterChain chain) throws Throwable {
+        String mn = method.getProxyMethod().getName();
         if (mn.equals("getDataSource") == true || mn.equals("setDataSource") == true || //
                 mn.equals("getJdbcDaoSupport") == true || mn.equals("setJdbcDaoSupport") == true)
-            return chain.doInvokeFilter(target, methods, args);
+            return chain.doInvokeFilter(target, method, args);
         //----------
         if (target instanceof JobSupport == false)
-            throw new CastException("类型" + target.getClass() + "没有继承JobSupport父类无法实现事务控制。");
+            throw new TransformException("类型" + target.getClass() + "没有继承JobSupport父类无法实现事务控制。");
         JobSupport ds = (JobSupport) target;
         //
         Boolean isRunning = this.running.get();
@@ -69,7 +68,7 @@ public class JdbcTransactionManager implements AOPInvokeFilter {
             //
             try {
                 this.begin(conn);
-                Object obj = chain.doInvokeFilter(target, methods, args);
+                Object obj = chain.doInvokeFilter(target, method, args);
                 this.commit(conn);
                 return obj;
             } catch (Exception e) {
@@ -82,7 +81,7 @@ public class JdbcTransactionManager implements AOPInvokeFilter {
             }
             /*---------------------------*/
         } else
-            return chain.doInvokeFilter(target, methods, args);
+            return chain.doInvokeFilter(target, method, args);
     }
     //==========================================================================================Job
     private void begin(Connection conn) throws Throwable {
@@ -96,5 +95,5 @@ public class JdbcTransactionManager implements AOPInvokeFilter {
     private void rollBack(Connection conn) throws Throwable {
         if (autoCommit == false)
             conn.rollback();
-    };
+    }
 }

@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 package org.more.submit.impl;
-import java.io.InputStream;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import org.more.submit.ActionInvoke;
 import org.more.submit.ActionObject;
 import org.more.submit.ActionStack;
-import org.more.util.ScriptUtil;
+import org.more.submit.ResultProcess;
 /**
  *  默认{@link ActionObject}接口实现。
  * @version : 2011-7-15
@@ -69,19 +68,14 @@ public class DefaultActionObject implements ActionObject {
         DefaultActionStack onStack = this.submitService.createStack(this.uri, stack, params);
         return this.callBack(onStack, this.invoke.invoke(onStack));
     };
-    /*执行脚本回调*/
+    /*执行后续处理*/
     private Object callBack(DefaultActionStack onStack, Object res) throws Throwable {
-        final String scriptBase = "META-INF/resource/submit/scripts/";
-        String callName = onStack.getCallName();
-        Object[] callParams = onStack.getCallParams();
-        //
-        String scriptName = scriptBase + callName + ".js";
-        InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(scriptName);
-        HashMap<String, Object> params = new HashMap<String, Object>();
-        params.put("Stack", onStack);
-        params.put("Submit", onStack.getSubmitService());
-        params.put("Params", callParams);
-        params.put("Result", res);
-        return ScriptUtil.runScript(in, params);
+        if (res instanceof String == false)
+            return res;
+        String str = (String) res;
+        ResultProcess rp = this.submitService.getResultProcess(str);
+        if (rp == null)
+            return res;
+        return rp.invoke(onStack, res);
     };
 };

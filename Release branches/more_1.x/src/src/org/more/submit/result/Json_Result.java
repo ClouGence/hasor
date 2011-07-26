@@ -13,20 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit;
-import org.more.util.attribute.IAttribute;
+package org.more.submit.result;
+import org.more.core.json.JsonUtil;
+import org.more.submit.ResultProcess;
+import org.more.submit.impl.DefaultActionStack;
 /**
- * 代表一个action执行时的参数堆栈，每当请求执行Action方法时候submit都会自动创建一个新的堆栈。
- * @version : 2011-7-14
+ * 藏住你换成json对象
+ * @version : 2011-7-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ActionStack extends IAttribute {
-    /**获取当前堆栈的父堆栈。*/
-    public ActionStack getParent();
-    /**获取{@link SubmitService}接口对象。*/
-    public SubmitService getSubmitService();
-    /**获取参数。*/
-    public Object getParam(String key);
-    /**获取参数。*/
-    public String getParamString(String key);
+public class Json_Result implements ResultProcess {
+    private JsonUtil json = new JsonUtil();
+    //
+    public Object invoke(DefaultActionStack onStack, Object res) {
+        return this.json.toString(res);
+    };
+    public void addParam(String key, String value) {
+        if (key.equals("border") == true)
+            this.json.setStringBorder(value.charAt(0));
+    };
 };

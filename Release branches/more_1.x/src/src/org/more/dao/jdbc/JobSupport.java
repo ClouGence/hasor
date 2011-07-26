@@ -58,7 +58,6 @@ public class JobSupport {
         this.jdbcDaoSupport = null;
     }
     /**finalize方法会调用releaseJdbcDaoSupport方法以释放资源。*/
-    @Override
     protected void finalize() throws Throwable {
         try {
             this.releaseJdbcDaoSupport();

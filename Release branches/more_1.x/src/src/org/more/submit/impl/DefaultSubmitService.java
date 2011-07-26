@@ -28,16 +28,16 @@ import org.more.util.attribute.IAttribute;
 public class DefaultSubmitService extends AbstractSubmitService {
     private static final long serialVersionUID = 8665931474234786465L;
     //
-    public void start(ApplicationContext context, IAttribute flash) {}
+    public void start(ApplicationContext context, IAttribute flash) {};
     public void stop(ApplicationContext context, IAttribute flash) {}
     //
     protected DefaultActionObject createActionObject(URI uri, ActionInvoke invoke) {
         /*日后的扩展在这里开发*/
         return new DefaultActionObject(invoke, this, uri);
-    }
+    };
     protected DefaultActionStack createStack(URI uri, ActionStack onStack, Map<String, ?> params) {
         DefaultActionStack stack = new DefaultActionStack(uri, onStack, this);
         stack.putALL(params);
         return stack;
-    }
+    };
 };

@@ -16,7 +16,10 @@
 package org.more.submit;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.more.submit.impl.DefaultActionStack;
 import org.more.submit.impl.DefaultSubmitService;
 import org.more.util.AttributeConfigBridge;
 import org.more.util.Config;
@@ -32,6 +35,7 @@ public class SubmitBuild extends AttBase {
     private Object                     context          = null;
     private String                     defaultNS        = null;
     private List<ActionContextBuilder> config_acb       = new ArrayList<ActionContextBuilder>();
+    private Map<String, ResultProcess> config_res       = new HashMap<String, ResultProcess>();
     //==========================================================================================Job
     public SubmitBuild() {};
     public SubmitBuild(Object context) {
@@ -63,11 +67,14 @@ public class SubmitBuild extends AttBase {
         for (ActionContextBuilder builder : this.config_acb) {
             builder.init(config);
             service.regeditNameSpace(builder.getPrefix(), builder.builder());
-        }
+        };
         //4.设置默认命名空间
         service.changeDefaultNameSpace(defaultNS);
+        //5.装配初始化ResultProcess
+        for (String key : this.config_res.keySet())
+            service.addResult(key, this.config_res.get(key));
         return service;
-    }
+    };
     /**设置默认命名空间*/
     public void setDefaultNameSpace(String defaultNS) {
         this.defaultNS = defaultNS;
@@ -76,5 +83,33 @@ public class SubmitBuild extends AttBase {
     public void addActionContexBuilder(ActionContextBuilder acb) {
         if (acb != null)
             this.config_acb.add(acb);
+    };
+    public ResultProcess addResult(String match, String process) {
+        ResultProcess rp = new Propxy_ResultProcess(process);
+        this.config_res.put(match, rp);
+        return rp;
+    };
+    public ResultProcess addResult(String match, ResultProcess process) {
+        this.config_res.put(match, process);
+        return process;
+    };
+};
+class Propxy_ResultProcess implements ResultProcess {
+    private String                  process       = null;
+    private ResultProcess           processObject = null;
+    private HashMap<String, String> configParam   = new HashMap<String, String>();
+    public Propxy_ResultProcess(String process) {
+        this.process = process;
+    };
+    public Object invoke(DefaultActionStack onStack, Object res) throws Throwable {
+        if (this.processObject == null) {
+            this.processObject = (ResultProcess) Thread.currentThread().getContextClassLoader().loadClass(process).newInstance();
+            for (String key : this.configParam.keySet())
+                this.processObject.addParam(key, this.configParam.get(key));
+        }
+        return this.processObject.invoke(onStack, res);
+    };
+    public void addParam(String key, String value) {
+        this.configParam.put(key, value);
     };
 };

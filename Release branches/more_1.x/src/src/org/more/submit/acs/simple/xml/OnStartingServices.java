@@ -50,7 +50,7 @@ class OnStartingServices implements EventListener<StartingServicesEvent> {
         if (this.config.acList != null)
             for (B_AC acb : this.config.acList) {
                 String prefix = acb.getNamespace();
-                ActionContext ac = context.getBean(acb.getRefBean());
+                ActionContext ac = new AC_Propxy(context, acb.getRefBean());;
                 service.regeditNameSpace(prefix, ac);
             }
         //4.×¢²áMapping

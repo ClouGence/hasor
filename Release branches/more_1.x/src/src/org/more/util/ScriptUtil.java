@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Map;
+import javax.script.Invocable;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -80,4 +81,40 @@ public abstract class ScriptUtil {
             c.setAttribute(key, params.get(key), ScriptContext.GLOBAL_SCOPE);
         return scriptEngine.eval(reader, c);
     };
+    /**获取可以执行调用的{@link Invocable}对象。*/
+    public static Invocable getInvocable(InputStream script, Map<String, ?> params) throws Exception {
+        return getInvocable(new InputStreamReader(script), params);
+    }
+    /**获取可以执行调用的{@link Invocable}对象。*/
+    public static Invocable getInvocable(CharSequence sequence, Map<String, ?> params) throws Exception {
+        StringBuffer sb = new StringBuffer(sequence);
+        String str = sb.toString();
+        return getInvocable(new StringReader(str), params);
+    }
+    /**获取可以执行调用的{@link Invocable}对象。*/
+    public static Invocable getInvocable(Reader reader, Map<String, ?> params) throws Exception {
+        return getInvocable(createScriptEngine(), reader, params);
+    }
+    /**获取可以执行调用的{@link Invocable}对象。*/
+    public static Invocable getInvocable(ScriptEngine scriptEngine, InputStream script, Map<String, ?> params) throws Exception {
+        return getInvocable(scriptEngine, new InputStreamReader(script), params);
+    }
+    /**获取可以执行调用的{@link Invocable}对象。*/
+    public static Invocable getInvocable(ScriptEngine scriptEngine, CharSequence sequence, Map<String, ?> params) throws Exception {
+        StringBuffer sb = new StringBuffer(sequence);
+        String str = sb.toString();
+        return getInvocable(scriptEngine, new StringReader(str), params);
+    }
+    /**获取可以执行调用的{@link Invocable}对象。*/
+    public static Invocable getInvocable(ScriptEngine scriptEngine, Reader reader, Map<String, ?> params) throws Exception {
+        if (scriptEngine == null)
+            throw new NullPointerException("脚本引擎不能为空。");
+        if (reader == null)
+            throw new NullPointerException("脚本reader参数为空。");
+        //执行脚本方法callBack，并且获取返回值返回
+        SimpleScriptContext c = new SimpleScriptContext();
+        for (String key : params.keySet())
+            c.setAttribute(key, params.get(key), ScriptContext.GLOBAL_SCOPE);
+        return (Invocable) scriptEngine;
+    }
 };

@@ -44,6 +44,8 @@ public class Register_Submit implements XmlNameSpaceRegister {
         kit.regeditHook("/config", new TagSubmit_Config(resource, config));
         kit.regeditHook("/actionContext", new TagSubmit_AC(resource, config));
         kit.regeditHook("/defaultAC", new TagSubmit_DefaultAC(resource, config));
+        kit.regeditHook("/result", new TagSubmit_Result(resource, config));
+        kit.regeditHook("/result/config", new TagSubmit_ResultConfig(resource, config));
         //3.×¢²áÃüÃû¿Õ¼ä
         if (namespaceURL == null)
             namespaceURL = DefaultNameSpaceURL;

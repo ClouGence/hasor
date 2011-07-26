@@ -15,7 +15,9 @@
  */
 package org.more.submit.impl;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.more.core.error.ExistException;
 import org.more.core.log.ILog;
@@ -24,6 +26,7 @@ import org.more.submit.ActionContext;
 import org.more.submit.ActionInvoke;
 import org.more.submit.ActionObject;
 import org.more.submit.ActionStack;
+import org.more.submit.ResultProcess;
 import org.more.submit.SubmitService;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
@@ -40,6 +43,10 @@ public abstract class AbstractSubmitService extends AttBase implements SubmitSer
     private String                     defaultNameSpace = null;
     private Map<String, IAttribute>    scopeMap         = new HashMap<String, IAttribute>();
     private SequenceStack              scopeStack       = new SequenceStack();
+    //
+    private Map<String, ResultProcess> processMap       = new HashMap<String, ResultProcess>();
+    private List<String>               processMatch     = new ArrayList<String>();
+    private ResultProcess              defaultResult    = null;
     //
     public void regeditNameSpace(String prefix, ActionContext context) {
         if (this.acList.containsKey(prefix) == true)
@@ -103,6 +110,31 @@ public abstract class AbstractSubmitService extends AttBase implements SubmitSer
     };
     public IAttribute getScopeStack() {
         return this.scopeStack;
+    };
+    public void addResult(String match, ResultProcess process) {
+        if (match == null || process == null)
+            return;
+        this.processMap.put(match, process);
+        this.processMatch.add(match);
+    };
+    public void setDefaultResult(ResultProcess defaultResult) {
+        this.defaultResult = defaultResult;
+    };
+    public ResultProcess getResultProcess(String name) {
+        //1.确定m
+        String m = null;
+        for (String match : this.processMatch)
+            if (name.matches(match) == true) {
+                m = match;
+                break;
+            }
+        //获取Result
+        ResultProcess rp = null;
+        if (m != null)
+            rp = this.processMap.get(m);
+        if (rp == null)
+            rp = this.defaultResult;
+        return rp;
     };
     /*-----------------------------------*/
     protected abstract ActionObject createActionObject(URI uri, ActionInvoke invoke);

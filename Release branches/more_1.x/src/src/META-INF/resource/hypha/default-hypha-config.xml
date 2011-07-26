@@ -6,6 +6,9 @@
 	xmlns:anno="http://project.byshell.org/more/schema/beans-anno"
 	xmlns:p="http://project.byshell.org/more/schema/point"
 	xmlns:submit="http://project.byshell.org/more/schema/submit">
+	
+	<b:meta key="rootPath"/><!-- 表示hypha的根路径 -->
+	
 	<!-- MetaData类型解析器的注册，当发生：InitEvent -->
 	<bc:mdParser-config>
 		<bc:parser mdType="SimpleType" class="org.more.hypha.beans.assembler.parser.SimpleType_MetaData_Parser" />
@@ -38,6 +41,7 @@
 	<el:add name="$att" class="org.more.hypha.el.assembler.EO_Attribute" />
 	<el:add name="$app" class="org.more.hypha.el.assembler.EO_App" />
 	<el:add name="$context" class="org.more.hypha.el.assembler.EO_Context" />
+
 
 	<!-- Submit v4.0 集成配置 -->
 	<!-- <submit:config key="org.more.submit.SubmitService" value="org.more.submit.impl.DefaultSubmitService"/> 该配置说明使用的SubmitService实例类，该配置是默认配置 -->
@@ -79,6 +83,17 @@
 	<submit:actionContext namespace="spring" refBean="$more_submit_spring_ac"/>
 	<!-- 默认AC -->
 	<submit:defaultAC defaultAC="simple"/>
+	<!-- 将结果集原样return -->
+	<submit:result match="return" class="org.more.submit.result.Return_Result"/>
+	<!-- freemarker默认模板 -->
+	<submit:result match="ftl:.*" class="org.more.submit.result.FTL_Result"><!-- 执行freemarker模板 -->
+		<submit:config key="suffix" value="flt"/><!-- 模板后缀名 -->
+		<submit:config key="rootPath" value="$att['rootPath']"/><!-- 模板所处根路径 -->
+	</submit:result>
+	<!-- 将结果集转换成json对象 -->
+	<submit:result match="json" class="org.more.submit.result.Json_Result">
+		<submit:config key="border" value="'"/><!-- 字符串分隔符是单引号还是双引号 -->
+	</submit:result>
 
 
 	<anno:anno package="org.more.*" enable="true"/>

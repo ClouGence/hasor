@@ -40,8 +40,8 @@ public class WebSubmitService extends DefaultSubmitService {
         this.regeditScope(CookieScope.Name, new CookieScope());
         this.regeditScope(RequestScope.Name, new RequestScope());
         this.regeditScope(JspPageScope.Name, new JspPageScope());
-    }
+    };
     protected WebActionStack createStack(URI uri, ActionStack onStack, Map<String, ?> params) {
         return new WebActionStack(uri, onStack, this);
-    }
+    };
 };
