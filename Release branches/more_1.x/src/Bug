@@ -1,0 +1,154 @@
+项目编码:GBK，编译:jdk1.5.0_u4
+--------------------------------------------------------------------------------------------------------------------
+More 框架开发：卷I
+	前言
+	第一部分：架构
+	第二部分：包含的功能
+	
+
+
+
+More 框架开发：卷II
+
+第二部分：beans
+	接口
+	模型定义-MetaData
+	Xml解析
+		事件
+		register.xml配置文件
+		自定义Xml命名空间解析器
+	
+	
+	
+	
+	Ioc引擎
+		Fact
+		Ioc
+		Expend
+	Bean创建逻辑(EngineLogic)
+		AbstractBeanBuilder类
+			扩展点
+		AbstractBeanBuilderEx类
+			扩展点
+	ValueMetaDataParser
+		
+
+
+
+
+看懂More源码的基础：
+	数据结构、Java指令集、Java反射、Aop(静态代理,动态代理)
+	XML(Schema,XML,NameSpace,Stax)、J2EE(JSP Tag,Servlet,Filter,Req,Res)、
+	Ognl、JavaScript、IO、JDBC、MVC、
+加速里了解More：
+	Struts1.x原理，有助于了解Submit 1.x和早期版本。
+	Struts2.x原理，有助于了解Submit 2.x~3.x版本。
+	CGlib2.x，有助于了解classcode组建。
+	看懂javap，有助于了解classcode组建。
+	Spring2.x，有助于了解hypha组建和早期的Beans组建。
+	ASM3.2框架，有助于了解classcode。
+	JSON标准，有助于了解json组建。
+	JDK，有助于了解log，xml，io，task。
+
+剩下的就要看你的思维是否灵活了。
+--------------------------------------------------------------------------------------------------------------------将来计划的
+alpha6
+ 1.领域模型尝试。
+alpha5
+ 1.bean配置模板。
+ 2.表单序列化。
+ 5.表单与Bean映射。
+ 6.rest架构支持
+
+JsonUtil
+More中的JSON标准
+
+
+后续版本
+05.copybean重写计划。
+06.xpath 比较算法。
+08.等待开发的工具：
+	页面错误拦截器。
+	资源拦截器，通过资源拦截器调用submit，以及资源访问策略。有点像大filter。利用资源拦截器实现rest策略。
+	more命令行
+	more TestCase
+09.submit 标签需要增加一个可以直接向session或者context中等作用域中输出数据的功能。也应当具备清理作用域数据的标签操作 例如add remove get set
+10.flow 流转按钮集，以及流程页面状态集
+	流转集相当于流程流转命令按钮的生成器，其中要附带流转控制信息，等。
+	流程页面状态机，负责工作流和页面上的流转数据携带器。
+11.选择性支持
+  1.直接实现接口
+12.web
+	头信息管理，路径匹配和头信息策略。继承、附加、扩展、浏览器
+
+
+ResourcesUtil 
+
+
+--------------------------------------------------------------------------------------------------------------------目前版本
+bug:
+	1.submit的扩展actionjs如果遇到action名称中包含“.”将导致整个js执行失败。
+  2.classcode-目前构造方法中无法支持float和long，两个基本类型。原因不明。
+  3.classcode-对于重复使用ClassCode的字节码修改有异常。
+info:
+ hypha:
+	1.通过 constructor-arg或property描述的属性值信息，没有通过date、bigText、ref、file、directory、uri、el等描述优先级高。如果两者同时出现则后者会替换前者。
+ submit
+	1.submit的返回值脚本回调处理目前版本不支持脚本编译缓存机制，所以可能有性能问题。
+	2.已知在与Spring集成时，并且配置了aop。该注解将失效。其原因是由于Spring在生成新类时会自动忽略掉所有携带的注解信息。
+/-----------------------------------------------/
+workflow v2.0
+  1.完成，并测试workflow.el
+more core
+  1.增加了ognl表达式语言框架。
+  2.恢复被删除的Base64js文件.
+  3.伤处重复的功能类SimpeCode.
+  4.使Base64可以获取到base64.js的Reader流.
+  5.增加xml软件包
+  	1.提供了三种xml访问级别。
+  	2.可以针对xml命名空间进行解析。
+classcode v2.0
+  1.升级classcode代码，全部重写相关代码。目前版本v2.0
+  2.可以在对象上增加一个任意属性并且可以通过属性策略指定其readonly特性。
+  3.可以增加一个代理属性，通过接口实现的方法来操控属性的get、set。
+  4.增加了before,returnning,throwing三个切点的监听器。
+  5.改进了aopFilter接口注入的方法。
+hypha v2.0：
+  1.正式推出“菌丝”组建，该组建是一个Bean容器为基础支撑环境的组建，可以替代Spring。它的前身是beans组建目前推出2.0版本并且更名为菌丝。
+  2.菌丝是一个微内核的ioc容器。它可以分为三个大组成部分1.API接口、2.可扩展的模型描述信息、3.API接口实现。
+  3.6种类型Bean定义的支持，其他类型持续加入。TemplateBeanBuilder、VariableBeanBuilder，不支持AOP。
+  4.新的标签解析体系，使用了全新的 xml解析器引擎。使菌丝的配置文件可以与任意其他配置文件集成在一起。
+  5.保留了beans v1.2中的三种注入方式，Fast、Ioc、Expend。
+  6.增加了事件系统支持。
+  7.增加了EL解析器，其内核是Ognl。
+  8.增加了扩展点管理器，通过扩展点管理器可以参与bean装载创建等核心环节。
+  9.新的 bean define体系，并且可扩展。其解析器也可以通过配置文件增加到hypha中。
+  10.接口层面90%以上升级。
+  11.支持自定义服务。
+submit v3.2：
+  重要更新：
+  1.重新构建了Submit3.1的内核结构，目前升级为Submit3.2。
+  2.所有submit资源都移动到META-INF目录中。
+  3.几乎重写了整个Submit的代码，代码重写率达到80%以上。
+  4.从核心功能中分离Filter部分，使其成为一个扩展，默认的more和spring外壳实现上都已经实现了filter部分的支持。如果有支撑环境在实现ActionContext时需要支持filter那么需要在额外实现FilterContext接口即可，SubmitBuild会自动为其装饰Filter的支持。
+  5.更改submit的代码为jdk1.5兼容。
+  6.增强了submit的ActionStack，可以设置回调脚本的脚本引擎名称。从而可以选择回调脚本的脚本引擎。
+  修正：
+  1.取消了当在web模式下的WEB-INF下配置文件位置，配置文件位置被统一到classes目录下。
+  优化：
+  1.简化了casing的代码量，去除了ObjectFactory类。casing只需要实现ActionContext接口和FilterContext接口即可完成casing。
+  2.不在设立独立的web支撑环境，web支撑已经融入到submit的设计一部分中。
+  3.简化了SubmitBuild的代码量，目前无论是build一个console还是web环境上的SubmitContext都只需要经过SubmitBuild的build方法即可完成，回避了以前那种web复杂的支撑。
+  扩展：
+  1.新版本Submit支持了SubmitContext和ActionContext两个核心接口的装饰器，通过这个装饰器可以扩展Submit的功能。
+  2.增加了一个parentStack作用域的支持，可以指定作用域在Stack的父级上。
+  3.参数作用域可以通过扩展方式注册。
+json
+  1.修复将对象转换成Json数据时候丢失{}和[]数据之间的逗号问题。
+  2.修复了无法将下述格式的json转换成对象的bug，例:{{key:'key',age:12}:{a:'b'}}
+  3.增加了字符串数据可以通过属性配置决定使用单引号还是双引号环抱数据。
+  4.完成了JsonUtil类的toObject方法。
+  5.扩充了JsonUtil类的构造方法，在创建JsonUtil对象时就可以指定使用单引号还是双引号环抱字符串数据。
+actionjs
+  1.应用新协议。
+  2.解决当项目在非站点跟路径上部署时无法拦截action调用请求的bug。
