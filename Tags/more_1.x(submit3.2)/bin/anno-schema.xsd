@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://more.byshell.org/schema/anno" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="anno">
+		<xs:complexType>
+			<xs:attribute name="enable" type="xs:boolean" default="true"/>
+			<xs:attribute name="package" type="xs:string" default="*"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

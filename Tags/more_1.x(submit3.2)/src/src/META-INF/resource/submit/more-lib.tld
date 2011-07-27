@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN" "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+<taglib>
+	<tlib-version>1.0</tlib-version>
+	<jsp-version>2.0</jsp-version>
+	<short-name>More页面预处理标签库</short-name>
+	<description>通过该标签库可以方便的使用页面标签调用action同时获取action的返回值。</description>
+	<tag>
+		<name>ActionTag</name>
+		<tag-class>org.more.submit.support.ActionTag</tag-class>
+		<description>使用该标签库时可以使用页面预处理功能，所谓页面预处理功能是指在页面中以标签的形式调用后台Action方法。</description>
+		<attribute>
+			<name>process</name>
+			<rtexprvalue>true</rtexprvalue>
+			<description>要调用的目标类和方法，例test.testMethod</description>
+		</attribute>
+		<attribute>
+			<name>result</name>
+			<rtexprvalue>true</rtexprvalue>
+			<description>ActionTag当执行完action之后将action返回结果存放到某个环境中的名称。</description>
+		</attribute>
+		<attribute>
+			<name>scope</name>
+			<rtexprvalue>true</rtexprvalue>
+			<description>ActionTag当执行完action之后将action返回结果存放到哪个环境。默认是request可选项有page,request,session,context</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>ActionParamTag</name>
+		<tag-class>org.more.submit.support.ActionParamTag</tag-class>
+		<description>页面预处理标签的参数标签，该参数标签作用是向页面预处理标签中ActionManager传递环境参数变量。</description>
+		<attribute>
+			<name>key</name>
+			<rtexprvalue>true</rtexprvalue>
+			<description>要传递的环境参数名，该类型是String类型。</description>
+		</attribute>
+		<attribute>
+			<name>value</name>
+			<rtexprvalue>true</rtexprvalue>
+			<description>要传递的环境参数，该类型是Object类型。</description>
+		</attribute>
+	</tag>
+</taglib>
