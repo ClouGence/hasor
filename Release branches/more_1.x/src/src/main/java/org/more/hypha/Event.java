@@ -16,7 +16,7 @@
 package org.more.hypha;
 import java.util.HashMap;
 import org.more.core.error.InitializationException;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 /**
  * 事件是一种通知机制，使用事件不能控制主控流程的执行。不过却可以通过事件得知内部的工作状态。
@@ -25,7 +25,7 @@ import org.more.core.log.LogFactory;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class Event {
-    protected static ILog log = LogFactory.getLog(Event.class);
+    protected static Log log = LogFactory.getLog(Event.class);
     /**该类是，标志事件被压入事件管理器之后的顺序位置。*/
     public static abstract class Sequence {
         /**返回事件所处的索引位置。*/

@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 package org.more.submit.result;
+import org.more.core.json.JsonUtil;
+import org.more.submit.Result;
 import org.more.submit.ResultProcess;
 import org.more.submit.impl.DefaultActionStack;
 /**
- * return
+ * 藏住你换成json对象
  * @version : 2011-7-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Return_Result implements ResultProcess {
-    public Object invoke(DefaultActionStack onStack, Object res) {
-        return res;
-    }
-    public void addParam(String key, String value) {}
-}
+public class JsonResultProcess implements ResultProcess {
+    private JsonUtil json = new JsonUtil();
+    //
+    public Object invoke(DefaultActionStack onStack, Result res) {
+        return this.json.toString(res.getObject());
+    };
+    public void addParam(String key, String value) {
+        if (key.equals("border") == true)
+            this.json.setStringBorder(value.charAt(0));
+    };
+};

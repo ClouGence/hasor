@@ -52,7 +52,7 @@ public class SubmitRoot extends HttpServlet implements Filter {
     private Pattern           actionURLPattern = null;
     private String            defaultNS        = null;
     /*-----------------------------------------------------------------*/
-    private void init(Config<ServletContext> config) throws ServletException {
+    protected void init(Config<ServletContext> config) throws ServletException {
         try {
             /*      /([^/]+)?:/([^?]*)(?:\\?(.*))?      */
             /*      /[ns]:/[actionpath][?info]          */
@@ -85,18 +85,17 @@ public class SubmitRoot extends HttpServlet implements Filter {
     };
     /*-----------------------------------------------------------------*/
     /** 过滤器初始化方法，该方法调用init(InitParameter param) */
-    public void init(final FilterConfig config) throws ServletException {
+    public final void init(final FilterConfig config) throws ServletException {
         this.init(new FilterSubmitConfig(config));
     };
     /** Servlet初始化方法，该方法调用init(InitParameter param) */
-    public void init() throws ServletException {
+    public final void init() throws ServletException {
         final ServletConfig config = this.getServletConfig();
         this.init(new ServletSubmitConfig(config));
     };
     /*-----------------------------------------------------------------*/
-    public URI getActionURI(HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        requestURI = requestURI.substring(this.contextPath.length());
+    protected URI getActionURI(HttpServletRequest request) {
+        String requestURI = getRequestPath(request);
         String userInfo = request.getQueryString();
         if (userInfo == null || userInfo.equals("") == true) {} else
             requestURI += ("?" + userInfo);
@@ -146,6 +145,18 @@ public class SubmitRoot extends HttpServlet implements Filter {
                 throw new ServletException(e);
         }
     };
+    private void printTo(HttpServletResponse res, Object object) throws IOException {
+        if (object == null)
+            return;
+        if (res.isCommitted() == false)
+            if (object instanceof CharSequence == false)
+                res.getWriter().write(new JsonUtil().toString(object));
+            else {
+                CharSequence cs = (CharSequence) object;
+                StringBuffer sb = new StringBuffer(cs);
+                res.getWriter().write(sb.toString());
+            }
+    }
     /** 中央调度过滤器 */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
@@ -153,7 +164,7 @@ public class SubmitRoot extends HttpServlet implements Filter {
         //
         URI uri = this.getActionURI(req);
         if (uri != null) {
-            this.doAction(uri, req, res);
+            this.printTo(res, this.doAction(uri, req, res));
             return;
         }
         chain.doFilter(req, res);
@@ -165,15 +176,22 @@ public class SubmitRoot extends HttpServlet implements Filter {
         //
         URI uri = this.getActionURI(req);
         if (uri != null) {
-            Object _res = this.doAction(uri, req, res);
-            if (res.isCommitted() == false)
-                res.getWriter().write(new JsonUtil().toString(_res));
+            this.printTo(res, this.doAction(uri, req, res));
             return;
         }
         res.sendError(404, "不存在的请求动作:<br/>" + uri);
     };
+    /**获取{@link SubmitService}对象。*/
+    protected SubmitService getSubmitService() {
+        return this.submitService;
+    };
+    /**获取请求路径*/
+    protected String getRequestPath(HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        requestURI = requestURI.substring(this.contextPath.length());
+        return requestURI;
+    };
 };
-@SuppressWarnings("unchecked")
 class FilterSubmitConfig implements Config<ServletContext> {
     private FilterConfig config = null;
     public FilterSubmitConfig(FilterConfig config) {
@@ -189,7 +207,6 @@ class FilterSubmitConfig implements Config<ServletContext> {
         return this.config.getInitParameterNames();
     };
 }
-@SuppressWarnings("unchecked")
 class ServletSubmitConfig implements Config<ServletContext> {
     private ServletConfig config = null;
     public ServletSubmitConfig(ServletConfig config) {

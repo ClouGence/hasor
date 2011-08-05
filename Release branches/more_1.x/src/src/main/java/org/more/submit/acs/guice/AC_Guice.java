@@ -16,7 +16,7 @@
 package org.more.submit.acs.guice;
 import java.util.ArrayList;
 import java.util.Collection;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.submit.acs.simple.AC_Simple;
 import com.google.inject.Guice;
@@ -29,9 +29,9 @@ import com.google.inject.Module;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class AC_Guice extends AC_Simple {
-    private static ILog log           = LogFactory.getLog(AC_Guice.class);
-    public Injector     guiceInjector = null;
-    public Object       modules       = null;
+    private static Log log           = LogFactory.getLog(AC_Guice.class);
+    public Injector    guiceInjector = null;
+    public Object      modules       = null;
     //
     protected Object getBean(Class<?> type) throws Throwable {
         GBean annoBean = type.getAnnotation(GBean.class);
@@ -40,18 +40,19 @@ public class AC_Guice extends AC_Simple {
         if (guiceInjector == null) {
             ArrayList<Module> mods = new ArrayList<Module>();
             //解析modules并且配置Guice  Injector
-            if (this.modules.getClass().isArray() == true)
-                //1.数组形式
-                for (Object obj : (Object[]) this.modules)
-                    this.add(mods, obj);
-            else if (Collection.class.isAssignableFrom(this.modules.getClass()) == true)
-                //2.集合形式
-                for (Object obj : (Collection<?>) this.modules)
-                    this.add(mods, obj);
-            else
-                //3.其他
-                this.add(mods, this.modules);
-            guiceInjector = Guice.createInjector(mods);
+            if (this.modules != null)
+                if (this.modules.getClass().isArray() == true)
+                    //1.数组形式
+                    for (Object obj : (Object[]) this.modules)
+                        this.add(mods, obj);
+                else if (Collection.class.isAssignableFrom(this.modules.getClass()) == true)
+                    //2.集合形式
+                    for (Object obj : (Collection<?>) this.modules)
+                        this.add(mods, obj);
+                else
+                    //3.其他
+                    this.add(mods, this.modules);
+            this.guiceInjector = Guice.createInjector(mods);
             log.info("AC for Guice Injector created.");
         }
         //调用Guice创建对象。

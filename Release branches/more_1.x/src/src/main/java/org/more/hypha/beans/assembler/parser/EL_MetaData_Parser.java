@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.assembler.parser;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.EvalExpression;
@@ -27,7 +27,7 @@ import org.more.hypha.commons.logic.ValueMetaDataParser;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class EL_MetaData_Parser implements ValueMetaDataParser<EL_ValueMetaData> {
-    private static ILog log = LogFactory.getLog(EL_MetaData_Parser.class);
+    private static Log log = LogFactory.getLog(EL_MetaData_Parser.class);
     /*------------------------------------------------------------------------------*/
     public Object parser(Object targetObject, EL_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
         String elText = data.getElText();

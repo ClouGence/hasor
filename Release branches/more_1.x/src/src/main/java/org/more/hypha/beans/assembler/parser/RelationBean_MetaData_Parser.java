@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.assembler.parser;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.NoDefineBeanException;
@@ -28,7 +28,7 @@ import org.more.hypha.context.AbstractApplicationContext;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class RelationBean_MetaData_Parser implements ValueMetaDataParser<Relation_ValueMetaData> {
-    private static ILog log = LogFactory.getLog(RelationBean_MetaData_Parser.class);
+    private static Log log = LogFactory.getLog(RelationBean_MetaData_Parser.class);
     /*------------------------------------------------------------------------------*/
     public Object parser(Object targetObject, Relation_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
         String refBeanID = data.getRefBean();

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import org.more.core.classcode.EngineToos;
 import org.more.core.error.LostException;
 import org.more.core.error.TypeException;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractMethodDefine;
 import org.more.hypha.DefineResource;
@@ -52,7 +52,7 @@ import org.more.util.attribute.IAttribute;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class Watch_Bean implements KeepWatchParser {
-    private static ILog log = LogFactory.getLog(Watch_Bean.class);
+    private static Log log = LogFactory.getLog(Watch_Bean.class);
     public void process(Object target, Annotation annoData, XmlDefineResource resource) {
         Class<?> beanType = (Class<?>) target;
         Bean bean = beanType.getAnnotation(Bean.class);

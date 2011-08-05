@@ -15,7 +15,7 @@
  */
 package org.more.hypha.el.xml;
 import java.util.List;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ELContext;
 import org.more.hypha.ELObject;
@@ -29,7 +29,7 @@ import org.more.hypha.context.InitEvent;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class OnInit implements EventListener<InitEvent> {
-    private static ILog log = LogFactory.getLog(OnInit.class);
+    private static Log log = LogFactory.getLog(OnInit.class);
     public void onEvent(InitEvent event, Sequence sequence) throws Throwable {
         AbstractApplicationContext context = (AbstractApplicationContext) event.toParams(sequence).applicationContext;
         ClassLoader loader = context.getClassLoader();

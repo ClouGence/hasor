@@ -15,23 +15,10 @@
  */
 package org.more.core.log;
 /**
- * 日志异常
- * @version 2009-5-13
+ * 日志输出接口，该接口的目的是将日志输出到指定的位置。
+ * @version : 2011-7-29
  * @author 赵永春 (zyc@byshell.org)
  */
-public class LogException extends RuntimeException {
-    private static final long serialVersionUID = 8222826886737695884L;
-    // ===============================================================
-    /** 日志异常 */
-    public LogException() {
-        super("日志异常");
-    }
-    /** 日志异常，错误信息由参数给出 */
-    public LogException(String msg) {
-        super(msg);
-    }
-    /** 日志异常，错误信息是承接上一个异常而来 */
-    public LogException(Exception e) {
-        super(e);
-    }
-}
+public interface LogFilter {
+    public void write(String msgType, String msg, Object[] params);
+};

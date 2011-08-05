@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.anno;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.Event;
 import org.more.hypha.context.xml.XmlDefineResource;
@@ -24,7 +24,7 @@ import org.more.hypha.context.xml.XmlDefineResource;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class BeginScanEvent extends Event {
-    private static ILog log = LogFactory.getLog(BeginScanEvent.class);
+    private static Log log = LogFactory.getLog(BeginScanEvent.class);
     public class BeginScanEvent_Params extends Event.Params {
         public XmlDefineResource resource    = null;
         public String            packageName = null;

@@ -27,7 +27,7 @@ import org.more.hypha.anno.AnnoService;
  */
 class EV_Method extends MethodAdapter {
     private AnnoService plugin = null;
-    private EV_Mark      mark   = null;
+    private EV_Mark     mark   = null;
     //----------
     public EV_Method(AnnoService plugin, EV_Mark mark, MethodVisitor mv) {
         super(mv);

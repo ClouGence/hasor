@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.aop.assembler;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
@@ -28,7 +28,7 @@ import org.more.hypha.commons.logic.CreateBeanPoint;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class AopCreateBeanPoint implements CreateBeanPoint {
-    private static ILog log = LogFactory.getLog(AopCreateBeanPoint.class);
+    private static Log log = LogFactory.getLog(AopCreateBeanPoint.class);
     public Object doFilter(ApplicationContext applicationContext, Object[] params, PointChain chain) throws Throwable {
         //∫œ∑®–‘≈–∂œ
         if (params == null || params.length == 0)

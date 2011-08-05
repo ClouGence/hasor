@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit;
+package org.more.submit.result;
+import org.more.submit.Result;
+import org.more.submit.ResultProcess;
 import org.more.submit.impl.DefaultActionStack;
 /**
- * 当action调用结束时会执行该结果处理器进行后续处理。
+ * return
  * @version : 2011-7-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ResultProcess {
-    /**执行回调处理 */
-    public Object invoke(DefaultActionStack onStack, Result res) throws Throwable;
-    /**添加配置参数*/
-    public void addParam(String key, String value);
-};
+public class ReturnResultProcess implements ResultProcess {
+    public Object invoke(DefaultActionStack onStack, Result res) {
+        return res.getObject();
+    }
+    public void addParam(String key, String value) {}
+}

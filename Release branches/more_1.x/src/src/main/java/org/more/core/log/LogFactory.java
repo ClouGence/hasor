@@ -15,125 +15,115 @@
  */
 package org.more.core.log;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import org.more.core.log.objects.DefaultLog;
+import java.net.URL;
+import java.util.List;
+import org.more.core.error.InitializationException;
+import org.more.core.log.impl.LogConfigParser;
+import org.more.core.log.impl.Log_Propxy;
+import org.more.util.ResourcesUtil;
 /**
- * 日志系统,默认配置文件名mylog.config
- * @version 2009-5-13
+ * 日志系统,默认配置文件名default.config
+ * @version : 2011-7-29
  * @author 赵永春 (zyc@byshell.org)
  */
 public class LogFactory {
-    private static final String     Log_Config_File = "mylog.config";
-    private static ComFactory       comFactory      = null;
-    private static ComObjectFactory comCache        = null;
-    private static boolean          init            = false;
-    public static final int         Mode_Debug      = 1;
-    public static final int         Mode_Run        = 2;
-    public static int               nowMode         = LogFactory.Mode_Run;
-    // ===============================================================
-    private static void init(CommandReader cr) throws IOException {
-        if (comFactory == null)
-            comFactory = ComFactory.getComFactory();
-        if (comCache == null)
-            comCache = new ComObjectFactory(comFactory);
-        comFactory.clear();
-        comCache.clear();
-        //
-        CommandAttribut ca = null;
-        while (true) {
-            ca = cr.readCommandAttribut();
-            if (ca == null)
-                break;
-            //
-            if (ca.getName().equals("dim")) {
-                // Log
-                String[] names = ca.getValue().split(",");
-                for (String name : names)
-                    comFactory.createComBean(name);
-            } else
-                comFactory.addAttribut(ca);
+    /**默认配置文件位置。*/
+    public static String      DefaultConfig = "META-INF/resource/log/default.config";
+    private static LogFactory factory       = null;
+    //
+    /**获取{@link LogFactory}日志输出对象，如果没有则使用默认配置文件创建它。*/
+    public static LogFactory getFactory() {
+        if (factory == null)
+            try {
+                factory = createFactory();
+            } catch (IOException e) {
+                throw new InitializationException("create LogFactory error!", e);
+            }
+        return factory;
+    }
+    /**使用内置配置文件创建一个{@link LogFactory}日志输出对象。*/
+    public static LogFactory createFactory() throws IOException {
+        List<URL> urls = ResourcesUtil.getResources(DefaultConfig);
+        LogFactory factory = new LogFactory();
+        for (URL url : urls) {
+            InputStream is = url.openStream();
+            factory.loadConfig(is);
+            is.close();
         }
-        init = true;
-        cr.close();
-    }
-    /**
-     * 获得默认日志输出对象，默认输出的所有输出内容只会向控制台输出。提示：默认日志对象使用的是
-     * DefaultLog，DefaultLogFormater，DefaultLogWrite三个组建对象。
-     * @return 返回默认日志输出对象，默认输出的所有输出内容只会向控制台输出。
-     */
-    public static ILog getLog() {
-        ILog log = new DefaultLog();
-        //        log.setFormater(new DefaultLogFormater());
-        //        log.addWrite(new DefaultLogWrite(), ILog.LogLevel_ALL);
-        return log;
-    }
-    /**
-     * 获得配置好的日志输出对象。在获得日志对象时可以向日志对象传递动态参数。
-     * @param name 配置的日志对象名。
-     * @param objects 在获得日志对象时需要给日志对象传递的参数列表。
-     * @return 返回配置好的日志输出对象。
-     */
-    public static ILog getLog(String name, Object... objects) {
-        try {
-            if (init == false)
-                lookUp();
-        } catch (Exception e) {}
-        //
-        try {
-            Object obj = comCache.getComObject(name, objects);// 试图从缓存装载
-            if (obj instanceof ILog)
-                return (ILog) obj;
-            else
-                return new NullLog(LogFactory.nowMode);
-        } catch (Exception e) {
-            return new NullLog(LogFactory.nowMode);
-        }
-    }
-    /**
-     * 使用系统默认日志文件，初始化日志系统。系统默认日志文件mylog.config，存放在程序启动路径下。
-     * @throws IOException 如果发生I/O异常
-     */
-    public static void lookUp() throws IOException {
-        InputStream is = LogFactory.class.getClassLoader().getResourceAsStream(LogFactory.Log_Config_File);
-        init(new CommandReader(new InputStreamReader(is, "utf-8")));// 初始化
-    }
-    /**
-     * 使用指定日志文件，初始化日志系统。
-     * @param file 配置文件
-     * @throws IOException 如果发生I/O异常
-     */
-    public static void lookUp(File file) throws IOException {
-        if (!file.canRead())
-            return;
-        init(new CommandReader(new FileReader(file)));
-    }
-    /**
-     * 使用指定日志配置字符串，初始化日志系统。
-     * @param config 配置字符串
-     * @throws IOException 如果发生I/O异常
-     */
-    public static void lookUp(String config) throws IOException {
-        init(new CommandReader(new StringReader(config)));
-    }
-    public static ILog getLog(final Class<?> type) {
-        final String TYPE = type.getSimpleName();
-        return new ILog() {
+        return factory;
+    };
+    /**使用内置配置文件创建一个{@link LogFactory}日志输出对象。fileString指定在资源目录中的配置文件位置。*/
+    public static LogFactory createFactory(String fileString) throws IOException {
+        LogFactory factory = createFactory();
+        List<URL> urls = ResourcesUtil.getResources(fileString);
+        if (urls != null)
+            for (URL url : urls) {
+                InputStream is = url.openStream();
+                factory.loadConfig(is);
+                is.close();
+            }
+        return factory;
+    };
+    /**使用内置配置文件创建一个{@link LogFactory}日志输出对象。file指定配置文件。*/
+    public static LogFactory createFactory(File file) throws IOException {
+        LogFactory factory = createFactory();
+        factory.loadConfig(new FileInputStream(file));
+        return factory;
+    };
+    /**使用内置配置文件创建一个{@link LogFactory}日志输出对象。is指定配置文件输入流。*/
+    public static LogFactory createFactory(InputStream is) throws IOException {
+        LogFactory factory = createFactory();
+        if (is != null)
+            factory.loadConfig(is);
+        return factory;
+    };
+    /**获取{@link Log}接口对象。*/
+    public static Log getLog(Class<?> type) {
+        return getFactory().getLogAsLevel(Level.Default, type);
+    };
+    /*-----------------------------------------------------------------------------*/
+    private Level[] levels = null;
+    //
+    //
+    //
+    /**获取所有级别的输出Log*/
+    public Log getLogAsALL(Class<?> owner) {
+        Log_Propxy allLog = new Log_Propxy();
+        for (Level l : this.getLevels())
+            allLog.add(this.getLogAsLevel(l, owner));
+        return allLog;
+    };
+    public Level[] getLevels() {
+        return this.levels.clone();
+    };
+    /**获取某一个级别上的输出Log*/
+    public Log getLogAsLevel(Level level, Class<?> owner) {
+        return new Log() {
             public void warning(String msg, Object... infoObjects) {
-                System.err.println("[Warning]" + TYPE + ": " + msg);
+                System.out.println(msg);
+            }
+            public void out(String type, String msg, Object... infoObjects) {
+                System.out.println("[" + type + "]" + msg);
             }
             public void info(String msg, Object... infoObjects) {
-                System.out.println("[Info]" + TYPE + ": " + msg);
+                System.out.println(msg);
             }
             public void error(String msg, Object... infoObjects) {
-                System.err.println("[Error]" + TYPE + ": " + msg);
+                System.out.println(msg);
             }
             public void debug(String msg, Object... infoObjects) {
-                //       System.out.println("[Debug]" + TYPE + ": " + msg);
+                System.out.println(msg);
             }
         };
-    }
-}
+    };
+    public void loadConfig(InputStream is) {
+        LogConfigParser parser = new LogConfigParser();
+        //
+        //
+        //
+        //this.levels = parser.getLevels();
+    };
+};

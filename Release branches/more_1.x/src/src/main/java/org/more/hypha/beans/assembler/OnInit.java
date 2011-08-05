@@ -15,7 +15,7 @@
  */
 package org.more.hypha.beans.assembler;
 import java.util.List;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.Event.Sequence;
 import org.more.hypha.EventListener;
@@ -33,7 +33,7 @@ import org.more.hypha.context.InitEvent;
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
 class OnInit implements EventListener<InitEvent> {
-    private static ILog log = LogFactory.getLog(OnInit.class);
+    private static Log log = LogFactory.getLog(OnInit.class);
     public void onEvent(InitEvent event, Sequence sequence) throws Throwable {
         AbstractApplicationContext context = (AbstractApplicationContext) event.toParams(sequence).applicationContext;
         ClassLoader loader = context.getClassLoader();

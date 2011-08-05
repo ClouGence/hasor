@@ -16,7 +16,7 @@
 package org.more.hypha.beans.assembler.parser;
 import java.util.HashSet;
 import java.util.Set;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
@@ -30,7 +30,7 @@ import org.more.hypha.commons.logic.ValueMetaDataParser;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class SetCollection_MetaData_Parser implements ValueMetaDataParser<Set_ValueMetaData> {
-    private static ILog           log               = LogFactory.getLog(SetCollection_MetaData_Parser.class);
+    private static Log            log               = LogFactory.getLog(SetCollection_MetaData_Parser.class);
     private static final Class<?> DefaultCollection = HashSet.class;
     /*------------------------------------------------------------------------------*/
     @SuppressWarnings("unchecked")

@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.log.objects;
-import org.more.core.log.ILogWrite;
+package org.more.submit.result;
+import org.more.submit.Result;
 /**
- * 默认日志输出，控制台输出
- * @version 2009-5-13
+ * return
+ * @version : 2011-7-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public class DefaultLogWrite implements ILogWrite {
-    public boolean writeLog(String msg) {
-        System.out.println(msg);
-        return true;
+public class ReturnResult extends Result {
+    public ReturnResult(Object object) {
+        super("return", object);
     }
 }

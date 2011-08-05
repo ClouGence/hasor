@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.assembler.parser;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
@@ -26,7 +26,7 @@ import org.more.hypha.commons.logic.ValueMetaDataParser;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class Enum_MetaData_Parser implements ValueMetaDataParser<Enum_ValueMetaData> {
-    private static ILog log = LogFactory.getLog(Enum_MetaData_Parser.class);
+    private static Log log = LogFactory.getLog(Enum_MetaData_Parser.class);
     /*------------------------------------------------------------------------------*/
     public Enum<?> parser(Object targetObject, Enum_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
         Enum<?> eValue = data.getEnumType(context.getClassLoader());

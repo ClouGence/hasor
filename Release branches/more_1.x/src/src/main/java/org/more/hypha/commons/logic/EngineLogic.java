@@ -30,7 +30,7 @@ import org.more.core.classcode.RootClassLoader;
 import org.more.core.error.LostException;
 import org.more.core.error.RepeateException;
 import org.more.core.error.SupportException;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
@@ -43,7 +43,7 @@ import org.more.hypha.context.AbstractApplicationContext;
 * @author ’‘”¿¥∫ (zyc@byshell.org)
 */
 public class EngineLogic {
-    private static ILog                                          log                = LogFactory.getLog(EngineLogic.class);
+    private static Log                                           log                = LogFactory.getLog(EngineLogic.class);
     private Map<String, AbstractBeanBuilder<AbstractBeanDefine>> builderMap         = null;
     private RootValueMetaDataParser                              rootParser         = null;
     private AbstractApplicationContext                           applicationContext = null;

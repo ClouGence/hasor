@@ -27,7 +27,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.more.core.io.AutoCloseInputStream;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 /**
  * Bean拷贝工具类，这个工具是实现了可以将Bean属性拷贝到其他bean中或者拷贝到map中。
@@ -40,10 +40,8 @@ import org.more.core.log.LogFactory;
  * @author 赵永春 (zyc@byshell.org)
  */
 public final class CopyBeanUtil implements Serializable, Cloneable {
-    /**  */
     private static final long             serialVersionUID = 2607862244142020076L;
-    /** 输出日志 */
-    private transient static ILog         log              = LogFactory.getLog("org_more_core_copybean");
+    private transient static Log          log              = LogFactory.getLog(CopyBeanUtil.class);
     /** Bean拷贝工具原形 */
     private transient static CopyBeanUtil utilPrototype    = null;
     //=======================================================================================

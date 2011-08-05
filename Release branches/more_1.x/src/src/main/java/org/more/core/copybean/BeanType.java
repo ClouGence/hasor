@@ -18,7 +18,7 @@ import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 /**
  * Bean拷贝工具所能支持的类型基类，如果想动态向CopyBean中增加可以拷贝的Bean类型则需要编写相应的类型定义。
@@ -27,10 +27,8 @@ import org.more.core.log.LogFactory;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class BeanType implements Serializable {
-    /**  */
-    private static final long       serialVersionUID = -3782452387920328586L;
-    /** 输出日志 */
-    protected static transient ILog log              = LogFactory.getLog("org_more_core_copybean");
+    private static final long      serialVersionUID = -3782452387920328586L;
+    protected static transient Log log              = LogFactory.getLog(BeanType.class);
     /**
      * 获取类型中bean里面的所有可读或可写属性Map。
      * @param object 目标对象。

@@ -23,7 +23,7 @@ import org.more.hypha.anno.AnnoService;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class EV_Anno implements AnnotationVisitor {
-    private AnnoService      plugin  = null;
+    private AnnoService       plugin  = null;
     private EV_Mark           mark    = null;
     private AnnotationVisitor visitor = null;
     //----------

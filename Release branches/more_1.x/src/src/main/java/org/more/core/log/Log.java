@@ -19,15 +19,7 @@ package org.more.core.log;
  * @version 2009-5-13
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ILog {
-    //    /** 调试级别 */
-    //    public static final String LogLevel_Debug   = "Debug";
-    //    /** 信息级别 */
-    //    public static final String LogLevel_Info    = "Info";
-    //    /** 错误级别 */
-    //    public static final String LogLevel_Error   = "Error";
-    //    /** 警告级别 */
-    //    public static final String LogLevel_Warning = "Warning";
+public interface Log {
     /**
      * 以调试级别输出日志。
      * @param msg 输出的日志。
@@ -48,4 +40,11 @@ public interface ILog {
      * @param msg 输出的日志。
      */
     public void warning(String msg, Object... infoObjects);
+    /**
+     * 输出日志信息，并且指定输出的类型。
+     * @param type 日志类型
+     * @param msg 日志信息
+     * @param infoObjects 携带参数。
+     */
+    public void out(String type, String msg, Object... infoObjects);
 }

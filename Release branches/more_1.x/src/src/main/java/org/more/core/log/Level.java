@@ -15,23 +15,24 @@
  */
 package org.more.core.log;
 /**
- * 日志对象重复定义
- * @version 2009-5-13
+ * 输出级别
+ * @version : 2011-7-27
  * @author 赵永春 (zyc@byshell.org)
  */
-public class LogRepeatException extends LogException {
-    private static final long serialVersionUID = 8629440806807181417L;
-    // ===============================================================
-    /** 日志对象重复定义 */
-    public LogRepeatException() {
-        super("日志对象重复定义");
-    }
-    /** 日志对象重复定义，错误信息由参数给出 */
-    public LogRepeatException(String msg) {
-        super(msg);
-    }
-    /** 日志对象重复定义，错误信息是承接上一个异常而来 */
-    public LogRepeatException(Exception e) {
-        super(e);
-    }
+public abstract class Level {
+    public static final Level Below   = new Below();
+    public static final Level High    = new High();
+    public static final Level Default = new Default();
+    //
+    /**级别0*/
+    public final static class Default extends Level {};
+    /**级别1*/
+    public final static class High extends Level {};
+    /**级别2*/
+    public final static class Below extends Level {};
+    //
+    /**获取级别名称。*/
+    public String getName() {
+        return this.getClass().getSimpleName();
+    };
 }

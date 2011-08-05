@@ -15,7 +15,7 @@
  */
 package org.more.hypha.commons.point_support.objs;
 import java.util.HashMap;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
@@ -27,7 +27,7 @@ import org.more.hypha.commons.logic.LoadClassPoint;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class CacheLoadClassPoint implements LoadClassPoint {
-    private static ILog               log             = LogFactory.getLog(CacheLoadClassPoint.class);
+    private static Log                log             = LogFactory.getLog(CacheLoadClassPoint.class);
     private HashMap<String, Class<?>> cacheDefineType = new HashMap<String, Class<?>>();
     public Object doFilter(ApplicationContext applicationContext, Object[] params, PointChain chain) throws Throwable {
         //1.∫œ∑®–‘≈–∂œ

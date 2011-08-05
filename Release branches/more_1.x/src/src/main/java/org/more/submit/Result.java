@@ -13,18 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.log;
+package org.more.submit;
 /**
- * 日志数据格式化接口
- * @version 2009-5-13
+ * 返回标记。
+ * @version : 2011-7-27
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ILogFormater {
-    /**
-     * 格式化日志字符串。
-     * @param level 此次格式化的日志信息是哪个级别上的日志。
-     * @param msg 日志消息。
-     * @return 返回格式化之后的日志信息。
-     */
-    public String getFormatMessage(String level, String msg);
+public class Result {
+    private String name   = null;
+    private Object object = null;
+    //
+    public Result(String name, Object object) {
+        this.name = name;
+        this.object = object;
+    };
+    public Object getObject() {
+        return this.object;
+    };
+    public String getName() {
+        return this.name;
+    };
 }

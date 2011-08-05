@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.context.xml;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.Event;
 /**
@@ -23,7 +23,7 @@ import org.more.hypha.Event;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class XmlLoadingEvent extends Event {
-    private static ILog log = LogFactory.getLog(XmlLoadingEvent.class);
+    private static Log log = LogFactory.getLog(XmlLoadingEvent.class);
     public class XmlLoadingEvent_Params extends Event.Params {
         public XmlDefineResource xmlDefineResource = null;
         public Object            source            = null;

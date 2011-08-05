@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.assembler.builder;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.NoDefineBeanException;
@@ -27,7 +27,7 @@ import org.more.hypha.commons.logic.AbstractBeanBuilder;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class RelationBeanBuilder extends AbstractBeanBuilder<RelationBeanDefine> {
-    private static ILog log = LogFactory.getLog(RelationBeanBuilder.class);
+    private static Log log = LogFactory.getLog(RelationBeanBuilder.class);
     /*------------------------------------------------------------------------------*/
     private String getName(RelationBeanDefine define) {
         String ref = define.getRef();

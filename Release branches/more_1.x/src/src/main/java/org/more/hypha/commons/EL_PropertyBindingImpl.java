@@ -15,7 +15,7 @@
  */
 package org.more.hypha.commons;
 import java.util.Map;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.core.ognl.Node;
 import org.more.core.ognl.Ognl;
@@ -29,7 +29,7 @@ import org.more.hypha.PropertyBinding;
  * @author 赵永春 (zyc@byshell.org)
  */
 class EL_PropertyBindingImpl implements PropertyBinding {
-    private static ILog log          = LogFactory.getLog(EL_PropertyBindingImpl.class);
+    private static Log  log          = LogFactory.getLog(EL_PropertyBindingImpl.class);
     private String      propertyEL   = null;                                           //属性EL
     private Node        propertyNode = null;                                           //编译的属性读取器
     /**子类可以通过该字段来改变属性的可读写状态，如果滞空该字段当setValue或者isReadOnly被调用时都会重新初始化它。*/

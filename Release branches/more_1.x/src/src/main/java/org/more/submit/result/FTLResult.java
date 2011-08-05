@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.log.objects;
-import java.util.Date;
-import org.more.core.log.ILogFormater;
+package org.more.submit.result;
+import org.more.submit.Result;
 /**
- * 默认格式化数据,输出时间+线程号+时间
- * @version 2009-5-13
+ * ftl
+ * @version : 2011-7-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public class DefaultLogFormater implements ILogFormater {
-    public String getFormatMessage(String level, String msg) {
-        String time = String.format("%1$tY-%1$tm-%1$te %1$tH:%1tM:%1$tS", new Date());
-        return time + ": T[" + Thread.currentThread().getId() + "]Level:" + level + " MSG=" + msg;
+public class FTLResult extends Result {
+    public FTLResult(Object object) {
+        super("ftl", object);
     }
 }

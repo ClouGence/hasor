@@ -1,16 +1,68 @@
-<html><body><pre>
-submit v2.0(版本alpha)：
-  1.独立的MVC框架，它没有自己的配置文件需要集成使用。
-  2.提供了以spring作为action容器的支持。
-  3.提供了以beans作为action容器的支持。
-  4.可以配置全局action过滤器。
-  5.可以独立配置每个action过滤器。
-  6.在action处理中可以通过event对象来直接调用另外的一个action并且获取其返回值。
-  7.action可以返回任意类型对象。
-  8.可以在ActionManager上绑定全局属性，让每个action都可以访问到。也可以传递私有属性到某一个acion中。
-  9.提供了submit2.0对web环境和非web环境的支持。
-  10.web环境中提供了Servlet方式配置和Filter方式部署的支持。
-  11.web环境中提供了页面预处理标签的支持。类似asp的include功能，只不过包含的是action代码。使一个jsp页中可以支持多个action的调用。页面预处理可以获取action返回值。
+<html><body>
+<a href="doc-files/submit_v2_0_struct.png">submit2.0系统结构图</a><br/>
+<a href="doc-files/submit_v3_0_struct.png">submit3.0系统结构图</a><br/>
+<a href="doc-files/submit_v3_0_invoke.png">submit3.0简易调用结构图</a><br/>
+<a href="doc-files/submit_v3_1_struct.png">submit3.1系统结构图</a><br/>
+<a href="doc-files/submit_v3_2_struct.png">submit3.2系统结构图</a><br/>
+<a href="doc-files/submit_v4.0_struct.png">submit4.0系统结构图</a><br/><pre>
+submit v4.0(版本alpha4)：
+  重要更新：
+  1.重新构建了Submit的内核结构，目前升级为Submit4.0。
+  2.Submit接口层面内容丰富（有待完善开发）。
+  3.删除了ActionFilter的概念，同时删除相关功能。
+  4.新增命名空间的概念，不同的命名空间使用不同的AC进行支持(AC,全名是ActionContext是一个Bean容器。)
+  5.删除了脚本回调的功能，因为考虑到执行效率关系。
+  6.ActionStack在该版本中被接口化了。
+  7.submit4.0，延续先前版本是一个独立的组建。不过submit4.0在hypha的支持下才显得更为强大，利用hypha它支持了注解扫描。xml化配置文件如果使用独立环境这些支持将不在有效。
+  8.AC，目前已经支持的AC容器有GoogleGuice、hypha、Simple(内置的)、Spring。
+  9.除了命名空间还支持包的概念，在每个ac中可以定义多个package，包是用于区分不同的action。注意：submit4.0不支持包中包。包的名称中可以包含字符“.”但是不允许包含“/”.
+  10.action的定位采用URI的形式，例如:ac://package.package.package.action/param/param。
+  扩展：
+  1.AC、ACB
+  2.内置了Web扩展。
+json
+  1.通过Result扩展可以完成将返回结果转换成为json对象。
+actionjs
+  1.删除了该功能。
+
+submit v3.2(版本alpha3-内部版本)：
+  重要更新：
+  1.重新构建了Submit3.1的内核结构，目前升级为Submit3.2。
+  2.所有submit资源都移动到META-INF目录中。
+  3.几乎重写了整个Submit的代码，代码重写率达到80%以上。
+  4.从核心功能中分离Filter部分，使其成为一个扩展，默认的more和spring外壳实现上都已经实现了filter部分的支持。如果有支撑环境在实现ActionContext时需要支持filter那么需要在额外实现FilterContext接口即可，SubmitBuild会自动为其装饰Filter的支持。
+  5.更改submit的代码为jdk1.5兼容。
+  6.增强了submit的ActionStack，可以设置回调脚本的脚本引擎名称。从而可以选择回调脚本的脚本引擎。
+  修正：
+  1.取消了当在web模式下的WEB-INF下配置文件位置，配置文件位置被统一到classes目录下。
+  优化：
+  1.简化了casing的代码量，去除了ObjectFactory类。casing只需要实现ActionContext接口和FilterContext接口即可完成casing。
+  2.不在设立独立的web支撑环境，web支撑已经融入到submit的设计一部分中。
+  3.简化了SubmitBuild的代码量，目前无论是build一个console还是web环境上的SubmitContext都只需要经过SubmitBuild的build方法即可完成，回避了以前那种web复杂的支撑。
+  扩展：
+  1.新版本Submit支持了SubmitContext和ActionContext两个核心接口的装饰器，通过这个装饰器可以扩展Submit的功能。
+  2.增加了一个parentStack作用域的支持，可以指定作用域在Stack的父级上。
+  3.参数作用域可以通过扩展方式注册。
+json
+  1.修复将对象转换成Json数据时候丢失{}和[]数据之间的逗号问题。
+  2.修复了无法将下述格式的json转换成对象的bug，例:{{key:'key',age:12}:{a:'b'}}
+  3.增加了字符串数据可以通过属性配置决定使用单引号还是双引号环抱数据。
+  4.完成了JsonUtil类的toObject方法。
+  5.扩充了JsonUtil类的构造方法，在创建JsonUtil对象时就可以指定使用单引号还是双引号环抱字符串数据。
+actionjs
+  1.应用新协议。
+  2.解决当项目在非站点跟路径上部署时无法拦截action调用请求的bug。
+
+submit v3.1(版本alpha3)：
+  1.TopFilter类更名为SubmitRoot。
+  2.优化submit代码，减少了代码中new的操作。
+  3.修改submit的Config接口getInitParameter相关方法返回值为Object类型。
+  4.重写了submit的more和spring外壳提供环境使其更简化和直观。同时more和spring外壳支撑中加入了默认配置文件位置。
+	其中more支撑环境默认配置文件位置：/WEB-INF/more-config.xml
+	其中spring支撑环境默认配置文件位置：/WEB-INF/applicationContext.xml
+  5.CasingBuild增加缓存功能，可以通过cacheContext属性控制是否开启缓存，默认是开启的。
+  6.增加ActionObjectFactory核心接口，该接口负责创建、查找一切Action相关资源，同时该负责解析Filter注解。
+  7.支持注解化配置Action所有配置。
 
 submit v3.0(版本alpha2)：
   1.增加了submit的Session支持。使action调用时需要保存的临时信息可以保存到session中用于缓存。
@@ -26,45 +78,17 @@ submit v3.0(版本alpha2)：
   11.在集成Spring时可以配置Spring监听器，同时submit3.0的配置文件参数就会失效。
   12.增加了当SubmitContext完成Action过滤器调用之后的返回结果脚本处理的支持，该脚本存放在META-INF/submit_scripts目录中，并且以js语法编写。
 
-submit v3.1(版本alpha3)：
-  1.TopFilter类更名为SubmitRoot。
-  2.优化submit代码，减少了代码中new的操作。
-  3.修改submit的Config接口getInitParameter相关方法返回值为Object类型。
-  4.重写了submit的more和spring外壳提供环境使其更简化和直观。同时more和spring外壳支撑中加入了默认配置文件位置。
-	其中more支撑环境默认配置文件位置：/WEB-INF/more-config.xml
-	其中spring支撑环境默认配置文件位置：/WEB-INF/applicationContext.xml
-  5.CasingBuild增加缓存功能，可以通过cacheContext属性控制是否开启缓存，默认是开启的。
-  6.增加ActionObjectFactory核心接口，该接口负责创建、查找一切Action相关资源，同时该负责解析Filter注解。
-  7.支持注解化配置Action所有配置。
-
-submit v3.2(版本alpha4)：
-  1.重新构建了Submit3.1的内核结构，目前升级为Submit3.2。
-  2.所有submit资源都移动到META-INF目录中。
-  3.几乎重写了整个Submit的代码，代码重写率达到80%以上。
-  4.从核心功能中分离Filter部分，使其成为一个扩展，默认的more和spring外壳实现上都已经实现了filter部分的支持。如果有支撑环境在实现ActionContext时需要支持filter那么需要在额外实现FilterContext接口即可，SubmitBuild会自动为其装饰Filter的支持。
-  5.取消了当在web模式下的WEB-INF下配置文件位置，配置文件位置被统一到classes目录下。
-  6.更换more支撑环境为BeanContext接口对象。
-  7.JavaScriptSubmitManager增加到内置more-config.xml配置文件中定义名称为$more_actionjs。
-  8.改变了一些异常文字信息。
-  9.action递交协议变更，目前支持以下格式action访问字符串。C代表API方式，S代表WEB方式。
-  	C actionName.methodName
-  	C actionName (调用默认ececute方法)
-  	S action!actionName.methodName (建议使用)
-  	S action!actionName (调用默认execute方法)
-  10.修复actionjs的js中more.util.AjaxCall对象的错误的逻辑意义参数synchronize的表述.目前更改为同步使用true异步使用false.
-  11.公开了Submit的一些类.
-  12.新版本Submit支持了SubmitContext和ActionContext两个核心接口的装饰器，通过这个装饰器可以扩展Submit的功能。
-  13.增加了一个parentStack作用域的支持，可以指定作用域在Stack的父级上。
-  14.参数作用域可以通过扩展方式注册。
-  15.增加了ActionContextDecorator和SubmitContextDecorator两个装饰器用于扩展功能，装饰器需要通过SubmitBuild在build之前进行注册。
-      优化：
-    1.简化了casing的代码量，去除了ObjectFactory类。casing只需要实现ActionContext接口和FilterContext接口即可完成casing。
-    2.不在设立独立的web支撑环境，web支撑已经融入到submit的设计一部分中。
-    3.简化了SubmitBuild的代码量，目前无论是build一个console还是web环境上的SubmitContext都只需要经过SubmitBuild的build方法即可完成，回避了以前那种web复杂的支撑。
+submit v2.0(版本alpha)：
+  1.独立的MVC框架，它没有自己的配置文件需要集成使用。
+  2.提供了以spring作为action容器的支持。
+  3.提供了以beans作为action容器的支持。
+  4.可以配置全局action过滤器。
+  5.可以独立配置每个action过滤器。
+  6.在action处理中可以通过event对象来直接调用另外的一个action并且获取其返回值。
+  7.action可以返回任意类型对象。
+  8.可以在ActionManager上绑定全局属性，让每个action都可以访问到。也可以传递私有属性到某一个acion中。
+  9.提供了submit2.0对web环境和非web环境的支持。
+  10.web环境中提供了Servlet方式配置和Filter方式部署的支持。
+  11.web环境中提供了页面预处理标签的支持。类似asp的include功能，只不过包含的是action代码。使一个jsp页中可以支持多个action的调用。页面预处理可以获取action返回值。
 </pre>
-<a href="doc-files/submit_v2_0_struct.png">submit2.0系统结构图</a><br/>
-<a href="doc-files/submit_v3_0_struct.png">submit3.0系统结构图</a><br/>
-<a href="doc-files/submit_v3_0_invoke.png">submit3.0简易调用结构图</a><br/>
-<a href="doc-files/submit_v3_1_struct.png">submit3.1系统结构图</a><br/>
-<a href="doc-files/submit_v3_2_struct.png">submit3.2系统结构图</a><br/>
 </body></html>

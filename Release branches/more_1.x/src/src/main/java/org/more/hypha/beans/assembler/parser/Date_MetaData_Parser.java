@@ -15,7 +15,7 @@
  */
 package org.more.hypha.beans.assembler.parser;
 import java.util.Date;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
@@ -28,7 +28,7 @@ import org.more.util.StringConvertUtil;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class Date_MetaData_Parser implements ValueMetaDataParser<Date_ValueMetaData> {
-    private static ILog log = LogFactory.getLog(Date_MetaData_Parser.class);
+    private static Log log = LogFactory.getLog(Date_MetaData_Parser.class);
     /*------------------------------------------------------------------------------*/
     public Date parser(Object targetObject, Date_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
         String dateString = data.getDateString();

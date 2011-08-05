@@ -30,7 +30,7 @@ import org.more.hypha.anno.AnnoService;
  */
 public class EV_Class extends ClassAdapter implements EV_Mark {
     private String            className = null;
-    private AnnoService      plugin    = null;
+    private AnnoService       plugin    = null;
     private boolean           mark      = false;                  //标记TagListener类是否忽略解析这个类。
     private ArrayList<String> markList  = new ArrayList<String>();
     /**创建{@link EV_Class}对象。*/

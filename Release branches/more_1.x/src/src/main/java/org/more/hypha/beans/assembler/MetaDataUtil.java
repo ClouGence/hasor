@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.assembler;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.beans.define.Collection_ValueMetaData;
 import org.more.hypha.commons.define.AbstractDefine;
@@ -26,7 +26,7 @@ import org.more.util.attribute.IAttribute;
  */
 public class MetaDataUtil {
     private static final String FungiCacheName = "$FungiCacheName_Type";
-    public static Class<?> pass(Collection_ValueMetaData<?> vmd, ApplicationContext context, ILog log, Class<?> defaultCollection) throws ClassNotFoundException {
+    public static Class<?> pass(Collection_ValueMetaData<?> vmd, ApplicationContext context, Log log, Class<?> defaultCollection) throws ClassNotFoundException {
         //1.确定类型
         IAttribute fungiAtt = vmd.getFungi();
         Class<?> listType = (Class<?>) vmd.getFungi().getAttribute(FungiCacheName);
@@ -46,7 +46,7 @@ public class MetaDataUtil {
         return listType;
     };
     /**从缓存中获取解析的类型。 */
-    public static Class<?> getTypeForFungi(AbstractDefine<?> data, ILog log) {
+    public static Class<?> getTypeForFungi(AbstractDefine<?> data, Log log) {
         IAttribute fungiAtt = data.getFungi();
         if (fungiAtt.contains(FungiCacheName) == true) {
             Class<?> setType = (Class<?>) fungiAtt.getAttribute(FungiCacheName);
@@ -57,7 +57,7 @@ public class MetaDataUtil {
         return null;
     };
     /**缓存类型*/
-    public static void putTypeToFungi(AbstractDefine<?> data, Class<?> type, ILog log) {
+    public static void putTypeToFungi(AbstractDefine<?> data, Class<?> type, Log log) {
         IAttribute fungiAtt = data.getFungi();
         log.debug("cache BeanBuilder = {%0}, type = {%1}.", data, type);
         fungiAtt.setAttribute(FungiCacheName, type);

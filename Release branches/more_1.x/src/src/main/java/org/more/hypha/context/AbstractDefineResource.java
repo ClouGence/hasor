@@ -15,7 +15,7 @@
  */
 package org.more.hypha.context;
 import java.util.Map;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.DefineResource;
@@ -31,7 +31,7 @@ import org.more.util.attribute.IAttribute;
  */
 public abstract class AbstractDefineResource implements DefineResource {
     private static final long       serialVersionUID = 1420351981612281917L;
-    private static ILog             log              = LogFactory.getLog(AbstractDefineResource.class);
+    private static Log              log              = LogFactory.getLog(AbstractDefineResource.class);
     private String                  sourceName       = null;                                           //资源名
     private IAttribute              flashContext     = null;                                           //全局闪存，通过重写受保护的方法createFlash来达到植入的目的。
     private ThreadLocal<IAttribute> threadFlash      = null;                                           //全局闪存，通过重写受保护的方法createFlash来达到植入的目的。

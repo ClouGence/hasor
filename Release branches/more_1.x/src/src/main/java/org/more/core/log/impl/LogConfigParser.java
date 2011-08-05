@@ -13,22 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.test.workflow.form;
-import java.util.Date;
-import org.more.workflow.form.FormBean;
-public class Role implements FormBean {
-    private String name = "namefafds";
-    public void setName(String name) {
-        this.name = name;
-    }
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-    private Data createTime = null;
-    public String getName() {
-        return name;
-    }
-    public Data getCreateTime() {
-        return createTime;
-    }
-};
+package org.more.core.log.impl;
+/**
+ * 
+ * @version : 2011-7-29
+ * @author ’‘”¿¥∫ (zyc@byshell.org)
+ */
+public class LogConfigParser {}

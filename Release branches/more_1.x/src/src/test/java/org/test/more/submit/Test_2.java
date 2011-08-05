@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.more.submit.ActionObject;
 import org.more.submit.SubmitBuild;
 import org.more.submit.SubmitService;
+import org.more.submit.acs.guice.AC_Guice;
 /**
  * @version 2010-10-18
  * @author ’‘”¿¥∫ (zyc@byshell.org)

@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import org.more.core.error.LoadException;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.core.xml.XmlParserKit;
 import org.more.core.xml.XmlParserKitManager;
@@ -40,7 +40,7 @@ import org.more.util.ResourcesUtil;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class XmlDefineResource extends ArrayDefineResource {
-    private static ILog                       log                 = LogFactory.getLog(XmlDefineResource.class);
+    private static Log                        log                 = LogFactory.getLog(XmlDefineResource.class);
     private static final String               ResourcePath        = "META-INF/resource/hypha/register.xml";            //标签注册器
     private static final String               DefaultResourcePath = "META-INF/resource/hypha/default-hypha-config.xml"; //默认配置文件
     private ArrayList<Object>                 sourceArray         = new ArrayList<Object>();
@@ -50,7 +50,7 @@ public class XmlDefineResource extends ArrayDefineResource {
     private static List<XmlNameSpaceRegister> registerObjects     = null;
     /**{@link XmlNameSpaceRegister}接口的代理，其作用是在调用接口方法时候创建接口对象。使{@link _NameSpaceConfiguration}类专注于XML的解析。*/
     private static class RegisterPropxy implements XmlNameSpaceRegister {
-        private static ILog          log            = LogFactory.getLog(RegisterPropxy.class);
+        private static Log           log            = LogFactory.getLog(RegisterPropxy.class);
         private RegisterBean         registerBean   = null;
         private XmlNameSpaceRegister registerObject = null;
         public RegisterPropxy(RegisterBean registerBean) {
@@ -82,7 +82,7 @@ public class XmlDefineResource extends ArrayDefineResource {
         if (XmlDefineResource.registerObjects == null) {
             XmlDefineResource.registerObjects = new ArrayList<XmlNameSpaceRegister>();
             log.info("scanning 'register.xml' ,path = '{%0}'.", ResourcePath);
-            List<InputStream> ins = ResourcesUtil.getResourceStream(ResourcePath);
+            List<InputStream> ins = ResourcesUtil.getResourcesAsStream(ResourcePath);
             _NameSpaceConfiguration ns = new _NameSpaceConfiguration();
             int count = ins.size();
             log.debug("scaned ,count = {%0}", count);
@@ -105,7 +105,7 @@ public class XmlDefineResource extends ArrayDefineResource {
             reg.initRegister(null, resource);
         //装载所有位于默认配置位置的配置文件
         log.debug("scanning default config ,path = '{%0}'.", DefaultResourcePath);
-        List<URL> ins = ResourcesUtil.getResource(DefaultResourcePath);
+        List<URL> ins = ResourcesUtil.getResources(DefaultResourcePath);
         int count = ins.size();
         for (int i = 0; i < count; i++) {
             log.info("addDefaultSource {%0} of {%1}.", i, count);
@@ -290,7 +290,7 @@ public class XmlDefineResource extends ArrayDefineResource {
                 this.passerXml(is, this);
                 is.close();
             } else if (obj instanceof String) {
-                List<URL> urls = ResourcesUtil.getResource((String) obj);
+                List<URL> urls = ResourcesUtil.getResources((String) obj);
                 log.debug("load String '{%0}' include [{%1}]", obj, urls);
                 for (URL url : urls) {
                     InputStream is = url.openConnection().getInputStream();

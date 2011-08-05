@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.assembler;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.Event.Sequence;
 import org.more.hypha.EventListener;
@@ -25,7 +25,7 @@ import org.more.hypha.context.DestroyEvent;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class OnDestroy implements EventListener<DestroyEvent> {
-    private static ILog log = LogFactory.getLog(OnDestroy.class);
+    private static Log log = LogFactory.getLog(OnDestroy.class);
     public void onEvent(DestroyEvent event, Sequence sequence) {
         log.debug("hypha.beans On Destroy!");
     }

@@ -46,8 +46,13 @@ public abstract class ResourcesUtil {
         public boolean goFind(ScanEvent event, boolean isInJar) throws Throwable;
     };
     /*------------------------------------------------------------------------------*/
-    /**获取classpath中可能存在的资源列表，以流的形式返回。*/
-    public static List<URL> getResource(String resourcePath) throws IOException {
+    /**获取classpath中可能存在的资源。*/
+    public static URL getResource(String resourcePath) throws IOException {
+        URL url = Thread.currentThread().getContextClassLoader().getResource(resourcePath);
+        return url;
+    }
+    /**获取classpath中可能存在的资源列表。*/
+    public static List<URL> getResources(String resourcePath) throws IOException {
         ArrayList<URL> urls = new ArrayList<URL>();
         Enumeration<URL> eurls = Thread.currentThread().getContextClassLoader().getResources(resourcePath);
         while (eurls.hasMoreElements() == true) {
@@ -56,10 +61,14 @@ public abstract class ResourcesUtil {
         }
         return urls;
     }
+    /**获取classpath中可能存在的资源，以流的形式返回。*/
+    public static InputStream getResourceAsStream(String resourcePath) throws IOException {
+        return Thread.currentThread().getContextClassLoader().getResourceAsStream(resourcePath);
+    }
     /**获取classpath中可能存在的资源列表，以流的形式返回。*/
-    public static List<InputStream> getResourceStream(String resourcePath) throws IOException {
+    public static List<InputStream> getResourcesAsStream(String resourcePath) throws IOException {
         ArrayList<InputStream> iss = new ArrayList<InputStream>();
-        List<URL> urls = getResource(resourcePath);
+        List<URL> urls = getResources(resourcePath);
         for (URL url : urls) {
             String protocol = url.getProtocol();
             File path = new File(URLDecoder.decode(url.getFile(), "utf-8"));

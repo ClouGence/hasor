@@ -15,7 +15,7 @@
  */
 package org.more.hypha.beans.assembler.builder;
 import java.util.Collection;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractMethodDefine;
 import org.more.hypha.AbstractPropertyDefine;
@@ -33,7 +33,7 @@ import org.more.util.PropxyObject;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class ClassBeanBuilder extends AbstractBeanBuilder<ClassPathBeanDefine> {
-    private static ILog log = LogFactory.getLog(ClassBeanBuilder.class);
+    private static Log log = LogFactory.getLog(ClassBeanBuilder.class);
     /*------------------------------------------------------------------------------*/
     public Class<?> loadType(ClassPathBeanDefine define, Object[] params) throws Throwable {
         String className = define.getSource();

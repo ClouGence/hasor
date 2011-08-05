@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import org.more.core.error.DefineException;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
@@ -41,7 +41,7 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractApplicationContext implements ApplicationContext {
-    private static ILog                            log                = LogFactory.getLog(AbstractApplicationContext.class);
+    private static Log                             log                = LogFactory.getLog(AbstractApplicationContext.class);
     private PropxyClassLoader                      classLoader        = null;
     private final String                           id                 = UUID.randomUUID().toString().replace("-", "");
     //init期间必须构建的基础对象

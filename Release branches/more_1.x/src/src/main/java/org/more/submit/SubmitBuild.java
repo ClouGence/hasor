@@ -101,7 +101,7 @@ class Propxy_ResultProcess implements ResultProcess {
     public Propxy_ResultProcess(String process) {
         this.process = process;
     };
-    public Object invoke(DefaultActionStack onStack, Object res) throws Throwable {
+    public Object invoke(DefaultActionStack onStack, Result res) throws Throwable {
         if (this.processObject == null) {
             this.processObject = (ResultProcess) Thread.currentThread().getContextClassLoader().loadClass(process).newInstance();
             for (String key : this.configParam.keySet())

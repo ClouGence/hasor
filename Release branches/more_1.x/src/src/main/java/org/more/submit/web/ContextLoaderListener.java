@@ -33,7 +33,8 @@ import org.more.util.ScanEvent;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class ContextLoaderListener implements ServletContextListener {
-    private ApplicationContext context = null;
+    public static final String ContextName = "org.more.hypha.ROOT";
+    private ApplicationContext context     = null;
     public void contextDestroyed(ServletContextEvent event) {
         if (this.context != null)
             this.context.destroy();//销毁context
@@ -45,7 +46,7 @@ public class ContextLoaderListener implements ServletContextListener {
             throw new InitializationException(e);
         }
         ServletContext sc = event.getServletContext();
-        sc.setAttribute("org.more.hypha.ROOT", this.context);
+        sc.setAttribute(ContextName, this.context);
         //设置参数
         Enumeration<?> enums = sc.getInitParameterNames();
         while (enums.hasMoreElements()) {

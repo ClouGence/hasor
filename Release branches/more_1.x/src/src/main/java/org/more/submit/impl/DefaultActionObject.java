@@ -20,6 +20,7 @@ import java.util.Map;
 import org.more.submit.ActionInvoke;
 import org.more.submit.ActionObject;
 import org.more.submit.ActionStack;
+import org.more.submit.Result;
 import org.more.submit.ResultProcess;
 /**
  *  默认{@link ActionObject}接口实现。
@@ -69,13 +70,13 @@ public class DefaultActionObject implements ActionObject {
         return this.callBack(onStack, this.invoke.invoke(onStack));
     };
     /*执行后续处理*/
-    private Object callBack(DefaultActionStack onStack, Object res) throws Throwable {
-        if (res instanceof String == false)
-            return res;
-        String str = (String) res;
-        ResultProcess rp = this.submitService.getResultProcess(str);
+    private Object callBack(DefaultActionStack onStack, Object var) throws Throwable {
+        if (var instanceof Result == false)
+            return var;
+        Result result = (Result) var;
+        ResultProcess rp = this.submitService.getResultProcess(result.getName());
         if (rp == null)
-            return res;
-        return rp.invoke(onStack, res);
+            return var;
+        return rp.invoke(onStack, result);
     };
 };

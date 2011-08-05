@@ -13,16 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit;
-import org.more.submit.impl.DefaultActionStack;
+package org.more.core.error;
 /**
- * 当action调用结束时会执行该结果处理器进行后续处理。
- * @version : 2011-7-25
+ * 数据性异常，该类型异常是指由于数据引发的不可控结果。
+ * 例如：格式、支持性、存在性、空间程度。
+ * @version 2009-10-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ResultProcess {
-    /**执行回调处理 */
-    public Object invoke(DefaultActionStack onStack, Result res) throws Throwable;
-    /**添加配置参数*/
-    public void addParam(String key, String value);
-};
+public class MoreDataException extends MoreException {
+    private static final long serialVersionUID = 3459563001434381901L;
+    /** 数据性异常。*/
+    public MoreDataException(String string) {
+        super(string);
+    }
+    /** 数据性异常。*/
+    public MoreDataException(Throwable error) {
+        super(error);
+    }
+    /** 数据性异常。*/
+    public MoreDataException(String string, Throwable error) {
+        super(string, error);
+    }
+}

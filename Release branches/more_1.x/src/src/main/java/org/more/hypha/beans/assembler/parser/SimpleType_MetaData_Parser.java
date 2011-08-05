@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.assembler.parser;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
@@ -28,7 +28,7 @@ import org.more.util.attribute.IAttribute;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class SimpleType_MetaData_Parser implements ValueMetaDataParser<Simple_ValueMetaData> {
-    private static ILog         log            = LogFactory.getLog(SimpleType_MetaData_Parser.class);
+    private static Log          log            = LogFactory.getLog(SimpleType_MetaData_Parser.class);
     private static final String FungiCacheName = "$FungiCacheName_Value";
     /*------------------------------------------------------------------------------*/
     public Object parser(Object targetObject, Simple_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {

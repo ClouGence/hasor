@@ -15,31 +15,11 @@
  */
 package org.more.core.log;
 /**
- * 属性条目Bean
+ * 对象格式化
  * @version 2009-5-13
  * @author 赵永春 (zyc@byshell.org)
  */
-class CommandAttribut {
-    private String name     = null; // 属性名
-    private String value    = null; // 属性值
-    private String comments = null; // 属性说明
-    // ===============================================================
-    public String getComments() {
-        return comments;
-    }
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getValue() {
-        return value;
-    }
-    public void setValue(String value) {
-        this.value = value;
-    }
+public interface ObjectFormater {
+    /**格式化目标对象成为字符串。*/
+    public String formatObject(Object object);
 }

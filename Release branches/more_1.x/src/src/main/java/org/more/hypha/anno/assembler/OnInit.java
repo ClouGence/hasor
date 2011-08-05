@@ -15,7 +15,7 @@
  */
 package org.more.hypha.anno.assembler;
 import org.more.core.error.InitializationException;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.Event.Sequence;
 import org.more.hypha.EventListener;
@@ -28,7 +28,7 @@ import org.more.hypha.context.InitEvent;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class OnInit implements EventListener<InitEvent> {
-    private static ILog  log     = LogFactory.getLog(OnInit.class);
+    private static Log  log     = LogFactory.getLog(OnInit.class);
     private AnnoService service = null;
     public OnInit(AnnoService service) {
         this.service = service;

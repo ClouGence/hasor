@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import org.more.core.error.DefineException;
 import org.more.core.error.RepeateException;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.DefineResource;
@@ -33,7 +33,7 @@ import org.more.hypha.context.AbstractDefineResource;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class ArrayDefineResource extends AbstractDefineResource {
-    private static ILog                     log         = LogFactory.getLog(ArrayDefineResource.class);
+    private static Log                      log         = LogFactory.getLog(ArrayDefineResource.class);
     private ArrayList<String>               defineNames = new ArrayList<String>();                     //bean定义名称集合
     private Map<String, AbstractBeanDefine> defineMap   = new HashMap<String, AbstractBeanDefine>();   //bean定义Map
     //

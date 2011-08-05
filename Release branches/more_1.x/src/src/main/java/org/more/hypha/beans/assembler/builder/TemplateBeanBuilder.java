@@ -15,7 +15,7 @@
  */
 package org.more.hypha.beans.assembler.builder;
 import org.more.core.error.SupportException;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.beans.define.TemplateBeanDefine;
 import org.more.hypha.commons.logic.AbstractBeanBuilder;
@@ -25,7 +25,7 @@ import org.more.hypha.commons.logic.AbstractBeanBuilder;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class TemplateBeanBuilder extends AbstractBeanBuilder<TemplateBeanDefine> {
-    private static ILog log = LogFactory.getLog(TemplateBeanBuilder.class);
+    private static Log log = LogFactory.getLog(TemplateBeanBuilder.class);
     /*------------------------------------------------------------------------------*/
     public Class<?> loadType(TemplateBeanDefine define, Object[] params) {
         String defineID = define.getID();

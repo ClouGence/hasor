@@ -66,7 +66,6 @@ public class WebActionStack extends DefaultActionStack {
     };
     //==========================================================================================request查询参数专用方法
     /**获取request请求参数中所有参数名称。*/
-    @SuppressWarnings("unchecked")
     public String[] getRequestParamNames() {
         Set<String> keys = this.getHttpRequest().getParameterMap().keySet();
         String[] ns = new String[keys.size()];

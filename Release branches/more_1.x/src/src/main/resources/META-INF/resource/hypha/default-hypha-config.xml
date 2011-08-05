@@ -49,12 +49,12 @@
 	<!-- <submit:acBuilder refBean="$more_submit_default_acBuilder"/>-->											<!-- ACB的配置例子 -->
 	<!-- 注册AC，Simple的AC提供者。 -->
 	<b:meta key="simple-loader"/><!-- 一个ClassLoader对象，该对象可以替换 AC_Simple使用的类装载器，默认使用当前线程的类装载器。-->
-	<b:classBean id="$more_submit_simple_ac" lazy="true" class="org.more.submit.acs.simple.AC_Simple">
+	<b:classBean id="$more_submit_simple_ac" class="org.more.submit.acs.simple.AC_Simple">
 		<b:property name="classLoader" elText="$att['simple-loader']"/>
 	</b:classBean>
 	<submit:actionContext namespace="simple" refBean="$more_submit_simple_ac"/>	<!-- 注册命名空间simple -->
 	<!-- 注册AC，Hypha的AC提供者。 -->
-	<b:classBean id="$more_submit_hypha_ac" lazy="true" class="org.more.submit.acs.hypha.AC_Hypha">
+	<b:classBean id="$more_submit_hypha_ac" class="org.more.submit.acs.hypha.AC_Hypha">
 		<!-- 使用EL将hypha的上下文注入进去。 -->
 		<b:property name="applicationContext" elText="$app"/>
 		<!-- 由于是继承关系因此，可以使用该属性进行注入 -->
@@ -64,7 +64,7 @@
 	<!-- 注册AC，Guice的AC提供者。 -->
 	<b:meta key="guice-modules"/><!-- guice-modules描述配置，该配置可以是对象也可以是字符串表示的module数组。  -->
 	<b:meta key="guice-injector"/><!-- guice-环境对象 -->
-	<b:classBean id="$more_submit_guice_ac" lazy="true" class="org.more.submit.acs.guice.AC_Guice">
+	<b:classBean id="$more_submit_guice_ac" class="org.more.submit.acs.guice.AC_Guice">
 		<b:property name="modules" elText="$att['guice-modules']"/>
 		<b:property name="guiceInjector" elText="$att['guice-injector']"/>
 		<!-- 由于是继承关系因此，可以使用该属性进行注入 -->
@@ -74,7 +74,7 @@
 	<!-- 注册AC，Spring的AC提供者。 -->
 	<b:meta key="spring-configs" value="classpath:*/applicationContext.xml"/><!-- 表示spring配置文件位置 -->
 	<b:meta key="spring-application" value=""/><!-- 表示spring上下文 -->
-	<b:classBean id="$more_submit_spring_ac" lazy="true" class="org.more.submit.acs.spring.AC_Spring">
+	<b:classBean id="$more_submit_spring_ac" class="org.more.submit.acs.spring.AC_Spring">
 		<b:property name="application" elText="$att['application']"/>
 		<b:property name="config" elText="$att['spring-configs']"/>
 		<!-- 由于是继承关系因此，可以使用该属性进行注入 -->
@@ -84,14 +84,14 @@
 	<!-- 默认AC -->
 	<submit:defaultAC defaultAC="simple"/>
 	<!-- 将结果集原样return -->
-	<submit:result match="return" class="org.more.submit.result.Return_Result"/>
+	<submit:result match="return" class="org.more.submit.result.ReturnResultProcess"/>
 	<!-- freemarker默认模板 -->
-	<submit:result match="ftl:.*" class="org.more.submit.result.FTL_Result"><!-- 执行freemarker模板 -->
+	<submit:result match="ftl" class="org.more.submit.result.FTLResultProcess"><!-- 执行freemarker模板 -->
 		<submit:config key="suffix" value="flt"/><!-- 模板后缀名 -->
 		<submit:config key="rootPath" value="$att['rootPath']"/><!-- 模板所处根路径 -->
 	</submit:result>
 	<!-- 将结果集转换成json对象 -->
-	<submit:result match="json" class="org.more.submit.result.Json_Result">
+	<submit:result match="json" class="org.more.submit.result.JsonResultProcess">
 		<submit:config key="border" value="'"/><!-- 字符串分隔符是单引号还是双引号 -->
 	</submit:result>
 

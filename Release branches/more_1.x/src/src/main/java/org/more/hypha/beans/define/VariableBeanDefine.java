@@ -76,7 +76,7 @@ public class VariableBeanDefine extends AbstractBaseBeanDefine {
         return (VariableType) StringConvertUtil.parseEnum(type, VariableType.class);
     };
     /**根据枚举获取其基本类型Class。*/
-    public static Class<?> getType(VariableType typeEnum) {
+    public static Class getType(VariableType typeEnum) {
         if (typeEnum == null)
             return null;
         else if (typeEnum == VariableType.Boolean)

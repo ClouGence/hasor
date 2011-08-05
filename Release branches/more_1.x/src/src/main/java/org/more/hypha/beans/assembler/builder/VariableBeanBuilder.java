@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.assembler.builder;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.beans.define.VariableBeanDefine;
 import org.more.hypha.beans.define.VariableBeanDefine.VariableType;
@@ -26,7 +26,7 @@ import org.more.util.StringConvertUtil;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class VariableBeanBuilder extends AbstractBeanBuilder<VariableBeanDefine> {
-    private static ILog log = LogFactory.getLog(VariableBeanBuilder.class);
+    private static Log log = LogFactory.getLog(VariableBeanBuilder.class);
     /*------------------------------------------------------------------------------*/
     public Class<?> loadType(VariableBeanDefine define, Object[] params) {
         VariableType vt = define.getType();

@@ -15,7 +15,7 @@
  */
 package org.more.hypha.commons;
 import java.util.Map;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ELContext;
 import org.more.hypha.ELException;
@@ -31,14 +31,14 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春
  */
 public class AbstractELContext implements ELContext {
-    private static ILog                log                = LogFactory.getLog(AbstractELContext.class);
+    private static Log                 log                = LogFactory.getLog(AbstractELContext.class);
     private AbstractApplicationContext applicationContext = null;
     private InnerOgnlContext           elAttribute        = null;
     /*------------------------------------------------------------------------------*/
     /**该类的目的是为了支持{@link ELObject}类型对象，该对象是以{@link IAttribute}接口形式向外提供。*/
     private class InnerOgnlContext extends AttBase {
         private static final long serialVersionUID = 8423446527838340104L;
-        private ILog              log              = LogFactory.getLog(InnerOgnlContext.class);
+        private Log               log              = LogFactory.getLog(InnerOgnlContext.class);
         public Object get(Object key) {
             Object obj = super.get(key);
             if (obj != null) {

@@ -13,20 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.test.workflow.propertybinding;
-import org.more.workflow.el.PropertyBinding;
-import org.test.workflow.form.User;
-public class Main {
-    /**
-     * @param args
-     * @throws  Exception 
-     */
-    public static void main(String[] args) throws Exception {
-        User us = new User();
-        PropertyBinding pb = new PropertyBinding("role.name", us);
-        //
-        System.out.println(pb.getValue());
-        pb.setValue("asdf");
-        System.out.println(pb.getValue());
+package org.more.core.log.impl;
+import org.more.core.log.LogWriter;
+/**
+ * 
+ * @version : 2011-7-29
+ * @author ’‘”¿¥∫ (zyc@byshell.org)
+ */
+public class ConsoleWriter implements LogWriter {
+    public void write(String msgType, String msg, Object[] params) {
+        // TODO Auto-generated method stub
     }
 }

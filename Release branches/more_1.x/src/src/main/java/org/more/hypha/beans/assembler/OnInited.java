@@ -15,7 +15,7 @@
  */
 package org.more.hypha.beans.assembler;
 import java.util.List;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.Event.Sequence;
@@ -28,7 +28,7 @@ import org.more.hypha.context.InitedEvent;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class OnInited implements EventListener<InitedEvent> {
-    private static ILog log = LogFactory.getLog(OnInited.class);
+    private static Log log = LogFactory.getLog(OnInited.class);
     public void onEvent(InitedEvent event, Sequence sequence) throws Throwable {
         AbstractApplicationContext context = (AbstractApplicationContext) event.toParams(sequence).applicationContext;
         //1.≥ı ºªØbean

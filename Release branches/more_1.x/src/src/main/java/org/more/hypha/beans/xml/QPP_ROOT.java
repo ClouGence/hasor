@@ -15,7 +15,7 @@
  */
 package org.more.hypha.beans.xml;
 import java.util.ArrayList;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ValueMetaData;
@@ -28,7 +28,7 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class QPP_ROOT implements QPP {
-    private static ILog    log        = LogFactory.getLog(QPP_ROOT.class);
+    private static Log     log        = LogFactory.getLog(QPP_ROOT.class);
     private ArrayList<QPP> parserList = new ArrayList<QPP>();             //属性快速解析器定义
     /**注册一个快速属性值解析器。*/
     public synchronized void regeditTypeParser(QPP parser) {

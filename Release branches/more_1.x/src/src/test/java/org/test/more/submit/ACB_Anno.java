@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 package org.test.more.submit;
+import java.net.URI;
 import org.more.submit.ActionContext;
 import org.more.submit.ActionContextBuilder;
 import org.more.submit.ActionInvoke;
 import org.more.submit.acs.simple.ACBuilder;
-import org.more.submit.impl.AbstractAC;
+import org.more.submit.acs.simple.AC_Simple;
 import org.more.util.Config;
 /**
  * 
@@ -31,10 +32,10 @@ public class ACB_Anno implements ActionContextBuilder {
         // TODO Auto-generated method stub
     }
     public ActionContext builder() {
-        return new AbstractAC() {
-            public ActionInvoke getAction(String name, String userInfo) {
-                System.out.println("ns=a , action=" + name);
-                return super.getAction(name, userInfo);
+        return new AC_Simple() {
+            public ActionInvoke getAction(URI uri) throws Throwable {
+                System.out.println("ns=a , action=" + uri);
+                return super.getAction(uri);
             }
         };
     }

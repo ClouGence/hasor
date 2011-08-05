@@ -15,7 +15,7 @@
  */
 package org.more.hypha.commons.define;
 import java.util.Map;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
@@ -27,9 +27,9 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractDefine<T> implements IAttribute {
-    private static final ILog log       = LogFactory.getLog(AbstractDefine.class);
-    private IAttribute        attribute = null;                                   //属性，为了提供IAttribute接口功能。
-    private IAttribute        fungi     = null;                                   //附加属性
+    private static final Log log       = LogFactory.getLog(AbstractDefine.class);
+    private IAttribute       attribute = null;                                   //属性，为了提供IAttribute接口功能。
+    private IAttribute       fungi     = null;                                   //附加属性
     /*------------------------------------------------------------------------------*/
     /**获取用于存放临时定义属性的附加的属性集，该对象化名为‘真菌’与attribute不同的是，
      * 真菌只存在于个体对象上而且这个对象是供应系统内部使用，而attribute是程序对外提供的属性扩展接口。*/

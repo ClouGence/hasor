@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.xml;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ValueMetaData;
@@ -29,7 +29,7 @@ import org.more.util.attribute.IAttribute;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class QPP_Value implements QPP {
-    private static ILog log = LogFactory.getLog(QPP_Value.class);
+    private static Log log = LogFactory.getLog(QPP_Value.class);
     public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
         String value = (String) attribute.getAttribute("value");
         if (value == null)

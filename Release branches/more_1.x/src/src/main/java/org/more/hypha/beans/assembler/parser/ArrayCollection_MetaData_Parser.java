@@ -15,7 +15,7 @@
  */
 package org.more.hypha.beans.assembler.parser;
 import java.lang.reflect.Array;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
@@ -29,7 +29,7 @@ import org.more.hypha.commons.logic.ValueMetaDataParser;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class ArrayCollection_MetaData_Parser implements ValueMetaDataParser<Array_ValueMetaData> {
-    private static ILog           log               = LogFactory.getLog(ArrayCollection_MetaData_Parser.class);
+    private static Log            log               = LogFactory.getLog(ArrayCollection_MetaData_Parser.class);
     private static final Class<?> DefaultCollection = Object.class;
     /*------------------------------------------------------------------------------*/
     public Object parser(Object targetObject, Array_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {

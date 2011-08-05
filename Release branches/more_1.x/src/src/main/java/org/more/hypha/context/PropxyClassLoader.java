@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 /**
 * 
@@ -26,7 +26,7 @@ import org.more.core.log.LogFactory;
 * @author ’‘”¿¥∫ (zyc@byshell.org)
 */
 class PropxyClassLoader extends ClassLoader {
-    private static ILog log    = LogFactory.getLog(PropxyClassLoader.class);
+    private static Log  log    = LogFactory.getLog(PropxyClassLoader.class);
     private ClassLoader loader = null;
     //
     public ClassLoader getLoader() {

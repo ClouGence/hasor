@@ -13,18 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.log;
+package org.more.core.log.impl;
+import org.more.core.log.LogWriter;
 /**
- * 日志输出接口
- * @version 2009-5-13
+ * 
+ * @version : 2011-7-29
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ILogWrite {
-    /**
-     * 输出日志。
-     * @param msg 日志消息。
-     * @return 返回日志输出是否成功。在默认组建中日志输出是否成功不会影响任何其他功能，
-     *         在扩展日志系统时可以使用该返回值来确定日志是否输出到特定位置。
-     */
-    public boolean writeLog(String msg);
+public class FileWriter implements LogWriter {
+    public void write(String msgType, String msg, Object[] params) {
+        // TODO Auto-generated method stub
+    }
 }

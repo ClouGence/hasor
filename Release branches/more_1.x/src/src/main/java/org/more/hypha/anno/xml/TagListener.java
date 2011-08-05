@@ -16,7 +16,7 @@
 package org.more.hypha.anno.xml;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.Event;
@@ -37,7 +37,7 @@ import org.more.util.ScanEvent;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class TagListener implements EventListener<XmlLoadedEvent> {
-    private static ILog log         = LogFactory.getLog(TagListener.class);
+    private static Log  log         = LogFactory.getLog(TagListener.class);
     private String      packageText = null;
     private AnnoService annoService = null;
     /**创建{@link TagListener}对象。 */

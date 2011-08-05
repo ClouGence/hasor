@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.test.workflow.el;
-import org.more.workflow.context.ELContext;
-import org.more.workflow.el.ValueExpression;
-import org.test.workflow.form.User;
-public class Main {
-    public static void main(String[] args) throws Exception {
-        ELContext context = new ELContext();
-        context.putLocalThis(new User());
-        System.out.println(new ValueExpression("this.role.name").eval(context));
+package org.more.submit.result;
+import org.more.submit.Result;
+/**
+ * json
+ * @version : 2011-7-25
+ * @author ’‘”¿¥∫ (zyc@byshell.org)
+ */
+public class JsonResult extends Result {
+    public JsonResult(Object object) {
+        super("json", object);
     }
-}
+};

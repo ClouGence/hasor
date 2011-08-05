@@ -16,7 +16,7 @@
 package org.more.hypha.commons.engine.xml;
 import java.util.Map;
 import java.util.Set;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.Event.Sequence;
 import org.more.hypha.EventListener;
@@ -30,7 +30,7 @@ import org.more.hypha.context.InitEvent;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class OnInit implements EventListener<InitEvent> {
-    private static ILog         log       = LogFactory.getLog(OnInit.class);
+    private static Log          log       = LogFactory.getLog(OnInit.class);
     private Map<String, String> xmlConfig = null;
     public OnInit(Map<String, String> xmlConfig) {
         this.xmlConfig = xmlConfig;

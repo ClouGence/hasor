@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.more.core.error.RepeateException;
 import org.more.core.error.SupportException;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
@@ -28,7 +28,7 @@ import org.more.hypha.ValueMetaData;
  * @author 赵永春 (zyc@byshell.org)
  */
 abstract class RootValueMetaDataParser implements ValueMetaDataParser<ValueMetaData> {
-    private static ILog                                     log               = LogFactory.getLog(RootValueMetaDataParser.class);
+    private static Log                                      log               = LogFactory.getLog(RootValueMetaDataParser.class);
     private Map<String, ValueMetaDataParser<ValueMetaData>> metaDataParserMap = new HashMap<String, ValueMetaDataParser<ValueMetaData>>();
     /*------------------------------------------------------------------------------*/
     /**第二个参数无效，因为{@link RootValueMetaDataParser}就是根。*/

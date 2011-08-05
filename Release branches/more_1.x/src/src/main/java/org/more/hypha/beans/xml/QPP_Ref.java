@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.xml;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ValueMetaData;
@@ -26,7 +26,7 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class QPP_Ref implements QPP {
-    private static ILog log = LogFactory.getLog(QPP_Ref.class);
+    private static Log log = LogFactory.getLog(QPP_Ref.class);
     public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
         //1.检查是否可以解析
         String value = (String) attribute.getAttribute("refBean");

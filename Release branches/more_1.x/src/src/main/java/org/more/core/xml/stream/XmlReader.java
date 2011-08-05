@@ -216,15 +216,15 @@ public class XmlReader {
         }
         return sb.append(qname.getLocalPart()).toString();
     }
-    /**执行XPath忽略判断。*/
-    private void pushEvent(XmlAccept accept, XmlStreamEvent e, String ignoreXPath) {
+    /**执行XPath忽略判断。 */
+    private void pushEvent(XmlAccept accept, XmlStreamEvent e, String ignoreXPath) throws XMLStreamException {
         //(3).XPath忽略判断
         boolean ignore = this.ignoreXPath(e.getXpath(), ignoreXPath);
         if (ignore == false)
             this.pushEvent(accept, e);
     }
-    /**负责推送事件的方法，子类可以通过扩展该方法在推送事件期间处理一些其他操作。*/
-    protected void pushEvent(XmlAccept accept, XmlStreamEvent e) {
+    /**负责推送事件的方法，子类可以通过扩展该方法在推送事件期间处理一些其他操作。 */
+    protected void pushEvent(XmlAccept accept, XmlStreamEvent e) throws XMLStreamException {
         if (accept != null)
             accept.sendEvent(e);
     }

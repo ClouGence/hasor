@@ -15,7 +15,7 @@
  */
 package org.more.hypha.commons.point_support.xml;
 import java.util.List;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.Event.Sequence;
 import org.more.hypha.EventListener;
@@ -29,7 +29,7 @@ import org.more.hypha.context.InitEvent;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class OnInit implements EventListener<InitEvent> {
-    private static ILog   log   = LogFactory.getLog(OnInit.class);
+    private static Log    log   = LogFactory.getLog(OnInit.class);
     private List<B_Point> bList = null;
     public OnInit(List<B_Point> bList) {
         this.bList = bList;

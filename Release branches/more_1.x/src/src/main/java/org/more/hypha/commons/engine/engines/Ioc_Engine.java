@@ -15,7 +15,7 @@
  */
 package org.more.hypha.commons.engine.engines;
 import java.util.Collection;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.BeanPropertyDefine;
@@ -29,7 +29,7 @@ import org.more.util.BeanUtil;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class Ioc_Engine extends IocEngine {
-    private static ILog log = LogFactory.getLog(Ioc_Engine.class);
+    private static Log log = LogFactory.getLog(Ioc_Engine.class);
     public void ioc(Object target, AbstractBeanDefine define, Object[] params) throws Throwable {
         Collection<? extends BeanPropertyDefine> bpds = define.getPropertys();
         if (bpds == null) {

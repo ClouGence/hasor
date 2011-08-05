@@ -19,6 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 /**
  *
@@ -26,9 +27,10 @@ import javax.xml.stream.XMLStreamWriter;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class XmlWriter implements XmlAccept {
-    private OutputStream xmlStrema     = null; //读取Xml数据的输出流。
-    private boolean      ignoreComment = true; //是否忽略Xml中的所有注释节点。
-    private boolean      ignoreSpace   = true; //是否忽略Xml中可忽略的空格。
+    private OutputStream    xmlStrema     = null; //读取Xml数据的输出流。
+    private XMLStreamWriter writer        = null;
+    private boolean         ignoreComment = true; //是否忽略Xml中的所有注释节点。
+    private boolean         ignoreSpace   = true; //是否忽略Xml中可忽略的空格。
     //--------------------------------------------------------------------
     /**创建一个XmlWriter对象用于写入xml事件流到fileName参数所表述的Xml文件。*/
     public XmlWriter(String fileName) throws FileNotFoundException {
@@ -62,10 +64,12 @@ public class XmlWriter implements XmlAccept {
         this.ignoreSpace = ignoreSpace;
     }
     //--------------------------------------------------------------------
-    public void reset() {
-        // TODO Auto-generated method stub
+    public void beginAccept() throws XMLStreamException {
+        XMLOutputFactory factory = XMLOutputFactory.newInstance();
+        writer = factory.createXMLStreamWriter(this.xmlStrema);
     }
-    public void sendEvent(XmlStreamEvent e) {
+    public void endAccept() {}
+    public void sendEvent(XmlStreamEvent e) throws XMLStreamException {
         //1.执行忽略。
         if (e instanceof TextEvent == true) {
             TextEvent textE = (TextEvent) e;
@@ -74,8 +78,28 @@ public class XmlWriter implements XmlAccept {
             if (textE.isSpaceEvent() == true && this.ignoreSpace == true)
                 return;
         }
-        XMLOutputFactory factory = XMLOutputFactory.newInstance();
-        XMLStreamWriter writer = factory.createXMLStreamWriter(this.xmlStrema);
-        // TODO Auto-generated method stub
+        //2.处理事件
+        if (e instanceof StartDocumentEvent) {
+            StartDocumentEvent ee = (StartDocumentEvent) e;
+            this.writer.writeStartDocument(ee.getEncoding(), ee.getVersion());
+        } else if (e instanceof EndDocumentEvent)
+            this.writer.writeEndDocument();
+        else if (e instanceof StartElementEvent) {
+            StartElementEvent ee = (StartElementEvent) e;
+            this.writer.writeStartElement(ee.getPrefix(), ee.getElementName(), ee.getNamespaceURI());
+        } else if (e instanceof EndElementEvent)
+            this.writer.writeEndElement();
+        else if (e instanceof TextEvent) {
+            TextEvent ee = (TextEvent) e;
+            if (ee.isCommentEvent() == true)
+                this.writer.writeComment(ee.getText());
+            if (ee.isCDATAEvent() == true)
+                this.writer.writeCData(ee.getText());
+            if (ee.isCharsEvent() == true)
+                this.writer.writeCharacters(ee.getText());
+            //if (ee.isSpaceEvent() == true  )
+            //if (ee.isWhiteSpace() == true)
+        }
+        //end writer
     }
 }

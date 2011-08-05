@@ -18,7 +18,7 @@ import java.io.File;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.List;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
@@ -31,12 +31,12 @@ import org.more.util.ResourcesUtil;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class File_MetaData_Parser implements ValueMetaDataParser<File_ValueMetaData> {
-    private static ILog log = LogFactory.getLog(File_MetaData_Parser.class);
+    private static Log log = LogFactory.getLog(File_MetaData_Parser.class);
     /*------------------------------------------------------------------------------*/
     public File parser(Object targetObject, File_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
         String matchString = data.getFileObject();
         log.debug("parser File match string = {%0}.", matchString);
-        List<URL> urls = ResourcesUtil.getResource(matchString);
+        List<URL> urls = ResourcesUtil.getResources(matchString);
         if (urls != null)
             if (urls.size() != 0) {
                 URL url = urls.get(0);

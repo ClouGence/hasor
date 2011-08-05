@@ -15,7 +15,7 @@
  */
 package org.more.submit.acs.simple.xml;
 import org.more.core.error.InitializationException;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.Event.Sequence;
 import org.more.hypha.EventListener;
@@ -30,8 +30,8 @@ import org.more.submit.SubmitService;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class OnStartingServices implements EventListener<StartingServicesEvent> {
-    private static ILog log    = LogFactory.getLog(OnStartingServices.class);
-    private B_Config    config = null;
+    private static Log log    = LogFactory.getLog(OnStartingServices.class);
+    private B_Config   config = null;
     // 
     public OnStartingServices(B_Config config) {
         this.config = config;

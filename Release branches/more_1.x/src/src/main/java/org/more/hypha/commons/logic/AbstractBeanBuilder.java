@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.commons.logic;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.commons.xml.Tag_Abstract;
@@ -26,7 +26,7 @@ import org.more.hypha.context.AbstractApplicationContext;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractBeanBuilder<T extends AbstractBeanDefine> {
-    private static final ILog          log                = LogFactory.getLog(Tag_Abstract.class);
+    private static final Log           log                = LogFactory.getLog(Tag_Abstract.class);
     private AbstractApplicationContext applicationContext = null;
     /*------------------------------------------------------------------------------*/
     /**设置当前{@link AbstractBeanBuilder}使用的{@link AbstractApplicationContext}环境对象。*/

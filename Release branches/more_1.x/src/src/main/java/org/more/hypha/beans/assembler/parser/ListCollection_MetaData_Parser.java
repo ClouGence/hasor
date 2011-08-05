@@ -16,7 +16,7 @@
 package org.more.hypha.beans.assembler.parser;
 import java.util.ArrayList;
 import java.util.List;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
@@ -30,7 +30,7 @@ import org.more.hypha.commons.logic.ValueMetaDataParser;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class ListCollection_MetaData_Parser implements ValueMetaDataParser<List_ValueMetaData> {
-    private static ILog           log               = LogFactory.getLog(ListCollection_MetaData_Parser.class);
+    private static Log            log               = LogFactory.getLog(ListCollection_MetaData_Parser.class);
     private static final Class<?> DefaultCollection = ArrayList.class;
     /*------------------------------------------------------------------------------*/
     @SuppressWarnings("unchecked")

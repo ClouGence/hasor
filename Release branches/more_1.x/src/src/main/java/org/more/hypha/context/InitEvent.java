@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.context;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.Event;
@@ -24,7 +24,7 @@ import org.more.hypha.Event;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class InitEvent extends Event {
-    private static ILog log = LogFactory.getLog(InitEvent.class);
+    private static Log log = LogFactory.getLog(InitEvent.class);
     public class InitEvent_Params extends Event.Params {
         public ApplicationContext applicationContext = null;
     };

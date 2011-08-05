@@ -13,17 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.result;
-import org.more.submit.ResultProcess;
-import org.more.submit.impl.DefaultActionStack;
+package org.more.core.log;
 /**
- * return
- * @version : 2011-7-25
+ * 日志输出接口，该接口的目的是将日志输出到指定的位置。
+ * @version : 2011-7-29
  * @author 赵永春 (zyc@byshell.org)
  */
-public class FTL_Result implements ResultProcess {
-    public Object invoke(DefaultActionStack onStack, Object res) {
-        return res;
-    }
-    public void addParam(String key, String value) {}
-}
+public interface LogWriter {
+    public void write(String msgType, String msg, Object[] params);
+};

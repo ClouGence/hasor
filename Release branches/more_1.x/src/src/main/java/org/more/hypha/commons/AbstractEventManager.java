@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.Event;
 import org.more.hypha.Event.Sequence;
@@ -35,7 +35,7 @@ import org.more.hypha.context.AbstractDefineResource;
 * @author ’‘”¿¥∫ (zyc@byshell.org)
 */
 public class AbstractEventManager implements EventManager {
-    private static final ILog                  log                          = LogFactory.getLog(AbstractEventManager.class);
+    private static final Log                   log                          = LogFactory.getLog(AbstractEventManager.class);
     private AbstractDefineResource             defineResource               = null;
     private EventExceptionHandler<Event>       defaultEventExceptionHandler = null;
     //

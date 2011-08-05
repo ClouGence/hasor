@@ -15,7 +15,7 @@
  */
 package org.more.hypha.commons;
 import java.util.Map;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.core.ognl.Node;
 import org.more.core.ognl.Ognl;
@@ -32,10 +32,10 @@ import org.more.util.attribute.TransformToMap;
  * @author 赵永春 (zyc@byshell.org)
  */
 class EL_EvalExpressionImpl implements EvalExpression {
-    private static ILog log              = LogFactory.getLog(EL_EvalExpressionImpl.class);
-    private String      expressionString = null;
-    private Node        expressionNode   = null;
-    private IAttribute  attribute        = null;
+    private static Log log              = LogFactory.getLog(EL_EvalExpressionImpl.class);
+    private String     expressionString = null;
+    private Node       expressionNode   = null;
+    private IAttribute attribute        = null;
     /*------------------------------------------------------------------------------*/
     public EL_EvalExpressionImpl(AbstractELContext abstractELContext, String expressionString) throws ELException {
         this.attribute = new ParentDecorator(abstractELContext.getELAttribute());//创建一个父级，以隔离来自elContext的属性。

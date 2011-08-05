@@ -27,7 +27,7 @@ import org.more.hypha.anno.AnnoService;
 class EV_Field implements FieldVisitor {
     private EV_Mark      mark    = null;
     private FieldVisitor visitor = null;
-    private AnnoService plugin  = null;
+    private AnnoService  plugin  = null;
     //----------
     public EV_Field(AnnoService plugin, EV_Mark mark, FieldVisitor visitor) {
         this.plugin = plugin;

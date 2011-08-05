@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.submit.acs.simple.xml;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.Event.Sequence;
 import org.more.hypha.EventListener;
@@ -28,8 +28,8 @@ import org.more.submit.acs.simple.Action;
  * @author 赵永春 (zyc@byshell.org)
  */
 class OnBeginScan implements EventListener<BeginScanEvent> {
-    private static ILog log    = LogFactory.getLog(OnBeginScan.class);
-    private B_Config    config = null;
+    private static Log log    = LogFactory.getLog(OnBeginScan.class);
+    private B_Config   config = null;
     /**该类负责注册注解扫描器。*/
     public OnBeginScan(B_Config config) {
         this.config = config;

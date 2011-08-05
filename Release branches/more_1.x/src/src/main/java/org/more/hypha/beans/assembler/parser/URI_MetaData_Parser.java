@@ -15,7 +15,7 @@
  */
 package org.more.hypha.beans.assembler.parser;
 import java.net.URI;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
@@ -27,7 +27,7 @@ import org.more.hypha.commons.logic.ValueMetaDataParser;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class URI_MetaData_Parser implements ValueMetaDataParser<URI_ValueMetaData> {
-    private static ILog log = LogFactory.getLog(URI_MetaData_Parser.class);
+    private static Log log = LogFactory.getLog(URI_MetaData_Parser.class);
     /*------------------------------------------------------------------------------*/
     public URI parser(Object targetObject, URI_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
         String uriString = data.getUriObject();

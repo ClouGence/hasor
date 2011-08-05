@@ -16,7 +16,7 @@
 package org.more.hypha.beans.assembler.parser;
 import java.util.HashMap;
 import java.util.Map;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
@@ -30,7 +30,7 @@ import org.more.hypha.commons.logic.ValueMetaDataParser;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class MapCollection_MetaData_Parser implements ValueMetaDataParser<Map_ValueMetaData> {
-    private static ILog           log               = LogFactory.getLog(MapCollection_MetaData_Parser.class);
+    private static Log            log               = LogFactory.getLog(MapCollection_MetaData_Parser.class);
     private static final Class<?> DefaultCollection = HashMap.class;
     /*------------------------------------------------------------------------------*/
     @SuppressWarnings("unchecked")

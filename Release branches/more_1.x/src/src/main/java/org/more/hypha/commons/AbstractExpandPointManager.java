@@ -16,7 +16,7 @@
 package org.more.hypha.commons;
 import java.util.ArrayList;
 import java.util.HashMap;
-import org.more.core.log.ILog;
+import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ExpandPointManager;
@@ -30,7 +30,7 @@ import org.more.hypha.context.AbstractApplicationContext;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public abstract class AbstractExpandPointManager implements ExpandPointManager {
-    private static ILog                  log                = LogFactory.getLog(AbstractExpandPointManager.class);
+    private static Log                   log                = LogFactory.getLog(AbstractExpandPointManager.class);
     private AbstractApplicationContext   applicationContext = null;
     private HashMap<String, PointFilter> enableFilterMap    = new HashMap<String, PointFilter>();
     private HashMap<String, PointFilter> disableFilterMap   = new HashMap<String, PointFilter>();
