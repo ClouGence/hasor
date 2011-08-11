@@ -13,19 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.console;
-import org.more.beans.resource.annotation.Bean;
+package org.hypha;
+import org.more.hypha.anno.define.Bean;
+import org.more.submit.Action;
 import org.more.submit.ActionStack;
-import org.more.submit.annotation.Action;
+import org.more.submit.acs.hypha.HBean;
 /**
  * 作为Action类必须是共有的非抽象的，同时也不能是接口。
  * Date : 2009-12-11
  */
-@Bean
-@Action
-public class AnnoAction {
-    public Object hello(ActionStack stack) {
-        System.out.println("Hello More! by annoAction.hello");
-        return "这个是返回结果。";
-    }
+@Bean()
+@HBean()
+public class AnnoHyphaBean {
+    @Action
+    public Object testHypha(ActionStack stack) {
+        System.out.println("这是一个来自hypha注解配置的Bean");
+        return null;
+    };
+    //不能使用‘/hi’是因为在Spring这个命名空间下已经存在了‘/hi’，那个bean是由配置文件定义的。
+    @Action("/hi_2")
+    public Object testHi(ActionStack stack) {
+        System.out.println("这是一个来自hypha注解配置的Bean,地址为 hi_2");
+        return null;
+    };
 }
+/*
+Action的地址是：
+    hypha://org.spring.AnnoHyphaBean.testHypha
+    hypha://hi_2
+*/

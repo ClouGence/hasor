@@ -13,22 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.console;
+package org.guice;
+import org.more.submit.Action;
 import org.more.submit.ActionStack;
+import org.more.submit.acs.guice.GBean;
 /**
- * 作为Action类必须是共有的非抽象的，同时也不能是接口。
- * Date : 2009-12-11
+ * 
+ * @version : 2011-8-11
+ * @author 赵永春 (zyc@byshell.org)
  */
-public class HelloAction {
-    /**Action方法必须接受一个类型为ActionStack的参数，Submit对于Action的返回值不做任何限制。*/
-    public Object hello(ActionStack stack) {
-        System.out.println("Hello More!");
-        return "这个是返回结果。";
-    }
-    /**该方法演示的是，如何获得传递给Action的参数。*/
-    public Object params(ActionStack stack) {
-        Object args = stack.getParam("arg");
-        System.out.println(args);//输出参数
-        return "return " + args;
-    }
+@GBean
+public class GuiceBean {
+    @Action
+    public Object testGuice(ActionStack stack) {
+        System.out.println("这是一个来自Guice的Bean");
+        return null;
+    };
+    @Action("/hi_1")
+    public Object testHi(ActionStack stack) {
+        System.out.println("这是一个来自Guice的Bean,地址为 hi_1");
+        return null;
+    };
 }
+/*
+Action的地址是：
+    guice://org.guice.GuiceBean.testGuice
+    guice://hi_1
+*/

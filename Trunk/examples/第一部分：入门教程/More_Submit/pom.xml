@@ -1,0 +1,28 @@
+﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>byshell.org</groupId>
+	<artifactId>more_test_submit</artifactId>
+	<version>alpha4</version>
+	<packaging>jar</packaging>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<target>1.5</target>
+					<source>1.5</source>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>byshell.org</groupId>
+			<artifactId>more-core</artifactId>
+			<version>alpha4</version>
+		</dependency>
+	</dependencies>
+</project>
