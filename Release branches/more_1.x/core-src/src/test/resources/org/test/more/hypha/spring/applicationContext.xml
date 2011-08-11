@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+	<!--==============================================系统配置-->
+	<bean name="test1" class="a.beanContextTest.Bean" scope="prototype">
+		<constructor-arg index="0" value="12"/>
+		<constructor-arg index="1" value="12.5"/>
+		<constructor-arg index="2" value="我是字符串"/>
+		<constructor-arg index="3">
+			<list>
+				<value type="java.lang.Integer">12</value>
+				<value type="java.lang.Float">12.5</value>
+				<value type="java.lang.String">我是字符串</value>
+			</list>
+		</constructor-arg>
+		<constructor-arg index="4">
+			<list>
+				<value type="java.lang.Integer">12</value>
+				<value type="java.lang.Float">12.5</value>
+				<value type="java.lang.String">我是字符串</value>
+			</list>
+		</constructor-arg>
+		<property name="a" value="12" />
+		<property name="b" value="12.5"/>
+		<property name="c" value="我是字符串"/>
+		<property name="d">
+			<list>
+				<value type="java.lang.Integer">12</value>
+				<value type="java.lang.Float">12.5</value>
+				<value type="java.lang.String">我是字符串</value>
+			</list>
+		</property>
+		<property name="e">
+			<list>
+				<value type="java.lang.Integer">12</value>
+				<value type="java.lang.Float">12.5</value>
+				<value type="java.lang.String">我是字符串</value>
+			</list>
+		</property>
+	</bean>
+	
+	
+	<!-- Spring AOP 一   ============================================================================================-->
+	<bean id="testBean" class="a.beanContextTest.Bean" scope="prototype">
+		<property name="a" value="12" />
+		<property name="b" value="字符串" />
+	</bean>
+	<!-- 配置拦截器 -->
+	<bean id="TestAuthorityInterceptor_1" class="a.beanContextTest.spring.TestAuthorityInterceptor" scope="prototype"/>
+	<bean id="TestAuthorityInterceptor_2" class="a.beanContextTest.spring.TestAuthorityInterceptor" scope="prototype"/>
+	<!-- 配置代理工厂bean -->
+	<bean id="service" class="org.springframework.aop.framework.ProxyFactoryBean" scope="prototype">
+		<property name="proxyInterfaces">
+			<value>a.beanContextTest.spring.TestBeanInterface</value>
+		</property>
+		<property name="target" ref="testBean" />
+		<property name="interceptorNames">
+			<list>
+				<value>TestAuthorityInterceptor_1</value>
+				<value>TestAuthorityInterceptor_2</value>
+			</list>
+		</property>
+	</bean>
+	<!-- Spring AOP 二   ============================================================================================-->
+</beans>
+
+	<!--
+		<constructor-arg index="0" value="123" /> <constructor-arg index="1"
+		value="123.5" /> <constructor-arg index="2" value="字符串" />
+	-->

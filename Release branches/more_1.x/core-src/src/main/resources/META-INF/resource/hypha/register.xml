@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+	<!-- initSequence应当大于零，小于零的属于more预留。数越大越在后面装载，启动顺序值可以相同（如果相同按照内部排序方式决定（顺序）进行）。 -->
+	<regedit initSequence="-10">
+		<namespace>http://project.byshell.org/more/schema/beans</namespace>
+		<factory>org.more.hypha.beans.assembler.TagRegister_Beans</factory>
+		<schema enable="false">/META-INF/resource/hypha/beans-schema.xsd</schema>
+	</regedit>
+	<regedit initSequence="-10"> 
+		<namespace>http://project.byshell.org/more/schema/beans-aop</namespace> 
+		<factory>org.more.hypha.aop.assembler.Register_Aop</factory> 
+		<schema enable="false">/META-INF/resource/hypha/aop-schema.xsd</schema> 
+	</regedit>
+	<regedit initSequence="-10"> 
+		<namespace>http://project.byshell.org/more/schema/beans-anno</namespace> 
+		<factory>org.more.hypha.anno.assembler.Register_Anno</factory> 
+		<schema enable="false">/META-INF/resource/hypha/annotation-schema.xsd</schema> 
+	</regedit>
+	<regedit initSequence="-10"> 
+		<namespace>http://project.byshell.org/more/schema/submit</namespace> 
+		<factory>org.more.submit.xml.Register_Submit</factory> 
+		<schema enable="false">/META-INF/resource/hypha/submit-schema.xsd</schema> 
+	</regedit>
+	<!-- ===================================================================================== -->
+	<regedit initSequence="-10">
+		<namespace>http://project.byshell.org/more/schema/beans-config</namespace>
+		<factory>org.more.hypha.beans.assembler.TagRegister_BeansConfig</factory>
+		<schema enable="false">/META-INF/resource/hypha/beans-config-schema.xsd</schema>
+	</regedit>
+	<regedit initSequence="-10">
+		<namespace>http://project.byshell.org/more/schema/engine</namespace>
+		<factory>org.more.hypha.commons.engine.xml.TagRegister_Engine</factory>
+		<schema enable="false">/META-INF/resource/hypha/engine-schema.xsd</schema>
+	</regedit>
+	<regedit initSequence="-10">
+		<namespace>http://project.byshell.org/more/schema/el-config</namespace>
+		<factory>org.more.hypha.el.xml.TagRegister_EL</factory>
+		<schema enable="false">/META-INF/resource/hypha/el-config-schema.xsd</schema>
+	</regedit>
+	<regedit initSequence="-10">
+		<namespace>http://project.byshell.org/more/schema/point</namespace>
+		<factory>org.more.hypha.commons.point_support.xml.TagRegister_Point</factory>
+		<schema enable="false">/META-INF/resource/hypha/point-schema.xsd</schema>
+	</regedit>
+</Configuration>
