@@ -9,6 +9,7 @@
 
 	<!-- freemarker默认模板 -->
 	<submit:result match="ftl" class="org.more.submit.result.FTLResultProcess"><!-- 执行freemarker模板 -->
+		<submit:config key="configBean"/><!-- 配置类，其类型必须是org.more.submit.result.FreeMarkerConfig的子类。 -->
 		<submit:config key="suffix" value="flt"/><!-- 模板后缀名 -->
 		<submit:config key="rootPath" value="$att['rootPath']"/><!-- 模板所处根路径 -->
 	</submit:result>

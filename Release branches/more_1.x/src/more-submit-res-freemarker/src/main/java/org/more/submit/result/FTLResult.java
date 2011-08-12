@@ -14,14 +14,71 @@
  * limitations under the License.
  */
 package org.more.submit.result;
+import java.io.Writer;
+import java.util.Map;
 import org.more.submit.Result;
+import org.more.util.attribute.AttBase;
+import org.more.util.attribute.IAttribute;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 /**
  * ftl
  * @version : 2011-7-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public class FTLResult extends Result<String> {
+public class FTLResult extends Result<String> implements IAttribute {
+    private Writer  writer      = null;
+    private Object  returnValue = null;
+    private AttBase att         = new AttBase();
+    //
+    public FTLResult(String templatePath, Writer writer, Object returnValue) {
+        super("ftl", templatePath);
+        this.writer = writer;
+        this.returnValue = returnValue;
+    }
+    public FTLResult(String templatePath, Writer writer) {
+        super("ftl", templatePath);
+        this.writer = writer;
+    }
     public FTLResult(String templatePath) {
         super("ftl", templatePath);
+    }
+    /**获取要执行的模板。*/
+    public String getTemplatePath() {
+        return this.getObject();
+    }
+    /**除了使用{@link FreeMarkerConfig}类对{@link Configuration}进行配置之外，也可以通过重写该方法进行配置。不过该方法配置会被最后执行。*/
+    public void applyConfiguration(Configuration configuration) {};
+    /**配置{@link Template}以便于提供更高级的功能。*/
+    public void applyTemplate(Template template) {}
+    /**获取模板执行结果输出地址。*/
+    public Writer getWriter() {
+        return this.writer;
+    };
+    /**当 模板调用动作结束之后action方法会返回该结果。*/
+    public Object getReturnValue() {
+        return this.returnValue;
+    };
+    //
+    public boolean contains(String name) {
+        return this.att.contains(name);
+    };
+    public void setAttribute(String name, Object value) {
+        this.att.setAttribute(name, value);
+    };
+    public Object getAttribute(String name) {
+        return this.att.getAttribute(name);
+    };
+    public void removeAttribute(String name) {
+        this.att.removeAttribute(name);
+    };
+    public String[] getAttributeNames() {
+        return this.att.getAttributeNames();
+    };
+    public void clearAttribute() {
+        this.att.clearAttribute();
+    };
+    public Map<String, Object> toMap() {
+        return this.att.toMap();
     }
 }
