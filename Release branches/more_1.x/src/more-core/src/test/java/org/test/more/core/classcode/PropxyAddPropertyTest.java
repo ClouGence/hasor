@@ -34,6 +34,7 @@ public class PropxyAddPropertyTest {
     @Test
     public void testBaseTypePropxy() throws Exception {
         ClassEngine ce = new ClassEngine();
+        ce.setSuperClass(TestBean2.class);
         ce.setBuilderMode(BuilderMode.Propxy);
         ce.addDelegate(Remote.class, new Propxy_Propxy());
         Object obj = ce.newInstance(new TestBean2());
