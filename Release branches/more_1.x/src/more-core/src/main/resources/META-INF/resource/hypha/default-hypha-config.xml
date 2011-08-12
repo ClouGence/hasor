@@ -6,9 +6,9 @@
 	xmlns:anno="http://project.byshell.org/more/schema/beans-anno"
 	xmlns:p="http://project.byshell.org/more/schema/point"
 	xmlns:submit="http://project.byshell.org/more/schema/submit">
-	
+
 	<b:meta key="rootPath"/><!-- 表示hypha的根路径 -->
-	
+
 	<!-- MetaData类型解析器的注册，当发生：InitEvent -->
 	<bc:mdParser-config>
 		<bc:parser mdType="SimpleType" class="org.more.hypha.beans.assembler.parser.SimpleType_MetaData_Parser" />
@@ -61,46 +61,18 @@
 		<b:property name="classLoader" elText="$att['simple-loader']"/>
 	</b:classBean>
 	<submit:actionContext namespace="hypha" refBean="$more_submit_hypha_ac"/>	<!-- 注册命名空间hypha -->	
-	<!-- 注册AC，Guice的AC提供者。 -->
-	<b:meta key="guice-modules"/><!-- guice-modules描述配置，该配置可以是对象也可以是字符串表示的module数组。  -->
-	<b:meta key="guice-injector"/><!-- guice-环境对象 -->
-	<b:classBean id="$more_submit_guice_ac" class="org.more.submit.acs.guice.AC_Guice">
-		<b:property name="modules" elText="$att['guice-modules']"/>
-		<b:property name="guiceInjector" elText="$att['guice-injector']"/>
-		<!-- 由于是继承关系因此，可以使用该属性进行注入 -->
-		<b:property name="classLoader" elText="$att['simple-loader']"/>
-	</b:classBean>
-	<submit:actionContext namespace="guice" refBean="$more_submit_guice_ac"/>	<!-- 注册命名空间guice -->
-	<!-- 注册AC，Spring的AC提供者。 -->
-	<b:meta key="spring-configs" value="classpath:*/applicationContext.xml"/><!-- 表示spring配置文件位置 -->
-	<b:meta key="spring-application" value=""/><!-- 表示spring上下文 -->
-	<b:classBean id="$more_submit_spring_ac" class="org.more.submit.acs.spring.AC_Spring">
-		<b:property name="application" elText="$att['application']"/>
-		<b:property name="config" elText="$att['spring-configs']"/>
-		<!-- 由于是继承关系因此，可以使用该属性进行注入 -->
-		<b:property name="classLoader" elText="$att['simple-loader']"/>
-	</b:classBean>
-	<submit:actionContext namespace="spring" refBean="$more_submit_spring_ac"/>
 	<!-- 默认AC -->
 	<submit:defaultAC defaultAC="simple"/>
+
+
 	<!-- 将结果集原样return -->
 	<submit:result match="return" class="org.more.submit.result.ReturnResultProcess"/>
-	<!-- freemarker默认模板 -->
-	<submit:result match="ftl" class="org.more.submit.result.FTLResultProcess"><!-- 执行freemarker模板 -->
-		<submit:config key="suffix" value="flt"/><!-- 模板后缀名 -->
-		<submit:config key="rootPath" value="$att['rootPath']"/><!-- 模板所处根路径 -->
-	</submit:result>
 	<!-- 将结果集转换成json对象 -->
 	<submit:result match="json" class="org.more.submit.result.JsonResultProcess">
 		<submit:config key="border" value="'"/><!-- 字符串分隔符是单引号还是双引号 -->
 	</submit:result>
 	<!-- 请求其他action -->
 	<submit:result match="submitAction" class="org.more.submit.result.SubmitActionResultProcess"/>
-	<!-- 请求转发处理 -->
-	<submit:result match="webForward" class="org.more.submit.web.result.WebForwardResultProcess"/>
-	<!-- web错误处理 -->
-	<submit:result match="webError" class="org.more.submit.web.result.WebErrorResultProcess"/>
-
 
 
 	<anno:anno package="org.more.*" enable="true"/>

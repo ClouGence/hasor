@@ -6,7 +6,7 @@
 		<artifactId>more-parent</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>more-core-web</artifactId>
+	<artifactId>more-submit-ac-guice</artifactId>
 	<packaging>jar</packaging>
 	<!-- -->
 	<dependencies>
@@ -15,11 +15,10 @@
 			<artifactId>more-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
 		<dependency>
-			<groupId>javax</groupId>
-			<artifactId>javaee-api</artifactId>
-			<version>${javaee.version}</version>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>${guice.inject.version}</version>
 		</dependency>
 	</dependencies>
 </project>
