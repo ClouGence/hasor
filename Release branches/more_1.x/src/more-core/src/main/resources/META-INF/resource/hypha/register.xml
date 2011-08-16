@@ -21,6 +21,11 @@
 		<factory>org.more.submit.xml.Register_Submit</factory> 
 		<schema enable="false">/META-INF/resource/hypha/submit-schema.xsd</schema> 
 	</regedit>
+	<regedit initSequence="-10"> 
+		<namespace>http://project.byshell.org/more/schema/remote</namespace> 
+		<factory>org.more.remote.xml.Register_Remote</factory> 
+		<schema enable="false">/META-INF/resource/hypha/remote-schema.xsd</schema> 
+	</regedit>
 	<!-- ===================================================================================== -->
 	<regedit initSequence="-10">
 		<namespace>http://project.byshell.org/more/schema/beans-config</namespace>

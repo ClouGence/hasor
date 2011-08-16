@@ -520,7 +520,7 @@ public class ClassEngine {
             else
                 obj = this.newClass.getConstructor(this.superClass).newInstance(propxyBean);
         } catch (Exception e) {
-            throw new InitializationException("初始化创建新类[" + this.newClass.getName() + "]错误," + e.getMessage());
+            throw new InitializationException("初始化创建新类[" + this.newClass.getName() + "]", e.getCause());
         }
         return this.configuration.configBean(obj);
     };

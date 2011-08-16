@@ -5,7 +5,8 @@
 	xmlns:aop="http://project.byshell.org/more/schema/aop"
 	xmlns:anno="http://project.byshell.org/more/schema/beans-anno"
 	xmlns:p="http://project.byshell.org/more/schema/point"
-	xmlns:submit="http://project.byshell.org/more/schema/submit">
+	xmlns:submit="http://project.byshell.org/more/schema/submit"
+	xmlns:r="http://project.byshell.org/more/schema/remote">
 
 	<b:meta key="rootPath"/><!-- 表示hypha的根路径 -->
 
@@ -60,7 +61,7 @@
 		<!-- 由于是继承关系因此，可以使用该属性进行注入 -->
 		<b:property name="classLoader" elText="$att['simple-loader']"/>
 	</b:classBean>
-	<submit:actionContext namespace="hypha" refBean="$more_submit_hypha_ac"/>	<!-- 注册命名空间hypha -->	
+	<submit:actionContext namespace="hypha" refBean="$more_submit_hypha_ac"/><!-- 注册命名空间hypha -->	
 	<!-- 默认AC -->
 	<submit:defaultAC defaultAC="simple"/>
 
@@ -73,6 +74,20 @@
 	</submit:result>
 	<!-- 请求其他action -->
 	<submit:result match="submitAction" class="org.more.submit.result.SubmitActionResultProcess"/>
+
+
+	<!-- RMI -->
+	<!-- <r:remote name="" faces="" refBean="" forPublisher=""/>
+	<r:remoteDirectory refBean="" forPublisher=""/> -->
+	<!-- remotePublisher，发布者会在rmi中注册一个与pathRoot一致名称的RMI远程对象。属性name等于‘""’的发布者是默认发布者。 -->
+	<r:remotePublisher name="" path="/" bindPort="1099" bindAddress="localhost"/>
+	<!-- 如没有指定forPublisher属性则使用默认发布者，默认的发布者名称为空。 -->
+	<b:classBean id="$more_rmi_DefaultRmiDirectory" class="org.more.remote.objects.HyphaRmiBeanDirectory">
+		<b:property name="applicationContext" elText="$app"/>
+	</b:classBean>
+	<r:remoteDirectory refBean="$more_rmi_DefaultRmiDirectory"/>
+	<!-- 默认RMI是关闭的 -->
+	<r:remoteEnable enable="false"/>
 
 
 	<anno:anno package="org.more.*" enable="true"/>

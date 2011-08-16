@@ -20,6 +20,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import org.more.core.error.InitializationException;
 import org.more.hypha.ApplicationContext;
+import org.more.hypha.context.AbstractDefineResource;
 import org.more.hypha.context.app.DefaultApplicationContext;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.submit.SubmitService;
@@ -41,7 +42,8 @@ public class ContextLoaderListener implements ServletContextListener {
     };
     public void contextInitialized(ServletContextEvent event) {
         try {
-            this.context = this.createContext(event);
+            AbstractDefineResource resource = this.createDefineResource(event);
+            this.context = this.createContext(event, resource);
         } catch (Throwable e) {
             throw new InitializationException(e);
         }
@@ -61,7 +63,12 @@ public class ContextLoaderListener implements ServletContextListener {
             this.context.setAttribute("rootPath", sc.getRealPath(""));
         this.context.init();//³õÊ¼»¯context
     };
-    protected ApplicationContext createContext(ServletContextEvent event) throws Throwable {
+    protected ApplicationContext createContext(ServletContextEvent event, AbstractDefineResource resource) throws Throwable {
+        DefaultApplicationContext app = new DefaultApplicationContext(resource);
+        app.setContextObject(event.getServletContext());
+        return app;
+    };
+    protected AbstractDefineResource createDefineResource(ServletContextEvent event) throws Throwable {
         final XmlDefineResource xdr = new XmlDefineResource();
         //
         String configs = event.getServletContext().getInitParameter("hypha-configs"); //TODO ×°ÔØxml
@@ -77,8 +84,6 @@ public class ContextLoaderListener implements ServletContextListener {
                 }
             });
         xdr.loadDefine();
-        DefaultApplicationContext app = new DefaultApplicationContext(xdr);
-        app.setContextObject(event.getServletContext());
-        return app;
-    };
+        return xdr;
+    }
 }

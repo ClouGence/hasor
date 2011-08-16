@@ -6,7 +6,7 @@
 		<artifactId>more-parent</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>more-core-web</artifactId>
+	<artifactId>more-submit-web</artifactId>
 	<packaging>jar</packaging>
 	<!-- -->
 	<dependencies>

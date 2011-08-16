@@ -1,55 +1,3 @@
--------------------------------------------------------------------------------------------------------------------------------书
-More 框架开发：卷I
-	前言
-	第一部分：架构
-	第二部分：包含的功能
-
-
-
-
-More 框架开发：卷II
-
-第二部分：beans
-	接口
-	模型定义-MetaData
-	Xml解析
-		事件
-		register.xml配置文件
-		自定义Xml命名空间解析器
-
-
-
-
-	Ioc引擎
-		Fact
-		Ioc
-		Expend
-	Bean创建逻辑(EngineLogic)
-		AbstractBeanBuilder类
-			扩展点
-		AbstractBeanBuilderEx类
-			扩展点
-	ValueMetaDataParser
-
-
-
-
-
-看懂More源码的基础：
-	数据结构、Java指令集、Java反射、Aop(静态代理,动态代理)
-	XML(Schema,XML,NameSpace,Stax)、J2EE(JSP Tag,Servlet,Filter,Req,Res)、
-	Ognl、JavaScript、IO、JDBC、MVC、
-加速里了解More：
-	Struts1.x原理，有助于了解Submit 1.x和早期版本。
-	Struts2.x原理，有助于了解Submit 2.x~3.x版本。
-	CGlib2.x，有助于了解classcode组建。
-	看懂javap，有助于了解classcode组建。
-	Spring2.x，有助于了解hypha组建和早期的Beans组建。
-	ASM3.2框架，有助于了解classcode。
-	JSON标准，有助于了解json组建。
-	JDK，有助于了解log，xml，io，task。
-
-剩下的就要看你的思维是否灵活了。
 -------------------------------------------------------------------------------------------------------------------------------计划的
 alpha6
  1.领域模型尝试。
@@ -59,11 +7,11 @@ alpha5
  5.表单与Bean映射。
  6.rest架构支持
 
-JsonUtil
-More中的JSON标准
+
 
 
 后续版本
+JsonUtil
 05.copybean重写计划。
 06.xpath 比较算法。
 08.等待开发的工具：
@@ -99,8 +47,6 @@ info:
  hypha:
 	1.通过 constructor-arg或property描述的属性值信息，没有通过date、bigText、ref、file、directory、uri、el等描述优先级高。如果两者同时出现则后者会替换前者。
 /-----------------------------------------------/
-workflow v2.0
-  1.完成，并测试workflow.el
 more core
   1.增加了ognl表达式语言框架。
   2.恢复被删除的Base64js文件.
