@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.more.remote.assembler;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.rmi.AccessException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.Remote;
@@ -26,6 +28,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.more.core.error.FormatException;
+import org.more.core.log.Log;
+import org.more.core.log.LogFactory;
 import org.more.remote.Publisher;
 import org.more.remote.RemoteService;
 import org.more.remote.RmiBeanCreater;
@@ -38,9 +43,8 @@ import org.more.remote.assembler.publisher.RmiServerSocketFactory;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class DefaultPublisher implements Publisher {
-    private String                      pathRoot         = null;
-    private String                      bindAddress      = null;
-    private int                         bindPort         = 1099;
+    private static Log                  log              = LogFactory.getLog(DefaultPublisher.class);
+    private URI                         publisherAddress = null;
     //
     private Map<String, Remote>         remoteMap        = new HashMap<String, Remote>();
     private Map<String, RmiBeanCreater> remoteCreaterMap = new HashMap<String, RmiBeanCreater>();
@@ -48,13 +52,19 @@ public class DefaultPublisher implements Publisher {
     //
     private Registry                    registry         = null;
     //
-    public DefaultPublisher(String pathRoot, String bindAddress, int bindPort) {
-        this.pathRoot = pathRoot;
-        this.bindAddress = bindAddress;
-        this.bindPort = bindPort;
+    public DefaultPublisher(String bindAddress, int bindPort, String pathRoot) {
+        String str = "rmi://" + bindAddress + ":" + bindPort + "/";
+        if (pathRoot.equals("/") == false)
+            str += pathRoot;
+        try {
+            this.publisherAddress = new URI(str);
+        } catch (URISyntaxException e) {
+            log.error("can`t create RMI Services URL, please check bindAddress,bindPort and pathRoot. URL is ‘{%0}’", str);
+            throw new FormatException("无法创建RMI服务地址，服务地址字符串错误。");
+        }
     };
-    public String getPathRoot() {
-        return this.pathRoot;
+    public URI getPublisherAddress() {
+        return this.publisherAddress;
     };
     public void pushRemote(String name, Remote rmiBean) {
         this.remoteMap.put(name, rmiBean);
@@ -69,16 +79,18 @@ public class DefaultPublisher implements Publisher {
     protected void bindRemote(String name, Remote remoteObject) throws AccessException, RemoteException, AlreadyBoundException {
         if (remoteObject == null)
             return;
-        String rmiName = name;
-        if (this.pathRoot.charAt(this.pathRoot.length() - 1) != '/')
-            rmiName = "/" + rmiName;
-        this.registry.bind(this.pathRoot + rmiName, remoteObject);
+        String rmiName = this.publisherAddress.getPath() + name;
+        rmiName = rmiName.substring(1);
+        log.info("Push RMI Service ‘{0}’", rmiName);
+        this.registry.bind(rmiName, remoteObject);
     };
     public void start(RemoteService remoteService) throws Throwable {
         //1.创建registry
-        RMIServerSocketFactory s = new RmiServerSocketFactory(this.bindAddress, remoteService);
+        String bindAddress = this.publisherAddress.getHost();
+        int bindPort = this.publisherAddress.getPort();
+        RMIServerSocketFactory s = new RmiServerSocketFactory(bindAddress, remoteService);
         RMIClientSocketFactory c = new RmiClientSocketFactory(remoteService);
-        this.registry = LocateRegistry.createRegistry(this.bindPort, c, s);
+        this.registry = LocateRegistry.createRegistry(bindPort, c, s);
         //2.发布服务
         //UnicastRemoteObject.exportObject(obj, port, csf, ssf);//导出不同的连接可以实现 IPV4  IPV6 双协议栈
         for (String key : this.remoteMap.keySet())

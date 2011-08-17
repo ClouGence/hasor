@@ -36,6 +36,8 @@ public class RemoteService_Impl implements RemoteService {
     /*---------------------------------------------------------------------------*/
     public void start(ApplicationContext context, IAttribute flash) {
         this.appContext = context;
+        if (enable == false)
+            return;
         //
         try {
             URL url = ResourcesUtil.getResource("META-INF/resource/rmi/server.policy");

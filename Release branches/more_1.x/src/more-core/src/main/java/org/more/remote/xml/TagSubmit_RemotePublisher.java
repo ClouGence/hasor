@@ -45,7 +45,7 @@ public class TagSubmit_RemotePublisher extends TagRemote_NS implements XmlElemen
         String _bindAddress = (bindAddress == null) ? "localhost" : bindAddress;
         int _bindPort = StringConvertUtil.parseInt(bindPort, 1099);
         //3.创建RemoteProxy
-        DefaultPublisher publisher = new DefaultPublisher(_pathRoot, _bindAddress, _bindPort);
+        DefaultPublisher publisher = new DefaultPublisher(_bindAddress, _bindPort, _pathRoot);
         //4.注册代理
         this.getService().addPublisher(_name, publisher);
     }
