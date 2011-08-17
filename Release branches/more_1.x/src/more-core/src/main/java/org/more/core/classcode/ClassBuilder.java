@@ -28,10 +28,10 @@ import org.more.core.asm.ClassWriter;
  * {@link ClassBuilder#init(ClassEngine)}方法。这时扩展类可以初始化自己的相关数据代码。<br/>
  * <b>扩展点二</b>、<br/>
  * 当{@link ClassBuilder#builderClass()}方法被ClassEngine调用之后，在结束方法返回{@link ClassConfiguration}
- * 之前该方法会调用{@link ClassBuilder#builder(ClassEngine)}方法。这时扩展类可以构造其它class或者改写原有字节码。
+ * 之前该方法会调用{@link ClassBuilder#builder(byte[], ClassEngine)}方法。这时扩展类可以构造其它class或者改写原有字节码。
  * 处于性能上的考虑我优先推荐下面这种扩展方式，因为下面的这种改写字节码的扩展方式是参与在字节码构造层次中的。<br/>
  * <b>扩展点三</b>、<br/>
- * {@link ClassBuilder#acceptClass(ClassVisitor)}方法是一个较为优雅的扩展方式。该方法会在builderClass()方法
+ * {@link ClassBuilder#acceptClass(ClassWriter)}方法是一个较为优雅的扩展方式。该方法会在builderClass()方法
  * 构造visitor环调用期间发生。builderClass在生成字节码时使用的是ASM3.2提供的visitor模式，该方法的参数是最终要
  * 写入的visitor。注意使用该扩展方式必须要熟悉ASM3.2框架。visitor环的层次关系是这样的：<br/>
  * <b>第一环</b>，ASM Write；<b>第二环</b>，用户扩展；<b>第三环</b>，ClassBuilder；<b>第四环</b>，ASM Read
@@ -214,7 +214,7 @@ public abstract class ClassBuilder {
     }
     //======================================================================================Builder
     /**
-     * {@link ClassBuilder#acceptClass(ClassVisitor)}方法是一个较为优雅的扩展方式。该方法会在builderClass()方法
+     * {@link ClassBuilder#acceptClass(ClassWriter)}方法是一个较为优雅的扩展方式。该方法会在builderClass()方法
      * 构造visitor环调用期间发生。builderClass在生成字节码时使用的是ASM3.2提供的visitor模式，该方法的参数是最终要
      * 写入的visitor。注意使用该扩展方式必须要熟悉ASM3.2框架。visitor环的层次关系是这样的：<br/>
      * <b>第一环</b>，ASM Write；<b>第二环</b>，用户扩展；<b>第三环</b>，Aop；<b>第四环</b>，ASM Read
@@ -227,7 +227,7 @@ public abstract class ClassBuilder {
     protected abstract void init(final ClassEngine classEngine);
     /**
      * 当{@link ClassBuilder#builderClass()}方法被ClassEngine调用之后，在结束方法返回{@link ClassConfiguration}
-     * 之前该方法会调用{@link ClassBuilder#builder(ClassEngine)}方法。这时子类可以通过重写该方法来构造其它class或者改写原有字节码。
+     * 之前该方法会调用{@link ClassBuilder#builder(byte[], ClassEngine)}方法。这时子类可以通过重写该方法来构造其它class或者改写原有字节码。
      * @param classEngine 使用的字节码引擎对象。
      */
     protected byte[] builder(final byte[] newClassBytes, final ClassEngine classEngine) {

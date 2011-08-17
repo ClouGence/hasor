@@ -74,8 +74,9 @@ public abstract class StringConvertUtil {
      * 数据类型转换，只支持如下数据类型：String，StringBuffer，Integer，Byte，Character，Short，Long，Float，Double，Boolean，Date。
      * 示例：DataType.changeType("12",Integer.class,-1);返回值为12。DataType.changeType("aa",Integer.class,-1);返回值为-1。
      * 注意：如果不指定转换类型默认类型是转换到String类型。并且默认值是null。
-     * @param value 要转换的数据类型。
-     * @param param 可变的参数第一个参数是要转换的类型， 第二个参数是转换到目标类型时如果失败采用的默认值。
+     * @param value 要转换的数据。
+     * @param toType 要转换的目标数据类型。
+     * @param defaultValue 可变的参数第一个参数是要转换的类型， 第二个参数是转换到目标类型时如果失败采用的默认值。
      * @return 返回转换之后的值。
      */
     public static Object changeType(final Object value, final Class<?> toType, final Object... defaultValue) {

@@ -41,7 +41,6 @@ public abstract class ResourcesUtil {
          * 找到资源。
          * @param event 找到资源事件。
          * @param isInJar 找到的资源是否处在jar文件里。
-         * @param context 资源所处上下文，对于在jar中的资源该参数表示了所处的哪个jar。对于在目录中的资源该参数表示的就是这个资源文件。
          */
         public boolean goFind(ScanEvent event, boolean isInJar) throws Throwable;
     };

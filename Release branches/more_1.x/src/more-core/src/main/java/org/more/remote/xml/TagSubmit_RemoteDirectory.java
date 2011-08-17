@@ -30,8 +30,7 @@ import org.more.remote.assembler.RmiBeanDirectoryPropxy;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class TagSubmit_RemoteDirectory extends TagRemote_NS implements XmlElementHook {
-    /**创建{@link TagSubmit_RemoteDirectory}对象 
-    * @param remotePropxy */
+    /**创建{@link TagSubmit_RemoteDirectory}对象 */
     public TagSubmit_RemoteDirectory(XmlDefineResource configuration, RemoteService service) {
         super(configuration, service);
     };

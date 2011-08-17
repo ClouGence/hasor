@@ -19,9 +19,10 @@ import java.util.Map;
 import org.more.hypha.ApplicationContext;
 import org.more.submit.ActionInvoke;
 import org.more.submit.ActionStack;
+import org.more.submit.SubmitService;
 import org.more.util.attribute.IAttribute;
 /**
- * 默认{@link SubmitService接口实现}，是submit v4.0的服务提提供类。
+ * 默认{@link SubmitService SubmitService接口实现}，是submit v4.0的服务提提供类。
  * @version : 2011-7-14
  * @author 赵永春 (zyc@byshell.org)
  */

@@ -24,7 +24,6 @@ public interface ExpandPointManager {
      * 顺序扩展点对象。
      * @param pointType 执行的扩展点类型
      * @param callBack 执行的最终回调函数
-     * @param context 上下文对象。
      * @param vars 参数对象
      * @return 返回执行扩展点的结果。
      */

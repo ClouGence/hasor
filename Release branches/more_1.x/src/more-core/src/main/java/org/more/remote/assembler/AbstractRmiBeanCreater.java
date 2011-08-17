@@ -51,6 +51,6 @@ public abstract class AbstractRmiBeanCreater implements RmiBeanCreater {
     };
     /**处理faces，将faces转换为可以曝露的Remote远程接口。*/
     protected Class<?>[] getRemoteFaces(Class<?>[] faces) throws Throwable {
-        return faces;/*接口到接口的转换*/
+        return faces;/*TODO 接口到接口的转换*/
     };
 };

@@ -110,7 +110,7 @@ public interface ApplicationContext extends IAttribute {
     public void setContextObject(Object contextObject);
     /**获取事件管理器，通过该管理器可以发送事件，事件的监听也是通过这个接口对象完成的。*/
     public EventManager getEventManager();
-    /**获取扩展点管理器，通过扩展点管理器可以检索、注册或者解除注册扩展点。有关扩展点的功能请参见{@link ExpandPoint}*/
+    /**获取扩展点管理器，通过扩展点管理器可以检索、注册或者解除注册扩展点。*/
     public ExpandPointManager getExpandPointManager();
     /**获取EL执行器。*/
     public ELContext getELContext();

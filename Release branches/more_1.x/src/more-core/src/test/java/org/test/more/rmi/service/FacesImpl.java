@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 package org.test.more.rmi.service;
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
+import org.more.hypha.anno.define.AutoWrite;
 import org.more.hypha.anno.define.Bean;
 import org.more.hypha.anno.define.Property;
 import org.more.remote.Remote;
@@ -26,10 +25,8 @@ import org.more.remote.Remote;
  */
 @Bean
 @Remote(name = "faces")
-public class FacesImpl extends UnicastRemoteObject implements Faces {
-    public FacesImpl() throws RemoteException {
-        super();
-    }
+public class FacesImpl implements Faces {
+    @AutoWrite
     @Property()
     public UserManager manager = null;
     //

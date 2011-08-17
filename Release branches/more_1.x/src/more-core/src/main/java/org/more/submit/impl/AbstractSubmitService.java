@@ -34,7 +34,7 @@ import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 import org.more.util.attribute.SequenceStack;
 /**
- * 默认{@link SubmitService接口实现}，是submit v4.0的服务提提供类。
+ * 默认{@link SubmitService SubmitService接口实现}，是submit v4.0的服务提提供类。
  * @version : 2011-7-14
  * @author 赵永春 (zyc@byshell.org)
  */

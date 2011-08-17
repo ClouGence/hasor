@@ -23,7 +23,7 @@ import org.test.more.rmi.service.Faces;
  */
 public class RmiClient {
     public static void main(String[] args) throws Throwable {
-        String url = "rmi://localhost:1099//faces";
+        String url = "rmi://localhost:1099/faces";
         Object obj = Naming.lookup(url);
         System.out.println(obj instanceof Faces);
         Faces ss = (Faces) obj;

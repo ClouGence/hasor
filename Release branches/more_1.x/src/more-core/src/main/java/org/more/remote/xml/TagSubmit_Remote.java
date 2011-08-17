@@ -30,8 +30,7 @@ import org.more.remote.assembler.creater.XmlRmiBeanCreater;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class TagSubmit_Remote extends TagRemote_NS implements XmlElementHook {
-    /**创建{@link TagSubmit_Remote}对象 
-    * @param remotePropxy */
+    /**创建{@link TagSubmit_Remote}对象 */
     public TagSubmit_Remote(XmlDefineResource configuration, RemoteService service) {
         super(configuration, service);
     }

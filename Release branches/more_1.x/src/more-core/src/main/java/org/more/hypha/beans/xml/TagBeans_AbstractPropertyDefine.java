@@ -23,7 +23,7 @@ import org.more.hypha.beans.define.AbstractValueMetaData;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.util.attribute.AttBase;
 /**
- * beans命名空间的属性标签解析基类。该类不会处理属性值元信息的解析这部分信息的解析交给其专有标签解析器或者由{@link QuickPropertyParser}接口负责处理。
+ * beans命名空间的属性标签解析基类。该类不会处理属性值元信息的解析这部分信息的解析交给其专有标签解析器或者由{@link QPP}接口负责处理。
  * @version 2010-9-19
  * @author 赵永春 (zyc@byshell.org)
  */

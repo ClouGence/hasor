@@ -29,7 +29,10 @@ public class ClassPathApplicationContext extends AbstractApplicationContext {
     private AbstractDefineResource defineResource = null;
     // 
     public ClassPathApplicationContext() throws Throwable {
-        this(null);
+        this((String) null);
+    };
+    public ClassPathApplicationContext(AbstractDefineResource defineResource) throws Throwable {
+        this.defineResource = defineResource;
     };
     public ClassPathApplicationContext(String configFile) throws Throwable {
         super(null);

@@ -23,10 +23,9 @@ import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.util.BeanUtil;
 /**
  * bases命名空间解析器的基类，在该类中定义了一些工具性的方法。
- * @version 2010-9-16
+ * @version : 2011-8-17
  * @author 赵永春 (zyc@byshell.org)
  */
-@SuppressWarnings("unchecked")
 public abstract class TagBeans_AbstractDefine<T> extends TagBeans_NS implements XmlElementHook {
     /**创建{@link TagBeans_AbstractDefine}对象*/
     public TagBeans_AbstractDefine(XmlDefineResource configuration) {

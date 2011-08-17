@@ -386,8 +386,10 @@ public class EngineToos implements Opcodes {
     };
     /**检查类型是否为一个基本类型或其包装类型，基本类型包括了boolean, byte, char, short, int, long, float, 和 double*/
     public static boolean isBaseType(Class<?> type) {
+        /*判断是否为基本类型*/
         if (type.isPrimitive() == true)
             return true;
+        /*判断各种包装类型*/
         if (type == Boolean.class)
             return true;
         if (type == Byte.class)

@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package org.more.submit.web;
+import java.net.URL;
 import java.util.Enumeration;
+import java.util.List;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -25,8 +27,6 @@ import org.more.hypha.context.app.DefaultApplicationContext;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.submit.SubmitService;
 import org.more.util.ResourcesUtil;
-import org.more.util.ResourcesUtil.ScanItem;
-import org.more.util.ScanEvent;
 /**
  * 该类的目的是负责装载{@link ApplicationContext}接口对象，并且将该对象放置在ServletContext中。
  * hypha-configs参数会给定配置文件位置，如果没有指定则他会寻找classpath目录下的“*-hypha-config.xml”
@@ -64,9 +64,9 @@ public class ContextLoaderListener implements ServletContextListener {
         this.context.init();//初始化context
     };
     protected ApplicationContext createContext(ServletContextEvent event, AbstractDefineResource resource) throws Throwable {
-        DefaultApplicationContext app = new DefaultApplicationContext(resource);
-        app.setContextObject(event.getServletContext());
-        return app;
+        DefaultApplicationContext appContext = new DefaultApplicationContext(resource);
+        appContext.setContextObject(event.getServletContext());
+        return appContext;
     };
     protected AbstractDefineResource createDefineResource(ServletContextEvent event) throws Throwable {
         final XmlDefineResource xdr = new XmlDefineResource();
@@ -76,13 +76,11 @@ public class ContextLoaderListener implements ServletContextListener {
             String[] cs = configs.split(";");
             for (String c : cs)
                 xdr.addSource(c);
-        } else
-            ResourcesUtil.scan("*-hypha-config.xml", new ScanItem() {
-                public boolean goFind(ScanEvent event, boolean isInJar) throws Throwable {
-                    xdr.addSource(event.getStream());
-                    return false;//false不返回
-                }
-            });
+        } else {
+            List<URL> urls = ResourcesUtil.getResources("hypha-config.xml");
+            for (URL url : urls)
+                xdr.addSource(url);
+        }
         xdr.loadDefine();
         return xdr;
     }

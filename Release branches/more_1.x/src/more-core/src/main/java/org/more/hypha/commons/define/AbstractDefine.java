@@ -21,7 +21,7 @@ import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**
  * 该类是所有描述信息需要集成的父类，该类提供了{@link IAttribute}接口实现。
- * 这意味着可以在这些定义信息上附加自定义属性。{@link #getAppendAttribute()}方法是提供了一个内部的属性集。
+ * 这意味着可以在这些定义信息上附加自定义属性。{@link #getFungi()}方法是提供了一个内部的属性集。
  * 在hypha中不会直接访问到这个属性集合，它将为定义结构起到扩展的目的。
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)

@@ -26,7 +26,7 @@ import org.more.hypha.context.AbstractApplicationContext;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**
- * 接口{@link ELContext}的实现类，该类{@link IAttribute}接口实现方法所使用的属性集合是由{@link #getOgnlContext()}方法提供的。
+ * 接口{@link ELContext}的实现类，该类{@link IAttribute}接口实现方法所使用的属性集合是由{@link #getELAttribute()}方法提供的。
  * Date : 2011-4-8
  * @author 赵永春
  */

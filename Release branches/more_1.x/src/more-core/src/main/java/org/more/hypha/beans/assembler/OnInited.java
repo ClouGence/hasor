@@ -34,15 +34,16 @@ class OnInited implements EventListener<InitedEvent> {
         //1.≥ı ºªØbean
         List<String> ns = context.getBeanDefinitionIDs();
         log.info("loadding init bean names = [{%0}].", ns);
-        for (String id : ns) {
-            AbstractBeanDefine define = context.getBeanDefinition(id);
-            if (define.isLazyInit() == false)
-                try {
-                    context.getBean(id);
-                } catch (Throwable e) {
-                    log.warning("load Bean {%0} error! ,message = {%1}", id, e);
-                    throw e;
-                }
-        }
+        if (ns != null)
+            for (String id : ns) {
+                AbstractBeanDefine define = context.getBeanDefinition(id);
+                if (define.isLazyInit() == false)
+                    try {
+                        context.getBean(id);
+                    } catch (Throwable e) {
+                        log.warning("load Bean {%0} error! ,message = {%1}", id, e);
+                        throw e;
+                    }
+            }
     };
 }
