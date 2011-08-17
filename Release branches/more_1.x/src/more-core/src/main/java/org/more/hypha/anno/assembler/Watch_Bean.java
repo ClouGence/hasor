@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import org.more.core.classcode.EngineToos;
+import org.more.core.error.LoadException;
 import org.more.core.error.LostException;
 import org.more.core.error.TypeException;
 import org.more.core.log.Log;
@@ -28,6 +29,7 @@ import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractMethodDefine;
 import org.more.hypha.DefineResource;
 import org.more.hypha.anno.KeepWatchParser;
+import org.more.hypha.anno.define.AutoWrite;
 import org.more.hypha.anno.define.Bean;
 import org.more.hypha.anno.define.MetaData;
 import org.more.hypha.anno.define.Param;
@@ -42,6 +44,7 @@ import org.more.hypha.beans.define.MethodDefine;
 import org.more.hypha.beans.define.ParamDefine;
 import org.more.hypha.beans.define.PropertyDefine;
 import org.more.hypha.beans.define.PropertyType;
+import org.more.hypha.beans.define.Relation_ValueMetaData;
 import org.more.hypha.beans.define.Simple_ValueMetaData;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.util.StringConvertUtil;
@@ -179,6 +182,7 @@ class Watch_Bean implements KeepWatchParser {
         ArrayList<Field> af = EngineToos.findAllField(beanType);
         for (Field f : af) {
             Property fa = f.getAnnotation(Property.class);
+            AutoWrite aw = f.getAnnotation(AutoWrite.class);
             if (fa == null)
                 continue;
             PropertyDefine pDefine = new PropertyDefine();
@@ -188,12 +192,13 @@ class Watch_Bean implements KeepWatchParser {
             pDefine.setName(f.getName());
             this.addMetaData(pDefine, fa.metaData());
             //
-            pDefine = (PropertyDefine) getPropertyDefine(fa, define, pDefine, resource);
+            boolean isAutoWrite = (aw == null) ? false : true;
+            pDefine = (PropertyDefine) getPropertyDefine(isAutoWrite, fa, define, pDefine, resource);
             define.addProperty(pDefine);
         }
         resource.addBeanDefine(define);
     }
-    private AbstractPropertyDefine getPropertyDefine(Property anno, ClassPathBeanDefine define, AbstractPropertyDefine propDefine, DefineResource resource) {
+    private AbstractPropertyDefine getPropertyDefine(boolean isAutoWrite, Property anno, ClassPathBeanDefine define, AbstractPropertyDefine propDefine, DefineResource resource) {
         String cpt = propDefine.getClassType();
         //3)解析Param注解
         AbstractValueMetaData valueMetaData = null;
@@ -223,8 +228,12 @@ class Watch_Bean implements KeepWatchParser {
                 valueMetaData = temp;
             }
         }
+        //4处理
         if (valueMetaData == null)
-            valueMetaData = this.getDefaultValueMetaData(cpt);
+            if (isAutoWrite == true)
+                valueMetaData = this.getAutoWriteValueMetaData(cpt);
+            else
+                valueMetaData = this.getDefaultValueMetaData(cpt);
         //5)添加
         propDefine.setValueMetaData(valueMetaData);
         return propDefine;
@@ -281,6 +290,26 @@ class Watch_Bean implements KeepWatchParser {
         simpleMetaData.setValueMetaType(propType);
         simpleMetaData.setValue(defaultValue);
         return simpleMetaData;
+    }
+    /**根据类型获取与其相关的自动注入ValueMetaData对象。*/
+    private AbstractValueMetaData getAutoWriteValueMetaData(String stringType) {
+        //1.确保stringType字符串中包含的字符不是诸如int,float,string等这样的字符。
+        PropertyType propType = Simple_ValueMetaData.getPropertyType(stringType);
+        if (propType != PropertyType.Null)
+            return getDefaultValueMetaData(stringType);
+        //2.不处理基本类型
+        Class<?> propxyType = null;
+        try {
+            propxyType = Thread.currentThread().getContextClassLoader().loadClass(stringType);
+        } catch (Exception e) {
+            throw new LoadException("无法装载类型" + stringType);
+        }
+        if (EngineToos.isBaseType(propxyType) == true)
+            return getDefaultValueMetaData(stringType);
+        //3.创建依赖注入
+        Relation_ValueMetaData rvmd = new Relation_ValueMetaData();
+        rvmd.setRefBean(stringType);
+        return rvmd;
     }
     /**添加元信息描述*/
     private void addMetaData(IAttribute att, MetaData[] data) {
