@@ -5,13 +5,22 @@
 	<artifactId>more-parent</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
+	<!-- -->
+	<properties>
+		<java.version>1.5</java.version>
+		<spring.version>2.5.6.SEC02</spring.version>
+		<guice.inject.version>3.0</guice.inject.version>
+		<javaee.version>6.0</javaee.version>
+		<freemarker.version>2.3.18</freemarker.version>
+	</properties>
+	<!--  -->
 	<build>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<target>1.5</target>
-					<source>1.5</source>
+					<target>${java.version}</target>
+					<source>${java.version}</source>
 					<encoding>GBK</encoding>
 				</configuration>
 			</plugin>
@@ -54,13 +63,6 @@
 			</plugin>
 		</plugins>
 	</build>
-	<!-- -->
-	<properties>
-		<spring.version>2.5.6.SEC02</spring.version>
-		<guice.inject.version>3.0</guice.inject.version>
-		<javaee.version>6.0</javaee.version>
-		<freemarker.version>2.3.18</freemarker.version>
-	</properties>
 	<!-- -->
 	<modules>
 		<module>more-core</module>

@@ -40,7 +40,7 @@ class Watch_Remote implements KeepWatchParser {
         Class<?>[] faces = remoteData.faces();
         String publisherStr = remoteData.forPublisher();
         //2.Ä¬ÈÏÖµ
-        String _name = (nameStr == null) ? "" : nameStr;
+        String _name = (nameStr.equals("") == true) ? classType.getSimpleName() : nameStr;
         Class<?>[] _faces = (faces == null || faces.length == 0) ? classType.getInterfaces() : faces;
         String _publisher = (publisherStr == null) ? "" : publisherStr;
         //3.µÇ¼Ç×¢²á 

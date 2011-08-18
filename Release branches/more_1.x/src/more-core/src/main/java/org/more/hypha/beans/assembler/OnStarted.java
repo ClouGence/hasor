@@ -21,15 +21,15 @@ import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.Event.Sequence;
 import org.more.hypha.EventListener;
 import org.more.hypha.context.AbstractApplicationContext;
-import org.more.hypha.context.InitedEvent;
+import org.more.hypha.context.StartedServicesEvent;
 /**
  * beans的初始化EventException
  * @version : 2011-4-22
  * @author 赵永春 (zyc@byshell.org)
  */
-class OnInited implements EventListener<InitedEvent> {
-    private static Log log = LogFactory.getLog(OnInited.class);
-    public void onEvent(InitedEvent event, Sequence sequence) throws Throwable {
+class OnStarted implements EventListener<StartedServicesEvent> {
+    private static Log log = LogFactory.getLog(OnStarted.class);
+    public void onEvent(StartedServicesEvent event, Sequence sequence) throws Throwable {
         AbstractApplicationContext context = (AbstractApplicationContext) event.toParams(sequence).applicationContext;
         //1.初始化bean
         List<String> ns = context.getBeanDefinitionIDs();

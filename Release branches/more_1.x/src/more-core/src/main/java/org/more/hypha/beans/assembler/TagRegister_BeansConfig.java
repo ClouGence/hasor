@@ -23,7 +23,7 @@ import org.more.hypha.beans.xml.BeansConfig_MDParserConfig;
 import org.more.hypha.beans.xml.BeansConfig_Parser;
 import org.more.hypha.context.DestroyEvent;
 import org.more.hypha.context.InitEvent;
-import org.more.hypha.context.InitedEvent;
+import org.more.hypha.context.StartedServicesEvent;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.hypha.context.xml.XmlNameSpaceRegister;
 /**
@@ -50,7 +50,7 @@ public class TagRegister_BeansConfig implements XmlNameSpaceRegister {
         //4.×¢²áÊÂ¼þ
         EventManager em = resource.getEventManager();
         em.addEventListener(Event.getEvent(InitEvent.class), new OnInit());
-        em.addEventListener(Event.getEvent(InitedEvent.class), new OnInited());
+        em.addEventListener(Event.getEvent(StartedServicesEvent.class), new OnStarted());
         em.addEventListener(Event.getEvent(DestroyEvent.class), new OnDestroy());
     }
 }

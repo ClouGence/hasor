@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
 @Target({ ElementType.TYPE })
 public @interface Remote {
     /**发布的名称，最终客户端在使用该RMI服务时会通过服务器地址在加上这个名称来定位，但如果指定了forPublisher属性则是另外一种情况。*/
-    public String name();
+    public String name() default "";
     /**标记的当前远程对象的所属Bean ID。*/
     public String refBeanID() default "";
     /**为该RMI服务提供一个指定的发布者，{@link RemoteService}可以通过发布者来修改发布的基地址，端口以及绑定的IP等信息。*/
