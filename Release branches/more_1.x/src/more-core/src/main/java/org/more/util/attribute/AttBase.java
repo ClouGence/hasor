@@ -31,7 +31,6 @@ public class AttBase implements IAttribute, Map<String, Object>, Serializable {
     /** 存放属性的集合 */
     private Map<String, Object> prop;
     //==================================================================================Constructor
-    //
     /**
      * 创建一个基本属性对象，属性的存放使用HashMap作为属性盛装器。基本属性接口实现类。
      * 注意：IAttribute接口特性及其子接口的功能将不会作用到Map接口上。开发人员仍然可以通过Map接口操作AttBase中的数据。
@@ -42,11 +41,10 @@ public class AttBase implements IAttribute, Map<String, Object>, Serializable {
     }
     /**
      * 创建一个基本属性对象，存放属性的盛装器可以是任何Map接口子接口及其实现类。如果prop参数提供的是
-     * Hashtable则Attribute接口将不可接受空值的属性。如果prop属性为空BaseAtt将默认使用HashMap作为
-     * 属性盛装器。
+     * Hashtable则Attribute接口将不可接受空值的属性。如果prop属性为空BaseAtt将默认使用HashMap作为属性盛装器。
      * @param prop 属性盛装器，如果prop属性为空BaseAtt将默认使用HashMap作为属性盛装器。
      */
-    protected AttBase(Map<String, Object> prop) {
+    public AttBase(Map<String, Object> prop) {
         if (prop == null)
             this.prop = new HashMap<String, Object>();
         else

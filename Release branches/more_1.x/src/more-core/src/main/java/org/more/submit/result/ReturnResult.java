@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package org.more.submit.result;
-import org.more.submit.Result;
+import org.more.submit.impl.DefaultResultImpl;
 /**
  * return
  * @version : 2011-7-25
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class ReturnResult extends Result<Object> {
-    public ReturnResult(Object object) {
-        super("return", object);
+public class ReturnResult extends DefaultResultImpl<Object> {
+    public ReturnResult(Object returnValue) {
+        super("return", returnValue);
     }
 }

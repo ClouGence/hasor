@@ -17,26 +17,31 @@ package org.more.submit.result;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
-import org.more.submit.Result;
+import org.more.submit.impl.DefaultResultImpl;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**
- * ftl
+ * 在返回action之前调用另外一个action
  * @version : 2011-7-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public class SubmitActionResult extends Result<URI> implements IAttribute {
+public class ActionResult extends DefaultResultImpl<URI> implements IAttribute {
     private IAttribute att = new AttBase();
-    public SubmitActionResult(String schema, String actionPath) throws URISyntaxException {
+    /*----------------------------------------------------------------*/
+    public ActionResult(String schema, String actionPath) throws URISyntaxException {
         super("submitAction", new URI(schema + "://" + actionPath));
     }
-    public SubmitActionResult(String actionPath) throws URISyntaxException {
+    public ActionResult(String actionPath) throws URISyntaxException {
         super("submitAction", new URI(actionPath));
     }
-    public SubmitActionResult(URI actionPath) {
+    public ActionResult(URI actionPath) {
         super("submitAction", actionPath);
     }
     /*----------------------------------------------------------------*/
+    /**获取要执行的Action地址。*/
+    public URI getActionURI() {
+        return this.getReturnValue();
+    }
     public boolean contains(String name) {
         return this.att.contains(name);
     }

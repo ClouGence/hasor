@@ -16,7 +16,7 @@
 package org.more.submit.result;
 import java.io.Writer;
 import java.util.Map;
-import org.more.submit.Result;
+import org.more.submit.impl.DefaultResultImpl;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 import freemarker.template.Configuration;
@@ -26,15 +26,15 @@ import freemarker.template.Template;
  * @version : 2011-7-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public class FTLResult extends Result<String> implements IAttribute {
-    private Writer  writer      = null;
-    private Object  returnValue = null;
-    private AttBase att         = new AttBase();
+public class FTLResult extends DefaultResultImpl<Object> implements IAttribute {
+    private Writer  writer       = null;
+    private String  templatePath = null;
+    private AttBase att          = new AttBase();
     //
     public FTLResult(String templatePath, Writer writer, Object returnValue) {
-        super("ftl", templatePath);
+        super("ftl", returnValue);
         this.writer = writer;
-        this.returnValue = returnValue;
+        this.templatePath = templatePath;
     }
     public FTLResult(String templatePath, Writer writer) {
         super("ftl", templatePath);
@@ -45,7 +45,7 @@ public class FTLResult extends Result<String> implements IAttribute {
     }
     /**获取要执行的模板。*/
     public String getTemplatePath() {
-        return this.getObject();
+        return this.templatePath;
     }
     /**除了使用{@link FreeMarkerConfig}类对{@link Configuration}进行配置之外，也可以通过重写该方法进行配置。不过该方法配置会被最后执行。*/
     public void applyConfiguration(Configuration configuration) {};
@@ -54,10 +54,6 @@ public class FTLResult extends Result<String> implements IAttribute {
     /**获取模板执行结果输出地址。*/
     public Writer getWriter() {
         return this.writer;
-    };
-    /**当 模板调用动作结束之后action方法会返回该结果。*/
-    public Object getReturnValue() {
-        return this.returnValue;
     };
     //
     public boolean contains(String name) {

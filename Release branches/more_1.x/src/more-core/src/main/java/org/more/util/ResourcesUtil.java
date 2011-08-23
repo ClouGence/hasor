@@ -24,11 +24,14 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.more.core.error.FormatException;
+import org.more.util.attribute.IAttribute;
+import org.more.util.attribute.TransformToAttribute;
 /**
  * classpath工具类
  * @version 2010-9-24
@@ -47,6 +50,26 @@ public abstract class ResourcesUtil {
     /*------------------------------------------------------------------------------*/
     private static ClassLoader getCurrentLoader() {
         return Thread.currentThread().getContextClassLoader();
+    }
+    /**合成所有属性文件的配置信息到一个{@link IAttribute}接口中。*/
+    public static IAttribute getPropertys(String[] resourcePaths) throws IOException {
+        IAttribute iatt = null;
+        for (String str : resourcePaths) {
+            IAttribute att = getPropertys(str);
+            if (iatt == null) {
+                iatt = att;
+                continue;
+            }
+            for (String key : att.getAttributeNames())
+                iatt.setAttribute(key, att.getAttribute(key));
+        }
+        return iatt;
+    }
+    /**读取一个属性文件，并且以{@link IAttribute}接口的形式返回。*/
+    public static IAttribute getPropertys(String resourcePath) throws IOException {
+        Properties prop = new Properties();
+        prop.load(getResourceAsStream(resourcePath));
+        return new TransformToAttribute(prop);
     }
     /**获取classpath中可能存在的资源。*/
     public static URL getResource(String resourcePath) throws IOException {

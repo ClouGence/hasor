@@ -13,29 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.test.more.rmi;
-import org.more.remote.client.RMI;
-import org.test.more.rmi.service.Faces;
+package org.more.remote.client;
 /**
- * 
+ * 客户端代理类。
  * @version : 2011-8-16
  * @author 赵永春 (zyc@byshell.org)
  */
-public class RmiClient {
-    public static void main(String[] args) throws Throwable {
-        //        Object obj = Naming.lookup("rmi://localhost:1099/faces");
-        RMI rmi = new RMI("rmi://localhost:1099/faces");
-        Object obj = rmi.lookup(Faces.class);
-        //        //
-        System.out.println(obj instanceof Faces);
-        Faces ss = (Faces) obj;
-        //        while (true) {
-        try {
-            ss.print("hello");
-        } catch (Exception e) {
-            System.out.println("----error");
-        }
-        Thread.sleep(500);
-        //        }
+public class ClientRemotePropxy {
+    private Object target = null;
+    public void setTarget(Object target) {
+        this.target = target;
     }
-}
+    /**获取目标对象。*/
+    public Object getTarget() {
+        return this.target;
+    };
+};

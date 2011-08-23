@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package org.more.submit.result;
-import org.more.submit.Result;
+import org.more.submit.impl.DefaultResultImpl;
 /**
  * json
  * @version : 2011-7-25
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class JsonResult extends Result<Object> {
-    public JsonResult(Object object) {
-        super("json", object);
+public class JsonResult extends DefaultResultImpl<Object> {
+    public JsonResult(Object jsonObject) {
+        super("json", jsonObject);
     }
 };

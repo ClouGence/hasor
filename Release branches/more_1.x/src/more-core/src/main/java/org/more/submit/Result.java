@@ -15,22 +15,14 @@
  */
 package org.more.submit;
 /**
- * 返回标记。
+ * 结果处理标记对象。
  * @version : 2011-7-27
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Result<T> {
-    private String name   = null;
-    private T      object = null;
-    //
-    public Result(String name, T object) {
-        this.name = name;
-        this.object = object;
-    };
-    public T getObject() {
-        return this.object;
-    };
-    public String getName() {
-        return this.name;
-    };
+public interface Result<T> {
+    /**获取action执行完毕返回的对象。*/
+    public T getReturnValue();
+    /**设置当action执行完毕返回的对象。*/
+    public void setReturnValue(T returnValue);
+    public String getName();
 }

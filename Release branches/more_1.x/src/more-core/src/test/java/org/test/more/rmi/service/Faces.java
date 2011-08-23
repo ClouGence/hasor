@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 package org.test.more.rmi.service;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
 /**
  * 
  * @version : 2011-8-16
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public interface Faces extends Remote {
-    public void print(String message) throws RemoteException;
+public interface Faces {
+    public void print(String message);
 }

@@ -48,9 +48,9 @@ public interface SubmitService extends IAttribute, Service {
     /**获取一个{@link IAttribute}接口对象，该接口对象是一个封装了多个作用域的接口对象。*/
     public IAttribute getScopeStack();
     /**注册一个结果处理器，当返回的结果是一个字符串时才会使用结果处理器进行处理。*/
-    public void addResult(String name, ResultProcess<?> process);
+    public void addResult(String name, ResultProcess<Result<?>> process);
     /**设置默认的结果处理器。*/
-    public void setDefaultResult(ResultProcess<?> process);
+    public void setDefaultResult(ResultProcess<Result<?>> process);
     /*-----------------------------------*/
     //    public Session getSession(String sessionID);
     //    public Session getSession();

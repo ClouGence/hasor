@@ -13,23 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.result;
-import org.more.core.json.JsonUtil;
-import org.more.submit.ActionStack;
-import org.more.submit.ResultProcess;
+package org.more.remote.client;
 /**
- * 藏住你换成json对象
- * @version : 2011-7-25
+ * 
+ * @version : 2011-8-19
  * @author 赵永春 (zyc@byshell.org)
  */
-public class JsonResultProcess implements ResultProcess<JsonResult> {
-    private JsonUtil json = new JsonUtil();
-    //
-    public Object invoke(ActionStack onStack, JsonResult res) {
-        return this.json.toString(res.getReturnValue());
-    };
-    public void addParam(String key, String value) {
-        if (key.equals("border") == true)
-            this.json.setStringBorder(value.charAt(0));
-    };
-};
+interface ShortName {
+    public static String ShortName       = "_$MoreRMI";
+    public static int    ShortNameLength = ShortName.length();
+}

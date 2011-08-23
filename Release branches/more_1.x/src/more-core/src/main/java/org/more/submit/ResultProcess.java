@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.more.submit;
-import org.more.submit.impl.DefaultActionStack;
 /**
  * 当action调用结束时会执行该结果处理器进行后续处理。
  * @version : 2011-7-25
@@ -22,7 +21,7 @@ import org.more.submit.impl.DefaultActionStack;
  */
 public interface ResultProcess<T extends Result<?>> {
     /**执行回调处理 */
-    public Object invoke(DefaultActionStack onStack, T res) throws Throwable;
+    public Object invoke(ActionStack onStack, T res) throws Throwable;
     /**添加配置参数*/
     public void addParam(String key, String value);
 };

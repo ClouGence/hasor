@@ -71,10 +71,10 @@ public class DefaultActionObject implements ActionObject {
     };
     /*执行后续处理*/
     private Object callBack(DefaultActionStack onStack, Object var) throws Throwable {
-        if (var instanceof Result == false)
+        if (var instanceof DefaultResultImpl == false)
             return var;
-        Result<?> result = (Result<?>) var;
-        ResultProcess rp = this.submitService.getResultProcess(result.getName());
+        DefaultResultImpl<?> result = (DefaultResultImpl<?>) var;
+        ResultProcess<Result<?>> rp = this.submitService.getResultProcess(result.getName());
         if (rp == null)
             return var;
         return rp.invoke(onStack, result);

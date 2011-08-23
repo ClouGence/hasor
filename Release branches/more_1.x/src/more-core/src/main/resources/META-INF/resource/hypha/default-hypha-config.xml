@@ -73,7 +73,7 @@
 		<submit:config key="border" value="'"/><!-- 字符串分隔符是单引号还是双引号 -->
 	</submit:result>
 	<!-- 请求其他action -->
-	<submit:result match="submitAction" class="org.more.submit.result.SubmitActionResultProcess"/>
+	<submit:result match="submitAction" class="org.more.submit.result.ActionResultProcess"/>
 
 
 	<!-- RMI -->

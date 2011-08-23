@@ -17,8 +17,8 @@ package org.more.submit.result;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import org.more.submit.ActionStack;
 import org.more.submit.ResultProcess;
-import org.more.submit.impl.DefaultActionStack;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -33,7 +33,7 @@ public class FTLResultProcess implements ResultProcess<FTLResult> {
     private String           rootPath   = null;
     private FreeMarkerConfig config     = null;
     //
-    public Object invoke(DefaultActionStack onStack, FTLResult res) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, TemplateException {
+    public Object invoke(ActionStack onStack, FTLResult res) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, TemplateException {
         Configuration freemarkConfig = new Configuration();
         //1.创建配置对象
         if (this.configBean != null) {

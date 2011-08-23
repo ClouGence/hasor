@@ -70,6 +70,7 @@
 		<module>more-submit-ac-guice</module>
 		<module>more-submit-ac-spring</module>
 		<module>more-submit-res-freemarker</module>
+		<module>more-webserver</module>
 	</modules>
 	<!-- -->
 	<dependencies>

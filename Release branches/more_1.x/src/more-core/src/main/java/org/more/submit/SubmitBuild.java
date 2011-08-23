@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 package org.more.submit;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.more.submit.impl.DefaultActionStack;
-import org.more.submit.impl.DefaultSubmitService;
 import org.more.util.AttributeConfigBridge;
 import org.more.util.Config;
+import org.more.util.ResourcesUtil;
 import org.more.util.attribute.AttBase;
+import org.more.util.attribute.IAttribute;
 /**
  * submit利用build模式创建{@link SubmitService}。
  * @version : 2011-7-15
@@ -31,14 +32,23 @@ import org.more.util.attribute.AttBase;
  */
 public class SubmitBuild extends AttBase {
     //========================================================================================Field
-    private static final long          serialVersionUID = 2922698361958221493L;
-    private Object                     context          = null;
-    private String                     defaultNS        = null;
-    private List<ActionContextBuilder> config_acb       = new ArrayList<ActionContextBuilder>();
-    private Map<String, ResultProcess> config_res       = new HashMap<String, ResultProcess>();
+    private static final long                     serialVersionUID = 2922698361958221493L;
+    private Object                                context          = null;
+    private String                                defaultNS        = null;
+    private List<ActionContextBuilder>            config_acb       = new ArrayList<ActionContextBuilder>();
+    private Map<String, ResultProcess<Result<?>>> config_res       = new HashMap<String, ResultProcess<Result<?>>>();
+    private IAttribute                            config           = null;
+    public static final String                    ConfigPath       = "META-INF/resource/submit/config.propertys";
     //==========================================================================================Job
-    public SubmitBuild() {};
+    public SubmitBuild() {
+        try {
+            this.config = ResourcesUtil.getPropertys(ConfigPath);
+        } catch (IOException e) {
+            this.config = new AttBase();
+        }
+    };
     public SubmitBuild(Object context) {
+        this();
         this.context = context;
     };
     /**将config的参数添加到SubmitBuild的环境中，config参数中如果指定了Context则会的替换构造方法传入的Context.*/
@@ -60,8 +70,12 @@ public class SubmitBuild extends AttBase {
         Object serviceImplType = this.getAttribute(SubmitService.class.getName());
         if (serviceImplType != null)
             service = (SubmitService) Thread.currentThread().getContextClassLoader().loadClass(serviceImplType.toString()).newInstance();
-        else
-            service = new DefaultSubmitService();
+        else {
+            String serviceImpl = (String) this.config.getAttribute("ServiceImpl");
+            if (serviceImpl == null || serviceImpl.equals(""))
+                serviceImpl = "org.more.submit.impl.DefaultSubmitService";
+            service = (SubmitService) Thread.currentThread().getContextClassLoader().loadClass(serviceImpl).newInstance();
+        }
         //2.注册ActionContext
         Config<?> config = new AttributeConfigBridge(this, this.context);
         for (ActionContextBuilder builder : this.config_acb) {
@@ -84,24 +98,24 @@ public class SubmitBuild extends AttBase {
         if (acb != null)
             this.config_acb.add(acb);
     };
-    public ResultProcess addResult(String match, String process) {
-        ResultProcess rp = new Propxy_ResultProcess(process);
+    public ResultProcess<Result<?>> addResult(String match, String process) {
+        ResultProcess<Result<?>> rp = new Propxy_ResultProcess(process);
         this.config_res.put(match, rp);
         return rp;
     };
-    public ResultProcess addResult(String match, ResultProcess process) {
+    public ResultProcess<Result<?>> addResult(String match, ResultProcess<Result<?>> process) {
         this.config_res.put(match, process);
         return process;
     };
 };
-class Propxy_ResultProcess implements ResultProcess {
-    private String                  process       = null;
-    private ResultProcess           processObject = null;
-    private HashMap<String, String> configParam   = new HashMap<String, String>();
+class Propxy_ResultProcess implements ResultProcess<Result<?>> {
+    private String                   process       = null;
+    private ResultProcess<Result<?>> processObject = null;
+    private HashMap<String, String>  configParam   = new HashMap<String, String>();
     public Propxy_ResultProcess(String process) {
         this.process = process;
     };
-    public Object invoke(DefaultActionStack onStack, Result res) throws Throwable {
+    public Object invoke(ActionStack onStack, Result<?> res) throws Throwable {
         if (this.processObject == null) {
             this.processObject = (ResultProcess) Thread.currentThread().getContextClassLoader().loadClass(process).newInstance();
             for (String key : this.configParam.keySet())

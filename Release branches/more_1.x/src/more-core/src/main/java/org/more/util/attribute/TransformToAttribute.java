@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.util.attribute;
+import java.util.HashMap;
 import java.util.Map;
 /**
  * 该类的职责是将{@link Map}接口对象转换为{@link IAttribute}接口对象。
@@ -21,11 +22,10 @@ import java.util.Map;
  * Date : 2011-4-12
  * @author 赵永春 (zyc@byshell.org)
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
 public class TransformToAttribute implements IAttribute {
-    private Map values = null;
+    private Map<Object, Object> values = null;
     /**创建一个{@link TransformToAttribute}对象，该对象的作用是将{@link Map}转换为{@link IAttribute}接口。*/
-    public TransformToAttribute(Map values) {
+    public TransformToAttribute(Map<Object, Object> values) {
         this.values = values;
     };
     public boolean contains(String name) {
@@ -53,6 +53,12 @@ public class TransformToAttribute implements IAttribute {
         this.values.clear();
     }
     public Map<String, Object> toMap() {
-        return this.values;
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        for (Object key : this.values.keySet())
+            if (key != null)
+                map.put(key.toString(), this.values.get(key));
+            else
+                map.put(null, this.values.get(key));
+        return map;
     };
 };

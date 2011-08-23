@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 package org.more.submit.result;
+import org.more.submit.ActionObject;
+import org.more.submit.ActionStack;
 import org.more.submit.ResultProcess;
-import org.more.submit.impl.DefaultActionStack;
 /**
- * 处理转发
+ * 处理Action调用
  * @version : 2011-7-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public class SubmitActionResultProcess implements ResultProcess<SubmitActionResult> {
-    public Object invoke(DefaultActionStack onStack, SubmitActionResult res) throws Throwable {
-        return onStack.getSubmitService().getActionObject(res.getObject()).doAction(res.toMap());
+public class ActionResultProcess implements ResultProcess<ActionResult> {
+    public Object invoke(ActionStack onStack, ActionResult res) throws Throwable {
+        ActionObject ao = onStack.getSubmitService().getActionObject(res.getActionURI());
+        return ao.doAction(res.toMap());
     }
     public void addParam(String key, String value) {}
 }

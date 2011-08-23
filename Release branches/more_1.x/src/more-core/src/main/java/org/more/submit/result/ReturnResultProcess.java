@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 package org.more.submit.result;
+import org.more.submit.ActionStack;
 import org.more.submit.ResultProcess;
-import org.more.submit.impl.DefaultActionStack;
 /**
  * return
  * @version : 2011-7-25
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class ReturnResultProcess implements ResultProcess<ReturnResult> {
-    public Object invoke(DefaultActionStack onStack, ReturnResult res) {
-        return res.getObject();
+    public Object invoke(ActionStack onStack, ReturnResult res) {
+        return res.getReturnValue();
     }
     public void addParam(String key, String value) {}
 }

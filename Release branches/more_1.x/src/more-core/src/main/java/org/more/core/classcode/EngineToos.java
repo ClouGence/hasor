@@ -256,6 +256,19 @@ public class EngineToos implements Opcodes {
             return asmType;
     }
     //=======================================================================================================================
+    public static String methodToAsmMethod(Method method) {
+        StringBuffer str = new StringBuffer();
+        str.append(method.getName());
+        str.append("(");
+        str.append(toAsmType(method.getParameterTypes()));
+        str.append(")");
+        Class<?> returnType = method.getReturnType();
+        if (returnType == void.class)
+            str.append("V");
+        else
+            str.append(toAsmType(returnType));
+        return str.toString();
+    }
     /**获取一个类对象字节码的读取流。*/
     public static InputStream getClassInputStream(Class<?> type) {
         ClassLoader loader = type.getClassLoader();

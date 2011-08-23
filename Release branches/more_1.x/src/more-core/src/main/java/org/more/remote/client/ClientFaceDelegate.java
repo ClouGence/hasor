@@ -13,29 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.test.more.rmi;
-import org.more.remote.client.RMI;
-import org.test.more.rmi.service.Faces;
+package org.more.remote.client;
+import java.lang.reflect.Method;
+import org.more.core.classcode.MethodDelegate;
+import org.more.core.error.InvokeException;
 /**
- * 
+ * 接口附加实现类
  * @version : 2011-8-16
  * @author 赵永春 (zyc@byshell.org)
  */
-public class RmiClient {
-    public static void main(String[] args) throws Throwable {
-        //        Object obj = Naming.lookup("rmi://localhost:1099/faces");
-        RMI rmi = new RMI("rmi://localhost:1099/faces");
-        Object obj = rmi.lookup(Faces.class);
-        //        //
-        System.out.println(obj instanceof Faces);
-        Faces ss = (Faces) obj;
-        //        while (true) {
+public class ClientFaceDelegate implements MethodDelegate {
+    public Object invoke(Method callMethod, Object target, Object[] params) throws InvokeException {
+        ClientRemotePropxy propxy = (ClientRemotePropxy) target;
+        Object obj = propxy.getTarget();
         try {
-            ss.print("hello");
+            Method m = obj.getClass().getMethod(callMethod.getName(), callMethod.getParameterTypes());
+            return m.invoke(obj, params);
         } catch (Exception e) {
-            System.out.println("----error");
+            throw new InvokeException(e.getCause());
         }
-        Thread.sleep(500);
-        //        }
-    }
-}
+    };
+};

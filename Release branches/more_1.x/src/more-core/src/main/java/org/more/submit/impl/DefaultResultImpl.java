@@ -13,23 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.submit.result;
-import org.more.core.json.JsonUtil;
-import org.more.submit.ActionStack;
-import org.more.submit.ResultProcess;
+package org.more.submit.impl;
+import org.more.submit.Result;
 /**
- * 藏住你换成json对象
- * @version : 2011-7-25
+ * 结果处理标记对象。
+ * @version : 2011-7-27
  * @author 赵永春 (zyc@byshell.org)
  */
-public class JsonResultProcess implements ResultProcess<JsonResult> {
-    private JsonUtil json = new JsonUtil();
+public class DefaultResultImpl<T> implements Result<T> {
+    private String name        = null;
+    private T      returnValue = null;
     //
-    public Object invoke(ActionStack onStack, JsonResult res) {
-        return this.json.toString(res.getReturnValue());
+    public DefaultResultImpl(String name) {
+        this.name = name;
     };
-    public void addParam(String key, String value) {
-        if (key.equals("border") == true)
-            this.json.setStringBorder(value.charAt(0));
+    public DefaultResultImpl(String name, T returnValue) {
+        this.name = name;
+        this.returnValue = returnValue;
     };
-};
+    public T getReturnValue() {
+        return this.returnValue;
+    };
+    public void setReturnValue(T returnValue) {
+        this.returnValue = returnValue;
+    }
+    public String getName() {
+        return this.name;
+    };
+}

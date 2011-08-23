@@ -28,6 +28,7 @@ import org.more.submit.ActionInvoke;
 import org.more.submit.ActionObject;
 import org.more.submit.ActionPackage;
 import org.more.submit.ActionStack;
+import org.more.submit.Result;
 import org.more.submit.ResultProcess;
 import org.more.submit.SubmitService;
 import org.more.util.attribute.AttBase;
@@ -39,17 +40,17 @@ import org.more.util.attribute.SequenceStack;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public abstract class AbstractSubmitService extends AttBase implements SubmitService {
-    private static final long             serialVersionUID = -2210504764611831806L;
-    private static Log                    log              = LogFactory.getLog(AbstractSubmitService.class);
-    private Map<String, ActionContext>    acList           = new HashMap<String, ActionContext>();
-    private String                        defaultNameSpace = null;
-    private Map<String, IAttribute>       scopeMap         = new HashMap<String, IAttribute>();
-    private SequenceStack                 scopeStack       = new SequenceStack();
+    private static final long                     serialVersionUID = -2210504764611831806L;
+    private static Log                            log              = LogFactory.getLog(AbstractSubmitService.class);
+    private Map<String, ActionContext>            acList           = new HashMap<String, ActionContext>();
+    private String                                defaultNameSpace = null;
+    private Map<String, IAttribute>               scopeMap         = new HashMap<String, IAttribute>();
+    private SequenceStack                         scopeStack       = new SequenceStack();
     //
-    private Map<String, ActionPackage>    packages         = new HashMap<String, ActionPackage>();
+    private Map<String, ActionPackage>            packages         = new HashMap<String, ActionPackage>();
     //
-    private Map<String, ResultProcess<?>> processMap       = new HashMap<String, ResultProcess<?>>();
-    private ResultProcess<?>              defaultResult    = null;
+    private Map<String, ResultProcess<Result<?>>> processMap       = new HashMap<String, ResultProcess<Result<?>>>();
+    private ResultProcess<Result<?>>              defaultResult    = null;
     //
     public void regeditNameSpace(String prefix, ActionContext context) {
         if (this.acList.containsKey(prefix) == true)
@@ -139,18 +140,18 @@ public abstract class AbstractSubmitService extends AttBase implements SubmitSer
     public IAttribute getScopeStack() {
         return this.scopeStack;
     };
-    public void addResult(String name, ResultProcess<?> process) {
+    public void addResult(String name, ResultProcess<Result<?>> process) {
         if (name == null || process == null)
             return;
         this.processMap.put(name.toLowerCase(), process);
     };
-    public void setDefaultResult(ResultProcess<?> defaultResult) {
+    public void setDefaultResult(ResultProcess<Result<?>> defaultResult) {
         this.defaultResult = defaultResult;
     };
-    public ResultProcess<?> getResultProcess(String name) {
+    public ResultProcess<Result<?>> getResultProcess(String name) {
         name = name.toLowerCase();
         //ªÒ»°Result
-        ResultProcess<?> rp = this.processMap.get(name);
+        ResultProcess<Result<?>> rp = this.processMap.get(name);
         if (rp == null)
             rp = this.defaultResult;
         return rp;

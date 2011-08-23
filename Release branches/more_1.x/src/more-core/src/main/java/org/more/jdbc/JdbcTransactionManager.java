@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.dao.jdbc;
+package org.more.jdbc;
 import java.sql.Connection;
 import javax.sql.DataSource;
 import org.more.core.classcode.AopFilterChain;
