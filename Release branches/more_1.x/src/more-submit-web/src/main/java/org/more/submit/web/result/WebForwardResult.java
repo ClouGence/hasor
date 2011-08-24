@@ -14,22 +14,46 @@
  * limitations under the License.
  */
 package org.more.submit.web.result;
-import org.more.submit.Result;
+import org.more.submit.impl.DefaultResultImpl;
 /**
- * ftl
+ * 转发
  * @version : 2011-7-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public class WebForwardResult extends Result<String> {
+public class WebForwardResult extends DefaultResultImpl<Object> {
     private ForwardEnum enumType = null;
+    private String      toURL    = null;
     public enum ForwardEnum {
-        Forward, Redirect
+        /**服务端转发*/
+        Forward,
+        /**客户端重定向*/
+        Redirect,
+        /**转发到主页上*/
+        F_Home,
+        /**重定向到主页上*/
+        R_Home,
+        /**通知客户端重新刷新当前请求。*/
+        Refresh,
+    }
+    /**默认重定向到主页上*/
+    public WebForwardResult() {
+        this(ForwardEnum.R_Home, null, null);
+    }
+    public WebForwardResult(ForwardEnum enumType) {
+        this(enumType, null, null);
     }
     public WebForwardResult(ForwardEnum enumType, String toURL) {
-        super("webForward", toURL);
+        this(enumType, toURL, null);
+    }
+    public WebForwardResult(ForwardEnum enumType, String toURL, Object returnValue) {
+        super("webForward", returnValue);
         this.enumType = enumType;
+        this.toURL = toURL;
     }
     public ForwardEnum getEnumType() {
-        return enumType;
+        return this.enumType;
+    }
+    public String getToURL() {
+        return this.toURL;
     }
 }

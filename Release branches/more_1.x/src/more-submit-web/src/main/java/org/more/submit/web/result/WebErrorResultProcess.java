@@ -17,8 +17,8 @@ package org.more.submit.web.result;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
+import org.more.submit.ActionStack;
 import org.more.submit.ResultProcess;
-import org.more.submit.impl.DefaultActionStack;
 import org.more.submit.web.WebActionStack;
 /**
  * ¥¶¿Ì¥ÌŒÛœÏ”¶
@@ -26,12 +26,12 @@ import org.more.submit.web.WebActionStack;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class WebErrorResultProcess implements ResultProcess<WebErrorResult> {
-    public Object invoke(DefaultActionStack onStack, WebErrorResult res) throws ServletException, IOException {
+    public Object invoke(ActionStack onStack, WebErrorResult res) throws ServletException, IOException {
         WebActionStack webStack = (WebActionStack) onStack;
         HttpServletResponse response = webStack.getHttpResponse();
         if (response.isCommitted() == false)
-            response.sendError(res.getNumber(), res.getObject());
-        return res;
+            response.sendError(res.getNumber(), res.getMessage());
+        return res.getReturnValue();
     }
     public void addParam(String key, String value) {}
 }

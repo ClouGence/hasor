@@ -14,26 +14,34 @@
  * limitations under the License.
  */
 package org.more.submit.web.result;
-import org.more.submit.Result;
+import org.more.submit.impl.DefaultResultImpl;
 /**
  * web¥ÌŒÛ
  * @version : 2011-7-25
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class WebErrorResult extends Result<String> {
-    private int number = 500;
+public class WebErrorResult extends DefaultResultImpl<Object> {
+    private int    number  = 500;
+    private String message = null;
+    //
     public WebErrorResult(int number, String message) {
-        super("webError", message);
-        this.number = number;
-    }
+        this(number, message, null);
+    };
     public WebErrorResult(int number) {
-        super("webError", "");
-        this.number = number;
-    }
+        this(number, null, null);
+    };
     public WebErrorResult(String message) {
-        super("webError", message);
-    }
+        this(500, message, null);
+    };
+    public WebErrorResult(int number, String message, Object returnValue) {
+        super("webError", returnValue);
+        this.number = number;
+        this.message = message;
+    };
     public int getNumber() {
         return this.number;
-    }
-}
+    };
+    public String getMessage() {
+        return this.message;
+    };
+};

@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.byshell</groupId>
 		<artifactId>more-parent</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>${project.version}</version>
 	</parent>
 	<artifactId>more-submit-ac-spring</artifactId>
 	<packaging>jar</packaging>
