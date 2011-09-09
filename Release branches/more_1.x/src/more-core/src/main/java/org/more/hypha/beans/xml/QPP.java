@@ -25,5 +25,5 @@ import org.more.util.attribute.IAttribute;
  */
 public interface QPP {
     /** 解析一个字符串值类型。*/
-    public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property);
+    public ValueMetaData parser(IAttribute<String> attribute, AbstractPropertyDefine property);
 }

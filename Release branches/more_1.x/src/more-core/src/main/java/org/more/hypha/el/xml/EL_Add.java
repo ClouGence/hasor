@@ -30,7 +30,7 @@ public class EL_Add extends EL_NS implements XmlElementHook {
     public EL_Add(XmlDefineResource configuration) {
         super(configuration);
     }
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         XmlDefineResource resource = this.getDefineResource();
         List<B_EL> elList = (List<B_EL>) resource.getFlash().getAttribute(ELConfigList);
         if (elList == null) {
@@ -42,5 +42,5 @@ public class EL_Add extends EL_NS implements XmlElementHook {
         el.setClassName(event.getAttributeValue("class"));
         elList.add(el);
     }
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {}
 }

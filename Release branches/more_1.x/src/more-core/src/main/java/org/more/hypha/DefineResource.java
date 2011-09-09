@@ -22,7 +22,7 @@ import org.more.util.attribute.IAttribute;
  * @version 2010-9-24
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface DefineResource extends IAttribute {
+public interface DefineResource extends IAttribute<Object> {
     /**获取一个状态该状态表述是否已经准备好。*/
     public boolean isReady();
     /**获取资源名。*/

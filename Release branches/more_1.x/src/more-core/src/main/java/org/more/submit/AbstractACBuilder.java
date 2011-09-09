@@ -15,7 +15,7 @@
  */
 package org.more.submit;
 import org.more.core.error.InitializationException;
-import org.more.util.Config;
+import org.more.util.config.Config;
 /**
  * 该类是表示一个由xml配置文件配置的{@link ActionContextBuilder}生称器。
  * @version : 2011-7-15

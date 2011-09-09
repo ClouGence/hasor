@@ -27,15 +27,15 @@ import org.more.util.attribute.IAttribute;
  */
 public class QPP_Ref implements QPP {
     private static Log log = LogFactory.getLog(QPP_Ref.class);
-    public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
+    public ValueMetaData parser(IAttribute<String> attribute, AbstractPropertyDefine property) {
         //1.检查是否可以解析
-        String value = (String) attribute.getAttribute("refBean");
+        String value = attribute.getAttribute("refBean");
         if (value == null)
             return null;
         //2.进行解析
         Relation_ValueMetaData newMETA = new Relation_ValueMetaData();
-        newMETA.setRefBean((String) value);
-        newMETA.setRefPackage((String) attribute.getAttribute("refPackage"));
+        newMETA.setRefBean(value);
+        newMETA.setRefPackage(attribute.getAttribute("refPackage"));
         log.debug("parser refBean id = {%0} , package = {%1}", value, newMETA.getRefPackage());
         return newMETA;
     }

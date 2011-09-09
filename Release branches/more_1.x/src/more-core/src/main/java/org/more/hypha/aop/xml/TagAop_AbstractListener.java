@@ -43,7 +43,7 @@ public abstract class TagAop_AbstractListener extends TagAop_AbstractInformed<Ab
             return new AopDefineInformed();
     }
     /**开始解析标签，确定PointcutType属性。*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         super.beginElement(context, xpath, event);
         AbstractInformed define = this.getDefine(context);
         define.setPointcutType(this.getPointcutType());

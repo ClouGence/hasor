@@ -31,10 +31,10 @@ public class TagEngine_Engine extends TagRegister_NS implements XmlElementHook {
         super(configuration);
         this.xmlConfig = xmlConfig;
     }
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         String name = event.getAttributeValue("name");
         String classname = event.getAttributeValue("class");
         this.xmlConfig.put(name, classname);//重复注册会导致替换的作用。
     }
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {}
 }

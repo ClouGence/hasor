@@ -30,14 +30,14 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractDefineResource implements DefineResource {
-    private static final long       serialVersionUID = 1420351981612281917L;
-    private static Log              log              = LogFactory.getLog(AbstractDefineResource.class);
-    private String                  sourceName       = null;                                           //资源名
-    private IAttribute              flashContext     = null;                                           //全局闪存，通过重写受保护的方法createFlash来达到植入的目的。
-    private ThreadLocal<IAttribute> threadFlash      = null;                                           //全局闪存，通过重写受保护的方法createFlash来达到植入的目的。
-    private IAttribute              attributeManager = null;                                           //属性管理器
+    private static final long               serialVersionUID = 1420351981612281917L;
+    private static Log                      log              = LogFactory.getLog(AbstractDefineResource.class);
+    private String                          sourceName       = null;                                           //资源名
+    private IAttribute<Object>              flashContext     = null;                                           //全局闪存，通过重写受保护的方法createFlash来达到植入的目的。
+    private ThreadLocal<IAttribute<Object>> threadFlash      = null;                                           //全局闪存，通过重写受保护的方法createFlash来达到植入的目的。
+    private IAttribute<Object>              attributeManager = null;                                           //属性管理器
     //以下字段都可以通过重写相应方法达到重写的目的。
-    private AbstractEventManager    eventManager     = null;                                           //事件管理器
+    private AbstractEventManager            eventManager     = null;                                           //事件管理器
     /*------------------------------------------------------------------------------*/
     public boolean contains(String name) {
         return this.getAttribute().contains(name);
@@ -71,7 +71,7 @@ public abstract class AbstractDefineResource implements DefineResource {
     }
     /*------------------------------------------------------------------------------*/
     /**获取DefineResource的属性访问接口。子类可以通过重写该方法来改变属性管理器。*/
-    public final IAttribute getAttribute() {
+    public final IAttribute<Object> getAttribute() {
         if (this.attributeManager == null) {
             log.info("create attributeManager...");
             this.attributeManager = this.createAttribute();
@@ -81,7 +81,7 @@ public abstract class AbstractDefineResource implements DefineResource {
     }
     /**获取Flash，这个flash是一个内部信息携带体。它可以贯穿整个hypha的所有阶段。
      * 得到flash有两种办法一种是主动获取。另外一种是在特定的位置由hypha提供。不受线程限制。*/
-    public final IAttribute getFlash() {
+    public final IAttribute<Object> getFlash() {
         if (this.flashContext == null) {
             log.info("create flashContext By Public...");
             this.flashContext = this.createFlash("Public");
@@ -91,10 +91,10 @@ public abstract class AbstractDefineResource implements DefineResource {
     };
     /**获取Flash，这个flash是一个内部信息携带体。它可以贯穿整个hypha的所有阶段。
      * 得到flash有两种办法一种是主动获取。另外一种是在特定的位置由hypha提供。线程间独立。*/
-    public final IAttribute getThreadFlash() {
-        IAttribute att = null;
+    public final IAttribute<Object> getThreadFlash() {
+        IAttribute<Object> att = null;
         if (this.threadFlash == null) {
-            this.threadFlash = new ThreadLocal<IAttribute>();
+            this.threadFlash = new ThreadLocal<IAttribute<Object>>();
             att = this.createFlash("Thread");
             this.threadFlash.set(att);
             log.info("create flashContext By Thread...");
@@ -123,14 +123,14 @@ public abstract class AbstractDefineResource implements DefineResource {
     }
     /*------------------------------------------------------------------------------*/
     /**创建一个属性管理器，重新该方法可以替换{@link DefineResource}接口使用的Attribute对象。*/
-    protected IAttribute createAttribute() {
-        return new AttBase();
+    protected IAttribute<Object> createAttribute() {
+        return new AttBase<Object>();
     };
     /**创建一个Flash，重新该方法可以替换{@link DefineResource}接口使用的Flash对象。
      * 如果参数值为‘Public’则表示创建是一个可以跨越所有线程的FLASH。
      * 如果为‘Thread’则表示创建的是一个只在当前线程里有效的FLASH*/
-    protected IAttribute createFlash(String type) {
-        return new AttBase();
+    protected IAttribute<Object> createFlash(String type) {
+        return new AttBase<Object>();
     };
     /**创建一个{@link EventManager}并且负责初始化它，重新该方法可以替换{@link DefineResource}接口使用的{@link EventManager}对象。*/
     protected AbstractEventManager createEventManager() {

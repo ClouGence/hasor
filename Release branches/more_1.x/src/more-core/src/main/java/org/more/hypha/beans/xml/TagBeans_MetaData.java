@@ -32,7 +32,7 @@ public class TagBeans_MetaData extends TagBeans_NS implements XmlElementHook {
     public TagBeans_MetaData(XmlDefineResource configuration) {
         super(configuration);
     }
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         String key = event.getAttributeValue("key");
         String value = event.getAttributeValue("value");
         //1.属性值定义
@@ -57,5 +57,5 @@ public class TagBeans_MetaData extends TagBeans_NS implements XmlElementHook {
         if (xpath.contains("/beans") == true)
             this.getDefineResource().setAttribute(key, value);
     }
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {}
 }

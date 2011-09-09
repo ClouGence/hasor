@@ -20,7 +20,7 @@ import org.more.util.attribute.IAttribute;
  * @version : 2011-4-19
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ELContext extends IAttribute {
+public interface ELContext extends IAttribute<Object> {
     /**将一段el字符串创建为{@link EvalExpression}类型对象，如果参数为空则返回空。*/
     public EvalExpression getExpression(String elString) throws ELException;
     /** 计算一段字符串的EL值，并且返回计算结果。如果参数为空则返回空。 */

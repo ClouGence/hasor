@@ -30,7 +30,7 @@ public class TagBeans_URI extends TagBeans_AbstractValueMetaDataDefine<URI_Value
         super(configuration);
     }
     /**创建{@link URI_ValueMetaData}对象。*/
-    protected URI_ValueMetaData createDefine(XmlStackDecorator context) {
+    protected URI_ValueMetaData createDefine(XmlStackDecorator<Object> context) {
         return new URI_ValueMetaData();
     }
     /**定义模板属性。*/

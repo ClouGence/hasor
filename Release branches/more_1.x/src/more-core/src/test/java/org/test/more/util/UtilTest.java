@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 package org.test.more.util;
+import java.beans.IntrospectionException;
 import java.net.URI;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.junit.Test;
+import org.more.util.BeanUtil;
 /**
  * 
  * @version : 2011-7-20
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class ClassPathUtilTest {
+public class UtilTest {
     @Test
     public void test() throws Throwable {
         URI uri = new URI("ns://sss/a");
@@ -52,5 +55,16 @@ public class ClassPathUtilTest {
             System.out.println(m.group(i));
         //
         // 
+    }
+    public String getAa() {
+        return null;
+    }
+    public void setAa(String aa) {}
+    @Test
+    public void test2() throws IntrospectionException {
+        
+        List<String> ps= BeanUtil.getPropertys( UtilTest.class);
+        
+         System.out.println(ps); 
     }
 }

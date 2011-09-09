@@ -26,17 +26,16 @@ import org.more.hypha.context.xml.XmlDefineResource;
  * @version : 2011-4-22
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@SuppressWarnings("unchecked")
 public class BeansConfig_BeanType extends BeansConfig_NS implements XmlElementHook {
     public BeansConfig_BeanType(XmlDefineResource configuration) {
         super(configuration);
     }
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         List<B_BeanType> btList = (List<B_BeanType>) context.getAttribute(BeansConfig_BeanTypeConfig.BTConfigList);
         B_BeanType bt = new B_BeanType();
         bt.settName(event.getAttributeValue("tName"));
         bt.setClassName(event.getAttributeValue("class"));
         btList.add(bt);
     }
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {}
 }

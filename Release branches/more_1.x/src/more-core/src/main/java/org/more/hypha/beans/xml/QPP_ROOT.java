@@ -55,7 +55,7 @@ public class QPP_ROOT implements QPP {
             log.error("unRegedit error {%0} is not exist.", parser);
     };
     /**将属性值解析为某一特定类型的值，将value表述的值转换成指定的元信息描述。*/
-    public synchronized ValueMetaData parser(IAttribute att, AbstractPropertyDefine property) {
+    public synchronized ValueMetaData parser(IAttribute<String> att, AbstractPropertyDefine property) {
         ValueMetaData valueMETADATA = null;
         for (QPP tp : parserList) {
             valueMETADATA = tp.parser(att, property);

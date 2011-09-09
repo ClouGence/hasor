@@ -34,7 +34,7 @@ public class TagAop_Apply extends TagAop_NS implements XmlElementHook {
     public TagAop_Apply(XmlDefineResource configuration) {
         super(configuration);
     }
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         //1.取值
         String config = event.getAttributeValue("config");
         String toBeanExp = event.getAttributeValue("toBeanExp");//优先级高
@@ -54,5 +54,5 @@ public class TagAop_Apply extends TagAop_NS implements XmlElementHook {
         else
             manager.addEventListener(e, new Listener_ToPackageApply(config, toPackageExp));
     }
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {}
 }

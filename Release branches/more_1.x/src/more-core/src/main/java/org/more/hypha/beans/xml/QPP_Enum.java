@@ -28,9 +28,9 @@ import org.more.util.attribute.IAttribute;
 public class QPP_Enum implements QPP {
     private static Log log = LogFactory.getLog(QPP_Enum.class);
     /**试图解析成为{@link Enum_ValueMetaData}如果解析失败返回null。*/
-    public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
+    public ValueMetaData parser(IAttribute<String> attribute, AbstractPropertyDefine property) {
         //1.检查是否可以解析
-        String value = (String) attribute.getAttribute("enum");
+        String value = attribute.getAttribute("enum");
         if (value == null)
             return null;
         //2.进行解析

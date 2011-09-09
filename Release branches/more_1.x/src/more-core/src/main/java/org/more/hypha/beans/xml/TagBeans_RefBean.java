@@ -30,7 +30,7 @@ public class TagBeans_RefBean extends TagBeans_AbstractBeanDefine<RelationBeanDe
         super(configuration);
     }
     /**创建{@link RelationBeanDefine}对象。*/
-    protected RelationBeanDefine createDefine(XmlStackDecorator context) {
+    protected RelationBeanDefine createDefine(XmlStackDecorator<Object> context) {
         return new RelationBeanDefine();
     }
     /**定义引用类型Bean的属性*/
@@ -44,7 +44,7 @@ public class TagBeans_RefBean extends TagBeans_AbstractBeanDefine<RelationBeanDe
         propertys.put(PropertyKey.refPackage, "refPackage");
         return propertys;
     }
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {
         RelationBeanDefine define = this.getDefine(context);
         define.setFactoryMethod(null);
         super.endElement(context, xpath, event);

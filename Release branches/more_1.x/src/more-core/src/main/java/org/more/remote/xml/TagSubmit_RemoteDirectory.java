@@ -35,7 +35,7 @@ public class TagSubmit_RemoteDirectory extends TagRemote_NS implements XmlElemen
         super(configuration, service);
     };
     /**开始标签解析expression属性。*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         //1.取值
         String refBean = event.getAttributeValue("refBean");
         String forPublisher = event.getAttributeValue("forPublisher");
@@ -49,5 +49,5 @@ public class TagSubmit_RemoteDirectory extends TagRemote_NS implements XmlElemen
         RmiBeanDirectory rmiBean = new RmiBeanDirectoryPropxy(_refBean, this.getService());
         publisher.pushRemoteList(rmiBean);
     };
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {};
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {};
 };

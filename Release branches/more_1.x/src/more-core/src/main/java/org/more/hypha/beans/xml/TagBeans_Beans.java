@@ -29,10 +29,10 @@ public class TagBeans_Beans extends TagBeans_NS implements XmlElementHook {
     public TagBeans_Beans(XmlDefineResource configuration) {
         super(configuration);
     }
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         context.createStack();
     }
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {
         context.dropStack();
     }
 }

@@ -29,7 +29,7 @@ public class TagBeans_ClassBean extends TagBeans_AbstractBeanDefine<ClassPathBea
         super(configuration);
     }
     /**创建{@link ClassPathBeanDefine}对象。*/
-    protected ClassPathBeanDefine createDefine(XmlStackDecorator context) {
+    protected ClassPathBeanDefine createDefine(XmlStackDecorator<Object> context) {
         return new ClassPathBeanDefine();
     }
     /**定义类型Bean特有属性。*/

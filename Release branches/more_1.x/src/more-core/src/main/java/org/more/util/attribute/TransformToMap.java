@@ -25,10 +25,10 @@ import java.util.Set;
  * Date : 2011-4-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TransformToMap implements Map<String, Object> {
-    private IAttribute values = null;
+public class TransformToMap<T> implements Map<String, T> {
+    private IAttribute<T> values = null;
     /**创建一个{@link TransformToMap}对象，该对象的作用是将{@link IAttribute}转换为{@link Map}接口。*/
-    public TransformToMap(IAttribute values) {
+    public TransformToMap(IAttribute<T> values) {
         this.values = values;
     };
     public int size() {
@@ -51,20 +51,20 @@ public class TransformToMap implements Map<String, Object> {
         return false;
     };
     /**Key必须是字符类型的的。*/
-    public Object get(Object key) {
+    public T get(Object key) {
         return this.values.getAttribute((String) key);
     };
-    public Object put(String key, Object value) {
+    public T put(String key, T value) {
         this.values.setAttribute(key, value);
         return value;
     };
-    public Object remove(Object key) {
+    public T remove(Object key) {
         String k = (String) key;
-        Object value = this.values.getAttribute(k);
+        T value = this.values.getAttribute(k);
         this.values.removeAttribute(k);
         return value;
     };
-    public void putAll(Map<? extends String, ? extends Object> m) {
+    public void putAll(Map<? extends String, ? extends T> m) {
         for (String key : m.keySet())
             this.put(key, m.get(key));
     };
@@ -77,30 +77,30 @@ public class TransformToMap implements Map<String, Object> {
             al.add(k);
         return al;
     };
-    public Collection<Object> values() {
-        ArrayList<Object> al = new ArrayList<Object>(this.size());
+    public Collection<T> values() {
+        ArrayList<T> al = new ArrayList<T>(this.size());
         for (String k : this.values.getAttributeNames())
             al.add(this.values.getAttribute(k));
         return al;
     };
-    public Set<Map.Entry<String, Object>> entrySet() {
-        HashSet<Map.Entry<String, Object>> al = new HashSet<Map.Entry<String, Object>>();
+    public Set<Map.Entry<String, T>> entrySet() {
+        HashSet<Map.Entry<String, T>> al = new HashSet<Map.Entry<String, T>>();
         for (String k : this.values.getAttributeNames())
             al.add(new Entry(k, this.values));
         return al;
     };
-    private class Entry implements Map.Entry<String, Object> {
-        private IAttribute values = null;
-        private String     key    = null;
-        public Entry(String key, IAttribute values) {
+    private class Entry implements Map.Entry<String, T> {
+        private IAttribute<T> values = null;
+        private String        key    = null;
+        public Entry(String key, IAttribute<T> values) {
             this.key = key;
             this.values = values;
         };
-        public Object setValue(Object value) {
+        public T setValue(T value) {
             this.values.setAttribute(this.key, value);
             return value;
         };
-        public Object getValue() {
+        public T getValue() {
             return this.values.getAttribute(this.key);
         };
         public String getKey() {

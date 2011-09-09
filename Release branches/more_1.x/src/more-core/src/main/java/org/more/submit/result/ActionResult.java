@@ -25,8 +25,8 @@ import org.more.util.attribute.IAttribute;
  * @version : 2011-7-25
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class ActionResult extends DefaultResultImpl<URI> implements IAttribute {
-    private IAttribute att = new AttBase();
+public class ActionResult extends DefaultResultImpl<URI> implements IAttribute<Object> {
+    private IAttribute<Object> att = new AttBase<Object>();
     /*----------------------------------------------------------------*/
     public ActionResult(String schema, String actionPath) throws URISyntaxException {
         super("submitAction", new URI(schema + "://" + actionPath));

@@ -33,7 +33,7 @@ public class TagBeans_Entity extends TagBeans_AbstractValueMetaDataDefine<MapEnt
         super(configuration);
     }
     /**创建{@link MapEntity_ValueMetaData}对象。*/
-    protected MapEntity_ValueMetaData createDefine(XmlStackDecorator context) {
+    protected MapEntity_ValueMetaData createDefine(XmlStackDecorator<Object> context) {
         return new MapEntity_ValueMetaData();
     }
     /**定义模板属性。*/
@@ -47,7 +47,7 @@ public class TagBeans_Entity extends TagBeans_AbstractValueMetaDataDefine<MapEnt
         //propertys.put(PropertyKey.value, "value");
         return propertys;
     }
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         super.beginElement(context, xpath, event);
         MapEntity_ValueMetaData mapEntity = this.getDefine(context);
         String key = event.getAttributeValue("key");

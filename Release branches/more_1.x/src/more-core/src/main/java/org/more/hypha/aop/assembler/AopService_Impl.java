@@ -18,19 +18,19 @@ import java.util.HashMap;
 import java.util.Map;
 import org.more.core.error.DefineException;
 import org.more.hypha.AbstractBeanDefine;
-import org.more.hypha.ApplicationContext;
 import org.more.hypha.DefineResource;
 import org.more.hypha.aop.AopService;
 import org.more.hypha.aop.define.AbstractPointcutDefine;
 import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.beans.define.AbstractBaseBeanDefine;
+import org.more.hypha.commons.AbstractService;
 import org.more.util.attribute.IAttribute;
 /**
  * 该类的目的是为了扩展{@link DefineResource}接口对象以将aop信息附加到定义资源接口中。
  * @version 2010-10-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public class AopService_Impl implements AopService {
+public class AopService_Impl extends AbstractService implements AopService {
     public static final String                  ServiceName  = "$more_aop_service";
     private static final String                 AopInfoName  = "$more_aop_info";
     private Map<String, AbstractPointcutDefine> pointcutList = new HashMap<String, AbstractPointcutDefine>();
@@ -38,17 +38,17 @@ public class AopService_Impl implements AopService {
     //
     private AopBuilder                          aopBuilder   = null;
     //
-    private IAttribute getFungi(AbstractBeanDefine define) {
+    private IAttribute<Object> getFungi(AbstractBeanDefine define) {
         if (define instanceof AbstractBaseBeanDefine)
             return ((AbstractBaseBeanDefine) define).getFungi();
         return null;
     }
     //
-    public void start(ApplicationContext context, IAttribute flash) {
-        this.aopBuilder = new AopBuilder(context);
+    public void start() {
+        this.aopBuilder = new AopBuilder(this.getContext());
         this.aopBuilder.init();
     };
-    public void stop(ApplicationContext context, IAttribute flash) {
+    public void stop() {
         this.aopBuilder.destroy();//执行销毁
         this.aopBuilder = null;
     };
@@ -79,7 +79,7 @@ public class AopService_Impl implements AopService {
     }
     /**获取{@link AbstractBeanDefine}对象上的aop配置，如果目标没有配置aop则返回null。*/
     public AopConfigDefine getAopDefine(AbstractBeanDefine define) {
-        IAttribute att = this.getFungi(define);
+        IAttribute<Object> att = this.getFungi(define);
         if (att.contains(AopInfoName) == true)
             return (AopConfigDefine) att.getAttribute(AopInfoName);
         return null;

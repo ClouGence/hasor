@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.context.xml;
+import java.io.IOException;
 import org.more.core.error.LoadException;
 /**
  * 为了{@link XmlDefineResource}类提供的一个注册器接口，如果要注册新的xml配置支持则需要实现这个接口并且
@@ -28,5 +29,5 @@ public interface XmlNameSpaceRegister {
      * @param namespaceURL 配置文件配置的命名空间。
      * @param resource {@link XmlDefineResource}对象。
      */
-    public void initRegister(String namespaceURL, XmlDefineResource resource) throws LoadException;
+    public void initRegister(String namespaceURL, XmlDefineResource resource) throws LoadException, IOException;
 }

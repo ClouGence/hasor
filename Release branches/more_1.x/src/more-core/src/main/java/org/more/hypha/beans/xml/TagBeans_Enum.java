@@ -32,7 +32,7 @@ public class TagBeans_Enum extends TagBeans_AbstractValueMetaDataDefine<Enum_Val
         super(configuration);
     }
     /**创建{@link Enum_ValueMetaData}对象。*/
-    protected Enum_ValueMetaData createDefine(XmlStackDecorator context) {
+    protected Enum_ValueMetaData createDefine(XmlStackDecorator<Object> context) {
         return new Enum_ValueMetaData();
     }
     /**定义模板属性。*/
@@ -47,7 +47,7 @@ public class TagBeans_Enum extends TagBeans_AbstractValueMetaDataDefine<Enum_Val
         return propertys;
     }
     /**解析属性*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         super.beginElement(context, xpath, event);
         Enum_ValueMetaData metaData = this.getDefine(context);
         if (metaData.getEnumType() == null) {

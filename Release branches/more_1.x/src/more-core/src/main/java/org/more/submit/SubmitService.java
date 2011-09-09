@@ -22,7 +22,7 @@ import org.more.util.attribute.IAttribute;
  * @version : 2011-7-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface SubmitService extends IAttribute, Service {
+public interface SubmitService extends IAttribute<Object>, Service {
     /**注册命名空间。*/
     public void regeditNameSpace(String prefix, ActionContext context);
     /**解除某个命名空间的注册。*/
@@ -42,11 +42,11 @@ public interface SubmitService extends IAttribute, Service {
     /**获取一个action对象，通过action对象可以执行action调用。该字符串格式类似如下：ac://package.package.package.action/param/param*/
     public ActionObject getActionObject(URI uri) throws Throwable;
     /**注册一个作用域，重复注册同一个名称的作用域则会产生替换。*/
-    public void regeditScope(String scopeName, IAttribute scope);
+    public void regeditScope(String scopeName, IAttribute<?> scope);
     /**获取已经注册的作用域，如果不存在该作用域则返回一个null。*/
-    public IAttribute getScope(String scopeName);
+    public IAttribute<?> getScope(String scopeName);
     /**获取一个{@link IAttribute}接口对象，该接口对象是一个封装了多个作用域的接口对象。*/
-    public IAttribute getScopeStack();
+    public IAttribute<?> getScopeStack();
     /**注册一个结果处理器，当返回的结果是一个字符串时才会使用结果处理器进行处理。*/
     public void addResult(String name, ResultProcess<Result<?>> process);
     /**设置默认的结果处理器。*/

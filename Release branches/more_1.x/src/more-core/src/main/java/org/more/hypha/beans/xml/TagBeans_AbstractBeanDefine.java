@@ -68,7 +68,7 @@ public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBaseBeanDefi
         return propertys;
     }
     /**特殊处理下useTemplate属性的注入*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         super.beginElement(context, xpath, event);
         AbstractBeanDefine define = this.getDefine(context);
         XmlDefineResource beanDefineManager = this.getDefineResource();
@@ -108,7 +108,7 @@ public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBaseBeanDefi
         }
     }
     /**结束解析标签。*/
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {
         AbstractBeanDefine define = this.getDefine(context);
         //context.removeAttribute(this.getAttributeName());
         // 不需要remove的原因是super.endElement方法会销毁当前栈

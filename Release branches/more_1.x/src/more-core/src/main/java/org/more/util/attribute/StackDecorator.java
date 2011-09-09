@@ -22,40 +22,40 @@ import org.more.core.error.SupportException;
  * @version 2010-9-11
  * @author 赵永春 (zyc@byshell.org)
  */
-public class StackDecorator extends AbstractAttDecorator {
+public class StackDecorator<T> extends AbstractAttDecorator<T> {
     //========================================================================================Field
     private int depth = 0;
     //==================================================================================Constructor
-    public StackDecorator(IAttribute source) throws NullPointerException {
+    public StackDecorator(IAttribute<T> source) throws NullPointerException {
         super(source);
     }
     //==========================================================================================JOB
     /**由于StackDecorator类型在createStack和dropStack方法中都需要改变创建source因此为了避免滥用setSource，所以StackDecorator装饰器不支持该方法。*/
-    public void setSource(IAttribute source) throws SupportException {
+    public void setSource(IAttribute<T> source) throws SupportException {
         throw new SupportException("StackDecorator装饰器不支持该方法。");
     }
     /**获取源*/
-    public IAttribute getSource() {
-        IAttribute att = super.getSource();
+    public IAttribute<T> getSource() {
+        IAttribute<T> att = super.getSource();
         if (depth == 0)
             return att;
-        return ((ParentDecorator) att).getSource();
+        return ((ParentDecorator<T>) att).getSource();
     }
     /** 该方法与getSource()方法返回值一样。 */
-    public IAttribute getCurrentStack() {
+    public IAttribute<T> getCurrentStack() {
         return super.getSource();
     }
     /** 获取当前堆的父堆。 */
-    public IAttribute getParentStack() {
+    public IAttribute<T> getParentStack() {
         if (depth == 0)
             return null;
-        IAttribute att = super.getSource();
-        return ((ParentDecorator) att).getParent();
+        IAttribute<T> att = super.getSource();
+        return ((ParentDecorator<T>) att).getParent();
     }
     /**在现有属性堆上创建一个堆。*/
     public synchronized void createStack() {
-        IAttribute source = super.getSource();
-        super.setSource(new ParentDecorator(new AttBase(), source));
+        IAttribute<T> source = super.getSource();
+        super.setSource(new ParentDecorator<T>(new AttBase<T>(), source));
         depth++;
     }
     /**销毁当前层次的属性堆，如果当前属性堆不是最初的哪个源则销毁这个层次的属性堆并将当前属性堆替换为父属性堆。操作成功返回true否则返回false。*/
@@ -63,9 +63,9 @@ public class StackDecorator extends AbstractAttDecorator {
         if (depth == 0)
             return false;
         //
-        IAttribute source = super.getSource();
+        IAttribute<T> source = super.getSource();
         if (source instanceof ParentDecorator) {
-            super.setSource(((ParentDecorator) source).getParent());
+            super.setSource(((ParentDecorator<T>) source).getParent());
             depth--;
             return true;
         }

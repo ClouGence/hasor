@@ -36,7 +36,7 @@ public class TagBeans_Method extends TagBeans_AbstractDefine<MethodDefine> {
         super(configuration);
     }
     /**创建{@link MethodDefine}对象*/
-    protected MethodDefine createDefine(XmlStackDecorator context) {
+    protected MethodDefine createDefine(XmlStackDecorator<Object> context) {
         return new MethodDefine();
     }
     /**属性的定义名称*/
@@ -56,7 +56,7 @@ public class TagBeans_Method extends TagBeans_AbstractDefine<MethodDefine> {
         return propertys;
     }
     /**将属性注册到Bean中。*/
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {
         MethodDefine method = this.getDefine(context);
         AbstractBaseBeanDefine define = (AbstractBaseBeanDefine) context.getAttribute(TagBeans_AbstractBeanDefine.BeanDefine);
         //

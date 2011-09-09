@@ -30,7 +30,7 @@ public class TagBeans_Date extends TagBeans_AbstractValueMetaDataDefine<Date_Val
         super(configuration);
     }
     /**创建{@link Date_ValueMetaData}对象。*/
-    protected Date_ValueMetaData createDefine(XmlStackDecorator context) {
+    protected Date_ValueMetaData createDefine(XmlStackDecorator<Object> context) {
         return new Date_ValueMetaData();
     }
     /**定义模板属性。*/

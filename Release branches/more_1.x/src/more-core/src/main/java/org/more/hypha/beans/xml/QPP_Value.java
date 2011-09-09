@@ -30,8 +30,8 @@ import org.more.util.attribute.IAttribute;
  */
 public class QPP_Value implements QPP {
     private static Log log = LogFactory.getLog(QPP_Value.class);
-    public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
-        String value = (String) attribute.getAttribute("value");
+    public ValueMetaData parser(IAttribute<String> attribute, AbstractPropertyDefine property) {
+        String value = attribute.getAttribute("value");
         if (value == null)
             return null;
         //2.不处理boolean,byte,short,int,long,float,double,char,string之外的任何类型。

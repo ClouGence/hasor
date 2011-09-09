@@ -29,9 +29,9 @@ import org.more.util.attribute.IAttribute;
 public class QPP_EL implements QPP {
     private static Log log = LogFactory.getLog(QPP_EL.class);
     /**试图解析成为{@link File_ValueMetaData}如果解析失败返回null。*/
-    public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
+    public ValueMetaData parser(IAttribute<String> attribute, AbstractPropertyDefine property) {
         //1.检查是否可以解析
-        String value = (String) attribute.getAttribute("elText");
+        String value = attribute.getAttribute("elText");
         if (value == null)
             return null;
         //2.进行解析

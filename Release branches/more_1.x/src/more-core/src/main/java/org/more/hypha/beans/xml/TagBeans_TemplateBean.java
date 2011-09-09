@@ -29,11 +29,10 @@ public class TagBeans_TemplateBean extends TagBeans_AbstractBeanDefine<TemplateB
         super(configuration);
     }
     /**创建{@link TemplateBeanDefine}对象。*/
-    protected TemplateBeanDefine createDefine(XmlStackDecorator context) {
+    protected TemplateBeanDefine createDefine(XmlStackDecorator<Object> context) {
         return new TemplateBeanDefine();
     }
-    @Override
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {
         TemplateBeanDefine define = this.getDefine(context);
         define.setBoolAbstract(true);
         define.setBoolSingleton(false);

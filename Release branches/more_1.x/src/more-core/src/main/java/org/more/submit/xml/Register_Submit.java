@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.submit.xml;
+import java.io.IOException;
 import java.util.ArrayList;
 import org.more.core.xml.XmlParserKit;
 import org.more.hypha.Event;
@@ -32,7 +33,7 @@ public class Register_Submit implements XmlNameSpaceRegister {
     /**如果没有指定namespaceURL参数则该常量将会指定默认的命名空间。*/
     public static final String DefaultNameSpaceURL = "http://project.byshell.org/more/schema/submit";
     /**执行初始化注册。*/
-    public void initRegister(String namespaceURL, XmlDefineResource resource) {
+    public void initRegister(String namespaceURL, XmlDefineResource resource) throws IOException {
         //1.SubmitBuild
         B_Config config = new B_Config();
         config.acList = new ArrayList<B_AC>();

@@ -26,7 +26,7 @@ import java.util.Collection;
  * @version 2009-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class Copy extends PropertyReaderWrite implements Serializable, Cloneable {
+public abstract class Copy extends PropertyReaderWrite<Object> implements Serializable, Cloneable {
     /**  */
     private static final long serialVersionUID = -4040330892099587195L;
     /** 该字段是存放执行当前拷贝的CopyBeanUtil对象 */
@@ -39,9 +39,9 @@ public abstract class Copy extends PropertyReaderWrite implements Serializable, 
         this.copyBeanUtil = copyBeanUtil;
     }
     /** Bean在拷贝过程中所支持的类型转换。 */
-    private Collection<ConvertType> convertType = null;
+    private Collection<ConvertType>     convertType = null;
     /** 属性读写器，属性拷贝使用该属性的值拷贝到其他AbstractReaderWrite中的 */
-    private PropertyReaderWrite     rw          = null;
+    private PropertyReaderWrite<Object> rw          = null;
     /**
      * 设置拷贝过程中所支持的类型转换集合。
      * @param convertType 拷贝过程中所支持的类型转换集合。
@@ -67,7 +67,7 @@ public abstract class Copy extends PropertyReaderWrite implements Serializable, 
      * @param toObject 准备拷贝的目标对象。
      * @return 如果拷贝成功则返回true否则返回fale。
      */
-    public abstract boolean copyTo(PropertyReaderWrite toObject);
+    public abstract boolean copyTo(PropertyReaderWrite<Object> toObject);
     protected Object clone() throws CloneNotSupportedException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -105,10 +105,10 @@ public abstract class Copy extends PropertyReaderWrite implements Serializable, 
     public void setObject(Object object) {
         this.rw.setObject(object);
     }
-    public PropertyReaderWrite getRw() {
+    public PropertyReaderWrite<Object> getRw() {
         return rw;
     }
-    public void setRw(PropertyReaderWrite rw) {
+    public void setRw(PropertyReaderWrite<Object> rw) {
         this.rw = rw;
     }
     public Class<?> getPropertyClass() {

@@ -32,7 +32,7 @@ public class SimpleType_MetaData_Parser implements ValueMetaDataParser<Simple_Va
     private static final String FungiCacheName = "$FungiCacheName_Value";
     /*------------------------------------------------------------------------------*/
     public Object parser(Object targetObject, Simple_ValueMetaData data, ValueMetaDataParser<ValueMetaData> rootParser, ApplicationContext context) throws Throwable {
-        IAttribute fungiAtt = data.getFungi();
+        IAttribute<Object> fungiAtt = data.getFungi();
         Object value = fungiAtt.getAttribute(FungiCacheName);
         if (value == null) {
             Class<?> sType = Simple_ValueMetaData.getPropertyType(data.getValueMetaType());

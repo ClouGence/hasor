@@ -40,7 +40,7 @@ public class TagAop_Config extends TagAop_NS implements XmlElementHook {
         super(configuration);
     }
     /**开始标签处理。*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         AopConfigDefine config = new AopConfigDefine();
         //att :name
         String name = event.getAttributeValue("name");
@@ -52,7 +52,7 @@ public class TagAop_Config extends TagAop_NS implements XmlElementHook {
         context.setAttribute(ConfigDefine, config);
     }
     /**结束标签处理。*/
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {
         AbstractBaseBeanDefine bean = (AbstractBaseBeanDefine) context.getAttribute(TagBeans_AbstractBeanDefine.BeanDefine);
         AopConfigDefine config = (AopConfigDefine) context.getAttribute(ConfigDefine);
         //1.检查内部的Informed

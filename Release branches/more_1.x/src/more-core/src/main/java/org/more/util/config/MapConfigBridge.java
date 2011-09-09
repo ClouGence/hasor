@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.util;
+package org.more.util.config;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Map;
@@ -30,10 +30,10 @@ public class MapConfigBridge implements Map<String, Object>, Config<Object> {
     private Object              context          = null;
     private Map<String, Object> attMap           = null;
     public MapConfigBridge() {
-        this.attMap = new AttBase();
+        this.attMap = new AttBase<Object>();
     }
     public MapConfigBridge(Object context) {
-        this.attMap = new AttBase();
+        this.attMap = new AttBase<Object>();
         this.context = context;
     }
     public MapConfigBridge(Map<String, Object> attMap, Object context) {

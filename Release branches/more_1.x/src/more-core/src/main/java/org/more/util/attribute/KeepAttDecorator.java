@@ -31,7 +31,7 @@ import org.more.core.error.MoreStateException;
 * @version 2009-12-3
 * @author 赵永春 (zyc@byshell.org)
 */
-public class KeepAttDecorator extends AbstractAttDecorator {
+public class KeepAttDecorator<T> extends AbstractAttDecorator<T> {
     //========================================================================================Field
     /** 保存属性特性的Map */
     private Map<String, KeepAttDecorator.KeepAttStruct> map = null;
@@ -52,7 +52,7 @@ public class KeepAttDecorator extends AbstractAttDecorator {
      * 该方法将采用默认策略IExtAttribute.ReplaceMode_Replace。
      * @param source 要装饰的目标属性对象。
      */
-    public KeepAttDecorator(IAttribute source) {
+    public KeepAttDecorator(IAttribute<T> source) {
         super(source);
         this.map = new HashMap<String, KeepAttDecorator.KeepAttStruct>();
     }
@@ -62,7 +62,7 @@ public class KeepAttDecorator extends AbstractAttDecorator {
      * @param name 要保存的属性名。
      * @param value 要保存的属性值。
      */
-    public void setAttribute(String name, Object value) {
+    public void setAttribute(String name, T value) {
         if (this.getSource().contains(name) == true)
             if (this.map.get(name).keep == true)
                 throw new MoreStateException("属性 " + name + " 具备保持特性不能接受新的属性值。");

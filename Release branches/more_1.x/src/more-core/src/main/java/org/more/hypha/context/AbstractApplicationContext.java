@@ -132,15 +132,15 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         return new AbstractExpandPointManager() {};
     };
     /**该方法可以获取{@link AbstractApplicationContext}接口对象所使用的属性管理器。子类可以通过重写该方法以来控制属性管理器对象。*/
-    protected IAttribute getAttribute() {
+    protected IAttribute<Object> getAttribute() {
         return this.getBeanResource();
     };
     /**获取Flash，这个flash是一个内部信息携带体。它可以贯穿整个hypha的所有阶段。而且不受跨线程限制。*/
-    public IAttribute getFlash() {
+    public IAttribute<Object> getFlash() {
         return this.getBeanResource().getFlash();
     };
     /**获取Flash，这个flash是一个内部信息携带体。它可以贯穿整个hypha的所有阶段。但是这个FLASH受跨线程限制。*/
-    public IAttribute getThreadFlash() {
+    public IAttribute<Object> getThreadFlash() {
         return this.getBeanResource().getThreadFlash();
     };
     /*------------------------------------------------------------*/
@@ -162,12 +162,17 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         //
         this.getEventManager().doEvent(Event.getEvent(InitEvent.class), this);
         this.getEventManager().doEvent(Event.getEvent(InitedEvent.class), this);
-        //
+        //初始化Service
+        for (Class<?> st : this.servicesMap.keySet()) {
+            Service s = this.servicesMap.get(st);
+            s.init(this, this.getFlash());
+            log.info("service ‘{%0}’ init... ", st);
+        }
         this.getEventManager().doEvent(Event.getEvent(StartingServicesEvent.class), this);
         for (Class<?> st : this.servicesMap.keySet()) {
             Service s = this.servicesMap.get(st);
-            s.start(this, this.getFlash());
-            log.info("service inited {%0} OK!", st);
+            s.start();
+            log.info("service ‘{%0}’ inited OK!", st);
         }
         this.getEventManager().doEvent(Event.getEvent(StartedServicesEvent.class), this);
         log.info("started!");
@@ -197,7 +202,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         this.engineLogic = null;
         for (Class<?> st : this.servicesMap.keySet()) {
             Service s = this.servicesMap.get(st);
-            s.stop(this, this.getFlash());
+            s.stop();
             log.info("destroy {%0} OK!", st);
         }
         this.servicesMap = null;
@@ -294,7 +299,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     /**返回当前线程getBean时传入的所有参数，如果在getBean返回之后使用该方法。将会返回一个null。*/
     public Object[] getGetBeanParams() {
         Object[] params = null;
-        IAttribute tflash = this.getThreadFlash();
+        IAttribute<Object> tflash = this.getThreadFlash();
         if (tflash.contains(KEY) == false)
             return null;
         params = (Object[]) tflash.getAttribute(KEY);
@@ -303,7 +308,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     }
     /**返回当前线程getBean时传入的指定位置参数，如果在getBean返回之后使用该方法。将会返回一个null。*/
     public Object getGetBeanParam(int index) {
-        IAttribute tflash = this.getThreadFlash();
+        IAttribute<Object> tflash = this.getThreadFlash();
         Object[] params = (Object[]) tflash.getAttribute(KEY);
         if (params == null) {
             log.debug("GetBean params {%0} is null.");

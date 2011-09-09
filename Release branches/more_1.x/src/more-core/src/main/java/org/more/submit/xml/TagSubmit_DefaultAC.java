@@ -32,10 +32,10 @@ public class TagSubmit_DefaultAC extends TagSubmit_NS implements XmlElementHook 
         this.config = config;
     }
     /**开始标签解析expression属性。*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         String defaultAC = event.getAttributeValue("defaultAC");
         if (defaultAC != null)
             config.build.setDefaultNameSpace(defaultAC);
     }
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {}
 }

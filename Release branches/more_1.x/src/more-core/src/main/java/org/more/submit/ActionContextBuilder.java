@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.submit;
-import org.more.util.Config;
+import org.more.util.config.Config;
 /**
  * 该接口是用于生成{@link ActionContext}接口的生成器，在该接口中可以得到更多的容器支持。
  * @version : 2011-7-15

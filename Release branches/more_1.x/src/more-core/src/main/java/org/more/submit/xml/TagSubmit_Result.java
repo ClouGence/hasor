@@ -34,11 +34,11 @@ public class TagSubmit_Result extends TagSubmit_NS implements XmlElementHook {
         this.config = config;
     };
     /**开始标签解析expression属性。*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         String match = event.getAttributeValue("match");
         String type = event.getAttributeValue("class");
         ResultProcess<?> rp = this.config.build.addResult(match, type);
         context.setAttribute(ResultProcess_Name, rp);
     };
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {};
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {};
 };

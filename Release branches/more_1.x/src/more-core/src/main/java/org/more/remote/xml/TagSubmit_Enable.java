@@ -32,11 +32,11 @@ public class TagSubmit_Enable extends TagRemote_NS implements XmlElementHook {
         super(configuration, service);
     }
     /**开始标签解析属性。*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         //1.取值
         String enable = event.getAttributeValue("enable");
         boolean _enable = StringConvertUtil.parseBoolean(enable, false);
         this.getService().setEnable(_enable);
     }
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {}
 }

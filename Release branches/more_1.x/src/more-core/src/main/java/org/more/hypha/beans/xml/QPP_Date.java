@@ -27,12 +27,12 @@ import org.more.util.attribute.IAttribute;
  */
 public class QPP_Date implements QPP {
     private static Log log = LogFactory.getLog(QPP_Date.class);
-    public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
-        String value = (String) attribute.getAttribute("date");
+    public ValueMetaData parser(IAttribute<String> attribute, AbstractPropertyDefine property) {
+        String value = attribute.getAttribute("date");
         if (value == null)
             return null;
         //2.½øÐÐ½âÎö
-        String format = (String) attribute.getAttribute("format");
+        String format = attribute.getAttribute("format");
         Date_ValueMetaData newMETA = new Date_ValueMetaData();
         newMETA.setDateString(value);
         newMETA.setFormatString(format);

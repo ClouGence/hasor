@@ -30,7 +30,7 @@ public class TagBeans_EL extends TagBeans_AbstractValueMetaDataDefine<EL_ValueMe
         super(resource);
     }
     /**创建{@link EL_ValueMetaData}对象。*/
-    protected EL_ValueMetaData createDefine(XmlStackDecorator context) {
+    protected EL_ValueMetaData createDefine(XmlStackDecorator<Object> context) {
         return new EL_ValueMetaData();
     }
     /**定义模板属性。*/

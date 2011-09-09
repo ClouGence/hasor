@@ -24,20 +24,19 @@ import org.more.util.attribute.IAttribute;
  * @version 2009-5-15
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class AttRW extends BeanType {
+public class AttRW extends BeanType<IAttribute<Object>> {
     /**  */
     private static final long serialVersionUID = 5550209216691841191L;
     public boolean checkObject(Object object) {
         return object instanceof IAttribute;
     }
-    protected Iterator<String> iteratorNames(Object obj) {
-        IAttribute att = (IAttribute) obj;
+    protected Iterator<String> iteratorNames(IAttribute<Object> obj) {
         ArrayList<String> ns = new ArrayList<String>(0);
-        for (String n : att.getAttributeNames())
+        for (String n : obj.getAttributeNames())
             ns.add(n);
         return ns.iterator();
     }
-    protected PropertyReaderWrite getPropertyRW(Object obj, String name) {
+    protected PropertyReaderWrite<IAttribute<Object>> getPropertyRW(IAttribute<Object> obj, String name) {
         AttReaderWrite prw = new AttReaderWrite();
         prw.setName(name);
         prw.setObject(obj);
@@ -49,15 +48,15 @@ public class AttRW extends BeanType {
  * Date : 2009-5-21
  * @author ’‘”¿¥∫
  */
-class AttReaderWrite extends PropertyReaderWrite {
+class AttReaderWrite extends PropertyReaderWrite<IAttribute<Object>> {
     /**  */
     private static final long serialVersionUID = -2857886652147342020L;
     public Object get() {
-        IAttribute att = (IAttribute) this.getObject();
+        IAttribute<Object> att = this.getObject();
         return att.getAttribute(this.getName());
     }
     public void set(Object value) {
-        IAttribute att = (IAttribute) this.getObject();
+        IAttribute<Object> att = this.getObject();
         att.setAttribute(this.getName(), value);
     }
     public Class<?> getPropertyClass() {

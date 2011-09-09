@@ -36,7 +36,7 @@ public class AbstractELContext implements ELContext {
     private InnerOgnlContext           elAttribute        = null;
     /*------------------------------------------------------------------------------*/
     /**该类的目的是为了支持{@link ELObject}类型对象，该对象是以{@link IAttribute}接口形式向外提供。*/
-    private class InnerOgnlContext extends AttBase {
+    private class InnerOgnlContext extends AttBase<Object> {
         private static final long serialVersionUID = 8423446527838340104L;
         private Log               log              = LogFactory.getLog(InnerOgnlContext.class);
         public Object get(Object key) {
@@ -89,7 +89,7 @@ public class AbstractELContext implements ELContext {
         return this.applicationContext;
     };
     /**获取一个{@link IAttribute}接口对象，还对象可以以{@link IAttribute}接口形式访问{@link AbstractELContext}中的属性。*/
-    IAttribute getELAttribute() {
+    IAttribute<Object> getELAttribute() {
         if (this.elAttribute == null) {
             this.elAttribute = new InnerOgnlContext();
             log.debug("created ognlContext ,{%0}", this.elAttribute);

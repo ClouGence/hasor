@@ -38,11 +38,11 @@ public abstract class TagAop_AbstractInformed<T extends AbstractInformed> extend
     /**创建一个{@link AbstractInformed}定义对象。*/
     protected abstract T createDefine(StartElementEvent event);
     /**获取创建的{@link AbstractInformed}定义对象。*/
-    protected final T getDefine(XmlStackDecorator context) {
+    protected final T getDefine(XmlStackDecorator<?> context) {
         return (T) context.getAttribute(AopInformedDefine);
     };
     /**开始标签解析*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         T define = this.createDefine(event);
         context.setAttribute(AopInformedDefine, define);
         //1.获取所属config
@@ -64,7 +64,7 @@ public abstract class TagAop_AbstractInformed<T extends AbstractInformed> extend
             config.addInformed(define);
     }
     /**结束标签解析，删除使用的变量。*/
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {
         context.removeAttribute(AopInformedDefine);
     }
 }

@@ -37,18 +37,18 @@ public class TagAop_UseConfig extends TagAop_NS implements XmlElementHook, XmlAt
         super(configuration);
     }
     /**处理标签形式。*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         String name = event.getAttributeValue("name");
         this.processElement(context, name);
     }
     /**处理属性形式。*/
-    public void attribute(XmlStackDecorator context, String xpath, AttributeEvent event) {
+    public void attribute(XmlStackDecorator<Object> context, String xpath, AttributeEvent event) {
         String name = event.getValue();
         this.processElement(context, name);
     }
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {}
     /**处理aop:useConfig*/
-    private void processElement(XmlStackDecorator context, String name) {
+    private void processElement(XmlStackDecorator<Object> context, String name) {
         AopService service = this.getAopConfig();
         AbstractBeanDefine bean = (AbstractBeanDefine) context.getAttribute(TagBeans_AbstractBeanDefine.BeanDefine);
         //

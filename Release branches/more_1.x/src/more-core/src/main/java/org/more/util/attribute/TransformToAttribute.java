@@ -22,7 +22,7 @@ import java.util.Map;
  * Date : 2011-4-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TransformToAttribute implements IAttribute {
+public class TransformToAttribute<T> implements IAttribute<T> {
     private Map<Object, Object> values = null;
     /**创建一个{@link TransformToAttribute}对象，该对象的作用是将{@link Map}转换为{@link IAttribute}接口。*/
     public TransformToAttribute(Map<Object, Object> values) {
@@ -34,8 +34,8 @@ public class TransformToAttribute implements IAttribute {
     public void setAttribute(String name, Object value) {
         this.values.put(name, value);
     };
-    public Object getAttribute(String name) {
-        return this.values.get(name);
+    public T getAttribute(String name) {
+        return (T) this.values.get(name);
     };
     public void removeAttribute(String name) {
         this.values.remove(name);
@@ -52,13 +52,13 @@ public class TransformToAttribute implements IAttribute {
     public void clearAttribute() {
         this.values.clear();
     }
-    public Map<String, Object> toMap() {
-        HashMap<String, Object> map = new HashMap<String, Object>();
+    public Map<String, T> toMap() {
+        HashMap<String, T> map = new HashMap<String, T>();
         for (Object key : this.values.keySet())
             if (key != null)
-                map.put(key.toString(), this.values.get(key));
+                map.put(key.toString(), (T) this.values.get(key));
             else
-                map.put(null, this.values.get(key));
+                map.put(null, (T) this.values.get(key));
         return map;
     };
 };

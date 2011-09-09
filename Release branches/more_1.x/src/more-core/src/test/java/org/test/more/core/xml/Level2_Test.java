@@ -39,7 +39,7 @@ public class Level2_Test {
         manager.regeditKit("http://www.test.org/schema/b", new XmlNamespaceParser() {
             public void endAccept() {}
             public void beginAccept() {}
-            public void sendEvent(XmlStackDecorator context, String xpath, XmlStreamEvent event) {
+            public void sendEvent(XmlStackDecorator<Object> context, String xpath, XmlStreamEvent event) {
                 System.out.println(event.getClass().getSimpleName() + "\t\t\t" + event.getXpath() + "\t\t\t" + xpath);
             }
         });

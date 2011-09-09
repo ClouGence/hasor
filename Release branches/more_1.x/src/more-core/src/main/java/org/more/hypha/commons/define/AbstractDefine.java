@@ -26,24 +26,24 @@ import org.more.util.attribute.IAttribute;
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractDefine<T> implements IAttribute {
-    private static final Log log       = LogFactory.getLog(AbstractDefine.class);
-    private IAttribute       attribute = null;                                   //属性，为了提供IAttribute接口功能。
-    private IAttribute       fungi     = null;                                   //附加属性
+public abstract class AbstractDefine<T> implements IAttribute<Object> {
+    private static final Log   log       = LogFactory.getLog(AbstractDefine.class);
+    private IAttribute<Object> attribute = null;                                   //属性，为了提供IAttribute接口功能。
+    private IAttribute<Object> fungi     = null;                                   //附加属性
     /*------------------------------------------------------------------------------*/
     /**获取用于存放临时定义属性的附加的属性集，该对象化名为‘真菌’与attribute不同的是，
      * 真菌只存在于个体对象上而且这个对象是供应系统内部使用，而attribute是程序对外提供的属性扩展接口。*/
-    public IAttribute getFungi() {
+    public IAttribute<Object> getFungi() {
         if (this.fungi == null) {
-            this.fungi = new AttBase();
+            this.fungi = new AttBase<Object>();
             log.debug("create fungi OK!");
         }
         return this.fungi;
     };
     /**获取定义的属性对象，并且以{@link IAttribute}接口形式返回。*/
-    protected IAttribute getAttribute() {
+    protected IAttribute<Object> getAttribute() {
         if (this.attribute == null) {
-            this.attribute = new AttBase();
+            this.attribute = new AttBase<Object>();
             log.debug("create attribute OK!");
         }
         return this.attribute;

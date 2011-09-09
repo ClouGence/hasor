@@ -33,10 +33,10 @@ public class TagSubmit_ACBuilder extends TagSubmit_NS implements XmlElementHook 
         this.config = config;
     }
     /**开始标签解析expression属性。*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         String refBean = event.getAttributeValue("refBean");
         if (refBean != null)
             config.build.addActionContexBuilder(new ACBuilder_ForXml(refBean));
     }
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {}
 }

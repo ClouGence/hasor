@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.util;
+package org.more.util.config;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Vector;
@@ -24,17 +24,17 @@ import org.more.util.attribute.IAttribute;
  * @version : 2010-7-27
  * @author ’‘”¿¥∫(zyc@byshell.org)
  */
-public class AttributeConfigBridge implements IAttribute, Config<Object> {
-    private static final long serialVersionUID = 5340008420422363045L;
-    private Object            context          = null;
-    private IAttribute        attMap           = null;
+public class AttributeConfigBridge implements IAttribute<Object>, Config<Object> {
+    private static final long  serialVersionUID = 5340008420422363045L;
+    private Object             context          = null;
+    private IAttribute<Object> attMap           = null;
     public AttributeConfigBridge() {
-        this.attMap = new AttBase();
+        this.attMap = new AttBase<Object>();
     }
-    public AttributeConfigBridge(IAttribute attMap) {
+    public AttributeConfigBridge(IAttribute<Object> attMap) {
         this.attMap = attMap;
     }
-    public AttributeConfigBridge(IAttribute attMap, Object context) {
+    public AttributeConfigBridge(IAttribute<Object> attMap, Object context) {
         this.attMap = attMap;
         this.context = context;
     }

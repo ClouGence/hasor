@@ -35,7 +35,7 @@ public class DeepCopy extends Copy {
      * @return 如果拷贝成功则返回true否则返回fale。
      * @throws Exception  如果拷贝中发生异常
      */
-    public boolean copyTo(PropertyReaderWrite toObject) {
+    public boolean copyTo(PropertyReaderWrite<Object> toObject) {
         Object obj = this.get();
         if (obj == null) {
             toObject.set(null);

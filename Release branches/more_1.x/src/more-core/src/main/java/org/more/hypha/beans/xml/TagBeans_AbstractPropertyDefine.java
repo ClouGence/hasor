@@ -39,7 +39,7 @@ public abstract class TagBeans_AbstractPropertyDefine<T extends AbstractProperty
         return PropertyDefine;
     }
     /**创建定义类型对象。*/
-    protected abstract T createDefine(XmlStackDecorator context);
+    protected abstract T createDefine(XmlStackDecorator<Object> context);
     /**定义通用的属性。*/
     public enum PropertyKey {
         value, boolLazyInit, classType, description
@@ -52,13 +52,13 @@ public abstract class TagBeans_AbstractPropertyDefine<T extends AbstractProperty
         return propertys;
     }
     /**开始解析属性标签。*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         //1.解析属性
         super.beginElement(context, xpath, event);
         //2.处理特殊属性classType。
         AbstractPropertyDefine pdefine = this.getDefine(context);
         //3.将元素定义的所有属性都添加到att中。
-        AttBase att = new AttBase();
+        AttBase<String> att = new AttBase<String>();
         for (int i = 0; i < event.getAttributeCount(); i++)
             att.put(event.getAttributeName(i).getLocalPart(), event.getAttributeValue(i));
         //4.负责解析属性值元信息，当具有value、date、bigText、ref、file、directory、uri、el等标签对属性进行描述时会自动覆盖这里的解析。

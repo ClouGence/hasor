@@ -77,7 +77,7 @@ public class JsonObject extends JsonMixed {
     public String toString(Object bean) {
         StringBuffer json = new StringBuffer("{");
         if (bean instanceof IAttribute) {
-            IAttribute att = (IAttribute) bean;
+            IAttribute<Object> att = (IAttribute<Object>) bean;
             String[] ns = att.getAttributeNames();
             for (int i = 0; i < ns.length; i++)
                 this.appendObject(json, ns[i], att.getAttribute(ns[i]));

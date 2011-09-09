@@ -34,7 +34,7 @@ public abstract class TagBeans_AbstractDefine<T> extends TagBeans_NS implements 
     /**如果isPutAttribute方法返回true则设置到{@link XmlStackDecorator}属性范围中的属性名由该方法确定。*/
     protected abstract String getAttributeName();
     /**创建定义类型对象。*/
-    protected abstract T createDefine(XmlStackDecorator context);
+    protected abstract T createDefine(XmlStackDecorator<Object> context);
     /**
      * 每个标签在beginElement开始执行时都会创建一个自己的堆，当遇到endElement方法调用时候会销毁这个堆。
      * 该方法的返回值可以确定是否跨越{@link XmlStackDecorator}的当前堆去上一层中寻找{@link T},默认值是true。
@@ -43,7 +43,7 @@ public abstract class TagBeans_AbstractDefine<T> extends TagBeans_NS implements 
         return true;
     };
     /**获取一个定义，如果没有就调用createDefine方法创建它。*/
-    protected final T getDefine(XmlStackDecorator context) {
+    protected final T getDefine(XmlStackDecorator<Object> context) {
         String defineName = this.getAttributeName();
         boolean spanStack = this.isSpanStack();
         T define = null;
@@ -61,7 +61,7 @@ public abstract class TagBeans_AbstractDefine<T> extends TagBeans_NS implements 
     /**该方法返回一个Map，Map的key定义的是定义中声明的属性，而Value中保存的是对应的XML元素属性名。*/
     protected abstract Map<Enum<?>, String> getPropertyMappings();
     /**开始解析标签，其中包括创建对应Bean和解析各个属性。*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         context.createStack();
         //1.获取Define
         T define = this.getDefine(context);
@@ -91,7 +91,7 @@ public abstract class TagBeans_AbstractDefine<T> extends TagBeans_NS implements 
         return xmlValue;
     };
     /**结束解析标签。*/
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {
         context.dropStack();
     };
 }

@@ -41,8 +41,7 @@ public abstract class TagBeans_AbstractValueMetaDataDefine<T extends AbstractVal
         return false;
     }
     /**负责将解析出来的ValueMetaData设置到属性中*/
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {
         //1.获取当前元信息描述对象，如果当前值元信息描述是否处于另外一个值信息描述之下还要获取父级值元信息描述对象。
         AbstractValueMetaData currentMetaData = this.getDefine(context);
         AbstractValueMetaData parentMetaData = (AbstractValueMetaData) context.getParentStack().getAttribute(ValueMetaDataDefine);
@@ -50,7 +49,7 @@ public abstract class TagBeans_AbstractValueMetaDataDefine<T extends AbstractVal
         if (parentMetaData != null && parentMetaData instanceof Collection_ValueMetaData)
             //这点代码的意思是如果当前描述信息处于另外一个Collection_ValueMetaData之下那么将这个描述信息添加到这个集合中。
             //Map标签之所以不用注册key和var标签是因为这里，map也是Collection_ValueMetaData一种。
-            ((Collection_ValueMetaData) parentMetaData).addObject(currentMetaData);
+            ((Collection_ValueMetaData<AbstractValueMetaData>) parentMetaData).addObject(currentMetaData);
         else {
             AbstractPropertyDefine pdefine = (AbstractPropertyDefine) context.getAttribute(TagBeans_AbstractPropertyDefine.PropertyDefine);
             if (currentMetaData != null)

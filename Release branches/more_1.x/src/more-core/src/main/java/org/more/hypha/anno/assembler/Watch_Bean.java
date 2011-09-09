@@ -19,7 +19,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
+import java.util.List;
 import org.more.core.classcode.EngineToos;
 import org.more.core.error.LoadException;
 import org.more.core.error.LostException;
@@ -47,6 +47,7 @@ import org.more.hypha.beans.define.PropertyType;
 import org.more.hypha.beans.define.Relation_ValueMetaData;
 import org.more.hypha.beans.define.Simple_ValueMetaData;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.util.BeanUtil;
 import org.more.util.StringConvertUtil;
 import org.more.util.attribute.IAttribute;
 /**
@@ -142,7 +143,7 @@ class Watch_Bean implements KeepWatchParser {
             break;
         }
         //-----------------------------------------------------------------------------------------------------方法
-        ArrayList<Method> methods = EngineToos.findAllMethod(beanType);
+        List<Method> methods = BeanUtil.getMethods(beanType);
         for (Method m : methods) {
             org.more.hypha.anno.define.Method ma = m.getAnnotation(org.more.hypha.anno.define.Method.class);
             if (ma == null)
@@ -151,7 +152,7 @@ class Watch_Bean implements KeepWatchParser {
             MethodDefine mDefine = new MethodDefine();
             mDefine.setCodeName(m.getName());
             mDefine.setName(ma.name());
-            mDefine.setBoolStatic(EngineToos.checkIn(Modifier.STATIC, m.getModifiers()));
+            mDefine.setBoolStatic(BeanUtil.checkModifiers(Modifier.STATIC, m.getModifiers()));
             this.addMetaData(mDefine, ma.metaData());
             //2.参数
             Class<?>[] mparamType = m.getParameterTypes();
@@ -179,7 +180,7 @@ class Watch_Bean implements KeepWatchParser {
             }
         }
         //-----------------------------------------------------------------------------------------------------属性
-        ArrayList<Field> af = EngineToos.findAllField(beanType);
+        List<Field> af = BeanUtil.getFields(beanType);
         for (Field f : af) {
             Property fa = f.getAnnotation(Property.class);
             AutoWrite aw = f.getAnnotation(AutoWrite.class);
@@ -304,7 +305,7 @@ class Watch_Bean implements KeepWatchParser {
         } catch (Exception e) {
             throw new LoadException("无法装载类型" + stringType);
         }
-        if (EngineToos.isBaseType(propxyType) == true)
+        if (BeanUtil.isBaseType(propxyType) == true)
             return getDefaultValueMetaData(stringType);
         //3.创建依赖注入
         Relation_ValueMetaData rvmd = new Relation_ValueMetaData();
@@ -312,7 +313,7 @@ class Watch_Bean implements KeepWatchParser {
         return rvmd;
     }
     /**添加元信息描述*/
-    private void addMetaData(IAttribute att, MetaData[] data) {
+    private void addMetaData(IAttribute<Object> att, MetaData[] data) {
         if (data == null)
             return;
         for (MetaData meta : data)

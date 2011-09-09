@@ -39,7 +39,7 @@ public class Listener_ToBeanApply implements EventListener<XmlLoadedEvent> {
     /**÷¥––Bean”¶”√°£*/
     public void onEvent(final XmlLoadedEvent event, final Sequence sequence) {
         XmlDefineResource config = event.toParams(sequence).xmlDefineResource;
-        IAttribute flash = config.getFlash();
+        IAttribute<Object> flash = config.getFlash();
         AopService aopPlugin = (AopService) flash.getAttribute(AopService_Impl.ServiceName);
         for (String defineName : config.getBeanDefinitionIDs())
             if (StringUtil.matchWild(this.toBeanExp, defineName) == true) {

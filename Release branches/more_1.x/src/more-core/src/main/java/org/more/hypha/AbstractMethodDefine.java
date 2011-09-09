@@ -21,7 +21,7 @@ import org.more.util.attribute.IAttribute;
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AbstractMethodDefine extends IAttribute {
+public interface AbstractMethodDefine extends IAttribute<Object> {
     /**返回方法的代理名称，代理名称是用于索引方法的目的。*/
     public String getName();
     /**返回方法的真实名称，该属性是表示方法的真实方法名。*/

@@ -25,11 +25,11 @@ import java.util.Set;
  * @version 2009-4-29
  * @author 赵永春 (zyc@byshell.org)
  */
-public class AttBase implements IAttribute, Map<String, Object>, Serializable {
+public class AttBase<T> implements IAttribute<T>, Map<String, T>, Serializable {
     //========================================================================================Field
-    private static final long   serialVersionUID = 5330675593787806813L;
+    private static final long serialVersionUID = 5330675593787806813L;
     /** 存放属性的集合 */
-    private Map<String, Object> prop;
+    private Map<String, T>    prop             = null;
     //==================================================================================Constructor
     /**
      * 创建一个基本属性对象，属性的存放使用HashMap作为属性盛装器。基本属性接口实现类。
@@ -37,16 +37,16 @@ public class AttBase implements IAttribute, Map<String, Object>, Serializable {
      * 但是Map接口将不会支持IAttribute接口的所有装饰器接口特性。
      */
     public AttBase() {
-        this.prop = new HashMap<String, Object>();
+        this.prop = new HashMap<String, T>();
     }
     /**
      * 创建一个基本属性对象，存放属性的盛装器可以是任何Map接口子接口及其实现类。如果prop参数提供的是
      * Hashtable则Attribute接口将不可接受空值的属性。如果prop属性为空BaseAtt将默认使用HashMap作为属性盛装器。
      * @param prop 属性盛装器，如果prop属性为空BaseAtt将默认使用HashMap作为属性盛装器。
      */
-    public AttBase(Map<String, Object> prop) {
+    public AttBase(Map<String, T> prop) {
         if (prop == null)
-            this.prop = new HashMap<String, Object>();
+            this.prop = new HashMap<String, T>();
         else
             this.prop = prop;
     }
@@ -55,14 +55,14 @@ public class AttBase implements IAttribute, Map<String, Object>, Serializable {
      * 获取BaseAtt的属性盛装器。
      * @return 返回获取BaseAtt的属性盛装器。
      */
-    protected Map<String, Object> getProp() {
+    protected Map<String, T> getProp() {
         return this.prop;
     }
     /**
      * 设置BaseAtt的属性保存对象，该方法将会替换原有BaseAtt对象内部的属性保存对象。
      * @param prop 设置属性对象保存Map
      */
-    protected void setProp(HashMap<String, Object> prop) {
+    protected void setProp(HashMap<String, T> prop) {
         this.prop = prop;
     }
     public void clearAttribute() {
@@ -71,7 +71,7 @@ public class AttBase implements IAttribute, Map<String, Object>, Serializable {
     public boolean contains(String name) {
         return this.prop.containsKey(name);
     }
-    public Object getAttribute(String name) {
+    public T getAttribute(String name) {
         return this.prop.get(name);
     }
     public String[] getAttributeNames() {
@@ -82,7 +82,7 @@ public class AttBase implements IAttribute, Map<String, Object>, Serializable {
     public void removeAttribute(String name) {
         this.prop.remove(name);
     }
-    public void setAttribute(String name, Object value) {
+    public void setAttribute(String name, T value) {
         this.prop.put(name, value);
     }
     //==================================================================================Map接口实现
@@ -95,10 +95,10 @@ public class AttBase implements IAttribute, Map<String, Object>, Serializable {
     public boolean containsValue(Object value) {
         return this.prop.containsValue(value);
     }
-    public Set<java.util.Map.Entry<String, Object>> entrySet() {
+    public Set<java.util.Map.Entry<String, T>> entrySet() {
         return this.prop.entrySet();
     }
-    public Object get(Object key) {
+    public T get(Object key) {
         return this.prop.get(key);
     }
     public boolean isEmpty() {
@@ -107,22 +107,22 @@ public class AttBase implements IAttribute, Map<String, Object>, Serializable {
     public Set<String> keySet() {
         return this.prop.keySet();
     }
-    public Object put(String key, Object value) {
+    public T put(String key, T value) {
         return this.prop.put(key, value);
     }
-    public void putAll(Map<? extends String, ? extends Object> m) {
+    public void putAll(Map<? extends String, ? extends T> m) {
         this.prop.putAll(m);
     }
-    public Object remove(Object key) {
+    public T remove(Object key) {
         return this.prop.remove(key);
     }
     public int size() {
         return this.prop.size();
     }
-    public Collection<Object> values() {
+    public Collection<T> values() {
         return this.prop.values();
     }
-    public Map<String, Object> toMap() {
+    public Map<String, T> toMap() {
         return this.prop;
     }
 }

@@ -16,12 +16,12 @@
 package org.more.core.copybean.ext;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import org.more.core.copybean.BeanType;
 import org.more.core.copybean.PropertyReaderWrite;
+import org.more.util.BeanUtil;
 /**
  * 对象类读写器。使用该类作为读写器可以实现从对象中拷贝属性或者向对象中拷贝属性。
  * 对象属性读写时只支持标准get/set方法，对于Boolean类型(包装类型)只支持get/set。
@@ -29,20 +29,17 @@ import org.more.core.copybean.PropertyReaderWrite;
  * @version 2009-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ObjectRW extends BeanType {
+public class ObjectRW extends BeanType<Object> {
     /**  */
     private static final long serialVersionUID = -7254414264895159995L;
     public boolean checkObject(Object object) {
         return true;
     }
     protected Iterator<String> iteratorNames(Object obj) {
-        Field[] fields = obj.getClass().getDeclaredFields();
-        ArrayList<String> ns = new ArrayList<String>(0);
-        for (Field n : fields)
-            ns.add(n.getName());
-        return ns.iterator();
+        List<String> fields = BeanUtil.getPropertysAndFields(obj.getClass());
+        return fields.iterator();
     }
-    protected PropertyReaderWrite getPropertyRW(Object obj, String name) {
+    protected PropertyReaderWrite<Object> getPropertyRW(Object obj, String name) {
         ObjectReaderWrite prw = new ObjectReaderWrite();
         prw.setName(name);
         prw.setObject(obj);
@@ -55,7 +52,7 @@ public class ObjectRW extends BeanType {
  * Date : 2009-5-21
  * @author 赵永春
  */
-class ObjectReaderWrite extends PropertyReaderWrite {
+class ObjectReaderWrite extends PropertyReaderWrite<Object> {
     /**  */
     private static final long serialVersionUID = 677145100804681671L;
     private Method            read_method      = null;               //读取方法

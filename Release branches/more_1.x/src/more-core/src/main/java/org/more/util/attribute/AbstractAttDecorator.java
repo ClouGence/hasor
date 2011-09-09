@@ -22,16 +22,16 @@ import java.util.Map;
  * @version 2009-4-30
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractAttDecorator implements IAttribute {
+public abstract class AbstractAttDecorator<T> implements IAttribute<T> {
     //========================================================================================Field
     /** 原始的属性类 */
-    private IAttribute source = null;
+    private IAttribute<T> source = null;
     /**
      * 创建属性装饰器。
      * @param source 要装饰的目标属性对象。
      * @throws NullPointerException 如果企图设置一个空值到装饰器将引发该异常。
      */
-    protected AbstractAttDecorator(IAttribute source) throws NullPointerException {
+    protected AbstractAttDecorator(IAttribute<T> source) throws NullPointerException {
         if (source == null)
             throw new NullPointerException("装饰目标属性对象为空。");
         else
@@ -42,7 +42,7 @@ public abstract class AbstractAttDecorator implements IAttribute {
      * 获得装饰器装饰的原始属性对象。
      * @return 返回装饰器装饰的原始属性对象。
      */
-    public IAttribute getSource() {
+    public IAttribute<T> getSource() {
         return source;
     }
     /**
@@ -50,7 +50,7 @@ public abstract class AbstractAttDecorator implements IAttribute {
      * @param source 准备替换的属性对象。
      * @throws NullPointerException 如果企图设置一个空值到装饰器将引发该异常。
      */
-    public void setSource(IAttribute source) throws NullPointerException {
+    public void setSource(IAttribute<T> source) throws NullPointerException {
         if (source == null)
             throw new NullPointerException("装饰目标属性对象为空。");
         else
@@ -62,7 +62,7 @@ public abstract class AbstractAttDecorator implements IAttribute {
     public boolean contains(String name) {
         return this.source.contains(name);
     }
-    public Object getAttribute(String name) {
+    public T getAttribute(String name) {
         return this.source.getAttribute(name);
     }
     public String[] getAttributeNames() {
@@ -71,10 +71,10 @@ public abstract class AbstractAttDecorator implements IAttribute {
     public void removeAttribute(String name) {
         this.source.removeAttribute(name);
     }
-    public void setAttribute(String name, Object value) {
-        this.source.setAttribute(name, value);
+    public void setAttribute(String name, T define) {
+        this.source.setAttribute(name, define);
     }
-    public Map<String, Object> toMap() {
+    public Map<String, T> toMap() {
         return this.source.toMap();
     }
 }

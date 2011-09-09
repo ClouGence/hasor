@@ -10,6 +10,7 @@
 
 	<b:meta key="rootPath"/><!-- 表示hypha的根路径 -->
 
+
 	<!-- MetaData类型解析器的注册，当发生：InitEvent -->
 	<bc:mdParser-config>
 		<bc:parser mdType="SimpleType" class="org.more.hypha.beans.assembler.parser.SimpleType_MetaData_Parser" />

@@ -30,7 +30,7 @@ public class TagBeans_Value extends TagBeans_AbstractValueMetaDataDefine<Simple_
     public TagBeans_Value(XmlDefineResource configuration) {
         super(configuration);
     }
-    protected Simple_ValueMetaData createDefine(XmlStackDecorator context) {
+    protected Simple_ValueMetaData createDefine(XmlStackDecorator<Object> context) {
         return new Simple_ValueMetaData();
     }
     /**定义属性。*/
@@ -44,7 +44,7 @@ public class TagBeans_Value extends TagBeans_AbstractValueMetaDataDefine<Simple_
         return propertys;
     }
     /**开始标签*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         super.beginElement(context, xpath, event);
         //1.检查空的类型值
         Simple_ValueMetaData newMEDATA = this.getDefine(context);

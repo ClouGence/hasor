@@ -39,20 +39,20 @@ public abstract class TagAop_AbstractPointcut<T extends AbstractPointcutDefine> 
     /**创建一个{@link AbstractPointcutDefine}定义对象。*/
     protected abstract T createDefine();
     /**获取创建的{@link AbstractPointcutDefine}定义对象。*/
-    protected final T getDefine(XmlStackDecorator context) {
+    protected final T getDefine(XmlStackDecorator<?> context) {
         return (T) context.getAttribute(PointcutDefine);
     };
     /**开始处理标签*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         context.createStack();
         T define = this.createDefine();
         String name = event.getAttributeValue("name");
         if (name != null)
             define.setName(name);// or this.putAttribute(define, "name", name);
-        context.setAttribute(PointcutDefine, define);
+        context.setAttribute(PointcutDefine, (Object) define);
     }
     /**结束处理标签*/
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {
         T define = this.getDefine(context);
         boolean isReg = false;
         //1.Pointcut出现在Group下面

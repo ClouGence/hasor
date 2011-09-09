@@ -27,5 +27,5 @@ public interface XmlAttributeHook extends XmlParserHook {
      * @param xpath 当前标签在所定义的命名空间中的xpath。
      * @param event 事件。
      */
-    public void attribute(XmlStackDecorator context, String xpath, AttributeEvent event);
+    public void attribute(XmlStackDecorator<Object> context, String xpath, AttributeEvent event);
 }

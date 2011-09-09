@@ -24,10 +24,10 @@ import org.more.util.attribute.IAttribute;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class EO_Params implements ELObject {
-    private final String KEY   = "GETBEAN_PARAM";
-    private IAttribute   flash = null;
+    private final String       KEY   = "GETBEAN_PARAM";
+    private IAttribute<Object> flash = null;
     //---------------------------------------------------------------
-    public void init(ApplicationContext context, IAttribute flash) {
+    public void init(ApplicationContext context, IAttribute<Object> flash) {
         this.flash = flash;
     }
     public boolean isReadOnly() {

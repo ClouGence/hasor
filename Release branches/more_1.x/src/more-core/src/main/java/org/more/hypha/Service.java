@@ -21,8 +21,10 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface Service {
+    /**服务初始化*/
+    public void init(ApplicationContext context, IAttribute<Object> flash);
     /**服务器启动在 inited事件之前调用。*/
-    public void start(ApplicationContext context, IAttribute flash);
+    public void start();
     /**服务停止在*/
-    public void stop(ApplicationContext context, IAttribute flash);
+    public void stop();
 }

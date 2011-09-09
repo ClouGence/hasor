@@ -31,7 +31,7 @@ public class TagBeans_Constructor extends TagBeans_AbstractPropertyDefine<Constr
         super(configuration);
     };
     /**创建{@link ConstructorDefine}对象。*/
-    protected ConstructorDefine createDefine(XmlStackDecorator context) {
+    protected ConstructorDefine createDefine(XmlStackDecorator<Object> context) {
         return new ConstructorDefine();
     };
     /**定义构造方法特有属性。*/
@@ -45,7 +45,7 @@ public class TagBeans_Constructor extends TagBeans_AbstractPropertyDefine<Constr
         return propertys;
     };
     /**将属性注册到Bean中。*/
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {
         ConstructorDefine property = this.getDefine(context);
         AbstractBaseBeanDefine define = (AbstractBaseBeanDefine) context.getAttribute(TagBeans_AbstractBeanDefine.BeanDefine);
         if (property.getIndex() == -1)

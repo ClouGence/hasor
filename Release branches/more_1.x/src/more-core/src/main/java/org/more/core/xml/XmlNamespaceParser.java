@@ -26,5 +26,5 @@ public interface XmlNamespaceParser {
     /**当收到停止解析的信号时，该方法主要用于做解析器的后续处理工作。*/
     public void endAccept();
     /**该方法在beginAccept和endAccept方法调用期间反复调用，每当Level 1发现一个事件都会通知给Level 2，然后由Level 2进行分发。*/
-    public void sendEvent(XmlStackDecorator context, String xpath, XmlStreamEvent event);
+    public void sendEvent(XmlStackDecorator<Object> context, String xpath, XmlStreamEvent event);
 }

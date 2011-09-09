@@ -22,7 +22,7 @@ import org.more.util.attribute.IAttribute;
  */
 public interface ELObject {
     /**初始化{@link ELObject}对象。*/
-    public void init(ApplicationContext context, IAttribute flash);
+    public void init(ApplicationContext context, IAttribute<Object> flash);
     /**如果该对象是不可写的则可以在实现该接口时返回true。*/
     public boolean isReadOnly();
     /**改变这个el对象值（或引用）。*/

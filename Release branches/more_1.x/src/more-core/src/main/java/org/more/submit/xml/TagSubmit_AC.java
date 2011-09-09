@@ -32,10 +32,10 @@ public class TagSubmit_AC extends TagSubmit_NS implements XmlElementHook {
         this.config = config;
     }
     /**开始标签解析expression属性。*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         String ns = event.getAttributeValue("namespace");
         if (ns != null && ns.equals("") == false)
             this.config.acList.add(new B_AC(ns, event.getAttributeValue("refBean")));
     }
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {}
 }

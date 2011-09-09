@@ -16,6 +16,7 @@
 package org.more.remote.client;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.rmi.server.RMIClassLoader;
 import java.rmi.server.RMIClassLoaderSpi;
 import org.more.core.error.FoundException;
 /**
@@ -54,30 +55,16 @@ public class ClientClassLoaderSpi extends RMIClassLoaderSpi implements ShortName
     }
     public Class<?> loadClass(String codebase, String name, ClassLoader defaultLoader) throws MalformedURLException, ClassNotFoundException {
         this.tryLoadClass(name);
-        return sun.rmi.server.LoaderHandler.loadClass(codebase, name, getLoader());
+        return RMIClassLoader.getDefaultProviderInstance().loadClass(codebase, name, getLoader());
     }
     public Class<?> loadProxyClass(String codebase, String[] interfaces, ClassLoader defaultLoader) throws MalformedURLException, ClassNotFoundException {
         this.tryLoadClass(interfaces);
-        return sun.rmi.server.LoaderHandler.loadProxyClass(codebase, interfaces, getLoader());
+        return RMIClassLoader.getDefaultProviderInstance().loadProxyClass(codebase, interfaces, getLoader());
     }
     public ClassLoader getClassLoader(String codebase) throws MalformedURLException {
-        return sun.rmi.server.LoaderHandler.getClassLoader(codebase);
+        return RMIClassLoader.getDefaultProviderInstance().getClassLoader(codebase);
     }
     public String getClassAnnotation(Class<?> cl) {
-        return sun.rmi.server.LoaderHandler.getClassAnnotation(cl);
+        return RMIClassLoader.getDefaultProviderInstance().getClassAnnotation(cl);
     }
-    //    public Class<?> loadClass(String codebase, String name, ClassLoader defaultLoader) throws MalformedURLException, ClassNotFoundException {
-    //        this.tryLoadClass(name);
-    //        return RMIClassLoader.getDefaultProviderInstance().loadClass(codebase, name, getLoader());
-    //    }
-    //    public Class<?> loadProxyClass(String codebase, String[] interfaces, ClassLoader defaultLoader) throws MalformedURLException, ClassNotFoundException {
-    //        this.tryLoadClass(interfaces);
-    //        return RMIClassLoader.getDefaultProviderInstance().loadProxyClass(codebase, interfaces, getLoader());
-    //    }
-    //    public ClassLoader getClassLoader(String codebase) throws MalformedURLException {
-    //        return RMIClassLoader.getDefaultProviderInstance().getClassLoader(codebase);
-    //    }
-    //    public String getClassAnnotation(Class<?> cl) {
-    //        return RMIClassLoader.getDefaultProviderInstance().getClassAnnotation(cl);
-    //    }
 }

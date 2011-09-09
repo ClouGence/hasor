@@ -23,6 +23,7 @@ import org.more.core.error.FormatException;
 import org.more.core.error.ResourceException;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
+import org.more.hypha.commons.AbstractService;
 import org.more.submit.ActionContext;
 import org.more.submit.ActionInvoke;
 import org.more.submit.ActionObject;
@@ -39,13 +40,14 @@ import org.more.util.attribute.SequenceStack;
  * @version : 2011-7-14
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public abstract class AbstractSubmitService extends AttBase implements SubmitService {
+public abstract class AbstractSubmitService extends AbstractService implements SubmitService {
     private static final long                     serialVersionUID = -2210504764611831806L;
     private static Log                            log              = LogFactory.getLog(AbstractSubmitService.class);
     private Map<String, ActionContext>            acList           = new HashMap<String, ActionContext>();
     private String                                defaultNameSpace = null;
-    private Map<String, IAttribute>               scopeMap         = new HashMap<String, IAttribute>();
-    private SequenceStack                         scopeStack       = new SequenceStack();
+    private Map<String, IAttribute<?>>            scopeMap         = new HashMap<String, IAttribute<?>>();
+    private SequenceStack<Object>                 scopeStack       = new SequenceStack<Object>();
+    private IAttribute<Object>                    thisAttribute    = new AttBase<Object>();
     //
     private Map<String, ActionPackage>            packages         = new HashMap<String, ActionPackage>();
     //
@@ -126,18 +128,18 @@ public abstract class AbstractSubmitService extends AttBase implements SubmitSer
     public String getDefaultNameSpaceString() {
         return this.defaultNameSpace;
     };
-    public IAttribute getScope(String scopeName) {
+    public IAttribute<?> getScope(String scopeName) {
         return this.scopeMap.get(scopeName);
     };
-    public void regeditScope(String scopeName, IAttribute scope) {
+    public void regeditScope(String scopeName, IAttribute<?> scope) {
         if (scopeName == null || scope == null) {
             log.warning("regeditScope error , scopeName or scope is null.");
             return;
         }
-        this.scopeStack.putStack(scope);
+        this.scopeStack.putStack((IAttribute<Object>) scope);
         this.scopeMap.put(scopeName, scope);
     };
-    public IAttribute getScopeStack() {
+    public IAttribute<?> getScopeStack() {
         return this.scopeStack;
     };
     public void addResult(String name, ResultProcess<Result<?>> process) {
@@ -156,6 +158,28 @@ public abstract class AbstractSubmitService extends AttBase implements SubmitSer
             rp = this.defaultResult;
         return rp;
     };
+    /*-----------------------------------*/
+    public boolean contains(String name) {
+        return this.thisAttribute.contains(name);
+    }
+    public void setAttribute(String name, Object value) {
+        this.thisAttribute.setAttribute(name, value);
+    }
+    public Object getAttribute(String name) {
+        return this.thisAttribute.getAttribute(name);
+    }
+    public void removeAttribute(String name) {
+        this.thisAttribute.removeAttribute(name);
+    }
+    public String[] getAttributeNames() {
+        return this.thisAttribute.getAttributeNames();
+    }
+    public void clearAttribute() {
+        this.thisAttribute.clearAttribute();
+    }
+    public Map<String, Object> toMap() {
+        return this.thisAttribute.toMap();
+    }
     /*-----------------------------------*/
     protected abstract ActionObject createActionObject(URI uri, ActionInvoke invoke);
     protected abstract ActionStack createStack(URI uri, ActionStack onStack, Map<String, ?> params);

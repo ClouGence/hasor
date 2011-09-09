@@ -19,14 +19,14 @@ package org.more.util.attribute;
  * @version 2009-5-1
  * @author 赵永春 (zyc@byshell.org)
  */
-public class NoEmptyAttDecorator extends AbstractAttDecorator {
+public class NoEmptyAttDecorator<T> extends AbstractAttDecorator<T> {
     //==================================================================================Constructor
     /**
      * 创建属性装饰器，该装饰器的目的是限制属性值必须不能为空。
      * @param source 要装饰的目标属性对象。
      * @throws NullPointerException 如果企图设置一个空值到装饰器将引发该异常。
      */
-    public NoEmptyAttDecorator(IAttribute source) throws NullPointerException {
+    public NoEmptyAttDecorator(IAttribute<T> source) throws NullPointerException {
         super(source);
     }
     //==========================================================================================Job
@@ -36,7 +36,7 @@ public class NoEmptyAttDecorator extends AbstractAttDecorator {
      * @param value 要保存的属性值。
      * @throws NullPointerException 发生该异常表示企图设置一个空属性值到属性集合中。
      */
-    public void setAttribute(String name, Object value) throws NullPointerException {
+    public void setAttribute(String name, T value) throws NullPointerException {
         if (value == null)
             throw new NullPointerException("不允许空属性值。");
         else

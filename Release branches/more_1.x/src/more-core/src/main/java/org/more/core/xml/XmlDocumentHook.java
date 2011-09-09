@@ -23,7 +23,7 @@ import org.more.core.xml.stream.StartDocumentEvent;
  */
 public interface XmlDocumentHook extends XmlParserHook {
     /**当遇到文档开始时。context参数是共用的环境对象。*/
-    public void beginDocument(XmlStackDecorator context, StartDocumentEvent event);
+    public void beginDocument(XmlStackDecorator<Object> context, StartDocumentEvent event);
     /**当遇到文档结束时。context参数是共用的环境对象。*/
-    public void endDocument(XmlStackDecorator context, EndDocumentEvent event);
+    public void endDocument(XmlStackDecorator<Object> context, EndDocumentEvent event);
 }

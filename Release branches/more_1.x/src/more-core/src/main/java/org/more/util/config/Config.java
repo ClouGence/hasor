@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.util;
+package org.more.util.config;
 import java.util.Enumeration;
 /**
  * 配置接口,该接口作为工具接口而存在以便于在整个more中各个组建可以重复使用它

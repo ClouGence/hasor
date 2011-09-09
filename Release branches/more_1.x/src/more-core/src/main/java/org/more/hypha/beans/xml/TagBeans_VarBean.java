@@ -31,7 +31,7 @@ public class TagBeans_VarBean extends TagBeans_AbstractBeanDefine<VariableBeanDe
         super(configuration);
     }
     /**创建VariableBeanDefine类型对象。*/
-    protected VariableBeanDefine createDefine(XmlStackDecorator context) {
+    protected VariableBeanDefine createDefine(XmlStackDecorator<Object> context) {
         return new VariableBeanDefine();
     }
     /**定义值Bean的属性*/
@@ -45,7 +45,7 @@ public class TagBeans_VarBean extends TagBeans_AbstractBeanDefine<VariableBeanDe
         propertys.put(PropertyKey.type, "type");
         return propertys;
     }
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {
         VariableBeanDefine define = this.getDefine(context);
         if (define.getType() == null)
             throw new FormatException("解析VariableBeanDefine类型Bean错误，无法解析其类型。");

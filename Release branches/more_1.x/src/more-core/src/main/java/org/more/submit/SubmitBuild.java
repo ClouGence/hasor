@@ -20,34 +20,29 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.more.util.AttributeConfigBridge;
-import org.more.util.Config;
-import org.more.util.ResourcesUtil;
+import org.more.core.global.Global;
 import org.more.util.attribute.AttBase;
-import org.more.util.attribute.IAttribute;
+import org.more.util.config.AttributeConfigBridge;
+import org.more.util.config.Config;
 /**
  * submit利用build模式创建{@link SubmitService}。
  * @version : 2011-7-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class SubmitBuild extends AttBase {
+public class SubmitBuild extends AttBase<Object> {
     //========================================================================================Field
     private static final long                     serialVersionUID = 2922698361958221493L;
     private Object                                context          = null;
     private String                                defaultNS        = null;
     private List<ActionContextBuilder>            config_acb       = new ArrayList<ActionContextBuilder>();
     private Map<String, ResultProcess<Result<?>>> config_res       = new HashMap<String, ResultProcess<Result<?>>>();
-    private IAttribute                            config           = null;
+    private Global                                config           = null;
     public static final String                    ConfigPath       = "META-INF/resource/submit/config.propertys";
     //==========================================================================================Job
-    public SubmitBuild() {
-        try {
-            this.config = ResourcesUtil.getPropertys(ConfigPath);
-        } catch (IOException e) {
-            this.config = new AttBase();
-        }
+    public SubmitBuild() throws IOException {
+        this.config = Global.createForFile(ConfigPath);
     };
-    public SubmitBuild(Object context) {
+    public SubmitBuild(Object context) throws IOException {
         this();
         this.context = context;
     };
@@ -71,7 +66,7 @@ public class SubmitBuild extends AttBase {
         if (serviceImplType != null)
             service = (SubmitService) Thread.currentThread().getContextClassLoader().loadClass(serviceImplType.toString()).newInstance();
         else {
-            String serviceImpl = (String) this.config.getAttribute("ServiceImpl");
+            String serviceImpl = (String) this.config.getString("ServiceImpl");
             if (serviceImpl == null || serviceImpl.equals(""))
                 serviceImpl = "org.more.submit.impl.DefaultSubmitService";
             service = (SubmitService) Thread.currentThread().getContextClassLoader().loadClass(serviceImpl).newInstance();

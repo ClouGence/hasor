@@ -40,11 +40,11 @@ public class XmlParserKitManager implements XmlAccept {
     /**注册的命名空间解析工具集*/
     private HashMap<String, ArrayList<XmlNamespaceParser>> regeditXmlParserKit = new HashMap<String, ArrayList<XmlNamespaceParser>>();
     /**活动的前缀与命名空间映射*/
-    private XmlStackDecorator                              activateStack       = null;
+    private XmlStackDecorator<Object>                      activateStack       = null;
     /**一个在分发xml事件流过程中一致存在的环境。*/
-    private XmlStackDecorator                              context             = new XmlStackDecorator(new AttBase());
+    private XmlStackDecorator<Object>                      context             = new XmlStackDecorator<Object>(new AttBase<Object>());
     /**获取环境对象，的{@link IAttribute}属性接口。*/
-    public IAttribute getContext() {
+    public IAttribute<Object> getContext() {
         return context.getSource();
     }
     /**
@@ -82,7 +82,7 @@ public class XmlParserKitManager implements XmlAccept {
     }
     /**开始{@link XmlAccept}接口的调用，该方法主要用于重置状态。*/
     public void beginAccept() {
-        this.activateStack = new XmlStackDecorator(new AttBase());
+        this.activateStack = new XmlStackDecorator<Object>(new AttBase<Object>());
         for (ArrayList<XmlNamespaceParser> alList : this.regeditXmlParserKit.values())
             for (XmlNamespaceParser xnp : alList)
                 xnp.beginAccept();

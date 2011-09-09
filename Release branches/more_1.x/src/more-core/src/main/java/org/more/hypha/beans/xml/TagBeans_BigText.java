@@ -34,7 +34,7 @@ public class TagBeans_BigText extends TagBeans_AbstractValueMetaDataDefine<BigTe
         super(configuration);
     }
     /**创建{@link BigText_ValueMetaData}对象。*/
-    protected BigText_ValueMetaData createDefine(XmlStackDecorator context) {
+    protected BigText_ValueMetaData createDefine(XmlStackDecorator<Object> context) {
         return new BigText_ValueMetaData();
     }
     /**返回null。*/
@@ -42,7 +42,7 @@ public class TagBeans_BigText extends TagBeans_AbstractValueMetaDataDefine<BigTe
         return null;
     }
     /**结束解析标签，该方法用于写入配置的CDATA信息。*/
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {
         BigText_ValueMetaData define = this.getDefine(context);
         if (define.getTextValue() == null) {
             StringBuffer scriptText = (StringBuffer) context.getAttribute(BigText);
@@ -52,7 +52,7 @@ public class TagBeans_BigText extends TagBeans_AbstractValueMetaDataDefine<BigTe
         super.endElement(context, xpath, event);
     }
     /**内容CDATA解析。*/
-    public void text(XmlStackDecorator context, String xpath, TextEvent event) {
+    public void text(XmlStackDecorator<Object> context, String xpath, TextEvent event) {
         if (event.isCommentEvent() == true)
             return;
         StringBuffer scriptText = (StringBuffer) context.getAttribute(BigText);

@@ -31,7 +31,7 @@ public class TagBeans_Package extends TagBeans_NS implements XmlElementHook {
     public TagBeans_Package(XmlDefineResource configuration) {
         super(configuration);
     }
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         String parentPackage = (String) context.getAttribute(LogicPackage);
         //
         context.createStack();
@@ -42,7 +42,7 @@ public class TagBeans_Package extends TagBeans_NS implements XmlElementHook {
             logicPackage = parentPackage + "." + logicPackage;
         context.setAttribute(LogicPackage, logicPackage);
     }
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {
         context.dropStack();
     }
 }

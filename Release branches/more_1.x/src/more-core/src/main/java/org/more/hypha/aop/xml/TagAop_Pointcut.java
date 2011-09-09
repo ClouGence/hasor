@@ -33,7 +33,7 @@ public class TagAop_Pointcut extends TagAop_AbstractPointcut<AopPointcutDefine> 
         return new AopPointcutDefine();
     }
     /**开始标签解析expression属性。*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         super.beginElement(context, xpath, event);
         AopPointcutDefine define = this.getDefine(context);
         define.setExpression(event.getAttributeValue("expression"));

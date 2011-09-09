@@ -28,7 +28,7 @@ public class MetaDataUtil {
     private static final String FungiCacheName = "$FungiCacheName_Type";
     public static Class<?> pass(Collection_ValueMetaData<?> vmd, ApplicationContext context, Log log, Class<?> defaultCollection) throws ClassNotFoundException {
         //1.确定类型
-        IAttribute fungiAtt = vmd.getFungi();
+        IAttribute<Object> fungiAtt = vmd.getFungi();
         Class<?> listType = (Class<?>) vmd.getFungi().getAttribute(FungiCacheName);
         if (listType == null) {
             String listTypeString = vmd.getCollectionType();
@@ -47,7 +47,7 @@ public class MetaDataUtil {
     };
     /**从缓存中获取解析的类型。 */
     public static Class<?> getTypeForFungi(AbstractDefine<?> data, Log log) {
-        IAttribute fungiAtt = data.getFungi();
+        IAttribute<Object> fungiAtt = data.getFungi();
         if (fungiAtt.contains(FungiCacheName) == true) {
             Class<?> setType = (Class<?>) fungiAtt.getAttribute(FungiCacheName);
             log.debug("return from fungi cache ,cacheName is {%0}, type = {%1}", FungiCacheName, setType);
@@ -58,7 +58,7 @@ public class MetaDataUtil {
     };
     /**缓存类型*/
     public static void putTypeToFungi(AbstractDefine<?> data, Class<?> type, Log log) {
-        IAttribute fungiAtt = data.getFungi();
+        IAttribute<Object> fungiAtt = data.getFungi();
         log.debug("cache BeanBuilder = {%0}, type = {%1}.", data, type);
         fungiAtt.setAttribute(FungiCacheName, type);
     };

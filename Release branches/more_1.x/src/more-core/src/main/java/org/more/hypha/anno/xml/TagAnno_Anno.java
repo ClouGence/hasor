@@ -36,7 +36,7 @@ public class TagAnno_Anno extends Tag_Abstract implements XmlElementHook {
         super(configuration);
         this.annoService = annoService;
     };
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         String packageText = event.getAttributeValue("package");
         String enable = event.getAttributeValue("enable");
         if (StringConvertUtil.parseBoolean(enable, true) == true) {
@@ -45,5 +45,5 @@ public class TagAnno_Anno extends Tag_Abstract implements XmlElementHook {
             this.getDefineResource().getEventManager().addEventListener(e, annoListener);
         }
     };
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {};
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {};
 };

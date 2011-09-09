@@ -27,19 +27,18 @@ import java.util.HashMap;
 import java.util.List;
 import org.more.core.asm.ClassReader;
 import org.more.core.asm.ClassWriter;
-import org.more.hypha.ApplicationContext;
 import org.more.hypha.DefineResource;
 import org.more.hypha.anno.AnnoService;
 import org.more.hypha.anno.KeepWatchParser;
 import org.more.hypha.anno.xml.EV_Class;
+import org.more.hypha.commons.AbstractService;
 import org.more.hypha.context.xml.XmlDefineResource;
-import org.more.util.attribute.IAttribute;
 /**
- * 注解插件接口{@link AnnoService_Impl}的实现类。
+ * 注解插件接口{@link AnnoService}的实现类。
  * @version 2010-10-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public class AnnoService_Impl implements AnnoService {
+public class AnnoService_Impl extends AbstractService implements AnnoService {
     /**要注册的插件名*/
     private XmlDefineResource                        config      = null;
     private ArrayList<String>                        parserTypes = new ArrayList<String>();
@@ -49,8 +48,8 @@ public class AnnoService_Impl implements AnnoService {
         this.config = config;
     }
     //
-    public void start(ApplicationContext context, IAttribute flash) {};
-    public void stop(ApplicationContext context, IAttribute flash) {};
+    public void start() {};
+    public void stop() {};
     //
     public XmlDefineResource getTarget() {
         return this.config;

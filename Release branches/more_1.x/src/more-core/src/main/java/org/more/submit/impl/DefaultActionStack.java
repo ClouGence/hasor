@@ -27,9 +27,9 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春(zyc@byshell.org)
  */
 public class DefaultActionStack implements ActionStack {
-    private AttBase       attBase = new AttBase();
-    private ActionStack   parent  = null;
-    private SubmitService service = null;
+    private AttBase<Object> attBase = new AttBase<Object>();
+    private ActionStack     parent  = null;
+    private SubmitService   service = null;
     //
     /*--------*/
     public DefaultActionStack(URI uri, ActionStack parent, SubmitService service) {
@@ -92,8 +92,8 @@ public class DefaultActionStack implements ActionStack {
         this.attBase.putAll(params);
     };
     /*--------*/
-    protected IAttribute getScopeAttribute(String scope) {
-        return this.service.getScope(scope);
+    protected IAttribute<Object> getScopeAttribute(String scope) {
+        return (IAttribute<Object>) this.service.getScope(scope);
     }
     /**在指定参数作用域中查找一个属性是否存在，scope参数由ScopeEnum接口的常量定义。*/
     public boolean contains(String name, String scope) {
@@ -121,7 +121,7 @@ public class DefaultActionStack implements ActionStack {
     };
     /**将Map中所有参数输出到指定的参数作用域中。*/
     public void putALL(Map<String, ?> params, String scope) {
-        IAttribute att = this.getScopeAttribute(scope);
+        IAttribute<Object> att = this.getScopeAttribute(scope);
         for (String key : params.keySet())
             att.setAttribute(key, params.get(key));
     };

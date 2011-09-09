@@ -56,7 +56,7 @@ public class XmlDefineResource extends ArrayDefineResource {
         public RegisterPropxy(RegisterBean registerBean) {
             this.registerBean = registerBean;
         };
-        public void initRegister(String namespaceURL, XmlDefineResource resource) throws LoadException {
+        public void initRegister(String namespaceURL, XmlDefineResource resource) throws LoadException, IOException {
             if (this.registerObject == null)
                 try {
                     String classname = this.registerBean.registerClass;

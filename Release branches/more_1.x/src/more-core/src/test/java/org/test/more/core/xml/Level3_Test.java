@@ -41,18 +41,18 @@ public class Level3_Test {
         XmlParserKit kit = new XmlParserKit();
         //-----------------------
         kit.regeditHook("/", new XmlDocumentHook() {
-            public void endDocument(XmlStackDecorator context, EndDocumentEvent event) {
+            public void endDocument(XmlStackDecorator<Object> context, EndDocumentEvent event) {
                 System.out.println(event);
             }
-            public void beginDocument(XmlStackDecorator context, StartDocumentEvent event) {
+            public void beginDocument(XmlStackDecorator<Object> context, StartDocumentEvent event) {
                 System.out.println(event);
             }
         });
         kit.regeditHook("/beans/bean", new XmlElementHook() {
-            public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
+            public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {
                 System.out.println(event.getName());
             }
-            public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+            public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
                 int index = event.getAttributeCount();
                 if (index != 0)
                     System.out.println(event.getAttributeName(index - 1) + "=" + event.getAttributeValue(index - 1));

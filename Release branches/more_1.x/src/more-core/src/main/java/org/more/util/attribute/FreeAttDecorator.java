@@ -20,14 +20,14 @@ import org.more.core.error.DefineException;
  * @version 2009-12-3
  * @author 赵永春 (zyc@byshell.org)
  */
-public class FreeAttDecorator extends ExtAttDecorator {
+public class FreeAttDecorator<T> extends ExtAttDecorator<T> {
     //==================================================================================Constructor
     /**
      * 构造一个自由的属性装饰器，该装饰器实现了IFreeAttribute接口的功能。
      * 该方法将采用默认策略IExtAttribute.ReplaceMode_Replace。
      * @param source 要装饰的目标属性对象。
      */
-    public FreeAttDecorator(IAttribute source) {
+    public FreeAttDecorator(IAttribute<T> source) {
         super(source);
     }
     /**
@@ -37,7 +37,7 @@ public class FreeAttDecorator extends ExtAttDecorator {
      *                   如果使用了一个不存在的值进行定义则会引发NoDefinitionException异常。
      * @throws DefineException 定义了一个不存在的属性策略。
      */
-    public FreeAttDecorator(IAttribute source, int replaceMode) throws DefineException {
+    public FreeAttDecorator(IAttribute<T> source, int replaceMode) throws DefineException {
         super(source);
         this.setReplacMode(replaceMode);
     }

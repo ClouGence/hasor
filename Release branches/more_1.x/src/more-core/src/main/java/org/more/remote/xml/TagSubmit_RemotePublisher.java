@@ -33,7 +33,7 @@ public class TagSubmit_RemotePublisher extends TagRemote_NS implements XmlElemen
         super(configuration, service);
     }
     /**开始标签解析属性。*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         //1.取值
         String name = event.getAttributeValue("name");
         String pathRoot = event.getAttributeValue("path");
@@ -49,5 +49,5 @@ public class TagSubmit_RemotePublisher extends TagRemote_NS implements XmlElemen
         //4.注册代理
         this.getService().addPublisher(_name, publisher);
     }
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {}
 }

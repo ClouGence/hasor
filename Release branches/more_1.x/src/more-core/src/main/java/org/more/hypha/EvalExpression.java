@@ -20,7 +20,7 @@ import org.more.util.attribute.IAttribute;
  * Date : 2011-4-13
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface EvalExpression extends IAttribute {
+public interface EvalExpression extends IAttribute<Object> {
     /**获取这个el表达式的字符串形式。*/
     public String getExpressionString();
     /**执行el表达式，参数表示了在执行el表达式时候使用的this是谁。 */

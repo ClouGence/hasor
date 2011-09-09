@@ -24,7 +24,7 @@ import org.more.util.attribute.IAttribute;
  */
 public class EO_Context implements ELObject {
     private ApplicationContext context = null;
-    public void init(ApplicationContext context, IAttribute flash) {
+    public void init(ApplicationContext context, IAttribute<Object> flash) {
         this.context = context;
     };
     public boolean isReadOnly() {

@@ -31,12 +31,12 @@ public class TagBeans_DefaultPackage extends TagBeans_NS implements XmlElementHo
     public TagBeans_DefaultPackage(XmlDefineResource configuration) {
         super(configuration);
     }
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         String logicPackage = event.getAttributeValue("package");
         if (logicPackage == null || logicPackage.equals("") == true)
             DefaultPackage = null;
         else
             DefaultPackage = logicPackage;
     }
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {}
 }

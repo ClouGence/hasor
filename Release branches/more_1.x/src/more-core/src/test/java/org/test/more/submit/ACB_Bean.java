@@ -22,7 +22,7 @@ import org.more.submit.ActionContext;
 import org.more.submit.ActionContextBuilder;
 import org.more.submit.ActionInvoke;
 import org.more.submit.acs.simple.AC_Simple;
-import org.more.util.Config;
+import org.more.util.config.Config;
 /**
  * 
  * @version : 2011-7-14

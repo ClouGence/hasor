@@ -43,7 +43,7 @@ public abstract class TagBeans_AbstractCollection<T extends Collection_ValueMeta
     /**当集合类型没有设置属性时可以通过该方法来获取默认类型。*/
     protected abstract Class<?> getDefaultCollectionType();
     /**开始执行标签*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         super.beginElement(context, xpath, event);
         Collection_ValueMetaData<?> valueMetaData = this.getDefine(context);
         String arrayTypeString = event.getAttributeValue("collectionType");

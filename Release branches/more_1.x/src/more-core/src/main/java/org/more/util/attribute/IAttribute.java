@@ -20,7 +20,7 @@ import java.util.Map;
  * @version 2009-4-28
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface IAttribute {
+public interface IAttribute<T> {
     /**
      * 测试某个属性是否存在。
      * @param name 被测试的属性名
@@ -32,13 +32,13 @@ public interface IAttribute {
      * @param name 要保存的属性名。
      * @param value 要保存的属性值。
      */
-    public void setAttribute(String name, Object value);
+    public void setAttribute(String name, T value);
     /**
      * 从属性集合中获得一个属性，如果企图获得的属性不存在返回null
      * @param name 要获得的属性名。
      * @return 返回属性值如果不存在属性则返回null。
      */
-    public Object getAttribute(String name);
+    public T getAttribute(String name);
     /**
      * 从现有属性集合中删除指定属性。
      * @param name 要删除的属性名称。
@@ -49,5 +49,5 @@ public interface IAttribute {
     /** 清空所有属性。 */
     public void clearAttribute();
     /**将{@link IAttribute}转换为Map形式。*/
-    public Map<String, Object> toMap();
+    public Map<String, T> toMap();
 }

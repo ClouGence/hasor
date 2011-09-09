@@ -35,7 +35,7 @@ public class TagSubmit_Remote extends TagRemote_NS implements XmlElementHook {
         super(configuration, service);
     }
     /**开始标签解析expression属性。*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         //1.取值
         String name = event.getAttributeValue("name");
         String faces = event.getAttributeValue("faces");
@@ -53,5 +53,5 @@ public class TagSubmit_Remote extends TagRemote_NS implements XmlElementHook {
         RmiBeanCreater rmiBean = new XmlRmiBeanCreater(_faces, _refBean, this.getService());//创建配置文件代理
         publisher.pushRemote(_name, rmiBean);
     }
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {}
 }

@@ -32,7 +32,7 @@ public class TagBeans_Param extends TagBeans_AbstractPropertyDefine<ParamDefine>
         super(configuration);
     }
     /**创建{@link PropertyDefine}对象。*/
-    protected ParamDefine createDefine(XmlStackDecorator context) {
+    protected ParamDefine createDefine(XmlStackDecorator<Object> context) {
         return new ParamDefine();
     }
     /**定义属性标签特有的属性*/
@@ -46,7 +46,7 @@ public class TagBeans_Param extends TagBeans_AbstractPropertyDefine<ParamDefine>
         return propertys;
     }
     /**将属性注册到Bean中。*/
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {
         ParamDefine param = this.getDefine(context);
         MethodDefine define = (MethodDefine) context.getAttribute(TagBeans_Method.MethodDefine);
         define.addParam(param);

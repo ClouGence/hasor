@@ -21,6 +21,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
@@ -49,7 +50,7 @@ public final class CopyBeanUtil implements Serializable, Cloneable {
     private transient static CopyBeanUtil utilPrototype    = null;
     //=======================================================================================
     /** Bean拷贝工具所支持的Bean类型。 */
-    private LinkedList<BeanType>          typeList         = new LinkedList<BeanType>();
+    private LinkedList<BeanType<Object>>  typeList         = new LinkedList<BeanType<Object>>();
     /** Bean拷贝工具所支持的Bean类型。 */
     private Map<String, Copy>             copyList         = new Hashtable<String, Copy>();
     /** Bean在拷贝过程中所支持的类型转换。 */
@@ -61,19 +62,21 @@ public final class CopyBeanUtil implements Serializable, Cloneable {
     /** 该代码快用于初始化，默认Bean类型。 */
     static {
         CopyBeanUtil.log.debug("BeginInit CopyBeanUtil file = config.properties");
+        CopyBeanUtil utilPrototype = new CopyBeanUtil();
+        Properties pro_1 = new Properties();
         try {
-            CopyBeanUtil utilPrototype = new CopyBeanUtil();
             //获得存放支持Bean类型的属性文件
             //config.properties属性文件属性排列顺序是最上面的在列表最后面
             List<URL> urls = ResourcesUtil.getResources("META-INF/resource/copybean/config.properties");
-            Properties pro_1 = new Properties();
             for (URL url : urls) {
                 InputStream is = url.openStream();
                 pro_1.load(new AutoCloseInputStream(is));//装载属性文件
                 is.close();
             }
-            //
-            for (Object n : pro_1.keySet()) {
+        } catch (Exception e) {}
+        //
+        for (Object n : pro_1.keySet())
+            try {
                 String key = n.toString();
                 String value = pro_1.get(n).toString();
                 CopyBeanUtil.log.debug("see config.properties key=" + key + " value=" + value);
@@ -85,8 +88,8 @@ public final class CopyBeanUtil implements Serializable, Cloneable {
                     utilPrototype.defaultCopy.setConvertType(utilPrototype.convertType);//注入类型转换支持集合
                 } else if (Pattern.matches(" *rw\\..*", key) == true) {
                     //初始化typeList
-                    Class<?> cls = Class.forName(value);
-                    BeanType obj = (BeanType) cls.newInstance();
+                    Class<BeanType<Object>> cls = (Class<BeanType<Object>>) Class.forName(value);
+                    BeanType<Object> obj = cls.newInstance();
                     utilPrototype.typeList.addLast(obj);
                 } else if (Pattern.matches(" *copy\\..*", key) == true) {
                     Matcher ma = Pattern.compile(" *copy\\.(.*)").matcher(key);
@@ -102,19 +105,18 @@ public final class CopyBeanUtil implements Serializable, Cloneable {
                     ConvertType obj = (ConvertType) cls.newInstance();
                     utilPrototype.convertType.addLast(obj);
                 }
+            } catch (Exception e) {
+                CopyBeanUtil.log.debug("InitError config.properties message=" + e.getMessage());
             }
-            //设置默认拷贝对象
-            CopyBeanUtil.utilPrototype = utilPrototype;
-            CopyBeanUtil.log.debug("EndInit CopyBeanUtil file = config.properties");
-        } catch (Exception e) {
-            CopyBeanUtil.log.debug("InitError config.properties message=" + e.getMessage());
-        }
+        //设置默认拷贝对象
+        CopyBeanUtil.utilPrototype = utilPrototype;
+        CopyBeanUtil.log.debug("EndInit CopyBeanUtil file = config.properties");
     }
     /**
      * 注册一个新的Bean拷贝所支持的类型，新注册的Bean类型要比系统内置的优先级高。通过该方法注册的类型将在以后所有CopyBeanUtil实例中得到支持。
      * @param type 新的Bean类型
      */
-    public static void regeditStaticType(BeanType type) {
+    public static void regeditStaticType(BeanType<Object> type) {
         CopyBeanUtil.utilPrototype.typeList.addFirst(type);
     }
     /**
@@ -146,54 +148,50 @@ public final class CopyBeanUtil implements Serializable, Cloneable {
      * @param mode 拷贝模式，该参数相当于调用CopyBeanUtil对象的changeDefaultCopy方法。
      * @return 返回成功拷贝几个属性，如果返回-1表示拷贝不被支持，如果返回0表示没有属性被拷贝。
      */
-    public int copy(Object object, Object to, String... mode) {
-        if (object == null || to == null)
+    public int copy(Object from, Object to, String... mode) {
+        if (from == null || to == null)
             return -1;
-        //
         if (mode != null && mode.length >= 1)
             this.changeDefaultCopy(mode[0]);
-        //
         //来源Bean属性集合引用
-        Map<String, PropertyReaderWrite> o_1 = null;
-        BeanType o_2_type = null;
-        //将拷贝和被拷贝的对象中获取出其需要拷贝的属性集合
-        CopyBeanUtil.log.debug("copybean obj=" + object + " to=" + to + " begin find BeanType");
-        for (BeanType type : this.typeList) {
-            //检查来源Bean是否被支持
-            if (type.checkObject(object) == true)
-                if (o_1 == null)
-                    o_1 = type.getPropertys(object);//from
-            //检查拷贝目标Bean是否被支持
+        BeanType<Object> fromSupport = null;
+        BeanType<Object> toSupport = null;
+        for (BeanType<Object> type : this.typeList) {
+            //确定from
+            if (type.checkObject(from) == true)
+                if (fromSupport == null)
+                    fromSupport = type;//from
+            //确定to
             if (type.checkObject(to) == true)
-                if (o_2_type == null)
-                    o_2_type = type; //to
-            if (o_1 != null && o_2_type != null)
+                if (toSupport == null)
+                    toSupport = type;//to
+            if (fromSupport != null && toSupport != null)
                 break;
         }
-        CopyBeanUtil.log.debug("copybean end find BeanType objType=" + o_1);
-        //如果属性集合中有空则返回-1
-        if (o_1 == null)
-            return -1;
-        //
-        CopyBeanUtil.log.debug("copybean begin copy ...");
+        //确定拷贝的属性名
+        Map<String, PropertyReaderWrite<Object>> fromProps = fromSupport.getPropertys(from);
+        Map<String, PropertyReaderWrite<Object>> toProps = toSupport.getPropertys(to);
+        ArrayList<String> names1 = new ArrayList<String>(fromProps.keySet());
+        ArrayList<String> names2 = new ArrayList<String>(toProps.keySet());
+        names1.retainAll(names2);
+        //确定拷贝方式
+        Copy copy = null;;
+        try {
+            copy = (Copy) this.getDefaultCopy().clone();
+        } catch (CloneNotSupportedException e) {
+            copy = this.defaultCopy;
+        }
+        copy.setCopyBeanUtil(this);
+        //进行拷贝
         int i = 0;
-        for (String key : o_1.keySet()) {
-            PropertyReaderWrite prw = o_2_type.getPropertyRW(to, key);
-            Copy copy_1 = null;
-            try {
-                copy_1 = (Copy) this.defaultCopy.clone();
-            } catch (CloneNotSupportedException e) {
-                continue;
-            }
-            copy_1.setCopyBeanUtil(this);
-            copy_1.setRw(o_1.get(key));
-            //
-            if (prw.canWrite() == true && copy_1.canReader() == true) {
-                copy_1.copyTo(prw);
+        for (String name : names1) {
+            PropertyReaderWrite<Object> read = fromProps.get(name);
+            PropertyReaderWrite<Object> write = toProps.get(name);
+            if (write.canWrite() == true && read.canReader() == true) {
+                copy.setRw(read);
+                copy.copyTo(write);
                 i++;
-                CopyBeanUtil.log.debug("copybean copy name=" + key);
-            } else
-                CopyBeanUtil.log.debug("copybean copy Ignore name=" + key);
+            }
         }
         CopyBeanUtil.log.debug("copybean end copy copy count =" + i);
         return i;
@@ -202,7 +200,7 @@ public final class CopyBeanUtil implements Serializable, Cloneable {
      * 注册一个新的Bean拷贝所支持的类型，新注册的Bean类型要比系统内置的优先级高。通过该方法注册的类型只有当前实例中得到支持。
      * @param type 新的Bean类型
      */
-    public void regeditType(BeanType type) {
+    public void regeditType(BeanType<Object> type) {
         this.typeList.addFirst(type);
     }
     /**

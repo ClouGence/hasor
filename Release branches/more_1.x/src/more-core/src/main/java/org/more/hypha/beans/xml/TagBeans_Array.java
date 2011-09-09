@@ -28,7 +28,7 @@ public class TagBeans_Array extends TagBeans_AbstractCollection<Array_ValueMetaD
         super(configuration);
     }
     /**创建{@link Array_ValueMetaData}对象。*/
-    protected Array_ValueMetaData createDefine(XmlStackDecorator context) {
+    protected Array_ValueMetaData createDefine(XmlStackDecorator<Object> context) {
         return new Array_ValueMetaData();
     }
     /**返回默认集合数据类型*/

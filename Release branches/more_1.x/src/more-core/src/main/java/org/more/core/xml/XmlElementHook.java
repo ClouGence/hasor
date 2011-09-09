@@ -28,12 +28,12 @@ public interface XmlElementHook extends XmlParserHook {
      * @param xpath 当前标签在所定义的命名空间中的xpath。
      * @param event 事件。
      */
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event);
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event);
     /**
      * 当遇到一个结束标签时。
      * @param context 环境上下文。
      * @param xpath 当前标签在所定义的命名空间中的xpath。
      * @param event 事件。
      */
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event);
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event);
 }

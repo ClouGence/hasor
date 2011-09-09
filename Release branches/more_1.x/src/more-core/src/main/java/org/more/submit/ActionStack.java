@@ -20,7 +20,7 @@ import org.more.util.attribute.IAttribute;
  * @version : 2011-7-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ActionStack extends IAttribute {
+public interface ActionStack extends IAttribute<Object> {
     /**获取当前堆栈的父堆栈。*/
     public ActionStack getParent();
     /**获取{@link SubmitService}接口对象。*/

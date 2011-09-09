@@ -26,17 +26,16 @@ import org.more.hypha.context.xml.XmlDefineResource;
  * @version : 2011-4-22
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@SuppressWarnings("unchecked")
 public class BeansConfig_Parser extends BeansConfig_NS implements XmlElementHook {
     public BeansConfig_Parser(XmlDefineResource configuration) {
         super(configuration);
     }
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         List<B_MDParser> btList = (List<B_MDParser>) context.getAttribute(BeansConfig_MDParserConfig.MDParserConfigList);
         B_MDParser bt = new B_MDParser();
         bt.setMdType(event.getAttributeValue("mdType"));
         bt.setClassName(event.getAttributeValue("class"));
         btList.add(bt);
     }
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {}
 }

@@ -22,16 +22,16 @@ import java.util.Collections;
  * @version 2010-9-11
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ParentDecorator extends AbstractAttDecorator {
+public class ParentDecorator<T> extends AbstractAttDecorator<T> {
     //========================================================================================Field
-    private IAttribute parent = null;
+    private IAttribute<T> parent = null;
     //==================================================================================Constructor
     /**
      * 创建一个ParentDecorator类型装饰器，使用该方法创建的装饰器其父属性集为空。
      * @param source 指定装饰器要装饰的属性集。
      * @throws NullPointerException 如果source参数为空则会引发该异常。
      */
-    public ParentDecorator(IAttribute source) throws NullPointerException {
+    public ParentDecorator(IAttribute<T> source) throws NullPointerException {
         super(source);
     }
     /**
@@ -40,17 +40,17 @@ public class ParentDecorator extends AbstractAttDecorator {
      * @param parent 所使用的父属性集。
      * @throws NullPointerException 如果source参数为空则会引发该异常。
      */
-    public ParentDecorator(IAttribute source, IAttribute parent) throws NullPointerException {
+    public ParentDecorator(IAttribute<T> source, IAttribute<T> parent) throws NullPointerException {
         super(source);
         this.parent = parent;
     }
     //==========================================================================================JOB
     /**获取当前属性集中的父属性集，如果使用的是ParentDecorator(IAttribute)构造方法创建的ParentDecorator对象则分支方法返回值与getSource()方法返回值一样。*/
-    public IAttribute getParent() {
+    public IAttribute<T> getParent() {
         return this.parent;
     }
     /**替换父属性集。*/
-    protected void setParent(IAttribute parent) {
+    protected void setParent(IAttribute<T> parent) {
         this.parent = parent;
     }
     /**首先从当前属性集中寻找，如果找到返回true。否则到父属性集中去找并且返回查找结果。*/
@@ -60,8 +60,8 @@ public class ParentDecorator extends AbstractAttDecorator {
         return true;
     }
     /**首先从当前属性集中寻找，如果找到返回这个对象。否则到父属性集中去找并且返回查找结果。*/
-    public Object getAttribute(String name) {
-        Object obj = super.getAttribute(name);
+    public T getAttribute(String name) {
+        T obj = super.getAttribute(name);
         if (obj == null)
             return this.parent.getAttribute(name);
         return obj;

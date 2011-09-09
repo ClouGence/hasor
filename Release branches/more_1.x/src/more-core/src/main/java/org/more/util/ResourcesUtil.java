@@ -52,10 +52,10 @@ public abstract class ResourcesUtil {
         return Thread.currentThread().getContextClassLoader();
     }
     /**合成所有属性文件的配置信息到一个{@link IAttribute}接口中。*/
-    public static IAttribute getPropertys(String[] resourcePaths) throws IOException {
-        IAttribute iatt = null;
+    public static IAttribute<String> getPropertys(String[] resourcePaths) throws IOException {
+        IAttribute<String> iatt = null;
         for (String str : resourcePaths) {
-            IAttribute att = getPropertys(str);
+            IAttribute<String> att = getPropertys(str);
             if (iatt == null) {
                 iatt = att;
                 continue;
@@ -66,10 +66,10 @@ public abstract class ResourcesUtil {
         return iatt;
     }
     /**读取一个属性文件，并且以{@link IAttribute}接口的形式返回。*/
-    public static IAttribute getPropertys(String resourcePath) throws IOException {
+    public static IAttribute<String> getPropertys(String resourcePath) throws IOException {
         Properties prop = new Properties();
         prop.load(getResourceAsStream(resourcePath));
-        return new TransformToAttribute(prop);
+        return new TransformToAttribute<String>(prop);
     }
     /**获取classpath中可能存在的资源。*/
     public static URL getResource(String resourcePath) throws IOException {

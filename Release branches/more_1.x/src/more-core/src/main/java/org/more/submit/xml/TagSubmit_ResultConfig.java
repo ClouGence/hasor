@@ -33,7 +33,7 @@ public class TagSubmit_ResultConfig extends TagSubmit_NS implements XmlElementHo
         //this.config = config;
     };
     /**开始标签解析expression属性。*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         String key = event.getAttributeValue("key");
         String value = event.getAttributeValue("value");
         //
@@ -42,5 +42,5 @@ public class TagSubmit_ResultConfig extends TagSubmit_NS implements XmlElementHo
         ResultProcess<?> rp = (ResultProcess<?>) context.getAttribute(TagSubmit_Result.ResultProcess_Name);
         rp.addParam(key, value);
     };
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {};
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {};
 };

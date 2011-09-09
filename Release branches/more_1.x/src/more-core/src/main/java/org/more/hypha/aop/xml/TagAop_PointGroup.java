@@ -35,7 +35,7 @@ public class TagAop_PointGroup extends TagAop_AbstractPointcut<AopPointcutGroupD
         return new AopPointcutGroupDefine();
     }
     /**开始标签，用于解析rel属性。*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         super.beginElement(context, xpath, event);
         AopPointcutGroupDefine define = this.getDefine(context);
         String rel = event.getAttributeValue("rel");

@@ -77,7 +77,7 @@ public class XmlParserKit implements XmlNamespaceParser {
         return this.hooks.get(xpath2);
     };
     /** */
-    public void sendEvent(XmlStackDecorator context, String xpath, XmlStreamEvent event) {
+    public void sendEvent(XmlStackDecorator<Object> context, String xpath, XmlStreamEvent event) {
         ArrayList<XmlParserHook> hooks = this.getHooks(xpath);
         if (hooks == null)
             return;

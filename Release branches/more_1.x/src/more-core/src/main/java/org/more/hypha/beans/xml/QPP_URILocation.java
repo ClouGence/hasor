@@ -27,8 +27,8 @@ import org.more.util.attribute.IAttribute;
  */
 public class QPP_URILocation implements QPP {
     private static Log log = LogFactory.getLog(QPP_URILocation.class);
-    public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
-        String value = (String) attribute.getAttribute("uriLocation");
+    public ValueMetaData parser(IAttribute<String> attribute, AbstractPropertyDefine property) {
+        String value = attribute.getAttribute("uriLocation");
         if (value == null)
             return null;
         //2.½øÐÐ½âÎö

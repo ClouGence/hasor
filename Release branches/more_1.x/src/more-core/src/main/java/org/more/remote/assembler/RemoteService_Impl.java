@@ -20,22 +20,20 @@ import java.util.HashMap;
 import java.util.Map;
 import org.more.core.error.InitializationException;
 import org.more.hypha.ApplicationContext;
+import org.more.hypha.commons.AbstractService;
 import org.more.remote.Publisher;
 import org.more.remote.RemoteService;
 import org.more.util.ResourcesUtil;
-import org.more.util.attribute.IAttribute;
 /**
  * 接口{@link RemoteService}的实现类。
  * @version : 2011-8-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class RemoteService_Impl implements RemoteService {
-    private ApplicationContext     appContext   = null;
+public class RemoteService_Impl extends AbstractService implements RemoteService {
     private Map<String, Publisher> publisherMap = new HashMap<String, Publisher>();
     private boolean                enable       = false;
     /*---------------------------------------------------------------------------*/
-    public void start(ApplicationContext context, IAttribute flash) {
-        this.appContext = context;
+    public void start() {
         if (enable == false)
             return;
         //
@@ -49,7 +47,7 @@ public class RemoteService_Impl implements RemoteService {
             throw new InitializationException(e);
         }
     };
-    public void stop(ApplicationContext context, IAttribute flash) {
+    public void stop() {
         for (Publisher pub : this.publisherMap.values())
             try {
                 pub.stop(this);
@@ -69,6 +67,6 @@ public class RemoteService_Impl implements RemoteService {
         return this.enable;
     };
     public ApplicationContext getApplicationContext() {
-        return this.appContext;
+        return this.getContext();
     };
 };

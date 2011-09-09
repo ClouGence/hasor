@@ -30,7 +30,7 @@ public class TagBeans_Ref extends TagBeans_AbstractValueMetaDataDefine<Relation_
         super(configuration);
     }
     /**创建{@link Relation_ValueMetaData}对象。*/
-    protected Relation_ValueMetaData createDefine(XmlStackDecorator context) {
+    protected Relation_ValueMetaData createDefine(XmlStackDecorator<Object> context) {
         return new Relation_ValueMetaData();
     }
     /**定义模板属性。*/

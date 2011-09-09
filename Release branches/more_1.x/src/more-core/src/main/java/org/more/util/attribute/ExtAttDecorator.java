@@ -25,7 +25,7 @@ import org.more.core.error.RepeateException;
  * @version 2009-4-30
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ExtAttDecorator extends AbstractAttDecorator {
+public class ExtAttDecorator<T> extends AbstractAttDecorator<T> {
     //========================================================================================Field
     /** 当替换模式(replacMode属性)处于ReplaceMode_Replace时，如果出现重名属性则替换原有属性。该替换原则是默认替换原则。 */
     public static final int ReplaceMode_Replace  = 0;
@@ -44,7 +44,7 @@ public class ExtAttDecorator extends AbstractAttDecorator {
      * 该方法将采用默认策略IExtAttribute.ReplaceMode_Replace。
      * @param source 要装饰的目标属性对象。
      */
-    public ExtAttDecorator(IAttribute source) {
+    public ExtAttDecorator(IAttribute<T> source) {
         super(source);
     }
     /**
@@ -54,7 +54,7 @@ public class ExtAttDecorator extends AbstractAttDecorator {
      * @param replaceMode 要更改的替换策略策略值，该值必须是ReplaceMode所定义的。
      * @throws DefineException 定义了一个不存在的属性策略。
      */
-    public ExtAttDecorator(IAttribute source, int replaceMode) throws DefineException {
+    public ExtAttDecorator(IAttribute<T> source, int replaceMode) throws DefineException {
         super(source);
         this.setReplacMode(replaceMode);
     }
@@ -86,7 +86,7 @@ public class ExtAttDecorator extends AbstractAttDecorator {
      * @param value 要保存的属性值
      * @throws RepeateException 当替换模式(replaceMode属性)处于ReplaceMode_Throw时，并且添加了重名属性。
      */
-    public void setAttribute(String name, Object value) throws RepeateException {
+    public void setAttribute(String name, T value) throws RepeateException {
         if (this.getSource().contains(name) == true)
             switch (this.replaceMode) {
             case ReplaceMode_Original://保留原始属性

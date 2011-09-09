@@ -16,11 +16,9 @@
 package org.more.submit.impl;
 import java.net.URI;
 import java.util.Map;
-import org.more.hypha.ApplicationContext;
 import org.more.submit.ActionInvoke;
 import org.more.submit.ActionStack;
 import org.more.submit.SubmitService;
-import org.more.util.attribute.IAttribute;
 /**
  * 默认{@link SubmitService SubmitService接口实现}，是submit v4.0的服务提提供类。
  * @version : 2011-7-14
@@ -29,8 +27,8 @@ import org.more.util.attribute.IAttribute;
 public class DefaultSubmitService extends AbstractSubmitService {
     private static final long serialVersionUID = 8665931474234786465L;
     //
-    public void start(ApplicationContext context, IAttribute flash) {};
-    public void stop(ApplicationContext context, IAttribute flash) {}
+    public void start() {};
+    public void stop() {}
     //
     protected DefaultActionObject createActionObject(URI uri, ActionInvoke invoke) {
         /*日后的扩展在这里开发*/

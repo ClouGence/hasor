@@ -27,8 +27,8 @@ import org.more.util.attribute.IAttribute;
  */
 public class QPP_Directory implements QPP {
     private static Log log = LogFactory.getLog(QPP_Directory.class);
-    public ValueMetaData parser(IAttribute attribute, AbstractPropertyDefine property) {
-        String value = (String) attribute.getAttribute("directory");
+    public ValueMetaData parser(IAttribute<String> attribute, AbstractPropertyDefine property) {
+        String value = attribute.getAttribute("directory");
         if (value == null)
             return null;
         //2.½øÐÐ½âÎö

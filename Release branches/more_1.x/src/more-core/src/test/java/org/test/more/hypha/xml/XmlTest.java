@@ -15,7 +15,6 @@
  */
 package org.test.more.hypha.xml;
 import org.junit.Test;
-import org.more.hypha.aop.AopService;
 import org.more.hypha.context.app.DefaultApplicationContext;
 import org.more.hypha.context.xml.XmlDefineResource;
 /**

@@ -25,7 +25,7 @@ import org.more.util.attribute.AttBase;
  * @version 2009-5-15
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public abstract class Task extends AttBase implements Runnable, Serializable {
+public abstract class Task extends AttBase<Object> implements Runnable, Serializable {
     /**  */
     private static final long serialVersionUID = -5330043409377797416L;
     /**  ‰≥ˆ»’÷æ */

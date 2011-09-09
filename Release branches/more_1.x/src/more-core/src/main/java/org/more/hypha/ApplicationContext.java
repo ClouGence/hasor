@@ -24,7 +24,7 @@ import org.more.util.attribute.IAttribute;
 * @version 2011-2-25
 * @author 赵永春 (zyc@byshell.org)
 */
-public interface ApplicationContext extends IAttribute {
+public interface ApplicationContext extends IAttribute<Object> {
     /**获取应用上下文ID值。*/
     public String getID();
     /**

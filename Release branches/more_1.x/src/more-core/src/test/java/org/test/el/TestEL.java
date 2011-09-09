@@ -29,7 +29,8 @@ import org.more.util.attribute.AttBase;
 public class TestEL {
     @Test
     public void test() throws OgnlException {
-        Map m = new AttBase() {
+        Map<String, Object> m = new AttBase<Object>() {
+            private static final long serialVersionUID = 5241838809363473602L;
             public Object get(Object key) {
                 return super.get(key);
             }

@@ -26,7 +26,7 @@ import org.more.util.attribute.TransformToMap;
  */
 public class EO_Attribute implements ELObject {
     private ApplicationContext context = null;
-    public void init(ApplicationContext context, IAttribute flash) {
+    public void init(ApplicationContext context, IAttribute<Object> flash) {
         this.context = context;
     };
     public boolean isReadOnly() {
@@ -39,7 +39,7 @@ public class EO_Attribute implements ELObject {
         return new ContextObject(this.context);//将Context转换为map对象
     };
 };
-class ContextObject extends TransformToMap {
+class ContextObject extends TransformToMap<Object> {
     public ContextObject(ApplicationContext context) {
         super(context);
     }

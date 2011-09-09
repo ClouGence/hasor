@@ -29,7 +29,7 @@ public class TagBeans_Set extends TagBeans_AbstractCollection<Set_ValueMetaData>
         super(configuration);
     }
     /**创建{@link Set_ValueMetaData}对象*/
-    protected Set_ValueMetaData createDefine(XmlStackDecorator context) {
+    protected Set_ValueMetaData createDefine(XmlStackDecorator<Object> context) {
         return new Set_ValueMetaData();
     }
     protected Class<?> getDefaultCollectionType() {

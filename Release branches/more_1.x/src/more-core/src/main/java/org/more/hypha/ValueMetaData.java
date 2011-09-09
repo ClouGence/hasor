@@ -21,7 +21,7 @@ import org.more.util.attribute.IAttribute;
 * @version 2010-9-17
 * @author 赵永春 (zyc@byshell.org)
 */
-public interface ValueMetaData extends IAttribute {
+public interface ValueMetaData extends IAttribute<Object> {
     /**返回这个属性的属性类型，该类型用于描述属性的类型特征。*/
     public String getMetaDataType();
     /**获取该元信息所属的属性定义。*/

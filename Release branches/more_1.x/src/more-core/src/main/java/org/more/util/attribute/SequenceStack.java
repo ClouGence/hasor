@@ -23,26 +23,26 @@ import java.util.Map;
  * @version : 2011-7-22
  * @author 赵永春 (zyc@byshell.org)
  */
-public class SequenceStack implements IAttribute {
-    private LinkedList<IAttribute> attList = new LinkedList<IAttribute>();
+public class SequenceStack<T> implements IAttribute<T> {
+    private LinkedList<IAttribute<T>> attList = new LinkedList<IAttribute<T>>();
     //
-    public void putStack(IAttribute scope) {
+    public void putStack(IAttribute<T> scope) {
         if (this.attList.contains(scope) == false)
             this.attList.addFirst(scope);
     };
     public boolean contains(String name) {
-        for (IAttribute iatt : this.attList)
+        for (IAttribute<?> iatt : this.attList)
             return iatt.contains(name);
         return false;
     };
-    public Object getAttribute(String name) {
-        for (IAttribute iatt : this.attList)
+    public T getAttribute(String name) {
+        for (IAttribute<T> iatt : this.attList)
             return iatt.getAttribute(name);
         return null;
     };
     public String[] getAttributeNames() {
         ArrayList<String> as = new ArrayList<String>();
-        for (IAttribute iatt : this.attList)
+        for (IAttribute<?> iatt : this.attList)
             for (String n : iatt.getAttributeNames())
                 if (as.contains(n) == false)
                     as.add(n);
@@ -50,10 +50,10 @@ public class SequenceStack implements IAttribute {
         as.toArray(array);
         return array;
     };
-    public Map<String, Object> toMap() {
-        HashMap<String, Object> as = new HashMap<String, Object>();
-        for (IAttribute iatt : this.attList) {
-            Map<String, Object> map = iatt.toMap();
+    public Map<String, T> toMap() {
+        HashMap<String, T> as = new HashMap<String, T>();
+        for (IAttribute<T> iatt : this.attList) {
+            Map<String, T> map = iatt.toMap();
             for (String n : map.keySet())
                 if (as.containsKey(n) == false)
                     as.put(n, map.get(n));
@@ -69,7 +69,7 @@ public class SequenceStack implements IAttribute {
         this.attList.get(0).removeAttribute(name);
     };
     /**该方法只会对最后一个加入的{@link IAttribute}对象起作用。*/
-    public void setAttribute(String name, Object value) {
+    public void setAttribute(String name, T value) {
         this.attList.get(0).setAttribute(name, value);
     };
 };

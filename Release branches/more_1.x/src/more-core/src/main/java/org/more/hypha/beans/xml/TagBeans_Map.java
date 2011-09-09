@@ -30,7 +30,7 @@ public class TagBeans_Map extends TagBeans_AbstractCollection<Map_ValueMetaData>
         super(configuration);
     }
     /**创建{@link List_ValueMetaData}对象*/
-    protected Map_ValueMetaData createDefine(XmlStackDecorator context) {
+    protected Map_ValueMetaData createDefine(XmlStackDecorator<Object> context) {
         return new Map_ValueMetaData();
     }
     protected Class<?> getDefaultCollectionType() {

@@ -31,11 +31,11 @@ public class Point_Point extends Point_NS implements XmlElementHook {
         super(configuration);
         this.bList = bList;
     }
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         B_Point el = new B_Point();
         el.setName(event.getAttributeValue("name"));
         el.setClassName(event.getAttributeValue("class"));
         this.bList.add(el);
     }
-    public void endElement(XmlStackDecorator context, String xpath, EndElementEvent event) {}
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {}
 }

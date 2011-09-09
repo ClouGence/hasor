@@ -22,10 +22,10 @@ public class Test {
      * @param args
      */
     public static void main(String[] args) {
-        ArrayList aa = new ArrayList();
+        ArrayList<Object> aa = new ArrayList<Object>();
         aa.add("aaa");
         //        aa.add(new User());
-        HashMap a = new HashMap();
+        HashMap<Object, Object> a = new HashMap<Object, Object>();
         //        a.put(false, aa);
         a.put("aa", aa);
         //        a.put(1, aa);

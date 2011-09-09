@@ -21,9 +21,9 @@ import org.more.util.attribute.StackDecorator;
  * @version 2010-9-23
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class XmlStackDecorator extends StackDecorator {
+public class XmlStackDecorator<T> extends StackDecorator<T> {
     private Object context = null;
-    public XmlStackDecorator(IAttribute source) throws NullPointerException {
+    public XmlStackDecorator(IAttribute<T> source) throws NullPointerException {
         super(source);
     }
     /**ªÒ»°Context*/

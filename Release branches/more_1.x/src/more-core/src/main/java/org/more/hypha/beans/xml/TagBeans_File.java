@@ -30,7 +30,7 @@ public class TagBeans_File extends TagBeans_AbstractValueMetaDataDefine<File_Val
         super(configuration);
     }
     /**创建{@link File_ValueMetaData}对象。*/
-    protected File_ValueMetaData createDefine(XmlStackDecorator context) {
+    protected File_ValueMetaData createDefine(XmlStackDecorator<Object> context) {
         File_ValueMetaData metaData = new File_ValueMetaData();
         metaData.setDir(false);
         return metaData;
@@ -44,7 +44,7 @@ public class TagBeans_File extends TagBeans_AbstractValueMetaDataDefine<File_Val
         return null;
     }
     /**解析属性*/
-    public void beginElement(XmlStackDecorator context, String xpath, StartElementEvent event) {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         super.beginElement(context, xpath, event);
         String path = event.getAttributeValue("path");
         if (path == null)

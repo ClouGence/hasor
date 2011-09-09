@@ -22,13 +22,13 @@ import java.io.Serializable;
  * @version 2009-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class PropertyReaderWrite implements Serializable {
+public abstract class PropertyReaderWrite<T> implements Serializable {
     /**  */
     private static final long serialVersionUID = -2738047086048993484L;
     /** 属性名 */
     private String            name             = null;
     /** 存放属性的对象 */
-    private Object            object           = null;
+    private T                 object           = null;
     /**
      * 读取目标属性值，该方法应当由子类实现。
      * @return 返回目标属性值，该方法应当由子类实现。
@@ -71,14 +71,14 @@ public abstract class PropertyReaderWrite implements Serializable {
      * 获得该属性读写器准备操作的属性名。
      * @return 返回该属性读写器准备操作的属性名。
      */
-    public Object getObject() {
+    public T getObject() {
         return object;
     }
     /**
      * 设置存放属性的对象
      * @param object 要设置的存放属性的对象
      */
-    public void setObject(Object object) {
+    public void setObject(T object) {
         this.object = object;
     }
     /**
