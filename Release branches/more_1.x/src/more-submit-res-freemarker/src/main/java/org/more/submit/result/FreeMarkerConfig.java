@@ -23,7 +23,11 @@ import freemarker.template.Template;
  */
 public class FreeMarkerConfig {
     /**≈‰÷√{@link Configuration}*/
-    public void applyConfiguration(Configuration config) {}
+    public Configuration applyConfiguration(Configuration config) {
+        return config;
+    }
     /**≈‰÷√{@link Configuration}*/
-    public void applyTemplate(Template config) {}
+    public Template applyTemplate(Template template) {
+        return template;
+    }
 };

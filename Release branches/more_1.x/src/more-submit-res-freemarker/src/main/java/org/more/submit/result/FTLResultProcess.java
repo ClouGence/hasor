@@ -16,9 +16,11 @@
 package org.more.submit.result;
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Writer;
 import org.more.submit.ActionStack;
 import org.more.submit.ResultProcess;
+import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -28,29 +30,32 @@ import freemarker.template.TemplateException;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class FTLResultProcess implements ResultProcess<FTLResult> {
-    private String           configBean = null;
-    private String           suffix     = null;
-    private String           rootPath   = null;
-    private FreeMarkerConfig config     = null;
+    private String           cfg_configBean = null;
+    private String           cfg_suffix     = null;
+    private String           cfg_rootPath   = null;
+    private FreeMarkerConfig userConfig     = null;
+    private Configuration    freemarkConfig = null;
     //
     public Object invoke(ActionStack onStack, FTLResult res) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, TemplateException {
-        Configuration freemarkConfig = new Configuration();
         //1.创建配置对象
-        if (this.configBean != null) {
-            if (this.config == null) {
-                Class<?> type = Thread.currentThread().getContextClassLoader().loadClass(configBean);
-                this.config = (FreeMarkerConfig) type.newInstance();
-            }
-            this.config.applyConfiguration(freemarkConfig);
+        if (this.freemarkConfig == null)
+            this.freemarkConfig = new Configuration();
+        if (this.cfg_configBean != null && this.userConfig == null) {
+            Class<?> type = Thread.currentThread().getContextClassLoader().loadClass(this.cfg_configBean);
+            this.userConfig = (FreeMarkerConfig) type.newInstance();
+            this.freemarkConfig.setDirectoryForTemplateLoading(new File(this.cfg_rootPath));
+            //this.freemarkConfig.setTemplateLoader(new TLoader()); new TemplateLoader;
+            this.freemarkConfig = this.userConfig.applyConfiguration(this.freemarkConfig);
         }
-        res.applyConfiguration(freemarkConfig);
-        //2.创建配置对象
-        freemarkConfig.setDirectoryForTemplateLoading(new File(this.rootPath));
-        String tempName = res.getTemplatePath() + "." + suffix;
-        Template temp = freemarkConfig.getTemplate(tempName);
-        if (config != null)
-            this.config.applyTemplate(temp);
-        res.applyTemplate(temp);
+        //2.配置对象
+        Configuration config = res.applyConfiguration(this.freemarkConfig);
+        if (config == null)
+            config = this.freemarkConfig;
+        String tempName = res.getTemplatePath() + "." + this.cfg_suffix;
+        Template temp = this.freemarkConfig.getTemplate(tempName);//获取模板
+        if (this.userConfig != null)
+            temp = this.userConfig.applyTemplate(temp);
+        temp = res.applyTemplate(temp);
         //3.执行模板
         Writer writer = res.getWriter();
         if (writer == null)
@@ -62,10 +67,10 @@ public class FTLResultProcess implements ResultProcess<FTLResult> {
         if (value == null || value.equals("") == true)
             return;
         if (key.equals("configBean") == true)
-            this.configBean = value;
+            this.cfg_configBean = value;
         if (key.equals("suffix") == true)
-            this.suffix = value;
+            this.cfg_suffix = value;
         if (key.equals("rootPath") == true)
-            this.rootPath = value;
+            this.cfg_rootPath = value;
     }
 }

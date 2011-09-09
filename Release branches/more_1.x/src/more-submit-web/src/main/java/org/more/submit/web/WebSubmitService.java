@@ -33,7 +33,7 @@ import org.more.util.attribute.IAttribute;
 public class WebSubmitService extends DefaultSubmitService {
     private static final long serialVersionUID = 5453676869981171561L;
     /**当服务启动时候注册一些作用域*/
-    public void start(ApplicationContext context, IAttribute flash) {
+    public void start(ApplicationContext context, IAttribute<Object> flash) {
         //注册顺序决定查找顺序。
         this.regeditScope(ServletContextScope.Name, new ServletContextScope());
         this.regeditScope(HttpSessionScope.Name, new HttpSessionScope());

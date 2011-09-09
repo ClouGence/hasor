@@ -26,7 +26,7 @@ import org.more.util.attribute.TransformToMap;
  * @version 2009-12-28
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class RequestScope implements IAttribute {
+public class RequestScope implements IAttribute<Object> {
     public static final String Name = "Request";
     //
     protected HttpServletRequest getHttpRequest() {
@@ -59,6 +59,6 @@ public class RequestScope implements IAttribute {
             this.removeAttribute(ns[i]);
     };
     public Map<String, Object> toMap() {
-        return new TransformToMap(this);
+        return new TransformToMap<Object>(this);
     };
 };

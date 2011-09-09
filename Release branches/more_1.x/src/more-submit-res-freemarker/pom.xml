@@ -4,16 +4,17 @@
 	<parent>
 		<groupId>org.byshell</groupId>
 		<artifactId>more-parent</artifactId>
-		<version>${project.version}</version>
+		<version>Final</version>
 	</parent>
 	<artifactId>more-submit-res-freemarker</artifactId>
+	<version>1.0.0-a01</version>
 	<packaging>jar</packaging>
 	<!-- -->
 	<dependencies>
 		<dependency>
 			<groupId>org.byshell</groupId>
 			<artifactId>more-core</artifactId>
-			<version>${project.version}</version>
+			<version>[1.0.0-a01,)</version>
 		</dependency>
 		<dependency>
 			<groupId>org.freemarker</groupId>

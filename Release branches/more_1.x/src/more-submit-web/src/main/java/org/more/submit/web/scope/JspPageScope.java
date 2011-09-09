@@ -26,7 +26,7 @@ import org.more.util.attribute.TransformToMap;
  * @version 2009-12-28
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class JspPageScope implements IAttribute {
+public class JspPageScope implements IAttribute<Object> {
     public static final String Name = "JspPage";
     //
     protected PageContext getPageContext() {
@@ -59,6 +59,6 @@ public class JspPageScope implements IAttribute {
             this.removeAttribute(ns[i]);
     };
     public Map<String, Object> toMap() {
-        return new TransformToMap(this);
+        return new TransformToMap<Object>(this);
     };
 };

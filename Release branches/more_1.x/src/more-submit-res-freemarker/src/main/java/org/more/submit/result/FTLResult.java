@@ -19,6 +19,7 @@ import java.util.Map;
 import org.more.submit.impl.DefaultResultImpl;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
+import org.more.util.attribute.ParentDecorator;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 /**
@@ -26,10 +27,11 @@ import freemarker.template.Template;
  * @version : 2011-7-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public class FTLResult extends DefaultResultImpl<Object> implements IAttribute {
-    private Writer  writer       = null;
-    private String  templatePath = null;
-    private AttBase att          = new AttBase();
+public class FTLResult extends DefaultResultImpl<Object> implements IAttribute<Object> {
+    private Writer             writer       = null;
+    private String             templatePath = null;
+    private IAttribute<Object> parentAtt    = null;
+    private AttBase<Object>    thisAtt      = new AttBase<Object>();
     //
     public FTLResult(String templatePath, Writer writer, Object returnValue) {
         super("ftl", returnValue);
@@ -48,33 +50,46 @@ public class FTLResult extends DefaultResultImpl<Object> implements IAttribute {
         return this.templatePath;
     }
     /**除了使用{@link FreeMarkerConfig}类对{@link Configuration}进行配置之外，也可以通过重写该方法进行配置。不过该方法配置会被最后执行。*/
-    public void applyConfiguration(Configuration configuration) {};
+    public Configuration applyConfiguration(Configuration configuration) {
+        return configuration;
+    };
     /**配置{@link Template}以便于提供更高级的功能。*/
-    public void applyTemplate(Template template) {}
+    public Template applyTemplate(Template template) {
+        return template;
+    }
     /**获取模板执行结果输出地址。*/
     public Writer getWriter() {
         return this.writer;
     };
     //
-    public boolean contains(String name) {
-        return this.att.contains(name);
+    /**设置该{@link IAttribute}接口的属性集父级属性集，该类的{@link IAttribute}接口set,remote,clean操作只会针对当前类的属性集，不会影响到父属性集。*/
+    public void setParentAtt(IAttribute<Object> parent) {
+        this.parentAtt = new ParentDecorator<Object>(this.thisAtt, parent);
     };
-    public void setAttribute(String name, Object value) {
-        this.att.setAttribute(name, value);
+    private IAttribute<Object> getParent() {
+        if (this.parentAtt == null)
+            return this.thisAtt;
+        return this.parentAtt;
+    };
+    public boolean contains(String name) {
+        return this.getParent().contains(name);
     };
     public Object getAttribute(String name) {
-        return this.att.getAttribute(name);
-    };
-    public void removeAttribute(String name) {
-        this.att.removeAttribute(name);
+        return this.getParent().getAttribute(name);
     };
     public String[] getAttributeNames() {
-        return this.att.getAttributeNames();
-    };
-    public void clearAttribute() {
-        this.att.clearAttribute();
+        return this.getParent().getAttributeNames();
     };
     public Map<String, Object> toMap() {
-        return this.att.toMap();
-    }
+        return this.getParent().toMap();
+    };
+    public void setAttribute(String name, Object value) {
+        this.thisAtt.setAttribute(name, value);
+    };
+    public void removeAttribute(String name) {
+        this.thisAtt.removeAttribute(name);
+    };
+    public void clearAttribute() {
+        this.thisAtt.clearAttribute();
+    };
 }

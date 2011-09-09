@@ -27,7 +27,7 @@ import org.more.util.attribute.TransformToMap;
  * @version 2009-12-28
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class CookieScope implements IAttribute {
+public class CookieScope implements IAttribute<String> {
     public static final String Name   = "Cookie";
     private int                maxAge = 31536000; //365ÃÏ
     //
@@ -52,7 +52,7 @@ public class CookieScope implements IAttribute {
                 return true;
         return false;
     };
-    public Object getAttribute(String name) {
+    public String getAttribute(String name) {
         Cookie[] cs = this.getHttpRequest().getCookies();
         if (cs != null)
             for (int i = 0; i < cs.length; i++)
@@ -78,9 +78,9 @@ public class CookieScope implements IAttribute {
                 this.getHttpResponse().addCookie(c);
             }
     };
-    public void setAttribute(String name, Object value) {
+    public void setAttribute(String name, String value) {
         //Cookie∑∂Œß
-        Cookie c = new Cookie(name, value.toString());
+        Cookie c = new Cookie(name, value);
         c.setMaxAge(maxAge);//365ÃÏ ß–ß
         this.getHttpResponse().addCookie(c);
     };
@@ -99,7 +99,7 @@ public class CookieScope implements IAttribute {
                 return cs[i];
         return null;
     }
-    public Map<String, Object> toMap() {
-        return new TransformToMap(this);
+    public Map<String, String> toMap() {
+        return new TransformToMap<String>(this);
     }
 };

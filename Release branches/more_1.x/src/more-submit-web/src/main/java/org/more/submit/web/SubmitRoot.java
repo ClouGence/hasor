@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.more.core.json.JsonUtil;
 import org.more.hypha.ApplicationContext;
 import org.more.submit.SubmitService;
-import org.more.util.Config;
+import org.more.util.config.Config;
 /**
  * submit4.0组建对Web部分的支持，该类已经实现了Filter接口并且继承自HttpServlet类。
  * 该web支持的配置只有一个参数buildClass，表示生成器的具体类型。action参数表示请求的协议名

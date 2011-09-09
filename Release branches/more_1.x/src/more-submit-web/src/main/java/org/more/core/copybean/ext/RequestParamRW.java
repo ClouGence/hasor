@@ -23,18 +23,17 @@ import org.more.core.copybean.PropertyReaderWrite;
  * @version 2009-5-15
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@SuppressWarnings("unchecked")
-public class RequestParamRW extends BeanType {
+public class RequestParamRW extends BeanType<ServletRequest> {
     /**  */
     private static final long serialVersionUID = 6914594767047640104L;
     public boolean checkObject(Object object) {
         return object instanceof ServletRequest;
     }
-    protected Iterator<String> iteratorNames(Object obj) {
+    protected Iterator<String> iteratorNames(ServletRequest obj) {
         ServletRequest request = (ServletRequest) obj;
         return request.getParameterMap().keySet().iterator();
     }
-    protected PropertyReaderWrite getPropertyRW(Object obj, String name) {
+    protected PropertyReaderWrite<ServletRequest> getPropertyRW(ServletRequest obj, String name) {
         RequestParamReaderWrite prw = new RequestParamReaderWrite();
         prw.setName(name);
         prw.setObject(obj);
@@ -46,7 +45,7 @@ public class RequestParamRW extends BeanType {
  * Date : 2009-5-21
  * @author ’‘”¿¥∫
  */
-class RequestParamReaderWrite extends PropertyReaderWrite {
+class RequestParamReaderWrite extends PropertyReaderWrite<ServletRequest> {
     /**  */
     private static final long serialVersionUID = 4150884799794227003L;
     public Object get() {
