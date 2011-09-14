@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.test.more.submit;
-import org.more.submit.impl.DefaultSubmitService;
+import org.more.services.submit.impl.DefaultSubmitService;
 /**
  * 
  * @version : 2011-7-15

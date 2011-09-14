@@ -18,13 +18,19 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.net.URI;
 /**
- * 表示该枚举对应的全局属性配置文件是哪个文件资源，该资源目录是在classpath目录下的。注意，该注解只有在修饰枚举时有效。
+ * 表示该枚举对应的全局属性配置文件是哪个文件资源。注意，该注解只有在修饰枚举时有效。
  * @version 2010-10-13
  * @author 赵永春 (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface PropFile {
+    /**表示该枚举对应的全局属性配置文件是一个文件资源。*/
+    public String file() default "";
+    /**表示该枚举对应的全局属性配置文件是一个{@link URI}资源。*/
+    public String uri() default "";
+    /**表示该枚举对应的全局属性配置文件是在classpath目录下的文件资源。*/
     public String value() default "";
-}
+};

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.test.more.rmi;
-import org.more.remote.client.RMI;
+import org.more.services.remote.client.RMI;
 import org.test.more.rmi.service.Faces;
 /**
  * 

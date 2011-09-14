@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.test.more.core.global;
+import java.io.IOException;
 import org.junit.Test;
 import org.more.core.global.Global;
 /**
@@ -23,10 +24,13 @@ import org.more.core.global.Global;
  */
 public class GlobalTest {
     @Test
-    public void test() {
+    public void test() throws IOException {
         Global global = Global.createForFile("org/test/more/core/global/global.properties");
         for (Element e : Element.values())
             System.out.println(global.getObject(e));
     }
 }
-enum Element {}
+enum Element {
+    
+    
+}

@@ -67,10 +67,10 @@
 	<!-- 包含的模块 -->
 	<modules>
 		<module>more-core</module>
-		<module>more-submit-web</module>
+		<module>more-core-web</module>
 		<module>more-submit-ac-guice</module>
 		<module>more-submit-ac-spring</module>
-		<module>more-submit-res-freemarker</module>
+		<module>more-services-freemarker</module>
 		<module>more-webserver</module>
 	</modules>
 	<!-- 全局引用的JAR -->

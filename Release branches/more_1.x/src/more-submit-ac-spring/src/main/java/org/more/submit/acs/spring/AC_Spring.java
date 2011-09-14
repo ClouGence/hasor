@@ -16,9 +16,9 @@
 package org.more.submit.acs.spring;
 import java.lang.reflect.Method;
 import org.more.hypha.anno.define.Bean;
-import org.more.submit.acs.hypha.HBean;
-import org.more.submit.acs.simple.AC_Simple;
-import org.more.submit.impl.AbstractAC;
+import org.more.services.submit.acs.hypha.HBean;
+import org.more.services.submit.acs.simple.AC_Simple;
+import org.more.services.submit.impl.AbstractAC;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;

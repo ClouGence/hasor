@@ -27,7 +27,6 @@ import org.more.core.error.TransformException;
  * @version 2009-4-29
  * @author 赵永春 (zyc@byshell.org)
  */
-@SuppressWarnings({ "unchecked", "rawtypes" })
 public abstract class StringConvertUtil {
     private static final Character DefaultValue_Character = ' ';
     private static final Boolean   DefaultValue_Boolean   = false;
@@ -79,41 +78,41 @@ public abstract class StringConvertUtil {
      * @param defaultValue 可变的参数第一个参数是要转换的类型， 第二个参数是转换到目标类型时如果失败采用的默认值。
      * @return 返回转换之后的值。
      */
-    public static Object changeType(final Object value, final Class<?> toType, final Object... defaultValue) {
+    public static <T> T changeType(final Object value, final Class<T> toType, final Object... defaultValue) {
         if (value == null || toType == null)
             return null;
         String valueString = value.toString();
         Object defaultVar = (defaultValue.length >= 1) ? defaultValue[0] : null;
         // -----------可以直接转换
         if (toType.isAssignableFrom(value.getClass()) == true)
-            return value;
+            return (T) value;
         // -----------String形式
         else if (String.class == toType)
-            return valueString;
+            return (T) valueString;
         else if (StringBuffer.class == toType)
-            return new StringBuffer(valueString);
+            return (T) new StringBuffer(valueString);
         else if (Integer.class == toType || int.class == toType)
-            return StringConvertUtil.parseInt(valueString, (Integer) defaultVar);
+            return (T) StringConvertUtil.parseInt(valueString, (Integer) defaultVar);
         else if (Byte.class == toType || byte.class == toType)
-            return StringConvertUtil.parseByte(valueString, (Byte) defaultVar);
+            return (T) StringConvertUtil.parseByte(valueString, (Byte) defaultVar);
         else if (Character.class == toType || char.class == toType) {
             if (valueString.equals("") == true)
-                return DefaultValue_Character;
-            return Character.valueOf(valueString.charAt(0));
+                return (T) DefaultValue_Character;
+            return (T) Character.valueOf(valueString.charAt(0));
         } else if (Short.class == toType || short.class == toType)
-            return StringConvertUtil.parseShort(valueString, (Short) defaultVar);
+            return (T) StringConvertUtil.parseShort(valueString, (Short) defaultVar);
         else if (Long.class == toType || long.class == toType)
-            return StringConvertUtil.parseLong(valueString, (Long) defaultVar);
+            return (T) StringConvertUtil.parseLong(valueString, (Long) defaultVar);
         else if (Float.class == toType || float.class == toType)
-            return StringConvertUtil.parseFloat(valueString, (Float) defaultVar);
+            return (T) StringConvertUtil.parseFloat(valueString, (Float) defaultVar);
         else if (Double.class == toType || double.class == toType)
-            return StringConvertUtil.parseDouble(valueString, (Double) defaultVar);
+            return (T) StringConvertUtil.parseDouble(valueString, (Double) defaultVar);
         else if (Boolean.class == toType || boolean.class == toType)
-            return StringConvertUtil.parseBoolean(valueString);
+            return (T) StringConvertUtil.parseBoolean(valueString);
         else if (Date.class.isAssignableFrom(toType) == true) {
             if (value instanceof Date == true)
-                return value;
-            return StringConvertUtil.parseDate(valueString);
+                return (T) value;
+            return (T) StringConvertUtil.parseDate(valueString);
         }
         // -----------处理枚举
         else if (Enum.class.isAssignableFrom(toType) == true) {
@@ -121,9 +120,9 @@ public abstract class StringConvertUtil {
             for (Enum<?> item : e.getEnumConstants()) {
                 String enumValue = item.name().toLowerCase();
                 if (enumValue.equals(valueString.toLowerCase()) == true)
-                    return item;
+                    return (T) item;
             }
-            return defaultVar;
+            return (T) defaultVar;
         } else
             throw new TransformException("from [" + value.getClass() + "] to [" + toType + "]不支持的转换类型。");
     }

@@ -46,17 +46,17 @@
 
 
 	<!-- Submit v4.0 集成配置 -->
-	<!-- <submit:config key="org.more.submit.SubmitService" value="org.more.submit.impl.DefaultSubmitService"/> 该配置说明使用的SubmitService实例类，该配置是默认配置 -->
-	<!-- <b:classBean id="$more_submit_default_acBuilder" class="org.more.submit.assembler.DefaultACBuilder"/>-->	<!-- ACB的配置例子 -->
+	<!-- <submit:config key="org.more.submit.SubmitService" value="org.more.services.submit.impl.DefaultSubmitService"/> 该配置说明使用的SubmitService实例类，该配置是默认配置 -->
+	<!-- <b:classBean id="$more_submit_default_acBuilder" class="org.more.services.submit.assembler.DefaultACBuilder"/>-->	<!-- ACB的配置例子 -->
 	<!-- <submit:acBuilder refBean="$more_submit_default_acBuilder"/>-->											<!-- ACB的配置例子 -->
 	<!-- 注册AC，Simple的AC提供者。 -->
 	<b:meta key="simple-loader"/><!-- 一个ClassLoader对象，该对象可以替换 AC_Simple使用的类装载器，默认使用当前线程的类装载器。-->
-	<b:classBean id="$more_submit_simple_ac" class="org.more.submit.acs.simple.AC_Simple">
+	<b:classBean id="$more_submit_simple_ac" class="org.more.services.submit.acs.simple.AC_Simple">
 		<b:property name="classLoader" elText="$att['simple-loader']"/>
 	</b:classBean>
 	<submit:actionContext namespace="simple" refBean="$more_submit_simple_ac"/>	<!-- 注册命名空间simple -->
 	<!-- 注册AC，Hypha的AC提供者。 -->
-	<b:classBean id="$more_submit_hypha_ac" class="org.more.submit.acs.hypha.AC_Hypha">
+	<b:classBean id="$more_submit_hypha_ac" class="org.more.services.submit.acs.hypha.AC_Hypha">
 		<!-- 使用EL将hypha的上下文注入进去。 -->
 		<b:property name="applicationContext" elText="$app"/>
 		<!-- 由于是继承关系因此，可以使用该属性进行注入 -->
@@ -68,13 +68,13 @@
 
 
 	<!-- 将结果集原样return -->
-	<submit:result match="return" class="org.more.submit.result.ReturnResultProcess"/>
+	<submit:result match="return" class="org.more.services.submit.result.ReturnResultProcess"/>
 	<!-- 将结果集转换成json对象 -->
-	<submit:result match="json" class="org.more.submit.result.JsonResultProcess">
+	<submit:result match="json" class="org.more.services.submit.result.JsonResultProcess">
 		<submit:config key="border" value="'"/><!-- 字符串分隔符是单引号还是双引号 -->
 	</submit:result>
 	<!-- 请求其他action -->
-	<submit:result match="submitAction" class="org.more.submit.result.ActionResultProcess"/>
+	<submit:result match="submitAction" class="org.more.services.submit.result.ActionResultProcess"/>
 
 
 	<!-- RMI -->
@@ -83,7 +83,7 @@
 	<!-- remotePublisher，发布者会在rmi中注册一个与pathRoot一致名称的RMI远程对象。属性name等于‘""’的发布者是默认发布者。 -->
 	<r:remotePublisher name="" path="/" bindPort="1099" bindAddress="localhost"/>
 	<!-- 如没有指定forPublisher属性则使用默认发布者，默认的发布者名称为空。 -->
-	<b:classBean id="$more_rmi_DefaultRmiDirectory" class="org.more.remote.objects.HyphaRmiBeanDirectory">
+	<b:classBean id="$more_rmi_DefaultRmiDirectory" class="org.more.services.remote.objects.HyphaRmiBeanDirectory">
 		<b:property name="applicationContext" elText="$app"/>
 	</b:classBean>
 	<r:remoteDirectory refBean="$more_rmi_DefaultRmiDirectory"/>

@@ -17,7 +17,7 @@ package org.test.more.rmi.service;
 import org.more.hypha.anno.define.AutoWrite;
 import org.more.hypha.anno.define.Bean;
 import org.more.hypha.anno.define.Property;
-import org.more.remote.Remote;
+import org.more.services.remote.Remote;
 /**
  * 
  * @version : 2011-8-16

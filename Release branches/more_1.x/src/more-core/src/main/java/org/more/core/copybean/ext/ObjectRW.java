@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 package org.more.core.copybean.ext;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
@@ -55,51 +54,33 @@ public class ObjectRW extends BeanType<Object> {
 class ObjectReaderWrite extends PropertyReaderWrite<Object> {
     /**  */
     private static final long serialVersionUID = 677145100804681671L;
-    private Method            read_method      = null;               //读取方法
-    private Method            write_method     = null;               //写入方法
+    private boolean           canRead          = false;              //读取方法
+    private boolean           canWrite         = false;              //写入方法
+    //
     private Class<?>          type             = null;               //
     /** 获取get/set方法 */
     public void init() {
-        try {
-            PropertyDescriptor pd = new PropertyDescriptor(this.getName(), this.getObject().getClass());
-            this.read_method = pd.getReadMethod();
-            this.write_method = pd.getWriteMethod();
-            this.type = pd.getPropertyType();
-        } catch (Exception e) {
-            this.read_method = null;
-            this.write_method = null;
-            this.type = null;
-        }
+        Field field = BeanUtil.getField(this.getName(), this.getObject().getClass());
+        if (field != null)
+            canRead = canWrite = true;//全部等于true
+        Method readM = BeanUtil.getReadMethod(this.getName(), this.getObject().getClass());
+        if (readM != null && canRead == false)
+            canRead = true;
+        Method writeM = BeanUtil.getWriteMethod(this.getName(), this.getObject().getClass());
+        if (writeM != null && canWrite == false)
+            canWrite = true;
     }
     public Object get() {
-        try {
-            return this.read_method.invoke(this.getObject());
-        } catch (Exception e) {
-            return null;
-        }
+        return BeanUtil.readPropertyOrField(this.getObject(), this.getName());
     }
     public void set(Object value) {
-        if (value == null)
-            return;
-        //
-        try {
-            Object inObject = value;
-            //调用的目标属性是数组
-            if (this.write_method.getParameterTypes()[0].isArray() == true)
-                inObject = new Object[] { value };
-            //调用的目标属性不是数组
-            else if (this.write_method.getParameterTypes()[0].isArray() == false)
-                if (inObject.getClass().isArray() == true)
-                    inObject = Array.get(value, 0);
-            //调用目标写入方法对对象进行拷贝
-            this.write_method.invoke(this.getObject(), inObject);
-        } catch (Exception e) {}
+        BeanUtil.writePropertyOrField(this.getObject(), this.getName(), value);
     }
     public boolean canWrite() {
-        return (this.write_method == null) ? false : true;
+        return this.canWrite;
     }
     public boolean canReader() {
-        return (this.read_method == null) ? false : true;
+        return this.canRead;
     }
     public Class<?> getPropertyClass() {
         return this.type;

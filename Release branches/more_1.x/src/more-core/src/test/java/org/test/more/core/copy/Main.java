@@ -14,17 +14,28 @@
  * limitations under the License.
  */
 package org.test.more.core.copy;
-
 import org.more.core.copybean.CopyBeanUtil;
-
 public class Main {
     /**
      * @param args
      */
     public static void main(String[] args) {
-        // TODO Auto-generated method stub
-        
-        CopyBeanUtil copy=CopyBeanUtil.newInstance();
-        System.out.println(copy);
+        Bean1 b1 = new Bean1();
+        b1.setName("aaaa");
+        System.out.println(b1.getName());
+        //
+        CopyBeanUtil copy = CopyBeanUtil.newInstance();
+        //
+        Bean2 b2 = new Bean2();
+        copy.copy(b1, b2);
+        System.out.println(b2.name);
+        //
+        Bean3 b3 = new Bean3();
+        copy.copy(b1, b3);
+        System.out.println(b3.getName());
+        //
+        Bean4 b4 = new Bean4();
+        copy.copy(b1, b4);
+        System.out.println(b4.name);
     }
 }

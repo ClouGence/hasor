@@ -15,8 +15,8 @@
  */
 package org.test.more.submit;
 import org.more.hypha.anno.define.Bean;
-import org.more.submit.Action;
-import org.more.submit.ActionStack;
+import org.more.services.submit.Action;
+import org.more.services.submit.ActionStack;
 /**
  * 
  * @version : 2011-7-14

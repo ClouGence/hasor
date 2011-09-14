@@ -429,5 +429,5 @@ public abstract class BeanUtil {
         if (value == null)
             value = readField(object, attName);
         return value;
-    };
+    }
 };
