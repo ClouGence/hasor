@@ -16,6 +16,7 @@
 package org.more.services.freemarker.submit;
 import java.io.Writer;
 import java.util.Map;
+import org.more.services.freemarker.TemplateBlock;
 import org.more.services.submit.impl.DefaultResultImpl;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
@@ -27,7 +28,7 @@ import freemarker.template.Template;
  * @version : 2011-7-25
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class FTLResult extends DefaultResultImpl<Object> implements IAttribute<Object> {
+public class FTLResult extends DefaultResultImpl<Object> implements IAttribute<Object>, TemplateBlock {
     private Writer             writer       = null;
     private String             templatePath = null;
     private IAttribute<Object> parentAtt    = null;

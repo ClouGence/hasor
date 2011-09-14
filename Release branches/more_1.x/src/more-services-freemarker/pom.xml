@@ -17,6 +17,18 @@
 			<version>[1.0.0-a01,)</version>
 		</dependency>
 		<dependency>
+			<groupId>org.byshell</groupId>
+			<artifactId>more-core-web</artifactId>
+			<version>[1.0.0-a01,)</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>${javaee.version}</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
 			<version>${freemarker.version}</version>

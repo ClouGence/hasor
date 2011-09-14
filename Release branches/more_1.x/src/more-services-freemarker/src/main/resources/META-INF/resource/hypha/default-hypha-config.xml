@@ -5,12 +5,18 @@
 	xmlns:aop="http://project.byshell.org/more/schema/aop"
 	xmlns:anno="http://project.byshell.org/more/schema/beans-anno"
 	xmlns:p="http://project.byshell.org/more/schema/point"
-	xmlns:submit="http://project.byshell.org/more/schema/submit">
+	xmlns:submit="http://project.byshell.org/more/schema/submit"
+	xmlns:fk="http://project.byshell.org/more/schema/freemarker">
+
+	<!-- 默认freemarker配置 -->
+	<fk:templateDir path=""/><!-- 模板所处根路径 -->
+	<fk:templates>
+		<fk:template name="500" path="root/error-500.html"/>
+		<fk:template name="404" path="root/error-404.html"/>
+	</fk:templates>
 
 	<!-- freemarker默认模板 -->
 	<submit:result match="ftl" class="org.more.services.freemarker.submit.FTLResultProcess"><!-- 执行freemarker模板 -->
 		<submit:config key="configBean"/><!-- 配置类，其类型必须是org.more.services.freemarker.submit.FreeMarkerConfig的子类。 -->
-		<submit:config key="suffix" value="flt"/><!-- 模板后缀名 -->
-		<submit:config key="rootPath" value="$att['rootPath']"/><!-- 模板所处根路径 -->
 	</submit:result>
 </b:beans>

@@ -13,16 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.services.freemarker.submit;
-import java.io.IOException;
-import java.io.Writer;
+package org.more.services.freemarker;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 什么都不干的{@link Writer}
- * @version : 2011-8-12
+ * 将该方法注册到freemarker中，当freemarker解析模板时遇到调用这个函数定义则会自动执行该方法。
+ * @version : 2011-9-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public class NoneWriter extends Writer {
-    public void close() throws IOException {}
-    public void flush() throws IOException {}
-    public void write(char[] cbuf, int off, int len) throws IOException {}
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Function {
+    /**表示函数名，如果没有填写则取方法名作为函数名。*/
+    public String value() default "";
+};
