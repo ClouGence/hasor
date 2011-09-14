@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.test.more.core.xml;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
 import org.more.core.xml.XmlDocumentHook;
@@ -34,7 +34,7 @@ import org.more.core.xml.stream.XmlReader;
  */
 public class Level3_Test {
     @Test
-    public void reader() throws FileNotFoundException, XMLStreamException {
+    public void reader() throws XMLStreamException, IOException {
         String url = "/META-INF/resource/hypha/default-hypha-config.xml";
         XmlReader reader = new XmlReader(Level3_Test.class.getResourceAsStream(url));
         XmlParserKitManager manager = new XmlParserKitManager();

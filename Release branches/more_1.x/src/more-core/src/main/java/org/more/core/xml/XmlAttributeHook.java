@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.more.core.xml;
+import java.io.IOException;
+import javax.xml.stream.XMLStreamException;
 import org.more.core.xml.stream.AttributeEvent;
 /**
  * 当遇到一个属性需要解析时使用该接口，使用该接口可以用于解析特定的属性。
@@ -27,5 +29,5 @@ public interface XmlAttributeHook extends XmlParserHook {
      * @param xpath 当前标签在所定义的命名空间中的xpath。
      * @param event 事件。
      */
-    public void attribute(XmlStackDecorator<Object> context, String xpath, AttributeEvent event);
+    public void attribute(XmlStackDecorator<Object> context, String xpath, AttributeEvent event) throws XMLStreamException, IOException;
 }

@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 package org.more.core.xml;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 import org.more.core.error.MoreStateException;
 import org.more.core.error.RepeateException;
 import org.more.core.xml.stream.AttributeEvent;
@@ -95,7 +97,7 @@ public class XmlParserKitManager implements XmlAccept {
                 xnp.endAccept();
     }
     /**实现{@link XmlAccept}接口用于接受事件的方法。*/
-    public synchronized void sendEvent(XmlStreamEvent e) {
+    public synchronized void sendEvent(XmlStreamEvent e) throws XMLStreamException, IOException {
         //1.创建堆栈，激活命名空间处理器。
         if (e instanceof StartElementEvent) {
             StartElementEvent ee = (StartElementEvent) e;
@@ -189,7 +191,7 @@ public class XmlParserKitManager implements XmlAccept {
             this.activateStack.dropStack();//销毁堆栈
     }
     /**该方法是用于分发事件到{@link XmlParserKit}解析器上。*/
-    private void issueEvent(XmlStreamEvent rootEvent, String xpath, ArrayList<XmlNamespaceParser> parserKitList) {
+    private void issueEvent(XmlStreamEvent rootEvent, String xpath, ArrayList<XmlNamespaceParser> parserKitList) throws XMLStreamException, IOException {
         for (XmlNamespaceParser kit : parserKitList)
             kit.sendEvent(this.context, xpath, rootEvent);
     }

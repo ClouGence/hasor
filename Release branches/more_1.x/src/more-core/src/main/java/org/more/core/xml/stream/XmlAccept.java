@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.core.xml.stream;
+import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 /**
  * 该接口的功能是用于接收{@link XmlReader}类扫描的xml事件流。如果在解析期间由sendEvent方法抛出异常那么endAccept方法很可能不会被调用。
@@ -27,5 +28,5 @@ public interface XmlAccept {
     /**结束{@link XmlAccept}接口的调用。*/
     public void endAccept() throws XMLStreamException;
     /**该方法是用于接受{@link XmlReader}类扫描的事件结果。如果在解析期间由sendEvent方法抛出异常那么endAccept方法很可能不会被调用。 */
-    public void sendEvent(XmlStreamEvent e) throws XMLStreamException;
+    public void sendEvent(XmlStreamEvent e) throws XMLStreamException, IOException;
 }

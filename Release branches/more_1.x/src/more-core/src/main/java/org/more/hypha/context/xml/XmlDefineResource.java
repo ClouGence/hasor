@@ -249,7 +249,7 @@ public class XmlDefineResource extends ArrayDefineResource {
         this.manager.unRegeditKit(namespace, kit);
     };
     /**解析配置文件流。*/
-    protected synchronized void passerXml(InputStream in, DefineResource conf) throws XMLStreamException {
+    protected synchronized void passerXml(InputStream in, DefineResource conf) throws XMLStreamException, IOException {
         new XmlReader(in).reader(this.manager, null);
     };
     /**手动执行配置装载动作，如果重复装载可能产生异常。该动作将会引发{@link XmlLoadingEvent}事件*/

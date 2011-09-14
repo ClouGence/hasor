@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.test.more.core.xml;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
 import org.more.core.xml.XmlNamespaceParser;
@@ -29,7 +29,7 @@ import org.more.core.xml.stream.XmlStreamEvent;
  */
 public class Level2_Test {
     @Test
-    public void reader() throws FileNotFoundException, XMLStreamException {
+    public void reader() throws XMLStreamException, IOException {
         XmlReader reader = new XmlReader(Level1_Test.class.getResourceAsStream("/org/test/more/core/xml/test_xml.xml"));
         //        reader.setIgnoreComment(true);
         //        reader.setIgnoreSpace(true);

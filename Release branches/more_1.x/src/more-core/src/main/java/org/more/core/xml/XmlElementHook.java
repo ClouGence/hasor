@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.more.core.xml;
+import java.io.IOException;
+import javax.xml.stream.XMLStreamException;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 /**
@@ -28,12 +30,12 @@ public interface XmlElementHook extends XmlParserHook {
      * @param xpath 当前标签在所定义的命名空间中的xpath。
      * @param event 事件。
      */
-    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event);
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) throws XMLStreamException, IOException;
     /**
      * 当遇到一个结束标签时。
      * @param context 环境上下文。
      * @param xpath 当前标签在所定义的命名空间中的xpath。
      * @param event 事件。
      */
-    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event);
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) throws XMLStreamException, IOException;
 }

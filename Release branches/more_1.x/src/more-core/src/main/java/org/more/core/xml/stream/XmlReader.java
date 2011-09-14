@@ -17,6 +17,7 @@ package org.more.core.xml.stream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import javax.xml.namespace.QName;
 import javax.xml.stream.StreamFilter;
@@ -89,8 +90,9 @@ public class XmlReader {
      * 如果配置了ignoreXPath参数则在形成事件流时XmlReader不会发送属于这个xpath的xml事件流。
      * @param accept 指定事件流接收对象。
      * @param ignoreXPath 指定要忽略的XPath路径。
+     * @throws IOException 
      */
-    public synchronized void reader(XmlAccept accept, String ignoreXPath) throws XMLStreamException {
+    public synchronized void reader(XmlAccept accept, String ignoreXPath) throws XMLStreamException, IOException {
         if (accept == null)
             return;
         accept.beginAccept();
@@ -216,15 +218,17 @@ public class XmlReader {
         }
         return sb.append(qname.getLocalPart()).toString();
     }
-    /**执行XPath忽略判断。 */
-    private void pushEvent(XmlAccept accept, XmlStreamEvent e, String ignoreXPath) throws XMLStreamException {
+    /**执行XPath忽略判断。 
+     * @throws IOException */
+    private void pushEvent(XmlAccept accept, XmlStreamEvent e, String ignoreXPath) throws XMLStreamException, IOException {
         //(3).XPath忽略判断
         boolean ignore = this.ignoreXPath(e.getXpath(), ignoreXPath);
         if (ignore == false)
             this.pushEvent(accept, e);
     }
-    /**负责推送事件的方法，子类可以通过扩展该方法在推送事件期间处理一些其他操作。 */
-    protected void pushEvent(XmlAccept accept, XmlStreamEvent e) throws XMLStreamException {
+    /**负责推送事件的方法，子类可以通过扩展该方法在推送事件期间处理一些其他操作。 
+     * @throws IOException */
+    protected void pushEvent(XmlAccept accept, XmlStreamEvent e) throws XMLStreamException, IOException {
         if (accept != null)
             accept.sendEvent(e);
     }

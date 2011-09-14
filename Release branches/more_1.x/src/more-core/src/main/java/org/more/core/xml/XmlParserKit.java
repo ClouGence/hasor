@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 package org.more.core.xml;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import javax.xml.stream.XMLStreamException;
 import org.more.core.error.RepeateException;
 import org.more.core.xml.stream.AttributeEvent;
 import org.more.core.xml.stream.EndDocumentEvent;
@@ -76,8 +78,7 @@ public class XmlParserKit implements XmlNamespaceParser {
             }
         return this.hooks.get(xpath2);
     };
-    /** */
-    public void sendEvent(XmlStackDecorator<Object> context, String xpath, XmlStreamEvent event) {
+    public void sendEvent(XmlStackDecorator<Object> context, String xpath, XmlStreamEvent event) throws XMLStreamException, IOException {
         ArrayList<XmlParserHook> hooks = this.getHooks(xpath);
         if (hooks == null)
             return;

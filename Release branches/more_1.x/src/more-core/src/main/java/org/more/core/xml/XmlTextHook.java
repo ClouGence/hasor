@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.more.core.xml;
+import java.io.IOException;
+import javax.xml.stream.XMLStreamException;
 import org.more.core.xml.stream.TextEvent;
 /**
  * 当遇到字符数据时使用该接口解析，字符数据类型包括了CDATA，Chars，space。
@@ -27,5 +29,5 @@ public interface XmlTextHook extends XmlParserHook {
      * @param xpath 当前标签在所定义的命名空间中的xpath。
      * @param event 事件。
      */
-    public void text(XmlStackDecorator<Object> context, String xpath, TextEvent event);
+    public void text(XmlStackDecorator<Object> context, String xpath, TextEvent event) throws XMLStreamException, IOException;
 }

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.more.core.xml;
+import java.io.IOException;
+import javax.xml.stream.XMLStreamException;
 import org.more.core.xml.stream.EndDocumentEvent;
 import org.more.core.xml.stream.StartDocumentEvent;
 /**
@@ -23,7 +25,7 @@ import org.more.core.xml.stream.StartDocumentEvent;
  */
 public interface XmlDocumentHook extends XmlParserHook {
     /**当遇到文档开始时。context参数是共用的环境对象。*/
-    public void beginDocument(XmlStackDecorator<Object> context, StartDocumentEvent event);
+    public void beginDocument(XmlStackDecorator<Object> context, StartDocumentEvent event) throws XMLStreamException, IOException;
     /**当遇到文档结束时。context参数是共用的环境对象。*/
-    public void endDocument(XmlStackDecorator<Object> context, EndDocumentEvent event);
+    public void endDocument(XmlStackDecorator<Object> context, EndDocumentEvent event) throws XMLStreamException, IOException;
 }
