@@ -13,20 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha;
-import org.more.util.attribute.IAttribute;
-/**
- * 服务接口
- * @version 2011-6-23
- * @author 赵永春 (zyc@byshell.org)
- */
-public interface Service {
-    /**服务初始化*/
-    public void init(ApplicationContext context, IAttribute<Object> flash);
-    /**获取上下文*/
-    public ApplicationContext getContext();
-    /**服务器启动在 inited事件之前调用。*/
-    public void start();
-    /**服务停止在*/
-    public void stop();
-}
+package org.test.more.core.copy;
+public class Bean4 extends Bean2 {}

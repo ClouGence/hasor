@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha;
+package org.more.core.global;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import org.more.util.attribute.IAttribute;
+import org.more.util.attribute.TransformToAttribute;
 /**
- * 服务接口
- * @version 2011-6-23
- * @author 赵永春 (zyc@byshell.org)
- */
-public interface Service {
-    /**服务初始化*/
-    public void init(ApplicationContext context, IAttribute<Object> flash);
-    /**获取上下文*/
-    public ApplicationContext getContext();
-    /**服务器启动在 inited事件之前调用。*/
-    public void start();
-    /**服务停止在*/
-    public void stop();
-}
+* 
+* @version : 2011-9-3
+* @author 赵永春 (zyc@byshell.org)
+*/
+public class FileGlobal extends Global {
+    protected IAttribute<String> loadConfig(InputStream stream) throws IOException {
+        Properties prop = new Properties();
+        prop.load(stream);
+        return new TransformToAttribute<String>(prop);
+    }
+};

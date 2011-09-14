@@ -35,6 +35,7 @@ import org.more.core.json.JsonUtil;
 import org.more.hypha.ApplicationContext;
 import org.more.services.submit.SubmitService;
 import org.more.util.config.Config;
+import org.more.web.hypha.ContextLoaderListener;
 /**
  * submit4.0组建对Web部分的支持，该类已经实现了Filter接口并且继承自HttpServlet类。
  * 该web支持的配置只有一个参数buildClass，表示生成器的具体类型。action参数表示请求的协议名
@@ -59,7 +60,7 @@ public class SubmitRoot extends HttpServlet implements Filter {
             actionURLPattern = Pattern.compile("/([^/]+)?:/([^?]*)(?:\\?(.*))?");
             this.servletContext = config.getContext();
             this.contextPath = this.servletContext.getContextPath();
-            ApplicationContext context = (ApplicationContext) this.servletContext.getAttribute("org.more.hypha.ROOT");
+            ApplicationContext context = (ApplicationContext) this.servletContext.getAttribute(ContextLoaderListener.ContextName);
             this.submitService = context.getService(SubmitService.class);
             {
                 //设置参数

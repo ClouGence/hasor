@@ -31,7 +31,7 @@ public class TransformToAttribute<T> implements IAttribute<T> {
     public boolean contains(String name) {
         return this.values.containsKey(name);
     };
-    public void setAttribute(String name, Object value) {
+    public void setAttribute(String name, T value) {
         this.values.put(name, value);
     };
     public T getAttribute(String name) {

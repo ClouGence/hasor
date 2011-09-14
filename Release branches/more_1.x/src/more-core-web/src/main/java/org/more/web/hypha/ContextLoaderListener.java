@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.web.submit;
+package org.more.web.hypha;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.List;
@@ -27,6 +27,7 @@ import org.more.hypha.context.app.DefaultApplicationContext;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.services.submit.SubmitService;
 import org.more.util.ResourcesUtil;
+import org.more.web.submit.WebSubmitService;
 /**
  * 该类的目的是负责装载{@link ApplicationContext}接口对象，并且将该对象放置在ServletContext中。
  * hypha-configs参数会给定配置文件位置，如果没有指定则他会寻找classpath目录下的“*-hypha-config.xml”

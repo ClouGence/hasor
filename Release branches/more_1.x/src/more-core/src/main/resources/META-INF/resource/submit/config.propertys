@@ -1,1 +1,1 @@
-ServiceImpl=org.more.submit.impl.DefaultSubmitService
+ServiceImpl=org.more.services.submit.impl.DefaultSubmitService

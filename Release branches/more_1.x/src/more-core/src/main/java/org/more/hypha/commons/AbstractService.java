@@ -27,7 +27,7 @@ public abstract class AbstractService implements Service {
     public void init(ApplicationContext context, IAttribute<Object> flash) {
         this.context = context;
     }
-    protected ApplicationContext getContext() {
+    public ApplicationContext getContext() {
         return this.context;
     }
     protected <T extends Service> T getService(Class<T> service) {
