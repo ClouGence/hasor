@@ -17,9 +17,10 @@ package org.more.services.freemarker.submit;
 import java.io.IOException;
 import java.io.Writer;
 import org.more.services.freemarker.FreemarkerService;
-import org.more.services.freemarker.assembler.NoneWriter;
 import org.more.services.submit.ActionStack;
 import org.more.services.submit.ResultProcess;
+import org.more.util.attribute.SequenceStack;
+import freemarker.template.Template;
 import freemarker.template.TemplateException;
 /**
  * return
@@ -28,22 +29,18 @@ import freemarker.template.TemplateException;
  */
 public class FTLResultProcess implements ResultProcess<FTLResult> {
     public Object invoke(ActionStack onStack, FTLResult res) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, TemplateException {
-        //3.执行模板
-        Writer writer = res.getWriter();
-        if (writer == null)
-            writer = new NoneWriter();
+        //1.准备环境
+        Writer writer = res.getWriter();//返回空无所谓
         FreemarkerService service = onStack.getSubmitService().getContext().getService(FreemarkerService.class);
-        service.process(res, res.toMap(), writer);
+        Template temp = service.getProcess().getTemplate(res);
+        temp = res.applyTemplate(temp);
+        //2.准备参数堆栈
+        SequenceStack<Object> stack = new SequenceStack<Object>();
+        stack.putStack(res);//第一搜索顺序
+        stack.putStack(service);//第二搜索顺序
+        //3.执行模板
+        temp.process(stack.toMap(), writer);
         return res.getReturnValue();
     }
-    public void addParam(String key, String value) {
-        //        if (value == null || value.equals("") == true)
-        //            return;
-        //        if (key.equals("configBean") == true)
-        //            this.cfg_configBean = value;
-        //        if (key.equals("suffix") == true)
-        //            this.cfg_suffix = value;
-        //        if (key.equals("rootPath") == true)
-        //            this.cfg_rootPath = value;
-    }
+    public void addParam(String key, String value) {}
 }

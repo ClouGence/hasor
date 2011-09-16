@@ -15,13 +15,13 @@
  */
 package org.more.services.freemarker.submit;
 import java.io.Writer;
+import java.util.Locale;
 import java.util.Map;
 import org.more.services.freemarker.TemplateBlock;
 import org.more.services.submit.impl.DefaultResultImpl;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 import org.more.util.attribute.ParentDecorator;
-import freemarker.template.Configuration;
 import freemarker.template.Template;
 /**
  * ftl
@@ -30,37 +30,60 @@ import freemarker.template.Template;
  */
 public class FTLResult extends DefaultResultImpl<Object> implements IAttribute<Object>, TemplateBlock {
     private Writer             writer       = null;
+    private String             inEncoding   = null;
+    private Locale             locale       = null;
     private String             templatePath = null;
+    /*-------------------------------------------------------------*/
     private IAttribute<Object> parentAtt    = null;
     private AttBase<Object>    thisAtt      = new AttBase<Object>();
     //
-    public FTLResult(String templatePath, Writer writer, Object returnValue) {
+    public FTLResult(String templatePath, String encoding, Writer writer, Object returnValue) {
         super("ftl", returnValue);
-        this.writer = writer;
         this.templatePath = templatePath;
+        this.inEncoding = encoding;
+        this.writer = writer;
     }
-    public FTLResult(String templatePath, Writer writer) {
+    public FTLResult(String templatePath, String encoding, Writer writer) {
         super("ftl", templatePath);
+        this.templatePath = templatePath;
+        this.inEncoding = encoding;
         this.writer = writer;
     }
     public FTLResult(String templatePath) {
         super("ftl", templatePath);
     }
+    /*-------------------------------------------------------------*/
     /**获取要执行的模板。*/
-    public String getTemplatePath() {
+    public String getTemplateName() {
         return this.templatePath;
     }
-    /**除了使用{@link FreeMarkerConfig}类对{@link Configuration}进行配置之外，也可以通过重写该方法进行配置。不过该方法配置会被最后执行。*/
-    public Configuration applyConfiguration(Configuration configuration) {
-        return configuration;
-    };
     /**配置{@link Template}以便于提供更高级的功能。*/
     public Template applyTemplate(Template template) {
         return template;
     }
+    /**获取区域*/
+    public Locale getLocale() {
+        return this.locale;
+    }
+    /**设置区域*/
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
     /**获取模板执行结果输出地址。*/
     public Writer getWriter() {
         return this.writer;
+    };
+    /**设置输出流。*/
+    public void setWriter(Writer writer) {
+        this.writer = writer;
+    };
+    /**获取输入文件的字符编码。*/
+    public String getInEncoding() {
+        return this.inEncoding;
+    };
+    /**设置输入文件的字符编码。*/
+    public void setInEncoding(String inEncoding) {
+        this.inEncoding = inEncoding;
     };
     //
     /**设置该{@link IAttribute}接口的属性集父级属性集，该类的{@link IAttribute}接口set,remote,clean操作只会针对当前类的属性集，不会影响到父属性集。*/
@@ -72,6 +95,7 @@ public class FTLResult extends DefaultResultImpl<Object> implements IAttribute<O
             return this.thisAtt;
         return this.parentAtt;
     };
+    /*-------------------------------------------------------------*/
     public boolean contains(String name) {
         return this.getParent().contains(name);
     };
@@ -92,5 +116,5 @@ public class FTLResult extends DefaultResultImpl<Object> implements IAttribute<O
     };
     public void clearAttribute() {
         this.thisAtt.clearAttribute();
-    };
+    }
 }

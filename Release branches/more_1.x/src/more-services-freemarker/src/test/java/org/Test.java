@@ -14,14 +14,25 @@
  * limitations under the License.
  */
 package org;
+import java.io.OutputStreamWriter;
 import org.more.hypha.context.app.ClassPathApplicationContext;
 import org.more.services.freemarker.FreemarkerService;
+import org.more.services.freemarker.assembler.FreemarkerService_Impl;
 public class Test {
     @org.junit.Test
     public void testFK() throws Throwable {
-        ClassPathApplicationContext context = new ClassPathApplicationContext();
-        context.init();
-        FreemarkerService service = context.getService(FreemarkerService.class);
+      //  ClassPathApplicationContext context = new ClassPathApplicationContext();
+        //context.init();
+        //FreemarkerService service = context.getService(FreemarkerService.class);
+        FreemarkerService service = new FreemarkerService_Impl();
+        service.start();
         System.out.println(service);
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        
+        service.addTemplate("500", "root/error-500.html");
+        
+        service.process("500", new OutputStreamWriter(System.out));
     }
 }

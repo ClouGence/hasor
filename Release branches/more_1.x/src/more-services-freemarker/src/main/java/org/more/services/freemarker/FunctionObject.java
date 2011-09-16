@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 package org.more.services.freemarker;
-import java.util.Locale;
-import org.more.util.attribute.IAttribute;
+import java.util.List;
+import freemarker.template.TemplateMethodModel;
+import freemarker.template.TemplateModelException;
 /**
- * 标识一个模板，该接口不光可以用于标记模板的位置，也可以用于决定模板文件的输入字符集。同时在执行模板期间需要的参数也可以通过块传入进去。
- * @version : 2011-9-14
+ * 
+ * @version : 2011-9-16
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface TemplateBlock extends IAttribute<Object> {
-    /**模板名称。*/
-    public String getTemplateName();
-    /**输入字符集*/
-    public String getInEncoding();
-    /**获取区域*/
-    public Locale getLocale();
+public abstract class FunctionObject implements TemplateMethodModel {
+    public Object exec(List arg0) throws TemplateModelException {
+        return this.call(arg0);
+    }
+    public abstract Object call(List<?> params);
 }

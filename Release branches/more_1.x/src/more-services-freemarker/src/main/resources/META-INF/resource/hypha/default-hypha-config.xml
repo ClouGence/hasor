@@ -9,10 +9,13 @@
 	xmlns:fk="http://project.byshell.org/more/schema/freemarker">
 
 	<!-- 默认freemarker配置 -->
+	<fk:defaultInEncoding encoding="utf-8"/>
+	<fk:defaultOutcoding encoding="utf-8"/>
 	<fk:templateDir path=""/><!-- 模板所处根路径 -->
+	
 	<fk:templates>
-		<fk:template name="500" path="root/error-500.html"/>
-		<fk:template name="404" path="root/error-404.html"/>
+		<fk:template name="500" encoding="utf-8" path="root/error-500.html"/>
+		<fk:template name="404" encoding="utf-8" path="root/error-404.html"/>
 	</fk:templates>
 
 	<!-- freemarker默认模板 -->

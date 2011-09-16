@@ -17,12 +17,28 @@ package org.more.services.freemarker.assembler;
 import java.io.IOException;
 import java.io.Writer;
 /**
- * 什么都不干的{@link Writer}
+ * {@link Writer}
  * @version : 2011-8-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public class NoneWriter extends Writer {
-    public void close() throws IOException {}
-    public void flush() throws IOException {}
-    public void write(char[] cbuf, int off, int len) throws IOException {}
+class NoneWriter extends Writer {
+    private Writer writer = null;
+    /**什么都不干的{@link Writer}。*/
+    public NoneWriter() {}
+    /**所有内容都输出到参数所代表的{@link Writer}中。*/
+    public NoneWriter(Writer writer) {
+        this.writer = writer;
+    }
+    public void close() throws IOException {
+        if (this.writer != null)
+            this.writer.close();
+    }
+    public void flush() throws IOException {
+        if (this.writer != null)
+            this.writer.flush();
+    }
+    public void write(char[] cbuf, int off, int len) throws IOException {
+        if (this.writer != null)
+            this.writer.write(cbuf, off, len);
+    }
 }

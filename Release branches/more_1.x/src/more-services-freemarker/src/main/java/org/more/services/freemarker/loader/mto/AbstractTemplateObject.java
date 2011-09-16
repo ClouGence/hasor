@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.services.freemarker.submit;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
+package org.more.services.freemarker.loader.mto;
+import java.io.IOException;
+import java.io.Reader;
 /**
- * freemarker配置。
- * @version : 2011-8-12
+ * 模板资源读取类，该类是一个抽象类。其实现类决定如何读取不同形式的资源。
+ * @version : 2011-9-16
  * @author 赵永春 (zyc@byshell.org)
  */
-public class FreeMarkerConfig {
-    /**配置{@link Configuration}*/
-    public Configuration applyConfiguration(Configuration config) {
-        return config;
-    }
-    /**配置{@link Configuration}*/
-    public Template applyTemplate(Template template) {
-        return template;
-    }
+public interface AbstractTemplateObject {
+    /**获取该对象最后修改时间。*/
+    public long lastModified();
+    /**打开对象*/
+    public void openObject() throws IOException;
+    /**获取对象的{@link Reader}，在获取之前可能需要调用{@link #openObject()}方法打开该对象。*/
+    public Reader getReader(String encoding) throws IOException;
+    /**关闭对象*/
+    public void closeObject() throws IOException;
 };

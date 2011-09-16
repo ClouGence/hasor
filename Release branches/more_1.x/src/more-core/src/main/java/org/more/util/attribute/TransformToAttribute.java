@@ -23,9 +23,11 @@ import java.util.Map;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class TransformToAttribute<T> implements IAttribute<T> {
-    private Map<Object, Object> values = null;
+    private Map values = null;
     /**创建一个{@link TransformToAttribute}对象，该对象的作用是将{@link Map}转换为{@link IAttribute}接口。*/
-    public TransformToAttribute(Map<Object, Object> values) {
+    public TransformToAttribute(Map values) {
+        if (values == null)
+            throw new NullPointerException();
         this.values = values;
     };
     public boolean contains(String name) {

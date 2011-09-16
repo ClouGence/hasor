@@ -15,7 +15,6 @@
  */
 package org.more.util.attribute;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 /**
@@ -51,14 +50,7 @@ public class SequenceStack<T> implements IAttribute<T> {
         return array;
     };
     public Map<String, T> toMap() {
-        HashMap<String, T> as = new HashMap<String, T>();
-        for (IAttribute<T> iatt : this.attList) {
-            Map<String, T> map = iatt.toMap();
-            for (String n : map.keySet())
-                if (as.containsKey(n) == false)
-                    as.put(n, map.get(n));
-        }
-        return as;
+        return new TransformToMap<T>(this);
     };
     /**该方法只会对最后一个加入的{@link IAttribute}对象起作用。*/
     public void clearAttribute() {

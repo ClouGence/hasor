@@ -21,21 +21,19 @@ import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.services.freemarker.FreemarkerService;
 /**
- * 用于解析fk:template标签。
+ * 用于解析fk:defaultOutcoding标签。
  * @version : 2011-8-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TagFK_Template extends TagFK_NS implements XmlElementHook {
-    /**创建{@link TagFK_Template}对象 */
-    public TagFK_Template(XmlDefineResource configuration, FreemarkerService service) {
+public class TagFK_DefaultOutEncoding extends TagFK_NS implements XmlElementHook {
+    /**创建{@link TagFK_DefaultOutEncoding}对象 */
+    public TagFK_DefaultOutEncoding(XmlDefineResource configuration, FreemarkerService service) {
         super(configuration, service);
     }
     /**开始标签解析属性。*/
     public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
-        String name = event.getAttributeValue("name");
-        String path = event.getAttributeValue("path");
-        String encoding = event.getAttributeValue("encoding");
-        this.getService().addTemplate(name, path, encoding);
+        String outcoding = event.getAttributeValue("encoding");
+        this.getService().setOutEncoding(outcoding);
     }
     public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {}
 }

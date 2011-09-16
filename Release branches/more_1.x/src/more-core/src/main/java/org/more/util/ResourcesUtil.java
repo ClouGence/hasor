@@ -107,6 +107,7 @@ public abstract class ResourcesUtil {
                 ZipEntry e = jar.getEntry(resourcePath);
                 iss.add(jar.getInputStream(e));
             }
+            // TODO 该处处理其他协议的资源加载。
         }
         return iss;
     }

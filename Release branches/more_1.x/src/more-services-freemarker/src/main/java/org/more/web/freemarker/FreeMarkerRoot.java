@@ -33,6 +33,7 @@ import org.more.hypha.ApplicationContext;
 import org.more.services.freemarker.FreemarkerService;
 import org.more.util.config.Config;
 import org.more.web.hypha.ContextLoaderListener;
+import freemarker.template.TemplateException;
 /**
  * freemarker 组建对Web部分的支持，该类已经实现了Filter接口并且继承自HttpServlet类。
  * @version : 2011-9-14
@@ -79,6 +80,13 @@ public class FreeMarkerRoot extends HttpServlet implements Filter {
         this.init(new ServletFreemarkerConfig(config));
     };
     /*-----------------------------------------------------------------*/
+    protected void processTemplate(String templateName, HttpServletResponse res, Map<String, Object> params) throws IOException, ServletException {
+        try {
+            this.freemarkerService.getProcess().process(templateName, params, res.getWriter());
+        } catch (TemplateException e) {
+            throw new ServletException(e);
+        }
+    }
     /**获取一个RootMap，这个Map用于存放一些对象，当模板被执行时该Map中的内容在解析模板时可以被模板访问到。*/
     protected Map<String, Object> getRootMap(HttpServletRequest req, HttpServletResponse res) {
         Map<String, String[]> paramMap = req.getParameterMap();
@@ -114,7 +122,7 @@ public class FreeMarkerRoot extends HttpServlet implements Filter {
         String templateName = this.getRequestPath(req);
         if (this.freemarkerService.containsTemplate(templateName) == true) {
             Map<String, Object> params = this.getRootMap(req, res);
-            this.freemarkerService.getProcess().process(templateName, params, response.getWriter());
+            this.processTemplate(templateName, res, params);
         } else
             chain.doFilter(req, res);
     };
@@ -126,9 +134,9 @@ public class FreeMarkerRoot extends HttpServlet implements Filter {
         String templateName = this.getRequestPath(req);
         Map<String, Object> params = this.getRootMap(req, res);
         if (this.freemarkerService.containsTemplate(templateName) == true)
-            this.freemarkerService.getProcess().process(templateName, params, response.getWriter());
+            this.processTemplate(templateName, res, params);
         else
-            this.freemarkerService.getProcess().process("404", params, response.getWriter());
+            this.processTemplate("404", res, params);
     };
     /**获取{@link FreemarkerService}对象。*/
     protected FreemarkerService getFreemarkerService() {

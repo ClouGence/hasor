@@ -55,7 +55,7 @@ public class AttBase<T> implements IAttribute<T>, Map<String, T>, Serializable {
      * 获取BaseAtt的属性盛装器。
      * @return 返回获取BaseAtt的属性盛装器。
      */
-    protected Map<String, T> getProp() {
+    protected Map<String, T> getMap() {
         return this.prop;
     }
     /**

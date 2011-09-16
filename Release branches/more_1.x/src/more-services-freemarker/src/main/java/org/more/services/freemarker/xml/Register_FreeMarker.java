@@ -37,6 +37,8 @@ public class Register_FreeMarker implements XmlNameSpaceRegister {
         FreemarkerService service = new FreemarkerService_Impl();
         //2.×¢²á±êÇ©½âÎöÆ÷
         XmlParserKit kit = new XmlParserKit();
+        kit.regeditHook("/defaultInEncoding", new TagFK_DefaultInEncoding(resource, service));
+        kit.regeditHook("/defaultOutcoding", new TagFK_DefaultOutEncoding(resource, service));
         kit.regeditHook("/templateDir", new TagFK_TemplateDir(resource, service));
         kit.regeditHook("/templates/template", new TagFK_Template(resource, service));
         //3.×¢²áÃüÃû¿Õ¼ä

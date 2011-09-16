@@ -17,39 +17,78 @@ package org.more.services.freemarker.loader;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import org.more.services.freemarker.FreemarkerService;
+import org.more.services.freemarker.loader.mto.AbstractTemplateObject;
+import org.more.services.freemarker.loader.mto.ClassPath_TemplateObject;
+import org.more.services.freemarker.loader.mto.File_TemplateObject;
+import org.more.services.freemarker.loader.mto.String_TemplateObject;
+import org.more.services.freemarker.loader.mto.URL_TemplateObject;
 import freemarker.cache.TemplateLoader;
 /**
- * 
+ * 处理配置文件中添加的模板。
  * @version : 2011-9-14
  * @author 赵永春 (zyc@byshell.org) 
  */
 public class MoreTemplateLoader implements TemplateLoader {
-    public MoreTemplateLoader(FreemarkerService freemarkerService) {
-        // TODO Auto-generated constructor stub
+    private Map<String, AbstractTemplateObject> objectMap = null;
+    private FreemarkerService                   service   = null;
+    //
+    public MoreTemplateLoader(FreemarkerService service) {
+        this.objectMap = new HashMap<String, AbstractTemplateObject>();
+        this.service = service;
+    };
+    /**将classpath中的一个资源地址作为模板内容添加到装载器中。*/
+    public void addTemplate(String name, String classPath) {
+        this.addTemplate(name, classPath, null);
+    };
+    public void addTemplate(String name, String classPath, String encoding) {
+        String $encoding = encoding;
+        $encoding = ($encoding != null) ? encoding : this.service.getInEncoding();
+        this.objectMap.put(name, new ClassPath_TemplateObject(classPath, $encoding));
     }
-    public void closeTemplateSource(Object arg0) throws IOException {
-        // TODO Auto-generated method stub
+    /**将{@link File}地址作为模板内容添加到装载器中。*/
+    public void addTemplate(String name, File filePath) {
+        this.addTemplate(name, filePath, null);
+    };
+    public void addTemplate(String name, File filePath, String encoding) {
+        String $encoding = encoding;
+        $encoding = ($encoding != null) ? encoding : this.service.getInEncoding();
+        this.objectMap.put(name, new File_TemplateObject(filePath, $encoding));
+    }
+    /**将{@link URL}地址作为模板内容添加到装载器中。*/
+    public void addTemplate(String name, URL urlPath) {
+        this.addTemplate(name, urlPath, null);
+    };
+    public void addTemplate(String name, URL urlPath, String encoding) {
+        String $encoding = encoding;
+        $encoding = ($encoding != null) ? encoding : this.service.getInEncoding();
+        this.objectMap.put(name, new URL_TemplateObject(urlPath, $encoding));
+    }
+    /**将字符串作为模板内容添加到装载器中。*/
+    public void addTemplateAsString(String name, String templateString) {
+        this.objectMap.put(name, new String_TemplateObject(templateString));
     }
     public Object findTemplateSource(String arg0) throws IOException {
-        // TODO Auto-generated method stub
-        return null;
+        if (this.objectMap.containsKey(arg0) == false)
+            return null;
+        return this.objectMap.get(arg0);
     }
     public long getLastModified(Object arg0) {
-        // TODO Auto-generated method stub
-        return 0;
+        AbstractTemplateObject mto = (AbstractTemplateObject) arg0;
+        return mto.lastModified();
     }
-    public Reader getReader(Object arg0, String arg1) throws IOException {
-        // TODO Auto-generated method stub
-        return null;
+    public Reader getReader(Object arg0, String encoding) throws IOException {
+        if (arg0 instanceof AbstractTemplateObject == false)
+            return null;
+        AbstractTemplateObject mto = (AbstractTemplateObject) arg0;
+        mto.openObject();
+        return mto.getReader(encoding);
     }
-    public void addTemplate(String name, String path) {
-        // TODO Auto-generated method stub
-    }
-    public void addTemplate(String name, File path) {
-        // TODO Auto-generated method stub
-    }
-    public void addTemplateAsString(String name, String templateString) {
-        // TODO Auto-generated method stub
+    public void closeTemplateSource(Object arg0) throws IOException {
+        if (arg0 instanceof AbstractTemplateObject == true)
+            ((AbstractTemplateObject) arg0).closeObject();
     }
 }

@@ -19,9 +19,8 @@ import org.more.hypha.anno.KeepWatchParser;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.services.freemarker.FreemarkerService;
 import org.more.services.freemarker.Function;
-import org.more.services.remote.Remote;
 /**
- * 该类的目的是用于解析{@link Remote}注解。
+ * 该类的目的是用于解析{@link Function}注解。
  * @version 2010-10-14
  * @author 赵永春 (zyc@byshell.org)
  */
