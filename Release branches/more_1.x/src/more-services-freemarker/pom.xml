@@ -20,7 +20,6 @@
 			<groupId>org.byshell</groupId>
 			<artifactId>more-core-web</artifactId>
 			<version>[1.0.0-a01,)</version>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>javax</groupId>

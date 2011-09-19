@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.services.freemarker.submit;
+package org.more.services.submit.result;
 import java.io.Writer;
 import java.util.Locale;
 import java.util.Map;

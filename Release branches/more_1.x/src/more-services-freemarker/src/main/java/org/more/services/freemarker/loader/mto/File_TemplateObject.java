@@ -34,8 +34,11 @@ public class File_TemplateObject implements AbstractTemplateObject {
         this.filePath = filePath;
         this.encoding = encoding;
     }
+    public InputStream getInputStream() throws IOException {
+        return new AutoCloseInputStream(new FileInputStream(filePath));
+    }
     public Reader getReader(String encoding) throws IOException {
-        InputStream is = new AutoCloseInputStream(new FileInputStream(filePath));
+        InputStream is = this.getInputStream();
         //
         String $encoding = encoding;
         if ($encoding == null)
@@ -43,7 +46,7 @@ public class File_TemplateObject implements AbstractTemplateObject {
         if ($encoding == null)
             return new InputStreamReader(is);
         else
-            return new InputStreamReader(is, encoding);
+            return new InputStreamReader(is, $encoding);
     }
     public long lastModified() {
         return this.filePath.lastModified();

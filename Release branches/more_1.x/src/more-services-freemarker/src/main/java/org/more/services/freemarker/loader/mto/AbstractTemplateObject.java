@@ -15,6 +15,7 @@
  */
 package org.more.services.freemarker.loader.mto;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 /**
  * 模板资源读取类，该类是一个抽象类。其实现类决定如何读取不同形式的资源。
@@ -28,6 +29,8 @@ public interface AbstractTemplateObject {
     public void openObject() throws IOException;
     /**获取对象的{@link Reader}，在获取之前可能需要调用{@link #openObject()}方法打开该对象。*/
     public Reader getReader(String encoding) throws IOException;
+    /**获取对象的{@link InputStream}。*/
+    public InputStream getInputStream() throws IOException;
     /**关闭对象*/
     public void closeObject() throws IOException;
 };

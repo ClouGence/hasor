@@ -15,16 +15,19 @@
  */
 package org.more.services.freemarker.assembler;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Locale;
 import java.util.Map;
 import org.more.services.freemarker.FreemarkerService;
+import org.more.services.freemarker.ResourceLoader;
 import org.more.services.freemarker.TemplateBlock;
 import org.more.services.freemarker.TemplateProcess;
 import org.more.util.attribute.SequenceStack;
 import org.more.util.attribute.TransformToAttribute;
+import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -137,5 +140,11 @@ public class TemplateProcess_Impl implements TemplateProcess {
             return this.cfg.getTemplate(templateName, $locale, $encoding);
         else
             return this.cfg.getTemplate(templateName, $encoding);
+    }
+    public InputStream getResourceAsStream(String resourcePath) throws IOException {
+        TemplateLoader loader = this.cfg.getTemplateLoader();
+        if (loader instanceof ResourceLoader)
+            return ((ResourceLoader) loader).getResourceAsStream(resourcePath);
+        return null;
     }
 }

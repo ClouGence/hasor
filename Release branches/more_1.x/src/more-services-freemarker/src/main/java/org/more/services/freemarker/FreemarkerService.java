@@ -47,8 +47,10 @@ public interface FreemarkerService extends Service, IAttribute<Object>, Template
     public void setSuperRoot(IAttribute<Object> rootMap);
     /**设置最上级rootMap对象，在解析模板时rootMap中的对象可以被模板访问到。*/
     public void setSuperRoot(Map<?, ?> rootMap);
-    /**设置模板的根路径*/
-    public void setTemplateDir(File templateDir) throws IOException;
+    /**添加设置模板的根路径*/
+    public void addTemplateDir(File templateDir) throws IOException;
+    /**添加模板的ClassPath目录，合法的目录可以是“org.package.aaa”或“org/package/aaa”或“/org/package/aaa”*/
+    public void addClassPath(String packageName) throws IOException;
     /**添加一个模板，被添加的模板只需要访问模板名即可。*/
     public void addTemplate(String name, String classPath);
     /**添加一个模板，被添加的模板只需要访问模板名即可。*/
@@ -65,8 +67,10 @@ public interface FreemarkerService extends Service, IAttribute<Object>, Template
     public void addTemplateAsString(String name, String templateString);
     /**添加一个模板装载器*/
     public void addLoader(TemplateLoader loader);
+    /**添加一个模板装载器*/
+    public void addLoader(int index, TemplateLoader loader);
     /**获取默认路径的模板执行对象，该方法返回的{@link TemplateProcess}只能装载到如下几个位置的模板：classpath中的模板、more配置文件中配置的模板、templateDir属性设置目录下的模板。*/
-    public TemplateProcess getProcess();
+    public TemplateProcess getProcess() throws IOException;
     /**获取指定路径的模板执行对象，该方法返回的{@link TemplateProcess}对象除了{@link #getProcess()}所支持的之外还支持下面这个路径中的模板。*/
     public TemplateProcess getProcess(File templateDir) throws IOException;
     /**注册一个函数*/

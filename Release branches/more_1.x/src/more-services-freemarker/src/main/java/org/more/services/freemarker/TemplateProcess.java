@@ -15,6 +15,7 @@
  */
 package org.more.services.freemarker;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Locale;
@@ -106,4 +107,6 @@ public interface TemplateProcess {
      * @return 返回模板数据的输入流
      */
     public Reader getTemplateBodyAsReader(TemplateBlock templateBlock) throws IOException;
+    /**获取模板所在位置下的资源输入流。*/
+    public InputStream getResourceAsStream(String resourcePath) throws IOException;
 }

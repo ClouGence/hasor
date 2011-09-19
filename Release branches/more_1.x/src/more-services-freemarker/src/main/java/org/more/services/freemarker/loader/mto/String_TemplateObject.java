@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 /**
  * ×Ö·û´®Ä£°å
  * @version : 2011-9-16
@@ -31,8 +30,11 @@ public class String_TemplateObject implements AbstractTemplateObject {
     public String_TemplateObject(String templateString) {
         this.templateString = templateString;
     }
-    public Reader getReader(String encoding) throws UnsupportedEncodingException {
-        InputStream in = new ByteArrayInputStream(this.templateString.getBytes());
+    public InputStream getInputStream() throws IOException {
+        return new ByteArrayInputStream(this.templateString.getBytes());
+    }
+    public Reader getReader(String encoding) throws IOException {
+        InputStream in = this.getInputStream();
         if (encoding == null)
             return new InputStreamReader(in);
         else

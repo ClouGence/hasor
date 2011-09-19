@@ -19,25 +19,33 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Date;
-import org.more.util.ResourcesUtil;
+import org.more.services.freemarker.FreemarkerService;
 /**
  * 装载ClassPath中的模板
  * @version : 2011-9-16
  * @author 赵永春 (zyc@byshell.org)
  */
 public class ClassPath_TemplateObject implements AbstractTemplateObject {
-    private String classPath = null;
-    private String encoding  = null;
+    private FreemarkerService service   = null;
+    private String            classPath = null;
+    private String            encoding  = null;
     //
-    public ClassPath_TemplateObject(String classPath, String encoding) {
-        this.classPath = classPath;
+    public ClassPath_TemplateObject(String classPath, String encoding, FreemarkerService service) {
+        String $packageName = classPath;
+        if ($packageName.length() > 1 && $packageName.charAt(0) == '/')
+            $packageName = $packageName.substring(1);
+        this.classPath = $packageName;
         this.encoding = encoding;
+        this.service = service;
     }
     public long lastModified() {
         return new Date().getTime();
     }
+    public InputStream getInputStream() throws IOException {
+        return this.service.getResourceAsStream(this.classPath);
+    }
     public Reader getReader(String encoding) throws IOException {
-        InputStream is = ResourcesUtil.getResourceAsStream(this.classPath);
+        InputStream is = this.getInputStream();
         //
         String $encoding = encoding;
         if ($encoding == null)
@@ -45,7 +53,7 @@ public class ClassPath_TemplateObject implements AbstractTemplateObject {
         if ($encoding == null)
             return new InputStreamReader(is);
         else
-            return new InputStreamReader(is, encoding);
+            return new InputStreamReader(is, $encoding);
     }
     public void openObject() throws IOException {}
     public void closeObject() throws IOException {}

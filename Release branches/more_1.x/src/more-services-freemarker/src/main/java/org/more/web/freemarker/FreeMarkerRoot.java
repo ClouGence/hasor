@@ -14,24 +14,26 @@
  * limitations under the License.
  */
 package org.more.web.freemarker;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.more.hypha.ApplicationContext;
 import org.more.services.freemarker.FreemarkerService;
+import org.more.services.freemarker.loader.DirTemplateLoader;
+import org.more.util.StringUtil;
 import org.more.util.config.Config;
+import org.more.web.AbstractServletFilter;
 import org.more.web.hypha.ContextLoaderListener;
 import freemarker.template.TemplateException;
 /**
@@ -39,19 +41,18 @@ import freemarker.template.TemplateException;
  * @version : 2011-9-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public class FreeMarkerRoot extends HttpServlet implements Filter {
+public class FreeMarkerRoot extends AbstractServletFilter {
     /*-----------------------------------------------------------------*/
     private static final long serialVersionUID  = -9157250446565992949L;
     private FreemarkerService freemarkerService = null;
-    private ServletContext    servletContext    = null;
-    private String            contextPath       = null;
+    private String[]          files             = { "*.html", "*.htm", "*.flt" };
     /*-----------------------------------------------------------------*/
     protected void init(Config<ServletContext> config) throws ServletException {
         try {
-            this.servletContext = config.getContext();
-            this.contextPath = this.servletContext.getContextPath();
-            ApplicationContext context = (ApplicationContext) this.servletContext.getAttribute(ContextLoaderListener.ContextName);
+            ApplicationContext context = (ApplicationContext) this.getServletContext().getAttribute(ContextLoaderListener.ContextName);
             this.freemarkerService = context.getService(FreemarkerService.class);
+            File webPath = new File(this.getAbsoluteContextPath());
+            this.freemarkerService.addLoader(0, new DirTemplateLoader(webPath));//Web目录
             {
                 //设置参数
                 Enumeration<String> enums = config.getInitParameterNames();
@@ -60,7 +61,12 @@ public class FreeMarkerRoot extends HttpServlet implements Filter {
                     this.freemarkerService.setAttribute(name, config.getInitParameter(name));
                 }
             }
-            this.servletContext.setAttribute("org.more.freemarker.ROOT", this.freemarkerService);
+            {
+                String fs = (String) config.getInitParameter("freemarker-files");
+                if (fs != null)
+                    this.files = fs.split(",");
+            }
+            this.getServletContext().setAttribute("org.more.freemarker.ROOT", this.freemarkerService);
         } catch (Throwable e) {
             e.printStackTrace();
             if (e instanceof ServletException)
@@ -70,19 +76,9 @@ public class FreeMarkerRoot extends HttpServlet implements Filter {
         }
     };
     /*-----------------------------------------------------------------*/
-    /** 过滤器初始化方法，该方法调用init(InitParameter param) */
-    public final void init(final FilterConfig config) throws ServletException {
-        this.init(new FilterFreemarkerConfig(config));
-    };
-    /** Servlet初始化方法，该方法调用init(InitParameter param) */
-    public final void init() throws ServletException {
-        final ServletConfig config = this.getServletConfig();
-        this.init(new ServletFreemarkerConfig(config));
-    };
-    /*-----------------------------------------------------------------*/
     protected void processTemplate(String templateName, HttpServletResponse res, Map<String, Object> params) throws IOException, ServletException {
         try {
-            this.freemarkerService.getProcess().process(templateName, params, res.getWriter());
+            this.freemarkerService.process(templateName, params, res.getWriter());
         } catch (TemplateException e) {
             throw new ServletException(e);
         }
@@ -100,7 +96,7 @@ public class FreeMarkerRoot extends HttpServlet implements Filter {
             else
                 reqParams.put(key, param);
         }
-        //
+        //输出root中的对象
         HashMap<String, Object> rootMap = new HashMap<String, Object>();
         rootMap.put("req", req);
         rootMap.put("request", req);
@@ -108,74 +104,66 @@ public class FreeMarkerRoot extends HttpServlet implements Filter {
         rootMap.put("response", res);
         rootMap.put("reqMap", reqParams);
         rootMap.put("session", req.getSession(true));
-        rootMap.put("context", req.getServletContext());
-        //
-        rootMap.put("service", this.freemarkerService);
-        rootMap.put("more", this.freemarkerService.getContext());
+        rootMap.put("context", req.getSession(true).getServletContext());
         return rootMap;
     }
     /** 中央调度过滤器 */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        //
         String templateName = this.getRequestPath(req);
-        if (this.freemarkerService.containsTemplate(templateName) == true) {
-            Map<String, Object> params = this.getRootMap(req, res);
-            this.processTemplate(templateName, res, params);
-        } else
+        //确定可以解析的扩展名
+        for (String pattern : this.files)
+            /**确定是否是模板*/
+            if (StringUtil.matchWild(pattern, templateName) == true) {
+                Map<String, Object> params = this.getRootMap(req, res);
+                if (this.freemarkerService.containsTemplate(templateName) == true)
+                    this.processTemplate(templateName, res, params);
+                else
+                    this.processTemplate("404", res, params);
+                return;
+            }
+        /**资源访问*/
+        if (new File(templateName).isDirectory() == true) {
             chain.doFilter(req, res);
+            return;
+        }
+        InputStream in = this.freemarkerService.getResourceAsStream(templateName);
+        if (in == null)
+            chain.doFilter(req, res);
+        else {
+            OutputStream out = res.getOutputStream();
+            byte[] arrayData = new byte[4096];
+            String mimeType = request.getServletContext().getMimeType(templateName);
+            res.setContentType(mimeType);
+            int length = 0;
+            while ((length = in.read(arrayData)) > 0)
+                out.write(arrayData, 0, length);
+            out.flush();
+        }
     };
-    /** 中央调度Servlet */
+    /** 中央调度Servlet，该services只会处理模板类型文件。 */
     public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         //
         String templateName = this.getRequestPath(req);
         Map<String, Object> params = this.getRootMap(req, res);
-        if (this.freemarkerService.containsTemplate(templateName) == true)
-            this.processTemplate(templateName, res, params);
-        else
-            this.processTemplate("404", res, params);
+        //确定可以解析的扩展名
+        for (String pattern : this.files)
+            /**确定是否是模板*/
+            if (StringUtil.matchWild(pattern, templateName) == true) {
+                if (this.freemarkerService.containsTemplate(templateName) == true)
+                    this.processTemplate(templateName, res, params);
+                else
+                    this.processTemplate("404", res, params);
+                return;
+            }
+        params.put("message", "未配置该文件为模板类型资源，或该资源文件不存在。");
+        this.processTemplate("500", res, params);
     };
     /**获取{@link FreemarkerService}对象。*/
     protected FreemarkerService getFreemarkerService() {
         return this.freemarkerService;
-    };
-    /**获取请求路径*/
-    protected String getRequestPath(HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        requestURI = requestURI.substring(this.contextPath.length());
-        return requestURI;
-    };
-};
-class FilterFreemarkerConfig implements Config<ServletContext> {
-    private FilterConfig config = null;
-    public FilterFreemarkerConfig(FilterConfig config) {
-        this.config = config;
-    };
-    public ServletContext getContext() {
-        return this.config.getServletContext();
-    };
-    public String getInitParameter(String name) {
-        return this.config.getInitParameter(name);
-    };
-    public Enumeration<String> getInitParameterNames() {
-        return this.config.getInitParameterNames();
-    };
-}
-class ServletFreemarkerConfig implements Config<ServletContext> {
-    private ServletConfig config = null;
-    public ServletFreemarkerConfig(ServletConfig config) {
-        this.config = config;
-    };
-    public ServletContext getContext() {
-        return this.config.getServletContext();
-    };
-    public String getInitParameter(String name) {
-        return this.config.getInitParameter(name);
-    };
-    public Enumeration<String> getInitParameterNames() {
-        return this.config.getInitParameterNames();
     };
 };

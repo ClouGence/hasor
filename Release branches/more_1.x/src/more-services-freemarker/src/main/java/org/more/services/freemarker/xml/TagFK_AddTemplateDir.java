@@ -23,20 +23,20 @@ import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.services.freemarker.FreemarkerService;
 /**
- * 用于解析fk:propertie标签。
+ * 用于解析fk:addTemplateDir标签。
  * @version : 2011-8-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TagFK_TemplateDir extends TagFK_NS implements XmlElementHook {
-    /**创建{@link TagFK_TemplateDir}对象 */
-    public TagFK_TemplateDir(XmlDefineResource configuration, FreemarkerService service) {
+public class TagFK_AddTemplateDir extends TagFK_NS implements XmlElementHook {
+    /**创建{@link TagFK_AddTemplateDir}对象 */
+    public TagFK_AddTemplateDir(XmlDefineResource configuration, FreemarkerService service) {
         super(configuration, service);
     }
     /**开始标签解析expression属性。*/
     public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) throws IOException {
-        String path = event.getAttributeValue("path");
-        if (path == null || path.equals("") == true) {} else
-            this.getService().setTemplateDir(new File(path));
+        String classpath = event.getAttributeValue("classpath");
+        if (classpath == null || classpath.equals("") == true) {} else
+            this.getService().addTemplateDir(new File(classpath));
     }
     public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {}
 }

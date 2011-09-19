@@ -31,6 +31,6 @@ class OnStartingServices implements EventListener<StartingServicesEvent> {
     }
     public void onEvent(StartingServicesEvent event, Sequence sequence) throws Throwable {
         AbstractApplicationContext app = (AbstractApplicationContext) event.toParams(sequence).applicationContext;
-        app.regeditService(FreemarkerService.class, this.service);//×¢²á·þÎñ
+        app.regeditService(FreemarkerService.class, this.service);
     }
 }

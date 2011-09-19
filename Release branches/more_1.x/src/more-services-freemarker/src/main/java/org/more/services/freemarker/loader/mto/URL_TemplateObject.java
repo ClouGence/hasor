@@ -33,8 +33,11 @@ public class URL_TemplateObject implements AbstractTemplateObject {
         this.url = url;
         this.encoding = encoding;
     }
+    public InputStream getInputStream() throws IOException {
+        return this.url.openStream();
+    }
     public Reader getReader(String encoding) throws IOException {
-        InputStream is = this.url.openStream();
+        InputStream is = this.getInputStream();
         //
         String $encoding = encoding;
         if ($encoding == null)
@@ -42,7 +45,7 @@ public class URL_TemplateObject implements AbstractTemplateObject {
         if ($encoding == null)
             return new InputStreamReader(is);
         else
-            return new InputStreamReader(is, encoding);
+            return new InputStreamReader(is, $encoding);
     }
     public long lastModified() {
         return new Date().getTime();

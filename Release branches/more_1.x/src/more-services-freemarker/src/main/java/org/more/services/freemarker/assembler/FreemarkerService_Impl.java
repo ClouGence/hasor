@@ -16,6 +16,7 @@
 package org.more.services.freemarker.assembler;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.URL;
@@ -30,13 +31,15 @@ import org.more.services.freemarker.FunctionObject;
 import org.more.services.freemarker.TagObject;
 import org.more.services.freemarker.TemplateBlock;
 import org.more.services.freemarker.TemplateProcess;
-import org.more.services.freemarker.loader.MoreTemplateLoader;
+import org.more.services.freemarker.loader.ClassPathTemplateLoader;
+import org.more.services.freemarker.loader.ConfigTemplateLoader;
+import org.more.services.freemarker.loader.DirTemplateLoader;
+import org.more.services.freemarker.loader.MultiTemplateLoader;
+import org.more.services.freemarker.loader.PropxyTemplateLoader;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 import org.more.util.attribute.SequenceStack;
 import org.more.util.attribute.TransformToAttribute;
-import freemarker.cache.FileTemplateLoader;
-import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -49,12 +52,12 @@ import freemarker.template.TemplateException;
 public class FreemarkerService_Impl extends AbstractService implements FreemarkerService {
     private Configuration         cfg           = null;
     private IAttribute<Object>    thisAtt       = new AttBase<Object>();
-    private IAttribute<Object>    tfMap         = null;                        //该对象是用于存放标签和函数
+    private IAttribute<Object>    tfMap         = new AttBase<Object>();          //该对象是用于存放标签和函数
     private SequenceStack<Object> rootMap       = null;
     //
-    private List<TemplateLoader>  loaderList    = null;
+    private List<TemplateLoader>  loaderList    = new ArrayList<TemplateLoader>();
     //
-    private MoreTemplateLoader    moreLoader    = new MoreTemplateLoader(this);
+    private ConfigTemplateLoader  moreLoader    = new ConfigTemplateLoader(this);
     private MultiTemplateLoader   multiLoader   = null;
     private Locale                defaultLocale = null;
     private String                inEncoding    = "utf-8";
@@ -62,15 +65,12 @@ public class FreemarkerService_Impl extends AbstractService implements Freemarke
     /*-------------------------------------------------------------*/
     public void start() {
         this.cfg = new Configuration();
-        this.loaderList = new ArrayList<TemplateLoader>();
-        this.tfMap = new AttBase<Object>();
-        this.loaderList.add(this.moreLoader);
     }
     public void stop() {
         this.cfg = null;
-        this.loaderList = null;
-        this.tfMap = null;
-        this.moreLoader = new MoreTemplateLoader(this);
+        this.tfMap.clearAttribute();
+        this.loaderList.clear();
+        this.moreLoader.resetState();
         this.multiLoader = null;
     }
     /*-------------------------------------------------------------*/
@@ -82,8 +82,13 @@ public class FreemarkerService_Impl extends AbstractService implements Freemarke
         if (superRoot != null)
             this.thisAtt = new TransformToAttribute<Object>((Map<Object, Object>) superRoot);
     }
-    public void setTemplateDir(File templateDir) throws IOException {
-        this.addLoader(new FileTemplateLoader(templateDir));
+    public void addTemplateDir(File templateDir) throws IOException {
+        this.addLoader(new DirTemplateLoader(templateDir));
+        this.multiLoader = null;
+    }
+    public void addClassPath(String packageName) throws IOException {
+        this.addLoader(new ClassPathTemplateLoader(packageName.replace(".", "/")));
+        this.multiLoader = null;
     }
     public Locale getDefaultLocale() {
         return this.defaultLocale;
@@ -131,36 +136,48 @@ public class FreemarkerService_Impl extends AbstractService implements Freemarke
         this.loaderList.add(loader);
         this.multiLoader = null;
     }
+    public synchronized void addLoader(int index, TemplateLoader loader) {
+        if (this.loaderList.contains(loader) == true)
+            return;
+        this.loaderList.add(index, loader);
+        this.multiLoader = null;
+    }
     /*-------------------------------------------------------------*/
     public Configuration getPublicConfiguration() {
         this.multiLoader = null;//重置该对象的目的是为了生效配置。
         return this.cfg;
     }
     /**获取一个{@link Configuration}对象，该对象是克隆自cfg。*/
-    private synchronized Configuration getConfiguration() {
+    private synchronized Configuration getConfiguration() throws IOException {
         // FileTemplateLoader f_Loader=new FileTemplateLoader();
         // ClassTemplateLoader c_Loader=new ClassTemplateLoader(loaderClass, path);
         // WebappTemplateLoader w_Loader=new WebappTemplateLoader(servletContext);
         if (this.multiLoader != null)
             return (Configuration) this.cfg.clone();
+        //1.确定Loader顺序。
+        ArrayList<TemplateLoader> $loaders = new ArrayList<TemplateLoader>();
+        $loaders.add(this.moreLoader);//more Loader，负责装载由接口添加的资源。第一顺序
+        if (this.loaderList != null)
+            $loaders.addAll(this.loaderList);//第二顺序
+        // 
+        TemplateLoader[] loaders = new TemplateLoader[$loaders.size()];
+        $loaders.toArray(loaders);
         //
-        TemplateLoader[] loaders = new TemplateLoader[this.loaderList.size()];
-        this.loaderList.toArray(loaders);
         this.multiLoader = new MultiTemplateLoader(loaders);
         this.cfg.setTemplateLoader(this.multiLoader);
         this.cfg.setOutputEncoding(this.outEncoding);
         //
         return (Configuration) this.cfg.clone();
     }
-    public TemplateProcess getProcess() {
+    public TemplateProcess getProcess() throws IOException {
         return new TemplateProcess_Impl(this, this.getConfiguration());
     }
     public TemplateProcess getProcess(File templateDir) throws IOException {
         Configuration cfg = getConfiguration();
         //
         TemplateLoader[] loaders = new TemplateLoader[2];
-        loaders[0] = cfg.getTemplateLoader();
-        loaders[1] = new FileTemplateLoader(templateDir);
+        loaders[0] = new PropxyTemplateLoader(cfg.getTemplateLoader());
+        loaders[1] = new DirTemplateLoader(templateDir);
         //
         cfg.setTemplateLoader(new MultiTemplateLoader(loaders));
         return new TemplateProcess_Impl(this, cfg);
@@ -213,6 +230,9 @@ public class FreemarkerService_Impl extends AbstractService implements Freemarke
     }
     public Reader getTemplateBodyAsReader(TemplateBlock templateBlock) throws IOException {
         return this.getProcess().getTemplateBodyAsReader(templateBlock);
+    }
+    public InputStream getResourceAsStream(String resourcePath) throws IOException {
+        return this.getProcess().getResourceAsStream(resourcePath);
     }
     /*-------------------------------------------------------------*/
     private IAttribute<Object> getSuperRoot() {

@@ -16,11 +16,13 @@
 package org.more.services.freemarker.loader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import org.more.services.freemarker.FreemarkerService;
+import org.more.services.freemarker.ResourceLoader;
 import org.more.services.freemarker.loader.mto.AbstractTemplateObject;
 import org.more.services.freemarker.loader.mto.ClassPath_TemplateObject;
 import org.more.services.freemarker.loader.mto.File_TemplateObject;
@@ -32,11 +34,11 @@ import freemarker.cache.TemplateLoader;
  * @version : 2011-9-14
  * @author 赵永春 (zyc@byshell.org) 
  */
-public class MoreTemplateLoader implements TemplateLoader {
+public class ConfigTemplateLoader implements TemplateLoader, ResourceLoader {
     private Map<String, AbstractTemplateObject> objectMap = null;
     private FreemarkerService                   service   = null;
     //
-    public MoreTemplateLoader(FreemarkerService service) {
+    public ConfigTemplateLoader(FreemarkerService service) {
         this.objectMap = new HashMap<String, AbstractTemplateObject>();
         this.service = service;
     };
@@ -47,7 +49,7 @@ public class MoreTemplateLoader implements TemplateLoader {
     public void addTemplate(String name, String classPath, String encoding) {
         String $encoding = encoding;
         $encoding = ($encoding != null) ? encoding : this.service.getInEncoding();
-        this.objectMap.put(name, new ClassPath_TemplateObject(classPath, $encoding));
+        this.objectMap.put(name, new ClassPath_TemplateObject(classPath, $encoding, service));
     }
     /**将{@link File}地址作为模板内容添加到装载器中。*/
     public void addTemplate(String name, File filePath) {
@@ -90,5 +92,13 @@ public class MoreTemplateLoader implements TemplateLoader {
     public void closeTemplateSource(Object arg0) throws IOException {
         if (arg0 instanceof AbstractTemplateObject == true)
             ((AbstractTemplateObject) arg0).closeObject();
+    }
+    public InputStream getResourceAsStream(String resourcePath) throws IOException {
+        if (this.objectMap.containsKey(resourcePath) == false)
+            return null;
+        return this.objectMap.get(resourcePath).getInputStream();
+    }
+    public void resetState() {
+        this.objectMap.clear();
     }
 }
