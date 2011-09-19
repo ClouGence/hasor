@@ -19,6 +19,7 @@ import org.more.hypha.anno.define.Bean;
 import org.more.services.submit.acs.hypha.HBean;
 import org.more.services.submit.acs.simple.AC_Simple;
 import org.more.services.submit.impl.AbstractAC;
+import org.more.util.StringUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,10 @@ public class AC_Spring extends AbstractAC {
         Service annoBean = type.getAnnotation(Service.class);
         String beanID = null;
         if (annoBean != null)
-            beanID = annoBean.value();
+            if (annoBean.value().equals("") == false)
+                beanID = annoBean.value();
+            else
+                beanID = StringUtil.toLowerCase(type.getSimpleName());
         else {
             SBean annoBean2 = type.getAnnotation(SBean.class);
             if (annoBean2 != null)

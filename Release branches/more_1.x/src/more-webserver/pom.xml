@@ -18,7 +18,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.byshell</groupId>
-			<artifactId>more-submit-web</artifactId>
+			<artifactId>more-core-web</artifactId>
 			<version>[1.0.0-a01,)</version>
 		</dependency>
 
