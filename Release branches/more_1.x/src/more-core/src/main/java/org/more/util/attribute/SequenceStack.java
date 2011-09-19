@@ -31,12 +31,14 @@ public class SequenceStack<T> implements IAttribute<T> {
     };
     public boolean contains(String name) {
         for (IAttribute<?> iatt : this.attList)
-            return iatt.contains(name);
+            if (iatt.contains(name) == true)
+                return true;
         return false;
     };
     public T getAttribute(String name) {
         for (IAttribute<T> iatt : this.attList)
-            return iatt.getAttribute(name);
+            if (iatt.contains(name) == true)
+                return iatt.getAttribute(name);
         return null;
     };
     public String[] getAttributeNames() {

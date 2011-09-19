@@ -7,8 +7,6 @@
 	xmlns:p="http://project.byshell.org/more/schema/point"
 	xmlns:submit="http://project.byshell.org/more/schema/submit">
 
-	<!-- 请求转发处理 -->
-	<submit:result match="webForward" class="org.more.web.submit.result.WebForwardResultProcess"/>
-	<!-- web错误处理 -->
-	<submit:result match="webError" class="org.more.web.submit.result.WebErrorResultProcess"/>
+	
+	<anno:anno package="org.*" enable="true"/>
 </b:beans>

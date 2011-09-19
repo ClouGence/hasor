@@ -20,36 +20,31 @@ import java.net.URISyntaxException;
 import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.more.core.json.JsonUtil;
 import org.more.hypha.ApplicationContext;
 import org.more.services.submit.SubmitService;
 import org.more.util.config.Config;
+import org.more.web.AbstractServletFilter;
 import org.more.web.hypha.ContextLoaderListener;
 /**
  * submit4.0组建对Web部分的支持，该类已经实现了Filter接口并且继承自HttpServlet类。
  * 该web支持的配置只有一个参数buildClass，表示生成器的具体类型。action参数表示请求的协议名
  * 或者action表达试参数名。默认是action。<br/>
- * SubmitRoot会反射的形式创建生成器。过滤器递交方式action://test.tesy?aaa=aaa，上述例子中“:”可以使用“!”代替
+ * SubmitRoot会反射的形式创建生成器。过滤器递交方式ac://test.tesy?aaa=aaa，上述例子中“:”可以使用“!”代替
  * @version 2009-6-29
  * @author 赵永春 (zyc@byshell.org)
  */
-public class SubmitRoot extends HttpServlet implements Filter {
+public class SubmitRoot extends AbstractServletFilter {
     /*-----------------------------------------------------------------*/
     private static final long serialVersionUID = -9157250446565992949L;
     private SubmitService     submitService    = null;
-    private ServletContext    servletContext   = null;
-    private String            contextPath      = null;
     private Pattern           actionURLPattern = null;
     private String            defaultNS        = null;
     /*-----------------------------------------------------------------*/
@@ -57,10 +52,9 @@ public class SubmitRoot extends HttpServlet implements Filter {
         try {
             /*      /([^/]+)?:/([^?]*)(?:\\?(.*))?      */
             /*      /[ns]:/[actionpath][?info]          */
-            actionURLPattern = Pattern.compile("/([^/]+)?:/([^?]*)(?:\\?(.*))?");
-            this.servletContext = config.getContext();
-            this.contextPath = this.servletContext.getContextPath();
-            ApplicationContext context = (ApplicationContext) this.servletContext.getAttribute(ContextLoaderListener.ContextName);
+            /*      /[ns]!/[actionpath][?info]          */
+            actionURLPattern = Pattern.compile("/([^/]+)?[:!]/([^?]*)(?:\\?(.*))?");
+            ApplicationContext context = (ApplicationContext) this.getServletContext().getAttribute(ContextLoaderListener.ContextName);
             this.submitService = context.getService(SubmitService.class);
             {
                 //设置参数
@@ -75,7 +69,7 @@ public class SubmitRoot extends HttpServlet implements Filter {
                 else
                     defaultNS = this.submitService.getDefaultNameSpaceString();
             }
-            this.servletContext.setAttribute("org.more.submit.ROOT", this.submitService);
+            this.getServletContext().setAttribute("org.more.submit.ROOT", this.submitService);
         } catch (Throwable e) {
             e.printStackTrace();
             if (e instanceof ServletException)
@@ -83,16 +77,6 @@ public class SubmitRoot extends HttpServlet implements Filter {
             else
                 throw new ServletException(e.getLocalizedMessage(), e);
         }
-    };
-    /*-----------------------------------------------------------------*/
-    /** 过滤器初始化方法，该方法调用init(InitParameter param) */
-    public final void init(final FilterConfig config) throws ServletException {
-        this.init(new FilterSubmitConfig(config));
-    };
-    /** Servlet初始化方法，该方法调用init(InitParameter param) */
-    public final void init() throws ServletException {
-        final ServletConfig config = this.getServletConfig();
-        this.init(new ServletSubmitConfig(config));
     };
     /*-----------------------------------------------------------------*/
     protected URI getActionURI(HttpServletRequest request) {
@@ -185,41 +169,5 @@ public class SubmitRoot extends HttpServlet implements Filter {
     /**获取{@link SubmitService}对象。*/
     protected SubmitService getSubmitService() {
         return this.submitService;
-    };
-    /**获取请求路径*/
-    protected String getRequestPath(HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        requestURI = requestURI.substring(this.contextPath.length());
-        return requestURI;
-    };
-};
-class FilterSubmitConfig implements Config<ServletContext> {
-    private FilterConfig config = null;
-    public FilterSubmitConfig(FilterConfig config) {
-        this.config = config;
-    };
-    public ServletContext getContext() {
-        return this.config.getServletContext();
-    };
-    public String getInitParameter(String name) {
-        return this.config.getInitParameter(name);
-    };
-    public Enumeration<String> getInitParameterNames() {
-        return this.config.getInitParameterNames();
-    };
-}
-class ServletSubmitConfig implements Config<ServletContext> {
-    private ServletConfig config = null;
-    public ServletSubmitConfig(ServletConfig config) {
-        this.config = config;
-    };
-    public ServletContext getContext() {
-        return this.config.getServletContext();
-    };
-    public String getInitParameter(String name) {
-        return this.config.getInitParameter(name);
-    };
-    public Enumeration<String> getInitParameterNames() {
-        return this.config.getInitParameterNames();
     };
 };
