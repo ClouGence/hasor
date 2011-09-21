@@ -47,7 +47,7 @@ public abstract class JsonType {
                 return new JsonArray(this.currentContext).toObject(readStr);
             else if (readStr.charAt(0) == '{')
                 return new JsonObject(this.currentContext).toObject(readStr);
-            else if (readStr.charAt(0) >= 30 && readStr.charAt(0) <= 39)
+            else if ((int) readStr.charAt(0) >= 48 && (int) readStr.charAt(0) <= 57)
                 return new JsonNumber(this.currentContext).toObject(readStr);
             else
                 return new JsonString(this.currentContext).toObject(readStr);

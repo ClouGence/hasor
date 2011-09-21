@@ -61,6 +61,13 @@ public class JsonUtil {
         return CopyBeanUtil.newInstance().copy(data, obj, "value");
     }
     /**将json数据转换为map形式，如果json数据仅仅表示一个对象而非json Object类型则这个json对象将被封装到返回的map中它的key是空字符串*/
+    public Object toObject(String str) {
+        String readStr = str.trim();
+        if (readStr == null || readStr.equals(""))
+            return null;
+        return this.passJsonString(readStr);
+    }
+    /**将json数据转换为map形式，如果json数据仅仅表示一个对象而非json Object类型则这个json对象将被封装到返回的map中它的key是空字符串*/
     public Map<String, ?> toMap(String str) {
         String readStr = str.trim();
         if (readStr == null || readStr.equals(""))
