@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.json;
+package org.more.core.json.parser;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.more.core.json.JsonException;
+import org.more.core.json.JsonUtil;
 /**
  * 负责处理Array类型或者Collection类型的json格式互转。
  * @version 2010-1-7
  * @author 赵永春 (zyc@byshell.org)
  */
 public class JsonArray extends JsonMixed {
-    protected JsonArray(JsonUtil currentContext) {
+    public JsonArray(JsonUtil currentContext) {
         super(currentContext);
     };
     public Object toObject(String str) {
@@ -48,7 +50,8 @@ public class JsonArray extends JsonMixed {
             else
                 sb = sb.delete(0, readStr.length() + 1);
             //处理这个字符串数据的类型进行处理。
-            al.add(this.passJsonObject(readStr));
+            JsonUtil json = this.getCurrentContext();
+            al.add(json.toObject(readStr));
         }
         return al.toArray();
     }
@@ -73,8 +76,9 @@ public class JsonArray extends JsonMixed {
         json.append("]");
         return json.toString();
     }
-    private void appendObject(StringBuffer json, Object var) {
-        json.append(this.passJsonString(var));
-        json.append(",");
+    private void appendObject(StringBuffer jsonStr, Object var) {
+        JsonUtil json = this.getCurrentContext();
+        jsonStr.append(json.toString(var));
+        jsonStr.append(",");
     }
 }

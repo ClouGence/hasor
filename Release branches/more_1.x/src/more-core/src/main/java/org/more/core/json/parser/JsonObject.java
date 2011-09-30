@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.json;
+package org.more.core.json.parser;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.more.core.json.JsonException;
+import org.more.core.json.JsonUtil;
+import org.more.util.BeanUtil;
 import org.more.util.attribute.IAttribute;
 /**
  * 负责处理Object类型的json格式互转。
@@ -27,7 +30,7 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class JsonObject extends JsonMixed {
-    protected JsonObject(JsonUtil currentContext) {
+    public JsonObject(JsonUtil currentContext) {
         super(currentContext);
     };
     /**分离KV，这个函数是专门分离 {}:{}类型的或者[]:{}等组合*/
@@ -70,7 +73,8 @@ public class JsonObject extends JsonMixed {
             String key = readStr.substring(0, firstIndex);
             String value = readStr.substring(firstIndex + 1);
             //处理这个字符串数据的类型进行处理。
-            map.put(this.passJsonObject(key), this.passJsonObject(value));
+            JsonUtil json = this.getCurrentContext();
+            map.put(json.toObject(key), json.toObject(value));
         }
         return map;
     }
@@ -124,10 +128,11 @@ public class JsonObject extends JsonMixed {
             }
         } catch (Exception e) {}
     };
-    private void appendObject(StringBuffer json, Object key, Object var) {
-        json.append(this.passJsonString(key));
-        json.append(":");
-        json.append(this.passJsonString(var));
-        json.append(",");
+    private void appendObject(StringBuffer jsonStr, Object key, Object var) {
+        JsonUtil json = this.getCurrentContext();
+        jsonStr.append(json.toString(key));
+        jsonStr.append(":");
+        jsonStr.append(json.toString(var));
+        jsonStr.append(",");
     }
 }

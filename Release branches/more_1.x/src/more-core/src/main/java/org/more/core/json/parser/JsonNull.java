@@ -13,27 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.json;
+package org.more.core.json.parser;
+import org.more.core.json.JsonUtil;
 /**
- * 负责处理Boolean类型的json格式互转。
+ * 负责处理null类型的json格式互转。
  * @version 2010-1-7
  * @author 赵永春 (zyc@byshell.org)
  */
-public class JsonBoolean extends JsonType {
-    protected JsonBoolean(JsonUtil currentContext) {
+public class JsonNull extends JsonMixed {
+    public JsonNull(JsonUtil currentContext) {
         super(currentContext);
     };
     public Object toObject(String str) {
-        if (str.equals("true"))
-            return true;
-        else if (str.equals("false"))
-            return false;
-        else
-            throw new JsonException("json数据非法不能作为boolean类型转换。");
+        return null;
     }
-    public String toString(Object object) {
-        if (object instanceof Boolean == false)
-            throw new JsonException("JsonBoolean不能将一个布尔类型对象转换为JSON对应格式。");
-        return (((Boolean) object) == true) ? "true" : "false";
+    public String toString(Object bean) {
+        return null;
     }
 }

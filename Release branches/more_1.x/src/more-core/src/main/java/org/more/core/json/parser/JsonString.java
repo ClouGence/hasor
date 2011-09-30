@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.json;
+package org.more.core.json.parser;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
+import org.more.core.json.JsonException;
+import org.more.core.json.JsonParser;
+import org.more.core.json.JsonUtil;
 /**
  * 负责处理字符类型的json格式互转。
  * @version 2010-1-7
  * @author 赵永春 (zyc@byshell.org)
  */
-public class JsonString extends JsonType {
+public class JsonString extends JsonParser {
     private static final Map<Character, String> charset = new HashMap<Character, String>(); ;
     static {
         JsonString.charset.put('"', "\\\"");
@@ -36,7 +39,7 @@ public class JsonString extends JsonType {
         JsonString.charset.put('\r', "\\\r");
         JsonString.charset.put('\t', "\\\t");
     };
-    protected JsonString(JsonUtil currentContext) {
+    public JsonString(JsonUtil currentContext) {
         super(currentContext);
     };
     public Object toObject(String str) {

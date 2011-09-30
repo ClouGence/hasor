@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.json;
+package org.more.core.json.parser;
+
+import org.more.core.json.JsonParser;
+import org.more.core.json.JsonUtil;
+
 /**
  *json集合类型数据，它包含了数组类型和对象类型。
  * @version 2010-1-7
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class JsonMixed extends JsonType {
+public abstract class JsonMixed extends JsonParser {
     protected JsonMixed(JsonUtil currentContext) {
         super(currentContext);
     };

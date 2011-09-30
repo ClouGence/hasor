@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 package org.more.core.json;
-import org.more.util.StringConvertUtil;
 /**
- * 负责处理Number类型的json格式互转。
- * @version 2010-1-7
+ * Json互转时的检查接口，当检查通过就会使用与其注册的JsonParser进行解析。
+ * @version : 2011-9-28
  * @author 赵永春 (zyc@byshell.org)
  */
-public class JsonNumber extends JsonType {
-    protected JsonNumber(JsonUtil currentContext) {
-        super(currentContext);
-    };
-    public Object toObject(String str) {
-        return StringConvertUtil.parseNumber(str, 0);
-    }
-    public String toString(Object bean) {
-        if (bean instanceof Number == true)
-            return bean.toString();
-        else
-            throw new JsonException("JsonNumber不能将一个非数字类型对象转换为JSON对应格式。");
-    }
+public interface JsonCheck {
+    /**检查目标对象是否可以转成所期望的字符串。*/
+    public boolean checkToString(Object source);
+    /**检查目标对象是否可以转成所期望的对象。*/
+    public boolean checkToObject(String source);
 }
