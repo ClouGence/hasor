@@ -14,27 +14,14 @@
  * limitations under the License.
  */
 package org.more.core.global;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import org.more.core.error.FormatException;
 import org.more.core.error.InitializationException;
 import org.more.core.error.SupportException;
-import org.more.core.global.impl.FileGlobal;
-import org.more.core.global.impl.XmlGlobal;
-import org.more.core.io.AutoCloseInputStream;
 import org.more.core.json.JsonUtil;
 import org.more.core.ognl.Ognl;
 import org.more.core.ognl.OgnlException;
@@ -452,123 +439,3 @@ public abstract class Global implements IAttribute<Object> {
         return new Global(configs) {};
     }
 };
-//class ELWrite {
-//    private static final Map<Character, String> charset     = new HashMap<Character, String>(); ;
-//    static {
-//        charset.put('"', "\\\"");
-//        charset.put('\'', "\\\'");
-//        charset.put('\\', "\\\\");
-//        charset.put('/', "\\/");
-//        charset.put('\b', "\\\b");
-//        charset.put('\f', "\\\f");
-//        charset.put('\n', "\\\n");
-//        charset.put('\r', "\\\r");
-//        charset.put('\t', "\\\t");
-//    };
-//    private ArrayList<String>                   ss          = new ArrayList<String>();
-//    private ArrayList<Boolean>                  bs          = new ArrayList<Boolean>();
-//    private StringBuffer                        cur         = new StringBuffer();
-//    //
-//    private boolean                             sense       = false;                           //是否开启转义
-//    private boolean                             el          = false;                           //是否开启EL
-//    private boolean                             readyEL     = false;                           //EL检测，标记
-//    private int                                 depth       = 0;                               //大括号深度
-//    private char                                startString = 0;
-//    //
-//    public void write(char c) {
-//        /*处理转义*/
-//        if (sense == true) {
-//            sense = false;
-//            cur.append(c);
-//            return;
-//        }
-//        /*遇到\开启转义*/
-//        if (c == '\\') {
-//            sense = true;
-//            return;
-//        }
-//        if (startString == 0) {
-//            /*遇到$预备EL*/
-//            if (el == false && c == '$') {
-//                readyEL = true;
-//                return;
-//            }
-//            /*处理预备el下的下一个字符*/
-//            if (readyEL == true)
-//                if (c == '{' && el == false) {
-//                    newLine();
-//                    el = true;//开始el
-//                    readyEL = false;
-//                    depth++;
-//                    return;
-//                } else
-//                    throw new FormatException("错误的EL表达式开始。");
-//            /*EL结束*/
-//            if (el == true && c == '}' && depth == 1) {
-//                newLine();
-//                el = false;
-//                depth = 0;
-//                return;
-//            }
-//        }
-//        /*特殊处理 {}*/
-//        if (el == true)
-//            if (c == '\"' || c == '\'')
-//                if (startString == 0)
-//                    startString = c;
-//                else if (startString == c)
-//                    startString = 0;
-//        this.cur.append(c);
-//    }
-//    private void newLine() {
-//        if (cur.length() > 0) {
-//            String elStr = cur.toString().trim();
-//            if (elStr.equals("") == false) {
-//                ss.add(elStr);
-//                if (el == true)
-//                    bs.add(true);
-//                else
-//                    bs.add(false);
-//            }
-//        }
-//        cur = new StringBuffer();
-//    }
-//    public List<String> getS() {
-//        newLine();
-//        return ss;
-//    }
-//    public List<Boolean> getB() {
-//        newLine();
-//        return bs;
-//    }
-//    public String getEL() {
-//        List<String> ss = this.getS();
-//        List<Boolean> bs = this.getB();
-//        //
-//        StringBuffer sb = new StringBuffer();
-//        for (int i = 0; i < ss.size(); i++) {
-//            String s = ss.get(i);
-//            if (bs.get(i) == false) {
-//                sb.append(" + ");
-//                sb.append('\"');
-//                try {
-//                    Reader sr = new StringReader((String) s);
-//                    while (true) {
-//                        int c_read = sr.read();
-//                        char c = (char) c_read;
-//                        if (c_read == -1)
-//                            break;
-//                        if (charset.containsKey(c) == true)
-//                            sb.append(charset.get(c));
-//                        else
-//                            sb.append(c);
-//                    }
-//                } catch (Exception e) {}
-//                sb.append('\"');
-//                //
-//            } else
-//                sb.append(s);
-//        }
-//        return sb.toString();
-//    }
-//}
