@@ -18,14 +18,24 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import org.more.core.error.FormatException;
+import org.more.core.error.InitializationException;
 import org.more.core.error.SupportException;
+import org.more.core.global.impl.FileGlobal;
+import org.more.core.global.impl.XmlGlobal;
 import org.more.core.io.AutoCloseInputStream;
+import org.more.core.json.JsonUtil;
 import org.more.core.ognl.Ognl;
 import org.more.core.ognl.OgnlException;
 import org.more.util.ResourcesUtil;
@@ -35,18 +45,38 @@ import org.more.util.attribute.IAttribute;
 import org.more.util.attribute.SequenceStack;
 import org.more.util.attribute.TransformToMap;
 /**
-* 
+* 全局常量读取器
 * @version : 2011-9-3
 * @author 赵永春 (zyc@byshell.org)
 */
 public abstract class Global implements IAttribute<Object> {
-    private Map<String, IAttribute<String>> listConfigAtt = null;
-    private SequenceStack<String>           allConfigAtt  = null;
-    private Object                          context       = null;
+    /**内置对象名*/
+    private final static String                _global      = "_global";
+    private final static String                EnableEL     = "_global.enableEL";
+    private final static String                EnableJson   = "_global.enableJson";
+    public final static String[]               Configs      = new String[] { "global_config.properties", "META-INF/global_config.properties", "META-INF/resource/core/global_config.properties" };
+    /**添加的所有配置文件都在这里保存，根据不同的注册名来进行分组*/
+    private Map<String, SequenceStack<String>> poolMap      = null;
+    private SequenceStack<String>              allData      = null;
+    private SequenceStack<Object>              rootMap      = null;
+    //
+    private Object                             context      = null;
+    private GlobalObject                       globalObject = null;
+    //
     /*------------------------------------------------------------------------*/
+    public Global(IAttribute<String> configs) {
+        this();
+        this.addConfig("", configs);
+    }
     public Global() {
-        this.listConfigAtt = new HashMap<String, IAttribute<String>>();
-        this.allConfigAtt = new SequenceStack<String>();
+        this.poolMap = new LinkedHashMap<String, SequenceStack<String>>();
+        this.allData = new SequenceStack<String>();
+        //设置el root对象
+        this.rootMap = new SequenceStack<Object>();
+        this.rootMap.putStack(new AttBase<Object>());
+        this.rootMap.putStack(this);
+        this.globalObject = new GlobalObject(this);
+        this.rootMap.setAttribute(_global, new TransformToMap<Object>(this.globalObject));//内置对象
     };
     /*------------------------------------------------------------------------*/
     /**解析全局配置参数，并且返回其{@link Object}形式对象。*/
@@ -57,6 +87,14 @@ public abstract class Global implements IAttribute<Object> {
     public Object getObject(String name) {
         return this.getToType(name, Object.class);
     };
+    /**解析全局配置参数，并且返回其{@link Object}形式对象。第二个参数为默认值。*/
+    public Object getObject(Enum<?> name, Object defaultValue) {
+        return this.getToType(name, Object.class, defaultValue);
+    };
+    /**解析全局配置参数，并且返回其{@link Object}形式对象。第二个参数为默认值。*/
+    public Object getObject(String name, Object defaultValue) {
+        return this.getToType(name, Object.class, defaultValue);
+    };
     /**解析全局配置参数，并且返回其{@link Character}形式对象。*/
     public Character getChar(Enum<?> name) {
         return this.getToType(name, Character.class);
@@ -64,6 +102,14 @@ public abstract class Global implements IAttribute<Object> {
     /**解析全局配置参数，并且返回其{@link Character}形式对象。*/
     public Character getChar(String name) {
         return this.getToType(name, Character.class);
+    };
+    /**解析全局配置参数，并且返回其{@link Character}形式对象。第二个参数为默认值。*/
+    public Character getChar(Enum<?> name, Character defaultValue) {
+        return this.getToType(name, Character.class, defaultValue);
+    };
+    /**解析全局配置参数，并且返回其{@link Character}形式对象。第二个参数为默认值。*/
+    public Character getChar(String name, Character defaultValue) {
+        return this.getToType(name, Character.class, defaultValue);
     };
     /**解析全局配置参数，并且返回其{@link String}形式对象。*/
     public String getString(Enum<?> name) {
@@ -73,6 +119,14 @@ public abstract class Global implements IAttribute<Object> {
     public String getString(String name) {
         return this.getToType(name, String.class);
     };
+    /**解析全局配置参数，并且返回其{@link String}形式对象。第二个参数为默认值。*/
+    public String getString(Enum<?> name, String defaultValue) {
+        return this.getToType(name, String.class, defaultValue);
+    };
+    /**解析全局配置参数，并且返回其{@link String}形式对象。第二个参数为默认值。*/
+    public String getString(String name, String defaultValue) {
+        return this.getToType(name, String.class, defaultValue);
+    };
     /**解析全局配置参数，并且返回其{@link Boolean}形式对象。*/
     public Boolean getBoolean(Enum<?> name) {
         return this.getToType(name, Boolean.class);
@@ -80,6 +134,14 @@ public abstract class Global implements IAttribute<Object> {
     /**解析全局配置参数，并且返回其{@link Boolean}形式对象。*/
     public Boolean getBoolean(String name) {
         return this.getToType(name, Boolean.class);
+    };
+    /**解析全局配置参数，并且返回其{@link Boolean}形式对象。第二个参数为默认值。*/
+    public Boolean getBoolean(Enum<?> name, Boolean defaultValue) {
+        return this.getToType(name, Boolean.class, defaultValue);
+    };
+    /**解析全局配置参数，并且返回其{@link Boolean}形式对象。第二个参数为默认值。*/
+    public Boolean getBoolean(String name, Boolean defaultValue) {
+        return this.getToType(name, Boolean.class, defaultValue);
     };
     /**解析全局配置参数，并且返回其{@link Short}形式对象。*/
     public Short getShort(Enum<?> name) {
@@ -89,6 +151,14 @@ public abstract class Global implements IAttribute<Object> {
     public Short getShort(String name) {
         return this.getToType(name, Short.class);
     };
+    /**解析全局配置参数，并且返回其{@link Short}形式对象。第二个参数为默认值。*/
+    public Short getShort(Enum<?> name, Short defaultValue) {
+        return this.getToType(name, Short.class, defaultValue);
+    };
+    /**解析全局配置参数，并且返回其{@link Short}形式对象。第二个参数为默认值。*/
+    public Short getShort(String name, Short defaultValue) {
+        return this.getToType(name, Short.class, defaultValue);
+    };
     /**解析全局配置参数，并且返回其{@link Integer}形式对象。*/
     public Integer getInteger(Enum<?> name) {
         return this.getToType(name, Integer.class);
@@ -96,6 +166,14 @@ public abstract class Global implements IAttribute<Object> {
     /**解析全局配置参数，并且返回其{@link Integer}形式对象。*/
     public Integer getInteger(String name) {
         return this.getToType(name, Integer.class);
+    };
+    /**解析全局配置参数，并且返回其{@link Integer}形式对象。第二个参数为默认值。*/
+    public Integer getInteger(Enum<?> name, Integer defaultValue) {
+        return this.getToType(name, Integer.class, defaultValue);
+    };
+    /**解析全局配置参数，并且返回其{@link Integer}形式对象。第二个参数为默认值。*/
+    public Integer getInteger(String name, Integer defaultValue) {
+        return this.getToType(name, Integer.class, defaultValue);
     };
     /**解析全局配置参数，并且返回其{@link Long}形式对象。*/
     public Long getLong(Enum<?> name) {
@@ -105,6 +183,14 @@ public abstract class Global implements IAttribute<Object> {
     public Long getLong(String name) {
         return this.getToType(name, Long.class);
     };
+    /**解析全局配置参数，并且返回其{@link Long}形式对象。第二个参数为默认值。*/
+    public Long getLong(Enum<?> name, Long defaultValue) {
+        return this.getToType(name, Long.class, defaultValue);
+    };
+    /**解析全局配置参数，并且返回其{@link Long}形式对象。第二个参数为默认值。*/
+    public Long getLong(String name, Long defaultValue) {
+        return this.getToType(name, Long.class, defaultValue);
+    };
     /**解析全局配置参数，并且返回其{@link Float}形式对象。*/
     public Float getFloat(Enum<?> name) {
         return this.getToType(name, Float.class);
@@ -112,6 +198,14 @@ public abstract class Global implements IAttribute<Object> {
     /**解析全局配置参数，并且返回其{@link Float}形式对象。*/
     public Float getFloat(String name) {
         return this.getToType(name, Float.class);
+    };
+    /**解析全局配置参数，并且返回其{@link Float}形式对象。第二个参数为默认值。*/
+    public Float getFloat(Enum<?> name, Float defaultValue) {
+        return this.getToType(name, Float.class, defaultValue);
+    };
+    /**解析全局配置参数，并且返回其{@link Float}形式对象。第二个参数为默认值。*/
+    public Float getFloat(String name, Float defaultValue) {
+        return this.getToType(name, Float.class, defaultValue);
     };
     /**解析全局配置参数，并且返回其{@link Double}形式对象。*/
     public Double getDouble(Enum<?> name) {
@@ -121,6 +215,14 @@ public abstract class Global implements IAttribute<Object> {
     public Double getDouble(String name) {
         return this.getToType(name, Double.class);
     };
+    /**解析全局配置参数，并且返回其{@link Double}形式对象。第二个参数为默认值。*/
+    public Double getDouble(Enum<?> name, Double defaultValue) {
+        return this.getToType(name, Double.class, defaultValue);
+    };
+    /**解析全局配置参数，并且返回其{@link Double}形式对象。第二个参数为默认值。*/
+    public Double getDouble(String name, Double defaultValue) {
+        return this.getToType(name, Double.class, defaultValue);
+    };
     /**解析全局配置参数，并且返回其{@link Date}形式对象。*/
     public Date getDate(Enum<?> name) {
         return this.getToType(name, Date.class);
@@ -129,108 +231,123 @@ public abstract class Global implements IAttribute<Object> {
     public Date getDate(String name) {
         return this.getToType(name, Date.class);
     };
-    public boolean contains(String name) {
-        return this.allConfigAtt.contains(name);
+    /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
+    public Date getDate(Enum<?> name, Date defaultValue) {
+        return this.getToType(name, Date.class, defaultValue);
+    };
+    /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
+    public Date getDate(String name, Date defaultValue) {
+        return this.getToType(name, Date.class, defaultValue);
+    };
+    /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
+    public Date getDate(Enum<?> name, long defaultValue) {
+        return this.getToType(name, Date.class, new Date(defaultValue));
+    };
+    /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
+    public Date getDate(String name, long defaultValue) {
+        return this.getToType(name, Date.class, new Date(defaultValue));
+    };
+    /*------------------------------------------------------------------------*/
+    /**视图访问以该枚举名称命名的属性文件或绑定在该枚举上的属性文件，如果尝试访问的属性文件不存在则规则与{@link #getOriginalString(String)}相同。*/
+    public String getOriginalString(String scope, String name) {
+        if (name == null)
+            return null;
+        //2.从list中获取Config
+        IAttribute<String> config = null;
+        if (scope == null || this.poolMap.containsKey(scope) == false)
+            config = this.allData;
+        else
+            config = this.poolMap.get(scope);
+        return config.getAttribute(name);
+    };
+    /**按照序列顺序在所有加入的全局配置文件中寻找指定名称的属性值，并且将原始信息返回。*/
+    public String getOriginalString(String name) {
+        return this.getOriginalString(null, name);
+    };
+    /**解析全局配置参数，并且返回toType参数指定的类型。*/
+    public <T> T getToType(String name, Class<T> toType, T defaultValue) {
+        String oriString = this.getOriginalString(null, name);
+        if (oriString == null)
+            return defaultValue;
+        //
+        Object var = this.getEval(oriString);
+        return StringConvertUtil.changeType(var, toType, defaultValue);
     }
+    /**解析全局配置参数，并且返回toType参数指定的类型。*/
+    public <T> T getToType(Enum<?> enumItem, Class<T> toType, T defaultValue) {
+        if (enumItem == null)
+            return defaultValue;
+        String oriString = this.getOriginalString(enumItem.getClass().getSimpleName(), enumItem.name());
+        if (oriString == null)
+            return defaultValue;
+        //
+        Object var = this.getEval(oriString);
+        return StringConvertUtil.changeType(var, toType, defaultValue);
+    }
+    /**解析全局配置参数，并且返回toType参数指定的类型。*/
+    public <T> T getToType(Enum<?> enumItem, Class<T> toType) {
+        return this.getToType(enumItem, toType, null);
+    };
+    /**解析全局配置参数，并且返回toType参数指定的类型。*/
+    public <T> T getToType(String name, Class<T> toType) {
+        return this.getToType(name, toType, null);
+    };
+    /*------------------------------------------------------------------------*/
+    public boolean contains(String name) {
+        return this.allData.contains(name);
+    }
+    /**该方法等同于{@link #getObject(String)}*/
     public Object getAttribute(String name) {
         return this.getObject(name);
     }
+    /**将{@link Global}类转换成{@link Map}接口形式。*/
     public Map<String, Object> toMap() {
         return new TransformToMap<Object>(this);
     }
     public String[] getAttributeNames() {
-        return this.allConfigAtt.getAttributeNames();
+        return this.allData.getAttributeNames();
     }
+    /**Global，不支持该方法。*/
     public void setAttribute(String name, Object value) {
         throw new SupportException("Global，不支持该方法。");
     }
+    /**Global，不支持该方法。*/
     public void removeAttribute(String name) {
         throw new SupportException("Global，不支持该方法。");
     }
+    /**Global，不支持该方法。*/
     public void clearAttribute() {
         throw new SupportException("Global，不支持该方法。");
     }
     /*------------------------------------------------------------------------*/
-    /**视图访问以该枚举名称命名的属性文件或绑定在该枚举上的属性文件，如果尝试访问的属性文件不存在则规则与{@link #getOriginalString(String)}相同。*/
-    public String getOriginalString(Enum<?> name) {
-        if (name == null)
-            return null;
-        //1.取得名称
-        String simpleName = name.getClass().getSimpleName();
-        //2.从list中获取Config
-        IAttribute<String> att = null;
-        if (this.listConfigAtt.containsKey(simpleName) == false)
-            att = this.allConfigAtt;
-        else
-            att = this.listConfigAtt.get(simpleName);
-        return att.getAttribute(name.name());
-    };
-    /**按照序列顺序在所有加入的全局配置文件中寻找指定名称的属性值，并且将原始信息返回。*/
-    public String getOriginalString(String name) {
-        if (name == null)
-            return null;
-        return this.allConfigAtt.getAttribute(name);
-    };
-    /**将一组原始的配置信息添加到列表中，如果存在已经使用的名称则覆盖。*/
-    protected void addConfig(String name, IAttribute<String> config) {
-        this.listConfigAtt.put(name, config);
+    /**将一组原始的配置信息添加到Global中，如果存在已经使用的名称则追加。*/
+    public void addConfig(Class<? extends Enum<?>> enumType, IAttribute<String> config) {
+        if (enumType == null || config == null)
+            throw new NullPointerException("‘enumType’ or ‘config’ param is null");
+        this.addConfig(enumType.getSimpleName(), config);
+    }
+    /**将一组原始的配置信息添加到Global中，如果存在已经使用的名称则追加。*/
+    public void addConfig(String name, IAttribute<String> config) {
+        if (name == null || config == null)
+            throw new NullPointerException("‘name’ or ‘config’ param is null");
+        SequenceStack<String> stack = null;
+        if (this.poolMap.containsKey(name) == false) {
+            //新增了一条，同时将这条增加到allData中
+            stack = new SequenceStack<String>();
+            this.poolMap.put(name, stack);
+            this.allData.putStack(stack);
+        } else
+            stack = this.poolMap.get(name);
+        stack.putStack(config);
     };
     /**检测name表示的配置信息是否已经注册。*/
-    protected boolean addConfig(String name) {
-        return this.listConfigAtt.containsKey(name);
+    protected boolean containsConfig(String name) {
+        return this.poolMap.containsKey(name);
     };
-    /**解析全局配置参数，并且返回toType参数指定的类型。*/
-    public <T> T getToType(Enum<?> enumItem, Class<T> toType) {
-        String oriString = this.getOriginalString(enumItem);
-        if (oriString == null)
-            return null;
-        //
-        Object var = this.evalEL(oriString);
-        return StringConvertUtil.changeType(var, toType);
-    };
-    /**解析全局配置参数，并且返回toType参数指定的类型。*/
-    public <T> T getToType(String name, Class<T> toType) {
-        String oriString = this.getOriginalString(name);
-        if (oriString == null)
-            return null;
-        //
-        Object var = this.evalEL(oriString);
-        return StringConvertUtil.changeType(var, toType);
-    };
-    /*------------------------------------------------------------------------*/
-    /**绑定一个枚举到一个配置文件上，如果这个枚举配置了{@link PropFile}注解则使用该注解标记的属性文件进行装载，否则就装载与枚举名同名的属性文件。*/
-    public void addEnum(Class<? extends Enum<?>> enumType) throws Throwable {
-        PropFile pFile = enumType.getAnnotation(PropFile.class);
-        if (pFile != null)
-            if (pFile.file().equals("") == false)
-                this.addResource(enumType, new File(pFile.file()));
-            else if (pFile.uri().equals("") == false)
-                this.addResource(enumType, new URI(pFile.uri()));
-            else if (pFile.value().equals("") == false)
-                this.addResource(enumType, pFile.value());
-            else
-                this.addResource(enumType, enumType.getSimpleName());
-        this.addResource(enumType, enumType.getSimpleName());
-    };
-    /**添加一个配置文件，并且绑定到指定的枚举上。*/
-    public void addResource(Class<? extends Enum<?>> enumType, String resource) throws IOException {
-        InputStream stream = ResourcesUtil.getResourceAsStream(resource);
-        IAttribute<String> att = this.loadConfig(stream);
-        this.addAttribute(enumType, att);
-    };
-    /**添加一个配置文件，并且绑定到指定的枚举上。*/
-    public void addResource(Class<? extends Enum<?>> enumType, URI resource) throws MalformedURLException, IOException {
-        IAttribute<String> att = this.loadConfig(new AutoCloseInputStream(resource.toURL().openStream()));
-        this.addAttribute(enumType, att);
-    };
-    /**添加一个配置文件，并且绑定到指定的枚举上。*/
-    public void addResource(Class<? extends Enum<?>> enumType, File resource) throws IOException {
-        IAttribute<String> att = this.loadConfig(new AutoCloseInputStream(new FileInputStream(resource)));
-        this.addAttribute(enumType, att);
-    };
-    /*------------------------------------------------------------------------*/
     /**解析流对象，并且将解析的结果返回为{@link IAttribute}接口形式。*/
-    protected abstract IAttribute<String> loadConfig(InputStream stream) throws IOException;
+    protected IAttribute<String> loadConfig(InputStream stream) throws IOException {
+        return new AttBase<String>();
+    };
     /**返回上下文对象。*/
     protected Object getContext() {
         return this.context;
@@ -241,46 +358,217 @@ public abstract class Global implements IAttribute<Object> {
     };
     /**返回上下文对象。*/
     protected Map<String, Object> getRoot() {
-        AttBase<Object> root = new AttBase<Object>();
-        root.put("context", this.context);
-        return root;
+        return this.rootMap.toMap();
     };
-    /**添加到集合中*/
-    private void addAttribute(Class<? extends Enum<?>> enumType, IAttribute<String> att) {
-        String name = enumType.getSimpleName();
-        this.listConfigAtt.put(name, att);
-        this.allConfigAtt.putStack(att);
+    /**返回一共增加了多少个config分组设置。*/
+    protected int getConfigGroupCount() {
+        return this.poolMap.size();
     }
-    //
-    //
-    private <T> T evalEL(String elString) {
-        //1.整理elString
-        elString = elString;
+    /**返回一共增加了多少个config设置。*/
+    protected int getConfigAllCount() {
+        return this.allData.size();
+    }
+    /**添加一个内置属性*/
+    public void addGlobalProperty(String name, GlobalProperty property) {
+        if (name == null || name.equals("") == true || property == null)
+            throw new NullPointerException("");
+        this.globalObject.addGlobalProperty(name, property);
+    }
+    /*------------------------------------------------------------------------*/
+    /*将包含EL的字符串转换成为EL字符串。*/
+    private String toEL(String string) {
+        ELStateVisitor elv = new ELStateVisitor();
+        ELParser elParser = new ELParser(elv);
+        elParser.parser(string);
+        return elv.getEL();
+    };
+    private <T> T getEval(String elString) {
+        elString = elString.trim();
+        if (elString == null || elString.equals("") == true)
+            return null;
+        //1.获取标记位置
+        StringBuffer elStr = new StringBuffer(elString.trim());
+        char firstChar = elStr.charAt(0);
+        char lastChar = elStr.charAt(elStr.length() - 1);
+        //2.截取尾巴
+        if (lastChar == ';') {
+            elStr.deleteCharAt(elStr.length());
+            lastChar = elStr.charAt(elStr.length() - 1);//去掉尾部的分号
+        }
+        //3.判断类型
+        elStr.deleteCharAt(0);
+        elStr.deleteCharAt(elStr.length() - 1);
+        Object res = null;
+        if (firstChar == '(' && lastChar == ')')
+            res = this.$evalJSON(elStr.toString());
+        else if (firstChar == '{' && lastChar == '}')
+            res = this.$evalEL(elStr.toString());
+        else {
+            //   .*\$\{.*\}.*
+            if (elString.matches(".*\\$\\{.*\\}.*") == false)
+                res = this.$evalString(elString);//普通字符串
+            else
+                res = this.$evalEL(toEL(elString));//包含EL的字符串
+        }
+        return (T) res;
+    }
+    /**在解析过程中负责解析字符串*/
+    protected String $evalString(String string) {
+        return string;
+    };
+    /**在解析过程中负责解析EL串，如果_global.enableEL属性配置为false则不解析json数据。*/
+    protected Object $evalEL(String elString) {
+        //1.解析elString
+        if (this.getBoolean(EnableEL, true) == false)
+            return this.$evalString(elString);
         //2.解析elString
         try {
-            return (T) Ognl.getValue(elString, this.getRoot());
+            return Ognl.getValue(elString, this.getRoot());
         } catch (OgnlException e) {
             throw new FormatException(elString + "：作为EL解析错误。");
         }
     };
+    /**在解析过程中负责解析Json串，如果_global.enableJson属性配置为false则不解析json数据。*/
+    protected Object $evalJSON(String jsonString) {
+        if (this.getBoolean(EnableJson, true) == false)
+            return this.$evalString(jsonString);
+        else
+            return JsonUtil.transformToObject(jsonString);
+    };
     /*------------------------------------------------------------------------*/
-    public static Global createForXml(String xmlPath) throws IOException {
-        return createForXml(xmlPath, null);
+    public static Global newInstance(String factoryName, Object... params) throws IOException {
+        IAttribute<String> configAtt = ResourcesUtil.getPropertys(Configs);
+        String factoryType = configAtt.getAttribute(factoryName);
+        if (factoryType == null)
+            throw new SupportException("Global factory ‘" + factoryName + "’ is not define.");
+        try {
+            GlobalFactory globalFactory = (GlobalFactory) Thread.currentThread().getContextClassLoader().loadClass(factoryType).newInstance();
+            return globalFactory.createGlobal(params);
+        } catch (Exception e) {
+            throw new InitializationException("init error can`t create GlobalFactory  " + factoryName + "=" + factoryType);
+        }
     };
-    public static Global createForFile(String propPath) throws IOException {
-        return createForFile(propPath, null);
-    };
-    public static Global createForXml(String xmlPath, Object context) throws IOException {
-        XmlGlobal xml = new XmlGlobal();
-        xml.setContext(context);
-        xml.addResource(GlobalEnum.class, xmlPath);
-        return xml;
-    };
-    public static Global createForFile(String propPath, Object context) throws IOException {
-        FileGlobal file = new FileGlobal();
-        file.setContext(context);
-        file.addResource(GlobalEnum.class, propPath);
-        return file;
-    };
+    public static Global newInstance(IAttribute<String> configs) {
+        return new Global(configs) {};
+    }
 };
-enum GlobalEnum {}
+//class ELWrite {
+//    private static final Map<Character, String> charset     = new HashMap<Character, String>(); ;
+//    static {
+//        charset.put('"', "\\\"");
+//        charset.put('\'', "\\\'");
+//        charset.put('\\', "\\\\");
+//        charset.put('/', "\\/");
+//        charset.put('\b', "\\\b");
+//        charset.put('\f', "\\\f");
+//        charset.put('\n', "\\\n");
+//        charset.put('\r', "\\\r");
+//        charset.put('\t', "\\\t");
+//    };
+//    private ArrayList<String>                   ss          = new ArrayList<String>();
+//    private ArrayList<Boolean>                  bs          = new ArrayList<Boolean>();
+//    private StringBuffer                        cur         = new StringBuffer();
+//    //
+//    private boolean                             sense       = false;                           //是否开启转义
+//    private boolean                             el          = false;                           //是否开启EL
+//    private boolean                             readyEL     = false;                           //EL检测，标记
+//    private int                                 depth       = 0;                               //大括号深度
+//    private char                                startString = 0;
+//    //
+//    public void write(char c) {
+//        /*处理转义*/
+//        if (sense == true) {
+//            sense = false;
+//            cur.append(c);
+//            return;
+//        }
+//        /*遇到\开启转义*/
+//        if (c == '\\') {
+//            sense = true;
+//            return;
+//        }
+//        if (startString == 0) {
+//            /*遇到$预备EL*/
+//            if (el == false && c == '$') {
+//                readyEL = true;
+//                return;
+//            }
+//            /*处理预备el下的下一个字符*/
+//            if (readyEL == true)
+//                if (c == '{' && el == false) {
+//                    newLine();
+//                    el = true;//开始el
+//                    readyEL = false;
+//                    depth++;
+//                    return;
+//                } else
+//                    throw new FormatException("错误的EL表达式开始。");
+//            /*EL结束*/
+//            if (el == true && c == '}' && depth == 1) {
+//                newLine();
+//                el = false;
+//                depth = 0;
+//                return;
+//            }
+//        }
+//        /*特殊处理 {}*/
+//        if (el == true)
+//            if (c == '\"' || c == '\'')
+//                if (startString == 0)
+//                    startString = c;
+//                else if (startString == c)
+//                    startString = 0;
+//        this.cur.append(c);
+//    }
+//    private void newLine() {
+//        if (cur.length() > 0) {
+//            String elStr = cur.toString().trim();
+//            if (elStr.equals("") == false) {
+//                ss.add(elStr);
+//                if (el == true)
+//                    bs.add(true);
+//                else
+//                    bs.add(false);
+//            }
+//        }
+//        cur = new StringBuffer();
+//    }
+//    public List<String> getS() {
+//        newLine();
+//        return ss;
+//    }
+//    public List<Boolean> getB() {
+//        newLine();
+//        return bs;
+//    }
+//    public String getEL() {
+//        List<String> ss = this.getS();
+//        List<Boolean> bs = this.getB();
+//        //
+//        StringBuffer sb = new StringBuffer();
+//        for (int i = 0; i < ss.size(); i++) {
+//            String s = ss.get(i);
+//            if (bs.get(i) == false) {
+//                sb.append(" + ");
+//                sb.append('\"');
+//                try {
+//                    Reader sr = new StringReader((String) s);
+//                    while (true) {
+//                        int c_read = sr.read();
+//                        char c = (char) c_read;
+//                        if (c_read == -1)
+//                            break;
+//                        if (charset.containsKey(c) == true)
+//                            sb.append(charset.get(c));
+//                        else
+//                            sb.append(c);
+//                    }
+//                } catch (Exception e) {}
+//                sb.append('\"');
+//                //
+//            } else
+//                sb.append(s);
+//        }
+//        return sb.toString();
+//    }
+//}
