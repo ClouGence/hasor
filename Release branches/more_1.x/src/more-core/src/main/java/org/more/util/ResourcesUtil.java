@@ -31,6 +31,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.more.core.error.FormatException;
 import org.more.util.attribute.IAttribute;
+import org.more.util.attribute.SequenceStack;
 import org.more.util.attribute.TransformToAttribute;
 /**
  * classpath工具类
@@ -53,16 +54,9 @@ public abstract class ResourcesUtil {
     }
     /**合成所有属性文件的配置信息到一个{@link IAttribute}接口中。*/
     public static IAttribute<String> getPropertys(String[] resourcePaths) throws IOException {
-        IAttribute<String> iatt = null;
-        for (String str : resourcePaths) {
-            IAttribute<String> att = getPropertys(str);
-            if (iatt == null) {
-                iatt = att;
-                continue;
-            }
-            for (String key : att.getAttributeNames())
-                iatt.setAttribute(key, att.getAttribute(key));
-        }
+        SequenceStack<String> iatt = new SequenceStack<String>();
+        for (String str : resourcePaths)
+            iatt.putStack(getPropertys(str));
         return iatt;
     }
     /**读取一个属性文件，并且以{@link IAttribute}接口的形式返回。*/

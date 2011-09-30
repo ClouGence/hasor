@@ -56,14 +56,21 @@ public class SequenceStack<T> implements IAttribute<T> {
     };
     /**该方法只会对最后一个加入的{@link IAttribute}对象起作用。*/
     public void clearAttribute() {
-        this.attList.get(0).clearAttribute();
+        if (this.attList.isEmpty() == false)
+            this.attList.get(0).clearAttribute();
     };
     /**该方法只会对最后一个加入的{@link IAttribute}对象起作用。*/
     public void removeAttribute(String name) {
-        this.attList.get(0).removeAttribute(name);
+        if (this.attList.isEmpty() == false)
+            this.attList.get(0).removeAttribute(name);
     };
     /**该方法只会对最后一个加入的{@link IAttribute}对象起作用。*/
     public void setAttribute(String name, T value) {
-        this.attList.get(0).setAttribute(name, value);
+        if (this.attList.isEmpty() == false)
+            this.attList.get(0).setAttribute(name, value);
+    }
+    /**返回队列中元素的个数*/
+    public int size() {
+        return this.attList.size();
     };
 };

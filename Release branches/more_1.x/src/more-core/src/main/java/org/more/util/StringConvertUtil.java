@@ -45,13 +45,13 @@ public abstract class StringConvertUtil {
     */
     public static Number parseNumber(final String value, final Number... defaultValue) {
         try {
-            if (value.indexOf(".") != -1)
-                try {
-                    return Float.parseFloat(value);
-                } catch (Exception e) {
+            if (value.indexOf(".") != -1) {
+                float var = Float.parseFloat(value);
+                if (var == Float.POSITIVE_INFINITY || var == Float.NEGATIVE_INFINITY)
                     return Double.parseDouble(value);
-                }
-            else
+                else
+                    return var;
+            } else
                 try {
                     return Byte.parseByte(value);
                 } catch (Exception e) {
