@@ -1,10 +1,10 @@
-<safety xmlns="http://project.xdf.cn/safety">
-<!--	<resources name="test"><A></A></resources>-->
-	
-	<resources name="test" xmlns:config="http://www.test.org/schema/config">
+<s:safety xmlns:s="http://project.xdf.cn/safety">
+	<!-- <resources name="test"><A></A></resources> -->
+
+	<s:resources name="test" xmlns:config="http://www.test.org/schema/config">
 		<config:if>
-			<function/>
+			<s:function />
 		</config:if>
-	</resources>
-	
-</safety>
+	</s:resources>
+
+</s:safety>
