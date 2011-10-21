@@ -38,7 +38,7 @@ public abstract class XmlStreamEvent {
     //-----------------------------------------------------
     /**获取当前事件发生时所处的元素。*/
     public QName getCurrentElement() {
-        return currentElement;
+        return this.currentElement;
     }
     void setCurrentElement(ElementTree currentElementTree) {
         if (currentElementTree != null)

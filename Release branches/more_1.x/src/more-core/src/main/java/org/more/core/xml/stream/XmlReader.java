@@ -191,7 +191,7 @@ public class XmlReader {
                     currentXPathTemp.append(this.getName(qn));
                     currentElement = new ElementTree(qn, currentElement);
                     currentEvent = new AttributeEvent(currentXPathTemp.toString(), this, reader, i);
-                    currentEvent.setCurrentElement(currentElement);
+                    currentEvent.setCurrentElement(currentElement.getParent());//将属性的当前节点设置成其所属的元素节点。
                     currentElement = currentElement.getParent();
                     this.pushEvent(accept, currentEvent, ignoreXPath);
                 }

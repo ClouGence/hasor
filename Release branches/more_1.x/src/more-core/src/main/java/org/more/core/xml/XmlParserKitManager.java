@@ -167,7 +167,12 @@ public class XmlParserKitManager implements XmlAccept {
         //3.处理AttributeEvent
         if (e instanceof AttributeEvent) {
             AttributeEvent ee = (AttributeEvent) e;
-            String prefix = ee.getCurrentElement().getPrefix();
+            String prefix = ee.getName().getPrefix();
+            prefix = (prefix == null) ? "" : prefix;
+            if (prefix.equals("") == true)
+                prefix = ee.getCurrentElement().getPrefix();
+            prefix = (prefix == null) ? "" : prefix;
+            //
             NameSpace ns = this.activateStack.getNameSpace(prefix);
             ns.appendXPath(ee.getElementName(), true);
             this.issueEvent(e, this.activateStack);
