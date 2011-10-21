@@ -79,11 +79,11 @@ public class XmlReader {
      * @param testXPath 表示打算忽略的XPath。
      * @return 返回一个boolean值，该值决定了是否忽略当前XPath条目。
      */
-    protected boolean ignoreXPath(String currentXPath, String testXPath) {
-        if (testXPath == null)
+    protected boolean ignoreXPath(String currentXPath, String testWild) {
+        if (testWild == null)
             return false;
         //TODO XPath比较算法，比较currentXPath是否属于testXPath范围内的，目前使用的是?和*通配符。
-        return StringUtil.matchWild(testXPath, currentXPath);
+        return StringUtil.matchWild(testWild, currentXPath);
     }
     /**
      * 执行解析Xml文件，并且形成xml事件流。这些事件流被输入到{@link XmlAccept}类型对象中。
@@ -101,39 +101,39 @@ public class XmlReader {
         XMLStreamReader reader = factory.createXMLStreamReader(this.xmlStrema);
         StreamFilter filter = new NullStreamFilter(this, this.getXmlStreamFilter());
         reader = factory.createFilteredReader(reader, filter);
-        //2.准备数据XPath
-        StringBuffer currentXPath = new StringBuffer("/");
+        //2.准备数据
+        StringBuffer currentXPath = new StringBuffer("/");//XPath
         ElementTree currentElement = null;//设置当前事件所属的元素
+        XmlStreamEvent currentEvent = null;
         //3.轮询推送事件流
         while (true) {
             //(1).拉出事件类型
             int xmlEvent = reader.getEventType();//当前事件对象
-            XmlStreamEvent event = null;
             //(2).生成事件对象
             switch (xmlEvent) {
             case XMLStreamConstants.START_DOCUMENT:
                 //开始文档
-                event = new StartDocumentEvent(currentXPath.toString(), this, reader);
-                event.setCurrentElement(currentElement);//设置当前元素
+                currentEvent = new StartDocumentEvent(currentXPath.toString(), this, reader);
+                currentEvent.setCurrentElement(currentElement);//设置当前元素
                 break;
             case XMLStreamConstants.END_DOCUMENT:
                 //结束文档
-                event = new EndDocumentEvent(currentXPath.toString(), this, reader);
-                event.setCurrentElement(currentElement);//设置当前元素
+                currentEvent = new EndDocumentEvent(currentXPath.toString(), this, reader);
+                currentEvent.setCurrentElement(currentElement);//设置当前元素
                 break;
             case XMLStreamConstants.START_ELEMENT:
                 //开始元素
                 if (currentXPath.indexOf("/") != currentXPath.length() - 1)
                     currentXPath.append("/");
                 currentXPath.append(this.getName(reader.getName()));
-                event = new StartElementEvent(currentXPath.toString(), this, reader);
+                currentEvent = new StartElementEvent(currentXPath.toString(), this, reader);
                 currentElement = new ElementTree(reader.getName(), currentElement);
-                event.setCurrentElement(currentElement);//设置当前元素
+                currentEvent.setCurrentElement(currentElement);//设置当前元素
                 break;
             case XMLStreamConstants.END_ELEMENT:
                 //结束元素
-                event = new EndElementEvent(currentXPath.toString(), this, reader);
-                event.setCurrentElement(currentElement);//设置当前元素
+                currentEvent = new EndElementEvent(currentXPath.toString(), this, reader);
+                currentEvent.setCurrentElement(currentElement);//设置当前元素
                 int index = currentXPath.lastIndexOf("/");
                 index = (index == 0) ? 1 : index;
                 currentXPath = currentXPath.delete(index, currentXPath.length());
@@ -141,24 +141,24 @@ public class XmlReader {
                 break;
             case XMLStreamConstants.COMMENT:
                 //注释
-                event = new TextEvent(currentXPath.toString(), this, reader, Type.Comment);
-                event.setCurrentElement(currentElement);//设置当前元素
+                currentEvent = new TextEvent(currentXPath.toString(), this, reader, Type.Comment);
+                currentEvent.setCurrentElement(currentElement);//设置当前元素
                 break;
             case XMLStreamConstants.CDATA:
                 //CDATA数据
-                event = new TextEvent(currentXPath.toString(), this, reader, Type.CDATA);
-                event.setCurrentElement(currentElement);//设置当前元素
+                currentEvent = new TextEvent(currentXPath.toString(), this, reader, Type.CDATA);
+                currentEvent.setCurrentElement(currentElement);//设置当前元素
                 break;
             //---------------------------------------------
             case XMLStreamConstants.SPACE:
                 //可以忽略的空格
-                event = new TextEvent(currentXPath.toString(), this, reader, Type.Space);
-                event.setCurrentElement(currentElement);//设置当前元素
+                currentEvent = new TextEvent(currentXPath.toString(), this, reader, Type.Space);
+                currentEvent.setCurrentElement(currentElement);//设置当前元素
                 break;
             case XMLStreamConstants.CHARACTERS:
                 //字符数据
-                event = new TextEvent(currentXPath.toString(), this, reader, Type.Chars);
-                event.setCurrentElement(currentElement);//设置当前元素
+                currentEvent = new TextEvent(currentXPath.toString(), this, reader, Type.Chars);
+                currentEvent.setCurrentElement(currentElement);//设置当前元素
                 break;
             }
             //(3).执行忽略
@@ -172,7 +172,7 @@ public class XmlReader {
                 continue;
             }
             //(4).推送事件
-            this.pushEvent(accept, event, ignoreXPath);
+            this.pushEvent(accept, currentEvent, ignoreXPath);
             if (xmlEvent == XMLStreamConstants.START_ELEMENT) {
                 int attCount = reader.getAttributeCount();
                 for (int i = 0; i < attCount; i++) {
@@ -190,10 +190,10 @@ public class XmlReader {
                     currentXPathTemp.append("/@");
                     currentXPathTemp.append(this.getName(qn));
                     currentElement = new ElementTree(qn, currentElement);
-                    event = new AttributeEvent(currentXPathTemp.toString(), this, reader, i);
-                    event.setCurrentElement(currentElement);
+                    currentEvent = new AttributeEvent(currentXPathTemp.toString(), this, reader, i);
+                    currentEvent.setCurrentElement(currentElement);
                     currentElement = currentElement.getParent();
-                    this.pushEvent(accept, event, ignoreXPath);
+                    this.pushEvent(accept, currentEvent, ignoreXPath);
                 }
             }
             //(5).获取下一个xml文档流事件。
@@ -218,16 +218,30 @@ public class XmlReader {
         }
         return sb.append(qname.getLocalPart()).toString();
     }
-    /**执行XPath忽略判断。 
-     * @throws IOException */
+    /**执行XPath忽略判断。 */
+    private XmlStreamEvent skipEvent = null; //要跳过的事件
     private void pushEvent(XmlAccept accept, XmlStreamEvent e, String ignoreXPath) throws XMLStreamException, IOException {
-        //(3).XPath忽略判断
+        //(1).XPath忽略“判断”
         boolean ignore = this.ignoreXPath(e.getXpath(), ignoreXPath);
-        if (ignore == false)
-            this.pushEvent(accept, e);
+        if (ignore == true)
+            return;
+        //(2).上一个标签跳过之后，接下来的所有标签都执行跳过“判断”
+        if (this.skipEvent != null) {
+            e.skip();
+            if (this.skipEvent.isPartner(e) == true)
+                this.skipEvent = null;//如果当前标签和上一个跳过标签是兄弟关系， 那么skipEvent置空。
+        }
+        //(3).执行跳过
+        if (e.isSkip() == true)
+            return;
+        //(4).执行事件
+        this.pushEvent(accept, e);
+        //(5).接收跳过事件
+        if (this.skipEvent == null)
+            if (e.isSkip() == true)
+                this.skipEvent = e;
     }
-    /**负责推送事件的方法，子类可以通过扩展该方法在推送事件期间处理一些其他操作。 
-     * @throws IOException */
+    /**负责推送事件的方法，子类可以通过扩展该方法在推送事件期间处理一些其他操作。 被忽略的和被跳过的事件将不会接受到该方法的调用。*/
     protected void pushEvent(XmlAccept accept, XmlStreamEvent e) throws XMLStreamException, IOException {
         if (accept != null)
             accept.sendEvent(e);

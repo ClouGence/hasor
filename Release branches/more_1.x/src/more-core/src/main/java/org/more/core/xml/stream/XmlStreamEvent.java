@@ -28,6 +28,7 @@ public abstract class XmlStreamEvent {
     private XMLStreamReader reader         = null; //底层的XMLStreamReader
     private XmlReader       xmlReader      = null;
     private QName           currentElement = null;
+    private boolean         skip           = false;
     //-----------------------------------------------------
     public XmlStreamEvent(String xpath, XmlReader xmlReader, XMLStreamReader reader) {
         this.xpath = xpath;
@@ -63,4 +64,16 @@ public abstract class XmlStreamEvent {
     public NamespaceContext getNamespaceContext() {
         return this.reader.getNamespaceContext();
     }
+    /**返回一个boolean值，该值表示是否跳过该事件的处理，如果被跳过的事件是{@link StartDocumentEvent}或{@link StartElementEvent}则也会跳过中间的所有事件流。*/
+    public boolean isSkip() {
+        return this.skip;
+    }
+    /**跳过当前事件，如果被跳过的事件是{@link StartDocumentEvent}或{@link StartElementEvent}则也会跳过中间的所有事件流。*/
+    public void skip() {
+        this.skip = true;
+    }
+    /**是否为一个全局事件，全局事件是指该事件会在所有注册的命名空间解析器上传播。*/
+    public abstract boolean isPublicEvent();
+    /**判断参数中的事件对象是否是与当前事件对象为一个拍档。例如：{@link StartDocumentEvent}和{@link EndDocumentEvent}是一对拍档，同一Xpath的{@link StartElementEvent}和{@link EndElementEvent}是一对拍档*/
+    public abstract boolean isPartner(XmlStreamEvent e);
 }

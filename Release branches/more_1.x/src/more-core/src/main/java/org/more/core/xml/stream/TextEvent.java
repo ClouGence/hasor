@@ -89,5 +89,19 @@ public class TextEvent extends XmlStreamEvent {
     /** 返回存储（此文本事件的）第一个字符位置处的文本字符数组的偏移量。 */
     public int getTextStart() {
         return this.getReader().getTextStart();
+    }
+    /**该事件的拍档是它自己。*/
+    public boolean isPartner(XmlStreamEvent e) {
+        if (e instanceof TextEvent)
+            return true;
+        else
+            return false;
     };
+    /**文本事件，如果文本类型是Comment，则是共有事件。其他为私有事件。*/
+    public boolean isPublicEvent() {
+        if (this.isCommentEvent() == true)
+            return true;
+        else
+            return false;
+    }
 }

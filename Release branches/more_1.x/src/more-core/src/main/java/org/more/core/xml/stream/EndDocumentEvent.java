@@ -24,4 +24,12 @@ public class EndDocumentEvent extends XmlStreamEvent {
     public EndDocumentEvent(String xpath, XmlReader xmlReader, XMLStreamReader reader) {
         super(xpath, xmlReader, reader);
     }
+    /**该事件的拍档是{@link StartDocumentEvent}类型对象。*/
+    public boolean isPartner(XmlStreamEvent e) {
+        return e instanceof StartDocumentEvent;
+    };
+    /**文档结束事件，是共有事件。*/
+    public boolean isPublicEvent() {
+        return true;
+    }
 }

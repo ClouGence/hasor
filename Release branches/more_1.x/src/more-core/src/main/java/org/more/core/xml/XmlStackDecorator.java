@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.core.xml;
+import java.util.HashMap;
 import org.more.util.attribute.IAttribute;
 import org.more.util.attribute.StackDecorator;
 /**
@@ -33,5 +34,13 @@ public class XmlStackDecorator<T> extends StackDecorator<T> {
     /**…Ë÷√Context*/
     public void setContext(Object context) {
         this.context = context;
+    }
+    //---------------
+    private HashMap<String, NameSpace> nameSpaceMap = new HashMap<String, NameSpace>();
+    NameSpace getNameSpace(String prefix) {
+        return this.nameSpaceMap.get(prefix);
+    }
+    void addNameSpace(String prefix, NameSpace nameSpace) {
+        this.nameSpaceMap.put(prefix, nameSpace);
     }
 }

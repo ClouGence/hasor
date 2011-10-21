@@ -36,4 +36,12 @@ public class StartDocumentEvent extends XmlStreamEvent {
     public String getCharacterEncoding() {
         return this.getReader().getCharacterEncodingScheme();
     }
+    /**该事件的拍档是{@link EndDocumentEvent}类型对象。*/
+    public boolean isPartner(XmlStreamEvent e) {
+        return e instanceof EndDocumentEvent;
+    };
+    /**文档结束事件，是共有事件。*/
+    public boolean isPublicEvent() {
+        return true;
+    }
 }

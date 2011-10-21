@@ -30,19 +30,30 @@ import org.more.core.xml.stream.XmlStreamEvent;
 public class Level2_Test {
     @Test
     public void reader() throws XMLStreamException, IOException {
-        XmlReader reader = new XmlReader(Level1_Test.class.getResourceAsStream("/org/test/more/core/xml/test_xml.xml"));
-        //        reader.setIgnoreComment(true);
-        //        reader.setIgnoreSpace(true);
+        XmlReader reader = new XmlReader(Level1_Test.class.getResourceAsStream("/org/test/more/core/xml/level_2.xml"));
+        //reader.setIgnoreComment(true);
+        //reader.setIgnoreSpace(true);
         XmlParserKitManager manager = new XmlParserKitManager();
-        //        manager.regeditKit("http://www.test.org/schema/beans", new XmlParserKit());
-        //        manager.regeditKit("http://www.test.org/schema/config", new XmlParserKit());
-        manager.regeditKit("http://www.test.org/schema/b", new XmlNamespaceParser() {
-            public void endAccept() {}
-            public void beginAccept() {}
-            public void sendEvent(XmlStackDecorator<Object> context, String xpath, XmlStreamEvent event) {
-                System.out.println(event.getClass().getSimpleName() + "\t\t\t" + event.getXpath() + "\t\t\t" + xpath);
-            }
-        });
+        //manager.regeditKit("http://www.test.org/schema/beans", new XmlParserKit());
+        //manager.regeditKit("http://www.test.org/schema/config", new XmlParserKit());
+        manager.regeditKit("http://project.xdf.cn/safety", new XmlNSP("S"));
+        manager.regeditKit("http://www.test.org/schema/config", new XmlNSP("C"));
+        //http://www.test.org/schema/config
         reader.reader(manager, null);//"/beans/config:config");
+    }
+}
+class XmlNSP implements XmlNamespaceParser {
+    private String marker = null;
+    public XmlNSP(String string) {
+        this.marker = string + " ";
+    }
+    public void beginAccept() {
+        System.out.println(marker + "begin....");
+    }
+    public void endAccept() {
+        System.out.println(marker + "end!");
+    }
+    public void sendEvent(XmlStackDecorator<Object> context, String xpath, XmlStreamEvent event) throws IOException, XMLStreamException {
+        System.out.println(marker + context.getDepth() + "\t" + event.getClass().getSimpleName() + "\t" + xpath);
     }
 }

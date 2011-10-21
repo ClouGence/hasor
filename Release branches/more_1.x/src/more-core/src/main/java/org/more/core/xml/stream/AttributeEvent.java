@@ -49,4 +49,12 @@ public class AttributeEvent extends XmlStreamEvent {
     public String getValue() {
         return this.getReader().getAttributeValue(this.index);
     }
+    /**该事件没有拍档。*/
+    public boolean isPartner(XmlStreamEvent e) {
+        return false;
+    }
+    /**属性事件，不是共有事件。*/
+    public boolean isPublicEvent() {
+        return false;
+    }
 }

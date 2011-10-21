@@ -15,12 +15,13 @@
  */
 package org.test.more.core.xml;
 import java.io.IOException;
+import java.io.InputStream;
 import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
-import org.more.core.xml.stream.TextEvent;
 import org.more.core.xml.stream.XmlAccept;
 import org.more.core.xml.stream.XmlReader;
 import org.more.core.xml.stream.XmlStreamEvent;
+import org.more.util.ResourcesUtil;
 /**
  *
  * @version 2010-9-8
@@ -29,25 +30,25 @@ import org.more.core.xml.stream.XmlStreamEvent;
 public class Level1_Test {
     @Test
     public void reader() throws XMLStreamException, IOException {
-        XmlReader reader = new XmlReader(Level1_Test.class.getResourceAsStream("/org/test/more/core/xml/test_xml.xml"));
-        reader.setIgnoreComment(true);
-        reader.setIgnoreSpace(true);
-        reader.reader(new XmlAccept() {
-            public void beginAccept() {}
-            public void endAccept() {}
-            public void sendEvent(XmlStreamEvent e) {
-                System.out.println(e.getClass() + "\t\t" + e.getXpath().toString());
-                //
-                if (e instanceof TextEvent)
-                    System.out.print(((TextEvent) e).getTrimText());
-                //                if (e instanceof AttributeEvent)
-                //                    System.out.println(((AttributeEvent) e).getValue());
-                //                if (e instanceof StartElementEvent) {
-                //                    StartElementEvent ee = (StartElementEvent) e;
-                //                    if (ee.getAttributeCount() != 0)
-                //                        System.out.println(((StartElementEvent) e).getAttributeValue(0));
-                //                }
-            }
-        }, null);//"/beans/config:config");
+        String url = "org/test/more/core/xml/level_1.xml";
+        InputStream in = ResourcesUtil.getResourceAsStream(url);
+        //
+        new XmlReader(in).reader(new XmlSpan(), null);
+    }
+}
+class XmlSpan implements XmlAccept {
+    public void beginAccept() throws XMLStreamException {
+        System.out.println("begin....");
+    }
+    public void endAccept() throws XMLStreamException {
+        System.out.println("end!");
+    }
+    public void sendEvent(XmlStreamEvent e) throws XMLStreamException, IOException {
+        if (e.getXpath().equals("/safety/resources")) {
+            e.skip();
+            System.out.println("skip  \t" + e.getClass().getSimpleName() + e.getXpath());
+            return;
+        }
+        System.out.println(e.getClass().getSimpleName() + "\t" + e.getXpath());
     }
 }

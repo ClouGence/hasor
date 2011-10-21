@@ -57,4 +57,22 @@ public class EndElementEvent extends XmlStreamEvent {
     public String getNamespaceURI(String prefix) {
         return this.getReader().getNamespaceURI(prefix);
     }
+    /**该事件的拍档是{@link StartElementEvent}类型对象，被测试的对象的{@link QName}必须与当前对象的{@link QName}相同，并且要在同一个xpath下。*/
+    public boolean isPartner(XmlStreamEvent e) {
+        if (e instanceof StartElementEvent == false)
+            return false;
+        //
+        StartElementEvent ende = (StartElementEvent) e;
+        QName qnameA = this.getName();
+        QName qnameB = ende.getName();
+        if (qnameA.equals(qnameB) == false)
+            return false;
+        if (this.getXpath().equals(ende.getXpath()) == false)
+            return false;
+        return true;
+    };
+    /**元素结束事件，不是共有事件。*/
+    public boolean isPublicEvent() {
+        return false;
+    }
 }

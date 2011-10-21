@@ -17,14 +17,11 @@ package org.test.more.core.xml;
 import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
-import org.more.core.xml.XmlDocumentHook;
 import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlParserKit;
 import org.more.core.xml.XmlParserKitManager;
 import org.more.core.xml.XmlStackDecorator;
-import org.more.core.xml.stream.EndDocumentEvent;
 import org.more.core.xml.stream.EndElementEvent;
-import org.more.core.xml.stream.StartDocumentEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.core.xml.stream.XmlReader;
 /**
@@ -35,33 +32,50 @@ import org.more.core.xml.stream.XmlReader;
 public class Level3_Test {
     @Test
     public void reader() throws XMLStreamException, IOException {
-        String url = "/META-INF/resource/hypha/default-hypha-config.xml";
+        String url = "/org/test/more/core/xml/level_3.xml";
         XmlReader reader = new XmlReader(Level3_Test.class.getResourceAsStream(url));
         XmlParserKitManager manager = new XmlParserKitManager();
         XmlParserKit kit = new XmlParserKit();
         //-----------------------
-        kit.regeditHook("/", new XmlDocumentHook() {
-            public void endDocument(XmlStackDecorator<Object> context, EndDocumentEvent event) {
-                System.out.println(event);
-            }
-            public void beginDocument(XmlStackDecorator<Object> context, StartDocumentEvent event) {
-                System.out.println(event);
-            }
-        });
-        kit.regeditHook("/beans/bean", new XmlElementHook() {
-            public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {
-                System.out.println(event.getName());
-            }
-            public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
-                int index = event.getAttributeCount();
-                if (index != 0)
-                    System.out.println(event.getAttributeName(index - 1) + "=" + event.getAttributeValue(index - 1));
-                System.out.println(event.getAttributeValue("name"));
-                System.out.println(event.getName());
-            }
-        });
+        kit.regeditHook("/program", new Tag_programe());
+        kit.regeditHook("*/echoPath", new Tag_echoPath());
+        kit.regeditHook("*/if", new Tag_if());
+        kit.regeditHook("*/function", new Tag_function());
         //-----------------------
-        manager.regeditKit("http://www.test.org/schema/bean", kit);
+        manager.regeditKit("http://project.xdf.cn/program", kit);
         reader.reader(manager, null);//"/beans/config:config");
     }
+}
+class Tag_programe implements XmlElementHook {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) throws XMLStreamException, IOException {
+        System.out.println("programe begin...");
+    }
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) throws XMLStreamException, IOException {
+        System.out.println("programe stop!");
+    }
+}
+class Tag_echoPath implements XmlElementHook {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) throws XMLStreamException, IOException {
+        System.out.println("\t-----" + xpath);
+    }
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) throws XMLStreamException, IOException {}
+}
+class Tag_if implements XmlElementHook {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) throws XMLStreamException, IOException {
+        String str = event.getAttributeValue("enable");
+        if (str.equals("true") == true)
+            event.skip();
+        else
+            System.out.println("begin if \t" + xpath);
+    }
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) throws XMLStreamException, IOException {
+        System.out.println("end if \t" + xpath);
+    }
+}
+class Tag_function implements XmlElementHook {
+    public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) throws XMLStreamException, IOException {
+        // TODO Auto-generated method stub
+        System.out.println("callFun\t" + xpath);
+    }
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) throws XMLStreamException, IOException {}
 }
