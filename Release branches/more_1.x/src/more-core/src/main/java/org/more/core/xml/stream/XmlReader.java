@@ -82,7 +82,7 @@ public class XmlReader {
     protected boolean ignoreXPath(String currentXPath, String testWild) {
         if (testWild == null)
             return false;
-        //TODO XPath比较算法，比较currentXPath是否属于testXPath范围内的，目前使用的是?和*通配符。
+        //XXX:XPath比较算法，比较currentXPath是否属于testXPath范围内的，目前使用的是?和*通配符。
         return StringUtil.matchWild(testWild, currentXPath);
     }
     /**

@@ -17,6 +17,7 @@ package org.more.core.global;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.more.core.error.FormatException;
@@ -53,7 +54,8 @@ public abstract class Global implements IAttribute<Object> {
     /*------------------------------------------------------------------------*/
     public Global(IAttribute<String> configs) {
         this();
-        this.addConfig("", configs);
+        if (configs != null)
+            this.addConfig("", configs);
     }
     public Global() {
         this.poolMap = new LinkedHashMap<String, SequenceStack<String>>();
@@ -264,7 +266,7 @@ public abstract class Global implements IAttribute<Object> {
     public <T> T getToType(Enum<?> enumItem, Class<T> toType, T defaultValue) {
         if (enumItem == null)
             return defaultValue;
-        String oriString = this.getOriginalString(enumItem.getClass().getSimpleName(), enumItem.name());
+        String oriString = this.getOriginalString(enumItem.getClass().getName(), enumItem.name());
         if (oriString == null)
             return defaultValue;
         //
@@ -311,7 +313,7 @@ public abstract class Global implements IAttribute<Object> {
     public void addConfig(Class<? extends Enum<?>> enumType, IAttribute<String> config) {
         if (enumType == null || config == null)
             throw new NullPointerException("‘enumType’ or ‘config’ param is null");
-        this.addConfig(enumType.getSimpleName(), config);
+        this.addConfig(enumType.getName(), config);
     }
     /**将一组原始的配置信息添加到Global中，如果存在已经使用的名称则追加。*/
     public void addConfig(String name, IAttribute<String> config) {
@@ -362,19 +364,12 @@ public abstract class Global implements IAttribute<Object> {
         this.globalObject.addGlobalProperty(name, property);
     }
     /*------------------------------------------------------------------------*/
-    /*将包含EL的字符串转换成为EL字符串。*/
-    private String toEL(String string) {
-        ELStateVisitor elv = new ELStateVisitor();
-        ELParser elParser = new ELParser(elv);
-        elParser.parser(string);
-        return elv.getEL();
-    };
     private <T> T getEval(String elString) {
         elString = elString.trim();
         if (elString == null || elString.equals("") == true)
             return null;
         //1.获取标记位置
-        StringBuffer elStr = new StringBuffer(elString.trim());
+        StringBuffer elStr = new StringBuffer(elString);
         char firstChar = elStr.charAt(0);
         char lastChar = elStr.charAt(elStr.length() - 1);
         //2.截取尾巴
@@ -387,16 +382,21 @@ public abstract class Global implements IAttribute<Object> {
         elStr.deleteCharAt(elStr.length() - 1);
         Object res = null;
         if (firstChar == '(' && lastChar == ')')
+            //整句JSON
             res = this.$evalJSON(elStr.toString());
         else if (firstChar == '{' && lastChar == '}')
+            //整句EL
             res = this.$evalEL(elStr.toString());
-        else {
-            //   .*\$\{.*\}.*
-            if (elString.matches(".*\\$\\{.*\\}.*") == false)
-                res = this.$evalString(elString);//普通字符串
-            else
-                res = this.$evalEL(toEL(elString));//包含EL的字符串
-        }
+        else if (firstChar == '"' && lastChar == '"')
+            //整句字符串1
+            res = this.$evalString(elStr.toString());
+        else if (firstChar == '\'' && lastChar == '\'')
+            //整句字符串2
+            res = this.$evalString(elStr.toString());
+        else
+            //包含EL的文本 
+            res = this.$evalEL2(elString);
+        //4.返回解析结果
         return (T) res;
     }
     /**在解析过程中负责解析字符串*/
@@ -422,20 +422,66 @@ public abstract class Global implements IAttribute<Object> {
         else
             return JsonUtil.transformToObject(jsonString);
     };
+    /**在解析过程中负责解析包含EL串的字符串，如果_global.enableEL属性配置为false则不解析json数据。，该字符串中是通过${和}块来标记EL部分。*/
+    protected Object $evalEL2(String elString) {
+        //如果要处理的字符串中不包含表达式部分则使用字符串方式处理。
+        if (elString.matches("\\$\\{.*\\}") == false)
+            return this.$evalString(elString);
+        //XXX: 以后可以使用JavaCC进行解析，这样就可以处理“${}”的转义问题。目前只负责将${}部分通过正则表达式进行查找替换。
+        //
+        //
+        final String startKEY = "${";
+        final String endKEY = "}";
+        //
+        int index = elString.indexOf(startKEY);
+        int length = 0;
+        StringBuffer sb = new StringBuffer();
+        while (true) {
+            if (elString.indexOf(startKEY, index) != -1)
+                break;
+            length = elString.indexOf(endKEY, index);
+            sb.append(elString.substring(index, length));
+        }
+        return this.$evalEL(sb.toString());
+    };
     /*------------------------------------------------------------------------*/
-    public static Global newInstance(String factoryName, Object... params) throws IOException {
-        IAttribute<String> configAtt = ResourcesUtil.getPropertys(Configs);
-        String factoryType = configAtt.getAttribute(factoryName);
-        if (factoryType == null)
-            throw new SupportException("Global factory ‘" + factoryName + "’ is not define.");
+    /**起缓存作用*/
+    private static final HashMap<String, Class<?>> globalFactoryMap = new HashMap<String, Class<?>>();
+    /**创建默认的{@link Global}对象。*/
+    public static Global newInstance() throws IOException, ClassNotFoundException {
+        return newInstance((Object) null);
+    }
+    /**创建默认的{@link Global}对象，参数是{@link GlobalFactory}在创建{@link Global}时候传入的参数。*/
+    public static Global newInstance(Object... params) throws IOException, ClassNotFoundException {
+        return newInstance("properties", params);
+    }
+    /**创建{@link Global}对象，参数是{@link GlobalFactory}在创建{@link Global}时候传入的参数。factoryName是指定注册的{@link GlobalFactory}。*/
+    public static Global newInstance(String factoryName, Object... params) throws IOException, ClassNotFoundException {
+        Class<?> globalFactoryType = null;
+        if (globalFactoryMap.containsKey(factoryName) == true)
+            globalFactoryType = globalFactoryMap.get(factoryName);
+        else {
+            IAttribute<String> configAtt = ResourcesUtil.getPropertys(Configs);
+            String factoryType = configAtt.getAttribute(factoryName);
+            if (factoryType == null)
+                throw new SupportException("Global factory ‘" + factoryName + "’ is not define.");
+            globalFactoryType = Thread.currentThread().getContextClassLoader().loadClass(factoryType);
+            globalFactoryMap.put(factoryName, globalFactoryType);
+        }
+        //
         try {
-            GlobalFactory globalFactory = (GlobalFactory) Thread.currentThread().getContextClassLoader().loadClass(factoryType).newInstance();
+            GlobalFactory globalFactory = (GlobalFactory) globalFactoryType.newInstance();
             return globalFactory.createGlobal(params);
         } catch (Exception e) {
-            throw new InitializationException("init error can`t create GlobalFactory  " + factoryName + "=" + factoryType);
+            throw new InitializationException("init error can`t create type " + globalFactoryType);
         }
     };
-    public static Global newInstance(IAttribute<String> configs) {
+    /**创建一个{@link Global}本体实例化对象。*/
+    public static Global newInterInstance(IAttribute<String> configs) {
         return new Global(configs) {};
-    }
+    };
+    /**创建一个{@link Global}本体实例化对象。*/
+    public static Global newInterInstance() {
+        return new Global(null) {};
+    };
 };
