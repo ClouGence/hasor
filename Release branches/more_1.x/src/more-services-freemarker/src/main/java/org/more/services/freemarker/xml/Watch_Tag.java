@@ -32,6 +32,7 @@ class Watch_Tag implements KeepWatchParser {
     public void process(Object target, Annotation annoData, XmlDefineResource resource) {
         Class<?> classType = (Class<?>) target;
         Tag remoteData = (Tag) annoData;
+        // TODO 未来实现Freemarker的标签定义。
         //        //1.取得参数
         //        String nameStr = remoteData.name();
         //        Class<?>[] faces = remoteData.faces();

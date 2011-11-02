@@ -32,6 +32,7 @@ class Watch_Function implements KeepWatchParser {
     public void process(Object target, Annotation annoData, XmlDefineResource resource) {
         Class<?> classType = (Class<?>) target;
         Function remoteData = (Function) annoData;
+        // TODO 未来实现Freemarker的方法调用。
         //        //1.取得参数
         //        String nameStr = remoteData.name();
         //        Class<?>[] faces = remoteData.faces();

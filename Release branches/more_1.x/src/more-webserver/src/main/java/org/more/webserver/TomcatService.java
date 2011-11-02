@@ -1,4 +1,5 @@
 package org.more.webserver;
+import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.startup.Tomcat;
 /**
@@ -15,6 +16,13 @@ public class TomcatService {
         tomcat.setBaseDir(catalina_home);
         StandardHost host = new StandardHost();
         tomcat.start();
+        
+        appu
+        tomcat.getEngine().
+         
         //
     }
+}
+class c extends Connector{
+    
 }

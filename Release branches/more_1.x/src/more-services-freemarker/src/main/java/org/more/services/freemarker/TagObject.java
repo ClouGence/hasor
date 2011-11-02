@@ -28,6 +28,6 @@ import freemarker.template.TemplateModel;
  */
 public class TagObject implements TemplateDirectiveModel {
     public void execute(Environment arg0, Map arg1, TemplateModel[] arg2, TemplateDirectiveBody arg3) throws TemplateException, IOException {
-        // TODO Auto-generated method stub
+        // TODO 未来实现Freemarker的标签定义。
     }
 }

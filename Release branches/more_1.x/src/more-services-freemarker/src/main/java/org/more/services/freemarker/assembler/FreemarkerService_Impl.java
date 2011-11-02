@@ -35,7 +35,6 @@ import org.more.services.freemarker.loader.ClassPathTemplateLoader;
 import org.more.services.freemarker.loader.ConfigTemplateLoader;
 import org.more.services.freemarker.loader.DirTemplateLoader;
 import org.more.services.freemarker.loader.MultiTemplateLoader;
-import org.more.services.freemarker.loader.PropxyTemplateLoader;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 import org.more.util.attribute.SequenceStack;
@@ -176,7 +175,7 @@ public class FreemarkerService_Impl extends AbstractService implements Freemarke
         Configuration cfg = getConfiguration();
         //
         TemplateLoader[] loaders = new TemplateLoader[2];
-        loaders[0] = new PropxyTemplateLoader(cfg.getTemplateLoader());
+        loaders[0] = cfg.getTemplateLoader();
         loaders[1] = new DirTemplateLoader(templateDir);
         //
         cfg.setTemplateLoader(new MultiTemplateLoader(loaders));
@@ -235,7 +234,7 @@ public class FreemarkerService_Impl extends AbstractService implements Freemarke
         return this.getProcess().getResourceAsStream(resourcePath);
     }
     /*-------------------------------------------------------------*/
-    private IAttribute<Object> getSuperRoot() {
+    protected IAttribute<Object> getSuperRoot() {
         if (this.rootMap == null) {
             this.rootMap = new SequenceStack<Object>();
             this.rootMap.putStack(this.tfMap);

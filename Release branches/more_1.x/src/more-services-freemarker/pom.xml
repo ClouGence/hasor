@@ -22,15 +22,9 @@
 			<version>[1.0.0-a01,)</version>
 		</dependency>
 		<dependency>
-			<groupId>javax</groupId>
-			<artifactId>javaee-api</artifactId>
-			<version>${javaee.version}</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
-			<version>${freemarker.version}</version>
+			<version>2.3.18</version>
 		</dependency>
 	</dependencies>
 </project>

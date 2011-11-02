@@ -24,6 +24,7 @@ import freemarker.template.TemplateModelException;
  */
 public abstract class FunctionObject implements TemplateMethodModel {
     public Object exec(List arg0) throws TemplateModelException {
+        // TODO 未来实现Freemarker的方法调用。
         return this.call(arg0);
     }
     public abstract Object call(List<?> params);
