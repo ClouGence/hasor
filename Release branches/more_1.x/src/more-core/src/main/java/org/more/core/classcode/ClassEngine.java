@@ -491,7 +491,7 @@ public class ClassEngine {
         this.methodStrategy.reset();
         //5.
         try {
-            this.newClass = this.rootClassLoader.loadClass(this.className);//TODO
+            this.newClass = this.rootClassLoader.loadClass(this.className);
         } catch (ClassNotFoundException e) {
             if (this.debug == false)
                 throw e;

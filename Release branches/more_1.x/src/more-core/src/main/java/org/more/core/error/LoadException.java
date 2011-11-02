@@ -25,4 +25,8 @@ public class LoadException extends MoreActionException {
     public LoadException(String string) {
         super(string);
     }
+    /**装载类型异常。*/
+    public LoadException(String string, Throwable error) {
+        super(string, error);
+    }
 }
