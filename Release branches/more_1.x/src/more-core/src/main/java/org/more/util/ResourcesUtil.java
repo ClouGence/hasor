@@ -55,14 +55,19 @@ public abstract class ResourcesUtil {
     /**合成所有属性文件的配置信息到一个{@link IAttribute}接口中。*/
     public static IAttribute<String> getPropertys(String[] resourcePaths) throws IOException {
         SequenceStack<String> iatt = new SequenceStack<String>();
-        for (String str : resourcePaths)
-            iatt.putStack(getPropertys(str));
+        for (String str : resourcePaths) {
+            IAttribute<String> att = getPropertys(str);
+            if (att != null)
+                iatt.putStack(att);
+        }
         return iatt;
     }
     /**读取一个属性文件，并且以{@link IAttribute}接口的形式返回。*/
     public static IAttribute<String> getPropertys(String resourcePath) throws IOException {
         Properties prop = new Properties();
-        prop.load(getResourceAsStream(resourcePath));
+        InputStream in = getResourceAsStream(resourcePath);
+        if (in != null)
+            prop.load(in);
         return new TransformToAttribute<String>(prop);
     }
     /**获取classpath中可能存在的资源。*/
@@ -101,7 +106,7 @@ public abstract class ResourcesUtil {
                 ZipEntry e = jar.getEntry(resourcePath);
                 iss.add(jar.getInputStream(e));
             }
-            // TODO 该处处理其他协议的资源加载。
+            // TODO 该处处理其他协议的资源加载。诸如OSGi等协议。
         }
         return iss;
     }
