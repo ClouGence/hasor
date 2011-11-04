@@ -15,7 +15,7 @@
  */
 package org.more.core.global;
 /**
- * 该接口表示一个Global对象上的属性。
+ * 该接口表示一个自定义读写方式的属性对象，内置对象会解析该类。global也会执行解析该类。
  * @version : 2011-9-30
  * @author 赵永春 (zyc@byshell.org)
  */

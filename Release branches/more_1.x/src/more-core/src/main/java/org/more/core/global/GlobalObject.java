@@ -14,115 +14,87 @@
  * limitations under the License.
  */
 package org.more.core.global;
+import java.util.HashMap;
 import java.util.Map;
-import org.more.core.error.SupportException;
-import org.more.util.StringConvertUtil;
-import org.more.util.attribute.AttBase;
+import org.more.core.global.gp.CFGList_GP;
+import org.more.core.global.gp.Count_GP;
+import org.more.core.global.gp.EnableEL_GP;
+import org.more.core.global.gp.EnableJson_GP;
+import org.more.core.global.gp.GroupCount_GP;
 import org.more.util.attribute.IAttribute;
+import org.more.util.attribute.SequenceStack;
 /**
  * 内置对象
  * @version : 2011-9-29
  * @author 赵永春 (zyc@byshell.org)
  */
-class GlobalObject extends AttBase<Object> implements IAttribute<Object> {
+class GlobalObject extends HashMap<String, Object> {
     private static final long           serialVersionUID = -4297024677619713055L;
+    /**动态操作Global属性的属性缓存器。*/
+    public final static String          _Global          = "_global";
     private Global                      onGlobal         = null;
     private Map<String, GlobalProperty> propertys        = null;
     //
     public GlobalObject(Global onGlobal) {
         this.onGlobal = onGlobal;
+        this.propertys = new HashMap<String, GlobalProperty>();
         //植入固定的内置属性
-        this.addGlobalProperty("enableEL", new EnableEL_GP());
-        this.addGlobalProperty("enableJson", new EnableJson_GP());
-        this.addGlobalProperty("context", new Context_GP());
-        this.addGlobalProperty("groupSize", new GroupCount_GP());
-        this.addGlobalProperty("size", new Count_GP());
+        this.propertys.put("enableEL", new EnableEL_GP());
+        this.propertys.put("enableJson", new EnableJson_GP());
+        this.propertys.put("groupCount", new GroupCount_GP());
+        this.propertys.put("count", new Count_GP());
+        this.propertys.put("cfgList", new CFGList_GP());
     };
-    public void addGlobalProperty(String name, GlobalProperty property) {
-        if (propertys.containsKey(name) == false)
-            propertys.put(name, property);
-    };
-    public Object getAttribute(String name) {
-        System.out.println("ggggg   :" + name);
-        //属性读取操作。
-        if (propertys.containsKey(name) == false)
-            return super.getAttribute(name);
+    public boolean containsKey(Object key) {
+        if (this.propertys.containsKey(key) == false)
+            return super.containsKey(key);
+        return true;
+    }
+    public Object get(Object name) {
+        //XXX:内置属性读，System.out.println("get   :" + name);
+        if (this.propertys.containsKey(name) == false) {
+            IAttribute<Object> iatt = this.onGlobal.getScope((String) name);
+            return (iatt != null) ? new LastList(iatt) : super.get(name);
+        }
         GlobalProperty property = propertys.get(name);
+        if (property == null)
+            return null;//内置对象为空
         return property.getValue(this.onGlobal);
-    };
-    public void setAttribute(String name, Object newValue) {
-        System.out.println("ggggg   :" + name);
-        //属性写入操作。
+    }
+    public Object put(String name, Object newValue) {
+        //XXX:内置属性写，System.out.println("set   :" + name);
         if (propertys.containsKey(name) == false)
-            throw new SupportException("Global，不支持该方法。");
+            return super.put(name, newValue);
         GlobalProperty property = propertys.get(name);
         property.setValue(newValue, this.onGlobal);
-    };
+        return newValue;
+    }
 };
-/**
- * _global.enableEL
- * @version : 2011-9-30
- * @author 赵永春 (zyc@byshell.org)
- */
-class EnableEL_GP implements GlobalProperty {
-    public Object getValue(Global global) {
-        String oriString = global.getOriginalString("_global.enableEL");
-        return StringConvertUtil.parseBoolean(oriString, true);
+/**处理“_global['global.properties'][1].config_1”*/
+class LastList extends HashMap<Object, Object> {
+    private static final long  serialVersionUID = 5149441075415231185L;
+    private IAttribute<Object> iatt             = null;
+    public LastList(IAttribute<Object> iatt) {
+        this.iatt = iatt;
     }
-    public void setValue(Object value, Global global) {
-        throw new SupportException("_global.enableEL，属性不支持写操作。");
-    }
-}
-/**
- * _global.enableJson
- * @version : 2011-9-30
- * @author 赵永春 (zyc@byshell.org)
- */
-class EnableJson_GP implements GlobalProperty {
-    public Object getValue(Global global) {
-        String oriString = global.getOriginalString("_global.enableJson");
-        return StringConvertUtil.parseBoolean(oriString, true);
-    }
-    public void setValue(Object value, Global global) {
-        throw new SupportException("_global.enableJson，属性不支持写操作。");
+    public Object get(Object key) {
+        if (key.equals("count") == true)
+            return this.iatt.size();
+        if (key instanceof Integer && this.iatt instanceof SequenceStack)
+            return new LastMap(((SequenceStack) this.iatt).getIndex((Integer) key));
+        return this.iatt.getAttribute((String) key);
     }
 }
-/**
- * _global.context
- * @version : 2011-9-30
- * @author 赵永春 (zyc@byshell.org)
- */
-class Context_GP implements GlobalProperty {
-    public Object getValue(Global global) {
-        return global.getContext();
+/**处理“_global['global.properties'][1].config_1”*/
+class LastMap extends HashMap<Object, Object> {
+    private static final long  serialVersionUID = 5149441075415231185L;
+    private IAttribute<Object> iatt             = null;
+    public LastMap(IAttribute<Object> iatt) {
+        this.iatt = iatt;
     }
-    public void setValue(Object value, Global global) {
-        throw new SupportException("_global.context，属性不支持写操作。");
-    }
-}
-/**
- * _global.groupSize
- * @version : 2011-9-30
- * @author 赵永春 (zyc@byshell.org)
- */
-class GroupCount_GP implements GlobalProperty {
-    public Object getValue(Global global) {
-        return global.getConfigGroupCount();
-    }
-    public void setValue(Object value, Global global) {
-        throw new SupportException("_global.groupSize，属性不支持写操作。");
-    }
-}
-/**
-* _global.size
-* @version : 2011-9-30
-* @author 赵永春 (zyc@byshell.org)
-*/
-class Count_GP implements GlobalProperty {
-    public Object getValue(Global global) {
-        return global.getConfigAllCount();
-    }
-    public void setValue(Object value, Global global) {
-        throw new SupportException("_global.size，属性不支持写操作。");
+    public Object get(Object key) {
+        if (key.equals("count") == true)
+            return this.iatt.size();
+        return this.iatt.getAttribute((String) key);
     }
 }

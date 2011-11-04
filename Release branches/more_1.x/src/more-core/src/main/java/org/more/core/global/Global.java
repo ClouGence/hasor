@@ -15,7 +15,7 @@
  */
 package org.more.core.global;
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -25,12 +25,13 @@ import org.more.core.error.InitializationException;
 import org.more.core.error.SupportException;
 import org.more.core.json.JsonUtil;
 import org.more.core.ognl.Ognl;
+import org.more.core.ognl.OgnlContext;
 import org.more.core.ognl.OgnlException;
 import org.more.util.ResourcesUtil;
 import org.more.util.StringConvertUtil;
-import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 import org.more.util.attribute.SequenceStack;
+import org.more.util.attribute.TransformToAttribute;
 import org.more.util.attribute.TransformToMap;
 /**
 * 全局常量读取器
@@ -38,36 +39,48 @@ import org.more.util.attribute.TransformToMap;
 * @author 赵永春 (zyc@byshell.org)
 */
 public abstract class Global implements IAttribute<Object> {
-    /**内置对象名*/
-    private final static String                _global      = "_global";
-    private final static String                EnableEL     = "_global.enableEL";
-    private final static String                EnableJson   = "_global.enableJson";
-    public final static String[]               Configs      = new String[] { "global_config.properties", "META-INF/global_config.properties", "META-INF/resource/core/global_config.properties" };
-    /**添加的所有配置文件都在这里保存，根据不同的注册名来进行分组*/
-    private Map<String, SequenceStack<String>> poolMap      = null;
-    private SequenceStack<String>              allData      = null;
-    private SequenceStack<Object>              rootMap      = null;
+    /**是否启用el表达式解析。*/
+    private final static String                          EnableEL     = "_global.enableEL";
+    /**是否启用json解析*/
+    private final static String                          EnableJson   = "_global.enableJson";
+    /**其顺序是优先级顺序*/
+    public final static String[]                         Configs      = new String[] { "META-INF/resource/core/global_config.properties", "META-INF/global_config.properties", "global_config.properties" };
+    /**添加的所有配置文件都在这里保存，根据不同的注册名来进行分组，_global域和_cache域也在其中。*/
+    private LinkedHashMap<String, SequenceStack<Object>> scopeMap     = null;
+    private GlobalObject                                 globalObject = new GlobalObject(this);
     //
-    private Object                             context      = null;
-    private GlobalObject                       globalObject = null;
     //
     /*------------------------------------------------------------------------*/
-    public Global(IAttribute<String> configs) {
-        this();
-        if (configs != null)
-            this.addConfig("", configs);
-    }
-    public Global() {
-        this.poolMap = new LinkedHashMap<String, SequenceStack<String>>();
-        this.allData = new SequenceStack<String>();
-        //设置el root对象
-        this.rootMap = new SequenceStack<Object>();
-        this.rootMap.putStack(new AttBase<Object>());
-        this.rootMap.putStack(this);
-        this.globalObject = new GlobalObject(this);
-        this.rootMap.setAttribute(_global, new TransformToMap<Object>(this.globalObject));//内置对象
+    private SequenceStack<Object>                        $elData      = null;
+    /**返回可用于计算EL的集合对象，该集合对象中包含了_Global和_Cache。*/
+    protected IAttribute<Object> getALLRoot() {
+        if (this.$elData == null) {
+            this.$elData = new SequenceStack<Object>();
+            for (IAttribute<Object> att : this.scopeMap.values())
+                if (att != null)
+                    $elData.putStack(att);
+        }
+        return this.$elData;
+    };
+    public OgnlContext transformToOgnlContext() {
+        HashMap<String, Object> all = new HashMap<String, Object>(this.getALLRoot().toMap());
+        all.put(GlobalObject._Global, this.globalObject);
+        return new OgnlContext(all);
     };
     /*------------------------------------------------------------------------*/
+    public Global(IAttribute<Object> configs) {
+        this();
+        if (configs != null)
+            this.addScope("", configs);
+    };
+    public Global() {
+        this.scopeMap = new LinkedHashMap<String, SequenceStack<Object>>();
+    };
+    /*------------------------------------------------------------------------*/
+    /**使用Ognl计算字符串，并且返回其计算结果。*/
+    public Object evalString(String ognlString) throws OgnlException {
+        return Ognl.getValue(ognlString, this.transformToOgnlContext());
+    };
     /**解析全局配置参数，并且返回其{@link Object}形式对象。*/
     public Object getObject(Enum<?> name) {
         return this.getToType(name, Object.class);
@@ -237,42 +250,6 @@ public abstract class Global implements IAttribute<Object> {
         return this.getToType(name, Date.class, new Date(defaultValue));
     };
     /*------------------------------------------------------------------------*/
-    /**视图访问以该枚举名称命名的属性文件或绑定在该枚举上的属性文件，如果尝试访问的属性文件不存在则规则与{@link #getOriginalString(String)}相同。*/
-    public String getOriginalString(String scope, String name) {
-        if (name == null)
-            return null;
-        //2.从list中获取Config
-        IAttribute<String> config = null;
-        if (scope == null || this.poolMap.containsKey(scope) == false)
-            config = this.allData;
-        else
-            config = this.poolMap.get(scope);
-        return config.getAttribute(name);
-    };
-    /**按照序列顺序在所有加入的全局配置文件中寻找指定名称的属性值，并且将原始信息返回。*/
-    public String getOriginalString(String name) {
-        return this.getOriginalString(null, name);
-    };
-    /**解析全局配置参数，并且返回toType参数指定的类型。*/
-    public <T> T getToType(String name, Class<T> toType, T defaultValue) {
-        String oriString = this.getOriginalString(null, name);
-        if (oriString == null)
-            return defaultValue;
-        //
-        Object var = this.getEval(oriString);
-        return StringConvertUtil.changeType(var, toType, defaultValue);
-    }
-    /**解析全局配置参数，并且返回toType参数指定的类型。*/
-    public <T> T getToType(Enum<?> enumItem, Class<T> toType, T defaultValue) {
-        if (enumItem == null)
-            return defaultValue;
-        String oriString = this.getOriginalString(enumItem.getClass().getName(), enumItem.name());
-        if (oriString == null)
-            return defaultValue;
-        //
-        Object var = this.getEval(oriString);
-        return StringConvertUtil.changeType(var, toType, defaultValue);
-    }
     /**解析全局配置参数，并且返回toType参数指定的类型。*/
     public <T> T getToType(Enum<?> enumItem, Class<T> toType) {
         return this.getToType(enumItem, toType, null);
@@ -281,88 +258,159 @@ public abstract class Global implements IAttribute<Object> {
     public <T> T getToType(String name, Class<T> toType) {
         return this.getToType(name, toType, null);
     };
+    /**解析全局配置参数，并且返回toType参数指定的类型。*/
+    public <T> T getToType(String name, Class<T> toType, T defaultValue) {
+        Object oriObject = this.getOriginalObject(null, name);
+        if (oriObject == null)
+            return defaultValue;
+        //
+        Object var = null;
+        if (oriObject instanceof String)
+            var = this.getEval((String) oriObject);
+        else
+            var = oriObject;
+        return StringConvertUtil.changeType(var, toType, defaultValue);
+    };
+    /**解析全局配置参数，并且返回toType参数指定的类型。*/
+    public <T> T getToType(Enum<?> enumItem, Class<T> toType, T defaultValue) {
+        if (enumItem == null)
+            return defaultValue;
+        Object oriObject = this.getOriginalObject(enumItem.getClass().getName(), enumItem.name());//获取原始数据
+        //
+        Object var = null;
+        if (oriObject instanceof String)
+            //原始数据是字符串经过Eval过程
+            var = this.getEval((String) oriObject);
+        else if (oriObject instanceof GlobalProperty)
+            //原始数据是GlobalProperty直接get
+            var = ((GlobalProperty) oriObject).getValue(this);
+        else
+            //其他类型不予处理（数据就是要的值）
+            var = oriObject;
+        return StringConvertUtil.changeType(var, toType, defaultValue);
+    };
+    /** {@link Global#getOriginalObject(String)}的字符串形式.*/
+    public String getOriginalString(String name) {
+        Object obj = this.getOriginalObject(name);
+        return (obj != null) ? obj.toString() : null;
+    };
+    /** {@link Global#getOriginalObject(String, String)}的字符串形式.*/
+    public String getOriginalString(String scope, String name) {
+        Object obj = this.getOriginalObject(scope, name);
+        return (obj != null) ? obj.toString() : null;
+    };
+    /**获取指定名称的原始配置信息，该原始信息配置是存在于下面位置：<br/>1._Cache。<br/>2.装载的配置文件。<br/>3.通过addConfig方法加入的配置数据。*/
+    public Object getOriginalObject(String name) {
+        return this.getOriginalObject(null, name);
+    };
+    /**在指定的作用域中获取指定名称的原始配置信息，如果作用域参数为null那么将在所有作用域中搜寻，该原始信息配置是存在于下面位置：<br/>
+     * 1._Cache。<br/>2.装载的配置文件。<br/>3.通过addConfig方法加入的配置数据。*/
+    public Object getOriginalObject(String scope, String name) {
+        if (name == null)
+            return null;
+        //1.从list中获取Config
+        IAttribute<Object> config = null;
+        if (scope == null || this.scopeMap.containsKey(scope) == false)
+            config = this.getALLRoot();//不包含内置对象。
+        else
+            config = this.scopeMap.get(scope);
+        //2.Name
+        return config.getAttribute(name);
+    };
     /*------------------------------------------------------------------------*/
     public boolean contains(String name) {
-        return this.allData.contains(name);
-    }
+        return this.getALLRoot().contains(name);
+    };
     /**该方法等同于{@link #getObject(String)}*/
     public Object getAttribute(String name) {
         return this.getObject(name);
-    }
+    };
     /**将{@link Global}类转换成{@link Map}接口形式。*/
     public Map<String, Object> toMap() {
         return new TransformToMap<Object>(this);
-    }
+    };
+    /**将{@link Global}类转换成{@link Map}接口形式。*/
+    public Map<String, Object> toMap(String scope) {
+        return this.scopeMap.get(scope).toMap();
+    };
     public String[] getAttributeNames() {
-        return this.allData.getAttributeNames();
-    }
-    /**Global，不支持该方法。*/
-    public void setAttribute(String name, Object value) {
-        throw new SupportException("Global，不支持该方法。");
-    }
-    /**Global，不支持该方法。*/
+        return this.getALLRoot().getAttributeNames();
+    };
+    public int size() {
+        return this.getALLRoot().size();
+    };
+    /**值会被直接设置到内置对象中，该方法不会影响到固定的内置属性（它们的优先级仍然是最高的）。*/
+    public void setAttribute(String name, Object newValue) {
+        this.globalObject.put(name, newValue);
+    };
+    /**从内置对象中删除属性，该方法不会影响到固定的内置属性（它们的优先级仍然是最高的）。*/
     public void removeAttribute(String name) {
-        throw new SupportException("Global，不支持该方法。");
-    }
-    /**Global，不支持该方法。*/
+        this.globalObject.remove(name);
+    };
+    /**清空内置对象中的属性，该方法不会影响到固定的内置属性（它们的优先级仍然是最高的）。*/
     public void clearAttribute() {
-        throw new SupportException("Global，不支持该方法。");
-    }
+        this.globalObject.clear();
+    };
     /*------------------------------------------------------------------------*/
     /**将一组原始的配置信息添加到Global中，如果存在已经使用的名称则追加。*/
-    public void addConfig(Class<? extends Enum<?>> enumType, IAttribute<String> config) {
+    public void addScope(Class<? extends Enum<?>> enumType, Map config) {
+        this.addScope(enumType, new TransformToAttribute<Object>(config));
+    };
+    /**将一组原始的配置信息添加到Global中，如果存在已经使用的名称则追加。*/
+    public void addScope(String name, Map config) {
+        this.addScope(name, new TransformToAttribute<Object>(config));
+    };
+    /**将一组原始的配置信息添加到Global中，如果存在已经使用的名称则追加。*/
+    public void addScope(Class<? extends Enum<?>> enumType, IAttribute<Object> config) {
         if (enumType == null || config == null)
             throw new NullPointerException("‘enumType’ or ‘config’ param is null");
-        this.addConfig(enumType.getName(), config);
-    }
+        this.addScope(enumType.getName(), config);
+    };
     /**将一组原始的配置信息添加到Global中，如果存在已经使用的名称则追加。*/
-    public void addConfig(String name, IAttribute<String> config) {
+    public void addScope(String name, IAttribute<Object> config) {
         if (name == null || config == null)
             throw new NullPointerException("‘name’ or ‘config’ param is null");
-        SequenceStack<String> stack = null;
-        if (this.poolMap.containsKey(name) == false) {
+        if (this.scopeMap.containsKey(name) == false) {
             //新增了一条，同时将这条增加到allData中
-            stack = new SequenceStack<String>();
-            this.poolMap.put(name, stack);
-            this.allData.putStack(stack);
-        } else
-            stack = this.poolMap.get(name);
-        stack.putStack(config);
+            SequenceStack<Object> stack = new SequenceStack<Object>();
+            stack.putStack(config);
+            this.scopeMap.put(name, stack);
+        } else {
+            IAttribute<?> stack = this.scopeMap.get(name);
+            if (stack instanceof SequenceStack == false)
+                throw new SupportException("‘" + name + "’ scope does not support more of the same.");
+            SequenceStack<Object> $stack = (SequenceStack<Object>) stack;
+            $stack.putStack(config);
+        }
     };
-    /**检测name表示的配置信息是否已经注册。*/
-    protected boolean containsConfig(String name) {
-        return this.poolMap.containsKey(name);
+    /**按照添加顺序的位置获取一个作用域*/
+    public IAttribute<Object> getScope(int index) {
+        ArrayList<IAttribute<Object>> list = new ArrayList<IAttribute<Object>>();
+        for (SequenceStack<Object> attSeq : this.scopeMap.values())
+            for (IAttribute<Object> att : attSeq.getList())
+                list.add(att);
+        return list.get(index);
     };
-    /**解析流对象，并且将解析的结果返回为{@link IAttribute}接口形式。*/
-    protected IAttribute<String> loadConfig(InputStream stream) throws IOException {
-        return new AttBase<String>();
+    /**按照添加的名称获取一个作用域*/
+    public IAttribute<Object> getScope(String name) {
+        return this.scopeMap.get(name);
     };
-    /**返回上下文对象。*/
-    protected Object getContext() {
-        return this.context;
+    /**如果想获取重名作用域其中一项的请使用该方法。*/
+    public IAttribute<Object> getScope(String name, int index) {
+        IAttribute<Object> temp = this.getScope(name);
+        if (temp instanceof SequenceStack == false)
+            return temp;
+        SequenceStack<Object> stack = (SequenceStack<Object>) temp;
+        return stack.getIndex(index);
     };
-    /**设置上下文对象。*/
-    protected void setContext(Object context) {
-        this.context = context;
+    /**返回一共增加了多少个config分组设置，这里包括<b>内置属性</b>。所以该值应该大于等于<b>1</b>。*/
+    public int getConfigGroupCount() {
+        return this.scopeMap.size();
     };
-    /**返回上下文对象。*/
-    protected Map<String, Object> getRoot() {
-        return this.rootMap.toMap();
+    /**返回一共有多少条配置。其中包含<b>内置属性</b>。*/
+    public int getConfigItemCount() {
+        return this.getALLRoot().size();
     };
-    /**返回一共增加了多少个config分组设置。*/
-    protected int getConfigGroupCount() {
-        return this.poolMap.size();
-    }
-    /**返回一共增加了多少个config设置。*/
-    protected int getConfigAllCount() {
-        return this.allData.size();
-    }
-    /**添加一个内置属性*/
-    public void addGlobalProperty(String name, GlobalProperty property) {
-        if (name == null || name.equals("") == true || property == null)
-            throw new NullPointerException("");
-        this.globalObject.addGlobalProperty(name, property);
-    }
     /*------------------------------------------------------------------------*/
     private <T> T getEval(String elString) {
         elString = elString.trim();
@@ -398,7 +446,7 @@ public abstract class Global implements IAttribute<Object> {
             res = this.$evalEL2(elString);
         //4.返回解析结果
         return (T) res;
-    }
+    };
     /**在解析过程中负责解析字符串*/
     protected String $evalString(String string) {
         return string;
@@ -410,9 +458,9 @@ public abstract class Global implements IAttribute<Object> {
             return this.$evalString(elString);
         //2.解析elString
         try {
-            return Ognl.getValue(elString, this.getRoot());
+            return Ognl.getValue(elString, this.transformToOgnlContext());
         } catch (OgnlException e) {
-            throw new FormatException(elString + "：作为EL解析错误。");
+            throw new FormatException("expression ‘" + elString + "’ error.");
         }
     };
     /**在解析过程中负责解析Json串，如果_global.enableJson属性配置为false则不解析json数据。*/
@@ -427,7 +475,7 @@ public abstract class Global implements IAttribute<Object> {
         //如果要处理的字符串中不包含表达式部分则使用字符串方式处理。
         if (elString.matches("\\$\\{.*\\}") == false)
             return this.$evalString(elString);
-        //XXX: 以后可以使用JavaCC进行解析，这样就可以处理“${}”的转义问题。目前只负责将${}部分通过正则表达式进行查找替换。
+        //TODO:以后可以使用JavaCC进行解析，这样就可以处理“${}”的转义问题。目前只负责将${}部分通过正则表达式进行查找替换。
         //
         //
         final String startKEY = "${";
@@ -442,7 +490,7 @@ public abstract class Global implements IAttribute<Object> {
             length = elString.indexOf(endKEY, index);
             sb.append(elString.substring(index, length));
         }
-        return this.$evalEL(sb.toString());
+        return this.$evalEL(sb.toString());//执行el
     };
     /*------------------------------------------------------------------------*/
     /**起缓存作用*/
@@ -450,11 +498,11 @@ public abstract class Global implements IAttribute<Object> {
     /**创建默认的{@link Global}对象。*/
     public static Global newInstance() throws IOException, ClassNotFoundException {
         return newInstance((Object) null);
-    }
+    };
     /**创建默认的{@link Global}对象，参数是{@link GlobalFactory}在创建{@link Global}时候传入的参数。*/
     public static Global newInstance(Object... params) throws IOException, ClassNotFoundException {
         return newInstance("properties", params);
-    }
+    };
     /**创建{@link Global}对象，参数是{@link GlobalFactory}在创建{@link Global}时候传入的参数。factoryName是指定注册的{@link GlobalFactory}。*/
     public static Global newInstance(String factoryName, Object... params) throws IOException, ClassNotFoundException {
         Class<?> globalFactoryType = null;
@@ -471,13 +519,15 @@ public abstract class Global implements IAttribute<Object> {
         //
         try {
             GlobalFactory globalFactory = (GlobalFactory) globalFactoryType.newInstance();
-            return globalFactory.createGlobal(params);
-        } catch (Exception e) {
+            Global global = globalFactory.createGlobal(params);
+            //XXX:可以装载内置属性
+            return global;
+        } catch (Throwable e) {
             throw new InitializationException("init error can`t create type " + globalFactoryType);
         }
     };
     /**创建一个{@link Global}本体实例化对象。*/
-    public static Global newInterInstance(IAttribute<String> configs) {
+    public static Global newInterInstance(IAttribute<Object> configs) {
         return new Global(configs) {};
     };
     /**创建一个{@link Global}本体实例化对象。*/

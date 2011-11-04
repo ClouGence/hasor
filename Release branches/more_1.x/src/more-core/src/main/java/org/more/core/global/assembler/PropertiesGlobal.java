@@ -15,15 +15,16 @@
  */
 package org.more.core.global.assembler;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
+import java.util.Properties;
 import org.more.core.global.Global;
 import org.more.core.global.GlobalFactory;
+import org.more.util.ResourcesUtil;
 /**
 * 
 * @version : 2011-9-3
@@ -31,67 +32,60 @@ import org.more.core.global.GlobalFactory;
 */
 public class PropertiesGlobal implements GlobalFactory {
     /*------------------------------------------------------------------------*/
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
-    public @interface PropertiesFile {
-        /**表示该枚举对应的全局属性配置文件是一个文件资源。*/
-        public String file() default "";
-        /**表示该枚举对应的全局属性配置文件是一个{@link URI}资源。*/
-        public String uri() default "";
-        /**表示该枚举对应的全局属性配置文件是在classpath目录下的文件资源。*/
-        public String value() default "";
-    };
+    //TODO:注解绑定枚举元素的支持
+    //    @Retention(RetentionPolicy.RUNTIME)
+    //    @Target(ElementType.TYPE)
+    //    public @interface PropertiesFile {
+    //        /**表示该枚举对应的全局属性配置文件是一个文件资源。*/
+    //        public String file() default "";
+    //        /**表示该枚举对应的全局属性配置文件是一个{@link URI}资源。*/
+    //        public String uri() default "";
+    //        /**表示该枚举对应的全局属性配置文件是在classpath目录下的文件资源。*/
+    //        public String value() default "";
+    //    };
+    protected Properties createProperties(Object streamOrReader) throws IOException {
+        Properties prop = new Properties();
+        if (streamOrReader instanceof InputStream)
+            prop.load((InputStream) streamOrReader);
+        else if (streamOrReader instanceof Reader)
+            prop.load((Reader) streamOrReader);
+        return prop;
+    }
     /*------------------------------------------------------------------------*/
-    public Global createGlobal(Object... objects) {
+    public Global createGlobal(Object... objects) throws IOException {
         Global global = Global.newInterInstance();
         for (Object obj : objects)
             if (obj instanceof File) {
-                //
+                //文件装载，key值是文件名。key相当于属性的作用域。
+                File fileObject = (File) obj;
+                InputStream stream = ResourcesUtil.getResourceAsStream(fileObject);
+                global.addScope(fileObject.getName(), this.createProperties(stream));//添加属性
             } else if (obj instanceof URL) {
-                //
+                //URL装载，key值是getFile名。key相当于属性的作用域。
+                URL urlObject = (URL) obj;
+                InputStream stream = ResourcesUtil.getResourceAsStream(urlObject);
+                global.addScope(urlObject.getPath(), this.createProperties(stream));//添加属性
             } else if (obj instanceof URI) {
-                //
+                //URI装载，key值是getPath名。key相当于属性的作用域。
+                URI uriObject = (URI) obj;
+                InputStream stream = ResourcesUtil.getResourceAsStream(uriObject);
+                global.addScope(uriObject.getPath(), this.createProperties(stream));//添加属性
             } else if (obj instanceof String) {
-                //
+                //字符串装载
+                String stringObject = (String) obj;
+                String name = new File(stringObject).getName();
+                List<InputStream> streams = ResourcesUtil.getResourcesAsStream(stringObject);
+                for (InputStream stream : streams)
+                    global.addScope(name, this.createProperties(stream));//添加属性
             } else if (obj instanceof Reader) {
-                //
+                //Reader装载，key值是空字符串。key相当于属性的作用域。
+                Reader readerObject = (Reader) obj;
+                global.addScope("", this.createProperties(readerObject));//添加属性
+            } else if (obj instanceof InputStream) {
+                //InputStream装载，key值是空字符串。key相当于属性的作用域。
+                InputStream streamObject = (InputStream) obj;
+                global.addScope("", this.createProperties(streamObject));//添加属性
             }
         return global;
     }
-    //    /*------------------------------------------------------------------------*/
-    //    /**绑定一个枚举到一个配置文件上，如果这个枚举配置了{@link PropertiesFile}注解则使用该注解标记的属性文件进行装载，否则就装载与枚举名同名的属性文件。*/
-    //    public void addEnum(Class<? extends Enum<?>> enumType) throws Throwable {
-    //        PropertiesFile pFile = enumType.getAnnotation(PropertiesFile.class);
-    //        if (pFile != null)
-    //            if (pFile.file().equals("") == false)
-    //                this.addResource(enumType, new File(pFile.file()));
-    //            else if (pFile.uri().equals("") == false)
-    //                this.addResource(enumType, new URI(pFile.uri()));
-    //            else if (pFile.value().equals("") == false)
-    //                this.addResource(enumType, pFile.value());
-    //            else
-    //                this.addResource(enumType, enumType.getSimpleName());
-    //        this.addResource(enumType, enumType.getSimpleName());
-    //    };
-    //    /**添加一个配置文件，并且绑定到指定的枚举上。*/
-    //    public void addResource(Class<? extends Enum<?>> enumType, String resource) throws IOException {
-    //        InputStream stream = ResourcesUtil.getResourceAsStream(resource);
-    //        IAttribute<String> att = this.loadConfig(stream);
-    //        this.addAttribute(enumType, att);
-    //    };
-    //    /**添加一个配置文件，并且绑定到指定的枚举上。*/
-    //    public void addResource(Class<? extends Enum<?>> enumType, URI resource) throws MalformedURLException, IOException {
-    //        IAttribute<String> att = this.loadConfig(new AutoCloseInputStream(resource.toURL().openStream()));
-    //        this.addAttribute(enumType, att);
-    //    };
-    //    /**添加一个配置文件，并且绑定到指定的枚举上。*/
-    //    public void addResource(Class<? extends Enum<?>> enumType, File resource) throws IOException {
-    //        IAttribute<String> att = this.loadConfig(new AutoCloseInputStream(new FileInputStream(resource)));
-    //        this.addAttribute(enumType, att);
-    //    };
-    //    protected IAttribute<String> loadConfig(InputStream stream) throws IOException {
-    //        Properties prop = new Properties();
-    //        prop.load(stream);
-    //        return new TransformToAttribute<String>(prop);
-    //    }
 };
