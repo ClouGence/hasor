@@ -15,6 +15,7 @@
  */
 package org.test.more.core.json;
 import java.util.ArrayList;
+import java.util.HashMap;
 import org.junit.Test;
 import org.more.core.json.JsonUtil;
 public class JsonTest {
@@ -101,7 +102,21 @@ public class JsonTest {
         println(obj);
     }
     @Test
-    public void testMap() {}
+    public void testMap() {
+        HashMap<String, Object> objs = new HashMap<String, Object>();
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("aaaaaa");
+        list.add("bbbbbb");
+        list.add("cccccc");
+        list.add("dddddd");
+        objs.put("keu", list);
+        //
+        //String str = "{keu:['aaaaaa','bbbbbb','cccccc','dddddd']}";
+        String str = jsonUtil.toString(objs);
+        println(str);
+        Object obj = jsonUtil.toObject(str);
+        println(obj);
+    }
     @Test
     public void testObject() {}
 }

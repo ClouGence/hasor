@@ -74,7 +74,6 @@ class Tag_if implements XmlElementHook {
 }
 class Tag_function implements XmlElementHook {
     public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) throws XMLStreamException, IOException {
-        // TODO Auto-generated method stub
         System.out.println("callFun\t" + xpath);
     }
     public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) throws XMLStreamException, IOException {}
