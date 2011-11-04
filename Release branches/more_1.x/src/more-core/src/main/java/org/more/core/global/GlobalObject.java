@@ -53,6 +53,8 @@ class GlobalObject extends HashMap<String, Object> {
     public Object get(Object name) {
         //XXX:ƒ⁄÷√ Ù–‘∂¡£¨System.out.println("get   :" + name);
         if (this.propertys.containsKey(name) == false) {
+            if (name instanceof Integer)
+                return new LastList(this.onGlobal.getScope((Integer) name));
             IAttribute<Object> iatt = this.onGlobal.getScope((String) name);
             return (iatt != null) ? new LastList(iatt) : super.get(name);
         }

@@ -78,8 +78,12 @@ public abstract class Global implements IAttribute<Object> {
     };
     /*------------------------------------------------------------------------*/
     /**使用Ognl计算字符串，并且返回其计算结果。*/
-    public Object evalString(String ognlString) throws OgnlException {
-        return Ognl.getValue(ognlString, this.transformToOgnlContext());
+    public Object evalName(String ognlString) throws OgnlException {
+        Object oriObject = Ognl.getValue(ognlString, this.transformToOgnlContext());
+        if (oriObject instanceof String)
+            return this.getEval((String) oriObject);
+        else
+            return oriObject;
     };
     /**解析全局配置参数，并且返回其{@link Object}形式对象。*/
     public Object getObject(Enum<?> name) {
@@ -422,7 +426,7 @@ public abstract class Global implements IAttribute<Object> {
         char lastChar = elStr.charAt(elStr.length() - 1);
         //2.截取尾巴
         if (lastChar == ';') {
-            elStr.deleteCharAt(elStr.length());
+            elStr.deleteCharAt(elStr.length() - 1);
             lastChar = elStr.charAt(elStr.length() - 1);//去掉尾部的分号
         }
         //3.判断类型
