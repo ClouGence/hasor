@@ -21,7 +21,10 @@ import java.util.Map;
 import org.more.core.copybean.CopyBeanUtil;
 import org.more.core.error.InitializationException;
 import org.more.core.error.SupportException;
-import org.more.core.global.Global;
+import org.more.util.ResourcesUtil;
+import org.more.util.StringConvertUtil;
+import org.more.util.attribute.IAttribute;
+import org.more.util.attribute.SequenceStack;
 /**
  * 属性stringBorder是用于决定字符串序列化时使用单引号“'”或者双引号“"”(默认值)。
  * JsonUtil在序列化字符串对象时支持了String、Character、CharSequence、Reader这些类型。
@@ -32,32 +35,34 @@ import org.more.core.global.Global;
 public abstract class JsonUtil {
     /**默认字符串，34:", 39:'*/
     public static char                           StringBorder = '"';
-    public static final String[]                 configs      = new String[] { "json_config.properties", "META-INF/json_config.properties", "META-INF/resource/core/json_config.properties" };
+    /*顺序是优先级顺序*/
+    public static final String[]                 configs      = new String[] { "META-INF/resource/core/json_config.properties", "META-INF/json_config.properties", "json_config.properties" };
     //
     private char                                 stringBorder = JsonUtil.StringBorder;
     private LinkedHashMap<JsonCheck, JsonParser> jsonTypes    = new LinkedHashMap<JsonCheck, JsonParser>();
     /**创建JsonUtil对象，字符串序列化使用双引号环抱。 */
     protected JsonUtil() throws Exception {
-        Global global = Global.newInstance("properties", configs);
-        int _globalCount = global.getInteger("_global.count");
         //1.整理index
         ArrayList<String> names = new ArrayList<String>();
-        for (int i = 0; i < _globalCount; i++) {
-            /*获取装载了多少个配置文件*/
-            Object index = global.getObject("_global[" + i + "].index");
-            if (index == null || index.getClass().isArray() == false)
-                continue;//如果这个配置文件下不包含index或者该属性是一个非法的类型则忽略这个配置文件
-            Object[] $index = (Object[]) index;
-            for (Object obj : $index)
+        SequenceStack<String> seqStack = new SequenceStack<String>();
+        //
+        for (String cfg : configs) {
+            IAttribute<String> attList = ResourcesUtil.getPropertys(cfg);
+            seqStack.putStack(attList);
+            String index = attList.getAttribute("index");
+            if (index == null)
+                continue;
+            String[] $index = index.split(",");
+            for (String obj : $index)
                 if (names.contains(obj) == false)
-                    names.add(obj.toString());
+                    names.add(obj);
         }
         //2.装载index
         for (String name : names) {
             if (name == null || name.equals("") == true)
                 continue;
-            String _check = global.getString(name + "_Check");
-            String _parser = global.getString(name + "_Parser");
+            String _check = seqStack.getAttribute(name + "_Check");
+            String _parser = seqStack.getAttribute(name + "_Parser");
             if (_check == null || _check.equals("") == true || _parser == null || _parser.equals("") == true)
                 continue;
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -67,7 +72,15 @@ public abstract class JsonUtil {
             JsonParser $$_parser = (JsonParser) $_parser.getConstructor(JsonUtil.class).newInstance(this);
             this.addType($$_check, $$_parser);
         }
-        this.stringBorder = global.getChar("useDoubleBorder", JsonUtil.StringBorder);
+        String useDoubleBorder = seqStack.getAttribute("useDoubleBorder");
+        if (useDoubleBorder == null || useDoubleBorder.equals("") == true)
+            this.stringBorder = JsonUtil.StringBorder;
+        else {
+            if (StringConvertUtil.parseBoolean(useDoubleBorder, true) == true)
+                this.stringBorder = '"';
+            else
+                this.stringBorder = '\'';
+        }
     };
     /**添加一种类型的解析，添加的类型解析是被追加进去的。TODO 改为插入方式*/
     private void addType(JsonCheck check, JsonParser parser) {

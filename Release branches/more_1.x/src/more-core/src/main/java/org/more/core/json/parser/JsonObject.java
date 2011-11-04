@@ -74,7 +74,11 @@ public class JsonObject extends JsonMixed {
             String value = readStr.substring(firstIndex + 1);
             //处理这个字符串数据的类型进行处理。
             JsonUtil json = this.getCurrentContext();
-            map.put(json.toObject(key), json.toObject(value));
+            try {
+                map.put(json.toObject(key), json.toObject(value));
+            } catch (Exception e) {
+                map.put(key, json.toObject(value));
+            }
         }
         return map;
     }
