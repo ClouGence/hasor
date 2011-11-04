@@ -15,19 +15,29 @@
  */
 package org.more.util.attribute;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 /**
  * 
  * @version : 2011-7-22
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@byshell.org) 
  */
 public class SequenceStack<T> implements IAttribute<T> {
-    private LinkedList<IAttribute<T>> attList = new LinkedList<IAttribute<T>>();
-    //
+    private List<IAttribute<T>> attList = null;
+    public SequenceStack() {
+        this.attList = new ArrayList<IAttribute<T>>();
+    }
+    public SequenceStack(Collection<IAttribute<T>> collection) {
+        this();
+        for (IAttribute<T> att : collection)
+            if (att != null)
+                attList.add(att);
+    }
+    /**将一个{@link IAttribute}接口对象加入到队列中，越先加入的优先级越低。*/
     public void putStack(IAttribute<T> scope) {
         if (this.attList.contains(scope) == false)
-            this.attList.addFirst(scope);
+            this.attList.add(scope);
     };
     public boolean contains(String name) {
         for (IAttribute<?> iatt : this.attList)
@@ -69,8 +79,18 @@ public class SequenceStack<T> implements IAttribute<T> {
         if (this.attList.isEmpty() == false)
             this.attList.get(0).setAttribute(name, value);
     }
-    /**返回队列中元素的个数*/
-    public int size() {
+    /**返回队列中元素个数*/
+    public int attCount() {
         return this.attList.size();
-    };
+    }
+    /**返回所有队列元素中的属性总数*/
+    public int size() {
+        return this.getAttributeNames().length;
+    }
+    public IAttribute<T> getIndex(int index) {
+        return this.attList.get(index);
+    }
+    public List<IAttribute<T>> getList() {
+        return this.attList;
+    }
 };

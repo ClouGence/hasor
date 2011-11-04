@@ -77,4 +77,7 @@ public abstract class AbstractAttDecorator<T> implements IAttribute<T> {
     public Map<String, T> toMap() {
         return this.source.toMap();
     }
+    public int size() {
+        return this.source.size();
+    }
 }

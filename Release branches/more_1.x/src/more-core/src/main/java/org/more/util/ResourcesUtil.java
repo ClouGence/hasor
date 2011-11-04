@@ -19,6 +19,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.more.core.error.FormatException;
+import org.more.core.io.AutoCloseInputStream;
 import org.more.util.attribute.IAttribute;
 import org.more.util.attribute.SequenceStack;
 import org.more.util.attribute.TransformToAttribute;
@@ -86,6 +88,31 @@ public abstract class ResourcesUtil {
         return urls;
     }
     /**获取classpath中可能存在的资源，以流的形式返回。*/
+    public static InputStream getResourceAsStream(File resourceFile) throws IOException {
+        return getResourceAsStream(resourceFile.toURI().toURL());
+    }
+    /**获取classpath中可能存在的资源，以流的形式返回。*/
+    public static InputStream getResourceAsStream(URI resourceURI) throws IOException {
+        return getResourceAsStream(resourceURI.toURL());
+    }
+    /**获取classpath中可能存在的资源，以流的形式返回。*/
+    public static InputStream getResourceAsStream(URL resourceURL) throws IOException {
+        String protocol = resourceURL.getProtocol();
+        File path = new File(URLDecoder.decode(resourceURL.getFile(), "utf-8"));
+        if (protocol.equals("file") == true) {
+            //文件
+            if (path.canRead() == true && path.isFile() == true)
+                return new AutoCloseInputStream(new FileInputStream(path));
+        } else if (protocol.equals("jar") == true) {
+            //JAR文件
+            JarFile jar = ((JarURLConnection) resourceURL.openConnection()).getJarFile();
+            ZipEntry e = jar.getEntry(resourceURL.getPath());
+            return jar.getInputStream(e);
+        }
+        // TODO 该处处理其他协议的资源加载。诸如OSGi等协议。
+        return null;
+    }
+    /**获取classpath中可能存在的资源，以流的形式返回。*/
     public static InputStream getResourceAsStream(String resourcePath) throws IOException {
         return getCurrentLoader().getResourceAsStream(resourcePath);
     }
@@ -94,19 +121,9 @@ public abstract class ResourcesUtil {
         ArrayList<InputStream> iss = new ArrayList<InputStream>();
         List<URL> urls = getResources(resourcePath);
         for (URL url : urls) {
-            String protocol = url.getProtocol();
-            File path = new File(URLDecoder.decode(url.getFile(), "utf-8"));
-            if (protocol.equals("file") == true) {
-                //文件
-                if (path.canRead() == true && path.isFile() == true)
-                    iss.add(new FileInputStream(path));
-            } else if (protocol.equals("jar") == true) {
-                //JAR文件
-                JarFile jar = ((JarURLConnection) url.openConnection()).getJarFile();
-                ZipEntry e = jar.getEntry(resourcePath);
-                iss.add(jar.getInputStream(e));
-            }
-            // TODO 该处处理其他协议的资源加载。诸如OSGi等协议。
+            InputStream in = getResourceAsStream(url);
+            if (in != null)
+                iss.add(in);
         }
         return iss;
     }

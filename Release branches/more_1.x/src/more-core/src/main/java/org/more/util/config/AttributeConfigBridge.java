@@ -25,9 +25,8 @@ import org.more.util.attribute.IAttribute;
  * @author ’‘”¿¥∫(zyc@byshell.org)
  */
 public class AttributeConfigBridge implements IAttribute<Object>, Config<Object> {
-    private static final long  serialVersionUID = 5340008420422363045L;
-    private Object             context          = null;
-    private IAttribute<Object> attMap           = null;
+    private Object             context = null;
+    private IAttribute<Object> attMap  = null;
     public AttributeConfigBridge() {
         this.attMap = new AttBase<Object>();
     }
@@ -70,5 +69,8 @@ public class AttributeConfigBridge implements IAttribute<Object>, Config<Object>
     }
     public Map<String, Object> toMap() {
         return this.attMap.toMap();
+    }
+    public int size() {
+        return this.attMap.size();
     }
 }

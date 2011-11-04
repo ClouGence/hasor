@@ -50,4 +50,6 @@ public interface IAttribute<T> {
     public void clearAttribute();
     /**将{@link IAttribute}转换为Map形式。*/
     public Map<String, T> toMap();
+    /**获取属性集合中总共有多少属性被定义。*/
+    public int size();
 }
