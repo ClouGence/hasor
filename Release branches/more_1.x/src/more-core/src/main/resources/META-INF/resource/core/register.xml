@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<register>
+	<namespace url="http://project.byshell.org/more/schema/beans" schema="/META-INF/resource/hypha/beans-schema.xsd">
+		<xmlPath xmlPath="" class="" />
+	</namespace>
+</register>
