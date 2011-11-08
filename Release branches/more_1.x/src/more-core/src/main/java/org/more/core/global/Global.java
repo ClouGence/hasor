@@ -29,6 +29,7 @@ import org.more.core.ognl.OgnlContext;
 import org.more.core.ognl.OgnlException;
 import org.more.util.ResourcesUtil;
 import org.more.util.StringConvertUtil;
+import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 import org.more.util.attribute.SequenceStack;
 import org.more.util.attribute.TransformToAttribute;
@@ -48,7 +49,8 @@ public abstract class Global implements IAttribute<Object> {
     /**添加的所有配置文件都在这里保存，根据不同的注册名来进行分组，_global域和_cache域也在其中。*/
     private LinkedHashMap<String, SequenceStack<Object>> scopeMap     = null;
     private GlobalObject                                 globalObject = new GlobalObject(this);
-    //
+    private AttBase<Object>                              cache        = new AttBase<Object>();
+    // 
     //
     /*------------------------------------------------------------------------*/
     private SequenceStack<Object>                        $elData      = null;
@@ -59,6 +61,7 @@ public abstract class Global implements IAttribute<Object> {
             for (IAttribute<Object> att : this.scopeMap.values())
                 if (att != null)
                     $elData.putStack(att);
+            this.$elData.putStack(cache);
         }
         return this.$elData;
     };
@@ -345,15 +348,15 @@ public abstract class Global implements IAttribute<Object> {
     };
     /**值会被直接设置到内置对象中，该方法不会影响到固定的内置属性（它们的优先级仍然是最高的）。*/
     public void setAttribute(String name, Object newValue) {
-        this.globalObject.put(name, newValue);
+        this.cache.put(name, newValue);
     };
     /**从内置对象中删除属性，该方法不会影响到固定的内置属性（它们的优先级仍然是最高的）。*/
     public void removeAttribute(String name) {
-        this.globalObject.remove(name);
+        this.cache.remove(name);
     };
     /**清空内置对象中的属性，该方法不会影响到固定的内置属性（它们的优先级仍然是最高的）。*/
     public void clearAttribute() {
-        this.globalObject.clear();
+        this.cache.clear();
     };
     /*------------------------------------------------------------------------*/
     /**将一组原始的配置信息添加到Global中，如果存在已经使用的名称则追加。*/
@@ -477,24 +480,11 @@ public abstract class Global implements IAttribute<Object> {
     /**在解析过程中负责解析包含EL串的字符串，如果_global.enableEL属性配置为false则不解析json数据。，该字符串中是通过${和}块来标记EL部分。*/
     protected Object $evalEL2(String elString) {
         //如果要处理的字符串中不包含表达式部分则使用字符串方式处理。
-        if (elString.matches("\\$\\{.*\\}") == false)
+        if (elString.matches(".*\\$\\{.*\\}.*") == false)
             return this.$evalString(elString);
-        //TODO:以后可以使用JavaCC进行解析，这样就可以处理“${}”的转义问题。目前只负责将${}部分通过正则表达式进行查找替换。
-        //
-        //
-        final String startKEY = "${";
-        final String endKEY = "}";
-        //
-        int index = elString.indexOf(startKEY);
-        int length = 0;
-        StringBuffer sb = new StringBuffer();
-        while (true) {
-            if (elString.indexOf(startKEY, index) != -1)
-                break;
-            length = elString.indexOf(endKEY, index);
-            sb.append(elString.substring(index, length));
-        }
-        return this.$evalEL(sb.toString());//执行el
+        //TODO:目前版本暂不支持包含EL表达式的字符串解析。以后可以考虑使用JavaCC或者正则表达式进行解析。
+        throw new SupportException("目前版本暂不支持包含EL表达式的字符串解析。");
+        //return this.$evalEL(elString);//执行el
     };
     /*------------------------------------------------------------------------*/
     /**起缓存作用*/

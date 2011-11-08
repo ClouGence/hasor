@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 import org.more.core.json.JsonException;
 import org.more.core.json.JsonUtil;
-import org.more.util.BeanUtil;
 import org.more.util.attribute.IAttribute;
 /**
  * 负责处理Object类型的json格式互转。

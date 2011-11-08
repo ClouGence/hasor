@@ -24,6 +24,7 @@ import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.core.xml.stream.XmlReader;
+import org.more.util.ResourcesUtil;
 /**
  *
  * @version 2010-9-8
@@ -32,8 +33,8 @@ import org.more.core.xml.stream.XmlReader;
 public class Level3_Test {
     @Test
     public void reader() throws XMLStreamException, IOException {
-        String url = "/org/test/more/core/xml/level_3.xml";
-        XmlReader reader = new XmlReader(Level3_Test.class.getResourceAsStream(url));
+        String url = "org/test/more/core/xml/level_3.xml";
+        XmlReader reader = new XmlReader(ResourcesUtil.getResourceAsStream(url));
         XmlParserKitManager manager = new XmlParserKitManager();
         XmlParserKit kit = new XmlParserKit();
         //-----------------------

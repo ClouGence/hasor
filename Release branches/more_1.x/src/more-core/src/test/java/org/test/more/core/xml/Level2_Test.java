@@ -22,6 +22,7 @@ import org.more.core.xml.XmlParserKitManager;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.XmlReader;
 import org.more.core.xml.stream.XmlStreamEvent;
+import org.more.util.ResourcesUtil;
 /**
  *
  * @version 2010-9-8
@@ -30,7 +31,7 @@ import org.more.core.xml.stream.XmlStreamEvent;
 public class Level2_Test {
     @Test
     public void reader() throws XMLStreamException, IOException {
-        XmlReader reader = new XmlReader(Level1_Test.class.getResourceAsStream("/org/test/more/core/xml/level_2.xml"));
+        XmlReader reader = new XmlReader(ResourcesUtil.getResourceAsStream("org/test/more/core/xml/level_2.xml"));
         //reader.setIgnoreComment(true);
         //reader.setIgnoreSpace(true);
         XmlParserKitManager manager = new XmlParserKitManager();

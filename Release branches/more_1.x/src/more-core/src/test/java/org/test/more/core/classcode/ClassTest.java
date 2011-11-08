@@ -34,7 +34,7 @@ public class ClassTest {
     @Test
     public void test_2() throws Exception {
         ClassEngine ce = new ClassEngine(String.class);
-        System.out.println(ce.newInstance(null));//TODO 跑出错误是正确的结果。
+        System.out.println(ce.newInstance(null));//跑出错误是正确的结果。
     }
     @Test
     public void test_3() throws Exception {
@@ -57,7 +57,7 @@ public class ClassTest {
     public void test_6() throws Exception {
         ClassEngine ce = new ClassEngine(String.class);
         ce.setBuilderMode(BuilderMode.Propxy);
-        System.out.println(ce.newInstance(""));//TODO 跑出错误是正确的结果。
+        System.out.println(ce.newInstance(""));//跑出错误是正确的结果。
     }
     @Test
     public void test_7() throws Exception {}
