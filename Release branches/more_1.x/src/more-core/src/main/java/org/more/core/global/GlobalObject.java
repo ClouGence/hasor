@@ -20,7 +20,7 @@ import org.more.core.global.gp.CFGList_GP;
 import org.more.core.global.gp.Count_GP;
 import org.more.core.global.gp.EnableEL_GP;
 import org.more.core.global.gp.EnableJson_GP;
-import org.more.core.global.gp.GroupCount_GP;
+import org.more.core.global.gp.ScopeCount_GP;
 import org.more.util.attribute.IAttribute;
 import org.more.util.attribute.SequenceStack;
 /**
@@ -41,7 +41,7 @@ class GlobalObject extends HashMap<String, Object> {
         //植入固定的内置属性
         this.propertys.put("enableEL", new EnableEL_GP());
         this.propertys.put("enableJson", new EnableJson_GP());
-        this.propertys.put("groupCount", new GroupCount_GP());
+        this.propertys.put("scopeCount", new ScopeCount_GP());
         this.propertys.put("count", new Count_GP());
         this.propertys.put("cfgList", new CFGList_GP());
     };

@@ -410,8 +410,8 @@ public abstract class Global implements IAttribute<Object> {
         SequenceStack<Object> stack = (SequenceStack<Object>) temp;
         return stack.getIndex(index);
     };
-    /**返回一共增加了多少个config分组设置，这里包括<b>内置属性</b>。所以该值应该大于等于<b>1</b>。*/
-    public int getConfigGroupCount() {
+    /**返回一共有多少种作用域分组，这里包括<b>内置属性</b>。所以该值应该大于等于<b>1</b>。*/
+    public int getScopeCount() {
         return this.scopeMap.size();
     };
     /**返回一共有多少条配置。其中包含<b>内置属性</b>。*/
@@ -482,7 +482,7 @@ public abstract class Global implements IAttribute<Object> {
         //如果要处理的字符串中不包含表达式部分则使用字符串方式处理。
         if (elString.matches(".*\\$\\{.*\\}.*") == false)
             return this.$evalString(elString);
-        //TODO:目前版本暂不支持包含EL表达式的字符串解析。以后可以考虑使用JavaCC或者正则表达式进行解析。
+        //FIXME:目前版本暂不支持包含EL表达式的字符串解析。以后可以考虑使用JavaCC或者正则表达式进行解析。
         throw new SupportException("目前版本暂不支持包含EL表达式的字符串解析。");
         //return this.$evalEL(elString);//执行el
     };
@@ -514,7 +514,7 @@ public abstract class Global implements IAttribute<Object> {
         try {
             GlobalFactory globalFactory = (GlobalFactory) globalFactoryType.newInstance();
             Global global = globalFactory.createGlobal(params);
-            //XXX:可以装载内置属性
+            //FIXME:可以装载内置属性
             return global;
         } catch (Throwable e) {
             throw new InitializationException("init error can`t create type " + globalFactoryType);
@@ -527,5 +527,5 @@ public abstract class Global implements IAttribute<Object> {
     /**创建一个{@link Global}本体实例化对象。*/
     public static Global newInterInstance() {
         return new Global(null) {};
-    };
+    }
 };

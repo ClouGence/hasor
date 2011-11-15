@@ -22,11 +22,11 @@ import org.more.core.global.GlobalProperty;
  * @version : 2011-9-30
  * @author 赵永春 (zyc@byshell.org)
  */
-public class GroupCount_GP implements GlobalProperty {
+public class ScopeCount_GP implements GlobalProperty {
     public Object getValue(Global global) {
-        return global.getConfigGroupCount();
+        return global.getScopeCount();
     }
     public void setValue(Object value, Global global) {
-        throw new SupportException("_global.groupSize，属性不支持写操作。");
+        throw new SupportException("_global.scopeCount，属性不支持写操作。");
     }
 }

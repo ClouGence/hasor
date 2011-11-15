@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.core.global.gp;
-import java.util.ArrayList;
+import java.util.AbstractList;
 import org.more.core.error.SupportException;
 import org.more.core.global.Global;
 import org.more.core.global.GlobalProperty;
@@ -35,13 +35,15 @@ public class CFGList_GP implements GlobalProperty {
     }
 }
 /**该类是为了实现在el中以list结构访问cfgList内置属性。*/
-class CFGList extends ArrayList<Object> {
-    private static final long serialVersionUID = -5144216708454403683L;
-    private Global            global           = null;
+class CFGList extends AbstractList<Object> {
+    private Global global = null;
     public CFGList(Global global) {
         this.global = global;
     }
     public Object get(int index) {
         return this.global.getScope(index).toMap();
+    }
+    public int size() {
+        return this.global.getScopeCount();
     }
 }
