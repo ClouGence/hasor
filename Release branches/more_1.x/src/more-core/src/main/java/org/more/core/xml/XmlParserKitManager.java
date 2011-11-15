@@ -40,11 +40,25 @@ public class XmlParserKitManager implements XmlAccept {
     private HashMap<String, ArrayList<XmlNamespaceParser>> regeditXmlParserKit = new HashMap<String, ArrayList<XmlNamespaceParser>>();
     /**活动的前缀与命名空间映射*/
     private XmlStackDecorator<Object>                      activateStack       = null;
-    /**一个在分发xml事件流过程中一致存在的环境。*/
-    private XmlStackDecorator<Object>                      context             = new XmlStackDecorator<Object>(new AttBase<Object>());
+    //
+    //
+    //
+    private XmlStackDecorator<Object> getXmlStack() {
+        if (this.activateStack == null)
+            this.activateStack = new XmlStackDecorator<Object>(new AttBase<Object>());
+        return this.activateStack;
+    }
     /**获取环境对象，的{@link IAttribute}属性接口。*/
-    public IAttribute<Object> getContext() {
-        return context.getSource();
+    public IAttribute<Object> getAttContext() {
+        return getXmlStack().getSource();
+    }
+    /**设置绑定的上下文对象*/
+    public void setContext(Object context) {
+        getXmlStack().setContext(context);
+    }
+    /**获取绑定的上下文对象*/
+    public Object getContext() {
+        return getXmlStack().getContext();
     }
     /**
      * 绑定某个命名空间处理器到一个解析器上。绑定的解析器可以用于监听到xml事件流信息。
@@ -61,7 +75,7 @@ public class XmlParserKitManager implements XmlAccept {
         else
             list = new ArrayList<XmlNamespaceParser>();
         if (list.contains(kit) == true)
-            throw new RepeateException("namespace ‘" + namespace + "’ and kit ‘" + kit + "’ is repeat");
+            throw new RepeateException("命名空间[" + namespace + "]与解析器" + kit + "重复注册。");
         list.add(kit);
         this.regeditXmlParserKit.put(namespace, list);
     }
@@ -72,7 +86,7 @@ public class XmlParserKitManager implements XmlAccept {
      */
     public void unRegeditKit(String namespace, XmlNamespaceParser kit) {
         if (namespace == null || kit == null)
-            throw new NullPointerException("namespace or kit is null.");
+            throw new NullPointerException("namespace，kit参数不能为空。");
         if (this.regeditXmlParserKit.containsKey(namespace) == false)
             return;
         ArrayList<XmlNamespaceParser> list = this.regeditXmlParserKit.get(namespace);
@@ -81,7 +95,7 @@ public class XmlParserKitManager implements XmlAccept {
     }
     /**开始{@link XmlAccept}接口的调用，该方法主要用于重置状态。*/
     public void beginAccept() {
-        this.activateStack = new XmlStackDecorator<Object>(new AttBase<Object>());
+        this.getXmlStack();
         for (ArrayList<XmlNamespaceParser> alList : this.regeditXmlParserKit.values())
             for (XmlNamespaceParser xnp : alList)
                 xnp.beginAccept();
@@ -113,7 +127,7 @@ public class XmlParserKitManager implements XmlAccept {
                 ArrayList<XmlNamespaceParser> alList = this.regeditXmlParserKit.get(namespace);
                 if (alList != null)
                     for (XmlNamespaceParser kit : alList)
-                        kit.sendEvent(this.context, xpath, e);
+                        kit.sendEvent(this.getXmlStack(), xpath, e);
             }
         else {
             //处理私有事件
@@ -123,7 +137,7 @@ public class XmlParserKitManager implements XmlAccept {
             ArrayList<XmlNamespaceParser> alList = this.regeditXmlParserKit.get(ns.getUri());
             if (alList != null)
                 for (XmlNamespaceParser kit : alList)
-                    kit.sendEvent(this.context, ns.getXpath(), e);
+                    kit.sendEvent(this.getXmlStack(), ns.getXpath(), e);
         }
     }
     /**实现{@link XmlAccept}接口用于接受事件的方法。*/

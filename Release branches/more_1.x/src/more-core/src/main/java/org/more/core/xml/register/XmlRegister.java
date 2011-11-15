@@ -112,11 +112,17 @@ public class XmlRegister extends XmlParserKitManager {
         this.addSourceArray(source);
     }
     /**解析配置文件流。*/
-    public void passerXml(InputStream in) throws XMLStreamException, IOException {
+    public void passerXml(InputStream in, Object context) throws XMLStreamException, IOException {
+        if (context != null)
+            this.setContext(context);
         new XmlReader(in).reader(this, null);
     };
     /**手动执行配置装载动作，如果重复装载可能产生异常。*/
     public synchronized void loadXml() throws IOException, XMLStreamException {
+        this.loadXml(null);
+    }
+    /**手动执行配置装载动作，如果重复装载可能产生异常。参数是传入的环境对象，在解析xml的时候可以获取到。*/
+    public synchronized void loadXml(Object context) throws IOException, XMLStreamException {
         log.info("loadXml source count = {%0}.", this.sourceArray.size());
         int count = this.sourceArray.size();
         for (int i = 0; i < count; i++) {
@@ -131,31 +137,31 @@ public class XmlRegister extends XmlParserKitManager {
                 } catch (Exception e) {
                     log.warning("reset InputStream error ,Stream not supported.");
                 }
-                this.passerXml(is);
+                this.passerXml(is, context);
             } else if (obj instanceof URL) {
                 URL url = ((URL) obj);
                 log.debug("load URL '{%0}'", url);
                 InputStream is = url.openStream();
-                this.passerXml(is);
+                this.passerXml(is, context);
                 is.close();
             } else if (obj instanceof URI) {
                 URI uri = ((URI) obj);
                 log.debug("load URI '{%0}'", uri);
                 InputStream is = uri.toURL().openStream();
-                this.passerXml(is);
+                this.passerXml(is, context);
                 is.close();
             } else if (obj instanceof File) {
                 File file = (File) obj;
                 log.debug("load File '{%0}'", file);
                 FileInputStream is = new FileInputStream(file);
-                this.passerXml(is);
+                this.passerXml(is, context);
                 is.close();
             } else if (obj instanceof String) {
                 List<URL> urls = ResourcesUtil.getResources((String) obj);
                 log.debug("load String '{%0}' include [{%1}]", obj, urls);
                 for (URL url : urls) {
                     InputStream is = url.openConnection().getInputStream();
-                    this.passerXml(is);
+                    this.passerXml(is, context);
                     is.close();
                 }
             }

@@ -95,6 +95,7 @@ public class JsonObject extends JsonMixed {
                 this.appendObject(json, key, map.get(key));
         } else {
             Class<?> type = bean.getClass();
+            //FIXME:ÐÞ¸ÄÎªBeanUtil¡£
             Map<String, Field> fields = new HashMap<String, Field>();
             //
             for (Field f : type.getFields())
