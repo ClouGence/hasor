@@ -13,20 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.global.gp;
-import org.more.core.error.SupportException;
-import org.more.core.global.Global;
-import org.more.core.global.GlobalProperty;
+package org.more.core.xml.register;
+import org.more.core.xml.XmlParserKit;
 /**
- * _global.groupSize
- * @version : 2011-9-30
+ * 
+ * @version : 2011-12-5
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ScopeCount_GP implements GlobalProperty {
-    public Object getValue(Global global) {
-        return global.getScopeCount();
-    }
-    public void setValue(Object value, Global global) {
-        throw new SupportException("_global.scopeCount，属性不支持写操作。");
-    }
-}
+public interface XmlRegisterHook {
+    /**创建{@link XmlParserKit}xpath注册器。参数是要创建的命名空间。*/
+    public XmlParserKit createXmlParserKit(String namespace, XmlRegister manager);
+};

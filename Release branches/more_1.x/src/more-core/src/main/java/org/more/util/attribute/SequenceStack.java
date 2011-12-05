@@ -46,9 +46,11 @@ public class SequenceStack<T> implements IAttribute<T> {
         return false;
     };
     public T getAttribute(String name) {
-        for (IAttribute<T> iatt : this.attList)
-            if (iatt.contains(name) == true)
-                return iatt.getAttribute(name);
+        for (IAttribute<T> iatt : this.attList) {
+            T res = iatt.getAttribute(name);
+            if (res != null)
+                return res;
+        }
         return null;
     };
     public String[] getAttributeNames() {
@@ -64,17 +66,17 @@ public class SequenceStack<T> implements IAttribute<T> {
     public Map<String, T> toMap() {
         return new TransformToMap<T>(this);
     };
-    /**该方法只会对最后一个加入的{@link IAttribute}对象起作用。*/
+    /**该方法只会对第一个加入的{@link IAttribute}对象起作用。*/
     public void clearAttribute() {
         if (this.attList.isEmpty() == false)
             this.attList.get(0).clearAttribute();
     };
-    /**该方法只会对最后一个加入的{@link IAttribute}对象起作用。*/
+    /**该方法只会对第一个加入的{@link IAttribute}对象起作用。*/
     public void removeAttribute(String name) {
         if (this.attList.isEmpty() == false)
             this.attList.get(0).removeAttribute(name);
     };
-    /**该方法只会对最后一个加入的{@link IAttribute}对象起作用。*/
+    /**该方法只会对第一个加入的{@link IAttribute}对象起作用。*/
     public void setAttribute(String name, T value) {
         if (this.attList.isEmpty() == false)
             this.attList.get(0).setAttribute(name, value);

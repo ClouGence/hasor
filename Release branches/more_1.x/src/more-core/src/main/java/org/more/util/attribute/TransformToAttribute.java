@@ -16,6 +16,7 @@
 package org.more.util.attribute;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 /**
  * 该类的职责是将{@link Map}接口对象转换为{@link IAttribute}接口对象。
  * 但是请注意，{@link Map}的Key必须为String类型否则可能无法通过字符串形式的Key获取到值。
@@ -43,7 +44,10 @@ public class TransformToAttribute<T> implements IAttribute<T> {
         this.values.remove(name);
     };
     public String[] getAttributeNames() {
-        String[] KEYS = new String[this.values.size()];
+        Set<?> set = this.values.keySet();
+        String[] KEYS = new String[set.size()];
+        if (KEYS.length == 0)
+            return KEYS;
         int i = 0;
         for (Object k : this.values.keySet()) {
             KEYS[i] = (k != null) ? k.toString() : null;
