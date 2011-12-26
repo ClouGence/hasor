@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.copybean.type;
-import org.more.core.copybean.ConvertType;
-import org.more.util.StringConvertUtil;
+package org.more.core.copybean.convert;
+import org.more.core.copybean.Convert;
 /**
- * CopyBean处理Long类型转换的辅助类。
+ * CopyBean处理String类型转换的辅助类。
  * @version 2009-5-23
  * @author 赵永春 (zyc@byshell.org)
  */
-public class LongConvertType extends ConvertType {
-    /**  */
-    private static final long serialVersionUID = -3319752731163417948L;
-    public boolean checkType(Object from, Class<?> to) {
-        return (to == Long.class || to == long.class) ? true : false;
+public class StringConvertType implements Convert<String> {
+    public boolean checkConvert(Class<?> toType) {
+        return toType.isAssignableFrom(CharSequence.class);
     }
-    public Object convert(Object object) {
+    public String convert(Object object) {
         if (object == null)
-            return 0;
-        else
-            return StringConvertUtil.parseLong(object.toString());
+            return null;
+        CharSequence seq = (CharSequence) object;
+        StringBuffer sb = new StringBuffer(seq);
+        return sb.toString();
     }
 }

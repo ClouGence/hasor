@@ -116,9 +116,10 @@ public abstract class JsonUtil {
     }
     /**将json数据转换为指定的类型结构。*/
     public Object toObject(String str, Class<?> superType) throws InstantiationException, IllegalAccessException {
-        Object obj = superType.newInstance();
         Object data = this.toObject(str);
-        return CopyBeanUtil.newInstance().copy(data, obj);
+        Object returnData = superType.newInstance();
+        CopyBeanUtil.getCopyBeanUtil().copyPropertys(data, returnData);
+        return returnData;
     }
     /**将json数据转换为object形式，如果json数据是一个数组则返回数组对象，如果是一个对象则返回一个map*/
     public Object toObject(String str) {
@@ -142,6 +143,10 @@ public abstract class JsonUtil {
         try {
             return new JsonUtil() {};
         } catch (Exception e) {
+            if (e instanceof InitializationException == true)
+                throw (InitializationException) e;
+            if (e instanceof RuntimeException == true)
+                throw (RuntimeException) e;
             throw new InitializationException(e);
         }
     };

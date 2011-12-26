@@ -13,31 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.copybean.type;
+package org.more.core.copybean.convert;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.more.core.copybean.ConvertType;
+import org.more.core.copybean.Convert;
 /**
  * CopyBean处理Date类型转换的辅助类。
  * @version 2009-5-23
  * @author 赵永春 (zyc@byshell.org)
  */
-public class DateConvertType extends ConvertType {
-    /**  */
-    private static final long serialVersionUID         = -5864989968961653320L;
+public class DateConvertType implements Convert<Date> {
     /** 当遇到传入的值为空时，返回null。 */
-    public final static int   DefaultType_Null         = 0;
+    public final static int DefaultType_Null         = 0;
     /** 当遇到传入的值为空时，返回staticDefault属性的时间。 */
-    public final static int   DefaultType_DefaultValue = 1;
+    public final static int DefaultType_DefaultValue = 1;
     /** 当遇到传入的值为空时，创建一个新时间返回。 */
-    public final static int   DefaultType_NewDate      = 2;
+    public final static int DefaultType_NewDate      = 2;
     /** 默认时间格式 */
-    private String            format                   = "yyyy-MM-dd hh:mm:ss";
+    private String          format                   = "yyyy-MM-dd hh:mm:ss";
     /** 时间格式的默认类型。 */
-    private Date              staticDefault            = null;
+    private Date            staticDefault            = null;
     /** 当准备转换的时间为空时其默认值策略是什么，该策略是DateConvertType.DefaultType_制定的 */
-    private int               defaultType              = DateConvertType.DefaultType_NewDate;
+    private int             defaultType              = DateConvertType.DefaultType_NewDate;
     /**
      * 获得当准备转换的时间为空时其默认值策略。
      * @return 返回当准备转换的时间为空时默认值换策略。
@@ -51,21 +49,6 @@ public class DateConvertType extends ConvertType {
      */
     public void setDefaultType(int defaultType) {
         this.defaultType = defaultType;
-    }
-    public boolean checkType(Object from, Class<?> to) {
-        return (to == Date.class) ? true : false;
-    }
-    public Object convert(Object object) {
-        if (object == null)
-            return getDefaultValue();
-        if (object instanceof Date)
-            return object;
-        else
-            try {
-                return new SimpleDateFormat(this.format).parse(object.toString());
-            } catch (ParseException e) {
-                return getDefaultValue();
-            }
     }
     private Date getDefaultValue() {
         switch (this.defaultType) {
@@ -91,5 +74,20 @@ public class DateConvertType extends ConvertType {
      */
     public void setFormat(String format) {
         this.format = format;
+    }
+    public boolean checkConvert(Class<?> toType) {
+        return toType.isAssignableFrom(Date.class);
+    }
+    public Date convert(Object object) {
+        if (object == null)
+            return getDefaultValue();
+        if (object instanceof Date)
+            return (Date) object;
+        else
+            try {
+                return new SimpleDateFormat(this.format).parse(object.toString());
+            } catch (ParseException e) {
+                return getDefaultValue();
+            }
     }
 }

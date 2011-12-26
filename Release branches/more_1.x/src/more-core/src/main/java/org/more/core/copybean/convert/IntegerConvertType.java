@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.copybean.type;
-import org.more.core.copybean.ConvertType;
+package org.more.core.copybean.convert;
+import org.more.core.copybean.Convert;
 import org.more.util.StringConvertUtil;
 /**
- * CopyBean处理Boolean类型转换的辅助类。
+ * CopyBean处理Integer类型转换的辅助类。
  * @version 2009-5-23
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ByteConvertType extends ConvertType {
-    /**  */
-    private static final long serialVersionUID = 1L;
-    public boolean checkType(Object from, Class<?> to) {
-        return (to == Byte.class || to == byte.class) ? true : false;
+public class IntegerConvertType implements Convert<Integer> {
+    public boolean checkConvert(Class<?> toType) {
+        return (toType == Integer.class || toType == int.class) ? true : false;
     }
-    public Object convert(Object object) {
+    public Integer convert(Object object) {
         if (object == null)
             return 0;
+        else if (object instanceof Integer)
+            return (Integer) object;
         else
-            return StringConvertUtil.parseByte(object.toString(), (byte) 0);
+            return StringConvertUtil.parseInt(object.toString(), 0);
     }
 }

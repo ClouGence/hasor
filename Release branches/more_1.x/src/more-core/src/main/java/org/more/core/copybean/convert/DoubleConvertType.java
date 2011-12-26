@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.copybean.type;
-import org.more.core.copybean.ConvertType;
+package org.more.core.copybean.convert;
+import org.more.core.copybean.Convert;
 import org.more.util.StringConvertUtil;
 /**
- * CopyBean处理Integer类型转换的辅助类。
+ * CopyBean处理Double类型转换的辅助类。
  * @version 2009-5-23
  * @author 赵永春 (zyc@byshell.org)
  */
-public class IntegerConvertType extends ConvertType {
-    /**  */
-    private static final long serialVersionUID = -3319752731163417948L;
-    public boolean checkType(Object from, Class<?> to) {
-        return (to == Integer.class || to == int.class) ? true : false;
+public class DoubleConvertType implements Convert<Double> {
+    public boolean checkConvert(Class<?> toType) {
+        return (toType == Double.class || toType == double.class) ? true : false;
     }
-    public Object convert(Object object) {
+    public Double convert(Object object) {
         if (object == null)
-            return 0;
+            return 0d;
+        else if (object instanceof Double)
+            return (Double) object;
         else
-            return StringConvertUtil.parseInt(object.toString(), 0);
+            return StringConvertUtil.parseDouble(object.toString(), 0d);
     }
 }

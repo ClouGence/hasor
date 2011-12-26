@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.copybean.type;
-import org.more.core.copybean.ConvertType;
+package org.more.core.copybean.convert;
+import org.more.core.copybean.Convert;
 import org.more.util.StringConvertUtil;
 /**
  * CopyBean处理Short类型转换的辅助类。
  * @version 2009-5-23
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ShortConvertType extends ConvertType {
-    /**  */
-    private static final long serialVersionUID = -3319752731163417948L;
-    public boolean checkType(Object from, Class<?> to) {
-        return (to == Short.class || to == short.class) ? true : false;
+public class ShortConvertType implements Convert<Short> {
+    public boolean checkConvert(Class<?> toType) {
+        return (toType == Short.class || toType == short.class) ? true : false;
     }
-    public Object convert(Object object) {
+    public Short convert(Object object) {
         if (object == null)
             return 0;
+        else if (object instanceof Short)
+            return (Short) object;
         else
             return StringConvertUtil.parseShort(object.toString(), (short) 0);
     }

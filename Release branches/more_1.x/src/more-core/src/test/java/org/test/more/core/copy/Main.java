@@ -27,15 +27,15 @@ public class Main {
         CopyBeanUtil copy = CopyBeanUtil.newInstance();
         //
         Bean2 b2 = new Bean2();
-        copy.copy(b1, b2);
+        copy.copyPropertys(b1, b2);
         System.out.println(b2.name);
         //
         Bean3 b3 = new Bean3();
-        copy.copy(b1, b3);
+        copy.copyPropertys(b1, b3);
         System.out.println(b3.getName());
         //
         Bean4 b4 = new Bean4();
-        copy.copy(b1, b4);
+        copy.copyPropertys(b1, b4);
         System.out.println(b4.name);
     }
 }

@@ -47,6 +47,7 @@ public class JsonTest {
         println(jsonUtil.toString((long) 4));
         println(jsonUtil.toString((float) 5));
         println(jsonUtil.toString((double) 6));
+        println(jsonUtil.toString("ffadf\n\t\u4F60"));
         println();
         // 
         println(jsonUtil.toObject("1")); //byte 
@@ -63,6 +64,7 @@ public class JsonTest {
         println(jsonUtil.toObject("'abcdefg'"));
         println(jsonUtil.toObject("'testChars'"));
         println(jsonUtil.toObject("'2'"));
+        println(jsonUtil.toObject("'ffadf\n\t\u4F60Äã'"));
         println();
     }
     @Test

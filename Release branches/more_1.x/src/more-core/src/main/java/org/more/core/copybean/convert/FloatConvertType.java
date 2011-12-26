@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.copybean.type;
-import org.more.core.copybean.ConvertType;
+package org.more.core.copybean.convert;
+import org.more.core.copybean.Convert;
+import org.more.util.StringConvertUtil;
 /**
- * CopyBean处理String类型转换的辅助类。
+ * CopyBean处理Float类型转换的辅助类。
  * @version 2009-5-23
  * @author 赵永春 (zyc@byshell.org)
  */
-public class StringConvertType extends ConvertType {
-    /**  */
-    private static final long serialVersionUID = 1L;
-    public boolean checkType(Object from, Class<?> to) {
-        return (to == String.class) ? true : false;
+public class FloatConvertType implements Convert<Float> {
+    public boolean checkConvert(Class<?> toType) {
+        return (toType == Float.class || toType == float.class) ? true : false;
     }
-    public Object convert(Object object) {
+    public Float convert(Object object) {
         if (object == null)
-            return null;
+            return 0f;
+        else if (object instanceof Double)
+            return (Float) object;
         else
-            return object.toString();
+            return StringConvertUtil.parseFloat(object.toString(), 0f);
     }
 }

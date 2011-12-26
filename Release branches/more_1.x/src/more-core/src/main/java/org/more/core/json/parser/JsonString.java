@@ -30,14 +30,14 @@ public class JsonString extends JsonParser {
     private static final Map<Character, String> charset = new HashMap<Character, String>(); ;
     static {
         JsonString.charset.put('"', "\\\"");
-        JsonString.charset.put('\'', "\\\'");
+        JsonString.charset.put('\'', "\\'");
         JsonString.charset.put('\\', "\\\\");
         JsonString.charset.put('/', "\\/");
-        JsonString.charset.put('\b', "\\\b");
-        JsonString.charset.put('\f', "\\\f");
-        JsonString.charset.put('\n', "\\\n");
-        JsonString.charset.put('\r', "\\\r");
-        JsonString.charset.put('\t', "\\\t");
+        JsonString.charset.put('\b', "\\b");
+        JsonString.charset.put('\f', "\\f");
+        JsonString.charset.put('\n', "\\n");
+        JsonString.charset.put('\r', "\\r");
+        JsonString.charset.put('\t', "\\t");
     };
     public JsonString(JsonUtil currentContext) {
         super(currentContext);

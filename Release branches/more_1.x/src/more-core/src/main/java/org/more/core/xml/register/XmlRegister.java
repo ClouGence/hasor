@@ -119,7 +119,7 @@ public class XmlRegister extends XmlParserKitManager {
     };
     /**手动执行配置装载动作，如果重复装载可能产生异常。*/
     public synchronized void loadXml() throws IOException, XMLStreamException {
-        this.loadXml(null);
+        this.loadXml(this.getContext());
     }
     /**手动执行配置装载动作，如果重复装载可能产生异常。参数是传入的环境对象，在解析xml的时候可以获取到。*/
     public synchronized void loadXml(Object context) throws IOException, XMLStreamException {

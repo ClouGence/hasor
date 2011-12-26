@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.copybean.type;
-import org.more.core.copybean.ConvertType;
+package org.more.core.copybean.convert;
+import org.more.core.copybean.Convert;
 /**
  * CopyBean处理Object类型转换的辅助类。
  * @version 2009-5-23
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ObjectConvertType extends ConvertType {
-    /**  */
-    private static final long serialVersionUID = -3992654676741781922L;
-    public boolean checkType(Object from, Class<?> to) {
-        return (to == Object.class) ? true : false;
+public class ObjectConvertType implements Convert<Object> {
+    public boolean checkConvert(Class<?> toType) {
+        return true;
     }
     public Object convert(Object object) {
         return object;

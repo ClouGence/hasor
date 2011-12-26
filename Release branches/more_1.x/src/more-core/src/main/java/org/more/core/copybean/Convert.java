@@ -14,26 +14,22 @@
  * limitations under the License.
  */
 package org.more.core.copybean;
-import java.io.Serializable;
 /**
  * CopyBean处理类型转换的辅助类基类。
  * @version 2009-5-23
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class ConvertType implements Serializable {
-    /**  */
-    private static final long serialVersionUID = 3575928676067771750L;
+public interface Convert<T> {
     /**
      * 检查某对象是否可以通过该类型转换类进行转换。如果可以转换则返回true否则返回fale。
-     * @param from 什么对象。
      * @param to 转换到的目标类型。
      * @return 检查某对象是否可以通过该类型转换类进行转换。如果可以转换则返回true否则返回fale。
      */
-    public abstract boolean checkType(Object from, Class<?> to);
+    public boolean checkConvert(Class<?> toType);
     /**
      * 转换对象目标类型。返回转换结果。
      * @param object 要被转换的类型。
      * @return 转换对象目标类型。返回转换结果。
      */
-    public abstract Object convert(Object object);
+    public T convert(Object object);
 }
