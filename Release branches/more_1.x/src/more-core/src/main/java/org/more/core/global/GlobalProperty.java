@@ -21,7 +21,7 @@ package org.more.core.global;
  */
 public interface GlobalProperty {
     /** 读取属性*/
-    public Object getValue(Global global);
+    public Object getValue(AbstractGlobal global);
     /** 写入属性*/
-    public void setValue(Object newValue, Global global);
+    public void setValue(Object newValue, AbstractGlobal global);
 }

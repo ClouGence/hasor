@@ -16,7 +16,7 @@
 package org.more.core.global.gp;
 import java.util.ArrayList;
 import org.more.core.error.SupportException;
-import org.more.core.global.Global;
+import org.more.core.global.AbstractGlobal;
 import org.more.core.global.GlobalProperty;
 /**
 * _global.cfgList
@@ -25,20 +25,20 @@ import org.more.core.global.GlobalProperty;
 */
 public class CFGList_GP implements GlobalProperty {
     private CFGList list = null;
-    public Object getValue(Global global) {
+    public Object getValue(AbstractGlobal global) {
         if (this.list == null)
             this.list = new CFGList(global);
         return this.list;
     }
-    public void setValue(Object value, Global global) {
+    public void setValue(Object value, AbstractGlobal global) {
         throw new SupportException("_global.cfgList，属性不支持写操作。");
     }
 }
 /**该类是为了实现在el中以list结构访问cfgList内置属性。*/
 class CFGList extends ArrayList<Object> {
     private static final long serialVersionUID = -5144216708454403683L;
-    private Global            global           = null;
-    public CFGList(Global global) {
+    private AbstractGlobal    global           = null;
+    public CFGList(AbstractGlobal global) {
         this.global = global;
     }
     public Object get(int index) {

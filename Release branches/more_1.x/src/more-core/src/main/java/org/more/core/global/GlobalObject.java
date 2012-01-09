@@ -32,10 +32,10 @@ class GlobalObject extends HashMap<String, Object> {
     private static final long           serialVersionUID = -4297024677619713055L;
     /**动态操作Global属性的属性缓存器。*/
     public final static String          _Global          = "_global";
-    private Global                      onGlobal         = null;
+    private AbstractGlobal              onGlobal         = null;
     private Map<String, GlobalProperty> propertys        = null;
     //
-    public GlobalObject(Global onGlobal) {
+    public GlobalObject(AbstractGlobal onGlobal) {
         this.onGlobal = onGlobal;
         this.propertys = new HashMap<String, GlobalProperty>();
         //植入固定的内置属性

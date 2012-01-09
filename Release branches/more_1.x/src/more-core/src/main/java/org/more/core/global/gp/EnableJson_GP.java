@@ -15,7 +15,7 @@
  */
 package org.more.core.global.gp;
 import org.more.core.error.SupportException;
-import org.more.core.global.Global;
+import org.more.core.global.AbstractGlobal;
 import org.more.core.global.GlobalProperty;
 import org.more.util.StringConvertUtil;
 /**
@@ -24,11 +24,11 @@ import org.more.util.StringConvertUtil;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class EnableJson_GP implements GlobalProperty {
-    public Object getValue(Global global) {
+    public Object getValue(AbstractGlobal global) {
         String oriString = global.getOriginalString("_global.enableJson");
         return StringConvertUtil.parseBoolean(oriString, true);
     }
-    public void setValue(Object value, Global global) {
+    public void setValue(Object value, AbstractGlobal global) {
         throw new SupportException("_global.enableJson，属性不支持写操作。");
     }
 }
