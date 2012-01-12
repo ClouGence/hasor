@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 package org.more.core.json.parser;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.more.core.json.JsonException;
 import org.more.core.json.JsonUtil;
+import org.more.util.BeanUtil;
 import org.more.util.attribute.IAttribute;
 /**
  * 负责处理Object类型的json格式互转。
@@ -94,17 +93,11 @@ public class JsonObject extends JsonMixed {
             for (Object key : ns)
                 this.appendObject(json, key, map.get(key));
         } else {
-            Class<?> type = bean.getClass();
-            //FIXME:修改为BeanUtil。
-            Map<String, Field> fields = new HashMap<String, Field>();
-            //
-            for (Field f : type.getFields())
-                fields.put(f.getName(), f);
-            for (Field f : type.getDeclaredFields())
-                fields.put(f.getName(), f);
-            //
-            for (Field f : fields.values())
-                this.appendField(bean, f, json);
+            Class<?> targetType = bean.getClass();
+            List<String> propNames = BeanUtil.getPropertys(targetType);
+            propNames.remove("class");//TODO 删除会引起递归的class属性。
+            for (String attName : propNames)
+                this.appendObject(json, attName, BeanUtil.readPropertyOrField(bean, attName));
         }
         /*-----*/
         int index = json.length() - 1;
@@ -112,25 +105,6 @@ public class JsonObject extends JsonMixed {
             json.deleteCharAt(index);
         json.append("}");
         return json.toString();
-    }
-    private void appendField(Object bean, Field field, StringBuffer json) {
-        Class<?> type = bean.getClass();
-        try {
-            int access = field.getModifiers();
-            if ((access | Modifier.PUBLIC) == access)
-                this.appendObject(json, field.getName(), field.get(bean)); //直接访问字段
-            else {
-                //转换首字母大写
-                StringBuffer sb = new StringBuffer(field.getName());
-                char firstChar = sb.charAt(0);
-                sb.delete(0, 1);
-                sb.insert(0, (char) ((firstChar >= 97) ? firstChar - 32 : firstChar));
-                sb.insert(0, "get");
-                //通过get/set访问
-                Method m = type.getMethod(sb.toString());
-                this.appendObject(json, field.getName(), m.invoke(bean));
-            }
-        } catch (Exception e) {}
     };
     private void appendObject(StringBuffer jsonStr, Object key, Object var) {
         JsonUtil json = this.getCurrentContext();
@@ -138,5 +112,5 @@ public class JsonObject extends JsonMixed {
         jsonStr.append(":");
         jsonStr.append(json.toString(var));
         jsonStr.append(",");
-    }
+    };
 }

@@ -28,6 +28,6 @@ public class NumberCheck implements JsonCheck {
     }
     public boolean checkToObject(String source) {
         // (\d*\.)?\d*
-        return source.matches("(\\d*\\.)?\\d*");
+        return source.matches("[+-]?(\\d*\\.)?\\d*");
     }
 }
