@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package org.more.hypha.context.array;
+import org.more.core.event.Event;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.DefineResource;
-import org.more.hypha.Event;
 import org.more.hypha.context.xml.XmlDefineResource;
 /**
  * 当清空Bean定义时候引发该事件。

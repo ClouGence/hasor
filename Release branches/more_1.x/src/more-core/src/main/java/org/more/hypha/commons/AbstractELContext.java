@@ -161,4 +161,7 @@ public class AbstractELContext implements ELContext {
     public Map<String, Object> toMap() {
         return this.getELAttribute().toMap();
     }
+    public int size() {
+        return this.getELAttribute().size();
+    }
 };

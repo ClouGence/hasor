@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.more.hypha.context.xml;
+import org.more.core.event.Event;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
-import org.more.hypha.Event;
 /**
  * 装载动作执行完毕。
  * @version 2010-10-10

@@ -15,10 +15,10 @@
  */
 package org.more.hypha.commons.point_support.xml;
 import java.util.List;
+import org.more.core.event.Event.Sequence;
+import org.more.core.event.EventListener;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
-import org.more.hypha.Event.Sequence;
-import org.more.hypha.EventListener;
 import org.more.hypha.ExpandPointManager;
 import org.more.hypha.PointFilter;
 import org.more.hypha.context.AbstractApplicationContext;

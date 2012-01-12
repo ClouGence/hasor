@@ -24,13 +24,14 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import org.more.core.error.LoadException;
+import org.more.core.event.Event;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.core.xml.XmlParserKit;
-import org.more.core.xml.XmlParserKitManager;
+import org.more.core.xml.register.XmlRegister;
 import org.more.core.xml.stream.XmlReader;
 import org.more.hypha.DefineResource;
-import org.more.hypha.Event;
+import org.more.hypha.commons.xml.AbstractXmlRegister;
 import org.more.hypha.context.array.ArrayDefineResource;
 import org.more.hypha.context.xml._NameSpaceConfiguration.RegisterBean;
 import org.more.util.ResourcesUtil;
@@ -40,23 +41,23 @@ import org.more.util.ResourcesUtil;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class XmlDefineResource extends ArrayDefineResource {
-    private static Log                        log                 = LogFactory.getLog(XmlDefineResource.class);
-    private static final String               ResourcePath        = "META-INF/resource/hypha/register.xml";            //标签注册器
-    private static final String               DefaultResourcePath = "META-INF/resource/hypha/default-hypha-config.xml"; //默认配置文件
-    private ArrayList<Object>                 sourceArray         = new ArrayList<Object>();
-    private XmlParserKitManager               manager             = new XmlParserKitManager();                         //xml解析器
-    private boolean                           loadMark            = false;                                             //是否已经执行过装载.
+    private static Log                  log                 = LogFactory.getLog(XmlDefineResource.class);
+    private static final String         ResourcePath        = "META-INF/resource/hypha/register.xml";            //标签注册器
+    private static final String         DefaultResourcePath = "META-INF/resource/hypha/default-hypha-config.xml"; //默认配置文件
+    private ArrayList<Object>           sourceArray         = new ArrayList<Object>();
+    private XmlRegister                 xmlRegister         = new XmlRegister();                                 //xml解析器
+    private boolean                     loadMark            = false;                                             //是否已经执行过装载.
     /*------------------------------------------------------------*/
-    private static List<XmlNameSpaceRegister> registerObjects     = null;
+    private static List<RegisterPropxy> registerObjects     = null;
     /**{@link XmlNameSpaceRegister}接口的代理，其作用是在调用接口方法时候创建接口对象。使{@link _NameSpaceConfiguration}类专注于XML的解析。*/
-    private static class RegisterPropxy implements XmlNameSpaceRegister {
+    private static class RegisterPropxy extends AbstractXmlRegister {
         private static Log           log            = LogFactory.getLog(RegisterPropxy.class);
         private RegisterBean         registerBean   = null;
         private XmlNameSpaceRegister registerObject = null;
         public RegisterPropxy(RegisterBean registerBean) {
             this.registerBean = registerBean;
         };
-        public void initRegister(String namespaceURL, XmlDefineResource resource) throws LoadException, IOException {
+        private XmlNameSpaceRegister getRegisterObject() {
             if (this.registerObject == null)
                 try {
                     String classname = this.registerBean.registerClass;
@@ -65,9 +66,19 @@ public class XmlDefineResource extends ArrayDefineResource {
                 } catch (Exception e) {
                     log.error("new XmlNameSpaceRegister error, errorType = {%0} , message = {%1}.", e.getClass(), e.getMessage());
                 }
-            log.debug("init XmlNameSpaceRegister sequence = {%0}, namespace = [{%1}]", this.registerBean.initSequence, this.registerBean.namespace);
-            this.registerObject.initRegister(this.registerBean.namespace, resource);
-        };
+            return this.registerObject;
+        }
+        public RegisterBean getRegisterInfo() {
+            return this.registerBean;
+        }
+        public XmlParserKit createKit(String namespace, XmlRegister manager) {
+            log.debug("init XmlRegister on create ParserKit sequence = {%0}, namespace = [{%1}]", this.registerBean.initSequence, this.registerBean.namespace);
+            return this.getRegisterObject().createXmlParserKit(namespace, manager);
+        }
+        public void initRegister(XmlParserKit parserKit, XmlDefineResource resource) throws LoadException, IOException {
+            log.debug("init XmlRegister on initRegister sequence = {%0}, namespace = [{%1}]", this.registerBean.initSequence, this.registerBean.namespace);
+            this.getRegisterObject().initRegister(parserKit, resource);
+        }
     };
     //
     /**清空命名空间解析器重新读取‘register.xml’配置文件。*/
@@ -80,7 +91,7 @@ public class XmlDefineResource extends ArrayDefineResource {
     private static void s_init(XmlDefineResource resource) throws IOException, XMLStreamException, LoadException {
         //关键-初始化
         if (XmlDefineResource.registerObjects == null) {
-            XmlDefineResource.registerObjects = new ArrayList<XmlNameSpaceRegister>();
+            XmlDefineResource.registerObjects = new ArrayList<RegisterPropxy>();
             log.info("scanning 'register.xml' ,path = '{%0}'.", ResourcePath);
             List<InputStream> ins = ResourcesUtil.getResourcesAsStream(ResourcePath);
             _NameSpaceConfiguration ns = new _NameSpaceConfiguration();
@@ -100,9 +111,11 @@ public class XmlDefineResource extends ArrayDefineResource {
             }
         }
         log.info("begin initRegister XmlNameSpaceRegister...");
-        for (XmlNameSpaceRegister reg : registerObjects)
+        for (RegisterPropxy reg : registerObjects) {
             /**第一个参数会在{@link NameSpaceRegisterPropxy}对象中得到*/
-            reg.initRegister(null, resource);
+            XmlParserKit kit = reg.createXmlParserKit(reg.getRegisterInfo().namespace, resource.xmlRegister);
+            reg.initRegister(kit, resource);//使用创建的kit初始化注册器
+        }
         //装载所有位于默认配置位置的配置文件
         log.debug("scanning default config ,path = '{%0}'.", DefaultResourcePath);
         List<URL> ins = ResourcesUtil.getResources(DefaultResourcePath);
@@ -226,31 +239,9 @@ public class XmlDefineResource extends ArrayDefineResource {
     public boolean isReady() {
         return this.loadMark;
     }
-    /**获取{@link XmlParserKitManager}*/
-    protected XmlParserKitManager getManager() {
-        return this.manager;
-    };
-    /**注册一个标签解析工具集。*/
-    public synchronized void regeditXmlParserKit(String namespace, XmlParserKit kit) {
-        if (namespace == null || kit == null) {
-            log.warning("regedit XmlParserKit error ,params namespace or XmlParserKit is null.");
-            return;
-        }
-        log.info("regedit XmlParserKit namespace = {%0} ,and XmlParserKit = {%1}", namespace, kit);
-        this.manager.regeditKit(namespace, kit);
-    };
-    /**取消一个标签解析工具集的注册。*/
-    public synchronized void unRegeditXmlParserKit(String namespace, XmlParserKit kit) {
-        if (namespace == null || kit == null) {
-            log.warning("unRegedit XmlParserKit error ,params namespace or XmlParserKit is null.");
-            return;
-        }
-        log.info("unRegedit XmlParserKit namespace = {%0} ,and XmlParserKit = {%1}", namespace, kit);
-        this.manager.unRegeditKit(namespace, kit);
-    };
     /**解析配置文件流。*/
     protected synchronized void passerXml(InputStream in, DefineResource conf) throws XMLStreamException, IOException {
-        new XmlReader(in).reader(this.manager, null);
+        new XmlReader(in).reader(this.xmlRegister, null);/*第二个参数是排除路径*/
     };
     /**手动执行配置装载动作，如果重复装载可能产生异常。该动作将会引发{@link XmlLoadingEvent}事件*/
     public synchronized void loadDefine() throws IOException, XMLStreamException {

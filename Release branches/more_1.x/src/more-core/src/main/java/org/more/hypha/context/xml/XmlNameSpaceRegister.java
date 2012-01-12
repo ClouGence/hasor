@@ -16,6 +16,8 @@
 package org.more.hypha.context.xml;
 import java.io.IOException;
 import org.more.core.error.LoadException;
+import org.more.core.xml.XmlParserKit;
+import org.more.core.xml.register.XmlRegisterHook;
 /**
  * 为了{@link XmlDefineResource}类提供的一个注册器接口，如果要注册新的xml配置支持则需要实现这个接口并且
  * 留下一个无参的构造方法，同时在“/META-INF/resource/beans/regedit.xml”位置编写配置文件。
@@ -23,11 +25,10 @@ import org.more.core.error.LoadException;
  * @version 2010-9-24
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface XmlNameSpaceRegister {
+public interface XmlNameSpaceRegister extends XmlRegisterHook {
     /**
      * 执行注册
-     * @param namespaceURL 配置文件配置的命名空间。
-     * @param resource {@link XmlDefineResource}对象。
+     * @param resource {@link XmlParserKit}对象。
      */
-    public void initRegister(String namespaceURL, XmlDefineResource resource) throws LoadException, IOException;
+    public void initRegister(XmlParserKit parserKit, XmlDefineResource resource) throws LoadException, IOException;
 }

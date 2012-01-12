@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.more.hypha.aop.xml;
+import org.more.core.event.Event.Sequence;
+import org.more.core.event.EventListener;
 import org.more.hypha.AbstractBeanDefine;
-import org.more.hypha.Event.Sequence;
-import org.more.hypha.EventListener;
 import org.more.hypha.aop.AopService;
 import org.more.hypha.aop.assembler.AopService_Impl;
 import org.more.hypha.context.xml.XmlDefineResource;

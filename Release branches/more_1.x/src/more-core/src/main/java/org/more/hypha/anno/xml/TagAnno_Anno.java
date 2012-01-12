@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package org.more.hypha.anno.xml;
+import org.more.core.event.Event;
 import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.Event;
 import org.more.hypha.anno.AnnoService;
 import org.more.hypha.commons.xml.Tag_Abstract;
 import org.more.hypha.context.xml.XmlDefineResource;

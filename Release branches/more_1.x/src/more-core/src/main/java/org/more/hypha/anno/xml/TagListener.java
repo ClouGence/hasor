@@ -16,12 +16,12 @@
 package org.more.hypha.anno.xml;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import org.more.core.event.Event;
+import org.more.core.event.Event.Sequence;
+import org.more.core.event.EventListener;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
-import org.more.hypha.Event;
-import org.more.hypha.Event.Sequence;
-import org.more.hypha.EventListener;
 import org.more.hypha.anno.AnnoService;
 import org.more.hypha.anno.BeginScanEvent;
 import org.more.hypha.anno.EndScanEvent;

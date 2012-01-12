@@ -69,5 +69,8 @@ public abstract class AbstractDefine<T> implements IAttribute<Object> {
     }
     public Map<String, Object> toMap() {
         return this.getAttribute().toMap();
+    }
+    public int size() {
+        return this.getAttribute().size();
     };
 }

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package org.more.hypha.context;
+import org.more.core.event.Event;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.Event;
 /**
  * 服务启动之前。
  * @version 2011-2-25

@@ -16,10 +16,10 @@
 package org.more.hypha.commons.engine.xml;
 import java.util.Map;
 import java.util.Set;
+import org.more.core.event.Event.Sequence;
+import org.more.core.event.EventListener;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
-import org.more.hypha.Event.Sequence;
-import org.more.hypha.EventListener;
 import org.more.hypha.commons.logic.EngineLogic;
 import org.more.hypha.commons.logic.IocEngine;
 import org.more.hypha.context.AbstractApplicationContext;

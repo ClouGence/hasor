@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.assembler;
+import java.io.IOException;
+import org.more.core.error.LoadException;
 import org.more.core.xml.XmlParserKit;
 import org.more.hypha.beans.xml.QPP_Date;
 import org.more.hypha.beans.xml.QPP_Directory;
@@ -50,6 +52,7 @@ import org.more.hypha.beans.xml.TagBeans_TemplateBean;
 import org.more.hypha.beans.xml.TagBeans_URI;
 import org.more.hypha.beans.xml.TagBeans_Value;
 import org.more.hypha.beans.xml.TagBeans_VarBean;
+import org.more.hypha.commons.xml.AbstractXmlRegister;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.hypha.context.xml.XmlNameSpaceRegister;
 /**
@@ -57,50 +60,42 @@ import org.more.hypha.context.xml.XmlNameSpaceRegister;
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TagRegister_Beans implements XmlNameSpaceRegister {
-    /**如果没有指定namespaceURL参数则该常量将会指定默认的命名空间。*/
-    public static final String DefaultNameSpaceURL = "http://project.byshell.org/more/schema/beans";
+public class TagRegister_Beans extends AbstractXmlRegister {
     /**执行初始化注册。*/
-    public void initRegister(String namespaceURL, XmlDefineResource resource) {
+    public void initRegister(XmlParserKit parserKit, XmlDefineResource resource) throws LoadException, IOException {
         //1.注册标签解析器
-        XmlParserKit kit = new XmlParserKit();
-        kit.regeditHook("/beans", new TagBeans_Beans(resource));
-        kit.regeditHook("/beans/meta", new TagBeans_MetaData(resource));
-        kit.regeditHook("/beans/defaultPackage", new TagBeans_DefaultPackage(resource));
-        kit.regeditHook(new String[] { "/beans/package", "/beans/*/package" }, new TagBeans_Package(resource));
+        parserKit.regeditHook("/beans", new TagBeans_Beans(resource));
+        parserKit.regeditHook("/beans/meta", new TagBeans_MetaData(resource));
+        parserKit.regeditHook("/beans/defaultPackage", new TagBeans_DefaultPackage(resource));
+        parserKit.regeditHook(new String[] { "/beans/package", "/beans/*/package" }, new TagBeans_Package(resource));
         //
-        kit.regeditHook(new String[] { "/beans/classBean", "/beans/*/classBean" }, new TagBeans_ClassBean(resource));
-        kit.regeditHook(new String[] { "/beans/refBean", "/beans/*/refBean" }, new TagBeans_RefBean(resource));
-        kit.regeditHook(new String[] { "/beans/templateBean", "/beans/*/templateBean" }, new TagBeans_TemplateBean(resource));
-        kit.regeditHook(new String[] { "/beans/varBean", "/beans/*/varBean" }, new TagBeans_VarBean(resource));
+        parserKit.regeditHook(new String[] { "/beans/classBean", "/beans/*/classBean" }, new TagBeans_ClassBean(resource));
+        parserKit.regeditHook(new String[] { "/beans/refBean", "/beans/*/refBean" }, new TagBeans_RefBean(resource));
+        parserKit.regeditHook(new String[] { "/beans/templateBean", "/beans/*/templateBean" }, new TagBeans_TemplateBean(resource));
+        parserKit.regeditHook(new String[] { "/beans/varBean", "/beans/*/varBean" }, new TagBeans_VarBean(resource));
         //
-        kit.regeditHook("/beans/*Bean/constructor-arg", new TagBeans_Constructor(resource));
-        kit.regeditHook("/beans/*Bean/property", new TagBeans_Property(resource));
-        kit.regeditHook("/beans/*Bean/meta", new TagBeans_MetaData(resource));
-        kit.regeditHook("/beans/*Bean/*/meta", new TagBeans_MetaData(resource));
-        kit.regeditHook("/beans/*Bean/method", new TagBeans_Method(resource));
-        kit.regeditHook("/beans/*Bean/method/param", new TagBeans_Param(resource));
+        parserKit.regeditHook("/beans/*Bean/constructor-arg", new TagBeans_Constructor(resource));
+        parserKit.regeditHook("/beans/*Bean/property", new TagBeans_Property(resource));
+        parserKit.regeditHook("/beans/*Bean/meta", new TagBeans_MetaData(resource));
+        parserKit.regeditHook("/beans/*Bean/*/meta", new TagBeans_MetaData(resource));
+        parserKit.regeditHook("/beans/*Bean/method", new TagBeans_Method(resource));
+        parserKit.regeditHook("/beans/*Bean/method/param", new TagBeans_Param(resource));
         //
-        kit.regeditHook("/beans/*Bean/*/value", new TagBeans_Value(resource));
-        kit.regeditHook("/beans/*Bean/*/date", new TagBeans_Date(resource));
-        kit.regeditHook("/beans/*Bean/*/enum", new TagBeans_Enum(resource));
-        kit.regeditHook("/beans/*Bean/*/bigText", new TagBeans_BigText(resource));
-        kit.regeditHook("/beans/*Bean/*/ref", new TagBeans_Ref(resource));
-        kit.regeditHook("/beans/*Bean/*/file", new TagBeans_File(resource));
-        kit.regeditHook("/beans/*Bean/*/directory", new TagBeans_Directory(resource));
-        kit.regeditHook("/beans/*Bean/*/uri", new TagBeans_URI(resource));
-        kit.regeditHook("/beans/*Bean/*/el", new TagBeans_EL(resource));
-        kit.regeditHook("/beans/*Bean/*/array", new TagBeans_Array(resource));
-        kit.regeditHook("/beans/*Bean/*/set", new TagBeans_Set(resource));
-        kit.regeditHook("/beans/*Bean/*/list", new TagBeans_List(resource));
-        kit.regeditHook("/beans/*Bean/*/map", new TagBeans_Map(resource));
-        kit.regeditHook("/beans/*Bean/*/map/entity", new TagBeans_Entity(resource));
-        //
-        //2.注册命名空间
-        if (namespaceURL == null)
-            namespaceURL = DefaultNameSpaceURL;
-        resource.regeditXmlParserKit(namespaceURL, kit);
-        //3.注册快速属性值解析器，顺序就是优先级。
+        parserKit.regeditHook("/beans/*Bean/*/value", new TagBeans_Value(resource));
+        parserKit.regeditHook("/beans/*Bean/*/date", new TagBeans_Date(resource));
+        parserKit.regeditHook("/beans/*Bean/*/enum", new TagBeans_Enum(resource));
+        parserKit.regeditHook("/beans/*Bean/*/bigText", new TagBeans_BigText(resource));
+        parserKit.regeditHook("/beans/*Bean/*/ref", new TagBeans_Ref(resource));
+        parserKit.regeditHook("/beans/*Bean/*/file", new TagBeans_File(resource));
+        parserKit.regeditHook("/beans/*Bean/*/directory", new TagBeans_Directory(resource));
+        parserKit.regeditHook("/beans/*Bean/*/uri", new TagBeans_URI(resource));
+        parserKit.regeditHook("/beans/*Bean/*/el", new TagBeans_EL(resource));
+        parserKit.regeditHook("/beans/*Bean/*/array", new TagBeans_Array(resource));
+        parserKit.regeditHook("/beans/*Bean/*/set", new TagBeans_Set(resource));
+        parserKit.regeditHook("/beans/*Bean/*/list", new TagBeans_List(resource));
+        parserKit.regeditHook("/beans/*Bean/*/map", new TagBeans_Map(resource));
+        parserKit.regeditHook("/beans/*Bean/*/map/entity", new TagBeans_Entity(resource));
+        //2.注册快速属性值解析器，顺序就是优先级。
         /*当xml中试图配置了多种属性类别值时候优先级将会起到作用，列如同时配置了value 和 refBean属性。那么value的优先级比refBean高。*/
         QPP_ROOT typeManager = new QPP_ROOT();
         typeManager.regeditTypeParser(new QPP_Value());

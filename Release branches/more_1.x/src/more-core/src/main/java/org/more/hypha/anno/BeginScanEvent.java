@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.more.hypha.anno;
+import org.more.core.event.Event;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
-import org.more.hypha.Event;
 import org.more.hypha.context.xml.XmlDefineResource;
 /**
  * 该事件是在Xml装载结束期间引发，标志着注解扫描开始。

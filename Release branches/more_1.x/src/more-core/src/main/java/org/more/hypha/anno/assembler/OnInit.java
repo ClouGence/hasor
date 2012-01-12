@@ -15,10 +15,10 @@
  */
 package org.more.hypha.anno.assembler;
 import org.more.core.error.InitializationException;
+import org.more.core.event.Event.Sequence;
+import org.more.core.event.EventListener;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
-import org.more.hypha.Event.Sequence;
-import org.more.hypha.EventListener;
 import org.more.hypha.anno.AnnoService;
 import org.more.hypha.context.AbstractApplicationContext;
 import org.more.hypha.context.InitEvent;

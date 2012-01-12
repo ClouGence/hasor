@@ -98,5 +98,8 @@ class EL_EvalExpressionImpl implements EvalExpression {
     }
     public Map<String, Object> toMap() {
         return new TransformToMap<Object>(this.attribute);
+    }
+    public int size() {
+        return this.attribute.size();
     };
 };

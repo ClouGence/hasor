@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 package org.more.hypha.commons.engine.xml;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import org.more.core.error.LoadException;
+import org.more.core.event.Event;
 import org.more.core.xml.XmlParserKit;
-import org.more.hypha.Event;
+import org.more.hypha.commons.xml.AbstractXmlRegister;
 import org.more.hypha.context.InitEvent;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.hypha.context.xml.XmlNameSpaceRegister;
@@ -26,20 +29,13 @@ import org.more.hypha.context.xml.XmlNameSpaceRegister;
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TagRegister_Engine implements XmlNameSpaceRegister {
-    /**如果没有指定namespaceURL参数则该常量将会指定默认的命名空间。*/
-    public static final String DefaultNameSpaceURL = "http://project.byshell.org/more/schema/engine";
+public class TagRegister_Engine extends AbstractXmlRegister {
     /**执行初始化注册。*/
-    public void initRegister(String namespaceURL, XmlDefineResource resource) {
+    public void initRegister(XmlParserKit parserKit, XmlDefineResource resource) throws LoadException, IOException {
         Map<String, String> xmlConfig = new HashMap<String, String>();
         //1.注册标签解析器
-        XmlParserKit kit = new XmlParserKit();
-        kit.regeditHook("/engine", new TagEngine_Engine(resource, xmlConfig));
-        //2.注册命名空间
-        if (namespaceURL == null)
-            namespaceURL = DefaultNameSpaceURL;
-        resource.regeditXmlParserKit(namespaceURL, kit);
-        //3.注册事件.
+        parserKit.regeditHook("/engine", new TagEngine_Engine(resource, xmlConfig));
+        //2.注册事件.
         resource.getEventManager().addEventListener(Event.getEvent(InitEvent.class), new OnInit(xmlConfig));
-    };
+    }
 };

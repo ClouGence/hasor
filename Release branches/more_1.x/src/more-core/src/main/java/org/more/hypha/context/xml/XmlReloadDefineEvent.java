@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.more.hypha.context.xml;
+import org.more.core.event.Event;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
-import org.more.hypha.Event;
 /**
  * 重新装载事件，当环境被请求重新装载时会引发该事件。
  * @version 2010-10-10

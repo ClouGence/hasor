@@ -15,12 +15,12 @@
  */
 package org.more.hypha.context;
 import java.util.Map;
+import org.more.core.event.Event;
+import org.more.core.event.EventManager;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.DefineResource;
-import org.more.hypha.Event;
-import org.more.hypha.EventManager;
 import org.more.hypha.commons.AbstractEventManager;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
@@ -30,7 +30,6 @@ import org.more.util.attribute.IAttribute;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractDefineResource implements DefineResource {
-    private static final long               serialVersionUID = 1420351981612281917L;
     private static Log                      log              = LogFactory.getLog(AbstractDefineResource.class);
     private String                          sourceName       = null;                                           //资源名
     private IAttribute<Object>              flashContext     = null;                                           //全局闪存，通过重写受保护的方法createFlash来达到植入的目的。
@@ -59,6 +58,9 @@ public abstract class AbstractDefineResource implements DefineResource {
     }
     public Map<String, Object> toMap() {
         return this.getAttribute().toMap();
+    };
+    public int size() {
+        return this.getAttribute().size();
     };
     /*------------------------------------------------------------------------------*/
     /**设置资源名。*/

@@ -15,6 +15,7 @@
  */
 package org.more.hypha;
 import java.util.List;
+import org.more.core.event.EventManager;
 import org.more.util.attribute.IAttribute;
 /**
  * 这个接口是more.hypha组建的基本接口之一，该接口用于提供{@link AbstractBeanDefine}的索引获取功能。

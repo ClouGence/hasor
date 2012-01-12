@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package org.more.hypha.context.array;
+import org.more.core.event.Event;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.DefineResource;
-import org.more.hypha.Event;
 import org.more.hypha.context.xml.XmlDefineResource;
 /**
  * 开始初始化过程事件，该事件是{@link DefineResource}。收到一个新{@link AbstractBeanDefine}定义添加时引发。

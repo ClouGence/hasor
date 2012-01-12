@@ -15,10 +15,10 @@
  */
 package org.more.hypha.beans.assembler;
 import java.util.List;
+import org.more.core.event.Event.Sequence;
+import org.more.core.event.EventListener;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
-import org.more.hypha.Event.Sequence;
-import org.more.hypha.EventListener;
 import org.more.hypha.beans.xml.BeansConfig_BeanTypeConfig;
 import org.more.hypha.beans.xml.BeansConfig_MDParserConfig;
 import org.more.hypha.commons.logic.AbstractBeanBuilder;

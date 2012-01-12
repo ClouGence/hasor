@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 package org.more.hypha.beans.assembler;
+import java.io.IOException;
+import org.more.core.error.LoadException;
+import org.more.core.event.Event;
+import org.more.core.event.EventManager;
 import org.more.core.xml.XmlParserKit;
-import org.more.hypha.Event;
-import org.more.hypha.EventManager;
 import org.more.hypha.beans.xml.BeansConfig_BeanType;
 import org.more.hypha.beans.xml.BeansConfig_BeanTypeConfig;
 import org.more.hypha.beans.xml.BeansConfig_MDParserConfig;
 import org.more.hypha.beans.xml.BeansConfig_Parser;
+import org.more.hypha.commons.xml.AbstractXmlRegister;
 import org.more.hypha.context.DestroyEvent;
 import org.more.hypha.context.InitEvent;
 import org.more.hypha.context.StartedServicesEvent;
@@ -31,23 +34,15 @@ import org.more.hypha.context.xml.XmlNameSpaceRegister;
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TagRegister_BeansConfig implements XmlNameSpaceRegister {
-    /**如果没有指定namespaceURL参数则该常量将会指定默认的命名空间。*/
-    public static final String DefaultNameSpaceURL = "http://project.byshell.org/more/schema/beans-config";
+public class TagRegister_BeansConfig extends AbstractXmlRegister {
     /**执行初始化注册。*/
-    public void initRegister(String namespaceURL, XmlDefineResource resource) {
+    public void initRegister(XmlParserKit parserKit, XmlDefineResource resource) throws LoadException, IOException {
         //1.注册标签解析器
-        XmlParserKit kit = new XmlParserKit();
-        kit.regeditHook("/beanType-config", new BeansConfig_BeanTypeConfig(resource));
-        kit.regeditHook("/beanType-config/beanType", new BeansConfig_BeanType(resource));
-        kit.regeditHook("/mdParser-config", new BeansConfig_MDParserConfig(resource));
-        kit.regeditHook("/mdParser-config/parser", new BeansConfig_Parser(resource));
-        //
-        //2.注册命名空间
-        if (namespaceURL == null)
-            namespaceURL = DefaultNameSpaceURL;
-        resource.regeditXmlParserKit(namespaceURL, kit);
-        //4.注册事件
+        parserKit.regeditHook("/beanType-config", new BeansConfig_BeanTypeConfig(resource));
+        parserKit.regeditHook("/beanType-config/beanType", new BeansConfig_BeanType(resource));
+        parserKit.regeditHook("/mdParser-config", new BeansConfig_MDParserConfig(resource));
+        parserKit.regeditHook("/mdParser-config/parser", new BeansConfig_Parser(resource));
+        //2.注册事件
         EventManager em = resource.getEventManager();
         em.addEventListener(Event.getEvent(InitEvent.class), new OnInit());
         em.addEventListener(Event.getEvent(StartedServicesEvent.class), new OnStarted());

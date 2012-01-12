@@ -21,13 +21,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import org.more.core.error.DefineException;
+import org.more.core.event.Event;
+import org.more.core.event.EventManager;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ELContext;
-import org.more.hypha.Event;
-import org.more.hypha.EventManager;
 import org.more.hypha.ExpandPointManager;
 import org.more.hypha.PointCallBack;
 import org.more.hypha.Service;
@@ -376,5 +376,8 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     };
     public Map<String, Object> toMap() {
         return this.getAttribute().toMap();
-    }
+    };
+    public int size() {
+        return this.getAttribute().size();
+    };
 };
