@@ -430,4 +430,22 @@ public abstract class BeanUtil {
             value = readField(object, attName);
         return value;
     }
+    /**判断对象是否为空或者是一个空字符串。*/
+    public static boolean isNone(Object targetBean) {
+        return (targetBean == null || targetBean.equals("") == true) ? true : false;
+    }
+    /**比较两个值是否相等，同时包含了值为空的判断。该方法使用equals进行判断*/
+    public static boolean isEq(Object value1, Object value2) {
+        if (value1 == null && value2 != null)
+            return false;
+        if (value1 != null && value2 == null)
+            return false;
+        if (value1 == null && value2 == null)
+            return true;
+        return value1.equals(value2);
+    }
+    /**比较两个值是否不相等，同时包含了值为空的判断。该方法使用equals进行判断*/
+    public static boolean isNe(Object value1, Object value2) {
+        return !isEq(value1, value2);
+    }
 };

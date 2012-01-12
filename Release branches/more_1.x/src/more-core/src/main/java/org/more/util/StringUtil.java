@@ -19,7 +19,7 @@ package org.more.util;
  * @version 2010-9-19
  * @author ÕÔÓÀ´º (zyc@byshell.org)
  */
-public abstract class StringUtil {
+public abstract class StringUtil extends StringConvertUtil {
     /**×ª»»Ê××ÖÄ¸´óÐ´¡£*/
     public static String toUpperCase(String value) {
         StringBuffer sb = new StringBuffer(value);

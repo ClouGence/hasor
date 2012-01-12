@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.util;
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -123,6 +124,10 @@ public abstract class StringConvertUtil {
                     return (T) item;
             }
             return (T) defaultVar;
+        } else if (File.class.isAssignableFrom(toType) == true) {
+            if (value instanceof File == true)
+                return (T) value;
+            return (T) new File(valueString);
         } else
             throw new TransformException("from [" + value.getClass() + "] to [" + toType + "]不支持的转换类型。");
     }
@@ -133,7 +138,7 @@ public abstract class StringConvertUtil {
      * @param defaultValue 如果数据错误取的默认值。
      * @return 返回int的转换结果。
      */
-    public static Integer parseInt(final String value, final Integer... defaultValue) {
+    public static Integer parseInt(final String value, final int... defaultValue) {
         try {
             return (value == null || value.equals("") == false) ? Integer.valueOf(value) : defaultValue[0];
         } catch (Exception e) {
@@ -147,7 +152,7 @@ public abstract class StringConvertUtil {
      * @param defaultValue 如果数据错误取的默认值。
      * @return 返回float的转换结果。
      */
-    public static Float parseFloat(final String value, final Float... defaultValue) {
+    public static Float parseFloat(final String value, final float... defaultValue) {
         try {
             float var = (value == null || value.equals("") == false) ? Float.valueOf(value) : defaultValue[0];
             if (Float.isNaN(var) == true || Float.isInfinite(var) == true)
@@ -164,7 +169,7 @@ public abstract class StringConvertUtil {
      * @param defaultValue 如果数据错误取的默认值。
      * @return 返回double的转换结果。
      */
-    public static Double parseDouble(final String value, final Double... defaultValue) {
+    public static Double parseDouble(final String value, final double... defaultValue) {
         try {
             return (value == null || value.equals("") == false) ? Double.valueOf(value) : defaultValue[0];
         } catch (Exception e) {
@@ -176,7 +181,7 @@ public abstract class StringConvertUtil {
      * @param value 数据字符串。
      * @return 返回boolean的转换结果。
      */
-    public static Boolean parseBoolean(final String value, final Boolean... defaultValue) {
+    public static Boolean parseBoolean(final String value, final boolean... defaultValue) {
         if (value == null)
             return (defaultValue.length >= 1) ? defaultValue[0] : StringConvertUtil.DefaultValue_Boolean; //false;
         else if (value.equals("0") == true || value.equals("no") == true || value.equals("N") == true)
@@ -193,7 +198,7 @@ public abstract class StringConvertUtil {
      * @param defaultValue 如果数据错误取的默认值。
      * @return 返回long的转换结果。
      */
-    public static Long parseLong(final String value, final Long... defaultValue) {
+    public static Long parseLong(final String value, final long... defaultValue) {
         try {
             return (value == null || value.equals("") == false) ? Long.valueOf(value) : defaultValue[0];
         } catch (Exception e) {
@@ -207,7 +212,7 @@ public abstract class StringConvertUtil {
      * @param defaultValue 如果数据错误取的默认值。
      * @return 返回byte的转换结果。
      */
-    public static Byte parseByte(final String value, final Byte... defaultValue) {
+    public static Byte parseByte(final String value, final byte... defaultValue) {
         try {
             return (value == null || value.equals("") == false) ? Byte.valueOf(value) : defaultValue[0];
         } catch (Exception e) {
@@ -221,7 +226,7 @@ public abstract class StringConvertUtil {
      * @param defaultValue 如果数据错误取的默认值。
      * @return 返回short的转换结果。
      */
-    public static Short parseShort(final String value, final Short... defaultValue) {
+    public static Short parseShort(final String value, final short... defaultValue) {
         try {
             return (value == null || value.equals("") == false) ? Short.valueOf(value) : defaultValue[0];
         } catch (Exception e) {
