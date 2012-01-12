@@ -62,7 +62,7 @@ public abstract class TagBeans_AbstractDefine<T> extends TagBeans_NS implements 
     protected abstract Map<Enum<?>, String> getPropertyMappings();
     /**开始解析标签，其中包括创建对应Bean和解析各个属性。*/
     public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
-        context.createStack();
+        //        context.createStack();
         //1.获取Define
         T define = this.getDefine(context);
         //2.设置BeanDefine的值
@@ -92,6 +92,6 @@ public abstract class TagBeans_AbstractDefine<T> extends TagBeans_NS implements 
     };
     /**结束解析标签。*/
     public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {
-        context.dropStack();
+        //        context.dropStack();
     };
 }
