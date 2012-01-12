@@ -22,5 +22,5 @@ import org.more.core.xml.XmlParserKit;
  */
 public interface XmlRegisterHook {
     /**创建{@link XmlParserKit}xpath注册器。参数是要创建的命名空间。*/
-    public XmlParserKit createXmlParserKit(String namespace, XmlRegister manager);
+    public XmlParserKit createXmlParserKit(final String namespace, final XmlRegister manager);
 };
