@@ -24,7 +24,6 @@ import org.more.core.classcode.Method;
  */
 public class Aop_Filter implements AopInvokeFilter {
     public Object doFilter(Object target, Method method, Object[] args, AopFilterChain chain) throws Throwable {
-        // TODO Auto-generated method stub
         return null;
     }
 }

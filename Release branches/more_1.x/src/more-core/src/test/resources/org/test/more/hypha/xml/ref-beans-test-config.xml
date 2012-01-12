@@ -51,8 +51,8 @@
 	<refBean id="r_bean_8" init="ref_init" destroy="ref_destroy"
 		refBean="org.more.rc_bean_0"/>
 
-	<refBean id="r_bean_9" init="ref_init" destroy="ref_destroy"
-		refBean="c_bean_10"/>
+<!-- 	<refBean id="r_bean_9" init="ref_init" destroy="ref_destroy" -->
+<!-- 		refBean="c_bean_10"/> -->
 
 	<!-- 属性测试,2 -->
 	<templateBean id="r_temp_0">

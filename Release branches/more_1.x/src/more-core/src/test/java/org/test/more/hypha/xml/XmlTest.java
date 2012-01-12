@@ -34,12 +34,12 @@ public class XmlTest {
         System.out.println("start...");
         XmlDefineResource xdr = new XmlDefineResource();
         //
-        xdr.addSource("org/test/more/hypha/xml/class-beans-test-config.xml");
-        xdr.addSource("org/test/more/hypha/xml/ref-beans-test-config.xml");
+        xdr.addSource("org/test/more/hypha/xml/class-beans-test-config.xml");//Bug  c_Bean_10
+        xdr.addSource("org/test/more/hypha/xml/ref-beans-test-config.xml");//Bug r_bean_9
         xdr.addSource("org/test/more/hypha/xml/template-beans-test-config.xml");
         xdr.addSource("org/test/more/hypha/xml/var-beans-test-config.xml");
-        xdr.addSource("org/test/more/hypha/xml/aop-test-config.xml");
-        xdr.addSource("org/test/more/hypha/xml/anno-test-config.xml");
+        //        xdr.addSource("org/test/more/hypha/xml/aop-test-config.xml");
+        //        xdr.addSource("org/test/more/hypha/xml/anno-test-config.xml");
         xdr.loadDefine();
         //
         DefaultApplicationContext app = new DefaultApplicationContext(xdr);

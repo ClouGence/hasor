@@ -15,7 +15,6 @@
  */
 package org.test.more.core.classcode;
 import java.lang.annotation.Annotation;
-import java.rmi.Remote;
 import org.junit.Test;
 import org.more.core.classcode.AopBeforeListener;
 import org.more.core.classcode.AopFilterChain;

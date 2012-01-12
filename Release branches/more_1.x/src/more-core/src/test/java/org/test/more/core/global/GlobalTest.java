@@ -15,8 +15,6 @@
  */
 package org.test.more.core.global;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.Test;
 import org.more.core.global.Global;
 import org.more.core.ognl.OgnlException;
@@ -63,6 +61,11 @@ public class GlobalTest {
         System.out.println("----------------1");
         global.setAttribute("testParam", new User());
         System.out.println(global.evalName("testParam.name + _global['global.properties'][1].DocPath"));
+        System.out.println("----------------1");
+        global.setAttribute("testParam", new User());
+        System.out.println(global.getFilePath("filePath"));
+        System.out.println(global.getDirectoryPath("filePath"));
+        System.out.println(global.getString("abc.efg"));
     }
     //    public void test() throws IOException {
     //        Global global = Global.createForFile("org/test/more/core/global/global.properties");

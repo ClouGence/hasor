@@ -60,8 +60,8 @@
 	<classBean id="c_bean_9" factoryName="c_bean_8" factoryMethod="factory"
 		class="java.lang.Object"/>
 
-<!--	<classBean id="c_bean_10" init="initMethod" destroy="destroyMethod"-->
-<!--		class="org.test.more.hypha.xml.class_bean.TestBean_0"/>-->
+<!-- 	<classBean id="c_bean_10" init="initMethod" destroy="destroyMethod" -->
+<!-- 		class="org.test.more.hypha.xml.class_bean.TestBean_0"/> -->
 
 	<!-- 属性测试,2 -->
 	<templateBean id="c_temp_1">
