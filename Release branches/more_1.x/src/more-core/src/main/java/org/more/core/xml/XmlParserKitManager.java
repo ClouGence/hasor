@@ -60,6 +60,13 @@ public class XmlParserKitManager implements XmlAccept {
     public Object getContext() {
         return getXmlStack().getContext();
     }
+    /**检测一个命名空间处理器是否已经绑定到某个命名空间上。*/
+    public boolean isRegeditKit(String namespace, XmlNamespaceParser kit) {
+        if (this.regeditXmlParserKit.containsKey(namespace) == false)
+            return false;
+        ArrayList<XmlNamespaceParser> parserList = this.regeditXmlParserKit.get(namespace);
+        return parserList.contains(kit);
+    }
     /**
      * 绑定某个命名空间处理器到一个解析器上。绑定的解析器可以用于监听到xml事件流信息。
      * 如果企图重复关联某个解析器与命名空间的对应关系则会引发{@link RepeateException}异常。
