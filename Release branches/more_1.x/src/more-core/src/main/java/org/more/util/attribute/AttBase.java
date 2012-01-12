@@ -66,24 +66,24 @@ public class AttBase<T> implements IAttribute<T>, Map<String, T>, Serializable {
         this.prop = prop;
     }
     public void clearAttribute() {
-        this.clear();
+        this.prop.clear();
     }
     public boolean contains(String name) {
-        return this.containsKey(name);
+        return this.prop.containsKey(name);
     }
     public T getAttribute(String name) {
-        return this.get(name);
+        return this.prop.get(name);
     }
     public String[] getAttributeNames() {
         String[] keys = new String[this.prop.size()];
-        this.keySet().toArray(keys);
+        this.prop.keySet().toArray(keys);
         return keys;
     }
     public void removeAttribute(String name) {
-        this.remove(name);
+        this.prop.remove(name);
     }
     public void setAttribute(String name, T value) {
-        this.put(name, value);
+        this.prop.put(name, value);
     }
     //==================================================================================Map接口实现
     public void clear() {
