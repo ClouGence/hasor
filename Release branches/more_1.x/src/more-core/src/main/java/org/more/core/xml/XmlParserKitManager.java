@@ -177,12 +177,11 @@ public class XmlParserKitManager implements XmlAccept {
         } else
         //2.处理EndElementEvent
         if (e instanceof EndElementEvent) {
-            this.activateStack.dropStack();
             EndElementEvent ee = (EndElementEvent) e;
-            //
             NameSpace ns = this.activateStack.getNameSpace(ee.getPrefix());
             this.issueEvent(e, this.activateStack);
             ns.removeXPath();
+            this.activateStack.dropStack();
             return;
         } else
         //3.处理AttributeEvent
