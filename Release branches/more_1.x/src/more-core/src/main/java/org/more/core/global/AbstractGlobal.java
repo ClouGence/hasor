@@ -40,16 +40,16 @@ import org.more.util.attribute.TransformToMap;
  */
 public abstract class AbstractGlobal implements IAttribute<Object> {
     /**是否启用el表达式解析。*/
-    private final static String                              EnableEL          = "_global.enableEL";
+    private final static String                                 EnableEL          = "_global.enableEL";
     /**是否启用json解析*/
-    private final static String                              EnableJson        = "_global.enableJson";
-    private final static String                              defaultProperties = "global_config.properties";
+    private final static String                                 EnableJson        = "_global.enableJson";
+    private final static String                                 defaultProperties = "global_config.properties";
     /**其顺序是优先级顺序*/
-    private final static String[]                            configs           = new String[] { "META-INF/resource/core/global_config.properties", "META-INF/global_config.properties" };
+    private final static String[]                               configs           = new String[] { "META-INF/resource/core/global_config.properties", "META-INF/global_config.properties" };
     /**添加的所有配置文件都在这里保存，根据不同的注册名来进行分组，_global域和_cache域也在其中。*/
     private LinkedHashMap<String, DecSequenceAttribute<Object>> scopeMap          = null;
-    private GlobalObject                                     globalObject      = new GlobalObject(this);
-    private Attribute<Object>                                cache             = new Attribute<Object>();
+    private GlobalObject                                        globalObject      = new GlobalObject(this);
+    private Attribute<Object>                                   cache             = new Attribute<Object>();
     // 
     //
     /*------------------------------------------------------------------------*/
