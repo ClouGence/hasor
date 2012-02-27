@@ -28,9 +28,9 @@ import org.more.core.ognl.OgnlContext;
 import org.more.core.ognl.OgnlException;
 import org.more.util.ResourcesUtil;
 import org.more.util.StringConvertUtil;
-import org.more.util.attribute.AttBase;
+import org.more.util.attribute.Attribute;
 import org.more.util.attribute.IAttribute;
-import org.more.util.attribute.SequenceStack;
+import org.more.util.attribute.DecSequenceAttribute;
 import org.more.util.attribute.TransformToAttribute;
 import org.more.util.attribute.TransformToMap;
 /**
@@ -40,23 +40,24 @@ import org.more.util.attribute.TransformToMap;
  */
 public abstract class AbstractGlobal implements IAttribute<Object> {
     /**是否启用el表达式解析。*/
-    private final static String                          EnableEL     = "_global.enableEL";
+    private final static String                              EnableEL          = "_global.enableEL";
     /**是否启用json解析*/
-    private final static String                          EnableJson   = "_global.enableJson";
+    private final static String                              EnableJson        = "_global.enableJson";
+    private final static String                              defaultProperties = "global_config.properties";
     /**其顺序是优先级顺序*/
-    public final static String[]                         Configs      = new String[] { "META-INF/resource/core/global_config.properties", "META-INF/global_config.properties", "global_config.properties" };
+    private final static String[]                            configs           = new String[] { "META-INF/resource/core/global_config.properties", "META-INF/global_config.properties" };
     /**添加的所有配置文件都在这里保存，根据不同的注册名来进行分组，_global域和_cache域也在其中。*/
-    private LinkedHashMap<String, SequenceStack<Object>> scopeMap     = null;
-    private GlobalObject                                 globalObject = new GlobalObject(this);
-    private AttBase<Object>                              cache        = new AttBase<Object>();
+    private LinkedHashMap<String, DecSequenceAttribute<Object>> scopeMap          = null;
+    private GlobalObject                                     globalObject      = new GlobalObject(this);
+    private Attribute<Object>                                cache             = new Attribute<Object>();
     // 
     //
     /*------------------------------------------------------------------------*/
-    private SequenceStack<Object>                        $elData      = null;
+    private DecSequenceAttribute<Object>                        $elData           = null;
     /**返回可用于计算EL的集合对象，该集合对象中包含了_Global和_Cache。*/
     protected IAttribute<Object> getALLRoot() {
         if (this.$elData == null) {
-            this.$elData = new SequenceStack<Object>();
+            this.$elData = new DecSequenceAttribute<Object>();
             for (IAttribute<Object> att : this.scopeMap.values())
                 if (att != null)
                     $elData.putStack(att);
@@ -76,7 +77,7 @@ public abstract class AbstractGlobal implements IAttribute<Object> {
             this.addScope("", configs);
     };
     public AbstractGlobal() {
-        this.scopeMap = new LinkedHashMap<String, SequenceStack<Object>>();
+        this.scopeMap = new LinkedHashMap<String, DecSequenceAttribute<Object>>();
     };
     /*------------------------------------------------------------------------*/
     /**使用Ognl计算字符串，并且返回其计算结果。*/
@@ -210,22 +211,22 @@ public abstract class AbstractGlobal implements IAttribute<Object> {
             throw new NullPointerException("‘name’ or ‘config’ param is null");
         if (this.scopeMap.containsKey(name) == false) {
             //新增了一条，同时将这条增加到allData中
-            SequenceStack<Object> stack = new SequenceStack<Object>();
+            DecSequenceAttribute<Object> stack = new DecSequenceAttribute<Object>();
             stack.putStack(config);
             this.scopeMap.put(name, stack);
         } else {
             IAttribute<?> stack = this.scopeMap.get(name);
-            if (stack instanceof SequenceStack == false)
+            if (stack instanceof DecSequenceAttribute == false)
                 throw new SupportException("‘" + name + "’ scope does not support more of the same.");
-            SequenceStack<Object> $stack = (SequenceStack<Object>) stack;
+            DecSequenceAttribute<Object> $stack = (DecSequenceAttribute<Object>) stack;
             $stack.putStack(config);
         }
     };
     /**按照添加顺序的位置获取一个作用域*/
     public IAttribute<Object> getScope(int index) {
         ArrayList<IAttribute<Object>> list = new ArrayList<IAttribute<Object>>();
-        for (SequenceStack<Object> attSeq : this.scopeMap.values())
-            for (IAttribute<Object> att : attSeq.getList())
+        for (DecSequenceAttribute<Object> attSeq : this.scopeMap.values())
+            for (IAttribute<Object> att : attSeq.getSequenceList())
                 list.add(att);
         return list.get(index);
     };
@@ -236,9 +237,9 @@ public abstract class AbstractGlobal implements IAttribute<Object> {
     /**如果想获取重名作用域其中一项的请使用该方法。*/
     public IAttribute<Object> getScope(String name, int index) {
         IAttribute<Object> temp = this.getScope(name);
-        if (temp instanceof SequenceStack == false)
+        if (temp instanceof DecSequenceAttribute == false)
             return temp;
-        SequenceStack<Object> stack = (SequenceStack<Object>) temp;
+        DecSequenceAttribute<Object> stack = (DecSequenceAttribute<Object>) temp;
         return stack.getIndex(index);
     };
     /**返回一共增加了多少个config分组设置，这里包括<b>内置属性</b>。所以该值应该大于等于<b>1</b>。*/
@@ -325,11 +326,7 @@ public abstract class AbstractGlobal implements IAttribute<Object> {
     private static final HashMap<String, Class<?>> globalFactoryMap = new HashMap<String, Class<?>>();
     /**创建默认的{@link Global}对象。*/
     public static Global newInstance() throws IOException, ClassNotFoundException {
-        return newInstance((Object) null);
-    };
-    /**创建默认的{@link Global}对象，参数是{@link GlobalFactory}在创建{@link Global}时候传入的参数。*/
-    public static Global newInstance(Object... params) throws IOException, ClassNotFoundException {
-        return newInstanceByFactory("properties", params);
+        return newInstanceByFactory("properties", new Object[0]);
     };
     /**创建{@link Global}对象，参数是{@link GlobalFactory}在创建{@link Global}时候传入的参数。factoryName是指定注册的{@link GlobalFactory}。*/
     public static Global newInstanceByFactory(String factoryName, Object... params) throws IOException, ClassNotFoundException {
@@ -337,7 +334,12 @@ public abstract class AbstractGlobal implements IAttribute<Object> {
         if (globalFactoryMap.containsKey(factoryName) == true)
             globalFactoryType = globalFactoryMap.get(factoryName);
         else {
-            IAttribute<String> configAtt = ResourcesUtil.getPropertys(Configs);
+            ArrayList<String> $configs = new ArrayList<String>();
+            for (String c : configs)
+                $configs.add(c);
+            $configs.add(defaultProperties);
+            //
+            IAttribute<String> configAtt = ResourcesUtil.getPropertys($configs.iterator());
             String factoryType = configAtt.getAttribute(factoryName);
             if (factoryType == null)
                 throw new SupportException("Global factory ‘" + factoryName + "’ is not define.");

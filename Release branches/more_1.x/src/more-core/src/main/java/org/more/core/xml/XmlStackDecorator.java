@@ -15,18 +15,14 @@
  */
 package org.more.core.xml;
 import java.util.HashMap;
-import org.more.util.attribute.IAttribute;
-import org.more.util.attribute.StackDecorator;
+import org.more.util.attribute.DecStackDecorator;
 /**
- * 该类继承自{@link StackDecorator}装饰器，作用是提供了一个context对象的支持。
+ * 该类继承自{@link DecStackDecorator}装饰器，作用是提供了一个context对象的支持。
  * @version 2010-9-23
  * @author 赵永春 (zyc@byshell.org)
  */
-public class XmlStackDecorator<T> extends StackDecorator<T> {
+public class XmlStackDecorator<T> extends DecStackDecorator<T> {
     private Object context = null;
-    public XmlStackDecorator(IAttribute<T> source) throws NullPointerException {
-        super(source);
-    }
     /**获取Context*/
     public Object getContext() {
         return context;

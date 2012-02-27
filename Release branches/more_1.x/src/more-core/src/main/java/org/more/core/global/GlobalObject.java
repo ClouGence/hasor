@@ -22,7 +22,7 @@ import org.more.core.global.gp.EnableEL_GP;
 import org.more.core.global.gp.EnableJson_GP;
 import org.more.core.global.gp.GroupCount_GP;
 import org.more.util.attribute.IAttribute;
-import org.more.util.attribute.SequenceStack;
+import org.more.util.attribute.DecSequenceAttribute;
 /**
  * ƒ⁄÷√∂‘œÛ
  * @version : 2011-9-29
@@ -82,8 +82,8 @@ class LastList extends HashMap<Object, Object> {
     public Object get(Object key) {
         if (key.equals("count") == true)
             return this.iatt.size();
-        if (key instanceof Integer && this.iatt instanceof SequenceStack)
-            return new LastMap(((SequenceStack) this.iatt).getIndex((Integer) key));
+        if (key instanceof Integer && this.iatt instanceof DecSequenceAttribute)
+            return new LastMap(((DecSequenceAttribute) this.iatt).getIndex((Integer) key));
         return this.iatt.getAttribute((String) key);
     }
 }

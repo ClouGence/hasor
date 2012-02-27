@@ -26,7 +26,6 @@ import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.core.xml.stream.XmlAccept;
 import org.more.core.xml.stream.XmlStreamEvent;
-import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**
  * <b>Level 2</b>：该级别的xml访问策略关注于xml元素或属性与命名空间的对应性，使用XmlParserKitManager
@@ -42,10 +41,9 @@ public class XmlParserKitManager implements XmlAccept {
     private XmlStackDecorator<Object>                      activateStack       = null;
     //
     //
-    //
     private XmlStackDecorator<Object> getXmlStack() {
         if (this.activateStack == null)
-            this.activateStack = new XmlStackDecorator<Object>(new AttBase<Object>());
+            this.activateStack = new XmlStackDecorator<Object>();
         return this.activateStack;
     }
     /**获取环境对象，的{@link IAttribute}属性接口。*/

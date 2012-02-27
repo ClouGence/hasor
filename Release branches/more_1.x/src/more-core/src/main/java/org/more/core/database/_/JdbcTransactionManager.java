@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.jdbc;
+package org.more.core.database._;
 import java.sql.Connection;
 import javax.sql.DataSource;
 import org.more.core.classcode.AopFilterChain;

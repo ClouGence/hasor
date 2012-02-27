@@ -24,7 +24,7 @@ import org.more.core.error.SupportException;
 import org.more.util.ResourcesUtil;
 import org.more.util.StringConvertUtil;
 import org.more.util.attribute.IAttribute;
-import org.more.util.attribute.SequenceStack;
+import org.more.util.attribute.DecSequenceAttribute;
 /**
  * 属性stringBorder是用于决定字符串序列化时使用单引号“'”或者双引号“"”(默认值)。
  * JsonUtil在序列化字符串对象时支持了String、Character、CharSequence、Reader这些类型。
@@ -34,19 +34,25 @@ import org.more.util.attribute.SequenceStack;
  */
 public abstract class JsonUtil {
     /**默认字符串，34:", 39:'*/
-    public static char                           StringBorder = '"';
+    public static char                           StringBorder      = '"';
     /*顺序是优先级顺序*/
-    public static final String[]                 configs      = new String[] { "META-INF/resource/core/json_config.properties", "META-INF/json_config.properties", "json_config.properties" };
-    //
-    private char                                 stringBorder = JsonUtil.StringBorder;
-    private LinkedHashMap<JsonCheck, JsonParser> jsonTypes    = new LinkedHashMap<JsonCheck, JsonParser>();
+    private static final String                  defaultProperties = "json_config.properties";
+    public static final String[]                 configs           = new String[] { "META-INF/resource/core/json_config.properties", "META-INF/json_config.properties" };
+    private char                                 stringBorder      = JsonUtil.StringBorder;
+    private LinkedHashMap<JsonCheck, JsonParser> jsonTypes         = new LinkedHashMap<JsonCheck, JsonParser>();
     /**创建JsonUtil对象，字符串序列化使用双引号环抱。 */
-    protected JsonUtil() throws Exception {
+    protected JsonUtil(String specialConfig) throws Exception {
         //1.整理index
         ArrayList<String> names = new ArrayList<String>();
-        SequenceStack<String> seqStack = new SequenceStack<String>();
+        DecSequenceAttribute<String> seqStack = new DecSequenceAttribute<String>();
         //
-        for (String cfg : configs) {
+        ArrayList<String> $configs = new ArrayList<String>();
+        for (String c : configs)
+            $configs.add(c);
+        if (specialConfig != null)
+            $configs.add(specialConfig);
+        //
+        for (String cfg : $configs) {
             IAttribute<String> attList = ResourcesUtil.getPropertys(cfg);
             seqStack.putStack(attList);
             String index = attList.getAttribute("index");
@@ -138,10 +144,21 @@ public abstract class JsonUtil {
     }
     /*---------------------------------------------------------------------------------*/
     private static JsonUtil defaultUtil = null;
+    /**使用自定义属性配置文件重新初始化{@link JsonUtil}工具对象。*/
+    public static JsonUtil initializationUtil(String specialConfig) {
+        defaultUtil = newInstance(specialConfig);
+        return defaultUtil;
+    };
+    /**获取一个JsonUtil实例，该方法返回上一次调用该方法创建的实例对象。*/
+    public static JsonUtil getJsonUtil() {
+        if (defaultUtil == null)
+            initializationUtil(defaultProperties);
+        return defaultUtil;
+    };
     /**无论如何都创建一个新的JsonUtil实例。*/
-    public static JsonUtil newInstance() {
+    public static JsonUtil newInstance(String specialConfig) {
         try {
-            return new JsonUtil() {};
+            return new JsonUtil(specialConfig) {};
         } catch (Exception e) {
             if (e instanceof InitializationException == true)
                 throw (InitializationException) e;
@@ -149,12 +166,6 @@ public abstract class JsonUtil {
                 throw (RuntimeException) e;
             throw new InitializationException(e);
         }
-    };
-    /**获取一个JsonUtil实例，该方法返回上一次调用该方法创建的实例对象。*/
-    public static JsonUtil getJsonUtil() {
-        if (defaultUtil == null)
-            defaultUtil = newInstance();
-        return defaultUtil;
     };
     /**将对象转换为json格式数据，注意如果对象中出现递归引用则会引发堆栈溢出异常。*/
     public static String transformToJson(Object dataBean) {

@@ -13,17 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.task;
+package org.more.core.database;
+import java.util.List;
 /**
- * 任务处理器的运行状态。
- * @version 2009-5-16
+ * 
+ * @version : 2011-12-27
  * @author 赵永春 (zyc@byshell.org)
  */
-public enum TaskState {
-    /** 新的任务，没有进行过任何执行。 */
-    New,
-    /** 正在执行。 */
-    Run,
-    /** 已经执行完毕。 */
-    RunEnd
+public interface OrmSupport {
+    /**保存对象*/
+    public void insertObject(Object entityObject);
+    /**更新对象*/
+    public void updateObject(Object entityObject);
+    /**删除这个新对象*/
+    public void deleteObject(Object entityObject);
+    /**查询所有对象列表*/
+    public List<Object> getObjectList(Class<?> entityType);
+    /**查询所有对象列表*/
+    public Object getObjectByID(Object objectID, Class<?> entityType);
+    /**获取实体上ID列的值。*/
+    public Object getID(Object entityObject, Class<?> entityType);
 }

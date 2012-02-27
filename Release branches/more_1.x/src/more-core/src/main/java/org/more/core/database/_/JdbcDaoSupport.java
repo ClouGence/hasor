@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.jdbc;
+package org.more.core.database._;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.sql.Connection;

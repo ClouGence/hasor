@@ -34,20 +34,33 @@ import org.more.util.attribute.IAttribute;
  * @version 2009-5-20
  * @author 赵永春 (zyc@byshell.org)
  */
-@SuppressWarnings("unchecked")
 public abstract class CopyBeanUtil {
+    /*默认自定义配置文件位置*/
+    public static final String                defaultProperties  = "copybean_config.properties";
     /*顺序是优先级顺序*/
-    public static final String[]              configs            = new String[] { "META-INF/resource/core/copybean_config.properties", "META-INF/copybean_config.properties", "copybean_config.properties" };
+    private static final String[]             configs            = new String[] { "META-INF/resource/core/copybean_config.properties", "META-INF/copybean_config.properties" };
     private ArrayList<Convert<Object>>        convertList        = new ArrayList<Convert<Object>>();
     private ArrayList<PropertyReader<Object>> propertyReaderList = new ArrayList<PropertyReader<Object>>();
     private ArrayList<PropertyWrite<Object>>  propertyWriteList  = new ArrayList<PropertyWrite<Object>>();
     //
     //
-    /**创建JsonUtil对象，字符串序列化使用双引号环抱。 */
-    protected CopyBeanUtil() throws IOException {
+    /**
+     * 创建JsonUtil对象，字符串序列化使用双引号环抱。
+     * @param specialConfig 要装载的特别配置属性文件，该属性文件应当位于classPath中。
+     */
+    protected CopyBeanUtil(String specialConfig) throws IOException {
+        //1.准备配置文件
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        for (String cfg : configs) {
+        ArrayList<String> $configs = new ArrayList<String>();
+        for (String c : configs)
+            $configs.add(c);
+        if (specialConfig != null)
+            $configs.add(specialConfig);
+        //2.装载配置文件
+        for (String cfg : $configs) {
             IAttribute<String> attList = ResourcesUtil.getPropertys(cfg);
+            if (attList == null)
+                continue;
             String convertList = attList.getAttribute("ConvertList");
             if (convertList != null) {
                 String[] $convertList = convertList.split(",");
@@ -75,7 +88,19 @@ public abstract class CopyBeanUtil {
         } catch (Exception e) {
             throw new InitializationException(e);
         }
-    }
+    };
+    /**无论如何都创建一个新的CopyBeanUtil实例。*/
+    public static CopyBeanUtil newInstance(String specialConfig) {
+        try {
+            return new CopyBeanUtil(specialConfig) {};
+        } catch (Exception e) {
+            if (e instanceof InitializationException == true)
+                throw (InitializationException) e;
+            if (e instanceof RuntimeException == true)
+                throw (RuntimeException) e;
+            throw new InitializationException(e);
+        }
+    };
     public int copyPropertys(Object fromObject, Object toObject) {
         if (fromObject == null || toObject == null)
             return 0;//不执行拷贝。
@@ -166,22 +191,41 @@ public abstract class CopyBeanUtil {
     }
     /*---------------------------------------------------------------------------------*/
     private static CopyBeanUtil defaultUtil = null;
-    /**无论如何都创建一个新的CopyBeanUtil实例。*/
-    public static CopyBeanUtil newInstance() {
-        try {
-            return new CopyBeanUtil() {};
-        } catch (Exception e) {
-            if (e instanceof InitializationException == true)
-                throw (InitializationException) e;
-            if (e instanceof RuntimeException == true)
-                throw (RuntimeException) e;
-            throw new InitializationException(e);
-        }
+    /**使用自定义属性配置文件重新初始化{@link CopyBeanUtil}工具对象。*/
+    public static CopyBeanUtil initializationUtil(String specialConfig) {
+        defaultUtil = newInstance(specialConfig);
+        return defaultUtil;
     };
     /**获取一个CopyBeanUtil实例，该方法返回上一次调用该方法创建的实例对象。*/
     public static CopyBeanUtil getCopyBeanUtil() {
         if (defaultUtil == null)
-            defaultUtil = newInstance();
+            initializationUtil(defaultProperties);
         return defaultUtil;
+    };
+    public static int copyTo(Object fromObject, Object toObject) {
+        return getCopyBeanUtil().copyPropertys(fromObject, toObject);//没有拷贝到东西.
+    };
+    public static int copyTo(Object fromObject, Object toObject, List<String> propertysNames) {
+        return getCopyBeanUtil().copyPropertys(fromObject, toObject, propertysNames);
+    };
+    public static int copyTo(Object fromObject, Object toObject, Map<String, String> propertysMapping) {
+        return getCopyBeanUtil().copyPropertys(fromObject, toObject, propertysMapping);
+    };
+    /**
+     * 读取目标属性值，该方法应当由子类实现。
+     * @return 返回目标属性值，该方法应当由子类实现。
+     */
+    public static Object getProperty(String propertyName, Object target) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+        return getCopyBeanUtil().readProperty(propertyName, target);
+    };
+    /**
+     * 读取目标属性值，该方法应当由子类实现。
+     * @param propertyName 要写入的名称
+     * @param target 要写入的目标bean
+     * @param newValue 写入的新值
+     * @return 返回目标属性值，该方法应当由子类实现。
+     */
+    public static boolean setProperty(String propertyName, Object target, Object newValue) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+        return getCopyBeanUtil().writeProperty(propertyName, target, newValue);
     };
 }
