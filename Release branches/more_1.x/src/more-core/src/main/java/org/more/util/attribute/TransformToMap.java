@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 package org.more.util.attribute;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.AbstractMap;
+import java.util.AbstractSet;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 /**
@@ -25,70 +27,64 @@ import java.util.Set;
  * Date : 2011-4-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TransformToMap<T> implements Map<String, T> {
-    private IAttribute<T> values = null;
+public class TransformToMap<T> extends AbstractMap<String, T> {
+    private IAttribute<T> values   = null;
+    private TransformSet  entrySet = null;
+    //
     /**创建一个{@link TransformToMap}对象，该对象的作用是将{@link IAttribute}转换为{@link Map}接口。*/
     public TransformToMap(IAttribute<T> values) {
         this.values = values;
+        this.entrySet = new TransformSet(values);
     };
-    public int size() {
-        return this.values.getAttributeNames().length;
-    };
-    public boolean isEmpty() {
-        return (this.size() == 0) ? true : false;
-    };
-    /**Key必须是字符类型的的。*/
-    public boolean containsKey(Object key) {
-        return this.values.contains(key.toString());
-    };
-    public boolean containsValue(Object value) {
-        for (String k : this.values.getAttributeNames()) {
-            Object obj = this.values.getAttribute(k);
-            if (obj != null)
-                if (obj.equals(value) == true)
-                    return true;
-        }
-        return false;
-    };
-    /**Key必须是字符类型的的。*/
-    public T get(Object key) {
-        return this.values.getAttribute((String) key);
-    };
+    @Override
     public T put(String key, T value) {
         this.values.setAttribute(key, value);
         return value;
     };
-    public T remove(Object key) {
-        String k = (String) key;
-        T value = this.values.getAttribute(k);
-        this.values.removeAttribute(k);
-        return value;
+    @Override
+    public Set<java.util.Map.Entry<String, T>> entrySet() {
+        return this.entrySet;
     };
-    public void putAll(Map<? extends String, ? extends T> m) {
-        for (String key : m.keySet())
-            this.put(key, m.get(key));
+    //
+    //
+    //
+    private class TransformSet extends AbstractSet<java.util.Map.Entry<String, T>> {
+        private IAttribute<T> values = null;
+        public TransformSet(IAttribute<T> values) {
+            this.values = values;
+        };
+        @Override
+        public int size() {
+            return values.size();
+        };
+        @Override
+        public Iterator<java.util.Map.Entry<String, T>> iterator() {
+            return new TransformIterator(this.values);
+        };
     };
-    public void clear() {
-        this.values.clearAttribute();
-    };
-    public Set<String> keySet() {
-        HashSet<String> al = new HashSet<String>();
-        for (String k : this.values.getAttributeNames())
-            al.add(k);
-        return al;
-    };
-    public Collection<T> values() {
-        ArrayList<T> al = new ArrayList<T>(this.size());
-        for (String k : this.values.getAttributeNames())
-            al.add(this.values.getAttribute(k));
-        return al;
-    };
-    public Set<Map.Entry<String, T>> entrySet() {
-        HashSet<Map.Entry<String, T>> al = new HashSet<Map.Entry<String, T>>();
-        for (String k : this.values.getAttributeNames())
-            al.add(new Entry(k, this.values));
-        return al;
-    };
+    private class TransformIterator implements Iterator<Map.Entry<String, T>> {
+        private IAttribute<T>    values      = null;
+        private Iterator<String> names       = null;
+        private String           currentName = null;
+        public TransformIterator(IAttribute<T> values) {
+            this.values = values;
+            List<String> names = Arrays.asList(this.values.getAttributeNames());
+            this.names = names.iterator();
+        }
+        @Override
+        public boolean hasNext() {
+            return this.names.hasNext();
+        }
+        @Override
+        public java.util.Map.Entry<String, T> next() {
+            this.currentName = this.names.next();
+            return new Entry(this.currentName, this.values);
+        }
+        @Override
+        public void remove() {
+            this.values.removeAttribute(this.currentName);
+        }
+    }
     private class Entry implements Map.Entry<String, T> {
         private IAttribute<T> values = null;
         private String        key    = null;
@@ -96,15 +92,18 @@ public class TransformToMap<T> implements Map<String, T> {
             this.key = key;
             this.values = values;
         };
+        @Override
         public T setValue(T value) {
             this.values.setAttribute(this.key, value);
             return value;
         };
+        @Override
         public T getValue() {
             return this.values.getAttribute(this.key);
         };
+        @Override
         public String getKey() {
             return this.key;
         };
-    };
+    }
 };

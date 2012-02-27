@@ -16,68 +16,68 @@
 package org.more.util.attribute;
 import java.util.Map;
 /**
- *    抽象的属性装饰器，所有属性装饰器类必须继承自该类或者其子类。抽象的装饰器类中提供
- * 了对原始属性对象的一套get/set方法。通过装饰器的get/set方法可以方便的在不同的装饰
- * 器上进行切换或者采用装饰器嵌套。注意：调用装饰器中的保护方法不会影响到装饰的目标类。
+ * 抽象的属性装饰器，所有属性装饰器类必须继承自该类或者其子类。
  * @version 2009-4-30
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractAttDecorator<T> implements IAttribute<T> {
-    //========================================================================================Field
-    /** 原始的属性类 */
+public abstract class AttributeDecorator<T> implements IAttribute<T> {
     private IAttribute<T> source = null;
     /**
      * 创建属性装饰器。
      * @param source 要装饰的目标属性对象。
      * @throws NullPointerException 如果企图设置一个空值到装饰器将引发该异常。
      */
-    protected AbstractAttDecorator(IAttribute<T> source) throws NullPointerException {
+    protected AttributeDecorator(IAttribute<T> source) throws NullPointerException {
         if (source == null)
-            throw new NullPointerException("装饰目标属性对象为空。");
+            throw new NullPointerException("target source IAttribute is null.");
         else
             this.source = source;
-    }
-    //==================================================================================Constructor
-    /**
-     * 获得装饰器装饰的原始属性对象。
-     * @return 返回装饰器装饰的原始属性对象。
-     */
-    public IAttribute<T> getSource() {
-        return source;
-    }
+    };
+    /** 获得被装饰的对象。*/
+    public final IAttribute<T> getSource() {
+        return this.source;
+    };
     /**
      * 设置装饰器要装饰的目标类。如果装饰器已经装饰了某个属性对象那么该方法将替换原有属性对象。
      * @param source 准备替换的属性对象。
      * @throws NullPointerException 如果企图设置一个空值到装饰器将引发该异常。
      */
-    public void setSource(IAttribute<T> source) throws NullPointerException {
+    protected final void setSource(IAttribute<T> source) throws NullPointerException {
         if (source == null)
-            throw new NullPointerException("装饰目标属性对象为空。");
+            throw new NullPointerException("target source IAttribute is null.");
         else
             this.source = source;
+    };
+    @Override
+    public Map<String, T> toMap() {
+        return new TransformToMap<T>(this);
     }
+    @Override
     public void clearAttribute() {
         this.source.clearAttribute();
-    }
+    };
+    @Override
     public boolean contains(String name) {
         return this.source.contains(name);
-    }
+    };
+    @Override
     public T getAttribute(String name) {
         return this.source.getAttribute(name);
-    }
+    };
+    @Override
     public String[] getAttributeNames() {
         return this.source.getAttributeNames();
-    }
+    };
+    @Override
     public void removeAttribute(String name) {
         this.source.removeAttribute(name);
-    }
-    public void setAttribute(String name, T define) {
-        this.source.setAttribute(name, define);
-    }
-    public Map<String, T> toMap() {
-        return this.source.toMap();
-    }
+    };
+    @Override
+    public void setAttribute(String name, T value) {
+        this.source.setAttribute(name, value);
+    };
+    @Override
     public int size() {
         return this.source.size();
-    }
-}
+    };
+};
