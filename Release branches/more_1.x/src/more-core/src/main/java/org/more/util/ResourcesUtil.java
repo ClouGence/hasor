@@ -23,7 +23,9 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.jar.JarEntry;
@@ -33,7 +35,7 @@ import java.util.zip.ZipInputStream;
 import org.more.core.error.FormatException;
 import org.more.core.io.AutoCloseInputStream;
 import org.more.util.attribute.IAttribute;
-import org.more.util.attribute.SequenceStack;
+import org.more.util.attribute.DecSequenceAttribute;
 import org.more.util.attribute.TransformToAttribute;
 /**
  * classpath工具类
@@ -56,8 +58,16 @@ public abstract class ResourcesUtil {
     }
     /**合成所有属性文件的配置信息到一个{@link IAttribute}接口中。*/
     public static IAttribute<String> getPropertys(String[] resourcePaths) throws IOException {
-        SequenceStack<String> iatt = new SequenceStack<String>();
-        for (String str : resourcePaths) {
+        return getPropertys(Arrays.asList(resourcePaths).iterator());
+    }
+    /**合成所有属性文件的配置信息到一个{@link IAttribute}接口中。*/
+    public static IAttribute<String> getPropertys(Iterator<String> iterator) throws IOException {
+        if (iterator == null)
+            return null;
+        //
+        DecSequenceAttribute<String> iatt = new DecSequenceAttribute<String>();
+        while (iterator.hasNext() == true) {
+            String str = iterator.next();
             IAttribute<String> att = getPropertys(str);
             if (att != null)
                 iatt.putStack(att);
@@ -108,6 +118,8 @@ public abstract class ResourcesUtil {
             JarFile jar = ((JarURLConnection) resourceURL.openConnection()).getJarFile();
             ZipEntry e = jar.getEntry(resourceURL.getPath());
             return jar.getInputStream(e);
+        } else if (protocol.equals("class") == true) {
+            //TODO 
         }
         // TODO 该处处理其他协议的资源加载。诸如OSGi等协议。
         return null;

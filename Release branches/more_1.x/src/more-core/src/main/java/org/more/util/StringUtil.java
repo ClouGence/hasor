@@ -38,7 +38,7 @@ public abstract class StringUtil extends StringConvertUtil {
     }
     /**将通配符转换成正则表达式。*/
     public static String wildToRegex(String wild) {
-        StringBuffer result = new StringBuffer("^");
+        StringBuffer result = new StringBuffer("");
         char metachar[] = { '$', '^', '[', ']', '(', ')', '{', '|', '+', '.', '\\' };
         for (int i = 0; i < wild.length(); i++) {
             char ch = wild.charAt(i);
@@ -53,6 +53,19 @@ public abstract class StringUtil extends StringConvertUtil {
                 result.append(ch);
         }
         result.append("$");
+        return result.toString();
+    }
+    /**将字符串转换成成正则表达式。*/
+    public static String stringToRegex(String wild) {
+        StringBuffer result = new StringBuffer("");
+        char metachar[] = { '$', '^', '[', ']', '(', ')', '{', '|', '+', '.', '\\' };
+        for (int i = 0; i < wild.length(); i++) {
+            char ch = wild.charAt(i);
+            for (int j = 0; j < metachar.length; j++)
+                if (ch == metachar[j])
+                    result.append("\\");
+            result.append(ch);
+        }
         return result.toString();
     }
     /**使用通配符匹配字符串。*/

@@ -22,8 +22,8 @@ import java.io.UnsupportedEncodingException;
  * @version 2009-4-28
  * @author 赵永春 (zyc@byshell.org)
  */
-public final class Base64 {
-    public static final String Base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@*-"; // supplement
+public abstract class Base64 {
+    protected static final String Base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@*-"; // supplement
     /**返回与Base64对应的JSbase64编码/解码脚本*/
     public static Reader getJSReader() throws UnsupportedEncodingException {
         return new InputStreamReader(Base64.class.getResourceAsStream("/META-INF/resource/util/base64.js"), "utf-8");
