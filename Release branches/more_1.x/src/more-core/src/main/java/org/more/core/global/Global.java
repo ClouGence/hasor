@@ -210,7 +210,7 @@ public abstract class Global extends AbstractGlobal {
     /**解析全局配置参数，并且返回其{@link File}形式对象（用于表示文件）。第二个参数为默认值。*/
     public String getFilePath(Enum<?> name, String defaultValue) {
         String filePath = this.getToType(name, String.class);
-        if (filePath == null || filePath.isEmpty() == true)
+        if (filePath == null || filePath.length() == 0)
             return defaultValue;//空
         //
         int length = filePath.length();
@@ -222,7 +222,7 @@ public abstract class Global extends AbstractGlobal {
     /**解析全局配置参数，并且返回其{@link Date}形式对象（用于表示文件）。第二个参数为默认值。*/
     public String getFilePath(String name, String defaultValue) {
         String filePath = this.getToType(name, String.class);
-        if (filePath == null || filePath.isEmpty() == true)
+        if (filePath == null || filePath.length() == 0)
             return defaultValue;//空
         //
         int length = filePath.length();
@@ -242,7 +242,7 @@ public abstract class Global extends AbstractGlobal {
     /**解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。*/
     public String getDirectoryPath(Enum<?> name, String defaultValue) {
         String filePath = this.getToType(name, String.class);
-        if (filePath == null || filePath.isEmpty() == true)
+        if (filePath == null || filePath.length() == 0)
             return defaultValue;//空
         //
         int length = filePath.length();
@@ -254,7 +254,7 @@ public abstract class Global extends AbstractGlobal {
     /**解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。*/
     public String getDirectoryPath(String name, String defaultValue) {
         String filePath = this.getToType(name, String.class);
-        if (filePath == null || filePath.isEmpty() == true)
+        if (filePath == null || filePath.length() == 0)
             return defaultValue;//空
         //
         int length = filePath.length();

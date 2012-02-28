@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Properties;
 import org.more.core.global.Global;
 import org.more.core.global.GlobalFactory;
+import org.more.core.io.ReaderInputStream;
 import org.more.util.ResourcesUtil;
 /**
 * 
@@ -31,24 +32,19 @@ import org.more.util.ResourcesUtil;
 * @author 赵永春 (zyc@byshell.org)
 */
 public class PropertiesGlobal implements GlobalFactory {
-    /*------------------------------------------------------------------------*/
-    //TODO:注解绑定枚举元素的支持
-    //    @Retention(RetentionPolicy.RUNTIME)
-    //    @Target(ElementType.TYPE)
-    //    public @interface PropertiesFile {
-    //        /**表示该枚举对应的全局属性配置文件是一个文件资源。*/
-    //        public String file() default "";
-    //        /**表示该枚举对应的全局属性配置文件是一个{@link URI}资源。*/
-    //        public String uri() default "";
-    //        /**表示该枚举对应的全局属性配置文件是在classpath目录下的文件资源。*/
-    //        public String value() default "";
-    //    };
-    protected Properties createProperties(Object streamOrReader) throws IOException {
+    protected Properties createProperties(InputStream stream) throws IOException {
         Properties prop = new Properties();
-        if (streamOrReader instanceof InputStream)
-            prop.load((InputStream) streamOrReader);
-        else if (streamOrReader instanceof Reader)
-            prop.load((Reader) streamOrReader);
+        if (stream != null)
+            prop.load(stream);
+        return prop;
+    }
+    protected Properties createProperties(Reader reader, String encoding) throws IOException {
+        Properties prop = new Properties();
+        if (reader != null)
+            if (encoding == null)
+                prop.load(new ReaderInputStream(reader));
+            else
+                prop.load(new ReaderInputStream(reader, encoding));
         return prop;
     }
     /*------------------------------------------------------------------------*/
@@ -80,7 +76,7 @@ public class PropertiesGlobal implements GlobalFactory {
             } else if (obj instanceof Reader) {
                 //Reader装载，key值是空字符串。key相当于属性的作用域。
                 Reader readerObject = (Reader) obj;
-                global.addScope("", this.createProperties(readerObject));//添加属性
+                global.addScope("", this.createProperties(readerObject, null));//添加属性 XXX: 第二个参数null表示使用的编码
             } else if (obj instanceof InputStream) {
                 //InputStream装载，key值是空字符串。key相当于属性的作用域。
                 InputStream streamObject = (InputStream) obj;
