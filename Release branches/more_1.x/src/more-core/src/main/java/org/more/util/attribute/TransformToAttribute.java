@@ -34,19 +34,15 @@ public class TransformToAttribute<T> implements IAttribute<T> {
     public boolean contains(String name) {
         return this.values.containsKey(name);
     };
-    @Override
     public void setAttribute(String name, T value) {
         this.values.put(name, value);
     };
-    @Override
     public T getAttribute(String name) {
         return (T) this.values.get(name);
     };
-    @Override
     public void removeAttribute(String name) {
         this.values.remove(name);
     };
-    @Override
     public String[] getAttributeNames() {
         Set<?> set = this.values.keySet();
         String[] KEYS = new String[set.size()];
@@ -59,11 +55,9 @@ public class TransformToAttribute<T> implements IAttribute<T> {
         }
         return KEYS;
     };
-    @Override
     public void clearAttribute() {
         this.values.clear();
     };
-    @Override
     public Map<String, T> toMap() {
         HashMap<String, T> map = new HashMap<String, T>();
         for (Object key : this.values.keySet())
@@ -73,7 +67,6 @@ public class TransformToAttribute<T> implements IAttribute<T> {
                 map.put(null, (T) this.values.get(key));
         return map;
     };
-    @Override
     public int size() {
         return this.values.size();
     };

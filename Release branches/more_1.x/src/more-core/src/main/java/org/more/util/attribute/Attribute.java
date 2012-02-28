@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.more.util.attribute;
-import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -24,9 +23,8 @@ import java.util.Set;
  * @version : 2012-2-23
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Attribute<V> extends AbstractMap<String, V> implements IAttribute<V>, Serializable {
-    private static final long                     serialVersionUID = -2405343948202779870L;
-    protected Set<java.util.Map.Entry<String, V>> entrySet         = new HashSet<Map.Entry<String, V>>();
+public class Attribute<V> extends AbstractMap<String, V> implements IAttribute<V> {
+    protected Set<java.util.Map.Entry<String, V>> entrySet = new HashSet<Map.Entry<String, V>>();
     /** 创建一个基本属性对象。 */
     public Attribute() {}
     /** 创建一个基本属性对象，使用参数对象初始化它。 */
@@ -34,44 +32,53 @@ public class Attribute<V> extends AbstractMap<String, V> implements IAttribute<V
         if (prop != null)
             this.entrySet = prop.entrySet();
     }
-    @Override
     public boolean contains(String name) {
         return this.containsKey(name);
     }
-    @Override
     public void setAttribute(String name, V value) {
         this.put(name, value);
     }
-    @Override
     public V getAttribute(String name) {
         return this.get(name);
     }
-    @Override
     public void removeAttribute(String name) {
         this.remove(name);
     }
-    @Override
     public String[] getAttributeNames() {
         String[] keys = new String[this.size()];
         this.keySet().toArray(keys);
         return keys;
     }
-    @Override
     public void clearAttribute() {
         this.clear();
     }
-    @Override
     public Map<String, V> toMap() {
         return this;
     }
-    @Override
     public Set<java.util.Map.Entry<String, V>> entrySet() {
         return this.entrySet;
     }
-    @Override
     public V put(String key, V value) {
-        Entry<String, V> e = new SimpleEntry<String, V>(key, value);
+        Entry<String, V> e = new SimpleEntry<V>(key, value);
         this.entrySet.add(e);
         return value;
+    }
+    private static class SimpleEntry<V> implements Entry<String, V> {
+        private String entry_key = null;
+        private V      entry_var = null;
+        public SimpleEntry(String key, V value) {
+            this.entry_key = key;
+            this.entry_var = value;
+        }
+        public String getKey() {
+            return this.entry_key;
+        }
+        public V getValue() {
+            return this.entry_var;
+        }
+        public V setValue(V value) {
+            this.entry_var = value;
+            return this.entry_var;
+        }
     }
 }

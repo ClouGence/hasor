@@ -36,12 +36,10 @@ public class TransformToMap<T> extends AbstractMap<String, T> {
         this.values = values;
         this.entrySet = new TransformSet(values);
     };
-    @Override
     public T put(String key, T value) {
         this.values.setAttribute(key, value);
         return value;
     };
-    @Override
     public Set<java.util.Map.Entry<String, T>> entrySet() {
         return this.entrySet;
     };
@@ -53,11 +51,9 @@ public class TransformToMap<T> extends AbstractMap<String, T> {
         public TransformSet(IAttribute<T> values) {
             this.values = values;
         };
-        @Override
         public int size() {
             return values.size();
         };
-        @Override
         public Iterator<java.util.Map.Entry<String, T>> iterator() {
             return new TransformIterator(this.values);
         };
@@ -71,16 +67,13 @@ public class TransformToMap<T> extends AbstractMap<String, T> {
             List<String> names = Arrays.asList(this.values.getAttributeNames());
             this.names = names.iterator();
         }
-        @Override
         public boolean hasNext() {
             return this.names.hasNext();
         }
-        @Override
         public java.util.Map.Entry<String, T> next() {
             this.currentName = this.names.next();
             return new Entry(this.currentName, this.values);
         }
-        @Override
         public void remove() {
             this.values.removeAttribute(this.currentName);
         }
@@ -92,16 +85,13 @@ public class TransformToMap<T> extends AbstractMap<String, T> {
             this.key = key;
             this.values = values;
         };
-        @Override
         public T setValue(T value) {
             this.values.setAttribute(this.key, value);
             return value;
         };
-        @Override
         public T getValue() {
             return this.values.getAttribute(this.key);
         };
-        @Override
         public String getKey() {
             return this.key;
         };

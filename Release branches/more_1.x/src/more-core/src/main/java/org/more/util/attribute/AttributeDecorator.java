@@ -48,35 +48,27 @@ public abstract class AttributeDecorator<T> implements IAttribute<T> {
         else
             this.source = source;
     };
-    @Override
     public Map<String, T> toMap() {
         return new TransformToMap<T>(this);
     }
-    @Override
     public void clearAttribute() {
         this.source.clearAttribute();
     };
-    @Override
     public boolean contains(String name) {
         return this.source.contains(name);
     };
-    @Override
     public T getAttribute(String name) {
         return this.source.getAttribute(name);
     };
-    @Override
     public String[] getAttributeNames() {
         return this.source.getAttributeNames();
     };
-    @Override
     public void removeAttribute(String name) {
         this.source.removeAttribute(name);
     };
-    @Override
     public void setAttribute(String name, T value) {
         this.source.setAttribute(name, value);
     };
-    @Override
     public int size() {
         return this.source.size();
     };
