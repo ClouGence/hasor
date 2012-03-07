@@ -34,8 +34,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.more.core.error.FormatException;
 import org.more.core.io.AutoCloseInputStream;
-import org.more.util.attribute.IAttribute;
 import org.more.util.attribute.DecSequenceAttribute;
+import org.more.util.attribute.IAttribute;
 import org.more.util.attribute.TransformToAttribute;
 /**
  * classpathπ§æﬂ¿‡
@@ -70,7 +70,7 @@ public abstract class ResourcesUtil {
             String str = iterator.next();
             IAttribute<String> att = getPropertys(str);
             if (att != null)
-                iatt.putStack(att);
+                iatt.putAtt(str, att);
         }
         return iatt;
     }

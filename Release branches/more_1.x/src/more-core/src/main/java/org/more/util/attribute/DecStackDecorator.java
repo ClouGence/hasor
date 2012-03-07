@@ -31,9 +31,20 @@ public class DecStackDecorator<V> extends AttributeDecorator<V> {
     public final int getDepth() {
         return this.depth;
     };
-    /** 该方法与getSource()方法返回值一样。 */
-    public IAttribute<V> getCurrentStack() {
-        return super.getSource();
+    //    /** 该方法与getSource()方法返回值一样。 */
+    //    public IAttribute<V> getCurrentStack() {
+    //        return super.getSource();
+    //    };
+    /** 获取指定深度的父堆（如果可能）。0代表当前层，数字越大获取的深度越深。 */
+    public IAttribute<V> getParentStack(int depth) {
+        if (depth < 0 || depth > this.depth)
+            throw new IndexOutOfBoundsException();
+        if (depth == 0)
+            return super.getSource();
+        IAttribute<V> att = super.getSource();
+        for (int i = 0; i < depth - 1; i++)
+            att = ((DecParentAttribute<V>) att).getParent();
+        return att;
     };
     /** 获取当前堆的父堆（如果可能）。 */
     public IAttribute<V> getParentStack() {

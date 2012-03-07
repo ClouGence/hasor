@@ -51,38 +51,39 @@ public class DecSequenceAttribute<V> extends AttributeDecorator<V> {
                 if (att != null)
                     this.attList.add(att);
     };
-    public void putStack(IAttribute<V> att) {
-        this.putStack(UUID.randomUUID().toString(), att);
-    };
-    /**将{@link IAttribute}接口对象加入到队列中。*/
-    public void putStack(String name, IAttribute<V> scope) {
+    public void putAtt(String name, IAttribute<V> att) {
         if (this.attMap.containsKey(name) == false) {
-            this.attMap.put(name, scope);
-            this.attList.add(scope);
+            this.attMap.put(name, att);
+            this.attList.add(att);
         }
     };
-    /**将{@link IAttribute}接口对象弹出队列。*/
-    public void popStack(String name) {
-        if (this.attMap.containsKey(name) == true)
-            this.attList.remove(this.attMap.remove(name));
+    public List<IAttribute<V>> getAttList() {
+        return this.attList;
     };
-    /**测试一个名称是否存在。*/
-    public boolean containsScope(String name) {
+    public int getAttCount() {
+        return this.attList.size();
+    };
+    public boolean containsAtt(String name) {
         return this.attMap.containsKey(name);
     };
+    public IAttribute<V> removeAtt(String name) {
+        if (this.attMap.containsKey(name) == true) {
+            IAttribute<V> att = this.attMap.remove(name);
+            if (att != null)
+                this.attList.remove(att);
+            return att;
+        }
+        return null;
+    };
+    public void putAtt(IAttribute<V> att) {
+        this.putAtt(UUID.randomUUID().toString(), att);
+    };
+    /**将{@link IAttribute}接口对象弹出队列。*/
+    public void popStack(String name) {};
     /**获取序列中指定位置的属性对象。*/
     public IAttribute<V> getIndex(int index) {
         return this.attList.get(index);
     };
-    /**获取序列的列表。*/
-    public List<IAttribute<V>> getSequenceList() {
-        return this.attList;
-    };
-    /**返回序列的数目。*/
-    public int getSequenceCount() {
-        return this.attList.size();
-    }
-    @Override
     public boolean contains(String name) {
         if (super.contains(name) == true)
             return true;
@@ -91,7 +92,6 @@ public class DecSequenceAttribute<V> extends AttributeDecorator<V> {
                 return true;
         return false;
     };
-    @Override
     public V getAttribute(String name) {
         V res = super.getAttribute(name);
         if (res == null)
@@ -103,7 +103,6 @@ public class DecSequenceAttribute<V> extends AttributeDecorator<V> {
         return res;
     };
     /**返回当前属性集以及序列属性集中的所有属性名（不重复）。<br/><b>这是一个高成本操作。</b>*/
-    @Override
     public String[] getAttributeNames() {
         HashSet<String> names = new HashSet<String>();
         Collections.addAll(names, super.getAttributeNames());
@@ -114,7 +113,6 @@ public class DecSequenceAttribute<V> extends AttributeDecorator<V> {
         return array;
     };
     /**返回所有队列元素中的属性总数。<br/><b>这是一个高成本操作。*/
-    @Override
     public int size() {
         return this.getAttributeNames().length;
     };
