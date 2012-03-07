@@ -24,7 +24,7 @@ public class Main {
         b1.setName("aaaa");
         System.out.println(b1.getName());
         //
-        CopyBeanUtil copy = CopyBeanUtil.newInstance();
+        CopyBeanUtil copy = CopyBeanUtil.newInstance(null);
         //
         Bean2 b2 = new Bean2();
         copy.copyPropertys(b1, b2);

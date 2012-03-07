@@ -32,7 +32,7 @@ public class GlobalTest {
         //        HashMap context = new HashMap();
         //        context.put("root", root);
         //        System.out.println(Ognl.getValue("root['name']", context));
-        Global global = Global.newInstance("properties", "org/test/more/core/global/global.properties", "global.properties");
+        Global global = Global.newInstanceByFactory("properties", "utf-8", "org/test/more/core/global/global.properties", "global.properties");
         System.out.println(global.evalName("_global.enableJson"));
         System.out.println(global.evalName("_global.enableEL"));
         System.out.println(global.evalName("_global.groupCount"));
