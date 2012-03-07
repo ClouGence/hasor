@@ -33,9 +33,11 @@ import org.more.util.StringUtil;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class XmlReader {
-    private InputStream xmlStrema     = null; //读取Xml数据的输入流。
-    private boolean     ignoreComment = true; //是否忽略Xml中的所有注释节点。
-    private boolean     ignoreSpace   = true; //是否忽略Xml中可忽略的空格。
+    /**默认使用编码*/
+    public final static String DefaultEncoding = "utf-8";
+    private InputStream        xmlStrema       = null;   //读取Xml数据的输入流。
+    private boolean            ignoreComment   = true;   //是否忽略Xml中的所有注释节点。
+    private boolean            ignoreSpace     = true;   //是否忽略Xml中可忽略的空格。
     //--------------------------------------------------------------------
     /**创建一个XmlReader对象用于阅读fileName参数所表述的Xml文件。*/
     public XmlReader(String fileName) throws FileNotFoundException {
@@ -93,12 +95,22 @@ public class XmlReader {
      * @throws IOException 
      */
     public synchronized void reader(XmlAccept accept, String ignoreXPath) throws XMLStreamException, IOException {
+        this.reader(accept, DefaultEncoding, ignoreXPath);
+    }
+    /**
+     * 执行解析Xml文件，并且形成xml事件流。这些事件流被输入到{@link XmlAccept}类型对象中。
+     * 如果配置了ignoreXPath参数则在形成事件流时XmlReader不会发送属于这个xpath的xml事件流。
+     * @param accept 指定事件流接收对象。
+     * @param ignoreXPath 指定要忽略的XPath路径。
+     * @throws IOException 
+     */
+    public synchronized void reader(XmlAccept accept, String encoding, String ignoreXPath) throws XMLStreamException, IOException {
         if (accept == null)
             return;
         accept.beginAccept();
         //1.准备扫描的引擎。
         XMLInputFactory factory = XMLInputFactory.newInstance();
-        XMLStreamReader reader = factory.createXMLStreamReader(this.xmlStrema);
+        XMLStreamReader reader = factory.createXMLStreamReader(this.xmlStrema, encoding);
         StreamFilter filter = new NullStreamFilter(this, this.getXmlStreamFilter());
         reader = factory.createFilteredReader(reader, filter);
         //2.准备数据
@@ -174,6 +186,7 @@ public class XmlReader {
             //(4).推送事件
             this.pushEvent(accept, currentEvent, ignoreXPath);
             if (xmlEvent == XMLStreamConstants.START_ELEMENT) {
+                XmlStreamEvent elementEvent = currentEvent;
                 int attCount = reader.getAttributeCount();
                 for (int i = 0; i < attCount; i++) {
                     //推送属性事件
@@ -190,7 +203,7 @@ public class XmlReader {
                     currentXPathTemp.append("/@");
                     currentXPathTemp.append(this.getName(qn));
                     currentElement = new ElementTree(qn, currentElement);
-                    currentEvent = new AttributeEvent(currentXPathTemp.toString(), this, reader, i);
+                    currentEvent = new AttributeEvent(elementEvent, currentXPathTemp.toString(), this, reader, i);
                     currentEvent.setCurrentElement(currentElement.getParent());//将属性的当前节点设置成其所属的元素节点。
                     currentElement = currentElement.getParent();
                     this.pushEvent(accept, currentEvent, ignoreXPath);

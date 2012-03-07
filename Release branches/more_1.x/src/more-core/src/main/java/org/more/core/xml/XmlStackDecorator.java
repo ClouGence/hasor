@@ -21,19 +21,19 @@ import org.more.util.attribute.DecStackDecorator;
  * @version 2010-9-23
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class XmlStackDecorator<T> extends DecStackDecorator<T> {
-    private Object context = null;
+public class XmlStackDecorator<T> extends DecStackDecorator<Object> {
+    private T context = null;
     /**ªÒ»°Context*/
-    public Object getContext() {
+    public T getContext() {
         return context;
     }
     /**…Ë÷√Context*/
-    public void setContext(Object context) {
+    public void setContext(T context) {
         this.context = context;
     }
     //---------------
     private HashMap<String, NameSpace> nameSpaceMap = new HashMap<String, NameSpace>();
-    NameSpace getNameSpace(String prefix) {
+    public NameSpace getNameSpace(String prefix) {
         return this.nameSpaceMap.get(prefix);
     }
     void addNameSpace(String prefix, NameSpace nameSpace) {

@@ -54,7 +54,7 @@ public abstract class JsonUtil {
         //
         for (String cfg : $configs) {
             IAttribute<String> attList = ResourcesUtil.getPropertys(cfg);
-            seqStack.putStack(attList);
+            seqStack.putAtt(attList);
             String index = attList.getAttribute("index");
             if (index == null)
                 continue;

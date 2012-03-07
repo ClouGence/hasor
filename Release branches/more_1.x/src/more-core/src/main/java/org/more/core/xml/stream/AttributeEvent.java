@@ -22,16 +22,22 @@ import javax.xml.stream.XMLStreamReader;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class AttributeEvent extends XmlStreamEvent {
-    public AttributeEvent(String xpath, XmlReader xmlReader, XMLStreamReader reader, int index) {
+    public AttributeEvent(XmlStreamEvent elementEvent, String xpath, XmlReader xmlReader, XMLStreamReader reader, int index) {
         super(xpath, xmlReader, reader);
         this.attQName = reader.getAttributeName(index);
+        this.elementEvent = elementEvent;
         this.index = index;
     }
-    private QName attQName = null;
-    private int   index    = 0;
+    private QName          attQName     = null;
+    private int            index        = 0;
+    private XmlStreamEvent elementEvent = null;
     /**获取属性名称{@link QName}对象。*/
     public QName getName() {
         return this.attQName;
+    }
+    /**获取属性所在元素的事件对象。*/
+    public XmlStreamEvent getElementEvent() {
+        return elementEvent;
     }
     /**获取属性名(不包含命名空间前缀)。*/
     public String getElementName() {

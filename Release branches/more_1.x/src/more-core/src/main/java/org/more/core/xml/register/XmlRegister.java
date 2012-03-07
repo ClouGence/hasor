@@ -47,13 +47,18 @@ public class XmlRegister extends XmlParserKitManager {
         new XmlReader(in).reader(new Reg_Parser(this), null);
     }
     /**创建{@link XmlRegister}对象,不重新装载命名空间注册。*/
-    public XmlRegister() throws IOException, XMLStreamException, LoadException {
+    public XmlRegister(Object context) throws IOException, XMLStreamException, LoadException {
+        this.setContext(context);
         if (isLoadDefault() == true)
             for (String config : Configs) {
                 List<URL> urls = ResourcesUtil.getResources(config);
                 for (URL url : urls)
                     this.loadRegisterXML(url);
             }
+    }
+    /**创建{@link XmlRegister}对象,不重新装载命名空间注册。*/
+    public XmlRegister() throws IOException, XMLStreamException, LoadException {
+        this(null);
     }
     /**是否装载由{@link #Configs}常量定义的默认配置文件。*/
     protected boolean isLoadDefault() {

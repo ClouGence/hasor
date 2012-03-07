@@ -19,7 +19,7 @@ package org.more.core.xml;
  * @version 2010-9-12
  * @author 赵永春 (zyc@byshell.org)
  */
-class NameSpace {
+public class NameSpace {
     private String       uri   = null; //命名空间
     private StringBuffer xpath = null; //xpath
     /***/
@@ -36,7 +36,7 @@ class NameSpace {
         return this.xpath.toString();
     }
     /**追加xpath一个节点。*/
-    public void appendXPath(String name, boolean isAttribute) {
+    void appendXPath(String name, boolean isAttribute) {
         if (this.xpath.indexOf("/") != this.xpath.length() - 1)
             this.xpath.append("/");
         if (isAttribute == true)
@@ -44,7 +44,7 @@ class NameSpace {
         this.xpath.append(name);
     }
     /**删除xpath的最后一个节点。*/
-    public void removeXPath() {
+    void removeXPath() {
         int index = this.xpath.lastIndexOf("/");
         index = (index == 0) ? 1 : index;
         this.xpath = this.xpath.delete(index, this.xpath.length());

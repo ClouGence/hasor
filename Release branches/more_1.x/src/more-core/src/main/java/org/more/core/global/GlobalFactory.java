@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 package org.more.core.global;
-import java.io.IOException;
 /**
  * {@link Global}创建工厂
  * @version : 2011-9-29
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface GlobalFactory {
-    /**创建{@link Global}对象 
-     * @throws IOException */
-    public Global createGlobal(Object... objects) throws Throwable;
+    /**创建{@link Global}对象*/
+    public Global createGlobal(String encoding, Object... objects) throws Throwable;
 }

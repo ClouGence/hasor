@@ -29,8 +29,8 @@ import org.more.core.ognl.OgnlException;
 import org.more.util.ResourcesUtil;
 import org.more.util.StringConvertUtil;
 import org.more.util.attribute.Attribute;
-import org.more.util.attribute.IAttribute;
 import org.more.util.attribute.DecSequenceAttribute;
+import org.more.util.attribute.IAttribute;
 import org.more.util.attribute.TransformToAttribute;
 import org.more.util.attribute.TransformToMap;
 /**
@@ -39,6 +39,8 @@ import org.more.util.attribute.TransformToMap;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractGlobal implements IAttribute<Object> {
+    /**默认编码*/
+    public final static String                                  DefaultEncoding   = "utf-8";
     /**是否启用el表达式解析。*/
     private final static String                                 EnableEL          = "_global.enableEL";
     /**是否启用json解析*/
@@ -60,8 +62,8 @@ public abstract class AbstractGlobal implements IAttribute<Object> {
             this.$elData = new DecSequenceAttribute<Object>();
             for (IAttribute<Object> att : this.scopeMap.values())
                 if (att != null)
-                    $elData.putStack(att);
-            this.$elData.putStack(cache);
+                    $elData.putAtt(att);
+            this.$elData.putAtt(cache);
         }
         return this.$elData;
     };
@@ -191,42 +193,48 @@ public abstract class AbstractGlobal implements IAttribute<Object> {
         this.cache.clear();
     };
     /*------------------------------------------------------------------------*/
-    /**将一组原始的配置信息添加到Global中，如果存在已经使用的名称则追加。*/
+    /**将一组原始的配置信息追加到Global中，如果存在已经使用的名称则追加(越先加入，优先级越高)。*/
     public void addScope(Class<? extends Enum<?>> enumType, Map config) {
-        this.addScope(enumType, new TransformToAttribute<Object>(config));
+        if (config instanceof IAttribute == true)
+            this.addScope(enumType, (IAttribute) config);
+        else
+            this.addScope(enumType, new TransformToAttribute<Object>(config));
     };
-    /**将一组原始的配置信息添加到Global中，如果存在已经使用的名称则追加。*/
+    /**将一组原始的配置信息追加到Global中，如果存在已经使用的名称则追加(越先加入，优先级越高)。*/
     public void addScope(String name, Map config) {
-        this.addScope(name, new TransformToAttribute<Object>(config));
+        if (config instanceof IAttribute == true)
+            this.addScope(name, (IAttribute) config);
+        else
+            this.addScope(name, new TransformToAttribute<Object>(config));
     };
-    /**将一组原始的配置信息添加到Global中，如果存在已经使用的名称则追加。*/
+    /**将一组原始的配置信息追加到Global中，如果存在已经使用的名称则追加(越先加入，优先级越高)。*/
     public void addScope(Class<? extends Enum<?>> enumType, IAttribute<Object> config) {
         if (enumType == null || config == null)
             throw new NullPointerException("‘enumType’ or ‘config’ param is null");
         this.addScope(enumType.getName(), config);
     };
-    /**将一组原始的配置信息添加到Global中，如果存在已经使用的名称则追加。*/
+    /**将一组原始的配置信息追加到Global中，如果存在已经使用的名称则追加(越先加入，优先级越高)。*/
     public void addScope(String name, IAttribute<Object> config) {
         if (name == null || config == null)
             throw new NullPointerException("‘name’ or ‘config’ param is null");
         if (this.scopeMap.containsKey(name) == false) {
             //新增了一条，同时将这条增加到allData中
             DecSequenceAttribute<Object> stack = new DecSequenceAttribute<Object>();
-            stack.putStack(config);
+            stack.putAtt(config);
             this.scopeMap.put(name, stack);
         } else {
             IAttribute<?> stack = this.scopeMap.get(name);
             if (stack instanceof DecSequenceAttribute == false)
                 throw new SupportException("‘" + name + "’ scope does not support more of the same.");
             DecSequenceAttribute<Object> $stack = (DecSequenceAttribute<Object>) stack;
-            $stack.putStack(config);
+            $stack.putAtt(config);
         }
     };
     /**按照添加顺序的位置获取一个作用域*/
     public IAttribute<Object> getScope(int index) {
         ArrayList<IAttribute<Object>> list = new ArrayList<IAttribute<Object>>();
         for (DecSequenceAttribute<Object> attSeq : this.scopeMap.values())
-            for (IAttribute<Object> att : attSeq.getSequenceList())
+            for (IAttribute<Object> att : attSeq.getAttList())
                 list.add(att);
         return list.get(index);
     };
@@ -326,10 +334,10 @@ public abstract class AbstractGlobal implements IAttribute<Object> {
     private static final HashMap<String, Class<?>> globalFactoryMap = new HashMap<String, Class<?>>();
     /**创建默认的{@link Global}对象。*/
     public static Global newInstance() throws IOException, ClassNotFoundException {
-        return newInstanceByFactory("properties", new Object[0]);
+        return newInstanceByFactory("properties", DefaultEncoding);
     };
     /**创建{@link Global}对象，参数是{@link GlobalFactory}在创建{@link Global}时候传入的参数。factoryName是指定注册的{@link GlobalFactory}。*/
-    public static Global newInstanceByFactory(String factoryName, Object... params) throws IOException, ClassNotFoundException {
+    public static Global newInstanceByFactory(String factoryName, String encoding, Object... params) throws IOException, ClassNotFoundException {
         Class<?> globalFactoryType = null;
         if (globalFactoryMap.containsKey(factoryName) == true)
             globalFactoryType = globalFactoryMap.get(factoryName);
@@ -349,7 +357,7 @@ public abstract class AbstractGlobal implements IAttribute<Object> {
         //
         try {
             GlobalFactory globalFactory = (GlobalFactory) globalFactoryType.newInstance();
-            Global global = globalFactory.createGlobal(params);
+            Global global = globalFactory.createGlobal(encoding, params);
             //XXX:可以装载内置属性
             return global;
         } catch (Throwable e) {
