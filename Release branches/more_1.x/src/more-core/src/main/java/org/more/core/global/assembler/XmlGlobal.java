@@ -17,6 +17,7 @@ package org.more.core.global.assembler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -44,16 +45,24 @@ public class XmlGlobal extends AbstractGlobalFactory {
     //        public final String LoadXml_NameSpace  = "LoadXml_NameSpace";
     //    };
     public static final String DefaultNameSpace    = "http://project.byshell.org/more/schema/global";
+    private HashSet<String>    loadNameSpace       = new HashSet<String>();
     private boolean            isIgnoreRootElement = false;
     //
     public Map<String, Object> createProperties(InputStream stream, String encoding) throws IOException, XMLStreamException {
+        if (loadNameSpace.contains(loadNameSpace) == false)
+            loadNameSpace.add(DefaultNameSpace);
         HashMap<String, Object> xmlTree = new HashMap<String, Object>();
         XmlParserKit kit = new XmlParserKit();
         kit.regeditHook("/*", new Config_ElementHook(this.isIgnoreRootElement));
         XmlRegister xmlRegister = new XmlRegister(xmlTree);
-        xmlRegister.regeditKit(DefaultNameSpace, kit);
+        for (String ns : loadNameSpace)
+            xmlRegister.regeditKit(ns, kit);
         new XmlReader(stream).reader(xmlRegister, encoding, null);
         return xmlTree;
+    }
+    /**获取要装载的命名空间集合。*/
+    public HashSet<String> getLoadNameSpace() {
+        return this.loadNameSpace;
     }
     /**判断在解析xml的时候是否放弃根节点。*/
     public boolean isIgnoreRootElement() {
@@ -96,7 +105,7 @@ class Config_ElementHook implements XmlElementHook, XmlAttributeHook, XmlTextHoo
         //
         HashMap<String, Object> xmlTree = (HashMap<String, Object>) context.getContext();
         xmlTree.put($key, $value);
-        //System.out.println($key + "=" + $value);
+        System.out.println($key + "=" + $value);
     }
     //
     //
@@ -117,6 +126,7 @@ class Config_ElementHook implements XmlElementHook, XmlAttributeHook, XmlTextHoo
         this.putConfig(key, value.toString(), context);
     };
     public void attribute(XmlStackDecorator<Object> context, String xpath, AttributeEvent event) throws XMLStreamException, IOException {
+        context.setAttribute("QName", event.getName());
         //1.拼成属性名
         String key = getElementPath(context);
         String value = event.getValue();

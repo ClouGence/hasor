@@ -184,6 +184,7 @@ public class XmlParserKitManager implements XmlAccept {
         } else
         //3.处理AttributeEvent
         if (e instanceof AttributeEvent) {
+            this.activateStack.createStack();
             AttributeEvent ee = (AttributeEvent) e;
             String prefix = ee.getName().getPrefix();
             prefix = (prefix == null) ? "" : prefix;
@@ -195,6 +196,7 @@ public class XmlParserKitManager implements XmlAccept {
             ns.appendXPath(ee.getElementName(), true);
             this.issueEvent(e, this.activateStack);
             ns.removeXPath();
+            this.activateStack.dropStack();
             return;
         } else
             //4.分发事件
