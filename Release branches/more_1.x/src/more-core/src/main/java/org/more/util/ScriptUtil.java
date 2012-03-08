@@ -24,7 +24,6 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.SimpleScriptContext;
-import org.more.core.error.SupportException;
 /**
  * 脚本执行工具
  * @version : 2011-7-22
@@ -42,7 +41,7 @@ public abstract class ScriptUtil {
         ScriptEngineManager manager = new ScriptEngineManager();
         ScriptEngine engineObject = manager.getEngineByName(engine);
         if (engineObject == null)
-            throw new SupportException("不支持的脚本引擎[" + engine + "]");
+            throw new UnsupportedOperationException("不支持的脚本引擎[" + engine + "]");
         return engineObject;
     };
     /** 指定调用Action返回之后的脚本处理请求。 */
