@@ -73,7 +73,7 @@ public class EngineToos implements Opcodes {
         case 'V':
             return RETURN;//Void
         default:
-            throw new RuntimeException("不支持的类型装载请求");//
+            throw new UnsupportedOperationException("不支持的类型装载请求");//
         }
     }
     /**根据类型获取其Load指令。*/
@@ -101,7 +101,7 @@ public class EngineToos implements Opcodes {
         case '[':
             return ALOAD;//Array
         default:
-            throw new RuntimeException("不支持的类型装载请求");//
+            throw new UnsupportedOperationException("不支持的类型装载请求");//
         }
     }
     /**根据asm类型获取其ASTORE指令。*/
@@ -129,7 +129,7 @@ public class EngineToos implements Opcodes {
         case '[':
             return AASTORE;//Array
         default:
-            throw new RuntimeException("不支持的类型装载请求");//
+            throw new UnsupportedOperationException("不支持的类型装载请求");//
         }
     }
     //=======================================================================================================================
