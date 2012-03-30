@@ -26,6 +26,8 @@ import org.more.core.event.EventManager;
 import org.more.webui.PropertyHolder;
 import org.more.webui.ValueHolder;
 import org.more.webui.ViewContext;
+import org.more.webui.event.ActionEvent;
+import org.more.webui.event.InitInvokeEvent;
 /**
  * 所有组件的根
  * @version : 2011-8-4
@@ -121,6 +123,8 @@ public abstract class UIComponent implements StateHolder {
     /*-------------------------------------------------------------------------------*/
     /**第1阶段，处理初始化阶段，该阶段负责初始化组件。*/
     public void processInit(ViewContext viewContext) {
+        /*弹出所有初始化调用事件*/
+        this.privateEventManager.popEvent(Event.getEvent(InitInvokeEvent.class));
         this.initUIComponent(viewContext);
         for (UIComponent com : this.getChildren())
             com.processInit(viewContext);
@@ -154,6 +158,8 @@ public abstract class UIComponent implements StateHolder {
     };
     /**第6阶段，处理Action动作和客户端回传的消息*/
     public void processApplication(ViewContext viewContext) {
+        /*弹出所有动作事件*/
+        this.privateEventManager.popEvent(Event.getEvent(ActionEvent.class));
         for (UIComponent com : this.getChildren())
             com.processApplication(viewContext);
     };

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.webui.components;
-import org.more.webui.el.MethodExpression;
+import org.more.webui.MethodExpression;
 /**
 * Actionִ�нӿڡ�
 * @version : 2012-1-1
