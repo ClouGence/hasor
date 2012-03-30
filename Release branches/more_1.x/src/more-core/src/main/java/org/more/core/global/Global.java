@@ -22,7 +22,7 @@ import org.more.util.attribute.IAttribute;
 * @version : 2011-9-3
 * @author ’‘”¿¥∫ (zyc@byshell.org)
 */
-public abstract class Global extends AbstractGlobal {
+public class Global extends AbstractGlobal {
     /*------------------------------------------------------------------------*/
     public Global(IAttribute<Object> configs) {
         super(configs);
