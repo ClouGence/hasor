@@ -28,13 +28,13 @@ import org.more.webui.ValueHolder;
 import org.more.webui.ViewContext;
 import org.more.webui.event.ActionEvent;
 import org.more.webui.event.InitInvokeEvent;
+import org.more.webui.util.ComponentUtil;
 /**
  * 所有组件的根
  * @version : 2011-8-4
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class UIComponent implements StateHolder {
-    private String                   componentID         = null;
     private List<UIComponent>        components          = null;
     private boolean                  isRender            = true;
     /**私有事件管理器，该事件时间线不会受到其他组件影响*/
@@ -44,24 +44,24 @@ public abstract class UIComponent implements StateHolder {
     /**通用属性表*/
     public enum Propertys {
         /**组件ID*/
-        componentID, //
-        /**组件使用的属性配置文件*/
-        profile//
+        id,
     };
-    //
     /**获取组件类型名称。*/
     public abstract String getComponentType();
     /**返回组件的ID*/
-    public String getComponentID() {
-        return this.componentID;
+    public String getID() {
+        String componentID = this.getProperty(Propertys.id.name()).valueTo(String.class);
+        if (componentID == null)
+            this.setID(ComponentUtil.generateID(this.getClass()));
+        return componentID;
     };
     /**设置属性ID*/
-    public void setComponentID(String componentID) {
-        this.componentID = componentID;
+    public void setID(String componentID) {
+        this.getProperty(Propertys.id.name()).value(componentID);
     };
     /**在当前组件的子级中寻找某个特定ID的组件*/
     public UIComponent getChildByID(String componentID) {
-        if (this.componentID.equals(componentID) == true)
+        if (this.getID().equals(componentID) == true)
             return this;
         for (UIComponent component : this.getChildren()) {
             UIComponent com = component.getChildByID(componentID);
@@ -80,7 +80,7 @@ public abstract class UIComponent implements StateHolder {
             this.components = new ArrayList<UIComponent>();
         return this.components;
     };
-    /**子类可以通过该方法初始化该组件。*/
+    /**子类可以通过该方法初始化组件。*/
     protected void initUIComponent(ViewContext viewContext) {};
     /**获取保存属性的集合。*/
     public Map<String, ValueHolder> getPropertys() {
@@ -134,7 +134,7 @@ public abstract class UIComponent implements StateHolder {
         /*将请求参数中要求灌入的属性值灌入到属性上*/
         for (String key : this.propertys.keySet()) {
             /*被灌入的属性名，请求参数中必须是“componentID:attName”*/
-            String newValue = viewContext.getHttpRequest().getParameter(this.componentID + ":" + key);
+            String newValue = viewContext.getHttpRequest().getParameter(this.getID() + ":" + key);
             if (newValue != null)
                 this.propertys.get(key).value(newValue);
         }
@@ -186,7 +186,7 @@ public abstract class UIComponent implements StateHolder {
         if (stateData == null)
             return;
         if (stateData.length != 2)
-            throw new MoreDataException("WebUI无法重塑组件状态，在重塑组件[" + this.componentID + "]组件发生数据丢失");
+            throw new MoreDataException("WebUI无法重塑组件状态，在重塑组件[" + this.getID() + "]组件发生数据丢失");
         //2.恢复自身数据
         Map<String, Object> mineState = (Map<String, Object>) stateData[0];
         for (String propName : mineState.keySet()) {
@@ -198,7 +198,7 @@ public abstract class UIComponent implements StateHolder {
         Map<String, Object> childrenState = (Map<String, Object>) stateData[1];
         List<UIComponent> uic = getChildren();
         for (UIComponent com : uic)
-            com.restoreState((Object[]) childrenState.get(com.getComponentID()));
+            com.restoreState((Object[]) childrenState.get(com.getID()));
     };
     public Object[] saveState() {
         //1.持久化自身的状态
@@ -212,7 +212,7 @@ public abstract class UIComponent implements StateHolder {
         HashMap<String, Object> childrenState = new HashMap<String, Object>();
         List<UIComponent> uic = getChildren();
         for (UIComponent com : uic)
-            childrenState.put(com.getComponentID(), com.saveState());
+            childrenState.put(com.getID(), com.saveState());
         //3.返回持久化状态
         Object[] thisState = new Object[2];
         thisState[0] = mineState;
