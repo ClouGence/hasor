@@ -69,5 +69,8 @@ public class TransformToAttribute<T> implements IAttribute<T> {
     };
     public int size() {
         return this.values.size();
+    }
+    public void putMap(Map<String, T> params) {
+        this.values.putAll(params);
     };
 };

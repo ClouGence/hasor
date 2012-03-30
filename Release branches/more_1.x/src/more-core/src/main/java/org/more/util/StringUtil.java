@@ -38,6 +38,8 @@ public abstract class StringUtil extends StringConvertUtil {
     }
     /**将通配符转换成正则表达式。*/
     public static String wildToRegex(String wild) {
+        if (wild == null)
+            throw new NullPointerException("wild param is null");
         StringBuffer result = new StringBuffer("");
         char metachar[] = { '$', '^', '[', ']', '(', ')', '{', '|', '+', '.', '\\' };
         for (int i = 0; i < wild.length(); i++) {
@@ -57,6 +59,8 @@ public abstract class StringUtil extends StringConvertUtil {
     }
     /**将字符串转换成成正则表达式。*/
     public static String stringToRegex(String wild) {
+        if (wild == null)
+            throw new NullPointerException("wild param is null");
         StringBuffer result = new StringBuffer("");
         char metachar[] = { '$', '^', '[', ']', '(', ')', '{', '|', '+', '.', '\\' };
         for (int i = 0; i < wild.length(); i++) {
@@ -70,6 +74,8 @@ public abstract class StringUtil extends StringConvertUtil {
     }
     /**使用通配符匹配字符串。*/
     public static boolean matchWild(String pattern, String str) {
+        if (str == null)
+            return false;
         return str.matches(wildToRegex(pattern));
     }
 };

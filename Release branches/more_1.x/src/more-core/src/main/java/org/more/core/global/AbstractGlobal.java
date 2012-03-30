@@ -167,9 +167,15 @@ public abstract class AbstractGlobal implements IAttribute<Object> {
         return this.getToType(name, Object.class);
     };
     /**将{@link Global}类转换成{@link Map}接口形式。*/
+    private Map<String, Object> mapTarget = null;
     public Map<String, Object> toMap() {
-        return new TransformToMap<Object>(this);
-    };
+        if (this.mapTarget == null)
+            this.mapTarget = new TransformToMap<Object>(this);
+        return this.mapTarget;
+    }
+    public void putMap(Map<String, Object> params) {
+        this.cache.putAll(params);
+    }
     /**将{@link Global}类转换成{@link Map}接口形式。*/
     public Map<String, Object> toMap(String scope) {
         return this.scopeMap.get(scope).toMap();

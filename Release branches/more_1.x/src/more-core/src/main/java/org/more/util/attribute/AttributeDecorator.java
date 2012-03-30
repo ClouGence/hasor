@@ -23,10 +23,10 @@ import java.util.Map;
 public abstract class AttributeDecorator<T> implements IAttribute<T> {
     private IAttribute<T> source = null;
     /**
-     * 创建属性装饰器。
-     * @param source 要装饰的目标属性对象。
-     * @throws NullPointerException 如果企图设置一个空值到装饰器将引发该异常。
-     */
+    * 创建属性装饰器。
+    * @param source 要装饰的目标属性对象。
+    * @throws NullPointerException 如果企图设置一个空值到装饰器将引发该异常。
+    */
     protected AttributeDecorator(IAttribute<T> source) throws NullPointerException {
         if (source == null)
             throw new NullPointerException("target source IAttribute is null.");
@@ -48,9 +48,15 @@ public abstract class AttributeDecorator<T> implements IAttribute<T> {
         else
             this.source = source;
     };
+    private Map<String, T> mapTarget = null;
     public Map<String, T> toMap() {
-        return new TransformToMap<T>(this);
+        if (this.mapTarget == null)
+            this.mapTarget = new TransformToMap<T>(this);
+        return this.mapTarget;
     }
+    public void putMap(Map<String, T> params) {
+        this.source.putMap(params);
+    };
     public void clearAttribute() {
         this.source.clearAttribute();
     };

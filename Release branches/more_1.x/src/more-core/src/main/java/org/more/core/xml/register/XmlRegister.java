@@ -36,9 +36,10 @@ import org.more.util.ResourcesUtil;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class XmlRegister extends XmlParserKitManager {
-    private final static Log     log         = LogFactory.getLog(XmlRegister.class);
-    public final static String[] Configs     = new String[] { "META-INF/resource/core/register.xml", "META-INF/register.xml", "register.xml" };
-    private ArrayList<Object>    sourceArray = new ArrayList<Object>();
+    private final static Log     log           = LogFactory.getLog(XmlRegister.class);
+    private final static String  defaultConfig = "register.xml";
+    public final static String[] Configs       = new String[] { "META-INF/resource/core/register.xml", "META-INF/register.xml" };
+    private ArrayList<Object>    sourceArray   = new ArrayList<Object>();
     //
     //
     private void loadRegisterXML(URL registerURL) throws IOException, XMLStreamException {
@@ -49,20 +50,24 @@ public class XmlRegister extends XmlParserKitManager {
     /**创建{@link XmlRegister}对象,不重新装载命名空间注册。*/
     public XmlRegister(Object context) throws IOException, XMLStreamException, LoadException {
         this.setContext(context);
-        if (isLoadDefault() == true)
-            for (String config : Configs) {
-                List<URL> urls = ResourcesUtil.getResources(config);
-                for (URL url : urls)
-                    this.loadRegisterXML(url);
-            }
+        for (String config : Configs) {
+            List<URL> urls = ResourcesUtil.getResources(config);
+            for (URL url : urls)
+                this.loadRegisterXML(url);
+        }
+        if (isLoadDefault() == true) {
+            List<URL> urls = ResourcesUtil.getResources(defaultConfig);
+            for (URL url : urls)
+                this.loadRegisterXML(url);
+        }
     }
     /**创建{@link XmlRegister}对象,不重新装载命名空间注册。*/
     public XmlRegister() throws IOException, XMLStreamException, LoadException {
         this(null);
     }
-    /**是否装载由{@link #Configs}常量定义的默认配置文件。*/
+    /**是否装载由{@link #Configs}常量定义的默认配置文件（默认true）。*/
     protected boolean isLoadDefault() {
-        return false;
+        return true;
     }
     /*------------------------------------------------------------*/
     /**添加register配置文件。*/

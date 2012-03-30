@@ -44,6 +44,7 @@ public class XmlGlobal extends AbstractGlobalFactory {
     //        /**除了默认命名空间被装载之外还需要装载的命名空间（数组形式）*/
     //        public final String LoadXml_NameSpace  = "LoadXml_NameSpace";
     //    };
+    /**默认使用的命名空间。*/
     public static final String DefaultNameSpace    = "http://project.byshell.org/more/schema/global";
     private HashSet<String>    loadNameSpace       = new HashSet<String>();
     private boolean            isIgnoreRootElement = false;
@@ -105,7 +106,6 @@ class Config_ElementHook implements XmlElementHook, XmlAttributeHook, XmlTextHoo
         //
         HashMap<String, Object> xmlTree = (HashMap<String, Object>) context.getContext();
         xmlTree.put($key, $value);
-        System.out.println($key + "=" + $value);
     }
     //
     //
