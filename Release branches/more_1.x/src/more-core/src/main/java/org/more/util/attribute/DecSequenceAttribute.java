@@ -87,27 +87,32 @@ public class DecSequenceAttribute<V> extends AttributeDecorator<V> {
     public boolean contains(String name) {
         if (super.contains(name) == true)
             return true;
-        for (IAttribute<?> iatt : this.attList)
-            if (iatt.contains(name) == true)
+        int size = this.attList.size();
+        for (int i = 0; i < size; i++)
+            if (this.attList.get(i).contains(name) == true)
                 return true;
         return false;
     };
     public V getAttribute(String name) {
         V res = super.getAttribute(name);
-        if (res == null)
-            for (IAttribute<V> iatt : this.attList) {
-                res = iatt.getAttribute(name);
+        if (res == null) {
+            int size = this.attList.size();
+            for (int i = 0; i < size; i++) {
+                res = this.attList.get(i).getAttribute(name);
                 if (res != null)
                     return res;
             }
+        }
         return res;
     };
     /**返回当前属性集以及序列属性集中的所有属性名（不重复）。<br/><b>这是一个高成本操作。</b>*/
     public String[] getAttributeNames() {
         HashSet<String> names = new HashSet<String>();
         Collections.addAll(names, super.getAttributeNames());
-        for (IAttribute<?> attItem : this.attList)
-            Collections.addAll(names, attItem.getAttributeNames());
+        int size = this.attList.size();
+        for (int i = 0; i < size; i++)
+            //        for (IAttribute<?> attItem : this.attList)
+            Collections.addAll(names, this.attList.get(i).getAttributeNames());
         String[] array = new String[names.size()];
         names.toArray(array);
         return array;
