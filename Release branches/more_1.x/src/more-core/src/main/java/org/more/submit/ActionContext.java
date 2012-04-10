@@ -27,5 +27,5 @@ public interface ActionContext {
     //    /**通过外部地址获取action的内部地址。*/
     //    public Method getActionMapping(String mappingKey) throws Throwable;
     /**通过外部地址获取action的内部地址。*/
-    public ActionInvoke getActionInvoke(String mappingKey) throws Throwable;
+    public ActionInvoke getActionInvoke(String classKey, String methodKey) throws Throwable;
 }

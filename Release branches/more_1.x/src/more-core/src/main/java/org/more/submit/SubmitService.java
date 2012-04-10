@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.more.core.classcode.EngineToos;
 import org.more.core.error.ExistException;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
@@ -92,7 +93,12 @@ public abstract class SubmitService extends Attribute<Object> {
             log.debug("Space ¡°{%0}¡± support is not exist.", scheme);
             throw new ExistException("Space ¡°" + scheme + "¡± support is not exist.");
         }
-        ActionInvoke invoke = ac.getActionInvoke(uri.getAuthority());
+        //
+        String authority = uri.getAuthority();
+        String actionKey = EngineToos.splitPackageName(authority);
+        String methodKey = EngineToos.splitSimpleName(authority);
+        //
+        ActionInvoke invoke = ac.getActionInvoke(actionKey, methodKey);
         if (invoke == null)
             return null;
         return this.createActionObject(uri, invoke);
