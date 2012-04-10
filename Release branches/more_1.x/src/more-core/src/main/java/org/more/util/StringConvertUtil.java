@@ -22,12 +22,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.more.core.error.TransformException;
 /**
- * 字符串数据类型转换工具类
- * @version 2009-4-29
- * @author 赵永春 (zyc@byshell.org)
- */
+* 字符串数据类型转换工具类
+* @version 2009-4-29
+* @author 赵永春 (zyc@byshell.org)
+*/
 public abstract class StringConvertUtil {
     private static final Character DefaultValue_Character = ' ';
     private static final Boolean   DefaultValue_Boolean   = false;
@@ -131,7 +130,7 @@ public abstract class StringConvertUtil {
                 return (T) value;
             return (T) new File(valueString);
         } else
-            throw new TransformException("from [" + value.getClass() + "] to [" + toType + "]不支持的转换类型。");
+            throw new UnsupportedOperationException("from [" + value.getClass() + "] to [" + toType + "]不支持的转换类型。");
     }
     /**
      * 将字符类型数据转换成int类型数据。如果字符串格式非法其默认值为0。示例：

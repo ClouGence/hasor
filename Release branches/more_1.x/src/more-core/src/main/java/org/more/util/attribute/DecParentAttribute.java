@@ -44,7 +44,7 @@ public class DecParentAttribute<V> extends AttributeDecorator<V> {
         this.parent = parent;
     };
     /**获取父属性集。*/
-    public final IAttribute<V> getParent() {
+    public IAttribute<V> getParent() {
         return this.parent;
     };
     /**
