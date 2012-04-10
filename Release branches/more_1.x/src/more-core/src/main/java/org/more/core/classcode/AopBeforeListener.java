@@ -20,7 +20,7 @@ package org.more.core.classcode;
 * @version 2010-9-2
 * @author 赵永春 (zyc@byshell.org)
 */
-public interface AopBeforeListener extends AopListener {
+public interface AopBeforeListener {
     /**
      * 用于接收before切面的事件的方法。
      * @param target 被调用的对象。

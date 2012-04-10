@@ -77,14 +77,17 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
         this.renderMethodList = new ArrayList<String>();
         this.renderDelegateList = new ArrayList<String>();
         this.renderDelegatePropxyList = new ArrayList<String>();
-        this.asmClassName = this.classBuilder.getAsmClassName();
+        this.asmClassName = this.classBuilder.getClassEngine().getAsmClassName();
     }
+    /***/
     public ArrayList<String> getRenderMethodList() {
         return this.renderMethodList;
     }
+    /***/
     public ArrayList<String> getRenderDelegateList() {
         return this.renderDelegateList;
     }
+    /***/
     public ArrayList<String> getRenderDelegatePropxyList() {
         return this.renderDelegatePropxyList;
     }
@@ -123,7 +126,7 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
     //2.输出已有方法，Super和Propxy。
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         BuilderMode builderMode = this.classEngine.getBuilderMode();
-        String asmSuperClassName = this.classBuilder.getAsmSuperClassName();
+        String asmSuperClassName = this.classBuilder.getClassEngine().getAsmSuperClassName();
         String fullDesc = name + desc;
         MethodStrategy methodStrategy = this.classEngine.getMethodStrategy();
         //

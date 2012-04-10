@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import org.more.core.asm.ClassAdapter;
 import org.more.core.asm.ClassReader;
-import org.more.core.asm.ClassVisitor;
 import org.more.core.asm.ClassWriter;
 /**
  * 类生成器，可以通过继承该类重写acceptClass方法来使用classcode基于asm3.2的高级功能。<br/>
@@ -40,48 +39,17 @@ import org.more.core.asm.ClassWriter;
  */
 public abstract class ClassBuilder {
     /**该字段会被getClassBytes()方法*/
-    protected byte[]               newClassBytes         = null; //新类的字节码。
-    private ClassEngine            classEngine           = null; //Class引擎。
+    protected byte[]    newClassBytes  = null; //新类的字节码。
+    private ClassEngine classEngine    = null; //Class引擎。
     //property
-    private String                 asmClassName          = null; //新类的字节码名。
-    private String                 asmSuperClassName     = null; //父类的字节码名。
-    private String[]               delegateString        = null; //委托类型By ASM
-    private Class<?>[]             delegateType          = null; //委托类型By Class
-    private String[]               simpleFields          = null; //简单属性
-    private String[]               delegateFields        = null; //委托属性
-    //aop
-    private AopInvokeFilter[]      aopFilter             = null; //aop过滤器对象集合。
-    private AopBeforeListener[]    aopBeforeListeners    = null; //before切面事件监听器。
-    private AopReturningListener[] aopReturningListeners = null; //returning切面事件监听器。
-    private AopThrowingListener[]  aopThrowingListeners  = null; //throwing切面事件监听器。
+    private String[]    delegateString = null; //委托类型By ASM
+    private Class<?>[]  delegateType   = null; //委托类型By Class
+    private String[]    simpleFields   = null; //简单属性
+    private String[]    delegateFields = null; //委托属性
     //======================================================================================Get/Set
     /**获取使用的Class引擎。*/
     public ClassEngine getClassEngine() {
         return this.classEngine;
-    }
-    /**返回新类的名称(字节码形式)。*/
-    public String getAsmClassName() {
-        return this.asmClassName;
-    }
-    /**返回父类的名称(字节码形式)。*/
-    public String getAsmSuperClassName() {
-        return this.asmSuperClassName;
-    };
-    /**返回配置的{@link AopInvokeFilter}数组，该对象是在{@link ClassEngine}类中配置。*/
-    public AopInvokeFilter[] getAopFilter() {
-        return this.aopFilter;
-    }
-    /**返回配置的{@link AopBeforeListener}数组，该对象是在{@link ClassEngine}类中配置。*/
-    public AopBeforeListener[] getAopBeforeListeners() {
-        return this.aopBeforeListeners;
-    }
-    /**返回配置的{@link AopReturningListener}数组，该对象是在{@link ClassEngine}类中配置。*/
-    public AopReturningListener[] getAopReturningListeners() {
-        return this.aopReturningListeners;
-    }
-    /**返回配置的{@link AopThrowingListener}数组，该对象是在{@link ClassEngine}类中配置。*/
-    public AopThrowingListener[] getAopThrowingListeners() {
-        return this.aopThrowingListeners;
     }
     /**返回委托接口数组的字节码形式。*/
     public String[] getDelegateString() {
@@ -119,7 +87,10 @@ public abstract class ClassBuilder {
      * 如果getAopFilter()、getAopBeforeListeners()、getAopReturningListeners()、getAopThrowingListeners()返回值都是null时，该方法返回值将会是false否则是true。
      */
     public boolean isRenderAop() {
-        if (this.getAopFilter() == null && this.getAopBeforeListeners() == null && this.getAopReturningListeners() == null && this.getAopThrowingListeners() == null)
+        if (this.classEngine.getAopFilters() == null && //
+                this.classEngine.getAopBeforeListeners() == null && //
+                this.classEngine.getAopReturningListeners() == null && //
+                this.classEngine.getAopThrowingListeners() == null)
             return false;
         else
             return true;
@@ -134,26 +105,12 @@ public abstract class ClassBuilder {
     public final void initBuilder(ClassEngine classEngine) {
         this.newClassBytes = null; //新类的字节码。
         this.classEngine = null; //Class引擎。
-        this.asmClassName = null; //新类的字节码名。
-        this.asmSuperClassName = null; //父类的字节码名。
         this.delegateString = null; //委托类型By ASM
         this.delegateType = null; //委托类型By Class
         this.simpleFields = null; //简单属性
         this.delegateFields = null; //委托属性
-        this.aopFilter = null; //aop过滤器对象集合。
-        this.aopBeforeListeners = null; //before切面事件监听器。
-        this.aopReturningListeners = null; //returning切面事件监听器。
-        this.aopThrowingListeners = null; //throwing切面事件监听器。
         //---------------------------------------------------------
         this.classEngine = classEngine;
-        //1.config
-        this.asmClassName = EngineToos.replaceClassName(classEngine.getClassName());
-        this.asmSuperClassName = EngineToos.replaceClassName(classEngine.getSuperClass().getName());
-        //2.AOP
-        this.aopFilter = classEngine.getAopFilters();
-        this.aopBeforeListeners = classEngine.getAopBeforeListeners();
-        this.aopReturningListeners = classEngine.getAopReturningListeners();
-        this.aopThrowingListeners = classEngine.getAopThrowingListeners();
         //3.Delegate
         Class<?>[] delegateType = classEngine.getDelegates();
         if (delegateType != null) {
@@ -184,7 +141,7 @@ public abstract class ClassBuilder {
         this.init(this.classEngine);
     }
     /**调用构建过程构建新的字节码对象。*/
-    public final ClassConfiguration builderClass() throws IOException {
+    public final CreatedConfiguration builderClass() throws IOException {
         //1.基本信息
         ClassEngine engine = this.classEngine;
         Class<?> superClass = engine.getSuperClass();
@@ -210,7 +167,7 @@ public abstract class ClassBuilder {
         if (this.newClassBytes == null)
             return null;
         else
-            return new ClassConfiguration(this, builderAdapter, aopAdapter);
+            return new CreatedConfiguration(this, builderAdapter, aopAdapter);
     }
     //======================================================================================Builder
     /**

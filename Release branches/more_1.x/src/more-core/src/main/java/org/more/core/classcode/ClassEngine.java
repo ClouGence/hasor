@@ -38,9 +38,8 @@ import org.more.core.error.TypeException;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class ClassEngine {
-    //Engine配置信息，默认信息
     /**默认超类java.lang.Object。*/
-    public static final String               DefaultSuperClass        = "java.lang.Object";
+    public static final Class<?>             DefaultSuperClass        = java.lang.Object.class;
     /**默认生成模式{@link BuilderMode#Super}。*/
     public static final BuilderMode          DefaultBuilderMode       = BuilderMode.Super;
     /**默认类名策略{@link DefaultClassNameStrategy}。*/
@@ -53,9 +52,6 @@ public class ClassEngine {
     public static final MethodStrategy       DefaultMethodStrategy    = new DefaultMethodStrategy();
     /**默认属性策略{@link DefaultPropertyStrategy}。*/
     public static final PropertyStrategy     DefaultPropertyStrategy  = new DefaultPropertyStrategy();
-    private boolean                          debug                    = false;                         //调试模式，如果开启调试模式则只生成字节码不装载它
-    //
-    //    static {}
     //
     //策略信息
     private ClassNameStrategy                classNameStrategy        = DefaultClassNameStrategy;      //类名策略，负责生成类名的管理。
@@ -78,21 +74,16 @@ public class ClassEngine {
     //生成的
     private Class<?>                         newClass                 = null;                          //新类
     private byte[]                           newClassBytes            = null;                          //新类的字节码。
-    private ClassConfiguration               configuration            = null;
+    private CreatedConfiguration             configuration            = null;
     private RootClassLoader                  rootClassLoader          = null;                          //处理来自类新类装载请求的类装载器。
     //==================================================================================Constructor
-    /**创建classcode v2.0引擎，如果参数为true表示使用debug模式，在debug模式下{@link ClassEngine#builderClass()}方法在装载生成的新类 时不会抛出。*/
-    public ClassEngine(boolean debug) throws ClassNotFoundException {
-        this();
-        this.debug = debug;
-    };
     /** 创建一个ClassEngine类型对象，默认生成的类是Object的子类， */
     public ClassEngine() throws ClassNotFoundException {
-        this(Thread.currentThread().getContextClassLoader().loadClass(DefaultSuperClass));
+        this(null, DefaultSuperClass, null);
     };
-    /** 创建一个ClassEngine类型对象，可以通过参数指定新类的名称。 */
+    /** 创建一个ClassEngine类型对象，默认生成的类是Object的子类， */
     public ClassEngine(String className) throws ClassNotFoundException {
-        this(className, Thread.currentThread().getContextClassLoader().loadClass(DefaultSuperClass), Thread.currentThread().getContextClassLoader());
+        this(className, DefaultSuperClass, null);
     };
     /**
      * 创建一个ClassEngine类型对象，该构造参数指定了新类类名、新类的基类以类装载器。<br/>
@@ -107,7 +98,11 @@ public class ClassEngine {
     };
     /** 创建一个ClassEngine类型对象，参数指定的是新类的父类类型。*/
     public ClassEngine(Class<?> superClass) {
-        this(null, superClass, Thread.currentThread().getContextClassLoader());
+        this(null, superClass, null);
+    };
+    /** 创建一个ClassEngine类型对象，参数指定的是新类的父类类型。*/
+    public ClassEngine(Class<?> superClass, ClassLoader parentLoader) {
+        this(null, superClass, parentLoader);
     };
     /**
      * 创建一个ClassEngine类型对象，该构造参数指定了新类类名、新类的基类以类装载器。<br/>
@@ -128,7 +123,7 @@ public class ClassEngine {
         if (superClass != null)
             this.superClass = superClass;
         else
-            this.superClass = Object.class;
+            this.superClass = DefaultSuperClass;
         //3.参数parentLoader
         if (parentLoader == null)
             this.rootClassLoader = new RootClassLoader(Thread.currentThread().getContextClassLoader());
@@ -136,6 +131,15 @@ public class ClassEngine {
             this.rootClassLoader = (RootClassLoader) parentLoader;
         else
             this.rootClassLoader = new RootClassLoader(parentLoader);
+    };
+    //======================================================================================private
+    /**返回新类的名称(字节码形式)。*/
+    final String getAsmClassName() {
+        return EngineToos.replaceClassName(this.getClassName());
+    }
+    /**返回父类的名称(字节码形式)。*/
+    final String getAsmSuperClassName() {
+        return EngineToos.replaceClassName(this.getSuperClass().getName());
     };
     //======================================================================================Get/Set
     /**获取类名的生成策略。*/
@@ -238,14 +242,8 @@ public class ClassEngine {
         this.setSuperClass(parentLoader.loadClass(superClass));
     };
     /**获取当前引擎正在使用的父类装载器。*/
-    public ClassLoader getRootClassLoader() {
+    public RootClassLoader getRootClassLoader() {
         return this.rootClassLoader;
-    };
-    /**设置当前引擎使用的父类装载器，设置新的父类装载器会导致，引擎解除在原有类装载器上的注册，并且重新在新的类装载器上进行注册。*/
-    public void setRootClassLoader(RootClassLoader rootClassLoader) {
-        this.rootClassLoader.unRegeditEngine(this);
-        this.rootClassLoader = rootClassLoader;
-        this.rootClassLoader.regeditEngine(this);
     };
     /**
      * 向新类中添加一个委托接口实现，该委托接口中的所有方法均通过委托对象代理处理。如果委托接口中有方法与基类的方法冲突时。
@@ -411,14 +409,6 @@ public class ClassEngine {
         this.aopThrowingListeners.toArray(listeners);
         return listeners;
     };
-    /**返回一个boolean值，该值表明了引擎是否处在debug模式。如果返回true则表明引擎运行在debug模式。*/
-    public boolean isDebug() {
-        return debug;
-    };
-    /**设置一个boolean值，该值表明了引擎是否处在debug模式。如果设置true则表明引擎运行在debug模式。*/
-    public void setDebug(boolean debug) {
-        this.debug = debug;
-    };
     //=======================================================================================Method
     /**
      * 完全重置，该重置方法将会清除新生成的类同时也会清除添加的委托接口以及新属性。<br/>
@@ -490,12 +480,7 @@ public class ClassEngine {
         this.propertyStrategy.reset();
         this.methodStrategy.reset();
         //5.
-        try {
-            this.newClass = this.rootClassLoader.loadClass(this.className);
-        } catch (ClassNotFoundException e) {
-            if (this.debug == false)
-                throw e;
-        }
+        this.newClass = this.rootClassLoader.loadClass(this.className);
         return this;
     };
     //======================================================================================Builder

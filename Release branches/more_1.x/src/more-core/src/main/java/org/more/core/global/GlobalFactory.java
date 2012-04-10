@@ -14,12 +14,57 @@
  * limitations under the License.
  */
 package org.more.core.global;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
+import org.more.util.ResourcesUtil;
 /**
  * {@link Global}创建工厂
  * @version : 2011-9-29
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface GlobalFactory {
+public abstract class GlobalFactory {
+    /**默认编码*/
+    public final static String DefaultEncoding = "utf-8";
     /**创建{@link Global}对象*/
-    public Global createGlobal(String encoding, Object... objects) throws Throwable;
+    protected abstract Map<String, Object> loadConfig(InputStream stream, String encoding) throws IOException;
+    /*------------------------------------------------------------------------*/
+    public Global createGlobal(Object... objects) throws IOException {
+        return createGlobal(DefaultEncoding, objects);
+    };
+    public Global createGlobal(String encoding, Object[] objects) throws IOException {
+        //1.创建对象
+        Global global = AbstractGlobal.newInterInstance();
+        if (encoding == null)
+            encoding = DefaultEncoding;
+        //2.进行装载
+        for (Object obj : objects)
+            if (obj instanceof File) {
+                //文件装载，key值是文件名。key相当于属性的作用域。
+                File fileObject = (File) obj;
+                InputStream stream = ResourcesUtil.getResourceAsStream(fileObject);
+                global.putAll(this.loadConfig(stream, encoding));//添加属性
+            } else if (obj instanceof URL) {
+                //URL装载，key值是getFile名。key相当于属性的作用域。
+                URL urlObject = (URL) obj;
+                InputStream stream = ResourcesUtil.getResourceAsStream(urlObject);
+                global.putAll(this.loadConfig(stream, encoding));//添加属性
+            } else if (obj instanceof URI) {
+                //URI装载，key值是getPath名。key相当于属性的作用域。
+                URI uriObject = (URI) obj;
+                InputStream stream = ResourcesUtil.getResourceAsStream(uriObject);
+                global.putAll(this.loadConfig(stream, encoding));//添加属性
+            } else if (obj instanceof String) {
+                //字符串装载
+                String stringObject = (String) obj;
+                List<InputStream> streams = ResourcesUtil.getResourcesAsStream(stringObject);
+                for (InputStream stream : streams)
+                    global.putAll(this.loadConfig(stream, encoding));//添加属性
+            }
+        return global;
+    };
 }

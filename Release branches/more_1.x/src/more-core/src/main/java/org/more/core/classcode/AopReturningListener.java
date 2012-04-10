@@ -21,7 +21,7 @@ package org.more.core.classcode;
 * @version 2010-9-2
 * @author 赵永春 (zyc@byshell.org)
 */
-public interface AopReturningListener extends AopListener {
+public interface AopReturningListener {
     /**
      * 用于接收returning切面的事件的方法。
      * @param target 被调用的对象。

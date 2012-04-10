@@ -22,7 +22,7 @@ import org.more.core.error.InitializationException;
  * @version 2010-9-3
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ClassConfiguration {
+public class CreatedConfiguration {
     private ClassBuilder      classBuilder             = null;
     //
     private ArrayList<String> renderMethodList         = null; //所有委托接口的方法数组，是具有顺序的。
@@ -31,7 +31,7 @@ public class ClassConfiguration {
     private ArrayList<String> renderAopMethodList      = null; //具有Aop特性的方法数组，是具有顺序的。
     //
     /**创建ClassConfiguration对象。*/
-    ClassConfiguration(ClassBuilder classBuilder, BuilderClassAdapter builderAdapter, AopClassAdapter aopAdapter) {
+    CreatedConfiguration(ClassBuilder classBuilder, BuilderClassAdapter builderAdapter, AopClassAdapter aopAdapter) {
         this.classBuilder = classBuilder;
         //获取当执行生成新类时候的产出信息。
         this.renderMethodList = builderAdapter.getRenderMethodList();

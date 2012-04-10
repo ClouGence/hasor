@@ -23,7 +23,7 @@ package org.more.core.classcode;
 * @version 2010-9-3
 * @author 赵永春 (zyc@byshell.org)
 */
-public interface AopInvokeFilter extends AopInformed {
+public interface AopInvokeFilter {
     /**
      * 当调用受AOP拦截的方法时执行该方法，chain参数对象可以用来继续执行过滤器链。如果直接调用
      * callMethod对象的invoke函数则可以跳过过滤器链直接执行目标方法，并获取返回值。

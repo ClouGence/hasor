@@ -16,6 +16,8 @@
 package org.more.core.global;
 import java.io.File;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import org.more.util.attribute.IAttribute;
 /**
 * 全局常量读取器
@@ -24,11 +26,14 @@ import org.more.util.attribute.IAttribute;
 */
 public class Global extends AbstractGlobal {
     /*------------------------------------------------------------------------*/
-    public Global(IAttribute<Object> configs) {
+    public Global() {
+        this(new HashMap<String, Object>());
+    };
+    public Global(Map<String, Object> configs) {
         super(configs);
     };
-    public Global() {
-        super();
+    public Global(IAttribute<Object> configs) {
+        super(configs.toMap());
     };
     /*------------------------------------------------------------------------*/
     /**解析全局配置参数，并且返回其{@link Object}形式对象。*/

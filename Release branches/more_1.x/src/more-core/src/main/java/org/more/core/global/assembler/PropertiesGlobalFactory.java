@@ -20,13 +20,15 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
+import org.more.core.global.GlobalFactory;
 /**
 * 使用{@link Properties}类，装载属性文件。
 * @version : 2011-9-3
 * @author 赵永春 (zyc@byshell.org)
 */
-public class PropertiesGlobal extends AbstractGlobalFactory {
-    protected Map<String, Object> createProperties(InputStream stream, String encoding) throws IOException {
+public class PropertiesGlobalFactory extends GlobalFactory {
+    //
+    protected Map<String, Object> loadConfig(InputStream stream, String encoding) throws IOException {
         Properties prop = new Properties();
         prop.load(new InputStreamReader(stream, encoding));
         if (stream != null)
