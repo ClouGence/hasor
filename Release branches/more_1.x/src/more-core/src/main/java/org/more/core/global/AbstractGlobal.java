@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.more.core.global;
-import java.util.HashMap;
 import java.util.Map;
 import org.more.core.error.FormatException;
 import org.more.core.error.SupportException;
@@ -26,30 +25,71 @@ import org.more.core.ognl.OgnlException;
 import org.more.util.StringConvertUtil;
 import org.more.util.attribute.Attribute;
 import org.more.util.attribute.IAttribute;
+import org.more.util.attribute.TransformToAttribute;
 /**
  * Global系统的核心实现
  * @version : 2011-12-31
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractGlobal extends Attribute<Object> {
+public abstract class AbstractGlobal implements IAttribute<Object> {
+    /*------------------------------------------------------------------------*/
+    private IAttribute<Object> targetContainer = new Attribute<Object>();
+    public AbstractGlobal() {};
+    public AbstractGlobal(Map<String, Object> configs) {
+        this(new TransformToAttribute<Object>(configs));
+    };
+    public AbstractGlobal(IAttribute<Object> configs) {
+        this.targetContainer = configs;
+    };
+    /**子类可以重写该方法以替换targetContainer属性容器。*/
+    protected IAttribute<Object> getAttContainer() {
+        return targetContainer;
+    }
+    /*------------------------------------------------------------------------*/
+    @Override
+    public boolean contains(String name) {
+        return this.getAttContainer().contains(name);
+    }
+    @Override
+    public void setAttribute(String name, Object value) {
+        this.getAttContainer().setAttribute(name, value);
+    }
+    @Override
+    public Object getAttribute(String name) {
+        return this.getAttContainer().getAttribute(name);
+    }
+    @Override
+    public void removeAttribute(String name) {
+        this.getAttContainer().removeAttribute(name);
+    }
+    @Override
+    public String[] getAttributeNames() {
+        return this.getAttContainer().getAttributeNames();
+    }
+    @Override
+    public void clearAttribute() {
+        this.getAttContainer().clearAttribute();
+    }
+    @Override
+    public Map<String, Object> toMap() {
+        return this.getAttContainer().toMap();
+    }
+    @Override
+    public void putMap(Map<String, Object> params) {
+        this.getAttContainer().putMap(params);
+    }
+    @Override
+    public int size() {
+        return this.getAttContainer().size();
+    }
+    /*------------------------------------------------------------------------*/
     private OgnlContext ognlContext = null;
     private OgnlContext transformToOgnlContext() {
         if (this.ognlContext == null) {
-            this.ognlContext = new OgnlContext(this);
+            this.ognlContext = new OgnlContext(this.toMap());
         }
         return this.ognlContext;
     };
-    /*------------------------------------------------------------------------*/
-    public AbstractGlobal() {
-        this(new HashMap<String, Object>());
-    };
-    public AbstractGlobal(Map<String, Object> configs) {
-        super(configs);
-    };
-    public AbstractGlobal(IAttribute<Object> configs) {
-        super(configs.toMap());
-    };
-    /*------------------------------------------------------------------------*/
     /**是否启用el表达式解析。*/
     public boolean isEnableEL() {
         return this.getToType("_global.enableEL", Boolean.class, false);
@@ -58,7 +98,6 @@ public abstract class AbstractGlobal extends Attribute<Object> {
     public boolean isEnableJson() {
         return this.getToType("_global.enableJson", Boolean.class, false);
     }
-    /*------------------------------------------------------------------------*/
     private Map<String, Node> cacheNode = new java.util.Hashtable<String, Node>();
     /**使用Ognl计算字符串，并且返回其计算结果。*/
     public Object evalExpression(String ognlString) throws OgnlException {

@@ -47,23 +47,23 @@ public abstract class GlobalFactory {
                 //文件装载，key值是文件名。key相当于属性的作用域。
                 File fileObject = (File) obj;
                 InputStream stream = ResourcesUtil.getResourceAsStream(fileObject);
-                global.putAll(this.loadConfig(stream, encoding));//添加属性
+                global.putMap(this.loadConfig(stream, encoding));//添加属性
             } else if (obj instanceof URL) {
                 //URL装载，key值是getFile名。key相当于属性的作用域。
                 URL urlObject = (URL) obj;
                 InputStream stream = ResourcesUtil.getResourceAsStream(urlObject);
-                global.putAll(this.loadConfig(stream, encoding));//添加属性
+                global.putMap(this.loadConfig(stream, encoding));//添加属性
             } else if (obj instanceof URI) {
                 //URI装载，key值是getPath名。key相当于属性的作用域。
                 URI uriObject = (URI) obj;
                 InputStream stream = ResourcesUtil.getResourceAsStream(uriObject);
-                global.putAll(this.loadConfig(stream, encoding));//添加属性
+                global.putMap(this.loadConfig(stream, encoding));//添加属性
             } else if (obj instanceof String) {
                 //字符串装载
                 String stringObject = (String) obj;
                 List<InputStream> streams = ResourcesUtil.getResourcesAsStream(stringObject);
                 for (InputStream stream : streams)
-                    global.putAll(this.loadConfig(stream, encoding));//添加属性
+                    global.putMap(this.loadConfig(stream, encoding));//添加属性
             }
         return global;
     };
