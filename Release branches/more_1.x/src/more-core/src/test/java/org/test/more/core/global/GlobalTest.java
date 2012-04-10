@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 package org.test.more.core.global;
-import java.io.IOException;
 import org.junit.Test;
 import org.more.core.global.Global;
-import org.more.core.ognl.OgnlException;
+import org.more.core.global.assembler.PropertiesGlobalFactory;
 import org.test.more.core.json.User;
 /**
  * 
@@ -25,34 +24,31 @@ import org.test.more.core.json.User;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class GlobalTest {
+    public static void main(String[] args) throws Throwable {
+        Global global = new PropertiesGlobalFactory().createGlobal("org/test/more/core/global/global.properties", "global.properties");
+        long count = 0;
+        int step = 50000;
+        int index = 0;
+        long start = System.currentTimeMillis();
+        while (true) {
+            index++;
+            global.getFilePath("String");
+            if (count * step < index) {
+                count++;
+                System.out.println(index + "\t" + (System.currentTimeMillis() - start));
+            }
+        }
+    }
     @Test
-    public void testBase() throws IOException, ClassNotFoundException, OgnlException {
+    public void testBase() throws Throwable {
         //        HashMap root = new HashMap();
         //        root.put("name", "adf");
         //        HashMap context = new HashMap();
         //        context.put("root", root);
         //        System.out.println(Ognl.getValue("root['name']", context));
-        Global global = Global.newInstanceByFactory("properties", "utf-8", "org/test/more/core/global/global.properties", "global.properties");
-        System.out.println(global.evalName("_global.enableJson"));
-        System.out.println(global.evalName("_global.enableEL"));
-        System.out.println(global.evalName("_global.groupCount"));
-        System.out.println(global.evalName("_global.count"));
-        //
-        //
-        System.out.println();
-        System.out.println(global.evalName("_global['global.properties'].String"));
-        System.out.println(global.evalName("_global['global.properties'].String"));
-        System.out.println(global.evalName("_global['global.properties'].count"));
-        //
-        System.out.println();
-        System.out.println(global.evalName("_global['global.properties'][0].count"));
-        System.out.println(global.evalName("_global['global.properties'][0].String"));
-        System.out.println(global.evalName("_global['global.properties'][1].count"));
-        System.out.println(global.evalName("_global['global.properties'][1].String"));
+        Global global = new PropertiesGlobalFactory().createGlobal("org/test/more/core/global/global.properties", "global.properties");
         //
         System.out.println(global.getObject("JsonData"));
-        System.out.println(global.evalName("_global['global.properties'].JsonData"));
-        //
         System.out.println("----------------");
         System.out.println(global.getObject(Element.DocPath));
         for (Element e : Element.values())
@@ -60,12 +56,12 @@ public class GlobalTest {
         //
         System.out.println("----------------1");
         global.setAttribute("testParam", new User());
-        System.out.println(global.evalName("testParam.name + _global['global.properties'][1].DocPath"));
         System.out.println("----------------1");
         global.setAttribute("testParam", new User());
         System.out.println(global.getFilePath("filePath"));
         System.out.println(global.getDirectoryPath("filePath"));
         System.out.println(global.getString("abc.efg"));
+        System.out.println(global.getString("String"));
     }
     //    public void test() throws IOException {
     //        Global global = Global.createForFile("org/test/more/core/global/global.properties");

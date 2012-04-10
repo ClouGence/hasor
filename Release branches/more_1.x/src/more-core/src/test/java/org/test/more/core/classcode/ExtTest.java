@@ -29,7 +29,8 @@ public class ExtTest {
     @Test
     public void test_1() throws Exception {
         ClassEngine ce = new TestClassEngine();
-        System.out.println(ce.newInstance(null));
+        ce.setBuilderMode(BuilderMode.Propxy);
+        System.out.println(ce.newInstance(new Object()));
     };
 }
 class TestClassEngine extends ClassEngine {

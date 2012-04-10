@@ -15,8 +15,11 @@
  */
 package org.test.more.core.global;
 import java.io.IOException;
+import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
+import org.more.core.error.LoadException;
 import org.more.core.global.Global;
+import org.more.core.global.assembler.XmlGlobalFactory;
 import org.more.core.ognl.OgnlException;
 /**
  * 
@@ -25,13 +28,11 @@ import org.more.core.ognl.OgnlException;
  */
 public class XmlGlobalTest {
     @Test
-    public void testBase() throws IOException, ClassNotFoundException, OgnlException {
-        //        HashMap root = new HashMap();
-        //        root.put("name", "adf");
-        //        HashMap context = new HashMap();
-        //        context.put("root", root);
-        //        System.out.println(Ognl.getValue("root['name']", context));
-        Global global = Global.newInstanceByFactory("xml", "utf-8", "org/test/more/core/global/global.xml");
-//        System.out.println(global.getString("variables.variable"));
+    public void testBase() throws IOException, ClassNotFoundException, OgnlException, LoadException, XMLStreamException {
+        XmlGlobalFactory globalFactory = new XmlGlobalFactory();
+        globalFactory.setIgnoreRootElement(true);//在解析XML的时候忽略根节点。
+        Global global = globalFactory.createGlobal("org/test/more/core/global/global.xml");
+        //
+        System.out.println(global.getString("mongoServer.url"));
     }
 }

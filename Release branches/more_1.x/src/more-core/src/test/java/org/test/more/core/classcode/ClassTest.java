@@ -34,7 +34,7 @@ public class ClassTest {
     @Test
     public void test_2() throws Exception {
         ClassEngine ce = new ClassEngine(String.class);
-        System.out.println(ce.newInstance(null));//跑出错误是正确的结果。
+        System.out.println(ce.newInstance(null));//跑出错误是正确的结果。原因是String为final。
     }
     @Test
     public void test_3() throws Exception {
@@ -57,7 +57,7 @@ public class ClassTest {
     public void test_6() throws Exception {
         ClassEngine ce = new ClassEngine(String.class);
         ce.setBuilderMode(BuilderMode.Propxy);
-        System.out.println(ce.newInstance(""));//跑出错误是正确的结果。
+        System.out.println(ce.newInstance(""));//跑出错误是正确的结果。原因是String为final。
     }
     @Test
     public void test_7() throws Exception {}
@@ -80,13 +80,11 @@ public class ClassTest {
     @Test
     public void test_10() throws Exception {
         RootClassLoader root = new RootClassLoader(ClassLoader.getSystemClassLoader());
-        ClassEngine ce_1 = new ClassEngine(ClassTest.class);
-        ce_1.setRootClassLoader(root);
+        ClassEngine ce_1 = new ClassEngine(ClassTest.class, root);
         ce_1.setBuilderMode(BuilderMode.Propxy);
         Object obj_1 = ce_1.newInstance(new ClassTest());
         //
-        ClassEngine ce_2 = new ClassEngine(obj_1.getClass());
-        ce_2.setRootClassLoader(root);
+        ClassEngine ce_2 = new ClassEngine(obj_1.getClass(), root);
         ce_2.setBuilderMode(BuilderMode.Propxy);
         Object obj_2 = ce_2.newInstance(obj_1);
         System.out.println(obj_2);
