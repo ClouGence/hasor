@@ -32,7 +32,7 @@ public class RestoreView_Phase extends Phase {
         return this.phaseID;
     };
     public void execute(ViewContext uiContext) throws Throwable {
-        String stateJsonData = uiContext.getStateData();
+        String stateJsonData = uiContext.getStateJsonData();
         if (stateJsonData == null)
             return;
         UIViewRoot viewRoot = uiContext.getViewRoot();

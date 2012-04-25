@@ -21,7 +21,7 @@ public class Test {
      */
     public static void main(String[] args) {
         // TODO Auto-generated method stub
-        Template temp;
+        Template temp = null;
         temp.getRootTreeNode().getChildAt(0);
     }
 }

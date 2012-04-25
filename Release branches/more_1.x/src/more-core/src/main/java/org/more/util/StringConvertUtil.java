@@ -248,6 +248,9 @@ public abstract class StringConvertUtil {
             return defaultValue[0];
         }
     }
+    public static String parseString(String value, String... defaultValue) {
+        return (value == null || value.equals("") == false) ? value : defaultValue[0];
+    }
     /**
      * 将字符串转化为集合类型。在转化过程中可以指定分割符转换类型以及相应类型的默认转换值。
      * 类型的默认转换值是指当原数据在像目标转换时发生异常而采用的默认值取代。 语法如下：<br/>

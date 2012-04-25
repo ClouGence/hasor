@@ -22,7 +22,7 @@ import org.more.core.xml.XmlParserKit;
  * @version : 2011-12-5
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-class XmlRegisterHookUtil {
+public class XmlRegisterHookUtil {
     private static Log                  log         = LogFactory.getLog(XmlRegisterHookUtil.class);
     public static final XmlRegisterHook DefaultHook = new DefaultHook() {};
     //

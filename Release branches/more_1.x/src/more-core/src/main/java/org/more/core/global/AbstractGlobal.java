@@ -33,17 +33,30 @@ import org.more.util.StringConvertUtil;
  */
 public abstract class AbstractGlobal implements IAttribute<Object> {
     /*------------------------------------------------------------------------*/
-    private IAttribute<Object> targetContainer = new Attribute<Object>();
+    private IAttribute<Object> targetContainer  = new Attribute<Object>();
+    private IAttribute<Object> $targetContainer = null;
     public AbstractGlobal() {};
     public AbstractGlobal(Map<String, Object> configs) {
-        this(new TransformToAttribute<Object>(configs));
+        this.targetContainer = new TransformToAttribute<Object>(configs);
     };
     public AbstractGlobal(IAttribute<Object> configs) {
         this.targetContainer = configs;
     };
     /**子类可以重写该方法以替换targetContainer属性容器。*/
     protected IAttribute<Object> getAttContainer() {
-        return targetContainer;
+        if (this.$targetContainer != null)
+            return this.$targetContainer;
+        //
+        if (this.isCaseSensitive() == true)
+            this.$targetContainer = this.targetContainer;
+        else {
+            this.$targetContainer = new Attribute<Object>();
+            String[] ns = this.targetContainer.getAttributeNames();
+            for (String n : ns)
+                this.$targetContainer.setAttribute(n.toLowerCase(), this.targetContainer.getAttribute(n));
+        }
+        //
+        return $targetContainer;
     }
     /*------------------------------------------------------------------------*/
     @Override
@@ -90,6 +103,21 @@ public abstract class AbstractGlobal implements IAttribute<Object> {
         }
         return this.ognlContext;
     };
+    private boolean caseSensitive = true;
+    /**是否对字母大小写敏感，返回true表示敏感。*/
+    public boolean isCaseSensitive() {
+        return this.caseSensitive;
+    };
+    /**启用，大小写敏感。*/
+    public void enableCaseSensitive() {
+        this.caseSensitive = true;
+        this.$targetContainer = null;
+    }
+    /**禁用，大小写不敏感。*/
+    public void disableCaseSensitive() {
+        this.caseSensitive = false;
+        this.$targetContainer = null;
+    }
     /**是否启用el表达式解析。*/
     public boolean isEnableEL() {
         return this.getToType("_global.enableEL", Boolean.class, false);
@@ -122,7 +150,7 @@ public abstract class AbstractGlobal implements IAttribute<Object> {
     };
     /**解析全局配置参数，并且返回toType参数指定的类型。*/
     public <T> T getToType(String name, Class<T> toType, T defaultValue) {
-        Object oriObject = this.getAttribute(name);
+        Object oriObject = this.getAttribute((this.isCaseSensitive() == false) ? name.toLowerCase() : name);
         if (oriObject == null)
             return defaultValue;
         //
