@@ -1,0 +1,5 @@
+// Country-specific policy file for countries with no limits on crypto strength.
+grant {
+    // Country-specific policy file for countries with no limits on crypto strength..
+    permission java.security.AllPermission; 
+};

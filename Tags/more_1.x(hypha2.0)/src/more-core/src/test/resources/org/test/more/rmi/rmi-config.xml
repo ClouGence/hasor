@@ -1,0 +1,8 @@
+<b:beans xmlns:b="http://project.byshell.org/more/schema/beans"
+	xmlns:r="http://project.byshell.org/more/schema/remote"
+	xmlns:anno="http://project.byshell.org/more/schema/beans-anno">
+
+	<anno:anno package="org.test.more.rmi.*" enable="true"/>
+
+	<r:remoteEnable enable="true"/>
+</b:beans>

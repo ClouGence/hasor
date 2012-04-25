@@ -1,0 +1,1 @@
+要注意装载配置文件的装载顺序，classpath根目录下的default-hypha-config.xml其装载顺序低于META-INF下面的默认配置文件。
