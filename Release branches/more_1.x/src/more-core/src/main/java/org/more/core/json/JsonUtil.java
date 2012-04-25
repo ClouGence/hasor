@@ -21,10 +21,10 @@ import java.util.Map;
 import org.more.core.copybean.CopyBeanUtil;
 import org.more.core.error.InitializationException;
 import org.more.core.error.SupportException;
+import org.more.core.iatt.DecSequenceAttribute;
+import org.more.core.iatt.IAttribute;
 import org.more.util.ResourcesUtil;
 import org.more.util.StringConvertUtil;
-import org.more.util.attribute.IAttribute;
-import org.more.util.attribute.DecSequenceAttribute;
 /**
  * 属性stringBorder是用于决定字符串序列化时使用单引号“'”或者双引号“"”(默认值)。
  * JsonUtil在序列化字符串对象时支持了String、Character、CharSequence、Reader这些类型。

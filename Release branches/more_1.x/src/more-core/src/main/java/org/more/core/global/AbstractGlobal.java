@@ -17,15 +17,15 @@ package org.more.core.global;
 import java.util.Map;
 import org.more.core.error.FormatException;
 import org.more.core.error.SupportException;
+import org.more.core.iatt.Attribute;
+import org.more.core.iatt.IAttribute;
+import org.more.core.iatt.TransformToAttribute;
 import org.more.core.json.JsonUtil;
 import org.more.core.ognl.Node;
 import org.more.core.ognl.Ognl;
 import org.more.core.ognl.OgnlContext;
 import org.more.core.ognl.OgnlException;
 import org.more.util.StringConvertUtil;
-import org.more.util.attribute.Attribute;
-import org.more.util.attribute.IAttribute;
-import org.more.util.attribute.TransformToAttribute;
 /**
  * Global系统的核心实现
  * @version : 2011-12-31

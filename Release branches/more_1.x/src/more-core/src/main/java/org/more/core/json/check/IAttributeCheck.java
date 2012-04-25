@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.more.core.json.check;
+import org.more.core.iatt.IAttribute;
 import org.more.core.json.JsonCheck;
-import org.more.util.attribute.IAttribute;
 /**
  * 对IAttribute类型的检查
  * @version : 2011-9-28

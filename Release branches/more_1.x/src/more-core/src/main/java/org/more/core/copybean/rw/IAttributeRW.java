@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.more.core.copybean.PropertyReader;
 import org.more.core.copybean.PropertyWrite;
-import org.more.util.attribute.IAttribute;
+import org.more.core.iatt.IAttribute;
 /**
  * IAttribute类读写器。使用该类作为读写器可以实现从IAttribute对象中拷贝属性或者向IAttribute中拷贝属性。
  * @version 2009-5-15

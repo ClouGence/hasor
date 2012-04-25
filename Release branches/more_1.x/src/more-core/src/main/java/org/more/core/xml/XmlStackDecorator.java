@@ -15,7 +15,7 @@
  */
 package org.more.core.xml;
 import java.util.HashMap;
-import org.more.util.attribute.DecStackDecorator;
+import org.more.core.iatt.DecStackDecorator;
 /**
  * 该类继承自{@link DecStackDecorator}装饰器，作用是提供了一个context对象的支持。
  * @version 2010-9-23

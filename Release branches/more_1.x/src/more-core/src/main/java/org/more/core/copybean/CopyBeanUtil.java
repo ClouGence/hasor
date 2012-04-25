@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Map;
 import org.more.core.error.InitializationException;
 import org.more.core.error.SupportException;
+import org.more.core.iatt.IAttribute;
 import org.more.util.ResourcesUtil;
 import org.more.util.StringConvertUtil;
-import org.more.util.attribute.IAttribute;
 /**
  * Bean拷贝工具类，这个工具是实现了可以将Bean属性拷贝到其他bean中或者拷贝到map中。
  * 开发者可以通过扩展BeanType类以接受更多的bean类型。系统中已经支持了

@@ -23,6 +23,8 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import org.more.core.error.FormatException;
 import org.more.core.global.GlobalFactory;
+import org.more.core.iatt.DecParentAttribute;
+import org.more.core.iatt.IAttribute;
 import org.more.core.xml.XmlAttributeHook;
 import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlParserKit;
@@ -34,8 +36,6 @@ import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.core.xml.stream.TextEvent;
 import org.more.core.xml.stream.XmlReader;
-import org.more.util.attribute.DecParentAttribute;
-import org.more.util.attribute.IAttribute;
 /**
 * Ω‚ŒˆXml
 * @version : 2011-9-3
