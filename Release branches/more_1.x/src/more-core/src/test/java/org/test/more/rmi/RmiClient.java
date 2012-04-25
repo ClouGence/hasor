@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.test.more.rmi;
-import org.more.services.remote.client.RMI;
+import org.more.core.remote.client.RMI;
 import org.test.more.rmi.service.Faces;
 /**
  * 
@@ -24,7 +24,7 @@ import org.test.more.rmi.service.Faces;
 public class RmiClient {
     public static void main(String[] args) throws Throwable {
         //        Object obj = Naming.lookup("rmi://localhost:1099/faces");
-        RMI rmi = new RMI("rmi://localhost:1099/faces");
+        RMI rmi = new RMI("rmi://127.0.0.1:880/faces");
         Object obj = rmi.lookup(Faces.class);
         //        //
         System.out.println(obj instanceof Faces);

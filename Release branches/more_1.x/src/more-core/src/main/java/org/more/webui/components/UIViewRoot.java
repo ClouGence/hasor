@@ -16,15 +16,13 @@
 package org.more.webui.components;
 import java.util.HashMap;
 import java.util.Map;
-import freemarker.template.Template;
 /**
- * 
+ * 所有组件的根，同时也负责保存所有视图参数。
  * @version : 2012-3-29
  * @author 赵永春 (zyc@byshell.org)
  */
 public class UIViewRoot extends UIComponent {
-    private Map<String, UIParamter> params   = new HashMap<String, UIParamter>();
-    private Template                template = null;
+    private Map<String, UIParamter> params = new HashMap<String, UIParamter>();
     @Override
     public String getComponentType() {
         return "ViewRoot";
@@ -35,10 +33,17 @@ public class UIViewRoot extends UIComponent {
     }
     /**获取请求的参数Map*/
     public Map<String, UIParamter> getParamters() {
-        return params;
+        return this.params;
     }
-    /**获取WebUI模板*/
-    public Template getTemplate() {
-        return this.template;
+    /**添加一个参数，如果参数名称重复新的会替换旧的。*/
+    public void addParamter(UIParamter uip) {
+        if (uip != null)
+            this.params.put(uip.getName(), uip);
+    }
+    public void addParamter(String key, Object value) {
+        UIParamter uip = new UIParamter();
+        uip.setName(key);
+        uip.setValue(value);
+        this.addParamter(uip);
     }
 }

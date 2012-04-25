@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 package org.test.more.rmi;
-import org.more.hypha.context.app.DefaultApplicationContext;
-import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.core.remote.DefaultPublisher;
+import org.test.more.rmi.service.FacesImpl;
+/**
+ * 
+ * @version : 2012-2-9
+ * @author ’‘”¿¥∫ (zyc@byshell.org)
+ */
 public class RmiServer {
     public static void main(String[] args) throws Throwable {
-        System.out.println("start...");
-        XmlDefineResource xdr = new XmlDefineResource();
-        //
-        xdr.addSource("org/test/more/rmi/rmi-config.xml");
-        xdr.loadDefine();
-        //
-        DefaultApplicationContext app = new DefaultApplicationContext(xdr);
-        app.init();
+        DefaultPublisher push = new DefaultPublisher("127.0.0.1", 880);
+        push.pushObject("faces", new FacesImpl());
+        push.start();
         System.out.println("----------------------------------");
+        for (String pushObj : push.getPushList())
+            System.out.println(pushObj);
     }
 }

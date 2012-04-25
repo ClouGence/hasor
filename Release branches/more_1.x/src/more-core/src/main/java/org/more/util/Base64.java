@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 package org.more.util;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 /**
  * 简单编码类，该类提供了Base64的编码，该编码器与配套的js编码器可以实现互相编码互相转化功能。
  * @version 2009-4-28
@@ -24,10 +21,11 @@ import java.io.UnsupportedEncodingException;
  */
 public abstract class Base64 {
     protected static final String Base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@*-"; // supplement
-    /**返回与Base64对应的JSbase64编码/解码脚本*/
-    public static Reader getJSReader() throws UnsupportedEncodingException {
-        return new InputStreamReader(Base64.class.getResourceAsStream("/META-INF/resource/util/base64.js"), "utf-8");
-    };
+    /***/
+    //    /**返回与Base64对应的JSbase64编码/解码脚本*/
+    //    public static Reader getJSReader() throws UnsupportedEncodingException {
+    //        return new InputStreamReader(Base64.class.getResourceAsStream("/META-INF/resource/util/base64.js"), "utf-8");
+    //    };
     /**
      * 使用UTF-8编码进行Base64编码
      * @param s 要编码的原始数据

@@ -14,14 +14,18 @@
 	<!-- 公共插件设置 -->
 	<build>
 		<plugins>
+			<!-- resource charset -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
 					<target>${java.version}</target>
 					<source>${java.version}</source>
 					<encoding>GBK</encoding>
+					<!-- 发出编译警告和错误时是否停止 -->
+					<failOnError>false</failOnError>
 				</configuration>
 			</plugin>
+			<!-- skip test -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -29,6 +33,7 @@
 					<skip>true</skip>
 				</configuration>
 			</plugin>
+			<!-- package sources to jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -43,6 +48,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!-- package javadoc to jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -64,12 +70,6 @@
 	<!-- 包含的模块 -->
 	<modules>
 		<module>more-core</module>
-		<module>more-core-web</module>
-		<module>more-submit-ac-guice</module>
-		<module>more-submit-ac-spring</module>
-		<module>more-services-freemarker</module>
-		<module>more-webserver</module>
-		<module>more-develop</module>
 	</modules>
 	<!-- 全局引用的JAR -->
 	<dependencies>
@@ -77,12 +77,6 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.8.2</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
-			<version>2.0.0</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

@@ -30,7 +30,7 @@ import org.more.webui.event.ActionEvent;
 import org.more.webui.event.InitInvokeEvent;
 import org.more.webui.util.ComponentUtil;
 /**
- * 所有组件的根
+ * 所有组件的根，这里拥有组件的所有关键方法。
  * @version : 2011-8-4
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -49,19 +49,19 @@ public abstract class UIComponent implements StateHolder {
     /**获取组件类型名称。*/
     public abstract String getComponentType();
     /**返回组件的ID*/
-    public String getID() {
+    public String getId() {
         String componentID = this.getProperty(Propertys.id.name()).valueTo(String.class);
         if (componentID == null)
-            this.setID(ComponentUtil.generateID(this.getClass()));
+            this.setId(ComponentUtil.generateID(this.getClass()));
         return componentID;
     };
     /**设置属性ID*/
-    public void setID(String componentID) {
+    public void setId(String componentID) {
         this.getProperty(Propertys.id.name()).value(componentID);
     };
     /**在当前组件的子级中寻找某个特定ID的组件*/
     public UIComponent getChildByID(String componentID) {
-        if (this.getID().equals(componentID) == true)
+        if (this.getId().equals(componentID) == true)
             return this;
         for (UIComponent component : this.getChildren()) {
             UIComponent com = component.getChildByID(componentID);
@@ -134,7 +134,7 @@ public abstract class UIComponent implements StateHolder {
         /*将请求参数中要求灌入的属性值灌入到属性上*/
         for (String key : this.propertys.keySet()) {
             /*被灌入的属性名，请求参数中必须是“componentID:attName”*/
-            String newValue = viewContext.getHttpRequest().getParameter(this.getID() + ":" + key);
+            String newValue = viewContext.getHttpRequest().getParameter(this.getId() + ":" + key);
             if (newValue != null)
                 this.propertys.get(key).value(newValue);
         }
@@ -186,7 +186,7 @@ public abstract class UIComponent implements StateHolder {
         if (stateData == null)
             return;
         if (stateData.length != 2)
-            throw new MoreDataException("WebUI无法重塑组件状态，在重塑组件[" + this.getID() + "]组件发生数据丢失");
+            throw new MoreDataException("WebUI无法重塑组件状态，在重塑组件[" + this.getId() + "]组件发生数据丢失");
         //2.恢复自身数据
         Map<String, Object> mineState = (Map<String, Object>) stateData[0];
         for (String propName : mineState.keySet()) {
@@ -198,7 +198,7 @@ public abstract class UIComponent implements StateHolder {
         Map<String, Object> childrenState = (Map<String, Object>) stateData[1];
         List<UIComponent> uic = getChildren();
         for (UIComponent com : uic)
-            com.restoreState((Object[]) childrenState.get(com.getID()));
+            com.restoreState((Object[]) childrenState.get(com.getId()));
     };
     public Object[] saveState() {
         //1.持久化自身的状态
@@ -212,7 +212,7 @@ public abstract class UIComponent implements StateHolder {
         HashMap<String, Object> childrenState = new HashMap<String, Object>();
         List<UIComponent> uic = getChildren();
         for (UIComponent com : uic)
-            childrenState.put(com.getID(), com.saveState());
+            childrenState.put(com.getId(), com.saveState());
         //3.返回持久化状态
         Object[] thisState = new Object[2];
         thisState[0] = mineState;

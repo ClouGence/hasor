@@ -20,19 +20,8 @@ package org.more.core.log;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class Level {
-    public static final Level Below   = new Below();
-    public static final Level High    = new High();
-    public static final Level Default = new Default();
-    //
-    /**级别0*/
-    public final static class Default extends Level {};
-    /**级别1*/
-    public final static class High extends Level {};
-    /**级别2*/
-    public final static class Below extends Level {};
-    //
     /**获取级别名称。*/
-    public String getName() {
-        return this.getClass().getSimpleName();
-    };
+    public abstract String getLevelName();
+    //
+    public abstract boolean matchLevel(String invokeString);
 }

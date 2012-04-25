@@ -50,6 +50,8 @@ public abstract class AttributeDecorator<T> implements IAttribute<T> {
     };
     private Map<String, T> mapTarget = null;
     public Map<String, T> toMap() {
+        if (this.source instanceof Map)
+            return (Map<String, T>) this.source;
         if (this.mapTarget == null)
             this.mapTarget = new TransformToMap<T>(this);
         return this.mapTarget;

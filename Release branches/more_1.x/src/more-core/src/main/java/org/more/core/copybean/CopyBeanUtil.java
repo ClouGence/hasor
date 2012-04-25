@@ -23,6 +23,7 @@ import java.util.Map;
 import org.more.core.error.InitializationException;
 import org.more.core.error.SupportException;
 import org.more.util.ResourcesUtil;
+import org.more.util.StringConvertUtil;
 import org.more.util.attribute.IAttribute;
 /**
  * Bean拷贝工具类，这个工具是实现了可以将Bean属性拷贝到其他bean中或者拷贝到map中。
@@ -34,33 +35,21 @@ import org.more.util.attribute.IAttribute;
  * @version 2009-5-20
  * @author 赵永春 (zyc@byshell.org)
  */
+@SuppressWarnings("unchecked")
 public abstract class CopyBeanUtil {
-    /*默认自定义配置文件位置*/
-    public static final String                defaultProperties  = "copybean_config.properties";
     /*顺序是优先级顺序*/
-    private static final String[]             configs            = new String[] { "META-INF/resource/core/copybean_config.properties", "META-INF/copybean_config.properties" };
+    public static final String[]              configs            = new String[] { "META-INF/resource/core/copybean_config.properties", "META-INF/copybean_config.properties", "copybean_config.properties" };
     private ArrayList<Convert<Object>>        convertList        = new ArrayList<Convert<Object>>();
     private ArrayList<PropertyReader<Object>> propertyReaderList = new ArrayList<PropertyReader<Object>>();
     private ArrayList<PropertyWrite<Object>>  propertyWriteList  = new ArrayList<PropertyWrite<Object>>();
+    private boolean                           nullValueCP        = true;
     //
     //
-    /**
-     * 创建JsonUtil对象，字符串序列化使用双引号环抱。
-     * @param specialConfig 要装载的特别配置属性文件，该属性文件应当位于classPath中。
-     */
-    protected CopyBeanUtil(String specialConfig) throws IOException {
-        //1.准备配置文件
+    /**创建JsonUtil对象，字符串序列化使用双引号环抱。 */
+    protected CopyBeanUtil() throws IOException {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        ArrayList<String> $configs = new ArrayList<String>();
-        for (String c : configs)
-            $configs.add(c);
-        if (specialConfig != null)
-            $configs.add(specialConfig);
-        //2.装载配置文件
-        for (String cfg : $configs) {
+        for (String cfg : configs) {
             IAttribute<String> attList = ResourcesUtil.getPropertys(cfg);
-            if (attList == null)
-                continue;
             String convertList = attList.getAttribute("ConvertList");
             if (convertList != null) {
                 String[] $convertList = convertList.split(",");
@@ -80,6 +69,8 @@ public abstract class CopyBeanUtil {
                     this.propertyWriteList.add((PropertyWrite<Object>) this.createObject($prop, loader));
             }
         }
+        IAttribute<String> attList = ResourcesUtil.getPropertys(configs);
+        nullValueCP = StringConvertUtil.parseBoolean(attList.getAttribute("NullValueCP"), true);
     };
     private Object createObject(String className, ClassLoader loader) {
         try {
@@ -88,19 +79,7 @@ public abstract class CopyBeanUtil {
         } catch (Exception e) {
             throw new InitializationException(e);
         }
-    };
-    /**无论如何都创建一个新的CopyBeanUtil实例。*/
-    public static CopyBeanUtil newInstance(String specialConfig) {
-        try {
-            return new CopyBeanUtil(specialConfig) {};
-        } catch (Exception e) {
-            if (e instanceof InitializationException == true)
-                throw (InitializationException) e;
-            if (e instanceof RuntimeException == true)
-                throw (RuntimeException) e;
-            throw new InitializationException(e);
-        }
-    };
+    }
     public int copyPropertys(Object fromObject, Object toObject) {
         if (fromObject == null || toObject == null)
             return 0;//不执行拷贝。
@@ -127,11 +106,15 @@ public abstract class CopyBeanUtil {
         PropertyWrite<Object> writeObject = null;
         //得到readerObject,writeObject
         for (PropertyReader<Object> reader : this.propertyReaderList)
-            if (reader.getTargetClass().isAssignableFrom(fromObject.getClass()) == true)
+            if (reader.getTargetClass().isAssignableFrom(fromObject.getClass()) == true) {
                 readerObject = reader;
+                break;
+            }
         for (PropertyWrite<Object> write : this.propertyWriteList)
-            if (write.getTargetClass().isAssignableFrom(toObject.getClass()) == true)
+            if (write.getTargetClass().isAssignableFrom(toObject.getClass()) == true) {
                 writeObject = write;
+                break;
+            }
         //
         if (readerObject == null || writeObject == null)
             throw new SupportException("Don't support Object " + fromObject + " or " + toObject);
@@ -145,6 +128,8 @@ public abstract class CopyBeanUtil {
                 if (readerObject.canReader(fromProp, fromObject) == false)
                     continue;
                 Object newValue = readerObject.readProperty(fromProp, fromObject);
+                if (this.nullValueCP == false)
+                    continue;
                 if (writeObject.canWrite(toProp, toObject, newValue) == false)
                     continue;
                 //2.类型转换
@@ -191,15 +176,22 @@ public abstract class CopyBeanUtil {
     }
     /*---------------------------------------------------------------------------------*/
     private static CopyBeanUtil defaultUtil = null;
-    /**使用自定义属性配置文件重新初始化{@link CopyBeanUtil}工具对象。*/
-    public static CopyBeanUtil initializationUtil(String specialConfig) {
-        defaultUtil = newInstance(specialConfig);
-        return defaultUtil;
+    /**无论如何都创建一个新的CopyBeanUtil实例。*/
+    public static CopyBeanUtil newInstance() {
+        try {
+            return new CopyBeanUtil() {};
+        } catch (Exception e) {
+            if (e instanceof InitializationException == true)
+                throw (InitializationException) e;
+            if (e instanceof RuntimeException == true)
+                throw (RuntimeException) e;
+            throw new InitializationException(e);
+        }
     };
     /**获取一个CopyBeanUtil实例，该方法返回上一次调用该方法创建的实例对象。*/
     public static CopyBeanUtil getCopyBeanUtil() {
         if (defaultUtil == null)
-            initializationUtil(defaultProperties);
+            defaultUtil = newInstance();
         return defaultUtil;
     };
     public static int copyTo(Object fromObject, Object toObject) {

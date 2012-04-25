@@ -21,7 +21,7 @@ import java.util.Map;
  * @version : 2011-11-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface PagesList {
+public interface PagesList<T> {
     /**获取一个值，该值表示分页的页大小。*/
     public int getPageSize();
     /**获取当前分页数据的首条记录，在整个查询结果的位置。*/
@@ -34,14 +34,14 @@ public interface PagesList {
     /**执行当前分页查询，返回结果使用Map封装。*/
     public List<Map<String, Object>> query();
     /**执行当前分页查询，返回结果使用给定的类型封装。*/
-    public <T> List<T> query(Class<T> dataType);
+    public List<T> query(Class<T> dataType);
     //
     /**查询第一页并且返回分页对象。*/
-    public PagesList firstPage();
+    public PagesList<T> firstPage();
     /**查询上一页并且返回分页对象。*/
-    public PagesList previousPage();
+    public PagesList<T> previousPage();
     /**查询下一页并且返回分页对象。*/
-    public PagesList nextPage();
+    public PagesList<T> nextPage();
     /**查询最后一页并且返回分页对象。*/
-    public PagesList lastPage();
+    public PagesList<T> lastPage();
 }

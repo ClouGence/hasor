@@ -114,7 +114,7 @@ public abstract class BeanUtil {
         return str.toString();
     }
     /*----------------------------------------------------------------------------------------*/
-    /**获取类定义的字段和继承父类中定义的字段以及父类的父类（子类重新定义同名字段也会被返回）。*/
+    /**获取类定义的字段和继承父类中定义的字段以及父类的父类（子类重新定义同名字段也会被列入集合）。*/
     public static List<Field> findALLFields(Class<?> target) {
         if (target == null) {
             log.error("findALLFields an error , target is null, please check it.");
@@ -138,7 +138,7 @@ public abstract class BeanUtil {
             return;
         findALLFields(superType, fList);
     }
-    /**获取类定义的字段和继承父类中定义的字段以及父类的父类（子类重新定义同名字段也不会被返回）。*/
+    /**{@link #findALLFields(Class))}方法返回值的无重复版本。*/
     public static List<Field> findALLFieldsNoRepeat(Class<?> target) {
         if (target == null) {
             log.error("findALLFieldsNoRepeat an error , target is null, please check it.");
@@ -186,7 +186,7 @@ public abstract class BeanUtil {
             return;
         findALLMethods(superType, mList);
     }
-    /**获取类定义的方法和继承父类中定义的方法以及父类的父类（子类的重写方法也不会被返回）。*/
+    /**{@link #findALLMethods(Class))}方法返回值的无重复版本。*/
     public static List<Method> findALLMethodsNoRepeat(Class<?> target) {
         if (target == null) {
             log.error("findALLMethodsNoRepeat an error , target is null, please check it.");
@@ -215,6 +215,48 @@ public abstract class BeanUtil {
         findALLMethodsNoRepeat(superType, mMap);
     }
     /*----------------------------------------------------------------------------------------*/
+    /**查找一个可操作的字段列表。*/
+    public static List<Field> getFields(Class<?> type) {
+        ArrayList<Field> fList = new ArrayList<Field>();
+        for (Field field : type.getFields())
+            if (fList.contains(field) == false)
+                fList.add(field);
+        return fList;
+    }
+    /**查找一个可操作的方法列表。*/
+    public static List<Method> getMethods(Class<?> type) {
+        ArrayList<Method> mList = new ArrayList<Method>();
+        for (Method method : type.getMethods())
+            if (mList.contains(method) == false)
+                mList.add(method);
+        return mList;
+    }
+    /**查找一个可操作的字段。*/
+    public static Field getField(String fieldName, Class<?> type) {
+        if (fieldName == null || type == null) {
+            log.error("fieldName an error , fieldName or type is null, please check it.");
+            return null;
+        }
+        for (Field f : type.getFields())
+            if (f.getName().equals(fieldName) == true) {
+                log.debug("find method {%0}.", f);
+                return f;
+            }
+        log.debug("{%0} method not exist at {%1}.", fieldName, type);
+        return null;
+    }
+    /**查找一个可操作的方法。*/
+    public static Method getMethod(Class<?> atClass, String name, Class<?>[] paramType) {
+        try {
+            return atClass.getMethod(name, paramType);
+        } catch (Exception e) {
+            try {
+                return atClass.getDeclaredMethod(name, paramType);
+            } catch (Exception e1) {
+                return null;
+            }
+        }
+    }
     /**获取属性名集合，该方法是{@link #getPropertys(Class)}方法的升级版，通过该方法还可以同时返回可访问的字段作为属性。*/
     public static List<String> getPropertysAndFields(Class<?> target) {
         List<String> mnames = getPropertys(target);
@@ -284,47 +326,57 @@ public abstract class BeanUtil {
         log.debug("{%0} method not exist at {%1}.", methodName, target);
         return null;
     }
-    /**查找一个可操作的字段。*/
-    public static Field getField(String fieldName, Class<?> type) {
-        if (fieldName == null || type == null) {
-            log.error("fieldName an error , fieldName or type is null, please check it.");
-            return null;
-        }
-        for (Field f : type.getFields())
-            if (f.getName().equals(fieldName) == true) {
-                log.debug("find method {%0}.", f);
-                return f;
-            }
-        log.debug("{%0} method not exist at {%1}.", fieldName, type);
-        return null;
+    /**测试是否具有propertyName所表示的属性，无论是读或写方法只要存在一个就表示存在该属性。*/
+    public static boolean hasProperty(String propertyName, Class<?> target) {
+        //get、set方法
+        if (getReadMethod(propertyName, target) == null)
+            if (getWriteMethod(propertyName, target) == null)
+                return false;
+        return true;
     }
-    /**查找一个可操作的字段列表。*/
-    public static List<Field> getFields(Class<?> type) {
-        ArrayList<Field> fList = new ArrayList<Field>();
-        for (Field field : type.getFields())
-            if (fList.contains(field) == false)
-                fList.add(field);
-        return fList;
+    /**测试是否具有fieldName所表示的字段，无论是读或写方法只要存在一个就表示存在该属性。*/
+    public static boolean hasField(String propertyName, Class<?> target) {
+        if (getField(propertyName, target) == null)
+            return false;
+        else
+            return true;
     }
-    /**查找一个可操作的方法。*/
-    public static Method getMethod(Class<?> atClass, String name, Class<?>[] paramType) {
-        try {
-            return atClass.getMethod(name, paramType);
-        } catch (Exception e) {
-            try {
-                return atClass.getDeclaredMethod(name, paramType);
-            } catch (Exception e1) {
-                return null;
-            }
-        }
+    /**测试是否具有name所表示的属性，hasProperty或hasField有一个返回为true则返回true。*/
+    public static boolean hasPropertyOrField(String name, Class<?> target) {
+        if (hasProperty(name, target) == false)
+            if (hasField(name, target) == false)
+                return false;
+        return true;
     }
-    /**查找一个可操作的方法列表。*/
-    public static List<Method> getMethods(Class<?> type) {
-        ArrayList<Method> mList = new ArrayList<Method>();
-        for (Method method : type.getMethods())
-            if (mList.contains(method) == false)
-                mList.add(method);
-        return mList;
+    /**测试是否支持readProperty方法。*/
+    public static boolean canReadProperty(String propertyName, Class<?> target) {
+        Method readMethod = getReadMethod(propertyName, target);
+        if (readMethod == null)
+            return true;
+        else
+            return false;
+    }
+    /**测试是否支持readPropertyOrField方法。*/
+    public static boolean canReadPropertyOrField(String propertyName, Class<?> target) {
+        if (canReadProperty(propertyName, target) == false)
+            if (hasField(propertyName, target) == false)
+                return false;
+        return true;
+    }
+    /**测试是否支持writeProperty方法。*/
+    public static boolean canWriteProperty(String propertyName, Class<?> target) {
+        Method writeMethod = getWriteMethod(propertyName, target);
+        if (writeMethod == null)
+            return true;
+        else
+            return false;
+    }
+    /**测试是否支持writePropertyOrField方法。*/
+    public static boolean canWritePropertyOrField(String propertyName, Class<?> target) {
+        if (canWriteProperty(propertyName, target) == false)
+            if (hasField(propertyName, target) == false)
+                return false;
+        return true;
     }
     /*----------------------------------------------------------------------------------------*/
     /**执行属性注入，除了注入int,short,long,等基本类型之外该方法还支持注入枚举类型。返回值表示执行是否成功。注意：该方法会根据属性类型进行尝试类型转换。*/
@@ -378,10 +430,12 @@ public abstract class BeanUtil {
     }
     /**执行注入，该方法首先会视图执行属性方法注入。如果失败则执行字段注入。注意：该方法会根据属性类型进行尝试类型转换。*/
     public static boolean writePropertyOrField(Object object, String attName, Object value) {
-        if (writeProperty(object, attName, value) == false)
-            if (writeField(object, attName, value) == false)
-                return false;
-        return true;
+        Class<?> defineType = object.getClass();
+        if (canWriteProperty(attName, defineType) == true)
+            return writeProperty(object, attName, value);//支持方法写入
+        if (hasField(attName, defineType) == true)
+            return writeField(object, attName, value);//支持字段写入
+        return false;
     }
     /**执行属性读取。*/
     public static Object readProperty(Object object, String attName) {
@@ -425,10 +479,12 @@ public abstract class BeanUtil {
     }
     /**执行注入，该方法首先会视图执行属性方法注入。如果失败则执行字段注入。注意：该方法会根据属性类型进行尝试类型转换。*/
     public static Object readPropertyOrField(Object object, String attName) {
-        Object value = readProperty(object, attName);
-        if (value == null)
-            value = readField(object, attName);
-        return value;
+        Class<?> defineType = object.getClass();
+        if (canReadProperty(attName, defineType) == true)
+            return readProperty(object, attName);//支持方法读取
+        if (hasField(attName, defineType) == true)
+            return readField(object, attName);//支持字段读取
+        return null;
     }
     /**判断对象是否为空或者是一个空字符串。*/
     public static boolean isNone(Object targetBean) {

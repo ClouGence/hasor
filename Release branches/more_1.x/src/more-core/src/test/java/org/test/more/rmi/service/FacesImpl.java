@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 package org.test.more.rmi.service;
-import org.more.hypha.anno.define.AutoWrite;
-import org.more.hypha.anno.define.Bean;
-import org.more.hypha.anno.define.Property;
-import org.more.services.remote.Remote;
 /**
  * 
  * @version : 2011-8-16
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@Bean
-@Remote(name = "faces")
 public class FacesImpl implements Faces {
-    @AutoWrite
-    @Property()
-    public UserManager manager = null;
     //
     public void print(String message) {
         System.out.println("to see " + message);

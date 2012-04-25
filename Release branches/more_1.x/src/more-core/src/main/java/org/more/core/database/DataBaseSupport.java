@@ -16,6 +16,7 @@
 package org.more.core.database;
 import java.util.List;
 import java.util.Map;
+import org.more.core.database.meta.TableMetaData;
 /**
  * 数据库基本操作接口，该接口不支持批量操作。
  * @version : 2011-11-9

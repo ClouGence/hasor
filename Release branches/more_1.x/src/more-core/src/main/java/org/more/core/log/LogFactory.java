@@ -82,7 +82,7 @@ public class LogFactory {
     };
     /**获取{@link Log}接口对象。*/
     public static Log getLog(Class<?> type) {
-        return getFactory().getLogAsLevel(Level.Default, type);
+        return getFactory().getLogAsLevel(null, type);
     };
     /*-----------------------------------------------------------------------------*/
     private Level[] levels = null;
