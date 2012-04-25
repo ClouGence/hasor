@@ -16,6 +16,7 @@
 package org.more.util;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
@@ -33,18 +34,59 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.more.core.error.FormatException;
+import org.more.core.iatt.DecSequenceAttribute;
+import org.more.core.iatt.IAttribute;
+import org.more.core.iatt.TransformToAttribute;
 import org.more.core.io.AutoCloseInputStream;
-import org.more.util.attribute.DecSequenceAttribute;
-import org.more.util.attribute.IAttribute;
-import org.more.util.attribute.TransformToAttribute;
 /**
  * classpath工具类
  * @version 2010-9-24
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class ResourcesUtil {
+    /** 发现事件 */
+    public static class ScanEvent {
+        private String      name    = null;
+        private boolean     isRead  = false; //是否可读。
+        private boolean     isWrite = false; //是否可写
+        //
+        private InputStream stream  = null;
+        private File        file    = null;
+        //
+        /**创建{@link ScanEvent}*/
+        ScanEvent(String name, File file) {
+            this.isRead = file.canRead();
+            this.isWrite = file.canWrite();
+            this.file = file;
+            this.name = name;
+        }
+        /**创建{@link ScanEvent}*/
+        ScanEvent(String name, JarEntry entry, InputStream stream) {
+            this.isRead = !entry.isDirectory();
+            this.isWrite = false;
+            this.stream = stream;
+            this.name = name;
+        }
+        //----------------------------------
+        public String getName() {
+            return name;
+        }
+        public boolean isRead() {
+            return this.isRead;
+        }
+        public boolean isWrite() {
+            return this.isWrite;
+        }
+        public InputStream getStream() throws FileNotFoundException {
+            if (this.stream != null)
+                return this.stream;
+            if (this.file != null && this.isRead == true)
+                return new FileInputStream(this.file);
+            return null;
+        }
+    }
     /**扫描classpath时找到资源的回调接口方法。*/
-    public interface ScanItem {
+    public static interface ScanItem {
         /**
          * 找到资源。
          * @param event 找到资源事件。

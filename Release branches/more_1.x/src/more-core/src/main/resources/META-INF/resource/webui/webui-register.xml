@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<profile xmlns="http://project.byshell.org/more/schema/webui">
+
+
+	<register-Components>
+		<component componentType="" class="" profile="" />
+		<component componentType="" class="" profile="" />
+		<component componentType="" class="" profile="" />
+		<component componentType="" class="" profile="" />
+	</register-Components>
+
+
+	<register-Tags>
+		<tag>
+			<tag-name>Table</tag-name>
+			<profile></profile>
+			<componentType></componentType>
+			<renderID></renderID>
+		</tag>
+	</register-Tags>
+
+
+	<register-Render>
+		<renderScope scopeName="default">
+			<render renderID="" class="" profile="" />
+			<render renderID="" class="" profile="" />
+		</renderScope>
+	</register-Render>
+</profile>

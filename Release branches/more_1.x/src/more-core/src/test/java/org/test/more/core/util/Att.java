@@ -17,11 +17,11 @@ package org.test.more.core.util;
 import java.util.Comparator;
 import java.util.Map.Entry;
 import org.junit.Test;
+import org.more.core.iatt.Attribute;
+import org.more.core.iatt.DecParentAttribute;
+import org.more.core.iatt.DecSequenceAttribute;
+import org.more.core.iatt.DecStackDecorator;
 import org.more.util.MergeUtil;
-import org.more.util.attribute.Attribute;
-import org.more.util.attribute.DecParentAttribute;
-import org.more.util.attribute.DecSequenceAttribute;
-import org.more.util.attribute.DecStackDecorator;
 @SuppressWarnings("unchecked")
 public class Att {
     @Test
