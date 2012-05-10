@@ -141,7 +141,7 @@ public abstract class StringConvertUtil {
      */
     public static Integer parseInt(final String value, final Integer... defaultValue) {
         try {
-            return (value == null || value.equals("") == false) ? Integer.valueOf(value) : defaultValue[0];
+            return (value == null || value.equals("") == true) ? defaultValue[0] : Integer.valueOf(value);
         } catch (Exception e) {
             if (defaultValue == null || defaultValue.length == 0)
                 return StringConvertUtil.DefaultValue_Integer;
@@ -157,7 +157,7 @@ public abstract class StringConvertUtil {
      */
     public static Float parseFloat(final String value, final Float... defaultValue) {
         try {
-            float var = (value == null || value.equals("") == false) ? Float.valueOf(value) : defaultValue[0];
+            float var = (value == null || value.equals("") == true) ? defaultValue[0] : Float.valueOf(value);
             if (Float.isNaN(var) == true || Float.isInfinite(var) == true)
                 return (defaultValue.length >= 1) ? defaultValue[0] : StringConvertUtil.DefaultValue_Float;
             return var;
@@ -176,7 +176,10 @@ public abstract class StringConvertUtil {
      */
     public static Double parseDouble(final String value, final Double... defaultValue) {
         try {
-            return (value == null || value.equals("") == false) ? Double.valueOf(value) : defaultValue[0];
+            double var = (value == null || value.equals("") == true) ? defaultValue[0] : Double.valueOf(value);
+            if (Double.isNaN(var) == true || Double.isInfinite(var) == true)
+                return (defaultValue.length >= 1) ? defaultValue[0] : StringConvertUtil.DefaultValue_Float;
+            return var;
         } catch (Exception e) {
             if (defaultValue == null || defaultValue.length == 0)
                 return StringConvertUtil.DefaultValue_Double;
@@ -209,7 +212,7 @@ public abstract class StringConvertUtil {
      */
     public static Long parseLong(final String value, final Long... defaultValue) {
         try {
-            return (value == null || value.equals("") == false) ? Long.valueOf(value) : defaultValue[0];
+            return (value == null || value.equals("") == true) ? defaultValue[0] : Long.valueOf(value);
         } catch (Exception e) {
             if (defaultValue == null || defaultValue.length == 0)
                 return StringConvertUtil.DefaultValue_Long;
@@ -225,7 +228,7 @@ public abstract class StringConvertUtil {
      */
     public static Byte parseByte(final String value, final Byte... defaultValue) {
         try {
-            return (value == null || value.equals("") == false) ? Byte.valueOf(value) : defaultValue[0];
+            return (value == null || value.equals("") == true) ? defaultValue[0] : Byte.valueOf(value);
         } catch (Exception e) {
             if (defaultValue == null || defaultValue.length == 0)
                 return StringConvertUtil.DefaultValue_Byte;
@@ -241,7 +244,7 @@ public abstract class StringConvertUtil {
      */
     public static Short parseShort(final String value, final Short... defaultValue) {
         try {
-            return (value == null || value.equals("") == false) ? Short.valueOf(value) : defaultValue[0];
+            return (value == null || value.equals("") == true) ? defaultValue[0] : Short.valueOf(value);
         } catch (Exception e) {
             if (defaultValue == null || defaultValue.length == 0)
                 return StringConvertUtil.DefaultValue_Short;
@@ -249,7 +252,7 @@ public abstract class StringConvertUtil {
         }
     }
     public static String parseString(String value, String... defaultValue) {
-        return (value == null || value.equals("") == false) ? value : defaultValue[0];
+        return (value == null || value.equals("") == true) ? defaultValue[0] : value;
     }
     /**
      * 将字符串转化为集合类型。在转化过程中可以指定分割符转换类型以及相应类型的默认转换值。

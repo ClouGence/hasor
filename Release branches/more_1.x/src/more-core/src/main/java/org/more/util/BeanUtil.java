@@ -348,10 +348,10 @@ public abstract class BeanUtil {
                 return false;
         return true;
     }
-    /**测试是否支持readProperty方法。*/
+    /**测试是否支持readProperty方法。返回true表示可以进行读取操作。*/
     public static boolean canReadProperty(String propertyName, Class<?> target) {
         Method readMethod = getReadMethod(propertyName, target);
-        if (readMethod == null)
+        if (readMethod != null)
             return true;
         else
             return false;
@@ -363,10 +363,10 @@ public abstract class BeanUtil {
                 return false;
         return true;
     }
-    /**测试是否支持writeProperty方法。*/
+    /**测试是否支持writeProperty方法。返回true表示可以进行写入操作。*/
     public static boolean canWriteProperty(String propertyName, Class<?> target) {
         Method writeMethod = getWriteMethod(propertyName, target);
-        if (writeMethod == null)
+        if (writeMethod != null)
             return true;
         else
             return false;
