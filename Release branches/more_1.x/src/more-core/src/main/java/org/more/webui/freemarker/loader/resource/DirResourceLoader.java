@@ -20,13 +20,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import org.more.webui.freemarker.loader.ResourceLoader;
+import org.more.webui.freemarker.loader.IResourceLoader;
 /**
  * 将一个File对象所代表的路径作为根路径，资源获取相对于该路径下。
  * @version : 2011-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class DirResourceLoader implements ResourceLoader {
+public class DirResourceLoader implements IResourceLoader {
     private File baseDir = null;
     public DirResourceLoader(File baseDir) throws IOException {
         this.baseDir = baseDir;;

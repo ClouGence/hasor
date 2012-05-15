@@ -18,20 +18,25 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import org.more.webui.freemarker.loader.ResourceLoader;
+import org.more.webui.freemarker.loader.IResourceLoader;
+import org.more.webui.freemarker.loader.ITemplateLoader;
 import org.more.webui.freemarker.loader.resource.DirResourceLoader;
 import freemarker.cache.FileTemplateLoader;
 /**
- * 实现了{@link ResourceLoader}接口的{@link FileTemplateLoader}类。
+ * 实现了{@link IResourceLoader}接口的{@link FileTemplateLoader}类。
  * @version : 2011-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class DirTemplateLoader extends FileTemplateLoader implements ResourceLoader {
+public class DirTemplateLoader extends FileTemplateLoader implements ITemplateLoader, IResourceLoader {
     private DirResourceLoader dirResourceLoader = null;
     //
     public DirTemplateLoader(File templateDir) throws IOException {
         super(templateDir);
         this.dirResourceLoader = new DirResourceLoader(this.baseDir);
+    }
+    @Override
+    public String getType() {
+        return this.getClass().getSimpleName();
     }
     public InputStream getResourceAsStream(String resourcePath) throws IOException {
         return this.dirResourceLoader.getResourceAsStream(resourcePath);

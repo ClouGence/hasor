@@ -21,24 +21,28 @@ import java.io.Reader;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import org.more.webui.freemarker.loader.ResourceLoader;
+import org.more.webui.freemarker.loader.IResourceLoader;
+import org.more.webui.freemarker.loader.ITemplateLoader;
 import org.more.webui.freemarker.loader.template.mto.AbstractTemplateObject;
 import org.more.webui.freemarker.loader.template.mto.ClassPath_TemplateObject;
 import org.more.webui.freemarker.loader.template.mto.File_TemplateObject;
 import org.more.webui.freemarker.loader.template.mto.String_TemplateObject;
 import org.more.webui.freemarker.loader.template.mto.URL_TemplateObject;
-import freemarker.cache.TemplateLoader;
 /**
  * 处理配置文件中添加的模板。
  * @version : 2011-9-14
  * @author 赵永春 (zyc@byshell.org) 
  */
-public class ConfigTemplateLoader implements TemplateLoader, ResourceLoader {
+public class ConfigTemplateLoader implements ITemplateLoader, IResourceLoader {
     private Map<String, AbstractTemplateObject> objectMap = null;
     //
     public ConfigTemplateLoader() {
         this.objectMap = new HashMap<String, AbstractTemplateObject>();
     };
+    @Override
+    public String getType() {
+        return this.getClass().getSimpleName();
+    }
     /**将classpath中的一个资源地址作为模板内容添加到装载器中。*/
     public void addTemplate(String name, String classPath) {
         this.objectMap.put(name, new ClassPath_TemplateObject(classPath, Thread.currentThread().getContextClassLoader()));

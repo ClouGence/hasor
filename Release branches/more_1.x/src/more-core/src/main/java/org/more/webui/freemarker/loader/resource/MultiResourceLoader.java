@@ -19,30 +19,30 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import org.more.webui.freemarker.loader.ResourceLoader;
+import org.more.webui.freemarker.loader.IResourceLoader;
 /**
-* 可以将多个{@link ResourceLoader}接口对象作为一个提供出去。。
+* 可以将多个{@link IResourceLoader}接口对象作为一个提供出去。。
 * @version : 2011-9-17
 * @author 赵永春 (zyc@byshell.org)
 */
-public class MultiResourceLoader implements ResourceLoader {
-    private ArrayList<ResourceLoader> resourceLoaders = new ArrayList<ResourceLoader>();
+public class MultiResourceLoader implements IResourceLoader {
+    private ArrayList<IResourceLoader> resourceLoaders = new ArrayList<IResourceLoader>();
     //
     public MultiResourceLoader() {}
-    public MultiResourceLoader(ResourceLoader[] loaders) {
-        for (ResourceLoader loader : loaders)
+    public MultiResourceLoader(IResourceLoader[] loaders) {
+        for (IResourceLoader loader : loaders)
             this.resourceLoaders.add(loader);
     }
-    public MultiResourceLoader(Collection<ResourceLoader> loaders) {
-        for (ResourceLoader loader : loaders)
+    public MultiResourceLoader(Collection<IResourceLoader> loaders) {
+        for (IResourceLoader loader : loaders)
             this.resourceLoaders.add(loader);
     }
-    public void addResourceLoader(ResourceLoader loader) {
+    public void addResourceLoader(IResourceLoader loader) {
         this.resourceLoaders.add(loader);
     }
     public InputStream getResourceAsStream(String resourcePath) throws IOException {
         for (int i = 0; i < resourceLoaders.size(); i++) {
-            ResourceLoader loader = resourceLoaders.get(i);
+            IResourceLoader loader = resourceLoaders.get(i);
             InputStream in = loader.getResourceAsStream(resourcePath);
             if (in != null)
                 return in;
@@ -51,7 +51,7 @@ public class MultiResourceLoader implements ResourceLoader {
     }
     public URL getResource(String resourcePath) throws IOException {
         for (int i = 0; i < resourceLoaders.size(); i++) {
-            ResourceLoader loader = resourceLoaders.get(i);
+            IResourceLoader loader = resourceLoaders.get(i);
             URL url = loader.getResource(resourcePath);
             if (url != null)
                 return url;

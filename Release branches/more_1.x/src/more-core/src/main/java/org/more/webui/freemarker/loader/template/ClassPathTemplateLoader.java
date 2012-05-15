@@ -21,15 +21,15 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.net.URLClassLoader;
-import org.more.webui.freemarker.loader.ResourceLoader;
+import org.more.webui.freemarker.loader.IResourceLoader;
+import org.more.webui.freemarker.loader.ITemplateLoader;
 import org.more.webui.freemarker.loader.resource.ClassPathResourceLoader;
-import freemarker.cache.TemplateLoader;
 /**
- * 处理Classpath中的模板。
- * @version : 2011-9-14
- * @author 赵永春 (zyc@byshell.org) 
- */
-public class ClassPathTemplateLoader extends URLClassLoader implements TemplateLoader, ResourceLoader {
+* 处理Classpath中的模板。
+* @version : 2011-9-14
+* @author 赵永春 (zyc@byshell.org) 
+*/
+public class ClassPathTemplateLoader extends URLClassLoader implements ITemplateLoader, IResourceLoader {
     private String                  packageName    = null;
     private ClassPathResourceLoader resourceLoader = null;
     //
@@ -42,10 +42,15 @@ public class ClassPathTemplateLoader extends URLClassLoader implements TemplateL
     public ClassPathTemplateLoader(String packageName, ClassLoader parent) {
         super(new URL[0], parent);
         this.packageName = (packageName == null) ? "" : packageName;
+        this.packageName = this.packageName.replace(".", "/");
         if (this.packageName.length() > 0)
             if (this.packageName.charAt(0) == '/')
                 this.packageName = this.packageName.substring(1);
         this.resourceLoader = new ClassPathResourceLoader(this.packageName, this);
+    }
+    @Override
+    public String getType() {
+        return this.getClass().getSimpleName();
     }
     public Object findTemplateSource(String name) throws IOException {
         StringBuffer $name = new StringBuffer(this.packageName);

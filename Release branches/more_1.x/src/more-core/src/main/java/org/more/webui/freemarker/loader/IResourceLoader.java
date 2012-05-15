@@ -22,7 +22,7 @@ import java.net.URL;
  * @version : 2011-9-14
  * @author 赵永春 (zyc@byshell.org) 
  */
-public interface ResourceLoader {
+public interface IResourceLoader {
     public URL getResource(String resourcePath) throws IOException;
     /**装载指定资源。*/
     public InputStream getResourceAsStream(String resourcePath) throws IOException;

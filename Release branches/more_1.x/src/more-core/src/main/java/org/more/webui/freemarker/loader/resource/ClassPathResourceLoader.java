@@ -16,7 +16,7 @@
 package org.more.webui.freemarker.loader.resource;
 import java.io.InputStream;
 import java.net.URL;
-import org.more.webui.freemarker.loader.ResourceLoader;
+import org.more.webui.freemarker.loader.IResourceLoader;
 /**
  * {@link ClassPathResourceLoader}会使用一个classpath路径作为相对路径。
  * 假设该类代表了一个名为“org.more.res”的资源包，
@@ -25,7 +25,7 @@ import org.more.webui.freemarker.loader.ResourceLoader;
  * @version : 2011-9-14
  * @author 赵永春 (zyc@byshell.org) 
  */
-public class ClassPathResourceLoader implements ResourceLoader {
+public class ClassPathResourceLoader implements IResourceLoader {
     private String      packageName = null;
     private ClassLoader classLoader = null;
     /***/
