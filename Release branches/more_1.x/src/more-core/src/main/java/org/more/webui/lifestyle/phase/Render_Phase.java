@@ -35,7 +35,7 @@ public class Render_Phase extends Phase {
         if (response.isCommitted() == false) {
             PrintWriter writer = response.getWriter();
             BeanManager manager = uiContext.getUIContext().getBeanManager();
-            uiContext.getTemplate().process(manager.getOgnlContext(), writer);
+            uiContext.getTemplate().process(manager, writer);
         }
     };
 };
