@@ -23,18 +23,17 @@ import org.more.core.event.AbstractEventManager;
 import org.more.core.event.Event;
 import org.more.core.event.EventListener;
 import org.more.core.event.EventManager;
-import org.more.webui.PropertyHolder;
-import org.more.webui.ValueHolder;
 import org.more.webui.ViewContext;
+import org.more.webui._.Register;
+import org.more.webui._.ValueHolder;
 import org.more.webui.event.ActionEvent;
 import org.more.webui.event.InitInvokeEvent;
-import org.more.webui.util.ComponentUtil;
 /**
- * 所有组件的根，这里拥有组件的所有关键方法。
- * @version : 2011-8-4
- * @author 赵永春 (zyc@byshell.org)
- */
-public abstract class UIComponent implements StateHolder {
+* 所有组件的根，这里拥有组件的所有关键方法。
+* @version : 2011-8-4
+* @author 赵永春 (zyc@byshell.org)
+*/
+public abstract class UIComponent {
     private List<UIComponent>        components          = null;
     private boolean                  isRender            = true;
     /**私有事件管理器，该事件时间线不会受到其他组件影响*/
@@ -46,13 +45,13 @@ public abstract class UIComponent implements StateHolder {
         /**组件ID*/
         id,
     };
-    /**获取组件类型名称。*/
+    /**获取组件类型名称（每个类型组件都有可以用于表示该类型的Type）。*/
     public abstract String getComponentType();
     /**返回组件的ID*/
     public String getId() {
         String componentID = this.getProperty(Propertys.id.name()).valueTo(String.class);
         if (componentID == null)
-            this.setId(ComponentUtil.generateID(this.getClass()));
+            this.setId(Register.generateID(this.getClass()));
         return componentID;
     };
     /**设置属性ID*/
@@ -86,13 +85,14 @@ public abstract class UIComponent implements StateHolder {
     public Map<String, ValueHolder> getPropertys() {
         return this.propertys;
     };
-    /**设置用于表示组件属性的字符串。*/
+    /**设置用于表示组件属性的字符串，propertyText参数设置进来的值分为两种：EL类型“${...}”、字符串数据。*/
     public void setPropertyText(String propertyName, String propertyText) {
+        //TODO 不同类型的属性设置处理。
         ValueHolder value = this.getProperty(propertyName);
-        if (value.equalsText(propertyText) == true)
+        if (value != null && value.equalsText(propertyText) == true)
             return;
         /*创建一个新的属性对象放入属性集合*/
-        value = PropertyHolder.createPropertyHolder(propertyText);
+        value = new ValueHolder(propertyText);
         this.getPropertys().put(propertyName, value);
     };
     /**获取用于表示组件属性的字符串。*/
@@ -181,6 +181,7 @@ public abstract class UIComponent implements StateHolder {
         return this.privateEventManager;
     };
     /*-------------------------------------------------------------------------------*/
+    /**从状态数据中恢复状态*/
     public void restoreState(Object[] stateData) {
         //1.数据检查
         if (stateData == null)
@@ -191,8 +192,7 @@ public abstract class UIComponent implements StateHolder {
         Map<String, Object> mineState = (Map<String, Object>) stateData[0];
         for (String propName : mineState.keySet()) {
             ValueHolder vh = this.propertys.get(propName);
-            if (vh != null && vh.isReadOnly() == false)
-                vh.value(mineState.get(propName));
+            vh.value(mineState.get(propName));
         }
         //3.恢复子组件
         Map<String, Object> childrenState = (Map<String, Object>) stateData[1];
@@ -200,13 +200,13 @@ public abstract class UIComponent implements StateHolder {
         for (UIComponent com : uic)
             com.restoreState((Object[]) childrenState.get(com.getId()));
     };
+    /**将组件的数据提取出来*/
     public Object[] saveState() {
         //1.持久化自身的状态
         HashMap<String, Object> mineState = new HashMap<String, Object>();
         for (String propName : this.propertys.keySet()) {
             ValueHolder vh = this.propertys.get(propName);
-            if (vh.isReadOnly() == false)
-                mineState.put(propName, vh.value());
+            mineState.put(propName, vh.value());
         }
         //2.持久化子组件的状态
         HashMap<String, Object> childrenState = new HashMap<String, Object>();
