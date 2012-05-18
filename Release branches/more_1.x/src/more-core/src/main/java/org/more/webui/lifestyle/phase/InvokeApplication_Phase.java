@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.webui.lifestyle.phase;
-import org.more.webui.ViewContext;
+import org.more.webui.context.ViewContext;
 import org.more.webui.lifestyle.Phase;
 import org.more.webui.lifestyle.PhaseID;
 /**

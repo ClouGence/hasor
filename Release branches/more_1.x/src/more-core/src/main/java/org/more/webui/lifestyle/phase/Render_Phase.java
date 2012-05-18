@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 package org.more.webui.lifestyle.phase;
-import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
-import org.more.webui.BeanManager;
-import org.more.webui.ViewContext;
+import org.more.webui.context.UIContext;
+import org.more.webui.context.ViewContext;
 import org.more.webui.lifestyle.Phase;
 import org.more.webui.lifestyle.PhaseID;
+import org.more.webui.tag.TagObject;
 /**
  * 第7阶段，将执行完的UI信息渲染到客户机中。
  * @version : 2011-8-4
@@ -30,12 +32,20 @@ public class Render_Phase extends Phase {
     public PhaseID getPhaseID() {
         return this.phaseID;
     };
-    public void execute(ViewContext uiContext) throws Throwable {
-        HttpServletResponse response = uiContext.getHttpResponse();
+    public void execute(ViewContext viewContext) throws Throwable {
+        if (viewContext.isRender() == false)
+            return;
+        HttpServletResponse response = viewContext.getHttpResponse();
         if (response.isCommitted() == false) {
-            PrintWriter writer = response.getWriter();
-            BeanManager manager = uiContext.getUIContext().getBeanManager();
-            uiContext.getTemplate().process(manager, writer);
+            UIContext uiContext = viewContext.getUIContext();
+            //1.拿到所有标签
+            Map<String, TagObject> tagMap = uiContext.getRegister().createTagObjectMap();
+            //2.拿到用户空间
+            HashMap<String, Object> mm = new HashMap<String, Object>();
+            mm.putAll(tagMap);
+            mm.put("att_1", "aaa");
+            //            BeanManager manager =uiContext .getBeanManager();//TODO
+            viewContext.getTemplate().process(mm, response.getWriter());
         }
     };
 };

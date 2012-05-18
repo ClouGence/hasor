@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <profile xmlns="http://project.byshell.org/more/schema/webui">
 
-
 	<register-Components>
-		<component componentType="" class="" profile="" />
-		<component componentType="" class="" profile="" />
-		<component componentType="" class="" profile="" />
-		<component componentType="" class="" profile="" />
+		<component id="WebUI.ViewRoot" class="org.more.webui.components.UIViewRoot" />
+		<component id="WebUI.UICommand" class="org.more.webui.components.htmls.UICommand" />
+		<component id="WebUI.UIParamter" class="org.more.webui.components.UIParamter" />
 	</register-Components>
 
-
 	<register-Tags>
-		<tag>
-			<tag-name>Table</tag-name>
-			<profile></profile>
-			<componentType></componentType>
+		<tag id="UIParamter">
+			<componentType>WebUI.UIParamter</componentType>
+			<renderID></renderID>
+		</tag>
+		<tag id="user">
+			<componentType>WebUI.UICommand</componentType>
 			<renderID></renderID>
 		</tag>
 	</register-Tags>
 
 
 	<register-Render>
+		<default></default>
 		<renderScope scopeName="default">
-			<render renderID="" class="" profile="" />
-			<render renderID="" class="" profile="" />
+			<render id="WebUIRender.UIParamter" class="" />
+			<render id="WebUIRender.UICommand" class="" />
 		</renderScope>
 	</register-Render>
 </profile>

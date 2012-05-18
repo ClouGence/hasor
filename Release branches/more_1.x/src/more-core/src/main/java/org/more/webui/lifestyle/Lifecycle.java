@@ -16,8 +16,8 @@
 package org.more.webui.lifestyle;
 import java.util.ArrayList;
 import java.util.List;
-import org.more.core.error.MoreActionException;
-import org.more.webui.ViewContext;
+import org.more.webui.UILifecycleException;
+import org.more.webui.context.ViewContext;
 /**
  * 生命周期执行方法
  * @version : 2011-8-3
@@ -43,12 +43,12 @@ public abstract class Lifecycle {
         return list;
     };
     /**开始处理整个ui生命周期方法。 */
-    public void execute(ViewContext uiContext) {
+    public void execute(ViewContext uiContext) throws UILifecycleException {
         for (Phase phase : this.getPhases())
             try {
                 phase.doPhase(uiContext, this.listeners);
             } catch (Throwable e) {
-                throw new MoreActionException("在执行UI生命周期方法期间发生异常。", e);
+                throw new UILifecycleException("生命周期异常：在执行" + phase.getPhaseID() + "阶段期间发生异常。", e);
             }
     };
     /**获取生命周期中的各个阶段对象。*/

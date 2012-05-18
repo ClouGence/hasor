@@ -42,6 +42,6 @@ public class UIParamter extends UIComponent {
     };
     /**设置参数值*/
     public void setValue(Object newValue) {
-        this.setProperty(Propertys.value.name(), newValue);
+        this.getProperty(Propertys.value.name()).value(newValue);
     };
 }

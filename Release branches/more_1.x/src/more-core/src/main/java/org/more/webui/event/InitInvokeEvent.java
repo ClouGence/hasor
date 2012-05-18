@@ -17,8 +17,8 @@ package org.more.webui.event;
 import org.more.core.event.Event;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
-import org.more.webui.ViewContext;
 import org.more.webui.components.UIComponent;
+import org.more.webui.context.ViewContext;
 /**
  * Action引发事件。
  * @version 2011-2-25

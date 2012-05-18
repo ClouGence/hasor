@@ -1,4 +1,5 @@
 package org.more.webui.freemarker.parser;
+import org.more.webui.UIInitException;
 import org.more.webui.components.UIComponent;
 import freemarker.core.TemplateElement;
 /**
@@ -8,7 +9,7 @@ import freemarker.core.TemplateElement;
  */
 public interface ElementHook {
     /**开始处理遇到的模板标签*/
-    public UIComponent beginAtBlcok(TemplateElement e) throws Throwable;
+    public UIComponent beginAtBlcok(TemplateElement e) throws UIInitException;
     /**处理遇到的模板标签结束*/
-    public void endAtBlcok(TemplateElement e);
+    public void endAtBlcok(TemplateElement e) throws UIInitException;
 }

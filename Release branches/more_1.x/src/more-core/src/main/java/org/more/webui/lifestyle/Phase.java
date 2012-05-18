@@ -16,7 +16,7 @@
 package org.more.webui.lifestyle;
 import java.util.Iterator;
 import java.util.List;
-import org.more.webui.ViewContext;
+import org.more.webui.context.ViewContext;
 /**
  * 表示生命周期中的一个阶段。
  * @version : 2011-8-4

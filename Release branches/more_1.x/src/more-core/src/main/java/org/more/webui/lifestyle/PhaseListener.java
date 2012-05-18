@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.webui.lifestyle;
-import org.more.webui.ViewContext;
+import org.more.webui.context.ViewContext;
 /**
  * 阶段事件监听器，当一个阶段的方法被执行时会调用监听器的相关方法。
  * @version : 2011-8-4

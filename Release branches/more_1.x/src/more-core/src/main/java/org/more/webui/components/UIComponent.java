@@ -23,9 +23,7 @@ import org.more.core.event.AbstractEventManager;
 import org.more.core.event.Event;
 import org.more.core.event.EventListener;
 import org.more.core.event.EventManager;
-import org.more.webui.ViewContext;
-import org.more.webui._.Register;
-import org.more.webui._.ValueHolder;
+import org.more.webui.context.ViewContext;
 import org.more.webui.event.ActionEvent;
 import org.more.webui.event.InitInvokeEvent;
 /**
@@ -34,11 +32,14 @@ import org.more.webui.event.InitInvokeEvent;
 * @author 赵永春 (zyc@byshell.org)
 */
 public abstract class UIComponent {
+    private String                   componentID         = null;
     private List<UIComponent>        components          = null;
     private boolean                  isRender            = true;
+    private boolean                  isRenderChildren    = true;
     /**私有事件管理器，该事件时间线不会受到其他组件影响*/
     private EventManager             privateEventManager = new AbstractEventManager() {};
     private Map<String, ValueHolder> propertys           = new HashMap<String, ValueHolder>();
+    private Map<String, UIParamter>  params              = new HashMap<String, UIParamter>();
     //
     /**通用属性表*/
     public enum Propertys {
@@ -49,14 +50,31 @@ public abstract class UIComponent {
     public abstract String getComponentType();
     /**返回组件的ID*/
     public String getId() {
-        String componentID = this.getProperty(Propertys.id.name()).valueTo(String.class);
-        if (componentID == null)
-            this.setId(Register.generateID(this.getClass()));
-        return componentID;
+        return this.componentID;
     };
     /**设置属性ID*/
     public void setId(String componentID) {
-        this.getProperty(Propertys.id.name()).value(componentID);
+        this.componentID = componentID;
+    };
+    /**获取一个请求参数*/
+    public UIParamter getParamter(String name) {
+        return this.params.get(name);
+    };
+    /**获取请求的参数Map*/
+    public Map<String, UIParamter> getParamters() {
+        return this.params;
+    };
+    /**添加一个参数，如果参数名称重复新的会替换旧的。*/
+    public void addParamter(UIParamter uip) {
+        if (uip != null)
+            this.params.put(uip.getName(), uip);
+    };
+    /**添加一个参数，如果参数名称重复新的会替换旧的。*/
+    public void addParamter(String key, Object value) {
+        UIParamter uip = new UIParamter();
+        uip.setName(key);
+        uip.setValue(value);
+        this.addParamter(uip);
     };
     /**在当前组件的子级中寻找某个特定ID的组件*/
     public UIComponent getChildByID(String componentID) {
@@ -79,38 +97,38 @@ public abstract class UIComponent {
             this.components = new ArrayList<UIComponent>();
         return this.components;
     };
+    /**获取一个组建列表该列表中包含了该组建以及该组建的所有子组建。*/
+    public List<UIComponent> getALLChildren() {
+        ArrayList<UIComponent> list = new ArrayList<UIComponent>();
+        list.add(this);
+        for (UIComponent uic : getChildren())
+            list.addAll(uic.getALLChildren());
+        return list;
+    };
     /**子类可以通过该方法初始化组件。*/
     protected void initUIComponent(ViewContext viewContext) {};
     /**获取保存属性的集合。*/
     public Map<String, ValueHolder> getPropertys() {
         return this.propertys;
     };
-    /**设置用于表示组件属性的字符串，propertyText参数设置进来的值分为两种：EL类型“${...}”、字符串数据。*/
-    public void setPropertyText(String propertyName, String propertyText) {
-        //TODO 不同类型的属性设置处理。
-        ValueHolder value = this.getProperty(propertyName);
-        if (value != null && value.equalsText(propertyText) == true)
-            return;
-        /*创建一个新的属性对象放入属性集合*/
-        value = new ValueHolder(propertyText);
-        this.getPropertys().put(propertyName, value);
-    };
-    /**获取用于表示组件属性的字符串。*/
-    public String getPropertyText(String propertyName, String propertyText) {
-        ValueHolder value = this.getProperty(propertyName);
-        if (value != null)
-            return value.getPropertyText();
-        return null;
-    };
     /**获取用于表示组件属性对象。*/
     public ValueHolder getProperty(String propertyName) {
         return this.getPropertys().get(propertyName);
     };
-    /**将新值设置到属性中。*/
-    public void setProperty(String propertyName, Object newValue) {
+    /**设置用于表示组件属性的字符串，propertyText参数设置进来的值分为两种：EL类型“${...}”、字符串数据。*/
+    public void setPropertyEL(String propertyName, String elString) {
         ValueHolder value = this.getProperty(propertyName);
-        if (value != null)
-            value.value(newValue);
+        ExpressionValueHolder elValueHolder = null;
+        if (value == null || value instanceof ExpressionValueHolder == false)
+            elValueHolder = new ExpressionValueHolder(elString);
+        this.getPropertys().put(propertyName, elValueHolder);
+    };
+    /**设置用于表示组件属性的字符串。*/
+    public void setProperty(String propertyName, String newValue) {
+        ValueHolder value = this.getProperty(propertyName);
+        if (value == null)
+            value = new StaticValueHolder(newValue);
+        this.getPropertys().put(propertyName, value);
     };
     /**返回一个boolean值，该值决定是否渲染该组件*/
     public boolean isRender() {
@@ -120,6 +138,14 @@ public abstract class UIComponent {
     public void setRender(boolean isRender) {
         this.isRender = isRender;
     };
+    /**返回一个boolean值，该值决定是否渲染该组件的子组建。*/
+    public boolean isRenderChildren() {
+        return this.isRenderChildren;
+    }
+    /**设置一个boolean值，该值决定是否渲染该组件的子组建。*/
+    public void setRenderChildren(boolean isRenderChildren) {
+        this.isRenderChildren = isRenderChildren;
+    }
     /*-------------------------------------------------------------------------------*/
     /**第1阶段，处理初始化阶段，该阶段负责初始化组件。*/
     public void processInit(ViewContext viewContext) {
@@ -151,7 +177,7 @@ public abstract class UIComponent {
         /*更新所有注册到propertys中的属性值*/
         for (String key : this.propertys.keySet()) {
             ValueHolder vh = this.propertys.get(key);
-            vh.updateModule();
+            vh.updateModule(viewContext);
         }
         for (UIComponent com : this.getChildren())
             com.processUpdate(viewContext);

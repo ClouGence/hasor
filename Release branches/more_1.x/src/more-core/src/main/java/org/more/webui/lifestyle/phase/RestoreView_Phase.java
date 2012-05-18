@@ -16,8 +16,8 @@
 package org.more.webui.lifestyle.phase;
 import org.more.core.error.MoreDataException;
 import org.more.core.json.JsonUtil;
-import org.more.webui.ViewContext;
 import org.more.webui.components.UIViewRoot;
+import org.more.webui.context.ViewContext;
 import org.more.webui.lifestyle.Phase;
 import org.more.webui.lifestyle.PhaseID;
 /**
