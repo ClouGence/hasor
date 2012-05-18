@@ -44,7 +44,7 @@ public class XmlRegister extends XmlParserKitManager {
     private void loadRegisterXML(URL registerURL) throws IOException, XMLStreamException {
         log.info("loadRegisterXML for '{%0}'.", registerURL);
         InputStream in = new AutoCloseInputStream(registerURL.openStream());
-        new XmlReader(in).reader(new Reg_Parser(this), null);
+        getXmlReader(in).reader(new Reg_Parser(this), null);
     }
     /**创建{@link XmlRegister}对象,不重新装载命名空间注册。*/
     public XmlRegister(Object context) throws IOException, XMLStreamException, LoadException {
@@ -63,7 +63,7 @@ public class XmlRegister extends XmlParserKitManager {
     /**添加register配置文件。*/
     public void loadRegister(InputStream stream) throws XMLStreamException, IOException {
         if (stream != null)
-            new XmlReader(stream).reader(new Reg_Parser(this), null);
+            getXmlReader(stream).reader(new Reg_Parser(this), null);
     }
     /**添加register配置文件。*/
     public void loadRegister(URI uri) throws XMLStreamException, IOException {
@@ -116,11 +116,14 @@ public class XmlRegister extends XmlParserKitManager {
     public void addSource(String source) {
         this.addSourceArray(source);
     }
+    protected XmlReader getXmlReader(InputStream in) {
+        return new XmlReader(in);
+    }
     /**解析配置文件流。*/
     public void passerXml(InputStream in, Object context) throws XMLStreamException, IOException {
         if (context != null)
             this.setContext(context);
-        new XmlReader(in).reader(this, null);
+        getXmlReader(in).reader(this, null);
     };
     /**手动执行配置装载动作，如果重复装载可能产生异常。*/
     public synchronized void loadXml() throws IOException, XMLStreamException {

@@ -89,7 +89,10 @@ public class XmlWriter implements XmlAccept {
             this.writer.writeStartElement(ee.getPrefix(), ee.getElementName(), ee.getNamespaceURI());
         } else if (e instanceof EndElementEvent)
             this.writer.writeEndElement();
-        else if (e instanceof TextEvent) {
+        else if (e instanceof AttributeEvent) {
+            AttributeEvent ee = (AttributeEvent) e;
+            this.writer.writeAttribute(ee.getPrefix(), ee.getNamespaceURI(), ee.getElementName(), ee.getValue());
+        } else if (e instanceof TextEvent) {
             TextEvent ee = (TextEvent) e;
             if (ee.isCommentEvent() == true)
                 this.writer.writeComment(ee.getText());
