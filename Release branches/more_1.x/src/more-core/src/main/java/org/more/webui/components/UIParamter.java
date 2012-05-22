@@ -20,8 +20,8 @@ package org.more.webui.components;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class UIParamter extends UIComponent {
-    public String getComponentType() {
-        return "WebUI.UIParamter";
+    public String getTagName() {
+        return "Paramter";
     };
     /*-------------------------------------------------------------------------------属性*/
     /**{@link UIParamter}的属性列表*/

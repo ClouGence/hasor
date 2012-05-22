@@ -13,5 +13,5 @@ public class StaticValueHolder extends ValueHolder {
         this.value(staticValue);
     }
     @Override
-    public void updateModule(ViewContext viewContext) {}
+    public void updateModule(UIComponent component, ViewContext viewContext) {}
 }

@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import org.more.webui.UIInitException;
 import org.more.webui.components.UIComponent;
-import org.more.webui.context.Register;
+import org.more.webui.context.FacesConfig;
 import freemarker.core.Expression;
 import freemarker.core.TemplateElement;
 /**
@@ -13,21 +13,20 @@ import freemarker.core.TemplateElement;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Hook_UserTag implements ElementHook {
-    private Register register = null; //注册器
+    private FacesConfig facesConfig = null; //注册器
     //
-    public Hook_UserTag(Register register) {
-        if (register == null)
+    public Hook_UserTag(FacesConfig facesConfig) {
+        if (facesConfig == null)
             throw new NullPointerException("param ‘component_Register’ si null.");
-        this.register = register;
+        this.facesConfig = facesConfig;
     }
     @Override
     public UIComponent beginAtBlcok(TemplateElement e) throws UIInitException {
-        String tagName = e.getDescription().split(" ")[1];
-        String componentType = this.register.getMappingComponentByTagName(tagName);
-        if (componentType == null)
-            return null;
         //A.创建组建
-        UIComponent com = this.register.createComponent(componentType);
+        String tagName = e.getDescription().split(" ")[1];
+        UIComponent componentObject = this.facesConfig.createComponent(tagName);
+        if (componentObject == null)
+            return null;
         //B.装载属性定义
         Map<String, Expression> namedArgs = null;
         try {
@@ -41,9 +40,9 @@ public class Hook_UserTag implements ElementHook {
                 if (exp.getClass().getSimpleName().equals("StringLiteral") == true) {
                     Field valueField = exp.getClass().getDeclaredField("value");
                     valueField.setAccessible(true);
-                    com.setProperty(key, (String) valueField.get(exp));
+                    componentObject.setProperty(key, (String) valueField.get(exp));
                 } else
-                    com.setPropertyEL(key, exp.getSource());
+                    componentObject.setPropertyEL(key, exp.getSource());
             }
         } catch (Exception e2) {
             throw new UIInitException("Freemarker兼容错误：无法读取namedArgs或value字段。建议使用建议使用freemarker 2.3.19版本。", e2);
@@ -54,18 +53,18 @@ public class Hook_UserTag implements ElementHook {
                 Class<?> strV = Thread.currentThread().getContextClassLoader().loadClass("freemarker.core.StringLiteral");
                 Constructor<?> cons = strV.getDeclaredConstructor(String.class);
                 cons.setAccessible(true);
-                Expression idExp = (Expression) cons.newInstance(com.getId());
+                Expression idExp = (Expression) cons.newInstance(componentObject.getId());
                 namedArgs.put("id", idExp);
             } else {
                 Expression idExp = namedArgs.get("id");
                 Field valueField = idExp.getClass().getDeclaredField("value");
                 valueField.setAccessible(true);
-                com.setId((String) valueField.get(idExp));
+                componentObject.setId((String) valueField.get(idExp));
             }
         } catch (Exception e2) {
             throw new UIInitException("Freemarker兼容错误：无法创建StringLiteral类型对象。建议使用建议使用freemarker 2.3.19版本。", e2);
         }
-        return com;
+        return componentObject;
     }
     @Override
     public void endAtBlcok(TemplateElement e) throws UIInitException {}

@@ -1,4 +1,5 @@
 package org.more.webui.components;
+import org.more.core.ognl.OgnlException;
 import org.more.util.StringConvertUtil;
 import org.more.webui.context.ViewContext;
 /**
@@ -25,5 +26,5 @@ public abstract class ValueHolder {
         this.newValue = newValue;
     }
     /**将写入{@link ValueHolder}的属性的值更新到模型中。*/
-    public abstract void updateModule(ViewContext viewContext);
+    public abstract void updateModule(UIComponent component, ViewContext viewContext) throws OgnlException;
 }

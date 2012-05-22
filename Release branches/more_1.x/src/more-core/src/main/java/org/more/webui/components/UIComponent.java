@@ -23,6 +23,7 @@ import org.more.core.event.AbstractEventManager;
 import org.more.core.event.Event;
 import org.more.core.event.EventListener;
 import org.more.core.event.EventManager;
+import org.more.core.ognl.OgnlException;
 import org.more.webui.context.ViewContext;
 import org.more.webui.event.ActionEvent;
 import org.more.webui.event.InitInvokeEvent;
@@ -46,8 +47,8 @@ public abstract class UIComponent {
         /**组件ID*/
         id,
     };
-    /**获取组件类型名称（每个类型组件都有可以用于表示该类型的Type）。*/
-    public abstract String getComponentType();
+    /**获取组件的标签名称。*/
+    public abstract String getTagName();
     /**返回组件的ID*/
     public String getId() {
         return this.componentID;
@@ -78,6 +79,8 @@ public abstract class UIComponent {
     };
     /**在当前组件的子级中寻找某个特定ID的组件*/
     public UIComponent getChildByID(String componentID) {
+        if (componentID == null)
+            return null;
         if (this.getId().equals(componentID) == true)
             return this;
         for (UIComponent component : this.getChildren()) {
@@ -173,11 +176,11 @@ public abstract class UIComponent {
             com.processValidate(viewContext);
     };
     /**第5阶段，将组件模型中的新值应用到，Bean*/
-    public void processUpdate(ViewContext viewContext) {
+    public void processUpdate(ViewContext viewContext) throws OgnlException {
         /*更新所有注册到propertys中的属性值*/
         for (String key : this.propertys.keySet()) {
             ValueHolder vh = this.propertys.get(key);
-            vh.updateModule(viewContext);
+            vh.updateModule(this, viewContext);
         }
         for (UIComponent com : this.getChildren())
             com.processUpdate(viewContext);

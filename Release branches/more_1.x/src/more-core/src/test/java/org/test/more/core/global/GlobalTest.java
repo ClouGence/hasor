@@ -25,7 +25,7 @@ import org.test.more.core.json.User;
  */
 public class GlobalTest {
     public static void main(String[] args) throws Throwable {
-        Global global = new PropertiesGlobalFactory().createGlobal("org/test/more/core/global/global.properties", "global.properties");
+        Global global = new PropertiesGlobalFactory().createGlobal("utf-8", new Object[] { "org/test/more/core/global/global.properties", "global.properties" });
         long count = 0;
         int step = 50000;
         int index = 0;
@@ -46,7 +46,7 @@ public class GlobalTest {
         //        HashMap context = new HashMap();
         //        context.put("root", root);
         //        System.out.println(Ognl.getValue("root['name']", context));
-        Global global = new PropertiesGlobalFactory().createGlobal("org/test/more/core/global/global.properties", "global.properties");
+        Global global = new PropertiesGlobalFactory().createGlobal("utf-8", new Object[] { "org/test/more/core/global/global.properties", "global.properties" });
         //
         System.out.println(global.getObject("JsonData"));
         System.out.println("----------------");

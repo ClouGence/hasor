@@ -8,24 +8,22 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.more.core.global.Global;
-import org.more.core.global.assembler.XmlGlobalFactory;
-import org.more.webui.context.UIContext;
+import org.more.webui.context.DefaultFacesContextFactory;
+import org.more.webui.context.FacesConfig;
+import org.more.webui.context.FacesContext;
 import org.more.webui.context.ViewContext;
-import org.more.webui.freemarker.loader.template.ClassPathTemplateLoader;
-import org.more.webui.freemarker.loader.template.MultiTemplateLoader;
 import org.more.webui.lifestyle.DefaultLifestyleFactory;
 import org.more.webui.lifestyle.Lifecycle;
-import freemarker.template.Configuration;
 /**
- * 
+ * Web入口
  * @version : 2012-5-11
  * @author 赵永春 (zyc@byshell.org)
  */
 public class WebFilter implements Filter {
-    private String    facesSuffix = ".xhtml";
-    private Lifecycle lifecycle   = null;
-    private UIContext uiContext   = null;
+    private String       facesSuffix = null;
+    private Lifecycle    lifecycle   = null;
+    private FacesConfig  config      = null;
+    private FacesContext uiContext   = null;
     //
     @Override
     public void doFilter(ServletRequest arg0, ServletResponse arg1, FilterChain arg2) throws IOException, ServletException {
@@ -42,28 +40,11 @@ public class WebFilter implements Filter {
     }
     @Override
     public void init(FilterConfig arg0) throws ServletException {
-        try {
-            Configuration cfg = new Configuration();
-            MultiTemplateLoader multi = new MultiTemplateLoader();
-            multi.addTemplateLoader(new ClassPathTemplateLoader("org.more.webui.freemarker.xhtml.parser"));
-            cfg.setLocalizedLookup(false);
-            cfg.setTemplateLoader(multi);
-            //
-            //A.创建注册器
-            XmlGlobalFactory xmlGlobal = new XmlGlobalFactory();
-            xmlGlobal.setIgnoreRootElement(true);
-            xmlGlobal.getLoadNameSpace().add("http://project.byshell.org/more/schema/webui");
-            Global uiConfig = xmlGlobal.createGlobal("utf-8", new Object[] { "META-INF/resource/webui/webui-register.xml" });
-            //
-            this.lifecycle = new DefaultLifestyleFactory().createLifestyle();
-            this.uiContext = new UIContext(uiConfig, cfg);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // TODO Auto-generated method stub
+        this.config = new FacesConfig(arg0);
+        this.facesSuffix = this.config.getFacesSuffix();
+        this.uiContext = new DefaultFacesContextFactory().createFacesContext(this.config);
+        this.lifecycle = new DefaultLifestyleFactory().createLifestyle();
     }
     @Override
-    public void destroy() {
-        // TODO Auto-generated method stub
-    }
+    public void destroy() {}
 }

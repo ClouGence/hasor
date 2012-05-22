@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package org.more.webui.lifestyle.phase;
-import java.util.HashMap;
-import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
-import org.more.webui.context.UIContext;
+import org.more.core.iatt.DecSequenceAttribute;
+import org.more.webui.context.FacesContext;
+import org.more.webui.context.RenderType;
 import org.more.webui.context.ViewContext;
 import org.more.webui.lifestyle.Phase;
 import org.more.webui.lifestyle.PhaseID;
-import org.more.webui.tag.TagObject;
+import org.more.webui.render.RenderKit;
 /**
  * 第7阶段，将执行完的UI信息渲染到客户机中。
  * @version : 2011-8-4
@@ -33,20 +33,25 @@ public class Render_Phase extends Phase {
         return this.phaseID;
     };
     public void execute(ViewContext viewContext) throws Throwable {
-        if (viewContext.isRender() == false)
-            return;
         HttpServletResponse response = viewContext.getHttpResponse();
-        if (response.isCommitted() == false) {
-            UIContext uiContext = viewContext.getUIContext();
-            //1.拿到所有标签
-            Map<String, TagObject> tagMap = uiContext.getRegister().createTagObjectMap();
-            //2.拿到用户空间
-            HashMap<String, Object> mm = new HashMap<String, Object>();
-            mm.putAll(tagMap);
-            mm.put("att_1", "aaa");
-            //            BeanManager manager =uiContext .getBeanManager();//TODO
-            viewContext.getTemplate().process(mm, response.getWriter());
-        }
+        if (response.isCommitted() == true)
+            return;
+        //A.确定渲染范围
+        RenderType renderType = viewContext.isRender();
+        if (renderType == RenderType.No)
+            return;
+        else if (renderType == RenderType.Part)//TODO : 严重问题 有可能不支持
+            return;
+        else if (renderType == RenderType.ALL)
+            return;
+        //B.准备环境
+        FacesContext uiContext = viewContext.getUIContext();
+        RenderKit kit = uiContext.getFacesConfig().getRenderKit(viewContext.getRenderKitName());
+        DecSequenceAttribute seq = new DecSequenceAttribute();
+        seq.putMap(kit.getTags());
+        seq.putMap(uiContext.getAttribute());
+        //C.执行渲染
+        viewContext.getTemplate().process(seq.toMap(), response.getWriter());
     };
 };
 class Render_PhaseID extends PhaseID {

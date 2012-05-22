@@ -20,8 +20,11 @@ package org.more.webui.components;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class UIViewRoot extends UIComponent {
+    public UIViewRoot() {
+        this.setId("com_root");
+    }
     @Override
-    public String getComponentType() {
-        return "WebUI.ViewRoot";
+    public String getTagName() {
+        return "ViewRoot";
     }
 }

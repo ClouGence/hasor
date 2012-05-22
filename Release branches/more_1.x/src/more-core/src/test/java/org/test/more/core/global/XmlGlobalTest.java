@@ -31,8 +31,8 @@ public class XmlGlobalTest {
     public void testBase() throws IOException, ClassNotFoundException, OgnlException, LoadException, XMLStreamException {
         XmlGlobalFactory globalFactory = new XmlGlobalFactory();
         globalFactory.setIgnoreRootElement(true);//在解析XML的时候忽略根节点。
-        Global global = globalFactory.createGlobal("org/test/more/core/global/global.xml");
+        Global global = globalFactory.createGlobal("utf-8", new Object[] { "org/test/more/core/global/global.xml" });
         //
-        System.out.println(global.getString("mongoServer.url"));
+        System.out.println(global.getString("jdbc.driver"));
     }
 }

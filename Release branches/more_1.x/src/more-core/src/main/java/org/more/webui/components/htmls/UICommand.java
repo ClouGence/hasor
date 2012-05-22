@@ -7,8 +7,7 @@ import org.more.webui.components.UIComponent;
  */
 public class UICommand extends UIComponent {
     @Override
-    public String getComponentType() {
-        // TODO Auto-generated method stub
-        return "WebUI.UICommand";
+    public String getTagName() {
+        return "Command";
     }
 }
