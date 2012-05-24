@@ -103,6 +103,7 @@ class Config_ElementHook implements XmlElementHook, XmlAttributeHook, XmlTextHoo
         }
         return sb.toString();
     };
+    /**重要方法：所有拼成的配置项都会使用该方法加入到结果中。*/
     public void putConfig(String key, String value, XmlStackDecorator<Object> context) {
         String $value = value.trim();
         if ($value == null || $value.equals("") == true)

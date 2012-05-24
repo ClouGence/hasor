@@ -25,22 +25,20 @@ import org.more.core.event.EventListener;
 import org.more.core.event.EventManager;
 import org.more.core.ognl.OgnlException;
 import org.more.webui.context.ViewContext;
-import org.more.webui.event.ActionEvent;
-import org.more.webui.event.InitInvokeEvent;
 /**
 * 所有组件的根，这里拥有组件的所有关键方法。
 * @version : 2011-8-4
 * @author 赵永春 (zyc@byshell.org)
 */
 public abstract class UIComponent {
-    private String                   componentID         = null;
-    private List<UIComponent>        components          = null;
-    private boolean                  isRender            = true;
-    private boolean                  isRenderChildren    = true;
+    private String                           componentID         = null;
+    private List<UIComponent>                components          = null;
+    private boolean                          isRender            = true;
+    private boolean                          isRenderChildren    = true;
     /**私有事件管理器，该事件时间线不会受到其他组件影响*/
-    private EventManager             privateEventManager = new AbstractEventManager() {};
-    private Map<String, ValueHolder> propertys           = new HashMap<String, ValueHolder>();
-    private Map<String, UIParamter>  params              = new HashMap<String, UIParamter>();
+    private EventManager                     privateEventManager = new AbstractEventManager() {};
+    private Map<String, AbstractValueHolder> propertys           = new HashMap<String, AbstractValueHolder>();
+    private Map<String, UIParamter>          params              = new HashMap<String, UIParamter>();
     //
     /**通用属性表*/
     public enum Propertys {
@@ -111,24 +109,31 @@ public abstract class UIComponent {
     /**子类可以通过该方法初始化组件。*/
     protected void initUIComponent(ViewContext viewContext) {};
     /**获取保存属性的集合。*/
-    public Map<String, ValueHolder> getPropertys() {
+    public Map<String, AbstractValueHolder> getPropertys() {
         return this.propertys;
     };
     /**获取用于表示组件属性对象。*/
-    public ValueHolder getProperty(String propertyName) {
-        return this.getPropertys().get(propertyName);
+    public AbstractValueHolder getProperty(String propertyName) {
+        AbstractValueHolder value = this.getPropertys().get(propertyName);
+        if (value == null)
+            return new StaticValueHolder();
+        return value;
     };
-    /**设置用于表示组件属性的字符串，propertyText参数设置进来的值分为两种：EL类型“${...}”、字符串数据。*/
-    public void setPropertyEL(String propertyName, String elString) {
-        ValueHolder value = this.getProperty(propertyName);
+    /**添加一个EL形式的组建。属性参数readString、writeString分别对应了业务组建的读写属性。*/
+    public void setPropertyEL(String propertyName, String readString, String writeString) {
+        AbstractValueHolder value = this.getPropertys().get(propertyName);
         ExpressionValueHolder elValueHolder = null;
         if (value == null || value instanceof ExpressionValueHolder == false)
-            elValueHolder = new ExpressionValueHolder(elString);
+            elValueHolder = new ExpressionValueHolder(readString, writeString);
         this.getPropertys().put(propertyName, elValueHolder);
+    };
+    /**该方法会将elString参数会作为readString和、writeString。*/
+    public void setPropertyEL(String propertyName, String elString) {
+        this.setPropertyEL(propertyName, elString, elString);
     };
     /**设置用于表示组件属性的字符串。*/
     public void setProperty(String propertyName, String newValue) {
-        ValueHolder value = this.getProperty(propertyName);
+        AbstractValueHolder value = this.getPropertys().get(propertyName);
         if (value == null)
             value = new StaticValueHolder(newValue);
         this.getPropertys().put(propertyName, value);
@@ -152,8 +157,9 @@ public abstract class UIComponent {
     /*-------------------------------------------------------------------------------*/
     /**第1阶段，处理初始化阶段，该阶段负责初始化组件。*/
     public void processInit(ViewContext viewContext) {
-        /*弹出所有初始化调用事件*/
-        this.privateEventManager.popEvent(Event.getEvent(InitInvokeEvent.class));
+        /*重置属性，重置属性会保证每个生命周期内的属性值是由UI中定义的原始值。*/
+        for (AbstractValueHolder vh : this.propertys.values())
+            vh.reset();
         this.initUIComponent(viewContext);
         for (UIComponent com : this.getChildren())
             com.processInit(viewContext);
@@ -179,16 +185,20 @@ public abstract class UIComponent {
     public void processUpdate(ViewContext viewContext) throws OgnlException {
         /*更新所有注册到propertys中的属性值*/
         for (String key : this.propertys.keySet()) {
-            ValueHolder vh = this.propertys.get(key);
-            vh.updateModule(this, viewContext);
+            AbstractValueHolder vh = this.propertys.get(key);
+            if (vh.isUpdate() == true)
+                vh.updateModule(this, viewContext);
         }
         for (UIComponent com : this.getChildren())
             com.processUpdate(viewContext);
     };
     /**第6阶段，处理Action动作和客户端回传的消息*/
-    public void processApplication(ViewContext viewContext) {
-        /*弹出所有动作事件*/
-        this.privateEventManager.popEvent(Event.getEvent(ActionEvent.class));
+    public void processApplication(ViewContext viewContext) throws OgnlException {
+        /*执行action动作。*/
+        if (this.getId().equals(viewContext.getTarget()) == true)
+            if (this instanceof ActionSource == true)
+                ((ActionSource) this).getActionExpression().execute(this, viewContext);
+        //
         for (UIComponent com : this.getChildren())
             com.processApplication(viewContext);
     };
@@ -220,7 +230,7 @@ public abstract class UIComponent {
         //2.恢复自身数据
         Map<String, Object> mineState = (Map<String, Object>) stateData[0];
         for (String propName : mineState.keySet()) {
-            ValueHolder vh = this.propertys.get(propName);
+            AbstractValueHolder vh = this.propertys.get(propName);
             vh.value(mineState.get(propName));
         }
         //3.恢复子组件
@@ -234,7 +244,7 @@ public abstract class UIComponent {
         //1.持久化自身的状态
         HashMap<String, Object> mineState = new HashMap<String, Object>();
         for (String propName : this.propertys.keySet()) {
-            ValueHolder vh = this.propertys.get(propName);
+            AbstractValueHolder vh = this.propertys.get(propName);
             mineState.put(propName, vh.value());
         }
         //2.持久化子组件的状态

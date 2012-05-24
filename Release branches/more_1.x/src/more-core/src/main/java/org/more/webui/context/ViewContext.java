@@ -4,7 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.more.util.StringConvertUtil;
 import org.more.webui.UIInitException;
-import org.more.webui.components.UIComponent;
 import org.more.webui.components.UIViewRoot;
 import org.more.webui.web.PostFormEnum;
 import freemarker.template.Template;
@@ -76,17 +75,20 @@ public class ViewContext {
     //   PostForm
     /*--------------*/
     /**获取本次请求来源与那个组建。*/
-    public UIComponent getTarget() throws UIInitException, IOException {
-        String targetComponentID = this.getHttpRequest().getParameter(PostFormEnum.PostForm_TargetParamKey.value());
-        return this.getViewRoot().getChildByID(targetComponentID);
+    public String getTarget() {
+        return this.getHttpRequest().getParameter(PostFormEnum.PostForm_TargetParamKey.value());
     };
     //    /**获取客户端引发的事件。*/
     //    public Event getEvent() {};
     /**获取渲染类型，默认渲染全部*/
-    public RenderType isRender() {
+    public RenderType getRenderType() {
         String renderKey = PostFormEnum.PostForm_RenderParamKey.value();
         String renderType = this.getHttpRequest().getParameter(renderKey);
-        return StringConvertUtil.changeType(renderType, RenderType.class, RenderType.ALL);
+        RenderType render = StringConvertUtil.changeType(renderType, RenderType.class, RenderType.ALL);
+        if (render == null)
+            return RenderType.ALL;
+        else
+            return render;
     }
     /**获取请求的状态数据。*/
     public String getStateData() {

@@ -21,5 +21,5 @@ package org.more.webui.components;
 */
 public interface ActionSource {
     /**获取action方法调用表达式*/
-    public MethodExpression getAction();
+    public MethodExpression getActionExpression();
 }

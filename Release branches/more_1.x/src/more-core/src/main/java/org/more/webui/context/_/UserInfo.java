@@ -1,6 +1,7 @@
 package org.more.webui.context._;
+import org.more.webui.context.ViewContext;
 public class UserInfo {
-    private String acc = "default_acc";
+    private String acc = "default_acc22";
     private String pwd = "default_pwd";
     public String getAcc() {
         return acc;
@@ -14,5 +15,5 @@ public class UserInfo {
     public void setPwd(String pwd) {
         this.pwd = pwd;
     }
-    public void login(){};
+    public void login() {};
 }

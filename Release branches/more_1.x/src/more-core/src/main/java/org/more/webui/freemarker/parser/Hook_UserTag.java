@@ -17,7 +17,7 @@ public class Hook_UserTag implements ElementHook {
     //
     public Hook_UserTag(FacesConfig facesConfig) {
         if (facesConfig == null)
-            throw new NullPointerException("param ‘component_Register’ si null.");
+            throw new NullPointerException("param ‘FacesConfig’ si null.");
         this.facesConfig = facesConfig;
     }
     @Override
@@ -49,18 +49,21 @@ public class Hook_UserTag implements ElementHook {
         }
         //C.将组建和标签对象的ID值相互绑定。
         try {
+            String comID = null;
             if (namedArgs.containsKey("id") == false) {
                 Class<?> strV = Thread.currentThread().getContextClassLoader().loadClass("freemarker.core.StringLiteral");
                 Constructor<?> cons = strV.getDeclaredConstructor(String.class);
                 cons.setAccessible(true);
-                Expression idExp = (Expression) cons.newInstance(componentObject.getId());
+                comID = FacesConfig.generateID(componentObject.getClass());//生成新的ID
+                Expression idExp = (Expression) cons.newInstance(comID);
                 namedArgs.put("id", idExp);
             } else {
                 Expression idExp = namedArgs.get("id");
                 Field valueField = idExp.getClass().getDeclaredField("value");
                 valueField.setAccessible(true);
-                componentObject.setId((String) valueField.get(idExp));
+                comID = (String) valueField.get(idExp);
             }
+            componentObject.setId(comID);
         } catch (Exception e2) {
             throw new UIInitException("Freemarker兼容错误：无法创建StringLiteral类型对象。建议使用建议使用freemarker 2.3.19版本。", e2);
         }

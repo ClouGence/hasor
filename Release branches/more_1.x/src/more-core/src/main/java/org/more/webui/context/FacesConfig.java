@@ -134,22 +134,26 @@ public class FacesConfig {
     public void addRender(String scope, String tagName, Class<? extends Render> renderClass) {
         this.getRenderKit(scope).addRender(tagName, renderClass);
     }
+    /*----------------------------------------------------------------*/
+    private static Map<Template, UIViewRoot> rootMap = new HashMap<Template, UIViewRoot>();
     /**用于创建一个{@link UIViewRoot}对象 */
     public UIViewRoot createViewRoot(Template template) throws UIInitException, IOException {
+        if (rootMap.containsKey(template) == true)
+            return rootMap.get(template);
         //A.创建扫描器
         ElementHook hook = new Hook_UserTag(this);/*UnifiedCall：@add*/
         TemplateScanner scanner = new TemplateScanner();
         scanner.addElementHook("UnifiedCall", hook);
         //B.解析模板获取UIViewRoot
-        return (UIViewRoot) scanner.parser(template, new UIViewRoot());
+        UIViewRoot root = (UIViewRoot) scanner.parser(template, new UIViewRoot());
+        rootMap.put(template, root);
+        return root;
     }
     /**根据组建的标签名，创建组建*/
     public UIComponent createComponent(String tagName) throws UIInitException {
         try {
             Class<?> comClass = this.componentMap.get(tagName);
-            UIComponent com = (UIComponent) comClass.newInstance();
-            com.setId(FacesConfig.generateID(com.getClass()));//设置ID
-            return com;
+            return (UIComponent) comClass.newInstance();
         } catch (InstantiationException e) {
             throw new UIInitException("组建错误： ‘" + tagName + "’不能被创建.", e);
         } catch (IllegalAccessException e) {

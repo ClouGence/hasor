@@ -36,22 +36,21 @@ public class Render_Phase extends Phase {
         HttpServletResponse response = viewContext.getHttpResponse();
         if (response.isCommitted() == true)
             return;
-        //A.确定渲染范围
-        RenderType renderType = viewContext.isRender();
+        //A.准备环境
+        FacesContext uiContext = viewContext.getUIContext();
+        RenderKit kit = uiContext.getFacesConfig().getRenderKit(viewContext.getRenderKitName());
+        //
+        DecSequenceAttribute seq = new DecSequenceAttribute();
+        seq.putMap(kit.getTags());
+        seq.putMap(uiContext.getAttribute());
+        //B.确定渲染范围，进行渲染
+        RenderType renderType = viewContext.getRenderType();
         if (renderType == RenderType.No)
             return;
         else if (renderType == RenderType.Part)//TODO : 严重问题 有可能不支持
             return;
         else if (renderType == RenderType.ALL)
-            return;
-        //B.准备环境
-        FacesContext uiContext = viewContext.getUIContext();
-        RenderKit kit = uiContext.getFacesConfig().getRenderKit(viewContext.getRenderKitName());
-        DecSequenceAttribute seq = new DecSequenceAttribute();
-        seq.putMap(kit.getTags());
-        seq.putMap(uiContext.getAttribute());
-        //C.执行渲染
-        viewContext.getTemplate().process(seq.toMap(), response.getWriter());
+            viewContext.getTemplate().process(seq.toMap(), response.getWriter());
     };
 };
 class Render_PhaseID extends PhaseID {
