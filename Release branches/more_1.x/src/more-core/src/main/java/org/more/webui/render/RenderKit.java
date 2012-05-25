@@ -9,10 +9,10 @@ import org.more.webui.tag.TagObject;
  */
 public class RenderKit {
     private Map<String, Class<? extends Render>> renderMapping = new HashMap<String, Class<? extends Render>>();
-    private Map<String, TagObject>               tagMap        = new HashMap<String, TagObject>();
+    private Map<String, Object>                  tagMap        = new HashMap<String, Object>();
     //
     /**获取已经注册的标签对象集合*/
-    public Map<String, TagObject> getTags() {
+    public Map<String, Object> getTags() {
         return this.tagMap;
     }
     public Render getRender(String tagName) {

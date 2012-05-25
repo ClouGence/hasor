@@ -1,5 +1,5 @@
 package org.more.webui.context;
-import org.more.core.iatt.Attribute;
+import java.util.Map;
 import freemarker.template.Configuration;
 /**
  * 
@@ -23,5 +23,5 @@ public abstract class FacesContext {
     /**获取freemarker的配置对象。*/
     public abstract Configuration getFreemarker();
     /**获取属性集合*/
-    public abstract Attribute<Object> getAttribute();
+    public abstract Map<String, Object> getAttribute();
 }

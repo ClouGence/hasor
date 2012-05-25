@@ -1,10 +1,13 @@
 package org.more.webui.context;
 import java.io.IOException;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.more.core.iatt.DecSequenceAttribute;
 import org.more.util.StringConvertUtil;
 import org.more.webui.UIInitException;
 import org.more.webui.components.UIViewRoot;
+import org.more.webui.render.RenderKit;
 import org.more.webui.web.PostFormEnum;
 import freemarker.template.Template;
 /**
@@ -42,6 +45,15 @@ public class ViewContext {
     /**获取响应对象。*/
     public HttpServletResponse getHttpResponse() {
         return this.res;
+    }
+    /**获取与当前视图相关的EL上下文*/
+    public Map<String, Object> getViewELContext() {
+        DecSequenceAttribute<Object> seq = new DecSequenceAttribute<Object>();
+        String kitName = this.getRenderKitName();
+        RenderKit kit = this.getUIContext().getFacesConfig().getRenderKit(kitName);
+        seq.putMap(kit.getTags());
+        seq.putMap(this.getUIContext().getAttribute());
+        return seq.toMap();
     }
     /**获取{@link FacesContext}对象*/
     public FacesContext getUIContext() {

@@ -1,5 +1,5 @@
 package org.more.webui.components;
-import org.more.core.iatt.Attribute;
+import java.util.Map;
 import org.more.core.ognl.Node;
 import org.more.core.ognl.Ognl;
 import org.more.core.ognl.OgnlException;
@@ -41,7 +41,7 @@ public class ExpressionValueHolder extends AbstractValueHolder {
     public void updateModule(UIComponent component, ViewContext viewContext) throws OgnlException {
         if (getWriteNode() == null)
             return;//不支持写入
-        Attribute<Object> elContext = viewContext.getUIContext().getAttribute();
+        Map<String, Object> elContext = viewContext.getViewELContext();
         Ognl.setValue(this.getWriteNode(), elContext, this.value());
         this.value(null);
         this.getValue().needUpdate = false;
@@ -54,7 +54,7 @@ public class ExpressionValueHolder extends AbstractValueHolder {
         //
         try {
             ViewContext viewContext = ViewContext.getCurrentViewContext();
-            Attribute<Object> elContext = viewContext.getUIContext().getAttribute();
+            Map<String, Object> elContext = viewContext.getViewELContext();
             return Ognl.getValue(this.getReadNode(), elContext);
         } catch (OgnlException e) {
             throw new RuntimeException(e);

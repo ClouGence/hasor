@@ -1,5 +1,6 @@
 package org.more.webui.context;
-import org.more.core.iatt.Attribute;
+import java.util.HashMap;
+import java.util.Map;
 import freemarker.template.Configuration;
 /**
  * 
@@ -7,16 +8,16 @@ import freemarker.template.Configuration;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class DefaultFacesContext extends FacesContext {
-    private Configuration     cfg = null;
-    private Attribute<Object> att = null;
+    private Configuration       cfg = null;
+    private Map<String, Object> att = null;
     /*------------------------------------------------*/
     public DefaultFacesContext(FacesConfig config) {
         super(config);
     }
     @Override
-    public Attribute<Object> getAttribute() {
+    public Map<String, Object> getAttribute() {
         if (this.att == null)
-            this.att = new Attribute<Object>();
+            this.att = new HashMap<String, Object>();
         return this.att;
     }
     @Override

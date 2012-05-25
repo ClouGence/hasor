@@ -14,7 +14,10 @@ import org.more.webui.render.Render;
 public class HTMLButton implements Render {
     @Override
     public void beginRender(ViewContext viewContext, UIComponent component, Map params, Writer writer) throws IOException {
-        writer.write("<div id='" + component.getId() + "' ");
+        if (component.getProperty("id").value() == null)
+            writer.write("<div id='" + component.getId() + "' ");
+        else
+            writer.write("<div ");
         Map<String, AbstractValueHolder> entMap = component.getPropertys();
         for (String entKEY : entMap.keySet()) {
             AbstractValueHolder vh = entMap.get(entKEY);

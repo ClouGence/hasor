@@ -15,5 +15,7 @@ public class UserInfo {
     public void setPwd(String pwd) {
         this.pwd = pwd;
     }
-    public void login() {};
+    public void login(String abc) {
+        System.out.println(abc);
+    };
 }

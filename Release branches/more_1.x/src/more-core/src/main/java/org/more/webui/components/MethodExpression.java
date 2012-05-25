@@ -1,4 +1,5 @@
 package org.more.webui.components;
+import java.util.Map;
 import org.more.core.ognl.Node;
 import org.more.core.ognl.Ognl;
 import org.more.core.ognl.OgnlException;
@@ -21,6 +22,8 @@ public class MethodExpression {
         return this.elNodeTree;
     }
     public void execute(UIComponent component, ViewContext viewContext) throws OgnlException {
-        Ognl.getValue(this.getNodeTree(), viewContext.getUIContext().getAttribute(), component);
+        Map<String, Object> viewEL = viewContext.getViewELContext();
+        viewEL.put("this", component);
+        Ognl.getValue(this.getNodeTree(), viewEL);
     }
 }

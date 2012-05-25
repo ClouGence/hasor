@@ -15,13 +15,10 @@
  */
 package org.more.webui.lifestyle.phase;
 import javax.servlet.http.HttpServletResponse;
-import org.more.core.iatt.DecSequenceAttribute;
-import org.more.webui.context.FacesContext;
 import org.more.webui.context.RenderType;
 import org.more.webui.context.ViewContext;
 import org.more.webui.lifestyle.Phase;
 import org.more.webui.lifestyle.PhaseID;
-import org.more.webui.render.RenderKit;
 /**
  * 第7阶段，将执行完的UI信息渲染到客户机中。
  * @version : 2011-8-4
@@ -36,21 +33,15 @@ public class Render_Phase extends Phase {
         HttpServletResponse response = viewContext.getHttpResponse();
         if (response.isCommitted() == true)
             return;
-        //A.准备环境
-        FacesContext uiContext = viewContext.getUIContext();
-        RenderKit kit = uiContext.getFacesConfig().getRenderKit(viewContext.getRenderKitName());
-        //
-        DecSequenceAttribute seq = new DecSequenceAttribute();
-        seq.putMap(kit.getTags());
-        seq.putMap(uiContext.getAttribute());
-        //B.确定渲染范围，进行渲染
+        //确定渲染范围，进行渲染
         RenderType renderType = viewContext.getRenderType();
         if (renderType == RenderType.No)
             return;
-        else if (renderType == RenderType.Part)//TODO : 严重问题 有可能不支持
+        else if (renderType == RenderType.Part) {//TODO : 严重问题 有可能不支持
+            System.out.println("局部渲染::暂不支持.");
             return;
-        else if (renderType == RenderType.ALL)
-            viewContext.getTemplate().process(seq.toMap(), response.getWriter());
+        } else if (renderType == RenderType.ALL)
+            viewContext.getTemplate().process(viewContext.getViewELContext(), response.getWriter());
     };
 };
 class Render_PhaseID extends PhaseID {
