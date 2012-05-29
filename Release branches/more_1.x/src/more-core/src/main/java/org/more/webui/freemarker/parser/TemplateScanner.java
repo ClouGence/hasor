@@ -35,12 +35,12 @@ public class TemplateScanner {
             //同时它也保证在递归调用parserElement方法的过程中element参数永远是componentParent所处组件下的标签。
             UIComponent componentItem = null;
             if (hook != null)
-                componentItem = hook.beginAtBlcok(e);//在解析元素时如果返回了一个UIComponent则将这个UIComponent加入到componentParent
+                componentItem = hook.beginAtBlcok(this, e, componentParent);//在解析元素时如果返回了一个UIComponent则将这个UIComponent加入到componentParent
             if (componentItem != null)
                 componentParent.getChildren().add(componentItem);
             this.parserElement(e, (componentItem != null) ? componentItem : componentParent);//递归解析
             if (hook != null)
-                hook.endAtBlcok(e);
+                hook.endAtBlcok(this, e, componentParent);
         }
         return componentParent;
     }

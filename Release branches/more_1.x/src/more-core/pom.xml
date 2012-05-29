@@ -70,7 +70,7 @@
 			<version>2.5.6.SEC02</version>
 			<optional>true</optional>
 		</dependency>
-		
+
 		<!-- Jetty 8 -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
@@ -99,18 +99,18 @@
 		<!-- <optional>true</optional> -->
 		<!-- </dependency> -->
 		<!-- JSF 2.0 -->
-		<!-- <dependency> -->
-		<!-- <groupId>com.sun.faces</groupId> -->
-		<!-- <artifactId>jsf-api</artifactId> -->
-		<!-- <version>2.1.6</version> -->
-		<!-- <optional>true</optional> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>com.sun.faces</groupId> -->
-		<!-- <artifactId>jsf-impl</artifactId> -->
-		<!-- <version>2.1.6</version> -->
-		<!-- <optional>true</optional> -->
-		<!-- </dependency> -->
+		<dependency>
+			<groupId>com.sun.faces</groupId>
+			<artifactId>jsf-api</artifactId>
+			<version>2.1.6</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.faces</groupId>
+			<artifactId>jsf-impl</artifactId>
+			<version>2.1.6</version>
+			<optional>true</optional>
+		</dependency>
 		<!-- Apache OSGi -->
 		<!-- <dependency> -->
 		<!-- <groupId>org.apache.felix</groupId> -->

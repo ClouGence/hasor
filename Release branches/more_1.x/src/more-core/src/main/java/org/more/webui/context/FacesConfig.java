@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import org.more.webui.UIInitException;
 import org.more.webui.components.UIComponent;
 import org.more.webui.components.UIViewRoot;
@@ -12,7 +13,7 @@ import org.more.webui.freemarker.loader.ITemplateLoader;
 import org.more.webui.freemarker.loader.template.ClassPathTemplateLoader;
 import org.more.webui.freemarker.loader.template.DirTemplateLoader;
 import org.more.webui.freemarker.loader.template.MultiTemplateLoader;
-import org.more.webui.freemarker.parser.ElementHook;
+import org.more.webui.freemarker.parser.Hook_Include;
 import org.more.webui.freemarker.parser.Hook_UserTag;
 import org.more.webui.freemarker.parser.TemplateScanner;
 import org.more.webui.render.Render;
@@ -25,9 +26,6 @@ import freemarker.template.Template;
  */
 public class FacesConfig {
     private String                     encoding           = "utf-8";                         //字符编码
-    private String                     numberFormat       = null;                            //数字格式化
-    private String                     booleanFormat      = null;                            //布尔类型格式化
-    private String                     dateTimeFormat     = null;                            //时间日期格式化
     private boolean                    localizedLookup    = false;                           //是否启用国际化的额支持
     private String                     facesSuffix        = ".xhtml";
     private FilterConfig               initConfig         = null;
@@ -45,27 +43,6 @@ public class FacesConfig {
     /**根据组件类型，生成个组件ID*/
     public static String generateID(Class<? extends UIComponent> compClass) {
         return "com_" + (genID++);
-    }
-    /**获取用于解析模板时解析数字类型的格式。*/
-    public String getNumberFormat() {
-        return this.numberFormat;
-    }
-    public void setNumberFormat(String numberFormat) {
-        this.numberFormat = numberFormat;
-    }
-    /**获取用于解析模板时解析布尔类型的格式。*/
-    public String getBooleanFormat() {
-        return this.booleanFormat;
-    }
-    public void setBooleanFormat(String booleanFormat) {
-        this.booleanFormat = booleanFormat;
-    }
-    /**获取用于解析模板时解析时间日期类型的格式。*/
-    public String getDateTimeFormat() {
-        return this.dateTimeFormat;
-    }
-    public void setDateTimeFormat(String dateTimeFormat) {
-        this.dateTimeFormat = dateTimeFormat;
     }
     /**获取一个boolean值该值决定了模板是否支持国际化。*/
     public boolean isLocalizedLookup() {
@@ -91,6 +68,9 @@ public class FacesConfig {
     public String getInitConfig(String key) {
         return this.initConfig.getInitParameter(key);
     }
+    public ServletContext getServletContext() {
+        return this.initConfig.getServletContext();
+    }
     /*----------------------------------------------------------------*/
     /**添加{@link ITemplateLoader}对象。*/
     public void addLoader(ITemplateLoader loader) {
@@ -102,7 +82,7 @@ public class FacesConfig {
         this.addLoader(loader);
     }
     /**添加一个路径作为Loader的路径。*/
-    public void addTemplateLoader(File templateDir) throws IOException {
+    public void addLoader(File templateDir) throws IOException {
         DirTemplateLoader loader = new DirTemplateLoader(templateDir);
         this.addLoader(loader);
     }
@@ -135,25 +115,24 @@ public class FacesConfig {
         this.getRenderKit(scope).addRender(tagName, renderClass);
     }
     /*----------------------------------------------------------------*/
-    private static Map<Template, UIViewRoot> rootMap = new HashMap<Template, UIViewRoot>();
     /**用于创建一个{@link UIViewRoot}对象 */
-    public UIViewRoot createViewRoot(Template template) throws UIInitException, IOException {
-        if (rootMap.containsKey(template) == true)
-            return rootMap.get(template);
+    public UIViewRoot createViewRoot(Template template, String templateFile) throws UIInitException, IOException {
         //A.创建扫描器
-        ElementHook hook = new Hook_UserTag(this);/*UnifiedCall：@add*/
         TemplateScanner scanner = new TemplateScanner();
-        scanner.addElementHook("UnifiedCall", hook);
+        scanner.addElementHook("UnifiedCall", new Hook_UserTag(this));/*UnifiedCall：@add*/
+        scanner.addElementHook("Include", new Hook_Include(this));/*Include：@Include*/
         //B.解析模板获取UIViewRoot
         UIViewRoot root = (UIViewRoot) scanner.parser(template, new UIViewRoot());
-        rootMap.put(template, root);
         return root;
     }
     /**根据组建的标签名，创建组建*/
     public UIComponent createComponent(String tagName) throws UIInitException {
         try {
             Class<?> comClass = this.componentMap.get(tagName);
-            return (UIComponent) comClass.newInstance();
+            if (comClass != null)
+                return (UIComponent) comClass.newInstance();
+            else
+                return null;
         } catch (InstantiationException e) {
             throw new UIInitException("组建错误： ‘" + tagName + "’不能被创建.", e);
         } catch (IllegalAccessException e) {

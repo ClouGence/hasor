@@ -38,7 +38,8 @@ public abstract class UIComponent {
     /**私有事件管理器，该事件时间线不会受到其他组件影响*/
     private EventManager                     privateEventManager = new AbstractEventManager() {};
     private Map<String, AbstractValueHolder> propertys           = new HashMap<String, AbstractValueHolder>();
-    private Map<String, UIParamter>          params              = new HashMap<String, UIParamter>();
+    /**附带数据对象*/
+    private Object                           data                = null;
     //
     /**通用属性表*/
     public enum Propertys {
@@ -54,26 +55,6 @@ public abstract class UIComponent {
     /**设置属性ID*/
     public void setId(String componentID) {
         this.componentID = componentID;
-    };
-    /**获取一个请求参数*/
-    public UIParamter getParamter(String name) {
-        return this.params.get(name);
-    };
-    /**获取请求的参数Map*/
-    public Map<String, UIParamter> getParamters() {
-        return this.params;
-    };
-    /**添加一个参数，如果参数名称重复新的会替换旧的。*/
-    public void addParamter(UIParamter uip) {
-        if (uip != null)
-            this.params.put(uip.getName(), uip);
-    };
-    /**添加一个参数，如果参数名称重复新的会替换旧的。*/
-    public void addParamter(String key, Object value) {
-        UIParamter uip = new UIParamter();
-        uip.setName(key);
-        uip.setValue(value);
-        this.addParamter(uip);
     };
     /**在当前组件的子级中寻找某个特定ID的组件*/
     public UIComponent getChildByID(String componentID) {
@@ -153,6 +134,14 @@ public abstract class UIComponent {
     /**设置一个boolean值，该值决定是否渲染该组件的子组建。*/
     public void setRenderChildren(boolean isRenderChildren) {
         this.isRenderChildren = isRenderChildren;
+    }
+    /**获取附带的数据对象*/
+    public Object getData() {
+        return data;
+    }
+    /**设置附带的数据对象*/
+    public void setData(Object data) {
+        this.data = data;
     }
     /*-------------------------------------------------------------------------------*/
     /**第1阶段，处理初始化阶段，该阶段负责初始化组件。*/

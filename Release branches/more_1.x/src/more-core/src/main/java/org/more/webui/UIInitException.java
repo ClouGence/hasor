@@ -5,4 +5,7 @@ public class UIInitException extends ServletException {
     public UIInitException(String string, Exception e) {
         super(string, e);
     }
+    public UIInitException(String string) {
+        super(string);
+    }
 }

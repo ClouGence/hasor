@@ -21,7 +21,7 @@ public class Hook_UserTag implements ElementHook {
         this.facesConfig = facesConfig;
     }
     @Override
-    public UIComponent beginAtBlcok(TemplateElement e) throws UIInitException {
+    public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent) throws UIInitException {
         //A.创建组建
         String tagName = e.getDescription().split(" ")[1];
         UIComponent componentObject = this.facesConfig.createComponent(tagName);
@@ -70,5 +70,5 @@ public class Hook_UserTag implements ElementHook {
         return componentObject;
     }
     @Override
-    public void endAtBlcok(TemplateElement e) throws UIInitException {}
+    public void endAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent) throws UIInitException {}
 }

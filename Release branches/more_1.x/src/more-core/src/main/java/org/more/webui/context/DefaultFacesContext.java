@@ -1,6 +1,7 @@
 package org.more.webui.context;
 import java.util.HashMap;
 import java.util.Map;
+import freemarker.cache.MruCacheStorage;
 import freemarker.template.Configuration;
 /**
  * 
@@ -27,15 +28,9 @@ public class DefaultFacesContext extends FacesContext {
             String config = this.getFacesConfig().getEncoding();
             if (config != null)
                 cfg.setDefaultEncoding(config);
-            config = this.getFacesConfig().getDateTimeFormat();
-            if (config != null)
-                cfg.setDateTimeFormat(config);
-            config = this.getFacesConfig().getBooleanFormat();
-            if (config != null)
-                cfg.setBooleanFormat(config);
-            config = this.getFacesConfig().getNumberFormat();
-            if (config != null)
-                cfg.setNumberFormat(config);
+            /*这条必须加，因为没有缓存会有模板重新载入丢失的问题。
+             * 引发这个问题的原因是webui需要向模板中的标签写入id文件。*/
+            cfg.setCacheStorage(new MruCacheStorage(0, Integer.MAX_VALUE));
             //
             cfg.setLocalizedLookup(this.getFacesConfig().isLocalizedLookup());
             cfg.setTemplateLoader(this.getFacesConfig().getMultiTemplateLoader());

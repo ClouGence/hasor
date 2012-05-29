@@ -20,20 +20,25 @@ public class ViewContext {
     private HttpServletResponse res       = null; //res
     private String              facePath  = null; //视图模板位置
     private FacesContext        uiContext = null; //整体上下文
-    private UIViewRoot          viewRoot  = null;
+    private Template            template  = null; //本次请求的模板对象。
     //
     public ViewContext(HttpServletRequest req, HttpServletResponse res, FacesContext uiContext) {
         this.req = req;
         this.res = res;
-        this.facePath = this.req.getRequestURI();
+        this.facePath = this.req.getRequestURI().substring(req.getContextPath().length());
         this.uiContext = uiContext;
     }
+    //
+    //
+    private UIViewRoot viewRoot = null;
     /**获取表示该视图的{@link UIViewRoot}对象。*/
     public UIViewRoot getViewRoot() throws UIInitException, IOException {
         //A.创建UIViewRoot
         if (this.viewRoot == null) {
-            Template temp = this.getTemplate();
-            this.viewRoot = this.uiContext.getFacesConfig().createViewRoot(temp);
+            Template tempRoot = this.uiContext.getFreemarker().getTemplate(this.facePath, this.getEncoding());
+            String reqURI = this.req.getRequestURI();
+            String templateFile = this.req.getServletContext().getRealPath(reqURI);
+            this.viewRoot = this.uiContext.getFacesConfig().createViewRoot(tempRoot, templateFile);
         }
         //B.返回UIViewRoot
         return this.viewRoot;
@@ -46,14 +51,19 @@ public class ViewContext {
     public HttpServletResponse getHttpResponse() {
         return this.res;
     }
+    //
+    //
+    private DecSequenceAttribute<Object> seq = null;
     /**获取与当前视图相关的EL上下文*/
     public Map<String, Object> getViewELContext() {
-        DecSequenceAttribute<Object> seq = new DecSequenceAttribute<Object>();
-        String kitName = this.getRenderKitName();
-        RenderKit kit = this.getUIContext().getFacesConfig().getRenderKit(kitName);
-        seq.putMap(kit.getTags());
-        seq.putMap(this.getUIContext().getAttribute());
-        return seq.toMap();
+        if (this.seq == null) {
+            this.seq = new DecSequenceAttribute<Object>();
+            String kitName = this.getRenderKitName();
+            RenderKit kit = this.getUIContext().getFacesConfig().getRenderKit(kitName);
+            this.seq.putMap(kit.getTags());
+            this.seq.putMap(this.getUIContext().getAttribute());
+        }
+        return this.seq.toMap();
     }
     /**获取{@link FacesContext}对象*/
     public FacesContext getUIContext() {
@@ -63,9 +73,11 @@ public class ViewContext {
     public String getEncoding() {
         return this.uiContext.getEncoding();
     }
-    /**获取视图模板对象*/
+    /**获取视图模板对象，用于渲染*/
     public Template getTemplate() throws IOException {
-        return this.uiContext.getFreemarker().getTemplate(this.facePath, this.getEncoding());
+        if (this.template == null)
+            this.template = this.uiContext.getFreemarker().getTemplate(this.facePath, this.getEncoding());
+        return this.template;
     }
     /**获取使用的渲染器集。*/
     public String getRenderKitName() {

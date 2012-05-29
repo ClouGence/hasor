@@ -11,7 +11,7 @@ public class WebServer {
     public static void main(String[] args) throws Exception {
         Server server = new Server();
         SelectChannelConnector connector = new SelectChannelConnector();
-        connector.setPort(8081);
+        connector.setPort(8082);
         server.addConnector(connector);
         WebAppContext context = new WebAppContext();
         context.setContextPath("/");
