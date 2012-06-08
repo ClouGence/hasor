@@ -28,13 +28,14 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.more.core.error.FormatException;
-import org.more.core.iatt.DecSequenceAttribute;
+import org.more.core.iatt.DecSequenceMap;
 import org.more.core.iatt.IAttribute;
 import org.more.core.iatt.TransformToAttribute;
 import org.more.core.io.AutoCloseInputStream;
@@ -105,20 +106,20 @@ public abstract class ResourcesUtil {
         return Thread.currentThread().getContextClassLoader();
     }
     /**合成所有属性文件的配置信息到一个{@link IAttribute}接口中。*/
-    public static IAttribute<String> getPropertys(String[] resourcePaths) throws IOException {
+    public static Map<String, String> getPropertys(String[] resourcePaths) throws IOException {
         return getPropertys(Arrays.asList(resourcePaths).iterator());
     }
     /**合成所有属性文件的配置信息到一个{@link IAttribute}接口中。*/
-    public static IAttribute<String> getPropertys(Iterator<String> iterator) throws IOException {
+    public static Map<String, String> getPropertys(Iterator<String> iterator) throws IOException {
         if (iterator == null)
             return null;
         //
-        DecSequenceAttribute<String> iatt = new DecSequenceAttribute<String>();
+        DecSequenceMap<String> iatt = new DecSequenceMap<String>();
         while (iterator.hasNext() == true) {
             String str = iterator.next();
             IAttribute<String> att = getPropertys(str);
             if (att != null)
-                iatt.putAtt(str, att);
+                iatt.addMap(att.toMap());
         }
         return iatt;
     }
