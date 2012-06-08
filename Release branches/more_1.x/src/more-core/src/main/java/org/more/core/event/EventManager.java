@@ -23,12 +23,12 @@ import org.more.core.event.Event.Sequence;
 */
 public interface EventManager {
     /**设置默认异常处理器，当执行监听器方法时监听器抛出了异常将有该对象进行处理。*/
-    public void setDefaultEventExceptionHandler(EventExceptionHandler<Event> handler);
+    public void setDefaultEventExceptionHandler(EventExceptionHandler handler);
     /**获取默认的异常处理器，当执行监听器方法时监听器抛出了异常将有该对象进行处理。*/
-    public EventExceptionHandler<Event> getDefaultEventExceptionHandler();
+    public EventExceptionHandler getDefaultEventExceptionHandler();
     /*------------------------------------------------------------------------------*/
     /**添加一种类型事件的事件监听器。*/
-    public void addEventListener(Event eventType, EventListener<?> listener);
+    public void addEventListener(Event eventType, EventListener listener);
     /**清空所有在队列中等待处理的事件。*/
     public void clearEvent();
     /**清空队列中指定类型的事件。*/
@@ -59,17 +59,17 @@ public interface EventManager {
      * @param objects 该事件携带的参数信息
      * @return 返回该事件在队列中的位置。
      */
-    public Sequence pushEvent(Event eventType, EventExceptionHandler<Event> handler, Object... objects);
+    public Sequence pushEvent(Event eventType, EventExceptionHandler handler, Object... objects);
     /**弹出所有类型事件，{@link EventExceptionHandler}类型参数指定了如果在执行事件期间发生异常的异常处理器。
      * 如果该参数指定为空则使用默认的异常处理器。*/
-    public void popEvent(EventExceptionHandler<Event> handler);
+    public void popEvent(EventExceptionHandler handler);
     /**弹出某种特定类型的事件，{@link EventExceptionHandler}类型参数指定了如果在执行事件期间发生异常的异常处理器。
      * 如果该参数指定为空则使用默认的异常处理器。*/
-    public void popEvent(Event eventType, EventExceptionHandler<Event> handler);
+    public void popEvent(Event eventType, EventExceptionHandler handler);
     /**弹出特定顺序位置的事件，{@link EventExceptionHandler}类型参数指定了如果在执行事件期间发生异常的异常处理器。
      * 如果该参数指定为空则使用默认的异常处理器。*/
-    public void popEvent(Sequence sequence, EventExceptionHandler<Event> handler);
+    public void popEvent(Sequence sequence, EventExceptionHandler handler);
     /**绕过事件队列直接通知事件处理器处理这个事件，{@link EventExceptionHandler}类型
      * 参数指定了如果在执行事件期间发生异常的异常处理对象。如果该参数指定为空则使用默认的异常处理器。*/
-    public void doEvent(Event eventType, EventExceptionHandler<Event> handler, Object... objects);
+    public void doEvent(Event eventType, EventExceptionHandler handler, Object... objects);
 }

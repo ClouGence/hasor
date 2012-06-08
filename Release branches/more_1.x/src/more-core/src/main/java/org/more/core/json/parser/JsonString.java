@@ -18,6 +18,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.more.core.json.JsonException;
 import org.more.core.json.JsonParser;
 import org.more.core.json.JsonUtil;
@@ -44,6 +45,8 @@ public class JsonString extends JsonParser {
     };
     public Object toObject(String str) {
         if (str.charAt(0) == 34 || str.charAt(0) == 39) {
+            for (Entry<Character, String> ent : charset.entrySet())
+                str = str.replace(ent.getValue(), String.valueOf(ent.getKey()));
             StringBuffer sb = new StringBuffer(str);
             sb.deleteCharAt(0);
             sb.deleteCharAt(sb.length() - 1);

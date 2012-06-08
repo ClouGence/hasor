@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 package org.more.core.json.parser;
-
 import org.more.core.json.JsonParser;
 import org.more.core.json.JsonUtil;
-
 /**
  *json集合类型数据，它包含了数组类型和对象类型。
  * @version 2010-1-7
@@ -29,6 +27,7 @@ public abstract class JsonMixed extends JsonParser {
     };
     /**读取第一个属性条目*/
     protected String readJSONString(String str) {
+        char strStartWith = 0;
         StringBuffer returnS = new StringBuffer();
         int depth = 0;
         //获取最近的一个属性值
@@ -40,6 +39,19 @@ public abstract class JsonMixed extends JsonParser {
                 depth++;
             else if (s_temp == ']' || s_temp == '}')
                 depth--;
+            else if (s_temp == '\\') {
+                returnS.append(s_temp);
+                i++;
+                s_temp = str.charAt(i);
+            } else if (s_temp == '"' || s_temp == '\'')
+                if (strStartWith == 0) {
+                    strStartWith = s_temp;
+                    depth++;
+                } else {
+                    strStartWith = 0;
+                    depth--;
+                }
+            //
             returnS.append(s_temp);
         }
         return returnS.toString();

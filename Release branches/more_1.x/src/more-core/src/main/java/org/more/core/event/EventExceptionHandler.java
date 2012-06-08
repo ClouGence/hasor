@@ -20,7 +20,7 @@ import org.more.core.event.Event.Sequence;
 * @version : 2011-5-18
 * @author 赵永春 (zyc@byshell.org)
 */
-public interface EventExceptionHandler<T extends Event> {
+public interface EventExceptionHandler {
     /**处理该事件异常。*/
-    public void processException(Throwable exception, Sequence sequence, EventListener<T> listener);
+    public void processException(Throwable exception, Sequence sequence, EventListener listener);
 }

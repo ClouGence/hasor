@@ -28,30 +28,30 @@ import org.more.core.log.LogFactory;
 * @author ’‘”¿¥∫ (zyc@byshell.org)
 */
 public class AbstractEventManager implements EventManager {
-    private static final Log                   log                          = LogFactory.getLog(AbstractEventManager.class);
-    private EventExceptionHandler<Event>       defaultEventExceptionHandler = null;
+    private static final Log                log                          = LogFactory.getLog(AbstractEventManager.class);
+    private EventExceptionHandler           defaultEventExceptionHandler = null;
     //
-    private Map<Event, List<EventListener<?>>> listener                     = new HashMap<Event, List<EventListener<?>>>();
-    private List<Sequence>                     eventQueue                   = new LinkedList<Sequence>();
-    private Map<Sequence, Event>               eventQueueMap                = new HashMap<Sequence, Event>();
+    private Map<Event, List<EventListener>> listener                     = new HashMap<Event, List<EventListener>>();
+    private List<Sequence>                  eventQueue                   = new LinkedList<Sequence>();
+    private Map<Sequence, Event>            eventQueueMap                = new HashMap<Sequence, Event>();
     /*------------------------------------------------------------------------------*/
-    public void setDefaultEventExceptionHandler(EventExceptionHandler<Event> handler) {
+    public void setDefaultEventExceptionHandler(EventExceptionHandler handler) {
         log.info("change default EventExceptionHandler, new handler = {%0}", handler);
         this.defaultEventExceptionHandler = handler;
     }
-    public EventExceptionHandler<Event> getDefaultEventExceptionHandler() {
+    public EventExceptionHandler getDefaultEventExceptionHandler() {
         return this.defaultEventExceptionHandler;
     }
     /*------------------------------------------------------------------------------*/
-    public void addEventListener(Event eventType, EventListener<?> listener) {
+    public void addEventListener(Event eventType, EventListener listener) {
         if (eventType == null || listener == null) {
             log.warning("add event listener error , eventType or listener is null.");
             return;
         }
-        List<EventListener<?>> listeners = this.listener.get(eventType);
+        List<EventListener> listeners = this.listener.get(eventType);
         if (listeners == null) {
             log.debug("this event is first append, event = {%0}, listener = {%1}", eventType, listener);
-            listeners = new ArrayList<EventListener<?>>();
+            listeners = new ArrayList<EventListener>();
             this.listener.put(eventType, listeners);
         }
         log.debug("add event listener, event = {%0}, listener = {%1}", eventType, listener);
@@ -69,7 +69,7 @@ public class AbstractEventManager implements EventManager {
         }
         ArrayList<Sequence> als = new ArrayList<Sequence>();
         for (Sequence si : this.eventQueue)
-            if (si.getEventType() == eventType)
+            if (si.getEventType().equals(eventType) == true)
                 als.add(si);
         for (Sequence si : als)
             this.removeEvent(si);
@@ -111,7 +111,7 @@ public class AbstractEventManager implements EventManager {
         log.debug("popEvent {%0} event...", eventType);
         ArrayList<Sequence> als = new ArrayList<Sequence>();
         for (Sequence si : this.eventQueue)
-            if (si.getEventType() == eventType) {
+            if (si.getEventType().equals(eventType) == true) {
                 this.exeSequence(eventType, si, si.getHandler());//run
                 als.add(si);
             }
@@ -139,7 +139,7 @@ public class AbstractEventManager implements EventManager {
         this.exeSequence(eventType, sequence, this.defaultEventExceptionHandler);
     }
     /*------------------------------------------------------------------------------*/
-    public Sequence pushEvent(Event eventType, EventExceptionHandler<Event> handler, Object... objects) {
+    public Sequence pushEvent(Event eventType, EventExceptionHandler handler, Object... objects) {
         if (eventType == null) {
             log.error("pushEvent an error, eventType is null.");
             return null;
@@ -154,7 +154,7 @@ public class AbstractEventManager implements EventManager {
         log.debug("pushEvent {%0} event ,index = {%1} ,params = {%2}", eventType, impl.getIndex(), objects);
         return impl;
     }
-    public synchronized void popEvent(EventExceptionHandler<Event> handler) {
+    public synchronized void popEvent(EventExceptionHandler handler) {
         log.debug("popEvent all event ... , handler = {%0}", handler);
         for (Sequence si : this.eventQueue) {
             if (handler == null)
@@ -163,7 +163,7 @@ public class AbstractEventManager implements EventManager {
         }
         this.clearEvent();
     }
-    public synchronized void popEvent(Event eventType, EventExceptionHandler<Event> handler) {
+    public synchronized void popEvent(Event eventType, EventExceptionHandler handler) {
         if (eventType == null) {
             log.error("popEvent an error, eventType is null.");
             return;
@@ -171,7 +171,7 @@ public class AbstractEventManager implements EventManager {
         log.debug("popEvent {%0} event... , handler = {%1}", eventType, handler);
         ArrayList<Sequence> als = new ArrayList<Sequence>();
         for (Sequence si : this.eventQueue)
-            if (si.getEventType() == eventType) {
+            if (si.getEventType().equals(eventType) == true) {
                 if (handler == null)
                     handler = si.getHandler();
                 this.exeSequence(eventType, si, handler);//run
@@ -180,7 +180,7 @@ public class AbstractEventManager implements EventManager {
         for (Sequence si : als)
             this.removeEvent(si);//delete
     }
-    public synchronized void popEvent(Sequence sequence, EventExceptionHandler<Event> handler) {
+    public synchronized void popEvent(Sequence sequence, EventExceptionHandler handler) {
         if (sequence == null) {
             log.error("popEvent an error, sequence is null.");
             return;
@@ -193,7 +193,7 @@ public class AbstractEventManager implements EventManager {
         } else
             log.debug("popEvent Sequence is not found, event = {%0}, index = {%1} , handler = {%2}", sequence.getEventType(), sequence.getIndex(), handler);
     }
-    public void doEvent(Event eventType, EventExceptionHandler<Event> handler, Object... objects) {
+    public void doEvent(Event eventType, EventExceptionHandler handler, Object... objects) {
         if (eventType == null) {
             log.error("doEvent an error, eventType is null.");
             return;
@@ -204,12 +204,11 @@ public class AbstractEventManager implements EventManager {
     };
     /*------------------------------------------------------------------------------*/
     /**÷¥––*/
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private void exeSequence(Event eventType, Sequence sequence, EventExceptionHandler<Event> handler) {
+    private void exeSequence(Event eventType, Sequence sequence, EventExceptionHandler handler) {
         //begin
         for (Event e : this.listener.keySet())
-            if (e == eventType) {
-                List<EventListener<?>> listeners = this.listener.get(eventType);
+            if (e.equals(eventType) == true) {
+                List<EventListener> listeners = this.listener.get(eventType);
                 log.debug("run exeSequence, find listeners {%0}", listeners);
                 for (EventListener listener : listeners)
                     try {
@@ -232,12 +231,12 @@ public class AbstractEventManager implements EventManager {
 }
 /***/
 class SequenceImpl extends Sequence {
-    private List<Sequence>               eventQueue = null;
-    private Event                        eventType  = null;
-    private Object[]                     objects    = null;
-    private EventExceptionHandler<Event> handler    = null;
+    private List<Sequence>        eventQueue = null;
+    private Event                 eventType  = null;
+    private Object[]              objects    = null;
+    private EventExceptionHandler handler    = null;
     //
-    SequenceImpl(List<Sequence> eventQueue, Event eventType, EventExceptionHandler<Event> handler, Object[] objects) {
+    SequenceImpl(List<Sequence> eventQueue, Event eventType, EventExceptionHandler handler, Object[] objects) {
         this.eventQueue = eventQueue;
         this.eventType = eventType;
         this.objects = objects;
@@ -251,7 +250,7 @@ class SequenceImpl extends Sequence {
     public Object[] getParams() {
         return this.objects;
     }
-    public EventExceptionHandler<Event> getHandler() {
+    public EventExceptionHandler getHandler() {
         return this.handler;
     }
 }
