@@ -18,7 +18,6 @@ import java.util.Comparator;
 import java.util.Map.Entry;
 import org.junit.Test;
 import org.more.core.iatt.Attribute;
-import org.more.core.iatt.DecSequenceAttribute;
 import org.more.core.iatt.DecStackDecorator;
 import org.more.util.MergeUtil;
 @SuppressWarnings("unchecked")

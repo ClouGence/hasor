@@ -69,8 +69,8 @@ public abstract class CopyBeanUtil {
                     this.propertyWriteList.add((PropertyWrite<Object>) this.createObject($prop, loader));
             }
         }
-        IAttribute<String> attList = ResourcesUtil.getPropertys(configs);
-        nullValueCP = StringConvertUtil.parseBoolean(attList.getAttribute("NullValueCP"), true);
+        Map<String, String> attList = ResourcesUtil.getPropertys(configs);
+        nullValueCP = StringConvertUtil.parseBoolean(attList.get("NullValueCP"), true);
     };
     private Object createObject(String className, ClassLoader loader) {
         try {

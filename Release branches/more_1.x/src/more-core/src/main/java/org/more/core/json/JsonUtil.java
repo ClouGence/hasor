@@ -21,7 +21,7 @@ import java.util.Map;
 import org.more.core.copybean.CopyBeanUtil;
 import org.more.core.error.InitializationException;
 import org.more.core.error.SupportException;
-import org.more.core.iatt.DecSequenceAttribute;
+import org.more.core.iatt.DecSequenceMap;
 import org.more.core.iatt.IAttribute;
 import org.more.util.ResourcesUtil;
 import org.more.util.StringConvertUtil;
@@ -44,7 +44,7 @@ public abstract class JsonUtil {
     protected JsonUtil(String specialConfig) throws Exception {
         //1.’˚¿Ìindex
         ArrayList<String> names = new ArrayList<String>();
-        DecSequenceAttribute<String> seqStack = new DecSequenceAttribute<String>();
+        DecSequenceMap<String> seqStack = new DecSequenceMap<String>();
         //
         ArrayList<String> $configs = new ArrayList<String>();
         for (String c : configs)
@@ -54,7 +54,7 @@ public abstract class JsonUtil {
         //
         for (String cfg : $configs) {
             IAttribute<String> attList = ResourcesUtil.getPropertys(cfg);
-            seqStack.putAtt(attList);
+            seqStack.addMap(attList.toMap());
             String index = attList.getAttribute("index");
             if (index == null)
                 continue;
@@ -67,8 +67,8 @@ public abstract class JsonUtil {
         for (String name : names) {
             if (name == null || name.equals("") == true)
                 continue;
-            String _check = seqStack.getAttribute(name + "_Check");
-            String _parser = seqStack.getAttribute(name + "_Parser");
+            String _check = seqStack.get(name + "_Check");
+            String _parser = seqStack.get(name + "_Parser");
             if (_check == null || _check.equals("") == true || _parser == null || _parser.equals("") == true)
                 continue;
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -78,7 +78,7 @@ public abstract class JsonUtil {
             JsonParser $$_parser = (JsonParser) $_parser.getConstructor(JsonUtil.class).newInstance(this);
             this.addType($$_check, $$_parser);
         }
-        String useDoubleBorder = seqStack.getAttribute("useDoubleBorder");
+        String useDoubleBorder = seqStack.get("useDoubleBorder");
         if (useDoubleBorder == null || useDoubleBorder.equals("") == true)
             this.stringBorder = JsonUtil.StringBorder;
         else {
