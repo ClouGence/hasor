@@ -74,6 +74,33 @@ public abstract class BeanUtil {
             return true;
         return false;
     }
+    /**获取指定类型的默认值。*/
+    public static Object getDefaultValue(Class<?> returnType) {
+        if (returnType == null)
+            return null;
+        else if (returnType == int.class || returnType == Integer.class)
+            return 0;
+        else if (returnType == byte.class || returnType == Byte.class)
+            return 0;
+        else if (returnType == char.class || returnType == Character.class)
+            return ' ';
+        else if (returnType == double.class || returnType == Double.class)
+            return 0d;
+        else if (returnType == float.class || returnType == Float.class)
+            return 0f;
+        else if (returnType == long.class || returnType == Long.class)
+            return 0l;
+        else if (returnType == short.class || returnType == Short.class)
+            return 0;
+        else if (returnType == boolean.class || returnType == Boolean.class)
+            return false;
+        else if (returnType == void.class || returnType == Void.class)
+            return null;
+        else if (returnType.isArray() == true)
+            return null;
+        else
+            return null;
+    };
     /**检测类名是否合法。*/
     public static boolean checkClassName(String className) {
         if (className == null || className.equals(""))

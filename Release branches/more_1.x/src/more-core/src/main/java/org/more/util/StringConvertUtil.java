@@ -81,8 +81,14 @@ public abstract class StringConvertUtil {
      * @return 返回转换之后的值。
      */
     public static <T> T changeType(final Object value, final Class<T> toType, final Object... defaultValue) {
-        if (value == null || toType == null)
+        if (toType == null)
             return null;
+        if (value == null)
+            if (toType.isPrimitive() == true)
+                return (T) BeanUtil.getDefaultValue(toType);
+            else
+                return null;
+        //
         String valueString = value.toString();
         Object defaultVar = (defaultValue.length >= 1) ? defaultValue[0] : null;
         // -----------可以直接转换
