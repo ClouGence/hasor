@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.components;
+package org.more.webui.components.page;
+import org.more.webui.support.UICom;
 /**
-* Action执行接口。
-* @version : 2012-1-1
-* @author 赵永春 (zyc@byshell.org)
-*/
-public interface ActionSource {
-    /**获取action方法调用表达式*/
-    public MethodExpression getActionExpression();
-}
+ * 尾页
+ * @version : 2012-6-14
+ * @author 赵永春 (zyc@byshell.org)
+ */
+@UICom(tagName = "ui_pLast")
+public class LastPageCom extends AbstractItemCom {}

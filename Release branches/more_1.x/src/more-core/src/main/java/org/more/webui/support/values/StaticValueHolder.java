@@ -13,18 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.freemarker.parser;
-import org.more.webui.UIInitException;
+package org.more.webui.support.values;
+import org.more.webui.context.ViewContext;
 import org.more.webui.support.UIComponent;
-import freemarker.core.TemplateElement;
 /**
- * freemarker模板元素块钩子。
- * @version : 2012-5-14
+ * 静态值
+ * @version : 2012-5-11
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ElementHook {
-    /**开始处理遇到的模板标签*/
-    public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent) throws UIInitException;
-    /**处理遇到的模板标签结束*/
-    public void endAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent) throws UIInitException;
+public class StaticValueHolder extends AbstractValueHolder {
+    //
+    public StaticValueHolder() {}
+    public StaticValueHolder(Object staticValue) {
+        this.setMetaValue(staticValue);
+    }
+    @Override
+    public boolean isUpdate() {
+        return false;
+    }
+    @Override
+    public boolean isReadOnly() {
+        return false;
+    }
+    @Override
+    public void updateModule(UIComponent component, ViewContext viewContext) {}
 }

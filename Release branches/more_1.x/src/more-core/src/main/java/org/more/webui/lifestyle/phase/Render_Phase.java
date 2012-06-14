@@ -25,9 +25,14 @@ import org.more.webui.lifestyle.PhaseID;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class Render_Phase extends Phase {
-    private Render_PhaseID phaseID = new Render_PhaseID();
+    public static class Render_PhaseID extends PhaseID {
+        public String getPhaseID() {
+            return "Render";
+        };
+    };
+    private static Render_PhaseID PhaseID = new Render_PhaseID();
     public PhaseID getPhaseID() {
-        return this.phaseID;
+        return PhaseID;
     };
     public void execute(ViewContext viewContext) throws Throwable {
         HttpServletResponse response = viewContext.getHttpResponse();
@@ -42,10 +47,5 @@ public class Render_Phase extends Phase {
             return;
         } else if (renderType == RenderType.ALL)
             viewContext.getTemplate().process(viewContext.getViewELContext(), response.getWriter());
-    };
-};
-class Render_PhaseID extends PhaseID {
-    public String getPhaseID() {
-        return "Render";
     };
 };

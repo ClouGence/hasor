@@ -46,7 +46,9 @@ public abstract class Lifecycle {
     public void execute(ViewContext uiContext) throws UILifecycleException {
         for (Phase phase : this.getPhases())
             try {
+                //                long t = System.currentTimeMillis();
                 phase.doPhase(uiContext, this.listeners);
+                //                System.out.println("$$$$\t" + phase + "\t" + (System.currentTimeMillis() - t));
             } catch (Throwable e) {
                 throw new UILifecycleException("生命周期异常：在执行" + phase.getPhaseID() + "阶段期间发生异常。", e);
             }

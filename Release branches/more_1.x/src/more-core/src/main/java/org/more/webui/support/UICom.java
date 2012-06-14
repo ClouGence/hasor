@@ -13,18 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.components;
-/**
- * 所有组件的根，同时也负责保存所有视图参数。
- * @version : 2012-3-29
- * @author 赵永春 (zyc@byshell.org)
- */
-public class UIViewRoot extends UIComponent {
-    public UIViewRoot() {
-        this.setId("com_root");
-    }
-    @Override
-    public String getTagName() {
-        return "ViewRoot";
-    }
+package org.more.webui.support;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface UICom {
+    /**设置该组建的标签名*/
+    public String tagName();
 }

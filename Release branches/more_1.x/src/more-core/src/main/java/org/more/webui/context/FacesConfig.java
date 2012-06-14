@@ -1,3 +1,18 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.more.webui.context;
 import java.io.File;
 import java.io.IOException;
@@ -7,8 +22,6 @@ import java.util.Map;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import org.more.webui.UIInitException;
-import org.more.webui.components.UIComponent;
-import org.more.webui.components.UIViewRoot;
 import org.more.webui.freemarker.loader.ITemplateLoader;
 import org.more.webui.freemarker.loader.template.ClassPathTemplateLoader;
 import org.more.webui.freemarker.loader.template.DirTemplateLoader;
@@ -16,11 +29,11 @@ import org.more.webui.freemarker.loader.template.MultiTemplateLoader;
 import org.more.webui.freemarker.parser.Hook_Include;
 import org.more.webui.freemarker.parser.Hook_UserTag;
 import org.more.webui.freemarker.parser.TemplateScanner;
-import org.more.webui.render.Render;
-import org.more.webui.render.RenderKit;
+import org.more.webui.support.UIComponent;
+import org.more.webui.support.UIViewRoot;
 import freemarker.template.Template;
 /**
- * 
+ * 该类负责创建webui的各类组建以及获取相关需要配置。
  * @version : 2012-5-22
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -32,8 +45,8 @@ public class FacesConfig {
     private ArrayList<ITemplateLoader> templateLoaderList = new ArrayList<ITemplateLoader>();
     /**组建的标签名和对应的组建类型*/
     private Map<String, Class<?>>      componentMap       = new HashMap<String, Class<?>>();
-    /**组建的标签名和对应的渲染器*/
-    private Map<String, RenderKit>     renderKitMap       = new HashMap<String, RenderKit>();
+    //    /**组建的标签名和对应的渲染器*/
+    //    private Map<String, RenderKit>     renderKitMap       = new HashMap<String, RenderKit>();
     /*----------------------------------------------------------------*/
     public FacesConfig(FilterConfig initConfig) {
         this.initConfig = initConfig;
@@ -101,19 +114,19 @@ public class FacesConfig {
     public void addComponent(String tagName, Class<?> componentClass) {
         this.componentMap.put(tagName, componentClass);
     }
-    /**创建一个{@link RenderKit}*/
-    public RenderKit getRenderKit(String scope) {
-        RenderKit kit = this.renderKitMap.get(scope);
-        if (kit == null) {
-            kit = new RenderKit();
-            this.renderKitMap.put(scope, kit);
-        }
-        return kit;
-    }
-    /**添加标签的映射关系。*/
-    public void addRender(String scope, String tagName, Class<? extends Render> renderClass) {
-        this.getRenderKit(scope).addRender(tagName, renderClass);
-    }
+    //    /**创建一个{@link RenderKit}*/
+    //    public RenderKit getRenderKit(String scope) {
+    //        RenderKit kit = this.renderKitMap.get(scope);
+    //        if (kit == null) {
+    //            kit = new RenderKit();
+    //            this.renderKitMap.put(scope, kit);
+    //        }
+    //        return kit;
+    //    }
+    //    /**添加标签的映射关系。*/
+    //    public void addRender(String scope, String tagName, Class<?> renderClass) {
+    //        this.getRenderKit(scope).addRender(tagName, renderClass);
+    //    }
     /*----------------------------------------------------------------*/
     /**用于创建一个{@link UIViewRoot}对象 */
     public UIViewRoot createViewRoot(Template template, String templateFile) throws UIInitException, IOException {
@@ -127,16 +140,10 @@ public class FacesConfig {
     }
     /**根据组建的标签名，创建组建*/
     public UIComponent createComponent(String tagName) throws UIInitException {
-        try {
-            Class<?> comClass = this.componentMap.get(tagName);
-            if (comClass != null)
-                return (UIComponent) comClass.newInstance();
-            else
-                return null;
-        } catch (InstantiationException e) {
-            throw new UIInitException("组建错误： ‘" + tagName + "’不能被创建.", e);
-        } catch (IllegalAccessException e) {
-            throw new UIInitException("组建错误：在创建 ‘" + tagName + "’期间遇到一个错误的访问权限.", e);
-        }
+        Class<?> comClass = this.componentMap.get(tagName);
+        if (comClass != null)
+            return (UIComponent) AppUtil.getObj(comClass);
+        else
+            return null;
     }
 }

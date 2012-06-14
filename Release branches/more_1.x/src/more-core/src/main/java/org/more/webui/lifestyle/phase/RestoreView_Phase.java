@@ -14,40 +14,38 @@
  * limitations under the License.
  */
 package org.more.webui.lifestyle.phase;
-import org.more.core.error.MoreDataException;
+import java.util.List;
 import org.more.core.json.JsonUtil;
-import org.more.webui.components.UIViewRoot;
 import org.more.webui.context.ViewContext;
 import org.more.webui.lifestyle.Phase;
 import org.more.webui.lifestyle.PhaseID;
+import org.more.webui.support.UIViewRoot;
 /**
  * 第2阶段，重塑UI组件状态。
  * @version : 2011-8-4
  * @author 赵永春 (zyc@byshell.org)
  */
 public class RestoreView_Phase extends Phase {
-    private RestoreView_PhaseID phaseID = new RestoreView_PhaseID();
+    public static class RestoreView_PhaseID extends PhaseID {
+        public String getPhaseID() {
+            return "RestoreView";
+        };
+    };
+    private static RestoreView_PhaseID PhaseID = new RestoreView_PhaseID();
     //
     public PhaseID getPhaseID() {
-        return this.phaseID;
+        return PhaseID;
     };
     public void execute(ViewContext uiContext) throws Throwable {
+        String target = uiContext.getTarget();
+        if (target == null)
+            return;
+        // 回溯状态
+        UIViewRoot viewRoot = uiContext.getViewRoot();
         String stateJsonData = uiContext.getStateData();
         if (stateJsonData == null)
             return;
-        UIViewRoot viewRoot = uiContext.getViewRoot();
-        Object[] viewState = (Object[]) JsonUtil.transformToObject(stateJsonData);
-        //1.数据检查
-        if (viewState == null)
-            return;
-        if (viewState.length != 2)
-            throw new MoreDataException("由于数据丢失无法重塑viewRoot状态。");
-        //2.回溯状态
-        viewRoot.restoreState(viewState);
-    };
-};
-class RestoreView_PhaseID extends PhaseID {
-    public String getPhaseID() {
-        return "RestoreView";
+        Object[] viewState = JsonUtil.fromJson(stateJsonData, List.class).toArray();
+        viewRoot.restoreState(target, viewState);
     };
 };

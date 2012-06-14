@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.freemarker.parser;
-import org.more.webui.UIInitException;
-import org.more.webui.support.UIComponent;
-import freemarker.core.TemplateElement;
+package org.more.webui.render;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * freemarker模板元素块钩子。
- * @version : 2012-5-14
+ * 注册渲染器
+ * @version : 2012-5-30
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ElementHook {
-    /**开始处理遇到的模板标签*/
-    public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent) throws UIInitException;
-    /**处理遇到的模板标签结束*/
-    public void endAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent) throws UIInitException;
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface UIRender {
+    /**注册的标签名*/
+    public String tagName();
 }

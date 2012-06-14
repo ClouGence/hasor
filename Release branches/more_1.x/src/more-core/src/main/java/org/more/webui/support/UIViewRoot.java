@@ -13,18 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.freemarker.parser;
-import org.more.webui.UIInitException;
-import org.more.webui.support.UIComponent;
-import freemarker.core.TemplateElement;
+package org.more.webui.support;
 /**
- * freemarker模板元素块钩子。
- * @version : 2012-5-14
+ * 所有组件的根，同时也负责保存所有视图参数。该组建不使用@UICom注解注册
+ * @version : 2012-3-29
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ElementHook {
-    /**开始处理遇到的模板标签*/
-    public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent) throws UIInitException;
-    /**处理遇到的模板标签结束*/
-    public void endAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent) throws UIInitException;
+public class UIViewRoot extends UIComponent {
+    public UIViewRoot() {
+        this.setId("com_root");
+    }
+    public void restoreState(String componentID, Object[] stateData) {
+        UIComponent com = this.getChildByID(componentID);
+        com.restoreState(stateData);
+    }
+    public Object[] saveState(String componentID) {
+        UIComponent com = this.getChildByID(componentID);
+        return com.saveState();
+    }
 }

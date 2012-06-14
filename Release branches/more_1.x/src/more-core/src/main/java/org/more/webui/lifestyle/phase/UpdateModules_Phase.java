@@ -23,16 +23,16 @@ import org.more.webui.lifestyle.PhaseID;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class UpdateModules_Phase extends Phase {
-    private UpdateModules_PhaseID phaseID = new UpdateModules_PhaseID();
+    public static class UpdateModules_PhaseID extends PhaseID {
+        public String getPhaseID() {
+            return "UpdateModules";
+        };
+    };
+    private static UpdateModules_PhaseID PhaseID = new UpdateModules_PhaseID();
     public PhaseID getPhaseID() {
-        return this.phaseID;
+        return PhaseID;
     };
     public void execute(ViewContext uiContext) throws Throwable {
         uiContext.getViewRoot().processUpdate(uiContext); //执行模型更新
-    };
-};
-class UpdateModules_PhaseID extends PhaseID {
-    public String getPhaseID() {
-        return "UpdateModules";
     };
 };

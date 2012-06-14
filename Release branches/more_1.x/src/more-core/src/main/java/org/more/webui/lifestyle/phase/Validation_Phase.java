@@ -23,16 +23,16 @@ import org.more.webui.lifestyle.PhaseID;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class Validation_Phase extends Phase {
-    private Validation_PhaseID phaseID = new Validation_PhaseID();
+    public static class Validation_PhaseID extends PhaseID {
+        public String getPhaseID() {
+            return "Validation";
+        };
+    };
+    private static Validation_PhaseID PhaseID = new Validation_PhaseID();
     public PhaseID getPhaseID() {
-        return this.phaseID;
+        return PhaseID;
     };
     public void execute(ViewContext uiContext) throws Throwable {
         uiContext.getViewRoot().processValidate(uiContext);
-    };
-};
-class Validation_PhaseID extends PhaseID {
-    public String getPhaseID() {
-        return "Validation";
     };
 };

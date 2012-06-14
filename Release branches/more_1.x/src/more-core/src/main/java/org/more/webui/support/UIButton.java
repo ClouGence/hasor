@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.lifestyle.phase;
+package org.more.webui.support;
 import org.more.webui.context.ViewContext;
-import org.more.webui.lifestyle.Phase;
-import org.more.webui.lifestyle.PhaseID;
 /**
- * 第1阶段，用于初始化视图中的组件模型树。
- * @version : 2012-3-29
+ * Button
+ * @version : 2012-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class InitView_Phase extends Phase {
-    public static class InitView_PhaseID extends PhaseID {
-        public String getPhaseID() {
-            return "InitView";
-        };
-    };
-    private static InitView_PhaseID PhaseID = new InitView_PhaseID();
-    public PhaseID getPhaseID() {
-        return PhaseID;
-    };
-    public void execute(ViewContext viewContext) throws Throwable {
-        viewContext.getViewRoot().processInit(viewContext);
+public class UIButton extends UIComponent {
+    /**通用属性表*/
+    public enum Propertys {
+        /**表示渲染时候是否使用a标签代替input标签，默认：是*/
+        useLink
     }
-};
+    @Override
+    protected void initUIComponent(ViewContext viewContext) {
+        super.initUIComponent(viewContext);
+        this.setProperty(Propertys.useLink.name(), true);
+    }
+    public boolean isUseLink() {
+        return this.getProperty(Propertys.useLink.name()).valueTo(Boolean.TYPE);
+    }
+    public void setUseLink(boolean useLink) {
+        this.getProperty(Propertys.useLink.name()).value(useLink);
+    }
+}

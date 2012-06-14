@@ -23,17 +23,17 @@ import org.more.webui.lifestyle.PhaseID;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class ApplyRequestValue_Phase extends Phase {
-    private ApplyRequestValue_PhaseID phaseID = new ApplyRequestValue_PhaseID();
+    public static class ApplyRequestValue_PhaseID extends PhaseID {
+        public String getPhaseID() {
+            return "ApplyRequestValue";
+        };
+    };
+    private static ApplyRequestValue_PhaseID PhaseID = new ApplyRequestValue_PhaseID();
     //
     public PhaseID getPhaseID() {
-        return this.phaseID;
+        return PhaseID;
     };
     public void execute(ViewContext uiContext) throws Throwable {
         uiContext.getViewRoot().processApplyRequest(uiContext); //应用请求参数
-    };
-};
-class ApplyRequestValue_PhaseID extends PhaseID {
-    public String getPhaseID() {
-        return "ApplyRequestValue";
     };
 };

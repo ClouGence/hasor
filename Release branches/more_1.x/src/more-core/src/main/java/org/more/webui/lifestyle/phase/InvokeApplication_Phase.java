@@ -23,16 +23,16 @@ import org.more.webui.lifestyle.PhaseID;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class InvokeApplication_Phase extends Phase {
-    private InvokeApplication_PhaseID phaseID = new InvokeApplication_PhaseID();
+    public static class InvokeApplication_PhaseID extends PhaseID {
+        public String getPhaseID() {
+            return "InvokeApplication";
+        };
+    };
+    private static InvokeApplication_PhaseID PhaseID = new InvokeApplication_PhaseID();
     public PhaseID getPhaseID() {
-        return this.phaseID;
+        return PhaseID;
     };
     public void execute(ViewContext uiContext) throws Throwable {
         uiContext.getViewRoot().processApplication(uiContext);
-    };
-};
-class InvokeApplication_PhaseID extends PhaseID {
-    public String getPhaseID() {
-        return "InvokeApplication";
     };
 };

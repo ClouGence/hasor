@@ -1,10 +1,25 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.more.webui.freemarker.parser;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import org.more.webui.UIInitException;
-import org.more.webui.components.UIComponent;
-import org.more.webui.components.UIViewRoot;
+import org.more.webui.support.UIComponent;
+import org.more.webui.support.UIViewRoot;
 import freemarker.core.TemplateElement;
 import freemarker.template.Template;
 /**
@@ -37,7 +52,7 @@ public class TemplateScanner {
             if (hook != null)
                 componentItem = hook.beginAtBlcok(this, e, componentParent);//在解析元素时如果返回了一个UIComponent则将这个UIComponent加入到componentParent
             if (componentItem != null)
-                componentParent.getChildren().add(componentItem);
+                componentParent.addChildren(componentItem);
             this.parserElement(e, (componentItem != null) ? componentItem : componentParent);//递归解析
             if (hook != null)
                 hook.endAtBlcok(this, e, componentParent);

@@ -13,18 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.freemarker.parser;
-import org.more.webui.UIInitException;
-import org.more.webui.support.UIComponent;
-import freemarker.core.TemplateElement;
+package org.more.webui.components.targetbutton;
+import org.more.webui.support.UIButton;
+import org.more.webui.support.UICom;
 /**
- * freemarker模板元素块钩子。
- * @version : 2012-5-14
+ * 该组建的功能是引发其他组建的action请求。
+ * @version : 2012-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ElementHook {
-    /**开始处理遇到的模板标签*/
-    public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent) throws UIInitException;
-    /**处理遇到的模板标签结束*/
-    public void endAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent) throws UIInitException;
+@UICom(tagName = "ui_TargetButton")
+public class TargetButton extends UIButton {
+    /**通用属性表*/
+    public enum Propertys {
+        /**所调用的目标ID*/
+        target
+    }
+    public String getTarget() {
+        return this.getProperty(Propertys.target.name()).valueTo(String.class);
+    }
+    public void setTarget(String target) {
+        this.getProperty(Propertys.target.name()).value(target);
+    }
 }
