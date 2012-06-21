@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package org.more.core.global;
+import java.util.AbstractMap;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import org.more.core.error.FormatException;
 import org.more.core.error.SupportException;
-import org.more.core.iatt.Attribute;
-import org.more.core.iatt.IAttribute;
-import org.more.core.iatt.TransformToAttribute;
 import org.more.core.json.JsonUtil;
 import org.more.core.ognl.Node;
 import org.more.core.ognl.Ognl;
@@ -31,76 +31,44 @@ import org.more.util.StringConvertUtil;
  * @version : 2011-12-31
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractGlobal implements IAttribute<Object> {
+public abstract class AbstractGlobal extends AbstractMap<String, Object> {
     /*------------------------------------------------------------------------*/
-    private IAttribute<Object> targetContainer  = new Attribute<Object>();
-    private IAttribute<Object> $targetContainer = null;
-    public AbstractGlobal() {};
-    public AbstractGlobal(Map<String, Object> configs) {
-        this.targetContainer = new TransformToAttribute<Object>(configs);
+    private Map<String, Object> targetContainer  = new HashMap<String, Object>();
+    private Map<String, Object> $targetContainer = null;
+    public AbstractGlobal() {
+        this(null);
     };
-    public AbstractGlobal(IAttribute<Object> configs) {
-        this.targetContainer = configs;
+    public AbstractGlobal(Map<String, Object> configs) {
+        if (configs == null)
+            this.targetContainer = new HashMap<String, Object>();
+        else
+            this.targetContainer = configs;
     };
     /**子类可以重写该方法以替换targetContainer属性容器。*/
-    protected IAttribute<Object> getAttContainer() {
+    protected Map<String, Object> getAttContainer() {
         if (this.$targetContainer != null)
             return this.$targetContainer;
         //
         if (this.isCaseSensitive() == true)
             this.$targetContainer = this.targetContainer;
         else {
-            this.$targetContainer = new Attribute<Object>();
-            String[] ns = this.targetContainer.getAttributeNames();
+            this.$targetContainer = new HashMap<String, Object>();
+            Set<String> ns = this.targetContainer.keySet();
             for (String n : ns)
-                this.$targetContainer.setAttribute(n.toLowerCase(), this.targetContainer.getAttribute(n));
+                this.$targetContainer.put(n.toLowerCase(), this.targetContainer.get(n));
         }
         //
         return $targetContainer;
     }
-    /*------------------------------------------------------------------------*/
     @Override
-    public boolean contains(String name) {
-        return this.getAttContainer().contains(name);
-    }
-    @Override
-    public void setAttribute(String name, Object value) {
-        this.getAttContainer().setAttribute(name, value);
-    }
-    @Override
-    public Object getAttribute(String name) {
-        return this.getAttContainer().getAttribute(name);
-    }
-    @Override
-    public void removeAttribute(String name) {
-        this.getAttContainer().removeAttribute(name);
-    }
-    @Override
-    public String[] getAttributeNames() {
-        return this.getAttContainer().getAttributeNames();
-    }
-    @Override
-    public void clearAttribute() {
-        this.getAttContainer().clearAttribute();
-    }
-    @Override
-    public Map<String, Object> toMap() {
-        return this.getAttContainer().toMap();
-    }
-    @Override
-    public void putMap(Map<String, Object> params) {
-        this.getAttContainer().putMap(params);
-    }
-    @Override
-    public int size() {
-        return this.getAttContainer().size();
+    public Set<Entry<String, Object>> entrySet() {
+        return getAttContainer().entrySet();
     }
     /*------------------------------------------------------------------------*/
     private OgnlContext ognlContext = null;
     private OgnlContext transformToOgnlContext() {
-        if (this.ognlContext == null) {
-            this.ognlContext = new OgnlContext(this.toMap());
-        }
+        if (this.ognlContext == null)
+            this.ognlContext = new OgnlContext(this.getAttContainer());
         return this.ognlContext;
     };
     private boolean caseSensitive = true;
@@ -150,7 +118,7 @@ public abstract class AbstractGlobal implements IAttribute<Object> {
     };
     /**解析全局配置参数，并且返回toType参数指定的类型。*/
     public <T> T getToType(String name, Class<T> toType, T defaultValue) {
-        Object oriObject = this.getAttribute((this.isCaseSensitive() == false) ? name.toLowerCase() : name);
+        Object oriObject = this.getAttContainer().get((this.isCaseSensitive() == false) ? name.toLowerCase() : name);
         if (oriObject == null)
             return defaultValue;
         //

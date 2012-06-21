@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.more.core.iatt.IAttribute;
 import org.more.core.json.JsonException;
 import org.more.core.json.JsonUtil;
 import org.more.util.BeanUtil;
@@ -82,12 +81,7 @@ public class JsonObject extends JsonMixed {
     }
     public String toString(Object bean) {
         StringBuffer json = new StringBuffer("{");
-        if (bean instanceof IAttribute) {
-            IAttribute<Object> att = (IAttribute<Object>) bean;
-            String[] ns = att.getAttributeNames();
-            for (int i = 0; i < ns.length; i++)
-                this.appendObject(json, ns[i], att.getAttribute(ns[i]));
-        } else if (bean instanceof Map) {
+        if (bean instanceof Map) {
             Map<?, ?> map = (Map<?, ?>) bean;
             Set<?> ns = map.keySet();
             for (Object key : ns)

@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import org.more.core.error.InitializationException;
 import org.more.core.error.SupportException;
-import org.more.core.iatt.IAttribute;
 import org.more.util.ResourcesUtil;
 import org.more.util.StringConvertUtil;
 /**
@@ -49,20 +48,20 @@ public abstract class CopyBeanUtil {
     protected CopyBeanUtil() throws IOException {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         for (String cfg : configs) {
-            IAttribute<String> attList = ResourcesUtil.getPropertys(cfg);
-            String convertList = attList.getAttribute("ConvertList");
+            Map<String, String> attList = ResourcesUtil.getPropertys(cfg);
+            String convertList = attList.get("ConvertList");
             if (convertList != null) {
                 String[] $convertList = convertList.split(",");
                 for (String $con : $convertList)
                     this.convertList.add((Convert<Object>) this.createObject($con, loader));
             }
-            String propertyReaderList = attList.getAttribute("PropertyReaderList");
+            String propertyReaderList = attList.get("PropertyReaderList");
             if (propertyReaderList != null) {
                 String[] $propertyReaderList = propertyReaderList.split(",");
                 for (String $prop : $propertyReaderList)
                     this.propertyReaderList.add((PropertyReader<Object>) this.createObject($prop, loader));
             }
-            String propertyWriteList = attList.getAttribute("PropertyWriteList");
+            String propertyWriteList = attList.get("PropertyWriteList");
             if (propertyWriteList != null) {
                 String[] $propertyWriteList = propertyWriteList.split(",");
                 for (String $prop : $propertyWriteList)

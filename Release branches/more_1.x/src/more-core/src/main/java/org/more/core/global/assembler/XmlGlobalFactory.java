@@ -23,8 +23,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import org.more.core.error.FormatException;
 import org.more.core.global.GlobalFactory;
-import org.more.core.iatt.DecParentAttribute;
-import org.more.core.iatt.IAttribute;
 import org.more.core.xml.XmlAttributeHook;
 import org.more.core.xml.XmlElementHook;
 import org.more.core.xml.XmlParserKit;
@@ -86,20 +84,19 @@ class Config_ElementHook implements XmlElementHook, XmlAttributeHook, XmlTextHoo
     };
     private String getElementPath(XmlStackDecorator<Object> context) {
         StringBuffer sb = new StringBuffer();
-        int count = context.getDepth();
-        int beginI = 0;
+        int count = context.getDepth();;
         //决定是否忽略根
+        int beginI = 0;
         if (this.isIgnoreRootElement == true)
             beginI = 1;
         //
-        for (; beginI < count; beginI++) {
-            DecParentAttribute<Object> $att = (DecParentAttribute<Object>) context.getParentStack(count - beginI);
-            IAttribute<Object> att = $att.getSource();//拿到Source对象。
-            QName qname = (QName) att.getAttribute("QName");
+        for (; beginI <= count; beginI++) {
+            Map<String, Object> $att = context.getParentStack(count - beginI);
+            QName qname = (QName) $att.get("QName");
             //
             sb.append(qname.getLocalPart() + ".");
-            if (att.contains("id") == true)
-                sb.append(att.getAttribute("id") + ".");
+            if ($att.containsKey("id") == true)
+                sb.append($att.get("id") + ".");
         }
         return sb.toString();
     };
@@ -116,19 +113,19 @@ class Config_ElementHook implements XmlElementHook, XmlAttributeHook, XmlTextHoo
     public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) throws XMLStreamException, IOException {
         String id = event.getAttributeValue("id");
         if (id != null)
-            context.setAttribute("id", id);
-        context.setAttribute("@Value", new StringBuffer(""));
-        context.setAttribute("QName", event.getName());
+            context.put("id", id);
+        context.put("@Value", new StringBuffer(""));
+        context.put("QName", event.getName());
     };
     public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) throws XMLStreamException, IOException {
         //1.拼成属性名
         String key = getElementPath(context);
-        StringBuffer value = (StringBuffer) context.getAttribute("@Value");
+        StringBuffer value = (StringBuffer) context.get("@Value");
         //2.输出
         this.putConfig(key, value.toString(), context);
     };
     public void attribute(XmlStackDecorator<Object> context, String xpath, AttributeEvent event) throws XMLStreamException, IOException {
-        context.setAttribute("QName", event.getName());
+        context.put("QName", event.getName());
         //1.拼成属性名
         String key = getElementPath(context);
         String value = event.getValue();
@@ -138,7 +135,7 @@ class Config_ElementHook implements XmlElementHook, XmlAttributeHook, XmlTextHoo
         this.putConfig(key, value.toString(), context);
     };
     public void text(XmlStackDecorator<Object> context, String xpath, TextEvent event) throws XMLStreamException, IOException {
-        StringBuffer sb = (StringBuffer) context.getAttribute("@Value");
+        StringBuffer sb = (StringBuffer) context.get("@Value");
         sb.append(event.getTrimText());
     };
 }

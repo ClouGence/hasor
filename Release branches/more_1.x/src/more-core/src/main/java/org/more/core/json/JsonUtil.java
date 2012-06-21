@@ -21,8 +21,7 @@ import java.util.Map;
 import org.more.core.copybean.CopyBeanUtil;
 import org.more.core.error.InitializationException;
 import org.more.core.error.SupportException;
-import org.more.core.iatt.DecSequenceMap;
-import org.more.core.iatt.IAttribute;
+import org.more.core.map.DecSequenceMap;
 import org.more.util.ResourcesUtil;
 import org.more.util.StringConvertUtil;
 /**
@@ -44,7 +43,7 @@ public abstract class JsonUtil {
     protected JsonUtil(String specialConfig) throws Exception {
         //1.’˚¿Ìindex
         ArrayList<String> names = new ArrayList<String>();
-        DecSequenceMap<String> seqStack = new DecSequenceMap<String>();
+        DecSequenceMap<String, String> seqStack = new DecSequenceMap<String, String>();
         //
         ArrayList<String> $configs = new ArrayList<String>();
         for (String c : configs)
@@ -53,9 +52,9 @@ public abstract class JsonUtil {
             $configs.add(specialConfig);
         //
         for (String cfg : $configs) {
-            IAttribute<String> attList = ResourcesUtil.getPropertys(cfg);
-            seqStack.addMap(attList.toMap());
-            String index = attList.getAttribute("index");
+            Map<String, String> attList = ResourcesUtil.getPropertys(cfg);
+            seqStack.addMap(attList);
+            String index = attList.get("index");
             if (index == null)
                 continue;
             String[] $index = index.split(",");

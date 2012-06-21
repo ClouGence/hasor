@@ -21,7 +21,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import org.more.core.error.MoreStateException;
 import org.more.core.error.RepeateException;
-import org.more.core.iatt.IAttribute;
 import org.more.core.xml.stream.AttributeEvent;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
@@ -46,10 +45,10 @@ public class XmlParserKitManager implements XmlAccept {
             this.activateStack = new XmlStackDecorator<Object>();
         return this.activateStack;
     }
-    /**获取环境对象，的{@link IAttribute}属性接口。*/
-    public IAttribute<Object> getAttContext() {
-        return getXmlStack().getSource();
-    }
+    //    /**获取环境对象，的{@link IAttribute}属性接口。*/
+    //    public IAttribute<Object> getAttContext() {
+    //        return getXmlStack().get.getSource();
+    //    }
     /**设置绑定的上下文对象*/
     public void setContext(Object context) {
         getXmlStack().setContext(context);
@@ -124,7 +123,7 @@ public class XmlParserKitManager implements XmlAccept {
                     xpath = "/";//必定是 开始文档或者结束文档事件。
                 else {
                     String prefix = currentElement.getPrefix();
-                    NameSpace ns = (NameSpace) this.activateStack.getAttribute(prefix);
+                    NameSpace ns = (NameSpace) this.activateStack.get(prefix);
                     if (ns == null)
                         throw new MoreStateException("解析错误，前缀[" + prefix + "]代表的命名空间没有被激活。");
                     xpath = ns.getXpath();
