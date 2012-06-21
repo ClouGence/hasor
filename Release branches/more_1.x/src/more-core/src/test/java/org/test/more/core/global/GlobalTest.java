@@ -55,9 +55,9 @@ public class GlobalTest {
             System.out.println(global.getObject(e));
         //
         System.out.println("----------------1");
-        global.setAttribute("testParam", new User());
+        global.put("testParam", new User());
         System.out.println("----------------1");
-        global.setAttribute("testParam", new User());
+        global.put("testParam", new User());
         System.out.println(global.getFilePath("filePath"));
         System.out.println(global.getDirectoryPath("filePath"));
         System.out.println(global.getString("abc.efg"));

@@ -29,16 +29,14 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.more.core.error.FormatException;
-import org.more.core.iatt.DecSequenceMap;
-import org.more.core.iatt.IAttribute;
-import org.more.core.iatt.TransformToAttribute;
 import org.more.core.io.AutoCloseInputStream;
+import org.more.core.map.DecSequenceMap;
+import org.more.core.map.Properties;
 /**
  * classpath工具类
  * @version 2010-9-24
@@ -105,31 +103,31 @@ public abstract class ResourcesUtil {
     private static ClassLoader getCurrentLoader() {
         return Thread.currentThread().getContextClassLoader();
     }
-    /**合成所有属性文件的配置信息到一个{@link IAttribute}接口中。*/
+    /**合成所有属性文件的配置信息到一个{@link Map}接口中。*/
     public static Map<String, String> getPropertys(String[] resourcePaths) throws IOException {
         return getPropertys(Arrays.asList(resourcePaths).iterator());
     }
-    /**合成所有属性文件的配置信息到一个{@link IAttribute}接口中。*/
+    /**合成所有属性文件的配置信息到一个{@link Map}接口中。*/
     public static Map<String, String> getPropertys(Iterator<String> iterator) throws IOException {
         if (iterator == null)
             return null;
         //
-        DecSequenceMap<String> iatt = new DecSequenceMap<String>();
+        DecSequenceMap<String, String> iatt = new DecSequenceMap<String, String>();
         while (iterator.hasNext() == true) {
             String str = iterator.next();
-            IAttribute<String> att = getPropertys(str);
+            Map<String, String> att = getPropertys(str);
             if (att != null)
-                iatt.addMap(att.toMap());
+                iatt.addMap(att);
         }
         return iatt;
     }
-    /**读取一个属性文件，并且以{@link IAttribute}接口的形式返回。*/
-    public static IAttribute<String> getPropertys(String resourcePath) throws IOException {
+    /**读取一个属性文件，并且以{@link Map}接口的形式返回。*/
+    public static Map<String, String> getPropertys(String resourcePath) throws IOException {
         Properties prop = new Properties();
         InputStream in = getResourceAsStream(formatResource(resourcePath));
         if (in != null)
             prop.load(in);
-        return new TransformToAttribute<String>(prop);
+        return prop;
     }
     /**获取classpath中可能存在的资源。*/
     public static URL getResource(String resourcePath) throws IOException {
