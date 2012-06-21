@@ -18,6 +18,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import org.more.webui.UIInitException;
+import org.more.webui.context.FacesContext;
 import org.more.webui.support.UIComponent;
 import org.more.webui.support.UIViewRoot;
 import freemarker.core.TemplateElement;
@@ -34,12 +35,12 @@ public class TemplateScanner {
         this.blockRegister.put(itemType, hook);
     }
     /**解析模板用于生成{@link UIViewRoot}*/
-    public UIComponent parser(Template template, UIComponent uiViewRoot) throws UIInitException {
+    public UIComponent parser(Template template, UIComponent uiViewRoot, FacesContext uiContext) throws UIInitException {
         TemplateElement rootNode = template.getRootTreeNode();
-        return parserElement(rootNode, uiViewRoot);
+        return parserElement(rootNode, uiViewRoot, uiContext);
     }
     /**element要解析的元素，componentParent当前所处组件*/
-    private UIComponent parserElement(TemplateElement element, UIComponent componentParent) throws UIInitException {
+    private UIComponent parserElement(TemplateElement element, UIComponent componentParent, FacesContext uiContext) throws UIInitException {
         Enumeration<TemplateElement> enumItems = element.children();
         while (enumItems.hasMoreElements() == true) {
             //递归扫描所有模板节点。
@@ -50,12 +51,12 @@ public class TemplateScanner {
             //同时它也保证在递归调用parserElement方法的过程中element参数永远是componentParent所处组件下的标签。
             UIComponent componentItem = null;
             if (hook != null)
-                componentItem = hook.beginAtBlcok(this, e, componentParent);//在解析元素时如果返回了一个UIComponent则将这个UIComponent加入到componentParent
+                componentItem = hook.beginAtBlcok(this, e, componentParent, uiContext);//在解析元素时如果返回了一个UIComponent则将这个UIComponent加入到componentParent
             if (componentItem != null)
                 componentParent.addChildren(componentItem);
-            this.parserElement(e, (componentItem != null) ? componentItem : componentParent);//递归解析
+            this.parserElement(e, (componentItem != null) ? componentItem : componentParent, uiContext);//递归解析
             if (hook != null)
-                hook.endAtBlcok(this, e, componentParent);
+                hook.endAtBlcok(this, e, componentParent, uiContext);
         }
         return componentParent;
     }

@@ -16,6 +16,7 @@
 package org.more.webui.freemarker.parser;
 import org.more.webui.UIInitException;
 import org.more.webui.context.FacesConfig;
+import org.more.webui.context.FacesContext;
 import org.more.webui.support.UIComponent;
 import freemarker.core.TemplateElement;
 import freemarker.template.Template;
@@ -33,17 +34,17 @@ public class Hook_Include implements ElementHook {
         this.facesConfig = facesConfig;
     }
     @Override
-    public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent) throws UIInitException {
+    public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, FacesContext uiContext) throws UIInitException {
         try {
             String includeName = e.getDescription().split(" ")[1];
             includeName = includeName.substring(1, includeName.length() - 1);
             Template includeTemp = e.getTemplate().getConfiguration().getTemplate(includeName);
-            scanner.parser(includeTemp, parent);
+            scanner.parser(includeTemp, parent, uiContext);
             return null;
         } catch (Exception e2) {
             throw new UIInitException("解析异常：处理include发生错误“" + e.getDescription() + "”", e2);
         }
     }
     @Override
-    public void endAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent) throws UIInitException {}
+    public void endAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, FacesContext uiContext) throws UIInitException {}
 }

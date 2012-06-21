@@ -19,9 +19,10 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.more.core.iatt.DecSequenceMap;
+import org.more.core.map.DecSequenceMap;
 import org.more.util.StringConvertUtil;
 import org.more.webui.UIInitException;
+import org.more.webui.render.RenderKit;
 import org.more.webui.support.UIComponent;
 import org.more.webui.support.UIViewRoot;
 import org.more.webui.web.PostFormEnum;
@@ -44,19 +45,19 @@ public class ViewContext extends HashMap<String, Object> {
         this.res = res;
         this.facePath = this.req.getRequestURI().substring(req.getContextPath().length());
         this.uiContext = uiContext;
-    }
+    };
     /**获取要渲染的页面*/
     public String getFacePath() {
         return facePath;
-    }
+    };
     /**设置渲染的页面*/
     public void setFacePath(String facePath) {
         this.facePath = facePath;
-    }
+    };
     /**获取一个本次请求中唯一的客户端ID */
     public String getComClientID(UIComponent component) {
         return String.valueOf(comClientID++);
-    }
+    };
     //
     //
     private UIViewRoot viewRoot = null;
@@ -67,63 +68,58 @@ public class ViewContext extends HashMap<String, Object> {
             Template tempRoot = this.getTemplate();
             String reqURI = this.req.getRequestURI();
             String templateFile = this.req.getSession().getServletContext().getRealPath(reqURI);
-            this.viewRoot = this.uiContext.getFacesConfig().createViewRoot(tempRoot, templateFile);
+            this.viewRoot = this.uiContext.getFacesConfig().createViewRoot(tempRoot, templateFile, this.uiContext);
         }
         //B.返回UIViewRoot
         return this.viewRoot;
-    }
+    };
     /**获取请求对象。*/
     public HttpServletRequest getHttpRequest() {
         return this.req;
-    }
+    };
     /**获取响应对象。*/
     public HttpServletResponse getHttpResponse() {
         return this.res;
-    }
-    //
-    //
-    private DecSequenceMap<Object> seq = null;
+    };
+    private DecSequenceMap<String, Object> seq = null;
     /**获取与当前视图相关的EL上下文*/
     public Map<String, Object> getViewELContext() {
         if (this.seq == null) {
-            this.seq = new DecSequenceMap<Object>();
+            this.seq = new DecSequenceMap<String, Object>();
             /*0.标签对象*/
-            //            RenderKit kit = this.getUIContext().getRenderKit();
-            //            this.seq.addMap(kit.getTags());//当WebUI生命周期：渲染。时候使用。
-            //注释原因:在FacesContextFactory初始化时候已经将标签设置到全局services中。
+            RenderKit kit = this.getUIContext().getRenderKit();
+            this.seq.addMap(kit.getTags());//当WebUI生命周期：渲染。时候使用。
             /*1.视图属性*/
             this.seq.addMap(this);
             /*2.环境属性*/
             this.seq.addMap(this.getUIContext().getAttribute());
-            /*3.环境属性*/
-            this.seq.addMap(FreemarkerInit.initModelMap);
         }
         return this.seq;
-    }
+    };
     /**获取{@link FacesContext}对象*/
     public FacesContext getUIContext() {
         return this.uiContext;
-    }
+    };
     /**获取使用的编码*/
     public String getEncoding() {
         return this.uiContext.getEncoding();
-    }
+    };
     /**获取视图模板对象，用于渲染*/
     public Template getTemplate() throws IOException {
         return this.uiContext.getFreemarker().getTemplate(this.facePath, this.getEncoding());
-    }
+    };
     /*--------------*/
     //  ThreadLocal
     /*--------------*/
     private static ThreadLocal<ViewContext> threadLocal = new ThreadLocal<ViewContext>();
     public static ViewContext getCurrentViewContext() {
         return threadLocal.get();
-    }
+    };
     public static void setCurrentViewContext(ViewContext viewContext) {
         if (threadLocal.get() != null)
             threadLocal.remove();
         threadLocal.set(viewContext);
-    }
+    };
     /*--------------*/
     //   PostForm
     /*--------------*/
@@ -145,10 +141,10 @@ public class ViewContext extends HashMap<String, Object> {
             return RenderType.ALL;
         else
             return render;
-    }
+    };
     /**获取请求的状态数据。*/
     public String getStateData() {
         String stateDataKey = PostFormEnum.PostForm_StateDataParamKey.value();
         return this.getHttpRequest().getParameter(stateDataKey);
-    }
+    };
 }

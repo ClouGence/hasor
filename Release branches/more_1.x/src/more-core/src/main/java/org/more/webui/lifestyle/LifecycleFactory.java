@@ -15,6 +15,7 @@
  */
 package org.more.webui.lifestyle;
 import java.util.Set;
+import org.more.util.ClassUtil;
 import org.more.webui.context.FacesConfig;
 import org.more.webui.lifestyle.phase.ApplyRequestValue_Phase;
 import org.more.webui.lifestyle.phase.InitView_Phase;
@@ -51,7 +52,7 @@ public class LifecycleFactory {
         }
         /*添加生命周期监听器*/
         {
-            Set<Class<?>> classSet = AppUtil.getClassSet(UIPhase.class);
+            Set<Class<?>> classSet = ClassUtil.getClassSet(UIPhase.class);
             for (Class<?> type : classSet) {
                 if (PhaseListener.class.isAssignableFrom(type) == false)
                     throw new ClassCastException(type + " to PhaseListener");

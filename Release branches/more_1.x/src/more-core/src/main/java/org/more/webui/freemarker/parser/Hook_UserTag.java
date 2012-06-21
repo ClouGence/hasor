@@ -19,6 +19,7 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import org.more.webui.UIInitException;
 import org.more.webui.context.FacesConfig;
+import org.more.webui.context.FacesContext;
 import org.more.webui.support.UIComponent;
 import freemarker.core.Expression;
 import freemarker.core.TemplateElement;
@@ -36,10 +37,10 @@ public class Hook_UserTag implements ElementHook {
         this.facesConfig = facesConfig;
     }
     @Override
-    public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent) throws UIInitException {
+    public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, FacesContext uiContext) throws UIInitException {
         //A.创建组建
         String tagName = e.getDescription().split(" ")[1];
-        UIComponent componentObject = this.facesConfig.createComponent(tagName);
+        UIComponent componentObject = this.facesConfig.createComponent(tagName, uiContext);
         if (componentObject == null)
             return null;
         //B.装载属性定义
@@ -85,5 +86,5 @@ public class Hook_UserTag implements ElementHook {
         return componentObject;
     }
     @Override
-    public void endAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent) throws UIInitException {}
+    public void endAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, FacesContext uiContext) throws UIInitException {}
 }

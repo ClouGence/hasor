@@ -128,18 +128,17 @@ public class FacesConfig {
     //        this.getRenderKit(scope).addRender(tagName, renderClass);
     //    }
     /*----------------------------------------------------------------*/
-    /**用于创建一个{@link UIViewRoot}对象 */
-    public UIViewRoot createViewRoot(Template template, String templateFile) throws UIInitException, IOException {
+    /**用于创建一个{@link UIViewRoot}对象*/
+    public UIViewRoot createViewRoot(Template template, String templateFile, FacesContext uiContext) throws UIInitException, IOException {
         //A.创建扫描器
         TemplateScanner scanner = new TemplateScanner();
         scanner.addElementHook("UnifiedCall", new Hook_UserTag(this));/*UnifiedCall：@add*/
         scanner.addElementHook("Include", new Hook_Include(this));/*Include：@Include*/
         //B.解析模板获取UIViewRoot
-        UIViewRoot root = (UIViewRoot) scanner.parser(template, new UIViewRoot());
-        return root;
+        return (UIViewRoot) scanner.parser(template, new UIViewRoot(), uiContext);
     }
     /**根据组建的标签名，创建组建*/
-    public UIComponent createComponent(String tagName) throws UIInitException {
+    public UIComponent createComponent(String tagName, FacesContext uiContext) throws UIInitException {
         Class<?> comClass = this.componentMap.get(tagName);
         if (comClass != null)
             return (UIComponent) AppUtil.getObj(comClass);
