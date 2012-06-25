@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -87,11 +88,11 @@ public abstract class ResourcesUtil {
     /**扫描classpath时找到资源的回调接口方法。*/
     public static interface ScanItem {
         /**
-         * 找到资源。
+         * 找到资源(返回值为true表示找到预期的资源结束扫描，false表示继续扫描剩下的资源)
          * @param event 找到资源事件。
          * @param isInJar 找到的资源是否处在jar文件里。
          */
-        public boolean goFind(ScanEvent event, boolean isInJar) throws Throwable;
+        public boolean goFind(ScanEvent event, boolean isInJar);
     };
     /*------------------------------------------------------------------------------*/
     private static String formatResource(String resourcePath) {
@@ -204,7 +205,7 @@ public abstract class ResourcesUtil {
     }
     /*------------------------------------------------------------------------------*/
     /**对某一个目录执行扫描。*/
-    private static boolean scanDir(File dirFile, String wild, ScanItem item, File contextDir) throws Throwable {
+    private static boolean scanDir(File dirFile, String wild, ScanItem item, File contextDir) {
         String contextPath = contextDir.getAbsolutePath().replace("\\", "/");
         //1.如果进来的就是一个文件。
         if (dirFile.isDirectory() == false) {
@@ -239,16 +240,15 @@ public abstract class ResourcesUtil {
         return false;
     }
     /**对某一个jar文件执行扫描。*/
-    public static boolean scanJar(JarFile jarFile, String wild, ScanItem item) throws Throwable {
+    public static boolean scanJar(JarFile jarFile, String wild, ScanItem item) throws IOException {
         final Enumeration<JarEntry> jes = jarFile.entries();
         while (jes.hasMoreElements() == true) {
             JarEntry e = jes.nextElement();
             String name = e.getName();
             if (StringUtil.matchWild(wild, name) == true)
                 if (e.isDirectory() == false)
-                    if (item.goFind(new ScanEvent(name, e, jarFile.getInputStream(e)), true) == true) {
+                    if (item.goFind(new ScanEvent(name, e, jarFile.getInputStream(e)), true) == true)
                         return true;
-                    }
         }
         return false;
     }
@@ -259,7 +259,7 @@ public abstract class ResourcesUtil {
      * @param wild 扫描期间要排除资源的通配符。
      * @param item 当找到资源时执行回调的接口。
      */
-    public static void scan(String wild, ScanItem item) throws Throwable {
+    public static void scan(String wild, ScanItem item) throws IOException, URISyntaxException {
         if (wild == null || wild.equals("") == true)
             return;
         char firstChar = wild.charAt(0);

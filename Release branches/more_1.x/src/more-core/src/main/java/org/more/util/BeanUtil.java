@@ -17,12 +17,14 @@ package org.more.util;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import org.more.core.classcode.EngineToos;
 import org.more.core.classcode.RootClassLoader;
+import org.more.core.error.InvokeException;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 /**
@@ -139,6 +141,50 @@ public abstract class BeanUtil {
         int indexStart = str.indexOf(declaringClass);
         str.delete(indexStart, indexStart + declaringClass.length() + 1);
         return str.toString();
+    }
+    /**
+     * 该方法的作用是反射的形式调用目标的方法。
+     * @param target 被调用的对象
+     * @param methodName 要调用的反射方法名。
+     * @param objects 参数列表
+     */
+    public static Object invokeMethod(Object target, String methodName, Object... objects) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+        if (target == null)
+            return null;
+        Class<?> targetType = target.getClass();
+        Method invokeMethod = null;
+        //反射调用方法
+        Method[] ms = targetType.getMethods();
+        for (Method m : ms) {
+            //1.名字不相等的忽略
+            if (m.getName().equals(methodName) == false)
+                continue;
+            //2.目标方法参数列表个数与types字段中存放的个数不一样的忽略。
+            Class<?>[] paramTypes = m.getParameterTypes();
+            if (paramTypes.length != objects.length)
+                continue;
+            //3.如果有参数类型不一样的也忽略---1
+            boolean isFind = true;
+            for (int i = 0; i < paramTypes.length; i++) {
+                Object param_object = objects[i];
+                if (param_object == null)
+                    continue;
+                //
+                if (paramTypes[i].isAssignableFrom(param_object.getClass()) == false) {
+                    isFind = false;
+                    break;
+                }
+            }
+            //5.如果有参数类型不一样的也忽略---2
+            if (isFind == false)
+                continue;
+            //符合条件执行调用
+            invokeMethod = m;
+        }
+        if (invokeMethod == null)
+            throw new InvokeException("无法调用目标方法[" + methodName + "]！");
+        else
+            return invokeMethod.invoke(target, objects);
     }
     /*----------------------------------------------------------------------------------------*/
     /**获取类定义的字段和继承父类中定义的字段以及父类的父类（子类重新定义同名字段也会被列入集合）。*/
