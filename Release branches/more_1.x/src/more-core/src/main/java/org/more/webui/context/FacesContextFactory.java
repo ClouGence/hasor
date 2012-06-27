@@ -16,7 +16,6 @@
 package org.more.webui.context;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.more.util.ClassUtil;
 import org.more.webui.render.NoRender;
 import org.more.webui.render.Render;
 import org.more.webui.render.RenderKit;
@@ -34,7 +33,7 @@ public class FacesContextFactory {
         FacesContext fc = new FacesContext(config) {};
         //A.扫描注解添加组建。
         {
-            Set<Class<?>> classSet = ClassUtil.getClassSet(UICom.class);
+            Set<Class<?>> classSet = config.getClassSet(UICom.class);
             for (Class<?> type : classSet) {
                 UICom uicom = type.getAnnotation(UICom.class);
                 if (UIComponent.class.isAssignableFrom(type) == false)
@@ -49,7 +48,7 @@ public class FacesContextFactory {
         }
         //B.扫描注解添加标签渲染器。
         {
-            Set<Class<?>> classSet = ClassUtil.getClassSet(UIRender.class);
+            Set<Class<?>> classSet = config.getClassSet(UIRender.class);
             for (Class<?> type : classSet) {
                 UIRender uiRender = type.getAnnotation(UIRender.class);
                 if (Render.class.isAssignableFrom(type) == false)

@@ -145,7 +145,11 @@ public class PageCom extends UIComponent {
     public String getPageLinkAsTemplate(ViewContext viewContext) {
         AbstractValueHolder avh = this.getProperty(Propertys.pageLink.name());
         String metaValue = (String) avh.getMetaValue();
-        return FtlHelp.ftlTest(metaValue, viewContext.getViewELContext());
+        try {
+            return viewContext.processTemplateString(metaValue);
+        } catch (Exception e) {
+            return "javascript:alert('PageCom.getPageLinkAsTemplate()方法执行遇到错误。');";
+        }
     }
     /*-------------------------------------------------------------------------------*/
     Mode runMode = null;

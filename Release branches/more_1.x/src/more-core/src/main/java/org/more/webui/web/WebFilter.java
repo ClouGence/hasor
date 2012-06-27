@@ -28,7 +28,6 @@ import org.more.webui.context.FacesContext;
 import org.more.webui.context.FacesContextFactory;
 import org.more.webui.context.ViewContext;
 import org.more.webui.lifestyle.Lifecycle;
-import org.more.webui.lifestyle.LifecycleFactory;
 import com.google.inject.Singleton;
 /**
  * Web入口
@@ -46,6 +45,10 @@ public class WebFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) arg0;
         HttpServletResponse res = (HttpServletResponse) arg1;
         //判断请求资源是否满足尾缀要求。
+        if (req.getRequestURI().endsWith(this.config.getFacesSuffix()) == false) {
+            arg2.doFilter(arg0, arg1);
+            return;
+        }
         ViewContext viewContext = new ViewContext(req, res, this.uiContext);
         ViewContext.setCurrentViewContext(viewContext);
         this.lifecycle.execute(viewContext);

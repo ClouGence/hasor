@@ -15,16 +15,11 @@
  */
 package org.more.webui.context;
 /**
- * 
- * @version : 2012-4-25
+ * bean管理器
+ * @version : 2012-6-27
  * @author 赵永春 (zyc@byshell.org)
  */
-public class DefaultFacesContextFactory extends FacesContextFactory {
-    /**创建{@link FacesContext}。*/
-    public FacesContext createFacesContext(FacesConfig config) {
-        DefaultFacesContext fc = new DefaultFacesContext(config);
-        //
-        fc.getFacesConfig().addLoader("org.more.webui.freemarker.xhtml.parser");
-        return fc;
-    }
+public interface BeanManager {
+    /**获取需要的Bean对象*/
+    public <T> T getBean(String beanName);
 }

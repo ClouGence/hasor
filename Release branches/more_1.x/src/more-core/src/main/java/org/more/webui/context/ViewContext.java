@@ -15,18 +15,24 @@
  */
 package org.more.webui.context;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.more.core.map.DecSequenceMap;
+import org.more.util.CommonCodeUtil;
 import org.more.util.StringConvertUtil;
 import org.more.webui.UIInitException;
-import org.more.webui.render.RenderKit;
+import org.more.webui.freemarker.parser.Hook_Include;
+import org.more.webui.freemarker.parser.Hook_UserTag;
+import org.more.webui.freemarker.parser.TemplateScanner;
 import org.more.webui.support.UIComponent;
 import org.more.webui.support.UIViewRoot;
 import org.more.webui.web.PostFormEnum;
+import com.sun.xml.internal.messaging.saaj.util.CharWriter;
 import freemarker.template.Template;
+import freemarker.template.TemplateException;
 /**
  * 请求的视图环境对象，每次请求一张视图。
  * @version : 2012-4-25
@@ -59,7 +65,26 @@ public class ViewContext extends HashMap<String, Object> {
         return String.valueOf(comClientID++);
     };
     //
-    //
+    /**执行模板字符串*/
+    public String processTemplateString(String templateString) throws TemplateException, IOException {
+        //A.取得指纹
+        String hashStr = null;
+        try {
+            /*使用MD5加密*/
+            hashStr = CommonCodeUtil.MD5.getMD5(templateString);
+        } catch (NoSuchAlgorithmException e) {
+            /*使用hashCode*/
+            hashStr = String.valueOf(templateString.hashCode());
+        }
+        hashStr += ".temp";
+        //B.将内容加入到模板加载器中。
+        this.getUIContext().addTemplateString(hashStr, templateString);
+        //C.执行指纹模板
+        CharWriter charWrite = new CharWriter();
+        Map<String, Object> elContext = this.getViewELContext();
+        this.getUIContext().getFreemarker().getTemplate(hashStr).process(elContext, charWrite);
+        return charWrite.toString();
+    };
     private UIViewRoot viewRoot = null;
     /**获取表示该视图的{@link UIViewRoot}对象。*/
     public UIViewRoot getViewRoot() throws UIInitException, IOException {
@@ -68,7 +93,12 @@ public class ViewContext extends HashMap<String, Object> {
             Template tempRoot = this.getTemplate();
             String reqURI = this.req.getRequestURI();
             String templateFile = this.req.getSession().getServletContext().getRealPath(reqURI);
-            this.viewRoot = this.uiContext.getFacesConfig().createViewRoot(tempRoot, templateFile, this.uiContext);
+            //
+            TemplateScanner scanner = new TemplateScanner();
+            scanner.addElementHook("UnifiedCall", new Hook_UserTag());/*UnifiedCall：@add*/
+            scanner.addElementHook("Include", new Hook_Include());/*Include：@Include*/
+            //B.解析模板获取UIViewRoot
+            this.viewRoot = (UIViewRoot) scanner.parser(tempRoot, new UIViewRoot(), uiContext);
         }
         //B.返回UIViewRoot
         return this.viewRoot;
@@ -86,9 +116,9 @@ public class ViewContext extends HashMap<String, Object> {
     public Map<String, Object> getViewELContext() {
         if (this.seq == null) {
             this.seq = new DecSequenceMap<String, Object>();
-            /*0.标签对象*/
-            RenderKit kit = this.getUIContext().getRenderKit();
-            this.seq.addMap(kit.getTags());//当WebUI生命周期：渲染。时候使用。
+            /*0.标签集*/
+            String KitScope = this.getRenderKitScope();
+            this.seq.addMap(this.getUIContext().getRenderKit(KitScope).getTags());
             /*1.视图属性*/
             this.seq.addMap(this);
             /*2.环境属性*/
@@ -102,12 +132,16 @@ public class ViewContext extends HashMap<String, Object> {
     };
     /**获取使用的编码*/
     public String getEncoding() {
-        return this.uiContext.getEncoding();
+        return this.uiContext.getFacesConfig().getEncoding();
     };
     /**获取视图模板对象，用于渲染*/
     public Template getTemplate() throws IOException {
         return this.uiContext.getFreemarker().getTemplate(this.facePath, this.getEncoding());
     };
+    /**获取渲染器KIT名*/
+    public String getRenderKitScope() {
+        return "default";
+    }
     /*--------------*/
     //  ThreadLocal
     /*--------------*/
@@ -146,5 +180,5 @@ public class ViewContext extends HashMap<String, Object> {
     public String getStateData() {
         String stateDataKey = PostFormEnum.PostForm_StateDataParamKey.value();
         return this.getHttpRequest().getParameter(stateDataKey);
-    };
+    }
 }

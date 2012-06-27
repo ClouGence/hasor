@@ -21,7 +21,6 @@ import java.util.Map;
 import org.more.core.error.LostException;
 import org.more.webui.context.ViewContext;
 import org.more.webui.render.Render;
-import org.more.webui.render.RenderKit;
 import org.more.webui.support.UICom;
 import org.more.webui.support.UIComponent;
 import freemarker.core.Environment;
@@ -35,6 +34,7 @@ import freemarker.template.utility.DeepUnwrap;
  * @version : 2012-5-13
  * @author 赵永春 (zyc@byshell.org)
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class TagObject implements TemplateDirectiveModel {
     public final void execute(Environment arg0, Map arg1, TemplateModel[] arg2, TemplateDirectiveBody arg3) throws TemplateException, IOException {
         //0.反解过程
@@ -64,8 +64,8 @@ public class TagObject implements TemplateDirectiveModel {
         UICom uicom = component.getClass().getAnnotation(UICom.class);
         if (uicom == null)
             throw new LostException("组建“" + component.getId() + "”的类型无法定位到其渲染器。");
-        RenderKit kit = viewContext.getUIContext().getRenderKit();
-        Render renderer = kit.getRender(uicom.tagName());
+        String kitScope = viewContext.getRenderKitScope();
+        Render renderer = viewContext.getUIContext().getRenderKit(kitScope).getRender(uicom.tagName());
         //D.进行渲染
         TemplateBody body = new TemplateBody(arg3, arg0);
         Writer writer = arg0.getOut();

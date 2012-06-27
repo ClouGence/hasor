@@ -60,7 +60,7 @@ public abstract class Lifecycle {
         return phase;
     };
     /**Ìí¼ÓÒ»¸ö½×¶Î*/
-    protected void addPhase(Phase phase) {
+    public void addPhase(Phase phase) {
         this.phase.add(phase);
     };
 };

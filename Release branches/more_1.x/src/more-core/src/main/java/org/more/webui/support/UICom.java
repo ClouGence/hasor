@@ -18,6 +18,11 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+/**
+ * 
+ * @version : 2012-6-25
+ * @author ’‘”¿¥∫ (zyc@byshell.org)
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface UICom {

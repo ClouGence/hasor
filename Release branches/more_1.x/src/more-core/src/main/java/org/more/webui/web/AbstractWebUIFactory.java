@@ -1,22 +1,7 @@
-/*
- * Copyright 2008-2009 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.more.webui.lifestyle;
-import java.util.Set;
-import org.more.util.ClassUtil;
+package org.more.webui.web;
 import org.more.webui.context.FacesConfig;
+import org.more.webui.context.FacesContextFactory;
+import org.more.webui.lifestyle.Lifecycle;
 import org.more.webui.lifestyle.phase.ApplyRequestValue_Phase;
 import org.more.webui.lifestyle.phase.InitView_Phase;
 import org.more.webui.lifestyle.phase.InvokeApplication_Phase;
@@ -25,11 +10,11 @@ import org.more.webui.lifestyle.phase.RestoreView_Phase;
 import org.more.webui.lifestyle.phase.UpdateModules_Phase;
 import org.more.webui.lifestyle.phase.Validation_Phase;
 /**
- * 生命周期工厂类，该类用于创建生命周期对象。
- * @version : 2012-3-29
+ * 
+ * @version : 2012-6-27
  * @author 赵永春 (zyc@byshell.org)
  */
-public class LifecycleFactory {
+public abstract class AbstractWebUIFactory {
     /**创建生命周期对象*/
     public Lifecycle createLifestyle(FacesConfig config) {
         /*创建生命周期对象*/
@@ -50,16 +35,16 @@ public class LifecycleFactory {
             //第7阶段，将执行完的UI信息渲染到客户机中。
             lifestyle.addPhase(new Render_Phase());
         }
-        /*添加生命周期监听器*/
-        {
-            Set<Class<?>> classSet = ClassUtil.getClassSet(UIPhase.class);
-            for (Class<?> type : classSet) {
-                if (PhaseListener.class.isAssignableFrom(type) == false)
-                    throw new ClassCastException(type + " to PhaseListener");
-                else
-                    lifestyle.addPhaseListener((PhaseListener) AppUtil.getObj(type));
-            }
-        }
         return lifestyle;
     }
+    public FacesContextFactory createFacesContextFactory() {
+        return new DefaultFacesContext();
+    }
 }
+///*添加生命周期监听器*/
+//Set<Class<?>> classSet = config.getClassSet(UIPhase.class);
+//for (Class<?> type : classSet)
+//    if (PhaseListener.class.isAssignableFrom(type) == false)
+//        throw new ClassCastException(type + " to PhaseListener");
+//    else
+//        lifestyle.addPhaseListener((PhaseListener) AppUtil.getObj(type));

@@ -16,12 +16,12 @@
 package org.more.webui.components.ajaxbutton;
 import java.io.IOException;
 import java.io.Writer;
-import org.more.core.json.JsonUtil;
-import org.more.util.CommonCode;
+import org.more.util.CommonCodeUtil;
 import org.more.webui.context.ViewContext;
 import org.more.webui.render.Render;
 import org.more.webui.render.UIRender;
 import org.more.webui.tag.TemplateBody;
+import com.alibaba.fastjson.JSONObject;
 import freemarker.template.TemplateException;
 /**
  * 
@@ -42,7 +42,7 @@ public class AjaxButtonRender implements Render<AjaxButton> {
         writer.write(" id='" + component.getClientID(viewContext) + "'");
         writer.write(" comID='" + component.getId() + "'");
         writer.write(" comType='ui_AjaxButton'");
-        String base64 = CommonCode.Base64.base64Encode(JsonUtil.transformToJson(component.saveState()));
+        String base64 = CommonCodeUtil.Base64.base64Encode(JSONObject.toJSONString(component.saveState()));
         writer.write(" uiState='" + base64 + "'");
         //HTML Att
         writer.write(" style='" + component.getProperty("style").valueTo(String.class) + "'");

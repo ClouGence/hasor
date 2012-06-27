@@ -15,7 +15,6 @@
  */
 package org.more.webui.freemarker.parser;
 import org.more.webui.UIInitException;
-import org.more.webui.context.FacesConfig;
 import org.more.webui.context.FacesContext;
 import org.more.webui.support.UIComponent;
 import freemarker.core.TemplateElement;
@@ -26,13 +25,6 @@ import freemarker.template.Template;
  * @author ÕÔÓÀ´º (zyc@byshell.org)
  */
 public class Hook_Include implements ElementHook {
-    private FacesConfig facesConfig = null; //×¢²áÆ÷
-    //
-    public Hook_Include(FacesConfig facesConfig) {
-        if (facesConfig == null)
-            throw new NullPointerException("param ¡®FacesConfig¡¯ si null.");
-        this.facesConfig = facesConfig;
-    }
     @Override
     public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, FacesContext uiContext) throws UIInitException {
         try {

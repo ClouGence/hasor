@@ -17,7 +17,6 @@ package org.test.more.core.global;
 import org.junit.Test;
 import org.more.core.global.Global;
 import org.more.core.global.assembler.PropertiesGlobalFactory;
-import org.test.more.core.json.User;
 /**
  * 
  * @version : 2011-9-5
@@ -55,9 +54,6 @@ public class GlobalTest {
             System.out.println(global.getObject(e));
         //
         System.out.println("----------------1");
-        global.put("testParam", new User());
-        System.out.println("----------------1");
-        global.put("testParam", new User());
         System.out.println(global.getFilePath("filePath"));
         System.out.println(global.getDirectoryPath("filePath"));
         System.out.println(global.getString("abc.efg"));

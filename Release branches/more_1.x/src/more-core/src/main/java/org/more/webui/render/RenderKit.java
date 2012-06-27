@@ -16,6 +16,7 @@
 package org.more.webui.render;
 import java.util.HashMap;
 import java.util.Map;
+import org.more.webui.context.FacesContext;
 import org.more.webui.tag.TagObject;
 /**
  * 
@@ -23,27 +24,33 @@ import org.more.webui.tag.TagObject;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class RenderKit {
-    private Map<String, Class<?>> renderMapping = new HashMap<String, Class<?>>();
-    private Map<String, Object>   tagMap        = new HashMap<String, Object>();
-    //
-    /**获取已经注册的标签对象集合*/
+    private FacesContext        facesContext  = null;
+    /*标签对象集合*/
+    private Map<String, Object> tagObjectMap  = new HashMap<String, Object>();
+    /*渲染器映射*/
+    private Map<String, String> renderMapping = new HashMap<String, String>();
+    /*----------------------------------------------------------------*/
+    public void initKit(FacesContext facesContext) {
+        this.facesContext = facesContext;
+    }
+    /**获取已经注册的标签对象集合。*/
     public Map<String, Object> getTags() {
-        return this.tagMap;
+        return this.tagObjectMap;
     }
-    public Render<?> getRender(String tagName) {
-        Class<?> renderType = this.renderMapping.get(tagName);
-        return (Render<?>) AppUtil.getObj(renderType);
-    }
-    /**注册标签类，只能对已经注册render的组建进行注册*/
+    /**注册标签类，只能对已经注册render的组建进行注册。*/
     public void addTag(String tagName, TagObject tagObject) {
-        if (this.renderMapping.containsKey(tagName) == true)
-            if (tagObject != null)
-                tagMap.put(tagName, tagObject);
-            else
-                throw new NullPointerException("TagObject类型参数不能为空。");
+        if (tagObject == null)
+            throw new NullPointerException("TagObject类型参数不能为空。");
+        this.tagObjectMap.put(tagName, tagObject);
     }
-    public void addRender(String tagName, Class<?> renderClass) {
-        this.renderMapping.put(tagName, renderClass);
-        this.tagMap.put(tagName, new TagObject());//输出默认标签
+    /**获取渲染器对象。*/
+    public Render<?> getRender(String tagName) {
+        String mappingName = this.renderMapping.get(tagName);
+        return this.facesContext.getBeanContext().getBean(mappingName);
+    }
+    /**添加渲染器映射。*/
+    public void addRenderMapping(String tagName, String beanName) {
+        this.renderMapping.put(tagName, beanName);
+        this.tagObjectMap.put(tagName, new TagObject());//输出默认标签
     }
 }

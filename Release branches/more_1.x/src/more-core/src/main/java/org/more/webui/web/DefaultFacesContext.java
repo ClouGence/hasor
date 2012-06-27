@@ -1,6 +1,8 @@
-package org.more.webui.context;
+package org.more.webui.web;
 import java.util.HashMap;
 import java.util.Map;
+import org.more.webui.context.FacesConfig;
+import org.more.webui.context.FacesContext;
 import freemarker.cache.MruCacheStorage;
 import freemarker.template.Configuration;
 /**
@@ -9,17 +11,10 @@ import freemarker.template.Configuration;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class DefaultFacesContext extends FacesContext {
-    private Configuration       cfg = null;
-    private Map<String, Object> att = null;
+    private Configuration cfg = null;
     /*------------------------------------------------*/
     public DefaultFacesContext(FacesConfig config) {
         super(config);
-    }
-    @Override
-    public Map<String, Object> getAttribute() {
-        if (this.att == null)
-            this.att = new HashMap<String, Object>();
-        return this.att;
     }
     @Override
     public Configuration getFreemarker() {

@@ -29,18 +29,11 @@ import freemarker.core.TemplateElement;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Hook_UserTag implements ElementHook {
-    private FacesConfig facesConfig = null; //注册器
-    //
-    public Hook_UserTag(FacesConfig facesConfig) {
-        if (facesConfig == null)
-            throw new NullPointerException("param ‘FacesConfig’ si null.");
-        this.facesConfig = facesConfig;
-    }
     @Override
     public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, FacesContext uiContext) throws UIInitException {
         //A.创建组建
         String tagName = e.getDescription().split(" ")[1];
-        UIComponent componentObject = this.facesConfig.createComponent(tagName, uiContext);
+        UIComponent componentObject = uiContext.getComponent(tagName);
         if (componentObject == null)
             return null;
         //B.装载属性定义
