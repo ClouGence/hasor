@@ -1,46 +1,29 @@
+//public class ELUtil {
+//    public static Map<String, Node> cacheNode = new java.util.Hashtable<String, Node>();
+//    public static Object evalOGNL(String expressionString, Object root) throws OgnlException {
+//        Node expressionNode = cacheNode.get(expressionString);
+//        if (expressionNode == null) {
+//            expressionNode = (Node) Ognl.parseExpression(expressionString);
+//            cacheNode.put(expressionString, expressionNode);
+//        }
+//        OgnlContext oc = new OgnlContext();
+//        oc.setCurrentObject(root);
+//        return expressionNode.getValue(oc, root);
+//    };
+//    public static Node parserNode(String expressionString) throws OgnlException {
+//        Node expressionNode = cacheNode.get(expressionString);
+//        if (expressionNode == null) {
+//            expressionNode = (Node) Ognl.parseExpression(expressionString);
+//            cacheNode.put(expressionString, expressionNode);
+//        }
+//        return expressionNode;
+//    };
+//}
 -------------------------------------------------------------------------------------------------------------------------------计划的
-alpha6
- 1.领域模型尝试。
-alpha5
- 1.bean配置模板。
- 2.表单序列化。
- 5.表单与Bean映射。
- 6.rest架构支持
-
-
-
-
-后续版本
-06.xpath 比较算法。
-08.等待开发的工具：
-	页面错误拦截器。
-	资源拦截器，通过资源拦截器调用submit，以及资源访问策略。有点像大filter。利用资源拦截器实现rest策略，等其他功能的支持。
-	more命令行
-	more TestCase
-09.submit 标签需要增加一个可以直接向session或者context中等作用域中输出数据的功能。也应当具备清理作用域数据的标签操作 例如add remove get set
-10.flow 流转按钮集，以及流程页面状态集
-	流转集相当于流程流转命令按钮的生成器，其中要附带流转控制信息，等。
-	流程页面状态机，负责工作流和页面上的流转数据携带器。
-11.选择性支持
-  1.直接实现接口
-12.web
-	头信息管理，路径匹配和头信息策略。继承、附加、扩展、浏览器
-13.Submit 4.0 actionjs.
-
-
-
-
-
-
-
-
--------------------------------------------------------------------------------------------------------------------------------目前版本
-bug:
+Bug:
   1.classcode-目前生称的方法中不支持基本类型。原因不明。
   2.classcode-对于重复使用ClassCode的字节码修改有异常。
-info:
- hypha:
-	1.通过 constructor-arg或property描述的属性值信息，没有通过date、bigText、ref、file、directory、uri、el等描述优先级高。如果两者同时出现则后者会替换前者。
+  3.json对字符串的反序列化有问题在遇到多个引号的情况下逻辑混乱。
 /-----------------------------------------------/
 more core
   1.增加了ognl表达式语言框架。
@@ -69,37 +52,3 @@ copybean v2.0
   2.修正了大量bug。
   3.支持自定义属性类型的读写器。
   4.支持自定义格式转换。
-hypha v2.0：
-  1.正式推出“菌丝”组建，该组建是一个Ioc容器，它存在的目的是为基础功能提供支撑。它不具备Aop功能因此不能用它作为拦截器。它的前身是beans组建。
-  2.菌丝是一个微内核的ioc容器。它可以分为三个大组成部分1.API接口、2.Bean模型描述信息、3.内核代码。
-  3.4种类型Bean定义的支持，其他类型持续加入。TemplateBeanBuilder、VariableBeanBuilder，不支持AOP。
-  4.新的标签解析体系，使用了全新的 xml解析器引擎。使菌丝的配置文件可以与任意其他配置文件集成在一起。
-  5.目前只提供了Ioc注入方式，预计将会支持Fast、Ioc、Expend三种注入方式。
-  6.增加了事件系统支持。
-  7.增加了EL解析器，其内核是Ognl。
-submit v4.0：
-  重要更新：
-  1.重新构建了Submit的内核结构，目前升级为Submit4.0。
-  2.Submit接口层面内容丰富（有待完善开发）。
-  3.删除了ActionFilter的概念，同时删除相关功能。
-  4.新增命名空间的概念，不同的命名空间使用不同的AC进行支持(AC,全名是ActionContext是一个Bean容器。)
-  5.删除了脚本回调的功能，因为考虑到执行效率关系。
-  6.ActionStack在该版本中被接口化了。
-  7.submit4.0，延续先前版本是一个独立的组建。不过submit4.0在hypha的支持下才显得更为强大，利用hypha它支持了注解扫描。xml化配置文件如果使用独立环境这些支持将不在有效。
-  8.AC，目前已经支持的AC容器有GoogleGuice、hypha、Simple(内置的)、Spring。
-  9.除了命名空间还支持包的概念，在每个ac中可以定义多个package，包是用于区分不同的action。注意：submit4.0不支持包中包。包的名称中可以包含字符“.”但是不允许包含“/”.
-  10.action的定位采用URI的形式，例如:ac://package.package.package.action/param/param。
-说明：
-  1.url中的协议只负责用于区分Action提供者的AC名，在整个Submit服务中所有action无论是存在那个AC中都要求是唯一的路径。
-  扩展：
-  1.AC、ACB
-  2.内置了Web扩展。
-  json，通过Result扩展可以完成将返回结果转换成为json对象。
-  actionjs，目前版本删除了该插件功能。后续会使用jQuery实现相关功能。
-remote v1.0：
-  1.新增组件，通过该组件可以实现在hypha中发布一个远程RMI服务。
-  2.RMI的发布可以绑定在本地任意的一张网卡中，默认绑定的是localhost端口号为1099。这些参数可以通过hypha-remote的配置文件进行修改和配置。
-  3.作为远程对象如果要被发布成为RMI服务那么需要编写一个远程接口，该接口必须继承于Remote接口，并且接口中的方法需要抛出RemoteException类型异常。
-  4.作为服务提供的实现类可以是任意类型的的对象，remote会自动为其生成代理。
-  5.默认RMI服务启动时并不提供RMI服务。
-  6.RMI内置了一个部署器，该部署器将hypha中的bean全部曝露到rmi中。
