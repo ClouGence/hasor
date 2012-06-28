@@ -62,9 +62,7 @@ public class UtilTest {
     public void setAa(String aa) {}
     @Test
     public void test2() throws IntrospectionException {
-        
-        List<String> ps= BeanUtil.getPropertys( UtilTest.class);
-        
-         System.out.println(ps); 
+        List<String> ps = BeanUtil.getPropertys(UtilTest.class);
+        System.out.println(ps);
     }
 }

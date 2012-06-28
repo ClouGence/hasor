@@ -14,7 +14,6 @@ package org.test.more.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class MD5 {
     public static String getMD5(byte[] source) {
         String s = null;
