@@ -18,10 +18,6 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.more.core.ognl.Node;
-import org.more.core.ognl.Ognl;
-import org.more.core.ognl.OgnlContext;
-import org.more.core.ognl.OgnlException;
 import org.more.util.StringConvertUtil;
 /**
  * Global系统的核心实现
@@ -31,7 +27,7 @@ import org.more.util.StringConvertUtil;
 public abstract class AbstractGlobal extends AbstractMap<String, Object> {
     /*------------------------------------------------------------------------*/
     private Map<String, Object> targetContainer  = new HashMap<String, Object>();
-    private Map<String, Object> $targetContainer = null;
+    private Map<String, Object> $targetContainer = null;                         //具备大小写敏感设置的集合
     public AbstractGlobal() {
         this(null);
     };
@@ -62,12 +58,6 @@ public abstract class AbstractGlobal extends AbstractMap<String, Object> {
         return getAttContainer().entrySet();
     }
     /*------------------------------------------------------------------------*/
-    private OgnlContext ognlContext = null;
-    private OgnlContext transformToOgnlContext() {
-        if (this.ognlContext == null)
-            this.ognlContext = new OgnlContext(this.getAttContainer());
-        return this.ognlContext;
-    };
     private boolean caseSensitive = true;
     /**是否对字母大小写敏感，返回true表示敏感。*/
     public boolean isCaseSensitive() {
@@ -83,20 +73,6 @@ public abstract class AbstractGlobal extends AbstractMap<String, Object> {
         this.caseSensitive = false;
         this.$targetContainer = null;
     }
-    private Map<String, Node> cacheNode = new java.util.Hashtable<String, Node>();
-    /**使用Ognl计算字符串，并且返回其计算结果。*/
-    public Object evalExpression(String ognlString) throws OgnlException {
-        Node expressionNode = this.cacheNode.get(ognlString);
-        if (expressionNode == null) {
-            expressionNode = (Node) Ognl.parseExpression(ognlString);
-            this.cacheNode.put(ognlString, expressionNode);
-        }
-        Object oriObject = expressionNode.getValue(this.transformToOgnlContext(), this.transformToOgnlContext());
-        if (oriObject instanceof String)
-            return this.getEval((String) oriObject, Object.class);
-        else
-            return oriObject;
-    };
     /**解析全局配置参数，并且返回toType参数指定的类型。*/
     public <T> T getToType(Enum<?> enumItem, Class<T> toType) {
         return this.getToType(enumItem, toType, null);
