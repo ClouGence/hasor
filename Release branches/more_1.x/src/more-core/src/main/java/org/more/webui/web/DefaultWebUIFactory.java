@@ -19,7 +19,9 @@ import org.more.webui.context.FacesConfig;
 import org.more.webui.context.FacesContext;
 import org.more.webui.freemarker.loader.ClassPathTemplateLoader;
 import org.more.webui.lifestyle.Lifecycle;
+import freemarker.cache.MruCacheStorage;
 import freemarker.template.Configuration;
+import freemarker.template.DefaultObjectWrapper;
 /**
  * 默认实现
  * @version : 2012-6-27
@@ -49,6 +51,9 @@ class DefaultFacesContext extends FacesContext {
             return cfg;
         cfg = new Configuration();
         cfg.setTemplateLoader(new ClassPathTemplateLoader(null));
+        /*这条必须加，因为没有缓存会有模板重新载入丢失的问题。
+         * 引发这个问题的原因是webui需要向模板中的标签写入id文件。*/
+        cfg.setCacheStorage(new MruCacheStorage(0, Integer.MAX_VALUE));
         return cfg;
     }
 }

@@ -39,6 +39,7 @@ public class Render_Phase extends Phase {
         if (response.isCommitted() == true)
             return;
         //确定渲染范围，进行渲染
+        response.setCharacterEncoding(viewContext.getUIContext().getEnvironment().getOutEncoding());
         RenderType renderType = viewContext.getRenderType();
         if (renderType == RenderType.No)
             return;

@@ -71,16 +71,14 @@
 		</dependency>
 
 
-
-
-
-
 		<!-- Jetty 8 -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.eclipse.jetty</groupId> -->
-		<!-- <artifactId>jetty-webapp</artifactId> -->
-		<!-- <version>8.1.2.v20120308</version> -->
-		<!-- </dependency> -->
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>8.1.2.v20120308</version>
+			<optional>true</optional>
+			<scope>test</scope>
+		</dependency>
 		<!-- JSP Support -->
 		<!-- <dependency> -->
 		<!-- <groupId>org.eclipse.jetty</groupId> -->

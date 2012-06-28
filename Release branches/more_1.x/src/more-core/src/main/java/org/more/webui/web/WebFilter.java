@@ -43,15 +43,17 @@ public class WebFilter implements Filter {
     public void doFilter(ServletRequest arg0, ServletResponse arg1, FilterChain arg2) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) arg0;
         HttpServletResponse res = (HttpServletResponse) arg1;
-        //判断请求资源是否满足尾缀要求。
-        if (req.getRequestURI().endsWith(this.config.getFacesSuffix()) == false) {
+        if (req.getRequestURI().endsWith(this.config.getFacesSuffix()) == true) {
+            /**处理Faces*/
+            ViewContext viewContext = new ViewContext(req, res, this.uiContext);
+            ViewContext.setCurrentViewContext(viewContext);
+            this.lifecycle.execute(viewContext);
+            ViewContext.setCurrentViewContext(null);
+        } else {
+            /**处理资源*/
             arg2.doFilter(arg0, arg1);
             return;
         }
-        ViewContext viewContext = new ViewContext(req, res, this.uiContext);
-        ViewContext.setCurrentViewContext(viewContext);
-        this.lifecycle.execute(viewContext);
-        ViewContext.setCurrentViewContext(null);
     }
     @Override
     public void init(FilterConfig arg0) throws ServletException {

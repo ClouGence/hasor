@@ -63,7 +63,7 @@ public class ClassPathTemplateLoader extends URLClassLoader implements ITemplate
     public long getLastModified(Object templateSource) {
         URL url = (URL) templateSource;
         if (url.getProtocol().equals("file") == true)
-            return new File(url.toString()).lastModified();
+            return new File(url.getFile()).lastModified();
         return 0;
     }
     public Reader getReader(Object templateSource, String encoding) throws IOException {

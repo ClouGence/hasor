@@ -24,7 +24,6 @@ import org.more.webui.freemarker.loader.ConfigTemplateLoader;
 import org.more.webui.freemarker.loader.MultiTemplateLoader;
 import org.more.webui.render.RenderKit;
 import org.more.webui.support.UIComponent;
-import freemarker.cache.MruCacheStorage;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 /**
@@ -102,9 +101,6 @@ public abstract class FacesContext {
             this.cfg = createFreemarker();
             cfg.setDefaultEncoding(this.getEnvironment().getPageEncoding());
             cfg.setOutputEncoding(this.getEnvironment().getOutEncoding());
-            /*这条必须加，因为没有缓存会有模板重新载入丢失的问题。
-             * 引发这个问题的原因是webui需要向模板中的标签写入id文件。*/
-            cfg.setCacheStorage(new MruCacheStorage(0, Integer.MAX_VALUE));
             cfg.setLocalizedLookup(this.getEnvironment().isLocalizedLookup());
             //
             TemplateLoader[] loaders = null;
