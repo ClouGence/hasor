@@ -1,8 +1,0 @@
-<html><body>
-该软件包是对more中jdbc的轻量封装。<br/>
-业务类或者action通过继承JobSupport对象以获得JdbcDaoSupport类的功能支持。<br/>
-
-其子类需要被注入dataSource数据源它的类型是javax.sql.DataSource。<br/>
-
-如果打算启用事务控制器则需要配置JdbcTransactionManager类型对象。并且配置业务类的aop过滤器为JdbcTransactionManager同时不在需要进行dataSource数据源的注入配置。
-</body></html>

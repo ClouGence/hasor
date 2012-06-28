@@ -1,0 +1,28 @@
+
+json_config配置文件的装载顺序是
+	"META-INF/resource/core/json_config.properties"
+	"META-INF/json_config.properties",
+	"json_config.properties",
+
+
+global_confi配置文件的装载顺序是
+	"META-INF/resource/core/global_config.properties"
+	"META-INF/global_config.properties",
+	"global_config.properties",
+
+copybean_config.properties配置文件的装载顺序是
+	"META-INF/resource/core/copybean_config.properties"
+	"META-INF/copybean_config.properties",
+	"copybean_config.properties",
+
+
+
+
+
+
+
+
+
+
+
+

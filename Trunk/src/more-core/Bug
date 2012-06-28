@@ -1,0 +1,54 @@
+//public class ELUtil {
+//    public static Map<String, Node> cacheNode = new java.util.Hashtable<String, Node>();
+//    public static Object evalOGNL(String expressionString, Object root) throws OgnlException {
+//        Node expressionNode = cacheNode.get(expressionString);
+//        if (expressionNode == null) {
+//            expressionNode = (Node) Ognl.parseExpression(expressionString);
+//            cacheNode.put(expressionString, expressionNode);
+//        }
+//        OgnlContext oc = new OgnlContext();
+//        oc.setCurrentObject(root);
+//        return expressionNode.getValue(oc, root);
+//    };
+//    public static Node parserNode(String expressionString) throws OgnlException {
+//        Node expressionNode = cacheNode.get(expressionString);
+//        if (expressionNode == null) {
+//            expressionNode = (Node) Ognl.parseExpression(expressionString);
+//            cacheNode.put(expressionString, expressionNode);
+//        }
+//        return expressionNode;
+//    };
+//}
+-------------------------------------------------------------------------------------------------------------------------------计划的
+Bug:
+  1.classcode-目前生称的方法中不支持基本类型。原因不明。
+  2.classcode-对于重复使用ClassCode的字节码修改有异常。
+  3.json对字符串的反序列化有问题在遇到多个引号的情况下逻辑混乱。
+/-----------------------------------------------/
+more core
+  1.增加了ognl表达式语言框架。
+  2.恢复被删除的Base64js文件.
+  3.删除重复的功能类SimpeCode.
+  4.使Base64可以获取到base64.js的Reader流.
+  5.增加xml软件包
+  	1.提供了三种xml访问级别。
+  	2.可以针对xml命名空间进行解析。
+  6.增加了Global全局配置文件读取器，通过它可以在配置文件中配置json格式的数据，它还支持同时装载多个配置文件。并且可以独立访问每个配置文件。
+#log v2.0
+  1.重写了Log组建。
+  2.增加级别概念，在不同的级别上可以输出不同级别的日志。内置了high、below、default，三个日志输出级别。
+  3.日志的消息类型可扩展，内置了debug、info、error、warning，四个类型。
+  4.增加了filters概念，可以通过filters来过滤起作用的日志输出源。
+classcode v2.0
+  1.升级classcode代码，全部重写相关代码。目前版本v2.0
+  2.可以在对象上增加一个任意属性并且可以通过属性策略指定其readonly特性。
+  3.可以增加一个代理属性，通过接口实现的方法来操控属性的get、set。
+  4.增加了before,returnning,throwing三个切点的监听器。
+  5.改进了aopFilter接口注入的方法。
+json v2.0
+  1.更换了JsonUtil类，提供了一个更友好的API。
+copybean v2.0
+  1.重写了copybean。
+  2.修正了大量bug。
+  3.支持自定义属性类型的读写器。
+  4.支持自定义格式转换。
