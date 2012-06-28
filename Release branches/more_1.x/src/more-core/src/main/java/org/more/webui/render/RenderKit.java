@@ -24,11 +24,11 @@ import org.more.webui.tag.TagObject;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class RenderKit {
-    private FacesContext        facesContext  = null;
+    private FacesContext          facesContext  = null;
     /*标签对象集合*/
-    private Map<String, Object> tagObjectMap  = new HashMap<String, Object>();
+    private Map<String, Object>   tagObjectMap  = new HashMap<String, Object>();
     /*渲染器映射*/
-    private Map<String, String> renderMapping = new HashMap<String, String>();
+    private Map<String, Class<?>> renderMapping = new HashMap<String, Class<?>>();
     /*----------------------------------------------------------------*/
     public void initKit(FacesContext facesContext) {
         this.facesContext = facesContext;
@@ -45,12 +45,12 @@ public class RenderKit {
     }
     /**获取渲染器对象。*/
     public Render<?> getRender(String tagName) {
-        String mappingName = this.renderMapping.get(tagName);
-        return this.facesContext.getBeanContext().getBean(mappingName);
+        Class<?> beanType = this.renderMapping.get(tagName);
+        return this.facesContext.getBeanContext().getBean(beanType);
     }
     /**添加渲染器映射。*/
-    public void addRenderMapping(String tagName, String beanName) {
-        this.renderMapping.put(tagName, beanName);
+    public void addRenderType(String tagName, Class<?> beanType) {
+        this.renderMapping.put(tagName, beanType);
         this.tagObjectMap.put(tagName, new TagObject());//输出默认标签
     }
 }

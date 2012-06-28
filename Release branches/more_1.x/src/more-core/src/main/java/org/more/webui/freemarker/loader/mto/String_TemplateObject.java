@@ -13,38 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.freemarker.loader.template.mto;
+package org.more.webui.freemarker.loader.mto;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Date;
-import org.more.webui.freemarker.loader.resource.ClassPathResourceLoader;
 /**
- * 装载ClassPath中的模板对象
+ * 字符串模板
  * @version : 2011-9-16
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ClassPath_TemplateObject extends ClassPathResourceLoader implements AbstractTemplateObject {
-    private String classPath = null;
+public class String_TemplateObject implements AbstractTemplateObject {
+    private String templateString = null;
     //
-    public ClassPath_TemplateObject(String classPath, ClassLoader loader) {
-        super("", loader);
-        this.classPath = classPath;
-    }
-    public long lastModified() {
-        return new Date().getTime();
+    public String_TemplateObject(String templateString) {
+        this.templateString = templateString;
     }
     public InputStream getInputStream() throws IOException {
-        return this.getResourceAsStream(this.classPath);
+        return new ByteArrayInputStream(this.templateString.getBytes());
     }
     public Reader getReader(String encoding) throws IOException {
-        InputStream is = this.getInputStream();
-        //
-        String $encoding = encoding;
-        if ($encoding == null)
-            $encoding = DefaultEncoding;
-        return new InputStreamReader(is, $encoding);
+        InputStream in = this.getInputStream();
+        if (encoding == null)
+            return new InputStreamReader(in, DefaultEncoding);
+        else
+            return new InputStreamReader(in, encoding);
+    }
+    public long lastModified() {
+        return 0;
     }
     @Override
     public void openObject() {

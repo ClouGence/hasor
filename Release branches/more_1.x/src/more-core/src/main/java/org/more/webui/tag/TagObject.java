@@ -70,7 +70,7 @@ public class TagObject implements TemplateDirectiveModel {
         TemplateBody body = new TemplateBody(arg3, arg0);
         Writer writer = arg0.getOut();
         renderer.beginRender(viewContext, component, body, writer);
-        if (component.isRenderChildren() == true && arg3 != null)
+        if (component.isRenderChildren() == true)
             renderer.render(viewContext, component, body, writer);
         renderer.endRender(viewContext, component, body, writer);
     }

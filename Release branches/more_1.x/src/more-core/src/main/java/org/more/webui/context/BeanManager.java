@@ -21,5 +21,5 @@ package org.more.webui.context;
  */
 public interface BeanManager {
     /**获取需要的Bean对象*/
-    public <T> T getBean(String beanName);
+    public <T> T getBean(Class<?> type);
 }

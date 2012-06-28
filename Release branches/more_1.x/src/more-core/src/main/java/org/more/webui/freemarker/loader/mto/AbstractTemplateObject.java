@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.freemarker.loader.template.mto;
+package org.more.webui.freemarker.loader.mto;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;

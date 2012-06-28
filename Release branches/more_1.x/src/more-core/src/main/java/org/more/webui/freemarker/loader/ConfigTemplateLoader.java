@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.freemarker.loader.template;
+package org.more.webui.freemarker.loader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,13 +21,12 @@ import java.io.Reader;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import org.more.webui.freemarker.loader.IResourceLoader;
-import org.more.webui.freemarker.loader.ITemplateLoader;
-import org.more.webui.freemarker.loader.template.mto.AbstractTemplateObject;
-import org.more.webui.freemarker.loader.template.mto.ClassPath_TemplateObject;
-import org.more.webui.freemarker.loader.template.mto.File_TemplateObject;
-import org.more.webui.freemarker.loader.template.mto.String_TemplateObject;
-import org.more.webui.freemarker.loader.template.mto.URL_TemplateObject;
+import org.more.webui.freemarker.loader.mto.AbstractTemplateObject;
+import org.more.webui.freemarker.loader.mto.ClassPath_TemplateObject;
+import org.more.webui.freemarker.loader.mto.File_TemplateObject;
+import org.more.webui.freemarker.loader.mto.String_TemplateObject;
+import org.more.webui.freemarker.loader.mto.URL_TemplateObject;
+import org.more.webui.resource.IResourceLoader;
 /**
  * 处理配置文件中添加的模板。
  * @version : 2011-9-14

@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.freemarker.loader.template;
+package org.more.webui.freemarker.loader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import org.more.webui.freemarker.loader.IResourceLoader;
-import org.more.webui.freemarker.loader.ITemplateLoader;
-import org.more.webui.freemarker.loader.resource.DirResourceLoader;
+import org.more.webui.resource.DirResourceLoader;
+import org.more.webui.resource.IResourceLoader;
 import freemarker.cache.FileTemplateLoader;
 /**
  * 实现了{@link IResourceLoader}接口的{@link FileTemplateLoader}类。

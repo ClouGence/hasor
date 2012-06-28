@@ -24,7 +24,9 @@ public class UIButton extends UIComponent {
     /**通用属性表*/
     public enum Propertys {
         /**表示渲染时候是否使用a标签代替input标签，默认：是*/
-        useLink
+        useLink,
+        /**文本值*/
+        value
     }
     @Override
     protected void initUIComponent(ViewContext viewContext) {
@@ -36,5 +38,11 @@ public class UIButton extends UIComponent {
     }
     public void setUseLink(boolean useLink) {
         this.getProperty(Propertys.useLink.name()).value(useLink);
+    }
+    public String getValue() {
+        return this.getProperty(Propertys.value.name()).valueTo(String.class);
+    }
+    public void setValue(String value) {
+        this.getProperty(Propertys.value.name()).value(value);
     }
 }

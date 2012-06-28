@@ -36,6 +36,7 @@ public class TemplateBody implements TemplateDirectiveBody {
         return this.environment;
     }
     public void render(Writer arg0) throws TemplateException, IOException {
-        this.templateBody.render(arg0);
+        if (templateBody != null)
+            this.templateBody.render(arg0);
     }
 }

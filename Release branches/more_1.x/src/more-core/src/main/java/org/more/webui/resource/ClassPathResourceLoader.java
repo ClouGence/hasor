@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.freemarker.loader.resource;
+package org.more.webui.resource;
 import java.io.InputStream;
 import java.net.URL;
-import org.more.webui.freemarker.loader.IResourceLoader;
 /**
  * {@link ClassPathResourceLoader}会使用一个classpath路径作为相对路径。
  * 假设该类代表了一个名为“org.more.res”的资源包，

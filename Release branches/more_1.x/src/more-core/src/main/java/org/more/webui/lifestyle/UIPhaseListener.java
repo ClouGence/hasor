@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.freemarker.loader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
+package org.more.webui.lifestyle;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 给定资源路径装载该资源对象。
- * @version : 2011-9-14
- * @author 赵永春 (zyc@byshell.org) 
+ * webui生命周期阶段监听器
+ * @version : 2012-5-30
+ * @author 赵永春 (zyc@byshell.org)
  */
-public interface IResourceLoader {
-    public URL getResource(String resourcePath) throws IOException;
-    /**装载指定资源。*/
-    public InputStream getResourceAsStream(String resourcePath) throws IOException;
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface UIPhaseListener {}

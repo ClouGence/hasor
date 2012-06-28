@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.more.webui.context.FacesConfig;
 import org.more.webui.context.FacesContext;
-import org.more.webui.context.FacesContextFactory;
 import org.more.webui.context.ViewContext;
 import org.more.webui.lifestyle.Lifecycle;
 import com.google.inject.Singleton;
@@ -39,7 +38,7 @@ public class WebFilter implements Filter {
     private Lifecycle    lifecycle = null;
     private FacesConfig  config    = null;
     private FacesContext uiContext = null;
-    //
+    /*-----------------------------------------------------------------------------------*/
     @Override
     public void doFilter(ServletRequest arg0, ServletResponse arg1, FilterChain arg2) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) arg0;
@@ -56,9 +55,17 @@ public class WebFilter implements Filter {
     }
     @Override
     public void init(FilterConfig arg0) throws ServletException {
-        this.config = new FacesConfig(arg0);
-        this.lifecycle = new LifecycleFactory().createLifestyle(this.config);
-        this.uiContext = new FacesContextFactory().createFacesContext(this.config);
+        try {
+            this.config = new FacesConfig(arg0);
+            String factoryClass = this.config.getWebUIFactoryClass();
+            Class<?> factory = Thread.currentThread().getContextClassLoader().loadClass(factoryClass);
+            WebUIFactory webuiFactory = (WebUIFactory) factory.newInstance();
+            FactoryBuild build = new FactoryBuild(webuiFactory);
+            this.uiContext = build.buildFacesContext(this.config);
+            this.lifecycle = build.buildLifestyle(this.config, this.uiContext);
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
     }
     @Override
     public void destroy() {}

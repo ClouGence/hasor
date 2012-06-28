@@ -78,7 +78,7 @@ public class ViewContext extends HashMap<String, Object> {
         }
         hashStr += ".temp";
         //B.将内容加入到模板加载器中。
-        this.getUIContext().addTemplateString(hashStr, templateString);
+        this.getUIContext().getConfigTemplateLoader().addTemplateAsString(hashStr, templateString);
         //C.执行指纹模板
         CharWriter charWrite = new CharWriter();
         Map<String, Object> elContext = this.getViewELContext();
@@ -130,13 +130,10 @@ public class ViewContext extends HashMap<String, Object> {
     public FacesContext getUIContext() {
         return this.uiContext;
     };
-    /**获取使用的编码*/
-    public String getEncoding() {
-        return this.uiContext.getFacesConfig().getEncoding();
-    };
     /**获取视图模板对象，用于渲染*/
     public Template getTemplate() throws IOException {
-        return this.uiContext.getFreemarker().getTemplate(this.facePath, this.getEncoding());
+        String pageEncoding = this.getUIContext().getEnvironment().getPageEncoding();
+        return this.uiContext.getFreemarker().getTemplate(this.facePath, pageEncoding);
     };
     /**获取渲染器KIT名*/
     public String getRenderKitScope() {

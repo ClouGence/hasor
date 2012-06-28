@@ -17,7 +17,16 @@ package org.more.webui.lifestyle;
 import java.util.ArrayList;
 import java.util.List;
 import org.more.webui.UILifecycleException;
+import org.more.webui.context.FacesConfig;
+import org.more.webui.context.FacesContext;
 import org.more.webui.context.ViewContext;
+import org.more.webui.lifestyle.phase.ApplyRequestValue_Phase;
+import org.more.webui.lifestyle.phase.InitView_Phase;
+import org.more.webui.lifestyle.phase.InvokeApplication_Phase;
+import org.more.webui.lifestyle.phase.Render_Phase;
+import org.more.webui.lifestyle.phase.RestoreView_Phase;
+import org.more.webui.lifestyle.phase.UpdateModules_Phase;
+import org.more.webui.lifestyle.phase.Validation_Phase;
 /**
  * 生命周期执行方法
  * @version : 2011-8-3
@@ -26,6 +35,13 @@ import org.more.webui.context.ViewContext;
 public abstract class Lifecycle {
     private List<PhaseListener> listeners = new ArrayList<PhaseListener>();
     private List<Phase>         phase     = new ArrayList<Phase>();
+    private FacesConfig         config    = null;
+    public Lifecycle(FacesConfig config) {
+        this.config = config;
+    }
+    protected FacesConfig getEnvironment() {
+        return config;
+    }
     /**添加一个阶段监听器*/
     public void addPhaseListener(PhaseListener listener) {
         if (this.listeners.contains(listener) == false)
@@ -63,4 +79,26 @@ public abstract class Lifecycle {
     public void addPhase(Phase phase) {
         this.phase.add(phase);
     };
+    /**创建默认的生命周期对象*/
+    public static Lifecycle getDefault(FacesConfig config, FacesContext context) {
+        /*创建生命周期对象*/
+        Lifecycle lifestyle = new Lifecycle(config) {};
+        {
+            //第1阶段，用于初始化视图中的组件模型树。
+            lifestyle.addPhase(new InitView_Phase());
+            //第2阶段，重塑UI组件状态。
+            lifestyle.addPhase(new RestoreView_Phase());
+            //第3阶段，将请求参数中要求灌入的属性值灌入到属性上。
+            lifestyle.addPhase(new ApplyRequestValue_Phase());
+            //第4阶段，对组件模型中的数据进行验证。
+            lifestyle.addPhase(new Validation_Phase());
+            //第5阶段，将组件模型中的值设置到映射的bean中。
+            lifestyle.addPhase(new UpdateModules_Phase());
+            //第6阶段，处理请求消息。诸如Command，Click事件。等动作。
+            lifestyle.addPhase(new InvokeApplication_Phase());
+            //第7阶段，将执行完的UI信息渲染到客户机中。
+            lifestyle.addPhase(new Render_Phase());
+        }
+        return lifestyle;
+    }
 };

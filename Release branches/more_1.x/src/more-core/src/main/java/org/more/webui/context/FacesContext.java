@@ -14,11 +14,18 @@
  * limitations under the License.
  */
 package org.more.webui.context;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import org.more.webui.UIInitException;
+import org.more.webui.freemarker.loader.ConfigTemplateLoader;
+import org.more.webui.freemarker.loader.MultiTemplateLoader;
 import org.more.webui.render.RenderKit;
 import org.more.webui.support.UIComponent;
+import freemarker.cache.MruCacheStorage;
+import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 /**
  * 该类是用于支持webui的环境、运行环境
@@ -26,19 +33,23 @@ import freemarker.template.Configuration;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class FacesContext {
-    private FacesConfig            facesConfig  = null;
-    private Map<String, RenderKit> renderKitMap = new HashMap<String, RenderKit>();
-    /*保存的是组建和Bean名的映射关系*/
-    private Map<String, String>    componentMap = new HashMap<String, String>();
-    private Map<String, Object>    att          = null;
+    private FacesConfig              facesConfig          = null;
+    private Map<String, RenderKit>   renderKitMap         = new HashMap<String, RenderKit>();
+    //
+    private Set<String>              componentSet         = new HashSet<String>();
+    private Map<String, Class<?>>    componentTypeMap     = new HashMap<String, Class<?>>();
+    private Map<String, UIComponent> componentObjectMap   = new HashMap<String, UIComponent>();
+    //
+    private Map<String, Object>      att                  = null;
+    private ConfigTemplateLoader     configTemplateLoader = new ConfigTemplateLoader();
     //
     public FacesContext(FacesConfig facesConfig) {
         this.facesConfig = facesConfig;
     };
     /**获取配置对象。*/
-    public FacesConfig getFacesConfig() {
+    public FacesConfig getEnvironment() {
         return this.facesConfig;
-    };
+    }
     /*----------------------------------------------------------------*/
     /**添加RenderKit。*/
     public void addRenderKit(String scope, RenderKit kit) {
@@ -51,17 +62,33 @@ public abstract class FacesContext {
     /**
      * 添加一条组建的注册。
      * @param tagName 组建的标签名。
-     * @param componentClass 组建class类型。
+     * @param componentBeanType 组建class类型。
      */
-    public void addComponent(String tagName, String componentBeanName) {
-        this.componentMap.put(tagName, componentBeanName);
+    public void addComponentType(String tagName, Class<?> componentBeanType) {
+        this.componentTypeMap.put(tagName, componentBeanType);
+        this.componentSet.add(tagName);
+    }
+    /**
+     * 添加一条组建的注册。
+     * @param tagName 组建的标签名。
+     * @param componentBeanObject 组建对象。
+     */
+    public void addComponentObject(String tagName, UIComponent componentBeanObject) {
+        this.componentObjectMap.put(tagName, componentBeanObject);
+        this.componentSet.add(tagName);
+    }
+    /**获取已经注册的组建名*/
+    public Set<String> getComponentSet() {
+        return Collections.unmodifiableSet(this.componentSet);
     }
     /**根据组建的标签名获取组建*/
     public UIComponent getComponent(String tagName) throws UIInitException {
-        String componentBeanName = this.componentMap.get(tagName);
-        if (componentBeanName == null)
+        if (componentObjectMap.containsKey(tagName) == true)
+            return componentObjectMap.get(tagName);
+        Class<?> componentBeanType = this.componentTypeMap.get(tagName);
+        if (componentBeanType == null)
             return null;
-        return this.getBeanContext().getBean(componentBeanName);
+        return this.getBeanContext().getBean(componentBeanType);
     }
     /**获取属性集合。*/
     public Map<String, Object> getAttribute() {
@@ -69,12 +96,34 @@ public abstract class FacesContext {
             this.att = new HashMap<String, Object>();
         return this.att;
     }
+    private Configuration cfg = null;
+    public final Configuration getFreemarker() {
+        if (this.cfg == null) {
+            this.cfg = createFreemarker();
+            cfg.setDefaultEncoding(this.getEnvironment().getPageEncoding());
+            cfg.setOutputEncoding(this.getEnvironment().getOutEncoding());
+            /*这条必须加，因为没有缓存会有模板重新载入丢失的问题。
+             * 引发这个问题的原因是webui需要向模板中的标签写入id文件。*/
+            cfg.setCacheStorage(new MruCacheStorage(0, Integer.MAX_VALUE));
+            cfg.setLocalizedLookup(this.getEnvironment().isLocalizedLookup());
+            //
+            TemplateLoader[] loaders = null;
+            if (cfg.getTemplateLoader() != null) {
+                loaders = new TemplateLoader[2];
+                loaders[1] = cfg.getTemplateLoader();
+            } else
+                loaders = new TemplateLoader[1];
+            loaders[0] = this.configTemplateLoader;
+            cfg.setTemplateLoader(new MultiTemplateLoader(loaders));
+        }
+        return this.cfg;
+    }
     /*----------------------------------------------------------------*/
-    public void addTemplateString(String hashStr, String templateString) {
-        a// TODO Auto-generated method stub
+    public ConfigTemplateLoader getConfigTemplateLoader() {
+        return this.configTemplateLoader;
     }
     /**获取Bean管理器。*/
     public abstract BeanManager getBeanContext();
     /**获取freemarker的配置对象。*/
-    public abstract Configuration getFreemarker();
+    public abstract Configuration createFreemarker();
 }

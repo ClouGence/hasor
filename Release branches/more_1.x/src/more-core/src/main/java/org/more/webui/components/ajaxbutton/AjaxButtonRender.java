@@ -35,7 +35,7 @@ public class AjaxButtonRender implements Render<AjaxButton> {
         if (component.isUseLink() == true)
             writer.write("<a href='javascript:void(0);'");
         else
-            writer.write("<input text='button'");
+            writer.write("<input type='button'");
         /*-------------------------------------------------*/
         //
         /*-------------------------------------------------*/
@@ -51,11 +51,13 @@ public class AjaxButtonRender implements Render<AjaxButton> {
         //
         /*-------------------------------------------------*/
         writer.write(" onclick='" + component.getId() + ".onclick(this);'");
+        if (component.isUseLink() == false)
+            writer.write(" value='" + component.getProperty("value").valueTo(String.class) + "'");
         writer.write(">");
     }
     @Override
     public void render(ViewContext viewContext, AjaxButton component, TemplateBody arg3, Writer writer) throws IOException, TemplateException {
-        if (component.isUseLink() == false)
+        if (component.isUseLink() == true)
             writer.write(component.getProperty("value").valueTo(String.class));
         else
             arg3.render(writer);

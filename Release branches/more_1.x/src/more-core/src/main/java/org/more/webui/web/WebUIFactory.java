@@ -14,26 +14,17 @@
  * limitations under the License.
  */
 package org.more.webui.web;
+import org.more.webui.context.FacesConfig;
+import org.more.webui.context.FacesContext;
+import org.more.webui.lifestyle.Lifecycle;
 /**
- * 常量表
- * @version : 2012-5-21
+ * 
+ * @version : 2012-6-27
  * @author 赵永春 (zyc@byshell.org)
  */
-public enum PostFormEnum {
-    /**发生事件的组建*/
-    PostForm_TargetParamKey("WebUI_PF_Target"),
-    /**发生的事件*/
-    PostForm_EventKey("WebUI_PF_Event"),
-    /**执行渲染的类型*/
-    PostForm_RenderParamKey("WebUI_PF_Render"),
-    /**回传状态的状态数据*/
-    PostForm_StateDataParamKey("WebUI_PF_State"), ;
-    //
-    private String value = null;
-    PostFormEnum(String value) {
-        this.value = value;
-    }
-    public String value() {
-        return this.value;
-    }
+public interface WebUIFactory {
+    /**创建{@link Lifecycle}对象。*/
+    public Lifecycle createLifestyle(FacesConfig config, FacesContext context);
+    /**创建{@link FacesContext}对象。*/
+    public FacesContext createFacesContext(FacesConfig config);
 }

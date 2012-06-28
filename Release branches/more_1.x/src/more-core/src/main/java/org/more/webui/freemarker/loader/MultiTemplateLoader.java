@@ -49,7 +49,7 @@
  * information on the Visigoth Software Society, please see
  * http://www.visigoths.org/
  */
-package org.more.webui.freemarker.loader.template;
+package org.more.webui.freemarker.loader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -58,9 +58,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.more.webui.freemarker.loader.IResourceLoader;
-import org.more.webui.freemarker.loader.ITemplateLoader;
-import org.more.webui.freemarker.loader.resource.MultiResourceLoader;
+import org.more.webui.resource.IResourceLoader;
+import org.more.webui.resource.MultiResourceLoader;
 import freemarker.cache.StatefulTemplateLoader;
 import freemarker.cache.TemplateCache;
 import freemarker.cache.TemplateLoader;

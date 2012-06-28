@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.freemarker.loader.resource;
+package org.more.webui.resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import org.more.webui.freemarker.loader.IResourceLoader;
 /**
 * 可以将多个{@link IResourceLoader}接口对象作为一个提供出去。。
 * @version : 2011-9-17
