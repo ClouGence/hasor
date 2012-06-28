@@ -54,6 +54,7 @@ class DefaultFacesContext extends FacesContext {
         /*这条必须加，因为没有缓存会有模板重新载入丢失的问题。
          * 引发这个问题的原因是webui需要向模板中的标签写入id文件。*/
         cfg.setCacheStorage(new MruCacheStorage(0, Integer.MAX_VALUE));
+        cfg.setClassicCompatible(true);
         return cfg;
     }
 }
