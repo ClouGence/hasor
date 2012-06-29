@@ -4,5 +4,14 @@
 ~中文测试~
 <@ui_AjaxButton id="test" value="按钮1" useLink=false />
 <#include "/org/more/webui/freemarker/xhtml/parser/template_2.xhtml"/>
+
+<@ui_Page id="msgPage" startWith=0 pageSize=10 currentPage=req_pageNum rowCount=100 pageLink="template_1.xhtml?pageNum=${PageIndex}" class="pagination p5 tc">
+	<@ui_pFirst id="pf">首页</@ui_pFirst>
+	<@ui_pPrev id="pp">上一页</@ui_pPrev>
+	<@ui_pNum id="pi"><font color="<#if isCurrent==true>red</#if>">${PageIndex+1}</font></@ui_pNum>
+	<@ui_pNext id="pn">下一页</@ui_pNext>
+	<@ui_pLast id="pl">尾页</@ui_pLast>
+	<@ui_pNoDate id="none"><span class="g3">&lt;没有分页数据&gt;</span></@ui_pNoDate>
+</@ui_Page>
 </body>
 </html>
