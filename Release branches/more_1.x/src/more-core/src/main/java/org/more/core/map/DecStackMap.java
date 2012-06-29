@@ -57,7 +57,7 @@ public class DecStackMap<K, T> extends DecSequenceMap<K, T> {
     /**销毁当前层次的属性栈，如果在栈顶执行该操作将会引发{@link IndexOutOfBoundsException}类型异常。*/
     public synchronized void dropStack() {
         StackSimpleSet<K, T> stackList = (StackSimpleSet<K, T>) this.entrySet();
-        if (stackList.size() == 1)
+        if (stackList.mapList.size() == 0)
             throw new IndexOutOfBoundsException();
         stackList.removeFirst();
     };
