@@ -52,14 +52,14 @@ public class AjaxButtonRender implements Render<AjaxButton> {
         /*-------------------------------------------------*/
         writer.write(" onclick='" + component.getId() + ".onclick(this);'");
         if (component.isUseLink() == false)
-            writer.write(" value='" + component.getProperty("value").valueTo(String.class) + "'");
+            writer.write(" value='" + component.getTitle() + "'");
         writer.write(">");
     }
     @Override
     public void render(ViewContext viewContext, AjaxButton component, TemplateBody arg3, Writer writer) throws IOException, TemplateException {
         if (component.isUseLink() == true)
-            writer.write(component.getProperty("value").valueTo(String.class));
-        else
+            writer.write(component.getTitle());
+        else if (arg3 != null)
             arg3.render(writer);
     }
     @Override

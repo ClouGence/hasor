@@ -45,7 +45,7 @@ public class RestoreView_Phase extends Phase {
         String stateJsonData = uiContext.getStateData();
         if (stateJsonData == null)
             return;
-        Object[] viewState = JSONObject.parseObject(stateJsonData, List.class).toArray();
+        List<?> viewState = JSONObject.parseObject(stateJsonData, List.class);
         viewRoot.restoreState(target, viewState);
     };
 };

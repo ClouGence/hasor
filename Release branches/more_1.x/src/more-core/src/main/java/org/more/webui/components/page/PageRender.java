@@ -92,6 +92,8 @@ public class PageRender implements Render<PageCom> {
     }
     @Override
     public void render(ViewContext viewContext, PageCom component, TemplateBody arg3, Writer writer) throws IOException, TemplateException {
+        if (arg3 == null)
+            return;
         /**起始号*/
         int startWith = component.getStartWith();
         /**总数*/

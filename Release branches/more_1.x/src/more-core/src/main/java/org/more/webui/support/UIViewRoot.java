@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.webui.support;
+import java.util.List;
 /**
  * 所有组件的根，同时也负责保存所有视图参数。该组建不使用@UICom注解注册
  * @version : 2012-3-29
@@ -23,11 +24,11 @@ public class UIViewRoot extends UIComponent {
     public UIViewRoot() {
         this.setId("com_root");
     }
-    public void restoreState(String componentID, Object[] stateData) {
+    public void restoreState(String componentID, List<?> stateData) {
         UIComponent com = this.getChildByID(componentID);
         com.restoreState(stateData);
     }
-    public Object[] saveState(String componentID) {
+    public List<?> saveState(String componentID) {
         UIComponent com = this.getChildByID(componentID);
         return com.saveState();
     }

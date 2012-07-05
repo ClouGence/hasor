@@ -58,7 +58,9 @@ public class ExpressionValueHolder extends AbstractValueHolder {
         if (getWriteNode() == null)
             return;//不支持写入
         Map<String, Object> elContext = viewContext.getViewELContext();
-        Ognl.setValue(this.getWriteNode(), elContext, this.value());
+        try {
+            Ognl.setValue(this.getWriteNode(), elContext, this.value());
+        } catch (Exception e) {}
         this.value(null);
         this.getValue().needUpdate = false;
     }

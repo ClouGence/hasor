@@ -15,8 +15,8 @@
  */
 package org.more.webui.support;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.more.core.error.MoreDataException;
@@ -141,8 +141,8 @@ public abstract class UIComponent {
         return this.components.size();
     };
     /**获取一个元素集合，该集合是存放子组件的场所*/
-    public Iterator<UIComponent> getChildren() {
-        return this.components.iterator();
+    public List<UIComponent> getChildren() {
+        return Collections.unmodifiableList(this.components);
     };
     /**获取一个组建列表该列表中包含了该组建以及该组建的所有子组建。*/
     public List<UIComponent> getALLChildren() {
@@ -304,14 +304,14 @@ public abstract class UIComponent {
     }
     /*-------------------------------------------------------------------------------状态处理*/
     /**从状态数据中恢复状态*/
-    public void restoreState(Object[] stateData) {
+    public void restoreState(List<?> stateData) {
         //1.数据检查
         if (stateData == null)
             return;
-        if (stateData.length != 2)
+        if (stateData.size() != 2)
             throw new MoreDataException("WebUI无法重塑组件状态，在重塑组件[" + this.getId() + "]组件发生数据丢失");
         //2.恢复自身数据
-        Map<String, Object> mineState = (Map<String, Object>) stateData[0];
+        Map<String, Object> mineState = (Map<String, Object>) stateData.get(0);
         for (String propName : mineState.keySet())
             /*处理除ID之外的所有属性*/
             if ("id".equals(propName) == false) {
@@ -320,12 +320,12 @@ public abstract class UIComponent {
                     vh.value(mineState.get(propName));
             }
         //3.恢复子组件
-        Map<String, Object> childrenState = (Map<String, Object>) stateData[1];
+        Map<String, Object> childrenState = (Map<String, Object>) stateData.get(1);
         for (UIComponent com : components)
-            com.restoreState((Object[]) childrenState.get(com.getId()));
+            com.restoreState((List<?>) childrenState.get(com.getId()));
     };
     /**将组件的数据提取出来*/
-    public Object[] saveState() {
+    public List<?> saveState() {
         //1.持久化自身的状态
         HashMap<String, Object> mineState = new HashMap<String, Object>();
         for (String propName : this.propertys.keySet()) {
@@ -337,9 +337,9 @@ public abstract class UIComponent {
         for (UIComponent com : components)
             childrenState.put(com.getId(), com.saveState());
         //3.返回持久化状态
-        Object[] thisState = new Object[2];
-        thisState[0] = mineState;
-        thisState[1] = childrenState;
-        return thisState;
+        ArrayList<Object> array = new ArrayList<Object>();
+        array.add(mineState);
+        array.add(childrenState);
+        return array;
     }
 };

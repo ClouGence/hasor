@@ -56,7 +56,8 @@ public class TextInputRender implements Render<TextInput> {
     }
     @Override
     public void render(ViewContext viewContext, TextInput component, TemplateBody arg3, Writer writer) throws IOException, TemplateException {
-        arg3.render(writer);
+        if (arg3 != null)
+            arg3.render(writer);
     }
     @Override
     public void endRender(ViewContext viewContext, TextInput component, TemplateBody arg3, Writer writer) throws IOException {

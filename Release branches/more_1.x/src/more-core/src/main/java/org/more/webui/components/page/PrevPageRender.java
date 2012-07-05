@@ -48,7 +48,8 @@ public class PrevPageRender implements Render<PrevPageCom> {
     public void render(ViewContext viewContext, PrevPageCom component, TemplateBody arg3, Writer writer) throws IOException, TemplateException {
         if (isRun(component) == false)
             return;
-        arg3.render(writer);
+        if (arg3 != null)
+            arg3.render(writer);
     }
     @Override
     public void endRender(ViewContext viewContext, PrevPageCom component, TemplateBody arg3, Writer writer) throws IOException {
