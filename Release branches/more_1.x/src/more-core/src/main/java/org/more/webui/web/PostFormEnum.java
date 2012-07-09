@@ -20,14 +20,16 @@ package org.more.webui.web;
  * @author 赵永春 (zyc@byshell.org)
  */
 public enum PostFormEnum {
-    /**发生事件的组建*/
+    /**发生事件的组建。*/
     PostForm_TargetParamKey("WebUI_PF_Target"),
-    /**发生的事件*/
+    /**发生的事件。*/
     PostForm_EventKey("WebUI_PF_Event"),
-    /**执行渲染的类型*/
+    /**执行渲染的类型。*/
     PostForm_RenderParamKey("WebUI_PF_Render"),
-    /**回传状态的状态数据*/
-    PostForm_StateDataParamKey("WebUI_PF_State"), ;
+    /**回传状态的状态数据。*/
+    PostForm_StateDataParamKey("WebUI_PF_State"),
+    /**回传一条信息表示本次请求来自于Ajax。*/
+    PostForm_IsAjaxKey("WebUI_PF_Ajax"), ;
     //
     private String value = null;
     PostFormEnum(String value) {

@@ -30,6 +30,7 @@ import org.more.webui.freemarker.parser.TemplateScanner;
 import org.more.webui.support.UIComponent;
 import org.more.webui.support.UIViewRoot;
 import org.more.webui.web.PostFormEnum;
+import com.alibaba.fastjson.JSONObject;
 import com.sun.xml.internal.messaging.saaj.util.CharWriter;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -51,6 +52,16 @@ public class ViewContext extends HashMap<String, Object> {
         this.res = res;
         this.facePath = this.req.getRequestURI().substring(req.getContextPath().length());
         this.uiContext = uiContext;
+        Map<String, String[]> reqMap = req.getParameterMap();
+        for (String key : reqMap.keySet()) {
+            String[] value = reqMap.get(key);
+            if (value.length == 0)
+                this.put(key, null);
+            else if (value.length == 1)
+                this.put(key, value[0]);
+            else
+                this.put(key, value);
+        }
     };
     /**获取要渲染的页面*/
     public String getFacePath() {
@@ -64,25 +75,15 @@ public class ViewContext extends HashMap<String, Object> {
     public String getComClientID(UIComponent component) {
         return String.valueOf(comClientID++);
     };
+    public String newClientID() {
+        return "Com_" + String.valueOf(comClientID++);
+    }
     //
     /**执行模板字符串*/
     public String processTemplateString(String templateString) throws TemplateException, IOException {
-        //A.取得指纹
-        String hashStr = null;
-        try {
-            /*使用MD5加密*/
-            hashStr = CommonCodeUtil.MD5.getMD5(templateString);
-        } catch (NoSuchAlgorithmException e) {
-            /*使用hashCode*/
-            hashStr = String.valueOf(templateString.hashCode());
-        }
-        hashStr += ".temp";
-        //B.将内容加入到模板加载器中。
-        this.getUIContext().getConfigTemplateLoader().addTemplateAsString(hashStr, templateString);
-        //C.执行指纹模板
-        CharWriter charWrite = new CharWriter();
         Map<String, Object> elContext = this.getViewELContext();
-        this.getUIContext().getFreemarker().getTemplate(hashStr).process(elContext, charWrite);
+        CharWriter charWrite = new CharWriter();
+        this.getUIContext().processTemplateString(templateString, charWrite, elContext);
         return charWrite.toString();
     };
     private UIViewRoot viewRoot = null;
@@ -177,5 +178,12 @@ public class ViewContext extends HashMap<String, Object> {
     public String getStateData() {
         String stateDataKey = PostFormEnum.PostForm_StateDataParamKey.value();
         return this.getHttpRequest().getParameter(stateDataKey);
+    }
+    /**只有当是ajax请求的时候才会生效*/
+    public void sendAjaxData(Object sendData) throws IOException {
+        if (this.getEvent() != null) {
+            String sendDataStr = JSONObject.toJSONString(sendData);
+            this.getHttpResponse().getWriter().write(sendDataStr);
+        }
     }
 }

@@ -37,9 +37,9 @@ public class MethodExpression {
             this.elNodeTree = (Node) Ognl.parseExpression(expressionString);
         return this.elNodeTree;
     }
-    public void execute(UIComponent component, ViewContext viewContext) throws OgnlException {
+    public Object execute(UIComponent component, ViewContext viewContext) throws OgnlException {
         Map<String, Object> viewEL = viewContext.getViewELContext();
         viewEL.put("this", component);
-        Ognl.getValue(this.getNodeTree(), viewEL);
+        return Ognl.getValue(this.getNodeTree(), viewEL);
     }
 }

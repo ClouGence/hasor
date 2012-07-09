@@ -24,6 +24,10 @@ public class UIViewRoot extends UIComponent {
     public UIViewRoot() {
         this.setId("com_root");
     }
+    @Override
+    public String getComponentType() {
+        return "ui_ViewRoot";
+    }
     public void restoreState(String componentID, List<?> stateData) {
         UIComponent com = this.getChildByID(componentID);
         com.restoreState(stateData);

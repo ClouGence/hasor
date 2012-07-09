@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.webui.support;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,10 +26,10 @@ import org.more.core.event.Event;
 import org.more.core.event.EventListener;
 import org.more.core.event.EventManager;
 import org.more.core.ognl.OgnlException;
+import org.more.util.BeanUtil;
 import org.more.webui.context.ViewContext;
 import org.more.webui.support.values.AbstractValueHolder;
 import org.more.webui.support.values.ExpressionValueHolder;
-import org.more.webui.support.values.MethodExpression;
 import org.more.webui.support.values.StaticValueHolder;
 /**
 * 所有组件的根，这里拥有组件的所有关键方法。
@@ -52,6 +53,8 @@ public abstract class UIComponent {
     public void setId(String componentID) {
         this.componentID = componentID;
     };
+    /**获取组建类型*/
+    public abstract String getComponentType();
     public String getClientID(ViewContext viewContext) {
         //        if (clientID == null)
         return "uiCID_" + viewContext.getComClientID(this);
@@ -67,12 +70,10 @@ public abstract class UIComponent {
         errorScript,
         /**Ajax是否使用同步操作*/
         async,
-        /**Action动作*/
-        actionEL,
         /**表示是否渲染*/
-        isRender,
+        render,
         /**表示是否渲染子组建*/
-        isRenderChildren,
+        renderChildren,
     };
     public String getBeforeScript() {
         return this.getProperty(Propertys.beforeScript.name()).valueTo(String.class);
@@ -100,27 +101,19 @@ public abstract class UIComponent {
     }
     /**返回一个boolean值，该值决定是否渲染该组件*/
     public boolean isRender() {
-        return this.getProperty(Propertys.isRender.name()).valueTo(Boolean.TYPE);
+        return this.getProperty(Propertys.render.name()).valueTo(Boolean.TYPE);
     };
     /**设置一个boolean值，该值决定是否渲染该组件*/
     public void setRender(boolean isRender) {
-        this.getProperty(Propertys.isRender.name()).value(isRender);
+        this.getProperty(Propertys.render.name()).value(isRender);
     };
     /**返回一个boolean值，该值决定是否渲染该组件的子组建。*/
     public boolean isRenderChildren() {
-        return this.getProperty(Propertys.isRenderChildren.name()).valueTo(Boolean.TYPE);
+        return this.getProperty(Propertys.renderChildren.name()).valueTo(Boolean.TYPE);
     }
     /**设置一个boolean值，该值决定是否渲染该组件的子组建。*/
     public void setRenderChildren(boolean isRenderChildren) {
-        this.getProperty(Propertys.isRenderChildren.name()).value(isRenderChildren);
-    }
-    /**获取Action EL字符串*/
-    public String getActionEL() {
-        return this.getProperty(Propertys.actionEL.name()).valueTo(String.class);
-    }
-    /**设置Action EL字符串*/
-    public void setActionEL(String action) {
-        this.getProperty(Propertys.actionEL.name()).value(action);
+        this.getProperty(Propertys.renderChildren.name()).value(isRenderChildren);
     }
     /*-------------------------------------------------------------------------------核心方法*/
     /**在当前组件的子级中寻找某个特定ID的组件*/
@@ -156,11 +149,11 @@ public abstract class UIComponent {
     public void addChildren(UIComponent componentItem) {
         componentItem.setParent(this);
         this.components.add(componentItem);
-    }
+    };
     /**获取组建的父级。*/
     public UIComponent getParent() {
         return this.parent;
-    }
+    };
     /**设置组建的父级别。*/
     private void setParent(UIComponent parent) {
         this.parent = parent;
@@ -204,21 +197,25 @@ public abstract class UIComponent {
                     Object newValue = objMap.get(key);
                     vh.value(newValue);
                 }
-    }
+    };
     /*-------------------------------------------------------------------------------生命周期*/
     /**子类可以通过该方法初始化组件。*/
     protected void initUIComponent(ViewContext viewContext) {
         /*设置属性默认值，当页面中有值被设置的时候这里设置的默认值就会失效*/
-        //        this.clientID = null;
+        //this.clientID = null;
         this.setProperty(Propertys.beforeScript.name(), "true");
         this.setProperty(Propertys.async.name(), true);//默认使用异步操作
-        this.setProperty(Propertys.isRender.name(), true);
-        this.setProperty(Propertys.isRenderChildren.name(), true);
-        this.setProperty(Propertys.actionEL.name(), null);
+        this.setProperty(Propertys.render.name(), true);
+        this.setProperty(Propertys.renderChildren.name(), true);
     };
+    /**组建被初始化标记*/
+    private Boolean doInit = false;
     /**第1阶段，处理初始化阶段，该阶段负责初始化组件。*/
-    public void processInit(ViewContext viewContext) {
-        this.initUIComponent(viewContext);
+    public final void processInit(ViewContext viewContext) {
+        if (this.doInit == false) {
+            this.initUIComponent(viewContext);
+            this.doInit = true;
+        }
         /*重置属性，重置属性会保证每个生命周期内的属性值是由UI中定义的原始值。*/
         for (AbstractValueHolder vh : this.propertys.values())
             vh.reset();
@@ -257,20 +254,17 @@ public abstract class UIComponent {
     public void processApplication(ViewContext viewContext) throws OgnlException {
         if (this.getId().equals(viewContext.getTarget()) == true) {
             /*处理客户端引发的事*/
-            if (viewContext.getEvent() != null)
+            Event eventType = Event.getEvent(viewContext.getEvent());
+            if (eventType != null)
                 /**事件请求*/
-                this.doEvent(viewContext);
-            else
-                /**Action请求*/
-                this.doAction(viewContext);//处理
+                this.doEvent(eventType, viewContext);
         }
         for (UIComponent com : this.components)
             com.processApplication(viewContext);
     };
     /*-------------------------------------------------------------------------------事件响应*/
     /**执行事件*/
-    protected void doEvent(ViewContext viewContext) {
-        Event eventType = Event.getEvent(viewContext.getEvent());
+    protected void doEvent(Event eventType, ViewContext viewContext) {
         this.privateEventManager.doEvent(eventType, this, viewContext);
     };
     /**发出事件，该事件会被发送到私有事件管理器中。*/
@@ -289,19 +283,6 @@ public abstract class UIComponent {
     protected EventManager getEventManager() {
         return this.privateEventManager;
     };
-    /*-------------------------------------------------------------------------------Action调用处理*/
-    /**执行action调用*/
-    protected void doAction(ViewContext viewContext) throws OgnlException {
-        MethodExpression me = this.getActionExpression();
-        if (me != null)
-            me.execute(this, viewContext);
-    };
-    public MethodExpression getActionExpression() {
-        String actionString = this.getActionEL();
-        if (actionString == null || actionString.equals("")) {} else
-            return new MethodExpression(actionString);
-        return null;
-    }
     /*-------------------------------------------------------------------------------状态处理*/
     /**从状态数据中恢复状态*/
     public void restoreState(List<?> stateData) {
@@ -312,13 +293,24 @@ public abstract class UIComponent {
             throw new MoreDataException("WebUI无法重塑组件状态，在重塑组件[" + this.getId() + "]组件发生数据丢失");
         //2.恢复自身数据
         Map<String, Object> mineState = (Map<String, Object>) stateData.get(0);
-        for (String propName : mineState.keySet())
-            /*处理除ID之外的所有属性*/
-            if ("id".equals(propName) == false) {
-                AbstractValueHolder vh = this.propertys.get(propName);
-                if (vh != null)
-                    vh.value(mineState.get(propName));
-            }
+        for (String propName : mineState.keySet()) {
+            /*排除错误*/
+            if (propName == null)
+                continue;
+            /*ID属性不处理*/
+            if (propName.toLowerCase().equals("id") == true)
+                continue;
+            /*处理注解*/
+            Method rm = BeanUtil.getWriteMethod(propName, this.getClass());
+            if (rm == null)
+                continue;
+            if (rm.getAnnotation(NoState.class) != null)
+                continue;
+            /*写入属性*/
+            AbstractValueHolder vh = this.propertys.get(propName);
+            if (vh != null)
+                vh.value(mineState.get(propName));
+        }
         //3.恢复子组件
         Map<String, Object> childrenState = (Map<String, Object>) stateData.get(1);
         for (UIComponent com : components)
@@ -329,6 +321,11 @@ public abstract class UIComponent {
         //1.持久化自身的状态
         HashMap<String, Object> mineState = new HashMap<String, Object>();
         for (String propName : this.propertys.keySet()) {
+            Method rm = BeanUtil.getReadMethod(propName, this.getClass());
+            if (rm == null)
+                continue;
+            if (rm.getAnnotation(NoState.class) != null)
+                continue;
             AbstractValueHolder vh = this.propertys.get(propName);
             mineState.put(propName, vh.value());
         }

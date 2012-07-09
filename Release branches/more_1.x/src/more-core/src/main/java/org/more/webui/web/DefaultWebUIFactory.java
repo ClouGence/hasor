@@ -21,7 +21,6 @@ import org.more.webui.freemarker.loader.ClassPathTemplateLoader;
 import org.more.webui.lifestyle.Lifecycle;
 import freemarker.cache.MruCacheStorage;
 import freemarker.template.Configuration;
-import freemarker.template.DefaultObjectWrapper;
 /**
  * д╛хой╣ож
  * @version : 2012-6-27

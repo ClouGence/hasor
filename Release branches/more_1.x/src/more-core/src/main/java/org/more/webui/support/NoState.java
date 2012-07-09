@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.freemarker.loader;
-import freemarker.cache.TemplateLoader;
+package org.more.webui.support;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 
- * @version : 2012-5-15
+ * 在属性的相应get方法上标记该注解表明该属性不需要被同步到客户端。
+ * 如果被标记在set方法上则表明不接收状态重塑。
+ * @version : 2012-7-9
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ITemplateLoader extends TemplateLoader {
-    /**获取类型*/
-    public String getType();
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface NoState {}

@@ -27,27 +27,35 @@ import org.more.webui.support.values.MethodExpression;
 public abstract class UIInput extends UIComponent {
     /**通用属性表*/
     public enum Propertys {
-        /**值*/
+        /**表单名*/
+        name,
+        /**表单值*/
         value,
-        /**当发生改变时EL调用表达式（ajax）。*/
+        /**当发生事件OnChange时。*/
         onChangeEL,
+        /**当发生事件OnLoadData时。*/
+        onLoadDataEL,
     }
-    private boolean addEventListener = false;
     @Override
     protected void initUIComponent(ViewContext viewContext) {
         super.initUIComponent(viewContext);
-        if (addEventListener == false) {
-            this.getEventManager().addEventListener(Event.getEvent("OnChange"), new Event_OnChange());
-            this.addEventListener = true;
-        }
-        this.setProperty(Propertys.value.name(), null);
+        this.getEventManager().addEventListener(Event.getEvent("OnChange"), new Event_OnChange());
+        this.getEventManager().addEventListener(Event.getEvent("OnLoadData"), new Event_OnLoadData());
     }
     /*-------------------------------------------------------------------------------*/
-    /**获取组建值*/
+    /**获取组建表单名*/
+    public String getName() {
+        return this.getProperty(Propertys.name.name()).valueTo(String.class);
+    }
+    /**设置组建表单名*/
+    public void setName(String name) {
+        this.getProperty(Propertys.name.name()).value(name);
+    }
+    /**获取组建表单值*/
     public Object getValue() {
         return this.getProperty(Propertys.value.name()).valueTo(Object.class);
     }
-    /**设置组建值*/
+    /**设置组建表单值*/
     public void setValue(String value) {
         this.getProperty(Propertys.value.name()).value(value);
     }
@@ -59,6 +67,14 @@ public abstract class UIInput extends UIComponent {
     public void setOnChangeEL(String onChangeEL) {
         this.getProperty(Propertys.onChangeEL.name()).value(onChangeEL);
     }
+    /**当企图装载数据时EL调用表达式（如果配置）*/
+    public String getOnLoadDataEL() {
+        return this.getProperty(Propertys.onLoadDataEL.name()).valueTo(String.class);
+    }
+    /**当企图装载数据时EL调用表达式（如果配置）*/
+    public void setOnLoadDataEL(String onLoadDataEL) {
+        this.getProperty(Propertys.onLoadDataEL.name()).value(onLoadDataEL);
+    }
     /*-------------------------------------------------------------------------------*/
     private MethodExpression onChangeExp = null;
     public MethodExpression getOnChangeExpression() {
@@ -69,6 +85,15 @@ public abstract class UIInput extends UIComponent {
         }
         return this.onChangeExp;
     }
+    private MethodExpression onLoadDataExp = null;
+    public MethodExpression getOnLoadDataExpression() {
+        if (this.onLoadDataExp == null) {
+            String onLoadDataExpString = this.getOnLoadDataEL();
+            if (onLoadDataExpString == null || onLoadDataExpString.equals("")) {} else
+                this.onLoadDataExp = new MethodExpression(onLoadDataExpString);
+        }
+        return this.onLoadDataExp;
+    }
 }
 /**负责处理OnChange事件的EL调用*/
 class Event_OnChange implements EventListener {
@@ -78,7 +103,17 @@ class Event_OnChange implements EventListener {
         ViewContext viewContext = (ViewContext) sequence.getParams()[1];
         MethodExpression e = component.getOnChangeExpression();
         if (e != null)
-            e.execute(component, viewContext);
+            viewContext.sendAjaxData(e.execute(component, viewContext));
     }
-    /*-------------------------------------------------------------------------------*/
+}
+/**负责处理OnLoadData事件的EL调用*/
+class Event_OnLoadData implements EventListener {
+    @Override
+    public void onEvent(Event event, Sequence sequence) throws Throwable {
+        UIInput component = (UIInput) sequence.getParams()[0];
+        ViewContext viewContext = (ViewContext) sequence.getParams()[1];
+        MethodExpression e = component.getOnLoadDataExpression();
+        if (e != null)
+            viewContext.sendAjaxData(e.execute(component, viewContext));
+    }
 }

@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 package org.more.webui.context;
+import java.io.IOException;
+import java.io.Writer;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.more.util.CommonCodeUtil;
 import org.more.webui.UIInitException;
 import org.more.webui.freemarker.loader.ConfigTemplateLoader;
 import org.more.webui.freemarker.loader.MultiTemplateLoader;
@@ -26,6 +30,7 @@ import org.more.webui.render.RenderKit;
 import org.more.webui.support.UIComponent;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
 /**
  * 该类是用于支持webui的环境、运行环境
  * @version : 2012-4-25
@@ -114,10 +119,23 @@ public abstract class FacesContext {
         }
         return this.cfg;
     }
-    /*----------------------------------------------------------------*/
-    public ConfigTemplateLoader getConfigTemplateLoader() {
-        return this.configTemplateLoader;
+    public void processTemplateString(String templateString, Writer writer, Map<String, Object> rootMap) throws TemplateException, IOException {
+        //A.取得指纹
+        String hashStr = null;
+        try {
+            /*使用MD5加密*/
+            hashStr = CommonCodeUtil.MD5.getMD5(templateString);
+        } catch (NoSuchAlgorithmException e) {
+            /*使用hashCode*/
+            hashStr = String.valueOf(templateString.hashCode());
+        }
+        hashStr += ".temp";
+        //B.将内容加入到模板加载器中。
+        this.configTemplateLoader.addTemplateAsString(hashStr, templateString);
+        //C.执行指纹模板
+        this.getFreemarker().getTemplate(hashStr).process(rootMap, writer);
     }
+    /*----------------------------------------------------------------*/
     /**获取Bean管理器。*/
     public abstract BeanManager getBeanContext();
     /**获取freemarker的配置对象。*/
