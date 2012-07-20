@@ -28,17 +28,11 @@ import freemarker.template.TemplateException;
 public class NoRender<T extends UIComponent> implements Render<T> {
     /**开始渲染组建*/
     @Override
-    public void beginRender(ViewContext viewContext, T component, TemplateBody arg3, Writer writer) throws IOException {
-        // TODO Auto-generated method stub
-    }
+    public void beginRender(ViewContext viewContext, T component, TemplateBody arg3, Writer writer) throws IOException {}
     /**进行渲染*/
     @Override
-    public void render(ViewContext viewContext, T component, TemplateBody arg3, Writer writer) throws IOException, TemplateException {
-        // TODO Auto-generated method stub
-    }
+    public void render(ViewContext viewContext, T component, TemplateBody arg3, Writer writer) throws IOException, TemplateException {}
     /**组建渲染结束*/
     @Override
-    public void endRender(ViewContext viewContext, T component, TemplateBody arg3, Writer writer) throws IOException {
-        // TODO Auto-generated method stub
-    }
+    public void endRender(ViewContext viewContext, T component, TemplateBody arg3, Writer writer) throws IOException {}
 }

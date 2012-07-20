@@ -25,5 +25,5 @@ import java.lang.annotation.Target;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
+@Target({ ElementType.METHOD })
 public @interface NoState {}

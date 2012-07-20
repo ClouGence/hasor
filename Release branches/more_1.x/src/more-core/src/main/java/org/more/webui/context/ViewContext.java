@@ -15,13 +15,11 @@
  */
 package org.more.webui.context;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.more.core.map.DecSequenceMap;
-import org.more.util.CommonCodeUtil;
 import org.more.util.StringConvertUtil;
 import org.more.webui.UIInitException;
 import org.more.webui.freemarker.parser.Hook_Include;
@@ -122,7 +120,10 @@ public class ViewContext extends HashMap<String, Object> {
             this.seq.addMap(this.getUIContext().getRenderKit(KitScope).getTags());
             /*1.视图属性*/
             this.seq.addMap(this);
-            /*2.环境属性*/
+            /*2.Bean环境属性*/
+            if (this.getUIContext().getBeanContext() instanceof Map)
+                this.seq.addMap((Map) this.getUIContext().getBeanContext());
+            /*3.环境属性*/
             this.seq.addMap(this.getUIContext().getAttribute());
         }
         return this.seq;
@@ -158,6 +159,11 @@ public class ViewContext extends HashMap<String, Object> {
     /**获取本次请求来源与那个组建。*/
     public String getTarget() {
         return this.getHttpRequest().getParameter(PostFormEnum.PostForm_TargetParamKey.value());
+    };
+    /**获取客户端引发的事件。*/
+    public boolean isAjax() {
+        String isAjax = this.getHttpRequest().getParameter(PostFormEnum.PostForm_IsAjaxKey.value());
+        return StringConvertUtil.parseBoolean(isAjax, false);
     };
     /**获取客户端引发的事件。*/
     public String getEvent() {

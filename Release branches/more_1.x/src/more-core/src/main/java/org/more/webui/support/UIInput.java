@@ -27,13 +27,15 @@ import org.more.webui.support.values.MethodExpression;
 public abstract class UIInput extends UIComponent {
     /**通用属性表*/
     public enum Propertys {
-        /**表单名*/
+        /**表单名（RW）*/
         name,
-        /**表单值*/
+        /**表单值（RW）*/
         value,
-        /**当发生事件OnChange时。*/
+        /**验证,正则表达式（RW）*/
+        verification,
+        /**当发生事件OnChange时（RW）*/
         onChangeEL,
-        /**当发生事件OnLoadData时。*/
+        /**当发生事件OnLoadData时（RW）*/
         onLoadDataEL,
     }
     @Override
@@ -41,6 +43,7 @@ public abstract class UIInput extends UIComponent {
         super.initUIComponent(viewContext);
         this.getEventManager().addEventListener(Event.getEvent("OnChange"), new Event_OnChange());
         this.getEventManager().addEventListener(Event.getEvent("OnLoadData"), new Event_OnLoadData());
+        this.setProperty(Propertys.value.name(), null);
     }
     /*-------------------------------------------------------------------------------*/
     /**获取组建表单名*/
@@ -74,6 +77,14 @@ public abstract class UIInput extends UIComponent {
     /**当企图装载数据时EL调用表达式（如果配置）*/
     public void setOnLoadDataEL(String onLoadDataEL) {
         this.getProperty(Propertys.onLoadDataEL.name()).value(onLoadDataEL);
+    }
+    /**验证,正则表达式（如果配置）*/
+    public String getVerification() {
+        return this.getProperty(Propertys.verification.name()).valueTo(String.class);
+    }
+    /**验证,正则表达式（如果配置）*/
+    public void setVerification(String verification) {
+        this.getProperty(Propertys.verification.name()).value(verification);
     }
     /*-------------------------------------------------------------------------------*/
     private MethodExpression onChangeExp = null;

@@ -19,7 +19,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * ×¢²áäÖÈ¾Æ÷
+ * ×¢²á¸ÃÀàÎªäÖÈ¾Æ÷¡£
  * @version : 2012-5-30
  * @author ÕÔÓÀ´º (zyc@byshell.org)
  */

@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 package org.more.webui.support;
-import org.more.core.event.Event;
-import org.more.core.event.Event.Sequence;
-import org.more.core.event.EventListener;
 import org.more.webui.context.ViewContext;
-import org.more.webui.support.values.MethodExpression;
 /**
  * Button
  * @version : 2012-5-15
@@ -27,28 +23,16 @@ import org.more.webui.support.values.MethodExpression;
 public abstract class UIButton extends UIComponent {
     /**通用属性表*/
     public enum Propertys {
-        /**Action动作*/
-        actionEL,
-        /**表示渲染时候是否使用a标签代替input标签，默认：是*/
+        /**表示渲染时候是否使用a标签代替input标签，默认：是（RW）*/
         useLink,
-        /**显示的名称*/
+        /**显示的名称（RW）*/
         title
     }
     @Override
     protected void initUIComponent(ViewContext viewContext) {
         super.initUIComponent(viewContext);
-        this.getEventManager().addEventListener(Event_OnAction.ActionEvent, new Event_OnAction());
-        this.setProperty(Propertys.actionEL.name(), null);
         this.setProperty(Propertys.useLink.name(), true);
         this.setProperty(Propertys.title.name(), "");
-    }
-    /**获取Action EL字符串*/
-    public String getActionEL() {
-        return this.getProperty(Propertys.actionEL.name()).valueTo(String.class);
-    }
-    /**设置Action EL字符串*/
-    public void setActionEL(String action) {
-        this.getProperty(Propertys.actionEL.name()).value(action);
     }
     public boolean isUseLink() {
         return this.getProperty(Propertys.useLink.name()).valueTo(Boolean.TYPE);
@@ -61,23 +45,5 @@ public abstract class UIButton extends UIComponent {
     }
     public void setTitle(String title) {
         this.getProperty(Propertys.title.name()).value(title);
-    }
-    public MethodExpression getActionExpression() {
-        String actionString = this.getActionEL();
-        if (actionString == null || actionString.equals("")) {} else
-            return new MethodExpression(actionString);
-        return null;
-    }
-}
-/**负责处理OnAction事件的EL调用*/
-class Event_OnAction implements EventListener {
-    public static Event ActionEvent = Event.getEvent("OnAction");
-    @Override
-    public void onEvent(Event event, Sequence sequence) throws Throwable {
-        UIButton component = (UIButton) sequence.getParams()[0];
-        ViewContext viewContext = (ViewContext) sequence.getParams()[1];
-        MethodExpression e = component.getActionExpression();
-        if (e != null)
-            viewContext.sendAjaxData(e.execute(component, viewContext));
     }
 };

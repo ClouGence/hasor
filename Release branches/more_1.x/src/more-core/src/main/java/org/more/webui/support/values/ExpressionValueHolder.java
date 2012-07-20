@@ -21,7 +21,7 @@ import org.more.core.ognl.OgnlException;
 import org.more.webui.context.ViewContext;
 import org.more.webui.support.UIComponent;
 /**
- * 静态值
+ * 表达式计算ValueHolder
  * @version : 2012-5-11
  * @author 赵永春 (zyc@byshell.org)
  */

@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.lifestyle.phase;
+package org.more.webui.render;
+import java.util.Map;
 import org.more.webui.context.ViewContext;
-import org.more.webui.lifestyle.Phase;
-import org.more.webui.lifestyle.PhaseID;
+import org.more.webui.support.UIInput;
 /**
- * 第4阶段，该阶段的目的是对组件模型中的数据进行验证。
- * @version : 2011-8-4
+ * 
+ * @version : 2012-5-18
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Validation_Phase extends Phase {
-    public static class Validation_PhaseID extends PhaseID {
-        public String getPhaseID() {
-            return "Validation";
-        };
-    };
-    private static Validation_PhaseID PhaseID = new Validation_PhaseID();
-    public PhaseID getPhaseID() {
-        return PhaseID;
-    };
-    public void execute(ViewContext uiContext) throws Throwable {
-        uiContext.getViewRoot().processValidate(uiContext);
-    };
-};
+public abstract class AbstractInputRender<T extends UIInput> extends AbstractRender<T> {
+    @Override
+    public Map<String, Object> tagAttributes(ViewContext viewContext, T component) {
+        Map<String, Object> hashMap = super.tagAttributes(viewContext, component);
+        //
+        Object var = component.getName();
+        if (var != null)
+            hashMap.put("name", var);
+        //
+        var = component.getValue();
+        if (var != null)
+            hashMap.put("value", component.getValue());
+        return hashMap;
+    }
+}

@@ -15,7 +15,7 @@
  */
 package org.more.webui.context;
 /**
- * bean管理器
+ * bean管理器，该类继承Map接口接口后map会被加入到El上下文
  * @version : 2012-6-27
  * @author 赵永春 (zyc@byshell.org)
  */

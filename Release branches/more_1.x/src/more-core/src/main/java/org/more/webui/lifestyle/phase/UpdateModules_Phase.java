@@ -18,7 +18,7 @@ import org.more.webui.context.ViewContext;
 import org.more.webui.lifestyle.Phase;
 import org.more.webui.lifestyle.PhaseID;
 /**
- * 第5阶段，将组件模型中的值设置到映射的bean中。
+ * 第5阶段，该阶段的目的是将组件模型中的值设置更新到bean中。
  * @version : 2011-8-4
  * @author 赵永春 (zyc@byshell.org)
  */

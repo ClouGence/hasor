@@ -19,6 +19,7 @@ import javax.servlet.ServletContext;
 import org.more.util.StringConvertUtil;
 import org.more.webui.support.UIComponent;
 import org.more.webui.web.DefaultWebUIFactory;
+import org.more.webui.web.WebUIFactory;
 /**
  * 该类负责创建webui的各类组建以及获取相关需要配置。
  * @version : 2012-5-22

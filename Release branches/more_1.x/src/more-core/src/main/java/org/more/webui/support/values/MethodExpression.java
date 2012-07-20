@@ -21,7 +21,7 @@ import org.more.core.ognl.OgnlException;
 import org.more.webui.context.ViewContext;
 import org.more.webui.support.UIComponent;
 /**
- * 
+ * 表达式方法执行
  * @version : 2012-5-23
  * @author 赵永春 (zyc@byshell.org)
  */

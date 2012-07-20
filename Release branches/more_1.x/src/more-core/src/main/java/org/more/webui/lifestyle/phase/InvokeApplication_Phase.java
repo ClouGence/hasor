@@ -18,7 +18,7 @@ import org.more.webui.context.ViewContext;
 import org.more.webui.lifestyle.Phase;
 import org.more.webui.lifestyle.PhaseID;
 /**
- * 第6阶段，处理请求消息。诸如Command，Click事件。等动作。
+ * 第6阶段，处理webui事件。
  * @version : 2011-8-4
  * @author 赵永春 (zyc@byshell.org)
  */

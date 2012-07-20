@@ -28,7 +28,7 @@ import java.net.URL;
 public class DirResourceLoader implements IResourceLoader {
     private File baseDir = null;
     public DirResourceLoader(File baseDir) throws IOException {
-        this.baseDir = baseDir;;
+        this.baseDir = baseDir;
     }
     public URL getResource(String resourcePath) throws MalformedURLException {
         File resource = new File(this.baseDir, resourcePath);

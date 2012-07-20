@@ -62,56 +62,64 @@ public abstract class UIComponent {
     }
     /**通用属性表*/
     public static enum Propertys {
-        /**客户端在请求之前进行的调用，返回false取消本次ajax请求*/
+        /**客户端在请求之前进行的调用，返回false取消本次ajax请求（R）*/
         beforeScript,
-        /**客户端脚本回调函数*/
+        /**客户端脚本回调函数（R）*/
         afterScript,
-        /**调用错误回调函数*/
+        /**调用错误回调函数（R）*/
         errorScript,
-        /**Ajax是否使用同步操作*/
+        /**Ajax是否使用同步操作（R）*/
         async,
-        /**表示是否渲染*/
+        /**表示是否渲染（-）*/
         render,
-        /**表示是否渲染子组建*/
+        /**表示是否渲染子组建（-）*/
         renderChildren,
     };
     public String getBeforeScript() {
         return this.getProperty(Propertys.beforeScript.name()).valueTo(String.class);
     }
+    @NoState
     public void setBeforeScript(String beforeScript) {
         this.getProperty(Propertys.beforeScript.name()).value(beforeScript);
     }
     public String getAfterScript() {
         return this.getProperty(Propertys.afterScript.name()).valueTo(String.class);
     }
+    @NoState
     public void setAfterScript(String afterScript) {
         this.getProperty(Propertys.afterScript.name()).value(afterScript);
     }
     public String getErrorScript() {
         return this.getProperty(Propertys.errorScript.name()).valueTo(String.class);
     }
+    @NoState
     public void setErrorScript(String errorScript) {
         this.getProperty(Propertys.errorScript.name()).value(errorScript);
     }
     public boolean isAsync() {
         return this.getProperty(Propertys.async.name()).valueTo(Boolean.TYPE);
     }
+    @NoState
     public void setAsync(boolean async) {
         this.getProperty(Propertys.async.name()).value(async);
     }
     /**返回一个boolean值，该值决定是否渲染该组件*/
+    @NoState
     public boolean isRender() {
         return this.getProperty(Propertys.render.name()).valueTo(Boolean.TYPE);
     };
     /**设置一个boolean值，该值决定是否渲染该组件*/
+    @NoState
     public void setRender(boolean isRender) {
         this.getProperty(Propertys.render.name()).value(isRender);
     };
     /**返回一个boolean值，该值决定是否渲染该组件的子组建。*/
+    @NoState
     public boolean isRenderChildren() {
         return this.getProperty(Propertys.renderChildren.name()).valueTo(Boolean.TYPE);
     }
     /**设置一个boolean值，该值决定是否渲染该组件的子组建。*/
+    @NoState
     public void setRenderChildren(boolean isRenderChildren) {
         this.getProperty(Propertys.renderChildren.name()).value(isRenderChildren);
     }
@@ -284,12 +292,12 @@ public abstract class UIComponent {
         return this.privateEventManager;
     };
     /*-------------------------------------------------------------------------------状态处理*/
-    /**从状态数据中恢复状态*/
+    /**从状态数据中恢复组建状态*/
     public void restoreState(List<?> stateData) {
         //1.数据检查
         if (stateData == null)
             return;
-        if (stateData.size() != 2)
+        if (stateData.size() == 0)
             throw new MoreDataException("WebUI无法重塑组件状态，在重塑组件[" + this.getId() + "]组件发生数据丢失");
         //2.恢复自身数据
         Map<String, Object> mineState = (Map<String, Object>) stateData.get(0);
@@ -312,12 +320,14 @@ public abstract class UIComponent {
                 vh.value(mineState.get(propName));
         }
         //3.恢复子组件
-        Map<String, Object> childrenState = (Map<String, Object>) stateData.get(1);
-        for (UIComponent com : components)
-            com.restoreState((List<?>) childrenState.get(com.getId()));
+        if (stateData.size() == 2) {
+            Map<String, Object> childrenState = (Map<String, Object>) stateData.get(1);
+            for (UIComponent com : components)
+                com.restoreState((List<?>) childrenState.get(com.getId()));
+        }
     };
-    /**将组件的数据提取出来*/
-    public List<?> saveState() {
+    /**保存组建的当前状态，不包含子组建。*/
+    public List<Object> saveStateOnlyMe() {
         //1.持久化自身的状态
         HashMap<String, Object> mineState = new HashMap<String, Object>();
         for (String propName : this.propertys.keySet()) {
@@ -329,14 +339,21 @@ public abstract class UIComponent {
             AbstractValueHolder vh = this.propertys.get(propName);
             mineState.put(propName, vh.value());
         }
+        //3.返回持久化状态
+        ArrayList<Object> array = new ArrayList<Object>();
+        array.add(mineState);
+        return array;
+    };
+    /**保存组建的当前状态，包含子组建。*/
+    public List<Object> saveState() {
+        //1.持久化自身的状态
+        List<Object> array = this.saveStateOnlyMe();
         //2.持久化子组件的状态
         HashMap<String, Object> childrenState = new HashMap<String, Object>();
         for (UIComponent com : components)
             childrenState.put(com.getId(), com.saveState());
         //3.返回持久化状态
-        ArrayList<Object> array = new ArrayList<Object>();
-        array.add(mineState);
         array.add(childrenState);
         return array;
-    }
+    };
 };

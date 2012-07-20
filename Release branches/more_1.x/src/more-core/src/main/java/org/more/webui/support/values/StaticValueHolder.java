@@ -17,7 +17,7 @@ package org.more.webui.support.values;
 import org.more.webui.context.ViewContext;
 import org.more.webui.support.UIComponent;
 /**
- * æ≤Ã¨÷µ
+ * æ≤Ã¨÷µValueHolder
  * @version : 2012-5-11
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */

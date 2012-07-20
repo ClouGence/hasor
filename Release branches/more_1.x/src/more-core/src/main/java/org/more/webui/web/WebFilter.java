@@ -27,13 +27,11 @@ import org.more.webui.context.FacesConfig;
 import org.more.webui.context.FacesContext;
 import org.more.webui.context.ViewContext;
 import org.more.webui.lifestyle.Lifecycle;
-import com.google.inject.Singleton;
 /**
  * Web»Îø⁄
  * @version : 2012-5-11
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@Singleton
 public class WebFilter implements Filter {
     private Lifecycle    lifecycle = null;
     private FacesConfig  config    = null;

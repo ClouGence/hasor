@@ -18,7 +18,7 @@ import org.more.webui.context.ViewContext;
 import org.more.webui.lifestyle.Phase;
 import org.more.webui.lifestyle.PhaseID;
 /**
- * 第3阶段，将请求参数中要求灌入的属性值灌入到属性上。
+ * 第3阶段，该阶段将请求参数中要求灌入的属性值灌入到属性上。
  * @version : 2011-8-4
  * @author 赵永春 (zyc@byshell.org)
  */

@@ -16,14 +16,18 @@
 package org.more.webui.render;
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.more.util.BeanUtil;
 import org.more.util.CommonCodeUtil;
 import org.more.webui.context.ViewContext;
 import org.more.webui.support.UIComponent;
 import org.more.webui.support.values.AbstractValueHolder;
 import org.more.webui.tag.TemplateBody;
 import com.alibaba.fastjson.JSONObject;
+import freemarker.template.TemplateException;
 import freemarker.template.TemplateModelException;
 /**
  * 
@@ -67,13 +71,34 @@ public abstract class AbstractRender<T extends UIComponent> implements Render<T>
         writer.write(">");
     };
     @Override
+    public void render(ViewContext viewContext, T component, TemplateBody arg3, Writer writer) throws IOException, TemplateException {
+        if (arg3 != null)
+            arg3.render(writer);
+    }
+    @Override
     public void endRender(ViewContext viewContext, T component, TemplateBody arg3, Writer writer) throws IOException, TemplateModelException {
         writer.write("</" + this.tagString + ">");
     };
     /**要使用的标签*/
     protected abstract String tagName(ViewContext viewContext, T component);
     /**位于标签上的属性名，如果名与核心属性名发生冲突则保留核心属性。*/
-    protected abstract Map<String, Object> tagAttributes(ViewContext viewContext, T component);
+    public Map<String, Object> tagAttributes(ViewContext viewContext, T component) {
+        HashMap<String, Object> mineState = new HashMap<String, Object>();
+        Map<String, AbstractValueHolder> comProp = component.getPropertys();
+        for (String propName : comProp.keySet()) {
+            //a.获取属性的get/set方法
+            Method rm = BeanUtil.getReadMethod(propName, component.getClass());
+            Method wm = BeanUtil.getWriteMethod(propName, component.getClass());
+            //b.只有没有定义get/set方法的属性才会被选中。
+            if (rm == null && wm == null) {
+                AbstractValueHolder vh = comProp.get(propName);
+                mineState.put(propName, vh.value());
+            }
+        }
+        return mineState;
+    };
     /**是否保存状态。*/
-    protected abstract boolean isSaveState(ViewContext viewContext, T component);
+    protected boolean isSaveState(ViewContext viewContext, T component) {
+        return true;
+    };
 }

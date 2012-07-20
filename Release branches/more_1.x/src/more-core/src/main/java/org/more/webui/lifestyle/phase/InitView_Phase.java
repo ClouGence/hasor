@@ -18,7 +18,7 @@ import org.more.webui.context.ViewContext;
 import org.more.webui.lifestyle.Phase;
 import org.more.webui.lifestyle.PhaseID;
 /**
- * 第1阶段，用于初始化视图中的组件模型树。
+ * 第1阶段，该阶段用于初始化视图中的组件模型树。
  * @version : 2012-3-29
  * @author 赵永春 (zyc@byshell.org)
  */
