@@ -59,7 +59,7 @@ public abstract class UIInput extends UIComponent {
         return this.getProperty(Propertys.value.name()).valueTo(Object.class);
     }
     /**设置组建表单值*/
-    public void setValue(String value) {
+    public void setValue(Object value) {
         this.getProperty(Propertys.value.name()).value(value);
     }
     /**当组建值发生改变之后会ajax调用该表达式（如果配置）*/

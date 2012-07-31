@@ -1,336 +1,354 @@
-﻿var WebUI = {};
-
-/* 组建核心方法 */
-WebUI.Core = {
-	Base64 : {
-		Base64Chars : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@*-",
-		encode64 : function(s) {
-			if (!s || s.length == 0)
-				return s;
-			var d = "";
-			var b = WebUI.Core.Base64.ucs2_utf8(s);
-			var b0, b1, b2, b3;
-			var len = b.length;
-			var i = 0;
-			while (i < len) {
-				var tmp = b[i++];
-				b0 = (tmp & 0xfc) >> 2;
-				b1 = (tmp & 0x03) << 4;
-				if (i < len) {
-					tmp = b[i++];
-					b1 |= (tmp & 0xf0) >> 4;
-					b2 = (tmp & 0x0f) << 2;
-					if (i < len) {
-						tmp = b[i++];
-						b2 |= (tmp & 0xc0) >> 6;
-						b3 = tmp & 0x3f;
-					} else
-						b3 = 64; // 1 byte "-" is supplement
-				} else
-					b2 = b3 = 64; // 2 bytes "-" are supplement
-				d += WebUI.Core.Base64.Base64Chars.charAt(b0);
-				d += WebUI.Core.Base64.Base64Chars.charAt(b1);
-				d += WebUI.Core.Base64.Base64Chars.charAt(b2);
-				d += WebUI.Core.Base64.Base64Chars.charAt(b3);
-			}
-			return d;
-		},
-		uncoded64 : function(s) {
-			if (!s)
-				return null;
-			var len = s.length;
-			if (len % 4 != 0)
-				throw s + " is not a valid Base64 string.";
-			var b = new Array();
-			var i = 0, j = 0, e = 0, c, tmp;
-			while (i < len) {
-				c = WebUI.Core.Base64.Base64Chars.indexOf(s.charAt(i++));
-				tmp = c << 18;
-				c = WebUI.Core.Base64.Base64Chars.indexOf(s.charAt(i++));
-				tmp |= c << 12;
-				c = WebUI.Core.Base64.Base64Chars.indexOf(s.charAt(i++));
-				if (c < 64) {
-					tmp |= c << 6;
-					c = WebUI.Core.Base64.Base64Chars.indexOf(s.charAt(i++));
-					if (c < 64)
-						tmp |= c;
-					else
-						e = 1;
-				} else {
-					e = 2;
-					i++;
-				}
-				b[j + 2] = tmp & 0xff;
-				tmp >>= 8;
-				b[j + 1] = tmp & 0xff;
-				tmp >>= 8;
-				b[j + 0] = tmp & 0xff;
-				j += 3;
-			}
-			b.splice(b.length - e, e);
-			return WebUI.Core.Base64.utf8_ucs2(b);
-		},
-		ucs2_utf8 : function(s) {
-			if (!s)
-				return null;
-			var d = new Array();
-			if (s == "")
-				return d;
-			var c = 0, i = 0, j = 0;
-			var len = s.length;
-			while (i < len) {
-				c = s.charCodeAt(i++);
-				if (c <= 0x7f)
-					// 1 byte
-					d[j++] = c;
-				else if ((c >= 0x80) && (c <= 0x7ff)) {
-					// 2 bytes
-					d[j++] = ((c >> 6) & 0x1f) | 0xc0;
-					d[j++] = (c & 0x3f) | 0x80;
-				} else {
-					// 3 bytes
-					d[j++] = (c >> 12) | 0xe0;
-					d[j++] = ((c >> 6) & 0x3f) | 0x80;
-					d[j++] = (c & 0x3f) | 0x80;
-				}
-			}// end whil
-			return d;
-		},
-		utf8_ucs2 : function(s) {
-			if (!s)
-				return null;
-			var len = s.length;
-			if (len == 0)
-				return "";
-			var d = "";
-			var c = 0, i = 0, tmp = 0;
-			while (i < len) {
-				c = s[i++];
-				if ((c & 0xe0) == 0xe0) {
-					// 3 bytes
-					tmp = (c & 0x0f) << 12;
-					c = s[i++];
-					tmp |= ((c & 0x3f) << 6);
-					c = s[i++];
-					tmp |= (c & 0x3f);
-				} else if ((c & 0xc0) == 0xc0) {
-					// 2 bytes
-					tmp = (c & 0x1f) << 6;
-					c = s[i++];
-					tmp |= (c & 0x3f);
-				} else
-					// 1 byte
-					tmp = c;
-				d += String.fromCharCode(tmp);
-			}
-			return d;
-		}
-	},
-	Component : {
-		/**获取当前网页的URL参数*/
-		getEnvironmentMap : function(){
-			var firstIndex=window.location.toString().indexOf("?");
-			var cfg={};
-			if (firstIndex!=-1){
-				var purl=decodeURIComponent(window.location.toString().substr(firstIndex + 1));
-				var ps=purl.split("&")
-				for (var index in ps){
-					var psItem=ps[index];
-					var k=psItem.split("=")[0];
-					var v=psItem.split("=")[1];
-					cfg[k]=v;
-				}
-			}
-			return cfg;
-		},
-		/** 获取组建自身状态 */
-		getState : function(jQueryObj) {
-			var stateData = jQueryObj.attr("uiState");
-			return eval(WebUI.Core.Base64.uncoded64(stateData))[0];
-		},
-		/** 在客户端改变组建状态（用于组建回溯上一个视图状态的数据），值得注意的是服务端只会处理在服务端定义过的属性。 */
-		setStateAtt : function(jQueryObj, attName, newValue) {
-			var stateData = jQueryObj.attr("uiState");
-			var stateMap = eval(WebUI.Core.Base64.uncoded64(stateData))[0];
-			stateMap[attName] = newValue;
-			stateData = [ stateMap,WebUI.Core.Component.getChildrenState(jQueryObj) ];
-			jQueryObj.attr("uiState", WebUI.Core.Base64.encode64(JSON.stringify(stateData)));
-		},
-		/** 获取子组建状态 */
-		getChildrenState : function(jQueryObj) {
-			var stateData = jQueryObj.attr("uiState");
-			return eval(WebUI.Core.Base64.uncoded64(stateData))[1];
-		},
-		/** 执行组件的Action动作 */
-		doAction : function(jQueryObj, urlData, okCallBack, errorCallBack) {
-			var stateMap = WebUI.Core.Component.getState(jQueryObj);
-			var postData = {
-				/* 发生事件的组建 */
-				"WebUI_PF_Target" : stateMap.id,
-				/* 引发的事件 */
-				"WebUI_PF_Event" : "",
-				/* 不执行渲染 */
-				"WebUI_PF_Render" : "No",
-				/* 组建状态，使用明文传输以减少服务器反解的压力 */
-				"WebUI_PF_State" : WebUI.Core.Base64.uncoded64(jQueryObj.attr("uiState"))
-			};
-			for ( var k in urlData)
-				postData[stateMap.id + ":" + k] = urlData[k];
-			if (eval(stateMap.beforeScript) == false)
-				return;
-			$.ajax({
-				type : 'post',
-				url : window.location,
-				data : postData,
-				async : stateMap.async,
-				success : function(res) {
-					eval(stateMap.afterScript);
-					okCallBack(res);
-				},
-				error : function(XMLHttpRequest, textStatus) {
-					eval(stateMap.errorScript);
-					errorCallBack(XMLHttpRequest, textStatus);
-				}
-			});
-		},
-		/** 触发组建身上的某个事件 */
-		doEvent : function(jQueryObj, eventName, urlData) {
-			// alert();
-			var stateMap = WebUI.Core.Component.getState(jQueryObj);
-			var postData = {
-				/* 发生事件的组建 */
-				"WebUI_PF_Target" : stateMap.id,
-				/* 引发的事件 */
-				"WebUI_PF_Event" : eventName,
-				/* 不执行渲染 */
-				"WebUI_PF_Render" : "No",
-				/* 组建状态，使用明文传输以减少服务器反解的压力 */
-				"WebUI_PF_State" : WebUI.Core.Base64.uncoded64(jQueryObj.attr("uiState"))
-			};
-			for ( var k in urlData)
-				postData[stateMap.id + ":" + k] = urlData[k];
-			$.ajax({
-				type : 'post',
-				url : window.location,
-				data : postData,
-				async : stateMap.async,
-				success : function(res) {
-					// okCallBack(res);
-				},
-				error : function(XMLHttpRequest, textStatus) {
-					// errorCallBack(XMLHttpRequest, textStatus);
-				}
-			});
-		}
-	}
-};
-/* 组建初始化 */
-$(function() {
-	$('[uiState]').each(function() {
-		var id = $(this).attr('comID');
-		var comType = $(this).attr('comType');
-		if (window[id] == null)
-			window[id] = eval("new WebUI." + comType + "()");
-	});
+﻿/* -------------------------------------------------------------------- */
+/* Button Component */
+/* -------------------------------------------------------------------- */
+/** ui_Button：按钮基类。 */
+WebUI.Component.$extends("ui_Button", "", {
+    /** 构造方法 */
+    "<init>" : function() {}
+});
+/** ui_AjaxButton：可以向服务器ajax方式向服务器发送OnAction事件 */
+WebUI.Component.$extends("ui_AjaxButton", "ui_Button", {
+    /** 构造方法 */
+    "<init>" : function() {
+        this.bindEvent("click", this.onclick);
+    },
+    /** 标签元素的click事件处理程序。 */
+    onclick : function() {
+        this.doEvent("OnAction", {}, function(res) {
+        /* TODO OnAction , OK CallBack. */
+        }, function(XMLHttpRequest, textStatus) {
+        /* TODO OnAction , Error CallBack. */
+        });
+    }
 });
 /* -------------------------------------------------------------------- */
-/**/
+/* Input Component */
 /* -------------------------------------------------------------------- */
-/* ui_AjaxButton组建 */
-WebUI.ui_AjaxButton = function(cfgMap,targetObj) {
-	var _this = this;
-	this.config = cfgMap;
-	this.state={};
-	if (targetObj!=null){
-		var stateMap = WebUI.Core.Component.getState($(targetObj));
-		for (var i in stateMap)
-			this.state[i]=stateMap[i];
-	}
-	/** 处理ui_AjaxButton的Action动作 */
-	this.doAction = function(jQueryObj, okCallBack, errCallBack) {
-		WebUI.Core.Component.doAction(jQueryObj, {}, okCallBack, errCallBack);
-	};
-	/** 响应ui_AjaxButton组建的点击事件。 */
-	this.onclick = function(targetObj) {
-		_this.doAction($(targetObj));
-	};
-};
+/** ui_Input：表单元素基类 */
+WebUI.Component.$extends("ui_Input", "", {
+    /** 构造方法 */
+    "<init>" : function() {
+        this.bindEvent("change", this.onchange);
+    },
+    /** 标签元素的change事件处理程序。 */
+    onchange : function() {
+        if (WebUI.isNaN(this.getState().get("onChangeEL")) == true)
+            return;
+        var paramData = {};
+        paramData[this.componentID + ":value"] = this.getValue();
+        this.doEvent("OnChange", paramData, function(res) {
+        /* TODO OnChange , OK CallBack. */
+        }, function(XMLHttpRequest, textStatus) {
+        /* TODO OnChange , Error CallBack. */
+        });
+    },
+    /** 从服务器上载入数据 */
+    loadData : function(paramData, funOK, funError) {
+        if (WebUI.isNaN(this.getState().get("onLoadDataEL")) == true)
+            return;
+        var $this = this;
+        this.doEvent("OnLoadData", paramData, function(res) {
+            if (WebUI.isFun(funOK) == true)
+                funOK.call($this, res);
+        }, function(XMLHttpRequest, textStatus) {
+            if (WebUI.isFun(funError) == true)
+                funError.call($this, XMLHttpRequest, textStatus);
+        });
+    },
+    /** （重写方法）返回一个值用于表示是否为一个表单元素（只要定义了name属性就成为表单元素） */
+    isForm : function() {
+        return !WebUI.isNaN(this.getName());
+    },
+    /** 验证表单值内容 */
+    verification : function() {
+        var ver = this.getState().get("verification");
+        if (WebUI.isNaN(ver) == true)
+            return true;
+        var verRegExp = new RegExp(ver);
+        return verRegExp.test(this.getValue());
+    },
+    /** 获取表单值（该方法不会引发State变化） */
+    getValue : function() {
+        return $(this.getElement()).attr("value");
+    },
+    /** 设置表单值（该方法不会引发State变化） */
+    setValue : function(newValue) {
+        $(this.getElement()).attr("value", newValue);
+    },
+    /** 获取表单名（该方法不会引发State变化） */
+    getName : function() {
+        return $(this.getElement()).attr("name");
+    },
+    /** 设置表单名（该方法不会引发State变化） */
+    setName : function(newName) {
+        $(this.getElement()).attr("name", newName);
+    }
+});
 /* ui_Text组建 */
-WebUI.ui_Text = function(cfgMap,targetObj) {
-	var _this = this;
-	this.config = cfgMap;
-	this.state={};
-	if (targetObj!=null){
-		var stateMap = WebUI.Core.Component.getState($(targetObj));
-		for (var i in stateMap)
-			this.state[i]=stateMap[i];
-	}
-	/** 处理ui_AjaxButton的Action动作 */
-	this.doAction = function(jQueryObj, okCallBack, errCallBack) {
-		WebUI.Core.Component.setStateAtt(jQueryObj, "value", jQueryObj.attr("value"));
-		WebUI.Core.Component.doAction(jQueryObj, {
-			value : jQueryObj.attr("value")
-		}, okCallBack, errCallBack);
-	};
-	/** 响应ui_Text组建的点击事件。 */
-	this.onchange = function(targetObj) {
-		WebUI.Core.Component.doEvent($(targetObj), "OnChange");
-	};
-};
-/* ui_TargetButton组建 */
-WebUI.ui_TargetButton = function(cfgMap,targetObj) {
-	var _this = this;
-	this.config = cfgMap;
-	this.state={};
-	if (targetObj!=null){
-		var stateMap = WebUI.Core.Component.getState($(targetObj));
-		for (var i in stateMap)
-			this.state[i]=stateMap[i];
-	}
-	/** 响应ui_TargetButton组建的点击事件。 */
-	this.doAction = function(jQueryObj, okCallBack, errCallBack) {
-		var stateMap = WebUI.Core.Component.getState(jQueryObj);
-		if (eval(stateMap.beforeScript) == false)
-			return;
-		var targetObject = $('[comid="' + stateMap.target + '"]');
-		if (targetObject.length <= 0)
-			return;
-		//
-		var targetActionFun = eval(stateMap.target + ".doAction");
-		if (typeof (targetActionFun) == "function")
-			targetActionFun($(targetObject[0]), function() {
-				eval(stateMap.afterScript);// 回调OK方法
-				okCallBack();
-			}, function() {
-				eval(stateMap.errorScript);// 回调Error方法
-				errCallBack();
-			});
-	};
-	this.onclick = function(targetObj) {
-		_this.doAction($(targetObj));
-	};
-};
-/* ui_Page组建 */
-WebUI.ui_Page = function(cfgMap,targetObj) {
-	var _this = this;
-	this.config = cfgMap;
-	this.state={};
-	if (targetObj!=null){
-		var stateMap = WebUI.Core.Component.getState($(targetObj));
-		for (var i in stateMap)
-			this.state[i]=stateMap[i];
-	}
-//	this.goPage = function(targetObj, goIndex) {
-//		if (typeof (targetObj) == 'string')
-//			targetObj = $("[comid='" + targetObj + "']");
-//		//
-//		var stateMap = WebUI.Core.Component.getState(targetObj);
-//		var clickFun=eval(stateMap.clickFun);
-//		if (typeof(clickFun)=='function')
-//			clickFun.call(_this, targetObj, goIndex);
-//	};
-//	/**计算在该分页组建上指定页码的起始记录号（只有被实例化之后的组建才可以被调用）*/
-//	this.evalRowNum = function(pageNum) {
-//		return this.state.pageSize * pageNum + this.state.startWith;
-//	};
-};
+WebUI.Component.$extends("ui_Text", "ui_Input", {
+    /** 构造方法 */
+    "<init>" : function() {
+        this.bindEvent("change", this.onchange);
+    },
+    /** 文本组建是否为多行输入 */
+    getMultiLine : function() {
+        return this.getState().get("multiLine");
+    }
+});
+/* ui_SelectOne组建 */
+WebUI.Component.$extends("ui_SelectOne", "ui_Input", {
+    /** 构造方法 */
+    "<init>" : function() {
+        this.bindEvent("change", this.onchange);
+    },
+    /** （重写方法）从服务器上载入数据 */
+    loadData : function(paramData, funOK, funError) {
+        if (WebUI.isNaN(this.getState().get("onLoadDataEL")) == true)
+            return;
+        var $this = this;
+        this.doEvent("OnLoadData", paramData, function(res) {
+            // A.成功装载
+            if (WebUI.isFun(funOK) == true)
+                funOK.call($this, res);
+            else {
+                var k = $this.getKeyField();
+                var v = $this.getVarField();
+                var arrayData = eval(res);
+                var e = $this.getElement();
+                e.options.length = 0;
+                for ( var i = 0; i < arrayData.length; i++)
+                    e.options.add(new Option(arrayData[i][v], arrayData[i][k]));
+            }
+        }, function(XMLHttpRequest, textStatus) {
+            // B.装载失败
+            if (WebUI.isFun(funError) == true)
+                funError.call($this, XMLHttpRequest, textStatus);
+        });
+    },
+    /** （重写方法）获取选中的值 */
+    getValue : function() {
+        var e = this.getElement();
+        return e.options[e.selectedIndex].value; // 选中值
+    },
+    /** 数据（R） */
+    getListData : function() {
+        return this.getState().get("listData");
+    },
+    /** 显示名称字段（R） */
+    getKeyField : function() {
+        return this.getState().get("keyField");
+    },
+    /** 值字段（R） */
+    getVarField : function() {
+        return this.getState().get("varField");
+    }
+});
+/* ui_SelectCheck组建 */
+WebUI.Component.$extends("ui_SelectCheck", "ui_Input", {
+    /** 构造方法 */
+    "<init>" : function() {
+        var fun = this.onchange;
+        $("#" + this.clientID + " input[type=checkbox]").bind("change", function() {
+            var comID = $(this).attr("forComID");
+            var $this = WebUI(comID);
+            fun.call($this);
+        });
+    },
+    /** （重写方法）从服务器上载入数据 */
+    loadData : function(paramData, funOK, funError) {
+        if (WebUI.isNaN(this.getState().get("onLoadDataEL")) == true)
+            return;
+        var $this = this;
+        this.doEvent("OnLoadData", paramData, function(res) {
+            // A.成功装载
+            if (WebUI.isFun(funOK) == true)
+                funOK.call($this, res);
+            else {
+                var k = $this.getKeyField();
+                var v = $this.getVarField();
+                var arrayData = eval(res);
+                var jqObject = $($this.getElement());
+                jqObject.html('');
+                for ( var i = 0; i < arrayData.length; i++)
+                    jqObject.append('<li><input type="checkbox" forComID="' + $this.componentID + '" name="' + $this.getName() + '" value="' + arrayData[i][k] + '"><span>' + arrayData[i][v] + '</span></li>');
+            }
+        }, function(XMLHttpRequest, textStatus) {
+            // B.装载失败
+            if (WebUI.isFun(funError) == true)
+                funError.call($this, XMLHttpRequest, textStatus);
+        });
+    },
+    /** （重写方法）获取选中的值 */
+    getValue : function() {
+        var selectData = new Array();
+        $("#" + this.clientID + " input[type=checkbox]").each(function() {
+            if (this.checked == true)
+                selectData.push(this.value);
+        });
+        return selectData; // 选中值
+    },
+    /** 数据（R） */
+    getListData : function() {
+        return this.getState().get("listData");
+    },
+    /** 显示名称字段（R） */
+    getKeyField : function() {
+        return this.getState().get("keyField");
+    },
+    /** 值字段（R） */
+    getVarField : function() {
+        return this.getState().get("varField");
+    }
+});
+/* -------------------------------------------------------------------- */
+/* Panel Component */
+/* -------------------------------------------------------------------- */
+// /* ui_AjaxForm组建 */
+WebUI.Component.$extends("ui_AjaxForm", "", {
+    /** 构造方法 */
+    "<init>" : function() {
+        this.bindEvent("submit", this.onsubmit);
+    },
+    /** 处理ui_AjaxForm的OnSubmit动作 */
+    onsubmit : function() {
+        this.doSubmit({}, function(res) {
+        /* TODO OnSubmit , OK CallBack. */
+        }, function(XMLHttpRequest, textStatus) {
+        /* TODO OnSubmit , Error CallBack. */
+        });
+        return false;
+    },
+    /** 处理ui_AjaxForm的OnSubmit动作 */
+    doSubmit : function(paramData, okCallBack, errCallBack) {
+        // A.准备数据
+        paramData = (WebUI.isObject(paramData) == false) ? {} : paramData;
+        $("#" + this.clientID + ' [comType]').each(function() {
+            if (WebUI.isNaN(this.uiObject) == true)
+                return;
+            var uio = this.uiObject;
+            if (uio.isForm() == false)
+                return;
+            paramData[uio.componentID + ":value"] = uio.getValue();
+        });
+        // B.引发OnSubmit事件
+        var $this = this;
+        this.doEvent("OnSubmit", paramData, function(res) {
+            if (WebUI.isFun(okCallBack) == true)
+                okCallBack.call($this, res);
+        }, function(XMLHttpRequest, textStatus) {
+            if (WebUI.isFun(errCallBack) == true)
+                errCallBack.call($this, XMLHttpRequest, textStatus);
+        });
+    },
+    /** 获取到表单的值Map */
+    getFormData : function() {
+        // A.准备数据
+        var paramData = {};
+        $("#" + this.clientID + ' [comType]').each(function() {
+            if (WebUI.isNaN(this.uiObject) == true)
+                return;
+            var uio = this.uiObject;
+            if (uio.isForm() == false)
+                return;
+            paramData[uio.getName()] = uio.getValue();
+        });
+        return paramData;
+    }
+});
+/* -------------------------------------------------------------------- */
+/* Complex Component */
+/* -------------------------------------------------------------------- */
+/* ui_Page：分页标签 */
+WebUI.Component.$extends("ui_Page", {
+    /** 构造方法 */
+    "<init>" : function() {}
+// this.goPage = function(targetObj, goIndex) {
+// if (typeof (targetObj) == 'string')
+// targetObj = $("[comid='" + targetObj + "']");
+// //
+// var stateMap = WebUI.Core.Component.getState(targetObj);
+// var clickFun=eval(stateMap.clickFun);
+// if (typeof(clickFun)=='function')
+// clickFun.call(_this, targetObj, goIndex);
+// };
+// /**计算在该分页组建上指定页码的起始记录号（只有被实例化之后的组建才可以被调用）*/
+// this.evalRowNum = function(pageNum) {
+// return this.state.pageSize * pageNum + this.state.startWith;
+// };
+});
+// /* ui_SWFUpload组建 */
+// WebUI.ui_SWFUpload = function(cfgMap, targetObj) {
+// var _this = this;
+// this.config = cfgMap;
+// /* Event Handlers */
+// this.EHs = {};
+// this.EHs.fileQueued = function(file) {};
+// this.EHs.fileQueueError = function(file, errorCode, message) {};
+// this.EHs.fileDialogComplete = function(numFilesSelected, numFilesQueued) {};
+// this.EHs.uploadStart = function(file) {
+// return true;
+// };
+// this.EHs.uploadProgress = function(file, bytesLoaded, bytesTotal) {};
+// this.EHs.uploadSuccess = function(file, serverData) {};
+// this.EHs.uploadError = function(file, errorCode, message) {};
+// this.EHs.uploadComplete = function(file) {};
+// this.EHs.queueComplete = function(numFilesUploaded) {};
+// /* init SWFUpload */
+// var upConfig = {
+// upload_url : "/common/upload!deal.do?uploadType=1",// 处理上传请求的服务器端脚本URL
+// flash_url : WebUI.Core.BasePath + "/static/js/webui_resource/swfupload_v2.2.0.1/falsh/swfupload.swf",// Flash控件的URL
+// file_post_name : "Filedata",// 是POST过去的$_FILES的数组名
+// post_params : {
+// "post_param_name_1" : "post_param_value_1",
+// "post_param_name_2" : "post_param_value_2",
+// "post_param_name_n" : "post_param_value_n"
+// },
+// use_query_string : false,
+// requeue_on_error : false,
+// http_success : [],// 例[ 201, 202 ],
+// assume_success_timeout : 0,
+// file_types : _this.config.allowFiles,// 允许上传的文件类型，例：*.jpg;*.gif
+// file_types_description : _this.config.allowFilesDesc,// 文件类型描述，例：Web Image Files
+// file_size_limit : _this.config.allowSize,// 上传文件体积上限，单位MB
+// file_upload_limit : 10,// 限定用户一次性最多上传多少个文件，在上传过程中，该数字会累加，如果设置为“0”，则表示没有限制
+// file_queue_limit : 2,// 上传队列数量限制，该项通常不需设置，会根据file_upload_limit自动赋值
+// debug : false,// 是否显示调试信息
+// prevent_swf_caching : false,
+// preserve_relative_urls : false,
+// button_placeholder_id : _this.config.uploadButtonID,// flash的上传按钮显示在html的位置，此名称的元素会被替换成object元素
+// button_image_url : "http://www.swfupload.org/button_sprite.png",
+// button_width : _this.config.buttonWidth,// 按钮宽度
+// button_height : _this.config.buttonHeight,// 按钮高度
+// button_text : "<b>Click</b> <span class=\"redText\">here</span>",
+// button_text_style : ".redText { color: #FF0000; }",
+// button_text_left_padding : 3,
+// button_text_top_padding : 2,
+// button_action : SWFUpload.BUTTON_ACTION.SELECT_FILES,
+// button_disabled : false,
+// button_cursor : SWFUpload.CURSOR.HAND,
+// button_window_mode : SWFUpload.WINDOW_MODE.TRANSPARENT,
+// // The event handler functions are defined
+// swfupload_loaded_handler : _this.EHs.swfupload_loaded_function, // 当Flash控件成功加载后触发的事件处理函数
+// file_dialog_start_handler : _this.EHs.file_dialog_start_function,// 当文件选取对话框弹出前出发的事件处理函数
+// file_queued_handler : typeof (fileQueued) != "undefined" ? fileQueued : _this.EHs.file_queued_function,
+// file_queue_error_handler : typeof (fileQueueError) != "undefined" ? fileQueueError : _this.EHs.file_queue_error_function,
+// file_dialog_complete_handler : typeof (fileDialogComplete) != "undefined" ? fileDialogComplete : _this.EHs.file_dialog_complete_function, // 当文件选取对话框关闭后触发的事件处理函数
+// upload_start_handler : typeof (uploadStart) != "undefined" ? uploadStart : _this.EHs.upload_start_function, // 开始上传文件前触发的事件处理函数
+// upload_progress_handler : typeof (uploadProgress) != "undefined" ? uploadProgress : _this.EHs.upload_progress_function,
+// upload_error_handler : typeof (uploadError) != "undefined" ? uploadError : _this.EHs.upload_error_function,
+// upload_success_handler : typeof (uploadSuccess) != "undefined" ? uploadSuccess : _this.EHs.upload_success_function, // 文件上传成功后触发的事件处理函数
+// upload_complete_handler : typeof (uploadComplete) != "undefined" ? uploadComplete : _this.EHs.upload_complete_function,
+// // Queue plugin event
+// queue_complete_handler : typeof (queueComplete) != "undefined" ? queueComplete : _this.EHs.queueComplete,
+// debug_handler : _this.EHs.debug_function,
+// custom_settings : {
+// componentConfig : _this.config,// 组建的配置对象
+// }
+// };
+// // 创建上传组建
+// this.SWFObject = new SWFUpload(upConfig);
+// /** 取消上传 */
+// this.cancelQueue = function() {
+// _this.SWFObject.cancelQueue();
+// };
+// };

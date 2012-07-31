@@ -48,7 +48,9 @@ public class ViewContext extends HashMap<String, Object> {
     public ViewContext(HttpServletRequest req, HttpServletResponse res, FacesContext uiContext) {
         this.req = req;
         this.res = res;
-        this.facePath = this.req.getRequestURI().substring(req.getContextPath().length());
+        this.facePath = this.req.getRequestURI();
+        if (this.facePath.startsWith(req.getContextPath()) == true)
+            this.facePath = this.facePath.substring(req.getContextPath().length());
         this.uiContext = uiContext;
         Map<String, String[]> reqMap = req.getParameterMap();
         for (String key : reqMap.keySet()) {

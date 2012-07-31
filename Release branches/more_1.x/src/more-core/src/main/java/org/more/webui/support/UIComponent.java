@@ -212,7 +212,7 @@ public abstract class UIComponent {
         /*设置属性默认值，当页面中有值被设置的时候这里设置的默认值就会失效*/
         //this.clientID = null;
         this.setProperty(Propertys.beforeScript.name(), "true");
-        this.setProperty(Propertys.async.name(), true);//默认使用异步操作
+        this.setProperty(Propertys.async.name(), true);//默认使用异步操作事件
         this.setProperty(Propertys.render.name(), true);
         this.setProperty(Propertys.renderChildren.name(), true);
     };
@@ -235,9 +235,13 @@ public abstract class UIComponent {
         /*将请求参数中要求灌入的属性值灌入到属性上*/
         for (String key : this.propertys.keySet()) {
             /*被灌入的属性名，请求参数中必须是“componentID:attName”*/
-            String newValue = viewContext.getHttpRequest().getParameter(this.getId() + ":" + key);
-            if (newValue != null)
-                this.propertys.get(key).value(newValue);
+            String[] newValues = viewContext.getHttpRequest().getParameterValues(this.getId() + ":" + key);
+            if (newValues == null)
+                continue;
+            else if (newValues.length == 1)
+                this.propertys.get(key).value(newValues[0]);
+            else
+                this.propertys.get(key).value(newValues);
         }
         for (UIComponent com : this.components)
             com.processApplyRequest(viewContext);
