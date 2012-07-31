@@ -95,6 +95,9 @@ public abstract class AbstractRender<T extends UIComponent> implements Render<T>
                 mineState.put(propName, vh.value());
             }
         }
+        AbstractValueHolder avh = comProp.get("class");
+        if (avh != null)
+            mineState.put("class", avh);
         return mineState;
     };
     /**是否保存状态。*/
