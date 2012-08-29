@@ -17,6 +17,9 @@ package org.more.webui.context;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import org.more.util.StringConvertUtil;
+import org.more.webui.freemarker.parser.Hook_Include;
+import org.more.webui.freemarker.parser.Hook_UserTag;
+import org.more.webui.freemarker.parser.TemplateScanner;
 import org.more.webui.support.UIComponent;
 import org.more.webui.web.DefaultWebUIFactory;
 import org.more.webui.web.WebUIFactory;
@@ -55,7 +58,7 @@ public class FacesConfig {
     private static long genID = 0;
     /**根据组件类型，生成个组件ID*/
     public static String generateID(Class<? extends UIComponent> compClass) {
-        return "com_" + (genID++);
+        return "Only_" + (genID++);
     }
     /**获取初始化的环境参数。*/
     public String getInitConfig(String key) {
@@ -64,6 +67,15 @@ public class FacesConfig {
     /**获取ServletContext*/
     public ServletContext getServletContext() {
         return this.initConfig.getServletContext();
+    }
+    private TemplateScanner templateScanner = null;
+    public TemplateScanner getTemplateScanner() {
+        if (templateScanner == null) {
+            this.templateScanner = new TemplateScanner();
+            this.templateScanner.addElementHook(Hook_UserTag.Name, new Hook_UserTag());/*UnifiedCall：@add*/
+            this.templateScanner.addElementHook(Hook_Include.Name, new Hook_Include());/*Include：@Include*/
+        }
+        return this.templateScanner;
     }
     /*--------------------------------------------------------------------------*/
     private String factoryName = null;

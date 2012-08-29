@@ -3,9 +3,19 @@ if (WebUI == undefined) {
     WebUI = function(serverID) {
         var res = $("[comid=" + serverID + "]");
         if (res.length != 0)
-            return res[0].uiObject;
+            if (WebUI.isNaN(res[0].uiObject) == true)
+                return WebUI.Component.create($(res[0]).attr('id'));
+            else
+                return res[0].uiObject;
     };
 }
+WebUI.init = function() {
+    $('[comType]').each(function() {
+        WebUI.Component.create($(this).attr('id'));
+    });
+};
+/* 客户端组建初始化 */
+$(WebUI.init);
 /*----------------------------------------------------------------------------------------------------util*/
 /** Web UI 工具方法 */
 WebUI.util = {
@@ -216,6 +226,7 @@ WebUI.Component.create = function(clientID) {
     var targetObj = $("#" + clientID);
     var com_ID = targetObj.attr('comID');
     var com_Type = targetObj.attr('comType');
+    var com_Path = targetObj.attr('comPath');
     //
     var tarClass = WebUI.Component[com_Type];
     if (WebUI.isObject(tarClass) == false)
@@ -225,6 +236,7 @@ WebUI.Component.create = function(clientID) {
     var newFo = new fo();
     newFo.clientID = clientID;
     newFo.componentID = com_ID;
+    newFo.componentPath = com_Path;
     // C.调用构造方法
     if (WebUI.isFun(newFo["<init>"]) == true)
         newFo["<init>"]();
@@ -237,6 +249,8 @@ WebUI.Component.prototype = {
     clientID : null,
     /** 组建的服务器ID（在WebUI.Component.create方法中赋予） */
     componentID : null,
+    /** 组建的服务器上的路径（在WebUI.Component.create方法中赋予） */
+    componentPath : null,
     /** 父类类型（在定义类型时赋予） */
     superClass : null,
     /** 组建类型。 */
@@ -280,6 +294,7 @@ WebUI.Component.prototype = {
                 sendData[k] = paramData[k];
         /* 携带WebUI头信息 */
         sendData["WebUI_PF_Target"] = this.componentID;/* 发生事件的组建 */
+        sendData["WebUI_PF_TargetPath"] = this.componentPath;/* 发生事件的组建 */
         sendData["WebUI_PF_Event"] = eventName;/* 引发的事件 */
         sendData["WebUI_PF_Render"] = "No";/* 不执行渲染 */
         sendData["WebUI_PF_State"] = WebUI.util.b64.uncoded64(this.getState().getCode());
@@ -402,42 +417,3 @@ WebUI.Component.State.prototype.set = function(attName, newValue) {
     var newCode = WebUI.util.b64.encode64(JSON.stringify(array));
     this.setCode(newCode);
 };
-/*----------------------------------------------------------------------------------------------------Demo*/
-/* 客户端组建初始化 */
-$(function() {
-    $('[comType]').each(function() {
-        WebUI.Component.create($(this).attr('id'));
-    });
-});
-// /** 创建类型A */
-// var classA = WebUI.Component.extends("classA", {
-// "<init>" : function() {
-// alert("构造方法，" + this.class);
-// },
-// printType : function() {
-// alert("this is classA.");
-// }
-// });
-// /** 创建类型B */
-// var classB = WebUI.Component.extends("classB", {
-// "<init>" : function() {
-// alert("构造方法，" + this.class);
-// },
-// printType : function() {
-// alert("this is classB.");
-// }
-// });
-// /** 创建类型C，继承自A */
-// var classC = classA.extends("classC", function() {
-// this["<init>"] = function() {
-// alert("构造方法，" + this.class);
-// };
-// });
-// //
-// classA.printType();
-// classB.printType();
-// classC.printType();
-// var encode = WebUI.util.b64.encode64('你好 Hello');
-// alert(encode);
-// var encode = WebUI.util.b64.uncoded64(encode);
-// alert(encode);

@@ -25,6 +25,7 @@ import freemarker.template.Template;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class Hook_Include implements ElementHook {
+    public static String Name = "Include";
     @Override
     public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, FacesContext uiContext) throws UIInitException {
         try {

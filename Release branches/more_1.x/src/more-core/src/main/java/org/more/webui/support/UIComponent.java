@@ -38,27 +38,21 @@ import org.more.webui.support.values.StaticValueHolder;
 */
 public abstract class UIComponent {
     private String                           componentID         = null;
-    //    private String                           clientID            = null;
+    private String                           componentPath       = null;
     private UIComponent                      parent              = null;
     private List<UIComponent>                components          = new ArrayList<UIComponent>();
     /**私有事件管理器，该事件时间线不会受到其他组件影响*/
     private EventManager                     privateEventManager = new AbstractEventManager() {};
     private Map<String, AbstractValueHolder> propertys           = new HashMap<String, AbstractValueHolder>();
+    private Map<String, Object>              atts                = new HashMap<String, Object>();
     /*-------------------------------------------------------------------------------get/set属性*/
     /**返回组件的ID*/
-    public String getId() {
-        return this.componentID;
-    };
+    public String getComponentID() {
+        return componentID;
+    }
     /**设置属性ID*/
-    public void setId(String componentID) {
+    public void setComponentID(String componentID) {
         this.componentID = componentID;
-    };
-    /**获取组建类型*/
-    public abstract String getComponentType();
-    public String getClientID(ViewContext viewContext) {
-        //        if (clientID == null)
-        return "uiCID_" + viewContext.getComClientID(this);
-        //        return clientID;
     }
     /**通用属性表*/
     public static enum Propertys {
@@ -124,11 +118,53 @@ public abstract class UIComponent {
         this.getProperty(Propertys.renderChildren.name()).value(isRenderChildren);
     }
     /*-------------------------------------------------------------------------------核心方法*/
+    /**获取用于附加的属性的Map对象*/
+    public Map<String, Object> getAtts() {
+        return atts;
+    };
+    /**获取组建类型*/
+    public abstract String getComponentType();
+    /**获取组建在组建树中的位置格式为：/1/3/4/2*/
+    public String getComponentPath() {
+        if (this.componentPath == null) {
+            StringBuffer buffer = new StringBuffer();
+            UIComponent target = this;
+            UIComponent targetParent = target.getParent();
+            while (targetParent != null) {
+                int index = targetParent.getChildren().indexOf(target);
+                buffer.append('/');
+                buffer.append(new StringBuffer(String.valueOf(index)).reverse());
+                //
+                target = targetParent;
+                targetParent = target.getParent();
+            }
+            this.componentPath = buffer.reverse().toString();
+        }
+        return this.componentPath;
+    }
+    /**获取一个可用的客户端ID*/
+    public String getClientID(ViewContext viewContext) {
+        if (this.getComponentID() != null)
+            return getComponentID();
+        else
+            return "uiCID_" + viewContext.getComClientID(this);
+    }
+    public UIComponent getChildByPath(String componentPath) {
+        if (componentPath == null || componentPath.equals("") == true)
+            return null;
+        if (componentPath.startsWith(this.getComponentPath()) == false)
+            return null;//判断要获取的目标不是自己的孩子
+        String targetPath = componentPath.substring(this.getComponentPath().length());
+        //
+        int firstSpan = targetPath.indexOf('/');
+        int index = Integer.parseInt(targetPath.substring(0, firstSpan));
+        return this.getChildren().get(index);
+    }
     /**在当前组件的子级中寻找某个特定ID的组件*/
     public UIComponent getChildByID(String componentID) {
         if (componentID == null)
             return null;
-        if (this.getId().equals(componentID) == true)
+        if (this.getComponentID().equals(componentID) == true)
             return this;
         for (UIComponent component : this.components) {
             UIComponent com = component.getChildByID(componentID);
@@ -210,7 +246,6 @@ public abstract class UIComponent {
     /**子类可以通过该方法初始化组件。*/
     protected void initUIComponent(ViewContext viewContext) {
         /*设置属性默认值，当页面中有值被设置的时候这里设置的默认值就会失效*/
-        //this.clientID = null;
         this.setProperty(Propertys.beforeScript.name(), "true");
         this.setProperty(Propertys.async.name(), true);//默认使用异步操作事件
         this.setProperty(Propertys.render.name(), true);
@@ -235,7 +270,7 @@ public abstract class UIComponent {
         /*将请求参数中要求灌入的属性值灌入到属性上*/
         for (String key : this.propertys.keySet()) {
             /*被灌入的属性名，请求参数中必须是“componentID:attName”*/
-            String[] newValues = viewContext.getHttpRequest().getParameterValues(this.getId() + ":" + key);
+            String[] newValues = viewContext.getHttpRequest().getParameterValues(this.getComponentPath() + ":" + key);
             if (newValues == null)
                 continue;
             else if (newValues.length == 1)
@@ -264,7 +299,7 @@ public abstract class UIComponent {
     };
     /**第6阶段，处理Action动作和客户端回传的事件*/
     public void processApplication(ViewContext viewContext) throws OgnlException {
-        if (this.getId().equals(viewContext.getTarget()) == true) {
+        if (this.getComponentPath().equals(viewContext.getTargetPath()) == true) {
             /*处理客户端引发的事*/
             Event eventType = Event.getEvent(viewContext.getEvent());
             if (eventType != null)
@@ -302,7 +337,7 @@ public abstract class UIComponent {
         if (stateData == null)
             return;
         if (stateData.size() == 0)
-            throw new MoreDataException("WebUI无法重塑组件状态，在重塑组件[" + this.getId() + "]组件发生数据丢失");
+            throw new MoreDataException("WebUI无法重塑组件状态，在重塑组件[" + this.getComponentID() + "]组件发生数据丢失");
         //2.恢复自身数据
         Map<String, Object> mineState = (Map<String, Object>) stateData.get(0);
         for (String propName : mineState.keySet()) {
@@ -327,7 +362,7 @@ public abstract class UIComponent {
         if (stateData.size() == 2) {
             Map<String, Object> childrenState = (Map<String, Object>) stateData.get(1);
             for (UIComponent com : components)
-                com.restoreState((List<?>) childrenState.get(com.getId()));
+                com.restoreState((List<?>) childrenState.get(com.getComponentPath()));
         }
     };
     /**保存组建的当前状态，不包含子组建。*/
@@ -355,7 +390,7 @@ public abstract class UIComponent {
         //2.持久化子组件的状态
         HashMap<String, Object> childrenState = new HashMap<String, Object>();
         for (UIComponent com : components)
-            childrenState.put(com.getId(), com.saveState());
+            childrenState.put(com.getComponentPath(), com.saveState());
         //3.返回持久化状态
         array.add(childrenState);
         return array;

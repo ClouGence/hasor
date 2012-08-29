@@ -15,6 +15,7 @@
  */
 package org.more.webui.components.text;
 import org.more.webui.context.ViewContext;
+import org.more.webui.support.NoState;
 import org.more.webui.support.UICom;
 import org.more.webui.support.UIInput;
 /**
@@ -26,8 +27,14 @@ import org.more.webui.support.UIInput;
 public class TextInput extends UIInput {
     /**通用属性表*/
     public enum Propertys {
-        /**是否启用多行支持*/
+        /**是否启用多行支持（R）*/
         multiLine,
+        /**是否为密码输入框（R）*/
+        pwd,
+    }
+    @Override
+    public String getComponentType() {
+        return "ui_Text";
     }
     @Override
     protected void initUIComponent(ViewContext viewContext) {
@@ -37,7 +44,15 @@ public class TextInput extends UIInput {
     public boolean isMultiLine() {
         return this.getProperty(Propertys.multiLine.name()).valueTo(Boolean.TYPE);
     }
+    @NoState
     public void setMultiLine(boolean multiLine) {
         this.getProperty(Propertys.multiLine.name()).value(multiLine);
+    }
+    public boolean isPwd() {
+        return this.getProperty(Propertys.pwd.name()).valueTo(Boolean.TYPE);
+    }
+    @NoState
+    public void setPwd(boolean pwd) {
+        this.getProperty(Propertys.pwd.name()).value(pwd);
     }
 }

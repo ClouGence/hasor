@@ -10,8 +10,8 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateModelException;
 import freemarker.template.utility.DeepUnwrap;
 /**
- * Ò³Âë
- * @version : 2012-6-14
+ * ·ÖÒ³×é½¨£¬Ò³Âë.
+ * @version : 2012-5-18
  * @author ÕÔÓÀ´º (zyc@byshell.org)
  */
 @UIRender(tagName = "ui_pNum")

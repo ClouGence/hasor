@@ -27,27 +27,31 @@ import org.more.webui.support.values.AbstractValueHolder;
 public class PageCom extends UIComponent {
     /**属性表*/
     public static enum Propertys {
-        /**是否显示【首页】按钮*/
+        /**是否显示【首页】按钮（RW）*/
         showFirst,
-        /**是否显示【上一页】按钮*/
+        /**是否显示【上一页】按钮（RW）*/
         showPrev,
-        /**是否显示【下一页】按钮*/
+        /**是否显示【下一页】按钮（RW）*/
         showNext,
-        /**是否显示【尾页】按钮*/
+        /**是否显示【尾页】按钮（RW）*/
         showLast,
-        /**开始的页码号*/
+        /**开始的页码号（RW）*/
         startWith,
-        /**页大小*/
+        /**页大小（RW）*/
         pageSize,
-        /**当前页*/
+        /**当前页（RW）*/
         currentPage,
-        /**记录总数*/
+        /**记录总数（RW）*/
         rowCount,
-        /**当没有数据时显示模式，可叠加（逗号分割）。F(首页按钮)、P(上一页按钮)、N(下一页按钮)、L（尾页按钮）、I(页码按钮)、T(显示ui_pNoDate标签内容)：注意I与T只能有一个生效*/
+        /**当没有数据时显示模式，可叠加（逗号分割）。F(首页按钮)、P(上一页按钮)、N(下一页按钮)、L（尾页按钮）、I(页码按钮)、T(显示ui_pNoDate标签内容)：注意I与T只能有一个生效（RW）*/
         noDateMode,
-        /**分页组建的连接*/
+        /**分页组建的连接（RW）*/
         pageLink,
     };
+    @Override
+    public String getComponentType() {
+        return "ui_Page";
+    }
     @Override
     protected void initUIComponent(ViewContext viewContext) {
         super.initUIComponent(viewContext);

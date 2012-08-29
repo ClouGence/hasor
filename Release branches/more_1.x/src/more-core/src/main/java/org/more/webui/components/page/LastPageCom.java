@@ -16,9 +16,14 @@
 package org.more.webui.components.page;
 import org.more.webui.support.UICom;
 /**
- * Œ≤“≥
- * @version : 2012-6-14
+ * ∑÷“≥◊ÈΩ®£∫Œ≤“≥
+ * @version : 2012-5-15
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @UICom(tagName = "ui_pLast")
-public class LastPageCom extends AbstractItemCom {}
+public class LastPageCom extends AbstractItemCom {
+    @Override
+    public String getComponentType() {
+        return "ui_pLast";
+    }
+}

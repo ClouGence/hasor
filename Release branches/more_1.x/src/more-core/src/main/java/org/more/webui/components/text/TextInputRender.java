@@ -16,12 +16,11 @@
 package org.more.webui.components.text;
 import java.io.IOException;
 import java.io.Writer;
-import org.more.util.CommonCodeUtil;
+import java.util.Map;
 import org.more.webui.context.ViewContext;
-import org.more.webui.render.Render;
+import org.more.webui.render.AbstractInputRender;
 import org.more.webui.render.UIRender;
 import org.more.webui.tag.TemplateBody;
-import com.alibaba.fastjson.JSONObject;
 import freemarker.template.TemplateException;
 /**
  * 
@@ -29,41 +28,33 @@ import freemarker.template.TemplateException;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @UIRender(tagName = "ui_Text")
-public class TextInputRender implements Render<TextInput> {
+public class TextInputRender extends AbstractInputRender<TextInput> {
     @Override
-    public void beginRender(ViewContext viewContext, TextInput component, TemplateBody arg3, Writer writer) throws IOException {
+    protected String tagName(ViewContext viewContext, TextInput component) {
         if (component.isMultiLine() == true)
-            writer.write("<textarea");
+            return "textarea";
         else
-            writer.write("<input type='text'");
-        /*-------------------------------------------------*/
-        //
-        /*-------------------------------------------------*/
-        writer.write(" id='" + component.getClientID(viewContext) + "'");
-        writer.write(" comID='" + component.getId() + "'");
-        writer.write(" comType='ui_Text'");
-        String base64 = CommonCodeUtil.Base64.base64Encode(JSONObject.toJSONString(component.saveState()));
-        writer.write(" uiState='" + base64 + "'");
-        //HTML Att
-        writer.write(" style='" + component.getProperty("style").valueTo(String.class) + "'");
-        writer.write(" class='" + component.getProperty("class").valueTo(String.class) + "'");
-        /*-------------------------------------------------*/
-        //
-        /*-------------------------------------------------*/
-        if (component.getOnChangeEL() != null)
-            writer.write(" onchange='" + component.getId() + ".onchange(this);'");
-        writer.write(">");
+            return "input";
+    }
+    @Override
+    public Map<String, Object> tagAttributes(ViewContext viewContext, TextInput component) {
+        Map<String, Object> hashMap = super.tagAttributes(viewContext, component);
+        if (component.isMultiLine() == false) {
+            if (component.isPwd() == true)
+                hashMap.put("type", "password");
+            else
+                hashMap.put("type", "text");
+        } else
+            hashMap.remove("value");
+        return hashMap;
     }
     @Override
     public void render(ViewContext viewContext, TextInput component, TemplateBody arg3, Writer writer) throws IOException, TemplateException {
-        if (arg3 != null)
-            arg3.render(writer);
-    }
-    @Override
-    public void endRender(ViewContext viewContext, TextInput component, TemplateBody arg3, Writer writer) throws IOException {
-        if (component.isMultiLine() == true)
-            writer.write("</textarea>");
-        else
-            writer.write("</input>");
+        super.render(viewContext, component, arg3, writer);
+        if (component.isMultiLine() == true) {
+            Object var = component.getValue();
+            if (var != null)
+                writer.append(String.valueOf(component.getValue()));
+        }
     }
 }

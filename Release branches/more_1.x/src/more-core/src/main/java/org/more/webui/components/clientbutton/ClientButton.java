@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.components.page;
+package org.more.webui.components.clientbutton;
+import org.more.webui.support.UIButton;
 import org.more.webui.support.UICom;
 /**
- * 分页组建：下一页
+ * 简单按钮。
  * @version : 2012-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
-@UICom(tagName = "ui_pNext")
-public class NextPageCom extends AbstractItemCom {
+@UICom(tagName = "ui_Button")
+public class ClientButton extends UIButton {
     @Override
     public String getComponentType() {
-        return "ui_pNext";
+        return "ui_Button";
     }
 }

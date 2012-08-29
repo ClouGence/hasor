@@ -20,8 +20,10 @@ package org.more.webui.web;
  * @author 赵永春 (zyc@byshell.org)
  */
 public enum PostFormEnum {
-    /**发生事件的组建。*/
+    /**发生事件的组建ID。*/
     PostForm_TargetParamKey("WebUI_PF_Target"),
+    /**发生事件的组建Path。*/
+    PostForm_TargetPathKey("WebUI_PF_TargetPath"),
     /**发生的事件。*/
     PostForm_EventKey("WebUI_PF_Event"),
     /**执行渲染的类型。*/

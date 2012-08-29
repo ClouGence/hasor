@@ -13,27 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.support;
-import java.util.List;
+package org.more.webui.components.ajaxform;
+import java.util.Map;
+import org.more.webui.context.ViewContext;
+import org.more.webui.render.AbstractRender;
+import org.more.webui.render.UIRender;
 /**
- * 所有组件的根，同时也负责保存所有视图参数。该组建不使用@UICom注解注册
- * @version : 2012-3-29
+ * 
+ * @version : 2012-5-18
  * @author 赵永春 (zyc@byshell.org)
  */
-public class UIViewRoot extends UIComponent {
-    public UIViewRoot() {
-        this.setComponentID("com_root");
+@UIRender(tagName = "ui_AjaxForm")
+public class AjaxFormRender extends AbstractRender<AjaxForm> {
+    @Override
+    protected String tagName(ViewContext viewContext, AjaxForm component) {
+        return "form";
     }
     @Override
-    public String getComponentType() {
-        return "ui_ViewRoot";
-    }
-    public void restoreState(String componentPath, List<?> stateData) {
-        UIComponent com = this.getChildByPath(componentPath);
-        com.restoreState(stateData);
-    }
-    public List<?> saveState(String componentPath) {
-        UIComponent com = this.getChildByPath(componentPath);
-        return com.saveState();
+    public Map<String, Object> tagAttributes(ViewContext viewContext, AjaxForm component) {
+        Map<String, Object> hashMap = super.tagAttributes(viewContext, component);
+        hashMap.put("_onsubmit", hashMap.remove("onsubmit"));
+        return hashMap;
     }
 }

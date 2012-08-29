@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.webui.context;
+import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,14 +23,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.more.core.map.DecSequenceMap;
 import org.more.util.StringConvertUtil;
 import org.more.webui.UIInitException;
-import org.more.webui.freemarker.parser.Hook_Include;
-import org.more.webui.freemarker.parser.Hook_UserTag;
 import org.more.webui.freemarker.parser.TemplateScanner;
 import org.more.webui.support.UIComponent;
 import org.more.webui.support.UIViewRoot;
 import org.more.webui.web.PostFormEnum;
 import com.alibaba.fastjson.JSONObject;
-import com.sun.xml.internal.messaging.saaj.util.CharWriter;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 /**
@@ -82,7 +80,7 @@ public class ViewContext extends HashMap<String, Object> {
     /**执行模板字符串*/
     public String processTemplateString(String templateString) throws TemplateException, IOException {
         Map<String, Object> elContext = this.getViewELContext();
-        CharWriter charWrite = new CharWriter();
+        CharArrayWriter charWrite = new CharArrayWriter();
         this.getUIContext().processTemplateString(templateString, charWrite, elContext);
         return charWrite.toString();
     };
@@ -95,9 +93,7 @@ public class ViewContext extends HashMap<String, Object> {
             String reqURI = this.req.getRequestURI();
             String templateFile = this.req.getSession().getServletContext().getRealPath(reqURI);
             //
-            TemplateScanner scanner = new TemplateScanner();
-            scanner.addElementHook("UnifiedCall", new Hook_UserTag());/*UnifiedCall：@add*/
-            scanner.addElementHook("Include", new Hook_Include());/*Include：@Include*/
+            TemplateScanner scanner = this.getUIContext().getEnvironment().getTemplateScanner();
             //B.解析模板获取UIViewRoot
             this.viewRoot = (UIViewRoot) scanner.parser(tempRoot, new UIViewRoot(), uiContext);
         }
@@ -161,6 +157,10 @@ public class ViewContext extends HashMap<String, Object> {
     /**获取本次请求来源与那个组建。*/
     public String getTarget() {
         return this.getHttpRequest().getParameter(PostFormEnum.PostForm_TargetParamKey.value());
+    };
+    /**获取发生组建的路径*/
+    public String getTargetPath() {
+        return this.getHttpRequest().getParameter(PostFormEnum.PostForm_TargetPathKey.value());
     };
     /**获取客户端引发的事件。*/
     public boolean isAjax() {

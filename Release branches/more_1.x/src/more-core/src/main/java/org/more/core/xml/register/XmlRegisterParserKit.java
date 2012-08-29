@@ -13,25 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.components.targetbutton;
-import org.more.webui.support.UIButton;
-import org.more.webui.support.UICom;
+package org.more.core.xml.register;
+import org.more.core.xml.XmlParserKit;
 /**
- * 该组建的功能是引发其他组建的action请求。
- * @version : 2012-5-15
+ * 继承了{@link XmlParserKit}并且增加了对创建它的{@link XmlRegisterHook}对象获取方法。
+ * @version : 2012-8-3
  * @author 赵永春 (zyc@byshell.org)
  */
-@UICom(tagName = "ui_TargetButton")
-public class TargetButton extends UIButton {
-    /**通用属性表*/
-    public enum Propertys {
-        /**所调用的目标ID*/
-        target
+public class XmlRegisterParserKit extends XmlParserKit {
+    private XmlRegisterHook xmlRegisterHook = null;
+    public XmlRegisterHook getXmlRegisterHook() {
+        return xmlRegisterHook;
     }
-    public String getTarget() {
-        return this.getProperty(Propertys.target.name()).valueTo(String.class);
-    }
-    public void setTarget(String target) {
-        this.getProperty(Propertys.target.name()).value(target);
+    void setXmlRegisterHook(XmlRegisterHook xmlRegisterHook) {
+        this.xmlRegisterHook = xmlRegisterHook;
     }
 }

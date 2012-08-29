@@ -17,11 +17,11 @@ package org.more.webui.components.page;
 import org.more.webui.context.ViewContext;
 import org.more.webui.support.UIComponent;
 /**
- * 
- * @version : 2012-6-14
+ * ∑÷“≥◊ÈΩ®£¨“≥¬Î
+ * @version : 2012-5-15
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class AbstractItemCom extends UIComponent {
+public abstract class AbstractItemCom extends UIComponent {
     public String getPageLinkAsTemplate(ViewContext viewContext) {
         PageCom pageCom = (PageCom) this.getParent();
         return pageCom.getPageLinkAsTemplate(viewContext);

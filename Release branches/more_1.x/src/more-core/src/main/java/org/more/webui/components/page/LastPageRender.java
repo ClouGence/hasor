@@ -25,8 +25,8 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateModelException;
 import freemarker.template.utility.DeepUnwrap;
 /**
- * Œ≤“≥
- * @version : 2012-6-14
+ * ∑÷“≥◊ÈΩ®£∫Œ≤“≥.
+ * @version : 2012-5-18
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @UIRender(tagName = "ui_pLast")

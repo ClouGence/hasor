@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.components.ajaxbutton;
+package org.more.webui.components.clientbutton;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
@@ -27,17 +27,17 @@ import freemarker.template.TemplateException;
  * @version : 2012-5-18
  * @author 赵永春 (zyc@byshell.org)
  */
-@UIRender(tagName = "ui_AjaxButton")
-public class AjaxButtonRender extends AbstractRender<AjaxButton> {
+@UIRender(tagName = "ui_Button")
+public class ClientButtonRender extends AbstractRender<ClientButton> {
     @Override
-    protected String tagName(ViewContext viewContext, AjaxButton component) {
+    protected String tagName(ViewContext viewContext, ClientButton component) {
         if (component.isUseLink() == true)
             return "a";
         else
             return "input";
     }
     @Override
-    public Map<String, Object> tagAttributes(ViewContext viewContext, AjaxButton component) {
+    public Map<String, Object> tagAttributes(ViewContext viewContext, ClientButton component) {
         //----覆盖定义的属性
         Map<String, Object> hashMap = super.tagAttributes(viewContext, component);
         if (component.isUseLink() == true)
@@ -45,11 +45,12 @@ public class AjaxButtonRender extends AbstractRender<AjaxButton> {
         else
             hashMap.put("type", "button");//writer.write("<input type='button'");
         if (component.isUseLink() == false)
-            hashMap.put("value", component.getTitle());;
+            hashMap.put("value", component.getTitle());
+        //----
         return hashMap;
     }
     @Override
-    public void render(ViewContext viewContext, AjaxButton component, TemplateBody arg3, Writer writer) throws IOException, TemplateException {
+    public void render(ViewContext viewContext, ClientButton component, TemplateBody arg3, Writer writer) throws IOException, TemplateException {
         if (component.isUseLink() == true)
             writer.write(component.getTitle());
         if (arg3 != null)

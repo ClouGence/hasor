@@ -37,8 +37,8 @@ public class RestoreView_Phase extends Phase {
         return PhaseID;
     };
     public void execute(ViewContext uiContext) throws Throwable {
-        String target = uiContext.getTarget();
-        if (target == null)
+        String targetPath = uiContext.getTargetPath();
+        if (targetPath == null)
             return;
         // »ØËÝ×´Ì¬
         UIViewRoot viewRoot = uiContext.getViewRoot();
@@ -46,6 +46,6 @@ public class RestoreView_Phase extends Phase {
         if (stateJsonData == null)
             return;
         List<?> viewState = JSONObject.parseObject(stateJsonData, List.class);
-        viewRoot.restoreState(target, viewState);
+        viewRoot.restoreState(targetPath, viewState);
     };
 };

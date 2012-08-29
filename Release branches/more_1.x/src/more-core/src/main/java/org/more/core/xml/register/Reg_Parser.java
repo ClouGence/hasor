@@ -19,7 +19,6 @@ import javax.xml.stream.XMLStreamException;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.core.xml.XmlParserHook;
-import org.more.core.xml.XmlParserKit;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.core.xml.stream.XmlAccept;
 import org.more.core.xml.stream.XmlStreamEvent;
@@ -29,11 +28,11 @@ import org.more.core.xml.stream.XmlStreamEvent;
  * @author 赵永春 (zyc@byshell.org)
  */
 class Reg_Parser implements XmlAccept {
-    private static Log      log         = LogFactory.getLog(Reg_Parser.class);
-    private XmlRegister     manager     = null;
-    private XmlParserKit    currentKit  = null;                               //xpath注册
-    private XmlRegisterHook currentHook = null;                               //当前命名空间钩子
-    private String          currentNS   = null;                               //当前命名空间
+    private static Log           log         = LogFactory.getLog(Reg_Parser.class);
+    private XmlRegister          manager     = null;
+    private XmlRegisterParserKit currentKit  = null;                               //xpath注册
+    private XmlRegisterHook      currentHook = null;                               //当前命名空间钩子
+    private String               currentNS   = null;                               //当前命名空间
     public Reg_Parser(XmlRegister manager) {
         this.manager = manager;
     };
@@ -64,6 +63,7 @@ class Reg_Parser implements XmlAccept {
             //3.注册命名空间
             this.currentNS = ee.getAttributeValue("url");
             this.currentKit = this.currentHook.createXmlParserKit(this.currentNS, this.manager);//创建注册器
+            this.currentKit.setXmlRegisterHook(this.currentHook);
             log.error("create xmlRegisterHook OK! Type =%0.", currentKit.getClass());
             //TODO:xml工具没有处理schema这个属性。String schema=ee.getAttributeValue("schema");
             this.manager.regeditKit(this.currentNS, this.currentKit);

@@ -45,13 +45,13 @@ public class XmlGlobalFactory extends GlobalFactory {
     private HashSet<String>    loadNameSpace       = new HashSet<String>();
     private boolean            isIgnoreRootElement = false;
     //
-    public Map<String, Object> loadConfig(InputStream stream, String encoding) throws IOException {
+    public Map<String, Object> loadConfig(InputStream stream, String encoding, boolean isIgnoreRootElement) throws IOException {
         try {
             if (loadNameSpace.contains(loadNameSpace) == false)
                 loadNameSpace.add(DefaultNameSpace);
             HashMap<String, Object> xmlTree = new HashMap<String, Object>();
             XmlParserKit kit = new XmlParserKit();
-            kit.regeditHook("/*", new Config_ElementHook(this.isIgnoreRootElement));
+            kit.regeditHook("/*", new Config_ElementHook(isIgnoreRootElement));
             XmlRegister xmlRegister = new XmlRegister(xmlTree);
             for (String ns : loadNameSpace)
                 xmlRegister.regeditKit(ns, kit);
@@ -63,6 +63,9 @@ public class XmlGlobalFactory extends GlobalFactory {
             else
                 throw (IOException) e;
         }
+    };
+    public Map<String, Object> loadConfig(InputStream stream, String encoding) throws IOException {
+        return this.loadConfig(stream, encoding, this.isIgnoreRootElement);
     };
     /**获取要装载的命名空间集合。*/
     public HashSet<String> getLoadNameSpace() {

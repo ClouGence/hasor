@@ -46,8 +46,9 @@ public abstract class AbstractRender<T extends UIComponent> implements Render<T>
         //Core Atts
         /*-------------------------------------------------*/
         writer.write(" id='" + component.getClientID(viewContext) + "'");
-        writer.write(" comID='" + component.getId() + "'");
+        writer.write(" comID='" + component.getComponentID() + "'");
         writer.write(" comType='" + component.getComponentType() + "'");
+        writer.write(" comPath='" + component.getComponentPath() + "'");
         if (this.isSaveState(viewContext, component) == true) {
             String base64 = CommonCodeUtil.Base64.base64Encode(JSONObject.toJSONString(component.saveState()));
             writer.write(" uiState='" + base64 + "'");

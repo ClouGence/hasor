@@ -25,8 +25,8 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateModelException;
 import freemarker.template.utility.DeepUnwrap;
 /**
- * 
- * @version : 2012-6-14
+ * 分页组建：上一页.
+ * @version : 2012-5-18
  * @author 赵永春 (zyc@byshell.org)
  */
 @UIRender(tagName = "ui_pPrev")

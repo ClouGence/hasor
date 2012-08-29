@@ -16,7 +16,10 @@
 package org.more.core.xml;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import org.more.core.error.MoreStateException;
@@ -96,6 +99,18 @@ public class XmlParserKitManager implements XmlAccept {
         ArrayList<XmlNamespaceParser> list = this.regeditXmlParserKit.get(namespace);
         if (list.contains(kit) == true)
             list.remove(kit);
+    }
+    /**获取注册的命名空间集合*/
+    public Set<String> getNamespace() {
+        return Collections.unmodifiableSet(this.regeditXmlParserKit.keySet());
+    }
+    /**获取指定命名空间下已注册的解析器集合。*/
+    public List<XmlNamespaceParser> getXmlNamespaceParser(String namespace) {
+        List<XmlNamespaceParser> parserList = this.regeditXmlParserKit.get(namespace);
+        if (parserList == null)
+            return Collections.unmodifiableList(new ArrayList<XmlNamespaceParser>());
+        else
+            return Collections.unmodifiableList(parserList);
     }
     /**开始{@link XmlAccept}接口的调用，该方法主要用于重置状态。*/
     public void beginAccept() {

@@ -130,9 +130,25 @@ WebUI.Component.$extends("ui_SelectOne", "ui_Input", {
         var e = this.getElement();
         return e.options[e.selectedIndex].value; // 选中值
     },
+    /** 获取选中的值 */
+    getSelectValue : function() {
+        var e = this.getElement();
+        var jqObject = e.options[e.selectedIndex]; // 选中值
+        var atItem = {};
+        atItem[jqObject.value] = jqObject.text;
+        return atItem;
+    },
     /** 数据（R） */
     getListData : function() {
-        return this.getState().get("listData");
+        var e = this.getElement();
+        var dataList = new Array();
+        for ( var i = 0; i < e.options.length; i++) {
+            var atItem = {};
+            var jqObject = e.options[i];
+            atItem[jqObject.value] = jqObject.text;
+            dataList.push(atItem);
+        }
+        return dataList;
     },
     /** 显示名称字段（R） */
     getKeyField : function() {
@@ -168,9 +184,26 @@ WebUI.Component.$extends("ui_SelectCheck", "ui_Input", {
                 var v = $this.getVarField();
                 var arrayData = eval(res);
                 var jqObject = $($this.getElement());
+                var titleFirst = $this.getState().get('titleFirst');
+                var selectValues = $this.getState().get('value');
+                try {
+                    selectValues = selectValues.split(",");
+                } catch (e) {
+                    selectValues = [ selectValues ];
+                }
                 jqObject.html('');
-                for ( var i = 0; i < arrayData.length; i++)
-                    jqObject.append('<li><input type="checkbox" forComID="' + $this.componentID + '" name="' + $this.getName() + '" value="' + arrayData[i][k] + '"><span>' + arrayData[i][v] + '</span></li>');
+                for ( var i = 0; i < arrayData.length; i++) {
+                    var span = '<span>' + arrayData[i][v] + '</span>';
+                    var input = '<input type="checkbox" forComID="' + $this.componentID + '" name="' + $this.getName() + '" value="' + arrayData[i][k] + '" varValue="' + arrayData[i][k] + '"';
+                    for ( var j = 0; j < selectValues.length; j++)
+                        if (selectValues[j] == arrayData[i][k])
+                            input += " checked='checked'";
+                    input += "/>";
+                    if (titleFirst == true)
+                        jqObject.append('<li>' + span + input + '</li>');
+                    else
+                        jqObject.append('<li>' + input + span + '</li>');
+                }
             }
         }, function(XMLHttpRequest, textStatus) {
             // B.装载失败
@@ -187,9 +220,29 @@ WebUI.Component.$extends("ui_SelectCheck", "ui_Input", {
         });
         return selectData; // 选中值
     },
+    /** 获取选中的值 */
+    getSelectValue : function() {
+        var dataList = new Array();
+        $("#" + this.clientID + " input[type=checkbox]").each(function() {
+            if (this.checked == true) {
+                var atItem = {};
+                var jqObject = $(this);
+                atItem[jqObject.attr('value')] = jqObject.attr('varValue');
+                dataList.push(atItem);
+            }
+        });
+        return dataList; // 选中值
+    },
     /** 数据（R） */
     getListData : function() {
-        return this.getState().get("listData");
+        var dataList = new Array();
+        $("#" + this.clientID + " input[type=checkbox]").each(function() {
+            var atItem = {};
+            var jqObject = $(this);
+            atItem[jqObject.attr('value')] = jqObject.attr('varValue');
+            dataList.push(atItem);
+        });
+        return dataList;
     },
     /** 显示名称字段（R） */
     getKeyField : function() {
@@ -228,7 +281,7 @@ WebUI.Component.$extends("ui_AjaxForm", "", {
             var uio = this.uiObject;
             if (uio.isForm() == false)
                 return;
-            paramData[uio.componentID + ":value"] = uio.getValue();
+            paramData[uio.componentPath + ":value"] = uio.getValue();
         });
         // B.引发OnSubmit事件
         var $this = this;

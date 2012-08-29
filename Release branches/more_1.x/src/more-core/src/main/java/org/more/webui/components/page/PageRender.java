@@ -16,13 +16,11 @@
 package org.more.webui.components.page;
 import java.io.IOException;
 import java.io.Writer;
-import org.more.util.CommonCodeUtil;
 import org.more.webui.components.page.PageCom.Mode;
 import org.more.webui.context.ViewContext;
-import org.more.webui.render.Render;
+import org.more.webui.render.AbstractRender;
 import org.more.webui.render.UIRender;
 import org.more.webui.tag.TemplateBody;
-import com.alibaba.fastjson.JSONObject;
 import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModelException;
@@ -32,25 +30,10 @@ import freemarker.template.TemplateModelException;
  * @author 赵永春 (zyc@byshell.org)
  */
 @UIRender(tagName = "ui_Page")
-public class PageRender implements Render<PageCom> {
+public class PageRender extends AbstractRender<PageCom> {
     @Override
-    public void beginRender(ViewContext viewContext, PageCom component, TemplateBody arg3, Writer writer) throws IOException {
-        writer.write("<div");
-        /*-------------------------------------------------*/
-        //
-        /*-------------------------------------------------*/
-        writer.write(" id='" + component.getClientID(viewContext) + "'");
-        writer.write(" comID='" + component.getId() + "'");
-        writer.write(" comType='ui_Page'");
-        String base64 = CommonCodeUtil.Base64.base64Encode(JSONObject.toJSONString(component.saveState()));
-        writer.write(" uiState='" + base64 + "'");
-        //HTML Att
-        writer.write(" style='" + component.getProperty("style").valueTo(String.class) + "'");
-        writer.write(" class='" + component.getProperty("class").valueTo(String.class) + "'");
-        /*-------------------------------------------------*/
-        //
-        /*-------------------------------------------------*/
-        writer.write(">");
+    protected String tagName(ViewContext viewContext, PageCom component) {
+        return "div";
     }
     /**无数据判断，有数据时始终返回true*/
     public boolean noData(boolean hasData, String noDateMode, String contains) {
@@ -188,9 +171,5 @@ public class PageRender implements Render<PageCom> {
             component.runMode = Mode.Last;
             arg3.render(writer);
         }
-    }
-    @Override
-    public void endRender(ViewContext viewContext, PageCom component, TemplateBody arg3, Writer writer) throws IOException {
-        writer.write("</div>");
     }
 }

@@ -34,6 +34,9 @@ public class TemplateScanner {
     public void addElementHook(String itemType, ElementHook hook) {
         this.blockRegister.put(itemType, hook);
     }
+    public boolean containsType(String itemType) {
+        return blockRegister.containsKey(itemType);
+    }
     /**解析模板用于生成{@link UIViewRoot}*/
     public UIComponent parser(Template template, UIComponent uiViewRoot, FacesContext uiContext) throws UIInitException {
         TemplateElement rootNode = template.getRootTreeNode();

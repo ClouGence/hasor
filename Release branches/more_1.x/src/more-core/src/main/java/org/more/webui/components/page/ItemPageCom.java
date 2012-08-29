@@ -16,9 +16,14 @@
 package org.more.webui.components.page;
 import org.more.webui.support.UICom;
 /**
- * Ò³Âë
- * @version : 2012-6-14
+ * ·ÖÒ³×é½¨£¬Ò³Âë
+ * @version : 2012-5-15
  * @author ÕÔÓÀ´º (zyc@byshell.org)
  */
 @UICom(tagName = "ui_pNum")
-public class ItemPageCom extends AbstractItemCom {}
+public class ItemPageCom extends AbstractItemCom {
+    @Override
+    public String getComponentType() {
+        return "ui_pNum";
+    }
+}

@@ -14,35 +14,38 @@
  * limitations under the License.
  */
 package org.more.core.xml.register;
+import java.util.HashMap;
+import java.util.Map;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
-import org.more.core.xml.XmlParserKit;
 /**
  * 
  * @version : 2011-12-5
  * @author 赵永春 (zyc@byshell.org)
  */
 public class XmlRegisterHookUtil {
-    private static Log                  log         = LogFactory.getLog(XmlRegisterHookUtil.class);
-    public static final XmlRegisterHook DefaultHook = new DefaultHook() {};
-    //
-    //
+    private static Log                          log         = LogFactory.getLog(XmlRegisterHookUtil.class);
+    public static final XmlRegisterHook         DefaultHook = new DefaultHook() {};
+    private static Map<String, XmlRegisterHook> hookMap     = new HashMap<String, XmlRegisterHook>();
     //
     /**根据参数指定的类型创建一个{@link xmlRegisterHook}对象*/
     public final static XmlRegisterHook getHook(String xmlRegisterHookClass) {
-        try {
-            Class<?> type = Thread.currentThread().getContextClassLoader().loadClass(xmlRegisterHookClass);
-            return (XmlRegisterHook) type.newInstance();
-        } catch (Exception e) {
-            /**错误*/
-            log.error("create xmlRegisterHook Type error =%0.", e);
-            e.printStackTrace();
-            return DefaultHook;
+        if (hookMap.containsKey(xmlRegisterHookClass) == false) {
+            try {
+                Class<?> type = Thread.currentThread().getContextClassLoader().loadClass(xmlRegisterHookClass);
+                hookMap.put(xmlRegisterHookClass, (XmlRegisterHook) type.newInstance());
+            } catch (Exception e) {
+                /**错误*/
+                log.error("create xmlRegisterHook Type error =%0.", e);
+                e.printStackTrace();
+            }
         }
+        XmlRegisterHook hook = hookMap.get(xmlRegisterHookClass);
+        return (hook == null) ? DefaultHook : hook;
     };
 };
 class DefaultHook implements XmlRegisterHook {
-    public XmlParserKit createXmlParserKit(String namespace, XmlRegister manager) {
-        return new XmlParserKit();
+    public XmlRegisterParserKit createXmlParserKit(String namespace, XmlRegister manager) {
+        return new XmlRegisterParserKit();
     };
 }

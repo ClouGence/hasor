@@ -24,8 +24,8 @@ import org.more.webui.tag.TemplateBody;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModelException;
 /**
- * 无数据
- * @version : 2012-6-14
+ * 分页组建，无数据.
+ * @version : 2012-5-18
  * @author 赵永春 (zyc@byshell.org)
  */
 @UIRender(tagName = "ui_pNoDate")

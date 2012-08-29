@@ -16,9 +16,14 @@
 package org.more.webui.components.page;
 import org.more.webui.support.UICom;
 /**
- * 无数据
- * @version : 2012-6-14
+ * 分页组建，无数据
+ * @version : 2012-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
 @UICom(tagName = "ui_pNoDate")
-public class NoDatePageCom extends AbstractItemCom {}
+public class NoDatePageCom extends AbstractItemCom {
+    @Override
+    public String getComponentType() {
+        return "ui_pNoDate";
+    }
+}
