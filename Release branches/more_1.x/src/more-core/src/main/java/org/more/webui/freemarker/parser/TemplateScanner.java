@@ -17,7 +17,6 @@ package org.more.webui.freemarker.parser;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import org.more.webui.UIInitException;
 import org.more.webui.context.FacesContext;
 import org.more.webui.support.UIComponent;
 import org.more.webui.support.UIViewRoot;
@@ -38,12 +37,12 @@ public class TemplateScanner {
         return blockRegister.containsKey(itemType);
     }
     /**解析模板用于生成{@link UIViewRoot}*/
-    public UIComponent parser(Template template, UIComponent uiViewRoot, FacesContext uiContext) throws UIInitException {
+    public UIComponent parser(Template template, UIComponent uiViewRoot, FacesContext uiContext) throws ElementHookException {
         TemplateElement rootNode = template.getRootTreeNode();
         return parserElement(rootNode, uiViewRoot, uiContext);
     }
     /**element要解析的元素，componentParent当前所处组件*/
-    private UIComponent parserElement(TemplateElement element, UIComponent componentParent, FacesContext uiContext) throws UIInitException {
+    private UIComponent parserElement(TemplateElement element, UIComponent componentParent, FacesContext uiContext) throws ElementHookException {
         Enumeration<TemplateElement> enumItems = element.children();
         while (enumItems.hasMoreElements() == true) {
             //递归扫描所有模板节点。

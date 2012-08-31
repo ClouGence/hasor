@@ -17,7 +17,6 @@ package org.more.webui.freemarker.parser;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import org.more.webui.UIInitException;
 import org.more.webui.context.FacesConfig;
 import org.more.webui.context.FacesContext;
 import org.more.webui.support.UIComponent;
@@ -31,7 +30,7 @@ import freemarker.core.TemplateElement;
 public class Hook_UserTag implements ElementHook {
     public static String Name = "UnifiedCall";
     @Override
-    public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, FacesContext uiContext) throws UIInitException {
+    public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, FacesContext uiContext) throws ElementHookException {
         //A.创建组建
         String tagName = e.getDescription().split(" ")[1];
         UIComponent componentObject = uiContext.getComponent(tagName);
@@ -59,7 +58,7 @@ public class Hook_UserTag implements ElementHook {
             else
                 namedArgs = new HashMap<String, Expression>();
         } catch (Exception e2) {
-            throw new UIInitException("Freemarker兼容错误：无法读取namedArgs或value字段。建议使用建议使用freemarker 2.3.19版本。", e2);
+            throw new ElementHookException("Freemarker兼容错误：无法读取namedArgs或value字段。建议使用建议使用freemarker 2.3.19版本。", e2);
         }
         //C.将组建和标签对象的ID值相互绑定。
         try {
@@ -72,10 +71,10 @@ public class Hook_UserTag implements ElementHook {
             } else
                 componentObject.setComponentID(FacesConfig.generateID(componentObject.getClass()));
         } catch (Exception e2) {
-            throw new UIInitException("Freemarker兼容错误：无法创建StringLiteral类型对象。建议使用建议使用freemarker 2.3.19版本。", e2);
+            throw new ElementHookException("Freemarker兼容错误：无法创建StringLiteral类型对象。建议使用建议使用freemarker 2.3.19版本。", e2);
         }
         return componentObject;
     }
     @Override
-    public void endAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, FacesContext uiContext) throws UIInitException {}
+    public void endAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, FacesContext uiContext) throws ElementHookException {}
 }

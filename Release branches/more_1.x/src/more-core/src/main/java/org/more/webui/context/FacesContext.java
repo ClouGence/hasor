@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.more.util.CommonCodeUtil;
-import org.more.webui.UIInitException;
 import org.more.webui.freemarker.loader.ConfigTemplateLoader;
 import org.more.webui.freemarker.loader.MultiTemplateLoader;
 import org.more.webui.render.RenderKit;
@@ -86,7 +85,7 @@ public abstract class FacesContext {
         return Collections.unmodifiableSet(this.componentSet);
     }
     /**根据组建的标签名获取组建*/
-    public UIComponent getComponent(String tagName) throws UIInitException {
+    public UIComponent getComponent(String tagName) {
         if (componentObjectMap.containsKey(tagName) == true)
             return componentObjectMap.get(tagName);
         Class<?> componentBeanType = this.componentTypeMap.get(tagName);

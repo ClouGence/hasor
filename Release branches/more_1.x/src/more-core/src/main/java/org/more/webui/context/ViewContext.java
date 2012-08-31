@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.more.core.map.DecSequenceMap;
 import org.more.util.StringConvertUtil;
-import org.more.webui.UIInitException;
 import org.more.webui.freemarker.parser.TemplateScanner;
 import org.more.webui.support.UIComponent;
 import org.more.webui.support.UIViewRoot;
@@ -86,7 +85,7 @@ public class ViewContext extends HashMap<String, Object> {
     };
     private UIViewRoot viewRoot = null;
     /**获取表示该视图的{@link UIViewRoot}对象。*/
-    public UIViewRoot getViewRoot() throws UIInitException, IOException {
+    public UIViewRoot getViewRoot() throws IOException {
         //A.创建UIViewRoot
         if (this.viewRoot == null) {
             Template tempRoot = this.getTemplate();

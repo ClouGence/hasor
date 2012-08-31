@@ -16,7 +16,6 @@
 package org.more.webui.lifestyle;
 import java.util.ArrayList;
 import java.util.List;
-import org.more.webui.UILifecycleException;
 import org.more.webui.context.FacesConfig;
 import org.more.webui.context.FacesContext;
 import org.more.webui.context.ViewContext;
