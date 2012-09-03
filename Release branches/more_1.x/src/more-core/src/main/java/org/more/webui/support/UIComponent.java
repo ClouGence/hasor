@@ -132,15 +132,18 @@ public abstract class UIComponent {
             UIComponent targetParent = target.getParent();
             while (targetParent != null) {
                 int index = targetParent.getChildren().indexOf(target);
-                buffer.append('/');
                 buffer.append(new StringBuffer(String.valueOf(index)).reverse());
+                buffer.append('/');
                 //
                 target = targetParent;
                 targetParent = target.getParent();
             }
             this.componentPath = buffer.reverse().toString();
         }
-        return this.componentPath;
+        if (this.componentPath.length() == 0)
+            return "/";
+        else
+            return this.componentPath;
     }
     /**获取一个可用的客户端ID*/
     public String getClientID(ViewContext viewContext) {
@@ -152,13 +155,22 @@ public abstract class UIComponent {
     public UIComponent getChildByPath(String componentPath) {
         if (componentPath == null || componentPath.equals("") == true)
             return null;
-        if (componentPath.startsWith(this.getComponentPath()) == false)
-            return null;//判断要获取的目标不是自己的孩子
-        String targetPath = componentPath.substring(this.getComponentPath().length());
+        if (this.getComponentPath().equals(componentPath) == true)
+            return this;//判断要获取的目标不是自己的孩子
         //
+        String targetPath = componentPath.substring(this.getComponentPath().length());
         int firstSpan = targetPath.indexOf('/');
-        int index = Integer.parseInt(targetPath.substring(0, firstSpan));
-        return this.getChildren().get(index);
+        int index = -1;
+        if (firstSpan == -1)
+            index = Integer.parseInt(targetPath);
+        else
+            index = Integer.parseInt(targetPath.substring(1, firstSpan));
+        UIComponent comObject = this.getChildren().get(index);
+        //
+        if (comObject == null)
+            return null;
+        else
+            return comObject.getChildByPath(componentPath);
     }
     /**在当前组件的子级中寻找某个特定ID的组件*/
     public UIComponent getChildByID(String componentID) {

@@ -31,7 +31,9 @@ public enum PostFormEnum {
     /**回传状态的状态数据。*/
     PostForm_StateDataParamKey("WebUI_PF_State"),
     /**回传一条信息表示本次请求来自于Ajax。*/
-    PostForm_IsAjaxKey("WebUI_PF_Ajax"), ;
+    PostForm_IsAjaxKey("WebUI_PF_Ajax"),
+    /**当客户端企图执行服务端脚本时才会回传一条这条信息。*/
+    PostForm_InvokeStringKey("WebUI_PF_Invoke"), ;
     //
     private String value = null;
     PostFormEnum(String value) {

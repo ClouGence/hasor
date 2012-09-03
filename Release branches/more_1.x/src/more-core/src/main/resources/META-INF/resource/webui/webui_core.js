@@ -188,15 +188,81 @@ WebUI.getEnvironmentMap = function() {
     return cfg;
 };
 /** 执行字符串，如果定义的只是函数名则调用该函数，如果是脚本字符串则执行脚本（注：如果脚本返回的是函数则这个函数也会被执行）。 */
-WebUI.runSrcipt = function(scriptText, thisContext, paramObj) {
+WebUI.runSrcipt = function(scriptText, thisContext, paramMap) {
+    WebUI.runSrcipt.$Key = null;
+    WebUI.runSrcipt.$Var = null;
+    WebUI.runSrcipt.$ParamMap = paramMap;
+    WebUI.runSrcipt.$ParamArray = new Array();
+    // 1.准备环境变量
+    for (WebUI.runSrcipt.$Key in WebUI.runSrcipt.$ParamMap) {
+        WebUI.runSrcipt.$Var = WebUI.runSrcipt.$ParamMap[WebUI.runSrcipt.$Key];
+        WebUI.runSrcipt.$ParamArray.push(WebUI.runSrcipt.$Var);
+        eval(WebUI.runSrcipt.$Key + "=WebUI.runSrcipt.$Var");
+    }
+    // 2.执行脚本
     var e = eval.call(thisContext, scriptText);
     if (WebUI.isFun(e) == true)
-        return e.apply(thisContext, paramObj);
+        e = e.apply(thisContext, WebUI.runSrcipt.$ParamArray);
     return e;
+};
+/**
+ * 静态方法，向服务器发送事件
+ * @param invokeString 要调用的服务器方法
+ * @param paramData 携带的参数
+ * @param async true|false同步状态（true表示使用同步）
+ * @param okCallBack 回调函数
+ * @param errorCallBack 回调函数
+ */
+WebUI.invoke = function(invokeString, paramData, async, okCallBack, errorCallBack) {
+    if (WebUI.isNaN(paramData) == true)
+        paramData = {};
+    if (WebUI.isNaN(async) == true)
+        async = false;
+    if (WebUI.isNaN(invokeString) == true)
+        return;
+    /* 准备请求参数 */
+    var sendData = {};
+    if (WebUI.isObject(paramData) == true)
+        for ( var k in paramData)
+            sendData[k] = paramData[k];
+    /* 携带WebUI头信息 */
+    sendData["WebUI_PF_Target"] = "com_root";/* 发生事件的组建 */
+    sendData["WebUI_PF_TargetPath"] = "/";/* 发生事件的组建 */
+    sendData["WebUI_PF_Event"] = "OnInvoke";/* 引发的事件 */
+    sendData["WebUI_PF_Render"] = "No";/* 不执行渲染 */
+    sendData["WebUI_PF_State"] = "[{},{}]";
+    //
+    sendData["WebUI_PF_Invoke"] = invokeString;
+    /* ajax请求 */
+    var postData = "";
+    for ( var k in sendData) {
+        var v = sendData[k];
+        if (WebUI.isArray(v) == true)
+            for ( var i = 0; i < v.length; i++)
+                postData += (encodeURIComponent(k) + "=" + encodeURIComponent(v[i]) + "&");
+        else
+            postData += (encodeURIComponent(k) + "=" + encodeURIComponent(v) + "&");
+    }
+    var res = $.ajax({
+        type : 'post',
+        url : window.location,
+        data : postData,
+        cache : false,
+        async : async,
+        success : function(res) {
+            if (WebUI.isFun(okCallBack) == true)
+                okCallBack(res);
+        },
+        error : function(XMLHttpRequest, textStatus) {
+            if (WebUI.isFun(errorCallBack) == true)
+                errorCallBack(XMLHttpRequest, textStatus);
+        }
+    });
+    return res.responseText;
 };
 /*----------------------------------------------------------------------------------------------------组建基类*/
 WebUI.Component = function() {};
-/** 静态方法，用于从WebUI.Component中派生一个新的类型。 */
+/** 静态方法，用于从WebUI.Component中派生一个新的类型对象。 */
 WebUI.Component.$extends = function(newType, superName, define) {
     if (WebUI.Component[newType] != null)
         throw "重复定义：" + newType;
@@ -208,9 +274,7 @@ WebUI.Component.$extends = function(newType, superName, define) {
     else
         fo.prototype = superObj;
     var newFo = new fo();
-    newFo.getClass = function() {
-        return newType;
-    };
+    newFo.class = newType;
     newFo.superClass = superObj;
     // B.赋予新方法
     if (WebUI.isObject(define) == true)
@@ -221,22 +285,31 @@ WebUI.Component.$extends = function(newType, superName, define) {
     WebUI.Component[newType] = newFo;
     return newFo;
 };
-/** 创建组建对象 */
+/** 创建组建实例对象 */
 WebUI.Component.create = function(clientID) {
     var targetObj = $("#" + clientID);
     var com_ID = targetObj.attr('comID');
     var com_Type = targetObj.attr('comType');
     var com_Path = targetObj.attr('comPath');
-    //
+    // 构建实例对象
     var tarClass = WebUI.Component[com_Type];
     if (WebUI.isObject(tarClass) == false)
         tarClass = new WebUI.Component();
     var fo = function() {};
     fo.prototype = tarClass;
     var newFo = new fo();
+    // 赋于属性值
     newFo.clientID = clientID;
     newFo.componentID = com_ID;
     newFo.componentPath = com_Path;
+    var newFoState = new WebUI.Component.State(newFo);
+    var newFoVar = new WebUI.Component.Variable(newFo);
+    newFo.getState = function() {
+        return newFoState;
+    };
+    newFo.getVariableMap = function() {
+        return newFoVar;
+    };
     // C.调用构造方法
     if (WebUI.isFun(newFo["<init>"]) == true)
         newFo["<init>"]();
@@ -254,9 +327,7 @@ WebUI.Component.prototype = {
     /** 父类类型（在定义类型时赋予） */
     superClass : null,
     /** 组建类型。 */
-    getClass : function() {
-        return "UIComponent";
-    },
+    class : "UIComponent",
     /** 获取组建的Dom标签 */
     getElement : function() {
         return $("#" + this.clientID)[0];
@@ -267,10 +338,17 @@ WebUI.Component.prototype = {
     },
     /** 静态方法，用于获取当前网页的URL参数。 */
     getEnvironmentMap : WebUI.getEnvironmentMap,
-    /** 获取组建自身状态 */
-    getState : function() {
-        var sMap = WebUI.Component.State;
-        return new sMap(this);
+    /** 获取组建自身状态（在定义类型时赋予） */
+    getState : null,
+    /** 携带属性集（在定义类型时赋予） */
+    getVariableMap : null,
+    /** 设置一个绑定参数，该绑定参数会在触发服务端事件时携带。 */
+    getVar : function(varKey) {
+        return this.getVariableMap().get(varKey);
+    },
+    /** 设置一个绑定参数，该绑定参数会在触发服务端事件时携带。 */
+    setVar : function(varKey, varValue) {
+        this.getVariableMap().set(varKey, varValue);
     },
     /** 组建是否为一个表单元素 */
     isForm : function() {
@@ -284,11 +362,31 @@ WebUI.Component.prototype = {
      * @param errorCallBack 回调函数
      */
     doEvent : function(eventName, paramData, okCallBack, errorCallBack) {
+        if (WebUI.isNaN(paramData) == true)
+            paramData = {};
         /* 不传事件名不处理事件 */
         if (WebUI.isNaN(eventName) == true)
             return;
-        /* 准备请求参数 */
+        /* beforeScript */
+        var beforeRes = WebUI.runSrcipt(this.beforeScript(), this, {
+            event : {
+                eventName : eventName,
+                target : this,
+                paramData : paramData
+            }
+        });
+        if (WebUI.isNaN(beforeRes) == true || beforeRes == true) {} else
+            return;
+        /* 准备请求参数：1.绑定的值，2.paramData参数值 */
         var sendData = {};
+        var varDataMap = this.getVariableMap().getDataMap();
+        for ( var k in varDataMap) {
+            var v = varDataMap[k];
+            if (WebUI.isFun(v) == true)
+                sendData[k] = v(this);
+            else
+                sendData[k] = v;
+        }
         if (WebUI.isObject(paramData) == true)
             for ( var k in paramData)
                 sendData[k] = paramData[k];
@@ -298,10 +396,6 @@ WebUI.Component.prototype = {
         sendData["WebUI_PF_Event"] = eventName;/* 引发的事件 */
         sendData["WebUI_PF_Render"] = "No";/* 不执行渲染 */
         sendData["WebUI_PF_State"] = WebUI.util.b64.uncoded64(this.getState().getCode());
-        /* beforeScript */
-        var beforeRes = WebUI.runSrcipt(this.beforeScript(), this, [ eventName, paramData ]);
-        if (WebUI.isNaN(beforeRes) == true || beforeRes == true) {} else
-            return;
         /* ajax请求 */
         var afterScr = this.afterScript();
         var errorScr = this.errorScript();
@@ -319,29 +413,45 @@ WebUI.Component.prototype = {
             type : 'post',
             url : window.location,
             data : postData,
+            cache : false,
             async : this.async(),
             success : function(res) {
                 if (WebUI.isNaN(afterScr) == false)
-                    WebUI.runSrcipt(afterScr, _this, [ eventName, paramData, res ]);
+                    WebUI.runSrcipt(afterScr, _this, {
+                        event : {
+                            eventName : eventName,
+                            target : this,
+                            paramData : paramData,
+                            result : res
+                        }
+                    });
                 if (WebUI.isFun(okCallBack) == true)
                     okCallBack(res);
             },
             error : function(XMLHttpRequest, textStatus) {
                 if (WebUI.isNaN(errorScr) == false)
-                    WebUI.runSrcipt(errorScr, _this, [ eventName, paramData, XMLHttpRequest, textStatus ]);
+                    WebUI.runSrcipt(errorScr, _this, {
+                        event : {
+                            eventName : eventName,
+                            target : this,
+                            paramData : paramData,
+                            textStatus : textStatus,
+                            XMLHttpRequest : XMLHttpRequest
+                        }
+                    });
                 if (WebUI.isFun(errorCallBack) == true)
                     errorCallBack(XMLHttpRequest, textStatus);
             }
         });
     },
-    /** 设置客户端事件 */
+    /** 在客户端事件链中加入一个客户端事件的绑定。 */
     bindEvent : function(eventName, fun) {
         $(this.getElement()).bind(eventName, function() {
             var $this = this.uiObject;// this 是Element元素对象
             fun.call($this);
         });
     },
-    /** 在客户端事件链中加入一个客户端事件的绑定。 */
+    /** 取消所有已知事件的绑定，使用新的函数绑定到事件上。 */
     onlyBindEvent : function(eventName, fun) {
         $(this.getElement()).unbind(eventName).removeAttr("on" + eventName).bind(eventName, function() {
             var $this = this.uiObject;// this 是Element元素对象
@@ -349,7 +459,7 @@ WebUI.Component.prototype = {
         });
     },
     /** 定义一个组建属性 */
-    defineProperty : function(name, define) {
+    defineProperty : function(name, readMethod, writeMethod) {
     // TODO
     },
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -373,47 +483,87 @@ WebUI.Component.prototype = {
 /*----------------------------------------------------------------------------------------------------状态管理*/
 WebUI.Component.State = function(component) {
     var target = component;
+    //
+    //
     /** 获取状态对象操作的那个组建。 */
     this.getTarget = function() {
         return target;
     };
+    /** 获取组建状态的编码字符串。 */
+    this.getCode = function() {
+        return $(this.getTarget().getElement()).attr("uiState");
+    };
+    /** 设置组建状态的编码字符串。 */
+    this.setCode = function(newState) {
+        return $(this.getTarget().getElement()).attr("uiState", newState);
+    };
+    /** 获取组建状态数据jsonMap */
+    this.getArray = function() {
+        var comStateData = this.getCode();
+        if (WebUI.isNaN(comStateData) == true) {
+            // TODO : 从全局的ViewData中获取状态数据。
+        }
+        return eval(WebUI.util.b64.uncoded64(comStateData));
+    };
+    /** 获取组建的某个状态属性。 */
+    this.get = function(attName) {
+        var array = this.getArray();
+        if (WebUI.isArray(array) == false)
+            return null;
+        if (array.length == 0)
+            return null;
+        return array[0][attName];
+    };
+    /** 在客户端改变组建状态（用于组建回溯上一个视图状态的数据），值得注意的是服务端只会处理在服务端定义过的属性。 */
+    this.set = function(attName, newValue) {
+        var array = this.getArray();
+        if (WebUI.isArray(array) == false)
+            array = [];
+        if (array.length == 0)
+            array.push({});// 自身状态
+        if (array.length == 1)
+            array.push({});// 孩子状态
+        // 写
+        array[0][attName] = newValue;
+        var newCode = WebUI.util.b64.encode64(JSON.stringify(array));
+        this.setCode(newCode);
+    };
 };
-/** 获取组建状态的编码字符串。 */
-WebUI.Component.State.prototype.getCode = function() {
-    return $(this.getTarget().getElement()).attr("uiState");
-};
-/** 设置组建状态的编码字符串。 */
-WebUI.Component.State.prototype.setCode = function(newState) {
-    return $(this.getTarget().getElement()).attr("uiState", newState);
-};
-/** 获取组建状态数据jsonMap */
-WebUI.Component.State.prototype.getArray = function() {
-    var comStateData = this.getCode();
-    if (WebUI.isNaN(comStateData) == true) {
-        // TODO : 从全局的ViewData中获取状态数据。
-    }
-    return eval(WebUI.util.b64.uncoded64(comStateData));
-};
-/** 获取组建的某个状态属性。 */
-WebUI.Component.State.prototype.get = function(attName) {
-    var array = this.getArray();
-    if (WebUI.isArray(array) == false)
-        return null;
-    if (array.length == 0)
-        return null;
-    return array[0][attName];
-};
-/** 在客户端改变组建状态（用于组建回溯上一个视图状态的数据），值得注意的是服务端只会处理在服务端定义过的属性。 */
-WebUI.Component.State.prototype.set = function(attName, newValue) {
-    var array = this.getArray();
-    if (WebUI.isArray(array) == false)
-        array = [];
-    if (array.length == 0)
-        array.push({});// 自身状态
-    if (array.length == 1)
-        array.push({});// 孩子状态
-    // 写
-    array[0][attName] = newValue;
-    var newCode = WebUI.util.b64.encode64(JSON.stringify(array));
-    this.setCode(newCode);
+/*----------------------------------------------------------------------------------------------------Var携带的属性集*/
+WebUI.Component.Variable = function(component) {
+    var target = component;
+    //
+    //
+    /** 获取属性集对象操作的那个组建。 */
+    this.getTarget = function() {
+        return target;
+    };
+    var dataMap = {};
+    /** 获取Variable的Map形式 */
+    this.getDataMap = function() {
+        return dataMap;
+    };
+    /** 清空Variable内部的所有属性 */
+    this.clear = function() {
+        dataMap = {};
+    };
+    /** 获取组建状态数据jsonMap */
+    this.getArray = function() {
+        var array = new Array();
+        var map = this.getDataMap();
+        for ( var k in map) {
+            var obj = {};
+            obj[k] = map[k];
+            array.push(obj);
+        }
+        return array;
+    };
+    /** 获取组建的某个状态属性。 */
+    this.get = function(attName) {
+        return this.getDataMap()[attName];
+    };
+    /** 在客户端改变组建状态（用于组建回溯上一个视图状态的数据），值得注意的是服务端只会处理在服务端定义过的属性。 */
+    this.set = function(attName, newValue) {
+        this.getDataMap()[attName] = newValue;
+    };
 };

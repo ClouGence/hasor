@@ -15,6 +15,12 @@
  */
 package org.more.webui.support;
 import java.util.List;
+import org.more.core.event.Event;
+import org.more.core.event.Event.Sequence;
+import org.more.core.event.EventListener;
+import org.more.webui.context.ViewContext;
+import org.more.webui.support.values.MethodExpression;
+import org.more.webui.web.PostFormEnum;
 /**
  * 所有组件的根，同时也负责保存所有视图参数。该组建不使用@UICom注解注册
  * @version : 2012-3-29
@@ -28,6 +34,11 @@ public class UIViewRoot extends UIComponent {
     public String getComponentType() {
         return "ui_ViewRoot";
     }
+    @Override
+    protected void initUIComponent(ViewContext viewContext) {
+        this.getEventManager().addEventListener(UIViewRoot_Event_OnAction.ActionEvent, new UIViewRoot_Event_OnAction());
+        super.initUIComponent(viewContext);
+    }
     public void restoreState(String componentPath, List<?> stateData) {
         UIComponent com = this.getChildByPath(componentPath);
         com.restoreState(stateData);
@@ -37,3 +48,18 @@ public class UIViewRoot extends UIComponent {
         return com.saveState();
     }
 }
+/**负责处理OnInvoke事件的EL调用*/
+class UIViewRoot_Event_OnAction implements EventListener {
+    public static Event ActionEvent = Event.getEvent("OnInvoke");
+    @Override
+    public void onEvent(Event event, Sequence sequence) throws Throwable {
+        UIViewRoot component = (UIViewRoot) sequence.getParams()[0];
+        ViewContext viewContext = (ViewContext) sequence.getParams()[1];
+        String invokeString = viewContext.getHttpRequest().getParameter(PostFormEnum.PostForm_InvokeStringKey.value());
+        if (invokeString == null || invokeString.equals("") == true)
+            return;
+        MethodExpression e = new MethodExpression(invokeString);
+        if (e != null)
+            viewContext.sendAjaxData(e.execute(component, viewContext));
+    }
+};

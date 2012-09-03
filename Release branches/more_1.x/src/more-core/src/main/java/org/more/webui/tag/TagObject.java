@@ -20,14 +20,17 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.more.core.error.LostException;
 import org.more.webui.context.ViewContext;
 import org.more.webui.freemarker.parser.Hook_UserTag;
 import org.more.webui.render.Render;
 import org.more.webui.support.UICom;
 import org.more.webui.support.UIComponent;
+import org.more.webui.support.values.AbstractValueHolder;
 import freemarker.core.Environment;
 import freemarker.core.TemplateElement;
+import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateDirectiveBody;
 import freemarker.template.TemplateDirectiveModel;
 import freemarker.template.TemplateException;
@@ -49,22 +52,23 @@ public class TagObject implements TemplateDirectiveModel {
                 objMap.put(key.toString(), DeepUnwrap.permissiveUnwrap(item));
             }
         //1.取得位置
+        TemplateElement element = null;
         try {
             //A.取得Stack中最后一个元素
             Field elementStackField = arg0.getClass().getDeclaredField("elementStack");
             elementStackField.setAccessible(true);
             List<Object> stackList = (List<Object>) elementStackField.get(arg0);
-            TemplateElement element = (TemplateElement) stackList.get(stackList.size() - 1);
-            //B.如果是一个注册元素则处理，否则忽略
-            String tagType = element.getClass().getSimpleName();
-            if (Hook_UserTag.Name.equals(tagType) == false)
-                throw new TemplateException("遇到一个非“UnifiedCall”类型标签绑定。", arg0);
-            //C.取得标签所处文档的位置路径。
-            UIComponent component = getComponentByElement(ViewContext.getCurrentViewContext().getViewRoot(), element);
-            this.exec(component, arg0, objMap, arg2, arg3);
+            element = (TemplateElement) stackList.get(stackList.size() - 1);
         } catch (Exception e) {
-            throw new TemplateException("错误：", e, arg0);
+            throw new TemplateException("Freemarker兼容错误：无法获取elementStack字段值。建议使用建议使用freemarker 2.3.19版本。", e, arg0);
         }
+        //B.如果是一个注册元素则处理，否则忽略
+        String tagType = element.getClass().getSimpleName();
+        if (Hook_UserTag.Name.equals(tagType) == false)
+            throw new TemplateException("遇到一个非“UnifiedCall”类型标签绑定。", arg0);
+        //C.取得标签所处文档的位置路径。
+        UIComponent component = getComponentByElement(ViewContext.getCurrentViewContext().getViewRoot(), element);
+        this.exec(component, arg0, objMap, arg2, arg3);
     }
     private UIComponent getComponentByElement(UIComponent component, TemplateElement element) {
         TemplateElement obj = (TemplateElement) component.getAtts().get(Hook_UserTag.Name);
@@ -99,7 +103,15 @@ public class TagObject implements TemplateDirectiveModel {
         ViewContext viewContext = ViewContext.getCurrentViewContext();
         String kitScope = viewContext.getRenderKitScope();
         Render renderer = viewContext.getUIContext().getRenderKit(kitScope).getRender(uicom.tagName());
-        //D.进行渲染
+        //D.准备属性
+        Map<String, AbstractValueHolder> valHolderMap = component.getPropertys();
+        if (valHolderMap != null)
+            for (Entry<String, AbstractValueHolder> ent : valHolderMap.entrySet()) {
+                String key = ent.getKey();
+                Object var = ent.getValue();
+                arg0.setVariable(key, ObjectWrapper.DEFAULT_WRAPPER.wrap(var));
+            }
+        //E.进行渲染
         TemplateBody body = new TemplateBody(arg3, arg0);
         Writer writer = arg0.getOut();
         renderer.beginRender(viewContext, component, body, writer);
