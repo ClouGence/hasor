@@ -140,10 +140,7 @@ public abstract class UIComponent {
             }
             this.componentPath = buffer.reverse().toString();
         }
-        if (this.componentPath.length() == 0)
-            return "/";
-        else
-            return this.componentPath;
+        return this.componentPath;
     }
     /**获取一个可用的客户端ID*/
     public String getClientID(ViewContext viewContext) {
@@ -155,16 +152,19 @@ public abstract class UIComponent {
     public UIComponent getChildByPath(String componentPath) {
         if (componentPath == null || componentPath.equals("") == true)
             return null;
-        if (this.getComponentPath().equals(componentPath) == true)
-            return this;//判断要获取的目标不是自己的孩子
+        String thisPath = this.getComponentPath();
+        if (thisPath.equals(componentPath) == true)
+            return this;//判断目标是否就是自己。
+        if (componentPath.startsWith(thisPath) == false)
+            return null;//排除要获取的目标不是自己孩子的情况。
         //
-        String targetPath = componentPath.substring(this.getComponentPath().length());
+        String targetPath = componentPath.substring(thisPath.length());
         int firstSpan = targetPath.indexOf('/');
         int index = -1;
         if (firstSpan == -1)
             index = Integer.parseInt(targetPath);
         else
-            index = Integer.parseInt(targetPath.substring(1, firstSpan));
+            index = Integer.parseInt(targetPath.substring(1, firstSpan + 2));
         UIComponent comObject = this.getChildren().get(index);
         //
         if (comObject == null)
