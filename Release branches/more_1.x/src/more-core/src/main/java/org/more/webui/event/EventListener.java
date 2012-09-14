@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.event;
-import org.more.core.event.Event.Sequence;
+package org.more.webui.event;
+import org.more.webui.context.ViewContext;
+import org.more.webui.support.UIComponent;
 /**
-* 异常处理器，该接口是为了处理{@link EventListener}事件在执行过程中引发的异常。
-* @version : 2011-5-18
+* 用于处理事件的事件监听器。
+* @version 2010-10-10
 * @author 赵永春 (zyc@byshell.org)
 */
-public interface EventExceptionHandler {
-    /**处理该事件异常。*/
-    public void processException(Throwable exception, Sequence sequence, EventListener listener);
-}
+public interface EventListener {
+    /**处理事件的处理方法，参数是要处理的事件。*/
+    public void onEvent(Event event, UIComponent component, ViewContext viewContext) throws Throwable;
+};

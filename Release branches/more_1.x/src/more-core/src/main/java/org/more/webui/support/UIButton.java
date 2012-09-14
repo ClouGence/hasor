@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 package org.more.webui.support;
-import org.more.core.event.Event;
-import org.more.core.event.Event.Sequence;
-import org.more.core.event.EventListener;
 import org.more.webui.context.ViewContext;
+import org.more.webui.event.Event;
+import org.more.webui.event.EventListener;
 import org.more.webui.support.values.MethodExpression;
 /**
  * Button
@@ -37,7 +36,7 @@ public abstract class UIButton extends UIComponent {
         super.initUIComponent(viewContext);
         this.setProperty(Propertys.title.name(), "");
         this.setProperty(Propertys.actionEL.name(), null);
-        this.getEventManager().addEventListener(UIButton_Event_OnAction.ActionEvent, new UIButton_Event_OnAction());
+        this.addEventListener(UIButton_Event_OnAction.ActionEvent, new UIButton_Event_OnAction());
     }
     public String getTitle() {
         return this.getProperty(Propertys.title.name()).valueTo(String.class);
@@ -64,11 +63,9 @@ public abstract class UIButton extends UIComponent {
 class UIButton_Event_OnAction implements EventListener {
     public static Event ActionEvent = Event.getEvent("OnAction");
     @Override
-    public void onEvent(Event event, Sequence sequence) throws Throwable {
-        UIButton component = (UIButton) sequence.getParams()[0];
-        ViewContext viewContext = (ViewContext) sequence.getParams()[1];
-        MethodExpression e = component.getActionExpression();
+    public void onEvent(Event event, UIComponent component, ViewContext viewContext) throws Throwable {
+        MethodExpression e = ((UIButton) component).getActionExpression();
         if (e != null)
-            viewContext.sendAjaxData(e.execute(component, viewContext));
+            viewContext.sendObject(e.execute(component, viewContext));
     }
 };

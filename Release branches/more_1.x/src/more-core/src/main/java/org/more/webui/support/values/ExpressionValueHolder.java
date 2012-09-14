@@ -54,13 +54,13 @@ public class ExpressionValueHolder extends AbstractValueHolder {
         return this.writeNodeTree;
     }
     @Override
-    public void updateModule(UIComponent component, ViewContext viewContext) throws OgnlException {
+    public void updateModule(UIComponent component, ViewContext viewContext) throws Throwable {
         if (getWriteNode() == null)
             return;//不支持写入
         Map<String, Object> elContext = viewContext.getViewELContext();
         try {
             Ognl.setValue(this.getWriteNode(), elContext, this.value());
-        } catch (Exception e) {}
+        } catch (OgnlException e) {}
         this.value(null);
         this.getValue().needUpdate = false;
     }
@@ -75,7 +75,7 @@ public class ExpressionValueHolder extends AbstractValueHolder {
             Map<String, Object> elContext = viewContext.getViewELContext();
             return Ognl.getValue(this.getReadNode(), elContext);
         } catch (OgnlException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getReason());
         }
     }
     @Override

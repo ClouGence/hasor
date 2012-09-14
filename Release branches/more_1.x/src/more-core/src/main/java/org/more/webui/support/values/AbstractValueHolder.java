@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.more.webui.support.values;
-import org.more.core.ognl.OgnlException;
 import org.more.util.StringConvertUtil;
 import org.more.webui.context.ViewContext;
 import org.more.webui.support.UIComponent;
@@ -83,5 +82,5 @@ public abstract class AbstractValueHolder {
         v.needUpdate = false;
     };
     /**将写入{@link AbstractValueHolder}的属性的值更新到模型中。*/
-    public abstract void updateModule(UIComponent component, ViewContext viewContext) throws OgnlException;
+    public abstract void updateModule(UIComponent component, ViewContext viewContext) throws Throwable;
 }

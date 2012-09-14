@@ -10,9 +10,9 @@ WebUI.Component.$extends("ui_AjaxForm", "", {
     },
     /** 处理ui_AjaxForm的OnSubmit动作 */
     onsubmit : function() {
-        this.doSubmit({}, function(res) {
+        this.doSubmit({}, function(event) {
         /* TODO OnSubmit , OK CallBack. */
-        }, function(XMLHttpRequest, textStatus) {
+        }, function(event) {
         /* TODO OnSubmit , Error CallBack. */
         });
         return false;
@@ -31,12 +31,12 @@ WebUI.Component.$extends("ui_AjaxForm", "", {
         });
         // B.引发OnSubmit事件
         var $this = this;
-        this.doEvent("OnSubmit", paramData, function(res) {
+        this.doEvent("OnSubmit", paramData, function(event) {
             if (WebUI.isFun(okCallBack) == true)
-                okCallBack.call($this, res);
-        }, function(XMLHttpRequest, textStatus) {
+                okCallBack.call($this, event);
+        }, function(event) {
             if (WebUI.isFun(errCallBack) == true)
-                errCallBack.call($this, XMLHttpRequest, textStatus);
+                errCallBack.call($this, event);
         });
     },
     /** 获取到表单的值Map */
@@ -95,7 +95,7 @@ WebUI.Component.$extends("ui_Page", {
 // /* init SWFUpload */
 // var upConfig = {
 // upload_url : "/common/upload!deal.do?uploadType=1",// 处理上传请求的服务器端脚本URL
-// flash_url : WebUI.Core.BasePath + "/static/js/webui_resource/swfupload_v2.2.0.1/falsh/swfupload.swf",// Flash控件的URL
+// flash_url : WebUI.Core.BasePath + "/platform/_script/js/webui_resource/swfupload_v2.2.0.1/falsh/swfupload.swf",// Flash控件的URL
 // file_post_name : "Filedata",// 是POST过去的$_FILES的数组名
 // post_params : {
 // "post_param_name_1" : "post_param_value_1",

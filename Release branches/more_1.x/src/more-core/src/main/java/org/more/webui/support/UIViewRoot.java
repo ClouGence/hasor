@@ -15,10 +15,9 @@
  */
 package org.more.webui.support;
 import java.util.List;
-import org.more.core.event.Event;
-import org.more.core.event.Event.Sequence;
-import org.more.core.event.EventListener;
 import org.more.webui.context.ViewContext;
+import org.more.webui.event.Event;
+import org.more.webui.event.EventListener;
 import org.more.webui.support.values.MethodExpression;
 import org.more.webui.web.PostFormEnum;
 /**
@@ -36,7 +35,7 @@ public class UIViewRoot extends UIComponent {
     }
     @Override
     protected void initUIComponent(ViewContext viewContext) {
-        this.getEventManager().addEventListener(UIViewRoot_Event_OnAction.ActionEvent, new UIViewRoot_Event_OnAction());
+        this.addEventListener(UIViewRoot_Event_OnAction.ActionEvent, new UIViewRoot_Event_OnAction());
         super.initUIComponent(viewContext);
     }
     public void restoreState(String componentPath, List<?> stateData) {
@@ -52,14 +51,12 @@ public class UIViewRoot extends UIComponent {
 class UIViewRoot_Event_OnAction implements EventListener {
     public static Event ActionEvent = Event.getEvent("OnInvoke");
     @Override
-    public void onEvent(Event event, Sequence sequence) throws Throwable {
-        UIViewRoot component = (UIViewRoot) sequence.getParams()[0];
-        ViewContext viewContext = (ViewContext) sequence.getParams()[1];
+    public void onEvent(Event event, UIComponent component, ViewContext viewContext) throws Throwable {
         String invokeString = viewContext.getHttpRequest().getParameter(PostFormEnum.PostForm_InvokeStringKey.value());
         if (invokeString == null || invokeString.equals("") == true)
             return;
         MethodExpression e = new MethodExpression(invokeString);
         if (e != null)
-            viewContext.sendAjaxData(e.execute(component, viewContext));
+            viewContext.sendObject(e.execute(component, viewContext));
     }
 };

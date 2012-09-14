@@ -14,9 +14,9 @@ WebUI.Component.$extends("ui_Input", "", {
             return;
         var paramData = {};
         paramData[this.componentID + ":value"] = this.getValue();
-        this.doEvent("OnChange", paramData, function(res) {
+        this.doEvent("OnChange", paramData, function(event) {
         /* TODO OnChange , OK CallBack. */
-        }, function(XMLHttpRequest, textStatus) {
+        }, function(event) {
         /* TODO OnChange , Error CallBack. */
         });
     },
@@ -25,12 +25,12 @@ WebUI.Component.$extends("ui_Input", "", {
         if (WebUI.isNaN(this.getState().get("onLoadDataEL")) == true)
             return;
         var $this = this;
-        this.doEvent("OnLoadData", paramData, function(res) {
+        this.doEvent("OnLoadData", paramData, function(event) {
             if (WebUI.isFun(funOK) == true)
-                funOK.call($this, res);
-        }, function(XMLHttpRequest, textStatus) {
+                funOK.call($this, event);
+        }, function(event) {
             if (WebUI.isFun(funError) == true)
-                funError.call($this, XMLHttpRequest, textStatus);
+                funError.call($this, event);
         });
     },
     /** （重写方法）返回一个值用于表示是否为一个表单元素（只要定义了name属性就成为表单元素） */
@@ -84,23 +84,23 @@ WebUI.Component.$extends("ui_SelectOne", "ui_Input", {
         if (WebUI.isNaN(this.getState().get("onLoadDataEL")) == true)
             return;
         var $this = this;
-        this.doEvent("OnLoadData", paramData, function(res) {
+        this.doEvent("OnLoadData", paramData, function(event) {
             // A.成功装载
             if (WebUI.isFun(funOK) == true)
-                funOK.call($this, res);
+                funOK.call($this, event);
             else {
                 var k = $this.getKeyField();
                 var v = $this.getVarField();
-                var arrayData = eval(res);
+                var arrayData = eval(event.result);
                 var e = $this.getElement();
                 e.options.length = 0;
                 for ( var i = 0; i < arrayData.length; i++)
                     e.options.add(new Option(arrayData[i][v], arrayData[i][k]));
             }
-        }, function(XMLHttpRequest, textStatus) {
+        }, function(event) {
             // B.装载失败
             if (WebUI.isFun(funError) == true)
-                funError.call($this, XMLHttpRequest, textStatus);
+                funError.call($this, event);
         });
     },
     /** （重写方法）获取选中的值 */
@@ -153,14 +153,14 @@ WebUI.Component.$extends("ui_SelectCheck", "ui_Input", {
         if (WebUI.isNaN(this.getState().get("onLoadDataEL")) == true)
             return;
         var $this = this;
-        this.doEvent("OnLoadData", paramData, function(res) {
+        this.doEvent("OnLoadData", paramData, function(event) {
             // A.成功装载
             if (WebUI.isFun(funOK) == true)
-                funOK.call($this, res);
+                funOK.call($this, event);
             else {
                 var k = $this.getKeyField();
                 var v = $this.getVarField();
-                var arrayData = eval(res);
+                var arrayData = eval(event.result);
                 var jqObject = $($this.getElement());
                 var titleFirst = $this.getState().get('titleFirst');
                 var selectValues = $this.getState().get('value');
@@ -183,10 +183,10 @@ WebUI.Component.$extends("ui_SelectCheck", "ui_Input", {
                         jqObject.append('<li>' + input + span + '</li>');
                 }
             }
-        }, function(XMLHttpRequest, textStatus) {
+        }, function(event) {
             // B.装载失败
             if (WebUI.isFun(funError) == true)
-                funError.call($this, XMLHttpRequest, textStatus);
+                funError.call($this, event);
         });
     },
     /** （重写方法）获取选中的值 */

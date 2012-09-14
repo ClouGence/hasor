@@ -19,9 +19,9 @@ WebUI.Component.$extends("ui_AjaxButton", "ui_Button", {
     },
     /** 标签元素的click事件处理程序。 */
     onclick : function() {
-        this.click({}, function(res) {
+        this.click({}, function(event) {
         /* TODO OnChange , OK CallBack. */
-        }, function(XMLHttpRequest, textStatus) {
+        }, function(event) {
         /* TODO OnChange , Error CallBack. */
         });
     }

@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 package org.more.webui.support;
-import org.more.core.event.Event;
-import org.more.core.event.Event.Sequence;
-import org.more.core.event.EventListener;
 import org.more.webui.context.ViewContext;
+import org.more.webui.event.Event;
+import org.more.webui.event.EventListener;
 import org.more.webui.support.values.MethodExpression;
 /**
  * 带有输入功能的组建
@@ -41,8 +40,8 @@ public abstract class UIInput extends UIComponent {
     @Override
     protected void initUIComponent(ViewContext viewContext) {
         super.initUIComponent(viewContext);
-        this.getEventManager().addEventListener(Event.getEvent("OnChange"), new Event_OnChange());
-        this.getEventManager().addEventListener(Event.getEvent("OnLoadData"), new Event_OnLoadData());
+        this.addEventListener(Event.getEvent("OnChange"), new Event_OnChange());
+        this.addEventListener(Event.getEvent("OnLoadData"), new Event_OnLoadData());
         this.setProperty(Propertys.value.name(), null);
     }
     /*-------------------------------------------------------------------------------*/
@@ -109,22 +108,18 @@ public abstract class UIInput extends UIComponent {
 /**负责处理OnChange事件的EL调用*/
 class Event_OnChange implements EventListener {
     @Override
-    public void onEvent(Event event, Sequence sequence) throws Throwable {
-        UIInput component = (UIInput) sequence.getParams()[0];
-        ViewContext viewContext = (ViewContext) sequence.getParams()[1];
-        MethodExpression e = component.getOnChangeExpression();
+    public void onEvent(Event event, UIComponent component, ViewContext viewContext) throws Throwable {
+        MethodExpression e = ((UIInput) component).getOnChangeExpression();
         if (e != null)
-            viewContext.sendAjaxData(e.execute(component, viewContext));
+            viewContext.sendObject(e.execute(component, viewContext));
     }
 }
 /**负责处理OnLoadData事件的EL调用*/
 class Event_OnLoadData implements EventListener {
     @Override
-    public void onEvent(Event event, Sequence sequence) throws Throwable {
-        UIInput component = (UIInput) sequence.getParams()[0];
-        ViewContext viewContext = (ViewContext) sequence.getParams()[1];
-        MethodExpression e = component.getOnLoadDataExpression();
+    public void onEvent(Event event, UIComponent component, ViewContext viewContext) throws Throwable {
+        MethodExpression e = ((UIInput) component).getOnLoadDataExpression();
         if (e != null)
-            viewContext.sendAjaxData(e.execute(component, viewContext));
+            viewContext.sendObject(e.execute(component, viewContext));
     }
 }

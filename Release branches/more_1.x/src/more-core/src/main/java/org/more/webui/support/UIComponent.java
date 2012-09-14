@@ -21,13 +21,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.more.core.error.MoreDataException;
-import org.more.core.event.AbstractEventManager;
-import org.more.core.event.Event;
-import org.more.core.event.EventListener;
-import org.more.core.event.EventManager;
-import org.more.core.ognl.OgnlException;
 import org.more.util.BeanUtil;
 import org.more.webui.context.ViewContext;
+import org.more.webui.event.Event;
+import org.more.webui.event.EventListener;
 import org.more.webui.support.values.AbstractValueHolder;
 import org.more.webui.support.values.ExpressionValueHolder;
 import org.more.webui.support.values.StaticValueHolder;
@@ -37,14 +34,13 @@ import org.more.webui.support.values.StaticValueHolder;
 * @author 赵永春 (zyc@byshell.org)
 */
 public abstract class UIComponent {
-    private String                           componentID         = null;
-    private String                           componentPath       = null;
-    private UIComponent                      parent              = null;
-    private List<UIComponent>                components          = new ArrayList<UIComponent>();
-    /**私有事件管理器，该事件时间线不会受到其他组件影响*/
-    private EventManager                     privateEventManager = new AbstractEventManager() {};
-    private Map<String, AbstractValueHolder> propertys           = new HashMap<String, AbstractValueHolder>();
-    private Map<String, Object>              atts                = new HashMap<String, Object>();
+    private String                           componentID   = null;
+    private String                           componentPath = null;
+    private UIComponent                      parent        = null;
+    private List<UIComponent>                components    = new ArrayList<UIComponent>();
+    private Map<Event, List<EventListener>>  listener      = new HashMap<Event, List<EventListener>>();
+    private Map<String, AbstractValueHolder> propertys     = new HashMap<String, AbstractValueHolder>();
+    private Map<String, Object>              atts          = new HashMap<String, Object>();
     /*-------------------------------------------------------------------------------get/set属性*/
     /**返回组件的ID*/
     public String getComponentID() {
@@ -266,7 +262,7 @@ public abstract class UIComponent {
     /**组建被初始化标记*/
     private Boolean doInit = false;
     /**第1阶段，处理初始化阶段，该阶段负责初始化组件。*/
-    public final void processInit(ViewContext viewContext) {
+    public final void processInit(ViewContext viewContext) throws Throwable {
         if (this.doInit == false) {
             this.initUIComponent(viewContext);
             this.doInit = true;
@@ -278,7 +274,7 @@ public abstract class UIComponent {
             com.processInit(viewContext);
     };
     /**第3阶段，将请求参数中与属性名一致的属性灌入属性上。*/
-    public void processApplyRequest(ViewContext viewContext) {
+    public void processApplyRequest(ViewContext viewContext) throws Throwable {
         /*将请求参数中要求灌入的属性值灌入到属性上*/
         for (String key : this.propertys.keySet()) {
             /*被灌入的属性名，请求参数中必须是“componentID:attName”*/
@@ -294,12 +290,12 @@ public abstract class UIComponent {
             com.processApplyRequest(viewContext);
     };
     /**第4阶段，该阶段用于提供一组验证数据的合法性。*/
-    public void processValidate(ViewContext viewContext) {
+    public void processValidate(ViewContext viewContext) throws Throwable {
         for (UIComponent com : this.components)
             com.processValidate(viewContext);
     };
     /**第5阶段，将组件模型中的新值应用到，Bean*/
-    public void processUpdate(ViewContext viewContext) throws OgnlException {
+    public void processUpdate(ViewContext viewContext) throws Throwable {
         /*更新所有注册到propertys中的属性值*/
         for (String key : this.propertys.keySet()) {
             AbstractValueHolder vh = this.propertys.get(key);
@@ -310,7 +306,7 @@ public abstract class UIComponent {
             com.processUpdate(viewContext);
     };
     /**第6阶段，处理Action动作和客户端回传的事件*/
-    public void processApplication(ViewContext viewContext) throws OgnlException {
+    public void processApplication(ViewContext viewContext) throws Throwable {
         if (this.getComponentPath().equals(viewContext.getTargetPath()) == true) {
             /*处理客户端引发的事*/
             Event eventType = Event.getEvent(viewContext.getEvent());
@@ -323,24 +319,33 @@ public abstract class UIComponent {
     };
     /*-------------------------------------------------------------------------------事件响应*/
     /**执行事件*/
-    protected void doEvent(Event eventType, ViewContext viewContext) {
-        this.privateEventManager.doEvent(eventType, this, viewContext);
-    };
-    /**发出事件，该事件会被发送到私有事件管理器中。*/
-    protected void pushEvent(Event eventType, Object... objects) {
-        this.privateEventManager.pushEvent(eventType, objects);
-    };
-    /**通知事件管理器抛出某一个类型的事件。*/
-    protected void popEvent(Event event) {
-        this.privateEventManager.popEvent(event);
+    protected void doEvent(Event eventType, ViewContext viewContext) throws Throwable {
+        try {
+            for (Event e : this.listener.keySet())
+                if (e.equals(eventType) == true) {
+                    List<EventListener> listeners = this.listener.get(eventType);
+                    for (EventListener listener : listeners)
+                        listener.onEvent(eventType, this, viewContext);
+                }
+        } catch (Exception e) {
+            if (viewContext.isAjax() == true) {
+                viewContext.sendError(e);
+                //e.printStackTrace(System.err);
+            } else
+                throw e;
+        }
     };
     /**添加一种类型事件的事件监听器。*/
     public void addEventListener(Event eventType, EventListener listener) {
-        this.privateEventManager.addEventListener(eventType, listener);
-    };
-    /**获取私有事件管理器。*/
-    protected EventManager getEventManager() {
-        return this.privateEventManager;
+        if (eventType == null || listener == null)
+            return;
+        List<EventListener> listeners = this.listener.get(eventType);
+        if (listeners == null) {
+            listeners = new ArrayList<EventListener>();
+            this.listener.put(eventType, listeners);
+        }
+        //        Log.debug("add event listener, event = " + eventType + ", listener = " + listener);
+        listeners.add(listener);
     };
     /*-------------------------------------------------------------------------------状态处理*/
     /**从状态数据中恢复组建状态*/

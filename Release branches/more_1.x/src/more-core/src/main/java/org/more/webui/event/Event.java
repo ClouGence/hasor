@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.event;
+package org.more.webui.event;
 import org.more.core.error.InitializationException;
 /**
  * 事件是一种通知机制，使用事件不能控制主控流程的执行。不过却可以通过事件得知内部的工作状态。
@@ -22,18 +22,6 @@ import org.more.core.error.InitializationException;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Event {
-    /**该类是，标志事件被压入事件管理器之后的顺序位置。*/
-    public static abstract class Sequence {
-        /**返回事件所处的索引位置。*/
-        public abstract int getIndex();
-        /**获取事件的类型。*/
-        public abstract Event getEventType();
-        /**获取事件的参数。*/
-        public abstract Object[] getParams();
-        /**获取该事件使用的异常处理器。*/
-        public abstract EventExceptionHandler getHandler();
-    };
-    //
     private String eventType = null;
     public Event(String eventType) {
         this.eventType = eventType;
@@ -58,9 +46,8 @@ public class Event {
     //----------------------------------------
     /**获取指定类型事件对象，如果参数为空则直接返回空值。事件对象在hypha中是全程唯一的，这样做的目的是为了减少new的数量。*/
     public static Event getEvent(String eventType) throws InitializationException {
-        if (eventType == null) {
+        if (eventType == null)
             return null;
-        }
         return new Event(eventType);
     }
 };

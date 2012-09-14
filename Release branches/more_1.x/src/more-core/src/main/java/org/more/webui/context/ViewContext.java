@@ -16,6 +16,7 @@
 package org.more.webui.context;
 import java.io.CharArrayWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -60,15 +61,15 @@ public class ViewContext extends HashMap<String, Object> {
                 this.put(key, value);
         }
     };
-    /**获取要渲染的页面*/
+    /**获取要渲染的页面。*/
     public String getFacePath() {
         return facePath;
     };
-    /**设置渲染的页面*/
+    /**设置渲染的页面。*/
     public void setFacePath(String facePath) {
         this.facePath = facePath;
     };
-    /**获取一个本次请求中唯一的客户端ID */
+    /**获取一个本次请求中唯一的客户端ID。*/
     public String getComClientID(UIComponent component) {
         return String.valueOf(comClientID++);
     };
@@ -76,7 +77,7 @@ public class ViewContext extends HashMap<String, Object> {
         return "Com_" + String.valueOf(comClientID++);
     }
     //
-    /**执行模板字符串*/
+    /**执行模板字符串。*/
     public String processTemplateString(String templateString) throws TemplateException, IOException {
         Map<String, Object> elContext = this.getViewELContext();
         CharArrayWriter charWrite = new CharArrayWriter();
@@ -108,7 +109,7 @@ public class ViewContext extends HashMap<String, Object> {
         return this.res;
     };
     private DecSequenceMap<String, Object> seq = null;
-    /**获取与当前视图相关的EL上下文*/
+    /**获取与当前视图相关的EL上下文。*/
     public Map<String, Object> getViewELContext() {
         if (this.seq == null) {
             this.seq = new DecSequenceMap<String, Object>();
@@ -125,19 +126,19 @@ public class ViewContext extends HashMap<String, Object> {
         }
         return this.seq;
     };
-    /**获取{@link FacesContext}对象*/
+    /**获取{@link FacesContext}对象。*/
     public FacesContext getUIContext() {
         return this.uiContext;
     };
-    /**获取视图模板对象，用于渲染*/
+    /**获取视图模板对象，用于渲染。*/
     public Template getTemplate() throws IOException {
         String pageEncoding = this.getUIContext().getEnvironment().getPageEncoding();
         return this.uiContext.getFreemarker().getTemplate(this.facePath, pageEncoding);
     };
-    /**获取渲染器KIT名*/
+    /**获取渲染器KIT名。*/
     public String getRenderKitScope() {
         return "default";
-    }
+    };
     /*--------------*/
     //  ThreadLocal
     /*--------------*/
@@ -157,7 +158,7 @@ public class ViewContext extends HashMap<String, Object> {
     public String getTarget() {
         return this.getHttpRequest().getParameter(PostFormEnum.PostForm_TargetParamKey.value());
     };
-    /**获取发生组建的路径*/
+    /**获取发生组建的路径。*/
     public String getTargetPath() {
         return this.getHttpRequest().getParameter(PostFormEnum.PostForm_TargetPathKey.value());
     };
@@ -171,7 +172,7 @@ public class ViewContext extends HashMap<String, Object> {
         String event = this.getHttpRequest().getParameter(PostFormEnum.PostForm_EventKey.value());
         return (event == null || event.equals("")) ? null : event;
     };
-    /**获取渲染类型，默认渲染全部*/
+    /**获取渲染类型，默认渲染全部。*/
     public RenderType getRenderType() {
         String renderKey = PostFormEnum.PostForm_RenderParamKey.value();
         String renderType = this.getHttpRequest().getParameter(renderKey);
@@ -185,12 +186,46 @@ public class ViewContext extends HashMap<String, Object> {
     public String getStateData() {
         String stateDataKey = PostFormEnum.PostForm_StateDataParamKey.value();
         return this.getHttpRequest().getParameter(stateDataKey);
-    }
-    /**只有当是ajax请求的时候才会生效*/
-    public void sendAjaxData(Object sendData) throws IOException {
+    };
+    /**向客户端发送响应数据。*/
+    private void pushClient(int stateNumber, Object returnData) throws IOException {
         if (this.getEvent() != null) {
-            String sendDataStr = JSONObject.toJSONString(sendData);
+            String sendDataStr = JSONObject.toJSONString(returnData);
+            this.getHttpResponse().setStatus(stateNumber);
             this.getHttpResponse().getWriter().write(sendDataStr);
         }
-    }
+    };
+    /**向客户端发送响应数据，回应状态:200.*/
+    public void sendObject(Object returnData) throws IOException {
+        this.pushClient(200, returnData);
+    };
+    /**向客户端发送响应数据。回应状态:500.*/
+    public void sendError(String returnError) throws IOException {
+        this.sendError(500, new Exception(returnError));
+    };
+    /**向客户端发送响应数据。回应状态:500.*/
+    public void sendError(Exception returnError) throws IOException {
+        this.sendError(500, returnError);
+    };
+    /**向客户端发送响应数据。回应状态由errorID参数指定.*/
+    public void sendError(int errorID, String returnError) throws IOException {
+        HashMap<String, Object> returnData = new HashMap<String, Object>();
+        returnData.put("errorID", errorID);
+        returnData.put("message", returnError);
+        returnData.put("trace", null);
+        this.pushClient(20, returnData);
+    };
+    /**向客户端发送响应数据。回应状态由errorID参数指定.*/
+    public void sendError(int errorID, Exception returnError) throws IOException {
+        if (returnError == null)
+            throw new NullPointerException();
+        HashMap<String, Object> returnData = new HashMap<String, Object>();
+        CharArrayWriter caw = new CharArrayWriter();
+        PrintWriter printWriter = new PrintWriter(caw);
+        returnError.printStackTrace(printWriter);
+        returnData.put("errorID", errorID);
+        returnData.put("message", returnError.getLocalizedMessage());
+        returnData.put("trace", caw.toString());
+        this.pushClient(20, returnData);
+    };
 }

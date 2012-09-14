@@ -228,10 +228,10 @@ WebUI.invoke = function(invokeString, paramData, async, okCallBack, errorCallBac
     /* 携带WebUI头信息 */
     sendData["WebUI_PF_Target"] = "com_root";/* 发生事件的组建 */
     sendData["WebUI_PF_TargetPath"] = "/";/* 发生事件的组建 */
+    sendData["WebUI_PF_Ajax"] = true;
     sendData["WebUI_PF_Event"] = "OnInvoke";/* 引发的事件 */
     sendData["WebUI_PF_Render"] = "No";/* 不执行渲染 */
     sendData["WebUI_PF_State"] = "[{},{}]";
-    //
     sendData["WebUI_PF_Invoke"] = invokeString;
     /* ajax请求 */
     var postData = "";
@@ -250,12 +250,38 @@ WebUI.invoke = function(invokeString, paramData, async, okCallBack, errorCallBac
         cache : false,
         async : async,
         success : function(res) {
+            var eventObject = {
+                event : {
+                    invoke : invokeString,
+                    paramData : paramData,
+                    result : res
+                }
+            };
             if (WebUI.isFun(okCallBack) == true)
-                okCallBack(res);
+                okCallBack(eventObject);
         },
         error : function(XMLHttpRequest, textStatus) {
+            var eventObject = {
+                event : {
+                    invoke : invokeString,
+                    paramData : paramData,
+                    errorID : null,
+                    message : null,
+                    trace : null
+                }
+            };
+            if (XMLHttpRequest.status == 20) {
+                var returnData = eval('(' + XMLHttpRequest.responseText + ')');
+                eventObject.event.errorID = returnData.errorID;
+                eventObject.event.message = returnData.message;
+                eventObject.event.trace = returnData.trace;
+            } else {
+                eventObject.event.errorID = XMLHttpRequest.status;
+                eventObject.event.message = XMLHttpRequest.responseText;
+                eventObject.event.trace = null;
+            }
             if (WebUI.isFun(errorCallBack) == true)
-                errorCallBack(XMLHttpRequest, textStatus);
+                errorCallBack(eventObject);
         }
     });
     return res.responseText;
@@ -393,6 +419,7 @@ WebUI.Component.prototype = {
         /* 携带WebUI头信息 */
         sendData["WebUI_PF_Target"] = this.componentID;/* 发生事件的组建 */
         sendData["WebUI_PF_TargetPath"] = this.componentPath;/* 发生事件的组建 */
+        sendData["WebUI_PF_Ajax"] = true;
         sendData["WebUI_PF_Event"] = eventName;/* 引发的事件 */
         sendData["WebUI_PF_Render"] = "No";/* 不执行渲染 */
         sendData["WebUI_PF_State"] = WebUI.util.b64.uncoded64(this.getState().getCode());
@@ -409,6 +436,7 @@ WebUI.Component.prototype = {
             else
                 postData += (encodeURIComponent(k) + "=" + encodeURIComponent(v) + "&");
         }
+        var $this = this;
         $.ajax({
             type : 'post',
             url : window.location,
@@ -416,31 +444,44 @@ WebUI.Component.prototype = {
             cache : false,
             async : this.async(),
             success : function(res) {
+                var eventObject = {
+                    event : {
+                        eventName : eventName,
+                        target : $this,
+                        paramData : paramData,
+                        result : res
+                    }
+                };
                 if (WebUI.isNaN(afterScr) == false)
-                    WebUI.runSrcipt(afterScr, _this, {
-                        event : {
-                            eventName : eventName,
-                            target : this,
-                            paramData : paramData,
-                            result : res
-                        }
-                    });
+                    WebUI.runSrcipt(afterScr, _this, eventObject);
                 if (WebUI.isFun(okCallBack) == true)
-                    okCallBack(res);
+                    okCallBack(eventObject);
             },
             error : function(XMLHttpRequest, textStatus) {
+                var eventObject = {
+                    event : {
+                        eventName : eventName,
+                        target : $this,
+                        paramData : paramData,
+                        errorID : null,
+                        message : null,
+                        trace : null
+                    }
+                };
+                if (XMLHttpRequest.status == 20) {
+                    var returnData = eval('(' + XMLHttpRequest.responseText + ')');
+                    eventObject.event.errorID = returnData.errorID;
+                    eventObject.event.message = returnData.message;
+                    eventObject.event.trace = returnData.trace;
+                } else {
+                    eventObject.event.errorID = XMLHttpRequest.status;
+                    eventObject.event.message = XMLHttpRequest.responseText;
+                    eventObject.event.trace = null;
+                }
                 if (WebUI.isNaN(errorScr) == false)
-                    WebUI.runSrcipt(errorScr, _this, {
-                        event : {
-                            eventName : eventName,
-                            target : this,
-                            paramData : paramData,
-                            textStatus : textStatus,
-                            XMLHttpRequest : XMLHttpRequest
-                        }
-                    });
+                    WebUI.runSrcipt(errorScr, _this, eventObject);
                 if (WebUI.isFun(errorCallBack) == true)
-                    errorCallBack(XMLHttpRequest, textStatus);
+                    errorCallBack(eventObject);
             }
         });
     },
