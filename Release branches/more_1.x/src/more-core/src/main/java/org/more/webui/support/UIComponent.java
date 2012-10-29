@@ -241,7 +241,7 @@ public abstract class UIComponent {
         value.value(newValue);
         this.getPropertys().put(propertyName, value);
     };
-    /**设置组建属性的MetaValue值（该值可以作为属性在全部线程上的默认初始化值）。*/
+    /**设置组建属性的MetaValue值（该值可以作为属性在全部线程上的默认初始化值，真正意义上的默认值）。*/
     public void setPropertyMetaValue(String propertyName, Object newValue) {
         AbstractValueHolder value = this.getPropertys().get(propertyName);
         if (value == null)
