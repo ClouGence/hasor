@@ -42,7 +42,7 @@ public abstract class UIInput extends UIComponent {
         super.initUIComponent(viewContext);
         this.addEventListener(Event.getEvent("OnChange"), new Event_OnChange());
         this.addEventListener(Event.getEvent("OnLoadData"), new Event_OnLoadData());
-        this.setProperty(Propertys.value.name(), null);
+        this.setPropertyMetaValue(Propertys.value.name(), null);
     }
     /*-------------------------------------------------------------------------------*/
     /**获取组建表单名*/

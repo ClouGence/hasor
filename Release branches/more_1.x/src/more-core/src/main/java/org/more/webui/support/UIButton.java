@@ -34,8 +34,8 @@ public abstract class UIButton extends UIComponent {
     @Override
     protected void initUIComponent(ViewContext viewContext) {
         super.initUIComponent(viewContext);
-        this.setProperty(Propertys.title.name(), "");
-        this.setProperty(Propertys.actionEL.name(), null);
+        this.setPropertyMetaValue(Propertys.title.name(), "");
+        this.setPropertyMetaValue(Propertys.actionEL.name(), null);
         this.addEventListener(UIButton_Event_OnAction.ActionEvent, new UIButton_Event_OnAction());
     }
     public String getTitle() {

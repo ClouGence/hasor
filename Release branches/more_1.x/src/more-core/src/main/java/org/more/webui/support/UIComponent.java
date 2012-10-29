@@ -233,11 +233,21 @@ public abstract class UIComponent {
     public void setPropertyEL(String propertyName, String elString) {
         this.setPropertyEL(propertyName, elString, elString);
     };
-    /**设置用于表示组件属性的字符串。*/
+    /**设置组建属性的值（该值的设置只会影响本次请求生命周期）。*/
     public void setProperty(String propertyName, Object newValue) {
         AbstractValueHolder value = this.getPropertys().get(propertyName);
         if (value == null)
+            value = new StaticValueHolder();
+        value.value(newValue);
+        this.getPropertys().put(propertyName, value);
+    };
+    /**设置组建属性的MetaValue值（该值可以作为属性在全部线程上的默认初始化值）。*/
+    public void setPropertyMetaValue(String propertyName, Object newValue) {
+        AbstractValueHolder value = this.getPropertys().get(propertyName);
+        if (value == null)
             value = new StaticValueHolder(newValue);
+        else
+            value.setMetaValue(newValue);
         this.getPropertys().put(propertyName, value);
     };
     /**将map中的属性全部安装到当前组建上*/
@@ -254,10 +264,10 @@ public abstract class UIComponent {
     /**子类可以通过该方法初始化组件。*/
     protected void initUIComponent(ViewContext viewContext) {
         /*设置属性默认值，当页面中有值被设置的时候这里设置的默认值就会失效*/
-        this.setProperty(Propertys.beforeScript.name(), "true");
-        this.setProperty(Propertys.async.name(), true);//默认使用异步操作事件
-        this.setProperty(Propertys.render.name(), true);
-        this.setProperty(Propertys.renderChildren.name(), true);
+        this.setPropertyMetaValue(Propertys.beforeScript.name(), "true");
+        this.setPropertyMetaValue(Propertys.async.name(), true);//默认使用异步操作事件
+        this.setPropertyMetaValue(Propertys.render.name(), true);
+        this.setPropertyMetaValue(Propertys.renderChildren.name(), true);
     };
     /**组建被初始化标记*/
     private Boolean doInit = false;
@@ -341,6 +351,7 @@ public abstract class UIComponent {
             return;
         List<EventListener> listeners = this.listener.get(eventType);
         if (listeners == null) {
+            //            Log.debug("this event is first append, event = " + eventType + ", listener = " + listener);
             listeners = new ArrayList<EventListener>();
             this.listener.put(eventType, listeners);
         }

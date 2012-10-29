@@ -51,7 +51,7 @@ public class Hook_UserTag implements ElementHook {
                     if (exp.getClass().getSimpleName().equals("StringLiteral") == true) {
                         Field valueField = exp.getClass().getDeclaredField("value");
                         valueField.setAccessible(true);
-                        componentObject.setProperty(key, (String) valueField.get(exp));
+                        componentObject.setPropertyMetaValue(key, (String) valueField.get(exp));
                     } else
                         componentObject.setPropertyEL(key, exp.getSource());
                 }
