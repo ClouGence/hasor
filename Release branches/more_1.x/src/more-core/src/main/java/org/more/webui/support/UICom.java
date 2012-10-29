@@ -18,6 +18,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.more.webui.render.NoRender;
+import org.more.webui.render.Render;
 /**
  * 
  * @version : 2012-6-25
@@ -28,4 +30,6 @@ import java.lang.annotation.Target;
 public @interface UICom {
     /**设置该组建的标签名*/
     public String tagName();
+    /**渲染器*/
+    public Class<? extends Render> renderType() default NoRender.class;
 }

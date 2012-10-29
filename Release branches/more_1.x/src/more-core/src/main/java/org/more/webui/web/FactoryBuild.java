@@ -23,10 +23,7 @@ import org.more.webui.context.FacesContext;
 import org.more.webui.lifestyle.Lifecycle;
 import org.more.webui.lifestyle.PhaseListener;
 import org.more.webui.lifestyle.UIPhaseListener;
-import org.more.webui.render.NoRender;
-import org.more.webui.render.Render;
 import org.more.webui.render.RenderKit;
-import org.more.webui.render.UIRender;
 import org.more.webui.support.UICom;
 import org.more.webui.support.UIComponent;
 import freemarker.template.TemplateModelException;
@@ -66,17 +63,8 @@ class FactoryBuild {
                 /*添加组建*/
                 fc.addComponentType(uicom.tagName(), type);
                 /*为组建添加默认标签渲染器，因为只有用于渲染器的组建才会生效。*/
-                fc.getRenderKit("default").addRenderType(uicom.tagName(), NoRender.class);
+                fc.getRenderKit("default").addRenderType(uicom.tagName(), uicom.renderType());
             }
-        }
-        //B.扫描注解添加标签渲染器。
-        classSet = classUtil.getClassSet(UIRender.class);
-        for (Class<?> type : classSet) {
-            UIRender uiRender = type.getAnnotation(UIRender.class);
-            if (Render.class.isAssignableFrom(type) == false)
-                throw new ClassCastException(type + " to Render");
-            else
-                fc.getRenderKit("default").addRenderType(uiRender.tagName(), type);
         }
         //C.向全局Freemarker服务中注册标签
         kit = fc.getRenderKit("default");
