@@ -27,10 +27,14 @@ WebUI.Component.$extends("ui_Input", "", {
         var $this = this;
         this.doEvent("OnLoadData", paramData, function(event) {
             if (WebUI.isFun(funOK) == true)
-                funOK.call($this, event);
+                funOK.call($this, {
+                    event : event
+                });
         }, function(event) {
             if (WebUI.isFun(funError) == true)
-                funError.call($this, event);
+                funError.call($this, {
+                    event : event
+                });
         });
     },
     /** （重写方法）返回一个值用于表示是否为一个表单元素（只要定义了name属性就成为表单元素） */
@@ -87,7 +91,9 @@ WebUI.Component.$extends("ui_SelectOne", "ui_Input", {
         this.doEvent("OnLoadData", paramData, function(event) {
             // A.成功装载
             if (WebUI.isFun(funOK) == true)
-                funOK.call($this, event);
+                funOK.call($this, {
+                    event : event
+                });
             else {
                 var k = $this.getKeyField();
                 var v = $this.getVarField();
@@ -100,7 +106,9 @@ WebUI.Component.$extends("ui_SelectOne", "ui_Input", {
         }, function(event) {
             // B.装载失败
             if (WebUI.isFun(funError) == true)
-                funError.call($this, event);
+                funError.call($this, {
+                    event : event
+                });
         });
     },
     /** （重写方法）获取选中的值 */
@@ -186,7 +194,9 @@ WebUI.Component.$extends("ui_SelectCheck", "ui_Input", {
         }, function(event) {
             // B.装载失败
             if (WebUI.isFun(funError) == true)
-                funError.call($this, event);
+                funError.call($this, {
+                    event : event
+                });
         });
     },
     /** （重写方法）获取选中的值 */

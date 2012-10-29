@@ -33,10 +33,14 @@ WebUI.Component.$extends("ui_AjaxForm", "", {
         var $this = this;
         this.doEvent("OnSubmit", paramData, function(event) {
             if (WebUI.isFun(okCallBack) == true)
-                okCallBack.call($this, event);
+                okCallBack.call($this, {
+                    event : event
+                });
         }, function(event) {
             if (WebUI.isFun(errCallBack) == true)
-                errCallBack.call($this, event);
+                errCallBack.call($this, {
+                    event : event
+                });
         });
     },
     /** 获取到表单的值Map */

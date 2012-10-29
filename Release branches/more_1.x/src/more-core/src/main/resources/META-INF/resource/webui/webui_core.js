@@ -188,7 +188,7 @@ WebUI.getEnvironmentMap = function() {
     return cfg;
 };
 /** 执行字符串，如果定义的只是函数名则调用该函数，如果是脚本字符串则执行脚本（注：如果脚本返回的是函数则这个函数也会被执行）。 */
-WebUI.runSrcipt = function(scriptText, thisContext, paramMap) {
+WebUI.runSrcipt = function(scriptContext, thisContext, paramMap) {
     WebUI.runSrcipt.$Key = null;
     WebUI.runSrcipt.$Var = null;
     WebUI.runSrcipt.$ParamMap = paramMap;
@@ -200,7 +200,7 @@ WebUI.runSrcipt = function(scriptText, thisContext, paramMap) {
         eval(WebUI.runSrcipt.$Key + "=WebUI.runSrcipt.$Var");
     }
     // 2.执行脚本
-    var e = eval.call(thisContext, scriptText);
+    var e = eval.call(thisContext, scriptContext);
     if (WebUI.isFun(e) == true)
         e = e.apply(thisContext, WebUI.runSrcipt.$ParamArray);
     return e;
@@ -251,34 +251,30 @@ WebUI.invoke = function(invokeString, paramData, async, okCallBack, errorCallBac
         async : async,
         success : function(res) {
             var eventObject = {
-                event : {
-                    invoke : invokeString,
-                    paramData : paramData,
-                    result : res
-                }
+                invoke : invokeString,
+                paramData : paramData,
+                result : res
             };
             if (WebUI.isFun(okCallBack) == true)
                 okCallBack(eventObject);
         },
         error : function(XMLHttpRequest, textStatus) {
             var eventObject = {
-                event : {
-                    invoke : invokeString,
-                    paramData : paramData,
-                    errorID : null,
-                    message : null,
-                    trace : null
-                }
+                invoke : invokeString,
+                paramData : paramData,
+                errorID : null,
+                message : null,
+                trace : null
             };
             if (XMLHttpRequest.status == 20) {
                 var returnData = eval('(' + XMLHttpRequest.responseText + ')');
-                eventObject.event.errorID = returnData.errorID;
-                eventObject.event.message = returnData.message;
-                eventObject.event.trace = returnData.trace;
+                eventObject.errorID = returnData.errorID;
+                eventObject.message = returnData.message;
+                eventObject.trace = returnData.trace;
             } else {
-                eventObject.event.errorID = XMLHttpRequest.status;
-                eventObject.event.message = XMLHttpRequest.responseText;
-                eventObject.event.trace = null;
+                eventObject.errorID = XMLHttpRequest.status;
+                eventObject.message = XMLHttpRequest.responseText;
+                eventObject.trace = null;
             }
             if (WebUI.isFun(errorCallBack) == true)
                 errorCallBack(eventObject);
@@ -455,7 +451,7 @@ WebUI.Component.prototype = {
                 if (WebUI.isNaN(afterScr) == false)
                     WebUI.runSrcipt(afterScr, _this, eventObject);
                 if (WebUI.isFun(okCallBack) == true)
-                    okCallBack(eventObject);
+                    okCallBack.call($this, eventObject.event);
             },
             error : function(XMLHttpRequest, textStatus) {
                 var eventObject = {
@@ -481,7 +477,7 @@ WebUI.Component.prototype = {
                 if (WebUI.isNaN(errorScr) == false)
                     WebUI.runSrcipt(errorScr, _this, eventObject);
                 if (WebUI.isFun(errorCallBack) == true)
-                    errorCallBack(eventObject);
+                    errorCallBack.call($this, eventObject.event);
             }
         });
     },
