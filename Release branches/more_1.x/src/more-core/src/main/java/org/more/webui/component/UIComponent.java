@@ -271,13 +271,17 @@ public abstract class UIComponent {
     };
     /**设置组建属性的值（该值的设置只会影响本次请求生命周期）。*/
     public void setProperty(String propertyName, Object newValue) {
+        if (ViewContext.getCurrentViewContext().getPhaseID().equals(InitView_Phase.PhaseID) == true)
+            throw new RuntimeException("请不要在InitView阶段使用该方法。");
+        //
         AbstractValueHolder value = this.getPropertys().get(propertyName);
         if (value == null)
             value = new StaticValueHolder();
         value.value(newValue);
         this.getPropertys().put(propertyName, value);
     };
-    /**设置组建属性的MetaValue值（该值可以作为属性在全部线程上的默认初始化值，真正意义上的默认值）。*/
+    /**设置组建属性的MetaValue值（该值可以作为属性在全部线程上的默认初始化值，真正意义上的默认值）。
+     * 注意：在initUIComponent方法中使用该方法只会影响到那些未在页面中定义的属性。*/
     public void setPropertyMetaValue(String propertyName, Object newValue) {
         AbstractValueHolder value = this.getPropertys().get(propertyName);
         if (value == null)
