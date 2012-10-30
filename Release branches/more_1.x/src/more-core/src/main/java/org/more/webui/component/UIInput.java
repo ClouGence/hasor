@@ -19,7 +19,7 @@ import org.more.webui.context.ViewContext;
 import org.more.webui.event.Event;
 import org.more.webui.event.EventListener;
 /**
- * 用于表述带有输入输出功能的组建模型。
+ * 用于表述带有输入输出功能的组建模型（表单元素）。
  * @version : 2012-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -36,6 +36,9 @@ public abstract class UIInput extends UIOutput {
     @Override
     protected void initUIComponent(ViewContext viewContext) {
         super.initUIComponent(viewContext);
+        this.setPropertyMetaValue(Propertys.name.name(), null);
+        this.setPropertyMetaValue(Propertys.verification.name(), null);
+        this.setPropertyMetaValue(Propertys.onChangeEL.name(), null);
         this.addEventListener(Event.getEvent("OnChange"), new Event_OnChange());
     }
     /*-------------------------------------------------------------------------------*/

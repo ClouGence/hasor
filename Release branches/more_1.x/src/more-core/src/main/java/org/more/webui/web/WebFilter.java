@@ -41,9 +41,10 @@ public class WebFilter implements Filter {
     public void doFilter(ServletRequest arg0, ServletResponse arg1, FilterChain arg2) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) arg0;
         HttpServletResponse res = (HttpServletResponse) arg1;
+        arg0.setAttribute("_head_startTime", System.currentTimeMillis());
         if (req.getRequestURI().endsWith(this.config.getFacesSuffix()) == true) {
             /**¥¶¿ÌFaces*/
-            ViewContext viewContext = new ViewContext(req, res, this.uiContext);
+            ViewContext viewContext = new ViewContext(req, res, this.lifecycle);
             ViewContext.setCurrentViewContext(viewContext);
             this.lifecycle.execute(viewContext);
             ViewContext.setCurrentViewContext(null);

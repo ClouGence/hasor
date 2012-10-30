@@ -28,7 +28,7 @@ public class InitView_Phase extends Phase {
             return "InitView";
         };
     };
-    private static InitView_PhaseID PhaseID = new InitView_PhaseID();
+    public final static InitView_PhaseID PhaseID = new InitView_PhaseID();
     public PhaseID getPhaseID() {
         return PhaseID;
     };

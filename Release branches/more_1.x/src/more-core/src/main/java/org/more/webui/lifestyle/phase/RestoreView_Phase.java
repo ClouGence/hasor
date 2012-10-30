@@ -31,7 +31,7 @@ public class RestoreView_Phase extends Phase {
             return "RestoreView";
         };
     };
-    private static RestoreView_PhaseID PhaseID = new RestoreView_PhaseID();
+    public final static RestoreView_PhaseID PhaseID = new RestoreView_PhaseID();
     //
     public PhaseID getPhaseID() {
         return PhaseID;

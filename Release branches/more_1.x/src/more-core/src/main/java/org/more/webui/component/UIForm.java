@@ -17,6 +17,7 @@ package org.more.webui.component;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.more.webui.component.support.NoState;
 import org.more.webui.component.values.MethodExpression;
 import org.more.webui.context.ViewContext;
 import org.more.webui.event.Event;
@@ -29,20 +30,21 @@ import org.more.webui.event.EventListener;
 public abstract class UIForm extends UIComponent {
     /**通用属性表*/
     public enum Propertys {
-        /**Action动作（RW）*/
+        /**Action动作（-）*/
         submitEL,
     }
     @Override
     protected void initUIComponent(ViewContext viewContext) {
         super.initUIComponent(viewContext);
         this.addEventListener(AjaxForm_Event_OnSubmit.SubmitEvent, new AjaxForm_Event_OnSubmit());
-        this.setPropertyMetaValue(Propertys.submitEL.name(), null);
     }
     /**获取form EL字符串*/
+    @NoState
     public String getSubmitEL() {
         return this.getProperty(Propertys.submitEL.name()).valueTo(String.class);
     }
     /**设置form EL字符串*/
+    @NoState
     public void setSubmitEL(String submitEL) {
         this.getProperty(Propertys.submitEL.name()).value(submitEL);
     }

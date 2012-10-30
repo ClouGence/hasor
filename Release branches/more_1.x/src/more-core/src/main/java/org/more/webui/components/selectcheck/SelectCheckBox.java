@@ -15,8 +15,8 @@
  */
 package org.more.webui.components.selectcheck;
 import java.util.List;
-import org.more.webui.component.NoState;
 import org.more.webui.component.UIInput;
+import org.more.webui.component.support.NoState;
 import org.more.webui.component.support.UICom;
 import org.more.webui.context.ViewContext;
 /**

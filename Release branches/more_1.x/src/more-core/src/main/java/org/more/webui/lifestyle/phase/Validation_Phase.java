@@ -28,7 +28,7 @@ public class Validation_Phase extends Phase {
             return "Validation";
         };
     };
-    private static Validation_PhaseID PhaseID = new Validation_PhaseID();
+    public final static Validation_PhaseID PhaseID = new Validation_PhaseID();
     public PhaseID getPhaseID() {
         return PhaseID;
     };

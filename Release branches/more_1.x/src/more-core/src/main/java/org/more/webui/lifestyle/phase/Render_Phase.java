@@ -30,7 +30,7 @@ public class Render_Phase extends Phase {
             return "Render";
         };
     };
-    private static Render_PhaseID PhaseID = new Render_PhaseID();
+    public final static Render_PhaseID PhaseID = new Render_PhaseID();
     public PhaseID getPhaseID() {
         return PhaseID;
     };

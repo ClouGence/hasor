@@ -15,6 +15,7 @@
  */
 package org.more.webui.component;
 import java.util.List;
+import org.more.webui.component.support.NoState;
 import org.more.webui.context.ViewContext;
 /**
  * 用于表述从多个值中进行选择的组建模型（表单元素）。
@@ -34,6 +35,7 @@ public abstract class UISelectInput extends UIInput {
     @Override
     protected void initUIComponent(ViewContext viewContext) {
         super.initUIComponent(viewContext);
+        this.setPropertyMetaValue(Propertys.listData.name(), null);
         this.setPropertyMetaValue(Propertys.keyField.name(), "key");
         this.setPropertyMetaValue(Propertys.varField.name(), "value");
     }

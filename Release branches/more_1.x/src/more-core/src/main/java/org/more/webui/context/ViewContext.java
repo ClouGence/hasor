@@ -26,6 +26,9 @@ import org.more.util.StringConvertUtil;
 import org.more.webui.component.UIComponent;
 import org.more.webui.component.UIViewRoot;
 import org.more.webui.freemarker.parser.TemplateScanner;
+import org.more.webui.lifestyle.Lifecycle;
+import org.more.webui.lifestyle.Phase;
+import org.more.webui.lifestyle.PhaseID;
 import org.more.webui.web.PostFormEnum;
 import com.alibaba.fastjson.JSONObject;
 import freemarker.template.Template;
@@ -40,16 +43,16 @@ public class ViewContext extends HashMap<String, Object> {
     private HttpServletRequest  req              = null;               //req
     private HttpServletResponse res              = null;               //res
     private String              facePath         = null;               //视图模板位置
-    private FacesContext        uiContext        = null;               //整体上下文
+    private Lifecycle           lifecycle        = null;               //整体上下文
     private long                comClientID      = 0;                  //组建的客户端ID
     //
-    public ViewContext(HttpServletRequest req, HttpServletResponse res, FacesContext uiContext) {
+    public ViewContext(HttpServletRequest req, HttpServletResponse res, Lifecycle lifecycle) {
         this.req = req;
         this.res = res;
         this.facePath = this.req.getRequestURI();
         if (this.facePath.startsWith(req.getContextPath()) == true)
             this.facePath = this.facePath.substring(req.getContextPath().length());
-        this.uiContext = uiContext;
+        this.lifecycle = lifecycle;
         Map<String, String[]> reqMap = req.getParameterMap();
         for (String key : reqMap.keySet()) {
             String[] value = reqMap.get(key);
@@ -61,6 +64,10 @@ public class ViewContext extends HashMap<String, Object> {
                 this.put(key, value);
         }
     };
+    /**获得所处的生命周期*/
+    public Lifecycle getLifecycle() {
+        return this.lifecycle;
+    }
     /**获取要渲染的页面。*/
     public String getFacePath() {
         return facePath;
@@ -76,7 +83,13 @@ public class ViewContext extends HashMap<String, Object> {
     public String newClientID() {
         return "Com_" + String.valueOf(comClientID++);
     }
-    //
+    /**获取当前所处的生命周期阶段。*/
+    public PhaseID getPhaseID() {
+        Phase phase = this.lifecycle.getCurrentPhase();
+        if (phase != null)
+            return phase.getPhaseID();
+        return null;
+    }
     /**执行模板字符串。*/
     public String processTemplateString(String templateString) throws TemplateException, IOException {
         Map<String, Object> elContext = this.getViewELContext();
@@ -95,7 +108,7 @@ public class ViewContext extends HashMap<String, Object> {
             //
             TemplateScanner scanner = this.getUIContext().getEnvironment().getTemplateScanner();
             //B.解析模板获取UIViewRoot
-            this.viewRoot = (UIViewRoot) scanner.parser(tempRoot, new UIViewRoot(), uiContext);
+            this.viewRoot = (UIViewRoot) scanner.parser(tempRoot, new UIViewRoot(), this.getUIContext());
         }
         //B.返回UIViewRoot
         return this.viewRoot;
@@ -128,12 +141,12 @@ public class ViewContext extends HashMap<String, Object> {
     };
     /**获取{@link FacesContext}对象。*/
     public FacesContext getUIContext() {
-        return this.uiContext;
+        return this.lifecycle.getFacesContext();
     };
     /**获取视图模板对象，用于渲染。*/
     public Template getTemplate() throws IOException {
         String pageEncoding = this.getUIContext().getEnvironment().getPageEncoding();
-        return this.uiContext.getFreemarker().getTemplate(this.facePath, pageEncoding);
+        return this.getUIContext().getFreemarker().getTemplate(this.facePath, pageEncoding);
     };
     /**获取渲染器KIT名。*/
     public String getRenderKitScope() {
@@ -191,6 +204,7 @@ public class ViewContext extends HashMap<String, Object> {
     private void pushClient(int stateNumber, Object returnData) throws IOException {
         if (this.getEvent() != null) {
             String sendDataStr = JSONObject.toJSONString(returnData);
+            //            String sendDataStr = AppUtil.getj.toJSONString(returnData);
             this.getHttpResponse().setStatus(stateNumber);
             this.getHttpResponse().getWriter().write(sendDataStr);
         }

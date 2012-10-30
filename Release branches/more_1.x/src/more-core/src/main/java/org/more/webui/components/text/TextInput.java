@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.more.webui.components.text;
-import org.more.webui.component.NoState;
 import org.more.webui.component.UIInput;
+import org.more.webui.component.support.NoState;
 import org.more.webui.component.support.UICom;
 import org.more.webui.context.ViewContext;
 /**

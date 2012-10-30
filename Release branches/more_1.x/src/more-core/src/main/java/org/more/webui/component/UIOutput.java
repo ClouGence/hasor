@@ -29,6 +29,7 @@ public abstract class UIOutput extends UIComponent {
     @Override
     protected void initUIComponent(ViewContext viewContext) {
         super.initUIComponent(viewContext);
+        this.setPropertyMetaValue(Propertys.value.name(), null);
     }
     /**获取组建value属性*/
     public Object getValue() {

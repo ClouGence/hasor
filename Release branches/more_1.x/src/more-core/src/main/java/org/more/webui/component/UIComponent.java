@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import org.more.core.error.MoreDataException;
 import org.more.util.BeanUtil;
+import org.more.webui.component.support.NoState;
 import org.more.webui.component.values.AbstractValueHolder;
 import org.more.webui.component.values.ExpressionValueHolder;
 import org.more.webui.component.values.MethodExpression;
@@ -29,6 +30,7 @@ import org.more.webui.component.values.StaticValueHolder;
 import org.more.webui.context.ViewContext;
 import org.more.webui.event.Event;
 import org.more.webui.event.EventListener;
+import org.more.webui.lifestyle.phase.InitView_Phase;
 /**
 * 所有组件的根，这里拥有组件的所有关键方法。
 * @version : 2011-8-4
@@ -65,8 +67,20 @@ public abstract class UIComponent {
         render,
         /**表示是否渲染子组建（-）*/
         renderChildren,
-        /**当发生事件OnLoadData时触发，该事件允许用户通过任意组建从服务端装载数据到客户端。（RW）*/
+        /**当发生事件OnLoadData时触发，该事件允许用户通过任意组建从服务端装载数据到客户端。（R）*/
         onLoadDataEL,
+    };
+    /**子类可以通过该方法初始化组件。*/
+    protected void initUIComponent(ViewContext viewContext) {
+        /*设置属性默认值，当页面中有值被设置的时候这里设置的默认值就会失效*/
+        this.setPropertyMetaValue(Propertys.beforeScript.name(), "true");
+        this.setPropertyMetaValue(Propertys.afterScript.name(), null);
+        this.setPropertyMetaValue(Propertys.errorScript.name(), null);
+        this.setPropertyMetaValue(Propertys.async.name(), true);//默认使用异步操作事件
+        this.setPropertyMetaValue(Propertys.render.name(), true);
+        this.setPropertyMetaValue(Propertys.renderChildren.name(), true);
+        this.setPropertyMetaValue(Propertys.onLoadDataEL.name(), null);
+        this.addEventListener(Event.getEvent("OnLoadData"), new Event_OnLoadData());
     };
     public String getBeforeScript() {
         return this.getProperty(Propertys.beforeScript.name()).valueTo(String.class);
@@ -121,18 +135,19 @@ public abstract class UIComponent {
         return this.getProperty(Propertys.onLoadDataEL.name()).valueTo(String.class);
     }
     /**当企图装载数据时EL调用表达式（如果配置）*/
+    @NoState
     public void setOnLoadDataEL(String onLoadDataEL) {
         this.getProperty(Propertys.onLoadDataEL.name()).value(onLoadDataEL);
     }
-    private MethodExpression onLoadDataExp = null;
-    /**获取onLoadDataExp属性的{@link MethodExpression}对象。*/
+    private MethodExpression loadDataExp = null;
+    /**获取loadDataExp属性的{@link MethodExpression}对象。*/
     public MethodExpression getOnLoadDataExpression() {
-        if (this.onLoadDataExp == null) {
-            String onLoadDataExpString = this.getOnLoadDataEL();
-            if (onLoadDataExpString == null || onLoadDataExpString.equals("")) {} else
-                this.onLoadDataExp = new MethodExpression(onLoadDataExpString);
+        if (this.loadDataExp == null) {
+            String loadDataExpString = this.getOnLoadDataEL();
+            if (loadDataExpString == null || loadDataExpString.equals("")) {} else
+                this.loadDataExp = new MethodExpression(loadDataExpString);
         }
-        return this.onLoadDataExp;
+        return this.loadDataExp;
     }
     /*-------------------------------------------------------------------------------核心方法*/
     /**获取用于附加的属性的Map对象*/
@@ -255,7 +270,7 @@ public abstract class UIComponent {
         this.setPropertyEL(propertyName, elString, elString);
     };
     /**设置组建属性的值（该值的设置只会影响本次请求生命周期）。*/
-    public void setProperty(String propertyName, String aa, Object newValue) {
+    public void setProperty(String propertyName, Object newValue) {
         AbstractValueHolder value = this.getPropertys().get(propertyName);
         if (value == null)
             value = new StaticValueHolder();
@@ -267,9 +282,11 @@ public abstract class UIComponent {
         AbstractValueHolder value = this.getPropertys().get(propertyName);
         if (value == null)
             value = new StaticValueHolder(newValue);
-        else
-            value.setMetaValue(newValue);
         this.getPropertys().put(propertyName, value);
+        //不处理init过程中的设置请求。
+        ViewContext view = ViewContext.getCurrentViewContext();
+        if (view != null && view.getPhaseID().equals(InitView_Phase.PhaseID) == false)
+            value.setMetaValue(newValue);
     };
     /**将map中的属性全部安装到当前组建上*/
     public void setupPropertys(Map<String, Object> objMap) {
@@ -282,15 +299,6 @@ public abstract class UIComponent {
                 }
     };
     /*-------------------------------------------------------------------------------生命周期*/
-    /**子类可以通过该方法初始化组件。*/
-    protected void initUIComponent(ViewContext viewContext) {
-        /*设置属性默认值，当页面中有值被设置的时候这里设置的默认值就会失效*/
-        this.setPropertyMetaValue(Propertys.beforeScript.name(), "true");
-        this.setPropertyMetaValue(Propertys.async.name(), true);//默认使用异步操作事件
-        this.setPropertyMetaValue(Propertys.render.name(), true);
-        this.setPropertyMetaValue(Propertys.renderChildren.name(), true);
-        this.addEventListener(Event.getEvent("OnLoadData"), new Event_OnLoadData());
-    };
     /**组建被初始化标记*/
     private Boolean doInit = false;
     /**第1阶段，处理初始化阶段，该阶段负责初始化组件。*/

@@ -35,12 +35,17 @@ public abstract class Lifecycle {
     private List<PhaseListener> listeners = new ArrayList<PhaseListener>();
     private List<Phase>         phase     = new ArrayList<Phase>();
     private FacesConfig         config    = null;
-    public Lifecycle(FacesConfig config) {
+    private FacesContext        uiContext = null;
+    public Lifecycle(FacesConfig config, FacesContext uiContext) {
         this.config = config;
+        this.uiContext = uiContext;
     }
-    protected FacesConfig getEnvironment() {
+    public FacesConfig getEnvironment() {
         return config;
     }
+    public FacesContext getFacesContext() {
+        return this.uiContext;
+    };
     /**添加一个阶段监听器*/
     public void addPhaseListener(PhaseListener listener) {
         if (this.listeners.contains(listener) == false)
@@ -62,6 +67,7 @@ public abstract class Lifecycle {
         for (Phase phase : this.getPhases())
             try {
                 //                long t = System.currentTimeMillis();
+                Lifecycle._setCurrentPhase(phase);
                 phase.doPhase(uiContext, this.listeners);
                 //                System.out.println("$$$$\t" + phase + "\t" + (System.currentTimeMillis() - t));
             } catch (Throwable e) {
@@ -78,10 +84,25 @@ public abstract class Lifecycle {
     public void addPhase(Phase phase) {
         this.phase.add(phase);
     };
+    /*--------------*/
+    //  ThreadLocal
+    /*--------------*/
+    private static ThreadLocal<Phase> threadLocal = new ThreadLocal<Phase>();
+    static void _setCurrentPhase(Phase viewContext) {
+        if (threadLocal.get() != null)
+            threadLocal.remove();
+        threadLocal.set(viewContext);
+    };
+    /**获取当前线程运行中的阶段。*/
+    public Phase getCurrentPhase() {
+        if (threadLocal.get() != null)
+            return threadLocal.get();
+        return null;
+    }
     /**创建默认的生命周期对象*/
     public static Lifecycle getDefault(FacesConfig config, FacesContext context) {
         /*创建生命周期对象*/
-        Lifecycle lifestyle = new Lifecycle(config) {};
+        Lifecycle lifestyle = new Lifecycle(config, context) {};
         {
             //第1阶段，用于初始化视图中的组件模型树。
             lifestyle.addPhase(new InitView_Phase());

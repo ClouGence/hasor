@@ -499,6 +499,23 @@ WebUI.Component.prototype = {
     defineProperty : function(name, readMethod, writeMethod) {
     // TODO
     },
+    /** 从服务器上载入数据 */
+    loadData : function(paramData, funOK, funError) {
+        if (WebUI.isNaN(this.getState().get("onLoadDataEL")) == true)
+            return;
+        var $this = this;
+        this.doEvent("OnLoadData", paramData, function(event) {
+            if (WebUI.isFun(funOK) == true)
+                funOK.call($this, {
+                    event : event
+                });
+        }, function(event) {
+            if (WebUI.isFun(funError) == true)
+                funError.call($this, {
+                    event : event
+                });
+        });
+    },
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
     /** 客户端在请求之前进行的调用，返回false取消本次ajax请求，只读 */
     beforeScript : function() {
@@ -520,8 +537,6 @@ WebUI.Component.prototype = {
 /*----------------------------------------------------------------------------------------------------状态管理*/
 WebUI.Component.State = function(component) {
     var target = component;
-    //
-    //
     /** 获取状态对象操作的那个组建。 */
     this.getTarget = function() {
         return target;
@@ -569,8 +584,6 @@ WebUI.Component.State = function(component) {
 /*----------------------------------------------------------------------------------------------------Var携带的属性集*/
 WebUI.Component.Variable = function(component) {
     var target = component;
-    //
-    //
     /** 获取属性集对象操作的那个组建。 */
     this.getTarget = function() {
         return target;
@@ -604,3 +617,142 @@ WebUI.Component.Variable = function(component) {
         this.getDataMap()[attName] = newValue;
     };
 };
+/*----------------------------------------------------------------------------------------------------核心提供的组建模型*/
+/* UIComponent Component（象征性作用） */
+/* -------------------------------------------------------------------- */
+WebUI.Component.$extends("UIComponent", "", {
+    /** !关于! */
+    "<about>" : function() {
+        alert("‘" + this.class + "’类型继承自UIComponent组建。");
+    }
+});
+/* -------------------------------------------------------------------- */
+/* UIForm Component */
+/* -------------------------------------------------------------------- */
+WebUI.Component.$extends("UIForm", "UIComponent", {
+    /** 处理UIForm的OnSubmit动作 */
+    onsubmit : function() {
+        this.doSubmit({}, function(event) {
+        /* TODO OnSubmit , OK CallBack. */
+        }, function(event) {
+        /* TODO OnSubmit , Error CallBack. */
+        });
+        return false;
+    },
+    /** 处理UIForm的OnSubmit动作 */
+    doSubmit : function(paramData, okCallBack, errCallBack) {
+        // A.准备数据
+        paramData = (WebUI.isObject(paramData) == false) ? {} : paramData;
+        $("#" + this.clientID + ' [comType]').each(function() {
+            if (WebUI.isNaN(this.uiObject) == true)
+                return;
+            var uio = this.uiObject;
+            if (uio.isForm() == false)
+                return;
+            paramData[uio.componentPath + ":value"] = uio.getValue();
+        });
+        // B.引发OnSubmit事件
+        var $this = this;
+        this.doEvent("OnSubmit", paramData, function(event) {
+            if (WebUI.isFun(okCallBack) == true)
+                okCallBack.call($this, {
+                    event : event
+                });
+        }, function(event) {
+            if (WebUI.isFun(errCallBack) == true)
+                errCallBack.call($this, {
+                    event : event
+                });
+        });
+    },
+    /** 获取到表单的值Map */
+    getFormData : function() {
+        // A.准备数据
+        var paramData = {};
+        $("#" + this.clientID + ' [comType]').each(function() {
+            if (WebUI.isNaN(this.uiObject) == true)
+                return;
+            var uio = this.uiObject;
+            if (uio.isForm() == false)
+                return;
+            paramData[uio.getName()] = uio.getValue();
+        });
+        return paramData;
+    }
+});
+/* -------------------------------------------------------------------- */
+/* UIOutput Component */
+/* -------------------------------------------------------------------- */
+WebUI.Component.$extends("UIOutput", "UIComponent", {
+    /** 获取表单值（该方法不会引发State变化） */
+    getValue : function() {
+        return $(this.getElement()).attr("value");
+    },
+    /** 设置表单值（该方法不会引发State变化） */
+    setValue : function(newValue) {
+        $(this.getElement()).attr("value", newValue);
+    }
+});
+/* -------------------------------------------------------------------- */
+/* UIInput Component */
+/* -------------------------------------------------------------------- */
+WebUI.Component.$extends("UIInput", "UIOutput", {
+    /** 标签元素的change事件处理程序。 */
+    onchange : function() {
+        if (WebUI.isNaN(this.getState().get("onChangeEL")) == true)
+            return;
+        var paramData = {};
+        paramData[this.componentID + ":value"] = this.getValue();
+        this.doEvent("OnChange", paramData, function(event) {
+        /* TODO OnChange , OK CallBack. */
+        }, function(event) {
+        /* TODO OnChange , Error CallBack. */
+        });
+    },
+    /** （重写方法）返回一个值用于表示是否为一个表单元素（只要定义了name属性就成为表单元素） */
+    isForm : function() {
+        return !WebUI.isNaN(this.getName());
+    },
+    /** 验证表单值内容 */
+    doVerification : function() {
+        var ver = this.getState().get("verification");
+        if (WebUI.isNaN(ver) == true)
+            return true;
+        var verRegExp = new RegExp(ver);
+        return verRegExp.test(this.getValue());
+    },
+    /** 获取表单名（该方法不会引发State变化） */
+    getName : function() {
+        return $(this.getElement()).attr("name");
+    },
+    /** 设置表单名（该方法不会引发State变化） */
+    setName : function(newName) {
+        $(this.getElement()).attr("name", newName);
+    }
+});
+/* -------------------------------------------------------------------- */
+/* UIButton Component */
+/* -------------------------------------------------------------------- */
+WebUI.Component.$extends("UIButton", "UIInput", {
+    /** 获取显示名称（该方法不会引发State变化） */
+    getTitle : function() {
+        return $(this.getElement()).attr("title");
+    },
+    /** 获取显示名称（该方法不会引发State变化） */
+    setTitle : function(newTitle) {
+        $(this.getElement()).attr("title", newTitle);
+    }
+});
+/* -------------------------------------------------------------------- */
+/* UISelectInput Component */
+/* -------------------------------------------------------------------- */
+WebUI.Component.$extends("UISelectInput", "UIInput", {
+    /** 显示名称字段（R） */
+    getKeyField : function() {
+        return this.getState().get("keyField");
+    },
+    /** 值字段（R） */
+    getVarField : function() {
+        return this.getState().get("varField");
+    }
+});

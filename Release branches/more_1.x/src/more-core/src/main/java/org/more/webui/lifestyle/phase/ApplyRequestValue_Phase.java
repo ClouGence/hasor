@@ -28,7 +28,7 @@ public class ApplyRequestValue_Phase extends Phase {
             return "ApplyRequestValue";
         };
     };
-    private static ApplyRequestValue_PhaseID PhaseID = new ApplyRequestValue_PhaseID();
+    public final static ApplyRequestValue_PhaseID PhaseID = new ApplyRequestValue_PhaseID();
     //
     public PhaseID getPhaseID() {
         return PhaseID;

@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 package org.more.webui.component;
+import org.more.webui.component.support.NoState;
 import org.more.webui.component.values.MethodExpression;
 import org.more.webui.context.ViewContext;
 import org.more.webui.event.Event;
 import org.more.webui.event.EventListener;
 /**
- * Button
+ * 按钮组建模型（表单元素）。
  * @version : 2012-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class UIButton extends UIInput {
     /**通用属性表*/
     public enum Propertys {
-        /**Action动作（RW）*/
+        /**Action动作（-）*/
         actionEL,
         /**显示的名称（RW）*/
         title
@@ -34,8 +35,8 @@ public abstract class UIButton extends UIInput {
     @Override
     protected void initUIComponent(ViewContext viewContext) {
         super.initUIComponent(viewContext);
-        this.setPropertyMetaValue(Propertys.title.name(), "");
         this.setPropertyMetaValue(Propertys.actionEL.name(), null);
+        this.setPropertyMetaValue(Propertys.title.name(), "");
         this.addEventListener(UIButton_Event_OnAction.ActionEvent, new UIButton_Event_OnAction());
     }
     public String getTitle() {
@@ -45,10 +46,12 @@ public abstract class UIButton extends UIInput {
         this.getProperty(Propertys.title.name()).value(title);
     }
     /**获取Action EL字符串*/
+    @NoState
     public String getActionEL() {
         return this.getProperty(Propertys.actionEL.name()).valueTo(String.class);
     }
     /**设置Action EL字符串*/
+    @NoState
     public void setActionEL(String action) {
         this.getProperty(Propertys.actionEL.name()).value(action);
     }

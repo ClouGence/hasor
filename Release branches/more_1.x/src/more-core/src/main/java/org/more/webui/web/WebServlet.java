@@ -28,22 +28,24 @@ import org.more.webui.context.FacesContext;
 import org.more.webui.context.ViewContext;
 import org.more.webui.lifestyle.Lifecycle;
 /**
- * 
- * @version : 2012-7-31
+ * Web入口
+ * @version : 2012-5-11
  * @author 赵永春 (zyc@byshell.org)
  */
 public class WebServlet extends HttpServlet {
-    private static final long serialVersionUID = 9189308591013074938L;
+    private static final long serialVersionUID = 0L;
     private Lifecycle         lifecycle        = null;
     private FacesConfig       config           = null;
     private FacesContext      uiContext        = null;
     /*-----------------------------------------------------------------------------------*/
     @Override
     protected void service(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException {
+        arg0.setAttribute("_head_startTime", System.currentTimeMillis());
         HttpServletRequest req = (HttpServletRequest) arg0;
         HttpServletResponse res = (HttpServletResponse) arg1;
         if (req.getRequestURI().endsWith(this.config.getFacesSuffix()) == true) {
-            ViewContext viewContext = new ViewContext(req, res, this.uiContext);
+            /** 处理Faces */
+            ViewContext viewContext = new ViewContext(req, res, this.lifecycle);
             ViewContext.setCurrentViewContext(viewContext);
             this.lifecycle.execute(viewContext);
             ViewContext.setCurrentViewContext(null);

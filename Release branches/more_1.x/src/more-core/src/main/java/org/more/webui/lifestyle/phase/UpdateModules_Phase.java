@@ -28,7 +28,7 @@ public class UpdateModules_Phase extends Phase {
             return "UpdateModules";
         };
     };
-    private static UpdateModules_PhaseID PhaseID = new UpdateModules_PhaseID();
+    public final static UpdateModules_PhaseID PhaseID = new UpdateModules_PhaseID();
     public PhaseID getPhaseID() {
         return PhaseID;
     };

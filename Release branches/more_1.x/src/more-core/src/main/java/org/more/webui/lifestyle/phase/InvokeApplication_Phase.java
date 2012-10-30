@@ -28,7 +28,7 @@ public class InvokeApplication_Phase extends Phase {
             return "InvokeApplication";
         };
     };
-    private static InvokeApplication_PhaseID PhaseID = new InvokeApplication_PhaseID();
+    public final static InvokeApplication_PhaseID PhaseID = new InvokeApplication_PhaseID();
     public PhaseID getPhaseID() {
         return PhaseID;
     };
