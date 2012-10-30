@@ -15,6 +15,7 @@
  */
 package org.more.webui.component.values;
 import java.util.Map;
+import org.more.core.map.DecSequenceMap;
 import org.more.core.ognl.Node;
 import org.more.core.ognl.Ognl;
 import org.more.core.ognl.OgnlException;
@@ -38,8 +39,17 @@ public class MethodExpression {
         return this.elNodeTree;
     }
     public Object execute(UIComponent component, ViewContext viewContext) throws Throwable {
+        return this.execute(component, viewContext, null);
+    }
+    public Object execute(UIComponent component, ViewContext viewContext, Map<String, Object> params) throws Throwable {
         try {
             Map<String, Object> viewEL = viewContext.getViewELContext();
+            if (params != null) {
+                DecSequenceMap<String, Object> decMap = new DecSequenceMap<String, Object>();
+                decMap.addMap(viewEL);
+                decMap.addMap(params);
+                viewEL = decMap;
+            }
             viewEL.put("this", component);
             return Ognl.getValue(this.getNodeTree(), viewEL);
         } catch (OgnlException e) {

@@ -9,6 +9,7 @@ if (WebUI == undefined) {
                 return res[0].uiObject;
     };
 }
+WebUI.Base = "";
 WebUI.init = function() {
     $('[comType]').each(function() {
         WebUI.Component.create($(this).attr('id'));
@@ -170,6 +171,14 @@ WebUI.isObject = function(target) {
 WebUI.isArray = function(target) {
     return target instanceof Array;
 };
+/** 获取当前网页的URL */
+WebUI.getLocal = function() {
+    var localStr = window.location.toString();
+    var firstIndex = localStr.indexOf("?");
+    if (firstIndex <= 0)
+        return localStr;
+    return localStr.substr(0, firstIndex + 1);
+};
 /** 获取当前网页的URL参数 */
 WebUI.getEnvironmentMap = function() {
     var localStr = window.location.toString();
@@ -186,6 +195,19 @@ WebUI.getEnvironmentMap = function() {
         }
     }
     return cfg;
+};
+/** 将一个map对象转换成为uri请求参数（不支持符合对象）。 */
+WebUI.mapToURI = function(mapObject) {
+    var postData = "";
+    for ( var k in mapObject) {
+        var v = mapObject[k];
+        if (WebUI.isArray(v) == true)
+            for ( var i = 0; i < v.length; i++)
+                postData += (encodeURIComponent(k) + "=" + encodeURIComponent(v[i]) + "&");
+        else
+            postData += (encodeURIComponent(k) + "=" + encodeURIComponent(v) + "&");
+    }
+    return postData;
 };
 /** 执行字符串，如果定义的只是函数名则调用该函数，如果是脚本字符串则执行脚本（注：如果脚本返回的是函数则这个函数也会被执行）。 */
 WebUI.runSrcipt = function(scriptContext, thisContext, paramMap) {
@@ -234,18 +256,10 @@ WebUI.invoke = function(invokeString, paramData, async, okCallBack, errorCallBac
     sendData["WebUI_PF_State"] = "[{},{}]";
     sendData["WebUI_PF_Invoke"] = invokeString;
     /* ajax请求 */
-    var postData = "";
-    for ( var k in sendData) {
-        var v = sendData[k];
-        if (WebUI.isArray(v) == true)
-            for ( var i = 0; i < v.length; i++)
-                postData += (encodeURIComponent(k) + "=" + encodeURIComponent(v[i]) + "&");
-        else
-            postData += (encodeURIComponent(k) + "=" + encodeURIComponent(v) + "&");
-    }
+    var postData = WebUI.mapToURI(sendData);
     var res = $.ajax({
         type : 'post',
-        url : window.location,
+        url : WebUI.getLocal(),
         data : postData,
         cache : false,
         async : async,
@@ -419,23 +433,15 @@ WebUI.Component.prototype = {
         sendData["WebUI_PF_Event"] = eventName;/* 引发的事件 */
         sendData["WebUI_PF_Render"] = "No";/* 不执行渲染 */
         sendData["WebUI_PF_State"] = WebUI.util.b64.uncoded64(this.getState().getCode());
+        sendData["WebUI_PF_Invoke"] = null;
         /* ajax请求 */
         var afterScr = this.afterScript();
         var errorScr = this.errorScript();
         var _this = this;
-        var postData = "";
-        for ( var k in sendData) {
-            var v = sendData[k];
-            if (WebUI.isArray(v) == true)
-                for ( var i = 0; i < v.length; i++)
-                    postData += (encodeURIComponent(k) + "=" + encodeURIComponent(v[i]) + "&");
-            else
-                postData += (encodeURIComponent(k) + "=" + encodeURIComponent(v) + "&");
-        }
-        var $this = this;
+        var postData = WebUI.mapToURI(sendData);
         $.ajax({
             type : 'post',
-            url : window.location,
+            url : WebUI.getLocal(),
             data : postData,
             cache : false,
             async : this.async(),
@@ -443,7 +449,7 @@ WebUI.Component.prototype = {
                 var eventObject = {
                     event : {
                         eventName : eventName,
-                        target : $this,
+                        target : _this,
                         paramData : paramData,
                         result : res
                     }
@@ -451,13 +457,13 @@ WebUI.Component.prototype = {
                 if (WebUI.isNaN(afterScr) == false)
                     WebUI.runSrcipt(afterScr, _this, eventObject);
                 if (WebUI.isFun(okCallBack) == true)
-                    okCallBack.call($this, eventObject.event);
+                    okCallBack.call(_this, eventObject.event);
             },
             error : function(XMLHttpRequest, textStatus) {
                 var eventObject = {
                     event : {
                         eventName : eventName,
-                        target : $this,
+                        target : _this,
                         paramData : paramData,
                         errorID : null,
                         message : null,
@@ -477,7 +483,7 @@ WebUI.Component.prototype = {
                 if (WebUI.isNaN(errorScr) == false)
                     WebUI.runSrcipt(errorScr, _this, eventObject);
                 if (WebUI.isFun(errorCallBack) == true)
-                    errorCallBack.call($this, eventObject.event);
+                    errorCallBack.call(_this, eventObject.event);
             }
         });
     },
