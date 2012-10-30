@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.support;
+package org.more.webui.component;
 import java.util.List;
+import org.more.webui.component.values.MethodExpression;
 import org.more.webui.context.ViewContext;
 import org.more.webui.event.Event;
 import org.more.webui.event.EventListener;
-import org.more.webui.support.values.MethodExpression;
 import org.more.webui.web.PostFormEnum;
 /**
  * 所有组件的根，同时也负责保存所有视图参数。该组建不使用@UICom注解注册

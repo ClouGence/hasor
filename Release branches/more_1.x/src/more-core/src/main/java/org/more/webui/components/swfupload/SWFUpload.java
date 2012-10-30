@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.more.webui.components.swfupload;
+import org.more.webui.component.UIComponent;
+import org.more.webui.component.support.UICom;
 import org.more.webui.context.ViewContext;
-import org.more.webui.support.UICom;
-import org.more.webui.support.UIComponent;
 /**
  * 文件上传组建
  * @version : 2012-5-15

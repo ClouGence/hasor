@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package org.more.webui.components.page;
+import org.more.webui.component.UIComponent;
+import org.more.webui.component.support.UICom;
+import org.more.webui.component.values.AbstractValueHolder;
 import org.more.webui.context.ViewContext;
-import org.more.webui.support.UICom;
-import org.more.webui.support.UIComponent;
-import org.more.webui.support.values.AbstractValueHolder;
 /**
  * ·ÖÒ³×é½¨
  * @version : 2012-5-15

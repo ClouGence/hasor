@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.support;
+package org.more.webui.component;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,12 +22,13 @@ import java.util.List;
 import java.util.Map;
 import org.more.core.error.MoreDataException;
 import org.more.util.BeanUtil;
+import org.more.webui.component.values.AbstractValueHolder;
+import org.more.webui.component.values.ExpressionValueHolder;
+import org.more.webui.component.values.MethodExpression;
+import org.more.webui.component.values.StaticValueHolder;
 import org.more.webui.context.ViewContext;
 import org.more.webui.event.Event;
 import org.more.webui.event.EventListener;
-import org.more.webui.support.values.AbstractValueHolder;
-import org.more.webui.support.values.ExpressionValueHolder;
-import org.more.webui.support.values.StaticValueHolder;
 /**
 * 所有组件的根，这里拥有组件的所有关键方法。
 * @version : 2011-8-4
@@ -64,6 +65,8 @@ public abstract class UIComponent {
         render,
         /**表示是否渲染子组建（-）*/
         renderChildren,
+        /**当发生事件OnLoadData时触发，该事件允许用户通过任意组建从服务端装载数据到客户端。（RW）*/
+        onLoadDataEL,
     };
     public String getBeforeScript() {
         return this.getProperty(Propertys.beforeScript.name()).valueTo(String.class);
@@ -113,10 +116,28 @@ public abstract class UIComponent {
     public void setRenderChildren(boolean isRenderChildren) {
         this.getProperty(Propertys.renderChildren.name()).value(isRenderChildren);
     }
+    /**当企图装载数据时EL调用表达式（如果配置）*/
+    public String getOnLoadDataEL() {
+        return this.getProperty(Propertys.onLoadDataEL.name()).valueTo(String.class);
+    }
+    /**当企图装载数据时EL调用表达式（如果配置）*/
+    public void setOnLoadDataEL(String onLoadDataEL) {
+        this.getProperty(Propertys.onLoadDataEL.name()).value(onLoadDataEL);
+    }
+    private MethodExpression onLoadDataExp = null;
+    /**获取onLoadDataExp属性的{@link MethodExpression}对象。*/
+    public MethodExpression getOnLoadDataExpression() {
+        if (this.onLoadDataExp == null) {
+            String onLoadDataExpString = this.getOnLoadDataEL();
+            if (onLoadDataExpString == null || onLoadDataExpString.equals("")) {} else
+                this.onLoadDataExp = new MethodExpression(onLoadDataExpString);
+        }
+        return this.onLoadDataExp;
+    }
     /*-------------------------------------------------------------------------------核心方法*/
     /**获取用于附加的属性的Map对象*/
     public Map<String, Object> getAtts() {
-        return atts;
+        return this.atts;
     };
     /**获取组建类型*/
     public abstract String getComponentType();
@@ -234,7 +255,7 @@ public abstract class UIComponent {
         this.setPropertyEL(propertyName, elString, elString);
     };
     /**设置组建属性的值（该值的设置只会影响本次请求生命周期）。*/
-    public void setProperty(String propertyName, Object newValue) {
+    public void setProperty(String propertyName, String aa, Object newValue) {
         AbstractValueHolder value = this.getPropertys().get(propertyName);
         if (value == null)
             value = new StaticValueHolder();
@@ -268,6 +289,7 @@ public abstract class UIComponent {
         this.setPropertyMetaValue(Propertys.async.name(), true);//默认使用异步操作事件
         this.setPropertyMetaValue(Propertys.render.name(), true);
         this.setPropertyMetaValue(Propertys.renderChildren.name(), true);
+        this.addEventListener(Event.getEvent("OnLoadData"), new Event_OnLoadData());
     };
     /**组建被初始化标记*/
     private Boolean doInit = false;
@@ -424,3 +446,12 @@ public abstract class UIComponent {
         return array;
     };
 };
+/**负责处理OnLoadData事件的EL调用*/
+class Event_OnLoadData implements EventListener {
+    @Override
+    public void onEvent(Event event, UIComponent component, ViewContext viewContext) throws Throwable {
+        MethodExpression e = component.getOnLoadDataExpression();
+        if (e != null)
+            viewContext.sendObject(e.execute(component, viewContext));
+    }
+}

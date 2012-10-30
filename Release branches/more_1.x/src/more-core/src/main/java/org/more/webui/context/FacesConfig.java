@@ -17,10 +17,10 @@ package org.more.webui.context;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import org.more.util.StringConvertUtil;
+import org.more.webui.component.UIComponent;
 import org.more.webui.freemarker.parser.Hook_Include;
 import org.more.webui.freemarker.parser.Hook_UserTag;
 import org.more.webui.freemarker.parser.TemplateScanner;
-import org.more.webui.support.UIComponent;
 import org.more.webui.web.DefaultWebUIFactory;
 import org.more.webui.web.WebUIFactory;
 /**

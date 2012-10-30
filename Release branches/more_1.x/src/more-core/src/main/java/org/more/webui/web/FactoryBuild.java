@@ -17,6 +17,8 @@ package org.more.webui.web;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.more.util.ClassUtil;
+import org.more.webui.component.UIComponent;
+import org.more.webui.component.support.UICom;
 import org.more.webui.context.BeanManager;
 import org.more.webui.context.FacesConfig;
 import org.more.webui.context.FacesContext;
@@ -24,8 +26,6 @@ import org.more.webui.lifestyle.Lifecycle;
 import org.more.webui.lifestyle.PhaseListener;
 import org.more.webui.lifestyle.UIPhaseListener;
 import org.more.webui.render.RenderKit;
-import org.more.webui.support.UICom;
-import org.more.webui.support.UIComponent;
 import freemarker.template.TemplateModelException;
 /**
  * 

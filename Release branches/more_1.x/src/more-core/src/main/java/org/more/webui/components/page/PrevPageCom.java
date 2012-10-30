@@ -1,5 +1,5 @@
 package org.more.webui.components.page;
-import org.more.webui.support.UICom;
+import org.more.webui.component.support.UICom;
 /**
  * 分页组建：上一页
  * @version : 2012-5-15

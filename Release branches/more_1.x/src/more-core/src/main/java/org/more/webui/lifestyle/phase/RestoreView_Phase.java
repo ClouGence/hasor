@@ -15,10 +15,10 @@
  */
 package org.more.webui.lifestyle.phase;
 import java.util.List;
+import org.more.webui.component.UIViewRoot;
 import org.more.webui.context.ViewContext;
 import org.more.webui.lifestyle.Phase;
 import org.more.webui.lifestyle.PhaseID;
-import org.more.webui.support.UIViewRoot;
 import com.alibaba.fastjson.JSONObject;
 /**
  * 第2阶段，重塑UI组件状态。

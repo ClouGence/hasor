@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.more.webui.components.page;
+import org.more.webui.component.UIComponent;
 import org.more.webui.context.ViewContext;
-import org.more.webui.support.UIComponent;
 /**
  * ·ÖÒ³×é½¨£¬Ò³Âë
  * @version : 2012-5-15

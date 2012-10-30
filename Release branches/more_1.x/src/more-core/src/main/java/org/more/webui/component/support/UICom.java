@@ -13,15 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.event;
-import org.more.webui.component.UIComponent;
-import org.more.webui.context.ViewContext;
+package org.more.webui.component.support;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import org.more.webui.render.NoRender;
+import org.more.webui.render.Render;
 /**
-* 用于处理事件的事件监听器。
-* @version 2010-10-10
-* @author 赵永春 (zyc@byshell.org)
-*/
-public interface EventListener {
-    /**处理事件的处理方法，参数是要处理的事件。*/
-    public void onEvent(Event event, UIComponent component, ViewContext viewContext) throws Throwable;
-};
+ * 
+ * @version : 2012-10-30
+ * @author 赵永春 (zyc@byshell.org)
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface UICom {
+    /**设置该组建的标签名*/
+    public String tagName();
+    /**渲染器*/
+    public Class<? extends Render> renderType() default NoRender.class;
+}

@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.support;
+package org.more.webui.component;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.more.webui.render.NoRender;
-import org.more.webui.render.Render;
 /**
- * 
- * @version : 2012-6-25
+ * 在属性的相应get方法上标记该注解表明该属性不需要被同步到客户端。
+ * 如果被标记在set方法上则表明不接收状态重塑。
+ * @version : 2012-7-9
  * @author 赵永春 (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface UICom {
-    /**设置该组建的标签名*/
-    public String tagName();
-    /**渲染器*/
-    public Class<? extends Render> renderType() default NoRender.class;
-}
+@Target({ ElementType.METHOD })
+public @interface NoState {}

@@ -13,19 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.components.selectcheck;
+package org.more.webui.component;
 import java.util.List;
-import org.more.webui.component.NoState;
-import org.more.webui.component.UIInput;
-import org.more.webui.component.support.UICom;
 import org.more.webui.context.ViewContext;
 /**
- * 选择框多选组建。
+ * 用于表述从多个值中进行选择的组建模型（表单元素）。
  * @version : 2012-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
-@UICom(tagName = "ui_SelectCheck")
-public class SelectCheckBox extends UIInput {
+public abstract class UISelectInput extends UIInput {
     /**通用属性表*/
     public static enum Propertys {
         /** 数据（-）*/
@@ -34,38 +30,12 @@ public class SelectCheckBox extends UIInput {
         keyField,
         /**值字段（R）*/
         varField,
-        /**是否将标题列于选择框之前，默认false（R）*/
-        titleFirst,
-    }
-    @Override
-    public String getComponentType() {
-        return "ui_SelectCheck";
     }
     @Override
     protected void initUIComponent(ViewContext viewContext) {
         super.initUIComponent(viewContext);
-        this.setProperty(Propertys.keyField.name(), "key");
-        this.setProperty(Propertys.varField.name(), "value");
-        this.setProperty(Propertys.titleFirst.name(), false);
-    }
-    /**选择的值，(R)<br/>SelectValue属性是对value属性增强解释。
-     * 当value值为Object时selectvalue是一个只有一个元素的数组。
-     * 如果value为String则selectvalue会根据“，”对字符串拆分。
-     * 如果value为数组或集合则selectValue返回集合的数组形式。*/
-    public Object[] getSelectValue() {
-        Object var = this.getValue();
-        if (var == null || var.getClass().isArray() == false) {
-            if (var instanceof String)
-                return ((String) var).split(",");
-            return new Object[] { var };
-        }
-        Class<?> varType = var.getClass();
-        if (varType.isArray() == true)
-            return (Object[]) var;
-        else if (var instanceof List == true)
-            return ((List) var).toArray();
-        else
-            return null;
+        this.setPropertyMetaValue(Propertys.keyField.name(), "key");
+        this.setPropertyMetaValue(Propertys.varField.name(), "value");
     }
     @NoState
     public List<?> getListData() {
@@ -89,11 +59,31 @@ public class SelectCheckBox extends UIInput {
     public void setVarField(String varField) {
         this.getProperty(Propertys.varField.name()).value(varField);
     }
-    public boolean isTitleFirst() {
-        return this.getProperty(Propertys.titleFirst.name()).valueTo(Boolean.TYPE);
+    /**选择的唯一值，(R)<br/>getSelectValue是对{@link #getSelectValues()}方法的延伸。
+     * 该方法只会返回{@link #getSelectValues()}方法返回值的第一个元素，如果不存在这个元素则返回null。*/
+    public Object getSelectValue() {
+        Object[] returnData = getSelectValues();
+        if (returnData != null && returnData.length != 0)
+            return returnData[0];
+        return null;
     }
-    @NoState
-    public void setTitleFirst(boolean titleFirst) {
-        this.getProperty(Propertys.titleFirst.name()).value(titleFirst);
+    /**选择的值，(R)<br/>SelectValue属性是对value属性增强解释。
+     * 当value值为Object时selectvalue是一个只有一个元素的数组。
+     * 如果value为String则selectvalue会根据“，”对字符串拆分。
+     * 如果value为数组或集合则selectValue返回集合的数组形式。*/
+    public Object[] getSelectValues() {
+        Object var = this.getValue();
+        if (var == null || var.getClass().isArray() == false) {
+            if (var instanceof String)
+                return ((String) var).split(",");
+            return new Object[] { var };
+        }
+        Class<?> varType = var.getClass();
+        if (varType.isArray() == true)
+            return (Object[]) var;
+        else if (var instanceof List == true)
+            return ((List) var).toArray();
+        else
+            return null;
     }
 }

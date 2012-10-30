@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.more.webui.components.ajaxbutton;
+import org.more.webui.component.UIButton;
+import org.more.webui.component.support.UICom;
 import org.more.webui.context.ViewContext;
-import org.more.webui.support.UIButton;
-import org.more.webui.support.UICom;
 /**
  * ajax方式请求的button
  * @version : 2012-5-15

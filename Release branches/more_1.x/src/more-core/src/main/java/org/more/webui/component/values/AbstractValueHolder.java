@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.support.values;
+package org.more.webui.component.values;
 import org.more.util.StringConvertUtil;
+import org.more.webui.component.UIComponent;
 import org.more.webui.context.ViewContext;
-import org.more.webui.support.UIComponent;
 /**
  * 属性值操作类，该类使用线程隔离的方式操作每一个属性。
  * @version : 2012-5-11

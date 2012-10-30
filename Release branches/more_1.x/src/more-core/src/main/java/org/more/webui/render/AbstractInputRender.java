@@ -15,8 +15,8 @@
  */
 package org.more.webui.render;
 import java.util.Map;
+import org.more.webui.component.UIInput;
 import org.more.webui.context.ViewContext;
-import org.more.webui.support.UIInput;
 /**
  * 
  * @version : 2012-5-18

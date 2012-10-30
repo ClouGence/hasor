@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.more.webui.freemarker.parser;
+import org.more.webui.component.UIComponent;
 import org.more.webui.context.FacesContext;
-import org.more.webui.support.UIComponent;
 import freemarker.core.TemplateElement;
 import freemarker.template.Template;
 /**

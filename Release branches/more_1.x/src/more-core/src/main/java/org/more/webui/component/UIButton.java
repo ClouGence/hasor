@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.support;
+package org.more.webui.component;
+import org.more.webui.component.values.MethodExpression;
 import org.more.webui.context.ViewContext;
 import org.more.webui.event.Event;
 import org.more.webui.event.EventListener;
-import org.more.webui.support.values.MethodExpression;
 /**
  * Button
  * @version : 2012-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class UIButton extends UIComponent {
+public abstract class UIButton extends UIInput {
     /**通用属性表*/
     public enum Propertys {
         /**Action动作（RW）*/

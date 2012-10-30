@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.webui.components.page;
-import org.more.webui.support.UICom;
+import org.more.webui.component.support.UICom;
 /**
  * ·ÖÒ³×é½¨£ºÎ²Ò³
  * @version : 2012-5-15

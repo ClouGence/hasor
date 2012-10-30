@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package org.more.webui.components.text;
+import org.more.webui.component.NoState;
+import org.more.webui.component.UIInput;
+import org.more.webui.component.support.UICom;
 import org.more.webui.context.ViewContext;
-import org.more.webui.support.NoState;
-import org.more.webui.support.UICom;
-import org.more.webui.support.UIInput;
 /**
  * Text输入框，可以被配置为多行的或者单行的
  * @version : 2012-5-15

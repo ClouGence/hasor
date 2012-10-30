@@ -13,38 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.components.ajaxform;
+package org.more.webui.component;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.more.webui.component.UIComponent;
-import org.more.webui.component.UIInput;
-import org.more.webui.component.support.UICom;
 import org.more.webui.component.values.MethodExpression;
 import org.more.webui.context.ViewContext;
 import org.more.webui.event.Event;
 import org.more.webui.event.EventListener;
 /**
- * ajax方式请求的表单
+ * 表单组建模型
  * @version : 2012-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
-@UICom(tagName = "ui_AjaxForm")
-public class AjaxForm extends UIComponent {
+public abstract class UIForm extends UIComponent {
     /**通用属性表*/
     public enum Propertys {
         /**Action动作（RW）*/
         submitEL,
     }
     @Override
-    public String getComponentType() {
-        return "ui_AjaxForm";
-    }
-    @Override
     protected void initUIComponent(ViewContext viewContext) {
         super.initUIComponent(viewContext);
         this.addEventListener(AjaxForm_Event_OnSubmit.SubmitEvent, new AjaxForm_Event_OnSubmit());
-        this.setProperty(Propertys.submitEL.name(), null);
+        this.setPropertyMetaValue(Propertys.submitEL.name(), null);
     }
     /**获取form EL字符串*/
     public String getSubmitEL() {
@@ -84,7 +76,7 @@ class AjaxForm_Event_OnSubmit implements EventListener {
     public static Event SubmitEvent = Event.getEvent("OnSubmit");
     @Override
     public void onEvent(Event event, UIComponent component, ViewContext viewContext) throws Throwable {
-        MethodExpression e = ((AjaxForm) component).getSubmitExpression();
+        MethodExpression e = ((UIForm) component).getSubmitExpression();
         if (e != null)
             viewContext.sendObject(e.execute(component, viewContext));
     }

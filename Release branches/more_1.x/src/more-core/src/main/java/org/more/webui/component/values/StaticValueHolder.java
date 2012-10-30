@@ -13,17 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.support;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package org.more.webui.component.values;
+import org.more.webui.component.UIComponent;
+import org.more.webui.context.ViewContext;
 /**
- * 在属性的相应get方法上标记该注解表明该属性不需要被同步到客户端。
- * 如果被标记在set方法上则表明不接收状态重塑。
- * @version : 2012-7-9
+ * 静态值ValueHolder
+ * @version : 2012-5-11
  * @author 赵永春 (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD })
-public @interface NoState {}
+public class StaticValueHolder extends AbstractValueHolder {
+    //
+    public StaticValueHolder() {}
+    public StaticValueHolder(Object staticValue) {
+        this.setMetaValue(staticValue);
+    }
+    @Override
+    public boolean isUpdate() {
+        return false;
+    }
+    @Override
+    public boolean isReadOnly() {
+        return false;
+    }
+    @Override
+    public void updateModule(UIComponent component, ViewContext viewContext) {}
+}

@@ -17,9 +17,9 @@ package org.more.webui.freemarker.parser;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import org.more.webui.component.UIComponent;
+import org.more.webui.component.UIViewRoot;
 import org.more.webui.context.FacesContext;
-import org.more.webui.support.UIComponent;
-import org.more.webui.support.UIViewRoot;
 import freemarker.core.TemplateElement;
 import freemarker.template.Template;
 /**

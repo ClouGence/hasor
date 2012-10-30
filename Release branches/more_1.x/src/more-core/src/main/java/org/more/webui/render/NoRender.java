@@ -16,8 +16,8 @@
 package org.more.webui.render;
 import java.io.IOException;
 import java.io.Writer;
+import org.more.webui.component.UIComponent;
 import org.more.webui.context.ViewContext;
-import org.more.webui.support.UIComponent;
 import org.more.webui.tag.TemplateBody;
 import freemarker.template.TemplateException;
 /**
