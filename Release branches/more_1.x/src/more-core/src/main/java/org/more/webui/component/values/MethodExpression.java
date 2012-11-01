@@ -46,8 +46,8 @@ public class MethodExpression {
             Map<String, Object> viewEL = viewContext.getViewELContext();
             if (params != null) {
                 DecSequenceMap<String, Object> decMap = new DecSequenceMap<String, Object>();
-                decMap.addMap(viewEL);
                 decMap.addMap(params);
+                decMap.addMap(viewEL);
                 viewEL = decMap;
             }
             viewEL.put("this", component);

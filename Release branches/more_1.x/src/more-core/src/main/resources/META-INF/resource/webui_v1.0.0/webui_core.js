@@ -1,152 +1,157 @@
-﻿var WebUI;
-if (WebUI == undefined) {
-    WebUI = function(serverID) {
-        var res = $("[comid=" + serverID + "]");
-        if (res.length != 0)
-            if (WebUI.isNaN(res[0].uiObject) == true)
-                return WebUI.Component.create($(res[0]).attr('id'));
-            else
-                return res[0].uiObject;
-    };
-}
-WebUI.Base = "";
+﻿/*----------------------------------------------------------------------------------------------------常量定义*/
+if (typeof (WebUI_Var_Library) == 'undefined')
+    WebUI_Var_Library = null;// webui lib所处的目录
+var WebUI = function(serverID) {
+    var res = $("[comid=" + serverID + "]");
+    if (res.length != 0)
+        if (WebUI.isNaN(res[0].uiObject) == true)
+            return WebUI.Component.create($(res[0]).attr('id'));
+        else
+            return res[0].uiObject;
+};
 WebUI.init = function() {
     $('[comType]').each(function() {
         WebUI.Component.create($(this).attr('id'));
+    });
+    $('[comType]').each(function() {
+        this.uiObject.render();
     });
 };
 /* 客户端组建初始化 */
 $(WebUI.init);
 /*----------------------------------------------------------------------------------------------------util*/
-/** Web UI 工具方法 */
-WebUI.util = {
-    b64 : {
-        Chars : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@*-",
-        /* 对字符串做Base64编码。 */
-        encode64 : function(s) {
-            if (!s || s.length == 0)
-                return s;
-            var d = "";
-            var b = this.ucs2_utf8(s);
-            var b0, b1, b2, b3;
-            var len = b.length;
-            var i = 0;
-            while (i < len) {
-                var tmp = b[i++];
-                b0 = (tmp & 0xfc) >> 2;
-                b1 = (tmp & 0x03) << 4;
+/** 获取变量。 */
+WebUI.variable = function(varName) {
+    if (varName == 'WebUI_Var_Library')
+        return (typeof (WebUI_Var_Library) != 'undefined') ? WebUI_Var_Library : "";
+};
+/** Web UI Base64工具 */
+WebUI.Base64 = {
+    Chars : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@*-",
+    /* 对字符串做Base64编码。 */
+    encode64 : function(s) {
+        if (!s || s.length == 0)
+            return s;
+        var d = "";
+        var b = this.ucs2_utf8(s);
+        var b0, b1, b2, b3;
+        var len = b.length;
+        var i = 0;
+        while (i < len) {
+            var tmp = b[i++];
+            b0 = (tmp & 0xfc) >> 2;
+            b1 = (tmp & 0x03) << 4;
+            if (i < len) {
+                tmp = b[i++];
+                b1 |= (tmp & 0xf0) >> 4;
+                b2 = (tmp & 0x0f) << 2;
                 if (i < len) {
                     tmp = b[i++];
-                    b1 |= (tmp & 0xf0) >> 4;
-                    b2 = (tmp & 0x0f) << 2;
-                    if (i < len) {
-                        tmp = b[i++];
-                        b2 |= (tmp & 0xc0) >> 6;
-                        b3 = tmp & 0x3f;
-                    } else
-                        b3 = 64; // 1 byte "-" is supplement
+                    b2 |= (tmp & 0xc0) >> 6;
+                    b3 = tmp & 0x3f;
                 } else
-                    b2 = b3 = 64; // 2 bytes "-" are supplement
-                d += this.Chars.charAt(b0);
-                d += this.Chars.charAt(b1);
-                d += this.Chars.charAt(b2);
-                d += this.Chars.charAt(b3);
-            }
-            return d;
-        },
-        /* 对字符串做Base64解码。 */
-        uncoded64 : function(s) {
-            if (!s)
-                return null;
-            var len = s.length;
-            if (len % 4 != 0)
-                throw s + " is not a valid Base64 string.";
-            var b = new Array();
-            var i = 0, j = 0, e = 0, c, tmp;
-            while (i < len) {
-                c = this.Chars.indexOf(s.charAt(i++));
-                tmp = c << 18;
-                c = this.Chars.indexOf(s.charAt(i++));
-                tmp |= c << 12;
-                c = this.Chars.indexOf(s.charAt(i++));
-                if (c < 64) {
-                    tmp |= c << 6;
-                    c = this.Chars.indexOf(s.charAt(i++));
-                    if (c < 64)
-                        tmp |= c;
-                    else
-                        e = 1;
-                } else {
-                    e = 2;
-                    i++;
-                }
-                b[j + 2] = tmp & 0xff;
-                tmp >>= 8;
-                b[j + 1] = tmp & 0xff;
-                tmp >>= 8;
-                b[j + 0] = tmp & 0xff;
-                j += 3;
-            }
-            b.splice(b.length - e, e);
-            return this.utf8_ucs2(b);
-        },
-        /**/
-        ucs2_utf8 : function(s) {
-            if (!s)
-                return null;
-            var d = new Array();
-            if (s == "")
-                return d;
-            var c = 0, i = 0, j = 0;
-            var len = s.length;
-            while (i < len) {
-                c = s.charCodeAt(i++);
-                if (c <= 0x7f)
-                    // 1 byte
-                    d[j++] = c;
-                else if ((c >= 0x80) && (c <= 0x7ff)) {
-                    // 2 bytes
-                    d[j++] = ((c >> 6) & 0x1f) | 0xc0;
-                    d[j++] = (c & 0x3f) | 0x80;
-                } else {
-                    // 3 bytes
-                    d[j++] = (c >> 12) | 0xe0;
-                    d[j++] = ((c >> 6) & 0x3f) | 0x80;
-                    d[j++] = (c & 0x3f) | 0x80;
-                }
-            }// end whil
-            return d;
-        },
-        /**/
-        utf8_ucs2 : function(s) {
-            if (!s)
-                return null;
-            var len = s.length;
-            if (len == 0)
-                return "";
-            var d = "";
-            var c = 0, i = 0, tmp = 0;
-            while (i < len) {
-                c = s[i++];
-                if ((c & 0xe0) == 0xe0) {
-                    // 3 bytes
-                    tmp = (c & 0x0f) << 12;
-                    c = s[i++];
-                    tmp |= ((c & 0x3f) << 6);
-                    c = s[i++];
-                    tmp |= (c & 0x3f);
-                } else if ((c & 0xc0) == 0xc0) {
-                    // 2 bytes
-                    tmp = (c & 0x1f) << 6;
-                    c = s[i++];
-                    tmp |= (c & 0x3f);
-                } else
-                    // 1 byte
-                    tmp = c;
-                d += String.fromCharCode(tmp);
-            }
-            return d;
+                    b3 = 64; // 1 byte "-" is supplement
+            } else
+                b2 = b3 = 64; // 2 bytes "-" are supplement
+            d += this.Chars.charAt(b0);
+            d += this.Chars.charAt(b1);
+            d += this.Chars.charAt(b2);
+            d += this.Chars.charAt(b3);
         }
+        return d;
+    },
+    /* 对字符串做Base64解码。 */
+    uncoded64 : function(s) {
+        if (!s)
+            return null;
+        var len = s.length;
+        if (len % 4 != 0)
+            throw s + " is not a valid Base64 string.";
+        var b = new Array();
+        var i = 0, j = 0, e = 0, c, tmp;
+        while (i < len) {
+            c = this.Chars.indexOf(s.charAt(i++));
+            tmp = c << 18;
+            c = this.Chars.indexOf(s.charAt(i++));
+            tmp |= c << 12;
+            c = this.Chars.indexOf(s.charAt(i++));
+            if (c < 64) {
+                tmp |= c << 6;
+                c = this.Chars.indexOf(s.charAt(i++));
+                if (c < 64)
+                    tmp |= c;
+                else
+                    e = 1;
+            } else {
+                e = 2;
+                i++;
+            }
+            b[j + 2] = tmp & 0xff;
+            tmp >>= 8;
+            b[j + 1] = tmp & 0xff;
+            tmp >>= 8;
+            b[j + 0] = tmp & 0xff;
+            j += 3;
+        }
+        b.splice(b.length - e, e);
+        return this.utf8_ucs2(b);
+    },
+    /**/
+    ucs2_utf8 : function(s) {
+        if (!s)
+            return null;
+        var d = new Array();
+        if (s == "")
+            return d;
+        var c = 0, i = 0, j = 0;
+        var len = s.length;
+        while (i < len) {
+            c = s.charCodeAt(i++);
+            if (c <= 0x7f)
+                // 1 byte
+                d[j++] = c;
+            else if ((c >= 0x80) && (c <= 0x7ff)) {
+                // 2 bytes
+                d[j++] = ((c >> 6) & 0x1f) | 0xc0;
+                d[j++] = (c & 0x3f) | 0x80;
+            } else {
+                // 3 bytes
+                d[j++] = (c >> 12) | 0xe0;
+                d[j++] = ((c >> 6) & 0x3f) | 0x80;
+                d[j++] = (c & 0x3f) | 0x80;
+            }
+        }// end whil
+        return d;
+    },
+    /**/
+    utf8_ucs2 : function(s) {
+        if (!s)
+            return null;
+        var len = s.length;
+        if (len == 0)
+            return "";
+        var d = "";
+        var c = 0, i = 0, tmp = 0;
+        while (i < len) {
+            c = s[i++];
+            if ((c & 0xe0) == 0xe0) {
+                // 3 bytes
+                tmp = (c & 0x0f) << 12;
+                c = s[i++];
+                tmp |= ((c & 0x3f) << 6);
+                c = s[i++];
+                tmp |= (c & 0x3f);
+            } else if ((c & 0xc0) == 0xc0) {
+                // 2 bytes
+                tmp = (c & 0x1f) << 6;
+                c = s[i++];
+                tmp |= (c & 0x3f);
+            } else
+                // 1 byte
+                tmp = c;
+            d += String.fromCharCode(tmp);
+        }
+        return d;
     }
 };
 /** 判断目标是否为空、未定义、空字符串 */
@@ -318,6 +323,16 @@ WebUI.Component.$extends = function(newType, superName, define) {
             newFo[k] = define[k];
     else if (WebUI.isFun(define) == true)
         define.call(newFo);
+    // C.代理构造方法，目的是为了让构造方法可以传递调用。
+    if (WebUI.isFun(newFo["<init>"]) == false)
+        newFo["<init>"] = function() {};
+    var userInit = newFo["<init>"];
+    newFo["<init>"] = function(realThis) {
+        if (WebUI.isNaN(newFo.superClass) == false)
+            newFo.superClass["<init>"].call(realThis, realThis);// 根对象是没有superClass的所以要加上判断。
+        userInit.call(realThis, realThis);
+    };
+    // D.保存定义的对象
     WebUI.Component[newType] = newFo;
     return newFo;
 };
@@ -348,9 +363,92 @@ WebUI.Component.create = function(clientID) {
     };
     // C.调用构造方法
     if (WebUI.isFun(newFo["<init>"]) == true)
-        newFo["<init>"]();
+        newFo["<init>"](newFo);
     $("#" + clientID)[0].uiObject = newFo;
     return newFo;
+};
+/** 状态管理 */
+WebUI.Component.State = function(component) {
+    var target = component;
+    /** 获取状态对象操作的那个组建。 */
+    this.getTarget = function() {
+        return target;
+    };
+    /** 获取组建状态的编码字符串。 */
+    this.getCode = function() {
+        return $(this.getTarget().getElement()).attr("uiState");
+    };
+    /** 设置组建状态的编码字符串。 */
+    this.setCode = function(newState) {
+        return $(this.getTarget().getElement()).attr("uiState", newState);
+    };
+    /** 获取组建状态数据jsonMap */
+    this.getArray = function() {
+        var comStateData = this.getCode();
+        if (WebUI.isNaN(comStateData) == true) {
+            // TODO : 从全局的ViewData中获取状态数据。
+        }
+        return eval(WebUI.Base64.uncoded64(comStateData));
+    };
+    /** 获取组建的某个状态属性。 */
+    this.get = function(attName) {
+        var array = this.getArray();
+        if (WebUI.isArray(array) == false)
+            return null;
+        if (array.length == 0)
+            return null;
+        return array[0][attName];
+    };
+    /** 在客户端改变组建状态（用于组建回溯上一个视图状态的数据），值得注意的是服务端只会处理在服务端定义过的属性。 */
+    this.set = function(attName, newValue) {
+        var array = this.getArray();
+        if (WebUI.isArray(array) == false)
+            array = [];
+        if (array.length == 0)
+            array.push({});// 自身状态
+        if (array.length == 1)
+            array.push({});// 孩子状态
+        // 写
+        array[0][attName] = newValue;
+        var newCode = WebUI.Base64.encode64(JSON.stringify(array));
+        this.setCode(newCode);
+    };
+};
+/** Var携带的属性集 */
+WebUI.Component.Variable = function(component) {
+    var target = component;
+    /** 获取属性集对象操作的那个组建。 */
+    this.getTarget = function() {
+        return target;
+    };
+    var dataMap = {};
+    /** 获取Variable的Map形式 */
+    this.getDataMap = function() {
+        return dataMap;
+    };
+    /** 清空Variable内部的所有属性 */
+    this.clear = function() {
+        dataMap = {};
+    };
+    /** 获取组建状态数据jsonMap */
+    this.getArray = function() {
+        var array = new Array();
+        var map = this.getDataMap();
+        for ( var k in map) {
+            var obj = {};
+            obj[k] = map[k];
+            array.push(obj);
+        }
+        return array;
+    };
+    /** 获取组建的某个状态属性。 */
+    this.get = function(attName) {
+        return this.getDataMap()[attName];
+    };
+    /** 在客户端改变组建状态（用于组建回溯上一个视图状态的数据），值得注意的是服务端只会处理在服务端定义过的属性。 */
+    this.set = function(attName, newValue) {
+        this.getDataMap()[attName] = newValue;
+    };
 };
 /** 组建原型 */
 WebUI.Component.prototype = {
@@ -432,7 +530,7 @@ WebUI.Component.prototype = {
         sendData["WebUI_PF_Ajax"] = true;
         sendData["WebUI_PF_Event"] = eventName;/* 引发的事件 */
         sendData["WebUI_PF_Render"] = "No";/* 不执行渲染 */
-        sendData["WebUI_PF_State"] = WebUI.util.b64.uncoded64(this.getState().getCode());
+        sendData["WebUI_PF_State"] = WebUI.Base64.uncoded64(this.getState().getCode());
         sendData["WebUI_PF_Invoke"] = null;
         /* ajax请求 */
         var afterScr = this.afterScript();
@@ -502,8 +600,40 @@ WebUI.Component.prototype = {
         });
     },
     /** 定义一个组建属性 */
-    defineProperty : function(name, readMethod, writeMethod) {
-    // TODO
+    defineProperty : function(property, p1, p2) {
+        if (WebUI.isNaN(p1) == true)
+            throw new "除了属性名称之外必须指定一个属性访问权限参数或者一个到两个属性读写方法.";
+        //
+        if (typeof (p1) == 'string') {
+            // 1.简单的属性添加。
+            this[property] = function(newValue) {
+                var name = arguments.callee.propertyName;// 获取绑定在函数自身上的name属性，该属性是由defineProperty方法赋予的。
+                var access = arguments.callee.access;// 获取绑定在函数自身上的name属性，该属性是由defineProperty方法赋予的。
+                if (typeof (newValue) != 'undefined') {
+                    if (/.*[Ww].*/.test(access) == true)
+                        this.getState().set(name, newValue);// set method
+                } else {
+                    if (/.*[Rr].*/.test(access) == true)
+                        return this.getState().get(name);// get method
+                }
+            };
+            this[property].propertyName = property;
+            this[property].access = p1;
+        } else if (WebUI.isFun(p1) == true) {
+            // 2.自定义get/set方法的属性添加。
+            this[property] = function(newValue) {
+                var readMethod = arguments.callee.readMethod;// 获取绑定在函数自身上的name属性，该属性是由defineProperty方法赋予的。
+                var writeMethod = arguments.callee.writeMethod;// 获取绑定在函数自身上的name属性，该属性是由defineProperty方法赋予的。
+                //
+                if (typeof (newValue) != 'undefined')
+                    writeMethod.call(this, newValue);// set method
+                else
+                    return readMethod.call(this);// get method
+            };
+            this[property].readMethod = (p1 == null) ? jQuery.noop : p1;
+            this[property].writeMethod = (p2 == null) ? jQuery.noop : p2;
+        } else
+            throw "未明确或不支持的类型.预期是string\function";
     },
     /** 从服务器上载入数据 */
     loadData : function(paramData, funOK, funError) {
@@ -522,109 +652,24 @@ WebUI.Component.prototype = {
                 });
         });
     },
-    /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-    /** 客户端在请求之前进行的调用，返回false取消本次ajax请求，只读 */
-    beforeScript : function() {
-        return this.getState().get("beforeScript");
-    },
-    /** 客户端脚本回调函数，只读 */
-    afterScript : function() {
-        return this.getState().get("afterScript");
-    },
-    /** 调用错误回调函数，只读 */
-    errorScript : function() {
-        return this.getState().get("errorScript");
-    },
-    /** Ajax是否使用同步操作，只读 */
-    async : function() {
-        return this.getState().get("async");
+    /** 执行组建渲染 */
+    render : function() {},
+    /** 构造方法 */
+    "<init>" : function() {
+        /** 客户端在请求之前进行的调用，返回false取消本次ajax请求（R） */
+        this.defineProperty("beforeScript", "R");
+        /** 客户端脚本回调函数（R） */
+        this.defineProperty("afterScript", "R");
+        /** 调用错误回调函数（R） */
+        this.defineProperty("errorScript", "R");
+        /** Ajax是否使用同步操作（R） */
+        this.defineProperty("async", "R");
+        /** 当发生事件OnLoadData时触发，该事件允许用户通过任意组建从服务端装载数据到客户端。（R） */
+        this.defineProperty("onLoadDataEL", "R");
     }
 };
-/*----------------------------------------------------------------------------------------------------状态管理*/
-WebUI.Component.State = function(component) {
-    var target = component;
-    /** 获取状态对象操作的那个组建。 */
-    this.getTarget = function() {
-        return target;
-    };
-    /** 获取组建状态的编码字符串。 */
-    this.getCode = function() {
-        return $(this.getTarget().getElement()).attr("uiState");
-    };
-    /** 设置组建状态的编码字符串。 */
-    this.setCode = function(newState) {
-        return $(this.getTarget().getElement()).attr("uiState", newState);
-    };
-    /** 获取组建状态数据jsonMap */
-    this.getArray = function() {
-        var comStateData = this.getCode();
-        if (WebUI.isNaN(comStateData) == true) {
-            // TODO : 从全局的ViewData中获取状态数据。
-        }
-        return eval(WebUI.util.b64.uncoded64(comStateData));
-    };
-    /** 获取组建的某个状态属性。 */
-    this.get = function(attName) {
-        var array = this.getArray();
-        if (WebUI.isArray(array) == false)
-            return null;
-        if (array.length == 0)
-            return null;
-        return array[0][attName];
-    };
-    /** 在客户端改变组建状态（用于组建回溯上一个视图状态的数据），值得注意的是服务端只会处理在服务端定义过的属性。 */
-    this.set = function(attName, newValue) {
-        var array = this.getArray();
-        if (WebUI.isArray(array) == false)
-            array = [];
-        if (array.length == 0)
-            array.push({});// 自身状态
-        if (array.length == 1)
-            array.push({});// 孩子状态
-        // 写
-        array[0][attName] = newValue;
-        var newCode = WebUI.util.b64.encode64(JSON.stringify(array));
-        this.setCode(newCode);
-    };
-};
-/*----------------------------------------------------------------------------------------------------Var携带的属性集*/
-WebUI.Component.Variable = function(component) {
-    var target = component;
-    /** 获取属性集对象操作的那个组建。 */
-    this.getTarget = function() {
-        return target;
-    };
-    var dataMap = {};
-    /** 获取Variable的Map形式 */
-    this.getDataMap = function() {
-        return dataMap;
-    };
-    /** 清空Variable内部的所有属性 */
-    this.clear = function() {
-        dataMap = {};
-    };
-    /** 获取组建状态数据jsonMap */
-    this.getArray = function() {
-        var array = new Array();
-        var map = this.getDataMap();
-        for ( var k in map) {
-            var obj = {};
-            obj[k] = map[k];
-            array.push(obj);
-        }
-        return array;
-    };
-    /** 获取组建的某个状态属性。 */
-    this.get = function(attName) {
-        return this.getDataMap()[attName];
-    };
-    /** 在客户端改变组建状态（用于组建回溯上一个视图状态的数据），值得注意的是服务端只会处理在服务端定义过的属性。 */
-    this.set = function(attName, newValue) {
-        this.getDataMap()[attName] = newValue;
-    };
-};
 /*----------------------------------------------------------------------------------------------------核心提供的组建模型*/
-/* UIComponent Component（象征性作用） */
+/* UIComponent Component（所有组建的根） */
 /* -------------------------------------------------------------------- */
 WebUI.Component.$extends("UIComponent", "", {
     /** !关于! */
@@ -655,7 +700,7 @@ WebUI.Component.$extends("UIForm", "UIComponent", {
             var uio = this.uiObject;
             if (uio.isForm() == false)
                 return;
-            paramData[uio.componentPath + ":value"] = uio.getValue();
+            paramData[uio.componentPath + ":value"] = uio.value();
         });
         // B.引发OnSubmit事件
         var $this = this;
@@ -681,22 +726,30 @@ WebUI.Component.$extends("UIForm", "UIComponent", {
             var uio = this.uiObject;
             if (uio.isForm() == false)
                 return;
-            paramData[uio.getName()] = uio.getValue();
+            paramData[uio.getName()] = uio.value();
         });
         return paramData;
+    },
+    /** 构造方法 */
+    "<init>" : function() {
+        var e = this.getElement();
+        if (e.tagName == "form")
+            if (WebUI.isNaN($(e).attr('onsubmit')) == true)
+                this.bindEvent("submit", this.onsubmit);
     }
 });
 /* -------------------------------------------------------------------- */
 /* UIOutput Component */
 /* -------------------------------------------------------------------- */
 WebUI.Component.$extends("UIOutput", "UIComponent", {
-    /** 获取表单值（该方法不会引发State变化） */
-    getValue : function() {
-        return $(this.getElement()).attr("value");
-    },
-    /** 设置表单值（该方法不会引发State变化） */
-    setValue : function(newValue) {
-        $(this.getElement()).attr("value", newValue);
+    /** 构造方法 */
+    "<init>" : function() {
+        this.defineProperty("value", function() {
+            return this.getState().get("value");
+        }, function(newValue) {
+            this.getState().set("value", newValue);
+            $(this.getElement()).html(newValue);
+        });
     }
 });
 /* -------------------------------------------------------------------- */
@@ -708,7 +761,9 @@ WebUI.Component.$extends("UIInput", "UIOutput", {
         if (WebUI.isNaN(this.getState().get("onChangeEL")) == true)
             return;
         var paramData = {};
-        paramData[this.componentID + ":value"] = this.getValue();
+        var newValue = $(this.getElement()).attr("value");
+        paramData[this.componentID + ":value"] = newValue;
+        this.value(newValue);
         this.doEvent("OnChange", paramData, function(event) {
         /* TODO OnChange , OK CallBack. */
         }, function(event) {
@@ -717,7 +772,7 @@ WebUI.Component.$extends("UIInput", "UIOutput", {
     },
     /** （重写方法）返回一个值用于表示是否为一个表单元素（只要定义了name属性就成为表单元素） */
     isForm : function() {
-        return !WebUI.isNaN(this.getName());
+        return !WebUI.isNaN(this.name());
     },
     /** 验证表单值内容 */
     doVerification : function() {
@@ -725,40 +780,64 @@ WebUI.Component.$extends("UIInput", "UIOutput", {
         if (WebUI.isNaN(ver) == true)
             return true;
         var verRegExp = new RegExp(ver);
-        return verRegExp.test(this.getValue());
+        return verRegExp.test(this.value());
     },
-    /** 获取表单名（该方法不会引发State变化） */
-    getName : function() {
-        return $(this.getElement()).attr("name");
-    },
-    /** 设置表单名（该方法不会引发State变化） */
-    setName : function(newName) {
-        $(this.getElement()).attr("name", newName);
+    /** 构造方法 */
+    "<init>" : function() {
+        var e = this.getElement();
+        if (e.tagName == "input" || e.tagName == "textArea" || e.tagName == "select")
+            // event
+            if (WebUI.isNaN($(e).attr('onchange')) == true)
+                this.bindEvent("change", this.onchange);
+        /** 值（RW） */
+        this.defineProperty("value", function() {
+            return $(this.getElement()).attr("value");
+        }, function(newValue) {
+            $(this.getElement()).attr("value", newValue);
+        });
+        /** 表单名（RW） */
+        this.defineProperty("name", function() {
+            return $(this.getElement()).attr("name");
+        }, function(newName) {
+            $(this.getElement()).attr("name", newName);
+        });
+        /** 验证输入数据的正则表达式（RW） */
+        this.defineProperty("verification", "RW");
+        /** 当发生事件OnChange时（RW） */
+        this.defineProperty("onChangeEL", "RW");
     }
 });
 /* -------------------------------------------------------------------- */
 /* UIButton Component */
 /* -------------------------------------------------------------------- */
 WebUI.Component.$extends("UIButton", "UIInput", {
-    /** 获取显示名称（该方法不会引发State变化） */
-    getTitle : function() {
-        return $(this.getElement()).attr("title");
+    /** 引发标签的click事件。 */
+    click : function(params, callBackFun, errorFun) {
+        this.doEvent("OnAction", params, callBackFun, errorFun);
     },
-    /** 获取显示名称（该方法不会引发State变化） */
-    setTitle : function(newTitle) {
-        $(this.getElement()).attr("title", newTitle);
+    /** 标签元素的click事件处理程序。 */
+    onclick : function() {
+        this.click({}, function(event) {
+        /* TODO OnChange , OK CallBack. */
+        }, function(event) {
+        /* TODO OnChange , Error CallBack. */
+        });
+    },
+    /** 构造方法 */
+    "<init>" : function() {
+        if (WebUI.isNaN($(this.getElement()).attr('onclick')) == true)
+            this.bindEvent("click", this.onclick);
     }
 });
 /* -------------------------------------------------------------------- */
 /* UISelectInput Component */
 /* -------------------------------------------------------------------- */
 WebUI.Component.$extends("UISelectInput", "UIInput", {
-    /** 显示名称字段（R） */
-    getKeyField : function() {
-        return this.getState().get("keyField");
-    },
-    /** 值字段（R） */
-    getVarField : function() {
-        return this.getState().get("varField");
+    /** 构造方法 */
+    "<init>" : function() {
+        /** 显示名称字段（R） */
+        this.defineProperty("keyField", "RW");
+        /** 值字段（R） */
+        this.defineProperty("varField", "RW");
     }
 });

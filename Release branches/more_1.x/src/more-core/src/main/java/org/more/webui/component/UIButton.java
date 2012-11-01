@@ -28,22 +28,13 @@ public abstract class UIButton extends UIInput {
     /**通用属性表*/
     public enum Propertys {
         /**Action动作（-）*/
-        actionEL,
-        /**显示的名称（RW）*/
-        title
+        actionEL
     }
     @Override
     protected void initUIComponent(ViewContext viewContext) {
         super.initUIComponent(viewContext);
         this.setPropertyMetaValue(Propertys.actionEL.name(), null);
-        this.setPropertyMetaValue(Propertys.title.name(), "");
         this.addEventListener(UIButton_Event_OnAction.ActionEvent, new UIButton_Event_OnAction());
-    }
-    public String getTitle() {
-        return this.getProperty(Propertys.title.name()).valueTo(String.class);
-    }
-    public void setTitle(String title) {
-        this.getProperty(Propertys.title.name()).value(title);
     }
     /**获取Action EL字符串*/
     @NoState
