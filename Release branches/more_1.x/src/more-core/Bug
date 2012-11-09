@@ -23,7 +23,6 @@
 Bug:
   1.classcode-目前生称的方法中不支持基本类型。原因不明。
   2.classcode-对于重复使用ClassCode的字节码修改有异常。
-  3.json对字符串的反序列化有问题在遇到多个引号的情况下逻辑混乱。
 /-----------------------------------------------/
 more core
   1.增加了ognl表达式语言框架。
@@ -45,10 +44,5 @@ classcode v2.0
   3.可以增加一个代理属性，通过接口实现的方法来操控属性的get、set。
   4.增加了before,returnning,throwing三个切点的监听器。
   5.改进了aopFilter接口注入的方法。
-json v2.0
-  1.更换了JsonUtil类，提供了一个更友好的API。
-copybean v2.0
-  1.重写了copybean。
-  2.修正了大量bug。
-  3.支持自定义属性类型的读写器。
-  4.支持自定义格式转换。
+删除了 json
+删除了 copybean。
