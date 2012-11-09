@@ -204,7 +204,6 @@ public class ViewContext extends HashMap<String, Object> {
     private void pushClient(int stateNumber, Object returnData) throws IOException {
         if (this.getEvent() != null) {
             String sendDataStr = JSONObject.toJSONString(returnData);
-            //            String sendDataStr = AppUtil.getj.toJSONString(returnData);
             this.getHttpResponse().setStatus(stateNumber);
             this.getHttpResponse().getWriter().write(sendDataStr);
         }

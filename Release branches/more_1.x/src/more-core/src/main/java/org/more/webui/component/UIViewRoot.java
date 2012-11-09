@@ -21,7 +21,9 @@ import org.more.webui.event.Event;
 import org.more.webui.event.EventListener;
 import org.more.webui.web.PostFormEnum;
 /**
- * 所有组件的根，同时也负责保存所有视图参数。该组建不使用@UICom注解注册
+ * <b>组建模型</b>：所有组件的根，同时也负责保存所有视图参数。该组建不使用@UICom注解注册。
+ * <br><b>服务端事件</b>：OnInvoke
+ * <br><b>渲染器</b>：无
  * @version : 2012-3-29
  * @author 赵永春 (zyc@byshell.org)
  */

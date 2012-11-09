@@ -32,7 +32,9 @@ import org.more.webui.event.Event;
 import org.more.webui.event.EventListener;
 import org.more.webui.lifestyle.phase.InitView_Phase;
 /**
-* 所有组件的根，这里拥有组件的所有关键方法。
+ * <b>组建模型</b>：所有组件的根，这里拥有组件的所有关键方法。
+ * <br><b>服务端事件</b>：OnLoadData
+ * <br><b>渲染器</b>：无
 * @version : 2011-8-4
 * @author 赵永春 (zyc@byshell.org)
 */
@@ -154,7 +156,7 @@ public abstract class UIComponent {
     public Map<String, Object> getAtts() {
         return this.atts;
     };
-    /**获取组建类型*/
+    /**获取组建类型，每一个UI组建都应该具备一个独一无二的componentType，这个ID是用来表示组建类型。*/
     public abstract String getComponentType();
     /**获取组建在组建树中的位置格式为：/1/3/4/2*/
     public String getComponentPath() {

@@ -15,15 +15,20 @@
  */
 package org.more.webui.components.page;
 import org.more.webui.component.support.UICom;
+import org.more.webui.components.page.PageCom.Mode;
 /**
  * 分页组建：下一页
  * @version : 2012-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
-@UICom(tagName = "ui_pNext")
-public class NextPageCom extends AbstractItemCom {
+@UICom(tagName = "ui_pNext", renderType = AbstractItemRender.class)
+public class NextPageCom extends AbstractItem {
     @Override
     public String getComponentType() {
         return "ui_pNext";
+    }
+    @Override
+    protected Mode getRenderMode() {
+        return Mode.Next;
     }
 }

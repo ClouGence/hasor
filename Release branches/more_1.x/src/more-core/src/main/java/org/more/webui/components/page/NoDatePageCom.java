@@ -15,15 +15,20 @@
  */
 package org.more.webui.components.page;
 import org.more.webui.component.support.UICom;
+import org.more.webui.components.page.PageCom.Mode;
 /**
  * 分页组建，无数据
  * @version : 2012-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
-@UICom(tagName = "ui_pNoDate")
-public class NoDatePageCom extends AbstractItemCom {
+@UICom(tagName = "ui_pNoDate", renderType = AbstractItemRender.class)
+public class NoDatePageCom extends AbstractItem {
     @Override
     public String getComponentType() {
         return "ui_pNoDate";
+    }
+    @Override
+    protected Mode getRenderMode() {
+        return Mode.NoDate;
     }
 }

@@ -19,8 +19,12 @@ import org.more.webui.component.values.MethodExpression;
 import org.more.webui.context.ViewContext;
 import org.more.webui.event.Event;
 import org.more.webui.event.EventListener;
+import org.more.webui.render.LinkButtonRender;
+import org.more.webui.render.inputs.ButtonInputRender;
 /**
- * 按钮组建模型（表单元素）。
+ * <b>组建模型</b>：按钮组建模型（表单元素）。
+ * <br><b>服务端事件</b>：OnAction
+ * <br><b>渲染器</b>：{@link ButtonInputRender}、{@link LinkButtonRender}
  * @version : 2012-5-15
  * @author 赵永春 (zyc@byshell.org)
  */

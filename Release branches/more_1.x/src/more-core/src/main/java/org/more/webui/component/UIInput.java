@@ -14,12 +14,23 @@
  * limitations under the License.
  */
 package org.more.webui.component;
-import org.more.webui.component.values.MethodExpression;
 import org.more.webui.context.ViewContext;
-import org.more.webui.event.Event;
-import org.more.webui.event.EventListener;
+import org.more.webui.render.inputs.ButtonInputRender;
+import org.more.webui.render.inputs.CheckboxInputRender;
+import org.more.webui.render.inputs.FileInputRender;
+import org.more.webui.render.inputs.HideInputRender;
+import org.more.webui.render.inputs.ImageInputRender;
+import org.more.webui.render.inputs.PasswordInputRender;
+import org.more.webui.render.inputs.RadioInputRender;
+import org.more.webui.render.inputs.ResetInputRender;
+import org.more.webui.render.inputs.SubmitInputRender;
+import org.more.webui.render.inputs.TextInputRender;
 /**
- * 用于表述带有输入输出功能的组建模型（表单元素）。
+ * <b>组建模型</b>：用于表述带有输入输出功能的组建模型（表单元素）。
+ * <br><b>服务端事件</b>：无
+ * <br><b>渲染器</b>：{@link ButtonInputRender}、{@link CheckboxInputRender}、{@link FileInputRender}、
+ * {@link HideInputRender}、{@link ImageInputRender}、{@link PasswordInputRender}、{@link RadioInputRender}、
+ * {@link ResetInputRender}、{@link SubmitInputRender}、{@link TextInputRender}
  * @version : 2012-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -30,16 +41,12 @@ public abstract class UIInput extends UIOutput {
         name,
         /**验证输入数据的正则表达式（RW）*/
         verification,
-        /**当发生事件OnChange时（RW）*/
-        onChangeEL,
     }
     @Override
     protected void initUIComponent(ViewContext viewContext) {
         super.initUIComponent(viewContext);
         this.setPropertyMetaValue(Propertys.name.name(), null);
         this.setPropertyMetaValue(Propertys.verification.name(), null);
-        this.setPropertyMetaValue(Propertys.onChangeEL.name(), null);
-        this.addEventListener(Event.getEvent("OnChange"), new Event_OnChange());
     }
     /*-------------------------------------------------------------------------------*/
     /**获取组建表单名*/
@@ -50,14 +57,6 @@ public abstract class UIInput extends UIOutput {
     public void setName(String name) {
         this.getProperty(Propertys.name.name()).value(name);
     }
-    /**当组建值发生改变之后会ajax调用该表达式（如果配置）*/
-    public String getOnChangeEL() {
-        return this.getProperty(Propertys.onChangeEL.name()).valueTo(String.class);
-    }
-    /**设置一个EL表达式该表达式会当组建值发生改变之后调用（如果配置）*/
-    public void setOnChangeEL(String onChangeEL) {
-        this.getProperty(Propertys.onChangeEL.name()).value(onChangeEL);
-    }
     /**验证,正则表达式（如果配置）*/
     public String getVerification() {
         return this.getProperty(Propertys.verification.name()).valueTo(String.class);
@@ -65,24 +64,5 @@ public abstract class UIInput extends UIOutput {
     /**验证,正则表达式（如果配置）*/
     public void setVerification(String verification) {
         this.getProperty(Propertys.verification.name()).value(verification);
-    }
-    /*-------------------------------------------------------------------------------*/
-    private MethodExpression onChangeExp = null;
-    public MethodExpression getOnChangeExpression() {
-        if (this.onChangeExp == null) {
-            String onChangeExpString = this.getOnChangeEL();
-            if (onChangeExpString == null || onChangeExpString.equals("")) {} else
-                this.onChangeExp = new MethodExpression(onChangeExpString);
-        }
-        return this.onChangeExp;
-    }
-}
-/**负责处理OnChange事件的EL调用*/
-class Event_OnChange implements EventListener {
-    @Override
-    public void onEvent(Event event, UIComponent component, ViewContext viewContext) throws Throwable {
-        MethodExpression e = ((UIInput) component).getOnChangeExpression();
-        if (e != null)
-            viewContext.sendObject(e.execute(component, viewContext));
     }
 }

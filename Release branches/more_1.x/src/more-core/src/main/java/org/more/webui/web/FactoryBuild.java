@@ -25,7 +25,7 @@ import org.more.webui.context.FacesContext;
 import org.more.webui.lifestyle.Lifecycle;
 import org.more.webui.lifestyle.PhaseListener;
 import org.more.webui.lifestyle.UIPhaseListener;
-import org.more.webui.render.RenderKit;
+import org.more.webui.render.support.RenderKit;
 import freemarker.template.TemplateModelException;
 /**
  * 

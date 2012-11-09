@@ -14,11 +14,21 @@
  * limitations under the License.
  */
 package org.more.webui.component;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import org.more.webui.component.support.NoState;
 import org.more.webui.context.ViewContext;
+import org.more.webui.render.select.CheckManySelectInputRender;
+import org.more.webui.render.select.RadioOnlySelectInputRender;
+import org.more.webui.render.select.SelectOnlySelectInputRender;
+import com.alibaba.fastjson.JSON;
 /**
- * 用于表述从多个值中进行选择的组建模型（表单元素）。
+ * <b>组建模型</b>：用于表述从多个值的输入输出组建（表单元素）。
+ * <br><b>服务端事件</b>：无
+ * <b>渲染器</b>：{@link CheckManySelectInputRender}、{@link SelectOnlySelectInputRender}、
+ * {@link RadioOnlySelectInputRender}
  * @version : 2012-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -31,6 +41,8 @@ public abstract class UISelectInput extends UIInput {
         keyField,
         /**值字段（R）*/
         varField,
+        /**是否将标题列于选择框之前（对于），默认false（R）*/
+        titleFirst,
     }
     @Override
     protected void initUIComponent(ViewContext viewContext) {
@@ -40,11 +52,11 @@ public abstract class UISelectInput extends UIInput {
         this.setPropertyMetaValue(Propertys.varField.name(), "value");
     }
     @NoState
-    public List<?> getListData() {
-        return this.getProperty(Propertys.listData.name()).valueTo(List.class);
+    public Object getListData() {
+        return this.getProperty(Propertys.listData.name()).valueTo(Object.class);
     }
     @NoState
-    public void setListData(List<?> listData) {
+    public void setListData(Object listData) {
         this.getProperty(Propertys.listData.name()).value(listData);
     }
     public String getKeyField() {
@@ -87,5 +99,38 @@ public abstract class UISelectInput extends UIInput {
             return ((List) var).toArray();
         else
             return null;
+    }
+    public List<Object> getValueList() {
+        List<Object> returnData = null;
+        //
+        Object var = this.getListData();
+        if (var == null)
+            return new ArrayList<Object>();
+        else if (var instanceof CharSequence) {
+            String varStr = null;
+            if (var instanceof String)
+                varStr = (String) var;
+            else
+                varStr = new StringBuffer((CharSequence) var).toString();
+            //
+            try {
+                returnData = JSON.parseObject(varStr, List.class);
+            } catch (Exception e) {
+                returnData = new ArrayList<Object>();
+                for (String item : varStr.split(","))
+                    returnData.add(item);
+            }
+        } else if (var.getClass().isArray() == true) {
+            returnData = new ArrayList<Object>();
+            for (Object item : (Object[]) var)
+                returnData.add(item);
+        } else if (var instanceof Collection == true) {
+            returnData = new ArrayList<Object>();
+            Collection coll = (Collection) var;
+            Iterator iter = coll.iterator();
+            while (iter.hasNext())
+                returnData.add(iter.next());
+        }
+        return returnData;
     }
 }

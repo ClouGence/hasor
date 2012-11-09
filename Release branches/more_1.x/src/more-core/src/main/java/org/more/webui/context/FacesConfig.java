@@ -17,7 +17,6 @@ package org.more.webui.context;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import org.more.util.StringConvertUtil;
-import org.more.webui.component.UIComponent;
 import org.more.webui.freemarker.parser.Hook_Include;
 import org.more.webui.freemarker.parser.Hook_UserTag;
 import org.more.webui.freemarker.parser.TemplateScanner;
@@ -54,11 +53,6 @@ public class FacesConfig {
     private FilterConfig initConfig = null;
     public FacesConfig(FilterConfig initConfig) {
         this.initConfig = initConfig;
-    }
-    private static long genID = 0;
-    /**根据组件类型，生成个组件ID*/
-    public static String generateID(Class<? extends UIComponent> compClass) {
-        return "Only_" + (genID++);
     }
     /**获取初始化的环境参数。*/
     public String getInitConfig(String key) {

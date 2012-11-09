@@ -18,8 +18,8 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import org.more.webui.component.UIComponent;
-import org.more.webui.context.FacesConfig;
 import org.more.webui.context.FacesContext;
+import org.more.webui.context.ViewContext;
 import freemarker.core.Expression;
 import freemarker.core.TemplateElement;
 /**
@@ -69,7 +69,7 @@ public class Hook_UserTag implements ElementHook {
                 String comID = (String) valueField.get(idExp);
                 componentObject.setComponentID(comID);
             } else
-                componentObject.setComponentID(FacesConfig.generateID(componentObject.getClass()));
+                componentObject.setComponentID(ViewContext.getCurrentViewContext().newClientID());
         } catch (Exception e2) {
             throw new ElementHookException("Freemarker兼容错误：无法创建StringLiteral类型对象。建议使用建议使用freemarker 2.3.19版本。", e2);
         }

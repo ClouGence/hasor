@@ -15,15 +15,20 @@
  */
 package org.more.webui.components.page;
 import org.more.webui.component.support.UICom;
+import org.more.webui.components.page.PageCom.Mode;
 /**
  * ∑÷“≥◊ÈΩ®£∫Œ≤“≥
  * @version : 2012-5-15
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@UICom(tagName = "ui_pLast")
-public class LastPageCom extends AbstractItemCom {
+@UICom(tagName = "ui_pLast", renderType = AbstractItemRender.class)
+public class LastPageCom extends AbstractItem {
     @Override
     public String getComponentType() {
         return "ui_pLast";
+    }
+    @Override
+    protected Mode getRenderMode() {
+        return Mode.Last;
     }
 }

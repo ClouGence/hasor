@@ -15,8 +15,11 @@
  */
 package org.more.webui.component;
 import org.more.webui.context.ViewContext;
+import org.more.webui.render.OutputRender;
 /**
- * 用于表述输出功能的组建模型。
+ * <b>组建模型</b>：用于表述输出功能的组建。
+ * <br><b>服务端事件</b>：无
+ * <br><b>渲染器</b>：{@link OutputRender}
  * @version : 2012-5-15
  * @author 赵永春 (zyc@byshell.org)
  */

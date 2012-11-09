@@ -18,8 +18,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.more.webui.render.NoRender;
-import org.more.webui.render.Render;
+import org.more.webui.render.support.NoRender;
+import org.more.webui.render.support.Render;
 /**
  * 
  * @version : 2012-10-30

@@ -15,15 +15,20 @@
  */
 package org.more.webui.components.page;
 import org.more.webui.component.support.UICom;
+import org.more.webui.components.page.PageCom.Mode;
 /**
  * ∑÷“≥◊ÈΩ®£¨“≥¬Î
  * @version : 2012-5-15
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@UICom(tagName = "ui_pNum")
-public class ItemPageCom extends AbstractItemCom {
+@UICom(tagName = "ui_pNum", renderType = AbstractItemRender.class)
+public class ItemPageCom extends AbstractItem {
     @Override
     public String getComponentType() {
         return "ui_pNum";
+    }
+    @Override
+    protected Mode getRenderMode() {
+        return Mode.Item;
     }
 }

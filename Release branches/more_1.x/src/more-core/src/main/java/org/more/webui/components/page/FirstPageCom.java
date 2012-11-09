@@ -15,15 +15,20 @@
  */
 package org.more.webui.components.page;
 import org.more.webui.component.support.UICom;
+import org.more.webui.components.page.PageCom.Mode;
 /**
  * 分页组建，第一页
  * @version : 2012-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
-@UICom(tagName = "ui_pFirst")
-public class FirstPageCom extends AbstractItemCom {
+@UICom(tagName = "ui_pFirst", renderType = AbstractItemRender.class)
+public class FirstPageCom extends AbstractItem {
     @Override
     public String getComponentType() {
         return "ui_pFirst";
+    }
+    @Override
+    protected Mode getRenderMode() {
+        return Mode.First;
     }
 }

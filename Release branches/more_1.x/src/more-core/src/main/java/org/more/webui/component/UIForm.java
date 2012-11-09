@@ -22,20 +22,27 @@ import org.more.webui.component.values.MethodExpression;
 import org.more.webui.context.ViewContext;
 import org.more.webui.event.Event;
 import org.more.webui.event.EventListener;
+import org.more.webui.render.FormRender;
 /**
- * 表单组建模型
+ * <b>组建模型</b>：表单组建。
+ * <br><b>服务端事件</b>：OnSubmit
+ * <br><b>渲染器</b>：{@link FormRender}
  * @version : 2012-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class UIForm extends UIComponent {
     /**通用属性表*/
     public enum Propertys {
-        /**Action动作（-）*/
+        /**表单的递交地址（RW）*/
+        submitAction,
+        /**Action动作，如果配置了submitAction属性则该属性会失效。（-）*/
         submitEL,
     }
     @Override
     protected void initUIComponent(ViewContext viewContext) {
         super.initUIComponent(viewContext);
+        this.setPropertyMetaValue(Propertys.submitAction.name(), null);
+        this.setPropertyMetaValue(Propertys.submitEL.name(), null);
         this.addEventListener(AjaxForm_Event_OnSubmit.SubmitEvent, new AjaxForm_Event_OnSubmit());
     }
     /**获取form EL字符串*/
@@ -68,7 +75,8 @@ public abstract class UIForm extends UIComponent {
         for (UIComponent com : this.getChildren())
             if (com instanceof UIInput == true) {
                 UIInput input = (UIInput) com;
-                comDataMap.put(input.getName(), input);
+                if (input.getName() == null || input.getName().equals("") == true) {} else
+                    comDataMap.put(input.getName(), input);
             }
         return comDataMap;
     }
