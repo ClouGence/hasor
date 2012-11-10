@@ -1,6 +1,35 @@
 /* -------------------------------------------------------------------- */
 /* UIUploadInput Component */
 /* -------------------------------------------------------------------- */
+function webui_swfupload_load_failed_handler() {}
+/** 发生错误版本。 */
+function webui_swfupload_preload_handler() {}
+/** 当某个文件被加入到上传队列 */
+function webui_file_queued_handler(file) {}
+/** 上传队列中发生错误 */
+function webui_file_queue_error_handler(file, errorCode, message) {}
+/** 上传对话框关闭之后。 */
+function webui_file_dialog_complete_handler(numFilesSelected, numFilesQueued) {}
+/** 当某个文件开始上传 */
+function webui_upload_start_handler(file) {}
+/** 文件上传过程中调用，用于更新进度。 */
+function webui_upload_progress_handler(file, bytesLoaded, bytesTotal) {}
+/** 上传组建级的错误。 */
+function webui_upload_error_handler(file, errorCode, message) {}
+/** 当队列中正在上传的文件完成上传之后调用。 */
+function webui_upload_success_handler(file, serverData) {}
+/** 每个文件上传完毕都会调用一遍 */
+function webui_upload_complete_handler(file) {}
+/** 当队列上传完毕之后，返回值决定组建在表单中的值。 */
+function webui_queue_complete_handler(numFilesUploaded, allServerData) {
+	return allServerData;
+}
+/** **************************** */
+/** **************************** */
+/** **************************** */
+/** **************************** */
+/** **************************** */
+/** **************************** */
 function WebUI_FileProgress(file, targetID) {
 	this.fileProgressID = file.id;
 	this.opacity = 100;
