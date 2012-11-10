@@ -3,31 +3,34 @@
 /* -------------------------------------------------------------------- */
 WebUI.Component.$extends("UISelectOnlySelectInput", "UISelectInput", {
 	/** （重写方法）从服务器上载入数据。 */
-	loadData : function(paramData, funOK, funError) {
+	loadData : function(paramData, ajaxAfter, ajaxError) {
 		if (WebUI.isNaN(this.getState().get("onLoadDataEL")) == true)
 			return;
 		var $this = this;
-		this.doEvent("OnLoadData", paramData, function(event) {
-			// A.成功装载
-			if (WebUI.isFun(funOK) == true)
-				funOK.call($this, {
-					event : event
-				});
-			else {
-				var k = $this.keyField();
-				var v = $this.varField();
-				var arrayData = eval(event.result);
-				var e = $this.getElement();
-				e.options.length = 0;
-				for ( var i = 0; i < arrayData.length; i++)
-					e.options.add(new Option(arrayData[i][v], arrayData[i][k]));
+		this.doEvent('OnLoadData', {
+			/* 携带的参数 */
+			'dataMap' : paramData,
+			/* 正确的回调 */
+			'ajaxAfter' : function(event) {
+				// A.成功装载
+				if (WebUI.isFun(ajaxAfter) == true)
+					ajaxAfter.call($this, event);
+				else {
+					var k = $this.keyField();
+					var v = $this.varField();
+					var arrayData = eval(event.result);
+					var e = $this.getElement();
+					e.options.length = 0;
+					for ( var i = 0; i < arrayData.length; i++)
+						e.options.add(new Option(arrayData[i][v], arrayData[i][k]));
+				}
+			},
+			/* 错误的回调 */
+			'ajaxError' : function(event) {
+				// B.装载失败
+				if (WebUI.isFun(ajaxError) == true)
+					ajaxError.call($this, event);
 			}
-		}, function(event) {
-			// B.装载失败
-			if (WebUI.isFun(funError) == true)
-				funError.call($this, {
-					event : event
-				});
 		});
 	},
 	/** 根据索引号获取被指定的元素。 */

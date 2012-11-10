@@ -25,7 +25,7 @@ WebUI.Component.$extends("UIForm", "UIComponent", {
 		return false;
 	},
 	/** 处理UIForm的OnSubmit动作 */
-	doSubmit : function(paramData, okCallBack, errCallBack) {
+	doSubmit : function(paramData, ajaxAfter, ajaxError) {
 		// A.准备数据
 		paramData = (WebUI.isObject(paramData) == false) ? {} : paramData;
 		$("#" + this.clientID + ' [sMode]').each(function() {
@@ -38,16 +38,19 @@ WebUI.Component.$extends("UIForm", "UIComponent", {
 		});
 		// B.引发OnSubmit事件
 		var $this = this;
-		this.doEvent("OnSubmit", paramData, function(event) {
-			if (WebUI.isFun(okCallBack) == true)
-				okCallBack.call($this, {
-					event : event
-				});
-		}, function(event) {
-			if (WebUI.isFun(errCallBack) == true)
-				errCallBack.call($this, {
-					event : event
-				});
+		this.doEvent('OnSubmit', {
+			/* 携带的参数 */
+			'dataMap' : paramData,
+			/* 正确的回调 */
+			'ajaxAfter' : function(event) {
+				if (WebUI.isFun(ajaxAfter) == true)
+					ajaxAfter.call($this, event);
+			},
+			/* 错误的回调 */
+			'ajaxError' : function(event) {
+				if (WebUI.isFun(ajaxError) == true)
+					ajaxError.call($this, event);
+			}
 		});
 	},
 	/** 获取到表单的值Map */

@@ -3,17 +3,69 @@
 /* -------------------------------------------------------------------- */
 WebUI.Component.$extends("UIPanel", "UIComponent", {
 	/** 载入一个指定的页面 */
-	load : function(url, paramMap, callBackFun, errorFun) {
+	load : function(url, paramMap, ajaxAfter, ajaxError) {
+		if (WebUI.isNaN(url) == true)
+			throw 'url is null.'
 		var $this = this;
-		this.doEventTo(url, "OnLoadPage", paramMap, function(res) {
-			$($this.getElement()).html(res.result);
-			if (WebUI.isFun(callBackFun) == true)
-				callBackFun.call($this, res);
-		}, function(res) {
-			$($this.getElement()).html(res.message);
-			if (WebUI.isFun(errorFun) == true)
-				errorFun.call($this, res);
-		});
+		var dialogPanel = $.dialog.list[$this.clientID];
+		if (WebUI.isNaN(dialogPanel) == false) {
+			/** 面板作为对话框 */
+			var iframe = dialogPanel.iframe;
+			if (WebUI.isNaN(iframe) == false) {
+				// 对话框工作在iframe模式
+				if (url.indexOf("?") > 0)
+					iframe.src = url + "&" + WebUI.mapToURI(paramMap);
+				else
+					iframe.src = url + "?" + WebUI.mapToURI(paramMap);
+				return;
+			} else {
+				// 对话框工作在div模式
+				WebUI.call(null, {
+					'url' : url,
+					/* 事件 */
+					'event' : 'OnLoadPage',
+					/* 携带的参数 */
+					'dataMap' : paramMap,
+					/* 渲染类型 */
+					'renderType' : 'ALL',
+					/* 正确的回调 */
+					'ajaxAfter' : function(res) {
+						dialogPanel.content(res.result, false, false)
+						if (WebUI.isFun(ajaxAfter) == true)
+							ajaxAfter.call($this, res);
+					},
+					/* 错误的回调 */
+					'ajaxError' : function(res) {
+						dialogPanel.content(res.message, false, false)
+						if (WebUI.isFun(ajaxError) == true)
+							ajaxError.call($this, res);
+					}
+				});
+			}
+		} else {
+			/** 面板作为div */
+			WebUI.call(null, {
+				'url' : url,
+				/* 事件 */
+				'event' : 'OnLoadPage',
+				/* 携带的参数 */
+				'dataMap' : paramMap,
+				/* 渲染类型 */
+				'renderType' : 'ALL',
+				/* 正确的回调 */
+				'ajaxAfter' : function(res) {
+					$($this.getElement()).html(res.result);
+					if (WebUI.isFun(ajaxAfter) == true)
+						ajaxAfter.call($this, res);
+				},
+				/* 错误的回调 */
+				'ajaxError' : function(res) {
+					$($this.getElement()).html(res.message);
+					if (WebUI.isFun(ajaxError) == true)
+						ajaxError.call($this, res);
+				}
+			});
+		}
 	},
 	/** 第一个参数是固定值，第二个参数是默认值，第三个是用户的配置。 */
 	showDialog : function(fixedParamMap, defaultParamMap, dialogParamMap) {
@@ -24,7 +76,9 @@ WebUI.Component.$extends("UIPanel", "UIComponent", {
 		for ( var v in fixedParamMap)
 			dialogParamMap[v] = fixedParamMap[v];
 		dialogParamMap["id"] = this.clientID;
-		dialogParamMap["content"] = $(this.getElement()).html();
+		var varContent = dialogParamMap['content'];
+		if (WebUI.isNaN(varContent) == true)
+			dialogParamMap["content"] = $(this.getElement()).html();
 		// 默认值
 		for ( var v in defaultParamMap)
 			if (WebUI.isNaN(dialogParamMap[v]) == true)
@@ -56,13 +110,13 @@ WebUI.Component.$extends("UIPanel", "UIComponent", {
 	dialogPanel : function(dialogParamMap) {
 		// 固定参数
 		var fixedParamMap = {};
-		fixedParamMap["fixed"] = true;
-		fixedParamMap["drag"] = false;
-		fixedParamMap["resize"] = false;
-		fixedParamMap["max"] = false;
-		fixedParamMap["min"] = false;
 		// 默认配置
 		var defaultParamMap = {};
+		defaultParamMap["max"] = true;
+		defaultParamMap["min"] = true;
+		defaultParamMap["fixed"] = true;
+		defaultParamMap["drag"] = true;
+		defaultParamMap["resize"] = true;
 		defaultParamMap["lock"] = false;
 		defaultParamMap["left"] = "60%";
 		defaultParamMap["top"] = "60%";

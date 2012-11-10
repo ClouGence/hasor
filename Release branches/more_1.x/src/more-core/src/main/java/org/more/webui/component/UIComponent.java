@@ -174,6 +174,8 @@ public abstract class UIComponent {
             }
             this.componentPath = buffer.reverse().toString();
         }
+        if (this.componentPath.length() == 0)
+            this.componentPath = "/";
         return this.componentPath;
     }
     /**获取一个可用的客户端ID*/

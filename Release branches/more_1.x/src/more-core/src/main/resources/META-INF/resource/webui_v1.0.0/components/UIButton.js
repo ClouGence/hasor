@@ -3,8 +3,15 @@
 /* -------------------------------------------------------------------- */
 WebUI.Component.$extends("UIButton", "UIInput", {
 	/** 引发标签的click事件。 */
-	click : function(params, callBackFun, errorFun) {
-		this.doEvent("OnAction", params, callBackFun, errorFun);
+	click : function(paramData, ajaxAfter, ajaxError) {
+		this.doEvent('OnAction', {
+			/* 携带的参数 */
+			'dataMap' : paramData,
+			/* 正确的回调 */
+			'ajaxAfter' : ajaxAfter,
+			/* 错误的回调 */
+			'ajaxError' : ajaxError
+		});
 	},
 	/** 标签元素的click事件处理程序。 */
 	onclick : function() {

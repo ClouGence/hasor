@@ -301,13 +301,13 @@ WebUI.Component.$extends("UIUploadInput", "UIInput", {
 });
 WebUI.Component.UIUploadInput.handlers.swfupload_load_failed_handler = function() {
 	// 1.通知用户程序
-	if (WebUI.isFun(webui_swfupload_load_failed_handler) == true)
+	if (WebUI.isNaN(webui_swfupload_load_failed_handler) == false)
 		webui_swfupload_load_failed_handler();
 };
 /** 发生错误版本。 */
 WebUI.Component.UIUploadInput.handlers.swfupload_preload_handler = function() {
 	// 1.通知用户程序
-	if (WebUI.isFun(webui_swfupload_preload_handler) == true)
+	if (WebUI.isNaN(webui_swfupload_preload_handler) == false)
 		webui_swfupload_preload_handler();
 	else
 		alert("您的Flash版本过低，SWfUpload 需要您更新 Flash Player 到 9.028 或者更高版本.");
@@ -321,7 +321,7 @@ WebUI.Component.UIUploadInput.handlers.file_queued_handler = function(file) {
 		progress.toggleCancel(true, this);
 	}
 	// 2.通知用户程序
-	if (WebUI.isFun(webui_file_queued_handler) == true)
+	if (WebUI.isNaN(webui_file_queued_handler) == false)
 		webui_file_queued_handler(file);
 };
 /** 上传队列中发生错误 */
@@ -358,7 +358,7 @@ WebUI.Component.UIUploadInput.handlers.file_queue_error_handler = function(file,
 		return;
 	}
 	// 3.通知用户程序
-	if (WebUI.isFun(webui_file_queue_error_handler) == true)
+	if (WebUI.isNaN(webui_file_queue_error_handler) == false)
 		webui_file_queue_error_handler(file, errorCode, message);
 };
 /** 上传对话框关闭之后。 */
@@ -366,7 +366,7 @@ WebUI.Component.UIUploadInput.handlers.file_dialog_complete_handler = function(n
 	// 1.启动上传
 	this.startUpload();// 对话框关闭之后就开始上传 TODO
 	// 2.通知用户程序
-	if (WebUI.isFun(webui_file_dialog_complete_handler) == true)
+	if (WebUI.isNaN(webui_file_dialog_complete_handler) == false)
 		webui_file_dialog_complete_handler();
 };
 /** 当某个文件开始上传 */
@@ -378,7 +378,7 @@ WebUI.Component.UIUploadInput.handlers.upload_start_handler = function(file) {
 		progress.toggleCancel(true, this);
 	}
 	// 2.通知用户程序
-	if (WebUI.isFun(webui_upload_start_handler) == true)
+	if (WebUI.isNaN(webui_upload_start_handler) == false)
 		webui_upload_start_handler(file);
 };
 /** 文件上传过程中调用，用于更新进度。 */
@@ -391,7 +391,7 @@ WebUI.Component.UIUploadInput.handlers.upload_progress_handler = function(file, 
 		progress.setStatus("上传中...");
 	}
 	// 2.通知用户程序
-	if (WebUI.isFun(webui_upload_progress_handler) == true)
+	if (WebUI.isNaN(webui_upload_progress_handler) == false)
 		webui_upload_progress_handler(file, bytesLoaded, bytesTotal);
 };
 /** 上传组建级的错误。 */
@@ -445,7 +445,7 @@ WebUI.Component.UIUploadInput.handlers.upload_error_handler = function(file, err
 		}
 	}
 	// 2.通知用户程序
-	if (WebUI.isFun(webui_upload_error_handler) == true)
+	if (WebUI.isNaN(webui_upload_error_handler) == false)
 		webui_upload_error_handler(file, errorCode, message);
 }
 /** 当队列中正在上传的文件完成上传之后调用。 */
@@ -462,13 +462,13 @@ WebUI.Component.UIUploadInput.handlers.upload_success_handler = function(file, s
 		this.customSettings.serverDataList = [];
 	this.customSettings.serverDataList.push(serverData);
 	// 3.通知用户程序
-	if (WebUI.isFun(webui_upload_success_handler) == true)
+	if (WebUI.isNaN(webui_upload_success_handler) == false)
 		webui_upload_success_handler(file, serverData);
 };
 /** 每个文件上传完毕都会调用一遍 */
 WebUI.Component.UIUploadInput.handlers.upload_complete_handler = function(file) {
 	// 1.通知用户程序
-	if (WebUI.isFun(webui_upload_complete_handler) == true)
+	if (WebUI.isNaN(webui_upload_complete_handler) == false)
 		webui_upload_complete_handler(file);
 };
 /** 当队列上传完毕之后 */
@@ -477,7 +477,7 @@ WebUI.Component.UIUploadInput.handlers.queue_complete_handler = function(numFile
 	var allServerData = this.customSettings.serverDataList;
 	this.customSettings.serverDataList = null;// 清理掉属性
 	// 2.通知用户程序
-	if (WebUI.isFun(webui_queue_complete_handler) == true)
+	if (WebUI.isNaN(webui_queue_complete_handler) == false)
 		allServerData = webui_queue_complete_handler(numFilesUploaded, allServerData);// 最终的值由用户决定
 	else
 		allServerData = JSON.stringify(allServerData);

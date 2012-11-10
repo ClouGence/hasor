@@ -30,7 +30,7 @@ import org.more.webui.lifestyle.Lifecycle;
 import org.more.webui.lifestyle.Phase;
 import org.more.webui.lifestyle.PhaseID;
 import org.more.webui.web.PostFormEnum;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSON;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 /**
@@ -175,7 +175,7 @@ public class ViewContext extends HashMap<String, Object> {
     public String getTargetPath() {
         return this.getHttpRequest().getParameter(PostFormEnum.PostForm_TargetPathKey.value());
     };
-    /**获取客户端引发的事件。*/
+    /**回传一条信息表示本次请求来自于Ajax，如果是ajax则回传的错误会被包装。*/
     public boolean isAjax() {
         String isAjax = this.getHttpRequest().getParameter(PostFormEnum.PostForm_IsAjaxKey.value());
         return StringConvertUtil.parseBoolean(isAjax, false);
@@ -203,7 +203,8 @@ public class ViewContext extends HashMap<String, Object> {
     /**向客户端发送响应数据。*/
     private void pushClient(int stateNumber, Object returnData) throws IOException {
         if (this.getEvent() != null) {
-            String sendDataStr = JSONObject.toJSONString(returnData);
+            String sendDataStr = JSON.toJSONString(returnData);
+            //            String sendDataStr = AppUtil.getj.toJSONString(returnData);
             this.getHttpResponse().setStatus(stateNumber);
             this.getHttpResponse().getWriter().write(sendDataStr);
         }
