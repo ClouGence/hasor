@@ -60,11 +60,7 @@ public abstract class AbstractInputRender<T extends UIInput> extends AbstractRen
         return hashMap;
     }
     @Override
-    public void render(ViewContext viewContext, T component, TemplateBody arg3, Writer writer) throws IOException, TemplateException {
-        Object val = component.getValue();
-        if (val != null)
-            writer.write(String.valueOf(val));
-    }
+    public void render(ViewContext viewContext, T component, TemplateBody arg3, Writer writer) throws IOException, TemplateException {}
     public static enum InputType {
         button, checkbox, file, hidden, image, password, radio, reset, submit, text,
     }

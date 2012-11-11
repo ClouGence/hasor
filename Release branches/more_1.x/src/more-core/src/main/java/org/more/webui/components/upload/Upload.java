@@ -18,6 +18,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.fileupload.FileItem;
@@ -46,8 +47,6 @@ public class Upload extends UIInput {
     public enum Propertys {
         /**接收上传的action地址，如果配置了该属性bizActionEL属性会失效。（R）*/
         uploadAction,
-        /**上传到的目的地（-）*/
-        uploadDir,
         /**文件上传的临时目录，默认目录是_uploadFileTempDir（-）。*/
         uploadTempDir,
         /**用于上传的内存缓存大小，默认10MB（-）。*/
@@ -79,7 +78,6 @@ public class Upload extends UIInput {
     protected void initUIComponent(ViewContext viewContext) {
         super.initUIComponent(viewContext);
         this.setPropertyMetaValue(Propertys.uploadAction.name(), null);
-        this.setPropertyMetaValue(Propertys.uploadDir.name(), null);
         this.setPropertyMetaValue(Propertys.uploadTempDir.name(), "/_uploadFileTempDir");
         this.setPropertyMetaValue(Propertys.uploadSizeThreshold.name(), 10 * 1024 * 1024);
         this.setPropertyMetaValue(Propertys.allowFiles.name(), "*");
@@ -99,14 +97,6 @@ public class Upload extends UIInput {
     @NoState
     public void setUploadAction(String uploadAction) {
         this.getProperty(Propertys.uploadAction.name()).value(uploadAction);
-    }
-    @NoState
-    public String getUploadDir() {
-        return this.getProperty(Propertys.uploadDir.name()).valueTo(String.class);
-    }
-    @NoState
-    public void setUploadDir(String uploadDir) {
-        this.getProperty(Propertys.uploadDir.name()).value(uploadDir);
     }
     @NoState
     public String getUploadTempDir() {
@@ -204,6 +194,9 @@ class SWFUpload_Event_OnUpLoad implements EventListener {
             //1.准备上传环境
             DiskFileItemFactory factory = new DiskFileItemFactory();// 为该请求创建一个DiskFileItemFactory对象，通过它来解析请求。执行解析后，所有的表单项目都保存在一个List中。
             ServletFileUpload upload = new ServletFileUpload(factory);
+            String charset = httpRequest.getCharacterEncoding();
+            if (charset != null)
+                upload.setHeaderEncoding(charset);
             factory.setSizeThreshold(swfUpload.getUploadSizeThreshold());
             File uploadTempDir = new File(servletContext.getRealPath(swfUpload.getUploadTempDir()));
             if (uploadTempDir.exists() == false)
@@ -212,15 +205,19 @@ class SWFUpload_Event_OnUpLoad implements EventListener {
             //2.处理传完的文件
             List<FileItem> itemList = upload.parseRequest(httpRequest);
             List<FileItem> finalList = new ArrayList<FileItem>();
+            Map<String, String> finalParam = new HashMap<String, String>();
             for (FileItem item : itemList)
                 if (item.isFormField() == false)
                     finalList.add(item);
+                else
+                    finalParam.put(new String(item.getFieldName().getBytes("iso-8859-1")), new String(item.getString().getBytes("iso-8859-1")));
             //3.通知业务系统
             Object returnData = null;
             MethodExpression onBizActionExp = swfUpload.getOnBizActionExpression();
             if (onBizActionExp != null) {
                 HashMap<String, Object> upParam = new HashMap<String, Object>();
                 upParam.put("files", finalList);
+                upParam.put("params", finalParam);
                 returnData = onBizActionExp.execute(component, viewContext, upParam);
             }
             //4.清理数据

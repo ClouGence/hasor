@@ -361,6 +361,13 @@ WebUI.call = function(target, paramMap) {
 		}
 		/* async */
 		async = target.async();
+		/* ajaxParam */
+		var ajaxParam = target.ajaxParam();
+		if (WebUI.isNaN(ajaxParam) == false)
+			if (url.indexOf('?') == -1)
+				url += (url + "?" + ajaxParam);
+			else
+				url += (url + "&" + ajaxParam);
 	}
 	/* 5.固定的信息 */
 	sendData['WebUI_PF_Ajax'] = true;

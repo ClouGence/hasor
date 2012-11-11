@@ -54,7 +54,7 @@ WebUI.Component.$extends("UISelectOnlySelectInput", "UISelectInput", {
 		var jqObject = e.options[e.selectedIndex]; // 选中值
 		var atItem = {};
 		atItem[this.keyField()] = jqObject.value;
-		atItem[this.varField()] = $(this).text();
+		atItem[this.varField()] = $(jqObject).text();
 		return [ atItem ];
 	},
 	/** （重写方法）数据（R）。 */

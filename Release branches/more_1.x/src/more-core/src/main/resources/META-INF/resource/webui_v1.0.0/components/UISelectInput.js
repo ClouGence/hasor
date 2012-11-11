@@ -2,6 +2,23 @@
 /* UISelectInput Component */
 /* -------------------------------------------------------------------- */
 WebUI.Component.$extends("UISelectInput", "UIInput", {
+	/** 标签元素的change事件处理程序。 */
+	onchange : function() {
+		var change = $(this.getElement()).attr("_onchange");
+		if (WebUI.isNaN(change) == false) {
+			var vList = this.selectValues();
+			var val = null;
+			if (vList.length == 0)
+				val = null;
+			else if (vList.length == 1)
+				val = vList[0];
+			else
+				val = vList;
+			return WebUI.runSrcipt(change, this, {
+				value : val
+			});
+		}
+	},
 	/** 获取被选择的值索引（字符串逗号分割）。 */
 	selectIndex : function() {
 		var vList = this.selectIndexs();

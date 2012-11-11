@@ -43,9 +43,5 @@ public class UploadRender extends AbstractRender<Upload> {
         return hashMap;
     }
     @Override
-    public void render(ViewContext viewContext, Upload component, TemplateBody arg3, Writer writer) throws IOException, TemplateException {
-        writer.write("<span id='" + component.getComponentID() + "PlaceID'></span>");
-        writer.write("<input id='" + component.getComponentID() + "Input' name='" + component.getName() + "' value='" + component.getValue() + "' type='hidden'/>");
-        writer.write("<div id='" + component.getComponentID() + "Progress' style='display:none;'></div>");
-    }
+    public void render(ViewContext viewContext, Upload component, TemplateBody arg3, Writer writer) throws IOException, TemplateException {}
 }

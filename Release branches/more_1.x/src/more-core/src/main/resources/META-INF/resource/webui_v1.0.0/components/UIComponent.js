@@ -290,6 +290,14 @@ WebUI.Component.prototype = {
 			}
 		});
 	},
+	/** 展示组建。 */
+	show : function(speed, callback) {
+		$(this.getElement()).show(speed, callback);
+	},
+	/** 隐藏组建。 */
+	hide : function(speed, callback) {
+		$(this.getElement()).hide(speed, callback);
+	},
 	/** 执行组建渲染 */
 	render : function() {},
 	/** 构造方法 */
@@ -304,6 +312,8 @@ WebUI.Component.prototype = {
 		this.defineProperty("async", "R");
 		/** 当发生事件OnLoadData时触发，该事件允许用户通过任意组建从服务端装载数据到客户端。（R） */
 		this.defineProperty("onLoadDataEL", "R");
+		/** 发生事件时携带的附带参数。（RW） */
+		this.defineProperty("ajaxParam", "RW");
 	}
 };
 WebUI.Component.$extends("UIComponent", "", {

@@ -71,6 +71,8 @@ public abstract class UIComponent {
         renderChildren,
         /**当发生事件OnLoadData时触发，该事件允许用户通过任意组建从服务端装载数据到客户端。（R）*/
         onLoadDataEL,
+        /**发生事件时在URL后面携带的参数。（RW）*/
+        ajaxParam,
     };
     /**子类可以通过该方法初始化组件。*/
     protected void initUIComponent(ViewContext viewContext) {
@@ -82,6 +84,7 @@ public abstract class UIComponent {
         this.setPropertyMetaValue(Propertys.render.name(), true);
         this.setPropertyMetaValue(Propertys.renderChildren.name(), true);
         this.setPropertyMetaValue(Propertys.onLoadDataEL.name(), null);
+        this.setPropertyMetaValue(Propertys.ajaxParam.name(), null);
         this.addEventListener(Event.getEvent("OnLoadData"), new Event_OnLoadData());
     };
     public String getBeforeScript() {
@@ -150,6 +153,14 @@ public abstract class UIComponent {
                 this.loadDataExp = new MethodExpression(loadDataExpString);
         }
         return this.loadDataExp;
+    }
+    /**发生事件时在URL后面携带的参数。（RW）*/
+    public String getAjaxParam() {
+        return this.getProperty(Propertys.ajaxParam.name()).valueTo(String.class);
+    }
+    /**发生事件时在URL后面携带的参数。（RW）*/
+    public void setAjaxParam(String ajaxParam) {
+        this.getProperty(Propertys.ajaxParam.name()).value(ajaxParam);
     }
     /*-------------------------------------------------------------------------------核心方法*/
     /**获取用于附加的属性的Map对象*/

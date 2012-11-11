@@ -207,21 +207,18 @@ WebUI.Component.$extends("UIUploadInput", "UIInput", {
 		queue_complete_handler : function() {}// Queue plugin event
 	},
 	initUpload : function() {
+		var __span = "<span id='" + this.clientID + "PlaceID'/>";
+		var __input = "<input id='" + this.clientID + "Input' name='paperFile' value='null' type='hidden'/>";
+		var __div = "<div id='" + this.clientID + "Progress' style='display:none;'/>";
+		$(this.getElement()).html(__span + __input + __div);
 		var uploadAction = this.uploadAction();
 		uploadAction = (uploadAction != null) ? uploadAction : WebUI.getLocal();
 		uploadAction += (uploadAction.indexOf("?") <= 0) ? "?" : "&";
+		uploadAction += (this.ajaxParam() + "&");
 		var buttonImage = this.buttonImage();// 按钮上的图片。
 		buttonImage = (buttonImage != null) ? buttonImage : WebUI.variable("WebUI_Var_Library") + "images/upload_65x29.png";
 		//
 		var sendData = {};
-		var varDataMap = this.getVariableMap().getDataMap();
-		for ( var k in varDataMap) {
-			var v = varDataMap[k];
-			if (WebUI.isFun(v) == true)
-				sendData[k] = v(this);
-			else
-				sendData[k] = v;
-		}
 		sendData["WebUI_PF_Target"] = this.componentID;/* 发生事件的组建 */
 		sendData["WebUI_PF_TargetPath"] = this.componentPath;/* 发生事件的组建 */
 		sendData["WebUI_PF_Ajax"] = true;
@@ -229,13 +226,15 @@ WebUI.Component.$extends("UIUploadInput", "UIInput", {
 		sendData["WebUI_PF_Render"] = "No";/* 不执行渲染 */
 		sendData["WebUI_PF_State"] = WebUI.Base64.uncoded64(this.getState().getCode());
 		sendData["WebUI_PF_Invoke"] = null;
-		var postData = WebUI.mapToURI(sendData);
+		for ( var k in sendData)
+			if (WebUI.isNaN(sendData[k]) == true)
+				sendData[k] = "";
 		//
+		var postData = WebUI.mapToURI(sendData);
 		var settings = {
 			flash_url : WebUI.variable("WebUI_Var_Library") + "dependence/swfupload_v2.2.0.1/falsh/swfupload.swf",// flash版本
 			flash9_url : WebUI.variable("WebUI_Var_Library") + "dependence/swfupload_v2.2.0.1/falsh/swfupload_fp9.swf",// 版本
 			upload_url : uploadAction + postData,// 上传地址
-			file_post_name : "Filedata",// 是POST过去的$_FILES的数组名
 			file_types : this.allowFiles(),// 允许上传的文件类型，例：*.jpg;*.gif
 			file_types_description : this.allowFilesDesc(),// 文件类型描述，例：Web
 			// Image Files
@@ -245,6 +244,7 @@ WebUI.Component.$extends("UIUploadInput", "UIInput", {
 			custom_settings : {
 				componentObject : this
 			},
+			post_params : this.getVariableMap().getDataMap(),
 			//
 			button_placeholder_id : this.componentID + "PlaceID",
 			button_action : (this.allowMulti() == true) ? SWFUpload.BUTTON_ACTION.SELECT_FILES : SWFUpload.BUTTON_ACTION.SELECT_FILE,// 是否允许多文件上传
