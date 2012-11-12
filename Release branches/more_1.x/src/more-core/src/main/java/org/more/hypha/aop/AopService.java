@@ -16,8 +16,8 @@
 package org.more.hypha.aop;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.Service;
-import org.more.hypha.aop.define.AbstractPointcutDefine;
-import org.more.hypha.aop.define.AopConfigDefine;
+import org.more.hypha.define.AopAbstractPointcutDefine;
+import org.more.hypha.define.AopConfigDefine;
 /**
  * 提供了更为丰富的aop相关方法。
  * @version 2010-10-8
@@ -25,12 +25,12 @@ import org.more.hypha.aop.define.AopConfigDefine;
  */
 public interface AopService extends Service {
     /**获取一个定义的切入点。*/
-    public AbstractPointcutDefine getPointcutDefine(String name);
+    public AopAbstractPointcutDefine getPointcutDefine(String name);
     /**添加切点定义。*/
-    public void addPointcutDefine(AbstractPointcutDefine define);
+    public void addPointcutDefine(AopAbstractPointcutDefine define);
     /**删除切点定义。*/
     public void removePointcutDefine(String name);
-    /**检测是否已经存在某个名称的{@link AbstractPointcutDefine}。*/
+    /**检测是否已经存在某个名称的{@link AopAbstractPointcutDefine}。*/
     public boolean containPointcutDefine(String defineName);
     //------------------
     /**测试一个aop配置是否存在。*/

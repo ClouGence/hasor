@@ -16,8 +16,8 @@
 package org.more.hypha.beans.xml;
 import java.util.ArrayList;
 import org.more.core.xml.XmlStackDecorator;
-import org.more.hypha.beans.define.List_ValueMetaData;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.List_ValueMetaData;
 /**
  * 用于解析list标签
  * @version 2010-9-16

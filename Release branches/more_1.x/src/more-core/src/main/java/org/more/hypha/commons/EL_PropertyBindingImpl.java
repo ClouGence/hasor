@@ -21,8 +21,8 @@ import org.more.core.ognl.Node;
 import org.more.core.ognl.Ognl;
 import org.more.core.ognl.OgnlContext;
 import org.more.core.ognl.OgnlException;
-import org.more.hypha.ELException;
-import org.more.hypha.PropertyBinding;
+import org.more.hypha.el.ELException;
+import org.more.hypha.el.PropertyBinding;
 /**
  * 属性绑操作器，通过该类可以对属性进行读写操作。
  * Date : 2011-4-11

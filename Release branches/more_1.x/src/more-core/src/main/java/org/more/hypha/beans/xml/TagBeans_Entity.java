@@ -18,10 +18,10 @@ import java.util.HashMap;
 import java.util.Map;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.beans.define.MapEntity_ValueMetaData;
-import org.more.hypha.beans.define.PropertyType;
-import org.more.hypha.beans.define.Simple_ValueMetaData;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.MapEntity_ValueMetaData;
+import org.more.hypha.define.PropertyType;
+import org.more.hypha.define.Simple_ValueMetaData;
 /**
  * 用于解析entity标签
  * @version 2010-9-23

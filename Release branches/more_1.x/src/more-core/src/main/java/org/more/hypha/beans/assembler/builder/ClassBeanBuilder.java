@@ -20,11 +20,11 @@ import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractMethodDefine;
 import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ValueMetaData;
-import org.more.hypha.beans.define.ClassPathBeanDefine;
-import org.more.hypha.beans.define.ConstructorDefine;
 import org.more.hypha.commons.logic.AbstractBeanBuilder;
 import org.more.hypha.commons.logic.ValueMetaDataParser;
 import org.more.hypha.context.AbstractApplicationContext;
+import org.more.hypha.define.ClassPathBeanDefine;
+import org.more.hypha.define.ConstructorDefine;
 import org.more.util.ConstructorPropxy;
 import org.more.util.PropxyObject;
 /**

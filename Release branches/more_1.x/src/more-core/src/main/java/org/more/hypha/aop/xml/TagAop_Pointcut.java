@@ -16,8 +16,8 @@
 package org.more.hypha.aop.xml;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.aop.define.AopPointcutDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.AopPointcutDefine;
 /**
  * 用于解析aop:pointcut标签
  * @version 2010-9-22

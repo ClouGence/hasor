@@ -18,10 +18,10 @@ import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.PointChain;
 import org.more.hypha.aop.AopService;
-import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.commons.logic.LoadClassPoint;
+import org.more.hypha.define.AopConfigDefine;
+import org.more.hypha.point.PointChain;
 /**
  * ÐÞ¸Ä×Ö½ÚÂë
  * @version : 2011-6-28

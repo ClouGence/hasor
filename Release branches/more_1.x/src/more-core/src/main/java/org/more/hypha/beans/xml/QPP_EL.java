@@ -18,8 +18,8 @@ import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ValueMetaData;
-import org.more.hypha.beans.define.EL_ValueMetaData;
-import org.more.hypha.beans.define.File_ValueMetaData;
+import org.more.hypha.define.EL_ValueMetaData;
+import org.more.hypha.define.File_ValueMetaData;
 import org.more.util.attribute.IAttribute;
 /**
  * EL Ù–‘÷µΩ‚Œˆ∆˜°£

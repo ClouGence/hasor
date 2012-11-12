@@ -19,8 +19,8 @@ import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.NoDefineBeanException;
 import org.more.hypha.beans.assembler.MetaDataUtil;
-import org.more.hypha.beans.define.RelationBeanDefine;
 import org.more.hypha.commons.logic.AbstractBeanBuilder;
+import org.more.hypha.define.RelationBeanDefine;
 /**
  * 引用类型bean。
  * @version 2011-2-15

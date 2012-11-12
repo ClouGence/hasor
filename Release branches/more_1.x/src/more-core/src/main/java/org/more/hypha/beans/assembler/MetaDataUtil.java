@@ -16,8 +16,8 @@
 package org.more.hypha.beans.assembler;
 import org.more.core.log.Log;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.beans.define.Collection_ValueMetaData;
-import org.more.hypha.commons.define.AbstractDefine;
+import org.more.hypha.define.AbstractDefine;
+import org.more.hypha.define.Collection_ValueMetaData;
 import org.more.util.attribute.IAttribute;
 /**
  * MetaDataπ§æﬂ¿‡

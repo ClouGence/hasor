@@ -17,10 +17,10 @@ package org.more.hypha.beans.assembler.parser;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.EvalExpression;
 import org.more.hypha.ValueMetaData;
-import org.more.hypha.beans.define.EL_ValueMetaData;
 import org.more.hypha.commons.logic.ValueMetaDataParser;
+import org.more.hypha.define.EL_ValueMetaData;
+import org.more.hypha.el.EvalExpression;
 /**
  * 解析EL表达式。
  * @version 2011-2-15

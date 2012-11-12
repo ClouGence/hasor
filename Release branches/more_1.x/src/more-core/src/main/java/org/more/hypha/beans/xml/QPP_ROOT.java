@@ -19,8 +19,8 @@ import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ValueMetaData;
-import org.more.hypha.beans.define.PropertyType;
-import org.more.hypha.beans.define.Simple_ValueMetaData;
+import org.more.hypha.define.PropertyType;
+import org.more.hypha.define.Simple_ValueMetaData;
 import org.more.util.attribute.IAttribute;
 /**
  * 属性快速解析器，将字符串值解析为指定的类型。

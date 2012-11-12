@@ -20,9 +20,9 @@ import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.assembler.MetaDataUtil;
-import org.more.hypha.beans.define.AbstractValueMetaData;
-import org.more.hypha.beans.define.Array_ValueMetaData;
 import org.more.hypha.commons.logic.ValueMetaDataParser;
+import org.more.hypha.define.AbstractValueMetaData;
+import org.more.hypha.define.Array_ValueMetaData;
 /**
  * 解析数组对象。
  * @version 2011-2-15

@@ -16,9 +16,9 @@
 package org.more.hypha.beans.assembler.builder;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
-import org.more.hypha.beans.define.VariableBeanDefine;
-import org.more.hypha.beans.define.VariableBeanDefine.VariableType;
 import org.more.hypha.commons.logic.AbstractBeanBuilder;
+import org.more.hypha.define.VariableBeanDefine;
+import org.more.hypha.define.VariableBeanDefine.VariableType;
 import org.more.util.StringConvertUtil;
 /**
  * 变量类型bean，该类型bean不能支持aop。

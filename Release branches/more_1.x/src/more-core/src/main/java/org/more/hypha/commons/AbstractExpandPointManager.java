@@ -19,11 +19,11 @@ import java.util.HashMap;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.ExpandPointManager;
-import org.more.hypha.PointCallBack;
-import org.more.hypha.PointChain;
-import org.more.hypha.PointFilter;
 import org.more.hypha.context.AbstractApplicationContext;
+import org.more.hypha.point.ExpandPointManager;
+import org.more.hypha.point.PointCallBack;
+import org.more.hypha.point.PointChain;
+import org.more.hypha.point.PointFilter;
 /**
  * 该类负责管理并调用并且执行扩展点的基类。
  * @version : 2011-6-29

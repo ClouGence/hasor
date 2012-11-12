@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.more.hypha.aop.xml;
-import org.more.hypha.aop.define.PointcutType;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.AopPointcutType;
 /**
  * 用于解析aop:before标签
  * @version 2010-10-10
@@ -26,8 +26,8 @@ public class TagAop_Before extends TagAop_AbstractListener {
     public TagAop_Before(XmlDefineResource configuration) {
         super(configuration);
     }
-    /**返回{@link PointcutType#Before}*/
-    protected PointcutType getPointcutType() {
-        return PointcutType.Before;
+    /**返回{@link AopPointcutType#Before}*/
+    protected AopPointcutType getPointcutType() {
+        return AopPointcutType.Before;
     }
 }

@@ -18,8 +18,8 @@ import java.util.Map;
 import org.more.core.error.FormatException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
-import org.more.hypha.beans.define.VariableBeanDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.VariableBeanDefine;
 /**
  * 用于解析/beans/varBean标签
  * @version 2010-9-16

@@ -29,24 +29,24 @@ import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractMethodDefine;
 import org.more.hypha.DefineResource;
 import org.more.hypha.anno.KeepWatchParser;
-import org.more.hypha.anno.define.AutoWrite;
-import org.more.hypha.anno.define.Bean;
-import org.more.hypha.anno.define.MetaData;
-import org.more.hypha.anno.define.Param;
-import org.more.hypha.anno.define.Property;
-import org.more.hypha.beans.define.AbstractBaseBeanDefine;
-import org.more.hypha.beans.define.AbstractPropertyDefine;
-import org.more.hypha.beans.define.AbstractValueMetaData;
-import org.more.hypha.beans.define.ClassPathBeanDefine;
-import org.more.hypha.beans.define.ConstructorDefine;
-import org.more.hypha.beans.define.EL_ValueMetaData;
-import org.more.hypha.beans.define.MethodDefine;
-import org.more.hypha.beans.define.ParamDefine;
-import org.more.hypha.beans.define.PropertyDefine;
-import org.more.hypha.beans.define.PropertyType;
-import org.more.hypha.beans.define.Relation_ValueMetaData;
-import org.more.hypha.beans.define.Simple_ValueMetaData;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.AbstractBeanDefine;
+import org.more.hypha.define.AbstractPropertyDefine;
+import org.more.hypha.define.AbstractValueMetaData;
+import org.more.hypha.define.ClassPathBeanDefine;
+import org.more.hypha.define.ConstructorDefine;
+import org.more.hypha.define.EL_ValueMetaData;
+import org.more.hypha.define.MethodDefine;
+import org.more.hypha.define.ParamDefine;
+import org.more.hypha.define.PropertyDefine;
+import org.more.hypha.define.PropertyType;
+import org.more.hypha.define.Relation_ValueMetaData;
+import org.more.hypha.define.Simple_ValueMetaData;
+import org.more.hypha.define.anno.AutoWrite;
+import org.more.hypha.define.anno.Bean;
+import org.more.hypha.define.anno.MetaData;
+import org.more.hypha.define.anno.Param;
+import org.more.hypha.define.anno.Property;
 import org.more.util.BeanUtil;
 import org.more.util.StringConvertUtil;
 import org.more.util.attribute.IAttribute;
@@ -91,7 +91,7 @@ class Watch_Bean implements KeepWatchParser {
         if (var != null && var.equals("") == false) {
             if (resource.containsBeanDefine(var) == false)
                 throw new LostException("[" + define.getName() + "]找不到关联的工厂[" + var + "]Bean定义");
-            AbstractBaseBeanDefine factoryBean = (AbstractBaseBeanDefine) resource.getBeanDefine(var);
+            AbstractBeanDefine factoryBean = (AbstractBeanDefine) resource.getBeanDefine(var);
             var = bean.factoryName();
             AbstractMethodDefine methodDefine = factoryBean.getMethod(var);
             factoryBean.setFactoryMethod(methodDefine);
@@ -104,7 +104,7 @@ class Watch_Bean implements KeepWatchParser {
         var = bean.useTemplate();
         if (var.equals("") == false) {
             if (resource.containsBeanDefine(var) == true)
-                define.setUseTemplate((AbstractBaseBeanDefine) resource.getBeanDefine(var));
+                define.setUseTemplate((AbstractBeanDefine) resource.getBeanDefine(var));
             else
                 throw new LostException("没有找到id为[" + var + "]的Bean定义作为模板。");
         }
@@ -115,7 +115,7 @@ class Watch_Bean implements KeepWatchParser {
         //-----------------------------------------------------------------------------------------------------构造方法
         Constructor<?>[] cs = beanType.getConstructors();
         for (Constructor<?> c : cs) {
-            org.more.hypha.anno.define.Constructor annoC = c.getAnnotation(org.more.hypha.anno.define.Constructor.class);
+            org.more.hypha.define.anno.Constructor annoC = c.getAnnotation(org.more.hypha.define.anno.Constructor.class);
             if (annoC == null)
                 continue;
             //1.参数相关信息
@@ -145,7 +145,7 @@ class Watch_Bean implements KeepWatchParser {
         //-----------------------------------------------------------------------------------------------------方法
         List<Method> methods = BeanUtil.getMethods(beanType);
         for (Method m : methods) {
-            org.more.hypha.anno.define.Method ma = m.getAnnotation(org.more.hypha.anno.define.Method.class);
+            org.more.hypha.define.anno.Method ma = m.getAnnotation(org.more.hypha.define.anno.Method.class);
             if (ma == null)
                 continue;
             //1.方法

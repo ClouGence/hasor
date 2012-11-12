@@ -22,8 +22,8 @@ import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
-import org.more.hypha.beans.define.File_ValueMetaData;
 import org.more.hypha.commons.logic.ValueMetaDataParser;
+import org.more.hypha.define.File_ValueMetaData;
 import org.more.util.ResourcesUtil;
 /**
  * 解析文件类型

@@ -17,8 +17,8 @@ package org.more.hypha.beans.xml;
 import java.util.Map;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
-import org.more.hypha.beans.define.RelationBeanDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.RelationBeanDefine;
 /**
  * 用于解析/beans/refBean标签
  * @version 2010-9-16

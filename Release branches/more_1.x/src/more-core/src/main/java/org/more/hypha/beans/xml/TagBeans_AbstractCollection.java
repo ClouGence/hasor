@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.beans.define.Collection_ValueMetaData;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.Collection_ValueMetaData;
 /**
  * 用于解析集合类型标签的基类。
  * @version 2010-9-23

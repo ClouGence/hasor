@@ -20,24 +20,24 @@ import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.aop.AopService;
-import org.more.hypha.aop.define.AbstractInformed;
-import org.more.hypha.aop.define.AbstractPointcutDefine;
-import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.AopAbstractInformed;
+import org.more.hypha.define.AopAbstractPointcutDefine;
+import org.more.hypha.define.AopConfigDefine;
 /**
  * 处理informed类型标签的refBean属性。
  * @version 2010-10-9
  * @author 赵永春 (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
-public abstract class TagAop_AbstractInformed<T extends AbstractInformed> extends TagAop_NS implements XmlElementHook {
+public abstract class TagAop_AbstractInformed<T extends AopAbstractInformed> extends TagAop_NS implements XmlElementHook {
     public static final String AopInformedDefine = "$more_aop_AopInformedDefine";
     public TagAop_AbstractInformed(XmlDefineResource configuration) {
         super(configuration);
     }
-    /**创建一个{@link AbstractInformed}定义对象。*/
+    /**创建一个{@link AopAbstractInformed}定义对象。*/
     protected abstract T createDefine(StartElementEvent event);
-    /**获取创建的{@link AbstractInformed}定义对象。*/
+    /**获取创建的{@link AopAbstractInformed}定义对象。*/
     protected final T getDefine(XmlStackDecorator<?> context) {
         return (T) context.getAttribute(AopInformedDefine);
     };
@@ -58,7 +58,7 @@ public abstract class TagAop_AbstractInformed<T extends AbstractInformed> extend
         //3.将Informed添加到父类的config中。
         if (pointcutRef != null) {
             AopService service = this.getAopConfig();
-            AbstractPointcutDefine pointcutDefine = service.getPointcutDefine(pointcutRef);
+            AopAbstractPointcutDefine pointcutDefine = service.getPointcutDefine(pointcutRef);
             config.addInformed(define, pointcutDefine);
         } else
             config.addInformed(define);

@@ -19,9 +19,9 @@ import java.util.Map;
 import org.more.core.error.DefineException;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
-import org.more.hypha.beans.define.AbstractBaseBeanDefine;
-import org.more.hypha.beans.define.MethodDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.AbstractBeanDefine;
+import org.more.hypha.define.MethodDefine;
 import org.more.util.BeanUtil;
 /**
  * 解析method标签。
@@ -58,7 +58,7 @@ public class TagBeans_Method extends TagBeans_AbstractDefine<MethodDefine> {
     /**将属性注册到Bean中。*/
     public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {
         MethodDefine method = this.getDefine(context);
-        AbstractBaseBeanDefine define = (AbstractBaseBeanDefine) context.getAttribute(TagBeans_AbstractBeanDefine.BeanDefine);
+        AbstractBeanDefine define = (AbstractBeanDefine) context.getAttribute(TagBeans_AbstractBeanDefine.BeanDefine);
         //
         if (method.getCodeName() == null)
             throw new DefineException("[" + define.getName() + "]的方法定义未定义codeName属性。");

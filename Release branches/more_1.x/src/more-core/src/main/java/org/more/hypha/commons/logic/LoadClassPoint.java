@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.commons.logic;
-import org.more.hypha.PointFilter;
+import org.more.hypha.point.PointFilter;
 /**
  * 在装载bean的类型的扩展点。
  * @version : 2011-6-29

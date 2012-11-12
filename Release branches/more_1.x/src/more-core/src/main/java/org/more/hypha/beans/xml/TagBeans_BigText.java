@@ -19,8 +19,8 @@ import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.XmlTextHook;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.TextEvent;
-import org.more.hypha.beans.define.BigText_ValueMetaData;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.BigText_ValueMetaData;
 /**
  * 用于解析bigText标签
  * @version 2010-9-22

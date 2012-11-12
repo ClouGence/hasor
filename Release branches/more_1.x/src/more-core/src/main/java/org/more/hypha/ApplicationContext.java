@@ -15,8 +15,9 @@
  */
 package org.more.hypha;
 import java.util.List;
+import org.more.hypha.define.AbstractBeanDefine;
 /**
-* 这个接口是More的Bean容器的核心接口，{@link ApplicationContext}的特定接口实现类可以用于某些情形。<br/><br/>
+* 这个接口是Bean容器的核心接口，{@link ApplicationContext}的特定接口实现类可以用于某些情形。<br/><br/>
 * 在{@link ApplicationContext}中所有Bean都有唯一的一个名称。该工厂将返回一个包含对象的一个独立实例(原型设计模式)，或单个
 * 共享实例(Singleton设计模式，该实例是在当前工厂中的一个单态）。返回哪种类型的实例取决于bean的配置。<br/><br/>
 * 处于工厂中的bean通常是存在于XML文件中。但不排除bean的来源于DBMS或者LDAP，这都取决于{@link ApplicationContext}中bean数据源接口是如何提供数据的。
@@ -38,11 +39,6 @@ public interface ApplicationContext {
      * @return 返回bean定义，如果获取不到指定的bean定义则返回null。
      */
     public AbstractBeanDefine getBeanDefinition(String id);
-    /**
-     * 获取{@link ApplicationContext}所使用的Bean定义资源，该资源对象可以提供有关Bean定义信息。
-     * @return 返回{@link ApplicationContext}所使用的Bean定义资源，该资源对象可以提供有关Bean定义信息。
-     */
-    public DefineResource getBeanResource();
     /**
     * 获取一个类装载器，org.more.hypha中的类装载均是通过这个类装载器进行装载的。
     * @return 返回一个类装载器，org.more.hypha中的类装载均是通过这个类装载器进行装载的。
@@ -114,6 +110,4 @@ public interface ApplicationContext {
     public Object getContextObject();
     /**设置应用的上下文环境对象。*/
     public void setContextObject(Object contextObject);
-    /**获取事件管理器，通过该管理器可以发送事件，事件的监听也是通过这个接口对象完成的。*/
-    public EventManager getEventManager();
 };

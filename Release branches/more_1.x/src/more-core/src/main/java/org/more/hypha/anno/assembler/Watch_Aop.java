@@ -18,16 +18,16 @@ import java.lang.annotation.Annotation;
 import org.more.core.error.LostException;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.anno.KeepWatchParser;
-import org.more.hypha.anno.define.Aop;
-import org.more.hypha.anno.define.AopInformed;
-import org.more.hypha.anno.define.Bean;
 import org.more.hypha.aop.AopService;
 import org.more.hypha.aop.assembler.AopService_Impl;
-import org.more.hypha.aop.define.AopConfigDefine;
-import org.more.hypha.aop.define.AopDefineInformed;
-import org.more.hypha.aop.define.AopPointcutDefine;
-import org.more.hypha.aop.define.PointcutType;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.AopConfigDefine;
+import org.more.hypha.define.AopDefineInformed;
+import org.more.hypha.define.AopPointcutDefine;
+import org.more.hypha.define.AopPointcutType;
+import org.more.hypha.define.anno.Aop;
+import org.more.hypha.define.anno.AopInformed;
+import org.more.hypha.define.anno.Bean;
 /**
  * 该bean用于解析aop的注解配置，取消该类不会影响到anno的服务提供。只不过会导致无法解析bean的aop注解声明。
  * @version 2010-10-14
@@ -82,7 +82,7 @@ class Watch_Aop implements KeepWatchParser {
         for (AopInformed informed : informeds) {
             String refBean = informed.refBean();
             String pointcut = informed.pointcut();
-            PointcutType pointType = informed.type();
+            AopPointcutType pointType = informed.type();
             //切入点定义
             AopPointcutDefine aoppoint_item = new AopPointcutDefine();
             aoppoint.setExpression(pointcut);

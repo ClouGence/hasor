@@ -19,9 +19,9 @@ import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.NoDefineBeanException;
 import org.more.hypha.ValueMetaData;
-import org.more.hypha.beans.define.Relation_ValueMetaData;
 import org.more.hypha.commons.logic.ValueMetaDataParser;
 import org.more.hypha.context.AbstractApplicationContext;
+import org.more.hypha.define.Relation_ValueMetaData;
 /**
  * 引用类型bean解析。
  * @version 2011-2-15

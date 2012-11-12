@@ -21,12 +21,11 @@ import java.util.List;
 import java.util.Map;
 import org.more.core.error.DefineException;
 import org.more.core.error.RepeateException;
-import org.more.core.event.Event;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
-import org.more.hypha.DefineResource;
 import org.more.hypha.context.AbstractDefineResource;
+import org.more.webui.event.Event;
 /**
  * 集合形式的{@link DefineResource}接口实现类，该类将所有Bean定义数据都存放在内存中。
  * @version 2010-11-30

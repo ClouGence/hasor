@@ -17,8 +17,8 @@ package org.more.hypha.beans.assembler.builder;
 import org.more.core.error.SupportException;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
-import org.more.hypha.beans.define.TemplateBeanDefine;
 import org.more.hypha.commons.logic.AbstractBeanBuilder;
+import org.more.hypha.define.TemplateBeanDefine;
 /**
  * TemplateBeanDefine类型bean解析，该类型bean啥也不支持。
  * @version 2011-2-15

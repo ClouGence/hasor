@@ -18,7 +18,7 @@ import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ValueMetaData;
-import org.more.hypha.beans.define.Enum_ValueMetaData;
+import org.more.hypha.define.Enum_ValueMetaData;
 import org.more.util.attribute.IAttribute;
 /**
  * 枚举属性值解析器，默认值是null。

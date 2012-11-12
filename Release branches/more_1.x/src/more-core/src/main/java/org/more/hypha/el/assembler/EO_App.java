@@ -16,7 +16,7 @@
 package org.more.hypha.el.assembler;
 import org.more.core.error.DefineException;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.ELObject;
+import org.more.hypha.el.ELObject;
 /**
  * EL中对应为{@link ApplicationContext context}对象，不支持赋值操作。
  * Date : 2011-4-11

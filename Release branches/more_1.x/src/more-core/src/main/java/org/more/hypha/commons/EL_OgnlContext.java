@@ -16,8 +16,8 @@
 package org.more.hypha.commons;
 import java.util.Map;
 import org.more.core.ognl.OgnlContext;
-import org.more.hypha.ELObject;
-import org.more.hypha.EvalExpression;
+import org.more.hypha.el.ELObject;
+import org.more.hypha.el.EvalExpression;
 import org.more.util.attribute.IAttribute;
 /**
  * {@link EvalExpression}接口的实现类，在该类上可以自由使用{@link IAttribute}接口而不用考虑是否会影响到整体。

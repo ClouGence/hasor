@@ -18,7 +18,7 @@ import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractPropertyDefine;
 import org.more.hypha.ValueMetaData;
-import org.more.hypha.beans.define.Date_ValueMetaData;
+import org.more.hypha.define.Date_ValueMetaData;
 import org.more.util.attribute.IAttribute;
 /**
  * 将value的值转换为Date类型表述。<br/>

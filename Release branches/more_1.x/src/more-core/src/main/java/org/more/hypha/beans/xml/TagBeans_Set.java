@@ -16,8 +16,8 @@
 package org.more.hypha.beans.xml;
 import java.util.HashSet;
 import org.more.core.xml.XmlStackDecorator;
-import org.more.hypha.beans.define.Set_ValueMetaData;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.Set_ValueMetaData;
 /**
  * 用于解析set标签
  * @version 2010-9-16

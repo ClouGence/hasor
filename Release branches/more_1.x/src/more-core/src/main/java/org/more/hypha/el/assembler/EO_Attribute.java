@@ -20,7 +20,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.ELObject;
+import org.more.hypha.el.ELObject;
 /**
  * EL中对应为{@link ApplicationContext context}对象的Map形式，不支持赋值操作。
  * Date : 2011-4-11

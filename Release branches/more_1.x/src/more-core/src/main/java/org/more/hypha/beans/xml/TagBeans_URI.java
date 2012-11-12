@@ -17,8 +17,8 @@ package org.more.hypha.beans.xml;
 import java.util.HashMap;
 import java.util.Map;
 import org.more.core.xml.XmlStackDecorator;
-import org.more.hypha.beans.define.URI_ValueMetaData;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.URI_ValueMetaData;
 /**
  * 用于解析uri标签
  * @version 2010-9-22

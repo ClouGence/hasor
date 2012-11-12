@@ -18,9 +18,9 @@ import java.util.HashMap;
 import java.util.Map;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.beans.define.AbstractPropertyDefine;
-import org.more.hypha.beans.define.Enum_ValueMetaData;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.AbstractPropertyDefine;
+import org.more.hypha.define.Enum_ValueMetaData;
 /**
  * 用于解析enum标签，该标签使用的枚举类型与属性定义类型一致。
  * @version 2010-9-22

@@ -19,8 +19,8 @@ import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.PointChain;
 import org.more.hypha.commons.logic.LoadClassPoint;
+import org.more.hypha.point.PointChain;
 /**
  * 该扩展点的作用是缓存已经装载的类型
  * @version : 2011-6-28

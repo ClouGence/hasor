@@ -16,8 +16,8 @@
 package org.more.hypha.beans.xml;
 import java.util.Map;
 import org.more.core.xml.XmlStackDecorator;
-import org.more.hypha.beans.define.ClassPathBeanDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.ClassPathBeanDefine;
 /**
  * 用于解析/beans/classBean标签
  * @version 2010-9-16

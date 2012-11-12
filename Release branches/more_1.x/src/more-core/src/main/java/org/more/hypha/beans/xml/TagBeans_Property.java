@@ -17,9 +17,9 @@ package org.more.hypha.beans.xml;
 import java.util.Map;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
-import org.more.hypha.beans.define.AbstractBaseBeanDefine;
-import org.more.hypha.beans.define.PropertyDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.AbstractBeanDefine;
+import org.more.hypha.define.PropertyDefine;
 /**
  * 用于解析property标签
  * @version 2010-9-16
@@ -48,7 +48,7 @@ public class TagBeans_Property extends TagBeans_AbstractPropertyDefine<PropertyD
     /**将属性注册到Bean中。*/
     public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {
         PropertyDefine property = this.getDefine(context);
-        AbstractBaseBeanDefine define = (AbstractBaseBeanDefine) context.getAttribute(TagBeans_AbstractBeanDefine.BeanDefine);
+        AbstractBeanDefine define = (AbstractBeanDefine) context.getAttribute(TagBeans_AbstractBeanDefine.BeanDefine);
         define.addProperty(property);
         super.endElement(context, xpath, event);
     }

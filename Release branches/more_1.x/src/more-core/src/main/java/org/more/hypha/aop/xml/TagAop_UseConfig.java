@@ -23,9 +23,9 @@ import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.aop.AopService;
-import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.beans.xml.TagBeans_AbstractBeanDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.AopConfigDefine;
 /**
  * 用于解析aop:useConfig标签和useConfig属性
  * @version 2010-10-9

@@ -20,10 +20,10 @@ import org.more.core.error.DefineException;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.DefineResource;
 import org.more.hypha.aop.AopService;
-import org.more.hypha.aop.define.AbstractPointcutDefine;
-import org.more.hypha.aop.define.AopConfigDefine;
-import org.more.hypha.beans.define.AbstractBaseBeanDefine;
 import org.more.hypha.commons.AbstractService;
+import org.more.hypha.define.AbstractBeanDefine;
+import org.more.hypha.define.AopAbstractPointcutDefine;
+import org.more.hypha.define.AopConfigDefine;
 import org.more.util.attribute.IAttribute;
 /**
  * 该类的目的是为了扩展{@link DefineResource}接口对象以将aop信息附加到定义资源接口中。
@@ -33,14 +33,14 @@ import org.more.util.attribute.IAttribute;
 public class AopService_Impl extends AbstractService implements AopService {
     public static final String                  ServiceName  = "$more_aop_service";
     private static final String                 AopInfoName  = "$more_aop_info";
-    private Map<String, AbstractPointcutDefine> pointcutList = new HashMap<String, AbstractPointcutDefine>();
+    private Map<String, AopAbstractPointcutDefine> pointcutList = new HashMap<String, AopAbstractPointcutDefine>();
     private Map<String, AopConfigDefine>        configList   = new HashMap<String, AopConfigDefine>();
     //
     private AopBuilder                          aopBuilder   = null;
     //
     private IAttribute<Object> getFungi(AbstractBeanDefine define) {
-        if (define instanceof AbstractBaseBeanDefine)
-            return ((AbstractBaseBeanDefine) define).getFungi();
+        if (define instanceof AbstractBeanDefine)
+            return ((AbstractBeanDefine) define).getFungi();
         return null;
     }
     //
@@ -89,13 +89,13 @@ public class AopService_Impl extends AbstractService implements AopService {
         return this.configList.get(name);
     }
     /**获取一个定义的切入点。*/
-    public AbstractPointcutDefine getPointcutDefine(String name) throws DefineException {
+    public AopAbstractPointcutDefine getPointcutDefine(String name) throws DefineException {
         if (this.pointcutList.containsKey(name) == false)
             throw new DefineException("不存在名称为[" + name + "]的AbstractPointcutDefine定义。");
         return this.pointcutList.get(name);
     }
     /**添加切点定义。*/
-    public void addPointcutDefine(AbstractPointcutDefine define) {
+    public void addPointcutDefine(AopAbstractPointcutDefine define) {
         this.pointcutList.put(define.getName(), define);
     }
     /**删除切点定义。*/

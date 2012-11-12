@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.anno.assembler;
-import org.more.hypha.anno.define.Bean;
+import org.more.hypha.define.anno.Bean;
 /**
  * MetaDataπ§æﬂ¿‡
  * @version : 2011-5-24

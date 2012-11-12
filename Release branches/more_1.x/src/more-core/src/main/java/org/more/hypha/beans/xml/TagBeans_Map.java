@@ -16,9 +16,9 @@
 package org.more.hypha.beans.xml;
 import java.util.HashMap;
 import org.more.core.xml.XmlStackDecorator;
-import org.more.hypha.beans.define.List_ValueMetaData;
-import org.more.hypha.beans.define.Map_ValueMetaData;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.List_ValueMetaData;
+import org.more.hypha.define.Map_ValueMetaData;
 /**
  * 用于解析map标签
  * @version 2010-9-16

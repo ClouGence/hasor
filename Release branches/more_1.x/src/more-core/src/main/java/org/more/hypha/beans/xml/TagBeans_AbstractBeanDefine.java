@@ -23,15 +23,15 @@ import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.AbstractMethodDefine;
 import org.more.hypha.DefineResource;
-import org.more.hypha.beans.define.AbstractBaseBeanDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.AbstractBeanDefine;
 import org.more.util.BeanUtil;
 /**
  * 用于解析/beans/*Bean标签的基类
  * @version 2010-9-16
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBaseBeanDefine> extends TagBeans_AbstractDefine<T> {
+public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBeanDefine> extends TagBeans_AbstractDefine<T> {
     /**创建{@link TagBeans_AbstractBeanDefine}对象*/
     public TagBeans_AbstractBeanDefine(XmlDefineResource configuration) {
         super(configuration);
@@ -84,7 +84,7 @@ public abstract class TagBeans_AbstractBeanDefine<T extends AbstractBaseBeanDefi
         if (factoryName != null) {
             if (beanDefineManager.containsBeanDefine(factoryName) == false)
                 throw new DefineException("[" + define.getName() + "]找不到关联的工厂[" + factoryName + "]Bean定义");
-            AbstractBaseBeanDefine factoryBean = (AbstractBaseBeanDefine) beanDefineManager.getBeanDefine(factoryName);
+            AbstractBeanDefine factoryBean = (AbstractBeanDefine) beanDefineManager.getBeanDefine(factoryName);
             String factoryMethod = event.getAttributeValue("factoryMethod");
             AbstractMethodDefine methodDefine = factoryBean.getMethod(factoryMethod);
             BeanUtil.writePropertyOrField(define, "factoryBean", factoryBean);

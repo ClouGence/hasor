@@ -16,10 +16,10 @@
 package org.more.hypha.beans.xml;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
-import org.more.hypha.beans.define.AbstractPropertyDefine;
-import org.more.hypha.beans.define.AbstractValueMetaData;
-import org.more.hypha.beans.define.Collection_ValueMetaData;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.AbstractPropertyDefine;
+import org.more.hypha.define.AbstractValueMetaData;
+import org.more.hypha.define.Collection_ValueMetaData;
 /**
  * 负责解析属性元信息标签的基类，该类考虑了值元信息的描述处于对另外一个值元信息的描述之中的情况。
  * @version 2010-9-19

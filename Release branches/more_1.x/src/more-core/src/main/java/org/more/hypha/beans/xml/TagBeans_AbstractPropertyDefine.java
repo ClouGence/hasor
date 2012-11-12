@@ -18,9 +18,9 @@ import java.util.HashMap;
 import java.util.Map;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.beans.define.AbstractPropertyDefine;
-import org.more.hypha.beans.define.AbstractValueMetaData;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.AbstractPropertyDefine;
+import org.more.hypha.define.AbstractValueMetaData;
 import org.more.util.attribute.AttBase;
 /**
  * beans命名空间的属性标签解析基类。该类不会处理属性值元信息的解析这部分信息的解析交给其专有标签解析器或者由{@link QPP}接口负责处理。

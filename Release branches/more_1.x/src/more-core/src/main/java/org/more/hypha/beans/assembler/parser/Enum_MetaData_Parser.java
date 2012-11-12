@@ -18,8 +18,8 @@ import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
-import org.more.hypha.beans.define.Enum_ValueMetaData;
 import org.more.hypha.commons.logic.ValueMetaDataParser;
+import org.more.hypha.define.Enum_ValueMetaData;
 /**
  * 枚举类型解析。
  * @version 2011-2-15

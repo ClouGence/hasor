@@ -17,8 +17,8 @@ package org.more.hypha.beans.xml;
 import java.util.HashMap;
 import java.util.Map;
 import org.more.core.xml.XmlStackDecorator;
-import org.more.hypha.beans.define.EL_ValueMetaData;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.EL_ValueMetaData;
 /**
  * 用于解析el标签
  * @version 2010-11-10

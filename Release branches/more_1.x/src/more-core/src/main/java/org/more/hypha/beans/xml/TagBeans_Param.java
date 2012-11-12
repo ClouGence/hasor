@@ -17,10 +17,10 @@ package org.more.hypha.beans.xml;
 import java.util.Map;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
-import org.more.hypha.beans.define.MethodDefine;
-import org.more.hypha.beans.define.ParamDefine;
-import org.more.hypha.beans.define.PropertyDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.MethodDefine;
+import org.more.hypha.define.ParamDefine;
+import org.more.hypha.define.PropertyDefine;
 /**
  * 用于解析param标签
  * @version 2010-9-16

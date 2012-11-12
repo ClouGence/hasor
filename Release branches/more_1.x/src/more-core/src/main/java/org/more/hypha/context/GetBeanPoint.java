@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.context;
-import org.more.hypha.PointFilter;
+import org.more.hypha.point.PointFilter;
 /**
  * 在调用Context的getBean时执行的扩展点。
  * @version : 2011-6-29

@@ -22,9 +22,9 @@ import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.aop.AopService;
-import org.more.hypha.aop.define.AopConfigDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.hypha.context.xml.XmlLoadedEvent;
+import org.more.hypha.define.AopConfigDefine;
 /**
  * 用于解析aop:apply标签
  * @version 2010-9-22

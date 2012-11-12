@@ -17,8 +17,8 @@ package org.more.hypha.beans.xml;
 import java.util.Map;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.beans.define.File_ValueMetaData;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.File_ValueMetaData;
 /**
  * 用于解析file标签
  * @version 2010-9-22

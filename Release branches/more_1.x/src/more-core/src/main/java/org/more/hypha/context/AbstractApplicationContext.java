@@ -27,13 +27,13 @@ import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.ELContext;
-import org.more.hypha.ExpandPointManager;
-import org.more.hypha.PointCallBack;
 import org.more.hypha.Service;
 import org.more.hypha.commons.AbstractELContext;
 import org.more.hypha.commons.AbstractExpandPointManager;
 import org.more.hypha.commons.logic.EngineLogic;
+import org.more.hypha.el.ELContext;
+import org.more.hypha.point.ExpandPointManager;
+import org.more.hypha.point.PointCallBack;
 import org.more.util.attribute.IAttribute;
 /**
  * 简单的{@link ApplicationContext}接口实现类，该类只是提供了一个平台。
@@ -52,7 +52,6 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     private Map<String, Object>                    singleBeanCache    = null;
     //
     private EngineLogic                            engineLogic        = null;
-    private LinkedHashMap<Class<?>, Service>       servicesMap        = null;
     //
     private static ThreadLocal<ApplicationContext> localContext       = new ThreadLocal<ApplicationContext>();
     private static Map<String, ApplicationContext> mapContext         = new HashMap<String, ApplicationContext>();

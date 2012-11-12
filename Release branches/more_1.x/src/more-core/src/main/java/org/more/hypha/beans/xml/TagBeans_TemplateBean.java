@@ -16,8 +16,8 @@
 package org.more.hypha.beans.xml;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
-import org.more.hypha.beans.define.TemplateBeanDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.TemplateBeanDefine;
 /**
  * 用于解析/beans/templateBean标签
  * @version 2010-9-16

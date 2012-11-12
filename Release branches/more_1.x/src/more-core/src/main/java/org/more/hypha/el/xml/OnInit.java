@@ -19,10 +19,10 @@ import org.more.core.event.Event.Sequence;
 import org.more.core.event.EventListener;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
-import org.more.hypha.ELContext;
-import org.more.hypha.ELObject;
 import org.more.hypha.context.AbstractApplicationContext;
 import org.more.hypha.context.InitEvent;
+import org.more.hypha.el.ELContext;
+import org.more.hypha.el.ELObject;
 /**
  * el的初始化EL对象。
  * @version : 2011-4-22

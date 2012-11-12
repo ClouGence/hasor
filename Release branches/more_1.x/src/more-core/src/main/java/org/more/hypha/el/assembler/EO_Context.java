@@ -15,7 +15,7 @@
  */
 package org.more.hypha.el.assembler;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.ELObject;
+import org.more.hypha.el.ELObject;
 /**
  * EL中对应为{@link ApplicationContext context}对象，支持赋值操作。
  * Date : 2011-4-11

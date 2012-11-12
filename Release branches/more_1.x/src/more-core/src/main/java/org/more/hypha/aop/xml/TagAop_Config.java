@@ -21,12 +21,12 @@ import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.aop.AopService;
-import org.more.hypha.aop.define.AbstractInformed;
-import org.more.hypha.aop.define.AbstractPointcutDefine;
-import org.more.hypha.aop.define.AopConfigDefine;
-import org.more.hypha.beans.define.AbstractBaseBeanDefine;
 import org.more.hypha.beans.xml.TagBeans_AbstractBeanDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.AbstractBeanDefine;
+import org.more.hypha.define.AopAbstractInformed;
+import org.more.hypha.define.AopAbstractPointcutDefine;
+import org.more.hypha.define.AopConfigDefine;
 import org.more.util.StringConvertUtil;
 /**
  * 用于解析aop:config标签
@@ -53,11 +53,11 @@ public class TagAop_Config extends TagAop_NS implements XmlElementHook {
     }
     /**结束标签处理。*/
     public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {
-        AbstractBaseBeanDefine bean = (AbstractBaseBeanDefine) context.getAttribute(TagBeans_AbstractBeanDefine.BeanDefine);
+        AbstractBeanDefine bean = (AbstractBeanDefine) context.getAttribute(TagBeans_AbstractBeanDefine.BeanDefine);
         AopConfigDefine config = (AopConfigDefine) context.getAttribute(ConfigDefine);
         //1.检查内部的Informed
-        AbstractPointcutDefine defaultPointcutDefine = config.getDefaultPointcutDefine();
-        for (AbstractInformed informed : config.getAopInformedList())
+        AopAbstractPointcutDefine defaultPointcutDefine = config.getDefaultPointcutDefine();
+        for (AopAbstractInformed informed : config.getAopInformedList())
             if (informed.getRefPointcut() == null)
                 informed.setRefPointcut(defaultPointcutDefine);
         //3.注册

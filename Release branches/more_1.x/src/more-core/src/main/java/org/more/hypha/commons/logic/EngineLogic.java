@@ -34,9 +34,9 @@ import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.PointCallBack;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.context.AbstractApplicationContext;
+import org.more.hypha.point.PointCallBack;
 /**
 * 该类负责hypha的整个bean创建流程，是一个非常重要的核心类。
 * @version : 2011-5-12

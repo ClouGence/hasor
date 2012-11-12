@@ -21,20 +21,20 @@ import org.more.core.classcode.AopReturningListener;
 import org.more.core.classcode.AopThrowingListener;
 import org.more.core.classcode.Method;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.aop.define.AbstractInformed;
-import org.more.hypha.aop.define.PointcutType;
+import org.more.hypha.define.AopAbstractInformed;
+import org.more.hypha.define.AopPointcutType;
 /**
  * AOP代理。
  * @version : 2011-7-12
  * @author 赵永春 (zyc@byshell.org)
  */
 class AopPropxyInformed implements AopBeforeListener, AopReturningListener, AopThrowingListener, AopInvokeFilter {
-    private AbstractInformed   informedDefine = null;
-    private PointcutType       pointcutType   = null;
+    private AopAbstractInformed   informedDefine = null;
+    private AopPointcutType       pointcutType   = null;
     private ApplicationContext context        = null;
     private Object             informedObject = null;
     //
-    public AopPropxyInformed(ApplicationContext context, AbstractInformed informed) {
+    public AopPropxyInformed(ApplicationContext context, AopAbstractInformed informed) {
         pointcutType = informed.getPointcutType();
         this.informedDefine = informed;
         this.context = context;
@@ -47,9 +47,9 @@ class AopPropxyInformed implements AopBeforeListener, AopReturningListener, AopT
     public Object doFilter(Object target, Method method, Object[] args, AopFilterChain chain) throws Throwable {
         //1.准备
         AopInvokeFilter filter = null;
-        if (pointcutType == PointcutType.Filter)
+        if (pointcutType == AopPointcutType.Filter)
             filter = (AopInvokeFilter) this.getInformedObject();
-        if (pointcutType == PointcutType.Auto) {
+        if (pointcutType == AopPointcutType.Auto) {
             Object temp = this.getInformedObject();
             if (temp instanceof AopInvokeFilter)
                 filter = (AopInvokeFilter) temp;
@@ -63,9 +63,9 @@ class AopPropxyInformed implements AopBeforeListener, AopReturningListener, AopT
     public void beforeInvoke(Object target, Method method, Object[] args) throws Throwable {
         //1.准备
         AopBeforeListener listener = null;
-        if (pointcutType == PointcutType.Before)
+        if (pointcutType == AopPointcutType.Before)
             listener = (AopBeforeListener) this.getInformedObject();
-        if (pointcutType == PointcutType.Auto) {
+        if (pointcutType == AopPointcutType.Auto) {
             Object temp = this.getInformedObject();
             if (temp instanceof AopBeforeListener)
                 listener = (AopBeforeListener) temp;
@@ -77,9 +77,9 @@ class AopPropxyInformed implements AopBeforeListener, AopReturningListener, AopT
     public void returningInvoke(Object target, Method method, Object[] args, Object result) throws Throwable {
         //1.准备
         AopReturningListener listener = null;
-        if (pointcutType == PointcutType.Returning)
+        if (pointcutType == AopPointcutType.Returning)
             listener = (AopReturningListener) this.getInformedObject();
-        if (pointcutType == PointcutType.Auto) {
+        if (pointcutType == AopPointcutType.Auto) {
             Object temp = this.getInformedObject();
             if (temp instanceof AopReturningListener)
                 listener = (AopReturningListener) temp;
@@ -91,9 +91,9 @@ class AopPropxyInformed implements AopBeforeListener, AopReturningListener, AopT
     public void throwsException(Object target, Method method, Object[] args, Throwable e) throws Throwable {
         //1.准备
         AopThrowingListener listener = null;
-        if (pointcutType == PointcutType.Throwing)
+        if (pointcutType == AopPointcutType.Throwing)
             listener = (AopThrowingListener) this.getInformedObject();
-        if (pointcutType == PointcutType.Auto) {
+        if (pointcutType == AopPointcutType.Auto) {
             Object temp = this.getInformedObject();
             if (temp instanceof AopThrowingListener)
                 listener = (AopThrowingListener) temp;

@@ -20,25 +20,25 @@ import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.aop.AopService;
-import org.more.hypha.aop.define.AbstractPointcutDefine;
-import org.more.hypha.aop.define.AopConfigDefine;
-import org.more.hypha.aop.define.AopPointcutGroupDefine;
 import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.define.AopAbstractPointcutDefine;
+import org.more.hypha.define.AopConfigDefine;
+import org.more.hypha.define.AopPointcutGroupDefine;
 /**
  * 用于解析切点标签的基类，该类会解析name属性。
  * @version 2010-9-24
  * @author 赵永春 (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
-public abstract class TagAop_AbstractPointcut<T extends AbstractPointcutDefine> extends TagAop_NS implements XmlElementHook {
+public abstract class TagAop_AbstractPointcut<T extends AopAbstractPointcutDefine> extends TagAop_NS implements XmlElementHook {
     private static final String PointcutDefine = "$more_Aop_PointcutDefine";
     /**创建{@link TagAop_AbstractPointcut}类型对象。*/
     public TagAop_AbstractPointcut(XmlDefineResource configuration) {
         super(configuration);
     }
-    /**创建一个{@link AbstractPointcutDefine}定义对象。*/
+    /**创建一个{@link AopAbstractPointcutDefine}定义对象。*/
     protected abstract T createDefine();
-    /**获取创建的{@link AbstractPointcutDefine}定义对象。*/
+    /**获取创建的{@link AopAbstractPointcutDefine}定义对象。*/
     protected final T getDefine(XmlStackDecorator<?> context) {
         return (T) context.getAttribute(PointcutDefine);
     };

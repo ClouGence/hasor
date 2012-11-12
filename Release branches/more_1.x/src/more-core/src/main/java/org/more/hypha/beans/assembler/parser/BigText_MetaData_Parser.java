@@ -18,8 +18,8 @@ import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
-import org.more.hypha.beans.define.BigText_ValueMetaData;
 import org.more.hypha.commons.logic.ValueMetaDataParser;
+import org.more.hypha.define.BigText_ValueMetaData;
 /**
  * 负责解析大文本类型。
  * @version 2011-2-15
