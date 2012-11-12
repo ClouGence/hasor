@@ -34,7 +34,10 @@ WebUI.Component.$extends("UIForm", "UIComponent", {
 			var uio = this.uiObject;
 			if (uio.isForm() == false)
 				return;
-			paramData[uio.componentPath + ":value"] = uio.value();
+			if (WebUI.isNaN(uio.selectValue) == false)
+				paramData[uio.componentPath + ":value"] = uio.selectValue();
+			else
+				paramData[uio.componentPath + ":value"] = uio.value();
 		});
 		// B.引发OnSubmit事件
 		var $this = this;

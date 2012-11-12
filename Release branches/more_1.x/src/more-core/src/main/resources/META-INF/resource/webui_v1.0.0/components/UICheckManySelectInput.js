@@ -2,6 +2,34 @@
 /* UICheckManySelectInput Component */
 /* -------------------------------------------------------------------- */
 WebUI.Component.$extends("UICheckManySelectInput", "UISelectInput", {
+	/** 将jsonData对象作为下拉列表框的值，可以接受string/array */
+	setData : function(jsonData) {
+		var k = this.keyField();
+		var v = this.varField();
+		var arrayData = (WebUI.isObject(jsonData) == false) ? eval(jsonData) : jsonData;
+		var jqObject = $(this.getElement());
+		var titleFirst = this.titleFirst();
+		var selectValues = this.getState().get('value');
+		try {
+			selectValues = selectValues.split(",");
+		} catch (e) {
+			selectValues = [ selectValues ];
+		}
+		jqObject.html('');
+		for ( var i = 0; i < arrayData.length; i++) {
+			var _id = jqObject.attr("id");
+			var span = "<a id='" + _id + "_Span' href='javascript:void(0)'>" + arrayData[i][v] + "</a>";
+			var input = '<input type="checkbox" forComID="' + this.componentID + '" name="' + this.name() + '" value="' + arrayData[i][k] + '" varValue="' + arrayData[i][v] + '"';
+			for ( var j = 0; j < selectValues.length; j++)
+				if (selectValues[j] == arrayData[i][k])
+					input += " checked='checked'";
+			input += "/>";
+			if (titleFirst == true)
+				jqObject.append("<li><label id='" + _id + "_Label'>" + span + input + '</label></li>');
+			else
+				jqObject.append("<li><label id='" + _id + "_Label'>" + input + span + '</label></li>');
+		}
+	},
 	/** （重写方法）从服务器上载入数据 */
 	loadData : function(paramData, ajaxAfter, ajaxError) {
 		if (WebUI.isNaN(this.getState().get("onLoadDataEL")) == true)
@@ -15,33 +43,8 @@ WebUI.Component.$extends("UICheckManySelectInput", "UISelectInput", {
 				// A.成功装载
 				if (WebUI.isFun(ajaxAfter) == true)
 					ajaxAfter.call($this, event);
-				else {
-					var k = $this.keyField();
-					var v = $this.varField();
-					var arrayData = eval(event.result);
-					var jqObject = $($this.getElement());
-					var titleFirst = $this.titleFirst();
-					var selectValues = $this.getState().get('value');
-					try {
-						selectValues = selectValues.split(",");
-					} catch (e) {
-						selectValues = [ selectValues ];
-					}
-					jqObject.html('');
-					for ( var i = 0; i < arrayData.length; i++) {
-						var _id = jqObject.attr("id");
-						var span = "<a id='" + _id + "_Span' href='javascript:void(0)'>" + arrayData[i][v] + "</a>";
-						var input = '<input type="checkbox" forComID="' + $this.componentID + '" name="' + $this.name() + '" value="' + arrayData[i][k] + '" varValue="' + arrayData[i][v] + '"';
-						for ( var j = 0; j < selectValues.length; j++)
-							if (selectValues[j] == arrayData[i][k])
-								input += " checked='checked'";
-						input += "/>";
-						if (titleFirst == true)
-							jqObject.append("<li><label id='" + _id + "_Label'>" + span + input + '</label></li>');
-						else
-							jqObject.append("<li><label id='" + _id + "_Label'>" + input + span + '</label></li>');
-					}
-				}
+				else
+					$this.setData(event.result);
 			},
 			/* 错误的回调 */
 			'ajaxError' : function(event) {

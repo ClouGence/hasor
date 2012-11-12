@@ -36,13 +36,6 @@ public class UIViewRoot extends UIComponent {
         return "ui_ViewRoot";
     }
     @Override
-    public UIComponent getChildByPath(String componentPath) {
-        if (componentPath.equals("/") == true)
-            return this;
-        else
-            return super.getChildByPath(componentPath);
-    }
-    @Override
     protected void initUIComponent(ViewContext viewContext) {
         this.addEventListener(UIViewRoot_Event_OnAction.ActionEvent, new UIViewRoot_Event_OnAction());
         super.initUIComponent(viewContext);

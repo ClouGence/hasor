@@ -2,6 +2,16 @@
 /* UISelectOnlySelectInput Component */
 /* -------------------------------------------------------------------- */
 WebUI.Component.$extends("UISelectOnlySelectInput", "UISelectInput", {
+	/** 将jsonData对象作为下拉列表框的值，可以接受string/array */
+	setData : function(jsonData) {
+		var k = this.keyField();
+		var v = this.varField();
+		var arrayData = (WebUI.isObject(jsonData) == false) ? eval(jsonData) : jsonData;
+		var e = this.getElement();
+		e.options.length = 0;
+		for ( var i = 0; i < arrayData.length; i++)
+			e.options.add(new Option(arrayData[i][v], arrayData[i][k]));
+	},
 	/** （重写方法）从服务器上载入数据。 */
 	loadData : function(paramData, ajaxAfter, ajaxError) {
 		if (WebUI.isNaN(this.getState().get("onLoadDataEL")) == true)
@@ -15,15 +25,8 @@ WebUI.Component.$extends("UISelectOnlySelectInput", "UISelectInput", {
 				// A.成功装载
 				if (WebUI.isFun(ajaxAfter) == true)
 					ajaxAfter.call($this, event);
-				else {
-					var k = $this.keyField();
-					var v = $this.varField();
-					var arrayData = eval(event.result);
-					var e = $this.getElement();
-					e.options.length = 0;
-					for ( var i = 0; i < arrayData.length; i++)
-						e.options.add(new Option(arrayData[i][v], arrayData[i][k]));
-				}
+				else
+					$this.setData(event.result);
 			},
 			/* 错误的回调 */
 			'ajaxError' : function(event) {

@@ -15,6 +15,7 @@ WebUI.Component.$extends = function(newType, superName, define) {
 		fo.prototype = superObj;
 	var newFo = new fo();
 	newFo.cMode = newType;
+	newFo.thisClass = newType;
 	newFo.superClass = superObj;
 	// B.赋予新方法
 	if (WebUI.isObject(define) == true)
@@ -159,6 +160,8 @@ WebUI.Component.prototype = {
 	componentPath : null,
 	/** 父类类型（在定义类型时赋予） */
 	superClass : null,
+	/** 当前类的类型（在定义类型时赋予） */
+	thisClass : null,
 	/** 服务端组建模型。 */
 	serverMode : function() {
 		return $(this.getElement()).attr("sMode");

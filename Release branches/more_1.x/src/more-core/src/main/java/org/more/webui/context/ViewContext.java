@@ -25,12 +25,17 @@ import org.more.core.map.DecSequenceMap;
 import org.more.util.StringConvertUtil;
 import org.more.webui.component.UIComponent;
 import org.more.webui.component.UIViewRoot;
+import org.more.webui.context.scope.CookieScope;
+import org.more.webui.context.scope.HttpRequestParamScope;
+import org.more.webui.context.scope.HttpRequestScope;
+import org.more.webui.context.scope.HttpSessionScope;
+import org.more.webui.context.scope.ServletContextScope;
 import org.more.webui.freemarker.parser.TemplateScanner;
 import org.more.webui.lifestyle.Lifecycle;
 import org.more.webui.lifestyle.Phase;
 import org.more.webui.lifestyle.PhaseID;
 import org.more.webui.web.PostFormEnum;
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 /**
@@ -131,10 +136,16 @@ public class ViewContext extends HashMap<String, Object> {
             this.seq.addMap(this.getUIContext().getRenderKit(KitScope).getTags());
             /*1.视图属性*/
             this.seq.addMap(this);
-            /*2.Bean环境属性*/
+            this.seq.put("view", this);
+            this.seq.put("req", new HttpRequestParamScope(this));
+            this.seq.put("reqa", new HttpRequestScope(this));
+            this.seq.put("cookie", new CookieScope(this));
+            this.seq.put("session", new HttpSessionScope(this));
+            this.seq.put("context", new ServletContextScope(this));
+            /*3.Bean环境属性*/
             if (this.getUIContext().getBeanContext() instanceof Map)
                 this.seq.addMap((Map) this.getUIContext().getBeanContext());
-            /*3.环境属性*/
+            /*4.环境属性*/
             this.seq.addMap(this.getUIContext().getAttribute());
         }
         return this.seq;
@@ -203,7 +214,7 @@ public class ViewContext extends HashMap<String, Object> {
     /**向客户端发送响应数据。*/
     private void pushClient(int stateNumber, Object returnData) throws IOException {
         if (this.getEvent() != null) {
-            String sendDataStr = JSON.toJSONString(returnData);
+            String sendDataStr = JSONObject.toJSONString(returnData);
             //            String sendDataStr = AppUtil.getj.toJSONString(returnData);
             this.getHttpResponse().setStatus(stateNumber);
             this.getHttpResponse().getWriter().write(sendDataStr);

@@ -169,10 +169,10 @@ public abstract class UIComponent {
     };
     /**获取组建类型，每一个UI组建都应该具备一个独一无二的componentType，这个ID是用来表示组建类型。*/
     public abstract String getComponentType();
-    /**获取组建在组建树中的位置格式为：/1/3/4/2*/
+    /**获取组建在组建树中的位置格式为：/1/3/4/2 */
     public String getComponentPath() {
         if (this.componentPath == null) {
-            StringBuffer buffer = new StringBuffer();
+            StringBuffer buffer = new StringBuffer("/");
             UIComponent target = this;
             UIComponent targetParent = target.getParent();
             while (targetParent != null) {
@@ -183,7 +183,10 @@ public abstract class UIComponent {
                 target = targetParent;
                 targetParent = target.getParent();
             }
-            this.componentPath = buffer.reverse().toString();
+            if (buffer.length() > 1)
+                this.componentPath = buffer.deleteCharAt(0).reverse().toString();
+            else
+                this.componentPath = buffer.reverse().toString();
         }
         return this.componentPath;
     }
@@ -203,8 +206,15 @@ public abstract class UIComponent {
         if (componentPath.startsWith(thisPath) == false)
             return null;//排除要获取的目标不是自己孩子的情况。
         //
-        String targetPath = componentPath.substring(thisPath.length() + 1);
+        String targetPath = componentPath.substring(thisPath.length());
         int firstSpan = targetPath.indexOf('/');
+        {
+            if (firstSpan == 0) {
+                targetPath = targetPath.substring(1);
+                firstSpan = targetPath.indexOf('/');
+            }
+        }
+        //
         int index = -1;
         if (firstSpan == -1)
             index = Integer.parseInt(targetPath);

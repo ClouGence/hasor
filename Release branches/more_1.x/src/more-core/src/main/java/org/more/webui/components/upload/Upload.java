@@ -215,9 +215,11 @@ class SWFUpload_Event_OnUpLoad implements EventListener {
             Object returnData = null;
             MethodExpression onBizActionExp = swfUpload.getOnBizActionExpression();
             if (onBizActionExp != null) {
+                HashMap<String, Object> upObject = new HashMap<String, Object>();
+                upObject.put("files", finalList);
+                upObject.put("params", finalParam);
                 HashMap<String, Object> upParam = new HashMap<String, Object>();
-                upParam.put("files", finalList);
-                upParam.put("params", finalParam);
+                upParam.put("up", upObject);
                 returnData = onBizActionExp.execute(component, viewContext, upParam);
             }
             //4.清理数据

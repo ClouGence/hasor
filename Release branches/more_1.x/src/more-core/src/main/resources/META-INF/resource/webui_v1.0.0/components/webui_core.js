@@ -365,9 +365,9 @@ WebUI.call = function(target, paramMap) {
 		var ajaxParam = target.ajaxParam();
 		if (WebUI.isNaN(ajaxParam) == false)
 			if (url.indexOf('?') == -1)
-				url += (url + "?" + ajaxParam);
+				url += ("?" + ajaxParam);
 			else
-				url += (url + "&" + ajaxParam);
+				url += ("&" + ajaxParam);
 	}
 	/* 5.固定的信息 */
 	sendData['WebUI_PF_Ajax'] = true;
@@ -381,10 +381,14 @@ WebUI.call = function(target, paramMap) {
 		return;
 	/* 7.处理beforeFun */
 	var postData = WebUI.mapToURI(sendData);
+	if (url.indexOf('?') == -1)
+		url += ("?" + postData);
+	else
+		url += ("&" + postData);
 	var res = $.ajax({
 		type : 'post',
 		url : url,
-		data : postData,
+		data : sendData["dataMap"],
 		cache : false,
 		async : async,
 		success : function(res) {
@@ -425,19 +429,18 @@ WebUI.call = function(target, paramMap) {
  * 静态方法，向服务器发送事件
  * @param invokeString 要调用的服务器方法
  * @param paramData 携带的参数
- * @param async true|false同步状态（true表示使用同步）
- * @param okCallBack 回调函数
- * @param errorCallBack 回调函数
+ * @param ajaxAfter 回调函数
+ * @param ajaxError 回调函数
  */
-WebUI.invoke = function(invokeString, paramData, async, okCallBack, errorCallBack) {
+WebUI.invoke = function(invokeString, paramData, ajaxAfter, ajaxError) {
 	var paramMap = {};
 	paramMap['ajaxBefore'] = null;// 开始之前
-	if (WebUI.isFun(okCallBack) == true)
-		paramMap['ajaxAfter'] = okCallBack;// 正确回调
-	if (WebUI.isFun(errorCallBack) == true)
-		paramMap['ajaxError'] = errorCallBack;// 错误回调
+	if (WebUI.isFun(ajaxAfter) == true)
+		paramMap['ajaxAfter'] = ajaxAfter;// 正确回调
+	if (WebUI.isFun(ajaxError) == true)
+		paramMap['ajaxError'] = ajaxError;// 错误回调
 	paramMap['dataMap'] = paramData;// 请求参数
 	paramMap['invoke'] = invokeString;// 引发服务端OnInvoke事件，invoke代表要在服务端执行的EL表达式。（注意：如果指定invoke参数则event参数会失效）
-	paramMap['async'] = (WebUI.isNaN(async) == true) ? true : async;
+	paramMap['async'] = (WebUI.isNaN(ajaxAfter) == false || WebUI.isNaN(ajaxError) == false) ? false : true;
 	return WebUI.call(null, paramMap);
 };
