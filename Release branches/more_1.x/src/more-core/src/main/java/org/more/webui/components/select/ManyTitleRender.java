@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.components.select.onlyselect;
-import org.more.webui.component.UISelectInput;
-import org.more.webui.component.support.UICom;
-import org.more.webui.render.select.SelectOnlySelectInputRender;
+package org.more.webui.components.select;
+import org.more.webui.render.select.CheckManySelectInputRender;
 /**
- * <b>作用</b>：下拉输入框组建。
- * <br><b>组建类型</b>：ui_OnlySelect
- * <br><b>标签</b>：@ui_OnlySelect
- * <br><b>服务端事件</b>：无
- * <br><b>渲染器</b>：{@link SelectOnlySelectInputRender}
- * @version : 2012-5-15
+ * 继承自{@link CheckManySelectInputRender}取消输出check框。
+ * <br><b>客户端模型</b>：UICheckManySelectInput（UICheckManySelectInput.js）
+ * @version : 2012-5-18
  * @author 赵永春 (zyc@byshell.org)
  */
-@UICom(tagName = "ui_OnlySelect", renderType = SelectOnlySelectInputRender.class)
-public class OnlySelect extends UISelectInput {
+public class ManyTitleRender extends CheckManySelectInputRender<ManyTitle> {
     @Override
-    public String getComponentType() {
-        return "ui_OnlySelect";
+    protected RenderType getRenderType(ManyTitle component) {
+        return RenderType.onlyTitle;
     }
 }

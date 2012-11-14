@@ -39,12 +39,17 @@ public class RadioOnlySelectInputRender<T extends UISelectInput> extends Abstrac
         return "ul";
     }
     @Override
+    public Map<String, Object> tagAttributes(ViewContext viewContext, T component) {
+        Map<String, Object> attr = super.tagAttributes(viewContext, component);
+        attr.put("renderType", this.getRenderType(component).name());
+        return attr;
+    }
+    @Override
     public void render(ViewContext viewContext, T component, TemplateBody arg3, Writer writer) throws IOException, TemplateException {
         List<?> listData = component.getValueList();
         String keyField = component.getKeyField();
         String varField = component.getVarField();
         Object[] selectVar = component.getSelectValues();
-        int dataIndex = 0;
         if (listData != null)
             for (Object obj : listData) {
                 if (obj == null)
@@ -60,54 +65,36 @@ public class RadioOnlySelectInputRender<T extends UISelectInput> extends Abstrac
                     varValue = BeanUtil.readPropertyOrField(obj, varField);
                 }
                 //输出
-                String cid = component.getComponentID() + "_" + dataIndex;
-                writer.write("<li><label id='" + cid + "_Label'>");
-                RenderType renderType = this.getRenderType(component);
-                if (renderType == RenderType.atFirst) {
-                    //在前面输出文本
-                    this.renderSpan(component, cid, writer, varValue, selectVar);
-                    this.renderInput(component, cid, writer, keyValue, varValue, selectVar, true);
-                } else if (renderType == RenderType.atLast) {
-                    //在后面输出文本
-                    this.renderInput(component, cid, writer, keyValue, varValue, selectVar, true);
-                    this.renderSpan(component, cid, writer, varValue, selectVar);
-                } else if (renderType == RenderType.onlyTitle) {
-                    //仅输出文本
-                    this.renderInput(component, cid, writer, keyValue, varValue, selectVar, false);
-                    this.renderSpan(component, cid, writer, varValue, selectVar);
-                } else
-                    throw new NullPointerException("getRenderType 方法没有明确返回值.");
-                writer.write("</label></li>");
-                dataIndex++;
+                String checkedStr = "no";
+                String checkedMark = "";
+                String titleMark = (this.getRenderType(component) == RenderType.onlyTitle) ? " style='display:none;'" : "";
+                for (Object selItem : selectVar)
+                    if (keyValue != null && keyValue.equals(selItem) == true) {
+                        checkedStr = "";
+                        checkedMark = "checked='checked'";
+                    } else {
+                        checkedStr = "no";
+                        checkedMark = "";
+                    }
+                writer.write("<li class='" + checkedStr + "checked'>");
+                writer.write("  <a href='javascript:void(0)'>");
+                writer.write("    <label>");
+                writer.write("      <em></em>");
+                writer.write("      <input type='radio' forComID='" + component.getComponentID() + "' name='" + component.getName() + "' value='" + keyValue + "' oriData='' " + checkedMark + " " + titleMark + "/>");
+                writer.write("      <span>" + varValue + "</span>");
+                writer.write("    </label>");
+                writer.write("  </a>");
+                writer.write("</li> ");
             }
-    }
-    public void renderInput(T component, String cid, Writer writer, Object keyValue, Object varValue, Object[] selectVar, boolean isShow) throws IOException, TemplateException {
-        writer.write("<input id='" + cid + "_Input' type='radio' forComID='" + component.getComponentID() + "'");
-        String name = component.getName();
-        if (name == null || name.equals("") == true) {} else
-            writer.write(" name='" + name + "'");
-        if (isShow == false)
-            writer.write(" style='display:none'");
-        writer.write(" value='" + keyValue + "'");
-        writer.write(" varValue='" + varValue + "'");
-        for (Object obj : selectVar)
-            if ((keyValue == null && obj == null) == true || keyValue.equals(obj) == true)
-                writer.write(" checked='checked'");
-        writer.write("/>");
-    }
-    public void renderSpan(T component, String cid, Writer writer, Object varValue, Object[] selectVar) throws IOException, TemplateException {
-        writer.write("<a id='" + cid + "_Span' href='javascript:void(0)'>" + varValue + "</a>");
     }
     /*----------------------------------------------------------------*/
     public static enum RenderType {
         /**选择框前面输出选项文本（有选择框）。*/
-        atFirst,
-        /**选择框后面输出选项文本（有选择框）。*/
-        atLast,
+        normal,
         /**选择框只包含文本（不带有选择框）。*/
         onlyTitle,
     }
     protected RenderType getRenderType(T component) {
-        return RenderType.atFirst;
+        return RenderType.normal;
     }
 }

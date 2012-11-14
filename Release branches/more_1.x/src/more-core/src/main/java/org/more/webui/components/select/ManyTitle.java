@@ -13,17 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.components.input.scriptinput;
-import org.more.webui.render.inputs.HideInputRender;
+package org.more.webui.components.select;
+import org.more.webui.component.UISelectInput;
+import org.more.webui.component.support.UICom;
 /**
- * 将输入组建渲染成input[type=hidden]。
- * <br><b>客户端模型</b>：ui_ScriptInput（webui_extends.js）
- * @version : 2012-5-18
+ * <b>作用</b>：标题多选组建。
+ * <br><b>组建类型</b>：ui_ManyTitle
+ * <br><b>标签</b>：@ui_ManyTitle
+ * <br><b>服务端事件</b>：无
+ * <br><b>渲染器</b>：{@link ManyTitleRender}
+ * @version : 2012-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ScriptInputRender extends HideInputRender<ScriptInput> {
+@UICom(tagName = "ui_ManyTitle", renderType = ManyTitleRender.class)
+public class ManyTitle extends UISelectInput {
     @Override
-    public String getClientType() {
-        return "ui_ScriptInput";
+    public String getComponentType() {
+        return "ui_ManyTitle";
     }
 }

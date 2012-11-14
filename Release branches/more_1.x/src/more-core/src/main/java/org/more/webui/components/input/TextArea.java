@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.components.input.text;
+package org.more.webui.components.input;
 import org.more.webui.component.UIInput;
 import org.more.webui.component.support.UICom;
 import org.more.webui.context.ViewContext;
-import org.more.webui.render.inputs.TextInputRender;
+import org.more.webui.render.inputs.TextAreaInputRender;
 /**
- * <b>作用</b>：Text输入框。
- * <br><b>组建类型</b>：ui_Text
- * <br><b>标签</b>：@ui_Text
+ * <b>作用</b>：Text多行输入框。
+ * <br><b>组建类型</b>：ui_TextArea
+ * <br><b>标签</b>：@ui_TextArea
  * <br><b>服务端事件</b>：无
- * <br><b>渲染器</b>：{@link TextInputRender}
+ * <br><b>渲染器</b>：{@link TextAreaInputRender}
  * @version : 2012-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
-@UICom(tagName = "ui_Text", renderType = TextInputRender.class)
-public class TextInput extends UIInput {
+@UICom(tagName = "ui_TextArea", renderType = TextAreaInputRender.class)
+public class TextArea extends UIInput {
     /**通用属性表*/
     public enum Propertys {
         /**该值是当value没有设置值时会用该值替代显示（RW）*/
@@ -36,7 +36,7 @@ public class TextInput extends UIInput {
     }
     @Override
     public String getComponentType() {
-        return "ui_Text";
+        return "ui_TextArea";
     }
     @Override
     protected void initUIComponent(ViewContext viewContext) {

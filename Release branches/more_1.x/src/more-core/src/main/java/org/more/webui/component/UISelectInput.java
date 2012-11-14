@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import org.more.webui.component.support.NoState;
 import org.more.webui.context.ViewContext;
 import org.more.webui.render.select.CheckManySelectInputRender;
@@ -35,14 +36,12 @@ import com.alibaba.fastjson.JSON;
 public abstract class UISelectInput extends UIInput {
     /**通用属性表*/
     public static enum Propertys {
-        /** 数据（-）*/
+        /** 数据（R）*/
         listData,
         /**显示名称字段（R）*/
         keyField,
         /**值字段（R）*/
         varField,
-        /**是否将标题列于选择框之前（对于），默认false（R）*/
-        titleFirst,
     }
     @Override
     protected void initUIComponent(ViewContext viewContext) {
@@ -51,7 +50,6 @@ public abstract class UISelectInput extends UIInput {
         this.setPropertyMetaValue(Propertys.keyField.name(), "key");
         this.setPropertyMetaValue(Propertys.varField.name(), "value");
     }
-    @NoState
     public Object getListData() {
         return this.getProperty(Propertys.listData.name()).valueTo(Object.class);
     }
@@ -100,8 +98,8 @@ public abstract class UISelectInput extends UIInput {
         else
             return null;
     }
-    public List<Object> getValueList() {
-        List<Object> returnData = null;
+    public List getValueList() {
+        List returnData = null;
         //
         Object var = this.getListData();
         if (var == null)
@@ -114,7 +112,7 @@ public abstract class UISelectInput extends UIInput {
                 varStr = new StringBuffer((CharSequence) var).toString();
             //
             try {
-                returnData = JSON.parseObject(varStr, List.class);
+                returnData = JSON.parseArray(varStr, Map.class);
             } catch (Exception e) {
                 returnData = new ArrayList<Object>();
                 for (String item : varStr.split(","))

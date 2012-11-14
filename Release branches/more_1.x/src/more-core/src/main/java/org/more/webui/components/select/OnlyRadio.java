@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.components.select.onlytitle;
+package org.more.webui.components.select;
 import org.more.webui.component.UISelectInput;
 import org.more.webui.component.support.UICom;
+import org.more.webui.render.select.RadioOnlySelectInputRender;
 /**
- * <b>作用</b>：标题单选输入框组建。
- * <br><b>组建类型</b>：ui_OnlyTitle
- * <br><b>标签</b>：@ui_OnlyTitle
+ * <b>作用</b>：单选输入框组建。
+ * <br><b>组建类型</b>：ui_OnlyRadio
+ * <br><b>标签</b>：@ui_OnlyRadio
  * <br><b>服务端事件</b>：无
- * <br><b>渲染器</b>：{@link OnlyTitleRender}
+ * <br><b>渲染器</b>：{@link RadioOnlySelectInputRender}
  * @version : 2012-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
-@UICom(tagName = "ui_OnlyTitle", renderType = OnlyTitleRender.class)
-public class OnlyTitle extends UISelectInput {
+@UICom(tagName = "ui_OnlyRadio", renderType = RadioOnlySelectInputRender.class)
+public class OnlyRadio extends UISelectInput {
     @Override
     public String getComponentType() {
-        return "ui_OnlyTitle";
+        return "ui_OnlyRadio";
     }
 }

@@ -134,6 +134,10 @@ public abstract class FacesContext {
         //C.执行指纹模板
         this.getFreemarker().getTemplate(hashStr).process(rootMap, writer);
     }
+    /**执行模板文件。*/
+    public void processTemplateResource(String templateResource, Writer writer, Map<String, Object> rootMap) throws TemplateException, IOException {
+        this.getFreemarker().getTemplate(templateResource).process(rootMap, writer);
+    };
     /*----------------------------------------------------------------*/
     /**获取Bean管理器。*/
     public abstract BeanManager getBeanContext();

@@ -162,6 +162,8 @@ WebUI.Component.prototype = {
 	superClass : null,
 	/** 当前类的类型（在定义类型时赋予） */
 	thisClass : null,
+	/** 当前组建html元素的JQuery形式。 */
+	$e : null,
 	/** 服务端组建模型。 */
 	serverMode : function() {
 		return $(this.getElement()).attr("sMode");
@@ -305,6 +307,7 @@ WebUI.Component.prototype = {
 	render : function() {},
 	/** 构造方法 */
 	"<init>" : function() {
+		this.$e = $(this.getElement());
 		/** 客户端在请求之前进行的调用，返回false取消本次ajax请求（R） */
 		this.defineProperty("beforeScript", "R");
 		/** 客户端脚本回调函数（R） */

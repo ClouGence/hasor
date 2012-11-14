@@ -46,23 +46,74 @@ WebUI.Component.$extends("UISelectInput", "UIInput", {
 			returnData += (vList[v][this.varField()] + ",");
 		return WebUI.deleteLast(returnData, ',');// 删掉最后一个&
 	},
+	/** 获取选中的值，返回值是数组形式。 */
+	selectValues : function() {
+		var returnData = new Array();
+		var dataList = this.listData();
+		var indexList = this.selectIndexs();
+		for ( var i in indexList)
+			returnData.push(dataList[indexList[i]]);
+		return returnData; // 选中值
+	},
+	/** 根据索引号获取被指定的数据 */
+	indexOf : function(index) {
+		var data = this.listData();
+		if (data.length > index)
+			return data[index];
+		return null;
+	},
+	/** （重写方法）从服务器上载入数据 */
+	loadData : function(paramData, ajaxAfter, ajaxError) {
+		if (WebUI.isNaN(this.getState().get("onLoadDataEL")) == true)
+			return;
+		var $this = this;
+		this.doEvent('OnLoadData', {
+			/* 携带的参数 */
+			'dataMap' : paramData,
+			/* 正确的回调 */
+			'ajaxAfter' : function(event) {
+				// A.成功装载
+				if (WebUI.isFun(ajaxAfter) == true)
+					ajaxAfter.call($this, event);
+				else
+					$this.listData(eval('(' + event.result + ')'));
+				$this.render();
+			},
+			/* 错误的回调 */
+			'ajaxError' : function(event) {
+				// B.装载失败
+				if (WebUI.isFun(ajaxError) == true)
+					ajaxError.call($this, event);
+			}
+		});
+	},
 	/** 获取选中的索引，返回值是数组形式（抽象方法，子类需要继承实现）。 */
 	selectIndexs : function() {
 		throw "抽象方法，子类需要继承实现。";
 	},
-	/** 获取选中的值，返回值是数组形式（抽象方法，子类需要继承实现）。 */
-	selectValues : function() {
-		throw "抽象方法，子类需要继承实现。";
-	},
-	/** 获取数据集合，返回值是数组形式（抽象方法，子类需要继承实现）。 */
-	getListData : function() {
+	/** （重写方法）根据自身的dataList值重新刷新数据显示。 */
+	render : function() {
 		throw "抽象方法，子类需要继承实现。";
 	},
 	/** 构造方法 */
 	"<init>" : function() {
-		/** 显示名称字段（R） */
+		/** 显示名称字段（RW） */
 		this.defineProperty("keyField", "RW");
-		/** 值字段（R） */
+		/** 值字段（RW） */
 		this.defineProperty("varField", "RW");
+		/** 数据（RW） */
+		this.defineProperty("listData", function() {
+			var returnData = this.getState().get("listData");
+			return (WebUI.isNaN(returnData) == true) ? [] : WebUI.isArray(returnData) ? returnData : [ returnData ];
+		}, function(newValue) {
+			this.getState().set("listData", newValue);
+		});
+		/** 数据（RW） */
+		this.defineProperty("value", function() {
+			var returnData = this.getState().get("value");
+			return (WebUI.isNaN(returnData) == true) ? [] : WebUI.isArray(returnData) ? returnData : [ returnData ];
+		}, function(newValue) {
+			this.getState().set("value", newValue);
+		});
 	}
 });

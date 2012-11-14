@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.components.input.scriptinput;
+package org.more.webui.components.input;
 import org.more.webui.component.UIInput;
 import org.more.webui.component.support.NoState;
 import org.more.webui.component.support.UICom;

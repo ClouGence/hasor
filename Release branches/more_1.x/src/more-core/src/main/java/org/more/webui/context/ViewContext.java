@@ -35,7 +35,7 @@ import org.more.webui.lifestyle.Lifecycle;
 import org.more.webui.lifestyle.Phase;
 import org.more.webui.lifestyle.PhaseID;
 import org.more.webui.web.PostFormEnum;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSON;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 /**
@@ -214,7 +214,7 @@ public class ViewContext extends HashMap<String, Object> {
     /**向客户端发送响应数据。*/
     private void pushClient(int stateNumber, Object returnData) throws IOException {
         if (this.getEvent() != null) {
-            String sendDataStr = JSONObject.toJSONString(returnData);
+            String sendDataStr = JSON.toJSONString(returnData);
             //            String sendDataStr = AppUtil.getj.toJSONString(returnData);
             this.getHttpResponse().setStatus(stateNumber);
             this.getHttpResponse().getWriter().write(sendDataStr);

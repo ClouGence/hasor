@@ -13,41 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.components.select.manycheck;
-import org.more.webui.component.UISelectInput;
-import org.more.webui.component.support.NoState;
+package org.more.webui.components.input;
+import org.more.webui.component.UIInput;
 import org.more.webui.component.support.UICom;
 import org.more.webui.context.ViewContext;
+import org.more.webui.render.inputs.TextInputRender;
 /**
- * <b>作用</b>：选择框多选组建。
- * <br><b>组建类型</b>：ui_ManySelect
- * <br><b>标签</b>：@ui_ManySelect
+ * <b>作用</b>：Text输入框。
+ * <br><b>组建类型</b>：ui_Text
+ * <br><b>标签</b>：@ui_Text
  * <br><b>服务端事件</b>：无
- * <br><b>渲染器</b>：{@link ManyCheckRender}
+ * <br><b>渲染器</b>：{@link TextInputRender}
  * @version : 2012-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
-@UICom(tagName = "ui_ManySelect", renderType = ManyCheckRender.class)
-public class ManyCheck extends UISelectInput {
+@UICom(tagName = "ui_Text", renderType = TextInputRender.class)
+public class TextInput extends UIInput {
     /**通用属性表*/
-    public static enum Propertys {
-        /**是否将标题列于选择框之前，默认false（R）*/
-        titleFirst,
+    public enum Propertys {
+        /**该值是当value没有设置值时会用该值替代显示（RW）*/
+        tipTitle,
     }
     @Override
     public String getComponentType() {
-        return "ui_ManySelect";
+        return "ui_Text";
     }
     @Override
     protected void initUIComponent(ViewContext viewContext) {
         super.initUIComponent(viewContext);
-        this.setPropertyMetaValue(Propertys.titleFirst.name(), false);
+        this.setPropertyMetaValue(Propertys.tipTitle.name(), null);
     }
-    public boolean isTitleFirst() {
-        return this.getProperty(Propertys.titleFirst.name()).valueTo(Boolean.TYPE);
+    public String getTipTitle() {
+        return this.getProperty(Propertys.tipTitle.name()).valueTo(String.class);
     }
-    @NoState
-    public void setTitleFirst(boolean titleFirst) {
-        this.getProperty(Propertys.titleFirst.name()).value(titleFirst);
+    public void setTipTitle(String tipTitle) {
+        this.getProperty(Propertys.tipTitle.name()).value(tipTitle);
     }
 }

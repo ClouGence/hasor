@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.components.select.onlytitle;
-import org.more.webui.render.select.RadioOnlySelectInputRender;
+package org.more.webui.components.input;
+import org.more.webui.render.inputs.HideInputRender;
 /**
- * 继承自{@link RadioOnlySelectInputRender}取消输出radio框。
- * <br><b>客户端模型</b>：UIRadioSelectOnlyInput（UIRadioSelectOnlyInput.js）
+ * 将输入组建渲染成input[type=hidden]。
+ * <br><b>客户端模型</b>：ui_ScriptInput（webui_extends.js）
  * @version : 2012-5-18
  * @author 赵永春 (zyc@byshell.org)
  */
-public class OnlyTitleRender extends RadioOnlySelectInputRender<OnlyTitle> {
+public class ScriptInputRender extends HideInputRender<ScriptInput> {
     @Override
-    protected RenderType getRenderType(OnlyTitle component) {
-        return RenderType.onlyTitle;
+    public String getClientType() {
+        return "ui_ScriptInput";
     }
 }

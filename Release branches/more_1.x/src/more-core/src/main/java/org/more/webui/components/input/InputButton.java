@@ -13,17 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.components.select.manytitle;
-import org.more.webui.render.select.CheckManySelectInputRender;
+package org.more.webui.components.input;
+import org.more.webui.component.UIButton;
+import org.more.webui.component.support.UICom;
+import org.more.webui.render.inputs.ButtonInputRender;
 /**
- * ¼Ì³Ğ×Ô{@link CheckManySelectInputRender}È¡ÏûÊä³öcheck¿ò¡£
- * <br><b>¿Í»§¶ËÄ£ĞÍ</b>£ºUICheckManySelectInput£¨UICheckManySelectInput.js£©
- * @version : 2012-5-18
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * <b>ä½œç”¨</b>ï¼šinputç±»å‹æŒ‰é’®
+ * <br><b>ç»„å»ºç±»å‹</b>ï¼šui_Button
+ * <br><b>æ ‡ç­¾</b>ï¼š@ui_Button
+ * <br><b>æœåŠ¡ç«¯äº‹ä»¶</b>ï¼šOnAction
+ * <br><b>æ¸²æŸ“å™¨</b>ï¼š{@link ButtonInputRender}
+ * @version : 2012-5-15
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
-public class ManyTitleRender extends CheckManySelectInputRender<ManyTitle> {
+@UICom(tagName = "ui_Button", renderType = ButtonInputRender.class)
+public class InputButton extends UIButton {
     @Override
-    protected RenderType getRenderType(ManyTitle component) {
-        return RenderType.onlyTitle;
+    public String getComponentType() {
+        return "ui_Button";
     }
 }

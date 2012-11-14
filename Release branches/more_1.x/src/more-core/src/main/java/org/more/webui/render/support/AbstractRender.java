@@ -26,7 +26,7 @@ import org.more.webui.component.UIComponent;
 import org.more.webui.component.values.AbstractValueHolder;
 import org.more.webui.context.ViewContext;
 import org.more.webui.tag.TemplateBody;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSON;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModelException;
 /**
@@ -55,7 +55,8 @@ public abstract class AbstractRender<T extends UIComponent> implements Render<T>
         writer.write(" cMode='" + this.getClientType() + "'");
         writer.write(" comPath='" + component.getComponentPath() + "'");
         if (this.isSaveState(viewContext, component) == true) {
-            String base64 = CommonCodeUtil.Base64.base64Encode(JSONObject.toJSONString(component.saveState()));
+            String jsonData = JSON.toJSONString(component.saveState());
+            String base64 = CommonCodeUtil.Base64.base64Encode(jsonData);
             writer.write(" uiState='" + base64 + "'");
         }
         /*-------------------------------------------------*/

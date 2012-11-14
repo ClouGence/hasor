@@ -15,11 +15,12 @@
  */
 package org.more.webui.lifestyle.phase;
 import java.util.List;
+import java.util.Map;
 import org.more.webui.component.UIViewRoot;
 import org.more.webui.context.ViewContext;
 import org.more.webui.lifestyle.Phase;
 import org.more.webui.lifestyle.PhaseID;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSON;
 /**
  * 第2阶段，重塑UI组件状态。
  * @version : 2011-8-4
@@ -45,7 +46,7 @@ public class RestoreView_Phase extends Phase {
         String stateJsonData = uiContext.getStateData();
         if (stateJsonData == null)
             return;
-        List<?> viewState = JSONObject.parseObject(stateJsonData, List.class);
+        List<Map> viewState = JSON.parseArray(stateJsonData, Map.class);
         viewRoot.restoreState(targetPath, viewState);
     };
 };

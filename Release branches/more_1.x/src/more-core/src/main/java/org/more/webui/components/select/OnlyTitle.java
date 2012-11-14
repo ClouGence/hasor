@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.components.input.inputbutton;
-import org.more.webui.component.UIButton;
+package org.more.webui.components.select;
+import org.more.webui.component.UISelectInput;
 import org.more.webui.component.support.UICom;
-import org.more.webui.render.inputs.ButtonInputRender;
 /**
- * <b>ä½œç”¨</b>ï¼šinputç±»å‹æŒ‰é’®
- * <br><b>ç»„å»ºç±»å‹</b>ï¼šui_Button
- * <br><b>æ ‡ç­¾</b>ï¼š@ui_Button
- * <br><b>æœåŠ¡ç«¯äº‹ä»¶</b>ï¼šOnAction
- * <br><b>æ¸²æŸ“å™¨</b>ï¼š{@link ButtonInputRender}
+ * <b>×÷ÓÃ</b>£º±êÌâµ¥Ñ¡ÊäÈë¿ò×é½¨¡£
+ * <br><b>×é½¨ÀàĞÍ</b>£ºui_OnlyTitle
+ * <br><b>±êÇ©</b>£º@ui_OnlyTitle
+ * <br><b>·şÎñ¶ËÊÂ¼ş</b>£ºÎŞ
+ * <br><b>äÖÈ¾Æ÷</b>£º{@link OnlyTitleRender}
  * @version : 2012-5-15
- * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
+ * @author ÕÔÓÀ´º (zyc@byshell.org)
  */
-@UICom(tagName = "ui_Button", renderType = ButtonInputRender.class)
-public class InputButton extends UIButton {
+@UICom(tagName = "ui_OnlyTitle", renderType = OnlyTitleRender.class)
+public class OnlyTitle extends UISelectInput {
     @Override
     public String getComponentType() {
-        return "ui_Button";
+        return "ui_OnlyTitle";
     }
 }

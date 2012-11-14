@@ -1,6 +1,18 @@
-/* -------------------------------------------------------------------- */
-/* UICheckManySelectInput Component */
-/* -------------------------------------------------------------------- */
-.WebUI_UICheckManySelectInput{
-	
-}
+/* --------------------------------------------------------------------
+UICheckManySelectInput Component
+
+.WebUI_UICheckManySelectInput		列表布局
+.WebUI_UICheckManySelectInputBlock	块状布局
+.WebUI_UICheckManySelectInputFloat	流状布局
+-------------------------------------------------------------------- */
+.WebUI_UICheckManySelectInput,.WebUI_UICheckManySelectInputBlock,.WebUI_UICheckManySelectInputFloat {padding:0px;margin:0px;border:1px solid #999;}
+.WebUI_UICheckManySelectInput li,.WebUI_UICheckManySelectInputBlock li,.WebUI_UICheckManySelectInputFloat li {line-height:25px;list-style:none;margin:2px;}
+.WebUI_UICheckManySelectInput em,.WebUI_UICheckManySelectInputBlock em,.WebUI_UICheckManySelectInputFloat em {font-style: normal;}
+.WebUI_UICheckManySelectInput a,.WebUI_UICheckManySelectInputBlock a,.WebUI_UICheckManySelectInputFloat a{text-decoration: none;background:#F9F9F9;display:block;border:1px solid #E0E0E0;}
+.WebUI_UICheckManySelectInput a:hover,.WebUI_UICheckManySelectInputBlock a:hover,.WebUI_UICheckManySelectInputFloat a:hover{text-decoration: none;background:#E0E0E0;border:1px solid #999;}
+.WebUI_UICheckManySelectInput label,.WebUI_UICheckManySelectInputBlock label,.WebUI_UICheckManySelectInputFloat label{display:block;}
+.WebUI_UICheckManySelectInputBlock li{float:left;width:200px;}
+.WebUI_UICheckManySelectInputFloat li{float:left;width:auto;}
+
+.WebUI_UICheckManySelectInput li.checked,.WebUI_UICheckManySelectInputBlock li.checked,.WebUI_UICheckManySelectInputFloat li.checked   {font-weight:bold;}
+.WebUI_UICheckManySelectInput li.nochecked,.WebUI_UICheckManySelectInputBlock li.nochecked,.WebUI_UICheckManySelectInputFloat li.nochecked {}
