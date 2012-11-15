@@ -205,6 +205,5 @@ WebUI.Component.$extends("UISelectInput", "UIInput", {
 			}
 			this.render();// 重新渲染
 		});
-
 	}
 });

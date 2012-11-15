@@ -9,6 +9,7 @@ var WebUI = function(serverID) {
 	if (res.length != 0)
 		if (WebUI.isNaN(res[0].uiObject) == true) {
 			var uiObject = WebUI.Component.create($(res[0]).attr('id'));
+			uiObject.getElement().uiObject = uiObject;
 			uiObject.render();
 			return uiObject;
 		} else
@@ -18,7 +19,7 @@ var WebUI = function(serverID) {
 };
 WebUI.init = function() {
 	$('[sMode]').each(function() {
-		WebUI.Component.create($(this).attr('id'));
+		WebUI($(this).attr('id'));
 	});
 };
 /* 客户端组建初始化 */
@@ -243,14 +244,20 @@ WebUI.call = function(target, paramMap) {
 		return;
 	/* 7.处理beforeFun */
 	var postData = WebUI.mapToURI(sendData);
-	if (url.indexOf('?') == -1)
-		url += ("?" + postData);
-	else
-		url += ("&" + postData);
+	/* 8.准备请求参数 */
+	var reqMap = {};
+	if (WebUI.isNaN(paramMap['dataMap']) == false) {
+		var p = paramMap['dataMap'];
+		for ( var k in p)
+			reqMap[k] = p[k];
+	}
+	for ( var k in sendData)
+		reqMap[k] = sendData[k];
+	/* 9.请求 */
 	var res = $.ajax({
 		type : 'post',
 		url : url,
-		data : paramMap['dataMap'],
+		data : reqMap,
 		cache : false,
 		async : async,
 		success : function(res) {

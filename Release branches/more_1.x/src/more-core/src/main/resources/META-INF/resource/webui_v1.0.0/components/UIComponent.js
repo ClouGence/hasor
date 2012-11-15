@@ -64,7 +64,6 @@ WebUI.Component.create = function(clientID) {
 	// C.调用构造方法
 	if (WebUI.isFun(newFo["<init>"]) == true)
 		newFo["<init>"](newFo);
-	$("#" + clientID)[0].uiObject = newFo;
 	return newFo;
 };
 /** 静态类，状态管理 */
@@ -223,15 +222,15 @@ WebUI.Component.prototype = {
 	},
 	/** 在客户端事件链中加入一个客户端事件的绑定。 */
 	bindEvent : function(eventName, fun) {
+		var $this=this;
 		$(this.getElement()).bind(eventName, function() {
-			var $this = this.uiObject;// this 是Element元素对象
 			fun.call($this);
 		});
 	},
 	/** 取消所有已知事件的绑定，使用新的函数绑定到事件上。 */
 	onlyBindEvent : function(eventName, fun) {
+		var $this=this;
 		$(this.getElement()).unbind(eventName).removeAttr("on" + eventName).bind(eventName, function() {
-			var $this = this.uiObject;// this 是Element元素对象
 			fun.call($this);
 		});
 	},
