@@ -21,23 +21,23 @@ import org.more.core.error.MoreStateException;
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class MapEntity_ValueMetaData extends Collection_ValueMetaData<AbstractValueMetaData> {
-    private AbstractValueMetaData key   = null; //Key
-    private AbstractValueMetaData value = null; //Value
+public class MapEntity_ValueMetaData extends Collection_ValueMetaData<ValueMetaData> {
+    private ValueMetaData key   = null; //Key
+    private ValueMetaData value = null; //Value
     /**该方法将会返回null*/
     public String getMetaDataType() {
         return null;
     }
     /**设置KEY*/
-    public void setKeyObject(AbstractValueMetaData key) {
+    public void setKeyObject(ValueMetaData key) {
         this.key = key;
     }
     /**设置VAR*/
-    public void setVarObject(AbstractValueMetaData value) {
+    public void setVarObject(ValueMetaData value) {
         this.value = value;
     }
     /**添加一个值到当前集合中，首次添加为key，二次添加为var，三次添加抛异常。*/
-    public void addObject(AbstractValueMetaData value) {
+    public void addObject(ValueMetaData value) {
         if (this.key == null) {
             this.key = value;
             return;
@@ -58,19 +58,19 @@ public class MapEntity_ValueMetaData extends Collection_ValueMetaData<AbstractVa
         return 0;
     }
     /**获取key*/
-    public AbstractValueMetaData getKey() {
+    public ValueMetaData getKey() {
         return this.key;
     }
     /**设置key*/
-    public void setKey(AbstractValueMetaData key) {
+    public void setKey(ValueMetaData key) {
         this.key = key;
     }
     /**获取value*/
-    public AbstractValueMetaData getValue() {
+    public ValueMetaData getValue() {
         return this.value;
     }
     /**设置value*/
-    public void setValue(AbstractValueMetaData value) {
+    public void setValue(ValueMetaData value) {
         this.value = value;
     }
 }

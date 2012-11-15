@@ -42,14 +42,14 @@ public interface AopService extends Service {
     /**删除aop配置定义。*/
     public void removeAopDefine(String name);
     //------------------
-    /**测试一个{@link AbstractBeanDefine}定义对象是否包含Aop配置。*/
-    public boolean containAop(AbstractBeanDefine define);
-    /**将一个aop配置携带到{@link AbstractBeanDefine}对象上，该方法可以在代码级上修改aop配置。*/
-    public void setAop(AbstractBeanDefine define, String config);
-    /**将一个aop配置携带到{@link AbstractBeanDefine}对象上，该方法可以在代码级上修改aop配置。*/
-    public void setAop(AbstractBeanDefine define, AopConfigDefine config);
-    /**移除{@link AbstractBeanDefine}对象上的aop配置，如果{@link AbstractBeanDefine}没有配置aop那么移除操作将被忽略。*/
-    public void removeAop(AbstractBeanDefine define);
-    /**获取{@link AbstractBeanDefine}对象上的aop配置，如果目标没有配置aop则返回null。*/
-    public AopConfigDefine getAopDefine(AbstractBeanDefine define);
+    /**测试一个{@link BeanDefine}定义对象是否包含Aop配置。*/
+    public boolean containAop(BeanDefine define);
+    /**将一个aop配置携带到{@link BeanDefine}对象上，该方法可以在代码级上修改aop配置。*/
+    public void setAop(BeanDefine define, String config);
+    /**将一个aop配置携带到{@link BeanDefine}对象上，该方法可以在代码级上修改aop配置。*/
+    public void setAop(BeanDefine define, AopConfigDefine config);
+    /**移除{@link BeanDefine}对象上的aop配置，如果{@link BeanDefine}没有配置aop那么移除操作将被忽略。*/
+    public void removeAop(BeanDefine define);
+    /**获取{@link BeanDefine}对象上的aop配置，如果目标没有配置aop则返回null。*/
+    public AopConfigDefine getAopDefine(BeanDefine define);
 }

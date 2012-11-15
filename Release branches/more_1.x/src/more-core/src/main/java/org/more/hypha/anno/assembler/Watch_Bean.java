@@ -29,10 +29,9 @@ import org.more.core.log.LogFactory;
 import org.more.hypha.AbstractMethodDefine;
 import org.more.hypha.DefineResource;
 import org.more.hypha.anno.KeepWatchParser;
-import org.more.hypha.context.xml.XmlDefineResource;
-import org.more.hypha.define.AbstractBeanDefine;
+import org.more.hypha.define.BeanDefine;
 import org.more.hypha.define.AbstractPropertyDefine;
-import org.more.hypha.define.AbstractValueMetaData;
+import org.more.hypha.define.ValueMetaData;
 import org.more.hypha.define.ClassPathBeanDefine;
 import org.more.hypha.define.ConstructorDefine;
 import org.more.hypha.define.EL_ValueMetaData;
@@ -47,6 +46,7 @@ import org.more.hypha.define.anno.Bean;
 import org.more.hypha.define.anno.MetaData;
 import org.more.hypha.define.anno.Param;
 import org.more.hypha.define.anno.Property;
+import org.more.hypha.xml.XmlDefineResource;
 import org.more.util.BeanUtil;
 import org.more.util.StringConvertUtil;
 import org.more.util.attribute.IAttribute;
@@ -91,7 +91,7 @@ class Watch_Bean implements KeepWatchParser {
         if (var != null && var.equals("") == false) {
             if (resource.containsBeanDefine(var) == false)
                 throw new LostException("[" + define.getName() + "]找不到关联的工厂[" + var + "]Bean定义");
-            AbstractBeanDefine factoryBean = (AbstractBeanDefine) resource.getBeanDefine(var);
+            BeanDefine factoryBean = (BeanDefine) resource.getBeanDefine(var);
             var = bean.factoryName();
             AbstractMethodDefine methodDefine = factoryBean.getMethod(var);
             factoryBean.setFactoryMethod(methodDefine);
@@ -104,7 +104,7 @@ class Watch_Bean implements KeepWatchParser {
         var = bean.useTemplate();
         if (var.equals("") == false) {
             if (resource.containsBeanDefine(var) == true)
-                define.setUseTemplate((AbstractBeanDefine) resource.getBeanDefine(var));
+                define.setUseTemplate((BeanDefine) resource.getBeanDefine(var));
             else
                 throw new LostException("没有找到id为[" + var + "]的Bean定义作为模板。");
         }
@@ -202,7 +202,7 @@ class Watch_Bean implements KeepWatchParser {
     private AbstractPropertyDefine getPropertyDefine(boolean isAutoWrite, Property anno, ClassPathBeanDefine define, AbstractPropertyDefine propDefine, DefineResource resource) {
         String cpt = propDefine.getClassType();
         //3)解析Param注解
-        AbstractValueMetaData valueMetaData = null;
+        ValueMetaData valueMetaData = null;
         if (anno != null) {
             this.addMetaData(propDefine, anno.metaData());
             //1.注释
@@ -242,7 +242,7 @@ class Watch_Bean implements KeepWatchParser {
     private AbstractPropertyDefine getPropertyDefine(Param anno, ClassPathBeanDefine define, AbstractPropertyDefine propDefine, DefineResource resource) {
         String cpt = propDefine.getClassType();
         //3)解析Param注解
-        AbstractValueMetaData valueMetaData = null;
+        ValueMetaData valueMetaData = null;
         if (anno != null) {
             this.addMetaData(propDefine, anno.metaData());
             //1.注释
@@ -276,7 +276,7 @@ class Watch_Bean implements KeepWatchParser {
         return propDefine;
     }
     /**根据类型获取与其相关的默认ValueMetaData对象。*/
-    private AbstractValueMetaData getDefaultValueMetaData(String stringType) {
+    private ValueMetaData getDefaultValueMetaData(String stringType) {
         PropertyType propType = Simple_ValueMetaData.getPropertyType(stringType);
         //没标记注解
         Simple_ValueMetaData simpleMetaData = new Simple_ValueMetaData();
@@ -293,7 +293,7 @@ class Watch_Bean implements KeepWatchParser {
         return simpleMetaData;
     }
     /**根据类型获取与其相关的自动注入ValueMetaData对象。*/
-    private AbstractValueMetaData getAutoWriteValueMetaData(String stringType) {
+    private ValueMetaData getAutoWriteValueMetaData(String stringType) {
         //1.确保stringType字符串中包含的字符不是诸如int,float,string等这样的字符。
         PropertyType propType = Simple_ValueMetaData.getPropertyType(stringType);
         if (propType != PropertyType.Null)

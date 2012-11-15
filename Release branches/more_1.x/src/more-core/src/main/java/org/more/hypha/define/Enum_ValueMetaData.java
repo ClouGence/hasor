@@ -20,7 +20,7 @@ import org.more.util.StringConvertUtil;
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Enum_ValueMetaData extends AbstractValueMetaData {
+public class Enum_ValueMetaData extends ValueMetaData {
     private String   enumValue = null; //枚举表述的字符串形式
     private String   enumType  = null; //枚举类型
     private Class<?> eType     = null;

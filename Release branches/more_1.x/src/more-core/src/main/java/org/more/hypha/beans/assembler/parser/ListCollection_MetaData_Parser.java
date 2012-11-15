@@ -22,7 +22,7 @@ import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.assembler.MetaDataUtil;
 import org.more.hypha.commons.logic.ValueMetaDataParser;
-import org.more.hypha.define.AbstractValueMetaData;
+import org.more.hypha.define.ValueMetaData;
 import org.more.hypha.define.List_ValueMetaData;
 /**
  * 解析列表类型。
@@ -40,11 +40,11 @@ public class ListCollection_MetaData_Parser implements ValueMetaDataParser<List_
         List<Object> listObject = (List<Object>) listType.newInstance();
         log.debug("create List value = {%0}, type = {%1}.", listObject, listType);
         //2.添加集合元素。
-        List<AbstractValueMetaData> mData = data.getCollectionValue();
+        List<ValueMetaData> mData = data.getCollectionValue();
         int count = mData.size();
         int index = 0;
         if (mData != null)
-            for (AbstractValueMetaData avmd : mData) {
+            for (ValueMetaData avmd : mData) {
                 Object obj = rootParser.parser(targetObject, avmd, rootParser, context);
                 log.debug("list parser item {%0} of {%1} , value = {%2}", index, count, obj);
                 listObject.add(obj);

@@ -19,7 +19,7 @@ package org.more.hypha.define;
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class RelationBeanDefine extends AbstractBeanDefine {
+public class RelationBeanDefine extends BeanDefine {
     private String ref        = null; //所引用的Bean名或id
     private String refPackage = null; //所引用的Bean作用域
     /**返回“RelationBean”。*/

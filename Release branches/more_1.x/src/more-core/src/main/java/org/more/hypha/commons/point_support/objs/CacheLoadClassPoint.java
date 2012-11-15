@@ -33,10 +33,10 @@ public class CacheLoadClassPoint implements LoadClassPoint {
         //1.合法性判断
         if (params == null || params.length == 0)
             return chain.doChain(applicationContext, params);
-        if (params[0] instanceof AbstractBeanDefine == false)
+        if (params[0] instanceof BeanDefine == false)
             return chain.doChain(applicationContext, params);
         //2.执行缓存
-        AbstractBeanDefine define = (AbstractBeanDefine) params[0];
+        BeanDefine define = (BeanDefine) params[0];
         String id = define.getID();
         if (this.cacheDefineType.containsKey(id) == true) {
             log.debug("load Define {%0} Type form Cache!", id);

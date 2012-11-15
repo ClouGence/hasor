@@ -19,7 +19,7 @@ package org.more.hypha.define;
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Relation_ValueMetaData extends AbstractValueMetaData {
+public class Relation_ValueMetaData extends ValueMetaData {
     private String refBean    = null; //引用的Bean名称
     private String refPackage = null; //引用的Bean所处作用域
     /**该方法将会返回{@link PropertyMetaTypeEnum#RelationBean}。*/

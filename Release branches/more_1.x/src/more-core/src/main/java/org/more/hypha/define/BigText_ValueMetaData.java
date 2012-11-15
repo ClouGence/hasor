@@ -19,7 +19,7 @@ package org.more.hypha.define;
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class BigText_ValueMetaData extends AbstractValueMetaData {
+public class BigText_ValueMetaData extends ValueMetaData {
     private String textValue = null; //CDATA内容
     /**该方法将会返回{@link PropertyMetaTypeEnum#BigText}。*/
     public String getMetaDataType() {

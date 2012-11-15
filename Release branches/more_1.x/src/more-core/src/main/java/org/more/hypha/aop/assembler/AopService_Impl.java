@@ -21,7 +21,7 @@ import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.DefineResource;
 import org.more.hypha.aop.AopService;
 import org.more.hypha.commons.AbstractService;
-import org.more.hypha.define.AbstractBeanDefine;
+import org.more.hypha.define.BeanDefine;
 import org.more.hypha.define.AopAbstractPointcutDefine;
 import org.more.hypha.define.AopConfigDefine;
 import org.more.util.attribute.IAttribute;
@@ -38,9 +38,9 @@ public class AopService_Impl extends AbstractService implements AopService {
     //
     private AopBuilder                          aopBuilder   = null;
     //
-    private IAttribute<Object> getFungi(AbstractBeanDefine define) {
-        if (define instanceof AbstractBeanDefine)
-            return ((AbstractBeanDefine) define).getFungi();
+    private IAttribute<Object> getFungi(BeanDefine define) {
+        if (define instanceof BeanDefine)
+            return ((BeanDefine) define).getFungi();
         return null;
     }
     //
@@ -56,29 +56,29 @@ public class AopService_Impl extends AbstractService implements AopService {
         return this.aopBuilder;
     }
     //
-    /**测试一个{@link AbstractBeanDefine}定义对象是否包含Aop配置。*/
-    public boolean containAop(AbstractBeanDefine define) {
+    /**测试一个{@link BeanDefine}定义对象是否包含Aop配置。*/
+    public boolean containAop(BeanDefine define) {
         return this.getFungi(define).contains(AopInfoName);
     }
-    /**将一个aop配置携带到{@link AbstractBeanDefine}对象上，该方法可以在代码级上修改aop配置。*/
-    public void setAop(AbstractBeanDefine define, String config) {
+    /**将一个aop配置携带到{@link BeanDefine}对象上，该方法可以在代码级上修改aop配置。*/
+    public void setAop(BeanDefine define, String config) {
         AopConfigDefine configDefine = this.configList.get(config);
         if (configDefine != null)
             this.getFungi(define).setAttribute(AopInfoName, configDefine);
     }
-    /**将一个aop配置携带到{@link AbstractBeanDefine}对象上，该方法可以在代码级上修改aop配置。*/
-    public void setAop(AbstractBeanDefine define, AopConfigDefine config) {
+    /**将一个aop配置携带到{@link BeanDefine}对象上，该方法可以在代码级上修改aop配置。*/
+    public void setAop(BeanDefine define, AopConfigDefine config) {
         if (define == null || config == null)
             throw new NullPointerException("define不能为空.");
         if (config != null)
             this.getFungi(define).setAttribute(AopInfoName, config);
     }
-    /**移除{@link AbstractBeanDefine}对象上的aop配置，如果{@link AbstractBeanDefine}没有配置aop那么移除操作将被忽略。*/
-    public void removeAop(AbstractBeanDefine define) {
+    /**移除{@link BeanDefine}对象上的aop配置，如果{@link BeanDefine}没有配置aop那么移除操作将被忽略。*/
+    public void removeAop(BeanDefine define) {
         this.getFungi(define).removeAttribute(AopInfoName);
     }
-    /**获取{@link AbstractBeanDefine}对象上的aop配置，如果目标没有配置aop则返回null。*/
-    public AopConfigDefine getAopDefine(AbstractBeanDefine define) {
+    /**获取{@link BeanDefine}对象上的aop配置，如果目标没有配置aop则返回null。*/
+    public AopConfigDefine getAopDefine(BeanDefine define) {
         IAttribute<Object> att = this.getFungi(define);
         if (att.contains(AopInfoName) == true)
             return (AopConfigDefine) att.getAttribute(AopInfoName);

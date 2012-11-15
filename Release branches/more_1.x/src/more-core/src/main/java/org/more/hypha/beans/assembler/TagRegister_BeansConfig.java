@@ -19,16 +19,16 @@ import org.more.core.error.LoadException;
 import org.more.core.event.Event;
 import org.more.core.event.EventManager;
 import org.more.core.xml.XmlParserKit;
-import org.more.hypha.beans.xml.BeansConfig_BeanType;
-import org.more.hypha.beans.xml.BeansConfig_BeanTypeConfig;
-import org.more.hypha.beans.xml.BeansConfig_MDParserConfig;
-import org.more.hypha.beans.xml.BeansConfig_Parser;
 import org.more.hypha.commons.xml.AbstractXmlRegister;
 import org.more.hypha.context.DestroyEvent;
 import org.more.hypha.context.InitEvent;
 import org.more.hypha.context.StartedServicesEvent;
-import org.more.hypha.context.xml.XmlDefineResource;
-import org.more.hypha.context.xml.XmlNameSpaceRegister;
+import org.more.hypha.xml.XmlDefineResource;
+import org.more.hypha.xml.XmlNameSpaceRegister;
+import org.more.hypha.xml.tags.config.BeansConfig_BeanType;
+import org.more.hypha.xml.tags.config.BeansConfig_BeanTypeConfig;
+import org.more.hypha.xml.tags.config.BeansConfig_MDParserConfig;
+import org.more.hypha.xml.tags.config.BeansConfig_Parser;
 /**
  * 该类实现了{@link XmlNameSpaceRegister}接口并且提供了对命名空间“http://project.byshell.org/more/schema/beans-config”的解析支持。
  * @version 2010-9-15

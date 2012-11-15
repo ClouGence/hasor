@@ -34,10 +34,10 @@ public class AopCreateBeanPoint implements CreateBeanPoint {
         if (params == null || params.length == 0)
             return chain.doChain(applicationContext, params);
         Object obj = params[0];
-        if (obj != null && obj instanceof AbstractBeanDefine == true) {} else
+        if (obj != null && obj instanceof BeanDefine == true) {} else
             return chain.doChain(applicationContext, params);
         //¥¶¿ÌAop
-        AbstractBeanDefine define = (AbstractBeanDefine) params[0];
+        BeanDefine define = (BeanDefine) params[0];
         AopService_Impl aopConfig = (AopService_Impl) applicationContext.getService(AopService.class);
         if (aopConfig == null) {
             log.warning("app {%1} services not include AopServices!", applicationContext.getID());

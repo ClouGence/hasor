@@ -18,7 +18,7 @@ import org.more.core.event.Event;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
 import org.more.hypha.DefineResource;
-import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.xml.XmlDefineResource;
 /**
  * 当清空Bean定义时候引发该事件。
  * @version 2010-10-11

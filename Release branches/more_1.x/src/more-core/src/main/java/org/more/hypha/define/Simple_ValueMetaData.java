@@ -20,7 +20,7 @@ import org.more.util.StringConvertUtil;
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Simple_ValueMetaData extends AbstractValueMetaData {
+public class Simple_ValueMetaData extends ValueMetaData {
     /**当检测到value有值但是又没有定义type时候值类型采用的默认数据类型。*/
     public static final PropertyType DefaultValueType = PropertyType.String;
     //---------------------------------------------------------------------------------------工具方法

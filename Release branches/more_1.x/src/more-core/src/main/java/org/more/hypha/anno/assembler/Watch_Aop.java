@@ -20,7 +20,6 @@ import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.anno.KeepWatchParser;
 import org.more.hypha.aop.AopService;
 import org.more.hypha.aop.assembler.AopService_Impl;
-import org.more.hypha.context.xml.XmlDefineResource;
 import org.more.hypha.define.AopConfigDefine;
 import org.more.hypha.define.AopDefineInformed;
 import org.more.hypha.define.AopPointcutDefine;
@@ -28,6 +27,7 @@ import org.more.hypha.define.AopPointcutType;
 import org.more.hypha.define.anno.Aop;
 import org.more.hypha.define.anno.AopInformed;
 import org.more.hypha.define.anno.Bean;
+import org.more.hypha.xml.XmlDefineResource;
 /**
  * 该bean用于解析aop的注解配置，取消该类不会影响到anno的服务提供。只不过会导致无法解析bean的aop注解声明。
  * @version 2010-10-14
@@ -56,7 +56,7 @@ class Watch_Aop implements KeepWatchParser {
             id = idb.toString();
         }
         //1.获取aop注解
-        AbstractBeanDefine define = resource.getBeanDefine(id);
+        BeanDefine define = resource.getBeanDefine(id);
         Aop aop = beanType.getAnnotation(Aop.class);
         if (aop == null)
             return;

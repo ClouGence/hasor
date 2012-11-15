@@ -25,7 +25,7 @@ import org.more.hypha.commons.AbstractEventManager;
 import org.more.util.attribute.AttBase;
 import org.more.util.attribute.IAttribute;
 /**
- * 数组{@link DefineResource}接口基本实现类，其子类需要实现有关{@link AbstractBeanDefine}类型的操作功能。
+ * 数组{@link DefineResource}接口基本实现类，其子类需要实现有关{@link BeanDefine}类型的操作功能。
  * @version 2010-11-30
  * @author 赵永春 (zyc@byshell.org)
  */

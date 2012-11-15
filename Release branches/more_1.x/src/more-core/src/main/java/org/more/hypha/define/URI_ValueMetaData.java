@@ -19,7 +19,7 @@ package org.more.hypha.define;
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class URI_ValueMetaData extends AbstractValueMetaData {
+public class URI_ValueMetaData extends ValueMetaData {
     private String uriObject = null; //表示连接的url字符数据
     /**该方法将会返回{@link PropertyMetaTypeEnum#URI}。*/
     public String getMetaDataType() {

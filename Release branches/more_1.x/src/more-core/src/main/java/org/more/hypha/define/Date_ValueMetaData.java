@@ -19,7 +19,7 @@ package org.more.hypha.define;
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Date_ValueMetaData extends AbstractValueMetaData {
+public class Date_ValueMetaData extends ValueMetaData {
     private String dateString   = null; //时间日期字符形式的数据
     private String formatString = null; //date属性的格式化字符串
     /**该方法将会返回{@link PropertyMetaTypeEnum#Date}。*/

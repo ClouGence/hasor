@@ -19,7 +19,7 @@ package org.more.hypha.define;
  * @version 2010-9-15
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class ClassPathBeanDefine extends AbstractBeanDefine {
+public class ClassPathBeanDefine extends BeanDefine {
     private String source = null; //class¿‡
     /**∑µªÿ°∞ClassBean°±°£*/
     public String getBeanType() {

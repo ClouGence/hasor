@@ -17,7 +17,7 @@ package org.more.hypha.anno;
 import org.more.core.event.Event;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
-import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.xml.XmlDefineResource;
 /**
  * 该事件是在Xml装载结束期间引发，标志着注解扫描开始。
  * @version 2011-2-25

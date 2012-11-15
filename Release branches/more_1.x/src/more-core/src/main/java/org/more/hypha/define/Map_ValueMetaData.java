@@ -22,17 +22,17 @@ import java.util.Map;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Map_ValueMetaData extends Collection_ValueMetaData<MapEntity_ValueMetaData> {
-    private HashMap<AbstractValueMetaData, AbstractValueMetaData> valueData = new HashMap<AbstractValueMetaData, AbstractValueMetaData>(); //数据
+    private HashMap<ValueMetaData, ValueMetaData> valueData = new HashMap<ValueMetaData, ValueMetaData>(); //数据
     /**该方法将会返回{@link PropertyMetaTypeEnum#MapCollection}。*/
     public String getMetaDataType() {
         return PropertyMetaTypeEnum.MapCollection;
     }
     /**以Map形式返回集合中的数据。*/
-    public Map<AbstractValueMetaData, AbstractValueMetaData> getCollectionValue() {
+    public Map<ValueMetaData, ValueMetaData> getCollectionValue() {
         return this.valueData;
     }
     /**添加一个元素。*/
-    public void addObject(AbstractValueMetaData key, AbstractValueMetaData value) {
+    public void addObject(ValueMetaData key, ValueMetaData value) {
         this.valueData.put(key, value);
     };
     /**添加一个元素。*/
@@ -40,7 +40,7 @@ public class Map_ValueMetaData extends Collection_ValueMetaData<MapEntity_ValueM
         this.valueData.put(mapEntity.getKey(), mapEntity.getValue());
     };
     /**删除一个元素。*/
-    public void removeObject(AbstractValueMetaData key) {
+    public void removeObject(ValueMetaData key) {
         this.valueData.remove(key);
     };
     /**获取集合当前数据内容条数数。*/

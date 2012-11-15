@@ -18,7 +18,7 @@ import org.more.core.error.MoreStateException;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.context.AbstractApplicationContext;
 import org.more.hypha.context.AbstractDefineResource;
-import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.xml.XmlDefineResource;
 /**
  * 简单的{@link ApplicationContext}接口实现类。
  * Date : 2011-4-8

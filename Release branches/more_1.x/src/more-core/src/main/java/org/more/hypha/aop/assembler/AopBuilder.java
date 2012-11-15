@@ -83,7 +83,7 @@ public class AopBuilder {
         }
     };
     /**获取一个aop bean类型。*/
-    public Class<?> builderType(Class<?> beanType, AopConfigDefine aopDefine, AbstractBeanDefine define) throws ClassNotFoundException, IOException {
+    public Class<?> builderType(Class<?> beanType, AopConfigDefine aopDefine, BeanDefine define) throws ClassNotFoundException, IOException {
         if (aopDefine.getAopMode() == BuilderMode.Propxy)
             return beanType;
         //
@@ -102,7 +102,7 @@ public class AopBuilder {
         return engine.builderClass().toClass();
     }
     /**生称一个aop配置的bean，如果bean是工厂方式创建的则在这里将使用代理方式实现其aop功能。*/
-    public Object builderBean(Object beanObject, AopConfigDefine aopDefine, AbstractBeanDefine define) throws ClassNotFoundException, IOException {
+    public Object builderBean(Object beanObject, AopConfigDefine aopDefine, BeanDefine define) throws ClassNotFoundException, IOException {
         ClassEngine engine = null;
         Object aopBean = null;
         //获取engine，和beanObject

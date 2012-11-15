@@ -22,7 +22,7 @@ import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.assembler.MetaDataUtil;
 import org.more.hypha.commons.logic.ValueMetaDataParser;
-import org.more.hypha.define.AbstractValueMetaData;
+import org.more.hypha.define.ValueMetaData;
 import org.more.hypha.define.Set_ValueMetaData;
 /**
  * 解析{@link Set}类型数据
@@ -40,11 +40,11 @@ public class SetCollection_MetaData_Parser implements ValueMetaDataParser<Set_Va
         Set<Object> setObject = (Set<Object>) setType.newInstance();
         log.debug("create Set value = {%0}, type = {%1}.", setObject, setType);
         //2.添加集合元素。
-        Set<AbstractValueMetaData> mData = data.getCollectionValue();
+        Set<ValueMetaData> mData = data.getCollectionValue();
         int count = mData.size();
         int index = 0;
         if (mData != null)
-            for (AbstractValueMetaData avmd : mData) {
+            for (ValueMetaData avmd : mData) {
                 Object obj = rootParser.parser(targetObject, avmd, rootParser, context);
                 log.debug("set parser item {%0} of {%1} , value = {%2}", index, count, obj);
                 setObject.add(obj);

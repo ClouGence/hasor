@@ -22,7 +22,7 @@ import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.assembler.MetaDataUtil;
 import org.more.hypha.commons.logic.ValueMetaDataParser;
-import org.more.hypha.define.AbstractValueMetaData;
+import org.more.hypha.define.ValueMetaData;
 import org.more.hypha.define.Map_ValueMetaData;
 /**
  * Ω‚ŒˆMap
@@ -40,12 +40,12 @@ public class MapCollection_MetaData_Parser implements ValueMetaDataParser<Map_Va
         Map<Object, Object> mapObject = (Map<Object, Object>) mapType.newInstance();
         log.debug("create Map value = {%0}, type = {%1}.", mapObject, mapType);
         //2. ‰≥ˆmap÷µ°£
-        Map<AbstractValueMetaData, AbstractValueMetaData> mData = data.getCollectionValue();
+        Map<ValueMetaData, ValueMetaData> mData = data.getCollectionValue();
         int count = mData.size();
         int index = 0;
         if (mData != null)
-            for (AbstractValueMetaData avmdK : mData.keySet()) {
-                AbstractValueMetaData avmdV = mData.get(avmdK);
+            for (ValueMetaData avmdK : mData.keySet()) {
+                ValueMetaData avmdV = mData.get(avmdK);
                 //
                 Object k = rootParser.parser(targetObject, avmdK, rootParser, context);
                 Object v = rootParser.parser(targetObject, avmdV, rootParser, context);

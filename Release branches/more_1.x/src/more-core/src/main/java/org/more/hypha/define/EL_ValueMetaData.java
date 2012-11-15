@@ -19,7 +19,7 @@ package org.more.hypha.define;
  * @version 2010-11-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public class EL_ValueMetaData extends AbstractValueMetaData {
+public class EL_ValueMetaData extends ValueMetaData {
     private String elText = null; //表示EL字符串
     /**该方法将会返回{@link PropertyMetaTypeEnum#EL}。*/
     public String getMetaDataType() {

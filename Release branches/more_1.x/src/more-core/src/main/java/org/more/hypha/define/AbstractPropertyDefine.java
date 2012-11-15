@@ -20,9 +20,9 @@ package org.more.hypha.define;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractPropertyDefine extends AbstractDefine<AbstractPropertyDefine> {
-    private String                classType     = null; //当执行属性注入时需要执行的类型转换类型
-    private String                description   = null; //属性描述
-    private AbstractValueMetaData valueMetaData = null; //值描述
+    private String        classType     = null; //当执行属性注入时需要执行的类型转换类型
+    private String        description   = null; //属性描述
+    private ValueMetaData valueMetaData = null; //值描述
     //-------------------------------------------------------------
     /**返回当执行属性注入时需要执行的类型转换类型。*/
     public String getClassType() {
@@ -33,12 +33,12 @@ public abstract class AbstractPropertyDefine extends AbstractDefine<AbstractProp
         return this.description;
     };
     /**获取对该属性的值信息描述。*/
-    public AbstractValueMetaData getMetaData() {
+    public ValueMetaData getMetaData() {
         return this.valueMetaData;
     };
     //-------------------------------------------------------------
     /**设置属性值的描述信息*/
-    public void setValueMetaData(AbstractValueMetaData valueMetaData) {
+    public void setValueMetaData(ValueMetaData valueMetaData) {
         valueMetaData.setFor(this);
         this.valueMetaData = valueMetaData;
     }

@@ -18,7 +18,7 @@ import java.net.URL;
 import java.util.List;
 import org.more.hypha.context.AbstractApplicationContext;
 import org.more.hypha.context.AbstractDefineResource;
-import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.xml.XmlDefineResource;
 import org.more.util.ResourcesUtil;
 /**
  * 提供一个文件路径，该文件是处于classpath中。

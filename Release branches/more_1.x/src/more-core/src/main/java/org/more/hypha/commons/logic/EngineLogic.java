@@ -44,7 +44,7 @@ import org.more.hypha.point.PointCallBack;
 */
 public class EngineLogic {
     private static Log                                           log                = LogFactory.getLog(EngineLogic.class);
-    private Map<String, AbstractBeanBuilder<AbstractBeanDefine>> builderMap         = null;
+    private Map<String, AbstractBeanBuilder<BeanDefine>> builderMap         = null;
     private RootValueMetaDataParser                              rootParser         = null;
     private AbstractApplicationContext                           applicationContext = null;
     //
@@ -60,7 +60,7 @@ public class EngineLogic {
         }
         //
         this.applicationContext = applicationContext;
-        this.builderMap = new HashMap<String, AbstractBeanBuilder<AbstractBeanDefine>>();
+        this.builderMap = new HashMap<String, AbstractBeanBuilder<BeanDefine>>();
         this.engineMap = new HashMap<String, IocEngine>();
         //
         log.debug("init EngineLogic, applicationContext = {%0}", applicationContext);
@@ -108,7 +108,7 @@ public class EngineLogic {
      * @param beanType 注册的bean定义类型。
      * @param builder 要注册的bean定义生成器。
      */
-    public void regeditBeanBuilder(String beanType, AbstractBeanBuilder<AbstractBeanDefine> builder) {
+    public void regeditBeanBuilder(String beanType, AbstractBeanBuilder<BeanDefine> builder) {
         if (beanType == null || builder == null) {
             log.warning("regedit bean Builder an error , beanType or AbstractBeanBuilder is null.");
             return;
@@ -133,7 +133,7 @@ public class EngineLogic {
      * @param define 要装载类型的bean定义。
      * @param params getBean时候传入的参数。
      */
-    public Class<?> loadType(final AbstractBeanDefine define, final Object[] params) throws Throwable {
+    public Class<?> loadType(final BeanDefine define, final Object[] params) throws Throwable {
         if (define == null) {
             log.error("builderType an error param AbstractBeanDefine is null.");
             throw new NullPointerException("builderType an error param AbstractBeanDefine is null.");
@@ -141,7 +141,7 @@ public class EngineLogic {
         String defineType = define.getBeanType();
         String defineID = define.getID();
         log.debug("builder bean Type defineID is {%0} ...", defineID);
-        final AbstractBeanBuilder<AbstractBeanDefine> builder = this.builderMap.get(defineType);
+        final AbstractBeanBuilder<BeanDefine> builder = this.builderMap.get(defineType);
         /*这里使用扩展点的方式来增强装载类型 */
         return this.applicationContext.getExpandPointManager().exePoint(//执行LoadClassPoint扩展点
                 LoadClassPoint.class, new PointCallBack() {
@@ -151,7 +151,7 @@ public class EngineLogic {
                 }, define, params);
     };
     /*------------------------------------------------------------------------------*/
-    public <T> T loadBean(final AbstractBeanDefine define, final Object[] params) throws Throwable {
+    public <T> T loadBean(final BeanDefine define, final Object[] params) throws Throwable {
         if (define == null) {
             log.error("loadBean an error param AbstractBeanDefine is null.");
             throw new NullPointerException("loadBean an error param AbstractBeanDefine is null.");
@@ -164,7 +164,7 @@ public class EngineLogic {
         final String defineID = define.getID();
         log.debug("loadBean Object defineID is {%0} ...", defineID);
         //1.
-        final AbstractBeanBuilder<AbstractBeanDefine> builder = this.builderMap.get(defineType);
+        final AbstractBeanBuilder<BeanDefine> builder = this.builderMap.get(defineType);
         if (builder == null) {
             log.error("loadBean {%0} Type {%1} is doesn`t support!", defineID, defineType);
             throw new SupportException("loadBean " + defineID + " Type " + defineType + " is doesn`t support!");
@@ -218,16 +218,16 @@ public class EngineLogic {
     };
     /*代理销毁方法*/
     private RootClassLoader propxyRootLoader = null;
-    private Object propxyFinalize(AbstractBeanDefine define, Object object) throws ClassNotFoundException, IOException {
+    private Object propxyFinalize(BeanDefine define, Object object) throws ClassNotFoundException, IOException {
         //使用统一的ClassLoader，来装载生成的 代理销毁方法类。
         if (this.propxyRootLoader == null)
             this.propxyRootLoader = new RootClassLoader(this.applicationContext.getClassLoader());
         //
-        AbstractBeanDefine attDefine = null;
+        BeanDefine attDefine = null;
         ProxyFinalizeClassEngine proxyEngine = null;//代理销毁方法生成器。
         //1.确定ProxyFinalizeClassEngine类型对象
-        if (define instanceof AbstractBeanDefine == true)
-            attDefine = (AbstractBeanDefine) define;
+        if (define instanceof BeanDefine == true)
+            attDefine = (BeanDefine) define;
         if (attDefine != null) //取得可能缓存的销毁方法生成器。
             proxyEngine = (ProxyFinalizeClassEngine) attDefine.getAttribute("ProxyFinalizeClassEngine");
         if (proxyEngine == null)
@@ -258,7 +258,7 @@ class ProxyClassNameStrategy implements ClassNameStrategy {
 class ProxyFinalizeClassEngine extends ClassEngine {
     private ProxyFinalizeClassBuilder builder      = null;
     private String                    finalizeName = null;
-    public ProxyFinalizeClassEngine(AbstractBeanDefine define, Object obj, RootClassLoader classLoader) throws ClassNotFoundException {
+    public ProxyFinalizeClassEngine(BeanDefine define, Object obj, RootClassLoader classLoader) throws ClassNotFoundException {
         super(false);
         this.setRootClassLoader(classLoader);
         this.setBuilderMode(BuilderMode.Propxy);

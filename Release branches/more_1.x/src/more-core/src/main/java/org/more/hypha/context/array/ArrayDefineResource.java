@@ -34,9 +34,9 @@ import org.more.webui.event.Event;
 public class ArrayDefineResource extends AbstractDefineResource {
     private static Log                      log         = LogFactory.getLog(ArrayDefineResource.class);
     private ArrayList<String>               defineNames = new ArrayList<String>();                     //bean定义名称集合
-    private Map<String, AbstractBeanDefine> defineMap   = new HashMap<String, AbstractBeanDefine>();   //bean定义Map
+    private Map<String, BeanDefine> defineMap   = new HashMap<String, BeanDefine>();   //bean定义Map
     //
-    public AbstractBeanDefine getBeanDefine(String id) throws DefineException {
+    public BeanDefine getBeanDefine(String id) throws DefineException {
         if (id == null) {
             log.error("param id is null.");
             return null;
@@ -62,7 +62,7 @@ public class ArrayDefineResource extends AbstractDefineResource {
     public boolean isPrototype(String id) throws DefineException {
         if (this.containsBeanDefine(id) == false)
             throw new DefineException("bean " + id + " is not exist.");
-        AbstractBeanDefine define = this.getBeanDefine(id);
+        BeanDefine define = this.getBeanDefine(id);
         if (define.factoryMethod() == null && define.isSingleton() == false)
             return true;
         else
@@ -71,16 +71,16 @@ public class ArrayDefineResource extends AbstractDefineResource {
     public boolean isSingleton(String id) throws DefineException {
         if (this.containsBeanDefine(id) == false)
             throw new DefineException("bean " + id + " is not exist.");
-        AbstractBeanDefine define = this.getBeanDefine(id);
+        BeanDefine define = this.getBeanDefine(id);
         return define.isSingleton();
     }
     public boolean isFactory(String id) throws DefineException {
         if (this.containsBeanDefine(id) == false)
             throw new DefineException("bean " + id + " is not exist.");
-        AbstractBeanDefine define = this.getBeanDefine(id);
+        BeanDefine define = this.getBeanDefine(id);
         return (define.factoryMethod() == null) ? false : true;
     }
-    public synchronized void addBeanDefine(AbstractBeanDefine define) throws NullPointerException, RepeateException {
+    public synchronized void addBeanDefine(BeanDefine define) throws NullPointerException, RepeateException {
         if (define == null) {
             log.warning("param define is null.");
             return;

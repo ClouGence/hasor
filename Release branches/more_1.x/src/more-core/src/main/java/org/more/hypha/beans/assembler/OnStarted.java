@@ -36,7 +36,7 @@ class OnStarted implements EventListener<StartedServicesEvent> {
         log.info("loadding init bean names = [{%0}].", ns);
         if (ns != null)
             for (String id : ns) {
-                AbstractBeanDefine define = context.getBeanDefinition(id);
+                BeanDefine define = context.getBeanDefinition(id);
                 if (define.isLazyInit() == false)
                     try {
                         context.getBean(id);

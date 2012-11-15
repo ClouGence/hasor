@@ -20,7 +20,7 @@ import org.more.util.StringConvertUtil;
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public class VariableBeanDefine extends AbstractBeanDefine {
+public class VariableBeanDefine extends BeanDefine {
     private VariableType type  = null; //值类型
     private String       value = null; //值
     /**返回“VariableBean”。*/
@@ -43,10 +43,10 @@ public class VariableBeanDefine extends AbstractBeanDefine {
     public void setValue(String value) {
         this.value = value;
     }
-    public AbstractBeanDefine getUseTemplate() {
+    public BeanDefine getUseTemplate() {
         return null;
     }
-    public void setUseTemplate(AbstractBeanDefine useTemplate) {}
+    public void setUseTemplate(BeanDefine useTemplate) {}
     //------------------------------------------------------------------
     /**该枚举中定义了{@link VariableBeanDefine}类可以表示的基本类型。*/
     public enum VariableType {

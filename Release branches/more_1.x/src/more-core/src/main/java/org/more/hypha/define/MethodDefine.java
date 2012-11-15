@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import org.more.core.error.RepeateException;
 /**
- * 该接口用于定义{@link AbstractBeanDefine}上的一个方法。
+ * 该接口用于定义{@link BeanDefine}上的一个方法。
  * @version 2010-10-13
  * @author 赵永春 (zyc@byshell.org)
  */

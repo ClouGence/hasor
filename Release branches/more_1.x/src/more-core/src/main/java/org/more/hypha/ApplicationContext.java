@@ -15,7 +15,7 @@
  */
 package org.more.hypha;
 import java.util.List;
-import org.more.hypha.define.AbstractBeanDefine;
+import org.more.hypha.define.BeanDefine;
 /**
 * 这个接口是Bean容器的核心接口，{@link ApplicationContext}的特定接口实现类可以用于某些情形。<br/><br/>
 * 在{@link ApplicationContext}中所有Bean都有唯一的一个名称。该工厂将返回一个包含对象的一个独立实例(原型设计模式)，或单个
@@ -38,7 +38,7 @@ public interface ApplicationContext {
      * @param id 要获取bean定义的bean名称。
      * @return 返回bean定义，如果获取不到指定的bean定义则返回null。
      */
-    public AbstractBeanDefine getBeanDefinition(String id);
+    public BeanDefine getBeanDefinition(String id);
     /**
     * 获取一个类装载器，org.more.hypha中的类装载均是通过这个类装载器进行装载的。
     * @return 返回一个类装载器，org.more.hypha中的类装载均是通过这个类装载器进行装载的。

@@ -19,13 +19,13 @@ import org.more.core.error.LoadException;
 import org.more.core.event.Event;
 import org.more.core.xml.XmlParserKit;
 import org.more.hypha.anno.AnnoService;
-import org.more.hypha.anno.xml.TagAnno_Anno;
 import org.more.hypha.commons.xml.AbstractXmlRegister;
 import org.more.hypha.context.InitEvent;
-import org.more.hypha.context.xml.XmlDefineResource;
-import org.more.hypha.context.xml.XmlNameSpaceRegister;
 import org.more.hypha.define.anno.Aop;
 import org.more.hypha.define.anno.Bean;
+import org.more.hypha.xml.XmlDefineResource;
+import org.more.hypha.xml.XmlNameSpaceRegister;
+import org.more.hypha.xml.tags.anno.TagAnno_Anno;
 /**
  * 该类实现了{@link XmlNameSpaceRegister}接口并且提供了对命名空间“http://project.byshell.org/more/schema/beans-anno”的解析支持。
  * @version 2010-9-15

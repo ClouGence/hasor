@@ -21,7 +21,7 @@ import org.more.hypha.ApplicationContext;
 import org.more.hypha.ValueMetaData;
 import org.more.hypha.beans.assembler.MetaDataUtil;
 import org.more.hypha.commons.logic.ValueMetaDataParser;
-import org.more.hypha.define.AbstractValueMetaData;
+import org.more.hypha.define.ValueMetaData;
 import org.more.hypha.define.Array_ValueMetaData;
 /**
  * 解析数组对象。
@@ -39,11 +39,11 @@ public class ArrayCollection_MetaData_Parser implements ValueMetaDataParser<Arra
         Object array = Array.newInstance(arrayItemType, initSize);
         log.debug("create Array type = {%0}, length = {%1}.", arrayItemType, initSize);
         //2.添加集合元素。
-        AbstractValueMetaData[] mData = data.getCollectionValue();
+        ValueMetaData[] mData = data.getCollectionValue();
         int count = mData.length;
         if (mData != null)
             for (int i = 0; i < count; i++) {
-                AbstractValueMetaData avmd = mData[i];
+                ValueMetaData avmd = mData[i];
                 Object obj = rootParser.parser(targetObject, avmd, rootParser, context);
                 log.debug("set parser item {%0} of {%1} , value = {%2}", i, count, obj);
                 Array.set(array, i, obj);

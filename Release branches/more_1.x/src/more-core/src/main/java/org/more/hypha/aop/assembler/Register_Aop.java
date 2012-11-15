@@ -19,20 +19,20 @@ import org.more.core.error.LoadException;
 import org.more.core.event.Event;
 import org.more.core.xml.XmlParserKit;
 import org.more.hypha.aop.AopService;
-import org.more.hypha.aop.xml.TagAop_Apply;
-import org.more.hypha.aop.xml.TagAop_Before;
-import org.more.hypha.aop.xml.TagAop_Config;
-import org.more.hypha.aop.xml.TagAop_Filter;
-import org.more.hypha.aop.xml.TagAop_Informed;
-import org.more.hypha.aop.xml.TagAop_PointGroup;
-import org.more.hypha.aop.xml.TagAop_Pointcut;
-import org.more.hypha.aop.xml.TagAop_Returning;
-import org.more.hypha.aop.xml.TagAop_Throwing;
-import org.more.hypha.aop.xml.TagAop_UseConfig;
 import org.more.hypha.commons.xml.AbstractXmlRegister;
 import org.more.hypha.context.InitEvent;
-import org.more.hypha.context.xml.XmlDefineResource;
-import org.more.hypha.context.xml.XmlNameSpaceRegister;
+import org.more.hypha.xml.XmlDefineResource;
+import org.more.hypha.xml.XmlNameSpaceRegister;
+import org.more.hypha.xml.tags.aop.TagAop_Apply;
+import org.more.hypha.xml.tags.aop.TagAop_Before;
+import org.more.hypha.xml.tags.aop.TagAop_Config;
+import org.more.hypha.xml.tags.aop.TagAop_Filter;
+import org.more.hypha.xml.tags.aop.TagAop_Informed;
+import org.more.hypha.xml.tags.aop.TagAop_PointGroup;
+import org.more.hypha.xml.tags.aop.TagAop_Pointcut;
+import org.more.hypha.xml.tags.aop.TagAop_Returning;
+import org.more.hypha.xml.tags.aop.TagAop_Throwing;
+import org.more.hypha.xml.tags.aop.TagAop_UseConfig;
 /**
  * 该类实现了{@link XmlNameSpaceRegister}接口并且提供了对命名空间“http://project.byshell.org/more/schema/beans-aop”的解析支持。
  * @version 2010-9-15

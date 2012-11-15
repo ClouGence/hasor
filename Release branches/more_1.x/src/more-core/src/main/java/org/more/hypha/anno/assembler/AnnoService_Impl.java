@@ -30,9 +30,9 @@ import org.more.core.asm.ClassWriter;
 import org.more.hypha.DefineResource;
 import org.more.hypha.anno.AnnoService;
 import org.more.hypha.anno.KeepWatchParser;
-import org.more.hypha.anno.xml.EV_Class;
 import org.more.hypha.commons.AbstractService;
-import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.xml.XmlDefineResource;
+import org.more.hypha.xml.tags.anno.Anno_EV_Class;
 /**
  * 注解插件接口{@link AnnoService}的实现类。
  * @version 2010-10-14
@@ -87,7 +87,7 @@ public class AnnoService_Impl extends AbstractService implements AnnoService {
     public synchronized void parserClass(InputStream classInputStream) throws ClassNotFoundException, IOException {
         //2.通知引擎扫描这个类，确定是否有必要解析。使用ASM进行扫描增加速度。
         ClassReader reader = new ClassReader(classInputStream);
-        EV_Class ev = new EV_Class(this, new ClassWriter(ClassWriter.COMPUTE_MAXS));
+        Anno_EV_Class ev = new Anno_EV_Class(this, new ClassWriter(ClassWriter.COMPUTE_MAXS));
         reader.accept(ev, ClassReader.SKIP_DEBUG);
         //3.通知引擎执行解析，这个类中包含具备解析条件的注解。
         ClassLoader loader = Thread.currentThread().getContextClassLoader();

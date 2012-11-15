@@ -30,7 +30,7 @@ import org.more.util.BeanUtil;
  */
 public class Ioc_Engine extends IocEngine {
     private static Log log = LogFactory.getLog(Ioc_Engine.class);
-    public void ioc(Object target, AbstractBeanDefine define, Object[] params) throws Throwable {
+    public void ioc(Object target, BeanDefine define, Object[] params) throws Throwable {
         Collection<? extends BeanPropertyDefine> bpds = define.getPropertys();
         if (bpds == null) {
             log.debug("Propertys is null so ioc not execute!");

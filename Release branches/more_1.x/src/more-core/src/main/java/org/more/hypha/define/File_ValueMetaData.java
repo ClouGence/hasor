@@ -19,7 +19,7 @@ package org.more.hypha.define;
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class File_ValueMetaData extends AbstractValueMetaData {
+public class File_ValueMetaData extends ValueMetaData {
     private String  fileObject = null; //表示文件或目录的字符串。
     private boolean isDir      = false; //表示是否是一个目录
     /**该方法将会返回{@link PropertyMetaTypeEnum#File}。*/

@@ -220,7 +220,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
             log.debug("{%0} bean form cache return.", defineID);
             return (T) obj;
         }
-        final AbstractBeanDefine define = this.getBeanDefinition(defineID);
+        final BeanDefine define = this.getBeanDefinition(defineID);
         if (define == null) {
             log.error("{%0} define is not exist.", defineID);
             throw new DefineException(defineID + " define is not exist.");
@@ -266,7 +266,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
             log.error("error , defineID is null or empty.");
             throw new NullPointerException("error , defineID is null or empty.");
         }
-        final AbstractBeanDefine define = this.getBeanDefinition(defineID);
+        final BeanDefine define = this.getBeanDefinition(defineID);
         if (define == null) {
             log.error("{%0} define is not exist.", defineID);
             throw new DefineException(defineID + " define is not exist.");
@@ -332,7 +332,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     public List<String> getBeanDefinitionIDs() {
         return this.getBeanResource().getBeanDefinitionIDs();
     };
-    public AbstractBeanDefine getBeanDefinition(String id) {
+    public BeanDefine getBeanDefinition(String id) {
         return this.getBeanResource().getBeanDefine(id);
     };
     public boolean containsBean(String id) {

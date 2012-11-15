@@ -19,13 +19,13 @@ import org.more.core.event.Event.Sequence;
 import org.more.core.event.EventListener;
 import org.more.core.log.Log;
 import org.more.core.log.LogFactory;
-import org.more.hypha.beans.xml.BeansConfig_BeanTypeConfig;
-import org.more.hypha.beans.xml.BeansConfig_MDParserConfig;
 import org.more.hypha.commons.logic.AbstractBeanBuilder;
 import org.more.hypha.commons.logic.EngineLogic;
 import org.more.hypha.commons.logic.ValueMetaDataParser;
 import org.more.hypha.context.AbstractApplicationContext;
 import org.more.hypha.context.InitEvent;
+import org.more.hypha.xml.tags.config.BeansConfig_BeanTypeConfig;
+import org.more.hypha.xml.tags.config.BeansConfig_MDParserConfig;
 /**
  * beansµÄ³õÊ¼»¯EventException
  * @version : 2011-4-22

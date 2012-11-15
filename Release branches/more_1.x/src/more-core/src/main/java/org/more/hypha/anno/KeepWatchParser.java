@@ -15,7 +15,7 @@
  */
 package org.more.hypha.anno;
 import java.lang.annotation.Annotation;
-import org.more.hypha.context.xml.XmlDefineResource;
+import org.more.hypha.xml.XmlDefineResource;
 /**
  * 注解注册解析器。该接口的功能是负责接收并处理由{@link AnnoService}接口注册的注解监视。
  * 可以将这个监视器注册到{@link AnnoService}插件中。

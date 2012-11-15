@@ -19,7 +19,7 @@ package org.more.hypha.define;
  * @version 2010-9-15
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class TemplateBeanDefine extends AbstractBeanDefine {
+public class TemplateBeanDefine extends BeanDefine {
     //-------------------------------------------------------------
     /**∑µªÿ°∞TemplateBean°±°£*/
     public String getBeanType() {
