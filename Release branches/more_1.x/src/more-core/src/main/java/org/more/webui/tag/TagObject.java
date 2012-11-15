@@ -27,7 +27,7 @@ import org.more.webui.component.support.UICom;
 import org.more.webui.component.values.AbstractValueHolder;
 import org.more.webui.context.ViewContext;
 import org.more.webui.freemarker.parser.Hook_UserTag;
-import org.more.webui.render.support.Render;
+import org.more.webui.render.Render;
 import freemarker.core.Environment;
 import freemarker.core.TemplateElement;
 import freemarker.template.ObjectWrapper;

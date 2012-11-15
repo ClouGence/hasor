@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.render.support;
+package org.more.webui.render;
 import java.io.IOException;
 import java.io.Writer;
 import org.more.webui.component.UIComponent;

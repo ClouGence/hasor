@@ -13,30 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.render;
-import java.util.Map;
-import org.more.webui.component.UIForm;
+package org.more.webui.render.output;
+import java.io.IOException;
+import java.io.Writer;
+import org.more.webui.components.UIOutput;
 import org.more.webui.context.ViewContext;
-import org.more.webui.render.support.AbstractRender;
+import org.more.webui.render.AbstractRender;
+import org.more.webui.tag.TemplateBody;
+import freemarker.template.TemplateException;
 /**
- * 将按钮组建渲染成form。
- * <br><b>客户端模型</b>：UIForm（UIForm.js）
+ * 将组建的值输出到span标签中。
+ * <br><b>客户端模型</b>：UIOutput（UIOutput.js）
  * @version : 2012-5-18
  * @author 赵永春 (zyc@byshell.org)
  */
-public class FormRender<T extends UIForm> extends AbstractRender<T> {
+public class OutputRender<T extends UIOutput> extends AbstractRender<T> {
     @Override
     public String getClientType() {
-        return "UIForm";
+        return "UIOutput";
     }
     @Override
     public String tagName(ViewContext viewContext, T component) {
-        return "form";
+        return "span";
     }
     @Override
-    public Map<String, Object> tagAttributes(ViewContext viewContext, T component) {
-        Map<String, Object> hashMap = super.tagAttributes(viewContext, component);
-        hashMap.put("_onsubmit", hashMap.remove("onsubmit"));
-        return hashMap;
+    public void render(ViewContext viewContext, T component, TemplateBody arg3, Writer writer) throws IOException, TemplateException {
+        arg3.render(writer);
+        writer.append(String.valueOf(component.getValue()));
     }
 }

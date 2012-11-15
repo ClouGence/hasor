@@ -15,9 +15,9 @@
  */
 package org.more.webui.render.select;
 import java.util.Map;
-import org.more.webui.component.UISelectInput;
+import org.more.webui.components.UISelectInput;
 import org.more.webui.context.ViewContext;
-import org.more.webui.render.support.AbstractRender;
+import org.more.webui.render.AbstractRender;
 /**
  * 抽象类，输入组建的渲染器，主要用于input标签。
  * <br><b>客户端模型</b>：UISelectInput（UISelectInput.js）

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.more.webui.components.linkbutton;
-import org.more.webui.component.UIButton;
 import org.more.webui.component.support.UICom;
-import org.more.webui.render.LinkButtonRender;
+import org.more.webui.components.UIButton;
+import org.more.webui.render.button.LinkButtonRender;
 /**
  * <b>作用</b>：使用超级连接形式生成一个按钮。
  * <br><b>组建类型</b>：ui_LinkButton

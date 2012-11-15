@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.webui.render.inputs;
-import org.more.webui.component.UIInput;
+import org.more.webui.components.UIInput;
 import org.more.webui.context.ViewContext;
 /**
  * 将输入组建渲染成input[type=text]。

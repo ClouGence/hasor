@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.io.Writer;
 import org.more.webui.components.page.PageCom.Mode;
 import org.more.webui.context.ViewContext;
-import org.more.webui.render.support.AbstractRender;
+import org.more.webui.render.AbstractRender;
 import org.more.webui.tag.TemplateBody;
 import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateException;

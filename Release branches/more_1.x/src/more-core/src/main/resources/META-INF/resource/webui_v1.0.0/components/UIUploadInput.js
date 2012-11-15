@@ -17,7 +17,9 @@ function webui_upload_progress_handler(file, bytesLoaded, bytesTotal) {}
 /** 上传组建级的错误。 */
 function webui_upload_error_handler(file, errorCode, message) {}
 /** 当队列中正在上传的文件完成上传之后调用。 */
-function webui_upload_success_handler(file, serverData) {}
+function webui_upload_success_handler(file, serverData) {
+	return serverData;
+}
 /** 每个文件上传完毕都会调用一遍 */
 function webui_upload_complete_handler(file) {}
 /** 当队列上传完毕之后，返回值决定组建在表单中的值。 */
@@ -309,6 +311,8 @@ WebUI.Component.$extends("UIUploadInput", "UIInput", {
 		this.defineProperty("value", function() {
 			return $("#" + this.componentID + "Input").attr("value");
 		}, function(newValue) {
+			if (WebUI.isArray(newValue) || WebUI.isObject(newValue))
+				newValue = JSON.stringify(newValue);
 			$("#" + this.componentID + "Input").attr("value", newValue);
 			if (WebUI.isNaN(this.onchange) == false)
 				this.onchange.call(this, newValue);// 事件没法帮上，在加上所有设置值都是通过该方法进行，因此在此处触发事件。
@@ -486,13 +490,13 @@ WebUI.Component.UIUploadInput.handlers.upload_success_handler = function(file, s
 		progress.setStatus("完成.");
 		progress.toggleCancel(false);
 	}
-	// 2.记录服务器返回的数据
+	// 2.通知用户程序
+	if (WebUI.isNaN(webui_upload_success_handler) == false)
+		serverData = webui_upload_success_handler(file, serverData);
+	// 3.记录服务器返回的数据
 	if (WebUI.isNaN(this.customSettings.serverDataList))
 		this.customSettings.serverDataList = [];
 	this.customSettings.serverDataList.push(serverData);
-	// 3.通知用户程序
-	if (WebUI.isNaN(webui_upload_success_handler) == false)
-		webui_upload_success_handler(file, serverData);
 };
 /** 每个文件上传完毕都会调用一遍 */
 WebUI.Component.UIUploadInput.handlers.upload_complete_handler = function(file) {
@@ -508,8 +512,6 @@ WebUI.Component.UIUploadInput.handlers.queue_complete_handler = function(numFile
 	// 2.通知用户程序
 	if (WebUI.isNaN(webui_queue_complete_handler) == false)
 		allServerData = webui_queue_complete_handler(numFilesUploaded, allServerData);// 最终的值由用户决定
-	else
-		allServerData = JSON.stringify(allServerData);
 	// 3.设置值到组建上(JSON.stringify(allServerData))
 	this.customSettings.componentObject.value(allServerData);
 };

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.more.webui.components.select;
-import org.more.webui.component.UISelectInput;
 import org.more.webui.component.support.UICom;
+import org.more.webui.components.UISelectInput;
 import org.more.webui.render.select.SelectOnlySelectInputRender;
 /**
  * <b>作用</b>：下拉输入框组建。

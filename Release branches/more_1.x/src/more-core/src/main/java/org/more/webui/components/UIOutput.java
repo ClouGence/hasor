@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.component;
+package org.more.webui.components;
+import org.more.webui.component.UIComponent;
 import org.more.webui.context.ViewContext;
-import org.more.webui.render.OutputRender;
+import org.more.webui.render.output.OutputRender;
 /**
  * <b>组建模型</b>：用于表述输出功能的组建。
  * <br><b>服务端事件</b>：无

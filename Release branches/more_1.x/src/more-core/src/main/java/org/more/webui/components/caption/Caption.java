@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.more.webui.components.caption;
-import org.more.webui.component.UIOutput;
 import org.more.webui.component.support.UICom;
-import org.more.webui.render.OutputRender;
+import org.more.webui.components.UIOutput;
+import org.more.webui.render.output.OutputRender;
 /**
  * <b>作用</b>：输出框。
  * <br><b>组建类型</b>：ui_Caption

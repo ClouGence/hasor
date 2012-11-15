@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.component;
+package org.more.webui.components;
 import org.more.webui.context.ViewContext;
 import org.more.webui.render.inputs.ButtonInputRender;
 import org.more.webui.render.inputs.CheckboxInputRender;

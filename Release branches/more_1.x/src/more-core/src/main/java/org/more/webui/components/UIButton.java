@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.component;
+package org.more.webui.components;
+import org.more.webui.component.UIComponent;
 import org.more.webui.component.support.NoState;
 import org.more.webui.component.values.MethodExpression;
 import org.more.webui.context.ViewContext;
 import org.more.webui.event.Event;
 import org.more.webui.event.EventListener;
-import org.more.webui.render.LinkButtonRender;
+import org.more.webui.render.button.LinkButtonRender;
 import org.more.webui.render.inputs.ButtonInputRender;
 /**
  * <b>组建模型</b>：按钮组建模型（表单元素）。

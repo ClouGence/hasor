@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.component;
+package org.more.webui.components;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.more.webui.component.UIComponent;
 import org.more.webui.component.support.NoState;
 import org.more.webui.component.values.MethodExpression;
 import org.more.webui.context.ViewContext;
 import org.more.webui.event.Event;
 import org.more.webui.event.EventListener;
-import org.more.webui.render.FormRender;
+import org.more.webui.render.form.FormRender;
 /**
  * <b>组建模型</b>：表单组建。
  * <br><b>服务端事件</b>：OnSubmit

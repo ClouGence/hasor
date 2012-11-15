@@ -13,22 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.render.inputs;
-import org.more.webui.components.UIInput;
+package org.more.webui.render;
+import java.io.IOException;
+import java.io.Writer;
+import org.more.webui.component.UIComponent;
 import org.more.webui.context.ViewContext;
+import org.more.webui.tag.TemplateBody;
+import freemarker.template.TemplateException;
 /**
- * 将输入组建渲染成input[type=image]。
- * <br><b>客户端模型</b>：UIButton（UIButton.js）
+ * 不进行渲染
  * @version : 2012-5-18
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ImageInputRender<T extends UIInput> extends AbstractInputRender<T> {
+public class NoRender<T extends UIComponent> implements Render<T> {
+    /**开始渲染组建*/
     @Override
-    public String getClientType() {
-        return "UIButton";
-    }
+    public void beginRender(ViewContext viewContext, T component, TemplateBody arg3, Writer writer) throws IOException {}
+    /**进行渲染*/
     @Override
-    public InputType getInputType(ViewContext viewContext, T component) {
-        return InputType.image;
-    }
+    public void render(ViewContext viewContext, T component, TemplateBody arg3, Writer writer) throws IOException, TemplateException {}
+    /**组建渲染结束*/
+    @Override
+    public void endRender(ViewContext viewContext, T component, TemplateBody arg3, Writer writer) throws IOException {}
 }

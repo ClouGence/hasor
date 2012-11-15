@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.more.webui.components.input;
-import org.more.webui.component.UIInput;
 import org.more.webui.component.support.UICom;
+import org.more.webui.components.UIInput;
 import org.more.webui.context.ViewContext;
 import org.more.webui.render.inputs.TextAreaInputRender;
 /**

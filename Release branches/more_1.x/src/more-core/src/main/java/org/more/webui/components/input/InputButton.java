@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.more.webui.components.input;
-import org.more.webui.component.UIButton;
 import org.more.webui.component.support.UICom;
+import org.more.webui.components.UIButton;
 import org.more.webui.render.inputs.ButtonInputRender;
 /**
  * <b>作用</b>：input类型按钮

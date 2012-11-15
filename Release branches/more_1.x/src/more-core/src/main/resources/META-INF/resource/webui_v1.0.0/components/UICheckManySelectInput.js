@@ -12,15 +12,30 @@
  * -------------------------------------------------------------------- */
 WebUI.Component.$extends("UICheckManySelectInput", "UISelectInput", {
 	/** （重写方法）获取被选择的值索引（数组结构）。 */
-	selectIndexs : function() {
-		var dataList = new Array();
-		var index = 0;
-		$("#" + this.clientID + " input[type=checkbox]").each(function() {
-			if (this.checked == true)
-				dataList.push(index);
-			index++;
-		});
-		return dataList; // 选中值
+	selectIndexs : function(newVar) {
+		if (WebUI.isNaN(newVar) == false) {
+			// W
+			if (WebUI.isArray(newVar) == false)
+				WebUI.throwError('参数类型错误，期待一个Array。');
+			var dataList = this.listData();
+			var selectKey = new Array();
+			for ( var e1 in newVar) {
+				if (dataList.length >= newVar[e1])
+					continue;
+				selectKey.push(dataList[e1][this.keyField()]);
+			}
+			this.value(selectKey);
+		} else {
+			// R
+			var dataList = new Array();
+			var index = 0;
+			$("#" + this.clientID + " li").each(function() {
+				if ($(this).attr('class') == 'checked')
+					dataList.push(index);
+				index++;
+			});
+			return dataList; // 选中值
+		}
 	},
 	/** （重写方法）根据自身的dataList值重新刷新数据显示。 */
 	render : function() {
@@ -72,24 +87,5 @@ WebUI.Component.$extends("UICheckManySelectInput", "UISelectInput", {
 		});
 	},
 	/** 构造方法 */
-	"<init>" : function() {
-		/** value */
-		this.defineProperty("value", function() {
-			var selectValues = this.getState().get('value');
-			try {
-				selectValues = selectValues.split(",");
-			} catch (e) {
-				selectValues = [ selectValues ];
-			}
-			return selectValues; // 选中值
-		}, function(newValue) {
-			var selectData = '';
-			if (WebUI.isArray(newValue) == false)
-				newValue = [ newValue ];
-			for ( var v in newValue)
-				selectData += (newValue[v] + ',');
-			selectData = WebUI.deleteLast(selectData, ',');
-			this.getState().set("value", selectData);
-		});
-	}
+	"<init>" : function() {}
 });

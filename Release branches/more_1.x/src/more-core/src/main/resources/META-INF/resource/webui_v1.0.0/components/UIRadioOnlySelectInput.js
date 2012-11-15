@@ -11,16 +11,31 @@
  * ]
  * -------------------------------------------------------------------- */
 WebUI.Component.$extends("UIRadioOnlySelectInput", "UISelectInput", {
-	/** （重写方法）获取被选择的值索引（数组结构）。 */
-	selectIndexs : function() {
-		var dataList = new Array();
-		var index = 0;
-		$("#" + this.clientID + " input[type=radio]").each(function() {
-			if (this.checked == true)
-				dataList.push(index);
-			index++;
-		});
-		return dataList; // 选中值
+	/** （重写方法）获取或设置选中的索引值集合。（参数和返回值均是string逗号分割）。 */
+	selectIndexs : function(newVar) {
+		if (WebUI.isNaN(newVar) == false) {
+			// W
+			if (WebUI.isArray(newVar) == false)
+				WebUI.throwError('参数类型错误，期待一个Array。');
+			var dataList = this.listData();
+			var selectKey = new Array();
+			for ( var e1 in newVar) {
+				if (parseInt(newVar[e1]) >= dataList.length)
+					continue;
+				selectKey.push(dataList[parseInt(newVar[e1])][this.keyField()]);
+			}
+			this.value(selectKey);
+		} else {
+			// R
+			var dataList = new Array();
+			var index = 0;
+			$("#" + this.clientID + " li").each(function() {
+				if ($(this).attr('class') == 'checked')
+					dataList.push(index);
+				index++;
+			});
+			return dataList; // 选中值
+		}
 	},
 	/** （重写方法）根据自身的dataList值重新刷新数据显示。 */
 	render : function() {

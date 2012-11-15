@@ -1,6 +1,6 @@
 package org.more.webui.components.input;
-import org.more.webui.component.UIInput;
 import org.more.webui.component.support.UICom;
+import org.more.webui.components.UIInput;
 import org.more.webui.render.inputs.HideInputRender;
 /**
  * <b>作用</b>：生成一个隐藏表单域。

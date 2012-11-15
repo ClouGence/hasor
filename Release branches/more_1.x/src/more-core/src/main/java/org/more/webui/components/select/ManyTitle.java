@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.more.webui.components.select;
-import org.more.webui.component.UISelectInput;
 import org.more.webui.component.support.UICom;
+import org.more.webui.components.UISelectInput;
 /**
  * <b>作用</b>：标题多选组建。
  * <br><b>组建类型</b>：ui_ManyTitle

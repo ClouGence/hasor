@@ -15,7 +15,7 @@
  */
 package org.more.webui.components.panel;
 import org.more.webui.context.ViewContext;
-import org.more.webui.render.support.AbstractRender;
+import org.more.webui.render.AbstractRender;
 /**
  * 将按钮组建渲染成div。
  * <br><b>客户端模型</b>：UIPanel（UIPanel.js）

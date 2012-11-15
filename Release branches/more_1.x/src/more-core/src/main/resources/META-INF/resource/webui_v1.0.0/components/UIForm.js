@@ -34,8 +34,8 @@ WebUI.Component.$extends("UIForm", "UIComponent", {
 			var uio = this.uiObject;
 			if (uio.isForm() == false)
 				return;
-			if (WebUI.isNaN(uio.selectValue) == false)
-				paramData[uio.componentPath + ":value"] = uio.selectValue();
+			if (WebUI.isNaN(uio.selectKey) == false)
+				paramData[uio.componentPath + ":value"] = uio.selectKey();
 			else
 				paramData[uio.componentPath + ":value"] = uio.value();
 		});

@@ -26,7 +26,7 @@ import org.more.util.CommonCodeUtil;
 import org.more.webui.component.UIComponent;
 import org.more.webui.freemarker.loader.ConfigTemplateLoader;
 import org.more.webui.freemarker.loader.MultiTemplateLoader;
-import org.more.webui.render.support.RenderKit;
+import org.more.webui.render.RenderKit;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;

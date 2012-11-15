@@ -17,7 +17,7 @@ package org.more.webui.render.inputs;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
-import org.more.webui.component.UIInput;
+import org.more.webui.components.UIInput;
 import org.more.webui.context.ViewContext;
 import org.more.webui.tag.TemplateBody;
 import freemarker.template.TemplateException;

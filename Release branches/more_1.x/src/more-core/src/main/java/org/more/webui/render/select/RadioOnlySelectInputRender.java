@@ -19,7 +19,7 @@ import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 import org.more.util.BeanUtil;
-import org.more.webui.component.UISelectInput;
+import org.more.webui.components.UISelectInput;
 import org.more.webui.context.ViewContext;
 import org.more.webui.tag.TemplateBody;
 import freemarker.template.TemplateException;

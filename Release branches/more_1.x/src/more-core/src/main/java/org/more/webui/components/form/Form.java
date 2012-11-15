@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.more.webui.components.form;
-import org.more.webui.component.UIForm;
 import org.more.webui.component.support.UICom;
-import org.more.webui.render.FormRender;
+import org.more.webui.components.UIForm;
+import org.more.webui.render.form.FormRender;
 /**
  * <b>作用</b>：用于封装页面表单元素的form。
  * <br><b>组建类型</b>：ui_Form
