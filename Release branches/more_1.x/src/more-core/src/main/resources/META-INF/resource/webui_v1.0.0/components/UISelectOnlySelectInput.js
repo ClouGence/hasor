@@ -43,7 +43,7 @@ WebUI.Component.$extends("UISelectOnlySelectInput", "UISelectInput", {
 		e.options.length = 0;
 		//
 		var tempEID = 'webui_' + this.clientID;
-		$('body').append('<' + tempEID + ' id=' + tempEID + ' style="display:none;"></' + tempEID + '>');
+		$('body').append('<span id=' + tempEID + ' style="display:none;"></span>');
 		var tempElement = $('#' + tempEID);
 		var selectIndex = 0;
 		for ( var i = 0; i < arrayData.length; i++) {

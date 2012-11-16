@@ -24,5 +24,5 @@ WebUI.Component.$extends("ui_Text", "UIInput", {
 		this.defineProperty("multiLine", "RW");
 		/** 该值是当value没有设置值时会用该值替代（RW） */
 		this.defineProperty("tipTitle", "RW");
-	},
+	}
 });

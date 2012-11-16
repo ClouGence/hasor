@@ -139,7 +139,7 @@ WebUI.throwError = function(throwObject, params) {
 			caller = caller && caller.caller;
 		}
 		callStack = '<b>CallStack:</b><pre>' + stack.join('\n') + '</pre>';
-		$.dialog({
+		WebUI.dialog({
 			title : 'Debug Throw：' + throwObject,
 			cancelVal : '关闭',
 			cancel : true,
@@ -149,7 +149,7 @@ WebUI.throwError = function(throwObject, params) {
 		});
 	}
 	throw throwObject;
-}
+};
 /** 内部方法：删掉位于字符串最末尾的字符，如果它存在的话。 */
 WebUI.deleteLast = function(stringData, words) {
 	if (stringData.length < words)
@@ -158,11 +158,11 @@ WebUI.deleteLast = function(stringData, words) {
 		return stringData;
 	// 删掉最后一个,
 	return stringData.substr(0, stringData.length - words.length)
-}
+};
 /** 内部方法：获取函数的函数名 */
 WebUI.getFunctionName = function(func) {
 	if (typeof func == 'function' || typeof func == 'object') {
 		var name = ('' + func).match(/function\s*([\w\$]*)\s*\(/);
 	}
 	return name && name[1];
-}
+};

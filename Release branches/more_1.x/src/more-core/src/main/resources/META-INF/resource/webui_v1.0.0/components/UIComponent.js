@@ -324,6 +324,6 @@ WebUI.Component.prototype = {
 WebUI.Component.$extends("UIComponent", "", {
 	/** !关于! */
 	"<about>" : function() {
-		alert("‘" + this.class + "’类型继承自UIComponent组建。");
+		alert("‘" + this.thisClass + "’类型继承自UIComponent组建。");
 	}
 });

@@ -50,6 +50,7 @@ public class RadioOnlySelectInputRender<T extends UISelectInput> extends Abstrac
         String keyField = component.getKeyField();
         String varField = component.getVarField();
         Object[] selectVar = component.getSelectValues();
+        int index = 0;
         if (listData != null)
             for (Object obj : listData) {
                 if (obj == null)
@@ -76,7 +77,7 @@ public class RadioOnlySelectInputRender<T extends UISelectInput> extends Abstrac
                         checkedStr = "no";
                         checkedMark = "";
                     }
-                writer.write("<li class='" + checkedStr + "checked'>");
+                writer.write("<li index='" + index + "' class='" + checkedStr + "checked'>");
                 writer.write("  <a href='javascript:void(0)'>");
                 writer.write("    <label>");
                 writer.write("      <em></em>");
@@ -85,6 +86,7 @@ public class RadioOnlySelectInputRender<T extends UISelectInput> extends Abstrac
                 writer.write("    </label>");
                 writer.write("  </a>");
                 writer.write("</li> ");
+                index++;
             }
     }
     /*----------------------------------------------------------------*/

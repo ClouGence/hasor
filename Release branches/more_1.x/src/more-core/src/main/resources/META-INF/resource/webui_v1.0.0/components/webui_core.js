@@ -4,7 +4,7 @@ if (typeof (WebUI_Var_Library) == 'undefined')
 if (typeof (WebUI_Debug) == 'undefined')
 	WebUI_Debug = false;// webui 是否开启debug模式
 
-var WebUI = function(serverID) {
+WebUI = function(serverID) {
 	var res = $("[comid=" + serverID + "]");
 	if (res.length != 0)
 		if (WebUI.isNaN(res[0].uiObject) == true) {
@@ -94,20 +94,19 @@ WebUI.mapToURI = function(mapObject) {
 };
 /** 执行字符串，如果定义的只是函数名则调用该函数，如果是脚本字符串则执行脚本（注：如果脚本返回的是函数则这个函数也会被执行）。 */
 WebUI.runSrcipt = function(scriptContext, thisContext, paramMap) {
-	WebUI.runSrcipt.$Key = null;
-	WebUI.runSrcipt.$Var = null;
-	WebUI.runSrcipt.$ParamMap = paramMap;
-	WebUI.runSrcipt.$ParamArray = new Array();
+	var paramsMark = '';
+	var vars = new Array();
 	// 1.准备环境变量
-	for (WebUI.runSrcipt.$Key in WebUI.runSrcipt.$ParamMap) {
-		WebUI.runSrcipt.$Var = WebUI.runSrcipt.$ParamMap[WebUI.runSrcipt.$Key];
-		WebUI.runSrcipt.$ParamArray.push(WebUI.runSrcipt.$Var);
-		eval(WebUI.runSrcipt.$Key + "=WebUI.runSrcipt.$Var");
+	for (k in paramMap) {
+		paramsMark = paramsMark.concat("'", k, "',");
+		vars.push(paramMap[k]);
 	}
+	paramsMark = WebUI.deleteLast(paramsMark, ',');
+	var ee = new Function('funBody', 'return new Function(' + paramsMark + ',"return "+funBody);')(scriptContext);
 	// 2.执行脚本
-	var e = (new Function("return " + scriptContext)).call(thisContext);
+	var e = ee.call(thisContext);
 	if (WebUI.isFun(e) == true)
-		e = e.apply(thisContext, WebUI.runSrcipt.$ParamArray);
+		e = e.apply(thisContext, vars);
 	return e;
 };
 /**
@@ -298,7 +297,7 @@ WebUI.call = function(target, paramMap) {
 						msg += ('<b>' + k + ':</b><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + sendData[k] + '<br/>');
 				msg += ('<b>Params:</b><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + JSON.stringify(paramMap['dataMap']) + '<br/>');
 				var trace = '<b>Message:</b><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + event.message + '<br/><b>Trace:</b><pre>' + event.trace + '</pre>';
-				$.dialog({
+				WebUI.dialog({
 					title : 'Debug Ajax Error：' + event.errorID,
 					cancelVal : '关闭',
 					cancel : true,
@@ -330,4 +329,13 @@ WebUI.invoke = function(invokeString, paramData, ajaxAfter, ajaxError) {
 	paramMap['invoke'] = invokeString;// 引发服务端OnInvoke事件，invoke代表要在服务端执行的EL表达式。（注意：如果指定invoke参数则event参数会失效）
 	paramMap['async'] = (WebUI.isNaN(ajaxAfter) == false || WebUI.isNaN(ajaxError) == false) ? false : true;
 	return WebUI.call(null, paramMap);
+};
+/** 封装的对话框 */
+WebUI.dialog = function(dialogParamMap) {
+	if (WebUI.isNaN(frameElement) == false)
+		if (WebUI.isNaN(frameElement.api) == false) {
+			frameElement.api.opener.$.dialog(dialogParamMap);
+			return;
+		}
+	$.dialog(dialogParamMap);
 };

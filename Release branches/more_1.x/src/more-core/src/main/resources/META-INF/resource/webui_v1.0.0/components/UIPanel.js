@@ -84,7 +84,7 @@ WebUI.Component.$extends("UIPanel", "UIComponent", {
 			if (WebUI.isNaN(dialogParamMap[v]) == true)
 				dialogParamMap[v] = defaultParamMap[v];
 		// dialog
-		$.dialog(dialogParamMap);
+		WebUI.dialog(dialogParamMap);
 	},
 	/** 将面板的内容作为对话框弹出（公告版）。 如下几个属性被锁定不可设置：id、content、fixed、drag、resize、max、min */
 	dialogNotice : function(dialogParamMap) {

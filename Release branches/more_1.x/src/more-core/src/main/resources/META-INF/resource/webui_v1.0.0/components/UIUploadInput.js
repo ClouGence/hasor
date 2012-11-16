@@ -253,6 +253,7 @@ WebUI.Component.$extends("UIUploadInput", "UIInput", {
 			button_width : this.buttonWidth(),
 			button_height : this.buttonHeight(),
 			button_image_url : buttonImage,
+			button_window_mode : 'transparent',
 			//
 			swfupload_load_failed_handler : this.handlers.swfupload_load_failed_handler,
 			swfupload_preload_handler : this.handlers.swfupload_preload_handler,

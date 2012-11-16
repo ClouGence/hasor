@@ -28,11 +28,9 @@ WebUI.Component.$extends("UICheckManySelectInput", "UISelectInput", {
 		} else {
 			// R
 			var dataList = new Array();
-			var index = 0;
 			$("#" + this.clientID + " li").each(function() {
 				if ($(this).attr('class') == 'checked')
-					dataList.push(index);
-				index++;
+					dataList.push($(this).attr('index'));
 			});
 			return dataList; // 选中值
 		}
@@ -57,8 +55,11 @@ WebUI.Component.$extends("UICheckManySelectInput", "UISelectInput", {
 			if (WebUI.isNaN(itemData['checked']) == false && itemData['checked'] == true) {
 				//
 			} else {
-				for ( var j = 0; j < selectValues.length; j++)
-					itemData['checked'] = (selectValues[j] == arrayData[i][k]) ? true : false;
+				for ( var j = 0; j < selectValues.length; j++) {
+					itemData['checked'] = ((selectValues[j] == arrayData[i][k]) ? true : false);
+					if (itemData['checked'] == true)
+						break;
+				}
 			}
 			// 添加元素
 			var ortData = null;// JSON.stringify(itemData);
@@ -66,17 +67,20 @@ WebUI.Component.$extends("UICheckManySelectInput", "UISelectInput", {
 			var titleMark = ($(this.getElement()).attr('renderType') == 'onlyTitle') ? " style='display:none;'" : "";
 			var href = (WebUI.isNaN(itemData['href']) == true) ? "javascript:void(0)" : itemData['href'];
 			var _input = "<input type='checkbox' forComID='" + this.componentID + "' name='" + this.name() + "' value='" + itemData[k] + "' oriData='" + ortData + "' " + ((ckecked == true) ? "checked='checked'" : "") + titleMark + "/>";
-			var _item = "<li class='" + ((ckecked == true) ? "" : "no") + "checked'><a href='" + href + "'><label><em></em>" + _input + "<span>" + itemData[v] + "</span></label></a></li>";
+			var _item = "<li index='" + i + "' class='" + ((ckecked == true) ? "" : "no") + "checked'><a href='" + href + "'><label><em></em>" + _input + "<span>" + itemData[v] + "</span></label></a></li>";
 			itemHtml = itemHtml + _item;
 		}
 		jqObject.html(itemHtml);
 		/** C---绑定事件 */
 		var fun = this.onchange;
-		$("#" + this.clientID + " input[type=checkbox]").bind("change", function() {
-			var comID = $(this).attr("forComID");
-			var $this = WebUI(comID);
-			$(this).closest("li").attr('class', (this.checked == true) ? "checked" : "nochecked");
+		$("#" + this.clientID + " li").bind("click", function() {
+			var comID = $(this).closest('[cmode]').attr("comid");
+			var checked = ($(this).attr('class') == 'checked') ? true : false;
+			checked = !checked;
+			$(this).attr('class', ((checked == true) ? 'checked' : 'nochecked'));
+			$(this).find("input[type=checkbox]")[0].checked = checked;
 			// 1.值都加入到集合中
+			var $this = WebUI(comID);
 			var arrayData = $this.selectValues();
 			var newValues = new Array();
 			for ( var v in arrayData)
