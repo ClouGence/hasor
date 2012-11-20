@@ -102,7 +102,11 @@ WebUI.runSrcipt = function(scriptContext, thisContext, paramMap) {
 		vars.push(paramMap[k]);
 	}
 	paramsMark = WebUI.deleteLast(paramsMark, ',');
-	var ee = new Function('funBody', 'return new Function(' + paramsMark + ',"return "+funBody);')(scriptContext);
+	var ee = null;
+	if (paramsMark.length == 0)
+		ee = new Function('funBody', 'return new Function("return "+funBody);')(scriptContext);
+	else
+		ee = new Function('funBody', 'return new Function(' + paramsMark + ',"return "+funBody);')(scriptContext);
 	// 2.执行脚本
 	var e = ee.call(thisContext);
 	if (WebUI.isFun(e) == true)

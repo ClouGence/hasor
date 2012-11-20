@@ -32,7 +32,7 @@ import org.more.webui.render.inputs.ButtonInputRender;
 public abstract class UIButton extends UIInput {
     /**通用属性表*/
     public enum Propertys {
-        /**Action动作（-）*/
+        /**Action动作（R）*/
         actionEL
     }
     @Override
@@ -42,7 +42,6 @@ public abstract class UIButton extends UIInput {
         this.addEventListener(UIButton_Event_OnAction.ActionEvent, new UIButton_Event_OnAction());
     }
     /**获取Action EL字符串*/
-    @NoState
     public String getActionEL() {
         return this.getProperty(Propertys.actionEL.name()).valueTo(String.class);
     }

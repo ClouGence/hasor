@@ -41,10 +41,9 @@ public class LinkButtonRender<T extends UIButton> extends AbstractRender<T> {
     public Map<String, Object> tagAttributes(ViewContext viewContext, T component) {
         //----覆盖定义的属性
         Map<String, Object> hashMap = super.tagAttributes(viewContext, component);
-        if (hashMap.containsKey("onclick") == false)
-            hashMap.put("href", "javascript:void(0);");//writer.write("<a href='javascript:void(0);'");
-        else
-            hashMap.put("href", "#");//writer.write("<a href='javascript:void(0);'");
+        hashMap.put("href", "javascript:void(0);");//writer.write("<a href='javascript:void(0);'");
+        if (hashMap.containsKey("onclick") == true)
+            hashMap.put("_onclick", hashMap.remove("onclick"));//writer.write("<a _onclick='xxx'");
         return hashMap;
     }
     @Override

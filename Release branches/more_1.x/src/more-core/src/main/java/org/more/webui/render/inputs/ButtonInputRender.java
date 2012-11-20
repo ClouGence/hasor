@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.webui.render.inputs;
+import java.util.Map;
 import org.more.webui.components.UIInput;
 import org.more.webui.context.ViewContext;
 /**
@@ -30,5 +31,12 @@ public class ButtonInputRender<T extends UIInput> extends AbstractInputRender<T>
     @Override
     public InputType getInputType(ViewContext viewContext, T component) {
         return InputType.button;
+    }
+    @Override
+    public Map<String, Object> tagAttributes(ViewContext viewContext, T component) {
+        Map<String, Object> hashMap = super.tagAttributes(viewContext, component);
+        if (hashMap.containsKey("onclick") == true)
+            hashMap.put("_onclick", hashMap.remove("onclick"));//writer.write("<a _onclick='xxx'");
+        return hashMap;
     }
 }
