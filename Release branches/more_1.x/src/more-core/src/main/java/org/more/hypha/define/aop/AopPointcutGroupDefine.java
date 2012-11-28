@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.define;
+package org.more.hypha.define.aop;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;

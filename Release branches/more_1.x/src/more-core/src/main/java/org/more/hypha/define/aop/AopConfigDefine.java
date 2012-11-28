@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.define;
+package org.more.hypha.define.aop;
 import java.util.ArrayList;
+import org.more.hypha.define.AbstractDefine;
 /**
  * aop≈‰÷√
  * @version 2010-9-25

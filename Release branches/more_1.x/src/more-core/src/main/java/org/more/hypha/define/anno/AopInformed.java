@@ -18,7 +18,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.more.hypha.define.AopPointcutType;
+import org.more.hypha.define.aop.AopPointcutType;
 /**
  * 该类的一个aop通知者，通过该注解配置aop的一个具体切入点。
  * @version 2010-10-13

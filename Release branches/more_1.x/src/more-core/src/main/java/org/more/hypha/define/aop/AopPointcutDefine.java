@@ -13,23 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.define;
+package org.more.hypha.define.aop;
 import java.lang.reflect.Method;
 /**
- * 切入点，该类的职责是负责对类或方法进行匹配。
- * @version 2010-9-25
+ * 切入点定义
+ * @version 2010-9-24
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AopAbstractPointcutDefine extends AbstractDefine<AopAbstractPointcutDefine> {
-    private String name = null;
-    /**获取切入点名称*/
-    public String getName() {
-        return name;
+public class AopPointcutDefine extends AopAbstractPointcutDefine {
+    private String expression = null;
+    /**获取匹配字符串。*/
+    public String getExpression() {
+        return this.expression;
     };
-    /**匹配一个方法是否符合表达式的要求。*/
-    public abstract boolean isMatch(Method method);
-    /**设置切点名*/
-    public void setName(String name) {
-        this.name = name;
+    /**设置表达式*/
+    public void setExpression(String expression) {
+        this.expression = expression;
+    };
+    /**测试方法是否被包含在切入点*/
+    public boolean isMatch(Method method) {
+        //TODO 实现匹配 
+        return true;
     };
 };

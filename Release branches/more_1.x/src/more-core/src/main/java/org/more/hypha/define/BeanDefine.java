@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.more.hypha.define.aop.AopConfigDefine;
 import org.more.hypha.utils.DefineUtils;
 /**
  * TemplateBeanDefine类用于定义一个bean的模板。

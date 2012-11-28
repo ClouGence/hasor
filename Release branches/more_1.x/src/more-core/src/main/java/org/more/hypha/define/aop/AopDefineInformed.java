@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.hypha.define;
+package org.more.hypha.define.aop;
 /**
- * 该类型aop定义可以定义一个无参数的方法作为aop接收调用方法，aop状态数据需要通过aop运行时获取。
- * 该类型不支持{@link AopPointcutType#Filter}形式的aop。
+ * 引用已注册的bean定义aop类型
  * @version 2010-9-27
  * @author 赵永春 (zyc@byshell.org)
  */
-public class AopMethodInformed extends AopAbstractInformed {
-    private String method  = null; //定义的方法名
+public class AopDefineInformed extends AopAbstractInformed {
     private String refBean = null; //连接的aopBean
     /**获取关联的refBean。*/
     public String getRefBean() {
@@ -30,13 +28,5 @@ public class AopMethodInformed extends AopAbstractInformed {
     /**设置关联的RefBean。*/
     public void setRefBean(String refBean) {
         this.refBean = refBean;
-    }
-    /**获取定义的方法名。*/
-    public String getMethod() {
-        return this.method;
-    }
-    /**设置定义的方法名。*/
-    public void setMethod(String method) {
-        this.method = method;
     }
 }
