@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 package org.more.hypha.define;
+import java.util.HashMap;
+import java.util.Map;
 /**
  * 表示一个属性值的抽象类
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class ValueMetaData extends AbstractDefine<ValueMetaData> implements PropertyMetaTypeEnum {
-    private AbstractPropertyDefine forPropertyDefine = null;
-    /**获取该元信息所属的属性定义。*/
-    public AbstractPropertyDefine getFor() {
-        return this.forPropertyDefine;
+public abstract class ValueMetaData extends AbstractDefine<ValueMetaData> {
+    /*除了值和类型之外配置的其他属性，这些扩展配置属性的目的是当解析它的时候会使用。或用于携带信息。*/
+    private Map<String, String> extParams = new HashMap<String, String>();
+    /*------------------------------------------------------------------*/
+    /**获取值类型*/
+    public abstract String getType();
+    /**获取配置的其他属性（这些扩展配置属性的目的是当解析它的时候会使用。或用于携带信息）*/
+    public Map<String, String> getExtParams() {
+        return extParams;
     }
-    public void setFor(AbstractPropertyDefine forPropertyDefine) {
-        this.forPropertyDefine = forPropertyDefine;
-    };
-    /**返回这个属性的属性类型，该类型用于描述属性的类型特征。*/
-    public abstract String getMetaDataType();
+    /**设置配置的其他属性（这些扩展配置属性的目的是当解析它的时候会使用。或用于携带信息）*/
+    public void setExtParams(Map<String, String> extParams) {
+        this.extParams = extParams;
+    }
 }

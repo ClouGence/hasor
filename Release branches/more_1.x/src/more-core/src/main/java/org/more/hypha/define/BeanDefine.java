@@ -15,260 +15,193 @@
  */
 package org.more.hypha.define;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import org.more.core.error.RepeateException;
+import java.util.Map;
+import org.more.hypha.utils.DefineUtils;
 /**
  * TemplateBeanDefine类用于定义一个bean的模板。
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class BeanDefine extends AbstractDefine<BeanDefine> {
-    private String                          id            = null;                                       //id
-    private String                          name          = null;                                       //名称
-    private String                          logicPackage  = null;                                       //逻辑包
-    private String                          iocEngine     = "Ioc";                                      //生成Bean所使用的生成器名
-    private boolean                         boolAbstract  = false;                                      //抽象标志
-    private boolean                         boolSingleton = false;                                      //单态标志
-    private boolean                         boolLazyInit  = true;                                       //延迟装载标志
-    private boolean                         boolCheckType = true;                                       //是否要求强制类型检查
-    private String                          description   = null;                                       //描述信息
-    /**获取工厂bean。*/
-    private BeanDefine                      factoryBean   = null;
-    private MethodDefine                    factoryMethod = null;
-    /**获取bean的Aop描述*/
-    private AopConfigDefine                 aopConfig     = null;
+    /**Base Info*/
     //
-    private ArrayList<ConstructorDefine>    initParams    = new ArrayList<ConstructorDefine>();         //初始化参数
-    private List<String>                    propertyNames = new ArrayList<String>();
-    private HashMap<String, PropertyDefine> propertys     = new LinkedHashMap<String, PropertyDefine>(); //属性
-    private List<String>                    methodNames   = new ArrayList<String>();
-    private HashMap<String, MethodDefine>   methods       = new HashMap<String, MethodDefine>();        //方法
-    private String                          initMethod    = null;                                       //初始化方法
-    private String                          destroyMethod = null;                                       //销毁方法
-    private BeanDefine                      useTemplate   = null;                                       //应用的模板
-    //-------------------------------------------------------------
-    /**返回bean的唯一编号，如果没有指定id属性则id值将是fullName属性值。*/
-    public String getID() {
-        if (this.id == null)
-            this.id = this.getFullName();
-        return this.id;
-    };
-    /**返回bean的名称，如果指定了package属性那么name的值可以出现重复。*/
-    public String getName() {
-        return this.name;
-    };
-    /**获取Bean的逻辑包定义，这个包定义与类的实际所处包不同。它表现为一个外在的逻辑管理形式。*/
-    public String getPackage() {
-        return this.logicPackage;
-    };
-    /**获取包含package和bean名的虚拟类完整限定名。*/
-    public String getFullName() {
-        if (this.logicPackage != null)
-            return this.logicPackage + "." + this.name;
-        else
-            return this.getName();
-    }
-    /**属性注入所使用的注入方式，Fact，Ioc，User*/
-    public String getIocEngine() {
-        return this.iocEngine;
-    }
-    /**设置注入所使用的注入方式，Fact，Ioc，User*/
-    public void setIocEngine(String iocEngine) {
-        this.iocEngine = iocEngine;
-    }
-    /**返回一个boolean值，表示类是否为一个抽象类。*/
-    public boolean isAbstract() {
-        return this.boolAbstract;
-    };
-    /**返回一个boolean值，表示这个bean是否为单态的。*/
-    public boolean isSingleton() {
-        return this.boolSingleton;
-    };
-    /**返回一个boolean值，表示这个bean是否为延迟装载的。*/
-    public boolean isLazyInit() {
-        return this.boolLazyInit;
-    };
-    /**是否要求强制类型检查*/
-    public boolean isCheck() {
-        return this.boolCheckType;
-    };
-    /**返回bean的描述信息。*/
-    public String getDescription() {
-        return this.description;
-    };
-    /**获取工厂bean。*/
-    public BeanDefine factoryBean() {
-        return this.factoryBean;
-    };
-    /**该方法与factoryName()方法是成对出现的，该方法表明目标方法的代理名称。*/
-    public MethodDefine factoryMethod() {
-        return this.factoryMethod;
-    };
-    /**获取方法的定义，如果当前定义中没有声明则自动到使用的模板中查找。依次类推直到模板返回为空。*/
-    public MethodDefine getMethod(String name) {
-        MethodDefine md = this.getDeclaredMethod(name);
-        if (md == null && this.useTemplate != null)
-            return this.useTemplate.getMethod(name);
-        return md;
-    };
-    /**获取方法的定义，该方法只会在当前定义中查找。*/
-    public MethodDefine getDeclaredMethod(String name) {
-        return this.methods.get(name);
-    };
-    /**获取当前定义中可用的方法声明集合。*/
-    public Collection<? extends MethodDefine> getMethods() {
-        HashMap<String, MethodDefine> ms = new HashMap<String, MethodDefine>();
-        ms.putAll(this.methods);
-        if (this.useTemplate != null)
-            for (MethodDefine m : this.useTemplate.getMethods())
-                if (ms.containsKey(m.getName()) == false)
-                    ms.put(m.getName(), m);
-        return Collections.unmodifiableCollection((Collection<MethodDefine>) ms.values());
-    };
-    /**获取当前定义中声明的方法列表，返回的结果不包括使用的模板中的方法声明。*/
-    public Collection<? extends MethodDefine> getDeclaredMethods() {
-        return Collections.unmodifiableCollection((Collection<MethodDefine>) this.methods.values());
-    };
-    /**获取属性定义，如果当前定义中没有声明则自动到使用的模板中查找。依次类推直到模板返回为空。*/
-    public PropertyDefine getProperty(String name) {
-        PropertyDefine define = this.getDeclaredProperty(name);
-        if (define == null && this.useTemplate != null)
-            return this.useTemplate.getProperty(name);
-        return define;
-    };
-    /**获取属性定义，该方法只会在当前定义中查找。*/
-    public PropertyDefine getDeclaredProperty(String name) {
-        return this.propertys.get(name);
-    };
-    /**返回bean的定义属性集合，返回的集合是一个只读集合。*/
-    public Collection<? extends PropertyDefine> getPropertys() {
-        HashMap<String, PropertyDefine> ps = new HashMap<String, PropertyDefine>();
-        ps.putAll(this.propertys);
-        if (this.useTemplate != null)
-            for (PropertyDefine p : this.useTemplate.getPropertys())
-                if (ps.containsKey(p.getName()) == false)
-                    ps.put(p.getName(), p);
-        return Collections.unmodifiableCollection((Collection<PropertyDefine>) ps.values());
-    };
-    /**获取当前定义中声明的属性列表，返回的结果不包括使用的模板中的属性声明。*/
-    public Collection<? extends PropertyDefine> getDeclaredPropertys() {
-        return Collections.unmodifiableCollection((Collection<PropertyDefine>) this.propertys.values());
-    };
-    /**获取初始化方法名。*/
-    public String getInitMethod() {
-        return this.initMethod;
-    };
-    /**获取销毁方法名。*/
-    public String getDestroyMethod() {
-        return this.destroyMethod;
-    };
-    /**获取bean使用的模板。*/
-    public BeanDefine getUseTemplate() {
-        return this.useTemplate;
-    };
-    /**
-     * 该属性定义了当创建这个bean时候需要的启动参数。
-     * 启动参数通常是指构造方法参数，对于工厂形式创建启动参数代表了工厂方法的参数列表。
-     * 返回的集合是一个只读集合。
-     */
-    public Collection<ConstructorDefine> getInitParams() {
-        return Collections.unmodifiableCollection((Collection<ConstructorDefine>) this.initParams);
-    };
+    /*每个Bean唯一的ID值。*/
+    private String                      id            = null;
+    /*名称,在不同的scope下可以重复定义。*/
+    private String                      name          = null;
+    /*所属的作用域。*/
+    private String                      scope         = null;
+    /*初始化参数&构造方法参数*/
+    private List<ParamDefine>           initParams    = new ArrayList<ParamDefine>();
+    /*应用的模板*/
+    private String                      useTemplate   = null;
+    /*------------------------------------------------------------------*/
+    /**Mark Info*/
+    //
+    /*抽象标志*/
+    private boolean                     abstractMark  = false;
+    /*单态标志*/
+    private boolean                     singletonMark = false;
+    /*延迟装载标志*/
+    private boolean                     lazyMark      = true;
+    /*描述信息*/
+    private String                      description   = null;
+    /*------------------------------------------------------------------*/
+    /**Create Info*/
+    //
+    /*工厂Bean名称或ID。*/
+    private String                      factoryBean   = null;
+    /*工厂Bean,下用于创建该bean的方法名。*/
+    private String                      factoryMethod = null;
+    /*初始化方法（生命周期：阶段-出生）*/
+    private String                      initMethod    = null;
+    /*销毁方法（生命周期：阶段-死亡）*/
+    private String                      destroyMethod = null;
+    /*------------------------------------------------------------------*/
+    /**Member Info*/
+    //
+    /*属性成员*/
+    private Map<String, PropertyDefine> propertys     = new HashMap<String, PropertyDefine>();
+    /*方法成员*/
+    private Map<String, MethodDefine>   methods       = new HashMap<String, MethodDefine>();
+    /*------------------------------------------------------------------*/
+    /**Expand Info*/
+    //
+    /*有关Aop方面的配置描述*/
+    private AopConfigDefine             aopConfig     = null;
+    /*------------------------------------------------------------------*/
     /**返回具有特征的字符串。*/
     public String toString() {
-        return this.getClass().getSimpleName() + "@" + this.hashCode() + " name=" + this.getName();
+        return this.getClass().getSimpleName() + "@" + this.hashCode() + " UID=" + DefineUtils.getFullName(this);
     };
-    /**添加一个启动参数，被添加的启动参数会自动进行排序。*/
-    public void addInitParam(ConstructorDefine constructorParam) {
-        if (constructorParam.getIndex() == -1)
-            constructorParam.setIndex(this.initParams.size());
-        this.initParams.add(constructorParam);
-        final BeanDefine define = this;
-        Collections.sort(this.initParams, new Comparator<ConstructorDefine>() {
-            public int compare(ConstructorDefine arg0, ConstructorDefine arg1) {
-                int cdefine_1 = arg0.getIndex();
-                int cdefine_2 = arg1.getIndex();
-                if (cdefine_1 > cdefine_2)
-                    return 1;
-                else if (cdefine_1 < cdefine_2)
-                    return -1;
-                else
-                    throw new RepeateException(define + "[" + arg0 + "]与[" + arg1 + "]构造参数索引重复.");
-            }
-        });
-    };
-    /**添加一个属性。*/
-    public void addProperty(PropertyDefine property) {
-        this.propertyNames.add(property.getName());
-        this.propertys.put(property.getName(), property);
-    };
-    /**添加一个方法描述。*/
-    public void addMethod(MethodDefine method) {
-        this.methodNames.add(method.getName());
-        this.methods.put(method.getName(), method);
-    };
-    /**获取bean的Aop描述*/
-    public AopConfigDefine getAopConfig() {
-        return aopConfig;
+    //
+    /**获取Bean唯一的ID值。*/
+    public String getId() {
+        return id;
     }
-    //-------------------------------------------------------------
-    /**设置id。*/
+    /**设置Bean唯一的ID值。*/
     public void setId(String id) {
         this.id = id;
     }
-    /**设置Bean名。*/
+    /**获取名称,名称在不同的scope下可以重复定义。*/
+    public String getName() {
+        return name;
+    }
+    /**设置名称,名称在不同的scope下可以重复定义。*/
     public void setName(String name) {
         this.name = name;
     }
-    /**设置逻辑包名称*/
-    public void setLogicPackage(String logicPackage) {
-        this.logicPackage = logicPackage;
+    /**获取所属的作用域。*/
+    public String getScope() {
+        return scope;
     }
-    /**设置描述信息。*/
+    /**设置所属的作用域。*/
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+    /**获取初始化参数&构造方法参数*/
+    public List<ParamDefine> getInitParams() {
+        return initParams;
+    }
+    /**设置初始化参数&构造方法参数*/
+    public void setInitParams(List<ParamDefine> initParams) {
+        this.initParams = initParams;
+    }
+    /**获取应用的模板*/
+    public String getUseTemplate() {
+        return useTemplate;
+    }
+    /**设置应用的模板*/
+    public void setUseTemplate(String useTemplate) {
+        this.useTemplate = useTemplate;
+    }
+    /**获取抽象标志*/
+    public boolean isAbstractMark() {
+        return abstractMark;
+    }
+    /**设置抽象标志*/
+    public void setAbstractMark(boolean abstractMark) {
+        this.abstractMark = abstractMark;
+    }
+    /**获取单态标志*/
+    public boolean isSingletonMark() {
+        return singletonMark;
+    }
+    /**设置单态标志*/
+    public void setSingletonMark(boolean singletonMark) {
+        this.singletonMark = singletonMark;
+    }
+    /**获取延迟装载标志*/
+    public boolean isLazyMark() {
+        return lazyMark;
+    }
+    /**设置延迟装载标志*/
+    public void setLazyMark(boolean lazyMark) {
+        this.lazyMark = lazyMark;
+    }
+    /**获取描述信息*/
+    public String getDescription() {
+        return description;
+    }
+    /**设置描述信息*/
     public void setDescription(String description) {
         this.description = description;
     }
-    public void setFactoryBean(BeanDefine factoryBean) {
+    /**获取工厂Bean名称或ID。*/
+    public String getFactoryBean() {
+        return factoryBean;
+    }
+    /**设置工厂Bean名称或ID。*/
+    public void setFactoryBean(String factoryBean) {
         this.factoryBean = factoryBean;
     }
-    /**设置创建该Bean时使用的工厂bean的方法描述。*/
-    public void setFactoryMethod(MethodDefine factoryMethod) {
+    /**获取工厂Bean,下用于创建该bean的方法名。*/
+    public String getFactoryMethod() {
+        return factoryMethod;
+    }
+    /**设置工厂Bean,下用于创建该bean的方法名。*/
+    public void setFactoryMethod(String factoryMethod) {
         this.factoryMethod = factoryMethod;
     }
-    /**设置该bean是否为一个抽象的。*/
-    public void setBoolAbstract(boolean boolAbstract) {
-        this.boolAbstract = boolAbstract;
+    /**获取初始化方法（生命周期：阶段-出生）*/
+    public String getInitMethod() {
+        return initMethod;
     }
-    /**设置该bean是否为一个单态的。*/
-    public void setBoolSingleton(boolean boolSingleton) {
-        this.boolSingleton = boolSingleton;
-    }
-    /**设置该bean是否为一个延迟初始化的。*/
-    public void setBoolLazyInit(boolean boolLazyInit) {
-        this.boolLazyInit = boolLazyInit;
-    }
-    /**设置是否执行强制检查。*/
-    public void setBoolCheckType(boolean boolCheckType) {
-        this.boolCheckType = boolCheckType;
-    }
-    /**设置bean初始化方法。*/
+    /**设置初始化方法（生命周期：阶段-出生）*/
     public void setInitMethod(String initMethod) {
         this.initMethod = initMethod;
     }
-    /**设置bean销毁方法。*/
+    /**获取销毁方法（生命周期：阶段-死亡）*/
+    public String getDestroyMethod() {
+        return destroyMethod;
+    }
+    /**设置销毁方法（生命周期：阶段-死亡）*/
     public void setDestroyMethod(String destroyMethod) {
         this.destroyMethod = destroyMethod;
     }
-    /**设置bean使用的模板。*/
-    public void setUseTemplate(BeanDefine useTemplate) {
-        this.useTemplate = useTemplate;
+    /**获取属性成员*/
+    public Map<String, PropertyDefine> getPropertys() {
+        return propertys;
     }
-    /**设置bean的Aop描述*/
+    /**设置属性成员*/
+    public void setPropertys(Map<String, PropertyDefine> propertys) {
+        this.propertys = propertys;
+    }
+    /**获取方法成员*/
+    public Map<String, MethodDefine> getMethods() {
+        return methods;
+    }
+    /**设置方法成员*/
+    public void setMethods(Map<String, MethodDefine> methods) {
+        this.methods = methods;
+    }
+    /**获取有关Aop方面的配置描述*/
+    public AopConfigDefine getAopConfig() {
+        return aopConfig;
+    }
+    /**设置有关Aop方面的配置描述*/
     public void setAopConfig(AopConfigDefine aopConfig) {
         this.aopConfig = aopConfig;
     }

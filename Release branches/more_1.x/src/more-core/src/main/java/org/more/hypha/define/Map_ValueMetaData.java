@@ -14,37 +14,16 @@
  * limitations under the License.
  */
 package org.more.hypha.define;
-import java.util.HashMap;
 import java.util.Map;
 /**
- * 表示一个{@link Map}类型的值元信息描述，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#MapCollection}。
+ * 表示一个{@link Map}类型的值元信息描述。
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Map_ValueMetaData extends Collection_ValueMetaData<MapEntity_ValueMetaData> {
-    private HashMap<ValueMetaData, ValueMetaData> valueData = new HashMap<ValueMetaData, ValueMetaData>(); //数据
-    /**该方法将会返回{@link PropertyMetaTypeEnum#MapCollection}。*/
-    public String getMetaDataType() {
-        return PropertyMetaTypeEnum.MapCollection;
+    /**返回{@link PropertyType#Map}*/
+    @Override
+    public String getType() {
+        return PropertyType.Map.value();
     }
-    /**以Map形式返回集合中的数据。*/
-    public Map<ValueMetaData, ValueMetaData> getCollectionValue() {
-        return this.valueData;
-    }
-    /**添加一个元素。*/
-    public void addObject(ValueMetaData key, ValueMetaData value) {
-        this.valueData.put(key, value);
-    };
-    /**添加一个元素。*/
-    public void addObject(MapEntity_ValueMetaData mapEntity) {
-        this.valueData.put(mapEntity.getKey(), mapEntity.getValue());
-    };
-    /**删除一个元素。*/
-    public void removeObject(ValueMetaData key) {
-        this.valueData.remove(key);
-    };
-    /**获取集合当前数据内容条数数。*/
-    public int size() {
-        return this.valueData.size();
-    };
 }

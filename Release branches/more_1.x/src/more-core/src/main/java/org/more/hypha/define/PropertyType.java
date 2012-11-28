@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 package org.more.hypha.define;
+import java.io.File;
+import java.net.URI;
+import java.net.URL;
+import java.util.Date;
 /**
  * 该枚举中定义了{@link Simple_ValueMetaData}类可以表示的基本类型。
  * @version 2010-11-11
@@ -21,23 +25,56 @@ package org.more.hypha.define;
  */
 public enum PropertyType {
     /**null数据。*/
-    Null,
+    Null("vt:null"),
     /**布尔类型。*/
-    Boolean,
+    Boolean("vt:boolean"),
     /**字节类型。*/
-    Byte,
+    Byte("vt:byte"),
     /**短整数类型。*/
-    Short,
+    Short("vt:short"),
     /**整数类型。*/
-    Int,
+    Int("vt:int"),
     /**长整数类型。*/
-    Long,
+    Long("vt:long"),
     /**单精度浮点数类型。*/
-    Float,
+    Float("vt:float"),
     /**双精度浮点数类型。*/
-    Double,
+    Double("vt:double"),
     /**字符类型。*/
-    Char,
+    Char("vt:char"),
     /**字符串类型。*/
-    String,
+    String("vt:string"),
+    //
+    /**数组类型。*/
+    Array("vt:array"),
+    /**集合类型。*/
+    List("vt:list"),
+    /**Set类型。*/
+    Set("vt:set"),
+    /**Map类型。*/
+    Map("vt:map"),
+    /**Map的一个实体类型。*/
+    MapEntity("vt:entity"),
+    //
+    /**Map类型。*/
+    Ref("vt:ref"),
+    //
+    /**Json数据类型。*/
+    Json("vt:json"),
+    /**{@link URL}类型。*/
+    URL("vt:url"),
+    /**{@link URI}类型。*/
+    URI("vt:uri"),
+    /**{@link File}类型。*/
+    File("vt:file"),
+    /**{@link Date}类型。*/
+    Date("vt:date"), ;
+    /*------------------------------------------------------------------*/
+    private String value = null;
+    PropertyType(String value) {
+        this.value = value;
+    }
+    public String value() {
+        return this.value;
+    }
 }

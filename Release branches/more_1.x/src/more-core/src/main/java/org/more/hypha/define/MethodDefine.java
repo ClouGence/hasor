@@ -15,65 +15,62 @@
  */
 package org.more.hypha.define;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import org.more.core.error.RepeateException;
+import java.util.List;
 /**
  * 该接口用于定义{@link BeanDefine}上的一个方法。
  * @version 2010-10-13
  * @author 赵永春 (zyc@byshell.org)
  */
 public class MethodDefine extends AbstractDefine<MethodDefine> {
-    private String                 name       = null;
-    private String                 codeName   = null;
-    private ArrayList<ParamDefine> params     = new ArrayList<ParamDefine>(); //属性
-    private boolean                boolStatic = false;
-    /**用于返回一个boolean值，该值表明位于bean上的方法是否为一个静态方法。*/
-    public boolean isStatic() {
-        return this.boolStatic;
+    /*静态方法标记*/
+    private boolean           staticMark = false;
+    /*定义的方法名（内部名称）.*/
+    private String            name       = null;
+    /*方法的真实名称.*/
+    private String            codeName   = null;
+    /*方法的返回值.*/
+    private String            returnType = null;
+    /*方法参数定义列表 */
+    private List<ParamDefine> params     = new ArrayList<ParamDefine>();
+    /*------------------------------------------------------------------*/
+    /**获取静态方法标记*/
+    public boolean isStaticMark() {
+        return staticMark;
     }
-    /**返回方法的代理名称，代理名称是用于索引方法的目的。*/
+    /**设置静态方法标记*/
+    public void setStaticMark(boolean staticMark) {
+        this.staticMark = staticMark;
+    }
+    /**获取定义的方法名（内部名称）.*/
     public String getName() {
-        return this.name;
-    };
-    /**返回方法的真实名称，该属性是表示方法的真实方法名。*/
-    public String getCodeName() {
-        return this.codeName;
-    };
-    /**返回方法的参数列表描述，返回的集合是只读的。*/
-    public Collection<? extends ParamDefine> getParams() {
-        return Collections.unmodifiableCollection(this.params);
+        return name;
     }
-    /**添加参数*/
-    public void addParam(ParamDefine param) {
-        if (param.getIndex() == -1)
-            param.setIndex(this.params.size());
-        this.params.add(param);
-        final MethodDefine define = this;
-        Collections.sort(this.params, new Comparator<ParamDefine>() {
-            public int compare(ParamDefine arg0, ParamDefine arg1) {
-                int cdefine_1 = arg0.getIndex();
-                int cdefine_2 = arg1.getIndex();
-                if (cdefine_1 > cdefine_2)
-                    return 1;
-                else if (cdefine_1 < cdefine_2)
-                    return -1;
-                else
-                    throw new RepeateException(define + "[" + arg0 + "]与[" + arg1 + "]方法参数索引重复.");
-            }
-        });
-    }
-    /**设置name属性*/
+    /**设置定义的方法名（内部名称）.*/
     public void setName(String name) {
         this.name = name;
     }
-    /**设置codeName属性*/
+    /**获取方法的真实名称.*/
+    public String getCodeName() {
+        return codeName;
+    }
+    /**设置方法的真实名称.*/
     public void setCodeName(String codeName) {
         this.codeName = codeName;
     }
-    /**设置该方法是否为一个静态方法。*/
-    public void setBoolStatic(boolean boolStatic) {
-        this.boolStatic = boolStatic;
+    /**获取方法的返回值.*/
+    public String getReturnType() {
+        return returnType;
+    }
+    /**设置方法的返回值.*/
+    public void setReturnType(String returnType) {
+        this.returnType = returnType;
+    }
+    /**获取方法参数定义列表 */
+    public List<ParamDefine> getParams() {
+        return params;
+    }
+    /**设置方法参数定义列表 */
+    public void setParams(List<ParamDefine> params) {
+        this.params = params;
     }
 }

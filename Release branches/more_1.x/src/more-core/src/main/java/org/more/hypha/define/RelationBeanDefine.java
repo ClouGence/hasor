@@ -20,8 +20,8 @@ package org.more.hypha.define;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class RelationBeanDefine extends BeanDefine {
-    private String ref        = null; //所引用的Bean名或id
-    private String refPackage = null; //所引用的Bean作用域
+    private String ref      = null; //所引用的Bean名或id
+    private String refScope = null; //所引用的Bean作用域
     /**返回“RelationBean”。*/
     public String getBeanType() {
         return "RelationBean";
@@ -35,11 +35,11 @@ public class RelationBeanDefine extends BeanDefine {
         this.ref = ref;
     }
     /**获取引用的Bean所属作用域。*/
-    public String getRefPackage() {
-        return this.refPackage;
+    public String getRefScope() {
+        return this.refScope;
     }
     /**设置引用的Bean所属作用域。*/
-    public void setRefPackage(String refPackage) {
-        this.refPackage = refPackage;
+    public void setRefScope(String refScope) {
+        this.refScope = refScope;
     }
 }

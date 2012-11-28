@@ -20,24 +20,24 @@ package org.more.hypha.define;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class PropertyDefine extends AbstractPropertyDefine {
-    private String  name         = null; //属性名
-    private boolean boolLazyInit = false; //是否延迟注入该属性。
+    private String  name     = null; //属性名
+    private boolean lazyMark = false; //是否延迟注入该属性。
     //-------------------------------------------------------------
     /**返回属性名。*/
     public String getName() {
         return this.name;
-    }
+    };
     /**设置属性名*/
     public void setName(String name) {
         this.name = name;
     };
-    /**设置是否延迟初始化该属性*/
-    public void setBoolLazyInit(boolean boolLazyInit) {
-        this.boolLazyInit = boolLazyInit;
-    }
     /**返回一个boolean值，表示这个bean是否为延迟注入的。*/
-    public boolean isLazyInit() {
-        return this.boolLazyInit;
+    public boolean isLazyMark() {
+        return lazyMark;
+    };
+    /**设置是否延迟初始化该属性*/
+    public void setLazyMark(boolean lazyMark) {
+        this.lazyMark = lazyMark;
     };
     /**返回具有特征的字符串。*/
     public String toString() {

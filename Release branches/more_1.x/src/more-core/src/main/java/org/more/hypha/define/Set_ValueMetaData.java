@@ -14,33 +14,16 @@
  * limitations under the License.
  */
 package org.more.hypha.define;
-import java.util.HashSet;
 import java.util.Set;
 /**
- * 表示一个{@link Set}类型的值元信息描述，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#SetCollection}。
+ * 表示一个{@link Set}类型的值元信息描述。
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Set_ValueMetaData extends Collection_ValueMetaData<ValueMetaData> {
-    private HashSet<ValueMetaData> valueData = new HashSet<ValueMetaData>(); //数据
-    /**该方法将会返回{@link PropertyMetaTypeEnum#SetCollection}。*/
-    public String getMetaDataType() {
-        return PropertyMetaTypeEnum.SetCollection;
+    /**返回{@link PropertyType#Array}*/
+    @Override
+    public String getType() {
+        return PropertyType.Set.value();
     }
-    /**以Set形式返回集合中的数据。*/
-    public Set<ValueMetaData> getCollectionValue() {
-        return this.valueData;
-    }
-    /**添加一个元素。*/
-    public void addObject(ValueMetaData value) {
-        this.valueData.add(value);
-    };
-    /**删除一个元素。*/
-    public void removeObject(ValueMetaData value) {
-        this.valueData.remove(value);
-    };
-    /**获取集合当前数据内容条数数。*/
-    public int size() {
-        return this.valueData.size();
-    };
 }

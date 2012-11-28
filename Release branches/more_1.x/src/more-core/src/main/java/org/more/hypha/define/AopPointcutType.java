@@ -15,9 +15,9 @@
  */
 package org.more.hypha.define;
 import org.more.core.classcode.AopBeforeListener;
+import org.more.core.classcode.AopInvokeFilter;
 import org.more.core.classcode.AopReturningListener;
 import org.more.core.classcode.AopThrowingListener;
-import org.more.core.classcode.AopInvokeFilter;
 /**
  * aop切面定义类型。
  * @version 2010-9-27

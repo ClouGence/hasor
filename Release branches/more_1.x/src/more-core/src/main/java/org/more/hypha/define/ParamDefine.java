@@ -20,11 +20,16 @@ package org.more.hypha.define;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class ParamDefine extends AbstractPropertyDefine {
-    private int    index = -1;  //属性索引，负数为自动分配
-    private String name  = null; //属性名
+    /*属性索引，负数为自动分配*/
+    private int    index = -1;
+    /*属性名*/
+    private String name  = null;
+    /*------------------------------------------------------------------*/
+    /**获取属性索引，负数为自动分配*/
     public int getIndex() {
         return this.index;
     }
+    /**设置属性索引，负数为自动分配*/
     public void setIndex(int index) {
         this.index = index;
     }

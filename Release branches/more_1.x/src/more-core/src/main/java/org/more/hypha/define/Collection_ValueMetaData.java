@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 package org.more.hypha.define;
+import java.util.ArrayList;
+import java.util.List;
 /**
  * 表示一个集合类型的抽象类其子类决定具体可以表述的集合类型。
  * @version 2010-9-18
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class Collection_ValueMetaData<T extends ValueMetaData> extends ValueMetaData {
-    private String collectionType = null; //集合对象类型，如果是数组则该值与属性collectionValueType一致。
-    private int    initSize       = 0;   //表示集合初始化大小
+    /*集合对象类型，如果是数组则该值与属性collectionValueType一致。*/
+    private String  collectionType = null;
+    /*数据*/
+    private List<T> values         = new ArrayList<T>();
+    /*------------------------------------------------------------------*/
     /**获取集合对象类型，如果是数组则该值与属性collectionValueType一致。*/
     public String getCollectionType() {
         return this.collectionType;
@@ -30,19 +35,12 @@ public abstract class Collection_ValueMetaData<T extends ValueMetaData> extends 
     public void setCollectionType(String collectionType) {
         this.collectionType = collectionType;
     }
-    /**返回最大的，*/
-    public int getInitSize() {
-        int size = this.size();
-        if (size > initSize)
-            return size;
-        return initSize;
+    /**获取属性集合。*/
+    public List<T> getValues() {
+        return this.values;
     };
-    /**设置集合初始化大小*/
-    public void setInitSize(int initSize) {
-        this.initSize = initSize;
-    }
-    /**添加一个属性值到当前集合中。*/
-    public abstract void addObject(T value);
-    /**获取集合当前数据内容条数数。*/
-    public abstract int size();
+    /**设置属性集合。*/
+    public void setValues(List<T> values) {
+        this.values = values;
+    };
 }

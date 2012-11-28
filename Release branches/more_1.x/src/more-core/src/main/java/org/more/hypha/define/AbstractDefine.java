@@ -26,7 +26,7 @@ import org.more.core.log.LogFactory;
 public abstract class AbstractDefine<T> {
     private static final Log        log       = LogFactory.getLog(AbstractDefine.class);
     private HashMap<String, Object> attribute = null;                                   //属性，为了提供IAttribute接口功能。
-    /*------------------------------------------------------------------------------*/
+    /*------------------------------------------------------------------*/
     /**获取定义的属性对象，并且以{@link Map}接口形式返回。*/
     protected Map<String, Object> getAttribute() {
         if (this.attribute == null) {

@@ -20,34 +20,35 @@ package org.more.hypha.define;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractPropertyDefine extends AbstractDefine<AbstractPropertyDefine> {
-    private String        classType     = null; //当执行属性注入时需要执行的类型转换类型
-    private String        description   = null; //属性描述
-    private ValueMetaData valueMetaData = null; //值描述
-    //-------------------------------------------------------------
+    /*当执行属性注入时需要执行的类型转换类型*/
+    private String        classType     = null;
+    /*属性描述*/
+    private String        description   = null;
+    /*属性值描述*/
+    private ValueMetaData valueMetaData = null;
+    /*------------------------------------------------------------------*/
     /**返回当执行属性注入时需要执行的类型转换类型。*/
     public String getClassType() {
         return this.classType;
     };
-    /**返回属性的描述信息。*/
-    public String getDescription() {
-        return this.description;
-    };
-    /**获取对该属性的值信息描述。*/
-    public ValueMetaData getMetaData() {
-        return this.valueMetaData;
-    };
-    //-------------------------------------------------------------
-    /**设置属性值的描述信息*/
-    public void setValueMetaData(ValueMetaData valueMetaData) {
-        valueMetaData.setFor(this);
-        this.valueMetaData = valueMetaData;
-    }
     /**设置属性类型*/
     public void setClassType(String classType) {
         this.classType = classType;
     }
+    /**返回属性的描述信息。*/
+    public String getDescription() {
+        return this.description;
+    };
     /**设置属性描述*/
     public void setDescription(String description) {
         this.description = description;
+    }
+    /**获取对该属性的值信息描述。*/
+    public ValueMetaData getValueMetaData() {
+        return valueMetaData;
+    }
+    /**设置属性值的描述信息*/
+    public void setValueMetaData(ValueMetaData valueMetaData) {
+        this.valueMetaData = valueMetaData;
     }
 }

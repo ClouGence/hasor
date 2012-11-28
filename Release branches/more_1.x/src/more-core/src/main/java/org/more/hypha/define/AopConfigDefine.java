@@ -15,25 +15,21 @@
  */
 package org.more.hypha.define;
 import java.util.ArrayList;
-import java.util.List;
-import org.more.core.classcode.BuilderMode;
 /**
  * aop配置
  * @version 2010-9-25
  * @author 赵永春 (zyc@byshell.org)
  */
 public class AopConfigDefine extends AbstractDefine<AopConfigDefine> {
-    private String                         name                  = null; //配置名
-    private BuilderMode                    aopMode               = null; //aop的生成策略
-    private AopAbstractPointcutDefine      defaultPointcutDefine = null; //默认切点
-    //
-    private ArrayList<AopAbstractInformed> aopInformedList       = null;
-    //
-    /**创建{@link AopConfigDefine}对象。*/
-    public AopConfigDefine() {
-        this.aopMode = BuilderMode.Super;
-        this.aopInformedList = new ArrayList<AopAbstractInformed>();
-    }
+    /*配置名*/
+    private String                         name                  = null;
+    /*aop的生成策略Super|Propxy*/
+    private String                         aopMode               = "super";
+    /*默认切点*/
+    private AopAbstractPointcutDefine      defaultPointcutDefine = null;
+    /*切点执行器*/
+    private ArrayList<AopAbstractInformed> aopInformedList       = new ArrayList<AopAbstractInformed>();
+    /*------------------------------------------------------------------*/
     //
     /**获取aop配置名。*/
     public String getName() {
@@ -51,27 +47,20 @@ public class AopConfigDefine extends AbstractDefine<AopConfigDefine> {
     public void setDefaultPointcutDefine(AopAbstractPointcutDefine defaultPointcutDefine) {
         this.defaultPointcutDefine = defaultPointcutDefine;
     }
-    /**获取aop切点执行器*/
-    public List<AopAbstractInformed> getAopInformedList() {
-        return this.aopInformedList;
-    }
-    /**添加一个切点执行器*/
-    public void addInformed(AopAbstractInformed informed, AopAbstractPointcutDefine refPointcut) {
-        informed.setRefPointcut(refPointcut);
-        this.aopInformedList.add(informed);
-    };
-    /**添加一个切点执行器*/
-    public void addInformed(AopAbstractInformed informed) {
-        if (informed.getRefPointcut() == null)
-            informed.setRefPointcut(this.defaultPointcutDefine);
-        this.aopInformedList.add(informed);
-    }
-    /**获取aop的生成策略。*/
-    public BuilderMode getAopMode() {
+    /**获取aop的生成策略Super|Propxy*/
+    public String getAopMode() {
         return aopMode;
     }
-    /**设置aop的生成策略。*/
-    public void setAopMode(BuilderMode aopMode) {
+    /**设置aop的生成策略Super|Propxy*/
+    public void setAopMode(String aopMode) {
         this.aopMode = aopMode;
-    };
+    }
+    /**获取切点执行器*/
+    public ArrayList<AopAbstractInformed> getAopInformedList() {
+        return aopInformedList;
+    }
+    /**设置切点执行器*/
+    public void setAopInformedList(ArrayList<AopAbstractInformed> aopInformedList) {
+        this.aopInformedList = aopInformedList;
+    }
 }

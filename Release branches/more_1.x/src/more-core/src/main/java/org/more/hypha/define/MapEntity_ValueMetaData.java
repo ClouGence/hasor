@@ -15,47 +15,19 @@
  */
 package org.more.hypha.define;
 import java.util.Map;
-import org.more.core.error.MoreStateException;
 /**
  * 表示一个{@link Map}类型的一个key value键值对的元信息描述。
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class MapEntity_ValueMetaData extends Collection_ValueMetaData<ValueMetaData> {
+public class MapEntity_ValueMetaData extends ValueMetaData {
     private ValueMetaData key   = null; //Key
     private ValueMetaData value = null; //Value
-    /**该方法将会返回null*/
-    public String getMetaDataType() {
-        return null;
-    }
-    /**设置KEY*/
-    public void setKeyObject(ValueMetaData key) {
-        this.key = key;
-    }
-    /**设置VAR*/
-    public void setVarObject(ValueMetaData value) {
-        this.value = value;
-    }
-    /**添加一个值到当前集合中，首次添加为key，二次添加为var，三次添加抛异常。*/
-    public void addObject(ValueMetaData value) {
-        if (this.key == null) {
-            this.key = value;
-            return;
-        }
-        if (this.value == null) {
-            this.value = value;
-            return;
-        }
-        throw new MoreStateException("key，value都已经设置.");
-    }
-    public int size() {
-        if (this.key == null && this.value == null)
-            return 0;
-        if (this.key != null && this.value != null)
-            return 2;
-        if (this.key == null || this.value == null)
-            return 1;
-        return 0;
+    /*------------------------------------------------------------------*/
+    /**返回{@link PropertyType#MapEntity}*/
+    @Override
+    public String getType() {
+        return PropertyType.MapEntity.value();
     }
     /**获取key*/
     public ValueMetaData getKey() {

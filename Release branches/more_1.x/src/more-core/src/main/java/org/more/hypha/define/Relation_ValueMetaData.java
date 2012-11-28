@@ -15,16 +15,19 @@
  */
 package org.more.hypha.define;
 /**
- * 表示对另外一个bean的引用，对应的PropertyMetaTypeEnum类型为{@link PropertyMetaTypeEnum#RelationBean}。
+ * 表示对另外一个bean的引用，对应的PropertyMetaTypeEnum类型为{@link MetaTypeEnum#RelationBean}。
  * @version 2010-9-17
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Relation_ValueMetaData extends ValueMetaData {
-    private String refBean    = null; //引用的Bean名称
-    private String refPackage = null; //引用的Bean所处作用域
-    /**该方法将会返回{@link PropertyMetaTypeEnum#RelationBean}。*/
-    public String getMetaDataType() {
-        return PropertyMetaTypeEnum.RelationBean;
+    //引用的Bean名称
+    private String refBean  = null;
+    //引用的Bean所处作用域
+    private String refScope = null;
+    /*------------------------------------------------------------------*/
+    /**值类型*/
+    public String getType() {
+        return PropertyType.Ref.value();
     }
     /**获取引用的bean*/
     public String getRefBean() {
@@ -35,11 +38,11 @@ public class Relation_ValueMetaData extends ValueMetaData {
         this.refBean = refBean;
     }
     /**获取引用的Bean所处包。*/
-    public String getRefPackage() {
-        return this.refPackage;
+    public String getRefScope() {
+        return this.refScope;
     }
     /**设置引用的Bean所处包。*/
-    public void setRefPackage(String refPackage) {
-        this.refPackage = refPackage;
+    public void setRefScope(String refScope) {
+        this.refScope = refScope;
     }
 }

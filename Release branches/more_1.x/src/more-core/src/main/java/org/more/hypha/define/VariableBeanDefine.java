@@ -17,6 +17,7 @@ package org.more.hypha.define;
 import org.more.util.StringConvertUtil;
 /**
  * VariableBeanDefine类用于定义一个值作为bean。该bean可以描述基本类型和字符串类型。
+ * useTemplate属性对其不起作用。
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -43,10 +44,6 @@ public class VariableBeanDefine extends BeanDefine {
     public void setValue(String value) {
         this.value = value;
     }
-    public BeanDefine getUseTemplate() {
-        return null;
-    }
-    public void setUseTemplate(BeanDefine useTemplate) {}
     //------------------------------------------------------------------
     /**该枚举中定义了{@link VariableBeanDefine}类可以表示的基本类型。*/
     public enum VariableType {
