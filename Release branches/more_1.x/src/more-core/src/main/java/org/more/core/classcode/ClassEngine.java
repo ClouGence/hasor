@@ -473,12 +473,6 @@ public class ClassEngine {
         if (this.configuration == null)
             throw new MoreStateException("builderClass ß∞‹°£");
         this.newClassBytes = cb.getClassBytes();
-        //4.÷ÿ÷√≤ﬂ¬‘
-        this.classNameStrategy.reset();
-        this.delegateStrategy.reset();
-        this.aopStrategy.reset();
-        this.propertyStrategy.reset();
-        this.methodStrategy.reset();
         //5.
         this.newClass = this.rootClassLoader.loadClass(this.className);
         return this;

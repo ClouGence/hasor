@@ -23,6 +23,4 @@ package org.more.core.classcode;
 interface BaseStrategy {
     /**初始化策略。*/
     public void initStrategy(ClassEngine classEngine);
-    /**重置策略。*/
-    public void reset();
 }

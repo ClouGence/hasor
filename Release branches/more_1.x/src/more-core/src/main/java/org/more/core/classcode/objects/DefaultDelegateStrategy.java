@@ -23,7 +23,6 @@ import org.more.core.classcode.DelegateStrategy;
  */
 public class DefaultDelegateStrategy implements DelegateStrategy {
     public void initStrategy(ClassEngine classEngine) {}
-    public void reset() {}
     public boolean isIgnore(Class<?> delegateType) {
         return false;
     }

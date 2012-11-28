@@ -28,7 +28,6 @@ import org.more.core.classcode.ClassEngine;
  */
 public class DefaultAopStrategy implements AopStrategy {
     public void initStrategy(ClassEngine classEngine) {}
-    public void reset() {}
     /**²»ºöÂÔAop¡£*/
     public boolean isIgnore(Class<?> superClass, Method ignoreMethod) {
         return false;

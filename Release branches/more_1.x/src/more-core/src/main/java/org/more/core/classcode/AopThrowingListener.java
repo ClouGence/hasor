@@ -29,5 +29,5 @@ public interface AopThrowingListener {
      * @param args 调用这个方法传递的参数。
      * @param e 接受发生的异常
      */
-    public void throwsException(Object target, Method method, Object[] args, Throwable e) throws Throwable;
+    public Throwable throwsException(Object target, Method method, Object[] args, Throwable e);
 }

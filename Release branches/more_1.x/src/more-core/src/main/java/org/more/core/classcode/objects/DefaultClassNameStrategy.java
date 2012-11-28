@@ -26,7 +26,6 @@ public class DefaultClassNameStrategy implements ClassNameStrategy {
     private static final String ClassPrefix = "_Dynamic$";                     //生成类的类名后缀名
     private static final String ClassName   = "org.more.core.classcode.Object"; //默认生成类的类名
     public void initStrategy(ClassEngine classEngine) {}
-    public void reset() {}
     public synchronized String generateName(Class<?> superClass) {
         String cn = null;
         if (superClass == null)

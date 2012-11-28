@@ -23,7 +23,6 @@ import org.more.core.classcode.MethodStrategy;
  */
 public class DefaultMethodStrategy implements MethodStrategy {
     public void initStrategy(ClassEngine classEngine) {}
-    public void reset() {}
     public boolean isIgnore(Class<?> superClass, Object ignoreMethod, boolean isConstructor) {
         return false;
     }

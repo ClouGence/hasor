@@ -34,7 +34,7 @@ public class AopFilterChain_Start {
         this.aopReturningListener = aopReturningListener;
         this.aopThrowingListener = aopThrowingListener;
     }
-    public Object doInvokeFilter(Object target, Method method, Object[] args) throws Throwable {
+    public Object doInvokeFilter(Object target, Method method, Object[] args) {
         try {
             //1.下一环节检测，除非发生内部错误否则不会出现环节丢失。
             if (this.nextFilterChain == null)
@@ -53,14 +53,15 @@ public class AopFilterChain_Start {
             return result;
         } catch (Throwable e) {
             //6.通知throwing切面。
+            Throwable throwObj = e;
             if (this.aopThrowingListener != null)
                 for (int i = 0; i < this.aopThrowingListener.length; i++)
-                    this.aopThrowingListener[i].throwsException(target, method, args, e);
+                    throwObj = this.aopThrowingListener[i].throwsException(target, method, args, throwObj);
             //7.如果抛出的异常属于RuntimeException那么直接转类型抛出。
             if (e instanceof RuntimeException == true)
-                throw (RuntimeException) e;
+                throw (RuntimeException) throwObj;
             else
-                throw new InvokeException(e);
+                throw new InvokeException(throwObj);
         }
     }
 }

@@ -23,7 +23,6 @@ import org.more.core.classcode.PropertyStrategy;
  */
 public class DefaultPropertyStrategy implements PropertyStrategy {
     public void initStrategy(ClassEngine classEngine) {}
-    public void reset() {}
     public boolean isIgnore(String name, Class<?> type, boolean isDelegate) {
         return false;
     }
