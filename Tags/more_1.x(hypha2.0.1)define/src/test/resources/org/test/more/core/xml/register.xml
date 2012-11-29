@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<register>
+	<namespace url="http://project.xdf.cn/safety" schema="/META-INF/resource/hypha/beans-schema.xsd">
+		<xmlPath xmlPath="/safety" class="org.test.more.core.xml.S_Tag_Safety" />
+		<xmlPath xmlPath="/safety/resources" class="org.test.more.core.xml.S_Tag_Resources" />
+		<xmlPath xmlPath="/safety/resources/A" class="org.test.more.core.xml.S_Tag_A" />
+		<xmlPath xmlPath="/safety/resources/function" class="org.test.more.core.xml.S_Tag_Function" />
+	</namespace>
+	<namespace url="http://www.test.org/schema/config">
+		<xmlPath xmlPath="/a" class="org.test.more.core.xml.C_Tag_A" />
+	</namespace>
+</register>

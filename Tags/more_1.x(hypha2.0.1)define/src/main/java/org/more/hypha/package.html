@@ -1,0 +1,61 @@
+<html><body>
+<a href="doc-files/hypha v2.0.png">hypha v2.0系统结构图</a><br/>
+<a href="doc-files/beans_v1_2_struct.png">beans v1.2系统结构图</a><br/>
+
+历史版本：<pre>
+hypha v2.0：
+  1.正式推出“菌丝”组建，该组建是一个Bean容器为基础支撑环境的组建，可以替代Spring。它的前身是beans组建目前推出2.0版本并且更名为菌丝。
+  2.菌丝是一个微内核的ioc容器。它可以分为三个大组成部分1.API接口、2.可扩展的模型描述信息、3.API接口实现。
+  3.6种类型Bean定义的支持，其他类型持续加入。TemplateBeanBuilder、VariableBeanBuilder，不支持AOP。
+  4.新的标签解析体系，使用了全新的 xml解析器引擎。使菌丝的配置文件可以与任意其他配置文件集成在一起。
+  5.保留了beans v1.2中的三种注入方式，Fast、Ioc、Expend。
+  6.增加了事件系统支持。
+  7.增加了EL解析器，其内核是Ognl。
+  8.增加了扩展点管理器，通过扩展点管理器可以参与bean装载创建等核心环节。
+  9.新的 bean define体系，并且可扩展。其解析器也可以通过配置文件增加到hypha中。
+  10.接口层面90%以上升级。
+  11.支持自定义服务。
+  12.提供自动AutoWrite自动注入注解的支持。
+  	
+beans v1.2(版本alpha3)：
+  1.增加注解配置支持，至此xml配置与注解支持可以同时进行。xml的优先级高于注解。
+  2.可以注解配置Bean。
+  3.可以注解配置Bean的构造方法参数注入
+  4.可以注解配置Bean的Aop链。
+  5.可以注解配置附加接口实现，但是所有附加接口都使用一个接口处理委托。如果要一个接口对应一个委托只有xml配置支持。
+  6.可以注解配置属性注入。
+  7.注解配置支持以定义的基本类型和四种引用类型。
+  8.注解配置需要通过xml配置anno:anno标签。
+  9.通过anno标签可以开启注解配置以及配置beans的扫描路径。
+  10.重写了Resource接口的实现类。
+
+beans v1.1(版本alpha2)：
+  1.增加，beans在初始化时候会读取xsd验证xml合法性。
+  2.调整一些Bug。
+
+beans v1.0(版本alpha)：
+  1.独立的Ioc、Aop框架，它的配置文件结构参考了Spring的配置文件结构。
+  2.形成了三大核心组建1)factory负责创建、2)injection负责注入、3)propparser负责属性解析。
+  3.支持构造方法注入和属性注入。
+  4.提供了三种注入形式【Ioc、Fact、Export】
+	Ioc：如果需要注入大量依赖bean则使用Ioc性能最好。
+	Fact：如果注入大量基本数据类型和少量的引用类型，并且这些引用类型多数配置了单态则Fact可以发挥极致性能，如果注入的数据全部为基本数据类型Fact的速度接近传统get/set方法直接调用注入。
+	Export：导出式注入为了追求比Fact更快的注入可以使用该方式。Export方式注入整个注入过程由编程人员在ExportInjectionProperty接口中实现。
+  5.提供了两种bean创建方式【Factort、New】
+	Factort：对工厂创建方式的支持。
+	New：普通构造方法创建支持。
+  6.aop提供过滤器链支持，过滤器需要实现AOPInvokeFilter接口。
+  7.支持关键字注入（四种引用注入）。
+	refBean：使用配置的其他bean对象，PRV_Bean.name。
+	{#attName}：使用BeanFactory接口的父接口IAttribute中的对象注入，PRV_ContextAtt{#name}。
+	{@number}：使用在getBean时候传递的参数对象进行注入，PRV_Param{@number}。
+	{$mime}：使用附加在bean定义中的属性注入，PRV_Mime{$name}。
+	提示1：{#this}会将BeanFactory实现对象注入到bean中，目前版本不支持关键字行为自定义。
+	提示2：关键字行为是指被“{}”环绕的第一个字符，more可以通过第一个字符来确定注入数据来源。
+	提示3：{$name}与{#name}不同{$name}依照最近的层级结构一次判断是否有这个属性如果没有向上一层寻找。
+  8.可以通过addImpl标签来向bean附加一个接口实现，而这个bean可以事先没有实现这个接口。注意：已经实现的接口addImpl将失效，不同接口的同名方法将只有一个被保留。
+  9.支持注入Map，Set，List，Array数据类型。
+  10.支持的基本类型包括: int、byte、char、double、float、long、short、boolean、String。
+  11.可以通过xsd验证文档结构，more不会验证xml合法性。
+  12.支持bean定义静态缓存和动态缓存。利用这两个缓存可以增加运行效率。
+</pre></body></html>

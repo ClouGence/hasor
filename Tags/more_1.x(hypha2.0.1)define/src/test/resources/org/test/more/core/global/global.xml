@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://project.byshell.org/more/schema/global">
+	<!-- *****************************全局配置***************************** -->
+	<!-- 数据库配置 -->
+	<jdbc>
+		<driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
+		<url>jdbc:sqlserver://192.168.21.100;DatabaseName=NOE_UMS_DEV</url>
+		<user>sa</user>
+		<password>abc123!@#</password>
+	</jdbc>
+	<!-- Mongo Server -->
+	<mongoServer url="mongo://192.168.21.100/NOE_UMS_DEV" />
+	<!-- 站点配置 -->
+	<webSite>
+		<location>VPN</location>
+		<accountAdmin>false</accountAdmin>
+		<webModle>true</webModle>
+		<displayName>U能学习中心</displayName>
+		<authKey>j2noe</authKey>
+		<cookieKey>j_noeweb_c</cookieKey>
+	</webSite>
+	<!-- Red5配置 -->
+	<red5>
+		<serverIP>10.200.15.20</serverIP>
+		<appName>vod</appName>
+		<blazeDSServer>http://10.200.15.20:8080/umscp/messagebroker/amf</blazeDSServer>
+		<mediaSavePath>C:/Program Files/Red5/webapps/vod/streams/</mediaSavePath>
+	</red5>
+	<!-- Web Service配置 -->
+	<webService>
+		<isInDomain>1</isInDomain>
+		<serverService>http://10.200.15.44:9888/DocProcess.asmx</serverService>
+		<nameSpace>http://www.xdf.cn/</nameSpace>
+		<fileIP>10.200.15.20</fileIP>
+		<userName>tongzhongfu</userName>
+		<userPsw>709120429</userPsw>
+	</webService>
+
+	
+	<resourcesServer>
+		<server host="http://192.168.25.90:8080/files" start="/umscp/files"/>
+	</resourcesServer>
+	
+	<!-- *****************************业务系统***************************** -->
+	<!--业务通用 -->
+	<Commons>
+		<FileUrlBasePath>/files/ucan/data/</FileUrlBasePath>
+	</Commons>
+	<!--学业规划 -->
+	<TPlan>
+		<!-- 学员测试查看测试结果，需要跳转到测评系统的测试结果页面，这个页面可能不在学业规划系统，需要在这里配置。可能是 http://www.xxx.com/ceping  不以/结尾 -->
+		<testWebAppRoot>/ums</testWebAppRoot>
+	</TPlan>
+	<!--学习管理 -->
+	<SSrv></SSrv>
+	<!--在线测评 -->
+	<ETest>
+		<!-- 上传文件的崭存目录 -->
+		<BASE_SAVE_PATH>d:/temp/</BASE_SAVE_PATH>
+		<!-- TPS与测评做交互的下载目录 -->
+		<FileAbsResourcesPath>http://192.168.25.90:8080</FileAbsResourcesPath>
+		<!-- 测评文件上传目录 -->
+		<upUploadBasePath>//10.200.15.20/apache-tomcat-6.0.32/webapps/tes_file/files/</upUploadBasePath>
+		<!-- 测评文件下载目录 -->
+		<downUploadBasePath>http://10.200.15.20:9060/tes_file/files/</downUploadBasePath>
+		<!-- 测评WebService文件服务器共享目录 -->
+		<fileUploadShareDir>//10.200.15.20/apache-tomcat-6.0.32/webapps/tes_file/files/</fileUploadShareDir>
+		<!-- 测评试题模板目录 -->
+		<topicSubjectTemplatePath>d:/topicSubjectTemplate/</topicSubjectTemplatePath>
+		<!-- 测评客观题是否能够被评分 -->
+		<isAllCanSetMark>true</isAllCanSetMark>
+	</ETest>
+	<!--教学教研 -->
+	<TTech></TTech>
+	<!-- *****************************系统架构***************************** -->
+	<!--系统架构 -->
+	<SSys>
+		<!-- 请求的结果会被缓存起来的路径（正则表达式），以逗号分合 -->
+		<cache-pattern>aaaa,bbbb</cache-pattern>
+		<!-- 登陆时的安全配置相关 -->
+		<loginSafe>
+			<!-- 退出时候的Action地址 -->
+			<logoutFormURL>/s_logout</logoutFormURL>
+			<!-- 退出之后的URL地址 -->
+			<logoutURL>/login.htm</logoutURL>
+			<!-- 登陆地址 -->
+			<loginA>/login.htm</loginA>
+			<loginB>/login.htm</loginB>
+			<startURL>/index.jsp</startURL>
+			<s_indexURL>/index.jsp</s_indexURL>
+			<indexURL>/index.jsp</indexURL>
+			<!-- 需要进行权限检查的路径，多个逗号分割 -->
+			<useCheckPaths>/</useCheckPaths>
+		</loginSafe>
+		
+		<uploads>
+			<upload id="1">
+				<baseDir>E:/server/tomcat6/webapps/upload/ums</baseDir>
+				<subDir>/xls</subDir>
+				<allow_file_exts>xls,xlsx</allow_file_exts>
+				<allow_max_length>10000k</allow_max_length>
+			</upload>
+			<upload id="2">
+				<baseDir>E:/server/tomcat6/webapps/upload/ums</baseDir>
+				<subDir>/data</subDir>
+				<allow_file_exts>jpg,jpeg,png,gif,tif,bmp,zip,rar,doc,txt,docx,ppt,pptx,xls,xlsx,wps,avi,wmv,wma,flv,mp3,mp4,rm,rmvb,rtf,pdf
+				</allow_file_exts>
+				<allow_max_length>100M</allow_max_length>
+			</upload>
+			<upload id="3">
+				<baseDir>E:/server/tomcat6/webapps/upload/ums</baseDir>
+				<subDir>/meeting</subDir>
+				<allow_file_exts>zip,rar,doc,txt,docx,ppt,pptx,xls,xlsx
+				</allow_file_exts>
+				<allow_max_length>100M</allow_max_length>
+			</upload>
+			<upload id="4">
+				<baseDir>E:/build/doc_data/files/ucan/data</baseDir>
+				<subDir></subDir>
+				<allow_file_exts>zip,rar,doc,txt,docx,ppt,pptx,xls,xlsx,avi,wmv,wma,flv,mp3,mp4,rm,rmvb</allow_file_exts>
+				<allow_max_length>100M</allow_max_length>
+			</upload>
+			<upload id="5">
+				<baseDir>E:/build/doc_data/files/ucan/data</baseDir>
+				<subDir></subDir>
+				<allow_file_exts>docx</allow_file_exts>
+				<allow_max_length>100M</allow_max_length>
+			</upload>
+			<upload id="6">
+				<baseDir>E:/build/doc_data/files/ucan/data</baseDir>
+				<subDir></subDir>
+				<allow_file_exts>avi,wmv,wma,flv,mp3,mp4,rm,rmvb</allow_file_exts>
+				<allow_max_length>100M</allow_max_length>
+			</upload>
+		</uploads>
+	</SSys>
+</settings>
