@@ -21,7 +21,7 @@ import java.util.Map;
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class ValueMetaData extends AbstractDefine<ValueMetaData> {
+public abstract class ValueMetaData extends AbstractDefine {
     /*除了值和类型之外配置的其他属性，这些扩展配置属性的目的是当解析它的时候会使用。或用于携带信息。*/
     private Map<String, String> extParams = new HashMap<String, String>();
     /*------------------------------------------------------------------*/

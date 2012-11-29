@@ -21,7 +21,7 @@ import java.util.List;
  * @version 2010-10-13
  * @author 赵永春 (zyc@byshell.org)
  */
-public class MethodDefine extends AbstractDefine<MethodDefine> {
+public class MethodDefine extends AbstractDefine {
     /*静态方法标记*/
     private boolean           staticMark = false;
     /*定义的方法名（内部名称）.*/

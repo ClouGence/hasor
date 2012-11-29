@@ -23,7 +23,7 @@ import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.aop.AopService;
-import org.more.hypha.define.AopConfigDefine;
+import org.more.hypha.define.aop.AopConfig;
 import org.more.hypha.xml.XmlDefineResource;
 import org.more.hypha.xml.tags.beans.TagBeans_AbstractBeanDefine;
 /**
@@ -52,7 +52,7 @@ public class TagAop_UseConfig extends TagAop_NS implements XmlElementHook, XmlAt
         AopService service = this.getAopConfig();
         BeanDefine bean = (BeanDefine) context.getAttribute(TagBeans_AbstractBeanDefine.BeanDefine);
         //
-        AopConfigDefine aopConfig = service.getAopDefine(name);
+        AopConfig aopConfig = service.getAopDefine(name);
         if (aopConfig == null)
             throw new LostException("useConfig 在[" + bean.getName() + "]上的[" + name + "]配置，无法在aop配置库中找到。");
         service.setAop(bean, aopConfig);

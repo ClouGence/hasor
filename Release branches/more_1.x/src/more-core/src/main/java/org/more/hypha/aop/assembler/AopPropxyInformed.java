@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 package org.more.hypha.aop.assembler;
-import org.more.core.classcode.AopBeforeListener;
-import org.more.core.classcode.AopFilterChain;
-import org.more.core.classcode.AopInvokeFilter;
 import org.more.core.classcode.AopReturningListener;
 import org.more.core.classcode.AopThrowingListener;
 import org.more.core.classcode.Method;
+import org.more.core.classcode.aop.AopBeforeListener;
+import org.more.core.classcode.aop.AopFilterChain;
+import org.more.core.classcode.aop.AopInvokeFilter;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.define.AopAbstractInformed;
-import org.more.hypha.define.AopPointcutType;
+import org.more.hypha.define.aop.AopProcessor;
+import org.more.hypha.define.aop.AopPointcutType;
 /**
  * AOP¥˙¿Ì°£
  * @version : 2011-7-12
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class AopPropxyInformed implements AopBeforeListener, AopReturningListener, AopThrowingListener, AopInvokeFilter {
-    private AopAbstractInformed   informedDefine = null;
+    private AopProcessor   informedDefine = null;
     private AopPointcutType       pointcutType   = null;
     private ApplicationContext context        = null;
     private Object             informedObject = null;
     //
-    public AopPropxyInformed(ApplicationContext context, AopAbstractInformed informed) {
+    public AopPropxyInformed(ApplicationContext context, AopProcessor informed) {
         pointcutType = informed.getPointcutType();
         this.informedDefine = informed;
         this.context = context;

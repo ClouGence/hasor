@@ -20,9 +20,9 @@ import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.aop.AopService;
-import org.more.hypha.define.AopAbstractPointcutDefine;
-import org.more.hypha.define.AopConfigDefine;
-import org.more.hypha.define.AopPointcutGroupDefine;
+import org.more.hypha.define.aop.AopPointcut;
+import org.more.hypha.define.aop.AopConfig;
+import org.more.hypha.define.aop.AopPointcutGroupDefine;
 import org.more.hypha.xml.XmlDefineResource;
 /**
  * 用于解析切点标签的基类，该类会解析name属性。
@@ -30,15 +30,15 @@ import org.more.hypha.xml.XmlDefineResource;
  * @author 赵永春 (zyc@byshell.org)
  */
 @SuppressWarnings("unchecked")
-public abstract class TagAop_AbstractPointcut<T extends AopAbstractPointcutDefine> extends TagAop_NS implements XmlElementHook {
+public abstract class TagAop_AbstractPointcut<T extends AopPointcut> extends TagAop_NS implements XmlElementHook {
     private static final String PointcutDefine = "$more_Aop_PointcutDefine";
     /**创建{@link TagAop_AbstractPointcut}类型对象。*/
     public TagAop_AbstractPointcut(XmlDefineResource configuration) {
         super(configuration);
     }
-    /**创建一个{@link AopAbstractPointcutDefine}定义对象。*/
+    /**创建一个{@link AopPointcut}定义对象。*/
     protected abstract T createDefine();
-    /**获取创建的{@link AopAbstractPointcutDefine}定义对象。*/
+    /**获取创建的{@link AopPointcut}定义对象。*/
     protected final T getDefine(XmlStackDecorator<?> context) {
         return (T) context.getAttribute(PointcutDefine);
     };
@@ -64,7 +64,7 @@ public abstract class TagAop_AbstractPointcut<T extends AopAbstractPointcutDefin
             }
         }
         //2.Pointcut出现在Config下面 
-        AopConfigDefine parentConfig = (AopConfigDefine) context.getAttribute(TagAop_Config.ConfigDefine);
+        AopConfig parentConfig = (AopConfig) context.getAttribute(TagAop_Config.ConfigDefine);
         if (isReg == false && parentConfig != null) {
             if (parentConfig != null) {
                 if (parentConfig.getDefaultPointcutDefine() != null)

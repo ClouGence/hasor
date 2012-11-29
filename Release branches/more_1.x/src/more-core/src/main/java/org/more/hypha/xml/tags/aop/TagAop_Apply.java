@@ -22,7 +22,7 @@ import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.aop.AopService;
-import org.more.hypha.define.AopConfigDefine;
+import org.more.hypha.define.aop.AopConfig;
 import org.more.hypha.xml.XmlDefineResource;
 import org.more.hypha.xml.XmlLoadedEvent;
 import org.more.hypha.xml.tags.listener.Listener_ToBeanApply;
@@ -45,7 +45,7 @@ public class TagAop_Apply extends TagAop_NS implements XmlElementHook {
         if (config == null)
             throw new LostException("apply标签，检测到未定义config属性或者属性值为空。");
         AopService service = this.getAopConfig();
-        AopConfigDefine aopConfig = service.getAopDefine(config);
+        AopConfig aopConfig = service.getAopDefine(config);
         if (aopConfig == null)
             throw new LostException("apply标签在应用[" + config + "]aop配置时无法找到其定义的AopConfigDefine类型对象。");
         //3.注册监听器 

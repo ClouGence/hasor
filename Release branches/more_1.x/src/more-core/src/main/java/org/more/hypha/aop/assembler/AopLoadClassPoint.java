@@ -20,7 +20,7 @@ import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
 import org.more.hypha.aop.AopService;
 import org.more.hypha.commons.logic.LoadClassPoint;
-import org.more.hypha.define.AopConfigDefine;
+import org.more.hypha.define.aop.AopConfig;
 import org.more.hypha.point.PointChain;
 /**
  * ÐÞ¸Ä×Ö½ÚÂë
@@ -43,7 +43,7 @@ public class AopLoadClassPoint implements LoadClassPoint {
             log.warning("app {%1} services not include AopServices!", applicationContext.getID());
             return chain.doChain(applicationContext, params);
         }
-        AopConfigDefine aopDefine = aopConfig.getAopDefine(define);
+        AopConfig aopDefine = aopConfig.getAopDefine(define);
         if (aopDefine == null)
             return chain.doChain(applicationContext, params);
         Class<?> beanType = (Class<?>) chain.doChain(applicationContext, params);

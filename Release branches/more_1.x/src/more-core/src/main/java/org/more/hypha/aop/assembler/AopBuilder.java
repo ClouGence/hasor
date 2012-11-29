@@ -17,18 +17,18 @@ package org.more.hypha.aop.assembler;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import org.more.core.classcode.AopBeforeListener;
-import org.more.core.classcode.AopInvokeFilter;
 import org.more.core.classcode.AopReturningListener;
 import org.more.core.classcode.AopThrowingListener;
 import org.more.core.classcode.BuilderMode;
 import org.more.core.classcode.ClassEngine;
 import org.more.core.classcode.RootClassLoader;
+import org.more.core.classcode.aop.AopBeforeListener;
+import org.more.core.classcode.aop.AopInvokeFilter;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.ApplicationContext;
-import org.more.hypha.define.AopAbstractInformed;
-import org.more.hypha.define.AopConfigDefine;
-import org.more.hypha.define.AopPointcutType;
+import org.more.hypha.define.aop.AopProcessor;
+import org.more.hypha.define.aop.AopConfig;
+import org.more.hypha.define.aop.AopPointcutType;
 import org.more.util.BeanUtil;
 /**
  * 该类是用来生成和配置aop的类。
@@ -58,12 +58,12 @@ public class AopBuilder {
         this.engineMap = null;
     };
     /**/
-    private AopPropxyInformed passerInformed(AopAbstractInformed informed) {
+    private AopPropxyInformed passerInformed(AopProcessor informed) {
         return new AopPropxyInformed(this.context, informed);
     };
-    private void configAop(ClassEngine engine, AopConfigDefine aopDefine) {
+    private void configAop(ClassEngine engine, AopConfig aopDefine) {
         engine.resetAop();
-        for (AopAbstractInformed informed : aopDefine.getAopInformedList()) {
+        for (AopProcessor informed : aopDefine.getAopInformedList()) {
             AopPointcutType type = informed.getPointcutType();
             Object informedObject = this.passerInformed(informed);
             if (type == AopPointcutType.Before)//注册before通知
@@ -83,7 +83,7 @@ public class AopBuilder {
         }
     };
     /**获取一个aop bean类型。*/
-    public Class<?> builderType(Class<?> beanType, AopConfigDefine aopDefine, BeanDefine define) throws ClassNotFoundException, IOException {
+    public Class<?> builderType(Class<?> beanType, AopConfig aopDefine, BeanDefine define) throws ClassNotFoundException, IOException {
         if (aopDefine.getAopMode() == BuilderMode.Propxy)
             return beanType;
         //
@@ -102,7 +102,7 @@ public class AopBuilder {
         return engine.builderClass().toClass();
     }
     /**生称一个aop配置的bean，如果bean是工厂方式创建的则在这里将使用代理方式实现其aop功能。*/
-    public Object builderBean(Object beanObject, AopConfigDefine aopDefine, BeanDefine define) throws ClassNotFoundException, IOException {
+    public Object builderBean(Object beanObject, AopConfig aopDefine, BeanDefine define) throws ClassNotFoundException, IOException {
         ClassEngine engine = null;
         Object aopBean = null;
         //获取engine，和beanObject

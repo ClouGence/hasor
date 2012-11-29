@@ -18,21 +18,21 @@ import java.util.Map;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.EndElementEvent;
 import org.more.hypha.define.BeanDefine;
-import org.more.hypha.define.ConstructorDefine;
+import org.more.hypha.define.ConstructorParamDefine;
 import org.more.hypha.xml.XmlDefineResource;
 /**
  * 用于解析constructor-arg标签
  * @version 2010-9-16
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TagBeans_Constructor extends TagBeans_AbstractPropertyDefine<ConstructorDefine> {
+public class TagBeans_Constructor extends TagBeans_AbstractPropertyDefine<ConstructorParamDefine> {
     /**创建{@link TagBeans_Constructor}对象*/
     public TagBeans_Constructor(XmlDefineResource configuration) {
         super(configuration);
     };
-    /**创建{@link ConstructorDefine}对象。*/
-    protected ConstructorDefine createDefine(XmlStackDecorator<Object> context) {
-        return new ConstructorDefine();
+    /**创建{@link ConstructorParamDefine}对象。*/
+    protected ConstructorParamDefine createDefine(XmlStackDecorator<Object> context) {
+        return new ConstructorParamDefine();
     };
     /**定义构造方法特有属性。*/
     public enum PropertyKey {
@@ -46,7 +46,7 @@ public class TagBeans_Constructor extends TagBeans_AbstractPropertyDefine<Constr
     };
     /**将属性注册到Bean中。*/
     public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {
-        ConstructorDefine property = this.getDefine(context);
+        ConstructorParamDefine property = this.getDefine(context);
         BeanDefine define = (BeanDefine) context.getAttribute(TagBeans_AbstractBeanDefine.BeanDefine);
         if (property.getIndex() == -1)
             property.setIndex(define.getInitParams().size());

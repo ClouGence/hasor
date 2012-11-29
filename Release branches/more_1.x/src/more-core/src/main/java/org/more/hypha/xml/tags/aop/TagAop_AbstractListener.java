@@ -16,24 +16,24 @@
 package org.more.hypha.xml.tags.aop;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.define.AopAbstractInformed;
-import org.more.hypha.define.AopDefineInformed;
-import org.more.hypha.define.AopMethodInformed;
-import org.more.hypha.define.AopPointcutType;
+import org.more.hypha.define.aop.AopProcessor;
+import org.more.hypha.define.aop.AopDefineInformed;
+import org.more.hypha.define.aop.AopMethodInformed;
+import org.more.hypha.define.aop.AopPointcutType;
 import org.more.hypha.xml.XmlDefineResource;
 /**
  * 该类是解析Informed类型标签的基类。
  * @version 2010-10-9
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class TagAop_AbstractListener extends TagAop_AbstractInformed<AopAbstractInformed> {
+public abstract class TagAop_AbstractListener extends TagAop_AbstractInformed<AopProcessor> {
     public TagAop_AbstractListener(XmlDefineResource configuration) {
         super(configuration);
     }
     /**返回Informed类型。*/
     protected abstract AopPointcutType getPointcutType();
     /**根据标签定义信息创建一个{@link AopDefineInformed}类型对象，如果标签中配置了method属性则创建{@link AopMethodInformed}返回。*/
-    protected AopAbstractInformed createDefine(StartElementEvent event) {
+    protected AopProcessor createDefine(StartElementEvent event) {
         String method = event.getAttributeValue("method");
         if (method != null) {
             AopMethodInformed informed = new AopMethodInformed();
@@ -45,7 +45,7 @@ public abstract class TagAop_AbstractListener extends TagAop_AbstractInformed<Ao
     /**开始解析标签，确定PointcutType属性。*/
     public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         super.beginElement(context, xpath, event);
-        AopAbstractInformed define = this.getDefine(context);
+        AopProcessor define = this.getDefine(context);
         define.setPointcutType(this.getPointcutType());
     }
 }

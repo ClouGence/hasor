@@ -16,8 +16,8 @@
 package org.more.hypha.xml.tags.aop;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.define.AopPointcutGroupDefine;
-import org.more.hypha.define.AopPointcutGroupDefine.RelEnum;
+import org.more.hypha.define.aop.AopPointcutGroupDefine;
+import org.more.hypha.define.aop.AopPointcutGroupDefine.RelEnum;
 import org.more.hypha.xml.XmlDefineResource;
 import org.more.util.StringConvertUtil;
 /**

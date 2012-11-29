@@ -20,13 +20,13 @@ import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.anno.KeepWatchParser;
 import org.more.hypha.aop.AopService;
 import org.more.hypha.aop.assembler.AopService_Impl;
-import org.more.hypha.define.AopConfigDefine;
-import org.more.hypha.define.AopDefineInformed;
-import org.more.hypha.define.AopPointcutDefine;
-import org.more.hypha.define.AopPointcutType;
 import org.more.hypha.define.anno.Aop;
 import org.more.hypha.define.anno.AopInformed;
 import org.more.hypha.define.anno.Bean;
+import org.more.hypha.define.aop.AopConfig;
+import org.more.hypha.define.aop.AopDefineInformed;
+import org.more.hypha.define.aop.AopPointcut;
+import org.more.hypha.define.aop.AopPointcutType;
 import org.more.hypha.xml.XmlDefineResource;
 /**
  * 该bean用于解析aop的注解配置，取消该类不会影响到anno的服务提供。只不过会导致无法解析bean的aop注解声明。
@@ -61,7 +61,7 @@ class Watch_Aop implements KeepWatchParser {
         if (aop == null)
             return;
         //2.检查useConfig属性。
-        AopConfigDefine aopConfig = null;
+        AopConfig aopConfig = null;
         String var = aop.useConfig();
         if (var.equals("") == false) {
             aopConfig = aopPlugin.getAopDefine(var);
@@ -71,10 +71,10 @@ class Watch_Aop implements KeepWatchParser {
             return;
         }
         //3.解析aop注解
-        aopConfig = new AopConfigDefine();
+        aopConfig = new AopConfig();
         aopConfig.setAopMode(aop.mode());
         //defaultPointcut
-        AopPointcutDefine aoppoint = new AopPointcutDefine();
+        AopPointcut aoppoint = new AopPointcut();
         aoppoint.setExpression(aop.defaultPointcut());
         aopConfig.setDefaultPointcutDefine(aoppoint);
         //informeds
@@ -84,7 +84,7 @@ class Watch_Aop implements KeepWatchParser {
             String pointcut = informed.pointcut();
             AopPointcutType pointType = informed.type();
             //切入点定义
-            AopPointcutDefine aoppoint_item = new AopPointcutDefine();
+            AopPointcut aoppoint_item = new AopPointcut();
             aoppoint.setExpression(pointcut);
             //监听器定义
             AopDefineInformed informedDefine = new AopDefineInformed();

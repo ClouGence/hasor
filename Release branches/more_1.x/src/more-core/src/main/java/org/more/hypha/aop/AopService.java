@@ -16,8 +16,8 @@
 package org.more.hypha.aop;
 import org.more.hypha.AbstractBeanDefine;
 import org.more.hypha.Service;
-import org.more.hypha.define.AopAbstractPointcutDefine;
-import org.more.hypha.define.AopConfigDefine;
+import org.more.hypha.define.aop.AopPointcut;
+import org.more.hypha.define.aop.AopConfig;
 /**
  * 提供了更为丰富的aop相关方法。
  * @version 2010-10-8
@@ -25,20 +25,20 @@ import org.more.hypha.define.AopConfigDefine;
  */
 public interface AopService extends Service {
     /**获取一个定义的切入点。*/
-    public AopAbstractPointcutDefine getPointcutDefine(String name);
+    public AopPointcut getPointcutDefine(String name);
     /**添加切点定义。*/
-    public void addPointcutDefine(AopAbstractPointcutDefine define);
+    public void addPointcutDefine(AopPointcut define);
     /**删除切点定义。*/
     public void removePointcutDefine(String name);
-    /**检测是否已经存在某个名称的{@link AopAbstractPointcutDefine}。*/
+    /**检测是否已经存在某个名称的{@link AopPointcut}。*/
     public boolean containPointcutDefine(String defineName);
     //------------------
     /**测试一个aop配置是否存在。*/
     public boolean containAopDefine(String name);
     /**获取一个aop配置定义。*/
-    public AopConfigDefine getAopDefine(String name);
+    public AopConfig getAopDefine(String name);
     /**添加aop配置定义。*/
-    public void addAopDefine(AopConfigDefine define);
+    public void addAopDefine(AopConfig define);
     /**删除aop配置定义。*/
     public void removeAopDefine(String name);
     //------------------
@@ -47,9 +47,9 @@ public interface AopService extends Service {
     /**将一个aop配置携带到{@link BeanDefine}对象上，该方法可以在代码级上修改aop配置。*/
     public void setAop(BeanDefine define, String config);
     /**将一个aop配置携带到{@link BeanDefine}对象上，该方法可以在代码级上修改aop配置。*/
-    public void setAop(BeanDefine define, AopConfigDefine config);
+    public void setAop(BeanDefine define, AopConfig config);
     /**移除{@link BeanDefine}对象上的aop配置，如果{@link BeanDefine}没有配置aop那么移除操作将被忽略。*/
     public void removeAop(BeanDefine define);
     /**获取{@link BeanDefine}对象上的aop配置，如果目标没有配置aop则返回null。*/
-    public AopConfigDefine getAopDefine(BeanDefine define);
+    public AopConfig getAopDefine(BeanDefine define);
 }

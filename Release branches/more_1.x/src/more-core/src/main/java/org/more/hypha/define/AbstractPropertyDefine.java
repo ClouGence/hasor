@@ -19,7 +19,7 @@ package org.more.hypha.define;
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractPropertyDefine extends AbstractDefine<AbstractPropertyDefine> {
+public abstract class AbstractPropertyDefine extends AbstractDefine {
     /*当执行属性注入时需要执行的类型转换类型*/
     private String        classType     = null;
     /*属性描述*/

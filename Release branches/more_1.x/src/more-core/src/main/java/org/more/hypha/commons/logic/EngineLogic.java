@@ -43,12 +43,12 @@ import org.more.hypha.point.PointCallBack;
 * @author 赵永春 (zyc@byshell.org)
 */
 public class EngineLogic {
-    private static Log                                           log                = LogFactory.getLog(EngineLogic.class);
+    private static Log                                   log                = LogFactory.getLog(EngineLogic.class);
     private Map<String, AbstractBeanBuilder<BeanDefine>> builderMap         = null;
-    private RootValueMetaDataParser                              rootParser         = null;
-    private AbstractApplicationContext                           applicationContext = null;
+    private RootValueMetaDataParser                      rootParser         = null;
+    private AbstractApplicationContext                   applicationContext = null;
     //
-    private Map<String, IocEngine>                               engineMap          = null;
+    private Map<String, IocEngine>                       engineMap          = null;
     /*------------------------------------------------------------------------------*/
     /**初始化，参数不能为空。*/
     public void init(AbstractApplicationContext applicationContext) {
@@ -247,7 +247,6 @@ class ProxyClassNameStrategy implements ClassNameStrategy {
     private static long         generateID  = 0;
     private static final String ClassPrefix = "_PF$"; //生成类的类名后缀名
     public void initStrategy(ClassEngine classEngine) {};
-    public void reset() {};
     public synchronized String generateName(Class<?> superClass) {
         String cn = superClass.getName();
         generateID++;

@@ -16,26 +16,26 @@
 package org.more.hypha.xml.tags.aop;
 import org.more.core.xml.XmlStackDecorator;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.define.AopPointcutDefine;
+import org.more.hypha.define.aop.AopPointcut;
 import org.more.hypha.xml.XmlDefineResource;
 /**
  * 用于解析aop:pointcut标签
  * @version 2010-9-22
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TagAop_Pointcut extends TagAop_AbstractPointcut<AopPointcutDefine> {
+public class TagAop_Pointcut extends TagAop_AbstractPointcut<AopPointcut> {
     /**创建{@link TagAop_Pointcut}对象*/
     public TagAop_Pointcut(XmlDefineResource configuration) {
         super(configuration);
     }
-    /**返回{@link AopPointcutDefine}类型对象。*/
-    protected AopPointcutDefine createDefine() {
-        return new AopPointcutDefine();
+    /**返回{@link AopPointcut}类型对象。*/
+    protected AopPointcut createDefine() {
+        return new AopPointcut();
     }
     /**开始标签解析expression属性。*/
     public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
         super.beginElement(context, xpath, event);
-        AopPointcutDefine define = this.getDefine(context);
+        AopPointcut define = this.getDefine(context);
         define.setExpression(event.getAttributeValue("expression"));
     }
 }

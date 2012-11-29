@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.hypha.xml.tags.aop;
-import org.more.hypha.define.AopPointcutType;
+import org.more.hypha.define.aop.AopPointcutType;
 import org.more.hypha.xml.XmlDefineResource;
 /**
  * 用于解析aop:before标签

@@ -33,7 +33,7 @@ import org.more.hypha.define.BeanDefine;
 import org.more.hypha.define.AbstractPropertyDefine;
 import org.more.hypha.define.ValueMetaData;
 import org.more.hypha.define.ClassPathBeanDefine;
-import org.more.hypha.define.ConstructorDefine;
+import org.more.hypha.define.ConstructorParamDefine;
 import org.more.hypha.define.EL_ValueMetaData;
 import org.more.hypha.define.MethodDefine;
 import org.more.hypha.define.ParamDefine;
@@ -133,11 +133,11 @@ class Watch_Bean implements KeepWatchParser {
                         break;
                     }
                 //2)创建ConstructorDefine
-                ConstructorDefine cDefine = new ConstructorDefine();
+                ConstructorParamDefine cDefine = new ConstructorParamDefine();
                 cDefine.setIndex(i);
                 cDefine.setClassType(cpt.getName());
                 //3)解析并添加
-                cDefine = (ConstructorDefine) getPropertyDefine(cpa, define, cDefine, resource);
+                cDefine = (ConstructorParamDefine) getPropertyDefine(cpa, define, cDefine, resource);
                 define.addInitParam(cDefine);
             }
             break;

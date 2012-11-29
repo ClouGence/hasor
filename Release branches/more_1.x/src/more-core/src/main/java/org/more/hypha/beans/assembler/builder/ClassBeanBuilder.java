@@ -24,7 +24,7 @@ import org.more.hypha.commons.logic.AbstractBeanBuilder;
 import org.more.hypha.commons.logic.ValueMetaDataParser;
 import org.more.hypha.context.AbstractApplicationContext;
 import org.more.hypha.define.ClassPathBeanDefine;
-import org.more.hypha.define.ConstructorDefine;
+import org.more.hypha.define.ConstructorParamDefine;
 import org.more.util.ConstructorPropxy;
 import org.more.util.PropxyObject;
 /**
@@ -52,7 +52,7 @@ public class ClassBeanBuilder extends AbstractBeanBuilder<ClassPathBeanDefine> {
             obj = this.tryCreateByFactory(define, params);
         else {
             log.debug("use builder create {%0}...", defineID);
-            Collection<ConstructorDefine> cdColl = define.getInitParams();
+            Collection<ConstructorParamDefine> cdColl = define.getInitParams();
             Object[] objects = this.transform_toObjects(null, cdColl, params);
             ConstructorPropxy cp = new ConstructorPropxy(defineType);
             for (Object o : objects)

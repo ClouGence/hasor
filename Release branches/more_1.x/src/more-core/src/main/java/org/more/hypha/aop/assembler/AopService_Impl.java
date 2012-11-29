@@ -22,8 +22,8 @@ import org.more.hypha.DefineResource;
 import org.more.hypha.aop.AopService;
 import org.more.hypha.commons.AbstractService;
 import org.more.hypha.define.BeanDefine;
-import org.more.hypha.define.AopAbstractPointcutDefine;
-import org.more.hypha.define.AopConfigDefine;
+import org.more.hypha.define.aop.AopPointcut;
+import org.more.hypha.define.aop.AopConfig;
 import org.more.util.attribute.IAttribute;
 /**
  * 该类的目的是为了扩展{@link DefineResource}接口对象以将aop信息附加到定义资源接口中。
@@ -33,8 +33,8 @@ import org.more.util.attribute.IAttribute;
 public class AopService_Impl extends AbstractService implements AopService {
     public static final String                  ServiceName  = "$more_aop_service";
     private static final String                 AopInfoName  = "$more_aop_info";
-    private Map<String, AopAbstractPointcutDefine> pointcutList = new HashMap<String, AopAbstractPointcutDefine>();
-    private Map<String, AopConfigDefine>        configList   = new HashMap<String, AopConfigDefine>();
+    private Map<String, AopPointcut> pointcutList = new HashMap<String, AopPointcut>();
+    private Map<String, AopConfig>        configList   = new HashMap<String, AopConfig>();
     //
     private AopBuilder                          aopBuilder   = null;
     //
@@ -62,12 +62,12 @@ public class AopService_Impl extends AbstractService implements AopService {
     }
     /**将一个aop配置携带到{@link BeanDefine}对象上，该方法可以在代码级上修改aop配置。*/
     public void setAop(BeanDefine define, String config) {
-        AopConfigDefine configDefine = this.configList.get(config);
+        AopConfig configDefine = this.configList.get(config);
         if (configDefine != null)
             this.getFungi(define).setAttribute(AopInfoName, configDefine);
     }
     /**将一个aop配置携带到{@link BeanDefine}对象上，该方法可以在代码级上修改aop配置。*/
-    public void setAop(BeanDefine define, AopConfigDefine config) {
+    public void setAop(BeanDefine define, AopConfig config) {
         if (define == null || config == null)
             throw new NullPointerException("define不能为空.");
         if (config != null)
@@ -78,31 +78,31 @@ public class AopService_Impl extends AbstractService implements AopService {
         this.getFungi(define).removeAttribute(AopInfoName);
     }
     /**获取{@link BeanDefine}对象上的aop配置，如果目标没有配置aop则返回null。*/
-    public AopConfigDefine getAopDefine(BeanDefine define) {
+    public AopConfig getAopDefine(BeanDefine define) {
         IAttribute<Object> att = this.getFungi(define);
         if (att.contains(AopInfoName) == true)
-            return (AopConfigDefine) att.getAttribute(AopInfoName);
+            return (AopConfig) att.getAttribute(AopInfoName);
         return null;
     }
     /**获取aop配置定义。*/
-    public AopConfigDefine getAopDefine(String name) {
+    public AopConfig getAopDefine(String name) {
         return this.configList.get(name);
     }
     /**获取一个定义的切入点。*/
-    public AopAbstractPointcutDefine getPointcutDefine(String name) throws DefineException {
+    public AopPointcut getPointcutDefine(String name) throws DefineException {
         if (this.pointcutList.containsKey(name) == false)
             throw new DefineException("不存在名称为[" + name + "]的AbstractPointcutDefine定义。");
         return this.pointcutList.get(name);
     }
     /**添加切点定义。*/
-    public void addPointcutDefine(AopAbstractPointcutDefine define) {
+    public void addPointcutDefine(AopPointcut define) {
         this.pointcutList.put(define.getName(), define);
     }
     /**删除切点定义。*/
     public void removePointcutDefine(String name) {
         this.pointcutList.remove(name);
     }
-    public void addAopDefine(AopConfigDefine define) {
+    public void addAopDefine(AopConfig define) {
         this.configList.put(define.getName(), define);
     }
     public void removeAopDefine(String name) {

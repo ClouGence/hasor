@@ -18,14 +18,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.more.hypha.define.aop.AopConfigDefine;
 import org.more.hypha.utils.DefineUtils;
 /**
  * TemplateBeanDefine类用于定义一个bean的模板。
  * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class BeanDefine extends AbstractDefine<BeanDefine> {
+public abstract class BeanDefine extends AbstractDefine {
     /**Base Info*/
     //
     /*每个Bean唯一的ID值。*/
@@ -67,11 +66,6 @@ public abstract class BeanDefine extends AbstractDefine<BeanDefine> {
     private Map<String, PropertyDefine> propertys     = new HashMap<String, PropertyDefine>();
     /*方法成员*/
     private Map<String, MethodDefine>   methods       = new HashMap<String, MethodDefine>();
-    /*------------------------------------------------------------------*/
-    /**Expand Info*/
-    //
-    /*有关Aop方面的配置描述*/
-    private AopConfigDefine             aopConfig     = null;
     /*------------------------------------------------------------------*/
     /**返回具有特征的字符串。*/
     public String toString() {
@@ -197,13 +191,5 @@ public abstract class BeanDefine extends AbstractDefine<BeanDefine> {
     /**设置方法成员*/
     public void setMethods(Map<String, MethodDefine> methods) {
         this.methods = methods;
-    }
-    /**获取有关Aop方面的配置描述*/
-    public AopConfigDefine getAopConfig() {
-        return aopConfig;
-    }
-    /**设置有关Aop方面的配置描述*/
-    public void setAopConfig(AopConfigDefine aopConfig) {
-        this.aopConfig = aopConfig;
     }
 }

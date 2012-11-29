@@ -17,7 +17,6 @@ package org.more.hypha.beans.assembler;
 import java.io.IOException;
 import org.more.core.error.LoadException;
 import org.more.core.xml.XmlParserKit;
-import org.more.hypha.commons.xml.AbstractXmlRegister;
 import org.more.hypha.xml.XmlDefineResource;
 import org.more.hypha.xml.XmlNameSpaceRegister;
 import org.more.hypha.xml.tags.beans.TagBeans_Array;

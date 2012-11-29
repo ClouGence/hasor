@@ -22,9 +22,9 @@ import org.more.core.xml.stream.EndElementEvent;
 import org.more.core.xml.stream.StartElementEvent;
 import org.more.hypha.aop.AopService;
 import org.more.hypha.define.BeanDefine;
-import org.more.hypha.define.AopAbstractInformed;
-import org.more.hypha.define.AopAbstractPointcutDefine;
-import org.more.hypha.define.AopConfigDefine;
+import org.more.hypha.define.aop.AopProcessor;
+import org.more.hypha.define.aop.AopPointcut;
+import org.more.hypha.define.aop.AopConfig;
 import org.more.hypha.xml.XmlDefineResource;
 import org.more.hypha.xml.tags.beans.TagBeans_AbstractBeanDefine;
 import org.more.util.StringConvertUtil;
@@ -41,7 +41,7 @@ public class TagAop_Config extends TagAop_NS implements XmlElementHook {
     }
     /**开始标签处理。*/
     public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) {
-        AopConfigDefine config = new AopConfigDefine();
+        AopConfig config = new AopConfig();
         //att :name
         String name = event.getAttributeValue("name");
         //att :aopMode
@@ -54,10 +54,10 @@ public class TagAop_Config extends TagAop_NS implements XmlElementHook {
     /**结束标签处理。*/
     public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) {
         BeanDefine bean = (BeanDefine) context.getAttribute(TagBeans_AbstractBeanDefine.BeanDefine);
-        AopConfigDefine config = (AopConfigDefine) context.getAttribute(ConfigDefine);
+        AopConfig config = (AopConfig) context.getAttribute(ConfigDefine);
         //1.检查内部的Informed
-        AopAbstractPointcutDefine defaultPointcutDefine = config.getDefaultPointcutDefine();
-        for (AopAbstractInformed informed : config.getAopInformedList())
+        AopPointcut defaultPointcutDefine = config.getDefaultPointcutDefine();
+        for (AopProcessor informed : config.getAopInformedList())
             if (informed.getRefPointcut() == null)
                 informed.setRefPointcut(defaultPointcutDefine);
         //3.注册

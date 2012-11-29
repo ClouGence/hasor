@@ -15,8 +15,8 @@
  */
 package org.more.hypha.xml.tags.aop;
 import org.more.core.xml.stream.StartElementEvent;
-import org.more.hypha.define.AopDefineInformed;
-import org.more.hypha.define.AopPointcutType;
+import org.more.hypha.define.aop.AopDefineInformed;
+import org.more.hypha.define.aop.AopPointcutType;
 import org.more.hypha.xml.XmlDefineResource;
 /**
  * 用于解析aop:filter标签
