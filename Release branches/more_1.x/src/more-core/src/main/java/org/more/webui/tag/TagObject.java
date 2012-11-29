@@ -91,6 +91,8 @@ public class TagObject implements TemplateDirectiveModel {
         return null;
     }
     public void exec(UIComponent component, Environment arg0, Map<String, Object> objMap, TemplateModel[] arg2, TemplateDirectiveBody arg3) throws TemplateException, IOException {
+        if (component == null)
+            return;
         //A.获取组建
         component.setupPropertys(objMap);
         //B.判断时候需要执行渲染

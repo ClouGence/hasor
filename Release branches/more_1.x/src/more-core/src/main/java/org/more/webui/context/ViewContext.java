@@ -113,7 +113,7 @@ public class ViewContext extends HashMap<String, Object> {
             //
             TemplateScanner scanner = this.getUIContext().getEnvironment().getTemplateScanner();
             //B.解析模板获取UIViewRoot
-            this.viewRoot = (UIViewRoot) scanner.parser(tempRoot, new UIViewRoot(), this.getUIContext());
+            this.viewRoot = (UIViewRoot) scanner.parser(tempRoot, new UIViewRoot(), this);
         }
         //B.返回UIViewRoot
         return this.viewRoot;

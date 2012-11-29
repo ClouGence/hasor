@@ -15,7 +15,7 @@
  */
 package org.more.webui.freemarker.parser;
 import org.more.webui.component.UIComponent;
-import org.more.webui.context.FacesContext;
+import org.more.webui.context.ViewContext;
 import freemarker.core.TemplateElement;
 /**
  * freemarker模板元素块钩子。
@@ -24,7 +24,7 @@ import freemarker.core.TemplateElement;
  */
 public interface ElementHook {
     /**开始处理遇到的模板标签*/
-    public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, FacesContext uiContext) throws ElementHookException;
+    public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, ViewContext viewContext) throws ElementHookException;
     /**处理遇到的模板标签结束*/
-    public void endAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, FacesContext uiContext) throws ElementHookException;
+    public void endAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, ViewContext viewContext) throws ElementHookException;
 }

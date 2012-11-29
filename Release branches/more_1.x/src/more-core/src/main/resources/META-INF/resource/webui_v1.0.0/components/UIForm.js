@@ -66,7 +66,10 @@ WebUI.Component.$extends("UIForm", "UIComponent", {
 			var uio = this.uiObject;
 			if (uio.isForm() == false)
 				return;
-			paramData[uio.getName()] = uio.value();
+			if (WebUI.isNaN(uio.selectKey) == false)
+				paramData[uio.name()] = uio.selectKey();
+			else
+				paramData[uio.name()] = uio.value();
 		});
 		return paramData;
 	},

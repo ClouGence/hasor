@@ -18,7 +18,6 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import org.more.webui.component.UIComponent;
-import org.more.webui.context.FacesContext;
 import org.more.webui.context.ViewContext;
 import freemarker.core.Expression;
 import freemarker.core.TemplateElement;
@@ -30,10 +29,10 @@ import freemarker.core.TemplateElement;
 public class Hook_UserTag implements ElementHook {
     public static String Name = "UnifiedCall";
     @Override
-    public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, FacesContext uiContext) throws ElementHookException {
+    public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, ViewContext viewContext) throws ElementHookException {
         //A.创建组建
         String tagName = e.getDescription().split(" ")[1];
-        UIComponent componentObject = uiContext.getComponent(tagName);
+        UIComponent componentObject = viewContext.getUIContext().getComponent(tagName);
         if (componentObject == null)
             return null;
         componentObject.getAtts().put(Name, e);//设置来源的TemplateElement
@@ -76,5 +75,5 @@ public class Hook_UserTag implements ElementHook {
         return componentObject;
     }
     @Override
-    public void endAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, FacesContext uiContext) throws ElementHookException {}
+    public void endAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, ViewContext viewContext) throws ElementHookException {}
 }

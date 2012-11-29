@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 package org.more.webui.freemarker.parser;
+import org.more.core.ognl.Ognl;
 import org.more.webui.component.UIComponent;
-import org.more.webui.context.FacesContext;
+import org.more.webui.context.ViewContext;
 import freemarker.core.TemplateElement;
 import freemarker.template.Template;
 /**
@@ -26,17 +27,21 @@ import freemarker.template.Template;
 public class Hook_Include implements ElementHook {
     public static String Name = "Include";
     @Override
-    public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, FacesContext uiContext) throws ElementHookException {
+    public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, ViewContext viewContext) throws ElementHookException {
         try {
             String includeName = e.getDescription().split(" ")[1];
             includeName = includeName.substring(1, includeName.length() - 1);
+            includeName = includeName.trim();
+            /*处理include的el*/
+            if (includeName.startsWith("${") == true && includeName.endsWith("}"))
+                includeName = (String) Ognl.getValue(includeName.substring(2, includeName.length() - 1), viewContext.getViewELContext());
             Template includeTemp = e.getTemplate().getConfiguration().getTemplate(includeName);
-            scanner.parser(includeTemp, parent, uiContext);
+            scanner.parser(includeTemp, parent, viewContext);
             return null;
         } catch (Exception e2) {
             throw new ElementHookException("解析异常：处理include发生错误“" + e.getDescription() + "”", e2);
         }
     }
     @Override
-    public void endAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, FacesContext uiContext) throws ElementHookException {}
+    public void endAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, ViewContext viewContext) throws ElementHookException {}
 }

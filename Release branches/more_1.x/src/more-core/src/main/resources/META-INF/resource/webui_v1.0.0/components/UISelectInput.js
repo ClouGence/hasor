@@ -176,7 +176,18 @@ WebUI.Component.$extends("UISelectInput", "UIInput", {
 		/** 数据（RW） */
 		this.defineProperty("listData", function() {
 			var returnData = this.getState().get("listData");
-			return (WebUI.isNaN(returnData) == true) ? [] : WebUI.isArray(returnData) ? returnData : [ returnData ];
+			if (WebUI.isNaN(returnData) == true)
+				return [];
+			if (WebUI.isArray(returnData) == true)
+				return returnData;
+			if (typeof (returnData) == 'string')
+				try {
+					return eval('(' + returnData + ')');
+				} catch (e) {
+					return [ returnData ];
+				}
+			else
+				return [ returnData ];
 		}, function(newValue) {
 			this.getState().set("listData", newValue);
 		});
