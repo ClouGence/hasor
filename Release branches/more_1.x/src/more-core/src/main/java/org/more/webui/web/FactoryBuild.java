@@ -80,7 +80,7 @@ class FactoryBuild {
         /*添加生命周期监听器*/
         BeanManager beanManager = context.getBeanContext();
         Set<Class<?>> classSet = classUtil.getClassSet(UIPhaseListener.class);
-        for (Class<?> type : classSet)
+        for (Class type : classSet)
             if (PhaseListener.class.isAssignableFrom(type) == false)
                 throw new ClassCastException(type + " to PhaseListener");
             else {

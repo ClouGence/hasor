@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.more.webui.freemarker.parser;
-import org.more.core.ognl.Ognl;
 import org.more.webui.component.UIComponent;
 import org.more.webui.context.ViewContext;
 import freemarker.core.TemplateElement;
@@ -31,10 +30,8 @@ public class Hook_Include implements ElementHook {
         try {
             String includeName = e.getDescription().split(" ")[1];
             includeName = includeName.substring(1, includeName.length() - 1);
-            includeName = includeName.trim();
             /*´¦ÀíincludeµÄel*/
-            if (includeName.startsWith("${") == true && includeName.endsWith("}"))
-                includeName = (String) Ognl.getValue(includeName.substring(2, includeName.length() - 1), viewContext.getViewELContext());
+            viewContext.processTemplateString(includeName.trim());
             Template includeTemp = e.getTemplate().getConfiguration().getTemplate(includeName);
             scanner.parser(includeTemp, parent, viewContext);
             return null;

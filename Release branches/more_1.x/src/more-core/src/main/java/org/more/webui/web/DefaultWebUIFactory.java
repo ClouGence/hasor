@@ -17,6 +17,7 @@ package org.more.webui.web;
 import org.more.webui.context.BeanManager;
 import org.more.webui.context.FacesConfig;
 import org.more.webui.context.FacesContext;
+import org.more.webui.context.guice.GuiceBeanManager;
 import org.more.webui.freemarker.loader.ClassPathTemplateLoader;
 import org.more.webui.lifestyle.Lifecycle;
 import freemarker.cache.MruCacheStorage;
@@ -37,12 +38,16 @@ public class DefaultWebUIFactory implements WebUIFactory {
     }
 }
 class DefaultFacesContext extends FacesContext {
-    private BeanManager   bManager = new DefaultBeanManager();
+    private BeanManager   bManager = null;
     private Configuration cfg      = null;
     public DefaultFacesContext(FacesConfig facesConfig) {
         super(facesConfig);
     }
     public BeanManager getBeanContext() {
+        if (this.bManager == null) {
+            this.bManager = new GuiceBeanManager();
+            this.bManager.init(this.getEnvironment());
+        }
         return bManager;
     }
     public Configuration createFreemarker() {
@@ -55,17 +60,5 @@ class DefaultFacesContext extends FacesContext {
         cfg.setCacheStorage(new MruCacheStorage(0, Integer.MAX_VALUE));
         cfg.setClassicCompatible(true);
         return cfg;
-    }
-}
-class DefaultBeanManager implements BeanManager {
-    @Override
-    public <T> T getBean(Class<?> type) {
-        try {
-            return (T) type.newInstance();
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
-        }
     }
 }

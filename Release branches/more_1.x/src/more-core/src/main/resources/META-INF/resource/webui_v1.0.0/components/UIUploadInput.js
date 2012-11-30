@@ -210,7 +210,7 @@ WebUI.Component.$extends("UIUploadInput", "UIInput", {
 	},
 	initUpload : function() {
 		var __span = "<span id='" + this.clientID + "PlaceID'/>";
-		var __input = "<input id='" + this.clientID + "Input' name='paperFile' value='null' type='hidden'/>";
+		var __input = "<input id='" + this.clientID + " Input' name='" + this.name() + "' value='null' type='hidden'/>";
 		var __div = "<div id='" + this.clientID + "Progress' style='display:none;'/>";
 		$(this.getElement()).html(__span + __input + __div);
 		var uploadAction = this.uploadAction();
@@ -310,19 +310,20 @@ WebUI.Component.$extends("UIUploadInput", "UIInput", {
 		});
 		/** 覆盖value属性 */
 		this.defineProperty("value", function() {
-			return $("#" + this.componentID + "Input").attr("value");
+			return $("#" + this.componentID + " Input").attr("value");
 		}, function(newValue) {
 			if (WebUI.isArray(newValue) || WebUI.isObject(newValue))
 				newValue = JSON.stringify(newValue);
-			$("#" + this.componentID + "Input").attr("value", newValue);
+			$("#" + this.componentID + " Input").attr("value", newValue);
 			if (WebUI.isNaN(this.onchange) == false)
 				this.onchange.call(this, newValue);// 事件没法帮上，在加上所有设置值都是通过该方法进行，因此在此处触发事件。
 		});
 		/** 表单名（RW） */
 		this.defineProperty("name", function() {
-			return $("#" + this.componentID + "Input").attr("name");
+			return this.getState().get("name");
 		}, function(newValue) {
-			$("#" + this.componentID + "Input").attr("name", newValue);
+			$("#" + this.componentID + " Input").attr("name", newValue);
+			this.getState().set("name", newValue);
 		});
 		/** 获取progressTargetID（R） */
 		this.defineProperty("progressTargetID", function() {

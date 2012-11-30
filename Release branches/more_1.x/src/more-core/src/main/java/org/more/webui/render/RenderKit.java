@@ -45,7 +45,7 @@ public class RenderKit {
     }
     /**获取渲染器对象。*/
     public Render<?> getRender(String tagName) {
-        Class<?> beanType = this.renderMapping.get(tagName);
+        Class beanType = this.renderMapping.get(tagName);
         return this.facesContext.getBeanContext().getBean(beanType);
     }
     /**添加渲染器映射。*/

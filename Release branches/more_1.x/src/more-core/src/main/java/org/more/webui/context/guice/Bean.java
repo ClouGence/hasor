@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.context;
+package org.more.webui.context.guice;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * bean管理器，该类继承Map接口接口后map会被加入到El上下文
- * @version : 2012-6-27
+ * 
+ * @version : 2012-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface BeanManager {
-    /**初始化。*/
-    public void init(FacesConfig environment);
-    /**获取需要的Bean对象。*/
-    public <T> T getBean(Class<T> type);
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Bean {
+    public String value() default "";
 }

@@ -88,7 +88,7 @@ public abstract class FacesContext {
     public UIComponent getComponent(String tagName) {
         if (componentObjectMap.containsKey(tagName) == true)
             return componentObjectMap.get(tagName);
-        Class<?> componentBeanType = this.componentTypeMap.get(tagName);
+        Class componentBeanType = this.componentTypeMap.get(tagName);
         if (componentBeanType == null)
             return null;
         return this.getBeanContext().getBean(componentBeanType);
