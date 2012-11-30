@@ -1,8 +1,8 @@
 package org.noe;
-import java.util.List;
 import java.util.Map;
 import org.more.webui.context.ViewContext;
-@Service("WebUIDemoService")
+import org.more.webui.context.guice.Bean;
+@Bean("WebUIDemoService")
 public class WebUIDemoService {
     private String desc;
     public String getDesc() {
@@ -22,13 +22,5 @@ public class WebUIDemoService {
     public String submitMap(Map mapData) {
         System.out.println(mapData.get("i_name"));
         return "heeel";
-    }
-    public List<?> getConstData() {
-        ConstService constService = AppUtil.getObj(ConstService.class);
-        //
-        TreeConstBean constBean = constService.loadConstByCode("BIZ_TPS_Setting", null);
-        if (constBean == null)
-            return null;
-        return constBean.getVarList();
     }
 }

@@ -79,6 +79,7 @@ public class ClassTest {
     }
     @Test
     public void test_10() throws Exception {
+        /*代理的代理*/
         RootClassLoader root = new RootClassLoader(ClassLoader.getSystemClassLoader());
         ClassEngine ce_1 = new ClassEngine(ClassTest.class, root);
         ce_1.setBuilderMode(BuilderMode.Propxy);

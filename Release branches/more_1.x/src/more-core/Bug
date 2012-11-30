@@ -33,11 +33,6 @@ more core
   	1.提供了三种xml访问级别。
   	2.可以针对xml命名空间进行解析。
   6.增加了Global全局配置文件读取器，通过它可以在配置文件中配置json格式的数据，它还支持同时装载多个配置文件。并且可以独立访问每个配置文件。
-#log v2.0
-  1.重写了Log组建。
-  2.增加级别概念，在不同的级别上可以输出不同级别的日志。内置了high、below、default，三个日志输出级别。
-  3.日志的消息类型可扩展，内置了debug、info、error、warning，四个类型。
-  4.增加了filters概念，可以通过filters来过滤起作用的日志输出源。
 classcode v2.0
   1.升级classcode代码，全部重写相关代码。目前版本v2.0
   2.可以在对象上增加一个任意属性并且可以通过属性策略指定其readonly特性。
@@ -46,3 +41,4 @@ classcode v2.0
   5.改进了aopFilter接口注入的方法。
 删除了 json
 删除了 copybean。
+删除了 log v2.0

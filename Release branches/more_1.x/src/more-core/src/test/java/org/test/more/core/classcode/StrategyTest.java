@@ -93,7 +93,6 @@ class Test_ClassNameStrategy implements ClassNameStrategy {
         return simpleNS + new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());
     }
     public void initStrategy(ClassEngine classEngine) {}
-    public void reset() {}
 }
 /**
  *
@@ -101,7 +100,6 @@ class Test_ClassNameStrategy implements ClassNameStrategy {
  * @author 赵永春 (zyc@byshell.org)
  */
 class Test_PropertyStrategy implements PropertyStrategy {
-    public void reset() {}
     public boolean isReadOnly(String name, Class<?> type, boolean isDelegate) {
         return true;//所有属性均只读
     }
@@ -118,7 +116,6 @@ class Test_DelegateStrategy implements DelegateStrategy {
         return Map.class == delegateType;//忽略Map接口实现。
     }
     public void initStrategy(ClassEngine classEngine) {}
-    public void reset() {}
 }
 class Test_MethodStrategy implements MethodStrategy {
     public boolean isIgnore(Class<?> superClass, Object ignoreMethod, boolean isConstructor) {
@@ -126,5 +123,4 @@ class Test_MethodStrategy implements MethodStrategy {
         return false;
     }
     public void initStrategy(ClassEngine classEngine) {}
-    public void reset() {}
 }

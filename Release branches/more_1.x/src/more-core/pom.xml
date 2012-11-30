@@ -30,7 +30,6 @@
 		<!-- <version>3.1</version> -->
 		<!-- <optional>true</optional> -->
 		<!-- </dependency> -->
-
 		<!-- J2EE -->
 		<dependency>
 			<groupId>org.jboss.spec.javax.servlet</groupId>
@@ -59,13 +58,18 @@
 			<artifactId>fastjson</artifactId>
 			<version>1.1.21</version>
 		</dependency>
+		<!-- commons-lang -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+		</dependency>
 		<!-- upload -->
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 			<version>1.2.2</version>
 		</dependency>
-
 		<!-- Guice3 -->
 		<dependency>
 			<groupId>com.google.inject</groupId>
@@ -73,8 +77,6 @@
 			<version>3.0</version>
 			<optional>true</optional>
 		</dependency>
-
-
 		<!-- Jetty 8 -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
@@ -89,10 +91,6 @@
 		<!-- <artifactId>jetty-jsp</artifactId> -->
 		<!-- <version>8.1.2.v20120308</version> -->
 		<!-- </dependency> -->
-
-
-
-
 		<!-- Spring2.5 -->
 		<!-- <dependency> -->
 		<!-- <groupId>org.springframework</groupId> -->

@@ -20,9 +20,10 @@ package org.test.more.core.classcode;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class TestBean2 implements TestBean2_Face {
-    private long  p_long   = 0;
-    private float p_float  = 0;
-    private int   p_double = 0;
+    private long    p_long    = 0;
+    private float   p_float   = 0;
+    private int     p_double  = 0;
+    private boolean p_boolean = false;
     //
     public long getP_long() {
         return p_long;
@@ -41,5 +42,11 @@ public class TestBean2 implements TestBean2_Face {
     }
     public void setP_double(int p_double) {
         this.p_double = p_double;
+    }
+    public Boolean isP_boolean() {
+        return p_boolean;
+    }
+    public void setP_boolean(Boolean p_boolean) {
+        this.p_boolean = p_boolean;
     }
 }

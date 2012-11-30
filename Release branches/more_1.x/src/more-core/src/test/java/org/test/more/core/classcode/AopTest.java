@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.test.more.core.classcode;
+import java.io.FileOutputStream;
 import java.lang.annotation.Annotation;
 import org.junit.Test;
 import org.more.core.classcode.AopBeforeListener;
@@ -51,7 +52,7 @@ public class AopTest {
     @Test
     public void test_2() throws Exception {
         ClassEngine ce = new ClassEngine(TestBean2.class);
-        ce.setBuilderMode(BuilderMode.Propxy);
+        ce.setBuilderMode(BuilderMode.Super);
         //
         ce.addListener(new Test_BeforeListener());
         ce.addListener(new Test_ReturningListener());
@@ -59,6 +60,10 @@ public class AopTest {
         ce.addAopFilter(new Test_Filter(1));
         ce.addAopFilter(new Test_Filter(2));
         //
+        //        FileOutputStream fos = new FileOutputStream(ce.builderClass().getSimpleName() + ".class");
+        //        fos.write(ce.toBytes());
+        //        fos.flush();
+        //        fos.close();
         Object obj = ce.newInstance(new TestBean2());
         TestBean2_Face face = (TestBean2_Face) obj;
         //
@@ -69,10 +74,6 @@ public class AopTest {
         face.setP_long(13l);
         face.getP_long();
         //
-        //        FileOutputStream fos = new FileOutputStream(ce.builderClass().getSimpleName() + ".class");
-        //        fos.write(ce.toBytes());
-        //        fos.flush();
-        //        fos.close();
         //
         System.out.println(face.getP_long());
     };
@@ -103,7 +104,8 @@ class Test_ReturningListener implements AopReturningListener {
     }
 }
 class Test_ThrowingListener implements AopThrowingListener {
-    public void throwsException(Object target, Method method, Object[] args, Throwable e) {
+    public Throwable throwsException(Object target, Method method, Object[] args, Throwable e) {
         System.out.println("throwingListener");
+        return e;
     }
 }
