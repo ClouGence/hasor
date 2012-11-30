@@ -36,6 +36,9 @@ public abstract class ClassUtil {
     public static ClassUtil newInstance(String[] scanPackages) {
         return new ClassUtil(scanPackages) {};
     }
+    public static ClassUtil newInstance(String scanPackages) {
+        return new ClassUtil(new String[] { scanPackages }) {};
+    }
     /**
      * 扫描jar包中凡是匹配compareType参数的类均被返回。（对执行结果不缓存）
      * @param packagePath 要扫描的包名。
