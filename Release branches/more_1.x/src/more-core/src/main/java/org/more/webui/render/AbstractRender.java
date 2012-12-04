@@ -1,4 +1,4 @@
-ï»¿/*
+/*
  * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,13 +32,13 @@ import freemarker.template.TemplateModelException;
 /**
  * 
  * @version : 2012-5-18
- * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
+ * @author ÕÔÓÀ´º (zyc@byshell.org)
  */
 public abstract class AbstractRender<T extends UIComponent> implements Render<T> {
     private String tagString = null;
-    /**è·å–æ¸²æŸ“çš„å®¢æˆ·ç«¯ç»„å»ºæ¨¡å‹åã€‚æ¯ä¸€ä¸ªå®¢æˆ·ç«¯ç»„å»ºéƒ½ä¼šå¯¹åº”ä¸€ä¸ªjsè„šæœ¬ã€‚*/
+    /**»ñÈ¡äÖÈ¾µÄ¿Í»§¶Ë×é½¨Ä£ĞÍÃû¡£Ã¿Ò»¸ö¿Í»§¶Ë×é½¨¶¼»á¶ÔÓ¦Ò»¸öjs½Å±¾¡£*/
     public abstract String getClientType();
-    /**è¦ä½¿ç”¨çš„æ ‡ç­¾*/
+    /**ÒªÊ¹ÓÃµÄ±êÇ©*/
     public abstract String tagName(ViewContext viewContext, T component);
     @Override
     public void beginRender(ViewContext viewContext, T component, TemplateBody arg3, Writer writer) throws IOException, TemplateModelException {
@@ -90,15 +90,15 @@ public abstract class AbstractRender<T extends UIComponent> implements Render<T>
     public void endRender(ViewContext viewContext, T component, TemplateBody arg3, Writer writer) throws IOException, TemplateModelException {
         writer.write("</" + this.tagString + ">");
     };
-    /**ä½äºæ ‡ç­¾ä¸Šçš„å±æ€§åï¼Œå¦‚æœåä¸æ ¸å¿ƒå±æ€§åå‘ç”Ÿå†²çªåˆ™ä¿ç•™æ ¸å¿ƒå±æ€§ã€‚*/
+    /**Î»ÓÚ±êÇ©ÉÏµÄÊôĞÔÃû£¬Èç¹ûÃûÓëºËĞÄÊôĞÔÃû·¢Éú³åÍ»Ôò±£ÁôºËĞÄÊôĞÔ¡£*/
     public Map<String, Object> tagAttributes(ViewContext viewContext, T component) {
         HashMap<String, Object> mineState = new HashMap<String, Object>();
         Map<String, AbstractValueHolder> comProp = component.getPropertys();
         for (String propName : comProp.keySet()) {
-            //a.è·å–å±æ€§çš„get/setæ–¹æ³•
+            //a.»ñÈ¡ÊôĞÔµÄget/set·½·¨
             Method rm = BeanUtil.getReadMethod(propName, component.getClass());
             Method wm = BeanUtil.getWriteMethod(propName, component.getClass());
-            //b.åªæœ‰æ²¡æœ‰å®šä¹‰get/setæ–¹æ³•çš„å±æ€§æ‰ä¼šè¢«é€‰ä¸­ã€‚
+            //b.Ö»ÓĞÃ»ÓĞ¶¨Òåget/set·½·¨µÄÊôĞÔ²Å»á±»Ñ¡ÖĞ¡£
             if (rm == null && wm == null) {
                 AbstractValueHolder vh = comProp.get(propName);
                 mineState.put(propName.toLowerCase(), vh.value());
@@ -109,7 +109,7 @@ public abstract class AbstractRender<T extends UIComponent> implements Render<T>
             mineState.put("class", avh);
         return mineState;
     };
-    /**æ˜¯å¦ä¿å­˜çŠ¶æ€ã€‚*/
+    /**ÊÇ·ñ±£´æ×´Ì¬¡£*/
     public boolean isSaveState(ViewContext viewContext, T component) {
         return true;
     }

@@ -26,8 +26,9 @@ public class CookieScope extends HashMap<String, Object> {
     private static final long serialVersionUID = -3056532859705478664L;
     public CookieScope(ViewContext viewContext) {
         Cookie[] cookies = viewContext.getHttpRequest().getCookies();
-        for (Cookie cookie : cookies)
-            super.put(cookie.getName(), cookie.getValue());
+        if (cookies != null)
+            for (Cookie cookie : cookies)
+                super.put(cookie.getName(), cookie.getValue());
     }
     @Override
     public Object get(Object key) {
