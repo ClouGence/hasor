@@ -34,13 +34,13 @@ class AopClassAdapter extends ClassAdapter implements Opcodes {
     private String              asmClassName        = null;
     //
     /**生成的Aop方法前缀*/
-    public final static String  AopMethodPrefix     = "$method_";
+    public final static String  AopMethodPrefix     = "$aopFun";
     /**生成的字段名*/
     public final static String  AopMethodArrayName  = "$aopMethods";
     private final static String AopMethodType       = EngineToos.toAsmType(org.more.core.classcode.Method.class);
     private final static String AopMethodArrayType  = EngineToos.toAsmType(org.more.core.classcode.Method[].class);
     /**生成的字段名*/
-    public final static String  AopFilterChainName  = "$aopfilterChain";
+    public final static String  AopFilterChainName  = "$aopFilterChain";
     /**具有aop特性的方法特定描述*/
     private ArrayList<String>   renderAopMethodList = new ArrayList<String>();
     //==================================================================================Constructor
@@ -78,6 +78,8 @@ class AopClassAdapter extends ClassAdapter implements Opcodes {
         Class<?> superClass = ce.getSuperClass();
         Class<?>[] paramTypes = EngineToos.toJavaType(asmParams, ce.getRootClassLoader());
         Method method = EngineToos.findMethod(superClass, name, paramTypes);
+        if (name.contains("$") == true)
+            return super.visitMethod(access, name, desc, signature, exceptions);//忽略方法
         if (method != null)
             if (aopStrategy.isIgnore(superClass, method) == true)
                 return super.visitMethod(access, name, desc, signature, exceptions);//忽略方法
@@ -115,6 +117,88 @@ class AopClassAdapter extends ClassAdapter implements Opcodes {
         mv.visitFieldInsn(PUTFIELD, this.asmClassName, propertyName, asmFieldType);
         mv.visitInsn(RETURN);
         mv.visitMaxs(1, 1);
+        mv.visitEnd();
+    }
+    public void visitAOPMethod__(final int index, final MethodVisitor mv, final String originalMethodName, final String desc) {
+        //
+        //1.准备输出方法数据
+        Pattern p = Pattern.compile("\\((.*)\\)(.*)");
+        Matcher m = p.matcher(desc);
+        m.find();
+        String[] asmParams = EngineToos.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
+        String asmReturns = m.group(2);
+        int paramCount = asmParams.length;
+        int localVarSize = paramCount + 1;//方法变量表大小
+        int maxStackSize = 0;//方法最大堆栈大小
+        //
+        //2.输出数据
+        //  mv = cw.visitMethod(ACC_PUBLIC, "getP_long", "(IZLjava/lang/Object;IZLjava/lang/Object;)J", null, null);
+        //  mv.visitCode();
+        Label l0 = new Label();
+        mv.visitLabel(l0);
+        mv.visitLineNumber(27, l0);
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitFieldInsn(GETFIELD, this.asmClassName, AopFilterChainName, EngineToos.toAsmType(AopFilterChain_Start[].class));
+        Label l1 = new Label();
+        mv.visitJumpInsn(IFNONNULL, l1);
+        Label l2 = new Label();
+        mv.visitLabel(l2);
+        mv.visitLineNumber(28, l2);
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitMethodInsn(INVOKESPECIAL, this.asmClassName, AopMethodPrefix + originalMethodName, desc);
+        mv.visitInsn(LRETURN);
+        mv.visitLabel(l1);
+        mv.visitLineNumber(29, l1);
+        mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+        mv.visitIntInsn(BIPUSH, 6);
+        mv.visitTypeInsn(ANEWARRAY, "java/lang/Object");
+        mv.visitInsn(DUP);
+        mv.visitInsn(ICONST_0);
+        mv.visitVarInsn(ILOAD, 1);
+        mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;");
+        mv.visitInsn(AASTORE);
+        mv.visitInsn(DUP);
+        mv.visitInsn(ICONST_1);
+        mv.visitVarInsn(ILOAD, 2);
+        mv.visitMethodInsn(INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;");
+        mv.visitInsn(AASTORE);
+        mv.visitInsn(DUP);
+        mv.visitInsn(ICONST_2);
+        mv.visitVarInsn(ALOAD, 3);
+        mv.visitInsn(AASTORE);
+        mv.visitInsn(DUP);
+        mv.visitInsn(ICONST_3);
+        mv.visitVarInsn(ILOAD, 4);
+        mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;");
+        mv.visitInsn(AASTORE);
+        mv.visitInsn(DUP);
+        mv.visitInsn(ICONST_4);
+        mv.visitVarInsn(ILOAD, 5);
+        mv.visitMethodInsn(INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;");
+        mv.visitInsn(AASTORE);
+        mv.visitInsn(DUP);
+        mv.visitInsn(ICONST_5);
+        mv.visitVarInsn(ALOAD, 6);
+        mv.visitInsn(AASTORE);
+        mv.visitVarInsn(ASTORE, 7);
+        Label l3 = new Label();
+        mv.visitLabel(l3);
+        mv.visitLineNumber(30, l3);
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitFieldInsn(GETFIELD, this.asmClassName, AopFilterChainName, EngineToos.toAsmType(AopFilterChain_Start[].class));
+        mv.visitInsn(ICONST_0);
+        mv.visitInsn(AALOAD);
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitFieldInsn(GETFIELD, this.asmClassName, AopMethodArrayName, AopMethodArrayType);
+        mv.visitInsn(ICONST_0);
+        mv.visitInsn(AALOAD);
+        mv.visitVarInsn(ALOAD, 7);
+        mv.visitMethodInsn(INVOKEVIRTUAL, "org/more/core/classcode/AopFilterChain_Start", "doInvokeFilter", "(Ljava/lang/Object;Lorg/more/core/classcode/Method;[Ljava/lang/Object;)Ljava/lang/Object;");
+        mv.visitTypeInsn(CHECKCAST, "java/lang/Long");
+        mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Long", "longValue", "()J");
+        mv.visitInsn(LRETURN);
+        mv.visitMaxs(4, 8);
         mv.visitEnd();
     }
     /**实现AOP方法的输出，其中指令详见ASM3.2的{@link Opcodes}接口定义。 */

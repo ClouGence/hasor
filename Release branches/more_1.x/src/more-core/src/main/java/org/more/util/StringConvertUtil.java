@@ -203,9 +203,9 @@ public abstract class StringConvertUtil {
                 return StringConvertUtil.DefaultValue_Boolean;
             return defaultValue[0];
         } else if (value.equals("0") == true || value.equals("no") == true || value.equals("N") == true)
-            return (defaultValue.length >= 1) ? defaultValue[0] : StringConvertUtil.DefaultValue_Boolean; //false;
+            return StringConvertUtil.DefaultValue_Boolean; //false;
         else if (value.equals("1") == true || value.equals("yes") == true || value.equals("Y") == true)
-            return (defaultValue.length >= 1) ? defaultValue[0] : !StringConvertUtil.DefaultValue_Boolean; //true;
+            return !StringConvertUtil.DefaultValue_Boolean; //true;
         else
             return Boolean.parseBoolean(value);
     }

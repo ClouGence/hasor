@@ -85,6 +85,12 @@
 			<optional>true</optional>
 			<scope>test</scope>
 		</dependency>
+
+
+
+
+
+
 		<!-- JSP Support -->
 		<!-- <dependency> -->
 		<!-- <groupId>org.eclipse.jetty</groupId> -->
@@ -106,13 +112,13 @@
 		<!-- <optional>true</optional> -->
 		<!-- </dependency> -->
 		<!-- hsqldb 2.0.0 -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.hsqldb</groupId> -->
-		<!-- <artifactId>hsqldb</artifactId> -->
-		<!-- <version>2.0.0</version> -->
-		<!-- <scope>test</scope> -->
-		<!-- <optional>true</optional> -->
-		<!-- </dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.hsqldb</groupId> -->
+<!-- 			<artifactId>hsqldb</artifactId> -->
+<!-- 			<version>2.0.0</version> -->
+<!-- 			<scope>test</scope> -->
+<!-- 			<optional>true</optional> -->
+<!-- 		</dependency> -->
 		<!-- JSF 2.0 -->
 		<!-- <dependency> -->
 		<!-- <groupId>com.sun.faces</groupId> -->
