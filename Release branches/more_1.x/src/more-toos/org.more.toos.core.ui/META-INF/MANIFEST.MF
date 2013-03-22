@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: MDT-Core.UI
+Bundle-SymbolicName: org.more.toos.core.ui;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.dev.toos.ui.Activator
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: .,
+ META-INF/lib/swing2swt.jar
+Require-Bundle: org.more.toos.core;bundle-version="1.0.0",
+ org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources
+Export-Package: org.dev.toos.ui.internal.ui.eclipse.wb.swt,
+ swing2swt.layout
+Bundle-Vendor: More Develop Toos

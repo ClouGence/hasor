@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            category="org.more.toos.views"
+            class="org.dev.toos.constcode.ui.view.ConstCodeView"
+            icon="icons/i_settings.gif"
+            id="org.more.toos.views.ConstView"
+            name="Const Xml Editer"
+            restorable="true">
+      </view>
+   </extension>
+</plugin>
