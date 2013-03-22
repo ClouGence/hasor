@@ -51,11 +51,9 @@ public class File_TemplateObject implements AbstractTemplateObject {
     public long lastModified() {
         return this.filePath.lastModified();
     }
-    @Override
     public void openObject() {
         // TODO Auto-generated method stub
     }
-    @Override
     public void closeObject() {
         // TODO Auto-generated method stub
     }

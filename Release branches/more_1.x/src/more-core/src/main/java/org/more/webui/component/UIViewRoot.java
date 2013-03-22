@@ -52,7 +52,6 @@ public class UIViewRoot extends UIComponent {
 /**负责处理OnInvoke事件的EL调用*/
 class UIViewRoot_Event_OnAction implements EventListener {
     public static Event ActionEvent = Event.getEvent("OnInvoke");
-    @Override
     public void onEvent(Event event, UIComponent component, ViewContext viewContext) throws Throwable {
         String invokeString = viewContext.getHttpRequest().getParameter(PostFormEnum.PostForm_InvokeStringKey.value());
         if (invokeString == null || invokeString.equals("") == true)

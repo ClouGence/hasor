@@ -41,7 +41,6 @@ public class GuiceBeanManager extends AbstractMap<String, Object> implements Bea
         final GuiceBeanManager $this = this;
         this.gucieBeanSet = new GucieBeanSet();
         this.injector = Guice.createInjector(new Module() {
-            @Override
             public void configure(Binder binder) {
                 String scanPackageStr = environment.getScanPackages();
                 String[] scanPackages = scanPackageStr.split(",");
@@ -57,32 +56,26 @@ public class GuiceBeanManager extends AbstractMap<String, Object> implements Bea
             }
         });
     }
-    @Override
     public Object put(String key, Object value) {
         Object returnData = this.remove(key);
         this.gucieBeanSet.add(new GucieEntry(key, value, this, false));
         return returnData;
     }
-    @Override
     public Set<Entry<String, Object>> entrySet() {
         return this.gucieBeanSet;
     }
-    @Override
     public <T> T getBean(Class<T> type) {
         return this.injector.getInstance(type);
     }
 }
 class GucieBeanSet extends AbstractSet<Entry<String, Object>> {
     private ArrayList<Entry<String, Object>> dataList = new ArrayList<Entry<String, Object>>();
-    @Override
     public boolean add(Entry<String, Object> e) {
         return this.dataList.add(e);
     }
-    @Override
     public Iterator<Entry<String, Object>> iterator() {
         return this.dataList.iterator();
     }
-    @Override
     public int size() {
         return this.dataList.size();
     }
@@ -99,17 +92,14 @@ class GucieEntry implements Entry<String, Object> {
         this.value = value;
         this.typeMode = typeMode;
     }
-    @Override
     public String getKey() {
         return this.key;
     }
-    @Override
     public Object getValue() {
         if (typeMode == true)
             return this.guiceBeanManager.getBean((Class) value);
         return value;
     }
-    @Override
     public Object setValue(Object value) {
         Object returnData = this.value;
         this.value = value;

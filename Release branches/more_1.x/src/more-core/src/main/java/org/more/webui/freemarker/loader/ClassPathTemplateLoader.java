@@ -47,7 +47,6 @@ public class ClassPathTemplateLoader extends URLClassLoader implements ITemplate
                 this.packageName = this.packageName.substring(1);
         this.resourceLoader = new ClassPathResourceLoader(this.packageName, this);
     }
-    @Override
     public String getType() {
         return this.getClass().getSimpleName();
     }

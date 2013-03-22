@@ -25,7 +25,6 @@ import freemarker.template.Template;
  */
 public class Hook_Include implements ElementHook {
     public static String Name = "Include";
-    @Override
     public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, ViewContext viewContext) throws ElementHookException {
         try {
             String includeName = e.getDescription().split(" ")[1];
@@ -39,6 +38,5 @@ public class Hook_Include implements ElementHook {
             throw new ElementHookException("解析异常：处理include发生错误“" + e.getDescription() + "”", e2);
         }
     }
-    @Override
     public void endAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, ViewContext viewContext) throws ElementHookException {}
 }

@@ -1,15 +1,92 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.byshell</groupId>
-		<artifactId>more-parent</artifactId>
-		<version>Final</version>
-	</parent>
+	<groupId>org.byshell</groupId>
 	<artifactId>more-core</artifactId>
 	<version>1.0.0-a01</version>
 	<packaging>jar</packaging>
 	<!-- -->
+	<properties>
+		<!-- 引用的JAR公共版本设置 -->
+		<java.version>1.6</java.version>
+		<deploy>true</deploy>
+	</properties>
+	<!-- 公共插件设置 -->
+	<build>
+		<plugins>
+			<!-- resource charset -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<target>1.5</target>
+					<source>1.5</source>
+					<encoding>GBK</encoding>
+					<!-- 发出编译警告和错误时是否停止 -->
+					<failOnError>false</failOnError>
+				</configuration>
+			</plugin>
+			<!-- skip test -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+			<!-- package sources to jar -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1.2</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- package javadoc to jar -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.8</version>
+				<configuration>
+					<encoding>gbk</encoding>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<!-- 发布地址 -->
+	<distributionManagement>
+		<repository>
+			<id>nexus-releases</id>
+			<name>public</name>
+			<url>http://192.168.25.91:8082/nexus/content/repositories/thirdparty/</url>
+		</repository>
+		<snapshotRepository>
+			<id>nexus-snapshot</id>
+			<name>snapshot</name>
+			<url>http://192.168.25.91:8082/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+	<!-- 全局引用的JAR -->
 	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
 		<!-- JSR173，Stax，JDK1.5 used -->
 		<!-- <dependency> -->
 		<!-- <groupId>javax.xml.stream</groupId> -->
@@ -112,13 +189,13 @@
 		<!-- <optional>true</optional> -->
 		<!-- </dependency> -->
 		<!-- hsqldb 2.0.0 -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.hsqldb</groupId> -->
-<!-- 			<artifactId>hsqldb</artifactId> -->
-<!-- 			<version>2.0.0</version> -->
-<!-- 			<scope>test</scope> -->
-<!-- 			<optional>true</optional> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.hsqldb</groupId> -->
+		<!-- <artifactId>hsqldb</artifactId> -->
+		<!-- <version>2.0.0</version> -->
+		<!-- <scope>test</scope> -->
+		<!-- <optional>true</optional> -->
+		<!-- </dependency> -->
 		<!-- JSF 2.0 -->
 		<!-- <dependency> -->
 		<!-- <groupId>com.sun.faces</groupId> -->

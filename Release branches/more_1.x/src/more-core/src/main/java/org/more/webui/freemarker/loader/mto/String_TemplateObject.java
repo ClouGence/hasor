@@ -43,11 +43,9 @@ public class String_TemplateObject implements AbstractTemplateObject {
     public long lastModified() {
         return 0;
     }
-    @Override
     public void openObject() {
         // TODO Auto-generated method stub
     }
-    @Override
     public void closeObject() {
         // TODO Auto-generated method stub
     }

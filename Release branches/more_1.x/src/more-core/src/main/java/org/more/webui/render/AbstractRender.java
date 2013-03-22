@@ -40,7 +40,6 @@ public abstract class AbstractRender<T extends UIComponent> implements Render<T>
     public abstract String getClientType();
     /**要使用的标签*/
     public abstract String tagName(ViewContext viewContext, T component);
-    @Override
     public void beginRender(ViewContext viewContext, T component, TemplateBody arg3, Writer writer) throws IOException, TemplateModelException {
         this.tagString = this.tagName(viewContext, component);
         if (this.tagString == null)
@@ -81,12 +80,10 @@ public abstract class AbstractRender<T extends UIComponent> implements Render<T>
         }
         writer.write(">");
     };
-    @Override
     public void render(ViewContext viewContext, T component, TemplateBody arg3, Writer writer) throws IOException, TemplateException {
         if (arg3 != null)
             arg3.render(writer);
     }
-    @Override
     public void endRender(ViewContext viewContext, T component, TemplateBody arg3, Writer writer) throws IOException, TemplateModelException {
         writer.write("</" + this.tagString + ">");
     };

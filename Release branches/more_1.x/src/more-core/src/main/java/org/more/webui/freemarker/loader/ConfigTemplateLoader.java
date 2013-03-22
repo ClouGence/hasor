@@ -38,7 +38,6 @@ public class ConfigTemplateLoader implements ITemplateLoader, IResourceLoader {
     public ConfigTemplateLoader() {
         this.objectMap = new HashMap<String, AbstractTemplateObject>();
     };
-    @Override
     public String getType() {
         return this.getClass().getSimpleName();
     }

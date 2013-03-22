@@ -46,11 +46,9 @@ public class ClassPath_TemplateObject extends ClassPathResourceLoader implements
             $encoding = DefaultEncoding;
         return new InputStreamReader(is, $encoding);
     }
-    @Override
     public void openObject() {
         // TODO Auto-generated method stub
     }
-    @Override
     public void closeObject() {
         // TODO Auto-generated method stub
     }

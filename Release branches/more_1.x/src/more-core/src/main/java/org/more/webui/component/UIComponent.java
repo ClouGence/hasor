@@ -484,7 +484,6 @@ public abstract class UIComponent {
 };
 /**负责处理OnLoadData事件的EL调用*/
 class Event_OnLoadData implements EventListener {
-    @Override
     public void onEvent(Event event, UIComponent component, ViewContext viewContext) throws Throwable {
         MethodExpression e = component.getOnLoadDataExpression();
         if (e != null)

@@ -37,7 +37,6 @@ public class WebFilter implements Filter {
     private FacesConfig  config    = null;
     private FacesContext uiContext = null;
     /*-----------------------------------------------------------------------------------*/
-    @Override
     public void doFilter(ServletRequest arg0, ServletResponse arg1, FilterChain arg2) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) arg0;
         HttpServletResponse res = (HttpServletResponse) arg1;
@@ -54,7 +53,6 @@ public class WebFilter implements Filter {
             return;
         }
     }
-    @Override
     public void init(FilterConfig arg0) throws ServletException {
         try {
             this.config = new FacesConfig(arg0);
@@ -68,6 +66,5 @@ public class WebFilter implements Filter {
             throw new ServletException(e);
         }
     }
-    @Override
     public void destroy() {}
 }

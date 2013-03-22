@@ -46,11 +46,9 @@ public class URL_TemplateObject implements AbstractTemplateObject {
     public long lastModified() {
         return new Date().getTime();
     }
-    @Override
     public void openObject() {
         // TODO Auto-generated method stub
     }
-    @Override
     public void closeObject() {
         // TODO Auto-generated method stub
     }

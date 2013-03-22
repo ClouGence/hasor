@@ -28,7 +28,6 @@ import freemarker.core.TemplateElement;
  */
 public class Hook_UserTag implements ElementHook {
     public static String Name = "UnifiedCall";
-    @Override
     public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, ViewContext viewContext) throws ElementHookException {
         //A.创建组建
         String tagName = e.getDescription().split(" ")[1];
@@ -74,6 +73,5 @@ public class Hook_UserTag implements ElementHook {
         }
         return componentObject;
     }
-    @Override
     public void endAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, ViewContext viewContext) throws ElementHookException {}
 }

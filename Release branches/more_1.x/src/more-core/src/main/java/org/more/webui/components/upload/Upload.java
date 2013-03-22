@@ -183,7 +183,6 @@ public class Upload extends UIInput {
 /**负责处理OnUpLoad事件的EL调用*/
 class SWFUpload_Event_OnUpLoad implements EventListener {
     public static Event OnUpLoad = Event.getEvent("OnUpLoad");
-    @Override
     public void onEvent(Event event, UIComponent component, ViewContext viewContext) throws Throwable {
         Upload swfUpload = (Upload) component;
         HttpServletRequest httpRequest = viewContext.getHttpRequest();

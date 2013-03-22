@@ -39,7 +39,6 @@ public abstract class UIForm extends UIComponent {
         /**Action动作，如果配置了submitAction属性则该属性会失效。（-）*/
         submitEL,
     }
-    @Override
     protected void initUIComponent(ViewContext viewContext) {
         super.initUIComponent(viewContext);
         this.setPropertyMetaValue(Propertys.submitAction.name(), null);
@@ -85,7 +84,6 @@ public abstract class UIForm extends UIComponent {
 /**负责处理OnSubmit事件的EL调用*/
 class AjaxForm_Event_OnSubmit implements EventListener {
     public static Event SubmitEvent = Event.getEvent("OnSubmit");
-    @Override
     public void onEvent(Event event, UIComponent component, ViewContext viewContext) throws Throwable {
         MethodExpression e = ((UIForm) component).getSubmitExpression();
         if (e != null)

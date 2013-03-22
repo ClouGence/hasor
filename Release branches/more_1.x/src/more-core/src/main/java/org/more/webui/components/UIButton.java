@@ -60,7 +60,6 @@ public abstract class UIButton extends UIInput {
 /**负责处理OnAction事件的EL调用*/
 class UIButton_Event_OnAction implements EventListener {
     public static Event ActionEvent = Event.getEvent("OnAction");
-    @Override
     public void onEvent(Event event, UIComponent component, ViewContext viewContext) throws Throwable {
         MethodExpression e = ((UIButton) component).getActionExpression();
         if (e != null)

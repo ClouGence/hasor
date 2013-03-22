@@ -27,9 +27,7 @@ import freemarker.template.TemplateModelException;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class AbstractItemRender implements Render<AbstractItem> {
-    @Override
     public void beginRender(ViewContext viewContext, AbstractItem component, TemplateBody arg3, Writer writer) throws IOException, TemplateModelException {}
-    @Override
     public void render(ViewContext viewContext, AbstractItem component, TemplateBody arg3, Writer writer) throws IOException, TemplateException {
         PageCom pageCom = (PageCom) component.getParent();
         if (pageCom.renderMode != component.getRenderMode())
@@ -38,6 +36,5 @@ public class AbstractItemRender implements Render<AbstractItem> {
         if (arg3 != null)
             arg3.render(writer);
     }
-    @Override
     public void endRender(ViewContext viewContext, AbstractItem component, TemplateBody arg3, Writer writer) throws IOException, TemplateModelException {}
 }

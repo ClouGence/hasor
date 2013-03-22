@@ -72,7 +72,6 @@ public abstract class ClassUtil {
         final Set<Class<?>> classSet = new HashSet<Class<?>>();
         try {
             ResourcesUtil.scan(packages[0].replace(".", "/") + "*.class", new ScanItem() {
-                @Override
                 public boolean goFind(ScanEvent event, boolean isInJar) {
                     String name = event.getName();
                     name = name.substring(0, name.length() - ".class".length());

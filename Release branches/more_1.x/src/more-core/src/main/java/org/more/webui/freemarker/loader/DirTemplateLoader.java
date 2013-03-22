@@ -33,7 +33,6 @@ public class DirTemplateLoader extends FileTemplateLoader implements ITemplateLo
         super(templateDir);
         this.dirResourceLoader = new DirResourceLoader(this.baseDir);
     }
-    @Override
     public String getType() {
         return this.getClass().getSimpleName();
     }

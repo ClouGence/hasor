@@ -38,7 +38,6 @@ public class WebServlet extends HttpServlet {
     private FacesConfig       config           = null;
     private FacesContext      uiContext        = null;
     /*-----------------------------------------------------------------------------------*/
-    @Override
     protected void service(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException {
         arg0.setAttribute("_head_startTime", System.currentTimeMillis());
         HttpServletRequest req = (HttpServletRequest) arg0;
@@ -51,7 +50,6 @@ public class WebServlet extends HttpServlet {
             ViewContext.setCurrentViewContext(null);
         }
     }
-    @Override
     public void init(ServletConfig config) throws ServletException {
         try {
             this.config = new FacesConfig(new TempFilterConfig(config));
@@ -65,7 +63,6 @@ public class WebServlet extends HttpServlet {
             throw new ServletException(e);
         }
     }
-    @Override
     public void destroy() {}
 }
 class TempFilterConfig implements FilterConfig {
@@ -73,19 +70,15 @@ class TempFilterConfig implements FilterConfig {
     public TempFilterConfig(ServletConfig config) {
         this.config = config;
     }
-    @Override
     public String getFilterName() {
         return config.getServletName();
     }
-    @Override
     public String getInitParameter(String name) {
         return config.getInitParameter(name);
     }
-    @Override
     public Enumeration getInitParameterNames() {
         return config.getInitParameterNames();
     }
-    @Override
     public ServletContext getServletContext() {
         return config.getServletContext();
     }

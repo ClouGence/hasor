@@ -97,7 +97,6 @@ public class MultiTemplateLoader implements ITemplateLoader, IResourceLoader, St
             this.loaders.add(loader);
         }
     }
-    @Override
     public String getType() {
         return this.getClass().getSimpleName();
     }
