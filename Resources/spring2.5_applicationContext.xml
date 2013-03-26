@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<beans>
+	<!--==============================================系统配置-->
+	<bean name="test" class="a.beanContextTest.Bean" scope="prototype">
+		<property name="a" value="12" />
+		<property name="b" value="12" />
+		<property name="c" value="12" />
+		<property name="d" value="12" />
+		<property name="e" value="12.5" />
+		<property name="f" value="12.6" />
+		<property name="g" value="true" />
+		<property name="h" value="我是字符串" />
+	</bean>
+</beans>
