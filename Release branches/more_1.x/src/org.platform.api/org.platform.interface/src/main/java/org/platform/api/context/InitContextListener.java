@@ -13,22 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.api.upfile;
-import java.util.List;
+package org.platform.api.context;
+import org.platform.api.event.InitEvent;
 /**
- * 上传服务获取信息接口，从该接口可以获取到上传服务的所有请求数据。
- * @version : 2013-3-12
+ * 平台环境文初始化接口。
+ * @version : 2013-3-20
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface IUpInfo {
-    //    /**获取{@link HttpServletRequest}对象。*/
-    //    public HttpServletRequest getHttpRequest();
-    //    /**获取{@link HttpServletResponse}对象。*/
-    //    public HttpServletResponse getHttpResponse();
-    /**获取所有上传条目。*/
-    public List<IFileItem> getItems();
-    /**获取指定的上传条目。*/
-    public IFileItem getItem(String name);
-    /**设置返回值*/
-    public void setReturnData(Object returnData);
+public interface InitContextListener {
+    /**系统初始化过程...*/
+    public void onContextInitialized(InitEvent event);
+    /**系统被销毁过程...*/
+    public void onContextDestroyed();
 }

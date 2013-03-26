@@ -4,7 +4,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import javax.servlet.Filter;
-import javax.servlet.annotation.WebInitParam;
 /**
  * 声明一个Filter，该Filter需要实现{@link Filter}接口。
  * @version : 2013-3-12
@@ -13,40 +12,34 @@ import javax.servlet.annotation.WebInitParam;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface WebFilter {
-    /**Filter在过滤器链上的顺序。*/
-    public int sort();
-    /** The description of the filter */
+    /**对服务的描述信息。
+     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
     public String description() default "";
-    /** The display name of the filter */
+    /**在管理控制台显示服务时使用displayName属性。
+     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
     public String displayName() default "";
-    /** The init parameters of the filter */
+    /**Filter在过滤器链上的顺序。默认：0，数字越大启动越延迟。
+     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
+    public int sort() default 0;
+    /** 服务的启动参数。
+     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
     public WebInitParam[] initParams() default {};
-    /** The name of the filter */
+    /** 过滤器名称或ID */
     public String filterName() default "";
-    /** The small-icon of the filter */
+    /** The small-icon of the filter.
+     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
     public String smallIcon() default "";
-    /** The large-icon of the filter */
+    /** The large-icon of the filter.
+     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
     public String largeIcon() default "";
-    /** The names of the servlets to which the filter applies. */
-    public String[] servletNames() default {};
     /**
-     * The URL patterns to which the filter applies
+     * URL匹配规则，与{@link WebFilter#urlPatterns()}属性表示同样功效。
      * @see org.platform.api.web.WebFilter#urlPatterns()
      */
     public String[] value() default {};
     /**
-     * The URL patterns to which the filter applies
+     * URL匹配规则，与{@link WebFilter#value()}属性表示同样功效。
      * @see org.platform.api.web.WebFilter#value()
      */
     public String[] urlPatterns() default {};
-    ///** The dispatcher types to which the filter applies */
-    //public DispatcherType[] dispatcherTypes() default { DispatcherType.REQUEST };
-    //    /**
-    //     * Declares whether the filter supports asynchronous operation mode.
-    //     *
-    //     * @see javax.servlet.ServletRequest#startAsync
-    //     * @see javax.servlet.ServletRequest#startAsync(ServletRequest,
-    //     * ServletResponse)
-    //     */
-    //    boolean asyncSupported() default false;
 }

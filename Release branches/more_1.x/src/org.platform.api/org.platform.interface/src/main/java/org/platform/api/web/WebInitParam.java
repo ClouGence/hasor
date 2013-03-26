@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
+@Target({ ElementType.ANNOTATION_TYPE })
 public @interface WebInitParam {
     /** Name of the initialization parameter */
     public String name();
