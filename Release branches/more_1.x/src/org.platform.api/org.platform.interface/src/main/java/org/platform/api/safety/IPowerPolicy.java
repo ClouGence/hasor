@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 package org.platform.api.safety;
+import org.platform.api.event.InitEvent;
 /**
- * 权限认证策略
+ * 权限判断，可以通过该接口来实现各种不用的权限模型。
  * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface IPowerPolicy {
+    /**初始化策略对象。*/
+    public void initPolicy(InitEvent event);
     /**
      * 进行策略检查。
      * @param userInfo 用户信息对象。
      * @param powerCode 要检查的权限点。
      */
-    public boolean test(IUser userInfo, Object powerCode);
+    public boolean testPermission(IAuthSession authSession, Permission[] powerCode);
 }

@@ -13,31 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.api.orm.meta;
+package org.platform.api.safety;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 属性扩展模式。
- * @version : 2013-1-27
+ * 
+ * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public enum KeyGeneratorEnum {
-    /**用两个long表示的十六进制UUID*/
-    UUIDHex("uuid.hex"),
-    /**字符串形式的UUID*/
-    UUIDString("uuid.string"),
-    /**数据库序列*/
-    Sequence("sequence"),
-    /**无生成策略*/
-    None("none"),
-    /**用户自定义生成策略*/
-    User("user");
-    //
-    //
-    //
-    private String value = null;
-    KeyGeneratorEnum(String value) {
-        this.value = value;
-    }
-    public String value() {
-        return this.value;
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.ANNOTATION_TYPE })
+public @interface InitParam {
+    /** Name of the initialization parameter */
+    public String name();
+    /** Value of the initialization parameter */
+    public String value();
+    /** Description of the initialization parameter */
+    public String description() default "";
 }

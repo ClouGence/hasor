@@ -13,25 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.api.orm.meta;
+package org.platform.api.safety;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 /**
- * 属性扩展模式。
- * @version : 2013-1-27
+ * 权限会话
+ * @version : 2013-3-26
  * @author 赵永春 (zyc@byshell.org)
  */
-public enum ExtModeEnum {
-    /**column将列名作为扩展属性*/
-    Column("column"),
-    /**row将记录作为扩展属性*/
-    Row("row");
+public abstract class IAuthSession {
+    private Object userObject = null;
+    private long   createTime = 0;
     //
-    //
-    //
-    private String value = null;
-    ExtModeEnum(String value) {
-        this.value = value;
+    public Object getUserObject() {
+        return userObject;
     }
-    public String value() {
-        return this.value;
+    public void setUserObject(Object userObject) {
+        this.userObject = userObject;
     }
+    /**获取request对象。*/
+    public abstract HttpServletRequest getHttpRequest();
+    /**获取response对象。*/
+    public abstract HttpServletResponse getHttpResponse();
 }

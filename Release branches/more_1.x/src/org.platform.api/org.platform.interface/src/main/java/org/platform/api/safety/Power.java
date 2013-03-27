@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
 @Target({ ElementType.TYPE, ElementType.METHOD })
 public @interface Power {
     /**权限点代码，如果没有填写权限点code则权限检测要求仅仅检测是否登陆。*/
-    public String value() default "";
+    public String[] value() default "";
     /**权限认证等级，*/
     public Level level() default Level.PassLogin;
     /**

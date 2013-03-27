@@ -13,43 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.api.orm.meta;
+package org.platform.api.dbmapping.meta;
+import java.util.ArrayList;
+import java.util.List;
 /**
- * 
+ * 分组属性
  * @version : 2013-1-27
  * @author 赵永春 (zyc@byshell.org)
  */
-public enum TypeEnum {
-    /**字符串*/
-    TString("string"),
-    /**浮点数*/
-    TFloat("float"),
-    /**整数*/
-    TInteger("int"),
-    /**双精度浮点数*/
-    TDouble("double"),
-    /**双精度整数*/
-    TLong("long"),
-    /**布尔值*/
-    TBoolean("boolean"),
-    /**时间日期类型*/
-    TDatetime("datetime"),
-    /**ID，类型*/
-    TUUID("uuid"),
-    /**字节类型*/
-    TBtye("byte"),
-    /**JSON数据*/
-    TJson("json"),
-    /**字节数组*/
-    TBytes("bytes");
+public class GroupAttMeta {
+    /**属性名*/
+    private String        name    = "userName";
+    /**分组属性中的属性元素*/
+    private List<AttMeta> attList = new ArrayList<AttMeta>();
     //
     //
     //
-    private String value = null;
-    TypeEnum(String value) {
-        this.value = value;
+    public String getName() {
+        return name;
     }
-    public String value() {
-        return this.value;
+    public void setName(String name) {
+        this.name = name;
+    }
+    public List<AttMeta> getAttList() {
+        return attList;
+    }
+    public void setAttList(List<AttMeta> attList) {
+        this.attList = attList;
     }
 }

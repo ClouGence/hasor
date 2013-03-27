@@ -13,16 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.api.safety;
-import java.util.Map;
+package org.platform.api.dbmapping.meta;
 /**
- * 负责登陆认证
- * @version : 2013-3-12
+ * 属性扩展模式。
+ * @version : 2013-1-27
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface IAuthorization {
-    /**登陆系统*/
-    public IUser login(Map<String, Object> params);
-    /**退出系统*/
-    public void exit(IUser userInfo);
+public enum OrderModeEnum {
+    /**升序*/
+    asc("asc"),
+    /**降序*/
+    desc("desc");
+    //
+    //
+    //
+    private String value = null;
+    OrderModeEnum(String value) {
+        this.value = value;
+    }
+    public String value() {
+        return this.value;
+    }
 }

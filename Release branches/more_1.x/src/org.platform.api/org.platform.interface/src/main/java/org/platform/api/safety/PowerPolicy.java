@@ -13,16 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.api.action;
+package org.platform.api.safety;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * 
- * @version : 2013-3-26
- * @author 赵永春 (zyc@byshell.org)
- */
+* 表示该类为处理用户是否具备某个权限的策略类，该类需要实现{@link IPowerPolicy}接口。
+* 通过权限策略可以应用不同的权限模型。
+* @version : 2013-3-25
+* @author 赵永春 (zyc@byshell.org)
+*/
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
-public @interface Action {}
+public @interface PowerPolicy {
+    /**权限检查策略初始化参数。
+     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
+    public InitParam[] initParam() default {};
+    /**PowerPolicy在策略链上的顺序。默认：0，数字越大启动越靠后。
+     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
+    public int sort() default 0;
+    /**权限检查策略名，当没有定义策略名时使用类名作为策略名。*/
+    public String name() default "";
+    /**需要配置策略的服务名。使用正则表达式。*/
+    public String[] applyRegExp() default ".*";
+}

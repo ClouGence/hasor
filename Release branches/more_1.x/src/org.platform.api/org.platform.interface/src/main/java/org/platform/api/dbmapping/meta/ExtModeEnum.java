@@ -13,10 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.api.safety;
+package org.platform.api.dbmapping.meta;
 /**
- * 
- * @version : 2013-3-12
+ * 属性扩展模式。
+ * @version : 2013-1-27
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface IUser {}
+public enum ExtModeEnum {
+    /**column将列名作为扩展属性*/
+    Column("column"),
+    /**row将记录作为扩展属性*/
+    Row("row");
+    //
+    //
+    //
+    private String value = null;
+    ExtModeEnum(String value) {
+        this.value = value;
+    }
+    public String value() {
+        return this.value;
+    }
+}

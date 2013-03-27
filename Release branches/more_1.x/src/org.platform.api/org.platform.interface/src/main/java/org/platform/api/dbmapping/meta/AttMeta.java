@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.api.orm.meta;
+package org.platform.api.dbmapping.meta;
 /**
  * »ù±¾ÊôÐÔ
  * @version : 2013-1-27

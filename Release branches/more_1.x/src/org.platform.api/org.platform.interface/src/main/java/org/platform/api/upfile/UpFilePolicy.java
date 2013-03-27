@@ -33,7 +33,7 @@ public @interface UpFilePolicy {
      * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
     public int sort() default 0;
     /**上传服务的策略名。*/
-    public String policyName();
+    public String name();
     /**需要配置策略的上传服务名。支持正则表达式。*/
     public String[] withService();
 }

@@ -18,7 +18,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.platform.api.safety.Power;
 /**
  * 上传文件的处理类，需要实现{@link IUpFile}接口。
  * @see org.platform.api.upfile.IUpFile
@@ -56,12 +55,7 @@ public @interface UpLoadFile {
     public static enum AccessPolicy {
         /**完全公开。*/
         Public,
-        /**
-         * 需要通过认证之后才可以使用。如果限制到特定的权限的配置请使用{@link Power}注解进行配置。
-         * @see org.platform.faces.safety.Power
-         */
-        Protected,
         /**需要经过{@link IUpFilePolicy}策略检验。*/
-        UpFilePolicy,
+        Policy,
     }
 }

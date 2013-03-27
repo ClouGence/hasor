@@ -1,4 +1,4 @@
-package org.platform.api.orm;
+package org.platform.api.dbmapping;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
-public @interface ViewEntity {
+public @interface Field {
     /**
      * (Optional) The entity name. Defaults to the unqualified
      * name of the entity class. This name is used to refer to the

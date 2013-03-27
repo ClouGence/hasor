@@ -13,22 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.api.orm.meta;
+package org.platform.api.dbmapping.meta;
 /**
  * 属性扩展模式。
  * @version : 2013-1-27
  * @author 赵永春 (zyc@byshell.org)
  */
-public enum OrderModeEnum {
-    /**升序*/
-    asc("asc"),
-    /**降序*/
-    desc("desc");
+public enum KeyGeneratorEnum {
+    /**用两个long表示的十六进制UUID*/
+    UUIDHex("uuid.hex"),
+    /**字符串形式的UUID*/
+    UUIDString("uuid.string"),
+    /**数据库序列*/
+    Sequence("sequence"),
+    /**无生成策略*/
+    None("none"),
+    /**用户自定义生成策略*/
+    User("user");
     //
     //
     //
     private String value = null;
-    OrderModeEnum(String value) {
+    KeyGeneratorEnum(String value) {
         this.value = value;
     }
     public String value() {

@@ -13,17 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.api.orm.meta;
+package org.platform.api.dbmapping.meta;
 /**
- * 一对一、多对一：映射实体（具有att标签的所有属性定义）
+ * 一对多：映射集合，如果没有配置column属性则使用PK作为外键表关联的主键列（具有att标签的所有属性定义）
  * @version : 2013-1-27
  * @author 赵永春 (zyc@byshell.org)
  */
-public class EntityAttMeta extends AttMeta {
+public class ListAttMeta extends AttMeta {
     /**外键实体名称。*/
-    private String forEntity   = "";
+    private String        forEntity   = "";
     /**外键实体中外键列。*/
-    private String forProperty = "";
+    private String        forProperty = "";
+    /**排序列（空值表示不排序）*/
+    private String        orderBy     = "";
+    /**排序模式*/
+    private OrderModeEnum orderMode   = OrderModeEnum.asc;
+    /**外键实体的进一步过滤*/
+    private String        filter      = "";
     //
     //
     //
@@ -38,5 +44,23 @@ public class EntityAttMeta extends AttMeta {
     }
     public void setForProperty(String forProperty) {
         this.forProperty = forProperty;
+    }
+    public String getOrderBy() {
+        return orderBy;
+    }
+    public void setOrderBy(String orderBy) {
+        this.orderBy = orderBy;
+    }
+    public OrderModeEnum getOrderMode() {
+        return orderMode;
+    }
+    public void setOrderMode(OrderModeEnum orderMode) {
+        this.orderMode = orderMode;
+    }
+    public String getFilter() {
+        return filter;
+    }
+    public void setFilter(String filter) {
+        this.filter = filter;
     }
 }
