@@ -13,15 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.api.context;
+package org.platform.runtime.startup;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 /**
  * 
- * @version : 2013-3-26
+ * @version : 2013-3-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AppContext {
-    /**获取环境初始化参数。*/
-    public String getInitParameter(String name);
-    /**获取环境初始化参数名称集合。*/
-    public String[] getInitParameterNames();
+public class MorePlatformListener implements ServletContextListener {
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        // TODO Auto-generated method stub
+    }
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        // TODO Auto-generated method stub
+    }
 }

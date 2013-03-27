@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.api.context;
+package org.platform.runtime.context;
 /**
- * 
- * @version : 2013-3-26
+ * 标记该类为一个插件。
+ * @version : 2013-1-5
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AppContext {
-    /**获取环境初始化参数。*/
-    public String getInitParameter(String name);
-    /**获取环境初始化参数名称集合。*/
-    public String[] getInitParameterNames();
+public @interface Plugin {
+    /**插件注册的名称。*/
+    public String name();
+    /**插件启动顺序系统保留值0~1000。启动顺序是按照从小到达的顺序启动。启动顺序相同的程序视类加载先后顺序为准。*/
+    public int index() default 0;
 }

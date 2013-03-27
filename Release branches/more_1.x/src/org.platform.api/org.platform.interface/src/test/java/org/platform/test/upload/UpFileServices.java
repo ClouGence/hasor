@@ -22,16 +22,15 @@ import org.platform.api.upfile.IFileItem;
 import org.platform.api.upfile.IUpFile;
 import org.platform.api.upfile.IUpFilePolicy;
 import org.platform.api.upfile.IUpInfo;
-import org.platform.api.upfile.InitParam;
-import org.platform.api.upfile.UpFilePolicy;
 import org.platform.api.upfile.UpLoadFile;
+import org.platform.api.upfile.UpLoadPolicy;
 /**
  * 
  * @version : 2013-3-26
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@UpLoadFile(value = "UpFileServices", initParam = { @InitParam(name = "", value = "") })
-@UpFilePolicy(policyName = "UpFileServicesPolicy", withService = "UpFileServices")
+@UpLoadFile(upName = { "UpFileServices" })
+@UpLoadPolicy(policyName = "UpFileServices")
 public class UpFileServices implements IUpFile, IUpFilePolicy {
     @Override
     public void initPolicy(InitEvent event) {}

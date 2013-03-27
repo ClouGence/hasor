@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.api.context;
+package org.platform.api.services;
+import org.platform.api.event.InitEvent;
 /**
- * 
- * @version : 2013-3-26
+ * 服务策略接口。
+ * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AppContext {
-    /**获取环境初始化参数。*/
-    public String getInitParameter(String name);
-    /**获取环境初始化参数名称集合。*/
-    public String[] getInitParameterNames();
+public interface IServicePolicy {
+    /**初始化策略对象。*/
+    public void initPolicy(InitEvent event);人
 }

@@ -27,9 +27,9 @@ import java.lang.annotation.Target;
 @Target({ ElementType.TYPE, ElementType.METHOD })
 public @interface InitContext {
     /**默认名称，该名称在系统控制台用于管理显示用途。*/
-    public String value() default "";
+    public String displayName() default "";
     /**对该类的描述信息。*/
-    public String desc() default "";
+    public String description() default "";
     /**启动顺序默认值0，该值越大表示启动顺序越延后。提示：负值等同于“0”。*/
     public int startIndex() default 0;
 }

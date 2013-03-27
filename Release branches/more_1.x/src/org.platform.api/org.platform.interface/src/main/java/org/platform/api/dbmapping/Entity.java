@@ -15,14 +15,30 @@ public @interface Entity {
     public String name() default "";
     /**实体映射的表名，默认使用简短类名作为该值。*/
     public String table() default "";
-    /***/
-    public Mode mode() default Mode.Upate;
+    /** 模式，有三个值可以设置。
+     * @see org.platform.api.dbmapping.Entity.Mode*/
+    public Mode mode() default Mode.Mapping;
+    /**该值是决定这个实体类的默认懒加载属性,默认值：false。 */
     public boolean lazy() default false;
-    //
+    /**实体是否参允许更新保存。*/
+    public boolean update() default true;
+    /**实体是否允许新增保存。*/
+    public boolean insert() default true;
+    /**实体是否允许执行删除操作。*/
+    public boolean delete() default true;
+    /**配置扩展表信息。*/
+    public ExtTable extTableInfo() default @ExtTable(extFKColumn = "", extPKColumn = "", extTable = "");
+    /**
+     * 每当重启系统，类实体的数据库映射会执行什么动作这个枚举的值定义。
+     * @version : 2013-3-27
+     * @author 赵永春 (zyc@byshell.org)
+     */
     public static enum Mode {
-        /***/
+        /**重构数据库对象，这种模式下会导致数据全部丢失。*/
         CreateDrop,
-        /***/
-        Upate
+        /**自动更新数据库，这种模式下会最大限度保证数据不丢失的情况下更新数据库结构。*/
+        Update,
+        /**仅映射，这种模式不会执行任何数据库的DDL（数据库结构不会变化）语句。*/
+        Mapping
     }
 }

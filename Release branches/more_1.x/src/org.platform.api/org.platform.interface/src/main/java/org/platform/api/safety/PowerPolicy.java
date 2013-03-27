@@ -34,7 +34,7 @@ public @interface PowerPolicy {
      * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
     public int sort() default 0;
     /**权限检查策略名，当没有定义策略名时使用类名作为策略名。*/
-    public String name() default "";
-    /**需要配置策略的服务名。使用正则表达式。*/
+    public String policyName();
+    /**需要配置策略的服务名。正则表达式，默认配置“.*”。*/
     public String[] applyRegExp() default ".*";
 }

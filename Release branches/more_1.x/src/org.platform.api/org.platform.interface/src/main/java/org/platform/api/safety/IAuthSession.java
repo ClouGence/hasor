@@ -16,6 +16,7 @@
 package org.platform.api.safety;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.platform.api.context.AppContext;
 /**
  * 权限会话
  * @version : 2013-3-26
@@ -23,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public abstract class IAuthSession {
     private Object userObject = null;
-    private long   createTime = 0;
+    //private long   createTime = 0;
     //
     public Object getUserObject() {
         return userObject;
@@ -31,6 +32,8 @@ public abstract class IAuthSession {
     public void setUserObject(Object userObject) {
         this.userObject = userObject;
     }
+    /**获取环境对象。*/
+    public abstract AppContext getContext();
     /**获取request对象。*/
     public abstract HttpServletRequest getHttpRequest();
     /**获取response对象。*/

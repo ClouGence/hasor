@@ -30,8 +30,9 @@ public @interface UpLoadFile {
     /**上传服务初始化参数。
      * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
     public InitParam[] initParam() default {};
-    /**上传服务注册的服务名。*/
-    public String[] value();
+    /**上传服务注册的服务名。
+     * 如果配置为空则使用类的简短类名作为名称。*/
+    public String[] upName();
     /**上传服务允许的最大请求数据长度。默认：0(无限制)。
      * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
     public long maxSize() default 0;
