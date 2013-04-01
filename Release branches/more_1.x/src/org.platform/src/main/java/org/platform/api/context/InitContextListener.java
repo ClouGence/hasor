@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.platform.api.context;
-import org.platform.api.event.InitEvent;
 /**
  * 平台环境文初始化接口。
  * @version : 2013-3-20
@@ -22,7 +21,7 @@ import org.platform.api.event.InitEvent;
  */
 public interface InitContextListener {
     /**系统初始化过程...*/
-    public void onContextInitialized(InitEvent event);
+    public void onContextInitialized(InitContextEvent event);
     /**系统被销毁过程...*/
     public void onContextDestroyed();
 }

@@ -16,17 +16,15 @@
 package org.platform.api.event;
 import java.util.HashMap;
 import java.util.Map;
-import org.platform.api.context.AppContext;
 /**
  * 
  * @version : 2013-3-26
  * @author 赵永春 (zyc@byshell.org)
  */
-public class InitEvent extends AbstractEvent {
+public class InitEvent implements PlatformEvent {
     private Map<String, String> initParam = null;
     /**构建InitEvent对象。*/
-    protected InitEvent(AppContext appContext, Map<String, String> initParam) {
-        super(appContext);
+    protected InitEvent(Map<String, String> initParam) {
         this.initParam = initParam;
     }
     /**获取上传服务初始化参数。*/

@@ -13,14 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.api.context;
-import javax.servlet.ServletContext;
+package org.platform.api.event;
 /**
- * AppContext环境接口工厂类，该类的主要职责是为框架平台提供{@link AppContext}接口对象。
- * @version : 2013-3-28
+ * 
+ * @version : 2013-3-26
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AppContextFactory {
-    /**获取一个Appcontext对象。*/
-    public abstract AppContext getAppContext(ServletContext servletContext);
-}
+public interface PlatformEvent {}
