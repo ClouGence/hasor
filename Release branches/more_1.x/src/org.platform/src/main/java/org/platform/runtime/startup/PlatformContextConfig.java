@@ -14,20 +14,29 @@
  * limitations under the License.
  */
 package org.platform.runtime.startup;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import java.util.Enumeration;
+import javax.servlet.ServletContext;
+import org.platform.api.context.ContextConfig;
 /**
- * 
- * @version : 2013-3-25
+ * ServletContextµΩContextConfigµƒ«≈
+ * @version : 2013-4-2
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class MorePlatformListener implements ServletContextListener {
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
-        // TODO Auto-generated method stub
+class PlatformContextConfig implements ContextConfig {
+    private ServletContext servletContext = null;
+    public PlatformContextConfig(ServletContext servletContext) {
+        this.servletContext = servletContext;
     }
     @Override
-    public void contextDestroyed(ServletContextEvent sce) {
-        // TODO Auto-generated method stub
+    public ServletContext getServletContext() {
+        return this.servletContext;
+    }
+    @Override
+    public String getInitParameter(String name) {
+        return this.servletContext.getInitParameter(name);
+    }
+    @Override
+    public Enumeration<String> getInitParameterNames() {
+        return this.servletContext.getInitParameterNames();
     }
 }
