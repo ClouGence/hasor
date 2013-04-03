@@ -14,13 +14,27 @@
  * limitations under the License.
  */
 package org.platform.api.context;
-import javax.servlet.ServletContext;
+import org.platform.api.event.PlatformEvent;
+import com.google.inject.Binder;
 /**
- * AppContext环境接口工厂类，该类的主要职责是为框架平台提供{@link AppContext}接口对象。
- * @version : 2013-3-28
+ * 
+ * @version : 2013-3-26
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AppContextFactory {
-    /**获取一个Appcontext对象。*/
-    public abstract AppContext getAppContext(ServletContext servletContext);
+public class ContextEvent implements PlatformEvent {
+    private AppContext appContext = null;
+    private Binder     binder     = null;
+    /**构建InitEvent对象。*/
+    protected ContextEvent(AppContext appContext, Binder binder) {
+        this.appContext = appContext;
+        this.binder = binder;
+    }
+    /**获取Config*/
+    public AppContext getConfig() {
+        return appContext;
+    }
+    /**获取用于初始化Guice的Binder。*/
+    public Binder getBinder() {
+        return binder;
+    }
 }

@@ -19,7 +19,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * 标志该类注册到系统初始化过程，该类在标记注解时必须实现{@link InitContextListener}接口。
+ * 标志该类注册到系统初始化过程，该类在标记注解时必须实现{@link ContextListener}接口。
  * @version : 2013-3-20
  * @author 赵永春 (zyc@byshell.org)
  */

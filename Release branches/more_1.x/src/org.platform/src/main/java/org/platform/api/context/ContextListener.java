@@ -19,9 +19,9 @@ package org.platform.api.context;
  * @version : 2013-3-20
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface InitContextListener {
+public interface ContextListener {
     /**系统初始化过程...*/
-    public void onContextInitialized(InitContextEvent event);
+    public void onContextInitialized(ContextEvent event);
     /**系统被销毁过程...*/
     public void onContextDestroyed();
 }

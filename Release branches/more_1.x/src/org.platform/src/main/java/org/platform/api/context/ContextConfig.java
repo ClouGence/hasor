@@ -17,12 +17,15 @@ package org.platform.api.context;
 import java.util.Enumeration;
 import javax.servlet.ServletContext;
 /**
- * 
+ * 配置对象
  * @version : 2013-3-28
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface ContextConfig {
+    /**获取{@link ServletContext}对象。*/
     public ServletContext getServletContext();
+    /**获取一个指定的初始化参数.*/
     public String getInitParameter(String name);
+    /**获取初始化参数名称集合.*/
     public Enumeration<String> getInitParameterNames();
 }
