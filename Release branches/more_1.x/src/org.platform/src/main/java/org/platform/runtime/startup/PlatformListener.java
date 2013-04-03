@@ -24,12 +24,13 @@ import javax.servlet.ServletContextListener;
 import org.more.util.ClassUtil;
 import org.platform.Assert;
 import org.platform.api.context.AppContext;
-import org.platform.api.context.AppContextFactory;
 import org.platform.api.context.ContextConfig;
+import org.platform.api.context.ContextEvent;
+import org.platform.api.context.ContextListener;
 import org.platform.api.context.InitContext;
-import org.platform.api.context.InitContextEvent;
-import org.platform.api.context.InitContextListener;
+import org.platform.runtime.Platform;
 import org.platform.runtime.PlatformFactoryFinder;
+import org.platform.runtime.context.AppContextFactory;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -40,26 +41,29 @@ import com.google.inject.Module;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class PlatformListener implements ServletContextListener {
-    protected final static String     GuiceName          = Guice.class.getName();
-    protected static final String     ContextFactoryName = AppContextFactory.class.getName();
-    private ContextConfig             contextConfig      = null;
-    private List<InitContextListener> initListener       = new ArrayList<InitContextListener>();
+    protected final static String GuiceName          = Guice.class.getName();
+    protected static final String ContextFactoryName = AppContextFactory.class.getName();
+    private ContextConfig         contextConfig      = null;
+    private List<ContextListener> initListener       = new ArrayList<ContextListener>();
     //
     //
     //
     /**子类可以自定义Injector对象，但要将systemModule加入到Module中。*/
     protected Injector getInjector(Module systemModule) {
-        return null;
+        return Guice.createInjector(systemModule);
     }
     /**子类可以自定义Injector对象，但要将systemModule加入到Module中。*/
     protected AppContextFactory getContextFactory(ContextConfig config) {
-        return null;
+        return PlatformFactoryFinder.getAppContextFactory(this.contextConfig);
     }
     /**初始*/
     protected void initContext(ContextConfig config) {
-        //1.扫描所有init钩子。
-        Set<Class<?>> initHookSet = ClassUtil.getClassSet("org.*", InitContext.class);
-        //2.对钩子进行排序。
+        //1.确定扫描范围。
+        String[] spanPackage = new String[] { "org.*" };
+        Platform.info("loadPackages : " + Platform.logString(spanPackage));
+        //2.扫描所有init钩子。
+        Set<Class<?>> initHookSet = ClassUtil.getClassSet(spanPackage, InitContext.class);
+        //3.对钩子进行排序。
         ArrayList<Class<?>> initHookList = new ArrayList<Class<?>>(initHookSet);
         Collections.sort(initHookList, new Comparator<Class<?>>() {
             @Override
@@ -71,47 +75,54 @@ public class PlatformListener implements ServletContextListener {
                 return (o1AnnoIndex < o2AnnoIndex ? -1 : (o1AnnoIndex == o2AnnoIndex ? 0 : 1));
             }
         });
-        //3.初始化执行钩子。
+        Platform.info("find ContextListener : " + Platform.logString(initHookList));
+        Platform.info("create ContextListener...");
+        //4.初始化执行钩子。
         for (Class<?> listenerClass : initHookList) {
-            if (InitContextListener.class.isAssignableFrom(listenerClass) == false) {
-                // TODO: handle exception
+            if (ContextListener.class.isAssignableFrom(listenerClass) == false) {
+                Platform.warning("not implemented ContextListener ：" + Platform.logString(listenerClass));
                 continue;
             }
             try {
-                InitContextListener listenerObject = (InitContextListener) listenerClass.newInstance();
+                ContextListener listenerObject = (ContextListener) listenerClass.newInstance();
                 this.initListener.add(listenerObject);
             } catch (Exception e) {
-                // TODO: handle exception
+                Platform.error("create " + Platform.logString(listenerClass) + " error : " + Platform.logString(e));
             }
         }
-        //4.准备AppContext、sysModule对象。
+        //5.准备AppContext、sysModule对象。
         AppContextFactory factory = this.getContextFactory(this.contextConfig);
-        if (factory != null) {
-            factory = PlatformFactoryFinder.getAppContextFactory(this.contextConfig);
-        }
         Assert.isNotNull(factory, "can not be create AppContextFactory.");
         final AppContext appContext = factory.getAppContext(this.contextConfig.getServletContext());
-        final List<InitContextListener> listenerList = this.initListener;
+        final List<ContextListener> listenerList = this.initListener;
         Module sysModule = new Module() {
             @Override
             public void configure(Binder binder) {
-                InitContextEvent event = new InitContextEvent(appContext, binder) {};
-                for (InitContextListener listener : listenerList)
+                ContextEvent event = new ContextEvent(appContext, binder) {};
+                for (ContextListener listener : listenerList) {
+                    if (listener == null)
+                        continue;
+                    Platform.info("send ContextEvent to : " + Platform.logString(listener.getClass()));
                     listener.onContextInitialized(event);
+                }
             }
         };
-        //5.构建Guice并初始化InitContextListener。
+        //6.构建Guice并init @InitContext注解类。
+        Platform.info("create guice and begin start...");
         Injector guice = this.getInjector(sysModule);
-        if (guice == null)
-            Guice.createInjector(sysModule);
-        //6.放入ServletContext环境。
+        Assert.isNotNull(guice, "can not be create Injector.");
+        //7.构建ExecuteCycle对象
+        //
+        //8.放入ServletContext环境。
+        Platform.info("ServletContext Attribut : " + ContextFactoryName + " -->> " + Platform.logString(factory));
+        Platform.info("ServletContext Attribut : " + GuiceName + " -->> " + Platform.logString(guice));
         this.contextConfig.getServletContext().setAttribute(ContextFactoryName, factory);
         this.contextConfig.getServletContext().setAttribute(GuiceName, guice);
     }
     /**销毁*/
     protected void destroyContext(ContextConfig config) {
-        final List<InitContextListener> listenerList = this.initListener;
-        for (InitContextListener listener : listenerList)
+        final List<ContextListener> listenerList = this.initListener;
+        for (ContextListener listener : listenerList)
             listener.onContextDestroyed();
     }
     //
