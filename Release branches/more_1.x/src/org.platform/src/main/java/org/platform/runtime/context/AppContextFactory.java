@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package org.platform.runtime.context;
+import javax.servlet.ServletContext;
+import org.platform.api.context.AppContext;
 /**
- * 标记该类为一个插件。
- * @version : 2013-1-5
+ * AppContext环境接口工厂类，该类的主要职责是为框架平台提供{@link AppContext}接口对象。
+ * @version : 2013-3-28
  * @author 赵永春 (zyc@byshell.org)
  */
-public @interface Plugin {
-    /**插件注册的名称。*/
-    public String name();
-    /**插件启动顺序系统保留值0~1000。启动顺序是按照从小到达的顺序启动。启动顺序相同的程序视类加载先后顺序为准。*/
-    public int index() default 0;
+public abstract class AppContextFactory {
+    /**获取一个Appcontext对象。*/
+    public abstract AbstractAppContext getAppContext(ServletContext servletContext);
 }
