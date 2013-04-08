@@ -13,19 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.api.context;
-import java.util.Enumeration;
-import javax.servlet.ServletContext;
+package org.platform.runtime.startup;
+import org.platform.api.context.ContextEvent;
+import org.platform.api.context.ContextListener;
+import org.platform.api.context.InitListener;
 /**
- * 配置对象
- * @version : 2013-3-28
+ * 支持Service等注解功能。
+ * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ContextConfig {
-    /**获取{@link ServletContext}对象。*/
-    public ServletContext getServletContext();
-    /**获取一个指定的初始化参数.*/
-    public String getInitParameter(String name);
-    /**获取初始化参数名称集合.*/
-    public Enumeration<String> getInitParameterNames();
+@InitListener(displayName = "PlatformContextListener", description = "用于支持整个平台的功能。", startIndex = 0)
+public class StartupContextListener implements ContextListener {
+    @Override
+    public void onContextInitialized(ContextEvent event) {
+        // TODO Auto-generated method stub
+    }
+    @Override
+    public void onContextDestroyed() {
+        // TODO Auto-generated method stub
+        a
+    }
 }

@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 package org.platform.api.context;
+import java.util.HashMap;
 import org.platform.api.event.PlatformEvent;
 import com.google.inject.Binder;
 /**
- * 
+ * 在平台初始化时会引发这个事件，在整个init过程{@link ContextEvent}事件对象只有一个。
  * @version : 2013-3-26
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ContextEvent implements PlatformEvent {
-    private AppContext appContext = null;
-    private Binder     binder     = null;
+public abstract class ContextEvent extends HashMap<String, Object> implements PlatformEvent {
+    private static final long     serialVersionUID = -5713833368806822664L;
+    private transient InitContext initContext      = null;
     /**构建InitEvent对象。*/
-    protected ContextEvent(AppContext appContext, Binder binder) {
-        this.appContext = appContext;
-        this.binder = binder;
+    protected ContextEvent(InitContext initContext) {
+        this.initContext = initContext;
     }
     /**获取Config*/
-    public AppContext getConfig() {
-        return appContext;
+    public InitContext getConfig() {
+        return initContext;
     }
     /**获取用于初始化Guice的Binder。*/
-    public Binder getBinder() {
-        return binder;
-    }
+    public abstract Binder getBinder();
 }

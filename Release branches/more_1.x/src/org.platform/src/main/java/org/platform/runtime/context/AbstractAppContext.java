@@ -17,7 +17,6 @@ package org.platform.runtime.context;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.platform.api.context.AppContext;
-import org.platform.api.context.ContextConfig;
 /**
  * runtime的基本实现，这个类主要负责处理HttpServletRequest、HttpServletResponse
  * @version : 2013-4-3
@@ -26,9 +25,6 @@ import org.platform.api.context.ContextConfig;
 public abstract class AbstractAppContext extends AppContext {
     private ThreadLocal<ReqRes> httpLocal = new ThreadLocal<AbstractAppContext.ReqRes>();
     //
-    protected AbstractAppContext(ContextConfig config) {
-        super(config);
-    }
     /**设置本次请求的request,response*/
     public void setCurrentHttp(HttpServletRequest req, HttpServletResponse res) {
         ReqRes reqres = this.httpLocal.get();
@@ -64,7 +60,7 @@ public abstract class AbstractAppContext extends AppContext {
         return null;
     }
     /**负责存放req,res的结构*/
-    public static class ReqRes {
+    private static class ReqRes {
         public HttpServletRequest  request;
         public HttpServletResponse response;
     }

@@ -15,7 +15,6 @@
  */
 package org.platform.api.context;
 import java.io.File;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
@@ -31,22 +30,8 @@ import org.platform.api.services.IService;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AppContext {
-    private ContextConfig config = null;
-    protected AppContext(ContextConfig config) {
-        this.config = config;
-    }
-    //
-    //
-    /**获取环境初始化参数。*/
-    public String getInitParameter(String name) {
-        return this.config.getInitParameter(name);
-    };
-    /**获取环境初始化参数名称集合。*/
-    public Enumeration<String> getInitParameterNames() {
-        return this.config.getInitParameterNames();
-    };
-    //
-    //
+    /**获取初始化上下文*/
+    public abstract InitContext getInitContext();
     /**通过名称创建bean实例，使用guice。*/
     public abstract <T> T getBean(String name);
     /**通过类型创建该类实例，使用guice*/
@@ -57,20 +42,20 @@ public abstract class AppContext {
     public abstract <T extends IService> T getService(Class<T> servicesType);
     /**获取已经注册的Bean名称。*/
     public abstract List<String> getBeanNames();
-    //
-    //
     /**取得{@link HttpServletRequest}类型对象。*/
     public abstract HttpServletRequest getHttpRequest();
     /**取得{@link HttpServletResponse}类型对象。*/
     public abstract HttpServletResponse getHttpResponse();
     /**取得{@link HttpSession}类型对象。*/
-    public abstract HttpSession getHttpSession();
+    public HttpSession getHttpSession(boolean create) {
+        return this.getHttpRequest().getSession(create);
+    }
     /**获取作用域操作对象。*/
     public abstract Scope getScope(ScopeEnum scopeEnmu);
-    //
-    //
-    /***/
-    public abstract Global getSettings();
+    /**获取应用程序配置。*/
+    public Global getSettings() {
+        return this.getInitContext().getSettings();
+    }
     /*----------------------------------------------------------------------*/
     /**生成一个UUID字符串。*/
     public static String genUUID() {

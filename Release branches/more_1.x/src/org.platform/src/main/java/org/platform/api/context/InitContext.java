@@ -14,22 +14,31 @@
  * limitations under the License.
  */
 package org.platform.api.context;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.Enumeration;
+import java.util.HashMap;
+import org.more.core.global.Global;
 /**
- * 标志该类注册到系统初始化过程，该类在标记注解时必须实现{@link ContextListener}接口。
- * @version : 2013-3-20
+ * 
+ * @version : 2013-3-26
  * @author 赵永春 (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
-public @interface InitContext {
-    /**默认名称，该名称在系统控制台用于管理显示用途。*/
-    public String displayName() default "";
-    /**对该类的描述信息。*/
-    public String description() default "";
-    /**启动顺序默认值0，该值越大表示启动顺序越延后。提示：负值等同于“0”。*/
-    public int startIndex() default 0;
+public abstract class InitContext extends HashMap<String, Object> {
+    private static final long serialVersionUID = 215801471945234405L;
+    private transient Config  config           = null;
+    protected InitContext(Config config) {
+        this.config = config;
+    }
+    /*----------------------------------------------------------------------*/
+    /**获取环境初始化参数。*/
+    public String getInitParameter(String name) {
+        return this.config.getInitParameter(name);
+    };
+    /**获取环境初始化参数名称集合。*/
+    public Enumeration<String> getInitParameterNames() {
+        return this.config.getInitParameterNames();
+    };
+    /**获取应用程序配置。*/
+    public Global getSettings() {
+        return this.config.getSettings();
+    }
 }

@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.runtime.startup;
+package org.platform.runtime.config;
 import java.util.Enumeration;
 import javax.servlet.ServletContext;
-import org.platform.api.context.ContextConfig;
+import org.more.core.global.Global;
+import org.platform.api.context.Config;
 /**
  * ServletContextµΩContextConfigµƒ«≈
  * @version : 2013-4-2
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-class PlatformContextConfig implements ContextConfig {
+public class PlatformConfig implements Config {
     private ServletContext servletContext = null;
-    public PlatformContextConfig(ServletContext servletContext) {
+    public PlatformConfig(ServletContext servletContext) {
         this.servletContext = servletContext;
     }
     @Override
@@ -38,5 +39,11 @@ class PlatformContextConfig implements ContextConfig {
     @Override
     public Enumeration<String> getInitParameterNames() {
         return this.servletContext.getInitParameterNames();
+    }
+    @Override
+    public Global getSettings() {
+        a
+        // TODO Auto-generated method stub
+        return null;
     }
 }
