@@ -13,19 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.api.context;
+package org.platform.runtime.context;
 import java.util.Enumeration;
 import org.more.core.global.Global;
+import org.platform.api.context.Config;
+import org.platform.api.context.InitContext;
 /**
  * 
- * @version : 2013-3-26
+ * @version : 2013-4-9
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface InitContext {
+public abstract class AbstractInitContext implements InitContext {
+    private transient Config config = null;
+    protected AbstractInitContext(Config config) {
+        this.config = config;
+    }
+    /*----------------------------------------------------------------------*/
     /**获取环境初始化参数。*/
-    public String getInitParameter(String name);
+    public String getInitParameter(String name) {
+        return this.config.getInitParameter(name);
+    };
     /**获取环境初始化参数名称集合。*/
-    public Enumeration<String> getInitParameterNames();
+    public Enumeration<String> getInitParameterNames() {
+        return this.config.getInitParameterNames();
+    };
     /**获取应用程序配置。*/
-    public Global getSettings();
+    public Global getSettings() {
+        return this.config.getSettings();
+    }
 }

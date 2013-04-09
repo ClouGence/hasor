@@ -31,6 +31,9 @@ import org.platform.api.context.InitContext;
 import org.platform.api.context.InitListener;
 import org.platform.runtime.Platform;
 import org.platform.runtime.config.PlatformConfig;
+import org.platform.runtime.context.AbstractInitContext;
+import org.platform.runtime.support.SafetyServiceSupportListener;
+import org.platform.runtime.support.ServicesServiceSupportListener;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -48,18 +51,30 @@ public class PlatformListener implements ServletContextListener {
     protected final static String PlatformBuild = PlatformBuild.class.getName();
     private List<ContextListener> initListener  = new ArrayList<ContextListener>();
     /*----------------------------------------------------------------------------------------------------*/
-    /**子类可以自定义Injector对象，但要将systemModule加入到Module中。*/
-    protected Injector getInjector(Module systemModule) {
-        return Guice.createInjector(systemModule);
+    //
+    /**子类可以自定义Injector对象，但要将systemModule加入到Module中，否则初始化过程会失败。*/
+    protected Injector getInjector(Module platformStartModule) {
+        return Guice.createInjector(platformStartModule);
     }
-    /**获取监听器类型集合。*/
+    //
+    /**获取内置的{@link ContextListener}，这些监听器不可删除，子类可以通过该方法得到系统定义了哪些内置监听器。*/
+    protected final List<Class<?>> internalInitListenerClasses() {
+        List<Class<?>> internal = new ArrayList<Class<?>>();
+        internal.add(ServicesServiceSupportListener.class);
+        internal.add(SafetyServiceSupportListener.class);
+        //
+        return internal;
+    }
+    //
+    /**获取监听器类型集合，用于搜索程序中所有标记了InitListener注解的类型。*/
     protected Set<Class<?>> findInitListenerClasses() {
-        String[] spanPackage = new String[] { "org.*" };
+        String[] spanPackage = new String[] { "org.*", "com.*", "net.*", "cn.*" };
         Platform.info("loadPackages : " + Platform.logString(spanPackage));
         return ClassUtil.getClassSet(spanPackage, InitListener.class);
     }
-    /**对监听器进行排序。*/
-    protected List<Class<?>> sortInitListenerClasses(List<Class<?>> sourceList) {
+    //
+    /**该方法会最终决定初始化哪些InitListener。初始化顺序按照返回集合的顺序。*/
+    protected List<Class<?>> decideInitListenerClasses(List<Class<?>> sourceList) {
         Collections.sort(sourceList, new Comparator<Class<?>>() {
             @Override
             public int compare(Class<?> o1, Class<?> o2) {
@@ -72,27 +87,30 @@ public class PlatformListener implements ServletContextListener {
         });
         return sourceList;
     }
+    //
     /**创建{@link ContextListener}类型对象*/
     protected ContextListener createInitListenerClasse(Class<?> listenerClass) {
         try {
             return (ContextListener) listenerClass.newInstance();
         } catch (Exception e) {
-            Platform.error("create " + Platform.logString(listenerClass) + " error : " + Platform.logString(e));
+            Platform.error("create " + Platform.logString(listenerClass) + " an error.", e);
             return null;
         }
     }
     /*----------------------------------------------------------------------------------------------------*/
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        //1.扫描所有init钩子。
+        //1.扫描所有ContextListener。
         Set<Class<?>> initHookSet = this.findInitListenerClasses();
         initHookSet = (initHookSet == null) ? new HashSet<Class<?>>() : initHookSet;
-        //2.加入StartupContextListener
+        //2.加入内置ContextListener
         List<Class<?>> initHookList = new ArrayList<Class<?>>(initHookSet);
-        if (initHookList.contains(StartupContextListener.class) == false)
-            initHookList.add(StartupContextListener.class);
-        //3.对钩子进行排序。
-        initHookList = this.sortInitListenerClasses(initHookList);
+        List<Class<?>> internalListener = this.internalInitListenerClasses();
+        for (Class<?> internal : internalListener)
+            if (initHookList.contains(internal) == false)
+                initHookList.add(internal);
+        //3.决定最终ContextListener集合，同时决定初始化顺序。
+        initHookList = this.decideInitListenerClasses(initHookList);
         Platform.info("find ContextListener : " + Platform.logString(initHookList));
         Platform.info("create ContextListener...");
         //4.初始化执行钩子。
@@ -107,9 +125,7 @@ public class PlatformListener implements ServletContextListener {
         }
         //5.准备PlatformContextEvent、sysModule对象。
         final Config config = new PlatformConfig(servletContextEvent.getServletContext());
-        final InitContext initContext = new InitContext(config) {
-            private static final long serialVersionUID = -7868983747354599739L;
-        };
+        final InitContext initContext = new AbstractInitContext(config) {};
         final PlatformContextEvent eventObject = new PlatformContextEvent(initContext);
         final List<ContextListener> listenerList = this.initListener;
         final Module sysModule = new Module() {

@@ -26,23 +26,14 @@ import com.google.inject.Injector;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class PlatformBuild {
-    private Config      config              = null;
-    private InitContext platformInitContext = null;
+    private Config      config      = null;
+    private Injector    guice       = null;
+    private InitContext initContext = null;
     //
-    //
-    //
-    // 
     public void buildPlatform(InitContext initContext, Injector guice) {
-        // TODO Auto-generated method stub
+        this.initContext = initContext;
+        this.guice = guice;
     }
-    //
-    //
-    //
-    //    
-    //
-    //
-    // 
-    //  
     public AppContextFactory getAppContextFactory() {
         // TODO Auto-generated method stub
         return null;a

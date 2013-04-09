@@ -21,8 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.more.core.global.Global;
-import org.platform.api.scope.Scope;
-import org.platform.api.scope.Scope.ScopeEnum;
+import org.platform.Assert;
 import org.platform.api.services.IService;
 /**
  * 
@@ -30,6 +29,12 @@ import org.platform.api.services.IService;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AppContext {
+    /**获取应用程序配置。*/
+    public Global getSettings() {
+        InitContext initContext = this.getInitContext();
+        Assert.isNotNull(initContext, "AppContext.getInitContext() return is null.");
+        return initContext.getSettings();
+    };
     /**获取初始化上下文*/
     public abstract InitContext getInitContext();
     /**通过名称创建bean实例，使用guice。*/
@@ -47,20 +52,12 @@ public abstract class AppContext {
     /**取得{@link HttpServletResponse}类型对象。*/
     public abstract HttpServletResponse getHttpResponse();
     /**取得{@link HttpSession}类型对象。*/
-    public HttpSession getHttpSession(boolean create) {
-        return this.getHttpRequest().getSession(create);
-    }
-    /**获取作用域操作对象。*/
-    public abstract Scope getScope(ScopeEnum scopeEnmu);
-    /**获取应用程序配置。*/
-    public Global getSettings() {
-        return this.getInitContext().getSettings();
-    }
+    public abstract HttpSession getHttpSession(boolean create);
     /*----------------------------------------------------------------------*/
     /**生成一个UUID字符串。*/
     public static String genUUID() {
         return UUID.randomUUID().toString();
-    }
+    };
     /**
      * 生成路径算法。
      * @param number 数字
@@ -77,5 +74,5 @@ public abstract class AppContext {
             number = c;
         } while (c > 0);
         return buffer.reverse().toString();
-    }
+    };
 }

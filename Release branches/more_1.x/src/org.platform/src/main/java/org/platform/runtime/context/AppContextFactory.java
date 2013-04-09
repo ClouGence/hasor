@@ -23,5 +23,5 @@ import org.platform.api.context.AppContext;
  */
 public abstract class AppContextFactory {
     /**获取一个Appcontext对象。*/
-    public abstract AbstractAppContext getAppContext(ServletContext servletContext);a
+    public abstract AbstractAppContext getAppContext(ServletContext servletContext);
 }

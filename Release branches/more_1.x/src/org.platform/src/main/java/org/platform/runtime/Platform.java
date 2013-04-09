@@ -25,9 +25,9 @@ import java.util.Collection;
  */
 public class Platform {
     public static void debug(String string) {
-        // TODO Auto-generated method stub
+        System.out.println(string);
     }
-    public static void error(String string) {
+    public static void error(String string, Exception e) {
         System.err.println(string);
     }
     public static void warning(String string) {

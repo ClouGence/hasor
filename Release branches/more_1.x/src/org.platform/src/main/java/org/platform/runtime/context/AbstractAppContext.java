@@ -16,52 +16,34 @@
 package org.platform.runtime.context;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.platform.api.context.AppContext;
+import org.platform.api.context.InitContext;
+import org.platform.runtime.WebHelper;
 /**
  * runtime的基本实现，这个类主要负责处理HttpServletRequest、HttpServletResponse
  * @version : 2013-4-3
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractAppContext extends AppContext {
-    private ThreadLocal<ReqRes> httpLocal = new ThreadLocal<AbstractAppContext.ReqRes>();
-    //
-    /**设置本次请求的request,response*/
-    public void setCurrentHttp(HttpServletRequest req, HttpServletResponse res) {
-        ReqRes reqres = this.httpLocal.get();
-        if (reqres == null) {
-            reqres = new ReqRes();
-            this.httpLocal.set(reqres);
-        }
-        reqres.request = req;
-        reqres.response = res;
-    }
-    /**重置request,response*/
-    public void resetCurrentHttp() {
-        ReqRes reqres = this.httpLocal.get();
-        if (reqres == null) {
-            reqres = new ReqRes();
-            this.httpLocal.set(reqres);
-        }
-        reqres.request = null;
-        reqres.response = null;
+    private InitContext initContext = null;
+    public AbstractAppContext(InitContext initContext) {
+        this.initContext = initContext;
     }
     @Override
+    public InitContext getInitContext() {
+        return this.initContext;
+    }
+    /**取得{@link HttpServletRequest}类型对象。*/
     public HttpServletRequest getHttpRequest() {
-        ReqRes reqres = this.httpLocal.get();
-        if (reqres != null)
-            return reqres.request;
-        return null;
+        return WebHelper.getHttpRequest();
     }
-    @Override
+    /**取得{@link HttpServletResponse}类型对象。*/
     public HttpServletResponse getHttpResponse() {
-        ReqRes reqres = this.httpLocal.get();
-        if (reqres != null)
-            return reqres.response;
-        return null;
+        return WebHelper.getHttpResponse();
     }
-    /**负责存放req,res的结构*/
-    private static class ReqRes {
-        public HttpServletRequest  request;
-        public HttpServletResponse response;
+    /**取得{@link HttpSession}类型对象。*/
+    public HttpSession getHttpSession(boolean create) {
+        return WebHelper.getHttpSession(create);
     }
 }

@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.platform.Assert;
 import org.platform.api.context.AppContext;
 import org.platform.runtime.Platform;
+import org.platform.runtime.WebHelper;
 import org.platform.runtime.context.AbstractAppContext;
 import org.platform.runtime.context.AppContextFactory;
 import org.platform.runtime.execycle.ExecuteCycle;
@@ -75,8 +76,10 @@ public class PlatformFilter implements Filter {
         final HttpServletResponse httpRes = (HttpServletResponse) response;
         Platform.debug("at http request :" + httpReq.getRequestURI());
         AbstractAppContext appContext = this.contextFactory.getAppContext(httpReq.getServletContext());
+        InlineWebHelper webHelper = InlineWebHelper.getWebHelper();
         try {
             //执行.
+            webHelper.initWebHelper(httpReq, httpRes);
             this.beforeRequest(appContext, httpReq, httpRes);
             this.executeCycle.execCycle(appContext, httpReq, httpRes, chain);
         } catch (IOException e) {
@@ -87,10 +90,32 @@ public class PlatformFilter implements Filter {
             throw e;
         } finally {
             this.afterResponse(appContext, httpReq, httpRes);
+            webHelper.clearWebHelper();
         }
     }
     /**在filter请求处理之前。*/
     protected void beforeRequest(AppContext appContext, HttpServletRequest httpReq, HttpServletResponse httpRes) {}
     /**在filter请求处理之后。*/
     protected void afterResponse(AppContext appContext, HttpServletRequest httpReq, HttpServletResponse httpRes) {}
+}
+/**
+ * 该类的目的是公开initWebHelper、clearWebHelper方法
+ * @version : 2013-4-9
+ * @author 赵永春 (zyc@byshell.org)
+ */
+class InlineWebHelper extends WebHelper {
+    private static InlineWebHelper inlineWebHelper = null;
+    public static InlineWebHelper getWebHelper() {
+        if (inlineWebHelper == null)
+            inlineWebHelper = new InlineWebHelper();
+        return inlineWebHelper;
+    }
+    @Override
+    public void initWebHelper(HttpServletRequest reqHttp, HttpServletResponse resHttp) {
+        super.initWebHelper(reqHttp, resHttp);
+    }
+    @Override
+    public void clearWebHelper() {
+        super.clearWebHelper();
+    }
 }
