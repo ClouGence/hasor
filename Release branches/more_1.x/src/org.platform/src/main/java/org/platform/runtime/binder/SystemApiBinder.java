@@ -13,18 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.api.context;
-import org.platform.api.binder.ApiBinder;
+package org.platform.runtime.binder;
+import org.platform.api.binder.AbstractApiBinder;
+import org.platform.api.context.InitContext;
+import com.google.inject.Binder;
 /**
- * 平台环境文初始化接口。
- * @version : 2013-3-20
+ * 
+ * @version : 2013-4-11
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ContextListener {
-    /**系统初始化过程...*/
-    public void initialize(ApiBinder event);
-    /**完成初始化。*/
-    public void initialized();
-    /**系统被销毁过程...*/
-    public void destroy();
+public class SystemApiBinder extends AbstractApiBinder {
+    private Binder guiceBinder = null;
+    public SystemApiBinder(InitContext initContext) {
+        super(initContext);
+    }
+    @Override
+    public Binder getGuiceBinder() {
+        return this.guiceBinder;
+    }
+    public void setGuiceBinder(Binder guiceBinder) {
+        this.guiceBinder = guiceBinder;
+    }
 }

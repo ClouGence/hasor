@@ -38,14 +38,14 @@ import org.platform.runtime.Platform;
  * @version : 2013-4-2
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class PlatformConfig implements Config {
-    final String           appSettingsName1 = "config.xml";
-    final String           appSettingsName2 = "static-config.xml";
-    final String           appSettingsName3 = "config-mapping.properties";
+public class AppConfig implements Config {
+    private final String   appSettingsName1 = "config.xml";
+    private final String   appSettingsName2 = "static-config.xml";
+    private final String   appSettingsName3 = "config-mapping.properties";
     private ServletContext servletContext   = null;
     //
     //
-    public PlatformConfig(ServletContext servletContext) {
+    public AppConfig(ServletContext servletContext) {
         this.servletContext = servletContext;
     }
     @Override
@@ -187,8 +187,8 @@ public class PlatformConfig implements Config {
     }
     /** */
     private static class SettingsResourceWatch extends ResourceWatch {
-        private PlatformConfig platformConfig = null;
-        public SettingsResourceWatch(URI uri, int watchStepTime, PlatformConfig platformConfig) {
+        private AppConfig platformConfig = null;
+        public SettingsResourceWatch(URI uri, int watchStepTime, AppConfig platformConfig) {
             super(uri, watchStepTime);
             this.platformConfig = platformConfig;
         }

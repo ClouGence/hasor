@@ -15,16 +15,17 @@
  */
 package org.platform.runtime.context;
 import java.util.Enumeration;
+import javax.servlet.ServletContext;
 import org.more.core.global.Global;
 import org.platform.api.context.Config;
 import org.platform.api.context.InitContext;
 /**
- * 
+ * {@link InitContext}接口的实现类。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractInitContext implements InitContext {
-    private transient Config config = null;
+    private Config config = null;
     protected AbstractInitContext(Config config) {
         this.config = config;
     }
@@ -40,5 +41,9 @@ public abstract class AbstractInitContext implements InitContext {
     /**获取应用程序配置。*/
     public Global getSettings() {
         return this.config.getSettings();
+    }
+    @Override
+    public ServletContext getServletContext() {
+        return this.config.getServletContext();
     }
 }

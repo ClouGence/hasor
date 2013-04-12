@@ -15,6 +15,7 @@
  */
 package org.platform.api.context;
 import java.util.Enumeration;
+import javax.servlet.ServletContext;
 import org.more.core.global.Global;
 /**
  * 
@@ -28,4 +29,6 @@ public interface InitContext {
     public Enumeration<String> getInitParameterNames();
     /**获取应用程序配置。*/
     public Global getSettings();
+    /**获取{@link ServletContext}环境对象。*/
+    public ServletContext getServletContext();
 }

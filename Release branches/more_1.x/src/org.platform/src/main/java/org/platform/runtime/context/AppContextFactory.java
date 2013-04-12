@@ -16,12 +16,15 @@
 package org.platform.runtime.context;
 import javax.servlet.ServletContext;
 import org.platform.api.context.AppContext;
+import org.platform.api.context.InitContext;
 /**
  * AppContext环境接口工厂类，该类的主要职责是为框架平台提供{@link AppContext}接口对象。
  * @version : 2013-3-28
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AppContextFactory {
+public interface AppContextFactory {
+    /**初始化环境。*/
+    public InitContext getInitContext();
     /**获取一个Appcontext对象。*/
-    public abstract AbstractAppContext getAppContext(ServletContext servletContext);
+    public AbstractAppContext getAppContext(ServletContext servletContext);
 }

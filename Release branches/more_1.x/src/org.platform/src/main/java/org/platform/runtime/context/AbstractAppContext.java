@@ -21,7 +21,7 @@ import org.platform.api.context.AppContext;
 import org.platform.api.context.InitContext;
 import org.platform.runtime.WebHelper;
 /**
- * runtime的基本实现，这个类主要负责处理HttpServletRequest、HttpServletResponse
+ * 对{@link AppContext}接口的基本实现，这个类主要负责处理HttpServletRequest、HttpServletResponse
  * @version : 2013-4-3
  * @author 赵永春 (zyc@byshell.org)
  */

@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.more.core.global.Global;
 import org.platform.Assert;
-import org.platform.api.services.IService;
 /**
  * 
  * @version : 2013-3-26
@@ -41,10 +40,10 @@ public abstract class AppContext {
     public abstract <T> T getBean(String name);
     /**通过类型创建该类实例，使用guice*/
     public abstract <T> T getBean(Class<T> beanType);
-    /**通过名称创建bean实例，使用guice。*/
-    public abstract <T extends IService> T getService(String servicesName);
-    /**通过类型创建该类实例，使用guice*/
-    public abstract <T extends IService> T getService(Class<T> servicesType);
+    //    /**通过名称创建bean实例，使用guice。*/
+    //    public abstract <T extends IService> T getService(String servicesName);
+    //    /**通过类型创建该类实例，使用guice*/
+    //    public abstract <T extends IService> T getService(Class<T> servicesType);
     /**获取已经注册的Bean名称。*/
     public abstract List<String> getBeanNames();
     /**取得{@link HttpServletRequest}类型对象。*/
