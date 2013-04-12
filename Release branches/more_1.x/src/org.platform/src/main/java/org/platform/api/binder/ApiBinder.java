@@ -36,6 +36,8 @@ public interface ApiBinder {
     public ServletBindingBuilder serve(String urlPattern, String... morePatterns);
     /**使用正则表达式，创建一个{@link ServletBindingBuilder}。*/
     public ServletBindingBuilder serveRegex(String regex, String... regexes);
+    /**绑定一个Servlet 异常处理程序。*/
+    public ErrorBindingBuilder error(Class<? extends Throwable> error, Class<? extends Throwable>... errores);
     /**获取用于初始化Guice的Binder。*/
     public Binder getGuiceBinder();
     /*----------------------------------------------------------------------------*/
@@ -56,5 +58,14 @@ public interface ApiBinder {
         public void with(Class<? extends HttpServlet> servletKey, Map<String, String> initParams);
         public void with(Key<? extends HttpServlet> servletKey, Map<String, String> initParams);
         public void with(HttpServlet servlet, Map<String, String> initParams);
+    }
+    /**负责配置Error。*/
+    public static interface ErrorBindingBuilder {
+        public void bind(Class<? extends ErrorHook> errorKey);
+        public void bind(Key<? extends ErrorHook> errorKey);
+        public void bind(ErrorHook errorHook);
+        public void bind(Class<? extends ErrorHook> errorKey, Map<String, String> initParams);
+        public void bind(Key<? extends ErrorHook> errorKey, Map<String, String> initParams);
+        public void bind(ErrorHook errorHook, Map<String, String> initParams);
     }
 }

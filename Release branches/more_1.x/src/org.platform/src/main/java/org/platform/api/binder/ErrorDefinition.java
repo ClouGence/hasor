@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 package org.platform.api.binder;
-import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.more.core.global.Global;
 import org.more.util.Iterators;
 import org.platform.api.context.AppContext;
+import org.platform.api.context.Config;
 import org.platform.api.context.InitContext;
 import org.platform.api.context.ViewContext;
 import com.google.inject.Injector;
@@ -39,37 +37,47 @@ import com.google.inject.Provider;
  * @version : 2013-4-11
  * @author 赵永春 (zyc@byshell.org)
  */
-class FilterDefinition extends AbstractServletModuleBinding implements Provider<FilterDefinition> {
-    private Key<? extends Filter> filterKey      = null; /*Filter对象既有可能绑定在这个Key上*/
-    private Filter                filterInstance = null;
+class ErrorDefinition implements Provider<ErrorDefinition> {
+    private Key<? extends ErrorHook>   errorHookKey      = null;
+    private ErrorHook                  errorHookInstance = null;
+    private Map<String, String>        initParams        = null;
+    private Class<? extends Throwable> errorType         = null;
     //
-    public FilterDefinition(String pattern, Key<? extends Filter> filterKey, UriPatternMatcher uriPatternMatcher, Map<String, String> initParams, Filter filterInstance) {
-        super(initParams, pattern, uriPatternMatcher);
-        this.filterKey = filterKey;
-        this.filterInstance = filterInstance;
+    //
+    public ErrorDefinition(Class<? extends Throwable> errorType, Key<? extends ErrorHook> errorHookKey, Map<String, String> initParams, ErrorHook errorHook) {
+        this.errorHookKey = errorHookKey;
+        this.initParams = initParams;
+        this.errorHookInstance = errorHook;
+        this.errorType = errorType;
+    }
+    //
+    private boolean matchesError(Throwable error) {
+        return errorType.isAssignableFrom(error.getClass());
+    }
+    public Map<String, String> getInitParams() {
+        return this.initParams;
     }
     @Override
-    public FilterDefinition get() {
+    public ErrorDefinition get() {
         return this;
     }
-    protected Filter getTarget(Injector injector) {
-        if (this.filterInstance == null)
-            this.filterInstance = injector.getInstance(this.filterKey);
-        return this.filterInstance;
+    protected ErrorHook getTarget(Injector injector) {
+        if (this.errorHookInstance == null)
+            this.errorHookInstance = injector.getInstance(this.errorHookKey);
+        return this.errorHookInstance;
     }
     @Override
     public String toString() {
-        return new ToStringBuilder(FilterDefinition.class)//
-                .append("pattern", getPattern())//
+        return new ToStringBuilder(ErrorDefinition.class)//
                 .append("initParams", getInitParams())//
-                .append("uriPatternType", getUriPatternType())//
+                .append("uriPatternType", this.errorType)//
                 .toString();
     }
     /*--------------------------------------------------------------------------------------------------------*/
     /**/
     public void init(final AppContext appContext, final FilterConfig initConfig) throws ServletException {
-        Filter filter = this.getTarget(appContext.getGuice());
-        if (filter == null)
+        ErrorHook errorHook = this.getTarget(appContext.getGuice());
+        if (errorHook == null)
             return;
         final Map<String, String> initParams = new HashMap<String, String>();
         //1. InitContext Config
@@ -89,13 +97,10 @@ class FilterDefinition extends AbstractServletModuleBinding implements Provider<
                 initParams.put(key, initConfig.getInitParameter(key));
             }
         }
-        //3. Filter Config
+        //3. HttpServlet Config
         initParams.putAll(this.getInitParams());
         //
-        filter.init(new FilterConfig() {
-            public String getFilterName() {
-                return filterKey.toString();
-            }
+        errorHook.init(appContext, new Config() {
             public ServletContext getServletContext() {
                 return initConfig.getServletContext();
             }
@@ -105,27 +110,27 @@ class FilterDefinition extends AbstractServletModuleBinding implements Provider<
             public Enumeration<String> getInitParameterNames() {
                 return Iterators.asEnumeration(initParams.keySet().iterator());
             }
+            @Override
+            public Global getSettings() {
+                return appContext.getSettings();
+            }
         });
     }
     /**/
-    public void doFilter(ViewContext viewContext, ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
-        boolean serve = this.matchesUri(path);
+    public void doError(ViewContext viewContext, ServletRequest request, ServletResponse response, Throwable error) throws Throwable {
+        boolean serve = this.matchesError(error);
+        if (serve == false)
+            throw error;
         //
-        Filter filter = this.getTarget(viewContext.getGuice());
-        //
-        if (serve == true && filter != null) {
-            filter.doFilter(request, response, chain);
-        } else {
-            chain.doFilter(httpRequest, response);
-        }
+        ErrorHook hook = this.getTarget(viewContext.getGuice());
+        if (hook != null)
+            hook.doError(viewContext, request, response, error);
     }
     /**/
     public void destroy(AppContext appContext) {
-        Filter filter = this.getTarget(appContext.getGuice());
-        if (filter == null)
+        ErrorHook errorHook = this.getTarget(appContext.getGuice());
+        if (errorHook == null)
             return;
-        filter.destroy();
+        errorHook.destroy(appContext);
     }
 }

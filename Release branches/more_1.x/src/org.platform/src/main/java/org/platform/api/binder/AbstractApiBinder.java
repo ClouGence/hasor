@@ -27,10 +27,11 @@ import com.google.inject.Binder;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractApiBinder extends AbstractModule implements ApiBinder {
-    private InitContext                         initContext         = null;
-    private Map<String, Object>                 extData             = null;
-    private FiltersModuleBuilder  filterModuleBinder  = null;
-    private ServletsModuleBuilder servletModuleBinder = null;
+    private InitContext           initContext         = null;
+    private Map<String, Object>   extData             = null;
+    private FiltersModuleBuilder  filterModuleBinder  = null; /*Filters*/
+    private ServletsModuleBuilder servletModuleBinder = null; /*Servlets*/
+    private ErrorsModuleBuilder   errorsModuleBuilder = null; /*Errors*/
     //
     /**构建InitEvent对象。*/
     protected AbstractApiBinder(InitContext initContext) {
@@ -64,8 +65,14 @@ public abstract class AbstractApiBinder extends AbstractModule implements ApiBin
         return this.servletModuleBinder.filterRegex(ArrayUtil.newArrayList(regexes, regex));
     };
     @Override
+    public ErrorBindingBuilder error(Class<? extends Throwable> error, Class<? extends Throwable>... errores) {
+        return this.errorsModuleBuilder.errorTypes(ArrayUtil.newArrayList(errores, error));
+    }
+    @Override
     protected void configure() {
         this.install(this.filterModuleBinder);
         this.install(this.servletModuleBinder);
+        this.install(this.errorsModuleBuilder);
+        this.bind(FilterPipeline.class).toInstance(new ManagedFilterPipeline());
     }
 }
