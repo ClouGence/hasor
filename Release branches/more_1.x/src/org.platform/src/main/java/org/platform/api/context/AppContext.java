@@ -17,11 +17,9 @@ package org.platform.api.context;
 import java.io.File;
 import java.util.List;
 import java.util.UUID;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import org.more.core.global.Global;
 import org.platform.Assert;
+import com.google.inject.Injector;
 /**
  * 
  * @version : 2013-3-26
@@ -36,27 +34,36 @@ public abstract class AppContext {
     };
     /**获取初始化上下文*/
     public abstract InitContext getInitContext();
+    /**获得Guice环境。*/
+    public abstract Injector getGuice();
     /**通过名称创建bean实例，使用guice。*/
-    public abstract <T> T getBean(String name);
+    public <T> T getBean(String name) {
+        Class<T> classType = this.getBeanType(name);
+        if (classType == null)
+            return null;
+        return this.getBean(classType);
+    };
+    /**通过名获取Bean的类型。*/
+    public abstract <T> Class<T> getBeanType(String name);
     /**通过类型创建该类实例，使用guice*/
-    public abstract <T> T getBean(Class<T> beanType);
+    public <T> T getBean(Class<T> beanType) {
+        return this.getGuice().getInstance(beanType);
+    };
     //    /**通过名称创建bean实例，使用guice。*/
     //    public abstract <T extends IService> T getService(String servicesName);
     //    /**通过类型创建该类实例，使用guice*/
     //    public abstract <T extends IService> T getService(Class<T> servicesType);
     /**获取已经注册的Bean名称。*/
     public abstract List<String> getBeanNames();
-    /**取得{@link HttpServletRequest}类型对象。*/
-    public abstract HttpServletRequest getHttpRequest();
-    /**取得{@link HttpServletResponse}类型对象。*/
-    public abstract HttpServletResponse getHttpResponse();
-    /**取得{@link HttpSession}类型对象。*/
-    public abstract HttpSession getHttpSession(boolean create);
     /*----------------------------------------------------------------------*/
-    /**生成一个UUID字符串。*/
-    public static String genUUID() {
+    /**生成一个UUID字符串，32个字符串长度。*/
+    public static String genIDBy32() {
+        return UUID.randomUUID().toString().replace("-", "");
+    }
+    /**生成一个UUID字符串，36个字符串长度。*/
+    public static String genIDBy36() {
         return UUID.randomUUID().toString();
-    };
+    }
     /**
      * 生成路径算法。
      * @param number 数字
