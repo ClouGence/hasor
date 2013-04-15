@@ -15,6 +15,7 @@
  */
 package org.platform.binder;
 import java.util.Map;
+import java.util.Set;
 import javax.servlet.Filter;
 import javax.servlet.http.HttpServlet;
 import org.platform.context.InitContext;
@@ -40,6 +41,8 @@ public interface ApiBinder {
     public ErrorBindingBuilder error(Class<? extends Throwable> error);
     /**获取用于初始化Guice的Binder。*/
     public Binder getGuiceBinder();
+    /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
+    public Set<Class<?>> getClassSet(Class<?> featureType);
     /*----------------------------------------------------------------------------*/
     /**负责配置Filter，参考Guice 3.0接口设计。*/
     public static interface FilterBindingBuilder {

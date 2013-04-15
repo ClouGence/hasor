@@ -17,8 +17,11 @@ package org.platform.binder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import org.more.util.ArrayUtil;
+import org.more.util.ClassUtil;
 import org.platform.Assert;
+import org.platform.Platform.PlatformConfigEnum;
 import org.platform.context.InitContext;
 import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
@@ -70,6 +73,14 @@ public abstract class AbstractApiBinder extends AbstractModule implements ApiBin
         ArrayList<Class<? extends Throwable>> errorList = new ArrayList<Class<? extends Throwable>>();
         errorList.add(error);
         return this.errorsModuleBuilder.errorTypes(errorList);
+    }
+    @Override
+    public Set<Class<?>> getClassSet(Class<?> featureType) {
+        if (featureType == null)
+            return null;
+        String loadPackages = this.initContext.getSettings().getString(PlatformConfigEnum.LoadPackages.getValue());
+        String[] spanPackage = loadPackages.split(",");
+        return ClassUtil.getClassSet(spanPackage, featureType);
     }
     @Override
     protected void configure() {
