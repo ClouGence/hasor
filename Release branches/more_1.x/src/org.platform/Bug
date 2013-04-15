@@ -33,12 +33,29 @@ more core
   	1.提供了三种xml访问级别。
   	2.可以针对xml命名空间进行解析。
   6.增加了Global全局配置文件读取器，通过它可以在配置文件中配置json格式的数据，它还支持同时装载多个配置文件。并且可以独立访问每个配置文件。
+  7.删除了 json
+  8.删除了 copybean
 classcode v2.0
   1.升级classcode代码，全部重写相关代码。目前版本v2.0
   2.可以在对象上增加一个任意属性并且可以通过属性策略指定其readonly特性。
   3.可以增加一个代理属性，通过接口实现的方法来操控属性的get、set。
   4.增加了before,returnning,throwing三个切点的监听器。
   5.改进了aopFilter接口注入的方法。
-删除了 json
-删除了 copybean。
-删除了 log v2.0
+classvisit v1.0
+  1.以访问者模式的方式迭代一个类。
+org.platform v1.0
+	1.轻量化开发框架-web应用方向。
+	2.采用Guice作为核心技术支撑。
+	3.Context分类：
+		InitContext	初始化环境
+		AppContext	应用环境
+		ViewContext	http请求环境
+	4.org.platform.api.binder 软件包60%源码参考Guice-Servlet实现。
+	
+
+
+
+
+
+
+            String value = URLEncoder.encode(user.getLoginName() + "@" + user.getId(), "UTF-8");

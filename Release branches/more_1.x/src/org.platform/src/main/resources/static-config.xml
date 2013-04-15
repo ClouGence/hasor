@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://project.byshell.org/more/schema/global">
+	<framework>
+		<!-- 包扫描覆盖范围 -->
+		<loadPackages>org.*, com.*, net.*, cn.*</loadPackages>
+		<!-- Web请求遇到异常后轮询errorHook的次数。 -->
+		<errorCaseCount>5</errorCaseCount>
+	</framework>
+</config>

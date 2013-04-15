@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://noe.xdf.cn/schema/global">
+	<test>
+		<abc>aaa</abc>
+	</test>
+</config>

@@ -263,5 +263,5 @@ public class Global extends AbstractGlobal {
             return filePath;
         else
             return filePath + File.separatorChar;
-    };
+    }
 };
