@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.more.util.StringUtil;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
+import org.platform.binder.ErrorHook;
 import org.platform.context.AbstractModuleListener;
 import org.platform.context.InitListener;
 /**
@@ -61,9 +62,12 @@ public class WebModuleServiceListener extends AbstractModuleListener {
         });
         //2.LoadFilter.
         this.loadFilter(event);
-        //2.LoadServlet.
+        //3.LoadServlet.
         this.loadServlet(event);
+        //4.loadErrorHook.
+        this.loadErrorHook(event);
     }
+    //
     /*装载Filter*/
     protected void loadFilter(ApiBinder event) {
         //1.获取
@@ -95,6 +99,7 @@ public class WebModuleServiceListener extends AbstractModuleListener {
             event.filter(null, filterAnno.urlPatterns()).through(filterType, initMap);
         }
     }
+    //
     /*装载Servlet*/
     protected void loadServlet(ApiBinder event) {
         //1.获取
@@ -126,6 +131,38 @@ public class WebModuleServiceListener extends AbstractModuleListener {
             event.serve(null, servletAnno.urlPatterns()).with(servletType, initMap);
         }
     }
+    //
+    /*装载异常处理程序*/
+    protected void loadErrorHook(ApiBinder event) {
+        //1.获取
+        Set<Class<?>> webErrorSet = event.getClassSet(WebError.class);
+        List<Class<? extends ErrorHook>> webErrorList = new ArrayList<Class<? extends ErrorHook>>();
+        for (Class<?> cls : webErrorSet) {
+            if (ErrorHook.class.isAssignableFrom(cls) == false) {
+                Platform.warning("not implemented ErrorHook ：" + Platform.logString(cls));
+            } else {
+                webErrorList.add((Class<? extends ErrorHook>) cls);
+            }
+        }
+        //2.排序
+        Collections.sort(webErrorList, new Comparator<Class<?>>() {
+            @Override
+            public int compare(Class<?> o1, Class<?> o2) {
+                WebError o1Anno = o1.getAnnotation(WebError.class);
+                WebError o2Anno = o2.getAnnotation(WebError.class);
+                int o1AnnoIndex = o1Anno.sort();
+                int o2AnnoIndex = o2Anno.sort();
+                return (o1AnnoIndex < o2AnnoIndex ? -1 : (o1AnnoIndex == o2AnnoIndex ? 0 : 1));
+            }
+        });
+        //3.注册
+        for (Class<? extends ErrorHook> errorHookType : webErrorList) {
+            WebError errorAnno = errorHookType.getAnnotation(WebError.class);
+            Map<String, String> initMap = this.toMap(errorAnno.initParams());
+            event.error(errorAnno.value()).bind(errorHookType, initMap);
+        }
+    }
+    //
     /*转换参数*/
     protected Map<String, String> toMap(WebInitParam[] initParams) {
         Map<String, String> initMap = new HashMap<String, String>();

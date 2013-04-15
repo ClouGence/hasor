@@ -35,8 +35,7 @@ import com.google.inject.TypeLiteral;
 @Singleton
 class ManagedErrorPipeline {
     private ErrorDefinition[] errorDefinitions;
-    private volatile boolean  initialized    = false;
-    private int               errorCaseCount = 5;    //0.总迭代次数
+    private volatile boolean  initialized = false;
     //
     public synchronized void initPipeline(AppContext appContext) throws ServletException {
         if (initialized)
@@ -45,7 +44,6 @@ class ManagedErrorPipeline {
         for (ErrorDefinition errorDefinition : errorDefinitions) {
             errorDefinition.init(appContext);
         }
-        this.errorCaseCount = appContext.getSettings().getInteger(PlatformConfigEnum.ErrorCaseCount.getValue(), 5);
         //everything was ok...
         this.initialized = true;
     }
@@ -60,7 +58,8 @@ class ManagedErrorPipeline {
     }
     public void dispatch(ViewContext viewContext, ServletRequest request, ServletResponse response, Throwable error) throws IOException, ServletException {
         //1.进行异常处理
-        for (int i = 0; i < this.errorCaseCount; i++) {
+        int errorCaseCount = viewContext.getSettings().getInteger(PlatformConfigEnum.ErrorCaseCount.getValue(), 5);
+        for (int i = 0; i < errorCaseCount; i++) {
             for (int j = 0; j < errorDefinitions.length; j++) {
                 ErrorDefinition errDefine = errorDefinitions[j];
                 try {
