@@ -14,35 +14,77 @@
  * limitations under the License.
  */
 package org.platform.api.binder;
+import static org.platform.api.RuntimeConfig.ErrorCaseCount;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.FilterChain;
+import javax.inject.Singleton;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import org.platform.api.context.AppContext;
 import org.platform.api.context.ViewContext;
 import com.google.inject.Binding;
+import com.google.inject.Injector;
 import com.google.inject.TypeLiteral;
 /**
  *  
  * @version : 2013-4-12
  * @author 赵永春 (zyc@byshell.org)
  */
-class ManagedErrorPipeline implements FilterPipeline {
-    private List<Binding<ErrorDefinition>> errorDefine = null;
+@Singleton
+class ManagedErrorPipeline {
+    private ErrorDefinition[] errorDefinitions;
+    private volatile boolean  initialized    = false;
+    private int               errorCaseCount = 5;    //0.总迭代次数
     //
-    @Override
-    public void initPipeline(AppContext appContext) throws ServletException {
-        this.errorDefine = appContext.getGuice().findBindingsByType(TypeLiteral.get(ErrorDefinition.class));
-        //filterDefine.get(0).getProvider().get().
+    public synchronized void initPipeline(AppContext appContext) throws ServletException {
+        if (initialized)
+            return;
+        this.errorDefinitions = collectErrorDefinitions(appContext.getGuice());
+        for (ErrorDefinition errorDefinition : errorDefinitions) {
+            errorDefinition.init(appContext);
+        }
+        this.errorCaseCount = appContext.getSettings().getInteger(ErrorCaseCount, 5);
+        //everything was ok...
+        this.initialized = true;
     }
-    @Override
-    public void dispatch(ViewContext viewContext, ServletRequest request, ServletResponse response, FilterChain defaultFilterChain) throws IOException, ServletException {
-        // TODO Auto-generated method stub
+    private ErrorDefinition[] collectErrorDefinitions(Injector injector) {
+        List<ErrorDefinition> errorDefinitions = new ArrayList<ErrorDefinition>();
+        TypeLiteral<ErrorDefinition> ERROR_DEFS = TypeLiteral.get(ErrorDefinition.class);
+        for (Binding<ErrorDefinition> entry : injector.findBindingsByType(ERROR_DEFS)) {
+            errorDefinitions.add(entry.getProvider().get());
+        }
+        // Convert to a fixed size array for speed.
+        return errorDefinitions.toArray(new ErrorDefinition[errorDefinitions.size()]);
     }
-    @Override
+    public void dispatch(ViewContext viewContext, ServletRequest request, ServletResponse response, Throwable error) throws IOException, ServletException {
+        //1.进行异常处理
+        for (int i = 0; i < this.errorCaseCount; i++) {
+            for (int j = 0; j < errorDefinitions.length; j++) {
+                ErrorDefinition errDefine = errorDefinitions[j];
+                try {
+                    if (errDefine.doError(viewContext, request, response, error) == true)
+                        return;
+                    else
+                        continue;
+                } catch (Throwable e) {
+                    error = e;
+                    break;
+                }
+                //end !
+            }
+        }
+        //2.异常处理程序无法将最终的异常处理完毕抛出最后处理的异常。
+        if (error instanceof IOException)
+            throw (IOException) error;
+        if (error instanceof ServletException)
+            throw (ServletException) error;
+        throw new ServletException(error);
+    }
     public void destroyPipeline(AppContext appContext) {
-        // TODO Auto-generated method stub
+        for (ErrorDefinition errorDefinition : errorDefinitions) {
+            errorDefinition.destroy(appContext);
+        }
     }
-}a
+}

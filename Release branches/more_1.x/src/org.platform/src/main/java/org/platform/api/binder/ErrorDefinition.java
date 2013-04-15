@@ -15,9 +15,7 @@
  */
 package org.platform.api.binder;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -27,7 +25,6 @@ import org.more.core.global.Global;
 import org.more.util.Iterators;
 import org.platform.api.context.AppContext;
 import org.platform.api.context.Config;
-import org.platform.api.context.InitContext;
 import org.platform.api.context.ViewContext;
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -75,34 +72,14 @@ class ErrorDefinition implements Provider<ErrorDefinition> {
     }
     /*--------------------------------------------------------------------------------------------------------*/
     /**/
-    public void init(final AppContext appContext, final FilterConfig initConfig) throws ServletException {
+    public void init(final AppContext appContext) throws ServletException {
         ErrorHook errorHook = this.getTarget(appContext.getGuice());
         if (errorHook == null)
             return;
-        final Map<String, String> initParams = new HashMap<String, String>();
-        //1. InitContext Config
-        {
-            InitContext initContext = appContext.getInitContext();
-            Enumeration<String> ns = initContext.getInitParameterNames();
-            while (ns.hasMoreElements()) {
-                String key = ns.nextElement();
-                initParams.put(key, initContext.getInitParameter(key));
-            }
-        }
-        //2. Root Filter Config
-        if (initConfig != null) {
-            Enumeration<String> ns = initConfig.getInitParameterNames();
-            while (ns.hasMoreElements()) {
-                String key = ns.nextElement();
-                initParams.put(key, initConfig.getInitParameter(key));
-            }
-        }
-        //3. HttpServlet Config
-        initParams.putAll(this.getInitParams());
-        //
+        final Map<String, String> initParams = this.getInitParams();
         errorHook.init(appContext, new Config() {
             public ServletContext getServletContext() {
-                return initConfig.getServletContext();
+                return appContext.getInitContext().getServletContext();
             }
             public String getInitParameter(String s) {
                 return initParams.get(s);
@@ -117,14 +94,14 @@ class ErrorDefinition implements Provider<ErrorDefinition> {
         });
     }
     /**/
-    public void doError(ViewContext viewContext, ServletRequest request, ServletResponse response, Throwable error) throws Throwable {
+    public boolean doError(ViewContext viewContext, ServletRequest request, ServletResponse response, Throwable error) throws Throwable {
         boolean serve = this.matchesError(error);
-        if (serve == false)
-            throw error;
-        //
-        ErrorHook hook = this.getTarget(viewContext.getGuice());
-        if (hook != null)
-            hook.doError(viewContext, request, response, error);
+        if (serve == true) {
+            ErrorHook hook = this.getTarget(viewContext.getGuice());
+            if (hook != null)
+                hook.doError(viewContext, request, response, error);
+        }
+        return serve;
     }
     /**/
     public void destroy(AppContext appContext) {

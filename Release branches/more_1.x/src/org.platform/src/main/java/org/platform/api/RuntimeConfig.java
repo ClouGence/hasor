@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.runtime.context;
-import javax.servlet.ServletContext;
-import org.platform.api.context.AppContext;
-import org.platform.api.context.InitContext;
+package org.platform.api;
 /**
- * AppContext环境接口工厂类，该类的主要职责是为框架平台提供{@link AppContext}接口对象。
- * @version : 2013-3-28
+ * 
+ * @version : 2013-4-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AppContextFactory {
-    /**初始化环境。*/
-    public InitContext getInitContext();
-    /**获取一个Appcontext对象。*/
-    public AbstractAppContext getAppContext(ServletContext servletContext);
+public interface RuntimeConfig {
+    /**异常处理程序总迭代次数(配置Code).*/
+    public final static String ErrorCaseCount      = "ErrorCaseCount";
+    /**启动进入配置页面(配置Code).*/
+    public final static String LaunchConfigure     = "launch-configure";
+    /**系统配置界面入口(配置Code).*/
+    public final static String LaunchConfigurePath = "/setting.config";
 }

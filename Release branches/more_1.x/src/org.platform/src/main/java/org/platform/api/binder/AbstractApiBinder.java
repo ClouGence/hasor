@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.platform.api.binder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import org.more.util.ArrayUtil;
@@ -29,9 +30,9 @@ import com.google.inject.Binder;
 public abstract class AbstractApiBinder extends AbstractModule implements ApiBinder {
     private InitContext           initContext         = null;
     private Map<String, Object>   extData             = null;
-    private FiltersModuleBuilder  filterModuleBinder  = null; /*Filters*/
-    private ServletsModuleBuilder servletModuleBinder = null; /*Servlets*/
-    private ErrorsModuleBuilder   errorsModuleBuilder = null; /*Errors*/
+    private FiltersModuleBuilder  filterModuleBinder  = new FiltersModuleBuilder(); /*Filters*/
+    private ServletsModuleBuilder servletModuleBinder = new ServletsModuleBuilder(); /*Servlets*/
+    private ErrorsModuleBuilder   errorsModuleBuilder = new ErrorsModuleBuilder();  /*Errors*/
     //
     /**构建InitEvent对象。*/
     protected AbstractApiBinder(InitContext initContext) {
@@ -65,14 +66,20 @@ public abstract class AbstractApiBinder extends AbstractModule implements ApiBin
         return this.servletModuleBinder.filterRegex(ArrayUtil.newArrayList(regexes, regex));
     };
     @Override
-    public ErrorBindingBuilder error(Class<? extends Throwable> error, Class<? extends Throwable>... errores) {
-        return this.errorsModuleBuilder.errorTypes(ArrayUtil.newArrayList(errores, error));
+    public ErrorBindingBuilder error(Class<? extends Throwable> error) {
+        ArrayList<Class<? extends Throwable>> errorList = new ArrayList<Class<? extends Throwable>>();
+        errorList.add(error);
+        return this.errorsModuleBuilder.errorTypes(errorList);
     }
     @Override
     protected void configure() {
         this.install(this.filterModuleBinder);
         this.install(this.servletModuleBinder);
         this.install(this.errorsModuleBuilder);
-        this.bind(FilterPipeline.class).toInstance(new ManagedFilterPipeline());
+        /*------------------------------------------*/
+        this.bind(InitContext.class).toInstance(this.initContext);
+        this.bind(ManagedErrorPipeline.class).asEagerSingleton();
+        this.bind(ManagedServletPipeline.class).asEagerSingleton();
+        this.bind(FilterPipeline.class).to(ManagedFilterPipeline.class).asEagerSingleton();
     }
 }

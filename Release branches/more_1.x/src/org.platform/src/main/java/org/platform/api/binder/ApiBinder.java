@@ -37,7 +37,7 @@ public interface ApiBinder {
     /**使用正则表达式，创建一个{@link ServletBindingBuilder}。*/
     public ServletBindingBuilder serveRegex(String regex, String... regexes);
     /**绑定一个Servlet 异常处理程序。*/
-    public ErrorBindingBuilder error(Class<? extends Throwable> error, Class<? extends Throwable>... errores);
+    public ErrorBindingBuilder error(Class<? extends Throwable> error);
     /**获取用于初始化Guice的Binder。*/
     public Binder getGuiceBinder();
     /*----------------------------------------------------------------------------*/

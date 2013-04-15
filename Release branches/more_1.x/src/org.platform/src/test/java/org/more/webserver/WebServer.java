@@ -16,10 +16,11 @@ public class WebServer {
         WebAppContext context = new WebAppContext();
         context.setContextPath("/");
         //context.setDescriptor("web/WEB-INF/web.xml");
-        context.setResourceBase("web");
+        context.setResourceBase("src/test/resources/");
         context.setConfigurationDiscovered(true);
         context.addFilter(WebFilter.class, "/*", null);
         server.setHandler(context);
         server.start();
+        System.out.println("srart at http://127.0.0.1:8082");
     }
 }

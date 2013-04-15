@@ -18,7 +18,6 @@ import java.util.Map;
 /**
  * Abstract implementation for all servlet module bindings
  * @version : 2013-4-12
- * @author sameb@google.com (Sam Berlin)
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class AbstractServletModuleBinding {
@@ -32,7 +31,7 @@ class AbstractServletModuleBinding {
     }
     /** Returns any context params supplied when creating the binding. */
     public Map<String, String> getInitParams() {
-        return initParams;
+        return this.initParams;
     }
     /** Returns the pattern used to match against the binding. */
     public String getPattern() {

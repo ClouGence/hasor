@@ -24,16 +24,16 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import org.more.util.ClassUtil;
 import org.platform.Assert;
+import org.platform.api.binder.AbstractApiBinder;
+import org.platform.api.binder.ApiBinder;
+import org.platform.api.binder.ApiBinderModule;
 import org.platform.api.context.Config;
-import org.platform.api.context.ContextEvent;
 import org.platform.api.context.ContextListener;
 import org.platform.api.context.InitContext;
 import org.platform.api.context.InitListener;
 import org.platform.runtime.Platform;
-import org.platform.runtime.config.PlatformConfig;
+import org.platform.runtime.config.AppConfig;
 import org.platform.runtime.context.AbstractInitContext;
-import org.platform.runtime.support.SafetyServiceSupportListener;
-import org.platform.runtime.support.ServicesServiceSupportListener;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -41,28 +41,27 @@ import com.google.inject.Module;
 /**
  * 该类实现启动过程中如下动作：<br/>
  * <pre>
- * 1.SpanClasses -> 2.Sort InitHook -> 3.Create InitHook ->
- * 4.Create Event & InitContext -> 5.Create Guice -> 6.do ContextListener
+ * 1.SpanClasses -> 2.add internal -> 3. Decide Listener -> 4.Create InitHook ->
+ * 4.Create Event & InitContext -> 5.Create Guice -> 6.do ContextListener ->
  * </pre>
  * @version : 2013-3-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public class PlatformListener implements ServletContextListener {
-    protected final static String PlatformBuild = PlatformBuild.class.getName();
-    private List<ContextListener> initListener  = new ArrayList<ContextListener>();
+public class RuntimeListener implements ServletContextListener {
+    protected final static String RuntimeGuice = Guice.class.getName();
+    private List<ContextListener> initListener = new ArrayList<ContextListener>();
     /*----------------------------------------------------------------------------------------------------*/
     //
     /**子类可以自定义Injector对象，但要将systemModule加入到Module中，否则初始化过程会失败。*/
-    protected Injector getInjector(Module platformStartModule) {
-        return Guice.createInjector(platformStartModule);
+    protected Injector getInjector(Module systemModule) {
+        return Guice.createInjector(systemModule);
     }
     //
     /**获取内置的{@link ContextListener}，这些监听器不可删除，子类可以通过该方法得到系统定义了哪些内置监听器。*/
     protected final List<Class<?>> internalInitListenerClasses() {
         List<Class<?>> internal = new ArrayList<Class<?>>();
-        internal.add(ServicesServiceSupportListener.class);
-        internal.add(SafetyServiceSupportListener.class);
-        //
+        //internal.add(ServicesServiceSupportListener.class);
+        //internal.add(SafetyServiceSupportListener.class);
         return internal;
     }
     //
@@ -124,54 +123,51 @@ public class PlatformListener implements ServletContextListener {
                 this.initListener.add(listenerObject);
         }
         //5.准备PlatformContextEvent、sysModule对象。
-        final Config config = new PlatformConfig(servletContextEvent.getServletContext());
-        final InitContext initContext = new AbstractInitContext(config) {};
-        final PlatformContextEvent eventObject = new PlatformContextEvent(initContext);
-        final List<ContextListener> listenerList = this.initListener;
-        final Module sysModule = new Module() {
+        final Config config = new AppConfig(servletContextEvent.getServletContext());
+        final AbstractInitContext initContext = new AbstractInitContext(config) {};
+        final ListenerApiBinder apiBinder = new ListenerApiBinder(initContext);
+        final Module systemModule = new ApiBinderModule(this.initListener) {
             @Override
-            public void configure(Binder binder) {
-                for (ContextListener listener : listenerList) {
-                    if (listener == null)
-                        continue;
-                    Platform.info("send ContextEvent to : " + Platform.logString(listener.getClass()));
-                    eventObject.setBinder(binder);
-                    listener.onContextInitialized(eventObject);
-                }
+            protected ApiBinder getApiBinder(Binder guiceBinder) {
+                apiBinder.setGuiceBinder(guiceBinder);/*用于给apiBinder设置guiceBinder。*/
+                return apiBinder;
             }
         };
         //6.构建Guice并init @InitContext注解类。
-        Platform.info("create guice and begin start...");
-        Injector guice = this.getInjector(sysModule);
+        Platform.info("initialize ...");
+        Injector guice = this.getInjector(systemModule);
         Assert.isNotNull(guice, "can not be create Injector.");
         //7.构建初始化PlatformBuild对象
-        PlatformBuild build = new PlatformBuild();
-        build.buildPlatform(initContext, guice);
-        //8.放入ServletContext环境。
-        Platform.info("ServletContext Attribut : " + PlatformBuild + " -->> " + Platform.logString(build));
-        config.getServletContext().setAttribute(PlatformBuild, build);
+        //8.发送完成初始化信号
+        Platform.info("send Initialized sign.");
+        for (ContextListener listener : this.initListener) {
+            if (listener == null)
+                continue;
+            listener.initialized();
+        }
+        Platform.info("initialization finish.");
+        //9.放入ServletContext环境。
+        Platform.info("ServletContext Attribut : " + RuntimeGuice + " -->> " + Platform.logString(guice));
+        config.getServletContext().setAttribute(RuntimeGuice, guice);
         Platform.info("platform started!");
     }
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         final List<ContextListener> listenerList = this.initListener;
         for (ContextListener listener : listenerList)
-            listener.onContextDestroyed();
+            listener.destroy();
     }
-    /*----------------------------------------------------------------------------------------------------*/
-    /**继承ContextEvent类用于实现getBinder方法。*/
-    private static class PlatformContextEvent extends ContextEvent {
-        private static final long serialVersionUID = -5525268844947074998L;
-        private transient Binder  binder           = null;
-        protected PlatformContextEvent(InitContext initContext) {
+    private static class ListenerApiBinder extends AbstractApiBinder {
+        private Binder guiceBinder = null;
+        public ListenerApiBinder(InitContext initContext) {
             super(initContext);
         }
-        public void setBinder(Binder binder) {
-            this.binder = binder;
-        }
         @Override
-        public Binder getBinder() {
-            return this.binder;
+        public Binder getGuiceBinder() {
+            return this.guiceBinder;
+        }
+        public void setGuiceBinder(Binder guiceBinder) {
+            this.guiceBinder = guiceBinder;
         }
     }
 }

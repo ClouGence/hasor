@@ -25,25 +25,25 @@ import com.google.inject.Module;
  * @version : 2013-4-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class SystemModule implements Module {
+public abstract class ApiBinderModule implements Module {
     private List<ContextListener> listenerList = null;
-    protected SystemModule(List<ContextListener> listenerList) {
+    protected ApiBinderModule(List<ContextListener> listenerList) {
+        this.listenerList = listenerList;
         if (listenerList == null)
             this.listenerList = new ArrayList<ContextListener>();
     }
     @Override
     public void configure(Binder binder) {
-        ApiBinder apiBinder = null;
         for (ContextListener listener : listenerList) {
             if (listener == null)
                 continue;
             Platform.info("send initialize to : " + Platform.logString(listener.getClass()));
-            apiBinder = this.getApiBinder(binder);
+            ApiBinder apiBinder = this.getApiBinder(binder);
             listener.initialize(apiBinder);
         }
         /*执行ApiBinder的configure，使其完成配置任务。*/
-        if (apiBinder instanceof Module)
-            binder.install((Module) apiBinder);
+        ApiBinder apiBinder = this.getApiBinder(binder);
+        binder.install((Module) apiBinder);
     }
     protected abstract ApiBinder getApiBinder(Binder guiceBinder);
 }

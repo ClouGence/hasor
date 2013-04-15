@@ -16,7 +16,6 @@
 package org.platform.api.binder;
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -29,7 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.more.util.Iterators;
 import org.platform.api.context.AppContext;
-import org.platform.api.context.InitContext;
 import org.platform.api.context.ViewContext;
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -67,37 +65,18 @@ class FilterDefinition extends AbstractServletModuleBinding implements Provider<
     }
     /*--------------------------------------------------------------------------------------------------------*/
     /**/
-    public void init(final AppContext appContext, final FilterConfig initConfig) throws ServletException {
+    public void init(final AppContext appContext) throws ServletException {
         Filter filter = this.getTarget(appContext.getGuice());
         if (filter == null)
             return;
-        final Map<String, String> initParams = new HashMap<String, String>();
-        //1. InitContext Config
-        {
-            InitContext initContext = appContext.getInitContext();
-            Enumeration<String> ns = initContext.getInitParameterNames();
-            while (ns.hasMoreElements()) {
-                String key = ns.nextElement();
-                initParams.put(key, initContext.getInitParameter(key));
-            }
-        }
-        //2. Root Filter Config
-        if (initConfig != null) {
-            Enumeration<String> ns = initConfig.getInitParameterNames();
-            while (ns.hasMoreElements()) {
-                String key = ns.nextElement();
-                initParams.put(key, initConfig.getInitParameter(key));
-            }
-        }
-        //3. Filter Config
-        initParams.putAll(this.getInitParams());
+        final Map<String, String> initParams = this.getInitParams();
         //
         filter.init(new FilterConfig() {
             public String getFilterName() {
                 return filterKey.toString();
             }
             public ServletContext getServletContext() {
-                return initConfig.getServletContext();
+                return appContext.getInitContext().getServletContext();
             }
             public String getInitParameter(String s) {
                 return initParams.get(s);

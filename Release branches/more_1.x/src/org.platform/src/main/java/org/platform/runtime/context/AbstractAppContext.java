@@ -14,36 +14,33 @@
  * limitations under the License.
  */
 package org.platform.runtime.context;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import java.util.List;
+import org.platform.Assert;
 import org.platform.api.context.AppContext;
-import org.platform.api.context.InitContext;
-import org.platform.runtime.WebHelper;
+import com.google.inject.Injector;
 /**
- * 对{@link AppContext}接口的基本实现，这个类主要负责处理HttpServletRequest、HttpServletResponse
- * @version : 2013-4-3
+ * {@link AppContext}接口的实现类。
+ * @version : 2013-4-9
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractAppContext extends AppContext {
-    private InitContext initContext = null;
-    public AbstractAppContext(InitContext initContext) {
-        this.initContext = initContext;
+public class AbstractAppContext extends AppContext {
+    private Injector guice = null;
+    protected AbstractAppContext(Injector guice) {
+        this.guice = guice;
+        Assert.isNotNull(guice);
     }
     @Override
-    public InitContext getInitContext() {
-        return this.initContext;
+    public Injector getGuice() {
+        return this.guice;
     }
-    /**取得{@link HttpServletRequest}类型对象。*/
-    public HttpServletRequest getHttpRequest() {
-        return WebHelper.getHttpRequest();
+    @Override
+    public <T> Class<T> getBeanType(String name) {
+        // TODO Auto-generated method stub
+        return null;
     }
-    /**取得{@link HttpServletResponse}类型对象。*/
-    public HttpServletResponse getHttpResponse() {
-        return WebHelper.getHttpResponse();
-    }
-    /**取得{@link HttpSession}类型对象。*/
-    public HttpSession getHttpSession(boolean create) {
-        return WebHelper.getHttpSession(create);
+    @Override
+    public List<String> getBeanNames() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

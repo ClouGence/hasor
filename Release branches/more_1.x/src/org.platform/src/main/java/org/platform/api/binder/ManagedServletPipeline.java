@@ -15,35 +15,137 @@
  */
 package org.platform.api.binder;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.FilterChain;
+import javax.inject.Singleton;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import org.platform.api.context.AppContext;
 import org.platform.api.context.ViewContext;
 import com.google.inject.Binding;
+import com.google.inject.Injector;
 import com.google.inject.TypeLiteral;
 /**
  * 
  * @version : 2013-4-12
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-class ManagedServletPipeline implements FilterPipeline {
-    public static final String               REQUEST_DISPATCHER_REQUEST = "javax.servlet.forward.servlet_path";
-    private List<Binding<ServletDefinition>> servletDefine              = null;
+@Singleton
+class ManagedServletPipeline {
+    private ServletDefinition[] servletDefinitions;
+    private volatile boolean    initialized = false;
     //
-    @Override
-    public void initPipeline(AppContext appContext) throws ServletException {
-        this.servletDefine = appContext.getGuice().findBindingsByType(TypeLiteral.get(ServletDefinition.class));
-        //filterDefine.get(0).getProvider().get().
+    public synchronized void initPipeline(AppContext appContext) throws ServletException {
+        if (initialized)
+            return;
+        this.servletDefinitions = collectServletDefinitions(appContext.getGuice());
+        for (ServletDefinition servletDefinition : servletDefinitions) {
+            servletDefinition.init(appContext);
+        }
+        //everything was ok...
+        this.initialized = true;
     }
-    @Override
-    public void dispatch(ViewContext viewContext, ServletRequest request, ServletResponse response, FilterChain defaultFilterChain) throws IOException, ServletException {
-        // TODO Auto-generated method stub
+    private ServletDefinition[] collectServletDefinitions(Injector injector) {
+        List<ServletDefinition> servletDefinitions = new ArrayList<ServletDefinition>();
+        TypeLiteral<ServletDefinition> SERVLET_DEFS = TypeLiteral.get(ServletDefinition.class);
+        for (Binding<ServletDefinition> entry : injector.findBindingsByType(SERVLET_DEFS)) {
+            servletDefinitions.add(entry.getProvider().get());
+        }
+        // Convert to a fixed size array for speed.
+        return servletDefinitions.toArray(new ServletDefinition[servletDefinitions.size()]);
     }
-    @Override
+    public boolean hasServletsMapped() {
+        return servletDefinitions.length > 0;
+    }
+    //
+    //
+    public boolean service(ViewContext viewContext, ServletRequest servletRequest, ServletResponse servletResponse) throws IOException, ServletException {
+        //stop at the first matching servlet and service
+        for (ServletDefinition servletDefinition : servletDefinitions) {
+            if (servletDefinition.service(viewContext, servletRequest, servletResponse)) {
+                return true;
+            }
+        }
+        //there was no match...
+        return false;
+    }
     public void destroyPipeline(AppContext appContext) {
-        // TODO Auto-generated method stub
+        for (ServletDefinition servletDefinition : servletDefinitions) {
+            servletDefinition.destroy(appContext);
+        }
     }
-}a
+    //
+    //
+    //
+    //
+    //
+    /**
+     * @return Returns a request dispatcher wrapped with a servlet mapped to
+     * the given path or null if no mapping was found.
+     */
+    RequestDispatcher getRequestDispatcher(final ViewContext viewContext, String path) {
+        final String newRequestUri = path;
+        // TODO(dhanji): check servlet spec to see if the following is legal or not.
+        // Need to strip query string if requested...
+        for (final ServletDefinition servletDefinition : servletDefinitions) {
+            if (servletDefinition.matchesUri(path)) {
+                return new RequestDispatcher() {
+                    public void forward(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+                        if (servletResponse.isCommitted() == true)
+                            throw new ServletException("Response has been committed--you can only call forward before committing the response (hint: don't flush buffers)");
+                        // clear buffer before forwarding
+                        servletResponse.resetBuffer();
+                        ServletRequest requestToProcess;
+                        if (servletRequest instanceof HttpServletRequest) {
+                            requestToProcess = new RequestDispatcherRequestWrapper(servletRequest, newRequestUri);
+                        } else {
+                            // This should never happen, but instead of throwing an exception
+                            // we will allow a happy case pass thru for maximum tolerance to
+                            // legacy (and internal) code.
+                            requestToProcess = servletRequest;
+                        }
+                        servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
+                        // now dispatch to the servlet
+                        try {
+                            servletDefinition.service(viewContext, requestToProcess, servletResponse);
+                        } finally {
+                            servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
+                        }
+                    }
+                    public void include(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+                        servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
+                        // route to the target servlet
+                        try {
+                            servletDefinition.service(viewContext, servletRequest, servletResponse);
+                        } finally {
+                            servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
+                        }
+                    }
+                };
+            }
+        }
+        //otherwise, can't process
+        return null;
+    }
+    /** 
+     * A Marker constant attribute that when present in the request indicates to Guice servlet that
+     * this request has been generated by a request dispatcher rather than the servlet pipeline.
+     * In accordance with section 8.4.2 of the Servlet 2.4 specification.
+     */
+    public static final String REQUEST_DISPATCHER_REQUEST = "javax.servlet.forward.servlet_path";
+    private static class RequestDispatcherRequestWrapper extends HttpServletRequestWrapper {
+        private final String newRequestUri;
+        public RequestDispatcherRequestWrapper(ServletRequest servletRequest, String newRequestUri) {
+            super((HttpServletRequest) servletRequest);
+            this.newRequestUri = newRequestUri;
+        }
+        @Override
+        public String getRequestURI() {
+            return newRequestUri;
+        }
+    }
+}

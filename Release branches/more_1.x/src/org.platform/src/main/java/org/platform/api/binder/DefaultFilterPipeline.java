@@ -17,8 +17,8 @@ package org.platform.api.binder;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.platform.api.context.AppContext;
 import org.platform.api.context.ViewContext;
 /**
@@ -30,7 +30,7 @@ public class DefaultFilterPipeline implements FilterPipeline {
     @Override
     public void initPipeline(AppContext appContext) throws ServletException {}
     @Override
-    public void dispatch(ViewContext viewContext, ServletRequest request, ServletResponse response, FilterChain defaultFilterChain) throws IOException, ServletException {
+    public void dispatch(ViewContext viewContext, HttpServletRequest request, HttpServletResponse response, FilterChain defaultFilterChain) throws IOException, ServletException {
         defaultFilterChain.doFilter(request, response);
     }
     @Override

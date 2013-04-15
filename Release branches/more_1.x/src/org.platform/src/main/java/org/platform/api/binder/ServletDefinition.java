@@ -17,9 +17,7 @@ package org.platform.api.binder;
 import static org.platform.api.binder.ManagedServletPipeline.REQUEST_DISPATCHER_REQUEST;
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -31,7 +29,6 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.more.util.Iterators;
 import org.platform.api.context.AppContext;
-import org.platform.api.context.InitContext;
 import org.platform.api.context.ViewContext;
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -71,37 +68,18 @@ class ServletDefinition extends AbstractServletModuleBinding implements Provider
     }
     /*--------------------------------------------------------------------------------------------------------*/
     /**/
-    public void init(final AppContext appContext, final FilterConfig initConfig) throws ServletException {
+    public void init(final AppContext appContext) throws ServletException {
         HttpServlet servlet = this.getTarget(appContext.getGuice());
         if (servlet == null)
             return;
-        final Map<String, String> initParams = new HashMap<String, String>();
-        //1. InitContext Config
-        {
-            InitContext initContext = appContext.getInitContext();
-            Enumeration<String> ns = initContext.getInitParameterNames();
-            while (ns.hasMoreElements()) {
-                String key = ns.nextElement();
-                initParams.put(key, initContext.getInitParameter(key));
-            }
-        }
-        //2. Root Filter Config
-        if (initConfig != null) {
-            Enumeration<String> ns = initConfig.getInitParameterNames();
-            while (ns.hasMoreElements()) {
-                String key = ns.nextElement();
-                initParams.put(key, initConfig.getInitParameter(key));
-            }
-        }
-        //3. HttpServlet Config
-        initParams.putAll(this.getInitParams());
+        final Map<String, String> initParams = this.getInitParams();
         //
         servlet.init(new ServletConfig() {
             public String getServletName() {
                 return servletKey.toString();
             }
             public ServletContext getServletContext() {
-                return initConfig.getServletContext();
+                return appContext.getInitContext().getServletContext();
             }
             public String getInitParameter(String s) {
                 return initParams.get(s);
@@ -112,13 +90,14 @@ class ServletDefinition extends AbstractServletModuleBinding implements Provider
         });
     }
     /**/
-    public void service(ViewContext viewContext, ServletRequest request, ServletResponse response) throws IOException, ServletException {
+    public boolean service(ViewContext viewContext, ServletRequest request, ServletResponse response) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
         boolean serve = this.matchesUri(path);
-        //
+        // 
         if (serve)
             doService(viewContext, request, response);
+        return serve;
     }
     /**/
     private void doService(ViewContext viewContext, final ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {

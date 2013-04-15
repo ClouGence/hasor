@@ -15,11 +15,10 @@
  */
 package org.platform.api.binder;
 import java.io.IOException;
-import javax.inject.Singleton;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.platform.api.context.AppContext;
 import org.platform.api.context.ViewContext;
 import com.google.inject.ImplementedBy;
@@ -28,13 +27,12 @@ import com.google.inject.ImplementedBy;
  * @version : 2013-4-11
  * @author 赵永春 (zyc@byshell.org)
  */
-@Singleton
 @ImplementedBy(DefaultFilterPipeline.class)
 public interface FilterPipeline {
     /**初始化管道*/
     public void initPipeline(AppContext appContext) throws ServletException;
     /**执行请求操作*/
-    public void dispatch(ViewContext viewContext, ServletRequest request, ServletResponse response, FilterChain defaultFilterChain) throws IOException, ServletException;
+    public void dispatch(ViewContext viewContext, HttpServletRequest request, HttpServletResponse response, FilterChain defaultFilterChain) throws IOException, ServletException;
     /**销毁管道*/
     public void destroyPipeline(AppContext appContext);
 }

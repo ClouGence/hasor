@@ -27,6 +27,7 @@ import com.google.inject.Injector;
  */
 public abstract class ViewContext {
     private AppContext appContext = null;
+    private String     requestURI = null;
     //
     //
     protected ViewContext(AppContext appContext) {
@@ -48,6 +49,15 @@ public abstract class ViewContext {
     public Injector getGuice() {
         return this.getAppContext().getGuice();
     };
+    /**获取请求的资源地址。*/
+    public String getRequestURI() {
+        if (this.requestURI == null) {
+            String requestURI = this.getHttpRequest().getRequestURI();
+            String contextPath = this.getHttpRequest().getContextPath();
+            this.requestURI = requestURI.substring(contextPath.length());
+        }
+        return requestURI;
+    }
     /**取得{@link HttpServletRequest}类型对象。*/
     public abstract HttpServletRequest getHttpRequest();
     /**取得{@link HttpServletResponse}类型对象。*/

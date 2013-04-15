@@ -26,6 +26,7 @@ import com.google.inject.Injector;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AppContext {
+    private InitContext initContext = null;
     /**获取应用程序配置。*/
     public Global getSettings() {
         InitContext initContext = this.getInitContext();
@@ -33,7 +34,11 @@ public abstract class AppContext {
         return initContext.getSettings();
     };
     /**获取初始化上下文*/
-    public abstract InitContext getInitContext();
+    public InitContext getInitContext() {
+        if (this.initContext == null)
+            this.initContext = this.getGuice().getInstance(InitContext.class);
+        return this.initContext;
+    }
     /**获得Guice环境。*/
     public abstract Injector getGuice();
     /**通过名称创建bean实例，使用guice。*/
