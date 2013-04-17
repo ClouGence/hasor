@@ -22,6 +22,8 @@ import java.util.Set;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
 import org.more.util.ClassUtil;
 import org.platform.Assert;
 import org.platform.Platform;
@@ -29,6 +31,7 @@ import org.platform.Platform.PlatformConfigEnum;
 import org.platform.binder.AbstractApiBinder;
 import org.platform.binder.ApiBinder;
 import org.platform.binder.ApiBinderModule;
+import org.platform.binder.SessionListenerPipeline;
 import org.platform.context.AbstractAppContext;
 import org.platform.context.AbstractInitContext;
 import org.platform.context.AppContext;
@@ -41,6 +44,7 @@ import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.Provider;
 /**
  * 该类实现启动过程中如下动作：<br/>
  * <pre>
@@ -50,13 +54,14 @@ import com.google.inject.Module;
  * @version : 2013-3-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public class RuntimeListener implements ServletContextListener {
-    public static final String    AppContextName = AppContext.class.getName();
-    private List<ContextListener> initListener   = new ArrayList<ContextListener>();
-    private Config                settings       = null;
-    private Injector              guice          = null;
-    private AppContext            appContext     = null;
-    private InitContext           initContext    = null;
+public class RuntimeListener implements ServletContextListener, HttpSessionListener {
+    public static final String      AppContextName          = AppContext.class.getName();
+    private List<ContextListener>   initListener            = new ArrayList<ContextListener>();
+    private Config                  settings                = null;
+    private Injector                guice                   = null;
+    private AppContext              appContext              = null;
+    private InitContext             initContext             = null;
+    private SessionListenerPipeline sessionListenerPipeline = null;
     /*----------------------------------------------------------------------------------------------------*/
     protected final Config getSettings() {
         return this.settings;
@@ -80,7 +85,7 @@ public class RuntimeListener implements ServletContextListener {
     /**获取监听器类型集合，用于搜索程序中所有标记了InitListener注解的类型，并且该类型实现了{@link ContextListener}接口。*/
     protected List<Class<? extends ContextListener>> searchListenerClasses() {
         //1.扫描classpath包
-        String spanPackages = this.settings.getSettings().getString(PlatformConfigEnum.LoadPackages.getValue());
+        String spanPackages = this.settings.getSettings().getString(PlatformConfigEnum.Framework_LoadPackages.getValue());
         String[] spanPackage = spanPackages.split(",");
         Platform.info("loadPackages : " + Platform.logString(spanPackage));
         Set<Class<?>> initHookSet = ClassUtil.getClassSet(spanPackage, InitListener.class);
@@ -161,6 +166,16 @@ public class RuntimeListener implements ServletContextListener {
                 apiBinder.setGuiceBinder(guiceBinder);/*用于给apiBinder设置guiceBinder。*/
                 return apiBinder;
             }
+            @Override
+            public void configure(Binder binder) {
+                super.configure(binder);
+                binder.bind(AppContext.class).toProvider(new Provider<AppContext>() {
+                    @Override
+                    public AppContext get() {
+                        return getAppContext();
+                    }
+                });
+            }
         };
         //6.构建Guice并init @InitContext注解类。
         Platform.info("initialize ...");
@@ -175,8 +190,14 @@ public class RuntimeListener implements ServletContextListener {
             listener.initialized();
         }
         Platform.info("initialization finish.");
-        //9.放入ServletContext环境。
+        //9.获取SessionListenerPipeline
+        Platform.info("SessionListenerPipeline createInstance...");
+        this.sessionListenerPipeline = this.guice.getInstance(SessionListenerPipeline.class);
+        this.sessionListenerPipeline.init(this.appContext);
+        //10.创建AppContext
+        Platform.info("createAppContext...");
         this.appContext = this.createAppContext();
+        //11.放入ServletContext环境。
         Platform.info("ServletContext Attribut : " + AppContextName + " -->> " + Platform.logString(this.appContext));
         servletContextEvent.getServletContext().setAttribute(AppContextName, this.appContext);
         Platform.info("platform started!");
@@ -186,6 +207,14 @@ public class RuntimeListener implements ServletContextListener {
         final List<ContextListener> listenerList = this.initListener;
         for (ContextListener listener : listenerList)
             listener.destroy();
+    }
+    @Override
+    public void sessionCreated(HttpSessionEvent se) {
+        this.sessionListenerPipeline.sessionCreated(se);
+    }
+    @Override
+    public void sessionDestroyed(HttpSessionEvent se) {
+        this.sessionListenerPipeline.sessionDestroyed(se);
     }
     private static class ListenerApiBinder extends AbstractApiBinder {
         private Binder guiceBinder = null;

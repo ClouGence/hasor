@@ -31,6 +31,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSessionListener;
 import org.more.util.StringUtil;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
@@ -38,11 +39,11 @@ import org.platform.binder.ErrorHook;
 import org.platform.context.AbstractModuleListener;
 import org.platform.context.InitListener;
 /**
- * 支持Service等注解功能。
+ * 支持WebError、WebFilter、WebServlet注解功能。
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@InitListener(displayName = "WebModuleServiceListener", description = "org.platform.web软件包功能支持。", startIndex = 0)
+@InitListener(displayName = "WebModuleServiceListener", description = "org.platform.web软件包功能支持。", startIndex = 1)
 public class WebModuleServiceListener extends AbstractModuleListener {
     /**初始化.*/
     @Override
@@ -66,6 +67,8 @@ public class WebModuleServiceListener extends AbstractModuleListener {
         this.loadServlet(event);
         //4.loadErrorHook.
         this.loadErrorHook(event);
+        //5.WebSessionListener
+        this.loadSessionListener(event);
     }
     //
     /*装载Filter*/
@@ -160,6 +163,35 @@ public class WebModuleServiceListener extends AbstractModuleListener {
             WebError errorAnno = errorHookType.getAnnotation(WebError.class);
             Map<String, String> initMap = this.toMap(errorAnno.initParams());
             event.error(errorAnno.value()).bind(errorHookType, initMap);
+        }
+    }
+    //
+    /*装载HttpSessionListener*/
+    protected void loadSessionListener(ApiBinder event) {
+        //1.获取
+        Set<Class<?>> sessionListenerSet = event.getClassSet(WebSessionListener.class);
+        List<Class<? extends HttpSessionListener>> sessionListenerList = new ArrayList<Class<? extends HttpSessionListener>>();
+        for (Class<?> cls : sessionListenerSet) {
+            if (HttpSessionListener.class.isAssignableFrom(cls) == false) {
+                Platform.warning("not implemented HttpSessionListener ：" + Platform.logString(cls));
+            } else {
+                sessionListenerList.add((Class<? extends HttpSessionListener>) cls);
+            }
+        }
+        //2.排序
+        Collections.sort(sessionListenerList, new Comparator<Class<?>>() {
+            @Override
+            public int compare(Class<?> o1, Class<?> o2) {
+                WebSessionListener o1Anno = o1.getAnnotation(WebSessionListener.class);
+                WebSessionListener o2Anno = o2.getAnnotation(WebSessionListener.class);
+                int o1AnnoIndex = o1Anno.sort();
+                int o2AnnoIndex = o2Anno.sort();
+                return (o1AnnoIndex < o2AnnoIndex ? -1 : (o1AnnoIndex == o2AnnoIndex ? 0 : 1));
+            }
+        });
+        //3.注册
+        for (Class<? extends HttpSessionListener> sessionListener : sessionListenerList) {
+            event.sessionListener().bind(sessionListener);
         }
     }
     //

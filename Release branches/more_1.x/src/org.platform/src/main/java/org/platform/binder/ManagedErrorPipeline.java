@@ -58,7 +58,7 @@ class ManagedErrorPipeline {
     }
     public void dispatch(ViewContext viewContext, ServletRequest request, ServletResponse response, Throwable error) throws IOException, ServletException {
         //1.进行异常处理
-        int errorCaseCount = viewContext.getSettings().getInteger(PlatformConfigEnum.ErrorCaseCount.getValue(), 5);
+        int errorCaseCount = viewContext.getSettings().getInteger(PlatformConfigEnum.Framework_ErrorCaseCount.getValue(), 5);
         for (int i = 0; i < errorCaseCount; i++) {
             for (int j = 0; j < errorDefinitions.length; j++) {
                 ErrorDefinition errDefine = errorDefinitions[j];

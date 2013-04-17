@@ -39,7 +39,7 @@ public class RuntimeFilter implements Filter {
     private AppContext     appContext     = null;
     private FilterPipeline filterPipeline = null;
     //
-    /**first visit it or start Filter*/
+    /**初始化过滤器，初始化会同时初始化FilterPipeline*/
     public void init(FilterConfig filterConfig) throws ServletException {
         Platform.info("init PlatformFilter...");
         ServletContext servletContext = filterConfig.getServletContext();
@@ -55,13 +55,15 @@ public class RuntimeFilter implements Filter {
         this.filterPipeline.initPipeline(this.appContext);
         Platform.info("FilterPipeline started.");
     }
-    /** destroy */
+    //
+    /** 销毁 */
     public void destroy() {
         Platform.info("executeCycle destroyCycle.");
         if (this.filterPipeline != null)
             this.filterPipeline.destroyPipeline(this.appContext);
     }
-    /** process request and anser response */
+    //
+    /** 处理request，响应response */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest httpReq = (HttpServletRequest) request;
         final HttpServletResponse httpRes = (HttpServletResponse) response;
@@ -80,20 +82,28 @@ public class RuntimeFilter implements Filter {
             this.afterResponse(appContext, httpReq, httpRes);
         }
     }
+    //
+    /**执行FilterPipeline*/
     private void processFilterPipeline(HttpServletRequest httpReq, HttpServletResponse httpRes, FilterChain chain) throws IOException, ServletException {
-        ViewContext viewContext = new AbstractViewContext(appContext, httpReq, httpRes) {};
+        ViewContext viewContext = this.createViewContext(httpReq, httpRes);
+        //RuntimePlatform.setViewContext(viewContext);
         this.filterPipeline.dispatch(viewContext, httpReq, httpRes, chain);
+        //RuntimePlatform.cleanViewContext();
     }
+    //
     /**获取{@link AppContext}接口。*/
     protected final AppContext getAppContext() {
         return appContext;
     }
+    //
     /**创建{@link ViewContext}对象。*/
     protected ViewContext createViewContext(HttpServletRequest httpReq, HttpServletResponse httpRes) {
         return new AbstractViewContext(this.appContext, httpReq, httpRes) {};
     }
+    //
     /**在filter请求处理之前。*/
     protected void beforeRequest(AppContext appContext, HttpServletRequest httpReq, HttpServletResponse httpRes) {}
+    //
     /**在filter请求处理之后。*/
     protected void afterResponse(AppContext appContext, HttpServletRequest httpReq, HttpServletResponse httpRes) {}
 }

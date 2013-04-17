@@ -23,12 +23,12 @@ import java.util.Collection;
  * @version : 2013-4-3
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Platform {
+public abstract class Platform {
     public static enum PlatformConfigEnum {
-        /**异常处理程序总迭代次数(配置Code).*/
-        ErrorCaseCount("framework.errorCaseCount"),
         /**装载的class包范畴，逗号间隔.*/
-        LoadPackages("framework.loadPackages");
+        Framework_LoadPackages("framework.loadPackages"),
+        /**异常处理程序总迭代次数(配置Code).*/
+        Framework_ErrorCaseCount("framework.httpServlet.errorCaseCount");
         //
         //
         private String value = null;
@@ -42,17 +42,58 @@ public class Platform {
     }
     //
     //
+    /*---------------------------------------------------------------------*/
+    //    private static AppContext                     platformAppContext = null;
+    //    private static final ThreadLocal<ViewContext> localViewContext   = new ThreadLocal<ViewContext>();
+    //    /**初始化Platform对象。*/
+    //    protected static void initPlatform(AppContext appContext) {
+    //        platformAppContext = appContext;
+    //    }
+    //    /**初始化当前线程的ViewContext对象。*/
+    //    protected static void initViewContext(ViewContext viewContext) {
+    //        Assert.isNotNull(viewContext);
+    //        cleanViewContext();
+    //        localViewContext.set(viewContext);
+    //    }
+    //    /**清空当前线程的ViewContext对象。*/
+    //    protected static void cleanViewContext() {
+    //        if (localViewContext.get() != null)
+    //            localViewContext.remove();
+    //    }
+    /*---------------------------------------------------------------------*/
+    //    //
+    //    /***/
+    //    public final static AppContext getAppContext() {
+    //        return platformAppContext;
+    //    }
+    //    //
+    //    /***/
+    //    public final static ViewContext getViewcontext() {
+    //        return localViewContext.get();
+    //    }
+    //    //
+    //    /***/
+    //    public final static InitContext getInitContext() {
+    //        return platformAppContext.getInitContext();
+    //    }
+    //    //
+    //    /**获取全局配置*/
+    //    public final static Global getSettings() {
+    //        return platformAppContext.getSettings();
+    //    }
+    //
+    //
     public static void debug(String string) {
-        System.out.println(string);
+        System.out.println(string);//TODO
     }
     public static void error(String string, Exception e) {
-        System.err.println(string);
+        System.err.println(string);//TODO
     }
     public static void warning(String string) {
-        System.err.println(string);
+        System.err.println(string);//TODO
     }
     public static void info(String string) {
-        System.out.println(string);
+        System.out.println(string);//TODO 
     }
     public static String logString(Object object) {
         if (object == null)

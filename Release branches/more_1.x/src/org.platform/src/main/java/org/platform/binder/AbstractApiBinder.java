@@ -31,11 +31,12 @@ import com.google.inject.Binder;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractApiBinder extends AbstractModule implements ApiBinder {
-    private InitContext           initContext         = null;
-    private Map<String, Object>   extData             = null;
-    private FiltersModuleBuilder  filterModuleBinder  = new FiltersModuleBuilder(); /*Filters*/
-    private ServletsModuleBuilder servletModuleBinder = new ServletsModuleBuilder(); /*Servlets*/
-    private ErrorsModuleBuilder   errorsModuleBuilder = new ErrorsModuleBuilder();  /*Errors*/
+    private InitContext            initContext            = null;
+    private Map<String, Object>    extData                = null;
+    private FiltersModuleBuilder   filterModuleBinder     = new FiltersModuleBuilder();  /*Filters*/
+    private ServletsModuleBuilder  servletModuleBinder    = new ServletsModuleBuilder(); /*Servlets*/
+    private ErrorsModuleBuilder    errorsModuleBuilder    = new ErrorsModuleBuilder();   /*Errors*/
+    private ListenerBindingBuilder listenerBindingBuilder = new ListenerBindingBuilder(); /*Listener*/
     //
     /**构建InitEvent对象。*/
     protected AbstractApiBinder(InitContext initContext) {
@@ -75,10 +76,14 @@ public abstract class AbstractApiBinder extends AbstractModule implements ApiBin
         return this.errorsModuleBuilder.errorTypes(errorList);
     }
     @Override
+    public SessionListenerBindingBuilder sessionListener() {
+        return this.listenerBindingBuilder.sessionListener();
+    }
+    @Override
     public Set<Class<?>> getClassSet(Class<?> featureType) {
         if (featureType == null)
             return null;
-        String loadPackages = this.initContext.getSettings().getString(PlatformConfigEnum.LoadPackages.getValue());
+        String loadPackages = this.initContext.getSettings().getString(PlatformConfigEnum.Framework_LoadPackages.getValue());
         String[] spanPackage = loadPackages.split(",");
         return ClassUtil.getClassSet(spanPackage, featureType);
     }
@@ -87,10 +92,13 @@ public abstract class AbstractApiBinder extends AbstractModule implements ApiBin
         this.install(this.filterModuleBinder);
         this.install(this.servletModuleBinder);
         this.install(this.errorsModuleBuilder);
+        this.install(this.listenerBindingBuilder);
         /*------------------------------------------*/
-        this.bind(InitContext.class).toInstance(this.initContext);
         this.bind(ManagedErrorPipeline.class).asEagerSingleton();
         this.bind(ManagedServletPipeline.class).asEagerSingleton();
         this.bind(FilterPipeline.class).to(ManagedFilterPipeline.class).asEagerSingleton();
+        //
+        this.bind(InitContext.class).toInstance(this.initContext);
+        this.bind(SessionListenerPipeline.class).to(ManagedSessionListenerPipeline.class).asEagerSingleton();
     }
 }

@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.servlet.Filter;
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpSessionListener;
 import org.platform.context.InitContext;
 import com.google.inject.Binder;
 import com.google.inject.Key;
@@ -39,6 +40,8 @@ public interface ApiBinder {
     public ServletBindingBuilder serveRegex(String regex, String... regexes);
     /**绑定一个Servlet 异常处理程序。*/
     public ErrorBindingBuilder error(Class<? extends Throwable> error);
+    /**注册一个Session监听器。*/
+    public SessionListenerBindingBuilder sessionListener();
     /**获取用于初始化Guice的Binder。*/
     public Binder getGuiceBinder();
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
@@ -70,5 +73,11 @@ public interface ApiBinder {
         public void bind(Class<? extends ErrorHook> errorKey, Map<String, String> initParams);
         public void bind(Key<? extends ErrorHook> errorKey, Map<String, String> initParams);
         public void bind(ErrorHook errorHook, Map<String, String> initParams);
+    }
+    /**负责配置SessionListener。*/
+    public static interface SessionListenerBindingBuilder {
+        public void bind(Class<? extends HttpSessionListener> listenerKey);
+        public void bind(Key<? extends HttpSessionListener> listenerKey);
+        public void bind(HttpSessionListener sessionListener);
     }
 }
