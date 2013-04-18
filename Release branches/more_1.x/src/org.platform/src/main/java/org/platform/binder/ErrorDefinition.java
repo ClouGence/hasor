@@ -24,6 +24,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.more.core.global.Global;
 import org.more.util.Iterators;
 import org.platform.context.AppContext;
+import org.platform.context.SettingListener;
 import org.platform.context.ViewContext;
 import org.platform.context.setting.Config;
 import com.google.inject.Injector;
@@ -90,6 +91,14 @@ class ErrorDefinition implements Provider<ErrorDefinition> {
             @Override
             public Global getSettings() {
                 return appContext.getSettings();
+            }
+            @Override
+            public void addSettingsListener(SettingListener settingsListener) {
+                appContext.getInitContext().getConfig().addSettingsListener(settingsListener);
+            }
+            @Override
+            public void removeSettingsListener(SettingListener settingsListener) {
+                appContext.getInitContext().getConfig().removeSettingsListener(settingsListener);
             }
         });
     }

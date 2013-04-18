@@ -14,21 +14,26 @@
  * limitations under the License.
  */
 package org.platform.security;
-import org.platform.security._.IUser;
 /**
- * 当前权限会话
+ * 负责权限系统中的用户会话。用户会话中保存了用户登陆之后的权限数据。
  * @version : 2013-3-26
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AuthSession {
-    /**执行登陆，返回值为{@link AuthorResult}类型枚举。*/
+    /**获取登陆的用户对象，如果未登录系统而且启用了来宾帐号则会返回来宾帐号。*/
+    public abstract IUser getUserObject();
+    /**用指定的用户对象登陆到权限系统。*/
     public abstract void doLogin(IUser user);
-    /**执行退出，返回值为{@link AuthorResult}类型枚举。*/
+    /**用指定的用户帐号密码系统。*/
+    public abstract void doLogin(String account, String password);
+    /**执行退出。*/
     public abstract void doLogout();
-    //
-    //
+    /**添加会话级别临时权限，当会话消失权限消失。*/
+    public abstract void addTempPermission(Permission permission);
     /**是否已经登陆*/
     public abstract boolean isLogin();
-    /**使用对策略判断权限。*/
-    public abstract boolean checkPolicy(Power powerAnno);
+    /**判断是否为来宾帐号，当启用了来宾帐号，并且尚未登陆系统的情况下该值返回为true。*/
+    public abstract boolean isGuest();
+    /**关闭会话*/
+    public abstract void close();
 }

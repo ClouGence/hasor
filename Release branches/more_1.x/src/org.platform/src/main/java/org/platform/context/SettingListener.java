@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.security;
+package org.platform.context;
+import org.more.core.global.Global;
 /**
- * 权限系统异常。
- * @version : 2013-4-17
+ * 当配置文件重新载入时
+ * @version : 2013-4-18
  * @author 赵永春 (zyc@byshell.org)
  */
-public class PermissionException extends Exception {
-    private static final long serialVersionUID = 2366386850634621969L;
-    //
-    public PermissionException(String msg) {
-        super(msg);
-    }
+public interface SettingListener {
+    public void reLoadConfig(Global oldConfig, Global newConfig);
 }

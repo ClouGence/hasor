@@ -17,6 +17,7 @@ package org.platform.context.setting;
 import java.util.Enumeration;
 import javax.servlet.ServletContext;
 import org.more.core.global.Global;
+import org.platform.context.SettingListener;
 /**
  * 配置对象
  * @version : 2013-3-28
@@ -31,4 +32,8 @@ public interface Config {
     public Enumeration<String> getInitParameterNames();
     /**获取应用程序配置。*/
     public Global getSettings();
+    /**添加配置文件改变事件监听器。*/
+    public void addSettingsListener(SettingListener settingsListener);
+    /**删除配置文件改变事件监听器。*/
+    public void removeSettingsListener(SettingListener settingsListener);
 }

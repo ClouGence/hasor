@@ -16,7 +16,7 @@
 package org.platform.context;
 import java.util.Enumeration;
 import javax.servlet.ServletContext;
-import org.more.core.global.Global;
+import org.platform.context.setting.Config;
 /**
  * 
  * @version : 2013-3-26
@@ -28,7 +28,7 @@ public interface InitContext {
     /**获取环境初始化参数名称集合。*/
     public Enumeration<String> getInitParameterNames();
     /**获取应用程序配置。*/
-    public Global getSettings();
+    public Config getConfig();
     /**获取{@link ServletContext}环境对象。*/
     public ServletContext getServletContext();
 }

@@ -15,14 +15,21 @@
  */
 package org.platform.security;
 /**
- * 权限系统异常。
- * @version : 2013-4-17
+ * 权限系统URL请求处理支持。
+ * @version : 2013-4-9
  * @author 赵永春 (zyc@byshell.org)
- */
-public class PermissionException extends Exception {
-    private static final long serialVersionUID = 2366386850634621969L;
-    //
-    public PermissionException(String msg) {
-        super(msg);
+ */ 
+public class URLPermission extends  Permission{
+    public URLPermission(String perCode) {
+        super(perCode);
+        // TODO Auto-generated constructor stub
     }
-}
+    public boolean matches(String reqPath) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+    public boolean testPermission(AuthSession authSession) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+}a

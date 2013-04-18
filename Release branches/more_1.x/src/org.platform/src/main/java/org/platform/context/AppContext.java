@@ -39,7 +39,7 @@ public abstract class AppContext {
     public Global getSettings() {
         InitContext initContext = this.getInitContext();
         Assert.isNotNull(initContext, "AppContext.getInitContext() return is null.");
-        return initContext.getSettings();
+        return initContext.getConfig().getSettings();
     };
     /**获取初始化上下文*/
     public InitContext getInitContext() {

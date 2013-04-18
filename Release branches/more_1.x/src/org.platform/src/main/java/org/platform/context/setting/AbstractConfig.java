@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -33,16 +34,18 @@ import org.more.util.ResourcesUtil;
 import org.more.util.StringUtil;
 import org.platform.Assert;
 import org.platform.Platform;
+import org.platform.context.SettingListener;
 /**
  * ServletContext到ContextConfig的桥
  * @version : 2013-4-2
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractConfig implements Config {
-    private final String   appSettingsName1 = "config.xml";
-    private final String   appSettingsName2 = "static-config.xml";
-    private final String   appSettingsName3 = "config-mapping.properties";
-    private ServletContext servletContext   = null;
+    private final String                appSettingsName1    = "config.xml";
+    private final String                appSettingsName2    = "static-config.xml";
+    private final String                appSettingsName3    = "config-mapping.properties";
+    private ServletContext              servletContext      = null;
+    private final List<SettingListener> settingListenerList = new ArrayList<SettingListener>();
     //
     //
     public AbstractConfig(ServletContext servletContext) {
@@ -63,6 +66,21 @@ public abstract class AbstractConfig implements Config {
     /***/
     public String getSettingsEncoding() {
         return "utf-8";
+    }
+    @Override
+    public void addSettingsListener(SettingListener settingsListener) {
+        if (this.settingListenerList.contains(settingsListener) == false)
+            this.settingListenerList.add(settingsListener);
+    }
+    @Override
+    public void removeSettingsListener(SettingListener settingsListener) {
+        if (this.settingListenerList.contains(settingsListener) == true)
+            this.settingListenerList.remove(settingsListener);
+    }
+    /**当重新载入配置文件时*/
+    protected void reLoadConfig(Global oldConfig, Global newConfig) {
+        for (SettingListener listener : this.settingListenerList)
+            listener.reLoadConfig(oldConfig, newConfig);
     }
     //
     //
@@ -190,7 +208,7 @@ public abstract class AbstractConfig implements Config {
         return configData;
     }
     /**/
-    private static class SettingsResourceWatch extends ResourceWatch {
+    private class SettingsResourceWatch extends ResourceWatch {
         private AbstractConfig platformConfig = null;
         public SettingsResourceWatch(URI uri, int watchStepTime, AbstractConfig platformConfig) {
             super(uri, watchStepTime);
@@ -198,8 +216,10 @@ public abstract class AbstractConfig implements Config {
         }
         @Override
         public void reload(URI resourceURI) throws IOException {
+            Global oldConfig = this.platformConfig.globalConfig;
             this.platformConfig.globalConfig = null;//清理掉globalConfig然后重新装载它。
-            this.platformConfig.getSettings();
+            Global newConfig = this.platformConfig.getSettings();
+            this.platformConfig.reLoadConfig(oldConfig, newConfig);
         }
         @Override
         public long lastModify(URI resourceURI) throws IOException {

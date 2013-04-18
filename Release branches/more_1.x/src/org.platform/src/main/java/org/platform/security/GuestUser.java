@@ -13,10 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.security._;
+package org.platform.security;
 /**
- * 表示一个用户。
+ * 表示来宾用户。
  * @version : 2013-4-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface IUser {}
+public class GuestUser implements IUser {
+    private String account  = "guest";
+    private String password = "guest";
+    private String name     = "Guest";
+    //
+    //
+    public String getAccount() {
+        return account;
+    }
+    public void setAccount(String account) {
+        this.account = account;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+}

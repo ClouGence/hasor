@@ -14,15 +14,23 @@
  * limitations under the License.
  */
 package org.platform.security;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 /**
- * 权限系统异常。
- * @version : 2013-4-17
+ * 权限系统URL请求处理支持。
+ * @version : 2013-4-9  
  * @author 赵永春 (zyc@byshell.org)
  */
-public class PermissionException extends Exception {
-    private static final long serialVersionUID = 2366386850634621969L;
-    //
-    public PermissionException(String msg) {
-        super(msg);
+class SecurityDispatcher {
+    public void forwardIndex(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+        // TODO Auto-generated method stub
     }
-}
+    public void forwardLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+        // TODO Auto-generated method stub
+    }
+    public void forwardError(ServletRequest request, ServletResponse response) {
+        // TODO Auto-generated method stub
+    }
+}s

@@ -21,22 +21,36 @@ package org.platform;
  */
 public interface PlatformConfigEnum {
     /**装载的class包范畴，逗号间隔.*/
-    public static final String Platform_LoadPackages       = "framework.loadPackages";
+    public static final String Platform_LoadPackages                = "framework.loadPackages";
     /**异常处理程序总迭代次数(配置Code).*/
-    public static final String Binder_ErrorCaseCount       = "framework.httpServlet.errorCaseCount";
+    public static final String Binder_ErrorCaseCount                = "framework.httpServlet.errorCaseCount";
     //
     //
     /**程序工作空间基础目录（绝对地址）*/
-    public static final String Workspace_WorkDir           = "workspace.workDir";
+    public static final String Workspace_WorkDir                    = "workspace.workDir";
     /** 程序的文件数据目录（默认相对workDir地址，可以通过设置absolute属性为true表示一个绝对地址）*/
-    public static final String Workspace_DataDir           = "workspace.dataDir";
-    public static final String Workspace_DataDir_Absolute  = "workspace.dataDir.absolute";
+    public static final String Workspace_DataDir                    = "workspace.dataDir";
+    public static final String Workspace_DataDir_Absolute           = "workspace.dataDir.absolute";
     /** 程序运行期间所需的临时数据存放地址（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址）*/
-    public static final String Workspace_TempDir           = "workspace.tempDir";
-    public static final String Workspace_TempDir_Absolute  = "workspace.tempDir.absolute";
+    public static final String Workspace_TempDir                    = "workspace.tempDir";
+    public static final String Workspace_TempDir_Absolute           = "workspace.tempDir.absolute";
     /** 程序运行时生成的缓存数据存放位置（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址）*/
-    public static final String Workspace_CacheDir          = "workspace.cacheDir";
-    public static final String Workspace_CacheDir_Absolute = "workspace.cacheDir.absolute";
+    public static final String Workspace_CacheDir                   = "workspace.cacheDir";
+    public static final String Workspace_CacheDir_Absolute          = "workspace.cacheDir.absolute";
     //
     //
+    /**登入地址*/
+    public static final String Security_LoginURL                    = "security.loginURL";
+    /**登出地址*/
+    public static final String Security_LogoutURL                   = "security.logoutURL";
+    /**登入表单，用户名*/
+    public static final String Security_LoginFormData_AccountField  = "security.loginFormData.accountField";
+    /**登入表单，密码*/
+    public static final String Security_LoginFormData_PasswordField = "security.loginFormData.passwordField";
+    /**request请求包含权限检查的URL*/
+    public static final String Security_Rules_Includes              = "security.rules.includes";
+    /**request请求排除权限检查的URL*/
+    public static final String Security_Rules_Excludes              = "security.rules.excludes";
+    /**逃出规则匹配的请求路径默认配置：NeedCheck、NoCheck*/
+    public static final String Security_Rules_DefaultRuleModel      = "security.rules.defaultRuleModel";
 }

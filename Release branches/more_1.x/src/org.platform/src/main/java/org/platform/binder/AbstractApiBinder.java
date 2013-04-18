@@ -83,7 +83,7 @@ public abstract class AbstractApiBinder extends AbstractModule implements ApiBin
     public Set<Class<?>> getClassSet(Class<?> featureType) {
         if (featureType == null)
             return null;
-        String loadPackages = this.initContext.getSettings().getString(Platform_LoadPackages);
+        String loadPackages = this.initContext.getConfig().getSettings().getString(Platform_LoadPackages);
         String[] spanPackage = loadPackages.split(",");
         return ClassUtil.getClassSet(spanPackage, featureType);
     }

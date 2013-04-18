@@ -15,14 +15,8 @@
  */
 package org.platform.security;
 /**
- * 权限系统异常。
+ * 表示一个用户。
  * @version : 2013-4-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class PermissionException extends Exception {
-    private static final long serialVersionUID = 2366386850634621969L;
-    //
-    public PermissionException(String msg) {
-        super(msg);
-    }
-}
+public interface IUser {}

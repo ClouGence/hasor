@@ -43,7 +43,7 @@ public abstract class ViewContext {
     }
     /**获取{@link Global}对象。*/
     public Global getSettings() {
-        return this.getInitContext().getSettings();
+        return this.getInitContext().getConfig().getSettings();
     }
     /**获取{@link Injector}Guice对象。*/
     public Injector getGuice() {

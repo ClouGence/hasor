@@ -16,6 +16,7 @@
 package org.platform.security._;
 import org.platform.context.AppContext;
 import org.platform.security.AuthSession;
+import org.platform.security.Permission;
 /**
  * 权限判断，可以通过该接口来实现各种不用的权限模型。
  * @version : 2013-3-12

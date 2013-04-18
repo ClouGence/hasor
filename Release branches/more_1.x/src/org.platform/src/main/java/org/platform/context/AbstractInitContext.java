@@ -16,7 +16,6 @@
 package org.platform.context;
 import java.util.Enumeration;
 import javax.servlet.ServletContext;
-import org.more.core.global.Global;
 import org.platform.Assert;
 import org.platform.context.setting.Config;
 /**
@@ -40,8 +39,8 @@ public abstract class AbstractInitContext implements InitContext {
         return this.config.getInitParameterNames();
     };
     /**获取应用程序配置。*/
-    public Global getSettings() {
-        return this.config.getSettings();
+    public Config getConfig() {
+        return this.config;
     }
     @Override
     public ServletContext getServletContext() {

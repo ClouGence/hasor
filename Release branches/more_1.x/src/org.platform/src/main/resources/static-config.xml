@@ -28,6 +28,8 @@
 			<dispatch sourceRegExp="">
 				<!-- 登陆成功之后要去的地址 -->
 				<indexPage>/login_ok_index.htm</indexPage>
+				<!-- 退出之后要去的地址 -->
+				<logoutPage>/login_ok_index.htm</logoutPage>
 				<!-- !!!下面的配置信息，配置一项即可!!! -->
 				<!-- 登陆失败：以Http 402号错误响应客户端。 -->
 				<errorPage processMode="Error">402</errorPage>
@@ -39,10 +41,17 @@
 		</forwards>
 		<!-- 权限判断规则 -->
 		<rules>
+			<!-- 逃出规则匹配的请求路径默认配置：NeedCheck、NoCheck -->
+			<defaultRuleModel>NoCheck</defaultRuleModel>
 			<!-- 需要权限检查的路径 -->
-			<include></include>
+			<includes>
+				<!-- 命中的URL需要用户进行登入 -->
+				<include isLogin="true"></include>
+				<!-- 命中的URL需要用户具备某种权限代码，(逗号间隔多个代码) -->
+				<include permissions=""></include>
+			</includes>
 			<!-- 不需要权限检查的路径 -->
-			<exclude></exclude>
+			<excludes></excludes>
 		</rules>
 		<!-- 来宾权限设置 -->
 		<guest enable="true">
