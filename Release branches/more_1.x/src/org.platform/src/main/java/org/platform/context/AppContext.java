@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 package org.platform.context;
+import static org.platform.PlatformConfigEnum.Workspace_CacheDir;
+import static org.platform.PlatformConfigEnum.Workspace_CacheDir_Absolute;
+import static org.platform.PlatformConfigEnum.Workspace_DataDir;
+import static org.platform.PlatformConfigEnum.Workspace_DataDir_Absolute;
+import static org.platform.PlatformConfigEnum.Workspace_TempDir;
+import static org.platform.PlatformConfigEnum.Workspace_TempDir_Absolute;
+import static org.platform.PlatformConfigEnum.Workspace_WorkDir;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
@@ -63,13 +70,13 @@ public abstract class AppContext {
     //    public abstract List<String> getBeanNames();
     /**获取程序工作目录（绝对路径）。*/
     public String getWorkDir() {
-        return this.getSettings().getDirectoryPath("workspace.workDir");
+        return this.getSettings().getDirectoryPath(Workspace_WorkDir);
     };
     /**获取数据文件目录（绝对路径）。*/
     public String getDataDir() {
         String workDir = getWorkDir();
-        String dataDir = this.getSettings().getDirectoryPath("workspace.dataDir");
-        boolean absolute = this.getSettings().getBoolean("workspace.dataDir.absolute");
+        String dataDir = this.getSettings().getDirectoryPath(Workspace_DataDir);
+        boolean absolute = this.getSettings().getBoolean(Workspace_DataDir_Absolute);
         if (absolute == false)
             return str2path(new File(workDir, dataDir).getAbsolutePath());
         else
@@ -78,8 +85,8 @@ public abstract class AppContext {
     /**获取临时数据文件目录。*/
     public String getTempDir() {
         String workDir = getWorkDir();
-        String tempDir = this.getSettings().getDirectoryPath("workspace.tempDir");
-        boolean absolute = this.getSettings().getBoolean("workspace.tempDir.absolute");
+        String tempDir = this.getSettings().getDirectoryPath(Workspace_TempDir);
+        boolean absolute = this.getSettings().getBoolean(Workspace_TempDir_Absolute);
         if (absolute == false)
             return str2path(new File(workDir, tempDir).getAbsolutePath());
         else
@@ -88,8 +95,8 @@ public abstract class AppContext {
     /**获取缓存目录。*/
     public String getCacheDir() {
         String workDir = getWorkDir();
-        String cacheDir = this.getSettings().getDirectoryPath("workspace.cacheDir");
-        boolean absolute = this.getSettings().getBoolean("workspace.cacheDir.absolute");
+        String cacheDir = this.getSettings().getDirectoryPath(Workspace_CacheDir);
+        boolean absolute = this.getSettings().getBoolean(Workspace_CacheDir_Absolute);
         if (absolute == false)
             return str2path(new File(workDir, cacheDir).getAbsolutePath());
         else

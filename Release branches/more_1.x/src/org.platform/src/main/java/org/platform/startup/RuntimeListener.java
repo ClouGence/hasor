@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.platform.startup;
+import static org.platform.PlatformConfigEnum.Platform_LoadPackages;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,7 +28,6 @@ import javax.servlet.http.HttpSessionListener;
 import org.more.util.ClassUtil;
 import org.platform.Assert;
 import org.platform.Platform;
-import org.platform.Platform.PlatformConfigEnum;
 import org.platform.binder.AbstractApiBinder;
 import org.platform.binder.ApiBinder;
 import org.platform.binder.ApiBinderModule;
@@ -85,7 +85,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     /**获取监听器类型集合，用于搜索程序中所有标记了InitListener注解的类型，并且该类型实现了{@link ContextListener}接口。*/
     protected List<Class<? extends ContextListener>> searchListenerClasses() {
         //1.扫描classpath包
-        String spanPackages = this.settings.getSettings().getString(PlatformConfigEnum.Framework_LoadPackages.getValue());
+        String spanPackages = this.settings.getSettings().getString(Platform_LoadPackages);
         String[] spanPackage = spanPackages.split(",");
         Platform.info("loadPackages : " + Platform.logString(spanPackage));
         Set<Class<?>> initHookSet = ClassUtil.getClassSet(spanPackage, InitListener.class);

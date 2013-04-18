@@ -24,7 +24,7 @@
 		</loginFormData>
 		<!-- 转发配置 -->
 		<forwards>
-			<!-- 匹配登陆源（正则表达式） -->
+			<!-- 登录源（正则表达式），当执行登陆时才会用到这里的配置。 -->
 			<dispatch sourceRegExp="">
 				<!-- 登陆成功之后要去的地址 -->
 				<indexPage>/login_ok_index.htm</indexPage>
@@ -37,6 +37,13 @@
 				<errorPage processMode="Page">/abc.htm</errorPage>
 			</dispatch>
 		</forwards>
+		<!-- 权限判断规则 -->
+		<rules>
+			<!-- 需要权限检查的路径 -->
+			<include></include>
+			<!-- 不需要权限检查的路径 -->
+			<exclude></exclude>
+		</rules>
 		<!-- 来宾权限设置 -->
 		<guest enable="true">
 			<!-- 来宾用户帐号类 -->

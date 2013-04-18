@@ -23,66 +23,7 @@ import java.util.Collection;
  * @version : 2013-4-3
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class Platform {
-    public static enum PlatformConfigEnum {
-        /**装载的class包范畴，逗号间隔.*/
-        Framework_LoadPackages("framework.loadPackages"),
-        /**异常处理程序总迭代次数(配置Code).*/
-        Framework_ErrorCaseCount("framework.httpServlet.errorCaseCount");
-        //
-        //
-        private String value = null;
-        PlatformConfigEnum(String value) {
-            this.value = value;
-        }
-        /**获取默认值*/
-        public String getValue() {
-            return this.value;
-        }
-    }
-    //
-    //
-    /*---------------------------------------------------------------------*/
-    //    private static AppContext                     platformAppContext = null;
-    //    private static final ThreadLocal<ViewContext> localViewContext   = new ThreadLocal<ViewContext>();
-    //    /**初始化Platform对象。*/
-    //    protected static void initPlatform(AppContext appContext) {
-    //        platformAppContext = appContext;
-    //    }
-    //    /**初始化当前线程的ViewContext对象。*/
-    //    protected static void initViewContext(ViewContext viewContext) {
-    //        Assert.isNotNull(viewContext);
-    //        cleanViewContext();
-    //        localViewContext.set(viewContext);
-    //    }
-    //    /**清空当前线程的ViewContext对象。*/
-    //    protected static void cleanViewContext() {
-    //        if (localViewContext.get() != null)
-    //            localViewContext.remove();
-    //    }
-    /*---------------------------------------------------------------------*/
-    //    //
-    //    /***/
-    //    public final static AppContext getAppContext() {
-    //        return platformAppContext;
-    //    }
-    //    //
-    //    /***/
-    //    public final static ViewContext getViewcontext() {
-    //        return localViewContext.get();
-    //    }
-    //    //
-    //    /***/
-    //    public final static InitContext getInitContext() {
-    //        return platformAppContext.getInitContext();
-    //    }
-    //    //
-    //    /**获取全局配置*/
-    //    public final static Global getSettings() {
-    //        return platformAppContext.getSettings();
-    //    }
-    //
-    //
+public abstract class Platform implements PlatformConfigEnum {
     public static void debug(String string) {
         System.out.println(string);//TODO
     }
