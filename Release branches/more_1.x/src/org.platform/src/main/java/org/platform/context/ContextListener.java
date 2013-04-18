@@ -24,7 +24,7 @@ public interface ContextListener {
     /**系统初始化过程...*/
     public void initialize(ApiBinder event);
     /**完成初始化。*/
-    public void initialized();
+    public void initialized(AppContext appContext);
     /**系统被销毁过程...*/
     public void destroy();
 }

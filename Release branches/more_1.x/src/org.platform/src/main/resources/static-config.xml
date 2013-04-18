@@ -1,9 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://project.byshell.org/more/schema/global">
+	<!-- 框架配置 -->
 	<framework>
 		<!-- 包扫描覆盖范围 -->
 		<loadPackages>org.*, com.*, net.*, cn.*</loadPackages>
-		<!-- Web请求遇到异常后轮询errorHook的次数。 -->
-		<errorCaseCount>5</errorCaseCount>
+		<httpServlet>
+			<!-- Web请求遇到异常后轮询errorHook的次数。 -->
+			<errorCaseCount>5</errorCaseCount>
+		</httpServlet>
 	</framework>
+	<!-- 权限配置 -->
+	<security>
+		<!-- 登录Action -->
+		<loginURL>s_login.sec</loginURL>
+		<!-- 登出Action -->
+		<logoutURL>s_logout.sec</logoutURL>
+		<!-- 登陆表单数据 -->
+		<loginFormData>
+			<!-- 登陆表单，用户名 -->
+			<accountField>j_username</accountField>
+			<!-- 登陆表单，密码 -->
+			<passwordField>j_password</passwordField>
+		</loginFormData>
+		<!-- 转发配置 -->
+		<forwards>
+			<!-- 匹配登陆源（正则表达式） -->
+			<dispatch sourceRegExp="">
+				<!-- 登陆成功之后要去的地址 -->
+				<indexPage>/login_ok_index.htm</indexPage>
+				<!-- !!!下面的配置信息，配置一项即可!!! -->
+				<!-- 登陆失败：以Http 402号错误响应客户端。 -->
+				<errorPage processMode="Error">402</errorPage>
+				<!-- 登陆失败：抛出特定类型异常。 -->
+				<errorPage processMode="Exception">org.platform.security.PermissionException</errorPage>
+				<!-- 登陆失败：跳转到特定页面或地址。 -->
+				<errorPage processMode="Page">/abc.htm</errorPage>
+			</dispatch>
+		</forwards>
+		<!-- 来宾权限设置 -->
+		<guest enable="true">
+			<!-- 来宾用户帐号类 -->
+			<classType>org.platform.security.GuestUser</classType>
+			<!-- 来宾帐号权限 -->
+			<permissions>TestCode,LoginCode</permissions>
+		</guest>
+	</security>
+	<!-- 工作空间设置 -->
+	<workspace>
+		<!-- 程序工作空间基础目录（绝对地址） -->
+		<workDir>.</workDir>
+		<!-- 程序的文件数据目录（默认相对workDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
+		<dataDir absolute="false">/files</dataDir>
+		<!-- 程序运行期间所需的临时数据存放地址（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
+		<tempDir absolute="false">/temp</tempDir>
+		<!-- 程序运行时生成的缓存数据存放位置（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
+		<cacheDir absolute="false">/cache</cacheDir>
+	</workspace>
 </config>

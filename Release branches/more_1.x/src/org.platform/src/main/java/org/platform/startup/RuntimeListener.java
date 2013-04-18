@@ -177,27 +177,26 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
                 });
             }
         };
-        //6.构建Guice并init @InitContext注解类。
+        //5.构建Guice并init @InitContext注解类。
         Platform.info("initialize ...");
         this.guice = this.createInjector(systemModule);
         Assert.isNotNull(this.guice, "can not be create Injector.");
-        //7.构建初始化PlatformBuild对象
+        Platform.info("init modules finish.");
+        //6.获取SessionListenerPipeline
+        Platform.info("SessionListenerPipeline createInstance...");
+        this.sessionListenerPipeline = this.guice.getInstance(SessionListenerPipeline.class);
+        this.sessionListenerPipeline.init(this.appContext);
+        //7.创建AppContext
+        Platform.info("createAppContext...");
+        this.appContext = this.createAppContext();
         //8.发送完成初始化信号
         Platform.info("send Initialized sign.");
         for (ContextListener listener : this.initListener) {
             if (listener == null)
                 continue;
-            listener.initialized();
+            listener.initialized(this.appContext);
         }
-        Platform.info("initialization finish.");
-        //9.获取SessionListenerPipeline
-        Platform.info("SessionListenerPipeline createInstance...");
-        this.sessionListenerPipeline = this.guice.getInstance(SessionListenerPipeline.class);
-        this.sessionListenerPipeline.init(this.appContext);
-        //10.创建AppContext
-        Platform.info("createAppContext...");
-        this.appContext = this.createAppContext();
-        //11.放入ServletContext环境。
+        //9.放入ServletContext环境。
         Platform.info("ServletContext Attribut : " + AppContextName + " -->> " + Platform.logString(this.appContext));
         servletContextEvent.getServletContext().setAttribute(AppContextName, this.appContext);
         Platform.info("platform started!");

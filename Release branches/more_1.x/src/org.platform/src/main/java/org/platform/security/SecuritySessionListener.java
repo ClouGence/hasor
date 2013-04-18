@@ -22,12 +22,18 @@ import javax.servlet.http.HttpSessionListener;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class SecuritySessionListener implements HttpSessionListener {
+    private SecurityService secService = null;
+    public void init(SecurityService secService) {
+        this.secService = secService;
+    }
     @Override
     public void sessionCreated(HttpSessionEvent se) {
-        // TODO Auto-generated method stub
+        this.secService.getAuthSession(se.getSession(), true);
     }
     @Override
     public void sessionDestroyed(HttpSessionEvent se) {
-        // TODO Auto-generated method stub
+        AuthSession authSession = this.secService.getAuthSession(se.getSession(), false);
+        if (authSession != null)
+            authSession.close();
     }
 }

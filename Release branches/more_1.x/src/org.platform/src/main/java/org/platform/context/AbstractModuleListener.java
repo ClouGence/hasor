@@ -24,7 +24,7 @@ public class AbstractModuleListener implements ContextListener {
     @Override
     public void initialize(ApiBinder event) {}
     @Override
-    public void initialized() {}
+    public void initialized(AppContext appContext) {}
     @Override
     public void destroy() {}
 }

@@ -15,9 +15,14 @@
  */
 package org.platform.security;
 import java.lang.reflect.Method;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
+import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AbstractModuleListener;
+import org.platform.context.AppContext;
 import org.platform.context.InitListener;
+import org.platform.security.Power.Level;
 import com.google.inject.matcher.AbstractMatcher;
 /**
  * 支持Service等注解功能。
@@ -26,17 +31,29 @@ import com.google.inject.matcher.AbstractMatcher;
  */
 @InitListener(displayName = "SecurityModuleServiceListener", description = "org.platform.security软件包功能支持。", startIndex = 0)
 public class SecurityModuleServiceListener extends AbstractModuleListener {
+    private SecurityService         secService  = null;
+    private SecuritySessionListener secListener = null;
     /**初始化.*/
     @Override
     public void initialize(ApiBinder event) {
-        //1.注册Aop 
-        event.getGuiceBinder().bindInterceptor(new ClassPowerMatcher(), new MethodPowerMatcher(), new SecurityInterceptor());
-        //2.Session变动通知机制 
-        event.sessionListener().bind(SecuritySessionListener.class);
+        /*HttpSession创建和销毁通知机制*/
+        this.secListener = new SecuritySessionListener();
+        event.sessionListener().bind(this.secListener);
+        /*request，请求拦截器*/
+        event.filter("*").through(SecurityFilter.class);
+        /*aop，方法执行权限支持*/
+        event.getGuiceBinder().bindInterceptor(new ClassPowerMatcher(), new MethodPowerMatcher(), new SecurityInterceptor());/*注册Aop*/
+        /**/
+        event.getGuiceBinder().bind(SecurityService.class);
+    }
+    @Override
+    public void initialized(AppContext appContext) {
+        this.secService = appContext.getBean(SecurityService.class);
+        this.secListener.init(this.secService);
     }
     /*-------------------------------------------------------------------------------------*/
     /*负责检测类是否匹配。规则：只要类型或方法上标记了@Power。*/
-    private static class ClassPowerMatcher extends AbstractMatcher<Class<?>> {
+    private class ClassPowerMatcher extends AbstractMatcher<Class<?>> {
         @Override
         public boolean matches(Class<?> matcherType) {
             if (matcherType.isAnnotationPresent(Power.class) == true)
@@ -55,7 +72,7 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         }
     }
     /*负责检测方法是否匹配。规则：方法或方法所处类上标记了@Power。*/
-    private static class MethodPowerMatcher extends AbstractMatcher<Method> {
+    private class MethodPowerMatcher extends AbstractMatcher<Method> {
         @Override
         public boolean matches(Method matcherType) {
             if (matcherType.isAnnotationPresent(Power.class) == true)
@@ -63,6 +80,37 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
             if (matcherType.getDeclaringClass().isAnnotationPresent(Power.class) == true)
                 return true;
             return false;
+        }
+    }
+    /*拦截器*/
+    private class SecurityInterceptor implements MethodInterceptor {
+        @Override
+        public Object invoke(MethodInvocation invocation) throws Throwable {
+            //1.获取权限数据
+            Power powerAnno = invocation.getMethod().getAnnotation(Power.class);
+            if (powerAnno == null)
+                powerAnno = invocation.getMethod().getDeclaringClass().getAnnotation(Power.class);
+            //2.测试权限
+            boolean passPower = true;
+            if (Level.PassLogin == powerAnno.level()) {
+                passPower = this.doPassLogin(powerAnno, invocation.getMethod());
+            } else if (Level.PassPolicy == powerAnno.level()) {
+                passPower = this.doPassPolicy(powerAnno, invocation.getMethod());
+            } else if (Level.Free == powerAnno.level()) {
+                passPower = true;
+            }
+            //3.执行代码
+            if (passPower)
+                return invocation.proceed();
+            String msg = "has no permission Level=" + powerAnno.level().name() + " Code : " + Platform.logString(powerAnno.value());
+            throw new PermissionException(msg);
+        }
+        private boolean doPassLogin(Power powerAnno, Method method) {
+            AuthSession authSession = secService.getCurrentAuthSession();
+            return authSession.isLogin();
+        }
+        private boolean doPassPolicy(Power powerAnno, Method method) {
+            return secService.createPowerTest().and(powerAnno).test();
         }
     }
 }
