@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 package org.platform.security;
-import static org.platform.PlatformConfigEnum.Security_LoginFormData_AccountField;
-import static org.platform.PlatformConfigEnum.Security_LoginFormData_PasswordField;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.platform.Platform;
 /**
  * 该类提供了获取与当前线程进行绑定的{@link AuthSession}，其子类通过调用initHelper和clearHelper两个静态方法以管理绑定对象。
  * @version : 2013-4-9
@@ -28,31 +25,19 @@ import org.platform.Platform;
 public interface SecurityService {
     /**获取或创建一个{@link AuthSession}接口。*/
     public abstract AuthSession getAuthSession(HttpServletRequest request, HttpServletResponse response, boolean created);
-    /*
-     * 
-     * 
-     *                 private String          accountField  = null;
-                private String          passwordField = null;
-                
-                accountField = newConfig.getString(Security_LoginFormData_AccountField);
-                passwordField = newConfig.getString(Security_LoginFormData_PasswordField);
-            String account = httpRequest.getParameter(accountField);
-            String password = httpRequest.getParameter(passwordField);
-
-     * */s
     /**获取或创建一个{@link AuthSession}接口。*/
     public abstract AuthSession getAuthSession(String authSessionID, boolean created);
     /**获取或创建一个{@link AuthSession}接口。*/
     public abstract AuthSession getAuthSession(HttpSession session, boolean created);
-    /***/
+    /**获取当前的权限会话。*/
     public abstract AuthSession getCurrentAuthSession();
-    /***/
-    public abstract PowerTest createPowerTest();
-    /***/
-    public abstract URLPermission getURLPermission(String reqPath);
-    public abstract SecurityDispatcher getDispatcher(String reqPath);
-    //
-    //  
+    /**根据uri获取用于判断权限的功能接口。*/
+    public abstract UriPatternMatcher getUriMatcher(String requestPath);
+    /**根据uri获取可用于跳转工具类。*/
+    public abstract SecurityDispatcher getDispatcher(String requestPath);
+    /**创建{@link PowerTest} 类，该类可以用来测试用户的权限。*/
+    public PowerTest newTest();
+    /**用户权限测试接口。*/
     public interface PowerTest {
         /*-*/
         public PowerTest and(Power powerAnno);
@@ -67,7 +52,7 @@ public interface SecurityService {
         public PowerTest or(String permission);
         public PowerTest not(String powerCode);
         /*-----------------------------------------*/
-        public void width(Runnable run);
-        public boolean test();
+        /**测试权限*/
+        public boolean test(AuthSession authSession);
     }
 }

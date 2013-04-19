@@ -23,14 +23,13 @@ import javax.servlet.http.HttpServletResponse;
  * @version : 2013-4-9  
  * @author 赵永春 (zyc@byshell.org)
  */
-class SecurityDispatcher {
-    public void forwardIndex(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
-        // TODO Auto-generated method stub
-    }
-    public void forwardLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
-        // TODO Auto-generated method stub
-    }
-    public void forwardError(ServletRequest request, ServletResponse response) {
-        // TODO Auto-generated method stub
-    }
-}s
+public interface SecurityDispatcher {
+    /**跳转到登入成功后的页面。*/
+    public void forwardIndex(HttpServletRequest httpRequest, HttpServletResponse httpResponse);
+    /**跳转到登出之后的页面。*/
+    public void forwardLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse);
+    /**权限判断模式下的跳转，具体跳转方式由配置文件定义。*/
+    public void forwardError(ServletRequest request, ServletResponse response);
+    /**跳转到配置的页面。*/
+    public void forward(String id, ServletRequest request, ServletResponse response);
+}

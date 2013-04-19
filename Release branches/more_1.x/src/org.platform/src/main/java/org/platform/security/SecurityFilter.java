@@ -28,7 +28,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.more.core.global.Global;
+import org.more.global.Global;
 import org.platform.Assert;
 import org.platform.Platform;
 import org.platform.context.AppContext;
@@ -101,8 +101,9 @@ class SecurityFilter implements Filter {
             return;
         }
         //3.访问权限判断
-        URLPermission rule = this.secService.getURLPermission(reqPath);
-        if (rule.testPermission(authSession) == false) {
+        UriPatternMatcher uriMatcher = this.secService.getUriMatcher(reqPath);
+        if (uriMatcher.testPermission(authSession) == false) {
+            Platform.info("Security -> authSession= ‘" + authSession.getSessionID() + "’  testPermission failure! uri= " + reqPath);
             /*没有权限，执行跳转*/
             dispatcher.forwardError(request, response);//跳转到出现异常的地址
             return;

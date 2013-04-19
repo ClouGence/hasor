@@ -21,7 +21,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.more.core.global.Global;
+import org.more.global.Global;
 import org.more.util.Iterators;
 import org.platform.context.AppContext;
 import org.platform.context.SettingListener;

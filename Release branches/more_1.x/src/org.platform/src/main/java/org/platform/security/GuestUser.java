@@ -19,10 +19,10 @@ package org.platform.security;
  * @version : 2013-4-17
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class GuestUser implements IUser {
+public class GuestUser implements UserInfo {
     private String account  = "guest";
     private String password = "guest";
-    private String name     = "Guest";
+    private String name     = "Guest User";
     //
     //
     public String getAccount() {

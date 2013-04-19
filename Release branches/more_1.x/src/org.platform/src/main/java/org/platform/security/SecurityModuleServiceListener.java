@@ -15,6 +15,8 @@
  */
 package org.platform.security;
 import java.lang.reflect.Method;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.platform.Platform;
@@ -49,7 +51,6 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
     @Override
     public void initialized(AppContext appContext) {
         this.secService = appContext.getBean(SecurityService.class);
-        this.secListener.init(this.secService);
     }
     /*-------------------------------------------------------------------------------------*/
     /*负责检测类是否匹配。规则：只要类型或方法上标记了@Power。*/
@@ -110,7 +111,20 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
             return authSession.isLogin();
         }
         private boolean doPassPolicy(Power powerAnno, Method method) {
-            return secService.createPowerTest().and(powerAnno).test();
+            AuthSession authSession = secService.getCurrentAuthSession();
+            return secService.newTest().and(powerAnno).test(authSession);
+        }
+    }
+    /*HttpSession动态监听*/
+    private class SecuritySessionListener implements HttpSessionListener {
+        @Override
+        public void sessionCreated(HttpSessionEvent se) {
+            secService.getAuthSession(se.getSession(), true);
+        }
+        @Override
+        public void sessionDestroyed(HttpSessionEvent se) {
+            AuthSession authSession = secService.getAuthSession(se.getSession(), true);
+            authSession.close();
         }
     }
 }

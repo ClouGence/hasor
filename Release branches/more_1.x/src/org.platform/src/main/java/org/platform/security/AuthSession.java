@@ -19,21 +19,27 @@ package org.platform.security;
  * @version : 2013-3-26
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AuthSession {
+public interface AuthSession {
+    /**获取会话ID*/
+    public String getSessionID();
     /**获取登陆的用户对象，如果未登录系统而且启用了来宾帐号则会返回来宾帐号。*/
-    public abstract IUser getUserObject();
+    public UserInfo getUserObject();
     /**用指定的用户对象登陆到权限系统。*/
-    public abstract void doLogin(IUser user);
+    public boolean doLogin(UserInfo user) throws SecurityException;
     /**用指定的用户帐号密码系统。*/
-    public abstract void doLogin(String account, String password);
+    public boolean doLogin(String account, String password) throws SecurityException;
     /**执行退出。*/
-    public abstract void doLogout();
-    /**添加会话级别临时权限，当会话消失权限消失。*/
-    public abstract void addTempPermission(Permission permission);
+    public boolean doLogout() throws SecurityException;
+    /**向会话添加一条临时权限。*/
+    public void addPermission(Permission permission);
+    /**临时撤销用户会话中一条权限。*/
+    public void removeTempPermission(Permission permission);
+    /**获取会话中包含的所有权限信息。*/
+    public Permission[] getPermissions();
     /**是否已经登陆*/
-    public abstract boolean isLogin();
+    public boolean isLogin();
     /**判断是否为来宾帐号，当启用了来宾帐号，并且尚未登陆系统的情况下该值返回为true。*/
-    public abstract boolean isGuest();
+    public boolean isGuest();
     /**关闭会话*/
-    public abstract void close();
+    public void close();
 }

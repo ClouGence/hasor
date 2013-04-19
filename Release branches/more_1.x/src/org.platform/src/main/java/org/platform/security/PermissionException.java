@@ -19,7 +19,7 @@ package org.platform.security;
  * @version : 2013-4-17
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class PermissionException extends Exception {
+public class PermissionException extends SecurityException {
     private static final long serialVersionUID = 2366386850634621969L;
     //
     public PermissionException(String msg) {

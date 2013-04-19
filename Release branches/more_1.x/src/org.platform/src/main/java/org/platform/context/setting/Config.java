@@ -16,7 +16,7 @@
 package org.platform.context.setting;
 import java.util.Enumeration;
 import javax.servlet.ServletContext;
-import org.more.core.global.Global;
+import org.more.global.Global;
 import org.platform.context.SettingListener;
 /**
  * ≈‰÷√∂‘œÛ

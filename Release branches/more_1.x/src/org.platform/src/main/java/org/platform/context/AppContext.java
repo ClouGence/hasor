@@ -25,7 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
-import org.more.core.global.Global;
+import org.more.global.Global;
 import org.platform.Assert;
 import com.google.inject.Injector;
 /**

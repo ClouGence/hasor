@@ -15,21 +15,22 @@
  */
 package org.platform.security;
 /**
- * 权限系统URL请求处理支持。
+ * 对URI进行权限判断接口。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@byshell.org)
- */ 
-public class URLPermission extends  Permission{
-    public URLPermission(String perCode) {
-        super(perCode);
-        // TODO Auto-generated constructor stub
+ */
+public class UriPatternMatcher {
+    private String requestURI = null;
+    //
+    protected UriPatternMatcher(String requestURI) {
+        this.requestURI = requestURI;
     }
-    public boolean matches(String reqPath) {
-        // TODO Auto-generated method stub
-        return false;
+    /**获取requestURI*/
+    public String getRequestURI() {
+        return requestURI;
     }
     public boolean testPermission(AuthSession authSession) {
         // TODO Auto-generated method stub
         return false;
     }
-}a
+}

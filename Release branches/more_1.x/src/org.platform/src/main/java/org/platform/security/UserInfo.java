@@ -19,4 +19,4 @@ package org.platform.security;
  * @version : 2013-4-17
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public interface IUser {}
+public interface UserInfo {}

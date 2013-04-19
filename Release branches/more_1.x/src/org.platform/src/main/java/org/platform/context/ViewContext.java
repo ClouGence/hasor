@@ -18,7 +18,7 @@ import java.io.File;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.more.core.global.Global;
+import org.more.global.Global;
 import com.google.inject.Injector;
 /**
  * 

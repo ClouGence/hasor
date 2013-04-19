@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.platform.context;
-import org.more.core.global.Global;
+import org.more.global.Global;
 /**
  * 当配置文件重新载入时
  * @version : 2013-4-18
