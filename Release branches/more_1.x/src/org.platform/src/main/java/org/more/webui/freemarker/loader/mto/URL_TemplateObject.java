@@ -20,7 +20,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.util.Date;
-import org.more.core.io.AutoCloseInputStream;
+import org.more.util.io.AutoCloseInputStream;
 /**
  * 处理URL的{@link AbstractTemplateObject}实现
  * @version : 2011-9-16

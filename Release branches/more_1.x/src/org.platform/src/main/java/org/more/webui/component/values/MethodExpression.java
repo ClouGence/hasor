@@ -15,10 +15,10 @@
  */
 package org.more.webui.component.values;
 import java.util.Map;
-import org.more.core.map.DecSequenceMap;
-import org.more.core.ognl.Node;
-import org.more.core.ognl.Ognl;
-import org.more.core.ognl.OgnlException;
+import org.more.ognl.Node;
+import org.more.ognl.Ognl;
+import org.more.ognl.OgnlException;
+import org.more.util.map.DecSequenceMap;
 import org.more.webui.component.UIComponent;
 import org.more.webui.context.ViewContext;
 /**

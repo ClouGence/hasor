@@ -22,7 +22,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import org.more.core.io.AutoCloseInputStream;
+import org.more.util.io.AutoCloseInputStream;
 /**
  * 处理文件的{@link AbstractTemplateObject}实现
  * @version : 2011-9-16

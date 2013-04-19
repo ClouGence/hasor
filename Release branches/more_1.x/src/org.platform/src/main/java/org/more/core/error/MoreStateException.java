@@ -20,7 +20,7 @@ package org.more.core.error;
  * @version 2009-7-8
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class MoreStateException extends MoreException {
+public class MoreStateException extends MoreRuntimeException {
     private static final long serialVersionUID = 5032345759263916241L;
     /**◊¥Ã¨–‘“Ï≥£*/
     public MoreStateException(String string) {

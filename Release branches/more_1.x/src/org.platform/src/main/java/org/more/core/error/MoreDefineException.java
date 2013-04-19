@@ -20,7 +20,7 @@ package org.more.core.error;
  * @version 2009-10-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class MoreDefineException extends MoreException {
+public class MoreDefineException extends MoreRuntimeException {
     private static final long serialVersionUID = 5497348918164005888L;
     /** more定义类异常。*/
     public MoreDefineException(String string) {

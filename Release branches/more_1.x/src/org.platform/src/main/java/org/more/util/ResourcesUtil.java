@@ -35,9 +35,9 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.more.core.error.FormatException;
-import org.more.core.io.AutoCloseInputStream;
-import org.more.core.map.DecSequenceMap;
-import org.more.core.map.Properties;
+import org.more.util.io.AutoCloseInputStream;
+import org.more.util.map.DecSequenceMap;
+import org.more.util.map.Properties;
 /**
  * classpathπ§æﬂ¿‡
  * @version 2010-9-24
