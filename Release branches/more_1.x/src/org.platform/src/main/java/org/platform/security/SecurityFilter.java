@@ -46,7 +46,7 @@ class SecurityFilter implements Filter {
     private String          logoutURL     = null; //登出地址
     //
     private AppContext      appContext    = null;
-    private SecurityService secService    = null;
+    private SecurityContext secService    = null;
     //
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -55,7 +55,7 @@ class SecurityFilter implements Filter {
         this.appContext = (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
         Assert.isNotNull(this.appContext, "AppContext is null.");
         //
-        this.secService = this.appContext.getBean(SecurityService.class);
+        this.secService = this.appContext.getBean(SecurityContext.class);
         //
         /*当配置文件改变时候用已接收通知*/
         SettingListener settingListener = new SettingListener() {

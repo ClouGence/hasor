@@ -19,13 +19,11 @@ package org.platform.security;
  * @version : 2013-3-26
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AuthSession {
+public class DefaultAuthSession implements AuthSession {
     /**获取会话ID*/
     public String getSessionID();
     /**获取登入的用户对象，如果未登录系统而且启用了来宾帐号则会返回来宾帐号。*/
     public UserInfo getUserObject();
-    /**返回其所属的{@link SecurityContext}接口对象。*/
-    public SecurityContext getSecurityContext();
     /**用指定的用户对象登入到权限系统。*/
     public boolean doLogin(UserInfo user) throws SecurityException;
     /**用指定的用户帐号密码系统。*/

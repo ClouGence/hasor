@@ -15,7 +15,7 @@
  */
 package org.platform.security;
 /**
- * 表示来宾用户。
+ * 表示来宾用户，来宾用户表示未登录状态下的用户。
  * @version : 2013-4-17
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -42,5 +42,9 @@ public class GuestUser implements UserInfo {
     }
     public void setName(String name) {
         this.name = name;
+    }
+    @Override
+    public boolean isGuest() {
+        return true;
     }
 }

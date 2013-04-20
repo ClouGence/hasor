@@ -33,7 +33,7 @@ import com.google.inject.matcher.AbstractMatcher;
  */
 @InitListener(displayName = "SecurityModuleServiceListener", description = "org.platform.security软件包功能支持。", startIndex = 0)
 public class SecurityModuleServiceListener extends AbstractModuleListener {
-    private SecurityService         secService  = null;
+    private SecurityContext         secService  = null;
     private SecuritySessionListener secListener = null;
     /**初始化.*/
     @Override
@@ -46,11 +46,12 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         /*aop，方法执行权限支持*/
         event.getGuiceBinder().bindInterceptor(new ClassPowerMatcher(), new MethodPowerMatcher(), new SecurityInterceptor());/*注册Aop*/
         /**/
-        event.getGuiceBinder().bind(SecurityService.class);
+        event.getGuiceBinder().bind(SecurityContext.class).to(DefaultSecurityService.class);
+        event.getGuiceBinder().bind(SecurityQuery.class).to(DefaultSecurityQuery.class);
     }
     @Override
     public void initialized(AppContext appContext) {
-        this.secService = appContext.getBean(SecurityService.class);
+        this.secService = appContext.getBean(SecurityContext.class);
     }
     /*-------------------------------------------------------------------------------------*/
     /*负责检测类是否匹配。规则：只要类型或方法上标记了@Power。*/
@@ -112,7 +113,11 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         }
         private boolean doPassPolicy(Power powerAnno, Method method) {
             AuthSession authSession = secService.getCurrentAuthSession();
-            return secService.newTest().and(powerAnno).test(authSession);
+            String[] powers = powerAnno.value();
+            SecurityQuery query = secService.newSecurityQuery();
+            for (String anno : powers)
+                query.and(anno);
+            return query.testPermission(authSession);
         }
     }
     /*HttpSession动态监听*/

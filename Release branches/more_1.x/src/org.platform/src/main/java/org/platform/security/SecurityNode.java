@@ -15,11 +15,11 @@
  */
 package org.platform.security;
 /**
- * 表示一个用户。
- * @version : 2013-4-17
+ * 用来判断权限的节点。
+ * @version : 2013-4-20
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface UserInfo {
-    /**测试用户是否为来宾身份。用户可能真实存在但是其身份为来宾身份也有可能。*/
-    public boolean isGuest();
+public interface SecurityNode {
+    /**计算权限值。*/
+    public boolean testPermission(AuthSession authSession);
 }
