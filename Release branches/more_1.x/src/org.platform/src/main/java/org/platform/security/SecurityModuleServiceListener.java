@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 package org.platform.security;
+import static org.platform.PlatformConfigEnum.Security_Enable;
 import java.lang.reflect.Method;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.more.global.Global;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AbstractModuleListener;
 import org.platform.context.AppContext;
 import org.platform.context.InitListener;
+import org.platform.context.SettingListener;
 import org.platform.security.Power.Level;
 import com.google.inject.matcher.AbstractMatcher;
 /**
@@ -33,6 +36,7 @@ import com.google.inject.matcher.AbstractMatcher;
  */
 @InitListener(displayName = "SecurityModuleServiceListener", description = "org.platform.security软件包功能支持。", startIndex = 0)
 public class SecurityModuleServiceListener extends AbstractModuleListener {
+    private boolean                 enable      = false; //默认禁止状态
     private SecurityContext         secService  = null;
     private SecuritySessionListener secListener = null;
     /**初始化.*/
@@ -45,7 +49,14 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         event.filter("*").through(SecurityFilter.class);
         /*aop，方法执行权限支持*/
         event.getGuiceBinder().bindInterceptor(new ClassPowerMatcher(), new MethodPowerMatcher(), new SecurityInterceptor());/*注册Aop*/
-        /**/
+        /*配置文件监听器*/
+        event.getInitContext().getConfig().addSettingsListener(new SettingListener() {
+            @Override
+            public void reLoadConfig(Global oldConfig, Global newConfig) {
+                enable = newConfig.getBoolean(Security_Enable, false);
+            }
+        });
+        /*绑定核心功能实现类。*/
         event.getGuiceBinder().bind(SecurityContext.class).to(DefaultSecurityService.class);
         event.getGuiceBinder().bind(SecurityQuery.class).to(DefaultSecurityQuery.class);
     }
@@ -58,6 +69,10 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
     private class ClassPowerMatcher extends AbstractMatcher<Class<?>> {
         @Override
         public boolean matches(Class<?> matcherType) {
+            /*如果处于禁用状态则忽略权限检测*/
+            if (enable == false)
+                return false;
+            /*----------------------------*/
             if (matcherType.isAnnotationPresent(Power.class) == true)
                 return true;
             Method[] m1s = matcherType.getMethods();
@@ -77,6 +92,10 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
     private class MethodPowerMatcher extends AbstractMatcher<Method> {
         @Override
         public boolean matches(Method matcherType) {
+            /*如果处于禁用状态则忽略权限检测*/
+            if (enable == false)
+                return false;
+            /*----------------------------*/
             if (matcherType.isAnnotationPresent(Power.class) == true)
                 return true;
             if (matcherType.getDeclaringClass().isAnnotationPresent(Power.class) == true)
@@ -88,6 +107,10 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
     private class SecurityInterceptor implements MethodInterceptor {
         @Override
         public Object invoke(MethodInvocation invocation) throws Throwable {
+            /*如果处于禁用状态则忽略权限检测*/
+            if (enable == false)
+                return invocation.proceed();
+            /*----------------------------*/
             //1.获取权限数据
             Power powerAnno = invocation.getMethod().getAnnotation(Power.class);
             if (powerAnno == null)
@@ -124,10 +147,14 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
     private class SecuritySessionListener implements HttpSessionListener {
         @Override
         public void sessionCreated(HttpSessionEvent se) {
+            if (enable == false)
+                return;
             secService.getAuthSession(se.getSession(), true);
         }
         @Override
         public void sessionDestroyed(HttpSessionEvent se) {
+            if (enable == false)
+                return;
             AuthSession authSession = secService.getAuthSession(se.getSession(), true);
             authSession.close();
         }

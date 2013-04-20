@@ -10,7 +10,7 @@
 		</httpServlet>
 	</framework>
 	<!-- 权限配置 -->
-	<security>
+	<security enable="false">
 		<!-- 登录Action -->
 		<loginURL>s_login.sec</loginURL>
 		<!-- 登出Action -->
@@ -34,9 +34,13 @@
 				<!-- 登陆失败：以Http 402号错误响应客户端。 -->
 				<errorPage processMode="Error">402</errorPage>
 				<!-- 登陆失败：抛出特定类型异常。 -->
-				<errorPage processMode="Exception">org.platform.security.PermissionException</errorPage>
+				<errorPage processMode="Exception">org.platform.security.PermissionException
+				</errorPage>
 				<!-- 登陆失败：跳转到特定页面或地址。 -->
 				<errorPage processMode="Page">/abc.htm</errorPage>
+				<!-- 配置的可以跳转的地址 -->
+				<page id="go_1">/go_1.htm</page>
+				<page id="go_2">/go_2.htm</page>
 			</dispatch>
 		</forwards>
 		<!-- 权限判断规则 -->

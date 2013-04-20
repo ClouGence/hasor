@@ -39,6 +39,8 @@ public interface PlatformConfigEnum {
     public static final String Workspace_CacheDir_Absolute          = "workspace.cacheDir.absolute";
     //
     //
+    /**是否启用权限系统*/
+    public static final String Security_Enable                      = "security.enable";
     /**登入地址*/
     public static final String Security_LoginURL                    = "security.loginURL";
     /**登出地址*/
