@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.test.more.core.classcode;
-import org.more.core.classcode.AopFilterChain_Start;
-import org.more.core.classcode.Method;
+import org.more.classcode.AopFilterChain_Start;
+import org.more.classcode.Method;
 public class TT {
     private long                   p_long;
     private float                  p_float;

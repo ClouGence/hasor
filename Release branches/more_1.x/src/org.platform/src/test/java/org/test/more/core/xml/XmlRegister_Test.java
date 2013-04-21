@@ -17,7 +17,7 @@ package org.test.more.core.xml;
 import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
-import org.more.core.xml.register.XmlRegister;
+import org.more.xml.register.XmlRegister;
 /**
  * */
 public class XmlRegister_Test {

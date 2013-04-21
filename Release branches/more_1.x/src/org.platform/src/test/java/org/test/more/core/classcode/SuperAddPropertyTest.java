@@ -18,9 +18,9 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
-import org.more.core.classcode.ClassEngine;
-import org.more.core.classcode.MethodDelegate;
-import org.more.core.classcode.PropertyDelegate;
+import org.more.classcode.ClassEngine;
+import org.more.classcode.MethodDelegate;
+import org.more.classcode.PropertyDelegate;
 import org.more.core.error.InvokeException;
 import org.more.core.error.PropertyException;
 /**

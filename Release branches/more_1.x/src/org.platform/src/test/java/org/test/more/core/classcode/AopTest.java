@@ -17,14 +17,14 @@ package org.test.more.core.classcode;
 import java.io.FileOutputStream;
 import java.lang.annotation.Annotation;
 import org.junit.Test;
-import org.more.core.classcode.AopBeforeListener;
-import org.more.core.classcode.AopFilterChain;
-import org.more.core.classcode.AopInvokeFilter;
-import org.more.core.classcode.AopReturningListener;
-import org.more.core.classcode.AopThrowingListener;
-import org.more.core.classcode.BuilderMode;
-import org.more.core.classcode.ClassEngine;
-import org.more.core.classcode.Method;
+import org.more.classcode.AopBeforeListener;
+import org.more.classcode.AopFilterChain;
+import org.more.classcode.AopInvokeFilter;
+import org.more.classcode.AopReturningListener;
+import org.more.classcode.AopThrowingListener;
+import org.more.classcode.BuilderMode;
+import org.more.classcode.ClassEngine;
+import org.more.classcode.Method;
 /**
  *
  * @version 2010-8-25

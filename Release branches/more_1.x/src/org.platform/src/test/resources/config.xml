@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://project.byshell.org/more/schema/global">
-	<test>
-		<abc>aaa</abc>
-	</test>
+	<!-- 框架配置 -->
 	<framework>
 		<!-- 包扫描覆盖范围 -->
 		<loadPackages>org.*, com.*, net.*, cn.*</loadPackages>
-		<!-- Web请求遇到异常后轮询errorHook的次数。 -->
-		<errorCaseCount>50</errorCaseCount>
 	</framework>
+	<!-- 权限配置 -->
+	<security enable="true">
+	</security>
+	<!-- 缓存配置 -->
+	<cacheConfig enable="true">
+		<!-- !!!这里需要自定义!!! -->
+	</cacheConfig>
+
 </config>

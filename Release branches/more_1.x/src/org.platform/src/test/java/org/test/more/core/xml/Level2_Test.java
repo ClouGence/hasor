@@ -17,12 +17,12 @@ package org.test.more.core.xml;
 import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
-import org.more.core.xml.XmlNamespaceParser;
-import org.more.core.xml.XmlParserKitManager;
-import org.more.core.xml.XmlStackDecorator;
-import org.more.core.xml.stream.XmlReader;
-import org.more.core.xml.stream.XmlStreamEvent;
 import org.more.util.ResourcesUtil;
+import org.more.xml.XmlNamespaceParser;
+import org.more.xml.XmlParserKitManager;
+import org.more.xml.XmlStackDecorator;
+import org.more.xml.stream.XmlReader;
+import org.more.xml.stream.XmlStreamEvent;
 /**
  *
  * @version 2010-9-8

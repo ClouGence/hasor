@@ -182,13 +182,13 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         this.guice = this.createInjector(systemModule);
         Assert.isNotNull(this.guice, "can not be create Injector.");
         Platform.info("init modules finish.");
-        //6.获取SessionListenerPipeline
+        //6.创建AppContext
+        Platform.info("createAppContext...");
+        this.appContext = this.createAppContext();
+        //7.获取SessionListenerPipeline
         Platform.info("SessionListenerPipeline createInstance...");
         this.sessionListenerPipeline = this.guice.getInstance(SessionListenerPipeline.class);
         this.sessionListenerPipeline.init(this.appContext);
-        //7.创建AppContext
-        Platform.info("createAppContext...");
-        this.appContext = this.createAppContext();
         //8.发送完成初始化信号
         Platform.info("send Initialized sign.");
         for (ContextListener listener : this.initListener) {

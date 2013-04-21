@@ -21,9 +21,7 @@ import org.platform.context.setting.Config;
  * @version : 2013-4-21
  * @author 赵永春 (zyc@byshell.org)
  */
-@DefaultKeyBuilder()
-@KeyBuilder(Object.class)
-class StringKeyBuilder implements IKeyBuilder {
+class ObjectStringKeyBuilder implements IKeyBuilder {
     /**获取参数的序列化标识码。*/
     public String serializeKey(Object arg) {
         return (arg == null) ? "NULL" : arg.toString();

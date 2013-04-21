@@ -16,10 +16,10 @@
 package org.test.more.core.xml;
 import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
-import org.more.core.xml.XmlElementHook;
-import org.more.core.xml.XmlStackDecorator;
-import org.more.core.xml.stream.EndElementEvent;
-import org.more.core.xml.stream.StartElementEvent;
+import org.more.xml.XmlElementHook;
+import org.more.xml.XmlStackDecorator;
+import org.more.xml.stream.EndElementEvent;
+import org.more.xml.stream.StartElementEvent;
 /**
  * 
  * @version : 2011-11-8

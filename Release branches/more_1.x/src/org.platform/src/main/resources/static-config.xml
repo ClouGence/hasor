@@ -4,13 +4,14 @@
 	<framework>
 		<!-- 包扫描覆盖范围 -->
 		<loadPackages>org.*, com.*, net.*, cn.*</loadPackages>
-		<httpServlet>
-			<!-- Web请求遇到异常后轮询errorHook的次数。 -->
-			<errorCaseCount>5</errorCaseCount>
-		</httpServlet>
 	</framework>
+	<!-- Web部分的配置 -->
+	<httpServlet>
+		<!-- Web请求遇到异常后轮询errorHook的次数。 -->
+		<errorCaseCount>5</errorCaseCount>
+	</httpServlet>
 	<!-- 权限配置 -->
-	<security enable="false">
+	<security enable="false" enableURL="true" enableMethod="true">
 		<!-- 登录Action -->
 		<loginURL>s_login.sec</loginURL>
 		<!-- 登出Action -->
@@ -34,8 +35,7 @@
 				<!-- 登陆失败：以Http 402号错误响应客户端。 -->
 				<errorPage processMode="Error">402</errorPage>
 				<!-- 登陆失败：抛出特定类型异常。 -->
-				<errorPage processMode="Exception">org.platform.security.PermissionException
-				</errorPage>
+				<errorPage processMode="Exception">org.platform.security.PermissionException</errorPage>
 				<!-- 登陆失败：跳转到特定页面或地址。 -->
 				<errorPage processMode="Page">/abc.htm</errorPage>
 				<!-- 配置的可以跳转的地址 -->
@@ -65,6 +65,10 @@
 			<permissions>TestCode,LoginCode</permissions>
 		</guest>
 	</security>
+	<!-- 缓存配置 -->
+	<cacheConfig enable="false">
+		<!-- !!!这里需要自定义!!! -->
+	</cacheConfig>
 	<!-- 工作空间设置 -->
 	<workspace>
 		<!-- 程序工作空间基础目录（绝对地址） -->

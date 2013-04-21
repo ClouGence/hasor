@@ -17,9 +17,9 @@ package org.test.more.core.classcode;
 import java.io.InputStream;
 import java.util.HashMap;
 import org.junit.Test;
-import org.more.core.classcode.BuilderMode;
-import org.more.core.classcode.ClassEngine;
-import org.more.core.classcode.RootClassLoader;
+import org.more.classcode.BuilderMode;
+import org.more.classcode.ClassEngine;
+import org.more.classcode.RootClassLoader;
 /**
  *
  * @version 2010-8-25

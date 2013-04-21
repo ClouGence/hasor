@@ -20,12 +20,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.junit.Test;
-import org.more.core.classcode.ClassEngine;
-import org.more.core.classcode.ClassNameStrategy;
-import org.more.core.classcode.DelegateStrategy;
-import org.more.core.classcode.MethodStrategy;
-import org.more.core.classcode.PropertyStrategy;
-import org.more.core.classcode.objects.DefaultMethodDelegate;
+import org.more.classcode.ClassEngine;
+import org.more.classcode.ClassNameStrategy;
+import org.more.classcode.DelegateStrategy;
+import org.more.classcode.MethodStrategy;
+import org.more.classcode.PropertyStrategy;
+import org.more.classcode.objects.DefaultMethodDelegate;
 /**
  *
  * @version 2010-8-25

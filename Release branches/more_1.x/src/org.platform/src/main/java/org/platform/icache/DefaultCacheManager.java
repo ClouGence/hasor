@@ -16,7 +16,6 @@
 package org.platform.icache;
 import org.platform.Platform;
 import org.platform.context.AppContext;
-import com.google.inject.Key;
 import com.google.inject.Singleton;
 /**
  * 缓存使用入口，缓存的实现由系统自行提供。
@@ -34,19 +33,24 @@ class DefaultCacheManager implements CacheManager {
     public void initManager(AppContext appContext) {
         Platform.info("cache ->> init CacheManager...");
         this.appContext = appContext;
-        this.defaultCache = (ICache) appContext.getGuice().getInstance(Key.get(DefaultCache.class));
-        this.defaultKeyBuilder = (IKeyBuilder) appContext.getGuice().getInstance(Key.get(DefaultKeyBuilder.class));
         //
         this.cacheManager = new ManagedCacheManager();
         this.keyBuilderManager = new ManagedKeyBuilderManager();
         this.cacheManager.initManager(appContext);
         this.keyBuilderManager.initManager(appContext);
+        //
+        this.defaultCache = appContext.getGuice().getProvider(ICache.class).get();
+        this.defaultKeyBuilder = appContext.getGuice().getProvider(IKeyBuilder.class).get();
     }
     @Override
     public void destroyManager() {
         Platform.info("cache ->> destroy CacheManager...");
         this.cacheManager.destroyManager();
         this.keyBuilderManager.destroyManager();
+    }
+    @Override
+    public ICache getDefaultCache() {
+        return this.defaultCache;
     }
     @Override
     public ICache getCache(String cacheName) {

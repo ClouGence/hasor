@@ -15,11 +15,11 @@
  */
 package org.test.more.core.classcode;
 import org.junit.Test;
-import org.more.core.asm.ClassAdapter;
-import org.more.core.asm.ClassWriter;
-import org.more.core.classcode.BuilderMode;
-import org.more.core.classcode.ClassBuilder;
-import org.more.core.classcode.ClassEngine;
+import org.more.asm.ClassAdapter;
+import org.more.asm.ClassWriter;
+import org.more.classcode.BuilderMode;
+import org.more.classcode.ClassBuilder;
+import org.more.classcode.ClassEngine;
 /**
  *
  * @version 2010-8-25

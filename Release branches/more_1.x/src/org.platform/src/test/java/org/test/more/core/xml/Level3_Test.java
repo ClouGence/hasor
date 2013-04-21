@@ -17,14 +17,14 @@ package org.test.more.core.xml;
 import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
-import org.more.core.xml.XmlElementHook;
-import org.more.core.xml.XmlParserKit;
-import org.more.core.xml.XmlParserKitManager;
-import org.more.core.xml.XmlStackDecorator;
-import org.more.core.xml.stream.EndElementEvent;
-import org.more.core.xml.stream.StartElementEvent;
-import org.more.core.xml.stream.XmlReader;
 import org.more.util.ResourcesUtil;
+import org.more.xml.XmlElementHook;
+import org.more.xml.XmlParserKit;
+import org.more.xml.XmlParserKitManager;
+import org.more.xml.XmlStackDecorator;
+import org.more.xml.stream.EndElementEvent;
+import org.more.xml.stream.StartElementEvent;
+import org.more.xml.stream.XmlReader;
 /**
  *
  * @version 2010-9-8

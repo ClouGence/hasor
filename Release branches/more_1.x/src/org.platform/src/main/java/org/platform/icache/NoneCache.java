@@ -21,8 +21,7 @@ import org.platform.context.setting.Config;
  * @version : 2013-4-20
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@DefaultCache()
-@Cache({ "default" })
+@Cache({ "none" })
 public class NoneCache implements ICache {
     @Override
     public void toCache(String key, Object value) {}

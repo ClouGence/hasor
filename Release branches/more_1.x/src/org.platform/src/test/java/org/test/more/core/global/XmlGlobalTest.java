@@ -18,9 +18,9 @@ import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
 import org.more.core.error.LoadException;
-import org.more.core.global.Global;
-import org.more.core.global.assembler.XmlGlobalFactory;
-import org.more.core.ognl.OgnlException;
+import org.more.global.Global;
+import org.more.global.assembler.XmlGlobalFactory;
+import org.more.ognl.OgnlException;
 /**
  * 
  * @version : 2011-9-5

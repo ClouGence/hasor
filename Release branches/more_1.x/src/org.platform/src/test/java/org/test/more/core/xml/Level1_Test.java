@@ -18,10 +18,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
-import org.more.core.xml.stream.XmlAccept;
-import org.more.core.xml.stream.XmlReader;
-import org.more.core.xml.stream.XmlStreamEvent;
 import org.more.util.ResourcesUtil;
+import org.more.xml.stream.XmlAccept;
+import org.more.xml.stream.XmlReader;
+import org.more.xml.stream.XmlStreamEvent;
 /**
  *
  * @version 2010-9-8

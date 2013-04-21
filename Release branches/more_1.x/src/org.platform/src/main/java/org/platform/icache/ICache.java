@@ -16,11 +16,13 @@
 package org.platform.icache;
 import org.platform.context.AppContext;
 import org.platform.context.setting.Config;
+import com.google.inject.ImplementedBy;
 /**
  * 缓存使用入口，缓存的实现由系统自行提供。
  * @version : 2013-4-20
  * @author 赵永春 (zyc@byshell.org)
  */
+@ImplementedBy(NoneCache.class)
 public interface ICache {
     /**初始化Cache*/
     public void initCache(AppContext appContext, Config config);

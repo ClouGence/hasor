@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
+@Target({ ElementType.TYPE, ElementType.METHOD })
 public @interface NeedCache {
     /**使用的缓存名。*/
     public String cacheName() default "";

@@ -21,6 +21,8 @@ import org.platform.context.AppContext;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface CacheManager {
+    /**获取默认缓存*/
+    public ICache getDefaultCache();
     /**获取缓存*/
     public ICache getCache(String cacheName);
     /**根据样本类型获取该类型的Key生成器。*/

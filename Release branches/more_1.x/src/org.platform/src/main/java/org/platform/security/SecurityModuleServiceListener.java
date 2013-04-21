@@ -26,7 +26,6 @@ import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AbstractModuleListener;
 import org.platform.context.AppContext;
-import org.platform.context.InitListener;
 import org.platform.context.SettingListener;
 import org.platform.security.Power.Level;
 import com.google.inject.matcher.AbstractMatcher;
@@ -35,7 +34,7 @@ import com.google.inject.matcher.AbstractMatcher;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@InitListener(displayName = "SecurityModuleServiceListener", description = "org.platform.security软件包功能支持。", startIndex = 1)
+//@InitListener(displayName = "SecurityModuleServiceListener", description = "org.platform.security软件包功能支持。", startIndex = 1)
 public class SecurityModuleServiceListener extends AbstractModuleListener {
     private boolean                 enable       = false; //启用禁用
     private boolean                 enableMethod = true; //方法权限检查
@@ -52,7 +51,7 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         /*aop，方法执行权限支持*/
         event.getGuiceBinder().bindInterceptor(new ClassPowerMatcher(), new MethodPowerMatcher(), new SecurityInterceptor());/*注册Aop*/
         /*配置文件监听器*/
-        event.getInitContext().getConfig().addSettingsListener(new SettingListener() {
+        SettingListener listener = new SettingListener() {
             @Override
             public void reLoadConfig(Global oldConfig, Global newConfig) {
                 enable = newConfig.getBoolean(Security_Enable, false);
@@ -60,7 +59,9 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
                 if (enable == false)
                     enableMethod = false;
             }
-        });
+        };
+        event.getInitContext().getConfig().addSettingsListener(listener);
+        listener.reLoadConfig(null, event.getInitContext().getConfig().getSettings());
         /*绑定核心功能实现类。*/
         event.getGuiceBinder().bind(SecurityContext.class).to(DefaultSecurityService.class);
         event.getGuiceBinder().bind(SecurityQuery.class).to(DefaultSecurityQuery.class);

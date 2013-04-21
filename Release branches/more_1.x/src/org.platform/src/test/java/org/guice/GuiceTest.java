@@ -18,6 +18,7 @@ import java.util.List;
 import com.google.inject.Binding;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 public class GuiceTest {
     /** */
@@ -33,7 +34,15 @@ public class GuiceTest {
         
         Faces faces=guice.getInstance(Faces.class);
         System.out.println(faces.getClass());
+        
+        
+        AAAA a=  guice.getInstance(Key.get(AAAA.class));
+        System.out.println(a);
     }
+}
+
+class AAAA{
+    
 }
 //@SuppressWarnings({ "unchecked", "rawtypes" })
 //class BeanProvider extends TypeLiteral {
