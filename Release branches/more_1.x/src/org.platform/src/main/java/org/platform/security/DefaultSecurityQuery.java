@@ -20,7 +20,7 @@ import org.platform.Assert;
  * @version : 2013-4-20
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class DefaultSecurityQuery implements SecurityQuery {
+class DefaultSecurityQuery implements SecurityQuery {
     protected SecurityNode testSecurityNode = new FixedValue(true);
     /*-------------------------------------------------------------------------------*/
     /*-¬ﬂº≠”Î-*/

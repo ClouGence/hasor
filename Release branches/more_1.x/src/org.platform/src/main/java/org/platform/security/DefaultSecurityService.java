@@ -22,7 +22,7 @@ import javax.servlet.http.HttpSession;
  * @version : 2013-4-20
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class DefaultSecurityService implements SecurityContext {
+  class DefaultSecurityService implements SecurityContext {
     @Override
     public AuthSession getAuthSession(HttpServletRequest request, HttpServletResponse response, boolean created) {
         // TODO Auto-generated method stub

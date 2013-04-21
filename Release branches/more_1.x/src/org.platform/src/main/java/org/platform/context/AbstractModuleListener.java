@@ -20,7 +20,7 @@ import org.platform.binder.ApiBinder;
  * @version : 2013-4-8
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class AbstractModuleListener implements ContextListener {
+public abstract class AbstractModuleListener implements ContextListener {
     @Override
     public void initialize(ApiBinder event) {}
     @Override

@@ -21,7 +21,7 @@ import com.google.inject.Injector;
  * @version : 2013-4-9
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class AbstractAppContext extends AppContext {
+public abstract class AbstractAppContext extends AppContext {
     private Injector guice = null;
     protected AbstractAppContext(Injector guice) {
         this.guice = guice;
