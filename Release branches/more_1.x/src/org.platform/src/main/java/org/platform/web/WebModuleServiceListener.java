@@ -43,7 +43,7 @@ import org.platform.context.InitListener;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@InitListener(displayName = "WebModuleServiceListener", description = "org.platform.web软件包功能支持。", startIndex = 1)
+@InitListener(displayName = "WebModuleServiceListener", description = "org.platform.web软件包功能支持。", startIndex = 2)
 public class WebModuleServiceListener extends AbstractModuleListener {
     /**初始化.*/
     @Override

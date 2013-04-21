@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.platform.binder;
-import static org.platform.PlatformConfigEnum.Binder_ErrorCaseCount;
+import static org.platform.PlatformConfigEnum.HttpServlet_ErrorCaseCount;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +58,7 @@ class ManagedErrorPipeline {
     }
     public void dispatch(ViewContext viewContext, ServletRequest request, ServletResponse response, Throwable error) throws IOException, ServletException {
         //1.进行异常处理
-        int errorCaseCount = viewContext.getSettings().getInteger(Binder_ErrorCaseCount, 5);
+        int errorCaseCount = viewContext.getSettings().getInteger(HttpServlet_ErrorCaseCount, 5);
         for (int i = 0; i < errorCaseCount; i++) {
             for (int j = 0; j < errorDefinitions.length; j++) {
                 ErrorDefinition errDefine = errorDefinitions[j];

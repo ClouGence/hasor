@@ -22,8 +22,10 @@ package org.platform;
 public interface PlatformConfigEnum {
     /**装载的class包范畴，逗号间隔.*/
     public static final String Platform_LoadPackages                = "framework.loadPackages";
+    //
+    //
     /**异常处理程序总迭代次数(配置Code).*/
-    public static final String Binder_ErrorCaseCount                = "framework.httpServlet.errorCaseCount";
+    public static final String HttpServlet_ErrorCaseCount           = "httpServlet.errorCaseCount";
     //
     //
     /**程序工作空间基础目录（绝对地址）*/
@@ -41,6 +43,10 @@ public interface PlatformConfigEnum {
     //
     /**是否启用权限系统*/
     public static final String Security_Enable                      = "security.enable";
+    /**当Security_Enable启用之后，该值决定是否启用针对URL部分的权限过滤。*/
+    public static final String Security_EnableURL                   = "security.enableURL";
+    /**当Security_Enable启用之后，该值决定是否启用针对方法调用中的权限过滤。*/
+    public static final String Security_EnableMethod                = "security.enableMethod";
     /**登入地址*/
     public static final String Security_LoginURL                    = "security.loginURL";
     /**登出地址*/
@@ -55,4 +61,8 @@ public interface PlatformConfigEnum {
     public static final String Security_Rules_Excludes              = "security.rules.excludes";
     /**逃出规则匹配的请求路径默认配置：NeedCheck、NoCheck*/
     public static final String Security_Rules_DefaultRuleModel      = "security.rules.defaultRuleModel";
+    //
+    //
+    /**是否启用缓存系统.*/
+    public static final String CacheConfig_Enable                   = "cacheConfig.enable";
 }

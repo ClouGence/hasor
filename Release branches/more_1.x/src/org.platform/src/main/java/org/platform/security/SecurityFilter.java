@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.platform.security;
+import static org.platform.PlatformConfigEnum.Security_Enable;
+import static org.platform.PlatformConfigEnum.Security_EnableURL;
 import static org.platform.PlatformConfigEnum.Security_LoginFormData_AccountField;
 import static org.platform.PlatformConfigEnum.Security_LoginFormData_PasswordField;
 import static org.platform.PlatformConfigEnum.Security_LoginURL;
@@ -40,6 +42,7 @@ import org.platform.startup.RuntimeListener;
  * @author 赵永春 (zyc@byshell.org)
  */
 class SecurityFilter implements Filter {
+    private boolean         enableURL     = true; //URL权限检查
     private String          accountField  = null; //帐号字段
     private String          passwordField = null; //密码字段
     private String          loginURL      = null; //登入地址
@@ -65,6 +68,10 @@ class SecurityFilter implements Filter {
                 passwordField = newConfig.getString(Security_LoginFormData_PasswordField);
                 loginURL = newConfig.getString(Security_LoginURL);
                 logoutURL = newConfig.getString(Security_LogoutURL);
+                if (newConfig.getBoolean(Security_Enable, false) == false)
+                    enableURL = false;
+                else
+                    enableURL = newConfig.getBoolean(Security_EnableURL, true);
             }
         };
         this.appContext.getInitContext().getConfig().addSettingsListener(settingListener);
@@ -78,11 +85,15 @@ class SecurityFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
+        //1.处理禁用状态
+        if (enableURL == false) {
+            chain.doFilter(httpRequest, httpResponse);
+            return;
+        }
+        //2.处理权限
         String reqPath = httpRequest.getRequestURI();
         reqPath = reqPath.substring(httpRequest.getContextPath().length());
         AuthSession authSession = this.secService.getAuthSession(httpRequest, httpResponse, true);//必然创建authSession
-        SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);/*获取到跳转对象*/
-        //
         //
         if (reqPath.endsWith(loginURL) == true) {
             //1.登入匹配
@@ -91,12 +102,14 @@ class SecurityFilter implements Filter {
             Platform.info("Security -> doLogin acc=" + account + " , pwd=" + password);
             authSession.doLogin(account, password);/*登入会话*/
             //
+            SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);/*获取到跳转对象*/
             dispatcher.forwardIndex(httpRequest, httpResponse);//跳转到登入成功之后的地址
             return;
         } else if (reqPath.endsWith(logoutURL) == true) {
             //2.登出匹配
             Platform.info("Security -> doLogout. user=" + authSession.getUserObject());
             authSession.doLogout();/*退出会话*/
+            SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);/*获取到跳转对象*/
             dispatcher.forwardLogout(httpRequest, httpResponse);//跳转到退出之后的地址
             return;
         }
@@ -105,6 +118,7 @@ class SecurityFilter implements Filter {
         if (uriMatcher.testPermission(authSession) == false) {
             Platform.info("Security -> authSession= ‘" + authSession.getSessionID() + "’  testPermission failure! uri= " + reqPath);
             /*没有权限，执行跳转*/
+            SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);/*获取到跳转对象*/
             dispatcher.forwardError(request, response);//跳转到出现异常的地址
             return;
         }

@@ -24,8 +24,8 @@ import static org.platform.PlatformConfigEnum.Workspace_WorkDir;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
-import org.apache.commons.lang.StringUtils;
 import org.more.global.Global;
+import org.more.util.StringUtil;
 import org.platform.Assert;
 import com.google.inject.Injector;
 /**
@@ -104,21 +104,21 @@ public abstract class AppContext {
     };
     /**获取数据文件目录，自动将name属性添加到返回值中。*/
     public String getDataDir(String name) {
-        if (StringUtils.isBlank(name) == true)
+        if (StringUtil.isBlank(name) == true)
             return getDataDir();
         else
             return str2path(new File(getDataDir(), name).getAbsolutePath());
     };
     /**获取临时数据文件目录，自动将name属性添加到返回值中。*/
     public String getTempDir(String name) {
-        if (StringUtils.isBlank(name) == true)
+        if (StringUtil.isBlank(name) == true)
             return getTempDir();
         else
             return str2path(new File(getTempDir(), name).getAbsolutePath());
     };
     /**获取缓存目录，自动将name属性添加到返回值中。*/
     public String getCacheDir(String name) {
-        if (StringUtils.isBlank(name) == true)
+        if (StringUtil.isBlank(name) == true)
             return getCacheDir();
         else
             return str2path(new File(getCacheDir(), name).getAbsolutePath());

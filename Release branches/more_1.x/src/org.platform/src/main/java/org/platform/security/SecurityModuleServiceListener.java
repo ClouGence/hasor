@@ -15,6 +15,7 @@
  */
 package org.platform.security;
 import static org.platform.PlatformConfigEnum.Security_Enable;
+import static org.platform.PlatformConfigEnum.Security_EnableMethod;
 import java.lang.reflect.Method;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
@@ -34,11 +35,12 @@ import com.google.inject.matcher.AbstractMatcher;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@InitListener(displayName = "SecurityModuleServiceListener", description = "org.platform.security软件包功能支持。", startIndex = 0)
+@InitListener(displayName = "SecurityModuleServiceListener", description = "org.platform.security软件包功能支持。", startIndex = 1)
 public class SecurityModuleServiceListener extends AbstractModuleListener {
-    private boolean                 enable      = false; //默认禁止状态
-    private SecurityContext         secService  = null;
-    private SecuritySessionListener secListener = null;
+    private boolean                 enable       = false; //启用禁用
+    private boolean                 enableMethod = true; //方法权限检查
+    private SecurityContext         secService   = null;
+    private SecuritySessionListener secListener  = null;
     /**初始化.*/
     @Override
     public void initialize(ApiBinder event) {
@@ -54,6 +56,9 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
             @Override
             public void reLoadConfig(Global oldConfig, Global newConfig) {
                 enable = newConfig.getBoolean(Security_Enable, false);
+                enableMethod = newConfig.getBoolean(Security_EnableMethod, false);
+                if (enable == false)
+                    enableMethod = false;
             }
         });
         /*绑定核心功能实现类。*/
@@ -70,7 +75,7 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         @Override
         public boolean matches(Class<?> matcherType) {
             /*如果处于禁用状态则忽略权限检测*/
-            if (enable == false)
+            if (enableMethod == false)
                 return false;
             /*----------------------------*/
             if (matcherType.isAnnotationPresent(Power.class) == true)
@@ -93,7 +98,7 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         @Override
         public boolean matches(Method matcherType) {
             /*如果处于禁用状态则忽略权限检测*/
-            if (enable == false)
+            if (enableMethod == false)
                 return false;
             /*----------------------------*/
             if (matcherType.isAnnotationPresent(Power.class) == true)
@@ -108,7 +113,7 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         @Override
         public Object invoke(MethodInvocation invocation) throws Throwable {
             /*如果处于禁用状态则忽略权限检测*/
-            if (enable == false)
+            if (enableMethod == false)
                 return invocation.proceed();
             /*----------------------------*/
             //1.获取权限数据
