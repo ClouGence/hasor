@@ -74,15 +74,19 @@ public abstract class AbstractGlobal extends AbstractMap<String, Object> {
         this.$targetContainer = null;
     }
     /**解析全局配置参数，并且返回toType参数指定的类型。*/
-    public <T> T getToType(Enum<?> enumItem, Class<T> toType) {
+    public final <T> T getToType(Enum<?> enumItem, Class<T> toType) {
         return this.getToType(enumItem, toType, null);
     };
     /**解析全局配置参数，并且返回toType参数指定的类型。*/
-    public <T> T getToType(String name, Class<T> toType) {
+    public final <T> T getToType(String name, Class<T> toType) {
         return this.getToType(name, toType, null);
     };
     /**解析全局配置参数，并且返回toType参数指定的类型。*/
-    public <T> T getToType(String name, Class<T> toType, T defaultValue) {
+    public final <T> T getToType(Enum<?> enumItem, Class<T> toType, T defaultValue) {
+        return getToType(enumItem.name(), toType, defaultValue);
+    };
+    /**解析全局配置参数，并且返回toType参数指定的类型。*/
+    public final <T> T getToType(String name, Class<T> toType, T defaultValue) {
         Object oriObject = this.getAttContainer().get((this.isCaseSensitive() == false) ? name.toLowerCase() : name);
         if (oriObject == null)
             return defaultValue;
@@ -90,22 +94,14 @@ public abstract class AbstractGlobal extends AbstractMap<String, Object> {
         T var = null;
         if (oriObject instanceof String)
             //原始数据是字符串经过Eval过程
-            var = this.getEval((String) oriObject, toType);
+            var = StringConvertUtil.changeType((String) oriObject, toType);
         else if (oriObject instanceof GlobalProperty)
             //原始数据是GlobalProperty直接get
-            var = ((GlobalProperty) oriObject).getValue(this, toType);
+            var = ((GlobalProperty) oriObject).getValue(toType, defaultValue);
         else
             //其他类型不予处理（数据就是要的值）
             var = (T) oriObject;
         return var;
-    };
-    /**解析全局配置参数，并且返回toType参数指定的类型。*/
-    public <T> T getToType(Enum<?> enumItem, Class<T> toType, T defaultValue) {
-        return getToType(enumItem.name(), toType, defaultValue);
-    };
-    /*------------------------------------------------------------------------*/
-    private <T> T getEval(String elString, Class<T> toType) {
-        return StringConvertUtil.changeType(elString, toType);
     };
     /*------------------------------------------------------------------------*/
     /**创建一个{@link Global}本体实例化对象。*/

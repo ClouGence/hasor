@@ -22,8 +22,8 @@ import javax.xml.stream.XMLStreamReader;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class EndElementEvent extends XmlStreamEvent {
-    public EndElementEvent(String xpath, XmlReader xmlReader, XMLStreamReader reader) {
-        super(xpath, xmlReader, reader);
+    public EndElementEvent(String xpath, XMLStreamReader reader) {
+        super(xpath, reader);
     }
     /**获取元素名称{@link QName}对象。*/
     public QName getName() {

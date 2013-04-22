@@ -22,8 +22,8 @@ import javax.xml.stream.XMLStreamReader;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class AttributeEvent extends XmlStreamEvent {
-    public AttributeEvent(XmlStreamEvent elementEvent, String xpath, XmlReader xmlReader, XMLStreamReader reader, int index) {
-        super(xpath, xmlReader, reader);
+    public AttributeEvent(XmlStreamEvent elementEvent, String xpath, XMLStreamReader reader, int index) {
+        super(xpath, reader);
         this.attQName = reader.getAttributeName(index);
         this.elementEvent = elementEvent;
         this.index = index;

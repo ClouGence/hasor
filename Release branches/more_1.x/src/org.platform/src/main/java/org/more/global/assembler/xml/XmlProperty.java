@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.xml.stream;
-import javax.xml.stream.XMLStreamReader;
+package org.more.global.assembler.xml;
+import java.util.List;
+import java.util.Map;
 /**
- * 当阅读xml结束时。
- * @version 2010-9-8
+ * Xml属性节点。
+ * @version : 2013-4-22
  * @author 赵永春 (zyc@byshell.org)
  */
-public class EndDocumentEvent extends XmlStreamEvent {
-    public EndDocumentEvent(String xpath, XMLStreamReader reader) {
-        super(xpath, reader);
-    }
-    /**该事件的拍档是{@link StartDocumentEvent}类型对象。*/
-    public boolean isPartner(XmlStreamEvent e) {
-        return e instanceof StartDocumentEvent;
-    };
-    /**文档结束事件，是共有事件。*/
-    public boolean isPublicEvent() {
-        return true;
-    }
+public interface XmlProperty {
+    /**获取Xml节点元素名称。*/
+    public String getName();
+    /**获取Xml节点文本值。*/
+    public String getText();
+    /**获取Xml节点Xml文本值。*/
+    public String getXmlText();
+    /**获取属性集合*/
+    public Map<String, String> getAttributeMap();
+    /**获取Xml子节点。*/
+    public List<XmlProperty> getChildren();
 }

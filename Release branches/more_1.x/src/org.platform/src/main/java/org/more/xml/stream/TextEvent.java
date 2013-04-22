@@ -23,8 +23,8 @@ import javax.xml.stream.XMLStreamReader;
  */
 public class TextEvent extends XmlStreamEvent {
     private Type type = null;
-    public TextEvent(String xpath, XmlReader xmlReader, XMLStreamReader reader, Type type) {
-        super(xpath, xmlReader, reader);
+    public TextEvent(String xpath, XMLStreamReader reader, Type type) {
+        super(xpath, reader);
         this.type = type;
     }
     /**

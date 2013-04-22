@@ -27,6 +27,7 @@ import org.platform.binder.ApiBinder;
 import org.platform.context.AbstractModuleListener;
 import org.platform.context.AppContext;
 import org.platform.context.SettingListener;
+import org.platform.icache.CacheManager;
 import org.platform.security.Power.Level;
 import com.google.inject.matcher.AbstractMatcher;
 /**
@@ -69,6 +70,7 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
     @Override
     public void initialized(AppContext appContext) {
         this.secService = appContext.getBean(SecurityContext.class);
+        Platform.info("online ->> security is " + (enable ? "enable." : "disable."));
     }
     /*-------------------------------------------------------------------------------------*/
     /*负责检测类是否匹配。规则：只要类型或方法上标记了@Power。*/

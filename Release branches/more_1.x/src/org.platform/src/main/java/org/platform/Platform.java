@@ -24,17 +24,23 @@ import java.util.Collection;
  * @author ÕÔÓÀ´º (zyc@byshell.org)
  */
 public abstract class Platform implements PlatformConfigEnum {
+    private static String callerType() {
+        StackTraceElement[] stackElements = new Exception().getStackTrace();
+        StackTraceElement onCode = stackElements[2];
+        String callerClass = onCode.getClassName();
+        return callerClass.substring(callerClass.lastIndexOf(".") + 1) + ":" + onCode.getMethodName();
+    }
     public static void debug(String string) {
-        System.out.println(string);//TODO
+        System.out.println(callerType() + " ->> " + string);//TODO
     }
     public static void error(String string, Exception e) {
-        System.err.println(string);//TODO
+        System.err.println(callerType() + " ->> " + string);//TODO
     }
     public static void warning(String string) {
-        System.err.println(string);//TODO
+        System.err.println(callerType() + " ->> " + string);//TODO
     }
     public static void info(String string) {
-        System.out.println(string);//TODO 
+        System.out.println(callerType() + " ->> " + string);//TODO 
     }
     public static String logString(Object object) {
         if (object == null)

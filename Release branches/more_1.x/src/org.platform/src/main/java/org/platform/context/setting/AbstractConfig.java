@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletContext;
 import org.more.global.Global;
-import org.more.global.assembler.XmlGlobalFactory;
+import org.more.global.assembler.xml.XmlPropertyGlobalFactory;
 import org.more.util.ResourceWatch;
 import org.more.util.ResourcesUtil;
 import org.more.util.StringUtil;
@@ -187,10 +187,10 @@ public abstract class AbstractConfig implements Config {
     private Map<String, Object> loadConfig(URI configURI, String encoding, Map<String, Object> loadTo) throws IOException {
         Map<String, Object> configData = (loadTo == null) ? new HashMap<String, Object>() : loadTo;
         Platform.info("PlatformSettings loadConfig Xml namespace : " + Platform.logString(configURI));
-        XmlGlobalFactory xmlg = null;
+        XmlPropertyGlobalFactory xmlg = null;
         //1.<载入生效的命名空间>
         try {
-            xmlg = new XmlGlobalFactory();
+            xmlg = new XmlPropertyGlobalFactory();
             xmlg.setIgnoreRootElement(true);/*忽略根*/
             /*载入自定义的命名空间支持。*/
             List<String> loadNameSpaceDefinition = this.loadNameSpaceDefinition();
@@ -203,6 +203,7 @@ public abstract class AbstractConfig implements Config {
             for (String key : version_1_DataMap.keySet())
                 configData.put(key.toLowerCase(), version_1_DataMap.get(key));
         } catch (Exception e) {
+            e.printStackTrace();
             Platform.warning("namespcae [" + configURI + "] no support!");
         }
         return configData;

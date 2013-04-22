@@ -69,6 +69,7 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
     public void initialized(AppContext appContext) {
         this.cacheManager = appContext.getBean(CacheManager.class);
         this.cacheManager.initManager(appContext);
+        Platform.info("online ->> cache is " + (enable ? "enable." : "disable."));
     }
     @Override
     public void destroy() {
@@ -77,7 +78,7 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
     //
     /*装载KeyBuilder*/
     protected void loadKeyBuilder(ApiBinder event) {
-        Platform.warning("cache ->> begin loadKeyBuilder...");
+        Platform.info("cache ->> begin loadKeyBuilder...");
         //1.获取
         Set<Class<?>> iKeyBuilderSet = event.getClassSet(KeyBuilder.class);
         List<Class<? extends IKeyBuilder>> iKeyBuilderList = new ArrayList<Class<? extends IKeyBuilder>>();
@@ -102,7 +103,7 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
     //
     /*装载Cache*/
     protected void loadCache(ApiBinder event) {
-        Platform.warning("cache ->> begin loadCache...");
+        Platform.info("cache ->> begin loadCache...");
         //1.获取
         Set<Class<?>> cacheSet = event.getClassSet(Cache.class);
         List<Class<? extends ICache>> cacheList = new ArrayList<Class<? extends ICache>>();

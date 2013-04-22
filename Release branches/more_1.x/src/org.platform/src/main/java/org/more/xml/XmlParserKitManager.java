@@ -26,6 +26,7 @@ import org.more.core.error.MoreStateException;
 import org.more.core.error.RepeateException;
 import org.more.xml.stream.AttributeEvent;
 import org.more.xml.stream.EndElementEvent;
+import org.more.xml.stream.StartDocumentEvent;
 import org.more.xml.stream.StartElementEvent;
 import org.more.xml.stream.XmlAccept;
 import org.more.xml.stream.XmlStreamEvent;
@@ -213,7 +214,18 @@ public class XmlParserKitManager implements XmlAccept {
             this.activateStack.dropStack();
             return;
         } else
-            //4.分发事件
+        //4.处理StartDocumentEvent
+        if (e instanceof StartDocumentEvent) {
+            this.activateStack.createStack();
+            this.issueEvent(e, this.activateStack);
+            return;
+        }//5.处理EndElementEvent
+        if (e instanceof EndElementEvent) {
+            this.activateStack.dropStack();
+            this.issueEvent(e, this.activateStack);
+            return;
+        } else
+            //5.分发事件
             this.issueEvent(e, this.activateStack);
     }
 }

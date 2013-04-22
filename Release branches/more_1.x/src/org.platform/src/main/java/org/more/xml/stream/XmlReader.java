@@ -125,12 +125,12 @@ public class XmlReader {
             switch (xmlEvent) {
             case XMLStreamConstants.START_DOCUMENT:
                 //开始文档
-                currentEvent = new StartDocumentEvent(currentXPath.toString(), this, reader);
+                currentEvent = new StartDocumentEvent(currentXPath.toString(), reader);
                 currentEvent.setCurrentElement(currentElement);//设置当前元素
                 break;
             case XMLStreamConstants.END_DOCUMENT:
                 //结束文档
-                currentEvent = new EndDocumentEvent(currentXPath.toString(), this, reader);
+                currentEvent = new EndDocumentEvent(currentXPath.toString(), reader);
                 currentEvent.setCurrentElement(currentElement);//设置当前元素
                 break;
             case XMLStreamConstants.START_ELEMENT:
@@ -138,13 +138,13 @@ public class XmlReader {
                 if (currentXPath.indexOf("/") != currentXPath.length() - 1)
                     currentXPath.append("/");
                 currentXPath.append(this.getName(reader.getName()));
-                currentEvent = new StartElementEvent(currentXPath.toString(), this, reader);
+                currentEvent = new StartElementEvent(currentXPath.toString(), reader);
                 currentElement = new ElementTree(reader.getName(), currentElement);
                 currentEvent.setCurrentElement(currentElement);//设置当前元素
                 break;
             case XMLStreamConstants.END_ELEMENT:
                 //结束元素
-                currentEvent = new EndElementEvent(currentXPath.toString(), this, reader);
+                currentEvent = new EndElementEvent(currentXPath.toString(), reader);
                 currentEvent.setCurrentElement(currentElement);//设置当前元素
                 int index = currentXPath.lastIndexOf("/");
                 index = (index == 0) ? 1 : index;
@@ -153,23 +153,23 @@ public class XmlReader {
                 break;
             case XMLStreamConstants.COMMENT:
                 //注释
-                currentEvent = new TextEvent(currentXPath.toString(), this, reader, Type.Comment);
+                currentEvent = new TextEvent(currentXPath.toString(), reader, Type.Comment);
                 currentEvent.setCurrentElement(currentElement);//设置当前元素
                 break;
             case XMLStreamConstants.CDATA:
                 //CDATA数据
-                currentEvent = new TextEvent(currentXPath.toString(), this, reader, Type.CDATA);
+                currentEvent = new TextEvent(currentXPath.toString(), reader, Type.CDATA);
                 currentEvent.setCurrentElement(currentElement);//设置当前元素
                 break;
             //---------------------------------------------
             case XMLStreamConstants.SPACE:
                 //可以忽略的空格
-                currentEvent = new TextEvent(currentXPath.toString(), this, reader, Type.Space);
+                currentEvent = new TextEvent(currentXPath.toString(), reader, Type.Space);
                 currentEvent.setCurrentElement(currentElement);//设置当前元素
                 break;
             case XMLStreamConstants.CHARACTERS:
                 //字符数据
-                currentEvent = new TextEvent(currentXPath.toString(), this, reader, Type.Chars);
+                currentEvent = new TextEvent(currentXPath.toString(), reader, Type.Chars);
                 currentEvent.setCurrentElement(currentElement);//设置当前元素
                 break;
             }
@@ -203,7 +203,7 @@ public class XmlReader {
                     currentXPathTemp.append("/@");
                     currentXPathTemp.append(this.getName(qn));
                     currentElement = new ElementTree(qn, currentElement);
-                    currentEvent = new AttributeEvent(elementEvent, currentXPathTemp.toString(), this, reader, i);
+                    currentEvent = new AttributeEvent(elementEvent, currentXPathTemp.toString(), reader, i);
                     currentEvent.setCurrentElement(currentElement.getParent());//将属性的当前节点设置成其所属的元素节点。
                     currentElement = currentElement.getParent();
                     this.pushEvent(accept, currentEvent, ignoreXPath);

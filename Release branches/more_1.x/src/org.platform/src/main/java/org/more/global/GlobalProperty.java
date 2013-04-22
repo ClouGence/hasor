@@ -15,13 +15,11 @@
  */
 package org.more.global;
 /**
- * 该接口表示一个自定义读写方式的属性对象，内置对象会解析该类。global也会执行解析该类。
+ * 该接口表示一个自定义属性对象。
  * @version : 2011-9-30
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface GlobalProperty {
     /** 读取属性*/
-    public <T> T getValue(AbstractGlobal global, Class<T> toType);
-    /** 写入属性*/
-    public void setValue(Object newValue, AbstractGlobal global);
+    public <T> T getValue(Class<T> toType, T defaultValue);
 }
