@@ -21,12 +21,12 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.more.global.Global;
 import org.more.util.Iterators;
 import org.platform.context.AppContext;
 import org.platform.context.SettingListener;
 import org.platform.context.ViewContext;
 import org.platform.context.setting.Config;
+import org.platform.context.setting.Settings;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
@@ -89,7 +89,7 @@ class ErrorDefinition implements Provider<ErrorDefinition> {
                 return Iterators.asEnumeration(initParams.keySet().iterator());
             }
             @Override
-            public Global getSettings() {
+            public Settings getSettings() {
                 return appContext.getSettings();
             }
             @Override

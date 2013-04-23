@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 package org.platform.icache;
-import static org.platform.PlatformConfigEnum.CacheConfig_Enable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.more.global.Global;
 import org.more.util.StringUtil;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AbstractModuleListener;
 import org.platform.context.AppContext;
 import org.platform.context.InitListener;
-import org.platform.context.SettingListener;
+import org.platform.context.setting.Config;
 import com.google.inject.Binder;
 import com.google.inject.Key;
 import com.google.inject.internal.UniqueAnnotations;
@@ -43,54 +43,63 @@ import com.google.inject.name.Names;
  */
 @InitListener(displayName = "CacheModuleServiceListener", description = "org.platform.icache软件包功能支持。", startIndex = 0)
 public class CacheModuleServiceListener extends AbstractModuleListener {
-    private boolean      enable       = false; /*默认关闭状态*/
-    private CacheManager cacheManager = null;
+    private CacheManager  cacheManager = null;
+    private CacheSettings settings     = new CacheSettings();
     /**初始化.*/
     @Override
     public void initialize(ApiBinder event) {
         //1.挂载Aop
         event.getGuiceBinder().bindInterceptor(new ClassNeedCacheMatcher(), new MethodPowerMatcher(), new CacheInterceptor());
         /*配置文件监听器*/
-        SettingListener listener = new SettingListener() {
-            @Override
-            public void reLoadConfig(Global oldConfig, Global newConfig) {
-                enable = newConfig.getBoolean(CacheConfig_Enable, false);
-            }
-        };
-        event.getInitContext().getConfig().addSettingsListener(listener);
-        listener.reLoadConfig(null, event.getInitContext().getConfig().getSettings());
+        Config systemConfig = event.getInitContext().getConfig();
+        systemConfig.addSettingsListener(this.settings);
+        this.settings.loadConfig(systemConfig.getSettings());
         //2.载入缓存配置
         this.loadCache(event);
         this.loadKeyBuilder(event);
         //3.注册Manager
-        event.getGuiceBinder().bind(CacheManager.class).to(DefaultCacheManager.class);
+        event.getGuiceBinder().bind(CacheManager.class).to(DefaultCacheManager.class).asEagerSingleton();
     }
     @Override
     public void initialized(AppContext appContext) {
         this.cacheManager = appContext.getBean(CacheManager.class);
         this.cacheManager.initManager(appContext);
-        Platform.info("online ->> cache is " + (enable ? "enable." : "disable."));
+        Platform.info("online ->> cache is " + (this.settings.isCacheEnable() ? "enable." : "disable."));
     }
     @Override
-    public void destroy() {
-        this.cacheManager.destroyManager();
+    public void destroy(AppContext appContext) {
+        Config systemConfig = appContext.getInitContext().getConfig();
+        systemConfig.removeSettingsListener(this.settings);
+        this.cacheManager.destroyManager(appContext);
     }
     //
     /*装载KeyBuilder*/
     protected void loadKeyBuilder(ApiBinder event) {
-        Platform.info("cache ->> begin loadKeyBuilder...");
+        Platform.info("begin loadKeyBuilder...");
         //1.获取
         Set<Class<?>> iKeyBuilderSet = event.getClassSet(KeyBuilder.class);
         List<Class<? extends IKeyBuilder>> iKeyBuilderList = new ArrayList<Class<? extends IKeyBuilder>>();
         for (Class<?> cls : iKeyBuilderSet) {
             if (IKeyBuilder.class.isAssignableFrom(cls) == false) {
-                Platform.warning("cache ->>loadKeyBuilder : not implemented IKeyBuilder of type " + Platform.logString(cls));
+                Platform.warning("loadKeyBuilder : not implemented IKeyBuilder of type " + Platform.logString(cls));
             } else {
-                Platform.info("cache ->> at KeyBuilder of type " + Platform.logString(cls));
+                Platform.info("at KeyBuilder of type " + Platform.logString(cls));
                 iKeyBuilderList.add((Class<? extends IKeyBuilder>) cls);
             }
         }
+        //2.排序
+        Collections.sort(iKeyBuilderList, new Comparator<Class<?>>() {
+            @Override
+            public int compare(Class<?> o1, Class<?> o2) {
+                KeyBuilder o1Anno = o1.getAnnotation(KeyBuilder.class);
+                KeyBuilder o2Anno = o2.getAnnotation(KeyBuilder.class);
+                int o1AnnoIndex = o1Anno.sort();
+                int o2AnnoIndex = o2Anno.sort();
+                return (o1AnnoIndex < o2AnnoIndex ? -1 : (o1AnnoIndex == o2AnnoIndex ? 0 : 1));
+            }
+        });
         //3.注册服务
+        long defaultKeyBuilderIndex = Long.MAX_VALUE;
         Binder binder = event.getGuiceBinder();
         for (Class<? extends IKeyBuilder> keyBuildertype : iKeyBuilderList) {
             KeyBuilder keyBuilderAnno = keyBuildertype.getAnnotation(KeyBuilder.class);
@@ -98,24 +107,34 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
             Map<String, String> initParams = this.toMap(keyBuilderAnno.initParams());
             KeyBuilderDefinition keyBuilderDefine = new KeyBuilderDefinition(keyBuilderAnno.value(), keyBuilderKey, initParams);
             binder.bind(KeyBuilderDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(keyBuilderDefine);
+            //确定是否为defaut
+            if (keyBuildertype.isAnnotationPresent(DefaultKeyBuilder.class) == true) {
+                Platform.info("at DefaultKeyBuilder of type " + Platform.logString(keyBuildertype));
+                DefaultKeyBuilder defaultKeyBuilder = keyBuildertype.getAnnotation(DefaultKeyBuilder.class);
+                if (defaultKeyBuilder.value() < defaultKeyBuilderIndex/*数越小越优先*/) {
+                    defaultKeyBuilderIndex = defaultKeyBuilder.value();
+                    binder.bind(IKeyBuilder.class).toProvider(keyBuilderDefine);
+                }
+            }
         }
     }
     //
     /*装载Cache*/
     protected void loadCache(ApiBinder event) {
-        Platform.info("cache ->> begin loadCache...");
+        Platform.info("begin loadCache...");
         //1.获取
         Set<Class<?>> cacheSet = event.getClassSet(Cache.class);
         List<Class<? extends ICache>> cacheList = new ArrayList<Class<? extends ICache>>();
         for (Class<?> cls : cacheSet) {
             if (ICache.class.isAssignableFrom(cls) == false) {
-                Platform.warning("cache ->> loadCache : not implemented ICache of type " + Platform.logString(cls));
+                Platform.warning("loadCache : not implemented ICache of type " + Platform.logString(cls));
             } else {
-                Platform.info("cache ->> at Cache of type " + Platform.logString(cls));
+                Platform.info("at Cache of type " + Platform.logString(cls));
                 cacheList.add((Class<? extends ICache>) cls);
             }
         }
         //3.注册服务
+        long defaultCacheIndex = Long.MAX_VALUE;
         Binder binder = event.getGuiceBinder();
         for (Class<? extends ICache> cacheType : cacheList) {
             Cache cacheAnno = cacheType.getAnnotation(Cache.class);
@@ -128,8 +147,12 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
             }
             //确定是否为defaut
             if (cacheType.isAnnotationPresent(DefaultCache.class) == true) {
-                Platform.info("cache ->> at DefaultCache of type " + Platform.logString(cacheType));
-                binder.bind(ICache.class).toProvider(cacheDefine);
+                Platform.info("at DefaultCache of type " + Platform.logString(cacheType));
+                DefaultCache defaultCache = cacheType.getAnnotation(DefaultCache.class);
+                if (defaultCache.value() < defaultCacheIndex/*数越小越优先*/) {
+                    defaultCacheIndex = defaultCache.value();
+                    binder.bind(ICache.class).toProvider(cacheDefine);
+                }
             }
         }
     }
@@ -149,7 +172,7 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
         @Override
         public boolean matches(Class<?> matcherType) {
             /*如果处于禁用状态则忽略缓存检测*/
-            if (enable == false)
+            if (settings.isCacheEnable() == false)
                 return false;
             /*----------------------------*/
             if (matcherType.isAnnotationPresent(NeedCache.class) == true)
@@ -172,7 +195,7 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
         @Override
         public boolean matches(Method matcherType) {
             /*如果处于禁用状态则忽略缓存检测*/
-            if (enable == false)
+            if (settings.isCacheEnable() == false)
                 return false;
             /*----------------------------*/
             if (matcherType.isAnnotationPresent(NeedCache.class) == true)
@@ -187,7 +210,7 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
         @Override
         public Object invoke(MethodInvocation invocation) throws Throwable {
             /*如果处于禁用状态则忽略缓存检测*/
-            if (enable == false)
+            if (settings.isCacheEnable() == false)
                 return invocation.proceed();
             /*----------------------------*/
             //1.获取缓存数据
@@ -202,11 +225,16 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
             Object[] args = invocation.getArguments();
             if (args != null)
                 for (Object arg : args) {
-                    IKeyBuilder keyBuilder = cacheManager.getKeyBuilder((arg != null) ? arg.getClass() : null);
+                    if (arg == null) {
+                        cacheKey.append("NULL");
+                        continue;
+                    }
+                    /*保证arg参数不为空*/
+                    IKeyBuilder keyBuilder = cacheManager.getKeyBuilder(arg.getClass());
                     cacheKey.append(keyBuilder.serializeKey(arg));
                 }
-            Platform.debug("cache ->> MethodInterceptor Method : " + targetMethod.toString());
-            Platform.debug("cache ->> MethodInterceptor Cache key :" + Platform.logString(cacheKey.toString()));
+            Platform.debug("MethodInterceptor Method : " + targetMethod.toString());
+            Platform.debug("MethodInterceptor Cache key :" + Platform.logString(cacheKey.toString()));
             //3.操作缓存
             ICache cacheObject = null;
             if (StringUtil.isBlank(cacheAnno.cacheName()) == true)
@@ -216,10 +244,10 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
             //
             String key = cacheKey.toString();
             if (cacheObject.hasCache(key) == true) {
-                Platform.debug("cache ->> the method return data is from Cache.");
+                Platform.debug("the method return data is from Cache.");
                 return cacheObject.fromCache(key);
             } else {
-                Platform.debug("cache ->> set data to Cache key :" + key);
+                Platform.debug("set data to Cache key :" + key);
                 Object res = invocation.proceed();
                 cacheObject.toCache(key, res, cacheAnno.timeout());
                 return res;

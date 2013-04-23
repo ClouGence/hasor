@@ -46,22 +46,18 @@ class ManagedKeyBuilderManager {
         // Convert to a fixed size array for speed.
         return keyBuilderDefinitionList.toArray(new KeyBuilderDefinition[keyBuilderDefinitionList.size()]);
     }
-    public void destroyManager() {
+    public void destroyManager(AppContext appContext) {
         Platform.info("cache ->> destroy ManagedKeyBuilderManager...");
         for (KeyBuilderDefinition cacheDefinition : keyBuilderDefinitionSet) {
-            cacheDefinition.destroy();
+            cacheDefinition.destroy(appContext);
         }
     }
     public IKeyBuilder getKeyBuilder(Class<?> sampleType, AppContext appContext) {
-        KeyBuilderDefinition useDefine = null;
         for (KeyBuilderDefinition def : this.keyBuilderDefinitionSet) {
             if (def.canSupport(sampleType) == true) {
-                useDefine = def;
-                break;
+                return appContext.getGuice().getInstance(def.getKeyBuilderKey());
             }
         }
-        if (useDefine != null)
-            return appContext.getGuice().getInstance(useDefine.getKeyBuilderKey());
         return null;
     }
 }

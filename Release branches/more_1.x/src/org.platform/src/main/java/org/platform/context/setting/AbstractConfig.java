@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletContext;
-import org.more.global.Global;
 import org.more.global.assembler.xml.XmlPropertyGlobalFactory;
 import org.more.util.ResourceWatch;
 import org.more.util.ResourcesUtil;
@@ -78,18 +77,18 @@ public abstract class AbstractConfig implements Config {
             this.settingListenerList.remove(settingsListener);
     }
     /**当重新载入配置文件时*/
-    protected void reLoadConfig(Global oldConfig, Global newConfig) {
+    protected void reLoadConfig(Settings oldConfig, Settings newConfig) {
         for (SettingListener listener : this.settingListenerList)
             listener.reLoadConfig(oldConfig, newConfig);
     }
     //
     //
     //
-    private Global              globalConfig      = null;
+    private Settings            globalConfig      = null;
     private Map<String, Object> allStaticSettings = null; /*所有静态配置*/
     private ResourceWatch       resourceWatch     = null; /*监控程序*/
     @Override
-    public Global getSettings() {
+    public Settings getSettings() {
         if (this.globalConfig != null)
             return this.globalConfig;
         //1.finalSettings
@@ -114,7 +113,7 @@ public abstract class AbstractConfig implements Config {
             }
         }
         //3.globalConfig
-        this.globalConfig = Global.newInterInstance(finalSettings);
+        this.globalConfig = new Settings(finalSettings);
         this.globalConfig.disableCaseSensitive();
         return globalConfig;
     }
@@ -217,9 +216,9 @@ public abstract class AbstractConfig implements Config {
         }
         @Override
         public void reload(URI resourceURI) throws IOException {
-            Global oldConfig = this.platformConfig.globalConfig;
+            Settings oldConfig = this.platformConfig.globalConfig;
             this.platformConfig.globalConfig = null;//清理掉globalConfig然后重新装载它。
-            Global newConfig = this.platformConfig.getSettings();
+            Settings newConfig = this.platformConfig.getSettings();
             this.platformConfig.reLoadConfig(oldConfig, newConfig);
         }
         @Override

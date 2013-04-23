@@ -26,7 +26,7 @@
 		<!-- 转发配置 -->
 		<forwards>
 			<!-- 登录源（正则表达式），当执行登陆时才会用到这里的配置。 -->
-			<dispatch sourceRegExp="">
+			<dispatch sourceRegExp="、pro">
 				<!-- 登陆成功之后要去的地址 -->
 				<indexPage>/login_ok_index.htm</indexPage>
 				<!-- 退出之后要去的地址 -->
@@ -66,8 +66,14 @@
 		</guest>
 	</security>
 	<!-- 缓存配置 -->
-	<cacheConfig enable="false">
-		<!-- !!!这里需要自定义!!! -->
+	<cacheConfig enable="true">
+		<!-- WeakMapCache 配置 -->
+		<!-- timeout=设置的超时时间10分钟超时 -->
+		<!-- eternal=缓存是否永远不销毁 -->
+		<!-- autoRenewal=每当访问缓存对象时是否自动对其续约（续约时间同加入时缓存超时时间） -->
+		<!-- threadSeep=缓存回收线程工作的时间频率(毫秒) -->
+		<weakMapCache timeout="600000" eternal="false" autoRenewal="false" threadSeep="5000" />
+		<!-- !!!这里可以放置其他缓存程序的Xml配置，然后通过XmlProperty类型读取到这段Xml!!! -->
 	</cacheConfig>
 	<!-- 工作空间设置 -->
 	<workspace>

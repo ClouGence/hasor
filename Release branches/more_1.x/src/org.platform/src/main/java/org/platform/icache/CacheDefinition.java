@@ -17,11 +17,11 @@ package org.platform.icache;
 import java.util.Enumeration;
 import java.util.Map;
 import javax.servlet.ServletContext;
-import org.more.global.Global;
 import org.more.util.Iterators;
 import org.platform.context.AppContext;
 import org.platform.context.SettingListener;
 import org.platform.context.setting.Config;
+import org.platform.context.setting.Settings;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 /**
@@ -59,7 +59,7 @@ class CacheDefinition implements Provider<ICache> {
                 return Iterators.asEnumeration(initParams.keySet().iterator());
             }
             @Override
-            public Global getSettings() {
+            public Settings getSettings() {
                 return appContext.getSettings();
             }
             @Override
@@ -72,9 +72,9 @@ class CacheDefinition implements Provider<ICache> {
             }
         });
     }
-    public void destroy() {
+    public void destroy(AppContext appContext) {
         if (this.cacheObject != null)
-            this.cacheObject.destroy();
+            this.cacheObject.destroy(appContext);
     }
     @Override
     public ICache get() {

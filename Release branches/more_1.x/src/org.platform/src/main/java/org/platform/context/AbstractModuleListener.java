@@ -26,5 +26,5 @@ public abstract class AbstractModuleListener implements ContextListener {
     @Override
     public void initialized(AppContext appContext) {}
     @Override
-    public void destroy() {}
+    public void destroy(AppContext appContext) {}
 }

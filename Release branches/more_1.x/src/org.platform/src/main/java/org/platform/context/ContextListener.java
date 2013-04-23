@@ -26,5 +26,5 @@ public interface ContextListener {
     /**完成初始化。*/
     public void initialized(AppContext appContext);
     /**系统被销毁过程...*/
-    public void destroy();
+    public void destroy(AppContext appContext);
 }

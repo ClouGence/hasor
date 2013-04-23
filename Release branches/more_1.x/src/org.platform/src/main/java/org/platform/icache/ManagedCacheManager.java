@@ -47,10 +47,10 @@ class ManagedCacheManager {
         }
         return cacheDefinitionMap;
     }
-    public void destroyManager() {
+    public void destroyManager(AppContext appContext) {
         Platform.info("cache ->> destroy ManagedCacheManager...");
         for (Entry<String, CacheDefinition> cacheDefinitionEnt : cacheDefinitionMap.entrySet()) {
-            cacheDefinitionEnt.getValue().destroy();
+            cacheDefinitionEnt.getValue().destroy(appContext);
         }
     }
     public ICache getCache(String cacheName, AppContext appContext) {

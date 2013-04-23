@@ -34,6 +34,7 @@ public abstract class GlobalFactory {
     /**创建{@link Global}对象*/
     protected abstract Map<String, Object> loadConfig(InputStream stream, String encoding) throws IOException;
     /*------------------------------------------------------------------------*/
+    /**解析资源并且生成Global可以使用的Map。*/
     public Map<String, Object> createMap(String encoding, Object[] objects) throws IOException {
         //1.创建对象
         HashMap<String, Object> globalMap = new HashMap<String, Object>();

@@ -13,21 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.icache;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package org.platform.icache.weakmapcache;
 /**
- * 声明该方法或者该类的所有方法在被调用时增加缓存支持。
- * @version : 2013-3-12
+ * 缓存对象
+ * @version : 2013-4-23
  * @author 赵永春 (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
-public @interface NeedCache {
-    /**使用的缓存名。*/
-    public String cacheName() default "";
-    /**缓存超时时间，默认值0。*/
-    public long timeout() default 0;
+class CacheEntity {
+    private Object value    = null;
+    private long   timeout  = 0;
+    private long   lastTime = 0;
+    //
+    public CacheEntity(Object value, long timeout) {
+        this.value = value;
+        this.timeout = timeout;
+        this.lastTime = System.currentTimeMillis();
+    }
+    //
+    public boolean isLost() {
+        return (lastTime + this.timeout) < System.currentTimeMillis();
+    }
+    //
+    public void refresh() {
+        this.lastTime = System.currentTimeMillis();
+    }
+    //
+    public Object get() {
+        return this.value;
+    }
 }

@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 package org.platform.icache;
-import org.platform.context.AppContext;
-import org.platform.context.setting.Config;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 默认缓存Key的生成器。
- * @version : 2013-4-21
+ * 当任何类型的KeyBuilder都匹配不到时使用该KeyBuilder，该注解必须和KeyBuilder注解同时使用。
+ * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-class ObjectStringKeyBuilder implements IKeyBuilder {
-    /**获取参数的序列化标识码。*/
-    public String serializeKey(Object arg) {
-        return (arg == null) ? "NULL" : arg.toString();
-    }
-    @Override
-    public void initKeyBuilder(AppContext appContext, Config config) {}
-    @Override
-    public void destroy() {};
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface DefaultKeyBuilder {
+    /**当配置了多个默认缓存时依照该值进行排序。（越小越优先）*/
+    public int value() default Integer.MAX_VALUE;
 }

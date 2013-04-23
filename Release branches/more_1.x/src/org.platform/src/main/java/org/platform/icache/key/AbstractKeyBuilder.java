@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.icache;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package org.platform.icache.key;
+import org.platform.context.AppContext;
+import org.platform.context.setting.Config;
+import org.platform.icache.IKeyBuilder;
 /**
- * 声明该方法或者该类的所有方法在被调用时增加缓存支持。
- * @version : 2013-3-12
+ * 
+ * @version : 2013-4-23
  * @author 赵永春 (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
-public @interface NeedCache {
-    /**使用的缓存名。*/
-    public String cacheName() default "";
-    /**缓存超时时间，默认值0。*/
-    public long timeout() default 0;
+abstract class AbstractKeyBuilder implements IKeyBuilder {
+    @Override
+    public void initKeyBuilder(AppContext appContext, Config config) {}
+    @Override
+    public void destroy(AppContext appContext) {}
 }

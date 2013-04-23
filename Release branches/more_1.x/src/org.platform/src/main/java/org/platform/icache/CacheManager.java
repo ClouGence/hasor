@@ -30,5 +30,5 @@ public interface CacheManager {
     /**初始化启动缓存服务。*/
     public void initManager(AppContext appContext);
     /**销毁缓存服务*/
-    public void destroyManager();
+    public void destroyManager(AppContext appContext);
 }

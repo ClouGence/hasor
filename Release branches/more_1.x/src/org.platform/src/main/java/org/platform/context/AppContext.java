@@ -24,9 +24,9 @@ import static org.platform.PlatformConfigEnum.Workspace_WorkDir;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
-import org.more.global.Global;
 import org.more.util.StringUtil;
 import org.platform.Assert;
+import org.platform.context.setting.Settings;
 import com.google.inject.Injector;
 /**
  * 
@@ -36,7 +36,7 @@ import com.google.inject.Injector;
 public abstract class AppContext {
     private InitContext initContext = null;
     /**获取应用程序配置。*/
-    public Global getSettings() {
+    public Settings getSettings() {
         InitContext initContext = this.getInitContext();
         Assert.isNotNull(initContext, "AppContext.getInitContext() return is null.");
         return initContext.getConfig().getSettings();

@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 package org.platform.security;
-import static org.platform.PlatformConfigEnum.Security_Enable;
-import static org.platform.PlatformConfigEnum.Security_EnableURL;
-import static org.platform.PlatformConfigEnum.Security_LoginFormData_AccountField;
-import static org.platform.PlatformConfigEnum.Security_LoginFormData_PasswordField;
-import static org.platform.PlatformConfigEnum.Security_LoginURL;
-import static org.platform.PlatformConfigEnum.Security_LogoutURL;
 import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -30,11 +24,10 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.more.global.Global;
 import org.platform.Assert;
 import org.platform.Platform;
 import org.platform.context.AppContext;
-import org.platform.context.SettingListener;
+import org.platform.context.setting.Config;
 import org.platform.startup.RuntimeListener;
 /**
  * 权限系统URL请求处理支持。
@@ -42,51 +35,37 @@ import org.platform.startup.RuntimeListener;
  * @author 赵永春 (zyc@byshell.org)
  */
 class SecurityFilter implements Filter {
-    private boolean         enableURL     = true; //URL权限检查
-    private String          accountField  = null; //帐号字段
-    private String          passwordField = null; //密码字段
-    private String          loginURL      = null; //登入地址
-    private String          logoutURL     = null; //登出地址
-    //
-    private AppContext      appContext    = null;
-    private SecurityContext secService    = null;
+    private SecuritySettings settings   = new SecuritySettings();
+    private AppContext      appContext = null;
+    private SecurityContext secService = null;
     //
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Platform.info("init SecurityFilter...");
         ServletContext servletContext = filterConfig.getServletContext();
         this.appContext = (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
+        Config systemConfig = this.appContext.getInitContext().getConfig();
         Assert.isNotNull(this.appContext, "AppContext is null.");
         //
         this.secService = this.appContext.getBean(SecurityContext.class);
         //
-        /*当配置文件改变时候用已接收通知*/
-        SettingListener settingListener = new SettingListener() {
-            @Override
-            public void reLoadConfig(Global oldConfig, Global newConfig) {
-                accountField = newConfig.getString(Security_LoginFormData_AccountField);
-                passwordField = newConfig.getString(Security_LoginFormData_PasswordField);
-                loginURL = newConfig.getString(Security_LoginURL);
-                logoutURL = newConfig.getString(Security_LogoutURL);
-                if (newConfig.getBoolean(Security_Enable, false) == false)
-                    enableURL = false;
-                else
-                    enableURL = newConfig.getBoolean(Security_EnableURL, true);
-            }
-        };
-        this.appContext.getInitContext().getConfig().addSettingsListener(settingListener);
-        /*取得配置*/
-        Global currentSetting = this.appContext.getSettings();
-        settingListener.reLoadConfig(currentSetting, currentSetting);
+        /*配置文件读取*/
+        this.settings.loadConfig(systemConfig.getSettings());
+        /*加入，监听配置文件改动*/
+        systemConfig.addSettingsListener(this.settings);
     }
     @Override
-    public void destroy() {}
+    public void destroy() {
+        Config systemConfig = this.appContext.getInitContext().getConfig();
+        /*撤销，监听配置文件改动*/
+        systemConfig.removeSettingsListener(this.settings);
+    }
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         //1.处理禁用状态
-        if (enableURL == false) {
+        if (this.settings.isEnableURL() == false) {
             chain.doFilter(httpRequest, httpResponse);
             return;
         }
@@ -95,17 +74,17 @@ class SecurityFilter implements Filter {
         reqPath = reqPath.substring(httpRequest.getContextPath().length());
         AuthSession authSession = this.secService.getAuthSession(httpRequest, httpResponse, true);//必然创建authSession
         //
-        if (reqPath.endsWith(loginURL) == true) {
+        if (reqPath.endsWith(this.settings.getLoginURL()) == true) {
             //1.登入匹配
-            String account = httpRequest.getParameter(accountField);
-            String password = httpRequest.getParameter(passwordField);
+            String account = httpRequest.getParameter(this.settings.getAccountField());
+            String password = httpRequest.getParameter(this.settings.getPasswordField());
             Platform.info("Security -> doLogin acc=" + account + " , pwd=" + password);
             authSession.doLogin(account, password);/*登入会话*/
             //
             SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);/*获取到跳转对象*/
             dispatcher.forwardIndex(httpRequest, httpResponse);//跳转到登入成功之后的地址
             return;
-        } else if (reqPath.endsWith(logoutURL) == true) {
+        } else if (reqPath.endsWith(this.settings.getLogoutURL()) == true) {
             //2.登出匹配
             Platform.info("Security -> doLogout. user=" + authSession.getUserObject());
             authSession.doLogout();/*退出会话*/

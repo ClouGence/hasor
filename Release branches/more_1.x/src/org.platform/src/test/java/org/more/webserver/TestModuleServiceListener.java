@@ -15,7 +15,6 @@
  */
 package org.more.webserver;
 import java.io.IOException;
-import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,9 +24,6 @@ import org.platform.context.AbstractModuleListener;
 import org.platform.context.AppContext;
 import org.platform.context.InitListener;
 import org.platform.context.setting.Config;
-import org.platform.icache.Cache;
-import org.platform.icache.DefaultCache;
-import org.platform.icache.ICache;
 import org.platform.icache.IKeyBuilder;
 import org.platform.icache.KeyBuilder;
 import org.platform.icache.NeedCache;
@@ -70,7 +66,7 @@ class ParamBean {
 }
 class TestBean {
     int index = 0;
-    @NeedCache
+    @NeedCache()
     public String eval1(ParamBean val) {
         index++;
         return val + String.valueOf(this.index);
@@ -80,51 +76,20 @@ class TestBean {
         return val + String.valueOf(this.index);
     }
 }
-@KeyBuilder(ParamBean.class)
+@KeyBuilder(value = ParamBean.class, sort = 2)
 class ObjectIntKeyBuilder implements IKeyBuilder {
     @Override
     public void initKeyBuilder(AppContext appContext, Config config) {
         // TODO Auto-generated method stub
     }
     @Override
-    public void destroy() {
+    public void destroy(AppContext appContext) {
         // TODO Auto-generated method stub
     }
     @Override
     public String serializeKey(Object arg) {
+        //        return arg.toString();
         ParamBean b = (ParamBean) arg;
         return b.value;
-    }
-}
-@DefaultCache
-@Cache("map")
-class MapCache extends HashMap<String, Object> implements ICache {
-    @Override
-    public void initCache(AppContext appContext, Config config) {
-        // TODO Auto-generated method stub
-    }
-    @Override
-    public void destroy() {
-        // TODO Auto-generated method stub
-    }
-    @Override
-    public void toCache(String key, Object value) {
-        this.toCache(key, value, 10000);
-    }
-    @Override
-    public void toCache(String key, Object value, long timeout) {
-        this.put(key, value);
-    }
-    @Override
-    public Object fromCache(String key) {
-        return this.get(key);
-    }
-    @Override
-    public boolean hasCache(String key) {
-        return this.containsKey(key);
-    }
-    @Override
-    public void remove(String key) {
-        super.remove(key);
     }
 }

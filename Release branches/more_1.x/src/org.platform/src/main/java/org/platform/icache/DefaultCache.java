@@ -19,10 +19,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * 声明当前的Cache为默认Cache，使用该注解必须同时使用Cache注解。
+ * 声明当前的Cache为默认Cache，该注解必须和Cache注解同时使用。
  * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
-public @interface DefaultCache {}
+public @interface DefaultCache {
+    /**当配置了多个默认缓存时依照该值进行排序。（越小越优先）*/
+    public int value() default Integer.MAX_VALUE;
+}

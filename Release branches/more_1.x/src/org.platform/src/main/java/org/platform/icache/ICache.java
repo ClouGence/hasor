@@ -16,28 +16,28 @@
 package org.platform.icache;
 import org.platform.context.AppContext;
 import org.platform.context.setting.Config;
-import com.google.inject.ImplementedBy;
 /**
- * 缓存使用入口，缓存的实现由系统自行提供。
+ * 缓存使用入口，缓存的默认使用HashMap作为实现。
  * @version : 2013-4-20
  * @author 赵永春 (zyc@byshell.org)
  */
-@ImplementedBy(NoneCache.class)
 public interface ICache {
     /**初始化Cache*/
     public void initCache(AppContext appContext, Config config);
-    /**销毁*/
-    public void destroy();
+    /**销毁Cache*/
+    public void destroy(AppContext appContext);
     /**将一个对象放入缓存。*/
-    public void toCache(String key, Object value);
+    public boolean toCache(String key, Object value);
     /**将一个对象放入缓存。*/
-    public void toCache(String key, Object value, long timeout);
+    public boolean toCache(String key, Object value, long timeout);
     /**根据key从缓存中获取缓存对象。*/
     public Object fromCache(String key);
     /**判断缓存中是否有要求的对象。*/
     public boolean hasCache(String key);
     /**删除某个缓存的内容*/
-    public void remove(String key);
+    public boolean remove(String key);
+    /**刷新指定key的缓存时间*/
+    public boolean refreshCache(String key);
     /**清空缓存*/
-    public void clear();
+    public boolean clear();
 }

@@ -16,7 +16,7 @@
 package org.test.more.core.global;
 import org.junit.Test;
 import org.more.global.Global;
-import org.more.global.assembler.PropertiesGlobalFactory;
+import org.more.global.assembler.propertie.PropertiesGlobalFactory;
 /**
  * 
  * @version : 2011-9-5

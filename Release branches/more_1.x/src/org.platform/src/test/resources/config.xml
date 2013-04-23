@@ -8,9 +8,7 @@
 	<!-- 权限配置 -->
 	<security enable="true">
 	</security>
-	<!-- 缓存配置 -->
-	<cacheConfig enable="true">
-		<!-- !!!这里需要自定义!!! -->
-	</cacheConfig>
+	<!-- MapCache 默认配置10分钟超时 -->
+	<cacheConfig.mapCache timeout="500" threadSeep="100" />
 
 </config>

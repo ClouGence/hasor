@@ -14,32 +14,25 @@
  * limitations under the License.
  */
 package org.platform.icache;
-import org.platform.context.AppContext;
-import org.platform.context.setting.Config;
+import static org.platform.PlatformConfigEnum.CacheConfig_Enable;
+import org.platform.context.SettingListener;
+import org.platform.context.setting.Settings;
 /**
- * Ã»ÓÐ»º´æ¡£
- * @version : 2013-4-20
+ * 
+ * @version : 2013-4-23
  * @author ÕÔÓÀ´º (zyc@byshell.org)
  */
-class NoneCache implements ICache {
-    @Override
-    public void toCache(String key, Object value) {}
-    @Override
-    public void toCache(String key, Object value, long timeout) {}
-    @Override
-    public Object fromCache(String key) {
-        return null;
+class CacheSettings implements SettingListener {
+    private boolean enable = false; /*Ä¬ÈÏ¹Ø±Õ×´Ì¬*/
+    //
+    public boolean isCacheEnable() {
+        return this.enable;
     }
     @Override
-    public boolean hasCache(String key) {
-        return false;
+    public void reLoadConfig(Settings oldConfig, Settings newConfig) {
+        this.enable = newConfig.getBoolean(CacheConfig_Enable, false);
     }
-    @Override
-    public void remove(String key) {}
-    @Override
-    public void clear() {}
-    @Override
-    public void initCache(AppContext appContext, Config config) {}
-    @Override
-    public void destroy() {}
+    public void loadConfig(Settings config) {
+        this.reLoadConfig(null, config);
+    }
 }

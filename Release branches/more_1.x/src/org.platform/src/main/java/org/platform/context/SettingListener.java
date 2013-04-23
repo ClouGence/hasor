@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package org.platform.context;
-import org.more.global.Global;
+import org.platform.context.setting.Settings;
 /**
  * 当配置文件重新载入时
  * @version : 2013-4-18
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface SettingListener {
-    public void reLoadConfig(Global oldConfig, Global newConfig);
+    public void reLoadConfig(Settings oldConfig, Settings newConfig);
 }

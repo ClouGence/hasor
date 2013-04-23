@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 package org.platform.security;
-import static org.platform.PlatformConfigEnum.Security_Enable;
-import static org.platform.PlatformConfigEnum.Security_EnableMethod;
 import java.lang.reflect.Method;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.more.global.Global;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AbstractModuleListener;
 import org.platform.context.AppContext;
-import org.platform.context.SettingListener;
-import org.platform.icache.CacheManager;
 import org.platform.security.Power.Level;
 import com.google.inject.matcher.AbstractMatcher;
 /**
@@ -37,10 +32,9 @@ import com.google.inject.matcher.AbstractMatcher;
  */
 //@InitListener(displayName = "SecurityModuleServiceListener", description = "org.platform.security软件包功能支持。", startIndex = 1)
 public class SecurityModuleServiceListener extends AbstractModuleListener {
-    private boolean                 enable       = false; //启用禁用
-    private boolean                 enableMethod = true; //方法权限检查
-    private SecurityContext         secService   = null;
-    private SecuritySessionListener secListener  = null;
+    private SecurityContext         secService  = null;
+    private SecuritySessionListener secListener = null;
+    private SecuritySettings         settings    = new SecuritySettings();
     /**初始化.*/
     @Override
     public void initialize(ApiBinder event) {
@@ -51,26 +45,23 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         event.filter("*").through(SecurityFilter.class);
         /*aop，方法执行权限支持*/
         event.getGuiceBinder().bindInterceptor(new ClassPowerMatcher(), new MethodPowerMatcher(), new SecurityInterceptor());/*注册Aop*/
-        /*配置文件监听器*/
-        SettingListener listener = new SettingListener() {
-            @Override
-            public void reLoadConfig(Global oldConfig, Global newConfig) {
-                enable = newConfig.getBoolean(Security_Enable, false);
-                enableMethod = newConfig.getBoolean(Security_EnableMethod, false);
-                if (enable == false)
-                    enableMethod = false;
-            }
-        };
-        event.getInitContext().getConfig().addSettingsListener(listener);
-        listener.reLoadConfig(null, event.getInitContext().getConfig().getSettings());
+        /*配置文件读取*/
+        this.settings.loadConfig(event.getInitContext().getConfig().getSettings());
         /*绑定核心功能实现类。*/
         event.getGuiceBinder().bind(SecurityContext.class).to(DefaultSecurityService.class);
         event.getGuiceBinder().bind(SecurityQuery.class).to(DefaultSecurityQuery.class);
     }
     @Override
     public void initialized(AppContext appContext) {
+        /*加入，监听配置文件改动*/
+        appContext.getInitContext().getConfig().addSettingsListener(this.settings);
         this.secService = appContext.getBean(SecurityContext.class);
-        Platform.info("online ->> security is " + (enable ? "enable." : "disable."));
+        Platform.info("online ->> security is " + (this.settings.isEnable() ? "enable." : "disable."));
+    }
+    @Override
+    public void destroy(AppContext appContext) {
+        /*撤销，监听配置文件改动*/
+        appContext.getInitContext().getConfig().removeSettingsListener(this.settings);
     }
     /*-------------------------------------------------------------------------------------*/
     /*负责检测类是否匹配。规则：只要类型或方法上标记了@Power。*/
@@ -78,7 +69,7 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         @Override
         public boolean matches(Class<?> matcherType) {
             /*如果处于禁用状态则忽略权限检测*/
-            if (enableMethod == false)
+            if (settings.isEnableMethod() == false)
                 return false;
             /*----------------------------*/
             if (matcherType.isAnnotationPresent(Power.class) == true)
@@ -101,7 +92,7 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         @Override
         public boolean matches(Method matcherType) {
             /*如果处于禁用状态则忽略权限检测*/
-            if (enableMethod == false)
+            if (settings.isEnableMethod() == false)
                 return false;
             /*----------------------------*/
             if (matcherType.isAnnotationPresent(Power.class) == true)
@@ -116,7 +107,7 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         @Override
         public Object invoke(MethodInvocation invocation) throws Throwable {
             /*如果处于禁用状态则忽略权限检测*/
-            if (enableMethod == false)
+            if (settings.isEnableMethod() == false)
                 return invocation.proceed();
             /*----------------------------*/
             //1.获取权限数据
@@ -155,13 +146,13 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
     private class SecuritySessionListener implements HttpSessionListener {
         @Override
         public void sessionCreated(HttpSessionEvent se) {
-            if (enable == false)
+            if (settings.isEnable() == false)
                 return;
             secService.getAuthSession(se.getSession(), true);
         }
         @Override
         public void sessionDestroyed(HttpSessionEvent se) {
-            if (enable == false)
+            if (settings.isEnable() == false)
                 return;
             AuthSession authSession = secService.getAuthSession(se.getSession(), true);
             authSession.close();

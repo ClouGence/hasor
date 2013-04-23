@@ -39,14 +39,14 @@ class DefaultCacheManager implements CacheManager {
         this.cacheManager.initManager(appContext);
         this.keyBuilderManager.initManager(appContext);
         //
-        this.defaultCache = appContext.getGuice().getProvider(ICache.class).get();
-        this.defaultKeyBuilder = appContext.getGuice().getProvider(IKeyBuilder.class).get();
+        this.defaultCache = appContext.getGuice().getInstance(ICache.class);
+        this.defaultKeyBuilder = appContext.getGuice().getInstance(IKeyBuilder.class);
     }
     @Override
-    public void destroyManager() {
+    public void destroyManager(AppContext appContext) {
         Platform.info("cache ->> destroy CacheManager...");
-        this.cacheManager.destroyManager();
-        this.keyBuilderManager.destroyManager();
+        this.cacheManager.destroyManager(this.appContext);
+        this.keyBuilderManager.destroyManager(this.appContext);
     }
     @Override
     public ICache getDefaultCache() {

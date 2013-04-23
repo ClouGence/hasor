@@ -37,4 +37,6 @@ public @interface KeyBuilder {
     public InitParam[] initParams() default {};
     /**该生称器可以作用的数据类型*/
     public Class<?> value();
+    /**排序顺序（越小越优先）*/
+    public int sort() default Integer.MAX_VALUE;
 }

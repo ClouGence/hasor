@@ -65,4 +65,12 @@ public interface PlatformConfigEnum {
     //
     /**是否启用缓存系统.*/
     public static final String CacheConfig_Enable                   = "cacheConfig.enable";
+    /**MapCache，设置的超时时间.*/
+    public static final String CacheConfig_WeakMapCache_Timeout     = "cacheConfig.weakMapCache.timeout";
+    /**MapCache，缓存是否永远不销毁.*/
+    public static final String CacheConfig_WeakMapCache_Eternal     = "cacheConfig.weakMapCache.eternal";
+    /**MapCache，每当访问缓存对象时是否自动对其续约（续约时间同加入时缓存超时时间）.*/
+    public static final String CacheConfig_WeakMapCache_AutoRenewal = "cacheConfig.weakMapCache.autoRenewal";
+    /**MapCache，缓存回收线程工作的时间频率(毫秒).*/
+    public static final String CacheConfig_WeakMapCache_ThreadSeep  = "cacheConfig.weakMapCache.threadSeep";
 }

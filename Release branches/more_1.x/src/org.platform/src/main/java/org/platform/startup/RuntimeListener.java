@@ -205,7 +205,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         final List<ContextListener> listenerList = this.initListener;
         for (ContextListener listener : listenerList)
-            listener.destroy();
+            listener.destroy(this.appContext);
     }
     @Override
     public void sessionCreated(HttpSessionEvent se) {
