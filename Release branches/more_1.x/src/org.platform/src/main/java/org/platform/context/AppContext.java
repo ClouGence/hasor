@@ -35,6 +35,10 @@ import com.google.inject.Injector;
  */
 public abstract class AppContext {
     private InitContext initContext = null;
+    /**获取系统启动时间*/
+    public long getAppStartTime() {
+        return this.initContext.getStartTime();
+    };
     /**获取应用程序配置。*/
     public Settings getSettings() {
         InitContext initContext = this.getInitContext();
@@ -181,5 +185,5 @@ public abstract class AppContext {
             number = c;
         } while (c > 0);
         return buffer.reverse().toString();
-    };
+    }
 }

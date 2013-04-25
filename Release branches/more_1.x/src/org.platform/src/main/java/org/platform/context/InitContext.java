@@ -31,4 +31,6 @@ public interface InitContext {
     public Config getConfig();
     /**获取{@link ServletContext}环境对象。*/
     public ServletContext getServletContext();
+    /**获取系统启动时间。*/
+    public long getStartTime();
 }

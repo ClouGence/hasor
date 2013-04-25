@@ -24,12 +24,17 @@ import org.platform.context.setting.Config;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractInitContext implements InitContext {
-    private Config config = null;
+    private Config config    = null;
+    private long   startTime = 0;   //系统启动时间
     protected AbstractInitContext(Config config) {
         this.config = config;
+        this.startTime = System.currentTimeMillis();
         Assert.isNotNull(config);
     }
     /*----------------------------------------------------------------------*/
+    public long getStartTime() {
+        return startTime;
+    }
     /**获取环境初始化参数。*/
     public String getInitParameter(String name) {
         return this.config.getInitParameter(name);
