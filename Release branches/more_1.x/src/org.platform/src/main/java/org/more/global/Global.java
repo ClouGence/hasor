@@ -200,6 +200,22 @@ public class Global extends AbstractGlobal {
     public Date getDate(String name, long defaultValue) {
         return this.getToType(name, Date.class, new Date(defaultValue));
     };
+    /**解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。*/
+    public <T extends Enum<?>> T getEnum(Enum<?> name, Class<T> enmType) {
+        return this.getToType(name, enmType, null);
+    };
+    /**解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。*/
+    public <T extends Enum<?>> T getEnum(String name, Class<T> enmType) {
+        return this.getToType(name, enmType, null);
+    };
+    /**解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。*/
+    public <T extends Enum<?>> T getEnum(Enum<?> name, Class<T> enmType, T defaultValue) {
+        return this.getToType(name, enmType, defaultValue);
+    };
+    /**解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。*/
+    public <T extends Enum<?>> T getEnum(String name, Class<T> enmType, T defaultValue) {
+        return this.getToType(name, enmType, defaultValue);
+    };
     /**解析全局配置参数，并且返回其{@link File}形式对象（用于表示文件）。第二个参数为默认值。*/
     public String getFilePath(Enum<?> name) {
         return this.getFilePath(name, null);
