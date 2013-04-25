@@ -23,21 +23,28 @@ import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AbstractModuleListener;
 import org.platform.context.AppContext;
+import org.platform.context.InitListener;
+import org.platform.context.setting.Config;
 import org.platform.security.Power.Level;
+import org.platform.security.internal.DefaultSecurityQuery;
+import org.platform.security.internal.DefaultSecurityService;
 import com.google.inject.matcher.AbstractMatcher;
 /**
  * 支持Service等注解功能。
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-//@InitListener(displayName = "SecurityModuleServiceListener", description = "org.platform.security软件包功能支持。", startIndex = 1)
+@InitListener(displayName = "SecurityModuleServiceListener", description = "org.platform.security软件包功能支持。", startIndex = 1)
 public class SecurityModuleServiceListener extends AbstractModuleListener {
     private SecurityContext         secService  = null;
     private SecuritySessionListener secListener = null;
-    private SecuritySettings         settings    = new SecuritySettings();
+    private SecuritySettings        settings    = null;
     /**初始化.*/
     @Override
     public void initialize(ApiBinder event) {
+        /*配置*/
+        this.settings = new SecuritySettings();
+        this.settings.loadConfig(event.getSettings());
         /*HttpSession创建和销毁通知机制*/
         this.secListener = new SecuritySessionListener();
         event.sessionListener().bind(this.secListener);
@@ -45,23 +52,26 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         event.filter("*").through(SecurityFilter.class);
         /*aop，方法执行权限支持*/
         event.getGuiceBinder().bindInterceptor(new ClassPowerMatcher(), new MethodPowerMatcher(), new SecurityInterceptor());/*注册Aop*/
-        /*配置文件读取*/
-        this.settings.loadConfig(event.getInitContext().getConfig().getSettings());
         /*绑定核心功能实现类。*/
+        event.getGuiceBinder().bind(SecuritySettings.class).toInstance(this.settings);//通过Guice
         event.getGuiceBinder().bind(SecurityContext.class).to(DefaultSecurityService.class);
         event.getGuiceBinder().bind(SecurityQuery.class).to(DefaultSecurityQuery.class);
     }
     @Override
     public void initialized(AppContext appContext) {
-        /*加入，监听配置文件改动*/
-        appContext.getInitContext().getConfig().addSettingsListener(this.settings);
+        Config systemConfig = appContext.getInitContext().getConfig();
+        systemConfig.addSettingsListener(this.settings);
+        //
         this.secService = appContext.getBean(SecurityContext.class);
+        this.secService.initSecurity(appContext);
         Platform.info("online ->> security is " + (this.settings.isEnable() ? "enable." : "disable."));
     }
     @Override
     public void destroy(AppContext appContext) {
-        /*撤销，监听配置文件改动*/
-        appContext.getInitContext().getConfig().removeSettingsListener(this.settings);
+        Config systemConfig = appContext.getInitContext().getConfig();
+        systemConfig.removeSettingsListener(this.settings);
+        //
+        this.secService.destroySecurity(appContext);
     }
     /*-------------------------------------------------------------------------------------*/
     /*负责检测类是否匹配。规则：只要类型或方法上标记了@Power。*/
@@ -130,16 +140,19 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
             throw new PermissionException(msg);
         }
         private boolean doPassLogin(Power powerAnno, Method method) {
-            AuthSession authSession = secService.getCurrentAuthSession();
-            return authSession.isLogin();
+            AuthSession[] authSessions = secService.getCurrentAuthSession();
+            for (AuthSession authSession : authSessions)
+                if (authSession.isLogin())
+                    return true;
+            return false;
         }
         private boolean doPassPolicy(Power powerAnno, Method method) {
-            AuthSession authSession = secService.getCurrentAuthSession();
+            AuthSession[] authSessions = secService.getCurrentAuthSession();
             String[] powers = powerAnno.value();
             SecurityQuery query = secService.newSecurityQuery();
             for (String anno : powers)
                 query.and(anno);
-            return query.testPermission(authSession);
+            return query.testPermission(authSessions);
         }
     }
     /*HttpSession动态监听*/
@@ -148,14 +161,17 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         public void sessionCreated(HttpSessionEvent se) {
             if (settings.isEnable() == false)
                 return;
-            secService.getAuthSession(se.getSession(), true);
+            //secService.createAuthSession();
         }
         @Override
         public void sessionDestroyed(HttpSessionEvent se) {
             if (settings.isEnable() == false)
                 return;
-            AuthSession authSession = secService.getAuthSession(se.getSession(), true);
-            authSession.close();
+            AuthSession[] authSessions = secService.getCurrentAuthSession();
+            if (authSessions == null)
+                return;
+            for (AuthSession authSession : authSessions)
+                secService.inactivationAuthSession(authSession.getSessionID()); /*钝化AuthSession*/
         }
     }
 }

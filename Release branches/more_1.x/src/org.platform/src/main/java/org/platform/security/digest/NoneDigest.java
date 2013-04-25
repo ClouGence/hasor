@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.security;
+package org.platform.security.digest;
+import org.platform.security.CodeDigest;
 /**
- * 权限系统异常。
- * @version : 2013-4-17
+ * 不编码，不解码
+ * @version : 2013-4-24
  * @author 赵永春 (zyc@byshell.org)
  */
-public class SecurityException extends Exception {
-    private static final long serialVersionUID = 2366386850634621969L;
-    //
-    public SecurityException(String msg) {
-        super(msg);
-    }
-    public SecurityException(String msg, Throwable e) {
-        super(msg, e);
-    }
+public final class NoneDigest implements CodeDigest {
+    /**编码*/
+    public String encode(String strValue, String generateKey) {
+        return strValue;
+    };
+    /**解码*/
+    public String decode(String strValue, String generateKey) {
+        return strValue;
+    };
 }

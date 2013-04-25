@@ -47,4 +47,8 @@ public class GuestUser implements UserInfo {
     public boolean isGuest() {
         return true;
     }
+    @Override
+    public String getUserCode() {
+        return this.getAccount() + "@" + this.getPassword();
+    }
 }

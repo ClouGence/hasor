@@ -19,7 +19,7 @@ package org.platform.security;
  * @version : 2013-4-9
  * @author 赵永春 (zyc@byshell.org)
  */
-public class UriPatternMatcher {
+public abstract class UriPatternMatcher {
     private String requestURI = null;
     //
     protected UriPatternMatcher(String requestURI) {
@@ -29,8 +29,18 @@ public class UriPatternMatcher {
     public String getRequestURI() {
         return requestURI;
     }
-    public boolean testPermission(AuthSession authSession) {
-        // TODO Auto-generated method stub
+    /**在权限会话中检测是否具有权限。*/
+    public abstract boolean testPermission(AuthSession authSession);
+    /**在权限会话中检测是否具有权限。*/
+    public boolean testPermission(AuthSession[] authSessions) {
+        if (authSessions == null)
+            return false;
+        for (AuthSession authSession : authSessions)
+            if (this.testPermission(authSession) == true)
+                return true;
         return false;
     }
-}a
+    public String toString() {
+        return this.getClass().getSimpleName() + " at requestURI= " + requestURI;
+    }
+}

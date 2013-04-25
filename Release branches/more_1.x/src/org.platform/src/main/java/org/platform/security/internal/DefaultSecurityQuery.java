@@ -13,22 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.security._;
-import org.platform.context.AppContext;
+package org.platform.security.internal;
+import org.platform.security.AbstractSecurityQuery;
 import org.platform.security.AuthSession;
-import org.platform.security.Permission;
 /**
- * 权限判断，可以通过该接口来实现各种不用的权限模型。
- * @version : 2013-3-12
+ * 
+ * @version : 2013-4-20
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface IPowerPolicy {
-    /**初始化策略对象。*/
-    public void initPolicy(AppContext appContext);
-    /**
-     * 进行策略检查。
-     * @param userInfo 用户信息对象。
-     * @param powerCode 要检查的权限点。
-     */
-    public boolean testPermission(AuthSession authSession, Permission[] powerCode);
-}
+public class DefaultSecurityQuery extends AbstractSecurityQuery {
+    @Override
+    public boolean testPermission(AuthSession[] authSession) {
+        return this.testSecurityNode.testPermission(authSession);
+    }
+}s

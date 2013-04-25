@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.security._;
+package org.platform.security;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
-* 表示该类为用户授权请求处理类，该类需要实现{@link Author}接口。
+* 表示该类为用户授权请求处理类，该类需要实现{@link SecurityAuthor}接口。
 * 通过该接口可以在不同的权限模型中实现用户的授权认证。
 * @version : 2013-3-25
 * @author 赵永春 (zyc@byshell.org)

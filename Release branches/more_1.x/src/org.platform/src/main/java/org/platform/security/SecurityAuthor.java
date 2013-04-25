@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.security._;
+package org.platform.security;
 import org.platform.context.AppContext;
-import org.platform.security.AuthSession;
 /**
  * 负责权限系统的认证工作，认证模块在系统中可以存在多份。这些模块会按照顺序排成一个链（认证模块链）
  * 每个认证处理请求都会在整个认证模块链上传播一遍，除非通过{@link AuthorResult#Exit}枚举值来强行中断。
  * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface Author {
+public interface SecurityAuthor {
     /**初始化授权模块。*/
     public void initAuthor(AppContext appContext);
     /**执行登陆，返回值为{@link AuthorResult}类型枚举。*/
@@ -40,4 +39,4 @@ public interface Author {
         /**在认证模块链上退出本次请求。*/
         Exit
     }
-}
+}s

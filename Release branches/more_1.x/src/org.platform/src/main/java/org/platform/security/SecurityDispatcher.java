@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.platform.security;
+import java.io.IOException;
+import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -24,12 +26,14 @@ import javax.servlet.http.HttpServletResponse;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface SecurityDispatcher {
-    /**跳转到登入成功后的页面。*/
-    public void forwardIndex(HttpServletRequest httpRequest, HttpServletResponse httpResponse);
-    /**跳转到登出之后的页面。*/
-    public void forwardLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse);
-    /**权限判断模式下的跳转，具体跳转方式由配置文件定义。*/
-    public void forwardError(ServletRequest request, ServletResponse response);
+    /**匹配的路径模式*/
+    public String getContentPath();
+    /**跳转到登入成功后的地址。*/
+    public void forwardIndex(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException, ServletException;
+    /**跳转到登出之后的地址。*/
+    public void forwardLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException, ServletException;
+    /**跳转到登入登出执行s登入失败时的地址。*/
+    public void forwardFailure(HttpServletRequest httpRequest, HttpServletResponse httpResponse, Throwable e) throws IOException, ServletException;
     /**跳转到配置的页面。*/
-    public void forward(String id, ServletRequest request, ServletResponse response);
+    public void forward(String id, ServletRequest request, ServletResponse response) throws IOException, ServletException;
 }

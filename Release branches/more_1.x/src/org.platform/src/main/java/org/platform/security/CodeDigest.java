@@ -15,17 +15,13 @@
  */
 package org.platform.security;
 /**
- * 权限系统异常。
- * @version : 2013-4-17
+ * cookie值编码解码。
+ * @version : 2013-4-24
  * @author 赵永春 (zyc@byshell.org)
  */
-public class SecurityException extends Exception {
-    private static final long serialVersionUID = 2366386850634621969L;
-    //
-    public SecurityException(String msg) {
-        super(msg);
-    }
-    public SecurityException(String msg, Throwable e) {
-        super(msg, e);
-    }
+public interface CodeDigest {
+    /**编码 */
+    public String encode(String strValue, String generateKey) throws Throwable;
+    /**解码*/
+    public String decode(String strValue, String generateKey) throws Throwable;
 }

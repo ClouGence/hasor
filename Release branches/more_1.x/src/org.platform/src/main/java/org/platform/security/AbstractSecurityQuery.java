@@ -20,7 +20,7 @@ import org.platform.Assert;
  * @version : 2013-4-20
  * @author 赵永春 (zyc@byshell.org)
  */
-class DefaultSecurityQuery implements SecurityQuery {
+public abstract class AbstractSecurityQuery implements SecurityQuery {
     protected SecurityNode testSecurityNode = new FixedValue(true);
     /*-------------------------------------------------------------------------------*/
     /*-逻辑与-*/
@@ -127,13 +127,8 @@ class DefaultSecurityQuery implements SecurityQuery {
         return "SecurityQuery =" + this.testSecurityNode.toString();
     }
     /*-------------------------------------------------------------------------------*/
-    @Override
-    public boolean testPermission(AuthSession authSession) {
-        return this.testSecurityNode.testPermission(authSession);
-    }
-    /*-------------------------------------------------------------------------------*/
     /** 基类 */
-    private static abstract class AbstractCheckResolver implements SecurityNode {
+    public static abstract class AbstractCheckResolver implements SecurityNode {
         private SecurityNode prev = null;
         private SecurityNode next = null;
         public AbstractCheckResolver(SecurityNode prev, SecurityNode next) {
@@ -144,8 +139,6 @@ class DefaultSecurityQuery implements SecurityQuery {
         public SecurityNode getPrev() {
             return this.prev;
         }
-        /**计算权限值。*/
-        public abstract boolean testPermission(AuthSession authSession);
         /**获取下一个节点。*/
         public SecurityNode getNext() {
             return this.next;
@@ -154,12 +147,12 @@ class DefaultSecurityQuery implements SecurityQuery {
         public abstract String toString();
     }
     /** 处理权限判断中逻辑“与”的处理。 */
-    private static class CheckAnd extends AbstractCheckResolver {
+    public static class CheckAnd extends AbstractCheckResolver {
         public CheckAnd(SecurityNode prev, SecurityNode next) {
             super(prev, next);
         }
         @Override
-        public boolean testPermission(AuthSession authSession) {
+        public boolean testPermission(AuthSession[] authSession) {
             boolean prevPerm = this.getPrev().testPermission(authSession);
             boolean nextPerm = this.getNext().testPermission(authSession);
             return prevPerm == true && nextPerm == true;
@@ -170,12 +163,12 @@ class DefaultSecurityQuery implements SecurityQuery {
         }
     }
     /** 处理权限判断中逻辑“或”的处理。 */
-    private static class CheckOr extends AbstractCheckResolver {
+    public static class CheckOr extends AbstractCheckResolver {
         public CheckOr(SecurityNode prev, SecurityNode next) {
             super(prev, next);
         }
         @Override
-        public boolean testPermission(AuthSession authSession) {
+        public boolean testPermission(AuthSession[] authSession) {
             boolean prevPerm = this.getPrev().testPermission(authSession);
             boolean nextPerm = this.getNext().testPermission(authSession);
             return prevPerm == true || nextPerm == true;
@@ -186,13 +179,13 @@ class DefaultSecurityQuery implements SecurityQuery {
         }
     }
     /** 处理权限判断中逻辑“非”的处理。 */
-    private static class CheckNot implements SecurityNode {
+    public static class CheckNot implements SecurityNode {
         private SecurityNode node = null;
         public CheckNot(SecurityNode node) {
             this.node = node;
         }
         @Override
-        public boolean testPermission(AuthSession authSession) {
+        public boolean testPermission(AuthSession[] authSession) {
             return !this.node.testPermission(authSession);
         }
         @Override
@@ -201,14 +194,19 @@ class DefaultSecurityQuery implements SecurityQuery {
         }
     }
     /** 对权限点求值，表示用户是否具备该权限点。 */
-    private static class CheckPermission implements SecurityNode {
+    public static class CheckPermission implements SecurityNode {
         private Permission permission = null;
         public CheckPermission(Permission permission) {
             this.permission = permission;
         }
         @Override
-        public boolean testPermission(AuthSession authSession) {
-            return authSession.hasPermission(this.permission);
+        public boolean testPermission(AuthSession[] authSessions) {
+            if (authSessions == null)
+                return false;
+            for (AuthSession authSession : authSessions)
+                if (authSession.hasPermission(this.permission))
+                    return true;
+            return false;
         }
         @Override
         public String toString() {
@@ -216,10 +214,15 @@ class DefaultSecurityQuery implements SecurityQuery {
         }
     }
     /** 测试是否登陆 */
-    private static class CheckLogin implements SecurityNode {
+    public static class CheckLogin implements SecurityNode {
         @Override
-        public boolean testPermission(AuthSession authSession) {
-            return authSession.isLogin();
+        public boolean testPermission(AuthSession[] authSessions) {
+            if (authSessions == null)
+                return false;
+            for (AuthSession authSession : authSessions)
+                if (authSession.isLogin())
+                    return true;
+            return false;
         }
         @Override
         public String toString() {
@@ -227,10 +230,15 @@ class DefaultSecurityQuery implements SecurityQuery {
         }
     }
     /** 测试是否登陆 */
-    private static class CheckGuest implements SecurityNode {
+    public static class CheckGuest implements SecurityNode {
         @Override
-        public boolean testPermission(AuthSession authSession) {
-            return authSession.isGuest();
+        public boolean testPermission(AuthSession[] authSessions) {
+            if (authSessions == null)
+                return false;
+            for (AuthSession authSession : authSessions)
+                if (authSession.isLogin())
+                    return false;
+            return true;
         }
         @Override
         public String toString() {
@@ -238,13 +246,13 @@ class DefaultSecurityQuery implements SecurityQuery {
         }
     }
     /** 固定值 */
-    private static class FixedValue implements SecurityNode {
+    public static class FixedValue implements SecurityNode {
         private boolean defaultValue = true;
         public FixedValue(boolean defaultValue) {
             this.defaultValue = defaultValue;
         }
         @Override
-        public boolean testPermission(AuthSession authSession) {
+        public boolean testPermission(AuthSession[] authSession) {
             return this.defaultValue;
         }
         @Override

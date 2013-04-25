@@ -21,5 +21,5 @@ package org.platform.security;
  */
 public interface SecurityNode {
     /**计算权限值。*/
-    public boolean testPermission(AuthSession authSession);
+    public boolean testPermission(AuthSession[] authSession);
 }

@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 package org.platform.security;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 权限系统异常。
- * @version : 2013-4-17
+ * 
+ * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public class SecurityException extends Exception {
-    private static final long serialVersionUID = 2366386850634621969L;
-    //
-    public SecurityException(String msg) {
-        super(msg);
-    }
-    public SecurityException(String msg, Throwable e) {
-        super(msg, e);
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.ANNOTATION_TYPE })
+public @interface InitParam {
+    /** Name of the initialization parameter */
+    public String name();
+    /** Value of the initialization parameter */
+    public String value();
+    /** Description of the initialization parameter */
+    public String description() default "";
 }

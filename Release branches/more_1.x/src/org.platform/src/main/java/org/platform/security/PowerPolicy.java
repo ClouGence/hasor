@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.security._;
+package org.platform.security;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
-* 表示该类为处理用户是否具备某个权限的策略类，该类需要实现{@link IPowerPolicy}接口。
+* 表示该类为处理用户是否具备某个权限的策略类，该类需要实现{@link SecurityPolicy}接口。
 * 通过权限策略可以应用不同的权限模型。
 * @version : 2013-3-25
 * @author 赵永春 (zyc@byshell.org)

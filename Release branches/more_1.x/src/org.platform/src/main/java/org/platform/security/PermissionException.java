@@ -15,7 +15,7 @@
  */
 package org.platform.security;
 /**
- * 权限系统异常。
+ * 权限不足。
  * @version : 2013-4-17
  * @author 赵永春 (zyc@byshell.org)
  */

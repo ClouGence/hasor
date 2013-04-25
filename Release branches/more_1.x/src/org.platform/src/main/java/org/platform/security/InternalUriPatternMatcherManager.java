@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.security._;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package org.platform.security;
+import org.more.util.StringUtil;
+import org.platform.context.AppContext;
 /**
  * 
- * @version : 2013-3-12
+ * @version : 2013-4-25
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.ANNOTATION_TYPE })
-public @interface InitParam {
-    /** Name of the initialization parameter */
-    public String name();
-    /** Value of the initialization parameter */
-    public String value();
-    /** Description of the initialization parameter */
-    public String description() default "";
-}
+class InternalUriPatternMatcherManager {
+    
+    public void initManager(AppContext appContext) {
+        // TODO Auto-generated method stub
+        
+    } 
+
+    public UriPatternMatcher getUriMatcher(String requestPath) {
+        // TODO Auto-generated method stub
+        return null;
+    };
+}s

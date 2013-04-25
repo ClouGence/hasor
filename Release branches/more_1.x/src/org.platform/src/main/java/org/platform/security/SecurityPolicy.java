@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 package org.platform.security;
+import org.platform.context.AppContext;
 /**
- * 权限系统异常。
- * @version : 2013-4-17
+ * 权限判断，可以通过该接口来实现各种不用的权限模型。
+ * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public class SecurityException extends Exception {
-    private static final long serialVersionUID = 2366386850634621969L;
-    //
-    public SecurityException(String msg) {
-        super(msg);
-    }
-    public SecurityException(String msg, Throwable e) {
-        super(msg, e);
-    }
-}
+public interface SecurityPolicy {
+    /**初始化策略对象。*/
+    public void initPolicy(AppContext appContext);
+    /**
+     * 进行策略检查。
+     * @param userInfo 用户信息对象。
+     * @param powerCode 要检查的权限点。
+     */
+    public boolean testPermission(AuthSession authSession, Permission[] powerCode);
+}a

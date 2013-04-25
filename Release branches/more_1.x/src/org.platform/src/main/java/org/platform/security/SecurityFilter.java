@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.platform.Assert;
 import org.platform.Platform;
 import org.platform.context.AppContext;
-import org.platform.context.setting.Config;
 import org.platform.startup.RuntimeListener;
 /**
  * 权限系统URL请求处理支持。
@@ -35,31 +34,29 @@ import org.platform.startup.RuntimeListener;
  * @author 赵永春 (zyc@byshell.org)
  */
 class SecurityFilter implements Filter {
-    private SecuritySettings settings   = new SecuritySettings();
-    private AppContext      appContext = null;
-    private SecurityContext secService = null;
+    private AppContext       appContext      = null;
+    private SecuritySettings settings        = null;
+    private SecurityContext  secService      = null;
+    private SecurityProcess  securityProcess = null;
     //
+    /**初始化*/
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Platform.info("init SecurityFilter...");
         ServletContext servletContext = filterConfig.getServletContext();
         this.appContext = (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
-        Config systemConfig = this.appContext.getInitContext().getConfig();
         Assert.isNotNull(this.appContext, "AppContext is null.");
         //
+        this.settings = this.appContext.getBean(SecuritySettings.class);
         this.secService = this.appContext.getBean(SecurityContext.class);
-        //
-        /*配置文件读取*/
-        this.settings.loadConfig(systemConfig.getSettings());
-        /*加入，监听配置文件改动*/
-        systemConfig.addSettingsListener(this.settings);
+        this.securityProcess = this.appContext.getBean(SecurityProcess.class);
     }
+    //
+    /**销毁*/
     @Override
-    public void destroy() {
-        Config systemConfig = this.appContext.getInitContext().getConfig();
-        /*撤销，监听配置文件改动*/
-        systemConfig.removeSettingsListener(this.settings);
-    }
+    public void destroy() {}
+    //
+    /***/
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
@@ -69,39 +66,47 @@ class SecurityFilter implements Filter {
             chain.doFilter(httpRequest, httpResponse);
             return;
         }
-        //2.处理权限
+        //2.恢复会话
+        try {
+            this.securityProcess.recoverAuthSession(httpRequest);
+        } catch (SecurityException e) {
+            Platform.error("recover AuthSession failure!", e);
+        }
+        //3.请求处理
         String reqPath = httpRequest.getRequestURI();
         reqPath = reqPath.substring(httpRequest.getContextPath().length());
-        AuthSession authSession = this.secService.getAuthSession(httpRequest, httpResponse, true);//必然创建authSession
-        //
         if (reqPath.endsWith(this.settings.getLoginURL()) == true) {
-            //1.登入匹配
-            String account = httpRequest.getParameter(this.settings.getAccountField());
-            String password = httpRequest.getParameter(this.settings.getPasswordField());
-            Platform.info("Security -> doLogin acc=" + account + " , pwd=" + password);
-            authSession.doLogin(account, password);/*登入会话*/
-            //
-            SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);/*获取到跳转对象*/
-            dispatcher.forwardIndex(httpRequest, httpResponse);//跳转到登入成功之后的地址
-            return;
-        } else if (reqPath.endsWith(this.settings.getLogoutURL()) == true) {
-            //2.登出匹配
-            Platform.info("Security -> doLogout. user=" + authSession.getUserObject());
-            authSession.doLogout();/*退出会话*/
-            SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);/*获取到跳转对象*/
-            dispatcher.forwardLogout(httpRequest, httpResponse);//跳转到退出之后的地址
+            /*A.登入*/
+            SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);
+            try {
+                this.securityProcess.processLogin(httpRequest, httpResponse);
+                dispatcher.forwardIndex(httpRequest, httpResponse);//跳转登入地址
+            } catch (SecurityException e) {
+                dispatcher.forwardFailure(httpRequest, httpResponse, e);//跳转登入登出失败地址
+            }
             return;
         }
-        //3.访问权限判断
-        UriPatternMatcher uriMatcher = this.secService.getUriMatcher(reqPath);
-        if (uriMatcher.testPermission(authSession) == false) {
-            Platform.info("Security -> authSession= ‘" + authSession.getSessionID() + "’  testPermission failure! uri= " + reqPath);
-            /*没有权限，执行跳转*/
-            SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);/*获取到跳转对象*/
-            dispatcher.forwardError(request, response);//跳转到出现异常的地址
+        if (reqPath.endsWith(this.settings.getLogoutURL()) == true) {
+            /*B.登出*/
+            SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);
+            try {
+                this.securityProcess.processLogout(httpRequest, httpResponse);
+                dispatcher.forwardLogout(httpRequest, httpResponse);//跳转登出地址
+            } catch (SecurityException e) {
+                dispatcher.forwardFailure(httpRequest, httpResponse, e);//跳转登入登出失败地址
+            }
             return;
         }
-        //4.具备权限继续访问
-        chain.doFilter(httpRequest, httpResponse);
+        {
+            /*C.访问请求*/
+            try {
+                this.securityProcess.processTestFilter(reqPath);
+                chain.doFilter(httpRequest, httpResponse);
+            } catch (PermissionException e) {
+                Platform.debug("testPermission failure! uri= " + reqPath);/*没有权限*/
+                SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);
+                dispatcher.forwardFailure(httpRequest, httpResponse, e);
+            }
+        }
     }
 }

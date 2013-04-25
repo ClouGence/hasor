@@ -20,18 +20,20 @@ package org.platform.security;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface AuthSession {
-    /**获取会话ID*/
+    /**获取会话ID。*/
     public String getSessionID();
     /**获取登入的用户对象，如果未登录系统而且启用了来宾帐号则会返回来宾帐号。*/
     public UserInfo getUserObject();
     /**返回其所属的{@link SecurityContext}接口对象。*/
     public SecurityContext getSecurityContext();
     /**用指定的用户对象登入到权限系统。*/
-    public boolean doLogin(UserInfo user) throws SecurityException;
+    public void doLogin(UserInfo user) throws SecurityException;
+    /**用指定的用户Code登陆系统（如果支持）。*/
+    public void doLoginCode(String userCode) throws SecurityException;
     /**用指定的用户帐号密码系统。*/
-    public boolean doLogin(String account, String password) throws SecurityException;
+    public void doLogin(String account, String password) throws SecurityException;
     /**执行退出。*/
-    public boolean doLogout() throws SecurityException;
+    public void doLogout() throws SecurityException;
     /**向会话添加一条临时权限。*/
     public void addPermission(Permission permission);
     /**临时撤销用户会话中一条权限。*/
@@ -40,6 +42,8 @@ public interface AuthSession {
     public Permission[] getPermissions();
     /**判断会话中是否包含指定权限。*/
     public boolean hasPermission(Permission permission);
+    /**判断会话中是否包含指定权限。*/
+    public boolean hasPermission(String permissionCode);
     /**是否已经登入*/
     public boolean isLogin();
     /**判断是否为来宾帐号。来宾帐号是一种用户身份，通常用来表示不需要登入系统时使用的用户。
@@ -47,4 +51,10 @@ public interface AuthSession {
     public boolean isGuest();
     /**关闭会话*/
     public void close();
+    /**获取session创建时间*/
+    public long getCreatedTime();
+    /**获取一个值，该值决定了session是否支持从Cookie中恢复会话。*/
+    public boolean supportCookieRecover();
+    /**设置true表示支持会话从Cookie中会恢复登陆*/
+    public void setSupportCookieRecover(boolean recover);
 }
