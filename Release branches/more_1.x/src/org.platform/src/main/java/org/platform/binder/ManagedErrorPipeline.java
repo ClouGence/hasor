@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.platform.binder;
-import static org.platform.PlatformConfigEnum.HttpServlet_ErrorCaseCount;
+import static org.platform.PlatformConfig.HttpServlet_ErrorCaseCount;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

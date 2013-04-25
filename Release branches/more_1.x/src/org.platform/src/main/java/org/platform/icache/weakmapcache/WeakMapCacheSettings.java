@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package org.platform.icache.weakmapcache;
-import static org.platform.PlatformConfigEnum.CacheConfig_Enable;
-import static org.platform.PlatformConfigEnum.CacheConfig_WeakMapCache_AutoRenewal;
-import static org.platform.PlatformConfigEnum.CacheConfig_WeakMapCache_Eternal;
-import static org.platform.PlatformConfigEnum.CacheConfig_WeakMapCache_ThreadSeep;
-import static org.platform.PlatformConfigEnum.CacheConfig_WeakMapCache_Timeout;
+import static org.platform.PlatformConfig.CacheConfig_Enable;
+import static org.platform.PlatformConfig.CacheConfig_WeakMapCache_AutoRenewal;
+import static org.platform.PlatformConfig.CacheConfig_WeakMapCache_Eternal;
+import static org.platform.PlatformConfig.CacheConfig_WeakMapCache_ThreadSeep;
+import static org.platform.PlatformConfig.CacheConfig_WeakMapCache_Timeout;
 import org.platform.context.SettingListener;
 import org.platform.context.setting.Settings;
 /**
@@ -26,7 +26,7 @@ import org.platform.context.setting.Settings;
  * @version : 2013-4-23
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-class WeakMapCacheSettings implements SettingListener {
+public class WeakMapCacheSettings implements SettingListener {
     private boolean cacheEnable    = false;
     private long    defaultTimeout = 10;
     private boolean eternal        = false;

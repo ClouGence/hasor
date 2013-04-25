@@ -33,5 +33,5 @@ public class Settings extends Global {
     /**解析全局配置参数，并且返回其{@link XmlProperty}形式对象。*/
     public XmlProperty getXmlProperty(String name) {
         return this.getToType(name, XmlProperty.class, null);
-    };
+    }
 }

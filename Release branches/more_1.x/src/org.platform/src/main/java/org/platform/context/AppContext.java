@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package org.platform.context;
-import static org.platform.PlatformConfigEnum.Workspace_CacheDir;
-import static org.platform.PlatformConfigEnum.Workspace_CacheDir_Absolute;
-import static org.platform.PlatformConfigEnum.Workspace_DataDir;
-import static org.platform.PlatformConfigEnum.Workspace_DataDir_Absolute;
-import static org.platform.PlatformConfigEnum.Workspace_TempDir;
-import static org.platform.PlatformConfigEnum.Workspace_TempDir_Absolute;
-import static org.platform.PlatformConfigEnum.Workspace_WorkDir;
+import static org.platform.PlatformConfig.Workspace_CacheDir;
+import static org.platform.PlatformConfig.Workspace_CacheDir_Absolute;
+import static org.platform.PlatformConfig.Workspace_DataDir;
+import static org.platform.PlatformConfig.Workspace_DataDir_Absolute;
+import static org.platform.PlatformConfig.Workspace_TempDir;
+import static org.platform.PlatformConfig.Workspace_TempDir_Absolute;
+import static org.platform.PlatformConfig.Workspace_WorkDir;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;

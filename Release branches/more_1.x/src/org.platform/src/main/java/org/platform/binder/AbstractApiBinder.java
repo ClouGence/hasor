@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.platform.binder;
-import static org.platform.PlatformConfigEnum.Platform_LoadPackages;
+import static org.platform.PlatformConfig.Platform_LoadPackages;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +23,8 @@ import org.more.util.ArrayUtil;
 import org.more.util.ClassUtil;
 import org.platform.Assert;
 import org.platform.context.InitContext;
+import org.platform.context.SettingListener;
+import org.platform.context.setting.Settings;
 import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
 /**
@@ -46,6 +48,14 @@ public abstract class AbstractApiBinder extends AbstractModule implements ApiBin
     @Override
     public InitContext getInitContext() {
         return initContext;
+    }
+    /**获取配置信息*/
+    public Settings getSettings() {
+        return this.initContext.getConfig().getSettings();
+    };
+    /**添加配置文件监听器*/
+    public void addSettingsListener(SettingListener settingListener) {
+        this.initContext.getConfig().addSettingsListener(settingListener);
     }
     /**获取用于携带参数的数据。*/
     public Map<String, Object> getExtData() {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.platform.icache;
-import static org.platform.PlatformConfigEnum.CacheConfig_Enable;
+import static org.platform.PlatformConfig.CacheConfig_Enable;
 import org.platform.context.SettingListener;
 import org.platform.context.setting.Settings;
 /**
@@ -22,7 +22,7 @@ import org.platform.context.setting.Settings;
  * @version : 2013-4-23
  * @author ÕÔÓÀ´º (zyc@byshell.org)
  */
-class CacheSettings implements SettingListener {
+public class CacheSettings implements SettingListener {
     private boolean enable = false; /*Ä¬ÈÏ¹Ø±Õ×´Ì¬*/
     //
     public boolean isCacheEnable() {

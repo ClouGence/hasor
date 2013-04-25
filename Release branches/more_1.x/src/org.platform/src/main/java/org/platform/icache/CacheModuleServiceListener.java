@@ -44,16 +44,16 @@ import com.google.inject.name.Names;
 @InitListener(displayName = "CacheModuleServiceListener", description = "org.platform.icache软件包功能支持。", startIndex = 0)
 public class CacheModuleServiceListener extends AbstractModuleListener {
     private CacheManager  cacheManager = null;
-    private CacheSettings settings     = new CacheSettings();
+    private CacheSettings settings     = null;
     /**初始化.*/
     @Override
     public void initialize(ApiBinder event) {
         //1.挂载Aop
         event.getGuiceBinder().bindInterceptor(new ClassNeedCacheMatcher(), new MethodPowerMatcher(), new CacheInterceptor());
         /*配置文件监听器*/
-        Config systemConfig = event.getInitContext().getConfig();
-        systemConfig.addSettingsListener(this.settings);
-        this.settings.loadConfig(systemConfig.getSettings());
+        this.settings = new CacheSettings();
+        this.settings.loadConfig(event.getSettings());
+        event.getGuiceBinder().bind(CacheSettings.class).toInstance(this.settings);
         //2.载入缓存配置
         this.loadCache(event);
         this.loadKeyBuilder(event);
@@ -62,6 +62,9 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
     }
     @Override
     public void initialized(AppContext appContext) {
+        Config systemConfig = appContext.getInitContext().getConfig();
+        systemConfig.addSettingsListener(this.settings);
+        //
         this.cacheManager = appContext.getBean(CacheManager.class);
         this.cacheManager.initManager(appContext);
         Platform.info("online ->> cache is " + (this.settings.isCacheEnable() ? "enable." : "disable."));
@@ -70,6 +73,7 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
     public void destroy(AppContext appContext) {
         Config systemConfig = appContext.getInitContext().getConfig();
         systemConfig.removeSettingsListener(this.settings);
+        //
         this.cacheManager.destroyManager(appContext);
     }
     //
