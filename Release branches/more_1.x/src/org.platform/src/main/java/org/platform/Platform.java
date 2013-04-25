@@ -23,7 +23,7 @@ import java.util.Collection;
  * @version : 2013-4-3
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public abstract class Platform implements PlatformConfigEnum {
+public abstract class Platform implements PlatformConfig {
     private static String callerType() {
         StackTraceElement[] stackElements = new Exception().getStackTrace();
         StackTraceElement onCode = stackElements[2];
