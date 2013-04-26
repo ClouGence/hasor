@@ -71,7 +71,7 @@ class SecurityFilter implements Filter {
         try {
             this.securityProcess.recoverAuthSession(httpRequest);
         } catch (SecurityException e) {
-            Platform.error("recover AuthSession failure!", e);
+            Platform.error("recover AuthSession failure!\n" + Platform.logString(e));
         }
         //3.请求处理
         String reqPath = httpRequest.getRequestURI();
@@ -104,7 +104,7 @@ class SecurityFilter implements Filter {
                 this.securityProcess.processTestFilter(reqPath);
                 chain.doFilter(httpRequest, httpResponse);
             } catch (PermissionException e) {
-                Platform.debug("testPermission failure! uri= " + reqPath);/*没有权限*/
+                Platform.debug("testPermission failure! uri= " + reqPath + "\n" + Platform.logString(e));/*没有权限*/
                 SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);
                 dispatcher.forwardFailure(ViewContext.currentViewContext(), e);
             }

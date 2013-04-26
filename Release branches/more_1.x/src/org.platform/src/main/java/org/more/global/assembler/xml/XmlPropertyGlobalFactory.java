@@ -36,21 +36,23 @@ public class XmlPropertyGlobalFactory extends GlobalFactory {
     public static final String DefaultNameSpace    = "http://project.byshell.org/more/schema/global";
     private HashSet<String>    loadNameSpace       = new HashSet<String>();
     private boolean            isIgnoreRootElement = false;
+    private XmlProperty        xmlTreeRoot         = null;
     //
     public Map<String, Object> loadConfig(InputStream stream, String encoding, boolean isIgnoreRootElement) throws IOException {
         try {
             if (loadNameSpace.contains(loadNameSpace) == false)
                 loadNameSpace.add(DefaultNameSpace);
-            XmlProperty xmlTreeRoot = new XmlPropertyImpl("");
+            if (this.xmlTreeRoot == null)
+                this.xmlTreeRoot = new XmlPropertyImpl("");
             XmlParserKit kit = new XmlParserKit();
             kit.regeditHook("/*", new XmlProperty_ElementHook());
-            XmlRegister xmlRegister = new XmlRegister(xmlTreeRoot);
+            XmlRegister xmlRegister = new XmlRegister(this.xmlTreeRoot);
             for (String ns : loadNameSpace)
                 xmlRegister.regeditKit(ns, kit);
             new XmlReader(stream).reader(xmlRegister, encoding, null);
             //2.转换结果
             HashMap<String, Object> returnData = new HashMap<String, Object>();
-            this.convertType(returnData, xmlTreeRoot.getChildren(), "");
+            this.convertType(returnData, this.xmlTreeRoot.getChildren(), "");
             //3.依照isIgnoreRootElement配置去掉前缀
             if (isIgnoreRootElement == true) {
                 HashMap<String, Object> finalReturnData = new HashMap<String, Object>();
@@ -99,5 +101,13 @@ public class XmlPropertyGlobalFactory extends GlobalFactory {
     /**设置在解析xml的时候是否放弃根节点。*/
     public void setIgnoreRootElement(boolean isIgnoreRootElement) {
         this.isIgnoreRootElement = isIgnoreRootElement;
+    }
+    /**设置用于Xml解析时使用的根节点*/
+    public XmlProperty getXmlTreeRoot() {
+        return xmlTreeRoot;
+    }
+    /**设置用于Xml解析时使用的根节点*/
+    public void setXmlTreeRoot(XmlProperty xmlTreeRoot) {
+        this.xmlTreeRoot = xmlTreeRoot;
     };
 }

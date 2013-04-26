@@ -29,6 +29,7 @@ public class DefaultSecurityService extends SecurityContext {
     }
     @Override
     protected void closeAuthSession(AuthSession authSession) {
-        // TODO Auto-generated method stub
+        // TODO Auto-generated method stub¡¢
+        System.out.println();
     }
-}s
+}

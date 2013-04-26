@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.icache.weakmapcache;
+package org.platform.icache.mapcache;
 /**
  * ª∫¥Ê∂‘œÛ
  * @version : 2013-4-23
@@ -31,6 +31,8 @@ class CacheEntity {
     }
     //
     public boolean isLost() {
+        if (this.timeout == Long.MAX_VALUE)
+            return false;
         return (lastTime + this.timeout) < System.currentTimeMillis();
     }
     //

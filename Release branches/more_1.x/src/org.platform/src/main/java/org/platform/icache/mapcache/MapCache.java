@@ -13,32 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.icache.weakmapcache;
+package org.platform.icache.mapcache;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.WeakHashMap;
 import org.platform.context.AppContext;
 import org.platform.context.setting.Config;
 import org.platform.icache.Cache;
 import org.platform.icache.DefaultCache;
 import org.platform.icache.ICache;
 /**
- * 使用Map作为缓存，WeakMapCache缓存仅作为内置提供的一个默认实现。
- * 提示：被缓存的对象可能由于虚拟机的垃圾回收机制可能在尚未失效前就会被回收。
+ * 使用Map作为缓存，MapCache缓存仅作为内置提供的一个默认实现。
  * @version : 2013-4-20
  * @author 赵永春 (zyc@byshell.org)
  */
 @DefaultCache
 @Cache("WeakMapCache")
-public class WeakMapCache extends Thread implements ICache {
-    private volatile boolean                          exitThread     = false;
-    private volatile WeakHashMap<String, CacheEntity> cacheEntityMap = new WeakHashMap<String, CacheEntity>();
-    private WeakMapCacheSettings                      settings       = new WeakMapCacheSettings();
+public class MapCache extends Thread implements ICache {
+    private volatile boolean                      exitThread     = false;
+    private volatile HashMap<String, CacheEntity> cacheEntityMap = new HashMap<String, CacheEntity>();
+    private MapCacheSettings                      settings       = new MapCacheSettings();
     //
     @Override
     public void run() {
-        this.setName("WeakMapCache-Daemon");
+        this.setName("MapCache-Daemon");
         while (!this.exitThread) {
             List<String> lostList = new ArrayList<String>();
             for (Entry<String, CacheEntity> ent : this.cacheEntityMap.entrySet()) {

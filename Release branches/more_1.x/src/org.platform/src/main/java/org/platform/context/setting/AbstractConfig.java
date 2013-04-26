@@ -100,7 +100,7 @@ public abstract class AbstractConfig implements Config {
                 this.resourceWatch.setDaemon(true);
                 this.resourceWatch.start();
             } catch (Exception e) {
-                Platform.error("resourceWatch start error, on : " + appSettingsName1 + " Settings file !", e);
+                Platform.error("resourceWatch start error, on : " + appSettingsName1 + " Settings file !\n" + Platform.logString(e));
             }
         }
         //3.globalConfig
@@ -128,7 +128,7 @@ public abstract class AbstractConfig implements Config {
                 loadConfig(configURL.toURI(), encoding, toMap);
             }
         } catch (Exception e) {
-            Platform.error("load ¡®" + appSettingsName1 + "¡¯ error. ", e);
+            Platform.error("load ¡®" + appSettingsName1 + "¡¯ error!\n" + Platform.logString(e));
         }
     }
     //
@@ -145,7 +145,7 @@ public abstract class AbstractConfig implements Config {
                 }
             }
         } catch (Exception e) {
-            Platform.error("load ¡®" + appSettingsName2 + "¡¯ error. ", e);
+            Platform.error("load ¡®" + appSettingsName2 + "¡¯ error!\n" + Platform.logString(e));
         }
     }
     //
@@ -174,7 +174,7 @@ public abstract class AbstractConfig implements Config {
                     }
                 }
         } catch (Exception e) {
-            Platform.error("load ¡®" + appSettingsName3 + "¡¯ error. ", e);
+            Platform.error("load ¡®" + appSettingsName3 + "¡¯ error!\n" + Platform.logString(e));
         }
     }
     //
@@ -231,6 +231,7 @@ public abstract class AbstractConfig implements Config {
         public void reload(URI resourceURI) throws IOException {
             Map<String, Object> newConfig = this.platformConfig.loadALLConfig();
             this.platformConfig.getSettings().setContainer(newConfig);
+            this.platformConfig.reLoadConfig(this.platformConfig.getSettings());
         }
         @Override
         public long lastModify(URI resourceURI) throws IOException {

@@ -117,7 +117,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         try {
             return (ContextListener) listenerClass.newInstance();
         } catch (Exception e) {
-            Platform.error("create " + Platform.logString(listenerClass) + " an error.", e);
+            Platform.error("create " + Platform.logString(listenerClass) + " an error!\n" + Platform.logString(e));
             return null;
         }
     }

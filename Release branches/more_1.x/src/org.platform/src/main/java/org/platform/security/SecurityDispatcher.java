@@ -23,6 +23,17 @@ import org.platform.context.ViewContext;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface SecurityDispatcher {
+    /**url请求处理器如何处理请求。*/
+    public static enum DispatcherType {
+        /**服务端转发*/
+        Forward,
+        /**客户端重定向*/
+        Redirect,
+        /**抛出异常*/
+        Exception,
+        /**设置response客户端状态*/
+        State
+    }
     /**匹配的路径模式*/
     public String getContentPath();
     /**跳转到登入成功后的地址。*/
@@ -32,5 +43,5 @@ public interface SecurityDispatcher {
     /**跳转到登入登出执行s登入失败时的地址。*/
     public void forwardFailure(ViewContext viewContext, Throwable e) throws IOException, ServletException;
     /**跳转到配置的页面。*/
-    public void forward(String id, ViewContext viewContext) throws IOException, ServletException;
+    public void forward(String id, ViewContext viewContext) throws IOException, ServletException, SecurityException;
 }

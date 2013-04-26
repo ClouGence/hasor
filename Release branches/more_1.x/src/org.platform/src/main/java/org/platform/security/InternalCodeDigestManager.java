@@ -14,24 +14,46 @@
  * limitations under the License.
  */
 package org.platform.security;
+import java.util.HashMap;
 import java.util.Map;
+import org.platform.Platform;
 import org.platform.context.AppContext;
+import org.platform.context.SettingListener;
+import org.platform.context.setting.Settings;
 /**
  * 
  * @version : 2013-4-25
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-class InternalCodeDigestManager {
-    private Map<String, CodeDigest> codeDigestMap = null;
+class InternalCodeDigestManager implements SettingListener {
+    private SecuritySettings        securitySettings    = null;
+    private Map<String, CodeDigest> codeDigestObjectMap = new HashMap<String, CodeDigest>();
     public void initManager(AppContext appContext) {
-        // TODO Auto-generated method stub
+        this.securitySettings = appContext.getBean(SecuritySettings.class);
+        appContext.getInitContext().getConfig().addSettingsListener(this);
     }
     public CodeDigest getCodeDigest(String name) {
-        // TODO Auto-generated method stub
-        return null;
-    } 
+        Map<String, Class<CodeDigest>> codeDigestMap = this.securitySettings.getDigestMap();
+        if (codeDigestMap.containsKey(name) == false)
+            return null;
+        //
+        if (this.codeDigestObjectMap.containsKey(name) == true)
+            return this.codeDigestObjectMap.get(name);
+        try {
+            Class<CodeDigest> digestType = codeDigestMap.get(name);
+            CodeDigest digestObject = digestType.newInstance();
+            this.codeDigestObjectMap.put(name, digestObject);
+            return digestObject;
+        } catch (Exception e) {
+            Platform.error("create CodeDigest an error!\t" + Platform.logString(e));
+            return null;
+        }
+    }
     public void destroyManager(AppContext appContext) {
-        // TODO Auto-generated method stub
-        
+        appContext.getInitContext().getConfig().removeSettingsListener(this);
+    }
+    @Override
+    public void loadConfig(Settings newConfig) {
+        this.codeDigestObjectMap.clear();
     };
-}a
+}

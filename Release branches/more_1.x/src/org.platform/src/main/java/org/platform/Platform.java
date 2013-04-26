@@ -36,9 +36,6 @@ public abstract class Platform implements PlatformConfig {
     public static void error(String string) {
         System.err.println(callerType() + " ->> " + string);//TODO
     }
-    public static void error(String string, Exception e) {
-        System.err.println(callerType() + " ->> " + string);//TODO
-    }
     public static void warning(String string) {
         System.err.println(callerType() + " ->> " + string);//TODO
     }

@@ -107,4 +107,4 @@ public class DefaultAuthSession implements AuthSession {
     public void setSupportCookieRecover(boolean recover) {
         // TODO Auto-generated method stub
     }
-}s
+}

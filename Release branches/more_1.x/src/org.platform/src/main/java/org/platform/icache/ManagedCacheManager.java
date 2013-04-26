@@ -31,7 +31,7 @@ class ManagedCacheManager {
     private Map<String, CacheDefinition> cacheDefinitionMap = null;
     //
     public void initManager(AppContext appContext) {
-        Platform.info("cache ->> init ManagedCacheManager...");
+        Platform.info("init ManagedCacheManager...");
         this.cacheDefinitionMap = collectCacheDefinitionMap(appContext.getGuice());
         for (Entry<String, CacheDefinition> cacheDefinitionEnt : cacheDefinitionMap.entrySet()) {
             cacheDefinitionEnt.getValue().initCache(appContext);
@@ -48,7 +48,7 @@ class ManagedCacheManager {
         return cacheDefinitionMap;
     }
     public void destroyManager(AppContext appContext) {
-        Platform.info("cache ->> destroy ManagedCacheManager...");
+        Platform.info("destroy ManagedCacheManager...");
         for (Entry<String, CacheDefinition> cacheDefinitionEnt : cacheDefinitionMap.entrySet()) {
             cacheDefinitionEnt.getValue().destroy(appContext);
         }

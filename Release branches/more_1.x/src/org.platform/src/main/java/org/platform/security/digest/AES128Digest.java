@@ -16,38 +16,40 @@
 package org.platform.security.digest;
 import java.security.SecureRandom;
 import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 import org.more.util.CommonCodeUtil.Base64;
 import org.platform.security.CodeDigest;
 /**
- * DES加密。
+ * AES加密，由于美国软件出口限制AES加密算法使用的是128位。
  * @version : 2013-4-24
  * @author 赵永春 (zyc@byshell.org)
  */
-public final class DesDigest implements CodeDigest {
+public final class AES128Digest implements CodeDigest {
     @Override
     public String encrypt(String strValue, String generateKey) throws Throwable {
-        SecureRandom sr = new SecureRandom(); //DES算法要求有一个可信任的随机数源
-        DESKeySpec dks = new DESKeySpec(generateKey.getBytes()); // 从原始密匙数据创建DESKeySpec对象
-        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES"); // 创建一个密匙工厂，然后用它把DESKeySpec转换成,一个SecretKey对象
-        SecretKey securekey = keyFactory.generateSecret(dks); // Cipher对象实际完成加密操作
-        Cipher cipher = Cipher.getInstance("DES"); // 用密匙初始化Cipher对象
-        cipher.init(Cipher.ENCRYPT_MODE, securekey, sr);// 现在，获取数据并加密
+        KeyGenerator kgen = KeyGenerator.getInstance("AES");
+        kgen.init(128, new SecureRandom(generateKey.getBytes()));
+        SecretKey secretKey = kgen.generateKey();
+        byte[] enCodeFormat = secretKey.getEncoded();
+        SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES");
+        Cipher cipher = Cipher.getInstance("AES");// 创建密码器   
+        cipher.init(Cipher.ENCRYPT_MODE, key);// 初始化   
         byte[] bytesData = cipher.doFinal(strValue.getBytes("utf-8"));// 正式执行加密操作
         return Base64.base64EncodeFoArray(bytesData);
     };
     @Override
     public String decrypt(String strValue, String generateKey) throws Throwable {
+        KeyGenerator kgen = KeyGenerator.getInstance("AES");
+        kgen.init(128, new SecureRandom(generateKey.getBytes()));
+        SecretKey secretKey = kgen.generateKey();
+        byte[] enCodeFormat = secretKey.getEncoded();
+        SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES");
+        Cipher cipher = Cipher.getInstance("AES");// 创建密码器   
+        cipher.init(Cipher.DECRYPT_MODE, key);// 初始化   
         byte[] bytesData = Base64.base64DecodeToArray(strValue);
-        SecureRandom sr = new SecureRandom(); //DES算法要求有一个可信任的随机数源
-        DESKeySpec dks = new DESKeySpec(generateKey.getBytes()); // 从原始密匙数据创建DESKeySpec对象
-        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES"); // 创建一个密匙工厂，然后用它把DESKeySpec转换成,一个SecretKey对象
-        SecretKey securekey = keyFactory.generateSecret(dks); // Cipher对象实际完成加密操作
-        Cipher cipher = Cipher.getInstance("DES"); // 用密匙初始化Cipher对象
-        cipher.init(Cipher.DECRYPT_MODE, securekey, sr);// 现在，获取数据并加密
-        bytesData = cipher.doFinal(bytesData);// 正式执行解密操作
+        bytesData = cipher.doFinal(bytesData);// 正式执行加密操作
         return new String(bytesData, "utf-8");
     }
 }

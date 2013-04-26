@@ -26,6 +26,7 @@ import static org.platform.PlatformConfig.Security_ClientCookie_Timeout;
 import static org.platform.PlatformConfig.Security_Enable;
 import static org.platform.PlatformConfig.Security_EnableMethod;
 import static org.platform.PlatformConfig.Security_EnableURL;
+import static org.platform.PlatformConfig.Security_EncryptionDigestSet;
 import static org.platform.PlatformConfig.Security_Forwards;
 import static org.platform.PlatformConfig.Security_Guest_ClassType;
 import static org.platform.PlatformConfig.Security_Guest_Enable;
@@ -47,35 +48,37 @@ import org.more.util.StringUtil;
 import org.platform.Platform;
 import org.platform.context.SettingListener;
 import org.platform.context.setting.Settings;
+import org.platform.security.SecurityDispatcher.DispatcherType;
 /**
  * 
  * @version : 2013-4-23
  * @author 赵永春 (zyc@byshell.org)
  */
 public class SecuritySettings implements SettingListener {
-    private boolean                  enable                     = false; //启用禁用
-    private boolean                  enableMethod               = true; //方法权限检查
-    private boolean                  enableURL                  = true; //URL权限检查
-    private String                   accountField               = null; //帐号字段
-    private String                   passwordField              = null; //密码字段
-    private String                   loginURL                   = null; //登入地址
-    private String                   logoutURL                  = null; //登出地址
-    private boolean                  guestEnable                = false; //是否启用来宾帐号
-    private String                   guestClassType             = null; //来宾帐号类型
-    private String[]                 guestPermissions           = null; //来宾帐号权限
-    private UriPatternMatcher        rulesDefault               = null; //URL权限检查默认策略配置：Login|Logout|Guest|Permission|None
-    private List<UriPatternMatcher>  rulesIncludeList           = null; //包含到权限检查路径
-    private List<UriPatternMatcher>  rulesExcludeList           = null; //排除权限检查
-    private boolean                  cookieEnable               = true; //是否启用客户端cookie来协助认证。
-    private boolean                  loseCookieOnStart          = true; //当系统启动时是否强制所有客户端已经登陆过的Cookie信息失效
-    private String                   cookieName                 = null; //客户端cookie名称
-    private int                      cookieTimeout              = 0;    //cookie超时时间，单位：秒
-    private boolean                  cookieEncryptionEnable     = true; //是否加密cookie内容
-    private String                   cookieEncryptionEncodeType = null; //cookie内容加密方式，DES,BAS64等等.
-    private String                   cookieEncryptionKey        = null; //cookie内容加密时使用的Key
-    private String                   cookieDomain               = null; //cookie的Domain配置，设置这个属性用来支持跨域访问cookie。（默认为空不对该值进行设置）
-    private String                   cookiePath                 = null; //cookie的path属性（默认为空不对该值进行设置）
-    private List<SecurityDispatcher> dispatcherForwardList      = null; //转发配置
+    private boolean                        enable                     = false; //启用禁用
+    private boolean                        enableMethod               = true; //方法权限检查
+    private boolean                        enableURL                  = true; //URL权限检查
+    private String                         accountField               = null; //帐号字段
+    private String                         passwordField              = null; //密码字段
+    private String                         loginURL                   = null; //登入地址
+    private String                         logoutURL                  = null; //登出地址
+    private boolean                        guestEnable                = false; //是否启用来宾帐号
+    private String                         guestClassType             = null; //来宾帐号类型
+    private String[]                       guestPermissions           = null; //来宾帐号权限
+    private UriPatternMatcher              rulesDefault               = null; //URL权限检查默认策略配置：Login|Logout|Guest|Permission|None
+    private List<UriPatternMatcher>        rulesIncludeList           = null; //包含到权限检查路径
+    private List<UriPatternMatcher>        rulesExcludeList           = null; //排除权限检查
+    private boolean                        cookieEnable               = true; //是否启用客户端cookie来协助认证。
+    private boolean                        loseCookieOnStart          = true; //当系统启动时是否强制所有客户端已经登陆过的Cookie信息失效
+    private String                         cookieName                 = null; //客户端cookie名称
+    private int                            cookieTimeout              = 0;    //cookie超时时间，单位：秒
+    private boolean                        cookieEncryptionEnable     = true; //是否加密cookie内容
+    private String                         cookieEncryptionEncodeType = null; //cookie内容加密方式，DES,BAS64等等.
+    private String                         cookieEncryptionKey        = null; //cookie内容加密时使用的Key
+    private String                         cookieDomain               = null; //cookie的Domain配置，设置这个属性用来支持跨域访问cookie。（默认为空不对该值进行设置）
+    private String                         cookiePath                 = null; //cookie的path属性（默认为空不对该值进行设置）
+    private List<SecurityDispatcher>       dispatcherForwardList      = null; //转发配置
+    private Map<String, Class<CodeDigest>> digestMap                  = null; //加密算法配置
     //
     //
     public void loadConfig(Settings newConfig) {
@@ -126,6 +129,10 @@ public class SecuritySettings implements SettingListener {
         XmlProperty dispatcherXml = newConfig.getXmlProperty(Security_Forwards); //转发配置
         this.dispatcherForwardList = new ArrayList<SecurityDispatcher>();
         this.readDispatcherForward(dispatcherXml);
+        //
+        XmlProperty encryptionDigestXml = newConfig.getXmlProperty(Security_EncryptionDigestSet); //加密算法配置
+        this.digestMap = new HashMap<String, Class<CodeDigest>>();
+        this.readCodeDigest(encryptionDigestXml);
     }
     //
     private void readIncludeRules(XmlProperty rulesIncludes) {
@@ -187,7 +194,7 @@ public class SecuritySettings implements SettingListener {
                 continue;
             Map<String, String> itemAtt = item.getAttributeMap();
             String contentPath = itemAtt.get("contentPath");
-            String defaultType = itemAtt.get("defaultType");
+            DispatcherType defaultType = StringConvertUtil.changeType(itemAtt.get("defaultType"), DispatcherType.class, DispatcherType.Forward);
             if (StringUtil.isBlank(contentPath) == true)
                 continue;
             //
@@ -196,7 +203,8 @@ public class SecuritySettings implements SettingListener {
             if (forwardList != null)
                 for (XmlProperty forwardItem : forwardList) {
                     String toURL = forwardItem.getText();
-                    String toType = forwardItem.getAttributeMap().get("type");
+                    String $toType = forwardItem.getAttributeMap().get("type");
+                    DispatcherType toType = StringConvertUtil.changeType($toType, DispatcherType.class, DispatcherType.Forward);
                     if (StringUtil.eqUnCaseSensitive("forwardIndex", forwardItem.getName()) == true) {
                         dispatcher.setForwardIndex(toURL, (toType == null) ? defaultType : toType);
                     } else if (StringUtil.eqUnCaseSensitive("forwardLogout", forwardItem.getName()) == true) {
@@ -213,6 +221,33 @@ public class SecuritySettings implements SettingListener {
             Platform.info("read SecurityDispatcher : " + dispatcher);
         }
     }
+    //
+    private void readCodeDigest(XmlProperty encryptionDigestXml) {
+        if (encryptionDigestXml == null)
+            return;
+        List<XmlProperty> dispatcherList = encryptionDigestXml.getChildren();
+        if (dispatcherList == null)
+            return;
+        for (XmlProperty item : dispatcherList) {
+            if (StringUtil.eqUnCaseSensitive("digest", item.getName()) == false)
+                continue;
+            String digestCode = item.getAttributeMap().get("name");
+            String digestType = item.getText();
+            try {
+                Class<?> digestClass = Class.forName(digestType);
+                if (CodeDigest.class.isAssignableFrom(digestClass) == false) {
+                    Platform.warning(digestCode + " digest " + digestType + " is not implemented CodeDigest");
+                    continue;
+                }
+                this.digestMap.put(digestCode, (Class<CodeDigest>) digestClass);
+                Platform.info("read CodeDigest " + digestCode + " = " + digestType);
+            } catch (Exception e) {
+                Platform.warning("create " + digestType + " an error ." + Platform.logString(e));
+            }
+        }
+    }
+    //
+    //
     //
     public boolean isEnable() {
         return enable;
@@ -282,5 +317,8 @@ public class SecuritySettings implements SettingListener {
     }
     public List<SecurityDispatcher> getDispatcherForwardList() {
         return dispatcherForwardList;
+    }
+    public Map<String, Class<CodeDigest>> getDigestMap() {
+        return digestMap;
     }
 };

@@ -30,7 +30,7 @@ class ManagedKeyBuilderManager {
     //
     //
     public void initManager(AppContext appContext) {
-        Platform.info("cache ->> init ManagedKeyBuilderManager...");
+        Platform.info("init ManagedKeyBuilderManager...");
         this.keyBuilderDefinitionSet = collectKeyBuilderDefinitionSet(appContext.getGuice());
         for (KeyBuilderDefinition keyBuilderDefinition : keyBuilderDefinitionSet) {
             keyBuilderDefinition.initKeyBuilder(appContext);
@@ -47,7 +47,7 @@ class ManagedKeyBuilderManager {
         return keyBuilderDefinitionList.toArray(new KeyBuilderDefinition[keyBuilderDefinitionList.size()]);
     }
     public void destroyManager(AppContext appContext) {
-        Platform.info("cache ->> destroy ManagedKeyBuilderManager...");
+        Platform.info("destroy ManagedKeyBuilderManager...");
         for (KeyBuilderDefinition cacheDefinition : keyBuilderDefinitionSet) {
             cacheDefinition.destroy(appContext);
         }

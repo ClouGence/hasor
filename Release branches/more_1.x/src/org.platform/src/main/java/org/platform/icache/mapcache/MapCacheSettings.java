@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.icache.weakmapcache;
+package org.platform.icache.mapcache;
 import static org.platform.PlatformConfig.CacheConfig_Enable;
 import static org.platform.PlatformConfig.CacheConfig_WeakMapCache_AutoRenewal;
 import static org.platform.PlatformConfig.CacheConfig_WeakMapCache_Eternal;
@@ -26,7 +26,7 @@ import org.platform.context.setting.Settings;
  * @version : 2013-4-23
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class WeakMapCacheSettings implements SettingListener {
+public class MapCacheSettings implements SettingListener {
     private boolean cacheEnable    = false;
     private long    defaultTimeout = 10;
     private boolean eternal        = false;

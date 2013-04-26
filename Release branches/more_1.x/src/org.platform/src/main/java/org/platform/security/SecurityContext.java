@@ -113,7 +113,7 @@ public abstract class SecurityContext {
     /**获取当前线程绑定的权限会话集合。返回值不可以为空。*/
     public AuthSession[] getCurrentAuthSession() {
         Map<String, AuthSession> curSessionMap = this.currentAuthSessionMap.get();
-        if (curSessionMap.size() == 0)
+        if (curSessionMap == null || curSessionMap.size() == 0)
             return new AuthSession[0];
         else {
             Collection<AuthSession> curAuthSessionSet = curSessionMap.values();

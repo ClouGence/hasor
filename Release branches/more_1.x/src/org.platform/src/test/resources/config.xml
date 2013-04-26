@@ -6,9 +6,32 @@
 		<loadPackages>org.*, com.*, net.*, cn.*</loadPackages>
 	</framework>
 	<!-- 权限配置 -->
-	<security enable="true">
+	<security enable="false">
+		<!-- 转发配置 -->
+		<forwards>
+			<!-- 登录源，当执行登陆时才会用到这里的配置。 -->
+			<dispatch contentPath="/pro" defaultType="forward|redirect">
+				<!-- 登陆成功之后要去的地址 -->
+				<forwardIndex type="redirect">/login_ok_index.htm</forwardIndex>
+				<!-- 退出之后要去的地址 -->
+				<forwardLogout type="redirect">/login_ok_index.htm</forwardLogout>
+				<!-- !!!下面的配置信息，配置一项即可!!! -->
+				<!-- 登陆失败：以Http 402号错误响应客户端。 -->
+				<forwardFailure processMode="Error">402</forwardFailure>
+				<!-- 配置的可以跳转的地址 -->
+				<forward id="go_1" type="redirect">/go_1.htm</forward>
+			</dispatch>
+		</forwards>
 	</security>
 	<!-- MapCache 默认配置10分钟超时 -->
-	<cacheConfig.mapCache timeout="500" threadSeep="100" />
+	<cacheConfig enable="true">
+		<!-- WeakMapCache 配置 -->
+		<!-- timeout=设置的超时时间10分钟超时 -->
+		<!-- eternal=缓存是否永远不销毁 -->
+		<!-- autoRenewal=每当访问缓存对象时是否自动对其续约（续约时间同加入时缓存超时时间） -->
+		<!-- threadSeep=缓存回收线程工作的时间频率(毫秒) -->
+		<weakMapCache timeout="500" eternal="false" autoRenewal="true" threadSeep="100" />
+		<!-- !!!这里可以放置其他缓存程序的Xml配置，然后通过XmlProperty类型读取到这段Xml!!! -->
+	</cacheConfig>
 
 </config>

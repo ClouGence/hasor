@@ -37,6 +37,14 @@ public abstract class AbstractGlobal extends AbstractMap<String, Object> {
         else
             this.targetContainer = configs;
     };
+    /**重置属性*/
+    public synchronized void setContainer(Map<String, Object> targetContainer) {
+        if (targetContainer == null)
+            this.targetContainer = new HashMap<String, Object>();
+        else
+            this.targetContainer = targetContainer;
+        this.$targetContainer = null;
+    }
     /**子类可以重写该方法以替换targetContainer属性容器。*/
     protected Map<String, Object> getAttContainer() {
         if (this.$targetContainer != null)
