@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.platform.security;
+import java.util.List;
 import org.more.util.StringUtil;
 import org.platform.context.AppContext;
 /**
@@ -22,14 +23,28 @@ import org.platform.context.AppContext;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class InternalUriPatternMatcherManager {
-    
+    private SecuritySettings securitySettings = null;
+    //
     public void initManager(AppContext appContext) {
-        // TODO Auto-generated method stub
-        
-    } 
-
+        this.securitySettings = appContext.getBean(SecuritySettings.class);
+    }
     public UriPatternMatcher getUriMatcher(String requestPath) {
-        // TODO Auto-generated method stub
+        if (StringUtil.isBlank(requestPath) == true)
+            return null;
+        requestPath = requestPath.toLowerCase();
+        //1.ºÏ≤È≈≈≥˝≈‰÷√
+        List<UriPatternMatcher> excludeRules = this.securitySettings.getRulesExcludeList();
+        for (UriPatternMatcher urlPattern : excludeRules) {
+            if (requestPath.startsWith(urlPattern.getRequestURI()) == true)
+                return urlPattern;
+        }
+        //2.ºÏ≤È∞¸∫¨≈‰÷√
+        List<UriPatternMatcher> includeRules = this.securitySettings.getRulesIncludeList();
+        for (UriPatternMatcher urlPattern : includeRules) {
+            if (requestPath.startsWith(urlPattern.getRequestURI()) == true)
+                return urlPattern;
+        }
         return null;
-    };
-}s
+    }
+    public void destroyManager(AppContext appContext) {};
+}

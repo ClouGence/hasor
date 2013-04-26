@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.security.digest;
-import org.more.util.CommonCodeUtil.Base64;
-import org.platform.security.CodeDigest;
+package org.platform.security;
+import org.platform.context.AppContext;
 /**
- * Base64编码。
- * @version : 2013-4-24
+ * 负责授权操作，通过该接口可以将权限控制框架连接到不同的权限模型。
+ * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public final class Base64Digest implements CodeDigest {
-    @Override
-    public String encrypt(String strValue, String generateKey) throws Throwable {
-        return Base64.base64Encode(strValue);
-    }
-    @Override
-    public String decrypt(String strValue, String generateKey) throws Throwable {
-        return Base64.base64Decode(strValue);
-    };
-}
+public interface SecurityAuthorize {
+    /**初始化策略对象。*/
+    public void initAuthorize(AppContext appContext);
+    /**
+     * 进行策略检查。
+     * @param userInfo 用户信息对象。
+     * @param powerCode 要检查的权限点。
+     */
+    public boolean testPermission(AuthSession authSession, Permission[] powerCode);
+}a

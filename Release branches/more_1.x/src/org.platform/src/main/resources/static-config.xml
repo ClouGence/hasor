@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://project.byshell.org/more/schema/global">
+	<!-- 数据源配置 -->
+	<dataSourceSet>
+		<jdbc name="dataSource1" default="true">
+			<dspool>dbcp</dspool>
+			<driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
+			<url>jdbc:sqlserver://10.200.15.100;DatabaseName=KAOYAN_DEV</url>
+			<account>sa</account>
+			<password>abc123!@#</password>
+		</jdbc>
+		<jdbc name="dataSource2">
+			<dspool>dbcp</dspool>
+			<driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
+			<url>jdbc:sqlserver://10.200.15.100;DatabaseName=KAOYAN_DEV</url>
+			<account>sa</account>
+			<password>abc123!@#</password>
+		</jdbc>
+	</dataSourceSet>
 	<!-- 框架配置 -->
 	<framework>
 		<!-- 包扫描覆盖范围 -->
@@ -12,10 +29,25 @@
 	</httpServlet>
 	<!-- 权限配置 -->
 	<security enable="false" enableURL="true" enableMethod="true">
-		<!-- 登录Action -->
+		<!-- 登入Action -->
 		<loginURL>s_login.sec</loginURL>
 		<!-- 登出Action -->
 		<logoutURL>s_logout.sec</logoutURL>
+		<!-- 权限的客户端cookie配置，默认启用 -->
+		<clientCookie enable="true">
+			<!-- cookie名称 -->
+			<cookieName>JSPSESSION</cookieName>
+			<!-- cookie的Domain配置，设置这个属性用来支持跨域访问cookie。（默认为空不对该值进行设置） -->
+			<cookieDomain></cookieDomain>
+			<!-- cookie的path属性（默认为空不对该值进行设置） -->
+			<cookiePath></cookiePath>
+			<!-- 当系统启动时是否强制所有客户端已经登陆过的Cookie信息失效 -->
+			<loseCookieOnStart>true</loseCookieOnStart>
+			<!-- cookie超时时间，单位:秒，默认7天。 -->
+			<timeout>604800</timeout>
+			<!-- cookie内容加密方式和密钥 -->
+			<encryption enable="true" encodeType="DES|Base64|Random|None|Aes128" key="12345678" />
+		</clientCookie>
 		<!-- 登陆表单数据 -->
 		<loginFormData>
 			<!-- 登陆表单，用户名 -->
@@ -25,37 +57,40 @@
 		</loginFormData>
 		<!-- 转发配置 -->
 		<forwards>
-			<!-- 登录源（正则表达式），当执行登陆时才会用到这里的配置。 -->
-			<dispatch sourceRegExp="、pro">
+			<!-- 登录源，当执行登陆时才会用到这里的配置。 -->
+			<dispatch contentPath="/user" defaultType="forward|redirect">
 				<!-- 登陆成功之后要去的地址 -->
-				<indexPage>/login_ok_index.htm</indexPage>
+				<forwardIndex type="forward|redirect">/login_ok_index.htm</forwardIndex>
 				<!-- 退出之后要去的地址 -->
-				<logoutPage>/login_ok_index.htm</logoutPage>
+				<forwardLogout type="forward|redirect">/login_ok_index.htm</forwardLogout>
 				<!-- !!!下面的配置信息，配置一项即可!!! -->
 				<!-- 登陆失败：以Http 402号错误响应客户端。 -->
-				<errorPage processMode="Error">402</errorPage>
+				<forwardFailure type="Error">402</forwardFailure>
 				<!-- 登陆失败：抛出特定类型异常。 -->
-				<errorPage processMode="Exception">org.platform.security.PermissionException</errorPage>
+				<forwardFailure type="Exception">org.platform.security.PermissionException</forwardFailure>
 				<!-- 登陆失败：跳转到特定页面或地址。 -->
-				<errorPage processMode="Page">/abc.htm</errorPage>
+				<forwardFailure type="forward|redirect">/abc.htm</forwardFailure>
 				<!-- 配置的可以跳转的地址 -->
-				<page id="go_1">/go_1.htm</page>
-				<page id="go_2">/go_2.htm</page>
+				<forward id="go_1" type="redirect">/go_1.htm</forward>
+				<forward id="go_2" type="redirect">/go_2.htm</forward>
 			</dispatch>
 		</forwards>
 		<!-- 权限判断规则 -->
+		<!-- Login:要求登陆，Logout:要求非登陆，Guest:要求具有来宾身份，Permission:要求具有权限点，None:无任何要求 -->
 		<rules>
-			<!-- 逃出规则匹配的请求路径默认配置：NeedCheck、NoCheck -->
-			<defaultRuleModel>NoCheck</defaultRuleModel>
+			<!-- URL权限检查默认策略配置：Login|Logout|Guest|Permission|None -->
+			<defaultRule mode="Permission" permissions="sdfsd" />
 			<!-- 需要权限检查的路径 -->
 			<includes>
 				<!-- 命中的URL需要用户进行登入 -->
-				<include isLogin="true"></include>
+				<include mode="Login">sd</include>
 				<!-- 命中的URL需要用户具备某种权限代码，(逗号间隔多个代码) -->
-				<include permissions=""></include>
+				<include mode="Permission" permissions="TestPower">sd</include>
 			</includes>
 			<!-- 不需要权限检查的路径 -->
-			<excludes></excludes>
+			<excludes>
+				<exclude></exclude>
+			</excludes>
 		</rules>
 		<!-- 来宾权限设置 -->
 		<guest enable="true">

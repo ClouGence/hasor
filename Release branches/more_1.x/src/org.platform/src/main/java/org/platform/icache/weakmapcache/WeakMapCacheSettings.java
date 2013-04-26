@@ -49,14 +49,11 @@ public class WeakMapCacheSettings implements SettingListener {
         return threadSeep;
     }
     @Override
-    public void reLoadConfig(Settings oldConfig, Settings newConfig) {
+    public void loadConfig(Settings newConfig) {
         this.cacheEnable = newConfig.getBoolean(CacheConfig_Enable);
         this.defaultTimeout = newConfig.getLong(CacheConfig_WeakMapCache_Timeout);
         this.eternal = newConfig.getBoolean(CacheConfig_WeakMapCache_Eternal);
         this.autoRenewal = newConfig.getBoolean(CacheConfig_WeakMapCache_AutoRenewal);
         this.threadSeep = newConfig.getLong(CacheConfig_WeakMapCache_ThreadSeep);
-    }
-    public void loadConfig(Settings settings) {
-        this.reLoadConfig(null, settings);
     }
 }

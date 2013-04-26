@@ -14,60 +14,119 @@
  * limitations under the License.
  */
 package org.platform.security;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.ServletException;
+import org.platform.Assert;
 import org.platform.context.AppContext;
 /**
- * 该类提供了获取与当前线程进行绑定的{@link AuthSession}。
+ * 安全认证系统服务。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class SecurityContext {
-    private InternalDispatcherManager        dispatcherManager        = null;
-    private InternalUriPatternMatcherManager uriPatternMatcherManager = null;
-    private UriPatternMatcher                defaultRules             = null;
-    private Map<String, CodeDigest>          codeDigestMap            = null;
-    private InternalSecurityQueryBuilder     securityQueryBuilder     = null; //负责处理SecurityQuer接口相关方法。
+    private InternalDispatcherManager             dispatcherManager        = null;
+    private InternalUriPatternMatcherManager      uriPatternMatcherManager = null;
+    private InternalCodeDigestManager             codeDigestManager        = null;
+    private UriPatternMatcher                     defaultRules             = null;
+    private InternalSecurityQueryBuilder          securityQueryBuilder     = null; //负责处理SecurityQuer接口相关方法。
+    private volatile Map<String, AuthSession>     authSessionMap           = null;
+    private ThreadLocal<Map<String, AuthSession>> currentAuthSessionMap    = null;
     //
     public void initSecurity(AppContext appContext) {
-        this.securityQueryBuilder = new InternalSecurityQueryBuilder(appContext);
         this.dispatcherManager = new InternalDispatcherManager();
         this.uriPatternMatcherManager = new InternalUriPatternMatcherManager();
-        //
-        this.dispatcherManager.initManager(appContext);
-        this.uriPatternMatcherManager.initManager(appContext);
+        this.codeDigestManager = new InternalCodeDigestManager();
         //
         SecuritySettings setting = appContext.getBean(SecuritySettings.class);
         this.defaultRules = setting.getRulesDefault();
+        //
+        this.securityQueryBuilder = new InternalSecurityQueryBuilder(appContext);
+        //
+        this.dispatcherManager.initManager(appContext);
+        this.uriPatternMatcherManager.initManager(appContext);
+        this.codeDigestManager.initManager(appContext);
+        //
+        this.authSessionMap = new HashMap<String, AuthSession>();
+        this.currentAuthSessionMap = new ThreadLocal<Map<String, AuthSession>>();
     }
     public void destroySecurity(AppContext appContext) {
-        this.codeDigestMap.clear();
+        this.dispatcherManager.destroyManager(appContext);
+        this.uriPatternMatcherManager.destroyManager(appContext);
+        this.codeDigestManager.destroyManager(appContext);
+        this.authSessionMap.clear();
+        this.currentAuthSessionMap = new ThreadLocal<Map<String, AuthSession>>();
     }
     /**创建一个权限会话。*/
-    public abstract AuthSession createAuthSession();
+    public AuthSession createAuthSession() {
+        AuthSession newAuthSession = this.newAuthSession();
+        Assert.isNotNull(newAuthSession);
+        String sessionID = newAuthSession.getSessionID();
+        this.authSessionMap.put(sessionID, newAuthSession);
+        this.activateAuthSession(sessionID);
+        return newAuthSession;
+    };
+    /**处理新会话的创建由子类决定新会话的类型。*/
+    protected abstract AuthSession newAuthSession();
+    /**处理会话的关闭由子类决定新会话的类型。*/
+    protected abstract void closeAuthSession(AuthSession authSession);
     /**通过AuthSessionID获取权限会话。*/
-    public AuthSession getAuthSession(String authSessionID);
+    public AuthSession getAuthSession(String authSessionID) {
+        return this.authSessionMap.get(authSessionID);
+    };
     /**判断权限系统中是否具有指定ID的权限会话，如果有返回true.*/
-    public boolean hasAuthSession(String authSessionID);
-    /**激活authSessionID参数表示的权限会话，被激活的权限会话将处于当前线程会话中。*/
-    public void activateAuthSession(String authSessionID);
-    /***/
-    public void inactivationAuthSession(String sessionID);
-    /**获取当前线程绑定的权限会话集合。*/
-    public AuthSession[] getCurrentAuthSession();
+    public boolean hasAuthSession(String authSessionID) {
+        return this.authSessionMap.containsKey(authSessionID);
+    };
+    /**将参数表示的会话激活到当前线程。*/
+    public synchronized boolean activateAuthSession(String authSessionID) {
+        Map<String, AuthSession> curSessionMap = this.currentAuthSessionMap.get();
+        if (curSessionMap == null) {
+            curSessionMap = new HashMap<String, AuthSession>();
+            this.currentAuthSessionMap.set(curSessionMap);
+        }
+        if (this.hasAuthSession(authSessionID) == true && curSessionMap.containsKey(authSessionID) == false) {
+            AuthSession authSession = this.getAuthSession(authSessionID);
+            curSessionMap.put(authSessionID, authSession);
+            return true;
+        }
+        return false;
+    };
+    /**从当前线程中活动的会话里去掉某个会话。*/
+    public synchronized boolean inactivationAuthSession(String sessionID) {
+        Map<String, AuthSession> curSessionMap = this.currentAuthSessionMap.get();
+        if (curSessionMap == null)
+            return false;
+        //
+        boolean returnData = false;
+        if (curSessionMap.containsKey(sessionID) == true) {
+            curSessionMap.remove(sessionID);
+            returnData = true;
+        }
+        //
+        if (curSessionMap.size() == 0)
+            this.currentAuthSessionMap.remove();
+        //
+        return returnData;
+    };
+    /**获取当前线程绑定的权限会话集合。返回值不可以为空。*/
+    public AuthSession[] getCurrentAuthSession() {
+        Map<String, AuthSession> curSessionMap = this.currentAuthSessionMap.get();
+        if (curSessionMap.size() == 0)
+            return new AuthSession[0];
+        else {
+            Collection<AuthSession> curAuthSessionSet = curSessionMap.values();
+            return curAuthSessionSet.toArray(new AuthSession[curAuthSessionSet.size()]);
+        }
+    };
     /**获取编码工具*/
     public CodeDigest getCodeDigest(String name) throws SecurityException {
-        if (this.codeDigestMap.containsKey(name) == true)
-            return this.codeDigestMap.get(name);
-        throw new SecurityException("CodeDigest :" + name + " is Undefined.");
+        CodeDigest digest = this.codeDigestManager.getCodeDigest(name);
+        if (digest == null)
+            throw new SecurityException("CodeDigest :" + name + " is Undefined.");
+        return digest;
     };
-    //
-    //
-    //
-    //
-    //
-    //
-    //
     /**根据uri获取用于判断权限的功能接口。*/
     public UriPatternMatcher getUriMatcher(String requestPath) {
         UriPatternMatcher matcher = this.uriPatternMatcherManager.getUriMatcher(requestPath);

@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 package org.platform.security;
+import java.util.Map;
 import org.platform.context.AppContext;
 /**
- * 权限判断，可以通过该接口来实现各种不用的权限模型。
- * @version : 2013-3-12
+ * 
+ * @version : 2013-4-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface SecurityPolicy {
-    /**初始化策略对象。*/
-    public void initPolicy(AppContext appContext);
-    /**
-     * 进行策略检查。
-     * @param userInfo 用户信息对象。
-     * @param powerCode 要检查的权限点。
-     */
-    public boolean testPermission(AuthSession authSession, Permission[] powerCode);
+class InternalCodeDigestManager {
+    private Map<String, CodeDigest> codeDigestMap = null;
+    public void initManager(AppContext appContext) {
+        // TODO Auto-generated method stub
+    }
+    public CodeDigest getCodeDigest(String name) {
+        // TODO Auto-generated method stub
+        return null;
+    } 
+    public void destroyManager(AppContext appContext) {
+        // TODO Auto-generated method stub
+        
+    };
 }a

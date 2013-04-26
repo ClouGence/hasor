@@ -25,11 +25,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletContext;
+import org.more.global.assembler.xml.XmlProperty;
 import org.more.global.assembler.xml.XmlPropertyGlobalFactory;
 import org.more.util.ResourceWatch;
 import org.more.util.ResourcesUtil;
 import org.more.util.StringUtil;
-import org.more.util.map.DecSequenceMap;
 import org.more.util.map.Properties;
 import org.platform.Assert;
 import org.platform.Platform;
@@ -77,29 +77,20 @@ public abstract class AbstractConfig implements Config {
             this.settingListenerList.remove(settingsListener);
     }
     /**当重新载入配置文件时*/
-    protected void reLoadConfig(Settings oldConfig, Settings newConfig) {
+    protected void reLoadConfig(Settings newConfig) {
         for (SettingListener listener : this.settingListenerList)
-            listener.reLoadConfig(oldConfig, newConfig);
+            listener.loadConfig(newConfig);
     }
     //
     //
-    //
-    private Settings            globalConfig      = null;
-    private Map<String, Object> allStaticSettings = null; /*所有静态配置*/
-    private ResourceWatch       resourceWatch     = null; /*监控程序*/
+    private Settings      globalConfig  = null;
+    private ResourceWatch resourceWatch = null; /*监控程序*/
     @Override
     public Settings getSettings() {
         if (this.globalConfig != null)
             return this.globalConfig;
         //1.finalSettings
-        DecSequenceMap<String, Object> finalSettings = new DecSequenceMap<String, Object>();
-        Map<String, Object> mainConfig = this.loadMainConfig();
-        finalSettings.addMap(mainConfig);
-        if (this.allStaticSettings == null)
-            this.allStaticSettings = this.loadStaticConfig();
-        finalSettings.addMap(this.allStaticSettings);
-        Map<String, Object> mappingConfig = this.loadMappingConfig(finalSettings);
-        finalSettings.addMap(mappingConfig);
+        Map<String, Object> finalSettings = this.loadALLConfig();
         //2.resourceWatch
         if (this.resourceWatch == null) {
             try {
@@ -118,46 +109,48 @@ public abstract class AbstractConfig implements Config {
         return globalConfig;
     }
     //
-    //
+    /**装载所有配置文件*/
+    protected Map<String, Object> loadALLConfig() {
+        HashMap<String, Object> finalSettings = new HashMap<String, Object>();
+        this.loadStaticConfig(finalSettings);
+        this.loadMainConfig(finalSettings);
+        this.loadMappingConfig(finalSettings);
+        return finalSettings;
+    }
     //
     /**装载主配置文件动态配置。*/
-    protected Map<String, Object> loadMainConfig() {
+    protected void loadMainConfig(Map<String, Object> toMap) {
         String encoding = this.getSettingsEncoding();
-        Map<String, Object> mainConfig = new HashMap<String, Object>();
         try {
             URL configURL = ResourcesUtil.getResource(appSettingsName1);
             if (configURL != null) {
                 Platform.info("load ‘" + configURL + "’");
-                loadConfig(configURL.toURI(), encoding, mainConfig);
+                loadConfig(configURL.toURI(), encoding, toMap);
             }
         } catch (Exception e) {
             Platform.error("load ‘" + appSettingsName1 + "’ error. ", e);
         }
-        return mainConfig;
     }
+    //
     /**装载静态配置。*/
-    protected Map<String, Object> loadStaticConfig() {
+    protected void loadStaticConfig(Map<String, Object> toMap) {
         String encoding = this.getSettingsEncoding();
-        DecSequenceMap<String, Object> allStaticSettings = new DecSequenceMap<String, Object>();
         //1.装载所有static-config.xml
         try {
-            Map<String, Object> staticConfig = new HashMap<String, Object>();
             List<URL> streamList = ResourcesUtil.getResources(appSettingsName2);
             if (streamList != null) {
                 for (URL resURL : streamList) {
                     Platform.info("load ‘" + resURL + "’");
-                    loadConfig(resURL.toURI(), encoding, staticConfig);
+                    loadConfig(resURL.toURI(), encoding, toMap);
                 }
             }
-            allStaticSettings.addMap(staticConfig);
         } catch (Exception e) {
             Platform.error("load ‘" + appSettingsName2 + "’ error. ", e);
         }
-        return allStaticSettings;
     }
+    //
     /**装载配置映射，参数是参照的映射配置。*/
-    protected Map<String, Object> loadMappingConfig(Map<String, Object> referConfig) {
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    protected void loadMappingConfig(Map<String, Object> referConfig) {
         try {
             List<URL> mappingList = ResourcesUtil.getResources(appSettingsName3);
             if (mappingList != null)
@@ -168,23 +161,28 @@ public abstract class AbstractConfig implements Config {
                     for (String key : prop.keySet()) {
                         String $propxyKey = key.toLowerCase();
                         String $key = prop.get(key).toLowerCase();
-                        String value = (String) referConfig.get($key);
+                        Object value = referConfig.get($key);
                         if (value == null)
-                            Platform.warning("mapping.. " + $propxyKey + "=" + $key + " 警告，值为空");
-                        else
-                            dataMap.put($propxyKey, value.trim());
+                            Platform.warning("mapping.. " + $propxyKey + "=" + $key + " value is null.");
+                        else {
+                            /*忽略冲突的映射*/
+                            if (referConfig.containsKey($propxyKey) == true) {
+                                Platform.error("mapping conflict! " + $propxyKey + " has this key.");
+                            } else
+                                referConfig.put($propxyKey, value);
+                        }
                     }
                 }
         } catch (Exception e) {
             Platform.error("load ‘" + appSettingsName3 + "’ error. ", e);
         }
-        return dataMap;
     }
+    //
     /**自定义配置文件命名空间。*/
     protected abstract List<String> loadNameSpaceDefinition();
-    /*loadConfig装载配置*/
-    private Map<String, Object> loadConfig(URI configURI, String encoding, Map<String, Object> loadTo) throws IOException {
-        Map<String, Object> configData = (loadTo == null) ? new HashMap<String, Object>() : loadTo;
+    //
+    /**loadConfig装载配置*/
+    private void loadConfig(URI configURI, String encoding, Map<String, Object> loadTo) throws IOException {
         Platform.info("PlatformSettings loadConfig Xml namespace : " + Platform.logString(configURI));
         XmlPropertyGlobalFactory xmlg = null;
         //1.<载入生效的命名空间>
@@ -198,16 +196,31 @@ public abstract class AbstractConfig implements Config {
                     if (StringUtil.isBlank(loadNS) == false)
                         xmlg.getLoadNameSpace().add(loadNS);
             //
-            Map<String, Object> version_1_DataMap = xmlg.createMap(encoding, new Object[] { ResourcesUtil.getResourceAsStream(configURI) });
-            for (String key : version_1_DataMap.keySet())
-                configData.put(key.toLowerCase(), version_1_DataMap.get(key));
+            Map<String, Object> dataMap = xmlg.createMap(encoding, new Object[] { ResourcesUtil.getResourceAsStream(configURI) });
+            /*处理多值合并问题*/
+            for (String key : dataMap.keySet()) {
+                String $key = key.toLowerCase();
+                Object $var = dataMap.get(key);
+                Object $varConflict = loadTo.get(key);
+                if ($varConflict != null && $varConflict instanceof XmlProperty && $var instanceof XmlProperty) {
+                    XmlProperty v1 = (XmlProperty) $var;
+                    XmlProperty v2 = (XmlProperty) $varConflict;
+                    //
+                    HashMap<String, String> attMap = new HashMap<String, String>();
+                    attMap.putAll(v2.getAttributeMap());
+                    attMap.putAll(v1.getAttributeMap());
+                    v1.getAttributeMap().putAll(attMap);
+                    v1.getChildren().addAll(v2.getChildren());
+                }
+                loadTo.put($key, $var);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             Platform.warning("namespcae [" + configURI + "] no support!");
         }
-        return configData;
     }
-    /**/
+    //
+    /***/
     private class SettingsResourceWatch extends ResourceWatch {
         private AbstractConfig platformConfig = null;
         public SettingsResourceWatch(URI uri, int watchStepTime, AbstractConfig platformConfig) {
@@ -216,10 +229,8 @@ public abstract class AbstractConfig implements Config {
         }
         @Override
         public void reload(URI resourceURI) throws IOException {
-            Settings oldConfig = this.platformConfig.globalConfig;
-            this.platformConfig.globalConfig = null;//清理掉globalConfig然后重新装载它。
-            Settings newConfig = this.platformConfig.getSettings();
-            this.platformConfig.reLoadConfig(oldConfig, newConfig);
+            Map<String, Object> newConfig = this.platformConfig.loadALLConfig();
+            this.platformConfig.getSettings().setContainer(newConfig);
         }
         @Override
         public long lastModify(URI resourceURI) throws IOException {
@@ -227,5 +238,7 @@ public abstract class AbstractConfig implements Config {
                 return new File(resourceURI).lastModified();
             return 0;
         }
+        @Override
+        public void firstLoad(URI resourceURI) throws IOException {}
     }
 }

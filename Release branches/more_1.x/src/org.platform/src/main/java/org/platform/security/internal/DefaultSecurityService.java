@@ -23,8 +23,12 @@ import org.platform.security.SecurityContext;
  */
 public class DefaultSecurityService extends SecurityContext {
     @Override
-    public AuthSession createAuthSession() {
+    protected AuthSession newAuthSession() {
         // TODO Auto-generated method stub
         return null;
+    }
+    @Override
+    protected void closeAuthSession(AuthSession authSession) {
+        // TODO Auto-generated method stub
     }
 }s

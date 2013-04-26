@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.security.internal;
-import org.platform.security.AbstractSecurityQuery;
-import org.platform.security.AuthSession;
+package org.platform.web;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 
- * @version : 2013-4-20
+ * 表示一个Action类，action类可以不必实现任何接口或继承任何类。
+ * @version : 2013-3-26
  * @author 赵永春 (zyc@byshell.org)
  */
-public class DefaultSecurityQuery extends AbstractSecurityQuery {
-    @Override
-    public boolean testPermission(AuthSession[] authSession) {
-        return this.testSecurityNode.testPermission(authSession);
-    }
-}s
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface Action {}

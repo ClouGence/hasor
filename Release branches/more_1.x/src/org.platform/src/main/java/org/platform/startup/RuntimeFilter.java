@@ -86,9 +86,9 @@ public class RuntimeFilter implements Filter {
     /**执行FilterPipeline*/
     private void processFilterPipeline(HttpServletRequest httpReq, HttpServletResponse httpRes, FilterChain chain) throws IOException, ServletException {
         ViewContext viewContext = this.createViewContext(httpReq, httpRes);
-        //RuntimePlatform.setViewContext(viewContext);
+        ViewContext.setViewContext(viewContext);
         this.filterPipeline.dispatch(viewContext, httpReq, httpRes, chain);
-        //RuntimePlatform.cleanViewContext();
+        ViewContext.cleanViewContext();
     }
     //
     /**获取{@link AppContext}接口。*/

@@ -40,17 +40,15 @@ class InternalSecurityProcess implements SecurityProcess {
     //
     /**写入权限Cookie。*/
     private void writeAuthSession(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws SecurityException {
-        if (this.settings.isCookieEncryptionEnable() == false)
-            return;
         AuthSession[] authSessions = this.secService.getCurrentAuthSession();
-        if (authSessions == null)
-            return;
         //1.写入HttpSession
         StringBuilder authSessionIDs = new StringBuilder("");
         for (AuthSession authSession : authSessions)
             authSessionIDs.append(authSession.getSessionID() + ",");
         httpRequest.getSession(true).setAttribute(HttpSessionAuthSessionSetName, authSessionIDs.toString());
         //
+        if (this.settings.isCookieEncryptionEnable() == false)
+            return;
         //2.写入Cookie对象
         CookieDataUtil cookieData = CookieDataUtil.create();
         if (authSessions != null)
@@ -67,7 +65,7 @@ class InternalSecurityProcess implements SecurityProcess {
         if (this.settings.isCookieEncryptionEnable() == true) {
             CodeDigest digest = this.secService.getCodeDigest(this.settings.getCookieEncryptionEncodeType());
             try {
-                cookieValue = digest.encode(cookieValue, this.settings.getCookieEncryptionKey());
+                cookieValue = digest.encrypt(cookieValue, this.settings.getCookieEncryptionKey());
             } catch (Throwable e) {
                 Platform.warning(this.settings.getCookieEncryptionEncodeType() + " encode cookieValue error. cookieValue=" + cookieValue);
                 return;
@@ -118,7 +116,7 @@ class InternalSecurityProcess implements SecurityProcess {
             if (this.settings.isCookieEncryptionEnable() == true) {
                 CodeDigest digest = this.secService.getCodeDigest(this.settings.getCookieEncryptionEncodeType());
                 try {
-                    cookieValue = digest.decode(cookieValue, this.settings.getCookieEncryptionKey());
+                    cookieValue = digest.decrypt(cookieValue, this.settings.getCookieEncryptionKey());
                 } catch (Throwable e) {
                     Platform.warning(this.settings.getCookieEncryptionEncodeType() + " decode cookieValue error. cookieValue=" + cookieValue);
                     return;/*解密失败意味着后面的恢复操作都不会用到有效数据因此return.*/
@@ -155,8 +153,7 @@ class InternalSecurityProcess implements SecurityProcess {
             return;
         String[] authSessionIDSet = authSessionIDs.split(",");
         for (String authSessionID : authSessionIDSet) {
-            if (this.secService.hasAuthSession(authSessionID) == true)
-                this.secService.activateAuthSession(authSessionID);
+            this.secService.activateAuthSession(authSessionID);
         }
     }
     //
@@ -181,9 +178,6 @@ class InternalSecurityProcess implements SecurityProcess {
     /**处理登出请求*/
     public void processLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws SecurityException {
         AuthSession[] authSessions = this.secService.getCurrentAuthSession();
-        if (authSessions == null)
-            return;
-        //
         for (AuthSession authSession : authSessions) {
             /*将所有已登入的会话全部登出*/
             if (authSession.isLogin() == false)

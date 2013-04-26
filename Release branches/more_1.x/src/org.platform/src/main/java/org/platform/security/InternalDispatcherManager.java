@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.platform.security;
+import java.util.List;
 import org.more.util.StringUtil;
 import org.platform.context.AppContext;
 /**
@@ -22,19 +23,19 @@ import org.platform.context.AppContext;
  * @author 赵永春 (zyc@byshell.org)
  */
 class InternalDispatcherManager {
-    private SecurityDispatcher[] dispatcherArray = null;
+    private SecuritySettings securitySettings = null;
     /**根据uri获取可用于跳转工具类。*/
     public SecurityDispatcher getDispatcher(String requestPath) {
         if (StringUtil.isBlank(requestPath) == true)
             return null;
-        for (SecurityDispatcher dispatcher : dispatcherArray) {
+        List<SecurityDispatcher> dispatcherList = securitySettings.getDispatcherForwardList();
+        for (SecurityDispatcher dispatcher : dispatcherList)
             if (requestPath.startsWith(dispatcher.getContentPath()) == true)
                 return dispatcher;
-        }
         return null;
-    } 
+    }
     public void initManager(AppContext appContext) {
-        // TODO Auto-generated method stub
-        
-    };
-}s
+        this.securitySettings = appContext.getBean(SecuritySettings.class);
+    }
+    public void destroyManager(AppContext appContext) {};
+}

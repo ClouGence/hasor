@@ -15,7 +15,8 @@
  */
 package org.platform.security;
 import org.platform.context.AppContext;
-import org.platform.security.AbstractSecurityQuery.CheckPermission;
+import org.platform.security.DefaultSecurityQuery.CheckPermission;
+import com.google.inject.Inject;
 /**
  * 
  * @version : 2013-4-25
@@ -23,6 +24,7 @@ import org.platform.security.AbstractSecurityQuery.CheckPermission;
  */
 class InternalSecurityQueryBuilder {
     private AppContext appContext = null;
+    @Inject
     public InternalSecurityQueryBuilder(AppContext appContext) {
         this.appContext = appContext;
     }

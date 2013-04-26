@@ -21,12 +21,12 @@ import org.platform.security.CodeDigest;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public final class NoneDigest implements CodeDigest {
-    /**±‡¬Î*/
-    public String encode(String strValue, String generateKey) {
+    @Override
+    public String encrypt(String strValue, String generateKey) throws Throwable {
         return strValue;
-    };
-    /**Ω‚¬Î*/
-    public String decode(String strValue, String generateKey) {
+    }
+    @Override
+    public String decrypt(String strValue, String generateKey) throws Throwable {
         return strValue;
     };
 }

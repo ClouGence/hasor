@@ -13,21 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.security.digest;
-import org.more.util.CommonCodeUtil.Base64;
-import org.platform.security.CodeDigest;
+package org.platform.web;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 /**
- * Base64编码。
- * @version : 2013-4-24
+ * 所有action的基类。
+ * @version : 2013-3-26
  * @author 赵永春 (zyc@byshell.org)
  */
-public final class Base64Digest implements CodeDigest {
-    @Override
-    public String encrypt(String strValue, String generateKey) throws Throwable {
-        return Base64.base64Encode(strValue);
-    }
-    @Override
-    public String decrypt(String strValue, String generateKey) throws Throwable {
-        return Base64.base64Decode(strValue);
-    };
+public abstract class AbstractAction {
+    /**执行*/
+    public abstract void execute(HttpServletRequest request, HttpServletResponse response);
 }

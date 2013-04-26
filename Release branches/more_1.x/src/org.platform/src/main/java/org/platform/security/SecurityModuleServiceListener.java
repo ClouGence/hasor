@@ -26,7 +26,6 @@ import org.platform.context.AppContext;
 import org.platform.context.InitListener;
 import org.platform.context.setting.Config;
 import org.platform.security.Power.Level;
-import org.platform.security.internal.DefaultSecurityQuery;
 import org.platform.security.internal.DefaultSecurityService;
 import com.google.inject.matcher.AbstractMatcher;
 /**
@@ -161,15 +160,21 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         public void sessionCreated(HttpSessionEvent se) {
             if (settings.isEnable() == false)
                 return;
-            //secService.createAuthSession();
+            AuthSession[] authSessions = secService.getCurrentAuthSession();
+            boolean needCreateSession = authSessions.length == 0;
+            if (needCreateSession) {
+                AuthSession authSession = secService.createAuthSession();
+                if (settings.isGuestEnable() == true) {
+                    authSession.doLoginGuest();/*µÇÂ½À´±öÕÊºÅ*/
+                    authSession.setSupportCookieRecover(false);/*²»»Ö¸´*/
+                }
+            }
         }
         @Override
         public void sessionDestroyed(HttpSessionEvent se) {
             if (settings.isEnable() == false)
                 return;
             AuthSession[] authSessions = secService.getCurrentAuthSession();
-            if (authSessions == null)
-                return;
             for (AuthSession authSession : authSessions)
                 secService.inactivationAuthSession(authSession.getSessionID()); /*¶Û»¯AuthSession*/
         }

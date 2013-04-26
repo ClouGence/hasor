@@ -28,11 +28,7 @@ public class CacheSettings implements SettingListener {
     public boolean isCacheEnable() {
         return this.enable;
     }
-    @Override
-    public void reLoadConfig(Settings oldConfig, Settings newConfig) {
-        this.enable = newConfig.getBoolean(CacheConfig_Enable, false);
-    }
     public void loadConfig(Settings config) {
-        this.reLoadConfig(null, config);
+        this.enable = config.getBoolean(CacheConfig_Enable, false);
     }
 }

@@ -66,6 +66,23 @@ public abstract class ViewContext {
     public HttpSession getHttpSession(boolean create) {
         return this.getHttpRequest().getSession(create);
     }
+    //
+    private static ThreadLocal<ViewContext> currentViewContext = new ThreadLocal<ViewContext>();
+    /**获取当前线程相关联的{@link ViewContext}*/
+    public static ViewContext currentViewContext() {
+        return currentViewContext.get();
+    }
+    /**设置当前线程相关联的{@link ViewContext}*/
+    public static void setViewContext(ViewContext viewContext) {
+        if (currentViewContext.get() != null)
+            currentViewContext.remove();
+        currentViewContext.set(viewContext);
+    }
+    /**清空当前线程相关联的{@link ViewContext}*/
+    public static void cleanViewContext() {
+        if (currentViewContext.get() != null)
+            currentViewContext.remove();
+    }
     /*----------------------------------------------------------------------*/
     /**
      * 生成路径算法。

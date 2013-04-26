@@ -21,7 +21,7 @@ import org.platform.context.AppContext;
  * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface SecurityAuthor {
+public interface SecurityAuthentication {
     /**初始化授权模块。*/
     public void initAuthor(AppContext appContext);
     /**执行登陆，返回值为{@link AuthorResult}类型枚举。*/

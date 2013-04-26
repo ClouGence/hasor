@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.platform.security;
+import org.more.util.StringUtil;
 /**
  * 对URI进行权限判断接口。
  * @version : 2013-4-9
@@ -33,6 +34,8 @@ enum UriPatternType {
     //
     //
     public static UriPatternMatcher get(UriPatternType type, String requestURI, String patternCode) {
+        if (StringUtil.isBlank(requestURI) == false)
+            requestURI = requestURI.toLowerCase();
         switch (type) {
         case Login:
             return new Login_UriPatternMatcher(requestURI);

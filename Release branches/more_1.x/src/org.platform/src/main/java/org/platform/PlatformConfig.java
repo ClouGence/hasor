@@ -63,6 +63,8 @@ public interface PlatformConfig {
     public static final String Security_Rules_Includes                     = "security.rules.includes";
     /**排除权限检查范畴的URL*/
     public static final String Security_Rules_Excludes                     = "security.rules.excludes";
+    /**转发配置*/
+    public static final String Security_Forwards                           = "security.forwards";
     /**是否启用来宾帐号，启用来宾帐号之后当用户尚未登陆时获取的AuthSession会获取来宾的AuthSession.*/
     public static final String Security_Guest_Enable                       = "security.guest.enable";
     /**来宾用户帐号类*/

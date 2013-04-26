@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.platform.Assert;
 import org.platform.Platform;
 import org.platform.context.AppContext;
+import org.platform.context.ViewContext;
 import org.platform.startup.RuntimeListener;
 /**
  * 权限系统URL请求处理支持。
@@ -80,9 +81,9 @@ class SecurityFilter implements Filter {
             SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);
             try {
                 this.securityProcess.processLogin(httpRequest, httpResponse);
-                dispatcher.forwardIndex(httpRequest, httpResponse);//跳转登入地址
+                dispatcher.forwardIndex(ViewContext.currentViewContext());//跳转登入地址
             } catch (SecurityException e) {
-                dispatcher.forwardFailure(httpRequest, httpResponse, e);//跳转登入登出失败地址
+                dispatcher.forwardFailure(ViewContext.currentViewContext(), e);//跳转登入登出失败地址
             }
             return;
         }
@@ -91,9 +92,9 @@ class SecurityFilter implements Filter {
             SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);
             try {
                 this.securityProcess.processLogout(httpRequest, httpResponse);
-                dispatcher.forwardLogout(httpRequest, httpResponse);//跳转登出地址
+                dispatcher.forwardLogout(ViewContext.currentViewContext());//跳转登出地址
             } catch (SecurityException e) {
-                dispatcher.forwardFailure(httpRequest, httpResponse, e);//跳转登入登出失败地址
+                dispatcher.forwardFailure(ViewContext.currentViewContext(), e);//跳转登入登出失败地址
             }
             return;
         }
@@ -105,7 +106,7 @@ class SecurityFilter implements Filter {
             } catch (PermissionException e) {
                 Platform.debug("testPermission failure! uri= " + reqPath);/*没有权限*/
                 SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);
-                dispatcher.forwardFailure(httpRequest, httpResponse, e);
+                dispatcher.forwardFailure(ViewContext.currentViewContext(), e);
             }
         }
     }

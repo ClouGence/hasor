@@ -20,7 +20,7 @@ import org.platform.Assert;
  * @version : 2013-4-20
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public abstract class AbstractSecurityQuery implements SecurityQuery {
+public class DefaultSecurityQuery implements SecurityQuery {
     protected SecurityNode testSecurityNode = new FixedValue(true);
     /*-------------------------------------------------------------------------------*/
     /*-¬ﬂº≠”Î-*/
@@ -125,6 +125,9 @@ public abstract class AbstractSecurityQuery implements SecurityQuery {
     @Override
     public String toString() {
         return "SecurityQuery =" + this.testSecurityNode.toString();
+    }
+    public boolean testPermission(AuthSession[] authSession) {
+        return this.testSecurityNode.testPermission(authSession);
     }
     /*-------------------------------------------------------------------------------*/
     /** ª˘¿‡ */

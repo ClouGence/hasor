@@ -16,7 +16,6 @@
 package org.platform.security.internal;
 import org.platform.security.AuthSession;
 import org.platform.security.Permission;
-import org.platform.security.SecurityContext;
 import org.platform.security.SecurityException;
 import org.platform.security.UserInfo;
 /**
@@ -28,19 +27,8 @@ public class DefaultAuthSession implements AuthSession {
     private String   sessionID = null;
     private UserInfo userObjet = null;
     @Override
-    public String getSessionID() {
+    public void doLoginGuest() {
         // TODO Auto-generated method stub
-        return null;
-    }s
-    @Override
-    public UserInfo getUserObject() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public SecurityContext getSecurityContext() {
-        // TODO Auto-generated method stub
-        return null;
     }
     @Override
     public void doLogin(UserInfo user) throws SecurityException {
@@ -57,6 +45,20 @@ public class DefaultAuthSession implements AuthSession {
     @Override
     public void doLogout() throws SecurityException {
         // TODO Auto-generated method stub
+    }
+    @Override
+    public void close() {
+        // TODO Auto-generated method stub
+    }
+    @Override
+    public String getSessionID() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public UserInfo getUserObject() {
+        // TODO Auto-generated method stub
+        return null;
     }
     @Override
     public void addPermission(Permission permission) {
@@ -92,10 +94,6 @@ public class DefaultAuthSession implements AuthSession {
         return false;
     }
     @Override
-    public void close() {
-        // TODO Auto-generated method stub
-    }
-    @Override
     public long getCreatedTime() {
         // TODO Auto-generated method stub
         return 0;
@@ -109,4 +107,4 @@ public class DefaultAuthSession implements AuthSession {
     public void setSupportCookieRecover(boolean recover) {
         // TODO Auto-generated method stub
     }
-}
+}s

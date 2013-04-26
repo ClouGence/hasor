@@ -21,5 +21,5 @@ import org.platform.context.setting.Settings;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public interface SettingListener {
-    public void reLoadConfig(Settings oldConfig, Settings newConfig);
+    public void loadConfig(Settings newConfig);
 }

@@ -21,7 +21,7 @@ package org.platform.security;
  */
 public interface CodeDigest {
     /**±àÂë */
-    public String encode(String strValue, String generateKey) throws Throwable;
+    public String encrypt(String strValue, String generateKey) throws Throwable;
     /**½âÂë*/
-    public String decode(String strValue, String generateKey) throws Throwable;
+    public String decrypt(String strValue, String generateKey) throws Throwable;
 }

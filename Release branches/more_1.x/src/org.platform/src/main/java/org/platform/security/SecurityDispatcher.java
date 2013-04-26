@@ -16,10 +16,7 @@
 package org.platform.security;
 import java.io.IOException;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.platform.context.ViewContext;
 /**
  * 权限系统URL请求处理支持。
  * @version : 2013-4-9  
@@ -29,11 +26,11 @@ public interface SecurityDispatcher {
     /**匹配的路径模式*/
     public String getContentPath();
     /**跳转到登入成功后的地址。*/
-    public void forwardIndex(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException, ServletException;
+    public void forwardIndex(ViewContext viewContext) throws IOException, ServletException;
     /**跳转到登出之后的地址。*/
-    public void forwardLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException, ServletException;
+    public void forwardLogout(ViewContext viewContext) throws IOException, ServletException;
     /**跳转到登入登出执行s登入失败时的地址。*/
-    public void forwardFailure(HttpServletRequest httpRequest, HttpServletResponse httpResponse, Throwable e) throws IOException, ServletException;
+    public void forwardFailure(ViewContext viewContext, Throwable e) throws IOException, ServletException;
     /**跳转到配置的页面。*/
-    public void forward(String id, ServletRequest request, ServletResponse response) throws IOException, ServletException;
+    public void forward(String id, ViewContext viewContext) throws IOException, ServletException;
 }
