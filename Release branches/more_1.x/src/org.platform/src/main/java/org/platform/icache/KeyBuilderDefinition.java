@@ -14,14 +14,7 @@
  * limitations under the License.
  */
 package org.platform.icache;
-import java.util.Enumeration;
-import java.util.Map;
-import javax.servlet.ServletContext;
-import org.more.util.Iterators;
 import org.platform.context.AppContext;
-import org.platform.context.SettingListener;
-import org.platform.context.setting.Config;
-import org.platform.context.setting.Settings;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 /**
@@ -32,43 +25,19 @@ import com.google.inject.Provider;
 class KeyBuilderDefinition implements Provider<IKeyBuilder> {
     private Class<?>                   type             = null;
     private Key<? extends IKeyBuilder> keyBuilderKey    = null;
-    private Map<String, String>        initParams       = null;
     private IKeyBuilder                keyBuilderObject = null;
     //
     //
-    public KeyBuilderDefinition(Class<?> type, Key<? extends IKeyBuilder> keyBuilderKey, Map<String, String> initParams) {
+    public KeyBuilderDefinition(Class<?> type, Key<? extends IKeyBuilder> keyBuilderKey) {
         this.type = type;
         this.keyBuilderKey = keyBuilderKey;
-        this.initParams = initParams;
     }
     public Key<? extends IKeyBuilder> getKeyBuilderKey() {
         return this.keyBuilderKey;
     }
     public void initKeyBuilder(final AppContext appContext) {
         this.keyBuilderObject = appContext.getGuice().getInstance(this.keyBuilderKey);
-        this.keyBuilderObject.initKeyBuilder(appContext, new Config() {
-            public ServletContext getServletContext() {
-                return appContext.getInitContext().getServletContext();
-            }
-            public String getInitParameter(String s) {
-                return initParams.get(s);
-            }
-            public Enumeration<String> getInitParameterNames() {
-                return Iterators.asEnumeration(initParams.keySet().iterator());
-            }
-            @Override
-            public Settings getSettings() {
-                return appContext.getSettings();
-            }
-            @Override
-            public void addSettingsListener(SettingListener settingsListener) {
-                appContext.getInitContext().getConfig().addSettingsListener(settingsListener);
-            }
-            @Override
-            public void removeSettingsListener(SettingListener settingsListener) {
-                appContext.getInitContext().getConfig().removeSettingsListener(settingsListener);
-            }
-        });
+        this.keyBuilderObject.initKeyBuilder(appContext);
     }
     public boolean canSupport(Class<?> targetType) {
         if (targetType == null)

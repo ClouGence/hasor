@@ -31,19 +31,13 @@ public class GuiceTest {
         List<Binding<Faces>> faceBind = guice.findBindingsByType(TypeLiteral.get(Faces.class));
         for (Binding<Faces> face : faceBind)
             face.getProvider().get().pring();
-        
-        Faces faces=guice.getInstance(Faces.class);
+        Faces faces = guice.getInstance(Faces.class);
         System.out.println(faces.getClass());
-        
-        
-        AAAA a=  guice.getInstance(Key.get(AAAA.class));
+        AAAA a = guice.getInstance(Key.get(AAAA.class));
         System.out.println(a);
     }
 }
-
-class AAAA{
-    
-}
+class AAAA {}
 //@SuppressWarnings({ "unchecked", "rawtypes" })
 //class BeanProvider extends TypeLiteral {
 //    @Override

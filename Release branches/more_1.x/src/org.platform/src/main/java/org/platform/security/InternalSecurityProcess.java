@@ -63,7 +63,7 @@ class InternalSecurityProcess implements SecurityProcess {
         //2.´´½¨Cookie
         String cookieValue = CookieDataUtil.parseString(cookieData);
         if (this.settings.isCookieEncryptionEnable() == true) {
-            CodeDigest digest = this.secService.getCodeDigest(this.settings.getCookieEncryptionEncodeType());
+            Digest digest = this.secService.getCodeDigest(this.settings.getCookieEncryptionEncodeType());
             try {
                 cookieValue = digest.encrypt(cookieValue, this.settings.getCookieEncryptionKey());
             } catch (Throwable e) {
@@ -114,7 +114,7 @@ class InternalSecurityProcess implements SecurityProcess {
                 continue;
             cookieValue = cookie.getValue();
             if (this.settings.isCookieEncryptionEnable() == true) {
-                CodeDigest digest = this.secService.getCodeDigest(this.settings.getCookieEncryptionEncodeType());
+                Digest digest = this.secService.getCodeDigest(this.settings.getCookieEncryptionEncodeType());
                 try {
                     cookieValue = digest.decrypt(cookieValue, this.settings.getCookieEncryptionKey());
                 } catch (Throwable e) {

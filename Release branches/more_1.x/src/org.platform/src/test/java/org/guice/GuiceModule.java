@@ -51,7 +51,7 @@ public class GuiceModule implements Module {
         //        //2.×¢²á×÷ÓÃÓò 
         //        binder.bindScope(Service.class, new SysScope(systemServices));
         //3.×¢²áAop 
-//        binder.bindInterceptor(new MyM(), new MyM(), new MyMethodInterceptor());
+        //        binder.bindInterceptor(new MyM(), new MyM(), new MyMethodInterceptor());
         //
         binder.bind(Faces.class).toInstance(new CopyOfFacesImpl(12));
         //

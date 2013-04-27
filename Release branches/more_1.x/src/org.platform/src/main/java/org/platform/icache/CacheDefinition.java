@@ -14,14 +14,7 @@
  * limitations under the License.
  */
 package org.platform.icache;
-import java.util.Enumeration;
-import java.util.Map;
-import javax.servlet.ServletContext;
-import org.more.util.Iterators;
 import org.platform.context.AppContext;
-import org.platform.context.SettingListener;
-import org.platform.context.setting.Config;
-import org.platform.context.setting.Settings;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 /**
@@ -29,18 +22,16 @@ import com.google.inject.Provider;
  * @version : 2013-3-12
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-class CacheDefinition implements Provider<ICache> {
-    private String[]              names       = null;
-    private Key<? extends ICache> cacheKey    = null;
-    private Map<String, String>   initParams  = null;
-    private ICache                cacheObject = null;
+class CacheDefinition implements Provider<ICache<Object>> {
+    private String[]                      names       = null;
+    private Key<? extends ICache<Object>> cacheKey    = null;
+    private ICache<Object>                cacheObject = null;
     //
-    public CacheDefinition(String[] names, Key<? extends ICache> cacheKey, Map<String, String> initParams) {
+    public CacheDefinition(String[] names, Key<? extends ICache<Object>> cacheKey) {
         this.names = names;
         this.cacheKey = cacheKey;
-        this.initParams = initParams;
     }
-    public Key<? extends ICache> getCacheKey() {
+    public Key<? extends ICache<Object>> getCacheKey() {
         return cacheKey;
     }
     public String[] getNames() {
@@ -48,36 +39,14 @@ class CacheDefinition implements Provider<ICache> {
     }
     public void initCache(final AppContext appContext) {
         this.cacheObject = appContext.getGuice().getInstance(this.cacheKey);
-        this.cacheObject.initCache(appContext, new Config() {
-            public ServletContext getServletContext() {
-                return appContext.getInitContext().getServletContext();
-            }
-            public String getInitParameter(String s) {
-                return initParams.get(s);
-            }
-            public Enumeration<String> getInitParameterNames() {
-                return Iterators.asEnumeration(initParams.keySet().iterator());
-            }
-            @Override
-            public Settings getSettings() {
-                return appContext.getSettings();
-            }
-            @Override
-            public void addSettingsListener(SettingListener settingsListener) {
-                appContext.getInitContext().getConfig().addSettingsListener(settingsListener);
-            }
-            @Override
-            public void removeSettingsListener(SettingListener settingsListener) {
-                appContext.getInitContext().getConfig().removeSettingsListener(settingsListener);
-            }
-        });
+        this.cacheObject.initCache(appContext);
     }
     public void destroy(AppContext appContext) {
         if (this.cacheObject != null)
             this.cacheObject.destroy(appContext);
     }
     @Override
-    public ICache get() {
+    public ICache<Object> get() {
         return this.cacheObject;
     }
 }

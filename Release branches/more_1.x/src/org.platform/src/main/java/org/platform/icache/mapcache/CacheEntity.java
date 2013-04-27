@@ -14,33 +14,34 @@
  * limitations under the License.
  */
 package org.platform.icache.mapcache;
+import org.platform.clock.Clock;
 /**
  * ª∫¥Ê∂‘œÛ
  * @version : 2013-4-23
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-class CacheEntity {
-    private Object value    = null;
-    private long   timeout  = 0;
-    private long   lastTime = 0;
+class CacheEntity<T> {
+    private T    value    = null;
+    private long timeout  = 0;
+    private long lastTime = 0;
     //
-    public CacheEntity(Object value, long timeout) {
+    public CacheEntity(T value, long timeout) {
         this.value = value;
         this.timeout = timeout;
-        this.lastTime = System.currentTimeMillis();
+        this.lastTime = Clock.getSyncTime();
     }
     //
     public boolean isLost() {
         if (this.timeout == Long.MAX_VALUE)
             return false;
-        return (lastTime + this.timeout) < System.currentTimeMillis();
+        return (lastTime + this.timeout) < Clock.getSyncTime();
     }
     //
     public void refresh() {
-        this.lastTime = System.currentTimeMillis();
+        this.lastTime = Clock.getSyncTime();
     }
     //
-    public Object get() {
+    public T get() {
         return this.value;
     }
 }

@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.UUID;
 import org.more.util.StringUtil;
 import org.platform.Assert;
+import org.platform.clock.Clock;
 import org.platform.context.setting.Settings;
 import com.google.inject.Injector;
 /**
@@ -134,7 +135,7 @@ public abstract class AppContext {
             this.tempFileDirectory = new File(this.getTempDir("tempFile"));
             this.tempFileDirectory.deleteOnExit();
         }
-        long markTime = System.currentTimeMillis();
+        long markTime = Clock.getSyncTime();
         String atPath = long2path(markTime, 2000);
         String fileName = "work_" + String.valueOf(markTime) + ".tmp";
         File tmpFile = new File(new File(this.tempFileDirectory, atPath), fileName);

@@ -22,9 +22,9 @@ import org.platform.context.AppContext;
  */
 public interface CacheManager {
     /**获取默认缓存*/
-    public ICache getDefaultCache();
+    public ICache<Object> getDefaultCache();
     /**获取缓存*/
-    public ICache getCache(String cacheName);
+    public ICache<Object> getCache(String cacheName);
     /**根据样本类型获取该类型的Key生成器。*/
     public IKeyBuilder getKeyBuilder(Class<?> sampleType);
     /**初始化启动缓存服务。*/

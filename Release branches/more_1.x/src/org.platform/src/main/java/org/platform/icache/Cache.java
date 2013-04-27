@@ -32,9 +32,8 @@ public @interface Cache {
     /**在管理控制台显示服务时使用displayName属性。
      * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
     public String displayName() default "";
-    /** 服务的启动参数。
-     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
-    public InitParam[] initParams() default {};
     /**缓存名称，同名注册会被覆盖。*/
     public String[] value();
+    /**排序顺序（越小越优先）*/
+    public int sort() default Integer.MAX_VALUE;
 }

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package org.platform.security.digest;
-import org.platform.security.CodeDigest;
+import org.platform.security.Digest;
 /**
  * ≤ª±‡¬Î£¨≤ªΩ‚¬Î
  * @version : 2013-4-24
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public final class NoneDigest implements CodeDigest {
+public final class NoneDigest implements Digest {
     @Override
     public String encrypt(String strValue, String generateKey) throws Throwable {
         return strValue;

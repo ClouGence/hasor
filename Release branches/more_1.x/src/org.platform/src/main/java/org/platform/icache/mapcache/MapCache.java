@@ -29,19 +29,26 @@ import org.platform.icache.ICache;
  * @author 赵永春 (zyc@byshell.org)
  */
 @DefaultCache
-@Cache("WeakMapCache")
-public class MapCache extends Thread implements ICache {
-    private volatile boolean                      exitThread     = false;
-    private volatile HashMap<String, CacheEntity> cacheEntityMap = new HashMap<String, CacheEntity>();
-    private MapCacheSettings                      settings       = new MapCacheSettings();
+@Cache(value = "MapCache", displayName = "InternalMapCache", description = "内置的Map缓存，ICache接口的简单实现。")
+public class MapCache<T> extends Thread implements ICache<T> {
+    protected String                                 threadName     = "InternalMapCache-Daemon";
+    private volatile boolean                         exitThread     = false;
+    private volatile HashMap<String, CacheEntity<T>> cacheEntityMap = new HashMap<String, CacheEntity<T>>();
+    private MapCacheSettings                         settings       = null;
     //
+    protected MapCacheSettings getMapCacheSettings() {
+        return new MapCacheSettings();
+    }
+    public MapCache() {
+        this.settings = this.getMapCacheSettings();
+    }
     @Override
     public void run() {
-        this.setName("MapCache-Daemon");
+        this.setName(this.threadName);
         while (!this.exitThread) {
             List<String> lostList = new ArrayList<String>();
-            for (Entry<String, CacheEntity> ent : this.cacheEntityMap.entrySet()) {
-                CacheEntity cacheEnt = ent.getValue();
+            for (Entry<String, CacheEntity<T>> ent : this.cacheEntityMap.entrySet()) {
+                CacheEntity<T> cacheEnt = ent.getValue();
                 if (cacheEnt == null)
                     continue;
                 if (cacheEnt.isLost())
@@ -57,7 +64,8 @@ public class MapCache extends Thread implements ICache {
         }
     }
     @Override
-    public synchronized void initCache(AppContext appContext, Config config) {
+    public synchronized void initCache(AppContext appContext) {
+        Config config = appContext.getInitContext().getConfig();
         this.settings.loadConfig(config.getSettings());
         /*加入，配置文件监听*/
         config.addSettingsListener(this.settings);
@@ -73,11 +81,11 @@ public class MapCache extends Thread implements ICache {
         this.clear();
     }
     @Override
-    public boolean toCache(String key, Object value) {
+    public boolean toCache(String key, T value) {
         return this.toCache(key, value, this.settings.getDefaultTimeout());
     }
     @Override
-    public boolean toCache(String key, Object value, long timeout) {
+    public boolean toCache(String key, T value, long timeout) {
         synchronized (key) {
             if (key == null)
                 return false;
@@ -87,14 +95,14 @@ public class MapCache extends Thread implements ICache {
             } else if (timeout <= 0)
                 timeout = this.settings.getDefaultTimeout();
             //
-            CacheEntity oldEnt = this.cacheEntityMap.put(key, new CacheEntity(value, timeout));
+            CacheEntity<T> oldEnt = this.cacheEntityMap.put(key, new CacheEntity<T>(value, timeout));
             return true;
         }
     }
     @Override
-    public Object fromCache(String key) {
+    public T fromCache(String key) {
         synchronized (key) {
-            CacheEntity cacheEntity = this.cacheEntityMap.get(key);
+            CacheEntity<T> cacheEntity = this.cacheEntityMap.get(key);
             if (cacheEntity != null) {
                 if (this.settings.isAutoRenewal() == true)
                     cacheEntity.refresh();
@@ -112,14 +120,14 @@ public class MapCache extends Thread implements ICache {
     @Override
     public boolean remove(String key) {
         synchronized (key) {
-            CacheEntity cacheEntity = this.cacheEntityMap.remove(key);
+            CacheEntity<T> cacheEntity = this.cacheEntityMap.remove(key);
             return cacheEntity != null;
         }
     }
     @Override
     public boolean refreshCache(String key) {
         synchronized (key) {
-            CacheEntity cacheEntity = this.cacheEntityMap.get(key);
+            CacheEntity<T> cacheEntity = this.cacheEntityMap.get(key);
             if (cacheEntity != null)
                 cacheEntity.refresh();
             return cacheEntity != null;

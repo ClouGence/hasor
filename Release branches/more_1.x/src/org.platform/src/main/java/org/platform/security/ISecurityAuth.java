@@ -13,23 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.icache;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package org.platform.security;
+import org.platform.context.AppContext;
 /**
- * 
+ * 负责权限系统的认证工作，认证模块在系统中可以存在多份。这些模块会按照顺序排成一个链（认证模块链）
  * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.ANNOTATION_TYPE })
-public @interface InitParam {
-    /** Name of the initialization parameter */
-    public String name();
-    /** Value of the initialization parameter */
-    public String value();
-    /** Description of the initialization parameter */
-    public String description() default "";
+public interface ISecurityAuth {
+    /**初始化授权模块。*/
+    public void initAuth(AppContext appContext);
+    /**执行登陆，返回值为{@link AuthorResult}类型枚举。*/
+    public UserInfo getUserInfo(String userCode);
 }

@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 package org.platform.security;
+import java.util.List;
 import org.platform.context.AppContext;
 /**
  * 负责授权操作，通过该接口可以将权限控制框架连接到不同的权限模型。
  * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface SecurityAuthorize {
+public interface ISecurityAccess {
     /**初始化策略对象。*/
-    public void initAuthorize(AppContext appContext);
-    /**
-     * 进行策略检查。
-     * @param userInfo 用户信息对象。
-     * @param powerCode 要检查的权限点。
-     */
-    public boolean testPermission(AuthSession authSession, Permission[] powerCode);
-}a
+    public void initAccess(AppContext appContext);
+    /**装载用户的权限。*/
+    public List<String> loadPermission(UserInfo userInfo);
+}

@@ -17,6 +17,7 @@ package org.platform.context;
 import java.util.Enumeration;
 import javax.servlet.ServletContext;
 import org.platform.Assert;
+import org.platform.clock.Clock;
 import org.platform.context.setting.Config;
 /**
  * {@link InitContext}接口的实现类。
@@ -28,7 +29,7 @@ public abstract class AbstractInitContext implements InitContext {
     private long   startTime = 0;   //系统启动时间
     protected AbstractInitContext(Config config) {
         this.config = config;
-        this.startTime = System.currentTimeMillis();
+        this.startTime = Clock.getSyncTime();
         Assert.isNotNull(config);
     }
     /*----------------------------------------------------------------------*/

@@ -21,26 +21,14 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 import org.more.util.CommonCodeUtil.Base64;
-import org.platform.security.CodeDigest;
+import org.platform.clock.Clock;
+import org.platform.security.Digest;
 /**
  * 随机加密。
  * @version : 2013-4-24
  * @author 赵永春 (zyc@byshell.org)
  */
-public final class RandomDigest implements CodeDigest {
-    public static void main(String[] args) throws Throwable {
-        RandomDigest random = new RandomDigest();
-        String body = "你好!";
-        System.out.println("Body:" + body);
-        for (int i = 0; i < 10; i++) {
-            Thread.sleep(1);
-            String hexBody = random.encrypt(body, "12345678");
-            System.out.println(hexBody);
-            System.out.println(">>" + random.decrypt(hexBody, "12345678"));
-        }
-        //        String strBody = new String(StringUtil.hexStr2Bytes(hexBody), "utf-8");
-        //        System.out.println("StrBody:" + strBody);
-    }
+public final class RandomDigest implements Digest {
     @Override
     public String encrypt(String strValue, String generateKey) throws Throwable {
         PBEKeySpec pbks = new PBEKeySpec(generateKey.toCharArray());
@@ -49,7 +37,7 @@ public final class RandomDigest implements CodeDigest {
         SecretKey k = kf.generateSecret(pbks);
         // 生成随机数盐
         byte[] salt = new byte[8];
-        Random r = new Random(System.currentTimeMillis());
+        Random r = new Random(Clock.getLocalTime());
         r.nextBytes(salt);
         // 创建并初始化密码器
         Cipher cipher = Cipher.getInstance("PBEWithMD5AndDES");

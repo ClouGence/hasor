@@ -29,6 +29,10 @@
 	</httpServlet>
 	<!-- 权限配置 -->
 	<security enable="false" enableURL="true" enableMethod="true">
+		<!-- authSession数据缓存名 -->
+		<authSessionCacheName>AuthSessionCache</authSessionCacheName>
+		<!-- 内置的权限数据缓存Cache配置 -->
+		<authSessionMapCache timeout="600000" eternal="true" autoRenewal="false" threadSeep="5000" />
 		<!-- 登入Action -->
 		<loginURL>s_login.sec</loginURL>
 		<!-- 登出Action -->
@@ -91,9 +95,9 @@
 			<!-- 需要权限检查的路径 -->
 			<includes>
 				<!-- 命中的URL需要用户进行登入 -->
-				<include mode="Login">sd</include>
+				<include mode="Login">/user</include>
 				<!-- 命中的URL需要用户具备某种权限代码，(逗号间隔多个代码) -->
-				<include mode="Permission" permissions="TestPower">sd</include>
+				<include mode="Permission" permissions="TestPower">/pro</include>
 			</includes>
 			<!-- 不需要权限检查的路径 -->
 			<excludes>
@@ -110,12 +114,12 @@
 	</security>
 	<!-- 缓存配置 -->
 	<cacheConfig enable="true">
-		<!-- WeakMapCache 配置 -->
+		<!-- MapCache 配置 -->
 		<!-- timeout=设置的超时时间10分钟超时 -->
 		<!-- eternal=缓存是否永远不销毁 -->
 		<!-- autoRenewal=每当访问缓存对象时是否自动对其续约（续约时间同加入时缓存超时时间） -->
 		<!-- threadSeep=缓存回收线程工作的时间频率(毫秒) -->
-		<weakMapCache timeout="600000" eternal="false" autoRenewal="false" threadSeep="5000" />
+		<mapCache timeout="600000" eternal="false" autoRenewal="false" threadSeep="5000" />
 		<!-- !!!这里可以放置其他缓存程序的Xml配置，然后通过XmlProperty类型读取到这段Xml!!! -->
 	</cacheConfig>
 	<!-- 工作空间设置 -->

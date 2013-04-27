@@ -16,25 +16,47 @@
 package org.platform.security;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
-import org.platform.Assert;
 import org.platform.context.AppContext;
+import org.platform.security.DefaultSecurityQuery.CheckPermission;
 /**
- * 安全认证系统服务。
+ * 安全认证系统服务，子类只需要解决SessionData存储就可以了。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class SecurityContext {
+    private AppContext                            appContext               = null;
     private InternalDispatcherManager             dispatcherManager        = null;
     private InternalUriPatternMatcherManager      uriPatternMatcherManager = null;
     private InternalCodeDigestManager             codeDigestManager        = null;
     private UriPatternMatcher                     defaultRules             = null;
-    private InternalSecurityQueryBuilder          securityQueryBuilder     = null; //负责处理SecurityQuer接口相关方法。
-    private volatile Map<String, AuthSession>     authSessionMap           = null;
     private ThreadLocal<Map<String, AuthSession>> currentAuthSessionMap    = null;
     //
-    public void initSecurity(AppContext appContext) {
+    //
+    //
+    public ISecurityAuth getSecurityAuth(String userAuthCode) {
+        return null;
+    }
+    protected abstract AuthSession newAuthSession(SessionData sessionData);
+    /**使用SessionData的数据创建AuthSession。*/
+    protected abstract SessionData createSessionData();
+    /**使用SessionData的数据创建AuthSession。*/
+    protected abstract void removeSessionData(SessionData authSessionID);
+    /**更新SessionData*/
+    protected abstract void updateSessionData(SessionData sessionData);
+    /**使用SessionData的数据创建AuthSession。*/
+    protected abstract SessionData getSessionDataByID(String authSessionID);
+    /**使用SessionData的数据创建AuthSession。*/
+    protected abstract List<SessionData> getSessionDataList();
+    //
+    //
+    //
+    /**初始化服务*/
+    public synchronized void initSecurity(AppContext appContext) {
+        this.appContext = appContext;
+        //
         this.dispatcherManager = new InternalDispatcherManager();
         this.uriPatternMatcherManager = new InternalUriPatternMatcherManager();
         this.codeDigestManager = new InternalCodeDigestManager();
@@ -42,42 +64,43 @@ public abstract class SecurityContext {
         SecuritySettings setting = appContext.getBean(SecuritySettings.class);
         this.defaultRules = setting.getRulesDefault();
         //
-        this.securityQueryBuilder = new InternalSecurityQueryBuilder(appContext);
-        //
         this.dispatcherManager.initManager(appContext);
         this.uriPatternMatcherManager.initManager(appContext);
         this.codeDigestManager.initManager(appContext);
         //
-        this.authSessionMap = new HashMap<String, AuthSession>();
         this.currentAuthSessionMap = new ThreadLocal<Map<String, AuthSession>>();
     }
-    public void destroySecurity(AppContext appContext) {
+    /**销毁服务*/
+    public synchronized void destroySecurity(AppContext appContext) {
         this.dispatcherManager.destroyManager(appContext);
         this.uriPatternMatcherManager.destroyManager(appContext);
         this.codeDigestManager.destroyManager(appContext);
-        this.authSessionMap.clear();
         this.currentAuthSessionMap = new ThreadLocal<Map<String, AuthSession>>();
     }
     /**创建一个权限会话。*/
-    public AuthSession createAuthSession() {
-        AuthSession newAuthSession = this.newAuthSession();
-        Assert.isNotNull(newAuthSession);
-        String sessionID = newAuthSession.getSessionID();
-        this.authSessionMap.put(sessionID, newAuthSession);
-        this.activateAuthSession(sessionID);
+    public synchronized AuthSession createAuthSession() {
+        /*1.新建SessionData，并且扔进缓存里*/
+        SessionData sessionData = this.createSessionData();
+        AuthSession newAuthSession = this.newAuthSession(sessionData);
+        /*3.放入ThreadLocal*/
+        Map<String, AuthSession> curSessionMap = this.currentAuthSessionMap.get();
+        if (curSessionMap == null) {
+            curSessionMap = new HashMap<String, AuthSession>();
+            this.currentAuthSessionMap.set(curSessionMap);
+        }
+        curSessionMap.put(newAuthSession.getSessionID(), newAuthSession);
         return newAuthSession;
     };
-    /**处理新会话的创建由子类决定新会话的类型。*/
-    protected abstract AuthSession newAuthSession();
-    /**处理会话的关闭由子类决定新会话的类型。*/
-    protected abstract void closeAuthSession(AuthSession authSession);
-    /**通过AuthSessionID获取权限会话。*/
+    /**通过AuthSessionID获取权限会话，不存在返回空。*/
     public AuthSession getAuthSession(String authSessionID) {
-        return this.authSessionMap.get(authSessionID);
+        SessionData sessionData = this.getSessionDataByID(authSessionID);
+        if (sessionData != null)
+            return this.newAuthSession(sessionData);
+        return null;
     };
     /**判断权限系统中是否具有指定ID的权限会话，如果有返回true.*/
     public boolean hasAuthSession(String authSessionID) {
-        return this.authSessionMap.containsKey(authSessionID);
+        return this.getSessionDataByID(authSessionID) != null;
     };
     /**将参数表示的会话激活到当前线程。*/
     public synchronized boolean activateAuthSession(String authSessionID) {
@@ -87,7 +110,7 @@ public abstract class SecurityContext {
             this.currentAuthSessionMap.set(curSessionMap);
         }
         if (this.hasAuthSession(authSessionID) == true && curSessionMap.containsKey(authSessionID) == false) {
-            AuthSession authSession = this.getAuthSession(authSessionID);
+            AuthSession authSession = this.getAuthSession(authSessionID);/*该方法会引发锁住authSessionID的动作*/
             curSessionMap.put(authSessionID, authSession);
             return true;
         }
@@ -121,8 +144,8 @@ public abstract class SecurityContext {
         }
     };
     /**获取编码工具*/
-    public CodeDigest getCodeDigest(String name) throws SecurityException {
-        CodeDigest digest = this.codeDigestManager.getCodeDigest(name);
+    public Digest getCodeDigest(String name) throws SecurityException {
+        Digest digest = this.codeDigestManager.getCodeDigest(name);
         if (digest == null)
             throw new SecurityException("CodeDigest :" + name + " is Undefined.");
         return digest;
@@ -141,26 +164,26 @@ public abstract class SecurityContext {
     };
     /**将Permission注解转换为SecurityNode。*/
     public SecurityNode getSecurityCondition(Permission permission) {
-        return this.securityQueryBuilder.getSecurityCondition(permission);
+        return new CheckPermission(permission);
     }
     /**将String注解转换为SecurityNode。*/
     public SecurityNode getSecurityCondition(String permissionCode) {
-        return this.securityQueryBuilder.getSecurityCondition(permissionCode);
+        return new CheckPermission(new Permission(permissionCode));
     }
     /**创建{@link SecurityQuery} 类，该类可以用来测试用户的权限。*/
     public SecurityQuery newSecurityQuery() {
-        return this.securityQueryBuilder.newSecurityQuery();
+        return this.appContext.getGuice().getInstance(SecurityQuery.class);
     };
     /**创建{@link SecurityQuery} 类，该类可以用来测试用户的权限。*/
     public SecurityQuery newSecurityQuery(Permission permission) {
-        return this.securityQueryBuilder.newSecurityQuery(permission);
+        return this.newSecurityQuery().and(permission);
     }
     /**创建{@link SecurityQuery} 类，该类可以用来测试用户的权限。*/
     public SecurityQuery newSecurityQuery(String permissionCode) {
-        return this.securityQueryBuilder.newSecurityQuery(permissionCode);
+        return this.newSecurityQuery().and(permissionCode);
     }
     /**创建{@link SecurityQuery} 类，该类可以用来测试用户的权限。*/
     public SecurityQuery newSecurityQuery(SecurityNode testNode) {
-        return this.securityQueryBuilder.newSecurityQuery(testNode);
+        return this.newSecurityQuery().andCustomer(testNode);
     }
-}
+}s

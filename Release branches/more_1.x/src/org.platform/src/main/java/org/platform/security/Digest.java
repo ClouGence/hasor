@@ -19,7 +19,7 @@ package org.platform.security;
  * @version : 2013-4-24
  * @author ÕÔÓÀ´º (zyc@byshell.org)
  */
-public interface CodeDigest {
+public interface Digest {
     /**±àÂë */
     public String encrypt(String strValue, String generateKey) throws Throwable;
     /**½âÂë*/

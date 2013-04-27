@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 package org.platform.security.internal;
+import java.util.List;
 import org.platform.security.AuthSession;
 import org.platform.security.SecurityContext;
+import org.platform.security.SessionData;
 /**
  *  
  * @version : 2013-4-20
@@ -23,13 +25,34 @@ import org.platform.security.SecurityContext;
  */
 public class DefaultSecurityService extends SecurityContext {
     @Override
-    protected AuthSession newAuthSession() {
+    protected AuthSession newAuthSession(SessionData sessionData) {
+        return new DefaultAuthSession(sessionData, this);
+    }
+    //  //
+    //  //
+    //  Key cacheKey = Key.get(TypeLiteral.get(ICache.class), Names.named(appContext.getSettings().getString(Security_AuthSessionCache)));
+    //  this.authSessionCache = appContext.getGuice().getInstance(cacheKey);
+    @Override
+    protected SessionData createSessionData() {
         // TODO Auto-generated method stub
         return null;
     }
     @Override
-    protected void closeAuthSession(AuthSession authSession) {
-        // TODO Auto-generated method stub¡¢
-        System.out.println();
+    protected void removeSessionData(SessionData authSessionID) {
+        // TODO Auto-generated method stub
     }
-}
+    @Override
+    protected void updateSessionData(SessionData sessionData) {
+        // TODO Auto-generated method stub
+    }
+    @Override
+    protected SessionData getSessionDataByID(String authSessionID) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    protected List<SessionData> getSessionDataList() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+}s

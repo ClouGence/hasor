@@ -15,6 +15,7 @@
  */
 package org.more.webserver;
 import java.io.IOException;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +24,6 @@ import org.platform.binder.ApiBinder;
 import org.platform.context.AbstractModuleListener;
 import org.platform.context.AppContext;
 import org.platform.context.InitListener;
-import org.platform.context.setting.Config;
 import org.platform.icache.IKeyBuilder;
 import org.platform.icache.KeyBuilder;
 import org.platform.icache.NeedCache;
@@ -64,32 +64,33 @@ class ParamBean {
     }
     public String value = null;
 }
+@NeedCache(cacheName = "TestCache", timeout = 43432)
 class TestBean {
     int index = 0;
-    @NeedCache()
     public String eval1(ParamBean val) {
         index++;
         return val + String.valueOf(this.index);
     }
+    @NeedCache(cacheName = "TestCache2")
     public String eval2(ParamBean val) {
         index++;
         return val + String.valueOf(this.index);
     }
 }
-@KeyBuilder(value = ParamBean.class, sort = 2)
+@KeyBuilder(value = Map.class, sort = 2)
 class ObjectIntKeyBuilder implements IKeyBuilder {
-    @Override
-    public void initKeyBuilder(AppContext appContext, Config config) {
-        // TODO Auto-generated method stub
-    }
-    @Override
-    public void destroy(AppContext appContext) {
-        // TODO Auto-generated method stub
-    }
     @Override
     public String serializeKey(Object arg) {
         //        return arg.toString();
         ParamBean b = (ParamBean) arg;
         return b.value;
+    }
+    @Override
+    public void initKeyBuilder(AppContext appContext) {
+        // TODO Auto-generated method stub
+    }
+    @Override
+    public void destroy(AppContext appContext) {
+        // TODO Auto-generated method stub
     }
 }

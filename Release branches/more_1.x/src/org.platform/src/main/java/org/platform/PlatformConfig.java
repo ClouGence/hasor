@@ -49,6 +49,16 @@ public interface PlatformConfig {
     public static final String Security_EnableURL                          = "security.enableURL";
     /**当Security_Enable启用之后，该值决定是否启用针对方法调用中的权限过滤。*/
     public static final String Security_EnableMethod                       = "security.enableMethod";
+    /**AuthSession数据缓存*/
+    public static final String Security_AuthSessionCache                   = "security.authSessionCacheName";
+    /**AuthSessionCache，设置的超时时间.*/
+    public static final String Security_AuthSessionCache_Timeout           = "security.authSessionMapCache.timeout";
+    /**AuthSessionCache，缓存是否永远不销毁.*/
+    public static final String Security_AuthSessionCache_Eternal           = "security.authSessionMapCache.eternal";
+    /**AuthSessionCache，每当访问缓存对象时是否自动对其续约（续约时间同加入时缓存超时时间）.*/
+    public static final String Security_AuthSessionCache_AutoRenewal       = "security.authSessionMapCache.autoRenewal";
+    /**AuthSessionCache，缓存回收线程工作的时间频率(毫秒).*/
+    public static final String Security_AuthSessionCache_ThreadSeep        = "security.authSessionMapCache.threadSeep";
     /**登入地址*/
     public static final String Security_LoginURL                           = "security.loginURL";
     /**登出地址*/
@@ -96,11 +106,11 @@ public interface PlatformConfig {
     /**是否启用缓存系统.*/
     public static final String CacheConfig_Enable                          = "cacheConfig.enable";
     /**MapCache，设置的超时时间.*/
-    public static final String CacheConfig_WeakMapCache_Timeout            = "cacheConfig.weakMapCache.timeout";
+    public static final String CacheConfig_MapCache_Timeout                = "cacheConfig.mapCache.timeout";
     /**MapCache，缓存是否永远不销毁.*/
-    public static final String CacheConfig_WeakMapCache_Eternal            = "cacheConfig.weakMapCache.eternal";
+    public static final String CacheConfig_MapCache_Eternal                = "cacheConfig.mapCache.eternal";
     /**MapCache，每当访问缓存对象时是否自动对其续约（续约时间同加入时缓存超时时间）.*/
-    public static final String CacheConfig_WeakMapCache_AutoRenewal        = "cacheConfig.weakMapCache.autoRenewal";
+    public static final String CacheConfig_MapCache_AutoRenewal            = "cacheConfig.mapCache.autoRenewal";
     /**MapCache，缓存回收线程工作的时间频率(毫秒).*/
-    public static final String CacheConfig_WeakMapCache_ThreadSeep         = "cacheConfig.weakMapCache.threadSeep";
+    public static final String CacheConfig_MapCache_ThreadSeep             = "cacheConfig.mapCache.threadSeep";
 }

@@ -17,13 +17,11 @@ package org.guice;
 public class FacesImpl implements Faces {
     private int index = 0;
     public FacesImpl(int i) {
-        index=i;
-      
+        index = i;
         // TODO Auto-generated constructor stub
     }
     @Override
     public void pring() {
         System.out.println(index);
-        
     }
 }

@@ -15,15 +15,13 @@
  */
 package org.platform.icache.key;
 import java.util.Date;
-import org.platform.icache.DefaultKeyBuilder;
 import org.platform.icache.KeyBuilder;
 /**
- * 默认实现
- * @version : 2013-4-21
+ * 
+ * @version : 2013-4-27
  * @author 赵永春 (zyc@byshell.org)
  */
-@DefaultKeyBuilder()
-@KeyBuilder(value = CharSequence.class)
+@KeyBuilder(value = Date.class)
 public class DateKeyBuilder extends AbstractKeyBuilder {
     /**获取参数的序列化标识码。*/
     public String serializeKey(Object arg) {

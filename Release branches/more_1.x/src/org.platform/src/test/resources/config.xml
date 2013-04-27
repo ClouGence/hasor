@@ -6,7 +6,7 @@
 		<loadPackages>org.*, com.*, net.*, cn.*</loadPackages>
 	</framework>
 	<!-- 权限配置 -->
-	<security enable="false">
+	<security enable="true">
 		<!-- 转发配置 -->
 		<forwards>
 			<!-- 登录源，当执行登陆时才会用到这里的配置。 -->

@@ -27,7 +27,7 @@ class DefaultCacheManager implements CacheManager {
     private ManagedCacheManager      cacheManager      = null;
     private ManagedKeyBuilderManager keyBuilderManager = null;
     private AppContext               appContext        = null;
-    private ICache                   defaultCache      = null;
+    private ICache<Object>           defaultCache      = null;
     private IKeyBuilder              defaultKeyBuilder = null;
     @Override
     public void initManager(AppContext appContext) {
@@ -49,12 +49,12 @@ class DefaultCacheManager implements CacheManager {
         this.keyBuilderManager.destroyManager(this.appContext);
     }
     @Override
-    public ICache getDefaultCache() {
+    public ICache<Object> getDefaultCache() {
         return this.defaultCache;
     }
     @Override
-    public ICache getCache(String cacheName) {
-        ICache icache = this.cacheManager.getCache(cacheName, this.appContext);
+    public ICache<Object> getCache(String cacheName) {
+        ICache<Object> icache = this.cacheManager.getCache(cacheName, this.appContext);
         if (icache == null) {
             Platform.warning("cache ->> use defaultCache . '" + cacheName + "' is not exist.");
             return this.defaultCache;

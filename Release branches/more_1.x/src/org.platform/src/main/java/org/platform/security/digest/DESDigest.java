@@ -20,13 +20,13 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 import org.more.util.CommonCodeUtil.Base64;
-import org.platform.security.CodeDigest;
+import org.platform.security.Digest;
 /**
  * DES加密。
  * @version : 2013-4-24
  * @author 赵永春 (zyc@byshell.org)
  */
-public final class DESDigest implements CodeDigest {
+public final class DESDigest implements Digest {
     @Override
     public String encrypt(String strValue, String generateKey) throws Throwable {
         SecureRandom sr = new SecureRandom(); //DES算法要求有一个可信任的随机数源

@@ -15,7 +15,6 @@
  */
 package org.platform.icache;
 import org.platform.context.AppContext;
-import org.platform.context.setting.Config;
 /**
  * cache在执行方法缓存时Key的生成器。
  * @version : 2013-4-21
@@ -23,7 +22,7 @@ import org.platform.context.setting.Config;
  */
 public interface IKeyBuilder {
     /**初始化IKeyBuilder*/
-    public void initKeyBuilder(AppContext appContext, Config config);
+    public void initKeyBuilder(AppContext appContext);
     /**销毁*/
     public void destroy(AppContext appContext);
     /**获取参数的序列化标识码，调用的参数不会为空。*/

@@ -26,22 +26,22 @@ import org.platform.context.setting.Settings;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class InternalCodeDigestManager implements SettingListener {
-    private SecuritySettings        securitySettings    = null;
-    private Map<String, CodeDigest> codeDigestObjectMap = new HashMap<String, CodeDigest>();
+    private SecuritySettings    securitySettings    = null;
+    private Map<String, Digest> codeDigestObjectMap = new HashMap<String, Digest>();
     public void initManager(AppContext appContext) {
         this.securitySettings = appContext.getBean(SecuritySettings.class);
         appContext.getInitContext().getConfig().addSettingsListener(this);
     }
-    public CodeDigest getCodeDigest(String name) {
-        Map<String, Class<CodeDigest>> codeDigestMap = this.securitySettings.getDigestMap();
+    public Digest getCodeDigest(String name) {
+        Map<String, Class<Digest>> codeDigestMap = this.securitySettings.getDigestMap();
         if (codeDigestMap.containsKey(name) == false)
             return null;
         //
         if (this.codeDigestObjectMap.containsKey(name) == true)
             return this.codeDigestObjectMap.get(name);
         try {
-            Class<CodeDigest> digestType = codeDigestMap.get(name);
-            CodeDigest digestObject = digestType.newInstance();
+            Class<Digest> digestType = codeDigestMap.get(name);
+            Digest digestObject = digestType.newInstance();
             this.codeDigestObjectMap.put(name, digestObject);
             return digestObject;
         } catch (Exception e) {

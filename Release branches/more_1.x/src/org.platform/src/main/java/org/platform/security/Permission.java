@@ -36,6 +36,8 @@ public class Permission {
         if (obj instanceof Permission) {
             String preCode = ((Permission) obj).getPermissionCode();
             return this.hashCode() == preCode.hashCode();
+        } else if (obj instanceof String) {
+            return this.perCode.equals(obj);
         }
         return super.equals(obj);
     }

@@ -15,7 +15,6 @@
  */
 package org.platform.icache.key;
 import org.platform.context.AppContext;
-import org.platform.context.setting.Config;
 import org.platform.icache.IKeyBuilder;
 /**
  * 
@@ -24,7 +23,7 @@ import org.platform.icache.IKeyBuilder;
  */
 abstract class AbstractKeyBuilder implements IKeyBuilder {
     @Override
-    public void initKeyBuilder(AppContext appContext, Config config) {}
+    public void initKeyBuilder(AppContext appContext) {}
     @Override
     public void destroy(AppContext appContext) {}
 }

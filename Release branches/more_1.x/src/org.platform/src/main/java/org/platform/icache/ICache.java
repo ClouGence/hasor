@@ -15,23 +15,22 @@
  */
 package org.platform.icache;
 import org.platform.context.AppContext;
-import org.platform.context.setting.Config;
 /**
  * 缓存使用入口，缓存的默认使用HashMap作为实现。
  * @version : 2013-4-20
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ICache {
+public interface ICache<T> {
     /**初始化Cache*/
-    public void initCache(AppContext appContext, Config config);
+    public void initCache(AppContext appContext);
     /**销毁Cache*/
     public void destroy(AppContext appContext);
     /**将一个对象放入缓存。*/
-    public boolean toCache(String key, Object value);
+    public boolean toCache(String key, T value);
     /**将一个对象放入缓存。*/
-    public boolean toCache(String key, Object value, long timeout);
+    public boolean toCache(String key, T value, long timeout);
     /**根据key从缓存中获取缓存对象。*/
-    public Object fromCache(String key);
+    public T fromCache(String key);
     /**判断缓存中是否有要求的对象。*/
     public boolean hasCache(String key);
     /**删除某个缓存的内容*/

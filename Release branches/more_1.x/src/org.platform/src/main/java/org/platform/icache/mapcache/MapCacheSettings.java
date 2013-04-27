@@ -15,10 +15,10 @@
  */
 package org.platform.icache.mapcache;
 import static org.platform.PlatformConfig.CacheConfig_Enable;
-import static org.platform.PlatformConfig.CacheConfig_WeakMapCache_AutoRenewal;
-import static org.platform.PlatformConfig.CacheConfig_WeakMapCache_Eternal;
-import static org.platform.PlatformConfig.CacheConfig_WeakMapCache_ThreadSeep;
-import static org.platform.PlatformConfig.CacheConfig_WeakMapCache_Timeout;
+import static org.platform.PlatformConfig.CacheConfig_MapCache_AutoRenewal;
+import static org.platform.PlatformConfig.CacheConfig_MapCache_Eternal;
+import static org.platform.PlatformConfig.CacheConfig_MapCache_ThreadSeep;
+import static org.platform.PlatformConfig.CacheConfig_MapCache_Timeout;
 import org.platform.context.SettingListener;
 import org.platform.context.setting.Settings;
 /**
@@ -48,12 +48,27 @@ public class MapCacheSettings implements SettingListener {
     public long getThreadSeep() {
         return threadSeep;
     }
+    protected void setCacheEnable(boolean cacheEnable) {
+        this.cacheEnable = cacheEnable;
+    }
+    protected void setDefaultTimeout(long defaultTimeout) {
+        this.defaultTimeout = defaultTimeout;
+    }
+    protected void setEternal(boolean eternal) {
+        this.eternal = eternal;
+    }
+    protected void setAutoRenewal(boolean autoRenewal) {
+        this.autoRenewal = autoRenewal;
+    }
+    protected void setThreadSeep(long threadSeep) {
+        this.threadSeep = threadSeep;
+    }
     @Override
     public void loadConfig(Settings newConfig) {
         this.cacheEnable = newConfig.getBoolean(CacheConfig_Enable);
-        this.defaultTimeout = newConfig.getLong(CacheConfig_WeakMapCache_Timeout);
-        this.eternal = newConfig.getBoolean(CacheConfig_WeakMapCache_Eternal);
-        this.autoRenewal = newConfig.getBoolean(CacheConfig_WeakMapCache_AutoRenewal);
-        this.threadSeep = newConfig.getLong(CacheConfig_WeakMapCache_ThreadSeep);
+        this.defaultTimeout = newConfig.getLong(CacheConfig_MapCache_Timeout);
+        this.eternal = newConfig.getBoolean(CacheConfig_MapCache_Eternal);
+        this.autoRenewal = newConfig.getBoolean(CacheConfig_MapCache_AutoRenewal);
+        this.threadSeep = newConfig.getLong(CacheConfig_MapCache_ThreadSeep);
     }
 }
