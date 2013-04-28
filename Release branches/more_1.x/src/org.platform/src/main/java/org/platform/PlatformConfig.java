@@ -51,14 +51,16 @@ public interface PlatformConfig {
     public static final String Security_EnableMethod                       = "security.enableMethod";
     /**AuthSession数据缓存*/
     public static final String Security_AuthSessionCache                   = "security.authSessionCacheName";
+    /**AuthSession超时时间*/
+    public static final String Security_AuthSessionTimeout                 = "security.authSessionTimeout";
     /**AuthSessionCache，设置的超时时间.*/
-    public static final String Security_AuthSessionCache_Timeout           = "security.authSessionMapCache.timeout";
+    public static final String Security_AuthSessionCache_Timeout           = "security.internalAuthSessionMapCache.timeout";
     /**AuthSessionCache，缓存是否永远不销毁.*/
-    public static final String Security_AuthSessionCache_Eternal           = "security.authSessionMapCache.eternal";
+    public static final String Security_AuthSessionCache_Eternal           = "security.internalAuthSessionMapCache.eternal";
     /**AuthSessionCache，每当访问缓存对象时是否自动对其续约（续约时间同加入时缓存超时时间）.*/
-    public static final String Security_AuthSessionCache_AutoRenewal       = "security.authSessionMapCache.autoRenewal";
+    public static final String Security_AuthSessionCache_AutoRenewal       = "security.internalAuthSessionMapCache.autoRenewal";
     /**AuthSessionCache，缓存回收线程工作的时间频率(毫秒).*/
-    public static final String Security_AuthSessionCache_ThreadSeep        = "security.authSessionMapCache.threadSeep";
+    public static final String Security_AuthSessionCache_ThreadSeep        = "security.internalAuthSessionMapCache.threadSeep";
     /**登入地址*/
     public static final String Security_LoginURL                           = "security.loginURL";
     /**登出地址*/
@@ -67,6 +69,8 @@ public interface PlatformConfig {
     public static final String Security_LoginFormData_AccountField         = "security.loginFormData.accountField";
     /**登入表单，密码*/
     public static final String Security_LoginFormData_PasswordField        = "security.loginFormData.passwordField";
+    /**登入表单，使用的权限系统*/
+    public static final String Security_LoginFormData_AuthField            = "security.loginFormData.authField";
     /**URL权限检查默认策略配置：Login|Logout|Guest|Permission|None*/
     public static final String Security_Rules_DefaultModel                 = "security.rules.defaultRule";
     /**包含在权限检查范畴的URL*/
@@ -77,8 +81,14 @@ public interface PlatformConfig {
     public static final String Security_Forwards                           = "security.forwards";
     /**是否启用来宾帐号，启用来宾帐号之后当用户尚未登陆时获取的AuthSession会获取来宾的AuthSession.*/
     public static final String Security_Guest_Enable                       = "security.guest.enable";
-    /**来宾用户帐号类*/
-    public static final String Security_Guest_ClassType                    = "security.guest.classType";
+    /**来宾帐号的认证系统 .*/
+    public static final String Security_Guest_AuthSystem                   = "security.guest.authSystem";
+    /**来宾帐号.*/
+    public static final String Security_Guest_Account                      = "security.guest.info.account";
+    /**来宾帐号的密码.*/
+    public static final String Security_Guest_Password                     = "security.guest.info.password";
+    /**来宾帐号的Code.*/
+    public static final String Security_Guest_UserCode                     = "security.guest.info.userCode";
     /**来宾帐号权限*/
     public static final String Security_Guest_Permissions                  = "security.guest.permissions";
     /**是否启用客户端cookie来协助认证。*/

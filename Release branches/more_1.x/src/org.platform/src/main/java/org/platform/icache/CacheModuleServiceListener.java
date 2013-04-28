@@ -86,10 +86,8 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
         for (Class<?> cls : iKeyBuilderSet) {
             if (IKeyBuilder.class.isAssignableFrom(cls) == false) {
                 Platform.warning("loadKeyBuilder : not implemented IKeyBuilder of type " + Platform.logString(cls));
-            } else {
-                Platform.info("at KeyBuilder of type " + Platform.logString(cls));
+            } else
                 iKeyBuilderList.add((Class<? extends IKeyBuilder>) cls);
-            }
         }
         //2.排序
         Collections.sort(iKeyBuilderList, new Comparator<Class<?>>() {
@@ -110,11 +108,12 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
             Key<? extends IKeyBuilder> keyBuilderKey = Key.get(keyBuildertype);
             KeyBuilderDefinition keyBuilderDefine = new KeyBuilderDefinition(keyBuilderAnno.value(), keyBuilderKey);
             binder.bind(KeyBuilderDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(keyBuilderDefine);
+            Platform.info(Platform.logString(keyBuilderAnno.value()) + " at KeyBuilder of type " + Platform.logString(keyBuildertype));
             //确定是否为defaut
             if (keyBuildertype.isAnnotationPresent(DefaultKeyBuilder.class) == true) {
-                Platform.info("at DefaultKeyBuilder of type " + Platform.logString(keyBuildertype));
+                Platform.warning(Platform.logString(keyBuilderAnno.value()) + " type DefaultKeyBuilder is " + Platform.logString(keyBuildertype));
                 DefaultKeyBuilder defaultKeyBuilder = keyBuildertype.getAnnotation(DefaultKeyBuilder.class);
-                if (defaultKeyBuilder.value() < defaultKeyBuilderIndex/*数越小越优先*/) {
+                if (defaultKeyBuilder.value() <= defaultKeyBuilderIndex/*数越小越优先*/) {
                     defaultKeyBuilderIndex = defaultKeyBuilder.value();
                     binder.bind(IKeyBuilder.class).toProvider(keyBuilderDefine);
                 }
@@ -127,39 +126,38 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
         Platform.info("begin loadCache...");
         //1.获取
         Set<Class<?>> cacheSet = event.getClassSet(Cache.class);
-        List<Class<? extends ICache<Object>>> cacheList = new ArrayList<Class<? extends ICache<Object>>>();
+        List<Class<ICache>> cacheList = new ArrayList<Class<ICache>>();
         for (Class<?> cls : cacheSet) {
             if (ICache.class.isAssignableFrom(cls) == false) {
                 Platform.warning("loadCache : not implemented ICache of type " + Platform.logString(cls));
-            } else {
-                Platform.info("at Cache of type " + Platform.logString(cls));
-                cacheList.add((Class<? extends ICache<Object>>) cls);
-            }
+            } else
+                cacheList.add((Class<ICache>) cls);
         }
         //3.注册服务
         long defaultCacheIndex = Long.MAX_VALUE;
         Binder binder = event.getGuiceBinder();
         Map<String, Integer> cacheIndex = new HashMap<String, Integer>();
-        for (Class<? extends ICache<Object>> cacheType : cacheList) {
+        for (Class<ICache> cacheType : cacheList) {
             Cache cacheAnno = cacheType.getAnnotation(Cache.class);
-            Key<? extends ICache<Object>> cacheKey = Key.get(cacheType);
-            //
-            CacheDefinition cacheDefine = new CacheDefinition(cacheAnno.value(), cacheKey);
             for (String cacheName : cacheAnno.value()) {
+                Platform.info(cacheName + " at Cache of type " + Platform.logString(cacheType));
+                //
                 int maxIndex = (cacheIndex.containsKey(cacheName) == false) ? Integer.MAX_VALUE : cacheIndex.get(cacheName);
-                if (cacheAnno.sort() > maxIndex) {
+                if (cacheAnno.sort() <= maxIndex/*数越小越优先*/) {
                     cacheIndex.put(cacheName, cacheAnno.sort());
+                    //
+                    CacheDefinition cacheDefine = new CacheDefinition(cacheName, cacheType);
                     binder.bind(CacheDefinition.class).annotatedWith(Names.named(cacheName)).toInstance(cacheDefine);
                     binder.bind(ICache.class).annotatedWith(Names.named(cacheName)).toProvider(cacheDefine);
-                }
-            }
-            //确定是否为defaut
-            if (cacheType.isAnnotationPresent(DefaultCache.class) == true) {
-                Platform.info("at DefaultCache of type " + Platform.logString(cacheType));
-                DefaultCache defaultCache = cacheType.getAnnotation(DefaultCache.class);
-                if (defaultCache.value() < defaultCacheIndex/*数越小越优先*/) {
-                    defaultCacheIndex = defaultCache.value();
-                    binder.bind(ICache.class).toProvider(cacheDefine);
+                    //确定是否为defaut
+                    if (cacheType.isAnnotationPresent(DefaultCache.class) == true) {
+                        Platform.warning(cacheName + " is DefaultCache!");
+                        DefaultCache defaultCache = cacheType.getAnnotation(DefaultCache.class);
+                        if (defaultCache.value() <= defaultCacheIndex/*数越小越优先*/) {
+                            defaultCacheIndex = defaultCache.value();
+                            binder.bind(ICache.class).toProvider(cacheDefine);
+                        }
+                    }
                 }
             }
         }

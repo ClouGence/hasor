@@ -23,6 +23,10 @@ import org.platform.context.AppContext;
 public interface ISecurityAuth {
     /**初始化授权模块。*/
     public void initAuth(AppContext appContext);
-    /**执行登陆，返回值为{@link AuthorResult}类型枚举。*/
+    /**通过userCode登陆系统*/
     public UserInfo getUserInfo(String userCode);
+    /**通过帐号密码登陆系统*/
+    public UserInfo getUserInfo(String account, String password);
+    /**销毁授权模块。*/
+    public void destroyAuth(AppContext appContext);
 }

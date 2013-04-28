@@ -170,6 +170,10 @@ public abstract class AppContext {
     public static String genIDBy36() {
         return UUID.randomUUID().toString();
     }
+    /**从时钟服务中获取一个在分布式部署环境里有效的时间。*/
+    public static long getSyncTime() {
+        return Clock.getSyncTime();
+    }
     /**
      * 生成路径算法。
      * @param number 数字

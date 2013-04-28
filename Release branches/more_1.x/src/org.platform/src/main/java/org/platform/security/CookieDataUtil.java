@@ -48,35 +48,35 @@ public final class CookieDataUtil {
         return this.cookieUserDataMap.values().toArray(new CookieUserData[this.cookieUserDataMap.size()]);
     }
     public final static class CookieUserData {
-        private String  userCode      = null;
-        private long    createdTime   = 0;
-        private boolean recover       = false;
-        private String  authSessionID = "";
-        private long    appStartTime  = 0;
+        private String sessionID    = "";
+        private String userCode     = null;
+        private String authSystem   = null;
+        private long   loginTime    = 0;
+        private long   appStartTime = 0;
         //
+        public String getSessionID() {
+            return sessionID;
+        }
+        public void setSessionID(String sessionID) {
+            this.sessionID = sessionID;
+        }
         public String getUserCode() {
             return userCode;
         }
         public void setUserCode(String userCode) {
             this.userCode = userCode;
         }
-        public long getCreatedTime() {
-            return createdTime;
+        public String getAuthSystem() {
+            return authSystem;
         }
-        public void setCreatedTime(long createdTime) {
-            this.createdTime = createdTime;
+        public void setAuthSystem(String authSystem) {
+            this.authSystem = authSystem;
         }
-        public boolean isRecover() {
-            return recover;
+        public long getLoginTime() {
+            return loginTime;
         }
-        public void setRecover(boolean recover) {
-            this.recover = recover;
-        }
-        public String getAuthSessionID() {
-            return authSessionID;
-        }
-        public void setAuthSessionID(String authSessionID) {
-            this.authSessionID = authSessionID;
+        public void setLoginTime(long loginTime) {
+            this.loginTime = loginTime;
         }
         public long getAppStartTime() {
             return appStartTime;

@@ -20,23 +20,22 @@ import org.platform.clock.Clock;
  * @version : 2013-4-27
  * @author 赵永春 (zyc@byshell.org)
  */
-public class SessionData {
-    private String   sessionID     = null;
-    private String   userCode      = null;
-    private String   fromAccess    = null;
-    private String   fromAuth      = null;
-    private boolean  loginMark     = false;
-    private boolean  cookieRecover = false;
-    private String[] permissionSet = null;
-    private long     createdTime   = Clock.getSyncTime();
-    //
-    //
-    //
-    public String getSessionID() {
-        return sessionID;
-    }
-    protected void setSessionID(String sessionID) {
-        this.sessionID = sessionID;
+public class SessionData implements Cloneable {
+    private String   userCode      = null;               //用户标识码
+    private String   authSystem    = null;               //授权系统ID
+    private String[] permissionSet = null;               //会话的权限
+    private long     loginTime     = 0;                  //登陆时间
+    private long     lastTime      = Clock.getSyncTime(); //最后更新时间
+    /*--------------------------------------------------*/
+    @Override
+    protected SessionData clone() throws CloneNotSupportedException {
+        SessionData newData = new SessionData();
+        newData.userCode = newData.userCode;
+        newData.authSystem = newData.authSystem;
+        newData.permissionSet = newData.permissionSet.clone();
+        newData.loginTime = newData.loginTime;
+        newData.lastTime = newData.lastTime;
+        return newData;
     }
     public String getUserCode() {
         return userCode;
@@ -44,29 +43,11 @@ public class SessionData {
     public void setUserCode(String userCode) {
         this.userCode = userCode;
     }
-    public String getFromAccess() {
-        return fromAccess;
+    public String getAuthSystem() {
+        return authSystem;
     }
-    public void setFromAccess(String fromAccess) {
-        this.fromAccess = fromAccess;
-    }
-    public String getFromAuth() {
-        return fromAuth;
-    }
-    public void setFromAuth(String fromAuth) {
-        this.fromAuth = fromAuth;
-    }
-    public boolean isLoginMark() {
-        return loginMark;
-    }
-    public void setLoginMark(boolean loginMark) {
-        this.loginMark = loginMark;
-    }
-    public boolean isCookieRecover() {
-        return cookieRecover;
-    }
-    public void setCookieRecover(boolean cookieRecover) {
-        this.cookieRecover = cookieRecover;
+    public void setAuthSystem(String authSystem) {
+        this.authSystem = authSystem;
     }
     public String[] getPermissionSet() {
         return permissionSet;
@@ -74,10 +55,16 @@ public class SessionData {
     public void setPermissionSet(String[] permissionSet) {
         this.permissionSet = permissionSet;
     }
-    public long getCreatedTime() {
-        return createdTime;
+    public long getLoginTime() {
+        return loginTime;
     }
-    public void setCreatedTime(long createdTime) {
-        this.createdTime = createdTime;
+    public void setLoginTime(long loginTime) {
+        this.loginTime = loginTime;
+    }
+    public long getLastTime() {
+        return lastTime;
+    }
+    public void setLastTime(long lastTime) {
+        this.lastTime = lastTime;
     }
 }

@@ -15,6 +15,11 @@
  */
 package org.platform.security;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -26,8 +31,10 @@ import org.platform.context.AppContext;
 import org.platform.context.InitListener;
 import org.platform.context.setting.Config;
 import org.platform.security.Power.Level;
-import org.platform.security.internal.DefaultSecurityService;
+import com.google.inject.Binder;
+import com.google.inject.Key;
 import com.google.inject.matcher.AbstractMatcher;
+import com.google.inject.name.Names;
 /**
  * 支持Service等注解功能。
  * @version : 2013-4-8
@@ -51,9 +58,12 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         event.filter("*").through(SecurityFilter.class);
         /*aop，方法执行权限支持*/
         event.getGuiceBinder().bindInterceptor(new ClassPowerMatcher(), new MethodPowerMatcher(), new SecurityInterceptor());/*注册Aop*/
+        /*装载SecurityAccess*/
+        this.loadSecurityAuth(event);
+        this.loadSecurityAccess(event);
         /*绑定核心功能实现类。*/
         event.getGuiceBinder().bind(SecuritySettings.class).toInstance(this.settings);//通过Guice
-        event.getGuiceBinder().bind(SecurityContext.class).to(DefaultSecurityService.class);
+        event.getGuiceBinder().bind(SecurityContext.class).to(InternalSecurityService.class).asEagerSingleton();
         event.getGuiceBinder().bind(SecurityQuery.class).to(DefaultSecurityQuery.class);
     }
     @Override
@@ -71,6 +81,70 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         systemConfig.removeSettingsListener(this.settings);
         //
         this.secService.destroySecurity(appContext);
+    }
+    //
+    /*装载SecurityAccess*/
+    protected void loadSecurityAuth(ApiBinder event) {
+        Platform.info("begin loadSecurityAuth...");
+        //1.获取
+        Set<Class<?>> authSet = event.getClassSet(SecurityAuth.class);
+        List<Class<? extends ISecurityAuth>> authList = new ArrayList<Class<? extends ISecurityAuth>>();
+        for (Class<?> cls : authSet) {
+            if (ISecurityAuth.class.isAssignableFrom(cls) == false) {
+                Platform.warning("loadSecurityAuth : not implemented ISecurityAuth of type " + Platform.logString(cls));
+            } else {
+                Platform.info("at SecurityAuth of type " + Platform.logString(cls));
+                authList.add((Class<? extends ISecurityAuth>) cls);
+            }
+        }
+        //3.注册服务
+        Binder binder = event.getGuiceBinder();
+        Map<String, Integer> authIndex = new HashMap<String, Integer>();
+        for (Class<? extends ISecurityAuth> authType : authList) {
+            SecurityAuth authAnno = authType.getAnnotation(SecurityAuth.class);
+            Key<? extends ISecurityAuth> authKey = Key.get(authType);
+            String authSystem = authAnno.authSystem();
+            //
+            SecurityAuthDefinition authDefine = new SecurityAuthDefinition(authSystem, authKey);
+            int maxIndex = (authIndex.containsKey(authSystem) == false) ? Integer.MAX_VALUE : authIndex.get(authSystem);
+            if (authAnno.sort() <= maxIndex/*值越小越优先*/) {
+                authIndex.put(authSystem, authAnno.sort());
+                binder.bind(SecurityAuthDefinition.class).annotatedWith(Names.named(authSystem)).toInstance(authDefine);
+                binder.bind(ISecurityAuth.class).annotatedWith(Names.named(authSystem)).toProvider(authDefine);
+            }
+        }
+    }
+    //
+    /*装载SecurityAccess*/
+    protected void loadSecurityAccess(ApiBinder event) {
+        Platform.info("begin loadSecurityAccess...");
+        //1.获取
+        Set<Class<?>> accessSet = event.getClassSet(SecurityAccess.class);
+        List<Class<? extends ISecurityAccess>> accessList = new ArrayList<Class<? extends ISecurityAccess>>();
+        for (Class<?> cls : accessSet) {
+            if (ISecurityAccess.class.isAssignableFrom(cls) == false) {
+                Platform.warning("loadSecurityAccess : not implemented ISecurityAccess of type " + Platform.logString(cls));
+            } else {
+                Platform.info("at SecurityAccess of type " + Platform.logString(cls));
+                accessList.add((Class<? extends ISecurityAccess>) cls);
+            }
+        }
+        //3.注册服务
+        Binder binder = event.getGuiceBinder();
+        Map<String, Integer> accessIndex = new HashMap<String, Integer>();
+        for (Class<? extends ISecurityAccess> accessType : accessList) {
+            SecurityAccess accessAnno = accessType.getAnnotation(SecurityAccess.class);
+            Key<? extends ISecurityAccess> accessKey = Key.get(accessType);
+            String authSystem = accessAnno.authSystem();
+            //
+            SecurityAccessDefinition accessDefine = new SecurityAccessDefinition(authSystem, accessKey);
+            int maxIndex = (accessIndex.containsKey(authSystem) == false) ? Integer.MAX_VALUE : accessIndex.get(authSystem);
+            if (accessAnno.sort() <= maxIndex/*值越小越优先*/) {
+                accessIndex.put(authSystem, accessAnno.sort());
+                binder.bind(SecurityAccessDefinition.class).annotatedWith(Names.named(authSystem)).toInstance(accessDefine);
+                binder.bind(ISecurityAccess.class).annotatedWith(Names.named(authSystem)).toProvider(accessDefine);
+            }
+        }
     }
     /*-------------------------------------------------------------------------------------*/
     /*负责检测类是否匹配。规则：只要类型或方法上标记了@Power。*/
@@ -163,10 +237,15 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
             AuthSession[] authSessions = secService.getCurrentAuthSession();
             boolean needCreateSession = authSessions.length == 0;
             if (needCreateSession) {
-                AuthSession authSession = secService.createAuthSession();
-                if (settings.isGuestEnable() == true) {
-                    authSession.doLoginGuest();/*登陆来宾帐号*/
-                    authSession.setSupportCookieRecover(false);/*不恢复*/
+                try {
+                    AuthSession newAuthSession = secService.createAuthSession();
+                    StringBuilder authSessionIDs = new StringBuilder("");
+                    for (AuthSession authSession : authSessions)
+                        authSessionIDs.append(authSession.getSessionID() + ",");
+                    authSessionIDs.append(newAuthSession.getSessionID());
+                    se.getSession().setAttribute(InternalSecurityProcess.HttpSessionAuthSessionSetName, authSessionIDs.toString());
+                } catch (SecurityException e) {
+                    Platform.error(Platform.logString(e));
                 }
             }
         }

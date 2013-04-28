@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.security;
+package org.platform.security.guest;
+import org.platform.security.UserInfo;
 /**
  * 表示来宾用户，来宾用户表示未登录状态下的用户。
  * @version : 2013-4-17
  * @author 赵永春 (zyc@byshell.org)
  */
 public class GuestUser implements UserInfo {
-    private String account  = "guest";
-    private String password = "guest";
-    private String name     = "Guest User";
+    private String account;
+    private String password;
     //
     //
     public String getAccount() {
@@ -37,18 +37,12 @@ public class GuestUser implements UserInfo {
     public void setPassword(String password) {
         this.password = password;
     }
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    public String getUserCode() {
+        return this.getAccount() + "@" + this.getPassword();
     }
     @Override
     public boolean isGuest() {
         return true;
-    }
-    @Override
-    public String getUserCode() {
-        return this.getAccount() + "@" + this.getPassword();
     }
 }

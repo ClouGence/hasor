@@ -15,6 +15,10 @@
  */
 package org.platform.security;
 import static org.platform.PlatformConfig.Security_AuthSessionCache;
+import static org.platform.PlatformConfig.Security_AuthSessionCache_AutoRenewal;
+import static org.platform.PlatformConfig.Security_AuthSessionCache_Eternal;
+import static org.platform.PlatformConfig.Security_AuthSessionCache_ThreadSeep;
+import static org.platform.PlatformConfig.Security_AuthSessionCache_Timeout;
 import static org.platform.PlatformConfig.Security_ClientCookie_CookieName;
 import static org.platform.PlatformConfig.Security_ClientCookie_Domain;
 import static org.platform.PlatformConfig.Security_ClientCookie_Enable;
@@ -29,10 +33,14 @@ import static org.platform.PlatformConfig.Security_EnableMethod;
 import static org.platform.PlatformConfig.Security_EnableURL;
 import static org.platform.PlatformConfig.Security_EncryptionDigestSet;
 import static org.platform.PlatformConfig.Security_Forwards;
-import static org.platform.PlatformConfig.Security_Guest_ClassType;
+import static org.platform.PlatformConfig.Security_Guest_Account;
+import static org.platform.PlatformConfig.Security_Guest_AuthSystem;
 import static org.platform.PlatformConfig.Security_Guest_Enable;
+import static org.platform.PlatformConfig.Security_Guest_Password;
 import static org.platform.PlatformConfig.Security_Guest_Permissions;
+import static org.platform.PlatformConfig.Security_Guest_UserCode;
 import static org.platform.PlatformConfig.Security_LoginFormData_AccountField;
+import static org.platform.PlatformConfig.Security_LoginFormData_AuthField;
 import static org.platform.PlatformConfig.Security_LoginFormData_PasswordField;
 import static org.platform.PlatformConfig.Security_LoginURL;
 import static org.platform.PlatformConfig.Security_LogoutURL;
@@ -56,31 +64,40 @@ import org.platform.security.SecurityDispatcher.DispatcherType;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class SecuritySettings implements SettingListener {
-    private boolean                    enable                     = false; //启用禁用
-    private boolean                    enableMethod               = true; //方法权限检查
-    private boolean                    enableURL                  = true; //URL权限检查
-    private String                     authSessionCacheName       = null; //权限数据缓存名
-    private String                     accountField               = null; //帐号字段
-    private String                     passwordField              = null; //密码字段
-    private String                     loginURL                   = null; //登入地址
-    private String                     logoutURL                  = null; //登出地址
-    private boolean                    guestEnable                = false; //是否启用来宾帐号
-    private String                     guestClassType             = null; //来宾帐号类型
-    private String[]                   guestPermissions           = null; //来宾帐号权限
-    private UriPatternMatcher          rulesDefault               = null; //URL权限检查默认策略配置：Login|Logout|Guest|Permission|None
-    private List<UriPatternMatcher>    rulesIncludeList           = null; //包含到权限检查路径
-    private List<UriPatternMatcher>    rulesExcludeList           = null; //排除权限检查
-    private boolean                    cookieEnable               = true; //是否启用客户端cookie来协助认证。
-    private boolean                    loseCookieOnStart          = true; //当系统启动时是否强制所有客户端已经登陆过的Cookie信息失效
-    private String                     cookieName                 = null; //客户端cookie名称
-    private int                        cookieTimeout              = 0;    //cookie超时时间，单位：秒
-    private boolean                    cookieEncryptionEnable     = true; //是否加密cookie内容
-    private String                     cookieEncryptionEncodeType = null; //cookie内容加密方式，DES,BAS64等等.
-    private String                     cookieEncryptionKey        = null; //cookie内容加密时使用的Key
-    private String                     cookieDomain               = null; //cookie的Domain配置，设置这个属性用来支持跨域访问cookie。（默认为空不对该值进行设置）
-    private String                     cookiePath                 = null; //cookie的path属性（默认为空不对该值进行设置）
-    private List<SecurityDispatcher>   dispatcherForwardList      = null; //转发配置
-    private Map<String, Class<Digest>> digestMap                  = null; //加密算法配置
+    private boolean                    enable;                        //Security_Enable                             :启用禁用
+    private boolean                    enableMethod;                  //Security_EnableMethod                       :方法权限检查
+    private boolean                    enableURL;                     //Security_EnableURL                          :URL权限检查
+    private String                     authSessionCacheName;          //Security_AuthSessionCache                   :权限数据缓存名
+    private long                       authSessionTimeout;            //Security_AuthSessionTimeout                 :Session超时时间
+    private long                       authSessionCacheDefaultTimeout; //Security_AuthSessionCache_Timeout          :AuthSessionCache，设置的超时时间.
+    private boolean                    authSessionCacheEternal;       //Security_AuthSessionCache_Eternal           :AuthSessionCache，缓存是否永远不销毁.
+    private boolean                    authSessionCacheAutoRenewal;   //Security_AuthSessionCache_AutoRenewal       :AuthSessionCache，每当访问缓存对象时是否自动对其续约（续约时间同加入时缓存超时时间）.
+    private long                       authSessionCacheThreadSeep;    //Security_AuthSessionCache_ThreadSeep        :AuthSessionCache，缓存回收线程工作的时间频率(毫秒).
+    private String                     loginURL;                      //登入地址
+    private String                     logoutURL;                     //登出地址
+    private String                     accountField;                  //帐号字段
+    private String                     passwordField;                 //密码字段
+    private String                     authField;                     //使用的认证系统字段
+    private UriPatternMatcher          rulesDefault;                  //URL权限检查默认策略配置                                       :Login|Logout|Guest|Permission|None
+    private List<UriPatternMatcher>    rulesIncludeList;              //包含到权限检查路径
+    private List<UriPatternMatcher>    rulesExcludeList;              //排除权限检查
+    private List<SecurityDispatcher>   dispatcherForwardList;         //转发配置
+    private boolean                    guestEnable;                   //Security_Guest_Enable                       :是否启用来宾帐号
+    private String                     guestAuthSystem;               //Security_Guest_AuthSystem                   :来宾帐号的认证系统
+    private String                     guestAccount;                  //Security_Guest_Account                      :来宾帐号
+    private String                     guestPassword;                 //Security_Guest_Password                     :来宾帐号密码
+    private String                     guestUserCode;                 //Security_Guest_UserCode                     :来宾用户Code
+    private String[]                   guestPermissions;              //Security_Guest_Permissions                  :来宾帐号权限
+    private boolean                    cookieEnable;                  //Security_ClientCookie_Enable                :是否启用客户端cookie来协助认证。
+    private boolean                    loseCookieOnStart;             //Security_ClientCookie_LoseCookieOnStart     :当系统启动时是否强制所有客户端已经登陆过的Cookie信息失效
+    private String                     cookieName;                    //Security_ClientCookie_CookieName            :客户端cookie名称
+    private int                        cookieTimeout;                 //Security_ClientCookie_Timeout               :cookie超时时间，单位：秒
+    private String                     cookieDomain;                  //Security_ClientCookie_Domain                :cookie的Domain配置，设置这个属性用来支持跨域访问cookie。（默认为空不对该值进行设置）
+    private String                     cookiePath;                    //Security_ClientCookie_Path                  :cookie的path属性（默认为空不对该值进行设置）
+    private boolean                    cookieEncryptionEnable;        //Security_ClientCookie_Encryption_Enable     :是否加密cookie内容
+    private String                     cookieEncryptionEncodeType;    //Security_ClientCookie_Encryption_EncodeType :cookie内容加密方式，DES,BAS64等等.
+    private String                     cookieEncryptionKey;           //Security_ClientCookie_Encryption_Key        :cookie内容加密时使用的Key
+    private Map<String, Class<Digest>> digestMap;                     //Security_EncryptionDigestSet                :加密算法配置
     //
     //
     public void loadConfig(Settings newConfig) {
@@ -93,16 +110,17 @@ public class SecuritySettings implements SettingListener {
         }
         //
         this.authSessionCacheName = newConfig.getString(Security_AuthSessionCache);
+        this.authSessionTimeout = newConfig.getLong(Security_AuthSessionCache_Timeout); //Session超时时间
+        this.authSessionCacheDefaultTimeout = newConfig.getLong(Security_AuthSessionCache_Timeout); //AuthSessionCache，设置的超时时间.
+        this.authSessionCacheEternal = newConfig.getBoolean(Security_AuthSessionCache_Eternal); //AuthSessionCache，缓存是否永远不销毁.
+        this.authSessionCacheAutoRenewal = newConfig.getBoolean(Security_AuthSessionCache_AutoRenewal); //AuthSessionCache，每当访问缓存对象时是否自动对其续约（续约时间同加入时缓存超时时间）.
+        this.authSessionCacheThreadSeep = newConfig.getLong(Security_AuthSessionCache_ThreadSeep); //AuthSessionCache，缓存回收线程工作的时间频率(毫秒).
         //
-        this.accountField = newConfig.getString(Security_LoginFormData_AccountField);
-        this.passwordField = newConfig.getString(Security_LoginFormData_PasswordField);
         this.loginURL = newConfig.getString(Security_LoginURL);
         this.logoutURL = newConfig.getString(Security_LogoutURL);
-        //
-        this.guestEnable = newConfig.getBoolean(Security_Guest_Enable); //是否启用来宾帐号
-        this.guestClassType = newConfig.getString(Security_Guest_ClassType); //来宾帐号类型
-        String guestPermissions = newConfig.getString(Security_Guest_Permissions); //来宾帐号权限
-        this.guestPermissions = (guestPermissions != null) ? guestPermissions.split(",") : new String[0];
+        this.accountField = newConfig.getString(Security_LoginFormData_AccountField);
+        this.passwordField = newConfig.getString(Security_LoginFormData_PasswordField);
+        this.authField = newConfig.getString(Security_LoginFormData_AuthField);
         //
         XmlProperty defaultRule = newConfig.getXmlProperty(Security_Rules_DefaultModel); //URL权限检查默认策略配置
         Map<String, String> itemAtt = defaultRule.getAttributeMap();
@@ -112,13 +130,24 @@ public class SecuritySettings implements SettingListener {
         UriPatternType patternType = StringConvertUtil.changeType(modeType, UriPatternType.class, UriPatternType.None);
         String requestURI = defaultRule.getText();
         this.rulesDefault = UriPatternType.get(patternType, requestURI, permissionCodes);
-        //
         XmlProperty rulesIncludes = newConfig.getXmlProperty(Security_Rules_Includes); //包含在权限检查范畴的URL配置
         this.rulesIncludeList = new ArrayList<UriPatternMatcher>();
         this.readIncludeRules(rulesIncludes);
         XmlProperty rulesExcludes = newConfig.getXmlProperty(Security_Rules_Excludes); //排除权限检查范畴的URL配置
         this.rulesExcludeList = new ArrayList<UriPatternMatcher>();
         this.readExcludesRules(rulesExcludes);
+        // 
+        XmlProperty dispatcherXml = newConfig.getXmlProperty(Security_Forwards); //转发配置
+        this.dispatcherForwardList = new ArrayList<SecurityDispatcher>();
+        this.readDispatcherForward(dispatcherXml);
+        //
+        this.guestEnable = newConfig.getBoolean(Security_Guest_Enable); //是否启用来宾帐号
+        this.guestAuthSystem = newConfig.getString(Security_Guest_AuthSystem); //来宾帐号的认证系统 guest.authSystem
+        this.guestAccount = newConfig.getString(Security_Guest_Account); //来宾帐号
+        this.guestPassword = newConfig.getString(Security_Guest_Password); //来宾帐号密码
+        this.guestUserCode = newConfig.getString(Security_Guest_UserCode); //来宾用户Code
+        String guestPermissions = newConfig.getString(Security_Guest_Permissions); //来宾帐号权限
+        this.guestPermissions = (guestPermissions != null) ? guestPermissions.split(",") : new String[0];
         //
         this.cookieEnable = newConfig.getBoolean(Security_ClientCookie_Enable); //是否启用客户端cookie来协助认证。
         this.loseCookieOnStart = newConfig.getBoolean(Security_ClientCookie_LoseCookieOnStart);//当系统启动时是否强制所有客户端已经登陆过的Cookie信息失效
@@ -129,10 +158,6 @@ public class SecuritySettings implements SettingListener {
         this.cookieEncryptionEnable = newConfig.getBoolean(Security_ClientCookie_Encryption_Enable); //是否加密cookie内容
         this.cookieEncryptionEncodeType = newConfig.getString(Security_ClientCookie_Encryption_EncodeType); //cookie内容加密方式，DES,BAS64等等.
         this.cookieEncryptionKey = newConfig.getString(Security_ClientCookie_Encryption_Key); //cookie内容加密时使用的Key
-        // 
-        XmlProperty dispatcherXml = newConfig.getXmlProperty(Security_Forwards); //转发配置
-        this.dispatcherForwardList = new ArrayList<SecurityDispatcher>();
-        this.readDispatcherForward(dispatcherXml);
         //
         XmlProperty encryptionDigestXml = newConfig.getXmlProperty(Security_EncryptionDigestSet); //加密算法配置
         this.digestMap = new HashMap<String, Class<Digest>>();
@@ -265,11 +290,20 @@ public class SecuritySettings implements SettingListener {
     public String getAuthSessionCacheName() {
         return authSessionCacheName;
     }
-    public String getAccountField() {
-        return accountField;
+    public long getAuthSessionTimeout() {
+        return authSessionTimeout;
     }
-    public String getPasswordField() {
-        return passwordField;
+    public long getAuthSessionCacheDefaultTimeout() {
+        return authSessionCacheDefaultTimeout;
+    }
+    public boolean isAuthSessionCacheEternal() {
+        return authSessionCacheEternal;
+    }
+    public boolean isAuthSessionCacheAutoRenewal() {
+        return authSessionCacheAutoRenewal;
+    }
+    public long getAuthSessionCacheThreadSeep() {
+        return authSessionCacheThreadSeep;
     }
     public String getLoginURL() {
         return loginURL;
@@ -277,14 +311,14 @@ public class SecuritySettings implements SettingListener {
     public String getLogoutURL() {
         return logoutURL;
     }
-    public boolean isGuestEnable() {
-        return guestEnable;
+    public String getAccountField() {
+        return accountField;
     }
-    public String getGuestClassType() {
-        return guestClassType;
+    public String getPasswordField() {
+        return passwordField;
     }
-    public String[] getGuestPermissions() {
-        return guestPermissions;
+    public String getAuthField() {
+        return authField;
     }
     public UriPatternMatcher getRulesDefault() {
         return rulesDefault;
@@ -294,6 +328,27 @@ public class SecuritySettings implements SettingListener {
     }
     public List<UriPatternMatcher> getRulesExcludeList() {
         return rulesExcludeList;
+    }
+    public List<SecurityDispatcher> getDispatcherForwardList() {
+        return dispatcherForwardList;
+    }
+    public boolean isGuestEnable() {
+        return guestEnable;
+    }
+    public String getGuestAuthSystem() {
+        return guestAuthSystem;
+    }
+    public String getGuestAccount() {
+        return guestAccount;
+    }
+    public String getGuestPassword() {
+        return guestPassword;
+    }
+    public String getGuestUserCode() {
+        return guestUserCode;
+    }
+    public String[] getGuestPermissions() {
+        return guestPermissions;
     }
     public boolean isCookieEnable() {
         return cookieEnable;
@@ -307,6 +362,12 @@ public class SecuritySettings implements SettingListener {
     public int getCookieTimeout() {
         return cookieTimeout;
     }
+    public String getCookieDomain() {
+        return cookieDomain;
+    }
+    public String getCookiePath() {
+        return cookiePath;
+    }
     public boolean isCookieEncryptionEnable() {
         return cookieEncryptionEnable;
     }
@@ -315,15 +376,6 @@ public class SecuritySettings implements SettingListener {
     }
     public String getCookieEncryptionKey() {
         return cookieEncryptionKey;
-    }
-    public String getCookieDomain() {
-        return cookieDomain;
-    }
-    public String getCookiePath() {
-        return cookiePath;
-    }
-    public List<SecurityDispatcher> getDispatcherForwardList() {
-        return dispatcherForwardList;
     }
     public Map<String, Class<Digest>> getDigestMap() {
         return digestMap;

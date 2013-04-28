@@ -31,7 +31,7 @@ class DefaultCacheManager implements CacheManager {
     private IKeyBuilder              defaultKeyBuilder = null;
     @Override
     public void initManager(AppContext appContext) {
-        Platform.info("cache ->> init CacheManager...");
+        Platform.info("init CacheManager...");
         this.appContext = appContext;
         //
         this.cacheManager = new ManagedCacheManager();
@@ -44,7 +44,7 @@ class DefaultCacheManager implements CacheManager {
     }
     @Override
     public void destroyManager(AppContext appContext) {
-        Platform.info("cache ->> destroy CacheManager...");
+        Platform.info("destroy CacheManager...");
         this.cacheManager.destroyManager(this.appContext);
         this.keyBuilderManager.destroyManager(this.appContext);
     }
@@ -56,7 +56,7 @@ class DefaultCacheManager implements CacheManager {
     public ICache<Object> getCache(String cacheName) {
         ICache<Object> icache = this.cacheManager.getCache(cacheName, this.appContext);
         if (icache == null) {
-            Platform.warning("cache ->> use defaultCache . '" + cacheName + "' is not exist.");
+            Platform.warning("use defaultCache . '" + cacheName + "' is not exist.");
             return this.defaultCache;
         }
         return icache;
@@ -65,7 +65,7 @@ class DefaultCacheManager implements CacheManager {
     public IKeyBuilder getKeyBuilder(Class<?> sampleType) {
         IKeyBuilder keyBuilder = this.keyBuilderManager.getKeyBuilder(sampleType, this.appContext);
         if (keyBuilder == null) {
-            Platform.warning("cache ->> use defaultKeyBuilder . '" + sampleType + "' is not register.");
+            Platform.warning("use defaultKeyBuilder . '" + sampleType + "' is not register.");
             return this.defaultKeyBuilder;
         }
         return keyBuilder;

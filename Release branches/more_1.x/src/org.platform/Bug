@@ -43,14 +43,33 @@ classcode v2.0
   5.改进了aopFilter接口注入的方法。
 classvisit v1.0
   1.以访问者模式的方式迭代一个类。
+
 org.platform v1.0
-	1.轻量化开发框架-web应用方向。
-	2.采用Guice作为核心技术支撑。
-	3.Context分类：
-		InitContext	初始化环境
-		AppContext	应用环境
-		ViewContext	http请求环境
-	4.org.platform.api.binder 软件包60%源码参考Guice-Servlet实现。
+	1.说明：
+		1).轻量化开发框架-Web应用方向。
+		2).DI容器采用Guice。
+	2.org.platform.binder 软件包
+		1).60%源码参考Guice-Servlet实现。
+		2).提供了HttpServlet、Filter、HttpSessionListener、HttpError接口的注册支持。
+	3.org.platform.context 软件包。
+		1).InitContext	初始化环境：启动参数、注册配置文件监听器
+		2).AppContext	应用环境：Bean创建
+		3).ViewContext	http请求环境：隔离请求作用域。
+		4).支持多配置文件合并功能：config.xml、static-config.xml
+		5).支持通过属性配置文件config-mapping.properties映射配置文件名称。
+	4.org.platform.icache 软件包。
+		1).支持通过注解缓存方法返回值。
+		2).方法缓存：在生成缓存key时候可以依照不同类型自行编写Key生成代码。
+		3).支持注解方式配置新的Cache和默认Cache
+		4).内置WeakMapCache
+		5).内置Date、Object类型的Key生成器
+		6).通过标记@NeedCache增加缓存功能，可以标记在类和方法上
+	5.org.platform.security 软件包。
+		1).
+	6.org.platform.web 软件包。
+		1).
+	7.org.platform.datasource 软件包。
+		1).数据源功能支持，支持定义多套数据源。
 	
 
 

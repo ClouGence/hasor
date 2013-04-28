@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.security.internal;
-import org.platform.security.AuthSession;
-import org.platform.security.SecurityContext;
-import org.platform.security.SessionData;
+package org.platform.security;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 负责权限系统中的用户会话。用户会话中保存了用户登入之后的权限数据。
- * @version : 2013-3-26
+ * 标记该类为AuthSessionListener，该类需要实现{@link IAuthSessionListener}接口。
+ * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public class DefaultAuthSession extends AuthSession {
-    public DefaultAuthSession(SessionData authSessionData, SecurityContext securityContext) {
-        super(authSessionData, securityContext);
-    }
-}a
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface AuthSessionListener {}

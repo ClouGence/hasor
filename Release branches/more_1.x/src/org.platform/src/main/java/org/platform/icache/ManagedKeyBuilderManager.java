@@ -28,7 +28,6 @@ import com.google.inject.TypeLiteral;
 class ManagedKeyBuilderManager {
     private KeyBuilderDefinition[] keyBuilderDefinitionSet = null;
     //
-    //
     public void initManager(AppContext appContext) {
         Platform.info("init ManagedKeyBuilderManager...");
         this.keyBuilderDefinitionSet = collectKeyBuilderDefinitionSet(appContext.getGuice());

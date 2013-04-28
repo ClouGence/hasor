@@ -42,8 +42,7 @@ class ManagedCacheManager {
         TypeLiteral<CacheDefinition> CACHE_DEFS = TypeLiteral.get(CacheDefinition.class);
         for (Binding<CacheDefinition> entry : injector.findBindingsByType(CACHE_DEFS)) {
             CacheDefinition define = entry.getProvider().get();
-            for (String name : define.getNames())
-                cacheDefinitionMap.put(name, define);
+            cacheDefinitionMap.put(define.getName(), define);
         }
         return cacheDefinitionMap;
     }
@@ -57,6 +56,6 @@ class ManagedCacheManager {
         CacheDefinition define = this.cacheDefinitionMap.get(cacheName);
         if (define == null)
             return null;
-        return appContext.getGuice().getInstance(define.getCacheKey());
+        return define.get();
     }
 }

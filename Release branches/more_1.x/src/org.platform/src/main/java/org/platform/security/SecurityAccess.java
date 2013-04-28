@@ -19,17 +19,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
-* 表示该类为处理用户是否具备某个权限的策略类，该类需要实现{@link SecurityPolicy}接口。
-* 通过权限策略可以应用不同的权限模型。
+* 该类是负责装载用户权限的类，该类需要实现{@link ISecurityAccess}接口。
+* 通过该类可以将多种权限模型集成到一起。
 * @version : 2013-3-25
 * @author 赵永春 (zyc@byshell.org)
 */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface SecurityAccess {
-    /**PowerPolicy在策略链上的顺序。默认：0，数字越大启动越靠后。
-     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
-    public int sort() default 0;
-    /**需要配置策略的服务名。正则表达式，默认配置“.*”。*/
-    public String[] applyAuth();
+    /**出现同名时的排序顺序。（越小越优先）。*/
+    public int sort() default Integer.MAX_VALUE;
+    /**认证系统名。*/
+    public String authSystem();
 }

@@ -15,30 +15,26 @@
  */
 package org.platform.icache;
 import org.platform.context.AppContext;
-import com.google.inject.Key;
 import com.google.inject.Provider;
 /**
  * 声明一个Cache，该Cache需要实现{@link ICache}接口。
  * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-class CacheDefinition implements Provider<ICache<Object>> {
-    private String[]                      names       = null;
-    private Key<? extends ICache<Object>> cacheKey    = null;
-    private ICache<Object>                cacheObject = null;
+class CacheDefinition implements Provider<ICache> {
+    private String        name        = null;
+    private Class<ICache> cacheType   = null;
+    private ICache        cacheObject = null;
     //
-    public CacheDefinition(String[] names, Key<? extends ICache<Object>> cacheKey) {
-        this.names = names;
-        this.cacheKey = cacheKey;
+    public CacheDefinition(String name, Class<ICache> cacheType) {
+        this.name = name;
+        this.cacheType = cacheType;
     }
-    public Key<? extends ICache<Object>> getCacheKey() {
-        return cacheKey;
-    }
-    public String[] getNames() {
-        return names;
+    public String getName() {
+        return name;
     }
     public void initCache(final AppContext appContext) {
-        this.cacheObject = appContext.getGuice().getInstance(this.cacheKey);
+        this.cacheObject = appContext.getGuice().getInstance(this.cacheType);
         this.cacheObject.initCache(appContext);
     }
     public void destroy(AppContext appContext) {
@@ -46,7 +42,7 @@ class CacheDefinition implements Provider<ICache<Object>> {
             this.cacheObject.destroy(appContext);
     }
     @Override
-    public ICache<Object> get() {
+    public ICache get() {
         return this.cacheObject;
     }
 }

@@ -29,13 +29,13 @@ import com.google.inject.Inject;
  * @author 赵永春 (zyc@byshell.org)
  */
 class InternalSecurityProcess implements SecurityProcess {
-    private static final String HttpSessionAuthSessionSetName = AuthSession.class.getName();
+    public static final String HttpSessionAuthSessionSetName = AuthSession.class.getName();
     @Inject
-    private SecuritySettings    settings                      = null;
+    private SecuritySettings   settings                      = null;
     @Inject
-    private SecurityContext     secService                    = null;
+    private SecurityContext    secService                    = null;
     @Inject
-    private AppContext          appContext                    = null;
+    private AppContext         appContext                    = null;
     //
     //
     /**写入权限Cookie。*/
@@ -53,10 +53,13 @@ class InternalSecurityProcess implements SecurityProcess {
         CookieDataUtil cookieData = CookieDataUtil.create();
         if (authSessions != null)
             for (AuthSession authSession : authSessions) {
+                if (authSession.supportCookieRecover() == false || authSession.isLogin() == false)
+                    continue;
                 CookieUserData cookieUserData = new CookieUserData();
-                cookieUserData.setCreatedTime(authSession.getCreatedTime());//Session创建时间
+                cookieUserData.setSessionID(authSession.getSessionID());//AuthSessionID
                 cookieUserData.setUserCode(authSession.getUserObject().getUserCode());//用户Code
-                cookieUserData.setAuthSessionID(authSession.getSessionID());//AuthSessionID
+                cookieUserData.setAuthSystem(authSession.getAuthSystem());//用户来源
+                cookieUserData.setLoginTime(authSession.getLoginTime());//Session创建时间
                 cookieUserData.setAppStartTime(this.appContext.getAppStartTime());
                 cookieData.addCookieUserData(cookieUserData);
             }
@@ -84,13 +87,15 @@ class InternalSecurityProcess implements SecurityProcess {
     }
     //
     /**通过userCode恢复AuthSession*/
-    private void recoverUserByCode(String userCode) {
-        AuthSession newAuthSession = this.secService.createAuthSession();
+    private void recoverUserByCode(String authSystem, String userCode) throws SecurityException {
+        AuthSession newAuthSession = null;
         try {
-            newAuthSession.doLoginCode(userCode);
+            newAuthSession = this.secService.createAuthSession();
+            newAuthSession.doLoginCode(authSystem, userCode);
         } catch (SecurityException e) {
-            newAuthSession.close();
             Platform.warning("recover cookieUser failure! userCode=" + userCode);
+            if (newAuthSession != null)
+                newAuthSession.close();
         }
     }
     //
@@ -131,18 +136,16 @@ class InternalSecurityProcess implements SecurityProcess {
             return;
         //4.恢复Cookie里保存的会话
         for (CookieUserData info : infos) {
-            if (info.isRecover() == false)
-                continue;
             if (this.settings.isLoseCookieOnStart() == true)
                 if (this.appContext.getAppStartTime() != info.getAppStartTime())
                     continue;
-            String authSessionID = info.getAuthSessionID();
+            String authSessionID = info.getSessionID();
             if (this.secService.hasAuthSession(authSessionID) == true)
                 /*如果认证系统中还存在authSessionID表示的会话就激活它*/
                 this.secService.activateAuthSession(authSessionID);
             else
                 /*用userCode恢复出一个新的会话*/
-                this.recoverUserByCode(info.getUserCode());
+                this.recoverUserByCode(info.getAuthSystem(), info.getUserCode());
         }
     }
     //
@@ -153,7 +156,11 @@ class InternalSecurityProcess implements SecurityProcess {
             return;
         String[] authSessionIDSet = authSessionIDs.split(",");
         for (String authSessionID : authSessionIDSet) {
-            this.secService.activateAuthSession(authSessionID);
+            try {
+                this.secService.activateAuthSession(authSessionID);
+            } catch (SecurityException e) {
+                Platform.info(authSessionID + " activate an error. " + Platform.logString(e));
+            }
         }
     }
     //
@@ -162,15 +169,16 @@ class InternalSecurityProcess implements SecurityProcess {
         //1.获得登入相关信息
         String account = httpRequest.getParameter(this.settings.getAccountField());
         String password = httpRequest.getParameter(this.settings.getPasswordField());
+        String formAuth = httpRequest.getParameter(this.settings.getAuthField());
         //3.执行登入
         AuthSession authSession = this.secService.createAuthSession();
         try {
-            authSession.doLogin(account, password);/*登入新会话*/
+            authSession.doLogin(formAuth, account, password);/*登入新会话*/
             Platform.info("login OK. acc=" + account + " , at SessionID=" + authSession.getSessionID());
             this.writeAuthSession(httpRequest, httpResponse);
         } catch (SecurityException e) {
-            authSession.close();
             Platform.info("login failure! acc=" + account + " , msg=" + e.getMessage());
+            authSession.close();
             throw e;
         }
     }
@@ -182,12 +190,12 @@ class InternalSecurityProcess implements SecurityProcess {
             /*将所有已登入的会话全部登出*/
             if (authSession.isLogin() == false)
                 continue;
-            String acc = authSession.getUserObject().getAccount();
+            String userCode = authSession.getUserObject().getUserCode();
             try {
                 authSession.doLogout();/*退出会话*/
-                Platform.info("logout OK. acc=" + acc + " , at SessionID=" + authSession.getSessionID());
+                Platform.info("logout OK. userCode=" + userCode + " , at SessionID=" + authSession.getSessionID());
             } catch (SecurityException e) {
-                Platform.info("logout failure! acc=" + acc + " , at SessionID=" + authSession.getSessionID());
+                Platform.info("logout failure! userCode=" + userCode + " , at SessionID=" + authSession.getSessionID());
                 throw e;
             }
         }

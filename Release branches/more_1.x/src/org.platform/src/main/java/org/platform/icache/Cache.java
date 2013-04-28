@@ -26,11 +26,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface Cache {
-    /**对服务的描述信息。
-     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
+    /**对服务的描述信息。*/
     public String description() default "";
-    /**在管理控制台显示服务时使用displayName属性。
-     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
+    /**在管理控制台显示服务时使用displayName属性。*/
     public String displayName() default "";
     /**缓存名称，同名注册会被覆盖。*/
     public String[] value();

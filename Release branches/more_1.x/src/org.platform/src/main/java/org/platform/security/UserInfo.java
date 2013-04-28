@@ -20,10 +20,8 @@ package org.platform.security;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface UserInfo {
-    /**测试用户是否为来宾身份。用户可能真实存在但是其身份为来宾身份也有可能，该方法用来确定用户是否为来宾用户。*/
-    public boolean isGuest();
     /**获取用户的识别码*/
     public String getUserCode();
-    /**获取帐号*/
-    public String getAccount();
+    /**测试用户是否为来宾帐号*/
+    public boolean isGuest();
 }

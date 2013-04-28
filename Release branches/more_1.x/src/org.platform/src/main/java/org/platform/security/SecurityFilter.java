@@ -108,6 +108,10 @@ class SecurityFilter implements Filter {
                 SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);
                 dispatcher.forwardFailure(ViewContext.currentViewContext(), e);
             }
+            /*D.如果authSession中的权限数据发生改变保存到缓存中，同时刷新AuthSession缓存*/
+            AuthSession[] authSessions = this.secService.getCurrentAuthSession();
+            for (AuthSession authSession : authSessions)
+                authSession.refreshCacheTime();/*刷新缓存中的数据*/
         }
     }
 }

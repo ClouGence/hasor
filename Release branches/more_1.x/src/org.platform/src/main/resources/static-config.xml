@@ -29,10 +29,13 @@
 	</httpServlet>
 	<!-- 权限配置 -->
 	<security enable="false" enableURL="true" enableMethod="true">
-		<!-- authSession数据缓存名 -->
+		<!-- 权限会话超时时间 -->
+		<authSessionTimeout>100000</authSessionTimeout>
+		<!-- -->
+		<!-- security使用的数据缓存名 -->
 		<authSessionCacheName>AuthSessionCache</authSessionCacheName>
 		<!-- 内置的权限数据缓存Cache配置 -->
-		<authSessionMapCache timeout="600000" eternal="true" autoRenewal="false" threadSeep="5000" />
+		<internalAuthSessionMapCache timeout="600000" eternal="true" autoRenewal="false" threadSeep="5000" />
 		<!-- 登入Action -->
 		<loginURL>s_login.sec</loginURL>
 		<!-- 登出Action -->
@@ -66,6 +69,8 @@
 			<accountField>j_username</accountField>
 			<!-- 登陆表单，密码 -->
 			<passwordField>j_password</passwordField>
+			<!-- 使用的权限系统 -->
+			<authField>j_auth</authField>
 		</loginFormData>
 		<!-- 转发配置 -->
 		<forwards>
@@ -107,9 +112,11 @@
 		<!-- 来宾权限设置 -->
 		<guest enable="true">
 			<!-- 来宾用户帐号类 -->
-			<classType>org.platform.security.GuestUser</classType>
+			<info account="guest" password="guest" userCode="guest@guest" />
+			<!-- 来宾帐号的认证系统 -->
+			<authSystem>GuestAuthSystem</authSystem>
 			<!-- 来宾帐号权限 -->
-			<permissions>TestCode,LoginCode</permissions>
+			<permissions>TestPower,LoginCode</permissions>
 		</guest>
 	</security>
 	<!-- 缓存配置 -->

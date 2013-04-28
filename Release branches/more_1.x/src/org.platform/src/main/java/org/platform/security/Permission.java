@@ -33,6 +33,8 @@ public class Permission {
     }
     @Override
     public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
         if (obj instanceof Permission) {
             String preCode = ((Permission) obj).getPermissionCode();
             return this.hashCode() == preCode.hashCode();

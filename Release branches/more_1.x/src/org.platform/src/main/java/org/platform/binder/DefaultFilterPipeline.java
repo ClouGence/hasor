@@ -26,7 +26,7 @@ import org.platform.context.ViewContext;
  * @version : 2013-4-11
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class DefaultFilterPipeline implements FilterPipeline {
+class DefaultFilterPipeline implements FilterPipeline {
     @Override
     public void initPipeline(AppContext appContext) throws ServletException {}
     @Override

@@ -10,7 +10,7 @@
 		<!-- 转发配置 -->
 		<forwards>
 			<!-- 登录源，当执行登陆时才会用到这里的配置。 -->
-			<dispatch contentPath="/pro" defaultType="forward|redirect">
+			<dispatch contentPath="/pro" defaultType="redirect">
 				<!-- 登陆成功之后要去的地址 -->
 				<forwardIndex type="redirect">/login_ok_index.htm</forwardIndex>
 				<!-- 退出之后要去的地址 -->
