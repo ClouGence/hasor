@@ -88,12 +88,6 @@ public abstract class SecurityContext {
     public synchronized AuthSession createAuthSession() throws SecurityException {
         AuthSession newAuthSession = this.newAuthSession(AppContext.genIDBy36());
         newAuthSession.loadSessionData(new SessionData());
-        if (this.settings.isGuestEnable() == true) {
-            String guestAccount = this.settings.getGuestAccount();
-            String guestPassword = this.settings.getGuestPassword();
-            String guestAuthSystem = this.settings.getGuestAuthSystem();
-            newAuthSession.doLogin(guestAuthSystem, guestAccount, guestPassword);/*登陆来宾帐号*/
-        }
         this.activateAuthSession(newAuthSession);
         return newAuthSession;
     };
@@ -173,6 +167,22 @@ public abstract class SecurityContext {
             return curSessionMap.toArray(new AuthSession[curSessionMap.size()]);
         }
     };
+    public AuthSession getCurrentBlankAuthSession() {
+        AuthSession[] authList = getCurrentAuthSession();
+        if (authList != null)
+            for (AuthSession auth : authList)
+                if (auth.isBlank() == true)
+                    return auth;
+        return null;
+    }
+    public AuthSession getCurrentGuestAuthSession() {
+        AuthSession[] authList = getCurrentAuthSession();
+        if (authList != null)
+            for (AuthSession auth : authList)
+                if (auth.isGuest() == true)
+                    return auth;
+        return null;
+    }
     /**获取编码工具*/
     public Digest getCodeDigest(String name) throws SecurityException {
         Digest digest = this.codeDigestManager.getCodeDigest(name);
@@ -187,10 +197,7 @@ public abstract class SecurityContext {
     }
     /**根据uri获取可用于跳转工具类。*/
     public SecurityDispatcher getDispatcher(String requestPath) throws ServletException {
-        SecurityDispatcher dispatcher = this.dispatcherManager.getDispatcher(requestPath);
-        if (dispatcher == null)
-            throw new ServletException("no match SecurityDispatcher to " + requestPath + "");
-        return dispatcher;
+        return this.dispatcherManager.getDispatcher(requestPath);
     };
     /**获取{@link ISecurityAuth}接口对象，如果不存在返回null。*/
     protected ISecurityAuth getSecurityAuth(String authName) throws SecurityException {

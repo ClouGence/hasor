@@ -182,6 +182,8 @@ public class SecuritySettings implements SettingListener {
             String permissionCodes = itemAtt.get("permissions");
             UriPatternType patternType = StringConvertUtil.changeType(modeType, UriPatternType.class, UriPatternType.None);
             String requestURI = item.getText();
+            if (StringUtil.isBlank(requestURI) == true)
+                continue;
             //
             UriPatternMatcher matcher = UriPatternType.get(patternType, requestURI, permissionCodes);
             this.rulesIncludeList.add(matcher);
@@ -205,6 +207,8 @@ public class SecuritySettings implements SettingListener {
                 continue;
             //
             String requestURI = item.getText();
+            if (StringUtil.isBlank(requestURI) == true)
+                continue;
             UriPatternMatcher matcher = UriPatternType.get(UriPatternType.None, requestURI, null);
             this.rulesExcludeList.add(matcher);
             //

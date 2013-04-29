@@ -53,7 +53,7 @@
 			<!-- cookie超时时间，单位:秒，默认7天。 -->
 			<timeout>604800</timeout>
 			<!-- cookie内容加密方式和密钥 -->
-			<encryption enable="true" encodeType="None" key="!@#123qw" />
+			<encryption enable="true" encodeType="DES" key="!@#123qw" />
 		</clientCookie>
 		<!-- 加密算法配置 -->
 		<encryptionDigestSet>
@@ -75,7 +75,7 @@
 		<!-- 转发配置 -->
 		<forwards>
 			<!-- 登录源，当执行登陆时才会用到这里的配置。 -->
-			<dispatch contentPath="/user" defaultType="forward|redirect|Exception|State">
+			<dispatch contentPath="/user333" defaultType="forward|redirect|Exception|State">
 				<!-- 登陆成功之后要去的地址 -->
 				<forwardIndex type="forward|redirect">/login_ok_index.htm</forwardIndex>
 				<!-- 退出之后要去的地址 -->
@@ -100,9 +100,9 @@
 			<!-- 需要权限检查的路径 -->
 			<includes>
 				<!-- 命中的URL需要用户进行登入 -->
-				<include mode="Login">/user</include>
+				<!-- <include mode="Login">/user</include> -->
 				<!-- 命中的URL需要用户具备某种权限代码，(逗号间隔多个代码) -->
-				<include mode="Permission" permissions="TestPower">/pro</include>
+				<!-- <include mode="Permission" permissions="TestPower">/pro</include> -->
 			</includes>
 			<!-- 不需要权限检查的路径 -->
 			<excludes>
@@ -116,7 +116,7 @@
 			<!-- 来宾帐号的认证系统 -->
 			<authSystem>GuestAuthSystem</authSystem>
 			<!-- 来宾帐号权限 -->
-			<permissions>TestPower,LoginCode</permissions>
+			<permissions></permissions>
 		</guest>
 	</security>
 	<!-- 缓存配置 -->

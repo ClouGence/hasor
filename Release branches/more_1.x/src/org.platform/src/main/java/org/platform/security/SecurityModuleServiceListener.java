@@ -33,8 +33,8 @@ import org.platform.context.setting.Config;
 import org.platform.security.Power.Level;
 import com.google.inject.Binder;
 import com.google.inject.Key;
+import com.google.inject.internal.UniqueAnnotations;
 import com.google.inject.matcher.AbstractMatcher;
-import com.google.inject.name.Names;
 /**
  * 支持Service等注解功能。
  * @version : 2013-4-8
@@ -93,7 +93,6 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
             if (ISecurityAuth.class.isAssignableFrom(cls) == false) {
                 Platform.warning("loadSecurityAuth : not implemented ISecurityAuth of type " + Platform.logString(cls));
             } else {
-                Platform.info("at SecurityAuth of type " + Platform.logString(cls));
                 authList.add((Class<? extends ISecurityAuth>) cls);
             }
         }
@@ -109,8 +108,9 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
             int maxIndex = (authIndex.containsKey(authSystem) == false) ? Integer.MAX_VALUE : authIndex.get(authSystem);
             if (authAnno.sort() <= maxIndex/*值越小越优先*/) {
                 authIndex.put(authSystem, authAnno.sort());
-                binder.bind(SecurityAuthDefinition.class).annotatedWith(Names.named(authSystem)).toInstance(authDefine);
-                binder.bind(ISecurityAuth.class).annotatedWith(Names.named(authSystem)).toProvider(authDefine);
+                binder.bind(SecurityAuthDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(authDefine);
+                binder.bind(ISecurityAuth.class).annotatedWith(UniqueAnnotations.create()).toProvider(authDefine);
+                Platform.info(authSystem + "[" + authAnno.sort() + "] at SecurityAuth of type " + Platform.logString(authType));
             }
         }
     }
@@ -125,7 +125,6 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
             if (ISecurityAccess.class.isAssignableFrom(cls) == false) {
                 Platform.warning("loadSecurityAccess : not implemented ISecurityAccess of type " + Platform.logString(cls));
             } else {
-                Platform.info("at SecurityAccess of type " + Platform.logString(cls));
                 accessList.add((Class<? extends ISecurityAccess>) cls);
             }
         }
@@ -141,8 +140,9 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
             int maxIndex = (accessIndex.containsKey(authSystem) == false) ? Integer.MAX_VALUE : accessIndex.get(authSystem);
             if (accessAnno.sort() <= maxIndex/*值越小越优先*/) {
                 accessIndex.put(authSystem, accessAnno.sort());
-                binder.bind(SecurityAccessDefinition.class).annotatedWith(Names.named(authSystem)).toInstance(accessDefine);
-                binder.bind(ISecurityAccess.class).annotatedWith(Names.named(authSystem)).toProvider(accessDefine);
+                binder.bind(SecurityAccessDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(accessDefine);
+                binder.bind(ISecurityAccess.class).annotatedWith(UniqueAnnotations.create()).toProvider(accessDefine);
+                Platform.info(authSystem + "[" + accessAnno.sort() + "] at SecurityAccess of type " + Platform.logString(accessType));
             }
         }
     }

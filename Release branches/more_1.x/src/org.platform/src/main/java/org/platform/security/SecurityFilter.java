@@ -62,12 +62,29 @@ class SecurityFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
+        httpRequest.getSession(true);
         //1.处理禁用状态
         if (this.settings.isEnableURL() == false) {
             chain.doFilter(httpRequest, httpResponse);
             return;
         }
-        //2.恢复会话
+        //2.
+        if (this.settings.isGuestEnable() == true) {
+            try {
+                AuthSession targetAuthSession = this.secService.getCurrentGuestAuthSession();
+                if (targetAuthSession == null)
+                    targetAuthSession = this.secService.getCurrentBlankAuthSession();
+                if (targetAuthSession == null)
+                    targetAuthSession = this.secService.createAuthSession();
+                String guestAccount = this.settings.getGuestAccount();
+                String guestPassword = this.settings.getGuestPassword();
+                String guestAuthSystem = this.settings.getGuestAuthSystem();
+                targetAuthSession.doLogin(guestAuthSystem, guestAccount, guestPassword);/*登陆来宾帐号*/
+            } catch (Exception e) {
+                Platform.warning(Platform.logString(e));
+            }
+        }
+        //3.恢复会话
         try {
             this.securityProcess.recoverAuthSession(httpRequest);
         } catch (SecurityException e) {

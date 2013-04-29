@@ -244,13 +244,19 @@ public class AuthSession {
     public boolean isClose() {
         return this.isClose;
     }
+    /**是否为空白状态，新的Session、退出之后的.但是尚未关闭的。*/
+    public boolean isBlank() {
+        if (this.isClose() == true || this.isLogin() == false)
+            return true;
+        return false;
+    }
     private void checkClose() throws SecurityException {
         if (isClose())
             throw new SecurityException("AuthSession is closed!");
     }
     /**刷新权限数据在缓存中的时间,(未登录\来宾帐号\已经关闭)满足前面三个情况中任意一种时都放弃向缓存服务更新。*/
     protected synchronized void refreshCacheTime() {
-        if (this.isClose() == true || this.isLogin() == false)
+        if (this.isBlank() == true || this.isGuest() == true)
             return;
         SessionData cacheData = this.getSecurityContext().getSessionData(this.sessionID);
         if (cacheData == null || cacheData.getLastTime() < this.authSessionData.getLastTime()) {
