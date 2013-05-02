@@ -28,7 +28,6 @@ import org.platform.clock.Clock;
  */
 public class AuthSession {
     private String                  sessionID;
-    private boolean                 cookieRecover;
     private UserInfo                userInfo;
     private Map<String, Permission> permissionMap;
     private SessionData             authSessionData;
@@ -131,9 +130,13 @@ public class AuthSession {
     public boolean hasPermission(String permissionCode) {
         return this.permissionMap.containsKey(permissionCode);
     };
+    /**判断会话是否关闭*/
+    public boolean isClose() {
+        return this.isClose;
+    }
     /**是否已经登入。*/
     public boolean isLogin() {
-        if (this.isClose())
+        if (this.isClose() || this.isGuest() == true)
             return false;
         //
         UserInfo userInfo = this.getUserObject();
@@ -150,20 +153,18 @@ public class AuthSession {
             return false;
         return userInfo.isGuest();
     };
+    /**是否为空白状态，新的Session、退出之后的.但是尚未关闭的。*/
+    public boolean isBlank() {
+        if (this.isClose() == false && (this.isLogin() == false || this.isGuest() == true))
+            return true;
+        return false;
+    }
     /**获取session创建时间*/
     public long getLoginTime() throws SecurityException {
         if (this.isLogin() == true)
             return this.authSessionData.getLoginTime();
         else
             return -1;
-    };
-    /**获取一个值，该值决定了session是否支持从Cookie中恢复会话。*/
-    public boolean supportCookieRecover() {
-        return this.cookieRecover;
-    };
-    /**设置true表示支持会话从Cookie中会恢复登陆，每当重新登陆之后该值都会被重置为false。*/
-    public void setSupportCookieRecover(boolean cookieRecover) {
-        this.cookieRecover = cookieRecover;
     };
     /**获取SecurityContext对象*/
     protected SecurityContext getSecurityContext() {
@@ -201,6 +202,7 @@ public class AuthSession {
             this.authSessionData.setLastTime(Clock.getSyncTime());
             this.reloadPermission();/*重载权限*/
             this.refreshCacheTime();
+            Platform.debug(this.sessionID + " :doLogin authSystem=" + authSystem + " ,userCode=" + userCode);
             return;
         }
         throw new SecurityException("unknown user!");
@@ -220,6 +222,7 @@ public class AuthSession {
             this.authSessionData.setLastTime(Clock.getSyncTime());
             this.reloadPermission();/*重载权限*/
             this.refreshCacheTime();
+            Platform.debug(this.sessionID + " :doLogin authSystem=" + authSystem + " ,account=" + account + " ,password=" + password);
             return;
         }
         throw new SecurityException("unknown user!");
@@ -227,11 +230,11 @@ public class AuthSession {
     /**执行退出。*/
     public synchronized void doLogout() throws SecurityException {
         this.checkClose();/*Check*/
-        this.cookieRecover = false;
         this.authSessionData = new SessionData();
         this.userInfo = null;
         this.permissionMap.clear();
         this.getSecurityContext().removeSessionData(this.sessionID);
+        Platform.debug(this.sessionID + " :doLogout! sessionID=" + this.sessionID);
     };
     /**关闭会话（退出会话，并且从当前线程中注销）。*/
     public synchronized void close() throws SecurityException {
@@ -239,16 +242,6 @@ public class AuthSession {
         this.doLogout();
         this.getSecurityContext().inactivationAuthSession(this);
         this.isClose = true;
-    }
-    /**判断会话是否关闭*/
-    public boolean isClose() {
-        return this.isClose;
-    }
-    /**是否为空白状态，新的Session、退出之后的.但是尚未关闭的。*/
-    public boolean isBlank() {
-        if (this.isClose() == true || this.isLogin() == false)
-            return true;
-        return false;
     }
     private void checkClose() throws SecurityException {
         if (isClose())

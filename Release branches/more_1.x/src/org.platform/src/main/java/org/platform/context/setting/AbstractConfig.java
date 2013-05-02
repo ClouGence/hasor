@@ -206,11 +206,11 @@ public abstract class AbstractConfig implements Config {
                     XmlProperty v1 = (XmlProperty) $var;
                     XmlProperty v2 = (XmlProperty) $varConflict;
                     //
-                    HashMap<String, String> attMap = new HashMap<String, String>();
-                    attMap.putAll(v2.getAttributeMap());
-                    attMap.putAll(v1.getAttributeMap());
-                    v1.getAttributeMap().putAll(attMap);
-                    v1.getChildren().addAll(v2.getChildren());
+                    MergeDefaultXmlProperty v3 = new MergeDefaultXmlProperty(v1.getName());
+                    v3.getAttributeMap().putAll(v2.getAttributeMap());
+                    v3.getAttributeMap().putAll(v1.getAttributeMap());
+                    v3.getChildren().addAll(v1.getChildren());
+                    v3.getChildren().addAll(v2.getChildren());
                 }
                 loadTo.put($key, $var);
             }

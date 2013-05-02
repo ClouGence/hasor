@@ -24,6 +24,8 @@ import com.google.inject.ImplementedBy;
  */
 @ImplementedBy(InternalSecurityProcess.class)
 public interface SecurityProcess {
+    /**写入会话数据。*/
+    public void writeAuthSession(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws SecurityException;
     /**处理登入请求。*/
     public void processLogin(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws SecurityException;
     /**处理登出请求*/
@@ -31,5 +33,5 @@ public interface SecurityProcess {
     /**测试要处理的资源是否具有权限访问，如果权限检测失败会抛出PermissionException异常。*/
     public void processTestFilter(String reqPath) throws PermissionException;
     /**恢复权限*/
-    public void recoverAuthSession(HttpServletRequest httpRequest) throws SecurityException;
+    public void recoverAuthSession(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws SecurityException;
 }

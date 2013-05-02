@@ -57,18 +57,21 @@ class ManagedErrorPipeline {
         return errorDefinitions.toArray(new ErrorDefinition[errorDefinitions.size()]);
     }
     public void dispatch(ViewContext viewContext, ServletRequest request, ServletResponse response, Throwable error) throws IOException, ServletException {
+        Throwable onError = (error instanceof ServletException) ? ((ServletException) error).getRootCause() : error;
+        if (onError == null)
+            onError = error;
         //1.进行异常处理
         int errorCaseCount = viewContext.getSettings().getInteger(HttpServlet_ErrorCaseCount, 5);
         for (int i = 0; i < errorCaseCount; i++) {
             for (int j = 0; j < errorDefinitions.length; j++) {
                 ErrorDefinition errDefine = errorDefinitions[j];
                 try {
-                    if (errDefine.doError(viewContext, request, response, error) == true)
+                    if (errDefine.doError(viewContext, request, response, onError) == true)
                         return;
                     else
                         continue;
                 } catch (Throwable e) {
-                    error = e;
+                    onError = e;
                     break;
                 }
                 //end !

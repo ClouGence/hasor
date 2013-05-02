@@ -73,13 +73,13 @@ public abstract class ViewContext {
         return currentViewContext.get();
     }
     /**设置当前线程相关联的{@link ViewContext}*/
-    public static void setViewContext(ViewContext viewContext) {
+    protected static void setViewContext(ViewContext viewContext) {
         if (currentViewContext.get() != null)
             currentViewContext.remove();
         currentViewContext.set(viewContext);
     }
     /**清空当前线程相关联的{@link ViewContext}*/
-    public static void cleanViewContext() {
+    protected static void cleanViewContext() {
         if (currentViewContext.get() != null)
             currentViewContext.remove();
     }

@@ -38,4 +38,12 @@ public abstract class AbstractViewContext extends ViewContext {
     public HttpServletResponse getHttpResponse() {
         return this.response;
     }
+    /**设置当前线程相关联的{@link ViewContext}*/
+    public static void setViewContext(ViewContext viewContext) {
+        ViewContext.setViewContext(viewContext);
+    }
+    /**清空当前线程相关联的{@link ViewContext}*/
+    public static void cleanViewContext() {
+        ViewContext.cleanViewContext();
+    }
 }

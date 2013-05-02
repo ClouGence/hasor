@@ -128,8 +128,8 @@ public class SecuritySettings implements SettingListener {
         String modeType = itemAtt.get("mode");
         String permissionCodes = itemAtt.get("permissions");
         UriPatternType patternType = StringConvertUtil.changeType(modeType, UriPatternType.class, UriPatternType.None);
-        String requestURI = defaultRule.getText();
-        this.rulesDefault = UriPatternType.get(patternType, requestURI, permissionCodes);
+        this.rulesDefault = UriPatternType.get(patternType, "(Default)", permissionCodes);
+        Platform.warning("rules.defaultRule ->" + this.rulesDefault);
         XmlProperty rulesIncludes = newConfig.getXmlProperty(Security_Rules_Includes); //包含在权限检查范畴的URL配置
         this.rulesIncludeList = new ArrayList<UriPatternMatcher>();
         this.readIncludeRules(rulesIncludes);
@@ -251,7 +251,7 @@ public class SecuritySettings implements SettingListener {
                 }
             //
             this.dispatcherForwardList.add(dispatcher);
-            Platform.info("read SecurityDispatcher : " + dispatcher);
+            Platform.info("read " + dispatcher);
         }
     }
     //

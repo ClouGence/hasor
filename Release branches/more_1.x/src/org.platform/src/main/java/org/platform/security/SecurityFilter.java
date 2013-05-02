@@ -24,6 +24,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.more.util.StringConvertUtil;
 import org.platform.Assert;
 import org.platform.Platform;
 import org.platform.context.AppContext;
@@ -71,9 +72,7 @@ class SecurityFilter implements Filter {
         //2.
         if (this.settings.isGuestEnable() == true) {
             try {
-                AuthSession targetAuthSession = this.secService.getCurrentGuestAuthSession();
-                if (targetAuthSession == null)
-                    targetAuthSession = this.secService.getCurrentBlankAuthSession();
+                AuthSession targetAuthSession = this.secService.getCurrentBlankAuthSession();
                 if (targetAuthSession == null)
                     targetAuthSession = this.secService.createAuthSession();
                 String guestAccount = this.settings.getGuestAccount();
@@ -86,7 +85,7 @@ class SecurityFilter implements Filter {
         }
         //3.恢复会话
         try {
-            this.securityProcess.recoverAuthSession(httpRequest);
+            this.securityProcess.recoverAuthSession(httpRequest, httpResponse);
         } catch (SecurityException e) {
             Platform.error("recover AuthSession failure!\n" + Platform.logString(e));
         }
@@ -123,7 +122,11 @@ class SecurityFilter implements Filter {
             } catch (PermissionException e) {
                 Platform.debug("testPermission failure! uri= " + reqPath + "\n" + Platform.logString(e));/*没有权限*/
                 SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);
-                dispatcher.forwardFailure(ViewContext.currentViewContext(), e);
+                if (dispatcher != null) {
+                    dispatcher.forwardFailure(ViewContext.currentViewContext(), e);
+                } else {
+                    e.printStackTrace(httpResponse.getWriter());
+                }
             }
             /*D.如果authSession中的权限数据发生改变保存到缓存中，同时刷新AuthSession缓存*/
             AuthSession[] authSessions = this.secService.getCurrentAuthSession();

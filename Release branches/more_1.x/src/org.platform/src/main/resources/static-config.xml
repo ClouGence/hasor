@@ -35,25 +35,25 @@
 		<!-- security使用的数据缓存名 -->
 		<authSessionCacheName>AuthSessionCache</authSessionCacheName>
 		<!-- 内置的权限数据缓存Cache配置 -->
-		<internalAuthSessionMapCache timeout="600000" eternal="true" autoRenewal="false" threadSeep="5000" />
+		<internalAuthSessionMapCache timeout="20000" eternal="true" autoRenewal="false" threadSeep="5000" />
 		<!-- 登入Action -->
 		<loginURL>s_login.sec</loginURL>
 		<!-- 登出Action -->
 		<logoutURL>s_logout.sec</logoutURL>
 		<!-- 权限的客户端cookie配置，默认启用 -->
-		<clientCookie enable="true">
+		<clientCookie enable="false">
 			<!-- cookie名称 -->
-			<cookieName>JSPSESSION</cookieName>
+			<cookieName>AUTHSESSION</cookieName>
 			<!-- cookie的Domain配置，设置这个属性用来支持跨域访问cookie。（默认为空不对该值进行设置） -->
 			<cookieDomain></cookieDomain>
 			<!-- cookie的path属性（默认为空不对该值进行设置） -->
-			<cookiePath></cookiePath>
+			<cookiePath>/</cookiePath>
 			<!-- 当系统启动时是否强制所有客户端已经登陆过的Cookie信息失效 -->
-			<loseCookieOnStart>true</loseCookieOnStart>
+			<loseCookieOnStart>false</loseCookieOnStart>
 			<!-- cookie超时时间，单位:秒，默认7天。 -->
 			<timeout>604800</timeout>
 			<!-- cookie内容加密方式和密钥 -->
-			<encryption enable="true" encodeType="DES" key="!@#123qw" />
+			<encryption enable="true" encodeType="None" key="!@#123qw" />
 		</clientCookie>
 		<!-- 加密算法配置 -->
 		<encryptionDigestSet>
@@ -96,7 +96,7 @@
 		<!-- Login:要求登陆，Logout:要求非登陆，Guest:要求具有来宾身份，Permission:要求具有权限点，None:无任何要求 -->
 		<rules>
 			<!-- URL权限检查默认策略配置：Login|Logout|Guest|Permission|None -->
-			<defaultRule mode="Permission" permissions="sdfsd" />
+			<defaultRule mode="None" />
 			<!-- 需要权限检查的路径 -->
 			<includes>
 				<!-- 命中的URL需要用户进行登入 -->

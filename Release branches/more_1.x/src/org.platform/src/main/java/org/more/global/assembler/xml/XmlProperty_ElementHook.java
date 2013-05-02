@@ -41,8 +41,8 @@ class XmlProperty_ElementHook implements XmlDocumentHook, XmlElementHook, XmlTex
     @Override
     public void endDocument(XmlStackDecorator<Object> context, EndDocumentEvent event) throws XMLStreamException, IOException {};
     public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) throws XMLStreamException, IOException {
-        XmlPropertyImpl xmlProperty = new XmlPropertyImpl(event.getName().getLocalPart());
-        XmlPropertyImpl parentXmlProperty = (XmlPropertyImpl) context.get(XmlProperty_AttName);
+        DefaultXmlProperty xmlProperty = new DefaultXmlProperty(event.getName().getLocalPart());
+        DefaultXmlProperty parentXmlProperty = (DefaultXmlProperty) context.get(XmlProperty_AttName);
         parentXmlProperty.addChildren(xmlProperty);
         for (int i = 0; i < event.getAttributeCount(); i++) {
             String attName = event.getAttributeName(i).getLocalPart();
@@ -57,7 +57,7 @@ class XmlProperty_ElementHook implements XmlDocumentHook, XmlElementHook, XmlTex
         sb.append(event.getTrimText());
     }
     public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) throws XMLStreamException, IOException {
-        XmlPropertyImpl xmlProperty = (XmlPropertyImpl) context.get(XmlProperty_AttName);
+        DefaultXmlProperty xmlProperty = (DefaultXmlProperty) context.get(XmlProperty_AttName);
         StringBuffer sb = (StringBuffer) context.get(XmlText_AttName);
         xmlProperty.setText(sb.toString());
     };

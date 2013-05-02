@@ -108,10 +108,10 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
             Key<? extends IKeyBuilder> keyBuilderKey = Key.get(keyBuildertype);
             KeyBuilderDefinition keyBuilderDefine = new KeyBuilderDefinition(keyBuilderAnno.value(), keyBuilderKey);
             binder.bind(KeyBuilderDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(keyBuilderDefine);
-            Platform.info(Platform.logString(keyBuilderAnno.value()) + " at KeyBuilder of type " + Platform.logString(keyBuildertype));
+            Platform.info("KeyBuilder type:" + Platform.logString(keyBuildertype) + " mapping " + Platform.logString(keyBuilderAnno.value()));
             //确定是否为defaut
             if (keyBuildertype.isAnnotationPresent(DefaultKeyBuilder.class) == true) {
-                Platform.warning(Platform.logString(keyBuilderAnno.value()) + " type DefaultKeyBuilder is " + Platform.logString(keyBuildertype));
+                Platform.warning("KeyBuilder type:" + Platform.logString(keyBuildertype) + " is DefaultKeyBuilder on " + Platform.logString(keyBuilderAnno.value()));
                 DefaultKeyBuilder defaultKeyBuilder = keyBuildertype.getAnnotation(DefaultKeyBuilder.class);
                 if (defaultKeyBuilder.value() <= defaultKeyBuilderIndex/*数越小越优先*/) {
                     defaultKeyBuilderIndex = defaultKeyBuilder.value();

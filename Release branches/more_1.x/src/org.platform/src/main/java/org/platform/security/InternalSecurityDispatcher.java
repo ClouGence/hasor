@@ -137,18 +137,19 @@ class InternalSecurityDispatcher implements SecurityDispatcher {
     //
     /**Å×³öÒì³£*/
     private void doThrowError(String errorType) throws IOException, ServletException {
+        Object errorObject = null;
         try {
             Class<?> error = Class.forName(errorType);
-            Object errorObject = error.newInstance();
-            if (errorObject instanceof IOException)
-                throw (IOException) errorObject;
-            else if (errorObject instanceof ServletException)
-                throw (ServletException) errorObject;
-            else
-                throw new ServletException((Throwable) errorObject);
+            errorObject = error.newInstance();
         } catch (Exception e) {
             throw new ServletException(e);
         }
+        if (errorObject instanceof IOException)
+            throw (IOException) errorObject;
+        else if (errorObject instanceof ServletException)
+            throw (ServletException) errorObject;
+        else
+            throw new ServletException((Throwable) errorObject);
     }
     //
     public void setForwardIndex(String toURL, DispatcherType type) {

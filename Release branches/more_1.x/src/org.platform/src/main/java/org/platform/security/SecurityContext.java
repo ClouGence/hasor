@@ -25,6 +25,9 @@ import org.platform.security.DefaultSecurityQuery.CheckPermission;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class SecurityContext {
+    /*表示在响应请求时将客户端cookie重写*/
+    public static final String               WriteAuthSession         = "SecurityContext.WriteAuthSession";
+    //
     private AppContext                       appContext               = null;
     private InternalDispatcherManager        dispatcherManager        = null;
     private InternalUriPatternMatcherManager uriPatternMatcherManager = null;
@@ -100,10 +103,6 @@ public abstract class SecurityContext {
             return newAuthSession;
         }
         return null;
-    };
-    /**判断权限系统中是否具有指定ID的权限会话，如果有返回true.*/
-    public boolean hasAuthSession(String authSessionID) {
-        return this.getSessionData(authSessionID) != null;
     };
     /**将参数表示的会话激活到当前线程。*/
     public synchronized boolean activateAuthSession(String authSessionID) throws SecurityException {

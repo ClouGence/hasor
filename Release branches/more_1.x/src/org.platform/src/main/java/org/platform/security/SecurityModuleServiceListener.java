@@ -24,6 +24,7 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.more.util.StringUtil;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AbstractModuleListener;
@@ -63,7 +64,7 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         this.loadSecurityAccess(event);
         /*绑定核心功能实现类。*/
         event.getGuiceBinder().bind(SecuritySettings.class).toInstance(this.settings);//通过Guice
-        event.getGuiceBinder().bind(SecurityContext.class).to(InternalSecurityService.class).asEagerSingleton();
+        event.getGuiceBinder().bind(SecurityContext.class).to(InternalSecurityContext.class).asEagerSingleton();
         event.getGuiceBinder().bind(SecurityQuery.class).to(DefaultSecurityQuery.class);
     }
     @Override
@@ -91,7 +92,7 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         List<Class<? extends ISecurityAuth>> authList = new ArrayList<Class<? extends ISecurityAuth>>();
         for (Class<?> cls : authSet) {
             if (ISecurityAuth.class.isAssignableFrom(cls) == false) {
-                Platform.warning("loadSecurityAuth : not implemented ISecurityAuth of type " + Platform.logString(cls));
+                Platform.warning("loadSecurityAuth : not implemented ISecurityAuth , class=" + Platform.logString(cls));
             } else {
                 authList.add((Class<? extends ISecurityAuth>) cls);
             }
@@ -110,7 +111,7 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
                 authIndex.put(authSystem, authAnno.sort());
                 binder.bind(SecurityAuthDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(authDefine);
                 binder.bind(ISecurityAuth.class).annotatedWith(UniqueAnnotations.create()).toProvider(authDefine);
-                Platform.info(authSystem + "[" + authAnno.sort() + "] at SecurityAuth of type " + Platform.logString(authType));
+                Platform.info(authSystem + "[" + ((authAnno.sort() == Integer.MAX_VALUE) ? "Max" : authAnno.sort()) + "] is SecurityAuth , class=" + Platform.logString(authType));
             }
         }
     }
@@ -123,7 +124,7 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         List<Class<? extends ISecurityAccess>> accessList = new ArrayList<Class<? extends ISecurityAccess>>();
         for (Class<?> cls : accessSet) {
             if (ISecurityAccess.class.isAssignableFrom(cls) == false) {
-                Platform.warning("loadSecurityAccess : not implemented ISecurityAccess of type " + Platform.logString(cls));
+                Platform.warning("loadSecurityAccess : not implemented ISecurityAccess. class=" + Platform.logString(cls));
             } else {
                 accessList.add((Class<? extends ISecurityAccess>) cls);
             }
@@ -142,7 +143,7 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
                 accessIndex.put(authSystem, accessAnno.sort());
                 binder.bind(SecurityAccessDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(accessDefine);
                 binder.bind(ISecurityAccess.class).annotatedWith(UniqueAnnotations.create()).toProvider(accessDefine);
-                Platform.info(authSystem + "[" + accessAnno.sort() + "] at SecurityAccess of type " + Platform.logString(accessType));
+                Platform.info(authSystem + "[" + ((accessAnno.sort() == Integer.MAX_VALUE) ? "Max" : accessAnno.sort()) + "] is SecurityAccess. class=" + Platform.logString(accessType));
             }
         }
     }
@@ -199,27 +200,29 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
                 powerAnno = invocation.getMethod().getDeclaringClass().getAnnotation(Power.class);
             //2.测试权限
             boolean passPower = true;
-            if (Level.PassLogin == powerAnno.level()) {
-                passPower = this.doPassLogin(powerAnno, invocation.getMethod());
-            } else if (Level.PassPolicy == powerAnno.level()) {
-                passPower = this.doPassPolicy(powerAnno, invocation.getMethod());
+            if (Level.NeedLogin == powerAnno.level()) {
+                passPower = this.doNeedLogin(powerAnno, invocation.getMethod());
+            } else if (Level.NeedAccess == powerAnno.level()) {
+                passPower = this.doNeedAccess(powerAnno, invocation.getMethod());
             } else if (Level.Free == powerAnno.level()) {
                 passPower = true;
             }
             //3.执行代码
             if (passPower)
                 return invocation.proceed();
-            String msg = "has no permission Level=" + powerAnno.level().name() + " Code : " + Platform.logString(powerAnno.value());
+            String msg = powerAnno.errorMsg();
+            if (StringUtil.isBlank(msg) == true)
+                msg = "has no permission Level=" + powerAnno.level().name() + " Code : " + Platform.logString(powerAnno.value());
             throw new PermissionException(msg);
         }
-        private boolean doPassLogin(Power powerAnno, Method method) {
+        private boolean doNeedLogin(Power powerAnno, Method method) {
             AuthSession[] authSessions = secService.getCurrentAuthSession();
             for (AuthSession authSession : authSessions)
                 if (authSession.isLogin())
                     return true;
             return false;
         }
-        private boolean doPassPolicy(Power powerAnno, Method method) {
+        private boolean doNeedAccess(Power powerAnno, Method method) {
             AuthSession[] authSessions = secService.getCurrentAuthSession();
             String[] powers = powerAnno.value();
             SecurityQuery query = secService.newSecurityQuery();

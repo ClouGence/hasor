@@ -31,7 +31,7 @@ public abstract class Platform implements PlatformConfig {
         return callerClass.substring(callerClass.lastIndexOf(".") + 1) + ":" + onCode.getMethodName();
     }
     public static void debug(String string) {
-        System.out.println(callerType() + " ->> " + string);//TODO
+        //        System.out.println(callerType() + " ->> " + string);//TODO
     }
     public static void error(String string) {
         System.err.println(callerType() + " ->> " + string);//TODO

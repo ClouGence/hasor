@@ -43,7 +43,7 @@ public class XmlPropertyGlobalFactory extends GlobalFactory {
             if (loadNameSpace.contains(loadNameSpace) == false)
                 loadNameSpace.add(DefaultNameSpace);
             if (this.xmlTreeRoot == null)
-                this.xmlTreeRoot = new XmlPropertyImpl("");
+                this.xmlTreeRoot = new DefaultXmlProperty("");
             XmlParserKit kit = new XmlParserKit();
             kit.regeditHook("/*", new XmlProperty_ElementHook());
             XmlRegister xmlRegister = new XmlRegister(this.xmlTreeRoot);
@@ -79,7 +79,7 @@ public class XmlPropertyGlobalFactory extends GlobalFactory {
     protected void convertType(Map<String, Object> returnData, List<XmlProperty> xmlPropertyList, String parentAttName) {
         if (xmlPropertyList != null)
             for (XmlProperty xmlProperty : xmlPropertyList) {
-                XmlPropertyImpl impl = (XmlPropertyImpl) xmlProperty;
+                DefaultXmlProperty impl = (DefaultXmlProperty) xmlProperty;
                 //1.put±¾¼¶
                 String key = ("".equals(parentAttName)) ? impl.getName() : (parentAttName + "." + impl.getName());
                 returnData.put(key, impl);

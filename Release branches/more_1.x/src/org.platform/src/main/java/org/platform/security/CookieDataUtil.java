@@ -48,18 +48,10 @@ public final class CookieDataUtil {
         return this.cookieUserDataMap.values().toArray(new CookieUserData[this.cookieUserDataMap.size()]);
     }
     public final static class CookieUserData {
-        private String sessionID    = "";
         private String userCode     = null;
         private String authSystem   = null;
-        private long   loginTime    = 0;
         private long   appStartTime = 0;
         //
-        public String getSessionID() {
-            return sessionID;
-        }
-        public void setSessionID(String sessionID) {
-            this.sessionID = sessionID;
-        }
         public String getUserCode() {
             return userCode;
         }
@@ -71,12 +63,6 @@ public final class CookieDataUtil {
         }
         public void setAuthSystem(String authSystem) {
             this.authSystem = authSystem;
-        }
-        public long getLoginTime() {
-            return loginTime;
-        }
-        public void setLoginTime(long loginTime) {
-            this.loginTime = loginTime;
         }
         public long getAppStartTime() {
             return appStartTime;

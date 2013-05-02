@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 package org.platform.security;
+import javax.servlet.ServletException;
 /**
  * 权限系统异常。
  * @version : 2013-4-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class SecurityException extends Exception {
+public class SecurityException extends ServletException {
     private static final long serialVersionUID = 2366386850634621969L;
     //
+    public SecurityException() {
+        super();
+    }
     public SecurityException(String msg) {
         super(msg);
     }

@@ -22,7 +22,13 @@ package org.platform.security;
 public class PermissionException extends SecurityException {
     private static final long serialVersionUID = 2366386850634621969L;
     //
+    public PermissionException() {
+        super();
+    }
     public PermissionException(String msg) {
         super(msg);
+    }
+    public PermissionException(String msg, Throwable e) {
+        super(msg, e);
     }
 }

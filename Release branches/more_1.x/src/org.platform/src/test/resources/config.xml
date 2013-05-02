@@ -11,23 +11,28 @@
 		<forwards>
 			<dispatch contentPath="/admin" defaultType="redirect">
 				<forwardIndex type="redirect">/admin/admin_index.htm</forwardIndex>
-				<forwardLogout type="redirect">/admin/login.htm</forwardLogout>
-				<forwardFailure processMode="State">402</forwardFailure>
+				<forwardLogout type="redirect">/login/admin_login.htm</forwardLogout>
+				<forwardFailure type="forward">/public/admin_error.htm</forwardFailure>
 			</dispatch>
 			<dispatch contentPath="/user" defaultType="redirect">
 				<forwardIndex type="redirect">/user/user_index.htm</forwardIndex>
-				<forwardLogout type="redirect">/user/login.htm</forwardLogout>
-				<forwardFailure processMode="State">501</forwardFailure>
+				<forwardLogout type="redirect">/login/user_login.htm</forwardLogout>
+				<forwardFailure type="Exception">org.platform.webapps.error.define.LoginSecurityException</forwardFailure>
 			</dispatch>
 			<dispatch contentPath="/bbs" defaultType="redirect">
 				<forwardIndex type="redirect">/bbs/bbs_index.htm</forwardIndex>
-				<forwardLogout type="redirect">/bbs/login.htm</forwardLogout>
-				<forwardFailure processMode="State">188</forwardFailure>
+				<forwardLogout type="redirect">/login/bbs_login.htm</forwardLogout>
+				<forwardFailure type="State">403</forwardFailure>
+			</dispatch>
+			<!-- 配置跳转定义，使用代码获取下面的跳转信息进行跳转！ -->
+			<dispatch contentPath="/" defaultType="redirect">
+				<forward id="go1" type="forward"  >/public/forword_page.htm</forward>
+				<forward id="go2" type="redirect" >http://www.baidu.com</forward>
+				<forward id="go3" type="Exception">org.platform.webapps.error.define.GoException</forward>
+				<forward id="go4" type="State"    >8082</forward>
 			</dispatch>
 		</forwards>
 		<rules>
-			<!-- URL权限检查默认策略配置：Login|Logout|Guest|Permission|None -->
-			<defaultRule mode="Permission" permissions="sdfsd" />
 			<includes>
 				<include mode="Login">/user</include>
 				<include mode="Permission" permissions="AdminPower">/admin</include>
