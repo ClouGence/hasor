@@ -25,9 +25,6 @@ import org.platform.security.DefaultSecurityQuery.CheckPermission;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class SecurityContext {
-    /*表示在响应请求时将客户端cookie重写*/
-    public static final String               WriteAuthSession         = "SecurityContext.WriteAuthSession";
-    //
     private AppContext                       appContext               = null;
     private InternalDispatcherManager        dispatcherManager        = null;
     private InternalUriPatternMatcherManager uriPatternMatcherManager = null;

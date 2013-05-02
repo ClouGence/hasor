@@ -24,7 +24,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.more.util.StringConvertUtil;
 import org.platform.Assert;
 import org.platform.Platform;
 import org.platform.context.AppContext;
@@ -58,9 +57,15 @@ class SecurityFilter implements Filter {
     @Override
     public void destroy() {}
     //
-    /***/
-    @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        this._doFilter(request, response, chain);
+        //¶Û»¯
+        AuthSession[] authSessions = secService.getCurrentAuthSession();
+        for (AuthSession authSession : authSessions)
+            secService.inactivationAuthSession(authSession.getSessionID()); /*¶Û»¯AuthSession*/
+    }
+    /***/
+    public void _doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         httpRequest.getSession(true);

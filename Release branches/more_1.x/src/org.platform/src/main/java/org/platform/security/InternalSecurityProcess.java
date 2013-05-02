@@ -18,7 +18,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.more.util.StringConvertUtil;
 import org.more.util.StringUtil;
 import org.platform.Platform;
 import org.platform.context.AppContext;
@@ -38,20 +37,24 @@ class InternalSecurityProcess implements SecurityProcess {
     @Inject
     private AppContext         appContext                    = null;
     //
-    //
-    /**写入权限Cookie。*/
-    public void writeAuthSession(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws SecurityException {
+    private void writeHttpSession(HttpServletRequest httpRequest) {
         AuthSession[] authSessions = this.secService.getCurrentAuthSession();
         //1.写入HttpSession
         StringBuilder authSessionIDs = new StringBuilder("");
         for (AuthSession authSession : authSessions)
             authSessionIDs.append(authSession.getSessionID() + ",");
         httpRequest.getSession(true).setAttribute(HttpSessionAuthSessionSetName, authSessionIDs.toString());
+    }
+    //
+    /**写入权限Cookie。*/
+    public void writeAuthSession(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws SecurityException {
+        this.writeHttpSession(httpRequest);
         //
         if (this.settings.isCookieEncryptionEnable() == false)
             return;
         //2.写入Cookie对象
         CookieDataUtil cookieData = CookieDataUtil.create();
+        AuthSession[] authSessions = this.secService.getCurrentAuthSession();
         if (authSessions != null)
             for (AuthSession authSession : authSessions) {
                 if (authSession.isLogin() == false)
@@ -101,22 +104,11 @@ class InternalSecurityProcess implements SecurityProcess {
         }
     }
     //
-    /**恢复权限*/
-    public void recoverAuthSession(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws SecurityException {
-        this.recoverAuthSession4HttpSession(httpRequest.getSession(true));
-        this.recoverAuthSession4Cookie(httpRequest);
-        Object mark = httpRequest.getAttribute(SecurityContext.WriteAuthSession);
-        if (mark == null)
-            return;
-        if (StringConvertUtil.parseBoolean(mark.toString(), false) == true)
-            this.writeAuthSession(httpRequest, httpResponse);
-    }
-    //
-    /**恢复Cookie中的登陆帐号。*/
-    private void recoverAuthSession4Cookie(HttpServletRequest httpRequest) throws SecurityException {
+    /**恢复Cookie中的登陆帐号,该方法会导致调用writeHttpSession方法。*/
+    private boolean recoverAuthSession4Cookie(HttpServletRequest httpRequest) throws SecurityException {
         //1.检测Cookie
         if (this.settings.isCookieEnable() == false)
-            return;
+            return false;
         //2.解码cookie的value
         Cookie[] cookieArray = httpRequest.getCookies();
         String cookieValue = null;
@@ -131,7 +123,7 @@ class InternalSecurityProcess implements SecurityProcess {
                     cookieValue = digest.decrypt(cookieValue, this.settings.getCookieEncryptionKey());
                 } catch (Throwable e) {
                     Platform.warning(this.settings.getCookieEncryptionEncodeType() + " decode cookieValue error. cookieValue=" + cookieValue);
-                    return;/*解密失败意味着后面的恢复操作都不会用到有效数据因此return.*/
+                    return false;/*解密失败意味着后面的恢复操作都不会用到有效数据因此return.*/
                 }
             }
             break;
@@ -142,10 +134,10 @@ class InternalSecurityProcess implements SecurityProcess {
             CookieDataUtil cookieData = CookieDataUtil.parseJson(cookieValue);
             infos = cookieData.getCookieUserDatas();
             if (infos == null)
-                return;
+                return false;
         } catch (Exception e) {
             Platform.debug("parseJson to CookieDataUtil error! " + this.settings.getCookieEncryptionEncodeType() + " decode . cookieValue=" + cookieValue);
-            return;
+            return false;
         }
         //4.恢复Cookie里保存的会话
         for (CookieUserData info : infos) {
@@ -154,22 +146,36 @@ class InternalSecurityProcess implements SecurityProcess {
                     continue;
             /*用userCode恢复出一个新的会话*/
             this.recoverUserByCode(info.getAuthSystem(), info.getUserCode());
-            httpRequest.setAttribute(SecurityContext.WriteAuthSession, true);
         }
+        this.writeHttpSession(httpRequest);
+        return true;
     }
     //
-    /**恢复Cookie中的登陆帐号。*/
-    private void recoverAuthSession4HttpSession(HttpSession httpSession) {
+    /**恢复HttpSession中的登陆帐号。*/
+    private boolean recoverAuthSession4HttpSession(HttpSession httpSession) {
         String authSessionIDs = (String) httpSession.getAttribute(HttpSessionAuthSessionSetName);
         if (StringUtil.isBlank(authSessionIDs) == true)
-            return;
+            return false;
         String[] authSessionIDSet = authSessionIDs.split(",");
+        boolean returnData = false;
         for (String authSessionID : authSessionIDSet) {
             try {
-                this.secService.activateAuthSession(authSessionID);
+                if (this.secService.activateAuthSession(authSessionID) == true) {
+                    Platform.debug("authSession : " + authSessionID + " activate!");
+                    returnData = true;
+                }
             } catch (SecurityException e) {
                 Platform.info(authSessionID + " activate an error. " + Platform.logString(e));
             }
+        }
+        return returnData;
+    }
+    //
+    /**恢复权限*/
+    public void recoverAuthSession(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws SecurityException {
+        boolean recoverMark = this.recoverAuthSession4HttpSession(httpRequest.getSession(true));
+        if (recoverMark == false) {
+            this.recoverAuthSession4Cookie(httpRequest);
         }
     }
     //

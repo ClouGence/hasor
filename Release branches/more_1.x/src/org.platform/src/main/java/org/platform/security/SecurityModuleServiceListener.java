@@ -235,30 +235,18 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
     private class SecuritySessionListener implements HttpSessionListener {
         @Override
         public void sessionCreated(HttpSessionEvent se) {
-            if (settings.isEnable() == false)
-                return;
-            AuthSession[] authSessions = secService.getCurrentAuthSession();
-            boolean needCreateSession = authSessions.length == 0;
-            if (needCreateSession) {
-                try {
-                    AuthSession newAuthSession = secService.createAuthSession();
-                    StringBuilder authSessionIDs = new StringBuilder("");
-                    for (AuthSession authSession : authSessions)
-                        authSessionIDs.append(authSession.getSessionID() + ",");
-                    authSessionIDs.append(newAuthSession.getSessionID());
-                    se.getSession().setAttribute(InternalSecurityProcess.HttpSessionAuthSessionSetName, authSessionIDs.toString());
-                } catch (SecurityException e) {
-                    Platform.error(Platform.logString(e));
-                }
-            }
+            //            if (settings.isEnable() == false)
+            //                return;
+            //            try {
+            //                AuthSession newAuthSession = secService.createAuthSession();
+            //                StringBuilder authSessionIDs = new StringBuilder("");
+            //                authSessionIDs.append(newAuthSession.getSessionID());
+            //                se.getSession().setAttribute(InternalSecurityProcess.HttpSessionAuthSessionSetName, authSessionIDs.toString());
+            //            } catch (SecurityException e) {
+            //                Platform.error(Platform.logString(e));
+            //            }
         }
         @Override
-        public void sessionDestroyed(HttpSessionEvent se) {
-            if (settings.isEnable() == false)
-                return;
-            AuthSession[] authSessions = secService.getCurrentAuthSession();
-            for (AuthSession authSession : authSessions)
-                secService.inactivationAuthSession(authSession.getSessionID()); /*¶Û»¯AuthSession*/
-        }
+        public void sessionDestroyed(HttpSessionEvent se) {}
     }
 }

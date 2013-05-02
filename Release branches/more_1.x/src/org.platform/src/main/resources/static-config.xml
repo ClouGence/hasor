@@ -19,7 +19,7 @@
 	</dataSourceSet>
 	<!-- 框架配置 -->
 	<framework>
-		<!-- 包扫描覆盖范围 -->
+		<!-- 包扫描覆盖范围(逗号间隔多个扫描范围) -->
 		<loadPackages>org.*, com.*, net.*, cn.*</loadPackages>
 	</framework>
 	<!-- Web部分的配置 -->
@@ -27,15 +27,18 @@
 		<!-- Web请求遇到异常后轮询errorHook的次数。 -->
 		<errorCaseCount>5</errorCaseCount>
 	</httpServlet>
-	<!-- 权限配置 -->
+	<!-- 权限配置： -->
+	<!-- enable：权限系统启用禁用 -->
+	<!-- enableURL：是否将Request请求纳入权限系统 -->
+	<!-- enableMethod：是否启用@Power注解支持 -->
 	<security enable="false" enableURL="true" enableMethod="true">
-		<!-- 权限会话超时时间 -->
-		<authSessionTimeout>100000</authSessionTimeout>
+		<!-- 权限会话超时时间，单位:毫秒，默认10分钟 -->
+		<authSessionTimeout>600000</authSessionTimeout>
 		<!-- -->
 		<!-- security使用的数据缓存名 -->
 		<authSessionCacheName>AuthSessionCache</authSessionCacheName>
 		<!-- 内置的权限数据缓存Cache配置 -->
-		<internalAuthSessionMapCache timeout="20000" eternal="true" autoRenewal="false" threadSeep="5000" />
+		<internalAuthSessionMapCache timeout="20000" eternal="false" autoRenewal="true" threadSeep="5000" />
 		<!-- 登入Action -->
 		<loginURL>s_login.sec</loginURL>
 		<!-- 登出Action -->
@@ -74,28 +77,12 @@
 		</loginFormData>
 		<!-- 转发配置 -->
 		<forwards>
-			<!-- 登录源，当执行登陆时才会用到这里的配置。 -->
-			<dispatch contentPath="/user333" defaultType="forward|redirect|Exception|State">
-				<!-- 登陆成功之后要去的地址 -->
-				<forwardIndex type="forward|redirect">/login_ok_index.htm</forwardIndex>
-				<!-- 退出之后要去的地址 -->
-				<forwardLogout type="forward|redirect">/login_ok_index.htm</forwardLogout>
-				<!-- !!!下面的配置信息，配置一项即可!!! -->
-				<!-- 登陆失败：以Http 402号错误响应客户端。 -->
-				<forwardFailure type="State">402</forwardFailure>
-				<!-- 登陆失败：抛出特定类型异常。 -->
-				<forwardFailure type="Exception">org.platform.security.PermissionException</forwardFailure>
-				<!-- 登陆失败：跳转到特定页面或地址。 -->
-				<forwardFailure type="forward|redirect|Exception|State">/abc.htm</forwardFailure>
-				<!-- 配置的可以跳转的地址 -->
-				<forward id="go_1" type="redirect">/go_1.htm</forward>
-				<forward id="go_2" type="redirect">/go_2.htm</forward>
-			</dispatch>
+			<!-- 登录源，当执行登陆时才会用到这里的配置。 <dispatch contentPath="/user333" defaultType="forward|redirect|Exception|State"> 登陆成功之后要去的地址 <forwardIndex type="forward|redirect">/login_ok_index.htm</forwardIndex> 退出之后要去的地址 <forwardLogout type="forward|redirect">/login_ok_index.htm</forwardLogout> !!!下面的配置信息，配置一项即可!!! 登陆失败：以Http 402号错误响应客户端。 <forwardFailure type="State">402</forwardFailure> 登陆失败：抛出特定类型异常。 <forwardFailure type="Exception">org.platform.security.PermissionException</forwardFailure> 登陆失败：跳转到特定页面或地址。 <forwardFailure type="forward|redirect|Exception|State">/abc.htm</forwardFailure> 配置的可以跳转的地址 <forward id="go_1" type="redirect">/go_1.htm</forward> <forward id="go_2" type="redirect">/go_2.htm</forward> </dispatch> -->
 		</forwards>
 		<!-- 权限判断规则 -->
 		<!-- Login:要求登陆，Logout:要求非登陆，Guest:要求具有来宾身份，Permission:要求具有权限点，None:无任何要求 -->
 		<rules>
-			<!-- URL权限检查默认策略配置：Login|Logout|Guest|Permission|None -->
+			<!-- URL权限检查默认策略配置：Login|Logout|Guest|Permission|None。mode属性配置成Permission时需要配置permissions参数。 -->
 			<defaultRule mode="None" />
 			<!-- 需要权限检查的路径 -->
 			<includes>
@@ -126,7 +113,7 @@
 		<!-- eternal=缓存是否永远不销毁 -->
 		<!-- autoRenewal=每当访问缓存对象时是否自动对其续约（续约时间同加入时缓存超时时间） -->
 		<!-- threadSeep=缓存回收线程工作的时间频率(毫秒) -->
-		<mapCache timeout="600000" eternal="false" autoRenewal="false" threadSeep="5000" />
+		<mapCache timeout="600000" eternal="false" autoRenewal="true" threadSeep="5000" />
 		<!-- !!!这里可以放置其他缓存程序的Xml配置，然后通过XmlProperty类型读取到这段Xml!!! -->
 	</cacheConfig>
 	<!-- 工作空间设置 -->

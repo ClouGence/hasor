@@ -2,7 +2,6 @@ package org.platform;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.more.webui.web.WebFilter;
 public class WebServer {
     /**
      * @param args

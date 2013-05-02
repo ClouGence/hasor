@@ -7,6 +7,7 @@
 	</framework>
 	<!-- 权限配置 -->
 	<security enable="true">
+		<clientCookie enable="true"></clientCookie>
 		<!-- 转发配置 -->
 		<forwards>
 			<dispatch contentPath="/admin" defaultType="redirect">
@@ -26,10 +27,10 @@
 			</dispatch>
 			<!-- 配置跳转定义，使用代码获取下面的跳转信息进行跳转！ -->
 			<dispatch contentPath="/" defaultType="redirect">
-				<forward id="go1" type="forward"  >/public/forword_page.htm</forward>
-				<forward id="go2" type="redirect" >http://www.baidu.com</forward>
+				<forward id="go1" type="forward">/public/forword_page.htm</forward>
+				<forward id="go2" type="redirect">http://www.baidu.com</forward>
 				<forward id="go3" type="Exception">org.platform.webapps.error.define.GoException</forward>
-				<forward id="go4" type="State"    >8082</forward>
+				<forward id="go4" type="State">8082</forward>
 			</dispatch>
 		</forwards>
 		<rules>
