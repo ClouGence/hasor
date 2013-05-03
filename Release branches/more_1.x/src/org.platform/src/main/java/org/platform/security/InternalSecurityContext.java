@@ -28,15 +28,16 @@ import org.platform.icache.ICache;
 import org.platform.icache.mapcache.MapCache;
 import org.platform.icache.mapcache.MapCacheSettings;
 import com.google.inject.Key;
+import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 /**
  * 内置SecurityContext类实现
  * @version : 2013-4-20
  * @author 赵永春 (zyc@byshell.org)
  */
+@Singleton
 class InternalSecurityContext extends SecurityContext {
     private ICache<SessionData> authSessionCache = null;
-    private AppContext          appContext       = null;
     private SettingListener     settingListener  = new SessionDataCacheSettingListener();
     private long                sessionTimeOut   = 0;
     //
@@ -44,7 +45,6 @@ class InternalSecurityContext extends SecurityContext {
     @Override
     public synchronized void initSecurity(AppContext appContext) {
         super.initSecurity(appContext);
-        this.appContext = appContext;
         this.settingListener.loadConfig(appContext.getSettings());
         appContext.getInitContext().getConfig().addSettingsListener(settingListener);
     }
@@ -53,7 +53,6 @@ class InternalSecurityContext extends SecurityContext {
         super.destroySecurity(appContext);
         appContext.getInitContext().getConfig().removeSettingsListener(settingListener);
     }
-    //
     @Override
     protected void removeSessionData(String sessionDataID) {
         this.authSessionCache.remove(sessionDataID);
@@ -76,7 +75,7 @@ class InternalSecurityContext extends SecurityContext {
         @Override
         public void loadConfig(Settings newConfig) {
             Key cacheKey = Key.get(ICache.class, Names.named(newConfig.getString(Security_AuthSessionCache)));
-            authSessionCache = appContext.getGuice().getInstance(cacheKey);
+            authSessionCache = getAppContext().getGuice().getInstance(cacheKey);
             sessionTimeOut = newConfig.getLong(Security_AuthSessionTimeout);
         }
     }

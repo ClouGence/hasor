@@ -20,9 +20,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.platform.context.ViewContext;
+import org.platform.security.AuthSession;
 import org.platform.security.SecurityContext;
 import org.platform.security.SecurityDispatcher;
+import org.platform.security.UserIdentity;
+import org.platform.security.UserIdentityUtil;
 import org.platform.web.WebServlet;
+import org.platform.webapps.safety.AdminUser;
+import org.platform.webapps.safety.BBSUser;
 import com.google.inject.Inject;
 /**
  * 
@@ -41,6 +46,11 @@ public class Scene2_HttpServlet extends HttpServlet {
         ViewContext currentViewContext = ViewContext.currentViewContext();
         String requestURI = currentViewContext.getRequestURI();
         SecurityDispatcher dispatcher = this.securityContext.getDispatcher(requestURI);
+        //
+        //
+        UserIdentity adminIdentity = UserIdentityUtil.getTypeIdentity(BBSUser.class);
+        AuthSession[] auth = securityContext.findCurrentAuthSession(adminIdentity);
+        //
         //
         String goID = req.getParameter("goID");
         dispatcher.forward(goID, currentViewContext);

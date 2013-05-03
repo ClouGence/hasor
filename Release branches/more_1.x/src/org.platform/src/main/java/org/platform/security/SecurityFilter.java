@@ -57,86 +57,78 @@ class SecurityFilter implements Filter {
     @Override
     public void destroy() {}
     //
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        this._doFilter(request, response, chain);
-        //钝化
-        AuthSession[] authSessions = secService.getCurrentAuthSession();
-        for (AuthSession authSession : authSessions)
-            secService.inactivationAuthSession(authSession.getSessionID()); /*钝化AuthSession*/
-    }
     /***/
-    public void _doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-        httpRequest.getSession(true);
-        //1.处理禁用状态
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        /*禁用状态*/
         if (this.settings.isEnableURL() == false) {
-            chain.doFilter(httpRequest, httpResponse);
+            chain.doFilter(request, response);
             return;
         }
-        //2.
-        if (this.settings.isGuestEnable() == true) {
-            try {
-                AuthSession targetAuthSession = this.secService.getCurrentBlankAuthSession();
-                if (targetAuthSession == null)
-                    targetAuthSession = this.secService.createAuthSession();
-                String guestAccount = this.settings.getGuestAccount();
-                String guestPassword = this.settings.getGuestPassword();
-                String guestAuthSystem = this.settings.getGuestAuthSystem();
-                targetAuthSession.doLogin(guestAuthSystem, guestAccount, guestPassword);/*登陆来宾帐号*/
-            } catch (Exception e) {
-                Platform.warning(Platform.logString(e));
-            }
+        /*执行处理*/
+        this.doSecurityFilter((HttpServletRequest) request, (HttpServletResponse) response, chain);
+        /*钝化线程的AuthSession，并且刷新它们*/
+        AuthSession[] authSessions = secService.getCurrentAuthSession();
+        for (AuthSession authSession : authSessions) {
+            secService.inactivationAuthSession(authSession.getSessionID()); /*钝化AuthSession*/
+            authSession.refreshCacheTime();/*刷新缓存中的数据*/
         }
-        //3.恢复会话
+    }
+    //
+    /***/
+    public void doSecurityFilter(HttpServletRequest httpRequest, HttpServletResponse httpResponse, FilterChain chain) throws IOException, ServletException {
+        //1.恢复会话
         try {
             this.securityProcess.recoverAuthSession(httpRequest, httpResponse);
         } catch (SecurityException e) {
             Platform.error("recover AuthSession failure!\n" + Platform.logString(e));
         }
-        //3.请求处理
+        //2.请求处理
         String reqPath = httpRequest.getRequestURI();
         reqPath = reqPath.substring(httpRequest.getContextPath().length());
         if (reqPath.endsWith(this.settings.getLoginURL()) == true) {
-            /*A.登入*/
-            SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);
-            try {
-                this.securityProcess.processLogin(httpRequest, httpResponse);
-                dispatcher.forwardIndex(ViewContext.currentViewContext());//跳转登入地址
-            } catch (SecurityException e) {
-                dispatcher.forwardFailure(ViewContext.currentViewContext(), e);//跳转登入登出失败地址
-            }
+            this.processLogin(reqPath, httpRequest, httpResponse);
             return;
         }
         if (reqPath.endsWith(this.settings.getLogoutURL()) == true) {
-            /*B.登出*/
-            SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);
-            try {
-                this.securityProcess.processLogout(httpRequest, httpResponse);
-                dispatcher.forwardLogout(ViewContext.currentViewContext());//跳转登出地址
-            } catch (SecurityException e) {
-                dispatcher.forwardFailure(ViewContext.currentViewContext(), e);//跳转登入登出失败地址
-            }
+            this.processLogout(reqPath, httpRequest, httpResponse);
             return;
         }
-        {
-            /*C.访问请求*/
-            try {
-                this.securityProcess.processTestFilter(reqPath);
-                chain.doFilter(httpRequest, httpResponse);
-            } catch (PermissionException e) {
-                Platform.debug("testPermission failure! uri= " + reqPath + "\n" + Platform.logString(e));/*没有权限*/
-                SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);
-                if (dispatcher != null) {
-                    dispatcher.forwardFailure(ViewContext.currentViewContext(), e);
-                } else {
-                    e.printStackTrace(httpResponse.getWriter());
-                }
+        //3.访问请求
+        try {
+            this.securityProcess.processTestFilter(reqPath);
+            chain.doFilter(httpRequest, httpResponse);
+        } catch (PermissionException e) {
+            Platform.debug("testPermission failure! uri= " + reqPath + "\n" + Platform.logString(e));/*没有权限*/
+            SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);
+            if (dispatcher != null) {
+                dispatcher.forwardFailure(ViewContext.currentViewContext(), e);
+            } else {
+                e.printStackTrace(httpResponse.getWriter());
             }
-            /*D.如果authSession中的权限数据发生改变保存到缓存中，同时刷新AuthSession缓存*/
-            AuthSession[] authSessions = this.secService.getCurrentAuthSession();
-            for (AuthSession authSession : authSessions)
-                authSession.refreshCacheTime();/*刷新缓存中的数据*/
         }
     }
+    //
+    /***/
+    private void processLogin(String reqPath, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws ServletException, IOException {
+        /*A.登入*/
+        SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);
+        try {
+            this.securityProcess.processLogin(httpRequest, httpResponse);
+            dispatcher.forwardIndex(ViewContext.currentViewContext());//跳转登入地址
+        } catch (SecurityException e) {
+            dispatcher.forwardFailure(ViewContext.currentViewContext(), e);//跳转登入登出失败地址
+        }
+    };
+    //
+    /***/
+    private void processLogout(String reqPath, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws ServletException, IOException {
+        /*B.登出*/
+        SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);
+        try {
+            this.securityProcess.processLogout(httpRequest, httpResponse);
+            dispatcher.forwardLogout(ViewContext.currentViewContext());//跳转登出地址
+        } catch (SecurityException e) {
+            dispatcher.forwardFailure(ViewContext.currentViewContext(), e);//跳转登入登出失败地址
+        }
+    };
 }

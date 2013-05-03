@@ -15,15 +15,11 @@
  */
 package org.platform.security;
 /**
- * 表示一个用户。
- * @version : 2013-4-17
+ * 表示用户身份
+ * @version : 2013-5-3
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface UserInfo {
-    /**获取用户的识别码*/
-    public String getUserCode();
-    /**获取用户身份分类标识*/
-    public UserIdentity getIdentity();
-    /**测试用户是否为来宾帐号*/
-    public boolean isGuest();
+public interface UserIdentity {
+    /**传入一个身份标志测试用户是否匹配该身份条件。*/
+    public boolean equals(UserIdentity identity);
 }

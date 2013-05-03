@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.platform.security;
+import static org.platform.security.AuthSession.HttpSessionAuthSessionSetName;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,13 +30,12 @@ import com.google.inject.Inject;
  * @author 赵永春 (zyc@byshell.org)
  */
 class InternalSecurityProcess implements SecurityProcess {
-    public static final String HttpSessionAuthSessionSetName = AuthSession.class.getName();
     @Inject
-    private SecuritySettings   settings                      = null;
+    private SecuritySettings settings   = null;
     @Inject
-    private SecurityContext    secService                    = null;
+    private SecurityContext  secService = null;
     @Inject
-    private AppContext         appContext                    = null;
+    private AppContext       appContext = null;
     //
     private void writeHttpSession(HttpServletRequest httpRequest) {
         AuthSession[] authSessions = this.secService.getCurrentAuthSession();
@@ -139,6 +139,7 @@ class InternalSecurityProcess implements SecurityProcess {
             Platform.debug("parseJson to CookieDataUtil error! " + this.settings.getCookieEncryptionEncodeType() + " decode . cookieValue=" + cookieValue);
             return false;
         }
+        boolean returnData = false;
         //4.恢复Cookie里保存的会话
         for (CookieUserData info : infos) {
             if (this.settings.isLoseCookieOnStart() == true)
@@ -146,9 +147,10 @@ class InternalSecurityProcess implements SecurityProcess {
                     continue;
             /*用userCode恢复出一个新的会话*/
             this.recoverUserByCode(info.getAuthSystem(), info.getUserCode());
+            returnData = true;
         }
         this.writeHttpSession(httpRequest);
-        return true;
+        return returnData;
     }
     //
     /**恢复HttpSession中的登陆帐号。*/
@@ -173,9 +175,25 @@ class InternalSecurityProcess implements SecurityProcess {
     //
     /**恢复权限*/
     public void recoverAuthSession(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws SecurityException {
+        //1.恢复会话
         boolean recoverMark = this.recoverAuthSession4HttpSession(httpRequest.getSession(true));
-        if (recoverMark == false) {
-            this.recoverAuthSession4Cookie(httpRequest);
+        if (recoverMark == false)
+            recoverMark = this.recoverAuthSession4Cookie(httpRequest);
+        if (recoverMark == true)
+            return;
+        //2.处理来宾账户
+        if (this.settings.isGuestEnable() == true) {
+            try {
+                AuthSession targetAuthSession = this.secService.getCurrentBlankAuthSession();
+                if (targetAuthSession == null)
+                    targetAuthSession = this.secService.createAuthSession();
+                String guestAccount = this.settings.getGuestAccount();
+                String guestPassword = this.settings.getGuestPassword();
+                String guestAuthSystem = this.settings.getGuestAuthSystem();
+                targetAuthSession.doLogin(guestAuthSystem, guestAccount, guestPassword);/*登陆来宾帐号*/
+            } catch (Exception e) {
+                Platform.warning(Platform.logString(e));
+            }
         }
     }
     //

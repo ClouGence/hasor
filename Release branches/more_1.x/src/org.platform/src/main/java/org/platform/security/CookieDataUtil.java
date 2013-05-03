@@ -23,7 +23,7 @@ import com.alibaba.fastjson.JSON;
  * @version : 2013-4-24
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public final class CookieDataUtil {
+class CookieDataUtil {
     public static CookieDataUtil parseJson(String jsonString) {
         List<CookieUserData> cookieUserList = JSON.parseArray(jsonString, CookieUserData.class);
         CookieDataUtil data = new CookieDataUtil();

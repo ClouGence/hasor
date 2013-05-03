@@ -13,32 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.webapps.safety;
-import org.platform.security.BaseUserInfo;
+package org.platform.security;
 /**
- * 表示来宾用户，来宾用户表示未登录状态下的用户。
- * @version : 2013-4-17
+ * 抽象的{@link UserInfo}接口。
+ * @version : 2013-5-3
  * @author 赵永春 (zyc@byshell.org)
  */
-public class UserUser extends BaseUserInfo {
-    private String account;
-    private String password;
-    //
-    //
-    public String getAccount() {
-        return account;
-    }
-    public void setAccount(String account) {
-        this.account = account;
-    }
-    public String getPassword() {
-        return password;
-    }
-    public void setPassword(String password) {
-        this.password = password;
+public abstract class BaseUserInfo implements UserInfo {
+    @Override
+    public boolean isGuest() {
+        return false;
     }
     @Override
-    public String getUserCode() {
-        return this.getAccount() + "@" + this.getPassword();
+    public UserIdentity getIdentity() {
+        return UserIdentityUtil.getTypeIdentity(this.getClass());
     }
 }

@@ -49,6 +49,7 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
     /**初始化.*/
     @Override
     public void initialize(ApiBinder event) {
+        Binder binder = event.getGuiceBinder();
         /*配置*/
         this.settings = new SecuritySettings();
         this.settings.loadConfig(event.getSettings());
@@ -56,16 +57,18 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         this.secListener = new SecuritySessionListener();
         event.sessionListener().bind(this.secListener);
         /*request，请求拦截器*/
-        event.filter("*").through(SecurityFilter.class);
+        Key<SecurityFilter> filterKey = Key.get(SecurityFilter.class);
+        binder.bind(filterKey).asEagerSingleton();
+        event.filter("*").through(filterKey);
         /*aop，方法执行权限支持*/
         event.getGuiceBinder().bindInterceptor(new ClassPowerMatcher(), new MethodPowerMatcher(), new SecurityInterceptor());/*注册Aop*/
         /*装载SecurityAccess*/
         this.loadSecurityAuth(event);
         this.loadSecurityAccess(event);
         /*绑定核心功能实现类。*/
-        event.getGuiceBinder().bind(SecuritySettings.class).toInstance(this.settings);//通过Guice
-        event.getGuiceBinder().bind(SecurityContext.class).to(InternalSecurityContext.class).asEagerSingleton();
-        event.getGuiceBinder().bind(SecurityQuery.class).to(DefaultSecurityQuery.class);
+        binder.bind(SecuritySettings.class).toInstance(this.settings);//通过Guice
+        binder.bind(SecurityContext.class).to(InternalSecurityContext.class);
+        binder.bind(SecurityQuery.class).to(DefaultSecurityQuery.class);
     }
     @Override
     public void initialized(AppContext appContext) {

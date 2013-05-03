@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 package org.platform.security.guest;
-import org.platform.security.UserInfo;
+import org.platform.security.BaseUserInfo;
 /**
  * 表示来宾用户，来宾用户表示未登录状态下的用户。
  * @version : 2013-4-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class GuestUser implements UserInfo {
+public class GuestUser extends BaseUserInfo {
     private String account;
     private String password;
-    //
     //
     public String getAccount() {
         return account;

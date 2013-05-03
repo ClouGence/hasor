@@ -35,23 +35,9 @@ public abstract class SecurityContext {
     private ManagedSecurityAccessManager     securityAccessManager    = null;
     private SecuritySettings                 settings                 = null;
     //
-    //
-    //
-    /**使用SessionData的数据创建AuthSession。*/
-    protected abstract void removeSessionData(String sessionDataID);
-    /**仅仅刷新缓存数据的过期时间*/
-    protected abstract void updateSessionData(String sessionID);
-    /**更新SessionData*/
-    protected abstract void updateSessionData(String sessionDataID, SessionData newSessionData);
-    /**使用SessionData的数据创建AuthSession。*/
-    protected abstract SessionData getSessionData(String sessionDataID);
-    //
-    /**新建AuthSession*/
-    protected AuthSession newAuthSession(String authSessionID) throws SecurityException {
-        AuthSession newAuthSession = new AuthSession(authSessionID, this) {};
-        return newAuthSession;
-    };
-    //
+    protected AppContext getAppContext() {
+        return appContext;
+    }
     //
     /**初始化服务*/
     public synchronized void initSecurity(AppContext appContext) {
@@ -154,6 +140,21 @@ public abstract class SecurityContext {
     public synchronized boolean inactivationAuthSession(AuthSession authSession) {
         return this.inactivationAuthSession(authSession.getSessionID());
     }
+    /**根据用户身份类型从当前线程会话列表中查找会话集合。（参数为空会返回当前线程上所有的会话。）*/
+    public AuthSession[] findCurrentAuthSession(UserIdentity userIdentity) {
+        AuthSession[] authSessionArray = getCurrentAuthSession();
+        if (userIdentity == null)
+            return authSessionArray;
+        ArrayList<AuthSession> finds = new ArrayList<AuthSession>();
+        for (AuthSession authSession : authSessionArray) {
+            UserInfo userInfo = authSession.getUserObject();
+            if (userInfo == null)
+                continue;
+            if (userInfo.getIdentity().equals(userIdentity) == true)
+                finds.add(authSession);
+        }
+        return finds.toArray(new AuthSession[finds.size()]);
+    };
     /**获取当前线程绑定的权限会话集合。返回值不可以为空。*/
     public AuthSession[] getCurrentAuthSession() {
         List<AuthSession> curSessionMap = this.currentAuthSessionList.get();
@@ -163,6 +164,7 @@ public abstract class SecurityContext {
             return curSessionMap.toArray(new AuthSession[curSessionMap.size()]);
         }
     };
+    /**获取被标记为Blank的会话（来宾用户或者未登录的会话）*/
     public AuthSession getCurrentBlankAuthSession() {
         AuthSession[] authList = getCurrentAuthSession();
         if (authList != null)
@@ -171,6 +173,7 @@ public abstract class SecurityContext {
                     return auth;
         return null;
     }
+    /**获取当前来宾用户，如果存在的话。*/
     public AuthSession getCurrentGuestAuthSession() {
         AuthSession[] authList = getCurrentAuthSession();
         if (authList != null)
@@ -227,4 +230,20 @@ public abstract class SecurityContext {
     public SecurityQuery newSecurityQuery(SecurityNode testNode) {
         return this.newSecurityQuery().andCustomer(testNode);
     }
+    //
+    //
+    //
+    /**使用SessionData的数据创建AuthSession。*/
+    protected abstract void removeSessionData(String sessionDataID);
+    /**仅仅刷新缓存数据的过期时间*/
+    protected abstract void updateSessionData(String sessionID);
+    /**更新SessionData*/
+    protected abstract void updateSessionData(String sessionDataID, SessionData newSessionData);
+    /**使用SessionData的数据创建AuthSession。*/
+    protected abstract SessionData getSessionData(String sessionDataID);
+    /**新建AuthSession*/
+    protected AuthSession newAuthSession(String authSessionID) throws SecurityException {
+        AuthSession newAuthSession = new AuthSession(authSessionID, this) {};
+        return newAuthSession;
+    };
 }

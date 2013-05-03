@@ -27,6 +27,7 @@ import org.platform.clock.Clock;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class AuthSession {
+    public static final String      HttpSessionAuthSessionSetName = AuthSession.class.getName();
     private String                  sessionID;
     private UserInfo                userInfo;
     private Map<String, Permission> permissionMap;
