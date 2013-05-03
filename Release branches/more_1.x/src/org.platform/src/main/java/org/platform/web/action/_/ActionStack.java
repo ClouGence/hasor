@@ -13,19 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.clock;
-/***
- * 
- * @version : 2013-4-27
+package org.platform.web.action._;
+import java.util.Map;
+/**
+ * 代表一个action执行时的参数堆栈，每当请求执行Action方法时候submit都会自动创建一个新的堆栈。
+ * @version : 2011-7-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Clock {
-    /**从时钟服务中获取一个在分布式部署环境里有效的时间（尚未实现）。*/
-    public static long getSyncTime() {
-        return System.currentTimeMillis();
-    }
-    /**从本地时钟获取一个时间。*/
-    public static long getLocalTime() {
-        return System.currentTimeMillis();
-    }
-}
+public interface ActionStack extends Map<String, Object> {};

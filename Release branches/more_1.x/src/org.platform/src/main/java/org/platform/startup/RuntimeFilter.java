@@ -67,7 +67,7 @@ public class RuntimeFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest httpReq = (HttpServletRequest) request;
         final HttpServletResponse httpRes = (HttpServletResponse) response;
-        Platform.debug("at http request :" + httpReq.getRequestURI());
+        Platform.debug("at http request : %s", httpReq.getRequestURI());
         try {
             //Ö´ÐÐ.
             this.beforeRequest(appContext, httpReq, httpRes);

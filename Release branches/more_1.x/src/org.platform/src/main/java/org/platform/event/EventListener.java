@@ -13,19 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.clock;
-/***
- * 
- * @version : 2013-4-27
- * @author 赵永春 (zyc@byshell.org)
- */
-public class Clock {
-    /**从时钟服务中获取一个在分布式部署环境里有效的时间（尚未实现）。*/
-    public static long getSyncTime() {
-        return System.currentTimeMillis();
-    }
-    /**从本地时钟获取一个时间。*/
-    public static long getLocalTime() {
-        return System.currentTimeMillis();
-    }
-}
+package org.platform.event;
+import org.platform.event.Event.Sequence;
+/**
+* 用于处理事件的事件监听器。
+* @version 2010-10-10
+* @author 赵永春 (zyc@byshell.org)
+*/
+public interface EventListener<T extends Event> {
+    /**处理事件的处理方法，参数是要处理的事件。*/
+    public void onEvent(T event, Sequence sequence) throws Throwable;
+};

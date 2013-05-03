@@ -34,6 +34,7 @@ public abstract class SecurityContext {
     private ManagedSecurityAuthManager       securityAuthManager      = null;
     private ManagedSecurityAccessManager     securityAccessManager    = null;
     private SecuritySettings                 settings                 = null;
+    //    IAuthSessionListener
     //
     protected AppContext getAppContext() {
         return appContext;

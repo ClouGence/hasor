@@ -15,6 +15,7 @@
  */
 package org.platform.context;
 import java.util.Enumeration;
+import java.util.Set;
 import javax.servlet.ServletContext;
 import org.platform.context.setting.Config;
 /**
@@ -23,6 +24,8 @@ import org.platform.context.setting.Config;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface InitContext {
+    /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
+    public Set<Class<?>> getClassSet(Class<?> featureType);
     /**获取环境初始化参数。*/
     public String getInitParameter(String name);
     /**获取环境初始化参数名称集合。*/

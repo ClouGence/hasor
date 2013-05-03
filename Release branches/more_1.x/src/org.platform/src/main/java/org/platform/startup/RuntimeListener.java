@@ -93,7 +93,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         List<Class<? extends ContextListener>> initHookList = new ArrayList<Class<? extends ContextListener>>();
         for (Class<?> cls : initHookSet) {
             if (ContextListener.class.isAssignableFrom(cls) == false) {
-                Platform.warning("not implemented ContextListener £º" + Platform.logString(cls));
+                Platform.warning("not implemented ContextListener :%s", cls);
             } else {
                 initHookList.add((Class<? extends ContextListener>) cls);
             }
@@ -117,7 +117,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         try {
             return (ContextListener) listenerClass.newInstance();
         } catch (Exception e) {
-            Platform.error("create " + Platform.logString(listenerClass) + " an error!\n" + Platform.logString(e));
+            Platform.error("create %s an error!\n%s", listenerClass, e);
             return null;
         }
     }

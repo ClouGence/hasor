@@ -45,7 +45,7 @@ class InternalCodeDigestManager implements SettingListener {
             this.codeDigestObjectMap.put(name, digestObject);
             return digestObject;
         } catch (Exception e) {
-            Platform.error("create CodeDigest an error!\t" + Platform.logString(e));
+            Platform.error("create CodeDigest an error!\t%s", e);
             return null;
         }
     }

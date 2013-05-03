@@ -13,19 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.clock;
-/***
- * 
- * @version : 2013-4-27
- * @author 赵永春 (zyc@byshell.org)
- */
-public class Clock {
-    /**从时钟服务中获取一个在分布式部署环境里有效的时间（尚未实现）。*/
-    public static long getSyncTime() {
-        return System.currentTimeMillis();
-    }
-    /**从本地时钟获取一个时间。*/
-    public static long getLocalTime() {
-        return System.currentTimeMillis();
-    }
+package org.platform.event;
+import org.platform.event.Event.Sequence;
+/**
+* 异常处理器，该接口是为了处理{@link EventListener}事件在执行过程中引发的异常。
+* @version : 2011-5-18
+* @author 赵永春 (zyc@byshell.org)
+*/
+public interface EventExceptionHandler<T extends Event> {
+    /**处理该事件异常。*/
+    public void processException(Throwable exception, Sequence sequence, EventListener<T> listener);
 }

@@ -43,7 +43,7 @@ import org.platform.context.InitListener;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@InitListener(displayName = "WebModuleServiceListener", description = "org.platform.web软件包功能支持。", startIndex = 2)
+@InitListener(displayName = "WebModuleServiceListener", description = "org.platform.web软件包功能支持。", startIndex = -50)
 public class WebModuleServiceListener extends AbstractModuleListener {
     /**初始化.*/
     @Override
@@ -78,7 +78,7 @@ public class WebModuleServiceListener extends AbstractModuleListener {
         List<Class<? extends Filter>> webFilterList = new ArrayList<Class<? extends Filter>>();
         for (Class<?> cls : webFilterSet) {
             if (Filter.class.isAssignableFrom(cls) == false) {
-                Platform.warning("not implemented Filter ：" + Platform.logString(cls));
+                Platform.warning("not implemented Filter :%s", cls);
             } else {
                 webFilterList.add((Class<? extends Filter>) cls);
             }
@@ -110,7 +110,7 @@ public class WebModuleServiceListener extends AbstractModuleListener {
         List<Class<? extends HttpServlet>> webServletList = new ArrayList<Class<? extends HttpServlet>>();
         for (Class<?> cls : webServletSet) {
             if (HttpServlet.class.isAssignableFrom(cls) == false) {
-                Platform.warning("not implemented HttpServlet ：" + Platform.logString(cls));
+                Platform.warning("not implemented HttpServlet :%s", cls);
             } else {
                 webServletList.add((Class<? extends HttpServlet>) cls);
             }
@@ -142,7 +142,7 @@ public class WebModuleServiceListener extends AbstractModuleListener {
         List<Class<? extends ErrorHook>> webErrorList = new ArrayList<Class<? extends ErrorHook>>();
         for (Class<?> cls : webErrorSet) {
             if (ErrorHook.class.isAssignableFrom(cls) == false) {
-                Platform.warning("not implemented ErrorHook ：" + Platform.logString(cls));
+                Platform.warning("not implemented ErrorHook :%s", cls);
             } else {
                 webErrorList.add((Class<? extends ErrorHook>) cls);
             }
@@ -173,7 +173,7 @@ public class WebModuleServiceListener extends AbstractModuleListener {
         List<Class<? extends HttpSessionListener>> sessionListenerList = new ArrayList<Class<? extends HttpSessionListener>>();
         for (Class<?> cls : sessionListenerSet) {
             if (HttpSessionListener.class.isAssignableFrom(cls) == false) {
-                Platform.warning("not implemented HttpSessionListener ：" + Platform.logString(cls));
+                Platform.warning("not implemented HttpSessionListener :%s", cls);
             } else {
                 sessionListenerList.add((Class<? extends HttpSessionListener>) cls);
             }

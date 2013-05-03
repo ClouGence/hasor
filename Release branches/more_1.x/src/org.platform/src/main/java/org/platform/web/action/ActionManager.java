@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.clock;
-/***
- * 
- * @version : 2013-4-27
+package org.platform.web.action;
+import org.platform.context.AppContext;
+/** 
+ * 缓存使用入口，缓存的实现由系统自行提供。
+ * @version : 2013-4-20
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Clock {
-    /**从时钟服务中获取一个在分布式部署环境里有效的时间（尚未实现）。*/
-    public static long getSyncTime() {
-        return System.currentTimeMillis();
-    }
-    /**从本地时钟获取一个时间。*/
-    public static long getLocalTime() {
-        return System.currentTimeMillis();
-    }
+public interface ActionManager {
+    /**获取默认缓存*/
+    public ICache<Object> getDefaultCache();
+    /**获取缓存*/
+    public ICache<Object> getCache(String cacheName);
+    /**根据样本类型获取该类型的Key生成器。*/
+    public IKeyBuilder getKeyBuilder(Class<?> sampleType);
+    /**初始化启动缓存服务。*/
+    public void initManager(AppContext appContext);
+    /**销毁缓存服务*/
+    public void destroyManager(AppContext appContext);
 }

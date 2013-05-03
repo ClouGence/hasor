@@ -41,7 +41,7 @@ import com.google.inject.name.Names;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@InitListener(displayName = "CacheModuleServiceListener", description = "org.platform.icache软件包功能支持。", startIndex = 0)
+@InitListener(displayName = "CacheModuleServiceListener", description = "org.platform.icache软件包功能支持。", startIndex = -100)
 public class CacheModuleServiceListener extends AbstractModuleListener {
     private CacheManager  cacheManager = null;
     private CacheSettings settings     = null;
@@ -67,7 +67,7 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
         //
         this.cacheManager = appContext.getBean(CacheManager.class);
         this.cacheManager.initManager(appContext);
-        Platform.info("online ->> cache is " + (this.settings.isCacheEnable() ? "enable." : "disable."));
+        Platform.info("online ->> cache is %s", (this.settings.isCacheEnable() ? "enable." : "disable."));
     }
     @Override
     public void destroy(AppContext appContext) {
@@ -85,7 +85,7 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
         List<Class<? extends IKeyBuilder>> iKeyBuilderList = new ArrayList<Class<? extends IKeyBuilder>>();
         for (Class<?> cls : iKeyBuilderSet) {
             if (IKeyBuilder.class.isAssignableFrom(cls) == false) {
-                Platform.warning("loadKeyBuilder : not implemented IKeyBuilder of type " + Platform.logString(cls));
+                Platform.warning("loadKeyBuilder : not implemented IKeyBuilder of type %s.", cls);
             } else
                 iKeyBuilderList.add((Class<? extends IKeyBuilder>) cls);
         }
@@ -129,7 +129,7 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
         List<Class<ICache>> cacheList = new ArrayList<Class<ICache>>();
         for (Class<?> cls : cacheSet) {
             if (ICache.class.isAssignableFrom(cls) == false) {
-                Platform.warning("loadCache : not implemented ICache of type " + Platform.logString(cls));
+                Platform.warning("loadCache : not implemented ICache of type %s", cls);
             } else
                 cacheList.add((Class<ICache>) cls);
         }
@@ -229,8 +229,8 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
                     IKeyBuilder keyBuilder = cacheManager.getKeyBuilder(arg.getClass());
                     cacheKey.append(keyBuilder.serializeKey(arg));
                 }
-            Platform.debug("MethodInterceptor Method : " + targetMethod.toString());
-            Platform.debug("MethodInterceptor Cache key :" + Platform.logString(cacheKey.toString()));
+            Platform.debug("MethodInterceptor Method : %s", targetMethod);
+            Platform.debug("MethodInterceptor Cache key :%s", cacheKey.toString());
             //3.获取缓存
             ICache<Object> cacheObject = null;
             if (StringUtil.isBlank(cacheAnno.cacheName()) == true)

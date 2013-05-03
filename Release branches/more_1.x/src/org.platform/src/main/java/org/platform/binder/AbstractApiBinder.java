@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 package org.platform.binder;
-import static org.platform.PlatformConfig.Platform_LoadPackages;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.more.util.ArrayUtil;
-import org.more.util.ClassUtil;
 import org.platform.Assert;
 import org.platform.context.InitContext;
 import org.platform.context.SettingListener;
@@ -91,11 +89,7 @@ public abstract class AbstractApiBinder extends AbstractModule implements ApiBin
     }
     @Override
     public Set<Class<?>> getClassSet(Class<?> featureType) {
-        if (featureType == null)
-            return null;
-        String loadPackages = this.initContext.getConfig().getSettings().getString(Platform_LoadPackages);
-        String[] spanPackage = loadPackages.split(",");
-        return ClassUtil.getClassSet(spanPackage, featureType);
+        return this.initContext.getClassSet(featureType);
     }
     @Override
     protected void configure() {

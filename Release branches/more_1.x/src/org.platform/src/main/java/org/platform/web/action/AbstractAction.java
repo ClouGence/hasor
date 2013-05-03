@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.web;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package org.platform.web.action;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 /**
- * 表示一个Action类，action类可以不必实现任何接口或继承任何类。
+ * 所有action的基类。
  * @version : 2013-3-26
  * @author 赵永春 (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface Action {}
+public abstract class AbstractAction {
+    /**执行*/
+    public abstract void execute(HttpServletRequest request, HttpServletResponse response);
+}

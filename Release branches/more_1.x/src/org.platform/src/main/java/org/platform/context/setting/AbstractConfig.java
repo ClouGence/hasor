@@ -100,7 +100,7 @@ public abstract class AbstractConfig implements Config {
                 this.resourceWatch.setDaemon(true);
                 this.resourceWatch.start();
             } catch (Exception e) {
-                Platform.error("resourceWatch start error, on : " + appSettingsName1 + " Settings file !\n" + Platform.logString(e));
+                Platform.error("resourceWatch start error, on : %s Settings file !\n%s", appSettingsName1, e);
             }
         }
         //3.globalConfig
@@ -124,11 +124,11 @@ public abstract class AbstractConfig implements Config {
         try {
             URL configURL = ResourcesUtil.getResource(appSettingsName1);
             if (configURL != null) {
-                Platform.info("load ‘" + configURL + "’");
+                Platform.info("load ‘%s’", configURL);
                 loadConfig(configURL.toURI(), encoding, toMap);
             }
         } catch (Exception e) {
-            Platform.error("load ‘" + appSettingsName1 + "’ error!\n" + Platform.logString(e));
+            Platform.error("load ‘%s’ error!\n%s", appSettingsName1, e);
         }
     }
     //
@@ -140,12 +140,12 @@ public abstract class AbstractConfig implements Config {
             List<URL> streamList = ResourcesUtil.getResources(appSettingsName2);
             if (streamList != null) {
                 for (URL resURL : streamList) {
-                    Platform.info("load ‘" + resURL + "’");
+                    Platform.info("load ‘%s’", resURL);
                     loadConfig(resURL.toURI(), encoding, toMap);
                 }
             }
         } catch (Exception e) {
-            Platform.error("load ‘" + appSettingsName2 + "’ error!\n" + Platform.logString(e));
+            Platform.error("load ‘%s’ error!\n%s", appSettingsName2, e);
         }
     }
     //
@@ -163,18 +163,18 @@ public abstract class AbstractConfig implements Config {
                         String $key = prop.get(key).toLowerCase();
                         Object value = referConfig.get($key);
                         if (value == null)
-                            Platform.warning("mapping.. " + $propxyKey + "=" + $key + " value is null.");
+                            Platform.warning("%s mapping to %s value is null.", $propxyKey, $key);
                         else {
                             /*忽略冲突的映射*/
                             if (referConfig.containsKey($propxyKey) == true) {
-                                Platform.error("mapping conflict! " + $propxyKey + " has this key.");
+                                Platform.error("mapping conflict! %s has this key.", $propxyKey);
                             } else
                                 referConfig.put($propxyKey, value);
                         }
                     }
                 }
         } catch (Exception e) {
-            Platform.error("load ‘" + appSettingsName3 + "’ error!\n" + Platform.logString(e));
+            Platform.error("load ‘%s’ error!\n%s", appSettingsName3, e);
         }
     }
     //
@@ -183,7 +183,7 @@ public abstract class AbstractConfig implements Config {
     //
     /**loadConfig装载配置*/
     private void loadConfig(URI configURI, String encoding, Map<String, Object> loadTo) throws IOException {
-        Platform.info("PlatformSettings loadConfig Xml namespace : " + Platform.logString(configURI));
+        Platform.info("PlatformSettings loadConfig Xml namespace : %s", configURI);
         XmlPropertyGlobalFactory xmlg = null;
         //1.<载入生效的命名空间>
         try {
@@ -216,7 +216,7 @@ public abstract class AbstractConfig implements Config {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Platform.warning("namespcae [" + configURI + "] no support!");
+            Platform.warning("namespcae [%s] no support!", configURI);
         }
     }
     //

@@ -37,7 +37,7 @@ public abstract class ApiBinderModule implements Module {
         for (ContextListener listener : listenerList) {
             if (listener == null)
                 continue;
-            Platform.info("send initialize to : " + Platform.logString(listener.getClass()));
+            Platform.info("send initialize to : %s", listener.getClass());
             ApiBinder apiBinder = this.getApiBinder(binder);
             listener.initialize(apiBinder);
         }

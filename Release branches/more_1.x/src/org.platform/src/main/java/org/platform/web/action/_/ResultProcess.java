@@ -13,19 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.clock;
-/***
- * 
- * @version : 2013-4-27
+package org.platform.web.action._;
+/**
+ * 当action调用结束时会执行该结果处理器进行后续处理。
+ * @version : 2011-7-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Clock {
-    /**从时钟服务中获取一个在分布式部署环境里有效的时间（尚未实现）。*/
-    public static long getSyncTime() {
-        return System.currentTimeMillis();
-    }
-    /**从本地时钟获取一个时间。*/
-    public static long getLocalTime() {
-        return System.currentTimeMillis();
-    }
-}
+public interface ResultProcess {
+    /**执行回调处理 */
+    public Object invoke(ActionStack onStack, Object res) throws Throwable;
+};

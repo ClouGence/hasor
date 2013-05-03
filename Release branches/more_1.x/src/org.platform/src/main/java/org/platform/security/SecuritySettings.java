@@ -129,7 +129,7 @@ public class SecuritySettings implements SettingListener {
         String permissionCodes = itemAtt.get("permissions");
         UriPatternType patternType = StringConvertUtil.changeType(modeType, UriPatternType.class, UriPatternType.None);
         this.rulesDefault = UriPatternType.get(patternType, "(Default)", permissionCodes);
-        Platform.warning("rules.defaultRule ->" + this.rulesDefault);
+        Platform.warning("rules.defaultRule ->%s", this.rulesDefault);
         XmlProperty rulesIncludes = newConfig.getXmlProperty(Security_Rules_Includes); //包含在权限检查范畴的URL配置
         this.rulesIncludeList = new ArrayList<UriPatternMatcher>();
         this.readIncludeRules(rulesIncludes);
@@ -188,7 +188,7 @@ public class SecuritySettings implements SettingListener {
             UriPatternMatcher matcher = UriPatternType.get(patternType, requestURI, permissionCodes);
             this.rulesIncludeList.add(matcher);
             //
-            Platform.info("read Include Rule : " + matcher);
+            Platform.info("read Include Rule : %s", matcher);
         }
     }
     //
@@ -212,7 +212,7 @@ public class SecuritySettings implements SettingListener {
             UriPatternMatcher matcher = UriPatternType.get(UriPatternType.None, requestURI, null);
             this.rulesExcludeList.add(matcher);
             //
-            Platform.info("read Exclude Rule : " + matcher);
+            Platform.info("read Exclude Rule : %s", matcher);
         }
     }
     //
@@ -251,7 +251,7 @@ public class SecuritySettings implements SettingListener {
                 }
             //
             this.dispatcherForwardList.add(dispatcher);
-            Platform.info("read " + dispatcher);
+            Platform.info("read %s", dispatcher);
         }
     }
     //
@@ -269,13 +269,13 @@ public class SecuritySettings implements SettingListener {
             try {
                 Class<?> digestClass = Class.forName(digestType);
                 if (Digest.class.isAssignableFrom(digestClass) == false) {
-                    Platform.warning(digestCode + " digest " + digestType + " is not implemented CodeDigest");
+                    Platform.warning("%s digest %s is not implemented CodeDigest.", digestCode, digestType);
                     continue;
                 }
                 this.digestMap.put(digestCode, (Class<Digest>) digestClass);
-                Platform.info("read CodeDigest " + digestCode + " = " + digestType);
+                Platform.info("read CodeDigest %s : %s", digestCode, digestType);
             } catch (Exception e) {
-                Platform.warning("create " + digestType + " an error ." + Platform.logString(e));
+                Platform.warning("create %s an error .\n%s", digestType, e);
             }
         }
     }

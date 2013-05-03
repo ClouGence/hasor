@@ -31,6 +31,7 @@ import org.platform.context.AbstractModuleListener;
 import org.platform.context.AppContext;
 import org.platform.context.InitListener;
 import org.platform.context.setting.Config;
+import org.platform.event.EventManager;
 import org.platform.security.Power.Level;
 import com.google.inject.Binder;
 import com.google.inject.Key;
@@ -41,7 +42,7 @@ import com.google.inject.matcher.AbstractMatcher;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@InitListener(displayName = "SecurityModuleServiceListener", description = "org.platform.security软件包功能支持。", startIndex = 1)
+@InitListener(displayName = "SecurityModuleServiceListener", description = "org.platform.security软件包功能支持。", startIndex = -90)
 public class SecurityModuleServiceListener extends AbstractModuleListener {
     private SecurityContext         secService  = null;
     private SecuritySessionListener secListener = null;
@@ -77,7 +78,16 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         //
         this.secService = appContext.getBean(SecurityContext.class);
         this.secService.initSecurity(appContext);
-        Platform.info("online ->> security is " + (this.settings.isEnable() ? "enable." : "disable."));
+        //
+        try {
+            EventManager eventManager = appContext.getBean(EventManager.class);
+            Set<Class<?>> authSessionListenerSet = appContext.getInitContext().getClassSet(AuthSessionListener.class);
+            //
+        } catch (Exception e) {
+            Platform.error("security load AuthSessionListener an error\n%s", e);
+        }
+        //
+        Platform.info("online ->> security is %s", (this.settings.isEnable() ? "enable." : "disable."));
     }
     @Override
     public void destroy(AppContext appContext) {
@@ -95,7 +105,7 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         List<Class<? extends ISecurityAuth>> authList = new ArrayList<Class<? extends ISecurityAuth>>();
         for (Class<?> cls : authSet) {
             if (ISecurityAuth.class.isAssignableFrom(cls) == false) {
-                Platform.warning("loadSecurityAuth : not implemented ISecurityAuth , class=" + Platform.logString(cls));
+                Platform.warning("loadSecurityAuth : not implemented ISecurityAuth , class=%s", cls);
             } else {
                 authList.add((Class<? extends ISecurityAuth>) cls);
             }
@@ -127,7 +137,7 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         List<Class<? extends ISecurityAccess>> accessList = new ArrayList<Class<? extends ISecurityAccess>>();
         for (Class<?> cls : accessSet) {
             if (ISecurityAccess.class.isAssignableFrom(cls) == false) {
-                Platform.warning("loadSecurityAccess : not implemented ISecurityAccess. class=" + Platform.logString(cls));
+                Platform.warning("loadSecurityAccess : not implemented ISecurityAccess. class=%s", cls);
             } else {
                 accessList.add((Class<? extends ISecurityAccess>) cls);
             }
@@ -238,18 +248,11 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
     private class SecuritySessionListener implements HttpSessionListener {
         @Override
         public void sessionCreated(HttpSessionEvent se) {
-            //            if (settings.isEnable() == false)
-            //                return;
-            //            try {
-            //                AuthSession newAuthSession = secService.createAuthSession();
-            //                StringBuilder authSessionIDs = new StringBuilder("");
-            //                authSessionIDs.append(newAuthSession.getSessionID());
-            //                se.getSession().setAttribute(InternalSecurityProcess.HttpSessionAuthSessionSetName, authSessionIDs.toString());
-            //            } catch (SecurityException e) {
-            //                Platform.error(Platform.logString(e));
-            //            }
+            //
         }
         @Override
-        public void sessionDestroyed(HttpSessionEvent se) {}
+        public void sessionDestroyed(HttpSessionEvent se) {
+            //
+        }
     }
 }

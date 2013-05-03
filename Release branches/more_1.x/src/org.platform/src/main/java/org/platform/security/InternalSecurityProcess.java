@@ -72,7 +72,7 @@ class InternalSecurityProcess implements SecurityProcess {
             try {
                 cookieValue = digest.encrypt(cookieValue, this.settings.getCookieEncryptionKey());
             } catch (Throwable e) {
-                Platform.warning(this.settings.getCookieEncryptionEncodeType() + " encode cookieValue error. cookieValue=" + cookieValue);
+                Platform.warning("%s encode cookieValue error. cookieValue=%s", this.settings.getCookieEncryptionEncodeType(), cookieValue);
                 return;
             }
         }
@@ -98,7 +98,7 @@ class InternalSecurityProcess implements SecurityProcess {
             //
             newAuthSession.doLoginCode(authSystem, userCode);
         } catch (SecurityException e) {
-            Platform.warning("recover cookieUser failure! userCode=" + userCode);
+            Platform.warning("recover cookieUser failure! userCode=%s", userCode);
             if (newAuthSession != null)
                 newAuthSession.close();
         }
@@ -122,7 +122,7 @@ class InternalSecurityProcess implements SecurityProcess {
                 try {
                     cookieValue = digest.decrypt(cookieValue, this.settings.getCookieEncryptionKey());
                 } catch (Throwable e) {
-                    Platform.warning(this.settings.getCookieEncryptionEncodeType() + " decode cookieValue error. cookieValue=" + cookieValue);
+                    Platform.warning("%s decode cookieValue error. cookieValue=%s", this.settings.getCookieEncryptionEncodeType(), cookieValue);
                     return false;/*解密失败意味着后面的恢复操作都不会用到有效数据因此return.*/
                 }
             }
@@ -136,7 +136,7 @@ class InternalSecurityProcess implements SecurityProcess {
             if (infos == null)
                 return false;
         } catch (Exception e) {
-            Platform.debug("parseJson to CookieDataUtil error! " + this.settings.getCookieEncryptionEncodeType() + " decode . cookieValue=" + cookieValue);
+            Platform.debug("parseJson to CookieDataUtil error! %s decode. cookieValue=%s", this.settings.getCookieEncryptionEncodeType(), cookieValue);
             return false;
         }
         boolean returnData = false;
@@ -163,11 +163,11 @@ class InternalSecurityProcess implements SecurityProcess {
         for (String authSessionID : authSessionIDSet) {
             try {
                 if (this.secService.activateAuthSession(authSessionID) == true) {
-                    Platform.debug("authSession : " + authSessionID + " activate!");
+                    Platform.debug("authSession : %s activate!", authSessionID);
                     returnData = true;
                 }
             } catch (SecurityException e) {
-                Platform.info(authSessionID + " activate an error. " + Platform.logString(e));
+                Platform.warning("%s activate an error. \n%s", authSessionID, e);
             }
         }
         return returnData;
@@ -192,7 +192,7 @@ class InternalSecurityProcess implements SecurityProcess {
                 String guestAuthSystem = this.settings.getGuestAuthSystem();
                 targetAuthSession.doLogin(guestAuthSystem, guestAccount, guestPassword);/*登陆来宾帐号*/
             } catch (Exception e) {
-                Platform.warning(Platform.logString(e));
+                Platform.warning("%s", e);
             }
         }
     }
@@ -209,10 +209,10 @@ class InternalSecurityProcess implements SecurityProcess {
             authSession = this.secService.createAuthSession();
         try {
             authSession.doLogin(formAuth, account, password);/*登入新会话*/
-            Platform.info("login OK. acc=" + account + " , at SessionID=" + authSession.getSessionID());
+            Platform.info("login OK. acc=%s , at SessionID= %s", account, authSession.getSessionID());
             this.writeAuthSession(httpRequest, httpResponse);
         } catch (SecurityException e) {
-            Platform.warning("login failure! acc=" + account + " , msg=" + e.getMessage());
+            Platform.warning("login failure! acc=%s , msg= %s", account, e.getMessage());
             authSession.close();
             throw e;
         }
@@ -228,9 +228,9 @@ class InternalSecurityProcess implements SecurityProcess {
             String userCode = authSession.getUserObject().getUserCode();
             try {
                 authSession.doLogout();/*退出会话*/
-                Platform.info("logout OK. userCode=" + userCode + " , at SessionID=" + authSession.getSessionID());
+                Platform.info("logout OK. userCode=%s , at SessionID= %s", userCode, authSession.getSessionID());
             } catch (SecurityException e) {
-                Platform.info("logout failure! userCode=" + userCode + " , at SessionID=" + authSession.getSessionID());
+                Platform.info("logout failure! userCode=%s , at SessionID= %s", userCode, authSession.getSessionID());
                 throw e;
             }
         }

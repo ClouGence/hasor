@@ -69,7 +69,7 @@ public class AuthSession {
             }
             return this.userInfo;
         } catch (SecurityException e) {
-            Platform.debug(Platform.logString(e));
+            Platform.debug("%s", e);
             return null;
         }
     };
@@ -203,7 +203,7 @@ public class AuthSession {
             this.authSessionData.setLastTime(Clock.getSyncTime());
             this.reloadPermission();/*重载权限*/
             this.refreshCacheTime();
-            Platform.debug(this.sessionID + " :doLogin authSystem=" + authSystem + " ,userCode=" + userCode);
+            Platform.debug("%s :doLogin authSystem=%s ,userCode=%s", this.sessionID, authSystem, userCode);
             return;
         }
         throw new SecurityException("unknown user!");
@@ -223,7 +223,7 @@ public class AuthSession {
             this.authSessionData.setLastTime(Clock.getSyncTime());
             this.reloadPermission();/*重载权限*/
             this.refreshCacheTime();
-            Platform.debug(this.sessionID + " :doLogin authSystem=" + authSystem + " ,account=" + account + " ,password=" + password);
+            Platform.debug("%s :doLogin authSystem=%s ,account=%s ,password=%s", this.sessionID, authSystem, account, password);
             return;
         }
         throw new SecurityException("unknown user!");
@@ -235,7 +235,7 @@ public class AuthSession {
         this.userInfo = null;
         this.permissionMap.clear();
         this.getSecurityContext().removeSessionData(this.sessionID);
-        Platform.debug(this.sessionID + " :doLogout! sessionID=" + this.sessionID);
+        Platform.debug("%s :doLogout!", this.sessionID);
     };
     /**关闭会话（退出会话，并且从当前线程中注销）。*/
     public synchronized void close() throws SecurityException {

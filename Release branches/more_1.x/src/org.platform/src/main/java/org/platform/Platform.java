@@ -16,6 +16,11 @@
 package org.platform;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 /**
@@ -30,18 +35,52 @@ public abstract class Platform implements PlatformConfig {
         String callerClass = onCode.getClassName();
         return callerClass.substring(callerClass.lastIndexOf(".") + 1) + ":" + onCode.getMethodName();
     }
-    public static void debug(String string) {
-        System.out.println(callerType() + " ->> " + string);//TODO
+    //
+    //
+    /***/
+    public static void debug(String string, Object... params) {
+        Object[] paramsStr = getStringArray(params);
+        System.out.println(callerType() + " ->> " + formatString(string, paramsStr));
     }
-    public static void error(String string) {
-        System.err.println(callerType() + " ->> " + string);//TODO
+    //
+    /***/
+    public static void error(String string, Object... params) {
+        Object[] paramsStr = getStringArray(params);
+        System.err.println(callerType() + " ->> " + formatString(string, paramsStr));
     }
-    public static void warning(String string) {
-        System.err.println(callerType() + " ->> " + string);//TODO
+    //
+    /***/
+    public static void warning(String string, Object... params) {
+        Object[] paramsStr = getStringArray(params);
+        System.err.println(callerType() + " ->> " + formatString(string, paramsStr));
     }
-    public static void info(String string) {
-        System.out.println(callerType() + " ->> " + string);//TODO 
+    //
+    /***/
+    public static void info(String string, Object... params) {
+        Object[] paramsStr = getStringArray(params);
+        System.out.println(callerType() + " ->> " + formatString(string, paramsStr));
     }
+    //
+    /***/
+    public static String formatString(String formatString, Object... args) {
+        if (args == null || args.length == 0)
+            return formatString;
+        return String.format(formatString, args);
+    }
+    //
+    /***/
+    public static String[] getStringArray(Object... objects) {
+        ArrayList<String> returnData = new ArrayList<String>();
+        for (Object obj : objects) {
+            if (obj == null)
+                returnData.add("null");
+            else
+                returnData.add(logString(obj));
+        }
+        return returnData.toArray(new String[returnData.size()]);
+    }
+    //
+    /***/
     public static String logString(Object object) {
         if (object == null)
             return "null";
@@ -69,6 +108,20 @@ public abstract class Platform implements PlatformConfig {
                 StringWriter sw = new StringWriter();
                 err.printStackTrace(new PrintWriter(sw));
                 logString.append(sw.getBuffer());
+            } else if (object instanceof URL) {
+                URL url = (URL) object;
+                try {
+                    logString.append(URLDecoder.decode(url.toString(), "utf-8"));
+                } catch (UnsupportedEncodingException e) {
+                    logString.append(url.toString());
+                }
+            } else if (object instanceof URI) {
+                URI uri = (URI) object;
+                try {
+                    logString.append(URLDecoder.decode(uri.toString(), "utf-8"));
+                } catch (UnsupportedEncodingException e) {
+                    logString.append(uri.toString());
+                }
             } else {
                 logString.append(object.toString());
             }

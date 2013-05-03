@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 package org.platform.context;
+import static org.platform.PlatformConfig.Platform_LoadPackages;
 import java.util.Enumeration;
+import java.util.Set;
 import javax.servlet.ServletContext;
+import org.more.util.ClassUtil;
 import org.platform.Assert;
 import org.platform.clock.Clock;
 import org.platform.context.setting.Config;
@@ -51,5 +54,13 @@ public abstract class AbstractInitContext implements InitContext {
     @Override
     public ServletContext getServletContext() {
         return this.config.getServletContext();
+    }
+    @Override
+    public Set<Class<?>> getClassSet(Class<?> featureType) {
+        if (featureType == null)
+            return null;
+        String loadPackages = this.getConfig().getSettings().getString(Platform_LoadPackages);
+        String[] spanPackage = loadPackages.split(",");
+        return ClassUtil.getClassSet(spanPackage, featureType);
     }
 }

@@ -26,7 +26,6 @@ import com.google.inject.ScopeAnnotation;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
-@ScopeAnnotation
 public @interface Service {
     /**服务名称或ID，在同一个作用域中可以设置多个不同的名称。*/
     public String[] value();
