@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 package org.platform.webapps;
+import org.platform.binder.ApiBinder;
 import org.platform.context.AbstractModuleListener;
 import org.platform.context.InitListener;
+import org.platform.webapps.business.scene2.service.Scene2_ServiceBean;
 /**
  * 
  * @version : 2013-4-29
@@ -23,5 +25,8 @@ import org.platform.context.InitListener;
  */
 @InitListener(displayName = "WebAppsListener", description = "WebAppsListener≤‚ ‘°£", startIndex = 10)
 public class WebAppsListener extends AbstractModuleListener {
-    
+    @Override
+    public void initialize(ApiBinder binder) {
+        binder.newBean("Scene2_ServiceBean").bindType(Scene2_ServiceBean.class).asEagerSingleton();
+    }
 }

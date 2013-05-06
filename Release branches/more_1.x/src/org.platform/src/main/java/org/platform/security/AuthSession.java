@@ -20,7 +20,7 @@ import java.util.Map;
 import org.more.util.StringUtil;
 import org.platform.Assert;
 import org.platform.Platform;
-import org.platform.clock.Clock;
+import org.platform.context.AppContext;
 /**
  * 负责权限系统中的用户会话。用户会话中保存了用户登入之后的权限数据。
  * @version : 2013-3-26
@@ -83,7 +83,7 @@ public class AuthSession {
     public void addPermission(Permission permission) throws SecurityException {
         this.checkClose();/*Check*/
         this.permissionMap.put(permission.getPermissionCode(), permission);
-        this.authSessionData.setLastTime(Clock.getSyncTime());
+        this.authSessionData.setLastTime(AppContext.getSyncTime());
     };
     /**向会话添加一条临时权限。*/
     public void addPermission(String permissionCode) throws SecurityException {
@@ -91,7 +91,7 @@ public class AuthSession {
         if (StringUtil.isBlank(permissionCode))
             return;
         this.permissionMap.put(permissionCode, new Permission(permissionCode));
-        this.authSessionData.setLastTime(Clock.getSyncTime());
+        this.authSessionData.setLastTime(AppContext.getSyncTime());
     };
     /**临时撤销用户会话中一条权限。*/
     public void removeTempPermission(Permission permission) throws SecurityException {
@@ -99,7 +99,7 @@ public class AuthSession {
         if (permission == null)
             return;
         this.permissionMap.remove(permission.getPermissionCode());
-        this.authSessionData.setLastTime(Clock.getSyncTime());
+        this.authSessionData.setLastTime(AppContext.getSyncTime());
     };
     /**临时撤销用户会话中一条权限。*/
     public void removeTempPermission(String permissionCode) throws SecurityException {
@@ -107,7 +107,7 @@ public class AuthSession {
         if (StringUtil.isBlank(permissionCode))
             return;
         this.permissionMap.remove(permissionCode);
-        this.authSessionData.setLastTime(Clock.getSyncTime());
+        this.authSessionData.setLastTime(AppContext.getSyncTime());
     };
     /**获取会话中包含的所有权限信息。*/
     public Permission[] getPermissionObjects() {
@@ -180,7 +180,7 @@ public class AuthSession {
         if (perList != null)
             for (Permission per : perList)
                 this.permissionMap.put(per.getPermissionCode(), per);
-        this.authSessionData.setLastTime(Clock.getSyncTime());
+        this.authSessionData.setLastTime(AppContext.getSyncTime());
     }
     /**用指定的用户对象登入到权限系统，如果登陆失败会抛出SecurityException类型异常。*/
     public synchronized void doLogin(String authSystem, UserInfo user) throws SecurityException {
@@ -199,8 +199,8 @@ public class AuthSession {
             this.userInfo = userInfo;
             this.authSessionData.setUserCode(this.userInfo.getUserCode());//用户标识码
             this.authSessionData.setAuthSystem(authSystem);
-            this.authSessionData.setLoginTime(Clock.getSyncTime());//登陆时间
-            this.authSessionData.setLastTime(Clock.getSyncTime());
+            this.authSessionData.setLoginTime(AppContext.getSyncTime());//登陆时间
+            this.authSessionData.setLastTime(AppContext.getSyncTime());
             this.reloadPermission();/*重载权限*/
             this.refreshCacheTime();
             Platform.debug("%s :doLogin authSystem=%s ,userCode=%s", this.sessionID, authSystem, userCode);
@@ -219,8 +219,8 @@ public class AuthSession {
             this.userInfo = userInfo;
             this.authSessionData.setUserCode(this.userInfo.getUserCode());//用户标识码
             this.authSessionData.setAuthSystem(authSystem);
-            this.authSessionData.setLoginTime(Clock.getSyncTime());//登陆时间
-            this.authSessionData.setLastTime(Clock.getSyncTime());
+            this.authSessionData.setLoginTime(AppContext.getSyncTime());//登陆时间
+            this.authSessionData.setLastTime(AppContext.getSyncTime());
             this.reloadPermission();/*重载权限*/
             this.refreshCacheTime();
             Platform.debug("%s :doLogin authSystem=%s ,account=%s ,password=%s", this.sessionID, authSystem, account, password);
@@ -269,6 +269,6 @@ public class AuthSession {
                 this.permissionMap.put(per, new Permission(per));
         if (this.authSessionData == null)
             this.authSessionData = sessionData;
-        this.authSessionData.setLastTime(Clock.getSyncTime());
+        this.authSessionData.setLastTime(AppContext.getSyncTime());
     }
 }

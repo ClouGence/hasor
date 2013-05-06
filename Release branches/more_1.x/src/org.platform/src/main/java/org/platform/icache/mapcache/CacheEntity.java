@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.platform.icache.mapcache;
-import org.platform.clock.Clock;
+import org.platform.context.clock.Clock;
 /**
  * ª∫¥Ê∂‘œÛ
  * @version : 2013-4-23

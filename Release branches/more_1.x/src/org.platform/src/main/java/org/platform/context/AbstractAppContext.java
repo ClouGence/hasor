@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 package org.platform.context;
+import java.util.HashMap;
+import java.util.Map;
 import org.platform.Assert;
+import org.platform.binder.BeanInfo;
+import com.google.inject.Binding;
 import com.google.inject.Injector;
+import com.google.inject.TypeLiteral;
 /**
  * {@link AppContext}接口的实现类。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractAppContext extends AppContext {
-    private Injector guice = null;
+    private Injector              guice       = null;
+    private Map<String, BeanInfo> beanInfoMap = null;
     protected AbstractAppContext(Injector guice) {
         this.guice = guice;
         Assert.isNotNull(guice);
@@ -31,14 +37,33 @@ public abstract class AbstractAppContext extends AppContext {
     public Injector getGuice() {
         return this.guice;
     }
-    //    @Override
-    //    public <T> Class<T> getBeanType(String name) {
-    //        // TODO Auto-generated method stub
-    //        return null;
-    //    }
-    //    @Override
-    //    public List<String> getBeanNames() {
-    //        // TODO Auto-generated method stub
-    //        return null;
-    //    }
+    @Override
+    public <T> Class<T> getBeanType(String name) {
+        if (this.beanInfoMap == null)
+            this.collectBeanInfos(this.getGuice());
+        BeanInfo info = this.beanInfoMap.get(name);
+        if (info != null)
+            return (Class<T>) info.getBeanType();
+        return null;
+    }
+    @Override
+    public String[] getBeanNames() {
+        if (this.beanInfoMap == null)
+            this.collectBeanInfos(this.getGuice());
+        return this.beanInfoMap.values().toArray(new String[this.beanInfoMap.size()]);
+    }
+    @Override
+    public BeanInfo getBeanInfo(String name) {
+        if (this.beanInfoMap == null)
+            this.collectBeanInfos(this.getGuice());
+        return this.beanInfoMap.get(name);
+    }
+    private void collectBeanInfos(Injector injector) {
+        this.beanInfoMap = new HashMap<String, BeanInfo>();
+        TypeLiteral<BeanInfo> INFO_DEFS = TypeLiteral.get(BeanInfo.class);
+        for (Binding<BeanInfo> entry : injector.findBindingsByType(INFO_DEFS)) {
+            BeanInfo beanInfo = entry.getProvider().get();
+            this.beanInfoMap.put(beanInfo.getName(), beanInfo);
+        }
+    }
 }

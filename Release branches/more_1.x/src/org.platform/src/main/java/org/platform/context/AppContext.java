@@ -26,7 +26,8 @@ import java.io.IOException;
 import java.util.UUID;
 import org.more.util.StringUtil;
 import org.platform.Assert;
-import org.platform.clock.Clock;
+import org.platform.binder.BeanInfo;
+import org.platform.context.clock.Clock;
 import org.platform.context.setting.Settings;
 import com.google.inject.Injector;
 /**
@@ -55,24 +56,26 @@ public abstract class AppContext {
     /**获得Guice环境。*/
     public abstract Injector getGuice();
     /**通过类型创建该类实例，使用guice*/
-    public <T> T getBean(Class<T> beanType) {
+    public <T> T getInstance(Class<T> beanType) {
         return this.getGuice().getInstance(beanType);
     };
     //    /**通过名称创建bean实例，使用guice。*/
     //    public abstract <T extends IService> T getService(String servicesName);
     //    /**通过类型创建该类实例，使用guice*/
     //    public abstract <T extends IService> T getService(Class<T> servicesType);
-    //    /**通过名称创建bean实例，使用guice。*/
-    //    public <T> T getBean(String name) {
-    //        Class<T> classType = this.getBeanType(name);
-    //        if (classType == null)
-    //            return null;
-    //        return this.getBean(classType);
-    //    };
-    //    /**通过名获取Bean的类型。*/
-    //    public abstract <T> Class<T> getBeanType(String name);
-    //    /**获取已经注册的Bean名称。*/
-    //    public abstract List<String> getBeanNames();
+    /**通过名称创建bean实例，使用guice。*/
+    public <T> T getBean(String name) {
+        BeanInfo beanInfo = this.getBeanInfo(name);
+        if (beanInfo == null)
+            return null;
+        return (T) this.getGuice().getInstance(beanInfo.getKey());
+    };
+    /**获取bean信息。*/
+    public abstract BeanInfo getBeanInfo(String name);
+    /**通过名获取Bean的类型。*/
+    public abstract <T> Class<T> getBeanType(String name);
+    /**获取已经注册的Bean名称。*/
+    public abstract String[] getBeanNames();
     /**获取程序工作目录（绝对路径）。*/
     public String getWorkDir() {
         return this.getSettings().getDirectoryPath(Workspace_WorkDir);
@@ -173,6 +176,10 @@ public abstract class AppContext {
     /**从时钟服务中获取一个在分布式部署环境里有效的时间。*/
     public static long getSyncTime() {
         return Clock.getSyncTime();
+    }
+    /**获取本地时钟*/
+    public static long getLocalTime() {
+        return Clock.getLocalTime();
     }
     /**
      * 生成路径算法。

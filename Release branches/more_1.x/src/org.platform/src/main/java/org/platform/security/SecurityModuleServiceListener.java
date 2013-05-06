@@ -31,7 +31,6 @@ import org.platform.context.AbstractModuleListener;
 import org.platform.context.AppContext;
 import org.platform.context.InitListener;
 import org.platform.context.setting.Config;
-import org.platform.event.EventManager;
 import org.platform.security.Power.Level;
 import com.google.inject.Binder;
 import com.google.inject.Key;
@@ -68,7 +67,7 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         this.loadSecurityAccess(event);
         /*绑定核心功能实现类。*/
         binder.bind(SecuritySettings.class).toInstance(this.settings);//通过Guice
-        binder.bind(SecurityContext.class).to(InternalSecurityContext.class);
+        binder.bind(SecurityContext.class).to(InternalSecurityContext.class).asEagerSingleton();
         binder.bind(SecurityQuery.class).to(DefaultSecurityQuery.class);
     }
     @Override
@@ -76,16 +75,8 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         Config systemConfig = appContext.getInitContext().getConfig();
         systemConfig.addSettingsListener(this.settings);
         //
-        this.secService = appContext.getBean(SecurityContext.class);
+        this.secService = appContext.getInstance(SecurityContext.class);
         this.secService.initSecurity(appContext);
-        //
-        try {
-            EventManager eventManager = appContext.getBean(EventManager.class);
-            Set<Class<?>> authSessionListenerSet = appContext.getInitContext().getClassSet(AuthSessionListener.class);
-            //
-        } catch (Exception e) {
-            Platform.error("security load AuthSessionListener an error\n%s", e);
-        }
         //
         Platform.info("online ->> security is %s", (this.settings.isEnable() ? "enable." : "disable."));
     }

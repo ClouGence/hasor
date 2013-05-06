@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 package org.platform.security;
-import org.platform.clock.Clock;
+import org.platform.context.AppContext;
 /**
  * 权限会话数据
  * @version : 2013-4-27
  * @author 赵永春 (zyc@byshell.org)
  */
 public class SessionData implements Cloneable {
-    private String   userCode      = null;               //用户标识码
-    private String   authSystem    = null;               //授权系统ID
-    private String[] permissionSet = null;               //会话的权限
-    private long     loginTime     = 0;                  //登陆时间
-    private long     lastTime      = Clock.getSyncTime(); //最后更新时间
+    private String   userCode      = null;                    //用户标识码
+    private String   authSystem    = null;                    //授权系统ID
+    private String[] permissionSet = null;                    //会话的权限
+    private long     loginTime     = 0;                       //登陆时间
+    private long     lastTime      = AppContext.getSyncTime(); //最后更新时间
     /*--------------------------------------------------*/
     @Override
     protected SessionData clone() throws CloneNotSupportedException {

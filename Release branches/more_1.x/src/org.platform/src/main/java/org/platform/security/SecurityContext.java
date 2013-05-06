@@ -50,7 +50,7 @@ public abstract class SecurityContext {
         this.securityAuthManager = new ManagedSecurityAuthManager();
         this.securityAccessManager = new ManagedSecurityAccessManager();
         //
-        this.settings = appContext.getBean(SecuritySettings.class);
+        this.settings = appContext.getInstance(SecuritySettings.class);
         this.defaultRules = settings.getRulesDefault();
         //
         this.dispatcherManager.initManager(appContext);
@@ -142,7 +142,7 @@ public abstract class SecurityContext {
         return this.inactivationAuthSession(authSession.getSessionID());
     }
     /**根据用户身份类型从当前线程会话列表中查找会话集合。（参数为空会返回当前线程上所有的会话。）*/
-    public AuthSession[] findCurrentAuthSession(UserIdentity userIdentity) {
+    public AuthSession[] findCurrentAuthSession(RoleIdentity userIdentity) {
         AuthSession[] authSessionArray = getCurrentAuthSession();
         if (userIdentity == null)
             return authSessionArray;

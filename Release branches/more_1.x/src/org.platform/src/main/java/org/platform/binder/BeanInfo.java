@@ -13,13 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.security;
+package org.platform.binder;
+import com.google.inject.Key;
 /**
- * 表示用户身份
- * @version : 2013-5-3
+ * 表示一个注册的Bean信息。
+ * @version : 2013-5-6
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface UserIdentity {
-    /**传入一个身份标志测试用户是否匹配该身份条件。*/
-    public boolean equals(UserIdentity identity);
+public interface BeanInfo {
+    /**获取bean的名称*/
+    public String getName();
+    /**获取bean的别名称*/
+    public String[] getAliasName();
+    /**获取bean的类型*/
+    public Class<?> getBeanType();
+    /**获取Key*/
+    public Key<?> getKey();
 }

@@ -65,7 +65,7 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
         Config systemConfig = appContext.getInitContext().getConfig();
         systemConfig.addSettingsListener(this.settings);
         //
-        this.cacheManager = appContext.getBean(CacheManager.class);
+        this.cacheManager = appContext.getInstance(CacheManager.class);
         this.cacheManager.initManager(appContext);
         Platform.info("online ->> cache is %s", (this.settings.isCacheEnable() ? "enable." : "disable."));
     }

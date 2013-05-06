@@ -13,20 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.security;
+package org.platform.scheduleds;
 /**
- * 用户会话监听器
- * @version : 2013-4-28
+ * 
+ * @version : 2013-5-6
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface IAuthSessionListener {
-    //
-    public void onCreateAuthSession(AuthSession authSession);
-    public void onCloseAuthSession(AuthSession authSession);
-    //
-    public void onActivateAuthSession(AuthSession authSession);
-    public void onInactivationAuthSession(AuthSession authSession);
-    //
-    public void onLogin(AuthSession authSession);
-    public void onLogout(AuthSession authSession);
-}s
+public interface ScheduledService {
+    /**安排一个任务的执行。*/
+    public void executeTask(Runnable runnable);
+}

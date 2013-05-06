@@ -29,7 +29,7 @@ class InternalCodeDigestManager implements SettingListener {
     private SecuritySettings    securitySettings    = null;
     private Map<String, Digest> codeDigestObjectMap = new HashMap<String, Digest>();
     public void initManager(AppContext appContext) {
-        this.securitySettings = appContext.getBean(SecuritySettings.class);
+        this.securitySettings = appContext.getInstance(SecuritySettings.class);
         appContext.getInitContext().getConfig().addSettingsListener(this);
     }
     public Digest getCodeDigest(String name) {

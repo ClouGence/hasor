@@ -20,14 +20,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.platform.context.ViewContext;
-import org.platform.security.AuthSession;
 import org.platform.security.SecurityContext;
 import org.platform.security.SecurityDispatcher;
-import org.platform.security.UserIdentity;
-import org.platform.security.UserIdentityUtil;
 import org.platform.web.WebServlet;
-import org.platform.webapps.safety.AdminUser;
-import org.platform.webapps.safety.BBSUser;
+import org.platform.webapps.business.scene2.service.Scene2_ServiceBean;
 import com.google.inject.Inject;
 /**
  * 
@@ -48,8 +44,8 @@ public class Scene2_HttpServlet extends HttpServlet {
         SecurityDispatcher dispatcher = this.securityContext.getDispatcher(requestURI);
         //
         //
-        UserIdentity adminIdentity = UserIdentityUtil.getTypeIdentity(BBSUser.class);
-        AuthSession[] auth = securityContext.findCurrentAuthSession(adminIdentity);
+        Scene2_ServiceBean serBean = currentViewContext.getAppContext().getBean("Scene2_ServiceBean");
+        serBean.print();
         //
         //
         String goID = req.getParameter("goID");

@@ -48,9 +48,9 @@ class SecurityFilter implements Filter {
         this.appContext = (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
         Assert.isNotNull(this.appContext, "AppContext is null.");
         //
-        this.settings = this.appContext.getBean(SecuritySettings.class);
-        this.secService = this.appContext.getBean(SecurityContext.class);
-        this.securityProcess = this.appContext.getBean(SecurityProcess.class);
+        this.settings = this.appContext.getInstance(SecuritySettings.class);
+        this.secService = this.appContext.getInstance(SecurityContext.class);
+        this.securityProcess = this.appContext.getInstance(SecurityProcess.class);
     }
     //
     /**Ïú»Ù*/

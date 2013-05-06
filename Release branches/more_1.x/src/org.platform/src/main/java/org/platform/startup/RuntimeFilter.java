@@ -47,7 +47,7 @@ public class RuntimeFilter implements Filter {
         Assert.isNotNull(this.appContext, "AppContext is null.");
         //
         /*1.构建appContext对象。*/
-        this.filterPipeline = this.appContext.getBean(FilterPipeline.class);
+        this.filterPipeline = this.appContext.getInstance(FilterPipeline.class);
         Assert.isNotNull(this.appContext, "AppContext is null.");
         //
         /*2.初始化执行周期管理器。*/

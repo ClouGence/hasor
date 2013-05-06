@@ -23,7 +23,7 @@ public interface UserInfo {
     /**获取用户的识别码*/
     public String getUserCode();
     /**获取用户身份分类标识*/
-    public UserIdentity getIdentity();
+    public RoleIdentity getIdentity();
     /**测试用户是否为来宾帐号*/
     public boolean isGuest();
 }

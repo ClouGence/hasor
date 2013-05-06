@@ -13,19 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.clock;
-/***
+package org.platform.webapps.business.scene2.service;
+import org.platform.security.AuthSession;
+import org.platform.security.RoleIdentity;
+import org.platform.security.RoleIdentityUtil;
+import org.platform.security.SecurityContext;
+import org.platform.webapps.safety.BBSUser;
+import com.google.inject.Inject;
+/**
  * 
- * @version : 2013-4-27
+ * @version : 2013-5-2
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Clock {
-    /**从时钟服务中获取一个在分布式部署环境里有效的时间（尚未实现）。*/
-    public static long getSyncTime() {
-        return System.currentTimeMillis();
-    }
-    /**从本地时钟获取一个时间。*/
-    public static long getLocalTime() {
-        return System.currentTimeMillis();
+public class Scene2_ServiceBean {
+    @Inject
+    private SecurityContext securityContext = null;
+    public void print() {
+        RoleIdentity adminIdentity = RoleIdentityUtil.getTypeIdentity(BBSUser.class);
+        AuthSession[] auth = securityContext.findCurrentAuthSession(adminIdentity);
+        System.out.println(auth.length);
     }
 }

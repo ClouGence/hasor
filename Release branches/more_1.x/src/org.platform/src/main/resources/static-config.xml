@@ -21,6 +21,8 @@
 	<framework>
 		<!-- 包扫描覆盖范围(逗号间隔多个扫描范围) -->
 		<loadPackages>org.*, com.*, net.*, cn.*</loadPackages>
+		<!-- 框架提供的任务管理器最大可以同时执行的任务数量。 -->
+		<taskPool threadSize="20"></taskPool>
 	</framework>
 	<!-- Web部分的配置 -->
 	<httpServlet>

@@ -13,18 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.context;
-import org.platform.binder.ApiBinder;
+package org.platform.scheduleds;
+import static org.platform.PlatformConfig.Platform_TaskPool_MaxSize;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 /**
- * ø’ µœ÷°£
- * @version : 2013-4-8
+ * 
+ * @version : 2013-5-6
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public abstract class AbstractModuleListener implements ContextListener {
+class ScheduledServiceImpl implements ScheduledService {
+    private ScheduledExecutorService scheduledService = null;
+    public void executeTask() {}
     @Override
-    public void initialize(ApiBinder binder) {}
-    @Override
-    public void initialized(AppContext appContext) {}
-    @Override
-    public void destroy(AppContext appContext) {}
+    public Future executeTask(Runnable runnable) {
+        if (this.scheduledService == null)
+            this.scheduledService = Executors.newScheduledThreadPool(this.getSettings().getInteger(Platform_TaskPool_MaxSize, 5));
+        
+       return this.scheduledService.submit(runnable)
+        
+    }
 }

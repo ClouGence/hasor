@@ -25,7 +25,7 @@ public abstract class BaseUserInfo implements UserInfo {
         return false;
     }
     @Override
-    public UserIdentity getIdentity() {
-        return UserIdentityUtil.getTypeIdentity(this.getClass());
+    public RoleIdentity getIdentity() {
+        return RoleIdentityUtil.getTypeIdentity(this.getClass());
     }
 }

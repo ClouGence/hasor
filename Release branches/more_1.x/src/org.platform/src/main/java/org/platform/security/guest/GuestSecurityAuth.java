@@ -31,7 +31,7 @@ public class GuestSecurityAuth implements ISecurityAuth {
     // 
     @Override
     public void initAuth(AppContext appContext) {
-        this.settings = appContext.getBean(SecuritySettings.class);
+        this.settings = appContext.getInstance(SecuritySettings.class);
     }
     @Override
     public UserInfo getUserInfo(String userCode) {

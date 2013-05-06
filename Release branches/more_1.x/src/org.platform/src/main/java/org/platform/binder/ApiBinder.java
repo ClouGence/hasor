@@ -24,6 +24,7 @@ import org.platform.context.SettingListener;
 import org.platform.context.setting.Settings;
 import com.google.inject.Binder;
 import com.google.inject.Key;
+import com.google.inject.binder.LinkedBindingBuilder;
 /**
  * 该类是代理了{@link Binder}并且提供了注册Servlet和Filter的方法。
  * @version : 2013-4-10
@@ -52,7 +53,16 @@ public interface ApiBinder {
     public Binder getGuiceBinder();
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
     public Set<Class<?>> getClassSet(Class<?> featureType);
+    /**注册一个bean。*/
+    public BeanBindingBuilder newBean(String beanName);
     /*----------------------------------------------------------------------------*/
+    /**负责配置Filter，参考Guice 3.0接口设计。*/
+    public static interface BeanBindingBuilder {
+        /**别名*/
+        public BeanBindingBuilder aliasName(String aliasName);
+        /**bean绑定的类型。*/
+        public <T> LinkedBindingBuilder<T> bindType(Class<T> beanClass);
+    }
     /**负责配置Filter，参考Guice 3.0接口设计。*/
     public static interface FilterBindingBuilder {
         public void through(Class<? extends Filter> filterKey);

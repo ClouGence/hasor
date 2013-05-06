@@ -35,7 +35,7 @@ class InternalDispatcherManager {
         return null;
     }
     public void initManager(AppContext appContext) {
-        this.securitySettings = appContext.getBean(SecuritySettings.class);
+        this.securitySettings = appContext.getInstance(SecuritySettings.class);
     }
     public void destroyManager(AppContext appContext) {};
 }

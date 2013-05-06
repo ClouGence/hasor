@@ -169,6 +169,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
             @Override
             public void configure(Binder binder) {
                 super.configure(binder);
+                /*绑定AppContext对象的Provider*/
                 binder.bind(AppContext.class).toProvider(new Provider<AppContext>() {
                     @Override
                     public AppContext get() {

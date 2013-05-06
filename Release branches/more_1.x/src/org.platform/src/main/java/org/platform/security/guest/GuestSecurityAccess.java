@@ -34,7 +34,7 @@ public class GuestSecurityAccess implements ISecurityAccess {
     //
     @Override
     public void initAccess(AppContext appContext) {
-        this.settings = appContext.getBean(SecuritySettings.class);
+        this.settings = appContext.getInstance(SecuritySettings.class);
     }
     @Override
     public List<Permission> loadPermission(UserInfo userInfo) {

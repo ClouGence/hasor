@@ -26,7 +26,7 @@ class InternalUriPatternMatcherManager {
     private SecuritySettings securitySettings = null;
     //
     public void initManager(AppContext appContext) {
-        this.securitySettings = appContext.getBean(SecuritySettings.class);
+        this.securitySettings = appContext.getInstance(SecuritySettings.class);
     }
     public UriPatternMatcher getUriMatcher(String requestPath) {
         if (StringUtil.isBlank(requestPath) == true)

@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.more.util.ArrayUtil;
+import org.more.util.StringUtil;
 import org.platform.Assert;
 import org.platform.context.InitContext;
 import org.platform.context.SettingListener;
@@ -33,6 +34,7 @@ import com.google.inject.Binder;
 public abstract class AbstractApiBinder extends AbstractModule implements ApiBinder {
     private InitContext            initContext            = null;
     private Map<String, Object>    extData                = null;
+    private BeanInfoModuleBuilder  beanInfoModuleBuilder  = new BeanInfoModuleBuilder(); /*Beans*/
     private FiltersModuleBuilder   filterModuleBinder     = new FiltersModuleBuilder();  /*Filters*/
     private ServletsModuleBuilder  servletModuleBinder    = new ServletsModuleBuilder(); /*Servlets*/
     private ErrorsModuleBuilder    errorsModuleBuilder    = new ErrorsModuleBuilder();   /*Errors*/
@@ -92,11 +94,18 @@ public abstract class AbstractApiBinder extends AbstractModule implements ApiBin
         return this.initContext.getClassSet(featureType);
     }
     @Override
+    public BeanBindingBuilder newBean(String beanName) {
+        if (StringUtil.isBlank(beanName) == true)
+            throw new NullPointerException(beanName);
+        return this.beanInfoModuleBuilder.newBeanDefine(this.getGuiceBinder()).aliasName(beanName);
+    }
+    @Override
     protected void configure() {
         this.install(this.filterModuleBinder);
         this.install(this.servletModuleBinder);
         this.install(this.errorsModuleBuilder);
         this.install(this.listenerBindingBuilder);
+        this.install(this.beanInfoModuleBuilder);
         /*------------------------------------------*/
         this.bind(ManagedErrorPipeline.class).asEagerSingleton();
         this.bind(ManagedServletPipeline.class).asEagerSingleton();

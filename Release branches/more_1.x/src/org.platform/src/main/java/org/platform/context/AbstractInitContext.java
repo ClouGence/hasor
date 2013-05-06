@@ -20,7 +20,7 @@ import java.util.Set;
 import javax.servlet.ServletContext;
 import org.more.util.ClassUtil;
 import org.platform.Assert;
-import org.platform.clock.Clock;
+import org.platform.context.clock.Clock;
 import org.platform.context.setting.Config;
 /**
  * {@link InitContext}接口的实现类。

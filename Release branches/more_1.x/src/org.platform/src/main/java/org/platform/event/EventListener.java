@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 package org.platform.event;
-import org.platform.event.Event.Sequence;
 /**
 * 用于处理事件的事件监听器。
 * @version 2010-10-10
 * @author 赵永春 (zyc@byshell.org)
 */
-public interface EventListener<T extends Event> {
+public interface EventListener {
     /**处理事件的处理方法，参数是要处理的事件。*/
-    public void onEvent(T event, Sequence sequence) throws Throwable;
+    public void onEvent(Event event);
 };

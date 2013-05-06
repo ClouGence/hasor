@@ -24,6 +24,8 @@ public interface PlatformConfig {
     //
     /**装载的class包范畴，逗号间隔.*/
     public static final String Platform_LoadPackages                       = "framework.loadPackages";
+    /**框架提供的任务管理器最大可以同时执行的任务数量.*/
+    public static final String Platform_TaskPool_MaxSize                   = "framework.taskPool.threadSize";
     //
     //
     /**异常处理程序总迭代次数(配置Code).*/

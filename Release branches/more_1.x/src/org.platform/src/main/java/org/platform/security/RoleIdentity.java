@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 package org.platform.security;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 /**
- * 标记该类为AuthSessionListener，该类需要实现{@link IAuthSessionListener}接口。
- * @version : 2013-3-12
+ * 表示用户登陆进系统的身份
+ * @version : 2013-5-3
  * @author 赵永春 (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface AuthSessionListener {}
+public interface RoleIdentity {
+    /**传入一个身份标志测试用户是否匹配该身份条件。*/
+    public boolean equals(RoleIdentity identity);
+}

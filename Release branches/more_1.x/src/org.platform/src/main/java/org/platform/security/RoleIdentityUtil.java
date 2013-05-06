@@ -19,18 +19,18 @@ package org.platform.security;
  * @version : 2013-5-3
  * @author 赵永春 (zyc@byshell.org)
  */
-public class UserIdentityUtil {
-    /**根据类型创建一个{@link UserIdentity}接口对象*/
-    public static UserIdentity getTypeIdentity(Class<?> type) {
+public class RoleIdentityUtil {
+    /**根据类型创建一个{@link RoleIdentity}接口对象*/
+    public static RoleIdentity getTypeIdentity(Class<?> type) {
         return new ClassTypeIdentity(type);
     }
-    private static class ClassTypeIdentity implements UserIdentity {
+    private static class ClassTypeIdentity implements RoleIdentity {
         private Class<?> userInfoType = null;
         public ClassTypeIdentity(Class<?> userInfoType) {
             this.userInfoType = userInfoType;
         }
         @Override
-        public boolean equals(UserIdentity identity) {
+        public boolean equals(RoleIdentity identity) {
             if (identity == null)
                 return false;
             if (identity instanceof ClassTypeIdentity)
