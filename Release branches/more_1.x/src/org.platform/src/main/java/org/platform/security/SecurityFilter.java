@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.platform.security;
+import static org.platform.security.AuthSession.HttpSessionAuthSessionSetName;
 import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -28,6 +29,7 @@ import org.platform.Assert;
 import org.platform.Platform;
 import org.platform.context.AppContext;
 import org.platform.context.ViewContext;
+import org.platform.event.EventManager;
 import org.platform.startup.RuntimeListener;
 /**
  * 权限系统URL请求处理支持。
@@ -35,10 +37,13 @@ import org.platform.startup.RuntimeListener;
  * @author 赵永春 (zyc@byshell.org)
  */
 class SecurityFilter implements Filter {
-    private AppContext       appContext      = null;
-    private SecuritySettings settings        = null;
-    private SecurityContext  secService      = null;
-    private SecurityProcess  securityProcess = null;
+    private AppContext               appContext            = null;
+    private SecuritySettings         settings              = null;
+    private SecurityContext          secContext            = null;
+    private LoginProcess             loginSecurityProcess  = null;
+    private LogoutProcess            logoutSecurityProcess = null;
+    private TestURLPermissionProcess urlPermissionProcess  = null;
+    private AutoLoginProcess         autoLoginProcess      = null;
     //
     /**初始化*/
     @Override
@@ -49,13 +54,28 @@ class SecurityFilter implements Filter {
         Assert.isNotNull(this.appContext, "AppContext is null.");
         //
         this.settings = this.appContext.getInstance(SecuritySettings.class);
-        this.secService = this.appContext.getInstance(SecurityContext.class);
-        this.securityProcess = this.appContext.getInstance(SecurityProcess.class);
+        this.secContext = this.appContext.getInstance(SecurityContext.class);
+        this.loginSecurityProcess = this.appContext.getInstance(LoginProcess.class);
+        this.logoutSecurityProcess = this.appContext.getInstance(LogoutProcess.class);
+        this.urlPermissionProcess = this.appContext.getInstance(TestURLPermissionProcess.class);
+        this.autoLoginProcess = this.appContext.getInstance(AutoLoginProcess.class);
     }
     //
     /**销毁*/
     @Override
     public void destroy() {}
+    //
+    /***/
+    private void writeAuthSession(ViewContext viewContext, boolean reWriteCookie) throws SecurityException {
+        AuthSession[] authSessions = this.secContext.getCurrentAuthSession();
+        //1.写入HttpSession
+        StringBuilder authSessionIDs = new StringBuilder("");
+        for (AuthSession authSession : authSessions)
+            authSessionIDs.append(authSession.getSessionID() + ",");
+        viewContext.getHttpSession(true).setAttribute(HttpSessionAuthSessionSetName, authSessionIDs.toString());
+        if (reWriteCookie == true)
+            this.autoLoginProcess.recoverCookie(this.secContext, viewContext);
+    }
     //
     /***/
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -67,68 +87,57 @@ class SecurityFilter implements Filter {
         /*执行处理*/
         this.doSecurityFilter((HttpServletRequest) request, (HttpServletResponse) response, chain);
         /*钝化线程的AuthSession，并且刷新它们*/
-        AuthSession[] authSessions = secService.getCurrentAuthSession();
+        AuthSession[] authSessions = secContext.getCurrentAuthSession();
         for (AuthSession authSession : authSessions) {
-            secService.inactivationAuthSession(authSession.getSessionID()); /*钝化AuthSession*/
+            secContext.inactivationAuthSession(authSession.getSessionID()); /*钝化AuthSession*/
             authSession.refreshCacheTime();/*刷新缓存中的数据*/
         }
     }
     //
     /***/
     public void doSecurityFilter(HttpServletRequest httpRequest, HttpServletResponse httpResponse, FilterChain chain) throws IOException, ServletException {
+        ViewContext viewContext = ViewContext.currentViewContext();
         //1.恢复会话
         try {
-            this.securityProcess.recoverAuthSession(httpRequest, httpResponse);
+            this.autoLoginProcess.recoverCookie(secContext, viewContext);
+            this.writeAuthSession(viewContext, false);
         } catch (SecurityException e) {
-            Platform.error("recover AuthSession failure!\n%s", e);
+            Platform.error("recover AuthSession failure!%s", e);
         }
         //2.请求处理
-        String reqPath = httpRequest.getRequestURI();
-        reqPath = reqPath.substring(httpRequest.getContextPath().length());
+        String reqPath = viewContext.getRequestURI();
         if (reqPath.endsWith(this.settings.getLoginURL()) == true) {
-            this.processLogin(reqPath, httpRequest, httpResponse);
+            /*A.登入*/
+            SecurityForward forward = this.loginSecurityProcess.processLogin(this.secContext, viewContext);
+            this.writeAuthSession(viewContext, true);
+            if (forward != null)
+                forward.forward(viewContext);//跳转地址
             return;
         }
         if (reqPath.endsWith(this.settings.getLogoutURL()) == true) {
-            this.processLogout(reqPath, httpRequest, httpResponse);
+            /*B.登出*/
+            SecurityForward forward = this.logoutSecurityProcess.processLogout(this.secContext, viewContext);
+            this.writeAuthSession(viewContext, true);
+            if (forward != null)
+                forward.forward(viewContext);//跳转地址
             return;
         }
         //3.访问请求
         try {
-            this.securityProcess.processTestFilter(reqPath);
+            AuthSession[] authSessions = this.secContext.getCurrentAuthSession();
+            EventManager eventManager = this.secContext.getAppContext().getInstance(EventManager.class);
+            eventManager.throwEvent(SecurityEvent.Security_URLPermissionEvent, reqPath, authSessions);/*抛出事件*/
+            boolean res = this.urlPermissionProcess.testURL(this.secContext, authSessions, viewContext);
+            if (res == false)
+                throw new PermissionException(reqPath);
             chain.doFilter(httpRequest, httpResponse);
         } catch (PermissionException e) {
-            Platform.debug("testPermission failure! uri=%s\n%s", reqPath, e);/*没有权限*/
-            SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);
-            if (dispatcher != null) {
-                dispatcher.forwardFailure(ViewContext.currentViewContext(), e);
-            } else {
+            Platform.debug("testPermission failure! uri=%s%s", reqPath, e);/*没有权限*/
+            SecurityDispatcher dispatcher = this.secContext.getDispatcher(reqPath);
+            if (dispatcher != null)
+                dispatcher.forwardFailure(e).forward(viewContext);
+            else
                 e.printStackTrace(httpResponse.getWriter());
-            }
         }
     }
-    //
-    /***/
-    private void processLogin(String reqPath, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws ServletException, IOException {
-        /*A.登入*/
-        SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);
-        try {
-            this.securityProcess.processLogin(httpRequest, httpResponse);
-            dispatcher.forwardIndex(ViewContext.currentViewContext());//跳转登入地址
-        } catch (SecurityException e) {
-            dispatcher.forwardFailure(ViewContext.currentViewContext(), e);//跳转登入登出失败地址
-        }
-    };
-    //
-    /***/
-    private void processLogout(String reqPath, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws ServletException, IOException {
-        /*B.登出*/
-        SecurityDispatcher dispatcher = this.secService.getDispatcher(reqPath);
-        try {
-            this.securityProcess.processLogout(httpRequest, httpResponse);
-            dispatcher.forwardLogout(ViewContext.currentViewContext());//跳转登出地址
-        } catch (SecurityException e) {
-            dispatcher.forwardFailure(ViewContext.currentViewContext(), e);//跳转登入登出失败地址
-        }
-    };
 }

@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.event;
+package org.platform.security;
+import org.platform.context.ViewContext;
 /**
-* 用于处理事件的事件监听器。
-* @version 2010-10-10
-* @author 赵永春 (zyc@byshell.org)
-*/
-public interface EventListener {
-    /**处理事件的处理方法，参数是要处理的事件。*/
-    public void onEvent(String event, Object[] params);
-};
+ * 访问地址权限检测请求
+ * @version : 2013-5-8
+ * @author 赵永春 (zyc@byshell.org)
+ */
+public interface TestURLPermissionProcess {
+    public boolean testURL(SecurityContext secContext, AuthSession[] authSessions, ViewContext viewContext);
+}

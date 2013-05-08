@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.webui.components.input;
-import org.more.webui.component.support.UICom;
-import org.more.webui.components.UIButton;
-import org.more.webui.render.inputs.ButtonInputRender;
+package org.platform.jmx;
+import java.lang.management.ManagementFactory;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 /**
- * <b>作用</b>：input类型按钮
- * <br><b>组建类型</b>：ui_Button
- * <br><b>标签</b>：@ui_Button
- * <br><b>服务端事件</b>：OnAction
- * <br><b>渲染器</b>：{@link ButtonInputRender}
- * @version : 2012-5-15
+ * 
+ * @version : 2013-5-7
  * @author 赵永春 (zyc@byshell.org)
  */
-@UICom(tagName = "ui_Button", renderType = ButtonInputRender.class)
-public class InputButton extends UIButton {
-    @Override
-    public String getComponentType() {
-        return "ui_Button";
+public class Main {
+    public static void main(String[] args) throws Exception {
+//        HtmlAdaptorServer s;
+        //        MBeanServer server = MBeanServerFactory.createMBeanServer();
+        MBeanServer server = ManagementFactory.getPlatformMBeanServer();
+        TestApi mxBean = new TestApiMBeanImpl();
+        server.registerMBean(mxBean, new ObjectName("serve:id=Server"));
+        System.in.read();
     }
 }

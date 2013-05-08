@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 package org.platform.event;
+import org.platform.context.AppContext;
 /**
-* 用于处理事件的事件监听器。
-* @version 2010-10-10
-* @author 赵永春 (zyc@byshell.org)
-*/
-public interface EventListener {
-    /**处理事件的处理方法，参数是要处理的事件。*/
-    public void onEvent(String event, Object[] params);
-};
+ * 
+ * @version : 2013-5-8
+ * @author 赵永春 (zyc@byshell.org)
+ */
+interface ManagerLife {
+    /**初始化Manager*/
+    public void initLife(AppContext appContext);
+    /**销毁Manager*/
+    public void destroyLife(AppContext appContext);
+}

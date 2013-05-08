@@ -13,13 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.event;
+package org.platform.jmx;
 /**
-* 用于处理事件的事件监听器。
-* @version 2010-10-10
-* @author 赵永春 (zyc@byshell.org)
-*/
-public interface EventListener {
-    /**处理事件的处理方法，参数是要处理的事件。*/
-    public void onEvent(String event, Object[] params);
-};
+ * 
+ * @version : 2013-5-7
+ * @author 赵永春 (zyc@byshell.org)
+ */
+public class TestApiMBeanImpl implements TestApi {
+    private String msg = "---";
+    @Override
+    public void start(String name) {
+        System.out.println("at Start:" + name);
+        this.msg += name;
+    }
+    @Override
+    public String getState() {
+        return msg;
+    }
+}

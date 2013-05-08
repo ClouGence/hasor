@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.event;
-/**
-* 用于处理事件的事件监听器。
-* @version 2010-10-10
-* @author 赵永春 (zyc@byshell.org)
-*/
-public interface EventListener {
-    /**处理事件的处理方法，参数是要处理的事件。*/
-    public void onEvent(String event, Object[] params);
-};
+package org.platform.security.process;
+import org.platform.security.SecuritySettings;
+import com.google.inject.Inject;
+/***
+ * 
+ * @version : 2013-5-8
+ * @author 赵永春 (zyc@byshell.org)
+ */
+class AbstractProcess {
+    @Inject
+    protected SecuritySettings settings = null;
+}

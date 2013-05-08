@@ -14,26 +14,31 @@
  * limitations under the License.
  */
 package org.platform.event;
-import org.platform.event.Event;
-import org.platform.event.EventListener;
 /**
- * 事件处理器，该接口的目的是为了处理{@link Event}类型事件。
+ * 事件处理器，该接口的目的是为了处理事件。
  * @version : 2013-5-6
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface EventManager {
+    /**EventManager服务启动。*/
+    public static final String EventManager_Start_Event   = "EventManager_Start_Event";
+    /**EventManager服务销毁*/
+    public static final String EventManager_Destroy_Event = "EventManager_Destroy_Event";
+    //
+    //
     /**添加一种类型事件的事件监听器。*/
     public void addEventListener(String eventType, EventListener listener);
-    /**添加一种类型事件的事件监听器。*/
-    public void addEventListener(Event eventType, EventListener listener);
     /**删除某个监听器的注册。*/
-    public void removeEventListener(EventListener listener);
+    public void removeAllEventListener(String eventType);
+    /**删除某个监听器的注册。*/
+    public void removeEventListener(String eventType, EventListener listener);
+    /**获取某种特定类型的事件监听器集合。*/
+    public EventListener[] getEventListener(String eventType);
+    /**获取所有事件监听器类型。*/
+    public String[] getEventTypes();
+    //
     /**同步方式抛出事件。*/
-    public void throwEvent(String eventType);
-    /**同步方式抛出事件。*/
-    public void throwEvent(Event eventType);
+    public void throwEvent(String eventType, Object... objects);
     /**异步方式抛出事件。*/
-    public void asynThrowEvent(String eventType);
-    /**异步方式抛出事件。*/
-    public void asynThrowEvent(Event eventType);
+    public void asynThrowEvent(String eventType, Object... objects);
 }

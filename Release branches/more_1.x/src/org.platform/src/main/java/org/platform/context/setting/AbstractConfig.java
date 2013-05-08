@@ -100,7 +100,7 @@ public abstract class AbstractConfig implements Config {
                 this.resourceWatch.setDaemon(true);
                 this.resourceWatch.start();
             } catch (Exception e) {
-                Platform.error("resourceWatch start error, on : %s Settings file !\n%s", appSettingsName1, e);
+                Platform.error("resourceWatch start error, on : %s Settings file !%s", appSettingsName1, e);
             }
         }
         //3.globalConfig
@@ -128,7 +128,7 @@ public abstract class AbstractConfig implements Config {
                 loadConfig(configURL.toURI(), encoding, toMap);
             }
         } catch (Exception e) {
-            Platform.error("load ¡®%s¡¯ error!\n%s", appSettingsName1, e);
+            Platform.error("load ¡®%s¡¯ error!%s", appSettingsName1, e);
         }
     }
     //
@@ -145,7 +145,7 @@ public abstract class AbstractConfig implements Config {
                 }
             }
         } catch (Exception e) {
-            Platform.error("load ¡®%s¡¯ error!\n%s", appSettingsName2, e);
+            Platform.error("load ¡®%s¡¯ error!%s", appSettingsName2, e);
         }
     }
     //
@@ -174,7 +174,7 @@ public abstract class AbstractConfig implements Config {
                     }
                 }
         } catch (Exception e) {
-            Platform.error("load ¡®%s¡¯ error!\n%s", appSettingsName3, e);
+            Platform.error("load ¡®%s¡¯ error!%s", appSettingsName3, e);
         }
     }
     //

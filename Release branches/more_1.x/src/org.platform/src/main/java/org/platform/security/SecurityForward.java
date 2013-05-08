@@ -16,20 +16,26 @@
 package org.platform.security;
 import java.io.IOException;
 import javax.servlet.ServletException;
-/**
- * 权限系统URL请求处理支持。
- * @version : 2013-4-9  
+import org.platform.context.ViewContext;
+/***
+ * 执行最终跳转的跳转对象
+ * @version : 2013-5-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface SecurityDispatcher {
-    /**匹配的路径模式*/
-    public String getContentPath();
-    /**跳转到登入成功后的地址。*/
-    public SecurityForward forwardIndex() throws IOException, ServletException;
-    /**跳转到登出之后的地址。*/
-    public SecurityForward forwardLogout() throws IOException, ServletException;
-    /**跳转到登入登出执行s登入失败时的地址。*/
-    public SecurityForward forwardFailure(Throwable e) throws IOException, ServletException;
-    /**跳转到配置的页面。*/
-    public SecurityForward forward(String id) throws IOException, ServletException, SecurityException;
+public interface SecurityForward {
+    /**url请求处理器如何处理请求。*/
+    public static enum ForwardType {
+        /**服务端转发*/
+        Forward,
+        /**客户端重定向*/
+        Redirect,
+        /**抛出异常*/
+        Exception,
+        /**设置response客户端状态*/
+        State
+    }
+    /**获取跳转类型*/
+    public ForwardType getForwardType();
+    /**执行跳转*/
+    public void forward(ViewContext viewContext) throws IOException, ServletException;
 }

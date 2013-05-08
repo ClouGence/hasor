@@ -57,7 +57,7 @@ import org.more.util.StringUtil;
 import org.platform.Platform;
 import org.platform.context.SettingListener;
 import org.platform.context.setting.Settings;
-import org.platform.security.SecurityDispatcher.DispatcherType;
+import org.platform.security.SecurityForward.ForwardType;
 /**
  * 
  * @version : 2013-4-23
@@ -227,7 +227,7 @@ public class SecuritySettings implements SettingListener {
                 continue;
             Map<String, String> itemAtt = item.getAttributeMap();
             String contentPath = itemAtt.get("contentPath");
-            DispatcherType defaultType = StringConvertUtil.changeType(itemAtt.get("defaultType"), DispatcherType.class, DispatcherType.Forward);
+            ForwardType defaultType = StringConvertUtil.changeType(itemAtt.get("defaultType"), ForwardType.class, ForwardType.Forward);
             if (StringUtil.isBlank(contentPath) == true)
                 continue;
             //
@@ -237,7 +237,7 @@ public class SecuritySettings implements SettingListener {
                 for (XmlProperty forwardItem : forwardList) {
                     String toURL = forwardItem.getText();
                     String $toType = forwardItem.getAttributeMap().get("type");
-                    DispatcherType toType = StringConvertUtil.changeType($toType, DispatcherType.class, DispatcherType.Forward);
+                    ForwardType toType = StringConvertUtil.changeType($toType, ForwardType.class, ForwardType.Forward);
                     if (StringUtil.eqUnCaseSensitive("forwardIndex", forwardItem.getName()) == true) {
                         dispatcher.setForwardIndex(toURL, (toType == null) ? defaultType : toType);
                     } else if (StringUtil.eqUnCaseSensitive("forwardLogout", forwardItem.getName()) == true) {
@@ -275,7 +275,7 @@ public class SecuritySettings implements SettingListener {
                 this.digestMap.put(digestCode, (Class<Digest>) digestClass);
                 Platform.info("read CodeDigest %s : %s", digestCode, digestType);
             } catch (Exception e) {
-                Platform.warning("create %s an error .\n%s", digestType, e);
+                Platform.warning("create %s an error.%s", digestType, e);
             }
         }
     }

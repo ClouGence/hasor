@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 package org.platform.event;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
-* 用于处理事件的事件监听器。
-* @version 2010-10-10
-* @author 赵永春 (zyc@byshell.org)
-*/
-public interface EventListener {
-    /**处理事件的处理方法，参数是要处理的事件。*/
-    public void onEvent(String event, Object[] params);
-};
+ * 声明一个事件监听器，标记了该接口的类必须要求实现{@link EventListener}接口。
+ * @version : 2013-3-12
+ * @author 赵永春 (zyc@byshell.org)
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface Listener {
+    /**要监听的事件名，同名注册会被覆盖。*/
+    public String[] value();
+}

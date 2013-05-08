@@ -32,6 +32,10 @@ import org.platform.context.AppContext;
 import org.platform.context.InitListener;
 import org.platform.context.setting.Config;
 import org.platform.security.Power.Level;
+import org.platform.security.process.DefaultAutoLoginProcess;
+import org.platform.security.process.DefaultLoginProcess;
+import org.platform.security.process.DefaultLogoutProcess;
+import org.platform.security.process.DefaultTestURLPermissionProcess;
 import com.google.inject.Binder;
 import com.google.inject.Key;
 import com.google.inject.internal.UniqueAnnotations;
@@ -41,7 +45,7 @@ import com.google.inject.matcher.AbstractMatcher;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@InitListener(displayName = "SecurityModuleServiceListener", description = "org.platform.security软件包功能支持。", startIndex = -90)
+@InitListener(displayName = "SecurityModuleServiceListener", description = "org.platform.security软件包功能支持。", startIndex = -100)
 public class SecurityModuleServiceListener extends AbstractModuleListener {
     private SecurityContext         secService  = null;
     private SecuritySessionListener secListener = null;
@@ -69,6 +73,11 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         binder.bind(SecuritySettings.class).toInstance(this.settings);//通过Guice
         binder.bind(SecurityContext.class).to(InternalSecurityContext.class).asEagerSingleton();
         binder.bind(SecurityQuery.class).to(DefaultSecurityQuery.class);
+        /**/
+        binder.bind(LoginProcess.class).to(DefaultLoginProcess.class);/*登入过程*/
+        binder.bind(LogoutProcess.class).to(DefaultLogoutProcess.class);/*登出过程*/
+        binder.bind(TestURLPermissionProcess.class).to(DefaultTestURLPermissionProcess.class);/*URL权限检测过程*/
+        binder.bind(AutoLoginProcess.class).to(DefaultAutoLoginProcess.class);/*处理自动登陆的处理过程*/
     }
     @Override
     public void initialized(AppContext appContext) {

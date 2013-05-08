@@ -27,6 +27,9 @@ class ScheduledServiceImpl implements ScheduledService {
     public void executeTask() {}
     @Override
     public Future executeTask(Runnable runnable) {
+        
+        Executors.newFixedThreadPool(40).s
+        
         if (this.scheduledService == null)
             this.scheduledService = Executors.newScheduledThreadPool(this.getSettings().getInteger(Platform_TaskPool_MaxSize, 5));
         

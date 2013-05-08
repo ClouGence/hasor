@@ -15,6 +15,7 @@
  */
 package org.more.util;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 /**
  * 数组相关工具
@@ -22,19 +23,28 @@ import java.util.List;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class ArrayUtil {
-    //    /***/
-    //    public static <T> T[] addToArray(T[] arr, T object) {
-    //        Object[] target = null;
-    //        if (arr == null) {
-    //            target = new Object[1];
-    //            target[0] = object;
-    //        } else {
-    //            target = new Object[arr.length + 1];
-    //            System.arraycopy(arr, 0, target, 0, target.length);
-    //            target[target.length - 1] = object;
-    //        }
-    //        return (T[]) Arrays.copyOf(target, target.length, arr.getClass());
-    //    }
+    public static <T> T[] removeInArray(T[] arr, T object) {
+        ArrayList<T> list = new ArrayList<T>();
+        if (arr != null)
+            for (T item : arr)
+                list.add(item);
+        if (object != null)
+            list.remove(object);
+        return (T[]) list.toArray();
+    }
+    /***/
+    public static <T> T[] addToArray(T[] arr, T object) {
+        Object[] target = null;
+        if (arr == null) {
+            target = new Object[1];
+            target[0] = object;
+        } else {
+            target = new Object[arr.length + 1];
+            System.arraycopy(arr, 0, target, 0, target.length);
+            target[target.length - 1] = object;
+        }
+        return (T[]) Arrays.copyOf(target, target.length, arr.getClass());
+    }
     /***/
     public static <T> List<T> newArrayList(T[] arr, T object) {
         ArrayList<T> list = new ArrayList<T>();

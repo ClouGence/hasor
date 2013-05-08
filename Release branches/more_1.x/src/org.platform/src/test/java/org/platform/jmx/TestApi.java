@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.event;
+package org.platform.jmx;
+import javax.management.MXBean;
 /**
-* 用于处理事件的事件监听器。
-* @version 2010-10-10
-* @author 赵永春 (zyc@byshell.org)
-*/
-public interface EventListener {
-    /**处理事件的处理方法，参数是要处理的事件。*/
-    public void onEvent(String event, Object[] params);
-};
+ * 
+ * @version : 2013-5-7
+ * @author 赵永春 (zyc@byshell.org)
+ */
+@MXBean
+public interface TestApi {
+    public void start(String name);
+    public String getState();
+}

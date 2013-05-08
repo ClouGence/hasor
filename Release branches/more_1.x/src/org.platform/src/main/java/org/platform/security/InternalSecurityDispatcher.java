@@ -22,21 +22,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.more.util.StringConvertUtil;
 import org.platform.context.ViewContext;
+import org.platform.security.SecurityForward.ForwardType;
 /**
  * 
  * @version : 2013-4-25
  * @author 赵永春 (zyc@byshell.org)
  */
 class InternalSecurityDispatcher implements SecurityDispatcher {
-    private String                      contentPath        = null;
-    private String                      forwardIndex       = null;
-    private DispatcherType              forwardIndexType   = null;
-    private String                      forwardLogout      = null;
-    private DispatcherType              forwardLogoutType  = null;
-    private String                      forwardFailure     = null;
-    private DispatcherType              forwardFailureType = null;
-    private Map<String, String>         forwardMap         = new HashMap<String, String>();
-    private Map<String, DispatcherType> forwardTypeMap     = new HashMap<String, DispatcherType>();
+    private String                       contentPath    = null;
+    private SecurityForward              indexForward   = null;
+    private SecurityForward              logoutForward  = null;
+    private SecurityForward              failureForward = null;
+    private Map<String, SecurityForward> forwardMap     = new HashMap<String, SecurityForward>();
     //
     public InternalSecurityDispatcher(String contentPath) {
         this.contentPath = contentPath;
@@ -46,130 +43,90 @@ class InternalSecurityDispatcher implements SecurityDispatcher {
         return this.contentPath;
     }
     @Override
-    public void forwardIndex(ViewContext viewContext) throws IOException, ServletException {
-        HttpServletRequest request = viewContext.getHttpRequest();
-        HttpServletResponse response = viewContext.getHttpResponse();
-        switch (this.forwardIndexType) {
-        case Forward:
-            request.getRequestDispatcher(this.forwardIndex).forward(request, response);
-            break;
-        case Redirect:
-            response.sendRedirect(this.forwardIndex);
-            break;
-        case Exception:
-            this.doThrowError(this.forwardIndex);
-            break;
-        case State:
-            response.sendError(StringConvertUtil.parseInt(forwardIndex, 500), "SecurityDispatcher Forward State :" + this.forwardIndex);
-            break;
-        default:
-            throw new ServletException("forwardType nonsupport.");
-        }
+    public SecurityForward forwardIndex() throws IOException, ServletException {
+        return this.indexForward;
     }
     @Override
-    public void forwardLogout(ViewContext viewContext) throws IOException, ServletException {
-        HttpServletRequest request = viewContext.getHttpRequest();
-        HttpServletResponse response = viewContext.getHttpResponse();
-        switch (this.forwardLogoutType) {
-        case Forward:
-            request.getRequestDispatcher(this.forwardLogout).forward(request, response);
-            break;
-        case Redirect:
-            response.sendRedirect(this.forwardLogout);
-            break;
-        case Exception:
-            this.doThrowError(this.forwardLogout);
-            break;
-        case State:
-            response.sendError(StringConvertUtil.parseInt(forwardLogout, 500), "SecurityDispatcher Forward State :" + this.forwardLogout);
-            break;
-        default:
-            throw new ServletException("forwardType nonsupport.");
-        }
+    public SecurityForward forwardLogout() throws IOException, ServletException {
+        return this.logoutForward;
     }
     @Override
-    public void forwardFailure(ViewContext viewContext, Throwable e) throws IOException, ServletException {
-        HttpServletRequest request = viewContext.getHttpRequest();
-        HttpServletResponse response = viewContext.getHttpResponse();
-        switch (this.forwardFailureType) {
-        case Forward:
-            request.getRequestDispatcher(this.forwardFailure).forward(request, response);
-            break;
-        case Redirect:
-            response.sendRedirect(this.forwardFailure);
-            break;
-        case Exception:
-            this.doThrowError(this.forwardFailure);
-            break;
-        case State:
-            response.sendError(StringConvertUtil.parseInt(forwardFailure, 500), "SecurityDispatcher Forward State :" + this.forwardFailure);
-            break;
-        default:
-            throw new ServletException("forwardType nonsupport.");
-        }
+    public SecurityForward forwardFailure(Throwable e) throws IOException, ServletException {
+        return this.failureForward;
     }
     @Override
-    public void forward(String id, ViewContext viewContext) throws IOException, ServletException {
+    public SecurityForward forward(String id) throws IOException, ServletException {
         if (this.forwardMap.containsKey(id) == false)
             throw new ServletException(id + " SecurityDispatcher is not exist.");
-        //
-        HttpServletRequest request = viewContext.getHttpRequest();
-        HttpServletResponse response = viewContext.getHttpResponse();
-        DispatcherType forwardType = this.forwardTypeMap.get(id);
-        String forwardURL = this.forwardMap.get(id);
-        switch (forwardType) {
-        case Forward:
-            request.getRequestDispatcher(forwardURL).forward(request, response);
-            break;
-        case Redirect:
-            response.sendRedirect(forwardURL);
-            break;
-        case Exception:
-            this.doThrowError(forwardURL);
-            break;
-        case State:
-            response.sendError(StringConvertUtil.parseInt(forwardURL, 500), "SecurityDispatcher Forward State :" + forwardURL);
-            break;
-        default:
-            throw new ServletException("forwardType nonsupport.");
-        }
+        return this.forwardMap.get(id);
     }
     //
-    /**抛出异常*/
-    private void doThrowError(String errorType) throws IOException, ServletException {
-        Object errorObject = null;
-        try {
-            Class<?> error = Class.forName(errorType);
-            errorObject = error.newInstance();
-        } catch (Exception e) {
-            throw new ServletException(e);
-        }
-        if (errorObject instanceof IOException)
-            throw (IOException) errorObject;
-        else if (errorObject instanceof ServletException)
-            throw (ServletException) errorObject;
-        else
-            throw new ServletException((Throwable) errorObject);
-    }
     //
-    public void setForwardIndex(String toURL, DispatcherType type) {
-        this.forwardIndex = toURL;
-        this.forwardIndexType = type;
+    public void setForwardIndex(String toURL, ForwardType type) {
+        this.indexForward = new SecurityForwardImpl(toURL, type);
     }
-    public void setForwardLogout(String toURL, DispatcherType type) {
-        this.forwardLogout = toURL;
-        this.forwardLogoutType = type;
+    public void setForwardLogout(String toURL, ForwardType type) {
+        this.logoutForward = new SecurityForwardImpl(toURL, type);
     }
-    public void setForwardFailure(String toURL, DispatcherType type) {
-        this.forwardFailure = toURL;
-        this.forwardFailureType = type;
+    public void setForwardFailure(String toURL, ForwardType type) {
+        this.failureForward = new SecurityForwardImpl(toURL, type);
     }
-    public void addForward(String id, String toURL, DispatcherType type) {
-        this.forwardMap.put(id, toURL);
-        this.forwardTypeMap.put(id, type);
+    public void addForward(String id, String toURL, ForwardType type) {
+        this.forwardMap.put(id, new SecurityForwardImpl(toURL, type));
     }
     @Override
     public String toString() {
         return "SecurityDispatcher at path: " + contentPath;
+    }
+    //
+    /**SecurityForward接口实现类。*/
+    class SecurityForwardImpl implements SecurityForward {
+        private String      forwardTo   = null;
+        private ForwardType forwardType = null;
+        public SecurityForwardImpl(String forwardTo, ForwardType forwardType) {
+            this.forwardTo = forwardTo;
+            this.forwardType = forwardType;
+        }
+        @Override
+        public ForwardType getForwardType() {
+            return this.forwardType;
+        }
+        @Override
+        public void forward(ViewContext viewContext) throws IOException, ServletException {
+            HttpServletRequest request = viewContext.getHttpRequest();
+            HttpServletResponse response = viewContext.getHttpResponse();
+            switch (this.forwardType) {
+            case Forward:
+                request.getRequestDispatcher(this.forwardTo).forward(request, response);
+                break;
+            case Redirect:
+                response.sendRedirect(this.forwardTo);
+                break;
+            case Exception:
+                this.doThrowError(this.forwardTo);
+                break;
+            case State:
+                response.sendError(StringConvertUtil.parseInt(forwardTo, 500), "SecurityDispatcher Forward State :" + this.forwardTo);
+                break;
+            default:
+                throw new ServletException("forwardType nonsupport.");
+            }
+        }
+        /**抛出异常*/
+        private void doThrowError(String errorType) throws IOException, ServletException {
+            Object errorObject = null;
+            try {
+                Class<?> error = Class.forName(errorType);
+                errorObject = error.newInstance();
+            } catch (Exception e) {
+                throw new ServletException(e);
+            }
+            if (errorObject instanceof IOException)
+                throw (IOException) errorObject;
+            else if (errorObject instanceof ServletException)
+                throw (ServletException) errorObject;
+            else
+                throw new ServletException((Throwable) errorObject);
+        }
     }
 }

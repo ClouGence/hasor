@@ -21,6 +21,7 @@ import org.more.util.StringUtil;
 import org.platform.Assert;
 import org.platform.Platform;
 import org.platform.context.AppContext;
+import org.platform.event.EventManager;
 /**
  * 负责权限系统中的用户会话。用户会话中保存了用户登入之后的权限数据。
  * @version : 2013-3-26
@@ -33,6 +34,7 @@ public class AuthSession {
     private Map<String, Permission> permissionMap;
     private SessionData             authSessionData;
     private SecurityContext         securityContext;
+    private EventManager            eventManager                  = null;
     private boolean                 isClose;
     //
     protected AuthSession(String sessionID, SecurityContext securityContext) {
@@ -42,6 +44,12 @@ public class AuthSession {
         this.securityContext = securityContext;
         this.isClose = false;
         this.permissionMap = new HashMap<String, Permission>();
+    }
+    /**获取{@link EventManager}*/
+    protected EventManager getEventManager() {
+        if (this.eventManager == null)
+            this.eventManager = this.securityContext.getAppContext().getInstance(EventManager.class);
+        return this.eventManager;
     }
     /**获取SessionData*/
     protected SessionData getSessionData() {
@@ -174,7 +182,6 @@ public class AuthSession {
     /**放弃缓存中的权限数据，重新载入授权数据。*/
     public synchronized void reloadPermission() throws SecurityException {
         this.checkClose();/*Check*/
-        //
         ISecurityAccess access = this.getSecurityContext().getSecurityAccess(this.authSessionData.getAuthSystem());
         List<Permission> perList = access.loadPermission(this.getUserObject());
         if (perList != null)
@@ -203,6 +210,13 @@ public class AuthSession {
             this.authSessionData.setLastTime(AppContext.getSyncTime());
             this.reloadPermission();/*重载权限*/
             this.refreshCacheTime();
+            {
+                HashMap<String, String> attr = new HashMap<String, String>();
+                attr.put("Type", "doLoginCode");
+                attr.put("AuthSystem", authSystem);
+                attr.put("UserCode", userCode);
+                this.getEventManager().throwEvent(SecurityEvent.Security_Login_Event, attr);/*抛出事件*/
+            }
             Platform.debug("%s :doLogin authSystem=%s ,userCode=%s", this.sessionID, authSystem, userCode);
             return;
         }
@@ -223,6 +237,14 @@ public class AuthSession {
             this.authSessionData.setLastTime(AppContext.getSyncTime());
             this.reloadPermission();/*重载权限*/
             this.refreshCacheTime();
+            {
+                HashMap<String, String> attr = new HashMap<String, String>();
+                attr.put("Type", "doLogin");
+                attr.put("AuthSystem", authSystem);
+                attr.put("Account", account);
+                attr.put("Password", password);
+                this.getEventManager().throwEvent(SecurityEvent.Security_Login_Event, attr);/*抛出事件*/
+            }
             Platform.debug("%s :doLogin authSystem=%s ,account=%s ,password=%s", this.sessionID, authSystem, account, password);
             return;
         }
@@ -231,6 +253,7 @@ public class AuthSession {
     /**执行退出。*/
     public synchronized void doLogout() throws SecurityException {
         this.checkClose();/*Check*/
+        this.getEventManager().throwEvent(SecurityEvent.Security_Logout_Event, this);/*抛出事件*/
         this.authSessionData = new SessionData();
         this.userInfo = null;
         this.permissionMap.clear();
@@ -240,6 +263,7 @@ public class AuthSession {
     /**关闭会话（退出会话，并且从当前线程中注销）。*/
     public synchronized void close() throws SecurityException {
         this.checkClose();/*Check*/
+        this.getEventManager().throwEvent(SecurityEvent.Security_AuthSession_Close_Event, this);/*抛出事件*/
         this.doLogout();
         this.getSecurityContext().inactivationAuthSession(this);
         this.isClose = true;

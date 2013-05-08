@@ -16,20 +16,12 @@
 package org.platform.security;
 import java.io.IOException;
 import javax.servlet.ServletException;
+import org.platform.context.ViewContext;
 /**
- * 权限系统URL请求处理支持。
- * @version : 2013-4-9  
+ * 处理登出请求
+ * @version : 2013-5-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface SecurityDispatcher {
-    /**匹配的路径模式*/
-    public String getContentPath();
-    /**跳转到登入成功后的地址。*/
-    public SecurityForward forwardIndex() throws IOException, ServletException;
-    /**跳转到登出之后的地址。*/
-    public SecurityForward forwardLogout() throws IOException, ServletException;
-    /**跳转到登入登出执行s登入失败时的地址。*/
-    public SecurityForward forwardFailure(Throwable e) throws IOException, ServletException;
-    /**跳转到配置的页面。*/
-    public SecurityForward forward(String id) throws IOException, ServletException, SecurityException;
+public interface LogoutProcess {
+    public SecurityForward processLogout(SecurityContext secContext, ViewContext viewContext) throws SecurityException, ServletException, IOException;
 }

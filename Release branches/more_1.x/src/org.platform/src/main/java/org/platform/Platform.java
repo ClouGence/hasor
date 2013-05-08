@@ -106,6 +106,7 @@ public abstract class Platform implements PlatformConfig {
             else if (object instanceof Throwable) {
                 Throwable err = (Throwable) object;
                 StringWriter sw = new StringWriter();
+                sw.append('\n');
                 err.printStackTrace(new PrintWriter(sw));
                 logString.append(sw.getBuffer());
             } else if (object instanceof URL) {

@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.event;
+package org.platform.security;
+import org.platform.context.ViewContext;
 /**
-* 用于处理事件的事件监听器。
-* @version 2010-10-10
-* @author 赵永春 (zyc@byshell.org)
-*/
-public interface EventListener {
-    /**处理事件的处理方法，参数是要处理的事件。*/
-    public void onEvent(String event, Object[] params);
-};
+ * 
+ * @version : 2013-4-25
+ * @author 赵永春 (zyc@byshell.org)
+ */
+public interface AutoLoginProcess {
+    /**写入会话数据。*/
+    public void writeCookie(SecurityContext secContext, AuthSession[] authSessions, ViewContext viewContext) throws SecurityException;
+    /**恢复权限*/
+    public AuthSession[] recoverCookie(SecurityContext secContext, ViewContext viewContext) throws SecurityException;
+}

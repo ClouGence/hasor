@@ -117,7 +117,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         try {
             return (ContextListener) listenerClass.newInstance();
         } catch (Exception e) {
-            Platform.error("create %s an error!\n%s", listenerClass, e);
+            Platform.error("create %s an error!%s", listenerClass, e);
             return null;
         }
     }
@@ -160,7 +160,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         //4.准备PlatformContextEvent、sysModule对象。
         this.initContext = this.createInitContext();
         final ListenerApiBinder apiBinder = new ListenerApiBinder(initContext);
-        final Module systemModule = new ApiBinderModule(this.initListener) {
+        final ApiBinderModule systemModule = new ApiBinderModule(this.initListener) {
             @Override
             protected ApiBinder getApiBinder(Binder guiceBinder) {
                 apiBinder.setGuiceBinder(guiceBinder);/*用于给apiBinder设置guiceBinder。*/

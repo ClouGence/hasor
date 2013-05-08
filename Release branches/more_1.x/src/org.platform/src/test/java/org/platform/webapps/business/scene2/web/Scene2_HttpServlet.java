@@ -49,6 +49,6 @@ public class Scene2_HttpServlet extends HttpServlet {
         //
         //
         String goID = req.getParameter("goID");
-        dispatcher.forward(goID, currentViewContext);
+        dispatcher.forward(goID).forward(currentViewContext);
     }
 }
