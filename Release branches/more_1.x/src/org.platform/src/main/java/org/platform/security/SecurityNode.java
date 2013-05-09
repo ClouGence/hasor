@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.platform.security;
+
+
 /**
  * 用来判断权限的节点。
  * @version : 2013-4-20

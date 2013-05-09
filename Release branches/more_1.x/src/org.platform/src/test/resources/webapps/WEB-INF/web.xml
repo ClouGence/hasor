@@ -4,11 +4,11 @@
 		<session-timeout>2000</session-timeout>
 	</session-config>
 	<listener>
-		<listener-class>org.platform.startup.RuntimeListener</listener-class>
+		<listener-class>org.platform.context.startup.RuntimeListener</listener-class>
 	</listener>
 	<filter>
 		<filter-name>runtime</filter-name>
-		<filter-class>org.platform.startup.RuntimeFilter</filter-class>
+		<filter-class>org.platform.context.startup.RuntimeFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>runtime</filter-name>

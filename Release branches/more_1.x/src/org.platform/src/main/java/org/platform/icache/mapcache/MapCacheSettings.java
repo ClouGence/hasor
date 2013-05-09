@@ -20,7 +20,7 @@ import static org.platform.PlatformConfig.CacheConfig_MapCache_Eternal;
 import static org.platform.PlatformConfig.CacheConfig_MapCache_ThreadSeep;
 import static org.platform.PlatformConfig.CacheConfig_MapCache_Timeout;
 import org.platform.context.SettingListener;
-import org.platform.context.setting.Settings;
+import org.platform.context.Settings;
 /**
  * ≈‰÷√–≈œ¢
  * @version : 2013-4-23

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.platform.security.guest;
-import org.platform.security.BaseUserInfo;
+import org.platform.security.support.BaseUserInfo;
 /**
  * 表示来宾用户，来宾用户表示未登录状态下的用户。
  * @version : 2013-4-17

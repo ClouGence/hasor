@@ -30,8 +30,8 @@ import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.binder.ApiBinder.BeanBindingBuilder;
 import org.platform.binder.ErrorHook;
-import org.platform.context.AbstractModuleListener;
 import org.platform.context.InitListener;
+import org.platform.context.support.AbstractModuleListener;
 /**
  * 支持Bean、WebError、WebFilter、WebServlet注解功能。
  * @version : 2013-4-8

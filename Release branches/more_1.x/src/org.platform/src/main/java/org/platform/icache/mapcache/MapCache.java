@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import org.platform.context.AppContext;
-import org.platform.context.setting.Config;
+import org.platform.context.Config;
 import org.platform.icache.Cache;
 import org.platform.icache.DefaultCache;
 import org.platform.icache.ICache;

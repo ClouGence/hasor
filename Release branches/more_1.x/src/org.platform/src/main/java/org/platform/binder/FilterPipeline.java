@@ -21,13 +21,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.platform.context.AppContext;
 import org.platform.context.ViewContext;
-import com.google.inject.ImplementedBy;
 /**
  * 使用ApiBinder创建的Servlet,Filter组成的管道。
  * @version : 2013-4-11
  * @author 赵永春 (zyc@byshell.org)
  */
-@ImplementedBy(DefaultFilterPipeline.class)
 public interface FilterPipeline {
     /**初始化管道*/
     public void initPipeline(AppContext appContext) throws ServletException;

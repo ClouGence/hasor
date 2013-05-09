@@ -16,19 +16,16 @@
 package org.platform.action;
 import org.platform.context.AppContext;
 /** 
- * 缓存使用入口，缓存的实现由系统自行提供。
+ * Action服务。
  * @version : 2013-4-20
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface ActionManager {
-    /**获取默认缓存*/
-    public ICache<Object> getDefaultCache();
-    /**获取缓存*/
-    public ICache<Object> getCache(String cacheName);
-    /**根据样本类型获取该类型的Key生成器。*/
-    public IKeyBuilder getKeyBuilder(Class<?> sampleType);
     /**初始化启动缓存服务。*/
     public void initManager(AppContext appContext);
     /**销毁缓存服务*/
     public void destroyManager(AppContext appContext);
+    
+    
+    
 }

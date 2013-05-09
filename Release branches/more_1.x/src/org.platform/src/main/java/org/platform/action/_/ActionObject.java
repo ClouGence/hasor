@@ -17,6 +17,7 @@ package org.platform.action._;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import org.platform.action.ActionInvoke;
 /**
  * 该接口是一个可调用的action对象，通过接口方法可以对action进行调用。
  * @version : 2011-7-14

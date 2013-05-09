@@ -21,7 +21,6 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 import org.more.util.CommonCodeUtil.Base64;
-import org.platform.context.AppContext;
 import org.platform.security.Digest;
 /**
  * 随机加密。
@@ -37,7 +36,7 @@ public final class RandomDigest implements Digest {
         SecretKey k = kf.generateSecret(pbks);
         // 生成随机数盐
         byte[] salt = new byte[8];
-        Random r = new Random(AppContext.getLocalTime());
+        Random r = new Random(System.currentTimeMillis());
         r.nextBytes(salt);
         // 创建并初始化密码器
         Cipher cipher = Cipher.getInstance("PBEWithMD5AndDES");

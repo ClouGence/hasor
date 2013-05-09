@@ -14,277 +14,58 @@
  * limitations under the License.
  */
 package org.platform.security;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.more.util.StringUtil;
-import org.platform.Assert;
-import org.platform.Platform;
-import org.platform.context.AppContext;
 /**
  * 负责权限系统中的用户会话。用户会话中保存了用户登入之后的权限数据。
  * @version : 2013-3-26
  * @author 赵永春 (zyc@byshell.org)
  */
-public class AuthSession {
-    public static final String      HttpSessionAuthSessionSetName = AuthSession.class.getName();
-    private String                  sessionID;
-    private UserInfo                userInfo;
-    private Map<String, Permission> permissionMap;
-    private SessionData             authSessionData;
-    private SecurityContext         securityContext;
-    private boolean                 isClose;
-    //
-    protected AuthSession(String sessionID, SecurityContext securityContext) {
-        Assert.isLegal(!StringUtil.isBlank(sessionID), "sessionID is Undefined!");
-        Assert.isNotNull(securityContext, "SecurityContext is Undefined!");
-        this.sessionID = sessionID;
-        this.securityContext = securityContext;
-        this.isClose = false;
-        this.permissionMap = new HashMap<String, Permission>();
-    }
-    /**获取SessionData*/
-    protected SessionData getSessionData() {
-        try {
-            return this.authSessionData.clone();
-        } catch (CloneNotSupportedException e) {
-            return null;
-        }
-    }
+public interface AuthSession {
+    public static final String HttpSessionAuthSessionSetName = AuthSession.class.getName();
     /**获取会话ID。*/
-    public String getSessionID() {
-        return this.sessionID;
-    };
+    public abstract String getSessionID();
     /**获取登入的用户对象，如果未登录系统而且启用了来宾帐号则会返回来宾帐号。*/
-    public UserInfo getUserObject() {
-        try {
-            this.checkClose();/*Check*/
-            if (this.userInfo == null) {
-                String userCode = this.authSessionData.getUserCode();
-                if (StringUtil.isBlank(userCode) == false) {
-                    String userFromAuth = this.authSessionData.getAuthSystem();
-                    ISecurityAuth auth = this.getSecurityContext().getSecurityAuth(userFromAuth);
-                    this.userInfo = auth.getUserInfo(userCode);
-                }
-            }
-            return this.userInfo;
-        } catch (SecurityException e) {
-            Platform.debug("%s", e);
-            return null;
-        }
-    };
+    public abstract UserInfo getUserObject();
     /**获取登陆会话时使用的具体权限系统。*/
-    public String getAuthSystem() {
-        if (getUserObject() != null)
-            return this.authSessionData.getAuthSystem();
-        return null;
-    }
+    public abstract String getAuthSystem();
     /**向会话添加一条临时权限。*/
-    public void addPermission(Permission permission) throws SecurityException {
-        this.checkClose();/*Check*/
-        this.permissionMap.put(permission.getPermissionCode(), permission);
-        this.authSessionData.setLastTime(AppContext.getSyncTime());
-    };
+    public abstract void addPermission(Permission permission) throws SecurityException;
     /**向会话添加一条临时权限。*/
-    public void addPermission(String permissionCode) throws SecurityException {
-        this.checkClose();/*Check*/
-        if (StringUtil.isBlank(permissionCode))
-            return;
-        this.permissionMap.put(permissionCode, new Permission(permissionCode));
-        this.authSessionData.setLastTime(AppContext.getSyncTime());
-    };
+    public abstract void addPermission(String permissionCode) throws SecurityException;
     /**临时撤销用户会话中一条权限。*/
-    public void removeTempPermission(Permission permission) throws SecurityException {
-        this.checkClose();/*Check*/
-        if (permission == null)
-            return;
-        this.permissionMap.remove(permission.getPermissionCode());
-        this.authSessionData.setLastTime(AppContext.getSyncTime());
-    };
+    public abstract void removeTempPermission(Permission permission) throws SecurityException;
     /**临时撤销用户会话中一条权限。*/
-    public void removeTempPermission(String permissionCode) throws SecurityException {
-        this.checkClose();/*Check*/
-        if (StringUtil.isBlank(permissionCode))
-            return;
-        this.permissionMap.remove(permissionCode);
-        this.authSessionData.setLastTime(AppContext.getSyncTime());
-    };
+    public abstract void removeTempPermission(String permissionCode) throws SecurityException;
     /**获取会话中包含的所有权限信息。*/
-    public Permission[] getPermissionObjects() {
-        return this.permissionMap.values().toArray(new Permission[this.permissionMap.size()]);
-    };
+    public abstract Permission[] getPermissionObjects();
     /**获取会话中包含的所有权限信息。*/
-    public String[] getPermissions() {
-        String[] pers = new String[this.permissionMap.size()];
-        int i = 0;
-        for (Permission per : this.permissionMap.values()) {
-            pers[i] = per.getPermissionCode();
-            i++;
-        }
-        return pers;
-    };
+    public abstract String[] getPermissions();
     /**判断会话中是否包含指定权限。*/
-    public boolean hasPermission(Permission permission) {
-        return this.hasPermission(permission.getPermissionCode());
-    };
+    public abstract boolean hasPermission(Permission permission);
     /**判断会话中是否包含指定权限。*/
-    public boolean hasPermission(String permissionCode) {
-        return this.permissionMap.containsKey(permissionCode);
-    };
+    public abstract boolean hasPermission(String permissionCode);
     /**判断会话是否关闭*/
-    public boolean isClose() {
-        return this.isClose;
-    }
+    public abstract boolean isClose();
     /**是否已经登入。*/
-    public boolean isLogin() {
-        if (this.isClose() || this.isGuest() == true)
-            return false;
-        //
-        UserInfo userInfo = this.getUserObject();
-        return userInfo != null;
-    };
+    public abstract boolean isLogin();
     /**判断是否为来宾帐号。来宾帐号是一种用户身份，通常用来表示不需要登入系统时使用的用户。
      * 用户使用来宾帐号登入系统虽然已经登入但是身份不会随着登入动作变为常规用户。*/
-    public boolean isGuest() {
-        if (this.isClose())
-            return false;
-        //
-        UserInfo userInfo = this.getUserObject();
-        if (userInfo == null)
-            return false;
-        return userInfo.isGuest();
-    };
+    public abstract boolean isGuest();
     /**是否为空白状态，新的Session、退出之后的.但是尚未关闭的。*/
-    public boolean isBlank() {
-        if (this.isClose() == false && (this.isLogin() == false || this.isGuest() == true))
-            return true;
-        return false;
-    }
+    public abstract boolean isBlank();
     /**获取session创建时间*/
-    public long getLoginTime() throws SecurityException {
-        if (this.isLogin() == true)
-            return this.authSessionData.getLoginTime();
-        else
-            return -1;
-    };
-    /**获取SecurityContext对象*/
-    protected SecurityContext getSecurityContext() {
-        return this.securityContext;
-    };
+    public abstract long getLoginTime() throws SecurityException;
     /**放弃缓存中的权限数据，重新载入授权数据。*/
-    public synchronized void reloadPermission() throws SecurityException {
-        this.checkClose();/*Check*/
-        ISecurityAccess access = this.getSecurityContext().getSecurityAccess(this.authSessionData.getAuthSystem());
-        List<Permission> perList = access.loadPermission(this.getUserObject());
-        if (perList != null)
-            for (Permission per : perList)
-                this.permissionMap.put(per.getPermissionCode(), per);
-        this.authSessionData.setLastTime(AppContext.getSyncTime());
-    }
+    public abstract void reloadPermission() throws SecurityException;
     /**用指定的用户对象登入到权限系统，如果登陆失败会抛出SecurityException类型异常。*/
-    public synchronized void doLogin(String authSystem, UserInfo user) throws SecurityException {
-        this.checkClose();/*Check*/
-        Assert.isNotNull(user);
-        this.doLoginCode(authSystem, user.getUserCode());
-    };
+    public abstract void doLogin(String authSystem, UserInfo user) throws SecurityException;
     /**用指定的用户userCode登入到权限系统，如果登陆失败会抛出SecurityException类型异常。*/
-    public synchronized void doLoginCode(String authSystem, String userCode) throws SecurityException {
-        this.checkClose();/*Check*/
-        ISecurityAuth authApi = this.getSecurityContext().getSecurityAuth(authSystem);
-        if (authApi == null)
-            throw new SecurityException("Not register " + authSystem + " ISecurityAuth.");
-        UserInfo userInfo = authApi.getUserInfo(userCode);
-        if (userInfo != null) {
-            this.userInfo = userInfo;
-            this.authSessionData.setUserCode(this.userInfo.getUserCode());//用户标识码
-            this.authSessionData.setAuthSystem(authSystem);
-            this.authSessionData.setLoginTime(AppContext.getSyncTime());//登陆时间
-            this.authSessionData.setLastTime(AppContext.getSyncTime());
-            this.reloadPermission();/*重载权限*/
-            this.refreshCacheTime();
-            Platform.debug("%s :doLogin authSystem=%s ,userCode=%s", this.sessionID, authSystem, userCode);
-            {
-                HashMap<String, String> attr = new HashMap<String, String>();
-                attr.put("Type", "doLoginCode");
-                attr.put("AuthSystem", authSystem);
-                attr.put("UserCode", userCode);
-                this.getSecurityContext().throwEvent(SecurityEventDefine.Login, attr, this);/*抛出事件*/
-            }
-            return;
-        }
-        throw new SecurityException("unknown user!");
-    };
+    public abstract void doLoginCode(String authSystem, String userCode) throws SecurityException;
     /**用指定的用户帐号密码系统。*/
-    public synchronized void doLogin(String authSystem, String account, String password) throws SecurityException {
-        this.checkClose();/*Check*/
-        ISecurityAuth authApi = this.getSecurityContext().getSecurityAuth(authSystem);
-        if (authApi == null)
-            throw new SecurityException("Not register " + authSystem + " ISecurityAuth.");
-        UserInfo userInfo = authApi.getUserInfo(account, password);
-        if (userInfo != null) {
-            this.userInfo = userInfo;
-            this.authSessionData.setUserCode(this.userInfo.getUserCode());//用户标识码
-            this.authSessionData.setAuthSystem(authSystem);
-            this.authSessionData.setLoginTime(AppContext.getSyncTime());//登陆时间
-            this.authSessionData.setLastTime(AppContext.getSyncTime());
-            this.reloadPermission();/*重载权限*/
-            this.refreshCacheTime();
-            Platform.debug("%s :doLogin authSystem=%s ,account=%s ,password=%s", this.sessionID, authSystem, account, password);
-            {
-                HashMap<String, String> attr = new HashMap<String, String>();
-                attr.put("Type", "doLogin");
-                attr.put("AuthSystem", authSystem);
-                attr.put("Account", account);
-                attr.put("Password", password);
-                this.getSecurityContext().throwEvent(SecurityEventDefine.Login, attr, this);/*抛出事件*/
-            }
-            return;
-        }
-        throw new SecurityException("unknown user!");
-    };
+    public abstract void doLogin(String authSystem, String account, String password) throws SecurityException;
     /**执行退出。*/
-    public synchronized void doLogout() throws SecurityException {
-        this.checkClose();/*Check*/
-        this.getSecurityContext().throwEvent(SecurityEventDefine.Logout, this);/*抛出事件*/
-        this.authSessionData = new SessionData();
-        this.userInfo = null;
-        this.permissionMap.clear();
-        this.getSecurityContext().removeSessionData(this.sessionID);
-        Platform.debug("%s :doLogout!", this.sessionID);
-    };
+    public abstract void doLogout() throws SecurityException;
     /**关闭会话（退出会话，并且从当前线程中注销）。*/
-    public synchronized void close() throws SecurityException {
-        this.checkClose();/*Check*/
-        this.getSecurityContext().throwEvent(SecurityEventDefine.AuthSession_Close, this);/*抛出事件*/
-        this.doLogout();
-        this.getSecurityContext().inactivationAuthSession(this);
-        this.isClose = true;
-    }
-    private void checkClose() throws SecurityException {
-        if (isClose())
-            throw new SecurityException("AuthSession is closed!");
-    }
+    public abstract void close() throws SecurityException;
     /**刷新权限数据在缓存中的时间,(未登录\来宾帐号\已经关闭)满足前面三个情况中任意一种时都放弃向缓存服务更新。*/
-    protected synchronized void refreshCacheTime() {
-        if (this.isBlank() == true || this.isGuest() == true)
-            return;
-        SessionData cacheData = this.getSecurityContext().getSessionData(this.sessionID);
-        if (cacheData == null || cacheData.getLastTime() < this.authSessionData.getLastTime()) {
-            String[] proArray = this.permissionMap.keySet().toArray(new String[this.permissionMap.size()]);
-            this.authSessionData.setPermissionSet(proArray);
-            this.getSecurityContext().updateSessionData(this.sessionID, this.authSessionData);
-        } else
-            this.getSecurityContext().updateSessionData(this.sessionID);
-    }
-    /**装载权限数据*/
-    protected void loadSessionData(SessionData sessionData) {
-        this.permissionMap.clear();
-        String[] perArray = sessionData.getPermissionSet();
-        if (perArray != null)
-            for (String per : perArray)
-                this.permissionMap.put(per, new Permission(per));
-        if (this.authSessionData == null)
-            this.authSessionData = sessionData;
-        this.authSessionData.setLastTime(AppContext.getSyncTime());
-    }
+    public abstract void refreshCacheTime();
 }

@@ -15,8 +15,8 @@
  */
 package org.platform.webapps;
 import org.platform.binder.ApiBinder;
-import org.platform.context.AbstractModuleListener;
 import org.platform.context.InitListener;
+import org.platform.context.support.AbstractModuleListener;
 /**
  * 
  * @version : 2013-4-29

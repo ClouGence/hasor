@@ -16,7 +16,7 @@
 package org.platform.webapps.listener;
 import org.platform.event.EventListener;
 import org.platform.event.Listener;
-import org.platform.security.SecurityEventDefine;
+import org.platform.security.support.SecurityEventDefine;
 /**
  * 
  * @version : 2013-5-9

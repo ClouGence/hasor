@@ -18,8 +18,8 @@ import org.more.util.StringUtil;
 import org.platform.context.AppContext;
 import org.platform.security.ISecurityAuth;
 import org.platform.security.SecurityAuth;
-import org.platform.security.SecuritySettings;
 import org.platform.security.UserInfo;
+import org.platform.security.support.SecuritySettings;
 /**
  * 
  * @version : 2013-4-28

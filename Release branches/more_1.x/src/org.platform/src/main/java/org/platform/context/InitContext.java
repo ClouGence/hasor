@@ -17,7 +17,6 @@ package org.platform.context;
 import java.util.Enumeration;
 import java.util.Set;
 import javax.servlet.ServletContext;
-import org.platform.context.setting.Config;
 /**
  * 
  * @version : 2013-3-26

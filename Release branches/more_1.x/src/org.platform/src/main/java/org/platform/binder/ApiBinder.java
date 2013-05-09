@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
 import org.platform.context.InitContext;
 import org.platform.context.SettingListener;
-import org.platform.context.setting.Settings;
+import org.platform.context.Settings;
 import com.google.inject.Binder;
 import com.google.inject.Key;
 import com.google.inject.binder.LinkedBindingBuilder;

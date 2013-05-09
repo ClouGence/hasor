@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.platform.context;
-import org.platform.context.setting.Settings;
 /**
  * 当配置文件重新载入时
  * @version : 2013-4-18

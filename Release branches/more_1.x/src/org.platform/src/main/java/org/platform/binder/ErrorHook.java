@@ -17,8 +17,8 @@ package org.platform.binder;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import org.platform.context.AppContext;
+import org.platform.context.Config;
 import org.platform.context.ViewContext;
-import org.platform.context.setting.Config;
 /**
  * Servlet异常处理程序。
  * @version : 2013-4-12

@@ -19,8 +19,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import org.platform.binder.ErrorHook;
 import org.platform.context.AppContext;
+import org.platform.context.Config;
 import org.platform.context.ViewContext;
-import org.platform.context.setting.Config;
 import org.platform.security.PermissionException;
 import org.platform.support.WebError;
 /**

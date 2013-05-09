@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.platform.icache.mapcache;
-import org.platform.context.clock.Clock;
 /**
  * ª∫¥Ê∂‘œÛ
  * @version : 2013-4-23
@@ -28,17 +27,17 @@ class CacheEntity<T> {
     public CacheEntity(T value, long timeout) {
         this.value = value;
         this.timeout = timeout;
-        this.lastTime = Clock.getSyncTime();
+        this.lastTime = System.currentTimeMillis();
     }
     //
     public boolean isLost() {
         if (this.timeout == Long.MAX_VALUE)
             return false;
-        return (lastTime + this.timeout) < Clock.getSyncTime();
+        return (lastTime + this.timeout) < System.currentTimeMillis();
     }
     //
     public void refresh() {
-        this.lastTime = Clock.getSyncTime();
+        this.lastTime = System.currentTimeMillis();
     }
     //
     public T get() {

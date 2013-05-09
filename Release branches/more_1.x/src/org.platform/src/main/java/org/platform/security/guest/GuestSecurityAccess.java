@@ -21,8 +21,8 @@ import org.platform.context.AppContext;
 import org.platform.security.ISecurityAccess;
 import org.platform.security.Permission;
 import org.platform.security.SecurityAccess;
-import org.platform.security.SecuritySettings;
 import org.platform.security.UserInfo;
+import org.platform.security.support.SecuritySettings;
 /**
  * 
  * @version : 2013-4-28
