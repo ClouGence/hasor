@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
 import org.platform.context.AppContext;
-import org.platform.event.EventManager;
 import org.platform.security.DefaultSecurityQuery.CheckPermission;
 /**
  * 安全认证系统服务，子类只需要解决SessionData存储就可以了。
@@ -31,7 +30,6 @@ public abstract class SecurityContext {
     private ThreadLocal<List<AuthSession>>   currentAuthSessionList   = null;
     private UriPatternMatcher                defaultRules             = null;
     private InternalDispatcherManager        dispatcherManager        = null;
-    private EventManager                     eventManager             = null;
     private ManagedSecurityAccessManager     securityAccessManager    = null;
     private ManagedSecurityAuthManager       securityAuthManager      = null;
     private SecuritySettings                 settings                 = null;
@@ -54,7 +52,7 @@ public abstract class SecurityContext {
         }
         //
         curSessionList.add(activateAuthSession);
-        this.eventManager.throwEvent(SecurityEvent.Security_AuthSession_Activate_Event, activateAuthSession);/*抛出事件*/
+        this.throwEvent(SecurityEventDefine.AuthSession_Activate, activateAuthSession);/*抛出事件*/
         //
         return true;
     }
@@ -192,7 +190,7 @@ public abstract class SecurityContext {
             curSessionList.remove(removeAuthSession);
             if (curSessionList.size() == 0)
                 this.currentAuthSessionList.remove();
-            this.eventManager.throwEvent(SecurityEvent.Security_AuthSession_Inactivation_Event, removeAuthSession);/*抛出事件*/
+            this.throwEvent(SecurityEventDefine.AuthSession_Inactivation, removeAuthSession);/*抛出事件*/
             return true;
         }
         //
@@ -208,7 +206,6 @@ public abstract class SecurityContext {
         this.codeDigestManager = new InternalCodeDigestManager();
         this.securityAuthManager = new ManagedSecurityAuthManager();
         this.securityAccessManager = new ManagedSecurityAccessManager();
-        this.eventManager = this.appContext.getInstance(EventManager.class);
         //
         this.settings = appContext.getInstance(SecuritySettings.class);
         this.defaultRules = settings.getRulesDefault();
@@ -224,7 +221,7 @@ public abstract class SecurityContext {
     /**新建AuthSession*/
     protected AuthSession newAuthSession(String authSessionID) throws SecurityException {
         AuthSession newAuthSession = new AuthSession(authSessionID, this) {};
-        this.eventManager.throwEvent(SecurityEvent.Security_AuthSession_New_Event, newAuthSession);/*抛出事件*/
+        this.throwEvent(SecurityEventDefine.AuthSession_New, newAuthSession);/*抛出事件*/
         return newAuthSession;
     }
     /**创建{@link SecurityQuery} 类，该类可以用来测试用户的权限。*/
@@ -244,10 +241,13 @@ public abstract class SecurityContext {
         return this.newSecurityQuery().and(permissionCode);
     }
     //
+    /**同步方式抛出事件。*/
+    protected abstract void throwEvent(String eventType, Object... objects);
+    //
     /**使用SessionData的数据创建AuthSession。*/
     protected abstract void removeSessionData(String sessionDataID);
     /**仅仅刷新缓存数据的过期时间*/
     protected abstract void updateSessionData(String sessionID);
     /**更新SessionData*/
-    protected abstract void updateSessionData(String sessionDataID, SessionData newSessionData);;
+    protected abstract void updateSessionData(String sessionDataID, SessionData newSessionData);
 }

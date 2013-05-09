@@ -15,6 +15,8 @@
  */
 package org.platform.event;
 import java.util.Set;
+import org.more.util.ArrayUtil;
+import org.more.util.StringUtil;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AbstractModuleListener;
@@ -46,10 +48,19 @@ public class EventModuleServiceListener extends AbstractModuleListener {
                 try {
                     Listener annoListener = cls.getAnnotation(Listener.class);
                     EventListener eventListener = (EventListener) appContext.getInstance(cls);
-                    for (String eventType : annoListener.value())
+                    String[] vals = annoListener.value();
+                    if (ArrayUtil.isBlank(vals)) {
+                        Platform.warning("missing eventType at listener %s.", new Object[] { vals });
+                        continue;
+                    }
+                    for (String eventType : vals) {
+                        if (StringUtil.isBlank(eventType) == true)
+                            continue;
+                        Platform.info("listener %s is listening on %s.", cls, eventType);
                         this.eventManager.addEventListener(eventType, eventListener);
+                    }
                 } catch (Exception e) {
-                    Platform.warning("addEventListener error%s.", e);
+                    Platform.warning("addEventListener error.%s", e);
                 }
             }
         }

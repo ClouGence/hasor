@@ -29,7 +29,6 @@ import org.platform.Assert;
 import org.platform.Platform;
 import org.platform.context.AppContext;
 import org.platform.context.ViewContext;
-import org.platform.event.EventManager;
 import org.platform.startup.RuntimeListener;
 /**
  * 权限系统URL请求处理支持。
@@ -125,8 +124,7 @@ class SecurityFilter implements Filter {
         //3.访问请求
         try {
             AuthSession[] authSessions = this.secContext.getCurrentAuthSession();
-            EventManager eventManager = this.secContext.getAppContext().getInstance(EventManager.class);
-            eventManager.throwEvent(SecurityEvent.Security_URLPermissionEvent, reqPath, authSessions);/*抛出事件*/
+            this.secContext.throwEvent(SecurityEventDefine.TestURLPermission, reqPath, authSessions);/*抛出事件*/
             boolean res = this.urlPermissionProcess.testURL(this.secContext, authSessions, viewContext);
             if (res == false)
                 throw new PermissionException(reqPath);

@@ -71,7 +71,7 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         this.loadSecurityAccess(event);
         /*绑定核心功能实现类。*/
         binder.bind(SecuritySettings.class).toInstance(this.settings);//通过Guice
-        binder.bind(SecurityContext.class).to(InternalSecurityContext.class).asEagerSingleton();
+        binder.bind(SecurityContext.class).to(DefaultSecurityContext.class).asEagerSingleton();
         binder.bind(SecurityQuery.class).to(DefaultSecurityQuery.class);
         /**/
         binder.bind(LoginProcess.class).to(DefaultLoginProcess.class);/*登入过程*/

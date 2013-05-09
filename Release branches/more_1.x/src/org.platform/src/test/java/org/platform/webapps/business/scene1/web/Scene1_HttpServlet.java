@@ -21,8 +21,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.platform.context.AppContext;
-import org.platform.web.WebServlet;
-import org.platform.webapps.business.scene1.service.Scene1_Services;
+import org.platform.support.WebServlet;
+import org.platform.webapps.business.scene1.service.Power_Services;
 import com.google.inject.Inject;
 /**
  * 
@@ -33,7 +33,7 @@ import com.google.inject.Inject;
 public class Scene1_HttpServlet extends HttpServlet {
     private static final long serialVersionUID = 9157509300789665741L;
     @Inject
-    private Scene1_Services   scene1Service    = null;
+    private Power_Services    scene1Service    = null;
     //
     //
     @Override

@@ -23,6 +23,9 @@ import java.util.List;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public abstract class ArrayUtil {
+    public static boolean isBlank(Object[] arr) {
+        return arr == null || arr.length == 0;
+    }
     public static <T> T[] removeInArray(T[] arr, T object) {
         ArrayList<T> list = new ArrayList<T>();
         if (arr != null)
@@ -40,7 +43,8 @@ public abstract class ArrayUtil {
             target[0] = object;
         } else {
             target = new Object[arr.length + 1];
-            System.arraycopy(arr, 0, target, 0, target.length);
+            if (arr.length != 0)
+                System.arraycopy(arr, 0, target, 0, target.length);
             target[target.length - 1] = object;
         }
         return (T[]) Arrays.copyOf(target, target.length, arr.getClass());

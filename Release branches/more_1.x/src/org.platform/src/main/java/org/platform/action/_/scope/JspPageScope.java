@@ -13,40 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.web.action._.scope;
+package org.platform.action._.scope;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Vector;
-import javax.servlet.ServletContext;
+import javax.servlet.jsp.PageContext;
 import org.more.submit.web.WebHelper;
 import org.more.util.attribute.IAttribute;
 import org.more.util.attribute.TransformToMap;
 /**
- * 负责提供ServletContext到{@link IAttribute IAttribute接口}的代理。
+ * 负责提供PageContext到{@link IAttribute IAttribute接口}的代理。
  * @version 2009-12-28
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ServletContextScope implements IAttribute {
-    public static final String Name = "ServletContext";
+public class JspPageScope implements IAttribute {
+    public static final String Name = "JspPage";
     //
-    protected ServletContext getServletContext() {
-        return WebHelper.getServletContext();
+    protected PageContext getPageContext() {
+        return WebHelper.getPageContext();
     };
     public boolean contains(String name) {
-        return this.getServletContext().getAttribute(name) != null;
+        return this.getPageContext().getAttribute(name, PageContext.PAGE_SCOPE) != null;
     };
     public void setAttribute(String name, Object value) {
-        this.getServletContext().setAttribute(name, value);
+        this.getPageContext().setAttribute(name, value, PageContext.PAGE_SCOPE);
     };
     public Object getAttribute(String name) {
-        return this.getServletContext().getAttribute(name);
+        return this.getPageContext().getAttribute(name, PageContext.PAGE_SCOPE);
     };
     public void removeAttribute(String name) {
-        this.getServletContext().removeAttribute(name);
+        this.getPageContext().removeAttribute(name, PageContext.PAGE_SCOPE);
     };
     public String[] getAttributeNames() {
         Vector<String> v = new Vector<String>(0);
-        Enumeration<?> attEnum = this.getServletContext().getAttributeNames();
+        Enumeration<?> attEnum = this.getPageContext().getAttributeNamesInScope(PageContext.PAGE_SCOPE);
         while (attEnum.hasMoreElements())
             v.add(attEnum.nextElement().toString());
         String[] ns = new String[v.size()];

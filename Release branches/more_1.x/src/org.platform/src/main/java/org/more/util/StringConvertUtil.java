@@ -66,7 +66,7 @@ public abstract class StringConvertUtil {
                     }
                 }
         } catch (Exception e) {
-            if (defaultValue == null || defaultValue.length == 0)
+            if (ArrayUtil.isBlank(defaultValue))
                 return 0;
             return defaultValue[0];
         }
@@ -147,9 +147,9 @@ public abstract class StringConvertUtil {
      */
     public static Integer parseInt(final String value, final Integer... defaultValue) {
         try {
-            return (value == null || value.equals("") == true) ? defaultValue[0] : Integer.valueOf(value);
+            return StringUtil.isBlank(value) ? defaultValue[0] : Integer.valueOf(value);
         } catch (Exception e) {
-            if (defaultValue == null || defaultValue.length == 0)
+            if (ArrayUtil.isBlank(defaultValue))
                 return StringConvertUtil.DefaultValue_Integer;
             return defaultValue[0];
         }
@@ -163,12 +163,12 @@ public abstract class StringConvertUtil {
      */
     public static Float parseFloat(final String value, final Float... defaultValue) {
         try {
-            float var = (value == null || value.equals("") == true) ? defaultValue[0] : Float.valueOf(value);
+            float var = StringUtil.isBlank(value) ? defaultValue[0] : Float.valueOf(value);
             if (Float.isNaN(var) == true || Float.isInfinite(var) == true)
                 return (defaultValue.length >= 1) ? defaultValue[0] : StringConvertUtil.DefaultValue_Float;
             return var;
         } catch (Exception e) {
-            if (defaultValue == null || defaultValue.length == 0)
+            if (ArrayUtil.isBlank(defaultValue))
                 return StringConvertUtil.DefaultValue_Float;
             return defaultValue[0];
         }
@@ -182,12 +182,12 @@ public abstract class StringConvertUtil {
      */
     public static Double parseDouble(final String value, final Double... defaultValue) {
         try {
-            double var = (value == null || value.equals("") == true) ? defaultValue[0] : Double.valueOf(value);
+            double var = StringUtil.isBlank(value) ? defaultValue[0] : Double.valueOf(value);
             if (Double.isNaN(var) == true || Double.isInfinite(var) == true)
                 return (defaultValue.length >= 1) ? defaultValue[0] : StringConvertUtil.DefaultValue_Float;
             return var;
         } catch (Exception e) {
-            if (defaultValue == null || defaultValue.length == 0)
+            if (ArrayUtil.isBlank(defaultValue))
                 return StringConvertUtil.DefaultValue_Double;
             return defaultValue[0];
         }
@@ -199,7 +199,7 @@ public abstract class StringConvertUtil {
      */
     public static Boolean parseBoolean(final String value, final Boolean... defaultValue) {
         if (value == null) {
-            if (defaultValue == null || defaultValue.length == 0)
+            if (ArrayUtil.isBlank(defaultValue))
                 return StringConvertUtil.DefaultValue_Boolean;
             return defaultValue[0];
         } else if (value.equals("0") == true || value.equals("no") == true || value.equals("N") == true)
@@ -218,9 +218,9 @@ public abstract class StringConvertUtil {
      */
     public static Long parseLong(final String value, final Long... defaultValue) {
         try {
-            return (value == null || value.equals("") == true) ? defaultValue[0] : Long.valueOf(value);
+            return StringUtil.isBlank(value) ? defaultValue[0] : Long.valueOf(value);
         } catch (Exception e) {
-            if (defaultValue == null || defaultValue.length == 0)
+            if (ArrayUtil.isBlank(defaultValue))
                 return StringConvertUtil.DefaultValue_Long;
             return defaultValue[0];
         }
@@ -234,9 +234,9 @@ public abstract class StringConvertUtil {
      */
     public static Byte parseByte(final String value, final Byte... defaultValue) {
         try {
-            return (value == null || value.equals("") == true) ? defaultValue[0] : Byte.valueOf(value);
+            return StringUtil.isBlank(value) ? defaultValue[0] : Byte.valueOf(value);
         } catch (Exception e) {
-            if (defaultValue == null || defaultValue.length == 0)
+            if (ArrayUtil.isBlank(defaultValue))
                 return StringConvertUtil.DefaultValue_Byte;
             return defaultValue[0];
         }
@@ -250,15 +250,15 @@ public abstract class StringConvertUtil {
      */
     public static Short parseShort(final String value, final Short... defaultValue) {
         try {
-            return (value == null || value.equals("") == true) ? defaultValue[0] : Short.valueOf(value);
+            return StringUtil.isBlank(value) ? defaultValue[0] : Short.valueOf(value);
         } catch (Exception e) {
-            if (defaultValue == null || defaultValue.length == 0)
+            if (ArrayUtil.isBlank(defaultValue))
                 return StringConvertUtil.DefaultValue_Short;
             return defaultValue[0];
         }
     }
     public static String parseString(String value, String... defaultValue) {
-        return (value == null || value.equals("") == true) ? defaultValue[0] : value;
+        return StringUtil.isBlank(value) ? defaultValue[0] : value;
     }
     /**
      * 将字符串转化为集合类型。在转化过程中可以指定分割符转换类型以及相应类型的默认转换值。

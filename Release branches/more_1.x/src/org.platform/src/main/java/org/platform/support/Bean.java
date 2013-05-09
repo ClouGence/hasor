@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.webapps;
-import org.platform.binder.ApiBinder;
-import org.platform.context.AbstractModuleListener;
-import org.platform.context.InitListener;
+package org.platform.support;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 
- * @version : 2013-4-29
+ * 标记一个Bean。
+ * @version : 2013-3-20
  * @author 赵永春 (zyc@byshell.org)
  */
-@InitListener(displayName = "WebAppsListener", description = "WebAppsListener测试。", startIndex = 10)
-public class WebAppsListener extends AbstractModuleListener {
-    @Override
-    public void initialize(ApiBinder binder) {}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface Bean {
+    /** Bean名称。*/
+    public String[] value();
 }

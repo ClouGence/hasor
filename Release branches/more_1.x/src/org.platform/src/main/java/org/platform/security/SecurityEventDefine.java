@@ -19,19 +19,19 @@ package org.platform.security;
  * @version : 2013-5-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface SecurityEvent {
+public interface SecurityEventDefine {
     /**当请求检测URL权限时，在事件中可以操控AuthSession临时赋予路径访问权限。*/
-    public static final String Security_URLPermissionEvent             = "Security_URLPermissionEvent";
+    public static final String TestURLPermission        = "TestURLPermission";
     /**登入事件*/
-    public static final String Security_Login_Event                    = "Security_Login_Event";
+    public static final String Login                    = "Login_Event";
     /**登出事件*/
-    public static final String Security_Logout_Event                   = "Security_Logout_Event";
+    public static final String Logout                   = "Logout_Event";
     /**AuthSession被关闭*/
-    public static final String Security_AuthSession_Close_Event        = "Security_AuthSession_Close_Event";
+    public static final String AuthSession_Close        = "AuthSession_Close_Event";
     /**AuthSession被创建*/
-    public static final String Security_AuthSession_New_Event          = "Security_AuthSession_New_Event";
+    public static final String AuthSession_New          = "AuthSession_New_Event";
     /**当前线程激活的AuthSession。*/
-    public static final String Security_AuthSession_Activate_Event     = "Security_AuthSession_Activate_Event";
+    public static final String AuthSession_Activate     = "AuthSession_Activate_Event";
     /**当前线程钝化的AuthSession。*/
-    public static final String Security_AuthSession_Inactivation_Event = "Security_AuthSession_Inactivation_Event";
+    public static final String AuthSession_Inactivation = "AuthSession_Inactivation_Event";
 }

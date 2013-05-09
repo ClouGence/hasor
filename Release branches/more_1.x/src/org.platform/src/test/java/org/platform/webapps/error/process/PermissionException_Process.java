@@ -22,7 +22,7 @@ import org.platform.context.AppContext;
 import org.platform.context.ViewContext;
 import org.platform.context.setting.Config;
 import org.platform.security.PermissionException;
-import org.platform.web.WebError;
+import org.platform.support.WebError;
 /**
  * 
  * @version : 2013-5-2

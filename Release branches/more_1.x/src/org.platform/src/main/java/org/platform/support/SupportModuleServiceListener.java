@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.web;
-import java.io.IOException;
+package org.platform.support;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -23,44 +22,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSessionListener;
+import org.more.util.ArrayUtil;
 import org.more.util.StringUtil;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
+import org.platform.binder.ApiBinder.BeanBindingBuilder;
 import org.platform.binder.ErrorHook;
 import org.platform.context.AbstractModuleListener;
 import org.platform.context.InitListener;
 /**
- * 支持WebError、WebFilter、WebServlet注解功能。
+ * 支持Bean、WebError、WebFilter、WebServlet注解功能。
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@InitListener(displayName = "WebModuleServiceListener", description = "org.platform.web软件包功能支持。", startIndex = -50)
-public class WebModuleServiceListener extends AbstractModuleListener {
+@InitListener(displayName = "SupportModuleServiceListener", description = "org.platform.support软件包功能支持。", startIndex = -50)
+public class SupportModuleServiceListener extends AbstractModuleListener {
     /**初始化.*/
     @Override
     public void initialize(ApiBinder event) {
-        //1.设置RootFilter
-        event.filter("*").through(new Filter() {
-            @Override
-            public void init(FilterConfig filterConfig) throws ServletException {}
-            @Override
-            public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-                WebHelper.initWebHelper((HttpServletRequest) request, (HttpServletResponse) response);
-                chain.doFilter(request, response);
-                WebHelper.clearWebHelper();
-            }
-            @Override
-            public void destroy() {}
-        });
+        //1.Bean
+        this.loadBean(event);
         //2.LoadFilter.
         this.loadFilter(event);
         //3.LoadServlet.
@@ -71,7 +54,24 @@ public class WebModuleServiceListener extends AbstractModuleListener {
         this.loadSessionListener(event);
     }
     //
-    /*装载Filter*/
+    /**装载Bean*/
+    protected void loadBean(ApiBinder event) {
+        Set<Class<?>> beanSet = event.getClassSet(Bean.class);
+        for (Class<?> beanClass : beanSet) {
+            Bean annoBean = beanClass.getAnnotation(Bean.class);
+            String[] names = annoBean.value();
+            if (ArrayUtil.isBlank(names)) {
+                Platform.warning("missing Bean name %s", beanClass);
+                continue;
+            }
+            BeanBindingBuilder beanBuilder = event.newBean(names[0]);
+            for (int i = 1; i < names.length; i++)
+                beanBuilder.aliasName(names[i]);
+            beanBuilder.bindType(beanClass);
+        }
+    }
+    //
+    /**装载Filter*/
     protected void loadFilter(ApiBinder event) {
         //1.获取
         Set<Class<?>> webFilterSet = event.getClassSet(WebFilter.class);
@@ -99,11 +99,10 @@ public class WebModuleServiceListener extends AbstractModuleListener {
             WebFilter filterAnno = filterType.getAnnotation(WebFilter.class);
             Map<String, String> initMap = this.toMap(filterAnno.initParams());
             event.filter(null, filterAnno.value()).through(filterType, initMap);
-            event.filter(null, filterAnno.urlPatterns()).through(filterType, initMap);
         }
     }
     //
-    /*装载Servlet*/
+    /**装载Servlet*/
     protected void loadServlet(ApiBinder event) {
         //1.获取
         Set<Class<?>> webServletSet = event.getClassSet(WebServlet.class);
@@ -131,11 +130,10 @@ public class WebModuleServiceListener extends AbstractModuleListener {
             WebServlet servletAnno = servletType.getAnnotation(WebServlet.class);
             Map<String, String> initMap = this.toMap(servletAnno.initParams());
             event.serve(null, servletAnno.value()).with(servletType, initMap);
-            event.serve(null, servletAnno.urlPatterns()).with(servletType, initMap);
         }
     }
     //
-    /*装载异常处理程序*/
+    /**装载异常处理程序*/
     protected void loadErrorHook(ApiBinder event) {
         //1.获取
         Set<Class<?>> webErrorSet = event.getClassSet(WebError.class);
@@ -166,7 +164,7 @@ public class WebModuleServiceListener extends AbstractModuleListener {
         }
     }
     //
-    /*装载HttpSessionListener*/
+    /**装载HttpSessionListener*/
     protected void loadSessionListener(ApiBinder event) {
         //1.获取
         Set<Class<?>> sessionListenerSet = event.getClassSet(WebSessionListener.class);
@@ -195,7 +193,7 @@ public class WebModuleServiceListener extends AbstractModuleListener {
         }
     }
     //
-    /*转换参数*/
+    /**转换参数*/
     protected Map<String, String> toMap(WebInitParam[] initParams) {
         Map<String, String> initMap = new HashMap<String, String>();
         if (initParams != null)

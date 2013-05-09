@@ -21,7 +21,7 @@ import org.platform.binder.ErrorHook;
 import org.platform.context.AppContext;
 import org.platform.context.ViewContext;
 import org.platform.context.setting.Config;
-import org.platform.web.WebError;
+import org.platform.support.WebError;
 import org.platform.webapps.error.define.LoginSecurityException;
 /**
  * 

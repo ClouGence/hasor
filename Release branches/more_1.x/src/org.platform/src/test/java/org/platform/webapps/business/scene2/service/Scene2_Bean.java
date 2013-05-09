@@ -18,19 +18,23 @@ import org.platform.security.AuthSession;
 import org.platform.security.RoleIdentity;
 import org.platform.security.RoleIdentityUtil;
 import org.platform.security.SecurityContext;
+import org.platform.support.Bean;
 import org.platform.webapps.safety.BBSUser;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 /**
  * 
  * @version : 2013-5-2
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class Scene2_ServiceBean {
+@Singleton
+@Bean("Scene2_ServiceBean")
+public class Scene2_Bean {
     @Inject
     private SecurityContext securityContext = null;
     public void print() {
         RoleIdentity adminIdentity = RoleIdentityUtil.getTypeIdentity(BBSUser.class);
         AuthSession[] auth = securityContext.findCurrentAuthSession(adminIdentity);
-        System.out.println(auth.length);
+        System.out.println("this is message from Scene2_Bean. Current AuthSession RoleIdentity is BBSUser count=" + auth.length);
     }
 }

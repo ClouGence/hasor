@@ -22,8 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.platform.context.ViewContext;
 import org.platform.security.SecurityContext;
 import org.platform.security.SecurityDispatcher;
-import org.platform.web.WebServlet;
-import org.platform.webapps.business.scene2.service.Scene2_ServiceBean;
+import org.platform.support.WebServlet;
+import org.platform.webapps.business.scene2.service.Scene2_Bean;
 import com.google.inject.Inject;
 /**
  * 
@@ -44,7 +44,7 @@ public class Scene2_HttpServlet extends HttpServlet {
         SecurityDispatcher dispatcher = this.securityContext.getDispatcher(requestURI);
         //
         //
-        Scene2_ServiceBean serBean = currentViewContext.getAppContext().getBean("Scene2_ServiceBean");
+        Scene2_Bean serBean = currentViewContext.getAppContext().getBean("Scene2_ServiceBean");
         serBean.print();
         //
         //

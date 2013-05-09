@@ -23,6 +23,7 @@ import static org.platform.PlatformConfig.Security_AuthSessionTimeout;
 import org.platform.context.AppContext;
 import org.platform.context.SettingListener;
 import org.platform.context.setting.Settings;
+import org.platform.event.EventManager;
 import org.platform.icache.Cache;
 import org.platform.icache.ICache;
 import org.platform.icache.mapcache.MapCache;
@@ -36,7 +37,7 @@ import com.google.inject.name.Names;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Singleton
-class InternalSecurityContext extends SecurityContext {
+public class DefaultSecurityContext extends SecurityContext {
     private ICache<SessionData> authSessionCache = null;
     private SettingListener     settingListener  = new SessionDataCacheSettingListener();
     private long                sessionTimeOut   = 0;
@@ -69,6 +70,13 @@ class InternalSecurityContext extends SecurityContext {
     protected SessionData getSessionData(String sessionDataID) {
         return this.authSessionCache.fromCache(sessionDataID);
     }
+    private EventManager eventManager = null;
+    @Override
+    protected void throwEvent(String eventType, Object... objects) {
+        if (this.eventManager == null)
+            this.eventManager = this.getAppContext().getInstance(EventManager.class);
+        this.eventManager.throwEvent(eventType, objects);
+    }
     /*--------------------------------------------------------------------------------------*/
     /**负责监听SessionDataCache部分配置文件改动的生效*/
     class SessionDataCacheSettingListener implements SettingListener {
@@ -92,7 +100,7 @@ class InternalSecurityContext extends SecurityContext {
     }
     /**内置的权限缓存数据*/
     @Cache(value = "AuthSessionCache", displayName = "AuthSessionMapCache", description = "内置的AuthSession数据缓存。")
-    static class InternalAuthSessionMapCache extends MapCache<SessionData> {
+    public static class InternalAuthSessionMapCache extends MapCache<SessionData> {
         public InternalAuthSessionMapCache() {
             super();
             this.threadName = "AuthSessionCache-Daemon";

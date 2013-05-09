@@ -13,23 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.web;
+package org.platform.support;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * 
- * @version : 2013-3-12
+ * 注册一个SessionListener处理接口。
+ * @version : 2013-3-20
  * @author 赵永春 (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.ANNOTATION_TYPE })
-public @interface WebInitParam {
-    /** Name of the initialization parameter */
-    public String name();
-    /** Value of the initialization parameter */
-    public String value();
-    /** Description of the initialization parameter */
-    public String description() default "";
+@Target({ ElementType.TYPE })
+public @interface WebSessionListener {
+    //    /**对服务的描述信息。
+    //     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
+    //    public String description() default "";
+    //    /**在管理控制台显示服务时使用displayName属性。
+    //     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
+    //    public String displayName() default "";
+    /**在迭代链上的顺序。默认：0，按照升序排序。
+     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
+    public int sort() default 0;
 }

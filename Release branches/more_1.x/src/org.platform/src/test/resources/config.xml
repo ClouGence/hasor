@@ -10,7 +10,7 @@
 		<clientCookie enable="true"></clientCookie>
 		<!-- 转发配置 -->
 		<forwards>
-			<dispatch contentPath="/admin" defaultType="redirect">
+			<dispatch contentPath="/admin/**.jsp" defaultType="redirect">
 				<forwardIndex type="redirect">/admin/admin_index.htm</forwardIndex>
 				<forwardLogout type="redirect">/login/admin_login.htm</forwardLogout>
 				<forwardFailure type="forward">/public/admin_error.htm</forwardFailure>
@@ -36,7 +36,7 @@
 		<rules>
 			<includes>
 				<include mode="Login">/user</include>
-				<include mode="Permission" permissions="AdminPower">/admin</include>
+				<include mode="Permission" permissions="AdminPower">/admin/**.jsp</include>
 				<include mode="Permission" permissions="BBSPower">/bbs</include>
 			</includes>
 			<excludes>

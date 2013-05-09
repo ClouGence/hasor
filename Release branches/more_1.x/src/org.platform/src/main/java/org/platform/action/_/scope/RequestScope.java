@@ -13,40 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.web.action._.scope;
+package org.platform.action._.scope;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Vector;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
 import org.more.submit.web.WebHelper;
 import org.more.util.attribute.IAttribute;
 import org.more.util.attribute.TransformToMap;
 /**
- * 负责提供HttpSession到{@link IAttribute IAttribute接口}的代理。
+ * 负责提供HttpServletRequest到{@link IAttribute IAttribute接口}的代理。
  * @version 2009-12-28
  * @author 赵永春 (zyc@byshell.org)
  */
-public class HttpSessionScope implements IAttribute {
-    public static final String Name = "HttpSession";
+public class RequestScope implements IAttribute {
+    public static final String Name = "Request";
     //
-    protected HttpSession getHttpSession() {
-        return WebHelper.getHttpSession();
+    protected HttpServletRequest getHttpRequest() {
+        return WebHelper.getHttpRequest();
     };
     public boolean contains(String name) {
-        return this.getHttpSession().getAttribute(name) != null;
+        return this.getHttpRequest().getAttribute(name) != null;
     };
     public void setAttribute(String name, Object value) {
-        this.getHttpSession().setAttribute(name, value);
+        this.getHttpRequest().setAttribute(name, value);
     };
     public Object getAttribute(String name) {
-        return this.getHttpSession().getAttribute(name);
+        return this.getHttpRequest().getAttribute(name);
     };
     public void removeAttribute(String name) {
-        this.getHttpSession().removeAttribute(name);
+        this.getHttpRequest().removeAttribute(name);
     };
     public String[] getAttributeNames() {
         Vector<String> v = new Vector<String>(0);
-        Enumeration<?> attEnum = this.getHttpSession().getAttributeNames();
+        Enumeration<?> attEnum = this.getHttpRequest().getAttributeNames();
         while (attEnum.hasMoreElements())
             v.add(attEnum.nextElement().toString());
         String[] ns = new String[v.size()];

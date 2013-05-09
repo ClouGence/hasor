@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.web.action;
-import org.platform.context.AppContext;
-/** 
- * 缓存使用入口，缓存的实现由系统自行提供。
- * @version : 2013-4-20
+package org.platform.support;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+/**
+ * 
+ * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ActionManager {
-    /**获取默认缓存*/
-    public ICache<Object> getDefaultCache();
-    /**获取缓存*/
-    public ICache<Object> getCache(String cacheName);
-    /**根据样本类型获取该类型的Key生成器。*/
-    public IKeyBuilder getKeyBuilder(Class<?> sampleType);
-    /**初始化启动缓存服务。*/
-    public void initManager(AppContext appContext);
-    /**销毁缓存服务*/
-    public void destroyManager(AppContext appContext);
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.ANNOTATION_TYPE })
+public @interface WebInitParam {
+    /** Name of the initialization parameter */
+    public String name();
+    /** Value of the initialization parameter */
+    public String value();
+    /** Description of the initialization parameter */
+    public String description() default "";
 }

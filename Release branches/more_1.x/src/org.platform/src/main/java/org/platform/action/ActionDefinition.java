@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.web.action;
+package org.platform.action;
 import org.platform.context.AppContext;
 import org.platform.icache.ICache;
 import com.google.inject.Provider;

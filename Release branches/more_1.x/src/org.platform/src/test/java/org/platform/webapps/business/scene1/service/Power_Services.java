@@ -21,7 +21,7 @@ import org.platform.security.Power.Level;
  * @version : 2013-5-2
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class Scene1_Services {
+public class Power_Services {
     @Power(level = Level.Free)
     public String callFree(String bizID, String param) {
         return "Scene1:" + bizID + " ,param=" + param;

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.platform.event;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -24,7 +23,6 @@ import org.more.util.ArrayUtil;
 import org.more.util.StringUtil;
 import org.platform.Assert;
 import org.platform.context.AppContext;
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 /**
  * {@link EventManager}接口的默认实现。
  * @version : 2013-5-6
@@ -53,7 +51,7 @@ class DefaultEventManager implements EventManager, ManagerLife {
         Assert.isNotNull(eventType, "remove eventType is null.");
         Assert.isNotNull(listener, "remove EventListener object is null.");
         EventListener[] eventListener = this.eventListenerMap.get(eventType);
-        if (eventListener == null || eventListener.length == 0)
+        if (ArrayUtil.isBlank(eventListener))
             return;
         eventListener = ArrayUtil.removeInArray(eventListener, listener);
         this.eventListenerMap.put(eventType, eventListener);
