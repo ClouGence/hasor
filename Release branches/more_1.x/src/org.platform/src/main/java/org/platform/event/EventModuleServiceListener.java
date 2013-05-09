@@ -71,12 +71,12 @@ public class EventModuleServiceListener extends AbstractModuleListener {
         if (this.eventManager instanceof ManagerLife)
             ((ManagerLife) this.eventManager).initLife(appContext);
         this.loadListener(appContext);
-        this.eventManager.throwEvent(EventManager.EventManager_Start_Event);
+        this.eventManager.throwEvent(EventManager.OnStart);
         Platform.info("EventManager is started.");
     }
     @Override
     public void destroy(AppContext appContext) {
-        this.eventManager.throwEvent(EventManager.EventManager_Destroy_Event);
+        this.eventManager.throwEvent(EventManager.OnDestroy);
         if (this.eventManager instanceof ManagerLife)
             ((ManagerLife) this.eventManager).destroyLife(appContext);
         Platform.info("EventManager is destroy.");

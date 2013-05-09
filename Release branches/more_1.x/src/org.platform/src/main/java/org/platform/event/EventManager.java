@@ -21,9 +21,9 @@ package org.platform.event;
  */
 public interface EventManager {
     /**EventManager服务启动。*/
-    public static final String EventManager_Start_Event   = "EventManager_Start_Event";
+    public static final String OnStart   = "EventManager_OnStart";
     /**EventManager服务销毁*/
-    public static final String EventManager_Destroy_Event = "EventManager_Destroy_Event";
+    public static final String OnDestroy = "EventManager_OnDestroy";
     //
     //
     /**添加一种类型事件的事件监听器。*/

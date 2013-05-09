@@ -21,17 +21,17 @@ package org.platform.security;
  */
 public interface SecurityEventDefine {
     /**当请求检测URL权限时，在事件中可以操控AuthSession临时赋予路径访问权限。*/
-    public static final String TestURLPermission        = "TestURLPermission";
+    public static final String TestURLPermission        = "Security_TestURLPermission";
     /**登入事件*/
-    public static final String Login                    = "Login_Event";
+    public static final String Login                    = "Security_Login";
     /**登出事件*/
-    public static final String Logout                   = "Logout_Event";
+    public static final String Logout                   = "Security_Logout";
     /**AuthSession被关闭*/
-    public static final String AuthSession_Close        = "AuthSession_Close_Event";
+    public static final String AuthSession_Close        = "Security_AuthSession_Close";
     /**AuthSession被创建*/
-    public static final String AuthSession_New          = "AuthSession_New_Event";
+    public static final String AuthSession_New          = "Security_AuthSession_New";
     /**当前线程激活的AuthSession。*/
-    public static final String AuthSession_Activate     = "AuthSession_Activate_Event";
+    public static final String AuthSession_Activate     = "Security_AuthSession_Activate";
     /**当前线程钝化的AuthSession。*/
-    public static final String AuthSession_Inactivation = "AuthSession_Inactivation_Event";
+    public static final String AuthSession_Inactivation = "Security_AuthSession_Inactivation";
 }
