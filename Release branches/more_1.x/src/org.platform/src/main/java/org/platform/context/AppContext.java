@@ -62,19 +62,10 @@ public interface AppContext {
     public String getCacheDir(String name);
     /**在临时目录下创建一个不重名的临时文件返回，该临时文件会在虚拟机正常退出之后连同其所在目录一同删除。*/
     public File createTempFile() throws IOException;
-    /*----------------------------------------------------------------------*/
-    /**生成一个UUID字符串，32个字符串长度。*/
-    public String genIDBy32();
-    /**生成一个UUID字符串，36个字符串长度。*/
-    public String genIDBy36();
-    /**从时钟服务中获取一个在分布式部署环境里有效的时间。*/
-    public long getSyncTime();
-    /**获取本地时钟*/
-    public long getLocalTime();
     /**
-     * 生成路径算法。
-     * @param number 数字
-     * @param size 每个目录下可以拥有的子目录或文件数目。
-     */
+    * 生成路径算法。
+    * @param number 数字
+    * @param size 每个目录下可以拥有的子目录或文件数目。
+    */
     public String genPath(long number, int size);
 }

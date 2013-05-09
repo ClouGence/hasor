@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import org.more.util.StringUtil;
 import org.platform.Assert;
 import org.platform.binder.BeanInfo;
@@ -202,22 +201,6 @@ public abstract class AbstractAppContext implements AppContext {
         return buffer.toString();
     };
     /*----------------------------------------------------------------------*/
-    @Override
-    public String genIDBy32() {
-        return UUID.randomUUID().toString().replace("-", "");
-    }
-    @Override
-    public String genIDBy36() {
-        return UUID.randomUUID().toString();
-    }
-    @Override
-    public long getSyncTime() {
-        return Clock.getSyncTime();
-    }
-    @Override
-    public long getLocalTime() {
-        return Clock.getLocalTime();
-    }
     @Override
     public String genPath(long number, int size) {
         StringBuffer buffer = new StringBuffer();

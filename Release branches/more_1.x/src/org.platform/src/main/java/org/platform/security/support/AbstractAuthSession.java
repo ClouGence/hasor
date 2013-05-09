@@ -51,7 +51,7 @@ class AbstractAuthSession implements AuthSession {
     public void addPermission(Permission permission) throws SecurityException {
         this.checkClose();/*Check*/
         this.permissionMap.put(permission.getPermissionCode(), permission);
-        this.authSessionData.setLastTime(this.getSecurityContext().getAppContext().getSyncTime());
+        this.authSessionData.setLastTime(System.currentTimeMillis());
     }
     @Override
     public void addPermission(String permissionCode) throws SecurityException {
@@ -59,7 +59,7 @@ class AbstractAuthSession implements AuthSession {
         if (StringUtil.isBlank(permissionCode))
             return;
         this.permissionMap.put(permissionCode, new Permission(permissionCode));
-        this.authSessionData.setLastTime(this.getSecurityContext().getAppContext().getSyncTime());
+        this.authSessionData.setLastTime(System.currentTimeMillis());
     };
     private void checkClose() throws SecurityException {
         if (isClose())
@@ -84,8 +84,8 @@ class AbstractAuthSession implements AuthSession {
             this.userInfo = userInfo;
             this.authSessionData.setUserCode(this.userInfo.getUserCode());//用户标识码
             this.authSessionData.setAuthSystem(authSystem);
-            this.authSessionData.setLoginTime(this.getSecurityContext().getAppContext().getSyncTime());//登陆时间
-            this.authSessionData.setLastTime(this.getSecurityContext().getAppContext().getSyncTime());
+            this.authSessionData.setLoginTime(System.currentTimeMillis());//登陆时间
+            this.authSessionData.setLastTime(System.currentTimeMillis());
             this.reloadPermission();/*重载权限*/
             this.refreshCacheTime();
             Platform.debug("%s :doLogin authSystem=%s ,account=%s ,password=%s", this.sessionID, authSystem, account, password);
@@ -118,8 +118,8 @@ class AbstractAuthSession implements AuthSession {
             this.userInfo = userInfo;
             this.authSessionData.setUserCode(this.userInfo.getUserCode());//用户标识码
             this.authSessionData.setAuthSystem(authSystem);
-            this.authSessionData.setLoginTime(this.getSecurityContext().getAppContext().getSyncTime());//登陆时间
-            this.authSessionData.setLastTime(this.getSecurityContext().getAppContext().getSyncTime());
+            this.authSessionData.setLoginTime(System.currentTimeMillis());//登陆时间
+            this.authSessionData.setLastTime(System.currentTimeMillis());
             this.reloadPermission();/*重载权限*/
             this.refreshCacheTime();
             Platform.debug("%s :doLogin authSystem=%s ,userCode=%s", this.sessionID, authSystem, userCode);
@@ -250,7 +250,7 @@ class AbstractAuthSession implements AuthSession {
                 this.permissionMap.put(per, new Permission(per));
         if (this.authSessionData == null)
             this.authSessionData = sessionData;
-        this.authSessionData.setLastTime(this.getSecurityContext().getAppContext().getSyncTime());
+        this.authSessionData.setLastTime(System.currentTimeMillis());
     };
     @Override
     public synchronized void refreshCacheTime() {
@@ -272,7 +272,7 @@ class AbstractAuthSession implements AuthSession {
         if (perList != null)
             for (Permission per : perList)
                 this.permissionMap.put(per.getPermissionCode(), per);
-        this.authSessionData.setLastTime(this.getSecurityContext().getAppContext().getSyncTime());
+        this.authSessionData.setLastTime(System.currentTimeMillis());
     }
     @Override
     public void removeTempPermission(Permission permission) throws SecurityException {
@@ -280,7 +280,7 @@ class AbstractAuthSession implements AuthSession {
         if (permission == null)
             return;
         this.permissionMap.remove(permission.getPermissionCode());
-        this.authSessionData.setLastTime(this.getSecurityContext().getAppContext().getSyncTime());
+        this.authSessionData.setLastTime(System.currentTimeMillis());
     }
     @Override
     public void removeTempPermission(String permissionCode) throws SecurityException {
@@ -288,6 +288,6 @@ class AbstractAuthSession implements AuthSession {
         if (StringUtil.isBlank(permissionCode))
             return;
         this.permissionMap.remove(permissionCode);
-        this.authSessionData.setLastTime(this.getSecurityContext().getAppContext().getSyncTime());
+        this.authSessionData.setLastTime(System.currentTimeMillis());
     }
 }

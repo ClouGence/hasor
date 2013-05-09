@@ -13,13 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.action._;
+package org.platform.action;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 当action调用结束时会执行该结果处理器进行后续处理。
- * @version : 2011-7-25
+ * 
+ * @version : 2013-5-9
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ResultProcess {
-    /**执行回调处理 */
-    public Object invoke(ActionStack onStack, Object res) throws Throwable;
-};
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.PARAMETER })
+public @interface Var {
+    /**restful风格方法参数映射。*/
+    public String value();
+}
