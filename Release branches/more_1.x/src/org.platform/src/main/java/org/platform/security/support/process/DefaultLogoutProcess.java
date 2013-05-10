@@ -16,8 +16,9 @@
 package org.platform.security.support.process;
 import java.io.IOException;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.platform.Platform;
-import org.platform.context.ViewContext;
 import org.platform.security.AuthSession;
 import org.platform.security.LogoutProcess;
 import org.platform.security.SecurityContext;
@@ -32,8 +33,9 @@ import org.platform.security.SecurityForward;
 public class DefaultLogoutProcess extends AbstractProcess implements LogoutProcess {
     /**处理登出请求*/
     @Override
-    public SecurityForward processLogout(SecurityContext secContext, ViewContext viewContext) throws SecurityException, ServletException, IOException {
-        SecurityDispatcher dispatcher = secContext.getDispatcher(viewContext.getRequestURI());
+    public SecurityForward processLogout(SecurityContext secContext, HttpServletRequest request, HttpServletResponse response) throws SecurityException, ServletException, IOException {
+        String reqPath = request.getRequestURI().substring(request.getContextPath().length());
+        SecurityDispatcher dispatcher = secContext.getDispatcher(reqPath);
         AuthSession[] authSessions = secContext.getCurrentAuthSession();
         for (AuthSession authSession : authSessions) {
             /*将所有已登入的会话全部登出*/

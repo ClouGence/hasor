@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.context.support.config;
+package org.platform.context.support;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.ServletContext;
+import org.more.global.Global;
+import org.more.global.assembler.xml.DefaultXmlProperty;
 import org.more.global.assembler.xml.XmlProperty;
 import org.more.global.assembler.xml.XmlPropertyGlobalFactory;
 import org.more.util.ResourceWatch;
@@ -33,93 +33,118 @@ import org.more.util.StringUtil;
 import org.more.util.map.Properties;
 import org.platform.Assert;
 import org.platform.Platform;
-import org.platform.context.Config;
+import org.platform.context.ContextListener;
 import org.platform.context.SettingListener;
 import org.platform.context.Settings;
 /**
- * ServletContext到ContextConfig的桥
+ * Settings接口的实现，并且提供了对config.xml、static-config.xml、config-mapping.properties文件的解析支持。
+ * 除此之外还提供了对config.xml配置文件的改变监听（该配置文件应当只有一个）。
  * @version : 2013-4-2
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractConfig implements Config {
-    private final String                appSettingsName1    = "config.xml";
-    private final String                appSettingsName2    = "static-config.xml";
-    private final String                appSettingsName3    = "config-mapping.properties";
-    private ServletContext              servletContext      = null;
-    private final List<SettingListener> settingListenerList = new ArrayList<SettingListener>();
+public class PlatformSettings extends Global implements Settings {
+    private final String                appSettingsName1         = "config.xml";
+    private final String                appSettingsName2         = "static-config.xml";
+    private final String                appSettingsName3         = "config-mapping.properties";
+    private final List<ContextListener> contextListener          = new ArrayList<ContextListener>();
+    private final List<SettingListener> settingListenerList      = new ArrayList<SettingListener>();
+    private final List<String>          loadNameSpaceList        = new ArrayList<String>();         //自定义配置文件命名空间。
+    private String                      settingsEncoding         = "utf-8";
+    private boolean                     enableSettingsMonitoring = true;                            //是否启动配置文件改动监听
     //
     //
-    public AbstractConfig(ServletContext servletContext) {
-        this.servletContext = servletContext;
+    //
+    public PlatformSettings() {
+        this.disableCaseSensitive();
+        //1.finalSettings
+        this.loadALLConfig();
+        //2.resourceWatch
+        try {
+            URL configURL = ResourcesUtil.getResource(appSettingsName1);
+            Assert.isNotNull(configURL, "Can't get to " + configURL);
+            this.resourceWatch = new SettingsResourceWatch(configURL.toURI(), 15 * 1000/*15秒检查一次*/);
+            this.resourceWatch.setDaemon(true);
+            this.resourceWatch.start();
+        } catch (Exception e) {
+            Platform.error("resourceWatch start error, on : %s Settings file !%s", appSettingsName1, e);
+        }
+    };
+    //
+    //
+    /**解析全局配置参数，并且返回其{@link XmlProperty}形式对象。*/
+    public XmlProperty getXmlProperty(Enum<?> name) {
+        return this.getToType(name, XmlProperty.class, null);
+    };
+    /**解析全局配置参数，并且返回其{@link XmlProperty}形式对象。*/
+    public XmlProperty getXmlProperty(String name) {
+        return this.getToType(name, XmlProperty.class, null);
+    }
+    /**添加启动监听器。*/
+    public void addContextListener(ContextListener contextListener) {
+        if (this.contextListener.contains(contextListener) == false)
+            this.contextListener.add(contextListener);
+    }
+    /**删除启动监听器。*/
+    public void removeContextListener(ContextListener contextListener) {
+        if (this.contextListener.contains(contextListener) == true)
+            this.contextListener.remove(contextListener);
     }
     @Override
-    public ServletContext getServletContext() {
-        return this.servletContext;
+    public ContextListener[] getContextListeners() {
+        return this.contextListener.toArray(new ContextListener[this.contextListener.size()]);
     }
-    @Override
-    public String getInitParameter(String name) {
-        return this.servletContext.getInitParameter(name);
-    }
-    @Override
-    public Enumeration<String> getInitParameterNames() {
-        return this.servletContext.getInitParameterNames();
-    }
-    /***/
-    public String getSettingsEncoding() {
-        return "utf-8";
-    }
-    @Override
+    /**添加配置文件变更监听器。*/
     public void addSettingsListener(SettingListener settingsListener) {
         if (this.settingListenerList.contains(settingsListener) == false)
             this.settingListenerList.add(settingsListener);
     }
-    @Override
+    /**删除配置文件监听器。*/
     public void removeSettingsListener(SettingListener settingsListener) {
         if (this.settingListenerList.contains(settingsListener) == true)
             this.settingListenerList.remove(settingsListener);
     }
-    /**当重新载入配置文件时*/
-    protected void reLoadConfig(Settings newConfig) {
-        for (SettingListener listener : this.settingListenerList)
-            listener.loadConfig(newConfig);
-    }
-    //
-    //
-    private Settings      globalConfig  = null;
-    private ResourceWatch resourceWatch = null; /*监控程序*/
     @Override
-    public Settings getSettings() {
-        if (this.globalConfig != null)
-            return this.globalConfig;
-        //1.finalSettings
-        Map<String, Object> finalSettings = this.loadALLConfig();
-        //2.resourceWatch
-        if (this.resourceWatch == null) {
-            try {
-                URL configURL = ResourcesUtil.getResource(appSettingsName1);
-                Assert.isNotNull(configURL, "Can't get to " + configURL);
-                this.resourceWatch = new SettingsResourceWatch(configURL.toURI(), 15 * 1000/*15秒检查一次*/, this);
-                this.resourceWatch.setDaemon(true);
-                this.resourceWatch.start();
-            } catch (Exception e) {
-                Platform.error("resourceWatch start error, on : %s Settings file !%s", appSettingsName1, e);
-            }
-        }
-        //3.globalConfig
-        this.globalConfig = new Settings(finalSettings) {};
-        this.globalConfig.disableCaseSensitive();
-        return globalConfig;
+    public SettingListener[] getSettingListeners() {
+        return this.settingListenerList.toArray(new SettingListener[this.settingListenerList.size()]);
     }
-    //
+    /**获取解析配置文件时使用的字符编码。*/
+    public String getSettingsEncoding() {
+        return this.settingsEncoding;
+    }
+    /**设置解析配置文件时使用的字符编码。*/
+    public void setSettingsEncoding(String encoding) {
+        this.settingsEncoding = encoding;
+    }
+    /**获取当载入配置文件时会被解析的命名空间。*/
+    public String[] getLoadNameSpaceList() {
+        return this.loadNameSpaceList.toArray(new String[this.loadNameSpaceList.size()]);
+    }
+    /**添加当载入配置文件时会被解析的命名空间。*/
+    public void addLoadNameSpace(String newLoadNameSpace) {
+        this.loadNameSpaceList.add(newLoadNameSpace);
+    }
+    /**删除当载入配置文件时会被解析的命名空间。*/
+    public void removeLoadNameSpace(String loadNameSpace) {
+        this.loadNameSpaceList.remove(loadNameSpace);
+    }
+    /**返回一个值确定是否启用对config.xml文件的改变监控。*/
+    public boolean isEnableSettingsMonitoring() {
+        return enableSettingsMonitoring;
+    }
+    /**设置一个值确定是否启用对config.xml文件的改变监控。*/
+    public void setEnableSettingsMonitoring(boolean enableSettingsMonitoring) {
+        this.enableSettingsMonitoring = enableSettingsMonitoring;
+    }
+    /*-------------------------------------------------------------------------------------------------------*/
+    private ResourceWatch resourceWatch = null; /*监控程序*/
     /**装载所有配置文件*/
-    protected Map<String, Object> loadALLConfig() {
+    protected void loadALLConfig() {
         HashMap<String, Object> finalSettings = new HashMap<String, Object>();
         this.loadStaticConfig(finalSettings);
         this.loadMainConfig(finalSettings);
         this.loadMappingConfig(finalSettings);
-        return finalSettings;
+        setContainer(finalSettings);
     }
-    //
     /**装载主配置文件动态配置。*/
     protected void loadMainConfig(Map<String, Object> toMap) {
         String encoding = this.getSettingsEncoding();
@@ -133,7 +158,6 @@ public abstract class AbstractConfig implements Config {
             Platform.error("load ‘%s’ error!%s", appSettingsName1, e);
         }
     }
-    //
     /**装载静态配置。*/
     protected void loadStaticConfig(Map<String, Object> toMap) {
         String encoding = this.getSettingsEncoding();
@@ -150,7 +174,6 @@ public abstract class AbstractConfig implements Config {
             Platform.error("load ‘%s’ error!%s", appSettingsName2, e);
         }
     }
-    //
     /**装载配置映射，参数是参照的映射配置。*/
     protected void loadMappingConfig(Map<String, Object> referConfig) {
         try {
@@ -179,10 +202,6 @@ public abstract class AbstractConfig implements Config {
             Platform.error("load ‘%s’ error!%s", appSettingsName3, e);
         }
     }
-    //
-    /**自定义配置文件命名空间。*/
-    protected abstract List<String> loadNameSpaceDefinition();
-    //
     /**loadConfig装载配置*/
     private void loadConfig(URI configURI, String encoding, Map<String, Object> loadTo) throws IOException {
         Platform.info("PlatformSettings loadConfig Xml namespace : %s", configURI);
@@ -192,9 +211,8 @@ public abstract class AbstractConfig implements Config {
             xmlg = new XmlPropertyGlobalFactory();
             xmlg.setIgnoreRootElement(true);/*忽略根*/
             /*载入自定义的命名空间支持。*/
-            List<String> loadNameSpaceDefinition = this.loadNameSpaceDefinition();
-            if (loadNameSpaceDefinition != null && loadNameSpaceDefinition.isEmpty() == false)
-                for (String loadNS : loadNameSpaceDefinition)
+            if (this.loadNameSpaceList != null && this.loadNameSpaceList.isEmpty() == false)
+                for (String loadNS : this.loadNameSpaceList)
                     if (StringUtil.isBlank(loadNS) == false)
                         xmlg.getLoadNameSpace().add(loadNS);
             //
@@ -221,27 +239,34 @@ public abstract class AbstractConfig implements Config {
             Platform.warning("namespcae [%s] no support!", configURI);
         }
     }
-    //
+    /**当重新载入配置文件时*/
+    protected void reLoadConfig() {
+        for (SettingListener listener : this.settingListenerList)
+            listener.loadConfig(this);
+    }
+    /*-------------------------------------------------------------------------------------------------------*/
     /***/
     private class SettingsResourceWatch extends ResourceWatch {
-        private AbstractConfig platformConfig = null;
-        public SettingsResourceWatch(URI uri, int watchStepTime, AbstractConfig platformConfig) {
+        public SettingsResourceWatch(URI uri, int watchStepTime) {
             super(uri, watchStepTime);
-            this.platformConfig = platformConfig;
         }
-        @Override
         public void reload(URI resourceURI) throws IOException {
-            Map<String, Object> newConfig = this.platformConfig.loadALLConfig();
-            this.platformConfig.getSettings().setContainer(newConfig);
-            this.platformConfig.reLoadConfig(this.platformConfig.getSettings());
+            if (enableSettingsMonitoring == false)
+                return;
+            loadALLConfig();
+            reLoadConfig();
         }
-        @Override
         public long lastModify(URI resourceURI) throws IOException {
             if ("file".equals(resourceURI.getScheme()) == true)
                 return new File(resourceURI).lastModified();
             return 0;
         }
-        @Override
         public void firstLoad(URI resourceURI) throws IOException {}
+    }
+    /***/
+    private class MergeDefaultXmlProperty extends DefaultXmlProperty {
+        public MergeDefaultXmlProperty(String elementName) {
+            super(elementName);
+        }
     }
 }

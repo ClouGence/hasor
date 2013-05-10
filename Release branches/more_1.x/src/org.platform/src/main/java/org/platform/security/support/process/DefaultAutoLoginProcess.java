@@ -16,10 +16,10 @@
 package org.platform.security.support.process;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.more.util.StringUtil;
 import org.platform.Platform;
-import org.platform.context.ViewContext;
 import org.platform.security.AuthSession;
 import org.platform.security.AutoLoginProcess;
 import org.platform.security.Digest;
@@ -34,7 +34,7 @@ import org.platform.security.support.process.CookieDataUtil.CookieUserData;
 public class DefaultAutoLoginProcess extends AbstractProcess implements AutoLoginProcess {
     /**写入会话数据。*/
     /**写入会话数据。*/
-    public void writeCookie(SecurityContext secContext, AuthSession[] authSessions, ViewContext viewContext) throws SecurityException {
+    public void writeCookie(SecurityContext secContext, AuthSession[] authSessions, HttpServletRequest request, HttpServletResponse response) throws SecurityException {
         //
         if (this.settings.isCookieEncryptionEnable() == false)
             return;
@@ -70,14 +70,14 @@ public class DefaultAutoLoginProcess extends AbstractProcess implements AutoLogi
         if (StringUtil.isBlank(cookieDomain) == false)
             cookie.setDomain(cookieDomain);
         //3.写入响应流
-        viewContext.getHttpResponse().addCookie(cookie);
+        response.addCookie(cookie);
     }
     /**恢复权限*/
-    public AuthSession[] recoverCookie(SecurityContext secContext, ViewContext viewContext) throws SecurityException {
+    public AuthSession[] recoverCookie(SecurityContext secContext, HttpServletRequest request, HttpServletResponse response) throws SecurityException {
         //1.恢复会话
-        boolean recoverMark = this.recoverAuthSession4HttpSession(secContext, viewContext.getHttpSession(true));
+        boolean recoverMark = this.recoverAuthSession4HttpSession(secContext, request.getSession(true));
         if (recoverMark == false)
-            recoverMark = this.recoverAuthSession4Cookie(secContext, viewContext.getHttpRequest());
+            recoverMark = this.recoverAuthSession4Cookie(secContext, request);
         if (recoverMark == true)
             return secContext.getCurrentAuthSession();
         //2.处理来宾账户

@@ -28,9 +28,8 @@ import org.more.util.StringUtil;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
-import org.platform.context.Config;
+import org.platform.context.ContextListener;
 import org.platform.context.InitListener;
-import org.platform.context.support.AbstractModuleListener;
 import org.platform.icache.Cache;
 import org.platform.icache.CacheManager;
 import org.platform.icache.DefaultCache;
@@ -50,7 +49,7 @@ import com.google.inject.name.Names;
  * @author 赵永春 (zyc@byshell.org)
  */
 @InitListener(displayName = "CacheModuleServiceListener", description = "org.platform.icache软件包功能支持。", startIndex = -100)
-public class CacheModuleServiceListener extends AbstractModuleListener {
+public class CacheModuleListener implements ContextListener {
     private CacheManager  cacheManager = null;
     private CacheSettings settings     = null;
     /**初始化.*/
@@ -70,8 +69,7 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
     }
     @Override
     public void initialized(AppContext appContext) {
-        Config systemConfig = appContext.getInitContext().getConfig();
-        systemConfig.addSettingsListener(this.settings);
+        appContext.getSettings().addSettingsListener(this.settings);
         //
         this.cacheManager = appContext.getInstance(CacheManager.class);
         this.cacheManager.initManager(appContext);
@@ -79,9 +77,7 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
     }
     @Override
     public void destroy(AppContext appContext) {
-        Config systemConfig = appContext.getInitContext().getConfig();
-        systemConfig.removeSettingsListener(this.settings);
-        //
+        appContext.getSettings().removeSettingsListener(this.settings);
         this.cacheManager.destroyManager(appContext);
     }
     //
@@ -134,18 +130,18 @@ public class CacheModuleServiceListener extends AbstractModuleListener {
         Platform.info("begin loadCache...");
         //1.获取
         Set<Class<?>> cacheSet = event.getClassSet(Cache.class);
-        List<Class<ICache>> cacheList = new ArrayList<Class<ICache>>();
+        List<Class<ICache<?>>> cacheList = new ArrayList<Class<ICache<?>>>();
         for (Class<?> cls : cacheSet) {
             if (ICache.class.isAssignableFrom(cls) == false) {
                 Platform.warning("loadCache : not implemented ICache of type %s", cls);
             } else
-                cacheList.add((Class<ICache>) cls);
+                cacheList.add((Class<ICache<?>>) cls);
         }
         //3.注册服务
         long defaultCacheIndex = Long.MAX_VALUE;
         Binder binder = event.getGuiceBinder();
         Map<String, Integer> cacheIndex = new HashMap<String, Integer>();
-        for (Class<ICache> cacheType : cacheList) {
+        for (Class<ICache<?>> cacheType : cacheList) {
             Cache cacheAnno = cacheType.getAnnotation(Cache.class);
             for (String cacheName : cacheAnno.value()) {
                 Platform.info(cacheName + " at Cache of type " + Platform.logString(cacheType));

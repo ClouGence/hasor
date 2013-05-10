@@ -16,8 +16,9 @@
 package org.platform.security.support.process;
 import java.io.IOException;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.platform.Platform;
-import org.platform.context.ViewContext;
 import org.platform.security.AuthSession;
 import org.platform.security.LoginProcess;
 import org.platform.security.SecurityContext;
@@ -32,12 +33,13 @@ import org.platform.security.SecurityForward;
 public class DefaultLoginProcess extends AbstractProcess implements LoginProcess {
     /**处理登入请求。*/
     @Override
-    public SecurityForward processLogin(SecurityContext secContext, ViewContext viewContext) throws SecurityException, ServletException, IOException {
-        SecurityDispatcher dispatcher = secContext.getDispatcher(viewContext.getRequestURI());
+    public SecurityForward processLogin(SecurityContext secContext, HttpServletRequest request, HttpServletResponse response) throws SecurityException, ServletException, IOException {
+        String reqPath = request.getRequestURI().substring(request.getContextPath().length());
+        SecurityDispatcher dispatcher = secContext.getDispatcher(reqPath);
         //1.获得登入相关信息
-        String account = viewContext.getHttpRequest().getParameter(this.settings.getAccountField());
-        String password = viewContext.getHttpRequest().getParameter(this.settings.getPasswordField());
-        String formAuth = viewContext.getHttpRequest().getParameter(this.settings.getAuthField());
+        String account = request.getParameter(this.settings.getAccountField());
+        String password = request.getParameter(this.settings.getPasswordField());
+        String formAuth = request.getParameter(this.settings.getAuthField());
         //3.执行登入
         AuthSession authSession = secContext.getCurrentBlankAuthSession();
         if (authSession == null)

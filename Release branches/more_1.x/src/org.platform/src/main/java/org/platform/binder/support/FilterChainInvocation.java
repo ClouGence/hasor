@@ -19,7 +19,6 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import org.platform.context.ViewContext;
 /**
  * 
  * @version : 2013-4-13
@@ -29,22 +28,20 @@ class FilterChainInvocation implements FilterChain {
     private final FilterDefinition[]     filterDefinitions;
     private final FilterChain            proceedingChain;
     private final ManagedServletPipeline servletPipeline;
-    private final ViewContext            viewContext;
     private int                          index = -1;
-    public FilterChainInvocation(ViewContext viewContext, FilterDefinition[] filterDefinitions, ManagedServletPipeline servletPipeline, FilterChain proceedingChain) {
+    public FilterChainInvocation(FilterDefinition[] filterDefinitions, ManagedServletPipeline servletPipeline, FilterChain proceedingChain) {
         this.filterDefinitions = filterDefinitions;
         this.servletPipeline = servletPipeline;
         this.proceedingChain = proceedingChain;
-        this.viewContext = viewContext;
     }
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse) throws IOException, ServletException {
         index++;
         //dispatch down the chain while there are more filters
         if (index < filterDefinitions.length) {
-            filterDefinitions[index].doFilter(this.viewContext, servletRequest, servletResponse, this);
+            filterDefinitions[index].doFilter(servletRequest, servletResponse, this);
         } else {
             //we've reached the end of the filterchain, let's try to dispatch to a servlet
-            final boolean serviced = servletPipeline.service(this.viewContext, servletRequest, servletResponse);
+            final boolean serviced = servletPipeline.service(servletRequest, servletResponse);
             //dispatch to the normal filter chain only if one of our servlets did not match
             if (!serviced) {
                 proceedingChain.doFilter(servletRequest, servletResponse);

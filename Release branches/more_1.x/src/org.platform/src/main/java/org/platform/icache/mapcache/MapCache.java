@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import org.platform.context.AppContext;
-import org.platform.context.Config;
 import org.platform.icache.Cache;
 import org.platform.icache.DefaultCache;
 import org.platform.icache.ICache;
@@ -65,10 +64,9 @@ public class MapCache<T> extends Thread implements ICache<T> {
     }
     @Override
     public synchronized void initCache(AppContext appContext) {
-        Config config = appContext.getInitContext().getConfig();
-        this.settings.loadConfig(config.getSettings());
+        this.settings.loadConfig(appContext.getSettings());
         /*加入，配置文件监听*/
-        config.addSettingsListener(this.settings);
+        appContext.getSettings().addSettingsListener(this.settings);
         this.exitThread = false;
         this.setDaemon(true);
         this.start();
@@ -77,7 +75,7 @@ public class MapCache<T> extends Thread implements ICache<T> {
     public synchronized void destroy(AppContext appContext) {
         this.exitThread = true;
         /*撤销，配置文件监听*/
-        appContext.getInitContext().getConfig().removeSettingsListener(settings);
+        appContext.getSettings().removeSettingsListener(settings);
         this.clear();
     }
     @Override

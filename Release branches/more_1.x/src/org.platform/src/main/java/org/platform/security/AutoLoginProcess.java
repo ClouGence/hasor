@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 package org.platform.security;
-import org.platform.context.ViewContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 /**
  * 
  * @version : 2013-4-25
@@ -22,7 +23,7 @@ import org.platform.context.ViewContext;
  */
 public interface AutoLoginProcess {
     /**写入会话数据。*/
-    public void writeCookie(SecurityContext secContext, AuthSession[] authSessions, ViewContext viewContext) throws SecurityException;
+    public void writeCookie(SecurityContext secContext, AuthSession[] authSessions, HttpServletRequest request, HttpServletResponse response) throws SecurityException;
     /**恢复权限*/
-    public AuthSession[] recoverCookie(SecurityContext secContext, ViewContext viewContext) throws SecurityException;
+    public AuthSession[] recoverCookie(SecurityContext secContext, HttpServletRequest request, HttpServletResponse response) throws SecurityException;
 }

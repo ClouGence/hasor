@@ -16,7 +16,8 @@
 package org.platform.security;
 import java.io.IOException;
 import javax.servlet.ServletException;
-import org.platform.context.ViewContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 /***
  * 执行最终跳转的跳转对象
  * @version : 2013-5-8
@@ -37,5 +38,5 @@ public interface SecurityForward {
     /**获取跳转类型*/
     public ForwardType getForwardType();
     /**执行跳转*/
-    public void forward(ViewContext viewContext) throws IOException, ServletException;
+    public void forward(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException;
 }

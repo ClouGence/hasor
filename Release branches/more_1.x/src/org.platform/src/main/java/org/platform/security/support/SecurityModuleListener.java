@@ -28,9 +28,8 @@ import org.more.util.StringUtil;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
-import org.platform.context.Config;
+import org.platform.context.ContextListener;
 import org.platform.context.InitListener;
-import org.platform.context.support.AbstractModuleListener;
 import org.platform.security.AuthSession;
 import org.platform.security.AutoLoginProcess;
 import org.platform.security.ISecurityAccess;
@@ -45,7 +44,7 @@ import org.platform.security.SecurityAuth;
 import org.platform.security.SecurityContext;
 import org.platform.security.SecurityQuery;
 import org.platform.security.TestURLPermissionProcess;
-import org.platform.security.support.impl.DefaultSecurityContext;
+import org.platform.security.support.impl.InternalSecurityContext;
 import org.platform.security.support.process.DefaultAutoLoginProcess;
 import org.platform.security.support.process.DefaultLoginProcess;
 import org.platform.security.support.process.DefaultLogoutProcess;
@@ -59,8 +58,8 @@ import com.google.inject.matcher.AbstractMatcher;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@InitListener(displayName = "SecurityModuleServiceListener", description = "org.platform.security软件包功能支持。", startIndex = -100)
-public class SecurityModuleServiceListener extends AbstractModuleListener {
+@InitListener(displayName = "SecurityModuleServiceListener", description = "org.platform.security软件包功能支持。", startIndex = -90)
+public class SecurityModuleListener implements ContextListener {
     private SecurityContext         secService  = null;
     private SecuritySessionListener secListener = null;
     private SecuritySettings        settings    = null;
@@ -85,7 +84,7 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
         this.loadSecurityAccess(event);
         /*绑定核心功能实现类。*/
         binder.bind(SecuritySettings.class).toInstance(this.settings);//通过Guice
-        binder.bind(SecurityContext.class).to(DefaultSecurityContext.class).asEagerSingleton();
+        binder.bind(SecurityContext.class).to(InternalSecurityContext.class).asEagerSingleton();
         binder.bind(SecurityQuery.class).to(DefaultSecurityQuery.class);
         /**/
         binder.bind(LoginProcess.class).to(DefaultLoginProcess.class);/*登入过程*/
@@ -95,18 +94,16 @@ public class SecurityModuleServiceListener extends AbstractModuleListener {
     }
     @Override
     public void initialized(AppContext appContext) {
-        Config systemConfig = appContext.getInitContext().getConfig();
-        systemConfig.addSettingsListener(this.settings);
+        appContext.getSettings().addSettingsListener(this.settings);
         //
-        this.secService = appContext.getInstance(DefaultSecurityContext.class);
+        this.secService = appContext.getInstance(InternalSecurityContext.class);
         this.secService.initSecurity(appContext);
         //
         Platform.info("online ->> security is %s", (this.settings.isEnable() ? "enable." : "disable."));
     }
     @Override
     public void destroy(AppContext appContext) {
-        Config systemConfig = appContext.getInitContext().getConfig();
-        systemConfig.removeSettingsListener(this.settings);
+        appContext.getSettings().removeSettingsListener(this.settings);
         //
         this.secService.destroySecurity(appContext);
     }

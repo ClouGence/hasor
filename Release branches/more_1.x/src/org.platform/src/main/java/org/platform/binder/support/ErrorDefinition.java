@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 package org.platform.binder.support;
-import java.util.Enumeration;
 import java.util.Map;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.more.util.Iterators;
 import org.platform.binder.ErrorHook;
 import org.platform.context.AppContext;
-import org.platform.context.Config;
-import org.platform.context.SettingListener;
-import org.platform.context.Settings;
-import org.platform.context.ViewContext;
-import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 /**
@@ -41,6 +33,7 @@ class ErrorDefinition implements Provider<ErrorDefinition> {
     private ErrorHook                  errorHookInstance = null;
     private Map<String, String>        initParams        = null;
     private Class<? extends Throwable> errorType         = null;
+    private AppContext                 appContext        = null;
     //
     //
     public ErrorDefinition(Class<? extends Throwable> errorType, Key<? extends ErrorHook> errorHookKey, Map<String, String> initParams, ErrorHook errorHook) {
@@ -60,9 +53,9 @@ class ErrorDefinition implements Provider<ErrorDefinition> {
     public ErrorDefinition get() {
         return this;
     }
-    protected ErrorHook getTarget(Injector injector) {
+    protected ErrorHook getTarget(AppContext appContext) {
         if (this.errorHookInstance == null)
-            this.errorHookInstance = injector.getInstance(this.errorHookKey);
+            this.errorHookInstance = appContext.getGuice().getInstance(this.errorHookKey);
         return this.errorHookInstance;
     }
     @Override
@@ -75,47 +68,26 @@ class ErrorDefinition implements Provider<ErrorDefinition> {
     /*--------------------------------------------------------------------------------------------------------*/
     /**/
     public void init(final AppContext appContext) throws ServletException {
-        ErrorHook errorHook = this.getTarget(appContext.getGuice());
+        this.appContext = appContext;
+        ErrorHook errorHook = this.getTarget(appContext);
         if (errorHook == null)
             return;
         final Map<String, String> initParams = this.getInitParams();
-        errorHook.init(appContext, new Config() {
-            public ServletContext getServletContext() {
-                return appContext.getInitContext().getServletContext();
-            }
-            public String getInitParameter(String s) {
-                return initParams.get(s);
-            }
-            public Enumeration<String> getInitParameterNames() {
-                return Iterators.asEnumeration(initParams.keySet().iterator());
-            }
-            @Override
-            public Settings getSettings() {
-                return appContext.getSettings();
-            }
-            @Override
-            public void addSettingsListener(SettingListener settingsListener) {
-                appContext.getInitContext().getConfig().addSettingsListener(settingsListener);
-            }
-            @Override
-            public void removeSettingsListener(SettingListener settingsListener) {
-                appContext.getInitContext().getConfig().removeSettingsListener(settingsListener);
-            }
-        });
+        errorHook.init(appContext);
     }
     /**/
-    public boolean doError(ViewContext viewContext, ServletRequest request, ServletResponse response, Throwable error) throws Throwable {
+    public boolean doError(ServletRequest request, ServletResponse response, Throwable error) throws Throwable {
         boolean serve = this.matchesError(error);
         if (serve == true) {
-            ErrorHook hook = this.getTarget(viewContext.getGuice());
+            ErrorHook hook = this.getTarget(this.appContext);
             if (hook != null)
-                hook.doError(viewContext, request, response, error);
+                hook.doError(request, response, error);
         }
         return serve;
     }
     /**/
     public void destroy(AppContext appContext) {
-        ErrorHook errorHook = this.getTarget(appContext.getGuice());
+        ErrorHook errorHook = this.getTarget(this.appContext);
         if (errorHook == null)
             return;
         errorHook.destroy(appContext);

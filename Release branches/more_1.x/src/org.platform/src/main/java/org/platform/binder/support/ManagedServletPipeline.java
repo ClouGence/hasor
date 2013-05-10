@@ -24,8 +24,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+import org.more.webui.context.ViewContext;
 import org.platform.context.AppContext;
-import org.platform.context.ViewContext;
 import com.google.inject.Binding;
 import com.google.inject.Injector;
 import com.google.inject.TypeLiteral;
@@ -63,10 +63,10 @@ class ManagedServletPipeline {
     }
     //
     //
-    public boolean service(ViewContext viewContext, ServletRequest servletRequest, ServletResponse servletResponse) throws IOException, ServletException {
+    public boolean service(ServletRequest servletRequest, ServletResponse servletResponse) throws IOException, ServletException {
         //stop at the first matching servlet and service
         for (ServletDefinition servletDefinition : servletDefinitions) {
-            if (servletDefinition.service(viewContext, servletRequest, servletResponse)) {
+            if (servletDefinition.service(servletRequest, servletResponse)) {
                 return true;
             }
         }
@@ -87,7 +87,7 @@ class ManagedServletPipeline {
      * @return Returns a request dispatcher wrapped with a servlet mapped to
      * the given path or null if no mapping was found.
      */
-    RequestDispatcher getRequestDispatcher(final ViewContext viewContext, String path) {
+    RequestDispatcher getRequestDispatcher(String path) {
         final String newRequestUri = path;
         // TODO(dhanji): check servlet spec to see if the following is legal or not.
         // Need to strip query string if requested...
@@ -111,7 +111,7 @@ class ManagedServletPipeline {
                         servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
                         // now dispatch to the servlet
                         try {
-                            servletDefinition.service(viewContext, requestToProcess, servletResponse);
+                            servletDefinition.service(requestToProcess, servletResponse);
                         } finally {
                             servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
                         }
@@ -120,7 +120,7 @@ class ManagedServletPipeline {
                         servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
                         // route to the target servlet
                         try {
-                            servletDefinition.service(viewContext, servletRequest, servletResponse);
+                            servletDefinition.service(servletRequest, servletResponse);
                         } finally {
                             servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
                         }

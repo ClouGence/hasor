@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.context.startup;
+package org.platform.context.support;
 import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -28,8 +28,6 @@ import org.platform.Assert;
 import org.platform.Platform;
 import org.platform.binder.FilterPipeline;
 import org.platform.context.AppContext;
-import org.platform.context.ViewContext;
-import org.platform.context.support.AbstractViewContext;
 /**
  * 入口Filter
  * @version : 2013-3-25
@@ -85,20 +83,12 @@ public class RuntimeFilter implements Filter {
     //
     /**执行FilterPipeline*/
     private void processFilterPipeline(HttpServletRequest httpReq, HttpServletResponse httpRes, FilterChain chain) throws IOException, ServletException {
-        ViewContext viewContext = this.createViewContext(httpReq, httpRes);
-        AbstractViewContext.setViewContext(viewContext);
-        this.filterPipeline.dispatch(viewContext, httpReq, httpRes, chain);
-        AbstractViewContext.cleanViewContext();
+        this.filterPipeline.dispatch(httpReq, httpRes, chain);
     }
     //
     /**获取{@link AppContext}接口。*/
     protected final AppContext getAppContext() {
         return appContext;
-    }
-    //
-    /**创建{@link ViewContext}对象。*/
-    protected ViewContext createViewContext(HttpServletRequest httpReq, HttpServletResponse httpRes) {
-        return new AbstractViewContext(this.appContext, httpReq, httpRes) {};
     }
     //
     /**在filter请求处理之前。*/

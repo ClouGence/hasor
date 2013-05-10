@@ -14,56 +14,49 @@
  * limitations under the License.
  */
 package org.platform.binder.support;
+import static org.platform.PlatformConfig.Platform_LoadPackages;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import org.more.util.ArrayUtil;
+import org.more.util.ClassUtil;
 import org.more.util.StringUtil;
-import org.platform.Assert;
 import org.platform.binder.ApiBinder;
 import org.platform.binder.FilterPipeline;
 import org.platform.binder.SessionListenerPipeline;
-import org.platform.context.InitContext;
-import org.platform.context.SettingListener;
 import org.platform.context.Settings;
 import com.google.inject.AbstractModule;
+import com.google.inject.Binder;
 /**
- * 该类是{@link ApiBinder}接口的抽象实现。
+ * 该类是{@link ApiBinder}接口实现。
  * @version : 2013-4-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractApiBinder extends AbstractModule implements ApiBinder {
-    private InitContext            initContext            = null;
-    private Map<String, Object>    extData                = null;
+class InternalApiBinder extends AbstractModule implements ApiBinder {
+    private Settings               settings               = null;
+    private Object                 context                = null;
+    private Binder                 guiceBinder            = null;
     private BeanInfoModuleBuilder  beanInfoModuleBuilder  = new BeanInfoModuleBuilder(); /*Beans*/
     private FiltersModuleBuilder   filterModuleBinder     = new FiltersModuleBuilder();  /*Filters*/
     private ServletsModuleBuilder  servletModuleBinder    = new ServletsModuleBuilder(); /*Servlets*/
     private ErrorsModuleBuilder    errorsModuleBuilder    = new ErrorsModuleBuilder();   /*Errors*/
     private ListenerBindingBuilder listenerBindingBuilder = new ListenerBindingBuilder(); /*Listener*/
     //
-    /**构建InitEvent对象。*/
-    protected AbstractApiBinder(InitContext initContext) {
-        Assert.isNotNull(initContext, "param initContext is null.");
-        this.initContext = initContext;
+    protected InternalApiBinder(Settings settings, Object context, Binder guiceBinder) {
+        this.settings = settings;
+        this.context = context;
+        this.guiceBinder = guiceBinder;
     }
     @Override
-    public InitContext getInitContext() {
-        return initContext;
+    public Binder getGuiceBinder() {
+        return this.guiceBinder;
     }
-    /**获取配置信息*/
+    @Override
     public Settings getSettings() {
-        return this.initContext.getConfig().getSettings();
-    };
-    /**添加配置文件监听器*/
-    public void addSettingsListener(SettingListener settingListener) {
-        this.initContext.getConfig().addSettingsListener(settingListener);
+        return settings;
     }
-    /**获取用于携带参数的数据。*/
-    public Map<String, Object> getExtData() {
-        if (this.extData == null)
-            this.extData = new HashMap<String, Object>();
-        return this.extData;
+    @Override
+    public Object getContext() {
+        return context;
     }
     @Override
     public FilterBindingBuilder filter(String urlPattern, String... morePatterns) {
@@ -93,7 +86,11 @@ public abstract class AbstractApiBinder extends AbstractModule implements ApiBin
     }
     @Override
     public Set<Class<?>> getClassSet(Class<?> featureType) {
-        return this.initContext.getClassSet(featureType);
+        if (featureType == null)
+            return null;
+        String loadPackages = this.getSettings().getString(Platform_LoadPackages);
+        String[] spanPackage = loadPackages.split(",");
+        return ClassUtil.getClassSet(spanPackage, featureType);
     }
     @Override
     public BeanBindingBuilder newBean(String beanName) {
@@ -112,8 +109,6 @@ public abstract class AbstractApiBinder extends AbstractModule implements ApiBin
         this.bind(ManagedErrorPipeline.class).asEagerSingleton();
         this.bind(ManagedServletPipeline.class).asEagerSingleton();
         this.bind(FilterPipeline.class).to(ManagedFilterPipeline.class).asEagerSingleton();
-        //
-        this.bind(InitContext.class).toInstance(this.initContext);
         this.bind(SessionListenerPipeline.class).to(ManagedSessionListenerPipeline.class).asEagerSingleton();
     }
 }

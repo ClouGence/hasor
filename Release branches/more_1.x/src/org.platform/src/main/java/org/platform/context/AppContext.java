@@ -16,6 +16,7 @@
 package org.platform.context;
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 import org.platform.binder.BeanInfo;
 import com.google.inject.Injector;
 /**
@@ -24,12 +25,18 @@ import com.google.inject.Injector;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface AppContext {
+    /**启动*/
+    public void start();
+    /**销毁方法。*/
+    public void destroyed();
+    /**获取上下文*/
+    public Object getContext();
     /**获取系统启动时间*/
     public long getAppStartTime();
     /**获取应用程序配置。*/
     public Settings getSettings();
-    /**获取初始化上下文*/
-    public InitContext getInitContext();
+    /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
+    public Set<Class<?>> getClassSet(Class<?> featureType);
     /**通过类型创建该类实例，使用guice*/
     public <T> T getInstance(Class<T> beanType);
     //    /**通过名称创建bean实例，使用guice。*/
@@ -64,8 +71,8 @@ public interface AppContext {
     public File createTempFile() throws IOException;
     /**
     * 生成路径算法。
-    * @param number 数字
-    * @param size 每个目录下可以拥有的子目录或文件数目。
+    * @param target 目标
+    * @param dirSize 每个目录下可以拥有的子目录或文件数目。
     */
     public String genPath(long number, int size);
 }

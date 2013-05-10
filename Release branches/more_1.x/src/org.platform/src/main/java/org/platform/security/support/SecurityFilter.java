@@ -27,8 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.platform.Assert;
 import org.platform.Platform;
 import org.platform.context.AppContext;
-import org.platform.context.ViewContext;
-import org.platform.context.startup.RuntimeListener;
+import org.platform.context.support.RuntimeListener;
 import org.platform.security.AuthSession;
 import org.platform.security.AutoLoginProcess;
 import org.platform.security.LoginProcess;
@@ -74,15 +73,15 @@ class SecurityFilter implements Filter {
     public void destroy() {}
     //
     /***/
-    private void writeAuthSession(ViewContext viewContext, boolean reWriteCookie) throws SecurityException {
+    private void writeAuthSession(HttpServletRequest request, HttpServletResponse response, boolean reWriteCookie) throws SecurityException {
         AuthSession[] authSessions = this.secContext.getCurrentAuthSession();
         //1.写入HttpSession
         StringBuilder authSessionIDs = new StringBuilder("");
         for (AuthSession authSession : authSessions)
             authSessionIDs.append(authSession.getSessionID() + ",");
-        viewContext.getHttpSession(true).setAttribute(AuthSession.HttpSessionAuthSessionSetName, authSessionIDs.toString());
+        request.getSession(true).setAttribute(AuthSession.HttpSessionAuthSessionSetName, authSessionIDs.toString());
         if (reWriteCookie == true)
-            this.autoLoginProcess.recoverCookie(this.secContext, viewContext);
+            this.autoLoginProcess.recoverCookie(this.secContext, request, response);
     }
     //
     /***/
@@ -93,41 +92,48 @@ class SecurityFilter implements Filter {
             return;
         }
         /*执行处理*/
-        this.doSecurityFilter((HttpServletRequest) request, (HttpServletResponse) response, chain);
+        try {
+            this.doSecurityFilter((HttpServletRequest) request, (HttpServletResponse) response, chain);
+        } catch (IOException e) {
+            throw e;
+        } catch (ServletException e) {
+            throw e;
+        }
         /*钝化线程的AuthSession，并且刷新它们*/
-        AuthSession[] authSessions = secContext.getCurrentAuthSession();
-        for (AuthSession authSession : authSessions) {
-            secContext.inactivationAuthSession(authSession.getSessionID()); /*钝化AuthSession*/
-            authSession.refreshCacheTime();/*刷新缓存中的数据*/
+        finally {
+            AuthSession[] authSessions = secContext.getCurrentAuthSession();
+            for (AuthSession authSession : authSessions) {
+                secContext.inactivationAuthSession(authSession.getSessionID()); /*钝化AuthSession*/
+                authSession.refreshCacheTime();/*刷新缓存中的数据*/
+            }
         }
     }
     //
     /***/
-    public void doSecurityFilter(HttpServletRequest httpRequest, HttpServletResponse httpResponse, FilterChain chain) throws IOException, ServletException {
-        ViewContext viewContext = ViewContext.currentViewContext();
+    public void doSecurityFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         //1.恢复会话
         try {
-            this.autoLoginProcess.recoverCookie(secContext, viewContext);
-            this.writeAuthSession(viewContext, false);
+            this.autoLoginProcess.recoverCookie(secContext, request, response);
+            this.writeAuthSession(request, response, false);
         } catch (SecurityException e) {
             Platform.error("recover AuthSession failure!%s", e);
         }
         //2.请求处理
-        String reqPath = viewContext.getRequestURI();
+        String reqPath = request.getRequestURI().substring(request.getContextPath().length());
         if (reqPath.endsWith(this.settings.getLoginURL()) == true) {
             /*A.登入*/
-            SecurityForward forward = this.loginSecurityProcess.processLogin(this.secContext, viewContext);
-            this.writeAuthSession(viewContext, true);
+            SecurityForward forward = this.loginSecurityProcess.processLogin(this.secContext, request, response);
+            this.writeAuthSession(request, response, true);
             if (forward != null)
-                forward.forward(viewContext);//跳转地址
+                forward.forward(request, response);//跳转地址
             return;
         }
         if (reqPath.endsWith(this.settings.getLogoutURL()) == true) {
             /*B.登出*/
-            SecurityForward forward = this.logoutSecurityProcess.processLogout(this.secContext, viewContext);
-            this.writeAuthSession(viewContext, true);
+            SecurityForward forward = this.logoutSecurityProcess.processLogout(this.secContext, request, response);
+            this.writeAuthSession(request, response, true);
             if (forward != null)
-                forward.forward(viewContext);//跳转地址
+                forward.forward(request, response);//跳转地址
             return;
         }
         //3.访问请求
@@ -136,17 +142,18 @@ class SecurityFilter implements Filter {
             if (this.secContext instanceof AbstractSecurityContext) {
                 ((AbstractSecurityContext) this.secContext).throwEvent(SecurityEventDefine.TestURLPermission, reqPath, authSessions);/*抛出事件*/
             }
-            boolean res = this.urlPermissionProcess.testURL(this.secContext, authSessions, viewContext);
+            boolean res = this.urlPermissionProcess.testURL(this.secContext, authSessions, request, response);
             if (res == false)
                 throw new PermissionException(reqPath);
-            chain.doFilter(httpRequest, httpResponse);
+            chain.doFilter(request, response);
         } catch (PermissionException e) {
             Platform.debug("testPermission failure! uri=%s%s", reqPath, e);/*没有权限*/
             SecurityDispatcher dispatcher = this.secContext.getDispatcher(reqPath);
             if (dispatcher != null)
-                dispatcher.forwardFailure(e).forward(viewContext);
-            else
-                e.printStackTrace(httpResponse.getWriter());
+                dispatcher.forwardFailure(e).forward(request, response);
+            else {
+                e.printStackTrace(response.getWriter());
+            }
         }
     }
 }

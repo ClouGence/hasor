@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.platform.context.support;
+import static org.platform.PlatformConfig.Platform_LoadPackages;
 import static org.platform.PlatformConfig.Workspace_CacheDir;
 import static org.platform.PlatformConfig.Workspace_CacheDir_Absolute;
 import static org.platform.PlatformConfig.Workspace_DataDir;
@@ -25,44 +26,33 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import org.more.util.ClassUtil;
 import org.more.util.StringUtil;
-import org.platform.Assert;
 import org.platform.binder.BeanInfo;
 import org.platform.context.AppContext;
-import org.platform.context.InitContext;
-import org.platform.context.Settings;
-import org.platform.context.support.clock.Clock;
 import com.google.inject.Binding;
-import com.google.inject.Injector;
 import com.google.inject.TypeLiteral;
 /**
- * {@link AppContext}接口的实现类。
+ * {@link AppContext}接口的抽象实现类。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractAppContext implements AppContext {
-    private Injector              guice       = null;
+    private long                  startTime   = System.currentTimeMillis(); //系统启动时间
     private Map<String, BeanInfo> beanInfoMap = null;
-    private InitContext           initContext = null;
-    protected AbstractAppContext(Injector guice) {
-        this.guice = guice;
-        Assert.isNotNull(guice);
-    }
+    //
     @Override
     public long getAppStartTime() {
-        return this.initContext.getStartTime();
+        return this.startTime;
     };
     @Override
-    public Settings getSettings() {
-        InitContext initContext = this.getInitContext();
-        Assert.isNotNull(initContext, "AppContext.getInitContext() return is null.");
-        return initContext.getConfig().getSettings();
-    };
-    @Override
-    public InitContext getInitContext() {
-        if (this.initContext == null)
-            this.initContext = this.getGuice().getInstance(InitContext.class);
-        return this.initContext;
+    public Set<Class<?>> getClassSet(Class<?> featureType) {
+        if (featureType == null)
+            return null;
+        String loadPackages = this.getSettings().getString(Platform_LoadPackages);
+        String[] spanPackage = loadPackages.split(",");
+        return ClassUtil.getClassSet(spanPackage, featureType);
     }
     @Override
     public <T> T getInstance(Class<T> beanType) {
@@ -73,13 +63,9 @@ public abstract class AbstractAppContext implements AppContext {
     //    /**通过类型创建该类实例，使用guice*/
     //    public abstract <T extends IService> T getService(Class<T> servicesType);
     @Override
-    public Injector getGuice() {
-        return this.guice;
-    }
-    @Override
     public <T> Class<T> getBeanType(String name) {
         if (this.beanInfoMap == null)
-            this.collectBeanInfos(this.getGuice());
+            this.collectBeanInfos();
         BeanInfo info = this.beanInfoMap.get(name);
         if (info != null)
             return (Class<T>) info.getBeanType();
@@ -88,19 +74,19 @@ public abstract class AbstractAppContext implements AppContext {
     @Override
     public String[] getBeanNames() {
         if (this.beanInfoMap == null)
-            this.collectBeanInfos(this.getGuice());
+            this.collectBeanInfos();
         return this.beanInfoMap.values().toArray(new String[this.beanInfoMap.size()]);
     }
     @Override
     public BeanInfo getBeanInfo(String name) {
         if (this.beanInfoMap == null)
-            this.collectBeanInfos(this.getGuice());
+            this.collectBeanInfos();
         return this.beanInfoMap.get(name);
     }
-    private void collectBeanInfos(Injector injector) {
+    private void collectBeanInfos() {
         this.beanInfoMap = new HashMap<String, BeanInfo>();
         TypeLiteral<BeanInfo> INFO_DEFS = TypeLiteral.get(BeanInfo.class);
-        for (Binding<BeanInfo> entry : injector.findBindingsByType(INFO_DEFS)) {
+        for (Binding<BeanInfo> entry : this.getGuice().findBindingsByType(INFO_DEFS)) {
             BeanInfo beanInfo = entry.getProvider().get();
             this.beanInfoMap.put(beanInfo.getName(), beanInfo);
         }
@@ -112,15 +98,57 @@ public abstract class AbstractAppContext implements AppContext {
             return null;
         return (T) this.getGuice().getInstance(beanInfo.getKey());
     };
+    private File tempFileDirectory = null;
+    @Override
+    public synchronized File createTempFile() throws IOException {
+        if (this.tempFileDirectory == null) {
+            this.tempFileDirectory = new File(this.getTempDir("tempFile"));
+            this.tempFileDirectory.deleteOnExit();
+        }
+        try {
+            Thread.sleep(1);
+        } catch (InterruptedException e) {}
+        long markTime = System.currentTimeMillis();
+        String atPath = genPath(markTime, 512);
+        String fileName = atPath.substring(0, atPath.length() - 1) + "_" + String.valueOf(markTime) + ".tmp";
+        File tmpFile = new File(tempFileDirectory, fileName);
+        tmpFile.getParentFile().mkdirs();
+        tmpFile.createNewFile();
+        return tmpFile;
+    };
+    private String str2path(String oriPath) {
+        int length = oriPath.length();
+        if (oriPath.charAt(length - 1) == File.separatorChar)
+            return oriPath;
+        else
+            return oriPath + File.separatorChar;
+    };
+    @Override
+    public String genPath(long number, int size) {
+        StringBuffer buffer = new StringBuffer();
+        long b = size;
+        long c = number;
+        do {
+            long m = number % b;
+            buffer.append(m + File.separator);
+            c = number / b;
+            number = c;
+        } while (c > 0);
+        return buffer.reverse().toString();
+    }
+    /*----------------------------------------------------------------------*/
     @Override
     public String getWorkDir() {
-        return this.getSettings().getDirectoryPath(Workspace_WorkDir);
+        String workDir = getSettings().getDirectoryPath(Workspace_WorkDir);
+        if (workDir.startsWith("." + File.separatorChar))
+            return new File(workDir.substring(2)).getAbsolutePath();
+        return workDir;
     };
     @Override
     public String getDataDir() {
         String workDir = getWorkDir();
-        String dataDir = this.getSettings().getDirectoryPath(Workspace_DataDir);
-        boolean absolute = this.getSettings().getBoolean(Workspace_DataDir_Absolute);
+        String dataDir = getSettings().getDirectoryPath(Workspace_DataDir);
+        boolean absolute = getSettings().getBoolean(Workspace_DataDir_Absolute);
         if (absolute == false)
             return str2path(new File(workDir, dataDir).getAbsolutePath());
         else
@@ -129,8 +157,8 @@ public abstract class AbstractAppContext implements AppContext {
     @Override
     public String getTempDir() {
         String workDir = getWorkDir();
-        String tempDir = this.getSettings().getDirectoryPath(Workspace_TempDir);
-        boolean absolute = this.getSettings().getBoolean(Workspace_TempDir_Absolute);
+        String tempDir = getSettings().getDirectoryPath(Workspace_TempDir);
+        boolean absolute = getSettings().getBoolean(Workspace_TempDir_Absolute);
         if (absolute == false)
             return str2path(new File(workDir, tempDir).getAbsolutePath());
         else
@@ -139,8 +167,8 @@ public abstract class AbstractAppContext implements AppContext {
     @Override
     public String getCacheDir() {
         String workDir = getWorkDir();
-        String cacheDir = this.getSettings().getDirectoryPath(Workspace_CacheDir);
-        boolean absolute = this.getSettings().getBoolean(Workspace_CacheDir_Absolute);
+        String cacheDir = getSettings().getDirectoryPath(Workspace_CacheDir);
+        boolean absolute = getSettings().getBoolean(Workspace_CacheDir_Absolute);
         if (absolute == false)
             return str2path(new File(workDir, cacheDir).getAbsolutePath());
         else
@@ -167,51 +195,4 @@ public abstract class AbstractAppContext implements AppContext {
         else
             return str2path(new File(getCacheDir(), name).getAbsolutePath());
     };
-    private File tempFileDirectory = null;
-    @Override
-    public File createTempFile() throws IOException {
-        if (this.tempFileDirectory == null) {
-            this.tempFileDirectory = new File(this.getTempDir("tempFile"));
-            this.tempFileDirectory.deleteOnExit();
-        }
-        long markTime = Clock.getSyncTime();
-        String atPath = long2path(markTime, 2000);
-        String fileName = "work_" + String.valueOf(markTime) + ".tmp";
-        File tmpFile = new File(new File(this.tempFileDirectory, atPath), fileName);
-        tmpFile.createNewFile();
-        return tmpFile;
-    };
-    private String str2path(String oriPath) {
-        int length = oriPath.length();
-        if (oriPath.charAt(length - 1) == File.separatorChar)
-            return oriPath;
-        else
-            return oriPath + File.separatorChar;
-    };
-    private String long2path(long a, int size) {
-        StringBuffer buffer = new StringBuffer();
-        long b = size;
-        long c = a;
-        do {
-            long m = a % b;
-            c = a / b;
-            a = c;
-            buffer.append(m + File.separator);
-        } while (c > 0);
-        return buffer.toString();
-    };
-    /*----------------------------------------------------------------------*/
-    @Override
-    public String genPath(long number, int size) {
-        StringBuffer buffer = new StringBuffer();
-        long b = size;
-        long c = number;
-        do {
-            long m = number % b;
-            buffer.append(m + File.separator);
-            c = number / b;
-            number = c;
-        } while (c > 0);
-        return buffer.reverse().toString();
-    }
 }

@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import org.platform.binder.FilterPipeline;
 import org.platform.context.AppContext;
-import org.platform.context.ViewContext;
 import com.google.inject.Binding;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -43,6 +42,7 @@ class ManagedFilterPipeline implements FilterPipeline {
     private final ManagedErrorPipeline   errorPipeline;
     private FilterDefinition[]           filterDefinitions;
     private volatile boolean             initialized = false;
+    private AppContext                   appContext  = null;
     //
     //
     @Inject
@@ -55,6 +55,7 @@ class ManagedFilterPipeline implements FilterPipeline {
     public synchronized void initPipeline(AppContext appContext) throws ServletException {
         if (initialized)
             return;
+        this.appContext = appContext;
         this.filterDefinitions = collectFilterDefinitions(appContext.getGuice());
         for (FilterDefinition filterDefinition : filterDefinitions) {
             filterDefinition.init(appContext);
@@ -75,17 +76,17 @@ class ManagedFilterPipeline implements FilterPipeline {
         return filterDefinitions.toArray(new FilterDefinition[filterDefinitions.size()]);
     }
     @Override
-    public void dispatch(ViewContext viewContext, HttpServletRequest request, HttpServletResponse response, FilterChain defaultFilterChain) throws IOException, ServletException {
+    public void dispatch(HttpServletRequest request, HttpServletResponse response, FilterChain defaultFilterChain) throws IOException, ServletException {
         if (!initialized) {
-            initPipeline(viewContext.getAppContext());
+            initPipeline(this.appContext);
         }
         try {
             /*执行过滤器链*/
-            ServletRequest dispatcherRequest = withDispatcher(viewContext, request, this.servletPipeline);
-            new FilterChainInvocation(viewContext, this.filterDefinitions, this.servletPipeline, defaultFilterChain).doFilter(dispatcherRequest, response);
+            ServletRequest dispatcherRequest = withDispatcher(request, this.servletPipeline);
+            new FilterChainInvocation(this.filterDefinitions, this.servletPipeline, defaultFilterChain).doFilter(dispatcherRequest, response);
         } catch (Exception e) {
             /*出现错误交给错误处理程序处理.*/
-            this.errorPipeline.dispatch(viewContext, request, response, e);
+            this.errorPipeline.dispatch(request, response, e);
         }
     }
     @Override
@@ -109,7 +110,7 @@ class ManagedFilterPipeline implements FilterPipeline {
      * This is not a problem cuz we intend for people to migrate from web.xml to guice-servlet,
      * incrementally, but not the other way around (which, we should actively discourage).
      */
-    private ServletRequest withDispatcher(final ViewContext viewContext, ServletRequest servletRequest, final ManagedServletPipeline servletPipeline) {
+    private ServletRequest withDispatcher(ServletRequest servletRequest, final ManagedServletPipeline servletPipeline) {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         // don't wrap the request if there are no servlets mapped. This prevents us from inserting our
         // wrapper unless it's actually going to be used. This is necessary for compatibility for apps
@@ -121,7 +122,7 @@ class ManagedFilterPipeline implements FilterPipeline {
         return new HttpServletRequestWrapper(request) {
             @Override
             public RequestDispatcher getRequestDispatcher(String path) {
-                final RequestDispatcher dispatcher = servletPipeline.getRequestDispatcher(viewContext, path);
+                final RequestDispatcher dispatcher = servletPipeline.getRequestDispatcher(path);
                 return (null != dispatcher) ? dispatcher : super.getRequestDispatcher(path);
             }
         };

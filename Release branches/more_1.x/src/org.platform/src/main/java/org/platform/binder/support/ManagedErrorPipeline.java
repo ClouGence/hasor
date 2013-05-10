@@ -23,7 +23,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import org.platform.context.AppContext;
-import org.platform.context.ViewContext;
 import com.google.inject.Binding;
 import com.google.inject.Injector;
 import com.google.inject.TypeLiteral;
@@ -36,8 +35,10 @@ import com.google.inject.TypeLiteral;
 class ManagedErrorPipeline {
     private ErrorDefinition[] errorDefinitions;
     private volatile boolean  initialized = false;
+    private AppContext        appContext  = null;
     //
     public synchronized void initPipeline(AppContext appContext) throws ServletException {
+        this.appContext = appContext;
         if (initialized)
             return;
         this.errorDefinitions = collectErrorDefinitions(appContext.getGuice());
@@ -56,17 +57,17 @@ class ManagedErrorPipeline {
         // Convert to a fixed size array for speed.
         return errorDefinitions.toArray(new ErrorDefinition[errorDefinitions.size()]);
     }
-    public void dispatch(ViewContext viewContext, ServletRequest request, ServletResponse response, Throwable error) throws IOException, ServletException {
+    public void dispatch(ServletRequest request, ServletResponse response, Throwable error) throws IOException, ServletException {
         Throwable onError = (error instanceof ServletException) ? ((ServletException) error).getRootCause() : error;
         if (onError == null)
             onError = error;
         //1.进行异常处理
-        int errorCaseCount = viewContext.getSettings().getInteger(HttpServlet_ErrorCaseCount, 5);
+        int errorCaseCount = this.appContext.getSettings().getInteger(HttpServlet_ErrorCaseCount, 5);
         for (int i = 0; i < errorCaseCount; i++) {
             for (int j = 0; j < errorDefinitions.length; j++) {
                 ErrorDefinition errDefine = errorDefinitions[j];
                 try {
-                    if (errDefine.doError(viewContext, request, response, onError) == true)
+                    if (errDefine.doError(request, response, onError) == true)
                         return;
                     else
                         continue;

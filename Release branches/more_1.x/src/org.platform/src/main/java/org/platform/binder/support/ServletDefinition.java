@@ -29,8 +29,6 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.more.util.Iterators;
 import org.platform.context.AppContext;
-import org.platform.context.ViewContext;
-import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 /**
@@ -42,6 +40,7 @@ class ServletDefinition extends AbstractServletModuleBinding implements Provider
     private Key<? extends HttpServlet> servletKey      = null; /*HttpServlet对象既有可能绑定在这个Key上*/
     private HttpServlet                servletInstance = null;
     private UriPatternMatcher          patternMatcher  = null;
+    private AppContext                 appContext      = null;
     //
     public ServletDefinition(String pattern, Key<? extends HttpServlet> servletKey, UriPatternMatcher uriPatternMatcher, Map<String, String> initParams, HttpServlet servletInstance) {
         super(initParams, pattern, uriPatternMatcher);
@@ -53,9 +52,9 @@ class ServletDefinition extends AbstractServletModuleBinding implements Provider
     public ServletDefinition get() {
         return this;
     }
-    protected HttpServlet getTarget(Injector injector) {
+    protected HttpServlet getTarget(AppContext appContext) {
         if (this.servletInstance == null)
-            this.servletInstance = injector.getInstance(this.servletKey);
+            this.servletInstance = appContext.getGuice().getInstance(this.servletKey);
         return this.servletInstance;
     }
     @Override
@@ -69,7 +68,8 @@ class ServletDefinition extends AbstractServletModuleBinding implements Provider
     /*--------------------------------------------------------------------------------------------------------*/
     /**/
     public void init(final AppContext appContext) throws ServletException {
-        HttpServlet servlet = this.getTarget(appContext.getGuice());
+        this.appContext = appContext;
+        HttpServlet servlet = this.getTarget(appContext);
         if (servlet == null)
             return;
         final Map<String, String> initParams = this.getInitParams();
@@ -79,7 +79,10 @@ class ServletDefinition extends AbstractServletModuleBinding implements Provider
                 return servletKey.toString();
             }
             public ServletContext getServletContext() {
-                return appContext.getInitContext().getServletContext();
+                Object context = appContext.getContext();
+                if (context instanceof ServletContext)
+                    return (ServletContext) context;
+                return null;
             }
             public String getInitParameter(String s) {
                 return initParams.get(s);
@@ -90,17 +93,17 @@ class ServletDefinition extends AbstractServletModuleBinding implements Provider
         });
     }
     /**/
-    public boolean service(ViewContext viewContext, ServletRequest request, ServletResponse response) throws IOException, ServletException {
+    public boolean service(ServletRequest request, ServletResponse response) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
         boolean serve = this.matchesUri(path);
         // 
         if (serve)
-            doService(viewContext, request, response);
+            doService(request, response);
         return serve;
     }
     /**/
-    private void doService(ViewContext viewContext, final ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+    private void doService(final ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
         HttpServletRequest request = new HttpServletRequestWrapper((HttpServletRequest) servletRequest) {
             private String  path;
             private boolean pathComputed     = false;
@@ -153,14 +156,14 @@ class ServletDefinition extends AbstractServletModuleBinding implements Provider
             }
         };
         //
-        HttpServlet servlet = this.getTarget(viewContext.getGuice());
+        HttpServlet servlet = this.getTarget(this.appContext);
         if (servlet == null)
             return;
         servlet.service(request, servletResponse);
     }
     /**/
     public void destroy(AppContext appContext) {
-        HttpServlet servlet = this.getTarget(appContext.getGuice());
+        HttpServlet servlet = this.getTarget(appContext);
         if (servlet == null)
             return;
         servlet.destroy();

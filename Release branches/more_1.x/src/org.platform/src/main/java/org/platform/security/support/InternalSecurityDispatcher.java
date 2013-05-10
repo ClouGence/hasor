@@ -21,7 +21,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.more.util.StringConvertUtil;
-import org.platform.context.ViewContext;
 import org.platform.security.SecurityDispatcher;
 import org.platform.security.SecurityForward;
 import org.platform.security.SecurityForward.ForwardType;
@@ -94,9 +93,7 @@ class InternalSecurityDispatcher implements SecurityDispatcher {
             return this.forwardType;
         }
         @Override
-        public void forward(ViewContext viewContext) throws IOException, ServletException {
-            HttpServletRequest request = viewContext.getHttpRequest();
-            HttpServletResponse response = viewContext.getHttpResponse();
+        public void forward(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
             switch (this.forwardType) {
             case Forward:
                 request.getRequestDispatcher(this.forwardTo).forward(request, response);

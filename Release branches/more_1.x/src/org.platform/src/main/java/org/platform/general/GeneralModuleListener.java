@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.support;
+package org.platform.general;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,15 +30,16 @@ import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.binder.ApiBinder.BeanBindingBuilder;
 import org.platform.binder.ErrorHook;
+import org.platform.context.AppContext;
+import org.platform.context.ContextListener;
 import org.platform.context.InitListener;
-import org.platform.context.support.AbstractModuleListener;
 /**
  * 支持Bean、WebError、WebFilter、WebServlet注解功能。
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@InitListener(displayName = "SupportModuleServiceListener", description = "org.platform.support软件包功能支持。", startIndex = -50)
-public class SupportModuleServiceListener extends AbstractModuleListener {
+@InitListener(displayName = "GeneralModuleServiceListener", description = "org.platform.general软件包功能支持。", startIndex = -50)
+public class GeneralModuleListener implements ContextListener {
     /**初始化.*/
     @Override
     public void initialize(ApiBinder event) {
@@ -202,4 +203,8 @@ public class SupportModuleServiceListener extends AbstractModuleListener {
                     initMap.put(param.name(), param.value());
         return initMap;
     }
+    @Override
+    public void initialized(AppContext appContext) {}
+    @Override
+    public void destroy(AppContext appContext) {}
 }

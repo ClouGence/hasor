@@ -15,31 +15,23 @@
  */
 package org.platform.security.support.impl;
 import static org.platform.PlatformConfig.Security_AuthSessionCache;
-import static org.platform.PlatformConfig.Security_AuthSessionCache_AutoRenewal;
-import static org.platform.PlatformConfig.Security_AuthSessionCache_Eternal;
-import static org.platform.PlatformConfig.Security_AuthSessionCache_ThreadSeep;
-import static org.platform.PlatformConfig.Security_AuthSessionCache_Timeout;
 import static org.platform.PlatformConfig.Security_AuthSessionTimeout;
 import org.platform.context.AppContext;
 import org.platform.context.SettingListener;
 import org.platform.context.Settings;
 import org.platform.event.EventManager;
-import org.platform.icache.Cache;
+import org.platform.icache.CacheManager;
 import org.platform.icache.ICache;
-import org.platform.icache.mapcache.MapCache;
-import org.platform.icache.mapcache.MapCacheSettings;
 import org.platform.security.support.AbstractSecurityContext;
 import org.platform.security.support.SessionData;
-import com.google.inject.Key;
 import com.google.inject.Singleton;
-import com.google.inject.name.Names;
 /**
  * 内置SecurityContext类实现
  * @version : 2013-4-20
  * @author 赵永春 (zyc@byshell.org)
  */
 @Singleton
-public class DefaultSecurityContext extends AbstractSecurityContext {
+public class InternalSecurityContext extends AbstractSecurityContext {
     private ICache<SessionData> authSessionCache = null;
     private SettingListener     settingListener  = new SessionDataCacheSettingListener();
     private long                sessionTimeOut   = 0;
@@ -49,12 +41,12 @@ public class DefaultSecurityContext extends AbstractSecurityContext {
     public synchronized void initSecurity(AppContext appContext) {
         super.initSecurity(appContext);
         this.settingListener.loadConfig(appContext.getSettings());
-        appContext.getInitContext().getConfig().addSettingsListener(settingListener);
+        appContext.getSettings().addSettingsListener(settingListener);
     }
     @Override
     public synchronized void destroySecurity(AppContext appContext) {
         super.destroySecurity(appContext);
-        appContext.getInitContext().getConfig().removeSettingsListener(settingListener);
+        appContext.getSettings().removeSettingsListener(settingListener);
     }
     @Override
     protected void removeSessionData(String sessionDataID) {
@@ -79,37 +71,16 @@ public class DefaultSecurityContext extends AbstractSecurityContext {
             this.eventManager = this.getAppContext().getInstance(EventManager.class);
         this.eventManager.throwEvent(eventType, objects);
     }
-    /*--------------------------------------------------------------------------------------*/
     /**负责监听SessionDataCache部分配置文件改动的生效*/
     class SessionDataCacheSettingListener implements SettingListener {
         @Override
         public void loadConfig(Settings newConfig) {
-            Key cacheKey = Key.get(ICache.class, Names.named(newConfig.getString(Security_AuthSessionCache)));
-            authSessionCache = getAppContext().getGuice().getInstance(cacheKey);
+            String cacheName = newConfig.getString(Security_AuthSessionCache);
+            CacheManager cacheManager = getAppContext().getInstance(CacheManager.class);
+            authSessionCache = cacheManager.getCache(cacheName);
+            if (authSessionCache == null)
+                throw new NullPointerException("not load AuthSessionCache ‘" + cacheName + "’");
             sessionTimeOut = newConfig.getLong(Security_AuthSessionTimeout);
-        }
-    }
-    /**负责InternalAuthSessionMapCache，类的配置文件监听工作*/
-    static class InternalAuthSessionMapCacheSettings extends MapCacheSettings {
-        @Override
-        public void loadConfig(Settings newConfig) {
-            this.setCacheEnable(true);
-            this.setDefaultTimeout(newConfig.getLong(Security_AuthSessionCache_Timeout));
-            this.setEternal(newConfig.getBoolean(Security_AuthSessionCache_Eternal));
-            this.setAutoRenewal(newConfig.getBoolean(Security_AuthSessionCache_AutoRenewal));
-            this.setThreadSeep(newConfig.getLong(Security_AuthSessionCache_ThreadSeep));
-        }
-    }
-    /**内置的权限缓存数据*/
-    @Cache(value = "AuthSessionCache", displayName = "AuthSessionMapCache", description = "内置的AuthSession数据缓存。")
-    public static class InternalAuthSessionMapCache extends MapCache<SessionData> {
-        public InternalAuthSessionMapCache() {
-            super();
-            this.threadName = "AuthSessionCache-Daemon";
-        }
-        @Override
-        protected MapCacheSettings getMapCacheSettings() {
-            return new InternalAuthSessionMapCacheSettings();
         }
     }
 }

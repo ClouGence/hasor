@@ -16,12 +16,13 @@
 package org.platform.security;
 import java.io.IOException;
 import javax.servlet.ServletException;
-import org.platform.context.ViewContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 /**
  * 处理登出请求
  * @version : 2013-5-8
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface LogoutProcess {
-    public SecurityForward processLogout(SecurityContext secContext, ViewContext viewContext) throws SecurityException, ServletException, IOException;
+    public SecurityForward processLogout(SecurityContext secContext, HttpServletRequest request, HttpServletResponse response) throws SecurityException, ServletException, IOException;
 }

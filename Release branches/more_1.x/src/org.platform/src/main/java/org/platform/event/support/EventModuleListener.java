@@ -20,8 +20,8 @@ import org.more.util.StringUtil;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
+import org.platform.context.ContextListener;
 import org.platform.context.InitListener;
-import org.platform.context.support.AbstractModuleListener;
 import org.platform.event.EventListener;
 import org.platform.event.EventManager;
 import org.platform.event.Listener;
@@ -31,7 +31,7 @@ import org.platform.event.Listener;
  * @author 赵永春 (zyc@byshell.org)
  */
 @InitListener(displayName = "EventModuleServiceListener", description = "org.platform.event软件包功能支持。", startIndex = -100)
-public class EventModuleServiceListener extends AbstractModuleListener {
+public class EventModuleListener implements ContextListener {
     private EventManager eventManager = null;
     /**初始化.*/
     @Override
@@ -43,7 +43,7 @@ public class EventModuleServiceListener extends AbstractModuleListener {
     protected void loadListener(AppContext appContext) {
         Platform.info("begin loadListener...");
         //1.获取
-        Set<Class<?>> listenerSet = appContext.getInitContext().getClassSet(Listener.class);
+        Set<Class<?>> listenerSet = appContext.getClassSet(Listener.class);
         for (Class<?> cls : listenerSet) {
             if (EventListener.class.isAssignableFrom(cls) == false) {
                 Platform.warning("loadListener : not implemented EventListener of type %s.", cls);

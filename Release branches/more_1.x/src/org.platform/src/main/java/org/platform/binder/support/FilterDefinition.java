@@ -28,8 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.more.util.Iterators;
 import org.platform.context.AppContext;
-import org.platform.context.ViewContext;
-import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 /**
@@ -40,6 +38,7 @@ import com.google.inject.Provider;
 class FilterDefinition extends AbstractServletModuleBinding implements Provider<FilterDefinition> {
     private Key<? extends Filter> filterKey      = null; /*Filter对象既有可能绑定在这个Key上*/
     private Filter                filterInstance = null;
+    private AppContext            appContext     = null;
     //
     public FilterDefinition(String pattern, Key<? extends Filter> filterKey, UriPatternMatcher uriPatternMatcher, Map<String, String> initParams, Filter filterInstance) {
         super(initParams, pattern, uriPatternMatcher);
@@ -50,9 +49,9 @@ class FilterDefinition extends AbstractServletModuleBinding implements Provider<
     public FilterDefinition get() {
         return this;
     }
-    protected Filter getTarget(Injector injector) {
+    protected Filter getTarget(AppContext appContext) {
         if (this.filterInstance == null)
-            this.filterInstance = injector.getInstance(this.filterKey);
+            this.filterInstance = appContext.getGuice().getInstance(this.filterKey);
         return this.filterInstance;
     }
     @Override
@@ -66,7 +65,8 @@ class FilterDefinition extends AbstractServletModuleBinding implements Provider<
     /*--------------------------------------------------------------------------------------------------------*/
     /**/
     public void init(final AppContext appContext) throws ServletException {
-        Filter filter = this.getTarget(appContext.getGuice());
+        this.appContext = appContext;
+        Filter filter = this.getTarget(appContext);
         if (filter == null)
             return;
         final Map<String, String> initParams = this.getInitParams();
@@ -76,7 +76,10 @@ class FilterDefinition extends AbstractServletModuleBinding implements Provider<
                 return filterKey.toString();
             }
             public ServletContext getServletContext() {
-                return appContext.getInitContext().getServletContext();
+                Object context = appContext.getContext();
+                if (context instanceof ServletContext)
+                    return (ServletContext) context;
+                return null;
             }
             public String getInitParameter(String s) {
                 return initParams.get(s);
@@ -87,12 +90,12 @@ class FilterDefinition extends AbstractServletModuleBinding implements Provider<
         });
     }
     /**/
-    public void doFilter(ViewContext viewContext, ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
         boolean serve = this.matchesUri(path);
         //
-        Filter filter = this.getTarget(viewContext.getGuice());
+        Filter filter = this.getTarget(this.appContext);
         //
         if (serve == true && filter != null) {
             filter.doFilter(request, response, chain);
@@ -102,7 +105,7 @@ class FilterDefinition extends AbstractServletModuleBinding implements Provider<
     }
     /**/
     public void destroy(AppContext appContext) {
-        Filter filter = this.getTarget(appContext.getGuice());
+        Filter filter = this.getTarget(appContext);
         if (filter == null)
             return;
         filter.destroy();

@@ -14,24 +14,77 @@
  * limitations under the License.
  */
 package org.platform.context;
-import java.util.Map;
-import org.more.global.Global;
+import java.io.File;
+import java.util.Date;
 import org.more.global.assembler.xml.XmlProperty;
 /**
  * 
  * @version : 2013-4-23
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Settings extends Global {
-    protected Settings(Map<String, Object> configs) {
-        super(configs);
-    };
+public interface Settings {
+    /**添加启动监听器。*/
+    public void addContextListener(ContextListener contextListener);
+    /**删除启动监听器。*/
+    public void removeContextListener(ContextListener contextListener);
+    /**获得所有启动监听器。*/
+    public ContextListener[] getContextListeners();
+    /**添加配置文件改变事件监听器。*/
+    public void addSettingsListener(SettingListener settingsListener);
+    /**删除配置文件改变事件监听器。*/
+    public void removeSettingsListener(SettingListener settingsListener);
+    /**获得所有配置文件改变事件监听器。*/
+    public SettingListener[] getSettingListeners();
+    /**解析全局配置参数，并且返回其{@link Character}形式对象。*/
+    public Character getChar(String name);
+    /**解析全局配置参数，并且返回其{@link Character}形式对象。第二个参数为默认值。*/
+    public Character getChar(String name, Character defaultValue);
+    /**解析全局配置参数，并且返回其{@link String}形式对象。*/
+    public String getString(String name);
+    /**解析全局配置参数，并且返回其{@link String}形式对象。第二个参数为默认值。*/
+    public String getString(String name, String defaultValue);
+    /**解析全局配置参数，并且返回其{@link Boolean}形式对象。*/
+    public Boolean getBoolean(String name);
+    /**解析全局配置参数，并且返回其{@link Boolean}形式对象。第二个参数为默认值。*/
+    public Boolean getBoolean(String name, Boolean defaultValue);
+    /**解析全局配置参数，并且返回其{@link Short}形式对象。*/
+    public Short getShort(String name);
+    /**解析全局配置参数，并且返回其{@link Short}形式对象。第二个参数为默认值。*/
+    public Short getShort(String name, Short defaultValue);
+    /**解析全局配置参数，并且返回其{@link Integer}形式对象。*/
+    public Integer getInteger(String name);
+    /**解析全局配置参数，并且返回其{@link Integer}形式对象。第二个参数为默认值。*/
+    public Integer getInteger(String name, Integer defaultValue);
+    /**解析全局配置参数，并且返回其{@link Long}形式对象。*/
+    public Long getLong(String name);
+    /**解析全局配置参数，并且返回其{@link Long}形式对象。第二个参数为默认值。*/
+    public Long getLong(String name, Long defaultValue);
+    /**解析全局配置参数，并且返回其{@link Float}形式对象。*/
+    public Float getFloat(String name);
+    /**解析全局配置参数，并且返回其{@link Float}形式对象。第二个参数为默认值。*/
+    public Float getFloat(String name, Float defaultValue);
+    /**解析全局配置参数，并且返回其{@link Double}形式对象。*/
+    public Double getDouble(String name);
+    /**解析全局配置参数，并且返回其{@link Double}形式对象。第二个参数为默认值。*/
+    public Double getDouble(String name, Double defaultValue);
+    /**解析全局配置参数，并且返回其{@link Date}形式对象。*/
+    public Date getDate(String name);
+    /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
+    public Date getDate(String name, Date defaultValue);
+    /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
+    public Date getDate(String name, long defaultValue);
+    /**解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。*/
+    public <T extends Enum<?>> T getEnum(String name, Class<T> enmType);
+    /**解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。*/
+    public <T extends Enum<?>> T getEnum(String name, Class<T> enmType, T defaultValue);
+    /**解析全局配置参数，并且返回其{@link Date}形式对象（用于表示文件）。第二个参数为默认值。*/
+    public String getFilePath(String name);
+    /**解析全局配置参数，并且返回其{@link Date}形式对象（用于表示文件）。第二个参数为默认值。*/
+    public String getFilePath(String name, String defaultValue);
+    /**解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。*/
+    public String getDirectoryPath(String name);
+    /**解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。*/
+    public String getDirectoryPath(String name, String defaultValue);
     /**解析全局配置参数，并且返回其{@link XmlProperty}形式对象。*/
-    public XmlProperty getXmlProperty(Enum<?> name) {
-        return this.getToType(name, XmlProperty.class, null);
-    };
-    /**解析全局配置参数，并且返回其{@link XmlProperty}形式对象。*/
-    public XmlProperty getXmlProperty(String name) {
-        return this.getToType(name, XmlProperty.class, null);
-    }
+    public XmlProperty getXmlProperty(String name);
 }

@@ -31,7 +31,7 @@ class InternalCodeDigestManager implements SettingListener {
     private Map<String, Digest> codeDigestObjectMap = new HashMap<String, Digest>();
     public void initManager(AppContext appContext) {
         this.securitySettings = appContext.getInstance(SecuritySettings.class);
-        appContext.getInitContext().getConfig().addSettingsListener(this);
+        appContext.getSettings().addSettingsListener(this);
     }
     public Digest getCodeDigest(String name) {
         Map<String, Class<Digest>> codeDigestMap = this.securitySettings.getDigestMap();
@@ -51,7 +51,7 @@ class InternalCodeDigestManager implements SettingListener {
         }
     }
     public void destroyManager(AppContext appContext) {
-        appContext.getInitContext().getConfig().removeSettingsListener(this);
+        appContext.getSettings().removeSettingsListener(this);
     }
     @Override
     public void loadConfig(Settings newConfig) {

@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 package org.platform.security;
-import org.platform.context.ViewContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 /**
  * ∑√Œ µÿ÷∑»®œﬁºÏ≤‚«Î«Û
  * @version : 2013-5-8
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public interface TestURLPermissionProcess {
-    public boolean testURL(SecurityContext secContext, AuthSession[] authSessions, ViewContext viewContext);
+    public boolean testURL(SecurityContext secContext, AuthSession[] authSessions, HttpServletRequest request, HttpServletResponse response);
 }

@@ -20,7 +20,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.platform.context.AppContext;
-import org.platform.context.ViewContext;
 /**
  * 使用ApiBinder创建的Servlet,Filter组成的管道。
  * @version : 2013-4-11
@@ -30,7 +29,7 @@ public interface FilterPipeline {
     /**初始化管道*/
     public void initPipeline(AppContext appContext) throws ServletException;
     /**执行请求操作*/
-    public void dispatch(ViewContext viewContext, HttpServletRequest request, HttpServletResponse response, FilterChain defaultFilterChain) throws IOException, ServletException;
+    public void dispatch(HttpServletRequest request, HttpServletResponse response, FilterChain defaultFilterChain) throws IOException, ServletException;
     /**销毁管道*/
     public void destroyPipeline(AppContext appContext);
 }

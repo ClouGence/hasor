@@ -17,8 +17,6 @@ package org.platform.binder;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import org.platform.context.AppContext;
-import org.platform.context.Config;
-import org.platform.context.ViewContext;
 /**
  * Servlet异常处理程序。
  * @version : 2013-4-12
@@ -26,12 +24,12 @@ import org.platform.context.ViewContext;
  */
 public interface ErrorHook {
     /**初始化Servlet异常钩子。*/
-    public void init(AppContext appContext, Config initConfig);
+    public void init(AppContext appContext);
     /**
      * 对拦截的异常进行处理，如果钩子无法处理异常或者处理期间出错则可以将异常抛出，抛出的异常会重新交付异常处理程序进行处理。<br/>
      * 异常处理调度程序会轮询所有已经注册ErrorHook，如果ErrorHook抛出异常则轮询会使用新的异常重新开始。默认轮询10次。
      */
-    public void doError(ViewContext viewContext, ServletRequest request, ServletResponse response, Throwable error) throws Throwable;
+    public void doError(ServletRequest request, ServletResponse response, Throwable error) throws Throwable;
     /**销毁异常钩子。*/
     public void destroy(AppContext appContext);
 }

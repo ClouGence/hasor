@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import org.platform.context.AppContext;
 import org.platform.security.AuthSession;
 import org.platform.security.Digest;
@@ -110,6 +111,11 @@ public abstract class AbstractSecurityContext implements SecurityContext {
         return finds.toArray(new AuthSession[finds.size()]);
     };
     //
+    public String getRequestURI(HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        String contextPath = request.getContextPath();
+        return requestURI.substring(contextPath.length());
+    }
     @Override
     public AppContext getAppContext() {
         return appContext;

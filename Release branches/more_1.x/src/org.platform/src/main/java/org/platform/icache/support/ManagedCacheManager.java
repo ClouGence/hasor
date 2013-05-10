@@ -53,10 +53,10 @@ class ManagedCacheManager {
             cacheDefinitionEnt.getValue().destroy(appContext);
         }
     }
-    public ICache<Object> getCache(String cacheName, AppContext appContext) {
+    public <T> ICache<T> getCache(String cacheName, AppContext appContext) {
         CacheDefinition define = this.cacheDefinitionMap.get(cacheName);
         if (define == null)
             return null;
-        return define.get();
+        return (ICache<T>) define.get();
     }
 }

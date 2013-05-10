@@ -19,8 +19,6 @@ import java.util.Set;
 import javax.servlet.Filter;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
-import org.platform.context.InitContext;
-import org.platform.context.SettingListener;
 import org.platform.context.Settings;
 import com.google.inject.Binder;
 import com.google.inject.Key;
@@ -31,12 +29,10 @@ import com.google.inject.binder.LinkedBindingBuilder;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface ApiBinder {
-    /**获取配置信息*/
+    /**获取应用程序配置。*/
     public Settings getSettings();
-    /**获取Config*/
-    public InitContext getInitContext();
-    /**添加配置文件监听器*/
-    public void addSettingsListener(SettingListener settingListener);
+    /**获取环境对象*/
+    public Object getContext();
     /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
     public FilterBindingBuilder filter(String urlPattern, String... morePatterns);
     /**使用正则表达式，创建一个{@link FilterBindingBuilder}。*/

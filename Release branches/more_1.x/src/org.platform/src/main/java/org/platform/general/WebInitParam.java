@@ -13,19 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.context.support.clock;
-/***
+package org.platform.general;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+/**
  * 
- * @version : 2013-4-27
+ * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Clock {
-    /**从时钟服务中获取一个在分布式部署环境里有效的时间（尚未实现）。*/
-    public static long getSyncTime() {
-        return System.currentTimeMillis();
-    }
-    /**从本地时钟获取一个时间。*/
-    public static long getLocalTime() {
-        return System.currentTimeMillis();
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.ANNOTATION_TYPE })
+public @interface WebInitParam {
+    /** Name of the initialization parameter */
+    public String name();
+    /** Value of the initialization parameter */
+    public String value();
+    /** Description of the initialization parameter */
+    public String description() default "";
 }

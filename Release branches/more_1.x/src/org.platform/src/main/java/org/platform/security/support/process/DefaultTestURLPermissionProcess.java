@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 package org.platform.security.support.process;
-import org.platform.context.ViewContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.platform.security.AuthSession;
 import org.platform.security.SecurityContext;
 import org.platform.security.TestURLPermissionProcess;
@@ -27,9 +28,9 @@ import org.platform.security.UriPatternMatcher;
 public class DefaultTestURLPermissionProcess extends AbstractProcess implements TestURLPermissionProcess {
     /**测试要处理的资源是否具有权限访问，如果权限检测失败会抛出PermissionException异常。*/
     @Override
-    public boolean testURL(SecurityContext secContext, AuthSession[] authSessions, ViewContext viewContext) {
-        String requestURI = viewContext.getRequestURI();
-        UriPatternMatcher uriMatcher = secContext.getUriMatcher(requestURI);
+    public boolean testURL(SecurityContext secContext, AuthSession[] authSessions, HttpServletRequest request, HttpServletResponse response) {
+        String reqPath = request.getRequestURI().substring(request.getContextPath().length());
+        UriPatternMatcher uriMatcher = secContext.getUriMatcher(reqPath);
         return uriMatcher.testPermission(authSessions);
     }
 }

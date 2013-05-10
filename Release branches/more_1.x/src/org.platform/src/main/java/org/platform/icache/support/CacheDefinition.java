@@ -22,12 +22,12 @@ import com.google.inject.Provider;
  * @version : 2013-3-12
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-class CacheDefinition implements Provider<ICache> {
-    private String        name        = null;
-    private Class<ICache> cacheType   = null;
-    private ICache        cacheObject = null;
+class CacheDefinition implements Provider<ICache<?>> {
+    private String           name        = null;
+    private Class<ICache<?>> cacheType   = null;
+    private ICache<?>        cacheObject = null;
     //
-    public CacheDefinition(String name, Class<ICache> cacheType) {
+    public CacheDefinition(String name, Class<ICache<?>> cacheType) {
         this.name = name;
         this.cacheType = cacheType;
     }
@@ -43,7 +43,7 @@ class CacheDefinition implements Provider<ICache> {
             this.cacheObject.destroy(appContext);
     }
     @Override
-    public ICache get() {
+    public ICache<?> get() {
         return this.cacheObject;
     }
 }

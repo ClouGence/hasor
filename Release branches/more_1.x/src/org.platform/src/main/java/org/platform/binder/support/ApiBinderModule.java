@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 package org.platform.binder.support;
-import java.util.ArrayList;
-import java.util.List;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.context.ContextListener;
+import org.platform.context.Settings;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 /**
@@ -26,25 +25,28 @@ import com.google.inject.Module;
  * @version : 2013-4-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class ApiBinderModule implements Module {
-    private List<ContextListener> listenerList = null;
-    protected ApiBinderModule(List<ContextListener> listenerList) {
-        this.listenerList = listenerList;
-        if (listenerList == null)
-            this.listenerList = new ArrayList<ContextListener>();
+public class ApiBinderModule implements Module {
+    private Settings settings = null;
+    private Object   context  = null;
+    //
+    protected ApiBinderModule(Settings settings, Object context) {
+        this.settings = settings;
+        this.context = context;
+    }
+    protected ApiBinder newApiBinder(Binder guiceBinder) {
+        return new InternalApiBinder(this.settings, this.context, guiceBinder);
     }
     @Override
     public void configure(Binder binder) {
-        for (ContextListener listener : listenerList) {
-            if (listener == null)
-                continue;
-            Platform.info("send initialize to : %s", listener.getClass());
-            ApiBinder apiBinder = this.getApiBinder(binder);
-            listener.initialize(apiBinder);
-        }
-        /*执行ApiBinder的configure，使其完成配置任务。*/
-        ApiBinder apiBinder = this.getApiBinder(binder);
-        binder.install((Module) apiBinder);
+        ContextListener[] listenerList = this.settings.getContextListeners();
+        if (listenerList != null)
+            for (ContextListener listener : listenerList) {
+                if (listener == null)
+                    continue;
+                Platform.info("send initialize to : %s", listener.getClass());
+                ApiBinder apiBinder = this.newApiBinder(binder);
+                listener.initialize(apiBinder);
+                binder.install((Module) apiBinder);
+            }
     }
-    protected abstract ApiBinder getApiBinder(Binder guiceBinder);
 }

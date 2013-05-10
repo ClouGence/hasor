@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.context.support;
-import org.platform.binder.ApiBinder;
-import org.platform.context.AppContext;
-import org.platform.context.ContextListener;
+package org.platform.general;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 空实现。
- * @version : 2013-4-8
+ * 标记一个Bean。
+ * @version : 2013-3-20
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractModuleListener implements ContextListener {
-    @Override
-    public void initialize(ApiBinder binder) {}
-    @Override
-    public void initialized(AppContext appContext) {}
-    @Override
-    public void destroy(AppContext appContext) {}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface Bean {
+    /** Bean名称。*/
+    public String[] value();
 }
