@@ -16,12 +16,12 @@
 package org.platform.webapps.business.scene1.web;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.UUID;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.platform.context.AppContext;
-import org.platform.support.WebServlet;
+import org.platform.general.WebServlet;
 import org.platform.webapps.business.scene1.service.Power_Services;
 import com.google.inject.Inject;
 /**
@@ -41,25 +41,25 @@ public class Scene1_HttpServlet extends HttpServlet {
         PrintWriter printWriter = resp.getWriter();
         //
         try {
-            printWriter.write("callFree:" + this.scene1Service.callFree(AppContext.genIDBy32(), "callFree"));
+            printWriter.write("callFree:" + this.scene1Service.callFree(UUID.randomUUID().toString(), "callFree"));
         } catch (Exception e) {
             e.printStackTrace(printWriter);
         }
         printWriter.write("\n/*-------------------------------------------------------------------*/\n");
         try {
-            printWriter.write("callLogin:" + this.scene1Service.callLogin(AppContext.genIDBy32(), "callLogin"));
+            printWriter.write("callLogin:" + this.scene1Service.callLogin(UUID.randomUUID().toString(), "callLogin"));
         } catch (Exception e) {
             e.printStackTrace(printWriter);
         }
         printWriter.write("\n/*-------------------------------------------------------------------*/\n");
         try {
-            printWriter.write("callAccess1:" + this.scene1Service.callAccess1(AppContext.genIDBy32(), "callAccess1"));
+            printWriter.write("callAccess1:" + this.scene1Service.callAccess1(UUID.randomUUID().toString(), "callAccess1"));
         } catch (Exception e) {
             e.printStackTrace(printWriter);
         }
         printWriter.write("\n/*-------------------------------------------------------------------*/\n");
         try {
-            printWriter.write("callAccess2:" + this.scene1Service.callAccess2(AppContext.genIDBy32(), "callAccess2"));
+            printWriter.write("callAccess2:" + this.scene1Service.callAccess2(UUID.randomUUID().toString(), "callAccess2"));
         } catch (Exception e) {
             e.printStackTrace(printWriter);
         }

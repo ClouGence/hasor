@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package org.platform.webapps.business.scene2.service;
+import org.platform.general.Bean;
 import org.platform.security.AuthSession;
 import org.platform.security.RoleIdentity;
 import org.platform.security.RoleIdentityUtil;
 import org.platform.security.SecurityContext;
-import org.platform.support.Bean;
 import org.platform.webapps.safety.BBSUser;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

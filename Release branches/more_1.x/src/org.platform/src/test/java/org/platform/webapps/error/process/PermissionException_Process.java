@@ -19,10 +19,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import org.platform.binder.ErrorHook;
 import org.platform.context.AppContext;
-import org.platform.context.Config;
-import org.platform.context.ViewContext;
+import org.platform.general.WebError;
 import org.platform.security.PermissionException;
-import org.platform.support.WebError;
 /**
  * 
  * @version : 2013-5-2
@@ -31,9 +29,9 @@ import org.platform.support.WebError;
 @WebError(PermissionException.class)
 public class PermissionException_Process implements ErrorHook {
     @Override
-    public void init(AppContext appContext, Config initConfig) {}
+    public void init(AppContext appContext) {}
     @Override
-    public void doError(ViewContext viewContext, ServletRequest request, ServletResponse response, Throwable error) throws Throwable {
+    public void doError(ServletRequest request, ServletResponse response, Throwable error) throws Throwable {
         PrintWriter printWriter = response.getWriter();
         //
         printWriter.write("\n<br/>");

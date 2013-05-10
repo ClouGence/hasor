@@ -19,9 +19,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import org.platform.binder.ErrorHook;
 import org.platform.context.AppContext;
-import org.platform.context.Config;
-import org.platform.context.ViewContext;
-import org.platform.support.WebError;
+import org.platform.general.WebError;
 import org.platform.webapps.error.define.LoginSecurityException;
 /**
  * 
@@ -31,9 +29,9 @@ import org.platform.webapps.error.define.LoginSecurityException;
 @WebError(LoginSecurityException.class)
 public class LoginSecurityException_Process implements ErrorHook {
     @Override
-    public void init(AppContext appContext, Config initConfig) {}
+    public void init(AppContext appContext) {}
     @Override
-    public void doError(ViewContext viewContext, ServletRequest request, ServletResponse response, Throwable error) throws Throwable {
+    public void doError(ServletRequest request, ServletResponse response, Throwable error) throws Throwable {
         PrintWriter printWriter = response.getWriter();
         //
         printWriter.write("\n<br/>");

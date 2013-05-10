@@ -19,10 +19,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.platform.context.ViewContext;
+import org.platform.context.AppContext;
+import org.platform.general.WebServlet;
 import org.platform.security.SecurityContext;
 import org.platform.security.SecurityDispatcher;
-import org.platform.support.WebServlet;
 import org.platform.webapps.business.scene2.service.Scene2_Bean;
 import com.google.inject.Inject;
 /**
@@ -35,20 +35,25 @@ public class Scene2_HttpServlet extends HttpServlet {
     private static final long serialVersionUID = -8203858833170622693L;
     @Inject
     private SecurityContext   securityContext  = null;
+    @Inject
+    private AppContext        appContext       = null;
     //
     //
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ViewContext currentViewContext = ViewContext.currentViewContext();
-        String requestURI = currentViewContext.getRequestURI();
+        String requestURI = req.getRequestURI().substring(req.getContextPath().length());
         SecurityDispatcher dispatcher = this.securityContext.getDispatcher(requestURI);
         //
         //
-        Scene2_Bean serBean = currentViewContext.getAppContext().getBean("Scene2_ServiceBean");
+        Scene2_Bean serBean = appContext.getBean("Scene2_ServiceBean");
         serBean.print();
+        for (int i = 0; i < 10; i++) {
+            //System.out.println(currentViewContext.genPath(System.currentTimeMillis(), 512));
+            System.out.println(appContext.createTempFile());
+        }
         //
         //
         String goID = req.getParameter("goID");
-        dispatcher.forward(goID).forward(currentViewContext);
+        dispatcher.forward(goID).forward(req, resp);
     }
 }

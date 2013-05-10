@@ -15,15 +15,26 @@
  */
 package org.platform.webapps;
 import org.platform.binder.ApiBinder;
+import org.platform.context.AppContext;
+import org.platform.context.ContextListener;
 import org.platform.context.InitListener;
-import org.platform.context.support.AbstractModuleListener;
 /**
  * 
  * @version : 2013-4-29
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @InitListener(displayName = "WebAppsListener", description = "WebAppsListener≤‚ ‘°£", startIndex = 10)
-public class WebAppsListener extends AbstractModuleListener {
+public class WebAppsListener implements ContextListener {
     @Override
-    public void initialize(ApiBinder binder) {}
+    public void initialize(ApiBinder binder) {
+        // TODO Auto-generated method stub
+    }
+    @Override
+    public void initialized(AppContext appContext) {
+        // TODO Auto-generated method stub
+    }
+    @Override
+    public void destroy(AppContext appContext) {
+        // TODO Auto-generated method stub
+    }
 }
