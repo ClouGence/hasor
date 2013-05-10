@@ -14,27 +14,28 @@
  * limitations under the License.
  */
 package org.platform.action.support;
-import org.platform.binder.ApiBinder;
+import javax.servlet.http.HttpServletRequest;
 import org.platform.context.AppContext;
-import org.platform.context.ContextListener;
-import org.platform.context.InitListener;
-/**
- * Action服务启动类，用于装载action。
- * @version : 2013-4-8
+/** 
+ * Action生命周期管理器。
+ * @version : 2013-4-20
  * @author 赵永春 (zyc@byshell.org)
  */
-@InitListener(displayName = "ActionModuleListener", description = "org.platform.action软件包功能支持。", startIndex = 0)
-public class ActionModuleListener implements ContextListener {
-    @Override
-    public void initialize(ApiBinder event) {
-        // TODO Auto-generated method stub
+public class ActionManager {
+    /*经过倒序排序之后的命名空间管理器*/
+    private NameSpaceManager[] nameSpaceManager = null;
+    //
+    //
+    /**初始化启动缓存服务。*/
+    public void initManager(AppContext appContext) {
+        //
     }
-    @Override
-    public void initialized(AppContext appContext) {
-        // TODO Auto-generated method stub
+    /**销毁缓存服务*/
+    public void destroyManager(AppContext appContext) {
+        //
     }
-    @Override
-    public void destroy(AppContext appContext) {
-        // TODO Auto-generated method stub
+    /**根据请求地址查找符合的Action命名空间。返回的map中key是action名。*/
+    public NameSpaceManager findNameSpace(HttpServletRequest request) {
+        return null;
     }
 }

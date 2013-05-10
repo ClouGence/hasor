@@ -17,14 +17,13 @@ package org.platform.context;
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
-import org.platform.binder.BeanInfo;
 import com.google.inject.Injector;
 /**
  * 
  * @version : 2013-3-26
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AppContext {
+public interface AppContext extends BeanContext {
     /**启动*/
     public void start();
     /**销毁方法。*/
@@ -45,14 +44,6 @@ public interface AppContext {
     //    public  <T extends IService> T getService(Class<T> servicesType);
     /**获得Guice环境。*/
     public Injector getGuice();
-    /**通过名获取Bean的类型。*/
-    public <T> Class<T> getBeanType(String name);
-    /**获取已经注册的Bean名称。*/
-    public String[] getBeanNames();
-    /**获取bean信息。*/
-    public BeanInfo getBeanInfo(String name);
-    /**通过名称创建bean实例，使用guice。*/
-    public <T> T getBean(String name);
     /**获取程序工作目录（绝对路径）。*/
     public String getWorkDir();
     /**获取数据文件目录（绝对路径）。*/

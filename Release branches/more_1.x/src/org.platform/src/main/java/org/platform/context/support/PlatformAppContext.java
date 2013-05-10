@@ -25,6 +25,7 @@ import org.platform.Assert;
 import org.platform.Platform;
 import org.platform.binder.support.ApiBinderModule;
 import org.platform.context.AppContext;
+import org.platform.context.BeanContext;
 import org.platform.context.ContextListener;
 import org.platform.context.InitListener;
 import org.platform.context.Settings;
@@ -70,6 +71,13 @@ public class PlatformAppContext extends AbstractAppContext {
             @Override
             public void configure(Binder binder) {
                 super.configure(binder);
+                /*绑定BeanContext对象的Provider*/
+                binder.bind(BeanContext.class).toProvider(new Provider<BeanContext>() {
+                    @Override
+                    public BeanContext get() {
+                        return appContet;
+                    }
+                });
                 /*绑定AppContext对象的Provider*/
                 binder.bind(AppContext.class).toProvider(new Provider<AppContext>() {
                     @Override

@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.action;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package org.platform.context;
+import org.platform.binder.BeanInfo;
 /**
  * 
- * @version : 2013-5-9
+ * @version : 2013-3-26
  * @author 赵永春 (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD })
-public @interface RestfulMapping {
-    /**对应生效的http方法，默认为空，表示匹配任何http方法。*/
-    public String method() default "";
-    /**restful风格映射。*/
-    public String value();
+public interface BeanContext {
+    /**通过名获取Bean的类型。*/
+    public <T> Class<T> getBeanType(String name);
+    /**获取已经注册的Bean名称。*/
+    public String[] getBeanNames();
+    /**获取bean信息。*/
+    public BeanInfo getBeanInfo(String name);
+    /**通过名称创建bean实例，使用guice。*/
+    public <T> T getBean(String name);
 }

@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.action;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-/**
- * 
- * @version : 2013-5-9
+package org.platform.action.support;
+import org.platform.context.AppContext;
+/** 
+ * 命名空间管理器。相同的action命名空间下的action方法，可以定义在不同的控制器下。
+ * @version : 2013-4-20
  * @author 赵永春 (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD })
-public @interface RestfulMapping {
-    /**对应生效的http方法，默认为空，表示匹配任何http方法。*/
-    public String method() default "";
-    /**restful风格映射。*/
-    public String value();
+public interface NameSpaceManager {
+    /**初始化启动缓存服务。*/
+    public void initManager(AppContext appContext);
+    /**销毁缓存服务*/
+    public void destroyManager(AppContext appContext);
+    /**获取控制器名称。*/
+    public String getNameSpace();
+    /**获取控制器中定义的action方法。*/
+    public ActionInvoke getActionByName(String httpMethod, String actionName);
 }

@@ -14,36 +14,35 @@
  * limitations under the License.
  */
 package org.platform.action.support;
-import org.platform.context.AppContext;
-import org.platform.icache.ICache;
+import java.lang.reflect.Method;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Provider;
 /**
- * 声明一个Action。
+ * 表示一个Action定义。
  * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-class ActionDefinition implements Provider<Object> {
-    private String        name        = null;
-    private Class<ICache> cacheType   = null;
-    private ICache        cacheObject = null;
+class ActionDefinition implements Provider<ActionInvoke>, ActionInvoke {
+    private String namespace    = null; //所处命名空间
+    private String actionMethod = null; //action名称
     //
-    public ActionDefinition(String name, Class<ICache> cacheType) {
-        this.name = name;
-        this.cacheType = cacheType;
-    }
-    public String getName() {
-        return name;
-    }
-    public void initCache(final AppContext appContext) {
-        this.cacheObject = appContext.getGuice().getInstance(this.cacheType);
-        this.cacheObject.initCache(appContext);
-    }
-    public void destroy(AppContext appContext) {
-        if (this.cacheObject != null)
-            this.cacheObject.destroy(appContext);
+    //
+    //
+    //
+    @Override
+    public Object invoke(HttpServletRequest request, HttpServletResponse response, Map<String, String[]> params) {
+        return params;
+        // TODO Auto-generated method stub
     }
     @Override
-    public ICache get() {
-        return this.cacheObject;
+    public ActionInvoke get() {
+        return this;
+    }
+    @Override
+    public Method getActionMethod() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

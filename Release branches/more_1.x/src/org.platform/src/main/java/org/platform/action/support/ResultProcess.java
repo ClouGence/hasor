@@ -13,19 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.action;
-import org.platform.context.AppContext;
-/** 
- * Action服务。
- * @version : 2013-4-20
+package org.platform.action.support;
+/**
+ * action结果处理器。
+ * @version : 2013-5-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ActionManager {
-    /**初始化启动缓存服务。*/
-    public void initManager(AppContext appContext);
-    /**销毁缓存服务*/
-    public void destroyManager(AppContext appContext);
-    
-    
-    
-}
+public interface ResultProcess {}

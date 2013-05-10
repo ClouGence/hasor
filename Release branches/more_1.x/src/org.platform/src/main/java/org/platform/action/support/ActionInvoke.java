@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 package org.platform.action.support;
+import java.lang.reflect.Method;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 /**
- * 所有action的基类。
- * @version : 2013-3-26
+ * 负责调用Action方法。
+ * @version : 2013-5-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractAction {
-    /**执行*/
-    public abstract void execute(HttpServletRequest request, HttpServletResponse response);
+public interface ActionInvoke {
+    /**获取被标记为Action的方法。*/
+    public Method getActionMethod();
+    /**执行方法调用。*/
+    public Object invoke(HttpServletRequest request, HttpServletResponse response, Map<String, String[]> params);
 }
