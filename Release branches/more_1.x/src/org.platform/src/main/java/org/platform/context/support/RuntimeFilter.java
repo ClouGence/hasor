@@ -39,7 +39,6 @@ public class RuntimeFilter implements Filter {
     //
     /**初始化过滤器，初始化会同时初始化FilterPipeline*/
     public void init(FilterConfig filterConfig) throws ServletException {
-        Platform.info("init PlatformFilter...");
         ServletContext servletContext = filterConfig.getServletContext();
         this.appContext = (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
         Assert.isNotNull(this.appContext, "AppContext is null.");
@@ -49,9 +48,8 @@ public class RuntimeFilter implements Filter {
         Assert.isNotNull(this.appContext, "AppContext is null.");
         //
         /*2.初始化执行周期管理器。*/
-        Platform.info("FilterPipeline init... ");
         this.filterPipeline.initPipeline(this.appContext);
-        Platform.info("FilterPipeline started.");
+        Platform.info("PlatformFilter started.");
     }
     //
     /** 销毁 */

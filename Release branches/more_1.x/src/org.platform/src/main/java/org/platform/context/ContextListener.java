@@ -22,7 +22,7 @@ import org.platform.binder.ApiBinder;
  */
 public interface ContextListener {
     /**系统初始化过程...*/
-    public void initialize(ApiBinder event);
+    public void initialize(ApiBinder binder);
     /**完成初始化。*/
     public void initialized(AppContext appContext);
     /**系统被销毁过程...*/

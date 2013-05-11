@@ -26,7 +26,7 @@ import org.platform.context.InitListener;
 @InitListener(displayName = "ActionModuleListener", description = "org.platform.action软件包功能支持。", startIndex = 0)
 public class ActionModuleListener implements ContextListener {
     @Override
-    public void initialize(ApiBinder event) {
+    public void initialize(ApiBinder binder) {
         // TODO Auto-generated method stub
     }
     @Override

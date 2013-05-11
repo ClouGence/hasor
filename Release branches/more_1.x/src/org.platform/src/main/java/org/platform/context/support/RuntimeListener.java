@@ -45,9 +45,9 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         this.appContext = this.createAppContext(servletContextEvent.getServletContext());
         appContext.start();
         //2.获取SessionListenerPipeline
-        Platform.info("SessionListenerPipeline createInstance...");
         this.sessionListenerPipeline = this.appContext.getInstance(SessionListenerPipeline.class);
         this.sessionListenerPipeline.init(this.appContext);
+        Platform.info("sessionListenerPipeline created.");
         //3.放入ServletContext环境。
         Platform.info("ServletContext Attribut : " + AppContextName + " -->> " + Platform.logString(this.appContext));
         servletContextEvent.getServletContext().setAttribute(AppContextName, this.appContext);

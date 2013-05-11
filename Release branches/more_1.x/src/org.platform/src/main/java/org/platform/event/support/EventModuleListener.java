@@ -41,9 +41,10 @@ public class EventModuleListener implements ContextListener {
     //
     /*×°ÔØListener*/
     protected void loadListener(AppContext appContext) {
-        Platform.info("begin loadListener...");
         //1.»ñÈ¡
         Set<Class<?>> listenerSet = appContext.getClassSet(Listener.class);
+        if (listenerSet == null)
+            return;
         for (Class<?> cls : listenerSet) {
             if (EventListener.class.isAssignableFrom(cls) == false) {
                 Platform.warning("loadListener : not implemented EventListener of type %s.", cls);

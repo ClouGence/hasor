@@ -32,11 +32,11 @@ class ManagedCacheManager {
     private Map<String, CacheDefinition> cacheDefinitionMap = null;
     //
     public void initManager(AppContext appContext) {
-        Platform.info("init ManagedCacheManager...");
         this.cacheDefinitionMap = collectCacheDefinitionMap(appContext.getGuice());
         for (Entry<String, CacheDefinition> cacheDefinitionEnt : cacheDefinitionMap.entrySet()) {
             cacheDefinitionEnt.getValue().initCache(appContext);
         }
+        Platform.info("managedCacheManager initialized.");
     }
     private Map<String, CacheDefinition> collectCacheDefinitionMap(Injector injector) {
         Map<String, CacheDefinition> cacheDefinitionMap = new HashMap<String, CacheDefinition>();

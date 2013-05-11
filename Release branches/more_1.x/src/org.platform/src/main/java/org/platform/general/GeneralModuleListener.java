@@ -38,7 +38,7 @@ import org.platform.context.InitListener;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@InitListener(displayName = "GeneralModuleServiceListener", description = "org.platform.general软件包功能支持。", startIndex = -50)
+@InitListener(displayName = "GeneralModuleServiceListener", description = "org.platform.general软件包功能支持。", startIndex = -100)
 public class GeneralModuleListener implements ContextListener {
     /**初始化.*/
     @Override
@@ -58,6 +58,8 @@ public class GeneralModuleListener implements ContextListener {
     /**装载Bean*/
     protected void loadBean(ApiBinder event) {
         Set<Class<?>> beanSet = event.getClassSet(Bean.class);
+        if (beanSet == null)
+            return;
         for (Class<?> beanClass : beanSet) {
             Bean annoBean = beanClass.getAnnotation(Bean.class);
             String[] names = annoBean.value();
@@ -66,6 +68,7 @@ public class GeneralModuleListener implements ContextListener {
                 continue;
             }
             BeanBindingBuilder beanBuilder = event.newBean(names[0]);
+            Platform.info("loadBean %s bind %s", names, beanClass);
             for (int i = 1; i < names.length; i++)
                 beanBuilder.aliasName(names[i]);
             beanBuilder.bindType(beanClass);
@@ -76,6 +79,8 @@ public class GeneralModuleListener implements ContextListener {
     protected void loadFilter(ApiBinder event) {
         //1.获取
         Set<Class<?>> webFilterSet = event.getClassSet(WebFilter.class);
+        if (webFilterSet == null)
+            return;
         List<Class<? extends Filter>> webFilterList = new ArrayList<Class<? extends Filter>>();
         for (Class<?> cls : webFilterSet) {
             if (Filter.class.isAssignableFrom(cls) == false) {
@@ -100,6 +105,11 @@ public class GeneralModuleListener implements ContextListener {
             WebFilter filterAnno = filterType.getAnnotation(WebFilter.class);
             Map<String, String> initMap = this.toMap(filterAnno.initParams());
             event.filter(null, filterAnno.value()).through(filterType, initMap);
+            //
+            String filterName = StringUtil.isBlank(filterAnno.filterName()) ? filterType.getSimpleName() : filterAnno.filterName();
+            int sortInt = filterAnno.sort();
+            String sortStr = sortInt == Integer.MAX_VALUE ? "Max" : sortInt == Integer.MIN_VALUE ? "Min" : String.valueOf(sortInt);
+            Platform.info("loadFilter %s[%s] bind %s on %s.", filterName, sortStr, filterType, filterAnno.value());
         }
     }
     //
@@ -107,6 +117,8 @@ public class GeneralModuleListener implements ContextListener {
     protected void loadServlet(ApiBinder event) {
         //1.获取
         Set<Class<?>> webServletSet = event.getClassSet(WebServlet.class);
+        if (webServletSet == null)
+            return;
         List<Class<? extends HttpServlet>> webServletList = new ArrayList<Class<? extends HttpServlet>>();
         for (Class<?> cls : webServletSet) {
             if (HttpServlet.class.isAssignableFrom(cls) == false) {
@@ -131,6 +143,11 @@ public class GeneralModuleListener implements ContextListener {
             WebServlet servletAnno = servletType.getAnnotation(WebServlet.class);
             Map<String, String> initMap = this.toMap(servletAnno.initParams());
             event.serve(null, servletAnno.value()).with(servletType, initMap);
+            //
+            String servletName = StringUtil.isBlank(servletAnno.servletName()) ? servletType.getSimpleName() : servletAnno.servletName();
+            int sortInt = servletAnno.loadOnStartup();
+            String sortStr = sortInt == Integer.MAX_VALUE ? "Max" : sortInt == Integer.MIN_VALUE ? "Min" : String.valueOf(sortInt);
+            Platform.info("loadServlet %s[%s] bind %s on %s.", servletName, sortStr, servletType, servletAnno.value());
         }
     }
     //
@@ -138,6 +155,8 @@ public class GeneralModuleListener implements ContextListener {
     protected void loadErrorHook(ApiBinder event) {
         //1.获取
         Set<Class<?>> webErrorSet = event.getClassSet(WebError.class);
+        if (webErrorSet == null)
+            return;
         List<Class<? extends ErrorHook>> webErrorList = new ArrayList<Class<? extends ErrorHook>>();
         for (Class<?> cls : webErrorSet) {
             if (ErrorHook.class.isAssignableFrom(cls) == false) {
@@ -162,6 +181,10 @@ public class GeneralModuleListener implements ContextListener {
             WebError errorAnno = errorHookType.getAnnotation(WebError.class);
             Map<String, String> initMap = this.toMap(errorAnno.initParams());
             event.error(errorAnno.value()).bind(errorHookType, initMap);
+            //
+            int sortInt = errorAnno.sort();
+            String sortStr = sortInt == Integer.MAX_VALUE ? "Max" : sortInt == Integer.MIN_VALUE ? "Min" : String.valueOf(sortInt);
+            Platform.info("loadErrorHook [%s] of %s.", sortStr, errorHookType);
         }
     }
     //
@@ -169,6 +192,8 @@ public class GeneralModuleListener implements ContextListener {
     protected void loadSessionListener(ApiBinder event) {
         //1.获取
         Set<Class<?>> sessionListenerSet = event.getClassSet(WebSessionListener.class);
+        if (sessionListenerSet == null)
+            return;
         List<Class<? extends HttpSessionListener>> sessionListenerList = new ArrayList<Class<? extends HttpSessionListener>>();
         for (Class<?> cls : sessionListenerSet) {
             if (HttpSessionListener.class.isAssignableFrom(cls) == false) {
@@ -191,6 +216,11 @@ public class GeneralModuleListener implements ContextListener {
         //3.注册
         for (Class<? extends HttpSessionListener> sessionListener : sessionListenerList) {
             event.sessionListener().bind(sessionListener);
+            //
+            WebSessionListener anno = sessionListener.getAnnotation(WebSessionListener.class);
+            int sortInt = anno.sort();
+            String sortStr = sortInt == Integer.MAX_VALUE ? "Max" : sortInt == Integer.MIN_VALUE ? "Min" : String.valueOf(sortInt);
+            Platform.info("loadSessionListener [%s] bind %s.", sortStr, sessionListener);
         }
     }
     //

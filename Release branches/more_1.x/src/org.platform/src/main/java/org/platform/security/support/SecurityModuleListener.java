@@ -73,10 +73,6 @@ public class SecurityModuleListener implements ContextListener {
         /*HttpSession创建和销毁通知机制*/
         this.secListener = new SecuritySessionListener();
         event.sessionListener().bind(this.secListener);
-        /*request，请求拦截器*/
-        Key<SecurityFilter> filterKey = Key.get(SecurityFilter.class);
-        binder.bind(filterKey).asEagerSingleton();
-        event.filter("*").through(filterKey);
         /*aop，方法执行权限支持*/
         event.getGuiceBinder().bindInterceptor(new ClassPowerMatcher(), new MethodPowerMatcher(), new SecurityInterceptor());/*注册Aop*/
         /*装载SecurityAccess*/
@@ -110,9 +106,10 @@ public class SecurityModuleListener implements ContextListener {
     //
     /*装载SecurityAccess*/
     protected void loadSecurityAuth(ApiBinder event) {
-        Platform.info("begin loadSecurityAuth...");
         //1.获取
         Set<Class<?>> authSet = event.getClassSet(SecurityAuth.class);
+        if (authSet == null)
+            return;
         List<Class<? extends ISecurityAuth>> authList = new ArrayList<Class<? extends ISecurityAuth>>();
         for (Class<?> cls : authSet) {
             if (ISecurityAuth.class.isAssignableFrom(cls) == false) {
@@ -142,9 +139,10 @@ public class SecurityModuleListener implements ContextListener {
     //
     /*装载SecurityAccess*/
     protected void loadSecurityAccess(ApiBinder event) {
-        Platform.info("begin loadSecurityAccess...");
         //1.获取
         Set<Class<?>> accessSet = event.getClassSet(SecurityAccess.class);
+        if (accessSet == null)
+            return;
         List<Class<? extends ISecurityAccess>> accessList = new ArrayList<Class<? extends ISecurityAccess>>();
         for (Class<?> cls : accessSet) {
             if (ISecurityAccess.class.isAssignableFrom(cls) == false) {

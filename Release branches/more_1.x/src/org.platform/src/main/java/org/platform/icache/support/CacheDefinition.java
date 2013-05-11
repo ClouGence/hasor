@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.platform.icache.support;
+import org.platform.Platform;
 import org.platform.context.AppContext;
 import org.platform.icache.ICache;
 import com.google.inject.Provider;
@@ -35,6 +36,7 @@ class CacheDefinition implements Provider<ICache<?>> {
         return name;
     }
     public void initCache(AppContext appContext) {
+        Platform.info("initCache [%s] bind %s.", name, cacheType);
         this.cacheObject = appContext.getGuice().getInstance(this.cacheType);
         this.cacheObject.initCache(appContext);
     }

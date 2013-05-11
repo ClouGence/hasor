@@ -32,11 +32,11 @@ class ManagedSecurityAccessManager {
     private Map<String, SecurityAccessDefinition> accessDefinitionMap = null;
     //
     public void initManager(AppContext appContext) {
-        Platform.info("init ManagedSecurityAccessManager...");
         this.accessDefinitionMap = collectSecurityAccessDefinitionMap(appContext.getGuice());
         for (Entry<String, SecurityAccessDefinition> definitionEnt : this.accessDefinitionMap.entrySet()) {
             definitionEnt.getValue().initAccess(appContext);
         }
+        Platform.info("managedSecurityAccessManager initialized.");
     }
     private Map<String, SecurityAccessDefinition> collectSecurityAccessDefinitionMap(Injector injector) {
         Map<String, SecurityAccessDefinition> accessDefinitionMap = new HashMap<String, SecurityAccessDefinition>();

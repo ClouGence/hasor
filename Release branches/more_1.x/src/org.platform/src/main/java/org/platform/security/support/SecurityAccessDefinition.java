@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.platform.security.support;
+import org.platform.Platform;
 import org.platform.context.AppContext;
 import org.platform.security.ISecurityAccess;
 import com.google.inject.Key;
@@ -33,6 +34,7 @@ class SecurityAccessDefinition implements Provider<ISecurityAccess> {
         this.accessKey = accessKey;
     }
     public void initAccess(AppContext appContext) {
+        Platform.info("init SecurityAccess %s bind %s.", authSystem, accessKey);
         this.accessObject = appContext.getGuice().getInstance(this.accessKey);
         this.accessObject.initAccess(appContext);
     }

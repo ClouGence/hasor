@@ -25,24 +25,25 @@ import com.google.inject.Provider;
  * @author 赵永春 (zyc@byshell.org)
  */
 class ActionDefinition implements Provider<ActionInvoke>, ActionInvoke {
-    private String namespace    = null; //所处命名空间
-    private String actionMethod = null; //action名称
+    private String   namespace    = null; //所处命名空间
+    private String   actionMethod = null; //action名称
+    private Class<?> targetClass  = null;
     //
     //
     //
     //
-    @Override
-    public Object invoke(HttpServletRequest request, HttpServletResponse response, Map<String, String[]> params) {
-        return params;
-        // TODO Auto-generated method stub
-    }
     @Override
     public ActionInvoke get() {
         return this;
     }
+    /*-------------------------------------------------------*/
     @Override
-    public Method getActionMethod() {
-        // TODO Auto-generated method stub
-        return null;
+    public String getActionMethod() {
+        return this.actionMethod;
+    }
+    @Override
+    public Object invoke(HttpServletRequest request, HttpServletResponse response, Map<String, String[]> params) {
+        
+        return params;
     }
 }

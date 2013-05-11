@@ -28,6 +28,7 @@ import org.platform.Assert;
 import org.platform.Platform;
 import org.platform.context.AppContext;
 import org.platform.context.support.RuntimeListener;
+import org.platform.general.WebFilter;
 import org.platform.security.AuthSession;
 import org.platform.security.AutoLoginProcess;
 import org.platform.security.LoginProcess;
@@ -38,12 +39,15 @@ import org.platform.security.SecurityDispatcher;
 import org.platform.security.SecurityException;
 import org.platform.security.SecurityForward;
 import org.platform.security.TestURLPermissionProcess;
+import com.google.inject.Singleton;
 /**
  * 权限系统URL请求处理支持。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@byshell.org)
  */
-class SecurityFilter implements Filter {
+@Singleton
+@WebFilter(value = "*", sort = Integer.MIN_VALUE)
+public class SecurityFilter implements Filter {
     private AppContext               appContext            = null;
     private SecuritySettings         settings              = null;
     private SecurityContext          secContext            = null;
@@ -55,7 +59,6 @@ class SecurityFilter implements Filter {
     /**初始化*/
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        Platform.info("init SecurityFilter...");
         ServletContext servletContext = filterConfig.getServletContext();
         this.appContext = (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
         Assert.isNotNull(this.appContext, "AppContext is null.");
@@ -66,11 +69,14 @@ class SecurityFilter implements Filter {
         this.logoutSecurityProcess = this.appContext.getInstance(LogoutProcess.class);
         this.urlPermissionProcess = this.appContext.getInstance(TestURLPermissionProcess.class);
         this.autoLoginProcess = this.appContext.getInstance(AutoLoginProcess.class);
+        Platform.info("SecurityFilter started.");
     }
     //
     /**销毁*/
     @Override
-    public void destroy() {}
+    public void destroy() {
+        Platform.info("SecurityFilter destroy.");
+    }
     //
     /***/
     private void writeAuthSession(HttpServletRequest request, HttpServletResponse response, boolean reWriteCookie) throws SecurityException {

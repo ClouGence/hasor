@@ -37,4 +37,6 @@ public @interface WebServlet {
     public String[] value();
     /**URL规则是否使用正则表达式格式书写的*/
     public boolean regex() default false;
+    /**Servlet名称*/
+    public String servletName() default "";
 }

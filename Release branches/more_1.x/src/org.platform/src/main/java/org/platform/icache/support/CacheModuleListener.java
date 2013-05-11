@@ -83,9 +83,10 @@ public class CacheModuleListener implements ContextListener {
     //
     /*装载KeyBuilder*/
     protected void loadKeyBuilder(ApiBinder event) {
-        Platform.info("begin loadKeyBuilder...");
         //1.获取
         Set<Class<?>> iKeyBuilderSet = event.getClassSet(KeyBuilder.class);
+        if (iKeyBuilderSet == null)
+            return;
         List<Class<? extends IKeyBuilder>> iKeyBuilderList = new ArrayList<Class<? extends IKeyBuilder>>();
         for (Class<?> cls : iKeyBuilderSet) {
             if (IKeyBuilder.class.isAssignableFrom(cls) == false) {
@@ -127,16 +128,18 @@ public class CacheModuleListener implements ContextListener {
     //
     /*装载Cache*/
     protected void loadCache(ApiBinder event) {
-        Platform.info("begin loadCache...");
         //1.获取
         Set<Class<?>> cacheSet = event.getClassSet(Cache.class);
+        if (cacheSet == null)
+            return;
         List<Class<ICache<?>>> cacheList = new ArrayList<Class<ICache<?>>>();
-        for (Class<?> cls : cacheSet) {
-            if (ICache.class.isAssignableFrom(cls) == false) {
-                Platform.warning("loadCache : not implemented ICache of type %s", cls);
-            } else
-                cacheList.add((Class<ICache<?>>) cls);
-        }
+        if (cacheSet != null)
+            for (Class<?> cls : cacheSet) {
+                if (ICache.class.isAssignableFrom(cls) == false) {
+                    Platform.warning("loadCache : not implemented ICache of type %s", cls);
+                } else
+                    cacheList.add((Class<ICache<?>>) cls);
+            }
         //3.注册服务
         long defaultCacheIndex = Long.MAX_VALUE;
         Binder binder = event.getGuiceBinder();

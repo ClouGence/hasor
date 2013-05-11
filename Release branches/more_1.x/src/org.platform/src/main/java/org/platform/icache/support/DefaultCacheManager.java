@@ -34,7 +34,6 @@ class DefaultCacheManager implements CacheManager {
     private IKeyBuilder              defaultKeyBuilder = null;
     @Override
     public void initManager(AppContext appContext) {
-        Platform.info("init CacheManager...");
         this.appContext = appContext;
         //
         this.cacheManager = new ManagedCacheManager();
@@ -44,6 +43,7 @@ class DefaultCacheManager implements CacheManager {
         //
         this.defaultCache = appContext.getGuice().getInstance(ICache.class);
         this.defaultKeyBuilder = appContext.getGuice().getInstance(IKeyBuilder.class);
+        Platform.info("CacheManager initialized.");
     }
     @Override
     public void destroyManager(AppContext appContext) {

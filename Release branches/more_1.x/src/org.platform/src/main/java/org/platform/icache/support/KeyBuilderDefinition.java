@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.platform.icache.support;
+import org.platform.Platform;
 import org.platform.context.AppContext;
 import org.platform.icache.IKeyBuilder;
 import com.google.inject.Key;
@@ -37,6 +38,7 @@ class KeyBuilderDefinition implements Provider<IKeyBuilder> {
         return this.keyBuilderKey;
     }
     public void initKeyBuilder(final AppContext appContext) {
+        Platform.info("initKeyBuilder %s mappingTo %s.", type, keyBuilderKey);
         this.keyBuilderObject = appContext.getGuice().getInstance(this.keyBuilderKey);
         this.keyBuilderObject.initKeyBuilder(appContext);
     }

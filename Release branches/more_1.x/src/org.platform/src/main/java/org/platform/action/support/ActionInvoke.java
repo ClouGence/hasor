@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.platform.action.support;
-import java.lang.reflect.Method;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface ActionInvoke {
     /**获取被标记为Action的方法。*/
-    public Method getActionMethod();
+    public String getActionMethod();
     /**执行方法调用。*/
     public Object invoke(HttpServletRequest request, HttpServletResponse response, Map<String, String[]> params);
 }

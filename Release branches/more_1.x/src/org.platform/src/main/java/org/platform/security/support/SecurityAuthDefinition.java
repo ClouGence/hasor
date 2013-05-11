@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.platform.security.support;
+import org.platform.Platform;
 import org.platform.context.AppContext;
 import org.platform.security.ISecurityAuth;
 import com.google.inject.Key;
@@ -33,6 +34,7 @@ class SecurityAuthDefinition implements Provider<ISecurityAuth> {
         this.authKey = authKey;
     }
     public void initAuth(AppContext appContext) {
+        Platform.info("init SecurityAuth %s bind %s.", authSystem, authKey);
         this.authObject = appContext.getGuice().getInstance(this.authKey);
         this.authObject.initAuth(appContext);
     }

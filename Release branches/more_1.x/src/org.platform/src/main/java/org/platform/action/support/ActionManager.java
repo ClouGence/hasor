@@ -21,21 +21,11 @@ import org.platform.context.AppContext;
  * @version : 2013-4-20
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ActionManager {
-    /*经过倒序排序之后的命名空间管理器*/
-    private NameSpaceManager[] nameSpaceManager = null;
-    //
-    //
+public interface ActionManager {
     /**初始化启动缓存服务。*/
-    public void initManager(AppContext appContext) {
-        //
-    }
+    public void initManager(AppContext appContext);
     /**销毁缓存服务*/
-    public void destroyManager(AppContext appContext) {
-        //
-    }
+    public void destroyManager(AppContext appContext);
     /**根据请求地址查找符合的Action命名空间。返回的map中key是action名。*/
-    public NameSpaceManager findNameSpace(HttpServletRequest request) {
-        return null;
-    }
+    public NameSpaceManager findNameSpace(HttpServletRequest request);
 }

@@ -30,6 +30,12 @@ public interface PlatformConfig {
     //
     /**异常处理程序总迭代次数(配置Code).*/
     public static final String HttpServlet_ErrorCaseCount                  = "httpServlet.errorCaseCount";
+    /**是否启用Action功能.*/
+    public static final String ActionServlet_Enable                        = "httpServlet.actionServlet.enable";
+    /**模式：mode:RestOnly（rest风格）、ServletOnly（中央servlet）、Both（两者同时使用）*/
+    public static final String ActionServlet_Mode                          = "httpServlet.actionServlet.mode";
+    /**action拦截器.*/
+    public static final String ActionServlet_Intercept                     = "httpServlet.actionServlet";
     //
     //
     /**程序工作空间基础目录（绝对地址）*/

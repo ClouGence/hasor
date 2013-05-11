@@ -30,11 +30,11 @@ class ManagedKeyBuilderManager {
     private KeyBuilderDefinition[] keyBuilderDefinitionSet = null;
     //
     public void initManager(AppContext appContext) {
-        Platform.info("init ManagedKeyBuilderManager...");
         this.keyBuilderDefinitionSet = collectKeyBuilderDefinitionSet(appContext.getGuice());
         for (KeyBuilderDefinition keyBuilderDefinition : keyBuilderDefinitionSet) {
             keyBuilderDefinition.initKeyBuilder(appContext);
         }
+        Platform.info("managedKeyBuilderManager initialized.");
     }
     private KeyBuilderDefinition[] collectKeyBuilderDefinitionSet(Injector injector) {
         ArrayList<KeyBuilderDefinition> keyBuilderDefinitionList = new ArrayList<KeyBuilderDefinition>();

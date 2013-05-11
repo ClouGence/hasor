@@ -27,6 +27,8 @@ import javax.servlet.Filter;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface WebFilter {
+    /**filter名称*/
+    public String filterName() default "";
     /**Filter在过滤器链上的顺序。默认：0，数字越大启动越延迟。
      * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
     public int sort() default 0;
