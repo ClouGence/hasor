@@ -13,22 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.jmx;
-import java.lang.management.ManagementFactory;
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-/**
+package org.platform.action.support;
+/***
  * 
- * @version : 2013-5-7
+ * @version : 2013-5-11
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Main {
-    public static void main(String[] args) throws Exception {
-        //        HtmlAdaptorServer s;
-        //        MBeanServer server = MBeanServerFactory.createMBeanServer();
-        MBeanServer server = ManagementFactory.getPlatformMBeanServer();
-        TestApi mxBean = new TestApiMBeanImpl();
-        server.registerMBean(mxBean, new ObjectName("serve:id=Server"));
-        System.in.read();
+public interface ActionBinder {
+    /**绑定一个命名空间*/
+    public NamespaceBindingBuilder bindPath(String path);
+    //
+    //
+    public static interface NamespaceBindingBuilder {
+        public ActionBindingBuilder bindAction(String actionName)
+        //public NamespaceBindingBuilder bindPath(String namespacePath)
     }
+    
+    
+    public ActionBindingBuilder bindAction(String actionName)
+    //public NamespaceBindingBuilder bindPath(String namespacePath)
 }
+
+
+

@@ -14,27 +14,37 @@
  * limitations under the License.
  */
 package org.platform.action.support;
+import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
 import org.platform.context.ContextListener;
 import org.platform.context.InitListener;
+import com.google.inject.Binder;
 /**
  * Action服务启动类，用于装载action。
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@InitListener(displayName = "ActionModuleListener", description = "org.platform.action软件包功能支持。", startIndex = 0)
+@InitListener(displayName = "ActionModuleListener", description = "org.platform.action软件包功能支持。", startIndex = -100)
 public class ActionModuleListener implements ContextListener {
+    private ActionSettings settings = null;
     @Override
-    public void initialize(ApiBinder binder) {
-        // TODO Auto-generated method stub
+    public void initialize(ApiBinder event) {
+        Binder binder = event.getGuiceBinder();
+        /*配置*/
+        this.settings = new ActionSettings();
+        this.settings.loadConfig(event.getSettings());
+        binder.bind(ActionSettings.class).toInstance(this.settings);//通过Guice
+        /*初始化*/
     }
     @Override
     public void initialized(AppContext appContext) {
-        // TODO Auto-generated method stub
+        appContext.getSettings().addSettingsListener(this.settings);
+        //
+        Platform.info("online ->> action is %s", (this.settings.isEnable() ? "enable." : "disable."));
     }
     @Override
     public void destroy(AppContext appContext) {
-        // TODO Auto-generated method stub
+        appContext.getSettings().removeSettingsListener(this.settings);
     }
 }

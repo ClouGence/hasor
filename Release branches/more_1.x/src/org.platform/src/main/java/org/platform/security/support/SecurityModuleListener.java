@@ -54,7 +54,7 @@ import com.google.inject.Key;
 import com.google.inject.internal.UniqueAnnotations;
 import com.google.inject.matcher.AbstractMatcher;
 /**
- * 支持Service等注解功能。
+ * 支持Service等注解功能，启动-90原因是InternalSecurityContext类需要Cache的服务。
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
