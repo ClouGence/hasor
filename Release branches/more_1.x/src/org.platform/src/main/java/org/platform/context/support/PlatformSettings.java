@@ -33,7 +33,7 @@ import org.more.util.StringUtil;
 import org.more.util.map.Properties;
 import org.platform.Assert;
 import org.platform.Platform;
-import org.platform.context.ContextListener;
+import org.platform.context.PlatformListener;
 import org.platform.context.SettingListener;
 import org.platform.context.Settings;
 /**
@@ -43,14 +43,14 @@ import org.platform.context.Settings;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class PlatformSettings extends Global implements Settings {
-    private final String                appSettingsName1         = "config.xml";
-    private final String                appSettingsName2         = "static-config.xml";
-    private final String                appSettingsName3         = "config-mapping.properties";
-    private final List<ContextListener> contextListener          = new ArrayList<ContextListener>();
-    private final List<SettingListener> settingListenerList      = new ArrayList<SettingListener>();
-    private final List<String>          loadNameSpaceList        = new ArrayList<String>();         //自定义配置文件命名空间。
-    private String                      settingsEncoding         = "utf-8";
-    private boolean                     enableSettingsMonitoring = true;                            //是否启动配置文件改动监听
+    private final String                 appSettingsName1         = "config.xml";
+    private final String                 appSettingsName2         = "static-config.xml";
+    private final String                 appSettingsName3         = "config-mapping.properties";
+    private final List<PlatformListener> contextListener          = new ArrayList<PlatformListener>();
+    private final List<SettingListener>  settingListenerList      = new ArrayList<SettingListener>();
+    private final List<String>           loadNameSpaceList        = new ArrayList<String>();          //自定义配置文件命名空间。
+    private String                       settingsEncoding         = "utf-8";
+    private boolean                      enableSettingsMonitoring = true;                             //是否启动配置文件改动监听
     //
     //
     //
@@ -80,18 +80,18 @@ public class PlatformSettings extends Global implements Settings {
         return this.getToType(name, XmlProperty.class, null);
     }
     /**添加启动监听器。*/
-    public void addContextListener(ContextListener contextListener) {
+    public void addContextListener(PlatformListener contextListener) {
         if (this.contextListener.contains(contextListener) == false)
             this.contextListener.add(contextListener);
     }
     /**删除启动监听器。*/
-    public void removeContextListener(ContextListener contextListener) {
+    public void removeContextListener(PlatformListener contextListener) {
         if (this.contextListener.contains(contextListener) == true)
             this.contextListener.remove(contextListener);
     }
     @Override
-    public ContextListener[] getContextListeners() {
-        return this.contextListener.toArray(new ContextListener[this.contextListener.size()]);
+    public PlatformListener[] getContextListeners() {
+        return this.contextListener.toArray(new PlatformListener[this.contextListener.size()]);
     }
     /**添加配置文件变更监听器。*/
     public void addSettingsListener(SettingListener settingsListener) {

@@ -16,7 +16,7 @@
 package org.platform.binder.support;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
-import org.platform.context.ContextListener;
+import org.platform.context.PlatformListener;
 import org.platform.context.Settings;
 import com.google.inject.Binder;
 import com.google.inject.Module;
@@ -38,9 +38,9 @@ public class ApiBinderModule implements Module {
     }
     @Override
     public void configure(Binder binder) {
-        ContextListener[] listenerList = this.settings.getContextListeners();
+        PlatformListener[] listenerList = this.settings.getContextListeners();
         if (listenerList != null)
-            for (ContextListener listener : listenerList) {
+            for (PlatformListener listener : listenerList) {
                 if (listener == null)
                     continue;
                 Platform.info("send initialize to : %s", listener.getClass());

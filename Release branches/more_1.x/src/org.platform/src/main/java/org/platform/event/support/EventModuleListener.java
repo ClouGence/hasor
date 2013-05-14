@@ -20,8 +20,8 @@ import org.more.util.StringUtil;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
-import org.platform.context.ContextListener;
-import org.platform.context.InitListener;
+import org.platform.context.PlatformListener;
+import org.platform.context.startup.PlatformExt;
 import org.platform.event.EventListener;
 import org.platform.event.EventManager;
 import org.platform.event.Listener;
@@ -30,8 +30,8 @@ import org.platform.event.Listener;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@InitListener(displayName = "EventModuleServiceListener", description = "org.platform.event软件包功能支持。", startIndex = -100)
-public class EventModuleListener implements ContextListener {
+@PlatformExt(displayName = "EventModuleServiceListener", description = "org.platform.event软件包功能支持。", startIndex = -100)
+public class EventModuleListener implements PlatformListener {
     private EventManager eventManager = null;
     /**初始化.*/
     @Override

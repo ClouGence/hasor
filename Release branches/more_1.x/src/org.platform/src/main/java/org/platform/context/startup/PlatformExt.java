@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.context;
+package org.platform.context.startup;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.platform.context.PlatformListener;
 /**
- * 标志该类注册到系统初始化过程，该类在标记注解时必须实现{@link ContextListener}接口。
+ * 标志该类注册到系统初始化过程，该类在标记注解时必须实现{@link PlatformListener}接口。
  * @version : 2013-3-20
  * @author 赵永春 (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })
-public @interface InitListener {
+public @interface PlatformExt {
     /**默认名称，该名称在系统控制台用于管理显示用途。*/
     public String displayName() default "";
     /**对该类的描述信息。*/

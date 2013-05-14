@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 package org.platform.context.support;
-import static org.platform.PlatformConfig.Platform_LoadPackages;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-import org.more.util.ClassUtil;
 import org.platform.Assert;
 import org.platform.Platform;
 import org.platform.binder.support.ApiBinderModule;
 import org.platform.context.AppContext;
 import org.platform.context.BeanContext;
-import org.platform.context.ContextListener;
-import org.platform.context.InitListener;
+import org.platform.context.PlatformListener;
 import org.platform.context.Settings;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
@@ -87,15 +79,6 @@ public class PlatformAppContext extends AbstractAppContext {
                 });
             }
         };
-        //3.扫描所有ContextListener。
-        List<Class<? extends ContextListener>> initHookList = this.searchListenerClasses();
-        Platform.info("find ContextListener : " + Platform.logString(initHookList));
-        Platform.info("create ContextListener...");
-        for (Class<?> listenerClass : initHookList) {
-            ContextListener listenerObject = this.createInitListenerClasse(listenerClass);
-            if (listenerObject != null)
-                settings.addContextListener(listenerObject);
-        }
         //4.构建Guice并init 注解类。
         Platform.info("initialize ...");
         this.guice = this.createInjector(systemModule);
@@ -103,9 +86,9 @@ public class PlatformAppContext extends AbstractAppContext {
         Platform.info("init modules finish.");
         //4.发送完成初始化信号
         Platform.info("send Initialized sign.");
-        final ContextListener[] listenerList = this.getSettings().getContextListeners();
+        final PlatformListener[] listenerList = this.getSettings().getContextListeners();
         if (listenerList != null) {
-            for (ContextListener listener : listenerList) {
+            for (PlatformListener listener : listenerList) {
                 if (listener == null)
                     continue;
                 listener.initialized(this);
@@ -115,54 +98,14 @@ public class PlatformAppContext extends AbstractAppContext {
     }
     /**销毁方法。*/
     public synchronized void destroyed() {
-        final ContextListener[] listenerList = this.getSettings().getContextListeners();
+        final PlatformListener[] listenerList = this.getSettings().getContextListeners();
         if (listenerList != null) {
-            for (ContextListener listener : listenerList)
+            for (PlatformListener listener : listenerList)
                 listener.destroy(this);
         }
     }
     /**通过guice创建{@link Injector}*/
     protected Injector createInjector(Module systemModule) {
         return Guice.createInjector(systemModule);
-    }
-    //
-    /**获取监听器类型集合，用于搜索程序中所有标记了InitListener注解的类型，并且该类型实现了{@link ContextListener}接口。*/
-    protected List<Class<? extends ContextListener>> searchListenerClasses() {
-        //1.扫描classpath包
-        String spanPackages = this.getSettings().getString(Platform_LoadPackages);
-        String[] spanPackage = spanPackages.split(",");
-        Platform.info("loadPackages : " + Platform.logString(spanPackage));
-        Set<Class<?>> initHookSet = ClassUtil.getClassSet(spanPackage, InitListener.class);
-        //2.过滤未实现ContextListener接口的标注
-        List<Class<? extends ContextListener>> initHookList = new ArrayList<Class<? extends ContextListener>>();
-        for (Class<?> cls : initHookSet) {
-            if (ContextListener.class.isAssignableFrom(cls) == false) {
-                Platform.warning("not implemented ContextListener :%s", cls);
-            } else {
-                initHookList.add((Class<? extends ContextListener>) cls);
-            }
-        }
-        //排序最终数据
-        Collections.sort(initHookList, new Comparator<Class<?>>() {
-            @Override
-            public int compare(Class<?> o1, Class<?> o2) {
-                InitListener o1Anno = o1.getAnnotation(InitListener.class);
-                InitListener o2Anno = o2.getAnnotation(InitListener.class);
-                int o1AnnoIndex = o1Anno.startIndex();
-                int o2AnnoIndex = o2Anno.startIndex();
-                return (o1AnnoIndex < o2AnnoIndex ? -1 : (o1AnnoIndex == o2AnnoIndex ? 0 : 1));
-            }
-        });
-        return initHookList;
-    }
-    //
-    /**创建{@link ContextListener}接口对象。*/
-    protected ContextListener createInitListenerClasse(Class<?> listenerClass) {
-        try {
-            return (ContextListener) listenerClass.newInstance();
-        } catch (Exception e) {
-            Platform.error("create %s an error!%s", listenerClass, e);
-            return null;
-        }
     }
 }

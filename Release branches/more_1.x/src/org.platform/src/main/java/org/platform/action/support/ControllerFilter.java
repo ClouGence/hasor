@@ -35,7 +35,7 @@ import com.google.inject.Singleton;
 public class ControllerFilter implements Filter {
     @Inject
     private ActionSettings actionSettings = null;
-    @Inject
+    //    @Inject
     private ActionManager  actionManager  = null;
     // 
     @Override
@@ -46,8 +46,9 @@ public class ControllerFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         //
+        chain.doFilter(request, response);
         // TODO Auto-generated method stub
-        actionManager.findNameSpace(httpRequest).getActionByName(httpRequest.getMethod(), "aa").invoke(request, response, params);
+        //        actionManager.findNameSpace(httpRequest).getActionByName(httpRequest.getMethod(), "aa").invoke(request, response, params);
     }
     @Override
     public void destroy() {

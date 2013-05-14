@@ -31,15 +31,15 @@ import org.platform.binder.ApiBinder;
 import org.platform.binder.ApiBinder.BeanBindingBuilder;
 import org.platform.binder.ErrorHook;
 import org.platform.context.AppContext;
-import org.platform.context.ContextListener;
-import org.platform.context.InitListener;
+import org.platform.context.PlatformListener;
+import org.platform.context.startup.PlatformExt;
 /**
  * 支持Bean、WebError、WebFilter、WebServlet注解功能。
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@InitListener(displayName = "GeneralModuleServiceListener", description = "org.platform.general软件包功能支持。", startIndex = -100)
-public class GeneralModuleListener implements ContextListener {
+@PlatformExt(displayName = "GeneralModuleServiceListener", description = "org.platform.general软件包功能支持。", startIndex = -100)
+public class GeneralModuleListener implements PlatformListener {
     /**初始化.*/
     @Override
     public void initialize(ApiBinder event) {

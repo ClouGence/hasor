@@ -36,7 +36,7 @@
 		<rules>
 			<includes>
 				<include mode="Login">/user</include>
-				<include mode="Permission" permissions="AdminPower">/admin/**.jsp</include>
+				<include mode="Permission" permissions="AdminPower">/admin/</include>
 				<include mode="Permission" permissions="BBSPower">/bbs</include>
 			</includes>
 			<excludes>

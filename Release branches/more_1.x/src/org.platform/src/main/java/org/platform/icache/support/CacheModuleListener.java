@@ -28,8 +28,8 @@ import org.more.util.StringUtil;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
-import org.platform.context.ContextListener;
-import org.platform.context.InitListener;
+import org.platform.context.PlatformListener;
+import org.platform.context.startup.PlatformExt;
 import org.platform.icache.Cache;
 import org.platform.icache.CacheManager;
 import org.platform.icache.DefaultCache;
@@ -48,8 +48,8 @@ import com.google.inject.name.Names;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@InitListener(displayName = "CacheModuleServiceListener", description = "org.platform.icache软件包功能支持。", startIndex = -100)
-public class CacheModuleListener implements ContextListener {
+@PlatformExt(displayName = "CacheModuleServiceListener", description = "org.platform.icache软件包功能支持。", startIndex = -100)
+public class CacheModuleListener implements PlatformListener {
     private CacheManager  cacheManager = null;
     private CacheSettings settings     = null;
     /**初始化.*/

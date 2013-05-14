@@ -28,8 +28,8 @@ import org.more.util.StringUtil;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
-import org.platform.context.ContextListener;
-import org.platform.context.InitListener;
+import org.platform.context.PlatformListener;
+import org.platform.context.startup.PlatformExt;
 import org.platform.security.AuthSession;
 import org.platform.security.AutoLoginProcess;
 import org.platform.security.ISecurityAccess;
@@ -58,8 +58,8 @@ import com.google.inject.matcher.AbstractMatcher;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@InitListener(displayName = "SecurityModuleServiceListener", description = "org.platform.security软件包功能支持。", startIndex = -90)
-public class SecurityModuleListener implements ContextListener {
+@PlatformExt(displayName = "SecurityModuleServiceListener", description = "org.platform.security软件包功能支持。", startIndex = -90)
+public class SecurityModuleListener implements PlatformListener {
     private SecurityContext         secService  = null;
     private SecuritySessionListener secListener = null;
     private SecuritySettings        settings    = null;

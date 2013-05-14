@@ -16,15 +16,15 @@
 package org.platform.webapps;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
-import org.platform.context.ContextListener;
-import org.platform.context.InitListener;
+import org.platform.context.PlatformListener;
+import org.platform.context.startup.PlatformExt;
 /**
  * 
  * @version : 2013-4-29
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@InitListener(displayName = "WebAppsListener", description = "WebAppsListener≤‚ ‘°£", startIndex = 10)
-public class WebAppsListener implements ContextListener {
+@PlatformExt(displayName = "WebAppsListener", description = "WebAppsListener≤‚ ‘°£", startIndex = 10)
+public class WebAppsListener implements PlatformListener {
     @Override
     public void initialize(ApiBinder binder) {
         // TODO Auto-generated method stub

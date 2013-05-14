@@ -9,28 +9,42 @@
 	<artifactId>org.platform.runtime</artifactId>
 	<version>0.0.1</version>
 	<packaging>jar</packaging>
-	<!-- 全局引用的JAR -->
+	<!-- 引用依赖 -->
 	<dependencies>
+		<!-- JUnit Test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- Jetty 8 Test -->
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>8.1.10.v20130312</version>
+			<optional>true</optional>
+			<scope>test</scope>
+		</dependency>
+		<!-- JSP Support -->
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-jsp</artifactId>
+			<version>8.1.2.v20120308</version>
+		</dependency>
+		<!-- =================================================================== -->
 		<!-- Guice3 -->
 		<dependency>
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
 			<version>3.0</version>
 		</dependency>
-		<!-- J2EE -->
+		<!-- J2EE API -->
 		<dependency>
-			<groupId>org.jboss.spec.javax.servlet</groupId>
-			<artifactId>jboss-servlet-api_3.0_spec</artifactId>
-			<version>1.0.1.Final</version>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>6.0</version>
 			<optional>true</optional>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.spec.javax.servlet.jsp</groupId>
-			<artifactId>jboss-jsp-api_2.2_spec</artifactId>
-			<version>1.0.1.Final</version>
-			<optional>true</optional>
-			<scope>test</scope>
 		</dependency>
 		<!-- commons-lang -->
 		<dependency>
@@ -38,35 +52,19 @@
 			<artifactId>commons-lang</artifactId>
 			<version>2.6</version>
 		</dependency>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		<!-- Ehcache2.5.1 -->
 		<!-- <dependency> -->
-		<!-- <groupId>net.sf.ehcache</groupId> -->
-		<!-- <artifactId>ehcache-core</artifactId> -->
-		<!-- <version>2.5.1</version> -->
+		<!-- <groupId>org.jboss.spec.javax.servlet</groupId> -->
+		<!-- <artifactId>jboss-servlet-api_3.0_spec</artifactId> -->
+		<!-- <version>1.0.1.Final</version> -->
+		<!-- <optional>true</optional> -->
+		<!-- <scope>test</scope> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.jboss.spec.javax.servlet.jsp</groupId> -->
+		<!-- <artifactId>jboss-jsp-api_2.2_spec</artifactId> -->
+		<!-- <version>1.0.1.Final</version> -->
+		<!-- <optional>true</optional> -->
+		<!-- <scope>test</scope> -->
 		<!-- </dependency> -->
 
 		<!-- freemarker -->
@@ -88,22 +86,12 @@
 			<artifactId>commons-fileupload</artifactId>
 			<version>1.2.2</version>
 		</dependency>
-
-
-
+		<!-- Ehcache2.5.1 -->
 		<!-- <dependency> -->
-		<!-- <groupId>com.google.inject.extensions</groupId> -->
-		<!-- <artifactId>guice-persist</artifactId> -->
-		<!-- <version>3.0</version> -->
+		<!-- <groupId>net.sf.ehcache</groupId> -->
+		<!-- <artifactId>ehcache-core</artifactId> -->
+		<!-- <version>2.5.1</version> -->
 		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>com.google.inject.extensions</groupId> -->
-		<!-- <artifactId>guice-jmx</artifactId> -->
-		<!-- <version>3.0</version> -->
-		<!-- </dependency> -->
-
-
-
 		<!-- JSR173，Stax，JDK1.5 used -->
 		<!-- <dependency> -->
 		<!-- <groupId>javax.xml.stream</groupId> -->
@@ -123,30 +111,6 @@
 		<!-- <artifactId>bsf-api</artifactId> -->
 		<!-- <version>3.1</version> -->
 		<!-- <optional>true</optional> -->
-		<!-- </dependency> -->
-
-
-
-
-		<!-- Jetty 8 -->
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-webapp</artifactId>
-			<version>8.1.10.v20130312</version>
-			<optional>true</optional>
-			<scope>test</scope>
-		</dependency>
-
-
-
-
-
-
-		<!-- JSP Support -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.eclipse.jetty</groupId> -->
-		<!-- <artifactId>jetty-jsp</artifactId> -->
-		<!-- <version>8.1.2.v20120308</version> -->
 		<!-- </dependency> -->
 		<!-- Spring2.5 -->
 		<!-- <dependency> -->

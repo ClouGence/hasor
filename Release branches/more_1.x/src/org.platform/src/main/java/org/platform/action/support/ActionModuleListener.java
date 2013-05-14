@@ -17,16 +17,16 @@ package org.platform.action.support;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
-import org.platform.context.ContextListener;
-import org.platform.context.InitListener;
+import org.platform.context.PlatformListener;
+import org.platform.context.startup.PlatformExt;
 import com.google.inject.Binder;
 /**
  * Action服务启动类，用于装载action。
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@InitListener(displayName = "ActionModuleListener", description = "org.platform.action软件包功能支持。", startIndex = -100)
-public class ActionModuleListener implements ContextListener {
+@PlatformExt(displayName = "ActionModuleListener", description = "org.platform.action软件包功能支持。", startIndex = -100)
+public class ActionModuleListener implements PlatformListener {
     private ActionSettings settings = null;
     @Override
     public void initialize(ApiBinder event) {

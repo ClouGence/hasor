@@ -24,11 +24,11 @@ import org.more.global.assembler.xml.XmlProperty;
  */
 public interface Settings {
     /**添加启动监听器。*/
-    public void addContextListener(ContextListener contextListener);
+    public void addContextListener(PlatformListener contextListener);
     /**删除启动监听器。*/
-    public void removeContextListener(ContextListener contextListener);
+    public void removeContextListener(PlatformListener contextListener);
     /**获得所有启动监听器。*/
-    public ContextListener[] getContextListeners();
+    public PlatformListener[] getContextListeners();
     /**添加配置文件改变事件监听器。*/
     public void addSettingsListener(SettingListener settingsListener);
     /**删除配置文件改变事件监听器。*/

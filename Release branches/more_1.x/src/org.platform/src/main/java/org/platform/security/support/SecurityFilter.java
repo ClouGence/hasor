@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.platform.Assert;
 import org.platform.Platform;
 import org.platform.context.AppContext;
-import org.platform.context.support.RuntimeListener;
+import org.platform.context.startup.RuntimeListener;
 import org.platform.general.WebFilter;
 import org.platform.security.AuthSession;
 import org.platform.security.AutoLoginProcess;

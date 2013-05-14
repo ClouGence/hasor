@@ -20,7 +20,7 @@ import org.platform.binder.ApiBinder;
  * @version : 2013-3-20
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ContextListener {
+public interface PlatformListener {
     /**系统初始化过程...*/
     public void initialize(ApiBinder binder);
     /**完成初始化。*/

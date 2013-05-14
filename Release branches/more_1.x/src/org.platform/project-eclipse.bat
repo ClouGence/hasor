@@ -1,1 +1,2 @@
-mvn eclipse:eclipse -Dwtpversion=2.0  -DdownloadSources
+call mvn eclipse:eclipse -Dwtpversion=2.0  -DdownloadSources
+pause
