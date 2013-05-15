@@ -24,7 +24,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import org.more.webui.context.ViewContext;
 import org.platform.context.AppContext;
 import com.google.inject.Binding;
 import com.google.inject.Injector;

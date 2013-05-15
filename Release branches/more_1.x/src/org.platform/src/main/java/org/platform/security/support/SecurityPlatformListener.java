@@ -54,12 +54,12 @@ import com.google.inject.Key;
 import com.google.inject.internal.UniqueAnnotations;
 import com.google.inject.matcher.AbstractMatcher;
 /**
- * 支持Service等注解功能，启动-90原因是InternalSecurityContext类需要Cache的服务。
+ * 支持Service等注解功能，启动延迟一个量级原因是InternalSecurityContext类需要Cache和Event服务。
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@PlatformExt(displayName = "SecurityModuleServiceListener", description = "org.platform.security软件包功能支持。", startIndex = -90)
-public class SecurityModuleListener implements PlatformListener {
+@PlatformExt(displayName = "SecurityModuleServiceListener", description = "org.platform.security软件包功能支持。", startIndex = Integer.MIN_VALUE + 1)
+public class SecurityPlatformListener implements PlatformListener {
     private SecurityContext         secService  = null;
     private SecuritySessionListener secListener = null;
     private SecuritySettings        settings    = null;

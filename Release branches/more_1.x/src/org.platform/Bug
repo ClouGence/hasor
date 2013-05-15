@@ -76,5 +76,4 @@ org.platform v1.0
 
 
 
-
-            String value = URLEncoder.encode(user.getLoginName() + "@" + user.getId(), "UTF-8");
+org.platform.security 内置一个混合式身份认证和授权工具。

@@ -13,38 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.action.support;
+package org.platform.freemarker.support;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
 import org.platform.context.PlatformListener;
 import org.platform.context.startup.PlatformExt;
-import com.google.inject.Binder;
 /**
- * Action服务启动类，用于装载action。
+ * Freemarker服务。
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@PlatformExt(displayName = "ActionModuleListener", description = "org.platform.action软件包功能支持。", startIndex = -100)
-public class ActionModuleListener implements PlatformListener {
-    private ActionSettings settings = null;
+@PlatformExt(displayName = "FreemarkerPlatformListener", description = "org.platform.freemarker软件包功能支持。", startIndex = Integer.MIN_VALUE)
+public class FreemarkerPlatformListener implements PlatformListener {
+    /**初始化.*/
     @Override
     public void initialize(ApiBinder event) {
-        Binder binder = event.getGuiceBinder();
-        /*配置*/
-        this.settings = new ActionSettings();
-        this.settings.loadConfig(event.getSettings());
-        binder.bind(ActionSettings.class).toInstance(this.settings);//通过Guice
-        /*初始化*/
+        //
+    }
+    //
+    /*装载Listener*/
+    protected void loadListener(AppContext appContext) {
+        //
     }
     @Override
     public void initialized(AppContext appContext) {
-        appContext.getSettings().addSettingsListener(this.settings);
         //
-        Platform.info("online ->> action is %s", (this.settings.isEnable() ? "enable." : "disable."));
+        Platform.info("EventManager is started.");
     }
     @Override
     public void destroy(AppContext appContext) {
-        appContext.getSettings().removeSettingsListener(this.settings);
+        //
+        Platform.info("EventManager is destroy.");
     }
 }

@@ -48,8 +48,8 @@ import com.google.inject.name.Names;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@PlatformExt(displayName = "CacheModuleServiceListener", description = "org.platform.icache软件包功能支持。", startIndex = -100)
-public class CacheModuleListener implements PlatformListener {
+@PlatformExt(displayName = "CacheModuleServiceListener", description = "org.platform.icache软件包功能支持。", startIndex = Integer.MIN_VALUE)
+public class CachePlatformListener implements PlatformListener {
     private CacheManager  cacheManager = null;
     private CacheSettings settings     = null;
     /**初始化.*/

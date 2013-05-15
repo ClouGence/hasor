@@ -30,8 +30,8 @@ import org.platform.event.Listener;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@PlatformExt(displayName = "EventModuleServiceListener", description = "org.platform.event软件包功能支持。", startIndex = -100)
-public class EventModuleListener implements PlatformListener {
+@PlatformExt(displayName = "EventModuleServiceListener", description = "org.platform.event软件包功能支持。", startIndex = Integer.MIN_VALUE)
+public class EventPlatformListener implements PlatformListener {
     private EventManager eventManager = null;
     /**初始化.*/
     @Override

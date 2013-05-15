@@ -38,8 +38,8 @@ import org.platform.context.startup.PlatformExt;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@PlatformExt(displayName = "GeneralModuleServiceListener", description = "org.platform.general软件包功能支持。", startIndex = -100)
-public class GeneralModuleListener implements PlatformListener {
+@PlatformExt(displayName = "GeneralModuleServiceListener", description = "org.platform.general软件包功能支持。", startIndex = Integer.MIN_VALUE)
+public class GeneralPlatformListener implements PlatformListener {
     /**初始化.*/
     @Override
     public void initialize(ApiBinder event) {

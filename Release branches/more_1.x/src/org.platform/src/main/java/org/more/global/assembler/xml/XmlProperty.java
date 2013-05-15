@@ -26,10 +26,18 @@ public interface XmlProperty {
     public String getName();
     /**获取Xml节点文本值。*/
     public String getText();
+    /**设置节点文本内容*/
+    public void setText(String text);
     /**获取Xml节点Xml文本值。*/
     public String getXmlText();
     /**获取属性集合*/
     public Map<String, String> getAttributeMap();
     /**获取Xml子节点。*/
     public List<XmlProperty> getChildren();
+    /**获取父节点*/
+    public XmlProperty getParent();
+    /**设置父节点*/
+    public void setParent(XmlProperty parent);
+    /**克隆一个XmlProperty*/
+    public XmlProperty clone() throws CloneNotSupportedException;
 }

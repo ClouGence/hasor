@@ -41,9 +41,10 @@ class XmlProperty_ElementHook implements XmlDocumentHook, XmlElementHook, XmlTex
     @Override
     public void endDocument(XmlStackDecorator<Object> context, EndDocumentEvent event) throws XMLStreamException, IOException {};
     public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) throws XMLStreamException, IOException {
-        DefaultXmlProperty xmlProperty = new DefaultXmlProperty(event.getName().getLocalPart());
         DefaultXmlProperty parentXmlProperty = (DefaultXmlProperty) context.get(XmlProperty_AttName);
+        DefaultXmlProperty xmlProperty = new DefaultXmlProperty(parentXmlProperty, event.getName().getLocalPart());
         parentXmlProperty.addChildren(xmlProperty);
+        //
         for (int i = 0; i < event.getAttributeCount(); i++) {
             String attName = event.getAttributeName(i).getLocalPart();
             String attValue = event.getAttributeValue(i);

@@ -30,9 +30,14 @@ public class DefaultXmlProperty implements XmlProperty, GlobalProperty {
     private String                  elementName = null;
     private String                  textString  = null;
     private HashMap<String, String> arrMap      = new HashMap<String, String>();
+    private XmlProperty             parent      = null;
     private List<XmlProperty>       children    = new ArrayList<XmlProperty>();
     //
     //
+    public DefaultXmlProperty(XmlProperty parent, String elementName) {
+        this.parent = parent;
+        this.elementName = elementName;
+    }
     public DefaultXmlProperty(String elementName) {
         this.elementName = elementName;
     }
@@ -80,6 +85,19 @@ public class DefaultXmlProperty implements XmlProperty, GlobalProperty {
         return strBuilder.toString();
     }
     @Override
+    public XmlProperty clone() throws CloneNotSupportedException {
+        DefaultXmlProperty newData = new DefaultXmlProperty(this.parent, this.elementName);
+        newData.arrMap.putAll(this.arrMap);
+        newData.textString = this.textString;
+        if (children != null)
+            for (XmlProperty xmlProp : this.children) {
+                XmlProperty newClone = xmlProp.clone();
+                newClone.setParent(newData);
+                newData.children.add(newClone);
+            }
+        return newData;
+    }
+    @Override
     public String toString() {
         return this.getText();
     }
@@ -94,5 +112,13 @@ public class DefaultXmlProperty implements XmlProperty, GlobalProperty {
     @Override
     public Map<String, String> getAttributeMap() {
         return this.arrMap;
+    }
+    @Override
+    public XmlProperty getParent() {
+        return this.parent;
+    }
+    @Override
+    public void setParent(XmlProperty parent) {
+        this.parent = parent;
     }
 }
