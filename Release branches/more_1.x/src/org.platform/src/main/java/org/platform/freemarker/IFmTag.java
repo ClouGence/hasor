@@ -15,8 +15,8 @@
  */
 package org.platform.freemarker;
 /***
- * 自定义函数
+ * 自定义标签
  * @version : 2013-5-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface CustomerFun {}
+public interface IFmTag {}
