@@ -32,6 +32,7 @@ import org.more.util.StringUtil;
 import org.platform.binder.BeanInfo;
 import org.platform.context.AppContext;
 import com.google.inject.Binding;
+import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
 /**
  * {@link AppContext}接口的抽象实现类。
@@ -42,6 +43,10 @@ public abstract class AbstractAppContext implements AppContext {
     private long                  startTime   = System.currentTimeMillis(); //系统启动时间
     private Map<String, BeanInfo> beanInfoMap = null;
     //
+    /**启动*/
+    public abstract void start(Module... modules);
+    /**销毁方法。*/
+    public abstract void destroyed();
     @Override
     public long getAppStartTime() {
         return this.startTime;

@@ -19,6 +19,7 @@ import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
 import org.platform.context.PlatformListener;
 import org.platform.context.startup.PlatformExt;
+import org.platform.freemarker.FreemarkerManager;
 /**
  * Freemarker服务。
  * @version : 2013-4-8
@@ -26,24 +27,30 @@ import org.platform.context.startup.PlatformExt;
  */
 @PlatformExt(displayName = "FreemarkerPlatformListener", description = "org.platform.freemarker软件包功能支持。", startIndex = Integer.MIN_VALUE)
 public class FreemarkerPlatformListener implements PlatformListener {
+    private FreemarkerSettings freemarkerSettings = null;
     /**初始化.*/
     @Override
     public void initialize(ApiBinder event) {
+        this.freemarkerSettings = new FreemarkerSettings();
+        this.freemarkerSettings.loadConfig(event.getSettings());
         //
+        event.getGuiceBinder().bind(FreemarkerSettings.class).toInstance(freemarkerSettings);
+        event.getGuiceBinder().bind(FreemarkerManager.class).to(DefaultFreemarkerManager.class);
     }
     //
     /*装载Listener*/
     protected void loadListener(AppContext appContext) {
-        //
+        //TODO sss
     }
     @Override
     public void initialized(AppContext appContext) {
-        //
-        Platform.info("EventManager is started.");
+        appContext.getSettings().addSettingsListener(this.freemarkerSettings);
+        Platform.info("online ->> freemarker is %s", (this.freemarkerSettings.isEnable() ? "enable." : "disable."));
     }
     @Override
     public void destroy(AppContext appContext) {
-        //
-        Platform.info("EventManager is destroy.");
+        appContext.getSettings().removeSettingsListener(this.freemarkerSettings);
+        this.freemarkerSettings = null;
+        Platform.info("freemarker is destroy.");
     }
 }

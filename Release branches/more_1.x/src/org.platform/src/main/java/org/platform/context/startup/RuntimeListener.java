@@ -30,6 +30,7 @@ import org.platform.Platform;
 import org.platform.binder.SessionListenerPipeline;
 import org.platform.context.AppContext;
 import org.platform.context.PlatformListener;
+import org.platform.context.support.AbstractAppContext;
 import org.platform.context.support.PlatformAppContext;
 /**
  * 该类实现启动过程中如下动作：<br/>
@@ -42,7 +43,7 @@ import org.platform.context.support.PlatformAppContext;
  */
 public class RuntimeListener implements ServletContextListener, HttpSessionListener {
     public static final String      AppContextName          = AppContext.class.getName();
-    private AppContext              appContext              = null;
+    private AbstractAppContext      appContext              = null;
     private SessionListenerPipeline sessionListenerPipeline = null;
     /*----------------------------------------------------------------------------------------------------*/
     /**创建{@link PlatformListener}接口对象。*/
@@ -91,7 +92,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         }
     }
     /***/
-    protected AppContext createAppContext(ServletContext sc) {
+    protected AbstractAppContext createAppContext(ServletContext sc) {
         return new PlatformAppContext(sc);
     }
     @Override

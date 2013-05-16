@@ -31,6 +31,11 @@
 		<!-- Action配置，enable：是否启用Action功能。 模式：mode:RestOnly（rest风格）、ServletOnly（中央servlet）、Both（两者同时使用） -->
 		<actionServlet enable="true" mode="ServletOnly">*.do</actionServlet>
 	</httpServlet>
+	<!-- freemarker 配置 -->
+	<freemarker enable="true">
+		<!-- freemarker模板后缀名逗号间隔多个. -->
+		<suffixSet>*.ftl</suffixSet>
+	</freemarker>
 	<!-- 权限配置： -->
 	<!-- enable：权限系统启用禁用 -->
 	<!-- enableURL：是否将Request请求纳入权限系统 -->
@@ -81,8 +86,7 @@
 		</loginFormData>
 		<!-- 转发配置 -->
 		<forwards>
-			<!-- 登录源，当执行登陆时才会用到这里的配置。 <dispatch contentPath="/user333" defaultType="forward|redirect|Exception|State"> 登陆成功之后要去的地址 <forwardIndex type="forward|redirect">/login_ok_index.htm</forwardIndex> 退出之后要去的地址 <forwardLogout type="forward|redirect">/login_ok_index.htm</forwardLogout> !!!下面的配置信息，配置一项即可!!! 登陆失败：以Http 402号错误响应客户端。 <forwardFailure type="State">402</forwardFailure> 登陆失败：抛出特定类型异常。 <forwardFailure type="Exception">org.platform.security.PermissionException</forwardFailure> 登陆失败：跳转到特定页面或地址。 <forwardFailure 
-				type="forward|redirect|Exception|State">/abc.htm</forwardFailure> 配置的可以跳转的地址 <forward id="go_1" type="redirect">/go_1.htm</forward> <forward id="go_2" type="redirect">/go_2.htm</forward> </dispatch> -->
+			<!-- 登录源，当执行登陆时才会用到这里的配置。 <dispatch contentPath="/user333" defaultType="forward|redirect|Exception|State"> 登陆成功之后要去的地址 <forwardIndex type="forward|redirect">/login_ok_index.htm</forwardIndex> 退出之后要去的地址 <forwardLogout type="forward|redirect">/login_ok_index.htm</forwardLogout> !!!下面的配置信息，配置一项即可!!! 登陆失败：以Http 402号错误响应客户端。 <forwardFailure type="State">402</forwardFailure> 登陆失败：抛出特定类型异常。 <forwardFailure type="Exception">org.platform.security.PermissionException</forwardFailure> 登陆失败：跳转到特定页面或地址。 <forwardFailure type="forward|redirect|Exception|State">/abc.htm</forwardFailure> 配置的可以跳转的地址 <forward id="go_1" type="redirect">/go_1.htm</forward> <forward id="go_2" type="redirect">/go_2.htm</forward> </dispatch> -->
 		</forwards>
 		<!-- 权限判断规则 -->
 		<!-- Login:要求登陆，Logout:要求非登陆，Guest:要求具有来宾身份，Permission:要求具有权限点，None:无任何要求 -->

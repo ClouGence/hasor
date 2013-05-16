@@ -28,26 +28,29 @@ import org.platform.Assert;
 import org.platform.Platform;
 import org.platform.binder.FilterPipeline;
 import org.platform.context.AppContext;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 /**
  * 入口Filter
  * @version : 2013-3-25
  * @author 赵永春 (zyc@byshell.org)
  */
+@Singleton
 public class RuntimeFilter implements Filter {
+    @Inject
     private AppContext     appContext     = null;
+    @Inject
     private FilterPipeline filterPipeline = null;
     //
     /**初始化过滤器，初始化会同时初始化FilterPipeline*/
     public void init(FilterConfig filterConfig) throws ServletException {
-        ServletContext servletContext = filterConfig.getServletContext();
-        this.appContext = (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
-        Assert.isNotNull(this.appContext, "AppContext is null.");
-        //
-        /*1.构建appContext对象。*/
-        this.filterPipeline = this.appContext.getInstance(FilterPipeline.class);
-        Assert.isNotNull(this.appContext, "AppContext is null.");
-        //
-        /*2.初始化执行周期管理器。*/
+        if (appContext == null) {
+            ServletContext servletContext = filterConfig.getServletContext();
+            this.appContext = (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
+            Assert.isNotNull(this.appContext, "AppContext is null.");
+            this.filterPipeline = this.appContext.getInstance(FilterPipeline.class);
+        }
+        /*1.初始化执行周期管理器。*/
         this.filterPipeline.initPipeline(this.appContext);
         Platform.info("PlatformFilter started.");
     }

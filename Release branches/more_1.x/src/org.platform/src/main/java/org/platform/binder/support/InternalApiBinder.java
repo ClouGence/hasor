@@ -21,17 +21,15 @@ import org.more.util.ArrayUtil;
 import org.more.util.ClassUtil;
 import org.more.util.StringUtil;
 import org.platform.binder.ApiBinder;
-import org.platform.binder.FilterPipeline;
-import org.platform.binder.SessionListenerPipeline;
 import org.platform.context.Settings;
-import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
+import com.google.inject.Module;
 /**
  * 该类是{@link ApiBinder}接口实现。
  * @version : 2013-4-10
  * @author 赵永春 (zyc@byshell.org)
  */
-class InternalApiBinder extends AbstractModule implements ApiBinder {
+class InternalApiBinder implements Module, ApiBinder {
     private Settings               settings               = null;
     private Object                 context                = null;
     private Binder                 guiceBinder            = null;
@@ -99,16 +97,11 @@ class InternalApiBinder extends AbstractModule implements ApiBinder {
         return this.beanInfoModuleBuilder.newBeanDefine(this.getGuiceBinder()).aliasName(beanName);
     }
     @Override
-    protected void configure() {
-        this.install(this.filterModuleBinder);
-        this.install(this.servletModuleBinder);
-        this.install(this.errorsModuleBuilder);
-        this.install(this.listenerBindingBuilder);
-        this.install(this.beanInfoModuleBuilder);
-        /*------------------------------------------*/
-        this.bind(ManagedErrorPipeline.class).asEagerSingleton();
-        this.bind(ManagedServletPipeline.class).asEagerSingleton();
-        this.bind(FilterPipeline.class).to(ManagedFilterPipeline.class).asEagerSingleton();
-        this.bind(SessionListenerPipeline.class).to(ManagedSessionListenerPipeline.class).asEagerSingleton();
+    public void configure(Binder binder) {
+        binder.install(this.filterModuleBinder);
+        binder.install(this.servletModuleBinder);
+        binder.install(this.errorsModuleBuilder);
+        binder.install(this.listenerBindingBuilder);
+        binder.install(this.beanInfoModuleBuilder);
     }
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.action.support;
+package org.platform.freemarker.support;
 import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -22,36 +22,47 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.more.util.StringUtil;
+import org.platform.freemarker.FreemarkerManager;
 import org.platform.general.WebFilter;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 /**
- * action功能的入口。
- * @version : 2013-5-11
+ * Freemarker模板功能支持。
+ * @version : 2013-4-9
  * @author 赵永春 (zyc@byshell.org)
  */
 @Singleton
 @WebFilter(value = "*", sort = Integer.MIN_VALUE + 2)
-public class ControllerFilter implements Filter {
+public class FreemarkerFilter implements Filter {
     @Inject
-    private ActionSettings actionSettings = null;
-    //    @Inject
-    private ActionManager  actionManager  = null;
-    // 
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        // TODO Auto-generated method stub
-    }
-    @Override
+    private FreemarkerManager  freemarkerManager = null;
+    @Inject
+    private FreemarkerSettings settings          = null;
+    //
+    /***/
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        //
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        String requestURI = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
+        String[] suffix = this.settings.getSuffix();
+        if (suffix != null) {
+            for (String sort : suffix)
+                if (StringUtil.matchWild(sort, requestURI) == true) {
+                    if (httpResponse.isCommitted() == true)
+                        return;
+                    //this.freemarkerManager.getTemplate(templateName).getTemplate(requestURI).process(rootMap, out);
+                    return;
+                }
+        }
         chain.doFilter(request, response);
-        // TODO Auto-generated method stub
-        //        actionManager.findNameSpace(httpRequest).getActionByName(httpRequest.getMethod(), "aa").invoke(request, response, params);
     }
+    //
+    /**初始化*/
     @Override
-    public void destroy() {
-        // TODO Auto-generated method stub
-    }
+    public void init(FilterConfig filterConfig) throws ServletException {}
+    /**销毁*/
+    @Override
+    public void destroy() {}
 }

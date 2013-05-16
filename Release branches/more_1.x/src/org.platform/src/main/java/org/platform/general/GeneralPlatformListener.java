@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.platform.general;
+import static org.platform.util.PlatformStringUtil.getIndexStr;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -107,9 +108,7 @@ public class GeneralPlatformListener implements PlatformListener {
             event.filter(null, filterAnno.value()).through(filterType, initMap);
             //
             String filterName = StringUtil.isBlank(filterAnno.filterName()) ? filterType.getSimpleName() : filterAnno.filterName();
-            int sortInt = filterAnno.sort();
-            String sortStr = sortInt == Integer.MAX_VALUE ? "Max" : sortInt == Integer.MIN_VALUE ? "Min" : String.valueOf(sortInt);
-            Platform.info("loadFilter %s[%s] bind %s on %s.", filterName, sortStr, filterType, filterAnno.value());
+            Platform.info("loadFilter %s[%s] bind %s on %s.", filterName, getIndexStr(filterAnno.sort()), filterType, filterAnno.value());
         }
     }
     //
@@ -146,8 +145,7 @@ public class GeneralPlatformListener implements PlatformListener {
             //
             String servletName = StringUtil.isBlank(servletAnno.servletName()) ? servletType.getSimpleName() : servletAnno.servletName();
             int sortInt = servletAnno.loadOnStartup();
-            String sortStr = sortInt == Integer.MAX_VALUE ? "Max" : sortInt == Integer.MIN_VALUE ? "Min" : String.valueOf(sortInt);
-            Platform.info("loadServlet %s[%s] bind %s on %s.", servletName, sortStr, servletType, servletAnno.value());
+            Platform.info("loadServlet %s[%s] bind %s on %s.", servletName, getIndexStr(sortInt), servletType, servletAnno.value());
         }
     }
     //
@@ -183,8 +181,7 @@ public class GeneralPlatformListener implements PlatformListener {
             event.error(errorAnno.value()).bind(errorHookType, initMap);
             //
             int sortInt = errorAnno.sort();
-            String sortStr = sortInt == Integer.MAX_VALUE ? "Max" : sortInt == Integer.MIN_VALUE ? "Min" : String.valueOf(sortInt);
-            Platform.info("loadErrorHook [%s] of %s.", sortStr, errorHookType);
+            Platform.info("loadErrorHook [%s] of %s.", getIndexStr(sortInt), errorHookType);
         }
     }
     //
@@ -219,8 +216,7 @@ public class GeneralPlatformListener implements PlatformListener {
             //
             WebSessionListener anno = sessionListener.getAnnotation(WebSessionListener.class);
             int sortInt = anno.sort();
-            String sortStr = sortInt == Integer.MAX_VALUE ? "Max" : sortInt == Integer.MIN_VALUE ? "Min" : String.valueOf(sortInt);
-            Platform.info("loadSessionListener [%s] bind %s.", sortStr, sessionListener);
+            Platform.info("loadSessionListener [%s] bind %s.", getIndexStr(sortInt), sessionListener);
         }
     }
     //

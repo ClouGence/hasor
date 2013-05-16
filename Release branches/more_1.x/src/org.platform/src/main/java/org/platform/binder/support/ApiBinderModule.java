@@ -16,6 +16,8 @@
 package org.platform.binder.support;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
+import org.platform.binder.FilterPipeline;
+import org.platform.binder.SessionListenerPipeline;
 import org.platform.context.PlatformListener;
 import org.platform.context.Settings;
 import com.google.inject.Binder;
@@ -48,5 +50,9 @@ public class ApiBinderModule implements Module {
                 listener.initialize(apiBinder);
                 binder.install((Module) apiBinder);
             }
+        binder.bind(ManagedErrorPipeline.class);
+        binder.bind(ManagedServletPipeline.class);
+        binder.bind(FilterPipeline.class).to(ManagedFilterPipeline.class);
+        binder.bind(SessionListenerPipeline.class).to(ManagedSessionListenerPipeline.class);
     }
 }

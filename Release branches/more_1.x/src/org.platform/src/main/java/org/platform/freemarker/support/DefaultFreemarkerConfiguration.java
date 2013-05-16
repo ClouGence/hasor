@@ -13,20 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.freemarker;
-import java.io.IOException;
-import freemarker.core.Environment;
-import freemarker.template.TemplateException;
-/***
- * 自定义标签
- * @version : 2013-5-14
+package org.platform.freemarker.support;
+import org.more.webui.freemarker.loader.ClassPathTemplateLoader;
+import org.platform.freemarker.FreemarkerConfig;
+import freemarker.template.Configuration;
+/**
+ * 
+ * @version : 2013-5-16
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface IFmTag {
-    /**准备开始执行标签*/
-    public boolean beforeTag(Environment environment) throws TemplateException;
-    /**执行标签*/
-    public void doTag(TemplateBody body) throws TemplateException, IOException;
-    /**标签执行完毕*/
-    public boolean afterTag(Environment environment) throws TemplateException;
+public class DefaultFreemarkerConfiguration implements FreemarkerConfig {
+    private Configuration cfg = null;
+    @Override
+    public Configuration configuration() {
+        if (cfg != null)
+            return cfg;
+        cfg = new Configuration();
+        cfg.setTemplateLoader(new ClassPathTemplateLoader(null));
+        cfg.setClassicCompatible(true);
+        return cfg;
+    }
 }

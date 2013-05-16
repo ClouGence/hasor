@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.freemarker;
-import java.io.IOException;
-import freemarker.core.Environment;
-import freemarker.template.TemplateException;
-/***
- * 自定义标签
- * @version : 2013-5-14
+package org.platform.jdbc;
+import java.sql.SQLException;
+import java.sql.SQLWarning;
+/**
+ * 
+ * @version : 2013-5-7
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface IFmTag {
-    /**准备开始执行标签*/
-    public boolean beforeTag(Environment environment) throws TemplateException;
-    /**执行标签*/
-    public void doTag(TemplateBody body) throws TemplateException, IOException;
-    /**标签执行完毕*/
-    public boolean afterTag(Environment environment) throws TemplateException;
+public class SQLWarningException extends SQLException {
+    private static final long serialVersionUID = -8847991983554189109L;
+    public SQLWarningException(String msg, SQLWarning ex) {
+        super(msg, ex);
+    }
+    public SQLWarning SQLWarning() {
+        return (SQLWarning) getCause();
+    }
 }

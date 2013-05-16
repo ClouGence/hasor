@@ -27,18 +27,15 @@ import org.more.util.StringConvertUtil;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class DefaultXmlProperty implements XmlProperty, GlobalProperty {
-    private String                  elementName = null;
-    private String                  textString  = null;
-    private HashMap<String, String> arrMap      = new HashMap<String, String>();
-    private XmlProperty             parent      = null;
-    private List<XmlProperty>       children    = new ArrayList<XmlProperty>();
+    private String                  elementName       = null;
+    private String                  textString        = null;
+    private HashMap<String, String> arrMap            = new HashMap<String, String>();
+    private List<XmlProperty>       children          = new ArrayList<XmlProperty>();
+    private XmlProperty             parentXmlProperty = null;
     //
     //
-    public DefaultXmlProperty(XmlProperty parent, String elementName) {
-        this.parent = parent;
-        this.elementName = elementName;
-    }
-    public DefaultXmlProperty(String elementName) {
+    public DefaultXmlProperty(XmlProperty parentXmlProperty, String elementName) {
+        this.parentXmlProperty = parentXmlProperty;
         this.elementName = elementName;
     }
     public void addAttribute(String attName, String attValue) {
@@ -66,27 +63,35 @@ public class DefaultXmlProperty implements XmlProperty, GlobalProperty {
     public String getXmlText() {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("<" + this.elementName);
-        if (arrMap.size() > 0)
+        if (arrMap.size() > 0) {
             strBuilder.append(" ");
-        //
-        for (Entry<String, String> attEnt : this.arrMap.entrySet()) {
-            strBuilder.append(attEnt.getKey() + "=" + "\"" + attEnt.getValue() + "\"");
+            for (Entry<String, String> attEnt : this.arrMap.entrySet())
+                strBuilder.append(attEnt.getKey() + "=" + "\"" + attEnt.getValue().replace("\"", "&quot;") + "\" ");
+            strBuilder.deleteCharAt(strBuilder.length() - 1);
         }
         strBuilder.append(">");
         //
         for (XmlProperty xmlEnt : this.children) {
-            strBuilder.append(xmlEnt.getXmlText());
+            String xmlText = new String(xmlEnt.getXmlText());
+            xmlText.replace("<", "&lt;");
+            xmlText.replace(">", "&gt;");
+            xmlText.replace("&", "&amp;");
+            strBuilder.append(xmlText);
         }
         //
         if (this.textString != null)
-            strBuilder.append(this.textString);
+            strBuilder.append(this.getText());
         //
         strBuilder.append("</" + this.elementName + ">");
         return strBuilder.toString();
     }
     @Override
+    public String toString() {
+        return this.getXmlText();
+    }
+    @Override
     public XmlProperty clone() throws CloneNotSupportedException {
-        DefaultXmlProperty newData = new DefaultXmlProperty(this.parent, this.elementName);
+        DefaultXmlProperty newData = new DefaultXmlProperty(this.parentXmlProperty, this.elementName);
         newData.arrMap.putAll(this.arrMap);
         newData.textString = this.textString;
         if (children != null)
@@ -96,10 +101,6 @@ public class DefaultXmlProperty implements XmlProperty, GlobalProperty {
                 newData.children.add(newClone);
             }
         return newData;
-    }
-    @Override
-    public String toString() {
-        return this.getText();
     }
     @Override
     public <T> T getValue(Class<T> toType, T defaultValue) {
@@ -113,12 +114,10 @@ public class DefaultXmlProperty implements XmlProperty, GlobalProperty {
     public Map<String, String> getAttributeMap() {
         return this.arrMap;
     }
-    @Override
     public XmlProperty getParent() {
-        return this.parent;
+        return parentXmlProperty;
     }
-    @Override
-    public void setParent(XmlProperty parent) {
-        this.parent = parent;
+    public void setParent(XmlProperty parentXmlProperty) {
+        this.parentXmlProperty = parentXmlProperty;
     }
 }

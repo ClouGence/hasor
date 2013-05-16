@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.platform.context.support;
+import java.util.ArrayList;
 import org.platform.Assert;
 import org.platform.Platform;
 import org.platform.binder.support.ApiBinderModule;
@@ -53,7 +54,7 @@ public class PlatformAppContext extends AbstractAppContext {
         return this.settings;
     }
     /**启动*/
-    public synchronized void start() {
+    public synchronized void start(Module... modules) {
         //1.settings。
         final Settings settings = this.getSettings();
         final Object contet = this.getContext();
@@ -81,7 +82,11 @@ public class PlatformAppContext extends AbstractAppContext {
         };
         //4.构建Guice并init 注解类。
         Platform.info("initialize ...");
-        this.guice = this.createInjector(systemModule);
+        ArrayList<Module> $modules = new ArrayList<Module>();
+        $modules.add(systemModule);
+        for (Module module : modules)
+            $modules.add(module);
+        this.guice = this.createInjector($modules.toArray(new Module[$modules.size()]));
         Assert.isNotNull(this.guice, "can not be create Injector.");
         Platform.info("init modules finish.");
         //4.发送完成初始化信号
@@ -105,7 +110,7 @@ public class PlatformAppContext extends AbstractAppContext {
         }
     }
     /**通过guice创建{@link Injector}*/
-    protected Injector createInjector(Module systemModule) {
+    protected Injector createInjector(Module[] systemModule) {
         return Guice.createInjector(systemModule);
     }
 }

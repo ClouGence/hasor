@@ -226,13 +226,10 @@ public class PlatformSettings extends Global implements Settings {
                     XmlProperty v1 = (XmlProperty) $var;
                     XmlProperty v2 = (XmlProperty) $varConflict;
                     //
-                    MergeDefaultXmlProperty v3 = new MergeDefaultXmlProperty(v1.getName());
-                    v3.getAttributeMap().putAll(v2.getAttributeMap());
-                    v3.getAttributeMap().putAll(v1.getAttributeMap());
-                    v3.getChildren().addAll(v1.getChildren());
-                    v3.getChildren().addAll(v2.getChildren());
-                }
-                loadTo.put($key, $var);
+                    v2.getAttributeMap().putAll(v1.getAttributeMap());
+                    v2.getChildren().addAll(v1.getChildren());
+                } else
+                    loadTo.put($key, $var);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -262,11 +259,5 @@ public class PlatformSettings extends Global implements Settings {
             return 0;
         }
         public void firstLoad(URI resourceURI) throws IOException {}
-    }
-    /***/
-    private class MergeDefaultXmlProperty extends DefaultXmlProperty {
-        public MergeDefaultXmlProperty(String elementName) {
-            super(elementName);
-        }
     }
 }

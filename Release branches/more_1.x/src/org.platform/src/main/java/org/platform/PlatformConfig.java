@@ -38,6 +38,12 @@ public interface PlatformConfig {
     public static final String ActionServlet_Intercept                     = "httpServlet.actionServlet";
     //
     //
+    /**是否启用freemarker.*/
+    public static final String FreemarkerConfig_Enable                     = "freemarker.enable";
+    /**freemarker模板后缀名逗号间隔多个.*/
+    public static final String FreemarkerConfig_Suffix                     = "freemarker.suffixSet";
+    //
+    //
     /**程序工作空间基础目录（绝对地址）*/
     public static final String Workspace_WorkDir                           = "workspace.workDir";
     /** 程序的文件数据目录（默认相对workDir地址，可以通过设置absolute属性为true表示一个绝对地址）*/

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.platform.event.support;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import org.more.util.ArrayUtil;
 import org.more.util.StringUtil;
@@ -32,40 +34,46 @@ import org.platform.event.Listener;
  */
 @PlatformExt(displayName = "EventModuleServiceListener", description = "org.platform.event软件包功能支持。", startIndex = Integer.MIN_VALUE)
 public class EventPlatformListener implements PlatformListener {
-    private EventManager eventManager = null;
+    private EventManager                         eventManager  = null;
+    private List<Class<? extends EventListener>> eventListener = null;
     /**初始化.*/
     @Override
     public void initialize(ApiBinder event) {
         event.getGuiceBinder().bind(EventManager.class).to(DefaultEventManager.class).asEagerSingleton();
-    }
-    //
-    /*装载Listener*/
-    protected void loadListener(AppContext appContext) {
         //1.获取
-        Set<Class<?>> listenerSet = appContext.getClassSet(Listener.class);
+        this.eventListener = new ArrayList<Class<? extends EventListener>>();
+        Set<Class<?>> listenerSet = event.getClassSet(Listener.class);
         if (listenerSet == null)
             return;
         for (Class<?> cls : listenerSet) {
             if (EventListener.class.isAssignableFrom(cls) == false) {
                 Platform.warning("loadListener : not implemented EventListener of type %s.", cls);
             } else {
-                try {
-                    Listener annoListener = cls.getAnnotation(Listener.class);
-                    EventListener eventListener = (EventListener) appContext.getInstance(cls);
-                    String[] vals = annoListener.value();
-                    if (ArrayUtil.isBlank(vals)) {
-                        Platform.warning("missing eventType at listener %s.", new Object[] { vals });
-                        continue;
-                    }
-                    for (String eventType : vals) {
-                        if (StringUtil.isBlank(eventType) == true)
-                            continue;
-                        Platform.info("listener %s is listening on %s.", cls, eventType);
-                        this.eventManager.addEventListener(eventType, eventListener);
-                    }
-                } catch (Exception e) {
-                    Platform.warning("addEventListener error.%s", e);
+                Platform.info("find listener %s.", cls);
+                this.eventListener.add((Class<? extends EventListener>) cls);
+            }
+        }
+    }
+    //
+    /*装载Listener*/
+    protected void loadListener(AppContext appContext) {
+        for (Class<? extends EventListener> listenerType : eventListener) {
+            try {
+                Listener annoListener = listenerType.getAnnotation(Listener.class);
+                EventListener eventListener = (EventListener) appContext.getInstance(listenerType);
+                String[] vals = annoListener.value();
+                if (ArrayUtil.isBlank(vals)) {
+                    Platform.warning("missing eventType at listener %s.", new Object[] { vals });
+                    continue;
                 }
+                for (String eventType : vals) {
+                    if (StringUtil.isBlank(eventType) == true)
+                        continue;
+                    Platform.info("listener %s is listening on %s.", listenerType, eventType);
+                    this.eventManager.addEventListener(eventType, eventListener);
+                }
+            } catch (Exception e) {
+                Platform.warning("addEventListener error.%s", e);
             }
         }
     }

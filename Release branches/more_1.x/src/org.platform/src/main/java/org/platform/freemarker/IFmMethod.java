@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 package org.platform.freemarker;
+import org.platform.context.AppContext;
+import freemarker.template.TemplateException;
 /***
  * 自定义函数
  * @version : 2013-5-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface IFmMethod {}
+public interface IFmMethod {
+    /**调用函数*/
+    public Object callMethod(Object[] args, AppContext appContext) throws TemplateException;
+}

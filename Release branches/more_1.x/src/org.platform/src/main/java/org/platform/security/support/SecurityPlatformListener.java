@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.platform.security.support;
+import static org.platform.util.PlatformStringUtil.getIndexStr;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -132,7 +133,7 @@ public class SecurityPlatformListener implements PlatformListener {
                 authIndex.put(authSystem, authAnno.sort());
                 binder.bind(SecurityAuthDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(authDefine);
                 binder.bind(ISecurityAuth.class).annotatedWith(UniqueAnnotations.create()).toProvider(authDefine);
-                Platform.info(authSystem + "[" + ((authAnno.sort() == Integer.MAX_VALUE) ? "Max" : authAnno.sort()) + "] is SecurityAuth , class=" + Platform.logString(authType));
+                Platform.info(authSystem + "[" + getIndexStr(authAnno.sort()) + "] is SecurityAuth , class=" + Platform.logString(authType));
             }
         }
     }
@@ -165,7 +166,7 @@ public class SecurityPlatformListener implements PlatformListener {
                 accessIndex.put(authSystem, accessAnno.sort());
                 binder.bind(SecurityAccessDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(accessDefine);
                 binder.bind(ISecurityAccess.class).annotatedWith(UniqueAnnotations.create()).toProvider(accessDefine);
-                Platform.info(authSystem + "[" + ((accessAnno.sort() == Integer.MAX_VALUE) ? "Max" : accessAnno.sort()) + "] is SecurityAccess. class=" + Platform.logString(accessType));
+                Platform.info(authSystem + "[" + getIndexStr(accessAnno.sort()) + "] is SecurityAccess. class=" + Platform.logString(accessType));
             }
         }
     }

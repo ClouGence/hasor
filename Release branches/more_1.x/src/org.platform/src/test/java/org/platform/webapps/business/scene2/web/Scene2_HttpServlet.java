@@ -45,6 +45,14 @@ public class Scene2_HttpServlet extends HttpServlet {
         SecurityDispatcher dispatcher = this.securityContext.getDispatcher(requestURI);
         //
         //
+        Object o1 = appContext.getSettings().getXmlProperty("dataSourceSet");
+        Object o2 = appContext.getSettings().getXmlProperty("framework");
+        Object o3 = appContext.getSettings().getXmlProperty("httpServlet");
+        Object o4 = appContext.getSettings().getXmlProperty("freemarker");
+        Object o5 = appContext.getSettings().getXmlProperty("security");
+        Object o6 = appContext.getSettings().getXmlProperty("cacheConfig");
+        Object o7 = appContext.getSettings().getXmlProperty("workspace");
+        //
         Scene2_Bean serBean = appContext.getBean("Scene2_ServiceBean");
         serBean.print();
         for (int i = 0; i < 10; i++) {

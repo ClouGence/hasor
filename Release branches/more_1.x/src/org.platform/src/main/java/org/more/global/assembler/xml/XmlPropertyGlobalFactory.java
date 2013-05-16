@@ -43,7 +43,7 @@ public class XmlPropertyGlobalFactory extends GlobalFactory {
             if (loadNameSpace.contains(loadNameSpace) == false)
                 loadNameSpace.add(DefaultNameSpace);
             if (this.xmlTreeRoot == null)
-                this.xmlTreeRoot = new DefaultXmlProperty("");
+                this.xmlTreeRoot = new DefaultXmlProperty(null, "");
             XmlParserKit kit = new XmlParserKit();
             kit.regeditHook("/*", new XmlProperty_ElementHook());
             XmlRegister xmlRegister = new XmlRegister(this.xmlTreeRoot);

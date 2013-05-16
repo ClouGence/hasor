@@ -18,16 +18,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 import com.google.inject.Injector;
+import com.google.inject.Module;
 /**
  * 
  * @version : 2013-3-26
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface AppContext extends BeanContext {
-    /**启动*/
-    public void start();
-    /**销毁方法。*/
-    public void destroyed();
     /**获取上下文*/
     public Object getContext();
     /**获取系统启动时间*/

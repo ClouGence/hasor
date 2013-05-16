@@ -16,20 +16,16 @@
 package org.platform.freemarker;
 import java.io.IOException;
 import java.io.Writer;
-import freemarker.template.Template;
+import freemarker.core.Environment;
 import freemarker.template.TemplateException;
 /**
- * Freemarker模板功能提供类。
- * @version : 2013-5-6
+ * 
+ * @version : 2012-6-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface FreemarkerManager {
-    /**获取模板。*/
-    public Template getTemplate(String templateName) throws TemplateException, IOException;
-    /**获取模板。*/
-    public void getTemplate(String templateName, Writer writer) throws TemplateException, IOException;
-    /**将字符串的内容作为模板执行。*/
-    public String processString(String ftlBody) throws TemplateException, IOException;
-    /**将字符串的内容作为模板执行。*/
-    public void processString(String ftlBody, Writer writer) throws TemplateException, IOException;
+public interface TemplateBody {
+    /**获取标签执行环境*/
+    public Environment getEnvironment();
+    /**渲染输出标签内容*/
+    public void render(Writer arg0) throws TemplateException, IOException;
 }

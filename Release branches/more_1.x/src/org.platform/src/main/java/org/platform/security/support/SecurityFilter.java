@@ -18,16 +18,12 @@ import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.platform.Assert;
 import org.platform.Platform;
-import org.platform.context.AppContext;
-import org.platform.context.startup.RuntimeListener;
 import org.platform.general.WebFilter;
 import org.platform.security.AuthSession;
 import org.platform.security.AutoLoginProcess;
@@ -39,6 +35,7 @@ import org.platform.security.SecurityDispatcher;
 import org.platform.security.SecurityException;
 import org.platform.security.SecurityForward;
 import org.platform.security.TestURLPermissionProcess;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 /**
  * 权限系统URL请求处理支持。
@@ -46,29 +43,24 @@ import com.google.inject.Singleton;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Singleton
-@WebFilter(value = "*", sort = Integer.MIN_VALUE)
+@WebFilter(value = "*", sort = Integer.MIN_VALUE + 1)
 public class SecurityFilter implements Filter {
-    private AppContext               appContext            = null;
+    @Inject
     private SecuritySettings         settings              = null;
+    @Inject
     private SecurityContext          secContext            = null;
+    @Inject
     private LoginProcess             loginSecurityProcess  = null;
+    @Inject
     private LogoutProcess            logoutSecurityProcess = null;
+    @Inject
     private TestURLPermissionProcess urlPermissionProcess  = null;
+    @Inject
     private AutoLoginProcess         autoLoginProcess      = null;
     //
     /**初始化*/
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        ServletContext servletContext = filterConfig.getServletContext();
-        this.appContext = (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
-        Assert.isNotNull(this.appContext, "AppContext is null.");
-        //
-        this.settings = this.appContext.getInstance(SecuritySettings.class);
-        this.secContext = this.appContext.getInstance(SecurityContext.class);
-        this.loginSecurityProcess = this.appContext.getInstance(LoginProcess.class);
-        this.logoutSecurityProcess = this.appContext.getInstance(LogoutProcess.class);
-        this.urlPermissionProcess = this.appContext.getInstance(TestURLPermissionProcess.class);
-        this.autoLoginProcess = this.appContext.getInstance(AutoLoginProcess.class);
         Platform.info("SecurityFilter started.");
     }
     //

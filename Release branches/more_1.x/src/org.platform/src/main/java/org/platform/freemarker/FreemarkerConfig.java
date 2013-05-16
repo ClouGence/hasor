@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 package org.platform.freemarker;
-import java.io.IOException;
-import freemarker.core.Environment;
-import freemarker.template.TemplateException;
-/***
- * 自定义标签
- * @version : 2013-5-14
+import freemarker.template.Configuration;
+/**
+ * 
+ * @version : 2013-5-16
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface IFmTag {
-    /**准备开始执行标签*/
-    public boolean beforeTag(Environment environment) throws TemplateException;
-    /**执行标签*/
-    public void doTag(TemplateBody body) throws TemplateException, IOException;
-    /**标签执行完毕*/
-    public boolean afterTag(Environment environment) throws TemplateException;
+public interface FreemarkerConfig {
+    /*** 获取配置好的freemarker{@link Configuration}对象。*/
+    public Configuration configuration();
 }
