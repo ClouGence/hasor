@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.freemarker;
+package org.platform.freemarker.support;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Map;
-import freemarker.core.Environment;
-import freemarker.template.TemplateException;
 /**
- * 
- * @version : 2012-6-14
+ * 一个无底洞Writer
+ * @version : 2013-5-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface TemplateBody {
-    /**标签属性*/
-    public Map<String, Object> tagProperty();
-    /**获取标签执行环境*/
-    public Environment getEnvironment();
-    /**渲染输出标签内容*/
-    public void render(Writer arg0) throws TemplateException, IOException;
+class NoneWriter extends Writer {
+    @Override
+    public void write(char[] cbuf, int off, int len) throws IOException {}
+    @Override
+    public void flush() throws IOException {}
+    @Override
+    public void close() throws IOException {}
 }

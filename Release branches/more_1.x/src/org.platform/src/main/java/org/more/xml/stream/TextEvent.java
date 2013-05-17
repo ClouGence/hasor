@@ -70,9 +70,26 @@ public class TextEvent extends XmlStreamEvent {
         else
             return null;
     }
+    private String textData = null;
     /**以字符串的形式返回解析事件的当前值，此方法返回 CHARACTERS 事件的字符串值，返回 COMMENT 的值、CDATA 节的字符串值、SPACE 事件的字符串值。 */
     public String getText() {
-        return this.getReader().getText();
+        if (textData == null) {
+            char[] data = new char[this.getReader().getTextLength()];
+            System.arraycopy(this.getReader().getTextCharacters(), this.getReader().getTextStart(), data, 0, this.getReader().getTextLength());
+            textData = new String(data);
+        }
+        return textData;
+    };
+    public String getOriginalText() {
+        String originalText = this.getText();
+        if (originalText != null) {
+            originalText = originalText.replace("&", "&amp;");//& 和
+            originalText = originalText.replace("<", "&lt;");//小于号
+            originalText = originalText.replace(">", "&gt;");//大于号
+            originalText = originalText.replace("'", "&apos;");//'单引号
+            originalText = originalText.replace("\"", "&quot;");//'双引号
+        }
+        return originalText;
     };
     /**返回一个包含此事件中字符的数组。 */
     public char[] getTextCharacters() {

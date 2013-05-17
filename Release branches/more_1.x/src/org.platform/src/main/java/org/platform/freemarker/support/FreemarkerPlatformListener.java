@@ -21,22 +21,21 @@ import org.platform.context.PlatformListener;
 import org.platform.context.startup.PlatformExt;
 import org.platform.freemarker.FreemarkerManager;
 /**
- * Freemarker服务。
+ * Freemarker服务，延迟一个级别是因为需要依赖icache
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@PlatformExt(displayName = "FreemarkerPlatformListener", description = "org.platform.freemarker软件包功能支持。", startIndex = Integer.MIN_VALUE)
+@PlatformExt(displayName = "FreemarkerPlatformListener", description = "org.platform.freemarker软件包功能支持。", startIndex = Integer.MIN_VALUE + 1)
 public class FreemarkerPlatformListener implements PlatformListener {
     private FreemarkerSettings freemarkerSettings = null;
     /**初始化.*/
     @Override
     public void initialize(ApiBinder event) {
         this.freemarkerSettings = new FreemarkerSettings();
-        this.freemarkerSettings.loadConfig(event.getSettings());
         //
         event.getGuiceBinder().bind(FreemarkerSettings.class).toInstance(freemarkerSettings);
         event.getGuiceBinder().bind(FreemarkerManager.class).to(DefaultFreemarkerManager.class);
-    }
+    }s
     //
     /*装载Listener*/
     protected void loadListener(AppContext appContext) {

@@ -65,8 +65,16 @@ public class DefaultXmlProperty implements XmlProperty, GlobalProperty {
         strBuilder.append("<" + this.elementName);
         if (arrMap.size() > 0) {
             strBuilder.append(" ");
-            for (Entry<String, String> attEnt : this.arrMap.entrySet())
-                strBuilder.append(attEnt.getKey() + "=" + "\"" + attEnt.getValue().replace("\"", "&quot;") + "\" ");
+            for (Entry<String, String> attEnt : this.arrMap.entrySet()) {
+                strBuilder.append(attEnt.getKey() + "=" + "\"");
+                String attVal = attEnt.getValue();
+                attVal = attVal.replace("<", "&lt;");//小于号
+                attVal = attVal.replace(">", "&gt;");//大于号
+                attVal = attVal.replace("'", "&apos;");//'单引号
+                attVal = attVal.replace("\"", "&quot;");//'双引号
+                attVal = attVal.replace("&", "&amp;");//& 和
+                strBuilder.append(attVal + "\" ");
+            }
             strBuilder.deleteCharAt(strBuilder.length() - 1);
         }
         strBuilder.append(">");

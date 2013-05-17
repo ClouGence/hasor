@@ -24,10 +24,13 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.more.util.StringUtil;
+import org.platform.Platform;
+import org.platform.freemarker.FreemarkerException;
 import org.platform.freemarker.FreemarkerManager;
 import org.platform.general.WebFilter;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import freemarker.template.TemplateException;
 /**
  * Freemarker模板功能支持。
  * @version : 2013-4-9
@@ -47,16 +50,42 @@ public class FreemarkerFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String requestURI = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
         String[] suffix = this.settings.getSuffix();
+        boolean doTemplate = false;
         if (suffix != null) {
             for (String sort : suffix)
                 if (StringUtil.matchWild(sort, requestURI) == true) {
-                    if (httpResponse.isCommitted() == true)
-                        return;
-                    //this.freemarkerManager.getTemplate(templateName).getTemplate(requestURI).process(rootMap, out);
-                    return;
+                    doTemplate = true;
+                    break;
                 }
         }
-        chain.doFilter(request, response);
+        if (doTemplate) {
+            try {
+                if (httpResponse.isCommitted() == true)
+                    return;
+                this.freemarkerManager.processTemplate(requestURI, new FreemarkerRequestRootMap(httpRequest), httpResponse.getWriter());
+                return;
+            } catch (TemplateException e) {
+                switch (this.settings.getOnError()) {
+                /**抛出异常*/
+                case ThrowError:
+                    throw new FreemarkerException(e);
+                    /**打印到控制台或日志*/
+                case PrintOnConsole:
+                    Platform.error("%s", e);
+                    break;
+                /**忽略，仅仅产生一条警告消息*/
+                case Warning:
+                    Platform.warning("process Template error -> requestURI is %s ,message is %s", requestURI, e.getMessage());
+                    break;
+                /**打印到页面*/
+                case PrintOnPage:
+                    e.printStackTrace(httpResponse.getWriter());
+                    break;
+                }
+            }
+        } else {
+            chain.doFilter(request, response);
+        }
     }
     //
     /**初始化*/

@@ -55,7 +55,7 @@ class XmlProperty_ElementHook implements XmlDocumentHook, XmlElementHook, XmlTex
     };
     public void text(XmlStackDecorator<Object> context, String xpath, TextEvent event) throws XMLStreamException, IOException {
         StringBuffer sb = (StringBuffer) context.get(XmlText_AttName);
-        sb.append(event.getTrimText());
+        sb.append(event.getText());
     }
     public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) throws XMLStreamException, IOException {
         DefaultXmlProperty xmlProperty = (DefaultXmlProperty) context.get(XmlProperty_AttName);

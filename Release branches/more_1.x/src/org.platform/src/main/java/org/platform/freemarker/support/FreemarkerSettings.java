@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 package org.platform.freemarker.support;
+import static org.platform.PlatformConfig.FreemarkerConfig_Enable;
+import static org.platform.PlatformConfig.FreemarkerConfig_OnError;
+import static org.platform.PlatformConfig.FreemarkerConfig_OutputEncoding;
+import static org.platform.PlatformConfig.FreemarkerConfig_Suffix;
 import org.platform.context.SettingListener;
 import org.platform.context.Settings;
 import com.google.inject.Singleton;
-import static org.platform.PlatformConfig.FreemarkerConfig_Enable;
-import static org.platform.PlatformConfig.FreemarkerConfig_Suffix;
 /**
  * 配置信息
  * @version : 2013-4-23
@@ -26,27 +28,53 @@ import static org.platform.PlatformConfig.FreemarkerConfig_Suffix;
  */
 @Singleton
 public class FreemarkerSettings implements SettingListener {
-    private boolean  enable = false;
-    private String[] suffix = null;
+    public static enum OnErrorMode {
+        /**抛出异常*/
+        ThrowError,
+        /**打印到控制台或日志*/
+        PrintOnConsole,
+        /**忽略，仅仅产生一条警告消息*/
+        Warning,
+        /**打印到页面*/
+        PrintOnPage
+    };
+    private boolean     enable         = false;
+    private String[]    suffix         = null;
+    private OnErrorMode onError        = null;
+    private String      outputEncoding = null;
     //
     public boolean isEnable() {
         return enable;
     }
-    protected void setEnable(boolean enable) {
-        this.enable = enable;
-    }
     public String[] getSuffix() {
         return suffix;
     }
+    public OnErrorMode getOnError() {
+        return onError;
+    }
+    public String getOutputEncoding() {
+        return outputEncoding;
+    }
+    protected void setOutputEncoding(String outputEncoding) {
+        this.outputEncoding = outputEncoding;
+    }
+    protected void setEnable(boolean enable) {
+        this.enable = enable;
+    }
     protected void setSuffix(String[] suffix) {
         this.suffix = suffix;
+    }
+    protected void setOnError(OnErrorMode onError) {
+        this.onError = onError;
     }
     @Override
     public void loadConfig(Settings newConfig) {
         this.enable = newConfig.getBoolean(FreemarkerConfig_Enable);
         String suffix = newConfig.getString(FreemarkerConfig_Suffix);
+        this.outputEncoding = newConfig.getString(FreemarkerConfig_OutputEncoding);
         this.suffix = suffix.split(",");
         for (int i = 0; i < this.suffix.length; i++)
             this.suffix[i] = this.suffix[i].trim();
+        this.onError = newConfig.getEnum(FreemarkerConfig_OnError, OnErrorMode.class, OnErrorMode.Warning);
     }
 }

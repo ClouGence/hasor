@@ -3,7 +3,7 @@
 	<!-- 框架配置 -->
 	<framework>
 		<!-- 包扫描覆盖范围 -->
-		<loadPackages>org.*, com.*, net.*, cn.*</loadPackages>
+		<loadPackages>org.*, com.*, net.*, cn.*,&lt;/试题&gt;</loadPackages>
 	</framework>
 	<!-- 权限配置 -->
 	<security enable="true">

@@ -42,6 +42,10 @@ public interface PlatformConfig {
     public static final String FreemarkerConfig_Enable                     = "freemarker.enable";
     /**freemarker模板后缀名逗号间隔多个.*/
     public static final String FreemarkerConfig_Suffix                     = "freemarker.suffixSet";
+    /**当模板处理发生异常时的处理方式.*/
+    public static final String FreemarkerConfig_OnError                    = "freemarker.onError";
+    /**输出编码.*/
+    public static final String FreemarkerConfig_OutputEncoding             = "freemarker.outputEncoding";
     //
     //
     /**程序工作空间基础目录（绝对地址）*/

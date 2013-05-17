@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 package org.platform.freemarker;
-import java.io.IOException;
-import java.io.Writer;
 import java.util.Map;
-import freemarker.core.Environment;
-import freemarker.template.TemplateException;
-/**
- * 
- * @version : 2012-6-14
+/***
+ * 标签接口{@link IFmTag}的增强接口，使用该接口将不会在调用标签的get/set方法设置属性。
+ * @version : 2013-5-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface TemplateBody {
-    /**标签属性*/
-    public Map<String, Object> tagProperty();
-    /**获取标签执行环境*/
-    public Environment getEnvironment();
-    /**渲染输出标签内容*/
-    public void render(Writer arg0) throws TemplateException, IOException;
+public interface IFmTag2 extends IFmTag {
+    /***/
+    public void setup(Map<String, Object> objMap);
 }

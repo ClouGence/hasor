@@ -31,10 +31,23 @@
 		<!-- Action配置，enable：是否启用Action功能。 模式：mode:RestOnly（rest风格）、ServletOnly（中央servlet）、Both（两者同时使用） -->
 		<actionServlet enable="true" mode="ServletOnly">*.do</actionServlet>
 	</httpServlet>
-	<!-- freemarker 配置 -->
-	<freemarker enable="true">
+	<!-- freemarker 配置，onError当模板处理发生异常时的处理方式。模式：ThrowError（抛出异常）、PrintOnConsole（打印到控制台或日志）、Warning（忽略，仅仅产生一条警告消息）PrintOnPage（打印到页面） -->
+	<freemarker enable="true" onError="PrintOnPage">
 		<!-- freemarker模板后缀名逗号间隔多个. -->
 		<suffixSet>*.ftl</suffixSet>
+		<!-- 解析freemarker时使用的字符编码 -->
+		<outputEncoding>utf-8</outputEncoding>
+		<!-- 模板装载器 -->
+		<loaderList>
+			<!-- 平台配置的缓存路径下 -->
+			<loader id="" index="Max" type="CachePath">/template</loader>
+			<!-- 网站路径 -->
+			<loader id="" index="" type="WebPath">/</loader>
+			<!-- 系统路径 -->
+			<loader id="" index="" type="SystemPath">/</loader>
+			<!-- ClassPath目录下 -->
+			<loader id="" index="Min" type="ClassPath">/META-INF/webapp</loader>
+		</loaderList>
 	</freemarker>
 	<!-- 权限配置： -->
 	<!-- enable：权限系统启用禁用 -->

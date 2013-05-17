@@ -13,22 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.freemarker.support;
-import java.io.IOException;
-import java.util.Map;
-import freemarker.core.Environment;
-import freemarker.template.TemplateDirectiveBody;
-import freemarker.template.TemplateDirectiveModel;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateModel;
-/**
- * 通用标签对象。
- * @version : 2012-5-13
+package org.platform.freemarker;
+import javax.servlet.ServletException;
+/***
+ * 
+ * @version : 2013-5-17
  * @author 赵永春 (zyc@byshell.org)
  */
-class InternalTagObject implements TemplateDirectiveModel {
-    @Override
-    public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body) throws TemplateException, IOException {
-        // TODO Auto-generated method stub
+public class FreemarkerException extends ServletException {
+    /**  */
+    private static final long serialVersionUID = -1273694651968148708L;
+    public FreemarkerException(Throwable e) {
+        super(e);
     }
 }

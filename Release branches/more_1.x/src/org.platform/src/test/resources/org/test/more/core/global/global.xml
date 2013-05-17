@@ -36,11 +36,11 @@
 		<userPsw>709120429</userPsw>
 	</webService>
 
-	
+
 	<resourcesServer>
-		<server host="http://192.168.25.90:8080/files" start="/umscp/files"/>
+		<server host="http://192.168.25.90:8080/files" start="/umscp/files" />
 	</resourcesServer>
-	
+
 	<!-- *****************************业务系统***************************** -->
 	<!--业务通用 -->
 	<Commons>
@@ -48,7 +48,7 @@
 	</Commons>
 	<!--学业规划 -->
 	<TPlan>
-		<!-- 学员测试查看测试结果，需要跳转到测评系统的测试结果页面，这个页面可能不在学业规划系统，需要在这里配置。可能是 http://www.xxx.com/ceping  不以/结尾 -->
+		<!-- 学员测试查看测试结果，需要跳转到测评系统的测试结果页面，这个页面可能不在学业规划系统，需要在这里配置。可能是 http://www.xxx.com/ceping 不以/结尾 -->
 		<testWebAppRoot>/ums</testWebAppRoot>
 	</TPlan>
 	<!--学习管理 -->
@@ -92,7 +92,7 @@
 			<!-- 需要进行权限检查的路径，多个逗号分割 -->
 			<useCheckPaths>/</useCheckPaths>
 		</loginSafe>
-		
+
 		<uploads>
 			<upload id="1">
 				<baseDir>E:/server/tomcat6/webapps/upload/ums</baseDir>

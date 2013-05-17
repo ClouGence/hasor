@@ -15,29 +15,126 @@
  */
 package org.platform.freemarker.support;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.security.NoSuchAlgorithmException;
+import java.util.Map;
+import org.more.util.CommonCodeUtil;
+import org.more.util.map.DecSequenceMap;
+import org.more.webui.freemarker.loader.ConfigTemplateLoader;
 import org.platform.freemarker.FreemarkerManager;
+import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+/**
+ * 
+ * @version : 2013-5-17
+ * @author 赵永春 (zyc@byshell.org)
+ */
 public class DefaultFreemarkerManager implements FreemarkerManager {
+    private ConfigTemplateLoader configTemplateLoader = new ConfigTemplateLoader();
+    //    private Configuration        cfg                  = null;
+    //
+    //
+    //
+    private Map<String, Object> getRootMap() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    public final Configuration getFreemarker() {
+        // TODO Auto-generated method stub
+        return null;
+        //        if (this.cfg == null) {
+        //            this.cfg = createFreemarker();
+        //            cfg.setDefaultEncoding(this.getEnvironment().getPageEncoding());
+        //            cfg.setOutputEncoding(this.getEnvironment().getOutEncoding());
+        //            cfg.setLocalizedLookup(this.getEnvironment().isLocalizedLookup());
+        //            //
+        //            TemplateLoader[] loaders = null;
+        //            if (cfg.getTemplateLoader() != null) {
+        //                loaders = new TemplateLoader[2];
+        //                loaders[1] = cfg.getTemplateLoader();
+        //            } else
+        //                loaders = new TemplateLoader[1];
+        //            loaders[0] = this.configTemplateLoader;
+        //            cfg.setTemplateLoader(new MultiTemplateLoader(loaders));
+        //        }
+        //        return this.cfg;
+    }
     @Override
     public Template getTemplate(String templateName) throws TemplateException, IOException {
         // TODO Auto-generated method stub
         return null;
+    }s
+    //
+    //
+    @Override
+    public void processTemplate(String templateName) throws TemplateException, IOException {
+        this.processTemplate(templateName, null, null);
     }
     @Override
-    public void getTemplate(String templateName, Writer writer) throws TemplateException, IOException {
-        // TODO Auto-generated method stub
+    public void processTemplate(String templateName, Map<String, Object> rootMap) throws TemplateException, IOException {
+        this.processTemplate(templateName, rootMap, null);
     }
     @Override
-    public String processString(String ftlBody) throws TemplateException, IOException {
-        // TODO Auto-generated method stub
-        return null;
+    public void processTemplate(String templateName, Map<String, Object> rootMap, Writer writer) throws TemplateException, IOException {
+        Writer writerTo = (writer == null) ? new NoneWriter() : writer;
+        Map<String, Object> finalRootMap = null;
+        if (rootMap == null || rootMap.isEmpty())
+            finalRootMap = getRootMap();
+        else {
+            DecSequenceMap<String, Object> seqMap = new DecSequenceMap<String, Object>();
+            seqMap.addMap(rootMap);
+            seqMap.addMap(getRootMap());
+            finalRootMap = seqMap;
+        }
+        this.getTemplate(templateName).process(finalRootMap, writerTo);
+    }
+    //
+    //
+    @Override
+    public String processString(String templateString) throws TemplateException, IOException {
+        StringWriter stringWriter = new StringWriter();
+        this.processString(templateString, null, stringWriter);
+        return stringWriter.toString();
     }
     @Override
-    public void processString(String ftlBody, Writer writer) throws TemplateException, IOException {
-        // TODO Auto-generated method stub
+    public String processString(String templateString, Map<String, Object> rootMap) throws TemplateException, IOException {
+        StringWriter stringWriter = new StringWriter();
+        this.processString(templateString, rootMap, stringWriter);
+        return stringWriter.toString();
+    }
+    //
+    //
+    @Override
+    public void processString(String templateString, Writer writer) throws TemplateException, IOException {
+        this.processString(templateString, null, writer);
+    }
+    @Override
+    public void processString(String templateString, Map<String, Object> rootMap, Writer writer) throws TemplateException, IOException {
+        //A.取得指纹
+        String hashStr = null;
+        try {
+            /*使用MD5加密*/
+            hashStr = CommonCodeUtil.MD5.getMD5(templateString);
+        } catch (NoSuchAlgorithmException e) {
+            /*使用hashCode*/
+            hashStr = String.valueOf(templateString.hashCode());
+        }
+        hashStr += ".temp";
+        //B.将内容加入到模板加载器中。
+        this.configTemplateLoader.addTemplateAsString(hashStr, templateString);
+        //C.执行指纹模板
+        Writer writerTo = (writer == null) ? new NoneWriter() : writer;
+        Map<String, Object> finalRootMap = null;
+        if (rootMap == null || rootMap.isEmpty())
+            finalRootMap = getRootMap();
+        else {
+            DecSequenceMap<String, Object> seqMap = new DecSequenceMap<String, Object>();
+            seqMap.addMap(rootMap);
+            seqMap.addMap(getRootMap());
+            finalRootMap = seqMap;
+        }
+        this.getTemplate(hashStr).process(finalRootMap, writerTo);
     }
 }
