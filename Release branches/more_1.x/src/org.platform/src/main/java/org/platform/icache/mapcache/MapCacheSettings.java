@@ -15,10 +15,6 @@
  */
 package org.platform.icache.mapcache;
 import static org.platform.PlatformConfig.CacheConfig_Enable;
-import static org.platform.PlatformConfig.CacheConfig_MapCache_AutoRenewal;
-import static org.platform.PlatformConfig.CacheConfig_MapCache_Eternal;
-import static org.platform.PlatformConfig.CacheConfig_MapCache_ThreadSeep;
-import static org.platform.PlatformConfig.CacheConfig_MapCache_Timeout;
 import org.platform.context.SettingListener;
 import org.platform.context.Settings;
 /**
@@ -63,12 +59,15 @@ public class MapCacheSettings implements SettingListener {
     protected void setThreadSeep(long threadSeep) {
         this.threadSeep = threadSeep;
     }
+    protected String getMapCacheSettingElementName() {
+        return "cacheConfig.mapCache";
+    }
     @Override
     public void loadConfig(Settings newConfig) {
         this.cacheEnable = newConfig.getBoolean(CacheConfig_Enable);
-        this.defaultTimeout = newConfig.getLong(CacheConfig_MapCache_Timeout);
-        this.eternal = newConfig.getBoolean(CacheConfig_MapCache_Eternal);
-        this.autoRenewal = newConfig.getBoolean(CacheConfig_MapCache_AutoRenewal);
-        this.threadSeep = newConfig.getLong(CacheConfig_MapCache_ThreadSeep);
+        this.defaultTimeout = newConfig.getLong(getMapCacheSettingElementName() + ".timeout");
+        this.eternal = newConfig.getBoolean(getMapCacheSettingElementName() + ".eternal");
+        this.autoRenewal = newConfig.getBoolean(getMapCacheSettingElementName() + ".autoRenewal");
+        this.threadSeep = newConfig.getLong(getMapCacheSettingElementName() + ".threadSeep");
     }
 }

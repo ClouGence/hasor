@@ -44,8 +44,6 @@ public interface PlatformConfig {
     public static final String FreemarkerConfig_Suffix                     = "freemarker.suffixSet";
     /**当模板处理发生异常时的处理方式.*/
     public static final String FreemarkerConfig_OnError                    = "freemarker.onError";
-    /**输出编码.*/
-    public static final String FreemarkerConfig_OutputEncoding             = "freemarker.outputEncoding";
     //
     //
     /**程序工作空间基础目录（绝对地址）*/
@@ -71,14 +69,6 @@ public interface PlatformConfig {
     public static final String Security_AuthSessionCache                   = "security.authSessionCacheName";
     /**AuthSession超时时间*/
     public static final String Security_AuthSessionTimeout                 = "security.authSessionTimeout";
-    /**AuthSessionCache，设置的超时时间.*/
-    public static final String Security_AuthSessionCache_Timeout           = "security.internalAuthSessionMapCache.timeout";
-    /**AuthSessionCache，缓存是否永远不销毁.*/
-    public static final String Security_AuthSessionCache_Eternal           = "security.internalAuthSessionMapCache.eternal";
-    /**AuthSessionCache，每当访问缓存对象时是否自动对其续约（续约时间同加入时缓存超时时间）.*/
-    public static final String Security_AuthSessionCache_AutoRenewal       = "security.internalAuthSessionMapCache.autoRenewal";
-    /**AuthSessionCache，缓存回收线程工作的时间频率(毫秒).*/
-    public static final String Security_AuthSessionCache_ThreadSeep        = "security.internalAuthSessionMapCache.threadSeep";
     /**登入地址*/
     public static final String Security_LoginURL                           = "security.loginURL";
     /**登出地址*/
@@ -133,12 +123,4 @@ public interface PlatformConfig {
     //
     /**是否启用缓存系统.*/
     public static final String CacheConfig_Enable                          = "cacheConfig.enable";
-    /**MapCache，设置的超时时间.*/
-    public static final String CacheConfig_MapCache_Timeout                = "cacheConfig.mapCache.timeout";
-    /**MapCache，缓存是否永远不销毁.*/
-    public static final String CacheConfig_MapCache_Eternal                = "cacheConfig.mapCache.eternal";
-    /**MapCache，每当访问缓存对象时是否自动对其续约（续约时间同加入时缓存超时时间）.*/
-    public static final String CacheConfig_MapCache_AutoRenewal            = "cacheConfig.mapCache.autoRenewal";
-    /**MapCache，缓存回收线程工作的时间频率(毫秒).*/
-    public static final String CacheConfig_MapCache_ThreadSeep             = "cacheConfig.mapCache.threadSeep";
 }

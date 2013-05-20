@@ -31,7 +31,7 @@ import org.platform.binder.SessionListenerPipeline;
 import org.platform.context.AppContext;
 import org.platform.context.PlatformListener;
 import org.platform.context.support.AbstractAppContext;
-import org.platform.context.support.PlatformAppContext;
+import org.platform.context.support.WebPlatformAppContext;
 /**
  * 该类实现启动过程中如下动作：<br/>
  * <pre>
@@ -93,7 +93,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     }
     /***/
     protected AbstractAppContext createAppContext(ServletContext sc) {
-        return new PlatformAppContext(sc);
+        return new WebPlatformAppContext(sc);
     }
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {

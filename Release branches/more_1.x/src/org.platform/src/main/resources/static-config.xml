@@ -35,118 +35,123 @@
 	<freemarker enable="true" onError="PrintOnPage">
 		<!-- freemarker模板后缀名逗号间隔多个. -->
 		<suffixSet>*.ftl</suffixSet>
-		<!-- 解析freemarker时使用的字符编码 -->
-		<outputEncoding>utf-8</outputEncoding>
 		<!-- 模板装载器 -->
-		<loaderList>
+		<templateLoader>
 			<!-- 平台配置的缓存路径下 -->
-			<loader id="" index="Max" type="CachePath">/template</loader>
+			<internalLoader index="Max" type="CachePath">/template</internalLoader>
 			<!-- 网站路径 -->
-			<loader id="" index="" type="WebPath">/</loader>
-			<!-- 系统路径 -->
-			<loader id="" index="" type="SystemPath">/</loader>
-			<!-- ClassPath目录下 -->
-			<loader id="" index="Min" type="ClassPath">/META-INF/webapp</loader>
-		</loaderList>
+			<internalLoader index="Max" type="WebPath"> /</internalLoader>
+		</templateLoader>
+		<!-- 使用Configurable.setSetting(String,String)方法进行配置。 -->
+		<settings>
+			<!-- 默认页面编码UTF-8 -->
+			<default_encoding>utf-8</default_encoding>
+			<!-- 输出编码格式UTF-8 -->
+			<output_encoding>utf-8</output_encoding>
+			<!-- 是否开启国际化false -->
+			<localized_lookup>false</localized_lookup>
+			<!-- null值测处理配置 -->
+			<classic_compatible>true</classic_compatible>
+		</settings>
 	</freemarker>
-	<!-- 权限配置： -->
-	<!-- enable：权限系统启用禁用 -->
-	<!-- enableURL：是否将Request请求纳入权限系统 -->
-	<!-- enableMethod：是否启用@Power注解支持 -->
-	<security enable="false" enableURL="true" enableMethod="true">
-		<!-- 权限会话超时时间，单位:毫秒，默认10分钟 -->
-		<authSessionTimeout>600000</authSessionTimeout>
-		<!-- -->
-		<!-- security使用的数据缓存名 -->
-		<authSessionCacheName>AuthSessionCache</authSessionCacheName>
-		<!-- 内置的权限数据缓存Cache配置 -->
-		<internalAuthSessionMapCache timeout="20000" eternal="false" autoRenewal="true" threadSeep="5000" />
-		<!-- 登入Action -->
-		<loginURL>s_login.sec</loginURL>
-		<!-- 登出Action -->
-		<logoutURL>s_logout.sec</logoutURL>
-		<!-- 权限的客户端cookie配置，默认启用 -->
-		<clientCookie enable="false">
-			<!-- cookie名称 -->
-			<cookieName>AUTHSESSION</cookieName>
-			<!-- cookie的Domain配置，设置这个属性用来支持跨域访问cookie。（默认为空不对该值进行设置） -->
-			<cookieDomain></cookieDomain>
-			<!-- cookie的path属性（默认为空不对该值进行设置） -->
-			<cookiePath>/</cookiePath>
-			<!-- 当系统启动时是否强制所有客户端已经登陆过的Cookie信息失效 -->
-			<loseCookieOnStart>false</loseCookieOnStart>
-			<!-- cookie超时时间，单位:秒，默认7天。 -->
-			<timeout>604800</timeout>
-			<!-- cookie内容加密方式和密钥 -->
-			<encryption enable="true" encodeType="None" key="!@#123qw" />
-		</clientCookie>
-		<!-- 加密算法配置 -->
-		<encryptionDigestSet>
-			<digest name="DES">org.platform.security.digest.DESDigest</digest>
-			<digest name="Base64">org.platform.security.digest.Base64Digest</digest>
-			<digest name="Random">org.platform.security.digest.RandomDigest</digest>
-			<digest name="None">org.platform.security.digest.NoneDigest</digest>
-			<digest name="AES128">org.platform.security.digest.AES128Digest</digest>
-		</encryptionDigestSet>
-		<!-- 登陆表单数据 -->
-		<loginFormData>
-			<!-- 登陆表单，用户名 -->
-			<accountField>j_username</accountField>
-			<!-- 登陆表单，密码 -->
-			<passwordField>j_password</passwordField>
-			<!-- 使用的权限系统 -->
-			<authField>j_auth</authField>
-		</loginFormData>
-		<!-- 转发配置 -->
-		<forwards>
-			<!-- 登录源，当执行登陆时才会用到这里的配置。 <dispatch contentPath="/user333" defaultType="forward|redirect|Exception|State"> 登陆成功之后要去的地址 <forwardIndex type="forward|redirect">/login_ok_index.htm</forwardIndex> 退出之后要去的地址 <forwardLogout type="forward|redirect">/login_ok_index.htm</forwardLogout> !!!下面的配置信息，配置一项即可!!! 登陆失败：以Http 402号错误响应客户端。 <forwardFailure type="State">402</forwardFailure> 登陆失败：抛出特定类型异常。 <forwardFailure type="Exception">org.platform.security.PermissionException</forwardFailure> 登陆失败：跳转到特定页面或地址。 <forwardFailure type="forward|redirect|Exception|State">/abc.htm</forwardFailure> 配置的可以跳转的地址 <forward id="go_1" type="redirect">/go_1.htm</forward> <forward id="go_2" type="redirect">/go_2.htm</forward> </dispatch> -->
-		</forwards>
-		<!-- 权限判断规则 -->
-		<!-- Login:要求登陆，Logout:要求非登陆，Guest:要求具有来宾身份，Permission:要求具有权限点，None:无任何要求 -->
-		<rules>
-			<!-- URL权限检查默认策略配置：Login|Logout|Guest|Permission|None。mode属性配置成Permission时需要配置permissions参数。 -->
-			<defaultRule mode="None" />
-			<!-- 需要权限检查的路径 -->
-			<includes>
-				<!-- 命中的URL需要用户进行登入 -->
-				<!-- <include mode="Login">/user</include> -->
-				<!-- 命中的URL需要用户具备某种权限代码，(逗号间隔多个代码) -->
-				<!-- <include mode="Permission" permissions="TestPower">/pro</include> -->
-			</includes>
-			<!-- 不需要权限检查的路径 -->
-			<excludes>
-				<exclude></exclude>
-			</excludes>
-		</rules>
-		<!-- 来宾权限设置 -->
-		<guest enable="true">
-			<!-- 来宾用户帐号类 -->
-			<info account="guest" password="guest" userCode="guest@guest" />
-			<!-- 来宾帐号的认证系统 -->
-			<authSystem>GuestAuthSystem</authSystem>
-			<!-- 来宾帐号权限 -->
-			<permissions></permissions>
-		</guest>
-	</security>
-	<!-- 缓存配置 -->
-	<cacheConfig enable="true">
-		<!-- MapCache 配置 -->
-		<!-- timeout=设置的超时时间10分钟超时 -->
-		<!-- eternal=缓存是否永远不销毁 -->
-		<!-- autoRenewal=每当访问缓存对象时是否自动对其续约（续约时间同加入时缓存超时时间） -->
-		<!-- threadSeep=缓存回收线程工作的时间频率(毫秒) -->
-		<mapCache timeout="600000" eternal="false" autoRenewal="true" threadSeep="5000" />
-		<!-- !!!这里可以放置其他缓存程序的Xml配置，然后通过XmlProperty类型读取到这段Xml!!! -->
-	</cacheConfig>
-	<!-- 工作空间设置 -->
-	<workspace>
-		<!-- 程序工作空间基础目录（绝对地址） -->
-		<workDir>.</workDir>
-		<!-- 程序的文件数据目录（默认相对workDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
-		<dataDir absolute="false">/files</dataDir>
-		<!-- 程序运行期间所需的临时数据存放地址（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
-		<tempDir absolute="false">/temp</tempDir>
-		<!-- 程序运行时生成的缓存数据存放位置（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
-		<cacheDir absolute="false">/cache</cacheDir>
-	</workspace>
+		<!-- 权限配置： -->
+		<!-- enable：权限系统启用禁用 -->
+		<!-- enableURL：是否将Request请求纳入权限系统 -->
+		<!-- enableMethod：是否启用@Power注解支持 -->
+		<security enable="false" enableURL="true" enableMethod="true">
+			<!-- 权限会话超时时间，单位:毫秒，默认10分钟 -->
+			<authSessionTimeout>600000</authSessionTimeout>
+			<!-- -->
+			<!-- security使用的数据缓存名 -->
+			<authSessionCacheName>AuthSessionCache</authSessionCacheName>
+			<!-- 内置的权限数据缓存Cache配置 -->
+			<internalAuthSessionMapCache timeout="20000" eternal="false" autoRenewal="true" threadSeep="5000" />
+			<!-- 登入Action -->
+			<loginURL>s_login.sec</loginURL>
+			<!-- 登出Action -->
+			<logoutURL>s_logout.sec</logoutURL>
+			<!-- 权限的客户端cookie配置，默认启用 -->
+			<clientCookie enable="false">
+				<!-- cookie名称 -->
+				<cookieName>AUTHSESSION</cookieName>
+				<!-- cookie的Domain配置，设置这个属性用来支持跨域访问cookie。（默认为空不对该值进行设置） -->
+				<cookieDomain></cookieDomain>
+				<!-- cookie的path属性（默认为空不对该值进行设置） -->
+				<cookiePath>/</cookiePath>
+				<!-- 当系统启动时是否强制所有客户端已经登陆过的Cookie信息失效 -->
+				<loseCookieOnStart>false</loseCookieOnStart>
+				<!-- cookie超时时间，单位:秒，默认7天。 -->
+				<timeout>604800</timeout>
+				<!-- cookie内容加密方式和密钥 -->
+				<encryption enable="true" encodeType="None" key="!@#123qw" />
+			</clientCookie>
+			<!-- 加密算法配置 -->
+			<encryptionDigestSet>
+				<digest name="DES">org.platform.security.digest.DESDigest</digest>
+				<digest name="Base64">org.platform.security.digest.Base64Digest</digest>
+				<digest name="Random">org.platform.security.digest.RandomDigest</digest>
+				<digest name="None">org.platform.security.digest.NoneDigest</digest>
+				<digest name="AES128">org.platform.security.digest.AES128Digest</digest>
+			</encryptionDigestSet>
+			<!-- 登陆表单数据 -->
+			<loginFormData>
+				<!-- 登陆表单，用户名 -->
+				<accountField>j_username</accountField>
+				<!-- 登陆表单，密码 -->
+				<passwordField>j_password</passwordField>
+				<!-- 使用的权限系统 -->
+				<authField>j_auth</authField>
+			</loginFormData>
+			<!-- 转发配置 -->
+			<forwards>
+				<!-- 登录源，当执行登陆时才会用到这里的配置。 <dispatch contentPath="/user333" defaultType="forward|redirect|Exception|State"> 登陆成功之后要去的地址 <forwardIndex type="forward|redirect">/login_ok_index.htm</forwardIndex> 退出之后要去的地址 <forwardLogout type="forward|redirect">/login_ok_index.htm</forwardLogout> !!!下面的配置信息，配置一项即可!!! 登陆失败：以Http 402号错误响应客户端。 <forwardFailure type="State">402</forwardFailure> 登陆失败：抛出特定类型异常。 <forwardFailure type="Exception">org.platform.security.PermissionException</forwardFailure> 登陆失败：跳转到特定页面或地址。 <forwardFailure type="forward|redirect|Exception|State">/abc.htm</forwardFailure> 配置的可以跳转的地址 <forward id="go_1" type="redirect">/go_1.htm</forward> <forward id="go_2" type="redirect">/go_2.htm</forward> </dispatch> -->
+			</forwards>
+			<!-- 权限判断规则 -->
+			<!-- Login:要求登陆，Logout:要求非登陆，Guest:要求具有来宾身份，Permission:要求具有权限点，None:无任何要求 -->
+			<rules>
+				<!-- URL权限检查默认策略配置：Login|Logout|Guest|Permission|None。mode属性配置成Permission时需要配置permissions参数。 -->
+				<defaultRule mode="None" />
+				<!-- 需要权限检查的路径 -->
+				<includes>
+					<!-- 命中的URL需要用户进行登入 -->
+					<!-- <include mode="Login">/user</include> -->
+					<!-- 命中的URL需要用户具备某种权限代码，(逗号间隔多个代码) -->
+					<!-- <include mode="Permission" permissions="TestPower">/pro</include> -->
+				</includes>
+				<!-- 不需要权限检查的路径 -->
+				<excludes>
+					<exclude></exclude>
+				</excludes>
+			</rules>
+			<!-- 来宾权限设置 -->
+			<guest enable="true">
+				<!-- 来宾用户帐号类 -->
+				<info account="guest" password="guest" userCode="guest@guest" />
+				<!-- 来宾帐号的认证系统 -->
+				<authSystem>GuestAuthSystem</authSystem>
+				<!-- 来宾帐号权限 -->
+				<permissions></permissions>
+			</guest>
+		</security>
+		<!-- 缓存配置 -->
+		<cacheConfig enable="true">
+			<!-- MapCache 配置 -->
+			<!-- timeout=设置的超时时间10分钟超时 -->
+			<!-- eternal=缓存是否永远不销毁 -->
+			<!-- autoRenewal=每当访问缓存对象时是否自动对其续约（续约时间同加入时缓存超时时间） -->
+			<!-- threadSeep=缓存回收线程工作的时间频率(毫秒) -->
+			<mapCache timeout="600000" eternal="false" autoRenewal="true" threadSeep="5000" />
+			<!-- !!!这里可以放置其他缓存程序的Xml配置，然后通过XmlProperty类型读取到这段Xml!!! -->
+		</cacheConfig>
+		<!-- 工作空间设置 -->
+		<workspace>
+			<!-- 程序工作空间基础目录（绝对地址） -->
+			<workDir>.</workDir>
+			<!-- 程序的文件数据目录（默认相对workDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
+			<dataDir absolute="false">/files</dataDir>
+			<!-- 程序运行期间所需的临时数据存放地址（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
+			<tempDir absolute="false">/temp</tempDir>
+			<!-- 程序运行时生成的缓存数据存放位置（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
+			<cacheDir absolute="false">/cache</cacheDir>
+		</workspace>
 </config>

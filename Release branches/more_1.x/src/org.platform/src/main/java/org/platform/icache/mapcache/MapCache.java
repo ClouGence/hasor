@@ -30,7 +30,7 @@ import org.platform.icache.ICache;
 @DefaultCache
 @Cache(value = "MapCache", displayName = "InternalMapCache", description = "内置的Map缓存，ICache接口的简单实现。")
 public class MapCache<T> extends Thread implements ICache<T> {
-    protected String                                 threadName     = "InternalMapCache-Daemon";
+    private String                                   threadName     = "InternalMapCache-Daemon";
     private volatile boolean                         exitThread     = false;
     private volatile HashMap<String, CacheEntity<T>> cacheEntityMap = new HashMap<String, CacheEntity<T>>();
     private MapCacheSettings                         settings       = null;
@@ -40,6 +40,9 @@ public class MapCache<T> extends Thread implements ICache<T> {
     }
     public MapCache() {
         this.settings = this.getMapCacheSettings();
+    }
+    protected String getThreadName() {
+        return this.threadName;
     }
     @Override
     public void run() {
@@ -135,5 +138,31 @@ public class MapCache<T> extends Thread implements ICache<T> {
     public synchronized boolean clear() {
         this.cacheEntityMap.clear();
         return true;
+    }
+    /*-------------------------------------------------------------------------------------*/
+    private static class CacheEntity<T> {
+        private T    value    = null;
+        private long timeout  = 0;
+        private long lastTime = 0;
+        //
+        public CacheEntity(T value, long timeout) {
+            this.value = value;
+            this.timeout = timeout;
+            this.lastTime = System.currentTimeMillis();
+        }
+        //
+        public boolean isLost() {
+            if (this.timeout == Long.MAX_VALUE)
+                return false;
+            return (lastTime + this.timeout) < System.currentTimeMillis();
+        }
+        //
+        public void refresh() {
+            this.lastTime = System.currentTimeMillis();
+        }
+        //
+        public T get() {
+            return this.value;
+        }
     }
 }

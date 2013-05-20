@@ -5,6 +5,20 @@
 		<!-- 包扫描覆盖范围 -->
 		<loadPackages>org.*, com.*, net.*, cn.*,&lt;/试题&gt;</loadPackages>
 	</framework>
+	<freemarker>
+		<suffixSet>*.html</suffixSet>
+		<!-- 模板装载器 -->
+		<templateLoader>
+			<!-- 平台配置的缓存路径下 -->
+			<loader id="" index="Max" type="CachePath">/template</loader>
+			<!-- 网站路径 -->
+			<loader id="" index="" type="WebPath">/</loader>
+			<!-- 系统路径 -->
+			<loader id="" index="" type="SystemPath">/</loader>
+			<!-- ClassPath目录下 -->
+			<loader id="" index="Min" type="ClassPath">/META-INF/webapp</loader>
+		</templateLoader>
+	</freemarker>
 	<!-- 权限配置 -->
 	<security enable="true">
 		<clientCookie enable="true"></clientCookie>

@@ -16,7 +16,6 @@
 package org.platform.freemarker;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Map;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -34,17 +33,17 @@ public interface FreemarkerManager {
     /**获取并执行模板。*/
     public void processTemplate(String templateName) throws TemplateException, IOException;
     /**获取并执行模板。*/
-    public void processTemplate(String templateName, Map<String, Object> rootMap) throws TemplateException, IOException;
+    public void processTemplate(String templateName, Object rootMap) throws TemplateException, IOException;
     /**获取并执行模板。*/
-    public void processTemplate(String templateName, Map<String, Object> rootMap, Writer writer) throws TemplateException, IOException;
+    public void processTemplate(String templateName, Object rootMap, Writer writer) throws TemplateException, IOException;
     //
     /**将字符串的内容作为模板执行。*/
     public String processString(String templateString) throws TemplateException, IOException;
     /**将字符串的内容作为模板执行。*/
-    public String processString(String templateString, Map<String, Object> rootMap) throws TemplateException, IOException;
+    public String processString(String templateString, Object rootMap) throws TemplateException, IOException;
     //
     /**将字符串的内容作为模板执行。*/
     public void processString(String templateString, Writer writer) throws TemplateException, IOException;
     /**将字符串的内容作为模板执行。*/
-    public void processString(String templateString, Map<String, Object> rootMap, Writer writer) throws TemplateException, IOException;
+    public void processString(String templateString, Object rootMap, Writer writer) throws TemplateException, IOException;
 }

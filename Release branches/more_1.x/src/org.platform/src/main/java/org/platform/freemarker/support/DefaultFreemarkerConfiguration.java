@@ -33,4 +33,4 @@ public class DefaultFreemarkerConfiguration implements FreemarkerConfig {
         cfg.setClassicCompatible(true);
         return cfg;
     }
-}
+}s

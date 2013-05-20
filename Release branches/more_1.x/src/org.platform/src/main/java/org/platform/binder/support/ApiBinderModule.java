@@ -50,6 +50,7 @@ public class ApiBinderModule implements Module {
                 listener.initialize(apiBinder);
                 binder.install((Module) apiBinder);
             }
+        /*Bind*/
         binder.bind(ManagedErrorPipeline.class);
         binder.bind(ManagedServletPipeline.class);
         binder.bind(FilterPipeline.class).to(ManagedFilterPipeline.class);

@@ -15,10 +15,7 @@
  */
 package org.platform.security.support;
 import static org.platform.PlatformConfig.Security_AuthSessionCache;
-import static org.platform.PlatformConfig.Security_AuthSessionCache_AutoRenewal;
-import static org.platform.PlatformConfig.Security_AuthSessionCache_Eternal;
-import static org.platform.PlatformConfig.Security_AuthSessionCache_ThreadSeep;
-import static org.platform.PlatformConfig.Security_AuthSessionCache_Timeout;
+import static org.platform.PlatformConfig.Security_AuthSessionTimeout;
 import static org.platform.PlatformConfig.Security_ClientCookie_CookieName;
 import static org.platform.PlatformConfig.Security_ClientCookie_Domain;
 import static org.platform.PlatformConfig.Security_ClientCookie_Enable;
@@ -113,11 +110,7 @@ public class SecuritySettings implements SettingListener {
         }
         //
         this.authSessionCacheName = newConfig.getString(Security_AuthSessionCache);
-        this.authSessionTimeout = newConfig.getLong(Security_AuthSessionCache_Timeout); //Session超时时间
-        this.authSessionCacheDefaultTimeout = newConfig.getLong(Security_AuthSessionCache_Timeout); //AuthSessionCache，设置的超时时间.
-        this.authSessionCacheEternal = newConfig.getBoolean(Security_AuthSessionCache_Eternal); //AuthSessionCache，缓存是否永远不销毁.
-        this.authSessionCacheAutoRenewal = newConfig.getBoolean(Security_AuthSessionCache_AutoRenewal); //AuthSessionCache，每当访问缓存对象时是否自动对其续约（续约时间同加入时缓存超时时间）.
-        this.authSessionCacheThreadSeep = newConfig.getLong(Security_AuthSessionCache_ThreadSeep); //AuthSessionCache，缓存回收线程工作的时间频率(毫秒).
+        this.authSessionTimeout = newConfig.getLong(Security_AuthSessionTimeout); //Session超时时间
         //
         this.loginURL = newConfig.getString(Security_LoginURL);
         this.logoutURL = newConfig.getString(Security_LogoutURL);

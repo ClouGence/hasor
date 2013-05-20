@@ -18,9 +18,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.security.NoSuchAlgorithmException;
-import java.util.Map;
 import org.more.util.CommonCodeUtil;
-import org.more.util.map.DecSequenceMap;
 import org.more.webui.freemarker.loader.ConfigTemplateLoader;
 import org.platform.freemarker.FreemarkerManager;
 import freemarker.template.Configuration;
@@ -37,10 +35,6 @@ public class DefaultFreemarkerManager implements FreemarkerManager {
     //
     //
     //
-    private Map<String, Object> getRootMap() {
-        // TODO Auto-generated method stub
-        return null;
-    }
     public final Configuration getFreemarker() {
         // TODO Auto-generated method stub
         return null;
@@ -63,8 +57,7 @@ public class DefaultFreemarkerManager implements FreemarkerManager {
     }
     @Override
     public Template getTemplate(String templateName) throws TemplateException, IOException {
-        // TODO Auto-generated method stub
-        return null;
+         return this.getFreemarker().getTemplate(templateName, locale, encoding, parse);
     }s
     //
     //
@@ -73,22 +66,13 @@ public class DefaultFreemarkerManager implements FreemarkerManager {
         this.processTemplate(templateName, null, null);
     }
     @Override
-    public void processTemplate(String templateName, Map<String, Object> rootMap) throws TemplateException, IOException {
+    public void processTemplate(String templateName, Object rootMap) throws TemplateException, IOException {
         this.processTemplate(templateName, rootMap, null);
     }
     @Override
-    public void processTemplate(String templateName, Map<String, Object> rootMap, Writer writer) throws TemplateException, IOException {
+    public void processTemplate(String templateName, Object rootMap, Writer writer) throws TemplateException, IOException {
         Writer writerTo = (writer == null) ? new NoneWriter() : writer;
-        Map<String, Object> finalRootMap = null;
-        if (rootMap == null || rootMap.isEmpty())
-            finalRootMap = getRootMap();
-        else {
-            DecSequenceMap<String, Object> seqMap = new DecSequenceMap<String, Object>();
-            seqMap.addMap(rootMap);
-            seqMap.addMap(getRootMap());
-            finalRootMap = seqMap;
-        }
-        this.getTemplate(templateName).process(finalRootMap, writerTo);
+        this.getTemplate(templateName).process(rootMap, writerTo);
     }
     //
     //
@@ -99,7 +83,7 @@ public class DefaultFreemarkerManager implements FreemarkerManager {
         return stringWriter.toString();
     }
     @Override
-    public String processString(String templateString, Map<String, Object> rootMap) throws TemplateException, IOException {
+    public String processString(String templateString, Object rootMap) throws TemplateException, IOException {
         StringWriter stringWriter = new StringWriter();
         this.processString(templateString, rootMap, stringWriter);
         return stringWriter.toString();
@@ -111,7 +95,7 @@ public class DefaultFreemarkerManager implements FreemarkerManager {
         this.processString(templateString, null, writer);
     }
     @Override
-    public void processString(String templateString, Map<String, Object> rootMap, Writer writer) throws TemplateException, IOException {
+    public void processString(String templateString, Object rootMap, Writer writer) throws TemplateException, IOException {
         //A.取得指纹
         String hashStr = null;
         try {
@@ -126,15 +110,8 @@ public class DefaultFreemarkerManager implements FreemarkerManager {
         this.configTemplateLoader.addTemplateAsString(hashStr, templateString);
         //C.执行指纹模板
         Writer writerTo = (writer == null) ? new NoneWriter() : writer;
-        Map<String, Object> finalRootMap = null;
-        if (rootMap == null || rootMap.isEmpty())
-            finalRootMap = getRootMap();
-        else {
-            DecSequenceMap<String, Object> seqMap = new DecSequenceMap<String, Object>();
-            seqMap.addMap(rootMap);
-            seqMap.addMap(getRootMap());
-            finalRootMap = seqMap;
-        }
-        this.getTemplate(hashStr).process(finalRootMap, writerTo);
+        Template  temp= this.getTemplate(hashStr);
+        if (temp!=null)
+            temp.process(rootMap, writerTo);
     }
 }

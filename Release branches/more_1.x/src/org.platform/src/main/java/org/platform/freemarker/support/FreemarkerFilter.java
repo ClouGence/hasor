@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.more.util.StringUtil;
 import org.platform.Platform;
+import org.platform.context.AppContext;
 import org.platform.freemarker.FreemarkerException;
 import org.platform.freemarker.FreemarkerManager;
 import org.platform.general.WebFilter;
@@ -39,6 +40,8 @@ import freemarker.template.TemplateException;
 @Singleton
 @WebFilter(value = "*", sort = Integer.MIN_VALUE + 2)
 public class FreemarkerFilter implements Filter {
+    @Inject
+    private AppContext         appContext        = null;
     @Inject
     private FreemarkerManager  freemarkerManager = null;
     @Inject
@@ -62,7 +65,8 @@ public class FreemarkerFilter implements Filter {
             try {
                 if (httpResponse.isCommitted() == true)
                     return;
-                this.freemarkerManager.processTemplate(requestURI, new FreemarkerRequestRootMap(httpRequest), httpResponse.getWriter());
+                TemplateRootMap rootMap = new TemplateRootMap(httpRequest, appContext, freemarkerManager);s
+                this.freemarkerManager.processTemplate(requestURI, rootMap, httpResponse.getWriter());
                 return;
             } catch (TemplateException e) {
                 switch (this.settings.getOnError()) {
