@@ -20,7 +20,10 @@ import java.io.Writer;
 import java.security.NoSuchAlgorithmException;
 import org.more.util.CommonCodeUtil;
 import org.more.webui.freemarker.loader.ConfigTemplateLoader;
+import org.platform.context.AppContext;
+import org.platform.freemarker.ConfigurationFactory;
 import org.platform.freemarker.FreemarkerManager;
+import com.google.inject.Singleton;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -29,36 +32,31 @@ import freemarker.template.TemplateException;
  * @version : 2013-5-17
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
+@Singleton
 public class DefaultFreemarkerManager implements FreemarkerManager {
+    private AppContext           appContext           = null;
     private ConfigTemplateLoader configTemplateLoader = new ConfigTemplateLoader();
-    //    private Configuration        cfg                  = null;
+    private ConfigurationFactory configurationFactory = null;
     //
     //
+    @Override
+    public void initManager(AppContext appContext) {
+        if (this.configurationFactory == null)
+            this.configurationFactory = appContext.getInstance(ConfigurationFactory.class);
+        this.appContext = appContext;
+        this.getFreemarker();
+        //this.configuration.setSharedVariable("", new TemplateModel() {});
+    }
+    @Override
+    public void destroyManager(AppContext appContext) {}
     //
     public final Configuration getFreemarker() {
-        // TODO Auto-generated method stub
-        return null;
-        //        if (this.cfg == null) {
-        //            this.cfg = createFreemarker();
-        //            cfg.setDefaultEncoding(this.getEnvironment().getPageEncoding());
-        //            cfg.setOutputEncoding(this.getEnvironment().getOutEncoding());
-        //            cfg.setLocalizedLookup(this.getEnvironment().isLocalizedLookup());
-        //            //
-        //            TemplateLoader[] loaders = null;
-        //            if (cfg.getTemplateLoader() != null) {
-        //                loaders = new TemplateLoader[2];
-        //                loaders[1] = cfg.getTemplateLoader();
-        //            } else
-        //                loaders = new TemplateLoader[1];
-        //            loaders[0] = this.configTemplateLoader;
-        //            cfg.setTemplateLoader(new MultiTemplateLoader(loaders));
-        //        }
-        //        return this.cfg;
+        return this.configurationFactory.configuration(this.appContext);
     }
     @Override
     public Template getTemplate(String templateName) throws TemplateException, IOException {
-         return this.getFreemarker().getTemplate(templateName, locale, encoding, parse);
-    }s
+        return this.getFreemarker().getTemplate(templateName);
+    }
     //
     //
     @Override
@@ -110,8 +108,8 @@ public class DefaultFreemarkerManager implements FreemarkerManager {
         this.configTemplateLoader.addTemplateAsString(hashStr, templateString);
         //C.÷¥––÷∏Œ∆ƒ£∞Â
         Writer writerTo = (writer == null) ? new NoneWriter() : writer;
-        Template  temp= this.getTemplate(hashStr);
-        if (temp!=null)
+        Template temp = this.getTemplate(hashStr);
+        if (temp != null)
             temp.process(rootMap, writerTo);
     }
 }

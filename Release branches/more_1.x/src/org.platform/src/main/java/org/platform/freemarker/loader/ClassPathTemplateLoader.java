@@ -21,8 +21,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.net.URLClassLoader;
-import org.platform.freemarker.resource.ClassPathResourceLoader;
-import org.platform.freemarker.resource.IResourceLoader;
+import org.platform.freemarker.loader.resource.ClassPathResourceLoader;
+import org.platform.freemarker.loader.resource.IResourceLoader;
 /**
 * 处理Classpath中的模板。
 * @version : 2011-9-14

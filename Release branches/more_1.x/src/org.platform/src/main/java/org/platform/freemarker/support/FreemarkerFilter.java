@@ -41,14 +41,17 @@ import freemarker.template.TemplateException;
 @WebFilter(value = "*", sort = Integer.MIN_VALUE + 2)
 public class FreemarkerFilter implements Filter {
     @Inject
-    private AppContext         appContext        = null;
-    @Inject
     private FreemarkerManager  freemarkerManager = null;
     @Inject
     private FreemarkerSettings settings          = null;
     //
     /***/
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        if (this.settings.isEnable() == false) {
+            chain.doFilter(request, response);
+            return;
+        }
+        //
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String requestURI = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
@@ -65,7 +68,9 @@ public class FreemarkerFilter implements Filter {
             try {
                 if (httpResponse.isCommitted() == true)
                     return;
-                TemplateRootMap rootMap = new TemplateRootMap(httpRequest, appContext, freemarkerManager);s
+                //HttpRequestHashModel requestHashModel = new HttpRequestHashModel(httpRequest, httpResponse);
+                //TemplateRootMap rootMap = new TemplateRootMap(httpRequest, appContext, freemarkerManager);
+                Object rootMap = null;
                 this.freemarkerManager.processTemplate(requestURI, rootMap, httpResponse.getWriter());
                 return;
             } catch (TemplateException e) {

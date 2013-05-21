@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.freemarker.resource;
+package org.platform.freemarker.loader.resource;
 import java.io.InputStream;
 import java.net.URL;
 /**

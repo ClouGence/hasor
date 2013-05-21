@@ -16,6 +16,7 @@
 package org.platform.freemarker;
 import java.io.IOException;
 import java.io.Writer;
+import org.platform.context.AppContext;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -25,6 +26,10 @@ import freemarker.template.TemplateException;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface FreemarkerManager {
+    /**初始化启动服务。*/
+    public void initManager(AppContext appContext);
+    /**销毁服务*/
+    public void destroyManager(AppContext appContext);
     /**获取用于执行模板的Freemarker*/
     public Configuration getFreemarker();
     /**获取模板。*/

@@ -26,7 +26,7 @@ import org.platform.freemarker.loader.mto.ClassPath_TemplateObject;
 import org.platform.freemarker.loader.mto.File_TemplateObject;
 import org.platform.freemarker.loader.mto.String_TemplateObject;
 import org.platform.freemarker.loader.mto.URL_TemplateObject;
-import org.platform.freemarker.resource.IResourceLoader;
+import org.platform.freemarker.loader.resource.IResourceLoader;
 /**
  * 处理配置文件中添加的模板。
  * @version : 2011-9-14

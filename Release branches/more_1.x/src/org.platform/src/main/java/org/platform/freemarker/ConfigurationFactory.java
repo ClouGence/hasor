@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 package org.platform.freemarker;
+import org.platform.context.AppContext;
 import freemarker.template.Configuration;
 /**
  * 
  * @version : 2013-5-16
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface FreemarkerConfig {
+public interface ConfigurationFactory {
     /*** 获取配置好的freemarker{@link Configuration}对象。*/
-    public Configuration configuration();
+    public Configuration configuration(AppContext appContext);
 }

@@ -18,8 +18,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import org.platform.freemarker.resource.DirResourceLoader;
-import org.platform.freemarker.resource.IResourceLoader;
+import org.platform.freemarker.loader.resource.DirResourceLoader;
+import org.platform.freemarker.loader.resource.IResourceLoader;
 import freemarker.cache.FileTemplateLoader;
 /**
  * 实现了{@link IResourceLoader}接口的{@link FileTemplateLoader}类。

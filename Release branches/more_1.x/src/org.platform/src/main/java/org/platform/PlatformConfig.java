@@ -44,6 +44,12 @@ public interface PlatformConfig {
     public static final String FreemarkerConfig_Suffix                     = "freemarker.suffixSet";
     /**当模板处理发生异常时的处理方式.*/
     public static final String FreemarkerConfig_OnError                    = "freemarker.onError";
+    /**Configuration对象创建工厂.*/
+    public static final String FreemarkerConfig_ConfigurationFactory       = "freemarker.configurationFactory";
+    /**FreeMarker配置.*/
+    public static final String FreemarkerConfig_Settings                   = "freemarker.settings";
+    /**FreeMarker装载器配置.*/
+    public static final String FreemarkerConfig_TemplateLoader             = "freemarker.templateLoader";
     //
     //
     /**程序工作空间基础目录（绝对地址）*/

@@ -20,11 +20,11 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.more.global.Global;
-import org.more.global.assembler.xml.DefaultXmlProperty;
 import org.more.global.assembler.xml.XmlProperty;
 import org.more.global.assembler.xml.XmlPropertyGlobalFactory;
 import org.more.util.ResourceWatch;
@@ -187,15 +187,16 @@ public class PlatformSettings extends Global implements Settings {
                         String $propxyKey = key.toLowerCase();
                         String $key = prop.get(key).toLowerCase();
                         Object value = referConfig.get($key);
-                        if (value == null)
+                        if (value == null) {
                             Platform.warning("%s mapping to %s value is null.", $propxyKey, $key);
-                        else {
-                            /*忽略冲突的映射*/
-                            if (referConfig.containsKey($propxyKey) == true) {
-                                Platform.error("mapping conflict! %s has this key.", $propxyKey);
-                            } else
-                                referConfig.put($propxyKey, value);
+                            continue;
                         }
+                        value = (value instanceof XmlProperty) ? ((XmlProperty) value).getText() : value;
+                        /*忽略冲突的映射*/
+                        if (referConfig.containsKey($propxyKey) == true) {
+                            Platform.error("mapping conflict! %s has this key.", $propxyKey);
+                        } else
+                            referConfig.put($propxyKey, value);
                     }
                 }
         } catch (Exception e) {
@@ -217,17 +218,21 @@ public class PlatformSettings extends Global implements Settings {
                         xmlg.getLoadNameSpace().add(loadNS);
             //
             Map<String, Object> dataMap = xmlg.createMap(encoding, new Object[] { ResourcesUtil.getResourceAsStream(configURI) });
-            /*处理多值合并问题*/
+            /*处理多值合并问题（采用覆盖和追加的策略）*/
             for (String key : dataMap.keySet()) {
                 String $key = key.toLowerCase();
                 Object $var = dataMap.get(key);
-                Object $varConflict = loadTo.get(key);
+                Object $varConflict = loadTo.get($key);
                 if ($varConflict != null && $varConflict instanceof XmlProperty && $var instanceof XmlProperty) {
                     XmlProperty v1 = (XmlProperty) $var;
                     XmlProperty v2 = (XmlProperty) $varConflict;
-                    //
+                    /*覆盖策略*/
                     v2.getAttributeMap().putAll(v1.getAttributeMap());
+                    /*追加策略*/
+                    Collections.reverse(v1.getChildren());
+                    Collections.reverse(v2.getChildren());
                     v2.getChildren().addAll(v1.getChildren());
+                    Collections.reverse(v2.getChildren());
                 } else
                     loadTo.put($key, $var);
             }

@@ -19,7 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Date;
-import org.platform.freemarker.resource.ClassPathResourceLoader;
+import org.platform.freemarker.loader.resource.ClassPathResourceLoader;
 /**
  * 装载ClassPath中的模板对象
  * @version : 2011-9-16
