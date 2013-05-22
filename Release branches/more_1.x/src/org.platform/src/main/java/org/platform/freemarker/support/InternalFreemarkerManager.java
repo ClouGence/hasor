@@ -20,10 +20,12 @@ import java.io.Writer;
 import java.security.NoSuchAlgorithmException;
 import org.more.util.CommonCodeUtil;
 import org.more.webui.freemarker.loader.ConfigTemplateLoader;
+import org.more.webui.freemarker.loader.MultiTemplateLoader;
 import org.platform.context.AppContext;
 import org.platform.freemarker.ConfigurationFactory;
 import org.platform.freemarker.FreemarkerManager;
 import com.google.inject.Singleton;
+import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -33,10 +35,11 @@ import freemarker.template.TemplateException;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Singleton
-public class DefaultFreemarkerManager implements FreemarkerManager {
+class InternalFreemarkerManager implements FreemarkerManager {
     private AppContext           appContext           = null;
-    private ConfigTemplateLoader configTemplateLoader = new ConfigTemplateLoader();
+    private ConfigTemplateLoader stringLoader         = null;
     private ConfigurationFactory configurationFactory = null;
+    private Configuration        configuration        = null;
     //
     //
     @Override
@@ -51,7 +54,19 @@ public class DefaultFreemarkerManager implements FreemarkerManager {
     public void destroyManager(AppContext appContext) {}
     //
     public final Configuration getFreemarker() {
-        return this.configurationFactory.configuration(this.appContext);
+        if (this.configuration == null) {
+            this.configuration = this.configurationFactory.configuration(this.appContext);
+            TemplateLoader[] loaders = null;
+            if (this.configuration.getTemplateLoader() != null) {
+                loaders = new TemplateLoader[2];
+                loaders[1] = this.configuration.getTemplateLoader();
+            } else
+                loaders = new TemplateLoader[1];
+            this.stringLoader = new ConfigTemplateLoader();
+            loaders[0] = this.stringLoader;
+            this.configuration.setTemplateLoader(new MultiTemplateLoader(loaders));
+        }
+        return configuration;
     }
     @Override
     public Template getTemplate(String templateName) throws TemplateException, IOException {
@@ -105,7 +120,7 @@ public class DefaultFreemarkerManager implements FreemarkerManager {
         }
         hashStr += ".temp";
         //B.将内容加入到模板加载器中。
-        this.configTemplateLoader.addTemplateAsString(hashStr, templateString);
+        this.stringLoader.addTemplateAsString(hashStr, templateString);
         //C.执行指纹模板
         Writer writerTo = (writer == null) ? new NoneWriter() : writer;
         Template temp = this.getTemplate(hashStr);

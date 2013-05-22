@@ -32,16 +32,24 @@
 		<actionServlet enable="true" mode="ServletOnly">*.do</actionServlet>
 	</httpServlet>
 	<!-- freemarker 配置，onError当模板处理发生异常时的处理方式。模式：ThrowError（抛出异常）、PrintOnConsole（打印到控制台或日志）、Warning（忽略，仅仅产生一条警告消息）PrintOnPage（打印到页面） -->
-	<freemarker enable="true" onError="PrintOnPage">
+	<freemarker enable="true" onError="ThrowError">
 		<!-- freemarker模板后缀名逗号间隔多个. -->
 		<suffixSet>*.ftl</suffixSet>
 		<!-- Configuration对象创建工厂 -->
-		<configurationFactory>org.platform.freemarker.support.DefaultConfigurationFactory</configurationFactory>
-		<!-- 模板装载器 -->
+		<configurationFactory>org.platform.freemarker.support.DefaultFreemarkerFactory</configurationFactory>
+		<!-- 模板装载器，以下配置在服务器运行中不支持自动应用修改。 -->
 		<templateLoader>
-			<workspacePathLoader>/META-INF/webapp</workspacePathLoader>
-			<webContentLoader>/</webContentLoader>
-			<classPathLoader>/META-INF/webapp</classPathLoader>
+			<!-- <PathLoader>c:\abc</PathLoader> -->
+			<!-- <PredefineLoader> -->
+			<!-- <templateBody key="" type="Resource|File|String(default)|URL">ssss</templateBody> -->
+			<!-- <templateBody key="" type="Resource|File|String(default)|URL">ssss</templateBody> -->
+			<!-- </PredefineLoader> -->
+			<!-- <WorkPathLoader pathType="workDir|dataDir|tempDir|cacheDir">/META-INF/webapp</WorkPathLoader> -->
+			<!-- -->
+			<!-- Web网站根 -->
+			<WebContentLoader>/</WebContentLoader>
+			<!-- classPath路径下指定的位置 -->
+			<ClassPathLoader>/META-INF/webapp</ClassPathLoader>
 		</templateLoader>
 		<!-- 使用Configurable.setSetting(String,String)方法进行配置。 -->
 		<settings>

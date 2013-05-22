@@ -228,6 +228,7 @@ public class PlatformSettings extends Global implements Settings {
                     XmlProperty v2 = (XmlProperty) $varConflict;
                     /*¸²¸Ç²ßÂÔ*/
                     v2.getAttributeMap().putAll(v1.getAttributeMap());
+                    v2.setText(v1.getText());
                     /*×·¼Ó²ßÂÔ*/
                     Collections.reverse(v1.getChildren());
                     Collections.reverse(v2.getChildren());

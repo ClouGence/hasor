@@ -1,3 +1,4 @@
+package org.platform.freemarker.support;
 ///*
 // * Copyright 2008-2009 the original author or authors.
 // *

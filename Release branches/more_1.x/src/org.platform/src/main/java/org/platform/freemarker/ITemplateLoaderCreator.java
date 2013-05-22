@@ -13,27 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.webapps.safety;
-import java.util.List;
+package org.platform.freemarker;
+import java.io.IOException;
+import org.more.global.assembler.xml.XmlProperty;
 import org.platform.context.AppContext;
-import org.platform.security.SecurityAccess;
-import org.platform.security.Permission;
-import org.platform.security.SecAccess;
-import org.platform.security.UserInfo;
+import org.platform.freemarker.loader.ITemplateLoader;
 /**
  * 
- * @version : 2013-4-28
+ * @version : 2013-5-22
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@SecAccess(authSystem = "UserAuth")
-public class UserSecurityAccess implements SecurityAccess {
-    //
-    @Override
-    public void initAccess(AppContext appContext) {}
-    @Override
-    public List<Permission> loadPermission(UserInfo userInfo) {
-        return null;
-    }
-    @Override
-    public void destroyAccess(AppContext appContext) {}
+public interface ITemplateLoaderCreator {
+    public ITemplateLoader newTemplateLoader(AppContext appContext, XmlProperty xmlConfig) throws IOException;
 }

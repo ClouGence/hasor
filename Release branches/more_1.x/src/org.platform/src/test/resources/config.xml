@@ -5,9 +5,16 @@
 		<!-- 包扫描覆盖范围 -->
 		<loadPackages>org.*, com.*, net.*, cn.*</loadPackages>
 	</framework>
+	<!-- ThrowError（抛出异常）、PrintOnConsole（打印到控制台或日志）、Warning（忽略，仅仅产生一条警告消息）PrintOnPage（打印到页面） -->
 	<freemarker>
+		<!-- freemarker模板后缀名逗号间隔多个. -->
 		<suffixSet>*.htm</suffixSet>
 		<templateLoader>
+			<PathLoader>c:\abc</PathLoader>
+			<PredefineLoader>
+				<templateString key="key1">${false:string}</templateString>
+				<templateString key="key2">say hello</templateString>
+			</PredefineLoader>
 		</templateLoader>
 	</freemarker>
 	<!-- 权限配置 -->

@@ -16,16 +16,16 @@
 package org.platform.webapps.safety;
 import org.more.util.StringUtil;
 import org.platform.context.AppContext;
-import org.platform.security.ISecurityAuth;
 import org.platform.security.SecurityAuth;
+import org.platform.security.SecAuth;
 import org.platform.security.UserInfo;
 /**
  * 
  * @version : 2013-4-28
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@SecurityAuth(authSystem = "BBSAuth")
-public class BBSSecurityAuth implements ISecurityAuth {
+@SecAuth(authSystem = "BBSAuth")
+public class BBSSecurityAuth implements SecurityAuth {
     //
     @Override
     public void initAuth(AppContext appContext) {}

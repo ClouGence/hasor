@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.more.util.StringUtil;
 import org.platform.Platform;
-import org.platform.context.AppContext;
 import org.platform.freemarker.FreemarkerException;
 import org.platform.freemarker.FreemarkerManager;
 import org.platform.general.WebFilter;
@@ -73,11 +72,11 @@ public class FreemarkerFilter implements Filter {
                 Object rootMap = null;
                 this.freemarkerManager.processTemplate(requestURI, rootMap, httpResponse.getWriter());
                 return;
-            } catch (TemplateException e) {
+            } catch (Exception e) {
                 switch (this.settings.getOnError()) {
                 /**抛出异常*/
                 case ThrowError:
-                    throw new FreemarkerException(e);
+                    throw new ServletException(e);
                     /**打印到控制台或日志*/
                 case PrintOnConsole:
                     Platform.error("%s", e);

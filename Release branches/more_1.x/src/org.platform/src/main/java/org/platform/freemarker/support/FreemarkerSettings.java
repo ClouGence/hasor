@@ -26,7 +26,7 @@ import com.google.inject.Singleton;
  * @author ÕÔÓÀ´º (zyc@byshell.org)
  */
 @Singleton
-public class FreemarkerSettings implements SettingListener {
+class FreemarkerSettings implements SettingListener {
     public static enum OnErrorMode {
         /**Å×³öÒì³£*/
         ThrowError,

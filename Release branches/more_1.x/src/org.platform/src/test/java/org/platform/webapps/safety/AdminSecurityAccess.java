@@ -17,17 +17,17 @@ package org.platform.webapps.safety;
 import java.util.ArrayList;
 import java.util.List;
 import org.platform.context.AppContext;
-import org.platform.security.ISecurityAccess;
-import org.platform.security.Permission;
 import org.platform.security.SecurityAccess;
+import org.platform.security.Permission;
+import org.platform.security.SecAccess;
 import org.platform.security.UserInfo;
 /**
  * 
  * @version : 2013-4-28
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@SecurityAccess(authSystem = "AdminAuth")
-public class AdminSecurityAccess implements ISecurityAccess {
+@SecAccess(authSystem = "AdminAuth")
+public class AdminSecurityAccess implements SecurityAccess {
     //
     @Override
     public void initAccess(AppContext appContext) {}
