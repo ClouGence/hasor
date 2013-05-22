@@ -33,15 +33,15 @@ import org.platform.context.PlatformListener;
 import org.platform.context.startup.PlatformExt;
 import org.platform.security.AuthSession;
 import org.platform.security.AutoLoginProcess;
-import org.platform.security.ISecurityAccess;
-import org.platform.security.ISecurityAuth;
+import org.platform.security.SecurityAccess;
+import org.platform.security.SecurityAuth;
 import org.platform.security.LoginProcess;
 import org.platform.security.LogoutProcess;
 import org.platform.security.PermissionException;
 import org.platform.security.Power;
 import org.platform.security.Power.Level;
-import org.platform.security.SecurityAccess;
-import org.platform.security.SecurityAuth;
+import org.platform.security.SecAccess;
+import org.platform.security.SecAuth;
 import org.platform.security.SecurityContext;
 import org.platform.security.SecurityQuery;
 import org.platform.security.TestURLPermissionProcess;
@@ -108,23 +108,23 @@ public class SecurityPlatformListener implements PlatformListener {
     /*装载SecurityAccess*/
     protected void loadSecurityAuth(ApiBinder event) {
         //1.获取
-        Set<Class<?>> authSet = event.getClassSet(SecurityAuth.class);
+        Set<Class<?>> authSet = event.getClassSet(SecAuth.class);
         if (authSet == null)
             return;
-        List<Class<? extends ISecurityAuth>> authList = new ArrayList<Class<? extends ISecurityAuth>>();
+        List<Class<? extends SecurityAuth>> authList = new ArrayList<Class<? extends SecurityAuth>>();
         for (Class<?> cls : authSet) {
-            if (ISecurityAuth.class.isAssignableFrom(cls) == false) {
+            if (SecurityAuth.class.isAssignableFrom(cls) == false) {
                 Platform.warning("loadSecurityAuth : not implemented ISecurityAuth , class=%s", cls);
             } else {
-                authList.add((Class<? extends ISecurityAuth>) cls);
+                authList.add((Class<? extends SecurityAuth>) cls);
             }
         }
         //3.注册服务
         Binder binder = event.getGuiceBinder();
         Map<String, Integer> authIndex = new HashMap<String, Integer>();
-        for (Class<? extends ISecurityAuth> authType : authList) {
-            SecurityAuth authAnno = authType.getAnnotation(SecurityAuth.class);
-            Key<? extends ISecurityAuth> authKey = Key.get(authType);
+        for (Class<? extends SecurityAuth> authType : authList) {
+            SecAuth authAnno = authType.getAnnotation(SecAuth.class);
+            Key<? extends SecurityAuth> authKey = Key.get(authType);
             String authSystem = authAnno.authSystem();
             //
             SecurityAuthDefinition authDefine = new SecurityAuthDefinition(authSystem, authKey);
@@ -132,7 +132,7 @@ public class SecurityPlatformListener implements PlatformListener {
             if (authAnno.sort() <= maxIndex/*值越小越优先*/) {
                 authIndex.put(authSystem, authAnno.sort());
                 binder.bind(SecurityAuthDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(authDefine);
-                binder.bind(ISecurityAuth.class).annotatedWith(UniqueAnnotations.create()).toProvider(authDefine);
+                binder.bind(SecurityAuth.class).annotatedWith(UniqueAnnotations.create()).toProvider(authDefine);
                 Platform.info(authSystem + "[" + getIndexStr(authAnno.sort()) + "] is SecurityAuth , class=" + Platform.logString(authType));
             }
         }
@@ -141,23 +141,23 @@ public class SecurityPlatformListener implements PlatformListener {
     /*装载SecurityAccess*/
     protected void loadSecurityAccess(ApiBinder event) {
         //1.获取
-        Set<Class<?>> accessSet = event.getClassSet(SecurityAccess.class);
+        Set<Class<?>> accessSet = event.getClassSet(SecAccess.class);
         if (accessSet == null)
             return;
-        List<Class<? extends ISecurityAccess>> accessList = new ArrayList<Class<? extends ISecurityAccess>>();
+        List<Class<? extends SecurityAccess>> accessList = new ArrayList<Class<? extends SecurityAccess>>();
         for (Class<?> cls : accessSet) {
-            if (ISecurityAccess.class.isAssignableFrom(cls) == false) {
+            if (SecurityAccess.class.isAssignableFrom(cls) == false) {
                 Platform.warning("loadSecurityAccess : not implemented ISecurityAccess. class=%s", cls);
             } else {
-                accessList.add((Class<? extends ISecurityAccess>) cls);
+                accessList.add((Class<? extends SecurityAccess>) cls);
             }
         }
         //3.注册服务
         Binder binder = event.getGuiceBinder();
         Map<String, Integer> accessIndex = new HashMap<String, Integer>();
-        for (Class<? extends ISecurityAccess> accessType : accessList) {
-            SecurityAccess accessAnno = accessType.getAnnotation(SecurityAccess.class);
-            Key<? extends ISecurityAccess> accessKey = Key.get(accessType);
+        for (Class<? extends SecurityAccess> accessType : accessList) {
+            SecAccess accessAnno = accessType.getAnnotation(SecAccess.class);
+            Key<? extends SecurityAccess> accessKey = Key.get(accessType);
             String authSystem = accessAnno.authSystem();
             //
             SecurityAccessDefinition accessDefine = new SecurityAccessDefinition(authSystem, accessKey);
@@ -165,7 +165,7 @@ public class SecurityPlatformListener implements PlatformListener {
             if (accessAnno.sort() <= maxIndex/*值越小越优先*/) {
                 accessIndex.put(authSystem, accessAnno.sort());
                 binder.bind(SecurityAccessDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(accessDefine);
-                binder.bind(ISecurityAccess.class).annotatedWith(UniqueAnnotations.create()).toProvider(accessDefine);
+                binder.bind(SecurityAccess.class).annotatedWith(UniqueAnnotations.create()).toProvider(accessDefine);
                 Platform.info(authSystem + "[" + getIndexStr(accessAnno.sort()) + "] is SecurityAccess. class=" + Platform.logString(accessType));
             }
         }

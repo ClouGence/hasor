@@ -21,8 +21,8 @@ import org.more.util.StringUtil;
 import org.platform.Assert;
 import org.platform.Platform;
 import org.platform.security.AuthSession;
-import org.platform.security.ISecurityAccess;
-import org.platform.security.ISecurityAuth;
+import org.platform.security.SecurityAccess;
+import org.platform.security.SecurityAuth;
 import org.platform.security.Permission;
 import org.platform.security.SecurityException;
 import org.platform.security.UserInfo;
@@ -76,7 +76,7 @@ class AbstractAuthSession implements AuthSession {
     @Override
     public synchronized void doLogin(String authSystem, String account, String password) throws SecurityException {
         this.checkClose();/*Check*/
-        ISecurityAuth authApi = this.getSecurityContext().getSecurityAuth(authSystem);
+        SecurityAuth authApi = this.getSecurityContext().getSecurityAuth(authSystem);
         if (authApi == null)
             throw new SecurityException("Not register " + authSystem + " ISecurityAuth.");
         UserInfo userInfo = authApi.getUserInfo(account, password);
@@ -110,7 +110,7 @@ class AbstractAuthSession implements AuthSession {
     @Override
     public synchronized void doLoginCode(String authSystem, String userCode) throws SecurityException {
         this.checkClose();/*Check*/
-        ISecurityAuth authApi = this.getSecurityContext().getSecurityAuth(authSystem);
+        SecurityAuth authApi = this.getSecurityContext().getSecurityAuth(authSystem);
         if (authApi == null)
             throw new SecurityException("Not register " + authSystem + " ISecurityAuth.");
         UserInfo userInfo = authApi.getUserInfo(userCode);
@@ -195,7 +195,7 @@ class AbstractAuthSession implements AuthSession {
                 String userCode = this.authSessionData.getUserCode();
                 if (StringUtil.isBlank(userCode) == false) {
                     String userFromAuth = this.authSessionData.getAuthSystem();
-                    ISecurityAuth auth = this.getSecurityContext().getSecurityAuth(userFromAuth);
+                    SecurityAuth auth = this.getSecurityContext().getSecurityAuth(userFromAuth);
                     this.userInfo = auth.getUserInfo(userCode);
                 }
             }
@@ -267,7 +267,7 @@ class AbstractAuthSession implements AuthSession {
     @Override
     public synchronized void reloadPermission() throws SecurityException {
         this.checkClose();/*Check*/
-        ISecurityAccess access = this.getSecurityContext().getSecurityAccess(this.authSessionData.getAuthSystem());
+        SecurityAccess access = this.getSecurityContext().getSecurityAccess(this.authSessionData.getAuthSystem());
         List<Permission> perList = access.loadPermission(this.getUserObject());
         if (perList != null)
             for (Permission per : perList)

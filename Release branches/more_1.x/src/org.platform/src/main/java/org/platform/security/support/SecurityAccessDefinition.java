@@ -16,7 +16,7 @@
 package org.platform.security.support;
 import org.platform.Platform;
 import org.platform.context.AppContext;
-import org.platform.security.ISecurityAccess;
+import org.platform.security.SecurityAccess;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 /**
@@ -24,12 +24,12 @@ import com.google.inject.Provider;
  * @version : 2013-4-28
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-class SecurityAccessDefinition implements Provider<ISecurityAccess> {
+class SecurityAccessDefinition implements Provider<SecurityAccess> {
     private String                         authSystem   = null;
-    private Key<? extends ISecurityAccess> accessKey    = null;
-    private ISecurityAccess                accessObject = null;
+    private Key<? extends SecurityAccess> accessKey    = null;
+    private SecurityAccess                accessObject = null;
     // 
-    public SecurityAccessDefinition(String authSystem, Key<? extends ISecurityAccess> accessKey) {
+    public SecurityAccessDefinition(String authSystem, Key<? extends SecurityAccess> accessKey) {
         this.authSystem = authSystem;
         this.accessKey = accessKey;
     }
@@ -45,11 +45,11 @@ class SecurityAccessDefinition implements Provider<ISecurityAccess> {
     public String getAuthSystem() {
         return this.authSystem;
     }
-    public Key<? extends ISecurityAccess> getSecurityAccessKey() {
+    public Key<? extends SecurityAccess> getSecurityAccessKey() {
         return this.accessKey;
     }
     @Override
-    public ISecurityAccess get() {
+    public SecurityAccess get() {
         return this.accessObject;
     }
 }

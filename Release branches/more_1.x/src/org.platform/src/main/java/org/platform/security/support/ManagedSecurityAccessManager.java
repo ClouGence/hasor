@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.platform.Platform;
 import org.platform.context.AppContext;
-import org.platform.security.ISecurityAccess;
+import org.platform.security.SecurityAccess;
 import com.google.inject.Binding;
 import com.google.inject.Injector;
 import com.google.inject.TypeLiteral;
@@ -53,7 +53,7 @@ class ManagedSecurityAccessManager {
             definitionEnt.getValue().destroyAccess(appContext);
         }
     }
-    public ISecurityAccess getSecurityAccess(String authSystem, AppContext appContext) {
+    public SecurityAccess getSecurityAccess(String authSystem, AppContext appContext) {
         SecurityAccessDefinition define = this.accessDefinitionMap.get(authSystem);
         if (define == null)
             return null;

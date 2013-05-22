@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 package org.platform.security;
-import java.util.List;
-import org.platform.context.AppContext;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 负责授权操作，通过该接口可以将权限控制框架连接到不同的权限模型。
- * @version : 2013-3-12
- * @author 赵永春 (zyc@byshell.org)
- */
-public interface ISecurityAccess {
-    /**初始化授权模块。*/
-    public void initAccess(AppContext appContext);
-    /**装载用户的权限。*/
-    public List<Permission> loadPermission(UserInfo userInfo);
-    /**销毁授权模块。*/
-    public void destroyAccess(AppContext appContext);
+* 表示该类为用户认证服务，该类需要实现{@link SecurityAuth}接口。
+* @version : 2013-3-25
+* @author 赵永春 (zyc@byshell.org)
+*/
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface SecAuth {
+    /**出现同名时的排序顺序。（越小越优先）。*/
+    public int sort() default Integer.MAX_VALUE;
+    /**认证系统名。*/
+    public String authSystem();
 }

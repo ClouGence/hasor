@@ -22,8 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.platform.context.AppContext;
 import org.platform.security.AuthSession;
 import org.platform.security.Digest;
-import org.platform.security.ISecurityAccess;
-import org.platform.security.ISecurityAuth;
+import org.platform.security.SecurityAccess;
+import org.platform.security.SecurityAuth;
 import org.platform.security.Permission;
 import org.platform.security.RoleIdentity;
 import org.platform.security.SecurityContext;
@@ -168,12 +168,12 @@ public abstract class AbstractSecurityContext implements SecurityContext {
     public SecurityDispatcher getDispatcher(String requestPath) throws ServletException {
         return this.dispatcherManager.getDispatcher(requestPath);
     }
-    /**获取{@link ISecurityAccess}接口对象，如果不存在返回null。*/
-    protected ISecurityAccess getSecurityAccess(String authName) {
+    /**获取{@link SecurityAccess}接口对象，如果不存在返回null。*/
+    protected SecurityAccess getSecurityAccess(String authName) {
         return securityAccessManager.getSecurityAccess(authName, this.appContext);
     }
-    /**获取{@link ISecurityAuth}接口对象，如果不存在返回null。*/
-    protected ISecurityAuth getSecurityAuth(String authName) throws SecurityException {
+    /**获取{@link SecurityAuth}接口对象，如果不存在返回null。*/
+    protected SecurityAuth getSecurityAuth(String authName) throws SecurityException {
         return securityAuthManager.getSecurityAuth(authName, this.appContext);
     };
     @Override

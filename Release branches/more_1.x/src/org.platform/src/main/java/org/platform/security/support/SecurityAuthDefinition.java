@@ -16,7 +16,7 @@
 package org.platform.security.support;
 import org.platform.Platform;
 import org.platform.context.AppContext;
-import org.platform.security.ISecurityAuth;
+import org.platform.security.SecurityAuth;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 /**
@@ -24,12 +24,12 @@ import com.google.inject.Provider;
  * @version : 2013-4-28
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-class SecurityAuthDefinition implements Provider<ISecurityAuth> {
+class SecurityAuthDefinition implements Provider<SecurityAuth> {
     private String                       authSystem = null;
-    private Key<? extends ISecurityAuth> authKey    = null;
-    private ISecurityAuth                authObject = null;
+    private Key<? extends SecurityAuth> authKey    = null;
+    private SecurityAuth                authObject = null;
     //  
-    public SecurityAuthDefinition(String authSystem, Key<? extends ISecurityAuth> authKey) {
+    public SecurityAuthDefinition(String authSystem, Key<? extends SecurityAuth> authKey) {
         this.authSystem = authSystem;
         this.authKey = authKey;
     }
@@ -45,11 +45,11 @@ class SecurityAuthDefinition implements Provider<ISecurityAuth> {
     public String getAuthSystem() {
         return this.authSystem;
     }
-    public Key<? extends ISecurityAuth> getSecurityAuthKey() {
+    public Key<? extends SecurityAuth> getSecurityAuthKey() {
         return this.authKey;
     }
     @Override
-    public ISecurityAuth get() {
+    public SecurityAuth get() {
         return this.authObject;
     }
 }

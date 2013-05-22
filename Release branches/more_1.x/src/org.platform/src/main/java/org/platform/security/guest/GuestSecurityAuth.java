@@ -16,8 +16,8 @@
 package org.platform.security.guest;
 import org.more.util.StringUtil;
 import org.platform.context.AppContext;
-import org.platform.security.ISecurityAuth;
 import org.platform.security.SecurityAuth;
+import org.platform.security.SecAuth;
 import org.platform.security.UserInfo;
 import org.platform.security.support.SecuritySettings;
 /**
@@ -25,8 +25,8 @@ import org.platform.security.support.SecuritySettings;
  * @version : 2013-4-28
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@SecurityAuth(authSystem = "GuestAuthSystem")
-public class GuestSecurityAuth implements ISecurityAuth {
+@SecAuth(authSystem = "GuestAuthSystem")
+public class GuestSecurityAuth implements SecurityAuth {
     private SecuritySettings settings = null;
     // 
     @Override

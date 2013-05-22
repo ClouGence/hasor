@@ -18,9 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.more.util.StringUtil;
 import org.platform.context.AppContext;
-import org.platform.security.ISecurityAccess;
-import org.platform.security.Permission;
 import org.platform.security.SecurityAccess;
+import org.platform.security.Permission;
+import org.platform.security.SecAccess;
 import org.platform.security.UserInfo;
 import org.platform.security.support.SecuritySettings;
 /**
@@ -28,8 +28,8 @@ import org.platform.security.support.SecuritySettings;
  * @version : 2013-4-28
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@SecurityAccess(authSystem = "GuestAuthSystem")
-public class GuestSecurityAccess implements ISecurityAccess {
+@SecAccess(authSystem = "GuestAuthSystem")
+public class GuestSecurityAccess implements SecurityAccess {
     private SecuritySettings settings = null;
     //
     @Override

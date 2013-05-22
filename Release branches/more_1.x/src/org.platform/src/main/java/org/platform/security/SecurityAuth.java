@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 package org.platform.security;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.platform.context.AppContext;
 /**
-* 表示该类为用户认证服务，该类需要实现{@link ISecurityAuth}接口。
-* @version : 2013-3-25
-* @author 赵永春 (zyc@byshell.org)
-*/
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface SecurityAuth {
-    /**出现同名时的排序顺序。（越小越优先）。*/
-    public int sort() default Integer.MAX_VALUE;
-    /**认证系统名。*/
-    public String authSystem();
+ * 负责权限系统的认证工作，认证模块在系统中可以存在多份。这些模块会按照顺序排成一个链（认证模块链）
+ * @version : 2013-3-12
+ * @author 赵永春 (zyc@byshell.org)
+ */
+public interface SecurityAuth {
+    /**初始化授权模块。*/
+    public void initAuth(AppContext appContext);
+    /**通过userCode登陆系统*/
+    public UserInfo getUserInfo(String userCode);
+    /**通过帐号密码登陆系统*/
+    public UserInfo getUserInfo(String account, String password);
+    /**销毁授权模块。*/
+    public void destroyAuth(AppContext appContext);
 }
