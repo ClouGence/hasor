@@ -25,12 +25,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.more.util.StringUtil;
 import org.platform.Platform;
-import org.platform.freemarker.FreemarkerException;
 import org.platform.freemarker.FreemarkerManager;
 import org.platform.general.WebFilter;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import freemarker.template.TemplateException;
 /**
  * Freemarker模板功能支持。
  * @version : 2013-4-9
