@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 package org.platform.context;
-import java.io.File;
-import java.io.IOException;
 import java.util.Set;
 import com.google.inject.Injector;
-import com.google.inject.Module;
 /**
  * 
  * @version : 2013-3-26
@@ -41,26 +38,6 @@ public interface AppContext extends BeanContext {
     //    public  <T extends IService> T getService(Class<T> servicesType);
     /**获得Guice环境。*/
     public Injector getGuice();
-    /**获取程序工作目录（绝对路径）。*/
-    public String getWorkDir();
-    /**获取数据文件目录（绝对路径）。*/
-    public String getDataDir();
-    /**获取临时数据文件目录。*/
-    public String getTempDir();
-    /**获取缓存目录。*/
-    public String getCacheDir();
-    /**获取数据文件目录，自动将name属性添加到返回值中。*/
-    public String getDataDir(String name);
-    /**获取临时数据文件目录，自动将name属性添加到返回值中。*/
-    public String getTempDir(String name);
-    /**获取缓存目录，自动将name属性添加到返回值中。*/
-    public String getCacheDir(String name);
-    /**在临时目录下创建一个不重名的临时文件返回，该临时文件会在虚拟机正常退出之后连同其所在目录一同删除。*/
-    public File createTempFile() throws IOException;
-    /**
-    * 生成路径算法。
-    * @param target 目标
-    * @param dirSize 每个目录下可以拥有的子目录或文件数目。
-    */
-    public String genPath(long number, int size);
+    /**获得工作空间设置*/
+    public WorkSpace getWorkSpace();
 }

@@ -15,22 +15,14 @@
  */
 package org.platform.context.support;
 import static org.platform.PlatformConfig.Platform_LoadPackages;
-import static org.platform.PlatformConfig.Workspace_CacheDir;
-import static org.platform.PlatformConfig.Workspace_CacheDir_Absolute;
-import static org.platform.PlatformConfig.Workspace_DataDir;
-import static org.platform.PlatformConfig.Workspace_DataDir_Absolute;
-import static org.platform.PlatformConfig.Workspace_TempDir;
-import static org.platform.PlatformConfig.Workspace_TempDir_Absolute;
-import static org.platform.PlatformConfig.Workspace_WorkDir;
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.more.util.ClassUtil;
-import org.more.util.StringUtil;
 import org.platform.binder.BeanInfo;
 import org.platform.context.AppContext;
+import org.platform.context.Settings;
+import org.platform.context.WorkSpace;
 import com.google.inject.Binding;
 import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
@@ -42,11 +34,24 @@ import com.google.inject.TypeLiteral;
 public abstract class AbstractAppContext implements AppContext {
     private long                  startTime   = System.currentTimeMillis(); //系统启动时间
     private Map<String, BeanInfo> beanInfoMap = null;
+    private WorkSpace             workSpace   = null;
     //
     /**启动*/
     public abstract void start(Module... modules);
     /**销毁方法。*/
     public abstract void destroyed();
+    @Override
+    public WorkSpace getWorkSpace() {
+        if (this.workSpace == null) {
+            this.workSpace = new AbstractWorkSpace() {
+                @Override
+                public Settings getSettings() {
+                    return AbstractAppContext.this.getSettings();
+                }
+            };
+        }
+        return this.workSpace;
+    }
     @Override
     public long getAppStartTime() {
         return this.startTime;
@@ -102,102 +107,5 @@ public abstract class AbstractAppContext implements AppContext {
         if (beanInfo == null)
             return null;
         return (T) this.getGuice().getInstance(beanInfo.getKey());
-    };
-    private File tempFileDirectory = null;
-    @Override
-    public synchronized File createTempFile() throws IOException {
-        if (this.tempFileDirectory == null) {
-            this.tempFileDirectory = new File(this.getTempDir("tempFile"));
-            this.tempFileDirectory.deleteOnExit();
-        }
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException e) {}
-        long markTime = System.currentTimeMillis();
-        String atPath = genPath(markTime, 512);
-        String fileName = atPath.substring(0, atPath.length() - 1) + "_" + String.valueOf(markTime) + ".tmp";
-        File tmpFile = new File(tempFileDirectory, fileName);
-        tmpFile.getParentFile().mkdirs();
-        tmpFile.createNewFile();
-        return tmpFile;
-    };
-    private String str2path(String oriPath) {
-        int length = oriPath.length();
-        if (oriPath.charAt(length - 1) == File.separatorChar)
-            return oriPath;
-        else
-            return oriPath + File.separatorChar;
-    };
-    @Override
-    public String genPath(long number, int size) {
-        StringBuffer buffer = new StringBuffer();
-        long b = size;
-        long c = number;
-        do {
-            long m = number % b;
-            buffer.append(m + File.separator);
-            c = number / b;
-            number = c;
-        } while (c > 0);
-        return buffer.reverse().toString();
-    }
-    /*----------------------------------------------------------------------*/
-    @Override
-    public String getWorkDir() {
-        String workDir = getSettings().getDirectoryPath(Workspace_WorkDir);
-        if (workDir.startsWith("." + File.separatorChar))
-            return new File(workDir.substring(2)).getAbsolutePath();
-        return workDir;
-    };
-    @Override
-    public String getDataDir() {
-        String workDir = getWorkDir();
-        String dataDir = getSettings().getDirectoryPath(Workspace_DataDir);
-        boolean absolute = getSettings().getBoolean(Workspace_DataDir_Absolute);
-        if (absolute == false)
-            return str2path(new File(workDir, dataDir).getAbsolutePath());
-        else
-            return str2path(new File(dataDir).getAbsolutePath());
-    };
-    @Override
-    public String getTempDir() {
-        String workDir = getWorkDir();
-        String tempDir = getSettings().getDirectoryPath(Workspace_TempDir);
-        boolean absolute = getSettings().getBoolean(Workspace_TempDir_Absolute);
-        if (absolute == false)
-            return str2path(new File(workDir, tempDir).getAbsolutePath());
-        else
-            return str2path(new File(tempDir).getAbsolutePath());
-    };
-    @Override
-    public String getCacheDir() {
-        String workDir = getWorkDir();
-        String cacheDir = getSettings().getDirectoryPath(Workspace_CacheDir);
-        boolean absolute = getSettings().getBoolean(Workspace_CacheDir_Absolute);
-        if (absolute == false)
-            return str2path(new File(workDir, cacheDir).getAbsolutePath());
-        else
-            return str2path(new File(cacheDir).getAbsolutePath());
-    };
-    @Override
-    public String getDataDir(String name) {
-        if (StringUtil.isBlank(name) == true)
-            return getDataDir();
-        else
-            return str2path(new File(getDataDir(), name).getAbsolutePath());
-    };
-    @Override
-    public String getTempDir(String name) {
-        if (StringUtil.isBlank(name) == true)
-            return getTempDir();
-        else
-            return str2path(new File(getTempDir(), name).getAbsolutePath());
-    };
-    @Override
-    public String getCacheDir(String name) {
-        if (StringUtil.isBlank(name) == true)
-            return getCacheDir();
-        else
-            return str2path(new File(getCacheDir(), name).getAbsolutePath());
     };
 }

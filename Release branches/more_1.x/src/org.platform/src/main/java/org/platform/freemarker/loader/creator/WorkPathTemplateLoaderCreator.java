@@ -20,6 +20,7 @@ import org.more.global.assembler.xml.XmlProperty;
 import org.more.util.StringConvertUtil;
 import org.more.util.StringUtil;
 import org.platform.context.AppContext;
+import org.platform.context.WorkSpace;
 import org.platform.freemarker.ITemplateLoaderCreator;
 import org.platform.freemarker.TemplateLoaderCreator;
 import org.platform.freemarker.loader.DirTemplateLoader;
@@ -41,18 +42,19 @@ public class WorkPathTemplateLoaderCreator implements ITemplateLoaderCreator {
         String body = xmlConfig.getText();
         body = StringUtil.isBlank(body) ? "" : body;
         File fileBody = null;
+        WorkSpace ws = appContext.getWorkSpace();
         switch (pathType) {
         case WorkDir:
-            fileBody = new File(appContext.getWorkDir(), body);
+            fileBody = new File(ws.getWorkDir(), body);
             break;
         case DataDir:
-            fileBody = new File(appContext.getDataDir(), body);
+            fileBody = new File(ws.getDataDir(), body);
             break;
         case TempDir:
-            fileBody = new File(appContext.getTempDir(), body);
+            fileBody = new File(ws.getTempDir(), body);
             break;
         case CacheDir:
-            fileBody = new File(appContext.getCacheDir(), body);
+            fileBody = new File(ws.getCacheDir(), body);
             break;
         }
         if (fileBody.exists() == false) {
