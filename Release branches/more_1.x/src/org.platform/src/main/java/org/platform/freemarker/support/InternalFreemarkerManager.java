@@ -84,7 +84,7 @@ class InternalFreemarkerManager implements FreemarkerManager {
     }
     @Override
     public void processTemplate(String templateName, Object rootMap, Writer writer) throws TemplateException, IOException {
-        Writer writerTo = (writer == null) ? new NoneWriter() : writer;
+        Writer writerTo = (writer == null) ? new InternalNoneWriter() : writer;
         this.getTemplate(templateName).process(rootMap, writerTo);
     }
     //
@@ -122,7 +122,7 @@ class InternalFreemarkerManager implements FreemarkerManager {
         //B.将内容加入到模板加载器中。
         this.stringLoader.addTemplateAsString(hashStr, templateString);
         //C.执行指纹模板
-        Writer writerTo = (writer == null) ? new NoneWriter() : writer;
+        Writer writerTo = (writer == null) ? new InternalNoneWriter() : writer;
         Template temp = this.getTemplate(hashStr);
         if (temp != null)
             temp.process(rootMap, writerTo);

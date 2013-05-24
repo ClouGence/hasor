@@ -25,10 +25,10 @@ import com.google.inject.TypeLiteral;
  * @version : 2013-5-22
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-class TemplateLoaderCreatorManager {
+class ManagedTemplateLoaderCreator {
     private TemplateLoaderCreatorDefinition[] creatorDefinitionArray = null;
     //
-    public TemplateLoaderCreatorManager(AppContext appContext) {
+    public ManagedTemplateLoaderCreator(AppContext appContext) {
         ArrayList<TemplateLoaderCreatorDefinition> creatorDefinitionList = new ArrayList<TemplateLoaderCreatorDefinition>();
         TypeLiteral<TemplateLoaderCreatorDefinition> CREATOR_DEFS = TypeLiteral.get(TemplateLoaderCreatorDefinition.class);
         for (Binding<TemplateLoaderCreatorDefinition> entry : appContext.getGuice().findBindingsByType(CREATOR_DEFS)) {

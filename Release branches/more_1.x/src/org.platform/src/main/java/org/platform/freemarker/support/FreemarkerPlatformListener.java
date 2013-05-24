@@ -24,7 +24,11 @@ import org.platform.context.AppContext;
 import org.platform.context.PlatformListener;
 import org.platform.context.startup.PlatformExt;
 import org.platform.freemarker.ConfigurationFactory;
+import org.platform.freemarker.FmMethod;
+import org.platform.freemarker.FmTag;
 import org.platform.freemarker.FreemarkerManager;
+import org.platform.freemarker.IFmMethod;
+import org.platform.freemarker.IFmTag;
 import org.platform.freemarker.ITemplateLoaderCreator;
 import org.platform.freemarker.TemplateLoaderCreator;
 /**
@@ -53,6 +57,8 @@ public class FreemarkerPlatformListener implements PlatformListener {
         }
         //
         this.loadTemplateLoader(event);
+        this.loadFmTag(event);
+        this.loadFmMethod(event);
     }
     //
     /**装载TemplateLoader*/
@@ -79,6 +85,58 @@ public class FreemarkerPlatformListener implements PlatformListener {
         }
         freemarkerBinder.configure(event.getGuiceBinder());
     }
+    //
+    /**装载FmTag*/
+    protected void loadFmTag(ApiBinder event) {
+        //1.获取
+        Set<Class<?>> fmTagSet = event.getClassSet(FmTag.class);
+        if (fmTagSet == null)
+            return;
+        List<Class<IFmTag>> fmTagList = new ArrayList<Class<IFmTag>>();
+        for (Class<?> cls : fmTagSet) {
+            if (IFmTag.class.isAssignableFrom(cls) == false) {
+                Platform.warning("loadFmTag : not implemented IFmTag or IFmTag2. class=%s", cls);
+            } else {
+                fmTagList.add((Class<IFmTag>) cls);
+            }
+        }
+        //3.注册服务
+        FreemarkerBinder freemarkerBinder = new FreemarkerBinder();
+        for (Class<IFmTag> fmTagType : fmTagList) {
+            FmTag fmTagAnno = fmTagType.getAnnotation(FmTag.class);
+            String tagName = fmTagAnno.value();
+            freemarkerBinder.bindTag(tagName, fmTagType);
+            Platform.info("loadFmTag %s at %s.", tagName, fmTagType);
+        }
+        freemarkerBinder.configure(event.getGuiceBinder());
+    }
+    //
+    /**装载FmMethod*/
+    protected void loadFmMethod(ApiBinder event) {
+        //1.获取
+        Set<Class<?>> fmMethodSet = event.getClassSet(FmMethod.class);
+        if (fmMethodSet == null)
+            return;
+        List<Class<IFmMethod>> fmMethodList = new ArrayList<Class<IFmMethod>>();
+        for (Class<?> cls : fmMethodSet) {
+            if (IFmMethod.class.isAssignableFrom(cls) == false) {
+                Platform.warning("loadFmMethod : not implemented IFmMethod. class=%s", cls);
+            } else {
+                fmMethodList.add((Class<IFmMethod>) cls);
+            }
+        }
+        //3.注册服务
+        FreemarkerBinder freemarkerBinder = new FreemarkerBinder();
+        for (Class<IFmMethod> fmMethodType : fmMethodList) {
+            FmMethod fmMethodAnno = fmMethodType.getAnnotation(FmMethod.class);
+            String funName = fmMethodAnno.value();
+            freemarkerBinder.bindMethod(funName, fmMethodType);
+            Platform.info("loadFmMethod %s at %s.", funName, fmMethodType);
+        }
+        freemarkerBinder.configure(event.getGuiceBinder());
+    }
+    //
+    /***/
     @Override
     public void initialized(AppContext appContext) {
         appContext.getSettings().addSettingsListener(this.freemarkerSettings);

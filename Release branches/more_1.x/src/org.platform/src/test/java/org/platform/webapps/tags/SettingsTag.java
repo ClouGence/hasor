@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.freemarker.support;
-import java.io.IOException;
-import java.io.Writer;
+package org.platform.webapps.tags;
+import org.platform.context.AppContext;
+import org.platform.freemarker.FmMethod;
+import org.platform.freemarker.IFmMethod;
+import freemarker.template.TemplateModelException;
 /**
- * Ò»¸öÎÞµ×¶´Writer
- * @version : 2013-5-17
+ * 
+ * @version : 2013-5-24
  * @author ÕÔÓÀ´º (zyc@byshell.org)
  */
-class NoneWriter extends Writer {
+@FmMethod("Settings")
+public class SettingsTag implements IFmMethod {
     @Override
-    public void write(char[] cbuf, int off, int len) throws IOException {}
-    @Override
-    public void flush() throws IOException {}
-    @Override
-    public void close() throws IOException {}
+    public Object callMethod(Object[] args, AppContext appContext) throws TemplateModelException {
+        return appContext.getSettings().getString(args[0].toString());
+    }
 }

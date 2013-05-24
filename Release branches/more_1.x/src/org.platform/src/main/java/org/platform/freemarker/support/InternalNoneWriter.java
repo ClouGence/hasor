@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.freemarker;
-import org.platform.context.AppContext;
-import freemarker.template.TemplateModelException;
-/***
- * 自定义函数
- * @version : 2013-5-14
+package org.platform.freemarker.support;
+import java.io.IOException;
+import java.io.Writer;
+/**
+ * 一个无底洞Writer
+ * @version : 2013-5-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface IFmMethod {
-    /**调用函数*/
-    public Object callMethod(Object[] args, AppContext appContext) throws TemplateModelException;
+class InternalNoneWriter extends Writer {
+    @Override
+    public void write(char[] cbuf, int off, int len) throws IOException {}
+    @Override
+    public void flush() throws IOException {}
+    @Override
+    public void close() throws IOException {}
 }

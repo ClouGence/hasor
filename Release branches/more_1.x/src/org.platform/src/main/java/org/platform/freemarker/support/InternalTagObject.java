@@ -34,9 +34,9 @@ import freemarker.template.utility.DeepUnwrap;
  * @version : 2012-5-13
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-class TagObject implements TemplateDirectiveModel {
+class InternalTagObject implements TemplateDirectiveModel {
     private IFmTag tagBody = null;
-    public TagObject(IFmTag tagBody) {
+    public InternalTagObject(IFmTag tagBody) {
         this.tagBody = tagBody;
         Assert.isNotNull(tagBody, "tag Object is null.");
     }

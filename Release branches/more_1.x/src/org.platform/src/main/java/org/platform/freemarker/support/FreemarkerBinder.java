@@ -16,6 +16,8 @@
 package org.platform.freemarker.support;
 import java.util.ArrayList;
 import java.util.List;
+import org.platform.freemarker.IFmMethod;
+import org.platform.freemarker.IFmTag;
 import org.platform.freemarker.ITemplateLoaderCreator;
 import com.google.inject.Binder;
 import com.google.inject.Module;
@@ -27,14 +29,30 @@ import com.google.inject.internal.UniqueAnnotations;
  */
 public class FreemarkerBinder implements Module {
     private List<TemplateLoaderCreatorDefinition> templateLoaderDefinition = new ArrayList<TemplateLoaderCreatorDefinition>();
+    private List<FmMethodDefinition>              fmMethodDefinition       = new ArrayList<FmMethodDefinition>();
+    private List<FmTagDefinition>                 fmTagDefinition          = new ArrayList<FmTagDefinition>();
     /***/
     public void bindTemplateLoaderCreator(String name, Class<ITemplateLoaderCreator> templateLoaderCreatorType) {
         this.templateLoaderDefinition.add(new TemplateLoaderCreatorDefinition(name, templateLoaderCreatorType));
+    }
+    /***/
+    public void bindTag(String tagName, Class<IFmTag> fmTagType) {
+        this.fmTagDefinition.add(new FmTagDefinition(tagName, fmTagType));
+    }
+    /***/
+    public void bindMethod(String funName, Class<IFmMethod> fmMethodType) {
+        this.fmMethodDefinition.add(new FmMethodDefinition(funName, fmMethodType));
     }
     @Override
     public void configure(Binder binder) {
         for (TemplateLoaderCreatorDefinition define : this.templateLoaderDefinition) {
             binder.bind(TemplateLoaderCreatorDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(define);
+        }
+        for (FmTagDefinition define : this.fmTagDefinition) {
+            binder.bind(FmTagDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(define);
+        }
+        for (FmMethodDefinition define : this.fmMethodDefinition) {
+            binder.bind(FmMethodDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(define);
         }
     }
 }
