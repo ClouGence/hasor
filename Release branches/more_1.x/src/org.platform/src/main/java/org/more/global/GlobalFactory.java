@@ -22,7 +22,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.more.util.ResourcesUtil;
+import org.more.util.ResourcesUtils;
 /**
  * {@link Global}创建工厂
  * @version : 2011-9-29
@@ -45,22 +45,22 @@ public abstract class GlobalFactory {
             if (obj instanceof File) {
                 //文件装载，key值是文件名。key相当于属性的作用域。
                 File fileObject = (File) obj;
-                InputStream stream = ResourcesUtil.getResourceAsStream(fileObject);
+                InputStream stream = ResourcesUtils.getResourceAsStream(fileObject);
                 globalMap.putAll(this.loadConfig(stream, encoding));//添加属性
             } else if (obj instanceof URL) {
                 //URL装载，key值是getFile名。key相当于属性的作用域。
                 URL urlObject = (URL) obj;
-                InputStream stream = ResourcesUtil.getResourceAsStream(urlObject);
+                InputStream stream = ResourcesUtils.getResourceAsStream(urlObject);
                 globalMap.putAll(this.loadConfig(stream, encoding));//添加属性
             } else if (obj instanceof URI) {
                 //URI装载，key值是getPath名。key相当于属性的作用域。
                 URI uriObject = (URI) obj;
-                InputStream stream = ResourcesUtil.getResourceAsStream(uriObject);
+                InputStream stream = ResourcesUtils.getResourceAsStream(uriObject);
                 globalMap.putAll(this.loadConfig(stream, encoding));//添加属性
             } else if (obj instanceof String) {
                 //字符串装载
                 String stringObject = (String) obj;
-                List<InputStream> streams = ResourcesUtil.getResourcesAsStream(stringObject);
+                List<InputStream> streams = ResourcesUtils.getResourcesAsStream(stringObject);
                 for (InputStream stream : streams)
                     globalMap.putAll(this.loadConfig(stream, encoding));//添加属性
             } else if (obj instanceof InputStream) {

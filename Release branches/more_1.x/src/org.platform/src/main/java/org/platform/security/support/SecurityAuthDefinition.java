@@ -25,7 +25,7 @@ import com.google.inject.Provider;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class SecurityAuthDefinition implements Provider<SecurityAuth> {
-    private String                       authSystem = null;
+    private String                      authSystem = null;
     private Key<? extends SecurityAuth> authKey    = null;
     private SecurityAuth                authObject = null;
     //  

@@ -25,8 +25,8 @@ import java.util.Set;
 import javax.servlet.Filter;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
-import org.more.util.ArrayUtil;
-import org.more.util.StringUtil;
+import org.more.util.ArrayUtils;
+import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.binder.ApiBinder.BeanBindingBuilder;
@@ -64,7 +64,7 @@ public class GeneralPlatformListener implements PlatformListener {
         for (Class<?> beanClass : beanSet) {
             Bean annoBean = beanClass.getAnnotation(Bean.class);
             String[] names = annoBean.value();
-            if (ArrayUtil.isBlank(names)) {
+            if (ArrayUtils.isBlank(names)) {
                 Platform.warning("missing Bean name %s", beanClass);
                 continue;
             }
@@ -107,7 +107,7 @@ public class GeneralPlatformListener implements PlatformListener {
             Map<String, String> initMap = this.toMap(filterAnno.initParams());
             event.filter(null, filterAnno.value()).through(filterType, initMap);
             //
-            String filterName = StringUtil.isBlank(filterAnno.filterName()) ? filterType.getSimpleName() : filterAnno.filterName();
+            String filterName = StringUtils.isBlank(filterAnno.filterName()) ? filterType.getSimpleName() : filterAnno.filterName();
             Platform.info("loadFilter %s[%s] bind %s on %s.", filterName, getIndexStr(filterAnno.sort()), filterType, filterAnno.value());
         }
     }
@@ -143,7 +143,7 @@ public class GeneralPlatformListener implements PlatformListener {
             Map<String, String> initMap = this.toMap(servletAnno.initParams());
             event.serve(null, servletAnno.value()).with(servletType, initMap);
             //
-            String servletName = StringUtil.isBlank(servletAnno.servletName()) ? servletType.getSimpleName() : servletAnno.servletName();
+            String servletName = StringUtils.isBlank(servletAnno.servletName()) ? servletType.getSimpleName() : servletAnno.servletName();
             int sortInt = servletAnno.loadOnStartup();
             Platform.info("loadServlet %s[%s] bind %s on %s.", servletName, getIndexStr(sortInt), servletType, servletAnno.value());
         }
@@ -225,7 +225,7 @@ public class GeneralPlatformListener implements PlatformListener {
         Map<String, String> initMap = new HashMap<String, String>();
         if (initParams != null)
             for (WebInitParam param : initParams)
-                if (StringUtil.isBlank(param.name()) == false)
+                if (StringUtils.isBlank(param.name()) == false)
                     initMap.put(param.name(), param.value());
         return initMap;
     }

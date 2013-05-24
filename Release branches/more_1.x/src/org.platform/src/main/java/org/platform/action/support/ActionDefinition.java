@@ -43,7 +43,6 @@ class ActionDefinition implements Provider<ActionInvoke>, ActionInvoke {
     }
     @Override
     public Object invoke(HttpServletRequest request, HttpServletResponse response, Map<String, String[]> params) {
-        
         return params;
     }
 }

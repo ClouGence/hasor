@@ -17,7 +17,7 @@ package org.platform.freemarker.loader.creator;
 import java.io.File;
 import java.io.IOException;
 import org.more.global.assembler.xml.XmlProperty;
-import org.more.util.StringUtil;
+import org.more.util.StringUtils;
 import org.platform.context.AppContext;
 import org.platform.freemarker.ITemplateLoaderCreator;
 import org.platform.freemarker.TemplateLoaderCreator;
@@ -35,7 +35,7 @@ public class PathTemplateLoaderCreator implements ITemplateLoaderCreator {
     @Override
     public ITemplateLoader newTemplateLoader(AppContext appContext, XmlProperty xmlConfig) throws IOException {
         String body = xmlConfig.getText();
-        body = StringUtil.isBlank(body) ? "" : body;
+        body = StringUtils.isBlank(body) ? "" : body;
         File fileBody = new File(body);
         if (fileBody.exists() == false)
             if (fileBody.mkdirs() == false)

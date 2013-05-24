@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.security.NoSuchAlgorithmException;
-import org.more.util.CommonCodeUtil;
+import org.more.util.CommonCodeUtils;
 import org.more.webui.freemarker.loader.ConfigTemplateLoader;
 import org.more.webui.freemarker.loader.MultiTemplateLoader;
 import org.platform.context.AppContext;
@@ -113,7 +113,7 @@ class InternalFreemarkerManager implements FreemarkerManager {
         String hashStr = null;
         try {
             /*使用MD5加密*/
-            hashStr = CommonCodeUtil.MD5.getMD5(templateString);
+            hashStr = CommonCodeUtils.MD5.getMD5(templateString);
         } catch (NoSuchAlgorithmException e) {
             /*使用hashCode*/
             hashStr = String.valueOf(templateString.hashCode());

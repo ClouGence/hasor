@@ -25,7 +25,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import org.more.util.StringUtil;
+import org.more.util.StringUtils;
 import org.more.xml.stream.TextEvent.Type;
 /**
  * <b>Level 1</b>：数据访问策略。该类的功能是将xml数据流转换成为xml事件流。并且可以在扫描xml时执行xml的忽略策略。
@@ -85,7 +85,7 @@ public class XmlReader {
         if (testWild == null)
             return false;
         //XXX:XPath比较算法，比较currentXPath是否属于testXPath范围内的，目前使用的是?和*通配符。
-        return StringUtil.matchWild(testWild, currentXPath);
+        return StringUtils.matchWild(testWild, currentXPath);
     }
     /**
      * 执行解析Xml文件，并且形成xml事件流。这些事件流被输入到{@link XmlAccept}类型对象中。

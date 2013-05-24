@@ -22,7 +22,7 @@ import java.util.List;
  * @version : 2013-4-12
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public abstract class ArrayUtil {
+public abstract class ArrayUtils {
     public static boolean isBlank(Object[] arr) {
         return arr == null || arr.length == 0;
     }

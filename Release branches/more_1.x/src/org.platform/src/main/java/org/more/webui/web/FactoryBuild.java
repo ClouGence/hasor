@@ -16,7 +16,7 @@
 package org.more.webui.web;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.more.util.ClassUtil;
+import org.more.util.ClassUtils;
 import org.more.webui.component.UIComponent;
 import org.more.webui.component.support.UICom;
 import org.more.webui.context.BeanManager;
@@ -33,7 +33,7 @@ import freemarker.template.TemplateModelException;
  * @author 赵永春 (zyc@byshell.org)
  */
 class FactoryBuild {
-    private ClassUtil    classUtil    = null; //扫描的类包路径
+    private ClassUtils   classUtil    = null; //扫描的类包路径
     private WebUIFactory webUIFactory = null;
     public FactoryBuild(WebUIFactory webUIFactory) {
         this.webUIFactory = webUIFactory;
@@ -43,7 +43,7 @@ class FactoryBuild {
             return;
         String scanPackageStr = config.getScanPackages();
         String[] scanPackages = scanPackageStr.split(",");
-        this.classUtil = ClassUtil.newInstance(scanPackages);
+        this.classUtil = ClassUtils.newInstance(scanPackages);
     }
     /**生成{@link FacesContext} */
     public FacesContext buildFacesContext(FacesConfig config) throws TemplateModelException {

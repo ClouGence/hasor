@@ -25,7 +25,7 @@ import java.util.Map;
  * @version : 2012-2-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class MergeUtil {
+public abstract class MergeUtils {
     /**合并两个迭代器*/
     public static <T> Iterator<T> mergeIterator(final Iterator<T> iterator1, final Iterator<T> iterator2) {
         final Iterator<T> i1 = (iterator1 != null) ? iterator1 : new ArrayList<T>(0).iterator();

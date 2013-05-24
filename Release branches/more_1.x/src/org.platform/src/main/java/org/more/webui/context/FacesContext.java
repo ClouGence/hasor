@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.more.util.CommonCodeUtil;
+import org.more.util.CommonCodeUtils;
 import org.more.webui.component.UIComponent;
 import org.more.webui.freemarker.loader.ConfigTemplateLoader;
 import org.more.webui.freemarker.loader.MultiTemplateLoader;
@@ -123,7 +123,7 @@ public abstract class FacesContext {
         String hashStr = null;
         try {
             /*使用MD5加密*/
-            hashStr = CommonCodeUtil.MD5.getMD5(templateString);
+            hashStr = CommonCodeUtils.MD5.getMD5(templateString);
         } catch (NoSuchAlgorithmException e) {
             /*使用hashCode*/
             hashStr = String.valueOf(templateString.hashCode());

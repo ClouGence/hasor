@@ -20,7 +20,7 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.more.util.StringConvertUtil;
+import org.more.util.StringConvertUtils;
 import org.platform.security.SecurityDispatcher;
 import org.platform.security.SecurityForward;
 import org.platform.security.SecurityForward.ForwardType;
@@ -105,7 +105,7 @@ class InternalSecurityDispatcher implements SecurityDispatcher {
                 this.doThrowError(this.forwardTo);
                 break;
             case State:
-                response.sendError(StringConvertUtil.parseInt(forwardTo, 500), "SecurityDispatcher Forward State :" + this.forwardTo);
+                response.sendError(StringConvertUtils.parseInt(forwardTo, 500), "SecurityDispatcher Forward State :" + this.forwardTo);
                 break;
             default:
                 throw new ServletException("forwardType nonsupport.");

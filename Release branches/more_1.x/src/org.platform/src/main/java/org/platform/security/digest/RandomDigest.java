@@ -20,7 +20,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
-import org.more.util.CommonCodeUtil.Base64;
+import org.more.util.CommonCodeUtils.Base64;
 import org.platform.security.Digest;
 /**
  * Ëæ»ú¼ÓÃÜ¡£

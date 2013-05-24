@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.junit.Test;
-import org.more.util.BeanUtil;
+import org.more.util.BeanUtils;
 /**
  * 
  * @version : 2011-7-20
@@ -62,7 +62,7 @@ public class UtilTest {
     public void setAa(String aa) {}
     @Test
     public void test2() throws IntrospectionException {
-        List<String> ps = BeanUtil.getPropertys(UtilTest.class);
+        List<String> ps = BeanUtils.getPropertys(UtilTest.class);
         System.out.println(ps);
     }
 }

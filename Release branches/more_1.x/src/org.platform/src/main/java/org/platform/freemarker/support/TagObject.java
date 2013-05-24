@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
-import org.more.util.BeanUtil;
+import org.more.util.BeanUtils;
 import org.platform.Assert;
 import org.platform.freemarker.IFmTag;
 import org.platform.freemarker.IFmTag2;
@@ -57,7 +57,7 @@ class TagObject implements TemplateDirectiveModel {
                 ((IFmTag2) this.tagBody).setup(objMap);
             } else {
                 for (Object key : params.keySet())
-                    BeanUtil.writePropertyOrField(this.tagBody, (String) key, params.get(key));
+                    BeanUtils.writePropertyOrField(this.tagBody, (String) key, params.get(key));
             }
         }
         this.tagBody.doTag(new InternalTemplateBody(objMap, body, env));

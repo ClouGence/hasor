@@ -19,7 +19,7 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import org.more.util.CommonCodeUtil.Base64;
+import org.more.util.CommonCodeUtils.Base64;
 import org.platform.security.Digest;
 /**
  * AES加密，由于美国软件出口限制AES加密算法使用的是128位。

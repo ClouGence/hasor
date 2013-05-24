@@ -18,7 +18,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.more.util.StringUtil;
+import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.security.AuthSession;
 import org.platform.security.AutoLoginProcess;
@@ -65,9 +65,9 @@ public class DefaultAutoLoginProcess extends AbstractProcess implements AutoLogi
         cookie.setMaxAge(this.settings.getCookieTimeout());
         String cookiePath = this.settings.getCookiePath();
         String cookieDomain = this.settings.getCookieDomain();
-        if (StringUtil.isBlank(cookiePath) == false)
+        if (StringUtils.isBlank(cookiePath) == false)
             cookie.setPath(cookiePath);
-        if (StringUtil.isBlank(cookieDomain) == false)
+        if (StringUtils.isBlank(cookieDomain) == false)
             cookie.setDomain(cookieDomain);
         //3.写入响应流
         response.addCookie(cookie);
@@ -161,7 +161,7 @@ public class DefaultAutoLoginProcess extends AbstractProcess implements AutoLogi
     private boolean recoverAuthSession4HttpSession(SecurityContext secContext, HttpSession httpSession) {
         /**恢复HttpSession中的登陆帐号。*/
         String authSessionIDs = (String) httpSession.getAttribute(AuthSession.HttpSessionAuthSessionSetName);
-        if (StringUtil.isBlank(authSessionIDs) == true)
+        if (StringUtils.isBlank(authSessionIDs) == true)
             return false;
         String[] authSessionIDSet = authSessionIDs.split(",");
         boolean returnData = false;

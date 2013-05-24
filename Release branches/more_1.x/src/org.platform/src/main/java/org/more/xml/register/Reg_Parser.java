@@ -16,23 +16,23 @@
 package org.more.xml.register;
 import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
-import org.more.core.log.Log;
-import org.more.core.log.LogFactory;
 import org.more.xml.XmlParserHook;
 import org.more.xml.stream.StartElementEvent;
 import org.more.xml.stream.XmlAccept;
 import org.more.xml.stream.XmlStreamEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 该类是为了解析regedit.xml而设立的。
  * @version 2010-9-24
  * @author 赵永春 (zyc@byshell.org)
  */
 class Reg_Parser implements XmlAccept {
-    private static Log           log         = LogFactory.getLog(Reg_Parser.class);
+    private static Logger        log         = LoggerFactory.getLogger(Reg_Parser.class);
     private XmlRegister          manager     = null;
-    private XmlRegisterParserKit currentKit  = null;                               //xpath注册
-    private XmlRegisterHook      currentHook = null;                               //当前命名空间钩子
-    private String               currentNS   = null;                               //当前命名空间
+    private XmlRegisterParserKit currentKit  = null;                                     //xpath注册
+    private XmlRegisterHook      currentHook = null;                                     //当前命名空间钩子
+    private String               currentNS   = null;                                     //当前命名空间
     public Reg_Parser(XmlRegister manager) {
         this.manager = manager;
     };

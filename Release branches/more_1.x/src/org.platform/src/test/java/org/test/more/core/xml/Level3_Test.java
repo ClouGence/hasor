@@ -17,7 +17,7 @@ package org.test.more.core.xml;
 import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
-import org.more.util.ResourcesUtil;
+import org.more.util.ResourcesUtils;
 import org.more.xml.XmlElementHook;
 import org.more.xml.XmlParserKit;
 import org.more.xml.XmlParserKitManager;
@@ -34,7 +34,7 @@ public class Level3_Test {
     @Test
     public void reader() throws XMLStreamException, IOException {
         String url = "org/test/more/core/xml/level_3.xml";
-        XmlReader reader = new XmlReader(ResourcesUtil.getResourceAsStream(url));
+        XmlReader reader = new XmlReader(ResourcesUtils.getResourceAsStream(url));
         XmlParserKitManager manager = new XmlParserKitManager();
         XmlParserKit kit = new XmlParserKit();
         //-----------------------

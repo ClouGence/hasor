@@ -24,19 +24,19 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import org.more.core.error.LoadException;
-import org.more.core.log.Log;
-import org.more.core.log.LogFactory;
-import org.more.util.ResourcesUtil;
+import org.more.util.ResourcesUtils;
 import org.more.util.io.AutoCloseInputStream;
 import org.more.xml.XmlParserKitManager;
 import org.more.xml.stream.XmlReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 
  * @version : 2011-11-7
  * @author 赵永春 (zyc@byshell.org)
  */
 public class XmlRegister extends XmlParserKitManager {
-    private final static Log     log         = LogFactory.getLog(XmlRegister.class);
+    private static Logger        log         = LoggerFactory.getLogger(Reg_Parser.class);
     public final static String[] Configs     = new String[] { "META-INF/resource/core/register.xml", "META-INF/register.xml" };
     private ArrayList<Object>    sourceArray = new ArrayList<Object>();
     //
@@ -50,7 +50,7 @@ public class XmlRegister extends XmlParserKitManager {
     public XmlRegister(Object context) throws IOException, XMLStreamException, LoadException {
         this.setContext(context);
         for (String config : Configs) {
-            List<URL> urls = ResourcesUtil.getResources(config);
+            List<URL> urls = ResourcesUtils.getResources(config);
             for (URL url : urls)
                 this.loadRegisterXML(url);
         }
@@ -67,19 +67,19 @@ public class XmlRegister extends XmlParserKitManager {
     }
     /**添加register配置文件。*/
     public void loadRegister(URI uri) throws XMLStreamException, IOException {
-        this.loadRegister(ResourcesUtil.getResourceAsStream(uri));
+        this.loadRegister(ResourcesUtils.getResourceAsStream(uri));
     }
     /**添加register配置文件。*/
     public void loadRegister(URL url) throws XMLStreamException, IOException {
-        this.loadRegister(ResourcesUtil.getResourceAsStream(url));
+        this.loadRegister(ResourcesUtils.getResourceAsStream(url));
     }
     /**添加register配置文件。*/
     public void loadRegister(File file) throws XMLStreamException, IOException {
-        this.loadRegister(ResourcesUtil.getResourceAsStream(file));
+        this.loadRegister(ResourcesUtils.getResourceAsStream(file));
     }
     /**添加register配置文件，该资源的存放路径是相对于classpath。*/
     public void loadRegister(String source) throws XMLStreamException, IOException {
-        List<URL> urls = ResourcesUtil.getResources(source);
+        List<URL> urls = ResourcesUtils.getResources(source);
         if (urls != null)
             for (URL url : urls)
                 this.loadRegister(url);
@@ -87,14 +87,14 @@ public class XmlRegister extends XmlParserKitManager {
     /*------------------------------------------------------------*/
     private void addSourceArray(Object source) {
         if (source == null) {
-            log.warning("addSource source is null.");
+            log.warn("addSource source is null.");
             return;
         }
         if (this.sourceArray.contains(source) == false) {
             log.debug("addSource {%0}.", source);
             this.sourceArray.add(source);
         } else
-            log.warning("addSource source error ,exist source. {%0}", source);
+            log.warn("addSource source error ,exist source. {%0}", source);
     }
     /**添加资源。*/
     public void addSource(InputStream stream) {
@@ -143,7 +143,7 @@ public class XmlRegister extends XmlParserKitManager {
                     log.debug("reset InputStream. Stream = {%0}", is);
                     is.reset();
                 } catch (Exception e) {
-                    log.warning("reset InputStream error ,Stream not supported.");
+                    log.warn("reset InputStream error ,Stream not supported.");
                 }
                 this.passerXml(is, context);
             } else if (obj instanceof URL) {
@@ -165,7 +165,7 @@ public class XmlRegister extends XmlParserKitManager {
                 this.passerXml(is, context);
                 is.close();
             } else if (obj instanceof String) {
-                List<URL> urls = ResourcesUtil.getResources((String) obj);
+                List<URL> urls = ResourcesUtils.getResources((String) obj);
                 log.debug("load String '{%0}' include [{%1}]", obj, urls);
                 for (URL url : urls) {
                     InputStream is = url.openConnection().getInputStream();

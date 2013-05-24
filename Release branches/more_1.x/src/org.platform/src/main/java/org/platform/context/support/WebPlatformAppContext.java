@@ -15,7 +15,7 @@
  */
 package org.platform.context.support;
 import javax.servlet.ServletContext;
-import org.more.util.ArrayUtil;
+import org.more.util.ArrayUtils;
 import org.platform.context.AppContext;
 import com.google.inject.Binder;
 import com.google.inject.Module;
@@ -43,7 +43,7 @@ public class WebPlatformAppContext extends PlatformAppContext {
                 });
             }
         };
-        modules = ArrayUtil.addToArray(modules, webModule);
+        modules = ArrayUtils.addToArray(modules, webModule);
         super.start(modules);
     }
 }

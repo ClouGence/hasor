@@ -23,7 +23,7 @@ import static org.platform.PlatformConfig.Workspace_TempDir_Absolute;
 import static org.platform.PlatformConfig.Workspace_WorkDir;
 import java.io.File;
 import java.io.IOException;
-import org.more.util.StringUtil;
+import org.more.util.StringUtils;
 import org.platform.context.WorkSpace;
 /**
  * 
@@ -70,21 +70,21 @@ public abstract class AbstractWorkSpace implements WorkSpace {
     };
     @Override
     public String getDataDir(String name) {
-        if (StringUtil.isBlank(name) == true)
+        if (StringUtils.isBlank(name) == true)
             return getDataDir();
         else
             return str2path(new File(getDataDir(), name).getAbsolutePath());
     };
     @Override
     public String getTempDir(String name) {
-        if (StringUtil.isBlank(name) == true)
+        if (StringUtils.isBlank(name) == true)
             return getTempDir();
         else
             return str2path(new File(getTempDir(), name).getAbsolutePath());
     };
     @Override
     public String getCacheDir(String name) {
-        if (StringUtil.isBlank(name) == true)
+        if (StringUtils.isBlank(name) == true)
             return getCacheDir();
         else
             return str2path(new File(getCacheDir(), name).getAbsolutePath());

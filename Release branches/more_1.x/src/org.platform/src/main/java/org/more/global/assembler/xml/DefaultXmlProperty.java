@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.more.global.GlobalProperty;
-import org.more.util.StringConvertUtil;
+import org.more.util.StringConvertUtils;
 /**
  * XmlProperty, GlobalProperty接口实现类。
  * @version : 2013-4-22
@@ -116,7 +116,7 @@ public class DefaultXmlProperty implements XmlProperty, GlobalProperty {
             return (T) this;
         if (GlobalProperty.class.isAssignableFrom(toType) == true)
             return (T) this;
-        return StringConvertUtil.changeType(this.getText(), toType, defaultValue);
+        return StringConvertUtils.changeType(this.getText(), toType, defaultValue);
     }
     @Override
     public Map<String, String> getAttributeMap() {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.platform.security.guest;
-import org.more.util.StringUtil;
+import org.more.util.StringUtils;
 import org.platform.context.AppContext;
 import org.platform.security.SecurityAuth;
 import org.platform.security.SecAuth;
@@ -35,7 +35,7 @@ public class GuestSecurityAuth implements SecurityAuth {
     }
     @Override
     public UserInfo getUserInfo(String userCode) {
-        boolean res = StringUtil.eqUnCaseSensitive(this.settings.getGuestUserCode(), userCode);
+        boolean res = StringUtils.eqUnCaseSensitive(this.settings.getGuestUserCode(), userCode);
         if (res == false)
             return null;
         GuestUser guestUser = new GuestUser();
@@ -48,8 +48,8 @@ public class GuestSecurityAuth implements SecurityAuth {
         String configGuestAcc = this.settings.getGuestAccount();
         String configGuestPwd = this.settings.getGuestPassword();
         //
-        boolean res1 = StringUtil.eqUnCaseSensitive(configGuestAcc, account);
-        boolean res2 = StringUtil.eqUnCaseSensitive(configGuestPwd, password);
+        boolean res1 = StringUtils.eqUnCaseSensitive(configGuestAcc, account);
+        boolean res2 = StringUtils.eqUnCaseSensitive(configGuestPwd, password);
         if (res1 == true && res2 == true) {
             GuestUser guestUser = new GuestUser();
             guestUser.setAccount(configGuestAcc);

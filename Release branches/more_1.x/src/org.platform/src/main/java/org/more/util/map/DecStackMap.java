@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
-import org.more.util.MergeUtil;
+import org.more.util.MergeUtils;
 /**
  * 提供一种栈结构的操作Map序列属性对象，利用该属性装饰器可以在属性集上增加另一个属性栈。
  * @version 2010-9-11
@@ -75,7 +75,7 @@ public class DecStackMap<K, T> extends DecSequenceMap<K, T> {
         public Iterator<java.util.Map.Entry<K, T>> iterator() {
             Iterator<java.util.Map.Entry<K, T>> seqIter = null;
             for (Map<K, T> mapItem : this.mapList)
-                seqIter = MergeUtil.mergeIterator(seqIter, mapItem.entrySet().iterator());
+                seqIter = MergeUtils.mergeIterator(seqIter, mapItem.entrySet().iterator());
             return seqIter;
         }
         @Override

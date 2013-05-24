@@ -29,7 +29,7 @@ import javax.script.SimpleScriptContext;
  * @version : 2011-7-22
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class ScriptUtil {
+public abstract class ScriptUtils {
     /**默认脚本引擎*/
     public static final String DefaultScriptEngine = "javascript";
     /**创建默认脚本引擎。*/

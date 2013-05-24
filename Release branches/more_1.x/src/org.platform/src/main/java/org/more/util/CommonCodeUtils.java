@@ -20,7 +20,7 @@ import java.security.NoSuchAlgorithmException;
  * @version : 2012-6-21
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class CommonCodeUtil {
+public abstract class CommonCodeUtils {
     /**
      * 简单编码类，该类提供了Base64的编码，该编码器与配套的js编码器可以实现互相编码互相转化功能。
      * @version 2009-4-28

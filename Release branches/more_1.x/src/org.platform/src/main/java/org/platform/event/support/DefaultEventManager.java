@@ -19,8 +19,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.more.util.ArrayUtil;
-import org.more.util.StringUtil;
+import org.more.util.ArrayUtils;
+import org.more.util.StringUtils;
 import org.platform.Assert;
 import org.platform.context.AppContext;
 import org.platform.event.EventListener;
@@ -41,7 +41,7 @@ class DefaultEventManager implements EventManager, ManagerLife {
         if (eventListener == null) {
             eventListener = new EventListener[0];
         }
-        eventListener = ArrayUtil.addToArray(eventListener, listener);
+        eventListener = ArrayUtils.addToArray(eventListener, listener);
         this.eventListenerMap.put(eventType, eventListener);
     }
     @Override
@@ -53,9 +53,9 @@ class DefaultEventManager implements EventManager, ManagerLife {
         Assert.isNotNull(eventType, "remove eventType is null.");
         Assert.isNotNull(listener, "remove EventListener object is null.");
         EventListener[] eventListener = this.eventListenerMap.get(eventType);
-        if (ArrayUtil.isBlank(eventListener))
+        if (ArrayUtils.isBlank(eventListener))
             return;
-        eventListener = ArrayUtil.removeInArray(eventListener, listener);
+        eventListener = ArrayUtils.removeInArray(eventListener, listener);
         this.eventListenerMap.put(eventType, eventListener);
     }
     @Override
@@ -70,7 +70,7 @@ class DefaultEventManager implements EventManager, ManagerLife {
     }
     @Override
     public void throwEvent(String eventType, Object... objects) {
-        if (StringUtil.isBlank(eventType) == true)
+        if (StringUtils.isBlank(eventType) == true)
             return;
         EventListener[] eventListener = this.eventListenerMap.get(eventType);
         if (eventListener != null) {
@@ -80,7 +80,7 @@ class DefaultEventManager implements EventManager, ManagerLife {
     }
     @Override
     public void asynThrowEvent(final String eventType, final Object... objects) {
-        if (StringUtil.isBlank(eventType) == true)
+        if (StringUtils.isBlank(eventType) == true)
             return;
         final EventListener[] eventListener = this.eventListenerMap.get(eventType);
         this.executorService.submit(new Runnable() {

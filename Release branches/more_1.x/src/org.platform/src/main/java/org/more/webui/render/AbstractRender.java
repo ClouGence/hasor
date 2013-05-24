@@ -20,8 +20,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.more.util.BeanUtil;
-import org.more.util.CommonCodeUtil;
+import org.more.util.BeanUtils;
+import org.more.util.CommonCodeUtils;
 import org.more.webui.component.UIComponent;
 import org.more.webui.component.values.AbstractValueHolder;
 import org.more.webui.context.ViewContext;
@@ -55,7 +55,7 @@ public abstract class AbstractRender<T extends UIComponent> implements Render<T>
         writer.write(" comPath='" + component.getComponentPath() + "'");
         if (this.isSaveState(viewContext, component) == true) {
             String jsonData = JSON.toJSONString(component.saveState());
-            String base64 = CommonCodeUtil.Base64.base64Encode(jsonData);
+            String base64 = CommonCodeUtils.Base64.base64Encode(jsonData);
             writer.write(" uiState='" + base64 + "'");
         }
         /*-------------------------------------------------*/
@@ -93,8 +93,8 @@ public abstract class AbstractRender<T extends UIComponent> implements Render<T>
         Map<String, AbstractValueHolder> comProp = component.getPropertys();
         for (String propName : comProp.keySet()) {
             //a.获取属性的get/set方法
-            Method rm = BeanUtil.getReadMethod(propName, component.getClass());
-            Method wm = BeanUtil.getWriteMethod(propName, component.getClass());
+            Method rm = BeanUtils.getReadMethod(propName, component.getClass());
+            Method wm = BeanUtils.getWriteMethod(propName, component.getClass());
             //b.只有没有定义get/set方法的属性才会被选中。
             if (rm == null && wm == null) {
                 AbstractValueHolder vh = comProp.get(propName);

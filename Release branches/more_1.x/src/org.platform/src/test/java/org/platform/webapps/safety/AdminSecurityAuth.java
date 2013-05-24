@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.platform.webapps.safety;
-import org.more.util.StringUtil;
+import org.more.util.StringUtils;
 import org.platform.context.AppContext;
 import org.platform.security.SecurityAuth;
 import org.platform.security.SecAuth;
@@ -39,7 +39,7 @@ public class AdminSecurityAuth implements SecurityAuth {
     @Override
     public UserInfo getUserInfo(String account, String password) {
         // 
-        if (StringUtil.eqUnCaseSensitive(account, password)) {
+        if (StringUtils.eqUnCaseSensitive(account, password)) {
             AdminUser adminUser = new AdminUser();
             adminUser.setAccount(account);
             adminUser.setPassword(password);

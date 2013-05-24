@@ -43,7 +43,7 @@ import org.more.util.map.Properties;
  * @version 2010-9-24
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class ResourcesUtil {
+public abstract class ResourcesUtils {
     /** 发现事件 */
     public static class ScanEvent {
         private String      name    = null;
@@ -214,7 +214,7 @@ public abstract class ResourcesUtil {
             if (dirPath.startsWith(contextPath) == true)
                 dirPath = dirPath.substring(contextPath.length(), dirPath.length());
             //2)计算忽略
-            if (StringUtil.matchWild(wild, dirPath) == false)
+            if (StringUtils.matchWild(wild, dirPath) == false)
                 return false;
             //3)执行发现
             return item.goFind(new ScanEvent(dirPath, dirFile), false);
@@ -232,7 +232,7 @@ public abstract class ResourcesUtil {
                     return true;
             }
             //2)计算忽略
-            if (StringUtil.matchWild(wild, dirPath) == false)
+            if (StringUtils.matchWild(wild, dirPath) == false)
                 continue;
             if (item.goFind(new ScanEvent(dirPath, f), false) == true)
                 return true;
@@ -245,7 +245,7 @@ public abstract class ResourcesUtil {
         while (jes.hasMoreElements() == true) {
             JarEntry e = jes.nextElement();
             String name = e.getName();
-            if (StringUtil.matchWild(wild, name) == true)
+            if (StringUtils.matchWild(wild, name) == true)
                 if (e.isDirectory() == false)
                     if (item.goFind(new ScanEvent(name, e, jarFile.getInputStream(e)), true) == true)
                         return true;

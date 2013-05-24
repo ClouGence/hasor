@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
-import org.more.util.ResourcesUtil;
+import org.more.util.ResourcesUtils;
 import org.more.xml.stream.XmlAccept;
 import org.more.xml.stream.XmlReader;
 import org.more.xml.stream.XmlStreamEvent;
@@ -31,7 +31,7 @@ public class Level1_Test {
     @Test
     public void reader() throws XMLStreamException, IOException {
         String url = "org/test/more/core/xml/level_1.xml";
-        InputStream in = ResourcesUtil.getResourceAsStream(url);
+        InputStream in = ResourcesUtils.getResourceAsStream(url);
         //
         new XmlReader(in).reader(new XmlSpan(), null);
     }

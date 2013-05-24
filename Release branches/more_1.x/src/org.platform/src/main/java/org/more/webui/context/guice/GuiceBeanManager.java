@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.apache.commons.lang.StringUtils;
-import org.more.util.ClassUtil;
+import org.more.util.ClassUtils;
 import org.more.webui.context.BeanManager;
 import org.more.webui.context.FacesConfig;
 import com.google.inject.Binder;
@@ -44,7 +44,7 @@ public class GuiceBeanManager extends AbstractMap<String, Object> implements Bea
             public void configure(Binder binder) {
                 String scanPackageStr = environment.getScanPackages();
                 String[] scanPackages = scanPackageStr.split(",");
-                Set<Class<?>> beanSet = ClassUtil.newInstance(scanPackages).getClassSet(Bean.class);
+                Set<Class<?>> beanSet = ClassUtils.newInstance(scanPackages).getClassSet(Bean.class);
                 if (beanSet != null)
                     for (Class<?> cls : beanSet) {
                         Bean beanClass = cls.getAnnotation(Bean.class);

@@ -25,15 +25,12 @@ import java.util.List;
 import org.more.classcode.EngineToos;
 import org.more.classcode.RootClassLoader;
 import org.more.core.error.InvokeException;
-import org.more.core.log.Log;
-import org.more.core.log.LogFactory;
 /**
  * 
  * @version : 2011-6-3
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class BeanUtil {
-    private static final Log log = LogFactory.getLog(BeanUtil.class);
+public abstract class BeanUtils {
     /**通过位运算决定data是否在modifiers里。*/
     public static boolean checkModifiers(int modifiers, int data) {
         int a = modifiers | data;
@@ -189,10 +186,8 @@ public abstract class BeanUtil {
     /*----------------------------------------------------------------------------------------*/
     /**获取类定义的字段和继承父类中定义的字段以及父类的父类（子类重新定义同名字段也会被列入集合）。*/
     public static List<Field> findALLFields(Class<?> target) {
-        if (target == null) {
-            log.error("findALLFields an error , target is null, please check it.");
+        if (target == null)
             return null;
-        }
         ArrayList<Field> fList = new ArrayList<Field>();
         findALLFields(target, fList);
         return fList;
@@ -213,10 +208,8 @@ public abstract class BeanUtil {
     }
     /**{@link #findALLFields(Class))}方法返回值的无重复版本。*/
     public static List<Field> findALLFieldsNoRepeat(Class<?> target) {
-        if (target == null) {
-            log.error("findALLFieldsNoRepeat an error , target is null, please check it.");
+        if (target == null)
             return null;
-        }
         LinkedHashMap<String, Field> fMap = new LinkedHashMap<String, Field>();
         findALLFieldsNoRepeat(target, fMap);
         return new ArrayList<Field>(fMap.values());
@@ -237,10 +230,8 @@ public abstract class BeanUtil {
     }
     /**获取类定义的方法和继承父类中定义的方法以及父类的父类（子类的重写方法也会被返回）。*/
     public static List<Method> findALLMethods(Class<?> target) {
-        if (target == null) {
-            log.error("findALLMethods an error , target is null, please check it.");
+        if (target == null)
             return null;
-        }
         ArrayList<Method> mList = new ArrayList<Method>();
         findALLMethods(target, mList);
         return mList;
@@ -261,10 +252,8 @@ public abstract class BeanUtil {
     }
     /**{@link #findALLMethods(Class))}方法返回值的无重复版本。*/
     public static List<Method> findALLMethodsNoRepeat(Class<?> target) {
-        if (target == null) {
-            log.error("findALLMethodsNoRepeat an error , target is null, please check it.");
+        if (target == null)
             return null;
-        }
         LinkedHashMap<String, Method> mMap = new LinkedHashMap<String, Method>();
         findALLMethodsNoRepeat(target, mMap);
         return new ArrayList<Method>(mMap.values());
@@ -306,16 +295,11 @@ public abstract class BeanUtil {
     }
     /**查找一个可操作的字段。*/
     public static Field getField(String fieldName, Class<?> type) {
-        if (fieldName == null || type == null) {
-            log.error("fieldName an error , fieldName or type is null, please check it.");
+        if (fieldName == null || type == null)
             return null;
-        }
         for (Field f : type.getFields())
-            if (f.getName().equals(fieldName) == true) {
-                log.debug("find method {%0}.", f);
+            if (f.getName().equals(fieldName) == true)
                 return f;
-            }
-        log.debug("{%0} method not exist at {%1}.", fieldName, type);
         return null;
     }
     /**查找一个可操作的方法。*/
@@ -354,7 +338,7 @@ public abstract class BeanUtil {
             else
                 continue;
             if (name.equals("") == false) {
-                name = StringUtil.toLowerCase(name);
+                name = StringUtils.toLowerCase(name);
                 if (mnames.contains(name) == false)
                     mnames.add(name);
             }
@@ -363,12 +347,10 @@ public abstract class BeanUtil {
     }
     /**获取一个属性的读取方法。*/
     public static Method getReadMethod(String property, Class<?> target) {
-        if (property == null || target == null) {
-            log.error("getReadMethod an error , property or target is null, please check it.");
+        if (property == null || target == null)
             return null;
-        }
-        String methodName_1 = "get" + StringUtil.toUpperCase(property);
-        String methodName_2 = "is" + StringUtil.toUpperCase(property);
+        String methodName_1 = "get" + StringUtils.toUpperCase(property);
+        String methodName_2 = "is" + StringUtils.toUpperCase(property);
         //
         for (Method m : target.getMethods())
             if (m.getParameterTypes().length == 0) {
@@ -382,21 +364,17 @@ public abstract class BeanUtil {
                         return m;
                 }
             }
-        log.debug("{%0} method not exist at {%1}.", property, target);
         return null;
     }
     /**获取一个属性的写入方法。*/
     public static Method getWriteMethod(String property, Class<?> target) {
-        if (property == null || target == null) {
-            log.error("getWriteMethod an error , property or target is null, please check it.");
+        if (property == null || target == null)
             return null;
-        }
-        String methodName = "set" + StringUtil.toUpperCase(property);
+        String methodName = "set" + StringUtils.toUpperCase(property);
         for (Method m : target.getMethods())
             if (m.getName().equals(methodName) == true)
                 if (m.getParameterTypes().length == 1)
                     return m;
-        log.debug("{%0} method not exist at {%1}.", methodName, target);
         return null;
     }
     /**测试是否具有propertyName所表示的属性，无论是读或写方法只要存在一个就表示存在该属性。*/
@@ -454,21 +432,17 @@ public abstract class BeanUtil {
     /*----------------------------------------------------------------------------------------*/
     /**执行属性注入，除了注入int,short,long,等基本类型之外该方法还支持注入枚举类型。返回值表示执行是否成功。注意：该方法会根据属性类型进行尝试类型转换。*/
     public static boolean writeProperty(Object object, String attName, Object value) {
-        if (object == null || attName == null) {
-            log.error("putAttribute an error, object or attName is null, please check it.");
+        if (object == null || attName == null)
             return false;
-        }
         //1.查找方法
         Class<?> defineType = object.getClass();
         Method writeMethod = getWriteMethod(attName, defineType);
-        if (writeMethod == null) {
-            log.debug("can`t invoke {%0} , this method not exist on {%1}", attName, defineType);
+        if (writeMethod == null)
             return false;
-        }
         //2.执行属性转换
         Class<?> toType = writeMethod.getParameterTypes()[0];
         Object defaultValue = EngineToos.getDefaultValue(toType);
-        Object attValueObject = StringConvertUtil.changeType(value, toType, defaultValue);
+        Object attValueObject = StringConvertUtils.changeType(value, toType, defaultValue);
         //3.执行属性注入
         try {
             writeMethod.invoke(object, attValueObject);
@@ -479,20 +453,16 @@ public abstract class BeanUtil {
     };
     /**执行字段注入，除了注入int,short,long,等基本类型之外该方法还支持注入枚举类型。注意：该方法会根据属性类型进行尝试类型转换。*/
     public static boolean writeField(Object object, String fieldName, Object value) {
-        if (object == null || fieldName == null) {
-            log.error("putAttribute an error, object or fieldName is null, please check it.");
+        if (object == null || fieldName == null)
             return false;
-        }
         //1.查找方法
         Class<?> defineType = object.getClass();
         Field writeField = getField(fieldName, defineType);
-        if (writeField == null) {
-            log.debug("can`t invoke {%0} , this field not exist on {%1}", fieldName, defineType);
+        if (writeField == null)
             return false;
-        }
         //2.执行属性转换
         Class<?> toType = writeField.getType();
-        Object attValueObject = StringConvertUtil.changeType(value, toType);
+        Object attValueObject = StringConvertUtils.changeType(value, toType);
         //3.执行属性注入
         try {
             writeField.set(object, attValueObject);
@@ -512,17 +482,13 @@ public abstract class BeanUtil {
     }
     /**执行属性读取。*/
     public static Object readProperty(Object object, String attName) {
-        if (object == null || attName == null) {
-            log.error("readAttribute an error, object or attName is null, please check it.");
+        if (object == null || attName == null)
             return false;
-        }
         //1.查找方法
         Class<?> defineType = object.getClass();
         Method readMethod = getReadMethod(attName, defineType);
-        if (readMethod == null) {
-            log.debug("can`t invoke {%0} , this method not exist on {%1}", attName, defineType);
+        if (readMethod == null)
             return null;
-        }
         //2.执行属性读取
         try {
             return readMethod.invoke(object);
@@ -532,17 +498,13 @@ public abstract class BeanUtil {
     };
     /**执行字段读取。*/
     public static Object readField(Object object, String fieldName) {
-        if (object == null || fieldName == null) {
-            log.error("gutAttribute an error, object or fieldName is null, please check it.");
+        if (object == null || fieldName == null)
             return null;
-        }
         //1.查找方法
         Class<?> defineType = object.getClass();
         Field readField = getField(fieldName, defineType);
-        if (readField == null) {
-            log.debug("can`t invoke {%0} , this field not exist on {%1}", fieldName, defineType);
+        if (readField == null)
             return null;
-        }
         //2.执行字段读取
         try {
             return readField.get(object);

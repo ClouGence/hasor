@@ -17,9 +17,9 @@ package org.platform.binder.support;
 import static org.platform.PlatformConfig.Platform_LoadPackages;
 import java.util.ArrayList;
 import java.util.Set;
-import org.more.util.ArrayUtil;
-import org.more.util.ClassUtil;
-import org.more.util.StringUtil;
+import org.more.util.ArrayUtils;
+import org.more.util.ClassUtils;
+import org.more.util.StringUtils;
 import org.platform.binder.ApiBinder;
 import org.platform.context.Settings;
 import com.google.inject.Binder;
@@ -58,19 +58,19 @@ class InternalApiBinder implements Module, ApiBinder {
     }
     @Override
     public FilterBindingBuilder filter(String urlPattern, String... morePatterns) {
-        return this.filterModuleBinder.filterPattern(ArrayUtil.newArrayList(morePatterns, urlPattern));
+        return this.filterModuleBinder.filterPattern(ArrayUtils.newArrayList(morePatterns, urlPattern));
     };
     @Override
     public FilterBindingBuilder filterRegex(String regex, String... regexes) {
-        return this.filterModuleBinder.filterRegex(ArrayUtil.newArrayList(regexes, regex));
+        return this.filterModuleBinder.filterRegex(ArrayUtils.newArrayList(regexes, regex));
     };
     @Override
     public ServletBindingBuilder serve(String urlPattern, String... morePatterns) {
-        return this.servletModuleBinder.filterPattern(ArrayUtil.newArrayList(morePatterns, urlPattern));
+        return this.servletModuleBinder.filterPattern(ArrayUtils.newArrayList(morePatterns, urlPattern));
     };
     @Override
     public ServletBindingBuilder serveRegex(String regex, String... regexes) {
-        return this.servletModuleBinder.filterRegex(ArrayUtil.newArrayList(regexes, regex));
+        return this.servletModuleBinder.filterRegex(ArrayUtils.newArrayList(regexes, regex));
     };
     @Override
     public ErrorBindingBuilder error(Class<? extends Throwable> error) {
@@ -88,11 +88,11 @@ class InternalApiBinder implements Module, ApiBinder {
             return null;
         String loadPackages = this.getSettings().getString(Platform_LoadPackages);
         String[] spanPackage = loadPackages.split(",");
-        return ClassUtil.getClassSet(spanPackage, featureType);
+        return ClassUtils.getClassSet(spanPackage, featureType);
     }
     @Override
     public BeanBindingBuilder newBean(String beanName) {
-        if (StringUtil.isBlank(beanName) == true)
+        if (StringUtils.isBlank(beanName) == true)
             throw new NullPointerException(beanName);
         return this.beanInfoModuleBuilder.newBeanDefine(this.getGuiceBinder()).aliasName(beanName);
     }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.platform.security.support;
-import org.more.util.StringUtil;
+import org.more.util.StringUtils;
 import org.platform.security.AuthSession;
 import org.platform.security.UriPatternMatcher;
 /**
@@ -36,7 +36,7 @@ enum UriPatternType {
     //
     //
     public static UriPatternMatcher get(UriPatternType type, String requestURI, String patternCode) {
-        if (StringUtil.isBlank(requestURI) == false)
+        if (StringUtils.isBlank(requestURI) == false)
             requestURI = requestURI.toLowerCase();
         switch (type) {
         case Login:

@@ -19,8 +19,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import org.more.global.assembler.xml.XmlProperty;
-import org.more.util.StringConvertUtil;
-import org.more.util.StringUtil;
+import org.more.util.StringConvertUtils;
+import org.more.util.StringUtils;
 import org.platform.context.AppContext;
 import org.platform.freemarker.ITemplateLoaderCreator;
 import org.platform.freemarker.TemplateLoaderCreator;
@@ -49,14 +49,14 @@ public class PredefineTemplateLoaderCreator implements ITemplateLoaderCreator {
             //
             String keyVal = xmlItem.getAttributeMap().get("key");
             String bodyVal = xmlItem.getText();
-            keyVal = StringUtil.isBlank(keyVal) ? null : keyVal;
-            bodyVal = StringUtil.isBlank(bodyVal) ? "" : bodyVal;
+            keyVal = StringUtils.isBlank(keyVal) ? null : keyVal;
+            bodyVal = StringUtils.isBlank(bodyVal) ? "" : bodyVal;
             //
-            if (StringUtil.isBlank(keyVal) == true)
+            if (StringUtils.isBlank(keyVal) == true)
                 continue;
             //
             String predefineTypeStr = xmlConfig.getAttributeMap().get("type");
-            PredefineType predefineType = StringConvertUtil.parseEnum(predefineTypeStr, PredefineType.class, PredefineType.String);
+            PredefineType predefineType = StringConvertUtils.parseEnum(predefineTypeStr, PredefineType.class, PredefineType.String);
             switch (predefineType) {
             case File:
                 configTemplateLoader.addTemplate(keyVal, new File(bodyVal));

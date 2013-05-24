@@ -28,8 +28,8 @@ import org.more.global.Global;
 import org.more.global.assembler.xml.XmlProperty;
 import org.more.global.assembler.xml.XmlPropertyGlobalFactory;
 import org.more.util.ResourceWatch;
-import org.more.util.ResourcesUtil;
-import org.more.util.StringUtil;
+import org.more.util.ResourcesUtils;
+import org.more.util.StringUtils;
 import org.more.util.map.Properties;
 import org.platform.Assert;
 import org.platform.Platform;
@@ -60,7 +60,7 @@ public class PlatformSettings extends Global implements Settings {
         this.loadALLConfig();
         //2.resourceWatch
         try {
-            URL configURL = ResourcesUtil.getResource(appSettingsName1);
+            URL configURL = ResourcesUtils.getResource(appSettingsName1);
             Assert.isNotNull(configURL, "Can't get to " + configURL);
             this.resourceWatch = new SettingsResourceWatch(configURL.toURI(), 15 * 1000/*15秒检查一次*/);
             this.resourceWatch.setDaemon(true);
@@ -149,7 +149,7 @@ public class PlatformSettings extends Global implements Settings {
     protected void loadMainConfig(Map<String, Object> toMap) {
         String encoding = this.getSettingsEncoding();
         try {
-            URL configURL = ResourcesUtil.getResource(appSettingsName1);
+            URL configURL = ResourcesUtils.getResource(appSettingsName1);
             if (configURL != null) {
                 Platform.info("load ‘%s’", configURL);
                 loadConfig(configURL.toURI(), encoding, toMap);
@@ -163,7 +163,7 @@ public class PlatformSettings extends Global implements Settings {
         String encoding = this.getSettingsEncoding();
         //1.装载所有static-config.xml
         try {
-            List<URL> streamList = ResourcesUtil.getResources(appSettingsName2);
+            List<URL> streamList = ResourcesUtils.getResources(appSettingsName2);
             if (streamList != null) {
                 for (URL resURL : streamList) {
                     Platform.info("load ‘%s’", resURL);
@@ -177,10 +177,10 @@ public class PlatformSettings extends Global implements Settings {
     /**装载配置映射，参数是参照的映射配置。*/
     protected void loadMappingConfig(Map<String, Object> referConfig) {
         try {
-            List<URL> mappingList = ResourcesUtil.getResources(appSettingsName3);
+            List<URL> mappingList = ResourcesUtils.getResources(appSettingsName3);
             if (mappingList != null)
                 for (URL url : mappingList) {
-                    InputStream inputStream = ResourcesUtil.getResourceAsStream(url);
+                    InputStream inputStream = ResourcesUtils.getResourceAsStream(url);
                     Properties prop = new Properties();
                     prop.load(inputStream);
                     for (String key : prop.keySet()) {
@@ -214,10 +214,10 @@ public class PlatformSettings extends Global implements Settings {
             /*载入自定义的命名空间支持。*/
             if (this.loadNameSpaceList != null && this.loadNameSpaceList.isEmpty() == false)
                 for (String loadNS : this.loadNameSpaceList)
-                    if (StringUtil.isBlank(loadNS) == false)
+                    if (StringUtils.isBlank(loadNS) == false)
                         xmlg.getLoadNameSpace().add(loadNS);
             //
-            Map<String, Object> dataMap = xmlg.createMap(encoding, new Object[] { ResourcesUtil.getResourceAsStream(configURI) });
+            Map<String, Object> dataMap = xmlg.createMap(encoding, new Object[] { ResourcesUtils.getResourceAsStream(configURI) });
             /*处理多值合并问题（采用覆盖和追加的策略）*/
             for (String key : dataMap.keySet()) {
                 String $key = key.toLowerCase();

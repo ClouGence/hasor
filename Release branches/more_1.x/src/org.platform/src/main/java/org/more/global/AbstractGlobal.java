@@ -18,7 +18,7 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.more.util.StringConvertUtil;
+import org.more.util.StringConvertUtils;
 /**
  * Global系统的核心实现
  * @version : 2011-12-31
@@ -102,7 +102,7 @@ public abstract class AbstractGlobal extends AbstractMap<String, Object> {
         T var = null;
         if (oriObject instanceof String)
             //原始数据是字符串经过Eval过程
-            var = StringConvertUtil.changeType((String) oriObject, toType);
+            var = StringConvertUtils.changeType((String) oriObject, toType);
         else if (oriObject instanceof GlobalProperty)
             //原始数据是GlobalProperty直接get
             var = ((GlobalProperty) oriObject).getValue(toType, defaultValue);

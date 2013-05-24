@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.more.util.StringConvertUtil;
+import org.more.util.StringConvertUtils;
 import org.more.util.map.DecSequenceMap;
 import org.more.webui.component.UIComponent;
 import org.more.webui.component.UIViewRoot;
@@ -189,7 +189,7 @@ public class ViewContext extends HashMap<String, Object> {
     /**回传一条信息表示本次请求来自于Ajax，如果是ajax则回传的错误会被包装。*/
     public boolean isAjax() {
         String isAjax = this.getHttpRequest().getParameter(PostFormEnum.PostForm_IsAjaxKey.value());
-        return StringConvertUtil.parseBoolean(isAjax, false);
+        return StringConvertUtils.parseBoolean(isAjax, false);
     };
     /**获取客户端引发的事件。*/
     public String getEvent() {
@@ -200,7 +200,7 @@ public class ViewContext extends HashMap<String, Object> {
     public RenderType getRenderType() {
         String renderKey = PostFormEnum.PostForm_RenderParamKey.value();
         String renderType = this.getHttpRequest().getParameter(renderKey);
-        RenderType render = StringConvertUtil.changeType(renderType, RenderType.class, RenderType.ALL);
+        RenderType render = StringConvertUtils.changeType(renderType, RenderType.class, RenderType.ALL);
         if (render == null)
             return RenderType.ALL;
         else

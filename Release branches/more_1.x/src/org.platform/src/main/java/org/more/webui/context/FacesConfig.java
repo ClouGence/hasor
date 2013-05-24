@@ -16,7 +16,7 @@
 package org.more.webui.context;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
-import org.more.util.StringConvertUtil;
+import org.more.util.StringConvertUtils;
 import org.more.webui.freemarker.parser.Hook_Include;
 import org.more.webui.freemarker.parser.Hook_UserTag;
 import org.more.webui.freemarker.parser.TemplateScanner;
@@ -75,7 +75,7 @@ public class FacesConfig {
     private String factoryName = null;
     public String getWebUIFactoryClass() {
         if (this.factoryName == null)
-            this.factoryName = StringConvertUtil.parseString(this.getInitConfig(WebUIConfig.FactoryName.value()), DefaultWebUIFactory.class.getName());
+            this.factoryName = StringConvertUtils.parseString(this.getInitConfig(WebUIConfig.FactoryName.value()), DefaultWebUIFactory.class.getName());
         return this.factoryName;
     };
     //
@@ -83,7 +83,7 @@ public class FacesConfig {
     /**获取一个boolean值该值决定了模板是否支持国际化。*/
     public boolean isLocalizedLookup() {
         if (this.localizedLookup == null)
-            this.localizedLookup = StringConvertUtil.parseBoolean(this.getInitConfig(WebUIConfig.LocalizedLookup.value()), false);
+            this.localizedLookup = StringConvertUtils.parseBoolean(this.getInitConfig(WebUIConfig.LocalizedLookup.value()), false);
         return localizedLookup;
     };
     //
@@ -91,7 +91,7 @@ public class FacesConfig {
     /**输出编码*/
     public String getOutEncoding() {
         if (this.outEncoding == null)
-            this.outEncoding = StringConvertUtil.parseString(this.getInitConfig(WebUIConfig.OutEncoding.value()), "utf-8");
+            this.outEncoding = StringConvertUtils.parseString(this.getInitConfig(WebUIConfig.OutEncoding.value()), "utf-8");
         return this.outEncoding;
     };
     //
@@ -99,7 +99,7 @@ public class FacesConfig {
     /**获取页面使用的字符编码*/
     public String getPageEncoding() {
         if (this.pageEncoding == null)
-            this.pageEncoding = StringConvertUtil.parseString(this.getInitConfig(WebUIConfig.PageEncoding.value()), "utf-8");
+            this.pageEncoding = StringConvertUtils.parseString(this.getInitConfig(WebUIConfig.PageEncoding.value()), "utf-8");
         return this.pageEncoding;
     };
     //
@@ -107,7 +107,7 @@ public class FacesConfig {
     /**获取一个扩展名，凡是具备该扩展名的文件都被视为UI文件。*/
     public String getFacesSuffix() {
         if (this.facesSuffix == null)
-            this.facesSuffix = StringConvertUtil.parseString(this.getInitConfig(WebUIConfig.FacesSuffix.value()), ".xhtml");
+            this.facesSuffix = StringConvertUtils.parseString(this.getInitConfig(WebUIConfig.FacesSuffix.value()), ".xhtml");
         return this.facesSuffix;
     };
     //
@@ -115,7 +115,7 @@ public class FacesConfig {
     /**扫描的包，默认:org.*,com.*,net.*,java.* */
     public String getScanPackages() {
         if (this.scanPackages == null)
-            this.scanPackages = StringConvertUtil.parseString(this.getInitConfig(WebUIConfig.ScanPackages.value()), "org.*,com.*,net.*,java.*");
+            this.scanPackages = StringConvertUtils.parseString(this.getInitConfig(WebUIConfig.ScanPackages.value()), "org.*,com.*,net.*,java.*");
         return this.scanPackages;
     };
 }

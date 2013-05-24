@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import javax.xml.stream.XMLStreamException;
 import org.more.core.error.RepeateException;
-import org.more.util.StringUtil;
+import org.more.util.StringUtils;
 import org.more.xml.stream.AttributeEvent;
 import org.more.xml.stream.EndDocumentEvent;
 import org.more.xml.stream.EndElementEvent;
@@ -72,7 +72,7 @@ public class XmlParserKit implements XmlNamespaceParser {
     private ArrayList<XmlParserHook> getHooks(String xpath) {
         String xpath2 = xpath;
         for (String xp : this.hooks.keySet())
-            if (StringUtil.matchWild(xp, xpath2) == true) {
+            if (StringUtils.matchWild(xp, xpath2) == true) {
                 xpath2 = xp;
                 break;
             }

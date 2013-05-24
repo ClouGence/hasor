@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.more.util.StringUtil;
+import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
@@ -240,7 +240,7 @@ public class CachePlatformListener implements PlatformListener {
             Platform.debug("MethodInterceptor Cache key :%s", cacheKey.toString());
             //3.ªÒ»°ª∫¥Ê
             ICache<Object> cacheObject = null;
-            if (StringUtil.isBlank(cacheAnno.cacheName()) == true)
+            if (StringUtils.isBlank(cacheAnno.cacheName()) == true)
                 cacheObject = cacheManager.getDefaultCache();
             else
                 cacheObject = cacheManager.getCache(cacheAnno.cacheName());

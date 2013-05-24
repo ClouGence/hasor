@@ -15,7 +15,7 @@
  */
 package org.platform.security.support;
 import java.util.List;
-import org.more.util.StringUtil;
+import org.more.util.StringUtils;
 import org.platform.context.AppContext;
 import org.platform.security.SecurityDispatcher;
 /**
@@ -27,7 +27,7 @@ class InternalDispatcherManager {
     private SecuritySettings securitySettings = null;
     /**根据uri获取可用于跳转工具类。*/
     public SecurityDispatcher getDispatcher(String requestPath) {
-        if (StringUtil.isBlank(requestPath) == true)
+        if (StringUtils.isBlank(requestPath) == true)
             return null;
         List<SecurityDispatcher> dispatcherList = securitySettings.getDispatcherForwardList();
         for (SecurityDispatcher dispatcher : dispatcherList)

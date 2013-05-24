@@ -25,7 +25,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-import org.more.util.ClassUtil;
+import org.more.util.ClassUtils;
 import org.platform.Platform;
 import org.platform.binder.SessionListenerPipeline;
 import org.platform.context.AppContext;
@@ -61,7 +61,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         String spanPackages = appContext.getSettings().getString(Platform_LoadPackages);
         String[] spanPackage = spanPackages.split(",");
         Platform.info("loadPackages : " + Platform.logString(spanPackage));
-        Set<Class<?>> initHookSet = ClassUtil.getClassSet(spanPackage, PlatformExt.class);
+        Set<Class<?>> initHookSet = ClassUtils.getClassSet(spanPackage, PlatformExt.class);
         //2.过滤未实现ContextListener接口的标注
         List<Class<? extends PlatformListener>> initHookList = new ArrayList<Class<? extends PlatformListener>>();
         for (Class<?> cls : initHookSet) {

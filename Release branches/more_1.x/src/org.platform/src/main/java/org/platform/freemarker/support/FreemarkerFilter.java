@@ -23,7 +23,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.more.util.StringUtil;
+import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.freemarker.FreemarkerManager;
 import org.platform.general.WebFilter;
@@ -56,7 +56,7 @@ public class FreemarkerFilter implements Filter {
         boolean doTemplate = false;
         if (suffix != null) {
             for (String sort : suffix)
-                if (StringUtil.matchWild(sort, requestURI) == true) {
+                if (StringUtils.matchWild(sort, requestURI) == true) {
                     doTemplate = true;
                     break;
                 }

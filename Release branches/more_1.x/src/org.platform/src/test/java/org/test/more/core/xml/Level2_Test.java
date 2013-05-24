@@ -17,7 +17,7 @@ package org.test.more.core.xml;
 import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
-import org.more.util.ResourcesUtil;
+import org.more.util.ResourcesUtils;
 import org.more.xml.XmlNamespaceParser;
 import org.more.xml.XmlParserKitManager;
 import org.more.xml.XmlStackDecorator;
@@ -31,7 +31,7 @@ import org.more.xml.stream.XmlStreamEvent;
 public class Level2_Test {
     @Test
     public void reader() throws XMLStreamException, IOException {
-        XmlReader reader = new XmlReader(ResourcesUtil.getResourceAsStream("org/test/more/core/xml/level_2.xml"));
+        XmlReader reader = new XmlReader(ResourcesUtils.getResourceAsStream("org/test/more/core/xml/level_2.xml"));
         //reader.setIgnoreComment(true);
         //reader.setIgnoreSpace(true);
         XmlParserKitManager manager = new XmlParserKitManager();

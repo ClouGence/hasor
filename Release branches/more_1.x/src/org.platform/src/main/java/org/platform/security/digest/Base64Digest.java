@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.platform.security.digest;
-import org.more.util.CommonCodeUtil.Base64;
+import org.more.util.CommonCodeUtils.Base64;
 import org.platform.security.Digest;
 /**
  * Base64±àÂë¡£

@@ -16,15 +16,15 @@
 package org.more.xml.register;
 import java.util.HashMap;
 import java.util.Map;
-import org.more.core.log.Log;
-import org.more.core.log.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 
  * @version : 2011-12-5
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class XmlRegisterHookUtil {
-    private static Log                          log         = LogFactory.getLog(XmlRegisterHookUtil.class);
+    private static Logger                       log         = LoggerFactory.getLogger(Reg_Parser.class);
     public static final XmlRegisterHook         DefaultHook = new DefaultHook() {};
     private static Map<String, XmlRegisterHook> hookMap     = new HashMap<String, XmlRegisterHook>();
     //

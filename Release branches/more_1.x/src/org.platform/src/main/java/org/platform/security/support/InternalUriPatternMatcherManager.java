@@ -15,7 +15,7 @@
  */
 package org.platform.security.support;
 import java.util.List;
-import org.more.util.StringUtil;
+import org.more.util.StringUtils;
 import org.platform.context.AppContext;
 import org.platform.security.UriPatternMatcher;
 /**
@@ -30,7 +30,7 @@ class InternalUriPatternMatcherManager {
         this.securitySettings = appContext.getInstance(SecuritySettings.class);
     }
     public UriPatternMatcher getUriMatcher(String requestPath) {
-        if (StringUtil.isBlank(requestPath) == true)
+        if (StringUtils.isBlank(requestPath) == true)
             return null;
         requestPath = requestPath.toLowerCase();
         //1.ºÏ≤È≈≈≥˝≈‰÷√

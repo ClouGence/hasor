@@ -23,7 +23,7 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import org.more.util.ArrayUtil;
+import org.more.util.ArrayUtils;
 /**
  * 
  * @version : 2013-4-3
@@ -64,7 +64,7 @@ public abstract class Platform implements PlatformConfig {
     //
     /***/
     public static String formatString(String formatString, Object... args) {
-        if (ArrayUtil.isBlank(args))
+        if (ArrayUtils.isBlank(args))
             return formatString;
         return String.format(formatString, args);
     }

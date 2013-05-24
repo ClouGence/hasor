@@ -18,7 +18,7 @@ import static org.platform.PlatformConfig.Platform_LoadPackages;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.more.util.ClassUtil;
+import org.more.util.ClassUtils;
 import org.platform.binder.BeanInfo;
 import org.platform.context.AppContext;
 import org.platform.context.Settings;
@@ -62,7 +62,7 @@ public abstract class AbstractAppContext implements AppContext {
             return null;
         String loadPackages = this.getSettings().getString(Platform_LoadPackages);
         String[] spanPackage = loadPackages.split(",");
-        return ClassUtil.getClassSet(spanPackage, featureType);
+        return ClassUtils.getClassSet(spanPackage, featureType);
     }
     @Override
     public <T> T getInstance(Class<T> beanType) {

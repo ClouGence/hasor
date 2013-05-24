@@ -15,7 +15,7 @@
  */
 package org.platform.freemarker.support;
 import java.util.ArrayList;
-import org.more.util.StringUtil;
+import org.more.util.StringUtils;
 import org.platform.context.AppContext;
 import org.platform.freemarker.ITemplateLoaderCreator;
 import com.google.inject.Binding;
@@ -42,7 +42,7 @@ class TemplateLoaderCreatorManager {
     public ITemplateLoaderCreator getCreator(String key) {
         if (creatorDefinitionArray != null)
             for (TemplateLoaderCreatorDefinition define : creatorDefinitionArray)
-                if (StringUtil.eqUnCaseSensitive(define.getName(), key))
+                if (StringUtils.eqUnCaseSensitive(define.getName(), key))
                     return define.get();
         return null;
     }

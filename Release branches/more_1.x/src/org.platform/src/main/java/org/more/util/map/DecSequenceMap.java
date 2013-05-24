@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.more.util.MergeUtil;
+import org.more.util.MergeUtils;
 /**
  * 按照顺序合并多个Map的工具，可以用来进行读写操作。
  * @version : 2012-2-23
@@ -91,7 +91,7 @@ public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
         public Iterator<java.util.Map.Entry<K, T>> iterator() {
             Iterator<java.util.Map.Entry<K, T>> seqIter = null;
             for (Map<K, T> mapItem : this.mapList)
-                seqIter = MergeUtil.mergeIterator(seqIter, mapItem.entrySet().iterator());
+                seqIter = MergeUtils.mergeIterator(seqIter, mapItem.entrySet().iterator());
             return seqIter;
         }
         @Override

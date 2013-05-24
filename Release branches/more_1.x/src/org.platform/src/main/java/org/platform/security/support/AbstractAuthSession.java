@@ -17,7 +17,7 @@ package org.platform.security.support;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.more.util.StringUtil;
+import org.more.util.StringUtils;
 import org.platform.Assert;
 import org.platform.Platform;
 import org.platform.security.AuthSession;
@@ -40,7 +40,7 @@ class AbstractAuthSession implements AuthSession {
     private UserInfo                userInfo;
     //
     protected AbstractAuthSession(String sessionID, AbstractSecurityContext securityContext) {
-        Assert.isLegal(!StringUtil.isBlank(sessionID), "sessionID is Undefined!");
+        Assert.isLegal(!StringUtils.isBlank(sessionID), "sessionID is Undefined!");
         Assert.isNotNull(securityContext, "SecurityContext is Undefined!");
         this.sessionID = sessionID;
         this.securityContext = securityContext;
@@ -56,7 +56,7 @@ class AbstractAuthSession implements AuthSession {
     @Override
     public void addPermission(String permissionCode) throws SecurityException {
         this.checkClose();/*Check*/
-        if (StringUtil.isBlank(permissionCode))
+        if (StringUtils.isBlank(permissionCode))
             return;
         this.permissionMap.put(permissionCode, new Permission(permissionCode));
         this.authSessionData.setLastTime(System.currentTimeMillis());
@@ -193,7 +193,7 @@ class AbstractAuthSession implements AuthSession {
             this.checkClose();/*Check*/
             if (this.userInfo == null) {
                 String userCode = this.authSessionData.getUserCode();
-                if (StringUtil.isBlank(userCode) == false) {
+                if (StringUtils.isBlank(userCode) == false) {
                     String userFromAuth = this.authSessionData.getAuthSystem();
                     SecurityAuth auth = this.getSecurityContext().getSecurityAuth(userFromAuth);
                     this.userInfo = auth.getUserInfo(userCode);
@@ -285,7 +285,7 @@ class AbstractAuthSession implements AuthSession {
     @Override
     public void removeTempPermission(String permissionCode) throws SecurityException {
         this.checkClose();/*Check*/
-        if (StringUtil.isBlank(permissionCode))
+        if (StringUtils.isBlank(permissionCode))
             return;
         this.permissionMap.remove(permissionCode);
         this.authSessionData.setLastTime(System.currentTimeMillis());

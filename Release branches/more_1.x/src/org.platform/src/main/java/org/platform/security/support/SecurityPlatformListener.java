@@ -25,7 +25,7 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.more.util.StringUtil;
+import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
@@ -234,7 +234,7 @@ public class SecurityPlatformListener implements PlatformListener {
             if (passPower)
                 return invocation.proceed();
             String msg = powerAnno.errorMsg();
-            if (StringUtil.isBlank(msg) == true)
+            if (StringUtils.isBlank(msg) == true)
                 msg = "has no permission Level=" + powerAnno.level().name() + " Code : " + Platform.logString(powerAnno.value());
             throw new PermissionException(msg);
         }

@@ -11,6 +11,32 @@
 	<packaging>jar</packaging>
 	<!-- 引用依赖 -->
 	<dependencies>
+		<!-- Log slf4j -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+		<!-- Guice3 -->
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>3.0</version>
+		</dependency>
+		<!-- J2EE API -->
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>6.0</version>
+			<optional>true</optional>
+		</dependency>
+		<!-- commons-lang -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+		</dependency>
+		<!-- =================================================================== -->
 		<!-- JUnit Test -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -32,40 +58,6 @@
 			<artifactId>jetty-jsp</artifactId>
 			<version>8.1.2.v20120308</version>
 		</dependency>
-		<!-- =================================================================== -->
-		<!-- Guice3 -->
-		<dependency>
-			<groupId>com.google.inject</groupId>
-			<artifactId>guice</artifactId>
-			<version>3.0</version>
-		</dependency>
-		<!-- J2EE API -->
-		<dependency>
-			<groupId>javax</groupId>
-			<artifactId>javaee-api</artifactId>
-			<version>6.0</version>
-			<optional>true</optional>
-		</dependency>
-		<!-- commons-lang -->
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.6</version>
-		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>org.jboss.spec.javax.servlet</groupId> -->
-		<!-- <artifactId>jboss-servlet-api_3.0_spec</artifactId> -->
-		<!-- <version>1.0.1.Final</version> -->
-		<!-- <optional>true</optional> -->
-		<!-- <scope>test</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.jboss.spec.javax.servlet.jsp</groupId> -->
-		<!-- <artifactId>jboss-jsp-api_2.2_spec</artifactId> -->
-		<!-- <version>1.0.1.Final</version> -->
-		<!-- <optional>true</optional> -->
-		<!-- <scope>test</scope> -->
-		<!-- </dependency> -->
 
 		<!-- freemarker -->
 		<dependency>

@@ -18,7 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.servlet.ServletContext;
 import org.more.global.assembler.xml.XmlProperty;
-import org.more.util.StringUtil;
+import org.more.util.StringUtils;
 import org.platform.context.AppContext;
 import org.platform.freemarker.ITemplateLoaderCreator;
 import org.platform.freemarker.TemplateLoaderCreator;
@@ -38,7 +38,7 @@ public class WebContentTemplateLoaderCreator implements ITemplateLoaderCreator {
             return null;
         //
         String body = xmlConfig.getText();
-        body = StringUtil.isBlank(body) ? "/" : body;
+        body = StringUtils.isBlank(body) ? "/" : body;
         body = context.getRealPath(body);
         File fileBody = new File(body);
         if (fileBody.exists() == false)

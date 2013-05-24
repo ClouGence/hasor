@@ -20,24 +20,24 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.more.util.ResourcesUtil.ScanEvent;
-import org.more.util.ResourcesUtil.ScanItem;
+import org.more.util.ResourcesUtils.ScanEvent;
+import org.more.util.ResourcesUtils.ScanItem;
 /**
  * 有关class的工具类。
  * @version : 2011-6-3
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class ClassUtil {
+public abstract class ClassUtils {
     private String[]                     scanPackages = null;
     private Map<Class<?>, Set<Class<?>>> cacheMap     = new HashMap<Class<?>, Set<Class<?>>>();
-    private ClassUtil(String[] scanPackages) {
+    private ClassUtils(String[] scanPackages) {
         this.scanPackages = scanPackages;
     };
-    public static ClassUtil newInstance(String[] scanPackages) {
-        return new ClassUtil(scanPackages) {};
+    public static ClassUtils newInstance(String[] scanPackages) {
+        return new ClassUtils(scanPackages) {};
     }
-    public static ClassUtil newInstance(String scanPackages) {
-        return new ClassUtil(new String[] { scanPackages }) {};
+    public static ClassUtils newInstance(String scanPackages) {
+        return new ClassUtils(new String[] { scanPackages }) {};
     }
     /**
      * 扫描jar包中凡是匹配compareType参数的类均被返回。（对执行结果不缓存）
@@ -71,7 +71,7 @@ public abstract class ClassUtil {
     public static Set<Class<?>> getClassSet(final String[] packages, final Class<?> compareType) {
         final Set<Class<?>> classSet = new HashSet<Class<?>>();
         try {
-            ResourcesUtil.scan(packages[0].replace(".", "/") + "*.class", new ScanItem() {
+            ResourcesUtils.scan(packages[0].replace(".", "/") + "*.class", new ScanItem() {
                 public boolean goFind(ScanEvent event, boolean isInJar) {
                     String name = event.getName();
                     name = name.substring(0, name.length() - ".class".length());

@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.more.core.error.MoreDataException;
-import org.more.util.BeanUtil;
+import org.more.util.BeanUtils;
 import org.more.webui.component.support.NoState;
 import org.more.webui.component.values.AbstractValueHolder;
 import org.more.webui.component.values.ExpressionValueHolder;
@@ -434,7 +434,7 @@ public abstract class UIComponent {
             if (propName.toLowerCase().equals("id") == true)
                 continue;
             /*处理注解*/
-            Method rm = BeanUtil.getWriteMethod(propName, this.getClass());
+            Method rm = BeanUtils.getWriteMethod(propName, this.getClass());
             if (rm == null)
                 continue;
             if (rm.getAnnotation(NoState.class) != null)
@@ -456,7 +456,7 @@ public abstract class UIComponent {
         //1.持久化自身的状态
         HashMap<String, Object> mineState = new HashMap<String, Object>();
         for (String propName : this.propertys.keySet()) {
-            Method rm = BeanUtil.getReadMethod(propName, this.getClass());
+            Method rm = BeanUtils.getReadMethod(propName, this.getClass());
             if (rm == null)
                 continue;
             if (rm.getAnnotation(NoState.class) != null)

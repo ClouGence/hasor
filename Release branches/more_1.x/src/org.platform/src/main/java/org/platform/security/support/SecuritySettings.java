@@ -49,8 +49,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.more.global.assembler.xml.XmlProperty;
-import org.more.util.StringConvertUtil;
-import org.more.util.StringUtil;
+import org.more.util.StringConvertUtils;
+import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.context.SettingListener;
 import org.platform.context.Settings;
@@ -123,7 +123,7 @@ public class SecuritySettings implements SettingListener {
         itemAtt = (itemAtt == null) ? new HashMap<String, String>() : itemAtt;
         String modeType = itemAtt.get("mode");
         String permissionCodes = itemAtt.get("permissions");
-        UriPatternType patternType = StringConvertUtil.changeType(modeType, UriPatternType.class, UriPatternType.None);
+        UriPatternType patternType = StringConvertUtils.changeType(modeType, UriPatternType.class, UriPatternType.None);
         this.rulesDefault = UriPatternType.get(patternType, "(Default)", permissionCodes);
         Platform.warning("rules.defaultRule ->%s", this.rulesDefault);
         XmlProperty rulesIncludes = newConfig.getXmlProperty(Security_Rules_Includes); //包含在权限检查范畴的URL配置
@@ -168,7 +168,7 @@ public class SecuritySettings implements SettingListener {
             return;
         //
         for (XmlProperty item : includeList) {
-            if (StringUtil.eqUnCaseSensitive("include", item.getName()) == false)
+            if (StringUtils.eqUnCaseSensitive("include", item.getName()) == false)
                 continue;
             Map<String, String> itemAtt = item.getAttributeMap();
             if (itemAtt == null)
@@ -176,9 +176,9 @@ public class SecuritySettings implements SettingListener {
             //
             String modeType = itemAtt.get("mode");
             String permissionCodes = itemAtt.get("permissions");
-            UriPatternType patternType = StringConvertUtil.changeType(modeType, UriPatternType.class, UriPatternType.None);
+            UriPatternType patternType = StringConvertUtils.changeType(modeType, UriPatternType.class, UriPatternType.None);
             String requestURI = item.getText();
-            if (StringUtil.isBlank(requestURI) == true)
+            if (StringUtils.isBlank(requestURI) == true)
                 continue;
             //
             UriPatternMatcher matcher = UriPatternType.get(patternType, requestURI, permissionCodes);
@@ -196,14 +196,14 @@ public class SecuritySettings implements SettingListener {
             return;
         //
         for (XmlProperty item : excludeList) {
-            if (StringUtil.eqUnCaseSensitive("exclude", item.getName()) == false)
+            if (StringUtils.eqUnCaseSensitive("exclude", item.getName()) == false)
                 continue;
             Map<String, String> itemAtt = item.getAttributeMap();
             if (itemAtt == null)
                 continue;
             //
             String requestURI = item.getText();
-            if (StringUtil.isBlank(requestURI) == true)
+            if (StringUtils.isBlank(requestURI) == true)
                 continue;
             UriPatternMatcher matcher = UriPatternType.get(UriPatternType.None, requestURI, null);
             this.rulesExcludeList.add(matcher);
@@ -219,12 +219,12 @@ public class SecuritySettings implements SettingListener {
         if (dispatcherList == null)
             return;
         for (XmlProperty item : dispatcherList) {
-            if (StringUtil.eqUnCaseSensitive("dispatch", item.getName()) == false)
+            if (StringUtils.eqUnCaseSensitive("dispatch", item.getName()) == false)
                 continue;
             Map<String, String> itemAtt = item.getAttributeMap();
             String contentPath = itemAtt.get("contentPath");
-            ForwardType defaultType = StringConvertUtil.changeType(itemAtt.get("defaultType"), ForwardType.class, ForwardType.Forward);
-            if (StringUtil.isBlank(contentPath) == true)
+            ForwardType defaultType = StringConvertUtils.changeType(itemAtt.get("defaultType"), ForwardType.class, ForwardType.Forward);
+            if (StringUtils.isBlank(contentPath) == true)
                 continue;
             //
             InternalSecurityDispatcher dispatcher = new InternalSecurityDispatcher(contentPath);
@@ -233,14 +233,14 @@ public class SecuritySettings implements SettingListener {
                 for (XmlProperty forwardItem : forwardList) {
                     String toURL = forwardItem.getText();
                     String $toType = forwardItem.getAttributeMap().get("type");
-                    ForwardType toType = StringConvertUtil.changeType($toType, ForwardType.class, ForwardType.Forward);
-                    if (StringUtil.eqUnCaseSensitive("forwardIndex", forwardItem.getName()) == true) {
+                    ForwardType toType = StringConvertUtils.changeType($toType, ForwardType.class, ForwardType.Forward);
+                    if (StringUtils.eqUnCaseSensitive("forwardIndex", forwardItem.getName()) == true) {
                         dispatcher.setForwardIndex(toURL, (toType == null) ? defaultType : toType);
-                    } else if (StringUtil.eqUnCaseSensitive("forwardLogout", forwardItem.getName()) == true) {
+                    } else if (StringUtils.eqUnCaseSensitive("forwardLogout", forwardItem.getName()) == true) {
                         dispatcher.setForwardLogout(toURL, (toType == null) ? defaultType : toType);
-                    } else if (StringUtil.eqUnCaseSensitive("forwardFailure", forwardItem.getName()) == true) {
+                    } else if (StringUtils.eqUnCaseSensitive("forwardFailure", forwardItem.getName()) == true) {
                         dispatcher.setForwardFailure(toURL, (toType == null) ? defaultType : toType);
-                    } else if (StringUtil.eqUnCaseSensitive("forward", forwardItem.getName()) == true) {
+                    } else if (StringUtils.eqUnCaseSensitive("forward", forwardItem.getName()) == true) {
                         String id = forwardItem.getAttributeMap().get("id");
                         dispatcher.addForward(id, toURL, (toType == null) ? defaultType : toType);
                     }
@@ -258,7 +258,7 @@ public class SecuritySettings implements SettingListener {
         if (dispatcherList == null)
             return;
         for (XmlProperty item : dispatcherList) {
-            if (StringUtil.eqUnCaseSensitive("digest", item.getName()) == false)
+            if (StringUtils.eqUnCaseSensitive("digest", item.getName()) == false)
                 continue;
             String digestCode = item.getAttributeMap().get("name");
             String digestType = item.getText();

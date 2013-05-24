@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.webui.component.values;
-import org.more.util.StringConvertUtil;
+import org.more.util.StringConvertUtils;
 import org.more.webui.component.UIComponent;
 import org.more.webui.context.ViewContext;
 /**
@@ -36,7 +36,7 @@ public abstract class AbstractValueHolder {
         return (var == null) ? "null" : var.toString();
     }
     public <T> T valueTo(Class<T> toType) {
-        return StringConvertUtil.changeType(this.value(), toType);
+        return StringConvertUtils.changeType(this.value(), toType);
     }
     /**返回模型上的属性值。*/
     public Object value() {

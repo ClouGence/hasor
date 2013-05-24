@@ -16,7 +16,7 @@
 package org.platform.security.guest;
 import java.util.ArrayList;
 import java.util.List;
-import org.more.util.StringUtil;
+import org.more.util.StringUtils;
 import org.platform.context.AppContext;
 import org.platform.security.SecurityAccess;
 import org.platform.security.Permission;
@@ -42,7 +42,7 @@ public class GuestSecurityAccess implements SecurityAccess {
         List<Permission> perArray = new ArrayList<Permission>();
         if (perList != null)
             for (String per : perList)
-                if (StringUtil.isBlank(per) == false)
+                if (StringUtils.isBlank(per) == false)
                     perArray.add(new Permission(per));
         return perArray;
     }

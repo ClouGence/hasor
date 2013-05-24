@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 import java.util.Map;
-import org.more.util.BeanUtil;
+import org.more.util.BeanUtils;
 import org.more.webui.components.UISelectInput;
 import org.more.webui.context.ViewContext;
 import org.more.webui.tag.TemplateBody;
@@ -54,8 +54,8 @@ public class SelectOnlySelectInputRender<T extends UISelectInput> extends Abstra
                     keyValue = mapData.get(keyField);
                     varValue = mapData.get(varField);
                 } else {
-                    keyValue = BeanUtil.readPropertyOrField(obj, keyField);
-                    varValue = BeanUtil.readPropertyOrField(obj, varField);
+                    keyValue = BeanUtils.readPropertyOrField(obj, keyField);
+                    varValue = BeanUtils.readPropertyOrField(obj, varField);
                 }
                 //Êä³ö
                 writer.write("  <option value='" + keyValue + "'");

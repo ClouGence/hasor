@@ -17,8 +17,8 @@ package org.platform.event.support;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.more.util.ArrayUtil;
-import org.more.util.StringUtil;
+import org.more.util.ArrayUtils;
+import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
@@ -62,12 +62,12 @@ public class EventPlatformListener implements PlatformListener {
                 Listener annoListener = listenerType.getAnnotation(Listener.class);
                 EventListener eventListener = (EventListener) appContext.getInstance(listenerType);
                 String[] vals = annoListener.value();
-                if (ArrayUtil.isBlank(vals)) {
+                if (ArrayUtils.isBlank(vals)) {
                     Platform.warning("missing eventType at listener %s.", new Object[] { vals });
                     continue;
                 }
                 for (String eventType : vals) {
-                    if (StringUtil.isBlank(eventType) == true)
+                    if (StringUtils.isBlank(eventType) == true)
                         continue;
                     Platform.info("listener %s is listening on %s.", listenerType, eventType);
                     this.eventManager.addEventListener(eventType, eventListener);

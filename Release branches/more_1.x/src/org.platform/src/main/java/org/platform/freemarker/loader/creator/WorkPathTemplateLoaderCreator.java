@@ -17,8 +17,8 @@ package org.platform.freemarker.loader.creator;
 import java.io.File;
 import java.io.IOException;
 import org.more.global.assembler.xml.XmlProperty;
-import org.more.util.StringConvertUtil;
-import org.more.util.StringUtil;
+import org.more.util.StringConvertUtils;
+import org.more.util.StringUtils;
 import org.platform.context.AppContext;
 import org.platform.context.WorkSpace;
 import org.platform.freemarker.ITemplateLoaderCreator;
@@ -38,9 +38,9 @@ public class WorkPathTemplateLoaderCreator implements ITemplateLoaderCreator {
     @Override
     public ITemplateLoader newTemplateLoader(AppContext appContext, XmlProperty xmlConfig) throws IOException {
         String pathTypeStr = xmlConfig.getAttributeMap().get("pathType");
-        PathType pathType = StringConvertUtil.parseEnum(pathTypeStr, PathType.class, PathType.WorkDir);
+        PathType pathType = StringConvertUtils.parseEnum(pathTypeStr, PathType.class, PathType.WorkDir);
         String body = xmlConfig.getText();
-        body = StringUtil.isBlank(body) ? "" : body;
+        body = StringUtils.isBlank(body) ? "" : body;
         File fileBody = null;
         WorkSpace ws = appContext.getWorkSpace();
         switch (pathType) {
