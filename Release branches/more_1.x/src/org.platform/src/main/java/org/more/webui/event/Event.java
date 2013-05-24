@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.webui.event;
-import org.more.core.error.InitializationException;
+import org.platform.event.EventManager;
 /**
  * 事件是一种通知机制，使用事件不能控制主控流程的执行。不过却可以通过事件得知内部的工作状态。
  * 该接口表示的是一个{@link EventManager}可以被识别处理的事件。
@@ -45,7 +45,7 @@ public class Event {
     }
     //----------------------------------------
     /**获取指定类型事件对象，如果参数为空则直接返回空值。事件对象在hypha中是全程唯一的，这样做的目的是为了减少new的数量。*/
-    public static Event getEvent(String eventType) throws InitializationException {
+    public static Event getEvent(String eventType) {
         if (eventType == null)
             return null;
         return new Event(eventType);

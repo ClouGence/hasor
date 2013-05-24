@@ -23,7 +23,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
-import org.more.core.error.LoadException;
 import org.more.util.ResourcesUtils;
 import org.more.util.io.AutoCloseInputStream;
 import org.more.xml.XmlParserKitManager;
@@ -47,7 +46,7 @@ public class XmlRegister extends XmlParserKitManager {
         getXmlReader(in).reader(new Reg_Parser(this), null);
     }
     /**创建{@link XmlRegister}对象,不重新装载命名空间注册。*/
-    public XmlRegister(Object context) throws IOException, XMLStreamException, LoadException {
+    public XmlRegister(Object context) throws IOException, XMLStreamException {
         this.setContext(context);
         for (String config : Configs) {
             List<URL> urls = ResourcesUtils.getResources(config);
@@ -56,7 +55,7 @@ public class XmlRegister extends XmlParserKitManager {
         }
     }
     /**创建{@link XmlRegister}对象,不重新装载命名空间注册。*/
-    public XmlRegister() throws IOException, XMLStreamException, LoadException {
+    public XmlRegister() throws IOException, XMLStreamException {
         this(null);
     }
     /*------------------------------------------------------------*/

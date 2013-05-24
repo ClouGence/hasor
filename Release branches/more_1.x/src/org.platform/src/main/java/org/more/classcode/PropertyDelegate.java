@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.more.classcode;
-import org.more.core.error.PropertyException;
 /**
  * 委托属性，classcode组建提供一种新型的属性形态，传统的bean的get/set方法是针对一个私有字段。
  * 而委托属性则是导出这个get/set方法到一个接口中。从而被添加的属性可以通过接口的相应方法来负责处理。

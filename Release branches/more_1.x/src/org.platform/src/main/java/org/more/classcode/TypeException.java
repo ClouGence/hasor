@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.error;
+package org.more.classcode;
 /**
- * 拷贝异常。
- * @version 2009-5-21
+ * 类型异常。
+ * @version 2009-7-7
  * @author 赵永春 (zyc@byshell.org)
  */
-public class CopyException extends MoreActionException {
-    private static final long serialVersionUID = -1658004519032584076L;
-    /**拷贝异常*/
-    public CopyException(String string) {
+public class TypeException extends ClassCodeRuntimeException {
+    private static final long serialVersionUID = -6286611015368846627L;
+    /**类型异常*/
+    public TypeException(String string) {
         super(string);
     }
-    /**拷贝异常*/
-    public CopyException(Throwable error) {
+    /**类型异常*/
+    public TypeException(Throwable error) {
         super(error);
     }
-    /**拷贝异常*/
-    public CopyException(String string, Throwable error) {
+    /**类型异常*/
+    public TypeException(String string, Throwable error) {
         super(string, error);
     }
 }

@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.error;
+package org.more.classcode;
 /**
- * 属性异常。
- * @version 2009-6-26
+ * 初始化异常。
+ * @version 2009-7-7
  * @author 赵永春 (zyc@byshell.org)
  */
-public class PropertyException extends MoreStateException {
-    private static final long serialVersionUID = -7774988512856603877L;
-    /**属性异常*/
-    public PropertyException(String string) {
+public class InitializationException extends ClassCodeRuntimeException {
+    private static final long serialVersionUID = 6489409968925378968L;
+    /**初始化异常*/
+    public InitializationException(String string) {
         super(string);
     }
-    /**属性异常*/
-    public PropertyException(Throwable error) {
+    /**初始化异常*/
+    public InitializationException(Throwable error) {
         super(error);
     }
-    /**属性异常*/
-    public PropertyException(String string, Throwable error) {
+    /**初始化异常*/
+    public InitializationException(String string, Throwable error) {
         super(string, error);
     }
 }

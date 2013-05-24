@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.error;
+package org.more.webui;
 /**
- * 格式错误，出现该异常通常是在操作某些数据时该数据格式异常或者不被支持。
- * @version 2009-10-17
+ * 数据异常。
+ * @version 2009-4-29
  * @author 赵永春 (zyc@byshell.org)
  */
-public class FormatException extends MoreDefineException {
-    private static final long serialVersionUID = 7219173260772984152L;
-    /**格式异常*/
-    public FormatException(String string) {
+public class DataException extends RuntimeException {
+    private static final long serialVersionUID = 3664651649094973500L;
+    /**数据异常。*/
+    public DataException(String string) {
         super(string);
     }
-    /**格式异常*/
-    public FormatException(Throwable error) {
+    /**数据异常。*/
+    public DataException(Throwable error) {
         super(error);
     }
-    /**格式异常*/
-    public FormatException(String string, Throwable error) {
+    /**数据异常。*/
+    public DataException(String string, Throwable error) {
         super(string, error);
     }
 }

@@ -13,20 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.error;
+package org.more.webui;
 /**
- * 装载类型异常。
- * @version : 2011-5-19
+ * 丢失异常。
+ * @version 2009-4-29
  * @author 赵永春 (zyc@byshell.org)
  */
-public class LoadException extends MoreActionException {
-    private static final long serialVersionUID = 6317337289658761264L;
-    /**装载类型异常。*/
-    public LoadException(String string) {
+public class LostException extends RuntimeException {
+    private static final long serialVersionUID = 3664651649094973500L;
+    /**丢失异常*/
+    public LostException(String string) {
         super(string);
     }
-    /**装载类型异常。*/
-    public LoadException(String string, Throwable error) {
+    /**丢失异常*/
+    public LostException(Throwable error) {
+        super(error);
+    }
+    /**丢失异常*/
+    public LostException(String string, Throwable error) {
         super(string, error);
     }
 }

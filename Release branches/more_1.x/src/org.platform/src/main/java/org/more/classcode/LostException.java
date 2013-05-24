@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.error;
+package org.more.classcode;
 /**
- * 存在性异常，该类型异常通常是与时间无关的，它需要与Found进行区分，Found是状态性的。
+ * 丢失异常。
  * @version 2009-4-29
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ExistException extends MoreDefineException {
+public class LostException extends ClassCodeRuntimeException {
     private static final long serialVersionUID = 3664651649094973500L;
-    /**存在性异常*/
-    public ExistException(String string) {
+    /**丢失异常*/
+    public LostException(String string) {
         super(string);
     }
-    /**存在性异常*/
-    public ExistException(Throwable error) {
+    /**丢失异常*/
+    public LostException(Throwable error) {
         super(error);
     }
-    /**存在性异常*/
-    public ExistException(String string, Throwable error) {
+    /**丢失异常*/
+    public LostException(String string, Throwable error) {
         super(string, error);
     }
 }

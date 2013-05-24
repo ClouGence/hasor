@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.xml.stream.XMLStreamException;
-import org.more.core.error.RepeateException;
+import org.more.RepeateException;
 import org.more.util.StringUtils;
 import org.more.xml.stream.AttributeEvent;
 import org.more.xml.stream.EndDocumentEvent;

@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.error;
+package org.more.classcode;
 /**
- * 初始化异常。
- * @version 2009-7-7
+ * 
+ * @version : 2013-5-24
  * @author 赵永春 (zyc@byshell.org)
  */
-public class InitializationException extends MoreActionException {
-    private static final long serialVersionUID = 6489409968925378968L;
-    /**初始化异常*/
-    public InitializationException(String string) {
+public class ClassCodeRuntimeException extends RuntimeException {
+    private static final long serialVersionUID = 2163944328191987917L;
+    public ClassCodeRuntimeException(String string, Throwable error) {
         super(string);
     }
-    /**初始化异常*/
-    public InitializationException(Throwable error) {
-        super(error);
+    public ClassCodeRuntimeException(String string) {
+        super(string);
     }
-    /**初始化异常*/
-    public InitializationException(String string, Throwable error) {
-        super(string, error);
+    public ClassCodeRuntimeException(Throwable error) {
+        super(error);
     }
 }

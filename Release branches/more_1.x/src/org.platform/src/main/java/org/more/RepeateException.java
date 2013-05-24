@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.error;
+package org.more;
 /**
- * 检查异常。
- * @version 2010-9-23
+ * 重复定义。
+ * @version 2009-4-29
  * @author 赵永春 (zyc@byshell.org)
  */
-public class CheckException extends MoreActionException {
-    private static final long serialVersionUID = -4958048464275640076L;
-    /**检查异常*/
-    public CheckException(String string) {
+public class RepeateException extends RuntimeException {
+    private static final long serialVersionUID = 2377606123252842745L;
+    /**重复定义*/
+    public RepeateException(String string) {
         super(string);
     }
-    /**检查异常*/
-    public CheckException(Throwable error) {
+    /**重复定义*/
+    public RepeateException(Throwable error) {
         super(error);
     }
-    /**检查异常*/
-    public CheckException(String string, Throwable error) {
+    /**重复定义*/
+    public RepeateException(String string, Throwable error) {
         super(string, error);
     }
 }

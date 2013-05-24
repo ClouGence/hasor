@@ -34,7 +34,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import org.more.core.error.FormatException;
 import org.more.util.io.AutoCloseInputStream;
 import org.more.util.map.DecSequenceMap;
 import org.more.util.map.Properties;
@@ -264,7 +263,7 @@ public abstract class ResourcesUtils {
             return;
         char firstChar = wild.charAt(0);
         if (firstChar == '?' || firstChar == '*')
-            throw new FormatException("classpath包扫描不支持首个字母为通配符字符。");
+            throw new IllegalArgumentException("classpath包扫描不支持首个字母为通配符字符。");
         //确定位置
         int index1 = wild.indexOf('?');
         int index2 = wild.indexOf('*');

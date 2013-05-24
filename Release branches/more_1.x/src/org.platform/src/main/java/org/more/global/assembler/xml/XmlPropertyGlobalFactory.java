@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.more.core.error.FormatException;
 import org.more.global.GlobalFactory;
 import org.more.xml.XmlParserKit;
 import org.more.xml.register.XmlRegister;
@@ -67,7 +66,7 @@ public class XmlPropertyGlobalFactory extends GlobalFactory {
             return returnData;
         } catch (Exception e) {
             if (e instanceof IOException == false)
-                throw new FormatException(e);
+                throw new IOException(e);
             else
                 throw (IOException) e;
         }

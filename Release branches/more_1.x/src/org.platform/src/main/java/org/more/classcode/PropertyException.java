@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.error;
+package org.more.classcode;
 /**
- * more异常系统的根。
- * @version 2009-10-17
+ * 属性异常。
+ * @version 2009-6-26
  * @author 赵永春 (zyc@byshell.org)
  */
-public class MoreRuntimeException extends RuntimeException {
-    private static final long serialVersionUID = 4235042411000290872L;
-    /** more异常。*/
-    public MoreRuntimeException(String string) {
+public class PropertyException extends ClassCodeRuntimeException {
+    private static final long serialVersionUID = -7774988512856603877L;
+    /**属性异常*/
+    public PropertyException(String string) {
         super(string);
     }
-    /** more异常。*/
-    public MoreRuntimeException(Throwable error) {
+    /**属性异常*/
+    public PropertyException(Throwable error) {
         super(error);
     }
-    /** more异常。*/
-    public MoreRuntimeException(String string, Throwable error) {
+    /**属性异常*/
+    public PropertyException(String string, Throwable error) {
         super(string, error);
     }
 }

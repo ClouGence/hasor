@@ -20,8 +20,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.more.core.error.MoreDataException;
 import org.more.util.BeanUtils;
+import org.more.webui.DataException;
 import org.more.webui.component.support.NoState;
 import org.more.webui.component.values.AbstractValueHolder;
 import org.more.webui.component.values.ExpressionValueHolder;
@@ -423,7 +423,7 @@ public abstract class UIComponent {
         if (stateData == null)
             return;
         if (stateData.size() == 0)
-            throw new MoreDataException("WebUI无法重塑组件状态，在重塑组件[" + this.getComponentID() + "]组件发生数据丢失");
+            throw new DataException("WebUI无法重塑组件状态，在重塑组件[" + this.getComponentID() + "]组件发生数据丢失");
         //2.恢复自身数据
         Map<String, Object> mineState = (Map<String, Object>) stateData.get(0);
         for (String propName : mineState.keySet()) {

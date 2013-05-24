@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.more.core.error.LostException;
+import org.more.webui.LostException;
 import org.more.webui.component.UIComponent;
 import org.more.webui.component.support.UICom;
 import org.more.webui.component.values.AbstractValueHolder;

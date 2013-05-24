@@ -17,7 +17,6 @@ package org.test.more.core.global;
 import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
-import org.more.core.error.LoadException;
 import org.more.global.Global;
 import org.more.global.assembler.xml.XmlPropertyGlobalFactory;
 import org.more.ognl.OgnlException;
@@ -28,7 +27,7 @@ import org.more.ognl.OgnlException;
  */
 public class XmlGlobalTest {
     @Test
-    public void testBase() throws IOException, ClassNotFoundException, OgnlException, LoadException, XMLStreamException {
+    public void testBase() throws IOException, ClassNotFoundException, OgnlException, XMLStreamException {
         XmlPropertyGlobalFactory globalFactory = new XmlPropertyGlobalFactory();
         globalFactory.setIgnoreRootElement(true);//在解析XML的时候忽略根节点。
         Global global = globalFactory.createGlobal("utf-8", new Object[] { "org/test/more/core/global/global.xml" });

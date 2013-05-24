@@ -13,25 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.error;
+package org.more;
 /**
- * more动作性异常，该类型异常是指某个过程中发生异常。通常异常定义是动词性质的。
- * 例如：转换、初始化、执行、检查、时间性的。
- * @version 2009-10-17
+ * 转换异常。
+ * @version 2009-7-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public class MoreActionException extends MoreRuntimeException {
-    private static final long serialVersionUID = 4235042411000290872L;
-    /** more动作类异常。*/
-    public MoreActionException(String string) {
+public class TransformException extends Exception {
+    private static final long serialVersionUID = 5032345759263916241L;
+    /**转换异常。*/
+    public TransformException(String string) {
         super(string);
     }
-    /** more动作类异常。*/
-    public MoreActionException(Throwable error) {
+    /**转换异常。*/
+    public TransformException(Throwable error) {
         super(error);
     }
-    /** more动作类异常。*/
-    public MoreActionException(String string, Throwable error) {
+    /**转换异常。*/
+    public TransformException(String string, Throwable error) {
         super(string, error);
     }
 }

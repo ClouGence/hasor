@@ -16,7 +16,6 @@
 package org.more.classcode;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import org.more.core.error.InitializationException;
 /**
  * 该类的作用是用于配置{@link ClassBuilder}生成的新类。
  * @version 2010-9-3

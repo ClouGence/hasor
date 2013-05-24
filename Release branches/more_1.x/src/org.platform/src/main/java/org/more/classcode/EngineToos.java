@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import org.more.asm.Opcodes;
 import org.more.asm.Type;
-import org.more.core.error.FormatException;
 /**
  * 生成字节码时候使用的工具类，当重写{@link ClassEngine}的相关方法时候会用上此类。
  * @version 2009-10-16

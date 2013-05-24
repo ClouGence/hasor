@@ -22,8 +22,7 @@ import java.util.List;
 import java.util.Set;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
-import org.more.core.error.MoreStateException;
-import org.more.core.error.RepeateException;
+import org.more.RepeateException;
 import org.more.xml.stream.AttributeEvent;
 import org.more.xml.stream.EndElementEvent;
 import org.more.xml.stream.StartDocumentEvent;
@@ -129,7 +128,7 @@ public class XmlParserKitManager implements XmlAccept {
     }
     /*--------------------------------------------------------------*/
     /**分发事件到{@link XmlParserKit}列表*/
-    private void issueEvent(XmlStreamEvent e, XmlStackDecorator<Object> activateStack) throws XMLStreamException, IOException {
+    private void issueEvent(XmlStreamEvent e, XmlStackDecorator<Object> activateStack) throws IOException, XMLStreamException {
         //公共事件
         if (e.isPublicEvent() == true)
             for (String namespace : this.regeditXmlParserKit.keySet()) {
@@ -141,7 +140,7 @@ public class XmlParserKitManager implements XmlAccept {
                     String prefix = currentElement.getPrefix();
                     NameSpace ns = (NameSpace) this.activateStack.get(prefix);
                     if (ns == null)
-                        throw new MoreStateException("解析错误，前缀[" + prefix + "]代表的命名空间没有被激活。");
+                        throw new XmlFormatException("解析错误，前缀[" + prefix + "]代表的命名空间没有被激活。");
                     xpath = ns.getXpath();
                 }
                 ArrayList<XmlNamespaceParser> alList = this.regeditXmlParserKit.get(namespace);

@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.error;
+package org.more.classcode;
 /**
- * 找到，找不到异常
- * @version 2009-4-29
+ * 调用异常。
+ * @version 2009-6-26
  * @author 赵永春 (zyc@byshell.org)
  */
-public class FoundException extends MoreStateException {
-    private static final long serialVersionUID = 3664651649094973500L;
-    /**找到，找不到异常*/
-    public FoundException(String string) {
+public class InvokeException extends ClassCodeRuntimeException {
+    private static final long serialVersionUID = -7774988512856603877L;
+    /**调用异常*/
+    public InvokeException(String string) {
         super(string);
     }
-    /**找到，找不到异常*/
-    public FoundException(Throwable error) {
+    /**调用异常*/
+    public InvokeException(Throwable error) {
         super(error);
-    }
-    /**找到，找不到异常*/
-    public FoundException(String string, Throwable error) {
-        super(string, error);
     }
 }

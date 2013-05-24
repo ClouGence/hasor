@@ -16,8 +16,8 @@
 package org.more.classcode.objects;
 import java.lang.reflect.Method;
 import org.more.classcode.EngineToos;
+import org.more.classcode.InvokeException;
 import org.more.classcode.MethodDelegate;
-import org.more.core.error.InvokeException;
 /**
  * 代理方法的空实现。
  * @version 2010-9-3

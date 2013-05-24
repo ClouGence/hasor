@@ -26,7 +26,6 @@ import org.more.asm.ClassWriter;
 import org.more.asm.FieldVisitor;
 import org.more.asm.MethodVisitor;
 import org.more.asm.Opcodes;
-import org.more.core.error.InvokeException;
 /**
  * 该类负责修改类的字节码附加接口实现方法。
  * 生成类过程

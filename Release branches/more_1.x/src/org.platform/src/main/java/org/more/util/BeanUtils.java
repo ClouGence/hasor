@@ -24,7 +24,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import org.more.classcode.EngineToos;
 import org.more.classcode.RootClassLoader;
-import org.more.core.error.InvokeException;
 /**
  * 
  * @version : 2011-6-3
@@ -179,7 +178,7 @@ public abstract class BeanUtils {
             invokeMethod = m;
         }
         if (invokeMethod == null)
-            throw new InvokeException("无法调用目标方法[" + methodName + "]！");
+            throw new NullPointerException(methodName + " invokeMethod is null.");
         else
             return invokeMethod.invoke(target, objects);
     }

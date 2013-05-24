@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.error;
+package org.more.classcode;
 /**
- * 定义异常。
- * @version 2009-4-29
+ * 格式错误，出现该异常通常是在操作某些数据时该数据格式异常或者不被支持。
+ * @version 2009-10-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class DefineException extends ExistException {
-    private static final long serialVersionUID = 3664651649094973500L;
-    /**定义异常*/
-    public DefineException(String string) {
+public class FormatException extends ClassCodeRuntimeException {
+    private static final long serialVersionUID = 7219173260772984152L;
+    /**格式异常*/
+    public FormatException(String string) {
         super(string);
     }
-    /**定义异常*/
-    public DefineException(Throwable error) {
+    /**格式异常*/
+    public FormatException(Throwable error) {
         super(error);
     }
-    /**定义异常*/
-    public DefineException(String string, Throwable error) {
+    /**格式异常*/
+    public FormatException(String string, Throwable error) {
         super(string, error);
     }
 }

@@ -26,17 +26,12 @@ import org.more.classcode.objects.DefaultClassNameStrategy;
 import org.more.classcode.objects.DefaultDelegateStrategy;
 import org.more.classcode.objects.DefaultMethodStrategy;
 import org.more.classcode.objects.DefaultPropertyStrategy;
-import org.more.core.error.FormatException;
-import org.more.core.error.InitializationException;
-import org.more.core.error.InvokeException;
-import org.more.core.error.MoreStateException;
-import org.more.core.error.TypeException;
 /**
- * classcode v2.0引擎。新引擎增加了debug模式，在debug模式下{@link ClassEngine#builderClass()}方法在装载生成的新类 时不会抛出。
- * 如果没有指定类装载引擎会使用Thread.currentThread().getContextClassLoader()方法返回的类装载器来装载类。
- * @version 2010-9-5
- * @author 赵永春 (zyc@byshell.org)
- */
+* classcode v2.0引擎。新引擎增加了debug模式，在debug模式下{@link ClassEngine#builderClass()}方法在装载生成的新类 时不会抛出。
+* 如果没有指定类装载引擎会使用Thread.currentThread().getContextClassLoader()方法返回的类装载器来装载类。
+* @version 2010-9-5
+* @author 赵永春 (zyc@byshell.org)
+*/
 public class ClassEngine {
     /**默认超类java.lang.Object。*/
     public static final Class<?>             DefaultSuperClass        = java.lang.Object.class;
@@ -471,7 +466,7 @@ public class ClassEngine {
         cb.initBuilder(this);
         this.configuration = cb.builderClass();
         if (this.configuration == null)
-            throw new MoreStateException("builderClass失败。");
+            throw new FormatException("builderClass失败。");
         this.newClassBytes = cb.getClassBytes();
         //5.
         this.newClass = this.rootClassLoader.loadClass(this.className);

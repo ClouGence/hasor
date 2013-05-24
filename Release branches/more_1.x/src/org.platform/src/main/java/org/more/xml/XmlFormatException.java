@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.core.error;
+package org.more.xml;
+import javax.xml.stream.XMLStreamException;
 /**
- * 类型异常。
- * @version 2009-7-7
+ * 格式错误，出现该异常通常是在操作某些数据时该数据格式异常或者不被支持。
+ * @version 2009-10-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TypeException extends ResourceException {
-    private static final long serialVersionUID = -6286611015368846627L;
-    /**类型异常*/
-    public TypeException(String string) {
+public class XmlFormatException extends XMLStreamException {
+    private static final long serialVersionUID = 7219173260772984152L;
+    /**格式异常*/
+    public XmlFormatException(String string) {
         super(string);
     }
-    /**类型异常*/
-    public TypeException(Throwable error) {
+    /**格式异常*/
+    public XmlFormatException(Throwable error) {
         super(error);
     }
-    /**类型异常*/
-    public TypeException(String string, Throwable error) {
+    /**格式异常*/
+    public XmlFormatException(String string, Throwable error) {
         super(string, error);
     }
 }
