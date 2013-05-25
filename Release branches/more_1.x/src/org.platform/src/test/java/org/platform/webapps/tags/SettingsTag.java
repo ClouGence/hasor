@@ -16,17 +16,20 @@
 package org.platform.webapps.tags;
 import org.platform.context.AppContext;
 import org.platform.freemarker.FmMethod;
-import org.platform.freemarker.IFmMethod;
-import freemarker.template.TemplateModelException;
+import org.platform.general.Bean;
+import com.google.inject.Inject;
 /**
  * 
  * @version : 2013-5-24
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@FmMethod("Settings")
-public class SettingsTag implements IFmMethod {
-    @Override
-    public Object callMethod(Object[] args, AppContext appContext) throws TemplateModelException {
-        return appContext.getSettings().getString(args[0].toString());
+@Bean("cfg")
+public class SettingsTag {
+    @Inject
+    private AppContext appContext = null;
+    @FmMethod("Settings")
+    public Object callMethod(String args) {
+        throw new NullPointerException();
+        //return appContext.getSettings().getString(args);
     }
 }
