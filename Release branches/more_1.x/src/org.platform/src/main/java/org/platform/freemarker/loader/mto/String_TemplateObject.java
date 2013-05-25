@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Date;
 /**
  * ×Ö·û´®Ä£°å
  * @version : 2011-9-16
@@ -41,7 +42,7 @@ public class String_TemplateObject implements AbstractTemplateObject {
             return new InputStreamReader(in, encoding);
     }
     public long lastModified() {
-        return 0;
+        return new Date().getTime();
     }
     public void openObject() {
         // TODO Auto-generated method stub

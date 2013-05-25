@@ -26,10 +26,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
-public @interface UpLoadFile {
-    /**上传服务初始化参数。
-     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
-    public InitParam[] initParam() default {};
+public @interface UpLoadAction {
     /**上传服务注册的服务名。
      * 如果配置为空则使用类的简短类名作为名称。*/
     public String[] upName();

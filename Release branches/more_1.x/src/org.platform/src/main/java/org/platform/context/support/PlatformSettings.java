@@ -238,7 +238,6 @@ public class PlatformSettings extends Global implements Settings {
                     loadTo.put($key, $var);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             Platform.warning("namespcae [%s] no support!", configURI);
         }
     }

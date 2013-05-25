@@ -172,9 +172,8 @@ public abstract class ResourcesUtils {
             ZipEntry e = jar.getEntry(entPath);
             return jar.getInputStream(e);
         } else if (protocol.equals("classpath") == true) {
-            //TODO
-            //            String resourcePath = formatResource(resourceURL.getFile());
-            //            return getCurrentLoader().getResourceAsStream(resourcePath);
+            String resourcePath = formatResource(resourceURL.getPath());
+            return getCurrentLoader().getResourceAsStream(resourcePath);
         }
         // TODO 该处处理其他协议的资源加载。诸如OSGi等协议。
         return null;

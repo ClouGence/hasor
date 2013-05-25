@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import org.platform.freemarker.loader.resource.ClassPathResourceLoader;
@@ -62,7 +63,11 @@ public class ClassPathTemplateLoader extends URLClassLoader implements ITemplate
     public long getLastModified(Object templateSource) {
         URL url = (URL) templateSource;
         if (url.getProtocol().equals("file") == true)
-            return new File(url.getFile()).lastModified();
+            try {
+                return new File(url.toURI()).lastModified();
+            } catch (URISyntaxException e) {
+                return 0;
+            }
         return 0;
     }
     public Reader getReader(Object templateSource, String encoding) throws IOException {

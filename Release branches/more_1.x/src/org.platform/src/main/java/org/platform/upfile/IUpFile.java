@@ -15,7 +15,7 @@
  */
 package org.platform.upfile;
 import java.io.IOException;
-import org.platform.event.InitEvent;
+import org.platform.context.AppContext;
 /**
  * 处理文件上传的接口
  * @version : 2013-3-12
@@ -23,7 +23,7 @@ import org.platform.event.InitEvent;
  */
 public interface IUpFile {
     /**初始化对象。*/
-    public void initUpFile(InitEvent event);
+    public void initUpFile(AppContext appContext);
     /*** 处理文件上传。*/
     public void doUpFile(IUpInfo upData) throws IOException;
 }

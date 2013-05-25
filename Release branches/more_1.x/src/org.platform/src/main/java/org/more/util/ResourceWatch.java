@@ -1,6 +1,7 @@
 package org.more.util;
 import java.io.IOException;
 import java.net.URI;
+import org.platform.Platform;
 /**
  * 当资源有改动时该类会调用Run方法。
  * @version : 2012-8-2
@@ -34,7 +35,9 @@ public abstract class ResourceWatch extends Thread {
         try {
             this.firstLoad(this.resourceURI);
             this.lastHashCode = this.lastModify(this.resourceURI);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            Platform.warning("%s lastModify error.", this.resourceURI);
+        }
         super.start();
     }
     @Override

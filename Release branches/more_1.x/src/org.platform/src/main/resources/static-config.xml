@@ -1,29 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://project.byshell.org/more/schema/global">
-	<!-- 数据源配置 -->
-	<dataSourceSet>
-		<jdbc name="dataSource1" default="true">
-			<dspool>dbcp</dspool>
-			<driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
-			<url>jdbc:sqlserver://10.200.15.100;DatabaseName=KAOYAN_DEV</url>
-			<account>sa</account>
-			<password>abc123!@#</password>
-		</jdbc>
-		<jdbc name="dataSource2">
-			<dspool>dbcp</dspool>
-			<driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
-			<url>jdbc:sqlserver://10.200.15.100;DatabaseName=KAOYAN_DEV</url>
-			<account>sa</account>
-			<password>abc123!@#</password>
-		</jdbc>
-	</dataSourceSet>
 	<!-- 框架配置 -->
 	<framework>
 		<!-- 包扫描覆盖范围(逗号间隔多个扫描范围) -->
 		<loadPackages>org.*, com.*, net.*, cn.*</loadPackages>
 		<!-- 框架提供的任务管理器最大可以同时执行的任务数量。 -->
-		<taskPool threadSize="20"></taskPool>
+		<!-- <taskPool threadSize="20"></taskPool> -->
 	</framework>
+	<!-- 工作空间设置 -->
+	<workspace>
+		<!-- 程序工作空间基础目录（绝对地址） -->
+		<workDir>.</workDir>
+		<!-- 程序的文件数据目录（默认相对workDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
+		<dataDir absolute="false">/files</dataDir>
+		<!-- 程序运行期间所需的临时数据存放地址（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
+		<tempDir absolute="false">/temp</tempDir>
+		<!-- 程序运行时生成的缓存数据存放位置（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
+		<cacheDir absolute="false">/cache</cacheDir>
+	</workspace>
+	<!-- 数据源配置 -->
+	<!-- <dataSourceSet> -->
+	<!-- <jdbc name="dataSource1" default="true"> -->
+	<!-- <dspool>dbcp</dspool> -->
+	<!-- <driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver> -->
+	<!-- <url>jdbc:sqlserver://10.200.15.100;DatabaseName=KAOYAN_DEV</url> -->
+	<!-- <account>sa</account> -->
+	<!-- <password>abc123!@#</password> -->
+	<!-- </jdbc> -->
+	<!-- <jdbc name="dataSource2"> -->
+	<!-- <dspool>dbcp</dspool> -->
+	<!-- <driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver> -->
+	<!-- <url>jdbc:sqlserver://10.200.15.100;DatabaseName=KAOYAN_DEV</url> -->
+	<!-- <account>sa</account> -->
+	<!-- <password>abc123!@#</password> -->
+	<!-- </jdbc> -->
+	<!-- </dataSourceSet> -->
 	<!-- Web部分的配置 -->
 	<httpServlet>
 		<!-- Web请求遇到异常后轮询errorHook的次数。 -->
@@ -112,7 +123,22 @@
 		</loginFormData>
 		<!-- 转发配置 -->
 		<forwards>
-			<!-- 登录源，当执行登陆时才会用到这里的配置。 <dispatch contentPath="/user333" defaultType="forward|redirect|Exception|State"> 登陆成功之后要去的地址 <forwardIndex type="forward|redirect">/login_ok_index.htm</forwardIndex> 退出之后要去的地址 <forwardLogout type="forward|redirect">/login_ok_index.htm</forwardLogout> !!!下面的配置信息，配置一项即可!!! 登陆失败：以Http 402号错误响应客户端。 <forwardFailure type="State">402</forwardFailure> 登陆失败：抛出特定类型异常。 <forwardFailure type="Exception">org.platform.security.PermissionException</forwardFailure> 登陆失败：跳转到特定页面或地址。 <forwardFailure type="forward|redirect|Exception|State">/abc.htm</forwardFailure> 配置的可以跳转的地址 <forward id="go_1" type="redirect">/go_1.htm</forward> <forward id="go_2" type="redirect">/go_2.htm</forward> </dispatch> -->
+			<!-- 登录源，当执行登陆时才会用到这里的配置。 -->
+			<!-- <dispatch contentPath="/user333" defaultType="forward|redirect|Exception|State"> -->
+			<!-- 登陆成功之后要去的地址 -->
+			<!-- <forwardIndex type="forward|redirect">/login_ok_index.htm</forwardIndex> -->
+			<!-- 退出之后要去的地址 -->
+			<!-- <forwardLogout type="forward|redirect">/login_ok_index.htm</forwardLogout> -->
+			<!-- !!!下面的配置信息，配置一项即可!!! 登陆失败：以Http 402号错误响应客户端。 -->
+			<!-- <forwardFailure type="State">402</forwardFailure> -->
+			<!-- 登陆失败：抛出特定类型异常。 -->
+			<!-- <forwardFailure type="Exception">org.platform.security.PermissionException</forwardFailure> -->
+			<!-- 登陆失败：跳转到特定页面或地址。 -->
+			<!-- <forwardFailure type="forward|redirect|Exception|State">/abc.htm</forwardFailure> -->
+			<!-- 配置的可以跳转的地址 -->
+			<!-- <forward id="go_1" type="redirect">/go_1.htm</forward> -->
+			<!-- <forward id="go_2" type="redirect">/go_2.htm</forward> -->
+			<!-- </dispatch> -->
 		</forwards>
 		<!-- 权限判断规则 -->
 		<!-- Login:要求登陆，Logout:要求非登陆，Guest:要求具有来宾身份，Permission:要求具有权限点，None:无任何要求 -->
@@ -151,15 +177,8 @@
 		<mapCache timeout="600000" eternal="false" autoRenewal="true" threadSeep="5000" />
 		<!-- !!!这里可以放置其他缓存程序的Xml配置，然后通过XmlProperty类型读取到这段Xml!!! -->
 	</cacheConfig>
-	<!-- 工作空间设置 -->
-	<workspace>
-		<!-- 程序工作空间基础目录（绝对地址） -->
-		<workDir>.</workDir>
-		<!-- 程序的文件数据目录（默认相对workDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
-		<dataDir absolute="false">/files</dataDir>
-		<!-- 程序运行期间所需的临时数据存放地址（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
-		<tempDir absolute="false">/temp</tempDir>
-		<!-- 程序运行时生成的缓存数据存放位置（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
-		<cacheDir absolute="false">/cache</cacheDir>
-	</workspace>
+	<!-- 文件上传服务配置 -->
+	<uploadService enable="false">
+
+	</uploadService>
 </config>
