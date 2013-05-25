@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.Filter;
-import org.platform.binder.ApiBinder;
 import org.platform.binder.ApiBinder.FilterBindingBuilder;
 import com.google.inject.Binder;
 import com.google.inject.Key;

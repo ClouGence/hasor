@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServlet;
-import org.platform.binder.ApiBinder;
 import org.platform.binder.ApiBinder.ServletBindingBuilder;
 import com.google.inject.Binder;
 import com.google.inject.Key;

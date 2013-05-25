@@ -16,9 +16,8 @@
 package org.platform.binder.support;
 import java.util.ArrayList;
 import java.util.List;
-import org.platform.binder.ApiBinder;
-import org.platform.binder.BeanInfo;
 import org.platform.binder.ApiBinder.BeanBindingBuilder;
+import org.platform.binder.BeanInfo;
 import com.google.inject.Binder;
 import com.google.inject.Key;
 import com.google.inject.Module;

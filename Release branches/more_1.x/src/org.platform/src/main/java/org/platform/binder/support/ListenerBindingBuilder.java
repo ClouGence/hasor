@@ -17,7 +17,6 @@ package org.platform.binder.support;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpSessionListener;
-import org.platform.binder.ApiBinder;
 import org.platform.binder.ApiBinder.SessionListenerBindingBuilder;
 import com.google.inject.Binder;
 import com.google.inject.Key;
