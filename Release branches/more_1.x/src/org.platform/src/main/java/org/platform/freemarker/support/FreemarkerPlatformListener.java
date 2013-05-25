@@ -15,6 +15,7 @@
  */
 package org.platform.freemarker.support;
 import static org.platform.PlatformConfig.FreemarkerConfig_ConfigurationFactory;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -27,7 +28,6 @@ import org.platform.freemarker.ConfigurationFactory;
 import org.platform.freemarker.FmMethod;
 import org.platform.freemarker.FmTag;
 import org.platform.freemarker.FreemarkerManager;
-import org.platform.freemarker.IFmMethod;
 import org.platform.freemarker.IFmTag;
 import org.platform.freemarker.ITemplateLoaderCreator;
 import org.platform.freemarker.TemplateLoaderCreator;
@@ -114,25 +114,24 @@ public class FreemarkerPlatformListener implements PlatformListener {
     /**装载FmMethod*/
     protected void loadFmMethod(ApiBinder event) {
         //1.获取
-        Set<Class<?>> fmMethodSet = event.getClassSet(FmMethod.class);
+        Set<Class<?>> fmMethodSet = event.getClassSet(Object.class);
         if (fmMethodSet == null)
             return;
-        List<Class<IFmMethod>> fmMethodList = new ArrayList<Class<IFmMethod>>();
-        for (Class<?> cls : fmMethodSet) {
-            if (IFmMethod.class.isAssignableFrom(cls) == false) {
-                Platform.warning("loadFmMethod : not implemented IFmMethod. class=%s", cls);
-            } else {
-                fmMethodList.add((Class<IFmMethod>) cls);
-            }
+        FreemarkerBinder freemarkerBinder = new FreemarkerBinder();
+        for (Class<?> fmMethodType : fmMethodSet) {
+            try {
+                Method[] m1s = fmMethodType.getMethods();
+                for (Method fmMethod : m1s) {
+                    if (fmMethod.isAnnotationPresent(FmMethod.class) == true) {
+                        FmMethod fmMethodAnno = fmMethod.getAnnotation(FmMethod.class);
+                        String funName = fmMethodAnno.value();
+                        freemarkerBinder.bindMethod(funName, fmMethod);
+                        Platform.info("loadFmMethod %s at %s.", funName, fmMethod);
+                    }
+                }
+            } catch (NoClassDefFoundError e) {/**/}
         }
         //3.注册服务
-        FreemarkerBinder freemarkerBinder = new FreemarkerBinder();
-        for (Class<IFmMethod> fmMethodType : fmMethodList) {
-            FmMethod fmMethodAnno = fmMethodType.getAnnotation(FmMethod.class);
-            String funName = fmMethodAnno.value();
-            freemarkerBinder.bindMethod(funName, fmMethodType);
-            Platform.info("loadFmMethod %s at %s.", funName, fmMethodType);
-        }
         freemarkerBinder.configure(event.getGuiceBinder());
     }
     //

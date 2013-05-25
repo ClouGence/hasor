@@ -17,8 +17,10 @@ package org.platform.context.support;
 import static org.platform.PlatformConfig.Platform_LoadPackages;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.more.util.ClassUtils;
+import org.platform.Assert;
 import org.platform.binder.BeanInfo;
 import org.platform.context.AppContext;
 import org.platform.context.Settings;
@@ -68,17 +70,25 @@ public abstract class AbstractAppContext implements AppContext {
     public <T> T getInstance(Class<T> beanType) {
         return this.getGuice().getInstance(beanType);
     };
-    //    /**通过名称创建bean实例，使用guice。*/
-    //    public abstract <T extends IService> T getService(String servicesName);
-    //    /**通过类型创建该类实例，使用guice*/
-    //    public abstract <T extends IService> T getService(Class<T> servicesType);
     @Override
     public <T> Class<T> getBeanType(String name) {
+        Assert.isNotNull(name, "bean name is null.");
         if (this.beanInfoMap == null)
             this.collectBeanInfos();
         BeanInfo info = this.beanInfoMap.get(name);
         if (info != null)
             return (Class<T>) info.getBeanType();
+        return null;
+    }
+    @Override
+    public String getBeanName(Class<?> targetClass) {
+        Assert.isNotNull(targetClass, "targetClass is null.");
+        if (this.beanInfoMap == null)
+            this.collectBeanInfos();
+        for (Entry<String, BeanInfo> ent : this.beanInfoMap.entrySet()) {
+            if (ent.getValue().getBeanType() == targetClass)
+                return ent.getKey();
+        }
         return null;
     }
     @Override

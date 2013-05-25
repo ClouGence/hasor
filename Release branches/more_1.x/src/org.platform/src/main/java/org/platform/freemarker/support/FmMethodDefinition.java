@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.platform.freemarker.support;
+import java.lang.reflect.Method;
 import org.platform.context.AppContext;
-import org.platform.freemarker.IFmMethod;
 import com.google.inject.Provider;
 import freemarker.template.TemplateMethodModel;
 /**
@@ -25,11 +25,11 @@ import freemarker.template.TemplateMethodModel;
  */
 class FmMethodDefinition implements Provider<TemplateMethodModel> {
     private String               funName      = null;
-    private Class<IFmMethod>     fmMethodType = null;
+    private Method               fmMethodType = null;
     private AppContext           appContext   = null;
     private InternalMethodObject funObject    = null;
     //
-    public FmMethodDefinition(String funName, Class<IFmMethod> fmMethodType) {
+    public FmMethodDefinition(String funName, Method fmMethodType) {
         this.funName = funName;
         this.fmMethodType = fmMethodType;
     }
@@ -41,8 +41,17 @@ class FmMethodDefinition implements Provider<TemplateMethodModel> {
     }
     @Override
     public TemplateMethodModel get() {
-        if (this.funObject == null)
-            this.funObject = new InternalMethodObject(this.appContext.getInstance(this.fmMethodType), this.appContext);
+        if (this.funObject == null) {
+            Class<?> fmMethodTargetClass = this.fmMethodType.getDeclaringClass();
+            String beanName = this.appContext.getBeanName(fmMethodTargetClass);
+            Object target = null;
+            if (beanName != null)
+                target = this.appContext.getBean(beanName);
+            else
+                target = this.appContext.getInstance(fmMethodTargetClass);
+            //
+            this.funObject = new InternalMethodObject(this.fmMethodType, target);
+        }
         return this.funObject;
     }
 }

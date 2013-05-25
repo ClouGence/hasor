@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.platform.freemarker.support;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import org.platform.freemarker.IFmMethod;
 import org.platform.freemarker.IFmTag;
 import org.platform.freemarker.ITemplateLoaderCreator;
 import com.google.inject.Binder;
@@ -40,7 +40,7 @@ public class FreemarkerBinder implements Module {
         this.fmTagDefinition.add(new FmTagDefinition(tagName, fmTagType));
     }
     /***/
-    public void bindMethod(String funName, Class<IFmMethod> fmMethodType) {
+    public void bindMethod(String funName, Method fmMethodType) {
         this.fmMethodDefinition.add(new FmMethodDefinition(funName, fmMethodType));
     }
     @Override

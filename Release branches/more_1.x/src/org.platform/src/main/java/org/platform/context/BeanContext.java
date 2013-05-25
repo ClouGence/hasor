@@ -23,6 +23,8 @@ import org.platform.binder.BeanInfo;
 public interface BeanContext {
     /**通过名获取Bean的类型。*/
     public <T> Class<T> getBeanType(String name);
+    /**如果存在目标类型的Bean则返回Bean的名称。*/
+    public String getBeanName(Class<?> targetClass);
     /**获取已经注册的Bean名称。*/
     public String[] getBeanNames();
     /**获取bean信息。*/
