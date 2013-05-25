@@ -29,7 +29,6 @@ public class SettingsTag {
     private AppContext appContext = null;
     @FmMethod("Settings")
     public Object callMethod(String args) {
-        throw new NullPointerException();
-        //return appContext.getSettings().getString(args);
+        return appContext.getSettings().getString(args);
     }
 }

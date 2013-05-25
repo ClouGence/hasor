@@ -95,7 +95,7 @@ public abstract class AbstractAppContext implements AppContext {
     public String[] getBeanNames() {
         if (this.beanInfoMap == null)
             this.collectBeanInfos();
-        return this.beanInfoMap.values().toArray(new String[this.beanInfoMap.size()]);
+        return this.beanInfoMap.keySet().toArray(new String[this.beanInfoMap.size()]);
     }
     @Override
     public BeanInfo getBeanInfo(String name) {

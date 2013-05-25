@@ -52,6 +52,7 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
         this.applyFmMethod(this.cfg, appContext);
         this.applyFmTag(this.cfg, appContext);
         //3.
+        this.applyBean(this.cfg, appContext);
         //4.Return
         return this.cfg;
     }
@@ -77,6 +78,20 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
                 configuration.setSharedVariable(ent.getKey(), ent.getValue());
             } catch (Exception e) {
                 Platform.error("%s tag Registration failed!%s", ent.getKey(), e);
+            }
+    }
+    //
+    /***/
+    protected void applyBean(Configuration configuration, AppContext appContext) {
+        String[] names = appContext.getBeanNames();
+        if (names == null || names.length == 0)
+            return;
+        Platform.info("Registration Beans %s", new Object[] { names });
+        for (String key : names)
+            try {
+                configuration.setSharedVariable(key, appContext.getBean(key));
+            } catch (Exception e) {
+                Platform.error("%s Bean Registration failed!%s", key, e);
             }
     }
     //
