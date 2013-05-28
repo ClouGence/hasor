@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.platform.action.support;
-import static org.platform.PlatformConfig.ActionServlet_Enable;
-import static org.platform.PlatformConfig.ActionServlet_Intercept;
-import static org.platform.PlatformConfig.ActionServlet_Mode;
+import static org.platform.action.ActionConfig.ActionServlet_Enable;
+import static org.platform.action.ActionConfig.ActionServlet_Intercept;
+import static org.platform.action.ActionConfig.ActionServlet_Mode;
 import org.platform.context.SettingListener;
 import org.platform.context.Settings;
 /**

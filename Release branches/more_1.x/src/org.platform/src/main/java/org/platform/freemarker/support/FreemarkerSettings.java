@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.platform.freemarker.support;
-import static org.platform.PlatformConfig.FreemarkerConfig_Enable;
-import static org.platform.PlatformConfig.FreemarkerConfig_OnError;
-import static org.platform.PlatformConfig.FreemarkerConfig_Suffix;
+import static org.platform.freemarker.ConfigurationFactory.FreemarkerConfig_Enable;
+import static org.platform.freemarker.ConfigurationFactory.FreemarkerConfig_OnError;
+import static org.platform.freemarker.ConfigurationFactory.FreemarkerConfig_Suffix;
 import org.platform.context.SettingListener;
 import org.platform.context.Settings;
 import com.google.inject.Singleton;

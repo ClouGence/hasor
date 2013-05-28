@@ -13,22 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.icache.support;
-import static org.platform.icache.CacheManager.CacheConfig_Enable;
-import org.platform.context.SettingListener;
-import org.platform.context.Settings;
+package org.platform.action;
 /**
  * 
- * @version : 2013-4-23
+ * @version : 2013-5-28
  * @author 赵永春 (zyc@byshell.org)
  */
-class CacheSettings implements SettingListener {
-    private boolean enable = false; /*默认关闭状态*/
-    //
-    public boolean isCacheEnable() {
-        return this.enable;
-    }
-    public void loadConfig(Settings config) {
-        this.enable = config.getBoolean(CacheConfig_Enable, false);
-    }
+public interface ActionConfig {
+    /**是否启用Action功能.*/
+    public static final String ActionServlet_Enable    = "httpServlet.actionServlet.enable";
+    /**模式：mode:RestOnly（rest风格）、ServletOnly（中央servlet）、Both（两者同时使用）*/
+    public static final String ActionServlet_Mode      = "httpServlet.actionServlet.mode";
+    /**action拦截器.*/
+    public static final String ActionServlet_Intercept = "httpServlet.actionServlet";
 }

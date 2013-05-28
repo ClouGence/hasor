@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.platform.icache.mapcache;
-import static org.platform.PlatformConfig.CacheConfig_Enable;
+import static org.platform.icache.CacheManager.CacheConfig_Enable;
 import org.platform.context.SettingListener;
 import org.platform.context.Settings;
 /**

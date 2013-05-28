@@ -22,6 +22,18 @@ import freemarker.template.Configuration;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface ConfigurationFactory {
+    /**是否启用freemarker.*/
+    public static final String FreemarkerConfig_Enable               = "freemarker.enable";
+    /**freemarker模板后缀名逗号间隔多个.*/
+    public static final String FreemarkerConfig_Suffix               = "freemarker.suffixSet";
+    /**当模板处理发生异常时的处理方式.*/
+    public static final String FreemarkerConfig_OnError              = "freemarker.onError";
+    /**Configuration对象创建工厂.*/
+    public static final String FreemarkerConfig_ConfigurationFactory = "freemarker.configurationFactory";
+    /**FreeMarker配置.*/
+    public static final String FreemarkerConfig_Settings             = "freemarker.settings";
+    /**FreeMarker装载器配置.*/
+    public static final String FreemarkerConfig_TemplateLoader       = "freemarker.templateLoader";
     /*** 获取配置好的freemarker{@link Configuration}对象。*/
     public Configuration configuration(AppContext appContext);
 }

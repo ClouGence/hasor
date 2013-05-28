@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.platform.freemarker.support;
-import static org.platform.PlatformConfig.FreemarkerConfig_ConfigurationFactory;
+import static org.platform.freemarker.ConfigurationFactory.FreemarkerConfig_ConfigurationFactory;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.platform.security.support.impl;
-import static org.platform.PlatformConfig.Security_AuthSessionCache;
-import static org.platform.PlatformConfig.Security_AuthSessionTimeout;
+import static org.platform.security.SecurityConfig.Security_AuthSessionCache;
+import static org.platform.security.SecurityConfig.Security_AuthSessionTimeout;
 import org.platform.context.AppContext;
 import org.platform.context.SettingListener;
 import org.platform.context.Settings;

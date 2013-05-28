@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package org.platform.freemarker.support;
-import static org.platform.PlatformConfig.FreemarkerConfig_Settings;
-import static org.platform.PlatformConfig.FreemarkerConfig_TemplateLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

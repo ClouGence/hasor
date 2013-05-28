@@ -20,113 +20,21 @@ package org.platform;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface PlatformConfig {
-    //
-    //
     /**装载的class包范畴，逗号间隔.*/
-    public static final String Platform_LoadPackages                       = "framework.loadPackages";
+    public static final String Platform_LoadPackages       = "framework.loadPackages";
     /**框架提供的任务管理器最大可以同时执行的任务数量.*/
-    public static final String Platform_TaskPool_MaxSize                   = "framework.taskPool.threadSize";
-    //
-    //
+    public static final String Platform_TaskPool_MaxSize   = "framework.taskPool.threadSize";
     /**异常处理程序总迭代次数(配置Code).*/
-    public static final String HttpServlet_ErrorCaseCount                  = "httpServlet.errorCaseCount";
-    /**是否启用Action功能.*/
-    public static final String ActionServlet_Enable                        = "httpServlet.actionServlet.enable";
-    /**模式：mode:RestOnly（rest风格）、ServletOnly（中央servlet）、Both（两者同时使用）*/
-    public static final String ActionServlet_Mode                          = "httpServlet.actionServlet.mode";
-    /**action拦截器.*/
-    public static final String ActionServlet_Intercept                     = "httpServlet.actionServlet";
-    //
-    //
-    /**是否启用freemarker.*/
-    public static final String FreemarkerConfig_Enable                     = "freemarker.enable";
-    /**freemarker模板后缀名逗号间隔多个.*/
-    public static final String FreemarkerConfig_Suffix                     = "freemarker.suffixSet";
-    /**当模板处理发生异常时的处理方式.*/
-    public static final String FreemarkerConfig_OnError                    = "freemarker.onError";
-    /**Configuration对象创建工厂.*/
-    public static final String FreemarkerConfig_ConfigurationFactory       = "freemarker.configurationFactory";
-    /**FreeMarker配置.*/
-    public static final String FreemarkerConfig_Settings                   = "freemarker.settings";
-    /**FreeMarker装载器配置.*/
-    public static final String FreemarkerConfig_TemplateLoader             = "freemarker.templateLoader";
-    //
-    //
+    public static final String HttpServlet_ErrorCaseCount  = "httpServlet.errorCaseCount";
     /**程序工作空间基础目录（绝对地址）*/
-    public static final String Workspace_WorkDir                           = "workspace.workDir";
+    public static final String Workspace_WorkDir           = "workspace.workDir";
     /** 程序的文件数据目录（默认相对workDir地址，可以通过设置absolute属性为true表示一个绝对地址）*/
-    public static final String Workspace_DataDir                           = "workspace.dataDir";
-    public static final String Workspace_DataDir_Absolute                  = "workspace.dataDir.absolute";
+    public static final String Workspace_DataDir           = "workspace.dataDir";
+    public static final String Workspace_DataDir_Absolute  = "workspace.dataDir.absolute";
     /** 程序运行期间所需的临时数据存放地址（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址）*/
-    public static final String Workspace_TempDir                           = "workspace.tempDir";
-    public static final String Workspace_TempDir_Absolute                  = "workspace.tempDir.absolute";
+    public static final String Workspace_TempDir           = "workspace.tempDir";
+    public static final String Workspace_TempDir_Absolute  = "workspace.tempDir.absolute";
     /** 程序运行时生成的缓存数据存放位置（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址）*/
-    public static final String Workspace_CacheDir                          = "workspace.cacheDir";
-    public static final String Workspace_CacheDir_Absolute                 = "workspace.cacheDir.absolute";
-    //
-    //
-    /**是否启用权限系统*/
-    public static final String Security_Enable                             = "security.enable";
-    /**当Security_Enable启用之后，该值决定是否启用针对URL部分的权限过滤。*/
-    public static final String Security_EnableURL                          = "security.enableURL";
-    /**当Security_Enable启用之后，该值决定是否启用针对方法调用中的权限过滤。*/
-    public static final String Security_EnableMethod                       = "security.enableMethod";
-    /**AuthSession数据缓存*/
-    public static final String Security_AuthSessionCache                   = "security.authSessionCacheName";
-    /**AuthSession超时时间*/
-    public static final String Security_AuthSessionTimeout                 = "security.authSessionTimeout";
-    /**登入地址*/
-    public static final String Security_LoginURL                           = "security.loginURL";
-    /**登出地址*/
-    public static final String Security_LogoutURL                          = "security.logoutURL";
-    /**登入表单，用户名*/
-    public static final String Security_LoginFormData_AccountField         = "security.loginFormData.accountField";
-    /**登入表单，密码*/
-    public static final String Security_LoginFormData_PasswordField        = "security.loginFormData.passwordField";
-    /**登入表单，使用的权限系统*/
-    public static final String Security_LoginFormData_AuthField            = "security.loginFormData.authField";
-    /**URL权限检查默认策略配置：Login|Logout|Guest|Permission|None*/
-    public static final String Security_Rules_DefaultModel                 = "security.rules.defaultRule";
-    /**包含在权限检查范畴的URL*/
-    public static final String Security_Rules_Includes                     = "security.rules.includes";
-    /**排除权限检查范畴的URL*/
-    public static final String Security_Rules_Excludes                     = "security.rules.excludes";
-    /**转发配置*/
-    public static final String Security_Forwards                           = "security.forwards";
-    /**是否启用来宾帐号，启用来宾帐号之后当用户尚未登陆时获取的AuthSession会获取来宾的AuthSession.*/
-    public static final String Security_Guest_Enable                       = "security.guest.enable";
-    /**来宾帐号的认证系统 .*/
-    public static final String Security_Guest_AuthSystem                   = "security.guest.authSystem";
-    /**来宾帐号.*/
-    public static final String Security_Guest_Account                      = "security.guest.info.account";
-    /**来宾帐号的密码.*/
-    public static final String Security_Guest_Password                     = "security.guest.info.password";
-    /**来宾帐号的Code.*/
-    public static final String Security_Guest_UserCode                     = "security.guest.info.userCode";
-    /**来宾帐号权限*/
-    public static final String Security_Guest_Permissions                  = "security.guest.permissions";
-    /**是否启用客户端cookie来协助认证。*/
-    public static final String Security_ClientCookie_Enable                = "security.clientCookie.enable";
-    /**当系统启动时是否强制所有客户端已经登陆过的Cookie信息失效*/
-    public static final String Security_ClientCookie_LoseCookieOnStart     = "security.clientCookie.loseCookieOnStart";
-    /**客户端cookie名称*/
-    public static final String Security_ClientCookie_CookieName            = "security.clientCookie.cookieName";
-    /**cookie超时时间，单位：秒*/
-    public static final String Security_ClientCookie_Timeout               = "security.clientCookie.timeout";
-    /**cookie的Domain配置，设置这个属性用来支持跨域访问cookie。（默认为空不对该值进行设置）*/
-    public static final String Security_ClientCookie_Domain                = "security.clientCookie.cookieDomain";
-    /**cookie的path属性（默认为空不对该值进行设置）*/
-    public static final String Security_ClientCookie_Path                  = "security.clientCookie.cookiePath";
-    /**是否加密cookie内容*/
-    public static final String Security_ClientCookie_Encryption_Enable     = "security.clientCookie.encryption.enable";
-    /**cookie内容加密方式，DES,BAS64等等.*/
-    public static final String Security_ClientCookie_Encryption_EncodeType = "security.clientCookie.encryption.encodeType";
-    /**cookie内容加密时使用的Key*/
-    public static final String Security_ClientCookie_Encryption_Key        = "security.clientCookie.encryption.key";
-    /**加密算法配置*/
-    public static final String Security_EncryptionDigestSet                = "security.encryptionDigestSet";
-    //
-    //
-    /**是否启用缓存系统.*/
-    public static final String CacheConfig_Enable                          = "cacheConfig.enable";
+    public static final String Workspace_CacheDir          = "workspace.cacheDir";
+    public static final String Workspace_CacheDir_Absolute = "workspace.cacheDir.absolute";
 }
