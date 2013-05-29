@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  * @Controller("/user")
  *     @RestfulMapping("/{acc}/{pwd}")
  *     public String add( @Var("acc") String acc, @Var("pwd") String pwd);
- *     
+ *     @RestfulMapping("/{acc}/{pwd}")
  *     public String add(HttpRequest,HttpResponse,Map params);
  * 
  * Example 2:
@@ -36,7 +36,7 @@ import java.lang.annotation.Target;
  * @Controller("/user") 
  *     @RestfulMapping("/{s}/{e}/{acc}/{type}")
  *     public String list( @Var("s") String start, @Var("e") String end, @Var("acc") String account, @Var("type") String type);
- *     
+ *     @RestfulMapping("/{s}/{e}/{acc}/{type}")
  *     public String list(HttpRequest,HttpResponse,Map params);
  * </PRE>
  * @version : 2013-3-26
@@ -45,6 +45,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface Controller {
+    /**对应生效的http方法，默认为Get\Post。*/
+    public String[] httpMethod() default { "Get", "Post" };
     /**action地址空间。*/
     public String[] value();
 }

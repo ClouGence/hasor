@@ -17,6 +17,7 @@ package org.platform.freemarker.support;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import org.platform.freemarker.FmBinder;
 import org.platform.freemarker.IFmTag;
 import org.platform.freemarker.ITemplateLoaderCreator;
 import com.google.inject.Binder;
@@ -27,19 +28,19 @@ import com.google.inject.internal.UniqueAnnotations;
  * @version : 2013-5-22
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class FreemarkerBinder implements Module {
+public class FmBinderImplements implements Module, FmBinder {
     private List<TemplateLoaderCreatorDefinition> templateLoaderDefinition = new ArrayList<TemplateLoaderCreatorDefinition>();
     private List<FmMethodDefinition>              fmMethodDefinition       = new ArrayList<FmMethodDefinition>();
     private List<FmTagDefinition>                 fmTagDefinition          = new ArrayList<FmTagDefinition>();
-    /***/
+    @Override
     public void bindTemplateLoaderCreator(String name, Class<ITemplateLoaderCreator> templateLoaderCreatorType) {
         this.templateLoaderDefinition.add(new TemplateLoaderCreatorDefinition(name, templateLoaderCreatorType));
     }
-    /***/
+    @Override
     public void bindTag(String tagName, Class<IFmTag> fmTagType) {
         this.fmTagDefinition.add(new FmTagDefinition(tagName, fmTagType));
     }
-    /***/
+    @Override
     public void bindMethod(String funName, Method fmMethodType) {
         this.fmMethodDefinition.add(new FmMethodDefinition(funName, fmMethodType));
     }

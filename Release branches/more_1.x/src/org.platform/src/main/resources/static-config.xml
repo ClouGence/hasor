@@ -48,7 +48,7 @@
 		<suffixSet>*.ftl</suffixSet>
 		<!-- Configuration对象创建工厂 -->
 		<configurationFactory>org.platform.freemarker.support.DefaultFreemarkerFactory</configurationFactory>
-		<!-- 模板装载器，以下配置在服务器运行中不支持自动应用修改。 -->
+		<!-- 模板装载器（注意：以下配置在服务器运行中不支持自动应用修改） -->
 		<templateLoader>
 			<!-- <PathLoader>c:\abc</PathLoader> -->
 			<!-- <PredefineLoader> -->

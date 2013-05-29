@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package org.platform.freemarker;
+import org.more.webui.freemarker.loader.ConfigTemplateLoader;
 import org.platform.context.AppContext;
+import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 /**
  * 
@@ -34,6 +36,11 @@ public interface ConfigurationFactory {
     public static final String FreemarkerConfig_Settings             = "freemarker.settings";
     /**FreeMarker装载器配置.*/
     public static final String FreemarkerConfig_TemplateLoader       = "freemarker.templateLoader";
+    //
     /*** 获取配置好的freemarker{@link Configuration}对象。*/
     public Configuration configuration(AppContext appContext);
+    /***/
+    public TemplateLoader createTemplateLoader(AppContext appContext);
+    //
+    public ConfigTemplateLoader createConfigTemplateLoader(AppContext appContext);
 }

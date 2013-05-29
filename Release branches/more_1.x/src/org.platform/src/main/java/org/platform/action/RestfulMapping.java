@@ -26,8 +26,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD })
 public @interface RestfulMapping {
-    /**对应生效的http方法，默认为空，表示匹配任何http方法。*/
-    public String method() default "";
+    /**对应生效的http方法，默认为Get\Post。*/
+    public String[] httpMethod() default { "Get", "Post" };
     /**restful风格映射。*/
     public String value();
 }

@@ -96,6 +96,10 @@ public abstract class Platform implements PlatformConfig {
                 logString.delete(logString.length() - 3, logString.length() - 1);
             logString.insert(0, "[ ");
             logString.append("]");
+        } else if (object.getClass().isEnum() == true) {
+            //
+            Enum<?> enumObj = (Enum<?>) object;
+            logString.append(enumObj.name());
         } else if (object.getClass().isArray() == true) {
             //
             Object[] array = (Object[]) object;

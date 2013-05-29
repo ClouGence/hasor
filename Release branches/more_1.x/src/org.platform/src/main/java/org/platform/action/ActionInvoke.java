@@ -13,28 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.action.support;
+package org.platform.action;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import org.platform.context.AppContext;
+import javax.servlet.http.HttpServletResponse;
 /**
- * 
- * @version : 2013-5-11
+ * 负责调用Action方法。
+ * @version : 2013-5-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ActionManagerImpl implements ActionManager {
-    /*经过倒序排序之后的命名空间管理器*/
-    private NameSpaceManager[] nameSpaceManager = null;
-    @Override
-    public void initManager(AppContext appContext) {
-        // TODO Auto-generated method stub
-    }
-    @Override
-    public void destroyManager(AppContext appContext) {
-        // TODO Auto-generated method stub
-    }
-    @Override
-    public NameSpaceManager findNameSpace(HttpServletRequest request) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+public interface ActionInvoke {
+    /**执行方法调用。*/
+    public Object invoke(HttpServletRequest request, HttpServletResponse response) throws ServletException;
 }

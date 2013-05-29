@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.action.support;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+package org.platform.freemarker;
+import java.lang.reflect.Method;
 /**
- * 负责调用Action方法。
- * @version : 2013-5-10
+ * 
+ * @version : 2013-5-29
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ActionInvoke {
-    /**获取被标记为Action的方法。*/
-    public String getActionMethod();
-    /**执行方法调用。*/
-    public Object invoke(HttpServletRequest request, HttpServletResponse response, Map<String, String[]> params);
+public interface FmBinder {
+    /***/
+    public void bindTemplateLoaderCreator(String name, Class<ITemplateLoaderCreator> templateLoaderCreatorType);
+    /***/
+    public void bindTag(String tagName, Class<IFmTag> fmTagType);
+    /***/
+    public void bindMethod(String funName, Method fmMethodType);
 }

@@ -15,6 +15,7 @@
  */
 package org.platform.action.support;
 import org.platform.Platform;
+import org.platform.action.ActionManager;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
 import org.platform.context.PlatformListener;
@@ -27,7 +28,8 @@ import com.google.inject.Binder;
  */
 @PlatformExt(displayName = "ActionModuleListener", description = "org.platform.action软件包功能支持。", startIndex = Integer.MIN_VALUE)
 public class ActionPlatformListener implements PlatformListener {
-    private ActionSettings settings = null;
+    private ActionSettings settings      = null;
+    private ActionManager  actionManager = null;
     @Override
     public void initialize(ApiBinder event) {
         Binder binder = event.getGuiceBinder();
@@ -35,16 +37,21 @@ public class ActionPlatformListener implements PlatformListener {
         this.settings = new ActionSettings();
         this.settings.loadConfig(event.getSettings());
         binder.bind(ActionSettings.class).toInstance(this.settings);//通过Guice
+        binder.bind(ActionManager.class).to(InternalActionManager.class).asEagerSingleton();
         /*初始化*/
+        s
     }
     @Override
     public void initialized(AppContext appContext) {
         appContext.getSettings().addSettingsListener(this.settings);
+        this.actionManager = appContext.getInstance(ActionManager.class);
+        this.actionManager.initManager(appContext);
         //
-        Platform.info("online ->> action is %s", (this.settings.isEnable() ? "enable." : "disable."));
+        Platform.info("online ->> action is %s for style %s", (this.settings.isEnable() ? "enable." : "disable."), this.settings.getMode());
     }
     @Override
     public void destroy(AppContext appContext) {
         appContext.getSettings().removeSettingsListener(this.settings);
+        this.actionManager.destroyManager(appContext);
     }
 }

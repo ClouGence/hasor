@@ -76,7 +76,7 @@ public class FreemarkerPlatformListener implements PlatformListener {
             }
         }
         //3.注册服务
-        FreemarkerBinder freemarkerBinder = new FreemarkerBinder();
+        FmBinderImplements freemarkerBinder = new FmBinderImplements();
         for (Class<ITemplateLoaderCreator> creatorType : templateLoaderCreatorList) {
             TemplateLoaderCreator creatorAnno = creatorType.getAnnotation(TemplateLoaderCreator.class);
             String defineName = creatorAnno.value();
@@ -101,7 +101,7 @@ public class FreemarkerPlatformListener implements PlatformListener {
             }
         }
         //3.注册服务
-        FreemarkerBinder freemarkerBinder = new FreemarkerBinder();
+        FmBinderImplements freemarkerBinder = new FmBinderImplements();
         for (Class<IFmTag> fmTagType : fmTagList) {
             FmTag fmTagAnno = fmTagType.getAnnotation(FmTag.class);
             String tagName = fmTagAnno.value();
@@ -117,7 +117,7 @@ public class FreemarkerPlatformListener implements PlatformListener {
         Set<Class<?>> fmMethodSet = event.getClassSet(Object.class);
         if (fmMethodSet == null)
             return;
-        FreemarkerBinder freemarkerBinder = new FreemarkerBinder();
+        FmBinderImplements freemarkerBinder = new FmBinderImplements();
         for (Class<?> fmMethodType : fmMethodSet) {
             try {
                 Method[] m1s = fmMethodType.getMethods();

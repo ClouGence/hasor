@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.more.global.assembler.xml.XmlProperty;
+import org.more.webui.freemarker.loader.ConfigTemplateLoader;
 import org.more.webui.freemarker.loader.MultiTemplateLoader;
 import org.platform.Platform;
 import org.platform.context.AppContext;
@@ -35,24 +36,18 @@ import freemarker.template.TemplateException;
  */
 @Singleton
 public class DefaultFreemarkerFactory implements ConfigurationFactory {
-    private Configuration cfg = null;
     @Override
     public synchronized Configuration configuration(AppContext appContext) {
-        if (this.cfg != null)
-            return this.cfg;
-        this.cfg = new Configuration();
+        Configuration cfg = new Configuration();
         //1.设置参数
-        this.applySetting(this.cfg, appContext);
-        TemplateLoader loader = this.createTemplateLoader(appContext);
-        if (loader != null)
-            this.cfg.setTemplateLoader(loader);
+        this.applySetting(cfg, appContext);
         //2.加入模板标签、模板函数
-        this.applyFmMethod(this.cfg, appContext);
-        this.applyFmTag(this.cfg, appContext);
+        this.applyFmMethod(cfg, appContext);
+        this.applyFmTag(cfg, appContext);
         //3.
-        this.applyBean(this.cfg, appContext);
+        this.applyBean(cfg, appContext);
         //4.Return
-        return this.cfg;
+        return cfg;
     }
     //
     /***/
@@ -114,7 +109,7 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
     }
     //
     /***/
-    protected TemplateLoader createTemplateLoader(AppContext appContext) {
+    public TemplateLoader createTemplateLoader(AppContext appContext) {
         ArrayList<ITemplateLoader> templateLoaderList = new ArrayList<ITemplateLoader>();
         XmlProperty configLoaderList = appContext.getSettings().getXmlProperty(FreemarkerConfig_TemplateLoader);
         ManagedTemplateLoaderCreator templateLoaderCreatorManager = new ManagedTemplateLoaderCreator(appContext);
@@ -151,5 +146,9 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
         if (loaders.length >= 0)
             return new MultiTemplateLoader(loaders);
         return null;
+    }
+    @Override
+    public ConfigTemplateLoader createConfigTemplateLoader(AppContext appContext) {
+        return new ConfigTemplateLoader();
     }
 }

@@ -13,26 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.action.support;
-/***
- * 
- * @version : 2013-5-11
+package org.platform.action;
+import org.platform.context.AppContext;
+/** 
+ * Action生命周期管理器。
+ * @version : 2013-4-20
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ActionBinder {
-    /**绑定一个命名空间*/
-    public NamespaceBindingBuilder bindPath(String path);
-    //
-    //
-    public static interface NamespaceBindingBuilder {
-        public ActionBindingBuilder bindAction(String actionName)
-        //public NamespaceBindingBuilder bindPath(String namespacePath)
-    }
-    
-    
-    public ActionBindingBuilder bindAction(String actionName)
-    //public NamespaceBindingBuilder bindPath(String namespacePath)
+public interface ActionManager {
+    /**初始化启动缓存服务。*/
+    public void initManager(AppContext appContext);
+    /**销毁缓存服务*/
+    public void destroyManager(AppContext appContext);
+    /**根据请求地址查找符合的Action命名空间。返回的map中key是action名。*/
+    public ActionNameSpace getNameSpace(String actionNS);
+    /**获取注册的ActionNameSpace*/
+    public ActionNameSpace[] getNameSpaceList();
 }
-
-
-

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.action.support;
+package org.platform.action.controller;
 import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -21,9 +21,6 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import org.platform.general.WebFilter;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 /**
  * action功能的入口。
@@ -31,27 +28,16 @@ import com.google.inject.Singleton;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Singleton
-@WebFilter(value = "*", sort = Integer.MIN_VALUE + 2)
-public class ControllerFilter implements Filter {
-    @Inject
-    private ActionSettings actionSettings = null;
-    //    @Inject
-    private ActionManager  actionManager  = null;
-    // 
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        // TODO Auto-generated method stub
-    }
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        //
-        chain.doFilter(request, response);
-        // TODO Auto-generated method stub
-        //        actionManager.findNameSpace(httpRequest).getActionByName(httpRequest.getMethod(), "aa").invoke(request, response, params);
-    }
+//@WebFilter(value = "*", sort = Integer.MIN_VALUE + 2)
+public class MergedController implements Filter {
     @Override
     public void destroy() {
+        // TODO Auto-generated method stub
+    }s
+    @Override
+    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {}
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
         // TODO Auto-generated method stub
     }
 }

@@ -13,10 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.action.support;
-/**
- * action结果处理器。
- * @version : 2013-5-10
+package org.platform.action;
+/** 
+ * 命名空间管理器。相同的action命名空间下的action方法，可以定义在不同的控制器下。
+ * @version : 2013-4-20
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ResultProcess {}
+public interface ActionNameSpace {
+    /**获取控制器名称。*/
+    public String getNameSpace();
+    /**获取控制器中定义的action方法。*/
+    public ActionInvoke getActionByName(String httpMethod, String actionName);
+}

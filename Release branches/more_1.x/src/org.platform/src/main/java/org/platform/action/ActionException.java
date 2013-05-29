@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.action.support;
-import javax.servlet.http.HttpServletRequest;
-import org.platform.context.AppContext;
-/** 
- * Action生命周期管理器。
- * @version : 2013-4-20
+package org.platform.action;
+import javax.servlet.ServletException;
+/**
+ * 
+ * @version : 2013-5-29
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ActionManager {
-    /**初始化启动缓存服务。*/
-    public void initManager(AppContext appContext);
-    /**销毁缓存服务*/
-    public void destroyManager(AppContext appContext);
-    /**根据请求地址查找符合的Action命名空间。返回的map中key是action名。*/
-    public NameSpaceManager findNameSpace(HttpServletRequest request);
+public class ActionException extends ServletException {
+    private static final long serialVersionUID = -3906162254138766480L;
+    public ActionException(String message) {
+        super(message);
+    }
 }

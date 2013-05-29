@@ -18,10 +18,13 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import org.more.util.CommonCodeUtils;
 import org.more.webui.freemarker.loader.ConfigTemplateLoader;
 import org.more.webui.freemarker.loader.MultiTemplateLoader;
 import org.platform.context.AppContext;
+import org.platform.context.SettingListener;
+import org.platform.context.Settings;
 import org.platform.freemarker.ConfigurationFactory;
 import org.platform.freemarker.FreemarkerManager;
 import com.google.inject.Singleton;
@@ -35,11 +38,11 @@ import freemarker.template.TemplateException;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Singleton
-class InternalFreemarkerManager implements FreemarkerManager {
-    private AppContext           appContext           = null;
-    private ConfigTemplateLoader stringLoader         = null;
-    private ConfigurationFactory configurationFactory = null;
-    private Configuration        configuration        = null;
+class InternalFreemarkerManager implements FreemarkerManager, SettingListener {
+    private AppContext             appContext           = null;
+    private ConfigTemplateLoader   stringLoader         = null;
+    private ConfigurationFactory   configurationFactory = null;
+    private volatile Configuration configuration        = null;
     //
     //
     @Override
@@ -48,23 +51,28 @@ class InternalFreemarkerManager implements FreemarkerManager {
             this.configurationFactory = appContext.getInstance(ConfigurationFactory.class);
         this.appContext = appContext;
         this.getFreemarker();
-        //this.configuration.setSharedVariable("", new TemplateModel() {});
+        appContext.getSettings().addSettingsListener(this);
     }
     @Override
-    public void destroyManager(AppContext appContext) {}
+    public void destroyManager(AppContext appContext) {
+        appContext.getSettings().removeSettingsListener(this);
+    }
     //
+    @Override
+    public void loadConfig(Settings newConfig) {
+        this.configuration = null;
+    }
     public final Configuration getFreemarker() {
         if (this.configuration == null) {
             this.configuration = this.configurationFactory.configuration(this.appContext);
-            TemplateLoader[] loaders = null;
-            if (this.configuration.getTemplateLoader() != null) {
-                loaders = new TemplateLoader[2];
-                loaders[1] = this.configuration.getTemplateLoader();
-            } else
-                loaders = new TemplateLoader[1];
-            this.stringLoader = new ConfigTemplateLoader();
-            loaders[0] = this.stringLoader;
-            this.configuration.setTemplateLoader(new MultiTemplateLoader(loaders));
+            //
+            ArrayList<TemplateLoader> loaders = new ArrayList<TemplateLoader>();
+            if (this.configuration.getTemplateLoader() != null)
+                loaders.add(this.configuration.getTemplateLoader());
+            loaders.add(this.configurationFactory.createConfigTemplateLoader(this.appContext));
+            loaders.add(this.configurationFactory.createTemplateLoader(this.appContext));
+            //
+            this.configuration.setTemplateLoader(new MultiTemplateLoader(loaders.toArray(new TemplateLoader[loaders.size()])));
         }
         return configuration;
     }
