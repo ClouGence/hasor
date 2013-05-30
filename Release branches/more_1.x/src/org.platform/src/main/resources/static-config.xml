@@ -40,7 +40,10 @@
 		<!-- Web请求遇到异常后轮询errorHook的次数。 -->
 		<errorCaseCount>5</errorCaseCount>
 		<!-- Action配置，enable：是否启用Action功能。 模式：mode:RestOnly（rest风格）、ServletOnly（中央servlet）、Both（两者同时使用） -->
-		<actionServlet enable="true" mode="ServletOnly">*.do</actionServlet>
+		<actionServlet enable="true" mode="ServletOnly" intercept="*.do">
+			<!-- 方法忽略的方法（逗号分割多组方法名），注意：在这里配置的忽略会应用到所有action上 -->
+			<ignoreMethod></ignoreMethod>
+		</actionServlet>
 	</httpServlet>
 	<!-- freemarker 配置，onError当模板处理发生异常时的处理方式。模式：ThrowError（抛出异常）、PrintOnConsole（打印到控制台或日志）、Warning（忽略，仅仅产生一条警告消息）PrintOnPage（打印到页面） -->
 	<freemarker enable="true" onError="ThrowError">

@@ -17,12 +17,16 @@ package org.platform.freemarker.support;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import org.more.util.StringUtils;
 import org.platform.freemarker.FmBinder;
 import org.platform.freemarker.IFmTag;
 import org.platform.freemarker.ITemplateLoaderCreator;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.internal.UniqueAnnotations;
+import freemarker.template.DefaultObjectWrapper;
+import freemarker.template.TemplateModel;
+import freemarker.template.TemplateModelException;
 /**
  * 
  * @version : 2013-5-22
@@ -32,17 +36,29 @@ public class FmBinderImplements implements Module, FmBinder {
     private List<TemplateLoaderCreatorDefinition> templateLoaderDefinition = new ArrayList<TemplateLoaderCreatorDefinition>();
     private List<FmMethodDefinition>              fmMethodDefinition       = new ArrayList<FmMethodDefinition>();
     private List<FmTagDefinition>                 fmTagDefinition          = new ArrayList<FmTagDefinition>();
+    private List<FmObjectDefinition>              fmObjectDefinition       = new ArrayList<FmObjectDefinition>();
     @Override
     public void bindTemplateLoaderCreator(String name, Class<ITemplateLoaderCreator> templateLoaderCreatorType) {
         this.templateLoaderDefinition.add(new TemplateLoaderCreatorDefinition(name, templateLoaderCreatorType));
     }
     @Override
     public void bindTag(String tagName, Class<IFmTag> fmTagType) {
+        if (StringUtils.isBlank(tagName) || fmTagType == null)
+            throw new NullPointerException("tagName or tagType is null.");
         this.fmTagDefinition.add(new FmTagDefinition(tagName, fmTagType));
     }
     @Override
     public void bindMethod(String funName, Method fmMethodType) {
+        if (StringUtils.isBlank(funName) || fmMethodType == null)
+            throw new NullPointerException("funName or targetMethod is null.");
         this.fmMethodDefinition.add(new FmMethodDefinition(funName, fmMethodType));
+    }
+    @Override
+    public void bindObject(String objName, Object targetObject) throws TemplateModelException {
+        if (StringUtils.isBlank(objName) || targetObject == null)
+            throw new NullPointerException("objName or targetObject is null.");
+        TemplateModel modelObject = DefaultObjectWrapper.DEFAULT_WRAPPER.wrap(targetObject);
+        this.fmObjectDefinition.add(new FmObjectDefinition(objName, modelObject));
     }
     @Override
     public void configure(Binder binder) {
@@ -54,6 +70,9 @@ public class FmBinderImplements implements Module, FmBinder {
         }
         for (FmMethodDefinition define : this.fmMethodDefinition) {
             binder.bind(FmMethodDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(define);
+        }
+        for (FmObjectDefinition define : this.fmObjectDefinition) {
+            binder.bind(FmObjectDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(define);
         }
     }
 }

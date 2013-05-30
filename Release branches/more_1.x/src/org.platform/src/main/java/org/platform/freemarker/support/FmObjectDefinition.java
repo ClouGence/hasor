@@ -13,21 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.freemarker;
-import java.lang.reflect.Method;
-import freemarker.template.TemplateModelException;
+package org.platform.freemarker.support;
+import com.google.inject.Provider;
+import freemarker.template.TemplateModel;
 /**
  * 
- * @version : 2013-5-29
+ * @version : 2013-5-24
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public interface FmBinder {
-    /***/
-    public void bindTemplateLoaderCreator(String name, Class<ITemplateLoaderCreator> templateLoaderCreatorType);
-    /***/
-    public void bindTag(String tagName, Class<IFmTag> fmTagType);
-    /***/
-    public void bindMethod(String funName, Method fmMethodType);
-    /***/
-    public void bindObject(String objName, Object targetObject) throws TemplateModelException;
+class FmObjectDefinition implements Provider<TemplateModel> {
+    private String        objName      = null;
+    private TemplateModel targetObject = null;
+    //
+    public FmObjectDefinition(String objName, TemplateModel targetObject) {
+        this.objName = objName;
+        this.targetObject = targetObject;
+    }
+    public String getName() {
+        return this.objName;
+    }
+    @Override
+    public TemplateModel get() {
+        return this.targetObject;
+    }
 }

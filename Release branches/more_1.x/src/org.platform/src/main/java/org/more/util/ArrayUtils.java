@@ -23,6 +23,27 @@ import java.util.List;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public abstract class ArrayUtils {
+    public static boolean isInclude(Object[] arr, Object target) {
+        if (isBlank(arr) == true)
+            return false;
+        //
+        boolean returnData = false;
+        for (Object obj : arr) {
+            if (obj == null && target == null) {
+                returnData = true;
+                break;
+            }
+            //
+            if ((obj == null && target != null) || (obj != null && target == null))
+                returnData = false;
+            //
+            returnData = obj.equals(target);
+            //
+            if (returnData)
+                break;
+        }
+        return returnData;
+    }
     public static boolean isBlank(Object[] arr) {
         return arr == null || arr.length == 0;
     }

@@ -48,7 +48,7 @@ public class ActionController extends HttpServlet {
         String actionMethod = actionInvoke.split("\\.")[0];
         ActionInvoke invoke = null;
         //2.获取 ActionInvoke
-        try {s
+        try {
             ActionNameSpace nameSpace = actionManager.getNameSpace(actionNS);
             invoke = nameSpace.getActionByName(request.getMethod(), actionMethod);
         } catch (NullPointerException e) {
@@ -58,6 +58,7 @@ public class ActionController extends HttpServlet {
         //3.执行调用
         try {
             Object result = invoke.invoke(request, response);
+            s
             //
         } catch (ServletException e) {
             if (e.getCause() instanceof IOException)

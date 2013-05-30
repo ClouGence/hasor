@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.platform.context.support;
-import static org.platform.PlatformConfig.Platform_LoadPackages;
+import static org.platform.Platform.Platform_LoadPackages;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;

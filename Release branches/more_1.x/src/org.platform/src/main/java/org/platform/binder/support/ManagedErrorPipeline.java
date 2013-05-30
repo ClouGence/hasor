@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.platform.binder.support;
-import static org.platform.PlatformConfig.HttpServlet_ErrorCaseCount;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +32,13 @@ import com.google.inject.TypeLiteral;
  */
 @Singleton
 class ManagedErrorPipeline {
-    private ErrorDefinition[] errorDefinitions;
-    private volatile boolean  initialized = false;
-    private AppContext        appContext  = null;
+    /**异常处理程序总迭代次数(配置Code).*/
+    public static final String HttpServlet_ErrorCaseCount = "httpServlet.errorCaseCount";
+    //
+    //
+    private ErrorDefinition[]  errorDefinitions;
+    private volatile boolean   initialized                = false;
+    private AppContext         appContext                 = null;
     //
     public synchronized void initPipeline(AppContext appContext) throws ServletException {
         this.appContext = appContext;

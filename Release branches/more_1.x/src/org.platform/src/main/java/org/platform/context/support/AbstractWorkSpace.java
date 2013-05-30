@@ -14,13 +14,6 @@
  * limitations under the License.
  */
 package org.platform.context.support;
-import static org.platform.PlatformConfig.Workspace_CacheDir;
-import static org.platform.PlatformConfig.Workspace_CacheDir_Absolute;
-import static org.platform.PlatformConfig.Workspace_DataDir;
-import static org.platform.PlatformConfig.Workspace_DataDir_Absolute;
-import static org.platform.PlatformConfig.Workspace_TempDir;
-import static org.platform.PlatformConfig.Workspace_TempDir_Absolute;
-import static org.platform.PlatformConfig.Workspace_WorkDir;
 import java.io.File;
 import java.io.IOException;
 import org.more.util.StringUtils;
@@ -31,6 +24,19 @@ import org.platform.context.WorkSpace;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractWorkSpace implements WorkSpace {
+    /**程序工作空间基础目录（绝对地址）*/
+    public static final String Workspace_WorkDir           = "workspace.workDir";
+    /** 程序的文件数据目录（默认相对workDir地址，可以通过设置absolute属性为true表示一个绝对地址）*/
+    public static final String Workspace_DataDir           = "workspace.dataDir";
+    public static final String Workspace_DataDir_Absolute  = "workspace.dataDir.absolute";
+    /** 程序运行期间所需的临时数据存放地址（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址）*/
+    public static final String Workspace_TempDir           = "workspace.tempDir";
+    public static final String Workspace_TempDir_Absolute  = "workspace.tempDir.absolute";
+    /** 程序运行时生成的缓存数据存放位置（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址）*/
+    public static final String Workspace_CacheDir          = "workspace.cacheDir";
+    public static final String Workspace_CacheDir_Absolute = "workspace.cacheDir.absolute";
+    //
+    //
     @Override
     public String getWorkDir() {
         String workDir = getSettings().getDirectoryPath(Workspace_WorkDir);

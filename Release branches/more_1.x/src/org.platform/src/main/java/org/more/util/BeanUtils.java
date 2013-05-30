@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import org.more.classcode.EngineToos;
@@ -278,19 +279,11 @@ public abstract class BeanUtils {
     /*----------------------------------------------------------------------------------------*/
     /**查找一个可操作的字段列表。*/
     public static List<Field> getFields(Class<?> type) {
-        ArrayList<Field> fList = new ArrayList<Field>();
-        for (Field field : type.getFields())
-            if (fList.contains(field) == false)
-                fList.add(field);
-        return fList;
+        return Arrays.asList(type.getFields());
     }
     /**查找一个可操作的方法列表。*/
     public static List<Method> getMethods(Class<?> type) {
-        ArrayList<Method> mList = new ArrayList<Method>();
-        for (Method method : type.getMethods())
-            if (mList.contains(method) == false)
-                mList.add(method);
-        return mList;
+        return Arrays.asList(type.getMethods());
     }
     /**查找一个可操作的字段。*/
     public static Field getField(String fieldName, Class<?> type) {

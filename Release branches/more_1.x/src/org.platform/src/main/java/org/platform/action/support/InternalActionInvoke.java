@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.more.util.StringUtils;
 import org.platform.action.ActionInvoke;
 import org.platform.context.AppContext;
 /**
@@ -26,71 +27,87 @@ import org.platform.context.AppContext;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 abstract class InternalActionInvoke implements ActionInvoke {
-    private String[] actionMethod = null;
-    //
-    //
-    public InternalActionInvoke(String[] actionMethod) {
-        this.actionMethod = actionMethod;
+    private String[]   httpMethod     = null;
+    private String     actionName     = null;
+    private String     restfulMapping = null;
+    private AppContext appContext     = null;
+    private Object     target         = null;
+    public InternalActionInvoke(String actionName) {
+        this.actionName = actionName;
     }
-    public String[] getActionMethod() {
-        return this.actionMethod;
+    //
+    //
+    public String[] getHttpMethod() {
+        return this.httpMethod;
+    }
+    public String getActionName() {
+        return actionName;
+    }
+    public String getRestfulMapping() {
+        return restfulMapping;
+    }
+    protected AppContext getAppContext() {
+        return appContext;
+    }
+    protected Object getTarget() {
+        return this.target;
+    }
+    protected void setTarget(Object target) {
+        this.target = target;
+    }
+    protected void setActionMethod(String[] httpMethod) {
+        this.httpMethod = httpMethod;
+    }
+    public void setRestfulMapping(String restfulMapping) {
+        this.restfulMapping = restfulMapping;
     }
     /**≥ı ºªØActionInvoke*/
-    public void destroyInvoke(AppContext appContext) {};
+    public void destroyInvoke(AppContext appContext) {
+        this.appContext = appContext;
+    };
     /**œ˙ªŸActionInvoke*/
-    public void initInvoke(AppContext appContext) {};
+    public void initInvoke(AppContext appContext) {
+        this.appContext = appContext;
+    };
     @Override
     public abstract Object invoke(HttpServletRequest request, HttpServletResponse response) throws ServletException;
     /*-------------------------------------------------------------------------------------------------------------------*/
     /**Method*/
     public static class InternalMethodActionInvoke extends InternalActionInvoke {
         private Method targetMethod = null;
-        public InternalMethodActionInvoke(String[] actionMethod, Method targetMethod) {
-            super(actionMethod);
+        public InternalMethodActionInvoke(Method targetMethod) {
+            super(targetMethod.getName());
             this.targetMethod = targetMethod;
         }
         @Override
         public Object invoke(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-            // TODO Auto-generated method stub
+            Object targetObject = this.getTarget();
+            if (targetObject == null) {
+                AppContext appContext = this.getAppContext();
+                Class<?> targetClass = this.targetMethod.getDeclaringClass();
+                String beanName = appContext.getBeanName(targetClass);
+                if (StringUtils.isBlank(beanName) == false)
+                    targetObject = appContext.getBean(beanName);
+                else
+                    targetObject = appContext.getInstance(targetClass);
+            }
+            //
+            if (targetObject == null)
+                throw new ServletException("create invokeObject on " + targetMethod.toString() + " return null.");
+            //
+            s
             return null;
-        }
-    }
-    /**Class*/
-    public static class InternalClassActionInvoke extends InternalActionInvoke {
-        private Class<?> targetClass = null;
-        public InternalClassActionInvoke(String[] actionMethod, Class<?> targetClass) {
-            super(actionMethod);
-            this.targetClass = targetClass;
-        }
-        @Override
-        public Object invoke(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-            // TODO Auto-generated method stub
-            return null;
-        }
-    }
-    /**Object*/
-    public static class InternalObjectActionInvoke extends InternalActionInvoke {
-        private Object targetObject = null;
-        public InternalObjectActionInvoke(String[] actionMethod, Object targetObject) {
-            super(actionMethod);
-            this.targetObject = targetObject;
-        }
-        @Override
-        public Object invoke(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-            // TODO Auto-generated method stub
-            return null;a
         }
     }
     /**ActionInvoke*/
     public static class InternalInvokeActionInvoke extends InternalActionInvoke {
-        private ActionInvoke targetInvoke = null;
-        public InternalInvokeActionInvoke(String[] actionMethod, ActionInvoke targetInvoke) {
-            super(actionMethod);
-            this.targetInvoke = targetInvoke;
+        public InternalInvokeActionInvoke(String actionName, ActionInvoke targetInvoke) {
+            super(actionName);
+            this.setTarget(targetInvoke);
         }
         @Override
         public Object invoke(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-            return this.targetInvoke.invoke(request, response);
+            return ((ActionInvoke) this.getTarget()).invoke(request, response);
         }
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.platform.general;
-import static org.platform.util.PlatformStringUtil.getIndexStr;
+import static org.platform.PlatformStringUtil.getIndexStr;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;

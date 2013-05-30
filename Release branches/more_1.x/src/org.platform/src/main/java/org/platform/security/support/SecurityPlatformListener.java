@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.platform.security.support;
-import static org.platform.util.PlatformStringUtil.getIndexStr;
+import static org.platform.PlatformStringUtil.getIndexStr;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;

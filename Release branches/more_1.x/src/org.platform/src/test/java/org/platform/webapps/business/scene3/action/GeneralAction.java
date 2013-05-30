@@ -13,21 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.freemarker;
-import java.lang.reflect.Method;
-import freemarker.template.TemplateModelException;
+package org.platform.webapps.business.scene3.action;
+import org.platform.action.Controller;
 /**
  * 
  * @version : 2013-5-29
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public interface FmBinder {
-    /***/
-    public void bindTemplateLoaderCreator(String name, Class<ITemplateLoaderCreator> templateLoaderCreatorType);
-    /***/
-    public void bindTag(String tagName, Class<IFmTag> fmTagType);
-    /***/
-    public void bindMethod(String funName, Method fmMethodType);
-    /***/
-    public void bindObject(String objName, Object targetObject) throws TemplateModelException;
+@Controller("/scene3/general")
+public class GeneralAction {
+    public String print() {
+        System.out.println("abc");
+        return "abc";
+    }
 }

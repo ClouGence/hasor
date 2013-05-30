@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.platform.context.startup;
-import static org.platform.PlatformConfig.Platform_LoadPackages;
+import static org.platform.Platform.Platform_LoadPackages;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;

@@ -26,21 +26,22 @@ public interface ActionBinder {
     /**用来绑定一个命名空间*/
     public static interface NameSpaceBindingBuilder {
         public String getNameSpace();
-        /**注册一个Action*/
-        public ActionBindingBuilder bindAction(String actionName);
+        /**注册一个Action，将action绑定到方法上。*/
+        public ActionBindingBuilder bindActionClass(Class<?> targetClass);
+        /**注册一个Action，将action绑定到方法上。*/
+        public ActionBindingBuilder bindActionObject(Object targetObject);
+        /**注册一个Action，将action绑定到方法上。*/
+        public ActionBindingBuilder bindActionMethod(Method targetMethod);
+        /**注册一个Action，将action绑定到{@link ActionInvoke}接口。*/
+        public ActionBindingBuilder bindActionInvoke(String actionName, ActionInvoke targetInvoke);
     }
     /**用来绑定action的执行目标*/
     public static interface ActionBindingBuilder {
-        public String getActionName();
         /**将action绑定的Http方法上。*/
-        public ActionBindingBuilder onMethod(String httpMethod);
-        /**将action绑定到方法上。*/
-        public void bindClass(Class<?> targetClass);
-        /**将action绑定到方法上。*/
-        public void bindObject(Object targetObject);
-        /**将action绑定到方法上。*/
-        public void bindMethod(Method targetMethod);
-        /**将action绑定到{@link ActionInvoke}接口。*/
-        public void bindActionInvoke(ActionInvoke targetInvoke);
+        public ActionBindingBuilder onHttpMethod(String httpMethod);
+        /**restful风格的映射*/
+        public void restfulMapping(String restfulMapping);
+        /**Action方法的对象*/
+        public void toInstance(Object targetAction);
     }
 }

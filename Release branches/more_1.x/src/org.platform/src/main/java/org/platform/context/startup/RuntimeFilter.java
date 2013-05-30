@@ -72,10 +72,10 @@ public class RuntimeFilter implements Filter {
             this.beforeRequest(appContext, httpReq, httpRes);
             this.processFilterPipeline(httpReq, httpRes, chain);
         } catch (IOException e) {
-            Platform.warning("execFilterPipeline IOException %s.", e.getMessage());
+            Platform.warning("execFilterPipeline IOException %s.", e);
             throw e;
         } catch (ServletException e) {
-            Platform.warning("execFilterPipeline ServletException %s.", e.getCause().getMessage());
+            Platform.warning("execFilterPipeline ServletException %s.", e.getCause());
             throw e;
         } finally {
             this.afterResponse(appContext, httpReq, httpRes);

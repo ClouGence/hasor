@@ -16,8 +16,8 @@
 package org.platform.freemarker.support;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import org.more.global.assembler.xml.XmlProperty;
+import org.more.util.StringUtils;
 import org.more.webui.freemarker.loader.ConfigTemplateLoader;
 import org.more.webui.freemarker.loader.MultiTemplateLoader;
 import org.platform.Platform;
@@ -25,7 +25,9 @@ import org.platform.context.AppContext;
 import org.platform.freemarker.ConfigurationFactory;
 import org.platform.freemarker.ITemplateLoaderCreator;
 import org.platform.freemarker.loader.ITemplateLoader;
+import com.google.inject.Binding;
 import com.google.inject.Singleton;
+import com.google.inject.TypeLiteral;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
@@ -52,25 +54,37 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
     //
     /***/
     protected void applyFmMethod(Configuration configuration, AppContext appContext) {
-        ManagedFmTagDefinition managedFmTag = new ManagedFmTagDefinition(appContext);
-        Map<String, Object> mfMap = managedFmTag.toMap();
-        for (java.util.Map.Entry<String, Object> ent : mfMap.entrySet())
+        ArrayList<FmMethodDefinition> fmMethodDefinitionList = new ArrayList<FmMethodDefinition>();
+        TypeLiteral<FmMethodDefinition> FMMETHOD_DEFS = TypeLiteral.get(FmMethodDefinition.class);
+        for (Binding<FmMethodDefinition> entry : appContext.getGuice().findBindingsByType(FMMETHOD_DEFS)) {
+            FmMethodDefinition define = entry.getProvider().get();
+            define.initAppContext(appContext);
+            fmMethodDefinitionList.add(define);
+        }
+        // Convert to a fixed size array for speed.
+        for (FmMethodDefinition fmDefine : fmMethodDefinitionList)
             try {
-                configuration.setSharedVariable(ent.getKey(), ent.getValue());
+                configuration.setSharedVariable(fmDefine.getName(), fmDefine.get());
             } catch (Exception e) {
-                Platform.error("%s function Registration failed!%s", ent.getKey(), e);
+                Platform.error("%s tag Registration failed!%s", fmDefine.getName(), e);
             }
     }
     //
     /***/
     protected void applyFmTag(Configuration configuration, AppContext appContext) {
-        ManagedFmMethodDefinition managedFmMethod = new ManagedFmMethodDefinition(appContext);
-        Map<String, Object> mfMap = managedFmMethod.toMap();
-        for (java.util.Map.Entry<String, Object> ent : mfMap.entrySet())
+        ArrayList<FmTagDefinition> fmTagDefinitionList = new ArrayList<FmTagDefinition>();
+        TypeLiteral<FmTagDefinition> FMTAG_DEFS = TypeLiteral.get(FmTagDefinition.class);
+        for (Binding<FmTagDefinition> entry : appContext.getGuice().findBindingsByType(FMTAG_DEFS)) {
+            FmTagDefinition define = entry.getProvider().get();
+            define.initAppContext(appContext);
+            fmTagDefinitionList.add(define);
+        }
+        // Convert to a fixed size array for speed.
+        for (FmTagDefinition fmDefine : fmTagDefinitionList)
             try {
-                configuration.setSharedVariable(ent.getKey(), ent.getValue());
+                configuration.setSharedVariable(fmDefine.getName(), fmDefine.get());
             } catch (Exception e) {
-                Platform.error("%s tag Registration failed!%s", ent.getKey(), e);
+                Platform.error("%s tag Registration failed!%s", fmDefine.getName(), e);
             }
     }
     //
@@ -86,6 +100,16 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
             } catch (Exception e) {
                 Platform.error("%s Bean Registration failed!%s", key, e);
             }
+        //
+        TypeLiteral<FmObjectDefinition> FMOBJECT_DEFS = TypeLiteral.get(FmObjectDefinition.class);
+        for (Binding<FmObjectDefinition> entry : appContext.getGuice().findBindingsByType(FMOBJECT_DEFS)) {
+            FmObjectDefinition define = entry.getProvider().get();
+            try {
+                configuration.setSharedVariable(define.getName(), define.get());
+            } catch (Exception e) {
+                Platform.error("%s Object Registration failed!%s", define.getName(), e);
+            }
+        }
     }
     //
     /***/
@@ -110,17 +134,29 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
     //
     /***/
     public TemplateLoader createTemplateLoader(AppContext appContext) {
+        //1.获取已经注册的TemplateLoader
+        ArrayList<TemplateLoaderCreatorDefinition> creatorDefinitionList = new ArrayList<TemplateLoaderCreatorDefinition>();
+        TypeLiteral<TemplateLoaderCreatorDefinition> CREATOR_DEFS = TypeLiteral.get(TemplateLoaderCreatorDefinition.class);
+        for (Binding<TemplateLoaderCreatorDefinition> entry : appContext.getGuice().findBindingsByType(CREATOR_DEFS)) {
+            TemplateLoaderCreatorDefinition define = entry.getProvider().get();
+            define.setAppContext(appContext);
+            creatorDefinitionList.add(define);
+        }
+        //2.获取配置的TemplateLoader
         ArrayList<ITemplateLoader> templateLoaderList = new ArrayList<ITemplateLoader>();
         XmlProperty configLoaderList = appContext.getSettings().getXmlProperty(FreemarkerConfig_TemplateLoader);
-        ManagedTemplateLoaderCreator templateLoaderCreatorManager = new ManagedTemplateLoaderCreator(appContext);
         if (configLoaderList != null) {
             List<XmlProperty> childrenList = configLoaderList.getChildren();
             for (XmlProperty item : childrenList) {
                 String key = item.getName();
                 String val = item.getText();
                 val = val != null ? val.trim() : "";
+                //从已经注册的TemplateLoader中获取一个TemplateLoaderCreator进行构建。
+                ITemplateLoaderCreator creator = null;
+                for (TemplateLoaderCreatorDefinition define : creatorDefinitionList)
+                    if (StringUtils.eqUnCaseSensitive(define.getName(), key))
+                        creator = define.get();
                 //
-                ITemplateLoaderCreator creator = templateLoaderCreatorManager.getCreator(key);
                 if (creator == null) {
                     Platform.warning("missing %s TemplateLoaderCreator!", key);
                 } else {

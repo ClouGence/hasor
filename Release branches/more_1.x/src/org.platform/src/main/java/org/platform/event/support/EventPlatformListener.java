@@ -40,9 +40,15 @@ public class EventPlatformListener implements PlatformListener {
     @Override
     public void initialize(ApiBinder event) {
         event.getGuiceBinder().bind(EventManager.class).to(DefaultEventManager.class).asEagerSingleton();
+    }
+    @Override
+    public void initialized(AppContext appContext) {
+        this.eventManager = appContext.getInstance(EventManager.class);
+        if (this.eventManager instanceof ManagerLife)
+            ((ManagerLife) this.eventManager).initLife(appContext);
         //1.»ñÈ¡
         this.eventListener = new ArrayList<Class<? extends EventListener>>();
-        Set<Class<?>> listenerSet = event.getClassSet(Listener.class);
+        Set<Class<?>> listenerSet = appContext.getClassSet(Listener.class);
         if (listenerSet == null)
             return;
         for (Class<?> cls : listenerSet) {
@@ -53,6 +59,9 @@ public class EventPlatformListener implements PlatformListener {
                 this.eventListener.add((Class<? extends EventListener>) cls);
             }
         }
+        this.loadListener(appContext);
+        this.eventManager.throwEvent(EventManager.OnStart);
+        Platform.info("EventManager is started.");
     }
     //
     /*×°ÔØListener*/
@@ -76,15 +85,6 @@ public class EventPlatformListener implements PlatformListener {
                 Platform.warning("addEventListener error.%s", e);
             }
         }
-    }
-    @Override
-    public void initialized(AppContext appContext) {
-        this.eventManager = appContext.getInstance(EventManager.class);
-        if (this.eventManager instanceof ManagerLife)
-            ((ManagerLife) this.eventManager).initLife(appContext);
-        this.loadListener(appContext);
-        this.eventManager.throwEvent(EventManager.OnStart);
-        Platform.info("EventManager is started.");
     }
     @Override
     public void destroy(AppContext appContext) {

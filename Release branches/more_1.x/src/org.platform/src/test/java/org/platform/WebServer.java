@@ -12,9 +12,9 @@ public class WebServer {
         SelectChannelConnector connector8082 = new SelectChannelConnector();
         connector8082.setPort(8082);
         server.addConnector(connector8082);
-        SelectChannelConnector connector8083 = new SelectChannelConnector();
-        connector8083.setPort(8083);
-        server.addConnector(connector8083);
+        //        SelectChannelConnector connector8083 = new SelectChannelConnector();
+        //        connector8083.setPort(8083);
+        //        server.addConnector(connector8083);
         //
         WebAppContext context = new WebAppContext();
         context.setContextPath("/");

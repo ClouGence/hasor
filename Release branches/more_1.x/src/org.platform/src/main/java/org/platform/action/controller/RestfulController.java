@@ -56,16 +56,30 @@ public class RestfulController implements Filter {
                 findSpace = space;
                 break;
             }
-        }s
+        }
         //2.获取 ActionInvoke
         String actionInvoke = null;
         ActionInvoke invoke = null;
         try {
-            actionInvoke = requestPath.substring(findSpace.getNameSpace().length());
-            String actionMethod = actionInvoke.split("\\.")[0];
+            actionInvoke = requestPath.substring(findSpace.getNameSpace().length() + 1);
+            String actionMethod = actionInvoke.split("/")[0];
             invoke = findSpace.getActionByName(request.getMethod(), actionMethod);
+            if (invoke == null)
+                throw new NullPointerException();
         } catch (NullPointerException e) {
             chain.doFilter(request, response);
+            return;
+        }
+        //3.执行调用
+        try {
+            Object result = invoke.invoke(request, response);
+            s
+            //
+        } catch (ServletException e) {
+            if (e.getCause() instanceof IOException)
+                throw (IOException) e.getCause();
+            else
+                throw e;
         }
     }
     @Override

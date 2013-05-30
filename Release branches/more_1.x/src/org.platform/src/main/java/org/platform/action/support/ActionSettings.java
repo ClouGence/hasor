@@ -15,8 +15,12 @@
  */
 package org.platform.action.support;
 import static org.platform.action.ActionConfig.ActionServlet_Enable;
+import static org.platform.action.ActionConfig.ActionServlet_IgnoreMethod;
 import static org.platform.action.ActionConfig.ActionServlet_Intercept;
 import static org.platform.action.ActionConfig.ActionServlet_Mode;
+import java.util.ArrayList;
+import java.util.List;
+import org.more.util.StringUtils;
 import org.platform.context.SettingListener;
 import org.platform.context.Settings;
 /**
@@ -34,14 +38,23 @@ public class ActionSettings implements SettingListener {
         /**同时工作在RestOnly、ServletOnly两个模式下。其中ServletOnly模式优先。*/
         Both
     }
-    private boolean        enable    = true; //是否启用Action功能.
-    private String         intercept = null; //action拦截器.
-    private ActionWorkMode mode      = null; //工作模式
+    private boolean        enable       = true; //是否启用Action功能.
+    private String         intercept    = null; //action拦截器.
+    private ActionWorkMode mode         = null; //工作模式
+    private List<String>   ignoreMethod = null; //忽略的方法
     @Override
     public void loadConfig(Settings newConfig) {
         this.enable = newConfig.getBoolean(ActionServlet_Enable, true);
         this.intercept = newConfig.getString(ActionServlet_Intercept, "*.do");
         this.mode = newConfig.getEnum(ActionServlet_Mode, ActionWorkMode.class, ActionWorkMode.ServletOnly);
+        this.ignoreMethod = new ArrayList<String>();
+        String ignoreStr = newConfig.getString(ActionServlet_IgnoreMethod);
+        if (StringUtils.isBlank(ignoreStr) == false) {
+            String[] ignoreArray = ignoreStr.split(",");
+            for (String str : ignoreArray)
+                if (StringUtils.isBlank(str) == false)
+                    this.ignoreMethod.add(str.trim());
+        }
     }
     public boolean isEnable() {
         return enable;
@@ -51,5 +64,8 @@ public class ActionSettings implements SettingListener {
     }
     public ActionWorkMode getMode() {
         return mode;
+    }
+    public List<String> getIgnoreMethod() {
+        return ignoreMethod;
     }
 }
