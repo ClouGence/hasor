@@ -19,6 +19,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import javax.xml.namespace.QName;
 import javax.xml.stream.StreamFilter;
 import javax.xml.stream.XMLInputFactory;
@@ -26,6 +28,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import org.more.util.StringUtils;
+import org.more.util.io.ReaderInputStream;
 import org.more.xml.stream.TextEvent.Type;
 /**
  * <b>Level 1</b>：数据访问策略。该类的功能是将xml数据流转换成为xml事件流。并且可以在扫描xml时执行xml的忽略策略。
@@ -52,6 +55,12 @@ public class XmlReader {
         if (xmlStrema == null)
             throw new NullPointerException("InputStream类型参数为空。");
         this.xmlStrema = xmlStrema;
+    }
+    /**创建一个XmlReader对象用于阅读xmlStrema参数所表述的Xml文件流。*/
+    public XmlReader(Reader xmlReader) {
+        if (xmlReader == null)
+            throw new NullPointerException("InputStream类型参数为空。");
+        this.xmlStrema = new ReaderInputStream(xmlReader);
     }
     //--------------------------------------------------------------------
     /**返回一个boolean值，该值表示了是否忽略在读取XML期间发现的描述节点。返回true表示忽略，false表示不忽略。*/
@@ -110,7 +119,8 @@ public class XmlReader {
         accept.beginAccept();
         //1.准备扫描的引擎。
         XMLInputFactory factory = XMLInputFactory.newInstance();
-        XMLStreamReader reader = factory.createXMLStreamReader(this.xmlStrema, encoding);
+        Reader textReader = new InputStreamReader(this.xmlStrema, encoding);
+        XMLStreamReader reader = factory.createXMLStreamReader(textReader);
         StreamFilter filter = new NullStreamFilter(this, this.getXmlStreamFilter());
         reader = factory.createFilteredReader(reader, filter);
         //2.准备数据

@@ -47,7 +47,7 @@ public abstract class XmlStreamEvent {
         return this.xpath;
     }
     /**获取{@link XMLStreamReader}对象。*/
-    protected XMLStreamReader getReader() {
+    public XMLStreamReader getReader() {
         return this.reader;
     }
     /**提供有关事件位置的信息。Location 提供的所有信息都是可选的。例如，应用程序可以只报告行号。*/
