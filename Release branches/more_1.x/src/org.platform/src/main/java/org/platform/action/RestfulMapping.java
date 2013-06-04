@@ -28,6 +28,6 @@ import java.lang.annotation.Target;
 public @interface RestfulMapping {
     /**对应生效的http方法，默认为Get\Post。*/
     public String[] httpMethod() default { "Get", "Post" };
-    /**restful风格映射。*/
+    /**restful风格映射。提示：可是使用通配符“*”表示任意个字符，“?”表示任意一个字符。*/
     public String value();
 }

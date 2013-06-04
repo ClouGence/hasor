@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.freemarker.FreemarkerManager;
-import org.platform.general.WebFilter;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 /**
@@ -35,7 +34,6 @@ import com.google.inject.Singleton;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Singleton
-@WebFilter(value = "*", sort = Integer.MIN_VALUE + 2)
 public class FreemarkerFilter implements Filter {
     @Inject
     private FreemarkerManager  freemarkerManager = null;

@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 package org.platform.webapps.business.scene3.action;
+import javax.servlet.http.HttpServletRequest;
 import org.platform.action.Controller;
+import org.platform.action.RestfulMapping;
+import org.platform.action.Var;
+import org.platform.webapps.business.scene2.service.Scene2_Bean;
 /**
  * 
  * @version : 2013-5-29
@@ -22,8 +26,9 @@ import org.platform.action.Controller;
  */
 @Controller("/scene3/general")
 public class GeneralAction {
-    public String print() {
-        System.out.println("abc");
+    @RestfulMapping("/{acc}/{acc}/{pwd}/*")
+    public String print(@Var("acc") int[] account, @Var("pwd") String password, HttpServletRequest request, Scene2_Bean bean) {
+        System.out.println(account + "\t=\t" + password + "\t" + request);
         return "abc";
     }
 }

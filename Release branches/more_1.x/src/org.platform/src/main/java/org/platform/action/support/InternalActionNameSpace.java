@@ -16,8 +16,8 @@
 package org.platform.action.support;
 import java.util.HashMap;
 import java.util.Map;
-import org.platform.action.ActionInvoke;
-import org.platform.action.ActionNameSpace;
+import org.platform.action.faces.ActionInvoke;
+import org.platform.action.faces.ActionNameSpace;
 import org.platform.context.AppContext;
 import com.google.inject.Binding;
 import com.google.inject.Provider;

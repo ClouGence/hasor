@@ -22,9 +22,9 @@ import org.more.util.BeanUtils;
 import org.platform.Platform;
 import org.platform.action.ActionBinder.ActionBindingBuilder;
 import org.platform.action.ActionBinder.NameSpaceBindingBuilder;
-import org.platform.action.ActionManager;
 import org.platform.action.Controller;
 import org.platform.action.RestfulMapping;
+import org.platform.action.faces.ActionManager;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
 import org.platform.context.PlatformListener;
@@ -35,13 +35,14 @@ import com.google.inject.Binder;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@PlatformExt(displayName = "ActionModuleListener", description = "org.platform.action软件包功能支持。", startIndex = Integer.MIN_VALUE)
+@PlatformExt(displayName = "ActionModuleListener", description = "org.platform.action软件包功能支持。", startIndex = Integer.MIN_VALUE + 2)
 public class ActionPlatformListener implements PlatformListener {
     private ActionSettings settings      = null;
     private ActionManager  actionManager = null;
     @Override
     public void initialize(ApiBinder event) {
         Binder binder = event.getGuiceBinder();
+        event.filter("*").through(MergedController.class);
         /*配置*/
         this.settings = new ActionSettings();
         this.settings.loadConfig(event.getSettings());
@@ -71,7 +72,7 @@ public class ActionPlatformListener implements PlatformListener {
     /*装载Controller*/
     private void loadController(NameSpaceBindingBuilder nsBinding, Class<?> controllerType) {
         List<Method> actionMethods = BeanUtils.getMethods(controllerType);
-        Object[] ignoreMethods = this.settings.getIgnoreMethod().toArray();
+        Object[] ignoreMethods = this.settings.getIgnoreMethod().toArray();//忽略
         Controller controllerAnno = controllerType.getAnnotation(Controller.class);
         for (Method method : actionMethods) {
             //1.执行忽略
@@ -81,15 +82,14 @@ public class ActionPlatformListener implements PlatformListener {
             ActionBindingBuilder actionBinding = nsBinding.bindActionMethod(method);
             for (String httpMethod : controllerAnno.httpMethod())
                 actionBinding = actionBinding.onHttpMethod(httpMethod);
-            {
-                //restful
-                RestfulMapping restfulMapping = method.getAnnotation(RestfulMapping.class);
-                if (restfulMapping != null) {
-                    for (String httpMethod : restfulMapping.httpMethod())
-                        actionBinding = actionBinding.onHttpMethod(httpMethod);
-                    actionBinding.restfulMapping(restfulMapping.value());
-                }
+            //3.restful
+            RestfulMapping restfulMapping = method.getAnnotation(RestfulMapping.class);
+            if (restfulMapping != null) {
+                for (String httpMethod : restfulMapping.httpMethod())
+                    actionBinding = actionBinding.onHttpMethod(httpMethod);
+                actionBinding.restfulMapping(restfulMapping.value());
             }
+            //
         }
     }
     @Override

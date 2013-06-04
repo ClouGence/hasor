@@ -24,7 +24,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.platform.Platform;
-import org.platform.general.WebFilter;
 import org.platform.security.AuthSession;
 import org.platform.security.AutoLoginProcess;
 import org.platform.security.LoginProcess;
@@ -43,7 +42,6 @@ import com.google.inject.Singleton;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Singleton
-@WebFilter(value = "*", sort = Integer.MIN_VALUE + 1)
 public class SecurityFilter implements Filter {
     @Inject
     private SecuritySettings         settings              = null;

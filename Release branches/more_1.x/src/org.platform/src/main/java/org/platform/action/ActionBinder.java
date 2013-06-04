@@ -15,6 +15,7 @@
  */
 package org.platform.action;
 import java.lang.reflect.Method;
+import org.platform.action.faces.ActionInvoke;
 /***
  * 
  * @version : 2013-5-11

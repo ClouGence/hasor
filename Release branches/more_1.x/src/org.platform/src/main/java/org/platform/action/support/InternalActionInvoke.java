@@ -14,19 +14,33 @@
  * limitations under the License.
  */
 package org.platform.action.support;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Map;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import org.more.util.BeanUtils;
+import org.more.util.StringConvertUtils;
 import org.more.util.StringUtils;
-import org.platform.action.ActionInvoke;
+import org.platform.Platform;
+import org.platform.action.Var;
+import org.platform.action.faces.ActionInvoke;
+import org.platform.action.faces.RestfulActionInvoke;
 import org.platform.context.AppContext;
 /**
  * 
  * @version : 2013-5-11
  * @author 赵永春 (zyc@byshell.org)
  */
-abstract class InternalActionInvoke implements ActionInvoke {
+abstract class InternalActionInvoke implements RestfulActionInvoke, ActionInvoke {
     private String[]   httpMethod     = null;
     private String     actionName     = null;
     private String     restfulMapping = null;
@@ -35,7 +49,6 @@ abstract class InternalActionInvoke implements ActionInvoke {
     public InternalActionInvoke(String actionName) {
         this.actionName = actionName;
     }
-    //
     //
     public String[] getHttpMethod() {
         return this.httpMethod;
@@ -70,8 +83,19 @@ abstract class InternalActionInvoke implements ActionInvoke {
         this.appContext = appContext;
     };
     @Override
-    public abstract Object invoke(HttpServletRequest request, HttpServletResponse response) throws ServletException;
+    public abstract Object invoke(HttpServletRequest request, HttpServletResponse response, Map<String, Object> overwriteHttpParams) throws ServletException;
     /*-------------------------------------------------------------------------------------------------------------------*/
+    /**ActionInvoke*/
+    public static class InternalInvokeActionInvoke extends InternalActionInvoke {
+        public InternalInvokeActionInvoke(String actionName, ActionInvoke targetInvoke) {
+            super(actionName);
+            this.setTarget(targetInvoke);
+        }
+        @Override
+        public Object invoke(HttpServletRequest request, HttpServletResponse response, Map<String, Object> overwriteHttpParams) throws ServletException {
+            return ((ActionInvoke) this.getTarget()).invoke(request, response, overwriteHttpParams);
+        }
+    }
     /**Method*/
     public static class InternalMethodActionInvoke extends InternalActionInvoke {
         private Method targetMethod = null;
@@ -80,7 +104,7 @@ abstract class InternalActionInvoke implements ActionInvoke {
             this.targetMethod = targetMethod;
         }
         @Override
-        public Object invoke(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        public Object invoke(HttpServletRequest request, HttpServletResponse response, Map<String, Object> overwriteHttpParams) throws ServletException {
             Object targetObject = this.getTarget();
             if (targetObject == null) {
                 AppContext appContext = this.getAppContext();
@@ -95,19 +119,89 @@ abstract class InternalActionInvoke implements ActionInvoke {
             if (targetObject == null)
                 throw new ServletException("create invokeObject on " + targetMethod.toString() + " return null.");
             //
-            s
-            return null;
+            try {
+                Class<?>[] targetParamClass = this.targetMethod.getParameterTypes();
+                Annotation[][] targetParamAnno = this.targetMethod.getParameterAnnotations();
+                targetParamClass = (targetParamClass == null) ? new Class<?>[0] : targetParamClass;
+                targetParamAnno = (targetParamAnno == null) ? new Annotation[0][0] : targetParamAnno;
+                ArrayList<Object> paramsArray = new ArrayList<Object>();
+                /*准备参数*/
+                for (int i = 0; i < targetParamClass.length; i++) {
+                    Class<?> paramClass = targetParamClass[i];
+                    Annotation[] paramAnno = targetParamAnno[i];
+                    paramAnno = (paramAnno == null) ? new Annotation[0] : paramAnno;
+                    String paramName = null;
+                    for (Annotation pAnno : paramAnno) {
+                        if (pAnno instanceof Var)
+                            paramName = ((Var) pAnno).value();
+                    }
+                    /**普通参数*/
+                    Object paramObject = (overwriteHttpParams != null) ? overwriteHttpParams.get(paramName) : request.getParameterValues(paramName);
+                    /**特殊参数*/
+                    if (paramObject == null)
+                        paramObject = getSpecialParamObject(request, response, paramClass);
+                    /**处理参数类型*/
+                    if (paramObject != null) {
+                        try {
+                            paramObject = processParamObject(paramObject, paramClass);
+                        } catch (Exception e) {
+                            /*该代码不会被执行，StringConvertUtils的类方法遇到错误之后会自动使用默认值替代*/
+                            paramObject = BeanUtils.getDefaultValue(paramClass);
+                            Platform.error("the action request parameter %s Convert Type error %s", paramName, e);
+                        }
+                    }
+                    paramsArray.add(paramObject);
+                }
+                return this.targetMethod.invoke(targetObject, paramsArray.toArray());
+            } catch (InvocationTargetException e) {
+                throw new ServletException(e.getCause());
+            } catch (Exception e) {
+                throw new ServletException(e);
+            }
         }
-    }
-    /**ActionInvoke*/
-    public static class InternalInvokeActionInvoke extends InternalActionInvoke {
-        public InternalInvokeActionInvoke(String actionName, ActionInvoke targetInvoke) {
-            super(actionName);
-            this.setTarget(targetInvoke);
+        /*处理特殊类型参数*/
+        private Object getSpecialParamObject(HttpServletRequest request, HttpServletResponse response, Class<?> paramClass) {
+            if (paramClass.isEnum() || paramClass.isArray() || paramClass.isPrimitive() || paramClass == String.class)
+                return null;/*忽略：基本类型、字符串类型*/
+            //
+            if (paramClass.isAssignableFrom(HttpServletRequest.class) || paramClass.isAssignableFrom(ServletRequest.class))
+                return request;
+            if (paramClass.isAssignableFrom(HttpServletResponse.class) || paramClass.isAssignableFrom(ServletResponse.class))
+                return response;
+            if (paramClass.isAssignableFrom(HttpSession.class))
+                return request.getSession(true);
+            if (paramClass.isAssignableFrom(ServletContext.class))
+                return request.getServletContext();
+            try {
+                return this.getAppContext().getInstance(paramClass);
+            } catch (Exception e) {
+                return null;
+            }
         }
-        @Override
-        public Object invoke(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-            return ((ActionInvoke) this.getTarget()).invoke(request, response);
+        /*处理参数类型转换*/
+        private Object processParamObject(Object targetValue, Class<?> targetType) {
+            Object returnData = null;
+            if (targetType.isArray() == true) {
+                //处理数组
+                Class<?> targetClass = targetType.getComponentType();
+                if (targetValue instanceof Object[]) {
+                    Object[] arr = (Object[]) targetValue;
+                    returnData = Array.newInstance(targetClass, arr.length);
+                    for (int i = 0; i < arr.length; i++)
+                        Array.set(returnData, i, processParamObject(arr[i], targetClass));
+                } else {
+                    returnData = Array.newInstance(targetClass, 1);
+                    Array.set(returnData, 0, targetValue);
+                }
+            } else {
+                //处理单值
+                if (targetValue instanceof Object[]) {
+                    Object[] arrayParamObject = (Object[]) targetValue;
+                    targetValue = arrayParamObject.length == 0 ? null : arrayParamObject[0];
+                }
+                returnData = StringConvertUtils.changeType(targetValue, targetType, BeanUtils.getDefaultValue(targetType));
+            }
+            return returnData;
         }
     }
 }

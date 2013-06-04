@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.action;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-/**
- * 负责调用Action方法。
- * @version : 2013-5-10
+package org.platform.action.faces;
+/** 
+ * 命名空间管理器。相同的action命名空间下的action方法，可以定义在不同的控制器下。
+ * @version : 2013-4-20
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ActionInvoke {
-    /**执行方法调用。*/
-    public Object invoke(HttpServletRequest request, HttpServletResponse response) throws ServletException;
+public interface ActionNameSpace {
+    /**获取控制器名称。*/
+    public String getNameSpace();
+    /**获取控制器中定义的action方法。*/
+    public ActionInvoke getActionByName(String httpMethod, String actionName);
 }

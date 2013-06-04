@@ -15,8 +15,8 @@
  */
 package org.platform.action.support;
 import java.util.ArrayList;
-import org.platform.action.ActionManager;
-import org.platform.action.ActionNameSpace;
+import org.platform.action.faces.ActionManager;
+import org.platform.action.faces.ActionNameSpace;
 import org.platform.context.AppContext;
 import com.google.inject.Binding;
 import com.google.inject.TypeLiteral;

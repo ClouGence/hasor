@@ -13,35 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.action.controller;
+package org.platform.action.support;
 import java.io.IOException;
+import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.action.ActionException;
-import org.platform.action.ActionInvoke;
-import org.platform.action.ActionManager;
-import org.platform.action.ActionNameSpace;
-import org.platform.general.WebServlet;
+import org.platform.action.faces.ActionInvoke;
+import org.platform.action.faces.ActionManager;
+import org.platform.action.faces.ActionNameSpace;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 /**
  * action功能的入口。
  * @version : 2013-5-11
  * @author 赵永春 (zyc@byshell.org)
  */
-@Singleton
-@WebServlet("*.do")
-public class ActionController extends HttpServlet {
+//@WebServlet("*.do")
+class ActionController extends HttpServlet {
     private static final long serialVersionUID = -2579757349905408506L;
     @Inject
     private ActionManager     actionManager    = null;
+    @Inject
+    private ActionSettings    actionSettings   = null;
     // 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String requestPath = request.getRequestURI().substring(request.getContextPath().length());
+        if (StringUtils.matchWild(actionSettings.getIntercept(), requestPath) == false)
+            return;
+        //
         //1.拆分请求字符串
         String actionNS = requestPath.substring(0, requestPath.lastIndexOf("/") + 1);
         String actionInvoke = requestPath.substring(requestPath.lastIndexOf("/") + 1);
@@ -57,8 +61,10 @@ public class ActionController extends HttpServlet {
         }
         //3.执行调用
         try {
-            Object result = invoke.invoke(request, response);
-            s
+            HashMap<String, Object> overwriteHttpParams = new HashMap<String, Object>();
+            overwriteHttpParams.putAll(request.getParameterMap());
+            Object result = invoke.invoke(request, response, overwriteHttpParams);
+            System.out.println(result);
             //
         } catch (ServletException e) {
             if (e.getCause() instanceof IOException)

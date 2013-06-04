@@ -21,7 +21,8 @@ import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 import org.platform.action.ActionBinder.ActionBindingBuilder;
 import org.platform.action.ActionBinder.NameSpaceBindingBuilder;
-import org.platform.action.ActionInvoke;
+import org.platform.action.faces.ActionInvoke;
+import org.platform.action.faces.RestfulActionInvoke;
 import org.platform.action.support.InternalActionInvoke.InternalInvokeActionInvoke;
 import org.platform.action.support.InternalActionInvoke.InternalMethodActionInvoke;
 import com.google.inject.Binder;
@@ -32,10 +33,10 @@ import com.google.inject.internal.UniqueAnnotations;
  * @version : 2013-5-30
  * @author 赵永春 (zyc@byshell.org)
  */
-class NameSpaceBindingBuilderImpl implements Module, NameSpaceBindingBuilder {
+class InternalNameSpaceBindingBuilder implements Module, NameSpaceBindingBuilder {
     private String                             namespace  = null;
     private List<AbstractActionBindingBuilder> actionList = new ArrayList<AbstractActionBindingBuilder>();
-    public NameSpaceBindingBuilderImpl(String namespace) {
+    public InternalNameSpaceBindingBuilder(String namespace) {
         this.namespace = namespace;
     }
     @Override
@@ -91,12 +92,14 @@ class NameSpaceBindingBuilderImpl implements Module, NameSpaceBindingBuilder {
     public void configure(Binder binder) {
         binder.bind(InternalActionNameSpace.class).annotatedWith(UniqueAnnotations.create()).toInstance(new InternalActionNameSpace(this.namespace));
         for (AbstractActionBindingBuilder ent : this.actionList)
-            ent.configure(binder);
+            ent.configure(binder, this);
     }
     //
     //
     /**目的是用来统一{@link Module}、{@link ActionBindingBuilder}两个类型，并且表示一个ActionBindingBuilder定义。*/
-    private static abstract class AbstractActionBindingBuilder implements Module, ActionBindingBuilder {}
+    private static abstract class AbstractActionBindingBuilder implements ActionBindingBuilder {
+        public abstract void configure(Binder binder, NameSpaceBindingBuilder nameSpaceBindingBuilder);
+    }
     /**对一个Action进行定义*/
     private static class ActionBindingBuilderImpl extends AbstractActionBindingBuilder {
         private String               restfulMapping = null;
@@ -126,10 +129,17 @@ class NameSpaceBindingBuilderImpl implements Module, NameSpaceBindingBuilder {
             return restfulMapping;
         }
         @Override
-        public void configure(Binder binder) {
+        public void configure(Binder binder, NameSpaceBindingBuilder nameSpaceBindingBuilder) {
             InternalActionInvoke actionInvoke = this.actionInvoke;
             if (actionInvoke != null) {
-                actionInvoke.setRestfulMapping(this.getRestfulMapping());
+                String restfulMapping = this.getRestfulMapping();
+                if (StringUtils.isBlank(restfulMapping) == false) {
+                    String restfulString = nameSpaceBindingBuilder.getNameSpace() + "/" + restfulMapping;
+                    restfulString = restfulString.replace("\\", "/").replaceAll("[/]{2}", "/");
+                    restfulString = restfulString.replace("*", ".*").replace("?", ".");
+                    this.actionInvoke.setRestfulMapping(restfulString);
+                    binder.bind(RestfulActionInvoke.class).annotatedWith(UniqueAnnotations.create()).toInstance(actionInvoke);
+                }
                 actionInvoke.setActionMethod(this.onMethod.toArray(new String[this.onMethod.size()]));
                 if (this.target != null)
                     actionInvoke.setTarget(this.target);
@@ -156,9 +166,9 @@ class NameSpaceBindingBuilderImpl implements Module, NameSpaceBindingBuilder {
                 item.restfulMapping(restfulMapping);
         }
         @Override
-        public void configure(Binder binder) {
+        public void configure(Binder binder, NameSpaceBindingBuilder nameSpaceBindingBuilder) {
             for (AbstractActionBindingBuilder item : elements)
-                item.configure(binder);
+                item.configure(binder, nameSpaceBindingBuilder);
         }
         @Override
         public void toInstance(Object targetAction) {

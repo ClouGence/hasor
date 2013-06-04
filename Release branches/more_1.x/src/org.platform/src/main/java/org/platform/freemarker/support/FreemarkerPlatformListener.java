@@ -36,7 +36,7 @@ import org.platform.freemarker.TemplateLoaderCreator;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@PlatformExt(displayName = "FreemarkerPlatformListener", description = "org.platform.freemarker软件包功能支持。", startIndex = Integer.MIN_VALUE + 1)
+@PlatformExt(displayName = "FreemarkerPlatformListener", description = "org.platform.freemarker软件包功能支持。", startIndex = Integer.MIN_VALUE + 2)
 public class FreemarkerPlatformListener implements PlatformListener {
     private FreemarkerSettings freemarkerSettings = null;
     private FreemarkerManager  freemarkerManager  = null;
@@ -59,6 +59,8 @@ public class FreemarkerPlatformListener implements PlatformListener {
         this.loadTemplateLoader(event);
         this.loadFmTag(event);
         this.loadFmMethod(event);
+        //
+        event.filter("*").through(FreemarkerFilter.class);
     }
     //
     /**装载TemplateLoader*/

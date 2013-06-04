@@ -25,18 +25,18 @@ import java.lang.annotation.Target;
  * HTTP: /user/add/account/password
  * HTTP: /user/add.do?account=aa&password=pwd
  * @Controller("/user")
- *     @RestfulMapping("/{acc}/{pwd}")
+ *     @RestfulMapping("/user/{acc}/{pwd}")
  *     public String add( @Var("acc") String acc, @Var("pwd") String pwd);
- *     @RestfulMapping("/{acc}/{pwd}")
+ *     @RestfulMapping("/user/{acc}/{pwd}")
  *     public String add(HttpRequest,HttpResponse,Map params);
  * 
  * Example 2:
  * HTTP: /user/list/2010-02-13/2013-02-22/zyc/all
  * HTTP: /user/list.do?start=2010-02-13&end=2013-02-22&name=zyc&type=all
  * @Controller("/user") 
- *     @RestfulMapping("/{s}/{e}/{acc}/{type}")
+ *     @RestfulMapping("/user/{s}/{e}/{acc}/{type}")
  *     public String list( @Var("s") String start, @Var("e") String end, @Var("acc") String account, @Var("type") String type);
- *     @RestfulMapping("/{s}/{e}/{acc}/{type}")
+ *     @RestfulMapping("/user/{s}/{e}/{acc}/{type}")
  *     public String list(HttpRequest,HttpResponse,Map params);
  * </PRE>
  * @version : 2013-3-26

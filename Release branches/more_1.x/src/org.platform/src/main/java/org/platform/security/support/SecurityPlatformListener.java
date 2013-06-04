@@ -33,8 +33,6 @@ import org.platform.context.PlatformListener;
 import org.platform.context.startup.PlatformExt;
 import org.platform.security.AuthSession;
 import org.platform.security.AutoLoginProcess;
-import org.platform.security.SecurityAccess;
-import org.platform.security.SecurityAuth;
 import org.platform.security.LoginProcess;
 import org.platform.security.LogoutProcess;
 import org.platform.security.PermissionException;
@@ -42,6 +40,8 @@ import org.platform.security.Power;
 import org.platform.security.Power.Level;
 import org.platform.security.SecAccess;
 import org.platform.security.SecAuth;
+import org.platform.security.SecurityAccess;
+import org.platform.security.SecurityAuth;
 import org.platform.security.SecurityContext;
 import org.platform.security.SecurityQuery;
 import org.platform.security.TestURLPermissionProcess;
@@ -88,6 +88,8 @@ public class SecurityPlatformListener implements PlatformListener {
         binder.bind(LogoutProcess.class).to(DefaultLogoutProcess.class);/*登出过程*/
         binder.bind(TestURLPermissionProcess.class).to(DefaultTestURLPermissionProcess.class);/*URL权限检测过程*/
         binder.bind(AutoLoginProcess.class).to(DefaultAutoLoginProcess.class);/*处理自动登陆的处理过程*/
+        //
+        event.filter("*").through(SecurityFilter.class);
     }
     @Override
     public void initialized(AppContext appContext) {

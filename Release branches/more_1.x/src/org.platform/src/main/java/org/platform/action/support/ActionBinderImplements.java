@@ -28,27 +28,27 @@ import com.google.inject.Module;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class ActionBinderImplements implements Module, ActionBinder {
-    private Map<String, NameSpaceBindingBuilderImpl> nameSpace = new HashMap<String, NameSpaceBindingBuilderImpl>();
+    private Map<String, InternalNameSpaceBindingBuilder> nameSpace = new HashMap<String, InternalNameSpaceBindingBuilder>();
     @Override
     public NameSpaceBindingBuilder bindNameSpace(String namespace) {
         if (this.nameSpace.containsKey(namespace) == true)
             return nameSpace.get(namespace);
-        NameSpaceBindingBuilderImpl nameSpace = new NameSpaceBindingBuilderImpl(namespace);
+        InternalNameSpaceBindingBuilder nameSpace = new InternalNameSpaceBindingBuilder(namespace);
         this.nameSpace.put(namespace, nameSpace);
         return nameSpace;
     }
     @Override
     public void configure(Binder binder) {
-        ArrayList<NameSpaceBindingBuilderImpl> nsList = new ArrayList<NameSpaceBindingBuilderImpl>(nameSpace.values());
-        Collections.sort(nsList, new Comparator<NameSpaceBindingBuilderImpl>() {
+        ArrayList<InternalNameSpaceBindingBuilder> nsList = new ArrayList<InternalNameSpaceBindingBuilder>(nameSpace.values());
+        Collections.sort(nsList, new Comparator<InternalNameSpaceBindingBuilder>() {
             @Override
-            public int compare(NameSpaceBindingBuilderImpl o1, NameSpaceBindingBuilderImpl o2) {
+            public int compare(InternalNameSpaceBindingBuilder o1, InternalNameSpaceBindingBuilder o2) {
                 String ns1 = o1.getNameSpace();
                 String ns2 = o2.getNameSpace();
                 return ns1.compareToIgnoreCase(ns2);
             }
         });
-        for (NameSpaceBindingBuilderImpl item : nsList)
+        for (InternalNameSpaceBindingBuilder item : nsList)
             item.configure(binder);
     }
 }
