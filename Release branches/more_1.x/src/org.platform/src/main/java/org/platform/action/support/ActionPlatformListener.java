@@ -24,7 +24,8 @@ import org.platform.action.ActionBinder.ActionBindingBuilder;
 import org.platform.action.ActionBinder.NameSpaceBindingBuilder;
 import org.platform.action.Controller;
 import org.platform.action.RestfulMapping;
-import org.platform.action.faces.ActionManager;
+import org.platform.action.ResultDefine;
+import org.platform.action.ResultProcess;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
 import org.platform.context.PlatformListener;
@@ -48,8 +49,11 @@ public class ActionPlatformListener implements PlatformListener {
         this.settings.loadConfig(event.getSettings());
         binder.bind(ActionSettings.class).toInstance(this.settings);//通过Guice
         binder.bind(ActionManager.class).to(InternalActionManager.class).asEagerSingleton();
+        binder.bind(ActionManager.class).to(InternalActionManager.class).asEagerSingleton();
         /*初始化*/
         this.loadController(event);
+        /*注册结果处理器*/
+        this.loadResultDefine(event);
     }
     //
     /*装载Controller*/
@@ -83,15 +87,35 @@ public class ActionPlatformListener implements PlatformListener {
             for (String httpMethod : controllerAnno.httpMethod())
                 actionBinding = actionBinding.onHttpMethod(httpMethod);
             //3.restful
-            RestfulMapping restfulMapping = method.getAnnotation(RestfulMapping.class);
-            if (restfulMapping != null) {
-                for (String httpMethod : restfulMapping.httpMethod())
+            RestfulMapping mappingRestful = method.getAnnotation(RestfulMapping.class);
+            if (mappingRestful != null) {
+                for (String httpMethod : mappingRestful.httpMethod())
                     actionBinding = actionBinding.onHttpMethod(httpMethod);
-                actionBinding.restfulMapping(restfulMapping.value());
+                actionBinding.mappingRestful(mappingRestful.value());
             }
             //
         }
     }
+    //
+    /*装载ResultDefine*/
+    protected void loadResultDefine(ApiBinder event) {
+        //1.获取
+        Set<Class<?>> resultDefineSet = event.getClassSet(ResultDefine.class);
+        if (resultDefineSet == null)
+            return;
+        //3.注册服务
+        ActionBinderImplements actionBinder = new ActionBinderImplements();
+        for (Class<?> resultDefineType : resultDefineSet) {
+            ResultDefine resultDefineAnno = resultDefineType.getAnnotation(ResultDefine.class);
+            if (ResultProcess.class.isAssignableFrom(resultDefineType) == false) {
+                Platform.warning("loadResultDefine : not implemented ResultProcess. class=%s", resultDefineType);
+            } else {
+                actionBinder.bindResultProcess(resultDefineAnno.value()).toType((Class<? extends ResultProcess>) resultDefineType);
+            }
+        }
+        event.getGuiceBinder().install(actionBinder);
+    }
+    //
     @Override
     public void initialized(AppContext appContext) {
         appContext.getSettings().addSettingsListener(this.settings);

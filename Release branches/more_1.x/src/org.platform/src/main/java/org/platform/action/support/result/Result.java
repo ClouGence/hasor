@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.action.faces;
-/** 
- * 命名空间管理器。相同的action命名空间下的action方法，可以定义在不同的控制器下。
- * @version : 2013-4-20
+package org.platform.action.support.result;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+/**
+ * 
+ * @version : 2013-6-5
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ActionNameSpace {
-    /**获取控制器名称。*/
-    public String getNameSpace();
-    /**获取控制器中定义的action方法。*/
-    public ActionInvoke getActionByName(String httpMethod, String actionName);
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD, ElementType.TYPE })
+public @interface Result {
+    /***/
+    public ResultType value() default ResultType.Forword;
 }

@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.action.faces;
-import java.util.Map;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+package org.platform.action;
+import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 负责调用Action方法。
+ * 负责处理Action调用之后的返回值。
  * @version : 2013-5-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ActionInvoke {
-    /**执行方法调用。*/
-    public Object invoke(HttpServletRequest request, HttpServletResponse response, Map<String, Object> overwriteHttpParams) throws ServletException;
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface ResultDefine {
+    public Class<? extends Annotation> value();
 }

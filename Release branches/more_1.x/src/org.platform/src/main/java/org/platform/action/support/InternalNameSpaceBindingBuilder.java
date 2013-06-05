@@ -21,10 +21,6 @@ import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 import org.platform.action.ActionBinder.ActionBindingBuilder;
 import org.platform.action.ActionBinder.NameSpaceBindingBuilder;
-import org.platform.action.faces.ActionInvoke;
-import org.platform.action.faces.RestfulActionInvoke;
-import org.platform.action.support.InternalActionInvoke.InternalInvokeActionInvoke;
-import org.platform.action.support.InternalActionInvoke.InternalMethodActionInvoke;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.internal.UniqueAnnotations;
@@ -47,7 +43,7 @@ class InternalNameSpaceBindingBuilder implements Module, NameSpaceBindingBuilder
     public ActionBindingBuilder bindActionMethod(Method targetMethod) {
         if (targetMethod == null)
             return null;
-        AbstractActionBindingBuilder actionBuilder = new ActionBindingBuilderImpl(new InternalMethodActionInvoke(targetMethod));
+        AbstractActionBindingBuilder actionBuilder = new ActionBindingBuilderImpl(targetMethod);
         this.actionList.add(actionBuilder);
         return actionBuilder.onHttpMethod("ANY");
     }
@@ -58,29 +54,6 @@ class InternalNameSpaceBindingBuilder implements Module, NameSpaceBindingBuilder
         /*迭代targetClass中所有方法都加入到ActionBindingBuilderGroup中。*/
         ActionBindingBuilderGroup groupActionBuilder = new ActionBindingBuilderGroup();
         List<Method> methodList = BeanUtils.getMethods(targetClass);
-        for (Method targetMethod : methodList) {
-            AbstractActionBindingBuilder actionBuilder = (AbstractActionBindingBuilder) this.bindActionMethod(targetMethod);
-            groupActionBuilder.getElements().add(actionBuilder);
-        }
-        this.actionList.add(groupActionBuilder);
-        return groupActionBuilder.onHttpMethod("ANY");
-    }
-    @Override
-    public ActionBindingBuilder bindActionInvoke(String actionName, ActionInvoke targetInvoke) {
-        if (StringUtils.isBlank(actionName) || targetInvoke == null)
-            return null;
-        AbstractActionBindingBuilder actionBuilder = new ActionBindingBuilderImpl(new InternalInvokeActionInvoke(actionName, targetInvoke));
-        this.actionList.add(actionBuilder);
-        return actionBuilder.onHttpMethod("ANY");
-    }
-    @Override
-    public ActionBindingBuilder bindActionObject(Object targetObject) {
-        if (targetObject == null)
-            return null;
-        /*迭代targetClass中所有方法都加入到ActionBindingBuilderGroup中。*/
-        ActionBindingBuilderGroup groupActionBuilder = new ActionBindingBuilderGroup();
-        groupActionBuilder.toInstance(targetObject);
-        List<Method> methodList = BeanUtils.getMethods(targetObject.getClass());
         for (Method targetMethod : methodList) {
             AbstractActionBindingBuilder actionBuilder = (AbstractActionBindingBuilder) this.bindActionMethod(targetMethod);
             groupActionBuilder.getElements().add(actionBuilder);
@@ -102,49 +75,46 @@ class InternalNameSpaceBindingBuilder implements Module, NameSpaceBindingBuilder
     }
     /**对一个Action进行定义*/
     private static class ActionBindingBuilderImpl extends AbstractActionBindingBuilder {
-        private String               restfulMapping = null;
-        private Object               target         = null;
-        private InternalActionInvoke actionInvoke   = null;
-        private ArrayList<String>    onMethod       = new ArrayList<String>();
+        private Method            targetMethod   = null;
+        private Object            targetObject   = null;
+        private ArrayList<String> bindHttpMethod = new ArrayList<String>();
+        private String            mappingRestful = null;
         //
-        public ActionBindingBuilderImpl(InternalActionInvoke actionInvoke) {
-            this.actionInvoke = actionInvoke;
+        public ActionBindingBuilderImpl(Method targetMethod) {
+            this.targetMethod = targetMethod;
         }
         @Override
-        public void toInstance(Object target) {
-            this.target = target;
+        public void toInstance(Object targetObject) {
+            this.targetObject = targetObject;
         }
         @Override
         public ActionBindingBuilder onHttpMethod(String httpMethod) {
             if (StringUtils.isBlank(httpMethod) == true)
                 return null;
-            this.onMethod.add(httpMethod.toUpperCase());
+            this.bindHttpMethod.add(httpMethod.toUpperCase());
             return this;
         }
         @Override
-        public void restfulMapping(String restfulMapping) {
-            this.restfulMapping = restfulMapping;
-        }
-        protected String getRestfulMapping() {
-            return restfulMapping;
+        public void mappingRestful(String mappingRestful) {
+            this.mappingRestful = mappingRestful;
         }
         @Override
         public void configure(Binder binder, NameSpaceBindingBuilder nameSpaceBindingBuilder) {
-            InternalActionInvoke actionInvoke = this.actionInvoke;
-            if (actionInvoke != null) {
-                String restfulMapping = this.getRestfulMapping();
-                if (StringUtils.isBlank(restfulMapping) == false) {
-                    String restfulString = nameSpaceBindingBuilder.getNameSpace() + "/" + restfulMapping;
-                    restfulString = restfulString.replace("\\", "/").replaceAll("[/]{2}", "/");
-                    restfulString = restfulString.replace("*", ".*").replace("?", ".");
-                    this.actionInvoke.setRestfulMapping(restfulString);
-                    binder.bind(RestfulActionInvoke.class).annotatedWith(UniqueAnnotations.create()).toInstance(actionInvoke);
-                }
-                actionInvoke.setActionMethod(this.onMethod.toArray(new String[this.onMethod.size()]));
-                if (this.target != null)
-                    actionInvoke.setTarget(this.target);
-                binder.bind(InternalActionInvoke.class).annotatedWith(UniqueAnnotations.create()).toInstance(actionInvoke);
+            InternalActionInvoke actionInvoke = null;;
+            if (this.targetObject != null)
+                actionInvoke = new InternalActionInvoke(this.targetMethod, this.targetObject);
+            else
+                actionInvoke = new InternalActionInvoke(this.targetMethod);
+            //
+            actionInvoke.setHttpMethod(this.bindHttpMethod.toArray(new String[this.bindHttpMethod.size()]));
+            if (StringUtils.isBlank(this.mappingRestful) == false) {
+                String restfulString = nameSpaceBindingBuilder.getNameSpace() + "/" + this.mappingRestful;
+                restfulString = restfulString.replace("\\", "/").replaceAll("[/]{2}", "/");
+                restfulString = restfulString.replace("*", ".*").replace("?", ".");
+                actionInvoke.setRestfulMapping(restfulString);
+                binder.bind(ActionInvoke2.class).annotatedWith(UniqueAnnotations.create()).toInstance(actionInvoke);
             }
+            binder.bind(ActionInvoke.class).annotatedWith(UniqueAnnotations.create()).toInstance(actionInvoke);
         }
     }
     /**对一组Action进行定义*/
@@ -161,9 +131,9 @@ class InternalNameSpaceBindingBuilder implements Module, NameSpaceBindingBuilder
             return this;
         }
         @Override
-        public void restfulMapping(String restfulMapping) {
+        public void mappingRestful(String mappingRestful) {
             for (AbstractActionBindingBuilder item : elements)
-                item.restfulMapping(restfulMapping);
+                item.mappingRestful(mappingRestful);
         }
         @Override
         public void configure(Binder binder, NameSpaceBindingBuilder nameSpaceBindingBuilder) {

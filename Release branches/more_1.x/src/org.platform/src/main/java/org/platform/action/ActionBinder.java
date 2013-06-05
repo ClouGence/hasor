@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.platform.action;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import org.platform.action.faces.ActionInvoke;
 /***
  * 
  * @version : 2013-5-11
@@ -24,25 +24,30 @@ import org.platform.action.faces.ActionInvoke;
 public interface ActionBinder {
     /**绑定一个命名空间*/
     public NameSpaceBindingBuilder bindNameSpace(String path);
+    /**绑定结果处理器*/
+    public ResultProcessBindingBuilder bindResultProcess(Class<? extends Annotation> annoType);
     /**用来绑定一个命名空间*/
     public static interface NameSpaceBindingBuilder {
         public String getNameSpace();
         /**注册一个Action，将action绑定到方法上。*/
         public ActionBindingBuilder bindActionClass(Class<?> targetClass);
         /**注册一个Action，将action绑定到方法上。*/
-        public ActionBindingBuilder bindActionObject(Object targetObject);
-        /**注册一个Action，将action绑定到方法上。*/
         public ActionBindingBuilder bindActionMethod(Method targetMethod);
-        /**注册一个Action，将action绑定到{@link ActionInvoke}接口。*/
-        public ActionBindingBuilder bindActionInvoke(String actionName, ActionInvoke targetInvoke);
     }
     /**用来绑定action的执行目标*/
     public static interface ActionBindingBuilder {
         /**将action绑定的Http方法上。*/
         public ActionBindingBuilder onHttpMethod(String httpMethod);
         /**restful风格的映射*/
-        public void restfulMapping(String restfulMapping);
+        public void mappingRestful(String restfulMapping);
         /**Action方法的对象*/
         public void toInstance(Object targetAction);
+    }
+    /**绑定结果处理器*/
+    public static interface ResultProcessBindingBuilder {
+        /**ResultProcess*/
+        public void toType(Class<? extends ResultProcess> resultProcess);
+        /**ResultProcess*/
+        public void toInstance(ResultProcess targetProcess);
     }
 }

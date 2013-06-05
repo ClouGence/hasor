@@ -32,7 +32,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.platform.action.faces.RestfulActionInvoke;
 import org.platform.context.AppContext;
 import com.google.inject.Binding;
 import com.google.inject.Inject;
@@ -45,21 +44,24 @@ import com.google.inject.TypeLiteral;
 //@WebFilter(value = "*", sort = Integer.MIN_VALUE + 2)
 class RestfulController implements Filter {
     @Inject
-    private AppContext            appContext  = null;
-    private RestfulActionInvoke[] invokeArray = null;
+    private AppContext      appContext    = null;
+    private ActionManager   actionManager = null;
+    private ActionInvoke2[] invokeArray   = null;
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        ArrayList<RestfulActionInvoke> restfulList = new ArrayList<RestfulActionInvoke>();
-        TypeLiteral<RestfulActionInvoke> REST_DEFS = TypeLiteral.get(RestfulActionInvoke.class);
-        for (Binding<RestfulActionInvoke> entry : appContext.getGuice().findBindingsByType(REST_DEFS))
+        this.actionManager = appContext.getInstance(ActionManager.class);
+        //
+        ArrayList<ActionInvoke2> restfulList = new ArrayList<ActionInvoke2>();
+        TypeLiteral<ActionInvoke2> REST_DEFS = TypeLiteral.get(ActionInvoke2.class);
+        for (Binding<ActionInvoke2> entry : appContext.getGuice().findBindingsByType(REST_DEFS))
             restfulList.add(entry.getProvider().get());
-        Collections.sort(restfulList, new Comparator<RestfulActionInvoke>() {
+        Collections.sort(restfulList, new Comparator<ActionInvoke2>() {
             @Override
-            public int compare(RestfulActionInvoke o1, RestfulActionInvoke o2) {
+            public int compare(ActionInvoke2 o1, ActionInvoke2 o2) {
                 return o1.getRestfulMapping().compareToIgnoreCase(o2.getRestfulMapping());
             }
         });
-        this.invokeArray = restfulList.toArray(new RestfulActionInvoke[restfulList.size()]);
+        this.invokeArray = restfulList.toArray(new ActionInvoke2[restfulList.size()]);
     }
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
@@ -67,12 +69,12 @@ class RestfulController implements Filter {
         HttpServletResponse response = (HttpServletResponse) resp;
         String requestPath = request.getRequestURI().substring(request.getContextPath().length());
         //1.ªÒ»° ActionInvoke
-        RestfulActionInvoke invoke = null;
+        ActionInvoke2 invoke = null;
         String matchKey = "(?:\\{(\\w+)\\}){1,}";//  (?:\{(\w+)\}){1,}
         String matchVar = null;
         Matcher keyM = null;
         Matcher varM = null;
-        for (RestfulActionInvoke restAction : this.invokeArray) {
+        for (ActionInvoke2 restAction : this.invokeArray) {
             String restfulMapping = restAction.getRestfulMapping();
             matchVar = restfulMapping.replaceAll("\\{\\w{1,}\\}", "(\\\\w{1,})");
             keyM = Pattern.compile(matchKey).matcher(restfulMapping);
@@ -116,8 +118,7 @@ class RestfulController implements Filter {
                 overwriteHttpParams.put(k, v.toArray(new String[v.size()]));
             }
             Object result = invoke.invoke(request, response, overwriteHttpParams);
-            System.out.println(result);
-            //
+            this.actionManager.processResult(invoke.getMethod(), result, request, response);
         } catch (ServletException e) {
             if (e.getCause() instanceof IOException)
                 throw (IOException) e.getCause();

@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.action.faces;
+package org.platform.action.support;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.platform.context.AppContext;
 /** 
  * Action生命周期管理器。
@@ -29,4 +34,6 @@ public interface ActionManager {
     public ActionNameSpace getNameSpace(String actionNS);
     /**获取注册的ActionNameSpace*/
     public ActionNameSpace[] getNameSpaceList();
+    /**根据被调用的方法获取其返回值处理器*/
+    public void processResult(Method targetMethod, Object result, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
 }

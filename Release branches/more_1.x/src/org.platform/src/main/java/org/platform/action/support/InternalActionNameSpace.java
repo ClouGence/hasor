@@ -16,8 +16,6 @@
 package org.platform.action.support;
 import java.util.HashMap;
 import java.util.Map;
-import org.platform.action.faces.ActionInvoke;
-import org.platform.action.faces.ActionNameSpace;
 import org.platform.context.AppContext;
 import com.google.inject.Binding;
 import com.google.inject.Provider;
@@ -28,45 +26,45 @@ import com.google.inject.TypeLiteral;
  * @author 赵永春 (zyc@byshell.org)
  */
 class InternalActionNameSpace implements Provider<ActionNameSpace>, ActionNameSpace {
-    private String                                         namespace       = null; //所处命名空间
-    private Map<String, Map<String, InternalActionInvoke>> actionInvokeMap = null; //<HttpMethod,<Method,Invoke>>
-    private InternalActionInvoke[]                         allActionInvoke = null;
+    private String                                 namespace       = null; //所处命名空间
+    private Map<String, Map<String, ActionInvoke>> actionInvokeMap = null; //<HttpMethod,<Method,Invoke>>
+    private ActionInvoke[]                         allActionInvoke = null;
     public InternalActionNameSpace(String namespace) {
         this.namespace = namespace;
     }
     public void initNameSpace(AppContext appContext) {
-        this.actionInvokeMap = new HashMap<String, Map<String, InternalActionInvoke>>();
+        this.actionInvokeMap = new HashMap<String, Map<String, ActionInvoke>>();
         this.allActionInvoke = collectActionInvoke(appContext);
         //
-        for (InternalActionInvoke invoke : allActionInvoke) {
+        for (ActionInvoke invoke : this.allActionInvoke) {
             String[] httpMethodArray = invoke.getHttpMethod();
             for (String httpMethod : httpMethodArray)
                 this.putActionInvoke(httpMethod, invoke);
         }
         //
-        for (InternalActionInvoke invoke : this.allActionInvoke)
+        for (ActionInvoke invoke : this.allActionInvoke)
             invoke.initInvoke(appContext);
     }
-    private void putActionInvoke(String httpMethod, InternalActionInvoke invoke) {
-        Map<String, InternalActionInvoke> invokeMap = this.actionInvokeMap.get(httpMethod);
+    private void putActionInvoke(String httpMethod, ActionInvoke invoke) {
+        Map<String, ActionInvoke> invokeMap = this.actionInvokeMap.get(httpMethod);
         if (invokeMap == null) {
-            invokeMap = new HashMap<String, InternalActionInvoke>();
+            invokeMap = new HashMap<String, ActionInvoke>();
             this.actionInvokeMap.put(httpMethod, invokeMap);
         }
-        invokeMap.put(invoke.getActionName(), invoke);
+        invokeMap.put(invoke.getMethod().getName(), invoke);
     }
-    private InternalActionInvoke[] collectActionInvoke(AppContext appContext) {
-        Map<String, InternalActionInvoke> invokeMap = new HashMap<String, InternalActionInvoke>();
-        TypeLiteral<InternalActionInvoke> INVOKE_DEFS = TypeLiteral.get(InternalActionInvoke.class);
-        for (Binding<InternalActionInvoke> entry : appContext.getGuice().findBindingsByType(INVOKE_DEFS)) {
-            InternalActionInvoke obj = entry.getProvider().get();
-            invokeMap.put(obj.getActionName(), obj);
+    private ActionInvoke[] collectActionInvoke(AppContext appContext) {
+        Map<String, ActionInvoke> invokeMap = new HashMap<String, ActionInvoke>();
+        TypeLiteral<ActionInvoke> INVOKE_DEFS = TypeLiteral.get(ActionInvoke.class);
+        for (Binding<ActionInvoke> entry : appContext.getGuice().findBindingsByType(INVOKE_DEFS)) {
+            ActionInvoke invoke = entry.getProvider().get();
+            invokeMap.put(invoke.getMethod().getName(), invoke);
         }
-        return invokeMap.values().toArray(new InternalActionInvoke[invokeMap.size()]);
+        return invokeMap.values().toArray(new ActionInvoke[invokeMap.size()]);
     }
     public void destroyNameSpace(AppContext appContext) {
-        for (InternalActionInvoke invoke : this.allActionInvoke)
-            invoke.destroyInvoke(appContext);
+        for (ActionInvoke invoke : this.allActionInvoke)
+            invoke.destroyInvoke();
     }
     @Override
     public ActionNameSpace get() {
@@ -79,7 +77,7 @@ class InternalActionNameSpace implements Provider<ActionNameSpace>, ActionNameSp
     @Override
     public ActionInvoke getActionByName(String httpMethod, String actionMethodName) {
         String method = httpMethod.toUpperCase();
-        Map<String, InternalActionInvoke> actionMap = actionInvokeMap.get(method);
+        Map<String, ActionInvoke> actionMap = actionInvokeMap.get(method);
         actionMap = (actionMap != null) ? actionMap : actionInvokeMap.get("ANY");
         if (actionMap != null) {
             return actionMap.get(actionMethodName);

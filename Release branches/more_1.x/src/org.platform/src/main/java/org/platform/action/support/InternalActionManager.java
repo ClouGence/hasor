@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 package org.platform.action.support;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import org.platform.action.faces.ActionManager;
-import org.platform.action.faces.ActionNameSpace;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.platform.action.ResultProcess;
 import org.platform.context.AppContext;
 import com.google.inject.Binding;
 import com.google.inject.TypeLiteral;
@@ -27,9 +32,11 @@ import com.google.inject.TypeLiteral;
  */
 class InternalActionManager implements ActionManager {
     /*经过倒序排序之后的命名空间管理器*/
-    private InternalActionNameSpace[] nameSpaceManager = null;
+    private InternalActionNameSpace[] nameSpaceManager     = null;
+    private ResultProcessManager      resultProcessManager = null;
     @Override
     public void initManager(AppContext appContext) {
+        this.resultProcessManager = appContext.getInstance(ResultProcessManager.class);
         this.nameSpaceManager = collectNameSpace(appContext);
         for (InternalActionNameSpace space : this.nameSpaceManager)
             space.initNameSpace(appContext);
@@ -60,5 +67,24 @@ class InternalActionManager implements ActionManager {
     @Override
     public ActionNameSpace[] getNameSpaceList() {
         return this.nameSpaceManager;
+    }
+    @Override
+    public void processResult(Method targetMethod, Object result, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Annotation[] annoArray = targetMethod.getAnnotations();
+        for (Annotation anno : annoArray) {
+            ResultProcess resProcess = this.resultProcessManager.getResultProcess(anno);
+            if (resProcess != null) {
+                resProcess.process(request, response, anno, result);
+                return;
+            }
+        }
+        annoArray = targetMethod.getDeclaringClass().getAnnotations();
+        for (Annotation anno : annoArray) {
+            ResultProcess resProcess = this.resultProcessManager.getResultProcess(anno);
+            if (resProcess != null) {
+                resProcess.process(request, response, anno, result);
+                return;
+            }
+        }
     }
 }

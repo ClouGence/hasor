@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.platform.action.support;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,7 +29,8 @@ import com.google.inject.Module;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class ActionBinderImplements implements Module, ActionBinder {
-    private Map<String, InternalNameSpaceBindingBuilder> nameSpace = new HashMap<String, InternalNameSpaceBindingBuilder>();
+    private Map<String, InternalNameSpaceBindingBuilder>       nameSpace     = new HashMap<String, InternalNameSpaceBindingBuilder>();
+    private Map<Class<?>, InternalResultProcessBindingBuilder> resultProcess = new HashMap<Class<?>, InternalResultProcessBindingBuilder>();
     @Override
     public NameSpaceBindingBuilder bindNameSpace(String namespace) {
         if (this.nameSpace.containsKey(namespace) == true)
@@ -38,17 +40,30 @@ public class ActionBinderImplements implements Module, ActionBinder {
         return nameSpace;
     }
     @Override
+    public ResultProcessBindingBuilder bindResultProcess(Class<? extends Annotation> annoType) {
+        if (annoType == null)
+            return null;
+        InternalResultProcessBindingBuilder builder = this.resultProcess.get(annoType);
+        if (builder == null) {
+            builder = new InternalResultProcessBindingBuilder(annoType);
+            this.resultProcess.put(annoType, builder);
+        }
+        return builder;
+    }
+    @Override
     public void configure(Binder binder) {
         ArrayList<InternalNameSpaceBindingBuilder> nsList = new ArrayList<InternalNameSpaceBindingBuilder>(nameSpace.values());
-        Collections.sort(nsList, new Comparator<InternalNameSpaceBindingBuilder>() {
+        Collections.sort(nsList, new Comparator<NameSpaceBindingBuilder>() {
             @Override
-            public int compare(InternalNameSpaceBindingBuilder o1, InternalNameSpaceBindingBuilder o2) {
+            public int compare(NameSpaceBindingBuilder o1, NameSpaceBindingBuilder o2) {
                 String ns1 = o1.getNameSpace();
                 String ns2 = o2.getNameSpace();
                 return ns1.compareToIgnoreCase(ns2);
             }
         });
         for (InternalNameSpaceBindingBuilder item : nsList)
+            item.configure(binder);
+        for (InternalResultProcessBindingBuilder item : this.resultProcess.values())
             item.configure(binder);
     }
 }

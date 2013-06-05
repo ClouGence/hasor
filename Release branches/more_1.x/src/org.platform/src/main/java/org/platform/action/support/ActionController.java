@@ -16,6 +16,7 @@
 package org.platform.action.support;
 import java.io.IOException;
 import java.util.HashMap;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,9 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.action.ActionException;
-import org.platform.action.faces.ActionInvoke;
-import org.platform.action.faces.ActionManager;
-import org.platform.action.faces.ActionNameSpace;
+import org.platform.context.AppContext;
 import com.google.inject.Inject;
 /**
  * action功能的入口。
@@ -36,9 +35,15 @@ import com.google.inject.Inject;
 class ActionController extends HttpServlet {
     private static final long serialVersionUID = -2579757349905408506L;
     @Inject
+    private AppContext        appContext       = null;
     private ActionManager     actionManager    = null;
-    @Inject
     private ActionSettings    actionSettings   = null;
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        this.actionManager = appContext.getInstance(ActionManager.class);
+        this.actionSettings = appContext.getInstance(ActionSettings.class);
+    }
     // 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -64,8 +69,7 @@ class ActionController extends HttpServlet {
             HashMap<String, Object> overwriteHttpParams = new HashMap<String, Object>();
             overwriteHttpParams.putAll(request.getParameterMap());
             Object result = invoke.invoke(request, response, overwriteHttpParams);
-            System.out.println(result);
-            //
+            this.actionManager.processResult(invoke.getMethod(), result, request, response);
         } catch (ServletException e) {
             if (e.getCause() instanceof IOException)
                 throw (IOException) e.getCause();
