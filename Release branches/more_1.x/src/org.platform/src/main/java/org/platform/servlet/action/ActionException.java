@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.webapps.business.scene3.action;
-import org.platform.servlet.action.Controller;
+package org.platform.servlet.action;
+import javax.servlet.ServletException;
 /**
  * 
  * @version : 2013-5-29
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@Controller("/scene3/restful")
-public class RestfulAction {}
+public class ActionException extends ServletException {
+    private static final long serialVersionUID = -3906162254138766480L;
+    public ActionException(String message) {
+        super(message);
+    }
+}

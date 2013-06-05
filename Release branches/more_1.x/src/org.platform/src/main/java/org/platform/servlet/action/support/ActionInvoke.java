@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.webapps.business.scene3.action;
+package org.platform.servlet.action.support;
+import java.lang.reflect.Method;
+import java.util.Map;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import org.platform.servlet.action.Controller;
-import org.platform.servlet.action.RestfulMapping;
-import org.platform.servlet.action.Var;
-import org.platform.servlet.action.support.result.Result;
-import org.platform.webapps.business.scene2.service.Scene2_Bean;
+import javax.servlet.http.HttpServletResponse;
+import org.platform.context.AppContext;
 /**
  * 
- * @version : 2013-5-29
+ * @version : 2013-6-5
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@Controller("/scene3/general")
-public class GeneralAction {
-    @Result
-    @RestfulMapping("/{acc}/{acc}/{pwd}/*")
-    public String print(@Var("acc") int[] account, @Var("pwd") String password, HttpServletRequest request, Scene2_Bean bean) {
-        System.out.println(account + "\t=\t" + password + "\t" + request);
-        return "/index.htm";
-    }
+public interface ActionInvoke {
+    public void initInvoke(AppContext appContext);
+    public String[] getHttpMethod();
+    public Method getMethod();
+    public Object invoke(HttpServletRequest request, HttpServletResponse response, Map<String, Object> overwriteHttpParams) throws ServletException;
+    public void destroyInvoke();
 }

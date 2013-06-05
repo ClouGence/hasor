@@ -13,24 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.webapps.business.scene3.action;
+package org.platform.servlet.action;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import org.platform.servlet.action.Controller;
-import org.platform.servlet.action.RestfulMapping;
-import org.platform.servlet.action.Var;
-import org.platform.servlet.action.support.result.Result;
-import org.platform.webapps.business.scene2.service.Scene2_Bean;
+import javax.servlet.http.HttpServletResponse;
 /**
- * 
- * @version : 2013-5-29
+ * 负责处理Action调用之后的返回值。
+ * @version : 2013-5-10
  * @author 赵永春 (zyc@byshell.org)
  */
-@Controller("/scene3/general")
-public class GeneralAction {
-    @Result
-    @RestfulMapping("/{acc}/{acc}/{pwd}/*")
-    public String print(@Var("acc") int[] account, @Var("pwd") String password, HttpServletRequest request, Scene2_Bean bean) {
-        System.out.println(account + "\t=\t" + password + "\t" + request);
-        return "/index.htm";
-    }
+public interface ResultProcess {
+    /**执行方法调用。*/
+    public void process(HttpServletRequest request, HttpServletResponse response, Annotation annoData, Object result) throws ServletException, IOException;
 }

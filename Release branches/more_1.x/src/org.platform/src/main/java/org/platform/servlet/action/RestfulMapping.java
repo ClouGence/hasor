@@ -13,12 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.webapps.business.scene3.action;
-import org.platform.servlet.action.Controller;
+package org.platform.servlet.action;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
  * 
- * @version : 2013-5-29
+ * @version : 2013-5-9
  * @author 赵永春 (zyc@byshell.org)
  */
-@Controller("/scene3/restful")
-public class RestfulAction {}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD })
+public @interface RestfulMapping {
+    /**对应生效的http方法，默认为Get\Post。*/
+    public String[] httpMethod() default { "Get", "Post" };
+    /**restful风格映射。提示：可是使用通配符“*”表示任意个字符，“?”表示任意一个字符。*/
+    public String value();
+}

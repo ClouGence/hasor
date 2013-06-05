@@ -44,6 +44,18 @@
 			<!-- 方法忽略的方法（逗号分割多组方法名），注意：在这里配置的忽略会应用到所有action上 -->
 			<ignoreMethod></ignoreMethod>
 		</actionServlet>
+		<!-- 请求转发映射 -->
+		<httpRequestMapping enable="true">
+			<!-- <mapping startWith="/baidu" forwardTo="http://www.baidu.com/" /> -->
+			<!-- <mapping startWith="/google" forwardTo="http://www.baidu.com/" /> -->
+		</httpRequestMapping>
+		<!-- 资源装载器 -->
+		<resourceLoader enable="false">
+			<loader />
+			<loader />
+			<loader />
+			<loader />
+		</resourceLoader>
 	</httpServlet>
 	<!-- freemarker 配置，onError当模板处理发生异常时的处理方式。模式：ThrowError（抛出异常）、PrintOnConsole（打印到控制台或日志）、Warning（忽略，仅仅产生一条警告消息）PrintOnPage（打印到页面） -->
 	<freemarker enable="true" onError="ThrowError">
@@ -180,8 +192,8 @@
 		<mapCache timeout="600000" eternal="false" autoRenewal="true" threadSeep="5000" />
 		<!-- !!!这里可以放置其他缓存程序的Xml配置，然后通过XmlProperty类型读取到这段Xml!!! -->
 	</cacheConfig>
-	<!-- 文件上传服务配置 -->
-	<uploadService enable="false">
+	<!-- httpServlet文件上传服务配置 -->
+	<upLoadConfig enable="false">
 
-	</uploadService>
+	</upLoadConfig>
 </config>

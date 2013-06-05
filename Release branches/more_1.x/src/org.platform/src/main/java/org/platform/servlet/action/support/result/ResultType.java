@@ -13,12 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.webapps.business.scene3.action;
-import org.platform.servlet.action.Controller;
+package org.platform.servlet.action.support.result;
 /**
  * 
- * @version : 2013-5-29
+ * @version : 2013-6-5
  * @author 赵永春 (zyc@byshell.org)
  */
-@Controller("/scene3/restful")
-public class RestfulAction {}
+public enum ResultType {
+    /**将返回值转为json格式输出。*/
+    Json,
+    /**服务端转发（Default）*/
+    Forword,
+    /**客户端重定向*/
+    Redirect,
+    /**包含*/
+    Include,
+    /**返回状态数据。例：return "203 错误的消息。"*/
+    State,
+    /**什么都不做*/
+    None,
+}

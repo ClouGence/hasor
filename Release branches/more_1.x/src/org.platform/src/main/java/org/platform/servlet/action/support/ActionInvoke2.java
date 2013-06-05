@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.webapps.business.scene3.action;
-import org.platform.servlet.action.Controller;
+package org.platform.servlet.action.support;
 /**
  * 
- * @version : 2013-5-29
+ * @version : 2013-6-5
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@Controller("/scene3/restful")
-public class RestfulAction {}
+public interface ActionInvoke2 extends ActionInvoke {
+    public String getRestfulMapping();
+}

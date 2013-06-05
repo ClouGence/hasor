@@ -60,7 +60,12 @@ public class FreemarkerPlatformListener implements PlatformListener {
         this.loadFmTag(event);
         this.loadFmMethod(event);
         //
-        event.filter("*").through(FreemarkerFilter.class);
+        if (this.freemarkerSettings.isEnable() == true) {
+            String[] suffix = this.freemarkerSettings.getSuffix();
+            if (suffix != null)
+                for (String suf : suffix)
+                    event.serve(suf).with(FreemarkerHttpServlet.class);
+        }
     }
     //
     /**×°ÔØTemplateLoader*/

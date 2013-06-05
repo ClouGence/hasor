@@ -13,12 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.webapps.business.scene3.action;
-import org.platform.servlet.action.Controller;
+package org.platform.servlet.action.support.result;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
  * 
- * @version : 2013-5-29
+ * @version : 2013-6-5
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@Controller("/scene3/restful")
-public class RestfulAction {}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD, ElementType.TYPE })
+public @interface Result {
+    /***/
+    public ResultType value() default ResultType.Forword;
+}
