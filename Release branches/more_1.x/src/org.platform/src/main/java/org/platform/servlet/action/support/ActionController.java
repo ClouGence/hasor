@@ -44,7 +44,13 @@ class ActionController extends HttpServlet {
         this.actionManager = appContext.getInstance(ActionManager.class);
         this.actionSettings = appContext.getInstance(ActionSettings.class);
     }
-    // 
+    public boolean testURL(HttpServletRequest request) {
+        String requestPath = request.getRequestURI().substring(request.getContextPath().length());
+        if (StringUtils.matchWild(actionSettings.getIntercept(), requestPath) == false)
+            return false;
+        return true;
+    }
+    //
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String requestPath = request.getRequestURI().substring(request.getContextPath().length());

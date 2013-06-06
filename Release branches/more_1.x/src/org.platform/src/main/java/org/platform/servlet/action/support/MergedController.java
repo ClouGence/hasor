@@ -52,7 +52,7 @@ public class MergedController implements Filter {
         this.actionController.init(new ServletConfigBridge(filterConfig));
     }
     @Override
-    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest req, ServletResponse resp, final FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
         if (this.actionSettings.getMode() == ActionWorkMode.ServletOnly) {
@@ -67,7 +67,11 @@ public class MergedController implements Filter {
             this.restfulController.doFilter(request, response, new FilterChain() {
                 @Override
                 public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
-                    MergedController.this.actionController.service(request, response);
+                    HttpServletRequest req = (HttpServletRequest) request;
+                    if (MergedController.this.actionController.testURL(req) == true)
+                        MergedController.this.actionController.service(request, response);
+                    else
+                        chain.doFilter(request, response);
                 }
             });
             return;
