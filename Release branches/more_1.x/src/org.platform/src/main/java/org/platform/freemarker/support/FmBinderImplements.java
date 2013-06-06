@@ -39,6 +39,8 @@ public class FmBinderImplements implements Module, FmBinder {
     private List<FmObjectDefinition>              fmObjectDefinition       = new ArrayList<FmObjectDefinition>();
     @Override
     public void bindTemplateLoaderCreator(String name, Class<ITemplateLoaderCreator> templateLoaderCreatorType) {
+        if (StringUtils.isBlank(name) || templateLoaderCreatorType == null)
+            return;
         this.templateLoaderDefinition.add(new TemplateLoaderCreatorDefinition(name, templateLoaderCreatorType));
     }
     @Override

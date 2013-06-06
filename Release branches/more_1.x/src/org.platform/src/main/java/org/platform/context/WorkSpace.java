@@ -22,6 +22,12 @@ import java.io.IOException;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface WorkSpace {
+    public static final String MORE_WORK_HOME  = "MORE_WORK_HOME";
+    public static final String MORE_DATA_HOME  = "MORE_DATA_HOME";
+    public static final String MORE_TEMP_HOME  = "MORE_TEMP_HOME";
+    public static final String MORE_CACHE_HOME = "MORE_CACHE_HOME";
+    //
+    //
     /**获取程序工作目录（绝对路径）。*/
     public String getWorkDir();
     /**获取数据文件目录（绝对路径）。*/

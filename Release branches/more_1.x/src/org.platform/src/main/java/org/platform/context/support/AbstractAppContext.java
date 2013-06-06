@@ -36,7 +36,11 @@ import com.google.inject.TypeLiteral;
 public abstract class AbstractAppContext implements AppContext {
     private long                  startTime   = System.currentTimeMillis(); //系统启动时间
     private Map<String, BeanInfo> beanInfoMap = null;
-    private WorkSpace             workSpace   = null;
+    private AbstractWorkSpace     workSpace   = null;
+    //
+    public AbstractAppContext() {
+        this.getWorkSpace();
+    }
     //
     /**启动*/
     public abstract void start(Module... modules);
@@ -51,6 +55,8 @@ public abstract class AbstractAppContext implements AppContext {
                     return AbstractAppContext.this.getSettings();
                 }
             };
+            this.workSpace.loadConfig(getSettings());
+            this.getSettings().addSettingsListener(this.workSpace);
         }
         return this.workSpace;
     }

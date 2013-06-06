@@ -45,17 +45,22 @@
 			<ignoreMethod></ignoreMethod>
 		</actionServlet>
 		<!-- 请求转发映射 -->
-		<httpRequestMapping enable="true">
-			<!-- <mapping startWith="/baidu" forwardTo="http://www.baidu.com/" /> -->
-			<!-- <mapping startWith="/google" forwardTo="http://www.baidu.com/" /> -->
-		</httpRequestMapping>
+		<!-- <httpRequestMapping enable="true"> -->
+		<!-- 文件匹配 -->
+		<!-- <fileMapping startWith="/" forwardTo="/index.htm" type="forward" /> -->
+		<!-- 目录匹配 -->
+		<!-- <pathMapping startWith="/baidu" forwardTo="http://www.baidu.com/" type="forward|redirect(default)"/> -->
+		<!-- </httpRequestMapping> -->
 		<!-- 资源装载器 -->
-		<resourceLoader enable="false">
-			<loader />
-			<loader />
-			<loader />
-			<loader />
-		</resourceLoader>
+		<resource enable="true">
+			<!-- 可以加载的资源格式 -->
+			<types>js,css,html,htm,xhtml,jsp,txt,xml,xsl,gif,jpg,jpeg,png,swf,swc,mp3,wav,avi</types>
+			<loader>
+				<!-- <zipLoader></zipLoader> -->
+				<pathLoader>{MORE_WORK_HOME}/webresource</pathLoader>
+				<classpathLoader>/META-INF/webapp</classpathLoader>
+			</loader>
+		</resource>
 	</httpServlet>
 	<!-- freemarker 配置，onError当模板处理发生异常时的处理方式。模式：ThrowError（抛出异常）、PrintOnConsole（打印到控制台或日志）、Warning（忽略，仅仅产生一条警告消息）PrintOnPage（打印到页面） -->
 	<freemarker enable="true" onError="ThrowError">
@@ -70,8 +75,8 @@
 			<!-- <templateBody key="" type="Resource|File|String(default)|URL">ssss</templateBody> -->
 			<!-- <templateBody key="" type="Resource|File|String(default)|URL">ssss</templateBody> -->
 			<!-- </PredefineLoader> -->
-			<!-- <WorkPathLoader pathType="workDir|dataDir|tempDir|cacheDir">/META-INF/webapp</WorkPathLoader> -->
 			<!-- -->
+			<PathLoader>{MORE_WORK_HOME}/template</PathLoader>
 			<!-- Web网站根 -->
 			<WebContentLoader>/</WebContentLoader>
 			<!-- classPath路径下指定的位置 -->

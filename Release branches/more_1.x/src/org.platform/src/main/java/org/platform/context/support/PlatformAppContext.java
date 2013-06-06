@@ -38,6 +38,7 @@ public class PlatformAppContext extends AbstractAppContext {
     private Settings settings = null;
     //
     public PlatformAppContext(Object context) {
+        super();
         this.context = context;
     }
     public Injector getGuice() {

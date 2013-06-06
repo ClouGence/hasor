@@ -17,13 +17,15 @@ package org.platform.context.support;
 import java.io.File;
 import java.io.IOException;
 import org.more.util.StringUtils;
+import org.platform.context.SettingListener;
+import org.platform.context.Settings;
 import org.platform.context.WorkSpace;
 /**
  * 
  * @version : 2013-5-23
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractWorkSpace implements WorkSpace {
+public abstract class AbstractWorkSpace implements WorkSpace, SettingListener {
     /**程序工作空间基础目录（绝对地址）*/
     public static final String Workspace_WorkDir           = "workspace.workDir";
     /** 程序的文件数据目录（默认相对workDir地址，可以通过设置absolute属性为true表示一个绝对地址）*/
@@ -40,6 +42,7 @@ public abstract class AbstractWorkSpace implements WorkSpace {
     @Override
     public String getWorkDir() {
         String workDir = getSettings().getDirectoryPath(Workspace_WorkDir);
+        workDir = workDir.replace("/", File.separator);
         if (workDir.startsWith("." + File.separatorChar))
             return new File(workDir.substring(2)).getAbsolutePath();
         return workDir;
@@ -132,5 +135,13 @@ public abstract class AbstractWorkSpace implements WorkSpace {
             number = c;
         } while (c > 0);
         return buffer.reverse().toString();
+    }
+    //
+    @Override
+    public void loadConfig(Settings newConfig) {
+        System.setProperty(MORE_WORK_HOME, this.getWorkDir());
+        System.setProperty(MORE_DATA_HOME, this.getDataDir());
+        System.setProperty(MORE_TEMP_HOME, this.getTempDir());
+        System.setProperty(MORE_CACHE_HOME, this.getCacheDir());
     }
 }

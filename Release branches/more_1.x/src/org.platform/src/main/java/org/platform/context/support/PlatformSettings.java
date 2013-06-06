@@ -224,16 +224,22 @@ public class PlatformSettings extends Global implements Settings {
                 Object $var = dataMap.get(key);
                 Object $varConflict = loadTo.get($key);
                 if ($varConflict != null && $varConflict instanceof XmlProperty && $var instanceof XmlProperty) {
-                    XmlProperty v1 = (XmlProperty) $var;
-                    XmlProperty v2 = (XmlProperty) $varConflict;
+                    XmlProperty $new = (XmlProperty) $var;
+                    XmlProperty $old = (XmlProperty) $varConflict;
+                    XmlProperty $final = $old.clone();
                     /*¸²¸Ç²ßÂÔ*/
-                    v2.getAttributeMap().putAll(v1.getAttributeMap());
-                    v2.setText(v1.getText());
+                    $final.getAttributeMap().putAll($new.getAttributeMap());
+                    $final.setText($new.getText());
                     /*×·¼Ó²ßÂÔ*/
-                    Collections.reverse(v1.getChildren());
-                    Collections.reverse(v2.getChildren());
-                    v2.getChildren().addAll(v1.getChildren());
-                    Collections.reverse(v2.getChildren());
+                    List<XmlProperty> $newChildren = new ArrayList<XmlProperty>($new.getChildren());
+                    List<XmlProperty> $oldChildren = new ArrayList<XmlProperty>($old.getChildren());
+                    Collections.reverse($newChildren);
+                    Collections.reverse($oldChildren);
+                    $final.getChildren().clear();
+                    $final.getChildren().addAll($oldChildren);
+                    $final.getChildren().addAll($newChildren);
+                    Collections.reverse($final.getChildren());
+                    loadTo.put($key, $final);
                 } else
                     loadTo.put($key, $var);
             }
