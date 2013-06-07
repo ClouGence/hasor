@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.platform.servlet.resource;
+import java.io.IOException;
 import java.io.InputStream;
 /**
  * 
@@ -21,5 +22,5 @@ import java.io.InputStream;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public interface ResourceLoader {
-    public InputStream getResourceAsStream(String resourcePath);
+    public InputStream getResourceAsStream(String resourcePath) throws IOException;
 }

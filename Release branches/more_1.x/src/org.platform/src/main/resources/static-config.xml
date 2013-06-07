@@ -51,16 +51,12 @@
 		<!-- 目录匹配 -->
 		<!-- <pathMapping startWith="/baidu" forwardTo="http://www.baidu.com/" type="forward|redirect(default)"/> -->
 		<!-- </httpRequestMapping> -->
-		<!-- 资源装载器 -->
-		<resource enable="true">
-			<!-- 可以加载的资源格式 -->
-			<types>js,css,html,htm,xhtml,jsp,txt,xml,xsl,gif,jpg,jpeg,png,swf,swc,mp3,wav,avi</types>
-			<loader>
-				<!-- <zipLoader></zipLoader> -->
-				<pathLoader>{MORE_WORK_HOME}/webresource</pathLoader>
-				<classpathLoader>/META-INF/webapp</classpathLoader>
-			</loader>
-		</resource>
+		<!-- 资源装载器（配置不支持动态更新） -->
+		<resourceLoader enable="true" cacheDir="httpservlet.resourceloader.classpath" types="js,css,gif,ico,jpg,jpeg,png,swf,swc,flv,mp3,wav,avi">
+			<!-- <zipLoader>{MORE_WEB_HOME}/ext-4.2.zip</zipLoader> -->
+			<pathLoader>{MORE_WORK_HOME}/webapp</pathLoader>
+			<classpathLoader>/META-INF/webapp</classpathLoader>
+		</resourceLoader>
 	</httpServlet>
 	<!-- freemarker 配置，onError当模板处理发生异常时的处理方式。模式：ThrowError（抛出异常）、PrintOnConsole（打印到控制台或日志）、Warning（忽略，仅仅产生一条警告消息）PrintOnPage（打印到页面） -->
 	<freemarker enable="true" onError="ThrowError">
@@ -68,7 +64,7 @@
 		<suffixSet>*.ftl</suffixSet>
 		<!-- Configuration对象创建工厂 -->
 		<configurationFactory>org.platform.freemarker.support.DefaultFreemarkerFactory</configurationFactory>
-		<!-- 模板装载器（注意：以下配置在服务器运行中不支持自动应用修改） -->
+		<!-- 模板装载器（配置不支持动态更新） -->
 		<templateLoader>
 			<!-- <PathLoader>c:\abc</PathLoader> -->
 			<!-- <PredefineLoader> -->
@@ -76,7 +72,7 @@
 			<!-- <templateBody key="" type="Resource|File|String(default)|URL">ssss</templateBody> -->
 			<!-- </PredefineLoader> -->
 			<!-- -->
-			<PathLoader>{MORE_WORK_HOME}/template</PathLoader>
+			<PathLoader>{MORE_WORK_HOME}/webapp</PathLoader>
 			<!-- Web网站根 -->
 			<WebContentLoader>/</WebContentLoader>
 			<!-- classPath路径下指定的位置 -->

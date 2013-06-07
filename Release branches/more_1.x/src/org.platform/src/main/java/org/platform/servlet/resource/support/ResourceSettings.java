@@ -15,7 +15,6 @@
  */
 package org.platform.servlet.resource.support;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import org.more.global.assembler.xml.XmlProperty;
 import org.more.util.StringUtils;
@@ -31,9 +30,10 @@ public class ResourceSettings implements SettingListener {
         public String      loaderType = null;
         public XmlProperty config     = null;
     }
-    private boolean        enable  = false;
-    private String[]       types   = null;
-    private LoaderConfig[] loaders = null;
+    private boolean        enable   = false;
+    private String[]       types    = null;
+    private LoaderConfig[] loaders  = null;
+    private String         cacheDir = null;
     //
     public boolean isEnable() {
         return enable;
@@ -53,21 +53,27 @@ public class ResourceSettings implements SettingListener {
     public void setLoaders(LoaderConfig[] loaders) {
         this.loaders = loaders;
     }
+    public String getCacheDir() {
+        return cacheDir;
+    }
+    public void setCacheDir(String cacheDir) {
+        this.cacheDir = cacheDir;
+    }
     @Override
     public void loadConfig(Settings newConfig) {
-        this.enable = newConfig.getBoolean("httpServlet.resource.enable");
-        XmlProperty typesRoot = newConfig.getXmlProperty("httpServlet.resource");
+        this.enable = newConfig.getBoolean("httpServlet.resourceLoader.enable");
+        String typesRoot = newConfig.getString("httpServlet.resourceLoader.types");
+        typesRoot = typesRoot == null ? "" : typesRoot;
         //1.∂¡»°types≈‰÷√
         HashSet<String> typesArray = new HashSet<String>();
-        for (XmlProperty c : typesRoot.getChildren()) {
-            if (StringUtils.eqUnCaseSensitive(c.getName(), "types") == false)
+        for (String type : typesRoot.split(",")) {
+            if (StringUtils.isBlank(type) == true)
                 continue;
-            if (c.getText() != null)
-                typesArray.addAll(Arrays.asList(c.getText().split(",")));
+            typesArray.add(type.trim());
         }
         this.types = typesArray.toArray(new String[typesArray.size()]);
         //2.∂¡»°loader≈‰÷√
-        XmlProperty loaderRoot = newConfig.getXmlProperty("httpServlet.resource.loader");
+        XmlProperty loaderRoot = newConfig.getXmlProperty("httpServlet.resourceLoader");
         ArrayList<LoaderConfig> loaderArray = new ArrayList<LoaderConfig>();
         for (XmlProperty c : loaderRoot.getChildren()) {
             LoaderConfig lc = new LoaderConfig();
@@ -76,5 +82,7 @@ public class ResourceSettings implements SettingListener {
             loaderArray.add(lc);
         }
         this.loaders = loaderArray.toArray(new LoaderConfig[loaderArray.size()]);
+        //3.
+        this.cacheDir = newConfig.getString("httpServlet.resourceLoader.cacheDir");
     }
 }

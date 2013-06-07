@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package org.platform.servlet.resource.loader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
+import org.more.util.io.AutoCloseInputStream;
 import org.platform.servlet.resource.ResourceLoader;
 /**
  * 将一个File对象所代表的路径作为根路径，资源获取相对于该路径下。
@@ -29,6 +32,12 @@ public class PathResourceLoader implements ResourceLoader {
     @Override
     public InputStream getResourceAsStream(String resourcePath) {
         String $name = this.dirPath + "/" + resourcePath;
+        $name = $name.replaceAll("/{2}", "/");
+        File file = new File($name);
+        try {
+            if (file.exists() && file.isFile())
+                return new AutoCloseInputStream(new FileInputStream(file));
+        } catch (Exception e) {}
         return null;
     }
 }

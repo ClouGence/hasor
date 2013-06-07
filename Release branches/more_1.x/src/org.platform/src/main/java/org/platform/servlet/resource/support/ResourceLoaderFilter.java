@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 package org.platform.servlet.resource.support;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
-import javax.inject.Singleton;
+import java.util.List;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -24,12 +31,16 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.io.IOUtils;
+import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.context.AppContext;
 import org.platform.servlet.resource.IResourceLoaderCreator;
 import org.platform.servlet.resource.ResourceLoader;
 import org.platform.servlet.resource.support.ResourceSettings.LoaderConfig;
+import org.platform.servlet.resource.util.MimeType;
 import com.google.inject.Binding;
 import com.google.inject.Inject;
 import com.google.inject.TypeLiteral;
@@ -38,20 +49,16 @@ import com.google.inject.TypeLiteral;
  * @version : 2013-6-5
  * @author 赵永春 (zyc@byshell.org)
  */
-@Singleton
 public class ResourceLoaderFilter implements Filter {
     @Inject
     private AppContext       appContext = null;
+    private MimeType         mimeType   = null;
     private ResourceSettings settings   = null;
     private ResourceLoader[] loaderList = null;
-    private boolean          init       = false;
-    //
+    private File             cacheDir   = null;
     //
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        if (init == true)
-            return;
-        init = true;
         this.settings = appContext.getInstance(ResourceSettings.class);
         //1.载入所有loaderCreator
         ArrayList<ResourceLoaderCreatorDefinition> loaderCreatorList = new ArrayList<ResourceLoaderCreatorDefinition>();
@@ -94,25 +101,101 @@ public class ResourceLoaderFilter implements Filter {
         }
         //3.保存
         this.loaderList = resourceLoaderList.toArray(new ResourceLoader[resourceLoaderList.size()]);
+        //4.缓存路径
+        this.cacheDir = new File(this.appContext.getWorkSpace().getCacheDir(this.settings.getCacheDir()));
+        if (!chekcCacheDir()) {
+            Platform.warning("init ResourceLoaderFilter error can not create %s", this.cacheDir);
+            int i = 0;
+            while (true) {
+                this.cacheDir = new File(this.appContext.getWorkSpace().getCacheDir(this.settings.getCacheDir() + "_" + String.valueOf(i)));
+                if (chekcCacheDir())
+                    break;
+            }
+        }
+        Platform.info("use cacheDir %s", this.cacheDir);
     }
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    //
+    private boolean chekcCacheDir() {
+        this.cacheDir.mkdirs();
+        if (this.cacheDir.isDirectory() == false && this.cacheDir.exists() == true)
+            return false;
+        else
+            return true;
+    }
+    //
+    private MimeType getMimeType() throws IOException {
+        if (this.mimeType != null)
+            return this.mimeType;
+        this.mimeType = new MimeType();
+        List<URL> listURL = ResourcesUtils.getResources("/META-INF/mime.types.xml");
+        if (listURL != null)
+            for (URL resourceURL : listURL)
+                try {
+                    InputStream inStream = ResourcesUtils.getResourceAsStream(resourceURL);
+                    this.mimeType.loadStream(inStream, "utf-8");
+                } catch (Exception e) {
+                    Platform.warning("loadMimeType error at %s", resourceURL);
+                }
+        return this.mimeType;
+    }
+    //
+    public void forwardTo(File file, ServletRequest request, ServletResponse response) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         String requestURI = req.getRequestURI();
+        String fileExt = requestURI.substring(requestURI.lastIndexOf("."));
+        String typeMimeType = req.getServletContext().getMimeType(fileExt);
+        if (StringUtils.isBlank(typeMimeType))
+            typeMimeType = this.getMimeType().get(fileExt.substring(1).toLowerCase());
+        //
+        response.setContentType(typeMimeType);
+        FileInputStream cacheFile = new FileInputStream(file);
+        IOUtils.copy(cacheFile, response.getOutputStream());
+        cacheFile.close();
+    }
+    //
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        //1.确定时候拦截
+        HttpServletRequest req = (HttpServletRequest) request;
+        String requestURI = req.getRequestURI();
+        try {
+            requestURI = URLDecoder.decode(requestURI, "utf-8");
+        } catch (Exception e) {}
         boolean hit = false;
         for (String s : this.settings.getTypes()) {
-            if (s.startsWith("*.") == false)
-                hit = StringUtils.matchWild("*." + s, requestURI);
-            else
-                hit = StringUtils.matchWild(s, requestURI);
-            if (hit)
+            if (requestURI.endsWith("." + s) == true) {
+                hit = true;
                 break;
+            }
         }
         if (hit == false) {
             chain.doFilter(request, response);
             return;
         }
-        System.out.println();
+        //2.检查缓存路径中是否存在
+        File cacheFile = new File(this.cacheDir, requestURI);
+        if (cacheFile.exists()) {
+            this.forwardTo(cacheFile, request, response);
+            return;
+        }
+        //3.尝试载入资源
+        InputStream inStream = null;
+        for (ResourceLoader loader : loaderList) {
+            inStream = loader.getResourceAsStream(requestURI);
+            if (inStream != null)
+                break;
+        }
+        if (inStream == null) {
+            chain.doFilter(request, response);
+            return;
+        }
+        //4.写入临时文件夹
+        cacheFile.getParentFile().mkdirs();
+        FileOutputStream out = new FileOutputStream(cacheFile);
+        IOUtils.copy(inStream, out);
+        out.flush();
+        out.close();
+        this.forwardTo(cacheFile, request, response);
     }
     @Override
     public void destroy() {}
