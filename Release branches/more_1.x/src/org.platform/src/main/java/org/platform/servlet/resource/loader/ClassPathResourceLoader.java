@@ -15,7 +15,7 @@
  */
 package org.platform.servlet.resource.loader;
 import java.io.InputStream;
-import java.net.URL;
+import org.more.util.StringUtils;
 import org.platform.servlet.resource.ResourceLoader;
 /**
  * 用于创建一个可以从classpath中获取资源的ResourceLoader。
@@ -38,14 +38,11 @@ public class ClassPathResourceLoader implements ResourceLoader {
     public ClassLoader getClassLoader() {
         return this.classLoader;
     }
-    public URL getResource(String name) {
-        String $name = this.packageName + "/" + name;
-        if ($name.charAt(0) == '/')
-            $name = $name.substring(1);
-        return this.classLoader.getResource($name);
-    }
     public InputStream getResourceAsStream(String name) {
-        String $name = this.packageName + "/" + name;
+        if (StringUtils.isBlank(name))
+            return null;
+        String $name = this.packageName + (name.charAt(0) == '/' ? name : "/" + name);
+        $name = $name.replaceAll("/{2}", "/");
         if ($name.charAt(0) == '/')
             $name = $name.substring(1);
         return this.classLoader.getResourceAsStream($name);

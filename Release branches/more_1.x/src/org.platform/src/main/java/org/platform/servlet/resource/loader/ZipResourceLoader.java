@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import org.more.util.io.AutoCloseInputStream;
 import org.platform.servlet.resource.ResourceLoader;
 /**
  * 用于创建一个可以从classpath中获取资源的ResourceLoader。

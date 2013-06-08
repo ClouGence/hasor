@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.Filter;
@@ -31,8 +30,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.io.IOUtils;
+import org.more.util.IOUtils;
 import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
 import org.platform.Platform;
@@ -155,6 +153,10 @@ public class ResourceLoaderFilter implements Filter {
     //
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        if (this.settings.isEnable() == false) {
+            chain.doFilter(request, response);
+            return;
+        }
         //1.»∑∂® ±∫Ú¿πΩÿ
         HttpServletRequest req = (HttpServletRequest) request;
         String requestURI = req.getRequestURI();
@@ -193,6 +195,7 @@ public class ResourceLoaderFilter implements Filter {
         cacheFile.getParentFile().mkdirs();
         FileOutputStream out = new FileOutputStream(cacheFile);
         IOUtils.copy(inStream, out);
+        inStream.close();
         out.flush();
         out.close();
         this.forwardTo(cacheFile, request, response);

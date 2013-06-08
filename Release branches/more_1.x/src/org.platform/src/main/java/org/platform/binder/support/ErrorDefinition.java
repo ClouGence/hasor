@@ -18,7 +18,7 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.platform.Platform;
 import org.platform.binder.ErrorHook;
 import org.platform.context.AppContext;
 import com.google.inject.Key;
@@ -60,10 +60,8 @@ class ErrorDefinition implements Provider<ErrorDefinition> {
     }
     @Override
     public String toString() {
-        return new ToStringBuilder(ErrorDefinition.class)//
-                .append("initParams", getInitParams())//
-                .append("uriPatternType", this.errorType)//
-                .toString();
+        return Platform.formatString("type %s initParams=%s ,uriPatternType=%s",//
+                ErrorDefinition.class, getInitParams(), this.errorType);
     }
     /*--------------------------------------------------------------------------------------------------------*/
     /**/
@@ -72,7 +70,6 @@ class ErrorDefinition implements Provider<ErrorDefinition> {
         ErrorHook errorHook = this.getTarget(appContext);
         if (errorHook == null)
             return;
-        final Map<String, String> initParams = this.getInitParams();
         errorHook.init(appContext);
     }
     /**/

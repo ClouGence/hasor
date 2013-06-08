@@ -167,8 +167,9 @@ public abstract class ResourcesUtils {
             //JARÎÄ¼þ
             JarFile jar = ((JarURLConnection) resourceURL.openConnection()).getJarFile();
             String jarFile = jar.getName().replace("\\", "/");
-            int beginIndex = resourceURL.getPath().indexOf(jarFile) + jarFile.length();
-            String entPath = resourceURL.getPath().substring(beginIndex + 2);
+            String resourcePath = URLDecoder.decode(resourceURL.getPath(), "utf-8");
+            int beginIndex = resourcePath.indexOf(jarFile) + jarFile.length();
+            String entPath = resourcePath.substring(beginIndex + 2);
             ZipEntry e = jar.getEntry(entPath);
             return jar.getInputStream(e);
         } else if (protocol.equals("classpath") == true) {

@@ -26,8 +26,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.more.util.Iterators;
+import org.platform.Platform;
 import org.platform.context.AppContext;
 import com.google.inject.Key;
 import com.google.inject.Provider;
@@ -59,11 +59,8 @@ class ServletDefinition extends AbstractServletModuleBinding implements Provider
     }
     @Override
     public String toString() {
-        return new ToStringBuilder(ServletDefinition.class)//
-                .append("pattern", getPattern())//
-                .append("initParams", getInitParams())//
-                .append("uriPatternType", getUriPatternType())//
-                .toString();
+        return Platform.formatString("type %s pattern=%s ,initParams=%s ,uriPatternType=%s",//
+                ServletDefinition.class, getPattern(), getInitParams(), getUriPatternType());
     }
     /*--------------------------------------------------------------------------------------------------------*/
     /**/

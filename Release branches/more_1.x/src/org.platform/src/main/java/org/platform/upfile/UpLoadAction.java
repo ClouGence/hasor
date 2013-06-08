@@ -27,33 +27,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface UpLoadAction {
-    /**上传服务注册的服务名。
-     * 如果配置为空则使用类的简短类名作为名称。*/
-    public String[] upName();
-    /**上传服务允许的最大请求数据长度。默认：0(无限制)。
-     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
-    public long maxSize() default 0;
-    /**上传服务允许的最小请求数据长度。默认：0(无限制)。
-     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
-    public long minSize() default 0;
-    /**是否允许一个请求中多个上传实体请求。
-     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
-    public boolean allowMulti() default false;
-    /**上传服务允许的文件类型。
-     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
-    public String[] allowFiles() default { "*.*" };
-    /**上传服务策略。默认:{@link AccessPolicy#Public}。
-     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
-    public AccessPolicy policy() default AccessPolicy.Public;
-    /**
-     * 公开范围枚举，如果系统启动了对外服务访问策略则可以通过访问通路直接访问到该服务。
-     * @version : 2013-3-12
-     * @author 赵永春 (zyc@byshell.org)
-     */
-    public static enum AccessPolicy {
-        /**完全公开。*/
-        Public,
-        /**需要经过{@link IUpFilePolicy}策略检验。*/
-        Policy,
-    }
+    /**上传服务名*/
+    public String value();
 }

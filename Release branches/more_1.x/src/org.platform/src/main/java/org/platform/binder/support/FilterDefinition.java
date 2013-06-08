@@ -25,8 +25,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.more.util.Iterators;
+import org.platform.Platform;
 import org.platform.context.AppContext;
 import com.google.inject.Key;
 import com.google.inject.Provider;
@@ -56,11 +56,8 @@ class FilterDefinition extends AbstractServletModuleBinding implements Provider<
     }
     @Override
     public String toString() {
-        return new ToStringBuilder(FilterDefinition.class)//
-                .append("pattern", getPattern())//
-                .append("initParams", getInitParams())//
-                .append("uriPatternType", getUriPatternType())//
-                .toString();
+        return Platform.formatString("type %s pattern=%s ,initParams=%s ,uriPatternType=%s",//
+                FilterDefinition.class, getPattern(), getInitParams(), getUriPatternType());
     }
     /*--------------------------------------------------------------------------------------------------------*/
     /**/

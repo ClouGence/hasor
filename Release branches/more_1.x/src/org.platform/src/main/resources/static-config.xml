@@ -194,7 +194,12 @@
 		<!-- !!!这里可以放置其他缓存程序的Xml配置，然后通过XmlProperty类型读取到这段Xml!!! -->
 	</cacheConfig>
 	<!-- httpServlet文件上传服务配置 -->
-	<upLoadConfig enable="false">
-
-	</upLoadConfig>
+	<upLoadService enable="false">
+		<!-- name：服务名 -->
+		<!-- maxSize：上传服务允许的最大请求数据长度。默认：0(无限制) -->
+		<!-- minSize：上传服务允许的最小请求数据长度。默认：0(无限制) -->
+		<!-- allowMulti：是否允许一个请求中多个上传实体请求 -->
+		<!-- allowFiles：允许的文件类型 -->
+		<upPoint name="" maxSize="0" minSize="" allowMulti="false" allowFiles="*.*" />
+	</upLoadService>
 </config>

@@ -16,7 +16,7 @@
 package org.platform.binder.support;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.platform.Platform;
 import org.platform.context.AppContext;
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -47,9 +47,8 @@ class ListenerDefinition implements Provider<ListenerDefinition> {
     }
     @Override
     public String toString() {
-        return new ToStringBuilder(ListenerDefinition.class)//
-                .append("listenerKey", this.listenerKey)//
-                .toString();
+        return Platform.formatString("type %s listenerKey=%s",//
+                ListenerDefinition.class, this.listenerKey);
     }
     /*--------------------------------------------------------------------------------------------------------*/
     /**/
