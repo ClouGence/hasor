@@ -37,6 +37,8 @@
 	<!-- </dataSourceSet> -->
 	<!-- Web部分的配置 -->
 	<httpServlet>
+		<!-- 请求响应编码设置 -->
+		<requestEncoding requestEncoding="utf-8" responseEncoding="utf-8" />
 		<!-- Web请求遇到异常后轮询errorHook的次数。 -->
 		<errorCaseCount>5</errorCaseCount>
 		<!-- Action配置，enable：是否启用Action功能。 模式：mode:RestOnly（rest风格）、ServletOnly（中央servlet）、Both（两者同时使用） -->
