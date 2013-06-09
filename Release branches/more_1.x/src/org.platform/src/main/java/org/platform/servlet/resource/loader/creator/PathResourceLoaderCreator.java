@@ -43,7 +43,7 @@ public class PathResourceLoaderCreator implements IResourceLoaderCreator {
         if (fileBody.exists() == false)
             if (fileBody.mkdirs() == false)
                 return null;
-        Platform.info("use path %s", fileBody);
+        Platform.info("loadPath %s -> %s", xmlConfig.getText(), fileBody);
         PathResourceLoader dirTemplateLoader = new PathResourceLoader(fileBody.getAbsolutePath());
         return dirTemplateLoader;
     }

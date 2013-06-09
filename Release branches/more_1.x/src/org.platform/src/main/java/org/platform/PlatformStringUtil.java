@@ -20,48 +20,24 @@ package org.platform;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public abstract class PlatformStringUtil {
+    public static void main(String[] args) {
+        System.out.println(getIndexStr(Integer.MAX_VALUE - 20));
+    }
     public static String getIndexStr(int index) {
-        if (index == Integer.MIN_VALUE)
-            return "Min";
-        else if (index == Integer.MIN_VALUE + 1)
-            return "Min+1";
-        else if (index == Integer.MIN_VALUE + 2)
-            return "Min+2";
-        else if (index == Integer.MIN_VALUE + 3)
-            return "Min+3";
-        else if (index == Integer.MIN_VALUE + 4)
-            return "Min+4";
-        else if (index == Integer.MIN_VALUE + 5)
-            return "Min+5";
-        else if (index == Integer.MIN_VALUE + 6)
-            return "Min+6";
-        else if (index == Integer.MIN_VALUE + 7)
-            return "Min+7";
-        else if (index == Integer.MIN_VALUE + 8)
-            return "Min+8";
-        else if (index == Integer.MIN_VALUE + 9)
-            return "Min+9";
-        else if (index == Integer.MAX_VALUE)
-            return "Max";
-        else if (index == Integer.MAX_VALUE - 1)
-            return "Max-1";
-        else if (index == Integer.MAX_VALUE - 2)
-            return "Max-2";
-        else if (index == Integer.MAX_VALUE - 3)
-            return "Max-3";
-        else if (index == Integer.MAX_VALUE - 4)
-            return "Max-4";
-        else if (index == Integer.MAX_VALUE - 5)
-            return "Max-5";
-        else if (index == Integer.MAX_VALUE - 6)
-            return "Max-6";
-        else if (index == Integer.MAX_VALUE - 7)
-            return "Max-7";
-        else if (index == Integer.MAX_VALUE - 8)
-            return "Max-8";
-        else if (index == Integer.MAX_VALUE - 9)
-            return "Max-9";
-        else
-            return String.valueOf(index);
+        int allRange = 1000;
+        /*-----------------------------------------*/
+        int minStartIndex = Integer.MIN_VALUE;
+        int minStopIndex = Integer.MIN_VALUE + allRange;
+        for (int i = minStartIndex; i < minStopIndex; i++) {
+            if (index == i)
+                return "Min" + ((index == Integer.MIN_VALUE) ? "" : ("+" + String.valueOf(i + Math.abs(Integer.MIN_VALUE))));
+        }
+        int maxStartIndex = Integer.MAX_VALUE;
+        int maxStopIndex = Integer.MAX_VALUE - allRange;
+        for (int i = maxStartIndex; i > maxStopIndex; i--) {
+            if (index == i)
+                return "Max" + ((index == Integer.MAX_VALUE) ? "" : ("-" + Math.abs(Integer.MAX_VALUE - i)));
+        }
+        return String.valueOf(index);
     }
 }

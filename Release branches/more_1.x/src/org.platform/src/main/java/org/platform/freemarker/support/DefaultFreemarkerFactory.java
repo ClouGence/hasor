@@ -165,9 +165,6 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
                         if (loader == null)
                             Platform.error("%s newTemplateLoader call newTemplateLoader return is null. config is %s.", key, val);
                         else {
-                            String logInfo = val.replace("\n", "");
-                            logInfo = logInfo.length() > 30 ? logInfo.substring(0, 30) : logInfo;
-                            Platform.info("[%s] TemplateLoader is added. config = %s", key, logInfo);
                             templateLoaderList.add(loader);
                         }
                     } catch (Exception e) {

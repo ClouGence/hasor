@@ -15,12 +15,16 @@
  */
 package org.platform.freemarker.support;
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.platform.Platform;
 import org.platform.freemarker.FreemarkerManager;
 import com.google.inject.Inject;
@@ -46,9 +50,29 @@ public class FreemarkerHttpServlet extends HttpServlet {
         try {
             if (httpResponse.isCommitted() == true)
                 return;
-            //HttpRequestHashModel requestHashModel = new HttpRequestHashModel(httpRequest, httpResponse);
-            //TemplateRootMap rootMap = new TemplateRootMap(httpRequest, appContext, freemarkerManager);
-            Object rootMap = null;
+            HashMap<String, Object> rootMap = null;
+            {
+                rootMap = new HashMap<String, Object>();
+                rootMap.put("request", httpRequest);
+                rootMap.put("response", httpResponse);
+                rootMap.put("session", httpRequest.getSession(true));
+                for (Entry<String, String[]> ent : httpRequest.getParameterMap().entrySet()) {
+                    String[] values = ent.getValue();
+                    rootMap.put("req_" + ent.getKey(), (values == null || values.length == 0) ? null : values[0]);
+                    rootMap.put("req_" + ent.getKey() + "s", values);
+                }
+                Enumeration<String> reqAtts = httpRequest.getAttributeNames();
+                while (reqAtts.hasMoreElements()) {
+                    String name = reqAtts.nextElement();
+                    rootMap.put(name, httpRequest.getAttribute(name));
+                }
+                HttpSession httpSession = httpRequest.getSession(true);
+                Enumeration<String> sesAtts = httpSession.getAttributeNames();
+                while (sesAtts.hasMoreElements()) {
+                    String name = sesAtts.nextElement();
+                    rootMap.put(name, httpSession.getAttribute(name));
+                }
+            }
             this.freemarkerManager.processTemplate(requestURI, rootMap, httpResponse.getWriter());
             return;
         } catch (Exception e) {

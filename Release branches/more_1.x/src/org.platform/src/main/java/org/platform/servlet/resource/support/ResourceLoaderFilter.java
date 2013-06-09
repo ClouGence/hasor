@@ -86,9 +86,6 @@ public class ResourceLoaderFilter implements Filter {
                     if (loader == null)
                         Platform.error("%s ResourceLoaderCreator call newInstance return is null. config is %s.", loaderType, configVal);
                     else {
-                        String logInfo = configVal.replace("\n", "");
-                        logInfo = logInfo.length() > 30 ? logInfo.substring(0, 30) : logInfo;
-                        Platform.info("[%s] ResourceLoader is added. config = %s", loaderType, logInfo);
                         resourceLoaderList.add(loader);
                     }
                 } catch (Exception e) {

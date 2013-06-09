@@ -21,6 +21,7 @@ import java.util.List;
 import org.more.global.assembler.xml.XmlProperty;
 import org.more.util.StringConvertUtils;
 import org.more.util.StringUtils;
+import org.platform.Platform;
 import org.platform.context.AppContext;
 import org.platform.freemarker.ITemplateLoaderCreator;
 import org.platform.freemarker.TemplateLoaderCreator;
@@ -72,6 +73,7 @@ public class PredefineTemplateLoaderCreator implements ITemplateLoaderCreator {
                 break;
             }
         }
+        Platform.info("loadConfig keys %s", configTemplateLoader.getKeys());
         return configTemplateLoader;
     }
 }

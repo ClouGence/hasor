@@ -19,6 +19,7 @@ import java.io.IOException;
 import javax.servlet.ServletContext;
 import org.more.global.assembler.xml.XmlProperty;
 import org.more.util.StringUtils;
+import org.platform.Platform;
 import org.platform.context.AppContext;
 import org.platform.freemarker.ITemplateLoaderCreator;
 import org.platform.freemarker.TemplateLoaderCreator;
@@ -44,6 +45,7 @@ public class WebContentTemplateLoaderCreator implements ITemplateLoaderCreator {
         if (fileBody.exists() == false)
             if (fileBody.mkdirs() == false)
                 return null;
+        Platform.info("loadWebContent %s -> %s", xmlConfig.getText(), fileBody);
         DirTemplateLoader dirTemplateLoader = new DirTemplateLoader(fileBody);
         return dirTemplateLoader;
     }

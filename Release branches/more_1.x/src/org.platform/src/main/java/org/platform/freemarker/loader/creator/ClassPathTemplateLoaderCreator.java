@@ -16,6 +16,7 @@
 package org.platform.freemarker.loader.creator;
 import org.more.global.assembler.xml.XmlProperty;
 import org.more.util.StringUtils;
+import org.platform.Platform;
 import org.platform.context.AppContext;
 import org.platform.freemarker.ITemplateLoaderCreator;
 import org.platform.freemarker.TemplateLoaderCreator;
@@ -32,6 +33,7 @@ public class ClassPathTemplateLoaderCreator implements ITemplateLoaderCreator {
     public ITemplateLoader newTemplateLoader(AppContext appContext, XmlProperty xmlConfig) {
         ClassPathTemplateLoader classpathLoader = null;
         String body = xmlConfig.getText();
+        Platform.info("loadClassPath %s", body);
         if (StringUtils.isBlank(body))
             classpathLoader = new ClassPathTemplateLoader();
         else

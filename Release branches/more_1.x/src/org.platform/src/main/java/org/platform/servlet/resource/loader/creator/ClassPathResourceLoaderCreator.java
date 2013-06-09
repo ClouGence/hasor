@@ -17,6 +17,7 @@ package org.platform.servlet.resource.loader.creator;
 import java.io.IOException;
 import org.more.global.assembler.xml.XmlProperty;
 import org.more.util.StringUtils;
+import org.platform.Platform;
 import org.platform.context.AppContext;
 import org.platform.servlet.resource.ResourceLoaderCreator;
 import org.platform.servlet.resource.ResourceLoader;
@@ -33,6 +34,7 @@ public class ClassPathResourceLoaderCreator implements IResourceLoaderCreator {
     public ResourceLoader newInstance(AppContext appContext, XmlProperty xmlConfig) throws IOException {
         String config = xmlConfig.getText();
         config = StringUtils.isBlank(config) ? "/" : config;
+        Platform.info("loadClassPath %s", config);
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         ClassPathResourceLoader classpathLoader = new ClassPathResourceLoader(config, loader);
         return classpathLoader;

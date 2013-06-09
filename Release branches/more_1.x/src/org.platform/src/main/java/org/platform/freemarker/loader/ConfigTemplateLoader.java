@@ -19,7 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.platform.freemarker.loader.mto.AbstractTemplateObject;
 import org.platform.freemarker.loader.mto.ClassPath_TemplateObject;
@@ -38,6 +40,9 @@ public class ConfigTemplateLoader implements ITemplateLoader, IResourceLoader {
     public ConfigTemplateLoader() {
         this.objectMap = new HashMap<String, AbstractTemplateObject>();
     };
+    public List<String> getKeys() {
+        return new ArrayList<String>(objectMap.keySet());
+    }
     public String getType() {
         return this.getClass().getSimpleName();
     }

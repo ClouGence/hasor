@@ -42,7 +42,7 @@ public class ZipResourceLoaderCreator implements IResourceLoaderCreator {
         File fileBody = new File(body);
         if (fileBody.exists() == false || fileBody.isDirectory())
             return null;
-        Platform.info("loadZip %s", fileBody);
+        Platform.info("loadZip %s -> %s", xmlConfig.getText(), fileBody);
         ZipResourceLoader dirTemplateLoader = new ZipResourceLoader(fileBody.getAbsolutePath());
         return dirTemplateLoader;
     }

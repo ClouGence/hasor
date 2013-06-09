@@ -45,7 +45,7 @@ public class PathTemplateLoaderCreator implements ITemplateLoaderCreator {
         if (fileBody.exists() == false)
             if (fileBody.mkdirs() == false)
                 return null;
-        Platform.info("use path %s", fileBody);
+        Platform.info("loadPath %s -> %s", xmlConfig.getText(), fileBody);
         DirTemplateLoader dirTemplateLoader = new DirTemplateLoader(fileBody);
         return dirTemplateLoader;
     }
