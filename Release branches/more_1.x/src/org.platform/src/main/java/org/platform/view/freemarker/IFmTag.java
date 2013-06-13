@@ -13,22 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.webapps.tags;
-import org.platform.context.AppContext;
-import org.platform.general.Bean;
-import org.platform.view.freemarker.FmMethod;
-import com.google.inject.Inject;
-/**
- * 
- * @version : 2013-5-24
+package org.platform.view.freemarker;
+import java.io.IOException;
+import freemarker.core.Environment;
+import freemarker.template.TemplateException;
+/***
+ * 自定义标签
+ * @version : 2013-5-14
  * @author 赵永春 (zyc@byshell.org)
  */
-@Bean("cfg")
-public class SettingsTag {
-    @Inject
-    private AppContext appContext = null;
-    @FmMethod("Settings")
-    public Object callMethod(String args) {
-        return appContext.getSettings().getString(args);
-    }
+public interface IFmTag {
+    /**准备开始执行标签*/
+    public boolean beforeTag(Environment environment) throws TemplateException;
+    /**执行标签*/
+    public void doTag(TemplateBody body) throws TemplateException, IOException;
+    /**标签执行完毕*/
+    public boolean afterTag(Environment environment) throws TemplateException;
 }

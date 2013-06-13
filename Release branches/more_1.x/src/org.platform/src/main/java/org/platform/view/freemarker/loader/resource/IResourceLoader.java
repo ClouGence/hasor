@@ -13,22 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.webapps.tags;
-import org.platform.context.AppContext;
-import org.platform.general.Bean;
-import org.platform.view.freemarker.FmMethod;
-import com.google.inject.Inject;
+package org.platform.view.freemarker.loader.resource;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 /**
- * 
- * @version : 2013-5-24
- * @author 赵永春 (zyc@byshell.org)
+ * 给定资源路径装载该资源对象。
+ * @version : 2011-9-14
+ * @author 赵永春 (zyc@byshell.org) 
  */
-@Bean("cfg")
-public class SettingsTag {
-    @Inject
-    private AppContext appContext = null;
-    @FmMethod("Settings")
-    public Object callMethod(String args) {
-        return appContext.getSettings().getString(args);
-    }
+public interface IResourceLoader {
+    public URL getResource(String resourcePath) throws IOException;
+    /**装载指定资源。*/
+    public InputStream getResourceAsStream(String resourcePath) throws IOException;
 }

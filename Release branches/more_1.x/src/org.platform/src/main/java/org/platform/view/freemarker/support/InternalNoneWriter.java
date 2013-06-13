@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.webapps.tags;
-import org.platform.context.AppContext;
-import org.platform.general.Bean;
-import org.platform.view.freemarker.FmMethod;
-import com.google.inject.Inject;
+package org.platform.view.freemarker.support;
+import java.io.IOException;
+import java.io.Writer;
 /**
- * 
- * @version : 2013-5-24
+ * Ò»¸öÎÞµ×¶´Writer
+ * @version : 2013-5-17
  * @author ÕÔÓÀ´º (zyc@byshell.org)
  */
-@Bean("cfg")
-public class SettingsTag {
-    @Inject
-    private AppContext appContext = null;
-    @FmMethod("Settings")
-    public Object callMethod(String args) {
-        return appContext.getSettings().getString(args);
-    }
+class InternalNoneWriter extends Writer {
+    @Override
+    public void write(char[] cbuf, int off, int len) throws IOException {}
+    @Override
+    public void flush() throws IOException {}
+    @Override
+    public void close() throws IOException {}
 }

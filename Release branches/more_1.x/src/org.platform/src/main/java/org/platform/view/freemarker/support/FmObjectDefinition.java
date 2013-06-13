@@ -13,22 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.webapps.tags;
-import org.platform.context.AppContext;
-import org.platform.general.Bean;
-import org.platform.view.freemarker.FmMethod;
-import com.google.inject.Inject;
+package org.platform.view.freemarker.support;
+import com.google.inject.Provider;
+import freemarker.template.TemplateModel;
 /**
  * 
  * @version : 2013-5-24
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@Bean("cfg")
-public class SettingsTag {
-    @Inject
-    private AppContext appContext = null;
-    @FmMethod("Settings")
-    public Object callMethod(String args) {
-        return appContext.getSettings().getString(args);
+class FmObjectDefinition implements Provider<TemplateModel> {
+    private String        objName      = null;
+    private TemplateModel targetObject = null;
+    //
+    public FmObjectDefinition(String objName, TemplateModel targetObject) {
+        this.objName = objName;
+        this.targetObject = targetObject;
+    }
+    public String getName() {
+        return this.objName;
+    }
+    @Override
+    public TemplateModel get() {
+        return this.targetObject;
     }
 }

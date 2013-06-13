@@ -13,22 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.webapps.tags;
+package org.platform.view.freemarker;
+import java.io.IOException;
+import org.more.global.assembler.xml.XmlProperty;
 import org.platform.context.AppContext;
-import org.platform.general.Bean;
-import org.platform.view.freemarker.FmMethod;
-import com.google.inject.Inject;
+import org.platform.view.freemarker.loader.ITemplateLoader;
 /**
  * 
- * @version : 2013-5-24
+ * @version : 2013-5-22
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@Bean("cfg")
-public class SettingsTag {
-    @Inject
-    private AppContext appContext = null;
-    @FmMethod("Settings")
-    public Object callMethod(String args) {
-        return appContext.getSettings().getString(args);
-    }
+public interface ITemplateLoaderCreator {
+    public ITemplateLoader newTemplateLoader(AppContext appContext, XmlProperty xmlConfig) throws IOException;
 }

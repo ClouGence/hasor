@@ -13,22 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.webapps.tags;
-import org.platform.context.AppContext;
-import org.platform.general.Bean;
-import org.platform.view.freemarker.FmMethod;
-import com.google.inject.Inject;
+package org.platform.view.freemarker.loader;
+import freemarker.cache.TemplateLoader;
 /**
  * 
- * @version : 2013-5-24
+ * @version : 2012-5-15
  * @author 赵永春 (zyc@byshell.org)
  */
-@Bean("cfg")
-public class SettingsTag {
-    @Inject
-    private AppContext appContext = null;
-    @FmMethod("Settings")
-    public Object callMethod(String args) {
-        return appContext.getSettings().getString(args);
-    }
+public interface ITemplateLoader extends TemplateLoader {
+    /**获取类型*/
+    public String getType();
 }

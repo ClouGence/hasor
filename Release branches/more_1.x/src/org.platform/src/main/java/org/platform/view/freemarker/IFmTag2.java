@@ -13,22 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.webapps.tags;
-import org.platform.context.AppContext;
-import org.platform.general.Bean;
-import org.platform.view.freemarker.FmMethod;
-import com.google.inject.Inject;
-/**
- * 
- * @version : 2013-5-24
+package org.platform.view.freemarker;
+import java.util.Map;
+/***
+ * 标签接口{@link IFmTag}的增强接口，使用该接口将不会在调用标签的get/set方法设置属性。
+ * @version : 2013-5-17
  * @author 赵永春 (zyc@byshell.org)
  */
-@Bean("cfg")
-public class SettingsTag {
-    @Inject
-    private AppContext appContext = null;
-    @FmMethod("Settings")
-    public Object callMethod(String args) {
-        return appContext.getSettings().getString(args);
-    }
+public interface IFmTag2 extends IFmTag {
+    /***/
+    public void setup(Map<String, Object> objMap);
 }

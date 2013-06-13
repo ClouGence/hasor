@@ -13,22 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.webapps.tags;
-import org.platform.context.AppContext;
-import org.platform.general.Bean;
-import org.platform.view.freemarker.FmMethod;
-import com.google.inject.Inject;
+package org.platform.view.freemarker;
+import java.lang.reflect.Method;
+import freemarker.template.TemplateModelException;
 /**
  * 
- * @version : 2013-5-24
+ * @version : 2013-5-29
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@Bean("cfg")
-public class SettingsTag {
-    @Inject
-    private AppContext appContext = null;
-    @FmMethod("Settings")
-    public Object callMethod(String args) {
-        return appContext.getSettings().getString(args);
-    }
+public interface FmBinder {
+    /***/
+    public void bindTemplateLoaderCreator(String name, Class<ITemplateLoaderCreator> templateLoaderCreatorType);
+    /***/
+    public void bindTag(String tagName, Class<IFmTag> fmTagType);
+    /***/
+    public void bindMethod(String funName, Method fmMethodType);
+    /***/
+    public void bindObject(String objName, Object targetObject) throws TemplateModelException;
 }
