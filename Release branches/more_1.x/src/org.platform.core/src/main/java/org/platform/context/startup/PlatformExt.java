@@ -34,14 +34,24 @@ public @interface PlatformExt {
     /**启动顺序默认值0，该值越大表示启动顺序越延后。提示：负值等同于“0”。*/
     public int startIndex() default 0;
     /*级别定义*/
-    public static int Lv_0 = Integer.MIN_VALUE + 0;
-    public static int Lv_1 = Integer.MIN_VALUE + 100;
-    public static int Lv_2 = Integer.MIN_VALUE + 200;
-    public static int Lv_3 = Integer.MIN_VALUE + 300;
-    public static int Lv_4 = Integer.MIN_VALUE + 400;
-    public static int Lv_5 = Integer.MIN_VALUE + 500;
-    public static int Lv_6 = Integer.MIN_VALUE + 600;
-    public static int Lv_7 = Integer.MIN_VALUE + 700;
-    public static int Lv_8 = Integer.MIN_VALUE + 800;
-    public static int Lv_9 = Integer.MIN_VALUE + 900;
+    public static int Lv_0    = Integer.MIN_VALUE + 0;
+    public static int Lv_0Max = Integer.MIN_VALUE + 99;
+    public static int Lv_1    = Integer.MIN_VALUE + 100;
+    public static int Lv_1Max = Integer.MIN_VALUE + 199;
+    public static int Lv_2    = Integer.MIN_VALUE + 200;
+    public static int Lv_2Max = Integer.MIN_VALUE + 299;
+    public static int Lv_3    = Integer.MIN_VALUE + 300;
+    public static int Lv_3Max = Integer.MIN_VALUE + 399;
+    public static int Lv_4    = Integer.MIN_VALUE + 400;
+    public static int Lv_4Max = Integer.MIN_VALUE + 499;
+    public static int Lv_5    = Integer.MIN_VALUE + 500;
+    public static int Lv_5Max = Integer.MIN_VALUE + 599;
+    public static int Lv_6    = Integer.MIN_VALUE + 600;
+    public static int Lv_6Max = Integer.MIN_VALUE + 699;
+    public static int Lv_7    = Integer.MIN_VALUE + 700;
+    public static int Lv_7Max = Integer.MIN_VALUE + 799;
+    public static int Lv_8    = Integer.MIN_VALUE + 800;
+    public static int Lv_8Max = Integer.MIN_VALUE + 899;
+    public static int Lv_9    = Integer.MIN_VALUE + 900;
+    public static int Lv_9Max = Integer.MIN_VALUE + 999;
 }

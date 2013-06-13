@@ -35,11 +35,11 @@ import org.platform.context.AppContext;
 import org.platform.context.PlatformListener;
 import org.platform.context.startup.PlatformExt;
 /**
- * 支持Bean、WebError、WebFilter、WebServlet注解功能。启动级别：Lv2
+ * 支持Bean、WebError、WebFilter、WebServlet注解功能。启动级别：Lv1Max
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@PlatformExt(displayName = "GeneralModuleServiceListener", description = "org.platform.general软件包功能支持。", startIndex = PlatformExt.Lv_2)
+@PlatformExt(displayName = "GeneralModuleServiceListener", description = "org.platform.general软件包功能支持。", startIndex = PlatformExt.Lv_1Max)
 public class GeneralPlatformListener implements PlatformListener {
     /**初始化.*/
     @Override

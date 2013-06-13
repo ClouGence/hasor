@@ -25,11 +25,11 @@ import org.platform.context.startup.PlatformExt;
 import org.platform.servlet.resource.IResourceLoaderCreator;
 import org.platform.servlet.resource.ResourceLoaderCreator;
 /**
- * 负责装载jar包中的资源。启动级别：Lv2
+ * 负责装载jar包中的资源。启动级别：Lv1
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@PlatformExt(displayName = "ResourceLoaderPlatformListener", description = "org.platform.servlet.resource软件包功能支持。", startIndex = PlatformExt.Lv_2)
+@PlatformExt(displayName = "ResourceLoaderPlatformListener", description = "org.platform.servlet.resource软件包功能支持。", startIndex = PlatformExt.Lv_1)
 public class ResourceLoaderPlatformListener implements PlatformListener {
     private ResourceSettings resourceSettings = null;
     @Override

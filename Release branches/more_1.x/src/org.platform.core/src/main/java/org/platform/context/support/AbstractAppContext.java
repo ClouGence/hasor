@@ -38,10 +38,6 @@ public abstract class AbstractAppContext implements AppContext {
     private Map<String, BeanInfo> beanInfoMap = null;
     private AbstractWorkSpace     workSpace   = null;
     //
-    public AbstractAppContext() {
-        this.getWorkSpace();
-    }
-    //
     /**启动*/
     public abstract void start(Module... modules);
     /**销毁方法。*/

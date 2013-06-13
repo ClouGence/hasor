@@ -38,7 +38,7 @@ public class PlatformAppContext extends AbstractAppContext {
     private Settings settings = null;
     //
     public PlatformAppContext(Object context) {
-        super();
+        this.getWorkSpace();
         this.context = context;
     }
     public Injector getGuice() {

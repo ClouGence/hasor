@@ -19,11 +19,11 @@ import org.platform.context.AppContext;
 import org.platform.context.PlatformListener;
 import org.platform.context.startup.PlatformExt;
 /**
- * 装饰服务，启动级别L2
+ * 装饰服务，启动级别L1
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@PlatformExt(displayName = "DecoratePlatformListener", description = "org.platform.view.decorate软件包功能支持。", startIndex = PlatformExt.Lv_2)
+@PlatformExt(displayName = "DecoratePlatformListener", description = "org.platform.view.decorate软件包功能支持。", startIndex = PlatformExt.Lv_1)
 public class DecoratePlatformListener implements PlatformListener {
     @Override
     public void initialize(ApiBinder binder) {
