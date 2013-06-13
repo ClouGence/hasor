@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>${cfg.getString("webSite.displayName")}--用户导入</title>
+<#include "/include/webui_simple_v1.0.0.inc"/>
+<script type="text/javascript">
+var abc='1234554321'
+
+function setVar(Data){
+    alert(Data);
+    abc=Data;
+}
+function beforeFun(event,name){
+    event.target.setVar("name",function(){
+        return WebUI('i_name').value();
+    });
+    event.target.setVar("age",function(){
+        return $('#i_age').attr("value");
+    });
+    event.target.setVar("sex","男");
+    event.target.setVar("var_1",function(){
+        return WebUI.invoke("WebUIDemoService.print('syso-c3')");
+    });
+    return confirm('确定发送服务端事件“'+event.eventName+'”方法？');
+};
+function afterFun(event){
+    alert("Event: "+event.eventName+' :OK!，returnData：'+event.result);
+};
+function textOnChange(e){
+	if (WebUI.isNaN(this.getSelectIndex)==false){
+		this.indexOf(this.getSelectIndex()[0]);
+	}
+    alert(e);
+};
+function schoolOnChange1(e){
+    WebUI("f3").loadData({schID:e.selectKey()});
+    WebUI("f4").loadData({schID:e.selectKey()});
+};
+function schoolOnChange2(e){
+    WebUI("f5").loadData({schID:e.selectKey()});
+};
+</script>
+</head>
+<body class="pd10">
+一、Ajax按钮组件 调用服务并且获取返回值Json：
+	age<input id="i_age" type="text" />
+	[<@ui_Button actionEL="WebUIDemoService.print(var_1,name,age,sex)" beforeScript="beforeFun(event,event.eventName)" afterScript="afterFun">按钮</@ui_Button>]<br/>
+二、输入框组件，单行模式：
+	<@ui_Text value="默认值" onchange="textOnChange"></@ui_Text><br/>
+三、输入框组件，多行模式：
+	<@ui_Text value="默认值" onchange="textOnChange"></@ui_Text><br/>
+四、分页组件演示：
+	<@ui_Page startWith=0 pageSize=10 currentPage=req_pageNum rowCount=100 pageLink="webui-demo.xhtml?pageNum=${PageIndex}&startRow=${RowNum}">
+		<@ui_pFirst>首页</@ui_pFirst>
+		<@ui_pPrev>上一页</@ui_pPrev>
+		<@ui_pNum><font color="<#if isCurrent==true>red</#if>">${PageIndex+1}</font></@ui_pNum>
+		<@ui_pNext>下一页</@ui_pNext>
+		<@ui_pLast>尾页</@ui_pLast>
+		<@ui_pNoDate><span class="g3" onclick="">&lt;没有分页数据&gt;</span></@ui_pNoDate>
+	</@ui_Page>
+五、下拉列表框组件（级联菜单示例）：
+	<@ui_OnlySelect name="impSch" keyField="schID" varField="schName" listData=ImportUserService.allSchools() onchange="schoolOnChange1(this)"/>
+	<@ui_OnlySelect id="f3" name="impJob" keyField="jobID" varField="jobName" onLoadDataEL="ImportUserService.loadJobs(schID)"/><br/>
+	<@ui_OnlyRadio id="f4" name="impJob2" keyField="jobID" varField="jobName" onLoadDataEL="ImportUserService.loadJobs(schID)"/><br/>
+六、下拉列表框联动check组（级联菜单示例）：
+	<@ui_OnlySelect name="impSch" keyField="schID" varField="schName" listData=ImportUserService.allSchools() onchange="schoolOnChange2(this)"/>
+	<@ui_ManySelect id="f5" name="impJob" keyField="jobID" varField="jobName" onLoadDataEL="ImportUserService.loadJobs(schID)" value="54e6700b-4c3e-4683-8f6d-d8d106e0ae44,88689403-2c08-493e-847f-79341e3e80ca,3692cb7b-3174-4ec1-a0a7-f8d8f2174e5f"/><br/>
+七、表单组件：
+	<@ui_Form id="form" submitEL="WebUIDemoService.submitMap(this.formData)" afterScript="">
+		姓名：<@ui_Text id="i_name" 	onchange="textOnChange" name="i_name"/><br/>
+		年龄：<@ui_Text 				onchange="textOnChange" name="i_age"/><br/>
+		简述：<@ui_TextArea			onchange="textOnChange" name="i_desc"		value=WebUIDemoService.desc/><br/>
+		学校1：<@ui_OnlyTitle 		onchange="textOnChange" name="i_sch1"		keyField="schID" 	varField="schName" 	listData=ImportUserService.allSchools()/><br/>
+		学校2：<@ui_ManySelect 		onchange="textOnChange" name="i_sch2"		keyField="schID" 	varField="schName" 	listData=ImportUserService.allSchools() value="766afdce-42e7-4d87-abd0-12326675fe41,b6a353f3-fece-4287-990d-8520ecc65680"/><br/>
+		隐藏表单：<@ui_ScriptInput 	onchange="textOnChange" name="i_var"		varRScript="abc" 	varWScript="setVar(Data);"/><br/>
+		文件上传：<@ui_Upload 		onchange="textOnChange" name="i_filesData"	allowFiles="*.jpg"	allowMulti=true		uploadAction="webui-demo.xhtml?u=${userInfo.getCode()}" bizActionEL="WebUIDemoService.uploadFiles(files)"/><br/>
+		选择常量：<@ui_ManyTitle 	onchange="textOnChange" name="i_const_1"	keyField="varCode"	varField="varName"	listData=WebUIDemoService.getConstData() /><br/>
+		选择常量二：<@uic_ConstCaption constCode="BIZ_TPS_POP_Term" />
+			<@uic_ConstOnlySelect	onchange="textOnChange" name="i_const_2" 	constCode="BIZ_TPS_POP_Term"/>
+		[<@ui_LinkButton id="form_submit" onclick="WebUI('form').doSubmit();">递交</@ui_LinkButton>]
+	</@ui_Form>
+</body>
+</html>

@@ -21,7 +21,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.platform.general.WebServlet;
 import org.platform.webapps.business.scene1.service.Power_Services;
 import com.google.inject.Inject;
 /**
@@ -29,7 +28,6 @@ import com.google.inject.Inject;
  * @version : 2013-5-2
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@WebServlet("/business/scene1.do")
 public class Scene1_HttpServlet extends HttpServlet {
     private static final long serialVersionUID = 9157509300789665741L;
     @Inject

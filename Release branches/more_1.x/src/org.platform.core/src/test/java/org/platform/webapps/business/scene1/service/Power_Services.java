@@ -14,27 +14,21 @@
  * limitations under the License.
  */
 package org.platform.webapps.business.scene1.service;
-import org.platform.security.Power;
-import org.platform.security.Power.Level;
 /**
  * 
  * @version : 2013-5-2
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class Power_Services {
-    @Power(level = Level.Free)
     public String callFree(String bizID, String param) {
         return "Scene1:" + bizID + " ,param=" + param;
     }
-    @Power(level = Level.NeedLogin, errorMsg = "call this method need doLogin.")
     public String callLogin(String bizID, String param) {
         return "Scene1:" + bizID + " ,param=" + param;
     }
-    @Power(level = Level.NeedAccess, errorMsg = "call this method need Access[BBSPower].", value = { "BBSPower" })
     public String callAccess1(String bizID, String param) {
         return "Scene1:" + bizID + " ,param=" + param;
     }
-    @Power(level = Level.NeedAccess, errorMsg = "call this method need Access[AdminPower,BBSPower].", value = { "AdminPower", "BBSPower" })
     public String callAccess2(String bizID, String param) {
         return "Scene1:" + bizID + " ,param=" + param;
     }

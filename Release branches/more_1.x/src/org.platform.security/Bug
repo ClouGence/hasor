@@ -1,0 +1,113 @@
+//public class ELUtil {
+//    public static Map<String, Node> cacheNode = new java.util.Hashtable<String, Node>();
+//    public static Object evalOGNL(String expressionString, Object root) throws OgnlException {
+//        Node expressionNode = cacheNode.get(expressionString);
+//        if (expressionNode == null) {
+//            expressionNode = (Node) Ognl.parseExpression(expressionString);
+//            cacheNode.put(expressionString, expressionNode);
+//        }
+//        OgnlContext oc = new OgnlContext();
+//        oc.setCurrentObject(root);
+//        return expressionNode.getValue(oc, root);
+//    };
+//    public static Node parserNode(String expressionString) throws OgnlException {
+//        Node expressionNode = cacheNode.get(expressionString);
+//        if (expressionNode == null) {
+//            expressionNode = (Node) Ognl.parseExpression(expressionString);
+//            cacheNode.put(expressionString, expressionNode);
+//        }
+//        return expressionNode;
+//    };
+//}
+-------------------------------------------------------------------------------------------------------------------------------计划的
+Bug:
+  1.classcode-目前生称的方法中不支持基本类型。原因不明。
+  2.classcode-对于重复使用ClassCode的字节码修改有异常。
+  3.xml-使用XmlReader。在xml事件流中处理TextEvent事件时如发生下面异常：（同时xml的文档验证正确。“</试题>”在xml中被表述为“&lt;/试题&gt;”）请更换event.getText()方法为event.getOriginalText()方法。
+Exception in thread "main" javax.xml.stream.XMLStreamException: ParseError at [row,col]:[2,79771]
+Message: The element type "试题" must be terminated by the matching end-tag "</试题>".
+	at com.sun.org.apache.xerces.internal.impl.XMLStreamReaderImpl.next(XMLStreamReaderImpl.java:593)
+	at com.sun.org.apache.xerces.internal.impl.XMLStreamFilterImpl.findNextEvent(XMLStreamFilterImpl.java:151)
+	at com.sun.org.apache.xerces.internal.impl.XMLStreamFilterImpl.next(XMLStreamFilterImpl.java:101)
+	at org.noe.framework.xml.stream.XmlReader.readEvent(XmlReader.java:223)
+	at org.noe.framework.xml.stream.XmlReader.reader(XmlReader.java:213)
+	at doc.xml.XmlToXmlProperty.loadConfig(XmlToXmlProperty.java:21)
+	at doc.MergeWord.mergeWord(MergeWord.java:109)
+	at doc.Main.mergeInto(Main.java:97)
+	at doc.Main.main(Main.java:62)
+/-----------------------------------------------/
+more core
+  1.增加了ognl表达式语言框架。
+  2.恢复被删除的Base64js文件.
+  3.删除重复的功能类SimpeCode.
+  4.使Base64可以获取到base64.js的Reader流.
+  5.增加xml软件包
+  	1.提供了三种xml访问级别。
+  	2.可以针对xml命名空间进行解析。
+  6.增加了Global全局配置文件读取器，通过它可以在配置文件中配置json格式的数据，它还支持同时装载多个配置文件。并且可以独立访问每个配置文件。
+  7.删除了 json
+  8.删除了 copybean
+classcode v2.0
+  1.升级classcode代码，全部重写相关代码。目前版本v2.0
+  2.可以在对象上增加一个任意属性并且可以通过属性策略指定其readonly特性。
+  3.可以增加一个代理属性，通过接口实现的方法来操控属性的get、set。
+  4.增加了before,returnning,throwing三个切点的监听器。
+  5.改进了aopFilter接口注入的方法。
+classvisit v1.0
+  1.以访问者模式的方式迭代一个类。
+
+org.platform v1.0
+	说明：
+		1).轻量化开发框架-Web应用方向。
+		2).DI容器采用Guice。
+	01.org.platform.binder
+		1).60%源码参考Guice-Servlet实现。
+		2).提供了HttpServlet、Filter、HttpSessionListener、HttpError接口的注册支持。
+	02.org.platform.context
+		1).AppContext	应用环境：Bean创建
+		2).支持多配置文件合并功能：config.xml、static-config.xml
+		3).支持通过属性配置文件config-mapping.properties映射配置文件名称。
+	03.org.platform.event
+		1).事件功能支持。
+		2).可以用来监听系统事件。
+		3).可以抛出自定义事件，并截获它。
+	04.org.platform.freemarker
+		1).Freemarker模板支持。
+		2).支持从classpath中载入模板。
+		3).支持从外部目录中载入模板。
+		4).支持配置文件中定义模板。
+		5).可以将字符串内容作为模板执行。
+		6).灵活的配置Freemarker。
+		7).模板执行异常后消息提示方式可配。
+	05.org.platform.general
+		1).注解配置Filter、HttpServlet、ErrorHook、HttpSessionListener
+	06.org.platform.icache
+		1).支持通过注解缓存方法返回值。
+		2).方法缓存：在生成缓存key时候可以依照不同类型自行编写Key生成代码。
+		3).支持注解方式配置新的Cache和默认Cache
+		4).内置MapCache
+		5).内置Date、Object类型的Key生成器
+		6).通过标记@NeedCache增加缓存功能，可以标记在类和方法上
+	07.org.platform.security
+		1).安全控制框架。
+		2).权限模型、权限会话、来宾用户。
+		3).丰富的可扩展点。
+		4).多重身份登陆、临时提升权限、临时撤销权限。
+		5).拦截URL、Method权限访问。
+		6).通过分布式权限数据缓存(基于Cookie)可以实现SSO（未测试）。
+		7).权限Cookie数据加密或编码：DES、Base64、Random、Random、AES128、不加密
+	08.org.platform.servlet.action
+		1).常规Action支持。
+		2).restful风格支持。
+		3).Action方法参数支持依赖注入。
+		4).自定义Action执行返回值处理。
+	09.org.platform.servlet.loader
+		1).资源装载器。
+		2).支持jar、zip中载入资源。
+	10.org.platform.servlet.mapping
+		1).http请求转发到其他服务器。
+		
+		
+		
+	7.org.platform.datasource 软件包。
+		1).数据源功能支持，支持定义多套数据源。

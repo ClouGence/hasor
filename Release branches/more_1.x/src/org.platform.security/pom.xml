@@ -1,0 +1,57 @@
+﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.more</groupId>
+		<artifactId>org.platform</artifactId>
+		<version>Final</version>
+	</parent>
+	<groupId>org.more</groupId>
+	<artifactId>org.platform.security</artifactId>
+	<version>0.0.1</version>
+	<packaging>jar</packaging>
+	<!-- 引用依赖 -->
+	<dependencies>
+		<dependency>
+			<groupId>org.more</groupId>
+			<artifactId>org.platform.core</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.more</groupId>
+			<artifactId>org.platform.icache</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.more</groupId>
+			<artifactId>org.platform.event</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+		<!-- Json -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.1.28</version>
+		</dependency>
+		<!-- =================================================================== -->
+		<!-- J2EE -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- Jetty 8 Test -->
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>8.1.10.v20130312</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.eclipse.jetty.orbit</groupId>
+					<artifactId>javax.servlet</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+</project>

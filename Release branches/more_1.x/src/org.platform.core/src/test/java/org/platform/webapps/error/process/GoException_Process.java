@@ -19,14 +19,11 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import org.platform.binder.ErrorHook;
 import org.platform.context.AppContext;
-import org.platform.general.WebError;
-import org.platform.webapps.error.define.GoException;
 /**
  * 
  * @version : 2013-5-2
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@WebError(GoException.class)
 public class GoException_Process implements ErrorHook {
     @Override
     public void init(AppContext appContext) {}

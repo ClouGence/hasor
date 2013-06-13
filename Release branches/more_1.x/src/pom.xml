@@ -11,8 +11,16 @@
 		<test.skip>true</test.skip>
 	</properties>
 	<modules>
-		<module>org.platform</module>
-		<module>org.platform.testProject</module>
+		<module>org.platform.demo</module>
+
+		<module>org.platform.core</module>
+		<module>org.platform.icache</module>
+		<module>org.platform.event</module>
+		<module>org.platform.security</module>
+		<module>org.platform.servlet</module>
+		<module>org.platform.view</module>
+		<module>org.platform.updown</module>
+		<module>org.platform.ui</module>
 	</modules>
 	<!-- 构建描述 -->
 	<build>

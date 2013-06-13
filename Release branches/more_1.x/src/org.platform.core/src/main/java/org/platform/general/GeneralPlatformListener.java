@@ -44,6 +44,10 @@ public class GeneralPlatformListener implements PlatformListener {
     /**≥ı ºªØ.*/
     @Override
     public void initialize(ApiBinder event) {
+        if (event.getSettings().getBoolean("framework.generalSupport") == false) {
+            Platform.warning("init General false!");
+            return;
+        }
         //1.Bean
         this.loadBean(event);
         //2.LoadFilter.

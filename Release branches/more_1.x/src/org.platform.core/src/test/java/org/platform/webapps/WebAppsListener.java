@@ -18,6 +18,9 @@ import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
 import org.platform.context.PlatformListener;
 import org.platform.context.startup.PlatformExt;
+import org.platform.webapps.business.scene1.web.Scene1_HttpServlet;
+import org.platform.webapps.error.define.GoException;
+import org.platform.webapps.error.process.GoException_Process;
 /**
  * 
  * @version : 2013-4-29
@@ -27,14 +30,11 @@ import org.platform.context.startup.PlatformExt;
 public class WebAppsListener implements PlatformListener {
     @Override
     public void initialize(ApiBinder binder) {
-        // TODO Auto-generated method stub
+        binder.serve("/business/scene1.do").with(Scene1_HttpServlet.class);
+        binder.error(GoException.class).bind(GoException_Process.class);
     }
     @Override
-    public void initialized(AppContext appContext) {
-        // TODO Auto-generated method stub
-    }
+    public void initialized(AppContext appContext) {}
     @Override
-    public void destroy(AppContext appContext) {
-        // TODO Auto-generated method stub
-    }
+    public void destroy(AppContext appContext) {}
 }

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://project.byshell.org/more/schema/global">
+	<!-- Web部分的配置 -->
+	<httpServlet>
+		<!-- 请求响应编码设置 -->
+		<requestEncoding requestEncoding="utf-8" responseEncoding="utf-8" />
+		<!-- Action配置，enable：是否启用Action功能。 模式：mode:RestOnly（rest风格）、ServletOnly（中央servlet）、Both（两者同时使用） -->
+		<actionServlet enable="true" mode="Both" intercept="*.do">
+			<!-- 方法忽略的方法（逗号分割多组方法名），注意：在这里配置的忽略会应用到所有action上 -->
+			<ignoreMethod></ignoreMethod>
+		</actionServlet>
+		<!-- 请求转发映射 -->
+		<!-- <httpRequestMapping enable="true"> -->
+		<!-- 文件匹配 -->
+		<!-- <fileMapping startWith="/" forwardTo="/index.htm" type="forward" /> -->
+		<!-- 目录匹配 -->
+		<!-- <pathMapping startWith="/baidu" forwardTo="http://www.baidu.com/" type="forward|redirect(default)"/> -->
+		<!-- </httpRequestMapping> -->
+		<!-- 资源装载器（配置不支持动态更新） -->
+		<resourceLoader enable="true" cacheDir="httpservlet.resourceloader.classpath" types="js,css,gif,ico,jpg,jpeg,png,swf,swc,flv,mp3,wav,avi">
+			<!-- <zipLoader>{MORE_WEB_HOME}/ext-4.2.zip</zipLoader> -->
+			<pathLoader>{MORE_WORK_HOME}/webapp</pathLoader>
+			<classpathLoader>/META-INF/webapp</classpathLoader>
+		</resourceLoader>
+	</httpServlet>
+</config>
