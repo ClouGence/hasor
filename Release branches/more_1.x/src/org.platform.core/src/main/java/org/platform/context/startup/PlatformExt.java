@@ -33,4 +33,15 @@ public @interface PlatformExt {
     public String description() default "";
     /**启动顺序默认值0，该值越大表示启动顺序越延后。提示：负值等同于“0”。*/
     public int startIndex() default 0;
+    /*级别定义*/
+    public static int Lv_0 = Integer.MIN_VALUE + 0;
+    public static int Lv_1 = Integer.MIN_VALUE + 100;
+    public static int Lv_2 = Integer.MIN_VALUE + 200;
+    public static int Lv_3 = Integer.MIN_VALUE + 300;
+    public static int Lv_4 = Integer.MIN_VALUE + 400;
+    public static int Lv_5 = Integer.MIN_VALUE + 500;
+    public static int Lv_6 = Integer.MIN_VALUE + 600;
+    public static int Lv_7 = Integer.MIN_VALUE + 700;
+    public static int Lv_8 = Integer.MIN_VALUE + 800;
+    public static int Lv_9 = Integer.MIN_VALUE + 900;
 }

@@ -205,7 +205,7 @@ public class PlatformSettings extends Global implements Settings {
     }
     /**loadConfig装载配置*/
     private void loadConfig(URI configURI, String encoding, Map<String, Object> loadTo) throws IOException {
-        Platform.info("PlatformSettings loadConfig Xml namespace : %s", configURI);
+        //Platform.info("PlatformSettings loadConfig Xml namespace : %s", configURI);
         XmlPropertyGlobalFactory xmlg = null;
         //1.<载入生效的命名空间>
         try {

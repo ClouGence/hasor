@@ -24,19 +24,19 @@ import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
 import org.platform.context.PlatformListener;
 import org.platform.context.startup.PlatformExt;
+import org.platform.servlet.action.ActionBinder.ActionBindingBuilder;
+import org.platform.servlet.action.ActionBinder.NameSpaceBindingBuilder;
 import org.platform.servlet.action.Controller;
 import org.platform.servlet.action.RestfulMapping;
 import org.platform.servlet.action.ResultDefine;
 import org.platform.servlet.action.ResultProcess;
-import org.platform.servlet.action.ActionBinder.ActionBindingBuilder;
-import org.platform.servlet.action.ActionBinder.NameSpaceBindingBuilder;
 import com.google.inject.Binder;
 /**
- * Action服务启动类，用于装载action。
+ * Action服务启动类，用于装载action。启动级别Lv2
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@PlatformExt(displayName = "ActionModuleListener", description = "org.platform.action软件包功能支持。", startIndex = Integer.MIN_VALUE + 2)
+@PlatformExt(displayName = "ActionModuleListener", description = "org.platform.action软件包功能支持。", startIndex = PlatformExt.Lv_2)
 public class ActionPlatformListener implements PlatformListener {
     private ActionSettings settings      = null;
     private ActionManager  actionManager = null;

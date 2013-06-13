@@ -13,34 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.servlet.encoding;
+package org.platform.view.decorate;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
 import org.platform.context.PlatformListener;
 import org.platform.context.startup.PlatformExt;
 /**
- * 请求响应编码。启动级别：Lv0+10
+ * 装饰服务，启动级别L2
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@PlatformExt(displayName = "EncodingFilterListener", description = "org.platform.servlet.encoding软件包功能支持。", startIndex = PlatformExt.Lv_0 + 10)
-public class EncodingFilterListener implements PlatformListener {
+@PlatformExt(displayName = "DecoratePlatformListener", description = "org.platform.view.decorate软件包功能支持。", startIndex = PlatformExt.Lv_2)
+public class DecoratePlatformListener implements PlatformListener {
     @Override
     public void initialize(ApiBinder binder) {
-        EncodingSettings setting = new EncodingSettings();
-        setting.loadConfig(binder.getSettings());
-        binder.getGuiceBinder().bind(EncodingSettings.class).toInstance(setting);
-        //
-        binder.filter("*").through(EncodingFilter.class);
+        binder.filter("*").through(ResponsePropxyFilter.class);
     }
     @Override
     public void initialized(AppContext appContext) {
-        EncodingSettings setting = appContext.getInstance(EncodingSettings.class);
-        appContext.getSettings().addSettingsListener(setting);
+        // TODO Auto-generated method stub
     }
     @Override
     public void destroy(AppContext appContext) {
-        EncodingSettings setting = appContext.getInstance(EncodingSettings.class);
-        appContext.getSettings().removeSettingsListener(setting);
+        // TODO Auto-generated method stub
     }
 }

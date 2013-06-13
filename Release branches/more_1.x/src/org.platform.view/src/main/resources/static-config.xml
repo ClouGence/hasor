@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://project.byshell.org/more/schema/global">
+	<!-- 装饰返回结果 -->
+	<decorate enable="true">
+		<decorator mime-type="text/html" class="" />
+		<decorator mime-type="text/html" class="" />
+	</decorate>
 	<!-- freemarker 配置，onError当模板处理发生异常时的处理方式。模式：ThrowError（抛出异常）、PrintOnConsole（打印到控制台或日志）、Warning（忽略，仅仅产生一条警告消息）PrintOnPage（打印到页面） -->
 	<freemarker enable="true" onError="ThrowError">
 		<!-- freemarker模板后缀名逗号间隔多个. -->
 		<suffixSet>*.ftl,*.html</suffixSet>
+		<!-- 模板解析的内容响应到客户端的类型 -->
+		<out-mime-type>text/html</out-mime-type>
 		<!-- Configuration对象创建工厂 -->
 		<configurationFactory>org.platform.view.freemarker.support.DefaultFreemarkerFactory</configurationFactory>
 		<!-- 模板装载器（配置不支持动态更新） -->

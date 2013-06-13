@@ -28,6 +28,8 @@ public interface ConfigurationFactory {
     public static final String FreemarkerConfig_Enable               = "freemarker.enable";
     /**freemarker模板后缀名逗号间隔多个.*/
     public static final String FreemarkerConfig_Suffix               = "freemarker.suffixSet";
+    /**f模板解析的内容响应到客户端的类型*/
+    public static final String FreemarkerConfig_OutMimeType          = "freemarker.out-mime-type";
     /**当模板处理发生异常时的处理方式.*/
     public static final String FreemarkerConfig_OnError              = "freemarker.onError";
     /**Configuration对象创建工厂.*/
