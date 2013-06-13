@@ -1,0 +1,25 @@
+<program xmlns="http://project.xdf.cn/program">
+	<!-- <resources name="test"><A></A></resources> -->
+	<echoPath />
+	<if enable="true">
+		<function />
+	</if>
+	<echoPath />
+	<if enable="true">
+		<function />
+	</if>
+	<echoPath />
+	<res>
+		<if enable="false">
+			<echoPath />
+			<function />
+			<if enable="true">
+				<function />
+			</if>
+			<echoPath />
+			<if enable="false">
+				<function />
+			</if>
+		</if>
+	</res>
+</program>
