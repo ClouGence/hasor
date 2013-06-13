@@ -1,0 +1,6 @@
+	姓名：<@ui_Text name="i_name"/><br/>
+	年龄：<@ui_Text name="i_age"/><br/>
+	简述：<@ui_Text name="i_desc" value=WebUIDemoService.desc multiLine=true/><br/>
+	学校1：<@ui_SelectOne name="i_sch1" keyField="schID" varField="schName" listData=ImportUserService.allSchools()/><br/>
+	学校2：<@ui_SelectCheck name="i_sch2" keyField="schID" varField="schName" listData=ImportUserService.allSchools() value="766afdce-42e7-4d87-abd0-12326675fe41,b6a353f3-fece-4287-990d-8520ecc65680"/><br/>
+	[<@ui_Button id="form_submit" onclick="WebUI('form').doSubmit();">递交</@ui_Button>]
