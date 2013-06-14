@@ -19,7 +19,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * 声明一个缓存中用于生成key的服务提供者，标记了该接口的类必须要求实现{@link IKeyBuilder}接口。
+ * 声明一个缓存中用于生成key的服务提供者，标记了该接口的类必须要求实现{@link KeyBuilderFace}接口。
  * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */

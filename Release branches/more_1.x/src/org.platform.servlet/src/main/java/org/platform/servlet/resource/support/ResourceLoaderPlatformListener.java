@@ -22,8 +22,8 @@ import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
 import org.platform.context.PlatformListener;
 import org.platform.context.startup.PlatformExt;
-import org.platform.servlet.resource.IResourceLoaderCreator;
 import org.platform.servlet.resource.ResourceLoaderCreator;
+import org.platform.servlet.resource.LoaderCreator;
 /**
  * 负责装载jar包中的资源。启动级别：Lv1+10
  * @version : 2013-4-8
@@ -45,22 +45,22 @@ public class ResourceLoaderPlatformListener implements PlatformListener {
     /**装载TemplateLoader*/
     protected void loadResourceLoader(ApiBinder event) {
         //1.获取
-        Set<Class<?>> resourceLoaderCreatorSet = event.getClassSet(ResourceLoaderCreator.class);
+        Set<Class<?>> resourceLoaderCreatorSet = event.getClassSet(LoaderCreator.class);
         if (resourceLoaderCreatorSet == null)
             return;
-        List<Class<IResourceLoaderCreator>> resourceLoaderCreatorList = new ArrayList<Class<IResourceLoaderCreator>>();
+        List<Class<ResourceLoaderCreator>> resourceLoaderCreatorList = new ArrayList<Class<ResourceLoaderCreator>>();
         for (Class<?> cls : resourceLoaderCreatorSet) {
-            if (IResourceLoaderCreator.class.isAssignableFrom(cls) == false) {
+            if (ResourceLoaderCreator.class.isAssignableFrom(cls) == false) {
                 Platform.warning("loadResourceLoader : not implemented ResourceLoaderCreator. class=%s", cls);
             } else {
-                resourceLoaderCreatorList.add((Class<IResourceLoaderCreator>) cls);
+                resourceLoaderCreatorList.add((Class<ResourceLoaderCreator>) cls);
             }
         }
         //3.注册服务
         ResourceBinderImplements loaderBinder = new ResourceBinderImplements();
-        for (Class<IResourceLoaderCreator> creatorType : resourceLoaderCreatorList) {
-            ResourceLoaderCreator creatorAnno = creatorType.getAnnotation(ResourceLoaderCreator.class);
-            String defineName = creatorAnno.value();
+        for (Class<ResourceLoaderCreator> creatorType : resourceLoaderCreatorList) {
+            LoaderCreator creatorAnno = creatorType.getAnnotation(LoaderCreator.class);
+            String defineName = creatorAnno.configElement();
             loaderBinder.bindLoaderCreator(defineName, creatorType);
             Platform.info("loadResourceLoader %s at %s.", defineName, creatorType);
         }

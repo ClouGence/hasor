@@ -21,7 +21,7 @@ import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.context.AppContext;
 import org.platform.view.freemarker.ConfigurationFactory;
-import org.platform.view.freemarker.ITemplateLoaderCreator;
+import org.platform.view.freemarker.TemplateLoaderCreator;
 import org.platform.view.freemarker.loader.ConfigTemplateLoader;
 import org.platform.view.freemarker.loader.ITemplateLoader;
 import org.platform.view.freemarker.loader.MultiTemplateLoader;
@@ -36,7 +36,6 @@ import freemarker.template.TemplateException;
  * @version : 2013-5-16
  * @author 赵永春 (zyc@byshell.org)
  */
-@Singleton
 public class DefaultFreemarkerFactory implements ConfigurationFactory {
     @Override
     public synchronized Configuration configuration(AppContext appContext) {
@@ -152,7 +151,7 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
                 String val = item.getText();
                 val = val != null ? val.trim() : "";
                 //从已经注册的TemplateLoader中获取一个TemplateLoaderCreator进行构建。
-                ITemplateLoaderCreator creator = null;
+                TemplateLoaderCreator creator = null;
                 for (TemplateLoaderCreatorDefinition define : creatorDefinitionList)
                     if (StringUtils.eqUnCaseSensitive(define.getName(), key))
                         creator = define.get();

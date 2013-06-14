@@ -19,17 +19,17 @@ import org.more.global.assembler.xml.XmlProperty;
 import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.context.AppContext;
-import org.platform.servlet.resource.ResourceLoaderCreator;
+import org.platform.servlet.resource.LoaderCreator;
 import org.platform.servlet.resource.ResourceLoader;
-import org.platform.servlet.resource.IResourceLoaderCreator;
+import org.platform.servlet.resource.ResourceLoaderCreator;
 import org.platform.servlet.resource.loader.ClassPathResourceLoader;
 /**
  * 用于创建一个可以从classpath中获取资源的ResourceLoader。
  * @version : 2013-6-6
  * @author 赵永春 (zyc@byshell.org)
  */
-@ResourceLoaderCreator("ClasspathLoader")
-public class ClassPathResourceLoaderCreator implements IResourceLoaderCreator {
+@LoaderCreator(configElement = "ClasspathLoader")
+public class ClassPathResourceLoaderCreator implements ResourceLoaderCreator {
     @Override
     public ResourceLoader newInstance(AppContext appContext, XmlProperty xmlConfig) throws IOException {
         String config = xmlConfig.getText();

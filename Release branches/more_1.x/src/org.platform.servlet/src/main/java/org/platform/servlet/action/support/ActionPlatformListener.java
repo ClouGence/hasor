@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import org.more.util.ArrayUtils;
 import org.more.util.BeanUtils;
+import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
@@ -27,6 +28,8 @@ import org.platform.context.startup.PlatformExt;
 import org.platform.servlet.action.ActionBinder.ActionBindingBuilder;
 import org.platform.servlet.action.ActionBinder.NameSpaceBindingBuilder;
 import org.platform.servlet.action.Controller;
+import org.platform.servlet.action.HttpMethod;
+import org.platform.servlet.action.MimeType;
 import org.platform.servlet.action.RestfulMapping;
 import org.platform.servlet.action.ResultDefine;
 import org.platform.servlet.action.ResultProcess;
@@ -86,11 +89,17 @@ public class ActionPlatformListener implements PlatformListener {
             ActionBindingBuilder actionBinding = nsBinding.bindActionMethod(method);
             for (String httpMethod : controllerAnno.httpMethod())
                 actionBinding = actionBinding.onHttpMethod(httpMethod);
-            //3.restful
+            //3.
+            MimeType mt = method.getAnnotation(MimeType.class);
+            mt = (mt == null) ? controllerType.getAnnotation(MimeType.class) : mt;
+            String minmeType = (mt != null) ? mt.value() : this.settings.getDefaultMimeType();
+            if (!StringUtils.isBlank(minmeType))
+                actionBinding = actionBinding.returnMimeType(minmeType);
+            //4.restful
             RestfulMapping mappingRestful = method.getAnnotation(RestfulMapping.class);
             if (mappingRestful != null) {
-                for (String httpMethod : mappingRestful.httpMethod())
-                    actionBinding = actionBinding.onHttpMethod(httpMethod);
+                for (HttpMethod httpMethod : mappingRestful.httpMethod())
+                    actionBinding = actionBinding.onHttpMethod(httpMethod.name().toUpperCase());
                 actionBinding.mappingRestful(mappingRestful.value());
             }
             //

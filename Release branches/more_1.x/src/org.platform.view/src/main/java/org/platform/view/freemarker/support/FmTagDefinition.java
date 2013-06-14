@@ -15,7 +15,7 @@
  */
 package org.platform.view.freemarker.support;
 import org.platform.context.AppContext;
-import org.platform.view.freemarker.IFmTag;
+import org.platform.view.freemarker.Tag;
 import com.google.inject.Provider;
 /**
  * 
@@ -24,11 +24,11 @@ import com.google.inject.Provider;
  */
 class FmTagDefinition implements Provider<InternalTagObject> {
     private String            tagName      = null;
-    private Class<IFmTag>     fmMethodType = null;
+    private Class<Tag>     fmMethodType = null;
     private AppContext        appContext   = null;
     private InternalTagObject tagObject    = null;
     //
-    public FmTagDefinition(String tagName, Class<IFmTag> fmMethodType) {
+    public FmTagDefinition(String tagName, Class<Tag> fmMethodType) {
         this.tagName = tagName;
         this.fmMethodType = fmMethodType;
     }

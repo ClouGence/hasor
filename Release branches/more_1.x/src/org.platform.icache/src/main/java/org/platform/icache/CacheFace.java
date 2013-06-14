@@ -20,7 +20,7 @@ import org.platform.context.AppContext;
  * @version : 2013-4-20
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public interface ICache<T> {
+public interface CacheFace<T> {
     /**≥ı ºªØCache*/
     public void initCache(AppContext appContext);
     /**œ˙ªŸCache*/

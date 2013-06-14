@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.servlet.action;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-/**
- * 
- * @version : 2013-5-9
+package org.platform.view.freemarker;
+import java.io.IOException;
+import freemarker.core.Environment;
+import freemarker.template.TemplateException;
+/***
+ * 自定义标签
+ * @version : 2013-5-14
  * @author 赵永春 (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD })
-public @interface RestfulMapping {
-    /**对应生效的http方法，默认为Any。*/
-    public HttpMethod[] httpMethod() default { HttpMethod.Any };
-    /**restful风格映射。提示：可是使用通配符“*”表示任意个字符，“?”表示任意一个字符。*/
-    public String value();
+public interface Tag {
+    /**准备开始执行标签*/
+    public boolean beforeTag(Environment environment) throws TemplateException;
+    /**执行标签*/
+    public void doTag(TemplateBody body) throws TemplateException, IOException;
+    /**标签执行完毕*/
+    public boolean afterTag(Environment environment) throws TemplateException;
 }

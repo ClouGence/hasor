@@ -18,8 +18,8 @@ import org.more.global.assembler.xml.XmlProperty;
 import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.context.AppContext;
-import org.platform.view.freemarker.ITemplateLoaderCreator;
 import org.platform.view.freemarker.TemplateLoaderCreator;
+import org.platform.view.freemarker.FmTemplateLoaderCreator;
 import org.platform.view.freemarker.loader.ClassPathTemplateLoader;
 import org.platform.view.freemarker.loader.ITemplateLoader;
 /**
@@ -27,8 +27,8 @@ import org.platform.view.freemarker.loader.ITemplateLoader;
 * @version : 2011-9-14
 * @author ’‘”¿¥∫ (zyc@byshell.org) 
 */
-@TemplateLoaderCreator("ClassPathLoader")
-public class ClassPathTemplateLoaderCreator implements ITemplateLoaderCreator {
+@FmTemplateLoaderCreator(configElement = "ClassPathLoader")
+public class ClassPathTemplateLoaderCreator implements TemplateLoaderCreator {
     @Override
     public ITemplateLoader newTemplateLoader(AppContext appContext, XmlProperty xmlConfig) {
         ClassPathTemplateLoader classpathLoader = null;

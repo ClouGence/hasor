@@ -1,5 +1,4 @@
-﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.more</groupId>
 	<artifactId>org.platform</artifactId>
@@ -21,6 +20,7 @@
 		<module>org.platform.view</module>
 		<module>org.platform.updown</module>
 		<module>org.platform.ui</module>
+		<module>org.platform.db</module>
 	</modules>
 	<!-- 构建描述 -->
 	<build>
@@ -90,6 +90,13 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- Jetty 8 Test -->
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>8.1.10.v20130312</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

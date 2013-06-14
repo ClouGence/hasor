@@ -23,17 +23,17 @@ import org.more.global.assembler.xml.XmlProperty;
 import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.context.AppContext;
-import org.platform.servlet.resource.IResourceLoaderCreator;
-import org.platform.servlet.resource.ResourceLoader;
 import org.platform.servlet.resource.ResourceLoaderCreator;
+import org.platform.servlet.resource.ResourceLoader;
+import org.platform.servlet.resource.LoaderCreator;
 import org.platform.servlet.resource.loader.ZipResourceLoader;
 /**
  * 用于创建一个可以从zip中获取资源的ResourceLoader。
  * @version : 2013-6-6
  * @author 赵永春 (zyc@byshell.org)
  */
-@ResourceLoaderCreator("ZipLoader")
-public class ZipResourceLoaderCreator implements IResourceLoaderCreator {
+@LoaderCreator(configElement = "ZipLoader")
+public class ZipResourceLoaderCreator implements ResourceLoaderCreator {
     @Override
     public ResourceLoader newInstance(AppContext appContext, XmlProperty xmlConfig) throws IOException {
         String body = xmlConfig.getText();

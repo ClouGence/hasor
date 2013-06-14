@@ -15,20 +15,20 @@
  */
 package org.platform.view.freemarker.support;
 import org.platform.context.AppContext;
-import org.platform.view.freemarker.ITemplateLoaderCreator;
+import org.platform.view.freemarker.TemplateLoaderCreator;
 import com.google.inject.Provider;
 /**
  * 声明一个Cache，该Cache需要实现{@link ICache}接口。
  * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-class TemplateLoaderCreatorDefinition implements Provider<ITemplateLoaderCreator> {
+class TemplateLoaderCreatorDefinition implements Provider<TemplateLoaderCreator> {
     private String                        name                = null;
     private AppContext                    appContext          = null;
-    private Class<ITemplateLoaderCreator> loaderCreatorType   = null;
-    private ITemplateLoaderCreator        loaderCreatorObject = null;
+    private Class<TemplateLoaderCreator> loaderCreatorType   = null;
+    private TemplateLoaderCreator        loaderCreatorObject = null;
     //
-    public TemplateLoaderCreatorDefinition(String name, Class<ITemplateLoaderCreator> loaderCreatorType) {
+    public TemplateLoaderCreatorDefinition(String name, Class<TemplateLoaderCreator> loaderCreatorType) {
         this.name = name;
         this.loaderCreatorType = loaderCreatorType;
     }
@@ -39,7 +39,7 @@ class TemplateLoaderCreatorDefinition implements Provider<ITemplateLoaderCreator
         this.appContext = appContext;
     }
     @Override
-    public ITemplateLoaderCreator get() {
+    public TemplateLoaderCreator get() {
         if (this.loaderCreatorObject == null)
             this.loaderCreatorObject = this.appContext.getInstance(this.loaderCreatorType);
         return this.loaderCreatorObject;

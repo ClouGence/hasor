@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.more.util.BeanUtils;
 import org.platform.Assert;
-import org.platform.view.freemarker.IFmTag;
-import org.platform.view.freemarker.IFmTag2;
+import org.platform.view.freemarker.Tag;
+import org.platform.view.freemarker.Tag2;
 import org.platform.view.freemarker.TemplateBody;
 import freemarker.core.Environment;
 import freemarker.template.TemplateDirectiveBody;
@@ -35,8 +35,8 @@ import freemarker.template.utility.DeepUnwrap;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class InternalTagObject implements TemplateDirectiveModel {
-    private IFmTag tagBody = null;
-    public InternalTagObject(IFmTag tagBody) {
+    private Tag tagBody = null;
+    public InternalTagObject(Tag tagBody) {
         this.tagBody = tagBody;
         Assert.isNotNull(tagBody, "tag Object is null.");
     }
@@ -53,8 +53,8 @@ class InternalTagObject implements TemplateDirectiveModel {
         this.tagBody.beforeTag(env);
         //3.…Ë÷√ Ù–‘&÷¥––±Í«©
         if (params != null) {
-            if (this.tagBody instanceof IFmTag2) {
-                ((IFmTag2) this.tagBody).setup(objMap);
+            if (this.tagBody instanceof Tag2) {
+                ((Tag2) this.tagBody).setup(objMap);
             } else {
                 for (Object key : params.keySet())
                     BeanUtils.writePropertyOrField(this.tagBody, (String) key, params.get(key));

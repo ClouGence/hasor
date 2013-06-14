@@ -17,7 +17,7 @@ package org.platform.icache.support;
 import java.util.ArrayList;
 import org.platform.Platform;
 import org.platform.context.AppContext;
-import org.platform.icache.IKeyBuilder;
+import org.platform.icache.KeyBuilderFace;
 import com.google.inject.Binding;
 import com.google.inject.Injector;
 import com.google.inject.TypeLiteral;
@@ -52,7 +52,7 @@ class ManagedKeyBuilderManager {
             cacheDefinition.destroy(appContext);
         }
     }
-    public IKeyBuilder getKeyBuilder(Class<?> sampleType, AppContext appContext) {
+    public KeyBuilderFace getKeyBuilder(Class<?> sampleType, AppContext appContext) {
         for (KeyBuilderDefinition def : this.keyBuilderDefinitionSet) {
             if (def.canSupport(sampleType) == true) {
                 return appContext.getGuice().getInstance(def.getKeyBuilderKey());

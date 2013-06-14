@@ -21,5 +21,5 @@ package org.platform.servlet.resource;
  */
 public interface ResourceBinder {
     /***/
-    public void bindLoaderCreator(String name, Class<IResourceLoaderCreator> resourceLoaderCreatorType);
+    public void bindLoaderCreator(String name, Class<ResourceLoaderCreator> resourceLoaderCreatorType);
 }

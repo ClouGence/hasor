@@ -17,8 +17,8 @@ package org.platform.icache.support;
 import org.platform.Platform;
 import org.platform.context.AppContext;
 import org.platform.icache.CacheManager;
-import org.platform.icache.ICache;
-import org.platform.icache.IKeyBuilder;
+import org.platform.icache.CacheFace;
+import org.platform.icache.KeyBuilderFace;
 import com.google.inject.Singleton;
 /**
  * 缓存使用入口，缓存的实现由系统自行提供。
@@ -30,8 +30,8 @@ class DefaultCacheManager implements CacheManager {
     private ManagedCacheManager      cacheManager      = null;
     private ManagedKeyBuilderManager keyBuilderManager = null;
     private AppContext               appContext        = null;
-    private ICache<Object>           defaultCache      = null;
-    private IKeyBuilder              defaultKeyBuilder = null;
+    private CacheFace<Object>           defaultCache      = null;
+    private KeyBuilderFace              defaultKeyBuilder = null;
     @Override
     public void initManager(AppContext appContext) {
         this.appContext = appContext;
@@ -41,8 +41,8 @@ class DefaultCacheManager implements CacheManager {
         this.cacheManager.initManager(appContext);
         this.keyBuilderManager.initManager(appContext);
         //
-        this.defaultCache = appContext.getGuice().getInstance(ICache.class);
-        this.defaultKeyBuilder = appContext.getGuice().getInstance(IKeyBuilder.class);
+        this.defaultCache = appContext.getGuice().getInstance(CacheFace.class);
+        this.defaultKeyBuilder = appContext.getGuice().getInstance(KeyBuilderFace.class);
         Platform.info("CacheManager initialized.");
     }
     @Override
@@ -52,12 +52,12 @@ class DefaultCacheManager implements CacheManager {
         this.keyBuilderManager.destroyManager(this.appContext);
     }
     @Override
-    public ICache<Object> getDefaultCache() {
+    public CacheFace<Object> getDefaultCache() {
         return this.defaultCache;
     }
     @Override
-    public ICache<Object> getCache(String cacheName) {
-        ICache<Object> icache = this.cacheManager.getCache(cacheName, this.appContext);
+    public CacheFace<Object> getCache(String cacheName) {
+        CacheFace<Object> icache = this.cacheManager.getCache(cacheName, this.appContext);
         if (icache == null) {
             Platform.warning("use defaultCache . '%s' is not exist.", cacheName);
             return this.defaultCache;
@@ -65,8 +65,8 @@ class DefaultCacheManager implements CacheManager {
         return icache;
     }
     @Override
-    public IKeyBuilder getKeyBuilder(Class<?> sampleType) {
-        IKeyBuilder keyBuilder = this.keyBuilderManager.getKeyBuilder(sampleType, this.appContext);
+    public KeyBuilderFace getKeyBuilder(Class<?> sampleType) {
+        KeyBuilderFace keyBuilder = this.keyBuilderManager.getKeyBuilder(sampleType, this.appContext);
         if (keyBuilder == null) {
             Platform.warning("use defaultKeyBuilder . '%s' is not register.", sampleType);
             return this.defaultKeyBuilder;

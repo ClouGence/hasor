@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.view.freemarker;
-import java.io.IOException;
-import org.more.global.assembler.xml.XmlProperty;
+package org.platform.icache;
 import org.platform.context.AppContext;
-import org.platform.view.freemarker.loader.ITemplateLoader;
 /**
- * 
- * @version : 2013-5-22
+ * cache在执行方法缓存时Key的生成器。
+ * @version : 2013-4-21
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ITemplateLoaderCreator {
-    public ITemplateLoader newTemplateLoader(AppContext appContext, XmlProperty xmlConfig) throws IOException;
+public interface KeyBuilderFace {
+    /**初始化IKeyBuilder*/
+    public void initKeyBuilder(AppContext appContext);
+    /**销毁*/
+    public void destroy(AppContext appContext);
+    /**获取参数的序列化标识码，调用的参数不会为空。*/
+    public String serializeKey(Object arg);
 }

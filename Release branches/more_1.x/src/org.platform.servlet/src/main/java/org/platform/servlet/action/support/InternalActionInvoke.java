@@ -42,14 +42,16 @@ class InternalActionInvoke implements ActionInvoke, ActionInvoke2 {
     private Method   targetMethod   = null;
     private Object   targetObject   = null;
     private String[] httpMethod     = null;
+    private String   mimeType       = null;
     private String   restfulMapping = null;
     //
-    public InternalActionInvoke(Method targetMethod) {
-        this(targetMethod, null);
+    public InternalActionInvoke(Method targetMethod, String mimeType) {
+        this(targetMethod, mimeType, null);
     }
-    public InternalActionInvoke(Method targetMethod, Object targetObject) {
+    public InternalActionInvoke(Method targetMethod, String mimeType, Object targetObject) {
         this.targetMethod = targetMethod;
         this.targetObject = targetObject;
+        this.mimeType = mimeType;
     }
     //
     public String[] getHttpMethod() {
@@ -126,6 +128,10 @@ class InternalActionInvoke implements ActionInvoke, ActionInvoke2 {
                 }
                 paramsArray.add(paramObject);
             }
+            //
+            if (!StringUtils.isBlank(this.mimeType))
+                response.setContentType(this.mimeType);
+            //
             return this.targetMethod.invoke(this.targetObject, paramsArray.toArray());
         } catch (InvocationTargetException e) {
             throw new ServletException(e.getCause());

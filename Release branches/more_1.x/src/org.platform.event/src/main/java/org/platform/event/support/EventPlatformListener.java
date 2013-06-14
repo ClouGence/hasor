@@ -24,9 +24,9 @@ import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
 import org.platform.context.PlatformListener;
 import org.platform.context.startup.PlatformExt;
-import org.platform.event.EventListener;
-import org.platform.event.EventManager;
 import org.platform.event.Listener;
+import org.platform.event.EventManager;
+import org.platform.event.EventListener;
 /**
  * 事件服务。启动级别：Lv0+10
  * @version : 2013-4-8
@@ -35,7 +35,7 @@ import org.platform.event.Listener;
 @PlatformExt(displayName = "EventModuleServiceListener", description = "org.platform.event软件包功能支持。", startIndex = PlatformExt.Lv_0 + 10)
 public class EventPlatformListener implements PlatformListener {
     private EventManager                         eventManager  = null;
-    private List<Class<? extends EventListener>> eventListener = null;
+    private List<Class<? extends Listener>> eventListener = null;
     /**初始化.*/
     @Override
     public void initialize(ApiBinder event) {
@@ -47,16 +47,16 @@ public class EventPlatformListener implements PlatformListener {
         if (this.eventManager instanceof ManagerLife)
             ((ManagerLife) this.eventManager).initLife(appContext);
         //1.获取
-        this.eventListener = new ArrayList<Class<? extends EventListener>>();
-        Set<Class<?>> listenerSet = appContext.getClassSet(Listener.class);
+        this.eventListener = new ArrayList<Class<? extends Listener>>();
+        Set<Class<?>> listenerSet = appContext.getClassSet(EventListener.class);
         if (listenerSet == null)
             return;
         for (Class<?> cls : listenerSet) {
-            if (EventListener.class.isAssignableFrom(cls) == false) {
+            if (Listener.class.isAssignableFrom(cls) == false) {
                 Platform.warning("loadListener : not implemented EventListener of type %s.", cls);
             } else {
                 Platform.info("find listener %s.", cls);
-                this.eventListener.add((Class<? extends EventListener>) cls);
+                this.eventListener.add((Class<? extends Listener>) cls);
             }
         }
         this.loadListener(appContext);
@@ -66,10 +66,10 @@ public class EventPlatformListener implements PlatformListener {
     //
     /*装载Listener*/
     protected void loadListener(AppContext appContext) {
-        for (Class<? extends EventListener> listenerType : eventListener) {
+        for (Class<? extends Listener> listenerType : eventListener) {
             try {
-                Listener annoListener = listenerType.getAnnotation(Listener.class);
-                EventListener eventListener = (EventListener) appContext.getInstance(listenerType);
+                EventListener annoListener = listenerType.getAnnotation(EventListener.class);
+                Listener eventListener = (Listener) appContext.getInstance(listenerType);
                 String[] vals = annoListener.value();
                 if (ArrayUtils.isBlank(vals)) {
                     Platform.warning("missing eventType at listener %s.", new Object[] { vals });

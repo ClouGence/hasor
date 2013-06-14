@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 package org.platform.servlet.resource;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.IOException;
+import org.more.global.assembler.xml.XmlProperty;
+import org.platform.context.AppContext;
 /**
- * 定义一个{@link ResourceLoader}映射类型。
- * @version : 2013-3-12
+ * 
+ * @version : 2013-5-22
  * @author 赵永春 (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface ResourceLoaderCreator {
-    /**表示配置在配置文件中的元素名称。*/
-    public String value();
+public interface ResourceLoaderCreator {
+    public ResourceLoader newInstance(AppContext appContext, XmlProperty xmlConfig) throws IOException;
 }

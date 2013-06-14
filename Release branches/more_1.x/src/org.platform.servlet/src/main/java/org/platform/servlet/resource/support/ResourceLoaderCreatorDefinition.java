@@ -15,20 +15,20 @@
  */
 package org.platform.servlet.resource.support;
 import org.platform.context.AppContext;
-import org.platform.servlet.resource.IResourceLoaderCreator;
+import org.platform.servlet.resource.ResourceLoaderCreator;
 import com.google.inject.Provider;
 /**
  *  
  * @version : 2013-3-12
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-class ResourceLoaderCreatorDefinition implements Provider<IResourceLoaderCreator> {
+class ResourceLoaderCreatorDefinition implements Provider<ResourceLoaderCreator> {
     private String                        name                = null;
     private AppContext                    appContext          = null;
-    private Class<IResourceLoaderCreator> loaderCreatorType   = null;
-    private IResourceLoaderCreator        loaderCreatorObject = null;
+    private Class<ResourceLoaderCreator> loaderCreatorType   = null;
+    private ResourceLoaderCreator        loaderCreatorObject = null;
     //
-    public ResourceLoaderCreatorDefinition(String name, Class<IResourceLoaderCreator> loaderCreatorType) {
+    public ResourceLoaderCreatorDefinition(String name, Class<ResourceLoaderCreator> loaderCreatorType) {
         this.name = name;
         this.loaderCreatorType = loaderCreatorType;
     }
@@ -39,7 +39,7 @@ class ResourceLoaderCreatorDefinition implements Provider<IResourceLoaderCreator
         this.appContext = appContext;
     }
     @Override
-    public IResourceLoaderCreator get() {
+    public ResourceLoaderCreator get() {
         if (this.loaderCreatorObject == null)
             this.loaderCreatorObject = this.appContext.getInstance(this.loaderCreatorType);
         return this.loaderCreatorObject;

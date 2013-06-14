@@ -21,7 +21,7 @@ import java.util.Map.Entry;
 import org.platform.context.AppContext;
 import org.platform.icache.Cache;
 import org.platform.icache.DefaultCache;
-import org.platform.icache.ICache;
+import org.platform.icache.CacheFace;
 /**
  * 使用Map作为缓存，MapCache缓存仅作为内置提供的一个默认实现。
  * @version : 2013-4-20
@@ -29,7 +29,7 @@ import org.platform.icache.ICache;
  */
 @DefaultCache
 @Cache(value = "MapCache", displayName = "InternalMapCache", description = "内置的Map缓存，ICache接口的简单实现。")
-public class MapCache<T> extends Thread implements ICache<T> {
+public class MapCache<T> extends Thread implements CacheFace<T> {
     private String                                   threadName     = "InternalMapCache-Daemon";
     private volatile boolean                         exitThread     = false;
     private volatile HashMap<String, CacheEntity<T>> cacheEntityMap = new HashMap<String, CacheEntity<T>>();

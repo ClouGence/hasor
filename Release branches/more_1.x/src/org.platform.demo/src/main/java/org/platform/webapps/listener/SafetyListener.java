@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 package org.platform.webapps.listener;
-import org.platform.event.EventListener;
 import org.platform.event.Listener;
+import org.platform.event.EventListener;
 import org.platform.security.support.SecurityEventDefine;
 /**
  * 
  * @version : 2013-5-9
- * @author утсю╢╨ (zyc@byshell.org)
+ * @author О©╫О©╫О©╫О©╫О©╫О©╫ (zyc@byshell.org)
  */
-@Listener({ SecurityEventDefine.Login })
-public class SafetyListener implements EventListener {
+@EventListener({ SecurityEventDefine.Login })
+public class SafetyListener implements Listener {
     @Override
     public void onEvent(String event, Object[] params) {
         System.out.println(event);

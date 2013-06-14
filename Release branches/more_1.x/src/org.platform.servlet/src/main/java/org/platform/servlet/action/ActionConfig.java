@@ -21,11 +21,13 @@ package org.platform.servlet.action;
  */
 public interface ActionConfig {
     /**是否启用Action功能.*/
-    public static final String ActionServlet_Enable       = "httpServlet.actionServlet.enable";
+    public static final String ActionServlet_Enable          = "httpServlet.actionServlet.enable";
     /**模式：mode:RestOnly（rest风格）、ServletOnly（中央servlet）、Both（两者同时使用）*/
-    public static final String ActionServlet_Mode         = "httpServlet.actionServlet.mode";
+    public static final String ActionServlet_Mode            = "httpServlet.actionServlet.mode";
     /**action拦截器.*/
-    public static final String ActionServlet_Intercept    = "httpServlet.actionServlet.intercept";
+    public static final String ActionServlet_Intercept       = "httpServlet.actionServlet.intercept";
+    /**默认Mime-Type.*/
+    public static final String ActionServlet_DefaultMimeType = "httpServlet.actionServlet.defaultMimeType";
     /**方法忽略的方法（逗号分割多组方法名），注意：在这里配置的忽略会应用到所有action上.*/
-    public static final String ActionServlet_IgnoreMethod = "httpServlet.actionServlet.ignoreMethod";
+    public static final String ActionServlet_IgnoreMethod    = "httpServlet.actionServlet.ignoreMethod";
 }

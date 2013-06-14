@@ -18,6 +18,7 @@ import static org.platform.servlet.action.ActionConfig.ActionServlet_Enable;
 import static org.platform.servlet.action.ActionConfig.ActionServlet_IgnoreMethod;
 import static org.platform.servlet.action.ActionConfig.ActionServlet_Intercept;
 import static org.platform.servlet.action.ActionConfig.ActionServlet_Mode;
+import static org.platform.servlet.action.ActionConfig.ActionServlet_DefaultMimeType;
 import java.util.ArrayList;
 import java.util.List;
 import org.more.util.StringUtils;
@@ -38,14 +39,16 @@ public class ActionSettings implements SettingListener {
         /**同时工作在RestOnly、ServletOnly两个模式下。其中ServletOnly模式优先。*/
         Both
     }
-    private boolean        enable       = true; //是否启用Action功能.
-    private String         intercept    = null; //action拦截器.
-    private ActionWorkMode mode         = null; //工作模式
-    private List<String>   ignoreMethod = null; //忽略的方法
+    private boolean        enable          = true; //是否启用Action功能.
+    private String         intercept       = null; //action拦截器.
+    private String         defaultMimeType = null; //默认响应类型
+    private ActionWorkMode mode            = null; //工作模式
+    private List<String>   ignoreMethod    = null; //忽略的方法
     @Override
     public void loadConfig(Settings newConfig) {
         this.enable = newConfig.getBoolean(ActionServlet_Enable, true);
         this.intercept = newConfig.getString(ActionServlet_Intercept, "*.do");
+        this.defaultMimeType = newConfig.getString(ActionServlet_DefaultMimeType, null);
         this.mode = newConfig.getEnum(ActionServlet_Mode, ActionWorkMode.class, ActionWorkMode.ServletOnly);
         this.ignoreMethod = new ArrayList<String>();
         String ignoreStr = newConfig.getString(ActionServlet_IgnoreMethod);
@@ -58,6 +61,9 @@ public class ActionSettings implements SettingListener {
     }
     public boolean isEnable() {
         return enable;
+    }
+    public String getDefaultMimeType() {
+        return defaultMimeType;
     }
     public String getIntercept() {
         return intercept;

@@ -27,13 +27,13 @@ public interface EventManager {
     //
     //
     /**添加一种类型事件的事件监听器。*/
-    public void addEventListener(String eventType, EventListener listener);
+    public void addEventListener(String eventType, Listener listener);
     /**删除某个监听器的注册。*/
     public void removeAllEventListener(String eventType);
     /**删除某个监听器的注册。*/
-    public void removeEventListener(String eventType, EventListener listener);
+    public void removeEventListener(String eventType, Listener listener);
     /**获取某种特定类型的事件监听器集合。*/
-    public EventListener[] getEventListener(String eventType);
+    public Listener[] getEventListener(String eventType);
     /**获取所有事件监听器类型。*/
     public String[] getEventTypes();
     //

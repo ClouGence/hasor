@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.servlet.resource;
-import java.io.IOException;
-import org.more.global.assembler.xml.XmlProperty;
-import org.platform.context.AppContext;
-/**
- * 
- * @version : 2013-5-22
+package org.platform.view.freemarker;
+import java.util.Map;
+/***
+ * 标签接口{@link Tag}的增强接口，使用该接口将不会在调用标签的get/set方法设置属性。
+ * @version : 2013-5-17
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface IResourceLoaderCreator {
-    public ResourceLoader newInstance(AppContext appContext, XmlProperty xmlConfig) throws IOException;
+public interface Tag2 extends Tag {
+    /***/
+    public void setup(Map<String, Object> objMap);
 }

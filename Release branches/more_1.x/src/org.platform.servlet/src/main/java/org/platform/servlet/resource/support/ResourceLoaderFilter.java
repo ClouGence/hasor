@@ -35,7 +35,7 @@ import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.context.AppContext;
-import org.platform.servlet.resource.IResourceLoaderCreator;
+import org.platform.servlet.resource.ResourceLoaderCreator;
 import org.platform.servlet.resource.ResourceLoader;
 import org.platform.servlet.resource.support.ResourceSettings.LoaderConfig;
 import org.platform.servlet.resource.util.MimeType;
@@ -71,7 +71,7 @@ public class ResourceLoaderFilter implements Filter {
         for (LoaderConfig item : this.settings.getLoaders()) {
             String loaderType = item.loaderType;
             String configVal = item.config.getText();
-            IResourceLoaderCreator creator = null;
+            ResourceLoaderCreator creator = null;
             //从已经注册的TemplateLoader中获取一个TemplateLoaderCreator进行构建。
             for (ResourceLoaderCreatorDefinition define : loaderCreatorList)
                 if (StringUtils.eqUnCaseSensitive(define.getName(), loaderType)) {

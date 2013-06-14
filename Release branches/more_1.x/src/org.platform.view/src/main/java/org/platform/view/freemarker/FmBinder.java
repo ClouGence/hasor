@@ -23,9 +23,9 @@ import freemarker.template.TemplateModelException;
  */
 public interface FmBinder {
     /***/
-    public void bindTemplateLoaderCreator(String name, Class<ITemplateLoaderCreator> templateLoaderCreatorType);
+    public void bindTemplateLoaderCreator(String name, Class<TemplateLoaderCreator> templateLoaderCreatorType);
     /***/
-    public void bindTag(String tagName, Class<IFmTag> fmTagType);
+    public void bindTag(String tagName, Class<Tag> fmTagType);
     /***/
     public void bindMethod(String funName, Method fmMethodType);
     /***/

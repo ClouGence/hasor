@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.more.util.StringUtils;
 import org.platform.view.freemarker.FmBinder;
-import org.platform.view.freemarker.IFmTag;
-import org.platform.view.freemarker.ITemplateLoaderCreator;
+import org.platform.view.freemarker.Tag;
+import org.platform.view.freemarker.TemplateLoaderCreator;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.internal.UniqueAnnotations;
@@ -38,13 +38,13 @@ public class FmBinderImplements implements Module, FmBinder {
     private List<FmTagDefinition>                 fmTagDefinition          = new ArrayList<FmTagDefinition>();
     private List<FmObjectDefinition>              fmObjectDefinition       = new ArrayList<FmObjectDefinition>();
     @Override
-    public void bindTemplateLoaderCreator(String name, Class<ITemplateLoaderCreator> templateLoaderCreatorType) {
+    public void bindTemplateLoaderCreator(String name, Class<TemplateLoaderCreator> templateLoaderCreatorType) {
         if (StringUtils.isBlank(name) || templateLoaderCreatorType == null)
             return;
         this.templateLoaderDefinition.add(new TemplateLoaderCreatorDefinition(name, templateLoaderCreatorType));
     }
     @Override
-    public void bindTag(String tagName, Class<IFmTag> fmTagType) {
+    public void bindTag(String tagName, Class<Tag> fmTagType) {
         if (StringUtils.isBlank(tagName) || fmTagType == null)
             throw new NullPointerException("tagName or tagType is null.");
         this.fmTagDefinition.add(new FmTagDefinition(tagName, fmTagType));

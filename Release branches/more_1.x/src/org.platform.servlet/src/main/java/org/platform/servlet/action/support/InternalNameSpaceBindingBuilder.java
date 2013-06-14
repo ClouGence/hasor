@@ -78,6 +78,7 @@ class InternalNameSpaceBindingBuilder implements Module, NameSpaceBindingBuilder
         private Method            targetMethod   = null;
         private Object            targetObject   = null;
         private ArrayList<String> bindHttpMethod = new ArrayList<String>();
+        private String            mimeType       = null;
         private String            mappingRestful = null;
         //
         public ActionBindingBuilderImpl(Method targetMethod) {
@@ -99,12 +100,17 @@ class InternalNameSpaceBindingBuilder implements Module, NameSpaceBindingBuilder
             this.mappingRestful = mappingRestful;
         }
         @Override
+        public ActionBindingBuilder returnMimeType(String mimeType) {
+            this.mimeType = mimeType;
+            return this;
+        }
+        @Override
         public void configure(Binder binder, NameSpaceBindingBuilder nameSpaceBindingBuilder) {
             InternalActionInvoke actionInvoke = null;;
             if (this.targetObject != null)
-                actionInvoke = new InternalActionInvoke(this.targetMethod, this.targetObject);
+                actionInvoke = new InternalActionInvoke(this.targetMethod, this.mimeType, this.targetObject);
             else
-                actionInvoke = new InternalActionInvoke(this.targetMethod);
+                actionInvoke = new InternalActionInvoke(this.targetMethod, this.mimeType);
             //
             actionInvoke.setHttpMethod(this.bindHttpMethod.toArray(new String[this.bindHttpMethod.size()]));
             if (StringUtils.isBlank(this.mappingRestful) == false) {
@@ -144,6 +150,12 @@ class InternalNameSpaceBindingBuilder implements Module, NameSpaceBindingBuilder
         public void toInstance(Object targetAction) {
             for (AbstractActionBindingBuilder item : elements)
                 item.toInstance(targetAction);
+        }
+        @Override
+        public ActionBindingBuilder returnMimeType(String mimeType) {
+            for (AbstractActionBindingBuilder item : elements)
+                item.returnMimeType(mimeType);
+            return this;
         }
     }
 }

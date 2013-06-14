@@ -28,9 +28,9 @@ import org.platform.view.freemarker.ConfigurationFactory;
 import org.platform.view.freemarker.FmMethod;
 import org.platform.view.freemarker.FmTag;
 import org.platform.view.freemarker.FreemarkerManager;
-import org.platform.view.freemarker.IFmTag;
-import org.platform.view.freemarker.ITemplateLoaderCreator;
+import org.platform.view.freemarker.Tag;
 import org.platform.view.freemarker.TemplateLoaderCreator;
+import org.platform.view.freemarker.FmTemplateLoaderCreator;
 /**
  * Freemarker服务，延迟一个级别是因为需要依赖icache，启动级别L1+10
  * @version : 2013-4-8
@@ -53,7 +53,7 @@ public class FreemarkerPlatformListener implements PlatformListener {
             event.getGuiceBinder().bind(ConfigurationFactory.class).to((Class<? extends ConfigurationFactory>) Class.forName(configurationFactory)).asEagerSingleton();
         } catch (Exception e) {
             Platform.error("bind configurationFactory error %s", e);
-            event.getGuiceBinder().bind(ConfigurationFactory.class).to(DefaultFreemarkerFactory.class);
+            event.getGuiceBinder().bind(ConfigurationFactory.class).to(DefaultFreemarkerFactory.class).asEagerSingleton();
         }
         //
         this.loadTemplateLoader(event);
@@ -71,22 +71,22 @@ public class FreemarkerPlatformListener implements PlatformListener {
     /**装载TemplateLoader*/
     protected void loadTemplateLoader(ApiBinder event) {
         //1.获取
-        Set<Class<?>> templateLoaderCreatorSet = event.getClassSet(TemplateLoaderCreator.class);
+        Set<Class<?>> templateLoaderCreatorSet = event.getClassSet(FmTemplateLoaderCreator.class);
         if (templateLoaderCreatorSet == null)
             return;
-        List<Class<ITemplateLoaderCreator>> templateLoaderCreatorList = new ArrayList<Class<ITemplateLoaderCreator>>();
+        List<Class<TemplateLoaderCreator>> templateLoaderCreatorList = new ArrayList<Class<TemplateLoaderCreator>>();
         for (Class<?> cls : templateLoaderCreatorSet) {
-            if (ITemplateLoaderCreator.class.isAssignableFrom(cls) == false) {
+            if (TemplateLoaderCreator.class.isAssignableFrom(cls) == false) {
                 Platform.warning("loadTemplateLoader : not implemented ITemplateLoaderCreator. class=%s", cls);
             } else {
-                templateLoaderCreatorList.add((Class<ITemplateLoaderCreator>) cls);
+                templateLoaderCreatorList.add((Class<TemplateLoaderCreator>) cls);
             }
         }
         //3.注册服务
         FmBinderImplements freemarkerBinder = new FmBinderImplements();
-        for (Class<ITemplateLoaderCreator> creatorType : templateLoaderCreatorList) {
-            TemplateLoaderCreator creatorAnno = creatorType.getAnnotation(TemplateLoaderCreator.class);
-            String defineName = creatorAnno.value();
+        for (Class<TemplateLoaderCreator> creatorType : templateLoaderCreatorList) {
+            FmTemplateLoaderCreator creatorAnno = creatorType.getAnnotation(FmTemplateLoaderCreator.class);
+            String defineName = creatorAnno.configElement();
             freemarkerBinder.bindTemplateLoaderCreator(defineName, creatorType);
             Platform.info("loadTemplateLoader %s at %s.", defineName, creatorType);
         }
@@ -99,17 +99,17 @@ public class FreemarkerPlatformListener implements PlatformListener {
         Set<Class<?>> fmTagSet = event.getClassSet(FmTag.class);
         if (fmTagSet == null)
             return;
-        List<Class<IFmTag>> fmTagList = new ArrayList<Class<IFmTag>>();
+        List<Class<Tag>> fmTagList = new ArrayList<Class<Tag>>();
         for (Class<?> cls : fmTagSet) {
-            if (IFmTag.class.isAssignableFrom(cls) == false) {
+            if (Tag.class.isAssignableFrom(cls) == false) {
                 Platform.warning("loadFmTag : not implemented IFmTag or IFmTag2. class=%s", cls);
             } else {
-                fmTagList.add((Class<IFmTag>) cls);
+                fmTagList.add((Class<Tag>) cls);
             }
         }
         //3.注册服务
         FmBinderImplements freemarkerBinder = new FmBinderImplements();
-        for (Class<IFmTag> fmTagType : fmTagList) {
+        for (Class<Tag> fmTagType : fmTagList) {
             FmTag fmTagAnno = fmTagType.getAnnotation(FmTag.class);
             String tagName = fmTagAnno.value();
             freemarkerBinder.bindTag(tagName, fmTagType);

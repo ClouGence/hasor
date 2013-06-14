@@ -24,11 +24,11 @@ public interface CacheManager {
     /**是否启用缓存系统.*/
     public static final String CacheConfig_Enable = "cacheConfig.enable";
     /**获取默认缓存*/
-    public <T> ICache<T> getDefaultCache();
+    public <T> CacheFace<T> getDefaultCache();
     /**获取缓存*/
-    public <T> ICache<T> getCache(String cacheName);
+    public <T> CacheFace<T> getCache(String cacheName);
     /**根据样本类型获取该类型的Key生成器。*/
-    public IKeyBuilder getKeyBuilder(Class<?> sampleType);
+    public KeyBuilderFace getKeyBuilder(Class<?> sampleType);
     /**初始化启动缓存服务。*/
     public void initManager(AppContext appContext);
     /**销毁缓存服务*/

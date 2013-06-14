@@ -16,20 +16,20 @@
 package org.platform.servlet.resource.support;
 import java.util.HashMap;
 import org.more.util.StringUtils;
-import org.platform.servlet.resource.IResourceLoaderCreator;
+import org.platform.servlet.resource.ResourceLoaderCreator;
 import org.platform.servlet.resource.ResourceBinder;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.internal.UniqueAnnotations;
 /**
- * 定义一个{@link IResourceLoaderCreator}映射类型。
+ * 定义一个{@link ResourceLoaderCreator}映射类型。
  * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
 public class ResourceBinderImplements implements Module, ResourceBinder {
     private HashMap<String, ResourceLoaderCreatorDefinition> define = new HashMap<String, ResourceLoaderCreatorDefinition>();
     @Override
-    public void bindLoaderCreator(String name, Class<IResourceLoaderCreator> resourceLoaderCreatorType) {
+    public void bindLoaderCreator(String name, Class<ResourceLoaderCreator> resourceLoaderCreatorType) {
         if (StringUtils.isBlank(name) || resourceLoaderCreatorType == null)
             return;
         this.define.put(name, new ResourceLoaderCreatorDefinition(name, resourceLoaderCreatorType));

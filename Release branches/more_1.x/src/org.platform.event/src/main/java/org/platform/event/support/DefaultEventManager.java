@@ -23,7 +23,7 @@ import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 import org.platform.Assert;
 import org.platform.context.AppContext;
-import org.platform.event.EventListener;
+import org.platform.event.Listener;
 import org.platform.event.EventManager;
 /**
  * {@link EventManager}接口的默认实现。
@@ -32,14 +32,14 @@ import org.platform.event.EventManager;
  */
 class DefaultEventManager implements EventManager, ManagerLife {
     private ExecutorService              executorService  = null;
-    private Map<String, EventListener[]> eventListenerMap = new HashMap<String, EventListener[]>();
+    private Map<String, Listener[]> eventListenerMap = new HashMap<String, Listener[]>();
     //
     @Override
-    public synchronized void addEventListener(String eventType, EventListener listener) {
+    public synchronized void addEventListener(String eventType, Listener listener) {
         Assert.isNotNull(listener, "add EventListener object is null.");
-        EventListener[] eventListener = this.eventListenerMap.get(eventType);
+        Listener[] eventListener = this.eventListenerMap.get(eventType);
         if (eventListener == null) {
-            eventListener = new EventListener[0];
+            eventListener = new Listener[0];
         }
         eventListener = ArrayUtils.addToArray(eventListener, listener);
         this.eventListenerMap.put(eventType, eventListener);
@@ -49,19 +49,19 @@ class DefaultEventManager implements EventManager, ManagerLife {
         this.eventListenerMap.remove(eventType);
     }
     @Override
-    public synchronized void removeEventListener(String eventType, EventListener listener) {
+    public synchronized void removeEventListener(String eventType, Listener listener) {
         Assert.isNotNull(eventType, "remove eventType is null.");
         Assert.isNotNull(listener, "remove EventListener object is null.");
-        EventListener[] eventListener = this.eventListenerMap.get(eventType);
+        Listener[] eventListener = this.eventListenerMap.get(eventType);
         if (ArrayUtils.isBlank(eventListener))
             return;
         eventListener = ArrayUtils.removeInArray(eventListener, listener);
         this.eventListenerMap.put(eventType, eventListener);
     }
     @Override
-    public EventListener[] getEventListener(String eventType) {
-        EventListener[] eventListener = this.eventListenerMap.get(eventType);
-        return (eventListener == null) ? new EventListener[0] : eventListener;
+    public Listener[] getEventListener(String eventType) {
+        Listener[] eventListener = this.eventListenerMap.get(eventType);
+        return (eventListener == null) ? new Listener[0] : eventListener;
     }
     @Override
     public String[] getEventTypes() {
@@ -72,9 +72,9 @@ class DefaultEventManager implements EventManager, ManagerLife {
     public void throwEvent(String eventType, Object... objects) {
         if (StringUtils.isBlank(eventType) == true)
             return;
-        EventListener[] eventListener = this.eventListenerMap.get(eventType);
+        Listener[] eventListener = this.eventListenerMap.get(eventType);
         if (eventListener != null) {
-            for (EventListener event : eventListener)
+            for (Listener event : eventListener)
                 event.onEvent(eventType, objects);
         }
     }
@@ -82,12 +82,12 @@ class DefaultEventManager implements EventManager, ManagerLife {
     public void asynThrowEvent(final String eventType, final Object... objects) {
         if (StringUtils.isBlank(eventType) == true)
             return;
-        final EventListener[] eventListener = this.eventListenerMap.get(eventType);
+        final Listener[] eventListener = this.eventListenerMap.get(eventType);
         this.executorService.submit(new Runnable() {
             @Override
             public void run() {
                 if (eventListener != null) {
-                    for (EventListener event : eventListener)
+                    for (Listener event : eventListener)
                         event.onEvent(eventType, objects);
                 }
             }

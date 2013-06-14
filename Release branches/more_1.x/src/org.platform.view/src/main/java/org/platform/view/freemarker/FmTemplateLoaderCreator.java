@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.servlet.action;
+package org.platform.view.freemarker;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.platform.view.freemarker.loader.ITemplateLoader;
 /**
- * 
- * @version : 2013-5-9
+ * {@link ITemplateLoader}类型定义，标记了该接口的类必须要求实现{@link TemplateLoaderCreator}接口。
+ * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD })
-public @interface RestfulMapping {
-    /**对应生效的http方法，默认为Any。*/
-    public HttpMethod[] httpMethod() default { HttpMethod.Any };
-    /**restful风格映射。提示：可是使用通配符“*”表示任意个字符，“?”表示任意一个字符。*/
-    public String value();
+@Target({ ElementType.TYPE })
+public @interface FmTemplateLoaderCreator {
+    /**声明的名，在config.xml中freemarker.templateLoader配置节内使用该名称作为元素名即可声明一条该类型的 {@link ITemplateLoader}。*/
+    public String configElement();
 }

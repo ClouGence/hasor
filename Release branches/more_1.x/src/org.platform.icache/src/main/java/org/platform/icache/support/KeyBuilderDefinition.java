@@ -16,7 +16,7 @@
 package org.platform.icache.support;
 import org.platform.Platform;
 import org.platform.context.AppContext;
-import org.platform.icache.IKeyBuilder;
+import org.platform.icache.KeyBuilderFace;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 /**
@@ -24,17 +24,17 @@ import com.google.inject.Provider;
  * @version : 2013-4-216
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-class KeyBuilderDefinition implements Provider<IKeyBuilder> {
+class KeyBuilderDefinition implements Provider<KeyBuilderFace> {
     private Class<?>                   type             = null;
-    private Key<? extends IKeyBuilder> keyBuilderKey    = null;
-    private IKeyBuilder                keyBuilderObject = null;
+    private Key<? extends KeyBuilderFace> keyBuilderKey    = null;
+    private KeyBuilderFace                keyBuilderObject = null;
     //
     //
-    public KeyBuilderDefinition(Class<?> type, Key<? extends IKeyBuilder> keyBuilderKey) {
+    public KeyBuilderDefinition(Class<?> type, Key<? extends KeyBuilderFace> keyBuilderKey) {
         this.type = type;
         this.keyBuilderKey = keyBuilderKey;
     }
-    public Key<? extends IKeyBuilder> getKeyBuilderKey() {
+    public Key<? extends KeyBuilderFace> getKeyBuilderKey() {
         return this.keyBuilderKey;
     }
     public void initKeyBuilder(final AppContext appContext) {
@@ -48,7 +48,7 @@ class KeyBuilderDefinition implements Provider<IKeyBuilder> {
         return this.type.isAssignableFrom(targetType);
     }
     @Override
-    public IKeyBuilder get() {
+    public KeyBuilderFace get() {
         return this.keyBuilderObject;
     }
     public void destroy(AppContext appContext) {
