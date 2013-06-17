@@ -20,7 +20,7 @@
 		<module>org.platform.view</module>
 		<module>org.platform.updown</module>
 		<module>org.platform.ui</module>
-		<module>org.platform.db</module>
+		<module>org.platform.ds</module>
 	</modules>
 	<!-- 构建描述 -->
 	<build>
