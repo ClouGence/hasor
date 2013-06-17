@@ -19,11 +19,11 @@ import org.platform.context.AppContext;
 import org.platform.context.PlatformListener;
 import org.platform.context.startup.PlatformExt;
 /**
- * 请求响应编码。启动级别：Lv0+10
+ * 请求响应编码。启动级别：Lv0
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@PlatformExt(displayName = "EncodingFilterListener", description = "org.platform.servlet.encoding软件包功能支持。", startIndex = PlatformExt.Lv_0 + 10)
+@PlatformExt(displayName = "EncodingFilterListener", description = "org.platform.servlet.encoding软件包功能支持。", startIndex = PlatformExt.Lv_0)
 public class EncodingFilterListener implements PlatformListener {
     @Override
     public void initialize(ApiBinder binder) {

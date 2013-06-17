@@ -44,11 +44,11 @@ import com.google.inject.internal.UniqueAnnotations;
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.name.Names;
 /**
- * 缓存服务。启动级别：Lv0+10
+ * 缓存服务。启动级别：Lv0
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@PlatformExt(displayName = "CacheModuleServiceListener", description = "org.platform.icache软件包功能支持。", startIndex = PlatformExt.Lv_0 + 10)
+@PlatformExt(displayName = "CacheModuleServiceListener", description = "org.platform.icache软件包功能支持。", startIndex = PlatformExt.Lv_0)
 public class CachePlatformListener implements PlatformListener {
     private CacheManager  cacheManager = null;
     private CacheSettings settings     = null;

@@ -16,11 +16,12 @@
 			<artifactId>org.platform.core</artifactId>
 			<version>0.0.1</version>
 		</dependency>
+<!--
 <dependency>
 	<groupId>org.ow2.jotm</groupId>
 	<artifactId>jotm-core</artifactId>
 	<version>2.2.3</version>
 </dependency>
-            
+        -->    
 	</dependencies>
 </project>

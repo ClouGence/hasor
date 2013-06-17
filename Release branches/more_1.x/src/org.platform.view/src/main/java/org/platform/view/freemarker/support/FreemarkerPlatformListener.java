@@ -32,11 +32,11 @@ import org.platform.view.freemarker.Tag;
 import org.platform.view.freemarker.TemplateLoaderCreator;
 import org.platform.view.freemarker.FmTemplateLoaderCreator;
 /**
- * Freemarker服务，延迟一个级别是因为需要依赖icache，启动级别L1+10
+ * Freemarker服务，延迟一个级别是因为需要依赖icache，启动级别L1
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@PlatformExt(displayName = "FreemarkerPlatformListener", description = "org.platform.view.freemarker软件包功能支持。", startIndex = PlatformExt.Lv_1 + 10)
+@PlatformExt(displayName = "FreemarkerPlatformListener", description = "org.platform.view.freemarker软件包功能支持。", startIndex = PlatformExt.Lv_1)
 public class FreemarkerPlatformListener implements PlatformListener {
     private FreemarkerSettings freemarkerSettings = null;
     private FreemarkerManager  freemarkerManager  = null;

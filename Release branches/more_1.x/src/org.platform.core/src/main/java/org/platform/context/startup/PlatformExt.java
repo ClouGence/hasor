@@ -33,25 +33,45 @@ public @interface PlatformExt {
     public String description() default "";
     /**启动顺序默认值0，该值越大表示启动顺序越延后。提示：负值等同于“0”。*/
     public int startIndex() default 0;
-    /*级别定义*/
-    public static int Lv_0    = Integer.MIN_VALUE + 0;
-    public static int Lv_0Max = Integer.MIN_VALUE + 99;
-    public static int Lv_1    = Integer.MIN_VALUE + 100;
-    public static int Lv_1Max = Integer.MIN_VALUE + 199;
-    public static int Lv_2    = Integer.MIN_VALUE + 200;
-    public static int Lv_2Max = Integer.MIN_VALUE + 299;
-    public static int Lv_3    = Integer.MIN_VALUE + 300;
-    public static int Lv_3Max = Integer.MIN_VALUE + 399;
-    public static int Lv_4    = Integer.MIN_VALUE + 400;
-    public static int Lv_4Max = Integer.MIN_VALUE + 499;
-    public static int Lv_5    = Integer.MIN_VALUE + 500;
-    public static int Lv_5Max = Integer.MIN_VALUE + 599;
-    public static int Lv_6    = Integer.MIN_VALUE + 600;
-    public static int Lv_6Max = Integer.MIN_VALUE + 699;
-    public static int Lv_7    = Integer.MIN_VALUE + 700;
-    public static int Lv_7Max = Integer.MIN_VALUE + 799;
-    public static int Lv_8    = Integer.MIN_VALUE + 800;
-    public static int Lv_8Max = Integer.MIN_VALUE + 899;
-    public static int Lv_9    = Integer.MIN_VALUE + 900;
-    public static int Lv_9Max = Integer.MIN_VALUE + 999;
+    /*级别定义：所有级别都是相对于Integet的最小值。*/
+    /**级别0：1~99，表示开始点：1*/
+    public static int Lv_0    = Integer.MIN_VALUE + 1;  //
+    /**级别0：1~99，表示结束点：99*/
+    public static int Lv_0Max = Integer.MIN_VALUE + 99; //
+    /**级别1：101~199，表示开始点：101*/
+    public static int Lv_1    = Integer.MIN_VALUE + 101; //
+    /**级别1：101~199，表示结束点：199*/
+    public static int Lv_1Max = Integer.MIN_VALUE + 199; //
+    /**级别2：201~299，表示开始点：201*/
+    public static int Lv_2    = Integer.MIN_VALUE + 201; //
+    /**级别2：201~299，表示结束点：299*/
+    public static int Lv_2Max = Integer.MIN_VALUE + 299; //
+    /**级别3：301~399，表示开始点：301*/
+    public static int Lv_3    = Integer.MIN_VALUE + 301; //
+    /**级别3：301~399，表示结束点：399*/
+    public static int Lv_3Max = Integer.MIN_VALUE + 399; //
+    /**级别4：401~499，表示开始点：401*/
+    public static int Lv_4    = Integer.MIN_VALUE + 401; //
+    /**级别4：401~499，表示结束点：499*/
+    public static int Lv_4Max = Integer.MIN_VALUE + 499; //
+    /**级别5：501~599，表示开始点：501*/
+    public static int Lv_5    = Integer.MIN_VALUE + 501; //
+    /**级别5：501~599，表示结束点：599*/
+    public static int Lv_5Max = Integer.MIN_VALUE + 599; //
+    /**级别6：601~699，表示开始点：601*/
+    public static int Lv_6    = Integer.MIN_VALUE + 601; //
+    /**级别6：601~699，表示结束点：699*/
+    public static int Lv_6Max = Integer.MIN_VALUE + 699; //
+    /**级别7：701~799，表示开始点：701*/
+    public static int Lv_7    = Integer.MIN_VALUE + 701; //
+    /**级别7：701~799，表示结束点：799*/
+    public static int Lv_7Max = Integer.MIN_VALUE + 799; //
+    /**级别8：801~899，表示开始点：801*/
+    public static int Lv_8    = Integer.MIN_VALUE + 801; //
+    /**级别8：801~899，表示结束点：899*/
+    public static int Lv_8Max = Integer.MIN_VALUE + 899; //
+    /**级别9：901~999，表示开始点：901*/
+    public static int Lv_9    = Integer.MIN_VALUE + 901; //
+    /**级别9：901~999，表示结束点：999*/
+    public static int Lv_9Max = Integer.MIN_VALUE + 999; //
 }

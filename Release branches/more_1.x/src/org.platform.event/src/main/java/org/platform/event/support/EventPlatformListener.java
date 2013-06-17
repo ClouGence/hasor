@@ -28,13 +28,13 @@ import org.platform.event.Listener;
 import org.platform.event.EventManager;
 import org.platform.event.EventListener;
 /**
- * 事件服务。启动级别：Lv0+10
+ * 事件服务。启动级别：Lv0
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@PlatformExt(displayName = "EventModuleServiceListener", description = "org.platform.event软件包功能支持。", startIndex = PlatformExt.Lv_0 + 10)
+@PlatformExt(displayName = "EventModuleServiceListener", description = "org.platform.event软件包功能支持。", startIndex = PlatformExt.Lv_0)
 public class EventPlatformListener implements PlatformListener {
-    private EventManager                         eventManager  = null;
+    private EventManager                    eventManager  = null;
     private List<Class<? extends Listener>> eventListener = null;
     /**初始化.*/
     @Override
