@@ -22,6 +22,7 @@ import java.io.Reader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import org.platform.view.freemarker.FmTemplateLoader;
 import org.platform.view.freemarker.loader.resource.ClassPathResourceLoader;
 import org.platform.view.freemarker.loader.resource.IResourceLoader;
 /**
@@ -29,7 +30,7 @@ import org.platform.view.freemarker.loader.resource.IResourceLoader;
 * @version : 2011-9-14
 * @author ’‘”¿¥∫ (zyc@byshell.org) 
 */
-public class ClassPathTemplateLoader extends URLClassLoader implements ITemplateLoader, IResourceLoader {
+public class ClassPathTemplateLoader extends URLClassLoader implements FmTemplateLoader, IResourceLoader {
     private String                  packageName    = null;
     private ClassPathResourceLoader resourceLoader = null;
     //

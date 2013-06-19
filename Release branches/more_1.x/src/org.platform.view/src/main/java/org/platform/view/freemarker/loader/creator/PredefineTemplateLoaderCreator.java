@@ -23,22 +23,22 @@ import org.more.util.StringConvertUtils;
 import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.context.AppContext;
-import org.platform.view.freemarker.TemplateLoaderCreator;
+import org.platform.view.freemarker.FmTemplateLoader;
 import org.platform.view.freemarker.FmTemplateLoaderCreator;
+import org.platform.view.freemarker.FmTemplateLoaderDefine;
 import org.platform.view.freemarker.loader.ConfigTemplateLoader;
-import org.platform.view.freemarker.loader.ITemplateLoader;
 /**
  * 处理配置文件中添加的模板。
  * @version : 2011-9-14
  * @author 赵永春 (zyc@byshell.org) 
  */
-@FmTemplateLoaderCreator(configElement = "PredefineLoader")
-public class PredefineTemplateLoaderCreator implements TemplateLoaderCreator {
+@FmTemplateLoaderDefine(configElement = "PredefineLoader")
+public class PredefineTemplateLoaderCreator implements FmTemplateLoaderCreator {
     public static enum PredefineType {
         Resource, File, String, URL
     }
     @Override
-    public ITemplateLoader newTemplateLoader(AppContext appContext, XmlProperty xmlConfig) throws MalformedURLException {
+    public FmTemplateLoader newTemplateLoader(AppContext appContext, XmlProperty xmlConfig) throws MalformedURLException {
         List<XmlProperty> childrenList = xmlConfig.getChildren();
         if (childrenList == null)
             return null;

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.platform.view.freemarker.support;
+import static org.platform.view.freemarker.ConfigurationFactory.FreemarkerConfig_ContentType;
 import static org.platform.view.freemarker.ConfigurationFactory.FreemarkerConfig_Enable;
 import static org.platform.view.freemarker.ConfigurationFactory.FreemarkerConfig_OnError;
-import static org.platform.view.freemarker.ConfigurationFactory.FreemarkerConfig_OutMimeType;
 import static org.platform.view.freemarker.ConfigurationFactory.FreemarkerConfig_Suffix;
 import org.platform.context.SettingListener;
 import org.platform.context.Settings;
@@ -39,7 +39,7 @@ class FreemarkerSettings implements SettingListener {
         PrintOnPage
     };
     private boolean     enable      = false;
-    private String      outMimeType = null;
+    private String      contentType = null;
     private String[]    suffix      = null;
     private OnErrorMode onError     = null;
     //
@@ -52,11 +52,11 @@ class FreemarkerSettings implements SettingListener {
     public OnErrorMode getOnError() {
         return onError;
     }
-    public String getOutMimeType() {
-        return outMimeType;
+    public String getContentType() {
+        return contentType;
     }
-    protected void setOutMimeType(String outMimeType) {
-        this.outMimeType = outMimeType;
+    protected void setContentType(String contentType) {
+        this.contentType = contentType;
     }
     protected void setEnable(boolean enable) {
         this.enable = enable;
@@ -71,7 +71,7 @@ class FreemarkerSettings implements SettingListener {
     public void loadConfig(Settings newConfig) {
         this.enable = newConfig.getBoolean(FreemarkerConfig_Enable);
         String suffix = newConfig.getString(FreemarkerConfig_Suffix);
-        this.outMimeType = newConfig.getString(FreemarkerConfig_OutMimeType, "text/html");
+        this.contentType = newConfig.getString(FreemarkerConfig_ContentType, "text/html");
         this.suffix = suffix.split(",");
         for (int i = 0; i < this.suffix.length; i++)
             this.suffix[i] = this.suffix[i].trim();

@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 package org.platform.view.freemarker;
-import java.io.IOException;
-import org.more.global.assembler.xml.XmlProperty;
-import org.platform.context.AppContext;
-import org.platform.view.freemarker.loader.ITemplateLoader;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 
- * @version : 2013-5-22
+ * {@link FmTemplateLoader}类型定义，标记了该接口的类必须要求实现{@link FmTemplateLoaderCreator}接口。
+ * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface TemplateLoaderCreator {
-    public ITemplateLoader newTemplateLoader(AppContext appContext, XmlProperty xmlConfig) throws IOException;
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface FmTemplateLoaderDefine {
+    /**声明的名，在config.xml中freemarker.templateLoader配置节内使用该名称作为元素名即可声明一条该类型的 {@link FmTemplateLoader}。*/
+    public String configElement();
 }

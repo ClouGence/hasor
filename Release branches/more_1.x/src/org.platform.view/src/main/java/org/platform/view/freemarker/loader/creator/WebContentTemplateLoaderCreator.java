@@ -21,19 +21,19 @@ import org.more.global.assembler.xml.XmlProperty;
 import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.context.AppContext;
-import org.platform.view.freemarker.TemplateLoaderCreator;
+import org.platform.view.freemarker.FmTemplateLoader;
 import org.platform.view.freemarker.FmTemplateLoaderCreator;
+import org.platform.view.freemarker.FmTemplateLoaderDefine;
 import org.platform.view.freemarker.loader.DirTemplateLoader;
-import org.platform.view.freemarker.loader.ITemplateLoader;
 /**
 * 处理Classpath中的模板。
 * @version : 2011-9-14
 * @author 赵永春 (zyc@byshell.org) 
 */
-@FmTemplateLoaderCreator(configElement = "WebContentLoader")
-public class WebContentTemplateLoaderCreator implements TemplateLoaderCreator {
+@FmTemplateLoaderDefine(configElement = "WebContentLoader")
+public class WebContentTemplateLoaderCreator implements FmTemplateLoaderCreator {
     @Override
-    public ITemplateLoader newTemplateLoader(AppContext appContext, XmlProperty xmlConfig) throws IOException {
+    public FmTemplateLoader newTemplateLoader(AppContext appContext, XmlProperty xmlConfig) throws IOException {
         ServletContext context = appContext.getInstance(ServletContext.class);
         if (context == null)
             return null;

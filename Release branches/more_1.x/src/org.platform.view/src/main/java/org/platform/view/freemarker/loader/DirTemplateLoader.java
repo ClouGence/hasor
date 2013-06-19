@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import org.platform.view.freemarker.FmTemplateLoader;
 import org.platform.view.freemarker.loader.resource.DirResourceLoader;
 import org.platform.view.freemarker.loader.resource.IResourceLoader;
 import freemarker.cache.FileTemplateLoader;
@@ -26,7 +27,7 @@ import freemarker.cache.FileTemplateLoader;
  * @version : 2011-9-17
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class DirTemplateLoader extends FileTemplateLoader implements ITemplateLoader, IResourceLoader {
+public class DirTemplateLoader extends FileTemplateLoader implements FmTemplateLoader, IResourceLoader {
     private DirResourceLoader dirResourceLoader = null;
     //
     public DirTemplateLoader(File templateDir) throws IOException {

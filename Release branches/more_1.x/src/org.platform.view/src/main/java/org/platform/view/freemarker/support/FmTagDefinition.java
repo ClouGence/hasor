@@ -24,7 +24,7 @@ import com.google.inject.Provider;
  */
 class FmTagDefinition implements Provider<InternalTagObject> {
     private String            tagName      = null;
-    private Class<Tag>     fmMethodType = null;
+    private Class<Tag>        fmMethodType = null;
     private AppContext        appContext   = null;
     private InternalTagObject tagObject    = null;
     //

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.platform.view.freemarker.FmTemplateLoader;
 import org.platform.view.freemarker.loader.mto.AbstractTemplateObject;
 import org.platform.view.freemarker.loader.mto.ClassPath_TemplateObject;
 import org.platform.view.freemarker.loader.mto.File_TemplateObject;
@@ -34,7 +35,7 @@ import org.platform.view.freemarker.loader.resource.IResourceLoader;
  * @version : 2011-9-14
  * @author ’‘”¿¥∫ (zyc@byshell.org) 
  */
-public class ConfigTemplateLoader implements ITemplateLoader, IResourceLoader {
+public class ConfigTemplateLoader implements FmTemplateLoader, IResourceLoader {
     private Map<String, AbstractTemplateObject> objectMap = null;
     //
     public ConfigTemplateLoader() {

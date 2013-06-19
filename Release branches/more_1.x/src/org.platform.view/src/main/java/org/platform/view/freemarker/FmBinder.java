@@ -23,7 +23,7 @@ import freemarker.template.TemplateModelException;
  */
 public interface FmBinder {
     /***/
-    public void bindTemplateLoaderCreator(String name, Class<TemplateLoaderCreator> templateLoaderCreatorType);
+    public void bindTemplateLoaderCreator(String name, Class<FmTemplateLoaderCreator> templateLoaderCreatorType);
     /***/
     public void bindTag(String tagName, Class<Tag> fmTagType);
     /***/

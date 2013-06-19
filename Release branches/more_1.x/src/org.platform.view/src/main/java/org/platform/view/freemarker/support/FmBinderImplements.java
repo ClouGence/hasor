@@ -20,7 +20,7 @@ import java.util.List;
 import org.more.util.StringUtils;
 import org.platform.view.freemarker.FmBinder;
 import org.platform.view.freemarker.Tag;
-import org.platform.view.freemarker.TemplateLoaderCreator;
+import org.platform.view.freemarker.FmTemplateLoaderCreator;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.internal.UniqueAnnotations;
@@ -38,7 +38,7 @@ public class FmBinderImplements implements Module, FmBinder {
     private List<FmTagDefinition>                 fmTagDefinition          = new ArrayList<FmTagDefinition>();
     private List<FmObjectDefinition>              fmObjectDefinition       = new ArrayList<FmObjectDefinition>();
     @Override
-    public void bindTemplateLoaderCreator(String name, Class<TemplateLoaderCreator> templateLoaderCreatorType) {
+    public void bindTemplateLoaderCreator(String name, Class<FmTemplateLoaderCreator> templateLoaderCreatorType) {
         if (StringUtils.isBlank(name) || templateLoaderCreatorType == null)
             return;
         this.templateLoaderDefinition.add(new TemplateLoaderCreatorDefinition(name, templateLoaderCreatorType));

@@ -21,9 +21,9 @@ import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.context.AppContext;
 import org.platform.view.freemarker.ConfigurationFactory;
-import org.platform.view.freemarker.TemplateLoaderCreator;
+import org.platform.view.freemarker.FmTemplateLoader;
+import org.platform.view.freemarker.FmTemplateLoaderCreator;
 import org.platform.view.freemarker.loader.ConfigTemplateLoader;
-import org.platform.view.freemarker.loader.ITemplateLoader;
 import org.platform.view.freemarker.loader.MultiTemplateLoader;
 import com.google.inject.Binding;
 import com.google.inject.Singleton;
@@ -142,7 +142,7 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
             creatorDefinitionList.add(define);
         }
         //2.获取配置的TemplateLoader
-        ArrayList<ITemplateLoader> templateLoaderList = new ArrayList<ITemplateLoader>();
+        ArrayList<FmTemplateLoader> templateLoaderList = new ArrayList<FmTemplateLoader>();
         XmlProperty configLoaderList = appContext.getSettings().getXmlProperty(FreemarkerConfig_TemplateLoader);
         if (configLoaderList != null) {
             List<XmlProperty> childrenList = configLoaderList.getChildren();
@@ -151,7 +151,7 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
                 String val = item.getText();
                 val = val != null ? val.trim() : "";
                 //从已经注册的TemplateLoader中获取一个TemplateLoaderCreator进行构建。
-                TemplateLoaderCreator creator = null;
+                FmTemplateLoaderCreator creator = null;
                 for (TemplateLoaderCreatorDefinition define : creatorDefinitionList)
                     if (StringUtils.eqUnCaseSensitive(define.getName(), key))
                         creator = define.get();
@@ -160,7 +160,7 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
                     Platform.warning("missing %s TemplateLoaderCreator!", key);
                 } else {
                     try {
-                        ITemplateLoader loader = creator.newTemplateLoader(appContext, item);
+                        FmTemplateLoader loader = creator.newTemplateLoader(appContext, item);
                         if (loader == null)
                             Platform.error("%s newTemplateLoader call newTemplateLoader return is null. config is %s.", key, val);
                         else {

@@ -29,8 +29,8 @@ import org.platform.view.freemarker.FmMethod;
 import org.platform.view.freemarker.FmTag;
 import org.platform.view.freemarker.FreemarkerManager;
 import org.platform.view.freemarker.Tag;
-import org.platform.view.freemarker.TemplateLoaderCreator;
 import org.platform.view.freemarker.FmTemplateLoaderCreator;
+import org.platform.view.freemarker.FmTemplateLoaderDefine;
 /**
  * Freemarker服务，延迟一个级别是因为需要依赖icache，启动级别L1
  * @version : 2013-4-8
@@ -71,21 +71,21 @@ public class FreemarkerPlatformListener implements PlatformListener {
     /**装载TemplateLoader*/
     protected void loadTemplateLoader(ApiBinder event) {
         //1.获取
-        Set<Class<?>> templateLoaderCreatorSet = event.getClassSet(FmTemplateLoaderCreator.class);
+        Set<Class<?>> templateLoaderCreatorSet = event.getClassSet(FmTemplateLoaderDefine.class);
         if (templateLoaderCreatorSet == null)
             return;
-        List<Class<TemplateLoaderCreator>> templateLoaderCreatorList = new ArrayList<Class<TemplateLoaderCreator>>();
+        List<Class<FmTemplateLoaderCreator>> templateLoaderCreatorList = new ArrayList<Class<FmTemplateLoaderCreator>>();
         for (Class<?> cls : templateLoaderCreatorSet) {
-            if (TemplateLoaderCreator.class.isAssignableFrom(cls) == false) {
+            if (FmTemplateLoaderCreator.class.isAssignableFrom(cls) == false) {
                 Platform.warning("loadTemplateLoader : not implemented ITemplateLoaderCreator. class=%s", cls);
             } else {
-                templateLoaderCreatorList.add((Class<TemplateLoaderCreator>) cls);
+                templateLoaderCreatorList.add((Class<FmTemplateLoaderCreator>) cls);
             }
         }
         //3.注册服务
         FmBinderImplements freemarkerBinder = new FmBinderImplements();
-        for (Class<TemplateLoaderCreator> creatorType : templateLoaderCreatorList) {
-            FmTemplateLoaderCreator creatorAnno = creatorType.getAnnotation(FmTemplateLoaderCreator.class);
+        for (Class<FmTemplateLoaderCreator> creatorType : templateLoaderCreatorList) {
+            FmTemplateLoaderDefine creatorAnno = creatorType.getAnnotation(FmTemplateLoaderDefine.class);
             String defineName = creatorAnno.configElement();
             freemarkerBinder.bindTemplateLoaderCreator(defineName, creatorType);
             Platform.info("loadTemplateLoader %s at %s.", defineName, creatorType);

@@ -58,6 +58,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.platform.view.freemarker.FmTemplateLoader;
 import org.platform.view.freemarker.loader.resource.IResourceLoader;
 import org.platform.view.freemarker.loader.resource.MultiResourceLoader;
 import freemarker.cache.StatefulTemplateLoader;
@@ -77,7 +78,7 @@ import freemarker.cache.TemplateLoader;
  * @version $Id: MultiTemplateLoader.java,v 1.12.2.2 2007/04/04 07:51:16 szegedia Exp $
  * @version $Id: MultiTemplateLoader.java,v 1.12.2.3 2012/05/14 15:27:32 ’‘”¿¥∫ Exp $
  */
-public class MultiTemplateLoader implements ITemplateLoader, IResourceLoader, StatefulTemplateLoader {
+public class MultiTemplateLoader implements FmTemplateLoader, IResourceLoader, StatefulTemplateLoader {
     private final MultiResourceLoader         resourceLoader    = new MultiResourceLoader();
     private final ArrayList<TemplateLoader>   loaders           = new ArrayList<TemplateLoader>();
     private final Map<String, TemplateLoader> lastLoaderForName = Collections.synchronizedMap(new HashMap<String, TemplateLoader>());

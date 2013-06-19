@@ -18,19 +18,19 @@ import org.more.global.assembler.xml.XmlProperty;
 import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.context.AppContext;
-import org.platform.view.freemarker.TemplateLoaderCreator;
+import org.platform.view.freemarker.FmTemplateLoader;
 import org.platform.view.freemarker.FmTemplateLoaderCreator;
+import org.platform.view.freemarker.FmTemplateLoaderDefine;
 import org.platform.view.freemarker.loader.ClassPathTemplateLoader;
-import org.platform.view.freemarker.loader.ITemplateLoader;
 /**
 * 负责装载Classpath中的模板文件。
 * @version : 2011-9-14
 * @author 赵永春 (zyc@byshell.org) 
 */
-@FmTemplateLoaderCreator(configElement = "ClassPathLoader")
-public class ClassPathTemplateLoaderCreator implements TemplateLoaderCreator {
+@FmTemplateLoaderDefine(configElement = "ClassPathLoader")
+public class ClassPathTemplateLoaderCreator implements FmTemplateLoaderCreator {
     @Override
-    public ITemplateLoader newTemplateLoader(AppContext appContext, XmlProperty xmlConfig) {
+    public FmTemplateLoader newTemplateLoader(AppContext appContext, XmlProperty xmlConfig) {
         ClassPathTemplateLoader classpathLoader = null;
         String body = xmlConfig.getText();
         Platform.info("loadClassPath %s", body);

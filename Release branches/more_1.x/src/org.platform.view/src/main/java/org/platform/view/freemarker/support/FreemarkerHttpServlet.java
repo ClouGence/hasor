@@ -73,7 +73,7 @@ public class FreemarkerHttpServlet extends HttpServlet {
                     rootMap.put(name, httpSession.getAttribute(name));
                 }
             }
-            httpResponse.setContentType(this.settings.getOutMimeType());
+            httpResponse.setContentType(this.settings.getContentType());
             this.freemarkerManager.processTemplate(requestURI, rootMap, response.getWriter());
             return;
         } catch (Exception e) {
