@@ -61,7 +61,7 @@ class ManagedDecorateFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         //1.执行过滤器获取输出的结果。
-        DecHttpServletRequestPropxy decRequest = new DecHttpServletRequestPropxy((HttpServletRequest) response);
+        DecHttpServletRequestPropxy decRequest = new DecHttpServletRequestPropxy((HttpServletRequest) request);
         DecHttpServletResponsePropxy decResponse = new DecHttpServletResponsePropxy((HttpServletResponse) response);
         chain.doFilter(decRequest, decResponse);
         //2.对获取结果进行装饰处理

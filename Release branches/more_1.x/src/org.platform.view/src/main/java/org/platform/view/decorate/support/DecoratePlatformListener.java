@@ -18,6 +18,8 @@ import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
 import org.platform.context.PlatformListener;
 import org.platform.context.startup.PlatformExt;
+import org.platform.view.decorate.DecorateBinder;
+import org.platform.view.decorate.parser.FreemarkerHtmlParser;
 /**
  * 装饰服务，启动级别L0
  * @version : 2013-4-8
@@ -27,10 +29,12 @@ import org.platform.context.startup.PlatformExt;
 public class DecoratePlatformListener implements PlatformListener {
     @Override
     public void initialize(ApiBinder binder) {
+        binder.getGuiceBinder().bind(DecorateBinder.class).to(DecorateBinderImplements.class);
         binder.filter("*").through(ManagedDecorateFilter.class);
-        
-        
-        
+        //
+        DecorateBinderImplements decorateBinder = new DecorateBinderImplements();
+        decorateBinder.decFilter("text/html;charset=UTF-8", "*").through(FreemarkerHtmlParser.class);
+        decorateBinder.configure(binder.getGuiceBinder());
     }
     @Override
     public void initialized(AppContext appContext) {
