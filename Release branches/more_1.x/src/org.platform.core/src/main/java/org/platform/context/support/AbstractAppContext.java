@@ -23,6 +23,7 @@ import org.more.util.ClassUtils;
 import org.platform.Assert;
 import org.platform.binder.BeanInfo;
 import org.platform.context.AppContext;
+import org.platform.context.SettingListener;
 import org.platform.context.Settings;
 import org.platform.context.WorkSpace;
 import com.google.inject.Binding;
@@ -37,22 +38,37 @@ public abstract class AbstractAppContext implements AppContext {
     private long                  startTime   = System.currentTimeMillis(); //系统启动时间
     private Map<String, BeanInfo> beanInfoMap = null;
     private AbstractWorkSpace     workSpace   = null;
+    private AbstractEnvironment   environment = null;
     //
     /**启动*/
     public abstract void start(Module... modules);
     /**销毁方法。*/
     public abstract void destroyed();
     @Override
+    public AbstractEnvironment getEnvironment() {
+        if (this.environment == null)
+            this.environment = new AbstractEnvironment() {};
+        return this.environment;
+    }
+    @Override
     public WorkSpace getWorkSpace() {
         if (this.workSpace == null) {
+            //1.创建AbstractWorkSpace
             this.workSpace = new AbstractWorkSpace() {
                 @Override
                 public Settings getSettings() {
                     return AbstractAppContext.this.getSettings();
                 }
             };
-            this.workSpace.loadConfig(getSettings());
-            this.getSettings().addSettingsListener(this.workSpace);
+            //2.载入环境变量
+            this.getEnvironment().loadEnvironment(this);
+            //3.配置文件改变监视
+            this.getSettings().addSettingsListener(new SettingListener() {
+                @Override
+                public void loadConfig(Settings newConfig) {
+                    AbstractAppContext.this.getEnvironment().loadEnvironment(AbstractAppContext.this);
+                }
+            });
         }
         return this.workSpace;
     }

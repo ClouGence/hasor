@@ -49,26 +49,12 @@ class FilterDefinition extends AbstractServletModuleBinding implements Provider<
     public FilterDefinition get() {
         return this;
     }
-    protected Filter getTarget(AppContext appContext) {
+    protected Filter getTarget(final AppContext appContext) throws ServletException {
         if (this.filterInstance == null)
             this.filterInstance = appContext.getGuice().getInstance(this.filterKey);
-        return this.filterInstance;
-    }
-    @Override
-    public String toString() {
-        return Platform.formatString("type %s pattern=%s ,initParams=%s ,uriPatternType=%s",//
-                FilterDefinition.class, getPattern(), getInitParams(), getUriPatternType());
-    }
-    /*--------------------------------------------------------------------------------------------------------*/
-    /**/
-    public void init(final AppContext appContext) throws ServletException {
-        this.appContext = appContext;
-        Filter filter = this.getTarget(appContext);
-        if (filter == null)
-            return;
-        final Map<String, String> initParams = this.getInitParams();
         //
-        filter.init(new FilterConfig() {
+        final Map<String, String> initParams = this.getInitParams();
+        this.filterInstance.init(new FilterConfig() {
             public String getFilterName() {
                 return filterKey.toString();
             }
@@ -85,6 +71,18 @@ class FilterDefinition extends AbstractServletModuleBinding implements Provider<
                 return Iterators.asEnumeration(initParams.keySet().iterator());
             }
         });
+        return this.filterInstance;
+    }
+    @Override
+    public String toString() {
+        return Platform.formatString("type %s pattern=%s ,initParams=%s ,uriPatternType=%s",//
+                FilterDefinition.class, getPattern(), getInitParams(), getUriPatternType());
+    }
+    /*--------------------------------------------------------------------------------------------------------*/
+    /**/
+    public void init(final AppContext appContext) throws ServletException {
+        this.appContext = appContext;
+        this.getTarget(appContext);
     }
     /**/
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -102,9 +100,8 @@ class FilterDefinition extends AbstractServletModuleBinding implements Provider<
     }
     /**/
     public void destroy(AppContext appContext) {
-        Filter filter = this.getTarget(appContext);
-        if (filter == null)
+        if (this.filterInstance == null)
             return;
-        filter.destroy();
+        this.filterInstance.destroy();
     }
 }

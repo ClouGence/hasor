@@ -40,4 +40,6 @@ public interface AppContext extends BeanContext {
     public Injector getGuice();
     /**获得工作空间设置*/
     public WorkSpace getWorkSpace();
+    /**获取环境变量操作接口。*/
+    public Environment getEnvironment();
 }

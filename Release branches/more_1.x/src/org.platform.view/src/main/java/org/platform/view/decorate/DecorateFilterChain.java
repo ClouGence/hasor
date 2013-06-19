@@ -13,23 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.binder;
+package org.platform.view.decorate;
 import java.io.IOException;
-import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.platform.context.AppContext;
 /**
- * 使用ApiBinder创建的Servlet,Filter组成的管道。
- * @version : 2013-4-11
+ * 
+ * @version : 2013-6-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface FilterPipeline {
-    /**初始化管道 */
-    public void initPipeline(AppContext appContext) throws ServletException;
-    /**执行请求操作*/
-    public void dispatch(HttpServletRequest request, HttpServletResponse response, FilterChain defaultFilterChain) throws IOException, ServletException;
-    /**销毁管道*/
-    public void destroyPipeline(AppContext appContext);
+public interface DecorateFilterChain {
+    public void doDecorate(DecorateServletRequest request, DecorateServletResponse response) throws IOException, ServletException;
 }

@@ -2,17 +2,16 @@
 <config xmlns="http://project.byshell.org/more/schema/global">
 	<!-- 页面装饰器配置 -->
 	<pageDecorate enable="false">
-		<!-- 装饰解析器的配置 -->
-		<processorDefine>
-
-		</processorDefine>
+		<processor name="default" creator="org.platform.view.decorate.parser.FreemarkerHtmlParser">
+			<property key="templatePath">{MORE_WEB_HOME}/template.htm</property>
+		</processor>
 		<!-- 缺省的装饰器 -->
 		<!-- name：装饰名，templatePath：装饰模板 -->
-		<decorator name="default" templatePath="decDefault.jsp" refParser="">
+		<decorator name="default" contentType="text/html" refParser="default">
 			<pattern>/*</pattern>
 			<pattern>/*</pattern>
 		</decorator>
-		<decorator name="dec1" templatePath="decDefault.jsp" refParser="">
+		<decorator name="dec1" contentType="text/html" refParser="">
 			<pattern>/*</pattern>
 			<pattern>/*</pattern>
 		</decorator>
@@ -22,7 +21,7 @@
 		<!-- freemarker模板后缀名逗号间隔多个. -->
 		<suffixSet>*.ftl,*.html</suffixSet>
 		<!-- 模板解析的内容响应到客户端的类型 -->
-		<out-mime-type>text/html</out-mime-type>
+		<contentType>text/html</contentType>
 		<!-- Configuration对象创建工厂 -->
 		<configurationFactory>org.platform.view.freemarker.support.DefaultFreemarkerFactory</configurationFactory>
 		<!-- 模板装载器（配置不支持动态更新） -->
@@ -33,9 +32,10 @@
 			<!-- <templateBody key="" type="Resource|File|String(default)|URL">ssss</templateBody> -->
 			<!-- </PredefineLoader> -->
 			<!-- -->
+			<!-- 工作目录中的webapp文件夹 -->
 			<PathLoader>{MORE_WORK_HOME}/webapp</PathLoader>
 			<!-- Web网站根 -->
-			<WebContentLoader>/</WebContentLoader>
+			<PathLoader>{MORE_WEB_ROOT}/</PathLoader>
 			<!-- classPath路径下指定的位置 -->
 			<ClassPathLoader>/META-INF/webapp</ClassPathLoader>
 		</templateLoader>

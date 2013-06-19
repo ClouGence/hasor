@@ -16,9 +16,6 @@
 package org.platform.view.freemarker.loader.creator;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.more.global.assembler.xml.XmlProperty;
 import org.more.util.StringUtils;
 import org.platform.Platform;
@@ -40,7 +37,7 @@ public class PathTemplateLoaderCreator implements FmTemplateLoaderCreator {
     public FmTemplateLoader newTemplateLoader(AppContext appContext, XmlProperty xmlConfig) throws IOException {
         String body = xmlConfig.getText();
         body = StringUtils.isBlank(body) ? "" : body;
-        body = this.getPath(body);
+        body = appContext.getEnvironment().evalString(body);
         File fileBody = new File(body);
         if (fileBody.exists() == false)
             if (fileBody.mkdirs() == false)
@@ -48,25 +45,5 @@ public class PathTemplateLoaderCreator implements FmTemplateLoaderCreator {
         Platform.info("loadPath %s -> %s", xmlConfig.getText(), fileBody);
         DirTemplateLoader dirTemplateLoader = new DirTemplateLoader(fileBody);
         return dirTemplateLoader;
-    }
-    private String getPath(String stringBody) {
-        Pattern keyPattern = Pattern.compile("(?:\\{(\\w+)\\}){1,1}");//  (?:\{(\w+)\})
-        Matcher keyM = keyPattern.matcher(stringBody);
-        ArrayList<String> data = new ArrayList<String>();
-        while (keyM.find()) {
-            String varKey = keyM.group(1);
-            String var = System.getProperty(varKey);
-            var = StringUtils.isBlank(var) ? System.getenv(varKey) : var;
-            var = var == null ? "" : var;
-            data.add(new String(var));
-        }
-        String[] splitArr = keyPattern.split(stringBody);
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < splitArr.length; i++) {
-            sb.append(splitArr[i]);
-            if (data.size() > i)
-                sb.append(data.get(i));
-        }
-        return sb.toString().replace("/", File.separator);
     }
 }

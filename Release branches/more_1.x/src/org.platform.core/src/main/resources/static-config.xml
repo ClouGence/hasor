@@ -7,7 +7,7 @@
 		<!-- 启用general软件包功能支持 -->
 		<generalSupport>true</generalSupport>
 	</framework>
-	<!-- 工作空间设置 -->
+	<!-- 工作空间设置,配置的路径不进行环境变量配置解析 -->
 	<workspace>
 		<!-- 程序工作空间基础目录（绝对地址） -->
 		<workDir>.</workDir>

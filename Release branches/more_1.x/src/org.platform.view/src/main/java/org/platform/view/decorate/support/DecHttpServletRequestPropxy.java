@@ -14,29 +14,16 @@
  * limitations under the License.
  */
 package org.platform.view.decorate.support;
-import java.io.IOException;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+import org.platform.view.decorate.DecorateServletRequest;
 /**
  * 
  * @version : 2013-6-9
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class ResponsePropxyFilter implements Filter {
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        // TODO Auto-generated method stub 
-    }
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        chain.doFilter(request, new ResponsePropxy(response));
-    }
-    @Override
-    public void destroy() {
-        // TODO Auto-generated method stub
+class DecHttpServletRequestPropxy extends HttpServletRequestWrapper implements DecorateServletRequest {
+    public DecHttpServletRequestPropxy(HttpServletRequest request) {
+        super(request);
     }
 }

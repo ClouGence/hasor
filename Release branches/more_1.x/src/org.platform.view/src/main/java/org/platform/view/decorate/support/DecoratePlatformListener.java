@@ -27,7 +27,10 @@ import org.platform.context.startup.PlatformExt;
 public class DecoratePlatformListener implements PlatformListener {
     @Override
     public void initialize(ApiBinder binder) {
-        binder.filter("*").through(ResponsePropxyFilter.class);
+        binder.filter("*").through(ManagedDecorateFilter.class);
+        
+        
+        
     }
     @Override
     public void initialized(AppContext appContext) {
