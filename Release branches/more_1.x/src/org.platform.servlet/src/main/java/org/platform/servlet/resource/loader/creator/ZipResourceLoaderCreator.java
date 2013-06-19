@@ -25,14 +25,14 @@ import org.platform.Platform;
 import org.platform.context.AppContext;
 import org.platform.servlet.resource.ResourceLoaderCreator;
 import org.platform.servlet.resource.ResourceLoader;
-import org.platform.servlet.resource.LoaderCreator;
+import org.platform.servlet.resource.ResourceLoaderDefine;
 import org.platform.servlet.resource.loader.ZipResourceLoader;
 /**
  * 用于创建一个可以从zip中获取资源的ResourceLoader。
  * @version : 2013-6-6
  * @author 赵永春 (zyc@byshell.org)
  */
-@LoaderCreator(configElement = "ZipLoader")
+@ResourceLoaderDefine(configElement = "ZipLoader")
 public class ZipResourceLoaderCreator implements ResourceLoaderCreator {
     @Override
     public ResourceLoader newInstance(AppContext appContext, XmlProperty xmlConfig) throws IOException {

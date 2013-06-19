@@ -15,14 +15,14 @@
  */
 package org.platform.icache.key;
 import org.platform.icache.DefaultKeyBuilder;
-import org.platform.icache.KeyBuilder;
+import org.platform.icache.KeyBuilderDefine;
 /**
  * 默认实现
  * @version : 2013-4-21
  * @author 赵永春 (zyc@byshell.org)
  */
 @DefaultKeyBuilder()
-@KeyBuilder(value = Object.class)
+@KeyBuilderDefine(value = Object.class)
 public class ObjectKeyBuilder extends AbstractKeyBuilder {
     /**获取参数的序列化标识码。*/
     public String serializeKey(Object arg) {

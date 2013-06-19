@@ -23,8 +23,8 @@ import com.google.inject.Provider;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class ResourceLoaderCreatorDefinition implements Provider<ResourceLoaderCreator> {
-    private String                        name                = null;
-    private AppContext                    appContext          = null;
+    private String                       name                = null;
+    private AppContext                   appContext          = null;
     private Class<ResourceLoaderCreator> loaderCreatorType   = null;
     private ResourceLoaderCreator        loaderCreatorObject = null;
     //

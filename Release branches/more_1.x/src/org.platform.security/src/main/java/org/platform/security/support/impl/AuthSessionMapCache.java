@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.platform.security.support.impl;
-import org.platform.icache.Cache;
+import org.platform.icache.CacheDefine;
 import org.platform.icache.mapcache.MapCache;
 import org.platform.icache.mapcache.MapCacheSettings;
 /**
@@ -22,7 +22,7 @@ import org.platform.icache.mapcache.MapCacheSettings;
  * @version : 2013-4-20
  * @author 赵永春 (zyc@byshell.org)
  */
-@Cache(value = "AuthSessionCache", displayName = "AuthSessionMapCache", description = "内置的AuthSession数据缓存。")
+@CacheDefine(value = "AuthSessionCache", displayName = "AuthSessionMapCache", description = "内置的AuthSession数据缓存。")
 public class AuthSessionMapCache<T> extends MapCache<T> {
     @Override
     protected MapCacheSettings getMapCacheSettings() {

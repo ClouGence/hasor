@@ -21,7 +21,7 @@ import org.platform.context.SettingListener;
 import org.platform.context.Settings;
 import org.platform.event.EventManager;
 import org.platform.icache.CacheManager;
-import org.platform.icache.CacheFace;
+import org.platform.icache.Cache;
 import org.platform.security.support.AbstractSecurityContext;
 import org.platform.security.support.SessionData;
 import com.google.inject.Singleton;
@@ -32,9 +32,9 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class InternalSecurityContext extends AbstractSecurityContext {
-    private CacheFace<SessionData> authSessionCache = null;
-    private SettingListener     settingListener  = new SessionDataCacheSettingListener();
-    private long                sessionTimeOut   = 0;
+    private Cache<SessionData> authSessionCache = null;
+    private SettingListener    settingListener  = new SessionDataCacheSettingListener();
+    private long               sessionTimeOut   = 0;
     //
     //
     @Override

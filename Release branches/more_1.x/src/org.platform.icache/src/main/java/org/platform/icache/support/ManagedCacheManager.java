@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.platform.Platform;
 import org.platform.context.AppContext;
-import org.platform.icache.CacheFace;
+import org.platform.icache.Cache;
 import com.google.inject.Binding;
 import com.google.inject.Injector;
 import com.google.inject.TypeLiteral;
@@ -53,10 +53,10 @@ class ManagedCacheManager {
             cacheDefinitionEnt.getValue().destroy(appContext);
         }
     }
-    public <T> CacheFace<T> getCache(String cacheName, AppContext appContext) {
+    public <T> Cache<T> getCache(String cacheName, AppContext appContext) {
         CacheDefinition define = this.cacheDefinitionMap.get(cacheName);
         if (define == null)
             return null;
-        return (CacheFace<T>) define.get();
+        return (Cache<T>) define.get();
     }
 }

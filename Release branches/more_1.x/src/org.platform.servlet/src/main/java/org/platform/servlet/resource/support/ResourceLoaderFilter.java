@@ -35,8 +35,8 @@ import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.context.AppContext;
-import org.platform.servlet.resource.ResourceLoaderCreator;
 import org.platform.servlet.resource.ResourceLoader;
+import org.platform.servlet.resource.ResourceLoaderCreator;
 import org.platform.servlet.resource.support.ResourceSettings.LoaderConfig;
 import org.platform.servlet.resource.util.MimeType;
 import com.google.inject.Binding;
@@ -161,7 +161,7 @@ public class ResourceLoaderFilter implements Filter {
             requestURI = URLDecoder.decode(requestURI, "utf-8");
         } catch (Exception e) {}
         boolean hit = false;
-        for (String s : this.settings.getTypes()) {
+        for (String s : this.settings.getContentTypes()) {
             if (requestURI.endsWith("." + s) == true) {
                 hit = true;
                 break;

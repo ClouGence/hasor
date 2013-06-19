@@ -30,10 +30,10 @@ public class ResourceSettings implements SettingListener {
         public String      loaderType = null;
         public XmlProperty config     = null;
     }
-    private boolean        enable   = false;
-    private String[]       types    = null;
-    private LoaderConfig[] loaders  = null;
-    private String         cacheDir = null;
+    private boolean        enable       = false;
+    private String[]       contentTypes = null;
+    private LoaderConfig[] loaders      = null;
+    private String         cacheDir     = null;
     //
     public boolean isEnable() {
         return enable;
@@ -41,11 +41,11 @@ public class ResourceSettings implements SettingListener {
     public void setEnable(boolean enable) {
         this.enable = enable;
     }
-    public String[] getTypes() {
-        return types.clone();
+    public String[] getContentTypes() {
+        return contentTypes.clone();
     }
-    public void setTypes(String[] types) {
-        this.types = types;
+    public void setContentTypes(String[] contentTypes) {
+        this.contentTypes = contentTypes;
     }
     public LoaderConfig[] getLoaders() {
         return loaders.clone();
@@ -62,7 +62,7 @@ public class ResourceSettings implements SettingListener {
     @Override
     public void loadConfig(Settings newConfig) {
         this.enable = newConfig.getBoolean("httpServlet.resourceLoader.enable");
-        String typesRoot = newConfig.getString("httpServlet.resourceLoader.types");
+        String typesRoot = newConfig.getString("httpServlet.resourceLoader.contentTypes");
         typesRoot = typesRoot == null ? "" : typesRoot;
         //1.∂¡»°types≈‰÷√
         HashSet<String> typesArray = new HashSet<String>();
@@ -71,7 +71,7 @@ public class ResourceSettings implements SettingListener {
                 continue;
             typesArray.add(type.trim());
         }
-        this.types = typesArray.toArray(new String[typesArray.size()]);
+        this.contentTypes = typesArray.toArray(new String[typesArray.size()]);
         //2.∂¡»°loader≈‰÷√
         XmlProperty loaderRoot = newConfig.getXmlProperty("httpServlet.resourceLoader");
         ArrayList<LoaderConfig> loaderArray = new ArrayList<LoaderConfig>();

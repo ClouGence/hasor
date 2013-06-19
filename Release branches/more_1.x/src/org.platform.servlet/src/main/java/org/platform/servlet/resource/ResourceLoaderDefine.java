@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.servlet.action;
+package org.platform.servlet.resource;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * 
- * @version : 2013-6-14
+ * 定义一个{@link ResourceLoader}映射类型。
+ * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
-public @interface MimeType {
-    /**响应结果的MimeType类型。*/
-    public String value();
+@Target({ ElementType.TYPE })
+public @interface ResourceLoaderDefine {
+    /**表示配置在配置文件中的元素名称。*/
+    public String configElement();
 }

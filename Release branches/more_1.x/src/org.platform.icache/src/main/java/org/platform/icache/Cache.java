@@ -14,24 +14,29 @@
  * limitations under the License.
  */
 package org.platform.icache;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.platform.context.AppContext;
 /**
- * 声明一个缓存服务提供者，标记了该接口的类必须要求实现{@link CacheFace}接口。
- * @version : 2013-3-12
+ * 缓存使用入口，缓存的默认使用HashMap作为实现。
+ * @version : 2013-4-20
  * @author 赵永春 (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface Cache {
-    /**对服务的描述信息。*/
-    public String description() default "";
-    /**在管理控制台显示服务时使用displayName属性。*/
-    public String displayName() default "";
-    /**缓存名称，同名注册会被覆盖。*/
-    public String[] value();
-    /**排序顺序（越小越优先）*/
-    public int sort() default Integer.MAX_VALUE;
+public interface Cache<T> {
+    /**初始化Cache*/
+    public void initCache(AppContext appContext);
+    /**销毁Cache*/
+    public void destroy(AppContext appContext);
+    /**将一个对象放入缓存。*/
+    public boolean toCache(String key, T value);
+    /**将一个对象放入缓存。*/
+    public boolean toCache(String key, T value, long timeout);
+    /**根据key从缓存中获取缓存对象。*/
+    public T fromCache(String key);
+    /**判断缓存中是否有要求的对象。*/
+    public boolean hasCache(String key);
+    /**删除某个缓存的内容*/
+    public boolean remove(String key);
+    /**刷新指定key的缓存时间*/
+    public boolean refreshCache(String key);
+    /**清空缓存*/
+    public boolean clear();
 }

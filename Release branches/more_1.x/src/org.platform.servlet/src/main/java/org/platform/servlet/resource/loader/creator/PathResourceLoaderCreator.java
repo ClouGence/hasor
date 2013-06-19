@@ -23,7 +23,7 @@ import org.more.global.assembler.xml.XmlProperty;
 import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.context.AppContext;
-import org.platform.servlet.resource.LoaderCreator;
+import org.platform.servlet.resource.ResourceLoaderDefine;
 import org.platform.servlet.resource.ResourceLoader;
 import org.platform.servlet.resource.ResourceLoaderCreator;
 import org.platform.servlet.resource.loader.PathResourceLoader;
@@ -32,7 +32,7 @@ import org.platform.servlet.resource.loader.PathResourceLoader;
  * @version : 2013-6-6
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@LoaderCreator(configElement = "PathLoader")
+@ResourceLoaderDefine(configElement = "PathLoader")
 public class PathResourceLoaderCreator implements ResourceLoaderCreator {
     @Override
     public ResourceLoader newInstance(AppContext appContext, XmlProperty xmlConfig) throws IOException {

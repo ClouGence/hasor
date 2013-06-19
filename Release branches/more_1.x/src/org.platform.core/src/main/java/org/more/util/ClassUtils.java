@@ -16,10 +16,10 @@
 package org.more.util;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 import org.more.util.ResourcesUtils.ScanEvent;
 import org.more.util.ResourcesUtils.ScanItem;
 /**
@@ -29,7 +29,7 @@ import org.more.util.ResourcesUtils.ScanItem;
  */
 public abstract class ClassUtils {
     private String[]                     scanPackages = null;
-    private Map<Class<?>, Set<Class<?>>> cacheMap     = new HashMap<Class<?>, Set<Class<?>>>();
+    private Map<Class<?>, Set<Class<?>>> cacheMap     = new WeakHashMap<Class<?>, Set<Class<?>>>();
     private ClassUtils(String[] scanPackages) {
         this.scanPackages = scanPackages;
     };

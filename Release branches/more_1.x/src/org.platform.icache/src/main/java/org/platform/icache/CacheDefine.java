@@ -14,17 +14,24 @@
  * limitations under the License.
  */
 package org.platform.icache;
-import org.platform.context.AppContext;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * cache在执行方法缓存时Key的生成器。
- * @version : 2013-4-21
+ * 声明一个缓存服务提供者，标记了该接口的类必须要求实现{@link Cache}接口。
+ * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface KeyBuilder {
-    /**初始化IKeyBuilder*/
-    public void initKeyBuilder(AppContext appContext);
-    /**销毁*/
-    public void destroy(AppContext appContext);
-    /**获取参数的序列化标识码，调用的参数不会为空。*/
-    public String serializeKey(Object arg);
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface CacheDefine {
+    /**对服务的描述信息。*/
+    public String description() default "";
+    /**在管理控制台显示服务时使用displayName属性。*/
+    public String displayName() default "";
+    /**缓存名称，同名注册会被覆盖。*/
+    public String[] value();
+    /**排序顺序（越小越优先）*/
+    public int sort() default Integer.MAX_VALUE;
 }

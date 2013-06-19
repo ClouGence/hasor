@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.icache;
-import org.platform.context.AppContext;
+package org.platform.servlet.action;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * cache在执行方法缓存时Key的生成器。
- * @version : 2013-4-21
+ * 
+ * @version : 2013-6-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface KeyBuilderFace {
-    /**初始化IKeyBuilder*/
-    public void initKeyBuilder(AppContext appContext);
-    /**销毁*/
-    public void destroy(AppContext appContext);
-    /**获取参数的序列化标识码，调用的参数不会为空。*/
-    public String serializeKey(Object arg);
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE, ElementType.METHOD })
+public @interface Produces {
+    /**响应结果的MimeType类型。*/
+    public String value();
 }

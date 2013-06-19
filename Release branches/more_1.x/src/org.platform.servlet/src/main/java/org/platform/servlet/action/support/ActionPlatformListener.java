@@ -29,7 +29,7 @@ import org.platform.servlet.action.ActionBinder.ActionBindingBuilder;
 import org.platform.servlet.action.ActionBinder.NameSpaceBindingBuilder;
 import org.platform.servlet.action.Controller;
 import org.platform.servlet.action.HttpMethod;
-import org.platform.servlet.action.MimeType;
+import org.platform.servlet.action.Produces;
 import org.platform.servlet.action.RestfulMapping;
 import org.platform.servlet.action.ResultDefine;
 import org.platform.servlet.action.ResultProcess;
@@ -90,9 +90,9 @@ public class ActionPlatformListener implements PlatformListener {
             for (String httpMethod : controllerAnno.httpMethod())
                 actionBinding = actionBinding.onHttpMethod(httpMethod);
             //3.
-            MimeType mt = method.getAnnotation(MimeType.class);
-            mt = (mt == null) ? controllerType.getAnnotation(MimeType.class) : mt;
-            String minmeType = (mt != null) ? mt.value() : this.settings.getDefaultMimeType();
+            Produces mt = method.getAnnotation(Produces.class);
+            mt = (mt == null) ? controllerType.getAnnotation(Produces.class) : mt;
+            String minmeType = (mt != null) ? mt.value() : this.settings.getDefaultProduces();
             if (!StringUtils.isBlank(minmeType))
                 actionBinding = actionBinding.returnMimeType(minmeType);
             //4.restful

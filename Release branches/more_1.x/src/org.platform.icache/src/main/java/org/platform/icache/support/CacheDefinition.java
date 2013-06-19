@@ -16,19 +16,19 @@
 package org.platform.icache.support;
 import org.platform.Platform;
 import org.platform.context.AppContext;
-import org.platform.icache.CacheFace;
+import org.platform.icache.Cache;
 import com.google.inject.Provider;
 /**
- * 声明一个Cache，该Cache需要实现{@link CacheFace}接口。
+ * 声明一个Cache，该Cache需要实现{@link Cache}接口。
  * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-class CacheDefinition implements Provider<CacheFace<?>> {
-    private String           name        = null;
-    private Class<CacheFace<?>> cacheType   = null;
-    private CacheFace<?>        cacheObject = null;
+class CacheDefinition implements Provider<Cache<?>> {
+    private String          name        = null;
+    private Class<Cache<?>> cacheType   = null;
+    private Cache<?>        cacheObject = null;
     //
-    public CacheDefinition(String name, Class<CacheFace<?>> cacheType) {
+    public CacheDefinition(String name, Class<Cache<?>> cacheType) {
         this.name = name;
         this.cacheType = cacheType;
     }
@@ -45,7 +45,7 @@ class CacheDefinition implements Provider<CacheFace<?>> {
             this.cacheObject.destroy(appContext);
     }
     @Override
-    public CacheFace<?> get() {
+    public Cache<?> get() {
         return this.cacheObject;
     }
 }

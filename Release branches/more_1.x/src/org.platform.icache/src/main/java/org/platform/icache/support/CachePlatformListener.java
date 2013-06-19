@@ -30,13 +30,13 @@ import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
 import org.platform.context.PlatformListener;
 import org.platform.context.startup.PlatformExt;
-import org.platform.icache.Cache;
+import org.platform.icache.CacheDefine;
 import org.platform.icache.CacheManager;
 import org.platform.icache.DefaultCache;
 import org.platform.icache.DefaultKeyBuilder;
-import org.platform.icache.CacheFace;
-import org.platform.icache.KeyBuilderFace;
+import org.platform.icache.Cache;
 import org.platform.icache.KeyBuilder;
+import org.platform.icache.KeyBuilderDefine;
 import org.platform.icache.NeedCache;
 import com.google.inject.Binder;
 import com.google.inject.Key;
@@ -84,22 +84,22 @@ public class CachePlatformListener implements PlatformListener {
     /*装载KeyBuilder*/
     protected void loadKeyBuilder(ApiBinder event) {
         //1.获取
-        Set<Class<?>> iKeyBuilderSet = event.getClassSet(KeyBuilder.class);
+        Set<Class<?>> iKeyBuilderSet = event.getClassSet(KeyBuilderDefine.class);
         if (iKeyBuilderSet == null)
             return;
-        List<Class<? extends KeyBuilderFace>> iKeyBuilderList = new ArrayList<Class<? extends KeyBuilderFace>>();
+        List<Class<? extends KeyBuilder>> iKeyBuilderList = new ArrayList<Class<? extends KeyBuilder>>();
         for (Class<?> cls : iKeyBuilderSet) {
-            if (KeyBuilderFace.class.isAssignableFrom(cls) == false) {
+            if (KeyBuilder.class.isAssignableFrom(cls) == false) {
                 Platform.warning("loadKeyBuilder : not implemented IKeyBuilder of type %s.", cls);
             } else
-                iKeyBuilderList.add((Class<? extends KeyBuilderFace>) cls);
+                iKeyBuilderList.add((Class<? extends KeyBuilder>) cls);
         }
         //2.排序
         Collections.sort(iKeyBuilderList, new Comparator<Class<?>>() {
             @Override
             public int compare(Class<?> o1, Class<?> o2) {
-                KeyBuilder o1Anno = o1.getAnnotation(KeyBuilder.class);
-                KeyBuilder o2Anno = o2.getAnnotation(KeyBuilder.class);
+                KeyBuilderDefine o1Anno = o1.getAnnotation(KeyBuilderDefine.class);
+                KeyBuilderDefine o2Anno = o2.getAnnotation(KeyBuilderDefine.class);
                 int o1AnnoIndex = o1Anno.sort();
                 int o2AnnoIndex = o2Anno.sort();
                 return (o1AnnoIndex < o2AnnoIndex ? -1 : (o1AnnoIndex == o2AnnoIndex ? 0 : 1));
@@ -108,9 +108,9 @@ public class CachePlatformListener implements PlatformListener {
         //3.注册服务
         long defaultKeyBuilderIndex = Long.MAX_VALUE;
         Binder binder = event.getGuiceBinder();
-        for (Class<? extends KeyBuilderFace> keyBuildertype : iKeyBuilderList) {
-            KeyBuilder keyBuilderAnno = keyBuildertype.getAnnotation(KeyBuilder.class);
-            Key<? extends KeyBuilderFace> keyBuilderKey = Key.get(keyBuildertype);
+        for (Class<? extends KeyBuilder> keyBuildertype : iKeyBuilderList) {
+            KeyBuilderDefine keyBuilderAnno = keyBuildertype.getAnnotation(KeyBuilderDefine.class);
+            Key<? extends KeyBuilder> keyBuilderKey = Key.get(keyBuildertype);
             KeyBuilderDefinition keyBuilderDefine = new KeyBuilderDefinition(keyBuilderAnno.value(), keyBuilderKey);
             binder.bind(KeyBuilderDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(keyBuilderDefine);
             Platform.info("KeyBuilder type:" + Platform.logString(keyBuildertype) + " mapping " + Platform.logString(keyBuilderAnno.value()));
@@ -120,7 +120,7 @@ public class CachePlatformListener implements PlatformListener {
                 DefaultKeyBuilder defaultKeyBuilder = keyBuildertype.getAnnotation(DefaultKeyBuilder.class);
                 if (defaultKeyBuilder.value() <= defaultKeyBuilderIndex/*数越小越优先*/) {
                     defaultKeyBuilderIndex = defaultKeyBuilder.value();
-                    binder.bind(KeyBuilderFace.class).toProvider(keyBuilderDefine);
+                    binder.bind(KeyBuilder.class).toProvider(keyBuilderDefine);
                 }
             }
         }
@@ -129,23 +129,23 @@ public class CachePlatformListener implements PlatformListener {
     /*装载Cache*/
     protected void loadCache(ApiBinder event) {
         //1.获取
-        Set<Class<?>> cacheSet = event.getClassSet(Cache.class);
+        Set<Class<?>> cacheSet = event.getClassSet(CacheDefine.class);
         if (cacheSet == null)
             return;
-        List<Class<CacheFace<?>>> cacheList = new ArrayList<Class<CacheFace<?>>>();
+        List<Class<Cache<?>>> cacheList = new ArrayList<Class<Cache<?>>>();
         if (cacheSet != null)
             for (Class<?> cls : cacheSet) {
-                if (CacheFace.class.isAssignableFrom(cls) == false) {
+                if (Cache.class.isAssignableFrom(cls) == false) {
                     Platform.warning("loadCache : not implemented ICache of type %s", cls);
                 } else
-                    cacheList.add((Class<CacheFace<?>>) cls);
+                    cacheList.add((Class<Cache<?>>) cls);
             }
         //3.注册服务
         long defaultCacheIndex = Long.MAX_VALUE;
         Binder binder = event.getGuiceBinder();
         Map<String, Integer> cacheIndex = new HashMap<String, Integer>();
-        for (Class<CacheFace<?>> cacheType : cacheList) {
-            Cache cacheAnno = cacheType.getAnnotation(Cache.class);
+        for (Class<Cache<?>> cacheType : cacheList) {
+            CacheDefine cacheAnno = cacheType.getAnnotation(CacheDefine.class);
             for (String cacheName : cacheAnno.value()) {
                 Platform.info(cacheName + " at Cache of type " + Platform.logString(cacheType));
                 //
@@ -155,14 +155,14 @@ public class CachePlatformListener implements PlatformListener {
                     //
                     CacheDefinition cacheDefine = new CacheDefinition(cacheName, cacheType);
                     binder.bind(CacheDefinition.class).annotatedWith(Names.named(cacheName)).toInstance(cacheDefine);
-                    binder.bind(CacheFace.class).annotatedWith(Names.named(cacheName)).toProvider(cacheDefine);
+                    binder.bind(Cache.class).annotatedWith(Names.named(cacheName)).toProvider(cacheDefine);
                     //确定是否为defaut
                     if (cacheType.isAnnotationPresent(DefaultCache.class) == true) {
                         Platform.warning(cacheName + " is DefaultCache!");
                         DefaultCache defaultCache = cacheType.getAnnotation(DefaultCache.class);
                         if (defaultCache.value() <= defaultCacheIndex/*数越小越优先*/) {
                             defaultCacheIndex = defaultCache.value();
-                            binder.bind(CacheFace.class).toProvider(cacheDefine);
+                            binder.bind(Cache.class).toProvider(cacheDefine);
                         }
                     }
                 }
@@ -233,13 +233,13 @@ public class CachePlatformListener implements PlatformListener {
                         continue;
                     }
                     /*保证arg参数不为空*/
-                    KeyBuilderFace keyBuilder = cacheManager.getKeyBuilder(arg.getClass());
+                    KeyBuilder keyBuilder = cacheManager.getKeyBuilder(arg.getClass());
                     cacheKey.append(keyBuilder.serializeKey(arg));
                 }
             Platform.debug("MethodInterceptor Method : %s", targetMethod);
             Platform.debug("MethodInterceptor Cache key :%s", cacheKey.toString());
             //3.获取缓存
-            CacheFace<Object> cacheObject = null;
+            Cache<Object> cacheObject = null;
             if (StringUtils.isBlank(cacheAnno.cacheName()) == true)
                 cacheObject = cacheManager.getDefaultCache();
             else

@@ -15,13 +15,13 @@
  */
 package org.platform.icache.key;
 import org.platform.context.AppContext;
-import org.platform.icache.KeyBuilderFace;
+import org.platform.icache.KeyBuilder;
 /**
  * 
  * @version : 2013-4-23
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-abstract class AbstractKeyBuilder implements KeyBuilderFace {
+abstract class AbstractKeyBuilder implements KeyBuilder {
     @Override
     public void initKeyBuilder(AppContext appContext) {}
     @Override

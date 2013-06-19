@@ -31,7 +31,7 @@ import org.platform.event.EventManager;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class DefaultEventManager implements EventManager, ManagerLife {
-    private ExecutorService              executorService  = null;
+    private ExecutorService         executorService  = null;
     private Map<String, Listener[]> eventListenerMap = new HashMap<String, Listener[]>();
     //
     @Override

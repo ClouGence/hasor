@@ -19,7 +19,7 @@ import org.more.global.assembler.xml.XmlProperty;
 import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.context.AppContext;
-import org.platform.servlet.resource.LoaderCreator;
+import org.platform.servlet.resource.ResourceLoaderDefine;
 import org.platform.servlet.resource.ResourceLoader;
 import org.platform.servlet.resource.ResourceLoaderCreator;
 import org.platform.servlet.resource.loader.ClassPathResourceLoader;
@@ -28,7 +28,7 @@ import org.platform.servlet.resource.loader.ClassPathResourceLoader;
  * @version : 2013-6-6
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@LoaderCreator(configElement = "ClasspathLoader")
+@ResourceLoaderDefine(configElement = "ClasspathLoader")
 public class ClassPathResourceLoaderCreator implements ResourceLoaderCreator {
     @Override
     public ResourceLoader newInstance(AppContext appContext, XmlProperty xmlConfig) throws IOException {

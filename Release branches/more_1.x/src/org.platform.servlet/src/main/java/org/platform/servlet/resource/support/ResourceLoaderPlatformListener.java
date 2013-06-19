@@ -23,7 +23,7 @@ import org.platform.context.AppContext;
 import org.platform.context.PlatformListener;
 import org.platform.context.startup.PlatformExt;
 import org.platform.servlet.resource.ResourceLoaderCreator;
-import org.platform.servlet.resource.LoaderCreator;
+import org.platform.servlet.resource.ResourceLoaderDefine;
 /**
  * 负责装载jar包中的资源。启动级别：Lv1
  * @version : 2013-4-8
@@ -45,7 +45,7 @@ public class ResourceLoaderPlatformListener implements PlatformListener {
     /**装载TemplateLoader*/
     protected void loadResourceLoader(ApiBinder event) {
         //1.获取
-        Set<Class<?>> resourceLoaderCreatorSet = event.getClassSet(LoaderCreator.class);
+        Set<Class<?>> resourceLoaderCreatorSet = event.getClassSet(ResourceLoaderDefine.class);
         if (resourceLoaderCreatorSet == null)
             return;
         List<Class<ResourceLoaderCreator>> resourceLoaderCreatorList = new ArrayList<Class<ResourceLoaderCreator>>();
@@ -59,7 +59,7 @@ public class ResourceLoaderPlatformListener implements PlatformListener {
         //3.注册服务
         ResourceBinderImplements loaderBinder = new ResourceBinderImplements();
         for (Class<ResourceLoaderCreator> creatorType : resourceLoaderCreatorList) {
-            LoaderCreator creatorAnno = creatorType.getAnnotation(LoaderCreator.class);
+            ResourceLoaderDefine creatorAnno = creatorType.getAnnotation(ResourceLoaderDefine.class);
             String defineName = creatorAnno.configElement();
             loaderBinder.bindLoaderCreator(defineName, creatorType);
             Platform.info("loadResourceLoader %s at %s.", defineName, creatorType);
