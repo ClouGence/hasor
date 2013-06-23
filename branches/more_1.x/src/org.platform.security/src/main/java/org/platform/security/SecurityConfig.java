@@ -78,6 +78,8 @@ public interface SecurityConfig {
     public static final String Security_ClientCookie_Encryption_EncodeType = "security.clientCookie.encryption.encodeType";
     /**cookie内容加密时使用的Key*/
     public static final String Security_ClientCookie_Encryption_Key        = "security.clientCookie.encryption.key";
+    /**cookie加密范围（ALL,Security）*/
+    public static final String Security_ClientCookie_Encryption_Scope      = "security.clientCookie.encryption.scope";
     /**加密算法配置*/
     public static final String Security_EncryptionDigestSet                = "security.encryptionDigestSet";
 }

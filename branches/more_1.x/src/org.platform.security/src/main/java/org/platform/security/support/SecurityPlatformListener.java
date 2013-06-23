@@ -31,10 +31,8 @@ import org.platform.binder.ApiBinder;
 import org.platform.context.AppContext;
 import org.platform.context.PlatformListener;
 import org.platform.context.startup.PlatformExt;
+import org.platform.security.AuthRequestProcess;
 import org.platform.security.AuthSession;
-import org.platform.security.AutoLoginProcess;
-import org.platform.security.LoginProcess;
-import org.platform.security.LogoutProcess;
 import org.platform.security.PermissionException;
 import org.platform.security.Power;
 import org.platform.security.Power.Level;
@@ -44,12 +42,10 @@ import org.platform.security.SecurityAccess;
 import org.platform.security.SecurityAuth;
 import org.platform.security.SecurityContext;
 import org.platform.security.SecurityQuery;
-import org.platform.security.TestURLPermissionProcess;
+import org.platform.security.TestPermissionProcess;
 import org.platform.security.support.impl.InternalSecurityContext;
-import org.platform.security.support.process.DefaultAutoLoginProcess;
-import org.platform.security.support.process.DefaultLoginProcess;
-import org.platform.security.support.process.DefaultLogoutProcess;
-import org.platform.security.support.process.DefaultTestURLPermissionProcess;
+import org.platform.security.support.process.DefaultAuthRequestProcess;
+import org.platform.security.support.process.DefaultTestPermissionProcess;
 import com.google.inject.Binder;
 import com.google.inject.Key;
 import com.google.inject.internal.UniqueAnnotations;
@@ -84,10 +80,8 @@ public class SecurityPlatformListener implements PlatformListener {
         binder.bind(SecurityContext.class).to(InternalSecurityContext.class).asEagerSingleton();
         binder.bind(SecurityQuery.class).to(DefaultSecurityQuery.class);
         /**/
-        binder.bind(LoginProcess.class).to(DefaultLoginProcess.class);/*登入过程*/
-        binder.bind(LogoutProcess.class).to(DefaultLogoutProcess.class);/*登出过程*/
-        binder.bind(TestURLPermissionProcess.class).to(DefaultTestURLPermissionProcess.class);/*URL权限检测过程*/
-        binder.bind(AutoLoginProcess.class).to(DefaultAutoLoginProcess.class);/*处理自动登陆的处理过程*/
+        binder.bind(AuthRequestProcess.class).to(DefaultAuthRequestProcess.class);/*登入过程*/
+        binder.bind(TestPermissionProcess.class).to(DefaultTestPermissionProcess.class);/*URL权限检测过程*/
         //
         event.filter("*").through(SecurityFilter.class);
     }

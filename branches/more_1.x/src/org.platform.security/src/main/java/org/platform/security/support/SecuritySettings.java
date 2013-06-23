@@ -22,6 +22,7 @@ import static org.platform.security.SecurityConfig.Security_ClientCookie_Enable;
 import static org.platform.security.SecurityConfig.Security_ClientCookie_Encryption_Enable;
 import static org.platform.security.SecurityConfig.Security_ClientCookie_Encryption_EncodeType;
 import static org.platform.security.SecurityConfig.Security_ClientCookie_Encryption_Key;
+import static org.platform.security.SecurityConfig.Security_ClientCookie_Encryption_Scope;
 import static org.platform.security.SecurityConfig.Security_ClientCookie_LoseCookieOnStart;
 import static org.platform.security.SecurityConfig.Security_ClientCookie_Path;
 import static org.platform.security.SecurityConfig.Security_ClientCookie_Timeout;
@@ -97,6 +98,7 @@ public class SecuritySettings implements SettingListener {
     private boolean                    cookieEncryptionEnable;        //Security_ClientCookie_Encryption_Enable     :是否加密cookie内容
     private String                     cookieEncryptionEncodeType;    //Security_ClientCookie_Encryption_EncodeType :cookie内容加密方式，DES,BAS64等等.
     private String                     cookieEncryptionKey;           //Security_ClientCookie_Encryption_Key        :cookie内容加密时使用的Key
+    private String                     cookieEncryptionScope;         //Security_ClientCookie_Encryption_Scope      :cookie加密范围（ALL,Security）
     private Map<String, Class<Digest>> digestMap;                     //Security_EncryptionDigestSet                :加密算法配置
     //
     //
@@ -154,6 +156,7 @@ public class SecuritySettings implements SettingListener {
         this.cookieEncryptionEnable = newConfig.getBoolean(Security_ClientCookie_Encryption_Enable); //是否加密cookie内容
         this.cookieEncryptionEncodeType = newConfig.getString(Security_ClientCookie_Encryption_EncodeType); //cookie内容加密方式，DES,BAS64等等.
         this.cookieEncryptionKey = newConfig.getString(Security_ClientCookie_Encryption_Key); //cookie内容加密时使用的Key
+        this.cookieEncryptionScope = newConfig.getString(Security_ClientCookie_Encryption_Scope); //scope加密范围
         //
         XmlProperty encryptionDigestXml = newConfig.getXmlProperty(Security_EncryptionDigestSet); //加密算法配置
         this.digestMap = new HashMap<String, Class<Digest>>();
@@ -376,6 +379,9 @@ public class SecuritySettings implements SettingListener {
     }
     public String getCookieEncryptionKey() {
         return cookieEncryptionKey;
+    }
+    public String getCookieEncryptionScope() {
+        return cookieEncryptionScope;
     }
     public Map<String, Class<Digest>> getDigestMap() {
         return digestMap;

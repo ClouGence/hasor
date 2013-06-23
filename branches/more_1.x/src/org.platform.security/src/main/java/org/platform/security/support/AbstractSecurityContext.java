@@ -121,6 +121,10 @@ public abstract class AbstractSecurityContext implements SecurityContext {
         return appContext;
     };
     @Override
+    public SecuritySettings getSettings() {
+        return settings;
+    }
+    @Override
     public AuthSession getAuthSession(String authSessionID) throws SecurityException {
         SessionData sessionData = this.getSessionData(authSessionID);
         if (sessionData != null) {

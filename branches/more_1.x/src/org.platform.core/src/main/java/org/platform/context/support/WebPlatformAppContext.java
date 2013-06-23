@@ -28,7 +28,7 @@ import com.google.inject.Provider;
 public class WebPlatformAppContext extends PlatformAppContext {
     public WebPlatformAppContext(ServletContext context) {
         super(context);
-        System.setProperty("MORE_WEB_HOME", context.getRealPath("/"));
+        System.setProperty("MORE_WEB_ROOT", context.getRealPath("/"));
     }
     @Override
     public synchronized void start(Module... modules) {

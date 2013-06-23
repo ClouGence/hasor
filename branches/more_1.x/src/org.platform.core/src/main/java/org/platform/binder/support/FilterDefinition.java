@@ -50,10 +50,11 @@ class FilterDefinition extends AbstractServletModuleBinding implements Provider<
         return this;
     }
     protected Filter getTarget(final AppContext appContext) throws ServletException {
-        if (this.filterInstance == null)
-            this.filterInstance = appContext.getGuice().getInstance(this.filterKey);
+        if (this.filterInstance != null)
+            return this.filterInstance;
         //
         final Map<String, String> initParams = this.getInitParams();
+        this.filterInstance = appContext.getGuice().getInstance(this.filterKey);
         this.filterInstance.init(new FilterConfig() {
             public String getFilterName() {
                 return filterKey.toString();

@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 package org.platform.security;
+import java.io.IOException;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 /**
- * 
- * @version : 2013-4-25
+ * 登入登出处理接口
+ * @version : 2013-5-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AutoLoginProcess {
-    /**写入会话数据。*/
-    public void writeCookie(SecurityContext secContext, AuthSession[] authSessions, HttpServletRequest request, HttpServletResponse response) throws SecurityException;
-    /**恢复权限*/
-    public AuthSession[] recoverCookie(SecurityContext secContext, HttpServletRequest request, HttpServletResponse response) throws SecurityException;
+public interface AuthRequestProcess {
+    /**登入*/
+    public SecurityForward processLogin(SecurityContext secContext, HttpServletRequest request, HttpServletResponse response) throws SecurityException, ServletException, IOException;
+    /**登出*/
+    public SecurityForward processLogout(SecurityContext secContext, HttpServletRequest request, HttpServletResponse response) throws SecurityException, ServletException, IOException;
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.security.support.process;
+package org.platform.security.support;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.platform.security.support.process;
+package org.platform.security.support;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,57 +21,21 @@ import javax.servlet.http.HttpSession;
 import org.more.util.StringUtils;
 import org.platform.Platform;
 import org.platform.security.AuthSession;
-import org.platform.security.AutoLoginProcess;
-import org.platform.security.Digest;
 import org.platform.security.SecurityContext;
 import org.platform.security.SecurityException;
-import org.platform.security.support.process.CookieDataUtil.CookieUserData;
+import org.platform.security.support.CookieDataUtil.CookieUserData;
+import com.google.inject.Inject;
 /**
- * {@link AutoLoginProcess}接口默认实现。
+ * 
  * @version : 2013-4-25
  * @author 赵永春 (zyc@byshell.org)
  */
-public class DefaultAutoLoginProcess extends AbstractProcess implements AutoLoginProcess {
-    /**写入会话数据。*/
-    /**写入会话数据。*/
-    public void writeCookie(SecurityContext secContext, AuthSession[] authSessions, HttpServletRequest request, HttpServletResponse response) throws SecurityException {
-        //
-        if (this.settings.isCookieEncryptionEnable() == false)
-            return;
-        //2.写入Cookie对象
-        CookieDataUtil cookieData = CookieDataUtil.create();
-        if (authSessions != null)
-            for (AuthSession authSession : authSessions) {
-                if (authSession.isLogin() == false)
-                    continue;
-                CookieUserData cookieUserData = new CookieUserData();
-                cookieUserData.setUserCode(authSession.getUserObject().getUserCode());//用户Code
-                cookieUserData.setAuthSystem(authSession.getAuthSystem());//用户来源
-                cookieUserData.setAppStartTime(secContext.getAppContext().getAppStartTime());
-                cookieData.addCookieUserData(cookieUserData);
-            }
-        //2.创建Cookie
-        String cookieValue = CookieDataUtil.parseString(cookieData);
-        if (this.settings.isCookieEncryptionEnable() == true) {
-            Digest digest = secContext.getCodeDigest(this.settings.getCookieEncryptionEncodeType());
-            try {
-                cookieValue = digest.encrypt(cookieValue, this.settings.getCookieEncryptionKey());
-            } catch (Throwable e) {
-                Platform.warning("%s encode cookieValue error. cookieValue=%s", this.settings.getCookieEncryptionEncodeType(), cookieValue);
-                return;
-            }
-        }
-        Cookie cookie = new Cookie(this.settings.getCookieName(), cookieValue);
-        cookie.setMaxAge(this.settings.getCookieTimeout());
-        String cookiePath = this.settings.getCookiePath();
-        String cookieDomain = this.settings.getCookieDomain();
-        if (StringUtils.isBlank(cookiePath) == false)
-            cookie.setPath(cookiePath);
-        if (StringUtils.isBlank(cookieDomain) == false)
-            cookie.setDomain(cookieDomain);
-        //3.写入响应流
-        response.addCookie(cookie);
-    }
+class InternalRecoverAuth4Cookie {
+    protected SecuritySettings settings = null;
+    @Inject
+    public InternalRecoverAuth4Cookie(SecuritySettings settings) {
+        this.settings = settings;
+    };
     /**恢复权限*/
     public AuthSession[] recoverCookie(SecurityContext secContext, HttpServletRequest request, HttpServletResponse response) throws SecurityException {
         //1.恢复会话
@@ -124,15 +88,6 @@ public class DefaultAutoLoginProcess extends AbstractProcess implements AutoLogi
             if (cookie.getName().endsWith(this.settings.getCookieName()) == false)
                 continue;
             cookieValue = cookie.getValue();
-            if (this.settings.isCookieEncryptionEnable() == true) {
-                Digest digest = secContext.getCodeDigest(this.settings.getCookieEncryptionEncodeType());
-                try {
-                    cookieValue = digest.decrypt(cookieValue, this.settings.getCookieEncryptionKey());
-                } catch (Throwable e) {
-                    Platform.warning("%s decode cookieValue error. cookieValue=%s", this.settings.getCookieEncryptionEncodeType(), cookieValue);
-                    return false;/*解密失败意味着后面的恢复操作都不会用到有效数据因此return.*/
-                }
-            }
             break;
         }
         //3.读取cookie内容恢复权限会话

@@ -16,12 +16,14 @@
 package org.platform.security;
 import javax.servlet.ServletException;
 import org.platform.context.AppContext;
+import org.platform.security.support.SecuritySettings;
 /**
  * 
  * @version : 2013-5-10
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface SecurityContext {
+    public SecuritySettings getSettings();
     /**将参数表示的会话激活到当前线程。*/
     public boolean activateAuthSession(AuthSession activateAuthSession) throws SecurityException;
     /**将参数表示的会话激活到当前线程。*/

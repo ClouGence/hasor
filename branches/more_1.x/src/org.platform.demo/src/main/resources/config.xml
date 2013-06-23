@@ -9,7 +9,7 @@
 	<httpServlet>
 		<!-- 资源装载器,（配置不支持动态更新） -->
 		<resourceLoader>
-			<zipLoader>{MORE_WEB_HOME}/pic.zip</zipLoader>
+			<zipLoader>{MORE_WEB_ROOT}/pic.zip</zipLoader>
 			<pathLoader>{MORE_WORK_HOME}/webresource</pathLoader>
 			<classpathLoader>/META-INF/</classpathLoader>
 		</resourceLoader>

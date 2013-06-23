@@ -21,6 +21,6 @@ import javax.servlet.http.HttpServletResponse;
  * @version : 2013-5-8
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public interface TestURLPermissionProcess {
+public interface TestPermissionProcess {
     public boolean testURL(SecurityContext secContext, AuthSession[] authSessions, HttpServletRequest request, HttpServletResponse response);
 }

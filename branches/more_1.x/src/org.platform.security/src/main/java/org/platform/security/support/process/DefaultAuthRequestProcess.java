@@ -20,17 +20,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.platform.Platform;
 import org.platform.security.AuthSession;
-import org.platform.security.LoginProcess;
+import org.platform.security.AuthRequestProcess;
 import org.platform.security.SecurityContext;
 import org.platform.security.SecurityDispatcher;
 import org.platform.security.SecurityException;
 import org.platform.security.SecurityForward;
 /**
- * {@link LoginProcess}接口默认实现。
+ * {@link AuthRequestProcess}接口默认实现。
  * @version : 2013-5-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public class DefaultLoginProcess extends AbstractProcess implements LoginProcess {
+public class DefaultAuthRequestProcess extends AbstractProcess implements AuthRequestProcess {
     /**处理登入请求。*/
     @Override
     public SecurityForward processLogin(SecurityContext secContext, HttpServletRequest request, HttpServletResponse response) throws SecurityException, ServletException, IOException {
@@ -53,5 +53,27 @@ public class DefaultLoginProcess extends AbstractProcess implements LoginProcess
             authSession.close();
             return dispatcher.forwardFailure(e);
         }
+    }
+    /**处理登出请求*/
+    @Override
+    public SecurityForward processLogout(SecurityContext secContext, HttpServletRequest request, HttpServletResponse response) throws SecurityException, ServletException, IOException {
+        String reqPath = request.getRequestURI().substring(request.getContextPath().length());
+        SecurityDispatcher dispatcher = secContext.getDispatcher(reqPath);
+        AuthSession[] authSessions = secContext.getCurrentAuthSession();
+        for (AuthSession authSession : authSessions) {
+            /*将所有已登入的会话全部登出*/
+            if (authSession.isLogin() == false)
+                continue;
+            String userCode = authSession.getUserObject().getUserCode();
+            try {
+                authSession.doLogout();/*退出会话*/
+                Platform.info("logout OK. userCode=%s , at SessionID= %s", userCode, authSession.getSessionID());
+                return dispatcher.forwardLogout();
+            } catch (SecurityException e) {
+                Platform.info("logout failure! userCode=%s , at SessionID= %s", userCode, authSession.getSessionID());
+                return dispatcher.forwardFailure(e);
+            }
+        }
+        return dispatcher.forwardLogout();
     }
 }

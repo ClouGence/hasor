@@ -18,14 +18,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.platform.security.AuthSession;
 import org.platform.security.SecurityContext;
-import org.platform.security.TestURLPermissionProcess;
+import org.platform.security.TestPermissionProcess;
 import org.platform.security.UriPatternMatcher;
 /**
- * {@link TestURLPermissionProcess}接口默认实现。
+ * {@link TestPermissionProcess}接口默认实现。
  * @version : 2013-5-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public class DefaultTestURLPermissionProcess extends AbstractProcess implements TestURLPermissionProcess {
+public class DefaultTestPermissionProcess extends AbstractProcess implements TestPermissionProcess {
     /**测试要处理的资源是否具有权限访问，如果权限检测失败会抛出PermissionException异常。*/
     @Override
     public boolean testURL(SecurityContext secContext, AuthSession[] authSessions, HttpServletRequest request, HttpServletResponse response) {

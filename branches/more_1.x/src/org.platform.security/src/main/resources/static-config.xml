@@ -22,13 +22,13 @@
 			<!-- cookie的Domain配置，设置这个属性用来支持跨域访问cookie。（默认为空不对该值进行设置） -->
 			<cookieDomain></cookieDomain>
 			<!-- cookie的path属性（默认为空不对该值进行设置） -->
-			<cookiePath>/</cookiePath>
+			<cookiePath></cookiePath>
 			<!-- 当系统启动时是否强制所有客户端已经登陆过的Cookie信息失效 -->
 			<loseCookieOnStart>false</loseCookieOnStart>
 			<!-- cookie超时时间，单位:秒，默认7天。 -->
 			<timeout>604800</timeout>
-			<!-- cookie内容加密方式和密钥 -->
-			<encryption enable="true" encodeType="None" key="!@#123qw" />
+			<!-- cookie内容加密方式和密钥（enable：是否启用加密，encodeType：加密算法，key：加密使用到的KEY，scope：加密范围[ALL:所有Cookie数据,Security:只加密权限数据]） -->
+			<encryption enable="true" encodeType="DES" key="!@#123qw" scope="Security" />
 		</clientCookie>
 		<!-- 加密算法配置 -->
 		<encryptionDigestSet>

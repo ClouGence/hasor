@@ -365,4 +365,22 @@ public abstract class StringUtils extends StringConvertUtils {
         String s2 = str2.toLowerCase();
         return s1.equals(s2);
     }
+    /**
+     * Ö´ÐÐ×Ö·û´®Æ¥Åä¡£
+     * <pre>
+     * StringUtils.eqUnCaseBlankSensitive(null,"")         = true
+     * StringUtils.eqUnCaseBlankSensitive("","")           = true
+     * StringUtils.eqUnCaseBlankSensitive(" ","")          = true
+     * StringUtils.eqUnCaseBlankSensitive(" ",null)        = true
+     * StringUtils.eqUnCaseBlankSensitive("bob","")        = false
+     * StringUtils.eqUnCaseBlankSensitive("  bob  ","bob") = true
+     * </pre> 
+     */
+    public static boolean eqUnCaseBlankSensitive(String str1, String str2) {
+        if (isBlank(str1) && isBlank(str2))
+            return true;
+        if (!isBlank(str1) && !isBlank(str2))
+            return eqUnCaseSensitive(str1.trim(), str2.trim());
+        return false;
+    }
 };
