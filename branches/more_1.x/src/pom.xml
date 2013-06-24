@@ -21,6 +21,7 @@
 		<module>org.platform.updown</module>
 		<module>org.platform.ui</module>
 		<module>org.platform.ds</module>
+		<module>org.platform.remote</module>
 	</modules>
 	<!-- 构建描述 -->
 	<build>

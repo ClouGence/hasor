@@ -3,7 +3,7 @@
 	<!-- 页面装饰器配置 -->
 	<pageDecorate enable="false">
 		<processor name="default" creator="org.platform.view.decorate.parser.FreemarkerHtmlParser">
-			<property key="templatePath">{MORE_WEB_HOME}/template.htm</property>
+			<templatePath>{MORE_WEB_HOME}/template.htm</templatePath>
 		</processor>
 		<!-- 缺省的装饰器 -->
 		<!-- name：装饰名，templatePath：装饰模板 -->
@@ -11,7 +11,7 @@
 			<pattern>/*</pattern>
 			<pattern>/*</pattern>
 		</decorator>
-		<decorator name="dec1" contentType="text/html" refParser="">
+		<decorator name="dec1" contentType="text/html" refParser="default">
 			<pattern>/*</pattern>
 			<pattern>/*</pattern>
 		</decorator>

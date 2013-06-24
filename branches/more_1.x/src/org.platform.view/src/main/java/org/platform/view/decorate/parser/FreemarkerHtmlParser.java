@@ -41,6 +41,7 @@ public class FreemarkerHtmlParser implements DecorateFilter {
             chain.doDecorate(request, response);
         } catch (Exception e) {
             // TODO: handle exception
+            response.getOutputStream().write(oriData);
         }
     }
     @Override
