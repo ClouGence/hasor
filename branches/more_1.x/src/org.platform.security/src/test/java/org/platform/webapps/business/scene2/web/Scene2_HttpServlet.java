@@ -19,10 +19,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.platform.context.AppContext;
-import org.platform.general.WebServlet;
-import org.platform.security.SecurityContext;
-import org.platform.security.SecurityDispatcher;
+import org.moreframework.context.AppContext;
+import org.moreframework.general.WebServlet;
+import org.moreframework.security.SecurityContext;
+import org.moreframework.security.SecurityDispatcher;
 import org.platform.webapps.business.scene2.service.Scene2_Bean;
 import com.google.inject.Inject;
 /**

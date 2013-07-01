@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package org.platform.webapps;
-import org.platform.binder.ApiBinder;
-import org.platform.context.AppContext;
-import org.platform.context.PlatformListener;
-import org.platform.context.startup.PlatformExt;
+import org.moreframework.binder.ApiBinder;
+import org.moreframework.context.AppContext;
+import org.moreframework.context.PlatformListener;
+import org.moreframework.context.startup.PlatformExt;
 import org.platform.webapps.business.scene1.web.Scene1_HttpServlet;
 import org.platform.webapps.error.define.GoException;
 import org.platform.webapps.error.process.GoException_Process;

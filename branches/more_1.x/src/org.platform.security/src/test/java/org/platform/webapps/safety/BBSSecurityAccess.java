@@ -16,11 +16,11 @@
 package org.platform.webapps.safety;
 import java.util.ArrayList;
 import java.util.List;
-import org.platform.context.AppContext;
-import org.platform.security.SecurityAccess;
-import org.platform.security.Permission;
-import org.platform.security.SecAccess;
-import org.platform.security.UserInfo;
+import org.moreframework.context.AppContext;
+import org.moreframework.security.Permission;
+import org.moreframework.security.SecAccess;
+import org.moreframework.security.SecurityAccess;
+import org.moreframework.security.UserInfo;
 /**
  * 
  * @version : 2013-4-28

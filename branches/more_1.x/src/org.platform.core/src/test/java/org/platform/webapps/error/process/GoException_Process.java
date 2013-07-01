@@ -17,8 +17,8 @@ package org.platform.webapps.error.process;
 import java.io.PrintWriter;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import org.platform.binder.ErrorHook;
-import org.platform.context.AppContext;
+import org.moreframework.binder.ErrorHook;
+import org.moreframework.context.AppContext;
 /**
  * 
  * @version : 2013-5-2

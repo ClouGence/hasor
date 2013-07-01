@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package org.platform.webapps;
-import org.platform.binder.ApiBinder;
-import org.platform.context.AppContext;
-import org.platform.context.PlatformListener;
-import org.platform.context.startup.PlatformExt;
+import org.moreframework.binder.ApiBinder;
+import org.moreframework.context.AppContext;
+import org.moreframework.context.PlatformListener;
+import org.moreframework.context.startup.PlatformExt;
 /**
  * 
  * @version : 2013-4-29

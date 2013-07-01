@@ -15,10 +15,10 @@
  */
 package org.platform.webapps.safety;
 import org.more.util.StringUtils;
-import org.platform.context.AppContext;
-import org.platform.security.SecurityAuth;
-import org.platform.security.SecAuth;
-import org.platform.security.UserInfo;
+import org.moreframework.context.AppContext;
+import org.moreframework.security.SecAuth;
+import org.moreframework.security.SecurityAuth;
+import org.moreframework.security.UserInfo;
 /**
  * 
  * @version : 2013-4-28

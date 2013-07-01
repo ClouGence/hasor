@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.platform.webapps.business.scene1.service;
-import org.platform.security.Power;
-import org.platform.security.Power.Level;
+import org.moreframework.security.Power;
+import org.moreframework.security.Power.Level;
 /**
  * 
  * @version : 2013-5-2

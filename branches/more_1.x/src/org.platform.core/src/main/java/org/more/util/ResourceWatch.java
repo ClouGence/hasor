@@ -1,17 +1,19 @@
 package org.more.util;
 import java.io.IOException;
 import java.net.URI;
-import org.platform.Platform;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 当资源有改动时该类会调用Run方法。
  * @version : 2012-8-2
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class ResourceWatch extends Thread {
-    private URI  resourceURI   = null; //资源地址
+    private static Logger log           = LoggerFactory.getLogger(ResourceWatch.class);
+    private URI           resourceURI   = null;                                        //资源地址
     //
-    private long lastHashCode  = 0;   //上一次检查资源的校验码，两次检查校验码不一致将执行reload
-    private long checkSeepTime = 0;   //检查的时间间隔-15秒
+    private long          lastHashCode  = 0;                                           //上一次检查资源的校验码，两次检查校验码不一致将执行reload
+    private long          checkSeepTime = 0;                                           //检查的时间间隔-15秒
     //
     public ResourceWatch() {
         this(null, 15 * 1000);
@@ -36,7 +38,7 @@ public abstract class ResourceWatch extends Thread {
             this.firstLoad(this.resourceURI);
             this.lastHashCode = this.lastModify(this.resourceURI);
         } catch (Exception e) {
-            Platform.warning("%s lastModify error.", this.resourceURI);
+            log.warn(this.resourceURI + " lastModify error.");
         }
         super.start();
     }
@@ -55,7 +57,7 @@ public abstract class ResourceWatch extends Thread {
                         this.reload(this.resourceURI);
                         this.lastHashCode = lastHashCode;
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        log.error("reload config error :%s", e);
                     }
                 }
                 sleep(this.checkSeepTime);

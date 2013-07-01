@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.platform.webapps.tags;
-import org.platform.context.AppContext;
-import org.platform.general.Bean;
-import org.platform.view.freemarker.FmMethod;
+import org.moreframework.context.AppContext;
+import org.moreframework.general.Bean;
+import org.moreframework.view.freemarker.FmMethod;
 import com.google.inject.Inject;
 /**
  * 

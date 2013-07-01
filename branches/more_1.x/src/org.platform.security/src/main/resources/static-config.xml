@@ -32,11 +32,11 @@
 		</clientCookie>
 		<!-- 加密算法配置 -->
 		<encryptionDigestSet>
-			<digest name="DES">org.platform.security.digest.DESDigest</digest>
-			<digest name="Base64">org.platform.security.digest.Base64Digest</digest>
-			<digest name="Random">org.platform.security.digest.RandomDigest</digest>
-			<digest name="None">org.platform.security.digest.NoneDigest</digest>
-			<digest name="AES128">org.platform.security.digest.AES128Digest</digest>
+			<digest name="DES">org.moreframework.security.digest.DESDigest</digest>
+			<digest name="Base64">org.moreframework.security.digest.Base64Digest</digest>
+			<digest name="Random">org.moreframework.security.digest.RandomDigest</digest>
+			<digest name="None">org.moreframework.security.digest.NoneDigest</digest>
+			<digest name="AES128">org.moreframework.security.digest.AES128Digest</digest>
 		</encryptionDigestSet>
 		<!-- 登陆表单数据 -->
 		<loginFormData>
