@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.moreframework.context.support;
+package org.moreframework.context.core;
 import java.io.File;
 import java.io.IOException;
 import org.more.util.StringUtils;

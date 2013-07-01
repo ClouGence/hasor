@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.moreframework.context.support;
+package org.moreframework.context.core;
 import javax.servlet.ServletContext;
 import org.more.util.ArrayUtils;
 import org.moreframework.context.AppContext;

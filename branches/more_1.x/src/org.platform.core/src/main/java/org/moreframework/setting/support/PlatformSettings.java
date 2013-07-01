@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.moreframework.context.support;
+package org.moreframework.setting.support;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,9 +33,8 @@ import org.more.util.StringUtils;
 import org.more.util.map.Properties;
 import org.moreframework.Assert;
 import org.moreframework.MoreFramework;
-import org.moreframework.context.PlatformListener;
-import org.moreframework.context.SettingListener;
-import org.moreframework.context.Settings;
+import org.moreframework.setting.SettingListener;
+import org.moreframework.setting.Settings;
 /**
  * Settings接口的实现，并且提供了对config.xml、static-config.xml、config-mapping.properties文件的解析支持。
  * 除此之外还提供了对config.xml配置文件的改变监听（该配置文件应当只有一个）。
@@ -43,14 +42,13 @@ import org.moreframework.context.Settings;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class PlatformSettings extends Global implements Settings {
-    private final String                 appSettingsName1         = "config.xml";
-    private final String                 appSettingsName2         = "static-config.xml";
-    private final String                 appSettingsName3         = "config-mapping.properties";
-    private final List<PlatformListener> contextListener          = new ArrayList<PlatformListener>();
-    private final List<SettingListener>  settingListenerList      = new ArrayList<SettingListener>();
-    private final List<String>           loadNameSpaceList        = new ArrayList<String>();          //自定义配置文件命名空间。
-    private String                       settingsEncoding         = "utf-8";
-    private boolean                      enableSettingsMonitoring = true;                             //是否启动配置文件改动监听
+    private final String                appSettingsName1         = "config.xml";
+    private final String                appSettingsName2         = "static-config.xml";
+    private final String                appSettingsName3         = "config-mapping.properties";
+    private final List<SettingListener> settingListenerList      = new ArrayList<SettingListener>();
+    private final List<String>          loadNameSpaceList        = new ArrayList<String>();         //自定义配置文件命名空间。
+    private String                      settingsEncoding         = "utf-8";
+    private boolean                     enableSettingsMonitoring = true;                            //是否启动配置文件改动监听
     //
     //
     //
@@ -78,20 +76,6 @@ public class PlatformSettings extends Global implements Settings {
     /**解析全局配置参数，并且返回其{@link XmlProperty}形式对象。*/
     public XmlProperty getXmlProperty(String name) {
         return this.getToType(name, XmlProperty.class, null);
-    }
-    /**添加启动监听器。*/
-    public void addContextListener(PlatformListener contextListener) {
-        if (this.contextListener.contains(contextListener) == false)
-            this.contextListener.add(contextListener);
-    }
-    /**删除启动监听器。*/
-    public void removeContextListener(PlatformListener contextListener) {
-        if (this.contextListener.contains(contextListener) == true)
-            this.contextListener.remove(contextListener);
-    }
-    @Override
-    public PlatformListener[] getContextListeners() {
-        return this.contextListener.toArray(new PlatformListener[this.contextListener.size()]);
     }
     /**添加配置文件变更监听器。*/
     public void addSettingsListener(SettingListener settingsListener) {

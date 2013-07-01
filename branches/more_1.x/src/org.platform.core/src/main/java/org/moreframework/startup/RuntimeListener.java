@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.moreframework.context.startup;
+package org.moreframework.startup;
 import static org.moreframework.MoreFramework.Platform_LoadPackages;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,8 +30,8 @@ import org.moreframework.MoreFramework;
 import org.moreframework.binder.SessionListenerPipeline;
 import org.moreframework.context.AppContext;
 import org.moreframework.context.PlatformListener;
-import org.moreframework.context.support.AbstractAppContext;
-import org.moreframework.context.support.WebPlatformAppContext;
+import org.moreframework.context.core.AbstractAppContext;
+import org.moreframework.context.core.WebPlatformAppContext;
 /**
  * 该类实现启动过程中如下动作：<br/>
  * <pre>
@@ -46,17 +46,13 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     private AbstractAppContext      appContext              = null;
     private SessionListenerPipeline sessionListenerPipeline = null;
     /*----------------------------------------------------------------------------------------------------*/
-    /**创建{@link PlatformListener}接口对象。*/
-    protected PlatformListener createInitListenerClasse(Class<?> listenerClass) {
-        try {
-            return (PlatformListener) listenerClass.newInstance();
-        } catch (Exception e) {
-            MoreFramework.error("create %s an error!%s", listenerClass, e);
-            return null;
-        }
+    /***/
+    protected AbstractAppContext createAppContext(ServletContext sc) {
+        return new WebPlatformAppContext(sc);
     }
+    //
     /**获取监听器类型集合，用于搜索程序中所有标记了InitListener注解的类型，并且该类型实现了{@link PlatformListener}接口。*/
-    protected void loadPlatformListener(AppContext appContext) {
+    protected void loadPlatformListener(AbstractAppContext appContext) {
         //1.扫描classpath包
         String spanPackages = appContext.getSettings().getString(Platform_LoadPackages);
         String[] spanPackage = spanPackages.split(",");
@@ -88,12 +84,17 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         for (Class<?> listenerClass : initHookList) {
             PlatformListener listenerObject = this.createInitListenerClasse(listenerClass);
             if (listenerObject != null)
-                appContext.getSettings().addContextListener(listenerObject);
+                appContext.addContextListener(listenerObject);
         }
     }
-    /***/
-    protected AbstractAppContext createAppContext(ServletContext sc) {
-        return new WebPlatformAppContext(sc);
+    /**创建{@link PlatformListener}接口对象。*/
+    protected PlatformListener createInitListenerClasse(Class<?> listenerClass) {
+        try {
+            return (PlatformListener) listenerClass.newInstance();
+        } catch (Exception e) {
+            MoreFramework.error("create %s an error!%s", listenerClass, e);
+            return null;
+        }
     }
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {

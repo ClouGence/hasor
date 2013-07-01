@@ -18,8 +18,8 @@ import static org.moreframework.view.freemarker.ConfigurationFactory.FreemarkerC
 import static org.moreframework.view.freemarker.ConfigurationFactory.FreemarkerConfig_Enable;
 import static org.moreframework.view.freemarker.ConfigurationFactory.FreemarkerConfig_OnError;
 import static org.moreframework.view.freemarker.ConfigurationFactory.FreemarkerConfig_Suffix;
-import org.moreframework.context.SettingListener;
-import org.moreframework.context.Settings;
+import org.moreframework.setting.SettingListener;
+import org.moreframework.setting.Settings;
 import com.google.inject.Singleton;
 /**
  * ≈‰÷√–≈œ¢

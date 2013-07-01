@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.moreframework.context.support;
+package org.moreframework.context.core;
 import static org.moreframework.MoreFramework.Platform_LoadPackages;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -23,9 +25,10 @@ import org.more.util.ClassUtils;
 import org.moreframework.Assert;
 import org.moreframework.binder.BeanInfo;
 import org.moreframework.context.AppContext;
-import org.moreframework.context.SettingListener;
-import org.moreframework.context.Settings;
+import org.moreframework.context.PlatformListener;
 import org.moreframework.context.WorkSpace;
+import org.moreframework.setting.SettingListener;
+import org.moreframework.setting.Settings;
 import com.google.inject.Binding;
 import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
@@ -35,10 +38,11 @@ import com.google.inject.TypeLiteral;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractAppContext implements AppContext {
-    private long                  startTime   = System.currentTimeMillis(); //系统启动时间
-    private Map<String, BeanInfo> beanInfoMap = null;
-    private AbstractWorkSpace     workSpace   = null;
-    private AbstractEnvironment   environment = null;
+    private long                         startTime       = System.currentTimeMillis();       //系统启动时间
+    private final List<PlatformListener> contextListener = new ArrayList<PlatformListener>();
+    private Map<String, BeanInfo>        beanInfoMap     = null;
+    private AbstractWorkSpace            workSpace       = null;
+    private AbstractEnvironment          environment     = null;
     //
     /**启动*/
     public abstract void start(Module... modules);
@@ -136,4 +140,18 @@ public abstract class AbstractAppContext implements AppContext {
             return null;
         return (T) this.getGuice().getInstance(beanInfo.getKey());
     };
+    /**添加启动监听器。*/
+    public void addContextListener(PlatformListener contextListener) {
+        if (this.contextListener.contains(contextListener) == false)
+            this.contextListener.add(contextListener);
+    }
+    /**删除启动监听器。*/
+    public void removeContextListener(PlatformListener contextListener) {
+        if (this.contextListener.contains(contextListener) == true)
+            this.contextListener.remove(contextListener);
+    }
+    /**获得所有启动监听器。*/
+    public PlatformListener[] getContextListeners() {
+        return this.contextListener.toArray(new PlatformListener[this.contextListener.size()]);
+    }
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.moreframework.context;
+package org.moreframework.setting;
 /**
  * 当配置文件重新载入时
  * @version : 2013-4-18

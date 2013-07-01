@@ -17,7 +17,7 @@ package org.moreframework.servlet.encoding;
 import org.moreframework.binder.ApiBinder;
 import org.moreframework.context.AppContext;
 import org.moreframework.context.PlatformListener;
-import org.moreframework.context.startup.PlatformExt;
+import org.moreframework.startup.PlatformExt;
 /**
  * 请求响应编码。启动级别：Lv0
  * @version : 2013-4-8

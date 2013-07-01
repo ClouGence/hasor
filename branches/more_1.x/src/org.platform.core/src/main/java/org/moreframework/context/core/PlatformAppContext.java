@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.moreframework.context.support;
+package org.moreframework.context.core;
 import java.util.ArrayList;
 import org.moreframework.Assert;
 import org.moreframework.MoreFramework;
+import org.moreframework.binder.ApiBinder;
 import org.moreframework.binder.support.ApiBinderModule;
 import org.moreframework.context.AppContext;
 import org.moreframework.context.BeanContext;
 import org.moreframework.context.PlatformListener;
-import org.moreframework.context.Settings;
+import org.moreframework.setting.Settings;
+import org.moreframework.setting.support.PlatformSettings;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -65,6 +67,16 @@ public class PlatformAppContext extends AbstractAppContext {
             @Override
             public void configure(Binder binder) {
                 super.configure(binder);
+                PlatformListener[] listenerList = getContextListeners();
+                if (listenerList != null)
+                    for (PlatformListener listener : listenerList) {
+                        if (listener == null)
+                            continue;
+                        MoreFramework.info("send initialize to : %s", listener.getClass());
+                        ApiBinder apiBinder = this.newApiBinder(binder);
+                        listener.initialize(apiBinder);
+                        binder.install((Module) apiBinder);
+                    }
                 /*绑定BeanContext对象的Provider*/
                 binder.bind(BeanContext.class).toProvider(new Provider<BeanContext>() {
                     @Override
@@ -92,7 +104,7 @@ public class PlatformAppContext extends AbstractAppContext {
         MoreFramework.info("init modules finish.");
         //4.发送完成初始化信号
         MoreFramework.info("send Initialized sign.");
-        final PlatformListener[] listenerList = this.getSettings().getContextListeners();
+        final PlatformListener[] listenerList = this.getContextListeners();
         if (listenerList != null) {
             for (PlatformListener listener : listenerList) {
                 if (listener == null)
@@ -104,7 +116,7 @@ public class PlatformAppContext extends AbstractAppContext {
     }
     /**销毁方法。*/
     public synchronized void destroyed() {
-        final PlatformListener[] listenerList = this.getSettings().getContextListeners();
+        final PlatformListener[] listenerList = this.getContextListeners();
         if (listenerList != null) {
             for (PlatformListener listener : listenerList)
                 listener.destroy(this);

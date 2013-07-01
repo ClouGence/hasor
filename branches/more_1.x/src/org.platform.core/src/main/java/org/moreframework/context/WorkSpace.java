@@ -16,6 +16,7 @@
 package org.moreframework.context;
 import java.io.File;
 import java.io.IOException;
+import org.moreframework.setting.Settings;
 /**
  * 表示一个工作空间设置
  * @version : 2013-5-23

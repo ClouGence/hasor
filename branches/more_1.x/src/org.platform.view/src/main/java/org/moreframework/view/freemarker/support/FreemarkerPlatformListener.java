@@ -23,7 +23,7 @@ import org.moreframework.MoreFramework;
 import org.moreframework.binder.ApiBinder;
 import org.moreframework.context.AppContext;
 import org.moreframework.context.PlatformListener;
-import org.moreframework.context.startup.PlatformExt;
+import org.moreframework.startup.PlatformExt;
 import org.moreframework.view.freemarker.ConfigurationFactory;
 import org.moreframework.view.freemarker.FmMethod;
 import org.moreframework.view.freemarker.FmTag;

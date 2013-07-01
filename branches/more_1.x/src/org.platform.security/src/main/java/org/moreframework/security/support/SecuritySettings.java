@@ -53,12 +53,12 @@ import org.more.global.assembler.xml.XmlProperty;
 import org.more.util.StringConvertUtils;
 import org.more.util.StringUtils;
 import org.moreframework.MoreFramework;
-import org.moreframework.context.SettingListener;
-import org.moreframework.context.Settings;
 import org.moreframework.security.Digest;
 import org.moreframework.security.SecurityDispatcher;
 import org.moreframework.security.UriPatternMatcher;
 import org.moreframework.security.SecurityForward.ForwardType;
+import org.moreframework.setting.SettingListener;
+import org.moreframework.setting.Settings;
 /**
  * 
  * @version : 2013-4-23

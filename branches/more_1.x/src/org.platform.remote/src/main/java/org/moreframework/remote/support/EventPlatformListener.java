@@ -23,10 +23,10 @@ import org.moreframework.MoreFramework;
 import org.moreframework.binder.ApiBinder;
 import org.moreframework.context.AppContext;
 import org.moreframework.context.PlatformListener;
-import org.moreframework.context.startup.PlatformExt;
 import org.moreframework.remote.EventListener;
 import org.moreframework.remote.EventManager;
 import org.moreframework.remote.Listener;
+import org.moreframework.startup.PlatformExt;
 /**
  * 事件服务。启动级别：Lv0
  * @version : 2013-4-8

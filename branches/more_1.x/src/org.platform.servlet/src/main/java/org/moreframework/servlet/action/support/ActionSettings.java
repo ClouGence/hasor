@@ -22,8 +22,8 @@ import static org.moreframework.servlet.action.ActionConfig.ActionServlet_Mode;
 import java.util.ArrayList;
 import java.util.List;
 import org.more.util.StringUtils;
-import org.moreframework.context.SettingListener;
-import org.moreframework.context.Settings;
+import org.moreframework.setting.SettingListener;
+import org.moreframework.setting.Settings;
 /**
  * 
  * @version : 2013-5-11

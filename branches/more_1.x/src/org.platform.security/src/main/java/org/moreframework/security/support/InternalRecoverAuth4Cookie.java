@@ -81,15 +81,16 @@ class InternalRecoverAuth4Cookie {
         if (this.settings.isCookieEnable() == false)
             return false;
         //2.解码cookie的value
-        Cookie[] cookieArray = httpRequest.getCookies();
         String cookieValue = null;
-        for (Cookie cookie : cookieArray) {
-            //匹配cookie名称
-            if (cookie.getName().endsWith(this.settings.getCookieName()) == false)
-                continue;
-            cookieValue = cookie.getValue();
-            break;
-        }
+        Cookie[] cookieArray = httpRequest.getCookies();
+        if (cookieArray != null)
+            for (Cookie cookie : cookieArray) {
+                //匹配cookie名称
+                if (cookie.getName().endsWith(this.settings.getCookieName()) == false)
+                    continue;
+                cookieValue = cookie.getValue();
+                break;
+            }
         //3.读取cookie内容恢复权限会话
         CookieUserData[] infos = null;
         try {

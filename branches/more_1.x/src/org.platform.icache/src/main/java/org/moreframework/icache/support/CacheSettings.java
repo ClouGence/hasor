@@ -15,8 +15,8 @@
  */
 package org.moreframework.icache.support;
 import static org.moreframework.icache.CacheManager.CacheConfig_Enable;
-import org.moreframework.context.SettingListener;
-import org.moreframework.context.Settings;
+import org.moreframework.setting.SettingListener;
+import org.moreframework.setting.Settings;
 /**
  * 
  * @version : 2013-4-23

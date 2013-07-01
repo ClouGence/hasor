@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import org.more.global.assembler.xml.XmlProperty;
 import org.more.util.StringUtils;
-import org.moreframework.context.SettingListener;
-import org.moreframework.context.Settings;
+import org.moreframework.setting.SettingListener;
+import org.moreframework.setting.Settings;
 /**
  * ≈‰÷√–≈œ¢
  * @version : 2013-4-23

@@ -21,7 +21,7 @@ import org.more.util.ArrayUtils;
 import org.more.util.ClassUtils;
 import org.more.util.StringUtils;
 import org.moreframework.binder.ApiBinder;
-import org.moreframework.context.Settings;
+import org.moreframework.setting.Settings;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 /**

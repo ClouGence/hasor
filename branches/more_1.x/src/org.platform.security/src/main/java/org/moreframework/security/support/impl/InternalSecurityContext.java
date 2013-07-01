@@ -17,13 +17,13 @@ package org.moreframework.security.support.impl;
 import static org.moreframework.security.SecurityConfig.Security_AuthSessionCache;
 import static org.moreframework.security.SecurityConfig.Security_AuthSessionTimeout;
 import org.moreframework.context.AppContext;
-import org.moreframework.context.SettingListener;
-import org.moreframework.context.Settings;
 import org.moreframework.event.EventManager;
 import org.moreframework.icache.Cache;
 import org.moreframework.icache.CacheManager;
 import org.moreframework.security.support.AbstractSecurityContext;
 import org.moreframework.security.support.SessionData;
+import org.moreframework.setting.SettingListener;
+import org.moreframework.setting.Settings;
 import com.google.inject.Singleton;
 /**
  * 内置SecurityContext类实现

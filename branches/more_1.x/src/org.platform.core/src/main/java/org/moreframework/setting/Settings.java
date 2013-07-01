@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.moreframework.context;
+package org.moreframework.setting;
 import java.io.File;
 import java.util.Date;
 import org.more.global.assembler.xml.XmlProperty;
@@ -23,12 +23,6 @@ import org.more.global.assembler.xml.XmlProperty;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface Settings {
-    /**添加启动监听器。*/
-    public void addContextListener(PlatformListener contextListener);
-    /**删除启动监听器。*/
-    public void removeContextListener(PlatformListener contextListener);
-    /**获得所有启动监听器。*/
-    public PlatformListener[] getContextListeners();
     /**添加配置文件改变事件监听器。*/
     public void addSettingsListener(SettingListener settingsListener);
     /**删除配置文件改变事件监听器。*/

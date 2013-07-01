@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 package org.moreframework.binder.support;
-import org.moreframework.MoreFramework;
 import org.moreframework.binder.ApiBinder;
 import org.moreframework.binder.FilterPipeline;
 import org.moreframework.binder.SessionListenerPipeline;
-import org.moreframework.context.PlatformListener;
-import org.moreframework.context.Settings;
+import org.moreframework.setting.Settings;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 /**
@@ -40,16 +38,6 @@ public class ApiBinderModule implements Module {
     }
     @Override
     public void configure(Binder binder) {
-        PlatformListener[] listenerList = this.settings.getContextListeners();
-        if (listenerList != null)
-            for (PlatformListener listener : listenerList) {
-                if (listener == null)
-                    continue;
-                MoreFramework.info("send initialize to : %s", listener.getClass());
-                ApiBinder apiBinder = this.newApiBinder(binder);
-                listener.initialize(apiBinder);
-                binder.install((Module) apiBinder);
-            }
         /*Bind*/
         binder.bind(ManagedErrorPipeline.class);
         binder.bind(ManagedServletPipeline.class);

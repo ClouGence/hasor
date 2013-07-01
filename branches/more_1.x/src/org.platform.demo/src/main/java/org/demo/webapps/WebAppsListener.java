@@ -17,7 +17,7 @@ package org.demo.webapps;
 import org.moreframework.binder.ApiBinder;
 import org.moreframework.context.AppContext;
 import org.moreframework.context.PlatformListener;
-import org.moreframework.context.startup.PlatformExt;
+import org.moreframework.startup.PlatformExt;
 /**
  * 
  * @version : 2013-4-29

@@ -21,9 +21,9 @@ import org.moreframework.MoreFramework;
 import org.moreframework.binder.ApiBinder;
 import org.moreframework.context.AppContext;
 import org.moreframework.context.PlatformListener;
-import org.moreframework.context.startup.PlatformExt;
 import org.moreframework.servlet.resource.ResourceLoaderCreator;
 import org.moreframework.servlet.resource.ResourceLoaderDefine;
+import org.moreframework.startup.PlatformExt;
 /**
  * 负责装载jar包中的资源。启动级别：Lv1
  * @version : 2013-4-8

@@ -18,9 +18,9 @@ import java.util.HashMap;
 import java.util.Map;
 import org.moreframework.MoreFramework;
 import org.moreframework.context.AppContext;
-import org.moreframework.context.SettingListener;
-import org.moreframework.context.Settings;
 import org.moreframework.security.Digest;
+import org.moreframework.setting.SettingListener;
+import org.moreframework.setting.Settings;
 /**
  * 
  * @version : 2013-4-25

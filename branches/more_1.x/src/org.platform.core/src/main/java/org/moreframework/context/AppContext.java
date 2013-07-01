@@ -15,6 +15,7 @@
  */
 package org.moreframework.context;
 import java.util.Set;
+import org.moreframework.setting.Settings;
 import com.google.inject.Injector;
 /**
  * 

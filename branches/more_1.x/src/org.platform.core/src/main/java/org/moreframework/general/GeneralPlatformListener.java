@@ -33,7 +33,7 @@ import org.moreframework.binder.ErrorHook;
 import org.moreframework.binder.ApiBinder.BeanBindingBuilder;
 import org.moreframework.context.AppContext;
 import org.moreframework.context.PlatformListener;
-import org.moreframework.context.startup.PlatformExt;
+import org.moreframework.startup.PlatformExt;
 /**
  * 支持Bean、WebError、WebFilter、WebServlet注解功能。启动级别：Lv1Max
  * @version : 2013-4-8

@@ -17,7 +17,7 @@ package org.moreframework.view.decorate.support;
 import org.moreframework.binder.ApiBinder;
 import org.moreframework.context.AppContext;
 import org.moreframework.context.PlatformListener;
-import org.moreframework.context.startup.PlatformExt;
+import org.moreframework.startup.PlatformExt;
 import org.moreframework.view.decorate.DecorateBinder;
 import org.moreframework.view.decorate.parser.FreemarkerHtmlParser;
 /**

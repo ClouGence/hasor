@@ -24,7 +24,6 @@ import org.moreframework.MoreFramework;
 import org.moreframework.binder.ApiBinder;
 import org.moreframework.context.AppContext;
 import org.moreframework.context.PlatformListener;
-import org.moreframework.context.startup.PlatformExt;
 import org.moreframework.servlet.action.Controller;
 import org.moreframework.servlet.action.HttpMethod;
 import org.moreframework.servlet.action.Produces;
@@ -33,6 +32,7 @@ import org.moreframework.servlet.action.ResultDefine;
 import org.moreframework.servlet.action.ResultProcess;
 import org.moreframework.servlet.action.ActionBinder.ActionBindingBuilder;
 import org.moreframework.servlet.action.ActionBinder.NameSpaceBindingBuilder;
+import org.moreframework.startup.PlatformExt;
 import com.google.inject.Binder;
 /**
  * Action服务启动类，用于装载action。启动级别Lv1
