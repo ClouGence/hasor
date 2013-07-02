@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<register>
-<!--
-	<namespace url="http://noe.xdf.cn/modules/menus" schema="http://noe.xdf.cn/modules/menus/schema.xsd" xmlRegisterHook="org.noe.modules.menus.xml.Menus_XmlHook">
-		<xmlPath xmlPath="/menus/*menu" 				class="org.noe.modules.menus.xml.Tag_Menu" />
-	</namespace>
--->
-</register>

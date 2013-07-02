@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<b:beans xmlns:b="http://project.byshell.org/more/schema/beans"
-	 xmlns="http://project.byshell.org/more/schema/beans-anno">
-	
-	<anno package="org.test.more.hypha.xml.*" enable="true"/>
-</b:beans>

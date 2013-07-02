@@ -1,7 +1,0 @@
-<beans xmlns="http://project.byshell.org/more/schema/beans">
-	<classBean name="test" class="org.test.more.submit.TestAction">
-		<meta key="actionFilters" value="private"/>
-	</classBean>
-	<classBean name="private" class="org.test.more.submit.ActionF" />
-	<classBean name="public" class="org.test.more.submit.ActionPF"/>
-</beans>
