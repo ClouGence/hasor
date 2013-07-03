@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package org.platform.webapps;
-import org.moreframework.binder.ApiBinder;
-import org.moreframework.context.AppContext;
-import org.moreframework.context.PlatformListener;
-import org.moreframework.startup.PlatformExt;
+import org.hasor.binder.ApiBinder;
+import org.hasor.context.AppContext;
+import org.hasor.context.PlatformListener;
+import org.hasor.startup.PlatformExt;
 /**
  * 
  * @version : 2013-4-29

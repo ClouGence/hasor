@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://project.byshell.org/more/schema/global">
+<config xmlns="http://project.hasor.net/hasor/schema/global">
 	<!-- httpServlet文件上传服务配置 -->
 	<updownService enable="false">
 		<!-- name：服务名 -->

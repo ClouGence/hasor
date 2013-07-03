@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mimeConfig xmlns="http://project.byshell.org/more/schema/mime-mapping">
+<mimeConfig xmlns="http://project.hasor.net/hasor/schema/mime-mapping">
 	<mime-mapping>
 		<extension>123</extension>
 		<mime-type>application/vnd.lotus-1-2-3</mime-type>

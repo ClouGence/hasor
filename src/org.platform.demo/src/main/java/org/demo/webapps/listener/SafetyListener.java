@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.demo.webapps.listener;
-import org.moreframework.event.EventListener;
-import org.moreframework.event.Listener;
-import org.moreframework.security.support.SecurityEventDefine;
+import org.hasor.event.EventListener;
+import org.hasor.event.Listener;
+import org.hasor.security.support.SecurityEventDefine;
 /**
  * 
  * @version : 2013-5-9

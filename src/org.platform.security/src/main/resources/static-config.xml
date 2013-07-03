@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://project.byshell.org/more/schema/global">
+<config xmlns="http://project.hasor.net/hasor/schema/global">
 	<!-- 权限配置： -->
 	<!-- enable：权限系统启用禁用 -->
 	<!-- enableURL：是否将Request请求纳入权限系统 -->
@@ -32,11 +32,11 @@
 		</clientCookie>
 		<!-- 加密算法配置 -->
 		<encryptionDigestSet>
-			<digest name="DES">org.moreframework.security.digest.DESDigest</digest>
-			<digest name="Base64">org.moreframework.security.digest.Base64Digest</digest>
-			<digest name="Random">org.moreframework.security.digest.RandomDigest</digest>
-			<digest name="None">org.moreframework.security.digest.NoneDigest</digest>
-			<digest name="AES128">org.moreframework.security.digest.AES128Digest</digest>
+			<digest name="DES">org.hasor.security.digest.DESDigest</digest>
+			<digest name="Base64">org.hasor.security.digest.Base64Digest</digest>
+			<digest name="Random">org.hasor.security.digest.RandomDigest</digest>
+			<digest name="None">org.hasor.security.digest.NoneDigest</digest>
+			<digest name="AES128">org.hasor.security.digest.AES128Digest</digest>
 		</encryptionDigestSet>
 		<!-- 登陆表单数据 -->
 		<loginFormData>
@@ -58,7 +58,7 @@
 			<!-- !!!下面的配置信息，配置一项即可!!! 登陆失败：以Http 402号错误响应客户端。 -->
 			<!-- <forwardFailure type="State">402</forwardFailure> -->
 			<!-- 登陆失败：抛出特定类型异常。 -->
-			<!-- <forwardFailure type="Exception">org.platform.security.PermissionException</forwardFailure> -->
+			<!-- <forwardFailure type="Exception">org.hasor.security.PermissionException</forwardFailure> -->
 			<!-- 登陆失败：跳转到特定页面或地址。 -->
 			<!-- <forwardFailure type="forward|redirect|Exception|State">/abc.htm</forwardFailure> -->
 			<!-- 配置的可以跳转的地址 -->

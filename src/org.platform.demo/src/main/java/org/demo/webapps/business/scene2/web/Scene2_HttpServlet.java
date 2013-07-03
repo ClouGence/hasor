@@ -20,10 +20,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.demo.webapps.business.scene2.service.Scene2_Bean;
-import org.moreframework.context.AppContext;
-import org.moreframework.general.WebServlet;
-import org.moreframework.security.SecurityContext;
-import org.moreframework.security.SecurityDispatcher;
+import org.hasor.context.AppContext;
+import org.hasor.general.WebServlet;
+import org.hasor.security.SecurityContext;
+import org.hasor.security.SecurityDispatcher;
 import com.google.inject.Inject;
 /**
  * 

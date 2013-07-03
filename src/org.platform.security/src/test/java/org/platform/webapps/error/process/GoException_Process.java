@@ -17,9 +17,9 @@ package org.platform.webapps.error.process;
 import java.io.PrintWriter;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import org.moreframework.binder.ErrorHook;
-import org.moreframework.context.AppContext;
-import org.moreframework.general.WebError;
+import org.hasor.binder.ErrorHook;
+import org.hasor.context.AppContext;
+import org.hasor.general.WebError;
 import org.platform.webapps.error.define.GoException;
 /**
  * 

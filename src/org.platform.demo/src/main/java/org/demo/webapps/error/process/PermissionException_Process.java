@@ -17,10 +17,10 @@ package org.demo.webapps.error.process;
 import java.io.PrintWriter;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import org.moreframework.binder.ErrorHook;
-import org.moreframework.context.AppContext;
-import org.moreframework.general.WebError;
-import org.moreframework.security.PermissionException;
+import org.hasor.binder.ErrorHook;
+import org.hasor.context.AppContext;
+import org.hasor.general.WebError;
+import org.hasor.security.PermissionException;
 /**
  * 
  * @version : 2013-5-2

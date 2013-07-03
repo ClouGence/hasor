@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.demo.webapps.business.scene1.service;
-import org.moreframework.security.Power;
-import org.moreframework.security.Power.Level;
+import org.hasor.security.Power;
+import org.hasor.security.Power.Level;
 /**
  * 
  * @version : 2013-5-2

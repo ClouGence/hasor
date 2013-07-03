@@ -16,10 +16,10 @@
 package org.demo.webapps.business.scene3.action;
 import javax.servlet.http.HttpServletRequest;
 import org.demo.webapps.business.scene2.service.Scene2_Bean;
-import org.moreframework.servlet.action.Controller;
-import org.moreframework.servlet.action.RestfulMapping;
-import org.moreframework.servlet.action.Var;
-import org.moreframework.servlet.action.support.result.Result;
+import org.hasor.servlet.action.Controller;
+import org.hasor.servlet.action.RestfulMapping;
+import org.hasor.servlet.action.Var;
+import org.hasor.servlet.action.support.result.Result;
 /**
  * 
  * @version : 2013-5-29

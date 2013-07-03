@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.demo.webapps.business.scene1.service.Power_Services;
-import org.moreframework.general.WebServlet;
+import org.hasor.general.WebServlet;
 import com.google.inject.Inject;
 /**
  * 

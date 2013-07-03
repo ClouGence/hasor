@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.platform.webapps.safety;
-import org.moreframework.security.support.BaseUserInfo;
+import org.hasor.security.support.BaseUserInfo;
 /**
  * 表示来宾用户，来宾用户表示未登录状态下的用户。
  * @version : 2013-4-17

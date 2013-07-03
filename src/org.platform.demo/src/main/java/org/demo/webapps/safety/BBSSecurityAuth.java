@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package org.demo.webapps.safety;
+import org.hasor.context.AppContext;
+import org.hasor.security.SecAuth;
+import org.hasor.security.SecurityAuth;
+import org.hasor.security.UserInfo;
 import org.more.util.StringUtils;
-import org.moreframework.context.AppContext;
-import org.moreframework.security.SecAuth;
-import org.moreframework.security.SecurityAuth;
-import org.moreframework.security.UserInfo;
 import org.platform.webapps.safety.BBSUser;
 /**
  * 

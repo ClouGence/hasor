@@ -18,9 +18,9 @@ import java.io.PrintWriter;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import org.demo.webapps.error.define.LoginSecurityException;
-import org.moreframework.binder.ErrorHook;
-import org.moreframework.context.AppContext;
-import org.moreframework.general.WebError;
+import org.hasor.binder.ErrorHook;
+import org.hasor.context.AppContext;
+import org.hasor.general.WebError;
 /**
  * 
  * @version : 2013-5-2

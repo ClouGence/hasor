@@ -16,11 +16,11 @@
 package org.demo.webapps.safety;
 import java.util.ArrayList;
 import java.util.List;
-import org.moreframework.context.AppContext;
-import org.moreframework.security.Permission;
-import org.moreframework.security.SecAccess;
-import org.moreframework.security.SecurityAccess;
-import org.moreframework.security.UserInfo;
+import org.hasor.context.AppContext;
+import org.hasor.security.Permission;
+import org.hasor.security.SecAccess;
+import org.hasor.security.SecurityAccess;
+import org.hasor.security.UserInfo;
 /**
  * 
  * @version : 2013-4-28

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.demo.webapps.safety;
-import org.moreframework.security.support.BaseUserInfo;
+import org.hasor.security.support.BaseUserInfo;
 /**
  * ��ʾ�����û��������û���ʾδ��¼״̬�µ��û���
  * @version : 2013-4-17

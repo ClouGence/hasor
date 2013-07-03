@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://project.byshell.org/more/schema/global">
+<config xmlns="http://project.hasor.net/hasor/schema/global">
 	<!-- 页面装饰器配置 -->
 	<pageDecorate enable="false">
-		<processor name="default" creator="org.moreframework.view.decorate.parser.FreemarkerHtmlParser">
+		<processor name="default" creator="org.hasor.view.decorate.parser.FreemarkerHtmlParser">
 			<templatePath>{MORE_WEB_HOME}/template.htm</templatePath>
 		</processor>
 		<!-- 缺省的装饰器 -->
@@ -23,7 +23,7 @@
 		<!-- 模板解析的内容响应到客户端的类型 -->
 		<contentType>text/html</contentType>
 		<!-- Configuration对象创建工厂 -->
-		<configurationFactory>org.moreframework.view.freemarker.support.DefaultFreemarkerFactory</configurationFactory>
+		<configurationFactory>org.hasor.view.freemarker.support.DefaultFreemarkerFactory</configurationFactory>
 		<!-- 模板装载器（配置不支持动态更新） -->
 		<templateLoader>
 			<!-- <PathLoader>c:\abc</PathLoader> -->

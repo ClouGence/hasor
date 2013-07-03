@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.demo.webapps.business.scene3.action;
-import org.moreframework.servlet.action.Controller;
+import org.hasor.servlet.action.Controller;
 /**
  * 
  * @version : 2013-5-29

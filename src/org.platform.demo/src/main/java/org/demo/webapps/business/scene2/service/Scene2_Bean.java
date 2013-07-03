@@ -15,11 +15,11 @@
  */
 package org.demo.webapps.business.scene2.service;
 import org.demo.webapps.safety.BBSUser;
-import org.moreframework.general.Bean;
-import org.moreframework.security.AuthSession;
-import org.moreframework.security.RoleIdentity;
-import org.moreframework.security.RoleIdentityUtil;
-import org.moreframework.security.SecurityContext;
+import org.hasor.general.Bean;
+import org.hasor.security.AuthSession;
+import org.hasor.security.RoleIdentity;
+import org.hasor.security.RoleIdentityUtil;
+import org.hasor.security.SecurityContext;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 /**

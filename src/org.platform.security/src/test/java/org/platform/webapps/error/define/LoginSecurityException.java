@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.platform.webapps.error.define;
-import org.moreframework.security.PermissionException;
+import org.hasor.security.PermissionException;
 /**
  * 
  * @version : 2013-5-2
