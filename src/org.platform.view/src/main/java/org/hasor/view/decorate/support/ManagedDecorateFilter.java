@@ -67,6 +67,7 @@ class ManagedDecorateFilter implements Filter {
         //2.对获取结果进行装饰处理
         if (response.isCommitted() == false) {
             new FilterChainInvocation(this.filterDefinitions).doDecorate(decRequest, decResponse);
+            decResponse.flushBuffer();
             decResponse.sendByteData(decResponse.getBufferData());
         }
     }

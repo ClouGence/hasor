@@ -37,7 +37,9 @@ public class FreemarkerHtmlParser implements DecorateFilter {
         byte[] oriData = response.getBufferData();
         response.resetBuffer();
         try {
-            freemarkerManager.getTemplate(null).process(null, response.getWriter());
+            response.getWriter().write(new String(oriData, "utf-8"));
+            //response.getWriter().flush();
+            //            freemarkerManager.getTemplate(null).process(null, response.getWriter());
             chain.doDecorate(request, response);
         } catch (Exception e) {
             // TODO: handle exception

@@ -16,25 +16,30 @@
 package org.hasor.view.decorate.support;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 import org.hasor.view.decorate.DecorateServletResponse;
+import org.more.util.StringUtils;
 /**
  * 
  * @version : 2013-6-9
  * @author 赵永春 (zyc@byshell.org)
  */
 class DecHttpServletResponsePropxy extends HttpServletResponseWrapper implements DecorateServletResponse {
-    private ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+    private ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
+    private PrintWriter           dataWriter = null;
     //
     public DecHttpServletResponsePropxy(HttpServletResponse response) {
         super(response);
     }
     @Override
     public void flushBuffer() throws IOException {
-        this.byteArray.flush();
+        if (dataWriter != null)
+            this.dataWriter.flush();
+        this.dataStream.flush();
     }
     @Override
     public void reset() {
@@ -43,18 +48,27 @@ class DecHttpServletResponsePropxy extends HttpServletResponseWrapper implements
     }
     @Override
     public void resetBuffer() {
-        this.byteArray.reset();
+        if (this.dataWriter != null)
+            this.dataWriter.flush();
+        this.dataStream.reset();
     }
     @Override
     public PrintWriter getWriter() throws IOException {
-        return new PrintWriter(this.getOutputStream());
+        if (this.dataWriter != null)
+            return this.dataWriter;
+        String charcoding = this.getCharacterEncoding();
+        if (StringUtils.isBlank(charcoding) == false)
+            this.dataWriter = new PrintWriter(new OutputStreamWriter(this.getOutputStream(), charcoding));
+        else
+            this.dataWriter = new PrintWriter(new OutputStreamWriter(this.getOutputStream()));
+        return this.dataWriter;
     }
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
         return new ServletOutputStream() {
             @Override
             public void write(int b) throws IOException {
-                byteArray.write(b);
+                dataStream.write(b);
             }
             @Override
             public void close() throws IOException {}
@@ -62,7 +76,7 @@ class DecHttpServletResponsePropxy extends HttpServletResponseWrapper implements
     }
     /**获取装饰之前的内容*/
     public byte[] getBufferData() {
-        return this.byteArray.toByteArray();
+        return this.dataStream.toByteArray();
     }
     /**输出装饰之后的内容*/
     public void sendByteData(byte[] bytes) throws IOException {

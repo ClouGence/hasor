@@ -15,6 +15,7 @@
  */
 package org.hasor.view.freemarker.support;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map.Entry;
