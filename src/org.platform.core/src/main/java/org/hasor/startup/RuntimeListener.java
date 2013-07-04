@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.startup;
-import static org.hasor.MoreFramework.Platform_LoadPackages;
+import static org.hasor.HasorFramework.Platform_LoadPackages;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -25,7 +25,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.binder.SessionListenerPipeline;
 import org.hasor.context.AppContext;
 import org.hasor.context.PlatformListener;
@@ -56,13 +56,13 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         //1.扫描classpath包
         String spanPackages = appContext.getSettings().getString(Platform_LoadPackages);
         String[] spanPackage = spanPackages.split(",");
-        MoreFramework.info("loadPackages : " + MoreFramework.logString(spanPackage));
+        HasorFramework.info("loadPackages : " + HasorFramework.logString(spanPackage));
         Set<Class<?>> initHookSet = ClassUtils.getClassSet(spanPackage, PlatformExt.class);
         //2.过滤未实现ContextListener接口的标注
         List<Class<? extends PlatformListener>> initHookList = new ArrayList<Class<? extends PlatformListener>>();
         for (Class<?> cls : initHookSet) {
             if (PlatformListener.class.isAssignableFrom(cls) == false) {
-                MoreFramework.warning("not implemented ContextListener :%s", cls);
+                HasorFramework.warning("not implemented ContextListener :%s", cls);
             } else {
                 initHookList.add((Class<? extends PlatformListener>) cls);
             }
@@ -78,9 +78,9 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
                 return (o1AnnoIndex < o2AnnoIndex ? -1 : (o1AnnoIndex == o2AnnoIndex ? 0 : 1));
             }
         });
-        MoreFramework.info("find ContextListener : " + MoreFramework.logString(initHookList));
+        HasorFramework.info("find ContextListener : " + HasorFramework.logString(initHookList));
         //4.扫描所有ContextListener。
-        MoreFramework.info("create ContextListener...");
+        HasorFramework.info("create ContextListener...");
         for (Class<?> listenerClass : initHookList) {
             PlatformListener listenerObject = this.createInitListenerClasse(listenerClass);
             if (listenerObject != null)
@@ -92,7 +92,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         try {
             return (PlatformListener) listenerClass.newInstance();
         } catch (Exception e) {
-            MoreFramework.error("create %s an error!%s", listenerClass, e);
+            HasorFramework.error("create %s an error!%s", listenerClass, e);
             return null;
         }
     }
@@ -105,11 +105,11 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         //2.获取SessionListenerPipeline
         this.sessionListenerPipeline = this.appContext.getInstance(SessionListenerPipeline.class);
         this.sessionListenerPipeline.init(this.appContext);
-        MoreFramework.info("sessionListenerPipeline created.");
+        HasorFramework.info("sessionListenerPipeline created.");
         //3.放入ServletContext环境。
-        MoreFramework.info("ServletContext Attribut : " + AppContextName + " -->> " + MoreFramework.logString(this.appContext));
+        HasorFramework.info("ServletContext Attribut : " + AppContextName + " -->> " + HasorFramework.logString(this.appContext));
         servletContextEvent.getServletContext().setAttribute(AppContextName, this.appContext);
-        MoreFramework.info("platform started!");
+        HasorFramework.info("platform started!");
     }
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {

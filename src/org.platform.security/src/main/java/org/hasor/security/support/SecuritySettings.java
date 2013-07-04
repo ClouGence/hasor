@@ -49,7 +49,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.security.Digest;
 import org.hasor.security.SecurityDispatcher;
 import org.hasor.security.SecurityForward.ForwardType;
@@ -127,7 +127,7 @@ public class SecuritySettings implements SettingListener {
         String permissionCodes = itemAtt.get("permissions");
         UriPatternType patternType = StringConvertUtils.changeType(modeType, UriPatternType.class, UriPatternType.None);
         this.rulesDefault = UriPatternType.get(patternType, "(Default)", permissionCodes);
-        MoreFramework.warning("rules.defaultRule ->%s", this.rulesDefault);
+        HasorFramework.warning("rules.defaultRule ->%s", this.rulesDefault);
         XmlProperty rulesIncludes = newConfig.getXmlProperty(Security_Rules_Includes); //包含在权限检查范畴的URL配置
         this.rulesIncludeList = new ArrayList<UriPatternMatcher>();
         this.readIncludeRules(rulesIncludes);
@@ -187,7 +187,7 @@ public class SecuritySettings implements SettingListener {
             UriPatternMatcher matcher = UriPatternType.get(patternType, requestURI, permissionCodes);
             this.rulesIncludeList.add(matcher);
             //
-            MoreFramework.info("read Include Rule : %s", matcher);
+            HasorFramework.info("read Include Rule : %s", matcher);
         }
     }
     //
@@ -211,7 +211,7 @@ public class SecuritySettings implements SettingListener {
             UriPatternMatcher matcher = UriPatternType.get(UriPatternType.None, requestURI, null);
             this.rulesExcludeList.add(matcher);
             //
-            MoreFramework.info("read Exclude Rule : %s", matcher);
+            HasorFramework.info("read Exclude Rule : %s", matcher);
         }
     }
     //
@@ -250,7 +250,7 @@ public class SecuritySettings implements SettingListener {
                 }
             //
             this.dispatcherForwardList.add(dispatcher);
-            MoreFramework.info("read %s", dispatcher);
+            HasorFramework.info("read %s", dispatcher);
         }
     }
     //
@@ -268,13 +268,13 @@ public class SecuritySettings implements SettingListener {
             try {
                 Class<?> digestClass = Class.forName(digestType);
                 if (Digest.class.isAssignableFrom(digestClass) == false) {
-                    MoreFramework.warning("%s digest %s is not implemented CodeDigest.", digestCode, digestType);
+                    HasorFramework.warning("%s digest %s is not implemented CodeDigest.", digestCode, digestType);
                     continue;
                 }
                 this.digestMap.put(digestCode, (Class<Digest>) digestClass);
-                MoreFramework.info("read CodeDigest %s : %s", digestCode, digestType);
+                HasorFramework.info("read CodeDigest %s : %s", digestCode, digestType);
             } catch (Exception e) {
-                MoreFramework.warning("create %s an error.%s", digestType, e);
+                HasorFramework.warning("create %s an error.%s", digestType, e);
             }
         }
     }

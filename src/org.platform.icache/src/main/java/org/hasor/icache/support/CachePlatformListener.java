@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.binder.ApiBinder;
 import org.hasor.context.AppContext;
 import org.hasor.context.PlatformListener;
@@ -73,7 +73,7 @@ public class CachePlatformListener implements PlatformListener {
         //
         this.cacheManager = appContext.getInstance(CacheManager.class);
         this.cacheManager.initManager(appContext);
-        MoreFramework.info("online ->> cache is %s", (this.settings.isCacheEnable() ? "enable." : "disable."));
+        HasorFramework.info("online ->> cache is %s", (this.settings.isCacheEnable() ? "enable." : "disable."));
     }
     @Override
     public void destroy(AppContext appContext) {
@@ -90,7 +90,7 @@ public class CachePlatformListener implements PlatformListener {
         List<Class<? extends KeyBuilder>> iKeyBuilderList = new ArrayList<Class<? extends KeyBuilder>>();
         for (Class<?> cls : iKeyBuilderSet) {
             if (KeyBuilder.class.isAssignableFrom(cls) == false) {
-                MoreFramework.warning("loadKeyBuilder : not implemented IKeyBuilder of type %s.", cls);
+                HasorFramework.warning("loadKeyBuilder : not implemented IKeyBuilder of type %s.", cls);
             } else
                 iKeyBuilderList.add((Class<? extends KeyBuilder>) cls);
         }
@@ -113,10 +113,10 @@ public class CachePlatformListener implements PlatformListener {
             Key<? extends KeyBuilder> keyBuilderKey = Key.get(keyBuildertype);
             KeyBuilderDefinition keyBuilderDefine = new KeyBuilderDefinition(keyBuilderAnno.value(), keyBuilderKey);
             binder.bind(KeyBuilderDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(keyBuilderDefine);
-            MoreFramework.info("KeyBuilder type:" + MoreFramework.logString(keyBuildertype) + " mapping " + MoreFramework.logString(keyBuilderAnno.value()));
+            HasorFramework.info("KeyBuilder type:" + HasorFramework.logString(keyBuildertype) + " mapping " + HasorFramework.logString(keyBuilderAnno.value()));
             //确定是否为defaut
             if (keyBuildertype.isAnnotationPresent(DefaultKeyBuilder.class) == true) {
-                MoreFramework.warning("KeyBuilder type:" + MoreFramework.logString(keyBuildertype) + " is DefaultKeyBuilder on " + MoreFramework.logString(keyBuilderAnno.value()));
+                HasorFramework.warning("KeyBuilder type:" + HasorFramework.logString(keyBuildertype) + " is DefaultKeyBuilder on " + HasorFramework.logString(keyBuilderAnno.value()));
                 DefaultKeyBuilder defaultKeyBuilder = keyBuildertype.getAnnotation(DefaultKeyBuilder.class);
                 if (defaultKeyBuilder.value() <= defaultKeyBuilderIndex/*数越小越优先*/) {
                     defaultKeyBuilderIndex = defaultKeyBuilder.value();
@@ -136,7 +136,7 @@ public class CachePlatformListener implements PlatformListener {
         if (cacheSet != null)
             for (Class<?> cls : cacheSet) {
                 if (Cache.class.isAssignableFrom(cls) == false) {
-                    MoreFramework.warning("loadCache : not implemented ICache of type %s", cls);
+                    HasorFramework.warning("loadCache : not implemented ICache of type %s", cls);
                 } else
                     cacheList.add((Class<Cache<?>>) cls);
             }
@@ -147,7 +147,7 @@ public class CachePlatformListener implements PlatformListener {
         for (Class<Cache<?>> cacheType : cacheList) {
             CacheDefine cacheAnno = cacheType.getAnnotation(CacheDefine.class);
             for (String cacheName : cacheAnno.value()) {
-                MoreFramework.info(cacheName + " at Cache of type " + MoreFramework.logString(cacheType));
+                HasorFramework.info(cacheName + " at Cache of type " + HasorFramework.logString(cacheType));
                 //
                 int maxIndex = (cacheIndex.containsKey(cacheName) == false) ? Integer.MAX_VALUE : cacheIndex.get(cacheName);
                 if (cacheAnno.sort() <= maxIndex/*数越小越优先*/) {
@@ -158,7 +158,7 @@ public class CachePlatformListener implements PlatformListener {
                     binder.bind(Cache.class).annotatedWith(Names.named(cacheName)).toProvider(cacheDefine);
                     //确定是否为defaut
                     if (cacheType.isAnnotationPresent(DefaultCache.class) == true) {
-                        MoreFramework.warning(cacheName + " is DefaultCache!");
+                        HasorFramework.warning(cacheName + " is DefaultCache!");
                         DefaultCache defaultCache = cacheType.getAnnotation(DefaultCache.class);
                         if (defaultCache.value() <= defaultCacheIndex/*数越小越优先*/) {
                             defaultCacheIndex = defaultCache.value();
@@ -236,8 +236,8 @@ public class CachePlatformListener implements PlatformListener {
                     KeyBuilder keyBuilder = cacheManager.getKeyBuilder(arg.getClass());
                     cacheKey.append(keyBuilder.serializeKey(arg));
                 }
-            MoreFramework.debug("MethodInterceptor Method : %s", targetMethod);
-            MoreFramework.debug("MethodInterceptor Cache key :%s", cacheKey.toString());
+            HasorFramework.debug("MethodInterceptor Method : %s", targetMethod);
+            HasorFramework.debug("MethodInterceptor Cache key :%s", cacheKey.toString());
             //3.获取缓存
             Cache<Object> cacheObject = null;
             if (StringUtils.isBlank(cacheAnno.cacheName()) == true)
@@ -248,10 +248,10 @@ public class CachePlatformListener implements PlatformListener {
             String key = cacheKey.toString();
             Object returnData = null;
             if (cacheObject.hasCache(key) == true) {
-                MoreFramework.debug("the method return data is from Cache.");
+                HasorFramework.debug("the method return data is from Cache.");
                 returnData = cacheObject.fromCache(key);
             } else {
-                MoreFramework.debug("set data to Cache key :" + key);
+                HasorFramework.debug("set data to Cache key :" + key);
                 returnData = invocation.proceed();
                 cacheObject.toCache(key, returnData, cacheAnno.timeout());
             }

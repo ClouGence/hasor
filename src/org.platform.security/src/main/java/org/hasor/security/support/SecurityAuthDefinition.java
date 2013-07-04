@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.security.support;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.context.AppContext;
 import org.hasor.security.SecurityAuth;
 import com.google.inject.Key;
@@ -34,7 +34,7 @@ class SecurityAuthDefinition implements Provider<SecurityAuth> {
         this.authKey = authKey;
     }
     public void initAuth(AppContext appContext) {
-        MoreFramework.info("init SecurityAuth %s bind %s.", authSystem, authKey);
+        HasorFramework.info("init SecurityAuth %s bind %s.", authSystem, authKey);
         this.authObject = appContext.getGuice().getInstance(this.authKey);
         this.authObject.initAuth(appContext);
     }

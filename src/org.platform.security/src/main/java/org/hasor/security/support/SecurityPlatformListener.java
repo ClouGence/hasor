@@ -24,7 +24,7 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.binder.ApiBinder;
 import org.hasor.context.AppContext;
 import org.hasor.context.PlatformListener;
@@ -91,7 +91,7 @@ public class SecurityPlatformListener implements PlatformListener {
         this.secService = appContext.getInstance(InternalSecurityContext.class);
         this.secService.initSecurity(appContext);
         //
-        MoreFramework.info("online ->> security is %s", (this.settings.isEnable() ? "enable." : "disable."));
+        HasorFramework.info("online ->> security is %s", (this.settings.isEnable() ? "enable." : "disable."));
     }
     @Override
     public void destroy(AppContext appContext) {
@@ -109,7 +109,7 @@ public class SecurityPlatformListener implements PlatformListener {
         List<Class<? extends SecurityAuth>> authList = new ArrayList<Class<? extends SecurityAuth>>();
         for (Class<?> cls : authSet) {
             if (SecurityAuth.class.isAssignableFrom(cls) == false) {
-                MoreFramework.warning("loadSecurityAuth : not implemented ISecurityAuth , class=%s", cls);
+                HasorFramework.warning("loadSecurityAuth : not implemented ISecurityAuth , class=%s", cls);
             } else {
                 authList.add((Class<? extends SecurityAuth>) cls);
             }
@@ -128,7 +128,7 @@ public class SecurityPlatformListener implements PlatformListener {
                 authIndex.put(authSystem, authAnno.sort());
                 binder.bind(SecurityAuthDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(authDefine);
                 binder.bind(SecurityAuth.class).annotatedWith(UniqueAnnotations.create()).toProvider(authDefine);
-                MoreFramework.info(authSystem + "[" + MoreFramework.getIndexStr(authAnno.sort()) + "] is SecurityAuth , class=" + MoreFramework.logString(authType));
+                HasorFramework.info(authSystem + "[" + HasorFramework.getIndexStr(authAnno.sort()) + "] is SecurityAuth , class=" + HasorFramework.logString(authType));
             }
         }
     }
@@ -142,7 +142,7 @@ public class SecurityPlatformListener implements PlatformListener {
         List<Class<? extends SecurityAccess>> accessList = new ArrayList<Class<? extends SecurityAccess>>();
         for (Class<?> cls : accessSet) {
             if (SecurityAccess.class.isAssignableFrom(cls) == false) {
-                MoreFramework.warning("loadSecurityAccess : not implemented ISecurityAccess. class=%s", cls);
+                HasorFramework.warning("loadSecurityAccess : not implemented ISecurityAccess. class=%s", cls);
             } else {
                 accessList.add((Class<? extends SecurityAccess>) cls);
             }
@@ -161,7 +161,7 @@ public class SecurityPlatformListener implements PlatformListener {
                 accessIndex.put(authSystem, accessAnno.sort());
                 binder.bind(SecurityAccessDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(accessDefine);
                 binder.bind(SecurityAccess.class).annotatedWith(UniqueAnnotations.create()).toProvider(accessDefine);
-                MoreFramework.info(authSystem + "[" + MoreFramework.getIndexStr(accessAnno.sort()) + "] is SecurityAccess. class=" + MoreFramework.logString(accessType));
+                HasorFramework.info(authSystem + "[" + HasorFramework.getIndexStr(accessAnno.sort()) + "] is SecurityAccess. class=" + HasorFramework.logString(accessType));
             }
         }
     }
@@ -230,7 +230,7 @@ public class SecurityPlatformListener implements PlatformListener {
                 return invocation.proceed();
             String msg = powerAnno.errorMsg();
             if (StringUtils.isBlank(msg) == true)
-                msg = "has no permission Level=" + powerAnno.level().name() + " Code : " + MoreFramework.logString(powerAnno.value());
+                msg = "has no permission Level=" + powerAnno.level().name() + " Code : " + HasorFramework.logString(powerAnno.value());
             throw new PermissionException(msg);
         }
         private boolean doNeedLogin(Power powerAnno, Method method) {

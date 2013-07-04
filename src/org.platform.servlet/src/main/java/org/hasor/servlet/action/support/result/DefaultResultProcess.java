@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.servlet.action.ResultDefine;
 import org.hasor.servlet.action.ResultProcess;
 import org.more.util.StringConvertUtils;
@@ -38,20 +38,20 @@ public class DefaultResultProcess implements ResultProcess {
         Result resultData = (Result) annoData;
         switch (resultData.value()) {
         case Forword:
-            MoreFramework.debug("forword to %s.", result);
+            HasorFramework.debug("forword to %s.", result);
             request.getRequestDispatcher(result.toString()).forward(request, response);
             break;
         case Redirect:
-            MoreFramework.debug("redirect to %s.", result);
+            HasorFramework.debug("redirect to %s.", result);
             response.sendRedirect(result.toString());
             break;
         case Include:
-            MoreFramework.debug("include %s.", result);
+            HasorFramework.debug("include %s.", result);
             request.getRequestDispatcher(result.toString()).include(request, response);
             break;
         case Json:
             String jsonData = JSON.toJSONString(result);
-            MoreFramework.debug("write json %s.", jsonData.length() > 300 ? jsonData.substring(0, 300) : jsonData);
+            HasorFramework.debug("write json %s.", jsonData.length() > 300 ? jsonData.substring(0, 300) : jsonData);
             if (response.isCommitted() == false)
                 response.getWriter().write(jsonData);
             break;

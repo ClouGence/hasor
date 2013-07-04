@@ -17,7 +17,7 @@ package org.hasor.icache.support;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.context.AppContext;
 import org.hasor.icache.Cache;
 import com.google.inject.Binding;
@@ -36,7 +36,7 @@ class ManagedCacheManager {
         for (Entry<String, CacheDefinition> cacheDefinitionEnt : cacheDefinitionMap.entrySet()) {
             cacheDefinitionEnt.getValue().initCache(appContext);
         }
-        MoreFramework.info("managedCacheManager initialized.");
+        HasorFramework.info("managedCacheManager initialized.");
     }
     private Map<String, CacheDefinition> collectCacheDefinitionMap(Injector injector) {
         Map<String, CacheDefinition> cacheDefinitionMap = new HashMap<String, CacheDefinition>();
@@ -48,7 +48,7 @@ class ManagedCacheManager {
         return cacheDefinitionMap;
     }
     public void destroyManager(AppContext appContext) {
-        MoreFramework.info("destroy ManagedCacheManager...");
+        HasorFramework.info("destroy ManagedCacheManager...");
         for (Entry<String, CacheDefinition> cacheDefinitionEnt : cacheDefinitionMap.entrySet()) {
             cacheDefinitionEnt.getValue().destroy(appContext);
         }

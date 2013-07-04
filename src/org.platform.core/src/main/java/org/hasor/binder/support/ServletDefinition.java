@@ -26,7 +26,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.context.AppContext;
 import org.more.util.Iterators;
 import com.google.inject.Key;
@@ -59,7 +59,7 @@ class ServletDefinition extends AbstractServletModuleBinding implements Provider
     }
     @Override
     public String toString() {
-        return MoreFramework.formatString("type %s pattern=%s ,initParams=%s ,uriPatternType=%s",//
+        return HasorFramework.formatString("type %s pattern=%s ,initParams=%s ,uriPatternType=%s",//
                 ServletDefinition.class, getPattern(), getInitParams(), getUriPatternType());
     }
     /*--------------------------------------------------------------------------------------------------------*/

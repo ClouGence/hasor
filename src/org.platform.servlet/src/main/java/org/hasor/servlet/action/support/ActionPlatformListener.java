@@ -17,7 +17,7 @@ package org.hasor.servlet.action.support;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.binder.ApiBinder;
 import org.hasor.context.AppContext;
 import org.hasor.context.PlatformListener;
@@ -117,7 +117,7 @@ public class ActionPlatformListener implements PlatformListener {
         for (Class<?> resultDefineType : resultDefineSet) {
             ResultDefine resultDefineAnno = resultDefineType.getAnnotation(ResultDefine.class);
             if (ResultProcess.class.isAssignableFrom(resultDefineType) == false) {
-                MoreFramework.warning("loadResultDefine : not implemented ResultProcess. class=%s", resultDefineType);
+                HasorFramework.warning("loadResultDefine : not implemented ResultProcess. class=%s", resultDefineType);
             } else {
                 actionBinder.bindResultProcess(resultDefineAnno.value()).toType((Class<? extends ResultProcess>) resultDefineType);
             }
@@ -131,7 +131,7 @@ public class ActionPlatformListener implements PlatformListener {
         this.actionManager = appContext.getInstance(ActionManager.class);
         this.actionManager.initManager(appContext);
         //
-        MoreFramework.info("online ->> action is %s for style %s", (this.settings.isEnable() ? "enable." : "disable."), this.settings.getMode());
+        HasorFramework.info("online ->> action is %s for style %s", (this.settings.isEnable() ? "enable." : "disable."), this.settings.getMode());
     }
     @Override
     public void destroy(AppContext appContext) {

@@ -17,7 +17,7 @@ package org.hasor.servlet.resource.support;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.binder.ApiBinder;
 import org.hasor.context.AppContext;
 import org.hasor.context.PlatformListener;
@@ -51,7 +51,7 @@ public class ResourceLoaderPlatformListener implements PlatformListener {
         List<Class<ResourceLoaderCreator>> resourceLoaderCreatorList = new ArrayList<Class<ResourceLoaderCreator>>();
         for (Class<?> cls : resourceLoaderCreatorSet) {
             if (ResourceLoaderCreator.class.isAssignableFrom(cls) == false) {
-                MoreFramework.warning("loadResourceLoader : not implemented ResourceLoaderCreator. class=%s", cls);
+                HasorFramework.warning("loadResourceLoader : not implemented ResourceLoaderCreator. class=%s", cls);
             } else {
                 resourceLoaderCreatorList.add((Class<ResourceLoaderCreator>) cls);
             }
@@ -62,7 +62,7 @@ public class ResourceLoaderPlatformListener implements PlatformListener {
             ResourceLoaderDefine creatorAnno = creatorType.getAnnotation(ResourceLoaderDefine.class);
             String defineName = creatorAnno.configElement();
             loaderBinder.bindLoaderCreator(defineName, creatorType);
-            MoreFramework.info("loadResourceLoader %s at %s.", defineName, creatorType);
+            HasorFramework.info("loadResourceLoader %s at %s.", defineName, creatorType);
         }
         loaderBinder.configure(event.getGuiceBinder());
     }

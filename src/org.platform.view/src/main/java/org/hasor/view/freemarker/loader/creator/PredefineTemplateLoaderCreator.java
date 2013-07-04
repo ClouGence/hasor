@@ -18,7 +18,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.context.AppContext;
 import org.hasor.view.freemarker.FmTemplateLoader;
 import org.hasor.view.freemarker.FmTemplateLoaderCreator;
@@ -73,7 +73,7 @@ public class PredefineTemplateLoaderCreator implements FmTemplateLoaderCreator {
                 break;
             }
         }
-        MoreFramework.info("loadConfig keys %s", configTemplateLoader.getKeys());
+        HasorFramework.info("loadConfig keys %s", configTemplateLoader.getKeys());
         return configTemplateLoader;
     }
 }

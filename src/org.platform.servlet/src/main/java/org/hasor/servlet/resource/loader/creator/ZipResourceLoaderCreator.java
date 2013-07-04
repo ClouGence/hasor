@@ -16,7 +16,7 @@
 package org.hasor.servlet.resource.loader.creator;
 import java.io.File;
 import java.io.IOException;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.context.AppContext;
 import org.hasor.servlet.resource.ResourceLoader;
 import org.hasor.servlet.resource.ResourceLoaderCreator;
@@ -39,7 +39,7 @@ public class ZipResourceLoaderCreator implements ResourceLoaderCreator {
         File fileBody = new File(body);
         if (fileBody.exists() == false || fileBody.isDirectory())
             return null;
-        MoreFramework.info("loadZip %s -> %s", xmlConfig.getText(), fileBody);
+        HasorFramework.info("loadZip %s -> %s", xmlConfig.getText(), fileBody);
         ZipResourceLoader dirTemplateLoader = new ZipResourceLoader(fileBody.getAbsolutePath());
         return dirTemplateLoader;
     }

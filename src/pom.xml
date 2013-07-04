@@ -14,7 +14,6 @@
 
 		<module>org.platform.core</module>
 		<module>org.platform.icache</module>
-		<module>org.platform.event</module>
 		<module>org.platform.security</module>
 		<module>org.platform.servlet</module>
 		<module>org.platform.view</module>

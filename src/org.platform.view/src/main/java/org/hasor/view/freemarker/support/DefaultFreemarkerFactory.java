@@ -16,7 +16,7 @@
 package org.hasor.view.freemarker.support;
 import java.util.ArrayList;
 import java.util.List;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.context.AppContext;
 import org.hasor.view.freemarker.ConfigurationFactory;
 import org.hasor.view.freemarker.FmTemplateLoader;
@@ -64,7 +64,7 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
             try {
                 configuration.setSharedVariable(fmDefine.getName(), fmDefine.get());
             } catch (Exception e) {
-                MoreFramework.error("%s tag Registration failed!%s", fmDefine.getName(), e);
+                HasorFramework.error("%s tag Registration failed!%s", fmDefine.getName(), e);
             }
     }
     //
@@ -82,7 +82,7 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
             try {
                 configuration.setSharedVariable(fmDefine.getName(), fmDefine.get());
             } catch (Exception e) {
-                MoreFramework.error("%s tag Registration failed!%s", fmDefine.getName(), e);
+                HasorFramework.error("%s tag Registration failed!%s", fmDefine.getName(), e);
             }
     }
     //
@@ -91,12 +91,12 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
         String[] names = appContext.getBeanNames();
         if (names == null || names.length == 0)
             return;
-        MoreFramework.info("Registration Beans %s", new Object[] { names });
+        HasorFramework.info("Registration Beans %s", new Object[] { names });
         for (String key : names)
             try {
                 configuration.setSharedVariable(key, appContext.getBean(key));
             } catch (Exception e) {
-                MoreFramework.error("%s Bean Registration failed!%s", key, e);
+                HasorFramework.error("%s Bean Registration failed!%s", key, e);
             }
         //
         TypeLiteral<FmObjectDefinition> FMOBJECT_DEFS = TypeLiteral.get(FmObjectDefinition.class);
@@ -105,7 +105,7 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
             try {
                 configuration.setSharedVariable(define.getName(), define.get());
             } catch (Exception e) {
-                MoreFramework.error("%s Object Registration failed!%s", define.getName(), e);
+                HasorFramework.error("%s Object Registration failed!%s", define.getName(), e);
             }
         }
     }
@@ -123,9 +123,9 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
             val = val != null ? val.trim() : "";
             try {
                 configuration.setSetting(key, val);
-                MoreFramework.info("apply setting %s = %s.", key, val);
+                HasorFramework.info("apply setting %s = %s.", key, val);
             } catch (TemplateException e) {
-                MoreFramework.error("apply Setting at %s an error. value is %s.%s", key, val, e);
+                HasorFramework.error("apply Setting at %s an error. value is %s.%s", key, val, e);
             }
         }
     }
@@ -156,17 +156,17 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
                         creator = define.get();
                 //
                 if (creator == null) {
-                    MoreFramework.warning("missing %s TemplateLoaderCreator!", key);
+                    HasorFramework.warning("missing %s TemplateLoaderCreator!", key);
                 } else {
                     try {
                         FmTemplateLoader loader = creator.newTemplateLoader(appContext, item);
                         if (loader == null)
-                            MoreFramework.error("%s newTemplateLoader call newTemplateLoader return is null. config is %s.", key, val);
+                            HasorFramework.error("%s newTemplateLoader call newTemplateLoader return is null. config is %s.", key, val);
                         else {
                             templateLoaderList.add(loader);
                         }
                     } catch (Exception e) {
-                        MoreFramework.error("%s newTemplateLoader has error.%s", e);
+                        HasorFramework.error("%s newTemplateLoader has error.%s", e);
                     }
                 }
                 //

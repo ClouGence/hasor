@@ -21,11 +21,6 @@
 			<artifactId>org.platform.icache</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-		<dependency>
-			<groupId>org.more</groupId>
-			<artifactId>org.platform.event</artifactId>
-			<version>0.0.1</version>
-		</dependency>
 		<!-- Json -->
 		<dependency>
 			<groupId>com.alibaba</groupId>

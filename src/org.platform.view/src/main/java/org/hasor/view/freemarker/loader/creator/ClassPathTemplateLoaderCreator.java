@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.view.freemarker.loader.creator;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.context.AppContext;
 import org.hasor.view.freemarker.FmTemplateLoader;
 import org.hasor.view.freemarker.FmTemplateLoaderCreator;
@@ -33,7 +33,7 @@ public class ClassPathTemplateLoaderCreator implements FmTemplateLoaderCreator {
     public FmTemplateLoader newTemplateLoader(AppContext appContext, XmlProperty xmlConfig) {
         ClassPathTemplateLoader classpathLoader = null;
         String body = xmlConfig.getText();
-        MoreFramework.info("loadClassPath %s", body);
+        HasorFramework.info("loadClassPath %s", body);
         if (StringUtils.isBlank(body))
             classpathLoader = new ClassPathTemplateLoader();
         else

@@ -21,7 +21,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.context.AppContext;
 import org.hasor.servlet.action.ActionException;
 import org.more.util.StringUtils;
@@ -67,7 +67,7 @@ class ActionController extends HttpServlet {
             ActionNameSpace nameSpace = actionManager.getNameSpace(actionNS);
             invoke = nameSpace.getActionByName(request.getMethod(), actionMethod);
         } catch (NullPointerException e) {
-            String logInfo = MoreFramework.formatString("%s action is not defined.", actionInvoke);
+            String logInfo = HasorFramework.formatString("%s action is not defined.", actionInvoke);
             throw new ActionException(logInfo);
         }
         //3.Ö´ÐÐµ÷ÓÃ

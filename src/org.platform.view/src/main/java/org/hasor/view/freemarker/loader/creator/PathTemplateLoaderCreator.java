@@ -16,7 +16,7 @@
 package org.hasor.view.freemarker.loader.creator;
 import java.io.File;
 import java.io.IOException;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.context.AppContext;
 import org.hasor.view.freemarker.FmTemplateLoader;
 import org.hasor.view.freemarker.FmTemplateLoaderCreator;
@@ -42,7 +42,7 @@ public class PathTemplateLoaderCreator implements FmTemplateLoaderCreator {
         if (fileBody.exists() == false)
             if (fileBody.mkdirs() == false)
                 return null;
-        MoreFramework.info("loadPath %s -> %s", xmlConfig.getText(), fileBody);
+        HasorFramework.info("loadPath %s -> %s", xmlConfig.getText(), fileBody);
         DirTemplateLoader dirTemplateLoader = new DirTemplateLoader(fileBody);
         return dirTemplateLoader;
     }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.binder.support;
-import static org.hasor.MoreFramework.Platform_LoadPackages;
+import static org.hasor.HasorFramework.Platform_LoadPackages;
 import java.util.ArrayList;
 import java.util.Set;
 import org.hasor.binder.ApiBinder;

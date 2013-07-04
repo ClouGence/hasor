@@ -16,7 +16,7 @@
 package org.hasor.context.core;
 import java.util.ArrayList;
 import org.hasor.Assert;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.binder.ApiBinder;
 import org.hasor.binder.support.ApiBinderModule;
 import org.hasor.context.AppContext;
@@ -75,7 +75,7 @@ public class PlatformAppContext extends AbstractAppContext {
                     for (PlatformListener listener : listenerList) {
                         if (listener == null)
                             continue;
-                        MoreFramework.info("send initialize to : %s", listener.getClass());
+                        HasorFramework.info("send initialize to : %s", listener.getClass());
                         ApiBinder apiBinder = this.newApiBinder(binder);
                         listener.initialize(apiBinder);
                         binder.install((Module) apiBinder);
@@ -97,16 +97,16 @@ public class PlatformAppContext extends AbstractAppContext {
             }
         };
         //4.构建Guice并init 注解类。
-        MoreFramework.info("initialize ...");
+        HasorFramework.info("initialize ...");
         ArrayList<Module> $modules = new ArrayList<Module>();
         $modules.add(systemModule);
         for (Module module : modules)
             $modules.add(module);
         this.guice = this.createInjector($modules.toArray(new Module[$modules.size()]));
         Assert.isNotNull(this.guice, "can not be create Injector.");
-        MoreFramework.info("init modules finish.");
+        HasorFramework.info("init modules finish.");
         //4.发送完成初始化信号
-        MoreFramework.info("send Initialized sign.");
+        HasorFramework.info("send Initialized sign.");
         final PlatformListener[] listenerList = this.getContextListeners();
         if (listenerList != null) {
             for (PlatformListener listener : listenerList) {
@@ -115,7 +115,7 @@ public class PlatformAppContext extends AbstractAppContext {
                 listener.initialized(this);
             }
         }
-        MoreFramework.info("platform started!");
+        HasorFramework.info("platform started!");
     }
     /**销毁方法。*/
     public synchronized void destroyed() {

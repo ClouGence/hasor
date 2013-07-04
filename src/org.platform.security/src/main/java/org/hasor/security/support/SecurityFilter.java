@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.security.AuthRequestProcess;
 import org.hasor.security.AuthSession;
 import org.hasor.security.Digest;
@@ -60,12 +60,12 @@ public class SecurityFilter implements Filter {
     /**初始化*/
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        MoreFramework.info("SecurityFilter started.");
+        HasorFramework.info("SecurityFilter started.");
     }
     /**销毁*/
     @Override
     public void destroy() {
-        MoreFramework.info("SecurityFilter destroy.");
+        HasorFramework.info("SecurityFilter destroy.");
     }
     /**刷新HttpSession中的权限数据*/
     private void refreshHttpSession(HttpServletRequest request) {
@@ -141,7 +141,7 @@ public class SecurityFilter implements Filter {
             this.recoverAuth4Cookie.recoverCookie(secContext, request, response);
             this.refreshHttpSession(request);
         } catch (SecurityException e) {
-            MoreFramework.error("recover AuthSession failure!%s", e);
+            HasorFramework.error("recover AuthSession failure!%s", e);
         }
         //2.请求处理
         String reqPath = request.getRequestURI().substring(request.getContextPath().length());
@@ -174,7 +174,7 @@ public class SecurityFilter implements Filter {
                 throw new PermissionException(reqPath);
             chain.doFilter(request, response);
         } catch (PermissionException e) {
-            MoreFramework.debug("testPermission failure! uri=%s%s", reqPath, e);/*没有权限*/
+            HasorFramework.debug("testPermission failure! uri=%s%s", reqPath, e);/*没有权限*/
             SecurityDispatcher dispatcher = this.secContext.getDispatcher(reqPath);
             if (dispatcher != null)
                 dispatcher.forwardFailure(e).forward(request, response);
@@ -223,7 +223,7 @@ public class SecurityFilter implements Filter {
                                     cookieValue = digest.decrypt(cookieValue, this.settings.getCookieEncryptionKey());
                                     $cookies.get(i).setValue(cookieValue);
                                 } catch (Throwable e) {
-                                    MoreFramework.warning("%s decode cookieValue error. cookieValue=%s", settings.getCookieEncryptionEncodeType(), cookieValue);
+                                    HasorFramework.warning("%s decode cookieValue error. cookieValue=%s", settings.getCookieEncryptionEncodeType(), cookieValue);
                                     $cookies.remove(i);
                                 }
                             }
@@ -261,7 +261,7 @@ public class SecurityFilter implements Filter {
                     cookieValue = digest.encrypt(cookieValue, this.settings.getCookieEncryptionKey());
                     cookie.setValue(cookieValue);
                 } catch (Throwable e) {
-                    MoreFramework.warning("%s encode cookieValue error. cookieValue=%s", this.settings.getCookieEncryptionEncodeType(), cookieValue);
+                    HasorFramework.warning("%s encode cookieValue error. cookieValue=%s", this.settings.getCookieEncryptionEncodeType(), cookieValue);
                 }
             }
             super.addCookie(cookie);

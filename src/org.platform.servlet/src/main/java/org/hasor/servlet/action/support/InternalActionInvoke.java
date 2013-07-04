@@ -27,7 +27,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.context.AppContext;
 import org.hasor.servlet.action.Var;
 import org.more.util.BeanUtils;
@@ -123,7 +123,7 @@ class InternalActionInvoke implements ActionInvoke, ActionInvoke2 {
                     } catch (Exception e) {
                         /*该代码不会被执行，StringConvertUtils的类方法遇到错误之后会自动使用默认值替代*/
                         paramObject = BeanUtils.getDefaultValue(paramClass);
-                        MoreFramework.error("the action request parameter %s Convert Type error %s", paramName, e);
+                        HasorFramework.error("the action request parameter %s Convert Type error %s", paramName, e);
                     }
                 }
                 paramsArray.add(paramObject);

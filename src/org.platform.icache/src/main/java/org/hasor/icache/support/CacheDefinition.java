@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.icache.support;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.context.AppContext;
 import org.hasor.icache.Cache;
 import com.google.inject.Provider;
@@ -36,7 +36,7 @@ class CacheDefinition implements Provider<Cache<?>> {
         return name;
     }
     public void initCache(AppContext appContext) {
-        MoreFramework.info("initCache [%s] bind %s.", name, cacheType);
+        HasorFramework.info("initCache [%s] bind %s.", name, cacheType);
         this.cacheObject = appContext.getGuice().getInstance(this.cacheType);
         this.cacheObject.initCache(appContext);
     }

@@ -16,7 +16,7 @@
 package org.hasor.binder.support;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.context.AppContext;
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -47,7 +47,7 @@ class ListenerDefinition implements Provider<ListenerDefinition> {
     }
     @Override
     public String toString() {
-        return MoreFramework.formatString("type %s listenerKey=%s",//
+        return HasorFramework.formatString("type %s listenerKey=%s",//
                 ListenerDefinition.class, this.listenerKey);
     }
     /*--------------------------------------------------------------------------------------------------------*/

@@ -15,7 +15,7 @@
  */
 package org.hasor.icache.support;
 import java.util.ArrayList;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.context.AppContext;
 import org.hasor.icache.KeyBuilder;
 import com.google.inject.Binding;
@@ -34,7 +34,7 @@ class ManagedKeyBuilderManager {
         for (KeyBuilderDefinition keyBuilderDefinition : keyBuilderDefinitionSet) {
             keyBuilderDefinition.initKeyBuilder(appContext);
         }
-        MoreFramework.info("managedKeyBuilderManager initialized.");
+        HasorFramework.info("managedKeyBuilderManager initialized.");
     }
     private KeyBuilderDefinition[] collectKeyBuilderDefinitionSet(Injector injector) {
         ArrayList<KeyBuilderDefinition> keyBuilderDefinitionList = new ArrayList<KeyBuilderDefinition>();
@@ -47,7 +47,7 @@ class ManagedKeyBuilderManager {
         return keyBuilderDefinitionList.toArray(new KeyBuilderDefinition[keyBuilderDefinitionList.size()]);
     }
     public void destroyManager(AppContext appContext) {
-        MoreFramework.info("destroy ManagedKeyBuilderManager...");
+        HasorFramework.info("destroy ManagedKeyBuilderManager...");
         for (KeyBuilderDefinition cacheDefinition : keyBuilderDefinitionSet) {
             cacheDefinition.destroy(appContext);
         }

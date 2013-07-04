@@ -18,7 +18,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.security.AuthRequestProcess;
 import org.hasor.security.AuthSession;
 import org.hasor.security.SecurityContext;
@@ -46,10 +46,10 @@ public class DefaultAuthRequestProcess extends AbstractProcess implements AuthRe
             authSession = secContext.createAuthSession();
         try {
             authSession.doLogin(formAuth, account, password);/*登入新会话*/
-            MoreFramework.info("login OK. acc=%s , at SessionID= %s", account, authSession.getSessionID());
+            HasorFramework.info("login OK. acc=%s , at SessionID= %s", account, authSession.getSessionID());
             return dispatcher.forwardIndex();
         } catch (SecurityException e) {
-            MoreFramework.warning("login failure! acc=%s , msg= %s", account, e.getMessage());
+            HasorFramework.warning("login failure! acc=%s , msg= %s", account, e.getMessage());
             authSession.close();
             return dispatcher.forwardFailure(e);
         }
@@ -67,10 +67,10 @@ public class DefaultAuthRequestProcess extends AbstractProcess implements AuthRe
             String userCode = authSession.getUserObject().getUserCode();
             try {
                 authSession.doLogout();/*退出会话*/
-                MoreFramework.info("logout OK. userCode=%s , at SessionID= %s", userCode, authSession.getSessionID());
+                HasorFramework.info("logout OK. userCode=%s , at SessionID= %s", userCode, authSession.getSessionID());
                 return dispatcher.forwardLogout();
             } catch (SecurityException e) {
-                MoreFramework.info("logout failure! userCode=%s , at SessionID= %s", userCode, authSession.getSessionID());
+                HasorFramework.info("logout failure! userCode=%s , at SessionID= %s", userCode, authSession.getSessionID());
                 return dispatcher.forwardFailure(e);
             }
         }

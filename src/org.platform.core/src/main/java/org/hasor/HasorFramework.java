@@ -29,7 +29,7 @@ import org.more.util.ArrayUtils;
  * @version : 2013-4-3
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class MoreFramework {
+public abstract class HasorFramework {
     /**装载的class包范畴，逗号间隔.*/
     public static final String Platform_LoadPackages = "framework.loadPackages";
     //    /**框架提供的任务管理器最大可以同时执行的任务数量.*/
@@ -141,6 +141,8 @@ public abstract class MoreFramework {
         }
         return logString.toString();
     }
+    //
+    /***/
     public static String getIndexStr(int index) {
         int allRange = 1000;
         /*-----------------------------------------*/

@@ -16,7 +16,7 @@
 package org.hasor.servlet.resource.loader.creator;
 import java.io.File;
 import java.io.IOException;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.context.AppContext;
 import org.hasor.servlet.resource.ResourceLoader;
 import org.hasor.servlet.resource.ResourceLoaderCreator;
@@ -40,7 +40,7 @@ public class PathResourceLoaderCreator implements ResourceLoaderCreator {
         if (fileBody.exists() == false)
             if (fileBody.mkdirs() == false)
                 return null;
-        MoreFramework.info("loadPath %s -> %s", xmlConfig.getText(), fileBody);
+        HasorFramework.info("loadPath %s -> %s", xmlConfig.getText(), fileBody);
         PathResourceLoader dirTemplateLoader = new PathResourceLoader(fileBody.getAbsolutePath());
         return dirTemplateLoader;
     }

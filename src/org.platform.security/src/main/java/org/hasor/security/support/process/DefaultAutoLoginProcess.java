@@ -18,7 +18,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.security.AuthSession;
 import org.hasor.security.AutoLoginProcess;
 import org.hasor.security.Digest;
@@ -57,7 +57,7 @@ public class DefaultAutoLoginProcess extends AbstractProcess implements AutoLogi
             try {
                 cookieValue = digest.encrypt(cookieValue, this.settings.getCookieEncryptionKey());
             } catch (Throwable e) {
-                MoreFramework.warning("%s encode cookieValue error. cookieValue=%s", this.settings.getCookieEncryptionEncodeType(), cookieValue);
+                HasorFramework.warning("%s encode cookieValue error. cookieValue=%s", this.settings.getCookieEncryptionEncodeType(), cookieValue);
                 return;
             }
         }
@@ -91,7 +91,7 @@ public class DefaultAutoLoginProcess extends AbstractProcess implements AutoLogi
                 String guestAuthSystem = this.settings.getGuestAuthSystem();
                 targetAuthSession.doLogin(guestAuthSystem, guestAccount, guestPassword);/*登陆来宾帐号*/
             } catch (Exception e) {
-                MoreFramework.warning("%s", e);
+                HasorFramework.warning("%s", e);
             }
         }
         return secContext.getCurrentAuthSession();
@@ -106,7 +106,7 @@ public class DefaultAutoLoginProcess extends AbstractProcess implements AutoLogi
             //
             newAuthSession.doLoginCode(authSystem, userCode);
         } catch (SecurityException e) {
-            MoreFramework.warning("recover cookieUser failure! userCode=%s", userCode);
+            HasorFramework.warning("recover cookieUser failure! userCode=%s", userCode);
             if (newAuthSession != null)
                 newAuthSession.close();
         }
@@ -129,7 +129,7 @@ public class DefaultAutoLoginProcess extends AbstractProcess implements AutoLogi
                 try {
                     cookieValue = digest.decrypt(cookieValue, this.settings.getCookieEncryptionKey());
                 } catch (Throwable e) {
-                    MoreFramework.warning("%s decode cookieValue error. cookieValue=%s", this.settings.getCookieEncryptionEncodeType(), cookieValue);
+                    HasorFramework.warning("%s decode cookieValue error. cookieValue=%s", this.settings.getCookieEncryptionEncodeType(), cookieValue);
                     return false;/*解密失败意味着后面的恢复操作都不会用到有效数据因此return.*/
                 }
             }
@@ -143,7 +143,7 @@ public class DefaultAutoLoginProcess extends AbstractProcess implements AutoLogi
             if (infos == null)
                 return false;
         } catch (Exception e) {
-            MoreFramework.debug("parseJson to CookieDataUtil error! %s decode. cookieValue=%s", this.settings.getCookieEncryptionEncodeType(), cookieValue);
+            HasorFramework.debug("parseJson to CookieDataUtil error! %s decode. cookieValue=%s", this.settings.getCookieEncryptionEncodeType(), cookieValue);
             return false;
         }
         boolean returnData = false;
@@ -168,11 +168,11 @@ public class DefaultAutoLoginProcess extends AbstractProcess implements AutoLogi
         for (String authSessionID : authSessionIDSet) {
             try {
                 if (secContext.activateAuthSession(authSessionID) == true) {
-                    MoreFramework.debug("authSession : %s activate!", authSessionID);
+                    HasorFramework.debug("authSession : %s activate!", authSessionID);
                     returnData = true;
                 }
             } catch (SecurityException e) {
-                MoreFramework.warning("%s activate an error.%s", authSessionID, e);
+                HasorFramework.warning("%s activate an error.%s", authSessionID, e);
             }
         }
         return returnData;

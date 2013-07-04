@@ -17,7 +17,7 @@ package org.hasor.security.support;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.context.AppContext;
 import org.hasor.security.SecurityAccess;
 import com.google.inject.Binding;
@@ -36,7 +36,7 @@ class ManagedSecurityAccessManager {
         for (Entry<String, SecurityAccessDefinition> definitionEnt : this.accessDefinitionMap.entrySet()) {
             definitionEnt.getValue().initAccess(appContext);
         }
-        MoreFramework.info("managedSecurityAccessManager initialized.");
+        HasorFramework.info("managedSecurityAccessManager initialized.");
     }
     private Map<String, SecurityAccessDefinition> collectSecurityAccessDefinitionMap(Injector injector) {
         Map<String, SecurityAccessDefinition> accessDefinitionMap = new HashMap<String, SecurityAccessDefinition>();
@@ -48,7 +48,7 @@ class ManagedSecurityAccessManager {
         return accessDefinitionMap;
     }
     public void destroyManager(AppContext appContext) {
-        MoreFramework.info("destroy ManagedSecurityAccessManager...");
+        HasorFramework.info("destroy ManagedSecurityAccessManager...");
         for (Entry<String, SecurityAccessDefinition> definitionEnt : accessDefinitionMap.entrySet()) {
             definitionEnt.getValue().destroyAccess(appContext);
         }

@@ -16,7 +16,7 @@
 package org.hasor.security.support;
 import java.util.HashMap;
 import java.util.Map;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.context.AppContext;
 import org.hasor.security.Digest;
 import org.hasor.setting.SettingListener;
@@ -46,7 +46,7 @@ class InternalCodeDigestManager implements SettingListener {
             this.codeDigestObjectMap.put(name, digestObject);
             return digestObject;
         } catch (Exception e) {
-            MoreFramework.error("create CodeDigest an error!\t%s", e);
+            HasorFramework.error("create CodeDigest an error!\t%s", e);
             return null;
         }
     }

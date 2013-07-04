@@ -25,7 +25,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.hasor.Assert;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.binder.FilterPipeline;
 import org.hasor.context.AppContext;
 import com.google.inject.Inject;
@@ -52,12 +52,12 @@ public class RuntimeFilter implements Filter {
         }
         /*1.初始化执行周期管理器。*/
         this.filterPipeline.initPipeline(this.appContext);
-        MoreFramework.info("PlatformFilter started.");
+        HasorFramework.info("PlatformFilter started.");
     }
     //
     /** 销毁 */
     public void destroy() {
-        MoreFramework.info("executeCycle destroyCycle.");
+        HasorFramework.info("executeCycle destroyCycle.");
         if (this.filterPipeline != null)
             this.filterPipeline.destroyPipeline(this.appContext);
     }
@@ -66,16 +66,16 @@ public class RuntimeFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest httpReq = (HttpServletRequest) request;
         final HttpServletResponse httpRes = (HttpServletResponse) response;
-        MoreFramework.debug("at http request : %s", httpReq.getRequestURI());
+        HasorFramework.debug("at http request : %s", httpReq.getRequestURI());
         try {
             //执行.
             this.beforeRequest(appContext, httpReq, httpRes);
             this.processFilterPipeline(httpReq, httpRes, chain);
         } catch (IOException e) {
-            MoreFramework.warning("execFilterPipeline IOException %s.", e);
+            HasorFramework.warning("execFilterPipeline IOException %s.", e);
             throw e;
         } catch (ServletException e) {
-            MoreFramework.warning("execFilterPipeline ServletException %s.", e.getCause());
+            HasorFramework.warning("execFilterPipeline ServletException %s.", e.getCause());
             throw e;
         } finally {
             this.afterResponse(appContext, httpReq, httpRes);

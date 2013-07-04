@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.icache.support;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.context.AppContext;
 import org.hasor.icache.KeyBuilder;
 import com.google.inject.Key;
@@ -37,7 +37,7 @@ class KeyBuilderDefinition implements Provider<KeyBuilder> {
         return this.keyBuilderKey;
     }
     public void initKeyBuilder(final AppContext appContext) {
-        MoreFramework.info("initKeyBuilder %s mappingTo %s.", type, keyBuilderKey);
+        HasorFramework.info("initKeyBuilder %s mappingTo %s.", type, keyBuilderKey);
         this.keyBuilderObject = appContext.getGuice().getInstance(this.keyBuilderKey);
         this.keyBuilderObject.initKeyBuilder(appContext);
     }

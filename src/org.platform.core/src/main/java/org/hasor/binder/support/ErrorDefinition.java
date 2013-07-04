@@ -18,7 +18,7 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.binder.ErrorHook;
 import org.hasor.context.AppContext;
 import com.google.inject.Key;
@@ -60,7 +60,7 @@ class ErrorDefinition implements Provider<ErrorDefinition> {
     }
     @Override
     public String toString() {
-        return MoreFramework.formatString("type %s initParams=%s ,uriPatternType=%s",//
+        return HasorFramework.formatString("type %s initParams=%s ,uriPatternType=%s",//
                 ErrorDefinition.class, getInitParams(), this.errorType);
     }
     /*--------------------------------------------------------------------------------------------------------*/

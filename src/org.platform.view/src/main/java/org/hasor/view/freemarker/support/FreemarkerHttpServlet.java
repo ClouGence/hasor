@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.view.freemarker.FreemarkerManager;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -84,11 +84,11 @@ public class FreemarkerHttpServlet extends HttpServlet {
                 throw new ServletException(e);
                 /**打印到控制台或日志*/
             case PrintOnConsole:
-                MoreFramework.error("%s", e);
+                HasorFramework.error("%s", e);
                 break;
             /**忽略，仅仅产生一条警告消息*/
             case Warning:
-                MoreFramework.warning("process Template error -> requestURI is %s ,message is %s", requestURI, e.getMessage());
+                HasorFramework.warning("process Template error -> requestURI is %s ,message is %s", requestURI, e.getMessage());
                 break;
             /**打印到页面*/
             case PrintOnPage:

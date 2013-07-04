@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.icache.support;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.context.AppContext;
 import org.hasor.icache.Cache;
 import org.hasor.icache.CacheManager;
@@ -43,11 +43,11 @@ class DefaultCacheManager implements CacheManager {
         //
         this.defaultCache = appContext.getGuice().getInstance(Cache.class);
         this.defaultKeyBuilder = appContext.getGuice().getInstance(KeyBuilder.class);
-        MoreFramework.info("CacheManager initialized.");
+        HasorFramework.info("CacheManager initialized.");
     }
     @Override
     public void destroyManager(AppContext appContext) {
-        MoreFramework.info("destroy CacheManager...");
+        HasorFramework.info("destroy CacheManager...");
         this.cacheManager.destroyManager(this.appContext);
         this.keyBuilderManager.destroyManager(this.appContext);
     }
@@ -59,7 +59,7 @@ class DefaultCacheManager implements CacheManager {
     public Cache<Object> getCache(String cacheName) {
         Cache<Object> icache = this.cacheManager.getCache(cacheName, this.appContext);
         if (icache == null) {
-            MoreFramework.warning("use defaultCache . '%s' is not exist.", cacheName);
+            HasorFramework.warning("use defaultCache . '%s' is not exist.", cacheName);
             return this.defaultCache;
         }
         return icache;
@@ -68,7 +68,7 @@ class DefaultCacheManager implements CacheManager {
     public KeyBuilder getKeyBuilder(Class<?> sampleType) {
         KeyBuilder keyBuilder = this.keyBuilderManager.getKeyBuilder(sampleType, this.appContext);
         if (keyBuilder == null) {
-            MoreFramework.warning("use defaultKeyBuilder . '%s' is not register.", sampleType);
+            HasorFramework.warning("use defaultKeyBuilder . '%s' is not register.", sampleType);
             return this.defaultKeyBuilder;
         }
         return keyBuilder;

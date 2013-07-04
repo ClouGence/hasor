@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.binder.ApiBinder;
 import org.hasor.context.AppContext;
 import org.hasor.context.PlatformListener;
@@ -52,7 +52,7 @@ public class FreemarkerPlatformListener implements PlatformListener {
         try {
             event.getGuiceBinder().bind(ConfigurationFactory.class).to((Class<? extends ConfigurationFactory>) Class.forName(configurationFactory)).asEagerSingleton();
         } catch (Exception e) {
-            MoreFramework.error("bind configurationFactory error %s", e);
+            HasorFramework.error("bind configurationFactory error %s", e);
             event.getGuiceBinder().bind(ConfigurationFactory.class).to(DefaultFreemarkerFactory.class).asEagerSingleton();
         }
         //
@@ -77,7 +77,7 @@ public class FreemarkerPlatformListener implements PlatformListener {
         List<Class<FmTemplateLoaderCreator>> templateLoaderCreatorList = new ArrayList<Class<FmTemplateLoaderCreator>>();
         for (Class<?> cls : templateLoaderCreatorSet) {
             if (FmTemplateLoaderCreator.class.isAssignableFrom(cls) == false) {
-                MoreFramework.warning("loadTemplateLoader : not implemented ITemplateLoaderCreator. class=%s", cls);
+                HasorFramework.warning("loadTemplateLoader : not implemented ITemplateLoaderCreator. class=%s", cls);
             } else {
                 templateLoaderCreatorList.add((Class<FmTemplateLoaderCreator>) cls);
             }
@@ -88,7 +88,7 @@ public class FreemarkerPlatformListener implements PlatformListener {
             FmTemplateLoaderDefine creatorAnno = creatorType.getAnnotation(FmTemplateLoaderDefine.class);
             String defineName = creatorAnno.configElement();
             freemarkerBinder.bindTemplateLoaderCreator(defineName, creatorType);
-            MoreFramework.info("loadTemplateLoader %s at %s.", defineName, creatorType);
+            HasorFramework.info("loadTemplateLoader %s at %s.", defineName, creatorType);
         }
         freemarkerBinder.configure(event.getGuiceBinder());
     }
@@ -102,7 +102,7 @@ public class FreemarkerPlatformListener implements PlatformListener {
         List<Class<Tag>> fmTagList = new ArrayList<Class<Tag>>();
         for (Class<?> cls : fmTagSet) {
             if (Tag.class.isAssignableFrom(cls) == false) {
-                MoreFramework.warning("loadFmTag : not implemented IFmTag or IFmTag2. class=%s", cls);
+                HasorFramework.warning("loadFmTag : not implemented IFmTag or IFmTag2. class=%s", cls);
             } else {
                 fmTagList.add((Class<Tag>) cls);
             }
@@ -113,7 +113,7 @@ public class FreemarkerPlatformListener implements PlatformListener {
             FmTag fmTagAnno = fmTagType.getAnnotation(FmTag.class);
             String tagName = fmTagAnno.value();
             freemarkerBinder.bindTag(tagName, fmTagType);
-            MoreFramework.info("loadFmTag %s at %s.", tagName, fmTagType);
+            HasorFramework.info("loadFmTag %s at %s.", tagName, fmTagType);
         }
         freemarkerBinder.configure(event.getGuiceBinder());
     }
@@ -133,7 +133,7 @@ public class FreemarkerPlatformListener implements PlatformListener {
                         FmMethod fmMethodAnno = fmMethod.getAnnotation(FmMethod.class);
                         String funName = fmMethodAnno.value();
                         freemarkerBinder.bindMethod(funName, fmMethod);
-                        MoreFramework.info("loadFmMethod %s at %s.", funName, fmMethod);
+                        HasorFramework.info("loadFmMethod %s at %s.", funName, fmMethod);
                     }
                 }
             } catch (NoClassDefFoundError e) {/**/}
@@ -148,13 +148,13 @@ public class FreemarkerPlatformListener implements PlatformListener {
         appContext.getSettings().addSettingsListener(this.freemarkerSettings);
         this.freemarkerManager = appContext.getInstance(FreemarkerManager.class);
         this.freemarkerManager.initManager(appContext);
-        MoreFramework.info("online ->> freemarker is %s", (this.freemarkerSettings.isEnable() ? "enable." : "disable."));
+        HasorFramework.info("online ->> freemarker is %s", (this.freemarkerSettings.isEnable() ? "enable." : "disable."));
     }
     @Override
     public void destroy(AppContext appContext) {
         appContext.getSettings().removeSettingsListener(this.freemarkerSettings);
         this.freemarkerSettings = null;
         this.freemarkerManager.destroyManager(appContext);
-        MoreFramework.info("freemarker is destroy.");
+        HasorFramework.info("freemarker is destroy.");
     }
 }

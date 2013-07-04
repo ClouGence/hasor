@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.general;
-import static org.hasor.MoreFramework.getIndexStr;
+import static org.hasor.HasorFramework.getIndexStr;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -25,7 +25,7 @@ import java.util.Set;
 import javax.servlet.Filter;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.binder.ApiBinder;
 import org.hasor.binder.ErrorHook;
 import org.hasor.binder.ApiBinder.BeanBindingBuilder;
@@ -45,7 +45,7 @@ public class GeneralPlatformListener implements PlatformListener {
     @Override
     public void initialize(ApiBinder event) {
         if (event.getSettings().getBoolean("framework.generalSupport") == false) {
-            MoreFramework.warning("init General false!");
+            HasorFramework.warning("init General false!");
             return;
         }
         //1.Bean
@@ -69,11 +69,11 @@ public class GeneralPlatformListener implements PlatformListener {
             Bean annoBean = beanClass.getAnnotation(Bean.class);
             String[] names = annoBean.value();
             if (ArrayUtils.isBlank(names)) {
-                MoreFramework.warning("missing Bean name %s", beanClass);
+                HasorFramework.warning("missing Bean name %s", beanClass);
                 continue;
             }
             BeanBindingBuilder beanBuilder = event.newBean(names[0]);
-            MoreFramework.info("loadBean %s bind %s", names, beanClass);
+            HasorFramework.info("loadBean %s bind %s", names, beanClass);
             for (int i = 1; i < names.length; i++)
                 beanBuilder.aliasName(names[i]);
             beanBuilder.bindType(beanClass);
@@ -89,7 +89,7 @@ public class GeneralPlatformListener implements PlatformListener {
         List<Class<? extends Filter>> webFilterList = new ArrayList<Class<? extends Filter>>();
         for (Class<?> cls : webFilterSet) {
             if (Filter.class.isAssignableFrom(cls) == false) {
-                MoreFramework.warning("not implemented Filter :%s", cls);
+                HasorFramework.warning("not implemented Filter :%s", cls);
             } else {
                 webFilterList.add((Class<? extends Filter>) cls);
             }
@@ -112,7 +112,7 @@ public class GeneralPlatformListener implements PlatformListener {
             event.filter(null, filterAnno.value()).through(filterType, initMap);
             //
             String filterName = StringUtils.isBlank(filterAnno.filterName()) ? filterType.getSimpleName() : filterAnno.filterName();
-            MoreFramework.info("loadFilter %s[%s] bind %s on %s.", filterName, getIndexStr(filterAnno.sort()), filterType, filterAnno.value());
+            HasorFramework.info("loadFilter %s[%s] bind %s on %s.", filterName, getIndexStr(filterAnno.sort()), filterType, filterAnno.value());
         }
     }
     //
@@ -125,7 +125,7 @@ public class GeneralPlatformListener implements PlatformListener {
         List<Class<? extends HttpServlet>> webServletList = new ArrayList<Class<? extends HttpServlet>>();
         for (Class<?> cls : webServletSet) {
             if (HttpServlet.class.isAssignableFrom(cls) == false) {
-                MoreFramework.warning("not implemented HttpServlet :%s", cls);
+                HasorFramework.warning("not implemented HttpServlet :%s", cls);
             } else {
                 webServletList.add((Class<? extends HttpServlet>) cls);
             }
@@ -149,7 +149,7 @@ public class GeneralPlatformListener implements PlatformListener {
             //
             String servletName = StringUtils.isBlank(servletAnno.servletName()) ? servletType.getSimpleName() : servletAnno.servletName();
             int sortInt = servletAnno.loadOnStartup();
-            MoreFramework.info("loadServlet %s[%s] bind %s on %s.", servletName, getIndexStr(sortInt), servletType, servletAnno.value());
+            HasorFramework.info("loadServlet %s[%s] bind %s on %s.", servletName, getIndexStr(sortInt), servletType, servletAnno.value());
         }
     }
     //
@@ -162,7 +162,7 @@ public class GeneralPlatformListener implements PlatformListener {
         List<Class<? extends ErrorHook>> webErrorList = new ArrayList<Class<? extends ErrorHook>>();
         for (Class<?> cls : webErrorSet) {
             if (ErrorHook.class.isAssignableFrom(cls) == false) {
-                MoreFramework.warning("not implemented ErrorHook :%s", cls);
+                HasorFramework.warning("not implemented ErrorHook :%s", cls);
             } else {
                 webErrorList.add((Class<? extends ErrorHook>) cls);
             }
@@ -185,7 +185,7 @@ public class GeneralPlatformListener implements PlatformListener {
             event.error(errorAnno.value()).bind(errorHookType, initMap);
             //
             int sortInt = errorAnno.sort();
-            MoreFramework.info("loadErrorHook [%s] of %s.", getIndexStr(sortInt), errorHookType);
+            HasorFramework.info("loadErrorHook [%s] of %s.", getIndexStr(sortInt), errorHookType);
         }
     }
     //
@@ -198,7 +198,7 @@ public class GeneralPlatformListener implements PlatformListener {
         List<Class<? extends HttpSessionListener>> sessionListenerList = new ArrayList<Class<? extends HttpSessionListener>>();
         for (Class<?> cls : sessionListenerSet) {
             if (HttpSessionListener.class.isAssignableFrom(cls) == false) {
-                MoreFramework.warning("not implemented HttpSessionListener :%s", cls);
+                HasorFramework.warning("not implemented HttpSessionListener :%s", cls);
             } else {
                 sessionListenerList.add((Class<? extends HttpSessionListener>) cls);
             }
@@ -220,7 +220,7 @@ public class GeneralPlatformListener implements PlatformListener {
             //
             WebSessionListener anno = sessionListener.getAnnotation(WebSessionListener.class);
             int sortInt = anno.sort();
-            MoreFramework.info("loadSessionListener [%s] bind %s.", getIndexStr(sortInt), sessionListener);
+            HasorFramework.info("loadSessionListener [%s] bind %s.", getIndexStr(sortInt), sessionListener);
         }
     }
     //

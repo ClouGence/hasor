@@ -30,7 +30,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.context.AppContext;
 import org.hasor.servlet.resource.ResourceLoader;
 import org.hasor.servlet.resource.ResourceLoaderCreator;
@@ -79,17 +79,17 @@ public class ResourceLoaderFilter implements Filter {
                     break;
                 }
             if (creator == null) {
-                MoreFramework.warning("missing %s ResourceLoaderCreator!", loaderType);
+                HasorFramework.warning("missing %s ResourceLoaderCreator!", loaderType);
             } else {
                 try {
                     ResourceLoader loader = creator.newInstance(this.appContext, item.config);
                     if (loader == null)
-                        MoreFramework.error("%s ResourceLoaderCreator call newInstance return is null. config is %s.", loaderType, configVal);
+                        HasorFramework.error("%s ResourceLoaderCreator call newInstance return is null. config is %s.", loaderType, configVal);
                     else {
                         resourceLoaderList.add(loader);
                     }
                 } catch (Exception e) {
-                    MoreFramework.error("%s ResourceLoaderCreator has error.%s", e);
+                    HasorFramework.error("%s ResourceLoaderCreator has error.%s", e);
                 }
             }
             //
@@ -99,7 +99,7 @@ public class ResourceLoaderFilter implements Filter {
         //4.»º´æÂ·¾¶
         this.cacheDir = new File(this.appContext.getWorkSpace().getCacheDir(this.settings.getCacheDir()));
         if (!chekcCacheDir()) {
-            MoreFramework.warning("init ResourceLoaderFilter error can not create %s", this.cacheDir);
+            HasorFramework.warning("init ResourceLoaderFilter error can not create %s", this.cacheDir);
             int i = 0;
             while (true) {
                 this.cacheDir = new File(this.appContext.getWorkSpace().getCacheDir(this.settings.getCacheDir() + "_" + String.valueOf(i)));
@@ -107,7 +107,7 @@ public class ResourceLoaderFilter implements Filter {
                     break;
             }
         }
-        MoreFramework.info("use cacheDir %s", this.cacheDir);
+        HasorFramework.info("use cacheDir %s", this.cacheDir);
     }
     //
     private boolean chekcCacheDir() {
@@ -129,7 +129,7 @@ public class ResourceLoaderFilter implements Filter {
                     InputStream inStream = ResourcesUtils.getResourceAsStream(resourceURL);
                     this.mimeType.loadStream(inStream, "utf-8");
                 } catch (Exception e) {
-                    MoreFramework.warning("loadMimeType error at %s", resourceURL);
+                    HasorFramework.warning("loadMimeType error at %s", resourceURL);
                 }
         return this.mimeType;
     }

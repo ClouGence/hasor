@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.hasor.Assert;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.setting.SettingListener;
 import org.hasor.setting.Settings;
 import org.more.global.Global;
@@ -67,7 +67,7 @@ public class PlatformSettings extends Global implements Settings {
             this.resourceWatch.setDaemon(true);
             this.resourceWatch.start();
         } catch (Exception e) {
-            MoreFramework.error("resourceWatch start error, on : %s Settings file !%s", appSettingsName1, e);
+            HasorFramework.error("resourceWatch start error, on : %s Settings file !%s", appSettingsName1, e);
         }
     }
     //
@@ -139,11 +139,11 @@ public class PlatformSettings extends Global implements Settings {
         try {
             URL configURL = ResourcesUtils.getResource(appSettingsName1);
             if (configURL != null) {
-                MoreFramework.info("load ‘%s’", configURL);
+                HasorFramework.info("load ‘%s’", configURL);
                 loadConfig(configURL.toURI(), encoding, toMap);
             }
         } catch (Exception e) {
-            MoreFramework.error("load ‘%s’ error!%s", appSettingsName1, e);
+            HasorFramework.error("load ‘%s’ error!%s", appSettingsName1, e);
         }
     }
     /**装载静态配置。*/
@@ -154,12 +154,12 @@ public class PlatformSettings extends Global implements Settings {
             List<URL> streamList = ResourcesUtils.getResources(appSettingsName2);
             if (streamList != null) {
                 for (URL resURL : streamList) {
-                    MoreFramework.info("load ‘%s’", resURL);
+                    HasorFramework.info("load ‘%s’", resURL);
                     loadConfig(resURL.toURI(), encoding, toMap);
                 }
             }
         } catch (Exception e) {
-            MoreFramework.error("load ‘%s’ error!%s", appSettingsName2, e);
+            HasorFramework.error("load ‘%s’ error!%s", appSettingsName2, e);
         }
     }
     /**装载配置映射，参数是参照的映射配置。*/
@@ -176,19 +176,19 @@ public class PlatformSettings extends Global implements Settings {
                         String $key = prop.get(key).toLowerCase();
                         Object value = referConfig.get($key);
                         if (value == null) {
-                            MoreFramework.warning("%s mapping to %s value is null.", $propxyKey, $key);
+                            HasorFramework.warning("%s mapping to %s value is null.", $propxyKey, $key);
                             continue;
                         }
                         value = (value instanceof XmlProperty) ? ((XmlProperty) value).getText() : value;
                         /*忽略冲突的映射*/
                         if (referConfig.containsKey($propxyKey) == true) {
-                            MoreFramework.error("mapping conflict! %s has this key.", $propxyKey);
+                            HasorFramework.error("mapping conflict! %s has this key.", $propxyKey);
                         } else
                             referConfig.put($propxyKey, value);
                     }
                 }
         } catch (Exception e) {
-            MoreFramework.error("load ‘%s’ error!%s", appSettingsName3, e);
+            HasorFramework.error("load ‘%s’ error!%s", appSettingsName3, e);
         }
     }
     /**loadConfig装载配置*/
@@ -232,7 +232,7 @@ public class PlatformSettings extends Global implements Settings {
                     loadTo.put($key, $var);
             }
         } catch (Exception e) {
-            MoreFramework.warning("namespcae [%s] no support!", configURI);
+            HasorFramework.warning("namespcae [%s] no support!", configURI);
         }
     }
     /**当重新载入配置文件时*/

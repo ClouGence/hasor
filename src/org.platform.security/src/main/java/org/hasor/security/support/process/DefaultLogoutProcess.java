@@ -18,7 +18,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.security.AuthSession;
 import org.hasor.security.LogoutProcess;
 import org.hasor.security.SecurityContext;
@@ -44,10 +44,10 @@ public class DefaultLogoutProcess extends AbstractProcess implements LogoutProce
             String userCode = authSession.getUserObject().getUserCode();
             try {
                 authSession.doLogout();/*ÍË³ö»á»°*/
-                MoreFramework.info("logout OK. userCode=%s , at SessionID= %s", userCode, authSession.getSessionID());
+                HasorFramework.info("logout OK. userCode=%s , at SessionID= %s", userCode, authSession.getSessionID());
                 return dispatcher.forwardLogout();
             } catch (SecurityException e) {
-                MoreFramework.info("logout failure! userCode=%s , at SessionID= %s", userCode, authSession.getSessionID());
+                HasorFramework.info("logout failure! userCode=%s , at SessionID= %s", userCode, authSession.getSessionID());
                 return dispatcher.forwardFailure(e);
             }
         }

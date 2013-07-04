@@ -17,7 +17,7 @@ package org.hasor.security.support;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.context.AppContext;
 import org.hasor.security.SecurityAuth;
 import com.google.inject.Binding;
@@ -36,7 +36,7 @@ class ManagedSecurityAuthManager {
         for (Entry<String, SecurityAuthDefinition> definitionEnt : this.authDefinitionMap.entrySet()) {
             definitionEnt.getValue().initAuth(appContext);
         }
-        MoreFramework.info("managedSecurityAuthManager initialized.");
+        HasorFramework.info("managedSecurityAuthManager initialized.");
     }
     private Map<String, SecurityAuthDefinition> collectSecurityAuthDefinitionMap(Injector injector) {
         Map<String, SecurityAuthDefinition> authDefinitionMap = new HashMap<String, SecurityAuthDefinition>();
@@ -48,7 +48,7 @@ class ManagedSecurityAuthManager {
         return authDefinitionMap;
     }
     public void destroyManager(AppContext appContext) {
-        MoreFramework.info("destroy ManagedSecurityAuthManager...");
+        HasorFramework.info("destroy ManagedSecurityAuthManager...");
         for (Entry<String, SecurityAuthDefinition> definitionEnt : authDefinitionMap.entrySet()) {
             definitionEnt.getValue().destroyAuth(appContext);
         }

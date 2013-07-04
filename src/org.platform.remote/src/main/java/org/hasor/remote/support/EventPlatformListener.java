@@ -17,7 +17,7 @@ package org.hasor.remote.support;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.binder.ApiBinder;
 import org.hasor.context.AppContext;
 import org.hasor.context.PlatformListener;
@@ -53,15 +53,15 @@ public class EventPlatformListener implements PlatformListener {
             return;
         for (Class<?> cls : listenerSet) {
             if (Listener.class.isAssignableFrom(cls) == false) {
-                MoreFramework.warning("loadListener : not implemented EventListener of type %s.", cls);
+                HasorFramework.warning("loadListener : not implemented EventListener of type %s.", cls);
             } else {
-                MoreFramework.info("find listener %s.", cls);
+                HasorFramework.info("find listener %s.", cls);
                 this.eventListener.add((Class<? extends Listener>) cls);
             }
         }
         this.loadListener(appContext);
         this.eventManager.throwEvent(EventManager.OnStart);
-        MoreFramework.info("EventManager is started.");
+        HasorFramework.info("EventManager is started.");
     }
     //
     /*×°ÔØListener*/
@@ -72,17 +72,17 @@ public class EventPlatformListener implements PlatformListener {
                 Listener eventListener = (Listener) appContext.getInstance(listenerType);
                 String[] vals = annoListener.value();
                 if (ArrayUtils.isBlank(vals)) {
-                    MoreFramework.warning("missing eventType at listener %s.", new Object[] { vals });
+                    HasorFramework.warning("missing eventType at listener %s.", new Object[] { vals });
                     continue;
                 }
                 for (String eventType : vals) {
                     if (StringUtils.isBlank(eventType) == true)
                         continue;
-                    MoreFramework.info("listener %s is listening on %s.", listenerType, eventType);
+                    HasorFramework.info("listener %s is listening on %s.", listenerType, eventType);
                     this.eventManager.addEventListener(eventType, eventListener);
                 }
             } catch (Exception e) {
-                MoreFramework.warning("addEventListener error.%s", e);
+                HasorFramework.warning("addEventListener error.%s", e);
             }
         }
     }
@@ -91,6 +91,6 @@ public class EventPlatformListener implements PlatformListener {
         this.eventManager.throwEvent(EventManager.OnDestroy);
         if (this.eventManager instanceof ManagerLife)
             ((ManagerLife) this.eventManager).destroyLife(appContext);
-        MoreFramework.info("EventManager is destroy.");
+        HasorFramework.info("EventManager is destroy.");
     }
 }

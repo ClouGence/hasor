@@ -15,7 +15,7 @@
  */
 package org.hasor.servlet.resource.loader.creator;
 import java.io.IOException;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.context.AppContext;
 import org.hasor.servlet.resource.ResourceLoader;
 import org.hasor.servlet.resource.ResourceLoaderCreator;
@@ -34,7 +34,7 @@ public class ClassPathResourceLoaderCreator implements ResourceLoaderCreator {
     public ResourceLoader newInstance(AppContext appContext, XmlProperty xmlConfig) throws IOException {
         String config = xmlConfig.getText();
         config = StringUtils.isBlank(config) ? "/" : config;
-        MoreFramework.info("loadClassPath %s", config);
+        HasorFramework.info("loadClassPath %s", config);
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         ClassPathResourceLoader classpathLoader = new ClassPathResourceLoader(config, loader);
         return classpathLoader;

@@ -25,7 +25,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.context.AppContext;
 import org.more.util.Iterators;
 import com.google.inject.Key;
@@ -76,7 +76,7 @@ class FilterDefinition extends AbstractServletModuleBinding implements Provider<
     }
     @Override
     public String toString() {
-        return MoreFramework.formatString("type %s pattern=%s ,initParams=%s ,uriPatternType=%s",//
+        return HasorFramework.formatString("type %s pattern=%s ,initParams=%s ,uriPatternType=%s",//
                 FilterDefinition.class, getPattern(), getInitParams(), getUriPatternType());
     }
     /*--------------------------------------------------------------------------------------------------------*/

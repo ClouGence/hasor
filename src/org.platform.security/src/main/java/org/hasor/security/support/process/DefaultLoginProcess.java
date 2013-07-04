@@ -18,7 +18,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.security.AuthSession;
 import org.hasor.security.LoginProcess;
 import org.hasor.security.SecurityContext;
@@ -46,10 +46,10 @@ public class DefaultLoginProcess extends AbstractProcess implements LoginProcess
             authSession = secContext.createAuthSession();
         try {
             authSession.doLogin(formAuth, account, password);/*登入新会话*/
-            MoreFramework.info("login OK. acc=%s , at SessionID= %s", account, authSession.getSessionID());
+            HasorFramework.info("login OK. acc=%s , at SessionID= %s", account, authSession.getSessionID());
             return dispatcher.forwardIndex();
         } catch (SecurityException e) {
-            MoreFramework.warning("login failure! acc=%s , msg= %s", account, e.getMessage());
+            HasorFramework.warning("login failure! acc=%s , msg= %s", account, e.getMessage());
             authSession.close();
             return dispatcher.forwardFailure(e);
         }

@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.hasor.Assert;
-import org.hasor.MoreFramework;
+import org.hasor.HasorFramework;
 import org.hasor.security.AuthSession;
 import org.hasor.security.Permission;
 import org.hasor.security.SecurityAccess;
@@ -88,7 +88,7 @@ class AbstractAuthSession implements AuthSession {
             this.authSessionData.setLastTime(System.currentTimeMillis());
             this.reloadPermission();/*重载权限*/
             this.refreshCacheTime();
-            MoreFramework.debug("%s :doLogin authSystem=%s ,account=%s ,password=%s", this.sessionID, authSystem, account, password);
+            HasorFramework.debug("%s :doLogin authSystem=%s ,account=%s ,password=%s", this.sessionID, authSystem, account, password);
             {
                 HashMap<String, String> attr = new HashMap<String, String>();
                 attr.put("Type", "doLogin");
@@ -122,7 +122,7 @@ class AbstractAuthSession implements AuthSession {
             this.authSessionData.setLastTime(System.currentTimeMillis());
             this.reloadPermission();/*重载权限*/
             this.refreshCacheTime();
-            MoreFramework.debug("%s :doLogin authSystem=%s ,userCode=%s", this.sessionID, authSystem, userCode);
+            HasorFramework.debug("%s :doLogin authSystem=%s ,userCode=%s", this.sessionID, authSystem, userCode);
             {
                 HashMap<String, String> attr = new HashMap<String, String>();
                 attr.put("Type", "doLoginCode");
@@ -142,7 +142,7 @@ class AbstractAuthSession implements AuthSession {
         this.userInfo = null;
         this.permissionMap.clear();
         this.getSecurityContext().removeSessionData(this.sessionID);
-        MoreFramework.debug("%s :doLogout!", this.sessionID);
+        HasorFramework.debug("%s :doLogout!", this.sessionID);
     };
     @Override
     public String getAuthSystem() {
@@ -201,7 +201,7 @@ class AbstractAuthSession implements AuthSession {
             }
             return this.userInfo;
         } catch (SecurityException e) {
-            MoreFramework.debug("%s", e);
+            HasorFramework.debug("%s", e);
             return null;
         }
     }
