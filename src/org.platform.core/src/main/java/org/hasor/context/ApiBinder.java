@@ -15,26 +15,14 @@
  */
 package org.hasor.context;
 import java.util.Set;
-import com.google.inject.Injector;
+import com.google.inject.Binder;
+import com.google.inject.binder.LinkedBindingBuilder;
 /**
- * 应用程序上下文
- * @version : 2013-3-26
+ * ApiBinder
+ * @version : 2013-4-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AppContext {
-    /**通过名获取Bean的类型。*/
-    public <T> Class<T> getBeanType(String name);
-    /**如果存在目标类型的Bean则返回Bean的名称。*/
-    public String getBeanName(Class<?> targetClass);
-    /**获取已经注册的Bean名称。*/
-    public String[] getBeanNames();
-    /**获取bean信息。*/
-    public BeanInfo getBeanInfo(String name);
-    /**通过名称创建bean实例，使用guice。*/
-    public <T> T getBean(String name);
-    /**通过类型创建该类实例，使用guice*/
-    public <T> T getInstance(Class<T> beanType);
-    //
+public interface ApiBinder {
     /**获取上下文*/
     public Object getContext();
     /**获取系统启动时间*/
@@ -45,10 +33,17 @@ public interface AppContext {
     public WorkSpace getWorkSpace();
     /**获取环境变量操作接口。*/
     public Environment getEnvironment();
-    /**同步方式抛出事件。当方法返回时已经全部处理完成事件分发。*/
-    public EventManager getEventManager();
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
     public Set<Class<?>> getClassSet(Class<?> featureType);
-    /**获得Guice环境。*/
-    public Injector getGuice();
+    /**获取用于初始化Guice的Binder。*/
+    public Binder getGuiceBinder();
+    /**注册一个bean。*/
+    public BeanBindingBuilder newBean(String beanName);
+    /**负责注册Bean*/
+    public static interface BeanBindingBuilder {
+        /**别名*/
+        public BeanBindingBuilder aliasName(String aliasName);
+        /**bean绑定的类型。*/
+        public <T> LinkedBindingBuilder<T> bindType(Class<T> beanClass);
+    }
 }
