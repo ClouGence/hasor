@@ -30,10 +30,18 @@ import org.more.util.ArrayUtils;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class HasorFramework {
+    public static final String MORE_WORK_HOME               = "MORE_WORK_HOME";
+    public static final String MORE_DATA_HOME               = "MORE_DATA_HOME";
+    public static final String MORE_TEMP_HOME               = "MORE_TEMP_HOME";
+    public static final String MORE_CACHE_HOME              = "MORE_CACHE_HOME";
     /**装载的class包范畴，逗号间隔.*/
-    public static final String Platform_LoadPackages = "framework.loadPackages";
-    //    /**框架提供的任务管理器最大可以同时执行的任务数量.*/
-    //    public static final String Platform_TaskPool_MaxSize  = "framework.taskPool.threadSize";
+    public static final String Platform_LoadPackages        = "framework.loadPackages";
+    /**框架提供的事件管理器最大可以同时执行的任务数量.*/
+    public static final String Platform_EventThreadPoolSize = "framework.eventThreadPoolSize";
+    //
+    //
+    //
+    //
     //
     //
     //
@@ -159,5 +167,62 @@ public abstract class HasorFramework {
                 return "Max" + ((index == Integer.MAX_VALUE) ? "" : ("-" + Math.abs(Integer.MAX_VALUE - i)));
         }
         return String.valueOf(index);
+    }
+    /*
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     */
+    /** Asserts that an argument is legal. If the given boolean is
+     * not <code>true</code>, an <code>IllegalArgumentException</code>
+     * is thrown.
+     *
+     * @param expression the outcome of the check
+     * @return <code>true</code> if the check passes (does not return
+     *    if the check fails)
+     * @exception IllegalArgumentException if the legality test failed
+     */
+    public static boolean assertIsLegal(boolean expression) {
+        return assertIsLegal(expression, ""); //$NON-NLS-1$
+    }
+    /** Asserts that an argument is legal. If the given boolean is
+     * not <code>true</code>, an <code>IllegalArgumentException</code>
+     * is thrown.
+     * The given message is included in that exception, to aid debugging.
+     *
+     * @param expression the outcome of the check
+     * @param message the message to include in the exception
+     * @return <code>true</code> if the check passes (does not return
+     *    if the check fails)
+     * @exception IllegalArgumentException if the legality test failed
+     */
+    public static boolean assertIsLegal(boolean expression, String message) {
+        if (!expression)
+            throw new IllegalArgumentException(message);
+        return expression;
+    }
+    /** Asserts that the given object is not <code>null</code>. If this
+     * is not the case, some kind of unchecked exception is thrown.
+     * 
+     * @param object the value to test
+     */
+    public static void assertIsNotNull(Object object) {
+        assertIsNotNull(object, ""); //$NON-NLS-1$
+    }
+    /** Asserts that the given object is not <code>null</code>. If this
+     * is not the case, some kind of unchecked exception is thrown.
+     * The given message is included in that exception, to aid debugging.
+     *
+     * @param object the value to test
+     * @param message the message to include in the exception
+     */
+    public static void assertIsNotNull(Object object, String message) {
+        if (object == null)
+            throw new NullPointerException("null argument:" + message); //$NON-NLS-1$
     }
 }
