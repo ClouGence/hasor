@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.hasor.HasorFramework;
@@ -49,6 +50,13 @@ public class StandardEnvironment implements Environment, SettingListener {
     @Override
     public void reLoadConfig(Settings newConfig) {
         this.envMap.putAll(System.getenv());
+        Properties prop = System.getProperties();
+        for (Object propKey : prop.keySet()) {
+            String k = propKey.toString();
+            Object v = prop.get(propKey);
+            if (v != null)
+                this.envMap.put(k, v.toString());
+        }
         this.envMap.put("HASOR_WORK_HOME", workSpace.getWorkDir());
         this.envMap.put("HASOR_DATA_HOME", workSpace.getDataDir());
         this.envMap.put("HASOR_TEMP_HOME", workSpace.getTempDir());

@@ -15,14 +15,19 @@
  */
 package org.hasor.context;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Date;
-import org.more.global.assembler.xml.XmlProperty;
 /**
  * 配置文件设置
  * @version : 2013-4-23
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface Settings {
+    /**获取指在某个特定命名空间下的Settings接口对象。*/
+    public Settings getNamespace(URL namespace);
+    /**强制重新装载配置文件，该方法会引发配置文件重载事件。*/
+    public void refresh() throws IOException;
     /**添加配置文件改变事件监听器。*/
     public void addSettingsListener(SettingListener listener);
     /**删除配置文件改变事件监听器。*/

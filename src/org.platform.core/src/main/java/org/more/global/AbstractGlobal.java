@@ -68,16 +68,16 @@ public abstract class AbstractGlobal extends AbstractMap<String, Object> {
     /*------------------------------------------------------------------------*/
     private boolean caseSensitive = true;
     /**是否对字母大小写敏感，返回true表示敏感。*/
-    public boolean isCaseSensitive() {
+    public synchronized boolean isCaseSensitive() {
         return this.caseSensitive;
     };
     /**启用，大小写敏感。*/
-    public void enableCaseSensitive() {
+    public synchronized void enableCaseSensitive() {
         this.caseSensitive = true;
         this.$targetContainer = null;
     }
     /**禁用，大小写不敏感。*/
-    public void disableCaseSensitive() {
+    public synchronized void disableCaseSensitive() {
         this.caseSensitive = false;
         this.$targetContainer = null;
     }

@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 package org.hasor.context;
-import com.google.inject.Injector;
+import java.util.List;
+import java.util.Map;
 /**
- * 应用程序上下文
- * @version : 2013-3-26
+ * Xml属性节点。
+ * @version : 2013-4-22
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AppContext extends InitContext, Lifecycle {
-    /**通过名获取Bean的类型。*/
-    public <T> Class<T> getBeanType(String name);
-    /**如果存在目标类型的Bean则返回Bean的名称。*/
-    public String getBeanName(Class<?> targetClass);
-    /**获取已经注册的Bean名称。*/
-    public String[] getBeanNames();
-    /**获取bean信息。*/
-    public BeanInfo getBeanInfo(String name);
-    /**通过名称创建bean实例，使用guice。*/
-    public <T> T getBean(String name);
-    /**通过类型创建该类实例，使用guice*/
-    public <T> T getInstance(Class<T> beanType);
-    /**获得Guice环境。*/
-    public Injector getGuice();
+public interface XmlProperty {
+    /**获取Xml节点元素名称。*/
+    public String getName();
+    /**获取Xml节点文本值。*/
+    public String getText();
+    /**获取Xml节点Xml文本值。*/
+    public String getXmlText();
+    /**获取属性集合*/
+    public Map<String, String> getAttributeMap();
+    /**获取Xml子节点。*/
+    public List<XmlProperty> getChildren();
+    /**获取父节点*/
+    public XmlProperty getParent();
+    /**克隆一个XmlProperty*/
+    public XmlProperty clone() throws CloneNotSupportedException;
 }

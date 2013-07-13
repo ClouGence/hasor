@@ -23,16 +23,8 @@ import com.google.inject.binder.LinkedBindingBuilder;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface ApiBinder {
-    /**获取上下文*/
-    public Object getContext();
-    /**获取系统启动时间*/
-    public long getAppStartTime();
-    /**获取应用程序配置。*/
-    public Settings getSettings();
-    /**获得工作空间设置*/
-    public WorkSpace getWorkSpace();
-    /**获取环境变量操作接口。*/
-    public Environment getEnvironment();
+    /**获取初始化环境*/
+    public InitContext getInitContext();
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
     public Set<Class<?>> getClassSet(Class<?> featureType);
     /**获取用于初始化Guice的Binder。*/

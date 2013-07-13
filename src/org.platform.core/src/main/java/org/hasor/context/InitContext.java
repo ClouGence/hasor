@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 package org.hasor.context;
-import com.google.inject.Injector;
+import java.util.Set;
 /**
- * 应用程序上下文
+ * 初始化使其的应用程序上下文
  * @version : 2013-3-26
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AppContext extends InitContext, Lifecycle {
-    /**通过名获取Bean的类型。*/
-    public <T> Class<T> getBeanType(String name);
-    /**如果存在目标类型的Bean则返回Bean的名称。*/
-    public String getBeanName(Class<?> targetClass);
-    /**获取已经注册的Bean名称。*/
-    public String[] getBeanNames();
-    /**获取bean信息。*/
-    public BeanInfo getBeanInfo(String name);
-    /**通过名称创建bean实例，使用guice。*/
-    public <T> T getBean(String name);
-    /**通过类型创建该类实例，使用guice*/
-    public <T> T getInstance(Class<T> beanType);
-    /**获得Guice环境。*/
-    public Injector getGuice();
+public interface InitContext {
+    /**获取上下文*/
+    public Object getContext();
+    /**获取系统启动时间*/
+    public long getAppStartTime();
+    /**获取应用程序配置。*/
+    public Settings getSettings();
+    /**获得工作空间设置*/
+    public WorkSpace getWorkSpace();
+    /**获取环境变量操作接口。*/
+    public Environment getEnvironment();
+    /**同步方式抛出事件。当方法返回时已经全部处理完成事件分发。*/
+    public EventManager getEventManager();
+    /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
+    public Set<Class<?>> getClassSet(Class<?> featureType);
 }

@@ -22,15 +22,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.hasor.Assert;
-import org.hasor.binder.BeanInfo;
 import org.hasor.context.AppContext;
-import org.hasor.context.PlatformListener;
+import org.hasor.context.BeanInfo;
+import org.hasor.context.HasorModule;
+import org.hasor.context.SettingListener;
+import org.hasor.context.Settings;
 import org.hasor.context.WorkSpace;
-import org.hasor.setting.SettingListener;
-import org.hasor.setting.Settings;
+import org.hasor.context.setting.StandardEnvironment;
+import org.hasor.context.setting.StandardWorkSpace;
 import org.more.util.ClassUtils;
 import com.google.inject.Binding;
-import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
 /**
  * {@link AppContext}接口的抽象实现类。
@@ -38,27 +39,23 @@ import com.google.inject.TypeLiteral;
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractAppContext implements AppContext {
-    private long                         startTime       = System.currentTimeMillis();       //系统启动时间
-    private final List<PlatformListener> contextListener = new ArrayList<PlatformListener>();
-    private Map<String, BeanInfo>        beanInfoMap     = null;
-    private AbstractWorkSpace            workSpace       = null;
-    private AbstractEnvironment          environment     = null;
+    private long                  startTime   = System.currentTimeMillis();  //系统启动时间
+    private List<HasorModule>     haosrModule = new ArrayList<HasorModule>();
+    private Map<String, BeanInfo> beanInfoMap = null;
+    private StandardWorkSpace     workSpace   = null;
+    private StandardEnvironment   environment = null;
     //
-    /**启动*/
-    public abstract void start(Module... modules);
-    /**销毁方法。*/
-    public abstract void destroyed();
     @Override
-    public AbstractEnvironment getEnvironment() {
+    public StandardEnvironment getEnvironment() {
         if (this.environment == null)
-            this.environment = new AbstractEnvironment() {};
+            this.environment = new StandardEnvironment();
         return this.environment;
     }
     @Override
     public WorkSpace getWorkSpace() {
         if (this.workSpace == null) {
             //1.创建AbstractWorkSpace
-            this.workSpace = new AbstractWorkSpace() {
+            this.workSpace = new StandardWorkSpace() {
                 @Override
                 public Settings getSettings() {
                     return AbstractAppContext.this.getSettings();
@@ -76,6 +73,10 @@ public abstract class AbstractAppContext implements AppContext {
         }
         return this.workSpace;
     }
+    /**启动*/
+    public abstract void start(HasorModule... modules);
+    /**销毁方法。*/
+    public abstract void destroyed();
     @Override
     public long getAppStartTime() {
         return this.startTime;
@@ -141,17 +142,17 @@ public abstract class AbstractAppContext implements AppContext {
         return (T) this.getGuice().getInstance(beanInfo.getKey());
     };
     /**添加启动监听器。*/
-    public void addContextListener(PlatformListener contextListener) {
+    public void addContextListener(HasorModule contextListener) {
         if (this.contextListener.contains(contextListener) == false)
             this.contextListener.add(contextListener);
     }
     /**删除启动监听器。*/
-    public void removeContextListener(PlatformListener contextListener) {
+    public void removeContextListener(HasorModule contextListener) {
         if (this.contextListener.contains(contextListener) == true)
             this.contextListener.remove(contextListener);
     }
     /**获得所有启动监听器。*/
-    public PlatformListener[] getContextListeners() {
-        return this.contextListener.toArray(new PlatformListener[this.contextListener.size()]);
+    public HasorModule[] getContextListeners() {
+        return this.contextListener.toArray(new HasorModule[this.contextListener.size()]);
     }
 }

@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 package org.hasor.context.core;
+import java.beans.beancontext.BeanContext;
 import java.util.ArrayList;
 import org.hasor.Assert;
 import org.hasor.HasorFramework;
-import org.hasor.binder.ApiBinder;
-import org.hasor.binder.support.ApiBinderModule;
+import org.hasor.context.ApiBinder;
 import org.hasor.context.AppContext;
-import org.hasor.context.BeanContext;
-import org.hasor.context.PlatformListener;
-import org.hasor.setting.Settings;
-import org.hasor.setting.support.PlatformSettings;
+import org.hasor.context.HasorModule;
+import org.hasor.context.Settings;
+import org.hasor.context.binder.ApiBinderModule;
+import org.hasor.context.setting.HasorSettings;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.Module;
 import com.google.inject.Provider;
 /**
  * {@link AppContext}接口的抽象实现类。
@@ -37,7 +36,7 @@ import com.google.inject.Provider;
 public class PlatformAppContext extends AbstractAppContext {
     private Injector         guice    = null;
     private Object           context  = null;
-    private PlatformSettings settings = null;
+    private HasorSettings settings = null;
     //
     public PlatformAppContext(Object context) {
         this.getWorkSpace();
@@ -53,14 +52,14 @@ public class PlatformAppContext extends AbstractAppContext {
     @Override
     public Settings getSettings() {
         if (this.settings == null) {
-            this.settings = new PlatformSettings();
+            this.settings = new HasorSettings();
             this.settings.addLoadNameSpace("http://project.hasor.net/hasor/schema/global");
             this.settings.loadSettings();
         }
         return this.settings;
     }
     /**启动*/
-    public synchronized void start(Module... modules) {
+    public synchronized void start(HasorModule... modules) {
         //1.settings。
         final Settings settings = this.getSettings();
         final Object contet = this.getContext();
@@ -70,15 +69,15 @@ public class PlatformAppContext extends AbstractAppContext {
             @Override
             public void configure(Binder binder) {
                 super.configure(binder);
-                PlatformListener[] listenerList = getContextListeners();
+                HasorModule[] listenerList = getContextListeners();
                 if (listenerList != null)
-                    for (PlatformListener listener : listenerList) {
+                    for (HasorModule listener : listenerList) {
                         if (listener == null)
                             continue;
                         HasorFramework.info("send initialize to : %s", listener.getClass());
                         ApiBinder apiBinder = this.newApiBinder(binder);
                         listener.initialize(apiBinder);
-                        binder.install((Module) apiBinder);
+                        binder.install((HasorModule) apiBinder);
                     }
                 /*绑定BeanContext对象的Provider*/
                 binder.bind(BeanContext.class).toProvider(new Provider<BeanContext>() {
@@ -98,18 +97,18 @@ public class PlatformAppContext extends AbstractAppContext {
         };
         //4.构建Guice并init 注解类。
         HasorFramework.info("initialize ...");
-        ArrayList<Module> $modules = new ArrayList<Module>();
+        ArrayList<HasorModule> $modules = new ArrayList<HasorModule>();
         $modules.add(systemModule);
-        for (Module module : modules)
-            $modules.add(module);
-        this.guice = this.createInjector($modules.toArray(new Module[$modules.size()]));
+        for (HasorModule hasorModule : modules)
+            $modules.add(hasorModule);
+        this.guice = this.createInjector($modules.toArray(new HasorModule[$modules.size()]));
         Assert.isNotNull(this.guice, "can not be create Injector.");
         HasorFramework.info("init modules finish.");
         //4.发送完成初始化信号
         HasorFramework.info("send Initialized sign.");
-        final PlatformListener[] listenerList = this.getContextListeners();
+        final HasorModule[] listenerList = this.getContextListeners();
         if (listenerList != null) {
-            for (PlatformListener listener : listenerList) {
+            for (HasorModule listener : listenerList) {
                 if (listener == null)
                     continue;
                 listener.initialized(this);
@@ -119,14 +118,14 @@ public class PlatformAppContext extends AbstractAppContext {
     }
     /**销毁方法。*/
     public synchronized void destroyed() {
-        final PlatformListener[] listenerList = this.getContextListeners();
+        final HasorModule[] listenerList = this.getContextListeners();
         if (listenerList != null) {
-            for (PlatformListener listener : listenerList)
+            for (HasorModule listener : listenerList)
                 listener.destroy(this);
         }
     }
     /**通过guice创建{@link Injector}*/
-    protected Injector createInjector(Module[] systemModule) {
+    protected Injector createInjector(HasorModule[] systemModule) {
         return Guice.createInjector(systemModule);
     }
 }
