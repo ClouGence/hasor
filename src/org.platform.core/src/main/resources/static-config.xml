@@ -6,6 +6,8 @@
 		<loadPackages>org.hasor.*</loadPackages>
 		<!-- 启用general软件包功能支持 -->
 		<generalSupport>true</generalSupport>
+		<!-- 执行事件的线程池大小 -->
+		<eventThreadPoolSize>20</eventThreadPoolSize>
 	</framework>
 	<!-- 工作空间设置,配置的路径不进行环境变量配置解析 -->
 	<workspace>
@@ -18,9 +20,4 @@
 		<!-- 程序运行时生成的缓存数据存放位置（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
 		<cacheDir absolute="false">/cache</cacheDir>
 	</workspace>
-	<!-- Web部分的配置 -->
-	<httpServlet>
-		<!-- Web请求遇到异常后轮询errorHook的次数。 -->
-		<errorCaseCount>5</errorCaseCount>
-	</httpServlet>
 </config>

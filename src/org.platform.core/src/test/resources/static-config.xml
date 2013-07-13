@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://project.hasor.net/hasor/schema/global">
+	<!-- 框架配置 -->
+	<framework>
+		<!-- 包扫描覆盖范围(逗号间隔多个扫描范围) -->
+		<loadPackages>org.hasor.*</loadPackages>
+		<!-- 启用general软件包功能支持 -->
+		<generalSupport>true</generalSupport>
+		<!-- 执行事件的线程池大小 -->
+		<eventThreadPoolSize>20</eventThreadPoolSize>
+	</framework>
+	<!-- 工作空间设置,配置的路径不进行环境变量配置解析 -->
+	<workspace>
+		<!-- 程序工作空间基础目录（绝对地址） -->
+		<workDir>.</workDir>
+		<!-- 程序的文件数据目录（默认相对workDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
+		<dataDir absolute="false">/files</dataDir>
+		<!-- 程序运行期间所需的临时数据存放地址（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
+		<tempDir absolute="false">/temp</tempDir>
+		<!-- 程序运行时生成的缓存数据存放位置（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
+		<cacheDir absolute="false">/cache</cacheDir>
+	</workspace>
+</config>

@@ -26,11 +26,11 @@ import javax.servlet.Filter;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
 import org.hasor.HasorFramework;
-import org.hasor.binder.ApiBinder;
-import org.hasor.binder.ErrorHook;
-import org.hasor.binder.ApiBinder.BeanBindingBuilder;
+import org.hasor.context.ApiBinder;
+import org.hasor.context.ApiBinder.BeanBindingBuilder;
 import org.hasor.context.AppContext;
-import org.hasor.context.PlatformListener;
+import org.hasor.context.HasorModule;
+import org.hasor.context.binder.ErrorHook;
 import org.hasor.startup.PlatformExt;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
@@ -40,7 +40,7 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@byshell.org)
  */
 @PlatformExt(displayName = "GeneralModuleServiceListener", description = "org.platform.general软件包功能支持。", startIndex = PlatformExt.Lv_1Max)
-public class GeneralPlatformListener implements PlatformListener {
+public class GeneralPlatformListener implements HasorModule {
     /**初始化.*/
     @Override
     public void initialize(ApiBinder event) {

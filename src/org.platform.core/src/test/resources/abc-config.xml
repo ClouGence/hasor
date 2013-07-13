@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://project.hasor.net/hasor/schema/global">
+	<!-- 框架配置 -->
+	<framework>
+		<!-- 包扫描覆盖范围 -->
+		<loadPackages>org.*, com.*, net.*, cn.*</loadPackages>
+	</framework>
+	<!-- Web部分的配置 -->
+	<httpServlet>
+		<!-- 资源装载器,（配置不支持动态更新） -->
+		<resourceLoader>
+			<zipLoader>{MORE_WEB_ROOT}/pic.zip</zipLoader>
+			<pathLoader>{MORE_WORK_HOME}/webresource</pathLoader>
+			<classpathLoader>/META-INF/</classpathLoader>
+		</resourceLoader>
+	</httpServlet>
+	<workspace>
+		<!-- 程序工作空间基础目录（绝对地址） -->
+		<workDir>./test-work</workDir>
+	</workspace>
+	<!-- ThrowError（抛出异常）、PrintOnConsole（打印到控制台或日志）、Warning（忽略，仅仅产生一条警告消息）PrintOnPage（打印到页面） -->
+	<freemarker>
+		<!-- freemarker模板后缀名逗号间隔多个. -->
+		<suffixSet>*.htm</suffixSet>
+		<templateLoader>
+			<PathLoader>c:\abc</PathLoader>
+			<PredefineLoader>
+				<templateString key="key1">${false:string}</templateString>
+				<templateString key="key2">say hello</templateString>
+			</PredefineLoader>
+		</templateLoader>
+	</freemarker>
+	<!-- 权限配置 -->
+	<security enable="true">
+		<clientCookie enable="true"></clientCookie>
+		<!-- 转发配置 -->
+		<forwards>
+			<dispatch contentPath="/admin" defaultType="redirect">
+				<forwardIndex type="redirect">/admin/admin_index.htm</forwardIndex>
+				<forwardLogout type="redirect">/login/admin_login.htm</forwardLogout>
+				<forwardFailure type="forward">/public/admin_error.htm</forwardFailure>
+			</dispatch>
+			<dispatch contentPath="/user" defaultType="redirect">
+				<forwardIndex type="redirect">/user/user_index.htm</forwardIndex>
+				<forwardLogout type="redirect">/login/user_login.htm</forwardLogout>
+				<forwardFailure type="Exception">org.platform.webapps.error.define.LoginSecurityException</forwardFailure>
+			</dispatch>
+			<dispatch contentPath="/bbs" defaultType="redirect">
+				<forwardIndex type="redirect">/bbs/bbs_index.htm</forwardIndex>
+				<forwardLogout type="redirect">/login/bbs_login.htm</forwardLogout>
+				<forwardFailure type="State">403</forwardFailure>
+			</dispatch>
+			<!-- 配置跳转定义，使用代码获取下面的跳转信息进行跳转！ -->
+			<dispatch contentPath="/" defaultType="redirect">
+				<forward id="go1" type="forward">/public/forword_page.htm</forward>
+				<forward id="go2" type="redirect">http://www.baidu.com</forward>
+				<forward id="go3" type="Exception">org.platform.webapps.error.define.GoException</forward>
+				<forward id="go4" type="State">8082</forward>
+			</dispatch>
+		</forwards>
+		<rules>
+			<includes>
+				<include mode="Login">/user</include>
+				<include mode="Permission" permissions="AdminPower">/admin/</include>
+				<include mode="Permission" permissions="BBSPower">/bbs</include>
+			</includes>
+			<excludes>
+				<exclude></exclude>
+			</excludes>
+		</rules>
+	</security>
+</config>

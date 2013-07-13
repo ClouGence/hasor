@@ -17,6 +17,7 @@ package org.hasor.context.setting;
 import java.io.IOException;
 import java.util.Map;
 import javax.xml.stream.XMLStreamException;
+import org.hasor.context.Settings;
 import org.more.xml.XmlStackDecorator;
 import org.more.xml.stream.XmlStreamEvent;
 /**
@@ -26,9 +27,9 @@ import org.more.xml.stream.XmlStreamEvent;
  */
 public interface HasorXmlParser {
     /**每当开始解析一个Xml文件时调用。*/
-    public void beginAccept(Map<String, String> dataContainer);
+    public void beginAccept(Settings context, Map<String, Object> dataContainer);
     /**当xml文件解析完毕时调用。*/
-    public void endAccept(Map<String, String> dataContainer);
+    public void endAccept(Settings context, Map<String, Object> dataContainer);
     /**在解析xml过程中调用，所有发来的事件都是来自于一个命名空间下的。*/
     public void sendEvent(XmlStackDecorator<Object> context, String xpath, XmlStreamEvent event) throws IOException, XMLStreamException;
 }

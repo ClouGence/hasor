@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +30,7 @@ import org.hasor.context.Settings;
 import org.hasor.context.XmlProperty;
 import org.more.util.ResourceWatch;
 import org.more.util.ResourcesUtils;
-import org.more.util.StringConvertUtils;
-import org.more.util.StringUtils;
+import org.more.util.map.DecSequenceMap;
 import org.more.util.map.Properties;
 import org.more.xml.XmlParserKitManager;
 import org.more.xml.stream.XmlReader;
@@ -42,11 +40,10 @@ import org.more.xml.stream.XmlReader;
  * @version : 2013-4-2
  * @author 赵永春 (zyc@byshell.org)
  */
-public class HasorSettings extends ResourceWatch implements Settings {
-    //    private DecSequenceMap<String, String>   settingMap   = new DecSequenceMap<String, String>();
-    //    private Map<String, Map<String, String>> nsSettingMap = new HashMap<String, Map<String, String>>();
-    public HasorSettings() {
-        super();
+public class HasorSettings extends AbstractHasorSettings {
+    public HasorSettings() {}
+    public HasorSettings(String mainConfig) throws IOException {
+        this.load(mainConfig);
     }
     /*-------------------------------------------------------------------------------------------------------
      * 
@@ -57,6 +54,7 @@ public class HasorSettings extends ResourceWatch implements Settings {
     private String                    settingEncoding = "utf-8";
     private Map<String, List<String>> nsDefine        = null;
     private XmlParserKitManager       initKitManager  = null;
+    //
     /**获取解析配置文件时使用的字符编码。*/
     public String getSettingEncoding() {
         return this.settingEncoding;
@@ -71,7 +69,7 @@ public class HasorSettings extends ResourceWatch implements Settings {
             return this.nsDefine;
         //
         HashMap<String, List<String>> define = new HashMap<String, List<String>>();
-        List<URL> nspropURLs = ResourcesUtils.getResources("ns.prop");
+        List<URL> nspropURLs = ResourcesUtils.getResources("META-INF/ns.prop");
         if (nspropURLs != null) {
             for (URL nspropURL : nspropURLs) {
                 HasorFramework.info("find ‘ns.prop’ at ‘%s’.", nspropURL);
@@ -100,7 +98,7 @@ public class HasorSettings extends ResourceWatch implements Settings {
         return this.nsDefine;
     }
     /**创建解析器*/
-    private XmlParserKitManager loadXmlParserKitManager(Map<String, Map<String, String>> loadTo) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    private XmlParserKitManager loadXmlParserKitManager(Map<String, Map<String, Object>> loadTo) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         if (this.initKitManager != null)
             return this.initKitManager;
         XmlParserKitManager kitManager = new XmlParserKitManager();
@@ -109,9 +107,9 @@ public class HasorSettings extends ResourceWatch implements Settings {
             //获取同一个命名空间下注册的解析器
             List<String> xmlParserSet = nsParser.get(xmlNS);
             //创建用于存放命名空间下数据的容器
-            Map<String, String> dataContainer = new HashMap<String, String>();
+            Map<String, Object> dataContainer = new HashMap<String, Object>();
             //创建解析器代理，并且将注册的解析器设置到代理上
-            InternalHasorXmlParserPropxy nsKit = new InternalHasorXmlParserPropxy(dataContainer);
+            InternalHasorXmlParserPropxy nsKit = new InternalHasorXmlParserPropxy(this, dataContainer);
             //加入到返回结果集合中
             loadTo.put(xmlNS, dataContainer);
             //
@@ -128,15 +126,15 @@ public class HasorSettings extends ResourceWatch implements Settings {
         return kitManager;
     }
     /**将static-config.xml配置文件的内容装载到参数指定的map中，如果存在重复定义做替换合并操作。*/
-    protected void loadStaticConfig(Map<String, Map<String, String>> toMap) throws IOException {
+    protected void loadStaticConfig(Map<String, Map<String, Object>> loadTo) throws IOException {
         final String staticConfig = "static-config.xml";
         //1.装载所有static-config.xml
         try {
             List<URL> streamList = ResourcesUtils.getResources(staticConfig);
             if (streamList != null) {
                 for (URL resURL : streamList) {
-                    loadConfig(resURL.toURI(), toMap);
                     HasorFramework.info("load ‘%s’", resURL);
+                    loadConfig(resURL.toURI(), loadTo);
                 }
             }
         } catch (Exception e) {
@@ -144,20 +142,21 @@ public class HasorSettings extends ResourceWatch implements Settings {
         }
     }
     /**装载主配置文件动态配置。*/
-    protected void loadMainConfig(String mainConfig, Map<String, Map<String, String>> toMap) {
+    protected void loadMainConfig(String mainConfig, Map<String, Map<String, Object>> loadTo) {
         try {
             URL configURL = ResourcesUtils.getResource(mainConfig);
             if (configURL != null) {
-                loadConfig(configURL.toURI(), toMap);
                 HasorFramework.info("load ‘%s’", configURL);
+                loadConfig(configURL.toURI(), loadTo);
             }
         } catch (Exception e) {
             HasorFramework.error("load ‘%s’ error!%s", mainConfig, e);
         }
     }
     /**装载配置映射，参数是参照的映射配置。*/
-    protected void loadMappingConfig(Map<String, Object> referConfig) {
+    protected Map<String, Object> loadMappingConfig(Map<String, Object> referConfig) {
         final String configMapping = "config-mapping.properties";
+        Map<String, Object> mappingSettings = new HashMap<String, Object>();
         try {
             List<URL> mappingList = ResourcesUtils.getResources(configMapping);
             if (mappingList != null)
@@ -178,15 +177,16 @@ public class HasorSettings extends ResourceWatch implements Settings {
                         if (referConfig.containsKey($propxyKey) == true) {
                             HasorFramework.error("mapping conflict! %s has this key.", $propxyKey);
                         } else
-                            referConfig.put($propxyKey, value);
+                            mappingSettings.put($propxyKey, value);
                     }
                 }
         } catch (Exception e) {
             HasorFramework.error("load ‘%s’ error!%s", configMapping, e);
         }
+        return mappingSettings;
     }
     /**loadConfig装载配置*/
-    private void loadConfig(URI configURI, Map<String, Map<String, String>> loadTo) throws IOException, XMLStreamException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    private void loadConfig(URI configURI, Map<String, Map<String, Object>> loadTo) throws IOException, XMLStreamException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         String encoding = this.getSettingEncoding();
         InputStream stream = ResourcesUtils.getResourceAsStream(configURI);
         //获取解析器
@@ -195,114 +195,127 @@ public class HasorSettings extends ResourceWatch implements Settings {
         xmlAccept.setContext(this);
         //解析Xml
         new XmlReader(stream).reader(xmlAccept, encoding, null);
-        //
-        //
-        //
-        //
-        //
-        //
-        //
-        //后续还要做数据合并操作
-        //
-        System.out.println();
-        //        Map<String, Map<String, String>> data = xmlAccept.getReturnData();
-        //        //
-        //        XmlPropertyGlobalFactory xmlg = null;
-        //        //1.<载入生效的命名空间>
-        //        try {
-        //            xmlg = new XmlPropertyGlobalFactory();
-        //            xmlg.setIgnoreRootElement(true);/*忽略根*/
-        //            /*载入自定义的命名空间支持。*/
-        //            if (this.loadNameSpaceList != null && this.loadNameSpaceList.isEmpty() == false)
-        //                for (String loadNS : this.loadNameSpaceList)
-        //                    if (StringUtils.isBlank(loadNS) == false)
-        //                        xmlg.getLoadNameSpace().add(loadNS);
-        //            //
-        //            Map<String, Object> dataMap = xmlg.createMap(encoding, new Object[] { ResourcesUtils.getResourceAsStream(configURI) });
-        //            /*处理多值合并问题（采用覆盖和追加的策略）*/
-        //            for (String key : dataMap.keySet()) {
-        //                String $key = key.toLowerCase();
-        //                Object $var = dataMap.get(key);
-        //                Object $varConflict = loadTo.get($key);
-        //                if ($varConflict != null && $varConflict instanceof XmlProperty && $var instanceof XmlProperty) {
-        //                    XmlProperty $new = (XmlProperty) $var;
-        //                    XmlProperty $old = (XmlProperty) $varConflict;
-        //                    XmlProperty $final = $old.clone();
-        //                    /*覆盖策略*/
-        //                    $final.getAttributeMap().putAll($new.getAttributeMap());
-        //                    $final.setText($new.getText());
-        //                    /*追加策略*/
-        //                    List<XmlProperty> $newChildren = new ArrayList<XmlProperty>($new.getChildren());
-        //                    List<XmlProperty> $oldChildren = new ArrayList<XmlProperty>($old.getChildren());
-        //                    Collections.reverse($newChildren);
-        //                    Collections.reverse($oldChildren);
-        //                    $final.getChildren().clear();
-        //                    $final.getChildren().addAll($oldChildren);
-        //                    $final.getChildren().addAll($newChildren);
-        //                    Collections.reverse($final.getChildren());
-        //                    loadTo.put($key, $final);
-        //                } else
-        //                    loadTo.put($key, $var);
-        //            }
-        //        } catch (Exception e) {
-        //            HasorFramework.warning("namespcae [%s] no support!", configURI);
-        //        }
-    }
-    public static void main(String[] args) throws IOException {
-        HasorSettings settings = new HasorSettings();
-        settings.refresh();
-    }
-    @Override
-    public Settings getNamespace(URL namespace) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    private HashMap<String, String> getSettingMap() {
-        // TODO Auto-generated method stub
-        return null;
     }
     /*-------------------------------------------------------------------------------------------------------
      * 
      * 配置文件监听改变事件 相关方法
      * 
      */
-    private final List<SettingListener> settingListenerList = new ArrayList<SettingListener>();
+    private DecSequenceMap<String, Object>   settingMap          = new DecSequenceMap<String, Object>();
+    private Map<String, Map<String, Object>> settingNsMap        = new HashMap<String, Map<String, Object>>();
+    private List<SettingListener>            settingListenerList = new ArrayList<SettingListener>();
+    private ResourceWatch                    watch               = null;
+    //
+    protected Map<String, Object> getSettingMap() {
+        return this.settingMap;
+    }
     @Override
-    public void refresh() throws IOException {
-        Map<String, Map<String, String>> finalSettings = new HashMap<String, Map<String, String>>();
+    public Settings getNamespace(URL namespace) {
+        final HasorSettings setting = this;
+        final Map<String, Object> data = this.settingNsMap.get(namespace);
+        if (data == null)
+            return null;
+        return new AbstractHasorSettings() {
+            @Override
+            public void removeSettingsListener(SettingListener listener) {
+                throw new UnsupportedOperationException();
+            }
+            @Override
+            public void refresh() throws IOException {
+                throw new UnsupportedOperationException();
+            }
+            @Override
+            public void addSettingsListener(SettingListener listener) {
+                throw new UnsupportedOperationException();
+            }
+            @Override
+            public void load(String mainConfig) throws IOException {
+                throw new UnsupportedOperationException();
+            }
+            @Override
+            public SettingListener[] getSettingListeners() {
+                return setting.getSettingListeners();
+            }
+            @Override
+            public Settings getNamespace(URL namespace) {
+                return setting.getNamespace(namespace);
+            }
+            @Override
+            protected Map<String, Object> getSettingMap() {
+                return data;
+            }
+        };
+    }
+    @Override
+    public synchronized void load(String mainConfig) throws IOException {
+        this.mainSettings = mainConfig;
+        this.refresh();
+    }
+    @Override
+    public synchronized void refresh() throws IOException {
+        Map<String, Map<String, Object>> finalSettings = new HashMap<String, Map<String, Object>>();
+        //1.载入并且初始化‘ns.prop’
+        try {
+            this.loadXmlParserKitManager(finalSettings);
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
+        //2.载入静态配置文件
         this.loadStaticConfig(finalSettings);
+        //3.载入主配置文件
         this.loadMainConfig(this.mainSettings, finalSettings);
-        //        this.loadMappingConfig(finalSettings);
+        this.settingNsMap = finalSettings;
+        //4.合并不同命名空间下的配置项
+        for (Map<String, Object> ent : this.settingNsMap.values())
+            this.settingMap.addMap(ent);
+        //5.取得映射结果
+        Map<String, Object> finalMapping = this.loadMappingConfig(this.settingMap);
+        this.settingMap.addMap(finalMapping);
+        //6.引发事件
         this.doEvent();
     }
     /**启动配置文件修改监听*/
-    @Override
     public synchronized void start() {
+        if (this.watch != null)
+            return;
+        //1.建立主配置文件监听器
+        final HasorSettings settings = this;
+        this.watch = new ResourceWatch() {
+            public void firstStart(URI resourceURI) throws IOException {}
+            /**当配置文件被检测到有修改迹象时，调用刷新进行重载。*/
+            public final void onChange(URI resourceURI) throws IOException {
+                settings.refresh();
+            }
+            /**检测主配置文件是否被修改*/
+            public long lastModify(URI resourceURI) throws IOException {
+                if ("file".equals(resourceURI.getScheme()) == true)
+                    return new File(resourceURI).lastModified();
+                return 0;
+            }
+        };
+        //2.启动监听器
         try {
             URL configURL = ResourcesUtils.getResource(this.mainSettings);
             if (configURL == null) {
                 HasorFramework.warning("Can't get to mainConfig %s.", configURL);
                 return;
             }
-            this.setResourceURI(configURL.toURI());
-            this.setDaemon(true);
-            HasorFramework.warning("settings Watch started thread name is %s.", this.getName());
-            super.start();
+            this.watch.setName("MasterConfiguration-Watch");
+            this.watch.setResourceURI(configURL.toURI());
+            this.watch.setDaemon(true);
+            HasorFramework.warning("settings Watch started thread name is %s.", this.watch.getName());
+            this.watch.start();
         } catch (Exception e) {
             HasorFramework.error("settings Watch start error, on : %s Settings file !%s", this.mainSettings, e);
+            this.watch = null;
         }
     }
-    /**/
-    public void firstStart(URI resourceURI) throws IOException {}
-    /**当配置文件被检测到有修改迹象时，调用刷新进行重载。*/
-    public final void onChange(URI resourceURI) throws IOException {
-        this.refresh();
-    }
-    /**检测主配置文件是否被修改*/
-    public long lastModify(URI resourceURI) throws IOException {
-        if ("file".equals(resourceURI.getScheme()) == true)
-            return new File(resourceURI).lastModified();
-        return 0;
+    /**停止配置文件修改监听*/
+    public synchronized void stop() {
+        if (this.watch == null)
+            return;
+        this.watch.stop();
+        this.watch = null;
     }
     /**触发配置文件重载事件。*/
     protected void doEvent() {
@@ -324,160 +337,5 @@ public class HasorSettings extends ResourceWatch implements Settings {
     @Override
     public SettingListener[] getSettingListeners() {
         return this.settingListenerList.toArray(new SettingListener[this.settingListenerList.size()]);
-    }
-    /*-------------------------------------------------------------------------------------------------------
-     * 
-     * 其他方法
-     * 
-     */
-    /**解析全局配置参数，并且返回toType参数指定的类型。*/
-    public final <T> T getToType(String name, Class<T> toType, T defaultValue) {
-        Object oriObject = this.getSettingMap().get(StringUtils.isBlank(name) ? "" : name);
-        if (oriObject == null)
-            return defaultValue;
-        //
-        T var = null;
-        if (oriObject instanceof String)
-            //原始数据是字符串经过Eval过程
-            var = StringConvertUtils.changeType((String) oriObject, toType);
-        else if (oriObject instanceof GlobalProperty)
-            //原始数据是GlobalProperty直接get
-            var = ((GlobalProperty) oriObject).getValue(toType, defaultValue);
-        else
-            //其他类型不予处理（数据就是要的值）
-            var = (T) oriObject;
-        return var;
-    };
-    /**解析全局配置参数，并且返回toType参数指定的类型。*/
-    public final <T> T getToType(String name, Class<T> toType) {
-        return this.getToType(name, toType, null);
-    };
-    /**解析全局配置参数，并且返回其{@link Object}形式对象。*/
-    public Object getObject(String name) {
-        return this.getToType(name, Object.class);
-    };
-    /**解析全局配置参数，并且返回其{@link Object}形式对象。第二个参数为默认值。*/
-    public Object getObject(String name, Object defaultValue) {
-        return this.getToType(name, Object.class, defaultValue);
-    };
-    /**解析全局配置参数，并且返回其{@link Character}形式对象。*/
-    public Character getChar(String name) {
-        return this.getToType(name, Character.class);
-    };
-    /**解析全局配置参数，并且返回其{@link Character}形式对象。第二个参数为默认值。*/
-    public Character getChar(String name, Character defaultValue) {
-        return this.getToType(name, Character.class, defaultValue);
-    };
-    /**解析全局配置参数，并且返回其{@link String}形式对象。*/
-    public String getString(String name) {
-        return this.getToType(name, String.class);
-    };
-    /**解析全局配置参数，并且返回其{@link String}形式对象。第二个参数为默认值。*/
-    public String getString(String name, String defaultValue) {
-        return this.getToType(name, String.class, defaultValue);
-    };
-    /**解析全局配置参数，并且返回其{@link Boolean}形式对象。*/
-    public Boolean getBoolean(String name) {
-        return this.getToType(name, Boolean.class);
-    };
-    /**解析全局配置参数，并且返回其{@link Boolean}形式对象。第二个参数为默认值。*/
-    public Boolean getBoolean(String name, Boolean defaultValue) {
-        return this.getToType(name, Boolean.class, defaultValue);
-    };
-    /**解析全局配置参数，并且返回其{@link Short}形式对象。*/
-    public Short getShort(String name) {
-        return this.getToType(name, Short.class);
-    };
-    /**解析全局配置参数，并且返回其{@link Short}形式对象。第二个参数为默认值。*/
-    public Short getShort(String name, Short defaultValue) {
-        return this.getToType(name, Short.class, defaultValue);
-    };
-    /**解析全局配置参数，并且返回其{@link Integer}形式对象。*/
-    public Integer getInteger(String name) {
-        return this.getToType(name, Integer.class);
-    };
-    /**解析全局配置参数，并且返回其{@link Integer}形式对象。第二个参数为默认值。*/
-    public Integer getInteger(String name, Integer defaultValue) {
-        return this.getToType(name, Integer.class, defaultValue);
-    };
-    /**解析全局配置参数，并且返回其{@link Long}形式对象。*/
-    public Long getLong(String name) {
-        return this.getToType(name, Long.class);
-    };
-    /**解析全局配置参数，并且返回其{@link Long}形式对象。第二个参数为默认值。*/
-    public Long getLong(String name, Long defaultValue) {
-        return this.getToType(name, Long.class, defaultValue);
-    };
-    /**解析全局配置参数，并且返回其{@link Float}形式对象。*/
-    public Float getFloat(String name) {
-        return this.getToType(name, Float.class);
-    };
-    /**解析全局配置参数，并且返回其{@link Float}形式对象。第二个参数为默认值。*/
-    public Float getFloat(String name, Float defaultValue) {
-        return this.getToType(name, Float.class, defaultValue);
-    };
-    /**解析全局配置参数，并且返回其{@link Double}形式对象。*/
-    public Double getDouble(String name) {
-        return this.getToType(name, Double.class);
-    };
-    /**解析全局配置参数，并且返回其{@link Double}形式对象。第二个参数为默认值。*/
-    public Double getDouble(String name, Double defaultValue) {
-        return this.getToType(name, Double.class, defaultValue);
-    };
-    /**解析全局配置参数，并且返回其{@link Date}形式对象。*/
-    public Date getDate(String name) {
-        return this.getToType(name, Date.class);
-    };
-    /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
-    public Date getDate(String name, Date defaultValue) {
-        return this.getToType(name, Date.class, defaultValue);
-    };
-    /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
-    public Date getDate(String name, long defaultValue) {
-        return this.getToType(name, Date.class, new Date(defaultValue));
-    };
-    /**解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。*/
-    public <T extends Enum<?>> T getEnum(String name, Class<T> enmType) {
-        return this.getToType(name, enmType, null);
-    };
-    /**解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。*/
-    public <T extends Enum<?>> T getEnum(String name, Class<T> enmType, T defaultValue) {
-        return this.getToType(name, enmType, defaultValue);
-    };
-    /**解析全局配置参数，并且返回其{@link Date}形式对象（用于表示文件）。第二个参数为默认值。*/
-    public String getFilePath(String name) {
-        return this.getFilePath(name, null);
-    };
-    /**解析全局配置参数，并且返回其{@link Date}形式对象（用于表示文件）。第二个参数为默认值。*/
-    public String getFilePath(String name, String defaultValue) {
-        String filePath = this.getToType(name, String.class);
-        if (filePath == null || filePath.length() == 0)
-            return defaultValue;//空
-        //
-        int length = filePath.length();
-        if (filePath.charAt(length - 1) == File.separatorChar)
-            return filePath.substring(0, length - 1);
-        else
-            return filePath;
-    };
-    /**解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。*/
-    public String getDirectoryPath(String name) {
-        return this.getDirectoryPath(name, null);
-    };
-    /**解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。*/
-    public String getDirectoryPath(String name, String defaultValue) {
-        String filePath = this.getToType(name, String.class);
-        if (filePath == null || filePath.length() == 0)
-            return defaultValue;//空
-        //
-        int length = filePath.length();
-        if (filePath.charAt(length - 1) == File.separatorChar)
-            return filePath;
-        else
-            return filePath + File.separatorChar;
-    }
-    /**解析全局配置参数，并且返回其{@link XmlProperty}形式对象。*/
-    public XmlProperty getXmlProperty(String name) {
-        return this.getToType(name, XmlProperty.class, null);
     }
 }

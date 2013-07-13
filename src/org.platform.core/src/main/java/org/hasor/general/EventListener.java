@@ -13,27 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.context;
-import java.util.List;
-import java.util.Map;
+package org.hasor.general;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * Xml属性节点。
- * @version : 2013-4-22
+ * 声明一个事件监听器，标记了该接口的类必须要求实现{@link EventListener}接口。
+ * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface XmlProperty {
-    /**获取Xml节点元素名称。*/
-    public String getName();
-    /**获取Xml节点文本值。*/
-    public String getText();
-    /**获取Xml节点Xml文本值。*/
-    public String getXmlText();
-    /**获取属性集合*/
-    public Map<String, String> getAttributeMap();
-    /**获取Xml子节点。*/
-    public List<XmlProperty> getChildren();
-    /**获取父节点*/
-    public XmlProperty getParent();
-    /**克隆一个XmlProperty*/
-    public XmlProperty clone();
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface EventListener {
+    /**要监听的事件名，同名注册会被覆盖。*/
+    public String[] value();
 }

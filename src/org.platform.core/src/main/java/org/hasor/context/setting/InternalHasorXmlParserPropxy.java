@@ -29,10 +29,11 @@ import org.more.xml.stream.XmlStreamEvent;
  */
 class InternalHasorXmlParserPropxy implements XmlNamespaceParser {
     private List<HasorXmlParser> parserList    = new ArrayList<HasorXmlParser>();
-    private Map<String, String>  dataContainer = null;
-    private Object               context       = null;
+    private Map<String, Object>  dataContainer = null;
+    private HasorSettings        context       = null;
     //
-    public InternalHasorXmlParserPropxy(Map<String, String> dataContainer) {
+    public InternalHasorXmlParserPropxy(HasorSettings context, Map<String, Object> dataContainer) {
+        this.context = context;
         this.dataContainer = dataContainer;
     }
     void addTarget(HasorXmlParser newInstance) {
@@ -42,19 +43,16 @@ class InternalHasorXmlParserPropxy implements XmlNamespaceParser {
     @Override
     public void beginAccept() {
         for (HasorXmlParser par : parserList)
-            par.beginAccept(this.dataContainer);
+            par.beginAccept(this.context, this.dataContainer);
     }
     @Override
     public void endAccept() {
         for (HasorXmlParser par : parserList)
-            par.endAccept(this.dataContainer);
+            par.endAccept(this.context, this.dataContainer);
     }
     @Override
     public void sendEvent(XmlStackDecorator<Object> context, String xpath, XmlStreamEvent event) throws IOException, XMLStreamException {
-        this.context = context.getContext();
-        context.setContext(this);
         for (HasorXmlParser par : this.parserList)
             par.sendEvent(context, xpath, event);
-        context.setContext(this.context);
     }
 }
