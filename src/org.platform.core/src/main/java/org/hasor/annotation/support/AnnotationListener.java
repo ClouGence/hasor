@@ -13,9 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.annotation;
+package org.hasor.annotation.support;
 import java.util.Set;
 import org.hasor.Hasor;
+import org.hasor.annotation.Bean;
+import org.hasor.annotation.EventListener;
+import org.hasor.annotation.Module;
+import org.hasor.annotation.SettingsListener;
 import org.hasor.context.AbstractHasorModule;
 import org.hasor.context.ApiBinder;
 import org.hasor.context.ApiBinder.BeanBindingBuilder;

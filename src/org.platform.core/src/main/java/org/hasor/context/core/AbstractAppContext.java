@@ -90,4 +90,6 @@ public abstract class AbstractAppContext extends StandardInitContext implements 
     public <T> T getInstance(Class<T> beanType) {
         return this.getGuice().getInstance(beanType);
     }
+    /**Ïú»Ù*/
+    public abstract void destroy();
 }
