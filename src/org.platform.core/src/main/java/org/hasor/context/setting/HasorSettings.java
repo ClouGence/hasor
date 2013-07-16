@@ -24,23 +24,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.xml.stream.XMLStreamException;
-import org.hasor.HasorFramework;
-import org.hasor.context.SettingListener;
+import org.hasor.Hasor;
+import org.hasor.context.Lifecycle;
+import org.hasor.context.HasorSettingListener;
 import org.hasor.context.Settings;
 import org.hasor.context.XmlProperty;
 import org.more.util.ResourceWatch;
 import org.more.util.ResourcesUtils;
+import org.more.util.StringUtils;
 import org.more.util.map.DecSequenceMap;
 import org.more.util.map.Properties;
 import org.more.xml.XmlParserKitManager;
 import org.more.xml.stream.XmlReader;
 /**
- * Settings接口的实现，并且提供了对config.xml、static-config.xml、config-mapping.properties文件的解析支持。
+ * Settings接口的实现，并且提供了对hasor-config.xml、static-config.xml、config-mapping.properties文件的解析支持。
  * 除此之外还提供了对config.xml配置文件的改变监听（该配置文件应当只有一个）。
  * @version : 2013-4-2
  * @author 赵永春 (zyc@byshell.org)
  */
-public class HasorSettings extends AbstractHasorSettings {
+public class HasorSettings extends AbstractHasorSettings implements Lifecycle {
     public HasorSettings() {}
     public HasorSettings(String mainConfig) throws IOException {
         this.load(mainConfig);
@@ -50,7 +52,7 @@ public class HasorSettings extends AbstractHasorSettings {
      * 载入配置文件 相关方法
      * 
      */
-    private String                    mainSettings    = "config.xml";
+    private String                    mainSettings    = "hasor-config.xml";
     private String                    settingEncoding = "utf-8";
     private Map<String, List<String>> nsDefine        = null;
     private XmlParserKitManager       initKitManager  = null;
@@ -72,7 +74,7 @@ public class HasorSettings extends AbstractHasorSettings {
         List<URL> nspropURLs = ResourcesUtils.getResources("META-INF/ns.prop");
         if (nspropURLs != null) {
             for (URL nspropURL : nspropURLs) {
-                HasorFramework.info("find ‘ns.prop’ at ‘%s’.", nspropURL);
+                Hasor.info("find ‘ns.prop’ at ‘%s’.", nspropURL);
                 InputStream inStream = ResourcesUtils.getResourceAsStream(nspropURL);
                 if (inStream != null) {
                     /*载入ns.prop*/
@@ -93,7 +95,7 @@ public class HasorSettings extends AbstractHasorSettings {
                 }
             }
         }
-        HasorFramework.info("load space ‘%s’.", define);
+        Hasor.info("load space ‘%s’.", define);
         this.nsDefine = define;
         return this.nsDefine;
     }
@@ -116,12 +118,12 @@ public class HasorSettings extends AbstractHasorSettings {
             for (String xmlParser : xmlParserSet) {
                 Class<?> xmlParserType = Class.forName(xmlParser);
                 nsKit.addTarget((HasorXmlParser) xmlParserType.newInstance());
-                HasorFramework.info("add XmlNamespaceParser ‘%s’ on ‘%s’.", xmlParser, xmlNS);
+                Hasor.info("add XmlNamespaceParser ‘%s’ on ‘%s’.", xmlParser, xmlNS);
             }
             /*使用XmlParserKitManager实现不同解析器接收不用命名空间事件的支持*/
             kitManager.regeditKit(xmlNS, nsKit);
         }
-        HasorFramework.info("XmlParserKitManager created!");
+        Hasor.info("XmlParserKitManager created!");
         this.initKitManager = kitManager;
         return kitManager;
     }
@@ -133,12 +135,12 @@ public class HasorSettings extends AbstractHasorSettings {
             List<URL> streamList = ResourcesUtils.getResources(staticConfig);
             if (streamList != null) {
                 for (URL resURL : streamList) {
-                    HasorFramework.info("load ‘%s’", resURL);
+                    Hasor.info("load ‘%s’", resURL);
                     loadConfig(resURL.toURI(), loadTo);
                 }
             }
         } catch (Exception e) {
-            HasorFramework.error("load ‘%s’ error!%s", staticConfig, e);
+            Hasor.error("load ‘%s’ error!%s", staticConfig, e);
         }
     }
     /**装载主配置文件动态配置。*/
@@ -146,11 +148,11 @@ public class HasorSettings extends AbstractHasorSettings {
         try {
             URL configURL = ResourcesUtils.getResource(mainConfig);
             if (configURL != null) {
-                HasorFramework.info("load ‘%s’", configURL);
+                Hasor.info("load ‘%s’", configURL);
                 loadConfig(configURL.toURI(), loadTo);
             }
         } catch (Exception e) {
-            HasorFramework.error("load ‘%s’ error!%s", mainConfig, e);
+            Hasor.error("load ‘%s’ error!%s", mainConfig, e);
         }
     }
     /**装载配置映射，参数是参照的映射配置。*/
@@ -169,19 +171,19 @@ public class HasorSettings extends AbstractHasorSettings {
                         String $key = prop.get(key).toLowerCase();
                         Object value = referConfig.get($key);
                         if (value == null) {
-                            HasorFramework.warning("%s mapping to %s value is null.", $propxyKey, $key);
+                            Hasor.warning("%s mapping to %s value is null.", $propxyKey, $key);
                             continue;
                         }
                         value = (value instanceof XmlProperty) ? ((XmlProperty) value).getText() : value;
                         /*忽略冲突的映射*/
                         if (referConfig.containsKey($propxyKey) == true) {
-                            HasorFramework.error("mapping conflict! %s has this key.", $propxyKey);
+                            Hasor.error("mapping conflict! %s has this key.", $propxyKey);
                         } else
                             mappingSettings.put($propxyKey, value);
                     }
                 }
         } catch (Exception e) {
-            HasorFramework.error("load ‘%s’ error!%s", configMapping, e);
+            Hasor.error("load ‘%s’ error!%s", configMapping, e);
         }
         return mappingSettings;
     }
@@ -203,7 +205,7 @@ public class HasorSettings extends AbstractHasorSettings {
      */
     private DecSequenceMap<String, Object>   settingMap          = new DecSequenceMap<String, Object>();
     private Map<String, Map<String, Object>> settingNsMap        = new HashMap<String, Map<String, Object>>();
-    private List<SettingListener>            settingListenerList = new ArrayList<SettingListener>();
+    private List<HasorSettingListener>       settingListenerList = new ArrayList<HasorSettingListener>();
     private ResourceWatch                    watch               = null;
     //
     protected Map<String, Object> getSettingMap() {
@@ -217,7 +219,7 @@ public class HasorSettings extends AbstractHasorSettings {
             return null;
         return new AbstractHasorSettings() {
             @Override
-            public void removeSettingsListener(SettingListener listener) {
+            public void removeSettingsListener(HasorSettingListener listener) {
                 throw new UnsupportedOperationException();
             }
             @Override
@@ -225,7 +227,7 @@ public class HasorSettings extends AbstractHasorSettings {
                 throw new UnsupportedOperationException();
             }
             @Override
-            public void addSettingsListener(SettingListener listener) {
+            public void addSettingsListener(HasorSettingListener listener) {
                 throw new UnsupportedOperationException();
             }
             @Override
@@ -233,7 +235,7 @@ public class HasorSettings extends AbstractHasorSettings {
                 throw new UnsupportedOperationException();
             }
             @Override
-            public SettingListener[] getSettingListeners() {
+            public HasorSettingListener[] getSettingListeners() {
                 return setting.getSettingListeners();
             }
             @Override
@@ -248,11 +250,14 @@ public class HasorSettings extends AbstractHasorSettings {
     }
     @Override
     public synchronized void load(String mainConfig) throws IOException {
+        if (StringUtils.isBlank(mainConfig))
+            return;
         this.mainSettings = mainConfig;
         this.refresh();
     }
     @Override
     public synchronized void refresh() throws IOException {
+        this.settingMap.removeAllMap();
         Map<String, Map<String, Object>> finalSettings = new HashMap<String, Map<String, Object>>();
         //1.载入并且初始化‘ns.prop’
         try {
@@ -278,6 +283,8 @@ public class HasorSettings extends AbstractHasorSettings {
     public synchronized void start() {
         if (this.watch != null)
             return;
+        //3.发送事件
+        this.doEvent();
         //1.建立主配置文件监听器
         final HasorSettings settings = this;
         this.watch = new ResourceWatch() {
@@ -297,16 +304,16 @@ public class HasorSettings extends AbstractHasorSettings {
         try {
             URL configURL = ResourcesUtils.getResource(this.mainSettings);
             if (configURL == null) {
-                HasorFramework.warning("Can't get to mainConfig %s.", configURL);
+                Hasor.warning("Can't get to mainConfig ‘%s’.", this.mainSettings);
                 return;
             }
             this.watch.setName("MasterConfiguration-Watch");
             this.watch.setResourceURI(configURL.toURI());
             this.watch.setDaemon(true);
-            HasorFramework.warning("settings Watch started thread name is %s.", this.watch.getName());
+            Hasor.warning("settings Watch started thread name is %s.", this.watch.getName());
             this.watch.start();
         } catch (Exception e) {
-            HasorFramework.error("settings Watch start error, on : %s Settings file !%s", this.mainSettings, e);
+            Hasor.error("settings Watch start error, on : %s Settings file !%s", this.mainSettings, e);
             this.watch = null;
         }
     }
@@ -317,25 +324,29 @@ public class HasorSettings extends AbstractHasorSettings {
         this.watch.stop();
         this.watch = null;
     }
+    @Override
+    public boolean isRunning() {
+        return this.watch != null;
+    }
     /**触发配置文件重载事件。*/
     protected void doEvent() {
-        for (SettingListener listener : this.settingListenerList)
-            listener.reLoadConfig(this);
+        for (HasorSettingListener listener : this.settingListenerList)
+            listener.onLoadConfig(this);
     }
     /**添加配置文件变更监听器。*/
     @Override
-    public void addSettingsListener(SettingListener settingsListener) {
+    public void addSettingsListener(HasorSettingListener settingsListener) {
         if (this.settingListenerList.contains(settingsListener) == false)
             this.settingListenerList.add(settingsListener);
     }
     /**删除配置文件监听器。*/
     @Override
-    public void removeSettingsListener(SettingListener settingsListener) {
+    public void removeSettingsListener(HasorSettingListener settingsListener) {
         if (this.settingListenerList.contains(settingsListener) == true)
             this.settingListenerList.remove(settingsListener);
     }
     @Override
-    public SettingListener[] getSettingListeners() {
-        return this.settingListenerList.toArray(new SettingListener[this.settingListenerList.size()]);
+    public HasorSettingListener[] getSettingListeners() {
+        return this.settingListenerList.toArray(new HasorSettingListener[this.settingListenerList.size()]);
     }
 }

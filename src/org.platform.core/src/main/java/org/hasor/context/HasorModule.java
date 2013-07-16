@@ -22,8 +22,10 @@ package org.hasor.context;
 public interface HasorModule {
     /**初始化过程。*/
     public void init(ApiBinder binder);
-    /**启动过程。*/
+    /**启动信号*/
     public void start(AppContext appContext);
+    /**停止信号*/
+    public void stop(AppContext appContext);
     /**销毁过程。*/
     public void destroy(AppContext appContext);
 }

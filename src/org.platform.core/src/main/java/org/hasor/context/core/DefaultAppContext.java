@@ -1,0 +1,249 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.hasor.context.core;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.hasor.Hasor;
+import org.hasor.context.ApiBinder;
+import org.hasor.context.AppContext;
+import org.hasor.context.Environment;
+import org.hasor.context.EventManager;
+import org.hasor.context.HasorModule;
+import org.hasor.context.InitContext;
+import org.hasor.context.PhaseEventManager;
+import org.hasor.context.Settings;
+import org.hasor.context.WorkSpace;
+import org.hasor.context.binder.ApiBinderModule;
+import com.google.inject.Binder;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Provider;
+/**
+ * {@link AppContext}接口默认实现。
+ * @version : 2013-4-9
+ * @author 赵永春 (zyc@byshell.org)
+ */
+public class DefaultAppContext extends AbstractAppContext {
+    private List<HasorModule> haosrModuleSet;
+    private boolean           running;
+    private Injector          guice;
+    //
+    public DefaultAppContext() throws IOException {
+        super();
+    }
+    public DefaultAppContext(String mainConfig) throws IOException {
+        super(mainConfig);
+    }
+    protected List<HasorModule> getModuleList() {
+        if (this.haosrModuleSet == null)
+            this.haosrModuleSet = new ArrayList<HasorModule>();
+        return haosrModuleSet;
+    }
+    //
+    /**添加模块*/
+    public void addModule(HasorModule contextListener) {
+        if (this.getModuleList().contains(contextListener) == false)
+            this.getModuleList().add(contextListener);
+    }
+    /**删除模块*/
+    public void removeModule(HasorModule contextListener) {
+        if (this.getModuleList().contains(contextListener) == true)
+            this.getModuleList().remove(contextListener);
+    }
+    /**获得所有模块*/
+    public HasorModule[] getModules() {
+        List<HasorModule> haosrModuleSet = getModuleList();
+        return haosrModuleSet.toArray(new HasorModule[haosrModuleSet.size()]);
+    }
+    /**获取Guice接口*/
+    public Injector getGuice() {
+        return this.guice;
+    }
+    /**为模块创建ApiBinder*/
+    protected ApiBinder newApiBinder(final HasorModule forModule, final Binder binder) {
+        return new ApiBinderModule(this) {
+            @Override
+            public Binder getGuiceBinder() {
+                return binder;
+            }
+        };
+    }
+    /**通过guice创建{@link Injector}，该方法会促使调用模块init生命周期*/
+    protected Injector createInjector(com.google.inject.Module[] guiceModules) {
+        //1.构建ApiBinderModule。
+        final AppContext appContet = this;
+        final com.google.inject.Module masterBind = new com.google.inject.Module() {
+            @Override
+            public void configure(Binder binder) {
+                /*引发模块init生命周期*/
+                HasorModule[] hasorModules = getModules();
+                if (hasorModules != null)
+                    for (HasorModule mod : hasorModules) {
+                        if (mod == null)
+                            continue;
+                        Hasor.info("init Event on : %s", mod.getClass());
+                        onInit(mod, binder);//触发事件
+                    }
+                Hasor.info("init modules finish.");
+                /*绑定InitContext对象的Provider*/
+                binder.bind(InitContext.class).toProvider(new Provider<InitContext>() {
+                    @Override
+                    public InitContext get() {
+                        return appContet;
+                    }
+                });
+                /*绑定AppContext对象的Provider*/
+                binder.bind(AppContext.class).toProvider(new Provider<AppContext>() {
+                    @Override
+                    public AppContext get() {
+                        return appContet;
+                    }
+                });
+                /*绑定EventManager对象的Provider*/
+                binder.bind(EventManager.class).toProvider(new Provider<EventManager>() {
+                    @Override
+                    public EventManager get() {
+                        return appContet.getEventManager();
+                    }
+                });
+                /*绑定PhaseEventManager对象的Provider*/
+                binder.bind(PhaseEventManager.class).toProvider(new Provider<PhaseEventManager>() {
+                    @Override
+                    public PhaseEventManager get() {
+                        return (PhaseEventManager) appContet.getEventManager();
+                    }
+                });
+                /*绑定Settings对象的Provider*/
+                binder.bind(Settings.class).toProvider(new Provider<Settings>() {
+                    @Override
+                    public Settings get() {
+                        return appContet.getSettings();
+                    }
+                });
+                /*绑定WorkSpace对象的Provider*/
+                binder.bind(WorkSpace.class).toProvider(new Provider<WorkSpace>() {
+                    @Override
+                    public WorkSpace get() {
+                        return appContet.getWorkSpace();
+                    }
+                });
+                /*绑定Environment对象的Provider*/
+                binder.bind(Environment.class).toProvider(new Provider<Environment>() {
+                    @Override
+                    public Environment get() {
+                        return appContet.getEnvironment();
+                    }
+                });
+            }
+        };
+        //2.
+        ArrayList<com.google.inject.Module> guiceModuleSet = new ArrayList<com.google.inject.Module>();
+        guiceModuleSet.add(masterBind);
+        if (guiceModules != null)
+            for (com.google.inject.Module mod : guiceModules)
+                guiceModuleSet.add(mod);
+        return Guice.createInjector(guiceModuleSet.toArray(new com.google.inject.Module[guiceModuleSet.size()]));
+    }
+    @Override
+    public synchronized void start() {
+        if (this.running == true)
+            return;
+        /*创建Guice对象，并且引发模块的init事件*/
+        if (this.guice == null) {
+            Hasor.info("send init sign...");
+            ((PhaseEventManager) this.getEventManager()).popPhaseEvent(PhaseEvent_Init, (InitContext) this);//发送阶段事件
+            this.guice = this.createInjector(null);
+            Hasor.assertIsNotNull(this.guice, "can not be create Injector.");
+        }
+        /*发送完成初始化信号*/
+        this.running = true;
+        Hasor.info("send start sign.");
+        ((PhaseEventManager) this.getEventManager()).popPhaseEvent(PhaseEvent_Start, (AppContext) this);//发送阶段事件
+        HasorModule[] hasorModules = this.getModules();
+        if (hasorModules != null) {
+            for (HasorModule mod : hasorModules) {
+                if (mod == null)
+                    continue;
+                Hasor.info("start Event on : %s", mod.getClass());
+                this.onStart(mod);
+            }
+        }
+        Hasor.info("hasor started!");
+    }
+    @Override
+    public synchronized void stop() {
+        if (this.running == false)
+            return;
+        /*发送完成初始化信号*/
+        this.running = false;
+        Hasor.info("send start sign.");
+        ((PhaseEventManager) this.getEventManager()).popPhaseEvent(PhaseEvent_Stop, (AppContext) this);//发送阶段事件
+        HasorModule[] hasorModules = this.getModules();
+        if (hasorModules != null) {
+            for (HasorModule mod : hasorModules) {
+                if (mod == null)
+                    continue;
+                Hasor.info("stop Event on : %s", mod.getClass());
+                this.onStop(mod);
+            }
+        }
+        Hasor.info("hasor stoped!");
+    }
+    /**销毁*/
+    public synchronized void destroy() {
+        this.stop();
+        Hasor.info("send destroy sign.");
+        ((PhaseEventManager) this.getEventManager()).popPhaseEvent(PhaseEvent_Destroy, (AppContext) this);//发送阶段事件
+        HasorModule[] hasorModules = this.getModules();
+        if (hasorModules != null) {
+            for (HasorModule mod : hasorModules) {
+                if (mod == null)
+                    continue;
+                Hasor.info("destroy Event on : %s", mod.getClass());
+                this.onDestroy(mod);
+            }
+        }
+        Hasor.info("hasor destroy!");
+    }
+    @Override
+    public boolean isRunning() {
+        return this.running;
+    }
+    //
+    //
+    protected void onTimer() {/**/}
+    /**模块的 init 生命周期调用。*/
+    protected void onInit(HasorModule forModule, Binder binder) {
+        ApiBinder apiBinder = this.newApiBinder(forModule, binder);
+        forModule.init(apiBinder);
+        if (apiBinder instanceof com.google.inject.Module)
+            binder.install((com.google.inject.Module) apiBinder);
+    }
+    /**发送模块启动信号*/
+    protected void onStart(HasorModule forModule) {
+        forModule.start(this);
+    }
+    /**发送模块停止信号*/
+    protected void onStop(HasorModule forModule) {
+        forModule.stop(this);
+    }
+    /**模块的 destroy 生命周期调用。*/
+    protected void onDestroy(HasorModule forModule) {
+        forModule.destroy(this);
+    }
+    // 
+}

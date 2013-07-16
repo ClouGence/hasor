@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 package org.hasor.context.event;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.hasor.HasorFramework;
-import org.hasor.context.AppEventListener;
+import org.hasor.Hasor;
 import org.hasor.context.EventManager;
+import org.hasor.context.HasorEventListener;
 import org.hasor.context.Settings;
-import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 /**
  * 标准事件处理器接口的实现类
@@ -31,41 +32,42 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class StandardEventManager implements EventManager {
-    private ExecutorService                 executorService  = null;
-    private Map<String, AppEventListener[]> eventListenerMap = new HashMap<String, AppEventListener[]>();
+    private ExecutorService                       executorService     = null;
+    private int                                   eventThreadPoolSize = 0;
+    private Map<String, List<HasorEventListener>> eventListenerMap    = new HashMap<String, List<HasorEventListener>>();
     //
     public StandardEventManager(Settings settings) {
-        int eventThreadPoolSize = settings.getInteger(HasorFramework.Platform_EventThreadPoolSize, 20);
+        this.eventThreadPoolSize = settings.getInteger("framework.eventThreadPoolSize", 20);
         this.executorService = Executors.newScheduledThreadPool(eventThreadPoolSize);
     }
     @Override
-    public synchronized void addEventListener(String eventType, AppEventListener eventListener) {
-        HasorFramework.assertIsNotNull(eventListener, "add EventListener object is null.");
-        AppEventListener[] eventListenerArray = this.eventListenerMap.get(eventType);
-        if (eventListenerArray == null) {
-            eventListenerArray = new AppEventListener[0];
+    public synchronized void addEventListener(String eventType, HasorEventListener hasorEventListener) {
+        Hasor.assertIsNotNull(hasorEventListener, "add EventListener object is null.");
+        List<HasorEventListener> eventListenerList = this.eventListenerMap.get(eventType);
+        if (eventListenerList == null) {
+            eventListenerList = new ArrayList<HasorEventListener>();
+            this.eventListenerMap.put(eventType, eventListenerList);
         }
-        eventListenerArray = ArrayUtils.addToArray(eventListenerArray, eventListener);
-        this.eventListenerMap.put(eventType, eventListenerArray);
+        if (eventListenerList.contains(hasorEventListener) == false)
+            eventListenerList.add(hasorEventListener);
     }
     @Override
     public synchronized void removeAllEventListener(String eventType) {
         this.eventListenerMap.remove(eventType);
     }
     @Override
-    public synchronized void removeEventListener(String eventType, AppEventListener eventListener) {
-        HasorFramework.assertIsNotNull(eventType, "remove eventType is null.");
-        HasorFramework.assertIsNotNull(eventListener, "remove EventListener object is null.");
-        AppEventListener[] eventListenerArray = this.eventListenerMap.get(eventType);
-        if (ArrayUtils.isBlank(eventListenerArray))
+    public synchronized void removeEventListener(String eventType, HasorEventListener hasorEventListener) {
+        Hasor.assertIsNotNull(eventType, "remove eventType is null.");
+        Hasor.assertIsNotNull(hasorEventListener, "remove EventListener object is null.");
+        List<HasorEventListener> eventListenerList = this.eventListenerMap.get(eventType);
+        if (eventListenerList.isEmpty())
             return;
-        eventListenerArray = ArrayUtils.removeInArray(eventListenerArray, eventListener);
-        this.eventListenerMap.put(eventType, eventListenerArray);
+        eventListenerList.remove(hasorEventListener);
     }
     @Override
-    public AppEventListener[] getEventListener(String eventType) {
-        AppEventListener[] eventListener = this.eventListenerMap.get(eventType);
-        return (eventListener == null) ? new AppEventListener[0] : eventListener;
+    public HasorEventListener[] getEventListener(String eventType) {
+        List<HasorEventListener> eventListenerList = this.eventListenerMap.get(eventType);
+        return (eventListenerList == null) ? new HasorEventListener[0] : eventListenerList.toArray(new HasorEventListener[eventListenerList.size()]);
     }
     @Override
     public String[] getEventTypes() {
@@ -76,9 +78,9 @@ public class StandardEventManager implements EventManager {
     public void doSyncEvent(String eventType, Object... objects) {
         if (StringUtils.isBlank(eventType) == true)
             return;
-        AppEventListener[] eventListener = this.eventListenerMap.get(eventType);
-        if (eventListener != null) {
-            for (AppEventListener event : eventListener)
+        List<HasorEventListener> eventListenerList = this.eventListenerMap.get(eventType);
+        if (eventListenerList != null) {
+            for (HasorEventListener event : eventListenerList)
                 event.onEvent(eventType, objects);
         }
     }
@@ -86,15 +88,20 @@ public class StandardEventManager implements EventManager {
     public void doAsynEvent(final String eventType, final Object... objects) {
         if (StringUtils.isBlank(eventType) == true)
             return;
-        final AppEventListener[] eventListener = this.eventListenerMap.get(eventType);
+        final List<HasorEventListener> eventListenerList = this.eventListenerMap.get(eventType);
         this.executorService.submit(new Runnable() {
             @Override
             public void run() {
-                if (eventListener != null) {
-                    for (AppEventListener event : eventListener)
+                if (eventListenerList != null) {
+                    for (HasorEventListener event : eventListenerList)
                         event.onEvent(eventType, objects);
                 }
             }
         });
+    }
+    @Override
+    public synchronized void clean() {
+        this.executorService.shutdownNow();
+        this.executorService = Executors.newScheduledThreadPool(this.eventThreadPoolSize);
     }
 }

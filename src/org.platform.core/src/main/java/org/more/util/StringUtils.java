@@ -383,4 +383,13 @@ public abstract class StringUtils extends StringConvertUtils {
             return eqUnCaseSensitive(str1.trim(), str2.trim());
         return false;
     }
+    /**按照某个字符组装固定长度的的字符串。*/
+    public static String fixedString(int length, char c) {
+        if (length <= 0)
+            return "";
+        char[] chars = new char[length];
+        for (int i = 0; i < chars.length; i++)
+            chars[i] = c;
+        return new String(chars);
+    }
 };

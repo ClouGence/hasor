@@ -21,9 +21,11 @@ package org.hasor.context;
  */
 public interface PhaseEventManager extends EventManager {
     /**抛出阶段性事件。该类事件抛出之后只有等待Hasor在执行相应阶段时才会处理对应的事件。<br/>
-     * 该方法和{@link PhaseEventManager#addEventListener(String, AppEventListener)}方法不同。
+     * 该方法和{@link PhaseEventManager#addEventListener(String, HasorEventListener)}方法不同。
      * pushPhaseEvent方法注册的时间监听器当收到一次阶段性事件之后会被自动删除。*/
-    public void pushPhaseEvent(String eventType, AppEventListener eventListener);
+    public void pushPhaseEventListener(String eventType, HasorEventListener hasorEventListener);
+    /**不同于{@link #pushPhaseEventListener(String, HasorEventListener)}方法的是，通过该方法加入的监听器不会被自动删除。*/
+    public void addPhaseEventListener(String eventType, HasorEventListener hasorEventListener);
     /**弹出阶段性事件。*/
     public void popPhaseEvent(String eventType, Object... objects);
 }

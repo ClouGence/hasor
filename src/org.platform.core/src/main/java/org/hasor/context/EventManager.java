@@ -21,13 +21,13 @@ package org.hasor.context;
  */
 public interface EventManager {
     /**添加一种类型事件的事件监听器。*/
-    public void addEventListener(String eventType, AppEventListener eventListener);
+    public void addEventListener(String eventType, HasorEventListener hasorEventListener);
     /**删除某个监听器的注册。*/
     public void removeAllEventListener(String eventType);
     /**删除某个监听器的注册。*/
-    public void removeEventListener(String eventType, AppEventListener eventListener);
+    public void removeEventListener(String eventType, HasorEventListener hasorEventListener);
     /**获取某种特定类型的事件监听器集合。*/
-    public AppEventListener[] getEventListener(String eventType);
+    public HasorEventListener[] getEventListener(String eventType);
     /**获取所有事件监听器类型。*/
     public String[] getEventTypes();
     //
@@ -35,4 +35,7 @@ public interface EventManager {
     public void doSyncEvent(String eventType, Object... objects);
     /**异步方式抛出事件。asynEvent方法的调用不会决定何时开始执行事件，而这一切由事件管理器决定。*/
     public void doAsynEvent(String eventType, Object... objects);
+    //
+    /**清空未完成的事件等待执行队列*/
+    public void clean();
 }

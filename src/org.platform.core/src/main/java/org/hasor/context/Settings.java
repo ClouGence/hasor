@@ -18,22 +18,25 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
+import java.util.Set;
 /**
  * 配置文件设置
  * @version : 2013-4-23
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface Settings {
+    /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类）*/
+    public Set<Class<?>> getClassSet(Class<?> featureType, String loadPackages);
     /**获取指在某个特定命名空间下的Settings接口对象。*/
     public Settings getNamespace(URL namespace);
     /**强制重新装载配置文件，该方法会引发配置文件重载事件。*/
     public void refresh() throws IOException;
     /**添加配置文件改变事件监听器。*/
-    public void addSettingsListener(SettingListener listener);
+    public void addSettingsListener(HasorSettingListener listener);
     /**删除配置文件改变事件监听器。*/
-    public void removeSettingsListener(SettingListener listener);
+    public void removeSettingsListener(HasorSettingListener listener);
     /**获得所有配置文件改变事件监听器。*/
-    public SettingListener[] getSettingListeners();
+    public HasorSettingListener[] getSettingListeners();
     /**解析全局配置参数，并且返回其{@link Character}形式对象。*/
     public Character getChar(String name);
     /**解析全局配置参数，并且返回其{@link Character}形式对象。第二个参数为默认值。*/

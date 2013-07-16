@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 package org.hasor.context.binder;
-import static org.hasor.HasorFramework.Platform_LoadPackages;
 import java.util.Set;
 import org.hasor.context.ApiBinder;
 import org.hasor.context.InitContext;
-import org.more.util.ClassUtils;
 import org.more.util.StringUtils;
 import com.google.inject.Binder;
 import com.google.inject.Module;
@@ -27,14 +25,12 @@ import com.google.inject.Module;
  * @version : 2013-4-12
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class ApiBinderModule implements ApiBinder, Module {
+public abstract class ApiBinderModule implements ApiBinder, Module {
     private InitContext           initContext = null;
-    private Binder                guiceBinder = null;
     private BeanInfoModuleBuilder beanBuilder = new BeanInfoModuleBuilder(); /*Beans*/
     //
-    protected ApiBinderModule(Binder guiceBinder, InitContext initContext) {
+    protected ApiBinderModule(InitContext initContext) {
         this.initContext = initContext;
-        this.guiceBinder = guiceBinder;
     }
     @Override
     public void configure(Binder binder) {
@@ -45,16 +41,10 @@ public class ApiBinderModule implements ApiBinder, Module {
         return this.initContext;
     }
     @Override
-    public Binder getGuiceBinder() {
-        return this.guiceBinder;
-    }
-    @Override
     public Set<Class<?>> getClassSet(Class<?> featureType) {
         if (featureType == null)
             return null;
-        String loadPackages = this.getInitContext().getSettings().getString(Platform_LoadPackages);
-        String[] spanPackage = loadPackages.split(",");
-        return ClassUtils.getClassSet(spanPackage, featureType);
+        return this.getInitContext().getClassSet(featureType);
     }
     @Override
     public BeanBindingBuilder newBean(String beanName) {

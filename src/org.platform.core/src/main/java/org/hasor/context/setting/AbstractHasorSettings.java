@@ -18,8 +18,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 import org.hasor.context.Settings;
 import org.hasor.context.XmlProperty;
+import org.more.util.ClassUtils;
 import org.more.util.StringConvertUtils;
 import org.more.util.StringUtils;
 /**
@@ -32,6 +34,14 @@ public abstract class AbstractHasorSettings implements Settings {
     protected abstract Map<String, Object> getSettingMap();
     /**将指定的配置文件作为主配置文件载入。*/
     public abstract void load(String mainConfig) throws IOException;
+    /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类）*/
+    public Set<Class<?>> getClassSet(Class<?> featureType, String loadPackages) {
+        if (featureType == null)
+            return null;
+        loadPackages = (loadPackages == null) ? "" : loadPackages;
+        String[] spanPackage = loadPackages.split(",");
+        return ClassUtils.getClassSet(spanPackage, featureType);
+    }
     /**解析全局配置参数，并且返回toType参数指定的类型。*/
     public final <T> T getToType(String name, Class<T> toType, T defaultValue) {
         Object oriObject = this.getSettingMap().get(StringUtils.isBlank(name) ? "" : name.toLowerCase());

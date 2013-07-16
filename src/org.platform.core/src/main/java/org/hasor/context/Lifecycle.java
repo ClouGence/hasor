@@ -20,6 +20,14 @@ package org.hasor.context;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface Lifecycle {
+    /**阶段事件：Phase_OnInit*/
+    public static final String PhaseEvent_Init    = "Phase_OnInit";
+    /**阶段事件：Phase_OnStart*/
+    public static final String PhaseEvent_Start   = "Phase_OnStart";
+    /**阶段事件：Phase_OnStop*/
+    public static final String PhaseEvent_Stop    = "Phase_OnStop";
+    /**阶段事件：Phase_OnDestroy*/
+    public static final String PhaseEvent_Destroy = "Phase_OnDestroy";
     /**启动*/
     public void start();
     /**停止*/

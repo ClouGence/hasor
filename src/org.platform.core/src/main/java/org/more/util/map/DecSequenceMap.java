@@ -61,6 +61,11 @@ public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
     public void removeMap(Map<K, T> newMap) {
         entrySet().removeMap(newMap);
     }
+    /**É¾³ýÒ»¸ömap*/
+    public void removeAllMap() {
+        if (entrySet().isEmpty() == false)
+            entrySet().clear();
+    }
     public List<Map<K, T>> getMapList() {
         return Collections.unmodifiableList(this.entrySet().mapList);
     };
