@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.context;
+import java.util.List;
 /**
  * 标准事件处理器。
  * @version : 2013-5-6
@@ -27,7 +28,7 @@ public interface EventManager {
     /**删除某个监听器的注册。*/
     public void removeEventListener(String eventType, HasorEventListener hasorEventListener);
     /**获取某种特定类型的事件监听器集合。*/
-    public HasorEventListener[] getEventListener(String eventType);
+    public List<HasorEventListener> getEventListener(String eventType);
     /**获取所有事件监听器类型。*/
     public String[] getEventTypes();
     //

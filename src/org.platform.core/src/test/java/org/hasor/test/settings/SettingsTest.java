@@ -15,8 +15,11 @@
  */
 package org.hasor.test.settings;
 import java.io.IOException;
+import javax.inject.Inject;
+import org.hasor.annotation.EventListener;
 import org.hasor.annotation.SettingsListener;
 import org.hasor.context.AppContext;
+import org.hasor.context.HasorEventListener;
 import org.hasor.context.HasorSettingListener;
 import org.hasor.context.Settings;
 import org.hasor.test.AbstractTestContext;
@@ -28,12 +31,9 @@ import org.junit.Test;
  */
 public class SettingsTest extends AbstractTestContext {
     @Override
-    protected void initContext(AppContext appContext) {
-        // TODO Auto-generated method stub
-    }
+    protected void initContext(AppContext appContext) {}
     @Test
     public void test() throws IOException {
-        TestSetting sett = this.getAppContext().getInstance(TestSetting.class);
         System.in.read();
     }
 }
@@ -43,6 +43,15 @@ class TestSetting implements HasorSettingListener {
     @Override
     public void onLoadConfig(Settings newConfig) {
         configString = newConfig.getString("PACK");
-        System.out.println();
+        System.out.println("onLoadConfig£º" + configString);
+    }
+}
+@EventListener("Phase_OnTimer")
+class TimerEvent implements HasorEventListener {
+    @Inject
+    private TestSetting setting = null;
+    @Override
+    public void onEvent(String event, Object[] params) {
+        System.out.println(setting.configString);
     }
 }

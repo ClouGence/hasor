@@ -24,7 +24,7 @@ import org.hasor.context.EventManager;
 import org.hasor.context.HasorEventListener;
 import org.hasor.context.HasorSettingListener;
 import org.hasor.context.Lifecycle;
-import org.hasor.context.PhaseEventManager;
+import org.hasor.context.AdvancedEventManager;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 /**
@@ -37,15 +37,15 @@ public class AnnotationListener extends AbstractHasorModule {
     //
     /**³õÊ¼»¯.*/
     @Override
-    public void init(ApiBinder event) {
-        if (event.getInitContext().getSettings().getBoolean("framework.annotation") == false) {
+    public void init(ApiBinder apiBinder) {
+        if (apiBinder.getInitContext().getSettings().getBoolean("framework.annotation") == false) {
             Hasor.warning("init Annotation false!");
             return;
         }
         //1.Bean
-        this.loadBean(event);
+        this.loadBean(apiBinder);
         //2.Settings
-        this.loadSettings(event);
+        this.loadSettings(apiBinder);
     }
     //
     /***/
@@ -55,8 +55,8 @@ public class AnnotationListener extends AbstractHasorModule {
     }
     //
     /**×°ÔØBean*/
-    protected void loadBean(ApiBinder event) {
-        Set<Class<?>> beanSet = event.getClassSet(Bean.class);
+    protected void loadBean(ApiBinder apiBinder) {
+        Set<Class<?>> beanSet = apiBinder.getClassSet(Bean.class);
         if (beanSet == null)
             return;
         for (Class<?> beanClass : beanSet) {
@@ -68,7 +68,7 @@ public class AnnotationListener extends AbstractHasorModule {
             }
             if (StringUtils.isBlank(names[0]))
                 continue;
-            BeanBindingBuilder beanBuilder = event.newBean(names[0]);
+            BeanBindingBuilder beanBuilder = apiBinder.newBean(names[0]);
             Hasor.info("loadBean %s bind %s", names, beanClass);
             for (int i = 1; i < names.length; i++)
                 beanBuilder.aliasName(names[i]);
@@ -106,11 +106,11 @@ public class AnnotationListener extends AbstractHasorModule {
         Set<Class<?>> settingSet = apiBinder.getClassSet(SettingsListener.class);
         if (settingSet == null)
             return;
-        PhaseEventManager phaseEventManager = (PhaseEventManager) apiBinder.getInitContext().getEventManager();
+        AdvancedEventManager advancedEventManager = (AdvancedEventManager) apiBinder.getInitContext().getEventManager();
         for (final Class<?> settingClass : settingSet) {
             apiBinder.getGuiceBinder().bind(settingClass).asEagerSingleton();
             Hasor.info("%s bind SettingsListener.", settingClass);
-            phaseEventManager.pushPhaseEventListener(Lifecycle.PhaseEvent_Start, new HasorEventListener() {
+            advancedEventManager.pushPhaseEventListener(Lifecycle.PhaseEvent_Start, new HasorEventListener() {
                 @Override
                 public void onEvent(String event, Object[] params) {
                     AppContext appContext = (AppContext) params[0];

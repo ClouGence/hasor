@@ -15,12 +15,13 @@
  */
 package org.hasor.context.event;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import org.hasor.Hasor;
 import org.hasor.context.EventManager;
 import org.hasor.context.HasorEventListener;
@@ -32,13 +33,17 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class StandardEventManager implements EventManager {
-    private ExecutorService                       executorService     = null;
+    private ScheduledExecutorService              executorService     = null;
     private int                                   eventThreadPoolSize = 0;
     private Map<String, List<HasorEventListener>> eventListenerMap    = new HashMap<String, List<HasorEventListener>>();
     //
     public StandardEventManager(Settings settings) {
         this.eventThreadPoolSize = settings.getInteger("framework.eventThreadPoolSize", 20);
         this.executorService = Executors.newScheduledThreadPool(eventThreadPoolSize);
+    }
+    /**获取执行事件使用的ScheduledExecutorService接口对象。*/
+    protected ScheduledExecutorService getExecutorService() {
+        return this.executorService;
     }
     @Override
     public synchronized void addEventListener(String eventType, HasorEventListener hasorEventListener) {
@@ -65,9 +70,9 @@ public class StandardEventManager implements EventManager {
         eventListenerList.remove(hasorEventListener);
     }
     @Override
-    public HasorEventListener[] getEventListener(String eventType) {
+    public List<HasorEventListener> getEventListener(String eventType) {
         List<HasorEventListener> eventListenerList = this.eventListenerMap.get(eventType);
-        return (eventListenerList == null) ? new HasorEventListener[0] : eventListenerList.toArray(new HasorEventListener[eventListenerList.size()]);
+        return (eventListenerList == null) ? new ArrayList<HasorEventListener>(0) : Collections.unmodifiableList(eventListenerList);
     }
     @Override
     public String[] getEventTypes() {

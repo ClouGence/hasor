@@ -18,13 +18,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.hasor.Hasor;
+import org.hasor.context.AdvancedEventManager;
 import org.hasor.context.ApiBinder;
 import org.hasor.context.AppContext;
 import org.hasor.context.Environment;
 import org.hasor.context.EventManager;
+import org.hasor.context.HasorEventListener;
 import org.hasor.context.HasorModule;
 import org.hasor.context.InitContext;
-import org.hasor.context.PhaseEventManager;
 import org.hasor.context.Settings;
 import org.hasor.context.WorkSpace;
 import org.hasor.context.binder.ApiBinderModule;
@@ -121,10 +122,10 @@ public class DefaultAppContext extends AbstractAppContext {
                     }
                 });
                 /*绑定PhaseEventManager对象的Provider*/
-                binder.bind(PhaseEventManager.class).toProvider(new Provider<PhaseEventManager>() {
+                binder.bind(AdvancedEventManager.class).toProvider(new Provider<AdvancedEventManager>() {
                     @Override
-                    public PhaseEventManager get() {
-                        return (PhaseEventManager) appContet.getEventManager();
+                    public AdvancedEventManager get() {
+                        return (AdvancedEventManager) appContet.getEventManager();
                     }
                 });
                 /*绑定Settings对象的Provider*/
@@ -165,14 +166,14 @@ public class DefaultAppContext extends AbstractAppContext {
         /*创建Guice对象，并且引发模块的init事件*/
         if (this.guice == null) {
             Hasor.info("send init sign...");
-            ((PhaseEventManager) this.getEventManager()).popPhaseEvent(PhaseEvent_Init, (InitContext) this);//发送阶段事件
+            ((AdvancedEventManager) this.getEventManager()).popPhaseEvent(PhaseEvent_Init, (InitContext) this);//发送阶段事件
             this.guice = this.createInjector(null);
             Hasor.assertIsNotNull(this.guice, "can not be create Injector.");
         }
         /*发送完成初始化信号*/
         this.running = true;
         Hasor.info("send start sign.");
-        ((PhaseEventManager) this.getEventManager()).popPhaseEvent(PhaseEvent_Start, (AppContext) this);//发送阶段事件
+        ((AdvancedEventManager) this.getEventManager()).popPhaseEvent(PhaseEvent_Start, (AppContext) this);//发送阶段事件
         HasorModule[] hasorModules = this.getModules();
         if (hasorModules != null) {
             for (HasorModule mod : hasorModules) {
@@ -182,16 +183,25 @@ public class DefaultAppContext extends AbstractAppContext {
                 this.onStart(mod);
             }
         }
+        /*注册计时器*/
+        ((AdvancedEventManager) this.getEventManager()).addTimer(PhaseEvent_Timer, new HasorEventListener() {
+            @Override
+            public void onEvent(String event, Object[] params) {
+                onTimer();
+            }
+        });
         Hasor.info("hasor started!");
     }
     @Override
     public synchronized void stop() {
         if (this.running == false)
             return;
-        /*发送完成初始化信号*/
+        /*发送停止信号*/
         this.running = false;
         Hasor.info("send start sign.");
-        ((PhaseEventManager) this.getEventManager()).popPhaseEvent(PhaseEvent_Stop, (AppContext) this);//发送阶段事件
+        ((AdvancedEventManager) this.getEventManager()).popPhaseEvent(PhaseEvent_Stop, (AppContext) this);//发送阶段事件
+        ((AdvancedEventManager) this.getEventManager()).removeTimerNow(PhaseEvent_Timer);//停止计时器
+        ((AdvancedEventManager) this.getEventManager()).clean();
         HasorModule[] hasorModules = this.getModules();
         if (hasorModules != null) {
             for (HasorModule mod : hasorModules) {
@@ -207,7 +217,8 @@ public class DefaultAppContext extends AbstractAppContext {
     public synchronized void destroy() {
         this.stop();
         Hasor.info("send destroy sign.");
-        ((PhaseEventManager) this.getEventManager()).popPhaseEvent(PhaseEvent_Destroy, (AppContext) this);//发送阶段事件
+        ((AdvancedEventManager) this.getEventManager()).popPhaseEvent(PhaseEvent_Destroy, (AppContext) this);//发送阶段事件
+        ((AdvancedEventManager) this.getEventManager()).cleanALL();
         HasorModule[] hasorModules = this.getModules();
         if (hasorModules != null) {
             for (HasorModule mod : hasorModules) {
@@ -225,7 +236,13 @@ public class DefaultAppContext extends AbstractAppContext {
     }
     //
     //
-    protected void onTimer() {/**/}
+    /**计时器触发事件*/
+    protected void onTimer() {
+        List<HasorEventListener> eventListener = this.getEventManager().getEventListener(PhaseEvent_Timer);
+        Object[] params = new Object[] { this };
+        for (HasorEventListener event : eventListener)
+            event.onEvent(PhaseEvent_Timer, params);
+    }
     /**模块的 init 生命周期调用。*/
     protected void onInit(HasorModule forModule, Binder binder) {
         ApiBinder apiBinder = this.newApiBinder(forModule, binder);

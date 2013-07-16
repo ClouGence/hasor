@@ -24,7 +24,7 @@ import org.hasor.context.Lifecycle;
 import org.hasor.context.Settings;
 import org.hasor.context.WorkSpace;
 import org.hasor.context.environment.StandardEnvironment;
-import org.hasor.context.event.PhaseStandardEventManager;
+import org.hasor.context.event.StandardAdvancedEventManager;
 import org.hasor.context.setting.HasorSettings;
 import org.hasor.context.workspace.StandardWorkSpace;
 import org.more.util.ClassUtils;
@@ -53,7 +53,7 @@ public class StandardInitContext implements InitContext {
         this.settings = new HasorSettings(mainConfig);
         this.workSpace = new StandardWorkSpace(this.settings);
         this.environment = new StandardEnvironment(this.workSpace);
-        this.eventManager = new PhaseStandardEventManager(this.settings);
+        this.eventManager = new StandardAdvancedEventManager(this.settings);
         //
         String spanPackages = this.getSettings().getString("framework.loadPackages");
         this.spanPackage = spanPackages.split(",");

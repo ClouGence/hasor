@@ -8,6 +8,8 @@
 		<annotation>true</annotation>
 		<!-- 执行事件的线程池大小（该配置只有首次装载生效） -->
 		<eventThreadPoolSize>20</eventThreadPoolSize>
+		<!-- Timer定时器执行配置,单位毫秒（该配置只有首次装载生效）。可选的配置：FixedDelay(固定间隔)、FixedRate(固定周期) -->
+		<timerEvent type="FixedDelay">1000</timerEvent>
 	</framework>
 	<!-- 工作空间设置,配置的路径不进行环境变量配置解析（该组配置支持自动重载） -->
 	<workspace>

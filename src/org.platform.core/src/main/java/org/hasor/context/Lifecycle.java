@@ -28,6 +28,8 @@ public interface Lifecycle {
     public static final String PhaseEvent_Stop    = "Phase_OnStop";
     /**阶段事件：Phase_OnDestroy*/
     public static final String PhaseEvent_Destroy = "Phase_OnDestroy";
+    /**阶段事件：Phase_OnTimer*/
+    public static final String PhaseEvent_Timer   = "Phase_OnTimer";
     /**启动*/
     public void start();
     /**停止*/
