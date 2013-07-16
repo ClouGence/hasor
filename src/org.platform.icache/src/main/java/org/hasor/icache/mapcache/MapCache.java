@@ -30,17 +30,11 @@ import org.hasor.icache.DefaultCache;
 @DefaultCache
 @CacheDefine(value = "MapCache", displayName = "InternalMapCache", description = "内置的Map缓存，ICache接口的简单实现。")
 public class MapCache<T> extends Thread implements Cache<T> {
+    private MapCacheSettings                         settings       = null;
     private String                                   threadName     = "InternalMapCache-Daemon";
     private volatile boolean                         exitThread     = false;
     private volatile HashMap<String, CacheEntity<T>> cacheEntityMap = new HashMap<String, CacheEntity<T>>();
-    private MapCacheSettings                         settings       = null;
     //
-    protected MapCacheSettings getMapCacheSettings() {
-        return new MapCacheSettings();
-    }
-    public MapCache() {
-        this.settings = this.getMapCacheSettings();
-    }
     protected String getThreadName() {
         return this.threadName;
     }
@@ -67,9 +61,7 @@ public class MapCache<T> extends Thread implements Cache<T> {
     }
     @Override
     public synchronized void initCache(AppContext appContext) {
-        this.settings.loadConfig(appContext.getSettings());
-        /*加入，配置文件监听*/
-        appContext.getSettings().addSettingsListener(this.settings);
+        this.settings = appContext.getInstance(MapCacheSettings.class);
         this.exitThread = false;
         this.setDaemon(true);
         this.start();
@@ -77,8 +69,6 @@ public class MapCache<T> extends Thread implements Cache<T> {
     @Override
     public synchronized void destroy(AppContext appContext) {
         this.exitThread = true;
-        /*撤销，配置文件监听*/
-        appContext.getSettings().removeSettingsListener(settings);
         this.clear();
     }
     @Override

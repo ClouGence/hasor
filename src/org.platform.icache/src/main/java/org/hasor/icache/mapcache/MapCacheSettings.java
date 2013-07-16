@@ -15,14 +15,16 @@
  */
 package org.hasor.icache.mapcache;
 import static org.hasor.icache.CacheManager.CacheConfig_Enable;
-import org.hasor.setting.SettingListener;
-import org.hasor.setting.Settings;
+import org.hasor.annotation.SettingsListener;
+import org.hasor.context.HasorSettingListener;
+import org.hasor.context.Settings;
 /**
  * ≈‰÷√–≈œ¢
  * @version : 2013-4-23
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class MapCacheSettings implements SettingListener {
+@SettingsListener
+public class MapCacheSettings implements HasorSettingListener {
     private boolean cacheEnable    = false;
     private long    defaultTimeout = 10;
     private boolean eternal        = false;
@@ -63,7 +65,7 @@ public class MapCacheSettings implements SettingListener {
         return "cacheConfig.mapCache";
     }
     @Override
-    public void loadConfig(Settings newConfig) {
+    public void onLoadConfig(Settings newConfig) {
         this.cacheEnable = newConfig.getBoolean(CacheConfig_Enable);
         this.defaultTimeout = newConfig.getLong(getMapCacheSettingElementName() + ".timeout");
         this.eternal = newConfig.getBoolean(getMapCacheSettingElementName() + ".eternal");

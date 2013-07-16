@@ -15,20 +15,23 @@
  */
 package org.hasor.icache.support;
 import static org.hasor.icache.CacheManager.CacheConfig_Enable;
-import org.hasor.setting.SettingListener;
-import org.hasor.setting.Settings;
+import org.hasor.annotation.SettingsListener;
+import org.hasor.context.HasorSettingListener;
+import org.hasor.context.Settings;
 /**
  * 
  * @version : 2013-4-23
  * @author ÕÔÓÀ´º (zyc@byshell.org)
  */
-class CacheSettings implements SettingListener {
+@SettingsListener
+class CacheSettings implements HasorSettingListener {
     private boolean enable = false; /*Ä¬ÈÏ¹Ø±Õ×´Ì¬*/
     //
     public boolean isCacheEnable() {
         return this.enable;
     }
-    public void loadConfig(Settings config) {
+    @Override
+    public void onLoadConfig(Settings config) {
         this.enable = config.getBoolean(CacheConfig_Enable, false);
     }
 }
