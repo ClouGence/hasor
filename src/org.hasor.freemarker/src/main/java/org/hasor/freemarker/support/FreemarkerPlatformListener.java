@@ -31,33 +31,29 @@ import org.hasor.freemarker.FmTemplateLoaderDefine;
 import org.hasor.freemarker.FreemarkerManager;
 import org.hasor.freemarker.Tag;
 /**
- * Freemarker服务，延迟一个级别是因为需要依赖icache，启动级别L1
+ * Freemarker服务，延迟一个级别是因为需要依赖icache，启动级别Lv_0
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@Module(displayName = "FreemarkerPlatformListener", description = "org.platform.view.freemarker软件包功能支持。", startIndex = Module.Lv_1)
+@Module(displayName = "FreemarkerPlatformListener", description = "org.hasor.freemarker软件包功能支持。", startIndex = Module.Lv_0)
 public class FreemarkerPlatformListener extends AbstractHasorModule {
-    private FreemarkerSettings freemarkerSettings = null;
-    private FreemarkerManager  freemarkerManager  = null;
+    private FreemarkerManager freemarkerManager = null;
     /**初始化.*/
     @Override
-    public void init(ApiBinder event) {
-        this.freemarkerSettings = new FreemarkerSettings();
-        this.freemarkerSettings.loadConfig(event.getSettings());
+    public void init(ApiBinder apiBinder) {
         //
-        event.getGuiceBinder().bind(FreemarkerSettings.class).toInstance(freemarkerSettings);
-        event.getGuiceBinder().bind(FreemarkerManager.class).to(InternalFreemarkerManager.class);
-        String configurationFactory = event.getSettings().getString(FreemarkerConfig_ConfigurationFactory, DefaultFreemarkerFactory.class.getName());
+        apiBinder.getGuiceBinder().bind(FreemarkerManager.class).to(InternalFreemarkerManager.class);
+        String configurationFactory = apiBinder.getInitContext().getSettings().getString("freemarker.configurationFactory", DefaultFreemarkerFactory.class.getName());
         try {
-            event.getGuiceBinder().bind(ConfigurationFactory.class).to((Class<? extends ConfigurationFactory>) Class.forName(configurationFactory)).asEagerSingleton();
+            apiBinder.getGuiceBinder().bind(ConfigurationFactory.class).to((Class<? extends ConfigurationFactory>) Class.forName(configurationFactory)).asEagerSingleton();
         } catch (Exception e) {
             Hasor.error("bind configurationFactory error %s", e);
-            event.getGuiceBinder().bind(ConfigurationFactory.class).to(DefaultFreemarkerFactory.class).asEagerSingleton();
+            apiBinder.getGuiceBinder().bind(ConfigurationFactory.class).to(DefaultFreemarkerFactory.class).asEagerSingleton();
         }
         //
-        this.loadTemplateLoader(event);
-        this.loadFmTag(event);
-        this.loadFmMethod(event);
+        this.loadTemplateLoader(apiBinder);
+        this.loadFmTag(apiBinder);
+        this.loadFmMethod(apiBinder);
     }
     //
     /**装载TemplateLoader*/
@@ -137,15 +133,11 @@ public class FreemarkerPlatformListener extends AbstractHasorModule {
     /***/
     @Override
     public void start(AppContext appContext) {
-        appContext.getSettings().addSettingsListener(this.freemarkerSettings);
         this.freemarkerManager = appContext.getInstance(FreemarkerManager.class);
         this.freemarkerManager.initManager(appContext);
-        Hasor.info("online ->> freemarker is %s", (this.freemarkerSettings.isEnable() ? "enable." : "disable."));
     }
     @Override
     public void destroy(AppContext appContext) {
-        appContext.getSettings().removeSettingsListener(this.freemarkerSettings);
-        this.freemarkerSettings = null;
         this.freemarkerManager.destroyManager(appContext);
         Hasor.info("freemarker is destroy.");
     }

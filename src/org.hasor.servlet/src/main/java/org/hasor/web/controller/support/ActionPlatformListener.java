@@ -55,7 +55,6 @@ public class ActionPlatformListener extends WebHasorModule {
         apiBinder.getGuiceBinder().bind(ActionSettings.class).toInstance(this.settings);
         /*配置*/
         binder.bind(ActionManager.class).to(InternalActionManager.class).asEagerSingleton();
-        binder.bind(ActionManager.class).to(InternalActionManager.class).asEagerSingleton();
         /*初始化*/
         this.loadController(apiBinder);
         /*注册结果处理器*/

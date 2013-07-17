@@ -30,18 +30,31 @@ public class EventTest extends AbstractTestContext {
         HasorEventListener event = new HasorEventListener() {
             @Override
             public void onEvent(String event, Object[] params) {
-                System.out.println(event + "\t");
+                System.out.println(event + "\t begin   " + params[0]);
+                try {
+                    Thread.sleep(1100);
+                } catch (InterruptedException e) {}
+                System.out.println(event + "\t end   " + params[0]);
             }
         };
         appContext.getEventManager().addEventListener(Lifecycle.PhaseEvent_Init, event);
         appContext.getEventManager().addEventListener(Lifecycle.PhaseEvent_Start, event);
         appContext.getEventManager().addEventListener(Lifecycle.PhaseEvent_Stop, event);
         appContext.getEventManager().addEventListener(Lifecycle.PhaseEvent_Destroy, event);
+        //
+        appContext.getEventManager().addEventListener("EE", event);
     }
     @Test
     public void phaseEvent() {
         this.getAppContext().start();
-        this.getAppContext().stop();
-        this.getAppContext().destroy();
+        int i = 0;
+        while (true) {
+            this.getAppContext().getEventManager().doAsynEvent("EE", i++);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {}
+        }
+        //        this.getAppContext().stop();
+        //        this.getAppContext().destroy();
     }
 }

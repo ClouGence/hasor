@@ -16,5 +16,14 @@
 			<artifactId>org.hasor.core</artifactId>
 			<version>0.0.1</version>
 		</dependency>
+
+
+		<!-- Test -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.5</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>

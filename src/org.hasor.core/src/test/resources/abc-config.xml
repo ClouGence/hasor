@@ -4,6 +4,8 @@
 	<framework>
 		<!-- 包扫描覆盖范围 -->
 		<loadPackages>org.*, com.*, net.*, cn.*</loadPackages>
+		<!-- 执行事件的线程池大小 -->
+		<eventThreadPoolSize>1</eventThreadPoolSize>
 	</framework>
 	<workspace>
 		<!-- 程序工作空间基础目录（绝对地址） -->

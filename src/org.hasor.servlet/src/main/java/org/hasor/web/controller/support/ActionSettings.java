@@ -21,7 +21,6 @@ import static org.hasor.web.controller.ActionConfig.ActionServlet_Intercept;
 import static org.hasor.web.controller.ActionConfig.ActionServlet_Mode;
 import java.util.ArrayList;
 import java.util.List;
-import org.hasor.annotation.SettingsListener;
 import org.hasor.context.HasorSettingListener;
 import org.hasor.context.Settings;
 import org.more.util.StringUtils;

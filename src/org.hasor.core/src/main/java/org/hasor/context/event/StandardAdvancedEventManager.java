@@ -32,13 +32,9 @@ import org.more.util.StringUtils;
 public class StandardAdvancedEventManager extends StandardEventManager implements AdvancedEventManager {
     private Map<String, LinkedList<HasorEventListener>> listenerMap = new HashMap<String, LinkedList<HasorEventListener>>();
     private Map<String, ScheduledFuture<?>>             timerMap    = new HashMap<String, ScheduledFuture<?>>();
-    private int                                         timerPeriod;
-    private String                                      timerType;
     //
     public StandardAdvancedEventManager(Settings settings) {
         super(settings);
-        this.timerPeriod = settings.getInteger("framework.timerEvent");
-        this.timerType = settings.getString("framework.timerEvent.type");
     }
     @Override
     public synchronized void pushEventListener(String eventType, HasorEventListener hasorEventListener) {
@@ -92,40 +88,42 @@ public class StandardAdvancedEventManager extends StandardEventManager implement
         this.timerMap.clear();
     }
     @Override
-    public synchronized void addTimer(final String timerType, final HasorEventListener hasorEventListener) throws RepeateException {
-        if (this.timerMap.containsKey(timerType))
-            throw new RepeateException(timerType + " timer is exist.");
+    public synchronized void addTimer(final String timerName, final HasorEventListener hasorEventListener) throws RepeateException {
+        if (this.timerMap.containsKey(timerName))
+            throw new RepeateException(timerName + " timer is exist.");
         //
+        int timerPeriod = this.getSettings().getInteger("framework.timerEvent");
+        final String timerType = this.getSettings().getString("framework.timerEvent.type");
         ScheduledFuture<?> future = null;
         Runnable eventListener = new Runnable() {
             @Override
             public void run() {
-                hasorEventListener.onEvent(timerType, null);
+                hasorEventListener.onEvent(timerName, null);
             }
         };
         /**固定间隔*/
-        if (StringUtils.eqUnCaseSensitive(this.timerType, "FixedDelay")) {
-            future = this.getExecutorService().scheduleWithFixedDelay(eventListener, 0, this.timerPeriod, TimeUnit.MILLISECONDS);
+        if (StringUtils.eqUnCaseSensitive(timerType, "FixedDelay")) {
+            future = this.getExecutorService().scheduleWithFixedDelay(eventListener, 0, timerPeriod, TimeUnit.MILLISECONDS);
         }
         /**固定周期*/
-        if (StringUtils.eqUnCaseSensitive(this.timerType, "FixedRate")) {
-            future = this.getExecutorService().scheduleAtFixedRate(eventListener, 0, this.timerPeriod, TimeUnit.MILLISECONDS);
+        if (StringUtils.eqUnCaseSensitive(timerType, "FixedRate")) {
+            future = this.getExecutorService().scheduleAtFixedRate(eventListener, 0, timerPeriod, TimeUnit.MILLISECONDS);
         }
         //
         if (future != null)
-            this.timerMap.put(timerType, future);
+            this.timerMap.put(timerName, future);
     }
     @Override
-    public synchronized void removeTimer(String timerType) {
-        if (this.timerMap.containsKey(timerType)) {
-            ScheduledFuture<?> future = this.timerMap.remove(timerType);
+    public synchronized void removeTimer(String timerName) {
+        if (this.timerMap.containsKey(timerName)) {
+            ScheduledFuture<?> future = this.timerMap.remove(timerName);
             future.cancel(false);
         }
     }
     @Override
-    public void removeTimerNow(String timerType) {
-        if (this.timerMap.containsKey(timerType)) {
-            ScheduledFuture<?> future = this.timerMap.remove(timerType);
+    public void removeTimerNow(String timerName) {
+        if (this.timerMap.containsKey(timerName)) {
+            ScheduledFuture<?> future = this.timerMap.remove(timerName);
             future.cancel(true);
         }
     }

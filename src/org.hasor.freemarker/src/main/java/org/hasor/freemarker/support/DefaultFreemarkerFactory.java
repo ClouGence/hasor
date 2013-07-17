@@ -113,7 +113,7 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
     /***/
     protected void applySetting(Configuration configuration, AppContext appContext) {
         //1.应用设置
-        XmlProperty settings = appContext.getSettings().getXmlProperty(FreemarkerConfig_Settings);
+        XmlProperty settings = appContext.getSettings().getXmlProperty("freemarker.settings");
         if (settings == null)
             return;
         List<XmlProperty> childrenList = settings.getChildren();
@@ -142,7 +142,7 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
         }
         //2.获取配置的TemplateLoader
         ArrayList<FmTemplateLoader> templateLoaderList = new ArrayList<FmTemplateLoader>();
-        XmlProperty configLoaderList = appContext.getSettings().getXmlProperty(FreemarkerConfig_TemplateLoader);
+        XmlProperty configLoaderList = appContext.getSettings().getXmlProperty("freemarker.templateLoader");
         if (configLoaderList != null) {
             List<XmlProperty> childrenList = configLoaderList.getChildren();
             for (XmlProperty item : childrenList) {

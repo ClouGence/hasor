@@ -22,9 +22,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
 import org.hasor.Hasor;
 import org.hasor.context.EventManager;
 import org.hasor.context.HasorEventListener;
+import org.hasor.context.HasorSettingListener;
 import org.hasor.context.Settings;
 import org.more.util.StringUtils;
 /**
@@ -33,13 +35,30 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class StandardEventManager implements EventManager {
-    private ScheduledExecutorService              executorService     = null;
-    private int                                   eventThreadPoolSize = 0;
-    private Map<String, List<HasorEventListener>> eventListenerMap    = new HashMap<String, List<HasorEventListener>>();
+    private Settings                              settings         = null;
+    private ScheduledExecutorService              executorService  = null;
+    private Map<String, List<HasorEventListener>> eventListenerMap = new HashMap<String, List<HasorEventListener>>();
     //
     public StandardEventManager(Settings settings) {
-        this.eventThreadPoolSize = settings.getInteger("framework.eventThreadPoolSize", 20);
-        this.executorService = Executors.newScheduledThreadPool(eventThreadPoolSize);
+        this.settings = settings;
+        this.executorService = Executors.newScheduledThreadPool(1);
+        settings.addSettingsListener(new HasorSettingListener() {
+            @Override
+            public void onLoadConfig(Settings newConfig) {
+                update();
+            }
+        });
+        this.update();
+        //
+    }
+    /**获取Setting接口对象*/
+    public Settings getSettings() {
+        return this.settings;
+    }
+    private void update() {
+        int eventThreadPoolSize = this.getSettings().getInteger("framework.eventThreadPoolSize", 20);
+        ThreadPoolExecutor threadPool = (ThreadPoolExecutor) executorService;
+        threadPool.setCorePoolSize(eventThreadPoolSize);
     }
     /**获取执行事件使用的ScheduledExecutorService接口对象。*/
     protected ScheduledExecutorService getExecutorService() {
@@ -107,6 +126,7 @@ public class StandardEventManager implements EventManager {
     @Override
     public synchronized void clean() {
         this.executorService.shutdownNow();
-        this.executorService = Executors.newScheduledThreadPool(this.eventThreadPoolSize);
+        this.executorService = Executors.newScheduledThreadPool(1);
+        this.update();
     }
 }

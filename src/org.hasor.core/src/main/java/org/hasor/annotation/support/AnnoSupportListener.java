@@ -32,11 +32,11 @@ import org.hasor.context.Lifecycle;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 /**
- * 支持Bean注解功能。启动级别：Lv1Max
+ * 支持Bean注解功能。启动级别：Lv_0
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@Module(displayName = "AnnoSupportListener", description = "org.hasor.annotation软件包功能支持。", startIndex = Module.Lv_1Max)
+@Module(displayName = "AnnoSupportListener", description = "org.hasor.annotation软件包功能支持。", startIndex = Module.Lv_0)
 public class AnnoSupportListener extends AbstractHasorModule {
     //
     /**初始化.*/

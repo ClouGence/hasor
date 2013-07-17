@@ -22,6 +22,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import org.hasor.context.AppContext;
+import org.hasor.context.HasorSettingListener;
+import org.hasor.context.Settings;
 import com.google.inject.Binding;
 import com.google.inject.Injector;
 import com.google.inject.TypeLiteral;
@@ -31,17 +33,17 @@ import com.google.inject.TypeLiteral;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Singleton
-public class ManagedErrorPipeline {
-    /**异常处理程序总迭代次数(配置Code).*/
-    public static final String HttpServlet_ErrorCaseCount = "httpServlet.errorCaseCount";
+public class ManagedErrorPipeline implements HasorSettingListener {
+    private ErrorDefinition[] errorDefinitions;
+    private volatile boolean  initialized    = false;
+    private int               errorCaseCount = 5;
     //
-    //
-    private ErrorDefinition[]  errorDefinitions;
-    private volatile boolean   initialized                = false;
-    private AppContext         appContext                 = null;
-    //
+    @Override
+    public void onLoadConfig(Settings newConfig) {
+        this.errorCaseCount = newConfig.getInteger("httpServlet.errorCaseCount", 5);
+    }
     public synchronized void initPipeline(AppContext appContext) throws ServletException {
-        this.appContext = appContext;
+        this.onLoadConfig(appContext.getSettings());
         if (initialized)
             return;
         this.errorDefinitions = collectErrorDefinitions(appContext.getGuice());
@@ -65,7 +67,6 @@ public class ManagedErrorPipeline {
         if (onError == null)
             onError = error;
         //1.进行异常处理
-        int errorCaseCount = this.appContext.getSettings().getInteger(HttpServlet_ErrorCaseCount, 5);
         for (int i = 0; i < errorCaseCount; i++) {
             for (int j = 0; j < errorDefinitions.length; j++) {
                 ErrorDefinition errDefine = errorDefinitions[j];

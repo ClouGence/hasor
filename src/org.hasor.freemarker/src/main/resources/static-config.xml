@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://project.hasor.net/hasor/schema/global">
 	<!-- freemarker 配置，onError当模板处理发生异常时的处理方式。模式：ThrowError（抛出异常）、PrintOnConsole（打印到控制台或日志）、Warning（忽略，仅仅产生一条警告消息）PrintOnPage（打印到页面） -->
-	<freemarker enable="true" onError="ThrowError">
+	<freemarker>
 		<!-- freemarker模板后缀名逗号间隔多个. -->
 		<suffixSet>*.ftl,*.html</suffixSet>
-		<!-- 模板解析的内容响应到客户端的类型 -->
-		<contentType>text/html</contentType>
 		<!-- Configuration对象创建工厂 -->
-		<configurationFactory>org.hasor.view.freemarker.support.DefaultFreemarkerFactory</configurationFactory>
+		<configurationFactory>org.hasor.freemarker.support.DefaultFreemarkerFactory</configurationFactory>
 		<!-- 模板装载器（配置不支持动态更新） -->
 		<templateLoader>
 			<!-- <PathLoader>c:\abc</PathLoader> -->
@@ -17,9 +15,9 @@
 			<!-- </PredefineLoader> -->
 			<!-- -->
 			<!-- 工作目录中的webapp文件夹 -->
-			<PathLoader>{MORE_WORK_HOME}/webapp</PathLoader>
+			<PathLoader>{HASOR_WORK_HOME}/webapp</PathLoader>
 			<!-- Web网站根 -->
-			<PathLoader>{MORE_WEB_ROOT}/</PathLoader>
+			<PathLoader>{HASOR_WEBROOT}/</PathLoader>
 			<!-- classPath路径下指定的位置 -->
 			<ClassPathLoader>/META-INF/webapp</ClassPathLoader>
 		</templateLoader>

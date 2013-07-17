@@ -55,14 +55,22 @@ public class MergedController implements Filter {
     public void doFilter(ServletRequest req, ServletResponse resp, final FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
+        /*启用禁用*/
+        if (this.actionSettings.isEnable() == false) {
+            chain.doFilter(request, response);
+            return;
+        }
+        /*运行模式：ServletOnly*/
         if (this.actionSettings.getMode() == ActionWorkMode.ServletOnly) {
             this.actionController.service(request, response);
             return;
         }
+        /*运行模式：RestOnly*/
         if (this.actionSettings.getMode() == ActionWorkMode.RestOnly) {
             this.restfulController.doFilter(request, response, chain);
             return;
         }
+        /*运行模式：Both*/
         if (this.actionSettings.getMode() == ActionWorkMode.Both) {
             this.restfulController.doFilter(request, response, new FilterChain() {
                 @Override

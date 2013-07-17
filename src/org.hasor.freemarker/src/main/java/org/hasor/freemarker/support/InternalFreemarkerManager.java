@@ -20,6 +20,7 @@ import java.io.Writer;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import org.hasor.context.AppContext;
+import org.hasor.context.HasorSettingListener;
 import org.hasor.context.Settings;
 import org.hasor.freemarker.ConfigurationFactory;
 import org.hasor.freemarker.FreemarkerManager;
@@ -37,7 +38,7 @@ import freemarker.template.TemplateException;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Singleton
-class InternalFreemarkerManager implements FreemarkerManager, SettingListener {
+class InternalFreemarkerManager implements FreemarkerManager, HasorSettingListener {
     private AppContext             appContext           = null;
     private ConfigTemplateLoader   stringLoader         = null;
     private ConfigurationFactory   configurationFactory = null;
@@ -58,7 +59,7 @@ class InternalFreemarkerManager implements FreemarkerManager, SettingListener {
     }
     //
     @Override
-    public void loadConfig(Settings newConfig) {
+    public void onLoadConfig(Settings newConfig) {
         this.configuration = null;
     }
     public final Configuration getFreemarker() {
