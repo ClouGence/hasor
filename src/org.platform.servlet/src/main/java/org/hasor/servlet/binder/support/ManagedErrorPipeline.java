@@ -31,7 +31,7 @@ import com.google.inject.TypeLiteral;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Singleton
-class ManagedErrorPipeline {
+public class ManagedErrorPipeline {
     /**异常处理程序总迭代次数(配置Code).*/
     public static final String HttpServlet_ErrorCaseCount = "httpServlet.errorCaseCount";
     //

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://project.hasor.net/hasor/schema/global">
-	<!-- Web部分的配置 -->
+	<!-- Web部分的配置（配置不支持动态更新） -->
 	<httpServlet>
 		<!-- Web请求遇到异常后轮询errorHook的次数。 -->
 		<errorCaseCount>5</errorCaseCount>
@@ -11,18 +11,18 @@
 			<!-- 方法忽略的方法（逗号分割多组方法名），注意：在这里配置的忽略会应用到所有action上 -->
 			<ignoreMethod></ignoreMethod>
 		</actionServlet>
-		<!-- 请求转发映射 -->
-		<!-- <httpRequestMapping enable="true"> -->
-		<!-- 文件匹配 -->
-		<!-- <fileMapping startWith="/" forwardTo="/index.htm" type="forward" /> -->
-		<!-- 目录匹配 -->
-		<!-- <pathMapping startWith="/baidu" forwardTo="http://www.baidu.com/" type="forward|redirect(default)"/> -->
-		<!-- </httpRequestMapping> -->
-		<!-- 资源装载器（配置不支持动态更新） -->
+		<!-- 资源装载器 -->
 		<resourceLoader enable="true" cacheDir="httpservlet.resourceloader.classpath" contentTypes="js,css,gif,ico,jpg,jpeg,png,swf,swc,flv,mp3,wav,avi">
-			<!-- <zipLoader>{MORE_WEB_HOME}/ext-4.2.zip</zipLoader> -->
-			<pathLoader>{MORE_WORK_HOME}/webapp</pathLoader>
+			<!-- <zipLoader>{HASOR_WEBROOT}/pic.zip</zipLoader> -->
+			<pathLoader>{HASOR_WORK_HOME}/webapp</pathLoader>
 			<classpathLoader>/META-INF/webapp</classpathLoader>
 		</resourceLoader>
 	</httpServlet>
 </config>
+<!-- 请求转发映射 -->
+<!-- <httpRequestMapping enable="true"> -->
+<!-- 文件匹配 -->
+<!-- <fileMapping startWith="/" forwardTo="/index.htm" type="forward" /> -->
+<!-- 目录匹配 -->
+<!-- <pathMapping startWith="/baidu" forwardTo="http://www.baidu.com/" type="forward|redirect(default)"/> -->
+<!-- </httpRequestMapping> -->

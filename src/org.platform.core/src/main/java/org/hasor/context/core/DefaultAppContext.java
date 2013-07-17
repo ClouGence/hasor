@@ -32,6 +32,7 @@ import org.hasor.context.binder.ApiBinderModule;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Module;
 import com.google.inject.Provider;
 /**
  * {@link AppContext}接口默认实现。
@@ -48,6 +49,9 @@ public class DefaultAppContext extends AbstractAppContext {
     }
     public DefaultAppContext(String mainConfig) throws IOException {
         super(mainConfig);
+    }
+    public DefaultAppContext(String mainConfig, Object context) throws IOException {
+        super(mainConfig, context);
     }
     protected List<HasorModule> getModuleList() {
         if (this.haosrModuleSet == null)
@@ -84,10 +88,10 @@ public class DefaultAppContext extends AbstractAppContext {
         };
     }
     /**通过guice创建{@link Injector}，该方法会促使调用模块init生命周期*/
-    protected Injector createInjector(com.google.inject.Module[] guiceModules) {
+    protected Injector createInjector(Module[] guiceModules) {
         //1.构建ApiBinderModule。
         final AppContext appContet = this;
-        final com.google.inject.Module masterBind = new com.google.inject.Module() {
+        final Module masterBind = new Module() {
             @Override
             public void configure(Binder binder) {
                 /*引发模块init生命周期*/
@@ -152,12 +156,12 @@ public class DefaultAppContext extends AbstractAppContext {
             }
         };
         //2.
-        ArrayList<com.google.inject.Module> guiceModuleSet = new ArrayList<com.google.inject.Module>();
+        ArrayList<Module> guiceModuleSet = new ArrayList<Module>();
         guiceModuleSet.add(masterBind);
         if (guiceModules != null)
-            for (com.google.inject.Module mod : guiceModules)
+            for (Module mod : guiceModules)
                 guiceModuleSet.add(mod);
-        return Guice.createInjector(guiceModuleSet.toArray(new com.google.inject.Module[guiceModuleSet.size()]));
+        return Guice.createInjector(guiceModuleSet.toArray(new Module[guiceModuleSet.size()]));
     }
     @Override
     public synchronized void start() {

@@ -16,7 +16,7 @@
 package org.hasor.web.resource;
 import java.io.IOException;
 import org.hasor.context.AppContext;
-import org.more.global.assembler.xml.XmlProperty;
+import org.hasor.context.XmlProperty;
 /**
  * 
  * @version : 2013-5-22

@@ -14,33 +14,18 @@
  * limitations under the License.
  */
 package org.hasor.web.encoding;
-import org.hasor.annotation.HasorModule;
-import org.hasor.context.AppContext;
-import org.hasor.context.PlatformListener;
-import org.hasor.context.binder.ApiBinder;
+import org.hasor.annotation.Module;
+import org.hasor.servlet.WebApiBinder;
+import org.hasor.servlet.WebHasorModule;
 /**
  * 请求响应编码。启动级别：Lv0
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@HasorModule(displayName = "EncodingFilterListener", description = "org.platform.servlet.encoding软件包功能支持。", startIndex = HasorModule.Lv_0)
-public class EncodingFilterListener implements PlatformListener {
+@Module(displayName = "EncodingFilterListener", description = "org.hasor.web.encoding软件包功能支持。", startIndex = Module.Lv_0)
+public class EncodingFilterListener extends WebHasorModule {
     @Override
-    public void initialize(WebApiBinder binder) {
-        EncodingSettings setting = new EncodingSettings();
-        setting.loadConfig(binder.getSettings());
-        binder.getGuiceBinder().bind(EncodingSettings.class).toInstance(setting);
-        //
-        binder.filter("*").through(EncodingFilter.class);
-    }
-    @Override
-    public void initialized(AppContext appContext) {
-        EncodingSettings setting = appContext.getInstance(EncodingSettings.class);
-        appContext.getSettings().addSettingsListener(setting);
-    }
-    @Override
-    public void destroy(AppContext appContext) {
-        EncodingSettings setting = appContext.getInstance(EncodingSettings.class);
-        appContext.getSettings().removeSettingsListener(setting);
+    public void init(WebApiBinder apiBinder) {
+        apiBinder.filter("*").through(EncodingFilter.class);
     }
 }

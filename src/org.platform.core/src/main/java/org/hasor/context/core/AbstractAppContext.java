@@ -34,7 +34,10 @@ public abstract class AbstractAppContext extends StandardInitContext implements 
         this("hasor-config.xml");
     }
     public AbstractAppContext(String mainConfig) throws IOException {
-        super(mainConfig);
+        this(mainConfig, null);
+    }
+    public AbstractAppContext(String mainConfig, Object context) throws IOException {
+        super(mainConfig, context);
     }
     //
     private Map<String, BeanInfo> beanInfoMap;

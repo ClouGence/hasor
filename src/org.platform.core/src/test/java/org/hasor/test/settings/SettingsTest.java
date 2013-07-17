@@ -46,7 +46,7 @@ class TestSetting implements HasorSettingListener {
         System.out.println("onLoadConfig£º" + configString);
     }
 }
-@EventListener("Phase_OnTimer")
+//@EventListener("Phase_OnTimer")
 class TimerEvent implements HasorEventListener {
     @Inject
     private TestSetting setting = null;

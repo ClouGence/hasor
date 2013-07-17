@@ -37,7 +37,7 @@ import com.google.inject.TypeLiteral;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Singleton
-class ManagedFilterPipeline implements FilterPipeline {
+public class ManagedFilterPipeline implements FilterPipeline {
     private final ManagedServletPipeline servletPipeline;
     private final ManagedErrorPipeline   errorPipeline;
     private FilterDefinition[]           filterDefinitions;

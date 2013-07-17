@@ -50,7 +50,11 @@ public class StandardInitContext implements InitContext {
         this("hasor-config.xml");
     }
     public StandardInitContext(String mainConfig) throws IOException {
+        this(mainConfig, null);
+    }
+    public StandardInitContext(String mainConfig, Object context) throws IOException {
         this.mainConfig = mainConfig;
+        this.setContext(context);
         this.initContext();
     }
     /**初始化方法*/

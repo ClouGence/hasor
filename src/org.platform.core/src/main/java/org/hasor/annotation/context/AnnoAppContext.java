@@ -36,6 +36,9 @@ public class AnnoAppContext extends DefaultAppContext {
     public AnnoAppContext(String mainConfig) throws IOException {
         super(mainConfig);
     }
+    public AnnoAppContext(String mainConfig, Object context) throws IOException {
+        super(mainConfig, context);
+    }
     @Override
     protected void initContext() throws IOException {
         super.initContext();

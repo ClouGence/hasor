@@ -29,7 +29,7 @@ import com.google.inject.TypeLiteral;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Singleton
-class ManagedSessionListenerPipeline implements SessionListenerPipeline {
+public class ManagedSessionListenerPipeline implements SessionListenerPipeline {
     private ListenerDefinition[] sessionListeners = null;
     private volatile boolean     initialized      = false;
     private AppContext           appContext       = null;

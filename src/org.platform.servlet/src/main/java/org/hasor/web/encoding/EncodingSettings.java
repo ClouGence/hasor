@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.web.encoding;
+import org.hasor.annotation.SettingsListener;
 import org.hasor.context.HasorSettingListener;
 import org.hasor.context.Settings;
 /**
@@ -21,6 +22,7 @@ import org.hasor.context.Settings;
  * @version : 2013-6-8
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
+@SettingsListener
 public class EncodingSettings implements HasorSettingListener {
     private String requestEncoding  = null;
     private String responseEncoding = null;
@@ -38,7 +40,7 @@ public class EncodingSettings implements HasorSettingListener {
         this.responseEncoding = responseEncoding;
     }
     @Override
-    public void loadConfig(Settings newConfig) {
+    public void onLoadConfig(Settings newConfig) {
         this.requestEncoding = newConfig.getString("httpServlet.requestEncoding.requestEncoding", "utf-8");
         this.responseEncoding = newConfig.getString("httpServlet.requestEncoding.responseEncoding", "utf-8");
     }

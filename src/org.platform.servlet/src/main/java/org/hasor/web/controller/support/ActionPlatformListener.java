@@ -18,18 +18,19 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
 import org.hasor.Hasor;
-import org.hasor.annotation.HasorModule;
+import org.hasor.annotation.Module;
 import org.hasor.context.AppContext;
-import org.hasor.context.PlatformListener;
-import org.hasor.context.binder.ApiBinder;
+import org.hasor.context.Settings;
+import org.hasor.servlet.WebApiBinder;
+import org.hasor.servlet.WebHasorModule;
+import org.hasor.web.controller.ActionBinder.ActionBindingBuilder;
+import org.hasor.web.controller.ActionBinder.NameSpaceBindingBuilder;
 import org.hasor.web.controller.Controller;
 import org.hasor.web.controller.HttpMethod;
 import org.hasor.web.controller.Produces;
 import org.hasor.web.controller.RestfulMapping;
 import org.hasor.web.controller.ResultDefine;
 import org.hasor.web.controller.ResultProcess;
-import org.hasor.web.controller.ActionBinder.ActionBindingBuilder;
-import org.hasor.web.controller.ActionBinder.NameSpaceBindingBuilder;
 import org.more.util.ArrayUtils;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
@@ -39,24 +40,26 @@ import com.google.inject.Binder;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@HasorModule(displayName = "ActionModuleListener", description = "org.platform.action软件包功能支持。", startIndex = HasorModule.Lv_1)
-public class ActionPlatformListener implements PlatformListener {
+@Module(displayName = "ActionModuleListener", description = "org.hasor.web.controller软件包功能支持。", startIndex = Module.Lv_1)
+public class ActionPlatformListener extends WebHasorModule {
     private ActionSettings settings      = null;
     private ActionManager  actionManager = null;
     @Override
-    public void initialize(WebApiBinder event) {
-        Binder binder = event.getGuiceBinder();
-        event.filter("*").through(MergedController.class);
-        /*配置*/
+    public void init(WebApiBinder apiBinder) {
+        Binder binder = apiBinder.getGuiceBinder();
+        apiBinder.filter("*").through(MergedController.class);
+        Settings settings = apiBinder.getInitContext().getSettings();
         this.settings = new ActionSettings();
-        this.settings.loadConfig(event.getSettings());
-        binder.bind(ActionSettings.class).toInstance(this.settings);//通过Guice
+        this.settings.onLoadConfig(settings);
+        settings.addSettingsListener(this.settings);
+        apiBinder.getGuiceBinder().bind(ActionSettings.class).toInstance(this.settings);
+        /*配置*/
         binder.bind(ActionManager.class).to(InternalActionManager.class).asEagerSingleton();
         binder.bind(ActionManager.class).to(InternalActionManager.class).asEagerSingleton();
         /*初始化*/
-        this.loadController(event);
+        this.loadController(apiBinder);
         /*注册结果处理器*/
-        this.loadResultDefine(event);
+        this.loadResultDefine(apiBinder);
     }
     //
     /*装载Controller*/
@@ -79,7 +82,7 @@ public class ActionPlatformListener implements PlatformListener {
     /*装载Controller*/
     private void loadController(NameSpaceBindingBuilder nsBinding, Class<?> controllerType) {
         List<Method> actionMethods = BeanUtils.getMethods(controllerType);
-        Object[] ignoreMethods = this.settings.getIgnoreMethod().toArray();//忽略
+        Object[] ignoreMethods = settings.getIgnoreMethod().toArray();//忽略
         Controller controllerAnno = controllerType.getAnnotation(Controller.class);
         for (Method method : actionMethods) {
             //1.执行忽略
@@ -105,7 +108,6 @@ public class ActionPlatformListener implements PlatformListener {
             //
         }
     }
-    //
     /*装载ResultDefine*/
     protected void loadResultDefine(WebApiBinder event) {
         //1.获取
@@ -126,16 +128,13 @@ public class ActionPlatformListener implements PlatformListener {
     }
     //
     @Override
-    public void initialized(AppContext appContext) {
-        appContext.getSettings().addSettingsListener(this.settings);
+    public void start(AppContext appContext) {
         this.actionManager = appContext.getInstance(ActionManager.class);
         this.actionManager.initManager(appContext);
-        //
         Hasor.info("online ->> action is %s for style %s", (this.settings.isEnable() ? "enable." : "disable."), this.settings.getMode());
     }
     @Override
     public void destroy(AppContext appContext) {
-        appContext.getSettings().removeSettingsListener(this.settings);
         this.actionManager.destroyManager(appContext);
     }
 }

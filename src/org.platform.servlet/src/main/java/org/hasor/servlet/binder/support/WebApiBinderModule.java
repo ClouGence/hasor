@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import org.hasor.context.InitContext;
 import org.hasor.context.binder.ApiBinderModule;
 import org.hasor.servlet.WebApiBinder;
-import org.hasor.servlet.binder.FilterPipeline;
-import org.hasor.servlet.binder.SessionListenerPipeline;
 import org.more.util.ArrayUtils;
 import com.google.inject.Binder;
 /**
@@ -68,10 +66,5 @@ public abstract class WebApiBinderModule extends ApiBinderModule implements WebA
         binder.install(this.servletModuleBinder);
         binder.install(this.errorsModuleBuilder);
         binder.install(this.listenerBindingBuilder);
-        /*Bind*/
-        binder.bind(ManagedErrorPipeline.class);
-        binder.bind(ManagedServletPipeline.class);
-        binder.bind(FilterPipeline.class).to(ManagedFilterPipeline.class);
-        binder.bind(SessionListenerPipeline.class).to(ManagedSessionListenerPipeline.class);
     }
 }

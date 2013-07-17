@@ -3,50 +3,26 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="/jslib/jquery_v1.10.1/jquery-v1.10.0.js"></script>
-<script src="/jslib/bootstrap_v2.3.2/js/bootstrap.min.js"></script>
-<link href="/jslib/bootstrap_v2.3.2/css/bootstrap.min.css" rel="stylesheet">
+<script src="/static/jquery_v1.10.1/jquery-v1.10.0.js"></script>
+<script src="/static/bootstrap_v2.3.2/js/bootstrap.min.js"></script>
+<link href="/static/bootstrap_v2.3.2/css/bootstrap.min.css" rel="stylesheet">
 <title>Demo</title>
 </head>
 <body>
-	<h1>Hello, world! -- ${req_hello}</h1>
+	<h1>Hello, world!</h1>
 	<ul class="breadcrumb">
 	  <li><a href="#">Demo Home</a> <span class="divider">/</span></li>
 	  <li><a href="http://www.bootcss.com/">Bootcss Home</a> <span class="divider">/</span></li>
 	</ul>
-	<!-- 登陆界面 -->
-	<a class="btn" href="/jslib/json2_v2010-03-20/json.js">json.js</a>
+	<a class="btn" href="/org/platform/p4.png" target="_target">Classpath image</a>
 	<div class="btn-group">
-		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">登陆入口<span class="caret"></span></a>
+		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">pic.zip<span class="caret"></span></a>
 		<ul class="dropdown-menu">
-			<li><a href="/login/admin_login.htm">admin Login Page</a></li>
-			<li><a href="/login/bbs_login.htm">bbs Login Page</a></li>
-			<li><a href="/login/user_login.htm">User Login Page</a></li>
+			<li><a href="/p1.jpg">p1 image</a></li>
+			<li><a href="/p2.jpg">p2 image</a></li>
+			<li><a href="/p3.png">p3 image</a></li>
 		</ul>
 	</div>
-	<!-- 受保护的页面 -->
-	<div class="btn-group">
-		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">受保护的页面<span class="caret"></span></a>
-		<ul class="dropdown-menu">
-			<li><a href="/admin">Go Admin</a></li>
-			<li><a href="/bbs">Go BBS</a></li>
-			<li><a href="/user">Go User</a></li>
-		</ul>
-	</div>
-	<!-- Servlet调用 -->
-	<div class="btn-group">
-		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Servlet调用<span class="caret"></span></a>
-		<ul class="dropdown-menu">
-			<li><a href="/business/scene1.do">business.scene1</a></li>
-			<li class="divider"></li>
-			<li><a href="scene2.do?goID=go1">[Go1]</a></li>
-			<li><a href="scene2.do?goID=go2">[Go2]</a></li>
-			<li><a href="scene2.do?goID=go3">[Go3]</a></li>
-			<li><a href="scene2.do?goID=go4">[Go4]</a></li>
-		</ul>
-	</div>
-	<br/><br/>
-	<span class="label label-warning">${Settings("framework.loadPackages")}</span>
-	<span class="label label-warning">${cfg.callMethod("framework.loadPackages")}</span>
+	<a class="btn" href="/path/showme.png" target="_target">File Path image</a>
 </body>
 </html>

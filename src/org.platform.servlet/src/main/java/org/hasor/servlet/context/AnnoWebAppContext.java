@@ -15,6 +15,7 @@
  */
 package org.hasor.servlet.context;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 import javax.servlet.ServletContext;
 import org.hasor.annotation.context.AnnoAppContext;
@@ -22,8 +23,16 @@ import org.hasor.context.Environment;
 import org.hasor.context.HasorModule;
 import org.hasor.context.WorkSpace;
 import org.hasor.context.environment.StandardEnvironment;
+import org.hasor.servlet.binder.FilterPipeline;
+import org.hasor.servlet.binder.SessionListenerPipeline;
+import org.hasor.servlet.binder.support.ManagedErrorPipeline;
+import org.hasor.servlet.binder.support.ManagedFilterPipeline;
+import org.hasor.servlet.binder.support.ManagedServletPipeline;
+import org.hasor.servlet.binder.support.ManagedSessionListenerPipeline;
 import org.hasor.servlet.binder.support.WebApiBinderModule;
 import com.google.inject.Binder;
+import com.google.inject.Injector;
+import com.google.inject.Module;
 import com.google.inject.Provider;
 /**
  * 
@@ -31,34 +40,32 @@ import com.google.inject.Provider;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class AnnoWebAppContext extends AnnoAppContext {
-    private ServletContext servletContext = null;
     public AnnoWebAppContext(ServletContext servletContext) throws IOException {
-        super();
-        this.setContext(servletContext);
-        this.servletContext = servletContext;
+        super("hasor-config.xml", servletContext);
     }
     public AnnoWebAppContext(String mainConfig, ServletContext servletContext) throws IOException {
-        super(mainConfig);
-        this.setContext(servletContext);
-        this.servletContext = servletContext;
+        super(mainConfig, servletContext);
     }
     public ServletContext getServletContext() {
-        return this.servletContext;
+        if (this.getContext() instanceof ServletContext)
+            return (ServletContext) this.getContext();
+        else
+            return null;
     }
     @Override
     protected Environment createEnvironment() {
-        return new WebStandardEnvironment(this.getWorkSpace(), this.servletContext);
+        return new WebStandardEnvironment(this.getWorkSpace(), this.getServletContext());
     }
     @Override
-    protected WebApiBinderModule newApiBinder(final HasorModule forModule, final Binder binder) {
-        return new WebApiBinderModule(this) {
-            @Override
-            public Binder getGuiceBinder() {
-                return binder;
-            }
+    protected Injector createInjector(Module[] guiceModules) {
+        Module webModule = new Module() {
             @Override
             public void configure(Binder binder) {
-                super.configure(binder);
+                /*Bind*/
+                binder.bind(ManagedErrorPipeline.class);
+                binder.bind(ManagedServletPipeline.class);
+                binder.bind(FilterPipeline.class).to(ManagedFilterPipeline.class);
+                binder.bind(SessionListenerPipeline.class).to(ManagedSessionListenerPipeline.class);
                 /*绑定ServletContext对象的Provider*/
                 binder.bind(ServletContext.class).toProvider(new Provider<ServletContext>() {
                     @Override
@@ -66,6 +73,22 @@ public class AnnoWebAppContext extends AnnoAppContext {
                         return getServletContext();
                     }
                 });
+            }
+        };
+        //2.
+        ArrayList<Module> guiceModuleSet = new ArrayList<Module>();
+        guiceModuleSet.add(webModule);
+        if (guiceModules != null)
+            for (Module mod : guiceModules)
+                guiceModuleSet.add(mod);
+        return super.createInjector(guiceModuleSet.toArray(new Module[guiceModuleSet.size()]));
+    }
+    @Override
+    protected WebApiBinderModule newApiBinder(final HasorModule forModule, final Binder binder) {
+        return new WebApiBinderModule(this) {
+            @Override
+            public Binder getGuiceBinder() {
+                return binder;
             }
         };
     }
@@ -84,7 +107,7 @@ class WebStandardEnvironment extends StandardEnvironment {
     @Override
     protected Map<String, String> getHasorEnvironment() {
         Map<String, String> hasorEnv = super.getHasorEnvironment();
-        hasorEnv.put("hasor_webroot", servletContext.getRealPath("/"));
+        hasorEnv.put("HASOR_WEBROOT", servletContext.getRealPath("/"));
         return hasorEnv;
     }
 }

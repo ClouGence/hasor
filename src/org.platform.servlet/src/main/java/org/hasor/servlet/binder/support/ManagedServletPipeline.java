@@ -34,7 +34,7 @@ import com.google.inject.TypeLiteral;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Singleton
-class ManagedServletPipeline {
+public class ManagedServletPipeline {
     private ServletDefinition[] servletDefinitions;
     private volatile boolean    initialized = false;
     //

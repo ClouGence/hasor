@@ -17,11 +17,11 @@ package org.hasor.web.resource.loader.creator;
 import java.io.IOException;
 import org.hasor.Hasor;
 import org.hasor.context.AppContext;
+import org.hasor.context.XmlProperty;
 import org.hasor.web.resource.ResourceLoader;
 import org.hasor.web.resource.ResourceLoaderCreator;
 import org.hasor.web.resource.ResourceLoaderDefine;
 import org.hasor.web.resource.loader.ClassPathResourceLoader;
-import org.more.global.assembler.xml.XmlProperty;
 import org.more.util.StringUtils;
 /**
  * 用于创建一个可以从classpath中获取资源的ResourceLoader。

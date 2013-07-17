@@ -18,10 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.hasor.Hasor;
-import org.hasor.annotation.HasorModule;
-import org.hasor.context.AppContext;
-import org.hasor.context.PlatformListener;
-import org.hasor.context.binder.ApiBinder;
+import org.hasor.annotation.Module;
+import org.hasor.servlet.WebApiBinder;
+import org.hasor.servlet.WebHasorModule;
 import org.hasor.web.resource.ResourceLoaderCreator;
 import org.hasor.web.resource.ResourceLoaderDefine;
 /**
@@ -29,17 +28,12 @@ import org.hasor.web.resource.ResourceLoaderDefine;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@HasorModule(displayName = "ResourceLoaderPlatformListener", description = "org.platform.servlet.resource软件包功能支持。", startIndex = HasorModule.Lv_1)
-public class ResourceLoaderPlatformListener implements PlatformListener {
-    private ResourceSettings resourceSettings = null;
+@Module(displayName = "ResourceLoaderPlatformListener", description = "org.hasor.web.resource软件包功能支持。", startIndex = Module.Lv_1)
+public class ResourceLoaderPlatformListener extends WebHasorModule {
     @Override
-    public void initialize(WebApiBinder binder) {
-        this.resourceSettings = new ResourceSettings();
-        this.resourceSettings.loadConfig(binder.getSettings());
-        binder.getGuiceBinder().bind(ResourceSettings.class).toInstance(this.resourceSettings);
-        //
-        this.loadResourceLoader(binder);
-        binder.filter("*").through(ResourceLoaderFilter.class);
+    public void init(WebApiBinder apiBinder) {
+        this.loadResourceLoader(apiBinder);
+        apiBinder.filter("*").through(ResourceLoaderFilter.class);
     }
     //
     /**装载TemplateLoader*/
@@ -65,13 +59,5 @@ public class ResourceLoaderPlatformListener implements PlatformListener {
             Hasor.info("loadResourceLoader %s at %s.", defineName, creatorType);
         }
         loaderBinder.configure(event.getGuiceBinder());
-    }
-    @Override
-    public void initialized(AppContext appContext) {
-        appContext.getSettings().addSettingsListener(this.resourceSettings);
-    }
-    @Override
-    public void destroy(AppContext appContext) {
-        appContext.getSettings().removeSettingsListener(this.resourceSettings);
     }
 }

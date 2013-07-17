@@ -68,6 +68,7 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
         int keyMaxSize = 0;
         for (String key : this.envMap.keySet())
             keyMaxSize = (key.length() >= keyMaxSize) ? key.length() : keyMaxSize;
+        //
         keyMaxSize = keyMaxSize + 2;
         Hasor.info("onLoadConfig Environment \n" + //
                 StringUtils.fixedString(100, '-') + "\n" + //
@@ -81,10 +82,10 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
     /**获取Hasor的环境变量*/
     protected Map<String, String> getHasorEnvironment() {
         Map<String, String> hasorEnv = new HashMap<String, String>();
-        hasorEnv.put("hasor_workHome", workSpace.getWorkDir());
-        hasorEnv.put("hasor_dataHome", workSpace.getDataDir());
-        hasorEnv.put("hasor_tempHome", workSpace.getTempDir());
-        hasorEnv.put("hasor_cacheHome", workSpace.getCacheDir());
+        hasorEnv.put("HASOR_WORK_HOME", workSpace.getWorkDir());
+        hasorEnv.put("HASOR_DATA_HOME", workSpace.getDataDir());
+        hasorEnv.put("HASOR_TEMP_HOME", workSpace.getTempDir());
+        hasorEnv.put("HASOR_CACHE_HOME", workSpace.getCacheDir());
         return hasorEnv;
     }
     /*
@@ -97,10 +98,9 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
         ArrayList<String> data = new ArrayList<String>();
         while (keyM.find()) {
             String varKey = keyM.group(1);
-            String var = System.getProperty(varKey);
-            var = StringUtils.isBlank(var) ? System.getenv(varKey) : var;
-            var = var == null ? "" : var;
-            data.add(new String(var));
+            String var = this.getEnvVar(varKey);
+            var = StringUtils.isBlank(var) ? ("{" + varKey + "}") : var;
+            data.add(var);
         }
         String[] splitArr = keyPattern.split(evalString);
         StringBuffer sb = new StringBuffer();
