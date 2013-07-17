@@ -10,12 +10,14 @@
 		<test.skip>true</test.skip>
 	</properties>
 	<modules>
-		<module>org.hasor.demo</module>
-
 		<module>org.hasor.core</module>
 		<module>org.hasor.icache</module>
-		<module>org.hasor.security</module>
+		<module>org.hasor.freemarker</module>
 		<module>org.hasor.servlet</module>
+
+
+		<module>org.hasor.demo</module>
+		<module>org.hasor.security</module>
 		<module>org.hasor.view</module>
 		<module>org.hasor.updown</module>
 		<module>org.hasor.ui</module>

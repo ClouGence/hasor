@@ -16,12 +16,6 @@
 			<artifactId>org.hasor.core</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-		<!-- JSR-331,restful -->
-		<!-- <dependency> -->
-		<!-- <groupId>javax.ws.rs</groupId> -->
-		<!-- <artifactId>jsr311-api</artifactId> -->
-		<!-- <version>1.1.1</version> -->
-		<!-- </dependency> -->
 		<!-- Json -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
@@ -35,9 +29,21 @@
 			<version>3.0.1</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- JSR-331,restful -->
+		<!-- <dependency> -->
+		<!-- <groupId>javax.ws.rs</groupId> -->
+		<!-- <artifactId>jsr311-api</artifactId> -->
+		<!-- <version>1.1.1</version> -->
+		<!-- </dependency> -->
 
 
-		<!-- Jetty 8 Test -->
+		<!-- Test -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.5</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-webapp</artifactId>
