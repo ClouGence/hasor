@@ -15,6 +15,8 @@
  */
 package org.hasor.context.core;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import org.hasor.Hasor;
 import org.hasor.context.Environment;
@@ -34,32 +36,57 @@ import org.more.util.ClassUtils;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class StandardInitContext implements InitContext {
-    private long         startTime;   //系统启动时间
-    private String[]     spanPackage;
-    private Settings     settings;
-    private WorkSpace    workSpace;
-    private Environment  environment;
-    private EventManager eventManager;
-    private Object       context;
+    private long                startTime;   //系统启动时间
+    private String              mainConfig;
+    private String[]            spanPackage;
+    private Settings            settings;
+    private WorkSpace           workSpace;
+    private Environment         environment;
+    private EventManager        eventManager;
+    private Map<String, Object> attributeMap;
+    private Object              context;
     //
     public StandardInitContext() throws IOException {
         this("hasor-config.xml");
     }
     public StandardInitContext(String mainConfig) throws IOException {
-        this.initContext(mainConfig);
+        this.mainConfig = mainConfig;
+        this.initContext();
     }
-    protected void initContext(String mainConfig) throws IOException {
+    /**初始化方法*/
+    protected void initContext() throws IOException {
         this.startTime = System.currentTimeMillis();
-        this.settings = new HasorSettings(mainConfig);
-        this.workSpace = new StandardWorkSpace(this.settings);
-        this.environment = new StandardEnvironment(this.workSpace);
-        this.eventManager = new StandardAdvancedEventManager(this.settings);
+        this.attributeMap = this.createAttributeMap();
+        this.settings = this.createSettings();
+        this.workSpace = this.createWorkSpace();
+        this.environment = this.createEnvironment();
+        this.eventManager = this.createEventManager();
         //
         String spanPackages = this.getSettings().getString("framework.loadPackages");
         this.spanPackage = spanPackages.split(",");
         Hasor.info("loadPackages : " + Hasor.logString(this.spanPackage));
         //
         ((Lifecycle) this.settings).start();
+    }
+    /**创建{@link Settings}接口对象*/
+    protected Settings createSettings() throws IOException {
+        return new HasorSettings(this.getMainConfig());
+    }
+    /**创建{@link WorkSpace}接口对象*/
+    protected WorkSpace createWorkSpace() {
+        return new StandardWorkSpace(this.getSettings());
+    }
+    /**创建{@link Environment}接口对象*/
+    protected Environment createEnvironment() {
+        return new StandardEnvironment(this.getWorkSpace());
+    }
+    /**创建{@link EventManager}接口对象*/
+    protected EventManager createEventManager() {
+        return new StandardAdvancedEventManager(this.getSettings());
+    }
+    /**创建属性容器*/
+    protected Map<String, Object> createAttributeMap() {
+        return new HashMap<String, Object>();
     }
     //
     @Override
@@ -68,6 +95,10 @@ public class StandardInitContext implements InitContext {
     }
     public Object getContext() {
         return context;
+    }
+    /**获取主配置文件*/
+    public String getMainConfig() {
+        return mainConfig;
     }
     /**设置上下文*/
     public void setContext(Object context) {
@@ -88,6 +119,10 @@ public class StandardInitContext implements InitContext {
     @Override
     public EventManager getEventManager() {
         return this.eventManager;
+    }
+    /**获取属性接口*/
+    public Map<String, Object> getAttributeMap() {
+        return attributeMap;
     }
     @Override
     public Set<Class<?>> getClassSet(Class<?> featureType) {

@@ -61,11 +61,8 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
         }
         this.envMap.putAll(hasorProp);
         //2.Hasor 特有变量
-        Map<String, String> hasorEnv = new HashMap<String, String>();
-        hasorEnv.put("hasor_workHome", workSpace.getWorkDir());
-        hasorEnv.put("hasor_dataHome", workSpace.getDataDir());
-        hasorEnv.put("hasor_tempHome", workSpace.getTempDir());
-        hasorEnv.put("hasor_cacheHome", workSpace.getCacheDir());
+        Map<String, String> hasorEnv = this.getHasorEnvironment();
+        hasorEnv = (hasorEnv == null) ? new HashMap<String, String>() : hasorEnv;
         this.envMap.putAll(hasorEnv);
         //3.日志输出
         int keyMaxSize = 0;
@@ -80,6 +77,15 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
                 StringUtils.fixedString(100, '-') + "\n" + //
                 Hasor.formatMap4log(keyMaxSize, hasorEnv) + //
                 StringUtils.fixedString(100, '-'));
+    }
+    /**获取Hasor的环境变量*/
+    protected Map<String, String> getHasorEnvironment() {
+        Map<String, String> hasorEnv = new HashMap<String, String>();
+        hasorEnv.put("hasor_workHome", workSpace.getWorkDir());
+        hasorEnv.put("hasor_dataHome", workSpace.getDataDir());
+        hasorEnv.put("hasor_tempHome", workSpace.getTempDir());
+        hasorEnv.put("hasor_cacheHome", workSpace.getCacheDir());
+        return hasorEnv;
     }
     /*
      * Environment 接口实现类，负责实现Environment接口相关功能。

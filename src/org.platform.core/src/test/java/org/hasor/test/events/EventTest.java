@@ -17,7 +17,6 @@ package org.hasor.test.events;
 import org.hasor.context.AppContext;
 import org.hasor.context.HasorEventListener;
 import org.hasor.context.Lifecycle;
-import org.hasor.context.AdvancedEventManager;
 import org.hasor.test.AbstractTestContext;
 import org.junit.Test;
 /**
@@ -34,10 +33,10 @@ public class EventTest extends AbstractTestContext {
                 System.out.println(event + "\t");
             }
         };
-        ((AdvancedEventManager) appContext.getEventManager()).addPhaseEventListener(Lifecycle.PhaseEvent_Init, event);
-        ((AdvancedEventManager) appContext.getEventManager()).addPhaseEventListener(Lifecycle.PhaseEvent_Start, event);
-        ((AdvancedEventManager) appContext.getEventManager()).addPhaseEventListener(Lifecycle.PhaseEvent_Stop, event);
-        ((AdvancedEventManager) appContext.getEventManager()).addPhaseEventListener(Lifecycle.PhaseEvent_Destroy, event);
+        appContext.getEventManager().addEventListener(Lifecycle.PhaseEvent_Init, event);
+        appContext.getEventManager().addEventListener(Lifecycle.PhaseEvent_Start, event);
+        appContext.getEventManager().addEventListener(Lifecycle.PhaseEvent_Stop, event);
+        appContext.getEventManager().addEventListener(Lifecycle.PhaseEvent_Destroy, event);
     }
     @Test
     public void phaseEvent() {

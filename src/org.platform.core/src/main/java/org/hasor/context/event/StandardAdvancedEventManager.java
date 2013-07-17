@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 package org.hasor.context.event;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -32,7 +30,6 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class StandardAdvancedEventManager extends StandardEventManager implements AdvancedEventManager {
-    private Map<String, List<HasorEventListener>>       finalMap    = new HashMap<String, List<HasorEventListener>>();
     private Map<String, LinkedList<HasorEventListener>> listenerMap = new HashMap<String, LinkedList<HasorEventListener>>();
     private Map<String, ScheduledFuture<?>>             timerMap    = new HashMap<String, ScheduledFuture<?>>();
     private int                                         timerPeriod;
@@ -44,7 +41,7 @@ public class StandardAdvancedEventManager extends StandardEventManager implement
         this.timerType = settings.getString("framework.timerEvent.type");
     }
     @Override
-    public synchronized void pushPhaseEventListener(String eventType, HasorEventListener hasorEventListener) {
+    public synchronized void pushEventListener(String eventType, HasorEventListener hasorEventListener) {
         if (StringUtils.isBlank(eventType) || hasorEventListener == null)
             return;
         LinkedList<HasorEventListener> eventList = this.listenerMap.get(eventType);
@@ -56,45 +53,43 @@ public class StandardAdvancedEventManager extends StandardEventManager implement
             eventList.push(hasorEventListener);
     }
     @Override
-    public void addPhaseEventListener(String eventType, HasorEventListener hasorEventListener) {
-        if (StringUtils.isBlank(eventType) || hasorEventListener == null)
-            return;
-        List<HasorEventListener> eventList = this.finalMap.get(eventType);
-        if (eventList == null) {
-            eventList = new ArrayList<HasorEventListener>();
-            this.finalMap.put(eventType, eventList);
-        }
-        if (eventList.contains(hasorEventListener) == false)
-            eventList.add(hasorEventListener);
-    }
-    @Override
-    public synchronized void popPhaseEvent(String eventType, Object... objects) {
+    public void doSyncEvent(String eventType, Object... objects) {
+        super.doSyncEvent(eventType, objects);
+        //
         if (StringUtils.isBlank(eventType))
             return;
-        //
-        LinkedList<HasorEventListener> eventList1 = this.listenerMap.get(eventType);
-        if (eventList1 != null) {
+        LinkedList<HasorEventListener> eventList = this.listenerMap.get(eventType);
+        if (eventList != null) {
             HasorEventListener listener = null;
-            while ((listener = eventList1.pollLast()) != null)
+            while ((listener = eventList.pollLast()) != null)
                 listener.onEvent(eventType, objects);
         }
-        List<HasorEventListener> eventList2 = this.finalMap.get(eventType);
-        if (eventList2 != null) {
-            for (int i = eventList2.size(); i > 0; i--) {
-                eventList2.get(i - 1).onEvent(eventType, objects);
+    }
+    @Override
+    public void doAsynEvent(final String eventType, final Object... objects) {
+        super.doAsynEvent(eventType, objects);
+        this.getExecutorService().submit(new Runnable() {
+            @Override
+            public void run() {
+                if (StringUtils.isBlank(eventType))
+                    return;
+                LinkedList<HasorEventListener> eventList = listenerMap.get(eventType);
+                if (eventList != null) {
+                    HasorEventListener listener = null;
+                    while ((listener = eventList.pollLast()) != null)
+                        listener.onEvent(eventType, objects);
+                }
             }
-        }
+        });
     }
     @Override
     public synchronized void clean() {
         super.clean();
         this.listenerMap.clear();
-    }
-    @Override
-    public synchronized void cleanALL() {
-        super.clean();
-        this.finalMap.clear();
-        this.listenerMap.clear();
+        //停止所有计时器
+        for (ScheduledFuture<?> fut : this.timerMap.values())
+            fut.cancel(true);
+        this.timerMap.clear();
     }
     @Override
     public synchronized void addTimer(final String timerType, final HasorEventListener hasorEventListener) throws RepeateException {
