@@ -26,11 +26,7 @@ import org.hasor.context.core.AbstractAppContext;
 import org.hasor.servlet.binder.SessionListenerPipeline;
 import org.hasor.servlet.context.AnnoWebAppContext;
 /**
- * 该类实现启动过程中如下动作：<br/>
- * <pre>
- * 1.SpanClasses -> 2.add internal -> 3. Decide Listener -> 4.Create InitHook ->
- * 4.Create Event & InitContext -> 5.Create Guice -> 6.do ContextListener ->
- * </pre>
+ * 
  * @version : 2013-3-25
  * @author 赵永春 (zyc@byshell.org)
  */

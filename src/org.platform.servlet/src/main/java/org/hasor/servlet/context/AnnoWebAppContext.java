@@ -15,9 +15,13 @@
  */
 package org.hasor.servlet.context;
 import java.io.IOException;
+import java.util.Map;
 import javax.servlet.ServletContext;
 import org.hasor.annotation.context.AnnoAppContext;
+import org.hasor.context.Environment;
 import org.hasor.context.HasorModule;
+import org.hasor.context.WorkSpace;
+import org.hasor.context.environment.StandardEnvironment;
 import org.hasor.servlet.binder.support.WebApiBinderModule;
 import com.google.inject.Binder;
 import com.google.inject.Provider;
@@ -42,10 +46,8 @@ public class AnnoWebAppContext extends AnnoAppContext {
         return this.servletContext;
     }
     @Override
-    protected void initContext(String mainConfig) throws IOException {
-        super.initContext(mainConfig);
-        this.getEnvironment().addEnvVar(varName, value);
-        System.setProperty("MORE_WEB_ROOT", context.getRealPath("/"));
+    protected Environment createEnvironment() {
+        return new WebStandardEnvironment(this.getWorkSpace(), this.servletContext);
     }
     @Override
     protected WebApiBinderModule newApiBinder(final HasorModule forModule, final Binder binder) {
@@ -66,5 +68,23 @@ public class AnnoWebAppContext extends AnnoAppContext {
                 });
             }
         };
+    }
+}
+/**
+ * 负责注册MORE_WEB_ROOT环境变量以及Web环境变量的维护。
+ * @version : 2013-7-17
+ * @author 赵永春 (zyc@byshell.org)
+ */
+class WebStandardEnvironment extends StandardEnvironment {
+    private ServletContext servletContext = null;
+    public WebStandardEnvironment(WorkSpace workSpace, ServletContext servletContext) {
+        super(workSpace);
+        this.servletContext = servletContext;
+    }
+    @Override
+    protected Map<String, String> getHasorEnvironment() {
+        Map<String, String> hasorEnv = super.getHasorEnvironment();
+        hasorEnv.put("hasor_webroot", servletContext.getRealPath("/"));
+        return hasorEnv;
     }
 }
