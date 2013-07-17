@@ -1,7 +1,7 @@
 ﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.more</groupId>
-	<artifactId>org.platform</artifactId>
+	<groupId>org.hasor</groupId>
+	<artifactId>org.hasor.parent</artifactId>
 	<version>Final</version>
 	<packaging>pom</packaging>
 	<!-- -->
@@ -10,17 +10,17 @@
 		<test.skip>true</test.skip>
 	</properties>
 	<modules>
-		<module>org.platform.demo</module>
+		<module>org.hasor.demo</module>
 
-		<module>org.platform.core</module>
-		<module>org.platform.icache</module>
-		<module>org.platform.security</module>
-		<module>org.platform.servlet</module>
-		<module>org.platform.view</module>
-		<module>org.platform.updown</module>
-		<module>org.platform.ui</module>
-		<module>org.platform.ds</module>
-		<module>org.platform.remote</module>
+		<module>org.hasor.core</module>
+		<module>org.hasor.icache</module>
+		<module>org.hasor.security</module>
+		<module>org.hasor.servlet</module>
+		<module>org.hasor.view</module>
+		<module>org.hasor.updown</module>
+		<module>org.hasor.ui</module>
+		<module>org.hasor.ds</module>
+		<module>org.hasor.remote</module>
 	</modules>
 	<!-- 构建描述 -->
 	<build>
@@ -90,13 +90,6 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.8.2</version>
-			<scope>test</scope>
-		</dependency>
-		<!-- Jetty 8 Test -->
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-webapp</artifactId>
-			<version>8.1.10.v20130312</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

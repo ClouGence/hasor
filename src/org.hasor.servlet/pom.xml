@@ -1,0 +1,48 @@
+﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.hasor</groupId>
+		<artifactId>org.hasor.parent</artifactId>
+		<version>Final</version>
+	</parent>
+	<groupId>org.hasor</groupId>
+	<artifactId>org.hasor.servlet</artifactId>
+	<version>0.0.1</version>
+	<packaging>jar</packaging>
+	<!-- 引用依赖 -->
+	<dependencies>
+		<dependency>
+			<groupId>org.hasor</groupId>
+			<artifactId>org.hasor.core</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+		<!-- JSR-331,restful -->
+		<!-- <dependency> -->
+		<!-- <groupId>javax.ws.rs</groupId> -->
+		<!-- <artifactId>jsr311-api</artifactId> -->
+		<!-- <version>1.1.1</version> -->
+		<!-- </dependency> -->
+		<!-- Json -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.1.28</version>
+		</dependency>
+		<!-- J2EE -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+
+		<!-- Jetty 8 Test -->
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>8.1.10.v20130312</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>
