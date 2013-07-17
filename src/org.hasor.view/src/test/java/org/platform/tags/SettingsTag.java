@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.view.decorate;
-import java.io.IOException;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
+package org.platform.tags;
+import org.hasor.annotation.Bean;
+import org.hasor.context.AppContext;
+import org.hasor.freemarker.FmMethod;
+import com.google.inject.Inject;
 /**
  * 
- * @version : 2013-6-14
+ * @version : 2013-5-24
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface DecorateFilter {
-    /**初始化事件*/
-    public void init(FilterConfig filterConfig) throws ServletException;
-    /**执行装饰器*/
-    public void doDecorate(DecorateServletRequest request, DecorateServletResponse response, DecorateFilterChain chain) throws ServletException, IOException;
-    /**销毁事件*/
-    public void destroy();
+@Bean("cfg")
+public class SettingsTag {
+    @Inject
+    private AppContext appContext = null;
+    @FmMethod("Settings")
+    public Object callMethod(String args) {
+        return appContext.getSettings().getString(args);
+    }
 }

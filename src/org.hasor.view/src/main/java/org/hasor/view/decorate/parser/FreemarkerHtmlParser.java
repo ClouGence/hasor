@@ -17,13 +17,12 @@ package org.hasor.view.decorate.parser;
 import java.io.IOException;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
+import org.hasor.freemarker.FreemarkerManager;
 import org.hasor.view.decorate.DecorateFilter;
 import org.hasor.view.decorate.DecorateFilterChain;
 import org.hasor.view.decorate.DecorateServletRequest;
 import org.hasor.view.decorate.DecorateServletResponse;
-import org.hasor.view.freemarker.FreemarkerManager;
 import com.google.inject.Inject;
-import freemarker.template.TemplateException;
 /**
  * HTML×°ÊÎÆ÷
  * @version : 2013-6-14

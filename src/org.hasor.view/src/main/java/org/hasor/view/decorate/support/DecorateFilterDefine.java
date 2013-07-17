@@ -21,7 +21,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import org.hasor.HasorFramework;
+import org.hasor.Hasor;
 import org.hasor.context.AppContext;
 import org.hasor.view.decorate.DecorateFilter;
 import org.hasor.view.decorate.DecorateFilterChain;
@@ -82,7 +82,7 @@ class DecorateFilterDefine implements Provider<DecorateFilterDefine> {
     }
     @Override
     public String toString() {
-        return HasorFramework.formatString("type %s pattern=%s ,initParams=%s ,uriPatternType=%s",//
+        return Hasor.formatString("type %s pattern=%s ,initParams=%s ,uriPatternType=%s",//
                 DecorateFilterDefine.class, pattern, initParams, patternMatcher);
     }
     /** Returns true if the given URI will match this binding. */

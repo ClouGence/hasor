@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.hasor.binder.ApiBinder;
+import org.hasor.context.ApiBinder;
 import org.hasor.view.decorate.DecorateBinder;
 import org.hasor.view.decorate.DecorateFilter;
 import org.more.util.ArrayUtils;

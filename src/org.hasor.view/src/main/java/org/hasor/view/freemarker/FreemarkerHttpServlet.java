@@ -13,13 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.freemarker.support;
+package org.hasor.view.freemarker;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.hasor.Hasor;
-import org.hasor.view.freemarker.FreemarkerManager;
+import org.hasor.freemarker.FreemarkerManager;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 /**

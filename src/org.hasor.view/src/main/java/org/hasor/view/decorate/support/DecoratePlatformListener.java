@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 package org.hasor.view.decorate.support;
-import org.hasor.binder.ApiBinder;
-import org.hasor.context.AppContext;
-import org.hasor.context.PlatformListener;
-import org.hasor.startup.PlatformExt;
+import org.hasor.annotation.Module;
+import org.hasor.servlet.WebApiBinder;
+import org.hasor.servlet.WebHasorModule;
 import org.hasor.view.decorate.DecorateBinder;
 import org.hasor.view.decorate.parser.FreemarkerHtmlParser;
 /**
@@ -25,23 +24,15 @@ import org.hasor.view.decorate.parser.FreemarkerHtmlParser;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@PlatformExt(displayName = "DecoratePlatformListener", description = "org.platform.view.decorate软件包功能支持。", startIndex = PlatformExt.Lv_0)
-public class DecoratePlatformListener implements PlatformListener {
+@Module(displayName = "DecoratePlatformListener", description = "org.platform.view.decorate软件包功能支持。", startIndex = Module.Lv_0)
+public class DecoratePlatformListener extends WebHasorModule {
     @Override
-    public void initialize(ApiBinder binder) {
+    public void init(WebApiBinder binder) {
         binder.getGuiceBinder().bind(DecorateBinder.class).to(DecorateBinderImplements.class);
         binder.filter("*").through(ManagedDecorateFilter.class);
         //
         DecorateBinderImplements decorateBinder = new DecorateBinderImplements();
         decorateBinder.decFilter("text/html;charset=UTF-8", "*").through(FreemarkerHtmlParser.class);
         decorateBinder.configure(binder.getGuiceBinder());
-    }
-    @Override
-    public void initialized(AppContext appContext) {
-        // TODO Auto-generated method stub
-    }
-    @Override
-    public void destroy(AppContext appContext) {
-        // TODO Auto-generated method stub
     }
 }
