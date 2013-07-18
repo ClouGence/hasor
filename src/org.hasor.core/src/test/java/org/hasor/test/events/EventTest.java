@@ -16,7 +16,6 @@
 package org.hasor.test.events;
 import org.hasor.context.AppContext;
 import org.hasor.context.HasorEventListener;
-import org.hasor.context.Lifecycle;
 import org.hasor.test.AbstractTestContext;
 import org.junit.Test;
 /**
@@ -37,23 +36,49 @@ public class EventTest extends AbstractTestContext {
                 System.out.println(event + "\t end   " + params[0]);
             }
         };
-        appContext.getEventManager().addEventListener(Lifecycle.PhaseEvent_Init, event);
-        appContext.getEventManager().addEventListener(Lifecycle.PhaseEvent_Start, event);
-        appContext.getEventManager().addEventListener(Lifecycle.PhaseEvent_Stop, event);
-        appContext.getEventManager().addEventListener(Lifecycle.PhaseEvent_Destroy, event);
         //
         appContext.getEventManager().addEventListener("EE", event);
     }
     @Test
     public void phaseEvent() {
         this.getAppContext().start();
-        int i = 0;
-        while (true) {
-            this.getAppContext().getEventManager().doAsynEvent("EE", i++);
+        class TT extends Thread {
+            public void run() {
+                int i = 0;
+                while (true) {
+                    getAppContext().getEventManager().doSyncEvent("EE", i++);
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {}
+                }
+            }
+        };
+        class TTT extends Thread {
+            public void run() {
+                int i = 0;
+                while (true) {
+                    getAppContext().getEventManager().addEventListener("EE", new HasorEventListener() {
+                        @Override
+                        public void onEvent(String event, Object[] params) {
+                            System.out.println();
+                        }
+                    });
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {}
+                }
+            }
+        };
+        TT t1 = new TT();
+        TT t2 = new TT();
+        TT t3 = new TT();
+        t1.start();
+        t2.start();
+        t3.start();
+        while (true)
             try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {}
-        }
+                Thread.sleep(1);
+            } catch (Exception e) {}
         //        this.getAppContext().stop();
         //        this.getAppContext().destroy();
     }

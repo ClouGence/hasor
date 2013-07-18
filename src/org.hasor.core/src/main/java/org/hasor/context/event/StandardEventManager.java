@@ -129,14 +129,13 @@ public class StandardEventManager implements EventManager {
         if (StringUtils.isBlank(eventType) == true)
             return;
         this.listenerRWLock.readLock().lock();//¼ÓËø(¶Á)
-        //
         HasorEventListener[] eventListenerArray = this.listenerMap.get(eventType);
+        this.listenerRWLock.readLock().unlock();//½âËø(¶Á)
+        //
         if (eventListenerArray != null) {
             for (HasorEventListener event : eventListenerArray)
                 event.onEvent(eventType, objects);
         }
-        //
-        this.listenerRWLock.readLock().unlock();//½âËø(¶Á)
     }
     @Override
     public void doAsynEvent(final String eventType, final Object... objects) {
