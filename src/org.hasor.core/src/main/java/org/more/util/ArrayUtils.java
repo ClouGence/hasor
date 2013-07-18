@@ -80,4 +80,13 @@ public abstract class ArrayUtils {
             list.add(object);
         return list;
     }
+    /***/
+    public static <T> boolean contains(T[] arr, T object) {
+        if (arr == null)
+            return false;
+        for (T item : arr)
+            if (item == object)
+                return true;
+        return false;
+    }
 }

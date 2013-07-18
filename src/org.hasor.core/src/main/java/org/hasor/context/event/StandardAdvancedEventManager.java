@@ -19,6 +19,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import org.hasor.context.AdvancedEventManager;
 import org.hasor.context.HasorEventListener;
 import org.hasor.context.Settings;
@@ -30,23 +32,26 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class StandardAdvancedEventManager extends StandardEventManager implements AdvancedEventManager {
-    private Map<String, LinkedList<HasorEventListener>> listenerMap = new HashMap<String, LinkedList<HasorEventListener>>();
-    private Map<String, ScheduledFuture<?>>             timerMap    = new HashMap<String, ScheduledFuture<?>>();
+    private Map<String, LinkedList<HasorEventListener>> onceListenerMap  = new HashMap<String, LinkedList<HasorEventListener>>();
+    private Lock                                        onceListenerLock = new ReentrantLock();
+    private Map<String, ScheduledFuture<?>>             timerMap         = new HashMap<String, ScheduledFuture<?>>();
     //
     public StandardAdvancedEventManager(Settings settings) {
         super(settings);
     }
     @Override
-    public synchronized void pushEventListener(String eventType, HasorEventListener hasorEventListener) {
+    public void pushEventListener(String eventType, HasorEventListener hasorEventListener) {
         if (StringUtils.isBlank(eventType) || hasorEventListener == null)
             return;
-        LinkedList<HasorEventListener> eventList = this.listenerMap.get(eventType);
+        this.onceListenerLock.lock();//加锁
+        LinkedList<HasorEventListener> eventList = this.onceListenerMap.get(eventType);
         if (eventList == null) {
             eventList = new LinkedList<HasorEventListener>();
-            this.listenerMap.put(eventType, eventList);
+            this.onceListenerMap.put(eventType, eventList);
         }
         if (eventList.contains(hasorEventListener) == false)
             eventList.push(hasorEventListener);
+        this.onceListenerLock.unlock();//解锁
     }
     @Override
     public void doSyncEvent(String eventType, Object... objects) {
@@ -54,12 +59,14 @@ public class StandardAdvancedEventManager extends StandardEventManager implement
         //
         if (StringUtils.isBlank(eventType))
             return;
-        LinkedList<HasorEventListener> eventList = this.listenerMap.get(eventType);
+        this.onceListenerLock.lock();//加锁
+        LinkedList<HasorEventListener> eventList = this.onceListenerMap.get(eventType);
         if (eventList != null) {
             HasorEventListener listener = null;
             while ((listener = eventList.pollLast()) != null)
                 listener.onEvent(eventType, objects);
         }
+        this.onceListenerLock.unlock();//解锁
     }
     @Override
     public void doAsynEvent(final String eventType, final Object... objects) {
@@ -69,23 +76,29 @@ public class StandardAdvancedEventManager extends StandardEventManager implement
             public void run() {
                 if (StringUtils.isBlank(eventType))
                     return;
-                LinkedList<HasorEventListener> eventList = listenerMap.get(eventType);
+                onceListenerLock.lock();//加锁
+                LinkedList<HasorEventListener> eventList = onceListenerMap.get(eventType);
                 if (eventList != null) {
                     HasorEventListener listener = null;
                     while ((listener = eventList.pollLast()) != null)
                         listener.onEvent(eventType, objects);
                 }
+                onceListenerLock.unlock();//解锁
             }
         });
     }
     @Override
-    public synchronized void clean() {
+    public void clean() {
+        this.onceListenerLock.lock();//加锁
+        //
         super.clean();
-        this.listenerMap.clear();
+        this.onceListenerMap.clear();
         //停止所有计时器
         for (ScheduledFuture<?> fut : this.timerMap.values())
             fut.cancel(true);
         this.timerMap.clear();
+        //
+        this.onceListenerLock.unlock();//解锁
     }
     @Override
     public synchronized void addTimer(final String timerName, final HasorEventListener hasorEventListener) throws RepeateException {
@@ -121,7 +134,7 @@ public class StandardAdvancedEventManager extends StandardEventManager implement
         }
     }
     @Override
-    public void removeTimerNow(String timerName) {
+    public synchronized void removeTimerNow(String timerName) {
         if (this.timerMap.containsKey(timerName)) {
             ScheduledFuture<?> future = this.timerMap.remove(timerName);
             future.cancel(true);

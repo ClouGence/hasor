@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 package org.hasor.context.event;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.hasor.Hasor;
 import org.hasor.context.EventManager;
 import org.hasor.context.HasorEventListener;
 import org.hasor.context.HasorSettingListener;
 import org.hasor.context.Settings;
+import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 /**
  * 标准事件处理器接口的实现类
@@ -35,9 +35,10 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class StandardEventManager implements EventManager {
-    private Settings                              settings         = null;
-    private ScheduledExecutorService              executorService  = null;
-    private Map<String, List<HasorEventListener>> eventListenerMap = new HashMap<String, List<HasorEventListener>>();
+    private Settings                          settings        = null;
+    private ScheduledExecutorService          executorService = null;
+    private Map<String, HasorEventListener[]> listenerMap     = new HashMap<String, HasorEventListener[]>();
+    private ReadWriteLock                     listenerRWLock  = new ReentrantReadWriteLock();
     //
     public StandardEventManager(Settings settings) {
         this.settings = settings;
@@ -49,7 +50,6 @@ public class StandardEventManager implements EventManager {
             }
         });
         this.update();
-        //
     }
     /**获取Setting接口对象*/
     public Settings getSettings() {
@@ -65,59 +65,91 @@ public class StandardEventManager implements EventManager {
         return this.executorService;
     }
     @Override
-    public synchronized void addEventListener(String eventType, HasorEventListener hasorEventListener) {
+    public void addEventListener(String eventType, HasorEventListener hasorEventListener) {
+        this.listenerRWLock.writeLock().lock();//加锁(写)
+        //
         Hasor.assertIsNotNull(hasorEventListener, "add EventListener object is null.");
-        List<HasorEventListener> eventListenerList = this.eventListenerMap.get(eventType);
-        if (eventListenerList == null) {
-            eventListenerList = new ArrayList<HasorEventListener>();
-            this.eventListenerMap.put(eventType, eventListenerList);
+        HasorEventListener[] eventListenerArray = this.listenerMap.get(eventType);
+        if (eventListenerArray == null) {
+            eventListenerArray = new HasorEventListener[] { hasorEventListener };
+            this.listenerMap.put(eventType, eventListenerArray);
+        } else {
+            if (ArrayUtils.contains(eventListenerArray, hasorEventListener) == false) {
+                eventListenerArray = ArrayUtils.addToArray(eventListenerArray, hasorEventListener);
+                this.listenerMap.put(eventType, eventListenerArray);
+            }
         }
-        if (eventListenerList.contains(hasorEventListener) == false)
-            eventListenerList.add(hasorEventListener);
+        //
+        this.listenerRWLock.writeLock().unlock();//解锁(写)
     }
     @Override
-    public synchronized void removeAllEventListener(String eventType) {
-        this.eventListenerMap.remove(eventType);
+    public void removeAllEventListener(String eventType) {
+        this.listenerRWLock.writeLock().lock();//加锁(写)
+        //
+        this.listenerMap.remove(eventType);
+        //
+        this.listenerRWLock.writeLock().unlock();//解锁(写)
     }
     @Override
-    public synchronized void removeEventListener(String eventType, HasorEventListener hasorEventListener) {
+    public void removeEventListener(String eventType, HasorEventListener hasorEventListener) {
+        this.listenerRWLock.writeLock().lock();//加锁(写)
+        //
         Hasor.assertIsNotNull(eventType, "remove eventType is null.");
         Hasor.assertIsNotNull(hasorEventListener, "remove EventListener object is null.");
-        List<HasorEventListener> eventListenerList = this.eventListenerMap.get(eventType);
-        if (eventListenerList.isEmpty())
-            return;
-        eventListenerList.remove(hasorEventListener);
+        HasorEventListener[] eventListenerArray = this.listenerMap.get(eventType);
+        if (!ArrayUtils.isBlank(eventListenerArray)) {
+            eventListenerArray = ArrayUtils.removeInArray(eventListenerArray, hasorEventListener);
+            this.listenerMap.put(eventType, eventListenerArray);
+        }
+        //
+        this.listenerRWLock.writeLock().unlock();//解锁(写)
     }
     @Override
-    public List<HasorEventListener> getEventListener(String eventType) {
-        List<HasorEventListener> eventListenerList = this.eventListenerMap.get(eventType);
-        return (eventListenerList == null) ? new ArrayList<HasorEventListener>(0) : Collections.unmodifiableList(eventListenerList);
+    public HasorEventListener[] getEventListener(String eventType) {
+        this.listenerRWLock.readLock().lock();//加锁(读)
+        //
+        HasorEventListener[] eventListenerArray = this.listenerMap.get(eventType);
+        eventListenerArray = (eventListenerArray == null) ? new HasorEventListener[0] : eventListenerArray.clone();
+        //
+        this.listenerRWLock.readLock().unlock();//解锁(读)
+        return eventListenerArray;
     }
     @Override
     public String[] getEventTypes() {
-        Set<String> eventTypes = this.eventListenerMap.keySet();
-        return eventTypes.toArray(new String[eventTypes.size()]);
+        this.listenerRWLock.readLock().lock();//加锁(读)
+        //
+        Set<String> eventTypes = this.listenerMap.keySet();
+        String[] eventTypeNames = eventTypes.toArray(new String[eventTypes.size()]);
+        //
+        this.listenerRWLock.readLock().unlock();//解锁(读)
+        return eventTypeNames;
     }
     @Override
     public void doSyncEvent(String eventType, Object... objects) {
         if (StringUtils.isBlank(eventType) == true)
             return;
-        List<HasorEventListener> eventListenerList = this.eventListenerMap.get(eventType);
-        if (eventListenerList != null) {
-            for (HasorEventListener event : eventListenerList)
+        this.listenerRWLock.readLock().lock();//加锁(读)
+        //
+        HasorEventListener[] eventListenerArray = this.listenerMap.get(eventType);
+        if (eventListenerArray != null) {
+            for (HasorEventListener event : eventListenerArray)
                 event.onEvent(eventType, objects);
         }
+        //
+        this.listenerRWLock.readLock().unlock();//解锁(读)
     }
     @Override
     public void doAsynEvent(final String eventType, final Object... objects) {
         if (StringUtils.isBlank(eventType) == true)
             return;
-        final List<HasorEventListener> eventListenerList = this.eventListenerMap.get(eventType);
+        this.listenerRWLock.readLock().lock();//加锁(读)
+        final HasorEventListener[] eventListenerArray = this.listenerMap.get(eventType);
+        this.listenerRWLock.readLock().unlock();//解锁(读)
         this.executorService.submit(new Runnable() {
             @Override
             public void run() {
-                if (eventListenerList != null) {
-                    for (HasorEventListener event : eventListenerList)
+                if (eventListenerArray != null) {
+                    for (HasorEventListener event : eventListenerArray)
                         event.onEvent(eventType, objects);
                 }
             }

@@ -245,7 +245,7 @@ public class DefaultAppContext extends AbstractAppContext {
     //
     /**计时器触发事件*/
     protected void onTimer() {
-        List<HasorEventListener> eventListener = this.getEventManager().getEventListener(PhaseEvent_Timer);
+        HasorEventListener[] eventListener = this.getEventManager().getEventListener(PhaseEvent_Timer);
         Object[] params = new Object[] { this };
         for (HasorEventListener event : eventListener)
             event.onEvent(PhaseEvent_Timer, params);
@@ -254,8 +254,8 @@ public class DefaultAppContext extends AbstractAppContext {
     protected void onInit(HasorModule forModule, Binder binder) {
         ApiBinder apiBinder = this.newApiBinder(forModule, binder);
         forModule.init(apiBinder);
-        if (apiBinder instanceof com.google.inject.Module)
-            binder.install((com.google.inject.Module) apiBinder);
+        if (apiBinder instanceof Module)
+            binder.install((Module) apiBinder);
     }
     /**发送模块启动信号*/
     protected void onStart(HasorModule forModule) {
