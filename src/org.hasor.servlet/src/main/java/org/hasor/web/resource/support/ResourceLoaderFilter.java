@@ -22,7 +22,13 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -49,11 +55,13 @@ import com.google.inject.TypeLiteral;
  */
 public class ResourceLoaderFilter implements Filter {
     @Inject
-    private AppContext       appContext = null;
-    private MimeType         mimeType   = null;
-    private ResourceSettings settings   = null;
-    private ResourceLoader[] loaderList = null;
-    private File             cacheDir   = null;
+    private AppContext                 appContext     = null;
+    private MimeType                   mimeType       = null;
+    private ResourceSettings           settings       = null;
+    private ResourceLoader[]           loaderList     = null;
+    private File                       cacheDir       = null;
+    private Map<String, ReadWriteLock> cachingRes     = new HashMap<String, ReadWriteLock>();
+    private Lock                       cachingResLock = new ReentrantLock();
     //
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -107,6 +115,7 @@ public class ResourceLoaderFilter implements Filter {
                     break;
             }
         }
+        //5.
         Hasor.info("use cacheDir %s", this.cacheDir);
     }
     //
@@ -135,6 +144,8 @@ public class ResourceLoaderFilter implements Filter {
     }
     //
     public void forwardTo(File file, ServletRequest request, ServletResponse response) throws IOException, ServletException {
+        if (response.isCommitted() == true)
+            return;
         HttpServletRequest req = (HttpServletRequest) request;
         String requestURI = req.getRequestURI();
         String fileExt = requestURI.substring(requestURI.lastIndexOf("."));
@@ -177,17 +188,48 @@ public class ResourceLoaderFilter implements Filter {
             this.forwardTo(cacheFile, request, response);
             return;
         }
-        //3.尝试载入资源
+        //3.创建锁
+        ReadWriteLock cacheRWLock = null;
+        this.cachingResLock.lock();
+        if (this.cachingRes.containsKey(requestURI) == true) {
+            cacheRWLock = this.cachingRes.get(requestURI);
+        } else {
+            cacheRWLock = new ReentrantReadWriteLock();
+            this.cachingRes.put(requestURI, cacheRWLock);
+        }
+        this.cachingResLock.unlock();
+        //4.在锁下缓存文件
+        boolean forwardType = true;
+        cacheRWLock.readLock().lock();//读取锁定
+        if (!cacheFile.exists()) {
+            /*升级锁*/
+            cacheRWLock.readLock().unlock();
+            cacheRWLock.writeLock().lock();
+            if (!cacheFile.exists()) {
+                forwardType = this.cacheRes(cacheFile, requestURI, request, response, chain);//当缓存失败时返回false
+            }
+            cacheRWLock.readLock().lock();
+            cacheRWLock.writeLock().unlock();
+        }
+        cacheRWLock.readLock().unlock();//读取解锁
+        //
+        if (forwardType)
+            this.forwardTo(cacheFile, request, response);
+        else
+            chain.doFilter(request, response);
+        //
+        this.cachingRes.remove(requestURI);
+    }
+    private boolean cacheRes(File cacheFile, String requestURI, ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        //3.尝试载入资源 
         InputStream inStream = null;
         for (ResourceLoader loader : loaderList) {
             inStream = loader.getResourceAsStream(requestURI);
             if (inStream != null)
                 break;
         }
-        if (inStream == null) {
-            chain.doFilter(request, response);
-            return;
-        }
+        if (inStream == null)
+            return false;
         //4.写入临时文件夹
         cacheFile.getParentFile().mkdirs();
         FileOutputStream out = new FileOutputStream(cacheFile);
@@ -195,7 +237,7 @@ public class ResourceLoaderFilter implements Filter {
         inStream.close();
         out.flush();
         out.close();
-        this.forwardTo(cacheFile, request, response);
+        return true;
     }
     @Override
     public void destroy() {}
