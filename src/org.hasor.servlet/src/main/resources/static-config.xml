@@ -16,6 +16,7 @@
 		<resourceLoader enable="true" cacheDir="httpservlet.resourceloader.classpath" contentTypes="js,css,gif,ico,jpg,jpeg,png,swf,swc,flv,mp3,wav,avi">
 			<!-- <zipLoader>{HASOR_WEBROOT}/pic.zip</zipLoader> -->
 			<pathLoader>{HASOR_WORK_HOME}/webapp</pathLoader>
+			<!-- **需要配置，否则会导致资源装载器反复尝试从loader中装载** -->
 			<pathLoader>{HASOR_WEBROOT}/</pathLoader>
 			<classpathLoader>/META-INF/webapp</classpathLoader>
 		</resourceLoader>

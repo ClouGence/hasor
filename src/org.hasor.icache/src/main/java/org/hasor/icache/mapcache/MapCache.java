@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.hasor.context.AppContext;
 import org.hasor.icache.Cache;
 import org.hasor.icache.CacheDefine;
@@ -30,10 +32,11 @@ import org.hasor.icache.DefaultCache;
 @DefaultCache
 @CacheDefine(value = "MapCache", displayName = "InternalMapCache", description = "内置的Map缓存，ICache接口的简单实现。")
 public class MapCache<T> extends Thread implements Cache<T> {
-    private MapCacheSettings                         settings       = null;
-    private String                                   threadName     = "InternalMapCache-Daemon";
-    private volatile boolean                         exitThread     = false;
-    private volatile HashMap<String, CacheEntity<T>> cacheEntityMap = new HashMap<String, CacheEntity<T>>();
+    private MapCacheSettings                         settings        = null;
+    private String                                   threadName      = "InternalMapCache-Daemon";
+    private volatile boolean                         exitThread      = false;
+    private volatile HashMap<String, CacheEntity<T>> cacheEntityMap  = new HashMap<String, CacheEntity<T>>();
+    private ReadWriteLock                            cacheEntityLock = new ReentrantReadWriteLock();
     //
     protected String getThreadName() {
         return this.threadName;
@@ -42,7 +45,9 @@ public class MapCache<T> extends Thread implements Cache<T> {
     public void run() {
         this.setName(this.threadName);
         while (!this.exitThread) {
+            this.cacheEntityLock.writeLock().lock();//加锁(写)
             List<String> lostList = new ArrayList<String>();
+            /*标记失效的元素*/
             for (Entry<String, CacheEntity<T>> ent : this.cacheEntityMap.entrySet()) {
                 CacheEntity<T> cacheEnt = ent.getValue();
                 if (cacheEnt == null)
@@ -50,10 +55,12 @@ public class MapCache<T> extends Thread implements Cache<T> {
                 if (cacheEnt.isLost())
                     lostList.add(ent.getKey());
             }
-            //
-            for (String lostKey : lostList)
-                this.cacheEntityMap.remove(lostKey);
-            //
+            /*移除失效的元素*/
+            if (lostList.isEmpty() == false) {
+                for (String lostKey : lostList)
+                    this.cacheEntityMap.remove(lostKey);
+            }
+            this.cacheEntityLock.writeLock().unlock();//解锁(写)
             try {
                 sleep(settings.getThreadSeep());
             } catch (InterruptedException e) {}
@@ -77,63 +84,65 @@ public class MapCache<T> extends Thread implements Cache<T> {
     }
     @Override
     public boolean toCache(String key, T value, long timeout) {
-        synchronized (key) {
-            if (key == null)
-                return false;
-            //
-            if (this.settings.isEternal() == true) {
-                timeout = Long.MAX_VALUE;
-            } else if (timeout <= 0)
-                timeout = this.settings.getDefaultTimeout();
-            //
-            CacheEntity<T> oldEnt = this.cacheEntityMap.put(key, new CacheEntity<T>(value, timeout));
-            return true;
-        }
+        if (key == null)
+            return false;
+        this.cacheEntityLock.writeLock().lock();//加锁(写)
+        if (this.settings.isEternal() == true) {
+            timeout = Long.MAX_VALUE;
+        } else if (timeout <= 0)
+            timeout = this.settings.getDefaultTimeout();
+        CacheEntity<T> oldEnt = this.cacheEntityMap.put(key, new CacheEntity<T>(value, timeout));
+        this.cacheEntityLock.writeLock().unlock();//解锁(写)
+        return true;
     }
     @Override
     public T fromCache(String key) {
-        synchronized (key) {
-            CacheEntity<T> cacheEntity = this.cacheEntityMap.get(key);
-            if (cacheEntity != null) {
-                if (this.settings.isAutoRenewal() == true)
-                    cacheEntity.refresh();
-                return cacheEntity.get();
-            }
-            return null;
+        T returnData = null;
+        this.cacheEntityLock.readLock().lock();//加锁(读)
+        CacheEntity<T> cacheEntity = this.cacheEntityMap.get(key);
+        if (cacheEntity != null) {
+            if (this.settings.isAutoRenewal() == true)
+                cacheEntity.refresh();
+            returnData = cacheEntity.get();
         }
+        this.cacheEntityLock.readLock().unlock();//解锁(读)
+        return returnData;
     }
     @Override
     public boolean hasCache(String key) {
-        synchronized (key) {
-            return this.cacheEntityMap.containsKey(key);
-        }
+        this.cacheEntityLock.readLock().lock();//加锁(读)
+        boolean res = this.cacheEntityMap.containsKey(key);
+        this.cacheEntityLock.readLock().unlock();//解锁(读)
+        return res;
     }
     @Override
     public boolean remove(String key) {
-        synchronized (key) {
-            CacheEntity<T> cacheEntity = this.cacheEntityMap.remove(key);
-            return cacheEntity != null;
-        }
+        this.cacheEntityLock.writeLock().lock();//加锁(写)
+        CacheEntity<T> cacheEntity = this.cacheEntityMap.remove(key);
+        this.cacheEntityLock.writeLock().unlock();//解锁(写)
+        return cacheEntity != null;
     }
     @Override
     public boolean refreshCache(String key) {
-        synchronized (key) {
-            CacheEntity<T> cacheEntity = this.cacheEntityMap.get(key);
-            if (cacheEntity != null)
-                cacheEntity.refresh();
-            return cacheEntity != null;
-        }
+        this.cacheEntityLock.readLock().lock();//加锁(读)
+        CacheEntity<T> cacheEntity = this.cacheEntityMap.get(key);
+        if (cacheEntity != null)
+            cacheEntity.refresh();
+        this.cacheEntityLock.readLock().unlock();//解锁(读)
+        return cacheEntity != null;
     }
     @Override
-    public synchronized boolean clear() {
+    public boolean clear() {
+        this.cacheEntityLock.writeLock().lock();//加锁(写)
         this.cacheEntityMap.clear();
+        this.cacheEntityLock.writeLock().unlock();//解锁(写)
         return true;
     }
     /*-------------------------------------------------------------------------------------*/
     private static class CacheEntity<T> {
-        private T    value    = null;
-        private long timeout  = 0;
-        private long lastTime = 0;
+        private volatile T    value    = null;
+        private volatile long timeout  = 0;
+        private volatile long lastTime = 0;
         //
         public CacheEntity(T value, long timeout) {
             this.value = value;
