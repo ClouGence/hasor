@@ -21,7 +21,13 @@
 			<artifactId>org.hasor.freemarker</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-
+		<!-- J2EE -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<!-- Test -->
 		<dependency>

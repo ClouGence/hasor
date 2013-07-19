@@ -15,16 +15,13 @@
  */
 package org.hasor.ds;
 import java.io.Reader;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
+import java.util.List;
+import java.util.Map;
+import javax.security.auth.login.Configuration;
 import javax.transaction.InvalidTransactionException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
-import javax.transaction.Transaction;
-import javax.transaction.TransactionManager;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.hibernate.cfg.Configuration;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.MapListHandler;
+import org.omg.CORBA.SystemException;
 /**
  * 
  * @version : 2013-6-14
@@ -33,6 +30,15 @@ import org.hibernate.cfg.Configuration;
 public class MoreTransactionManager implements TransactionManager {
     @Override
     public void begin() throws NotSupportedException, SystemException {
+        
+        QueryRunner run = new QueryRunner(null);
+        List<Map<String, Object>>  ds=   run.query("", new MapListHandler());
+        
+        
+        
+        
+        
+        
         Configuration cfg = null;
         cfg.buildSessionFactory().openSession().getSessionFactory();
         //

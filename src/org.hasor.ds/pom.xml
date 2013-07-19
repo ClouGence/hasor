@@ -17,14 +17,9 @@
 			<version>0.0.1</version>
 		</dependency>
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>4.2.2.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.ibatis</groupId>
-			<artifactId>ibatis-core</artifactId>
-			<version>3.0</version>
+			<groupId>commons-dbutils</groupId>
+			<artifactId>commons-dbutils</artifactId>
+			<version>1.5</version>
 		</dependency>
 
 		<!-- <dependency> <groupId>org.ow2.jotm</groupId> <artifactId>jotm-core</artifactId> <version>2.2.3</version> </dependency> -->
