@@ -19,7 +19,7 @@ package org.hasor.context;
  * @version : 2013-7-11
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface Lifecycle {
+public interface LifeCycle {
     /**阶段事件：Phase_OnInit*/
     public static final String PhaseEvent_Init    = "Phase_OnInit";
     /**阶段事件：Phase_OnStart*/

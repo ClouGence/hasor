@@ -22,7 +22,7 @@ import org.hasor.Hasor;
 import org.hasor.context.Environment;
 import org.hasor.context.EventManager;
 import org.hasor.context.InitContext;
-import org.hasor.context.Lifecycle;
+import org.hasor.context.LifeCycle;
 import org.hasor.context.Settings;
 import org.hasor.context.WorkSpace;
 import org.hasor.context.environment.StandardEnvironment;
@@ -70,7 +70,7 @@ public class StandardInitContext implements InitContext {
         this.spanPackage = spanPackages.split(",");
         Hasor.info("loadPackages : " + Hasor.logString(this.spanPackage));
         //
-        ((Lifecycle) this.settings).start();
+        ((LifeCycle) this.settings).start();
     }
     /**创建{@link Settings}接口对象*/
     protected Settings createSettings() throws IOException {
@@ -134,7 +134,7 @@ public class StandardInitContext implements InitContext {
     }
     @Override
     protected void finalize() throws Throwable {
-        ((Lifecycle) this.settings).stop();
+        ((LifeCycle) this.settings).stop();
         super.finalize();
     }
 }

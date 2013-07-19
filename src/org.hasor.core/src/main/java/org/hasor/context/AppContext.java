@@ -20,7 +20,7 @@ import com.google.inject.Injector;
  * @version : 2013-3-26
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AppContext extends InitContext, Lifecycle {
+public interface AppContext extends InitContext, LifeCycle {
     /**通过名获取Bean的类型。*/
     public <T> Class<T> getBeanType(String name);
     /**如果存在目标类型的Bean则返回Bean的名称。*/

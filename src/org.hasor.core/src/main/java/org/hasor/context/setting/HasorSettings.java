@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import org.hasor.Hasor;
-import org.hasor.context.Lifecycle;
+import org.hasor.context.LifeCycle;
 import org.hasor.context.HasorSettingListener;
 import org.hasor.context.Settings;
 import org.hasor.context.XmlProperty;
@@ -42,7 +42,7 @@ import org.more.xml.stream.XmlReader;
  * @version : 2013-4-2
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class HasorSettings extends AbstractHasorSettings implements Lifecycle {
+public class HasorSettings extends AbstractHasorSettings implements LifeCycle {
     public HasorSettings() {}
     public HasorSettings(String mainConfig) throws IOException {
         this.load(mainConfig);

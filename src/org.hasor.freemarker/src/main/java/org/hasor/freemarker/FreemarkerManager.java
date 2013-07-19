@@ -16,7 +16,7 @@
 package org.hasor.freemarker;
 import java.io.IOException;
 import java.io.Writer;
-import org.hasor.context.Lifecycle;
+import org.hasor.context.LifeCycle;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -25,7 +25,7 @@ import freemarker.template.TemplateException;
  * @version : 2013-5-6
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface FreemarkerManager extends Lifecycle {
+public interface FreemarkerManager extends LifeCycle {
     /**获取用于执行模板的Freemarker*/
     public Configuration getFreemarker();
     /**获取模板。*/
