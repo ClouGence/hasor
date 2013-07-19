@@ -37,7 +37,6 @@ import org.hasor.freemarker.Tag;
  */
 @Module(displayName = "FreemarkerPlatformListener", description = "org.hasor.freemarker软件包功能支持。", startIndex = Module.Lv_0)
 public class FreemarkerPlatformListener extends AbstractHasorModule {
-    private FreemarkerManager freemarkerManager = null;
     /**初始化.*/
     @Override
     public void init(ApiBinder apiBinder) {
@@ -133,12 +132,13 @@ public class FreemarkerPlatformListener extends AbstractHasorModule {
     /***/
     @Override
     public void start(AppContext appContext) {
-        this.freemarkerManager = appContext.getInstance(FreemarkerManager.class);
-        this.freemarkerManager.initManager(appContext);
+        FreemarkerManager freemarkerManager = appContext.getInstance(FreemarkerManager.class);
+        freemarkerManager.start();
     }
     @Override
-    public void destroy(AppContext appContext) {
-        this.freemarkerManager.destroyManager(appContext);
-        Hasor.info("freemarker is destroy.");
+    public void stop(AppContext appContext) {
+        FreemarkerManager freemarkerManager = appContext.getInstance(FreemarkerManager.class);
+        freemarkerManager.stop();
+        Hasor.info("freemarker is stop.");
     }
 }

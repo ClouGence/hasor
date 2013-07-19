@@ -19,6 +19,9 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import javax.inject.Inject;
 import org.hasor.context.AppContext;
 import org.hasor.context.HasorSettingListener;
 import org.hasor.context.Settings;
@@ -39,42 +42,74 @@ import freemarker.template.TemplateException;
  */
 @Singleton
 class InternalFreemarkerManager implements FreemarkerManager, HasorSettingListener {
-    private AppContext             appContext           = null;
-    private ConfigTemplateLoader   stringLoader         = null;
-    private ConfigurationFactory   configurationFactory = null;
-    private volatile Configuration configuration        = null;
+    @Inject
+    private AppContext             appContext;
+    private ConfigTemplateLoader   stringLoader;
+    private ConfigurationFactory   configurationFactory;
+    private volatile Configuration configuration;
+    private ReadWriteLock          configurationLock = new ReentrantReadWriteLock();
     //
     //
     @Override
-    public void initManager(AppContext appContext) {
-        if (this.configurationFactory == null)
-            this.configurationFactory = appContext.getInstance(ConfigurationFactory.class);
-        this.appContext = appContext;
+    public void start() {
+        this.configurationLock.writeLock().lock();//加锁(写)
+        this.stringLoader = new ConfigTemplateLoader();
+        this.configurationFactory = this.appContext.getInstance(ConfigurationFactory.class);;
+        this.appContext.getSettings().addSettingsListener(this);
+        this.configurationLock.writeLock().unlock();//解锁(写)
+        /*要放到锁外面，否则容易引起死锁*/
         this.getFreemarker();
-        appContext.getSettings().addSettingsListener(this);
     }
     @Override
-    public void destroyManager(AppContext appContext) {
-        appContext.getSettings().removeSettingsListener(this);
+    public void stop() {
+        this.configurationLock.writeLock().lock();//加锁(写)
+        this.stringLoader = null;
+        this.configurationFactory = null;
+        this.configuration = null;
+        this.appContext.getSettings().removeSettingsListener(this);
+        this.configurationLock.writeLock().unlock();//解锁(写)
+    }
+    @Override
+    public boolean isRunning() {
+        return configuration != null;
     }
     //
     @Override
     public void onLoadConfig(Settings newConfig) {
+        this.configurationLock.writeLock().lock();//加锁(写)
         this.configuration = null;
+        this.configurationLock.writeLock().unlock();//解锁(写)
     }
     public final Configuration getFreemarker() {
+        this.configurationLock.readLock().lock();//加锁(读)
         if (this.configuration == null) {
-            this.configuration = this.configurationFactory.configuration(this.appContext);
-            //
-            ArrayList<TemplateLoader> loaders = new ArrayList<TemplateLoader>();
-            if (this.configuration.getTemplateLoader() != null)
-                loaders.add(this.configuration.getTemplateLoader());
-            loaders.add(this.configurationFactory.createConfigTemplateLoader(this.appContext));
-            loaders.add(this.configurationFactory.createTemplateLoader(this.appContext));
-            //
-            this.configuration.setTemplateLoader(new MultiTemplateLoader(loaders.toArray(new TemplateLoader[loaders.size()])));
+            /*锁升级*/
+            this.configurationLock.readLock().unlock();
+            this.configurationLock.writeLock().lock();
+            if (this.configuration == null) {
+                /*准备*/
+                if (this.configurationFactory == null) {
+                    this.configurationLock.writeLock().unlock();
+                    throw new NullPointerException("ConfigurationFactory is not set.");
+                }
+                /*构建*/
+                this.configurationLock.readLock().lock();//加锁(读)
+                if (this.configuration == null) {
+                    this.configuration = this.configurationFactory.configuration(this.appContext);
+                    ArrayList<TemplateLoader> loaders = new ArrayList<TemplateLoader>();
+                    if (this.configuration.getTemplateLoader() != null)
+                        loaders.add(this.configuration.getTemplateLoader());
+                    loaders.add(this.configurationFactory.createConfigTemplateLoader(this.appContext));
+                    loaders.add(this.configurationFactory.createTemplateLoader(this.appContext));
+                    this.configuration.setTemplateLoader(new MultiTemplateLoader(loaders.toArray(new TemplateLoader[loaders.size()])));
+                }
+            }
+            /*锁降级*/
+            this.configurationLock.readLock().lock();
+            this.configurationLock.writeLock().unlock();
         }
-        return configuration;
+        this.configurationLock.readLock().unlock();//解锁(读)
+        return this.configuration;
     }
     @Override
     public Template getTemplate(String templateName) throws TemplateException, IOException {
