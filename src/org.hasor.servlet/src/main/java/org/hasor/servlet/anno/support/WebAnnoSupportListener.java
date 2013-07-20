@@ -37,11 +37,11 @@ import org.hasor.servlet.anno.WebServlet;
 import org.hasor.servlet.anno.WebSessionListener;
 import org.more.util.StringUtils;
 /**
- * 支持Bean、WebError、WebFilter、WebServlet注解功能。启动级别：Lv1Max
+ * 支持Bean、WebError、WebFilter、WebServlet注解功能。启动级别：Lv_1
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@Module(displayName = "WebAnnoSupportListener", description = "org.hasor.servlet.anno.support软件包功能支持。", startIndex = Module.Lv_1Max)
+@Module(displayName = "WebAnnoSupportListener", description = "org.hasor.servlet.anno.support软件包功能支持。", startIndex = Module.Lv_1)
 public class WebAnnoSupportListener extends WebHasorModule {
     /**初始化.*/
     @Override

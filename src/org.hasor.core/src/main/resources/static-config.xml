@@ -11,7 +11,7 @@
 		<!-- Timer定时器执行配置,单位毫秒。可选的配置：FixedDelay(固定间隔)、FixedRate(固定周期) -->
 		<timerEvent type="FixedDelay">1000</timerEvent>
 	</framework>
-	<!-- 工作空间设置,配置的路径不进行环境变量配置解析 -->
+	<!-- 工作空间设置（不支持环境变量） -->
 	<workspace>
 		<!-- 程序工作空间基础目录（绝对地址） -->
 		<workDir>.</workDir>

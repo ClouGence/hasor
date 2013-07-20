@@ -24,7 +24,7 @@ import org.hasor.servlet.WebHasorModule;
 import org.hasor.web.resource.ResourceLoaderCreator;
 import org.hasor.web.resource.ResourceLoaderDefine;
 /**
- * 负责装载jar包中的资源。启动级别：Lv1
+ * 负责装载jar包中的资源。启动级别：Lv_1
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */

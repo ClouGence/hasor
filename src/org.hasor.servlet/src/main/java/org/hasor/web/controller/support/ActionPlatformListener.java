@@ -36,7 +36,7 @@ import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 import com.google.inject.Binder;
 /**
- * Action服务启动类，用于装载action。启动级别Lv1
+ * Action服务启动类，用于装载action。启动级别Lv_1
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */

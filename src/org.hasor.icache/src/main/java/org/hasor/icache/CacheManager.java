@@ -21,8 +21,6 @@ import org.hasor.context.AppContext;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface CacheManager {
-    /**是否启用缓存系统.*/
-    public static final String CacheConfig_Enable = "cacheConfig.enable";
     /**获取默认缓存*/
     public <T> Cache<T> getDefaultCache();
     /**获取缓存*/

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.hasor.icache.mapcache;
-import static org.hasor.icache.CacheManager.CacheConfig_Enable;
 import org.hasor.annotation.SettingsListener;
 import org.hasor.context.HasorSettingListener;
 import org.hasor.context.Settings;
@@ -25,15 +24,11 @@ import org.hasor.context.Settings;
  */
 @SettingsListener
 public class MapCacheSettings implements HasorSettingListener {
-    private boolean cacheEnable    = false;
     private long    defaultTimeout = 10;
     private boolean eternal        = false;
     private boolean autoRenewal    = false;
     private long    threadSeep     = 500;
     //
-    public boolean isCacheEnable() {
-        return cacheEnable;
-    }
     public long getDefaultTimeout() {
         return defaultTimeout;
     }
@@ -45,9 +40,6 @@ public class MapCacheSettings implements HasorSettingListener {
     }
     public long getThreadSeep() {
         return threadSeep;
-    }
-    protected void setCacheEnable(boolean cacheEnable) {
-        this.cacheEnable = cacheEnable;
     }
     protected void setDefaultTimeout(long defaultTimeout) {
         this.defaultTimeout = defaultTimeout;
@@ -62,11 +54,10 @@ public class MapCacheSettings implements HasorSettingListener {
         this.threadSeep = threadSeep;
     }
     protected String getMapCacheSettingElementName() {
-        return "cacheConfig.mapCache";
+        return "cacheSettings.mapCache";
     }
     @Override
     public void onLoadConfig(Settings newConfig) {
-        this.cacheEnable = newConfig.getBoolean(CacheConfig_Enable);
         this.defaultTimeout = newConfig.getLong(getMapCacheSettingElementName() + ".timeout");
         this.eternal = newConfig.getBoolean(getMapCacheSettingElementName() + ".eternal");
         this.autoRenewal = newConfig.getBoolean(getMapCacheSettingElementName() + ".autoRenewal");

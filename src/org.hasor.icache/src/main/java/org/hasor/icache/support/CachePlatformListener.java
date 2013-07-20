@@ -50,8 +50,7 @@ import com.google.inject.name.Names;
  */
 @Module(displayName = "CacheModuleServiceListener", description = "org.platform.icache软件包功能支持。", startIndex = Module.Lv_0)
 public class CachePlatformListener extends AbstractHasorModule {
-    private CacheManager  cacheManager = null;
-    private CacheSettings settings     = null;
+    private CacheManager cacheManager = null;
     /**初始化.*/
     @Override
     public void init(ApiBinder apiBinder) {
@@ -65,10 +64,8 @@ public class CachePlatformListener extends AbstractHasorModule {
     }
     @Override
     public void start(AppContext appContext) {
-        this.settings = appContext.getInstance(CacheSettings.class);
         this.cacheManager = appContext.getInstance(CacheManager.class);
         this.cacheManager.initManager(appContext);
-        Hasor.info("online ->> cache is %s", (this.settings.isCacheEnable() ? "enable." : "disable."));
     }
     @Override
     public void destroy(AppContext appContext) {
@@ -168,10 +165,6 @@ public class CachePlatformListener extends AbstractHasorModule {
     private class ClassNeedCacheMatcher extends AbstractMatcher<Class<?>> {
         @Override
         public boolean matches(Class<?> matcherType) {
-            /*如果处于禁用状态则忽略缓存检测*/
-            if (settings.isCacheEnable() == false)
-                return false;
-            /*----------------------------*/
             if (matcherType.isAnnotationPresent(NeedCache.class) == true)
                 return true;
             Method[] m1s = matcherType.getMethods();
@@ -191,10 +184,6 @@ public class CachePlatformListener extends AbstractHasorModule {
     private class MethodPowerMatcher extends AbstractMatcher<Method> {
         @Override
         public boolean matches(Method matcherType) {
-            /*如果处于禁用状态则忽略缓存检测*/
-            if (settings.isCacheEnable() == false)
-                return false;
-            /*----------------------------*/
             if (matcherType.isAnnotationPresent(NeedCache.class) == true)
                 return true;
             if (matcherType.getDeclaringClass().isAnnotationPresent(NeedCache.class) == true)
@@ -206,10 +195,6 @@ public class CachePlatformListener extends AbstractHasorModule {
     private class CacheInterceptor implements MethodInterceptor {
         @Override
         public Object invoke(MethodInvocation invocation) throws Throwable {
-            /*如果处于禁用状态则忽略缓存检测*/
-            if (settings.isCacheEnable() == false)
-                return invocation.proceed();
-            /*----------------------------*/
             //1.获取缓存数据
             Method targetMethod = invocation.getMethod();
             NeedCache cacheAnno = targetMethod.getAnnotation(NeedCache.class);

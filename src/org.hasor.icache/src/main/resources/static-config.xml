@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://project.hasor.net/hasor/schema/global">
 	<!-- 缓存配置 -->
-	<cacheConfig enable="true">
+	<cacheSettings>
 		<!-- MapCache 配置 -->
 		<!-- timeout=设置的超时时间10分钟超时 -->
 		<!-- eternal=缓存是否永远不销毁 -->
@@ -9,5 +9,5 @@
 		<!-- threadSeep=缓存回收线程工作的时间频率(毫秒) -->
 		<mapCache timeout="600000" eternal="false" autoRenewal="true" threadSeep="5000" />
 		<!-- !!!这里可以放置其他缓存程序的Xml配置，然后通过XmlProperty类型读取到这段Xml!!! -->
-	</cacheConfig>
+	</cacheSettings>
 </config>
