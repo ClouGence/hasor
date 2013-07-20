@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://project.hasor.net/hasor/schema/global">
+	<!-- 框架配置 -->
+	<framework>
+		<!-- 包扫描覆盖范围 -->
+		<loadPackages>org.*, com.*, net.*, cn.*</loadPackages>
+	</framework>
+	<workspace>
+		<!-- 程序工作空间基础目录（绝对地址） -->
+		<workDir>./test-work</workDir>
+	</workspace>
+	<!-- Web部分的配置（配置不支持动态更新） -->
+	<httpServlet>
+		<!-- 资源装载器 -->
+		<resourceLoader>
+			<zipLoader>{HASOR_WEBROOT}/pic.zip</zipLoader>
+		</resourceLoader>
+	</httpServlet>
+</config>
