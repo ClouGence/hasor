@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://project.hasor.net/hasor/schema/global">
+	<!-- （仅当启动时候生效）权限配置： -->
+	<!-- enable：权限系统启用禁用 -->
+	<!-- enableURL：是否将Request请求纳入权限系统 -->
+	<!-- enableMethod：是否启用@Power注解支持 -->
+	<security enable="false" enableURL="true" enableMethod="true">
+		<!-- 权限会话超时时间，单位:毫秒，默认10分钟 -->
+		<authSessionTimeout>600000</authSessionTimeout>
+		<!-- security使用的数据缓存名 -->
+		<authSessionCacheName>AuthSessionCache</authSessionCacheName>
+		<!-- 内置的权限数据缓存Cache配置 -->
+		<internalAuthSessionMapCache timeout="20000" eternal="false" autoRenewal="true" threadSeep="5000" />
+		<!-- 登入Action -->
+		<loginURL>s_login.sec</loginURL>
+		<!-- 登出Action -->
+		<logoutURL>s_logout.sec</logoutURL>
+		<!-- 权限的客户端cookie配置，默认启用 -->
+		<clientCookie enable="false">
+			<!-- cookie名称 -->
+			<cookieName>AUTHSESSION</cookieName>
+			<!-- cookie的Domain配置，设置这个属性用来支持跨域访问cookie。（默认为空不对该值进行设置） -->
+			<cookieDomain></cookieDomain>
+			<!-- cookie的path属性（默认为空不对该值进行设置） -->
+			<cookiePath></cookiePath>
+			<!-- 当系统启动时是否强制所有客户端已经登陆过的Cookie信息失效 -->
+			<loseCookieOnStart>false</loseCookieOnStart>
+			<!-- cookie超时时间，单位:秒，默认7天。 -->
+			<timeout>604800</timeout>
+			<!-- cookie内容加密方式和密钥（enable：是否启用加密，encodeType：加密算法，key：加密使用到的KEY，scope：加密范围[ALL:所有Cookie数据,Security:只加密权限数据]） -->
+			<encryption enable="true" encodeType="DES" key="!@#123qw" scope="Security" />
+		</clientCookie>
+		<!-- 加密算法配置 -->
+		<encryptionDigestSet>
+			<digest name="DES">org.hasor.security.digest.DESDigest</digest>
+			<digest name="Base64">org.hasor.security.digest.Base64Digest</digest>
+			<digest name="Random">org.hasor.security.digest.RandomDigest</digest>
+			<digest name="None">org.hasor.security.digest.NoneDigest</digest>
+			<digest name="AES128">org.hasor.security.digest.AES128Digest</digest>
+		</encryptionDigestSet>
+		<!-- 登陆表单数据 -->
+		<loginFormData>
+			<!-- 登陆表单，用户名 -->
+			<accountField>j_username</accountField>
+			<!-- 登陆表单，密码 -->
+			<passwordField>j_password</passwordField>
+			<!-- 使用的权限系统 -->
+			<authField>j_auth</authField>
+		</loginFormData>
+		<!-- 转发配置 -->
+		<forwards>
+			<!-- 登录源，当执行登陆时才会用到这里的配置。 -->
+			<!-- <dispatch contentPath="/user333" defaultType="forward|redirect|Exception|State"> -->
+			<!-- 登陆成功之后要去的地址 -->
+			<!-- <forwardIndex type="forward|redirect">/login_ok_index.htm</forwardIndex> -->
+			<!-- 退出之后要去的地址 -->
+			<!-- <forwardLogout type="forward|redirect">/login_ok_index.htm</forwardLogout> -->
+			<!-- !!!下面的配置信息，配置一项即可!!! 登陆失败：以Http 402号错误响应客户端。 -->
+			<!-- <forwardFailure type="State">402</forwardFailure> -->
+			<!-- 登陆失败：抛出特定类型异常。 -->
+			<!-- <forwardFailure type="Exception">org.hasor.security.PermissionException</forwardFailure> -->
+			<!-- 登陆失败：跳转到特定页面或地址。 -->
+			<!-- <forwardFailure type="forward|redirect|Exception|State">/abc.htm</forwardFailure> -->
+			<!-- 配置的可以跳转的地址 -->
+			<!-- <forward id="go_1" type="redirect">/go_1.htm</forward> -->
+			<!-- <forward id="go_2" type="redirect">/go_2.htm</forward> -->
+			<!-- </dispatch> -->
+		</forwards>
+		<!-- 权限判断规则 -->
+		<!-- Login:要求登陆，Logout:要求非登陆，Guest:要求具有来宾身份，Permission:要求具有权限点，None:无任何要求 -->
+		<rules>
+			<!-- URL权限检查默认策略配置：Login|Logout|Guest|Permission|None。mode属性配置成Permission时需要配置permissions参数。 -->
+			<defaultRule mode="None" />
+			<!-- 需要权限检查的路径 -->
+			<includes>
+				<!-- 命中的URL需要用户进行登入 -->
+				<!-- <include mode="Login">/user</include> -->
+				<!-- 命中的URL需要用户具备某种权限代码，(逗号间隔多个代码) -->
+				<!-- <include mode="Permission" permissions="TestPower">/pro</include> -->
+			</includes>
+			<!-- 不需要权限检查的路径 -->
+			<excludes>
+				<!-- <exclude></exclude> -->
+			</excludes>
+		</rules>
+		<!-- 来宾权限设置 -->
+		<guest enable="true">
+			<!-- 来宾用户帐号类 -->
+			<info account="guest" password="guest" userCode="guest@guest" />
+			<!-- 来宾帐号的认证系统 -->
+			<authSystem>GuestAuthSystem</authSystem>
+			<!-- 来宾帐号权限 -->
+			<permissions></permissions>
+		</guest>
+	</security>
+</config>
