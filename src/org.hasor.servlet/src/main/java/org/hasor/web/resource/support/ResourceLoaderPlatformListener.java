@@ -32,6 +32,11 @@ import org.hasor.web.resource.ResourceLoaderDefine;
 public class ResourceLoaderPlatformListener extends WebHasorModule {
     @Override
     public void init(WebApiBinder apiBinder) {
+        /*绑定Settings，但是不支持重载更新*/
+        ResourceSettings settings = new ResourceSettings();
+        settings.onLoadConfig(apiBinder.getInitContext().getSettings());
+        apiBinder.getGuiceBinder().bind(ResourceSettings.class).toInstance(settings);
+        //
         this.loadResourceLoader(apiBinder);
         apiBinder.filter("*").through(ResourceLoaderFilter.class);
     }

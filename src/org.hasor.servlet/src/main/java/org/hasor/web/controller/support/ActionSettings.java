@@ -21,7 +21,6 @@ import static org.hasor.web.controller.ActionConfig.ActionServlet_Intercept;
 import static org.hasor.web.controller.ActionConfig.ActionServlet_Mode;
 import java.util.ArrayList;
 import java.util.List;
-import org.hasor.context.HasorSettingListener;
 import org.hasor.context.Settings;
 import org.more.util.StringUtils;
 /**
@@ -29,7 +28,7 @@ import org.more.util.StringUtils;
  * @version : 2013-5-11
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ActionSettings implements HasorSettingListener {
+public class ActionSettings /*implements HasorSettingListener*/{
     /**Action功能的工作模式。*/
     public static enum ActionWorkMode {
         /**仅工作在rest风格下*/
@@ -44,7 +43,7 @@ public class ActionSettings implements HasorSettingListener {
     private String         defaultProduces = null; //默认响应类型
     private ActionWorkMode mode            = null; //工作模式
     private List<String>   ignoreMethod    = null; //忽略的方法
-    @Override
+    //
     public void onLoadConfig(Settings newConfig) {
         this.enable = newConfig.getBoolean(ActionServlet_Enable, true);
         this.intercept = newConfig.getString(ActionServlet_Intercept, "*.do");

@@ -16,8 +16,6 @@
 package org.hasor.web.resource.support;
 import java.util.ArrayList;
 import java.util.HashSet;
-import org.hasor.annotation.SettingsListener;
-import org.hasor.context.HasorSettingListener;
 import org.hasor.context.Settings;
 import org.hasor.context.XmlProperty;
 import org.more.util.StringUtils;
@@ -26,8 +24,7 @@ import org.more.util.StringUtils;
  * @version : 2013-4-23
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@SettingsListener
-public class ResourceSettings implements HasorSettingListener {
+public class ResourceSettings /*implements HasorSettingListener*/{
     public static class LoaderConfig {
         public String      loaderType = null;
         public XmlProperty config     = null;
@@ -61,7 +58,6 @@ public class ResourceSettings implements HasorSettingListener {
     public void setCacheDir(String cacheDir) {
         this.cacheDir = cacheDir;
     }
-    @Override
     public void onLoadConfig(Settings newConfig) {
         this.enable = newConfig.getBoolean("httpServlet.resourceLoader.enable");
         String typesRoot = newConfig.getString("httpServlet.resourceLoader.contentTypes");

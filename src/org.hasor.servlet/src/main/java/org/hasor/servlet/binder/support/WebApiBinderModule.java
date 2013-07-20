@@ -62,6 +62,7 @@ public abstract class WebApiBinderModule extends ApiBinderModule implements WebA
     }
     @Override
     public void configure(Binder binder) {
+        super.configure(binder);
         binder.install(this.filterModuleBinder);
         binder.install(this.servletModuleBinder);
         binder.install(this.errorsModuleBuilder);

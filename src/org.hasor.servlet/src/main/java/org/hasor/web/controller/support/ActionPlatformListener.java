@@ -20,7 +20,6 @@ import java.util.Set;
 import org.hasor.Hasor;
 import org.hasor.annotation.Module;
 import org.hasor.context.AppContext;
-import org.hasor.context.Settings;
 import org.hasor.servlet.WebApiBinder;
 import org.hasor.servlet.WebHasorModule;
 import org.hasor.web.controller.ActionBinder.ActionBindingBuilder;
@@ -48,10 +47,8 @@ public class ActionPlatformListener extends WebHasorModule {
     public void init(WebApiBinder apiBinder) {
         Binder binder = apiBinder.getGuiceBinder();
         apiBinder.filter("*").through(MergedController.class);
-        Settings settings = apiBinder.getInitContext().getSettings();
         this.settings = new ActionSettings();
-        this.settings.onLoadConfig(settings);
-        settings.addSettingsListener(this.settings);
+        this.settings.onLoadConfig(apiBinder.getInitContext().getSettings());
         apiBinder.getGuiceBinder().bind(ActionSettings.class).toInstance(this.settings);
         /*≈‰÷√*/
         binder.bind(ActionManager.class).to(InternalActionManager.class).asEagerSingleton();

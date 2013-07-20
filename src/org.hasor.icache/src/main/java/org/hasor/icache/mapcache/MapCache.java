@@ -68,10 +68,13 @@ public class MapCache<T> extends Thread implements Cache<T> {
     }
     @Override
     public synchronized void initCache(AppContext appContext) {
-        this.settings = appContext.getInstance(MapCacheSettings.class);
+        this.settings = this.createSettings(appContext);
         this.exitThread = false;
         this.setDaemon(true);
         this.start();
+    }
+    protected MapCacheSettings createSettings(AppContext appContext) {
+        return appContext.getInstance(MapCacheSettings.class);
     }
     @Override
     public synchronized void destroy(AppContext appContext) {

@@ -22,8 +22,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import org.hasor.context.AppContext;
-import org.hasor.context.HasorSettingListener;
-import org.hasor.context.Settings;
 import com.google.inject.Binding;
 import com.google.inject.Injector;
 import com.google.inject.TypeLiteral;
@@ -33,17 +31,12 @@ import com.google.inject.TypeLiteral;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Singleton
-public class ManagedErrorPipeline implements HasorSettingListener {
+public class ManagedErrorPipeline {
     private ErrorDefinition[] errorDefinitions;
     private volatile boolean  initialized    = false;
     private int               errorCaseCount = 5;
     //
-    @Override
-    public void onLoadConfig(Settings newConfig) {
-        this.errorCaseCount = newConfig.getInteger("httpServlet.errorCaseCount", 5);
-    }
     public synchronized void initPipeline(AppContext appContext) throws ServletException {
-        this.onLoadConfig(appContext.getSettings());
         if (initialized)
             return;
         this.errorDefinitions = collectErrorDefinitions(appContext.getGuice());
@@ -51,6 +44,7 @@ public class ManagedErrorPipeline implements HasorSettingListener {
             errorDefinition.init(appContext);
         }
         //everything was ok...
+        this.errorCaseCount = appContext.getSettings().getInteger("httpServlet.errorCaseCount", 5);
         this.initialized = true;
     }
     private ErrorDefinition[] collectErrorDefinitions(Injector injector) {
