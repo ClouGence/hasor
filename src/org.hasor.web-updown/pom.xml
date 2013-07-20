@@ -6,7 +6,7 @@
 		<version>Final</version>
 	</parent>
 	<groupId>org.hasor</groupId>
-	<artifactId>org.hasor.updown</artifactId>
+	<artifactId>org.hasor.web-updown</artifactId>
 	<version>0.0.1</version>
 	<packaging>jar</packaging>
 	<!-- 引用依赖 -->
