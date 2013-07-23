@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package org.hasor.view.template.support;
+import java.util.ArrayList;
 import org.hasor.context.Settings;
+import org.more.util.StringUtils;
 /**
  * ≈‰÷√–≈œ¢
  * @version : 2013-4-23
@@ -62,11 +64,21 @@ public class TempSettings /*implements HasorSettingListener*/{
     }
     public void onLoadConfig(Settings newConfig) {
         this.enable = newConfig.getBoolean("template.enable");
-        String suffix = newConfig.getString("template.suffixSet");
+        String[] suffixArray = newConfig.getStringArray("template.suffixSet");
         this.contentType = newConfig.getString("template.contentType", "text/html");
-        this.suffix = suffix.split(",");
-        for (int i = 0; i < this.suffix.length; i++)
-            this.suffix[i] = this.suffix[i].trim();
+        //
+        ArrayList<String> suffixList = new ArrayList<String>();
+        for (String sufItem : suffixArray) {
+            if (StringUtils.isBlank(sufItem))
+                continue;
+            String[] suffix = sufItem.split(",");
+            for (String s : suffix) {
+                if (StringUtils.isBlank(s))
+                    continue;
+                suffixList.add(s);
+            }
+        }
+        this.suffix = suffixList.toArray(new String[suffixList.size()]);
         this.onError = newConfig.getEnum("template.onError", OnErrorMode.class, OnErrorMode.Warning);
     }
 }

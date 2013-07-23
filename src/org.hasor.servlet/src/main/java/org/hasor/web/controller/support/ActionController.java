@@ -66,6 +66,8 @@ class ActionController extends HttpServlet {
         try {
             ActionNameSpace nameSpace = actionManager.getNameSpace(actionNS);
             invoke = nameSpace.getActionByName(request.getMethod(), actionMethod);
+            if (invoke == null)
+                throw new NullPointerException();
         } catch (NullPointerException e) {
             String logInfo = Hasor.formatString("%s action is not defined.", actionInvoke);
             throw new ActionException(logInfo);

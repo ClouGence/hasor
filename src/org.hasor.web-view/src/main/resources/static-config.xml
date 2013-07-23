@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://project.hasor.net/hasor/schema/global">
+<root:config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-web-view">
 	<!-- （仅当启动时生效）页面装饰器配置 -->
 	<pageDecorate enable="false">
 		<processor name="default" creator="org.hasor.view.decorate.parser.FreemarkerHtmlParser">
@@ -18,9 +18,9 @@
 	</pageDecorate>
 	<!-- （仅当启动时生效）模板配置，onError当模板处理发生异常时的处理方式。模式：ThrowError（抛出异常）、PrintOnConsole（打印到控制台或日志）、Warning（忽略，仅仅产生一条警告消息）PrintOnPage（打印到页面） -->
 	<template enable="true" onError="ThrowError">
-		<!-- 模板后缀名逗号间隔多个. -->
-		<suffixSet>*.ftl,*.html,*.htm</suffixSet>
+		<!-- 模板后缀名逗号间隔多个（支持重复配置共同生效） -->
+		<suffixSet>*.ftl</suffixSet>
 		<!-- 模板解析的内容响应到客户端的类型 -->
 		<contentType>text/html</contentType>
 	</template>
-</config>
+</root:config>

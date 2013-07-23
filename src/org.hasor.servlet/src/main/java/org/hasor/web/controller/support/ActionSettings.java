@@ -50,12 +50,18 @@ public class ActionSettings /*implements HasorSettingListener*/{
         this.defaultProduces = newConfig.getString(ActionServlet_DefaultProduces, null);
         this.mode = newConfig.getEnum(ActionServlet_Mode, ActionWorkMode.class, ActionWorkMode.ServletOnly);
         this.ignoreMethod = new ArrayList<String>();
-        String ignoreStr = newConfig.getString(ActionServlet_IgnoreMethod);
-        if (StringUtils.isBlank(ignoreStr) == false) {
-            String[] ignoreArray = ignoreStr.split(",");
-            for (String str : ignoreArray)
-                if (StringUtils.isBlank(str) == false)
+        String[] ignoreStrArray = newConfig.getStringArray(ActionServlet_IgnoreMethod);
+        if (ignoreStrArray != null) {
+            for (String ignoreStr : ignoreStrArray) {
+                if (StringUtils.isBlank(ignoreStr))
+                    continue;
+                String[] ignoreArray = ignoreStr.split(",");
+                for (String str : ignoreArray) {
+                    if (StringUtils.isBlank(str))
+                        continue;
                     this.ignoreMethod.add(str.trim());
+                }
+            }
         }
     }
     public boolean isEnable() {

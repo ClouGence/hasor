@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://project.hasor.net/hasor/schema/global">
+<config xmlns="http://project.hasor.net/hasor/schema/main">
 	<!-- 框架配置 -->
 	<framework>
 		<!-- 包扫描覆盖范围 -->
-		<loadPackages>org.*, com.*, net.*, cn.*</loadPackages>
+		<loadPackages>org.platform.*</loadPackages>
 	</framework>
 	<workspace>
 		<!-- 程序工作空间基础目录（绝对地址） -->

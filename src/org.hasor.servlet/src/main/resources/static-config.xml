@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://project.hasor.net/hasor/schema/global">
+<root:config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-servlet">
 	<!-- （仅在启动时生效）Web部分的配置 -->
 	<httpServlet>
 		<!-- Web请求遇到异常后轮询errorHook的次数。 -->
@@ -9,8 +9,8 @@
 		<!-- Action配置，enable：是否启用Action功能。 模式：mode:RestOnly（rest风格）、ServletOnly（中央servlet）、Both（两者同时使用） -->
 		<!-- defaultProduces 默认响应类型 -->
 		<actionServlet enable="true" mode="Both" intercept="*.do" defaultProduces="">
-			<!-- 方法忽略的方法（逗号分割多组方法名），注意：在这里配置的忽略会应用到所有action上 -->
-			<ignoreMethod></ignoreMethod>
+			<!-- 方法忽略的方法（逗号分割多组方法名），注意：在这里配置的忽略会应用到所有action上（支持重复配置共同生效） -->
+			<ignoreMethod>equals,hashCode,toString,getClass,wait,notify,notifyAll</ignoreMethod>
 		</actionServlet>
 		<!-- 资源装载器 -->
 		<resourceLoader enable="true" cacheDir="httpservlet.resourceloader.classpath" contentTypes="js,css,gif,ico,jpg,jpeg,png,swf,swc,flv,mp3,wav,avi">
@@ -21,7 +21,7 @@
 			<classpathLoader>/META-INF/webapp</classpathLoader>
 		</resourceLoader>
 	</httpServlet>
-</config>
+</root:config>
 <!-- 请求转发映射 -->
 <!-- <httpRequestMapping enable="true"> -->
 <!-- 文件匹配 -->
