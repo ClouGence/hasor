@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://project.hasor.net/hasor/schema/global">
+<config xmlns="http://myProject.org">
+	<!-- <require type="http://noe.xdf.cn/schema/global"> -->
+	<!-- <setting key="" value="" /> -->
+	<!-- </require> -->
+	<!-- <require type=""> -->
+	<!-- <setting key="" value="" /> -->
+	<!-- </require> -->
+
 	<!-- 框架配置 -->
 	<framework>
 		<!-- 包扫描覆盖范围 -->
-		<loadPackages>org.*, com.*, net.*, cn.*</loadPackages>
+		<loadPackages>org.hasor.test.*</loadPackages>
 		<!-- 执行事件的线程池大小 -->
 		<eventThreadPoolSize>1</eventThreadPoolSize>
 	</framework>

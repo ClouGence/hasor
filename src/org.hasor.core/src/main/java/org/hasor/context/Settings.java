@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 /**
  * 配置文件设置
@@ -26,9 +27,13 @@ import java.util.Set;
  */
 public interface Settings {
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类）*/
+    public Set<Class<?>> getClassSet(Class<?> featureType, String[] loadPackages);
+    /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类）*/
     public Set<Class<?>> getClassSet(Class<?> featureType, String loadPackages);
     /**获取指在某个特定命名空间下的Settings接口对象。*/
-    public Settings getNamespace(URL namespace);
+    public String[] getNamespaceArray();
+    /**获取指在某个特定命名空间下的Settings接口对象。*/
+    public Settings getNamespace(String namespace);
     /**强制重新装载配置文件，该方法会引发配置文件重载事件。*/
     public void refresh() throws IOException;
     /**添加配置文件改变事件监听器。*/
@@ -89,4 +94,57 @@ public interface Settings {
     public String getDirectoryPath(String name, String defaultValue);
     /**解析全局配置参数，并且返回其{@link XmlProperty}形式对象。*/
     public XmlProperty getXmlProperty(String name);
+    //
+    /**解析全局配置参数，并且返回其{@link Character}形式对象。*/
+    public Character[] getCharArray(String name);
+    /**解析全局配置参数，并且返回其{@link Character}形式对象。第二个参数为默认值。*/
+    public Character[] getCharArray(String name, Character defaultValue);
+    /**解析全局配置参数，并且返回其{@link String}形式对象。*/
+    public String[] getStringArray(String name);
+    /**解析全局配置参数，并且返回其{@link String}形式对象。第二个参数为默认值。*/
+    public String[] getStringArray(String name, String defaultValue);
+    /**解析全局配置参数，并且返回其{@link Boolean}形式对象。*/
+    public Boolean[] getBooleanArray(String name);
+    /**解析全局配置参数，并且返回其{@link Boolean}形式对象。第二个参数为默认值。*/
+    public Boolean[] getBooleanArray(String name, Boolean defaultValue);
+    /**解析全局配置参数，并且返回其{@link Short}形式对象。*/
+    public Short[] getShortArray(String name);
+    /**解析全局配置参数，并且返回其{@link Short}形式对象。第二个参数为默认值。*/
+    public Short[] getShortArray(String name, Short defaultValue);
+    /**解析全局配置参数，并且返回其{@link Integer}形式对象。*/
+    public Integer[] getIntegerArray(String name);
+    /**解析全局配置参数，并且返回其{@link Integer}形式对象。第二个参数为默认值。*/
+    public Integer[] getIntegerArray(String name, Integer defaultValue);
+    /**解析全局配置参数，并且返回其{@link Long}形式对象。*/
+    public Long[] getLongArray(String name);
+    /**解析全局配置参数，并且返回其{@link Long}形式对象。第二个参数为默认值。*/
+    public Long[] getLongArray(String name, Long defaultValue);
+    /**解析全局配置参数，并且返回其{@link Float}形式对象。*/
+    public Float[] getFloatArray(String name);
+    /**解析全局配置参数，并且返回其{@link Float}形式对象。第二个参数为默认值。*/
+    public Float[] getFloatArray(String name, Float defaultValue);
+    /**解析全局配置参数，并且返回其{@link Double}形式对象。*/
+    public Double[] getDoubleArray(String name);
+    /**解析全局配置参数，并且返回其{@link Double}形式对象。第二个参数为默认值。*/
+    public Double[] getDoubleArray(String name, Double defaultValue);
+    /**解析全局配置参数，并且返回其{@link Date}形式对象。*/
+    public Date[] getDateArray(String name);
+    /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
+    public Date[] getDateArray(String name, Date defaultValue);
+    /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
+    public Date[] getDateArray(String name, long defaultValue);
+    /**解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。*/
+    public <T extends Enum<?>> T[] getEnumArray(String name, Class<T> enmType);
+    /**解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。*/
+    public <T extends Enum<?>> T[] getEnumArray(String name, Class<T> enmType, T defaultValue);
+    /**解析全局配置参数，并且返回其{@link Date}形式对象（用于表示文件）。第二个参数为默认值。*/
+    public String[] getFilePathArray(String name);
+    /**解析全局配置参数，并且返回其{@link Date}形式对象（用于表示文件）。第二个参数为默认值。*/
+    public String[] getFilePathArray(String name, String defaultValue);
+    /**解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。*/
+    public String[] getDirectoryPathArray(String name);
+    /**解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。*/
+    public String[] getDirectoryPathArray(String name, String defaultValue);
+    /**解析全局配置参数，并且返回其{@link XmlProperty}形式对象。*/
+    public XmlProperty[] getXmlPropertyArray(String name);
 }

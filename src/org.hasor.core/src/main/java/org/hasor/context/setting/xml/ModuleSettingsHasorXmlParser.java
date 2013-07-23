@@ -33,11 +33,11 @@ import org.more.xml.stream.StartElementEvent;
 import org.more.xml.stream.TextEvent;
 import org.more.xml.stream.XmlStreamEvent;
 /**
- * Xml解析器
+ * 模块配置解析器
  * @version : 2013-4-22
  * @author 赵永春 (zyc@byshell.org)
  */
-public class HasorXmlMappingParser implements HasorXmlParser {
+public class ModuleSettingsHasorXmlParser implements HasorXmlParser {
     private StringBuffer    xmlText           = null;
     private XmlPropertyImpl currentXmlPropert = null;
     //
@@ -74,14 +74,14 @@ public class HasorXmlMappingParser implements HasorXmlParser {
         //1.将XmlTree转换为map映射
         HashMap<String, Object> dataMap = new HashMap<String, Object>();
         this.convertType(dataMap, this.currentXmlPropert.getChildren(), "");
-        //2.弃掉转换过程中根节点名称
-        HashMap<String, Object> finalReturnData = new HashMap<String, Object>();
-        for (Entry<String, Object> ent : dataMap.entrySet()) {
-            String keyStr = ent.getKey();
-            keyStr = keyStr.substring(keyStr.indexOf(".") + 1);
-            finalReturnData.put(keyStr.toLowerCase(), ent.getValue());
-        }
-        dataMap = finalReturnData;
+        //        //2.弃掉转换过程中根节点名称
+        //        HashMap<String, Object> finalReturnData = new HashMap<String, Object>();
+        //        for (Entry<String, Object> ent : dataMap.entrySet()) {
+        //            String keyStr = ent.getKey();
+        //            keyStr = keyStr.substring(keyStr.indexOf(".") + 1);
+        //            finalReturnData.put(keyStr.toLowerCase(), ent.getValue());
+        //        }
+        //        dataMap = finalReturnData;
         //3.处理多值合并问题（采用覆盖和追加的策略）
         for (String key : dataMap.keySet()) {
             String $key = key.toLowerCase();

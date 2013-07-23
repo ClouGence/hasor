@@ -34,6 +34,8 @@ public class SettingsTest extends AbstractTestContext {
     protected void initContext(AppContext appContext) {}
     @Test
     public void test() throws IOException {
+        String[] strs = getAppContext().getSettings().getStringArray("framework.loadPackages");
+        System.out.println("invoke test" + strs);
         System.in.read();
     }
 }

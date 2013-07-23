@@ -15,6 +15,7 @@
  */
 package org.hasor.context.core;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -30,6 +31,7 @@ import org.hasor.context.event.StandardAdvancedEventManager;
 import org.hasor.context.setting.HasorSettings;
 import org.hasor.context.workspace.StandardWorkSpace;
 import org.more.util.ClassUtils;
+import org.more.util.StringUtils;
 /**
  * {@link InitContext}接口实现类。
  * @version : 2013-4-9
@@ -66,8 +68,19 @@ public class StandardInitContext implements InitContext {
         this.environment = this.createEnvironment();
         this.eventManager = this.createEventManager();
         //
-        String spanPackages = this.getSettings().getString("framework.loadPackages");
-        this.spanPackage = spanPackages.split(",");
+        String[] spanPackages = this.getSettings().getStringArray("framework.loadPackages");
+        ArrayList<String> allPack = new ArrayList<String>();
+        for (String packs : spanPackages) {
+            if (StringUtils.isBlank(packs) == true)
+                continue;
+            String[] packArray = packs.split(",");
+            for (String pack : packArray) {
+                if (StringUtils.isBlank(packs) == true)
+                    continue;
+                allPack.add(pack.trim());
+            }
+        }
+        this.spanPackage = allPack.toArray(new String[allPack.size()]);
         Hasor.info("loadPackages : " + Hasor.logString(this.spanPackage));
         //
         ((LifeCycle) this.settings).start();

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://project.hasor.net/hasor/schema/global">
+<root:config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-core">
 	<!-- 框架配置 -->
 	<framework>
 		<!-- （该配置在重载配置文件之后不会影响已有结果） -->
-		<!-- 包扫描覆盖范围，逗号间隔 -->
+		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
 		<loadPackages>org.hasor.*</loadPackages>
 		<!-- 启用注解功能支持 -->
 		<annotation>true</annotation>
@@ -24,4 +24,4 @@
 		<!-- 程序运行时生成的缓存数据存放位置（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
 		<cacheDir absolute="false">/cache</cacheDir>
 	</workspace>
-</config>
+</root:config>

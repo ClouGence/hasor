@@ -19,15 +19,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import org.hasor.Hasor;
-import org.hasor.context.LifeCycle;
 import org.hasor.context.HasorSettingListener;
-import org.hasor.context.Settings;
+import org.hasor.context.LifeCycle;
 import org.hasor.context.XmlProperty;
 import org.more.util.ResourceWatch;
 import org.more.util.ResourcesUtils;
@@ -70,7 +70,7 @@ public class HasorSettings extends AbstractHasorSettings implements LifeCycle {
         if (this.nsDefine != null)
             return this.nsDefine;
         //
-        HashMap<String, List<String>> define = new HashMap<String, List<String>>();
+        HashMap<String, List<String>> defineStr = new HashMap<String, List<String>>();
         List<URL> nspropURLs = ResourcesUtils.getResources("META-INF/ns.prop");
         if (nspropURLs != null) {
             for (URL nspropURL : nspropURLs) {
@@ -84,19 +84,23 @@ public class HasorSettings extends AbstractHasorSettings implements LifeCycle {
                         String v = prop.get(key);
                         String k = key.trim();
                         List<String> nsPasser = null;
-                        if (define.containsKey(k) == false) {
+                        if (defineStr.containsKey(k) == false) {
                             nsPasser = new ArrayList<String>();
-                            define.put(k, nsPasser);
+                            defineStr.put(k, nsPasser);
                         } else
-                            nsPasser = define.get(k);
+                            nsPasser = defineStr.get(k);
                         nsPasser.add(v);
                     }
                     /**/
                 }
             }
         }
-        Hasor.info("load space ‘%s’.", define);
-        this.nsDefine = define;
+        //
+        //        HashMap<URL, List<String>> define = new HashMap<URL, List<String>>();
+        //        for (Entry<String, List<String>> ent : defineStr.entrySet())
+        //            define.put(new URL(ent.getKey()), ent.getValue());
+        Hasor.info("load space ‘%s’.", defineStr);
+        this.nsDefine = defineStr;
         return this.nsDefine;
     }
     /**创建解析器*/
@@ -112,7 +116,7 @@ public class HasorSettings extends AbstractHasorSettings implements LifeCycle {
             Map<String, Object> dataContainer = new HashMap<String, Object>();
             //创建解析器代理，并且将注册的解析器设置到代理上
             InternalHasorXmlParserPropxy nsKit = new InternalHasorXmlParserPropxy(this, dataContainer);
-            //加入到返回结果集合中
+            //加入到返回结果集合中 
             loadTo.put(xmlNS, dataContainer);
             //
             for (String xmlParser : xmlParserSet) {
@@ -121,7 +125,13 @@ public class HasorSettings extends AbstractHasorSettings implements LifeCycle {
                 Hasor.info("add XmlNamespaceParser ‘%s’ on ‘%s’.", xmlParser, xmlNS);
             }
             /*使用XmlParserKitManager实现不同解析器接收不用命名空间事件的支持*/
-            kitManager.regeditKit(xmlNS, nsKit);
+            String xmlNSStr = null;
+            try {
+                xmlNSStr = URLDecoder.decode(xmlNS.toString(), "utf-8");
+            } catch (Exception e) {
+                xmlNSStr = xmlNS.toString();
+            }
+            kitManager.regeditKit(xmlNSStr, nsKit);
         }
         Hasor.info("XmlParserKitManager created!");
         this.initKitManager = kitManager;
@@ -212,7 +222,11 @@ public class HasorSettings extends AbstractHasorSettings implements LifeCycle {
         return this.settingMap;
     }
     @Override
-    public Settings getNamespace(URL namespace) {
+    public String[] getNamespaceArray() {
+        return this.nsDefine.keySet().toArray(new String[this.nsDefine.size()]);
+    }
+    @Override
+    public AbstractHasorSettings getNamespace(String namespace) {
         final HasorSettings setting = this;
         final Map<String, Object> data = this.settingNsMap.get(namespace);
         if (data == null)
@@ -239,8 +253,12 @@ public class HasorSettings extends AbstractHasorSettings implements LifeCycle {
                 return setting.getSettingListeners();
             }
             @Override
-            public Settings getNamespace(URL namespace) {
+            public AbstractHasorSettings getNamespace(String namespace) {
                 return setting.getNamespace(namespace);
+            }
+            @Override
+            public String[] getNamespaceArray() {
+                return setting.getNamespaceArray();
             }
             @Override
             protected Map<String, Object> getSettingMap() {

@@ -71,25 +71,29 @@ public abstract class ClassUtils {
     public static Set<Class<?>> getClassSet(final String[] packages, final Class<?> compareType) {
         final Set<Class<?>> classSet = new HashSet<Class<?>>();
         try {
-            ResourcesUtils.scan(packages[0].replace(".", "/") + "*.class", new ScanItem() {
-                public boolean goFind(ScanEvent event, boolean isInJar) {
-                    String name = event.getName();
-                    name = name.substring(0, name.length() - ".class".length());
-                    name = name.replace("/", ".");
-                    try {
-                        Class<?> loadType = Thread.currentThread().getContextClassLoader().loadClass(name);
-                        if (compareType.isAnnotation() == true) {
-                            //目标是注解
-                            Class<Annotation> annoType = (Class<Annotation>) compareType;
-                            if (loadType.getAnnotation(annoType) != null)
+            for (String tiem : packages) {
+                if (tiem == null)
+                    continue;
+                ResourcesUtils.scan(tiem.replace(".", "/") + "*.class", new ScanItem() {
+                    public boolean goFind(ScanEvent event, boolean isInJar) {
+                        String name = event.getName();
+                        name = name.substring(0, name.length() - ".class".length());
+                        name = name.replace("/", ".");
+                        try {
+                            Class<?> loadType = Thread.currentThread().getContextClassLoader().loadClass(name);
+                            if (compareType.isAnnotation() == true) {
+                                //目标是注解
+                                Class<Annotation> annoType = (Class<Annotation>) compareType;
+                                if (loadType.getAnnotation(annoType) != null)
+                                    classSet.add(loadType);
+                            } else if (compareType.isAssignableFrom(loadType) == true)
+                                //目标是类
                                 classSet.add(loadType);
-                        } else if (compareType.isAssignableFrom(loadType) == true)
-                            //目标是类
-                            classSet.add(loadType);
-                    } catch (ClassNotFoundException e) {}
-                    return false;
-                }
-            });
+                        } catch (ClassNotFoundException e) {}
+                        return false;
+                    }
+                });
+            }
         } catch (Throwable e) {}
         return classSet;
     }
