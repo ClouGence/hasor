@@ -104,12 +104,18 @@ public class StandardEventManager implements EventManager {
         //
         this.listenerRWLock.writeLock().unlock();//½âËø(Ğ´)
     }
+    private static final HasorEventListener[] EmptyEventListener = new HasorEventListener[0];
     @Override
     public HasorEventListener[] getEventListener(String eventType) {
         this.listenerRWLock.readLock().lock();//¼ÓËø(¶Á)
         //
         HasorEventListener[] eventListenerArray = this.listenerMap.get(eventType);
-        eventListenerArray = (eventListenerArray == null) ? new HasorEventListener[0] : eventListenerArray.clone();
+        if (eventListenerArray != null) {
+            HasorEventListener[] array = new HasorEventListener[eventListenerArray.length];
+            System.arraycopy(eventListenerArray, 0, array, 0, eventListenerArray.length);
+            eventListenerArray = array;
+        } else
+            eventListenerArray = EmptyEventListener;
         //
         this.listenerRWLock.readLock().unlock();//½âËø(¶Á)
         return eventListenerArray;

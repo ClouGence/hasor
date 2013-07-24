@@ -207,6 +207,7 @@ public class HasorSettings extends AbstractHasorSettings implements LifeCycle {
         xmlAccept.setContext(this);
         //Ω‚ŒˆXml
         new XmlReader(stream).reader(xmlAccept, encoding, null);
+        stream.close();
     }
     /*-------------------------------------------------------------------------------------------------------
      * 
