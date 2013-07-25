@@ -16,7 +16,7 @@
 package org.hasor.view.decorate.support;
 import org.hasor.annotation.Module;
 import org.hasor.servlet.WebApiBinder;
-import org.hasor.servlet.WebHasorModule;
+import org.hasor.servlet.AbstractWebHasorModule;
 import org.hasor.view.decorate.DecorateBinder;
 import org.hasor.view.decorate.parser.FreemarkerHtmlParser;
 /**
@@ -25,7 +25,7 @@ import org.hasor.view.decorate.parser.FreemarkerHtmlParser;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Module(displayName = "DecoratePlatformListener", description = "org.platform.view.decorate软件包功能支持。", startIndex = Module.Lv_0)
-public class DecoratePlatformListener extends WebHasorModule {
+public class DecoratePlatformListener extends AbstractWebHasorModule {
     @Override
     public void init(WebApiBinder binder) {
         binder.getGuiceBinder().bind(DecorateBinder.class).to(DecorateBinderImplements.class);

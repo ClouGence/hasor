@@ -29,7 +29,7 @@ import org.hasor.Hasor;
 import org.hasor.annotation.Module;
 import org.hasor.servlet.ErrorHook;
 import org.hasor.servlet.WebApiBinder;
-import org.hasor.servlet.WebHasorModule;
+import org.hasor.servlet.AbstractWebHasorModule;
 import org.hasor.servlet.anno.WebError;
 import org.hasor.servlet.anno.WebFilter;
 import org.hasor.servlet.anno.WebInitParam;
@@ -42,7 +42,7 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Module(displayName = "WebAnnoSupportListener", description = "org.hasor.servlet.anno.support软件包功能支持。", startIndex = Module.Lv_1)
-public class WebAnnoSupportListener extends WebHasorModule {
+public class WebAnnoSupportListener extends AbstractWebHasorModule {
     /**初始化.*/
     @Override
     public void init(WebApiBinder apiBinder) {

@@ -20,7 +20,7 @@ import java.util.Set;
 import org.hasor.Hasor;
 import org.hasor.annotation.Module;
 import org.hasor.servlet.WebApiBinder;
-import org.hasor.servlet.WebHasorModule;
+import org.hasor.servlet.AbstractWebHasorModule;
 import org.hasor.web.resource.ResourceLoaderCreator;
 import org.hasor.web.resource.ResourceLoaderDefine;
 /**
@@ -29,7 +29,7 @@ import org.hasor.web.resource.ResourceLoaderDefine;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Module(displayName = "ResourceLoaderPlatformListener", description = "org.hasor.web.resource软件包功能支持。", startIndex = Module.Lv_1)
-public class ResourceLoaderPlatformListener extends WebHasorModule {
+public class ResourceLoaderPlatformListener extends AbstractWebHasorModule {
     @Override
     public void init(WebApiBinder apiBinder) {
         /*绑定Settings，但是不支持重载更新*/

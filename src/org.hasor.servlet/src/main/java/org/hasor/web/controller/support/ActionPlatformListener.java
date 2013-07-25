@@ -21,7 +21,7 @@ import org.hasor.Hasor;
 import org.hasor.annotation.Module;
 import org.hasor.context.AppContext;
 import org.hasor.servlet.WebApiBinder;
-import org.hasor.servlet.WebHasorModule;
+import org.hasor.servlet.AbstractWebHasorModule;
 import org.hasor.web.controller.ActionBinder.ActionBindingBuilder;
 import org.hasor.web.controller.ActionBinder.NameSpaceBindingBuilder;
 import org.hasor.web.controller.Controller;
@@ -40,7 +40,7 @@ import com.google.inject.Binder;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Module(displayName = "ActionModuleListener", description = "org.hasor.web.controller软件包功能支持。", startIndex = Module.Lv_1)
-public class ActionPlatformListener extends WebHasorModule {
+public class ActionPlatformListener extends AbstractWebHasorModule {
     private ActionSettings settings      = null;
     private ActionManager  actionManager = null;
     @Override

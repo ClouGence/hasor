@@ -42,7 +42,7 @@ import org.hasor.security.support.impl.InternalSecurityContext;
 import org.hasor.security.support.process.AuthRequestProcess;
 import org.hasor.security.support.process.TestPermissionProcess;
 import org.hasor.servlet.WebApiBinder;
-import org.hasor.servlet.WebHasorModule;
+import org.hasor.servlet.AbstractWebHasorModule;
 import org.more.util.StringUtils;
 import com.google.inject.Binder;
 import com.google.inject.Key;
@@ -54,7 +54,7 @@ import com.google.inject.matcher.AbstractMatcher;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Module(displayName = "SecurityPlatformListener", description = "org.hasor.security软件包功能支持。", startIndex = Module.Lv_0Max)
-public class SecurityPlatformListener extends WebHasorModule {
+public class SecurityPlatformListener extends AbstractWebHasorModule {
     private SecurityContext         secService  = null;
     private SecuritySessionListener secListener = null;
     private SecuritySettings        settings    = null;
