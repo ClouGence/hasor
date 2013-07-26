@@ -20,24 +20,27 @@ import org.hasor.annotation.Bean;
 import org.hasor.annotation.EventListener;
 import org.hasor.annotation.Module;
 import org.hasor.annotation.SettingsListener;
-import org.hasor.context.AbstractHasorModule;
 import org.hasor.context.AdvancedEventManager;
 import org.hasor.context.ApiBinder;
 import org.hasor.context.ApiBinder.BeanBindingBuilder;
+import org.hasor.context.module.AbstractHasorModule;
 import org.hasor.context.AppContext;
 import org.hasor.context.EventManager;
 import org.hasor.context.HasorEventListener;
 import org.hasor.context.HasorSettingListener;
 import org.hasor.context.LifeCycle;
+import org.hasor.context.ModuleSettings;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 /**
- * 支持Bean注解功能。启动级别：Lv_0
+ * 支持Bean注解功能。
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@Module(displayName = "AnnoSupportListener", description = "org.hasor.annotation软件包功能支持。", startIndex = Module.Lv_0)
+@Module(displayName = "AnnoSupportListener", description = "org.hasor.annotation软件包功能支持。")
 public class AnnoSupportListener extends AbstractHasorModule {
+    @Override
+    public void configuration(ModuleSettings info) {}
     //
     /**初始化.*/
     @Override

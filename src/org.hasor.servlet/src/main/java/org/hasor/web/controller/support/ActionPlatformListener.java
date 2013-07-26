@@ -20,8 +20,10 @@ import java.util.Set;
 import org.hasor.Hasor;
 import org.hasor.annotation.Module;
 import org.hasor.context.AppContext;
-import org.hasor.servlet.WebApiBinder;
+import org.hasor.context.ModuleSettings;
 import org.hasor.servlet.AbstractWebHasorModule;
+import org.hasor.servlet.WebApiBinder;
+import org.hasor.servlet.anno.support.WebAnnoSupportListener;
 import org.hasor.web.controller.ActionBinder.ActionBindingBuilder;
 import org.hasor.web.controller.ActionBinder.NameSpaceBindingBuilder;
 import org.hasor.web.controller.Controller;
@@ -35,14 +37,18 @@ import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 import com.google.inject.Binder;
 /**
- * Action服务启动类，用于装载action。启动级别Lv_1
+ * Action服务启动类，用于装载action。
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@Module(displayName = "ActionModuleListener", description = "org.hasor.web.controller软件包功能支持。", startIndex = Module.Lv_1)
+@Module(displayName = "ActionModuleListener", description = "org.hasor.web.controller软件包功能支持。")
 public class ActionPlatformListener extends AbstractWebHasorModule {
     private ActionSettings settings      = null;
     private ActionManager  actionManager = null;
+    @Override
+    public void configuration(ModuleSettings info) {
+        info.beforeMe(WebAnnoSupportListener.class);
+    }
     @Override
     public void init(WebApiBinder apiBinder) {
         Binder binder = apiBinder.getGuiceBinder();

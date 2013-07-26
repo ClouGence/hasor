@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.hasor.servlet.anno.support;
-import static org.hasor.Hasor.getIndexStr;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,9 +26,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
 import org.hasor.Hasor;
 import org.hasor.annotation.Module;
+import org.hasor.annotation.support.AnnoSupportListener;
+import org.hasor.context.ModuleSettings;
+import org.hasor.servlet.AbstractWebHasorModule;
 import org.hasor.servlet.ErrorHook;
 import org.hasor.servlet.WebApiBinder;
-import org.hasor.servlet.AbstractWebHasorModule;
 import org.hasor.servlet.anno.WebError;
 import org.hasor.servlet.anno.WebFilter;
 import org.hasor.servlet.anno.WebInitParam;
@@ -41,8 +42,12 @@ import org.more.util.StringUtils;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@Module(displayName = "WebAnnoSupportListener", description = "org.hasor.servlet.anno.support软件包功能支持。", startIndex = Module.Lv_1)
+@Module(displayName = "WebAnnoSupportListener", description = "org.hasor.servlet.anno.support软件包功能支持。")
 public class WebAnnoSupportListener extends AbstractWebHasorModule {
+    @Override
+    public void configuration(ModuleSettings info) {
+        info.beforeMe(AnnoSupportListener.class);
+    }
     /**初始化.*/
     @Override
     public void init(WebApiBinder apiBinder) {
@@ -92,7 +97,7 @@ public class WebAnnoSupportListener extends AbstractWebHasorModule {
             apiBinder.filter(null, filterAnno.value()).through(filterType, initMap);
             //
             String filterName = StringUtils.isBlank(filterAnno.filterName()) ? filterType.getSimpleName() : filterAnno.filterName();
-            Hasor.info("loadFilter %s[%s] bind %s on %s.", filterName, getIndexStr(filterAnno.sort()), filterType, filterAnno.value());
+            Hasor.info("loadFilter %s[%s] bind %s on %s.", filterName, Hasor.getIndexStr(filterAnno.sort()), filterType, filterAnno.value());
         }
     }
     //
@@ -129,7 +134,7 @@ public class WebAnnoSupportListener extends AbstractWebHasorModule {
             //
             String servletName = StringUtils.isBlank(servletAnno.servletName()) ? servletType.getSimpleName() : servletAnno.servletName();
             int sortInt = servletAnno.loadOnStartup();
-            Hasor.info("loadServlet %s[%s] bind %s on %s.", servletName, getIndexStr(sortInt), servletType, servletAnno.value());
+            Hasor.info("loadServlet %s[%s] bind %s on %s.", servletName, Hasor.getIndexStr(sortInt), servletType, servletAnno.value());
         }
     }
     //
@@ -165,7 +170,7 @@ public class WebAnnoSupportListener extends AbstractWebHasorModule {
             apiBinder.error(errorAnno.value()).bind(errorHookType, initMap);
             //
             int sortInt = errorAnno.sort();
-            Hasor.info("loadErrorHook [%s] of %s.", getIndexStr(sortInt), errorHookType);
+            Hasor.info("loadErrorHook [%s] of %s.", Hasor.getIndexStr(sortInt), errorHookType);
         }
     }
     //
@@ -200,7 +205,7 @@ public class WebAnnoSupportListener extends AbstractWebHasorModule {
             //
             WebSessionListener anno = sessionListener.getAnnotation(WebSessionListener.class);
             int sortInt = anno.sort();
-            Hasor.info("loadSessionListener [%s] bind %s.", getIndexStr(sortInt), sessionListener);
+            Hasor.info("loadSessionListener [%s] bind %s.", Hasor.getIndexStr(sortInt), sessionListener);
         }
     }
     //

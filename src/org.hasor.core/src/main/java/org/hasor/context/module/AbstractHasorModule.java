@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.context;
+package org.hasor.context.module;
+import org.hasor.context.AppContext;
+import org.hasor.context.HasorModule;
 /**
  * 
  * @version : 2013-7-16
@@ -21,15 +23,9 @@ package org.hasor.context;
  */
 public abstract class AbstractHasorModule implements HasorModule {
     @Override
-    public void start(AppContext appContext) {
-        // TODO Auto-generated method stub
-    }
+    public void start(AppContext appContext) {}
     @Override
-    public void stop(AppContext appContext) {
-        // TODO Auto-generated method stub
-    }
+    public void stop(AppContext appContext) {}
     @Override
-    public void destroy(AppContext appContext) {
-        // TODO Auto-generated method stub
-    }
+    public void destroy(AppContext appContext) {}
 }

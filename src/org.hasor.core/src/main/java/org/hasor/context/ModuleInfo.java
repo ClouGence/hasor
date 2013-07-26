@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import org.hasor.context.HasorModule;
+package org.hasor.context;
+import java.util.List;
 /**
- * 标志该类注册到系统初始化过程，该类在标记注解时必须实现{@link HasorModule}接口。
- * @version : 2013-3-20
+ * 该接口只能获取模块信息
+ * @version : 2013-7-26
  * @author 赵永春 (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
-public @interface Module {
-    /**默认名称，该名称在系统控制台用于管理显示用途。*/
-    public String displayName() default "";
-    /**对该类的描述信息。*/
-    public String description() default "";
+public interface ModuleInfo {
+    /**获取绑定的配置文件命名空间*/
+    public String getSettingsNamespace();
+    /**获取显示名称*/
+    public String getDisplayName();
+    /**获取描述信息*/
+    public String getDescription();
+    /**获取模块信息所表述的模块对象*/
+    public HasorModule getModuleObject();
+    /**获取模块的依赖模块*/
+    public List<Dependency> getDependency();
 }

@@ -86,6 +86,7 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
         hasorEnv.put("HASOR_DATA_HOME", workSpace.getDataDir());
         hasorEnv.put("HASOR_TEMP_HOME", workSpace.getTempDir());
         hasorEnv.put("HASOR_CACHE_HOME", workSpace.getCacheDir());
+        hasorEnv.put("HASOR_PLUGIN_HOME", workSpace.getPluginDir());
         return hasorEnv;
     }
     /*

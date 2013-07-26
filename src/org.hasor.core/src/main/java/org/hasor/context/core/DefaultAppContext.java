@@ -26,9 +26,11 @@ import org.hasor.context.EventManager;
 import org.hasor.context.HasorEventListener;
 import org.hasor.context.HasorModule;
 import org.hasor.context.InitContext;
+import org.hasor.context.ModuleInfo;
 import org.hasor.context.Settings;
 import org.hasor.context.WorkSpace;
 import org.hasor.context.binder.ApiBinderModule;
+import org.hasor.context.module.ModuleInfoImplements;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -40,9 +42,9 @@ import com.google.inject.Provider;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class DefaultAppContext extends AbstractAppContext {
-    private List<HasorModule> haosrModuleSet;
-    private boolean           running;
-    private Injector          guice;
+    private List<ModuleInfo> haosrModuleSet;
+    private boolean          running;
+    private Injector         guice;
     //
     public DefaultAppContext() throws IOException {
         super();
@@ -53,34 +55,42 @@ public class DefaultAppContext extends AbstractAppContext {
     public DefaultAppContext(String mainConfig, Object context) throws IOException {
         super(mainConfig, context);
     }
-    protected List<HasorModule> getModuleList() {
+    protected List<ModuleInfo> getModuleList() {
         if (this.haosrModuleSet == null)
-            this.haosrModuleSet = new ArrayList<HasorModule>();
+            this.haosrModuleSet = new ArrayList<ModuleInfo>();
         return haosrModuleSet;
     }
     //
     /**添加模块*/
-    public void addModule(HasorModule contextListener) {
-        if (this.getModuleList().contains(contextListener) == false)
-            this.getModuleList().add(contextListener);
+    public void addModule(HasorModule hasorModule) {
+        for (ModuleInfo info : this.getModuleList())
+            if (info.getModuleObject() == hasorModule)
+                return;
+        this.getModuleList().add(new ModuleInfoImplements(hasorModule, this));
     }
     /**删除模块*/
-    public void removeModule(HasorModule contextListener) {
-        if (this.getModuleList().contains(contextListener) == true)
-            this.getModuleList().remove(contextListener);
+    public void removeModule(HasorModule hasorModule) {
+        ModuleInfo targetInfo = null;
+        for (ModuleInfo info : this.getModuleList())
+            if (info.getModuleObject() == hasorModule) {
+                targetInfo = info;
+                break;
+            }
+        if (targetInfo != null)
+            this.getModuleList().remove(targetInfo);
     }
     /**获得所有模块*/
-    public HasorModule[] getModules() {
-        List<HasorModule> haosrModuleSet = getModuleList();
-        return haosrModuleSet.toArray(new HasorModule[haosrModuleSet.size()]);
+    public ModuleInfo[] getModules() {
+        List<ModuleInfo> haosrModuleSet = getModuleList();
+        return haosrModuleSet.toArray(new ModuleInfo[haosrModuleSet.size()]);
     }
     /**获取Guice接口*/
     public Injector getGuice() {
         return this.guice;
     }
     /**为模块创建ApiBinder*/
-    protected ApiBinder newApiBinder(final HasorModule forModule, final Binder binder) {
-        return new ApiBinderModule(this) {
+    protected ApiBinder newApiBinder(final ModuleInfo forModule, final Binder binder) {
+        return new ApiBinderModule(this, forModule) {
             @Override
             public Binder getGuiceBinder() {
                 return binder;
@@ -89,75 +99,8 @@ public class DefaultAppContext extends AbstractAppContext {
     }
     /**通过guice创建{@link Injector}，该方法会促使调用模块init生命周期*/
     protected Injector createInjector(Module[] guiceModules) {
-        //1.构建ApiBinderModule。
-        final AppContext appContet = this;
-        final Module masterBind = new Module() {
-            @Override
-            public void configure(Binder binder) {
-                /*引发模块init生命周期*/
-                HasorModule[] hasorModules = getModules();
-                if (hasorModules != null)
-                    for (HasorModule mod : hasorModules) {
-                        if (mod == null)
-                            continue;
-                        Hasor.info("init Event on : %s", mod.getClass());
-                        onInit(mod, binder);//触发事件
-                    }
-                Hasor.info("init modules finish.");
-                /*绑定InitContext对象的Provider*/
-                binder.bind(InitContext.class).toProvider(new Provider<InitContext>() {
-                    @Override
-                    public InitContext get() {
-                        return appContet;
-                    }
-                });
-                /*绑定AppContext对象的Provider*/
-                binder.bind(AppContext.class).toProvider(new Provider<AppContext>() {
-                    @Override
-                    public AppContext get() {
-                        return appContet;
-                    }
-                });
-                /*绑定EventManager对象的Provider*/
-                binder.bind(EventManager.class).toProvider(new Provider<EventManager>() {
-                    @Override
-                    public EventManager get() {
-                        return appContet.getEventManager();
-                    }
-                });
-                /*绑定PhaseEventManager对象的Provider*/
-                binder.bind(AdvancedEventManager.class).toProvider(new Provider<AdvancedEventManager>() {
-                    @Override
-                    public AdvancedEventManager get() {
-                        return (AdvancedEventManager) appContet.getEventManager();
-                    }
-                });
-                /*绑定Settings对象的Provider*/
-                binder.bind(Settings.class).toProvider(new Provider<Settings>() {
-                    @Override
-                    public Settings get() {
-                        return appContet.getSettings();
-                    }
-                });
-                /*绑定WorkSpace对象的Provider*/
-                binder.bind(WorkSpace.class).toProvider(new Provider<WorkSpace>() {
-                    @Override
-                    public WorkSpace get() {
-                        return appContet.getWorkSpace();
-                    }
-                });
-                /*绑定Environment对象的Provider*/
-                binder.bind(Environment.class).toProvider(new Provider<Environment>() {
-                    @Override
-                    public Environment get() {
-                        return appContet.getEnvironment();
-                    }
-                });
-            }
-        };
-        //2.
         ArrayList<Module> guiceModuleSet = new ArrayList<Module>();
-        guiceModuleSet.add(masterBind);
+        guiceModuleSet.add(new MasterModule(this));
         if (guiceModules != null)
             for (Module mod : guiceModules)
                 guiceModuleSet.add(mod);
@@ -178,9 +121,9 @@ public class DefaultAppContext extends AbstractAppContext {
         this.running = true;
         Hasor.info("send start sign.");
         this.getEventManager().doSyncEvent(PhaseEvent_Start, (AppContext) this);//发送阶段事件
-        HasorModule[] hasorModules = this.getModules();
+        ModuleInfo[] hasorModules = this.getModules();
         if (hasorModules != null) {
-            for (HasorModule mod : hasorModules) {
+            for (ModuleInfo mod : hasorModules) {
                 if (mod == null)
                     continue;
                 Hasor.info("start Event on : %s", mod.getClass());
@@ -209,9 +152,9 @@ public class DefaultAppContext extends AbstractAppContext {
         this.getEventManager().doSyncEvent(PhaseEvent_Stop, (AppContext) this);//发送阶段事件
         this.getEventManager().clean();
         //
-        HasorModule[] hasorModules = this.getModules();
+        ModuleInfo[] hasorModules = this.getModules();
         if (hasorModules != null) {
-            for (HasorModule mod : hasorModules) {
+            for (ModuleInfo mod : hasorModules) {
                 if (mod == null)
                     continue;
                 Hasor.info("stop Event on : %s", mod.getClass());
@@ -226,9 +169,9 @@ public class DefaultAppContext extends AbstractAppContext {
         this.getEventManager().doSyncEvent(PhaseEvent_Destroy, (AppContext) this);//发送阶段事件
         this.getEventManager().clean();
         this.stop();
-        HasorModule[] hasorModules = this.getModules();
+        ModuleInfo[] hasorModules = this.getModules();
         if (hasorModules != null) {
-            for (HasorModule mod : hasorModules) {
+            for (ModuleInfo mod : hasorModules) {
                 if (mod == null)
                     continue;
                 Hasor.info("destroy Event on : %s", mod.getClass());
@@ -251,23 +194,94 @@ public class DefaultAppContext extends AbstractAppContext {
             event.onEvent(PhaseEvent_Timer, params);
     }
     /**模块的 init 生命周期调用。*/
-    protected void onInit(HasorModule forModule, Binder binder) {
+    protected void onInit(ModuleInfo forModule, Binder binder) {
         ApiBinder apiBinder = this.newApiBinder(forModule, binder);
-        forModule.init(apiBinder);
+        forModule.getModuleObject().init(apiBinder);
         if (apiBinder instanceof Module)
             binder.install((Module) apiBinder);
     }
     /**发送模块启动信号*/
-    protected void onStart(HasorModule forModule) {
-        forModule.start(this);
+    protected void onStart(ModuleInfo forModule) {
+        forModule.getModuleObject().start(this);
     }
     /**发送模块停止信号*/
-    protected void onStop(HasorModule forModule) {
-        forModule.stop(this);
+    protected void onStop(ModuleInfo forModule) {
+        forModule.getModuleObject().stop(this);
     }
     /**模块的 destroy 生命周期调用。*/
-    protected void onDestroy(HasorModule forModule) {
-        forModule.destroy(this);
+    protected void onDestroy(ModuleInfo forModule) {
+        forModule.getModuleObject().destroy(this);
     }
-    // 
+}
+class MasterModule implements Module {
+    private DefaultAppContext appContet = null;
+    public MasterModule(DefaultAppContext appContet) {
+        this.appContet = appContet;
+    }
+    public ModuleInfo[] getModulesByDependency() {
+        this.appContet.getModules();
+    }
+    //
+    @Override
+    public void configure(Binder binder) {
+        /*引发模块init生命周期*/
+        ModuleInfo[] hasorModules = this.getModulesByDependency();
+        if (hasorModules != null)
+            for (ModuleInfo mod : hasorModules) {
+                if (mod == null)
+                    continue;
+                Hasor.info("init Event on : %s", mod.getClass());
+                appContet.onInit(mod, binder);//触发事件
+            }
+        Hasor.info("init modules finish.");
+        /*绑定InitContext对象的Provider*/
+        binder.bind(InitContext.class).toProvider(new Provider<InitContext>() {
+            @Override
+            public InitContext get() {
+                return appContet;
+            }
+        });
+        /*绑定AppContext对象的Provider*/
+        binder.bind(AppContext.class).toProvider(new Provider<AppContext>() {
+            @Override
+            public AppContext get() {
+                return appContet;
+            }
+        });
+        /*绑定EventManager对象的Provider*/
+        binder.bind(EventManager.class).toProvider(new Provider<EventManager>() {
+            @Override
+            public EventManager get() {
+                return appContet.getEventManager();
+            }
+        });
+        /*绑定PhaseEventManager对象的Provider*/
+        binder.bind(AdvancedEventManager.class).toProvider(new Provider<AdvancedEventManager>() {
+            @Override
+            public AdvancedEventManager get() {
+                return (AdvancedEventManager) appContet.getEventManager();
+            }
+        });
+        /*绑定Settings对象的Provider*/
+        binder.bind(Settings.class).toProvider(new Provider<Settings>() {
+            @Override
+            public Settings get() {
+                return appContet.getSettings();
+            }
+        });
+        /*绑定WorkSpace对象的Provider*/
+        binder.bind(WorkSpace.class).toProvider(new Provider<WorkSpace>() {
+            @Override
+            public WorkSpace get() {
+                return appContet.getWorkSpace();
+            }
+        });
+        /*绑定Environment对象的Provider*/
+        binder.bind(Environment.class).toProvider(new Provider<Environment>() {
+            @Override
+            public Environment get() {
+                return appContet.getEnvironment();
+            }
+        });
+    }
 }

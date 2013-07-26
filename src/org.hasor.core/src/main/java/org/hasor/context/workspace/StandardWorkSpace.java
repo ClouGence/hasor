@@ -75,6 +75,16 @@ public class StandardWorkSpace implements WorkSpace {
             return str2path(new File(cacheDir).getAbsolutePath());
     };
     @Override
+    public String getPluginDir() {
+        String workDir = getWorkDir();
+        String pluginDir = getSettings().getDirectoryPath("workspace.pluginDir");
+        boolean absolute = getSettings().getBoolean("workspace.pluginDir.absolute");
+        if (absolute == false)
+            return str2path(new File(workDir, pluginDir).getAbsolutePath());
+        else
+            return str2path(new File(pluginDir).getAbsolutePath());
+    }
+    @Override
     public String getDataDir(String name) {
         if (StringUtils.isBlank(name) == true)
             return getDataDir();
@@ -95,6 +105,16 @@ public class StandardWorkSpace implements WorkSpace {
         else
             return str2path(new File(getCacheDir(), name).getAbsolutePath());
     };
+    @Override
+    public String getPluginDir(Class<?> hasorModule) {
+        if (hasorModule == null)
+            return null;
+        String pluginName = hasorModule.getName();
+        if (StringUtils.isBlank(pluginName) == true)
+            return getCacheDir();
+        else
+            return str2path(new File(getCacheDir(), pluginName).getAbsolutePath());
+    }
     private File tempFileDirectory = null;
     @Override
     public synchronized File createTempFile() throws IOException {

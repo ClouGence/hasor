@@ -20,6 +20,8 @@ package org.hasor.context;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface HasorModule {
+    /**配置模块信息*/
+    public void configuration(ModuleSettings info);
     /**初始化过程。*/
     public void init(ApiBinder apiBinder);
     /**启动信号*/

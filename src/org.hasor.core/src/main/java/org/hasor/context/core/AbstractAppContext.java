@@ -102,4 +102,9 @@ public abstract class AbstractAppContext extends StandardInitContext implements 
     }
     /**Ïú»Ù*/
     public abstract void destroy();
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        this.destroy();
+    }
 }

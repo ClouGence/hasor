@@ -20,7 +20,7 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 import org.hasor.annotation.context.AnnoAppContext;
 import org.hasor.context.Environment;
-import org.hasor.context.HasorModule;
+import org.hasor.context.ModuleInfo;
 import org.hasor.context.WorkSpace;
 import org.hasor.context.environment.StandardEnvironment;
 import org.hasor.servlet.binder.FilterPipeline;
@@ -84,8 +84,8 @@ public class AnnoWebAppContext extends AnnoAppContext {
         return super.createInjector(guiceModuleSet.toArray(new Module[guiceModuleSet.size()]));
     }
     @Override
-    protected WebApiBinderModule newApiBinder(final HasorModule forModule, final Binder binder) {
-        return new WebApiBinderModule(this) {
+    protected WebApiBinderModule newApiBinder(final ModuleInfo forModule, final Binder binder) {
+        return new WebApiBinderModule(this, forModule) {
             @Override
             public Binder getGuiceBinder() {
                 return binder;

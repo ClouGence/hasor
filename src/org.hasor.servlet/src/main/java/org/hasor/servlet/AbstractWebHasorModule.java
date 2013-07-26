@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.hasor.servlet;
-import org.hasor.context.AbstractHasorModule;
 import org.hasor.context.ApiBinder;
+import org.hasor.context.module.AbstractHasorModule;
 /**
  * 
  * @version : 2013-7-16
@@ -24,7 +24,8 @@ import org.hasor.context.ApiBinder;
 public abstract class AbstractWebHasorModule extends AbstractHasorModule {
     @Override
     public final void init(ApiBinder apiBinder) {
-        this.init((WebApiBinder) apiBinder);
+        if (apiBinder instanceof WebApiBinder)
+            this.init((WebApiBinder) apiBinder);
     }
     public abstract void init(WebApiBinder apiBinder);
 }

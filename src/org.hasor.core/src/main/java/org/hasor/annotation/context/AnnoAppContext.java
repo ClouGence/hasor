@@ -16,8 +16,6 @@
 package org.hasor.annotation.context;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import org.hasor.Hasor;
@@ -58,17 +56,6 @@ public class AnnoAppContext extends DefaultAppContext {
                 initHookList.add((Class<? extends HasorModule>) cls);
             }
         }
-        //3.排序最终数据
-        Collections.sort(initHookList, new Comparator<Class<?>>() {
-            @Override
-            public int compare(Class<?> o1, Class<?> o2) {
-                Module o1Anno = o1.getAnnotation(Module.class);
-                Module o2Anno = o2.getAnnotation(Module.class);
-                int o1AnnoIndex = o1Anno.startIndex();
-                int o2AnnoIndex = o2Anno.startIndex();
-                return (o1AnnoIndex < o2AnnoIndex ? -1 : (o1AnnoIndex == o2AnnoIndex ? 0 : 1));
-            }
-        });
         Hasor.info("find HasorModule : " + Hasor.logString(initHookList));
         //4.扫描所有ContextListener。
         Hasor.info("create HasorModule...");

@@ -4,8 +4,9 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.hasor.Hasor;
 import org.hasor.annotation.Module;
-import org.hasor.context.AbstractHasorModule;
 import org.hasor.context.ApiBinder;
+import org.hasor.context.ModuleSettings;
+import org.hasor.context.module.AbstractHasorModule;
 import org.platform.plugin.log.OutLog;
 import com.google.inject.matcher.AbstractMatcher;
 /**
@@ -13,8 +14,10 @@ import com.google.inject.matcher.AbstractMatcher;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@Module(displayName = "LogPlatformListener", description = "org.test.plugin.log软件包功能支持。", startIndex = Module.Lv_0)
+@Module(displayName = "LogPlatformListener", description = "org.test.plugin.log软件包功能支持。")
 public class LogPlatformListener extends AbstractHasorModule {
+    @Override
+    public void configuration(ModuleSettings info) {}
     @Override
     public void init(ApiBinder apiBinder) {
         //1.挂载Aop

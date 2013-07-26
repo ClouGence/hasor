@@ -23,6 +23,8 @@ import com.google.inject.binder.LinkedBindingBuilder;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface ApiBinder {
+    /**获取模块配置文件读取接口，如果在配置期间绑定了xml命名空间。则该方法相当于：{@link Settings#getNamespace(String)}。*/
+    public Settings getModuleSettings();
     /**获取初始化环境*/
     public InitContext getInitContext();
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/

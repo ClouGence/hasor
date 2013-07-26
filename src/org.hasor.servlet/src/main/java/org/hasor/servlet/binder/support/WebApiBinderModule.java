@@ -16,6 +16,7 @@
 package org.hasor.servlet.binder.support;
 import java.util.ArrayList;
 import org.hasor.context.InitContext;
+import org.hasor.context.ModuleInfo;
 import org.hasor.context.binder.ApiBinderModule;
 import org.hasor.servlet.WebApiBinder;
 import org.more.util.ArrayUtils;
@@ -31,8 +32,8 @@ public abstract class WebApiBinderModule extends ApiBinderModule implements WebA
     private ErrorsModuleBuilder    errorsModuleBuilder    = new ErrorsModuleBuilder();   /*Errors*/
     private ListenerBindingBuilder listenerBindingBuilder = new ListenerBindingBuilder(); /*Listener*/
     //
-    protected WebApiBinderModule(InitContext initContext) {
-        super(initContext);
+    protected WebApiBinderModule(InitContext initContext, ModuleInfo forModule) {
+        super(initContext, forModule);
     }
     @Override
     public FilterBindingBuilder filter(String urlPattern, String... morePatterns) {

@@ -1,2 +1,4 @@
+#
 http\://project.hasor.net/hasor/schema/main=org.hasor.context.setting.xml.RootSettingsHasorXmlParser
+#
 http\://project.hasor.net/hasor/schema/hasor-core=org.hasor.context.setting.xml.ModuleSettingsHasorXmlParser

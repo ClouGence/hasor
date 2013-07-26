@@ -17,6 +17,8 @@ package org.hasor.context.binder;
 import java.util.Set;
 import org.hasor.context.ApiBinder;
 import org.hasor.context.InitContext;
+import org.hasor.context.ModuleInfo;
+import org.hasor.context.Settings;
 import org.more.util.StringUtils;
 import com.google.inject.Binder;
 import com.google.inject.Module;
@@ -28,9 +30,11 @@ import com.google.inject.Module;
 public abstract class ApiBinderModule implements ApiBinder, Module {
     private InitContext           initContext = null;
     private BeanInfoModuleBuilder beanBuilder = new BeanInfoModuleBuilder(); /*Beans*/
+    private ModuleInfo            forModule   = null;
     //
-    protected ApiBinderModule(InitContext initContext) {
+    protected ApiBinderModule(InitContext initContext, ModuleInfo forModule) {
         this.initContext = initContext;
+        this.forModule = forModule;
     }
     @Override
     public void configure(Binder binder) {
@@ -39,6 +43,14 @@ public abstract class ApiBinderModule implements ApiBinder, Module {
     @Override
     public InitContext getInitContext() {
         return this.initContext;
+    }
+    @Override
+    public Settings getModuleSettings() {
+        Settings globalSetting = this.getInitContext().getSettings();
+        Settings modeuleSetting = globalSetting.getNamespace(this.forModule.getSettingsNamespace());
+        if (modeuleSetting != null)
+            return modeuleSetting;
+        return globalSetting;
     }
     @Override
     public Set<Class<?>> getClassSet(Class<?> featureType) {

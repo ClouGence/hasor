@@ -20,9 +20,10 @@ import java.util.List;
 import java.util.Set;
 import org.hasor.Hasor;
 import org.hasor.annotation.Module;
-import org.hasor.context.AbstractHasorModule;
 import org.hasor.context.ApiBinder;
 import org.hasor.context.AppContext;
+import org.hasor.context.ModuleSettings;
+import org.hasor.context.module.AbstractHasorModule;
 import org.hasor.freemarker.ConfigurationFactory;
 import org.hasor.freemarker.FmMethod;
 import org.hasor.freemarker.FmTag;
@@ -31,12 +32,14 @@ import org.hasor.freemarker.FmTemplateLoaderDefine;
 import org.hasor.freemarker.FreemarkerManager;
 import org.hasor.freemarker.Tag;
 /**
- * Freemarker服务，延迟一个级别是因为需要依赖icache，启动级别Lv_0
+ * Freemarker服务，延迟一个级别是因为需要依赖icache，启动级别
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@Module(displayName = "FreemarkerPlatformListener", description = "org.hasor.freemarker软件包功能支持。", startIndex = Module.Lv_0)
+@Module(displayName = "FreemarkerPlatformListener", description = "org.hasor.freemarker软件包功能支持。")
 public class FreemarkerPlatformListener extends AbstractHasorModule {
+    @Override
+    public void configuration(ModuleSettings info) {}
     /**初始化.*/
     @Override
     public void init(ApiBinder apiBinder) {

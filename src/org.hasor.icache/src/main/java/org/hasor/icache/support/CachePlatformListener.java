@@ -26,9 +26,10 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.hasor.Hasor;
 import org.hasor.annotation.Module;
-import org.hasor.context.AbstractHasorModule;
 import org.hasor.context.ApiBinder;
 import org.hasor.context.AppContext;
+import org.hasor.context.ModuleSettings;
+import org.hasor.context.module.AbstractHasorModule;
 import org.hasor.icache.Cache;
 import org.hasor.icache.CacheDefine;
 import org.hasor.icache.CacheManager;
@@ -48,9 +49,11 @@ import com.google.inject.name.Names;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@Module(displayName = "CacheModuleServiceListener", description = "org.platform.icache软件包功能支持。", startIndex = Module.Lv_0)
+@Module(displayName = "CachePlatformListener", description = "org.hasor.icache软件包功能支持。")
 public class CachePlatformListener extends AbstractHasorModule {
     private CacheManager cacheManager = null;
+    @Override
+    public void configuration(ModuleSettings info) {}
     /**初始化.*/
     @Override
     public void init(ApiBinder apiBinder) {
