@@ -27,10 +27,12 @@ import org.hasor.context.HasorEventListener;
 import org.hasor.context.HasorModule;
 import org.hasor.context.InitContext;
 import org.hasor.context.ModuleInfo;
+import org.hasor.context.ModuleSettings;
 import org.hasor.context.Settings;
 import org.hasor.context.WorkSpace;
 import org.hasor.context.binder.ApiBinderModule;
-import org.hasor.context.module.ModuleInfoImplements;
+import org.hasor.context.module.ModuleInfoBean;
+import org.hasor.context.module.ModuleReactor;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -66,7 +68,7 @@ public class DefaultAppContext extends AbstractAppContext {
         for (ModuleInfo info : this.getModuleList())
             if (info.getModuleObject() == hasorModule)
                 return;
-        this.getModuleList().add(new ModuleInfoImplements(hasorModule, this));
+        this.getModuleList().add(new ModuleInfoBean(hasorModule, this));
     }
     /**删除模块*/
     public void removeModule(HasorModule hasorModule) {
@@ -113,14 +115,14 @@ public class DefaultAppContext extends AbstractAppContext {
         /*创建Guice对象，并且引发模块的init事件*/
         if (this.guice == null) {
             Hasor.info("send init sign...");
-            this.getEventManager().doSyncEvent(PhaseEvent_Init, (InitContext) this);//发送阶段事件
+            this.getEventManager().doSyncEvent(LifeCycleEnum.PhaseEvent_Init.getValue(), (InitContext) this);//发送阶段事件
             this.guice = this.createInjector(null);
             Hasor.assertIsNotNull(this.guice, "can not be create Injector.");
         }
         /*发送完成初始化信号*/
         this.running = true;
         Hasor.info("send start sign.");
-        this.getEventManager().doSyncEvent(PhaseEvent_Start, (AppContext) this);//发送阶段事件
+        this.getEventManager().doSyncEvent(LifeCycleEnum.PhaseEvent_Start.getValue(), (AppContext) this);//发送阶段事件
         ModuleInfo[] hasorModules = this.getModules();
         if (hasorModules != null) {
             for (ModuleInfo mod : hasorModules) {
@@ -132,8 +134,8 @@ public class DefaultAppContext extends AbstractAppContext {
         }
         /*注册计时器*/
         if (this.getAdvancedEventManager() != null) {
-            Hasor.info("addTimer for event %s.", PhaseEvent_Timer);
-            this.getAdvancedEventManager().addTimer(PhaseEvent_Timer, new HasorEventListener() {
+            Hasor.info("addTimer for event %s.", LifeCycleEnum.PhaseEvent_Timer.getValue());
+            this.getAdvancedEventManager().addTimer(LifeCycleEnum.PhaseEvent_Timer.getValue(), new HasorEventListener() {
                 @Override
                 public void onEvent(String event, Object[] params) {
                     onTimer();
@@ -149,7 +151,7 @@ public class DefaultAppContext extends AbstractAppContext {
         /*发送停止信号*/
         this.running = false;
         Hasor.info("send stop sign.");
-        this.getEventManager().doSyncEvent(PhaseEvent_Stop, (AppContext) this);//发送阶段事件
+        this.getEventManager().doSyncEvent(LifeCycleEnum.PhaseEvent_Stop.getValue(), (AppContext) this);//发送阶段事件
         this.getEventManager().clean();
         //
         ModuleInfo[] hasorModules = this.getModules();
@@ -166,7 +168,7 @@ public class DefaultAppContext extends AbstractAppContext {
     /**销毁*/
     public synchronized void destroy() {
         Hasor.info("send destroy sign.");
-        this.getEventManager().doSyncEvent(PhaseEvent_Destroy, (AppContext) this);//发送阶段事件
+        this.getEventManager().doSyncEvent(LifeCycleEnum.PhaseEvent_Destroy.getValue(), (AppContext) this);//发送阶段事件
         this.getEventManager().clean();
         this.stop();
         ModuleInfo[] hasorModules = this.getModules();
@@ -188,10 +190,10 @@ public class DefaultAppContext extends AbstractAppContext {
     //
     /**计时器触发事件*/
     protected void onTimer() {
-        HasorEventListener[] eventListener = this.getEventManager().getEventListener(PhaseEvent_Timer);
+        HasorEventListener[] eventListener = this.getEventManager().getEventListener(LifeCycleEnum.PhaseEvent_Timer.getValue());
         Object[] params = new Object[] { this };
         for (HasorEventListener event : eventListener)
-            event.onEvent(PhaseEvent_Timer, params);
+            event.onEvent(LifeCycleEnum.PhaseEvent_Timer.getValue(), params);
     }
     /**模块的 init 生命周期调用。*/
     protected void onInit(ModuleInfo forModule, Binder binder) {
@@ -218,14 +220,18 @@ class MasterModule implements Module {
     public MasterModule(DefaultAppContext appContet) {
         this.appContet = appContet;
     }
-    public ModuleInfo[] getModulesByDependency() {
-        this.appContet.getModules();
-    }
     //
     @Override
     public void configure(Binder binder) {
+        /*确定启动顺序*/
+        Hasor.info("compile startup sequence!");
+        ModuleInfo[] hasorModules = this.appContet.getModules();
+        if (hasorModules != null)
+            for (ModuleInfo mod : hasorModules)
+                if (mod != null)
+                    mod.getModuleObject().configuration((ModuleSettings) mod);
+        hasorModules = new ModuleReactor().getResult(hasorModules);
         /*引发模块init生命周期*/
-        ModuleInfo[] hasorModules = this.getModulesByDependency();
         if (hasorModules != null)
             for (ModuleInfo mod : hasorModules) {
                 if (mod == null)

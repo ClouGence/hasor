@@ -20,16 +20,29 @@ package org.hasor.context;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface LifeCycle {
-    /**阶段事件：Phase_OnInit*/
-    public static final String PhaseEvent_Init    = "Phase_OnInit";
-    /**阶段事件：Phase_OnStart*/
-    public static final String PhaseEvent_Start   = "Phase_OnStart";
-    /**阶段事件：Phase_OnStop*/
-    public static final String PhaseEvent_Stop    = "Phase_OnStop";
-    /**阶段事件：Phase_OnDestroy*/
-    public static final String PhaseEvent_Destroy = "Phase_OnDestroy";
-    /**阶段事件：Phase_OnTimer*/
-    public static final String PhaseEvent_Timer   = "Phase_OnTimer";
+    public static enum LifeCycleEnum {
+        /**阶段事件：Phase_OnInit*/
+        PhaseEvent_Init("Phase_OnInit"),
+        /**阶段事件：Phase_OnStart*/
+        PhaseEvent_Start("Phase_OnStart"),
+        /**阶段事件：Phase_OnStop*/
+        PhaseEvent_Stop("Phase_OnStop"),
+        /**阶段事件：Phase_OnDestroy*/
+        PhaseEvent_Destroy("Phase_OnDestroy"),
+        /**阶段事件：Phase_OnTimer*/
+        PhaseEvent_Timer("Phase_OnTimer"), ;
+        private String value = null;
+        LifeCycleEnum(String var) {
+            this.value = var;
+        }
+        public String getValue() {
+            return value;
+        }
+        @Override
+        public String toString() {
+            return this.getValue();
+        }
+    }
     /**启动*/
     public void start();
     /**停止*/
