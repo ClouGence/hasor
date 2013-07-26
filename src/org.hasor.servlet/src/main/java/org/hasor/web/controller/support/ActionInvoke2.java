@@ -20,5 +20,8 @@ package org.hasor.web.controller.support;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface ActionInvoke2 extends ActionInvoke {
+    /**获取映射字符串*/
     public String getRestfulMapping();
+    /**获取映射字符串用于匹配的表达式字符串*/
+    public String getRestfulMappingMatches();
 }

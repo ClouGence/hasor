@@ -19,12 +19,14 @@ import java.util.Enumeration;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import org.hasor.context.AppContext;
 import org.hasor.web.controller.support.ActionSettings.ActionWorkMode;
@@ -53,13 +55,13 @@ public class MergedController implements Filter {
     }
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, final FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest) req;
-        HttpServletResponse response = (HttpServletResponse) resp;
         /*启用禁用*/
         if (this.actionSettings.isEnable() == false) {
-            chain.doFilter(request, response);
+            chain.doFilter(req, resp);
             return;
         }
+        HttpServletRequest request = (HttpServletRequest) withDispatcher(req);
+        HttpServletResponse response = (HttpServletResponse) resp;
         /*运行模式：ServletOnly*/
         if (this.actionSettings.getMode() == ActionWorkMode.ServletOnly) {
             this.actionController.service(request, response);
@@ -91,6 +93,7 @@ public class MergedController implements Filter {
         this.actionController.destroy();
     }
     //
+    /**负责从FilterConfig接口转为ServletConfig接口*/
     private static class ServletConfigBridge implements ServletConfig {
         private FilterConfig filterConfig = null;
         public ServletConfigBridge(FilterConfig filterConfig) {
@@ -112,5 +115,31 @@ public class MergedController implements Filter {
         public String getServletName() {
             return this.filterConfig.getFilterName();
         }
+    };
+    //
+    /** 使用代理ServletRequest对象来处理位于Action之内的请求转发. */
+    private ServletRequest withDispatcher(ServletRequest servletRequest) {
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        return new HttpServletRequestWrapper(request) {
+            @Override
+            public RequestDispatcher getRequestDispatcher(String path) {
+                RequestDispatcher dispatcher = null;
+                /*运行模式：ServletOnly*/
+                if (actionSettings.getMode() == ActionWorkMode.ServletOnly) {
+                    dispatcher = actionController.getRequestDispatcher(path, this.getMethod());
+                }
+                /*运行模式：RestOnly*/
+                else if (actionSettings.getMode() == ActionWorkMode.RestOnly) {
+                    dispatcher = restfulController.getRequestDispatcher(path, this);
+                }
+                /*运行模式：Both*/
+                else if (actionSettings.getMode() == ActionWorkMode.Both) {
+                    dispatcher = restfulController.getRequestDispatcher(path, this);
+                    if (dispatcher == null)
+                        dispatcher = actionController.getRequestDispatcher(path, this.getMethod());
+                }
+                return (null != dispatcher) ? dispatcher : super.getRequestDispatcher(path);
+            }
+        };
     }
 }

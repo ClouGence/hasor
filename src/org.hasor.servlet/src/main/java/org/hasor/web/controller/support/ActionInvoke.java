@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 package org.hasor.web.controller.support;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Map;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import org.hasor.context.AppContext;
 /**
  * 
@@ -29,6 +30,7 @@ public interface ActionInvoke {
     public void initInvoke(AppContext appContext);
     public String[] getHttpMethod();
     public Method getMethod();
-    public Object invoke(HttpServletRequest request, HttpServletResponse response, Map<String, Object> overwriteHttpParams) throws ServletException;
+    public Object invoke(ServletRequest request, ServletResponse response, Map<String, Object> overwriteHttpParams) throws ServletException, IOException;
     public void destroyInvoke();
+    public Object invoke(ServletRequest request, ServletResponse response) throws ServletException, IOException;
 }

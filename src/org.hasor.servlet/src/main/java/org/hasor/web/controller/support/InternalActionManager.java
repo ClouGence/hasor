@@ -19,8 +19,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import org.hasor.context.AppContext;
 import org.hasor.web.controller.ResultProcess;
 import com.google.inject.Binding;
@@ -69,7 +69,7 @@ class InternalActionManager implements ActionManager {
         return this.nameSpaceManager;
     }
     @Override
-    public void processResult(Method targetMethod, Object result, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void processResult(Method targetMethod, Object result, ServletRequest request, ServletResponse response) throws ServletException, IOException {
         Annotation[] annoArray = targetMethod.getAnnotations();
         for (Annotation anno : annoArray) {
             ResultProcess resProcess = this.resultProcessManager.getResultProcess(anno);

@@ -25,5 +25,13 @@
 	</div>
 	<a class="btn" href="/path/showme.png" target="_target">File Path image</a>
 	<a class="btn" href="/action/test.do" target="_target">Invoke Action</a>
+	<!-- Power -->
+	<div class="btn-group">
+		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Power<span class="caret"></span></a>
+		<ul class="dropdown-menu">
+			<li><a href="#" onclick="window.open('/power/add.do?power='+ new Date().getSeconds())">addPower</a></li>
+			<li><a href="#" onclick="window.open('/power/list')">listPower</a></li>
+		</ul>
+	</div>
 </body>
 </html>

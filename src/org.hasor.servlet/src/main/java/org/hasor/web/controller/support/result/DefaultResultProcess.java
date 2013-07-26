@@ -19,6 +19,8 @@ import java.lang.annotation.Annotation;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.hasor.Hasor;
@@ -34,7 +36,9 @@ import com.alibaba.fastjson.JSON;
 @ResultDefine(Result.class)
 public class DefaultResultProcess implements ResultProcess {
     @Override
-    public void process(HttpServletRequest request, HttpServletResponse response, Annotation annoData, Object result) throws ServletException, IOException {
+    public void process(ServletRequest req, ServletResponse resp, Annotation annoData, Object result) throws ServletException, IOException {
+        HttpServletRequest request = (HttpServletRequest) req;
+        HttpServletResponse response = (HttpServletResponse) resp;
         Result resultData = (Result) annoData;
         switch (resultData.value()) {
         case Forword:

@@ -17,8 +17,8 @@ package org.hasor.web.controller;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 /**
  * 负责处理Action调用之后的返回值。
  * @version : 2013-5-10
@@ -26,5 +26,5 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface ResultProcess {
     /**执行方法调用。*/
-    public void process(HttpServletRequest request, HttpServletResponse response, Annotation annoData, Object result) throws ServletException, IOException;
+    public void process(ServletRequest request, ServletResponse response, Annotation annoData, Object result) throws ServletException, IOException;
 }

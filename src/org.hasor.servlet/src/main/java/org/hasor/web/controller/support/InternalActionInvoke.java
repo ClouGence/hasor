@@ -19,6 +19,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -39,11 +40,12 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@byshell.org)
  */
 class InternalActionInvoke implements ActionInvoke, ActionInvoke2 {
-    private Method   targetMethod   = null;
-    private Object   targetObject   = null;
-    private String[] httpMethod     = null;
-    private String   mimeType       = null;
-    private String   restfulMapping = null;
+    private Method   targetMethod          = null;
+    private Object   targetObject          = null;
+    private String[] httpMethod            = null;
+    private String   mimeType              = null;
+    private String   restfulMapping        = null;
+    private String   restfulMappingMatches = null;
     //
     public InternalActionInvoke(Method targetMethod, String mimeType) {
         this(targetMethod, mimeType, null);
@@ -62,6 +64,14 @@ class InternalActionInvoke implements ActionInvoke, ActionInvoke2 {
     }
     public String getRestfulMapping() {
         return restfulMapping;
+    }
+    @Override
+    public String getRestfulMappingMatches() {
+        if (this.restfulMappingMatches == null) {
+            String mapping = this.getRestfulMapping();
+            this.restfulMappingMatches = mapping.replaceAll("\\{\\w{1,}\\}", "(\\\\w{1,})");
+        }
+        return this.restfulMappingMatches;
     }
     protected void setHttpMethod(String[] httpMethod) {
         this.httpMethod = httpMethod;
@@ -82,7 +92,13 @@ class InternalActionInvoke implements ActionInvoke, ActionInvoke2 {
         // TODO Auto-generated method stub
     }
     @Override
-    public Object invoke(HttpServletRequest request, HttpServletResponse response, Map<String, Object> overwriteHttpParams) throws ServletException {
+    public Object invoke(ServletRequest request, ServletResponse response) throws ServletException {
+        HashMap<String, Object> overwriteHttpParams = new HashMap<String, Object>();
+        overwriteHttpParams.putAll(request.getParameterMap());
+        return this.invoke(request, response, overwriteHttpParams);
+    }
+    @Override
+    public Object invoke(ServletRequest request, ServletResponse response, Map<String, Object> overwriteHttpParams) throws ServletException {
         if (this.targetObject == null) {
             Class<?> targetClass = this.targetMethod.getDeclaringClass();
             String beanName = this.appContext.getBeanName(targetClass);
@@ -140,7 +156,7 @@ class InternalActionInvoke implements ActionInvoke, ActionInvoke2 {
         }
     }
     /*处理特殊类型参数*/
-    private Object getSpecialParamObject(HttpServletRequest request, HttpServletResponse response, Class<?> paramClass) {
+    private Object getSpecialParamObject(ServletRequest request, ServletResponse response, Class<?> paramClass) {
         if (paramClass.isEnum() || paramClass.isArray() || paramClass.isPrimitive() || paramClass == String.class)
             return null;/*忽略：基本类型、字符串类型*/
         //
@@ -148,8 +164,11 @@ class InternalActionInvoke implements ActionInvoke, ActionInvoke2 {
             return request;
         if (paramClass.isAssignableFrom(HttpServletResponse.class) || paramClass.isAssignableFrom(ServletResponse.class))
             return response;
-        if (paramClass.isAssignableFrom(HttpSession.class))
-            return request.getSession(true);
+        if (paramClass.isAssignableFrom(HttpSession.class)) {
+            if (request instanceof HttpServletRequest)
+                return ((HttpServletRequest) request).getSession(true);
+            return null;
+        }
         if (paramClass.isAssignableFrom(ServletContext.class))
             return request.getServletContext();
         try {

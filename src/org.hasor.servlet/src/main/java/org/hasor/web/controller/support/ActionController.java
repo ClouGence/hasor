@@ -15,11 +15,14 @@
  */
 package org.hasor.web.controller.support;
 import java.io.IOException;
-import java.util.HashMap;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import org.hasor.Hasor;
 import org.hasor.context.AppContext;
@@ -58,31 +61,97 @@ class ActionController extends HttpServlet {
             return;
         //
         //1.拆分请求字符串
-        String actionNS = requestPath.substring(0, requestPath.lastIndexOf("/") + 1);
-        String actionInvoke = requestPath.substring(requestPath.lastIndexOf("/") + 1);
-        String actionMethod = actionInvoke.split("\\.")[0];
-        ActionInvoke invoke = null;
-        //2.获取 ActionInvoke
-        try {
-            ActionNameSpace nameSpace = actionManager.getNameSpace(actionNS);
-            invoke = nameSpace.getActionByName(request.getMethod(), actionMethod);
-            if (invoke == null)
-                throw new NullPointerException();
-        } catch (NullPointerException e) {
-            String logInfo = Hasor.formatString("%s action is not defined.", actionInvoke);
+        ActionInvoke invoke = getActionInvoke(requestPath, request.getMethod());
+        if (invoke == null) {
+            String logInfo = Hasor.formatString("%s action is not defined.", requestPath);
             throw new ActionException(logInfo);
         }
         //3.执行调用
         try {
-            HashMap<String, Object> overwriteHttpParams = new HashMap<String, Object>();
-            overwriteHttpParams.putAll(request.getParameterMap());
-            Object result = invoke.invoke(request, response, overwriteHttpParams);
+            Object result = invoke.invoke(request, response);
             this.actionManager.processResult(invoke.getMethod(), result, request, response);
         } catch (ServletException e) {
             if (e.getCause() instanceof IOException)
                 throw (IOException) e.getCause();
             else
                 throw e;
+        }
+    }
+    private ActionInvoke getActionInvoke(String requestPath, String httpMethod) {
+        //1.拆分请求字符串
+        String actionNS = requestPath.substring(0, requestPath.lastIndexOf("/") + 1);
+        String actionInvoke = requestPath.substring(requestPath.lastIndexOf("/") + 1);
+        String actionMethod = actionInvoke.split("\\.")[0];
+        //2.获取 ActionInvoke
+        ActionNameSpace nameSpace = actionManager.getNameSpace(actionNS);
+        if (nameSpace != null)
+            return nameSpace.getActionByName(httpMethod, actionMethod);
+        return null;
+    }
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    /** 为转发提供支持 */
+    public RequestDispatcher getRequestDispatcher(String path, String httpMethod) {
+        // TODO 需要检查下面代码是否符合Servlet规范（带request参数情况下也需要检查）
+        final String newRequestUri = path;
+        //1.拆分请求字符串
+        final ActionInvoke invoke = getActionInvoke(path, httpMethod);
+        if (invoke == null)
+            return null;
+        else
+            return new RequestDispatcher() {
+                @Override
+                public void include(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+                    servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
+                    /*执行servlet*/
+                    try {
+                        invoke.invoke(servletRequest, servletResponse);
+                    } finally {
+                        servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
+                    }
+                }
+                @Override
+                public void forward(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+                    if (servletResponse.isCommitted() == true)
+                        throw new ServletException("Response has been committed--you can only call forward before committing the response (hint: don't flush buffers)");
+                    /*清空缓冲*/
+                    servletResponse.resetBuffer();
+                    ServletRequest requestToProcess;
+                    if (servletRequest instanceof HttpServletRequest) {
+                        requestToProcess = new RequestDispatcherRequestWrapper(servletRequest, newRequestUri);
+                    } else {
+                        //正常情况之下不会执行这段代码。
+                        requestToProcess = servletRequest;
+                    }
+                    /*执行转发*/
+                    servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
+                    try {
+                        invoke.invoke(requestToProcess, servletResponse);
+                    } finally {
+                        servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
+                    }
+                }
+            };
+    }
+    /** 使用RequestDispatcherRequestWrapper类处理request.getRequestURI方法的返回值*/
+    public static final String REQUEST_DISPATCHER_REQUEST = "javax.servlet.forward.servlet_path";
+    private static class RequestDispatcherRequestWrapper extends HttpServletRequestWrapper {
+        private final String newRequestUri;
+        public RequestDispatcherRequestWrapper(ServletRequest servletRequest, String newRequestUri) {
+            super((HttpServletRequest) servletRequest);
+            this.newRequestUri = newRequestUri;
+        }
+        @Override
+        public String getRequestURI() {
+            return newRequestUri;
         }
     }
 }

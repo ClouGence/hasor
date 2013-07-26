@@ -17,8 +17,8 @@ package org.hasor.web.controller.support;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import org.hasor.context.AppContext;
 /** 
  * Action生命周期管理器。
@@ -35,5 +35,5 @@ public interface ActionManager {
     /**获取注册的ActionNameSpace*/
     public ActionNameSpace[] getNameSpaceList();
     /**根据被调用的方法获取其返回值处理器*/
-    public void processResult(Method targetMethod, Object result, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
+    public void processResult(Method targetMethod, Object result, ServletRequest request, ServletResponse response) throws ServletException, IOException;
 }
