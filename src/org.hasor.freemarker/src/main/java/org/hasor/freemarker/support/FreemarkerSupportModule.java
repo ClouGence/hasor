@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 import org.hasor.Hasor;
 import org.hasor.annotation.Module;
+import org.hasor.annotation.support.AnnoSupportModule;
 import org.hasor.context.ApiBinder;
 import org.hasor.context.AppContext;
 import org.hasor.context.ModuleSettings;
@@ -37,9 +38,11 @@ import org.hasor.freemarker.Tag;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Module(displayName = "FreemarkerPlatformListener", description = "org.hasor.freemarker软件包功能支持。")
-public class FreemarkerPlatformListener extends AbstractHasorModule {
+public class FreemarkerSupportModule extends AbstractHasorModule {
     @Override
-    public void configuration(ModuleSettings info) {}
+    public void configuration(ModuleSettings info) {
+        info.beforeMe(AnnoSupportModule.class);
+    }
     /**初始化.*/
     @Override
     public void init(ApiBinder apiBinder) {

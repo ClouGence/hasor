@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
 import org.hasor.Hasor;
 import org.hasor.annotation.Module;
-import org.hasor.annotation.support.AnnoSupportListener;
+import org.hasor.annotation.support.AnnoSupportModule;
 import org.hasor.context.ModuleSettings;
 import org.hasor.servlet.AbstractWebHasorModule;
 import org.hasor.servlet.ErrorHook;
@@ -38,15 +38,15 @@ import org.hasor.servlet.anno.WebServlet;
 import org.hasor.servlet.anno.WebSessionListener;
 import org.more.util.StringUtils;
 /**
- * 支持Bean、WebError、WebFilter、WebServlet注解功能。启动级别：Lv_1
+ * 支持Bean、WebError、WebFilter、WebServlet注解功能。
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@Module(displayName = "WebAnnoSupportListener", description = "org.hasor.servlet.anno.support软件包功能支持。")
-public class WebAnnoSupportListener extends AbstractWebHasorModule {
+@Module(description = "org.hasor.servlet软件包注解版支持。")
+public class ServletAnnoSupportModule extends AbstractWebHasorModule {
     @Override
     public void configuration(ModuleSettings info) {
-        info.beforeMe(AnnoSupportListener.class);
+        info.followTarget(AnnoSupportModule.class);
     }
     /**初始化.*/
     @Override

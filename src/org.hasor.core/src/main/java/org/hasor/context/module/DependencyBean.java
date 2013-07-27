@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package org.hasor.context.module;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import org.hasor.Hasor;
 import org.hasor.context.Dependency;
 import org.hasor.context.ModuleInfo;
 /**
@@ -22,9 +25,10 @@ import org.hasor.context.ModuleInfo;
  * @version : 2013-7-26
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class DependencyBean implements Dependency {
-    private ModuleInfo moduleInfo = null;
-    private boolean    option     = false;
+class DependencyBean implements Dependency {
+    private ModuleInfo       moduleInfo     = null;
+    private boolean          option         = false;
+    private List<Dependency> dependencyLiat = null;
     //
     public DependencyBean(ModuleInfo moduleInfo, boolean option) {
         this.moduleInfo = moduleInfo;
@@ -39,8 +43,18 @@ public class DependencyBean implements Dependency {
         return this.option;
     }
     @Override
+    public String toString() {
+        return Hasor.formatString("name %s, option is %s."//
+                , this.moduleInfo.getDisplayName(), this.option);
+    }
+    @Override
     public List<Dependency> getDependency() {
-        // TODO Auto-generated method stub
-        return null;
+        return Collections.unmodifiableList(this.dependencyLiat);
+    }
+    public void updateDependency(List<Dependency> depLiat) {
+        if (this.dependencyLiat == null)
+            this.dependencyLiat = new ArrayList<Dependency>();
+        this.dependencyLiat.clear();
+        this.dependencyLiat.addAll(depLiat);
     }
 }

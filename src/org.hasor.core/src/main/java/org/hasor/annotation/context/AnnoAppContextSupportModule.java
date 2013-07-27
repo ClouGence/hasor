@@ -21,20 +21,23 @@ import java.util.Set;
 import org.hasor.Hasor;
 import org.hasor.annotation.Module;
 import org.hasor.context.HasorModule;
+import org.hasor.context.ModuleInfo;
+import org.hasor.context.ModuleSettings;
 import org.hasor.context.core.DefaultAppContext;
+import org.more.util.StringUtils;
 /**
  * 
  * @version : 2013-7-16
  * @author 赵永春 (zyc@byshell.org)
  */
-public class AnnoAppContext extends DefaultAppContext {
-    public AnnoAppContext() throws IOException {
+public class AnnoAppContextSupportModule extends DefaultAppContext {
+    public AnnoAppContextSupportModule() throws IOException {
         super();
     }
-    public AnnoAppContext(String mainConfig) throws IOException {
+    public AnnoAppContextSupportModule(String mainConfig) throws IOException {
         super(mainConfig);
     }
-    public AnnoAppContext(String mainConfig, Object context) throws IOException {
+    public AnnoAppContextSupportModule(String mainConfig, Object context) throws IOException {
         super(mainConfig, context);
     }
     @Override
@@ -61,8 +64,16 @@ public class AnnoAppContext extends DefaultAppContext {
         Hasor.info("create HasorModule...");
         for (Class<?> modClass : initHookList) {
             HasorModule modObject = this.createModule(modClass);
-            if (modObject != null)
-                this.addModule(modObject);
+            if (modObject != null) {
+                ModuleInfo info = this.addModule(modObject);
+                if (info instanceof ModuleSettings) {
+                    ModuleSettings infoCfg = (ModuleSettings) info;
+                    Module modAnno = modClass.getAnnotation(Module.class);
+                    String dispName = StringUtils.isBlank(modAnno.displayName()) ? info.getModuleObject().getClass().getSimpleName() : modAnno.displayName();
+                    infoCfg.setDisplayName(dispName);
+                    infoCfg.setDescription(modAnno.description());
+                }
+            }
         }
     }
     /**创建{@link HasorModule}接口对象。*/

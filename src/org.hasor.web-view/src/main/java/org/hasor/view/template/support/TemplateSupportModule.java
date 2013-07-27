@@ -18,7 +18,7 @@ import org.hasor.annotation.Module;
 import org.hasor.context.ModuleSettings;
 import org.hasor.servlet.AbstractWebHasorModule;
 import org.hasor.servlet.WebApiBinder;
-import org.hasor.servlet.anno.support.WebAnnoSupportListener;
+import org.hasor.servlet.anno.support.ServletAnnoSupportModule;
 import org.hasor.view.template.TemplateService;
 import org.hasor.view.template.ext.freemarker.FreemarkerTemplateService;
 /**
@@ -27,10 +27,10 @@ import org.hasor.view.template.ext.freemarker.FreemarkerTemplateService;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Module(displayName = "TemplatePlatformListener", description = "org.hasor.view.template软件包功能支持。")
-public class TempPlatformListener extends AbstractWebHasorModule {
+public class TemplateSupportModule extends AbstractWebHasorModule {
     @Override
     public void configuration(ModuleSettings info) {
-        info.beforeMe(WebAnnoSupportListener.class);//在hasor-servlet启动之前
+        info.beforeMe(ServletAnnoSupportModule.class);//在hasor-servlet启动之前
     }
     /**初始化.*/
     @Override

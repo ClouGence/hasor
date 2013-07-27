@@ -29,7 +29,7 @@ import org.hasor.annotation.Module;
 import org.hasor.context.ApiBinder;
 import org.hasor.context.AppContext;
 import org.hasor.context.ModuleSettings;
-import org.hasor.icache.support.CachePlatformListener;
+import org.hasor.icache.support.CacheSupportModule;
 import org.hasor.security.AuthSession;
 import org.hasor.security.PermissionException;
 import org.hasor.security.Power;
@@ -45,7 +45,7 @@ import org.hasor.security.support.process.AuthRequestProcess;
 import org.hasor.security.support.process.TestPermissionProcess;
 import org.hasor.servlet.AbstractWebHasorModule;
 import org.hasor.servlet.WebApiBinder;
-import org.hasor.servlet.anno.support.WebAnnoSupportListener;
+import org.hasor.servlet.anno.support.ServletAnnoSupportModule;
 import org.more.util.StringUtils;
 import com.google.inject.Binder;
 import com.google.inject.Key;
@@ -56,15 +56,15 @@ import com.google.inject.matcher.AbstractMatcher;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@Module(displayName = "SecurityPlatformListener", description = "org.hasor.security软件包功能支持。")
-public class SecurityPlatformListener extends AbstractWebHasorModule {
+@Module(description = "org.hasor.security软件包功能支持。")
+public class ServletSecuritySupportModule extends AbstractWebHasorModule {
     private SecurityContext         secService  = null;
     private SecuritySessionListener secListener = null;
     private SecuritySettings        settings    = null;
     @Override
     public void configuration(ModuleSettings info) {
-        info.followTarget(CachePlatformListener.class);
-        info.afterMe(WebAnnoSupportListener.class);//在hasor-servlet启动之前
+        info.afterMe(ServletAnnoSupportModule.class);//在hasor-servlet启动之前
+        info.followTarget(CacheSupportModule.class);
     }
     /**初始化.*/
     @Override

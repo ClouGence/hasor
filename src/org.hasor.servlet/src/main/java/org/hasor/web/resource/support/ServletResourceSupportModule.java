@@ -22,7 +22,7 @@ import org.hasor.annotation.Module;
 import org.hasor.context.ModuleSettings;
 import org.hasor.servlet.AbstractWebHasorModule;
 import org.hasor.servlet.WebApiBinder;
-import org.hasor.servlet.anno.support.WebAnnoSupportListener;
+import org.hasor.servlet.anno.support.ServletAnnoSupportModule;
 import org.hasor.web.resource.ResourceLoaderCreator;
 import org.hasor.web.resource.ResourceLoaderDefine;
 /**
@@ -30,11 +30,11 @@ import org.hasor.web.resource.ResourceLoaderDefine;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@Module(displayName = "ResourceLoaderPlatformListener", description = "org.hasor.web.resource软件包功能支持。")
-public class ResourceLoaderPlatformListener extends AbstractWebHasorModule {
+@Module(description = "org.hasor.web.resource软件包功能支持。")
+public class ServletResourceSupportModule extends AbstractWebHasorModule {
     @Override
     public void configuration(ModuleSettings info) {
-        info.beforeMe(WebAnnoSupportListener.class);
+        info.beforeMe(ServletAnnoSupportModule.class);
     }
     @Override
     public void init(WebApiBinder apiBinder) {

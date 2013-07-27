@@ -23,7 +23,7 @@ import org.hasor.context.AppContext;
 import org.hasor.context.ModuleSettings;
 import org.hasor.servlet.AbstractWebHasorModule;
 import org.hasor.servlet.WebApiBinder;
-import org.hasor.servlet.anno.support.WebAnnoSupportListener;
+import org.hasor.servlet.anno.support.ServletAnnoSupportModule;
 import org.hasor.web.controller.ActionBinder.ActionBindingBuilder;
 import org.hasor.web.controller.ActionBinder.NameSpaceBindingBuilder;
 import org.hasor.web.controller.Controller;
@@ -41,13 +41,13 @@ import com.google.inject.Binder;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@Module(displayName = "ActionModuleListener", description = "org.hasor.web.controller软件包功能支持。")
-public class ActionPlatformListener extends AbstractWebHasorModule {
+@Module(description = "org.hasor.web.controller软件包功能支持。")
+public class ServletControllerSupportModule extends AbstractWebHasorModule {
     private ActionSettings settings      = null;
     private ActionManager  actionManager = null;
     @Override
     public void configuration(ModuleSettings info) {
-        info.beforeMe(WebAnnoSupportListener.class);
+        info.beforeMe(ServletAnnoSupportModule.class);
     }
     @Override
     public void init(WebApiBinder apiBinder) {

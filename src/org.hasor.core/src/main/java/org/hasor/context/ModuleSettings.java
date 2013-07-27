@@ -20,12 +20,12 @@ package org.hasor.context;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface ModuleSettings extends ModuleInfo {
+    /***/
+    public void afterMe(Class<? extends HasorModule> targetModule);
     /**要求目标模块的启动在当前模块之前进行启动。<br/>
      * 注意：该方法仅仅要求在目标模块之后启动。但目标模块是否启动并无强制要求。*/
     public void beforeMe(Class<? extends HasorModule> targetModule);
-    /**要求本模块先于目标模块启动。*/
-    public void afterMe(Class<? extends HasorModule> targetModule);
-    /**跟随目标模块启动而启动。<br/>
+    /**跟随目标模块启动而启动。<br/> 
      * 注意：该方法要求在目标模块启动之后在启动。*/
     public void followTarget(Class<? extends HasorModule> targetModule);
     /**绑定配置文件命名空间*/

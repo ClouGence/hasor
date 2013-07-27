@@ -37,8 +37,8 @@ import org.more.util.StringUtils;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@Module(displayName = "AnnoSupportListener", description = "org.hasor.annotation软件包功能支持。")
-public class AnnoSupportListener extends AbstractHasorModule {
+@Module(description = "org.hasor.annotation软件包功能支持。")
+public class AnnoSupportModule extends AbstractHasorModule {
     @Override
     public void configuration(ModuleSettings info) {}
     //

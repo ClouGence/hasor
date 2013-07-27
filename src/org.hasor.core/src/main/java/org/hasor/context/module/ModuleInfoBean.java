@@ -29,28 +29,20 @@ import org.more.UndefinedException;
  * @version : 2013-7-26
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ModuleInfoBean implements ModuleSettings {
-    private String           displayName      = null;
-    private String           description      = null;
-    private boolean          init             = false;
-    private HasorModule      moduleObject     = null;
-    private String           namespace        = null;
-    private AppContext       appContext       = null;
-    private List<Dependency> allDependency    = new ArrayList<Dependency>();
-    private List<Dependency> beforeDependency = new ArrayList<Dependency>(); //先启动
-    private List<Dependency> afterDependency  = new ArrayList<Dependency>(); //后启动
+public final class ModuleInfoBean implements ModuleSettings {
+    private String           displayName  = null;
+    private String           description  = null;
+    private boolean          init         = false;
+    private HasorModule      moduleObject = null;
+    private String           namespace    = null;
+    private AppContext       appContext   = null;
+    private List<Dependency> dependency   = new ArrayList<Dependency>();
     //
     //
     public ModuleInfoBean(HasorModule moduleObject, AppContext appContext) {
         Hasor.assertIsNotNull(moduleObject);
         this.moduleObject = moduleObject;
         this.appContext = appContext;
-    }
-    protected List<Dependency> getBeforeDependency() {
-        return beforeDependency;
-    }
-    protected List<Dependency> getAfterDependency() {
-        return afterDependency;
     }
     private ModuleInfo getInfo(Class<? extends HasorModule> targetModule) {
         ModuleInfo[] infoArray = this.appContext.getModules();
@@ -66,27 +58,12 @@ public class ModuleInfoBean implements ModuleSettings {
             throw new IllegalStateException("HasorModule is initialized");
         //
         ModuleInfo targetModuleInfo = this.getInfo(targetModule);
-        for (Dependency dep : this.allDependency)
+        for (Dependency dep : this.dependency)
             if (dep.getModuleInfo() == targetModuleInfo)
                 throw new IllegalStateException("before dependence is included.");
         //
         Dependency dep = new DependencyBean(targetModuleInfo, true);
-        this.beforeDependency.add(dep);
-        this.allDependency.add(dep);
-    }
-    @Override
-    public void afterMe(Class<? extends HasorModule> targetModule) {
-        if (init)
-            throw new IllegalStateException("HasorModule is initialized");
-        ModuleInfo targetModuleInfo = this.getInfo(targetModule);
-        //
-        for (Dependency dep : this.allDependency)
-            if (dep.getModuleInfo() == targetModuleInfo)
-                throw new IllegalStateException("after dependence is included.");
-        //
-        Dependency dep = new DependencyBean(targetModuleInfo, true);
-        this.afterDependency.add(dep);
-        this.allDependency.add(dep);
+        this.dependency.add(dep);
     }
     @Override
     public void followTarget(Class<? extends HasorModule> targetModule) {
@@ -94,19 +71,18 @@ public class ModuleInfoBean implements ModuleSettings {
             throw new IllegalStateException("HasorModule is initialized");
         //
         ModuleInfo targetModuleInfo = this.getInfo(targetModule);
-        for (Dependency dep : this.allDependency)
+        for (Dependency dep : this.dependency)
             if (dep.getModuleInfo() == targetModuleInfo)
                 throw new IllegalStateException("before dependence is included.");
         //
         Dependency dep = new DependencyBean(targetModuleInfo, false);
-        this.beforeDependency.add(dep);
-        this.allDependency.add(dep);
+        this.dependency.add(dep);
     }
     @Override
     public List<Dependency> getDependency() {
         if (init)
             throw new IllegalStateException("it is not clean.");
-        return Collections.unmodifiableList(this.allDependency);
+        return Collections.unmodifiableList(this.dependency);
     }
     @Override
     public void setDisplayName(String displayName) {
@@ -140,6 +116,12 @@ public class ModuleInfoBean implements ModuleSettings {
     }
     @Override
     public String toString() {
-        return ((this.displayName == null) ? "" : this.displayName) + " ModuleType : " + this.moduleObject.getClass();
+        return Hasor.formatString("displayName is %s, class is %s",//
+                this.displayName, this.moduleObject.getClass());
+    }
+    @Override
+    public void afterMe(Class<? extends HasorModule> targetModule) {
+        ModuleSettings setting = (ModuleSettings) this.getInfo(targetModule);
+        setting.beforeMe(this.getModuleObject().getClass());
     }
 }

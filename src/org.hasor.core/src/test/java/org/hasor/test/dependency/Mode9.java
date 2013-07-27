@@ -13,26 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test;
-import java.io.IOException;
-import org.hasor.annotation.context.AnnoAppContextSupportModule;
-import org.hasor.context.AppContext;
-import org.junit.Before;
+package org.hasor.test.dependency;
+import org.hasor.annotation.Module;
+import org.hasor.context.ApiBinder;
+import org.hasor.context.ModuleSettings;
+import org.hasor.context.module.AbstractHasorModule;
 /**
  * 
- * @version : 2013-7-16
+ * @version : 2013-7-27
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public abstract class AbstractTestContext {
-    private AnnoAppContextSupportModule appContext = null;
-    @Before
-    public void setUp() throws IOException {
-        this.appContext = new AnnoAppContextSupportModule("abc-config.xml");
-        this.initContext(appContext);
-        this.appContext.start();
-    }
-    protected abstract void initContext(AppContext appContext);
-    protected AnnoAppContextSupportModule getAppContext() {
-        return appContext;
+@Module()
+public class Mode9 extends AbstractHasorModule {
+    @Override
+    public void configuration(ModuleSettings info) {}
+    @Override
+    public void init(ApiBinder apiBinder) {
+        System.out.println("Mode9  init!");
     }
 }

@@ -64,14 +64,16 @@ public class DefaultAppContext extends AbstractAppContext {
     }
     //
     /**添加模块*/
-    public void addModule(HasorModule hasorModule) {
+    public ModuleInfo addModule(HasorModule hasorModule) {
         for (ModuleInfo info : this.getModuleList())
             if (info.getModuleObject() == hasorModule)
-                return;
-        this.getModuleList().add(new ModuleInfoBean(hasorModule, this));
+                return info;
+        ModuleInfo info = new ModuleInfoBean(hasorModule, this);
+        this.getModuleList().add(info);
+        return info;
     }
     /**删除模块*/
-    public void removeModule(HasorModule hasorModule) {
+    public ModuleInfo removeModule(HasorModule hasorModule) {
         ModuleInfo targetInfo = null;
         for (ModuleInfo info : this.getModuleList())
             if (info.getModuleObject() == hasorModule) {
@@ -80,6 +82,7 @@ public class DefaultAppContext extends AbstractAppContext {
             }
         if (targetInfo != null)
             this.getModuleList().remove(targetInfo);
+        return targetInfo;
     }
     /**获得所有模块*/
     public ModuleInfo[] getModules() {
@@ -214,80 +217,87 @@ public class DefaultAppContext extends AbstractAppContext {
     protected void onDestroy(ModuleInfo forModule) {
         forModule.getModuleObject().destroy(this);
     }
-}
-class MasterModule implements Module {
-    private DefaultAppContext appContet = null;
-    public MasterModule(DefaultAppContext appContet) {
-        this.appContet = appContet;
+    private void updateModuleIndex(ModuleInfo[] hasorModules) {
+        this.haosrModuleSet.clear();
+        for (ModuleInfo info : hasorModules)
+            this.haosrModuleSet.add(info);
     }
-    //
-    @Override
-    public void configure(Binder binder) {
-        /*确定启动顺序*/
-        Hasor.info("compile startup sequence!");
-        ModuleInfo[] hasorModules = this.appContet.getModules();
-        if (hasorModules != null)
-            for (ModuleInfo mod : hasorModules)
-                if (mod != null)
-                    mod.getModuleObject().configuration((ModuleSettings) mod);
-        hasorModules = new ModuleReactor().getResult(hasorModules);
-        /*引发模块init生命周期*/
-        if (hasorModules != null)
-            for (ModuleInfo mod : hasorModules) {
-                if (mod == null)
-                    continue;
-                Hasor.info("init Event on : %s", mod.getClass());
-                appContet.onInit(mod, binder);//触发事件
-            }
-        Hasor.info("init modules finish.");
-        /*绑定InitContext对象的Provider*/
-        binder.bind(InitContext.class).toProvider(new Provider<InitContext>() {
-            @Override
-            public InitContext get() {
-                return appContet;
-            }
-        });
-        /*绑定AppContext对象的Provider*/
-        binder.bind(AppContext.class).toProvider(new Provider<AppContext>() {
-            @Override
-            public AppContext get() {
-                return appContet;
-            }
-        });
-        /*绑定EventManager对象的Provider*/
-        binder.bind(EventManager.class).toProvider(new Provider<EventManager>() {
-            @Override
-            public EventManager get() {
-                return appContet.getEventManager();
-            }
-        });
-        /*绑定PhaseEventManager对象的Provider*/
-        binder.bind(AdvancedEventManager.class).toProvider(new Provider<AdvancedEventManager>() {
-            @Override
-            public AdvancedEventManager get() {
-                return (AdvancedEventManager) appContet.getEventManager();
-            }
-        });
-        /*绑定Settings对象的Provider*/
-        binder.bind(Settings.class).toProvider(new Provider<Settings>() {
-            @Override
-            public Settings get() {
-                return appContet.getSettings();
-            }
-        });
-        /*绑定WorkSpace对象的Provider*/
-        binder.bind(WorkSpace.class).toProvider(new Provider<WorkSpace>() {
-            @Override
-            public WorkSpace get() {
-                return appContet.getWorkSpace();
-            }
-        });
-        /*绑定Environment对象的Provider*/
-        binder.bind(Environment.class).toProvider(new Provider<Environment>() {
-            @Override
-            public Environment get() {
-                return appContet.getEnvironment();
-            }
-        });
+    private static class MasterModule implements Module {
+        private DefaultAppContext appContet = null;
+        public MasterModule(DefaultAppContext appContet) {
+            this.appContet = appContet;
+        }
+        //
+        @Override
+        public void configure(Binder binder) {
+            /*确定启动顺序*/
+            Hasor.info("compile startup sequence!");
+            ModuleInfo[] hasorModules = this.appContet.getModules();
+            if (hasorModules != null)
+                for (ModuleInfo mod : hasorModules)
+                    if (mod != null)
+                        mod.getModuleObject().configuration((ModuleSettings) mod);
+            ModuleReactor reactor = new ModuleReactor(hasorModules);
+            hasorModules = reactor.process();
+            this.appContet.updateModuleIndex(hasorModules);
+            /*引发模块init生命周期*/
+            if (hasorModules != null)
+                for (ModuleInfo mod : hasorModules) {
+                    if (mod == null)
+                        continue;
+                    Hasor.info("init Event on : %s", mod.getClass());
+                    appContet.onInit(mod, binder);//触发事件
+                }
+            Hasor.info("init modules finish.");
+            /*绑定InitContext对象的Provider*/
+            binder.bind(InitContext.class).toProvider(new Provider<InitContext>() {
+                @Override
+                public InitContext get() {
+                    return appContet;
+                }
+            });
+            /*绑定AppContext对象的Provider*/
+            binder.bind(AppContext.class).toProvider(new Provider<AppContext>() {
+                @Override
+                public AppContext get() {
+                    return appContet;
+                }
+            });
+            /*绑定EventManager对象的Provider*/
+            binder.bind(EventManager.class).toProvider(new Provider<EventManager>() {
+                @Override
+                public EventManager get() {
+                    return appContet.getEventManager();
+                }
+            });
+            /*绑定PhaseEventManager对象的Provider*/
+            binder.bind(AdvancedEventManager.class).toProvider(new Provider<AdvancedEventManager>() {
+                @Override
+                public AdvancedEventManager get() {
+                    return (AdvancedEventManager) appContet.getEventManager();
+                }
+            });
+            /*绑定Settings对象的Provider*/
+            binder.bind(Settings.class).toProvider(new Provider<Settings>() {
+                @Override
+                public Settings get() {
+                    return appContet.getSettings();
+                }
+            });
+            /*绑定WorkSpace对象的Provider*/
+            binder.bind(WorkSpace.class).toProvider(new Provider<WorkSpace>() {
+                @Override
+                public WorkSpace get() {
+                    return appContet.getWorkSpace();
+                }
+            });
+            /*绑定Environment对象的Provider*/
+            binder.bind(Environment.class).toProvider(new Provider<Environment>() {
+                @Override
+                public Environment get() {
+                    return appContet.getEnvironment();
+                }
+            });
+        }
     }
 }

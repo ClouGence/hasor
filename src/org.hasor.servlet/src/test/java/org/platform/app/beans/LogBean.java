@@ -1,7 +1,7 @@
 package org.platform.app.beans;
 import java.io.IOException;
 import org.hasor.annotation.Bean;
-import org.hasor.annotation.context.AnnoAppContext;
+import org.hasor.annotation.context.AnnoAppContextSupportModule;
 import org.platform.plugin.log.OutLog;
 /**
  * 
@@ -17,7 +17,7 @@ public class LogBean {
     //
     //
     public static void main(String[] args) throws IOException {
-        AnnoAppContext aac = new AnnoAppContext();
+        AnnoAppContextSupportModule aac = new AnnoAppContextSupportModule();
         aac.start();
         //
         LogBean logBean = (LogBean) aac.getBean("LogBean");

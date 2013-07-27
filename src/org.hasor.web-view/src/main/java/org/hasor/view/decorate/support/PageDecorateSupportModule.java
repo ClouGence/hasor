@@ -18,19 +18,19 @@ import org.hasor.annotation.Module;
 import org.hasor.context.ModuleSettings;
 import org.hasor.servlet.AbstractWebHasorModule;
 import org.hasor.servlet.WebApiBinder;
-import org.hasor.servlet.anno.support.WebAnnoSupportListener;
+import org.hasor.servlet.anno.support.ServletAnnoSupportModule;
 import org.hasor.view.decorate.DecorateBinder;
 import org.hasor.view.decorate.parser.FreemarkerHtmlParser;
 /**
- * 装饰服务，启动级别L0
+ * 装饰服务
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@Module(displayName = "DecoratePlatformListener", description = "org.platform.view.decorate软件包功能支持。")
-public class DecoratePlatformListener extends AbstractWebHasorModule {
+@Module(description = "org.platform.view.decorate软件包功能支持。")
+public class PageDecorateSupportModule extends AbstractWebHasorModule {
     @Override
     public void configuration(ModuleSettings info) {
-        info.afterMe(WebAnnoSupportListener.class);//在hasor-servlet启动之前
+        info.afterMe(ServletAnnoSupportModule.class);//在hasor-servlet启动之前
     }
     @Override
     public void init(WebApiBinder binder) {
