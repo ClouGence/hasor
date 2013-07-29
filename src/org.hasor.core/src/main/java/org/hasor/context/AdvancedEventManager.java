@@ -21,9 +21,7 @@ import org.more.RepeateException;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface AdvancedEventManager extends EventManager {
-    /**抛出阶段性事件。该类事件抛出之后只有等待Hasor在执行相应阶段时才会处理对应的事件。<br/>
-     * 该方法和{@link AdvancedEventManager#addEventListener(String, HasorEventListener)}方法不同。
-     * pushPhaseEvent方法注册的时间监听器当收到一次阶段性事件之后会被自动删除。*/
+    /**pushPhaseEvent方法注册的时间监听器当收到一次事件之后会被自动删除。*/
     public void pushEventListener(String eventType, HasorEventListener hasorEventListener);
     /**添加一个计时器，如果添加的计时器类型已经存在则会抛出异常。*/
     public void addTimer(String timerType, HasorEventListener hasorEventListener) throws RepeateException;

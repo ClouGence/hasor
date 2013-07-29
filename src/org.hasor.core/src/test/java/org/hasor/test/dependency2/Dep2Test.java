@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test.dependency;
+package org.hasor.test.dependency2;
 import java.io.IOException;
 import org.hasor.annotation.context.AnnoAppContextSupportModule;
-public class Test {
+public class Dep2Test {
     /**
      * @param args
      * @throws IOException 

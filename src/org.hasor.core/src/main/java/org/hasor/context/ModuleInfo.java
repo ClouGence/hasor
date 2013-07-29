@@ -16,7 +16,7 @@
 package org.hasor.context;
 import java.util.List;
 /**
- * 该接口只能获取模块信息
+ * 该接口只能获取模块信息（注意：该接口不要尝试去实现它）
  * @version : 2013-7-26
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -31,4 +31,16 @@ public interface ModuleInfo {
     public HasorModule getModuleObject();
     /**获取模块的依赖模块*/
     public List<Dependency> getDependency();
+    /**当模块没有通过configuration方法时false，否则为true.*/
+    public boolean isReady();
+    /**当模块刚刚经过start阶段，该方法返回值为true。否则返回值为false.*/
+    public boolean isRunning();
+    /**当模块没有通过init阶段返回值为false，否则为true.*/
+    public boolean isInit();
+    /**判断依赖的模块是否已经就绪*/
+    public boolean isDependencyReady();
+    /**判断依赖的模块是否已经启动*/
+    public boolean isDependencyRunning();
+    /**判断依赖的模块是否都通过了isInit*/
+    public boolean isDependencyInit();
 }

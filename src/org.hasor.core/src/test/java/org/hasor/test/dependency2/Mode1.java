@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test.dependency;
+package org.hasor.test.dependency2;
 import org.hasor.annotation.Module;
 import org.hasor.context.ApiBinder;
 import org.hasor.context.ModuleSettings;
@@ -24,14 +24,14 @@ import org.hasor.context.module.AbstractHasorModule;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Module()
-public class Mode4 extends AbstractHasorModule {
+public class Mode1 extends AbstractHasorModule {
     @Override
     public void configuration(ModuleSettings info) {
-        info.beforeMe(Mode5.class);
-        //throw new RuntimeException();
+        info.beforeMe(Mode2.class);
+        info.beforeMe(Mode3.class);
     }
     @Override
     public void init(ApiBinder apiBinder) {
-        System.out.println("Mode4  init!");
+        System.out.println("Mode1  init!");
     }
 }

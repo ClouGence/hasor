@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test.dependency;
+package org.hasor.test.dependency2;
 import org.hasor.annotation.Module;
 import org.hasor.context.ApiBinder;
+import org.hasor.context.AppContext;
 import org.hasor.context.ModuleSettings;
 import org.hasor.context.module.AbstractHasorModule;
 /**
@@ -24,14 +25,23 @@ import org.hasor.context.module.AbstractHasorModule;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Module()
-public class Mode4 extends AbstractHasorModule {
+public class Mode3 extends AbstractHasorModule {
     @Override
-    public void configuration(ModuleSettings info) {
-        info.beforeMe(Mode5.class);
-        //throw new RuntimeException();
-    }
+    public void configuration(ModuleSettings info) {}
     @Override
     public void init(ApiBinder apiBinder) {
-        System.out.println("Mode4  init!");
+        System.out.println("Mode3  init!");
+    }
+    @Override
+    public void start(AppContext appContext) {
+        super.start(appContext);
+    }
+    @Override
+    public void stop(AppContext appContext) {
+        super.stop(appContext);
+    }
+    @Override
+    public void destroy(AppContext appContext) {
+        super.destroy(appContext);
     }
 }

@@ -46,6 +46,8 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
             this.appContext.start();
         } catch (Exception e) {
             Hasor.error("createAppContext error.\n%s", e);
+            if (e instanceof RuntimeException)
+                throw (RuntimeException) e;
             throw new RuntimeException(e);
         }
         //2.ªÒ»°SessionListenerPipeline

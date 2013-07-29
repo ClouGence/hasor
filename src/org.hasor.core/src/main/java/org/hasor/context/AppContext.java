@@ -37,4 +37,6 @@ public interface AppContext extends InitContext, LifeCycle {
     public Injector getGuice();
     /**获得所有模块*/
     public ModuleInfo[] getModules();
+    /**是否完成初始化工作*/
+    public boolean isInit();
 }

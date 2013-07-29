@@ -15,7 +15,7 @@
  */
 package org.hasor.context;
 /**
- * 该接口可以配置模块信息
+ * 该接口可以配置模块信息（注意：该接口不要尝试去实现它）
  * @version : 2013-7-26
  * @author 赵永春 (zyc@byshell.org)
  */

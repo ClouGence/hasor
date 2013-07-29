@@ -12,6 +12,8 @@
 		<!-- （该配置在重载配置文件之后不会影响已有结果） -->
 		<!-- Timer定时器执行配置,单位毫秒。可选的配置：FixedDelay(固定间隔)、FixedRate(固定周期) -->
 		<timerEvent type="FixedDelay">1000</timerEvent>
+		<!-- 是否强迫所有模块都必须正常启动 -->
+		<forceModule>false</forceModule>
 	</framework>
 	<!-- 工作空间设置（不支持环境变量） -->
 	<workspace>

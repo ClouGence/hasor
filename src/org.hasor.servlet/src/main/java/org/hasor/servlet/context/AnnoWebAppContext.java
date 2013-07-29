@@ -99,7 +99,7 @@ public class AnnoWebAppContext extends AnnoAppContextSupportModule {
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class WebStandardEnvironment extends StandardEnvironment {
-    private ServletContext servletContext = null;
+    private ServletContext servletContext;
     public WebStandardEnvironment(WorkSpace workSpace, ServletContext servletContext) {
         super(workSpace);
         this.servletContext = servletContext;

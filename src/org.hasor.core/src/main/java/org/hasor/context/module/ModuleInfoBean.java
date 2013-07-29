@@ -20,29 +20,60 @@ import java.util.List;
 import org.hasor.Hasor;
 import org.hasor.context.AppContext;
 import org.hasor.context.Dependency;
+import org.hasor.context.HasorEventListener;
 import org.hasor.context.HasorModule;
 import org.hasor.context.ModuleInfo;
 import org.hasor.context.ModuleSettings;
 import org.more.UndefinedException;
+import org.more.util.StringUtils;
 /**
  * 
  * @version : 2013-7-26
  * @author 赵永春 (zyc@byshell.org)
  */
-public final class ModuleInfoBean implements ModuleSettings {
-    private String           displayName  = null;
-    private String           description  = null;
-    private boolean          init         = false;
-    private HasorModule      moduleObject = null;
-    private String           namespace    = null;
-    private AppContext       appContext   = null;
-    private List<Dependency> dependency   = new ArrayList<Dependency>();
+public final class ModuleInfoBean implements ModuleSettings, HasorEventListener {
+    public static final String Prop_Ready   = "ready";
+    public static final String Prop_Init    = "init";
+    public static final String Prop_Running = "running";
+    //
+    private String             displayName;
+    private String             description;
+    private HasorModule        moduleObject;
+    private String             namespace;
+    private AppContext         appContext;
+    private List<Dependency>   dependency;
+    /*运行状态*/
+    private boolean            running;
+    /*是否准备好*/
+    private boolean            ready;
+    /*是否初始化*/
+    private boolean            init;
     //
     //
     public ModuleInfoBean(HasorModule moduleObject, AppContext appContext) {
         Hasor.assertIsNotNull(moduleObject);
         this.moduleObject = moduleObject;
         this.appContext = appContext;
+        this.dependency = new ArrayList<Dependency>();
+        this.ready = false;
+        this.running = false;
+        /*ModuleInfoBean通过注册事件监听器监听来自于容器对模块状态的属性更新事件*/
+        appContext.getEventManager().addEventListener(this.moduleObject.getClass().getName(), this);
+    }
+    @Override
+    public void onEvent(String event, Object[] params) {
+        if (params == null || params.length < 2)
+            return;
+        /*该方法是用于接收来自于容器的模块事件*/
+        String propName = (String) params[0];
+        Object propValue = params[1];
+        if (StringUtils.eqUnCaseSensitive(Prop_Ready, propName) == true) {
+            this.ready = (Boolean) propValue;
+        } else if (StringUtils.eqUnCaseSensitive(Prop_Init, propName) == true) {
+            this.init = (Boolean) propValue;
+        } else if (StringUtils.eqUnCaseSensitive(Prop_Running, propName) == true) {
+            this.running = (Boolean) propValue;
+        }
     }
     private ModuleInfo getInfo(Class<? extends HasorModule> targetModule) {
         ModuleInfo[] infoArray = this.appContext.getModules();
@@ -54,8 +85,9 @@ public final class ModuleInfoBean implements ModuleSettings {
     }
     @Override
     public void beforeMe(Class<? extends HasorModule> targetModule) {
-        if (init)
-            throw new IllegalStateException("HasorModule is initialized");
+        if (ready())
+            /*模块已经准备好，只有当模块在准备期才可以使用该方法*/
+            throw new IllegalStateException("Module is ready, only can use this method in run-up.");
         //
         ModuleInfo targetModuleInfo = this.getInfo(targetModule);
         for (Dependency dep : this.dependency)
@@ -67,8 +99,9 @@ public final class ModuleInfoBean implements ModuleSettings {
     }
     @Override
     public void followTarget(Class<? extends HasorModule> targetModule) {
-        if (init)
-            throw new IllegalStateException("HasorModule is initialized");
+        if (ready())
+            /*模块已经准备好，只有当模块在准备期才可以使用该方法*/
+            throw new IllegalStateException("Module is ready, only can use this method in run-up.");
         //
         ModuleInfo targetModuleInfo = this.getInfo(targetModule);
         for (Dependency dep : this.dependency)
@@ -80,9 +113,13 @@ public final class ModuleInfoBean implements ModuleSettings {
     }
     @Override
     public List<Dependency> getDependency() {
-        if (init)
-            throw new IllegalStateException("it is not clean.");
+        if (!ready())
+            /*模块尚未准备好，依赖尚不清楚*/
+            throw new IllegalStateException("Module is not ready, Dependency is not clean.");
         return Collections.unmodifiableList(this.dependency);
+    }
+    List<Dependency> getInternalDependency() {
+        return this.dependency;
     }
     @Override
     public void setDisplayName(String displayName) {
@@ -102,8 +139,10 @@ public final class ModuleInfoBean implements ModuleSettings {
     }
     @Override
     public void bindingSettingsNamespace(String namespace) {
-        if (init)
-            throw new IllegalStateException("HasorModule is initialized");
+        if (ready())
+            /*模块已经准备好，只有当模块在准备期才可以使用该方法*/
+            throw new IllegalStateException("Module is ready, only can use this method in run-up.");
+        //
         this.namespace = namespace;
     }
     @Override
@@ -123,5 +162,43 @@ public final class ModuleInfoBean implements ModuleSettings {
     public void afterMe(Class<? extends HasorModule> targetModule) {
         ModuleSettings setting = (ModuleSettings) this.getInfo(targetModule);
         setting.beforeMe(this.getModuleObject().getClass());
+    }
+    @Override
+    public boolean isRunning() {
+        return this.running;
+    }
+    private boolean ready() {
+        if (this.appContext.isInit() == false)
+            return false;
+        return this.isReady();
+    }
+    @Override
+    public boolean isReady() {
+        return this.ready;
+    }
+    @Override
+    public boolean isInit() {
+        return this.init;
+    }
+    @Override
+    public boolean isDependencyReady() {
+        for (Dependency dep : this.getInternalDependency())
+            if (dep.getModuleInfo().isDependencyReady() == false || dep.getModuleInfo().isReady() == false)
+                return false;
+        return true;
+    }
+    @Override
+    public boolean isDependencyRunning() {
+        for (Dependency dep : this.getInternalDependency())
+            if (dep.getModuleInfo().isDependencyRunning() == false || dep.getModuleInfo().isRunning() == false)
+                return false;
+        return true;
+    }
+    @Override
+    public boolean isDependencyInit() {
+        for (Dependency dep : this.getInternalDependency())
+            if (dep.getModuleInfo().isDependencyInit() == false || dep.getModuleInfo().isInit() == false)
+                return false;
+        return true;
     }
 }
