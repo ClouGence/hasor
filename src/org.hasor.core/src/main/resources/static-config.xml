@@ -4,7 +4,7 @@
 	<framework>
 		<!-- （该配置在重载配置文件之后不会影响已有结果） -->
 		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
-		<loadPackages>org.hasor.*</loadPackages>
+		<loadPackages>org.hasor.context.*,org.hasor.annotation.*</loadPackages>
 		<!-- 启用注解功能支持 -->
 		<annotation>true</annotation>
 		<!-- 执行事件的线程池大小，注意：已经被安排Timer执行的事件，是不受生效之后的池大小限制的 -->

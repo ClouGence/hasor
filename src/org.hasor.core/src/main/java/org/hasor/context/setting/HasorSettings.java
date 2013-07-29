@@ -160,7 +160,8 @@ public class HasorSettings extends AbstractHasorSettings implements LifeCycle {
             if (configURL != null) {
                 Hasor.info("load ¡®%s¡¯", configURL);
                 loadConfig(configURL.toURI(), loadTo);
-            }
+            } else
+                Hasor.warning("cannot load the root configuration file ¡®%s¡¯", mainConfig);
         } catch (Exception e) {
             Hasor.error("load ¡®%s¡¯ error!%s", mainConfig, e);
         }

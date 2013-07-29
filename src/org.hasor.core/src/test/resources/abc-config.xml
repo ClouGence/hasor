@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://myProject.org">
-	<!-- <require type="http://noe.xdf.cn/schema/global"> -->
-	<!-- <setting key="" value="" /> -->
-	<!-- </require> -->
-	<!-- <require type=""> -->
-	<!-- <setting key="" value="" /> -->
-	<!-- </require> -->
-
+	<!-- 框架配置 -->
+	<framework>
+		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
+		<loadPackages>org.hasor.test.*</loadPackages>
+	</framework>
 	<!-- 框架配置 -->
 	<framework>
 		<!-- 包扫描覆盖范围 -->

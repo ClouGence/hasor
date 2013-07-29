@@ -222,6 +222,8 @@ public class DefaultAppContext extends AbstractAppContext {
         for (ModuleInfo info : hasorModules)
             this.haosrModuleSet.add(info);
     }
+    //
+    //
     private static class MasterModule implements Module {
         private DefaultAppContext appContet = null;
         public MasterModule(DefaultAppContext appContet) {

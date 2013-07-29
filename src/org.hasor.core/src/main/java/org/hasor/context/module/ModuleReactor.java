@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.hasor.Hasor;
-import org.hasor.annotation.support.AnnoSupportModule;
 import org.hasor.context.Dependency;
 import org.hasor.context.ModuleInfo;
 import org.more.util.StringUtils;
@@ -33,25 +32,6 @@ public class ModuleReactor {
         this.modules = modules;
     }
     //
-    private String getTreeInfo(List<ReactorModuleInfoElement> stackArray, String extInfo) {
-        StringBuilder sb = new StringBuilder("");
-        int size = String.valueOf(stackArray.size() - 1).length();
-        for (int i = 0; i < stackArray.size(); i++) {
-            ReactorModuleInfoElement element = stackArray.get(i);
-            sb.append(element.getMark());
-            sb.append(String.format("%0" + size + "d", i));
-            sb.append('.');
-            sb.append("-->");
-            sb.append(StringUtils.fixedString((element.getDepth() + 1) * 2, ' '));
-            sb.append(element.getInfo().getDisplayName());
-            sb.append(" (");
-            sb.append(element.getInfo().getModuleObject().getClass());
-            sb.append(")\n");
-        }
-        if (extInfo != null)
-            sb.append(extInfo);
-        return sb.toString();
-    }
     /**检查模块的依赖是否正确。*/
     public void checkModule(ModuleInfo info) {
         List<ReactorModuleInfoElement> stackArray = new ArrayList<ReactorModuleInfoElement>();
@@ -82,6 +62,7 @@ public class ModuleReactor {
             }
         }
     }
+    //
     /**按照明确的模块启动顺序对模块进行排序，该方法同时还进行了循环检测。*/
     public ModuleInfo[] process() {
         /*1.进行循环检查，确保模块的稳定依赖*/
@@ -94,20 +75,16 @@ public class ModuleReactor {
             for (Dependency dep : info.getDependency())
                 this.updateModuleDependency(dep);
         }
-        /*3.确定启动顺序*/
-        ArrayList<ReactorModuleInfoElement> tree = new ArrayList<ReactorModuleInfoElement>();
-        this.getStartArray(tree);
+        /*3.模块依赖树*/
+        List<ReactorModuleInfoElement> tree = new ArrayList<ReactorModuleInfoElement>();
+        this.getDependenceTree(tree);
         String treeInfo = getTreeInfo(tree, null);
         Hasor.info("dependence Tree\n%s", treeInfo);
-        //
-        ArrayList<ModuleInfo> finalList = new ArrayList<ModuleInfo>();
-        StringBuilder sb = new StringBuilder("");
-        for (int i = 0; i < tree.size(); i++) {
-            ModuleInfo data = tree.get(i).getInfo();
-            if (finalList.contains(data) == false)
-                finalList.add(data);
-        }
+        /*4.确定启动顺序*/
+        List<ModuleInfo> finalList = this.getStartModule(tree);
         ModuleInfo[] finalData = new ModuleInfo[finalList.size()];
+        //
+        StringBuilder sb = new StringBuilder("");
         int size = String.valueOf(finalList.size() - 1).length();
         for (int i = 0; i < finalList.size(); i++) {
             finalData[i] = finalList.get(i);
@@ -122,8 +99,9 @@ public class ModuleReactor {
         Hasor.info("startup sequence.\n%s", sb);
         return finalData;
     }
-    /*确定启动顺序*/
-    private void getStartArray(List<ReactorModuleInfoElement> infoList) {
+    //
+    /**确定依赖树*/
+    private void getDependenceTree(List<ReactorModuleInfoElement> infoList) {
         ArrayList<ModuleInfo> allModule = new ArrayList<ModuleInfo>(Arrays.asList(this.modules));
         /*去掉所有被依赖的项目*/
         for (ModuleInfo info : this.modules) {
@@ -131,15 +109,55 @@ public class ModuleReactor {
                 allModule.remove(dep.getModuleInfo());
         }
         for (ModuleInfo info : allModule)
-            this.addStartArray(1, info, infoList);
+            this.getDependenceTree(0, info, infoList);
     }
-    private void addStartArray(int depth, ModuleInfo info, List<ReactorModuleInfoElement> infoList) {
+    private void getDependenceTree(int depth, ModuleInfo info, List<ReactorModuleInfoElement> infoList) {
         infoList.add(new ReactorModuleInfoElement(depth, info));
         for (Dependency dep : info.getDependency())
-            addStartArray(depth + 1, dep.getModuleInfo(), infoList);
+            getDependenceTree(depth + 1, dep.getModuleInfo(), infoList);
+    }
+    private String getTreeInfo(List<ReactorModuleInfoElement> stackArray, String extInfo) {
+        StringBuilder sb = new StringBuilder("");
+        int size = String.valueOf(stackArray.size() - 1).length();
+        for (int i = 0; i < stackArray.size(); i++) {
+            ReactorModuleInfoElement element = stackArray.get(i);
+            sb.append(element.getMark());
+            sb.append(String.format("%0" + size + "d", i));
+            sb.append('.');
+            sb.append("-->");
+            sb.append(StringUtils.fixedString((element.getDepth() + 1) * 2, ' '));
+            sb.append(element.getInfo().getDisplayName());
+            sb.append(" (");
+            sb.append(element.getInfo().getModuleObject().getClass());
+            sb.append(")\n");
+        }
+        if (extInfo != null)
+            sb.append(extInfo);
+        return sb.toString();
     }
     //
-    /*构建ModuleInfo对象中的依赖树*/
+    /**根据依赖树确定模块启动顺序*/
+    private List<ModuleInfo> getStartModule(List<ReactorModuleInfoElement> infoList) {
+        List<ModuleInfo> finalList = new ArrayList<ModuleInfo>();
+        for (ReactorModuleInfoElement e : infoList)
+            if (e.getDepth() == 0) {
+                ModuleInfo infoItem = e.getInfo();
+                this.loadDependence(infoItem, finalList);
+                if (finalList.contains(infoItem) == false)
+                    finalList.add(infoItem);
+            }
+        return finalList;
+    }
+    private void loadDependence(ModuleInfo e, List<ModuleInfo> finalList) {
+        for (Dependency dep : e.getDependency()) {
+            ModuleInfo infoItem = dep.getModuleInfo();
+            this.loadDependence(infoItem, finalList);
+            if (finalList.contains(infoItem) == false)
+                finalList.add(infoItem);
+        }
+    }
+    //
+    /**更新ModuleInfo对象中的依赖树*/
     private void updateModuleDependency(Dependency dep) {
         DependencyBean depBean = (DependencyBean) dep;
         List<Dependency> refDep = depBean.getModuleInfo().getDependency();

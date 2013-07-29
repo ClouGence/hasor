@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://project.hasor.net/hasor/schema/main" xmlns:s="http://project.hasor.net/hasor/schema/test-safety">
-	<!-- 框架配置 -->
-	<framework>
-		<loadPackages>org.test.*</loadPackages>
-	</framework>
-
 	<!-- 默认权限配置（在其他命名空间下可以叠加配置） -->
 	<s:safety>
 		<s:defaultPower></s:defaultPower>
 	</s:safety>
-
 </config>

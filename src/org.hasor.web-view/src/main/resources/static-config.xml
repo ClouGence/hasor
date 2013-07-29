@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root:config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-web-view">
+	<!-- 框架配置 -->
+	<framework>
+		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
+		<loadPackages>org.hasor.view.decorate.*,org.hasor.view.template.*</loadPackages>
+	</framework>
 	<!-- （仅当启动时生效）页面装饰器配置 -->
 	<pageDecorate enable="false">
 		<processor name="default" creator="org.hasor.view.decorate.parser.FreemarkerHtmlParser">

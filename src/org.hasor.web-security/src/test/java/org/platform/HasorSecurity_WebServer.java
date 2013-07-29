@@ -2,7 +2,7 @@ package org.platform;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.webapp.WebAppContext;
-public class WebServer {
+public class HasorSecurity_WebServer {
     /**
      * @param args
      * @throws Exception 
