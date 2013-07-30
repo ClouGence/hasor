@@ -15,18 +15,24 @@
  */
 package org.hasor.context.event;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.hasor.Hasor;
 import org.hasor.context.EventManager;
 import org.hasor.context.HasorEventListener;
 import org.hasor.context.HasorSettingListener;
 import org.hasor.context.Settings;
+import org.more.RepeateException;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 /**
@@ -142,6 +148,8 @@ public class StandardEventManager implements EventManager {
             for (HasorEventListener event : eventListenerArray)
                 event.onEvent(eventType, objects);
         }
+        //
+        this.processOnceListener(eventType, objects);
     }
     @Override
     public void doAsynEvent(final String eventType, final Object... objects) {
@@ -157,13 +165,90 @@ public class StandardEventManager implements EventManager {
                     for (HasorEventListener event : eventListenerArray)
                         event.onEvent(eventType, objects);
                 }
+                processOnceListener(eventType, objects);
             }
         });
     }
     @Override
     public synchronized void clean() {
+        this.onceListenerLock.lock();//加锁
+        this.onceListenerMap.clear();
+        this.onceListenerLock.unlock();//解锁
+        //
+        //停止所有计时器
+        for (ScheduledFuture<?> fut : this.timerMap.values())
+            fut.cancel(true);
+        this.timerMap.clear();
+        //
         this.executorService.shutdownNow();
         this.executorService = Executors.newScheduledThreadPool(1);
         this.update();
+    }
+    private Map<String, LinkedList<HasorEventListener>> onceListenerMap  = new HashMap<String, LinkedList<HasorEventListener>>();
+    private Lock                                        onceListenerLock = new ReentrantLock();
+    private Map<String, ScheduledFuture<?>>             timerMap         = new HashMap<String, ScheduledFuture<?>>();
+    @Override
+    public void pushEventListener(String eventType, HasorEventListener hasorEventListener) {
+        if (StringUtils.isBlank(eventType) || hasorEventListener == null)
+            return;
+        this.onceListenerLock.lock();//加锁
+        LinkedList<HasorEventListener> eventList = this.onceListenerMap.get(eventType);
+        if (eventList == null) {
+            eventList = new LinkedList<HasorEventListener>();
+            this.onceListenerMap.put(eventType, eventList);
+        }
+        if (eventList.contains(hasorEventListener) == false)
+            eventList.push(hasorEventListener);
+        this.onceListenerLock.unlock();//解锁
+    }
+    private void processOnceListener(String eventType, Object... objects) {
+        this.onceListenerLock.lock();//加锁
+        LinkedList<HasorEventListener> eventList = this.onceListenerMap.get(eventType);
+        if (eventList != null) {
+            HasorEventListener listener = null;
+            while ((listener = eventList.pollLast()) != null)
+                listener.onEvent(eventType, objects);
+        }
+        this.onceListenerLock.unlock();//解锁
+    }
+    @Override
+    public synchronized void addTimer(final String timerName, final HasorEventListener hasorEventListener) throws RepeateException {
+        if (this.timerMap.containsKey(timerName))
+            throw new RepeateException(timerName + " timer is exist.");
+        //
+        int timerPeriod = this.getSettings().getInteger("framework.timerEvent");
+        final String timerType = this.getSettings().getString("framework.timerEvent.type");
+        ScheduledFuture<?> future = null;
+        Runnable eventListener = new Runnable() {
+            @Override
+            public void run() {
+                hasorEventListener.onEvent(timerName, null);
+            }
+        };
+        /**固定间隔*/
+        if (StringUtils.eqUnCaseSensitive(timerType, "FixedDelay")) {
+            future = this.getExecutorService().scheduleWithFixedDelay(eventListener, 0, timerPeriod, TimeUnit.MILLISECONDS);
+        }
+        /**固定周期*/
+        if (StringUtils.eqUnCaseSensitive(timerType, "FixedRate")) {
+            future = this.getExecutorService().scheduleAtFixedRate(eventListener, 0, timerPeriod, TimeUnit.MILLISECONDS);
+        }
+        //
+        if (future != null)
+            this.timerMap.put(timerName, future);
+    }
+    @Override
+    public synchronized void removeTimer(String timerName) {
+        if (this.timerMap.containsKey(timerName)) {
+            ScheduledFuture<?> future = this.timerMap.remove(timerName);
+            future.cancel(false);
+        }
+    }
+    @Override
+    public synchronized void removeTimerNow(String timerName) {
+        if (this.timerMap.containsKey(timerName)) {
+            ScheduledFuture<?> future = this.timerMap.remove(timerName);
+            future.cancel(true);
+        }
     }
 }

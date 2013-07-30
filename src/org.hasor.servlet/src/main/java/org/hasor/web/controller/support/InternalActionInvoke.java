@@ -170,7 +170,7 @@ class InternalActionInvoke implements ActionInvoke, ActionInvoke2 {
             return null;
         }
         if (paramClass.isAssignableFrom(ServletContext.class))
-            return request.getServletContext();
+            return ((HttpServletRequest) request).getSession(true).getServletContext();
         try {
             return this.appContext.getInstance(paramClass);
         } catch (Exception e) {

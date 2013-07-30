@@ -85,6 +85,16 @@ public class StandardWorkSpace implements WorkSpace {
             return str2path(new File(pluginDir).getAbsolutePath());
     }
     @Override
+    public String getLogDir() {
+        String workDir = getWorkDir();
+        String pluginDir = getSettings().getDirectoryPath("workspace.logDir");
+        boolean absolute = getSettings().getBoolean("workspace.logDir.absolute");
+        if (absolute == false)
+            return str2path(new File(workDir, pluginDir).getAbsolutePath());
+        else
+            return str2path(new File(pluginDir).getAbsolutePath());
+    }
+    @Override
     public String getDataDir(String name) {
         if (StringUtils.isBlank(name) == true)
             return getDataDir();
@@ -114,6 +124,13 @@ public class StandardWorkSpace implements WorkSpace {
             return getCacheDir();
         else
             return str2path(new File(getCacheDir(), pluginName).getAbsolutePath());
+    }
+    @Override
+    public String getLogDir(String subPath) {
+        if (StringUtils.isBlank(subPath) == true)
+            return getLogDir();
+        else
+            return str2path(new File(getLogDir(), subPath).getAbsolutePath());
     }
     private File tempFileDirectory = null;
     @Override

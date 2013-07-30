@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.hasor.Hasor;
-import org.hasor.context.AdvancedEventManager;
 import org.hasor.context.AppContext;
 import org.hasor.context.BeanInfo;
 import com.google.inject.Binding;
@@ -93,12 +92,6 @@ public abstract class AbstractAppContext extends StandardInitContext implements 
     @Override
     public <T> T getInstance(Class<T> beanType) {
         return this.getGuice().getInstance(beanType);
-    }
-    /**获取高级事件接口*/
-    public AdvancedEventManager getAdvancedEventManager() {
-        if (this.getEventManager() instanceof AdvancedEventManager)
-            return (AdvancedEventManager) this.getEventManager();
-        return null;
     }
     /**销毁*/
     public abstract void destroy();

@@ -27,7 +27,7 @@ import org.hasor.context.LifeCycle;
 import org.hasor.context.Settings;
 import org.hasor.context.WorkSpace;
 import org.hasor.context.environment.StandardEnvironment;
-import org.hasor.context.event.StandardAdvancedEventManager;
+import org.hasor.context.event.StandardEventManager;
 import org.hasor.context.setting.HasorSettings;
 import org.hasor.context.workspace.StandardWorkSpace;
 import org.more.util.ClassUtils;
@@ -99,7 +99,7 @@ public class StandardInitContext implements InitContext {
     }
     /**创建{@link EventManager}接口对象*/
     protected EventManager createEventManager() {
-        return new StandardAdvancedEventManager(this.getSettings());
+        return new StandardEventManager(this.getSettings());
     }
     /**创建属性容器*/
     protected Map<String, Object> createAttributeMap() {

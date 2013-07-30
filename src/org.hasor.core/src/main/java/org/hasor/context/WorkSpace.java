@@ -39,6 +39,9 @@ public interface WorkSpace {
     /**获取工作空间中专门用于存放模块配置信息的目录空间，配置可以在config.xml的“<b>workspace.pluginDir</b>”节点上配置。<br/>
      * <font color="00aa00"><b>提示</b></font>：该节点的配置内容支持环境变量解析。*/
     public String getPluginDir();
+    /**获取工作空间中专门用于存放日志的目录空间，配置可以在config.xml的“<b>workspace.logDir</b>”节点上配置。<br/>
+     * <font color="00aa00"><b>提示</b></font>：该节点的配置内容支持环境变量解析。*/
+    public String getLogDir();
     /**基于{@link #getDataDir()}的路径作为父路径，返回由subPath参数所表示的数据目录。<br/>
      * <font color="00aa00"><b>提示</b></font>：参数中支持包含环境变量。*/
     public String getDataDir(String subPath);
@@ -51,6 +54,9 @@ public interface WorkSpace {
     /**基于{@link #getPluginDir()}的路径作为父路径，返回由model参数所表示的模块私有空间。<br/>
      * <font color="00aa00"><b>提示</b></font>：参数中支持包含环境变量。*/
     public String getPluginDir(Class<?> hasorModule);
+    /**基于{@link #getLogDir()}的路径作为父路径，返回由subPath参数所表示的日志目录。<br/>
+     * <font color="00aa00"><b>提示</b></font>：参数中支持包含环境变量。*/
+    public String getLogDir(String subPath);
     /**在临时目录下创建一个不重名的临时文件返回，该临时文件会在虚拟机正常退出之后连同其所在目录一同删除。*/
     public File createTempFile() throws IOException;
     /**

@@ -20,7 +20,6 @@ import org.hasor.annotation.Bean;
 import org.hasor.annotation.EventListener;
 import org.hasor.annotation.Module;
 import org.hasor.annotation.SettingsListener;
-import org.hasor.context.AdvancedEventManager;
 import org.hasor.context.ApiBinder;
 import org.hasor.context.ApiBinder.BeanBindingBuilder;
 import org.hasor.context.AppContext;
@@ -113,11 +112,11 @@ public class AnnoSupportModule extends AbstractHasorModule {
         Set<Class<?>> settingSet = apiBinder.getClassSet(SettingsListener.class);
         if (settingSet == null)
             return;
-        AdvancedEventManager advancedEventManager = (AdvancedEventManager) apiBinder.getInitContext().getEventManager();
+        EventManager eventManager = apiBinder.getInitContext().getEventManager();
         for (final Class<?> settingClass : settingSet) {
             apiBinder.getGuiceBinder().bind(settingClass).asEagerSingleton();
             Hasor.info("%s bind SettingsListener.", settingClass);
-            advancedEventManager.pushEventListener(LifeCycleEnum.PhaseEvent_Start.getValue(), new HasorEventListener() {
+            eventManager.pushEventListener(LifeCycleEnum.PhaseEvent_Start.getValue(), new HasorEventListener() {
                 @Override
                 public void onEvent(String event, Object[] params) {
                     AppContext appContext = (AppContext) params[0];

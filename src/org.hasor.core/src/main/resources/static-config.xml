@@ -25,6 +25,8 @@
 		<tempDir absolute="false">/temp</tempDir>
 		<!-- 程序运行时生成的缓存数据存放位置（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
 		<cacheDir absolute="false">/cache</cacheDir>
+		<!-- 程序运行时生成的日志目录（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
+		<logDir absolute="false">/cache</logDir>
 		<!-- 插件&模块 的配置目录（默认相对workDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
 		<pluginDir absolute="false">/plugins</pluginDir>
 	</workspace>

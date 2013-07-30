@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.hasor.Hasor;
-import org.hasor.context.AdvancedEventManager;
 import org.hasor.context.ApiBinder;
 import org.hasor.context.AppContext;
 import org.hasor.context.Environment;
@@ -150,15 +149,13 @@ public class DefaultAppContext extends AbstractAppContext {
             this.onStart(mod);
         }
         /*注册计时器*/
-        if (this.getAdvancedEventManager() != null) {
-            Hasor.info("addTimer for event %s.", LifeCycleEnum.PhaseEvent_Timer.getValue());
-            this.getAdvancedEventManager().addTimer(LifeCycleEnum.PhaseEvent_Timer.getValue(), new HasorEventListener() {
-                @Override
-                public void onEvent(String event, Object[] params) {
-                    onTimer();
-                }
-            });
-        }
+        Hasor.info("addTimer for event %s.", LifeCycleEnum.PhaseEvent_Timer.getValue());
+        this.getEventManager().addTimer(LifeCycleEnum.PhaseEvent_Timer.getValue(), new HasorEventListener() {
+            @Override
+            public void onEvent(String event, Object[] params) {
+                onTimer();
+            }
+        });
         /*打印模块状态*/
         this.printModState();
         Hasor.info("hasor started!");
@@ -387,13 +384,6 @@ class ExtBind {
             @Override
             public EventManager get() {
                 return appContet.getEventManager();
-            }
-        });
-        /*绑定PhaseEventManager对象的Provider*/
-        binder.bind(AdvancedEventManager.class).toProvider(new Provider<AdvancedEventManager>() {
-            @Override
-            public AdvancedEventManager get() {
-                return (AdvancedEventManager) appContet.getEventManager();
             }
         });
         /*绑定Settings对象的Provider*/

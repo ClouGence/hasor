@@ -149,7 +149,7 @@ public class ResourceLoaderFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         String requestURI = req.getRequestURI();
         String fileExt = requestURI.substring(requestURI.lastIndexOf("."));
-        String typeMimeType = req.getServletContext().getMimeType(fileExt);
+        String typeMimeType = req.getSession(true).getServletContext().getMimeType(fileExt);
         if (StringUtils.isBlank(typeMimeType))
             typeMimeType = this.getMimeType().get(fileExt.substring(1).toLowerCase());
         //
