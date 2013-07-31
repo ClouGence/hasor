@@ -34,11 +34,23 @@ import org.slf4j.LoggerFactory;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public abstract class Hasor {
-    private static String callerType() {
+    private static String callerInfo() {
         StackTraceElement[] stackElements = new Exception().getStackTrace();
         StackTraceElement onCode = stackElements[2];
         String callerClass = onCode.getClassName();
         return callerClass.substring(callerClass.lastIndexOf(".") + 1) + ":" + onCode.getMethodName();
+    }
+    private static String callerWarn() {
+        StackTraceElement[] stackElements = new Exception().getStackTrace();
+        StackTraceElement onCode = stackElements[2];
+        String callerClass = onCode.getClassName();
+        return callerClass.substring(callerClass.lastIndexOf(".") + 1) + ":" + onCode.getMethodName();
+    }
+    private static String callerErr() {
+        StackTraceElement[] stackElements = new Exception().getStackTrace();
+        StackTraceElement onCode = stackElements[2];
+        //String callerClass = onCode.getClassName();
+        return onCode.getFileName() + ":" + onCode.getLineNumber() + " - " + onCode.getMethodName();
     }
     private static Class<?> callerClass() {
         StackTraceElement[] stackElements = new Exception().getStackTrace();
@@ -55,28 +67,28 @@ public abstract class Hasor {
     public static void debug(String string, Object... params) {
         Logger log = LoggerFactory.getLogger(callerClass());
         Object[] paramsStr = getStringArray(params);
-        log.debug(callerType() + " ->> " + formatString(string, paramsStr));
+        log.debug(callerInfo() + " ->> " + formatString(string, paramsStr));
     }
     //
     /***/
     public static void error(String string, Object... params) {
         Logger log = LoggerFactory.getLogger(callerClass());
         Object[] paramsStr = getStringArray(params);
-        log.error(callerType() + " ->> " + formatString(string, paramsStr));
+        log.error(callerErr() + " ->> " + formatString(string, paramsStr));
     }
     //
     /***/
     public static void warning(String string, Object... params) {
         Logger log = LoggerFactory.getLogger(callerClass());
         Object[] paramsStr = getStringArray(params);
-        log.warn(callerType() + " ->> " + formatString(string, paramsStr));
+        log.warn(callerWarn() + " ->> " + formatString(string, paramsStr));
     }
     //
     /***/
     public static void info(String string, Object... params) {
         Logger log = LoggerFactory.getLogger(callerClass());
         Object[] paramsStr = getStringArray(params);
-        log.info(callerType() + " ->> " + formatString(string, paramsStr));
+        log.info(callerInfo() + " ->> " + formatString(string, paramsStr));
     }
     //
     /***/

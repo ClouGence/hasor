@@ -16,12 +16,12 @@
 		<module>org.hasor.servlet</module>
 		<module>org.hasor.web-security</module>
 		<module>org.hasor.web-view</module>
-		<module>org.hasor.web-ui</module>
-		<module>org.hasor.web-updown</module>
+		<!-- <module>org.hasor.web-ui</module> -->
+		<!-- <module>org.hasor.web-updown</module> -->
 
 		<module>org.hasor.demo</module>
-		<module>org.hasor.ds</module>
-		<module>org.hasor.remote</module>
+		<!-- <module>org.hasor.ds</module> -->
+		<!-- <module>org.hasor.remote</module> -->
 	</modules>
 	<!-- 构建描述 -->
 	<build>

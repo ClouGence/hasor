@@ -19,26 +19,29 @@
 		</dependency>
 		<dependency>
 			<groupId>org.hasor</groupId>
-			<artifactId>org.hasor.view</artifactId>
+			<artifactId>org.hasor.web-view</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-		<!-- UI -->
+		<!-- Web Security -->
 		<dependency>
 			<groupId>org.hasor</groupId>
-			<artifactId>org.hasor.ui</artifactId>
+			<artifactId>org.hasor.web-security</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-		<!-- Security -->
+		<!-- Log -->
 		<dependency>
-			<groupId>org.hasor</groupId>
-			<artifactId>org.hasor.security</artifactId>
-			<version>0.0.1</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.2</version>
 		</dependency>
-		<!-- up & down -->
+
+
+
 		<dependency>
-			<groupId>org.hasor</groupId>
-			<artifactId>org.hasor.updown</artifactId>
-			<version>0.0.1</version>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>8.1.10.v20130312</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>
