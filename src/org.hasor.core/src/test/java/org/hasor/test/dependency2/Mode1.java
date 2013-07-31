@@ -28,7 +28,7 @@ public class Mode1 extends AbstractHasorModule {
     @Override
     public void configuration(ModuleSettings info) {
         info.beforeMe(Mode2.class);
-        info.beforeMe(Mode3.class);
+        info.followTarget(Mode3.class);
     }
     @Override
     public void init(ApiBinder apiBinder) {

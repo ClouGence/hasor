@@ -37,10 +37,10 @@ public interface ModuleInfo {
     public boolean isRunning();
     /**当模块没有通过init阶段返回值为false，否则为true.*/
     public boolean isInit();
-    /**判断依赖的模块是否已经就绪*/
+    /**判断依赖的模块是否已经就绪。如果依赖为一个可选依赖，则被依赖项目即使没有ready也会被判定为ready。*/
     public boolean isDependencyReady();
-    /**判断依赖的模块是否已经启动*/
+    /**判断依赖的模块是否已经启动。如果依赖为一个可选依赖，则被依赖项目即使没有Running也会被判定为Running。*/
     public boolean isDependencyRunning();
-    /**判断依赖的模块是否都通过了isInit*/
+    /**判断依赖的模块是否都通过了isInit。如果依赖为一个可选依赖，则被依赖项目即使没有init也会被判定为init。*/
     public boolean isDependencyInit();
 }

@@ -37,7 +37,7 @@ import org.hasor.freemarker.Tag;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@Module(displayName = "FreemarkerPlatformListener", description = "org.hasor.freemarker软件包功能支持。")
+@Module(description = "org.hasor.freemarker软件包功能支持。")
 public class FreemarkerSupportModule extends AbstractHasorModule {
     @Override
     public void configuration(ModuleSettings info) {

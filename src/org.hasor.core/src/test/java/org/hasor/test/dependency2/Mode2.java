@@ -27,7 +27,7 @@ import org.hasor.context.module.AbstractHasorModule;
 public class Mode2 extends AbstractHasorModule {
     @Override
     public void configuration(ModuleSettings info) {
-        info.beforeMe(Mode3.class);
+        info.beforeMe(Mode3.class);//∑««ø÷∆“¿¿µ
     }
     @Override
     public void init(ApiBinder apiBinder) {

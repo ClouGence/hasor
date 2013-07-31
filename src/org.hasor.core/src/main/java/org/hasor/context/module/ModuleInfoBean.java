@@ -184,21 +184,24 @@ public final class ModuleInfoBean implements ModuleSettings, HasorEventListener 
     public boolean isDependencyReady() {
         for (Dependency dep : this.getInternalDependency())
             if (dep.getModuleInfo().isDependencyReady() == false || dep.getModuleInfo().isReady() == false)
-                return false;
+                if (dep.isOption() == false)
+                    return false;
         return true;
     }
     @Override
     public boolean isDependencyRunning() {
         for (Dependency dep : this.getInternalDependency())
             if (dep.getModuleInfo().isDependencyRunning() == false || dep.getModuleInfo().isRunning() == false)
-                return false;
+                if (dep.isOption() == false)
+                    return false;
         return true;
     }
     @Override
     public boolean isDependencyInit() {
         for (Dependency dep : this.getInternalDependency())
             if (dep.getModuleInfo().isDependencyInit() == false || dep.getModuleInfo().isInit() == false)
-                return false;
+                if (dep.isOption() == false)
+                    return false;
         return true;
     }
 }
