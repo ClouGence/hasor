@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.hasor.context;
-import com.google.inject.Key;
 /**
  * Bean的注册信息。
  * @version : 2013-5-6
@@ -27,6 +26,4 @@ public interface BeanInfo {
     public String[] getAliasName();
     /**获取bean的类型*/
     public Class<?> getBeanType();
-    /**获取Guice类型的Key。*/
-    public Key<?> getKey();
 }

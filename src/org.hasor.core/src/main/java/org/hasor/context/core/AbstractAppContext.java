@@ -86,7 +86,7 @@ public abstract class AbstractAppContext extends StandardInitContext implements 
         BeanInfo beanInfo = this.getBeanInfo(name);
         if (beanInfo == null)
             return null;
-        return (T) this.getGuice().getInstance(beanInfo.getKey());
+        return (T) this.getGuice().getInstance(beanInfo.getBeanType());
     };
     //
     @Override

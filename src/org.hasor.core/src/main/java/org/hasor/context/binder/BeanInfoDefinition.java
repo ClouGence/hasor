@@ -15,7 +15,6 @@
  */
 package org.hasor.context.binder;
 import org.hasor.context.BeanInfo;
-import com.google.inject.Key;
 import com.google.inject.Provider;
 /**
  * 
@@ -25,12 +24,10 @@ import com.google.inject.Provider;
 class BeanInfoDefinition implements BeanInfo, Provider<BeanInfo> {
     private String   beanName   = null;
     private String[] aliasNames = null;
-    private Key<?>   beanKey    = null;
     private Class<?> beanClass  = null;
-    public BeanInfoDefinition(String beanName, String[] aliasNames, Key<?> beanKey, Class<?> beanClass) {
+    public BeanInfoDefinition(String beanName, String[] aliasNames, Class<?> beanClass) {
         this.beanName = beanName;
         this.aliasNames = aliasNames;
-        this.beanKey = beanKey;
         this.beanClass = beanClass;
     }
     @Override
@@ -48,9 +45,5 @@ class BeanInfoDefinition implements BeanInfo, Provider<BeanInfo> {
     @Override
     public Class<?> getBeanType() {
         return this.beanClass;
-    }
-    @Override
-    public Key<?> getKey() {
-        return this.beanKey;
     }
 }

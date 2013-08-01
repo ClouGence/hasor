@@ -28,9 +28,7 @@ public interface LifeCycle {
         /**阶段事件：Phase_OnStop*/
         PhaseEvent_Stop("Phase_OnStop"),
         /**阶段事件：Phase_OnDestroy*/
-        PhaseEvent_Destroy("Phase_OnDestroy"),
-        /**阶段事件：Phase_OnTimer*/
-        PhaseEvent_Timer("Phase_OnTimer"), ;
+        PhaseEvent_Destroy("Phase_OnDestroy"), ;
         private String value = null;
         LifeCycleEnum(String var) {
             this.value = var;

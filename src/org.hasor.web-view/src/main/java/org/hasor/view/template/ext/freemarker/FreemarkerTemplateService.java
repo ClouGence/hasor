@@ -16,6 +16,7 @@
 package org.hasor.view.template.ext.freemarker;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +42,8 @@ public class FreemarkerTemplateService implements TemplateService {
             rootMap.put("request", request);
             rootMap.put("response", response);
             rootMap.put("session", request.getSession(true));
-            for (Entry<String, String[]> ent : request.getParameterMap().entrySet()) {
+            Map<String, String[]> reqMap = request.getParameterMap();
+            for (Entry<String, String[]> ent : reqMap.entrySet()) {
                 String[] values = ent.getValue();
                 rootMap.put("req_" + ent.getKey(), (values == null || values.length == 0) ? null : values[0]);
                 rootMap.put("req_" + ent.getKey() + "s", values);

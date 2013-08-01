@@ -23,7 +23,6 @@ import org.hasor.context.ApiBinder;
 import org.hasor.context.AppContext;
 import org.hasor.context.Environment;
 import org.hasor.context.EventManager;
-import org.hasor.context.HasorEventListener;
 import org.hasor.context.HasorModule;
 import org.hasor.context.InitContext;
 import org.hasor.context.ModuleInfo;
@@ -148,14 +147,6 @@ public class DefaultAppContext extends AbstractAppContext {
                 continue;
             this.onStart(mod);
         }
-        /*注册计时器*/
-        Hasor.info("addTimer for event %s.", LifeCycleEnum.PhaseEvent_Timer.getValue());
-        this.getEventManager().addTimer(LifeCycleEnum.PhaseEvent_Timer.getValue(), new HasorEventListener() {
-            @Override
-            public void onEvent(String event, Object[] params) {
-                onTimer();
-            }
-        });
         /*打印模块状态*/
         this.printModState();
         Hasor.info("hasor started!");
@@ -216,13 +207,6 @@ public class DefaultAppContext extends AbstractAppContext {
             if (this.forceModule)
                 throw e;
         }
-    }
-    /**计时器触发事件*/
-    protected void onTimer() {
-        HasorEventListener[] eventListener = this.getEventManager().getEventListener(LifeCycleEnum.PhaseEvent_Timer.getValue());
-        Object[] params = new Object[] { this };
-        for (HasorEventListener event : eventListener)
-            event.onEvent(LifeCycleEnum.PhaseEvent_Timer.getValue(), params);
     }
     /**模块的 init 生命周期调用。*/
     protected void onInit(ModuleInfo forModule, Binder binder) {

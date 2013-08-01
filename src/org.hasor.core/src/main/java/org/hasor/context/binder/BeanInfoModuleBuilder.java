@@ -16,10 +16,9 @@
 package org.hasor.context.binder;
 import java.util.ArrayList;
 import java.util.List;
-import org.hasor.context.BeanInfo;
 import org.hasor.context.ApiBinder.BeanBindingBuilder;
+import org.hasor.context.BeanInfo;
 import com.google.inject.Binder;
-import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.binder.LinkedBindingBuilder;
@@ -59,11 +58,10 @@ class BeanInfoModuleBuilder implements Module {
         public <T> LinkedBindingBuilder<T> bindType(Class<T> beanClass) {
             if (this.names.isEmpty() == true)
                 throw new UnsupportedOperationException("the bean name is undefined!");
-            Key<T> beanKey = Key.get(beanClass);
-            LinkedBindingBuilder<T> beanBuilder = binder.bind(beanKey);
+            LinkedBindingBuilder<T> beanBuilder = binder.bind(beanClass);
             String[] aliasNames = this.names.toArray(new String[this.names.size()]);
             for (String nameItem : this.names) {
-                BeanInfoDefinition beanInfo = new BeanInfoDefinition(nameItem, aliasNames, beanKey, beanClass);
+                BeanInfoDefinition beanInfo = new BeanInfoDefinition(nameItem, aliasNames, beanClass);
                 beanInfoDefinitions.add(beanInfo);
             }
             return beanBuilder;
