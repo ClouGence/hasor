@@ -18,7 +18,7 @@ import org.hasor.annotation.Module;
 import org.hasor.context.ApiBinder;
 import org.hasor.context.AppContext;
 import org.hasor.context.ModuleSettings;
-import org.hasor.context.module.AbstractHasorModule;
+import org.hasor.context.reactor.AbstractHasorModule;
 /**
  * 
  * @version : 2013-7-27

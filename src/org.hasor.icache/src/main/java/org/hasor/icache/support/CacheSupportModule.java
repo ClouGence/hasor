@@ -30,7 +30,7 @@ import org.hasor.annotation.support.AnnoSupportModule;
 import org.hasor.context.ApiBinder;
 import org.hasor.context.AppContext;
 import org.hasor.context.ModuleSettings;
-import org.hasor.context.module.AbstractHasorModule;
+import org.hasor.context.reactor.AbstractHasorModule;
 import org.hasor.icache.Cache;
 import org.hasor.icache.CacheDefine;
 import org.hasor.icache.CacheManager;

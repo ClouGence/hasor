@@ -28,7 +28,7 @@ import org.hasor.context.HasorEventListener;
 import org.hasor.context.HasorSettingListener;
 import org.hasor.context.LifeCycle.LifeCycleEnum;
 import org.hasor.context.ModuleSettings;
-import org.hasor.context.module.AbstractHasorModule;
+import org.hasor.context.reactor.AbstractHasorModule;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 /**
@@ -44,7 +44,7 @@ public class AnnoSupportModule extends AbstractHasorModule {
     /**≥ı ºªØ.*/
     @Override
     public void init(ApiBinder apiBinder) {
-        if (apiBinder.getInitContext().getSettings().getBoolean("framework.annotation") == false) {
+        if (apiBinder.getInitContext().getSettings().getBoolean("hasor.annotation") == false) {
             Hasor.warning("init Annotation false!");
             return;
         }

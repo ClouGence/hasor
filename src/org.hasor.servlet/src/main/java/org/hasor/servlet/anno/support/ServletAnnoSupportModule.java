@@ -51,7 +51,7 @@ public class ServletAnnoSupportModule extends AbstractWebHasorModule {
     /**≥ı ºªØ.*/
     @Override
     public void init(WebApiBinder apiBinder) {
-        if (apiBinder.getInitContext().getSettings().getBoolean("framework.annotation") == false) {
+        if (apiBinder.getInitContext().getSettings().getBoolean("hasor.annotation") == false) {
             Hasor.warning("init WebAnnotation false!");
             return;
         }

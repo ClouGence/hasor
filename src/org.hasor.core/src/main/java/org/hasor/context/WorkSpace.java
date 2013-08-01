@@ -27,30 +27,21 @@ public interface WorkSpace {
     /**获取工作目录，工作路径的配置可以在config.xml的“<b>workspace.workDir</b>”节点上配置。<br/>
      * <font color="00aa00"><b>提示</b></font>：该节点的配置内容支持环境变量解析。*/
     public String getWorkDir();
-    /**获取数据文件存放目录，工作路径的配置可以在config.xml的“<b>workspace.dataDir</b>”节点上配置。<br/>
-     * <font color="00aa00"><b>提示</b></font>：该节点的配置内容支持环境变量解析。*/
-    public String getDataDir();
     /**获取临时文件存放目录，工作路径的配置可以在config.xml的“<b>workspace.tempDir</b>”节点上配置。<br/>
      * <font color="00aa00"><b>提示</b></font>：该节点的配置内容支持环境变量解析。*/
     public String getTempDir();
-    /**获取缓存文件存放目录，工作路径的配置可以在config.xml的“<b>workspace.cacheDir</b>”节点上配置。<br/>
-     * <font color="00aa00"><b>提示</b></font>：该节点的配置内容支持环境变量解析。*/
-    public String getCacheDir();
     /**获取工作空间中专门用于存放模块配置信息的目录空间，配置可以在config.xml的“<b>workspace.pluginDir</b>”节点上配置。<br/>
      * <font color="00aa00"><b>提示</b></font>：该节点的配置内容支持环境变量解析。*/
     public String getPluginDir();
     /**获取工作空间中专门用于存放日志的目录空间，配置可以在config.xml的“<b>workspace.logDir</b>”节点上配置。<br/>
      * <font color="00aa00"><b>提示</b></font>：该节点的配置内容支持环境变量解析。*/
     public String getLogDir();
-    /**基于{@link #getDataDir()}的路径作为父路径，返回由subPath参数所表示的数据目录。<br/>
+    /**基于{@link #getWorkDir()}的路径作为父路径，返回由subPath参数所表示的临时目录。<br/>
      * <font color="00aa00"><b>提示</b></font>：参数中支持包含环境变量。*/
-    public String getDataDir(String subPath);
+    public String getWorkDir(String subPath);
     /**基于{@link #getTempDir()}的路径作为父路径，返回由subPath参数所表示的临时目录。<br/>
      * <font color="00aa00"><b>提示</b></font>：参数中支持包含环境变量。*/
     public String getTempDir(String subPath);
-    /**基于{@link #getCacheDir()}的路径作为父路径，返回由subPath参数所表示的缓存目录。<br/>
-     * <font color="00aa00"><b>提示</b></font>：参数中支持包含环境变量。*/
-    public String getCacheDir(String subPath);
     /**基于{@link #getPluginDir()}的路径作为父路径，返回由model参数所表示的模块私有空间。<br/>
      * <font color="00aa00"><b>提示</b></font>：参数中支持包含环境变量。*/
     public String getPluginDir(Class<?> hasorModule);

@@ -38,82 +38,43 @@ public class StandardWorkSpace implements WorkSpace {
     }
     @Override
     public String getWorkDir() {
-        String workDir = getSettings().getDirectoryPath("workspace.workDir");
+        String workDir = getSettings().getDirectoryPath("hasor.workspace.workDir");
         workDir = workDir.replace("/", File.separator);
         if (workDir.startsWith("." + File.separatorChar))
             return new File(workDir.substring(2)).getAbsolutePath();
         return workDir;
     };
     @Override
-    public String getDataDir() {
-        String workDir = getWorkDir();
-        String dataDir = getSettings().getDirectoryPath("workspace.dataDir");
-        boolean absolute = getSettings().getBoolean("workspace.dataDir.absolute");
-        if (absolute == false)
-            return str2path(new File(workDir, dataDir).getAbsolutePath());
-        else
-            return str2path(new File(dataDir).getAbsolutePath());
-    };
-    @Override
     public String getTempDir() {
         String workDir = getWorkDir();
-        String tempDir = getSettings().getDirectoryPath("workspace.tempDir");
-        boolean absolute = getSettings().getBoolean("workspace.tempDir.absolute");
-        if (absolute == false)
-            return str2path(new File(workDir, tempDir).getAbsolutePath());
-        else
-            return str2path(new File(tempDir).getAbsolutePath());
-    };
-    @Override
-    public String getCacheDir() {
-        String workDir = getWorkDir();
-        String cacheDir = getSettings().getDirectoryPath("workspace.cacheDir");
-        boolean absolute = getSettings().getBoolean("workspace.cacheDir.absolute");
-        if (absolute == false)
-            return str2path(new File(workDir, cacheDir).getAbsolutePath());
-        else
-            return str2path(new File(cacheDir).getAbsolutePath());
+        String tempDir = getSettings().getDirectoryPath("hasor.workspace.tempDir");
+        return str2path(new File(workDir, tempDir).getAbsolutePath());
     };
     @Override
     public String getPluginDir() {
         String workDir = getWorkDir();
-        String pluginDir = getSettings().getDirectoryPath("workspace.pluginDir");
-        boolean absolute = getSettings().getBoolean("workspace.pluginDir.absolute");
-        if (absolute == false)
-            return str2path(new File(workDir, pluginDir).getAbsolutePath());
-        else
-            return str2path(new File(pluginDir).getAbsolutePath());
+        String pluginDir = getSettings().getDirectoryPath("hasor.workspace.pluginDir");
+        return str2path(new File(workDir, pluginDir).getAbsolutePath());
     }
     @Override
     public String getLogDir() {
         String workDir = getWorkDir();
-        String pluginDir = getSettings().getDirectoryPath("workspace.logDir");
-        boolean absolute = getSettings().getBoolean("workspace.logDir.absolute");
-        if (absolute == false)
-            return str2path(new File(workDir, pluginDir).getAbsolutePath());
-        else
-            return str2path(new File(pluginDir).getAbsolutePath());
+        String pluginDir = getSettings().getDirectoryPath("hasor.workspace.logDir");
+        return str2path(new File(workDir, pluginDir).getAbsolutePath());
     }
     @Override
-    public String getDataDir(String name) {
-        if (StringUtils.isBlank(name) == true)
-            return getDataDir();
+    public String getWorkDir(String subPath) {
+        if (StringUtils.isBlank(subPath) == true)
+            return getWorkDir();
         else
-            return str2path(new File(getDataDir(), name).getAbsolutePath());
-    };
+            return str2path(new File(getWorkDir(), subPath).getAbsolutePath());
+    }
     @Override
-    public String getTempDir(String name) {
-        if (StringUtils.isBlank(name) == true)
+    public String getTempDir(String subPath) {
+        if (StringUtils.isBlank(subPath) == true)
             return getTempDir();
         else
-            return str2path(new File(getTempDir(), name).getAbsolutePath());
-    };
-    @Override
-    public String getCacheDir(String name) {
-        if (StringUtils.isBlank(name) == true)
-            return getCacheDir();
-        else
-            return str2path(new File(getCacheDir(), name).getAbsolutePath());
+            return str2path(new File(getTempDir(), subPath).getAbsolutePath());
     };
     @Override
     public String getPluginDir(Class<?> hasorModule) {
@@ -121,9 +82,9 @@ public class StandardWorkSpace implements WorkSpace {
             return null;
         String pluginName = hasorModule.getName();
         if (StringUtils.isBlank(pluginName) == true)
-            return getCacheDir();
+            return getPluginDir();
         else
-            return str2path(new File(getCacheDir(), pluginName).getAbsolutePath());
+            return str2path(new File(getPluginDir(), pluginName).getAbsolutePath());
     }
     @Override
     public String getLogDir(String subPath) {

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://project.hasor.net/hasor/schema/main">
 	<!-- 框架配置 -->
-	<framework>
+	<hasor>
 		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
 		<loadPackages>org.platform.*</loadPackages>
-	</framework>
-	<workspace>
-		<!-- 程序工作空间基础目录（绝对地址） -->
-		<workDir>./test-work</workDir>
-	</workspace>
+		<workspace>
+			<!-- 程序工作空间基础目录（绝对地址） -->
+			<workDir>./test-work</workDir>
+		</workspace>
+	</hasor>
 	<!-- Web部分的配置（配置不支持动态更新） -->
 	<httpServlet>
 		<!-- 资源装载器 -->

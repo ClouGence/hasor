@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.xml.stream.XMLStreamException;
-import org.hasor.Hasor;
 import org.hasor.context.Settings;
 import org.hasor.context.XmlProperty;
 import org.hasor.context.setting.HasorXmlParser;
@@ -107,7 +106,6 @@ public class RootSettingsHasorXmlParser implements HasorXmlParser {
             } else
                 dataContainer.put($key, $var);
         }
-        Hasor.info("merge Completed size is %s", dataContainer.size());
     }
     /**转换成Key Value形式*/
     protected void convertType(Map<String, Object> returnData, List<XmlProperty> xmlPropertyList, String parentAttName) {

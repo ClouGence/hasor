@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root:config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-icache">
 	<!-- 框架配置 -->
-	<framework>
+	<hasor>
 		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
 		<loadPackages>org.hasor.icache.*</loadPackages>
-	</framework>
+	</hasor>
 	<!-- 缓存配置 -->
 	<cacheSettings>
 		<!-- MapCache 配置 -->

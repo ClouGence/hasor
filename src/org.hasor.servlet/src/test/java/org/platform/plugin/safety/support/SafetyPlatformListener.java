@@ -5,7 +5,7 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.hasor.annotation.Module;
 import org.hasor.context.ApiBinder;
 import org.hasor.context.ModuleSettings;
-import org.hasor.context.module.AbstractHasorModule;
+import org.hasor.context.reactor.AbstractHasorModule;
 import org.platform.plugin.safety.Power;
 import org.platform.plugin.safety.SafetyContext;
 import com.google.inject.matcher.AbstractMatcher;

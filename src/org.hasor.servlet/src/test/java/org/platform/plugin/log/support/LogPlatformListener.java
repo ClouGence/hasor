@@ -6,7 +6,7 @@ import org.hasor.Hasor;
 import org.hasor.annotation.Module;
 import org.hasor.context.ApiBinder;
 import org.hasor.context.ModuleSettings;
-import org.hasor.context.module.AbstractHasorModule;
+import org.hasor.context.reactor.AbstractHasorModule;
 import org.platform.plugin.log.OutLog;
 import com.google.inject.matcher.AbstractMatcher;
 /**

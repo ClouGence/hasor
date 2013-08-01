@@ -36,7 +36,7 @@ public class Dep2Test {
          *         Mode1 **
          *   Mode9
          */
-        AnnoAppContextSupportModule annoApp = new AnnoAppContextSupportModule("abc-config.xml");
+        AnnoAppContextSupportModule annoApp = new AnnoAppContextSupportModule("dep2-config.xml");
         annoApp.start();
         // TODO Auto-generated method stub
         annoApp.destroy();

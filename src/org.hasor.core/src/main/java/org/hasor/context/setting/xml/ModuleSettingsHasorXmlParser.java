@@ -107,7 +107,6 @@ public class ModuleSettingsHasorXmlParser implements HasorXmlParser {
             } else
                 dataContainer.put($key, $var);
         }
-        Hasor.info("merge Completed size is %s", dataContainer.size());
     }
     /**转换成Key Value形式*/
     protected void convertType(Map<String, Object> returnData, List<XmlProperty> xmlPropertyList, String parentAttName) {

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root:config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-freemarker">
 	<!-- 框架配置 -->
-	<framework>
+	<hasor>
 		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
 		<loadPackages>org.hasor.freemarker.*</loadPackages>
-	</framework>
+	</hasor>
 	<!-- freemarker 配置，onError当模板处理发生异常时的处理方式。模式：ThrowError（抛出异常）、PrintOnConsole（打印到控制台或日志）、Warning（忽略，仅仅产生一条警告消息）PrintOnPage（打印到页面） -->
 	<freemarker>
 		<!-- Configuration对象创建工厂 -->

@@ -62,7 +62,7 @@ public class StandardEventManager implements EventManager {
         return this.settings;
     }
     private void update() {
-        int eventThreadPoolSize = this.getSettings().getInteger("framework.eventThreadPoolSize", 20);
+        int eventThreadPoolSize = this.getSettings().getInteger("hasor.eventThreadPoolSize", 20);
         ThreadPoolExecutor threadPool = (ThreadPoolExecutor) executorService;
         threadPool.setCorePoolSize(eventThreadPoolSize);
     }
@@ -216,8 +216,8 @@ public class StandardEventManager implements EventManager {
         if (this.timerMap.containsKey(timerName))
             throw new RepeateException(timerName + " timer is exist.");
         //
-        int timerPeriod = this.getSettings().getInteger("framework.timerEvent");
-        final String timerType = this.getSettings().getString("framework.timerEvent.type");
+        int timerPeriod = this.getSettings().getInteger("hasor.timerEvent");
+        final String timerType = this.getSettings().getString("hasor.timerEvent.type");
         ScheduledFuture<?> future = null;
         Runnable eventListener = new Runnable() {
             @Override

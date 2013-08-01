@@ -30,8 +30,8 @@ import org.hasor.context.ModuleSettings;
 import org.hasor.context.Settings;
 import org.hasor.context.WorkSpace;
 import org.hasor.context.binder.ApiBinderModule;
-import org.hasor.context.module.ModuleInfoBean;
-import org.hasor.context.module.ModuleReactor;
+import org.hasor.context.reactor.ModuleInfoBean;
+import org.hasor.context.reactor.ModuleReactor;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -64,7 +64,7 @@ public class DefaultAppContext extends AbstractAppContext {
         super.initContext();
         this.running = false;
         this.guice = null;
-        this.forceModule = this.getSettings().getBoolean("framework.forceModule", false);
+        this.forceModule = this.getSettings().getBoolean("hasor.forceModule", false);
     }
     //
     //

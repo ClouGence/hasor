@@ -75,7 +75,7 @@ public class ResourceLoaderFilter implements Filter {
             loaderCreatorList.add(define);
         }
         //2.≈‰÷√loader
-        ArrayList<ResourceLoader> resourceLoaderList = new ArrayList<ResourceLoader>();
+        List<ResourceLoader> resourceLoaderList = new ArrayList<ResourceLoader>();
         for (LoaderConfig item : this.settings.getLoaders()) {
             String loaderType = item.loaderType;
             String configVal = item.config.getText();
@@ -105,12 +105,15 @@ public class ResourceLoaderFilter implements Filter {
         //3.±£¥Ê
         this.loaderList = resourceLoaderList.toArray(new ResourceLoader[resourceLoaderList.size()]);
         //4.ª∫¥Ê¬∑æ∂
-        this.cacheDir = new File(this.appContext.getWorkSpace().getCacheDir(this.settings.getCacheDir()));
+        String settingsCache = this.settings.getCacheDir();
+        String workCache = this.appContext.getWorkSpace().getWorkDir("cache");
+        //
+        this.cacheDir = new File(workCache, settingsCache);
         if (!chekcCacheDir()) {
             Hasor.warning("init ResourceLoaderFilter error can not create %s", this.cacheDir);
             int i = 0;
             while (true) {
-                this.cacheDir = new File(this.appContext.getWorkSpace().getCacheDir(this.settings.getCacheDir() + "_" + String.valueOf(i)));
+                this.cacheDir = new File(workCache, settingsCache + "_" + String.valueOf(i));
                 if (chekcCacheDir())
                     break;
             }

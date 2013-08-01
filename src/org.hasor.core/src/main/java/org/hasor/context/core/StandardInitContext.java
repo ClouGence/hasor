@@ -68,7 +68,7 @@ public class StandardInitContext implements InitContext {
         this.environment = this.createEnvironment();
         this.eventManager = this.createEventManager();
         //
-        String[] spanPackages = this.getSettings().getStringArray("framework.loadPackages");
+        String[] spanPackages = this.getSettings().getStringArray("hasor.loadPackages");
         ArrayList<String> allPack = new ArrayList<String>();
         for (String packs : spanPackages) {
             if (StringUtils.isBlank(packs) == true)
