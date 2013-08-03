@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -93,15 +94,18 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
     //
     /**特殊配置的环境变量*/
     protected Map<String, String> configEnvironment() {
-        Map<String, String> hasorEnv = new HashMap<String, String>();
-        XmlProperty[] xmlPropArray = this.getSettings().getXmlPropertyArray("environmentVar");
+        Settings settings = this.getSettings();
+        XmlProperty[] xmlPropArray = settings.getXmlPropertyArray("environmentVar");
+        List<String> envNames = new ArrayList<String>();//用于收集环境变量名称
         for (XmlProperty xmlProp : xmlPropArray) {
-            for (XmlProperty envItem : xmlProp.getChildren()) {
-                hasorEnv.put(envItem.getName().toUpperCase(), envItem.getText());
-            }
+            for (XmlProperty envItem : xmlProp.getChildren())
+                envNames.add(envItem.getName().toUpperCase());
         }
-        //单独处理work_home
-        String workDir = this.getSettings().getString("environmentVar.HASOR_WORK_HOME", "./");
+        Map<String, String> hasorEnv = new HashMap<String, String>();
+        for (String envItem : envNames)
+            hasorEnv.put(envItem, settings.getString("environmentVar." + envItem));
+        /*单独处理work_home*/
+        String workDir = settings.getString("environmentVar.HASOR_WORK_HOME", "./");
         workDir = workDir.replace("/", File.separator);
         if (workDir.startsWith("." + File.separatorChar))
             hasorEnv.put("HASOR_WORK_HOME", new File(workDir.substring(2)).getAbsolutePath());
@@ -189,6 +193,8 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
         return varValue;
     }
     private String evalString(String evalString, Map<String, String> paramMap) {
+        if (StringUtils.isBlank(evalString))
+            return "";
         Pattern keyPattern = Pattern.compile("(?:%(\\w+)%){1,1}");//  (?:%(\w+)%)
         Matcher keyM = keyPattern.matcher(evalString);
         ArrayList<String> data = new ArrayList<String>();

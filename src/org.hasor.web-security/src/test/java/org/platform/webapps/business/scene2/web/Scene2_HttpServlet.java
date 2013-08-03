@@ -57,7 +57,7 @@ public class Scene2_HttpServlet extends HttpServlet {
         serBean.print();
         for (int i = 0; i < 10; i++) {
             //System.out.println(currentViewContext.genPath(System.currentTimeMillis(), 512));
-            System.out.println(appContext.getWorkSpace().createTempFile());
+            System.out.println(appContext.getEnvironment().uniqueTempFile());
         }
         //
         //
