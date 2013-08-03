@@ -18,9 +18,9 @@
 			<!-- </PredefineLoader> -->
 			<!-- -->
 			<!-- 工作目录中的webapp文件夹 -->
-			<PathLoader>{HASOR_WORK_HOME}/webapp</PathLoader>
+			<PathLoader>%HASOR_WORK_HOME%/webapp</PathLoader>
 			<!-- Web网站根 -->
-			<PathLoader>{HASOR_WEBROOT}/</PathLoader>
+			<PathLoader>%HASOR_WEBROOT%/</PathLoader>
 			<!-- classPath路径下指定的位置 -->
 			<ClassPathLoader>/META-INF/webapp</ClassPathLoader>
 		</templateLoader>

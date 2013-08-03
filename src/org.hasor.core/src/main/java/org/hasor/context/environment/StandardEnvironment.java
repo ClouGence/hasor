@@ -15,10 +15,12 @@
  */
 package org.hasor.context.environment;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,7 +28,7 @@ import org.hasor.Hasor;
 import org.hasor.context.Environment;
 import org.hasor.context.HasorSettingListener;
 import org.hasor.context.Settings;
-import org.hasor.context.WorkSpace;
+import org.hasor.context.XmlProperty;
 import org.more.util.StringUtils;
 /**
  * Environment接口实现类，loadEnvironment方法是初始化方法。
@@ -34,85 +36,24 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class StandardEnvironment implements Environment, HasorSettingListener {
-    private Map<String, String> envMap      = new HashMap<String, String>();
-    private Map<String, String> readOnlyMap = null;
-    private WorkSpace           workSpace   = null;
+    /*所属的Settings*/
+    private Settings            settings;
+    /*最终使用的环境变量Map*/
+    private Map<String, String> finalEnvMap;
+    /*用户通过Api添加的环境变量Map*/
+    private Map<String, String> userEnvMap;
     //
-    public StandardEnvironment(WorkSpace workSpace) {
-        Hasor.assertIsNotNull(workSpace, "WorkSpace type parameter is empty!");
-        this.workSpace = workSpace;
-        this.workSpace.getSettings().addSettingsListener(this);
+    //
+    //
+    public StandardEnvironment(Settings settings) {
+        Hasor.assertIsNotNull(settings, "Settings type parameter is empty!");
+        this.settings = settings;
+        this.userEnvMap = new HashMap<String, String>();
+        settings.addSettingsListener(this);
     }
-    /*
-     * SettingListener 接口实现
-     *   实现该接口的目的是，通过注册SettingListener动态更新环境变量相关信息。
-     */
     @Override
-    public void onLoadConfig(Settings newConfig) {
-        //1.系统环境变量 & Java系统属性
-        this.envMap.putAll(System.getenv());
-        Properties prop = System.getProperties();
-        Map<String, String> hasorProp = new HashMap<String, String>();
-        for (Object propKey : prop.keySet()) {
-            String k = propKey.toString();
-            Object v = prop.get(propKey);
-            if (v != null)
-                hasorProp.put(k, v.toString());
-        }
-        this.envMap.putAll(hasorProp);
-        //2.Hasor 特有变量
-        Map<String, String> hasorEnv = this.getHasorEnvironment();
-        hasorEnv = (hasorEnv == null) ? new HashMap<String, String>() : hasorEnv;
-        this.envMap.putAll(hasorEnv);
-        //3.日志输出
-        int keyMaxSize = 0;
-        for (String key : this.envMap.keySet())
-            keyMaxSize = (key.length() >= keyMaxSize) ? key.length() : keyMaxSize;
-        //
-        keyMaxSize = keyMaxSize + 2;
-        Hasor.info("onLoadConfig Environment \n" + //
-                StringUtils.fixedString(100, '-') + "\n" + //
-                Hasor.formatMap4log(keyMaxSize, System.getenv()) + //
-                StringUtils.fixedString(100, '-') + "\n" + //
-                Hasor.formatMap4log(keyMaxSize, hasorProp) + //
-                StringUtils.fixedString(100, '-') + "\n" + //
-                Hasor.formatMap4log(keyMaxSize, hasorEnv) + //
-                StringUtils.fixedString(100, '-'));
-    }
-    /**获取Hasor的环境变量*/
-    protected Map<String, String> getHasorEnvironment() {
-        Map<String, String> hasorEnv = new HashMap<String, String>();
-        hasorEnv.put("HASOR_WORK_HOME", workSpace.getWorkDir());
-        hasorEnv.put("HASOR_TEMP_HOME", workSpace.getTempDir());
-        hasorEnv.put("HASOR_PLUGIN_HOME", workSpace.getPluginDir());
-        //hasorEnv.put("HASOR_DATA_HOME", workSpace.getDataDir());
-        //hasorEnv.put("HASOR_CACHE_HOME", workSpace.getCacheDir());
-        return hasorEnv;
-    }
-    /*
-     * Environment 接口实现类，负责实现Environment接口相关功能。
-     */
-    @Override
-    public String evalString(String evalString) {
-        Pattern keyPattern = Pattern.compile("(?:\\{(\\w+)\\}){1,1}");//  (?:\{(\w+)\})
-        Matcher keyM = keyPattern.matcher(evalString);
-        ArrayList<String> data = new ArrayList<String>();
-        while (keyM.find()) {
-            String varKey = keyM.group(1);
-            String var = this.getEnvVar(varKey);
-            var = StringUtils.isBlank(var) ? ("{" + varKey + "}") : var;
-            data.add(var);
-        }
-        String[] splitArr = keyPattern.split(evalString);
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < splitArr.length; i++) {
-            sb.append(splitArr[i]);
-            if (data.size() > i)
-                sb.append(data.get(i));
-        }
-        String returnData = sb.toString().replace("/", File.separator);
-        Hasor.debug("evalString '%s' eval to '%s'.", evalString, returnData);
-        return returnData;
+    public Settings getSettings() {
+        return this.settings;
     }
     @Override
     public void addEnvVar(String envName, String envValue) {
@@ -126,7 +67,7 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
         else
             Hasor.info("%s = %s.", envName, envValue);
         //
-        this.envMap.put(envName, StringUtils.isBlank(envValue) ? "" : envValue);
+        this.userEnvMap.put(envName, StringUtils.isBlank(envValue) ? "" : envValue);
     }
     @Override
     public void remoteEnvVar(String varName) {
@@ -134,7 +75,7 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
             Hasor.warning("%s env, name is empty.");
             return;
         }
-        this.envMap.remove(varName);
+        this.userEnvMap.remove(varName);
         Hasor.info("%s env removed.", varName);
     }
     @Override
@@ -143,12 +84,163 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
     }
     @Override
     public Map<String, String> getEnv() {
-        if (this.readOnlyMap == null)
-            this.readOnlyMap = Collections.unmodifiableMap(this.envMap);
-        return this.readOnlyMap;
+        if (this.finalEnvMap == null)
+            this.finalEnvMap = new HashMap<String, String>();
+        return Collections.unmodifiableMap(this.finalEnvMap);
+    }
+    //
+    //
+    //
+    /**特殊配置的环境变量*/
+    protected Map<String, String> configEnvironment() {
+        Map<String, String> hasorEnv = new HashMap<String, String>();
+        XmlProperty[] xmlPropArray = this.getSettings().getXmlPropertyArray("environmentVar");
+        for (XmlProperty xmlProp : xmlPropArray) {
+            for (XmlProperty envItem : xmlProp.getChildren()) {
+                hasorEnv.put(envItem.getName().toUpperCase(), envItem.getText());
+            }
+        }
+        //单独处理work_home
+        String workDir = this.getSettings().getString("environmentVar.HASOR_WORK_HOME", "./");
+        workDir = workDir.replace("/", File.separator);
+        if (workDir.startsWith("." + File.separatorChar))
+            hasorEnv.put("HASOR_WORK_HOME", new File(workDir.substring(2)).getAbsolutePath());
+        else
+            hasorEnv.put("HASOR_WORK_HOME", workDir);
+        return hasorEnv;
+    }
+    /*
+     * SettingListener 接口实现
+     *   实现该接口的目的是，通过注册SettingListener动态更新环境变量相关信息。
+     */
+    @Override
+    public void onLoadConfig(Settings newConfig) {
+        //1.系统环境变量 & Java系统属性
+        Map<String, String> systemEnv = new HashMap<String, String>();
+        systemEnv.putAll(System.getenv());
+        //2.Java属性
+        Properties prop = System.getProperties();
+        Map<String, String> javaProp = new HashMap<String, String>();
+        for (Object propKey : prop.keySet()) {
+            String k = propKey.toString();
+            Object v = prop.get(propKey);
+            if (v != null)
+                javaProp.put(k, v.toString());
+        }
+        //3.Hasor 特有变量
+        Map<String, String> hasorEnv = this.configEnvironment();
+        hasorEnv = (hasorEnv == null) ? new HashMap<String, String>() : hasorEnv;
+        //4.设置生效
+        Map<String, String> finalMap = new HashMap<String, String>();
+        finalMap.putAll(systemEnv);
+        finalMap.putAll(javaProp);
+        finalMap.putAll(hasorEnv);
+        finalMap.putAll(userEnvMap);
+        //5.解析hasor 特有环境变量
+        for (Entry<String, String> hasorEnt : hasorEnv.entrySet()) {
+            String k = hasorEnt.getKey();
+            String v = hasorEnt.getValue();
+            finalMap.put(k, "");/*预输出，防止循环*/
+            v = this.evalString(v, finalMap);
+            finalMap.put(k, v);
+            hasorEnt.setValue(v);
+        }
+        this.finalEnvMap = finalMap;
+        //
+        /*日志输出*/
+        int keyMaxSize = 0;
+        for (String key : finalMap.keySet())
+            keyMaxSize = (key.length() >= keyMaxSize) ? key.length() : keyMaxSize;
+        keyMaxSize = keyMaxSize + 2;
+        StringBuffer sb = new StringBuffer();
+        sb.append("onLoadConfig Environment \n");
+        sb.append(StringUtils.fixedString(100, '-') + "\n");
+        sb.append(Hasor.formatMap4log(keyMaxSize, systemEnv) + "\n");
+        sb.append(StringUtils.fixedString(100, '-') + "\n");
+        sb.append(Hasor.formatMap4log(keyMaxSize, javaProp) + "\n");
+        sb.append(StringUtils.fixedString(100, '-') + "\n");
+        sb.append(Hasor.formatMap4log(keyMaxSize, hasorEnv) + "\n");
+        sb.append(StringUtils.fixedString(100, '-') + "\n");
+        sb.append(Hasor.formatMap4log(keyMaxSize, userEnvMap));
+        Hasor.info(sb.toString());
+    }
+    //
+    //
+    //
+    @Override
+    public String evalEnvVar(String varName) {
+        return this.evalEnvVar(varName, new HashMap<String, String>());
     }
     @Override
-    public WorkSpace getWorkSpace() {
-        return this.workSpace;
+    public String evalString(String evalString) {
+        return this.evalString(evalString, new HashMap<String, String>());
+    }
+    private String evalEnvVar(String varName, Map<String, String> paramMap) {
+        if (paramMap.containsKey(varName))
+            return paramMap.get(varName);
+        paramMap.put(varName, "");/*预处理值*/
+        //
+        String varValue = this.getEnv().get(varName);
+        if (StringUtils.isBlank(varValue))
+            varValue = "";
+        else
+            varValue = this.evalString(varValue, paramMap);
+        paramMap.put(varName, varValue);/*覆盖预处理值*/
+        return varValue;
+    }
+    private String evalString(String evalString, Map<String, String> paramMap) {
+        Pattern keyPattern = Pattern.compile("(?:%(\\w+)%){1,1}");//  (?:%(\w+)%)
+        Matcher keyM = keyPattern.matcher(evalString);
+        ArrayList<String> data = new ArrayList<String>();
+        while (keyM.find()) {
+            String varKey = keyM.group(1);
+            String var = this.evalEnvVar(varKey, paramMap);
+            var = StringUtils.isBlank(var) ? ("%" + varKey + "%") : var;
+            data.add(var);
+        }
+        String[] splitArr = keyPattern.split(evalString);
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < splitArr.length; i++) {
+            sb.append(splitArr[i]);
+            if (data.size() > i)
+                sb.append(data.get(i));
+        }
+        String returnData = sb.toString();
+        Hasor.debug("evalString '%s' eval to '%s'.", evalString, returnData);
+        return returnData;
+    }
+    //
+    //
+    //
+    @Override
+    public synchronized File uniqueTempFile() throws IOException {
+        try {
+            Thread.sleep(1);
+        } catch (InterruptedException e) {}
+        long markTime = System.currentTimeMillis();
+        String atPath = genPath(markTime, 512);
+        String fileName = atPath.substring(0, atPath.length() - 1) + "_" + String.valueOf(markTime) + ".tmp";
+        File tmpFile = new File(evalEnvVar(TempPath), fileName);
+        tmpFile.getParentFile().mkdirs();
+        tmpFile.createNewFile();
+        Hasor.debug("create Temp File at %s.", tmpFile);
+        return tmpFile;
+    };
+    /**
+    * 生成路径算法生成一个Path
+    * @param target 目标
+    * @param dirSize 每个目录下可以拥有的子目录或文件数目。
+    */
+    public String genPath(long number, int size) {
+        StringBuffer buffer = new StringBuffer();
+        long b = size;
+        long c = number;
+        do {
+            long m = number % b;
+            buffer.append(m + File.separator);
+            c = number / b;
+            number = c;
+        } while (c > 0);
+        return buffer.reverse().toString();
     }
 }

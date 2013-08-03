@@ -4,11 +4,11 @@
 	<hasor>
 		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
 		<loadPackages>org.demo.*</loadPackages>
-		<workspace>
-			<!-- 程序工作空间基础目录（绝对地址） -->
-			<workDir>./test-work</workDir>
-		</workspace>
 	</hasor>
+	<environmentVar>
+		<!-- 程序工作空间基础目录（绝对地址） -->
+		<HASOR_WORK_HOME>./test-work</HASOR_WORK_HOME>
+	</environmentVar>
 	<template>
 		<!-- 模板后缀名逗号间隔多个（支持重复配置共同生效） -->
 		<suffixSet>*.html,*.htm</suffixSet>

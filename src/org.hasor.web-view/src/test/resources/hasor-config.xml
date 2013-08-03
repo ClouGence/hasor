@@ -4,17 +4,17 @@
 	<hasor>
 		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
 		<loadPackages>org.platform.*</loadPackages>
-		<workspace>
-			<!-- 程序工作空间基础目录（绝对地址） -->
-			<workDir>./test-work</workDir>
-		</workspace>
 	</hasor>
+	<environmentVar>
+		<!-- 程序工作空间基础目录（绝对地址） -->
+		<HASOR_WORK_HOME>./test-work</HASOR_WORK_HOME>
+	</environmentVar>
 	<!-- Web部分的配置（配置不支持动态更新） -->
 	<httpServlet>
 		<!-- 资源装载器 -->
 		<resourceLoader>
 			<classpathLoader>/</classpathLoader>
-			<zipLoader>{HASOR_WEBROOT}/pic.zip</zipLoader>
+			<zipLoader>%HASOR_WEBROOT%/pic.zip</zipLoader>
 		</resourceLoader>
 	</httpServlet>
 	<template>

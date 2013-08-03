@@ -30,7 +30,7 @@ import com.google.inject.Inject;
  * @version : 2013-5-2
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@WebServlet("*/scene2.do")
+@WebServlet("*/scene2.ser")
 public class Scene2_HttpServlet extends HttpServlet {
     private static final long serialVersionUID = -8203858833170622693L;
     @Inject
@@ -57,7 +57,7 @@ public class Scene2_HttpServlet extends HttpServlet {
         serBean.print();
         for (int i = 0; i < 10; i++) {
             //System.out.println(currentViewContext.genPath(System.currentTimeMillis(), 512));
-            System.out.println(appContext.getWorkSpace().createTempFile());
+            System.out.println(appContext.getEnvironment().uniqueTempFile());
         }
         //
         //

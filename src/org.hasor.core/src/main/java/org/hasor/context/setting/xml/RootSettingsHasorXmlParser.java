@@ -89,7 +89,7 @@ public class RootSettingsHasorXmlParser implements HasorXmlParser {
             if ($varConflict != null && $varConflict instanceof XmlProperty && $var instanceof XmlProperty) {
                 XmlProperty $new = (XmlProperty) $var;
                 XmlProperty $old = (XmlProperty) $varConflict;
-                XmlProperty $final = $old.clone();
+                XmlProperty $final = ((XmlPropertyImpl) $old).clone();
                 /*¸²¸Ç²ßÂÔ*/
                 $final.getAttributeMap().putAll($new.getAttributeMap());
                 ((XmlPropertyImpl) $final).setText($new.getText());

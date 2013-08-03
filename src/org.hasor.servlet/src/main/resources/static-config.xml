@@ -5,6 +5,10 @@
 		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
 		<loadPackages>org.hasor.servlet.*,org.hasor.web.*</loadPackages>
 	</hasor>
+	<environmentVar>
+		<!-- 资源缓存路径 -->
+		<HTTP_CACHE_PATH>%HASOR_WORK_HOME%/cache/httpservlet.resourceloader.classpath</HTTP_CACHE_PATH>
+	</environmentVar>
 	<!-- （仅在启动时生效）Web部分的配置 -->
 	<httpServlet>
 		<!-- Web请求遇到异常后轮询errorHook的次数。 -->
@@ -18,11 +22,11 @@
 			<ignoreMethod>equals,hashCode,toString,getClass,wait,notify,notifyAll</ignoreMethod>
 		</actionServlet>
 		<!-- 资源装载器 -->
-		<resourceLoader enable="true" cacheDir="httpservlet.resourceloader.classpath" contentTypes="js,css,gif,ico,jpg,jpeg,png,swf,swc,flv,mp3,wav,avi">
+		<resourceLoader enable="true" contentTypes="js,css,gif,ico,jpg,jpeg,png,swf,swc,flv,mp3,wav,avi">
 			<!-- <zipLoader>{HASOR_WEBROOT}/pic.zip</zipLoader> -->
-			<pathLoader>{HASOR_WORK_HOME}/webapp</pathLoader>
+			<pathLoader>%HASOR_WORK_HOME%/webapp</pathLoader>
 			<!-- **需要配置，否则会导致资源装载器反复尝试从loader中装载** -->
-			<pathLoader>{HASOR_WEBROOT}/</pathLoader>
+			<pathLoader>%HASOR_WEBROOT%/</pathLoader>
 			<classpathLoader>/META-INF/webapp</classpathLoader>
 		</resourceLoader>
 	</httpServlet>

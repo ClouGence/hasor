@@ -21,7 +21,7 @@ import javax.servlet.ServletContext;
 import org.hasor.annotation.context.AnnoAppContextSupportModule;
 import org.hasor.context.Environment;
 import org.hasor.context.ModuleInfo;
-import org.hasor.context.WorkSpace;
+import org.hasor.context.Settings;
 import org.hasor.context.environment.StandardEnvironment;
 import org.hasor.servlet.binder.FilterPipeline;
 import org.hasor.servlet.binder.SessionListenerPipeline;
@@ -54,7 +54,7 @@ public class AnnoWebAppContext extends AnnoAppContextSupportModule {
     }
     @Override
     protected Environment createEnvironment() {
-        return new WebStandardEnvironment(this.getWorkSpace(), this.getServletContext());
+        return new WebStandardEnvironment(this.getSettings(), this.getServletContext());
     }
     @Override
     protected Injector createInjector(Module[] guiceModules) {
@@ -100,13 +100,13 @@ public class AnnoWebAppContext extends AnnoAppContextSupportModule {
  */
 class WebStandardEnvironment extends StandardEnvironment {
     private ServletContext servletContext;
-    public WebStandardEnvironment(WorkSpace workSpace, ServletContext servletContext) {
-        super(workSpace);
+    public WebStandardEnvironment(Settings settings, ServletContext servletContext) {
+        super(settings);
         this.servletContext = servletContext;
     }
     @Override
-    protected Map<String, String> getHasorEnvironment() {
-        Map<String, String> hasorEnv = super.getHasorEnvironment();
+    protected Map<String, String> configEnvironment() {
+        Map<String, String> hasorEnv = super.configEnvironment();
         hasorEnv.put("HASOR_WEBROOT", servletContext.getRealPath("/"));
         return hasorEnv;
     }

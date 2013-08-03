@@ -185,7 +185,7 @@ public abstract class Hasor {
     //
     public static String formatMap4log(int colWidth, Map<String, String> mapData) {
         /*输出系统环境变量日志*/
-        StringBuffer outLog = new StringBuffer();
+        StringBuffer outLog = new StringBuffer("");
         for (String key : mapData.keySet()) {
             String var = mapData.get(key);
             var = (var != null) ? var.replace("\r", "\\r").replace("\n", "\\n") : var;
@@ -193,6 +193,8 @@ public abstract class Hasor {
             outLog.append(Hasor.formatString(" %s : %s", key, var));
             outLog.append('\n');
         }
+        if (outLog.length() > 1)
+            outLog.deleteCharAt(outLog.length() - 1);
         return outLog.toString();
     }
     /*

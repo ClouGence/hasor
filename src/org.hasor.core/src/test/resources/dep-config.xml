@@ -7,10 +7,11 @@
 		<!-- 执行事件的线程池大小 -->
 		<eventThreadPoolSize>1</eventThreadPoolSize>
 		<forceModule>false</forceModule>
-		<workspace>
-			<!-- 程序工作空间基础目录（绝对地址） -->
-			<workDir>./test-work</workDir>
-		</workspace>
 	</hasor>
+	<environmentVar>
+		<!-- 程序工作空间基础目录（绝对地址） -->
+		<HASOR_WORK_HOME>./test-work</HASOR_WORK_HOME>
+	</environmentVar>
+
 	<userConfig>cc</userConfig>
 </config>

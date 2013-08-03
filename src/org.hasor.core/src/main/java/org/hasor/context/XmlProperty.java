@@ -32,8 +32,4 @@ public interface XmlProperty {
     public Map<String, String> getAttributeMap();
     /**获取Xml子节点。*/
     public List<XmlProperty> getChildren();
-    /**获取父节点*/
-    public XmlProperty getParent();
-    /**克隆一个XmlProperty*/
-    public XmlProperty clone();
 }

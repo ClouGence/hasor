@@ -105,7 +105,7 @@ class XmlPropertyImpl implements XmlProperty, GlobalProperty {
         newData.textString = this.textString;
         if (children != null)
             for (XmlProperty xmlProp : this.children) {
-                XmlPropertyImpl newClone = (XmlPropertyImpl) xmlProp.clone();
+                XmlPropertyImpl newClone = ((XmlPropertyImpl) xmlProp).clone();
                 newClone.setParent(newData);
                 newData.children.add(newClone);
             }

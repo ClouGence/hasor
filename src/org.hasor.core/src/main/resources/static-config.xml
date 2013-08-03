@@ -14,16 +14,19 @@
 		<timerEvent type="FixedDelay">1000</timerEvent>
 		<!-- 是否强迫所有模块都必须正常启动 -->
 		<forceModule>false</forceModule>
-		<!-- 工作空间设置（不支持环境变量） -->
-		<workspace>
-			<!-- 程序工作空间基础目录（绝对地址） -->
-			<workDir>.</workDir>
-			<!-- 程序运行期间所需的临时数据存放地址（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
-			<tempDir>/temp</tempDir>
-			<!-- 程序运行时生成的日志目录（默认相对baseDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
-			<logDir>/cache</logDir>
-			<!-- 插件&模块 的配置目录（默认相对workDir地址，可以通过设置absolute属性为true表示一个绝对地址） -->
-			<pluginDir>/plugins</pluginDir>
-		</workspace>
 	</hasor>
+	<!-- 工作空间设置 -->
+	<environmentVar>
+		<!-- 程序工作空间基础目录 -->
+		<HASOR_WORK_HOME>./</HASOR_WORK_HOME>
+		<!-- 临时文件位置 -->
+		<HASOR_TEMP_PATH>%HASOR_WORK_HOME%/temp</HASOR_TEMP_PATH>
+		<!-- 日志存放位置 -->
+		<HASOR_LOG_PATH>%HASOR_WORK_HOME%/cache</HASOR_LOG_PATH>
+		<!-- 插件目录 -->
+		<HASOR_PLUGIN_PATH>%HASOR_WORK_HOME%/plugins</HASOR_PLUGIN_PATH>
+		<!-- 模块配置目录 -->
+		<HASOR_PLUGIN_SETTINGS>%HASOR_WORK_HOME%/settings</HASOR_PLUGIN_SETTINGS>
+	</environmentVar>
+
 </root:config>

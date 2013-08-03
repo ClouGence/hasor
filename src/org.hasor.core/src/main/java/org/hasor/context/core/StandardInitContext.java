@@ -25,11 +25,9 @@ import org.hasor.context.EventManager;
 import org.hasor.context.InitContext;
 import org.hasor.context.LifeCycle;
 import org.hasor.context.Settings;
-import org.hasor.context.WorkSpace;
 import org.hasor.context.environment.StandardEnvironment;
 import org.hasor.context.event.StandardEventManager;
 import org.hasor.context.setting.HasorSettings;
-import org.hasor.context.workspace.StandardWorkSpace;
 import org.more.util.ClassUtils;
 import org.more.util.StringUtils;
 /**
@@ -42,7 +40,6 @@ public class StandardInitContext implements InitContext {
     private String              mainConfig;
     private String[]            spanPackage;
     private Settings            settings;
-    private WorkSpace           workSpace;
     private Environment         environment;
     private EventManager        eventManager;
     private Map<String, Object> attributeMap;
@@ -64,7 +61,6 @@ public class StandardInitContext implements InitContext {
         this.startTime = System.currentTimeMillis();
         this.attributeMap = this.createAttributeMap();
         this.settings = this.createSettings();
-        this.workSpace = this.createWorkSpace();
         this.environment = this.createEnvironment();
         this.eventManager = this.createEventManager();
         //
@@ -89,13 +85,9 @@ public class StandardInitContext implements InitContext {
     protected Settings createSettings() throws IOException {
         return new HasorSettings(this.getMainConfig());
     }
-    /**创建{@link WorkSpace}接口对象*/
-    protected WorkSpace createWorkSpace() {
-        return new StandardWorkSpace(this.getSettings());
-    }
     /**创建{@link Environment}接口对象*/
     protected Environment createEnvironment() {
-        return new StandardEnvironment(this.getWorkSpace());
+        return new StandardEnvironment(this.getSettings());
     }
     /**创建{@link EventManager}接口对象*/
     protected EventManager createEventManager() {
@@ -124,10 +116,6 @@ public class StandardInitContext implements InitContext {
     @Override
     public Settings getSettings() {
         return this.settings;
-    }
-    @Override
-    public WorkSpace getWorkSpace() {
-        return this.workSpace;
     }
     @Override
     public Environment getEnvironment() {

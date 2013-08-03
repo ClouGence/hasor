@@ -27,8 +27,6 @@ public interface InitContext {
     public long getAppStartTime();
     /**获取应用程序配置。*/
     public Settings getSettings();
-    /**获得工作空间设置*/
-    public WorkSpace getWorkSpace();
     /**获取环境变量操作接口。*/
     public Environment getEnvironment();
     /**同步方式抛出事件。当方法返回时已经全部处理完成事件分发。*/

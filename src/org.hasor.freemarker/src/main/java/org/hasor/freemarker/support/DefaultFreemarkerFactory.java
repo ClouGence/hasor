@@ -166,7 +166,7 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
                             templateLoaderList.add(loader);
                         }
                     } catch (Exception e) {
-                        Hasor.error("%s newTemplateLoader has error.%s", e);
+                        Hasor.error("%s newTemplateLoader has error.%s", key, e);
                     }
                 }
                 //

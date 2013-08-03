@@ -32,7 +32,6 @@ public class ResourceSettings /*implements HasorSettingListener*/{
     private boolean        enable       = false;
     private String[]       contentTypes = null;
     private LoaderConfig[] loaders      = null;
-    private String         cacheDir     = null;
     //
     public boolean isEnable() {
         return enable;
@@ -51,12 +50,6 @@ public class ResourceSettings /*implements HasorSettingListener*/{
     }
     public void setLoaders(LoaderConfig[] loaders) {
         this.loaders = loaders;
-    }
-    public String getCacheDir() {
-        return cacheDir;
-    }
-    public void setCacheDir(String cacheDir) {
-        this.cacheDir = cacheDir;
     }
     public void onLoadConfig(Settings newConfig) {
         this.enable = newConfig.getBoolean("httpServlet.resourceLoader.enable");
@@ -80,7 +73,5 @@ public class ResourceSettings /*implements HasorSettingListener*/{
             loaderArray.add(lc);
         }
         this.loaders = loaderArray.toArray(new LoaderConfig[loaderArray.size()]);
-        //3.
-        this.cacheDir = newConfig.getString("httpServlet.resourceLoader.cacheDir");
     }
 }

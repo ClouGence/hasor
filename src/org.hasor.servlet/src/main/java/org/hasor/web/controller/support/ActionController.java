@@ -46,6 +46,7 @@ class ActionController extends HttpServlet {
         super.init(config);
         this.actionManager = appContext.getInstance(ActionManager.class);
         this.actionSettings = appContext.getInstance(ActionSettings.class);
+        Hasor.info("ActionController intercept %s.", actionSettings.getIntercept());
     }
     public boolean testURL(HttpServletRequest request) {
         String requestPath = request.getRequestURI().substring(request.getContextPath().length());

@@ -97,7 +97,7 @@ public class ResourceLoaderFilter implements Filter {
                         resourceLoaderList.add(loader);
                     }
                 } catch (Exception e) {
-                    Hasor.error("%s ResourceLoaderCreator has error.%s", e);
+                    Hasor.error("%s ResourceLoaderCreator has error.%s", loaderType, e);
                 }
             }
             //
@@ -105,15 +105,14 @@ public class ResourceLoaderFilter implements Filter {
         //3.±£´æ
         this.loaderList = resourceLoaderList.toArray(new ResourceLoader[resourceLoaderList.size()]);
         //4.»º´æÂ·¾¶
-        String settingsCache = this.settings.getCacheDir();
-        String workCache = this.appContext.getWorkSpace().getWorkDir("cache");
+        String cacheHome = this.appContext.getEnvironment().evalEnvVar("HTTP_CACHE_PATH");
         //
-        this.cacheDir = new File(workCache, settingsCache);
+        this.cacheDir = new File(cacheHome);
         if (!chekcCacheDir()) {
             Hasor.warning("init ResourceLoaderFilter error can not create %s", this.cacheDir);
             int i = 0;
             while (true) {
-                this.cacheDir = new File(workCache, settingsCache + "_" + String.valueOf(i));
+                this.cacheDir = new File(cacheHome + "_" + String.valueOf(i));
                 if (chekcCacheDir())
                     break;
             }

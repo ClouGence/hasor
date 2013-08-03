@@ -28,7 +28,6 @@ import org.hasor.context.InitContext;
 import org.hasor.context.ModuleInfo;
 import org.hasor.context.ModuleSettings;
 import org.hasor.context.Settings;
-import org.hasor.context.WorkSpace;
 import org.hasor.context.binder.ApiBinderModule;
 import org.hasor.context.reactor.ModuleInfoBean;
 import org.hasor.context.reactor.ModuleReactor;
@@ -375,13 +374,6 @@ class ExtBind {
             @Override
             public Settings get() {
                 return appContet.getSettings();
-            }
-        });
-        /*绑定WorkSpace对象的Provider*/
-        binder.bind(WorkSpace.class).toProvider(new Provider<WorkSpace>() {
-            @Override
-            public WorkSpace get() {
-                return appContet.getWorkSpace();
             }
         });
         /*绑定Environment对象的Provider*/

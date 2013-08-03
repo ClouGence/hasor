@@ -29,7 +29,7 @@ import com.google.inject.Inject;
  * @version : 2013-7-31
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@WebServlet("/business/scene1.do")
+@WebServlet("/business/scene1.ser")
 public class Scene1_HttpServlet extends HttpServlet {
     private static final long serialVersionUID = 9157509300789665741L;
     @Inject
