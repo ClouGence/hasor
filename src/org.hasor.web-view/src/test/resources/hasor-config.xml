@@ -17,6 +17,15 @@
 			<zipLoader>%HASOR_WEBROOT%/pic.zip</zipLoader>
 		</resourceLoader>
 	</httpServlet>
+	<!-- （仅当启动时生效）页面装饰器配置 -->
+	<pageDecorate enable="true">
+		<processor name="free" creator="org.hasor.view.decorate.parser.freemarker.FreemarkerHtmlParser">
+			<templatePath>/template.htm</templatePath>
+		</processor>
+		<decorator contentType="text/html;charset=UTF-8" refParser="free">
+			<pattern>/*</pattern>
+		</decorator>
+	</pageDecorate>
 	<template>
 		<!-- 模板后缀名逗号间隔多个（支持重复配置共同生效） -->
 		<suffixSet>*.html,*.htm</suffixSet>

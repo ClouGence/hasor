@@ -41,6 +41,7 @@ class ManagedDecorateFilter implements Filter {
     private DecorateFilterDefine[] filterDefinitions = null;
     @Inject
     private AppContext             appContext        = null;
+    private boolean                enable            = false;
     //
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -48,6 +49,7 @@ class ManagedDecorateFilter implements Filter {
         for (DecorateFilterDefine filterDefinition : filterDefinitions) {
             filterDefinition.init(appContext);
         }
+        this.enable = this.appContext.getSettings().getBoolean("pageDecorate.enable", false);
     }
     private DecorateFilterDefine[] collectFilterDefinitions(Injector injector) {
         List<DecorateFilterDefine> filterDefinitions = new ArrayList<DecorateFilterDefine>();
@@ -60,6 +62,11 @@ class ManagedDecorateFilter implements Filter {
     }
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        if (enable == false) {
+            chain.doFilter(request, response);
+            return;
+        }
+        //
         //1.执行过滤器获取输出的结果。
         DecHttpServletRequestPropxy decRequest = new DecHttpServletRequestPropxy((HttpServletRequest) request);
         DecHttpServletResponsePropxy decResponse = new DecHttpServletResponsePropxy((HttpServletResponse) response);
