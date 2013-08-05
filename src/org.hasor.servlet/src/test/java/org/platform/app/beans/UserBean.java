@@ -1,6 +1,6 @@
 package org.platform.app.beans;
 import javax.inject.Singleton;
-import org.hasor.annotation.Bean;
+import org.hasor.context.anno.Bean;
 /**
  * 
  * @version : 2013-7-26

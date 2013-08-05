@@ -22,6 +22,7 @@ import org.hasor.context.AppContext;
 import org.hasor.context.Dependency;
 import org.hasor.context.HasorEventListener;
 import org.hasor.context.HasorModule;
+import org.hasor.context.InitContext;
 import org.hasor.context.ModuleInfo;
 import org.hasor.context.ModuleSettings;
 import org.more.UndefinedException;
@@ -203,5 +204,9 @@ public final class ModuleInfoBean implements ModuleSettings, HasorEventListener 
                 if (dep.isOption() == false)
                     return false;
         return true;
+    }
+    @Override
+    public InitContext getInitContext() {
+        return this.appContext;
     }
 }

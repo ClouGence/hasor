@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.hasor.test.dependency2;
-import org.hasor.annotation.Module;
 import org.hasor.context.ApiBinder;
 import org.hasor.context.ModuleSettings;
+import org.hasor.context.anno.Module;
 import org.hasor.context.reactor.AbstractHasorModule;
 /**
  * 

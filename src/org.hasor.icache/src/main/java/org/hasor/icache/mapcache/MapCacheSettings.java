@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.hasor.icache.mapcache;
-import org.hasor.annotation.SettingsListener;
 import org.hasor.context.HasorSettingListener;
 import org.hasor.context.Settings;
+import org.hasor.context.anno.SettingsListener;
 /**
  * ≈‰÷√–≈œ¢
  * @version : 2013-4-23

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.platform.webapps.business.scene2.service;
-import org.hasor.annotation.Bean;
+import org.hasor.context.anno.Bean;
 import org.hasor.security.AuthSession;
 import org.hasor.security.RoleIdentity;
 import org.hasor.security.RoleIdentityUtil;

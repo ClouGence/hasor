@@ -203,6 +203,7 @@ public class DefaultAppContext extends AbstractAppContext {
             getEventManager().doSyncEvent(eventName, ModuleInfoBean.Prop_Ready, true);
         } catch (RuntimeException e) {
             getEventManager().doSyncEvent(eventName, ModuleInfoBean.Prop_Ready, false, e);
+            Hasor.error("%s is not onReady! %s", forModule.getDisplayName(), e.getMessage());
             if (this.forceModule)
                 throw e;
         }
@@ -225,7 +226,7 @@ public class DefaultAppContext extends AbstractAppContext {
             getEventManager().doSyncEvent(eventName, ModuleInfoBean.Prop_Init, true);
         } catch (RuntimeException e) {
             getEventManager().doSyncEvent(eventName, ModuleInfoBean.Prop_Init, false, e);
-            Hasor.error("%s in the init phase encounters an error.\n%s", forModule.getDisplayName(), e);
+            Hasor.error("%s is not init! %s", forModule.getDisplayName(), e.getMessage());
             if (this.forceModule)
                 throw e;
         }

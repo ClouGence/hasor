@@ -3,18 +3,14 @@
 	<!-- 框架配置 -->
 	<hasor>
 		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
-		<loadPackages>org.hasor.servlet.*,org.hasor.web.*</loadPackages>
+		<loadPackages>org.hasor.mvc.*</loadPackages>
 	</hasor>
 	<environmentVar>
 		<!-- 资源缓存路径 -->
 		<HTTP_CACHE_PATH>%HASOR_WORK_HOME%/cache/httpservlet.resourceloader.classpath</HTTP_CACHE_PATH>
 	</environmentVar>
-	<!-- （仅在启动时生效）Web部分的配置 -->
-	<httpServlet>
-		<!-- Web请求遇到异常后轮询errorHook的次数。 -->
-		<errorCaseCount>5</errorCaseCount>
-		<!-- 请求响应编码设置 -->
-		<requestEncoding requestEncoding="utf-8" responseEncoding="utf-8" />
+	<!-- Hasor MVC -->
+	<hasor-mvc>
 		<!-- Action配置，enable：是否启用Action功能。 模式：mode:RestOnly（rest风格）、ServletOnly（中央servlet）、Both（两者同时使用） -->
 		<!-- defaultProduces 默认响应类型 -->
 		<actionServlet enable="true" mode="Both" intercept="*.do" defaultProduces="">
@@ -29,12 +25,28 @@
 			<pathLoader>%HASOR_WEBROOT%/</pathLoader>
 			<classpathLoader>/META-INF/webapp</classpathLoader>
 		</resourceLoader>
-	</httpServlet>
+		<!-- （仅当启动时生效）页面装饰器配置 -->
+		<pageDecorate enable="false">
+			<!-- <processor name="default" creator="org.hasor.view.decorate.parser.freemarker.FreemarkerHtmlParser"> -->
+			<!-- <templatePath>%HASOR_WEBROOT%/template.htm</templatePath> -->
+			<!-- </processor> -->
+			<!-- 缺省的装饰器 -->
+			<!-- name：装饰名，templatePath：装饰模板 -->
+			<!-- <decorator contentType="text/html" refParser="default"> -->
+			<!-- <pattern>/*</pattern> -->
+			<!-- <pattern>/*</pattern> -->
+			<!-- </decorator> -->
+			<!-- <decorator contentType="text/html" refParser="default"> -->
+			<!-- <pattern>/*</pattern> -->
+			<!-- <pattern>/*</pattern> -->
+			<!-- </decorator> -->
+		</pageDecorate>
+		<!-- 请求转发映射 -->
+		<!-- <httpRequestMapping enable="true"> -->
+		<!-- 文件匹配 -->
+		<!-- <fileMapping startWith="/" forwardTo="/index.htm" type="forward" /> -->
+		<!-- 目录匹配 -->
+		<!-- <pathMapping startWith="/baidu" forwardTo="http://www.baidu.com/" type="forward|redirect(default)"/> -->
+		<!-- </httpRequestMapping> -->
+	</hasor-mvc>
 </root:config>
-<!-- 请求转发映射 -->
-<!-- <httpRequestMapping enable="true"> -->
-<!-- 文件匹配 -->
-<!-- <fileMapping startWith="/" forwardTo="/index.htm" type="forward" /> -->
-<!-- 目录匹配 -->
-<!-- <pathMapping startWith="/baidu" forwardTo="http://www.baidu.com/" type="forward|redirect(default)"/> -->
-<!-- </httpRequestMapping> -->

@@ -11,6 +11,7 @@
 	<packaging>jar</packaging>
 	<!-- 引用依赖 -->
 	<dependencies>
+		<!-- Hasor-Core -->
 		<dependency>
 			<groupId>org.hasor</groupId>
 			<artifactId>org.hasor.core</artifactId>

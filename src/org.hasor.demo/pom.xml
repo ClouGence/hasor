@@ -14,18 +14,18 @@
 		<!-- MVC -->
 		<dependency>
 			<groupId>org.hasor</groupId>
-			<artifactId>org.hasor.servlet</artifactId>
+			<artifactId>org.hasor.mvc</artifactId>
 			<version>0.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hasor</groupId>
-			<artifactId>org.hasor.web-view</artifactId>
+			<artifactId>org.hasor.icache</artifactId>
 			<version>0.0.1</version>
 		</dependency>
 		<!-- Web Security -->
 		<dependency>
 			<groupId>org.hasor</groupId>
-			<artifactId>org.hasor.web-security</artifactId>
+			<artifactId>org.hasor.security</artifactId>
 			<version>0.0.1</version>
 		</dependency>
 		<!-- Log -->

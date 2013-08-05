@@ -17,8 +17,8 @@ package org.platform.app.actions;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.hasor.context.AppContext;
-import org.hasor.web.controller.Controller;
-import org.hasor.web.controller.support.result.Result;
+import org.hasor.mvc.controller.Controller;
+import org.hasor.mvc.controller.support.result.Result;
 /**
  * 
  * @version : 2013-7-23

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.demo.listener;
-import org.hasor.annotation.EventListener;
 import org.hasor.context.HasorEventListener;
+import org.hasor.context.anno.EventListener;
 import org.hasor.security.support.SecurityEventDefine;
 /**
  * 

@@ -1,7 +1,7 @@
 package org.platform.app.beans;
 import java.io.IOException;
-import org.hasor.annotation.Bean;
-import org.hasor.annotation.context.AnnoAppContextSupportModule;
+import org.hasor.context.anno.Bean;
+import org.hasor.context.anno.context.AnnoAppContextSupportModule;
 import org.platform.plugin.log.OutLog;
 /**
  * 

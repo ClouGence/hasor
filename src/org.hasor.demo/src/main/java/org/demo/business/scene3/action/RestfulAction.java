@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.demo.business.scene3.action;
-import org.hasor.web.controller.Controller;
+import org.hasor.mvc.controller.Controller;
 /**
  * 
  * @version : 2013-7-31

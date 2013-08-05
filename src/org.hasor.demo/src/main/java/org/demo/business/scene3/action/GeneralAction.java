@@ -16,10 +16,10 @@
 package org.demo.business.scene3.action;
 import javax.servlet.http.HttpServletRequest;
 import org.demo.business.scene2.service.Scene2_Bean;
-import org.hasor.web.controller.Controller;
-import org.hasor.web.controller.RestfulMapping;
-import org.hasor.web.controller.Var;
-import org.hasor.web.controller.support.result.Result;
+import org.hasor.mvc.controller.Controller;
+import org.hasor.mvc.controller.RestfulMapping;
+import org.hasor.mvc.controller.Var;
+import org.hasor.mvc.controller.support.result.Result;
 /**
  * 
  * @version : 2013-7-31

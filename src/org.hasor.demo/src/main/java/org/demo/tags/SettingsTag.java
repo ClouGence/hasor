@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.demo.tags;
-import org.hasor.annotation.Bean;
 import org.hasor.context.AppContext;
+import org.hasor.context.anno.Bean;
 import org.hasor.freemarker.FmMethod;
 import com.google.inject.Inject;
 /**

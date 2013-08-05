@@ -15,7 +15,7 @@
  */
 package org.hasor.test.dependency2;
 import java.io.IOException;
-import org.hasor.annotation.context.AnnoAppContextSupportModule;
+import org.hasor.context.anno.context.AnnoAppContextSupportModule;
 public class Dep2Test {
     /**
      * @param args

@@ -11,16 +11,24 @@
 	<packaging>jar</packaging>
 	<!-- 引用依赖 -->
 	<dependencies>
+		<!-- Hasor-Core -->
 		<dependency>
 			<groupId>org.hasor</groupId>
 			<artifactId>org.hasor.core</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-		<!-- freemarker -->
+		<!-- Freemarker -->
 		<dependency>
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
 			<version>2.3.19</version>
+		</dependency>
+		<!-- J2EE -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
 		</dependency>
 
 

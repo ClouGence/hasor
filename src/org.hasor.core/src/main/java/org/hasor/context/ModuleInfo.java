@@ -43,4 +43,6 @@ public interface ModuleInfo {
     public boolean isDependencyRunning();
     /**判断依赖的模块是否都通过了isInit。如果依赖为一个可选依赖，则被依赖项目即使没有init也会被判定为init。*/
     public boolean isDependencyInit();
+    /**获取初始化上下文*/
+    public InitContext getInitContext();
 }

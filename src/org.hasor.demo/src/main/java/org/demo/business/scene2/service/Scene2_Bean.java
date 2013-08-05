@@ -15,7 +15,7 @@
  */
 package org.demo.business.scene2.service;
 import org.demo.safety.BBSUser;
-import org.hasor.annotation.Bean;
+import org.hasor.context.anno.Bean;
 import org.hasor.security.AuthSession;
 import org.hasor.security.RoleIdentity;
 import org.hasor.security.RoleIdentityUtil;
