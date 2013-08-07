@@ -17,12 +17,6 @@
 			<artifactId>org.hasor.core</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-		<!-- Hasor-freemarker -->
-		<dependency>
-			<groupId>org.hasor</groupId>
-			<artifactId>org.hasor.freemarker</artifactId>
-			<version>0.0.1</version>
-		</dependency>
 		<!-- J2EE -->
 		<dependency>
 			<groupId>javax.servlet</groupId>

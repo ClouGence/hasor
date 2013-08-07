@@ -13,14 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.mvc.decorate;
-import javax.servlet.http.HttpServletResponse;
+package org.hasor.freemarker.servlet;
 /**
- * 装饰HttpServletResponse
- * @version : 2013-6-19
+ * 
+ * @version : 2013-7-20
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface DecorateServletResponse extends HttpServletResponse {
-    /**获取尚未输出的缓存数据*/
-    public byte[] getBufferData();
+public class TemplateException extends Exception {
+    private static final long serialVersionUID = -3266765385480394090L;
+    public TemplateException(String string) {
+        super(string);
+    }
+    public TemplateException(Throwable error) {
+        super(error);
+    }
+    public TemplateException(String string, Throwable error) {
+        super(string, error);
+    }
 }

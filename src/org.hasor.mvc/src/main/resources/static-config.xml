@@ -11,15 +11,7 @@
 	</environmentVar>
 	<!-- Hasor MVC -->
 	<hasor-mvc>
-		<!-- （仅当启动时生效）模板配置，onError当模板处理发生异常时的处理方式。模式：ThrowError（抛出异常）、PrintOnConsole（打印到控制台或日志）、Warning（忽略，仅仅产生一条警告消息）PrintOnPage（打印到页面） -->
-		<template enable="false" onError="ThrowError">
-			<!-- 模板后缀名逗号间隔多个（支持重复配置共同生效） -->
-			<suffixSet>*.ftl</suffixSet>
-			<!-- 模板解析的内容响应到客户端的类型 -->
-			<contentType>text/html</contentType>
-		</template>
-		<!-- Action配置，enable：是否启用Action功能。 模式：mode:RestOnly（rest风格）、ServletOnly（中央servlet）、Both（两者同时使用） -->
-		<!-- defaultProduces 默认响应类型 -->
+		<!-- Action配置，defaultProduces 默认响应类型 ，enable：是否启用Action功能。 模式：mode:RestOnly（rest风格）、ServletOnly（中央servlet）、Both（两者同时使用） -->
 		<actionServlet enable="true" mode="Both" intercept="*.do" defaultProduces="">
 			<!-- 方法忽略的方法（逗号分割多组方法名），注意：在这里配置的忽略会应用到所有action上（支持重复配置共同生效） -->
 			<ignoreMethod>equals,hashCode,toString,getClass,wait,notify,notifyAll</ignoreMethod>
@@ -32,28 +24,5 @@
 			<pathLoader>%HASOR_WEBROOT%/</pathLoader>
 			<classpathLoader>/META-INF/webapp</classpathLoader>
 		</resourceLoader>
-		<!-- （仅当启动时生效）页面装饰器配置 -->
-		<pageDecorate enable="false">
-			<!-- <processor name="default" creator="org.hasor.view.decorate.parser.freemarker.FreemarkerHtmlParser"> -->
-			<!-- <templatePath>%HASOR_WEBROOT%/template.htm</templatePath> -->
-			<!-- </processor> -->
-			<!-- 缺省的装饰器 -->
-			<!-- name：装饰名，templatePath：装饰模板 -->
-			<!-- <decorator contentType="text/html" refParser="default"> -->
-			<!-- <pattern>/*</pattern> -->
-			<!-- <pattern>/*</pattern> -->
-			<!-- </decorator> -->
-			<!-- <decorator contentType="text/html" refParser="default"> -->
-			<!-- <pattern>/*</pattern> -->
-			<!-- <pattern>/*</pattern> -->
-			<!-- </decorator> -->
-		</pageDecorate>
-		<!-- 请求转发映射 -->
-		<!-- <httpRequestMapping enable="true"> -->
-		<!-- 文件匹配 -->
-		<!-- <fileMapping startWith="/" forwardTo="/index.htm" type="forward" /> -->
-		<!-- 目录匹配 -->
-		<!-- <pathMapping startWith="/baidu" forwardTo="http://www.baidu.com/" type="forward|redirect(default)"/> -->
-		<!-- </httpRequestMapping> -->
 	</hasor-mvc>
 </root:config>

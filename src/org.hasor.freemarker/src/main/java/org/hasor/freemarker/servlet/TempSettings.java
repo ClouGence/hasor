@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.mvc.template;
+package org.hasor.freemarker.servlet;
 import java.util.ArrayList;
 import org.hasor.context.Settings;
 import org.more.util.StringUtils;
@@ -63,9 +63,9 @@ public class TempSettings /*implements HasorSettingListener*/{
         this.onError = onError;
     }
     public void onLoadConfig(Settings newConfig) {
-        this.enable = newConfig.getBoolean("hasor-mvc.template.enable");
-        String[] suffixArray = newConfig.getStringArray("hasor-mvc.template.suffixSet");
-        this.contentType = newConfig.getString("hasor-mvc.template.contentType", "text/html");
+        this.enable = newConfig.getBoolean("freemarker.servlet.enable");
+        String[] suffixArray = newConfig.getStringArray("freemarker.servlet.suffixSet");
+        this.contentType = newConfig.getString("freemarker.servlet.contentType", "text/html");
         //
         ArrayList<String> suffixList = new ArrayList<String>();
         for (String sufItem : suffixArray) {
@@ -79,6 +79,6 @@ public class TempSettings /*implements HasorSettingListener*/{
             }
         }
         this.suffix = suffixList.toArray(new String[suffixList.size()]);
-        this.onError = newConfig.getEnum("hasor-mvc.template.onError", OnErrorMode.class, OnErrorMode.Warning);
+        this.onError = newConfig.getEnum("freemarker.servlet.onError", OnErrorMode.class, OnErrorMode.Warning);
     }
 }

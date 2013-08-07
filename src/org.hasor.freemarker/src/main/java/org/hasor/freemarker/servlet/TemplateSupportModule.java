@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.mvc.template;
+package org.hasor.freemarker.servlet;
 import org.hasor.context.ModuleSettings;
 import org.hasor.context.anno.Module;
 import org.hasor.servlet.AbstractWebHasorModule;
@@ -37,11 +37,12 @@ public class TemplateSupportModule extends AbstractWebHasorModule {
         tempSettings.onLoadConfig(apiBinder.getInitContext().getSettings());
         apiBinder.getGuiceBinder().bind(TempSettings.class).toInstance(tempSettings);
         //
-        if (tempSettings.isEnable() == true) {
-            String[] suffix = tempSettings.getSuffix();
-            if (suffix != null)
-                for (String suf : suffix)
-                    apiBinder.serve(suf).with(FmHttpServlet.class);
-        }
+        if (tempSettings.isEnable() == false)
+            return;
+        //
+        String[] suffix = tempSettings.getSuffix();
+        if (suffix != null)
+            for (String suf : suffix)
+                apiBinder.serve(suf).with(FmHttpServlet.class);
     }
 }

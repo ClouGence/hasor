@@ -23,6 +23,12 @@
 			<artifactId>org.hasor.security</artifactId>
 			<version>0.0.1</version>
 		</dependency>
+		<!-- Freemarker -->
+		<dependency>
+			<groupId>org.hasor</groupId>
+			<artifactId>org.hasor.freemarker</artifactId>
+			<version>0.0.1</version>
+		</dependency>
 		<!-- Log -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
