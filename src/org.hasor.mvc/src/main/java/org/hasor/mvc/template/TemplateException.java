@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.freemarker.web;
+package org.hasor.mvc.template;
 /**
  * 
  * @version : 2013-7-20

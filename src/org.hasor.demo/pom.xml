@@ -17,11 +17,6 @@
 			<artifactId>org.hasor.mvc</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-		<dependency>
-			<groupId>org.hasor</groupId>
-			<artifactId>org.hasor.freemarker</artifactId>
-			<version>0.0.1</version>
-		</dependency>
 		<!-- Web Security -->
 		<dependency>
 			<groupId>org.hasor</groupId>

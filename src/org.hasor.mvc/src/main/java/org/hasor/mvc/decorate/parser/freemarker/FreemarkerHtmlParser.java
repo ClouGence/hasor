@@ -17,7 +17,6 @@ package org.hasor.mvc.decorate.parser.freemarker;
 import java.io.IOException;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
-import org.cyberneko.html.parsers.DOMParser;
 import org.hasor.freemarker.FreemarkerManager;
 import org.hasor.mvc.decorate.DecorateFilter;
 import org.hasor.mvc.decorate.DecorateFilterChain;
@@ -25,6 +24,7 @@ import org.hasor.mvc.decorate.DecorateServletRequest;
 import org.hasor.mvc.decorate.DecorateServletResponse;
 import org.xml.sax.InputSource;
 import com.google.inject.Inject;
+import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 /**
  * HTML×°ÊÎÆ÷
  * @version : 2013-6-14
