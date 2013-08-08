@@ -45,8 +45,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface Controller {
-    /**对应生效的http方法，默认为Get\Post。*/
-    public String[] httpMethod() default { "Get", "Post" };
     /**action地址空间。*/
     public String[] value();
 }

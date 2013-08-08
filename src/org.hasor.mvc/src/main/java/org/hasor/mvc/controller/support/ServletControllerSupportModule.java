@@ -85,16 +85,14 @@ public class ServletControllerSupportModule extends AbstractWebHasorModule {
     private void loadController(NameSpaceBindingBuilder nsBinding, Class<?> controllerType) {
         List<Method> actionMethods = BeanUtils.getMethods(controllerType);
         Object[] ignoreMethods = settings.getIgnoreMethod().toArray();//ºöÂÔ
-        Controller controllerAnno = controllerType.getAnnotation(Controller.class);
         for (Method method : actionMethods) {
             //1.Ö´ÐÐºöÂÔ
             if (ArrayUtils.isInclude(ignoreMethods, method.getName()) == true)
                 continue;
             //2.×¢²áAction
             ActionBindingBuilder actionBinding = nsBinding.bindActionMethod(method);
-            for (String httpMethod : controllerAnno.httpMethod())
-                actionBinding = actionBinding.onHttpMethod(httpMethod);
-            //3.
+            actionBinding = actionBinding.onHttpMethod(HttpMethod.Any.name().toUpperCase());
+            //3. 
             Produces mt = method.getAnnotation(Produces.class);
             mt = (mt == null) ? controllerType.getAnnotation(Produces.class) : mt;
             String minmeType = (mt != null) ? mt.value() : this.settings.getDefaultProduces();
