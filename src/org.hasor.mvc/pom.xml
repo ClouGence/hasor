@@ -7,7 +7,7 @@
 	</parent>
 	<groupId>org.hasor</groupId>
 	<artifactId>org.hasor.mvc</artifactId>
-	<version>0.0.1</version>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 	<!-- 引用依赖 -->
 	<dependencies>
@@ -15,13 +15,7 @@
 		<dependency>
 			<groupId>org.hasor</groupId>
 			<artifactId>org.hasor.core</artifactId>
-			<version>0.0.1</version>
-		</dependency>
-		<!-- J2EE -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
+			<version>1.0.0</version>
 		</dependency>
 		<!-- Json -->
 		<dependency>
@@ -29,12 +23,13 @@
 			<artifactId>fastjson</artifactId>
 			<version>1.1.28</version>
 		</dependency>
-		<!-- JSR-331,restful -->
-		<!-- <dependency> -->
-		<!-- <groupId>javax.ws.rs</groupId> -->
-		<!-- <artifactId>jsr311-api</artifactId> -->
-		<!-- <version>1.1.1</version> -->
-		<!-- </dependency> -->
+		<!-- J2EE -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
 
 
 		<!-- Test -->

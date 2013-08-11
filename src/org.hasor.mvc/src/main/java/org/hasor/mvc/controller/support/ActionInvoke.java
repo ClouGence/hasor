@@ -14,23 +14,185 @@
  * limitations under the License.
  */
 package org.hasor.mvc.controller.support;
-import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import org.hasor.Hasor;
 import org.hasor.context.AppContext;
+import org.hasor.context.EventManager;
+import org.hasor.mvc.controller.HttpMethod;
+import org.hasor.mvc.controller.Var;
+import org.more.util.BeanUtils;
+import org.more.util.StringConvertUtils;
+import org.more.util.StringUtils;
 /**
  * 
  * @version : 2013-6-5
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ActionInvoke {
-    public void initInvoke(AppContext appContext);
-    public String[] getHttpMethod();
-    public Method getMethod();
-    public Object invoke(ServletRequest request, ServletResponse response, Map<String, Object> overwriteHttpParams) throws ServletException, IOException;
-    public void destroyInvoke();
-    public Object invoke(ServletRequest request, ServletResponse response) throws ServletException, IOException;
+public class ActionInvoke {
+    /**在调用Action之前引发的事件*/
+    public static String Event_BeforeInvoke    = "ActionInvoke_Event_BeforeInvoke";
+    /**在调用Action之后引发的事件*/
+    public static String Event_AfterInvoke     = "ActionInvoke_Event_AfterInvoke";
+    //
+    private Method       targetMethod          = null;
+    private Object       targetObject          = null;
+    private HttpMethod[] httpMethod            = null;
+    private String       mimeType              = null;
+    private String       restfulMapping        = null;
+    private String       restfulMappingMatches = null;
+    private AppContext   appContext            = null;
+    //
+    public ActionInvoke(Method targetMethod, HttpMethod[] httpMethod, String mimeType, Object targetObject) {
+        this.targetMethod = targetMethod;
+        this.httpMethod = httpMethod;
+        this.mimeType = mimeType;
+        this.targetObject = targetObject;
+    }
+    //
+    /**获取Action可以接收的方法*/
+    public HttpMethod[] getHttpMethod() {
+        return this.httpMethod;
+    }
+    //
+    /**获取目标方法。*/
+    public Method getTargetMethod() {
+        return this.targetMethod;
+    }
+    //
+    /**获取映射字符串*/
+    public String getRestfulMapping() {
+        return this.restfulMapping;
+    }
+    //
+    /**获取映射字符串用于匹配的表达式字符串*/
+    public String getRestfulMappingMatches() {
+        if (this.restfulMappingMatches == null) {
+            String mapping = this.getRestfulMapping();
+            this.restfulMappingMatches = mapping.replaceAll("\\{\\w{1,}\\}", "(\\\\w{1,})");
+        }
+        return this.restfulMappingMatches;
+    }
+    //
+    /**初始化*/
+    public void initInvoke(AppContext appContext) {
+        this.appContext = appContext;
+    }
+    //
+    /**执行调用*/
+    public Object invoke(ServletRequest request, ServletResponse response) throws ServletException {
+        HashMap<String, Object> overwriteHttpParams = new HashMap<String, Object>();
+        overwriteHttpParams.putAll(request.getParameterMap());
+        return this.invoke(request, response, overwriteHttpParams);
+    }
+    //
+    /**执行调用*/
+    public Object invoke(ServletRequest request, ServletResponse response, Map<String, Object> overwriteHttpParams) throws ServletException {
+        if (this.targetObject == null) {
+            Class<?> targetClass = this.targetMethod.getDeclaringClass();
+            String beanName = this.appContext.getBeanName(targetClass);
+            if (StringUtils.isBlank(beanName) == false)
+                this.targetObject = this.appContext.getBean(beanName);
+            else
+                this.targetObject = this.appContext.getInstance(targetClass);
+        }
+        //
+        if (this.targetObject == null)
+            throw new ServletException("create invokeObject on " + this.targetMethod.toString() + " return null.");
+        //
+        try {
+            Class<?>[] targetParamClass = this.targetMethod.getParameterTypes();
+            Annotation[][] targetParamAnno = this.targetMethod.getParameterAnnotations();
+            targetParamClass = (targetParamClass == null) ? new Class<?>[0] : targetParamClass;
+            targetParamAnno = (targetParamAnno == null) ? new Annotation[0][0] : targetParamAnno;
+            ArrayList<Object> paramsArray = new ArrayList<Object>();
+            /*准备参数*/
+            for (int i = 0; i < targetParamClass.length; i++) {
+                Class<?> paramClass = targetParamClass[i];
+                Annotation[] paramAnno = targetParamAnno[i];
+                paramAnno = (paramAnno == null) ? new Annotation[0] : paramAnno;
+                String paramName = null;
+                for (Annotation pAnno : paramAnno) {
+                    if (pAnno instanceof Var)
+                        paramName = ((Var) pAnno).value();
+                }
+                /**普通参数*/
+                Object paramObject = (overwriteHttpParams != null) ? overwriteHttpParams.get(paramName) : request.getParameterValues(paramName);
+                /**特殊参数*/
+                if (paramObject == null)
+                    paramObject = getSpecialParamObject(request, response, paramClass);
+                /**处理参数类型*/
+                if (paramObject != null) {
+                    try {
+                        paramObject = processParamObject(paramObject, paramClass);
+                    } catch (Exception e) {
+                        /*该代码不会被执行，StringConvertUtils的类方法遇到错误之后会自动使用默认值替代*/
+                        paramObject = BeanUtils.getDefaultValue(paramClass);
+                        Hasor.error("the action request parameter %s Convert Type error %s", paramName, e);
+                    }
+                }
+                paramsArray.add(paramObject);
+            }
+            Object[] invokeParams = paramsArray.toArray();
+            //
+            if (!StringUtils.isBlank(this.mimeType))
+                response.setContentType(this.mimeType);
+            //
+            EventManager eventManager = this.appContext.getEventManager();
+            /*引发事件*/
+            eventManager.doSyncEvent(Event_BeforeInvoke, this, invokeParams);
+            Object returnData = this.targetMethod.invoke(this.targetObject, invokeParams);
+            /*引发事件*/
+            eventManager.doSyncEvent(Event_AfterInvoke, this, invokeParams, returnData);
+            return returnData;
+        } catch (InvocationTargetException e) {
+            throw new ServletException(e.getCause());
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
+    }
+    /*处理特殊类型参数*/
+    private Object getSpecialParamObject(ServletRequest request, ServletResponse response, Class<?> paramClass) {
+        if (paramClass.isEnum() || paramClass.isArray() || paramClass.isPrimitive() || paramClass == String.class)
+            return null;/*忽略：基本类型、字符串类型*/
+        //
+        try {
+            return this.appContext.getInstance(paramClass);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    /*处理参数类型转换*/
+    private Object processParamObject(Object targetValue, Class<?> targetType) {
+        Object returnData = null;
+        if (targetType.isArray() == true) {
+            //处理数组
+            Class<?> targetClass = targetType.getComponentType();
+            if (targetValue instanceof Object[]) {
+                Object[] arr = (Object[]) targetValue;
+                returnData = Array.newInstance(targetClass, arr.length);
+                for (int i = 0; i < arr.length; i++)
+                    Array.set(returnData, i, processParamObject(arr[i], targetClass));
+            } else {
+                returnData = Array.newInstance(targetClass, 1);
+                Array.set(returnData, 0, targetValue);
+            }
+        } else {
+            //处理单值
+            if (targetValue instanceof Object[]) {
+                Object[] arrayParamObject = (Object[]) targetValue;
+                targetValue = arrayParamObject.length == 0 ? null : arrayParamObject[0];
+            }
+            returnData = StringConvertUtils.changeType(targetValue, targetType, BeanUtils.getDefaultValue(targetType));
+        }
+        return returnData;
+    }
 }

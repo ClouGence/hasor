@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.hasor.mvc.controller;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 /***
  * 
@@ -24,8 +23,6 @@ import java.lang.reflect.Method;
 public interface ActionBinder {
     /**绑定一个命名空间*/
     public NameSpaceBindingBuilder bindNameSpace(String path);
-    /**绑定结果处理器*/
-    public ResultProcessBindingBuilder bindResultProcess(Class<? extends Annotation> annoType);
     /**用来绑定一个命名空间*/
     public static interface NameSpaceBindingBuilder {
         public String getNameSpace();
@@ -37,19 +34,12 @@ public interface ActionBinder {
     /**用来绑定action的执行目标*/
     public static interface ActionBindingBuilder {
         /**将action绑定的Http方法上。*/
-        public ActionBindingBuilder onHttpMethod(String httpMethod);
+        public ActionBindingBuilder onHttpMethod(HttpMethod httpMethod);
         /**将设置返回的MimeType。*/
         public ActionBindingBuilder returnMimeType(String mimeType);
         /**restful风格的映射*/
         public void mappingRestful(String restfulMapping);
         /**Action方法的对象*/
         public void toInstance(Object targetAction);
-    }
-    /**绑定结果处理器*/
-    public static interface ResultProcessBindingBuilder {
-        /**ResultProcess*/
-        public void toType(Class<? extends ResultProcess> resultProcess);
-        /**ResultProcess*/
-        public void toInstance(ResultProcess targetProcess);
     }
 }

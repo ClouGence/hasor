@@ -17,18 +17,15 @@ package org.hasor.mvc.controller.support;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
-import org.hasor.Hasor;
 import org.hasor.context.AppContext;
 import org.hasor.context.ModuleSettings;
 import org.hasor.context.anno.Module;
+import org.hasor.mvc.controller.ActionBinder.ActionBindingBuilder;
+import org.hasor.mvc.controller.ActionBinder.NameSpaceBindingBuilder;
 import org.hasor.mvc.controller.Controller;
 import org.hasor.mvc.controller.HttpMethod;
 import org.hasor.mvc.controller.Produces;
 import org.hasor.mvc.controller.RestfulMapping;
-import org.hasor.mvc.controller.ResultDefine;
-import org.hasor.mvc.controller.ResultProcess;
-import org.hasor.mvc.controller.ActionBinder.ActionBindingBuilder;
-import org.hasor.mvc.controller.ActionBinder.NameSpaceBindingBuilder;
 import org.hasor.servlet.AbstractWebHasorModule;
 import org.hasor.servlet.WebApiBinder;
 import org.hasor.servlet.anno.support.ServletAnnoSupportModule;
@@ -57,21 +54,21 @@ public class ServletControllerSupportModule extends AbstractWebHasorModule {
         this.settings.onLoadConfig(apiBinder.getInitContext().getSettings());
         apiBinder.getGuiceBinder().bind(ActionSettings.class).toInstance(this.settings);
         /*配置*/
-        binder.bind(ActionManager.class).to(InternalActionManager.class).asEagerSingleton();
+        binder.bind(ActionManager.class).asEagerSingleton();
+        ActionManagerBuilder actionBinder = new ActionManagerBuilder();
         /*初始化*/
-        this.loadController(apiBinder);
-        /*注册结果处理器*/
-        this.loadResultDefine(apiBinder);
+        this.loadController(apiBinder, actionBinder);
+        /*构造*/
+        actionBinder.buildManager(binder);
     }
     //
-    /*装载Controller*/
-    protected void loadController(WebApiBinder event) {
+    /**装载Controller*/
+    protected void loadController(WebApiBinder event, ActionManagerBuilder actionBinder) {
         //1.获取
         Set<Class<?>> controllerSet = event.getClassSet(Controller.class);
         if (controllerSet == null)
             return;
         //3.注册服务
-        ActionBinderImplements actionBinder = new ActionBinderImplements();
         for (Class<?> controllerType : controllerSet) {
             Controller controllerAnno = controllerType.getAnnotation(Controller.class);
             for (String namespace : controllerAnno.value()) {
@@ -79,9 +76,7 @@ public class ServletControllerSupportModule extends AbstractWebHasorModule {
                 this.loadController(nsBinding, controllerType);
             }
         }
-        event.getGuiceBinder().install(actionBinder);
     }
-    /*装载Controller*/
     private void loadController(NameSpaceBindingBuilder nsBinding, Class<?> controllerType) {
         List<Method> actionMethods = BeanUtils.getMethods(controllerType);
         Object[] ignoreMethods = settings.getIgnoreMethod().toArray();//忽略
@@ -91,7 +86,7 @@ public class ServletControllerSupportModule extends AbstractWebHasorModule {
                 continue;
             //2.注册Action
             ActionBindingBuilder actionBinding = nsBinding.bindActionMethod(method);
-            actionBinding = actionBinding.onHttpMethod(HttpMethod.Any.name().toUpperCase());
+            actionBinding = actionBinding.onHttpMethod(HttpMethod.Any);
             //3. 
             Produces mt = method.getAnnotation(Produces.class);
             mt = (mt == null) ? controllerType.getAnnotation(Produces.class) : mt;
@@ -102,36 +97,17 @@ public class ServletControllerSupportModule extends AbstractWebHasorModule {
             RestfulMapping mappingRestful = method.getAnnotation(RestfulMapping.class);
             if (mappingRestful != null) {
                 for (HttpMethod httpMethod : mappingRestful.httpMethod())
-                    actionBinding = actionBinding.onHttpMethod(httpMethod.name().toUpperCase());
+                    actionBinding = actionBinding.onHttpMethod(httpMethod);
                 actionBinding.mappingRestful(mappingRestful.value());
             }
-            //
         }
-    }
-    /*装载ResultDefine*/
-    protected void loadResultDefine(WebApiBinder event) {
-        //1.获取
-        Set<Class<?>> resultDefineSet = event.getClassSet(ResultDefine.class);
-        if (resultDefineSet == null)
-            return;
-        //3.注册服务
-        ActionBinderImplements actionBinder = new ActionBinderImplements();
-        for (Class<?> resultDefineType : resultDefineSet) {
-            ResultDefine resultDefineAnno = resultDefineType.getAnnotation(ResultDefine.class);
-            if (ResultProcess.class.isAssignableFrom(resultDefineType) == false) {
-                Hasor.warning("loadResultDefine : not implemented ResultProcess. class=%s", resultDefineType);
-            } else {
-                actionBinder.bindResultProcess(resultDefineAnno.value()).toType((Class<? extends ResultProcess>) resultDefineType);
-            }
-        }
-        event.getGuiceBinder().install(actionBinder);
     }
     //
+    /***/
     @Override
     public void start(AppContext appContext) {
         this.actionManager = appContext.getInstance(ActionManager.class);
         this.actionManager.initManager(appContext);
-        Hasor.info("online ->> action is %s for style %s", (this.settings.isEnable() ? "enable." : "disable."), this.settings.getMode());
     }
     @Override
     public void destroy(AppContext appContext) {

@@ -45,6 +45,7 @@ class ActionController extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         this.actionManager = appContext.getInstance(ActionManager.class);
+        this.actionManager.initManager(appContext);
         this.actionSettings = appContext.getInstance(ActionSettings.class);
         Hasor.info("ActionController intercept %s.", actionSettings.getIntercept());
     }
@@ -70,7 +71,6 @@ class ActionController extends HttpServlet {
         //3.执行调用
         try {
             Object result = invoke.invoke(request, response);
-            this.actionManager.processResult(invoke.getMethod(), result, request, response);
         } catch (ServletException e) {
             if (e.getCause() instanceof IOException)
                 throw (IOException) e.getCause();
@@ -84,7 +84,7 @@ class ActionController extends HttpServlet {
         String actionInvoke = requestPath.substring(requestPath.lastIndexOf("/") + 1);
         String actionMethod = actionInvoke.split("\\.")[0];
         //2.获取 ActionInvoke
-        ActionNameSpace nameSpace = actionManager.getNameSpace(actionNS);
+        ActionNameSpace nameSpace = actionManager.findNameSpace(actionNS);
         if (nameSpace != null)
             return nameSpace.getActionByName(httpMethod, actionMethod);
         return null;

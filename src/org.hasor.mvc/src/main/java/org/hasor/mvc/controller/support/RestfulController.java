@@ -34,35 +34,35 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import org.hasor.context.AppContext;
-import com.google.inject.Binding;
 import com.google.inject.Inject;
-import com.google.inject.TypeLiteral;
 /**
  * action功能的入口。
  * @version : 2013-5-11
  * @author 赵永春 (zyc@byshell.org)
  */
-//@WebFilter(value = "*", sort = Integer.MIN_VALUE + 2)
 class RestfulController implements Filter {
     @Inject
-    private AppContext      appContext    = null;
-    private ActionManager   actionManager = null;
-    private ActionInvoke2[] invokeArray   = null;
+    private AppContext     appContext  = null;
+    private ActionInvoke[] invokeArray = null;
+    //
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        this.actionManager = appContext.getInstance(ActionManager.class);
+        ActionManager actionManager = appContext.getInstance(ActionManager.class);
+        ArrayList<ActionInvoke> restfulList = new ArrayList<ActionInvoke>();
         //
-        ArrayList<ActionInvoke2> restfulList = new ArrayList<ActionInvoke2>();
-        TypeLiteral<ActionInvoke2> REST_DEFS = TypeLiteral.get(ActionInvoke2.class);
-        for (Binding<ActionInvoke2> entry : appContext.getGuice().findBindingsByType(REST_DEFS))
-            restfulList.add(entry.getProvider().get());
-        Collections.sort(restfulList, new Comparator<ActionInvoke2>() {
+        for (ActionNameSpace ns : actionManager.getNameSpaceList()) {
+            for (ActionInvoke invoke : ns.getActions())
+                if (invoke.getRestfulMapping() != null)
+                    restfulList.add(invoke);
+        }
+        //
+        Collections.sort(restfulList, new Comparator<ActionInvoke>() {
             @Override
-            public int compare(ActionInvoke2 o1, ActionInvoke2 o2) {
+            public int compare(ActionInvoke o1, ActionInvoke o2) {
                 return o1.getRestfulMapping().compareToIgnoreCase(o2.getRestfulMapping());
             }
         });
-        this.invokeArray = restfulList.toArray(new ActionInvoke2[restfulList.size()]);
+        this.invokeArray = restfulList.toArray(new ActionInvoke[restfulList.size()]);
     }
     @Override
     public void destroy() {}
@@ -71,7 +71,7 @@ class RestfulController implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         String actionPath = request.getRequestURI().substring(request.getContextPath().length());
         //1.获取 ActionInvoke
-        ActionInvoke2 invoke = this.getActionInvoke(actionPath);
+        ActionInvoke invoke = this.getActionInvoke(actionPath);
         if (invoke == null) {
             chain.doFilter(request, resp);
             return;
@@ -80,7 +80,6 @@ class RestfulController implements Filter {
         try {
             Map<String, Object> overwriteHttpParams = this.getParams(request, actionPath, invoke);
             Object result = invoke.invoke(request, resp, overwriteHttpParams);
-            this.actionManager.processResult(invoke.getMethod(), result, request, resp);
         } catch (ServletException e) {
             if (e.getCause() instanceof IOException)
                 throw (IOException) e.getCause();
@@ -88,7 +87,7 @@ class RestfulController implements Filter {
                 throw e;
         }
     }
-    private Map<String, Object> getParams(ServletRequest request, String actionPath, ActionInvoke2 invoke) {
+    private Map<String, Object> getParams(ServletRequest request, String actionPath, ActionInvoke invoke) {
         String matchVar = invoke.getRestfulMappingMatches();
         String matchKey = "(?:\\{(\\w+)\\}){1,}";//  (?:\{(\w+)\}){1,}
         Matcher keyM = Pattern.compile(matchKey).matcher(invoke.getRestfulMapping());
@@ -120,8 +119,8 @@ class RestfulController implements Filter {
         }
         return overwriteHttpParams;
     }
-    private ActionInvoke2 getActionInvoke(String requestPath) {
-        for (ActionInvoke2 restAction : this.invokeArray)
+    private ActionInvoke getActionInvoke(String requestPath) {
+        for (ActionInvoke restAction : this.invokeArray)
             if (requestPath.matches(restAction.getRestfulMappingMatches()) == true)
                 return restAction;
         return null;
@@ -140,7 +139,7 @@ class RestfulController implements Filter {
     public RequestDispatcher getRequestDispatcher(final String newRequestUri, final HttpServletRequest request) {
         // TODO 需要检查下面代码是否符合Servlet规范（带request参数情况下也需要检查）
         //1.拆分请求字符串
-        final ActionInvoke2 invoke = getActionInvoke(newRequestUri);
+        final ActionInvoke invoke = getActionInvoke(newRequestUri);
         if (invoke == null)
             return null;
         else

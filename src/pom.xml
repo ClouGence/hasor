@@ -5,21 +5,18 @@
 	<version>Final</version>
 	<packaging>pom</packaging>
 	<!-- -->
-	<properties>
-		<!-- 跳过测试 -->
-		<test.skip>true</test.skip>
-	</properties>
 	<modules>
 		<module>org.hasor.core</module>
-		<module>org.hasor.freemarker</module>
 		<module>org.hasor.mvc</module>
-		<module>org.hasor.icache</module>
-		<module>org.hasor.security</module>
+
+		<!-- <module>org.hasor.freemarker</module> -->
+		<!-- <module>org.hasor.icache</module> -->
+		<!-- <module>org.hasor.security</module> -->
 
 		<!-- <module>org.hasor.web-ui</module> -->
 		<!-- <module>org.hasor.web-updown</module> -->
 
-		<module>org.hasor.demo</module>
+		<!-- <module>org.hasor.demo</module> -->
 		<!-- <module>org.hasor.ds</module> -->
 		<!-- <module>org.hasor.remote</module> -->
 	</modules>
@@ -47,7 +44,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<skip>${test.skip}</skip>
+					<skip>true</skip>
 				</configuration>
 			</plugin>
 			<!-- package sources to jar -->

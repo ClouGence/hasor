@@ -55,11 +55,6 @@ public class MergedController implements Filter {
     }
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, final FilterChain chain) throws IOException, ServletException {
-        /*启用禁用*/
-        if (this.actionSettings.isEnable() == false) {
-            chain.doFilter(req, resp);
-            return;
-        }
         HttpServletRequest request = (HttpServletRequest) withDispatcher(req);
         HttpServletResponse response = (HttpServletResponse) resp;
         /*运行模式：ServletOnly*/

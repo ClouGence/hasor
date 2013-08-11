@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 package org.hasor.mvc.controller.support;
-import static org.hasor.mvc.controller.ActionConfig.ActionServlet_DefaultProduces;
-import static org.hasor.mvc.controller.ActionConfig.ActionServlet_Enable;
-import static org.hasor.mvc.controller.ActionConfig.ActionServlet_IgnoreMethod;
-import static org.hasor.mvc.controller.ActionConfig.ActionServlet_Intercept;
-import static org.hasor.mvc.controller.ActionConfig.ActionServlet_Mode;
 import java.util.ArrayList;
 import java.util.List;
 import org.hasor.context.Settings;
@@ -29,6 +24,16 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class ActionSettings /*implements HasorSettingListener*/{
+    /**模式：mode:RestOnly（rest风格）、ServletOnly（中央servlet）、Both（两者同时使用）*/
+    public static final String ActionServlet_Mode            = "hasor-mvc.actionServlet.mode";
+    /**action拦截器.*/
+    public static final String ActionServlet_Intercept       = "hasor-mvc.actionServlet.intercept";
+    /**默认产生的Mime-Type类型.*/
+    public static final String ActionServlet_DefaultProduces = "hasor-mvc.actionServlet.defaultProduces";
+    /**方法忽略的方法（逗号分割多组方法名），注意：在这里配置的忽略会应用到所有action上.*/
+    public static final String ActionServlet_IgnoreMethod    = "hasor-mvc.actionServlet.ignoreMethod";
+    //
+    //
     /**Action功能的工作模式。*/
     public static enum ActionWorkMode {
         /**仅工作在rest风格下*/
@@ -38,14 +43,12 @@ public class ActionSettings /*implements HasorSettingListener*/{
         /**同时工作在RestOnly、ServletOnly两个模式下。其中ServletOnly模式优先。*/
         Both
     }
-    private boolean        enable          = true; //是否启用Action功能.
     private String         intercept       = null; //action拦截器.
     private String         defaultProduces = null; //默认响应类型
     private ActionWorkMode mode            = null; //工作模式
     private List<String>   ignoreMethod    = null; //忽略的方法
     //
     public void onLoadConfig(Settings newConfig) {
-        this.enable = newConfig.getBoolean(ActionServlet_Enable, true);
         this.intercept = newConfig.getString(ActionServlet_Intercept, "*.do");
         this.defaultProduces = newConfig.getString(ActionServlet_DefaultProduces, null);
         this.mode = newConfig.getEnum(ActionServlet_Mode, ActionWorkMode.class, ActionWorkMode.ServletOnly);
@@ -63,9 +66,6 @@ public class ActionSettings /*implements HasorSettingListener*/{
                 }
             }
         }
-    }
-    public boolean isEnable() {
-        return enable;
     }
     public String getDefaultProduces() {
         return defaultProduces;

@@ -14,26 +14,55 @@
  * limitations under the License.
  */
 package org.hasor.mvc.controller.support;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 import org.hasor.context.AppContext;
+import com.google.inject.Binding;
+import com.google.inject.TypeLiteral;
 /** 
  * Action生命周期管理器。
  * @version : 2013-4-20
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ActionManager {
+public class ActionManager {
+    private List<ActionNameSpace> nameSpaceList = new ArrayList<ActionNameSpace>();
+    //
     /**初始化启动缓存服务。*/
-    public void initManager(AppContext appContext);
+    public void initManager(AppContext appContext) {
+        TypeLiteral<ActionNameSpace> SPACE_DEFS = TypeLiteral.get(ActionNameSpace.class);
+        for (Binding<ActionNameSpace> entry : appContext.getGuice().findBindingsByType(SPACE_DEFS)) {
+            ActionNameSpace space = entry.getProvider().get();
+            nameSpaceList.add(space);
+        }
+        //
+        for (ActionNameSpace space : this.nameSpaceList)
+            space.initNameSpace(appContext);
+    }
+    //
     /**销毁缓存服务*/
-    public void destroyManager(AppContext appContext);
+    public void destroyManager(AppContext appContext) {
+        for (ActionNameSpace space : nameSpaceList)
+            space.destroyNameSpace(appContext);
+    }
+    //
     /**根据请求地址查找符合的Action命名空间。返回的map中key是action名。*/
-    public ActionNameSpace getNameSpace(String actionNS);
+    public ActionNameSpace findNameSpace(String actionNS) {
+        ActionNameSpace findSpace = null;
+        for (ActionNameSpace space : nameSpaceList) {
+            if (actionNS.startsWith(space.getNameSpace()) == true) {
+                findSpace = space;
+                break;
+            }
+        }
+        if (findSpace == null) {
+            findSpace = new ActionNameSpace(actionNS);
+            this.nameSpaceList.add(findSpace);
+        }
+        return findSpace;
+    }
+    //
     /**获取注册的ActionNameSpace*/
-    public ActionNameSpace[] getNameSpaceList();
-    /**根据被调用的方法获取其返回值处理器*/
-    public void processResult(Method targetMethod, Object result, ServletRequest request, ServletResponse response) throws ServletException, IOException;
+    public List<ActionNameSpace> getNameSpaceList() {
+        return this.nameSpaceList;
+    }
 }
