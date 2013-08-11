@@ -65,7 +65,7 @@ public abstract class ArrayUtils {
         } else {
             target = new Object[arr.length + 1];
             if (arr.length != 0)
-                System.arraycopy(arr, 0, target, 0, target.length);
+                System.arraycopy(arr, 0, target, 0, arr.length);
             target[target.length - 1] = object;
         }
         return (T[]) Arrays.copyOf(target, target.length, arr.getClass());

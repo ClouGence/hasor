@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.servlet;
-import org.hasor.context.ApiBinder;
-import org.hasor.context.reactor.AbstractHasorModule;
+package org.hasor.test.bean.beans;
+import org.hasor.context.anno.Bean;
 /**
- * 
- * @version : 2013-7-16
+ * AnnoServiceA 具有两个名称 AnnoA 和 BeanA
+ * @version : 2013-8-11
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractWebHasorModule extends AbstractHasorModule {
-    @Override
-    public final void init(ApiBinder apiBinder) {
-        if (apiBinder instanceof WebApiBinder)
-            this.init((WebApiBinder) apiBinder);
-        else
-            throw new UnsupportedOperationException("Hasor context does not support the web module.");
+@Bean(value = { "AnnoA", "BeanA" })
+public class BaseTestBean {
+    public void foo() {
+        System.out.println("this bean is AnnoA or BeanA type:" + this);
     }
-    public abstract void init(WebApiBinder apiBinder);
 }

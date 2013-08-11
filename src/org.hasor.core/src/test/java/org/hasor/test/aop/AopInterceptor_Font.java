@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.servlet;
-import org.hasor.context.ApiBinder;
-import org.hasor.context.reactor.AbstractHasorModule;
+package org.hasor.test.aop;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
 /**
- * 
- * @version : 2013-7-16
+ * ÃÌº”Font±Í«©
+ * @version : 2013-8-11
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public abstract class AbstractWebHasorModule extends AbstractHasorModule {
+public class AopInterceptor_Font implements MethodInterceptor {
     @Override
-    public final void init(ApiBinder apiBinder) {
-        if (apiBinder instanceof WebApiBinder)
-            this.init((WebApiBinder) apiBinder);
-        else
-            throw new UnsupportedOperationException("Hasor context does not support the web module.");
+    public Object invoke(MethodInvocation invocation) throws Throwable {
+        //System.out.println("before Font");
+        Object returnData = invocation.proceed();
+        //System.out.println("after Font");
+        return "<font>" + returnData + "</font>";
     }
-    public abstract void init(WebApiBinder apiBinder);
 }

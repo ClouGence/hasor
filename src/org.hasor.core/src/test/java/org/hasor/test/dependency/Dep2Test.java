@@ -13,26 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test;
+package org.hasor.test.dependency;
 import java.io.IOException;
-import org.hasor.context.AppContext;
 import org.hasor.context.anno.context.AnnoAppContextSupportModule;
-import org.junit.Before;
-/**
- * 
- * @version : 2013-7-16
- * @author ’‘”¿¥∫ (zyc@byshell.org)
- */
-public abstract class AbstractTestContext {
-    private AnnoAppContextSupportModule appContext = null;
-    @Before
-    public void setUp() throws IOException {
-        this.appContext = new AnnoAppContextSupportModule("test-config.xml");
-        this.initContext(appContext);
-        this.appContext.start();
-    }
-    protected abstract void initContext(AppContext appContext);
-    protected AnnoAppContextSupportModule getAppContext() {
-        return appContext;
+public class Dep2Test {
+    /**
+     * @param args
+     * @throws IOException 
+     */
+    public static void main(String[] args) throws IOException {
+        /*
+         * Mode1
+         *   Mode2
+         *     Mode4
+         *       Mode5
+         *   Mode3
+         *     Mode4
+         *       Mode5
+         *     Mode6
+         *       Mode7
+         *       Mode8
+         *         Mode1 **
+         *   Mode9
+         */
+        AnnoAppContextSupportModule annoApp = new AnnoAppContextSupportModule("dep2-config.xml");
+        annoApp.start();
+        // TODO Auto-generated method stub
+        annoApp.destroy();
     }
 }

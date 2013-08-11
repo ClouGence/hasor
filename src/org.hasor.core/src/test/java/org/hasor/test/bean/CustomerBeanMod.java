@@ -13,21 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.servlet;
+package org.hasor.test.bean;
 import org.hasor.context.ApiBinder;
+import org.hasor.context.ModuleSettings;
+import org.hasor.context.anno.Module;
 import org.hasor.context.reactor.AbstractHasorModule;
+import org.hasor.test.bean.beans.CustomerBean;
 /**
- * 
- * @version : 2013-7-16
+ * 代码方式注册Bean
+ * @version : 2013-8-11
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractWebHasorModule extends AbstractHasorModule {
+@Module
+public class CustomerBeanMod extends AbstractHasorModule {
     @Override
-    public final void init(ApiBinder apiBinder) {
-        if (apiBinder instanceof WebApiBinder)
-            this.init((WebApiBinder) apiBinder);
-        else
-            throw new UnsupportedOperationException("Hasor context does not support the web module.");
+    public void configuration(ModuleSettings info) {
+        // TODO Auto-generated method stub
     }
-    public abstract void init(WebApiBinder apiBinder);
+    @Override
+    public void init(ApiBinder apiBinder) {
+        /*代码方式注册Bean*/
+        apiBinder.newBean("Customer").bindType(CustomerBean.class);
+        /*代码方式注册Bean，单态*/
+        //apiBinder.newBean("Customer").bindType(CustomerBean.class).asEagerSingleton();
+    }
 }

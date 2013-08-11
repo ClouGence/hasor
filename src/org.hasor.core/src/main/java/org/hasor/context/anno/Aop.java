@@ -13,21 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.servlet;
-import org.hasor.context.ApiBinder;
-import org.hasor.context.reactor.AbstractHasorModule;
+package org.hasor.context.anno;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 
- * @version : 2013-7-16
+ * 标记一个Bean。
+ * @version : 2013-3-20
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractWebHasorModule extends AbstractHasorModule {
-    @Override
-    public final void init(ApiBinder apiBinder) {
-        if (apiBinder instanceof WebApiBinder)
-            this.init((WebApiBinder) apiBinder);
-        else
-            throw new UnsupportedOperationException("Hasor context does not support the web module.");
-    }
-    public abstract void init(WebApiBinder apiBinder);
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface Aop {
+    /** Bean名称。*/
+    public String[] value();
 }

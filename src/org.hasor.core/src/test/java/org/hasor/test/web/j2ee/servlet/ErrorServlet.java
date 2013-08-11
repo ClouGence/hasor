@@ -13,21 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.servlet;
-import org.hasor.context.ApiBinder;
-import org.hasor.context.reactor.AbstractHasorModule;
+package org.hasor.test.web.j2ee.servlet;
+import java.io.IOException;
+import javax.inject.Inject;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.hasor.context.AppContext;
+import org.hasor.servlet.anno.WebServlet;
+import org.hasor.test.web.beans.ShowInfoBean;
 /**
  * 
- * @version : 2013-7-16
+ * @version : 2013-8-11
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public abstract class AbstractWebHasorModule extends AbstractHasorModule {
+@WebServlet("/error.err")
+public class ErrorServlet extends HttpServlet {
     @Override
-    public final void init(ApiBinder apiBinder) {
-        if (apiBinder instanceof WebApiBinder)
-            this.init((WebApiBinder) apiBinder);
-        else
-            throw new UnsupportedOperationException("Hasor context does not support the web module.");
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        throw new NullPointerException();
     }
-    public abstract void init(WebApiBinder apiBinder);
 }

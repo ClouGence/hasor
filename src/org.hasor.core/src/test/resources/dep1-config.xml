@@ -3,11 +3,10 @@
 	<!-- 框架配置 -->
 	<hasor>
 		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
-		<loadPackages>org.hasor.test.dependency.test2.*</loadPackages>
+		<loadPackages>org.hasor.test.dependency.test1.*</loadPackages>
 	</hasor>
 	<environmentVar>
 		<!-- 程序工作空间基础目录（绝对地址） -->
 		<HASOR_WORK_HOME>./test-work</HASOR_WORK_HOME>
 	</environmentVar>
-	<userConfig>cc</userConfig>
 </config>

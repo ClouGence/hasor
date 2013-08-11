@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.servlet;
-import org.hasor.context.ApiBinder;
-import org.hasor.context.reactor.AbstractHasorModule;
-/**
- * 
- * @version : 2013-7-16
- * @author ÕÔÓÀ´º (zyc@byshell.org)
- */
-public abstract class AbstractWebHasorModule extends AbstractHasorModule {
+package org.hasor.test.events.listener;
+import org.hasor.Hasor;
+import org.hasor.context.HasorEventListener;
+import org.hasor.context.anno.EventListener;
+/**ÊÂ¼þ¼àÌýÆ÷B*/
+@EventListener("EventType_A")
+public class Type_A_EventListener implements HasorEventListener {
     @Override
-    public final void init(ApiBinder apiBinder) {
-        if (apiBinder instanceof WebApiBinder)
-            this.init((WebApiBinder) apiBinder);
-        else
-            throw new UnsupportedOperationException("Hasor context does not support the web module.");
+    public void onEvent(String event, Object[] params) {
+        System.out.println("Type_A onEvent :" + event + " \t" + Hasor.logString(params));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {}
     }
-    public abstract void init(WebApiBinder apiBinder);
-}
+};

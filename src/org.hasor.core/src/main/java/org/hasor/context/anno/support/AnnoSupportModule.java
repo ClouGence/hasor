@@ -37,9 +37,15 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Module(description = "org.hasor.annotation软件包功能支持。")
-public class AnnoSupportModule extends AbstractHasorModule {
+public class AnnoSupportModule extends AbstractHasorModule implements GetContext {
     @Override
     public void configuration(ModuleSettings info) {}
+    //
+    private AppContext appContext = null;
+    @Override
+    public AppContext getAppContext() {
+        return this.appContext;
+    }
     //
     /**初始化.*/
     @Override
@@ -52,11 +58,14 @@ public class AnnoSupportModule extends AbstractHasorModule {
         this.loadBean(apiBinder);
         //2.Settings
         this.loadSettings(apiBinder);
+        //3.Before
+        new BeforeSupport(apiBinder, this);
     }
     //
     /***/
     @Override
     public void start(AppContext appContext) {
+        this.appContext = appContext;
         this.loadEvent(appContext);
     }
     //

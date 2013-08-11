@@ -20,7 +20,6 @@ import org.hasor.context.AppContext;
 import org.hasor.context.HasorEventListener;
 import org.hasor.context.HasorSettingListener;
 import org.hasor.context.Settings;
-import org.hasor.context.anno.EventListener;
 import org.hasor.context.anno.SettingsListener;
 import org.hasor.test.AbstractTestContext;
 import org.junit.Test;

@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.servlet;
+package org.hasor.test.dependency.test1;
 import org.hasor.context.ApiBinder;
+import org.hasor.context.ModuleSettings;
+import org.hasor.context.anno.Module;
 import org.hasor.context.reactor.AbstractHasorModule;
 /**
  * 
- * @version : 2013-7-16
+ * @version : 2013-7-27
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public abstract class AbstractWebHasorModule extends AbstractHasorModule {
+@Module()
+public class Mode9 extends AbstractHasorModule {
     @Override
-    public final void init(ApiBinder apiBinder) {
-        if (apiBinder instanceof WebApiBinder)
-            this.init((WebApiBinder) apiBinder);
-        else
-            throw new UnsupportedOperationException("Hasor context does not support the web module.");
+    public void configuration(ModuleSettings info) {}
+    @Override
+    public void init(ApiBinder apiBinder) {
+        System.out.println("Mode9  init!");
     }
-    public abstract void init(WebApiBinder apiBinder);
 }

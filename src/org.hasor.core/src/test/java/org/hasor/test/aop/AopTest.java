@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.servlet;
-import org.hasor.context.ApiBinder;
-import org.hasor.context.reactor.AbstractHasorModule;
+package org.hasor.test.aop;
+import org.hasor.context.AppContext;
+import org.hasor.test.AbstractTestContext;
+import org.junit.Test;
 /**
- * 
- * @version : 2013-7-16
+ * 环境变量操作演示
+ * @version : 2013-8-11
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractWebHasorModule extends AbstractHasorModule {
+public class AopTest extends AbstractTestContext {
     @Override
-    public final void init(ApiBinder apiBinder) {
-        if (apiBinder instanceof WebApiBinder)
-            this.init((WebApiBinder) apiBinder);
-        else
-            throw new UnsupportedOperationException("Hasor context does not support the web module.");
+    protected void initContext(AppContext appContext) {}
+    @Test
+    public void aopTest() {
+        /*获取Bean的三种方式*/
+        AopBean bean = this.getAppContext().getInstance(AopBean.class);
+        System.out.println(bean.fooA("p1"));
+        System.out.println(bean.fooB("p2"));
     }
-    public abstract void init(WebApiBinder apiBinder);
 }

@@ -36,7 +36,11 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     private SessionListenerPipeline sessionListenerPipeline = null;
     /*----------------------------------------------------------------------------------------------------*/
     protected AbstractAppContext createAppContext(ServletContext sc) throws IOException {
-        return new AnnoWebAppContext(sc);
+        AnnoWebAppContext webContext = new AnnoWebAppContext(sc);
+        webContext.setHttpRequestProvider(HttpRequestProvider.getProvider());
+        webContext.setHttpResponseProvider(HttpResponseProvider.getProvider());
+        webContext.setHttpSessionProvider(HttpSessionProvider.getProvider());
+        return webContext;
     }
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {

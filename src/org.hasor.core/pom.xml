@@ -32,11 +32,19 @@
 		</dependency>
 
 
+
+
 		<!-- Test -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>7.6.11.v20130520</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

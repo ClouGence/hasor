@@ -73,6 +73,7 @@ public class RuntimeFilter implements Filter {
         final HttpServletResponse httpRes = (HttpServletResponse) response;
         httpReq.setCharacterEncoding(this.requestEncoding);
         httpRes.setCharacterEncoding(this.responseEncoding);
+        //
         Hasor.debug("at http(%s/%s) request : %s", this.requestEncoding, this.responseEncoding, httpReq.getRequestURI());
         //
         try {
@@ -100,9 +101,17 @@ public class RuntimeFilter implements Filter {
         return appContext;
     }
     //
-    /**在filter请求处理之前。*/
-    protected void beforeRequest(AppContext appContext, HttpServletRequest httpReq, HttpServletResponse httpRes) {}
+    /**在filter请求处理之前，该方法负责通知HttpRequestProvider、HttpResponseProvider、HttpSessionProvider更新对象。*/
+    protected void beforeRequest(AppContext appContext, HttpServletRequest httpReq, HttpServletResponse httpRes) {
+        HttpRequestProvider.getProvider().update(httpReq);
+        HttpResponseProvider.getProvider().update(httpRes);
+        HttpSessionProvider.getProvider().update(httpReq.getSession(true));
+    }
     //
-    /**在filter请求处理之后。*/
-    protected void afterResponse(AppContext appContext, HttpServletRequest httpReq, HttpServletResponse httpRes) {}
+    /**在filter请求处理之后，该方法负责通知HttpRequestProvider、HttpResponseProvider、HttpSessionProvider重置对象。*/
+    protected void afterResponse(AppContext appContext, HttpServletRequest httpReq, HttpServletResponse httpRes) {
+        HttpRequestProvider.getProvider().reset();
+        HttpResponseProvider.getProvider().reset();
+        HttpSessionProvider.getProvider().reset();
+    }
 }

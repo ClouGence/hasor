@@ -31,6 +31,7 @@ import org.hasor.context.HasorSettingListener;
 import org.hasor.context.Settings;
 import org.hasor.context.XmlProperty;
 import org.more.util.StringUtils;
+import org.more.util.map.DecSequenceMap;
 /**
  * Environment接口实现类，loadEnvironment方法是初始化方法。
  * @version : 2013-5-23
@@ -108,7 +109,7 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
         String workDir = settings.getString("environmentVar.HASOR_WORK_HOME", "./");
         workDir = workDir.replace("/", File.separator);
         if (workDir.startsWith("." + File.separatorChar))
-            hasorEnv.put("HASOR_WORK_HOME", new File(workDir.substring(2)).getAbsolutePath());
+            hasorEnv.put("HASOR_WORK_HOME", new File(System.getProperty("user.dir"), workDir.substring(2)).getAbsolutePath());
         else
             hasorEnv.put("HASOR_WORK_HOME", workDir);
         return hasorEnv;
@@ -135,11 +136,11 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
         Map<String, String> hasorEnv = this.configEnvironment();
         hasorEnv = (hasorEnv == null) ? new HashMap<String, String>() : hasorEnv;
         //4.设置生效
-        Map<String, String> finalMap = new HashMap<String, String>();
-        finalMap.putAll(systemEnv);
-        finalMap.putAll(javaProp);
-        finalMap.putAll(hasorEnv);
-        finalMap.putAll(userEnvMap);
+        DecSequenceMap<String, String> finalMap = new DecSequenceMap<String, String>();
+        finalMap.addMap(userEnvMap);
+        finalMap.addMap(hasorEnv);
+        finalMap.addMap(javaProp);
+        finalMap.addMap(systemEnv);
         //5.解析hasor 特有环境变量
         for (Entry<String, String> hasorEnt : hasorEnv.entrySet()) {
             String k = hasorEnt.getKey();
@@ -149,6 +150,7 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
             finalMap.put(k, v);
             hasorEnt.setValue(v);
         }
+        //
         this.finalEnvMap = finalMap;
         //
         /*日志输出*/
