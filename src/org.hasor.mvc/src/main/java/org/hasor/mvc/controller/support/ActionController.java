@@ -64,7 +64,7 @@ class ActionController extends HttpServlet {
         //1.拆分请求字符串
         ActionInvoke invoke = getActionInvoke(requestPath, request.getMethod());
         if (invoke == null) {
-            String logInfo = Hasor.formatString("%s action is not defined.", requestPath);
+            String logInfo = String.format("%s action is not defined.", requestPath);
             throw new ActionException(logInfo);
         }
         //3.执行调用

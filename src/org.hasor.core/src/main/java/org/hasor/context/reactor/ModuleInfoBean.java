@@ -156,7 +156,7 @@ public final class ModuleInfoBean implements ModuleSettings, HasorEventListener 
     }
     @Override
     public String toString() {
-        return Hasor.formatString("displayName is %s, class is %s",//
+        return String.format("displayName is %s, class is %s",//
                 this.displayName, this.moduleObject.getClass());
     }
     @Override

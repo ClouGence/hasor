@@ -81,7 +81,7 @@ public class LogPlatformListener extends AbstractHasorModule {
             String key = logKey.toString();
             long t = System.currentTimeMillis();
             Object returnData = invocation.proceed();
-            System.out.println(Hasor.formatString("log invoke at %s, use time: %s.", key, (System.currentTimeMillis() - t)));
+            System.out.println(String.format("log invoke at %s, use time: %s.", key, (System.currentTimeMillis() - t)));
             return returnData;
         }
     }

@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
-import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,35 +66,28 @@ public abstract class Hasor {
     public static void debug(String string, Object... params) {
         Logger log = LoggerFactory.getLogger(callerClass());
         Object[] paramsStr = getStringArray(params);
-        log.debug(callerInfo() + " ->> " + formatString(string, paramsStr));
+        log.debug(callerInfo() + " ->> " + String.format(string, paramsStr));
     }
     //
     /***/
     public static void error(String string, Object... params) {
         Logger log = LoggerFactory.getLogger(callerClass());
         Object[] paramsStr = getStringArray(params);
-        log.error(callerErr() + " ->> " + formatString(string, paramsStr));
+        log.error(callerErr() + " ->> " + String.format(string, paramsStr));
     }
     //
     /***/
     public static void warning(String string, Object... params) {
         Logger log = LoggerFactory.getLogger(callerClass());
         Object[] paramsStr = getStringArray(params);
-        log.warn(callerWarn() + " ->> " + formatString(string, paramsStr));
+        log.warn(callerWarn() + " ->> " + String.format(string, paramsStr));
     }
     //
     /***/
     public static void info(String string, Object... params) {
         Logger log = LoggerFactory.getLogger(callerClass());
         Object[] paramsStr = getStringArray(params);
-        log.info(callerInfo() + " ->> " + formatString(string, paramsStr));
-    }
-    //
-    /***/
-    public static String formatString(String formatString, Object... args) {
-        if (ArrayUtils.isBlank(args))
-            return formatString;
-        return String.format(formatString, args);
+        log.info(callerInfo() + " ->> " + String.format(string, paramsStr));
     }
     //
     /***/
@@ -190,7 +182,7 @@ public abstract class Hasor {
             String var = mapData.get(key);
             var = (var != null) ? var.replace("\r", "\\r").replace("\n", "\\n") : var;
             outLog.append(StringUtils.fixedString(colWidth - key.length(), ' '));
-            outLog.append(Hasor.formatString(" %s : %s", key, var));
+            outLog.append(String.format(" %s : %s", key, var));
             outLog.append('\n');
         }
         if (outLog.length() > 1)

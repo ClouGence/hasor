@@ -60,7 +60,7 @@ class ErrorDefinition implements Provider<ErrorDefinition> {
     }
     @Override
     public String toString() {
-        return Hasor.formatString("type %s initParams=%s ,uriPatternType=%s",//
+        return String.format("type %s initParams=%s ,uriPatternType=%s",//
                 ErrorDefinition.class, getInitParams(), this.errorType);
     }
     /*--------------------------------------------------------------------------------------------------------*/

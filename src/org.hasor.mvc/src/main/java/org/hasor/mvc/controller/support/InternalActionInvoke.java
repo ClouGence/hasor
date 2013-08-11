@@ -160,17 +160,6 @@ class InternalActionInvoke implements ActionInvoke, ActionInvoke2 {
         if (paramClass.isEnum() || paramClass.isArray() || paramClass.isPrimitive() || paramClass == String.class)
             return null;/*忽略：基本类型、字符串类型*/
         //
-        if (paramClass.isAssignableFrom(HttpServletRequest.class) || paramClass.isAssignableFrom(ServletRequest.class))
-            return request;
-        if (paramClass.isAssignableFrom(HttpServletResponse.class) || paramClass.isAssignableFrom(ServletResponse.class))
-            return response;
-        if (paramClass.isAssignableFrom(HttpSession.class)) {
-            if (request instanceof HttpServletRequest)
-                return ((HttpServletRequest) request).getSession(true);
-            return null;
-        }
-        if (paramClass.isAssignableFrom(ServletContext.class))
-            return ((HttpServletRequest) request).getSession(true).getServletContext();
         try {
             return this.appContext.getInstance(paramClass);
         } catch (Exception e) {

@@ -59,7 +59,7 @@ class ServletDefinition extends AbstractServletModuleBinding implements Provider
     }
     @Override
     public String toString() {
-        return Hasor.formatString("type %s pattern=%s ,initParams=%s ,uriPatternType=%s",//
+        return String.format("type %s pattern=%s ,initParams=%s ,uriPatternType=%s",//
                 ServletDefinition.class, getPattern(), getInitParams(), getUriPatternType());
     }
     /*--------------------------------------------------------------------------------------------------------*/

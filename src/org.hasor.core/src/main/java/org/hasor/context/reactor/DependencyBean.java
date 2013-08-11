@@ -44,7 +44,7 @@ class DependencyBean implements Dependency {
     }
     @Override
     public String toString() {
-        return Hasor.formatString("name %s, option is %s."//
+        return String.format("name %s, option is %s."//
                 , this.moduleInfo.getDisplayName(), this.option);
     }
     @Override

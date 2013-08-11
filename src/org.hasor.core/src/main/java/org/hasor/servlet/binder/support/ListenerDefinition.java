@@ -47,7 +47,7 @@ class ListenerDefinition implements Provider<ListenerDefinition> {
     }
     @Override
     public String toString() {
-        return Hasor.formatString("type %s listenerKey=%s",//
+        return String.format("type %s listenerKey=%s",//
                 ListenerDefinition.class, this.listenerKey);
     }
     /*--------------------------------------------------------------------------------------------------------*/
