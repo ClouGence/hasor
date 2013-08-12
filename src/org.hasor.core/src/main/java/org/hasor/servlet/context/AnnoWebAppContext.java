@@ -35,6 +35,8 @@ import org.hasor.servlet.binder.support.ManagedFilterPipeline;
 import org.hasor.servlet.binder.support.ManagedServletPipeline;
 import org.hasor.servlet.binder.support.ManagedSessionListenerPipeline;
 import org.hasor.servlet.binder.support.WebApiBinderModule;
+import org.hasor.servlet.context.provider.DefaultHttpServletRequestProvider;
+import org.hasor.servlet.context.provider.DefaultHttpServletResponseProvider;
 import com.google.inject.Binder;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -45,9 +47,8 @@ import com.google.inject.Provider;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class AnnoWebAppContext extends AnnoAppContextSupportModule {
-    private Provider<HttpServletRequest>  httpRequestProvider  = null;
-    private Provider<HttpServletResponse> httpResponseProvider = null;
-    private Provider<HttpSession>         httpSessionProvider  = null;
+    private Provider<HttpServletRequest>  httpRequestProvider  = new DefaultHttpServletRequestProvider();
+    private Provider<HttpServletResponse> httpResponseProvider = new DefaultHttpServletResponseProvider();
     //
     public AnnoWebAppContext(ServletContext servletContext) throws IOException {
         super("hasor-config.xml", servletContext);
@@ -72,15 +73,6 @@ public class AnnoWebAppContext extends AnnoAppContextSupportModule {
      * 注意：该方法在{@link #start()}方法调用之前设置才能生效。*/
     public void setHttpResponseProvider(Provider<HttpServletResponse> httpResponseProvider) {
         this.httpResponseProvider = httpResponseProvider;
-    }
-    /**获取{@link HttpSession}的Provider，该Provider用于依赖注入。*/
-    public Provider<HttpSession> getHttpSessionProvider() {
-        return httpSessionProvider;
-    }
-    /**设置{@link HttpSession}的Provider，该Provider用于依赖注入。<br/>
-     * 注意：该方法在{@link #start()}方法调用之前设置才能生效。*/
-    public void setHttpSessionProvider(Provider<HttpSession> httpSessionProvider) {
-        this.httpSessionProvider = httpSessionProvider;
     }
     /**获取{@link ServletContext}*/
     public ServletContext getServletContext() {
@@ -114,15 +106,17 @@ public class AnnoWebAppContext extends AnnoAppContextSupportModule {
                 if (httpRequestProvider != null) {
                     binder.bind(ServletRequest.class).to(HttpServletRequest.class);
                     binder.bind(HttpServletRequest.class).toProvider(httpRequestProvider);
+                    /*绑定HttpSession对象的Provider*/
+                    binder.bind(HttpSession.class).toProvider(new Provider<HttpSession>() {
+                        public HttpSession get() {
+                            return ((HttpServletRequest) httpResponseProvider.get()).getSession(true);
+                        }
+                    });
                 }
                 /*绑定ServletResponse，HttpServletResponse对象的Provider*/
                 if (httpResponseProvider != null) {
                     binder.bind(ServletResponse.class).to(HttpServletResponse.class);
                     binder.bind(HttpServletResponse.class).toProvider(httpResponseProvider);
-                }
-                /*绑定HttpSession对象的Provider*/
-                if (httpSessionProvider != null) {
-                    binder.bind(HttpSession.class).toProvider(httpSessionProvider);
                 }
             }
         };

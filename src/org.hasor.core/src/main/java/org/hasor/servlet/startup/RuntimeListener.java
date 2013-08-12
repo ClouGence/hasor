@@ -37,9 +37,6 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     /*----------------------------------------------------------------------------------------------------*/
     protected AbstractAppContext createAppContext(ServletContext sc) throws IOException {
         AnnoWebAppContext webContext = new AnnoWebAppContext(sc);
-        webContext.setHttpRequestProvider(HttpRequestProvider.getProvider());
-        webContext.setHttpResponseProvider(HttpResponseProvider.getProvider());
-        webContext.setHttpSessionProvider(HttpSessionProvider.getProvider());
         return webContext;
     }
     @Override

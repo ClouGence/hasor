@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.hasor.Hasor;
 import org.hasor.context.AppContext;
 import org.hasor.servlet.binder.FilterPipeline;
+import org.hasor.servlet.context.provider.HttpProvider;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 /**
@@ -103,15 +104,11 @@ public class RuntimeFilter implements Filter {
     //
     /**在filter请求处理之前，该方法负责通知HttpRequestProvider、HttpResponseProvider、HttpSessionProvider更新对象。*/
     protected void beforeRequest(AppContext appContext, HttpServletRequest httpReq, HttpServletResponse httpRes) {
-        HttpRequestProvider.getProvider().update(httpReq);
-        HttpResponseProvider.getProvider().update(httpRes);
-        HttpSessionProvider.getProvider().update(httpReq.getSession(true));
+        HttpProvider.getProvider().update(httpReq, httpRes);
     }
     //
     /**在filter请求处理之后，该方法负责通知HttpRequestProvider、HttpResponseProvider、HttpSessionProvider重置对象。*/
     protected void afterResponse(AppContext appContext, HttpServletRequest httpReq, HttpServletResponse httpRes) {
-        HttpRequestProvider.getProvider().reset();
-        HttpResponseProvider.getProvider().reset();
-        HttpSessionProvider.getProvider().reset();
+        HttpProvider.getProvider().reset();
     }
 }

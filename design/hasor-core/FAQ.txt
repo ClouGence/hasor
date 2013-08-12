@@ -1,0 +1,2 @@
+Q：在Hasor中怎样使已经被注入到Action中的request或response的对象更换成另外一个。
+A：首先确保

@@ -98,10 +98,12 @@ class ActionInvokeImpl implements ActionInvoke {
                         paramName = ((Var) pAnno).value();
                 }
                 /**普通参数*/
-                Object paramObject = (overwriteHttpParams != null) ? overwriteHttpParams.get(paramName) : request.getParameterValues(paramName);
+                Object paramObject = null;
+                if (StringUtils.isBlank(paramName) == false)
+                    paramObject = (overwriteHttpParams != null) ? overwriteHttpParams.get(paramName) : request.getParameterValues(paramName);
                 /**特殊参数*/
                 if (paramObject == null)
-                    paramObject = getSpecialParamObject(request, response, paramClass);
+                    paramObject = getSpecialParamObject(paramClass);
                 /**处理参数类型*/
                 if (paramObject != null) {
                     try {
@@ -146,7 +148,7 @@ class ActionInvokeImpl implements ActionInvoke {
         return returnData;
     }
     /*处理特殊类型参数*/
-    private Object getSpecialParamObject(ServletRequest request, ServletResponse response, Class<?> paramClass) {
+    private Object getSpecialParamObject(Class<?> paramClass) {
         if (paramClass.isEnum() || paramClass.isArray() || paramClass.isPrimitive() || paramClass == String.class)
             return null;/*忽略：基本类型、字符串类型*/
         //
