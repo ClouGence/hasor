@@ -24,11 +24,15 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.hasor.Hasor;
 import org.hasor.context.AppContext;
 import org.hasor.context.EventManager;
-import org.hasor.mvc.controller.HttpMethod;
+import org.hasor.mvc.controller.ActionDefine;
+import org.hasor.mvc.controller.ActionInvoke;
 import org.hasor.mvc.controller.Var;
+import org.hasor.servlet.context.provider.HttpProvider;
 import org.more.util.BeanUtils;
 import org.more.util.StringConvertUtils;
 import org.more.util.StringUtils;
@@ -37,80 +41,49 @@ import org.more.util.StringUtils;
  * @version : 2013-6-5
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ActionInvoke {
-    /**在调用Action之前引发的事件*/
-    public static String Event_BeforeInvoke    = "ActionInvoke_Event_BeforeInvoke";
-    /**在调用Action之后引发的事件*/
-    public static String Event_AfterInvoke     = "ActionInvoke_Event_AfterInvoke";
+class ActionInvokeImpl implements ActionInvoke {
+    private ActionDefine    actionDefine = null;
+    private AppContext      appContext   = null;
+    private Object          targetObject = null;
+    private ServletRequest  request      = null;
+    private ServletResponse response     = null;
     //
-    private Method       targetMethod          = null;
-    private Object       targetObject          = null;
-    private HttpMethod[] httpMethod            = null;
-    private String       mimeType              = null;
-    private String       restfulMapping        = null;
-    private String       restfulMappingMatches = null;
-    private AppContext   appContext            = null;
-    //
-    public ActionInvoke(Method targetMethod, HttpMethod[] httpMethod, String mimeType, Object targetObject) {
-        this.targetMethod = targetMethod;
-        this.httpMethod = httpMethod;
-        this.mimeType = mimeType;
+    public ActionInvokeImpl(ActionDefine actionDefine, Object targetObject, ServletRequest request, ServletResponse response) {
+        this.actionDefine = actionDefine;
         this.targetObject = targetObject;
+        this.request = request;
+        this.response = response;
+        this.appContext = this.getActionDefine().getAppContext();
     }
     //
-    /**获取Action可以接收的方法*/
-    public HttpMethod[] getHttpMethod() {
-        return this.httpMethod;
+    /**获取ActionDefine*/
+    public ActionDefine getActionDefine() {
+        return this.actionDefine;
     }
     //
-    /**获取目标方法。*/
-    public Method getTargetMethod() {
-        return this.targetMethod;
+    /**获取AppContext*/
+    public AppContext getAppContext() {
+        return this.appContext;
     }
     //
-    /**获取映射字符串*/
-    public String getRestfulMapping() {
-        return this.restfulMapping;
-    }
-    //
-    /**获取映射字符串用于匹配的表达式字符串*/
-    public String getRestfulMappingMatches() {
-        if (this.restfulMappingMatches == null) {
-            String mapping = this.getRestfulMapping();
-            this.restfulMappingMatches = mapping.replaceAll("\\{\\w{1,}\\}", "(\\\\w{1,})");
-        }
-        return this.restfulMappingMatches;
-    }
-    //
-    /**初始化*/
-    public void initInvoke(AppContext appContext) {
-        this.appContext = appContext;
+    /**获取调用的目标对象*/
+    public Object getTargetObject() {
+        return targetObject;
     }
     //
     /**执行调用*/
-    public Object invoke(ServletRequest request, ServletResponse response) throws ServletException {
+    public Object invoke() throws ServletException {
         HashMap<String, Object> overwriteHttpParams = new HashMap<String, Object>();
         overwriteHttpParams.putAll(request.getParameterMap());
-        return this.invoke(request, response, overwriteHttpParams);
+        return this.invoke(overwriteHttpParams);
     }
     //
     /**执行调用*/
-    public Object invoke(ServletRequest request, ServletResponse response, Map<String, Object> overwriteHttpParams) throws ServletException {
-        if (this.targetObject == null) {
-            Class<?> targetClass = this.targetMethod.getDeclaringClass();
-            String beanName = this.appContext.getBeanName(targetClass);
-            if (StringUtils.isBlank(beanName) == false)
-                this.targetObject = this.appContext.getBean(beanName);
-            else
-                this.targetObject = this.appContext.getInstance(targetClass);
-        }
-        //
-        if (this.targetObject == null)
-            throw new ServletException("create invokeObject on " + this.targetMethod.toString() + " return null.");
-        //
+    public Object invoke(Map<String, Object> overwriteHttpParams) throws ServletException {
         try {
-            Class<?>[] targetParamClass = this.targetMethod.getParameterTypes();
-            Annotation[][] targetParamAnno = this.targetMethod.getParameterAnnotations();
+            Method targetMethod = this.getActionDefine().getTargetMethod();
+            Class<?>[] targetParamClass = targetMethod.getParameterTypes();
+            Annotation[][] targetParamAnno = targetMethod.getParameterAnnotations();
             targetParamClass = (targetParamClass == null) ? new Class<?>[0] : targetParamClass;
             targetParamAnno = (targetParamAnno == null) ? new Annotation[0][0] : targetParamAnno;
             ArrayList<Object> paramsArray = new ArrayList<Object>();
@@ -143,21 +116,34 @@ public class ActionInvoke {
             }
             Object[] invokeParams = paramsArray.toArray();
             //
-            if (!StringUtils.isBlank(this.mimeType))
-                response.setContentType(this.mimeType);
+            String mimeType = this.getActionDefine().getMimeType();
+            if (!StringUtils.isBlank(mimeType))
+                response.setContentType(mimeType);
             //
-            EventManager eventManager = this.appContext.getEventManager();
-            /*引发事件*/
-            eventManager.doSyncEvent(Event_BeforeInvoke, this, invokeParams);
-            Object returnData = this.targetMethod.invoke(this.targetObject, invokeParams);
-            /*引发事件*/
-            eventManager.doSyncEvent(Event_AfterInvoke, this, invokeParams, returnData);
-            return returnData;
+            return this.call(targetMethod, this.getTargetObject(), invokeParams);
         } catch (InvocationTargetException e) {
             throw new ServletException(e.getCause());
         } catch (Exception e) {
             throw new ServletException(e);
         }
+    }
+    //
+    /*执行调用*/
+    private Object call(Method targetMethod, Object targetObject, Object[] invokeParams) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+        HttpProvider httpProvider = HttpProvider.getProvider();
+        HttpServletRequest oriRequest = httpProvider.getRequest();
+        HttpServletResponse oriResponse = httpProvider.getResponse();
+        {
+            httpProvider.update((HttpServletRequest) this.request, (HttpServletResponse) this.response);
+        }
+        EventManager eventManager = this.getAppContext().getEventManager();
+        eventManager.doSyncEvent(ActionDefineImpl.Event_BeforeInvoke, this, invokeParams);/*引发事件*/
+        Object returnData = targetMethod.invoke(this.getTargetObject(), invokeParams);
+        eventManager.doSyncEvent(ActionDefineImpl.Event_AfterInvoke, this, invokeParams, returnData); /*引发事件*/
+        {
+            httpProvider.update(oriRequest, oriResponse);
+        }
+        return returnData;
     }
     /*处理特殊类型参数*/
     private Object getSpecialParamObject(ServletRequest request, ServletResponse response, Class<?> paramClass) {
@@ -165,7 +151,7 @@ public class ActionInvoke {
             return null;/*忽略：基本类型、字符串类型*/
         //
         try {
-            return this.appContext.getInstance(paramClass);
+            return this.getActionDefine().getAppContext().getInstance(paramClass);
         } catch (Exception e) {
             return null;
         }

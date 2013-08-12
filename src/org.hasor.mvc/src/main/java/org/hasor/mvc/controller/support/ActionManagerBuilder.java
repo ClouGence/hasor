@@ -17,8 +17,10 @@ package org.hasor.mvc.controller.support;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.hasor.mvc.controller.ActionBinder;
 import org.hasor.mvc.controller.HttpMethod;
 import org.more.util.BeanUtils;
@@ -99,11 +101,11 @@ public class ActionManagerBuilder implements ActionBinder {
     //
     /**对一个Action进行定义*/
     private static class ActionBindingBuilderImpl extends AbstractActionBindingBuilder {
-        private Method                targetMethod   = null;
-        private Object                targetObject   = null;
-        private ArrayList<HttpMethod> bindHttpMethod = new ArrayList<HttpMethod>();
-        private String                mimeType       = null;
-        private String                mappingRestful = null;
+        private Method          targetMethod   = null;
+        private Object          targetObject   = null;
+        private Set<HttpMethod> bindHttpMethod = new HashSet<HttpMethod>();
+        private String          mimeType       = null;
+        private String          mappingRestful = null;
         //
         public ActionBindingBuilderImpl(Method targetMethod) {
             this.targetMethod = targetMethod;
@@ -141,8 +143,8 @@ public class ActionManagerBuilder implements ActionBinder {
             } else
                 restfulString = null;
             //3.
-            ActionInvoke actionInvoke = new ActionInvoke(this.targetMethod, bindMethods, this.mimeType, this.targetObject);
-            ans.putActionInvoke(actionInvoke);
+            ActionDefineImpl define = new ActionDefineImpl(this.targetMethod, bindMethods, this.mimeType, restfulString, this.targetObject);
+            ans.putActionDefine(define);
         }
     }
     //

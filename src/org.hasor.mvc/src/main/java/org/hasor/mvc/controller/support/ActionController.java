@@ -34,7 +34,6 @@ import com.google.inject.Inject;
  * @version : 2013-5-11
  * @author 赵永春 (zyc@byshell.org)
  */
-//@WebServlet("*.do")
 class ActionController extends HttpServlet {
     private static final long serialVersionUID = -2579757349905408506L;
     @Inject
@@ -63,14 +62,14 @@ class ActionController extends HttpServlet {
             return;
         //
         //1.拆分请求字符串
-        ActionInvoke invoke = getActionInvoke(requestPath, request.getMethod());
+        ActionDefineImpl invoke = getActionDefine(requestPath, request.getMethod());
         if (invoke == null) {
             String logInfo = String.format("%s action is not defined.", requestPath);
             throw new ActionException(logInfo);
         }
         //3.执行调用
         try {
-            Object result = invoke.invoke(request, response);
+            Object result = invoke.createInvoke(request, response).invoke();
         } catch (ServletException e) {
             if (e.getCause() instanceof IOException)
                 throw (IOException) e.getCause();
@@ -78,7 +77,7 @@ class ActionController extends HttpServlet {
                 throw e;
         }
     }
-    private ActionInvoke getActionInvoke(String requestPath, String httpMethod) {
+    private ActionDefineImpl getActionDefine(String requestPath, String httpMethod) {
         //1.拆分请求字符串
         String actionNS = requestPath.substring(0, requestPath.lastIndexOf("/") + 1);
         String actionInvoke = requestPath.substring(requestPath.lastIndexOf("/") + 1);
@@ -104,8 +103,8 @@ class ActionController extends HttpServlet {
         // TODO 需要检查下面代码是否符合Servlet规范（带request参数情况下也需要检查）
         final String newRequestUri = path;
         //1.拆分请求字符串
-        final ActionInvoke invoke = getActionInvoke(path, httpMethod);
-        if (invoke == null)
+        final ActionDefineImpl define = getActionDefine(path, httpMethod);
+        if (define == null)
             return null;
         else
             return new RequestDispatcher() {
@@ -114,7 +113,7 @@ class ActionController extends HttpServlet {
                     servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
                     /*执行servlet*/
                     try {
-                        invoke.invoke(servletRequest, servletResponse);
+                        define.createInvoke(servletRequest, servletResponse).invoke();
                     } finally {
                         servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
                     }
@@ -135,7 +134,7 @@ class ActionController extends HttpServlet {
                     /*执行转发*/
                     servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
                     try {
-                        invoke.invoke(requestToProcess, servletResponse);
+                        define.createInvoke(requestToProcess, servletResponse).invoke();
                     } finally {
                         servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
                     }

@@ -23,7 +23,7 @@ import org.more.util.StringUtils;
  * @version : 2013-5-11
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ActionSettings /*implements HasorSettingListener*/{
+class ActionSettings /*implements HasorSettingListener*/{
     /**模式：mode:RestOnly（rest风格）、ServletOnly（中央servlet）、Both（两者同时使用）*/
     public static final String ActionServlet_Mode            = "hasor-mvc.actionServlet.mode";
     /**action拦截器.*/

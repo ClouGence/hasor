@@ -13,26 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.mvc.controller.plugins.result.support;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import org.hasor.context.HasorEventListener;
-import org.hasor.mvc.controller.ActionInvoke;
+package org.hasor.mvc.controller;
+import java.util.Map;
+import javax.servlet.ServletException;
+import org.hasor.context.AppContext;
 /**
- * 
- * @version : 2013-8-11
+ * 用于调用Action的接口
+ * @version : 2013-8-12
  * @author 赵永春 (zyc@byshell.org)
  */
-@Singleton
-class Caller implements HasorEventListener {
-    @Inject
-    private ResultProcessManager resultProcessManager;
-    @Override
-    public void onEvent(String event, Object[] params) {
-        ActionInvoke invoke = (ActionInvoke) params[0];
-        Object[] invokeParams = (Object[]) params[1];
-        Object returnData = params[2];
-        //
-        System.out.println();
-    }
+public interface ActionInvoke {
+    /**获取ActionDefine*/
+    public ActionDefine getActionDefine();
+    /**获取AppContext*/
+    public AppContext getAppContext();
+    /**获取调用的目标类*/
+    public Object getTargetObject();
+    /**执行调用*/
+    public Object invoke() throws ServletException;
+    /**执行调用*/
+    public Object invoke(Map<String, Object> overwriteHttpParams) throws ServletException;
 }

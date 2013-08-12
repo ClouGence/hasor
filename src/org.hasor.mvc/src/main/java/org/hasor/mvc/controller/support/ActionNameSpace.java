@@ -26,9 +26,9 @@ import org.more.util.StringConvertUtils;
  * @version : 2013-4-20
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ActionNameSpace {
-    private String                                     namespace       = null;
-    private Map<HttpMethod, Map<String, ActionInvoke>> actionInvokeMap = new HashMap<HttpMethod, Map<String, ActionInvoke>>();
+class ActionNameSpace {
+    private String                                         namespace       = null;
+    private Map<HttpMethod, Map<String, ActionDefineImpl>> actionInvokeMap = new HashMap<HttpMethod, Map<String, ActionDefineImpl>>();
     //
     public ActionNameSpace(String namespace) {
         this.namespace = namespace;
@@ -38,17 +38,17 @@ public class ActionNameSpace {
         return this.namespace;
     }
     /**获取注册的所有Action*/
-    public List<ActionInvoke> getActions() {
-        ArrayList<ActionInvoke> actionList = new ArrayList<ActionInvoke>();
-        for (Map<String, ActionInvoke> invokeMap : this.actionInvokeMap.values())
-            for (ActionInvoke invoke : invokeMap.values())
+    public List<ActionDefineImpl> getActions() {
+        ArrayList<ActionDefineImpl> actionList = new ArrayList<ActionDefineImpl>();
+        for (Map<String, ActionDefineImpl> invokeMap : this.actionInvokeMap.values())
+            for (ActionDefineImpl invoke : invokeMap.values())
                 actionList.add(invoke);
         return actionList;
     }
     /**获取控制器中定义的action方法。*/
-    public ActionInvoke getActionByName(String method, String actionMethodName) {
+    public ActionDefineImpl getActionByName(String method, String actionMethodName) {
         HttpMethod httpMethod = StringConvertUtils.parseEnum(method, HttpMethod.class, HttpMethod.Any);
-        Map<String, ActionInvoke> actionMap = actionInvokeMap.get(httpMethod);
+        Map<String, ActionDefineImpl> actionMap = actionInvokeMap.get(httpMethod);
         actionMap = (actionMap != null) ? actionMap : actionInvokeMap.get(HttpMethod.Any);
         if (actionMap != null) {
             return actionMap.get(actionMethodName);
@@ -57,8 +57,8 @@ public class ActionNameSpace {
     }
     /**初始化NameSpace*/
     public void initNameSpace(AppContext appContext) {
-        for (Map<String, ActionInvoke> invokeMap : this.actionInvokeMap.values())
-            for (ActionInvoke invoke : invokeMap.values())
+        for (Map<String, ActionDefineImpl> invokeMap : this.actionInvokeMap.values())
+            for (ActionDefineImpl invoke : invokeMap.values())
                 invoke.initInvoke(appContext);
     }
     /**销毁NameSpace*/
@@ -66,17 +66,17 @@ public class ActionNameSpace {
         this.actionInvokeMap.clear();
     }
     /**添加Action*/
-    public void putActionInvoke(ActionInvoke invoke) {
-        if (invoke == null)
+    public void putActionDefine(ActionDefineImpl define) {
+        if (define == null)
             return;
-        for (HttpMethod httpMethod : invoke.getHttpMethod()) {
-            Map<String, ActionInvoke> invokeMap = this.actionInvokeMap.get(httpMethod);
+        for (HttpMethod httpMethod : define.getHttpMethod()) {
+            Map<String, ActionDefineImpl> invokeMap = this.actionInvokeMap.get(httpMethod);
             if (invokeMap == null) {
-                invokeMap = new HashMap<String, ActionInvoke>();
+                invokeMap = new HashMap<String, ActionDefineImpl>();
                 this.actionInvokeMap.put(httpMethod, invokeMap);
             }
-            String actionName = invoke.getTargetMethod().getName();
-            invokeMap.put(actionName, invoke);
+            String actionName = define.getTargetMethod().getName();
+            invokeMap.put(actionName, define);
         }
     }
 }

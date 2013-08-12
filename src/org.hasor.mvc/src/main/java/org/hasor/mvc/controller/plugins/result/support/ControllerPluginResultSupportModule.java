@@ -19,9 +19,9 @@ import org.hasor.Hasor;
 import org.hasor.context.AppContext;
 import org.hasor.context.ModuleSettings;
 import org.hasor.context.anno.Module;
+import org.hasor.mvc.controller.ActionDefine;
 import org.hasor.mvc.controller.plugins.result.ResultDefine;
 import org.hasor.mvc.controller.plugins.result.ResultProcess;
-import org.hasor.mvc.controller.support.ActionInvoke;
 import org.hasor.mvc.controller.support.ServletControllerSupportModule;
 import org.hasor.servlet.AbstractWebHasorModule;
 import org.hasor.servlet.WebApiBinder;
@@ -65,11 +65,11 @@ public class ControllerPluginResultSupportModule extends AbstractWebHasorModule 
     @Override
     public void start(AppContext appContext) {
         Caller caller = appContext.getInstance(Caller.class);
-        appContext.getEventManager().addEventListener(ActionInvoke.Event_AfterInvoke, caller);
+        appContext.getEventManager().addEventListener(ActionDefine.Event_AfterInvoke, caller);
     }
     @Override
     public void stop(AppContext appContext) {
         Caller caller = appContext.getInstance(Caller.class);
-        appContext.getEventManager().removeEventListener(ActionInvoke.Event_AfterInvoke, caller);;
+        appContext.getEventManager().removeEventListener(ActionDefine.Event_AfterInvoke, caller);;
     }
 }

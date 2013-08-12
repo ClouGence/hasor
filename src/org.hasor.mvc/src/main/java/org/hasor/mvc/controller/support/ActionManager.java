@@ -24,7 +24,7 @@ import com.google.inject.TypeLiteral;
  * @version : 2013-4-20
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ActionManager {
+class ActionManager {
     private List<ActionNameSpace> nameSpaceList = new ArrayList<ActionNameSpace>();
     //
     /**初始化启动缓存服务。*/

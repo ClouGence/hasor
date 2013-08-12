@@ -42,27 +42,27 @@ import com.google.inject.Inject;
  */
 class RestfulController implements Filter {
     @Inject
-    private AppContext     appContext  = null;
-    private ActionInvoke[] invokeArray = null;
+    private AppContext         appContext  = null;
+    private ActionDefineImpl[] defineArray = null;
     //
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         ActionManager actionManager = appContext.getInstance(ActionManager.class);
-        ArrayList<ActionInvoke> restfulList = new ArrayList<ActionInvoke>();
+        ArrayList<ActionDefineImpl> restfulList = new ArrayList<ActionDefineImpl>();
         //
         for (ActionNameSpace ns : actionManager.getNameSpaceList()) {
-            for (ActionInvoke invoke : ns.getActions())
-                if (invoke.getRestfulMapping() != null)
-                    restfulList.add(invoke);
+            for (ActionDefineImpl define : ns.getActions())
+                if (define.getRestfulMapping() != null)
+                    restfulList.add(define);
         }
         //
-        Collections.sort(restfulList, new Comparator<ActionInvoke>() {
+        Collections.sort(restfulList, new Comparator<ActionDefineImpl>() {
             @Override
-            public int compare(ActionInvoke o1, ActionInvoke o2) {
+            public int compare(ActionDefineImpl o1, ActionDefineImpl o2) {
                 return o1.getRestfulMapping().compareToIgnoreCase(o2.getRestfulMapping());
             }
         });
-        this.invokeArray = restfulList.toArray(new ActionInvoke[restfulList.size()]);
+        this.defineArray = restfulList.toArray(new ActionDefineImpl[restfulList.size()]);
     }
     @Override
     public void destroy() {}
@@ -71,15 +71,15 @@ class RestfulController implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         String actionPath = request.getRequestURI().substring(request.getContextPath().length());
         //1.获取 ActionInvoke
-        ActionInvoke invoke = this.getActionInvoke(actionPath);
-        if (invoke == null) {
+        ActionDefineImpl define = this.getActionDefine(actionPath);
+        if (define == null) {
             chain.doFilter(request, resp);
             return;
         }
         //3.执行调用
         try {
-            Map<String, Object> overwriteHttpParams = this.getParams(request, actionPath, invoke);
-            Object result = invoke.invoke(request, resp, overwriteHttpParams);
+            Map<String, Object> overwriteHttpParams = this.getParams(request, actionPath, define);
+            Object result = define.createInvoke(request, resp).invoke(overwriteHttpParams);
         } catch (ServletException e) {
             if (e.getCause() instanceof IOException)
                 throw (IOException) e.getCause();
@@ -87,7 +87,7 @@ class RestfulController implements Filter {
                 throw e;
         }
     }
-    private Map<String, Object> getParams(ServletRequest request, String actionPath, ActionInvoke invoke) {
+    private Map<String, Object> getParams(ServletRequest request, String actionPath, ActionDefineImpl invoke) {
         String matchVar = invoke.getRestfulMappingMatches();
         String matchKey = "(?:\\{(\\w+)\\}){1,}";//  (?:\{(\w+)\}){1,}
         Matcher keyM = Pattern.compile(matchKey).matcher(invoke.getRestfulMapping());
@@ -119,8 +119,8 @@ class RestfulController implements Filter {
         }
         return overwriteHttpParams;
     }
-    private ActionInvoke getActionInvoke(String requestPath) {
-        for (ActionInvoke restAction : this.invokeArray)
+    private ActionDefineImpl getActionDefine(String requestPath) {
+        for (ActionDefineImpl restAction : this.defineArray)
             if (requestPath.matches(restAction.getRestfulMappingMatches()) == true)
                 return restAction;
         return null;
@@ -139,45 +139,45 @@ class RestfulController implements Filter {
     public RequestDispatcher getRequestDispatcher(final String newRequestUri, final HttpServletRequest request) {
         // TODO 需要检查下面代码是否符合Servlet规范（带request参数情况下也需要检查）
         //1.拆分请求字符串
-        final ActionInvoke invoke = getActionInvoke(newRequestUri);
-        if (invoke == null)
+        final ActionDefineImpl define = getActionDefine(newRequestUri);
+        if (define == null)
             return null;
-        else
-            return new RequestDispatcher() {
-                @Override
-                public void include(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
-                    servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
-                    /*执行servlet*/
-                    try {
-                        Map<String, Object> overwriteHttpParams = getParams(request, newRequestUri, invoke);
-                        invoke.invoke(servletRequest, servletResponse, overwriteHttpParams);
-                    } finally {
-                        servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
-                    }
+        //
+        return new RequestDispatcher() {
+            @Override
+            public void include(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+                servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
+                /*执行servlet*/
+                try {
+                    Map<String, Object> overwriteHttpParams = getParams(request, newRequestUri, define);
+                    define.createInvoke(servletRequest, servletResponse).invoke(overwriteHttpParams);
+                } finally {
+                    servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
                 }
-                @Override
-                public void forward(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
-                    if (servletResponse.isCommitted() == true)
-                        throw new ServletException("Response has been committed--you can only call forward before committing the response (hint: don't flush buffers)");
-                    /*清空缓冲*/
-                    servletResponse.resetBuffer();
-                    ServletRequest requestToProcess;
-                    if (servletRequest instanceof HttpServletRequest) {
-                        requestToProcess = new RequestDispatcherRequestWrapper(servletRequest, newRequestUri);
-                    } else {
-                        //正常情况之下不会执行这段代码。
-                        requestToProcess = servletRequest;
-                    }
-                    /*执行转发*/
-                    servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
-                    try {
-                        Map<String, Object> overwriteHttpParams = getParams(request, newRequestUri, invoke);
-                        invoke.invoke(requestToProcess, servletResponse, overwriteHttpParams);
-                    } finally {
-                        servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
-                    }
+            }
+            @Override
+            public void forward(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+                if (servletResponse.isCommitted() == true)
+                    throw new ServletException("Response has been committed--you can only call forward before committing the response (hint: don't flush buffers)");
+                /*清空缓冲*/
+                servletResponse.resetBuffer();
+                ServletRequest requestToProcess;
+                if (servletRequest instanceof HttpServletRequest) {
+                    requestToProcess = new RequestDispatcherRequestWrapper(servletRequest, newRequestUri);
+                } else {
+                    //正常情况之下不会执行这段代码。
+                    requestToProcess = servletRequest;
                 }
-            };
+                /*执行转发*/
+                servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
+                try {
+                    Map<String, Object> overwriteHttpParams = getParams(request, newRequestUri, define);
+                    define.createInvoke(requestToProcess, servletResponse).invoke(overwriteHttpParams);
+                } finally {
+                    servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
+                }
+            }
+        };
     }
     /** 使用RequestDispatcherRequestWrapper类处理request.getRequestURI方法的返回值*/
     public static final String REQUEST_DISPATCHER_REQUEST = "javax.servlet.forward.servlet_path";
