@@ -216,7 +216,7 @@ public abstract class ResourcesUtils {
             if (dirPath.startsWith(contextPath) == true)
                 dirPath = dirPath.substring(contextPath.length(), dirPath.length());
             //2)计算忽略
-            if (StringUtils.matchWild(wild, dirPath) == false)
+            if (MatchUtils.matchWild(wild, dirPath) == false)
                 return false;
             //3)执行发现
             return item.goFind(new ScanEvent(dirPath, dirFile), false);
@@ -234,7 +234,7 @@ public abstract class ResourcesUtils {
                     return true;
             }
             //2)计算忽略
-            if (StringUtils.matchWild(wild, dirPath) == false)
+            if (MatchUtils.matchWild(wild, dirPath) == false)
                 continue;
             if (item.goFind(new ScanEvent(dirPath, f), false) == true)
                 return true;
@@ -247,7 +247,7 @@ public abstract class ResourcesUtils {
         while (jes.hasMoreElements() == true) {
             JarEntry e = jes.nextElement();
             String name = e.getName();
-            if (StringUtils.matchWild(wild, name) == true)
+            if (MatchUtils.matchWild(wild, name) == true)
                 if (e.isDirectory() == false)
                     if (item.goFind(new ScanEvent(name, e, jarFile.getInputStream(e)), true) == true)
                         return true;

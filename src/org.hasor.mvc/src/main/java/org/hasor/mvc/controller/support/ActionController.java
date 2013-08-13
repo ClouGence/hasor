@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.hasor.Hasor;
 import org.hasor.context.AppContext;
 import org.hasor.mvc.controller.ActionException;
-import org.more.util.StringUtils;
+import org.more.util.MatchUtils;
 import com.google.inject.Inject;
 /**
  * action功能的入口。
@@ -50,7 +50,7 @@ class ActionController extends HttpServlet {
     }
     public boolean testURL(HttpServletRequest request) {
         String requestPath = request.getRequestURI().substring(request.getContextPath().length());
-        if (StringUtils.matchWild(actionSettings.getIntercept(), requestPath) == false)
+        if (MatchUtils.matchWild(actionSettings.getIntercept(), requestPath) == false)
             return false;
         return true;
     }
@@ -58,7 +58,7 @@ class ActionController extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String requestPath = request.getRequestURI().substring(request.getContextPath().length());
-        if (StringUtils.matchWild(actionSettings.getIntercept(), requestPath) == false)
+        if (MatchUtils.matchWild(actionSettings.getIntercept(), requestPath) == false)
             return;
         //
         //1.拆分请求字符串

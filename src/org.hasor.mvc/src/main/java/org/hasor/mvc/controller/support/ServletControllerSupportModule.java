@@ -82,7 +82,7 @@ public class ServletControllerSupportModule extends AbstractWebHasorModule {
         Object[] ignoreMethods = settings.getIgnoreMethod().toArray();//ºöÂÔ
         for (Method method : actionMethods) {
             //1.Ö´ÐÐºöÂÔ
-            if (ArrayUtils.isInclude(ignoreMethods, method.getName()) == true)
+            if (ArrayUtils.contains(ignoreMethods, method.getName()) == true)
                 continue;
             //2.×¢²áAction
             ActionBindingBuilder actionBinding = nsBinding.bindActionMethod(method);

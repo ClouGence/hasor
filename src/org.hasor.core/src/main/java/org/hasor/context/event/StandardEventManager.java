@@ -81,7 +81,7 @@ public class StandardEventManager implements EventManager {
             this.listenerMap.put(eventType, eventListenerArray);
         } else {
             if (ArrayUtils.contains(eventListenerArray, hasorEventListener) == false) {
-                eventListenerArray = ArrayUtils.addToArray(eventListenerArray, hasorEventListener);
+                eventListenerArray = (HasorEventListener[]) ArrayUtils.add(eventListenerArray, hasorEventListener);
                 this.listenerMap.put(eventType, eventListenerArray);
             }
         }
@@ -103,8 +103,9 @@ public class StandardEventManager implements EventManager {
         Hasor.assertIsNotNull(eventType, "remove eventType is null.");
         Hasor.assertIsNotNull(hasorEventListener, "remove EventListener object is null.");
         HasorEventListener[] eventListenerArray = this.listenerMap.get(eventType);
-        if (!ArrayUtils.isBlank(eventListenerArray)) {
-            eventListenerArray = ArrayUtils.removeInArray(eventListenerArray, hasorEventListener);
+        if (!ArrayUtils.isEmpty(eventListenerArray)) {
+            int index = ArrayUtils.indexOf(eventListenerArray, hasorEventListener);
+            eventListenerArray = (HasorEventListener[]) ((index == ArrayUtils.INDEX_NOT_FOUND) ? eventListenerArray : ArrayUtils.remove(eventListenerArray, index));
             this.listenerMap.put(eventType, eventListenerArray);
         }
         //
@@ -226,11 +227,11 @@ public class StandardEventManager implements EventManager {
             }
         };
         /**固定间隔*/
-        if (StringUtils.eqUnCaseSensitive(timerType, "FixedDelay")) {
+        if (StringUtils.equalsIgnoreCase(timerType, "FixedDelay")) {
             future = this.getExecutorService().scheduleWithFixedDelay(eventListener, 0, timerPeriod, TimeUnit.MILLISECONDS);
         }
         /**固定周期*/
-        if (StringUtils.eqUnCaseSensitive(timerType, "FixedRate")) {
+        if (StringUtils.equalsIgnoreCase(timerType, "FixedRate")) {
             future = this.getExecutorService().scheduleAtFixedRate(eventListener, 0, timerPeriod, TimeUnit.MILLISECONDS);
         }
         //

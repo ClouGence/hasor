@@ -68,11 +68,11 @@ public final class ModuleInfoBean implements ModuleSettings, HasorEventListener 
         /*该方法是用于接收来自于容器的模块事件*/
         String propName = (String) params[0];
         Object propValue = params[1];
-        if (StringUtils.eqUnCaseSensitive(Prop_Ready, propName) == true) {
+        if (StringUtils.equalsIgnoreCase(Prop_Ready, propName) == true) {
             this.ready = (Boolean) propValue;
-        } else if (StringUtils.eqUnCaseSensitive(Prop_Init, propName) == true) {
+        } else if (StringUtils.equalsIgnoreCase(Prop_Init, propName) == true) {
             this.init = (Boolean) propValue;
-        } else if (StringUtils.eqUnCaseSensitive(Prop_Running, propName) == true) {
+        } else if (StringUtils.equalsIgnoreCase(Prop_Running, propName) == true) {
             this.running = (Boolean) propValue;
         }
     }

@@ -82,7 +82,7 @@ public class ResourceLoaderFilter implements Filter {
             ResourceLoaderCreator creator = null;
             //从已经注册的TemplateLoader中获取一个TemplateLoaderCreator进行构建。
             for (ResourceLoaderCreatorDefinition define : loaderCreatorList)
-                if (StringUtils.eqUnCaseSensitive(define.getName(), loaderType)) {
+                if (StringUtils.equalsIgnoreCase(define.getName(), loaderType)) {
                     creator = define.get();
                     break;
                 }

@@ -28,7 +28,7 @@ import org.hasor.context.Settings;
 import org.hasor.context.environment.StandardEnvironment;
 import org.hasor.context.event.StandardEventManager;
 import org.hasor.context.setting.HasorSettings;
-import org.more.util.ClassUtils;
+import org.more.util.ScanClassPath;
 import org.more.util.StringUtils;
 /**
  * {@link InitContext}接口实现类。
@@ -131,7 +131,7 @@ public class StandardInitContext implements InitContext {
     }
     @Override
     public Set<Class<?>> getClassSet(Class<?> featureType) {
-        return ClassUtils.getClassSet(this.spanPackage, featureType);
+        return ScanClassPath.getClassSet(this.spanPackage, featureType);
     }
     @Override
     protected void finalize() throws Throwable {

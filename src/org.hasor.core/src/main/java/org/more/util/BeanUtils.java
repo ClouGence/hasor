@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
-import org.more.classcode.EngineToos;
 import org.more.classcode.RootClassLoader;
+import org.more.convert.ConverterUtils;
 /**
  * 
  * @version : 2011-6-3
@@ -330,7 +330,7 @@ public abstract class BeanUtils {
             else
                 continue;
             if (name.equals("") == false) {
-                name = StringUtils.toLowerCase(name);
+                name = StringUtils.firstCharToLowerCase(name);
                 if (mnames.contains(name) == false)
                     mnames.add(name);
             }
@@ -341,8 +341,8 @@ public abstract class BeanUtils {
     public static Method getReadMethod(String property, Class<?> target) {
         if (property == null || target == null)
             return null;
-        String methodName_1 = "get" + StringUtils.toUpperCase(property);
-        String methodName_2 = "is" + StringUtils.toUpperCase(property);
+        String methodName_1 = "get" + StringUtils.firstCharToUpperCase(property);
+        String methodName_2 = "is" + StringUtils.firstCharToUpperCase(property);
         //
         for (Method m : target.getMethods())
             if (m.getParameterTypes().length == 0) {
@@ -362,7 +362,7 @@ public abstract class BeanUtils {
     public static Method getWriteMethod(String property, Class<?> target) {
         if (property == null || target == null)
             return null;
-        String methodName = "set" + StringUtils.toUpperCase(property);
+        String methodName = "set" + StringUtils.firstCharToUpperCase(property);
         for (Method m : target.getMethods())
             if (m.getName().equals(methodName) == true)
                 if (m.getParameterTypes().length == 1)
@@ -434,7 +434,7 @@ public abstract class BeanUtils {
         //2.执行属性转换
         Class<?> toType = writeMethod.getParameterTypes()[0];
         Object defaultValue = getDefaultValue(toType);
-        Object attValueObject = StringConvertUtils.changeType(value, toType, defaultValue);
+        Object attValueObject = ConverterUtils.convert(toType, value, defaultValue);
         //3.执行属性注入
         try {
             writeMethod.invoke(object, attValueObject);
@@ -454,7 +454,7 @@ public abstract class BeanUtils {
             return false;
         //2.执行属性转换
         Class<?> toType = writeField.getType();
-        Object attValueObject = StringConvertUtils.changeType(value, toType);
+        Object attValueObject = ConverterUtils.convert(toType, value);
         //3.执行属性注入
         try {
             writeField.set(object, attValueObject);
@@ -512,23 +512,5 @@ public abstract class BeanUtils {
         if (hasField(attName, defineType) == true)
             return readField(object, attName);//支持字段读取
         return null;
-    }
-    /**判断对象是否为空或者是一个空字符串。*/
-    public static boolean isNone(Object targetBean) {
-        return (targetBean == null || targetBean.equals("") == true) ? true : false;
-    }
-    /**比较两个值是否相等，同时包含了值为空的判断。该方法使用equals进行判断*/
-    public static boolean isEq(Object value1, Object value2) {
-        if (value1 == null && value2 != null)
-            return false;
-        if (value1 != null && value2 == null)
-            return false;
-        if (value1 == null && value2 == null)
-            return true;
-        return value1.equals(value2);
-    }
-    /**比较两个值是否不相等，同时包含了值为空的判断。该方法使用equals进行判断*/
-    public static boolean isNe(Object value1, Object value2) {
-        return !isEq(value1, value2);
     }
 };

@@ -174,37 +174,22 @@ public abstract class Hasor {
         }
         return logString.toString();
     }
-    //
-    public static String formatMap4log(int colWidth, Map<String, String> mapData) {
-        /*输出系统环境变量日志*/
-        StringBuffer outLog = new StringBuffer("");
-        for (String key : mapData.keySet()) {
-            String var = mapData.get(key);
-            var = (var != null) ? var.replace("\r", "\\r").replace("\n", "\\n") : var;
-            outLog.append(StringUtils.fixedString(colWidth - key.length(), ' '));
-            outLog.append(String.format(" %s : %s", key, var));
-            outLog.append('\n');
-        }
-        if (outLog.length() > 1)
-            outLog.deleteCharAt(outLog.length() - 1);
-        return outLog.toString();
-    }
     /*
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     */
+    * 
+    * 
+    * 
+    * 
+    * 
+    * 
+    * 
+    * 
+    * 
+    * 
+    * 
+    * 
+    * 
+    * 
+    */
     /** Asserts that an argument is legal. If the given boolean is
      * not <code>true</code>, an <code>IllegalArgumentException</code>
      * is thrown.

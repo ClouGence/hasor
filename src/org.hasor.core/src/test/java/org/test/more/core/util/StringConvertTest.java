@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.test.more.core.util;
-import java.util.Date;
 import org.junit.Test;
 import org.more.util.StringConvertUtils;
 public class StringConvertTest {
@@ -62,26 +61,6 @@ public class StringConvertTest {
     @Test
     public void toEnum() {
         System.out.println(StringConvertUtils.parseEnum("call", TestEnum.class));
-    };
-    @Test
-    public void toArray() {
-        System.out.println(StringConvertUtils.parseArray("a;b;c;3;4;5", ";"));
-    };
-    @Test
-    public void toList() {
-        System.out.println(StringConvertUtils.parseList("a;b;c;3;4;5", ";"));
-    };
-    @Test
-    public void changeType() {
-        System.out.println(StringConvertUtils.changeType("yes", boolean.class));
-        System.out.println(StringConvertUtils.changeType("23", byte.class));
-        System.out.println(StringConvertUtils.changeType("321", short.class));
-        System.out.println(StringConvertUtils.changeType("123", int.class));
-        System.out.println(StringConvertUtils.changeType("1221", long.class));
-        System.out.println(StringConvertUtils.changeType("12.5", float.class));
-        System.out.println(StringConvertUtils.changeType("56.23", double.class));
-        System.out.println(StringConvertUtils.changeType("2007/05/05", Date.class));
-        System.out.println(StringConvertUtils.changeType("take", TestEnum.class));
     };
 }
 enum TestEnum {

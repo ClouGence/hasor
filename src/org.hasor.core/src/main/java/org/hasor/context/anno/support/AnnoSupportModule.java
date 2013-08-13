@@ -77,7 +77,7 @@ public class AnnoSupportModule extends AbstractHasorModule implements GetContext
         for (Class<?> beanClass : beanSet) {
             Bean annoBean = beanClass.getAnnotation(Bean.class);
             String[] names = annoBean.value();
-            if (ArrayUtils.isBlank(names)) {
+            if (ArrayUtils.isEmpty(names)) {
                 Hasor.warning("missing Bean name %s", beanClass);
                 continue;
             }
@@ -103,7 +103,7 @@ public class AnnoSupportModule extends AbstractHasorModule implements GetContext
             } else {
                 EventListener eventType = cls.getAnnotation(EventListener.class);
                 String[] var = eventType.value();
-                if (ArrayUtils.isBlank(var))
+                if (ArrayUtils.isEmpty(var))
                     continue;
                 HasorEventListener e = (HasorEventListener) appContext.getInstance(cls);
                 for (String v : var)

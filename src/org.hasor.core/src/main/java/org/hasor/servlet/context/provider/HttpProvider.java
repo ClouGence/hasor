@@ -41,13 +41,13 @@ public class HttpProvider {
     /**注册HttpServletRequest信使，当HttpServletRequest更新时信使会接到通知。*/
     public void addHttpServletRequestMessenger(HttpProviderMessenger<HttpServletRequest> messenger) {
         WeakReference<HttpProviderMessenger<HttpServletRequest>> weak = new WeakReference<HttpProviderMessenger<HttpServletRequest>>(messenger);
-        this.requestMessengerList = ArrayUtils.addToArray(this.requestMessengerList, weak);
+        this.requestMessengerList = (WeakReference<HttpProviderMessenger<HttpServletRequest>>[]) ArrayUtils.add(this.requestMessengerList, weak);
     }
     //
     /**注册HttpServletRequest信使，当HttpServletRequest更新时信使会接到通知。*/
     public void addHttpServletResponseMessenger(HttpProviderMessenger<HttpServletResponse> messenger) {
         WeakReference<HttpProviderMessenger<HttpServletResponse>> weak = new WeakReference<HttpProviderMessenger<HttpServletResponse>>(messenger);
-        this.responseMessengerList = ArrayUtils.addToArray(this.responseMessengerList, weak);
+        this.responseMessengerList = (WeakReference<HttpProviderMessenger<HttpServletResponse>>[]) ArrayUtils.add(this.responseMessengerList, weak);
     }
     //
     /**获取当前线程绑定的HttpServletResponse*/

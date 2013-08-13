@@ -160,15 +160,29 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
         keyMaxSize = keyMaxSize + 2;
         StringBuffer sb = new StringBuffer();
         sb.append("onLoadConfig Environment \n");
-        sb.append(StringUtils.fixedString(100, '-') + "\n");
-        sb.append(Hasor.formatMap4log(keyMaxSize, systemEnv) + "\n");
-        sb.append(StringUtils.fixedString(100, '-') + "\n");
-        sb.append(Hasor.formatMap4log(keyMaxSize, javaProp) + "\n");
-        sb.append(StringUtils.fixedString(100, '-') + "\n");
-        sb.append(Hasor.formatMap4log(keyMaxSize, hasorEnv) + "\n");
-        sb.append(StringUtils.fixedString(100, '-') + "\n");
-        sb.append(Hasor.formatMap4log(keyMaxSize, userEnvMap));
+        sb.append(StringUtils.fixedString('-', 100) + "\n");
+        sb.append(formatMap4log(keyMaxSize, systemEnv) + "\n");
+        sb.append(StringUtils.fixedString('-', 100) + "\n");
+        sb.append(formatMap4log(keyMaxSize, javaProp) + "\n");
+        sb.append(StringUtils.fixedString('-', 100) + "\n");
+        sb.append(formatMap4log(keyMaxSize, hasorEnv) + "\n");
+        sb.append(StringUtils.fixedString('-', 100) + "\n");
+        sb.append(formatMap4log(keyMaxSize, userEnvMap));
         Hasor.info(sb.toString());
+    }
+    private static String formatMap4log(int colWidth, Map<String, String> mapData) {
+        /*输出系统环境变量日志*/
+        StringBuffer outLog = new StringBuffer("");
+        for (String key : mapData.keySet()) {
+            String var = mapData.get(key);
+            var = (var != null) ? var.replace("\r", "\\r").replace("\n", "\\n") : var;
+            outLog.append(StringUtils.fixedString(' ', colWidth - key.length()));
+            outLog.append(String.format(" %s : %s", key, var));
+            outLog.append('\n');
+        }
+        if (outLog.length() > 1)
+            outLog.deleteCharAt(outLog.length() - 1);
+        return outLog.toString();
     }
     //
     //

@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 package org.more.util;
-import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 /**
 * 字符串数据类型转换工具类
 * @version 2009-4-29
@@ -66,77 +61,10 @@ public abstract class StringConvertUtils {
                     }
                 }
         } catch (Exception e) {
-            if (ArrayUtils.isBlank(defaultValue))
+            if (ArrayUtils.isEmpty(defaultValue))
                 return 0;
             return defaultValue[0];
         }
-    }
-    /**
-     * 数据类型转换，只支持如下数据类型：String，StringBuffer，Integer，Byte，Character，Short，Long，Float，Double，Boolean，Date。
-     * 示例：DataType.changeType("12",Integer.class,-1);返回值为12。DataType.changeType("aa",Integer.class,-1);返回值为-1。
-     * 注意：如果不指定转换类型默认类型是转换到String类型。并且默认值是null。
-     * @param value 要转换的数据。
-     * @param toType 要转换的目标数据类型。
-     * @param defaultValue 可变的参数第一个参数是要转换的类型， 第二个参数是转换到目标类型时如果失败采用的默认值。
-     * @return 返回转换之后的值。
-     */
-    public static <T> T changeType(final Object value, final Class<T> toType, final Object... defaultValue) {
-        if (toType == null)
-            return null;
-        if (value == null)
-            if (toType.isPrimitive() == true)
-                return (T) BeanUtils.getDefaultValue(toType);
-            else
-                return null;
-        //
-        String valueString = value.toString();
-        Object defaultVar = (defaultValue.length >= 1) ? defaultValue[0] : null;
-        // -----------可以直接转换
-        if (toType.isAssignableFrom(value.getClass()) == true)
-            return (T) value;
-        // -----------String形式
-        else if (String.class == toType)
-            return (T) valueString;
-        else if (StringBuffer.class == toType)
-            return (T) new StringBuffer(valueString);
-        else if (Integer.class == toType || int.class == toType)
-            return (T) StringConvertUtils.parseInt(valueString, (Integer) defaultVar);
-        else if (Byte.class == toType || byte.class == toType)
-            return (T) StringConvertUtils.parseByte(valueString, (Byte) defaultVar);
-        else if (Character.class == toType || char.class == toType) {
-            if (valueString.equals("") == true)
-                return (T) DefaultValue_Character;
-            return (T) Character.valueOf(valueString.charAt(0));
-        } else if (Short.class == toType || short.class == toType)
-            return (T) StringConvertUtils.parseShort(valueString, (Short) defaultVar);
-        else if (Long.class == toType || long.class == toType)
-            return (T) StringConvertUtils.parseLong(valueString, (Long) defaultVar);
-        else if (Float.class == toType || float.class == toType)
-            return (T) StringConvertUtils.parseFloat(valueString, (Float) defaultVar);
-        else if (Double.class == toType || double.class == toType)
-            return (T) StringConvertUtils.parseDouble(valueString, (Double) defaultVar);
-        else if (Boolean.class == toType || boolean.class == toType)
-            return (T) StringConvertUtils.parseBoolean(valueString);
-        else if (Date.class.isAssignableFrom(toType) == true) {
-            if (value instanceof Date == true)
-                return (T) value;
-            return (T) StringConvertUtils.parseDate(valueString);
-        }
-        // -----------处理枚举
-        else if (Enum.class.isAssignableFrom(toType) == true) {
-            Class<Enum<?>> e = (Class<Enum<?>>) toType;
-            for (Enum<?> item : e.getEnumConstants()) {
-                String enumValue = item.name().toLowerCase();
-                if (enumValue.equals(valueString.toLowerCase()) == true)
-                    return (T) item;
-            }
-            return (T) defaultVar;
-        } else if (File.class.isAssignableFrom(toType) == true) {
-            if (value instanceof File == true)
-                return (T) value;
-            return (T) new File(valueString);
-        } else
-            throw new UnsupportedOperationException("from [" + value.getClass() + "] to [" + toType + "]不支持的转换类型。");
     }
     /**
      * 将字符类型数据转换成int类型数据。如果字符串格式非法其默认值为0。示例：
@@ -149,7 +77,7 @@ public abstract class StringConvertUtils {
         try {
             return StringUtils.isBlank(value) ? defaultValue[0] : Integer.valueOf(value);
         } catch (Exception e) {
-            if (ArrayUtils.isBlank(defaultValue))
+            if (ArrayUtils.isEmpty(defaultValue))
                 return StringConvertUtils.DefaultValue_Integer;
             return defaultValue[0];
         }
@@ -168,7 +96,7 @@ public abstract class StringConvertUtils {
                 return (defaultValue.length >= 1) ? defaultValue[0] : StringConvertUtils.DefaultValue_Float;
             return var;
         } catch (Exception e) {
-            if (ArrayUtils.isBlank(defaultValue))
+            if (ArrayUtils.isEmpty(defaultValue))
                 return StringConvertUtils.DefaultValue_Float;
             return defaultValue[0];
         }
@@ -187,7 +115,7 @@ public abstract class StringConvertUtils {
                 return (defaultValue.length >= 1) ? defaultValue[0] : StringConvertUtils.DefaultValue_Float;
             return var;
         } catch (Exception e) {
-            if (ArrayUtils.isBlank(defaultValue))
+            if (ArrayUtils.isEmpty(defaultValue))
                 return StringConvertUtils.DefaultValue_Double;
             return defaultValue[0];
         }
@@ -199,7 +127,7 @@ public abstract class StringConvertUtils {
      */
     public static Boolean parseBoolean(final String value, final Boolean... defaultValue) {
         if (value == null) {
-            if (ArrayUtils.isBlank(defaultValue))
+            if (ArrayUtils.isEmpty(defaultValue))
                 return StringConvertUtils.DefaultValue_Boolean;
             return defaultValue[0];
         } else if (value.equals("0") == true || value.equals("no") == true || value.equals("N") == true)
@@ -220,7 +148,7 @@ public abstract class StringConvertUtils {
         try {
             return StringUtils.isBlank(value) ? defaultValue[0] : Long.valueOf(value);
         } catch (Exception e) {
-            if (ArrayUtils.isBlank(defaultValue))
+            if (ArrayUtils.isEmpty(defaultValue))
                 return StringConvertUtils.DefaultValue_Long;
             return defaultValue[0];
         }
@@ -236,7 +164,7 @@ public abstract class StringConvertUtils {
         try {
             return StringUtils.isBlank(value) ? defaultValue[0] : Byte.valueOf(value);
         } catch (Exception e) {
-            if (ArrayUtils.isBlank(defaultValue))
+            if (ArrayUtils.isEmpty(defaultValue))
                 return StringConvertUtils.DefaultValue_Byte;
             return defaultValue[0];
         }
@@ -252,227 +180,13 @@ public abstract class StringConvertUtils {
         try {
             return StringUtils.isBlank(value) ? defaultValue[0] : Short.valueOf(value);
         } catch (Exception e) {
-            if (ArrayUtils.isBlank(defaultValue))
+            if (ArrayUtils.isEmpty(defaultValue))
                 return StringConvertUtils.DefaultValue_Short;
             return defaultValue[0];
         }
     }
     public static String parseString(String value, String... defaultValue) {
         return StringUtils.isBlank(value) ? defaultValue[0] : value;
-    }
-    /**
-     * 将字符串转化为集合类型。在转化过程中可以指定分割符转换类型以及相应类型的默认转换值。
-     * 类型的默认转换值是指当原数据在像目标转换时发生异常而采用的默认值取代。 语法如下：<br/>
-     * 1。DataType.getList("a,b,c,3,4,5");默认转换，该种方式转换是将原始数据按照逗号分割 转换结果是字符串集合<br/>
-     * 2。DataType.getList("a;b;c;3;4;5",";");指定分割符转换，该种类型转换是在默认转换之上使调用的程序对转换时使用
-     * 的分割符拥有了设置权利。<br/>
-     * 3。DataType.getList("a;b;c;3;4;5",";",Integer.class);指定类型转换，该种转换是在第二种
-     * 转换之上得来，次类型转换的返回集合结果使用指定类型。<br/>
-     * 4。DataType.getList("a;b;c;3;4;5",";",Integer.class,-1);带默认值的指定类型转换。
-     * 就上述例子来看返回结果应该是-1,-1,3,4,5。集合中存放的类型是Integer。<br/>
-     * 5。DataType.getList("a;b;c;3;4;5",";",Integer.class,-1,newArrayList());
-     * 第5种方式与第四种方式一样，不同的是第四种方式是函数本身内部会创建一个集合对象，而第5种方式 由用户提供这个集合对象。
-     * 6。DataType.getList("a;b;c;3;4;5",";",Integer.class,-1,newArrayList(),true|false);
-     * 第6种方式与第五种方式一样，第六种工作方式与第五种的区别仅仅在于。如果解析的List结果集合中在用户传递的List集合中出现冲突，是否替换原有数据取决于用户
-     * true表示替换，false表示不替换。
-     * @param in_value 数据字符串。
-     * @param param 参数，详细查看函数说明。
-     * @return 返回转换的集合对象。
-     */
-    public static List parseList(final String in_value, final Object... param) {
-        String value = (in_value == null) ? "" : in_value;
-        // -------------------
-        String split = ",";// 默认分割符。
-        Class<?> toType = String.class;// 默认String类型
-        Object defaultValue = null;// 默认值是null。
-        List array = null;
-        boolean replay = true;// 默认值是true 替换。
-        // -------------------
-        if (param.length == 0) {
-            // 没有参数
-            array = new ArrayList<Object>(0);
-        } else if (param.length == 1) {
-            // 一个参数
-            split = (String) param[0];
-            array = new ArrayList<Object>(0);
-        } else if (param.length == 2) {
-            // 两个参数
-            split = (String) param[0];
-            toType = (Class<?>) param[1];
-            array = new ArrayList<Object>(0);
-        } else if (param.length == 3) {
-            // 三个参数
-            split = (String) param[0];
-            toType = (Class<?>) param[1];
-            defaultValue = param[2];
-            array = new ArrayList<Object>(0);
-        } else if (param.length == 4) {
-            // 四个参数
-            split = (String) param[0];
-            toType = (Class<?>) param[1];
-            defaultValue = param[2];
-            array = (List<?>) param[3];
-        } else {
-            // 五个参数
-            split = (String) param[0];
-            toType = (Class<?>) param[1];
-            defaultValue = param[2];
-            array = (List<?>) param[3];
-            replay = StringConvertUtils.parseBoolean(param[4].toString());
-        }
-        // -------------------
-        String[] temp_split = value.split(split);
-        for (String var : temp_split)
-            if (array.contains(var) == true)
-                if (replay == true) {
-                    array.remove(var);
-                    array.add(StringConvertUtils.changeType(var, toType, defaultValue));
-                } else {}
-            else
-                array.add(StringConvertUtils.changeType(var, toType, defaultValue));
-        return array;
-    }
-    /**
-     * 将字符串转化为数组类型。用法参照parseList方法。不同的是该方法返回的是List的数组<br/> List array =
-     * parseList(value, param); array.toArray();
-     * @param in_value 数据字符串。
-     * @param param 参数，详细查看函数说明。
-     * @return 返回转换的数组对象。
-     */
-    public static Object[] parseArray(final String in_value, final Object... param) {
-        String value = (in_value == null) ? "" : in_value;
-        // -------------------
-        List array = parseList(value, param);
-        return array.toArray();
-    }
-    /**
-     * 将字符串转化为集合类型。在转化过程中可以指定分割符转换类型以及相应类型的默认转换值。
-     * 类型的默认转换值是指当原数据在像目标转换时发生异常而采用的默认值取代。 语法如下：<br/>
-     * 1。DataType.getMap("key=value;key1=value1;key2=value2;");默认转换，该种方式
-     * 转换是将原始数据按照逗号分割转换结果是字符串集合<br/>
-     * 2。DataType.getMap("key=value&key1=value1&key2=value2","=&");指定分割符转换，
-     * 该种类型转换是在默认转换之上使调用的程序对转换时使用的分割符拥有了设置权利。<br/>
-     * 3。DataType.getMap("key=1&key1=2&key2=3","=&",String.class,Integer.class);
-     * 指定类型转换，该种转换是在第二种转换之上得来，次类型转换的返回集合结果使用指定类型。<br/>
-     * 4。DataType.getMap("key=1&key1=a&key2=3","=&",String.class,Integer.class,-1);
-     * 带默认值的指定类型转换。就上述例子来看返回结果应该是key=1,key1=-1,key2=3。集合中存放
-     * 的类型是String,Integer。注意：此处的默认值是key=value，value的默认值。<br/>
-     * 5。DataType.getMap("key=1&key1=a&key2=3","=&",String.class,Integer.class,-1,newHashtable());
-     * 第5种方式与第四种方式一样，不同的是第四种方式是函数本身内部会创建一个集合对象，而第5种方式 由用户提供这个集合对象。
-     * 提示：如果解析的Map结果集合中在用户传递的Map集合中出现key冲突，则第5种方式将使用解析之后的结果替换原有的key和value。
-     * <br/>默认该函数效果如下：DataType.getMap("key=value;key1=value1","=;",String.class,String.class,null,newHashMap<String,String>());
-     * 6。DataType.getMap("key=1&key1=a&key2=3","=&",String.class,Integer.class,-1,newHashtable(),true|false);
-     * 第6种方式与第五种方式一样，第六种工作方式与第五种的区别仅仅在于。如果解析的Map结果集合中在用户传递的Map集合中出现key冲突，是否替换原有数据取决于用户
-     * true表示替换，false表示不替换。<br/>默认该函数效果如下：DataType.getMap("key=value;key1=value1","=;",String.class,String.class,null,newHashMap<String,String>(),false);
-     * @param in_value 数据字符串。
-     * @param param 参数，详细查看函数说明。
-     * @return 返回转换的集合对象。
-     */
-    public static Map parseMap(final String in_value, final Object... param) {
-        String value = (in_value == null) ? "" : in_value;
-        // -------------------
-        String split_key = "=";// 默认分割符1。
-        String split_val = ";";// 默认分割符2。
-        Class<?> toType_key = String.class;// key默认String类型
-        Class<?> toType_val = String.class;// val默认String类型
-        Object defaultValue = null;// 默认值是null。
-        Map array = null;
-        boolean replay = true;// 默认值是true 替换。
-        // -------------------
-        if (param.length == 0) {
-            // 没有参数
-            array = new HashMap<String, String>(0);
-        } else if (param.length == 1) {
-            // 一个参数
-            String split = (String) param[0];
-            if (split.length() == 1)
-                split_key = String.valueOf(split.charAt(0));
-            else {
-                split_key = String.valueOf(split.charAt(0));
-                split_val = String.valueOf(split.charAt(1));
-            }
-            array = new HashMap<String, String>();
-        } else if (param.length == 2) {
-            // 两个参数
-            String split = (String) param[0];
-            if (split.length() == 1)
-                split_key = String.valueOf(split.charAt(0));
-            else {
-                split_key = String.valueOf(split.charAt(0));
-                split_val = String.valueOf(split.charAt(1));
-            }
-            toType_key = (Class<?>) param[1];
-            array = new HashMap<String, String>();
-        } else if (param.length == 3) {
-            // 三个参数
-            String split = (String) param[0];
-            if (split.length() == 1)
-                split_key = String.valueOf(split.charAt(0));
-            else {
-                split_key = String.valueOf(split.charAt(0));
-                split_val = String.valueOf(split.charAt(1));
-            }
-            toType_key = (Class<?>) param[1];
-            toType_val = (Class<?>) param[2];
-            array = new HashMap<String, String>();
-        } else if (param.length == 4) {
-            // 四个参数
-            String split = (String) param[0];
-            if (split.length() == 1)
-                split_key = String.valueOf(split.charAt(0));
-            else {
-                split_key = String.valueOf(split.charAt(0));
-                split_val = String.valueOf(split.charAt(1));
-            }
-            toType_key = (Class<?>) param[1];
-            toType_val = (Class<?>) param[2];
-            defaultValue = param[3];
-            array = new HashMap<String, String>();
-        } else if (param.length == 5) {
-            // 五个参数
-            String split = (String) param[0];
-            if (split.length() == 1)
-                split_key = String.valueOf(split.charAt(0));
-            else {
-                split_key = String.valueOf(split.charAt(0));
-                split_val = String.valueOf(split.charAt(1));
-            }
-            toType_key = (Class<?>) param[1];
-            toType_val = (Class<?>) param[2];
-            defaultValue = param[3];
-            array = (Map) param[4];
-        } else {
-            // 六个参数
-            String split = (String) param[0];
-            if (split.length() == 1)
-                split_key = String.valueOf(split.charAt(0));
-            else {
-                split_key = String.valueOf(split.charAt(0));
-                split_val = String.valueOf(split.charAt(1));
-            }
-            toType_key = (Class<?>) param[1];
-            toType_val = (Class<?>) param[2];
-            defaultValue = param[3];
-            array = (Map) param[4];
-            replay = StringConvertUtils.parseBoolean(param[4].toString());
-        }
-        // -------------------
-        String[] temp_split = value.split(split_val);// key=value
-        for (String var : temp_split) {
-            String[] over_split = var.split(split_key);
-            if (over_split.length != 2)
-                continue;
-            Object ov_key = StringConvertUtils.changeType(over_split[0], toType_key);
-            Object ov_var = StringConvertUtils.changeType(over_split[1], toType_val, defaultValue);
-            if (array.containsKey(ov_key) == true)
-                if (replay == true) {
-                    array.remove(ov_key);
-                    array.put(ov_key, ov_var);
-                } else {}
-            else
-                array.put(ov_key, ov_var);
-        }
-        return array;
     }
     /**
      * 此方法用于字符串转换成时间类型。默认格式：yyyy/MM/dd-hh:mm:ss 默认时间：系统当前时间 时间格式表示说明：yyyy:表示年
@@ -518,4 +232,290 @@ public abstract class StringConvertUtils {
         }
         return (T) ((defaultValue.length >= 1) ? defaultValue[0] : null);
     }
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //    /**
+    //     * 数据类型转换，只支持如下数据类型：String，StringBuffer，Integer，Byte，Character，Short，Long，Float，Double，Boolean，Date。
+    //     * 示例：DataType.changeType("12",Integer.class,-1);返回值为12。DataType.changeType("aa",Integer.class,-1);返回值为-1。
+    //     * 注意：如果不指定转换类型默认类型是转换到String类型。并且默认值是null。
+    //     * @param value 要转换的数据。
+    //     * @param toType 要转换的目标数据类型。
+    //     * @param defaultValue 可变的参数第一个参数是要转换的类型， 第二个参数是转换到目标类型时如果失败采用的默认值。
+    //     * @return 返回转换之后的值。
+    //     */
+    //    public static <T> T parseBaseType(final Object value, final Class<T> toType, final Object... defaultValue) {
+    //        if (toType == null)
+    //            return null;
+    //        boolean primitive = toType.isPrimitive();
+    //        if (value == null)
+    //            return primitive ? BeanUtils.getDefaultValue(toType) : null;
+    //        //
+    //        String valueString = value.toString();
+    //        Object defaultVar = (defaultValue.length >= 1) ? defaultValue[0] : null;
+    //        // -----------可以直接转换
+    //        if (toType.isAssignableFrom(value.getClass()) == true)
+    //            return (T) value;
+    //        // -----------String形式
+    //        else if (String.class == toType)
+    //            return (T) valueString;
+    //        else if (StringBuffer.class == toType)
+    //            return (T) new StringBuffer(valueString);
+    //        else if (Integer.class == toType || int.class == toType)
+    //            return (T) StringConvertUtils.parseInt(valueString, (Integer) defaultVar);
+    //        else if (Byte.class == toType || byte.class == toType)
+    //            return (T) StringConvertUtils.parseByte(valueString, (Byte) defaultVar);
+    //        else if (Character.class == toType || char.class == toType) {
+    //            if (valueString.equals("") == true)
+    //                return (T) DefaultValue_Character;
+    //            return (T) Character.valueOf(valueString.charAt(0));
+    //        } else if (Short.class == toType || short.class == toType)
+    //            return (T) StringConvertUtils.parseShort(valueString, (Short) defaultVar);
+    //        else if (Long.class == toType || long.class == toType)
+    //            return (T) StringConvertUtils.parseLong(valueString, (Long) defaultVar);
+    //        else if (Float.class == toType || float.class == toType)
+    //            return (T) StringConvertUtils.parseFloat(valueString, (Float) defaultVar);
+    //        else if (Double.class == toType || double.class == toType)
+    //            return (T) StringConvertUtils.parseDouble(valueString, (Double) defaultVar);
+    //        else if (Boolean.class == toType || boolean.class == toType)
+    //            return (T) StringConvertUtils.parseBoolean(valueString);
+    //        else if (Date.class.isAssignableFrom(toType) == true) {
+    //            if (value instanceof Date == true)
+    //                return (T) value;
+    //            return (T) StringConvertUtils.parseDate(valueString);
+    //        }
+    //        // -----------处理枚举
+    //        else if (Enum.class.isAssignableFrom(toType) == true) {
+    //            Class<Enum<?>> e = (Class<Enum<?>>) toType;
+    //            for (Enum<?> item : e.getEnumConstants()) {
+    //                String enumValue = item.name().toLowerCase();
+    //                if (enumValue.equals(valueString.toLowerCase()) == true)
+    //                    return (T) item;
+    //            }
+    //            return (T) defaultVar;
+    //        } else if (File.class.isAssignableFrom(toType) == true) {
+    //            if (value instanceof File == true)
+    //                return (T) value;
+    //            return (T) new File(valueString);
+    //        } else
+    //            throw new UnsupportedOperationException("from [" + value.getClass() + "] to [" + toType + "]不支持的转换类型。");
+    //    }
+    //    /**
+    //     * 将字符串转化为集合类型。在转化过程中可以指定分割符转换类型以及相应类型的默认转换值。
+    //     * 类型的默认转换值是指当原数据在像目标转换时发生异常而采用的默认值取代。 语法如下：<br/>
+    //     * 1。DataType.getList("a,b,c,3,4,5");默认转换，该种方式转换是将原始数据按照逗号分割 转换结果是字符串集合<br/>
+    //     * 2。DataType.getList("a;b;c;3;4;5",";");指定分割符转换，该种类型转换是在默认转换之上使调用的程序对转换时使用
+    //     * 的分割符拥有了设置权利。<br/>
+    //     * 3。DataType.getList("a;b;c;3;4;5",";",Integer.class);指定类型转换，该种转换是在第二种
+    //     * 转换之上得来，次类型转换的返回集合结果使用指定类型。<br/>
+    //     * 4。DataType.getList("a;b;c;3;4;5",";",Integer.class,-1);带默认值的指定类型转换。
+    //     * 就上述例子来看返回结果应该是-1,-1,3,4,5。集合中存放的类型是Integer。<br/>
+    //     * 5。DataType.getList("a;b;c;3;4;5",";",Integer.class,-1,newArrayList());
+    //     * 第5种方式与第四种方式一样，不同的是第四种方式是函数本身内部会创建一个集合对象，而第5种方式 由用户提供这个集合对象。
+    //     * 6。DataType.getList("a;b;c;3;4;5",";",Integer.class,-1,newArrayList(),true|false);
+    //     * 第6种方式与第五种方式一样，第六种工作方式与第五种的区别仅仅在于。如果解析的List结果集合中在用户传递的List集合中出现冲突，是否替换原有数据取决于用户
+    //     * true表示替换，false表示不替换。
+    //     * @param in_value 数据字符串。
+    //     * @param param 参数，详细查看函数说明。
+    //     * @return 返回转换的集合对象。
+    //     */
+    //    public static List parseList(final String in_value, final Object... param) {
+    //        String value = (in_value == null) ? "" : in_value;
+    //        // -------------------
+    //        String split = ",";// 默认分割符。
+    //        Class<?> toType = String.class;// 默认String类型
+    //        Object defaultValue = null;// 默认值是null。
+    //        List array = null;
+    //        boolean replay = true;// 默认值是true 替换。
+    //        // -------------------
+    //        if (param.length == 0) {
+    //            // 没有参数
+    //            array = new ArrayList<Object>(0);
+    //        } else if (param.length == 1) {
+    //            // 一个参数
+    //            split = (String) param[0];
+    //            array = new ArrayList<Object>(0);
+    //        } else if (param.length == 2) {
+    //            // 两个参数
+    //            split = (String) param[0];
+    //            toType = (Class<?>) param[1];
+    //            array = new ArrayList<Object>(0);
+    //        } else if (param.length == 3) {
+    //            // 三个参数
+    //            split = (String) param[0];
+    //            toType = (Class<?>) param[1];
+    //            defaultValue = param[2];
+    //            array = new ArrayList<Object>(0);
+    //        } else if (param.length == 4) {
+    //            // 四个参数
+    //            split = (String) param[0];
+    //            toType = (Class<?>) param[1];
+    //            defaultValue = param[2];
+    //            array = (List<?>) param[3];
+    //        } else {
+    //            // 五个参数
+    //            split = (String) param[0];
+    //            toType = (Class<?>) param[1];
+    //            defaultValue = param[2];
+    //            array = (List<?>) param[3];
+    //            replay = StringConvertUtils.parseBoolean(param[4].toString());
+    //        }
+    //        // -------------------
+    //        String[] temp_split = value.split(split);
+    //        for (String var : temp_split)
+    //            if (array.contains(var) == true)
+    //                if (replay == true) {
+    //                    array.remove(var);
+    //                    array.add(StringConvertUtils.changeType(var, toType, defaultValue));
+    //                } else {}
+    //            else
+    //                array.add(StringConvertUtils.changeType(var, toType, defaultValue));
+    //        return array;
+    //    }
+    //    /**
+    //     * 将字符串转化为数组类型。用法参照parseList方法。不同的是该方法返回的是List的数组<br/> List array =
+    //     * parseList(value, param); array.toArray();
+    //     * @param in_value 数据字符串。
+    //     * @param param 参数，详细查看函数说明。
+    //     * @return 返回转换的数组对象。
+    //     */
+    //    public static Object[] parseArray(final String in_value, final Object... param) {
+    //        String value = (in_value == null) ? "" : in_value;
+    //        // -------------------
+    //        List array = parseList(value, param);
+    //        return array.toArray();
+    //    }
+    //    /**
+    //     * 将字符串转化为集合类型。在转化过程中可以指定分割符转换类型以及相应类型的默认转换值。
+    //     * 类型的默认转换值是指当原数据在像目标转换时发生异常而采用的默认值取代。 语法如下：<br/>
+    //     * 1。DataType.getMap("key=value;key1=value1;key2=value2;");默认转换，该种方式
+    //     * 转换是将原始数据按照逗号分割转换结果是字符串集合<br/>
+    //     * 2。DataType.getMap("key=value&key1=value1&key2=value2","=&");指定分割符转换，
+    //     * 该种类型转换是在默认转换之上使调用的程序对转换时使用的分割符拥有了设置权利。<br/>
+    //     * 3。DataType.getMap("key=1&key1=2&key2=3","=&",String.class,Integer.class);
+    //     * 指定类型转换，该种转换是在第二种转换之上得来，次类型转换的返回集合结果使用指定类型。<br/>
+    //     * 4。DataType.getMap("key=1&key1=a&key2=3","=&",String.class,Integer.class,-1);
+    //     * 带默认值的指定类型转换。就上述例子来看返回结果应该是key=1,key1=-1,key2=3。集合中存放
+    //     * 的类型是String,Integer。注意：此处的默认值是key=value，value的默认值。<br/>
+    //     * 5。DataType.getMap("key=1&key1=a&key2=3","=&",String.class,Integer.class,-1,newHashtable());
+    //     * 第5种方式与第四种方式一样，不同的是第四种方式是函数本身内部会创建一个集合对象，而第5种方式 由用户提供这个集合对象。
+    //     * 提示：如果解析的Map结果集合中在用户传递的Map集合中出现key冲突，则第5种方式将使用解析之后的结果替换原有的key和value。
+    //     * <br/>默认该函数效果如下：DataType.getMap("key=value;key1=value1","=;",String.class,String.class,null,newHashMap<String,String>());
+    //     * 6。DataType.getMap("key=1&key1=a&key2=3","=&",String.class,Integer.class,-1,newHashtable(),true|false);
+    //     * 第6种方式与第五种方式一样，第六种工作方式与第五种的区别仅仅在于。如果解析的Map结果集合中在用户传递的Map集合中出现key冲突，是否替换原有数据取决于用户
+    //     * true表示替换，false表示不替换。<br/>默认该函数效果如下：DataType.getMap("key=value;key1=value1","=;",String.class,String.class,null,newHashMap<String,String>(),false);
+    //     * @param in_value 数据字符串。
+    //     * @param param 参数，详细查看函数说明。
+    //     * @return 返回转换的集合对象。
+    //     */
+    //    public static Map parseMap(final String in_value, final Object... param) {
+    //        String value = (in_value == null) ? "" : in_value;
+    //        // -------------------
+    //        String split_key = "=";// 默认分割符1。
+    //        String split_val = ";";// 默认分割符2。
+    //        Class<?> toType_key = String.class;// key默认String类型
+    //        Class<?> toType_val = String.class;// val默认String类型
+    //        Object defaultValue = null;// 默认值是null。
+    //        Map array = null;
+    //        boolean replay = true;// 默认值是true 替换。
+    //        // -------------------
+    //        if (param.length == 0) {
+    //            // 没有参数
+    //            array = new HashMap<String, String>(0);
+    //        } else if (param.length == 1) {
+    //            // 一个参数
+    //            String split = (String) param[0];
+    //            if (split.length() == 1)
+    //                split_key = String.valueOf(split.charAt(0));
+    //            else {
+    //                split_key = String.valueOf(split.charAt(0));
+    //                split_val = String.valueOf(split.charAt(1));
+    //            }
+    //            array = new HashMap<String, String>();
+    //        } else if (param.length == 2) {
+    //            // 两个参数
+    //            String split = (String) param[0];
+    //            if (split.length() == 1)
+    //                split_key = String.valueOf(split.charAt(0));
+    //            else {
+    //                split_key = String.valueOf(split.charAt(0));
+    //                split_val = String.valueOf(split.charAt(1));
+    //            }
+    //            toType_key = (Class<?>) param[1];
+    //            array = new HashMap<String, String>();
+    //        } else if (param.length == 3) {
+    //            // 三个参数
+    //            String split = (String) param[0];
+    //            if (split.length() == 1)
+    //                split_key = String.valueOf(split.charAt(0));
+    //            else {
+    //                split_key = String.valueOf(split.charAt(0));
+    //                split_val = String.valueOf(split.charAt(1));
+    //            }
+    //            toType_key = (Class<?>) param[1];
+    //            toType_val = (Class<?>) param[2];
+    //            array = new HashMap<String, String>();
+    //        } else if (param.length == 4) {
+    //            // 四个参数
+    //            String split = (String) param[0];
+    //            if (split.length() == 1)
+    //                split_key = String.valueOf(split.charAt(0));
+    //            else {
+    //                split_key = String.valueOf(split.charAt(0));
+    //                split_val = String.valueOf(split.charAt(1));
+    //            }
+    //            toType_key = (Class<?>) param[1];
+    //            toType_val = (Class<?>) param[2];
+    //            defaultValue = param[3];
+    //            array = new HashMap<String, String>();
+    //        } else if (param.length == 5) {
+    //            // 五个参数
+    //            String split = (String) param[0];
+    //            if (split.length() == 1)
+    //                split_key = String.valueOf(split.charAt(0));
+    //            else {
+    //                split_key = String.valueOf(split.charAt(0));
+    //                split_val = String.valueOf(split.charAt(1));
+    //            }
+    //            toType_key = (Class<?>) param[1];
+    //            toType_val = (Class<?>) param[2];
+    //            defaultValue = param[3];
+    //            array = (Map) param[4];
+    //        } else {
+    //            // 六个参数
+    //            String split = (String) param[0];
+    //            if (split.length() == 1)
+    //                split_key = String.valueOf(split.charAt(0));
+    //            else {
+    //                split_key = String.valueOf(split.charAt(0));
+    //                split_val = String.valueOf(split.charAt(1));
+    //            }
+    //            toType_key = (Class<?>) param[1];
+    //            toType_val = (Class<?>) param[2];
+    //            defaultValue = param[3];
+    //            array = (Map) param[4];
+    //            replay = StringConvertUtils.parseBoolean(param[4].toString());
+    //        }
+    //        // -------------------
+    //        String[] temp_split = value.split(split_val);// key=value
+    //        for (String var : temp_split) {
+    //            String[] over_split = var.split(split_key);
+    //            if (over_split.length != 2)
+    //                continue;
+    //            Object ov_key = StringConvertUtils.changeType(over_split[0], toType_key);
+    //            Object ov_var = StringConvertUtils.changeType(over_split[1], toType_val, defaultValue);
+    //            if (array.containsKey(ov_key) == true)
+    //                if (replay == true) {
+    //                    array.remove(ov_key);
+    //                    array.put(ov_key, ov_var);
+    //                } else {}
+    //            else
+    //                array.put(ov_key, ov_var);
+    //        }
+    //        return array;
+    //    }
 }

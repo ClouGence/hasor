@@ -27,7 +27,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import org.more.util.StringUtils;
+import org.more.util.MatchUtils;
 import org.more.util.io.ReaderInputStream;
 import org.more.xml.stream.TextEvent.Type;
 /**
@@ -94,7 +94,7 @@ public class XmlReader {
         if (testWild == null)
             return false;
         //XXX:XPath比较算法，比较currentXPath是否属于testXPath范围内的，目前使用的是?和*通配符。
-        return StringUtils.matchWild(testWild, currentXPath);
+        return MatchUtils.matchWild(testWild, currentXPath);
     }
     /**
      * 执行解析Xml文件，并且形成xml事件流。这些事件流被输入到{@link XmlAccept}类型对象中。

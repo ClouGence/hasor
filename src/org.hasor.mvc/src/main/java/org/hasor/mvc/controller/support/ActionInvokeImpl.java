@@ -33,8 +33,8 @@ import org.hasor.mvc.controller.ActionDefine;
 import org.hasor.mvc.controller.ActionInvoke;
 import org.hasor.mvc.controller.Var;
 import org.hasor.servlet.context.provider.HttpProvider;
+import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
-import org.more.util.StringConvertUtils;
 import org.more.util.StringUtils;
 /**
  * 
@@ -179,7 +179,7 @@ class ActionInvokeImpl implements ActionInvoke {
                 Object[] arrayParamObject = (Object[]) targetValue;
                 targetValue = arrayParamObject.length == 0 ? null : arrayParamObject[0];
             }
-            returnData = StringConvertUtils.changeType(targetValue, targetType, BeanUtils.getDefaultValue(targetType));
+            returnData = ConverterUtils.convert(targetType, targetValue, BeanUtils.getDefaultValue(targetType));
         }
         return returnData;
     }

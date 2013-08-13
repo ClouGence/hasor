@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.hasor.context.XmlProperty;
 import org.hasor.context.setting.GlobalProperty;
-import org.more.util.StringConvertUtils;
+import org.more.convert.ConverterUtils;
 /**
  * XmlProperty, GlobalProperty接口实现类。
  * @version : 2013-4-22
@@ -117,7 +117,12 @@ class XmlPropertyImpl implements XmlProperty, GlobalProperty {
             return (T) this;
         if (GlobalProperty.class.isAssignableFrom(toType) == true)
             return (T) this;
-        return StringConvertUtils.changeType(this.getText(), toType, defaultValue);
+        try {
+            T returnData = (T) ConverterUtils.convert(toType, this.getText());
+            return returnData == null ? defaultValue : returnData;
+        } catch (Exception e) {
+            return defaultValue;
+        }
     }
     @Override
     public Map<String, String> getAttributeMap() {

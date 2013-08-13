@@ -129,7 +129,7 @@ public class ModuleReactor {
             sb.append(String.format("%0" + size + "d", i));
             sb.append('.');
             sb.append("-->");
-            sb.append(StringUtils.fixedString((element.getDepth() + 1) * 2, ' '));
+            sb.append(StringUtils.fixedString(' ', (element.getDepth() + 1) * 2));
             sb.append(element.getInfo().getDisplayName());
             sb.append(" (");
             sb.append(element.getInfo().getModuleObject().getClass());

@@ -15,11 +15,11 @@
  */
 package org.hasor.servlet.binder.support;
 import java.util.ArrayList;
+import java.util.List;
 import org.hasor.context.InitContext;
 import org.hasor.context.ModuleInfo;
 import org.hasor.context.binder.ApiBinderModule;
 import org.hasor.servlet.WebApiBinder;
-import org.more.util.ArrayUtils;
 import com.google.inject.Binder;
 /**
  * 该类是{@link WebApiBinder}接口实现。
@@ -35,21 +35,31 @@ public abstract class WebApiBinderModule extends ApiBinderModule implements WebA
     protected WebApiBinderModule(InitContext initContext, ModuleInfo forModule) {
         super(initContext, forModule);
     }
+    /***/
+    private static List<String> newArrayList(String[] arr, String object) {
+        ArrayList<String> list = new ArrayList<String>();
+        if (arr != null)
+            for (String item : arr)
+                list.add(item);
+        if (object != null)
+            list.add(object);
+        return list;
+    }
     @Override
     public FilterBindingBuilder filter(String urlPattern, String... morePatterns) {
-        return this.filterModuleBinder.filterPattern(ArrayUtils.newArrayList(morePatterns, urlPattern));
+        return this.filterModuleBinder.filterPattern(newArrayList(morePatterns, urlPattern));
     };
     @Override
     public FilterBindingBuilder filterRegex(String regex, String... regexes) {
-        return this.filterModuleBinder.filterRegex(ArrayUtils.newArrayList(regexes, regex));
+        return this.filterModuleBinder.filterRegex(newArrayList(regexes, regex));
     };
     @Override
     public ServletBindingBuilder serve(String urlPattern, String... morePatterns) {
-        return this.servletModuleBinder.filterPattern(ArrayUtils.newArrayList(morePatterns, urlPattern));
+        return this.servletModuleBinder.filterPattern(newArrayList(morePatterns, urlPattern));
     };
     @Override
     public ServletBindingBuilder serveRegex(String regex, String... regexes) {
-        return this.servletModuleBinder.filterRegex(ArrayUtils.newArrayList(regexes, regex));
+        return this.servletModuleBinder.filterRegex(newArrayList(regexes, regex));
     };
     @Override
     public ErrorBindingBuilder error(Class<? extends Throwable> error) {

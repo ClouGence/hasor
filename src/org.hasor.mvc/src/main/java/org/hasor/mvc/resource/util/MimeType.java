@@ -45,11 +45,11 @@ public class MimeType extends HashMap<String, String> {
                     this.stringBuffer.append(event.getText());
                 } else if (e instanceof EndElementEvent) {
                     EndElementEvent ee = (EndElementEvent) e;
-                    if (StringUtils.eqUnCaseSensitive(ee.getElementName(), "extension"))
+                    if (StringUtils.equalsIgnoreCase(ee.getElementName(), "extension"))
                         this.extension = this.stringBuffer.toString();
-                    else if (StringUtils.eqUnCaseSensitive(ee.getElementName(), "mime-type"))
+                    else if (StringUtils.equalsIgnoreCase(ee.getElementName(), "mime-type"))
                         this.mimeType = this.stringBuffer.toString();
-                    else if (StringUtils.eqUnCaseSensitive(ee.getElementName(), "mime-mapping")) {
+                    else if (StringUtils.equalsIgnoreCase(ee.getElementName(), "mime-mapping")) {
                         if (!StringUtils.isBlank(this.extension) && !StringUtils.isBlank(this.mimeType))
                             MimeType.this.put(this.extension.trim().toLowerCase(), this.mimeType.trim().toLowerCase());
                         this.extension = null;

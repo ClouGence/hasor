@@ -23,8 +23,8 @@ import java.util.Map;
 import java.util.Set;
 import org.hasor.context.Settings;
 import org.hasor.context.XmlProperty;
-import org.more.util.ClassUtils;
-import org.more.util.StringConvertUtils;
+import org.more.convert.ConverterUtils;
+import org.more.util.ScanClassPath;
 import org.more.util.StringUtils;
 /**
  * Settings接口的抽象实现。
@@ -44,7 +44,7 @@ public abstract class AbstractHasorSettings implements Settings {
             return null;
         if (loadPackages == null)
             loadPackages = new String[] { "" };
-        return ClassUtils.getClassSet(loadPackages, featureType);
+        return ScanClassPath.getClassSet(loadPackages, featureType);
     }
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类）*/
     public Set<Class<?>> getClassSet(Class<?> featureType, String loadPackages) {
@@ -63,7 +63,7 @@ public abstract class AbstractHasorSettings implements Settings {
         T var = null;
         if (oriObject instanceof String)
             //原始数据是字符串经过Eval过程
-            var = StringConvertUtils.changeType((String) oriObject, toType);
+            var = (T) ConverterUtils.convert(toType, oriObject);
         else if (oriObject instanceof GlobalProperty)
             //原始数据是GlobalProperty直接get
             var = ((GlobalProperty) oriObject).getValue(toType, defaultValue);
