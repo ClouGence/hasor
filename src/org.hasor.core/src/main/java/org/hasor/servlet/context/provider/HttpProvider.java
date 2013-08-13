@@ -51,17 +51,17 @@ public class HttpProvider {
     }
     //
     /**获取当前线程绑定的HttpServletResponse*/
-    public synchronized HttpServletResponse getResponse() {
+    public HttpServletResponse getResponse() {
         return this.response.get();
     }
     //
     /**获取当前线程绑定的HttpServletRequest*/
-    public synchronized HttpServletRequest getRequest() {
+    public HttpServletRequest getRequest() {
         return this.request.get();
     }
     //
     /**更新与当前线程绑定的HttpServletRequest对象*/
-    public synchronized void update(HttpServletRequest httpReq) {
+    public void update(HttpServletRequest httpReq) {
         if (httpReq == null)
             throw new IllegalArgumentException("HttpServletRequest cannot be null");
         //
@@ -87,7 +87,7 @@ public class HttpProvider {
     }
     //
     /**更新与当前线程绑定的HttpServletResponse对象*/
-    public synchronized void update(HttpServletResponse httpRes) {
+    public void update(HttpServletResponse httpRes) {
         if (httpRes == null)
             throw new IllegalArgumentException("HttpServletResponse cannot be null");
         //
@@ -113,23 +113,23 @@ public class HttpProvider {
     }
     //
     /**更新与当前线程绑定的HttpServletRequest和HttpServletResponse*/
-    public synchronized void update(HttpServletRequest httpReq, HttpServletResponse httpRes) {
+    public void update(HttpServletRequest httpReq, HttpServletResponse httpRes) {
         this.update(httpReq);
         this.update(httpRes);
     }
     //
     /**重置当前线程更新与当前线程绑定的HttpServletRequest*/
-    public synchronized void resetRequest() {
+    public void resetRequest() {
         this.request.remove();
     }
     //
     /**重置当前线程更新与当前线程绑定的HttpServletResponse*/
-    public synchronized void resetResponse() {
+    public void resetResponse() {
         this.response.remove();
     }
     //
     /**重置当前线程更新与当前线程绑定的HttpServletRequest和HttpServletResponse*/
-    public synchronized void reset() {
+    public void reset() {
         this.resetRequest();
         this.resetResponse();
     }

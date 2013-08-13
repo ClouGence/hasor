@@ -23,14 +23,11 @@ import com.google.inject.Provider;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 public class DefaultHttpServletResponseProvider implements Provider<HttpServletResponse> {
-    private IocHttpServletResponse iocHttpServletResponse = null;
     //
     @Override
     public HttpServletResponse get() {
-        if (this.iocHttpServletResponse == null) {
-            this.iocHttpServletResponse = new IocHttpServletResponse(HttpProvider.getProvider().getResponse());
-            HttpProvider.getProvider().addHttpServletResponseMessenger(this.iocHttpServletResponse);
-        }
+        IocHttpServletResponse iocHttpServletResponse = new IocHttpServletResponse(HttpProvider.getProvider().getResponse());
+        HttpProvider.getProvider().addHttpServletResponseMessenger(iocHttpServletResponse);
         return iocHttpServletResponse;
     }
     /** */

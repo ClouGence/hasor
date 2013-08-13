@@ -179,7 +179,7 @@ class ActionInvokeImpl implements ActionInvoke {
                 Object[] arrayParamObject = (Object[]) targetValue;
                 targetValue = arrayParamObject.length == 0 ? null : arrayParamObject[0];
             }
-            returnData = ConverterUtils.convert(targetType, targetValue, BeanUtils.getDefaultValue(targetType));
+            returnData = ConverterUtils.convert(targetType, targetValue);
         }
         return returnData;
     }

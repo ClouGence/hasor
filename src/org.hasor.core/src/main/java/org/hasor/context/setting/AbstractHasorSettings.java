@@ -70,7 +70,7 @@ public abstract class AbstractHasorSettings implements Settings {
         else
             //其他类型不予处理（数据就是要的值）
             var = (T) oriObject;
-        return var;
+        return var == null ? defaultValue : var;
     };
     public <T> T[] getToTypeArray(String name, Class<T> toType) {
         return this.getToTypeArray(name, toType, null);

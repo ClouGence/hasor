@@ -433,8 +433,7 @@ public abstract class BeanUtils {
             return false;
         //2.执行属性转换
         Class<?> toType = writeMethod.getParameterTypes()[0];
-        Object defaultValue = getDefaultValue(toType);
-        Object attValueObject = ConverterUtils.convert(toType, value, defaultValue);
+        Object attValueObject = ConverterUtils.convert(toType, value);
         //3.执行属性注入
         try {
             writeMethod.invoke(object, attValueObject);

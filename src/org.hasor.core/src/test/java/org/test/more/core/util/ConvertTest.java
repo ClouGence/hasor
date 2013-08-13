@@ -15,19 +15,20 @@
  */
 package org.test.more.core.util;
 import org.junit.Test;
+import org.more.convert.ConverterUtils;
 import org.more.util.StringConvertUtils;
-public class StringConvertTest {
+public class ConvertTest {
     @Test
     public void toBoolean() {
-        System.out.println(StringConvertUtils.parseBoolean("true"));
-        System.out.println(StringConvertUtils.parseBoolean("false"));
-        System.out.println(StringConvertUtils.parseBoolean("0"));
-        System.out.println(StringConvertUtils.parseBoolean("1"));
+        System.out.println(ConverterUtils.convert("true", Boolean.class));
+        System.out.println(ConverterUtils.convert("false", Boolean.class));
+        System.out.println(ConverterUtils.convert("0", Boolean.class));
+        System.out.println(ConverterUtils.convert("1", Boolean.class));
     };
     @Test
     public void toByte() {
-        System.out.println(StringConvertUtils.parseByte("123", (byte) 56));
-        System.out.println(StringConvertUtils.parseByte("321", (byte) 56));
+        System.out.println(ConverterUtils.convert("123", Byte.TYPE));
+        //System.out.println(ConverterUtils.convert("566", Byte.TYPE, 56));
     };
     @Test
     public void toShort() {
