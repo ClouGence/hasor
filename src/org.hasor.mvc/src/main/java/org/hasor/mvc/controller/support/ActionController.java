@@ -85,7 +85,7 @@ class ActionController extends HttpServlet {
         //2.ªÒ»° ActionInvoke
         ActionNameSpace nameSpace = actionManager.findNameSpace(actionNS);
         if (nameSpace != null)
-            return nameSpace.getActionByName(httpMethod, actionMethod);
+            return nameSpace.getActionByName(actionMethod);
         return null;
     }
     //

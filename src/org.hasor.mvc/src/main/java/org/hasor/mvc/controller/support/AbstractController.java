@@ -13,21 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.mvc.controller;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package org.hasor.mvc.controller.support;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 /**
  * 
  * @version : 2013-8-14
  * @author 赵永春 (zyc@byshell.org)
  */
-@Inherited
-@Target({ ElementType.TYPE, ElementType.METHOD })
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Produces {
-    /**响应的类型*/
-    public String value() default "*/*";
+public class AbstractController {
+    private HttpServletRequest  request  = null;
+    private HttpServletResponse response = null;
+    //
+    public void initController(HttpServletRequest request, HttpServletResponse response) {
+        this.request = request;
+        this.response = response;
+    }
+    protected HttpServletRequest getRequest() {
+        return request;
+    }
+    protected HttpServletResponse getResponse() {
+        return response;
+    }
 }

@@ -25,7 +25,7 @@ import org.more.util.StringUtils;
  */
 class ActionSettings /*implements HasorSettingListener*/{
     /**模式：mode:RestOnly（rest风格）、ServletOnly（中央servlet）、Both（两者同时使用）*/
-    public static final String ActionServlet_Mode            = "hasor-mvc.actionServlet.mode";
+    public static final String ActionServlet_Mode            = "hasor-mvc.actionServlet.workMode";
     /**action拦截器.*/
     public static final String ActionServlet_Intercept       = "hasor-mvc.actionServlet.intercept";
     /**默认产生的Mime-Type类型.*/

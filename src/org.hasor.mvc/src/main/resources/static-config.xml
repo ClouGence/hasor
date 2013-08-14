@@ -12,7 +12,7 @@
 	<!-- Hasor MVC -->
 	<hasor-mvc>
 		<!-- Action配置，defaultProduces 默认响应类型 ;模式：mode:RestOnly（rest风格）、ServletOnly（中央servlet）、Both（两者同时使用） -->
-		<actionServlet mode="Both" intercept="*.do" defaultProduces="">
+		<actionServlet workMode="Both" intercept="*.do" defaultProduces="*/*">
 			<!-- 方法忽略的方法（逗号分割多组方法名），注意：在这里配置的忽略会应用到所有action上（支持重复配置共同生效） -->
 			<ignoreMethod>equals,hashCode,toString,getClass,wait,notify,notifyAll</ignoreMethod>
 		</actionServlet>

@@ -17,7 +17,12 @@ package org.hasor.test.app.actions;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.hasor.context.AppContext;
+import org.hasor.mvc.controller.Any;
 import org.hasor.mvc.controller.Controller;
+import org.hasor.mvc.controller.HeaderParam;
+import org.hasor.mvc.controller.Path;
+import org.hasor.mvc.controller.PathParam;
+import org.hasor.mvc.controller.QueryParam;
 import org.hasor.mvc.controller.plugins.result.ext.Result;
 /**
  * 
@@ -27,7 +32,7 @@ import org.hasor.mvc.controller.plugins.result.ext.Result;
 @Controller("/action")
 public class TestAction {
     @Result
-    public String test(HttpServletResponse response, HttpServletRequest request, AppContext appContext) {
+    public String test(AppContext appContext) {
         String[] strs = appContext.getSettings().getStringArray("framework.loadPackages");
         System.out.println("invoke test" + strs);
         return "/index.htm";
@@ -36,5 +41,11 @@ public class TestAction {
     protected void finalize() throws Throwable {
         // TODO Auto-generated method stub
         super.finalize();
+    }
+    //
+    @Path("/user/{uid}/")
+    public Object userInfo(@PathParam("uid") String uid, @HeaderParam("User-Agent") String[] userAgent, @QueryParam("age") int age, @QueryParam("ns") String[] ns) {
+        System.out.println("hello");
+        return null;
     }
 }

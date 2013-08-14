@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.mvc.controller.plugins.result.support;
+import java.lang.reflect.Method;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.hasor.context.HasorEventListener;
@@ -33,6 +34,9 @@ class Caller implements HasorEventListener {
         Object[] invokeParams = (Object[]) params[1];
         Object returnData = params[2];
         //
+        Method httpJavaMethod = invoke.getActionDefine().getTargetMethod();
+        //httpJavaMethod.getAnnotation(annotationClass);
+        //resultProcessManager.
         System.out.println();
     }
 }

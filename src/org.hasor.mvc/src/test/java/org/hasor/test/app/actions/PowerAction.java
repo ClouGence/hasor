@@ -3,10 +3,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.hasor.mvc.controller.Controller;
-import org.hasor.mvc.controller.RestfulMapping;
+import org.hasor.mvc.controller.Get;
+import org.hasor.mvc.controller.Path;
+import org.hasor.mvc.controller.support.AbstractController;
 import org.hasor.test.plugin.log.OutLog;
 import org.hasor.test.plugin.safety.SafetyContext;
 import org.more.util.StringUtils;
@@ -17,27 +17,28 @@ import org.more.util.StringUtils;
  */
 @OutLog
 @Controller("/power")
-public class PowerAction {
+public class PowerAction extends AbstractController {
     @Inject
     private SafetyContext safetyContext;
-    public void add(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        String power = req.getParameter("power");
+    public void add() throws IOException, ServletException {
+        String power = this.getRequest().getParameter("power");
         if (!StringUtils.isBlank(power)) {
             this.safetyContext.addPower(power);
         }
-        req.getRequestDispatcher("/power/list").forward(req, resp);
+        this.getRequest().getRequestDispatcher("/power/list").forward(this.getRequest(), this.getResponse());
     }
-    public void del(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        String power = req.getParameter("power");
+    public void del() throws IOException, ServletException {
+        String power = this.getRequest().getParameter("power");
         if (!StringUtils.isBlank(power)) {
             this.safetyContext.remotePower(power);
-            resp.getWriter().write("DELETE POWER :" + power);
+            this.getResponse().getWriter().write("DELETE POWER :" + power);
         }
-        req.getRequestDispatcher("/power/list").forward(req, resp);
+        this.getRequest().getRequestDispatcher("/power/list").forward(this.getRequest(), this.getResponse());
     }
-    @RestfulMapping("/list")
-    public void listAction(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        PrintWriter w = resp.getWriter();
+    @Get
+    @Path("/power/list")
+    public void listAction() throws IOException {
+        PrintWriter w = this.getResponse().getWriter();
         w.write("POWER LIST:<br/>\n");
         for (String power : this.safetyContext.getPowers())
             w.write("has POWER :<a href='/power/del.do?power=" + power + "'>" + power + "</a><br/>\n");

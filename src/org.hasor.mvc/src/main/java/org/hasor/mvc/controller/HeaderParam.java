@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 package org.hasor.mvc.controller;
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * 
- * @version : 2013-8-14
+ * 请求头的中的值
+ * @version : 2013-5-9
  * @author 赵永春 (zyc@byshell.org)
  */
-@Inherited
-@Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Produces {
-    /**响应的类型*/
-    public String value() default "*/*";
+@Target({ ElementType.PARAMETER })
+@Documented
+public @interface HeaderParam {
+    /**参数名称。*/
+    public String value();
 }

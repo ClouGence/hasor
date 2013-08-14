@@ -18,9 +18,10 @@ import java.lang.reflect.Method;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.hasor.context.AppContext;
 import org.hasor.mvc.controller.ActionDefine;
-import org.hasor.mvc.controller.HttpMethod;
 import org.more.util.StringUtils;
 /**
  * 
@@ -28,15 +29,15 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@byshell.org)
  */
 class ActionDefineImpl implements ActionDefine {
-    private Method       targetMethod;
-    private Object       targetObject;
-    private HttpMethod[] httpMethod;
-    private String       mimeType;
-    private String       restfulMapping;
-    private String       restfulMappingMatches;
-    private AppContext   appContext;
+    private Method     targetMethod;
+    private Object     targetObject;
+    private String[]   httpMethod;
+    private String     mimeType;
+    private String     restfulMapping;
+    private String     restfulMappingMatches;
+    private AppContext appContext;
     //
-    public ActionDefineImpl(Method targetMethod, HttpMethod[] httpMethod, String mimeType, String restfulMapping, Object targetObject) {
+    public ActionDefineImpl(Method targetMethod, String[] httpMethod, String mimeType, String restfulMapping, Object targetObject) {
         this.targetMethod = targetMethod;
         this.httpMethod = httpMethod;
         this.mimeType = mimeType;
@@ -44,8 +45,17 @@ class ActionDefineImpl implements ActionDefine {
         this.targetObject = targetObject;
     }
     //
+    public boolean matchingMethod(String httpMethod) {
+        for (String m : this.getHttpMethod())
+            if (StringUtils.equalsIgnoreCase(httpMethod, m))
+                return true;
+            else if (StringUtils.equalsIgnoreCase(m, "ANY"))
+                return true;
+        return false;
+    }
+    //
     /**获取Action可以接收的方法*/
-    public HttpMethod[] getHttpMethod() {
+    public String[] getHttpMethod() {
         return this.httpMethod;
     }
     //
@@ -98,6 +108,10 @@ class ActionDefineImpl implements ActionDefine {
         //
         if (target == null)
             throw new ServletException("create invokeObject on " + targetMethod.toString() + " return null.");
-        return new ActionInvokeImpl(this, target, servletRequest, servletResponse);
+        return new ActionInvokeImpl(this, target, (HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);
+    }
+    @Override
+    public boolean isRESTful() {
+        return !StringUtils.isBlank(restfulMapping);
     }
 }

@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 package org.hasor.mvc.controller;
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * 
+ * 请求头的中的值查询字符串的值
  * @version : 2013-5-9
  * @author 赵永春 (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.PARAMETER })
-public @interface Var {
+@Documented
+public @interface QueryParam {
     /**参数名称。*/
     public String value();
 }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.hasor.mvc.controller;
-import java.util.Map;
 import javax.servlet.ServletException;
 import org.hasor.context.AppContext;
 /**
@@ -31,6 +30,4 @@ public interface ActionInvoke {
     public Object getTargetObject();
     /**执行调用*/
     public Object invoke() throws ServletException;
-    /**执行调用*/
-    public Object invoke(Map<String, Object> overwriteHttpParams) throws ServletException;
 }

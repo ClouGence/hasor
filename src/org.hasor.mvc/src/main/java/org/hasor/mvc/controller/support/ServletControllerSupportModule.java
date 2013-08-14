@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.mvc.controller.support;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
@@ -24,8 +25,8 @@ import org.hasor.mvc.controller.ActionBinder.ActionBindingBuilder;
 import org.hasor.mvc.controller.ActionBinder.NameSpaceBindingBuilder;
 import org.hasor.mvc.controller.Controller;
 import org.hasor.mvc.controller.HttpMethod;
+import org.hasor.mvc.controller.Path;
 import org.hasor.mvc.controller.Produces;
-import org.hasor.mvc.controller.RestfulMapping;
 import org.hasor.servlet.AbstractWebHasorModule;
 import org.hasor.servlet.WebApiBinder;
 import org.hasor.servlet.anno.support.ServletAnnoSupportModule;
@@ -86,20 +87,25 @@ public class ServletControllerSupportModule extends AbstractWebHasorModule {
                 continue;
             //2.◊¢≤·Action
             ActionBindingBuilder actionBinding = nsBinding.bindActionMethod(method);
-            actionBinding = actionBinding.onHttpMethod(HttpMethod.Any);
-            //3. 
+            //3.HttpMethod
+            Annotation[] annos = method.getAnnotations();
+            if (annos != null) {
+                for (Annotation anno : annos) {
+                    HttpMethod httpMethod = anno.annotationType().getAnnotation(HttpMethod.class);
+                    if (httpMethod != null)
+                        actionBinding = actionBinding.onHttpMethod(httpMethod.value());
+                }
+            }
+            //4.œÏ”¶¿‡–Õ
             Produces mt = method.getAnnotation(Produces.class);
             mt = (mt == null) ? controllerType.getAnnotation(Produces.class) : mt;
             String minmeType = (mt != null) ? mt.value() : this.settings.getDefaultProduces();
             if (!StringUtils.isBlank(minmeType))
                 actionBinding = actionBinding.returnMimeType(minmeType);
-            //4.restful
-            RestfulMapping mappingRestful = method.getAnnotation(RestfulMapping.class);
-            if (mappingRestful != null) {
-                for (HttpMethod httpMethod : mappingRestful.httpMethod())
-                    actionBinding = actionBinding.onHttpMethod(httpMethod);
+            //5.RESTful
+            Path mappingRestful = method.getAnnotation(Path.class);
+            if (mappingRestful != null)
                 actionBinding.mappingRestful(mappingRestful.value());
-            }
         }
     }
     //

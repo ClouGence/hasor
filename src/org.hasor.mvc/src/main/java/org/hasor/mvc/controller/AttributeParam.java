@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 package org.hasor.mvc.controller;
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * 
+ * Cookie的中的值
  * @version : 2013-5-9
  * @author 赵永春 (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD })
-public @interface RestfulMapping {
-    /**对应生效的http方法，默认为Any。*/
-    public HttpMethod[] httpMethod() default { HttpMethod.Any };
-    /**restful风格映射。提示：可是使用通配符“*”表示任意个字符，“?”表示任意一个字符。*/
+@Target({ ElementType.PARAMETER })
+@Documented
+public @interface AttributeParam {
+    /**参数名称。*/
     public String value();
 }

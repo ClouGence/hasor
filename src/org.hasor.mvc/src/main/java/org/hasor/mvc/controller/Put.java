@@ -15,19 +15,14 @@
  */
 package org.hasor.mvc.controller;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * 
- * @version : 2013-8-14
- * @author 赵永春 (zyc@byshell.org)
+ * Indicates that the annotated method responds to HTTP PUT requests
+ * @see HttpMethod
  */
-@Inherited
-@Target({ ElementType.TYPE, ElementType.METHOD })
+@Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Produces {
-    /**响应的类型*/
-    public String value() default "*/*";
-}
+@HttpMethod(HttpMethod.PUT)
+public @interface Put {}

@@ -17,12 +17,6 @@
 			<artifactId>org.hasor.core</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-		<!-- Json -->
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>1.1.28</version>
-		</dependency>
 		<!-- J2EE -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -30,6 +24,7 @@
 			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
+
 
 
 		<!-- Test -->

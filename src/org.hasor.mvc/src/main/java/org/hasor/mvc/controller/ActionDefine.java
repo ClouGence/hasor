@@ -28,9 +28,11 @@ public interface ActionDefine {
     public static String Event_AfterInvoke  = "ActionInvoke_Event_AfterInvoke";
     //
     /**获取Action可以接收的方法*/
-    public HttpMethod[] getHttpMethod();
+    public String[] getHttpMethod();
     /**获取目标方法。*/
     public Method getTargetMethod();
+    /**判断该Action是否配置了RESTful映射地址。*/
+    public boolean isRESTful();
     /**获取映射字符串*/
     public String getRestfulMapping();
     /**获取映射字符串用于匹配的表达式字符串*/

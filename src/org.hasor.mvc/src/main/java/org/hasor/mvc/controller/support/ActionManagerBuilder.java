@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.hasor.mvc.controller.ActionBinder;
-import org.hasor.mvc.controller.HttpMethod;
+import org.more.util.ArrayUtils;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 import com.google.inject.Binder;
@@ -75,7 +75,7 @@ public class ActionManagerBuilder implements ActionBinder {
                 groupActionBuilder.getElements().add(actionBuilder);
             }
             this.actionList.add(groupActionBuilder);
-            return groupActionBuilder.onHttpMethod(HttpMethod.Any);
+            return groupActionBuilder;
         }
         @Override
         public ActionBindingBuilder bindActionMethod(Method targetMethod) {
@@ -83,7 +83,7 @@ public class ActionManagerBuilder implements ActionBinder {
                 return null;
             AbstractActionBindingBuilder actionBuilder = new ActionBindingBuilderImpl(targetMethod);
             this.actionList.add(actionBuilder);
-            return actionBuilder.onHttpMethod(HttpMethod.Any);
+            return actionBuilder;
         }
         //
         public ActionNameSpace buildNameSpace(Binder binder) {
@@ -101,11 +101,11 @@ public class ActionManagerBuilder implements ActionBinder {
     //
     /**对一个Action进行定义*/
     private static class ActionBindingBuilderImpl extends AbstractActionBindingBuilder {
-        private Method          targetMethod   = null;
-        private Object          targetObject   = null;
-        private Set<HttpMethod> bindHttpMethod = new HashSet<HttpMethod>();
-        private String          mimeType       = null;
-        private String          mappingRestful = null;
+        private Method      targetMethod   = null;
+        private Object      targetObject   = null;
+        private Set<String> bindHttpMethod = new HashSet<String>();
+        private String      mimeType       = null;
+        private String      mappingRestful = null;
         //
         public ActionBindingBuilderImpl(Method targetMethod) {
             this.targetMethod = targetMethod;
@@ -115,7 +115,7 @@ public class ActionManagerBuilder implements ActionBinder {
             this.targetObject = targetObject;
         }
         @Override
-        public ActionBindingBuilder onHttpMethod(HttpMethod httpMethod) {
+        public ActionBindingBuilder onHttpMethod(String httpMethod) {
             if (httpMethod == null)
                 return null;
             this.bindHttpMethod.add(httpMethod);
@@ -133,16 +133,21 @@ public class ActionManagerBuilder implements ActionBinder {
         @Override
         public void buildActionNameSpace(Binder binder, ActionNameSpace ans) {
             //1.HttpMethod
-            HttpMethod[] bindMethods = this.bindHttpMethod.toArray(new HttpMethod[this.bindHttpMethod.size()]);
+            String[] bindMethods = this.bindHttpMethod.toArray(new String[this.bindHttpMethod.size()]);
             String restfulString = null;
             //2.RestfulMapping
             if (StringUtils.isBlank(this.mappingRestful) == false) {
-                restfulString = ans.getNameSpace() + "/" + this.mappingRestful;
+                restfulString = /*ans.getNameSpace() +*/"/" + this.mappingRestful;//TODO 
                 restfulString = restfulString.replace("\\", "/").replaceAll("[/]{2}", "/");
+                char lastChar = restfulString.charAt(restfulString.length() - 1);
+                if (lastChar == '/')
+                    restfulString = restfulString.substring(0, restfulString.length() - 1);
                 restfulString = restfulString.replace("*", ".*").replace("?", ".");
             } else
                 restfulString = null;
             //3.
+            if (ArrayUtils.isEmpty(bindMethods))
+                bindMethods = new String[] { "ANY" };
             ActionDefineImpl define = new ActionDefineImpl(this.targetMethod, bindMethods, this.mimeType, restfulString, this.targetObject);
             ans.putActionDefine(define);
         }
@@ -156,7 +161,7 @@ public class ActionManagerBuilder implements ActionBinder {
             return elements;
         }
         @Override
-        public ActionBindingBuilder onHttpMethod(HttpMethod httpMethod) {
+        public ActionBindingBuilder onHttpMethod(String httpMethod) {
             for (AbstractActionBindingBuilder item : elements)
                 item.onHttpMethod(httpMethod);
             return this;

@@ -18,12 +18,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -71,15 +65,14 @@ class RestfulController implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         String actionPath = request.getRequestURI().substring(request.getContextPath().length());
         //1.获取 ActionInvoke
-        ActionDefineImpl define = this.getActionDefine(actionPath);
+        ActionDefineImpl define = this.getActionDefine(request.getMethod(), actionPath);
         if (define == null) {
             chain.doFilter(request, resp);
             return;
         }
         //3.执行调用
         try {
-            Map<String, Object> overwriteHttpParams = this.getParams(request, actionPath, define);
-            Object result = define.createInvoke(request, resp).invoke(overwriteHttpParams);
+            Object result = define.createInvoke(request, resp).invoke();
         } catch (ServletException e) {
             if (e.getCause() instanceof IOException)
                 throw (IOException) e.getCause();
@@ -87,42 +80,13 @@ class RestfulController implements Filter {
                 throw e;
         }
     }
-    private Map<String, Object> getParams(ServletRequest request, String actionPath, ActionDefineImpl invoke) {
-        String matchVar = invoke.getRestfulMappingMatches();
-        String matchKey = "(?:\\{(\\w+)\\}){1,}";//  (?:\{(\w+)\}){1,}
-        Matcher keyM = Pattern.compile(matchKey).matcher(invoke.getRestfulMapping());
-        Matcher varM = Pattern.compile(matchVar).matcher(actionPath);
-        ArrayList<String> keyArray = new ArrayList<String>();
-        ArrayList<String> varArray = new ArrayList<String>();
-        while (keyM.find())
-            keyArray.add(keyM.group(1));
-        varM.find();
-        for (int i = 1; i <= varM.groupCount(); i++)
-            varArray.add(varM.group(i));
-        //
-        Map<String, List<String>> uriParams = new HashMap<String, List<String>>();
-        for (int i = 0; i < keyArray.size(); i++) {
-            String k = keyArray.get(i);
-            String v = varArray.get(i);
-            List<String> pArray = uriParams.get(k);
-            pArray = pArray == null ? new ArrayList<String>() : pArray;
-            if (pArray.contains(v) == false)
-                pArray.add(v);
-            uriParams.put(k, pArray);
+    private ActionDefineImpl getActionDefine(String httpMethod, String requestPath) {
+        for (ActionDefineImpl restAction : this.defineArray) {
+            if (requestPath.matches(restAction.getRestfulMappingMatches()) == true) {
+                if (restAction.matchingMethod(httpMethod))
+                    return restAction;
+            }
         }
-        HashMap<String, Object> overwriteHttpParams = new HashMap<String, Object>();
-        overwriteHttpParams.putAll(request.getParameterMap());
-        for (Entry<String, List<String>> ent : uriParams.entrySet()) {
-            String k = ent.getKey();
-            List<String> v = ent.getValue();
-            overwriteHttpParams.put(k, v.toArray(new String[v.size()]));
-        }
-        return overwriteHttpParams;
-    }
-    private ActionDefineImpl getActionDefine(String requestPath) {
-        for (ActionDefineImpl restAction : this.defineArray)
-            if (requestPath.matches(restAction.getRestfulMappingMatches()) == true)
-                return restAction;
         return null;
     }
     //
@@ -139,7 +103,7 @@ class RestfulController implements Filter {
     public RequestDispatcher getRequestDispatcher(final String newRequestUri, final HttpServletRequest request) {
         // TODO 需要检查下面代码是否符合Servlet规范（带request参数情况下也需要检查）
         //1.拆分请求字符串
-        final ActionDefineImpl define = getActionDefine(newRequestUri);
+        final ActionDefineImpl define = getActionDefine(request.getMethod(), newRequestUri);
         if (define == null)
             return null;
         //
@@ -149,8 +113,7 @@ class RestfulController implements Filter {
                 servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
                 /*执行servlet*/
                 try {
-                    Map<String, Object> overwriteHttpParams = getParams(request, newRequestUri, define);
-                    define.createInvoke(servletRequest, servletResponse).invoke(overwriteHttpParams);
+                    define.createInvoke(servletRequest, servletResponse).invoke();
                 } finally {
                     servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
                 }
@@ -171,8 +134,7 @@ class RestfulController implements Filter {
                 /*执行转发*/
                 servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
                 try {
-                    Map<String, Object> overwriteHttpParams = getParams(request, newRequestUri, define);
-                    define.createInvoke(requestToProcess, servletResponse).invoke(overwriteHttpParams);
+                    define.createInvoke(requestToProcess, servletResponse).invoke();
                 } finally {
                     servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
                 }

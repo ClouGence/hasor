@@ -34,7 +34,7 @@ public interface ActionBinder {
     /**用来绑定action的执行目标*/
     public static interface ActionBindingBuilder {
         /**将action绑定的Http方法上。*/
-        public ActionBindingBuilder onHttpMethod(HttpMethod httpMethod);
+        public ActionBindingBuilder onHttpMethod(String httpMethod);
         /**将设置返回的MimeType。*/
         public ActionBindingBuilder returnMimeType(String mimeType);
         /**restful风格的映射*/

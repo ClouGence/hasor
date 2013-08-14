@@ -15,19 +15,18 @@
  */
 package org.hasor.mvc.controller;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
  * 
- * @version : 2013-8-14
+ * @version : 2013-5-9
  * @author 赵永春 (zyc@byshell.org)
  */
-@Inherited
-@Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Produces {
-    /**响应的类型*/
-    public String value() default "*/*";
+@Target({ ElementType.METHOD })
+public @interface Path {
+    /**restful风格映射。提示：可是使用通配符“*”表示任意个字符，“?”表示任意一个字符。<p>
+     * <b>提示：</b>在做RESTful地址映射时系统已经对配置地址内容做了归整化*/
+    public String value();
 }

@@ -14,11 +14,40 @@
  * limitations under the License.
  */
 package org.hasor.mvc.controller;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 
- * @version : 2013-6-14
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * Associates the name of a HTTP method with an annotation. A Java method annotated
+ * with a runtime annotation that is itself annotated with this annotation will
+ * be used to handle HTTP requests of the indicated HTTP method. It is an error
+ * for a method to be annotated with more than one annotation that is annotated
+ * with {@code HttpMethod}.
+ *
+ * @see Get
+ * @see Post
+ * @see Put
+ * @see DELETE
+ * @see Head
  */
-public enum HttpMethod {
-    Get, Post, Put, Delete, Head, Option, Any
+@Target({ ElementType.ANNOTATION_TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface HttpMethod {
+    /** HTTP GET method */
+    public static final String GET     = "GET";
+    /** HTTP POST method */
+    public static final String POST    = "POST";
+    /** HTTP PUT method */
+    public static final String PUT     = "PUT";
+    /** HTTP DELETE method */
+    public static final String DELETE  = "DELETE";
+    /** HTTP HEAD method */
+    public static final String HEAD    = "HEAD";
+    /** HTTP OPTIONS method */
+    public static final String OPTIONS = "OPTIONS";
+    /** Specifies the name of a HTTP method. E.g. "GET". */
+    public String value();
 }
