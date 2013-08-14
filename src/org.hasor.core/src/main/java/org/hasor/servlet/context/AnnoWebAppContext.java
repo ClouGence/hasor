@@ -18,11 +18,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import org.hasor.context.Environment;
 import org.hasor.context.ModuleInfo;
 import org.hasor.context.Settings;
@@ -35,8 +30,6 @@ import org.hasor.servlet.binder.support.ManagedFilterPipeline;
 import org.hasor.servlet.binder.support.ManagedServletPipeline;
 import org.hasor.servlet.binder.support.ManagedSessionListenerPipeline;
 import org.hasor.servlet.binder.support.WebApiBinderModule;
-import org.hasor.servlet.context.provider.DefaultHttpServletRequestProvider;
-import org.hasor.servlet.context.provider.DefaultHttpServletResponseProvider;
 import com.google.inject.Binder;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -47,32 +40,12 @@ import com.google.inject.Provider;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class AnnoWebAppContext extends AnnoAppContextSupportModule {
-    private Provider<HttpServletRequest>  httpRequestProvider  = new DefaultHttpServletRequestProvider();
-    private Provider<HttpServletResponse> httpResponseProvider = new DefaultHttpServletResponseProvider();
     //
     public AnnoWebAppContext(ServletContext servletContext) throws IOException {
         super("hasor-config.xml", servletContext);
     }
     public AnnoWebAppContext(String mainConfig, ServletContext servletContext) throws IOException {
         super(mainConfig, servletContext);
-    }
-    /**获取{@link HttpServletRequest}的Provider，该Provider用于依赖注入。*/
-    public Provider<HttpServletRequest> getHttpRequestProvider() {
-        return httpRequestProvider;
-    }
-    /**设置{@link HttpServletRequest}的Provider，该Provider用于依赖注入。<br/>
-     * 注意：该方法在{@link #start()}方法调用之前设置才能生效。*/
-    public void setHttpRequestProvider(Provider<HttpServletRequest> httpRequestProvider) {
-        this.httpRequestProvider = httpRequestProvider;
-    }
-    /**获取{@link HttpServletResponse}的Provider，该Provider用于依赖注入。*/
-    public Provider<HttpServletResponse> getHttpResponseProvider() {
-        return httpResponseProvider;
-    }
-    /**设置{@link HttpServletResponse}的Provider，该Provider用于依赖注入。<br/>
-     * 注意：该方法在{@link #start()}方法调用之前设置才能生效。*/
-    public void setHttpResponseProvider(Provider<HttpServletResponse> httpResponseProvider) {
-        this.httpResponseProvider = httpResponseProvider;
     }
     /**获取{@link ServletContext}*/
     public ServletContext getServletContext() {
@@ -102,22 +75,6 @@ public class AnnoWebAppContext extends AnnoAppContextSupportModule {
                         return getServletContext();
                     }
                 });
-                /*绑定ServletRequest，HttpServletRequest对象的Provider*/
-                if (httpRequestProvider != null) {
-                    binder.bind(ServletRequest.class).to(HttpServletRequest.class);
-                    binder.bind(HttpServletRequest.class).toProvider(httpRequestProvider);
-                    /*绑定HttpSession对象的Provider*/
-                    binder.bind(HttpSession.class).toProvider(new Provider<HttpSession>() {
-                        public HttpSession get() {
-                            return ((HttpServletRequest) httpResponseProvider.get()).getSession(true);
-                        }
-                    });
-                }
-                /*绑定ServletResponse，HttpServletResponse对象的Provider*/
-                if (httpResponseProvider != null) {
-                    binder.bind(ServletResponse.class).to(HttpServletResponse.class);
-                    binder.bind(HttpServletResponse.class).toProvider(httpResponseProvider);
-                }
             }
         };
         //2.
