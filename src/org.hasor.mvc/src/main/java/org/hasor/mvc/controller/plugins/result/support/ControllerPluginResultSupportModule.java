@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 package org.hasor.mvc.controller.plugins.result.support;
-import java.util.Set;
-import org.hasor.Hasor;
 import org.hasor.context.AppContext;
 import org.hasor.context.ModuleSettings;
 import org.hasor.context.anno.Module;
 import org.hasor.mvc.controller.ActionDefine;
-import org.hasor.mvc.controller.plugins.result.ResultDefine;
-import org.hasor.mvc.controller.plugins.result.ResultProcess;
 import org.hasor.mvc.controller.support.ServletControllerSupportModule;
 import org.hasor.servlet.AbstractWebHasorModule;
 import org.hasor.servlet.WebApiBinder;
-import com.google.inject.internal.UniqueAnnotations;
 /**
  * 负责处理Action调用之后返回值的处理。
  * @version : 2013-8-11
@@ -39,27 +34,6 @@ public class ControllerPluginResultSupportModule extends AbstractWebHasorModule 
     }
     @Override
     public void init(WebApiBinder apiBinder) {
-        //1.获取
-        Set<Class<?>> resultDefineSet = apiBinder.getClassSet(ResultDefine.class);
-        if (resultDefineSet == null) {
-            Hasor.warning("Didn't find any ResultProcess.");
-            return;
-        }
-        //2.注册服务
-        for (Class<?> resultDefineType : resultDefineSet) {
-            ResultDefine resultDefineAnno = resultDefineType.getAnnotation(ResultDefine.class);
-            if (ResultProcess.class.isAssignableFrom(resultDefineType) == false) {
-                Hasor.warning("loadResultDefine : not implemented ResultProcess. class=%s", resultDefineType);
-            } else {
-                Hasor.info("loadResultDefine annoType is %s toInstance %s", resultDefineAnno.value(), resultDefineType);
-                //
-                Class<? extends ResultProcess> defineType = (Class<? extends ResultProcess>) resultDefineType;
-                ResultProcessPropxy propxy = new ResultProcessPropxy(resultDefineAnno.value(), defineType);
-                apiBinder.getGuiceBinder().bind(ResultProcessPropxy.class).annotatedWith(UniqueAnnotations.create()).toInstance(propxy);
-            }
-        }
-        //3.声明Caller、ResultProcessManager
-        apiBinder.getGuiceBinder().bind(ResultProcessManager.class);
         apiBinder.getGuiceBinder().bind(Caller.class);
     }
     @Override

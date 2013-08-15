@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.mvc.controller.plugins.result.ext;
+package org.hasor.mvc.controller.plugins.result;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -26,14 +26,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.ANNOTATION_TYPE })
 public @interface ResultType {
-    /**将返回值转为json格式输出。*/
-    public static final String Json     = "JSON";
-    /**服务端转发（Default）*/
-    public static final String Forword  = "FORWORD";
-    /**客户端重定向*/
-    public static final String Redirect = "REDIRECT";
-    /**包含*/
-    public static final String Include  = "INCLUDE";
-    /**什么都不返回。*/
-    public static final String None     = "NONE";
+    public String value();
 }

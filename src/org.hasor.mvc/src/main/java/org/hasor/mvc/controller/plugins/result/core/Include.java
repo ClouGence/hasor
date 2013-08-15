@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.mvc.controller.plugins.result.ext;
+package org.hasor.mvc.controller.plugins.result.core;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.hasor.mvc.controller.plugins.result.ResultType;
 /**
- * 
+ * ∞¸∫¨
  * @version : 2013-6-5
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.TYPE })
-public @interface Result {
-    /***/
-    public ResultType value() default ResultType.Forword;
-}
+@Target({ ElementType.METHOD })
+@ResultType(ResultEnum.Include)
+public @interface Include {}

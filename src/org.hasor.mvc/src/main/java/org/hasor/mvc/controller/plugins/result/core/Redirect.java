@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.mvc.controller.plugins.result;
-import java.lang.annotation.Annotation;
+package org.hasor.mvc.controller.plugins.result.core;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.hasor.mvc.controller.plugins.result.ResultType;
 /**
- * 负责处理Action调用之后的返回值。
- * @version : 2013-5-10
+ * 客户端重定向
+ * @version : 2013-6-5
  * @author 赵永春 (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface ResultDefine {
-    public Class<? extends Annotation> value();
-}
+@Target({ ElementType.METHOD })
+@ResultType(ResultEnum.Redirect)
+public @interface Redirect {}

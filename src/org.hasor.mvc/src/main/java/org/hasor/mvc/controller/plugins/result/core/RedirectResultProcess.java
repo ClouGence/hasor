@@ -13,18 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.mvc.controller.plugins.result;
+package org.hasor.mvc.controller.plugins.result.core;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.hasor.Hasor;
+import org.hasor.mvc.controller.plugins.result.ControllerResultDefine;
+import org.hasor.mvc.controller.plugins.result.ControllerResultProcess;
 /**
- * 负责处理Action调用之后的返回值。
- * @version : 2013-5-10
+ * 
+ * @version : 2013-6-5
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ResultProcess {
-    /**执行方法调用。*/
-    public void process(ServletRequest request, ServletResponse response, Annotation annoData, Object result) throws ServletException, IOException;
+@ControllerResultDefine(Redirect.class)
+public class RedirectResultProcess implements ControllerResultProcess {
+    @Override
+    public void process(HttpServletRequest request, HttpServletResponse response, Object result) throws ServletException, IOException {
+        Hasor.debug("redirect to %s.", result);
+        response.sendRedirect(result.toString());
+    }
 }

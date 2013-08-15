@@ -13,27 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.mvc.controller;
+package org.hasor.mvc.controller.plugins.result.core;
+import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.hasor.context.AppContext;
+import org.hasor.Hasor;
+import org.hasor.mvc.controller.plugins.result.ControllerResultDefine;
+import org.hasor.mvc.controller.plugins.result.ControllerResultProcess;
 /**
- * 用于调用Action的接口
- * @version : 2013-8-12
+ * 
+ * @version : 2013-6-5
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ActionInvoke {
-    /**获取ActionDefine*/
-    public ActionDefine getActionDefine();
-    /**获取AppContext*/
-    public AppContext getAppContext();
-    /**获取调用的目标类*/
-    public Object getTargetObject();
-    /**执行调用*/
-    public Object invoke() throws ServletException;
-    /**获取请求对象*/
-    public HttpServletRequest getRequest();
-    /**获取响应对象*/
-    public HttpServletResponse getResponse();
+@ControllerResultDefine(Include.class)
+public class IncludeResultProcess implements ControllerResultProcess {
+    @Override
+    public void process(HttpServletRequest request, HttpServletResponse response, Object result) throws ServletException, IOException {
+        Hasor.debug("include %s.", result);
+        request.getRequestDispatcher(result.toString()).include(request, response);
+    }
 }

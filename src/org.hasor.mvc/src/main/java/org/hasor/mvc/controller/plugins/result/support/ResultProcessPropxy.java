@@ -14,36 +14,35 @@
  * limitations under the License.
  */
 package org.hasor.mvc.controller.plugins.result.support;
-import java.lang.annotation.Annotation;
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.hasor.context.AppContext;
-import org.hasor.mvc.controller.plugins.result.ResultProcess;
+import org.hasor.mvc.controller.plugins.result.ControllerResultProcess;
 /**
  * 
  * @version : 2013-4-11
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-class ResultProcessPropxy {
-    private Class<? extends Annotation>    annoType          = null;
-    private Class<? extends ResultProcess> targetProcessType = null;
-    private ResultProcess                  targetProcess     = null;
-    //
-    public ResultProcessPropxy(Class<? extends Annotation> annoType, Class<? extends ResultProcess> targetProcessType) {
+class ResultProcessPropxy implements ControllerResultProcess {
+    private AppContext                               appContext        = null;
+    private String                                   annoType          = null;
+    private Class<? extends ControllerResultProcess> targetProcessType = null;
+    private ControllerResultProcess                  targetProcess     = null;
+    // 
+    public ResultProcessPropxy(String annoType, Class<? extends ControllerResultProcess> targetProcessType, AppContext appContext) {
         this.annoType = annoType;
         this.targetProcessType = targetProcessType;
+        this.appContext = appContext;
     }
-    public ResultProcessPropxy(Class<? extends Annotation> annoType, ResultProcess targetProcess) {
-        this.annoType = annoType;
-        this.targetProcess = targetProcess;
-        this.targetProcessType = targetProcess.getClass();
+    public String getName() {
+        return this.annoType;
     }
-    public boolean matchAnno(Annotation anno) {
-        if (anno == null)
-            return false;
-        return annoType.isInstance(anno);
-    }
-    public ResultProcess getInstance(AppContext appContext) {
+    @Override
+    public void process(HttpServletRequest request, HttpServletResponse response, Object result) throws ServletException, IOException {
         if (this.targetProcess == null)
             this.targetProcess = appContext.getInstance(this.targetProcessType);
-        return this.targetProcess;
+        this.targetProcess.process(request, response, result);
     }
 }
