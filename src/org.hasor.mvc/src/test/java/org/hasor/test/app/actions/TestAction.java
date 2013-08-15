@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 package org.hasor.test.app.actions;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.hasor.context.AppContext;
-import org.hasor.mvc.controller.Any;
 import org.hasor.mvc.controller.Controller;
 import org.hasor.mvc.controller.HeaderParam;
 import org.hasor.mvc.controller.Path;
 import org.hasor.mvc.controller.PathParam;
 import org.hasor.mvc.controller.QueryParam;
-import org.hasor.mvc.controller.plugins.result.ext.Result;
 /**
  * 
  * @version : 2013-7-23
@@ -31,7 +27,6 @@ import org.hasor.mvc.controller.plugins.result.ext.Result;
  */
 @Controller("/action")
 public class TestAction {
-    @Result
     public String test(AppContext appContext) {
         String[] strs = appContext.getSettings().getStringArray("framework.loadPackages");
         System.out.println("invoke test" + strs);

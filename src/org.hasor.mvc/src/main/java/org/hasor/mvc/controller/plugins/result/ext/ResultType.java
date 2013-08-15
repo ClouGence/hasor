@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 package org.hasor.mvc.controller.plugins.result.ext;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
  * 
  * @version : 2013-6-5
  * @author 赵永春 (zyc@byshell.org)
  */
-public enum ResultType {
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.ANNOTATION_TYPE })
+public @interface ResultType {
     /**将返回值转为json格式输出。*/
-    Json,
+    public static final String Json     = "JSON";
     /**服务端转发（Default）*/
-    Forword,
+    public static final String Forword  = "FORWORD";
     /**客户端重定向*/
-    Redirect,
+    public static final String Redirect = "REDIRECT";
     /**包含*/
-    Include,
-    /**返回状态数据。例：return "203 错误的消息。"*/
-    State,
-    /**什么都不做*/
-    None,
+    public static final String Include  = "INCLUDE";
+    /**什么都不返回。*/
+    public static final String None     = "NONE";
 }
