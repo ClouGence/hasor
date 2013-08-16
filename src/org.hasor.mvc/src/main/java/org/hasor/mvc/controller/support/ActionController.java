@@ -15,6 +15,7 @@
  */
 package org.hasor.mvc.controller.support;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -62,20 +63,13 @@ class ActionController extends HttpServlet {
             return;
         //
         //1.拆分请求字符串
-        ActionDefineImpl invoke = getActionDefine(requestPath, request.getMethod());
-        if (invoke == null) {
+        ActionDefineImpl define = getActionDefine(requestPath, request.getMethod());
+        if (define == null) {
             String logInfo = String.format("%s action is not defined.", requestPath);
             throw new ActionException(logInfo);
         }
         //3.执行调用
-        try {
-            Object result = invoke.createInvoke(request, response).invoke();
-        } catch (ServletException e) {
-            if (e.getCause() instanceof IOException)
-                throw (IOException) e.getCause();
-            else
-                throw e;
-        }
+        doInvoke(define, request, response);
     }
     private ActionDefineImpl getActionDefine(String requestPath, String httpMethod) {
         //1.拆分请求字符串
@@ -87,6 +81,19 @@ class ActionController extends HttpServlet {
         if (nameSpace != null)
             return nameSpace.getActionByName(actionMethod);
         return null;
+    }
+    //
+    private void doInvoke(ActionDefineImpl define, ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+        try {
+            define.createInvoke(servletRequest, servletResponse).invoke();
+        } catch (InvocationTargetException e) {
+            Throwable target = e.getTargetException();//拆开异常
+            if (target instanceof ServletException)
+                throw (ServletException) target;
+            if (target instanceof IOException)
+                throw (IOException) target;
+            throw new ServletException(target);
+        }
     }
     //
     //
@@ -113,7 +120,7 @@ class ActionController extends HttpServlet {
                     servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
                     /*执行servlet*/
                     try {
-                        define.createInvoke(servletRequest, servletResponse).invoke();
+                        doInvoke(define, servletRequest, servletResponse);
                     } finally {
                         servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
                     }
@@ -134,7 +141,7 @@ class ActionController extends HttpServlet {
                     /*执行转发*/
                     servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
                     try {
-                        define.createInvoke(requestToProcess, servletResponse).invoke();
+                        doInvoke(define, requestToProcess, servletResponse);
                     } finally {
                         servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
                     }

@@ -72,7 +72,7 @@ class Caller implements HasorEventListener {
         }
     }
     @Override
-    public void onEvent(String event, Object[] params) {
+    public void onEvent(String event, Object[] params) throws ServletException, IOException {
         this.init();
         //
         ActionInvoke invoke = (ActionInvoke) params[0];
@@ -88,15 +88,7 @@ class Caller implements HasorEventListener {
             if (resultType != null) {
                 ResultProcessPropxy propxy = this.defineMap.get(resultType.value());
                 if (propxy != null) {
-                    try {s
-                        propxy.process(invoke.getRequest(), invoke.getResponse(), returnData);
-                    } catch (ServletException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
+                    propxy.process(invoke.getRequest(), invoke.getResponse(), returnData);
                     return;
                 }
             }

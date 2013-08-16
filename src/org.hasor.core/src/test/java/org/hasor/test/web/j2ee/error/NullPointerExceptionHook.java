@@ -17,8 +17,7 @@ package org.hasor.test.web.j2ee.error;
 import java.io.Writer;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import org.hasor.context.AppContext;
-import org.hasor.servlet.ErrorHook;
+import org.hasor.servlet.WebErrorHook;
 import org.hasor.servlet.anno.WebError;
 /**
  * 该类处理servlet在调用过程中抛出的空指针异常
@@ -26,19 +25,11 @@ import org.hasor.servlet.anno.WebError;
  * @author 赵永春 (zyc@byshell.org)
  */
 @WebError(NullPointerException.class)
-public class NullPointerExceptionHook implements ErrorHook {
-    @Override
-    public void init(AppContext appContext) {
-        /*当接收到Web init信号时候调用*/
-    }
+public class NullPointerExceptionHook implements WebErrorHook {
     @Override
     public void doError(ServletRequest request, ServletResponse response, Throwable error) throws Throwable {
         Writer w = response.getWriter();
         w.write("is NullPointerException.");
         w.flush();
-    }
-    @Override
-    public void destroy(AppContext appContext) {
-        /*当接收到Web销毁信号时候调用*/
     }
 }

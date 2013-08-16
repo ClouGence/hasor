@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -82,48 +81,49 @@ class ActionInvokeImpl implements ActionInvoke {
     }
     //
     /**执行调用*/
-    public Object invoke() throws ServletException {
-        try {
-            Method targetMethod = this.getActionDefine().getTargetMethod();
-            Class<?>[] targetParamClass = targetMethod.getParameterTypes();
-            Annotation[][] targetParamAnno = targetMethod.getParameterAnnotations();
-            targetParamClass = (targetParamClass == null) ? new Class<?>[0] : targetParamClass;
-            targetParamAnno = (targetParamAnno == null) ? new Annotation[0][0] : targetParamAnno;
-            ArrayList<Object> paramsArray = new ArrayList<Object>();
-            /*准备参数*/
-            for (int i = 0; i < targetParamClass.length; i++) {
-                Class<?> paramClass = targetParamClass[i];
-                Object paramObject = this.getIvnokeParams(paramClass, targetParamAnno[i]);//获取参数
-                /*获取到的参数需要做一个类型转换，以防止method.invoke时发生异常。*/
-                if (paramObject == null)
-                    paramObject = BeanUtils.getDefaultValue(paramClass);
-                else
-                    paramObject = ConverterUtils.convert(paramClass, paramObject);
-                paramsArray.add(paramObject);
-            }
-            Object[] invokeParams = paramsArray.toArray();
-            /*设置返回ContentType*/
-            String mimeType = this.getActionDefine().getMimeType();
-            if (!StringUtils.isBlank(mimeType))
-                response.setContentType(mimeType);
-            /*执行调用*/
-            return this.call(targetMethod, invokeParams);
-        } catch (InvocationTargetException e) {
-            throw new ServletException(e.getCause());
-        } catch (Exception e) {
-            throw new ServletException(e);
+    public Object invoke() throws InvocationTargetException {
+        Method targetMethod = this.getActionDefine().getTargetMethod();
+        Class<?>[] targetParamClass = targetMethod.getParameterTypes();
+        Annotation[][] targetParamAnno = targetMethod.getParameterAnnotations();
+        targetParamClass = (targetParamClass == null) ? new Class<?>[0] : targetParamClass;
+        targetParamAnno = (targetParamAnno == null) ? new Annotation[0][0] : targetParamAnno;
+        ArrayList<Object> paramsArray = new ArrayList<Object>();
+        /*准备参数*/
+        for (int i = 0; i < targetParamClass.length; i++) {
+            Class<?> paramClass = targetParamClass[i];
+            Object paramObject = this.getIvnokeParams(paramClass, targetParamAnno[i]);//获取参数
+            /*获取到的参数需要做一个类型转换，以防止method.invoke时发生异常。*/
+            if (paramObject == null)
+                paramObject = BeanUtils.getDefaultValue(paramClass);
+            else
+                paramObject = ConverterUtils.convert(paramClass, paramObject);
+            paramsArray.add(paramObject);
         }
+        Object[] invokeParams = paramsArray.toArray();
+        /*设置返回ContentType*/
+        String mimeType = this.getActionDefine().getMimeType();
+        if (!StringUtils.isBlank(mimeType))
+            response.setContentType(mimeType);
+        /*执行调用*/
+        return this.call(targetMethod, invokeParams);
     }
     //
     /**执行调用，并引发事件*/
-    private Object call(Method targetMethod, Object[] invokeParams) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+    private Object call(Method targetMethod, Object[] invokeParams) throws InvocationTargetException {
         if (this.targetObject instanceof AbstractController)
             ((AbstractController) this.targetObject).initController(this.request, this.response);
         //
-        EventManager eventManager = this.getAppContext().getEventManager();
-        eventManager.doSyncEvent(ActionDefineImpl.Event_BeforeInvoke, this, invokeParams);/*引发事件*/
-        Object returnData = targetMethod.invoke(this.targetObject, invokeParams);
-        eventManager.doSyncEvent(ActionDefineImpl.Event_AfterInvoke, this, invokeParams, returnData); /*引发事件*/
+        Object returnData = null;
+        try {
+            EventManager eventManager = this.getAppContext().getEventManager();
+            eventManager.doSyncEvent(ActionDefineImpl.Event_BeforeInvoke, this, invokeParams);/*引发事件*/
+            returnData = targetMethod.invoke(this.targetObject, invokeParams);
+            eventManager.doSyncEvent(ActionDefineImpl.Event_AfterInvoke, this, invokeParams, returnData); /*引发事件*/
+        } catch (Throwable e) {
+            if (e instanceof InvocationTargetException)
+                throw (InvocationTargetException) e;
+            throw new InvocationTargetException(e);//将异常包装为InvocationTargetException类型Controller会拆开该异常。
+        }
         return returnData;
     }
     //

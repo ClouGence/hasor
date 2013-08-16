@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 package org.hasor.context;
-import java.util.EventListener;
 /**
- * 应用程序事件监听器
- * @version : 2013-7-10
+ * 异步事件回调接口。
+ * @version : 2013-4-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface HasorEventListener extends EventListener {
-    /**处理事件的处理方法，参数是要处理的事件。*/
-    public void onEvent(String event, Object[] params) throws Throwable;
-};
+public interface AsyncCallBackHook {
+    /**在执行事件监听器发生异常时调用该方法。*/
+    public void handleException(String eventType, Object[] objects, Throwable e);
+    /**当完成异步事件处理时回调。<p>
+     * 注意：无论在异步事件分发过程中{@link #handleException(String, Object[], Throwable)}方法是否被调用，该方法都会如期的被执行。*/
+    public void handleComplete(String eventType, Object[] objects);
+}

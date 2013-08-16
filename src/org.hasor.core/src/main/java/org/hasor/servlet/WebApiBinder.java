@@ -59,12 +59,12 @@ public interface WebApiBinder extends ApiBinder {
     }
     /**负责配置Error。*/
     public static interface ErrorBindingBuilder {
-        public void bind(Class<? extends ErrorHook> errorKey);
-        public void bind(Key<? extends ErrorHook> errorKey);
-        public void bind(ErrorHook errorHook);
-        public void bind(Class<? extends ErrorHook> errorKey, Map<String, String> initParams);
-        public void bind(Key<? extends ErrorHook> errorKey, Map<String, String> initParams);
-        public void bind(ErrorHook errorHook, Map<String, String> initParams);
+        public void bind(Class<? extends WebErrorHook> errorKey);
+        public void bind(Key<? extends WebErrorHook> errorKey);
+        public void bind(WebErrorHook webErrorHook);
+        public void bind(Class<? extends WebErrorHook> errorKey, Map<String, String> initParams);
+        public void bind(Key<? extends WebErrorHook> errorKey, Map<String, String> initParams);
+        public void bind(WebErrorHook webErrorHook, Map<String, String> initParams);
     }
     /**负责配置SessionListener。*/
     public static interface SessionListenerBindingBuilder {

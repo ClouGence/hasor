@@ -21,6 +21,8 @@ import org.more.RepeateException;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface EventManager {
+    /**pushPhaseEvent方法注册的时间监听器当收到一次事件之后会被自动删除。*/
+    public void pushEventListener(String eventType, HasorEventListener hasorEventListener);
     /**添加一种类型事件的事件监听器。*/
     public void addEventListener(String eventType, HasorEventListener hasorEventListener);
     /**删除某个监听器的注册。*/
@@ -32,18 +34,26 @@ public interface EventManager {
     /**获取所有事件监听器类型。*/
     public String[] getEventTypes();
     //
-    /**同步方式抛出事件。当方法返回时已经全部处理完成事件分发。*/
-    public void doSyncEvent(String eventType, Object... objects);
-    /**异步方式抛出事件。asynEvent方法的调用不会决定何时开始执行事件，而这一切由事件管理器决定。*/
-    public void doAsynEvent(String eventType, Object... objects);
+    /**同步方式抛出事件。当方法返回时已经全部处理完成事件分发。<p>
+     * 注意：当某个时间监听器抛出异常时该方法会吞掉异常，继续分发事件。被吞掉的异常会以一条警告的方式出现。*/
+    public void doSyncEventIgnoreThrow(String eventType, Object... objects);
+    /**同步方式抛出事件。当方法返回时已经全部处理完成事件分发。<p>
+     * 注意：当某个时间监听器抛出异常时将中断事件分发抛出监听器异常。*/
+    public void doSyncEvent(String eventType, Object... objects) throws Throwable;
+    /**异步方式抛出事件。asynEvent方法的调用不会决定何时开始执行事件，而这一切由事件管理器决定。<p>
+     * 注意：当某个时间监听器抛出异常时该方法会吞掉异常，继续分发事件。被吞掉的异常会以一条警告的方式出现。*/
+    public void doAsynEventIgnoreThrow(String eventType, Object... objects);
+    /**异步方式抛出事件。asynEvent方法的调用不会决定何时开始执行事件，而这一切由事件管理器决定。<p>
+     * 注意：当某个时间监听器抛出异常时将中断事件分发，并将程序执行权交给异常处理接口。*/
+    public void doAsynEvent(String eventType, AsyncCallBackHook callBack, Object... objects);
     //
     /**清空未完成的事件等待执行队列*/
     public void clean();
     //
-    /**pushPhaseEvent方法注册的时间监听器当收到一次事件之后会被自动删除。*/
-    public void pushEventListener(String eventType, HasorEventListener hasorEventListener);
     /**添加一个计时器，如果添加的计时器类型已经存在则会抛出异常。*/
     public void addTimer(String timerType, HasorEventListener hasorEventListener) throws RepeateException;
+    /**添加一个计时器，如果添加的计时器类型已经存在则会抛出异常。*/
+    public void addTimer(String timerType, HasorEventListener hasorEventListener, TimerCallBackHook callBack) throws RepeateException;
     /**移除可能或已经存在的计时器对象,当计时器正在执行时会将timer任务执行完毕.*/
     public void removeTimer(String timerType);
     /**移除可能或已经存在的计时器对象,当计时器正在执行时会尝试取消timer正在执行的任务.*/

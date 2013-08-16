@@ -15,6 +15,7 @@
  */
 package org.hasor.mvc.controller.support;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -71,14 +72,7 @@ class RestfulController implements Filter {
             return;
         }
         //3.执行调用
-        try {
-            Object result = define.createInvoke(request, resp).invoke();
-        } catch (ServletException e) {
-            if (e.getCause() instanceof IOException)
-                throw (IOException) e.getCause();
-            else
-                throw e;
-        }
+        this.doInvoke(define, request, resp);
     }
     private ActionDefineImpl getActionDefine(String httpMethod, String requestPath) {
         for (ActionDefineImpl restAction : this.defineArray) {
@@ -88,6 +82,19 @@ class RestfulController implements Filter {
             }
         }
         return null;
+    }
+    //
+    private void doInvoke(ActionDefineImpl define, ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+        try {
+            define.createInvoke(servletRequest, servletResponse).invoke();
+        } catch (InvocationTargetException e) {
+            Throwable target = e.getTargetException();
+            if (target instanceof ServletException)
+                throw (ServletException) target;
+            if (target instanceof IOException)
+                throw (IOException) target;
+            throw new ServletException(target);
+        }
     }
     //
     //
@@ -113,7 +120,7 @@ class RestfulController implements Filter {
                 servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
                 /*执行servlet*/
                 try {
-                    define.createInvoke(servletRequest, servletResponse).invoke();
+                    doInvoke(define, servletRequest, servletResponse);
                 } finally {
                     servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
                 }
@@ -134,7 +141,7 @@ class RestfulController implements Filter {
                 /*执行转发*/
                 servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
                 try {
-                    define.createInvoke(requestToProcess, servletResponse).invoke();
+                    doInvoke(define, requestToProcess, servletResponse);
                 } finally {
                     servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
                 }

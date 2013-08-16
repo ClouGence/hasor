@@ -18,9 +18,8 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import org.hasor.Hasor;
 import org.hasor.context.AppContext;
-import org.hasor.servlet.ErrorHook;
+import org.hasor.servlet.WebErrorHook;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 /**
@@ -29,17 +28,17 @@ import com.google.inject.Provider;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 class ErrorDefinition implements Provider<ErrorDefinition> {
-    private Key<? extends ErrorHook>   errorHookKey      = null;
-    private ErrorHook                  errorHookInstance = null;
-    private Map<String, String>        initParams        = null;
-    private Class<? extends Throwable> errorType         = null;
-    private AppContext                 appContext        = null;
+    private Key<? extends WebErrorHook> errorHookKey      = null;
+    private WebErrorHook                errorHookInstance = null;
+    private Map<String, String>         initParams        = null;
+    private Class<? extends Throwable>  errorType         = null;
+    private AppContext                  appContext        = null;
     //
     //
-    public ErrorDefinition(Class<? extends Throwable> errorType, Key<? extends ErrorHook> errorHookKey, Map<String, String> initParams, ErrorHook errorHook) {
+    public ErrorDefinition(Class<? extends Throwable> errorType, Key<? extends WebErrorHook> errorHookKey, Map<String, String> initParams, WebErrorHook webErrorHook) {
         this.errorHookKey = errorHookKey;
         this.initParams = initParams;
-        this.errorHookInstance = errorHook;
+        this.errorHookInstance = webErrorHook;
         this.errorType = errorType;
     }
     //
@@ -53,7 +52,7 @@ class ErrorDefinition implements Provider<ErrorDefinition> {
     public ErrorDefinition get() {
         return this;
     }
-    protected ErrorHook getTarget(AppContext appContext) {
+    protected WebErrorHook getTarget(AppContext appContext) {
         if (this.errorHookInstance == null)
             this.errorHookInstance = appContext.getGuice().getInstance(this.errorHookKey);
         return this.errorHookInstance;
@@ -67,16 +66,16 @@ class ErrorDefinition implements Provider<ErrorDefinition> {
     /**/
     public void init(final AppContext appContext) throws ServletException {
         this.appContext = appContext;
-        ErrorHook errorHook = this.getTarget(appContext);
-        if (errorHook == null)
+        WebErrorHook webErrorHook = this.getTarget(appContext);
+        if (webErrorHook == null)
             return;
-        errorHook.init(appContext);
+        //webErrorHook.init(appContext);
     }
     /**/
     public boolean doError(ServletRequest request, ServletResponse response, Throwable error) throws Throwable {
         boolean serve = this.matchesError(error);
         if (serve == true) {
-            ErrorHook hook = this.getTarget(this.appContext);
+            WebErrorHook hook = this.getTarget(this.appContext);
             if (hook != null)
                 hook.doError(request, response, error);
         }
@@ -84,9 +83,9 @@ class ErrorDefinition implements Provider<ErrorDefinition> {
     }
     /**/
     public void destroy(AppContext appContext) {
-        ErrorHook errorHook = this.getTarget(this.appContext);
-        if (errorHook == null)
+        WebErrorHook webErrorHook = this.getTarget(this.appContext);
+        if (webErrorHook == null)
             return;
-        errorHook.destroy(appContext);
+        //webErrorHook.destroy(appContext);
     }
 }

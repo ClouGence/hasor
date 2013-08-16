@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.mvc.controller;
-import javax.servlet.ServletException;
+import java.lang.reflect.InvocationTargetException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.hasor.context.AppContext;
@@ -31,7 +31,7 @@ public interface ActionInvoke {
     /**获取调用的目标类*/
     public Object getTargetObject();
     /**执行调用*/
-    public Object invoke() throws ServletException;
+    public Object invoke() throws InvocationTargetException;
     /**获取请求对象*/
     public HttpServletRequest getRequest();
     /**获取响应对象*/

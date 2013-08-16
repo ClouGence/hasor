@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 package org.hasor.context;
-import java.util.EventListener;
 /**
- * 应用程序事件监听器
- * @version : 2013-7-10
+ * Timer异常回调接口。
+ * @version : 2013-4-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface HasorEventListener extends EventListener {
-    /**处理事件的处理方法，参数是要处理的事件。*/
-    public void onEvent(String event, Object[] params) throws Throwable;
-};
+public interface TimerCallBackHook {
+    /**当Timer在执行期间发生异常时调用该方法。*/
+    public void handleException(String timerName, Throwable e);
+}

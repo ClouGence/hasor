@@ -125,7 +125,7 @@ public class DefaultAppContext extends AbstractAppContext {
             infoList.addAll(result);
         }
         /*创建guice并且触发init过程*/
-        this.getEventManager().doSyncEvent(LifeCycleEnum.PhaseEvent_Init.getValue(), (InitContext) this);//发送阶段事件
+        this.getEventManager().doSyncEventIgnoreThrow(LifeCycleEnum.PhaseEvent_Init.getValue(), (InitContext) this);//发送阶段事件
         this.guice = this.createInjector(null);
         Hasor.assertIsNotNull(this.guice, "can not be create Injector.");
     }
@@ -139,7 +139,7 @@ public class DefaultAppContext extends AbstractAppContext {
         /*发送完成初始化信号*/
         this.running = true;
         Hasor.info("send start sign.");
-        this.getEventManager().doSyncEvent(LifeCycleEnum.PhaseEvent_Start.getValue(), (AppContext) this);//发送阶段事件
+        this.getEventManager().doSyncEventIgnoreThrow(LifeCycleEnum.PhaseEvent_Start.getValue(), (AppContext) this);//发送阶段事件
         ModuleInfo[] hasorModules = this.getModules();
         for (ModuleInfo mod : hasorModules) {
             if (mod == null)
@@ -157,7 +157,7 @@ public class DefaultAppContext extends AbstractAppContext {
         /*发送停止信号*/
         this.running = false;
         Hasor.info("send stop sign.");
-        this.getEventManager().doSyncEvent(LifeCycleEnum.PhaseEvent_Stop.getValue(), (AppContext) this);//发送阶段事件
+        this.getEventManager().doSyncEventIgnoreThrow(LifeCycleEnum.PhaseEvent_Stop.getValue(), (AppContext) this);//发送阶段事件
         this.getEventManager().clean();
         //
         ModuleInfo[] hasorModules = this.getModules();
@@ -171,7 +171,7 @@ public class DefaultAppContext extends AbstractAppContext {
     @Override
     public synchronized void destroy() {
         Hasor.info("send destroy sign.");
-        this.getEventManager().doSyncEvent(LifeCycleEnum.PhaseEvent_Destroy.getValue(), (AppContext) this);//发送阶段事件
+        this.getEventManager().doSyncEventIgnoreThrow(LifeCycleEnum.PhaseEvent_Destroy.getValue(), (AppContext) this);//发送阶段事件
         this.getEventManager().clean();
         this.stop();
         ModuleInfo[] hasorModules = this.getModules();
@@ -200,9 +200,9 @@ public class DefaultAppContext extends AbstractAppContext {
         String eventName = modObj.getClass().getName();
         try {
             modObj.configuration((ModuleSettings) forModule);
-            getEventManager().doSyncEvent(eventName, ModuleInfoBean.Prop_Ready, true);
+            getEventManager().doSyncEventIgnoreThrow(eventName, ModuleInfoBean.Prop_Ready, true);
         } catch (RuntimeException e) {
-            getEventManager().doSyncEvent(eventName, ModuleInfoBean.Prop_Ready, false, e);
+            getEventManager().doSyncEventIgnoreThrow(eventName, ModuleInfoBean.Prop_Ready, false, e);
             Hasor.error("%s is not onReady! %s", forModule.getDisplayName(), e.getMessage());
             if (this.forceModule)
                 throw e;
@@ -223,9 +223,9 @@ public class DefaultAppContext extends AbstractAppContext {
                 binder.install((Module) apiBinder);
             //
             Hasor.info("init Event on : %s", modObj.getClass());
-            getEventManager().doSyncEvent(eventName, ModuleInfoBean.Prop_Init, true);
+            getEventManager().doSyncEventIgnoreThrow(eventName, ModuleInfoBean.Prop_Init, true);
         } catch (RuntimeException e) {
-            getEventManager().doSyncEvent(eventName, ModuleInfoBean.Prop_Init, false, e);
+            getEventManager().doSyncEventIgnoreThrow(eventName, ModuleInfoBean.Prop_Init, false, e);
             Hasor.error("%s is not init! %s", forModule.getDisplayName(), e.getMessage());
             if (this.forceModule)
                 throw e;
@@ -243,7 +243,7 @@ public class DefaultAppContext extends AbstractAppContext {
         try {
             modObj.start(this);
             Hasor.info("start Event on : %s", modObj.getClass());
-            getEventManager().doSyncEvent(eventName, ModuleInfoBean.Prop_Running, true);
+            getEventManager().doSyncEventIgnoreThrow(eventName, ModuleInfoBean.Prop_Running, true);
         } catch (RuntimeException e) {
             Hasor.error("%s in the start phase encounters an error.\n%s", forModule.getDisplayName(), e);
             if (this.forceModule)
@@ -260,7 +260,7 @@ public class DefaultAppContext extends AbstractAppContext {
         try {
             modObj.stop(this);
             Hasor.info("stop Event on : %s", modObj.getClass());
-            getEventManager().doSyncEvent(eventName, ModuleInfoBean.Prop_Running, false);
+            getEventManager().doSyncEventIgnoreThrow(eventName, ModuleInfoBean.Prop_Running, false);
         } catch (Exception e) {
             Hasor.error("%s in the stop phase encounters an error.\n%s", forModule.getDisplayName(), e);
         }

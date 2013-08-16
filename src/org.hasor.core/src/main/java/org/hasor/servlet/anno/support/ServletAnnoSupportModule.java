@@ -29,7 +29,7 @@ import org.hasor.context.ModuleSettings;
 import org.hasor.context.anno.Module;
 import org.hasor.context.anno.support.AnnoSupportModule;
 import org.hasor.servlet.AbstractWebHasorModule;
-import org.hasor.servlet.ErrorHook;
+import org.hasor.servlet.WebErrorHook;
 import org.hasor.servlet.WebApiBinder;
 import org.hasor.servlet.anno.WebError;
 import org.hasor.servlet.anno.WebFilter;
@@ -144,12 +144,12 @@ public class ServletAnnoSupportModule extends AbstractWebHasorModule {
         Set<Class<?>> webErrorSet = apiBinder.getClassSet(WebError.class);
         if (webErrorSet == null)
             return;
-        List<Class<? extends ErrorHook>> webErrorList = new ArrayList<Class<? extends ErrorHook>>();
+        List<Class<? extends WebErrorHook>> webErrorList = new ArrayList<Class<? extends WebErrorHook>>();
         for (Class<?> cls : webErrorSet) {
-            if (ErrorHook.class.isAssignableFrom(cls) == false) {
+            if (WebErrorHook.class.isAssignableFrom(cls) == false) {
                 Hasor.warning("not implemented ErrorHook :%s", cls);
             } else {
-                webErrorList.add((Class<? extends ErrorHook>) cls);
+                webErrorList.add((Class<? extends WebErrorHook>) cls);
             }
         }
         //2.ÅÅÐò
@@ -164,7 +164,7 @@ public class ServletAnnoSupportModule extends AbstractWebHasorModule {
             }
         });
         //3.×¢²á
-        for (Class<? extends ErrorHook> errorHookType : webErrorList) {
+        for (Class<? extends WebErrorHook> errorHookType : webErrorList) {
             WebError errorAnno = errorHookType.getAnnotation(WebError.class);
             Map<String, String> initMap = this.toMap(errorAnno.initParams());
             apiBinder.error(errorAnno.value()).bind(errorHookType, initMap);

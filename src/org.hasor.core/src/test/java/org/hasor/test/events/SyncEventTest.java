@@ -36,7 +36,7 @@ public class SyncEventTest extends AbstractTestContext {
     public void phaseEvent() throws IOException {
         for (int i = 0; i < 10; i++)
             /*发送同步事件*/
-            this.getAppContext().getEventManager().doSyncEvent(EventType.Type_A, i);
+            this.getAppContext().getEventManager().doSyncEventIgnoreThrow(EventType.Type_A, i);
     }
     /**事件监听器A*/
     private static class Test_EventListener implements HasorEventListener {

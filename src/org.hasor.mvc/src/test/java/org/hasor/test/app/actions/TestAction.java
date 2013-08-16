@@ -22,6 +22,7 @@ import org.hasor.mvc.controller.Path;
 import org.hasor.mvc.controller.PathParam;
 import org.hasor.mvc.controller.QueryParam;
 import org.hasor.mvc.controller.plugins.result.core.Forword;
+import org.hasor.mvc.controller.plugins.result.core.Redirect;
 /**
  * 
  * @version : 2013-7-23
@@ -29,7 +30,7 @@ import org.hasor.mvc.controller.plugins.result.core.Forword;
  */
 @Controller("/action")
 public class TestAction {
-    @Forword
+    @Redirect
     public String test(@InjectParam AppContext appContext) {
         String[] strs = appContext.getSettings().getStringArray("framework.loadPackages");
         System.out.println("invoke test" + strs);

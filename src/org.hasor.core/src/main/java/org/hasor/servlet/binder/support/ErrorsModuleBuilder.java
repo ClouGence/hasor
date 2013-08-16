@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.hasor.servlet.ErrorHook;
+import org.hasor.servlet.WebErrorHook;
 import org.hasor.servlet.WebApiBinder.ErrorBindingBuilder;
 import com.google.inject.Binder;
 import com.google.inject.Key;
@@ -45,31 +45,31 @@ class ErrorsModuleBuilder implements Module {
     /*-----------------------------------------------------------------------------------------*/
     static abstract class AbstractServletErrorBindingBuilder implements ErrorBindingBuilder {
         @Override
-        public void bind(Class<? extends ErrorHook> errorKey) {
+        public void bind(Class<? extends WebErrorHook> errorKey) {
             bind(Key.get(errorKey));
         }
         @Override
-        public void bind(Key<? extends ErrorHook> errorKey) {
+        public void bind(Key<? extends WebErrorHook> errorKey) {
             bind(errorKey, new HashMap<String, String>());
         }
         @Override
-        public void bind(ErrorHook errorHook) {
-            bind(errorHook, new HashMap<String, String>());
+        public void bind(WebErrorHook webErrorHook) {
+            bind(webErrorHook, new HashMap<String, String>());
         }
         @Override
-        public void bind(Class<? extends ErrorHook> errorKey, Map<String, String> initParams) {
+        public void bind(Class<? extends WebErrorHook> errorKey, Map<String, String> initParams) {
             bind(Key.get(errorKey), initParams);
         }
         @Override
-        public void bind(Key<? extends ErrorHook> errorKey, Map<String, String> initParams) {
+        public void bind(Key<? extends WebErrorHook> errorKey, Map<String, String> initParams) {
             bind(errorKey, initParams, null);
         }
         @Override
-        public void bind(ErrorHook errorHook, Map<String, String> initParams) {
-            Key<ErrorHook> servletKey = Key.get(ErrorHook.class, UniqueAnnotations.create());
-            bind(servletKey, initParams, errorHook);
+        public void bind(WebErrorHook webErrorHook, Map<String, String> initParams) {
+            Key<WebErrorHook> servletKey = Key.get(WebErrorHook.class, UniqueAnnotations.create());
+            bind(servletKey, initParams, webErrorHook);
         }
-        protected abstract void bind(Key<? extends ErrorHook> errorHookKey, Map<String, String> initParams, ErrorHook errorHook);
+        protected abstract void bind(Key<? extends WebErrorHook> errorHookKey, Map<String, String> initParams, WebErrorHook webErrorHook);
     }
     class Type_ServletErrorBindingBuilder extends AbstractServletErrorBindingBuilder {
         private final List<Class<? extends Throwable>> errorTypes;
@@ -77,9 +77,9 @@ class ErrorsModuleBuilder implements Module {
             this.errorTypes = errorTypes;
         }
         @Override
-        protected void bind(Key<? extends ErrorHook> errorHookKey, Map<String, String> initParams, ErrorHook errorHook) {
+        protected void bind(Key<? extends WebErrorHook> errorHookKey, Map<String, String> initParams, WebErrorHook webErrorHook) {
             for (Class<? extends Throwable> errorType : errorTypes)
-                errorDefinitions.add(new ErrorDefinition(errorType, errorHookKey, initParams, errorHook));
+                errorDefinitions.add(new ErrorDefinition(errorType, errorHookKey, initParams, webErrorHook));
         }
     }
     /*--*/

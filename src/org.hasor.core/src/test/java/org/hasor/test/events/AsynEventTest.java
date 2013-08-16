@@ -36,7 +36,7 @@ public class AsynEventTest extends AbstractTestContext {
     public void phaseEvent() throws IOException {
         for (int i = 0; i < 10; i++)
             /*发送同步事件*/
-            this.getAppContext().getEventManager().doAsynEvent(EventType.Type_B, i);
+            this.getAppContext().getEventManager().doAsynEventIgnoreThrow(EventType.Type_B, i);
         System.out.println("after Event do sth...");
         /*由于test-config.xml中配置了5个事件线程池，因此异步事件将以5个一组执行。*/
         System.in.read();
@@ -85,6 +85,6 @@ class ThrowEvent extends Thread {
     public void run() {
         int i = 0;
         while (true)
-            appContext.getEventManager().doSyncEvent(this.eventName, i++);
+            appContext.getEventManager().doSyncEventIgnoreThrow(this.eventName, i++);
     }
 };
