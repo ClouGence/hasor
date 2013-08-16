@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package org.more.classcode;
 * 表示这个过滤器所处过滤器链的下一个过滤器资源。本接口的doInvokeFilter方法表示执行过滤器资源，
 * 下一个过滤器资源可能是过滤器链的下一个过滤器元素也可能是真实的资源方法。对于classcode最终资源就是目标方法。
 * @version 2009-10-30
-* @author 赵永春 (zyc@byshell.org)
+* @author 赵永春 (zyc@hasor.net)
 */
 public interface AopFilterChain {
     /**

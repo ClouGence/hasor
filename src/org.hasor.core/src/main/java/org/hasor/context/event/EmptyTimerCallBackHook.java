@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ import org.hasor.context.TimerCallBackHook;
 /**
  * Timer“Ï≥£ªÿµ˜Ω”ø⁄°£
  * @version : 2013-4-12
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 class EmptyTimerCallBackHook implements TimerCallBackHook {
     public void handleException(String timerName, Throwable e) {}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
  * 当使用{@link ClassEngine}类的addDelegate方法来添加委托，添加的委托处理函数对象就是该接口对象。
  * 被委托的方法将会采用注册委托时传递的MethodDelegate接口对象作为回调对象。
  * @version 2010-9-3
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface MethodDelegate {
     /**

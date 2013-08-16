@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.hasor.servlet.WebApiBinder;
 /**
  * 负责处理Action调用之后返回值的处理。
  * @version : 2013-8-11
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Module(description = "org.hasor.mvc.controller.plugins.result软件包功能支持。")
 public class ControllerPluginResultSupportModule extends AbstractWebHasorModule {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.hasor.context;
 /**
  * Timer异常回调接口。
  * @version : 2013-4-12
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface TimerCallBackHook {
     /**当Timer在执行期间发生异常时调用该方法。*/

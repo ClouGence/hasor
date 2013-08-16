@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.more.classcode;
 /**
  * 过滤器链的中间环节，该类的目的是传递过滤器的调用。但是如果在传递调用期间发生无法找到下一个传递点则会引发aop链断开的异常。
  * @version 2010-9-2
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class AopFilterChain_Impl implements AopFilterChain {
     private AopInvokeFilter thisFilter      = null; //表示过滤器链的当前过滤器。

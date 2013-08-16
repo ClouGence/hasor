@@ -13,7 +13,7 @@ import org.more.util.StringUtils;
 /**
  * 
  * @version : 2013-7-25
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 @OutLog
 @Controller("/power")

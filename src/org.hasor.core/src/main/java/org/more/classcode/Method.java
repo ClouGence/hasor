@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.more.classcode;
 /**
  * classcode使用的Method对象，该类中封装了aop代理方法和真实的目标方法。
  * @version 2010-9-11
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class Method {
     private java.lang.reflect.Method proxyMethod  = null;

@@ -12,7 +12,7 @@ import com.google.inject.matcher.AbstractMatcher;
 /**
  * 日志服务。
  * @version : 2013-4-8
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Module(displayName = "LogPlatformListener", description = "org.test.plugin.log软件包功能支持。")
 public class LogPlatformListener extends AbstractHasorModule {

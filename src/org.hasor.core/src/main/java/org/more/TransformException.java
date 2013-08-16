@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.more;
 /**
  * ◊™ªª“Ï≥£°£
  * @version 2009-7-8
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public class TransformException extends Exception {
     private static final long serialVersionUID = 5032345759263916241L;

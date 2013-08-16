@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ import com.google.inject.Provider;
 /**
  * 
  * @version : 2013-7-16
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class AnnoWebAppContext extends AnnoAppContextSupportModule {
     //
@@ -98,7 +98,7 @@ public class AnnoWebAppContext extends AnnoAppContextSupportModule {
 /**
  * 负责注册MORE_WEB_ROOT环境变量以及Web环境变量的维护。
  * @version : 2013-7-17
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class WebStandardEnvironment extends StandardEnvironment {
     private ServletContext servletContext;

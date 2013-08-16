@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.more.classcode;
 * Aop的before切面，当收到before切面的事件通知时会自动调用该接口。该接口方法会在生成aop链的第一个环节发出调用。下面这张图中Before就是这个接口的工作点。
 * <br/><img width="400" src="doc-files/classcode_struct.png"/>
 * @version 2010-9-2
-* @author 赵永春 (zyc@byshell.org)
+* @author 赵永春 (zyc@hasor.net)
 */
 public interface AopBeforeListener {
     /**

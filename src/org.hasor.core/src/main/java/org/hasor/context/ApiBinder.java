@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import com.google.inject.binder.LinkedBindingBuilder;
 /**
  * ApiBinder
  * @version : 2013-4-10
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface ApiBinder {
     /**获取模块配置文件读取接口，如果在配置期间绑定了xml命名空间。则该方法相当于：{@link Settings#getNamespace(String)}。*/

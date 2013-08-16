@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.more.classcode;
 /**
  * 格式错误，出现该异常通常是在操作某些数据时该数据格式异常或者不被支持。
  * @version 2009-10-17
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class FormatException extends ClassCodeRuntimeException {
     private static final long serialVersionUID = 7219173260772984152L;

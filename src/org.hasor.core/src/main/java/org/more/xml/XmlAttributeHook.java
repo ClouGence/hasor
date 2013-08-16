@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import org.more.xml.stream.AttributeEvent;
 /**
  * 当遇到一个属性需要解析时使用该接口，使用该接口可以用于解析特定的属性。
  * @version 2010-9-13
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface XmlAttributeHook extends XmlParserHook {
     /**

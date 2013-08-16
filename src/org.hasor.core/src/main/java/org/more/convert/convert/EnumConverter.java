@@ -18,7 +18,7 @@ package org.more.convert.convert;
 /**
  * 
  * @version : 2013-8-13
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public final class EnumConverter extends AbstractConverter {
     public EnumConverter() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import org.more.util.map.DecStackMap;
 /**
  * 该类继承自{@link DecStackMap}装饰器，作用是提供了一个context对象的支持。
  * @version 2010-9-23
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class XmlStackDecorator<T> extends DecStackMap<String, Object> {
     private T context = null;

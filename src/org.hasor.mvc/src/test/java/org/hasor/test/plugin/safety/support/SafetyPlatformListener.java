@@ -12,7 +12,7 @@ import com.google.inject.matcher.AbstractMatcher;
 /**
  * 权限服务。
  * @version : 2013-4-8
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Module(displayName = "SafetyPlatformListener", description = "org.test.plugin.safety软件包功能支持。")
 public class SafetyPlatformListener extends AbstractHasorModule {

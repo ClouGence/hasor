@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.more.classcode.objects.DefaultPropertyStrategy;
 * classcode v2.0引擎。新引擎增加了debug模式，在debug模式下{@link ClassEngine#builderClass()}方法在装载生成的新类 时不会抛出。
 * 如果没有指定类装载引擎会使用Thread.currentThread().getContextClassLoader()方法返回的类装载器来装载类。
 * @version 2010-9-5
-* @author 赵永春 (zyc@byshell.org)
+* @author 赵永春 (zyc@hasor.net)
 */
 public class ClassEngine {
     /**默认超类java.lang.Object。*/

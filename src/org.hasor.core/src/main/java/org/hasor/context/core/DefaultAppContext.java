@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original утсю╢╨(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import com.google.inject.Provider;
 /**
  * {@link AppContext}╫с©зд╛хой╣ож║ё
  * @version : 2013-4-9
- * @author утсю╢╨ (zyc@byshell.org)
+ * @author утсю╢╨ (zyc@hasor.net)
  */
 public class DefaultAppContext extends AbstractAppContext {
     private boolean  running;

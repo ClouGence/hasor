@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import org.more.util.StringUtils;
 /**
  * 
  * @version : 2013-5-11
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class ActionSettings /*implements HasorSettingListener*/{
     /**模式：mode:RestOnly（rest风格）、ServletOnly（中央servlet）、Both（两者同时使用）*/

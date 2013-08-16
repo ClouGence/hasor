@@ -1,11 +1,11 @@
-/*
- * Copyright 2008-2009 the original author or authors.
+/**
+ * Copyright (C) 2008 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,9 +21,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.hasor.context.AppContext;
 /**
- * 使用ApiBinder创建的Servlet,Filter组成的管道。
- * @version : 2013-4-11
- * @author 赵永春 (zyc@byshell.org)
+ * An internal dispatcher for guice-servlet registered servlets and filters.
+ * By default, we assume a Guice 1.0 style servlet module is in play. In other
+ * words, we dispatch directly to the web.xml pipeline after setting up scopes.
+ *
+ * <p>
+ * If on the other hand, {@link ServletModule} is used to register managed
+ * servlets and/or filters, then a different pipeline is bound instead. Which,
+ * after dispatching to Guice-injected filters and servlets continues to the web.xml
+ * pipeline (if necessary).
+ *
+ * @author dhanji@gmail.com (Dhanji R. Prasanna)
  */
 public interface FilterPipeline {
     /**初始化管道 */

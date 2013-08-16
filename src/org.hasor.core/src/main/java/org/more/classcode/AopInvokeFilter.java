@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ package org.more.classcode;
 * 利用多个{@link AopInvokeFilter}可以组成过滤器链。
 * <br/><img width="400" src="doc-files/classcode_struct.png"/>
 * @version 2010-9-3
-* @author 赵永春 (zyc@byshell.org)
+* @author 赵永春 (zyc@hasor.net)
 */
 public interface AopInvokeFilter {
     /**

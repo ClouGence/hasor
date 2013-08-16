@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import java.util.Map;
  * {@link ClassEngine}引擎的类装载器，该类的职责是负责装载所有引擎生成的Class字节码。<br/>
  * 除此之外当引擎需要装载某些参数的类型时也需要通过该类装载器来装载。
  * @version 2010-9-5
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RootClassLoader extends ClassLoader {
     private Map<String, ClassEngine> classMap2 = null; // key is org.more.Test

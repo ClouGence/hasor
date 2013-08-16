@@ -6,7 +6,7 @@ import org.hasor.test.plugin.log.OutLog;
 /**
  * 
  * @version : 2013-7-25
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 @Bean("LogBean")
 public class LogBean {

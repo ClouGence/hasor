@@ -6,7 +6,7 @@ import java.lang.annotation.Target;
 /**
  * 
  * @version : 2013-7-25
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })

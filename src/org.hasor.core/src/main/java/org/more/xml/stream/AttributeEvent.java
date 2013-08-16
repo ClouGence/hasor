@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import javax.xml.stream.XMLStreamReader;
 /**
  * 当遇到一个属性声明时。
  * @version 2010-9-8
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class AttributeEvent extends XmlStreamEvent {
     public AttributeEvent(XmlStreamEvent elementEvent, String xpath, XMLStreamReader reader, int index) {

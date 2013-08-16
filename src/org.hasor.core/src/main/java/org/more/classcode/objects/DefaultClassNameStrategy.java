@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import org.more.classcode.ClassNameStrategy;
 /**
  * 该类是{@link ClassNameStrategy}的默认实现，其类名是“_DynamicObject$”名且所属“org.more.core.classcode”包。
  * @version 2010-9-3
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class DefaultClassNameStrategy implements ClassNameStrategy {
     private static long         generateID  = 0;

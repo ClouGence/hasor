@@ -4,7 +4,7 @@ import java.util.List;
 /**
  * 
  * @version : 2013-7-25
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public class SafetyContext {
     private List<String> powers = new ArrayList<String>();

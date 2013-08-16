@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@ import java.security.NoSuchAlgorithmException;
 /**
  * 
  * @version : 2012-6-21
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class CommonCodeUtils {
     /**
      * 简单编码类，该类提供了Base64的编码，该编码器与配套的js编码器可以实现互相编码互相转化功能。
      * @version 2009-4-28
-     * @author 赵永春 (zyc@byshell.org)
+     * @author 赵永春 (zyc@hasor.net)
      */
     public static abstract class Base64 {
         protected static final String Base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@*-"; // supplement
@@ -144,7 +144,7 @@ public abstract class CommonCodeUtils {
     /**
      * MD5算法提供
      * @version : 2011-11-7
-     * @author 赵永春 (zyc@byshell.org)
+     * @author 赵永春 (zyc@hasor.net)
      */
     public static abstract class MD5 {
         public static String encodeMD5(byte[] source) throws NoSuchAlgorithmException {
@@ -188,7 +188,7 @@ public abstract class CommonCodeUtils {
     /**
      * 基于十六进制的字符转换
      * @version : 2013-8-13
-     * @author 赵永春 (zyc@byshell.org)
+     * @author 赵永春 (zyc@hasor.net)
      */
     public static abstract class HexConversion {
         /** 字符串转换成十六进制字符串 */

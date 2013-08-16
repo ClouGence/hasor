@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import org.hasor.mvc.resource.ResourceLoader;
 /**
  * 用于创建一个可以从classpath中获取资源的ResourceLoader。
  * @version : 2013-6-6
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class ZipResourceLoader implements ResourceLoader {
     private File zipFile = null;

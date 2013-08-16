@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import org.more.util.io.AutoCloseInputStream;
 /**
  * 将一个File对象所代表的路径作为根路径，资源获取相对于该路径下。
  * @version : 2011-9-17
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class PathResourceLoader implements ResourceLoader {
     private String dirPath = null;

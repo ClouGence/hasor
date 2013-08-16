@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ import org.hasor.context.anno.Bean;
 /**
  * AnnoServiceA 具有两个名称 AnnoA 和 BeanA
  * @version : 2013-8-11
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Bean(value = { "AnnoA", "BeanA" })
 public class BaseTestBean {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.xml.stream.XMLStreamException;
-import org.hasor.Hasor;
 import org.hasor.context.Settings;
 import org.hasor.context.XmlProperty;
 import org.hasor.context.setting.HasorXmlParser;
@@ -35,7 +34,7 @@ import org.more.xml.stream.XmlStreamEvent;
 /**
  * ƒ£øÈ≈‰÷√Ω‚Œˆ∆˜
  * @version : 2013-4-22
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public class ModuleSettingsHasorXmlParser implements HasorXmlParser {
     private StringBuffer    xmlText           = null;

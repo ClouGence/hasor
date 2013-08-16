@@ -8,7 +8,7 @@ import org.hasor.test.plugin.safety.SafetyContext;
 /**
  * 
  * @version : 2013-7-25
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 @Bean("SafeBean")
 public class SafeBean {

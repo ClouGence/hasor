@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import javax.xml.stream.XMLStreamException;
 /**
  * 该接口的功能是用于接收{@link XmlReader}类扫描的xml事件流。如果在解析期间由sendEvent方法抛出异常那么endAccept方法很可能不会被调用。
  * @version 2010-9-11
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface XmlAccept {
     /**开始{@link XmlAccept}接口的调用，该方法主要用于重置状态。

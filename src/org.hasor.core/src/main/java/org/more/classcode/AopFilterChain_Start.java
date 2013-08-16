@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.more.classcode;
 /**
 * 过滤器链的第一个，负责在生成的aop类中调用。以产生aop链调用。
  * @version 2009-10-30
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class AopFilterChain_Start {
     private AopFilterChain         nextFilterChain      = null; //过滤器链的下一个过滤器。

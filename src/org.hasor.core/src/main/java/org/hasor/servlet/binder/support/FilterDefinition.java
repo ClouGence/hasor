@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import org.hasor.Hasor;
 import org.hasor.context.AppContext;
 import org.more.util.Iterators;
 import com.google.inject.Key;
@@ -33,7 +32,7 @@ import com.google.inject.Provider;
 /**
  * 
  * @version : 2013-4-11
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class FilterDefinition extends AbstractServletModuleBinding implements Provider<FilterDefinition> {
     private Key<? extends Filter> filterKey      = null; /*Filter对象既有可能绑定在这个Key上*/

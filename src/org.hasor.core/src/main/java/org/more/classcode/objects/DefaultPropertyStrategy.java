@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import org.more.classcode.PropertyStrategy;
 /**
  * 接口{@link PropertyStrategy}的默认实现，策略实现不会忽略任何属性，并且生成其读写属性。
  * @version 2010-9-3
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class DefaultPropertyStrategy implements PropertyStrategy {
     public void initStrategy(ClassEngine classEngine) {}

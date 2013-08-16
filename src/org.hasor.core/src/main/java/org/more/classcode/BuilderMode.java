@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package org.more.classcode;
  * 这两种模式可以大多数应付各种紧急情况和需求。在Propxy模式下可以在不重新构造对象的情况下附加新的属性、代理属性、委托。而Super模式是传统的
  * 继承父类改写方式来实现。当然无论是Propxy模式还是Super模式他们都可以支持相同功能的aop特性，只不过这需要受到java虚拟机访问修饰符的制约。
  * @version 2010-9-3
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public enum BuilderMode {
     /**

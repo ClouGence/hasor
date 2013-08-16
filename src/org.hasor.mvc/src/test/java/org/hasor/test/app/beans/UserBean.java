@@ -4,7 +4,7 @@ import org.hasor.context.anno.Bean;
 /**
  * 
  * @version : 2013-7-26
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 @Singleton
 @Bean("User")

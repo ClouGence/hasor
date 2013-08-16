@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import org.more.xml.stream.XmlStreamEvent;
  * 可以专门用于访问某个命名空间下的元素。每个命名空间的解析器都是一个{@link XmlParserKit}类型对象。
  * 在使用Level 2级别访问xml的时，需要将命名空间与解析器对应起来。并且借助Level 1的工具进行扫描xml。
  * @version 2010-9-8
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class XmlParserKitManager implements XmlAccept {
     /**注册的命名空间解析工具集*/

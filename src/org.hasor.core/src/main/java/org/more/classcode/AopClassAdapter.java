@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.more.asm.Opcodes;
 /**
  *该类的作用是在生成的类中加入aop的支持。
  * @version 2010-9-2
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class AopClassAdapter extends ClassAdapter implements Opcodes {
     private ClassBuilder        classBuilder        = null;
@@ -126,6 +126,7 @@ class AopClassAdapter extends ClassAdapter implements Opcodes {
         Matcher m = p.matcher(desc);
         m.find();
         String[] asmParams = EngineToos.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
+        
         String asmReturns = m.group(2);
         int paramCount = asmParams.length;
         int localVarSize = paramCount + 1;//方法变量表大小

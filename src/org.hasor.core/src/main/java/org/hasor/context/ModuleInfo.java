@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * 该接口只能获取模块信息（注意：该接口不要尝试去实现它）
  * @version : 2013-7-26
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface ModuleInfo {
     /**获取绑定的配置文件命名空间*/

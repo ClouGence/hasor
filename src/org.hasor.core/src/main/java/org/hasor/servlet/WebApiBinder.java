@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import com.google.inject.Key;
 /**
  * 该类是代理了{@link Binder}并且提供了注册Servlet和Filter的方法。
  * @version : 2013-4-10
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface WebApiBinder extends ApiBinder {
     /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/

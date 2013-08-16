@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import org.more.xml.stream.XmlStreamEvent;
  *  <b>Level 3</b>：该级别是基于级别2的增强，该级别的特点是可以将某个xpath所表示元素与其处理器{@link XmlParserHook}进行绑定。
  *  这个绑定由于是基于Level 2因此不会与其他命名空间的同名元素相混淆。
  * @version 2010-9-13
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class XmlParserKit implements XmlNamespaceParser {
     private HashMap<String, ArrayList<XmlParserHook>> hooks = new HashMap<String, ArrayList<XmlParserHook>>();

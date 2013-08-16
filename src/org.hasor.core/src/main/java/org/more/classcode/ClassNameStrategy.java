@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.more.classcode;
 /**
  * 类名生成策略，该接口在ClassEngine.builderClass期间调用。用于决定新类的类名和所属包。
  * @version 2010-9-3
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface ClassNameStrategy extends BaseStrategy {
     /**获取新类的类名。*/

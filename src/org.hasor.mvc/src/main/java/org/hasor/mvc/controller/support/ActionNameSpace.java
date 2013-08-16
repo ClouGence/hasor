@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import org.hasor.context.AppContext;
 /** 
  * 命名空间管理器。相同的action命名空间下的action方法，可以定义在不同的控制器下。
  * @version : 2013-4-20
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class ActionNameSpace {
     private String                        namespace        = null;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.more.classcode;
 /**
  * 过滤器链的最终一层，该类负责在aop调用链的最后环节执行方法调用。如果在执行最终调用时method参数无法定位其方法那么将会导致NoSuchMethodException异常
  * @version 2010-9-2
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class AopFilterChain_End implements AopFilterChain {
     public Object doInvokeFilter(Object target, Method method, Object[] args) throws Throwable {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ import org.more.asm.ClassWriter;
  * 写入的visitor。注意使用该扩展方式必须要熟悉ASM3.2框架。visitor环的层次关系是这样的：<br/>
  * <b>第一环</b>，ASM Write；<b>第二环</b>，用户扩展；<b>第三环</b>，ClassBuilder；<b>第四环</b>，ASM Read
  * @version 2010-9-3
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class ClassBuilder {
     /**该字段会被getClassBytes()方法*/

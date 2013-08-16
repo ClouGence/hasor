@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import org.more.util.MergeUtils;
 /**
  * 按照顺序合并多个Map的工具，可以用来进行读写操作。
  * @version : 2012-2-23
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
     private SimpleSet<K, T> entrySet = null;

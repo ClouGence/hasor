@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
  * 三个切面接口或者{@link AopInvokeFilter}过滤器接口时才会在生成类的期间启用aop的支持。<br/>
  * 通过该接口中的方法可以确定某个方法是否参与aop的生成，同时还可以控制生成的aop方法上切面对象和aop过滤器对象集合。
  * @version 2010-9-3
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface AopStrategy extends BaseStrategy {
     /**

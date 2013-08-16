@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import org.more.util.MergeUtils;
 /**
  * 提供一种栈结构的操作Map序列属性对象，利用该属性装饰器可以在属性集上增加另一个属性栈。
  * @version 2010-9-11
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class DecStackMap<K, T> extends DecSequenceMap<K, T> {
     /** 创建一个基本属性对象。 */

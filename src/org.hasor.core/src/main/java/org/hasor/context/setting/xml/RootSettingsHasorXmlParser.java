@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import org.more.xml.stream.XmlStreamEvent;
 /**
  * Ö÷ÅäÖÃÎÄ¼şµÄ½âÎöÆ÷
  * @version : 2013-4-22
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author ÕÔÓÀ´º (zyc@hasor.net)
  */
 public class RootSettingsHasorXmlParser implements HasorXmlParser {
     private StringBuffer    xmlText           = null;

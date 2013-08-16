@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 当资源有改动时该类会调用Run方法。
  * @version : 2012-8-2
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class ResourceWatch extends Thread {
     private static Logger log           = LoggerFactory.getLogger(ResourceWatch.class);

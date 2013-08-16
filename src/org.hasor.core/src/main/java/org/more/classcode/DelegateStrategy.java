@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.more.classcode;
  * 委托策略，该接口方法在{@link ClassBuilder#initBuilder(ClassEngine)}调用期间调用。
  * 用于决定委托接口是否生效。
  * @version 2010-9-3
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface DelegateStrategy extends BaseStrategy {
     /**

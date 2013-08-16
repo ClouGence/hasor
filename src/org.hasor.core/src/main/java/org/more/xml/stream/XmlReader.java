@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import org.more.xml.stream.TextEvent.Type;
 /**
  * <b>Level 1</b>：数据访问策略。该类的功能是将xml数据流转换成为xml事件流。并且可以在扫描xml时执行xml的忽略策略。
  * @version 2010-9-8
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class XmlReader {
     /**默认使用编码*/
@@ -273,7 +273,7 @@ public class XmlReader {
 /**
  * 该类的目的是可以不受空StreamFilter属性的影响。
  * @version 2010-9-8
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class NullStreamFilter implements StreamFilter {
     private StreamFilter parentFilter;

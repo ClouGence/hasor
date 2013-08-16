@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * 环境变量操作
  * @version : 2013-6-19
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface Environment {
     /**获取工作目录，工作路径的配置可以在config.xml的“<b>environmentVar.HASOR_WORK_HOME</b>”节点上配置。*/

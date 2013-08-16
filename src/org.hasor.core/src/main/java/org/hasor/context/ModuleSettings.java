@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.hasor.context;
 /**
  * 该接口可以配置模块信息（注意：该接口不要尝试去实现它）
  * @version : 2013-7-26
- * @author 赵永春 (zyc@byshell.org)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface ModuleSettings extends ModuleInfo {
     /**要求目标模块的启动排在该模块之后。*/
