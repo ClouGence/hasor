@@ -21,7 +21,7 @@ import org.hasor.mvc.controller.InjectParam;
 import org.hasor.mvc.controller.Path;
 import org.hasor.mvc.controller.PathParam;
 import org.hasor.mvc.controller.QueryParam;
-import org.hasor.mvc.controller.plugins.result.core.Forword;
+import org.hasor.mvc.controller.plugins.result.core.Json;
 import org.hasor.mvc.controller.plugins.result.core.Redirect;
 /**
  * 
@@ -42,9 +42,10 @@ public class TestAction {
         super.finalize();
     }
     //
+    @Json
     @Path("/user/{uid}/")
     public Object userInfo(@PathParam("uid") String uid, @HeaderParam("User-Agent") String[] userAgent, @QueryParam("age") int age, @QueryParam("ns") String[] ns) {
         System.out.println("hello");
-        return null;
+        return new String[] { "abc", "cde" };
     }
 }

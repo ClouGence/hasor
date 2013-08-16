@@ -1,9 +1,10 @@
 /*
- * Copyright 2008-2009 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -15,9 +16,17 @@
  */
 package org.more.convert;
 /**
- * 类型转换处理类型转换的辅助类基类。
- * @version 2009-5-23
- * @author 赵永春 (zyc@byshell.org)
+ * <p>Utility methods for converting String scalar values to objects of the
+ * specified Class, String arrays to arrays of the specified Class.</p>
+ *
+ * <p>For more details, see <code>ConvertUtilsBean</code> which provides the
+ * implementations for these methods.</p>
+ *
+ * @author Craig R. McClanahan
+ * @author Ralph Schaer
+ * @author Chris Audley
+ * @version $Revision: 556229 $ $Date: 2007-07-14 07:11:19 +0100 (Sat, 14 Jul 2007) $
+ * @see ConvertUtilsBean
  */
 public class ConverterUtils {
     // --------------------------------------------------------- Public Classes

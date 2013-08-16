@@ -29,10 +29,24 @@ public class AbstractController {
         this.request = request;
         this.response = response;
     }
+    /**获取{@link HttpServletRequest}*/
     protected HttpServletRequest getRequest() {
         return request;
     }
+    /**获取{@link HttpServletResponse}*/
     protected HttpServletResponse getResponse() {
         return response;
+    }
+    /**设置{@link HttpServletRequest}属性*/
+    protected void putAtt(String attKey, Object attValue) {
+        this.getRequest().setAttribute(attKey, attValue);
+    }
+    /**设置{@link HttpServletResponse}Header属性*/
+    protected void setHeader(String key, String value) {
+        this.getResponse().setHeader(key, value);
+    }
+    /**设置{@link HttpServletResponse}Header属性*/
+    protected void addHeader(String key, String value) {
+        this.getResponse().addHeader(key, value);
     }
 }

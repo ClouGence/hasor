@@ -37,7 +37,7 @@
  * Copyright (c) 2004, Mikael Grev, MiG InfoCom AB. (base64 @ miginfocom . com)
  * All rights reserved.
  */
-package org.more.util.io;
+package org.more.util.io.input;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;

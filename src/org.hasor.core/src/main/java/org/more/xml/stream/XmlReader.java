@@ -28,7 +28,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import org.more.util.MatchUtils;
-import org.more.util.io.ReaderInputStream;
+import org.more.util.io.input.ReaderInputStream;
 import org.more.xml.stream.TextEvent.Type;
 /**
  * <b>Level 1</b>：数据访问策略。该类的功能是将xml数据流转换成为xml事件流。并且可以在扫描xml时执行xml的忽略策略。
