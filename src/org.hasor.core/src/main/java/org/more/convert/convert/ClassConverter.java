@@ -30,6 +30,7 @@ package org.more.convert.convert;
  * @version $Revision: 690380 $ $Date: 2008-08-29 21:04:38 +0100 (Fri, 29 Aug 2008) $
  * @since 1.4
  */
+@SuppressWarnings("rawtypes")
 public final class ClassConverter extends AbstractConverter {
     /**
      * Construct a <b>java.lang.Class</b> <i>Converter</i> that throws

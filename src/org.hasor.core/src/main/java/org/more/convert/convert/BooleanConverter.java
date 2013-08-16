@@ -50,6 +50,7 @@ import org.more.convert.ConversionException;
  * @version $Revision: 801644 $ $Date: 2009-08-06 14:38:56 +0100 (Thu, 06 Aug 2009) $
  * @since 1.3
  */
+@SuppressWarnings("rawtypes")
 public final class BooleanConverter extends AbstractConverter {
     // ----------------------------------------------------------- Constructors
     /**

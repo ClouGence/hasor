@@ -122,6 +122,7 @@ import org.more.util.ContextClassLoaderLocal;
  * @version $Revision: 745079 $ $Date: 2009-02-17 14:04:10 +0000 (Tue, 17 Feb 2009) $
  * @since 1.7
  */
+@SuppressWarnings("rawtypes")
 public class ConverterBean {
     private static final Integer                 ZERO                 = new Integer(0);
     private static final Character               SPACE                = new Character(' ');

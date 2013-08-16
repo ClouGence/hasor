@@ -62,6 +62,7 @@ import java.util.WeakHashMap;
  * @author Craig R. McClanahan
  * @author Stephen Colebourne
  */
+@SuppressWarnings({ "rawtypes", "serial", "unchecked" })
 class WeakFastHashMap extends HashMap {
     /** The underlying map we are managing. */
     private Map     map  = null;

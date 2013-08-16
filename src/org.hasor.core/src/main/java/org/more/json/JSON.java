@@ -78,6 +78,7 @@ import org.eclipse.jetty.util.log.Logger;
  *
  *
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class JSON {
     static final Logger            LOG               = Log.getLogger(JSON.class);
     public final static JSON       DEFAULT           = new JSON();

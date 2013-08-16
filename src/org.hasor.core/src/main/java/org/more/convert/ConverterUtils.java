@@ -28,6 +28,7 @@ package org.more.convert;
  * @version $Revision: 556229 $ $Date: 2007-07-14 07:11:19 +0100 (Sat, 14 Jul 2007) $
  * @see ConvertUtilsBean
  */
+@SuppressWarnings("rawtypes")
 public class ConverterUtils {
     // --------------------------------------------------------- Public Classes
     /**

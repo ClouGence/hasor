@@ -27,6 +27,7 @@ import java.io.File;
  * @version $Revision: 690380 $ $Date: 2008-08-29 21:04:38 +0100 (Fri, 29 Aug 2008) $
  * @since 1.6
  */
+@SuppressWarnings("rawtypes")
 public final class FileConverter extends AbstractConverter {
     /**
      * Construct a <b>java.io.File</b> <i>Converter</i> that throws

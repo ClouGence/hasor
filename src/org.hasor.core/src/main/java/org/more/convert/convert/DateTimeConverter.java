@@ -74,6 +74,7 @@ import org.more.convert.ConversionException;
  * @version $Revision: 640131 $ $Date: 2008-03-23 02:10:31 +0000 (Sun, 23 Mar 2008) $
  * @since 1.8.0
  */
+@SuppressWarnings("rawtypes")
 public abstract class DateTimeConverter extends AbstractConverter {
     private String[] patterns;
     private String   displayPatterns;

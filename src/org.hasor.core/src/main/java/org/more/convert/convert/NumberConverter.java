@@ -79,6 +79,7 @@ import org.more.convert.ConversionException;
  * @version $Revision: 745081 $ $Date: 2009-02-17 14:05:20 +0000 (Tue, 17 Feb 2009) $
  * @since 1.8.0
  */
+@SuppressWarnings("rawtypes")
 public abstract class NumberConverter extends AbstractConverter {
     private static final Integer ZERO = new Integer(0);
     private static final Integer ONE  = new Integer(1);

@@ -20,6 +20,7 @@ package org.more.convert.convert;
  * @version : 2013-8-13
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
+@SuppressWarnings("rawtypes")
 public final class EnumConverter extends AbstractConverter {
     public EnumConverter() {
         super();
