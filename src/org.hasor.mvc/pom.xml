@@ -15,7 +15,7 @@
 		<dependency>
 			<groupId>org.hasor</groupId>
 			<artifactId>org.hasor.core</artifactId>
-			<version>1.0.0</version>
+			<version>0.0.1</version>
 		</dependency>
 		<!-- J2EE -->
 		<dependency>
