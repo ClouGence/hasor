@@ -15,7 +15,7 @@
  */
 package org.hasor.test.dependency;
 import java.io.IOException;
-import org.hasor.context.anno.context.AnnoAppContextSupportModule;
+import org.hasor.context.anno.context.AnnoAppContext;
 public class Dep1Test {
     /**
      * @param args
@@ -36,7 +36,7 @@ public class Dep1Test {
          *         Mode1 **
          *   Mode9
          */
-        AnnoAppContextSupportModule annoApp = new AnnoAppContextSupportModule("dep1-config.xml");
+        AnnoAppContext annoApp = new AnnoAppContext("dep1-config.xml");
         annoApp.start();
         // TODO Auto-generated method stub
         annoApp.destroy();

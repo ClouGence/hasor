@@ -30,14 +30,14 @@ import org.more.util.StringUtils;
  * @version : 2013-7-16
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-public class AnnoAppContextSupportModule extends DefaultAppContext {
-    public AnnoAppContextSupportModule() throws IOException {
+public class AnnoAppContext extends DefaultAppContext {
+    public AnnoAppContext() throws IOException {
         super();
     }
-    public AnnoAppContextSupportModule(String mainConfig) throws IOException {
+    public AnnoAppContext(String mainConfig) throws IOException {
         super(mainConfig);
     }
-    public AnnoAppContextSupportModule(String mainConfig, Object context) throws IOException {
+    public AnnoAppContext(String mainConfig, Object context) throws IOException {
         super(mainConfig, context);
     }
     @Override

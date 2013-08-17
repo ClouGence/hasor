@@ -16,7 +16,7 @@
 package org.hasor.test;
 import java.io.IOException;
 import org.hasor.context.AppContext;
-import org.hasor.context.anno.context.AnnoAppContextSupportModule;
+import org.hasor.context.anno.context.AnnoAppContext;
 import org.junit.Before;
 /**
  * 
@@ -24,15 +24,15 @@ import org.junit.Before;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public abstract class AbstractTestContext {
-    private AnnoAppContextSupportModule appContext = null;
+    private AnnoAppContext appContext = null;
     @Before
     public void setUp() throws IOException {
-        this.appContext = new AnnoAppContextSupportModule("test-config.xml");
+        this.appContext = new AnnoAppContext("test-config.xml");
         this.initContext(appContext);
         this.appContext.start();
     }
     protected abstract void initContext(AppContext appContext);
-    protected AnnoAppContextSupportModule getAppContext() {
+    protected AnnoAppContext getAppContext() {
         return appContext;
     }
 }

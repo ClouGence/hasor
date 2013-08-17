@@ -21,7 +21,7 @@ import javax.servlet.ServletContext;
 import org.hasor.context.Environment;
 import org.hasor.context.ModuleInfo;
 import org.hasor.context.Settings;
-import org.hasor.context.anno.context.AnnoAppContextSupportModule;
+import org.hasor.context.anno.context.AnnoAppContext;
 import org.hasor.context.environment.StandardEnvironment;
 import org.hasor.servlet.binder.FilterPipeline;
 import org.hasor.servlet.binder.SessionListenerPipeline;
@@ -39,7 +39,7 @@ import com.google.inject.Provider;
  * @version : 2013-7-16
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-public class AnnoWebAppContext extends AnnoAppContextSupportModule {
+public class AnnoWebAppContext extends AnnoAppContext {
     //
     public AnnoWebAppContext(ServletContext servletContext) throws IOException {
         super("hasor-config.xml", servletContext);

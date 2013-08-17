@@ -1,7 +1,7 @@
 package org.hasor.test.app.beans;
 import java.io.IOException;
 import org.hasor.context.anno.Bean;
-import org.hasor.context.anno.context.AnnoAppContextSupportModule;
+import org.hasor.context.anno.context.AnnoAppContext;
 import org.hasor.test.plugin.log.OutLog;
 import org.hasor.test.plugin.safety.Power;
 import org.hasor.test.plugin.safety.SafetyContext;
@@ -20,7 +20,7 @@ public class SafeBean {
     //
     //
     public static void main(String[] args) throws IOException {
-        AnnoAppContextSupportModule aac = new AnnoAppContextSupportModule();
+        AnnoAppContext aac = new AnnoAppContext();
         aac.start();
         //
         SafeBean safeBean = (SafeBean) aac.getBean("SafeBean");
