@@ -69,8 +69,10 @@ public class DefaultAppContext extends AbstractAppContext {
     //
     //
     //
-    /**添加模块*/
-    public ModuleInfo addModule(HasorModule hasorModule) {
+    /**添加模块，如果容器已经初始化那么会引发{@link IllegalStateException}异常。*/
+    public synchronized ModuleInfo addModule(HasorModule hasorModule) {
+        if (this.isInit())
+            throw new IllegalStateException("context is inited.");
         for (ModuleInfo info : this.getModuleList())
             if (info.getModuleObject() == hasorModule)
                 return info;
@@ -78,8 +80,10 @@ public class DefaultAppContext extends AbstractAppContext {
         this.getModuleList().add(info);
         return info;
     }
-    /**删除模块*/
-    public ModuleInfo removeModule(HasorModule hasorModule) {
+    /**删除模块，如果容器已经初始化那么会引发{@link IllegalStateException}异常。*/
+    public synchronized ModuleInfo removeModule(HasorModule hasorModule) {
+        if (this.isInit())
+            throw new IllegalStateException("context is inited.");
         ModuleInfo targetInfo = null;
         for (ModuleInfo info : this.getModuleList())
             if (info.getModuleObject() == hasorModule) {

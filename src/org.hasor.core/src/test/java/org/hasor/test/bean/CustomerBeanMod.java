@@ -17,7 +17,7 @@ package org.hasor.test.bean;
 import org.hasor.context.ApiBinder;
 import org.hasor.context.ModuleSettings;
 import org.hasor.context.anno.Module;
-import org.hasor.context.reactor.AbstractHasorModule;
+import org.hasor.context.module.AbstractHasorModule;
 import org.hasor.test.bean.beans.CustomerBean;
 /**
  * ´úÂë·½Ê½×¢²áBean

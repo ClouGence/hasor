@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.context.reactor;
+package org.hasor.context.module;
 import org.hasor.context.AppContext;
 import org.hasor.context.HasorModule;
+import org.hasor.context.ModuleSettings;
 /**
  * 
  * @version : 2013-7-16
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public abstract class AbstractHasorModule implements HasorModule {
+    @Override
+    public void configuration(ModuleSettings info) {}
     @Override
     public void start(AppContext appContext) {}
     @Override

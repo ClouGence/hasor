@@ -28,7 +28,7 @@ import org.hasor.context.anno.Bean;
 import org.hasor.context.anno.EventListener;
 import org.hasor.context.anno.Module;
 import org.hasor.context.anno.SettingsListener;
-import org.hasor.context.reactor.AbstractHasorModule;
+import org.hasor.context.module.AbstractHasorModule;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 /**
