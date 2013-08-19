@@ -1,2 +1,30 @@
 Q：在Hasor中怎样使已经被注入到Action中的request或response的对象更换成另外一个。
 A：首先确保
+
+
+
+Q：JDK1.5下使用Hasor启动会找不到 javax/xml/stream/XMLStreamException 这个类。
+A：这是由于Hasor的Xml解析使用的是JSR173规范(Stax)，解决
+
+
+
+		<!-- JSR173，Stax，JDK1.5 used -->
+		<!-- <dependency> -->
+		<!-- <groupId>javax.xml.stream</groupId> -->
+		<!-- <artifactId>stax-api</artifactId> -->
+		<!-- <version>1.0</version> -->
+		<!-- <optional>true</optional> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>stax</groupId> -->
+		<!-- <artifactId>stax</artifactId> -->
+		<!-- <version>1.2.0</version> -->
+		<!-- <optional>true</optional> -->
+		<!-- </dependency> -->
+		<!-- JSR223，Script，JDK1.5 used -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.bsf</groupId> -->
+		<!-- <artifactId>bsf-api</artifactId> -->
+		<!-- <version>3.1</version> -->
+		<!-- <optional>true</optional> -->
+		<!-- </dependency> -->
