@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.context;
+import org.more.UndefinedException;
 import com.google.inject.Injector;
 /**
  * 应用程序上下文
@@ -29,7 +30,7 @@ public interface AppContext extends InitContext, LifeCycle {
     public String[] getBeanNames();
     /**获取bean信息。*/
     public BeanInfo getBeanInfo(String name);
-    /**通过名称创建bean实例，使用guice。*/
+    /**通过名称创建bean实例，使用guice，如果获取的bean不存在则会引发{@link UndefinedException}类型异常。*/
     public <T> T getBean(String name);
     /**通过类型创建该类实例，使用guice*/
     public <T> T getInstance(Class<T> beanType);

@@ -21,6 +21,7 @@ import java.util.Map.Entry;
 import org.hasor.Hasor;
 import org.hasor.context.AppContext;
 import org.hasor.context.BeanInfo;
+import org.more.UndefinedException;
 import com.google.inject.Binding;
 import com.google.inject.TypeLiteral;
 /**
@@ -47,7 +48,7 @@ public abstract class AbstractAppContext extends StandardInitContext implements 
         BeanInfo info = this.beanInfoMap.get(name);
         if (info != null)
             return (Class<T>) info.getBeanType();
-        return null;
+        throw null;
     }
     public String getBeanName(Class<?> targetClass) {
         Hasor.assertIsNotNull(targetClass, "targetClass is null.");
@@ -80,7 +81,7 @@ public abstract class AbstractAppContext extends StandardInitContext implements 
     public <T> T getBean(String name) {
         BeanInfo beanInfo = this.getBeanInfo(name);
         if (beanInfo == null)
-            return null;
+            throw new UndefinedException("bean ¡®" + name + "¡¯ is undefined.");
         return (T) this.getGuice().getInstance(beanInfo.getBeanType());
     };
     //
