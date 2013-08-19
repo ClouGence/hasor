@@ -1,0 +1,5 @@
+当Hasor的运行环境为JDK1.5时请将stax-1.2.0.jar、stax-api-1.0.jar放置在类路径上。
+
+stax-1.2.0.jar、stax-api-1.0.jar两个Jar包是JSR-173的API和实现。
+
+  Jar包来自：http://www.java2s.com/Code/Jar/s/stax.htm
