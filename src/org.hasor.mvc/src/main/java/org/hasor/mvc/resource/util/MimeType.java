@@ -36,9 +36,7 @@ public class MimeType extends HashMap<String, String> {
             private StringBuffer stringBuffer = new StringBuffer();
             private String       extension    = null;
             private String       mimeType     = null;
-            @Override
             public void beginAccept() throws XMLStreamException {}
-            @Override
             public void sendEvent(XmlStreamEvent e) throws XMLStreamException, IOException {
                 if (e instanceof TextEvent) {
                     TextEvent event = (TextEvent) e;
@@ -59,7 +57,6 @@ public class MimeType extends HashMap<String, String> {
                     this.stringBuffer = new StringBuffer();
                 }
             }
-            @Override
             public void endAccept() throws XMLStreamException {}
         }, encoding, null);
     }

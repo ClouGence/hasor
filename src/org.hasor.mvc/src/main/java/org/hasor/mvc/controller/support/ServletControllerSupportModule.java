@@ -43,11 +43,9 @@ import com.google.inject.Binder;
 public class ServletControllerSupportModule extends AbstractWebHasorModule {
     private ActionSettings settings      = null;
     private ActionManager  actionManager = null;
-    @Override
     public void configuration(ModuleSettings info) {
         info.beforeMe(ServletAnnoSupportModule.class);
     }
-    @Override
     public void init(WebApiBinder apiBinder) {
         Binder binder = apiBinder.getGuiceBinder();
         apiBinder.filter("*").through(MergedController.class);
@@ -110,12 +108,10 @@ public class ServletControllerSupportModule extends AbstractWebHasorModule {
     }
     //
     /***/
-    @Override
     public void start(AppContext appContext) {
         this.actionManager = appContext.getInstance(ActionManager.class);
         this.actionManager.initManager(appContext);
     }
-    @Override
     public void destroy(AppContext appContext) {
         this.actionManager.destroyManager(appContext);
     }

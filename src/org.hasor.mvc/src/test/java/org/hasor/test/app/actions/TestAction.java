@@ -36,7 +36,6 @@ public class TestAction {
         System.out.println("invoke test" + strs);
         return "/index.htm";
     }
-    @Override
     protected void finalize() throws Throwable {
         // TODO Auto-generated method stub
         super.finalize();

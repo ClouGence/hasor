@@ -36,15 +36,12 @@ public abstract class ApiBinderModule implements ApiBinder, Module {
         this.initContext = initContext;
         this.forModule = forModule;
     }
-    @Override
     public void configure(Binder binder) {
         binder.install(this.beanBuilder);
     }
-    @Override
     public InitContext getInitContext() {
         return this.initContext;
     }
-    @Override
     public Settings getModuleSettings() {
         Settings globalSetting = this.getInitContext().getSettings();
         Settings modeuleSetting = globalSetting.getNamespace(this.forModule.getSettingsNamespace());
@@ -52,13 +49,11 @@ public abstract class ApiBinderModule implements ApiBinder, Module {
             return modeuleSetting;
         return globalSetting;
     }
-    @Override
     public Set<Class<?>> getClassSet(Class<?> featureType) {
         if (featureType == null)
             return null;
         return this.getInitContext().getClassSet(featureType);
     }
-    @Override
     public BeanBindingBuilder newBean(String beanName) {
         if (StringUtils.isBlank(beanName) == true)
             throw new NullPointerException(beanName);

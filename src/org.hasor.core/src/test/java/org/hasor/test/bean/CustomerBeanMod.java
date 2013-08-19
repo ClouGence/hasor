@@ -26,11 +26,9 @@ import org.hasor.test.bean.beans.CustomerBean;
  */
 @Module
 public class CustomerBeanMod extends AbstractHasorModule {
-    @Override
     public void configuration(ModuleSettings info) {
         // TODO Auto-generated method stub
     }
-    @Override
     public void init(ApiBinder apiBinder) {
         /*´úÂë·½Ê½×¢²áBean*/
         apiBinder.newBean("Customer").bindType(CustomerBean.class);

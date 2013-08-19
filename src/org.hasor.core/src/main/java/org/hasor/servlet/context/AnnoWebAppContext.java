@@ -54,14 +54,11 @@ public class AnnoWebAppContext extends AnnoAppContext {
         else
             return null;
     }
-    @Override
     protected Environment createEnvironment() {
         return new WebStandardEnvironment(this.getSettings(), this.getServletContext());
     }
-    @Override
     protected Injector createInjector(Module[] guiceModules) {
         Module webModule = new Module() {
-            @Override
             public void configure(Binder binder) {
                 /*Bind*/
                 binder.bind(ManagedErrorPipeline.class);
@@ -70,7 +67,6 @@ public class AnnoWebAppContext extends AnnoAppContext {
                 binder.bind(SessionListenerPipeline.class).to(ManagedSessionListenerPipeline.class);
                 /*绑定ServletContext对象的Provider*/
                 binder.bind(ServletContext.class).toProvider(new Provider<ServletContext>() {
-                    @Override
                     public ServletContext get() {
                         return getServletContext();
                     }
@@ -85,10 +81,8 @@ public class AnnoWebAppContext extends AnnoAppContext {
                 guiceModuleSet.add(mod);
         return super.createInjector(guiceModuleSet.toArray(new Module[guiceModuleSet.size()]));
     }
-    @Override
     protected WebApiBinderModule newApiBinder(final ModuleInfo forModule, final Binder binder) {
         return new WebApiBinderModule(this, forModule) {
-            @Override
             public Binder getGuiceBinder() {
                 return binder;
             }
@@ -106,7 +100,6 @@ class WebStandardEnvironment extends StandardEnvironment {
         super(settings);
         this.servletContext = servletContext;
     }
-    @Override
     protected Map<String, String> configEnvironment() {
         Map<String, String> hasorEnv = super.configEnvironment();
         hasorEnv.put("HASOR_WEBROOT", servletContext.getRealPath("/"));

@@ -30,7 +30,6 @@ import org.more.util.StringUtils;
  */
 @ResourceLoaderDefine(configElement = "ClasspathLoader")
 public class ClassPathResourceLoaderCreator implements ResourceLoaderCreator {
-    @Override
     public ResourceLoader newInstance(AppContext appContext, XmlProperty xmlConfig) throws IOException {
         String config = xmlConfig.getText();
         config = StringUtils.isBlank(config) ? "/" : config;

@@ -31,7 +31,6 @@ import org.more.util.StringUtils;
  */
 @ResourceLoaderDefine(configElement = "ZipLoader")
 public class ZipResourceLoaderCreator implements ResourceLoaderCreator {
-    @Override
     public ResourceLoader newInstance(AppContext appContext, XmlProperty xmlConfig) throws IOException {
         String body = xmlConfig.getText();
         body = StringUtils.isBlank(body) ? "" : body;

@@ -26,10 +26,8 @@ import org.hasor.servlet.WebApiBinder;
  */
 @Module(description = "org.hasor.mvc.controller.plugins.validation软件包功能支持。")
 public class ControllerPluginValidationSupportModule extends AbstractWebHasorModule {
-    @Override
     public void configuration(ModuleSettings info) {
         info.followTarget(ServletControllerSupportModule.class);
     }
-    @Override
     public void init(WebApiBinder apiBinder) {}
 }

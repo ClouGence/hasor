@@ -20,6 +20,10 @@ package org.more;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public class RepeateException extends RuntimeException {
+    /**
+     * Required for serialization support.
+     * @see java.io.Serializable
+     */
     private static final long serialVersionUID = 2377606123252842745L;
     /**÷ÿ∏¥∂®“Â*/
     public RepeateException(String string) {

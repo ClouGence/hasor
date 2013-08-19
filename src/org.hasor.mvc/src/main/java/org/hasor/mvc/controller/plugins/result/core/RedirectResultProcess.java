@@ -28,7 +28,6 @@ import org.hasor.mvc.controller.plugins.result.ControllerResultProcess;
  */
 @ControllerResultDefine(Redirect.class)
 public class RedirectResultProcess implements ControllerResultProcess {
-    @Override
     public void process(HttpServletRequest request, HttpServletResponse response, Object result) throws ServletException, IOException {
         Hasor.debug("redirect to %s.", result);
         response.sendRedirect(result.toString());

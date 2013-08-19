@@ -33,15 +33,12 @@ public class DecStackMap<K, T> extends DecSequenceMap<K, T> {
     public DecStackMap(Map<K, T> entryMap) {
         super(entryMap);
     };
-    @Override
     public T put(K key, T value) {
         return this.getMapList().get(0).put(key, value);
     }
-    @Override
     public T remove(Object key) {
         return this.getMapList().get(0).remove(key);
     }
-    @Override
     protected StackSimpleSet<K, T> createSet() {
         return new StackSimpleSet<K, T>();
     };
@@ -71,14 +68,12 @@ public class DecStackMap<K, T> extends DecSequenceMap<K, T> {
         public void removeFirst() {
             this.mapList.removeFirst();
         }
-        @Override
         public Iterator<java.util.Map.Entry<K, T>> iterator() {
             Iterator<java.util.Map.Entry<K, T>> seqIter = null;
             for (Map<K, T> mapItem : this.mapList)
                 seqIter = MergeUtils.mergeIterator(seqIter, mapItem.entrySet().iterator());
             return seqIter;
         }
-        @Override
         public int size() {
             int count = 0;
             for (Map<K, T> map : mapList)

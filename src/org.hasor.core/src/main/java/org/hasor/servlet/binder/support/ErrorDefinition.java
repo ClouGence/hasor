@@ -48,7 +48,6 @@ class ErrorDefinition implements Provider<ErrorDefinition> {
     public Map<String, String> getInitParams() {
         return this.initParams;
     }
-    @Override
     public ErrorDefinition get() {
         return this;
     }
@@ -57,7 +56,6 @@ class ErrorDefinition implements Provider<ErrorDefinition> {
             this.errorHookInstance = appContext.getGuice().getInstance(this.errorHookKey);
         return this.errorHookInstance;
     }
-    @Override
     public String toString() {
         return String.format("type %s initParams=%s ,uriPatternType=%s",//
                 ErrorDefinition.class, getInitParams(), this.errorType);

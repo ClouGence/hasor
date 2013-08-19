@@ -43,7 +43,6 @@ public class BeforeSupport {
     /*-------------------------------------------------------------------------------------*/
     /*拦截器*/
     private class BeforeInterceptor implements MethodInterceptor {
-        @Override
         public Object invoke(MethodInvocation invocation) throws Throwable {
             List<Class<? extends MethodInterceptor>> list = new ArrayList<Class<? extends MethodInterceptor>>();
             Method targetMethod = invocation.getMethod();
@@ -67,7 +66,6 @@ public class BeforeSupport {
     }
     /*负责检测匹配。规则：只要类型或方法上标记了@Before。*/
     private class BeforeMatcher extends AbstractMatcher<Object> {
-        @Override
         public boolean matches(Object type) {
             if (type instanceof Class<?>)
                 return this.matches((Class<?>) type);

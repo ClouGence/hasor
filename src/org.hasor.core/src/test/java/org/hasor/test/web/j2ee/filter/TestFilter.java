@@ -29,14 +29,11 @@ import org.hasor.servlet.anno.WebFilter;
  */
 @WebFilter("/*")
 public class TestFilter implements Filter {
-    @Override
     public void init(FilterConfig filterConfig) throws ServletException {}
-    @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         System.out.println("before Servlet.");
         chain.doFilter(request, response);
         System.out.println("after Servlet.");
     }
-    @Override
     public void destroy() {}
 }

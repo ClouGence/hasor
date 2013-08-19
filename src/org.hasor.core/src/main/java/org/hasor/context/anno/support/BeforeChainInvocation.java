@@ -49,23 +49,18 @@ class BeforeChainInvocation implements MethodInvocation {
         }
     }
     //-----------------------------------------------------------
-    @Override
     public Object[] getArguments() {
         return invocation.getArguments();
     }
-    @Override
     public Object proceed() throws Throwable {
         return this.invoke(this.invocation);
     }
-    @Override
     public Object getThis() {
         return invocation.getThis();
     }
-    @Override
     public AccessibleObject getStaticPart() {
         return invocation.getStaticPart();
     }
-    @Override
     public Method getMethod() {
         return invocation.getMethod();
     }

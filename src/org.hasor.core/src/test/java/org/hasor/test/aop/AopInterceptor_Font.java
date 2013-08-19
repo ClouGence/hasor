@@ -22,7 +22,6 @@ import org.aopalliance.intercept.MethodInvocation;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public class AopInterceptor_Font implements MethodInterceptor {
-    @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
         //System.out.println("before Font");
         Object returnData = invocation.proceed();

@@ -48,19 +48,15 @@ class XmlPropertyImpl implements XmlProperty, GlobalProperty {
     public void setText(String textString) {
         this.textString = textString;
     }
-    @Override
     public String getName() {
         return elementName;
     }
-    @Override
     public String getText() {
         return textString;
     }
-    @Override
     public List<XmlProperty> getChildren() {
         return children;
     }
-    @Override
     public String getXmlText() {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("<" + this.elementName);
@@ -94,11 +90,9 @@ class XmlPropertyImpl implements XmlProperty, GlobalProperty {
         strBuilder.append("</" + this.elementName + ">");
         return strBuilder.toString();
     }
-    @Override
     public String toString() {
         return this.getXmlText();
     }
-    @Override
     public XmlPropertyImpl clone() {
         XmlPropertyImpl newData = new XmlPropertyImpl(this.parentXmlProperty, this.elementName);
         newData.arrMap.putAll(this.arrMap);
@@ -111,7 +105,6 @@ class XmlPropertyImpl implements XmlProperty, GlobalProperty {
             }
         return newData;
     }
-    @Override
     public <T> T getValue(Class<T> toType, T defaultValue) {
         if (XmlProperty.class.isAssignableFrom(toType) == true)
             return (T) this;
@@ -124,7 +117,6 @@ class XmlPropertyImpl implements XmlProperty, GlobalProperty {
             return defaultValue;
         }
     }
-    @Override
     public Map<String, String> getAttributeMap() {
         return this.arrMap;
     }

@@ -35,7 +35,6 @@ class ListenerDefinition implements Provider<ListenerDefinition> {
         this.listenerInstance = listenerInstance;
     }
     //
-    @Override
     public ListenerDefinition get() {
         return this;
     }
@@ -44,7 +43,6 @@ class ListenerDefinition implements Provider<ListenerDefinition> {
             this.listenerInstance = injector.getInstance(this.listenerKey);
         return this.listenerInstance;
     }
-    @Override
     public String toString() {
         return String.format("type %s listenerKey=%s",//
                 ListenerDefinition.class, this.listenerKey);

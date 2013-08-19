@@ -32,7 +32,6 @@ import org.hasor.test.web.beans.ShowInfoBean;
 public class HelloWordServlet extends HttpServlet {
     @Inject
     private AppContext appContext = null;
-    @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ShowInfoBean infoBean = this.appContext.getInstance(ShowInfoBean.class);
         infoBean.showInfo();//´òÓ¡name²ÎÊý

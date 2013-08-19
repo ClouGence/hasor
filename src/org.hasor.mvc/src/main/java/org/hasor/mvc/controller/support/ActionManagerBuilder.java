@@ -34,7 +34,6 @@ import com.google.inject.internal.UniqueAnnotations;
  */
 public class ActionManagerBuilder implements ActionBinder {
     private Map<String, InternalNameSpaceBindingBuilder> nameSpaceMap = new HashMap<String, InternalNameSpaceBindingBuilder>();
-    @Override
     public NameSpaceBindingBuilder bindNameSpace(String namespace) {
         InternalNameSpaceBindingBuilder ansBuilder = this.nameSpaceMap.get(namespace);
         if (ansBuilder == null) {
@@ -59,11 +58,9 @@ public class ActionManagerBuilder implements ActionBinder {
         public InternalNameSpaceBindingBuilder(String namespace) {
             this.namespace = namespace;
         }
-        @Override
         public String getNameSpace() {
             return this.namespace;
         }
-        @Override
         public ActionBindingBuilder bindActionClass(Class<?> targetClass) {
             if (targetClass == null)
                 return null;
@@ -77,7 +74,6 @@ public class ActionManagerBuilder implements ActionBinder {
             this.actionList.add(groupActionBuilder);
             return groupActionBuilder;
         }
-        @Override
         public ActionBindingBuilder bindActionMethod(Method targetMethod) {
             if (targetMethod == null)
                 return null;
@@ -110,27 +106,22 @@ public class ActionManagerBuilder implements ActionBinder {
         public ActionBindingBuilderImpl(Method targetMethod) {
             this.targetMethod = targetMethod;
         }
-        @Override
         public void toInstance(Object targetObject) {
             this.targetObject = targetObject;
         }
-        @Override
         public ActionBindingBuilder onHttpMethod(String httpMethod) {
             if (httpMethod == null)
                 return null;
             this.bindHttpMethod.add(httpMethod);
             return this;
         }
-        @Override
         public void mappingRestful(String mappingRestful) {
             this.mappingRestful = mappingRestful;
         }
-        @Override
         public ActionBindingBuilder returnMimeType(String mimeType) {
             this.mimeType = mimeType;
             return this;
         }
-        @Override
         public void buildActionNameSpace(Binder binder, ActionNameSpace ans) {
             //1.HttpMethod
             String[] bindMethods = this.bindHttpMethod.toArray(new String[this.bindHttpMethod.size()]);
@@ -160,29 +151,24 @@ public class ActionManagerBuilder implements ActionBinder {
         public ArrayList<AbstractActionBindingBuilder> getElements() {
             return elements;
         }
-        @Override
         public ActionBindingBuilder onHttpMethod(String httpMethod) {
             for (AbstractActionBindingBuilder item : elements)
                 item.onHttpMethod(httpMethod);
             return this;
         }
-        @Override
         public void mappingRestful(String mappingRestful) {
             for (AbstractActionBindingBuilder item : elements)
                 item.mappingRestful(mappingRestful);
         }
-        @Override
         public void toInstance(Object targetAction) {
             for (AbstractActionBindingBuilder item : elements)
                 item.toInstance(targetAction);
         }
-        @Override
         public ActionBindingBuilder returnMimeType(String mimeType) {
             for (AbstractActionBindingBuilder item : elements)
                 item.returnMimeType(mimeType);
             return this;
         }
-        @Override
         public void buildActionNameSpace(Binder binder, ActionNameSpace ans) {
             for (AbstractActionBindingBuilder item : elements)
                 item.buildActionNameSpace(binder, ans);

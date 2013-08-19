@@ -30,7 +30,6 @@ import org.hasor.test.web.beans.ShowInfoBean;
  */
 @WebServlet("/error.err")
 public class ErrorServlet extends HttpServlet {
-    @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         throw new NullPointerException();
     }

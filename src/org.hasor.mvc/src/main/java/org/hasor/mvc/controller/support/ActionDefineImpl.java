@@ -110,7 +110,6 @@ class ActionDefineImpl implements ActionDefine {
             throw new ServletException("create invokeObject on " + targetMethod.toString() + " return null.");
         return new ActionInvokeImpl(this, target, (HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);
     }
-    @Override
     public boolean isRESTful() {
         return !StringUtils.isBlank(restfulMapping);
     }

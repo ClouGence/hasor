@@ -45,33 +45,26 @@ public abstract class WebApiBinderModule extends ApiBinderModule implements WebA
             list.add(object);
         return list;
     }
-    @Override
     public FilterBindingBuilder filter(String urlPattern, String... morePatterns) {
         return this.filterModuleBinder.filterPattern(newArrayList(morePatterns, urlPattern));
     };
-    @Override
     public FilterBindingBuilder filterRegex(String regex, String... regexes) {
         return this.filterModuleBinder.filterRegex(newArrayList(regexes, regex));
     };
-    @Override
     public ServletBindingBuilder serve(String urlPattern, String... morePatterns) {
         return this.servletModuleBinder.filterPattern(newArrayList(morePatterns, urlPattern));
     };
-    @Override
     public ServletBindingBuilder serveRegex(String regex, String... regexes) {
         return this.servletModuleBinder.filterRegex(newArrayList(regexes, regex));
     };
-    @Override
     public ErrorBindingBuilder error(Class<? extends Throwable> error) {
         ArrayList<Class<? extends Throwable>> errorList = new ArrayList<Class<? extends Throwable>>();
         errorList.add(error);
         return this.errorsModuleBuilder.errorTypes(errorList);
     }
-    @Override
     public SessionListenerBindingBuilder sessionListener() {
         return this.listenerBindingBuilder.sessionListener();
     }
-    @Override
     public void configure(Binder binder) {
         super.configure(binder);
         binder.install(this.filterModuleBinder);

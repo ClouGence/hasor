@@ -45,7 +45,6 @@ public class MergedController implements Filter {
     private RestfulController restfulController = null;
     private ActionController  actionController  = null;
     //
-    @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         this.actionSettings = this.appContext.getInstance(ActionSettings.class);
         this.restfulController = this.appContext.getInstance(RestfulController.class);
@@ -53,7 +52,6 @@ public class MergedController implements Filter {
         this.restfulController.init(filterConfig);
         this.actionController.init(new ServletConfigBridge(filterConfig));
     }
-    @Override
     public void doFilter(ServletRequest req, ServletResponse resp, final FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) withDispatcher(req);
         HttpServletResponse response = (HttpServletResponse) resp;
@@ -70,7 +68,6 @@ public class MergedController implements Filter {
         /*运行模式：Both*/
         if (this.actionSettings.getMode() == ActionWorkMode.Both) {
             this.restfulController.doFilter(request, response, new FilterChain() {
-                @Override
                 public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
                     HttpServletRequest req = (HttpServletRequest) request;
                     if (MergedController.this.actionController.testURL(req) == true)
@@ -82,7 +79,6 @@ public class MergedController implements Filter {
             return;
         }
     }
-    @Override
     public void destroy() {
         this.restfulController.destroy();
         this.actionController.destroy();
@@ -94,19 +90,15 @@ public class MergedController implements Filter {
         public ServletConfigBridge(FilterConfig filterConfig) {
             this.filterConfig = filterConfig;
         }
-        @Override
         public String getInitParameter(String name) {
             return this.filterConfig.getInitParameter(name);
         }
-        @Override
         public Enumeration<String> getInitParameterNames() {
             return this.filterConfig.getInitParameterNames();
         }
-        @Override
         public ServletContext getServletContext() {
             return this.filterConfig.getServletContext();
         }
-        @Override
         public String getServletName() {
             return this.filterConfig.getFilterName();
         }
@@ -116,7 +108,6 @@ public class MergedController implements Filter {
     private ServletRequest withDispatcher(ServletRequest servletRequest) {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         return new HttpServletRequestWrapper(request) {
-            @Override
             public RequestDispatcher getRequestDispatcher(String path) {
                 RequestDispatcher dispatcher = null;
                 /*运行模式：ServletOnly*/

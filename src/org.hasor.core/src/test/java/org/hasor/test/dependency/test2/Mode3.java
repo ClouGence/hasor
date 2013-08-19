@@ -26,23 +26,18 @@ import org.hasor.context.module.AbstractHasorModule;
  */
 @Module()
 public class Mode3 extends AbstractHasorModule {
-    @Override
     public void configuration(ModuleSettings info) {
         throw new RuntimeException();
     }
-    @Override
     public void init(ApiBinder apiBinder) {
         System.out.println("Mode3  init!");
     }
-    @Override
     public void start(AppContext appContext) {
         super.start(appContext);
     }
-    @Override
     public void stop(AppContext appContext) {
         super.stop(appContext);
     }
-    @Override
     public void destroy(AppContext appContext) {
         super.destroy(appContext);
     }

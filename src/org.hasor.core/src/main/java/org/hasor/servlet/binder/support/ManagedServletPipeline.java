@@ -133,7 +133,6 @@ public class ManagedServletPipeline {
             super((HttpServletRequest) servletRequest);
             this.newRequestUri = newRequestUri;
         }
-        @Override
         public String getRequestURI() {
             return newRequestUri;
         }

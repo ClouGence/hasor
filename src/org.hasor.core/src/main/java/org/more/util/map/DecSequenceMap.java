@@ -69,11 +69,9 @@ public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
     public List<Map<K, T>> getMapList() {
         return Collections.unmodifiableList(this.entrySet().mapList);
     };
-    @Override
     public T put(K key, T value) {
         return this.entrySet().mapList.get(0).put(key, value);
     }
-    @Override
     public T remove(Object key) {
         return this.entrySet().mapList.get(0).remove(key);
     }
@@ -92,14 +90,12 @@ public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
         public void removeMap(Map<K, T> newMap) {
             this.mapList.remove(newMap);
         }
-        @Override
         public Iterator<java.util.Map.Entry<K, T>> iterator() {
             Iterator<java.util.Map.Entry<K, T>> seqIter = null;
             for (Map<K, T> mapItem : this.mapList)
                 seqIter = MergeUtils.mergeIterator(seqIter, mapItem.entrySet().iterator());
             return seqIter;
         }
-        @Override
         public int size() {
             int count = 0;
             for (Map<K, T> map : mapList)

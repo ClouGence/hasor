@@ -20,6 +20,10 @@ package org.more;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public class TransformException extends Exception {
+    /**
+     * Required for serialization support.
+     * @see java.io.Serializable
+     */
     private static final long serialVersionUID = 5032345759263916241L;
     /**◊™ªª“Ï≥£°£*/
     public TransformException(String string) {

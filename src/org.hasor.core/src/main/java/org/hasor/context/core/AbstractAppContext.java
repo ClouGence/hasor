@@ -40,7 +40,6 @@ public abstract class AbstractAppContext extends StandardInitContext implements 
     }
     //
     private Map<String, BeanInfo> beanInfoMap;
-    @Override
     public <T> Class<T> getBeanType(String name) {
         Hasor.assertIsNotNull(name, "bean name is null.");
         if (this.beanInfoMap == null)
@@ -50,7 +49,6 @@ public abstract class AbstractAppContext extends StandardInitContext implements 
             return (Class<T>) info.getBeanType();
         return null;
     }
-    @Override
     public String getBeanName(Class<?> targetClass) {
         Hasor.assertIsNotNull(targetClass, "targetClass is null.");
         if (this.beanInfoMap == null)
@@ -61,13 +59,11 @@ public abstract class AbstractAppContext extends StandardInitContext implements 
         }
         return null;
     }
-    @Override
     public String[] getBeanNames() {
         if (this.beanInfoMap == null)
             this.collectBeanInfos();
         return this.beanInfoMap.keySet().toArray(new String[this.beanInfoMap.size()]);
     }
-    @Override
     public BeanInfo getBeanInfo(String name) {
         if (this.beanInfoMap == null)
             this.collectBeanInfos();
@@ -81,7 +77,6 @@ public abstract class AbstractAppContext extends StandardInitContext implements 
             this.beanInfoMap.put(beanInfo.getName(), beanInfo);
         }
     }
-    @Override
     public <T> T getBean(String name) {
         BeanInfo beanInfo = this.getBeanInfo(name);
         if (beanInfo == null)
@@ -89,13 +84,12 @@ public abstract class AbstractAppContext extends StandardInitContext implements 
         return (T) this.getGuice().getInstance(beanInfo.getBeanType());
     };
     //
-    @Override
     public <T> T getInstance(Class<T> beanType) {
         return this.getGuice().getInstance(beanType);
     }
     /**Ïú»Ù*/
     public abstract void destroy();
-    @Override
+    //
     protected void finalize() throws Throwable {
         super.finalize();
         this.destroy();

@@ -109,7 +109,6 @@ public class Base64OutputStreamWriter extends OutputStream {
      * @param off the start offset in the data.
      * @param len the number of bytes to write.
      */
-    @Override
     public void write(byte b[], int off, int len) throws IOException {
         if ((off < 0) || (off > b.length) || (len < 0) || ((off + len) > b.length) || ((off + len) < 0)) {
             throw new IndexOutOfBoundsException();
@@ -127,12 +126,10 @@ public class Base64OutputStreamWriter extends OutputStream {
      * @param b the bytes to write
      * @throws IOException if an error occurs
      */
-    @Override
     public void write(byte b[]) throws IOException {
         write(b, 0, b.length);
     }
     /** Closing <tt>Base64OutputStreamWriter</tt> does nothing. */
-    @Override
     public void close() throws IOException {}
     /**
      * <p>Encodes the remaining bytes and flushes the <code>char[]</code>

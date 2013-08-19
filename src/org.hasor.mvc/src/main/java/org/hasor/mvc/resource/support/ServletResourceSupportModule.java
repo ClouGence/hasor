@@ -32,11 +32,9 @@ import org.hasor.servlet.anno.support.ServletAnnoSupportModule;
  */
 @Module(description = "org.hasor.web.resource软件包功能支持。")
 public class ServletResourceSupportModule extends AbstractWebHasorModule {
-    @Override
     public void configuration(ModuleSettings info) {
         info.beforeMe(ServletAnnoSupportModule.class);
     }
-    @Override
     public void init(WebApiBinder apiBinder) {
         /*绑定Settings，但是不支持重载更新*/
         ResourceSettings settings = new ResourceSettings();

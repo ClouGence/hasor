@@ -35,7 +35,6 @@ class BeanInfoModuleBuilder implements Module {
     public BeanBindingBuilder newBeanDefine(Binder binder) {
         return new BeanBindingBuilderImpl(binder);
     }
-    @Override
     public void configure(Binder binder) {
         /*将BeanInfo绑定到Guice身上，在正式使用时利用findBindingsByType方法将其找回来。*/
         for (Provider<? extends BeanInfo> define : this.beanInfoDefinitions)
@@ -49,12 +48,10 @@ class BeanInfoModuleBuilder implements Module {
         public BeanBindingBuilderImpl(Binder binder) {
             this.binder = binder;
         }
-        @Override
         public BeanBindingBuilder aliasName(String aliasName) {
             this.names.add(aliasName);
             return this;
         }
-        @Override
         public <T> LinkedBindingBuilder<T> bindType(Class<T> beanClass) {
             if (this.names.isEmpty() == true)
                 throw new UnsupportedOperationException("the bean name is undefined!");

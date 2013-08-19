@@ -40,12 +40,10 @@ public class ModuleSettingsHasorXmlParser implements HasorXmlParser {
     private StringBuffer    xmlText           = null;
     private XmlPropertyImpl currentXmlPropert = null;
     //
-    @Override
     public void beginAccept(Settings context, Map<String, Object> dataContainer) {
         this.currentXmlPropert = new XmlPropertyImpl(null, "root");
         this.xmlText = new StringBuffer("");
     }
-    @Override
     public void sendEvent(XmlStackDecorator<Object> context, String xpath, XmlStreamEvent event) throws IOException, XMLStreamException {
         if (event instanceof StartElementEvent) {
             //
@@ -68,7 +66,6 @@ public class ModuleSettingsHasorXmlParser implements HasorXmlParser {
             this.xmlText.append(((TextEvent) event).getText());
         }
     }
-    @Override
     public void endAccept(Settings context, Map<String, Object> dataContainer) {
         //1.½«XmlTree×ª»»ÎªmapÓ³Éä
         HashMap<String, Object> dataMap = new HashMap<String, Object>();

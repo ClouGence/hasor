@@ -63,7 +63,6 @@ public class ResourceLoaderFilter implements Filter {
     private Map<String, ReadWriteLock> cachingRes     = new HashMap<String, ReadWriteLock>();
     private Lock                       cachingResLock = new ReentrantLock();
     //
-    @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         this.settings = appContext.getInstance(ResourceSettings.class);
         //1.‘ÿ»ÎÀ˘”–loaderCreator
@@ -161,7 +160,6 @@ public class ResourceLoaderFilter implements Filter {
         cacheFile.close();
     }
     //
-    @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         if (this.settings.isEnable() == false) {
             chain.doFilter(request, response);
@@ -241,6 +239,5 @@ public class ResourceLoaderFilter implements Filter {
         out.close();
         return true;
     }
-    @Override
     public void destroy() {}
 }

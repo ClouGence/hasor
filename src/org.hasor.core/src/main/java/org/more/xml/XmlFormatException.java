@@ -21,7 +21,11 @@ import javax.xml.stream.XMLStreamException;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public class XmlFormatException extends XMLStreamException {
-    private static final long serialVersionUID = 7219173260772984152L;
+    /**
+     * Required for serialization support.
+     * @see java.io.Serializable
+     */
+    private static final long serialVersionUID = 3647389307754446752L;
     /**∏Ò Ω“Ï≥£*/
     public XmlFormatException(String string) {
         super(string);

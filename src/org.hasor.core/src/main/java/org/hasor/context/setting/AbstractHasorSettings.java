@@ -106,11 +106,9 @@ public abstract class AbstractHasorSettings implements Settings {
     public Character getChar(String name, Character defaultValue) {
         return this.getToType(name, Character.class, defaultValue);
     };
-    @Override
     public Character[] getCharArray(String name) {
         return this.getToTypeArray(name, Character.class);
     }
-    @Override
     public Character[] getCharArray(String name, Character defaultValue) {
         return this.getToTypeArray(name, Character.class, defaultValue);
     }
@@ -122,11 +120,9 @@ public abstract class AbstractHasorSettings implements Settings {
     public String getString(String name, String defaultValue) {
         return this.getToType(name, String.class, defaultValue);
     };
-    @Override
     public String[] getStringArray(String name) {
         return this.getToTypeArray(name, String.class);
     }
-    @Override
     public String[] getStringArray(String name, String defaultValue) {
         return this.getToTypeArray(name, String.class, defaultValue);
     }
@@ -138,11 +134,9 @@ public abstract class AbstractHasorSettings implements Settings {
     public Boolean getBoolean(String name, Boolean defaultValue) {
         return this.getToType(name, Boolean.class, defaultValue);
     };
-    @Override
     public Boolean[] getBooleanArray(String name) {
         return this.getToTypeArray(name, Boolean.class);
     }
-    @Override
     public Boolean[] getBooleanArray(String name, Boolean defaultValue) {
         return this.getToTypeArray(name, Boolean.class, defaultValue);
     }
@@ -154,11 +148,9 @@ public abstract class AbstractHasorSettings implements Settings {
     public Short getShort(String name, Short defaultValue) {
         return this.getToType(name, Short.class, defaultValue);
     };
-    @Override
     public Short[] getShortArray(String name) {
         return this.getToTypeArray(name, Short.class);
     }
-    @Override
     public Short[] getShortArray(String name, Short defaultValue) {
         return this.getToTypeArray(name, Short.class, defaultValue);
     }
@@ -170,11 +162,9 @@ public abstract class AbstractHasorSettings implements Settings {
     public Integer getInteger(String name, Integer defaultValue) {
         return this.getToType(name, Integer.class, defaultValue);
     };
-    @Override
     public Integer[] getIntegerArray(String name) {
         return this.getToTypeArray(name, Integer.class);
     }
-    @Override
     public Integer[] getIntegerArray(String name, Integer defaultValue) {
         return this.getToTypeArray(name, Integer.class, defaultValue);
     }
@@ -186,11 +176,9 @@ public abstract class AbstractHasorSettings implements Settings {
     public Long getLong(String name, Long defaultValue) {
         return this.getToType(name, Long.class, defaultValue);
     };
-    @Override
     public Long[] getLongArray(String name) {
         return this.getToTypeArray(name, Long.class);
     }
-    @Override
     public Long[] getLongArray(String name, Long defaultValue) {
         return this.getToTypeArray(name, Long.class, defaultValue);
     }
@@ -202,11 +190,9 @@ public abstract class AbstractHasorSettings implements Settings {
     public Float getFloat(String name, Float defaultValue) {
         return this.getToType(name, Float.class, defaultValue);
     };
-    @Override
     public Float[] getFloatArray(String name) {
         return this.getToTypeArray(name, Float.class);
     }
-    @Override
     public Float[] getFloatArray(String name, Float defaultValue) {
         return this.getToTypeArray(name, Float.class, defaultValue);
     }
@@ -218,11 +204,9 @@ public abstract class AbstractHasorSettings implements Settings {
     public Double getDouble(String name, Double defaultValue) {
         return this.getToType(name, Double.class, defaultValue);
     };
-    @Override
     public Double[] getDoubleArray(String name) {
         return this.getToTypeArray(name, Double.class);
     }
-    @Override
     public Double[] getDoubleArray(String name, Double defaultValue) {
         return this.getToTypeArray(name, Double.class, defaultValue);
     }
@@ -238,15 +222,12 @@ public abstract class AbstractHasorSettings implements Settings {
     public Date getDate(String name, long defaultValue) {
         return this.getToType(name, Date.class, new Date(defaultValue));
     };
-    @Override
     public Date[] getDateArray(String name) {
         return this.getToTypeArray(name, Date.class);
     }
-    @Override
     public Date[] getDateArray(String name, Date defaultValue) {
         return this.getToTypeArray(name, Date.class, defaultValue);
     }
-    @Override
     public Date[] getDateArray(String name, long defaultValue) {
         return this.getToTypeArray(name, Date.class, new Date(defaultValue));
     }
@@ -258,11 +239,9 @@ public abstract class AbstractHasorSettings implements Settings {
     public <T extends Enum<?>> T getEnum(String name, Class<T> enmType, T defaultValue) {
         return this.getToType(name, enmType, defaultValue);
     };
-    @Override
     public <T extends Enum<?>> T[] getEnumArray(String name, Class<T> enmType) {
         return this.getToTypeArray(name, enmType, null);
     }
-    @Override
     public <T extends Enum<?>> T[] getEnumArray(String name, Class<T> enmType, T defaultValue) {
         return this.getToTypeArray(name, enmType, defaultValue);
     }
@@ -282,11 +261,9 @@ public abstract class AbstractHasorSettings implements Settings {
         else
             return filePath;
     };
-    @Override
     public String[] getFilePathArray(String name) {
         return this.getFilePathArray(name, null);
     }
-    @Override
     public String[] getFilePathArray(String name, String defaultValue) {
         ArrayList<String> filePaths = new ArrayList<String>();
         for (String url : this.getNamespaceArray()) {
@@ -318,11 +295,9 @@ public abstract class AbstractHasorSettings implements Settings {
         else
             return filePath + File.separatorChar;
     }
-    @Override
     public String[] getDirectoryPathArray(String name) {
         return this.getDirectoryPathArray(name, null);
     }
-    @Override
     public String[] getDirectoryPathArray(String name, String defaultValue) {
         ArrayList<String> directoryPaths = new ArrayList<String>();
         for (String url : this.getNamespaceArray()) {
@@ -342,7 +317,6 @@ public abstract class AbstractHasorSettings implements Settings {
     public XmlProperty getXmlProperty(String name) {
         return this.getToType(name, XmlProperty.class, null);
     }
-    @Override
     public XmlProperty[] getXmlPropertyArray(String name) {
         return this.getToTypeArray(name, XmlProperty.class, null);
     }

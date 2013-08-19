@@ -27,7 +27,6 @@ import org.junit.Test;
  */
 public class SyncEventTest extends AbstractTestContext {
     //
-    @Override
     protected void initContext(AppContext appContext) {
         /*×¢²áÊÂ¼þ¼àÌýÆ÷*/
         appContext.getEventManager().addEventListener(EventType.Type_A, new Test_EventListener(500));
@@ -44,7 +43,6 @@ public class SyncEventTest extends AbstractTestContext {
         public Test_EventListener(int sleep) {
             this.sleep = sleep;
         }
-        @Override
         public void onEvent(String event, Object[] params) {
             System.out.println("Test_EventListener£ºonEvent :" + event + " \t" + Hasor.logString(params));
             try {

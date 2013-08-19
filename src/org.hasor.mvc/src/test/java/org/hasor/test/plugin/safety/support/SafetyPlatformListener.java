@@ -17,9 +17,7 @@ import com.google.inject.matcher.AbstractMatcher;
 @Module(displayName = "SafetyPlatformListener", description = "org.test.plugin.safety软件包功能支持。")
 public class SafetyPlatformListener extends AbstractHasorModule {
     private SafetyContext safetyContext = null;
-    @Override
     public void configuration(ModuleSettings info) {}
-    @Override
     public void init(ApiBinder apiBinder) {
         //1.挂载Aop
         apiBinder.getGuiceBinder().bindInterceptor(new ClassPowerMatcher(), new MethodPowerMatcher(), new PowerInterceptor());
@@ -29,7 +27,6 @@ public class SafetyPlatformListener extends AbstractHasorModule {
     /*-------------------------------------------------------------------------------------*/
     /*负责检测类是否匹配。规则：只要类型或方法上标记了@Power。*/
     private class ClassPowerMatcher extends AbstractMatcher<Class<?>> {
-        @Override
         public boolean matches(Class<?> matcherType) {
             if (matcherType.isAnnotationPresent(Power.class) == true)
                 return true;
@@ -48,7 +45,6 @@ public class SafetyPlatformListener extends AbstractHasorModule {
     }
     /*负责检测方法是否匹配。规则：方法或方法所处类上标记了@Power。*/
     private class MethodPowerMatcher extends AbstractMatcher<Method> {
-        @Override
         public boolean matches(Method matcherType) {
             if (matcherType.isAnnotationPresent(Power.class) == true)
                 return true;
@@ -59,7 +55,6 @@ public class SafetyPlatformListener extends AbstractHasorModule {
     }
     /*拦截器*/
     private class PowerInterceptor implements MethodInterceptor {
-        @Override
         public Object invoke(MethodInvocation invocation) throws Throwable {
             //1.获取权限数据
             Method targetMethod = invocation.getMethod();

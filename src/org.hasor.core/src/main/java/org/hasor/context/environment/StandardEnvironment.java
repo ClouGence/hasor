@@ -53,11 +53,9 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
         this.userEnvMap = new HashMap<String, String>();
         settings.addSettingsListener(this);
     }
-    @Override
     public Settings getSettings() {
         return this.settings;
     }
-    @Override
     public void addEnvVar(String envName, String envValue) {
         if (StringUtils.isBlank(envName)) {
             Hasor.warning("%s env, name is empty.", envName);
@@ -71,7 +69,6 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
         //
         this.userEnvMap.put(envName, StringUtils.isBlank(envValue) ? "" : envValue);
     }
-    @Override
     public void remoteEnvVar(String varName) {
         if (StringUtils.isBlank(varName)) {
             Hasor.warning("%s env, name is empty.");
@@ -80,11 +77,9 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
         this.userEnvMap.remove(varName);
         Hasor.info("%s env removed.", varName);
     }
-    @Override
     public String getEnvVar(String envName) {
         return this.getEnv().get(envName);
     }
-    @Override
     public Map<String, String> getEnv() {
         if (this.finalEnvMap == null)
             this.finalEnvMap = new HashMap<String, String>();
@@ -118,7 +113,6 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
      * SettingListener 接口实现
      *   实现该接口的目的是，通过注册SettingListener动态更新环境变量相关信息。
      */
-    @Override
     public void onLoadConfig(Settings newConfig) {
         //1.系统环境变量 & Java系统属性
         Map<String, String> systemEnv = new HashMap<String, String>();
@@ -187,11 +181,9 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
     //
     //
     //
-    @Override
     public String evalEnvVar(String varName) {
         return this.evalEnvVar(varName, new HashMap<String, String>());
     }
-    @Override
     public String evalString(String evalString) {
         return this.evalString(evalString, new HashMap<String, String>());
     }
@@ -234,7 +226,6 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
     //
     //
     //
-    @Override
     public synchronized File uniqueTempFile() throws IOException {
         try {
             Thread.sleep(1);

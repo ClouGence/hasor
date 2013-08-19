@@ -28,7 +28,6 @@ import org.hasor.mvc.controller.plugins.result.ControllerResultProcess;
  */
 @ControllerResultDefine(Include.class)
 public class IncludeResultProcess implements ControllerResultProcess {
-    @Override
     public void process(HttpServletRequest request, HttpServletResponse response, Object result) throws ServletException, IOException {
         Hasor.debug("include %s.", result);
         request.getRequestDispatcher(result.toString()).include(request, response);

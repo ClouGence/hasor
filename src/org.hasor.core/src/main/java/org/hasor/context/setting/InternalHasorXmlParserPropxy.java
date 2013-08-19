@@ -40,17 +40,14 @@ class InternalHasorXmlParserPropxy implements XmlNamespaceParser {
         if (newInstance != null)
             this.parserList.add(newInstance);
     }
-    @Override
     public void beginAccept() {
         for (HasorXmlParser par : parserList)
             par.beginAccept(this.context, this.dataContainer);
     }
-    @Override
     public void endAccept() {
         for (HasorXmlParser par : parserList)
             par.endAccept(this.context, this.dataContainer);
     }
-    @Override
     public void sendEvent(XmlStackDecorator<Object> context, String xpath, XmlStreamEvent event) throws IOException, XMLStreamException {
         for (HasorXmlParser par : this.parserList)
             par.sendEvent(context, xpath, event);

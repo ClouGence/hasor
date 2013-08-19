@@ -200,11 +200,9 @@ class ReactorModuleInfoElement {
     public void setMark(String mark) {
         this.mark = mark;
     }
-    @Override
     public int hashCode() {
         return info.hashCode();
     }
-    @Override
     public boolean equals(Object obj) {
         return info.equals(obj);
     }

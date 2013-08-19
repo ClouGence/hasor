@@ -24,11 +24,9 @@ import java.util.Iterator;
 public final class Iterators {
     public static <T> Enumeration<T> asEnumeration(final Iterator<T> iterator) {
         return new Enumeration<T>() {
-            @Override
             public boolean hasMoreElements() {
                 return iterator.hasNext();
             }
-            @Override
             public T nextElement() {
                 return iterator.next();
             }

@@ -22,7 +22,6 @@ import org.hasor.context.module.AbstractHasorModule;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public abstract class AbstractWebHasorModule extends AbstractHasorModule {
-    @Override
     public final void init(ApiBinder apiBinder) {
         if (apiBinder instanceof WebApiBinder)
             this.init((WebApiBinder) apiBinder);

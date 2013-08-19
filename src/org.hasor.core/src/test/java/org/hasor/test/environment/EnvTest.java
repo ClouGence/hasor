@@ -24,7 +24,6 @@ import org.junit.Test;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public class EnvTest extends AbstractTestContext {
-    @Override
     protected void initContext(AppContext appContext) {
         //
         appContext.getEnvironment().addEnvVar("notepad", "%windir%/notepad.exe");

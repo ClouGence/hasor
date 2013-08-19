@@ -27,7 +27,6 @@ import org.junit.Test;
  */
 public class AsynEventTest extends AbstractTestContext {
     //
-    @Override
     protected void initContext(AppContext appContext) {
         /*×¢²áÊÂ¼þ¼àÌýÆ÷*/
         appContext.getEventManager().addEventListener(EventType.Type_B, new Test_EventListener(500));
@@ -47,7 +46,6 @@ public class AsynEventTest extends AbstractTestContext {
         public Test_EventListener(int sleep) {
             this.sleep = sleep;
         }
-        @Override
         public void onEvent(String event, Object[] params) {
             try {
                 Thread.sleep(this.sleep);
@@ -66,7 +64,6 @@ class ThrowEvent_EventListener implements HasorEventListener {
     public ThrowEvent_EventListener(int sleep) {
         this.sleep = sleep;
     }
-    @Override
     public void onEvent(String event, Object[] params) {
         System.out.println("onEvent :" + event + " \t" + Hasor.logString(params));
         try {

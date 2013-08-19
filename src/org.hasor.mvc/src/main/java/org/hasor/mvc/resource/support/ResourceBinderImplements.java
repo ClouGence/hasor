@@ -28,13 +28,11 @@ import com.google.inject.internal.UniqueAnnotations;
  */
 public class ResourceBinderImplements implements Module, ResourceBinder {
     private HashMap<String, ResourceLoaderCreatorDefinition> define = new HashMap<String, ResourceLoaderCreatorDefinition>();
-    @Override
     public void bindLoaderCreator(String name, Class<ResourceLoaderCreator> resourceLoaderCreatorType) {
         if (StringUtils.isBlank(name) || resourceLoaderCreatorType == null)
             return;
         this.define.put(name, new ResourceLoaderCreatorDefinition(name, resourceLoaderCreatorType));
     }
-    @Override
     public void configure(Binder binder) {
         for (ResourceLoaderCreatorDefinition define : this.define.values())
             binder.bind(ResourceLoaderCreatorDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(define);

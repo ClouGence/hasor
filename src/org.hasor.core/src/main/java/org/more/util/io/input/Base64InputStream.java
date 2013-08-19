@@ -150,7 +150,6 @@ public class Base64InputStream extends InputStream {
      *         <code>-1</code> if there is no more data because the end of
      *         the stream has been reached.
      */
-    @Override
     public int read(byte b[], int off, int len) {
         if (b == null) {
             throw new NullPointerException();
@@ -183,7 +182,6 @@ public class Base64InputStream extends InputStream {
      *
      * @return the actual number of bytes skipped.
      */
-    @Override
     public long skip(long n) {
         if (pos + n > count) {
             n = count - pos;
@@ -204,7 +202,6 @@ public class Base64InputStream extends InputStream {
      * @return the number of bytes that can be read from the input stream
      *         without blocking.
      */
-    @Override
     public int available() {
         return count - pos;
     }
@@ -215,7 +212,6 @@ public class Base64InputStream extends InputStream {
      *
      * @since JDK1.1
      */
-    @Override
     public boolean markSupported() {
         return true;
     }
@@ -234,7 +230,6 @@ public class Base64InputStream extends InputStream {
      *
      * @since JDK1.1
      */
-    @Override
     public void mark(int readAheadLimit) {
         mark = pos;
     }
@@ -243,7 +238,6 @@ public class Base64InputStream extends InputStream {
      * is 0 unless another position was marked or an offset was specified
      * in the constructor.
      */
-    @Override
     public void reset() {
         pos = mark;
     }
@@ -253,7 +247,6 @@ public class Base64InputStream extends InputStream {
      * generating an <tt>IOException</tt>.
      * <p/>
      */
-    @Override
     public void close() throws IOException {}
     /**
      * <p>Base64 decodes the source string.  NOTE:  This method doesn't

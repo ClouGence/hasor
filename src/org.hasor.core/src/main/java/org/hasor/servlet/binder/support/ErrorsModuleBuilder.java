@@ -36,7 +36,6 @@ class ErrorsModuleBuilder implements Module {
     public ErrorBindingBuilder errorTypes(List<Class<? extends Throwable>> errorTypes) {
         return new Type_ServletErrorBindingBuilder(errorTypes);
     }
-    @Override
     public void configure(Binder binder) {
         /*将ServletErrorDefinition绑定到Guice身上，在正式使用时利用findBindingsByType方法将其找回来。*/
         for (ErrorDefinition define : errorDefinitions)
@@ -44,27 +43,21 @@ class ErrorsModuleBuilder implements Module {
     }
     /*-----------------------------------------------------------------------------------------*/
     static abstract class AbstractServletErrorBindingBuilder implements ErrorBindingBuilder {
-        @Override
         public void bind(Class<? extends WebErrorHook> errorKey) {
             bind(Key.get(errorKey));
         }
-        @Override
         public void bind(Key<? extends WebErrorHook> errorKey) {
             bind(errorKey, new HashMap<String, String>());
         }
-        @Override
         public void bind(WebErrorHook webErrorHook) {
             bind(webErrorHook, new HashMap<String, String>());
         }
-        @Override
         public void bind(Class<? extends WebErrorHook> errorKey, Map<String, String> initParams) {
             bind(Key.get(errorKey), initParams);
         }
-        @Override
         public void bind(Key<? extends WebErrorHook> errorKey, Map<String, String> initParams) {
             bind(errorKey, initParams, null);
         }
-        @Override
         public void bind(WebErrorHook webErrorHook, Map<String, String> initParams) {
             Key<WebErrorHook> servletKey = Key.get(WebErrorHook.class, UniqueAnnotations.create());
             bind(servletKey, initParams, webErrorHook);
@@ -76,7 +69,6 @@ class ErrorsModuleBuilder implements Module {
         public Type_ServletErrorBindingBuilder(List<Class<? extends Throwable>> errorTypes) {
             this.errorTypes = errorTypes;
         }
-        @Override
         protected void bind(Key<? extends WebErrorHook> errorHookKey, Map<String, String> initParams, WebErrorHook webErrorHook) {
             for (Class<? extends Throwable> errorType : errorTypes)
                 errorDefinitions.add(new ErrorDefinition(errorType, errorHookKey, initParams, webErrorHook));

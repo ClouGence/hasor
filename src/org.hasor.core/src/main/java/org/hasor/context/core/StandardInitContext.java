@@ -98,7 +98,6 @@ public class StandardInitContext implements InitContext {
         return new HashMap<String, Object>();
     }
     //
-    @Override
     public long getAppStartTime() {
         return this.startTime;
     }
@@ -113,15 +112,12 @@ public class StandardInitContext implements InitContext {
     public void setContext(Object context) {
         this.context = context;
     }
-    @Override
     public Settings getSettings() {
         return this.settings;
     }
-    @Override
     public Environment getEnvironment() {
         return this.environment;
     }
-    @Override
     public EventManager getEventManager() {
         return this.eventManager;
     }
@@ -129,11 +125,9 @@ public class StandardInitContext implements InitContext {
     public Map<String, Object> getAttributeMap() {
         return attributeMap;
     }
-    @Override
     public Set<Class<?>> getClassSet(Class<?> featureType) {
         return ScanClassPath.getClassSet(this.spanPackage, featureType);
     }
-    @Override
     protected void finalize() throws Throwable {
         ((LifeCycle) this.settings).stop();
         super.finalize();

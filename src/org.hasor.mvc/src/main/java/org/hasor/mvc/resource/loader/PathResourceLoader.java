@@ -29,7 +29,6 @@ public class PathResourceLoader implements ResourceLoader {
     public PathResourceLoader(String dirPath) {
         this.dirPath = dirPath;
     }
-    @Override
     public InputStream getResourceAsStream(String resourcePath) {
         String $name = this.dirPath + "/" + resourcePath;
         $name = $name.replaceAll("/{2}", "/");

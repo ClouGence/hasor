@@ -20,7 +20,6 @@ import org.hasor.context.anno.EventListener;
 /**ÊÂ¼ş¼àÌıÆ÷B*/
 @EventListener("EventType_A")
 public class Type_A_EventListener implements HasorEventListener {
-    @Override
     public void onEvent(String event, Object[] params) {
         System.out.println("Type_A onEvent :" + event + " \t" + Hasor.logString(params));
         try {

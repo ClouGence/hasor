@@ -61,7 +61,6 @@ public final class ModuleInfoBean implements ModuleSettings, HasorEventListener 
         /*ModuleInfoBean通过注册事件监听器监听来自于容器对模块状态的属性更新事件*/
         appContext.getEventManager().addEventListener(this.moduleObject.getClass().getName(), this);
     }
-    @Override
     public void onEvent(String event, Object[] params) {
         if (params == null || params.length < 2)
             return;
@@ -84,7 +83,6 @@ public final class ModuleInfoBean implements ModuleSettings, HasorEventListener 
                     return info;
         throw new UndefinedException(targetModule.getName() + " module is Undefined!");
     }
-    @Override
     public void beforeMe(Class<? extends HasorModule> targetModule) {
         if (ready())
             /*模块已经准备好，只有当模块在准备期才可以使用该方法*/
@@ -98,7 +96,6 @@ public final class ModuleInfoBean implements ModuleSettings, HasorEventListener 
         Dependency dep = new DependencyBean(targetModuleInfo, true);
         this.dependency.add(dep);
     }
-    @Override
     public void followTarget(Class<? extends HasorModule> targetModule) {
         if (ready())
             /*模块已经准备好，只有当模块在准备期才可以使用该方法*/
@@ -112,7 +109,6 @@ public final class ModuleInfoBean implements ModuleSettings, HasorEventListener 
         Dependency dep = new DependencyBean(targetModuleInfo, false);
         this.dependency.add(dep);
     }
-    @Override
     public List<Dependency> getDependency() {
         if (!ready())
             /*模块尚未准备好，依赖尚不清楚*/
@@ -122,23 +118,18 @@ public final class ModuleInfoBean implements ModuleSettings, HasorEventListener 
     List<Dependency> getInternalDependency() {
         return this.dependency;
     }
-    @Override
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
-    @Override
     public void setDescription(String description) {
         this.description = description;
     }
-    @Override
     public String getDisplayName() {
         return this.displayName;
     }
-    @Override
     public String getDescription() {
         return this.description;
     }
-    @Override
     public void bindingSettingsNamespace(String namespace) {
         if (ready())
             /*模块已经准备好，只有当模块在准备期才可以使用该方法*/
@@ -146,25 +137,20 @@ public final class ModuleInfoBean implements ModuleSettings, HasorEventListener 
         //
         this.namespace = namespace;
     }
-    @Override
     public String getSettingsNamespace() {
         return this.namespace;
     }
-    @Override
     public HasorModule getModuleObject() {
         return this.moduleObject;
     }
-    @Override
     public String toString() {
         return String.format("displayName is %s, class is %s",//
                 this.displayName, this.moduleObject.getClass());
     }
-    @Override
     public void afterMe(Class<? extends HasorModule> targetModule) {
         ModuleSettings setting = (ModuleSettings) this.getInfo(targetModule);
         setting.beforeMe(this.getModuleObject().getClass());
     }
-    @Override
     public boolean isRunning() {
         return this.running;
     }
@@ -173,15 +159,12 @@ public final class ModuleInfoBean implements ModuleSettings, HasorEventListener 
             return false;
         return this.isReady();
     }
-    @Override
     public boolean isReady() {
         return this.ready;
     }
-    @Override
     public boolean isInit() {
         return this.init;
     }
-    @Override
     public boolean isDependencyReady() {
         for (Dependency dep : this.getInternalDependency())
             if (dep.getModuleInfo().isDependencyReady() == false || dep.getModuleInfo().isReady() == false)
@@ -189,7 +172,6 @@ public final class ModuleInfoBean implements ModuleSettings, HasorEventListener 
                     return false;
         return true;
     }
-    @Override
     public boolean isDependencyRunning() {
         for (Dependency dep : this.getInternalDependency())
             if (dep.getModuleInfo().isDependencyRunning() == false || dep.getModuleInfo().isRunning() == false)
@@ -197,7 +179,6 @@ public final class ModuleInfoBean implements ModuleSettings, HasorEventListener 
                     return false;
         return true;
     }
-    @Override
     public boolean isDependencyInit() {
         for (Dependency dep : this.getInternalDependency())
             if (dep.getModuleInfo().isDependencyInit() == false || dep.getModuleInfo().isInit() == false)
@@ -205,7 +186,6 @@ public final class ModuleInfoBean implements ModuleSettings, HasorEventListener 
                     return false;
         return true;
     }
-    @Override
     public InitContext getInitContext() {
         return this.appContext;
     }

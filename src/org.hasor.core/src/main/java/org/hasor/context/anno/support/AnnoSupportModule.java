@@ -38,17 +38,14 @@ import org.more.util.StringUtils;
  */
 @Module(description = "org.hasor.annotation软件包功能支持。")
 public class AnnoSupportModule extends AbstractHasorModule implements GetContext {
-    @Override
     public void configuration(ModuleSettings info) {}
     //
     private AppContext appContext = null;
-    @Override
     public AppContext getAppContext() {
         return this.appContext;
     }
     //
     /**初始化.*/
-    @Override
     public void init(ApiBinder apiBinder) {
         if (apiBinder.getInitContext().getSettings().getBoolean("hasor.annotation") == false) {
             Hasor.warning("init Annotation false!");
@@ -63,7 +60,6 @@ public class AnnoSupportModule extends AbstractHasorModule implements GetContext
     }
     //
     /***/
-    @Override
     public void start(AppContext appContext) {
         this.appContext = appContext;
         this.loadEvent(appContext);
@@ -126,7 +122,6 @@ public class AnnoSupportModule extends AbstractHasorModule implements GetContext
             apiBinder.getGuiceBinder().bind(settingClass).asEagerSingleton();
             Hasor.info("%s bind SettingsListener.", settingClass);
             eventManager.pushEventListener(LifeCycleEnum.PhaseEvent_Start.getValue(), new HasorEventListener() {
-                @Override
                 public void onEvent(String event, Object[] params) {
                     AppContext appContext = (AppContext) params[0];
                     HasorSettingListener settingObj = (HasorSettingListener) appContext.getInstance(settingClass);

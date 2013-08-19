@@ -23,7 +23,6 @@ import org.junit.Test;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public class AopTest extends AbstractTestContext {
-    @Override
     protected void initContext(AppContext appContext) {}
     @Test
     public void aopTest() {

@@ -23,12 +23,8 @@ import org.hasor.context.ModuleSettings;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public abstract class AbstractHasorModule implements HasorModule {
-    @Override
     public void configuration(ModuleSettings info) {}
-    @Override
     public void start(AppContext appContext) {}
-    @Override
     public void stop(AppContext appContext) {}
-    @Override
     public void destroy(AppContext appContext) {}
 }

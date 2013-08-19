@@ -51,7 +51,6 @@ public class ManagedFilterPipeline implements FilterPipeline {
         this.errorPipeline = errorPipeline;
     }
     //
-    @Override
     public synchronized void initPipeline(AppContext appContext) throws ServletException {
         if (initialized)
             return;
@@ -75,7 +74,6 @@ public class ManagedFilterPipeline implements FilterPipeline {
         // Convert to a fixed size array for speed.
         return filterDefinitions.toArray(new FilterDefinition[filterDefinitions.size()]);
     }
-    @Override
     public void dispatch(HttpServletRequest request, HttpServletResponse response, FilterChain defaultFilterChain) throws IOException, ServletException {
         if (!initialized) {
             initPipeline(this.appContext);
@@ -89,7 +87,6 @@ public class ManagedFilterPipeline implements FilterPipeline {
             this.errorPipeline.dispatch(request, response, e);
         }
     }
-    @Override
     public void destroyPipeline(AppContext appContext) {
         //destroy servlets first
         this.servletPipeline.destroyPipeline(appContext);
@@ -120,7 +117,6 @@ public class ManagedFilterPipeline implements FilterPipeline {
         }
         //noinspection OverlyComplexAnonymousInnerClass
         return new HttpServletRequestWrapper(request) {
-            @Override
             public RequestDispatcher getRequestDispatcher(String path) {
                 final RequestDispatcher dispatcher = servletPipeline.getRequestDispatcher(path);
                 return (null != dispatcher) ? dispatcher : super.getRequestDispatcher(path);

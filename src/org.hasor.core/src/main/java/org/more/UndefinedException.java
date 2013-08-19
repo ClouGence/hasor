@@ -20,6 +20,10 @@ package org.more;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public class UndefinedException extends RuntimeException {
+    /**
+     * Required for serialization support.
+     * @see java.io.Serializable
+     */
     private static final long serialVersionUID = 2377606123252842745L;
     /**Œ¥∂®“Â°£*/
     public UndefinedException(String string) {

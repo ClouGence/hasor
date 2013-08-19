@@ -58,7 +58,6 @@ public class DefaultAppContext extends AbstractAppContext {
     public DefaultAppContext(String mainConfig, Object context) throws IOException {
         super(mainConfig, context);
     }
-    @Override
     protected void initContext() throws IOException {
         super.initContext();
         this.running = false;
@@ -133,7 +132,6 @@ public class DefaultAppContext extends AbstractAppContext {
         this.guice = this.createInjector(null);
         Hasor.assertIsNotNull(this.guice, "can not be create Injector.");
     }
-    @Override
     public synchronized void start() {
         if (this.running == true)
             return;
@@ -154,7 +152,6 @@ public class DefaultAppContext extends AbstractAppContext {
         this.printModState();
         Hasor.info("hasor started!");
     }
-    @Override
     public synchronized void stop() {
         if (this.running == false)
             return;
@@ -172,7 +169,6 @@ public class DefaultAppContext extends AbstractAppContext {
         }
         Hasor.info("hasor stoped!");
     }
-    @Override
     public synchronized void destroy() {
         Hasor.info("send destroy sign.");
         this.getEventManager().doSyncEventIgnoreThrow(LifeCycleEnum.PhaseEvent_Destroy.getValue(), (AppContext) this);//发送阶段事件
@@ -186,11 +182,9 @@ public class DefaultAppContext extends AbstractAppContext {
         }
         Hasor.info("hasor destroy!");
     }
-    @Override
     public boolean isRunning() {
         return this.running;
     }
-    @Override
     public boolean isInit() {
         return this.guice != null;
     }
@@ -296,7 +290,6 @@ public class DefaultAppContext extends AbstractAppContext {
     /**为模块创建ApiBinder*/
     protected ApiBinder newApiBinder(final ModuleInfo forModule, final Binder binder) {
         return new ApiBinderModule(this, forModule) {
-            @Override
             public Binder getGuiceBinder() {
                 return binder;
             }
@@ -340,7 +333,6 @@ class MasterModule implements Module {
     public MasterModule(DefaultAppContext appContet) {
         this.appContet = appContet;
     }
-    @Override
     public void configure(Binder binder) {
         Hasor.info("send init sign...");
         ModuleInfo[] hasorModules = this.appContet.getModules();
@@ -355,35 +347,30 @@ class ExtBind {
     public static void doBind(final Binder binder, final AppContext appContet) {
         /*绑定InitContext对象的Provider*/
         binder.bind(InitContext.class).toProvider(new Provider<InitContext>() {
-            @Override
             public InitContext get() {
                 return appContet;
             }
         });
         /*绑定AppContext对象的Provider*/
         binder.bind(AppContext.class).toProvider(new Provider<AppContext>() {
-            @Override
             public AppContext get() {
                 return appContet;
             }
         });
         /*绑定EventManager对象的Provider*/
         binder.bind(EventManager.class).toProvider(new Provider<EventManager>() {
-            @Override
             public EventManager get() {
                 return appContet.getEventManager();
             }
         });
         /*绑定Settings对象的Provider*/
         binder.bind(Settings.class).toProvider(new Provider<Settings>() {
-            @Override
             public Settings get() {
                 return appContet.getSettings();
             }
         });
         /*绑定Environment对象的Provider*/
         binder.bind(Environment.class).toProvider(new Provider<Environment>() {
-            @Override
             public Environment get() {
                 return appContet.getEnvironment();
             }

@@ -47,7 +47,6 @@ class ServletDefinition extends AbstractServletModuleBinding implements Provider
         this.servletInstance = servletInstance;
         this.patternMatcher = uriPatternMatcher;
     }
-    @Override
     public ServletDefinition get() {
         return this;
     }
@@ -56,7 +55,6 @@ class ServletDefinition extends AbstractServletModuleBinding implements Provider
             this.servletInstance = appContext.getGuice().getInstance(this.servletKey);
         return this.servletInstance;
     }
-    @Override
     public String toString() {
         return String.format("type %s pattern=%s ,initParams=%s ,uriPatternType=%s",//
                 ServletDefinition.class, getPattern(), getInitParams(), getUriPatternType());
@@ -106,7 +104,6 @@ class ServletDefinition extends AbstractServletModuleBinding implements Provider
             //must use a boolean on the memo field, because null is a legal value (TODO no, it's not)
             private boolean pathInfoComputed = false;
             private String  pathInfo;
-            @Override
             public String getPathInfo() {
                 if (!isPathInfoComputed()) {
                     int servletPathLength = getServletPath().length();
@@ -129,11 +126,9 @@ class ServletDefinition extends AbstractServletModuleBinding implements Provider
             private boolean isPathComputed() {
                 return pathComputed && !(null != servletRequest.getAttribute(REQUEST_DISPATCHER_REQUEST));
             }
-            @Override
             public String getServletPath() {
                 return computePath();
             }
-            @Override
             public String getPathTranslated() {
                 final String info = getPathInfo();
                 return (null == info) ? null : getRealPath(info);

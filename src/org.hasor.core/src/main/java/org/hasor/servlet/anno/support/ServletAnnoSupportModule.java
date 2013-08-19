@@ -44,12 +44,10 @@ import org.more.util.StringUtils;
  */
 @Module(description = "org.hasor.servlet»Ìº˛∞¸◊¢Ω‚∞Ê÷ß≥÷°£")
 public class ServletAnnoSupportModule extends AbstractWebHasorModule {
-    @Override
     public void configuration(ModuleSettings info) {
         info.followTarget(AnnoSupportModule.class);
     }
     /**≥ı ºªØ.*/
-    @Override
     public void init(WebApiBinder apiBinder) {
         if (apiBinder.getInitContext().getSettings().getBoolean("hasor.annotation") == false) {
             Hasor.warning("init WebAnnotation false!");
@@ -81,7 +79,6 @@ public class ServletAnnoSupportModule extends AbstractWebHasorModule {
         }
         //2.≈≈–Ú
         Collections.sort(webFilterList, new Comparator<Class<?>>() {
-            @Override
             public int compare(Class<?> o1, Class<?> o2) {
                 WebFilter o1Anno = o1.getAnnotation(WebFilter.class);
                 WebFilter o2Anno = o2.getAnnotation(WebFilter.class);
@@ -117,7 +114,6 @@ public class ServletAnnoSupportModule extends AbstractWebHasorModule {
         }
         //2.≈≈–Ú
         Collections.sort(webServletList, new Comparator<Class<?>>() {
-            @Override
             public int compare(Class<?> o1, Class<?> o2) {
                 WebServlet o1Anno = o1.getAnnotation(WebServlet.class);
                 WebServlet o2Anno = o2.getAnnotation(WebServlet.class);
@@ -154,7 +150,6 @@ public class ServletAnnoSupportModule extends AbstractWebHasorModule {
         }
         //2.≈≈–Ú
         Collections.sort(webErrorList, new Comparator<Class<?>>() {
-            @Override
             public int compare(Class<?> o1, Class<?> o2) {
                 WebError o1Anno = o1.getAnnotation(WebError.class);
                 WebError o2Anno = o2.getAnnotation(WebError.class);
@@ -190,7 +185,6 @@ public class ServletAnnoSupportModule extends AbstractWebHasorModule {
         }
         //2.≈≈–Ú
         Collections.sort(sessionListenerList, new Comparator<Class<?>>() {
-            @Override
             public int compare(Class<?> o1, Class<?> o2) {
                 WebSessionListener o1Anno = o1.getAnnotation(WebSessionListener.class);
                 WebSessionListener o2Anno = o2.getAnnotation(WebSessionListener.class);

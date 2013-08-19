@@ -26,7 +26,6 @@ import org.hasor.servlet.anno.WebError;
  */
 @WebError(NullPointerException.class)
 public class NullPointerExceptionHook implements WebErrorHook {
-    @Override
     public void doError(ServletRequest request, ServletResponse response, Throwable error) throws Throwable {
         Writer w = response.getWriter();
         w.write("is NullPointerException.");

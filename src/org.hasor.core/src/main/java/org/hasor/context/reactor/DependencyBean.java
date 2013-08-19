@@ -33,20 +33,16 @@ class DependencyBean implements Dependency {
         this.moduleInfo = moduleInfo;
         this.option = option;
     }
-    @Override
     public ModuleInfo getModuleInfo() {
         return this.moduleInfo;
     }
-    @Override
     public boolean isOption() {
         return this.option;
     }
-    @Override
     public String toString() {
         return String.format("name %s, option is %s."//
                 , this.moduleInfo.getDisplayName(), this.option);
     }
-    @Override
     public List<Dependency> getDependency() {
         return Collections.unmodifiableList(this.dependencyLiat);
     }

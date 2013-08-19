@@ -223,59 +223,47 @@ public class HasorSettings extends AbstractHasorSettings implements LifeCycle {
     protected Map<String, Object> getSettingMap() {
         return this.settingMap;
     }
-    @Override
     public String[] getNamespaceArray() {
         return this.nsDefine.keySet().toArray(new String[this.nsDefine.size()]);
     }
-    @Override
     public AbstractHasorSettings getNamespace(String namespace) {
         final HasorSettings setting = this;
         final Map<String, Object> data = this.settingNsMap.get(namespace);
         if (data == null)
             return null;
         return new AbstractHasorSettings() {
-            @Override
             public void removeSettingsListener(HasorSettingListener listener) {
                 throw new UnsupportedOperationException();
             }
-            @Override
             public void refresh() throws IOException {
                 throw new UnsupportedOperationException();
             }
-            @Override
             public void addSettingsListener(HasorSettingListener listener) {
                 throw new UnsupportedOperationException();
             }
-            @Override
             public void load(String mainConfig) throws IOException {
                 throw new UnsupportedOperationException();
             }
-            @Override
             public HasorSettingListener[] getSettingListeners() {
                 return setting.getSettingListeners();
             }
-            @Override
             public AbstractHasorSettings getNamespace(String namespace) {
                 return setting.getNamespace(namespace);
             }
-            @Override
             public String[] getNamespaceArray() {
                 return setting.getNamespaceArray();
             }
-            @Override
             protected Map<String, Object> getSettingMap() {
                 return data;
             }
         };
     }
-    @Override
     public synchronized void load(String mainConfig) throws IOException {
         if (StringUtils.isBlank(mainConfig))
             return;
         this.mainSettings = mainConfig;
         this.refresh();
     }
-    @Override
     public synchronized void refresh() throws IOException {
         this.settingMap.removeAllMap();
         Map<String, Map<String, Object>> finalSettings = new HashMap<String, Map<String, Object>>();
@@ -344,7 +332,6 @@ public class HasorSettings extends AbstractHasorSettings implements LifeCycle {
         this.watch.stop();
         this.watch = null;
     }
-    @Override
     public boolean isRunning() {
         return this.watch != null;
     }
@@ -354,18 +341,15 @@ public class HasorSettings extends AbstractHasorSettings implements LifeCycle {
             listener.onLoadConfig(this);
     }
     /**Ìí¼ÓÅäÖÃÎÄ¼þ±ä¸ü¼àÌýÆ÷¡£*/
-    @Override
     public void addSettingsListener(HasorSettingListener settingsListener) {
         if (this.settingListenerList.contains(settingsListener) == false)
             this.settingListenerList.add(settingsListener);
     }
     /**É¾³ýÅäÖÃÎÄ¼þ¼àÌýÆ÷¡£*/
-    @Override
     public void removeSettingsListener(HasorSettingListener settingsListener) {
         if (this.settingListenerList.contains(settingsListener) == true)
             this.settingListenerList.remove(settingsListener);
     }
-    @Override
     public HasorSettingListener[] getSettingListeners() {
         return this.settingListenerList.toArray(new HasorSettingListener[this.settingListenerList.size()]);
     }

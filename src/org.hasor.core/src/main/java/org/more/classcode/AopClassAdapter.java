@@ -126,7 +126,6 @@ class AopClassAdapter extends ClassAdapter implements Opcodes {
         Matcher m = p.matcher(desc);
         m.find();
         String[] asmParams = EngineToos.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
-        
         String asmReturns = m.group(2);
         int paramCount = asmParams.length;
         int localVarSize = paramCount + 1;//方法变量表大小

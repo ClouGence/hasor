@@ -40,7 +40,6 @@ class RestfulController implements Filter {
     private AppContext         appContext  = null;
     private ActionDefineImpl[] defineArray = null;
     //
-    @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         ActionManager actionManager = appContext.getInstance(ActionManager.class);
         ArrayList<ActionDefineImpl> restfulList = new ArrayList<ActionDefineImpl>();
@@ -52,16 +51,13 @@ class RestfulController implements Filter {
         }
         //
         Collections.sort(restfulList, new Comparator<ActionDefineImpl>() {
-            @Override
             public int compare(ActionDefineImpl o1, ActionDefineImpl o2) {
                 return o1.getRestfulMapping().compareToIgnoreCase(o2.getRestfulMapping());
             }
         });
         this.defineArray = restfulList.toArray(new ActionDefineImpl[restfulList.size()]);
     }
-    @Override
     public void destroy() {}
-    @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         String actionPath = request.getRequestURI().substring(request.getContextPath().length());
@@ -115,7 +111,6 @@ class RestfulController implements Filter {
             return null;
         //
         return new RequestDispatcher() {
-            @Override
             public void include(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
                 servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
                 /*Ö´ÐÐservlet*/
@@ -125,7 +120,6 @@ class RestfulController implements Filter {
                     servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
                 }
             }
-            @Override
             public void forward(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
                 if (servletResponse.isCommitted() == true)
                     throw new ServletException("Response has been committed--you can only call forward before committing the response (hint: don't flush buffers)");
@@ -156,7 +150,6 @@ class RestfulController implements Filter {
             super((HttpServletRequest) servletRequest);
             this.newRequestUri = newRequestUri;
         }
-        @Override
         public String getRequestURI() {
             return newRequestUri;
         }

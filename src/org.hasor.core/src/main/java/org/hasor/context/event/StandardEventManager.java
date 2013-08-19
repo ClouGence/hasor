@@ -59,7 +59,6 @@ public class StandardEventManager implements EventManager {
         this.settings = settings;
         this.executorService = Executors.newScheduledThreadPool(1);
         settings.addSettingsListener(new HasorSettingListener() {
-            @Override
             public void onLoadConfig(Settings newConfig) {
                 update();
             }
@@ -85,7 +84,6 @@ public class StandardEventManager implements EventManager {
     //
     //
     //
-    @Override
     public void pushEventListener(String eventType, HasorEventListener hasorEventListener) {
         if (StringUtils.isBlank(eventType) || hasorEventListener == null)
             return;
@@ -99,7 +97,6 @@ public class StandardEventManager implements EventManager {
             eventList.push(hasorEventListener);
         this.onceListenerLock.unlock();//解锁
     }
-    @Override
     public void addEventListener(String eventType, HasorEventListener hasorEventListener) {
         this.listenerRWLock.writeLock().lock();//加锁(写)
         //
@@ -117,13 +114,11 @@ public class StandardEventManager implements EventManager {
         //
         this.listenerRWLock.writeLock().unlock();//解锁(写)
     }
-    @Override
     public void removeAllEventListener(String eventType) {
         this.listenerRWLock.writeLock().lock();//加锁(写)
         this.listenerMap.remove(eventType);
         this.listenerRWLock.writeLock().unlock();//解锁(写)
     }
-    @Override
     public void removeEventListener(String eventType, HasorEventListener hasorEventListener) {
         this.listenerRWLock.writeLock().lock();//加锁(写)
         //
@@ -138,7 +133,6 @@ public class StandardEventManager implements EventManager {
         //
         this.listenerRWLock.writeLock().unlock();//解锁(写)
     }
-    @Override
     public HasorEventListener[] getEventListener(String eventType) {
         this.listenerRWLock.readLock().lock();//加锁(读)
         //
@@ -153,7 +147,6 @@ public class StandardEventManager implements EventManager {
         this.listenerRWLock.readLock().unlock();//解锁(读)
         return eventListenerArray;
     }
-    @Override
     public String[] getEventTypes() {
         this.listenerRWLock.readLock().lock();//加锁(读)
         //
@@ -168,11 +161,9 @@ public class StandardEventManager implements EventManager {
     //
     //
     //
-    @Override
     public void doSyncEvent(String eventType, Object... objects) throws Throwable {
         this._doSyncEvent(false, eventType, objects);
     }
-    @Override
     public void doSyncEventIgnoreThrow(String eventType, Object... objects) {
         try {
             this._doSyncEvent(true, eventType, objects);
@@ -180,11 +171,9 @@ public class StandardEventManager implements EventManager {
             throw new RuntimeException(e);//由于ignore参数为true不会抛出事件的异常。这里可以再次抛出异常原因是确保不会吞掉潜在的异常信息。
         }
     }
-    @Override
     public void doAsynEvent(String eventType, AsyncCallBackHook callBack, Object... objects) {
         _doAsynEvent(false, eventType, callBack, objects);
     }
-    @Override
     public void doAsynEventIgnoreThrow(final String eventType, final Object... objects) {
         _doAsynEvent(true, eventType, null, objects);
     }
@@ -217,7 +206,6 @@ public class StandardEventManager implements EventManager {
         final HasorEventListener[] eventListenerArray = this.listenerMap.get(eventType);
         this.listenerRWLock.readLock().unlock();//解锁(读)
         this.executorService.submit(new Runnable() {
-            @Override
             public void run() {
                 if (eventListenerArray != null) {
                     for (HasorEventListener event : eventListenerArray)
@@ -259,7 +247,6 @@ public class StandardEventManager implements EventManager {
     //
     //
     //
-    @Override
     public synchronized void clean() {
         this.onceListenerLock.lock();//加锁
         this.onceListenerMap.clear();
@@ -279,11 +266,9 @@ public class StandardEventManager implements EventManager {
     //
     //
     //
-    @Override
     public synchronized void addTimer(String timerName, HasorEventListener hasorEventListener) throws RepeateException {
         this._addTimer(timerName, hasorEventListener, null);
     }
-    @Override
     public synchronized void addTimer(String timerName, HasorEventListener hasorEventListener, TimerCallBackHook callBack) throws RepeateException {
         this._addTimer(timerName, hasorEventListener, callBack);
     }
@@ -296,7 +281,6 @@ public class StandardEventManager implements EventManager {
         final String timerType = this.getSettings().getString("hasor.timerEvent.type");
         ScheduledFuture<?> future = null;
         Runnable eventListener = new Runnable() {
-            @Override
             public void run() {
                 try {
                     hasorEventListener.onEvent(timerName, null);
@@ -317,14 +301,12 @@ public class StandardEventManager implements EventManager {
         if (future != null)
             this.timerMap.put(timerName, future);
     }
-    @Override
     public synchronized void removeTimer(String timerName) {
         if (this.timerMap.containsKey(timerName)) {
             ScheduledFuture<?> future = this.timerMap.remove(timerName);
             future.cancel(false);
         }
     }
-    @Override
     public synchronized void removeTimerNow(String timerName) {
         if (this.timerMap.containsKey(timerName)) {
             ScheduledFuture<?> future = this.timerMap.remove(timerName);

@@ -41,7 +41,6 @@ class ActionController extends HttpServlet {
     private AppContext        appContext       = null;
     private ActionManager     actionManager    = null;
     private ActionSettings    actionSettings   = null;
-    @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         this.actionManager = appContext.getInstance(ActionManager.class);
@@ -56,7 +55,6 @@ class ActionController extends HttpServlet {
         return true;
     }
     //
-    @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String requestPath = request.getRequestURI().substring(request.getContextPath().length());
         if (MatchUtils.matchWild(actionSettings.getIntercept(), requestPath) == false)
@@ -115,7 +113,6 @@ class ActionController extends HttpServlet {
             return null;
         else
             return new RequestDispatcher() {
-                @Override
                 public void include(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
                     servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
                     /*Ö´ÐÐservlet*/
@@ -125,7 +122,6 @@ class ActionController extends HttpServlet {
                         servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
                     }
                 }
-                @Override
                 public void forward(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
                     if (servletResponse.isCommitted() == true)
                         throw new ServletException("Response has been committed--you can only call forward before committing the response (hint: don't flush buffers)");
@@ -156,7 +152,6 @@ class ActionController extends HttpServlet {
             super((HttpServletRequest) servletRequest);
             this.newRequestUri = newRequestUri;
         }
-        @Override
         public String getRequestURI() {
             return newRequestUri;
         }

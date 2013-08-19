@@ -1038,7 +1038,6 @@ public class JSON {
         public char peek() {
             return string.charAt(index);
         }
-        @Override
         public String toString() {
             return string.substring(0, index) + "|||" + string.substring(index);
         }
@@ -1169,7 +1168,6 @@ public class JSON {
                 parse(json);
             _json = json;
         }
-        @Override
         public String toString() {
             return _json;
         }

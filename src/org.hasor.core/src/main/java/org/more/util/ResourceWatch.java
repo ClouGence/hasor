@@ -32,7 +32,6 @@ public abstract class ResourceWatch extends Thread {
     /**检查资源是否修改，并且返回修改的时间戳。当两次检查不一致时会调用{@link #reload(URI)}方法。*/
     public abstract long lastModify(URI resourceURI) throws IOException;
     /**首次启动会先执行load然后在启动线程*/
-    @Override
     public synchronized void start() {
         try {
             this.firstStart(this.resourceURI);
@@ -42,7 +41,6 @@ public abstract class ResourceWatch extends Thread {
         }
         super.start();
     }
-    @Override
     public final void run() {
         if (this.resourceURI == null)
             return;

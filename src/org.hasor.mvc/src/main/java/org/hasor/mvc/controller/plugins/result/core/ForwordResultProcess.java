@@ -28,7 +28,6 @@ import org.hasor.mvc.controller.plugins.result.ControllerResultProcess;
 */
 @ControllerResultDefine(Forword.class)
 public class ForwordResultProcess implements ControllerResultProcess {
-    @Override
     public void process(HttpServletRequest request, HttpServletResponse response, Object result) throws ServletException, IOException {
         Hasor.debug("forword to %s.", result);
         request.getRequestDispatcher(result.toString()).forward(request, response);

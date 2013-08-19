@@ -29,7 +29,6 @@ import org.junit.Test;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public class SettingsTest extends AbstractTestContext {
-    @Override
     protected void initContext(AppContext appContext) {}
     @Test
     public void test() throws IOException {
@@ -41,7 +40,6 @@ public class SettingsTest extends AbstractTestContext {
 @SettingsListener
 class TestSetting implements HasorSettingListener {
     public String configString = null;
-    @Override
     public void onLoadConfig(Settings newConfig) {
         configString = newConfig.getString("PACK");
         System.out.println("onLoadConfig£∫" + configString);
@@ -51,7 +49,6 @@ class TestSetting implements HasorSettingListener {
 class TimerEvent implements HasorEventListener {
     @Inject
     private TestSetting setting = null;
-    @Override
     public void onEvent(String event, Object[] params) {
         System.out.println(setting.configString);
     }

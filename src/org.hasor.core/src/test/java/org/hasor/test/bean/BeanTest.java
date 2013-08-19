@@ -25,7 +25,6 @@ import org.junit.Test;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public class BeanTest extends AbstractTestContext {
-    @Override
     protected void initContext(AppContext appContext) {}
     @Test
     public void createBean() throws Exception {

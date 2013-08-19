@@ -31,7 +31,6 @@ class ListenerBindingBuilder implements Module {
     /*Filter 定义*/
     private final List<ListenerDefinition> listenerDefinitions = new ArrayList<ListenerDefinition>();
     //
-    @Override
     public void configure(Binder binder) {
         /*将ListenerDefinition绑定到Guice身上，在正式使用时利用findBindingsByType方法将其找回来。*/
         for (ListenerDefinition define : listenerDefinitions)
@@ -43,15 +42,12 @@ class ListenerBindingBuilder implements Module {
     /*-----------------------------------------------------------------------------------------*/
     /** SessionListenerBindingBuilder接口实现 */
     class SessionListenerBindingBuilderImpl implements SessionListenerBindingBuilder {
-        @Override
         public void bind(Class<? extends HttpSessionListener> listenerKey) {
             bind(Key.get(listenerKey));
         }
-        @Override
         public void bind(Key<? extends HttpSessionListener> listenerKey) {
             this.bind(listenerKey, null);
         }
-        @Override
         public void bind(HttpSessionListener sessionListener) {
             Key<HttpSessionListener> listenerKey = Key.get(HttpSessionListener.class, UniqueAnnotations.create());
             bind(listenerKey, sessionListener);

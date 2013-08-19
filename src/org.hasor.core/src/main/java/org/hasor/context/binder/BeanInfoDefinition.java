@@ -30,19 +30,15 @@ class BeanInfoDefinition implements BeanInfo, Provider<BeanInfo> {
         this.aliasNames = aliasNames;
         this.beanClass = beanClass;
     }
-    @Override
     public BeanInfo get() {
         return this;
     }
-    @Override
     public String getName() {
         return this.beanName;
     }
-    @Override
     public String[] getAliasName() {
         return this.aliasNames;
     }
-    @Override
     public Class<?> getBeanType() {
         return this.beanClass;
     }

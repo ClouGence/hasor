@@ -39,7 +39,6 @@ class FiltersModuleBuilder implements Module {
     public FilterBindingBuilder filterRegex(List<String> regexPattern) {
         return new FilterBindingBuilderImpl(UriPatternType.REGEX, regexPattern);
     }
-    @Override
     public void configure(Binder binder) {
         /*将FilterDefinition绑定到Guice身上，在正式使用时利用findBindingsByType方法将其找回来。*/
         for (FilterDefinition define : filterDefinitions)
@@ -55,28 +54,22 @@ class FiltersModuleBuilder implements Module {
             this.uriPatternType = uriPatternType;
             this.uriPatterns = uriPatterns;
         }
-        @Override
         public void through(Class<? extends Filter> filterKey) {
             through(Key.get(filterKey));
         }
-        @Override
         public void through(Key<? extends Filter> filterKey) {
             through(filterKey, new HashMap<String, String>());
         }
-        @Override
         public void through(Filter filter) {
             through(filter, new HashMap<String, String>());
         }
-        @Override
         public void through(Class<? extends Filter> filterKey, Map<String, String> initParams) {
             // Careful you don't accidentally make this method recursive, thank you IntelliJ IDEA!
             through(Key.get(filterKey), initParams);
         }
-        @Override
         public void through(Key<? extends Filter> filterKey, Map<String, String> initParams) {
             through(filterKey, initParams, null);
         }
-        @Override
         public void through(Filter filter, Map<String, String> initParams) {
             Key<Filter> filterKey = Key.get(Filter.class, UniqueAnnotations.create());
             through(filterKey, initParams, filter);

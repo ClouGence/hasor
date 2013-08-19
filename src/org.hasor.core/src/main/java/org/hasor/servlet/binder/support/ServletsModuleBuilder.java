@@ -39,7 +39,6 @@ class ServletsModuleBuilder implements Module {
     public ServletBindingBuilder filterRegex(List<String> regexPattern) {
         return new ServletBindingBuilderImpl(UriPatternType.REGEX, regexPattern);
     }
-    @Override
     public void configure(Binder binder) {
         /*将ServletDefinition绑定到Guice身上，在正式使用时利用findBindingsByType方法将其找回来。*/
         for (ServletDefinition define : servletDefinitions)

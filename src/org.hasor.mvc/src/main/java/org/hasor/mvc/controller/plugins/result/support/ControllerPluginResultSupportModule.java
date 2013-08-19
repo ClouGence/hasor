@@ -28,20 +28,16 @@ import org.hasor.servlet.WebApiBinder;
  */
 @Module(description = "org.hasor.mvc.controller.plugins.result软件包功能支持。")
 public class ControllerPluginResultSupportModule extends AbstractWebHasorModule {
-    @Override
     public void configuration(ModuleSettings info) {
         info.followTarget(ServletControllerSupportModule.class);
     }
-    @Override
     public void init(WebApiBinder apiBinder) {
         apiBinder.getGuiceBinder().bind(Caller.class);
     }
-    @Override
     public void start(AppContext appContext) {
         Caller caller = appContext.getInstance(Caller.class);
         appContext.getEventManager().addEventListener(ActionDefine.Event_AfterInvoke, caller);
     }
-    @Override
     public void stop(AppContext appContext) {
         Caller caller = appContext.getInstance(Caller.class);
         appContext.getEventManager().removeEventListener(ActionDefine.Event_AfterInvoke, caller);;

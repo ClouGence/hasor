@@ -25,12 +25,10 @@ import org.hasor.context.module.AbstractHasorModule;
  */
 @Module()
 public class Mode6 extends AbstractHasorModule {
-    @Override
     public void configuration(ModuleSettings info) {
         info.beforeMe(Mode7.class);
         info.beforeMe(Mode8.class);
     }
-    @Override
     public void init(ApiBinder apiBinder) {
         System.out.println("Mode6  init!");
     }

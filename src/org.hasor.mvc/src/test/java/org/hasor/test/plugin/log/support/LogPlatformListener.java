@@ -16,9 +16,7 @@ import com.google.inject.matcher.AbstractMatcher;
  */
 @Module(displayName = "LogPlatformListener", description = "org.test.plugin.log软件包功能支持。")
 public class LogPlatformListener extends AbstractHasorModule {
-    @Override
     public void configuration(ModuleSettings info) {}
-    @Override
     public void init(ApiBinder apiBinder) {
         //1.挂载Aop
         apiBinder.getGuiceBinder().bindInterceptor(new ClassOutLogMatcher(), new MethodOutLogMatcher(), new OutLogInterceptor());
@@ -26,7 +24,6 @@ public class LogPlatformListener extends AbstractHasorModule {
     /*-------------------------------------------------------------------------------------*/
     /*负责检测类是否匹配。规则：只要类型或方法上标记了@OutLog。*/
     private class ClassOutLogMatcher extends AbstractMatcher<Class<?>> {
-        @Override
         public boolean matches(Class<?> matcherType) {
             if (matcherType.isAnnotationPresent(OutLog.class) == true)
                 return true;
@@ -45,7 +42,6 @@ public class LogPlatformListener extends AbstractHasorModule {
     }
     /*负责检测方法是否匹配。规则：方法或方法所处类上标记了@OutLog。*/
     private class MethodOutLogMatcher extends AbstractMatcher<Method> {
-        @Override
         public boolean matches(Method matcherType) {
             if (matcherType.isAnnotationPresent(OutLog.class) == true)
                 return true;
@@ -56,7 +52,6 @@ public class LogPlatformListener extends AbstractHasorModule {
     }
     /*拦截器*/
     private class OutLogInterceptor implements MethodInterceptor {
-        @Override
         public Object invoke(MethodInvocation invocation) throws Throwable {
             //1.获取缓存数据
             Method targetMethod = invocation.getMethod();

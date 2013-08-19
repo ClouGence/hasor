@@ -39,7 +39,6 @@ class ResultProcessPropxy implements ControllerResultProcess {
     public String getName() {
         return this.annoType;
     }
-    @Override
     public void process(HttpServletRequest request, HttpServletResponse response, Object result) throws ServletException, IOException {
         if (this.targetProcess == null)
             this.targetProcess = appContext.getInstance(this.targetProcessType);

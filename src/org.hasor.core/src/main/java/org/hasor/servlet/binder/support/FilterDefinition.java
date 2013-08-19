@@ -44,7 +44,6 @@ class FilterDefinition extends AbstractServletModuleBinding implements Provider<
         this.filterKey = filterKey;
         this.filterInstance = filterInstance;
     }
-    @Override
     public FilterDefinition get() {
         return this;
     }
@@ -73,7 +72,6 @@ class FilterDefinition extends AbstractServletModuleBinding implements Provider<
         });
         return this.filterInstance;
     }
-    @Override
     public String toString() {
         return String.format("type %s pattern=%s ,initParams=%s ,uriPatternType=%s",//
                 FilterDefinition.class, getPattern(), getInitParams(), getUriPatternType());

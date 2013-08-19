@@ -35,7 +35,6 @@ public class ManagedSessionListenerPipeline implements SessionListenerPipeline {
     private AppContext           appContext       = null;
     //
     //
-    @Override
     public void init(AppContext appContext) {
         if (initialized)
             return;

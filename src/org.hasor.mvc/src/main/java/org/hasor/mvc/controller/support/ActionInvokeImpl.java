@@ -290,11 +290,9 @@ class ActionInvokeImpl implements ActionInvoke {
         this.pathParams = pathParams;
         return this.pathParams;
     }
-    @Override
     public HttpServletRequest getRequest() {
         return this.request;
     }
-    @Override
     public HttpServletResponse getResponse() {
         return this.response;
     }

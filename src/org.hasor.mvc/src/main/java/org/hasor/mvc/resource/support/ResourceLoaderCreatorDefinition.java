@@ -38,7 +38,6 @@ class ResourceLoaderCreatorDefinition implements Provider<ResourceLoaderCreator>
     public void setAppContext(AppContext appContext) {
         this.appContext = appContext;
     }
-    @Override
     public ResourceLoaderCreator get() {
         if (this.loaderCreatorObject == null)
             this.loaderCreatorObject = this.appContext.getInstance(this.loaderCreatorType);
