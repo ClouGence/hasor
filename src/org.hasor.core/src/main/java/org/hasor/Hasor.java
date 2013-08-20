@@ -221,8 +221,8 @@ public abstract class Hasor {
      * 
      * @param object the value to test
      */
-    public static void assertIsNotNull(Object object) {
-        assertIsNotNull(object, ""); //$NON-NLS-1$
+    public static <T> T assertIsNotNull(T object) {
+        return assertIsNotNull(object, ""); //$NON-NLS-1$
     }
     /** Asserts that the given object is not <code>null</code>. If this
      * is not the case, some kind of unchecked exception is thrown.
@@ -231,8 +231,9 @@ public abstract class Hasor {
      * @param object the value to test
      * @param message the message to include in the exception
      */
-    public static void assertIsNotNull(Object object, String message) {
+    public static <T> T assertIsNotNull(T object, String message) {
         if (object == null)
             throw new NullPointerException("null argument:" + message); //$NON-NLS-1$
+        return object;
     }
 }

@@ -23,13 +23,14 @@ import org.hasor.Hasor;
 import org.hasor.context.ApiBinder;
 import org.hasor.context.AppContext;
 import org.hasor.context.anno.Before;
-import com.google.inject.matcher.AbstractMatcher;
+import org.hasor.context.matcher.AopMatchers;
+import com.google.inject.matcher.Matcher;
 /**
  * 支持Bean注解功能。
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
-public class BeforeSupport {
+class BeforeSupport {
     private GetContext getContext = null;
     //
     public BeforeSupport(ApiBinder apiBinder, GetContext getContext) {
@@ -38,7 +39,8 @@ public class BeforeSupport {
             return;
         }
         this.getContext = getContext;
-        apiBinder.getGuiceBinder().bindInterceptor(new BeforeMatcher(), new BeforeMatcher(), new BeforeInterceptor());
+        Matcher<Object> matcher = AopMatchers.annotatedWith(Before.class);//
+        apiBinder.getGuiceBinder().bindInterceptor(matcher, matcher, new BeforeInterceptor());
     }
     /*-------------------------------------------------------------------------------------*/
     /*拦截器*/
@@ -47,13 +49,13 @@ public class BeforeSupport {
             List<Class<? extends MethodInterceptor>> list = new ArrayList<Class<? extends MethodInterceptor>>();
             Method targetMethod = invocation.getMethod();
             //
-            Before beforeAnno = targetMethod.getAnnotation(Before.class);
+            Before beforeAnno = targetMethod.getDeclaringClass().getAnnotation(Before.class);
             if (beforeAnno != null) {
                 for (Class<? extends MethodInterceptor> interType : beforeAnno.value())
                     if (interType != null)
                         list.add(interType);
             }
-            beforeAnno = targetMethod.getDeclaringClass().getAnnotation(Before.class);
+            beforeAnno = targetMethod.getAnnotation(Before.class);
             if (beforeAnno != null) {
                 for (Class<? extends MethodInterceptor> interType : beforeAnno.value())
                     if (interType != null)
@@ -62,38 +64,6 @@ public class BeforeSupport {
             //2.获取拦截器
             AppContext appContext = getContext.getAppContext();
             return new BeforeChainInvocation(appContext, list, invocation).invoke(invocation);
-        }
-    }
-    /*负责检测匹配。规则：只要类型或方法上标记了@Before。*/
-    private class BeforeMatcher extends AbstractMatcher<Object> {
-        public boolean matches(Object type) {
-            if (type instanceof Class<?>)
-                return this.matches((Class<?>) type);
-            if (type instanceof Method)
-                return this.matches((Method) type);
-            return false;
-        }
-        public boolean matches(Class<?> matcherType) {
-            if (matcherType.isAnnotationPresent(Before.class) == true)
-                return true;
-            Method[] m1s = matcherType.getMethods();
-            Method[] m2s = matcherType.getDeclaredMethods();
-            for (Method m1 : m1s) {
-                if (m1.isAnnotationPresent(Before.class) == true)
-                    return true;
-            }
-            for (Method m2 : m2s) {
-                if (m2.isAnnotationPresent(Before.class) == true)
-                    return true;
-            }
-            return false;
-        }
-        public boolean matches(Method matcherType) {
-            if (matcherType.isAnnotationPresent(Before.class) == true)
-                return true;
-            if (matcherType.getDeclaringClass().isAnnotationPresent(Before.class) == true)
-                return true;
-            return false;
         }
     }
 }

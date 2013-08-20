@@ -217,7 +217,7 @@ public class HasorSettings extends AbstractHasorSettings implements LifeCycle {
      */
     private DecSequenceMap<String, Object>   settingMap          = new DecSequenceMap<String, Object>();
     private Map<String, Map<String, Object>> settingNsMap        = new HashMap<String, Map<String, Object>>();
-    private List<HasorSettingListener>       settingListenerList = new ArrayList<HasorSettingListener>();
+    private List<Object>                     settingListenerList = new ArrayList<Object>();
     private ResourceWatch                    watch               = null;
     //
     protected Map<String, Object> getSettingMap() {
@@ -337,8 +337,8 @@ public class HasorSettings extends AbstractHasorSettings implements LifeCycle {
     }
     /**触发配置文件重载事件。*/
     protected void doEvent() {
-        for (HasorSettingListener listener : this.settingListenerList)
-            listener.onLoadConfig(this);
+        for (Object listener : this.settingListenerList)
+            ((HasorSettingListener) listener).onLoadConfig(this);
     }
     /**添加配置文件变更监听器。*/
     public void addSettingsListener(HasorSettingListener settingsListener) {

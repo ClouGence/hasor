@@ -48,8 +48,7 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
     //
     //
     public StandardEnvironment(Settings settings) {
-        Hasor.assertIsNotNull(settings, "Settings type parameter is empty!");
-        this.settings = settings;
+        this.settings = Hasor.assertIsNotNull(settings, "Settings type parameter is empty!");
         this.userEnvMap = new HashMap<String, String>();
         settings.addSettingsListener(this);
     }

@@ -52,8 +52,7 @@ public final class ModuleInfoBean implements ModuleSettings, HasorEventListener 
     //
     //
     public ModuleInfoBean(HasorModule moduleObject, AppContext appContext) {
-        Hasor.assertIsNotNull(moduleObject);
-        this.moduleObject = moduleObject;
+        this.moduleObject = Hasor.assertIsNotNull(moduleObject);
         this.appContext = appContext;
         this.dependency = new ArrayList<Dependency>();
         this.ready = false;
