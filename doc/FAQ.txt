@@ -1,10 +1,25 @@
-Q：在Hasor中怎样使已经被注入到Action中的request或response的对象更换成另外一个。
-A：首先确保
-
-
-
 Q：JDK1.5下使用Hasor启动会找不到 javax/xml/stream/XMLStreamException 这个类。
-A：这是由于Hasor的Xml解析使用的是JSR173规范(Stax)，解决
+A：这是由于Hasor的Xml解析使用的是JSR173规范(Stax)，解决办法是将jdk1.5-stax-lib目录中的jar包加入classpath。
+
+
+
+
+
+  3.xml-使用XmlReader。在xml事件流中处理TextEvent事件时如发生下面异常：（同时xml的文档验证正确。“</试题>”在xml中被表述为“&lt;/试题&gt;”）请更换event.getText()方法为event.getOriginalText()方法。
+Exception in thread "main" javax.xml.stream.XMLStreamException: ParseError at [row,col]:[2,79771]
+Message: The element type "试题" must be terminated by the matching end-tag "</试题>".
+	at com.sun.org.apache.xerces.internal.impl.XMLStreamReaderImpl.next(XMLStreamReaderImpl.java:593)
+	at com.sun.org.apache.xerces.internal.impl.XMLStreamFilterImpl.findNextEvent(XMLStreamFilterImpl.java:151)
+	at com.sun.org.apache.xerces.internal.impl.XMLStreamFilterImpl.next(XMLStreamFilterImpl.java:101)
+	at org.noe.framework.xml.stream.XmlReader.readEvent(XmlReader.java:223)
+	at org.noe.framework.xml.stream.XmlReader.reader(XmlReader.java:213)
+	at doc.xml.XmlToXmlProperty.loadConfig(XmlToXmlProperty.java:21)
+	at doc.MergeWord.mergeWord(MergeWord.java:109)
+	at doc.Main.mergeInto(Main.java:97)
+	at doc.Main.main(Main.java:62)
+
+
+
 
 
 
