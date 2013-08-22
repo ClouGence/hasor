@@ -74,6 +74,7 @@ public class StandardEventManager implements EventManager {
         int eventThreadPoolSize = this.getSettings().getInteger("hasor.eventThreadPoolSize", 20);
         ThreadPoolExecutor threadPool = (ThreadPoolExecutor) executorService;
         threadPool.setCorePoolSize(eventThreadPoolSize);
+        threadPool.setMaximumPoolSize(eventThreadPoolSize);
     }
     /**获取执行事件使用的ScheduledExecutorService接口对象。*/
     protected ScheduledExecutorService getExecutorService() {

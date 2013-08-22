@@ -57,6 +57,8 @@ public final class ModuleInfoBean implements ModuleSettings, HasorEventListener 
         this.dependency = new ArrayList<Dependency>();
         this.ready = false;
         this.running = false;
+        this.displayName = moduleObject.getClass().getSimpleName();
+        this.description = moduleObject.getClass().getName();
         /*ModuleInfoBean通过注册事件监听器监听来自于容器对模块状态的属性更新事件*/
         appContext.getEventManager().addEventListener(this.moduleObject.getClass().getName(), this);
     }

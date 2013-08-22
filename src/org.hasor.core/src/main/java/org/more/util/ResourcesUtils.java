@@ -23,6 +23,7 @@ import java.net.JarURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -277,7 +278,12 @@ public abstract class ResourcesUtils {
         String _wild = wild.substring(0, index);
         if (_wild.charAt(_wild.length() - 1) == '/')
             _wild = _wild.substring(0, _wild.length() - 1);
-        Enumeration<URL> urls = getCurrentLoader().getResources(_wild);
+        ClassLoader loader = getCurrentLoader();
+        Enumeration<URL> urls = null;
+        if (loader instanceof URLClassLoader == false)
+            urls = loader.getResources(_wild);
+        else
+            urls = ((URLClassLoader) loader).findResources(_wild);
         List<URL> dirs = rootDir();
         //
         while (urls.hasMoreElements() == true) {

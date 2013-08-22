@@ -16,6 +16,8 @@
 package org.hasor.context.core;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -76,6 +78,13 @@ public class StandardInitContext implements InitContext {
                 allPack.add(pack.trim());
             }
         }
+        //排序的目的是避免类似“org”，“com”，“net”这样的包声明排在首位。
+        Collections.sort(allPack, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return -o1.compareToIgnoreCase(o2);
+            }
+        });
         this.spanPackage = allPack.toArray(new String[allPack.size()]);
         Hasor.info("loadPackages : " + Hasor.logString(this.spanPackage));
         //
