@@ -7,7 +7,7 @@
 	</parent>
 	<groupId>org.hasor</groupId>
 	<artifactId>org.hasor.mvc</artifactId>
-	<version>1.0.0</version>
+	<version>0.0.1</version>
 	<packaging>jar</packaging>
 	<!-- 引用依赖 -->
 	<dependencies>

@@ -17,6 +17,7 @@ package org.hasor.servlet.binder.support;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Singleton;
+import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpSessionEvent;
 import org.hasor.context.AppContext;
 import org.hasor.servlet.binder.SessionListenerPipeline;
@@ -30,9 +31,10 @@ import com.google.inject.TypeLiteral;
  */
 @Singleton
 public class ManagedSessionListenerPipeline implements SessionListenerPipeline {
-    private ListenerDefinition[] sessionListeners = null;
-    private volatile boolean     initialized      = false;
-    private AppContext           appContext       = null;
+    private HttpSessionListenerDefinition[] sessionListeners = null;
+    private ContextListenerDefinition[]     contextListeners = null;
+    private volatile boolean                initialized      = false;
+    private AppContext                      appContext       = null;
     //
     //
     public void init(AppContext appContext) {
@@ -40,30 +42,56 @@ public class ManagedSessionListenerPipeline implements SessionListenerPipeline {
             return;
         this.appContext = appContext;
         this.sessionListeners = collectListenerDefinitions(appContext.getGuice());
+        this.contextListeners = collectContextListenerDefinitions(appContext.getGuice());
         //everything was ok...
         this.initialized = true;
     }
-    private ListenerDefinition[] collectListenerDefinitions(Injector injector) {
-        List<ListenerDefinition> sessionListeners = new ArrayList<ListenerDefinition>();
-        TypeLiteral<ListenerDefinition> LISTENER_DEFS = TypeLiteral.get(ListenerDefinition.class);
-        for (Binding<ListenerDefinition> entry : injector.findBindingsByType(LISTENER_DEFS)) {
+    private HttpSessionListenerDefinition[] collectListenerDefinitions(Injector injector) {
+        List<HttpSessionListenerDefinition> sessionListeners = new ArrayList<HttpSessionListenerDefinition>();
+        TypeLiteral<HttpSessionListenerDefinition> LISTENER_DEFS = TypeLiteral.get(HttpSessionListenerDefinition.class);
+        for (Binding<HttpSessionListenerDefinition> entry : injector.findBindingsByType(LISTENER_DEFS)) {
             sessionListeners.add(entry.getProvider().get());
         }
         // Convert to a fixed size array for speed.
-        return sessionListeners.toArray(new ListenerDefinition[sessionListeners.size()]);
+        return sessionListeners.toArray(new HttpSessionListenerDefinition[sessionListeners.size()]);
+    }
+    private ContextListenerDefinition[] collectContextListenerDefinitions(Injector injector) {
+        List<ContextListenerDefinition> contextListeners = new ArrayList<ContextListenerDefinition>();
+        TypeLiteral<ContextListenerDefinition> LISTENER_DEFS = TypeLiteral.get(ContextListenerDefinition.class);
+        for (Binding<ContextListenerDefinition> entry : injector.findBindingsByType(LISTENER_DEFS)) {
+            contextListeners.add(entry.getProvider().get());
+        }
+        // Convert to a fixed size array for speed.
+        return contextListeners.toArray(new ContextListenerDefinition[contextListeners.size()]);
     }
     public void sessionCreated(HttpSessionEvent event) {
         if (initialized == false)
             return;
-        for (ListenerDefinition listenerDefinition : sessionListeners) {
-            listenerDefinition.sessionCreated(this.appContext, event);
+        for (HttpSessionListenerDefinition httpSessionListenerDefinition : sessionListeners) {
+            httpSessionListenerDefinition.sessionCreated(this.appContext, event);
         }
     }
     public void sessionDestroyed(HttpSessionEvent event) {
         if (initialized == false)
             return;
-        for (ListenerDefinition listenerDefinition : sessionListeners) {
-            listenerDefinition.sessionDestroyed(this.appContext, event);
+        for (HttpSessionListenerDefinition httpSessionListenerDefinition : sessionListeners) {
+            httpSessionListenerDefinition.sessionDestroyed(this.appContext, event);
+        }
+    }
+    @Override
+    public void contextInitialized(ServletContextEvent event) {
+        if (initialized == false)
+            return;
+        for (ContextListenerDefinition contextListenerDefinition : contextListeners) {
+            contextListenerDefinition.contextInitialized(this.appContext, event);
+        }
+    }
+    @Override
+    public void contextDestroyed(ServletContextEvent event) {
+        if (initialized == false)
+            return;
+        for (ContextListenerDefinition contextListenerDefinition : contextListeners) {
+            contextListenerDefinition.contextDestroyed(this.appContext, event);
         }
     }
 }

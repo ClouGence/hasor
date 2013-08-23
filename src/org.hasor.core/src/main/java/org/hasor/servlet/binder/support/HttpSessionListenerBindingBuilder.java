@@ -27,14 +27,14 @@ import com.google.inject.internal.UniqueAnnotations;
  * @version : 2013-4-17
  * @author 赵永春 (zyc@hasor.net)
  */
-class ListenerBindingBuilder implements Module {
+class HttpSessionListenerBindingBuilder implements Module {
     /*Filter 定义*/
-    private final List<ListenerDefinition> listenerDefinitions = new ArrayList<ListenerDefinition>();
+    private final List<HttpSessionListenerDefinition> httpSessionListenerDefinitions = new ArrayList<HttpSessionListenerDefinition>();
     //
     public void configure(Binder binder) {
         /*将ListenerDefinition绑定到Guice身上，在正式使用时利用findBindingsByType方法将其找回来。*/
-        for (ListenerDefinition define : listenerDefinitions)
-            binder.bind(ListenerDefinition.class).annotatedWith(UniqueAnnotations.create()).toProvider(define);
+        for (HttpSessionListenerDefinition define : httpSessionListenerDefinitions)
+            binder.bind(HttpSessionListenerDefinition.class).annotatedWith(UniqueAnnotations.create()).toProvider(define);
     }
     public SessionListenerBindingBuilder sessionListener() {
         return new SessionListenerBindingBuilderImpl();
@@ -53,7 +53,7 @@ class ListenerBindingBuilder implements Module {
             bind(listenerKey, sessionListener);
         }
         private void bind(Key<? extends HttpSessionListener> listenerKey, HttpSessionListener listenerInstance) {
-            listenerDefinitions.add(new ListenerDefinition(listenerKey, listenerInstance));
+            httpSessionListenerDefinitions.add(new HttpSessionListenerDefinition(listenerKey, listenerInstance));
         }
     }
 }

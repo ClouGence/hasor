@@ -89,7 +89,7 @@ class ServletDefinition extends AbstractServletModuleBinding implements Provider
     /**/
     public boolean service(ServletRequest request, ServletResponse response) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
+        String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length() + 1);
         boolean serve = this.matchesUri(path);
         // 
         if (serve)

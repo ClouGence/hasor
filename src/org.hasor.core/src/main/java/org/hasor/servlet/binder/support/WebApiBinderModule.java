@@ -27,10 +27,11 @@ import com.google.inject.Binder;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public abstract class WebApiBinderModule extends ApiBinderModule implements WebApiBinder {
-    private FiltersModuleBuilder   filterModuleBinder     = new FiltersModuleBuilder();  /*Filters*/
-    private ServletsModuleBuilder  servletModuleBinder    = new ServletsModuleBuilder(); /*Servlets*/
-    private ErrorsModuleBuilder    errorsModuleBuilder    = new ErrorsModuleBuilder();   /*Errors*/
-    private ListenerBindingBuilder listenerBindingBuilder = new ListenerBindingBuilder(); /*Listener*/
+    private FiltersModuleBuilder         filterModuleBinder     = new FiltersModuleBuilder();        /*Filters*/
+    private ServletsModuleBuilder        servletModuleBinder    = new ServletsModuleBuilder();       /*Servlets*/
+    private ErrorsModuleBuilder          errorsModuleBuilder    = new ErrorsModuleBuilder();         /*Errors*/
+    private HttpSessionListenerBindingBuilder       httpSessionListenerBindingBuilder = new HttpSessionListenerBindingBuilder();      /*Listener*/
+    private ContextListenerBindingBuilder contextListenerBuilder = new ContextListenerBindingBuilder(); /*Listener*/
     //
     protected WebApiBinderModule(InitContext initContext, ModuleInfo forModule) {
         super(initContext, forModule);
@@ -63,13 +64,17 @@ public abstract class WebApiBinderModule extends ApiBinderModule implements WebA
         return this.errorsModuleBuilder.errorTypes(errorList);
     }
     public SessionListenerBindingBuilder sessionListener() {
-        return this.listenerBindingBuilder.sessionListener();
+        return this.httpSessionListenerBindingBuilder.sessionListener();
+    }
+    public ServletContextListenerBindingBuilder contextListener() {
+        return this.contextListenerBuilder.contextListener();
     }
     public void configure(Binder binder) {
         super.configure(binder);
         binder.install(this.filterModuleBinder);
         binder.install(this.servletModuleBinder);
         binder.install(this.errorsModuleBuilder);
-        binder.install(this.listenerBindingBuilder);
+        binder.install(this.httpSessionListenerBindingBuilder);
+        binder.install(this.contextListenerBuilder);
     }
 }

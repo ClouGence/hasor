@@ -25,17 +25,17 @@ import com.google.inject.Provider;
  * @version : 2013-4-11
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-class ListenerDefinition implements Provider<ListenerDefinition> {
+class HttpSessionListenerDefinition implements Provider<HttpSessionListenerDefinition> {
     private Key<? extends HttpSessionListener> listenerKey      = null;
     private HttpSessionListener                listenerInstance = null;
     //
     //
-    public ListenerDefinition(Key<? extends HttpSessionListener> listenerKey, HttpSessionListener listenerInstance) {
+    public HttpSessionListenerDefinition(Key<? extends HttpSessionListener> listenerKey, HttpSessionListener listenerInstance) {
         this.listenerKey = listenerKey;
         this.listenerInstance = listenerInstance;
     }
     //
-    public ListenerDefinition get() {
+    public HttpSessionListenerDefinition get() {
         return this;
     }
     protected HttpSessionListener getTarget(Injector injector) {
@@ -45,7 +45,7 @@ class ListenerDefinition implements Provider<ListenerDefinition> {
     }
     public String toString() {
         return String.format("type %s listenerKey=%s",//
-                ListenerDefinition.class, this.listenerKey);
+                HttpSessionListenerDefinition.class, this.listenerKey);
     }
     /*--------------------------------------------------------------------------------------------------------*/
     /**/

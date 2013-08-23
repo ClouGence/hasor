@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.servlet.binder;
+import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSessionListener;
 import org.hasor.context.AppContext;
 /**
@@ -21,7 +22,7 @@ import org.hasor.context.AppContext;
  * @version : 2013-4-17
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface SessionListenerPipeline extends HttpSessionListener {
+public interface SessionListenerPipeline extends HttpSessionListener, ServletContextListener {
     /**初始化Servlet异常钩子。*/
     public void init(AppContext appContext);
 }

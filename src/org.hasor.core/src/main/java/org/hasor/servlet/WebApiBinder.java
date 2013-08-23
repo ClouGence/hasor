@@ -16,6 +16,7 @@
 package org.hasor.servlet;
 import java.util.Map;
 import javax.servlet.Filter;
+import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
 import org.hasor.context.ApiBinder;
@@ -39,6 +40,8 @@ public interface WebApiBinder extends ApiBinder {
     public ErrorBindingBuilder error(Class<? extends Throwable> error);
     /**注册一个Session监听器。*/
     public SessionListenerBindingBuilder sessionListener();
+    /**注册一个ServletContextListener监听器。*/
+    public ServletContextListenerBindingBuilder contextListener();
     /**负责配置Filter，参考Guice 3.0接口设计。*/
     public static interface FilterBindingBuilder {
         public void through(Class<? extends Filter> filterKey);
@@ -71,5 +74,11 @@ public interface WebApiBinder extends ApiBinder {
         public void bind(Class<? extends HttpSessionListener> listenerKey);
         public void bind(Key<? extends HttpSessionListener> listenerKey);
         public void bind(HttpSessionListener sessionListener);
+    }
+    /**负责配置ServletContextListener。*/
+    public static interface ServletContextListenerBindingBuilder {
+        public void bind(Class<? extends ServletContextListener> listenerKey);
+        public void bind(Key<? extends ServletContextListener> listenerKey);
+        public void bind(ServletContextListener sessionListener);
     }
 }

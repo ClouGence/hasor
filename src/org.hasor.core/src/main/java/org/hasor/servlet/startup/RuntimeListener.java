@@ -57,8 +57,10 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         //3.放入ServletContext环境。
         Hasor.info("ServletContext Attribut : " + AppContextName + " -->> " + Hasor.logString(this.appContext));
         servletContextEvent.getServletContext().setAttribute(AppContextName, this.appContext);
+        this.sessionListenerPipeline.contextInitialized(servletContextEvent);
     }
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
+        this.sessionListenerPipeline.contextDestroyed(servletContextEvent);
         this.appContext.destroy();
     }
     public void sessionCreated(HttpSessionEvent se) {

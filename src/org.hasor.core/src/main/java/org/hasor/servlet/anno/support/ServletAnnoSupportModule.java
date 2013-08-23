@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.servlet.Filter;
+import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
 import org.hasor.Hasor;
@@ -29,8 +30,9 @@ import org.hasor.context.ModuleSettings;
 import org.hasor.context.anno.Module;
 import org.hasor.context.anno.support.AnnoSupportModule;
 import org.hasor.servlet.AbstractWebHasorModule;
-import org.hasor.servlet.WebErrorHook;
 import org.hasor.servlet.WebApiBinder;
+import org.hasor.servlet.WebErrorHook;
+import org.hasor.servlet.anno.WebContextListener;
 import org.hasor.servlet.anno.WebError;
 import org.hasor.servlet.anno.WebFilter;
 import org.hasor.servlet.anno.WebInitParam;
@@ -61,6 +63,8 @@ public class ServletAnnoSupportModule extends AbstractWebHasorModule {
         this.loadErrorHook(apiBinder);
         //4.WebSessionListener
         this.loadSessionListener(apiBinder);
+        //5.ServletContextListener
+        this.loadServletContextListener(apiBinder);
     }
     //
     /**装载Filter*/
@@ -94,7 +98,7 @@ public class ServletAnnoSupportModule extends AbstractWebHasorModule {
             apiBinder.filter(null, filterAnno.value()).through(filterType, initMap);
             //
             String filterName = StringUtils.isBlank(filterAnno.filterName()) ? filterType.getSimpleName() : filterAnno.filterName();
-            Hasor.info("loadFilter %s[%s] bind %s on %s.", filterName, Hasor.getIndexStr(filterAnno.sort()), filterType, filterAnno.value());
+            Hasor.info("loadFilter %s[%s] bind %s on %s.", filterName, getIndexStr(filterAnno.sort()), filterType, filterAnno.value());
         }
     }
     //
@@ -130,7 +134,7 @@ public class ServletAnnoSupportModule extends AbstractWebHasorModule {
             //
             String servletName = StringUtils.isBlank(servletAnno.servletName()) ? servletType.getSimpleName() : servletAnno.servletName();
             int sortInt = servletAnno.loadOnStartup();
-            Hasor.info("loadServlet %s[%s] bind %s on %s.", servletName, Hasor.getIndexStr(sortInt), servletType, servletAnno.value());
+            Hasor.info("loadServlet %s[%s] bind %s on %s.", servletName, getIndexStr(sortInt), servletType, servletAnno.value());
         }
     }
     //
@@ -165,7 +169,7 @@ public class ServletAnnoSupportModule extends AbstractWebHasorModule {
             apiBinder.error(errorAnno.value()).bind(errorHookType, initMap);
             //
             int sortInt = errorAnno.sort();
-            Hasor.info("loadErrorHook [%s] of %s.", Hasor.getIndexStr(sortInt), errorHookType);
+            Hasor.info("loadErrorHook [%s] of %s.", getIndexStr(sortInt), errorHookType);
         }
     }
     //
@@ -199,7 +203,41 @@ public class ServletAnnoSupportModule extends AbstractWebHasorModule {
             //
             WebSessionListener anno = sessionListener.getAnnotation(WebSessionListener.class);
             int sortInt = anno.sort();
-            Hasor.info("loadSessionListener [%s] bind %s.", Hasor.getIndexStr(sortInt), sessionListener);
+            Hasor.info("loadSessionListener [%s] bind %s.", getIndexStr(sortInt), sessionListener);
+        }
+    }
+    //
+    /**装载ServletContextListener*/
+    protected void loadServletContextListener(WebApiBinder apiBinder) {
+        //1.获取
+        Set<Class<?>> contextListenerSet = apiBinder.getClassSet(WebContextListener.class);
+        if (contextListenerSet == null)
+            return;
+        List<Class<? extends ServletContextListener>> contextListenerList = new ArrayList<Class<? extends ServletContextListener>>();
+        for (Class<?> cls : contextListenerSet) {
+            if (ServletContextListener.class.isAssignableFrom(cls) == false) {
+                Hasor.warning("not implemented ServletContextListener :%s", cls);
+            } else {
+                contextListenerList.add((Class<? extends ServletContextListener>) cls);
+            }
+        }
+        //2.排序
+        Collections.sort(contextListenerList, new Comparator<Class<?>>() {
+            public int compare(Class<?> o1, Class<?> o2) {
+                WebContextListener o1Anno = o1.getAnnotation(WebContextListener.class);
+                WebContextListener o2Anno = o2.getAnnotation(WebContextListener.class);
+                int o1AnnoIndex = o1Anno.sort();
+                int o2AnnoIndex = o2Anno.sort();
+                return (o1AnnoIndex < o2AnnoIndex ? -1 : (o1AnnoIndex == o2AnnoIndex ? 0 : 1));
+            }
+        });
+        //3.注册
+        for (Class<? extends ServletContextListener> sessionListener : contextListenerList) {
+            apiBinder.contextListener().bind(sessionListener);
+            //
+            WebContextListener anno = sessionListener.getAnnotation(WebContextListener.class);
+            int sortInt = anno.sort();
+            Hasor.info("loadServletContextListener [%s] bind %s.", getIndexStr(sortInt), sessionListener);
         }
     }
     //
@@ -211,5 +249,24 @@ public class ServletAnnoSupportModule extends AbstractWebHasorModule {
                 if (StringUtils.isBlank(param.name()) == false)
                     initMap.put(param.name(), param.value());
         return initMap;
+    }
+    //
+    /***/
+    private static String getIndexStr(int index) {
+        int allRange = 1000;
+        /*-----------------------------------------*/
+        int minStartIndex = Integer.MIN_VALUE;
+        int minStopIndex = Integer.MIN_VALUE + allRange;
+        for (int i = minStartIndex; i < minStopIndex; i++) {
+            if (index == i)
+                return "Min" + ((index == Integer.MIN_VALUE) ? "" : ("+" + String.valueOf(i + Math.abs(Integer.MIN_VALUE))));
+        }
+        int maxStartIndex = Integer.MAX_VALUE;
+        int maxStopIndex = Integer.MAX_VALUE - allRange;
+        for (int i = maxStartIndex; i > maxStopIndex; i--) {
+            if (index == i)
+                return "Max" + ((index == Integer.MAX_VALUE) ? "" : ("-" + Math.abs(Integer.MAX_VALUE - i)));
+        }
+        return String.valueOf(index);
     }
 }

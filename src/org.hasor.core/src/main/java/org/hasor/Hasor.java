@@ -101,25 +101,6 @@ public abstract class Hasor {
     }
     //
     /***/
-    public static String getIndexStr(int index) {
-        int allRange = 1000;
-        /*-----------------------------------------*/
-        int minStartIndex = Integer.MIN_VALUE;
-        int minStopIndex = Integer.MIN_VALUE + allRange;
-        for (int i = minStartIndex; i < minStopIndex; i++) {
-            if (index == i)
-                return "Min" + ((index == Integer.MIN_VALUE) ? "" : ("+" + String.valueOf(i + Math.abs(Integer.MIN_VALUE))));
-        }
-        int maxStartIndex = Integer.MAX_VALUE;
-        int maxStopIndex = Integer.MAX_VALUE - allRange;
-        for (int i = maxStartIndex; i > maxStopIndex; i--) {
-            if (index == i)
-                return "Max" + ((index == Integer.MAX_VALUE) ? "" : ("-" + Math.abs(Integer.MAX_VALUE - i)));
-        }
-        return String.valueOf(index);
-    }
-    //
-    /***/
     public static String logString(Object object) {
         if (object == null)
             return "null";
