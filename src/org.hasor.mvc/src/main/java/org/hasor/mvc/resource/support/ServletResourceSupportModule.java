@@ -39,6 +39,10 @@ public class ServletResourceSupportModule extends AbstractWebHasorModule {
         /*绑定Settings，但是不支持重载更新*/
         ResourceSettings settings = new ResourceSettings();
         settings.onLoadConfig(apiBinder.getInitContext().getSettings());
+        //
+        if (settings.isEnable() == false)
+            return;
+        //
         apiBinder.getGuiceBinder().bind(ResourceSettings.class).toInstance(settings);
         //
         this.loadResourceLoader(apiBinder);

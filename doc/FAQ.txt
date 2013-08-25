@@ -43,3 +43,8 @@ Message: The element type "ÊÔÌâ" must be terminated by the matching end-tag "</Ê
 		<!-- <version>3.1</version> -->
 		<!-- <optional>true</optional> -->
 		<!-- </dependency> -->
+
+
+
+¿ª·¢Õß¿ÉÒÔÕª³ıMore´úÂëÊ¹ÓÃApscheµÄcommons-lang¡¢commons-beansÈí¼ş°ü×÷ÎªÌæ»»£¬µ«ĞèÒª¸ÄĞ´Ò»Ğ©Ô´³ÌĞò¡£Èç¹û¿ª·¢ÕßÕâÑù×ö
+¶¨ÒåµÄÄ£¿é²»Ö§³ÖIoc/Aop

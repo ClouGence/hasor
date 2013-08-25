@@ -161,10 +161,6 @@ public class ResourceLoaderFilter implements Filter {
     }
     //
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (this.settings.isEnable() == false) {
-            chain.doFilter(request, response);
-            return;
-        }
         //1.»∑∂® ±∫Ú¿πΩÿ
         HttpServletRequest req = (HttpServletRequest) request;
         String requestURI = req.getRequestURI();
