@@ -20,9 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -33,8 +31,6 @@ import org.hasor.context.EventManager;
 import org.hasor.context.HasorEventListener;
 import org.hasor.context.HasorSettingListener;
 import org.hasor.context.Settings;
-import org.hasor.context.TimerCallBackHook;
-import org.more.RepeateException;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 /**
@@ -45,7 +41,6 @@ import org.more.util.StringUtils;
 public class StandardEventManager implements EventManager {
     private static final HasorEventListener[]           EmptyEventListener = new HasorEventListener[0];
     private static final EmptyAsyncCallBackHook         EmptyAsyncCallBack = new EmptyAsyncCallBackHook();
-    private static final EmptyTimerCallBackHook         EmptyTimerCallBack = new EmptyTimerCallBackHook();
     //
     private Settings                                    settings           = null;
     private ScheduledExecutorService                    executorService    = null;
@@ -53,7 +48,6 @@ public class StandardEventManager implements EventManager {
     private ReadWriteLock                               listenerRWLock     = new ReentrantReadWriteLock();
     private Map<String, LinkedList<HasorEventListener>> onceListenerMap    = new HashMap<String, LinkedList<HasorEventListener>>();
     private Lock                                        onceListenerLock   = new ReentrantLock();
-    private Map<String, ScheduledFuture<?>>             timerMap           = new HashMap<String, ScheduledFuture<?>>();
     //
     public StandardEventManager(Settings settings) {
         this.settings = settings;
@@ -253,65 +247,8 @@ public class StandardEventManager implements EventManager {
         this.onceListenerMap.clear();
         this.onceListenerLock.unlock();//解锁
         //
-        //停止所有计时器
-        for (ScheduledFuture<?> fut : this.timerMap.values())
-            fut.cancel(true);
-        this.timerMap.clear();
-        //
         this.executorService.shutdownNow();
         this.executorService = Executors.newScheduledThreadPool(1);
         this.update();
-    }
-    //
-    //
-    //
-    //
-    //
-    public synchronized void addTimer(String timerName, HasorEventListener hasorEventListener) throws RepeateException {
-        this._addTimer(timerName, hasorEventListener, null);
-    }
-    public synchronized void addTimer(String timerName, HasorEventListener hasorEventListener, TimerCallBackHook callBack) throws RepeateException {
-        this._addTimer(timerName, hasorEventListener, callBack);
-    }
-    private synchronized void _addTimer(final String timerName, final HasorEventListener hasorEventListener, TimerCallBackHook hook) throws RepeateException {
-        if (this.timerMap.containsKey(timerName))
-            throw new RepeateException(timerName + " timer is exist.");
-        //
-        final TimerCallBackHook callBack = (hook != null) ? hook : EmptyTimerCallBack;
-        int timerPeriod = this.getSettings().getInteger("hasor.timerEvent");
-        final String timerType = this.getSettings().getString("hasor.timerEvent.type");
-        ScheduledFuture<?> future = null;
-        Runnable eventListener = new Runnable() {
-            public void run() {
-                try {
-                    hasorEventListener.onEvent(timerName, null);
-                } catch (Throwable e) {
-                    callBack.handleException(timerName, e);
-                }
-            }
-        };
-        /**固定间隔*/
-        if (StringUtils.equalsIgnoreCase(timerType, "FixedDelay")) {
-            future = this.getExecutorService().scheduleWithFixedDelay(eventListener, 0, timerPeriod, TimeUnit.MILLISECONDS);
-        }
-        /**固定周期*/
-        if (StringUtils.equalsIgnoreCase(timerType, "FixedRate")) {
-            future = this.getExecutorService().scheduleAtFixedRate(eventListener, 0, timerPeriod, TimeUnit.MILLISECONDS);
-        }
-        //
-        if (future != null)
-            this.timerMap.put(timerName, future);
-    }
-    public synchronized void removeTimer(String timerName) {
-        if (this.timerMap.containsKey(timerName)) {
-            ScheduledFuture<?> future = this.timerMap.remove(timerName);
-            future.cancel(false);
-        }
-    }
-    public synchronized void removeTimerNow(String timerName) {
-        if (this.timerMap.containsKey(timerName)) {
-            ScheduledFuture<?> future = this.timerMap.remove(timerName);
-            future.cancel(true);
-        }
     }
 }

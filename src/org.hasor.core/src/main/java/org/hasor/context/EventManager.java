@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.hasor.context;
-import org.more.RepeateException;
 /**
  * 提供事件监听器的注册和同步事件异步事件的触发操作。
  * @version : 2013-5-6
@@ -49,13 +48,4 @@ public interface EventManager {
     //
     /**清空未完成的事件等待执行队列*/
     public void clean();
-    //
-    /**添加一个计时器，如果添加的计时器类型已经存在则会抛出异常。*/
-    public void addTimer(String timerType, HasorEventListener hasorEventListener) throws RepeateException;
-    /**添加一个计时器，如果添加的计时器类型已经存在则会抛出异常。*/
-    public void addTimer(String timerType, HasorEventListener hasorEventListener, TimerCallBackHook callBack) throws RepeateException;
-    /**移除可能或已经存在的计时器对象,当计时器正在执行时会将timer任务执行完毕.*/
-    public void removeTimer(String timerType);
-    /**移除可能或已经存在的计时器对象,当计时器正在执行时会尝试取消timer正在执行的任务.*/
-    public void removeTimerNow(String timerType);
 }
