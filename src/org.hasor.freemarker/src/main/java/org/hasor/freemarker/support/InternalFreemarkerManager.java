@@ -49,8 +49,6 @@ class InternalFreemarkerManager implements FreemarkerManager, HasorSettingListen
     private volatile Configuration configuration;
     private ReadWriteLock          configurationLock = new ReentrantReadWriteLock();
     //
-    //
-    @Override
     public void start() {
         this.configurationLock.writeLock().lock();//加锁(写)
         this.stringLoader = new ConfigTemplateLoader();
@@ -60,7 +58,6 @@ class InternalFreemarkerManager implements FreemarkerManager, HasorSettingListen
         /*要放到锁外面，否则容易引起死锁*/
         this.getFreemarker();
     }
-    @Override
     public void stop() {
         this.configurationLock.writeLock().lock();//加锁(写)
         this.stringLoader = null;
@@ -69,12 +66,10 @@ class InternalFreemarkerManager implements FreemarkerManager, HasorSettingListen
         this.appContext.getSettings().removeSettingsListener(this);
         this.configurationLock.writeLock().unlock();//解锁(写)
     }
-    @Override
     public boolean isRunning() {
         return configuration != null;
     }
     //
-    @Override
     public void onLoadConfig(Settings newConfig) {
         this.configurationLock.writeLock().lock();//加锁(写)
         this.configuration = null;
@@ -111,46 +106,35 @@ class InternalFreemarkerManager implements FreemarkerManager, HasorSettingListen
         this.configurationLock.readLock().unlock();//解锁(读)
         return this.configuration;
     }
-    @Override
     public Template getTemplate(String templateName) throws TemplateException, IOException {
         return this.getFreemarker().getTemplate(templateName);
     }
     //
-    //
-    @Override
     public void processTemplate(String templateName) throws TemplateException, IOException {
         this.processTemplate(templateName, null, null);
     }
-    @Override
     public void processTemplate(String templateName, Object rootMap) throws TemplateException, IOException {
         this.processTemplate(templateName, rootMap, null);
     }
-    @Override
     public void processTemplate(String templateName, Object rootMap, Writer writer) throws TemplateException, IOException {
         Writer writerTo = (writer == null) ? new InternalNoneWriter() : writer;
         this.getTemplate(templateName).process(rootMap, writerTo);
     }
     //
-    //
-    @Override
     public String processString(String templateString) throws TemplateException, IOException {
         StringWriter stringWriter = new StringWriter();
         this.processString(templateString, null, stringWriter);
         return stringWriter.toString();
     }
-    @Override
     public String processString(String templateString, Object rootMap) throws TemplateException, IOException {
         StringWriter stringWriter = new StringWriter();
         this.processString(templateString, rootMap, stringWriter);
         return stringWriter.toString();
     }
     //
-    //
-    @Override
     public void processString(String templateString, Writer writer) throws TemplateException, IOException {
         this.processString(templateString, null, writer);
     }
-    @Override
     public void processString(String templateString, Object rootMap, Writer writer) throws TemplateException, IOException {
         //A.取得指纹
         String hashStr = null;

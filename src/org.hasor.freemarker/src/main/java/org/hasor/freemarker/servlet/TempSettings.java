@@ -63,9 +63,9 @@ public class TempSettings /*implements HasorSettingListener*/{
         this.onError = onError;
     }
     public void onLoadConfig(Settings newConfig) {
-        this.enable = newConfig.getBoolean("freemarker.servlet.enable");
-        String[] suffixArray = newConfig.getStringArray("freemarker.servlet.suffixSet");
-        this.contentType = newConfig.getString("freemarker.servlet.contentType", "text/html");
+        this.enable = newConfig.getBoolean("hasor-freemarker.servlet.enable");
+        String[] suffixArray = newConfig.getStringArray("hasor-freemarker.servlet.suffixSet");
+        this.contentType = newConfig.getString("hasor-freemarker.servlet.contentType", "text/html");
         //
         ArrayList<String> suffixList = new ArrayList<String>();
         for (String sufItem : suffixArray) {
@@ -79,6 +79,6 @@ public class TempSettings /*implements HasorSettingListener*/{
             }
         }
         this.suffix = suffixList.toArray(new String[suffixList.size()]);
-        this.onError = newConfig.getEnum("freemarker.servlet.onError", OnErrorMode.class, OnErrorMode.Warning);
+        this.onError = newConfig.getEnum("hasor-freemarker.servlet.onError", OnErrorMode.class, OnErrorMode.Warning);
     }
 }

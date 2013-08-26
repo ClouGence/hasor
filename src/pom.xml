@@ -8,8 +8,9 @@
 	<modules>
 		<module>org.hasor.core</module>
 		<module>org.hasor.mvc</module>
+		<module>org.hasor.freemarker</module>
 
-		<!-- <module>org.hasor.freemarker</module> -->
+
 		<!-- <module>org.hasor.icache</module> -->
 		<!-- <module>org.hasor.security</module> -->
 

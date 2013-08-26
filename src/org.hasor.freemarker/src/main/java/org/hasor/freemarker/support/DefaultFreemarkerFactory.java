@@ -36,7 +36,6 @@ import freemarker.template.TemplateException;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class DefaultFreemarkerFactory implements ConfigurationFactory {
-    @Override
     public synchronized Configuration configuration(AppContext appContext) {
         Configuration cfg = new Configuration();
         //1.设置参数
@@ -113,7 +112,7 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
     /***/
     protected void applySetting(Configuration configuration, AppContext appContext) {
         //1.应用设置
-        XmlProperty settings = appContext.getSettings().getXmlProperty("freemarker.settings");
+        XmlProperty settings = appContext.getSettings().getXmlProperty("hasor-freemarker.settings");
         if (settings == null)
             return;
         List<XmlProperty> childrenList = settings.getChildren();
@@ -142,7 +141,7 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
         }
         //2.获取配置的TemplateLoader
         ArrayList<FmTemplateLoader> templateLoaderList = new ArrayList<FmTemplateLoader>();
-        XmlProperty configLoaderList = appContext.getSettings().getXmlProperty("freemarker.templateLoader");
+        XmlProperty configLoaderList = appContext.getSettings().getXmlProperty("hasor-freemarker.templateLoader");
         if (configLoaderList != null) {
             List<XmlProperty> childrenList = configLoaderList.getChildren();
             for (XmlProperty item : childrenList) {
@@ -152,7 +151,7 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
                 //从已经注册的TemplateLoader中获取一个TemplateLoaderCreator进行构建。
                 FmTemplateLoaderCreator creator = null;
                 for (TemplateLoaderCreatorDefinition define : creatorDefinitionList)
-                    if (StringUtils.eqUnCaseSensitive(define.getName(), key))
+                    if (StringUtils.equalsIgnoreCase(define.getName(), key))
                         creator = define.get();
                 //
                 if (creator == null) {
@@ -178,7 +177,6 @@ public class DefaultFreemarkerFactory implements ConfigurationFactory {
             return new MultiTemplateLoader(loaders);
         return null;
     }
-    @Override
     public ConfigTemplateLoader createConfigTemplateLoader(AppContext appContext) {
         return new ConfigTemplateLoader();
     }

@@ -18,18 +18,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.hasor.mvc.controller.Controller;
 import org.hasor.mvc.controller.support.AbstractController;
-import org.hasor.servlet.startup.provider.HttpProvider;
 /**
  * 
  * @version : 2013-8-23
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
 @Controller("/abc/123")
-public class ReqResAction {
+public class ReqResAction extends AbstractController {
     public void print() {
-        HttpProvider provider = HttpProvider.getProvider();
-        HttpServletRequest req = provider.getRequest();
-        HttpServletResponse res = provider.getResponse();
+        HttpServletRequest req = this.getRequest();
+        HttpServletResponse res = this.getResponse();
         System.out.println("Hello Action!");
     }
 }

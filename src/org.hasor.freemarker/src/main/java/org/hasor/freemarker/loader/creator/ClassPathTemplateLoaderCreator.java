@@ -29,7 +29,6 @@ import org.more.util.StringUtils;
 */
 @FmTemplateLoaderDefine(configElement = "ClassPathLoader")
 public class ClassPathTemplateLoaderCreator implements FmTemplateLoaderCreator {
-    @Override
     public FmTemplateLoader newTemplateLoader(AppContext appContext, XmlProperty xmlConfig) {
         ClassPathTemplateLoader classpathLoader = null;
         String body = xmlConfig.getText();

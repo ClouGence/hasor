@@ -40,7 +40,6 @@ class InternalTagObject implements TemplateDirectiveModel {
         this.tagBody = tagBody;
         Hasor.assertIsNotNull(tagBody, "tag Object is null.");
     }
-    @Override
     public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body) throws TemplateException, IOException {
         //1.反解过程
         HashMap<String, Object> objMap = new HashMap<String, Object>();
@@ -81,7 +80,6 @@ class InternalTagObject implements TemplateDirectiveModel {
             if (this.templateBody != null)
                 this.templateBody.render(arg0);
         }
-        @Override
         public Map<String, Object> tagProperty() {
             return this.tagProperty;
         }

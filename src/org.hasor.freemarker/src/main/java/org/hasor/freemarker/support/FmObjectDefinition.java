@@ -32,7 +32,6 @@ class FmObjectDefinition implements Provider<TemplateModel> {
     public String getName() {
         return this.objName;
     }
-    @Override
     public TemplateModel get() {
         return this.targetObject;
     }

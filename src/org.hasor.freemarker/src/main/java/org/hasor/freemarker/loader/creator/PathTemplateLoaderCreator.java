@@ -32,7 +32,6 @@ import org.more.util.StringUtils;
  */
 @FmTemplateLoaderDefine(configElement = "PathLoader")
 public class PathTemplateLoaderCreator implements FmTemplateLoaderCreator {
-    @Override
     public FmTemplateLoader newTemplateLoader(AppContext appContext, XmlProperty xmlConfig) throws IOException {
         String body = xmlConfig.getText();
         body = StringUtils.isBlank(body) ? "" : body;

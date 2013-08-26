@@ -78,7 +78,6 @@ public class ManagedSessionListenerPipeline implements SessionListenerPipeline {
             httpSessionListenerDefinition.sessionDestroyed(this.appContext, event);
         }
     }
-    @Override
     public void contextInitialized(ServletContextEvent event) {
         if (initialized == false)
             return;
@@ -86,7 +85,6 @@ public class ManagedSessionListenerPipeline implements SessionListenerPipeline {
             contextListenerDefinition.contextInitialized(this.appContext, event);
         }
     }
-    @Override
     public void contextDestroyed(ServletContextEvent event) {
         if (initialized == false)
             return;

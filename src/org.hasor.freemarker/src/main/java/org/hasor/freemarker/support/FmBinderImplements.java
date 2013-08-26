@@ -37,32 +37,27 @@ public class FmBinderImplements implements Module, FmBinder {
     private List<FmMethodDefinition>              fmMethodDefinition       = new ArrayList<FmMethodDefinition>();
     private List<FmTagDefinition>                 fmTagDefinition          = new ArrayList<FmTagDefinition>();
     private List<FmObjectDefinition>              fmObjectDefinition       = new ArrayList<FmObjectDefinition>();
-    @Override
     public void bindTemplateLoaderCreator(String name, Class<FmTemplateLoaderCreator> templateLoaderCreatorType) {
         if (StringUtils.isBlank(name) || templateLoaderCreatorType == null)
             return;
         this.templateLoaderDefinition.add(new TemplateLoaderCreatorDefinition(name, templateLoaderCreatorType));
     }
-    @Override
     public void bindTag(String tagName, Class<Tag> fmTagType) {
         if (StringUtils.isBlank(tagName) || fmTagType == null)
             throw new NullPointerException("tagName or tagType is null.");
         this.fmTagDefinition.add(new FmTagDefinition(tagName, fmTagType));
     }
-    @Override
     public void bindMethod(String funName, Method fmMethodType) {
         if (StringUtils.isBlank(funName) || fmMethodType == null)
             throw new NullPointerException("funName or targetMethod is null.");
         this.fmMethodDefinition.add(new FmMethodDefinition(funName, fmMethodType));
     }
-    @Override
     public void bindObject(String objName, Object targetObject) throws TemplateModelException {
         if (StringUtils.isBlank(objName) || targetObject == null)
             throw new NullPointerException("objName or targetObject is null.");
         TemplateModel modelObject = DefaultObjectWrapper.DEFAULT_WRAPPER.wrap(targetObject);
         this.fmObjectDefinition.add(new FmObjectDefinition(objName, modelObject));
     }
-    @Override
     public void configure(Binder binder) {
         for (TemplateLoaderCreatorDefinition define : this.templateLoaderDefinition) {
             binder.bind(TemplateLoaderCreatorDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(define);

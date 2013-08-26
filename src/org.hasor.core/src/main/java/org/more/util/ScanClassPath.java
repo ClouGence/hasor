@@ -70,31 +70,36 @@ public class ScanClassPath {
      */
     public static Set<Class<?>> getClassSet(final String[] packages, final Class<?> compareType) {
         final Set<Class<?>> classSet = new HashSet<Class<?>>();
-        try {
-            for (String tiem : packages) {
-                if (tiem == null)
-                    continue;
+        for (String tiem : packages) {
+            if (tiem == null)
+                continue;
+            try {
                 ResourcesUtils.scan(tiem.replace(".", "/") + "*.class", new ScanItem() {
-                    public boolean goFind(ScanEvent event, boolean isInJar) {
+                    public void found(ScanEvent event, boolean isInJar) {
                         String name = event.getName();
                         name = name.substring(0, name.length() - ".class".length());
                         name = name.replace("/", ".");
+                        Class<?> foundLoadType = null;
                         try {
                             Class<?> loadType = Thread.currentThread().getContextClassLoader().loadClass(name);
                             if (compareType.isAnnotation() == true) {
                                 //目标是注解
                                 Class<Annotation> annoType = (Class<Annotation>) compareType;
                                 if (loadType.getAnnotation(annoType) != null)
-                                    classSet.add(loadType);
+                                    foundLoadType = loadType;
                             } else if (compareType.isAssignableFrom(loadType) == true)
                                 //目标是类
-                                classSet.add(loadType);
-                        } catch (ClassNotFoundException e) {}
-                        return false;
+                                foundLoadType = loadType;
+                        } catch (Throwable e) {
+                            foundLoadType = null;
+                        } finally {
+                            if (foundLoadType != null)
+                                classSet.add(foundLoadType);
+                        }
                     }
                 });
-            }
-        } catch (Throwable e) {}
+            } catch (Exception e) {}
+        }
         return classSet;
     }
 }

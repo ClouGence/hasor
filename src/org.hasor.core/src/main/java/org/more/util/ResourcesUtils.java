@@ -19,6 +19,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.net.JarURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -92,7 +93,7 @@ public abstract class ResourcesUtils {
          * @param event 找到资源事件。
          * @param isInJar 找到的资源是否处在jar文件里。
          */
-        public boolean goFind(ScanEvent event, boolean isInJar);
+        public void found(ScanEvent event, boolean isInJar);
     };
     /*------------------------------------------------------------------------------*/
     private static String formatResource(String resourcePath) {
@@ -208,7 +209,7 @@ public abstract class ResourcesUtils {
     }
     /*------------------------------------------------------------------------------*/
     /**对某一个目录执行扫描。*/
-    private static boolean scanDir(File dirFile, String wild, ScanItem item, File contextDir) {
+    private static void scanDir(File dirFile, String wild, ScanItem item, File contextDir) {
         String contextPath = contextDir.getAbsolutePath().replace("\\", "/");
         //1.如果进来的就是一个文件。
         if (dirFile.isDirectory() == false) {
@@ -218,9 +219,10 @@ public abstract class ResourcesUtils {
                 dirPath = dirPath.substring(contextPath.length(), dirPath.length());
             //2)计算忽略
             if (MatchUtils.matchWild(wild, dirPath) == false)
-                return false;
+                return;
             //3)执行发现
-            return item.goFind(new ScanEvent(dirPath, dirFile), false);
+            item.found(new ScanEvent(dirPath, dirFile), false);
+            return;
         }
         //----------
         for (File f : dirFile.listFiles()) {
@@ -231,29 +233,24 @@ public abstract class ResourcesUtils {
             //3)执行发现
             if (f.isDirectory() == true) {
                 //扫描文件夹中的内容
-                if (scanDir(f, wild, item, contextDir) == true)
-                    return true;
+                scanDir(f, wild, item, contextDir);
             }
             //2)计算忽略
             if (MatchUtils.matchWild(wild, dirPath) == false)
                 continue;
-            if (item.goFind(new ScanEvent(dirPath, f), false) == true)
-                return true;
+            item.found(new ScanEvent(dirPath, f), false);
         }
-        return false;
     }
     /**对某一个jar文件执行扫描。*/
-    public static boolean scanJar(JarFile jarFile, String wild, ScanItem item) throws IOException {
+    public static void scanJar(JarFile jarFile, String wild, ScanItem item) throws IOException {
         final Enumeration<JarEntry> jes = jarFile.entries();
         while (jes.hasMoreElements() == true) {
             JarEntry e = jes.nextElement();
             String name = e.getName();
             if (MatchUtils.matchWild(wild, name) == true)
                 if (e.isDirectory() == false)
-                    if (item.goFind(new ScanEvent(name, e, jarFile.getInputStream(e)), true) == true)
-                        return true;
+                    item.found(new ScanEvent(name, e, jarFile.getInputStream(e)), true);
         }
-        return false;
     }
     /**
      * 扫描classpath目录中的资源，每当发现一个资源时都将产生对{@link ScanItem}接口的一次调用。请注意首个字符不可以是通配符。
@@ -282,23 +279,38 @@ public abstract class ResourcesUtils {
         Enumeration<URL> urls = null;
         if (loader instanceof URLClassLoader == false)
             urls = loader.getResources(_wild);
-        else
-            urls = ((URLClassLoader) loader).findResources(_wild);
+        else {
+            URLClassLoader urlLoader = (URLClassLoader) loader;
+            /*
+             * Jetty 使用getResources、Tomcat 使用findResources
+             * 在Jetty中WebappsClassLoader只实现了没有重写findResources
+             * 在Tomcat中WebappsClassLoader只实现了没有重写getResources
+             * 
+             * TODO : 该处逻辑为：首先判断findResources方法是否被重写，如果被重写则调用它否则调用getResources
+             */
+            try {
+                Class<?> loaderType = urlLoader.getClass();
+                Method m = loaderType.getMethod("findResources", String.class);
+                if (m.getDeclaringClass() == loaderType)
+                    urls = urlLoader.findResources(_wild);
+                else
+                    urls = urlLoader.getResources(_wild);
+            } catch (Exception e) {
+                urls = urlLoader.findResources(_wild);//Default
+            }
+        }
         List<URL> dirs = rootDir();
         //
         while (urls.hasMoreElements() == true) {
             URL url = urls.nextElement();
             String protocol = url.getProtocol();
-            boolean res = false;
             if (protocol.equals("file") == true) {
                 File f = new File(url.toURI());
-                res = scanDir(f, wild, item, new File(has(dirs, url).toURI()));
+                scanDir(f, wild, item, new File(has(dirs, url).toURI()));
             } else if (protocol.equals("jar") == true) {
                 JarURLConnection urlc = (JarURLConnection) url.openConnection();
-                res = scanJar(urlc.getJarFile(), wild, item);
+                scanJar(urlc.getJarFile(), wild, item);
             }
-            if (res == true)
-                return;
         }
     };
     private static URL has(List<URL> dirs, URL one) {
@@ -314,5 +326,4 @@ public abstract class ResourcesUtils {
             rootList.add(roote.nextElement());
         return rootList;
     };
-    /*------------------------------------------------------------------------------*/
 }

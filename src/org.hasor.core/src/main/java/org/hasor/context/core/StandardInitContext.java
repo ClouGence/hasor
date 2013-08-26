@@ -80,7 +80,6 @@ public class StandardInitContext implements InitContext {
         }
         //排序的目的是避免类似“org”，“com”，“net”这样的包声明排在首位。
         Collections.sort(allPack, new Comparator<String>() {
-            @Override
             public int compare(String o1, String o2) {
                 return -o1.compareToIgnoreCase(o2);
             }

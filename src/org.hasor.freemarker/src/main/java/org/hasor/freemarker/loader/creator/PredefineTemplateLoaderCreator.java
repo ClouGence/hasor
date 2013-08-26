@@ -25,7 +25,7 @@ import org.hasor.freemarker.FmTemplateLoader;
 import org.hasor.freemarker.FmTemplateLoaderCreator;
 import org.hasor.freemarker.FmTemplateLoaderDefine;
 import org.hasor.freemarker.loader.ConfigTemplateLoader;
-import org.more.util.StringConvertUtils;
+import org.more.convert.ConverterUtils;
 import org.more.util.StringUtils;
 /**
  * 处理配置文件中添加的模板。
@@ -37,7 +37,6 @@ public class PredefineTemplateLoaderCreator implements FmTemplateLoaderCreator {
     public static enum PredefineType {
         Resource, File, String, URL
     }
-    @Override
     public FmTemplateLoader newTemplateLoader(AppContext appContext, XmlProperty xmlConfig) throws MalformedURLException {
         List<XmlProperty> childrenList = xmlConfig.getChildren();
         if (childrenList == null)
@@ -57,7 +56,8 @@ public class PredefineTemplateLoaderCreator implements FmTemplateLoaderCreator {
                 continue;
             //
             String predefineTypeStr = xmlConfig.getAttributeMap().get("type");
-            PredefineType predefineType = StringConvertUtils.parseEnum(predefineTypeStr, PredefineType.class, PredefineType.String);
+            PredefineType predefineType = (PredefineType) ConverterUtils.convert(PredefineType.class, predefineTypeStr);
+            predefineType = (predefineType == null) ? PredefineType.String : predefineType;
             switch (predefineType) {
             case File:
                 configTemplateLoader.addTemplate(keyVal, new File(bodyVal));

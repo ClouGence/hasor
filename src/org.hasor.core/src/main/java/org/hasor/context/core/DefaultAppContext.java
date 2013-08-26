@@ -31,6 +31,7 @@ import org.hasor.context.Settings;
 import org.hasor.context.binder.ApiBinderModule;
 import org.hasor.context.reactor.ModuleInfoBean;
 import org.hasor.context.reactor.ModuleReactor;
+import org.more.util.exception.ExceptionUtils;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -192,6 +193,15 @@ public class DefaultAppContext extends AbstractAppContext {
     //
     //
     //
+    private void proForceModule(Throwable e) {
+        e = ExceptionUtils.getRootCause(e);
+        if (e instanceof RuntimeException)
+            throw (RuntimeException) e;
+        else if (e instanceof Error)
+            throw (Error) e;
+        else
+            throw new RuntimeException(e);
+    }
     /**准备事件*/
     protected void onReady(ModuleInfo forModule) {
         HasorModule modObj = forModule.getModuleObject();
@@ -199,11 +209,11 @@ public class DefaultAppContext extends AbstractAppContext {
         try {
             modObj.configuration((ModuleSettings) forModule);
             getEventManager().doSyncEventIgnoreThrow(eventName, ModuleInfoBean.Prop_Ready, true);
-        } catch (RuntimeException e) {
+        } catch (Throwable e) {
             getEventManager().doSyncEventIgnoreThrow(eventName, ModuleInfoBean.Prop_Ready, false, e);
             Hasor.error("%s is not onReady! %s", forModule.getDisplayName(), e.getMessage());
             if (this.forceModule)
-                throw e;
+                this.proForceModule(e);
         }
     }
     /**模块的 init 生命周期调用。*/
@@ -222,11 +232,11 @@ public class DefaultAppContext extends AbstractAppContext {
             //
             Hasor.info("init Event on : %s", modObj.getClass());
             getEventManager().doSyncEventIgnoreThrow(eventName, ModuleInfoBean.Prop_Init, true);
-        } catch (RuntimeException e) {
+        } catch (Throwable e) {
             getEventManager().doSyncEventIgnoreThrow(eventName, ModuleInfoBean.Prop_Init, false, e);
             Hasor.error("%s is not init! %s", forModule.getDisplayName(), e.getMessage());
             if (this.forceModule)
-                throw e;
+                this.proForceModule(e);
         }
     }
     /**发送模块启动信号*/
@@ -242,10 +252,10 @@ public class DefaultAppContext extends AbstractAppContext {
             modObj.start(this);
             Hasor.info("start Event on : %s", modObj.getClass());
             getEventManager().doSyncEventIgnoreThrow(eventName, ModuleInfoBean.Prop_Running, true);
-        } catch (RuntimeException e) {
+        } catch (Throwable e) {
             Hasor.error("%s in the start phase encounters an error.\n%s", forModule.getDisplayName(), e);
             if (this.forceModule)
-                throw e;
+                this.proForceModule(e);
         }
     }
     /**发送模块停止信号*/
@@ -259,7 +269,7 @@ public class DefaultAppContext extends AbstractAppContext {
             modObj.stop(this);
             Hasor.info("stop Event on : %s", modObj.getClass());
             getEventManager().doSyncEventIgnoreThrow(eventName, ModuleInfoBean.Prop_Running, false);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Hasor.error("%s in the stop phase encounters an error.\n%s", forModule.getDisplayName(), e);
         }
     }
@@ -275,7 +285,7 @@ public class DefaultAppContext extends AbstractAppContext {
         try {
             modObj.destroy(this);
             Hasor.info("destroy Event on : %s", modObj.getClass());
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Hasor.error("%s in the destroy phase encounters an error.\n%s", e);
         }
     }
@@ -337,8 +347,9 @@ class MasterModule implements Module {
         Hasor.info("send init sign...");
         ModuleInfo[] hasorModules = this.appContet.getModules();
         /*引发模块init生命周期*/
-        for (ModuleInfo mod : hasorModules)
+        for (ModuleInfo mod : hasorModules) {
             appContet.onInit(mod, binder);//触发生命周期
+        }
         Hasor.info("init modules finish.");
         ExtBind.doBind(binder, appContet);
     }

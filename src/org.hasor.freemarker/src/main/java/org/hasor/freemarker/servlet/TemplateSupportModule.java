@@ -16,6 +16,7 @@
 package org.hasor.freemarker.servlet;
 import org.hasor.context.ModuleSettings;
 import org.hasor.context.anno.Module;
+import org.hasor.freemarker.support.FreemarkerSupportModule;
 import org.hasor.servlet.AbstractWebHasorModule;
 import org.hasor.servlet.WebApiBinder;
 import org.hasor.servlet.anno.support.ServletAnnoSupportModule;
@@ -26,12 +27,17 @@ import org.hasor.servlet.anno.support.ServletAnnoSupportModule;
  */
 @Module(displayName = "TemplatePlatformListener", description = "org.hasor.view.template软件包功能支持。")
 public class TemplateSupportModule extends AbstractWebHasorModule {
-    @Override
     public void configuration(ModuleSettings info) {
         info.beforeMe(ServletAnnoSupportModule.class);//在hasor-servlet启动之前
+        info.beforeMe(FreemarkerSupportModule.class);//在FreemarkerSupportModule启动之前
+        //freemarker依赖检查
+        try {
+            Thread.currentThread().getContextClassLoader().loadClass("freemarker.template.Configuration");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
     /**初始化.*/
-    @Override
     public void init(WebApiBinder apiBinder) {
         TempSettings tempSettings = new TempSettings();
         tempSettings.onLoadConfig(apiBinder.getInitContext().getSettings());

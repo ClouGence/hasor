@@ -24,7 +24,7 @@ import org.hasor.context.AppContext;
 import org.hasor.context.ModuleSettings;
 import org.hasor.context.anno.Module;
 import org.hasor.context.anno.support.AnnoSupportModule;
-import org.hasor.context.reactor.AbstractHasorModule;
+import org.hasor.context.module.AbstractHasorModule;
 import org.hasor.freemarker.ConfigurationFactory;
 import org.hasor.freemarker.FmMethod;
 import org.hasor.freemarker.FmTag;
@@ -39,16 +39,20 @@ import org.hasor.freemarker.Tag;
  */
 @Module(description = "org.hasor.freemarker软件包功能支持。")
 public class FreemarkerSupportModule extends AbstractHasorModule {
-    @Override
     public void configuration(ModuleSettings info) {
         info.beforeMe(AnnoSupportModule.class);
+        //freemarker依赖检查
+        try {
+            Thread.currentThread().getContextClassLoader().loadClass("freemarker.template.Configuration");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
     /**初始化.*/
-    @Override
     public void init(ApiBinder apiBinder) {
         //
         apiBinder.getGuiceBinder().bind(FreemarkerManager.class).to(InternalFreemarkerManager.class);
-        String configurationFactory = apiBinder.getInitContext().getSettings().getString("freemarker.configurationFactory", DefaultFreemarkerFactory.class.getName());
+        String configurationFactory = apiBinder.getInitContext().getSettings().getString("hasor-freemarker.configurationFactory", DefaultFreemarkerFactory.class.getName());
         try {
             apiBinder.getGuiceBinder().bind(ConfigurationFactory.class).to((Class<? extends ConfigurationFactory>) Class.forName(configurationFactory)).asEagerSingleton();
         } catch (Exception e) {
@@ -136,12 +140,10 @@ public class FreemarkerSupportModule extends AbstractHasorModule {
     }
     //
     /***/
-    @Override
     public void start(AppContext appContext) {
         FreemarkerManager freemarkerManager = appContext.getInstance(FreemarkerManager.class);
         freemarkerManager.start();
     }
-    @Override
     public void stop(AppContext appContext) {
         FreemarkerManager freemarkerManager = appContext.getInstance(FreemarkerManager.class);
         freemarkerManager.stop();

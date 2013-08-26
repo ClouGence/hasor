@@ -18,7 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import org.hasor.Hasor;
-import org.more.util.StringConvertUtils;
+import org.more.convert.ConverterUtils;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
 /**
@@ -35,7 +35,6 @@ class InternalMethodObject implements TemplateMethodModel {
         this.fmMethodType = fmMethodType;
         this.target = target;
     }
-    @Override
     public Object exec(List arguments) throws TemplateModelException {
         Class<?>[] paramTypes = fmMethodType.getParameterTypes();
         Object[] paramObjects = new Object[paramTypes.length];
@@ -44,7 +43,7 @@ class InternalMethodObject implements TemplateMethodModel {
             if (i > arguments.size())
                 paramObjects[i] = null;
             else
-                paramObjects[i] = StringConvertUtils.changeType(arguments.get(i), paramTypes[i]);
+                paramObjects[i] = ConverterUtils.convert(paramTypes[i], arguments.get(i));
         }
         try {
             return this.fmMethodType.invoke(this.target, paramObjects);
