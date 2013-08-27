@@ -17,7 +17,7 @@ public class DemoServer {
         //        server.addConnector(connector8083);
         //
         WebAppContext context = new WebAppContext();
-        context.setContextPath("/");
+        context.setContextPath("/abc");
         //context.setDescriptor("web/WEB-INF/web.xml");
         context.setResourceBase("src/main/resources/webapps");
         context.setConfigurationDiscovered(true);

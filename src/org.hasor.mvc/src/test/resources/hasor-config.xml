@@ -8,13 +8,12 @@
 		<forceModule>fasle</forceModule>
 	</hasor>
 	<environmentVar>
-		<!-- 程序工作空间基础目录（绝对地址） -->
+		<!-- 设置工作路径，jar中的资源文件会根据这个路径存放 -->
 		<HASOR_WORK_HOME>./test-work</HASOR_WORK_HOME>
 	</environmentVar>
-	<!-- Web部分的配置（配置不支持动态更新） -->
 	<hasor-mvc>
 		<!-- 资源装载器 -->
-		<resourceLoader>
+		<resourceLoader enable="true">
 			<zipLoader>%HASOR_WEBROOT%/pic.zip</zipLoader>
 		</resourceLoader>
 	</hasor-mvc>

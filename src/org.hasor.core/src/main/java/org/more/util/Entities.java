@@ -96,53 +96,53 @@ class Entities {
             { "Icirc", "206" }, // ?- uppercase I, circumflex accent
             { "Iuml", "207" }, // ?- uppercase I, umlaut
             { "ETH", "208" }, // ?- uppercase Eth, Icelandic
-            { "Ntilde", "209" }, // ?- uppercase N, tilde
-            { "Ograve", "210" }, // ?- uppercase O, grave accent
-            { "Oacute", "211" }, // ?- uppercase O, acute accent
-            { "Ocirc", "212" }, // ?- uppercase O, circumflex accent
-            { "Otilde", "213" }, // ?- uppercase O, tilde
-            { "Ouml", "214" }, // ?- uppercase O, umlaut
+            { "Ntilde", "209" }, // - uppercase N, tilde
+            { "Ograve", "210" }, // - uppercase O, grave accent
+            { "Oacute", "211" }, // - uppercase O, acute accent
+            { "Ocirc", "212" }, // - uppercase O, circumflex accent
+            { "Otilde", "213" }, // - uppercase O, tilde
+            { "Ouml", "214" }, // - uppercase O, umlaut
             { "times", "215" }, // multiplication sign
-            { "Oslash", "216" }, // ?- uppercase O, slash
-            { "Ugrave", "217" }, // ?- uppercase U, grave accent
-            { "Uacute", "218" }, // ?- uppercase U, acute accent
-            { "Ucirc", "219" }, // ?- uppercase U, circumflex accent
-            { "Uuml", "220" }, // ?- uppercase U, umlaut
-            { "Yacute", "221" }, // ?- uppercase Y, acute accent
-            { "THORN", "222" }, // ?- uppercase THORN, Icelandic
-            { "szlig", "223" }, // ?- lowercase sharps, German
-            { "agrave", "224" }, // ?- lowercase a, grave accent
-            { "aacute", "225" }, // ?- lowercase a, acute accent
-            { "acirc", "226" }, // ?- lowercase a, circumflex accent
-            { "atilde", "227" }, // ?- lowercase a, tilde
-            { "auml", "228" }, // ?- lowercase a, umlaut
-            { "aring", "229" }, // ?- lowercase a, ring
-            { "aelig", "230" }, // ?- lowercase ae
-            { "ccedil", "231" }, // ?- lowercase c, cedilla
-            { "egrave", "232" }, // ?- lowercase e, grave accent
-            { "eacute", "233" }, // ?- lowercase e, acute accent
-            { "ecirc", "234" }, // ?- lowercase e, circumflex accent
-            { "euml", "235" }, // ?- lowercase e, umlaut
-            { "igrave", "236" }, // ?- lowercase i, grave accent
-            { "iacute", "237" }, // ?- lowercase i, acute accent
-            { "icirc", "238" }, // ?- lowercase i, circumflex accent
-            { "iuml", "239" }, // ?- lowercase i, umlaut
-            { "eth", "240" }, // ?- lowercase eth, Icelandic
-            { "ntilde", "241" }, // ?- lowercase n, tilde
-            { "ograve", "242" }, // ?- lowercase o, grave accent
-            { "oacute", "243" }, // ?- lowercase o, acute accent
-            { "ocirc", "244" }, // ?- lowercase o, circumflex accent
-            { "otilde", "245" }, // ?- lowercase o, tilde
-            { "ouml", "246" }, // ?- lowercase o, umlaut
+            { "Oslash", "216" }, // - uppercase O, slash
+            { "Ugrave", "217" }, // - uppercase U, grave accent
+            { "Uacute", "218" }, // - uppercase U, acute accent
+            { "Ucirc", "219" }, // - uppercase U, circumflex accent
+            { "Uuml", "220" }, // - uppercase U, umlaut
+            { "Yacute", "221" }, // - uppercase Y, acute accent
+            { "THORN", "222" }, // - uppercase THORN, Icelandic
+            { "szlig", "223" }, // - lowercase sharps, German
+            { "agrave", "224" }, // - lowercase a, grave accent
+            { "aacute", "225" }, // - lowercase a, acute accent
+            { "acirc", "226" }, // - lowercase a, circumflex accent
+            { "atilde", "227" }, // - lowercase a, tilde
+            { "auml", "228" }, // - lowercase a, umlaut
+            { "aring", "229" }, // - lowercase a, ring
+            { "aelig", "230" }, // - lowercase ae
+            { "ccedil", "231" }, // - lowercase c, cedilla
+            { "egrave", "232" }, // - lowercase e, grave accent
+            { "eacute", "233" }, // - lowercase e, acute accent
+            { "ecirc", "234" }, // - lowercase e, circumflex accent
+            { "euml", "235" }, // - lowercase e, umlaut
+            { "igrave", "236" }, // - lowercase i, grave accent
+            { "iacute", "237" }, // - lowercase i, acute accent
+            { "icirc", "238" }, // - lowercase i, circumflex accent
+            { "iuml", "239" }, // - lowercase i, umlaut
+            { "eth", "240" }, // - lowercase eth, Icelandic
+            { "ntilde", "241" }, // - lowercase n, tilde
+            { "ograve", "242" }, // - lowercase o, grave accent
+            { "oacute", "243" }, // - lowercase o, acute accent
+            { "ocirc", "244" }, // - lowercase o, circumflex accent
+            { "otilde", "245" }, // - lowercase o, tilde
+            { "ouml", "246" }, // - lowercase o, umlaut
             { "divide", "247" }, // division sign
-            { "oslash", "248" }, // ?- lowercase o, slash
-            { "ugrave", "249" }, // ?- lowercase u, grave accent
-            { "uacute", "250" }, // ?- lowercase u, acute accent
-            { "ucirc", "251" }, // ?- lowercase u, circumflex accent
-            { "uuml", "252" }, // ?- lowercase u, umlaut
-            { "yacute", "253" }, // ?- lowercase y, acute accent
-            { "thorn", "254" }, // ?- lowercase thorn, Icelandic
-            { "yuml", "255" }, // ÿ - lowercase y, umlaut
+            { "oslash", "248" }, // - lowercase o, slash
+            { "ugrave", "249" }, // - lowercase u, grave accent
+            { "uacute", "250" }, // - lowercase u, acute accent
+            { "ucirc", "251" }, // - lowercase u, circumflex accent
+            { "uuml", "252" }, // - lowercase u, umlaut
+            { "yacute", "253" }, // - lowercase y, acute accent
+            { "thorn", "254" }, // - lowercase thorn, Icelandic
+            { "yuml", "255" }, // - lowercase y, umlaut
                                                     };
     // http://www.w3.org/TR/REC-html40/sgml/entities.html
     // package scoped for testing

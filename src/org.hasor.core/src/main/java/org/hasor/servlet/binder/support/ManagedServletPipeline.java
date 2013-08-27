@@ -97,7 +97,9 @@ public class ManagedServletPipeline {
                         ServletRequest requestToProcess;
                         if (servletRequest instanceof HttpServletRequest) {
                             //使用RequestDispatcherRequestWrapper类处理request.getRequestURI方法的返回值
-                            requestToProcess = new RequestDispatcherRequestWrapper(servletRequest, newRequestUri);
+                            String servletPath = ((HttpServletRequest) servletRequest).getContextPath() + "/" + newRequestUri;
+                            servletPath = servletPath.replaceAll("/{2,}", "/");
+                            requestToProcess = new RequestDispatcherRequestWrapper(servletRequest, servletPath);
                         } else {
                             //通常不会进入这段代码.
                             requestToProcess = servletRequest;

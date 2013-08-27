@@ -1,5 +1,17 @@
-当Hasor的运行环境为JDK1.5时请将stax-1.2.0.jar、stax-api-1.0.jar放置在类路径上。
+1) master  目录中的所有Jar包为必须依赖，共4个。
+	aopalliance-1.0.jar	（Aop联盟）
+	guice-3.0.jar		（Guice）
+	javax.inject-1.jar	（JSR-330）
+	slf4j-api-1.7.5.jar	（SLF4j日志）
 
-stax-1.2.0.jar、stax-api-1.0.jar两个Jar包是JSR-173的API和实现。
+2) LICENSE  第三方依赖程序的LICENSE文件。
 
-  Jar包来自：http://www.java2s.com/Code/Jar/s/stax.htm
+3）jdk1.5-stax  Stax方式解析Xml的依赖，JDK1.5需要加入。
+	stax-1.2.0.jar		（JSR-173实现）
+	stax-api-1.0.jar	（JSR-173Api）
+	Jar包来自：http://www.java2s.com/Code/Jar/s/stax.htm
+
+4）log4j  如果配置Log4j为日志输出时需要加入。
+	log4j.xml		（配置文件）
+	log4j-1.2.17.jar	（log4j核心包）
+	slf4j-log4j12-1.7.2.jar	（slf4j的log4j适配）

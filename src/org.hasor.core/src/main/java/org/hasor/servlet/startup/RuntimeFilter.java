@@ -53,8 +53,8 @@ public class RuntimeFilter implements Filter {
             this.filterPipeline = this.appContext.getInstance(FilterPipeline.class);
         }
         /*获取请求响应编码*/
-        this.requestEncoding = this.appContext.getSettings().getString("hasor.httpServlet.requestEncoding.requestEncoding", "utf-8");
-        this.responseEncoding = this.appContext.getSettings().getString("hasor.httpServlet.requestEncoding.responseEncoding", "utf-8");
+        this.requestEncoding = this.appContext.getSettings().getString("hasor.httpServlet.requestEncoding.requestEncoding");
+        this.responseEncoding = this.appContext.getSettings().getString("hasor.httpServlet.requestEncoding.responseEncoding");
         /*1.初始化执行周期管理器。*/
         this.filterPipeline.initPipeline(this.appContext);
         Hasor.info("PlatformFilter started.");
@@ -71,8 +71,10 @@ public class RuntimeFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest httpReq = (HttpServletRequest) request;
         final HttpServletResponse httpRes = (HttpServletResponse) response;
-        httpReq.setCharacterEncoding(this.requestEncoding);
-        httpRes.setCharacterEncoding(this.responseEncoding);
+        if (this.requestEncoding != null)
+            httpReq.setCharacterEncoding(this.requestEncoding);
+        if (this.requestEncoding != null)
+            httpRes.setCharacterEncoding(this.responseEncoding);
         //
         Hasor.debug("at http(%s/%s) request : %s", this.requestEncoding, this.responseEncoding, httpReq.getRequestURI());
         //

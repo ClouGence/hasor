@@ -2,25 +2,38 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.hasor</groupId>
 	<artifactId>org.hasor.parent</artifactId>
-	<version>Final</version>
+	<version>1.0</version>
 	<packaging>pom</packaging>
-	<!-- -->
+
+	<!-- 授权协议 -->
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>赵永春</name>
+			<email>zyc@hasor.net</email>
+		</developer>
+	</developers>
+
+	<!-- 包含的模块 -->
 	<modules>
 		<module>org.hasor.core</module>
 		<module>org.hasor.mvc</module>
 		<module>org.hasor.freemarker</module>
-
-
 		<!-- <module>org.hasor.icache</module> -->
 		<!-- <module>org.hasor.security</module> -->
-
 		<!-- <module>org.hasor.web-ui</module> -->
 		<!-- <module>org.hasor.web-updown</module> -->
-
 		<!-- <module>org.hasor.demo</module> -->
 		<!-- <module>org.hasor.ds</module> -->
 		<!-- <module>org.hasor.remote</module> -->
 	</modules>
+
 	<!-- 构建描述 -->
 	<build>
 		<plugins>
@@ -89,6 +102,18 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>7.6.11.v20130520</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

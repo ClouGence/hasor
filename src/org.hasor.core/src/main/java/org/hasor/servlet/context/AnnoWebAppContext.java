@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.servlet.context;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -102,7 +103,14 @@ class WebStandardEnvironment extends StandardEnvironment {
     }
     protected Map<String, String> configEnvironment() {
         Map<String, String> hasorEnv = super.configEnvironment();
-        hasorEnv.put("HASOR_WEBROOT", servletContext.getRealPath("/"));
+        String webContextDir = servletContext.getRealPath("/");
+        hasorEnv.put("HASOR_WEBROOT", webContextDir);
+        //
+        /*µ•∂¿¥¶¿Ìwork_home*/
+        String workDir = this.getSettings().getString("environmentVar.HASOR_WORK_HOME", "./");
+        workDir = workDir.replace("/", File.separator);
+        if (workDir.startsWith("." + File.separatorChar))
+            hasorEnv.put("HASOR_WORK_HOME", new File(webContextDir, workDir.substring(2)).getAbsolutePath());
         return hasorEnv;
     }
 }
