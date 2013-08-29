@@ -12,7 +12,6 @@
 // ========================================================================
 package org.more.json;
 import java.util.Map;
-import org.eclipse.jetty.util.Loader;
 import org.more.json.JSON.Convertor;
 import org.more.json.JSON.Output;
 public class JSONPojoConvertorFactory implements JSON.Convertor {

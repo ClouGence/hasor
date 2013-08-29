@@ -21,11 +21,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.eclipse.jetty.util.Loader;
-import org.eclipse.jetty.util.QuotedStringTokenizer;
-import org.eclipse.jetty.util.TypeUtil;
-import org.eclipse.jetty.util.log.Log;
-import org.eclipse.jetty.util.log.Logger;
 /**
  * JSON Parser and Generator.
  *

@@ -21,8 +21,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.jetty.util.log.Log;
-import org.eclipse.jetty.util.log.Logger;
 import org.more.json.JSON.Output;
 /**
  * Converts POJOs to JSON and vice versa.

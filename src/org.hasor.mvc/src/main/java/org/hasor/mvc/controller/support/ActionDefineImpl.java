@@ -73,7 +73,7 @@ class ActionDefineImpl implements ActionDefine {
     public String getRestfulMappingMatches() {
         if (this.restfulMappingMatches == null) {
             String mapping = this.getRestfulMapping();
-            this.restfulMappingMatches = mapping.replaceAll("\\{\\w{1,}\\}", "(\\\\w{1,})");
+            this.restfulMappingMatches = mapping.replaceAll("\\{\\w{1,}\\}", "([^/]{1,})");
         }
         return this.restfulMappingMatches;
     }

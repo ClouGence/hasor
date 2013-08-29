@@ -111,7 +111,7 @@ class ActionInvokeImpl implements ActionInvoke {
     /**执行调用，并引发事件*/
     private Object call(Method targetMethod, Object[] invokeParams) throws InvocationTargetException {
         if (this.targetObject instanceof AbstractController)
-            ((AbstractController) this.targetObject).initController(this.request, this.response);
+            ((AbstractController) this.targetObject).initController(this.appContext, this.request, this.response);
         //
         Object returnData = null;
         try {

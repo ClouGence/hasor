@@ -47,6 +47,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface Controller {
-    /**action地址空间。*/
-    public String[] value();
+    /**action地址空间，默认值为“/”*/
+    public String[] value() default "/";
 }

@@ -13,9 +13,6 @@
 package org.more.json;
 import java.lang.reflect.Method;
 import java.util.Map;
-import org.eclipse.jetty.util.Loader;
-import org.eclipse.jetty.util.log.Log;
-import org.eclipse.jetty.util.log.Logger;
 import org.more.json.JSON.Output;
 /* ------------------------------------------------------------ */
 /**

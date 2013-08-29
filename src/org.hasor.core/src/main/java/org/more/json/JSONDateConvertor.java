@@ -17,9 +17,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
-import org.eclipse.jetty.util.DateCache;
-import org.eclipse.jetty.util.log.Log;
-import org.eclipse.jetty.util.log.Logger;
 import org.more.json.JSON.Output;
 /* ------------------------------------------------------------ */
 /**

@@ -14,32 +14,35 @@
  * limitations under the License.
  */
 package org.hasor.action;
+import java.util.HashMap;
 import org.hasor.mvc.controller.Controller;
-import org.hasor.mvc.controller.HeaderParam;
+import org.hasor.mvc.controller.Get;
 import org.hasor.mvc.controller.Path;
 import org.hasor.mvc.controller.PathParam;
-import org.hasor.mvc.controller.QueryParam;
+import org.hasor.mvc.controller.Post;
+import org.hasor.mvc.controller.plugins.result.core.Json;
+import org.hasor.mvc.controller.support.AbstractController;
 /**
  * 
  * @version : 2013-8-23
  * @author 赵永春(zyc@hasor.net)
  */
-@Controller("/abc/123")
-public class FirstAction {
-    //
-    //
-    //
-    //
-    /*print是action名字*/
-    public void print() {
-        System.out.println("Hello Action!");
+@Controller()
+public class UserAction extends AbstractController {
+    @Get//
+    @Json//
+    @Path("/userMag/{uid}")//
+    public Object getUserObject(@PathParam("uid") String userID) {
+        System.out.println(String.format("get user %s.", userID));
+        HashMap mapData = new HashMap();
+        mapData.put("userID", userID);
+        mapData.put("name", "用户名称");
+        return mapData;
     }
-    @Path("/user/{uid}/")
-    public void userInfo(@PathParam("uid") String uid,//@Path中声明的参数。
-            @HeaderParam("User-Agent") String userAgent,//Heade请求头
-            @QueryParam("age") int age,//请求地址“?”之后的参数。
-            @QueryParam("ns") String[] ns) {//同名参数数组
-        //
-        System.out.println(String.format("user %s age=%s by:%s", uid, age, userAgent));
+    @Post//
+    @Path("/userMag/{uid}")//
+    public void updateUser(@PathParam("uid") String userID) {
+        String name = this.getPara("name");
+        System.out.println(String.format("update user %s new Name is %s", userID, name));
     }
 }
