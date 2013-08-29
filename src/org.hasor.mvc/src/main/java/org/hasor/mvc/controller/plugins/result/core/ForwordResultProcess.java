@@ -15,6 +15,7 @@
  */
 package org.hasor.mvc.controller.plugins.result.core;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,7 +29,7 @@ import org.hasor.mvc.controller.plugins.result.ControllerResultProcess;
 */
 @ControllerResultDefine(Forword.class)
 public class ForwordResultProcess implements ControllerResultProcess {
-    public void process(HttpServletRequest request, HttpServletResponse response, Object result) throws ServletException, IOException {
+    public void process(HttpServletRequest request, HttpServletResponse response, Annotation annoData, Object result) throws ServletException, IOException {
         Hasor.debug("forword to %s.", result);
         request.getRequestDispatcher(result.toString()).forward(request, response);
     }

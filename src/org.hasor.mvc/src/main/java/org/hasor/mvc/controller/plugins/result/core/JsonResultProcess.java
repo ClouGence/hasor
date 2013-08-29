@@ -15,6 +15,7 @@
  */
 package org.hasor.mvc.controller.plugins.result.core;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +30,7 @@ import org.more.json.JSON;
  */
 @ControllerResultDefine(Json.class)
 public class JsonResultProcess implements ControllerResultProcess {
-    public void process(HttpServletRequest request, HttpServletResponse response, Object result) throws ServletException, IOException {
+    public void process(HttpServletRequest request, HttpServletResponse response, Annotation annoData, Object result) throws ServletException, IOException {
         String jsonData = JSON.toString(result);
         Hasor.debug("write json %s.", jsonData.length() > 300 ? jsonData.substring(0, 300) : jsonData);
         if (response.isCommitted() == false)

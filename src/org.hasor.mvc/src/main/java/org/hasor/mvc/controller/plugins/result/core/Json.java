@@ -18,7 +18,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.hasor.mvc.controller.plugins.result.ResultType;
 /**
  * 将返回值转为json格式输出。
  * @version : 2013-6-5
@@ -26,5 +25,4 @@ import org.hasor.mvc.controller.plugins.result.ResultType;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD })
-@ResultType(ResultEnum.Json)
 public @interface Json {}

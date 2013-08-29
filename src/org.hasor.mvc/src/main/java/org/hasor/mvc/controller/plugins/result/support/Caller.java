@@ -29,8 +29,6 @@ import org.hasor.context.HasorEventListener;
 import org.hasor.mvc.controller.ActionInvoke;
 import org.hasor.mvc.controller.plugins.result.ControllerResultDefine;
 import org.hasor.mvc.controller.plugins.result.ControllerResultProcess;
-import org.hasor.mvc.controller.plugins.result.ResultType;
-import org.more.util.StringUtils;
 /**
  * 
  * @version : 2013-8-11
@@ -39,13 +37,13 @@ import org.more.util.StringUtils;
 @Singleton
 class Caller implements HasorEventListener {
     @Inject
-    private AppContext                       appContext = null;
-    private Map<String, ResultProcessPropxy> defineMap  = null;
+    private AppContext                                            appContext = null;
+    private Map<Class<? extends Annotation>, ResultProcessPropxy> defineMap  = null;
     //
     private void init() {
         if (this.defineMap != null)
             return;
-        this.defineMap = new HashMap<String, ResultProcessPropxy>();
+        this.defineMap = new HashMap<Class<? extends Annotation>, ResultProcessPropxy>();
         //
         //1.ªÒ»°
         Set<Class<?>> resultDefineSet = appContext.getClassSet(ControllerResultDefine.class);
@@ -60,14 +58,13 @@ class Caller implements HasorEventListener {
                 Hasor.warning("loadResultDefine : not implemented ResultProcess. class=%s", resultDefineType);
             } else {
                 Class<? extends ControllerResultProcess> defineType = (Class<? extends ControllerResultProcess>) resultDefineType;
-                ResultType resultType = resultDefineAnno.value().getAnnotation(ResultType.class);
-                if (resultType == null || StringUtils.isBlank(resultType.value()))
+                Class<? extends Annotation> resultType = resultDefineAnno.value();
+                if (resultType == null)
                     continue;
-                String annoType = resultType.value();
-                Hasor.info("loadResultDefine annoType is %s toInstance %s", annoType, resultDefineType);
+                Hasor.info("loadResultDefine annoType is %s toInstance %s", resultType, resultDefineType);
                 //
-                ResultProcessPropxy propxy = new ResultProcessPropxy(annoType, defineType, appContext);
-                this.defineMap.put(annoType, propxy);
+                ResultProcessPropxy propxy = new ResultProcessPropxy(resultType, defineType, appContext);
+                this.defineMap.put(resultType, propxy);
             }
         }
     }
@@ -83,11 +80,11 @@ class Caller implements HasorEventListener {
         if (annos == null)
             return;
         for (Annotation anno : annos) {
-            ResultType resultType = anno.annotationType().getAnnotation(ResultType.class);
+            Class<? extends Annotation> resultType = anno.annotationType();
             if (resultType != null) {
-                ResultProcessPropxy propxy = this.defineMap.get(resultType.value());
+                ResultProcessPropxy propxy = this.defineMap.get(resultType);
                 if (propxy != null) {
-                    propxy.process(invoke.getRequest(), invoke.getResponse(), returnData);
+                    propxy.process(invoke.getRequest(), invoke.getResponse(), anno, returnData);
                     return;
                 }
             }

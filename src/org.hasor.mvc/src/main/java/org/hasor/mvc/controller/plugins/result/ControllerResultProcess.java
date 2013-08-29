@@ -15,6 +15,7 @@
  */
 package org.hasor.mvc.controller.plugins.result;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,5 +26,5 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface ControllerResultProcess {
     /**执行方法调用。*/
-    public void process(HttpServletRequest request, HttpServletResponse response, Object result) throws ServletException, IOException;
+    public void process(HttpServletRequest request, HttpServletResponse response, Annotation annoData, Object result) throws ServletException, IOException;
 }

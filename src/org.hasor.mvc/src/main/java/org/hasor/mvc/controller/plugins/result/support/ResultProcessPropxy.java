@@ -15,6 +15,7 @@
  */
 package org.hasor.mvc.controller.plugins.result.support;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,21 +28,21 @@ import org.hasor.mvc.controller.plugins.result.ControllerResultProcess;
  */
 class ResultProcessPropxy implements ControllerResultProcess {
     private AppContext                               appContext        = null;
-    private String                                   annoType          = null;
+    private Class<? extends Annotation>              annoType          = null;
     private Class<? extends ControllerResultProcess> targetProcessType = null;
     private ControllerResultProcess                  targetProcess     = null;
     // 
-    public ResultProcessPropxy(String annoType, Class<? extends ControllerResultProcess> targetProcessType, AppContext appContext) {
+    public ResultProcessPropxy(Class<? extends Annotation> annoType, Class<? extends ControllerResultProcess> targetProcessType, AppContext appContext) {
         this.annoType = annoType;
         this.targetProcessType = targetProcessType;
         this.appContext = appContext;
     }
-    public String getName() {
+    public Class<? extends Annotation> getAnnoType() {
         return this.annoType;
     }
-    public void process(HttpServletRequest request, HttpServletResponse response, Object result) throws ServletException, IOException {
+    public void process(HttpServletRequest request, HttpServletResponse response, Annotation annoData, Object result) throws ServletException, IOException {
         if (this.targetProcess == null)
             this.targetProcess = appContext.getInstance(this.targetProcessType);
-        this.targetProcess.process(request, response, result);
+        this.targetProcess.process(request, response, annoData, result);
     }
 }
