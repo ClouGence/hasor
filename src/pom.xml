@@ -22,6 +22,7 @@
 
 	<!-- 包含的模块 -->
 	<modules>
+		<module>org.eclipse.jetty</module>
 		<module>org.hasor.core</module>
 		<module>org.hasor.mvc</module>
 		<module>org.hasor.freemarker</module>
@@ -108,12 +109,6 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.2</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-webapp</artifactId>
-			<version>7.6.11.v20130520</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

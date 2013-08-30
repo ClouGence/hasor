@@ -1,0 +1,132 @@
+﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.hasor</groupId>
+		<artifactId>org.hasor.parent</artifactId>
+		<version>1.0</version>
+	</parent>
+	<groupId>org.hasor</groupId>
+	<artifactId>org.eclipse.jetty</artifactId>
+	<version>0.0.1</version>
+	<packaging>jar</packaging>
+	<!-- 引用依赖 -->
+	<dependencies>
+		<!-- Log -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+
+
+
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>8.1.12.v20130726</version>
+		</dependency>
+				<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-jmx</artifactId>
+			<version>8.1.12.v20130726</version>
+		</dependency>
+				<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-jsp</artifactId>
+			<version>8.1.12.v20130726</version>
+		</dependency>
+		
+		
+		
+		
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.eclipse.jetty</groupId> -->
+<!-- 			<artifactId>jetty-websocket</artifactId> -->
+<!-- 			<version>8.1.12.v20130726</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.eclipse.jetty</groupId> -->
+<!-- 			<artifactId>jetty-jndi</artifactId> -->
+<!-- 			<version>8.1.12.v20130726</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.eclipse.jetty</groupId> -->
+<!-- 			<artifactId>jetty-servlets</artifactId> -->
+<!-- 			<version>8.1.12.v20130726</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.eclipse.jetty</groupId> -->
+<!-- 			<artifactId>jetty-annotations</artifactId> -->
+<!-- 			<version>8.1.12.v20130726</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.eclipse.jetty</groupId> -->
+<!-- 			<artifactId>jetty-ajp</artifactId> -->
+<!-- 			<version>8.1.12.v20130726</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.eclipse.jetty</groupId> -->
+<!-- 			<artifactId>jetty-rewrite</artifactId> -->
+<!-- 			<version>8.1.12.v20130726</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.eclipse.jetty</groupId> -->
+<!-- 			<artifactId>jetty-nested</artifactId> -->
+<!-- 			<version>8.1.12.v20130726</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.eclipse.jetty</groupId> -->
+<!-- 			<artifactId>jetty-start</artifactId> -->
+<!-- 			<version>8.1.12.v20130726</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.eclipse.jetty</groupId> -->
+<!-- 			<artifactId>jetty-http-spi</artifactId> -->
+<!-- 			<version>8.1.12.v20130726</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.eclipse.jetty</groupId> -->
+<!-- 			<artifactId>jetty-ajp</artifactId> -->
+<!-- 			<version>8.1.12.v20130726</version> -->
+<!-- 		</dependency> -->
+
+
+
+
+		<!-- <dependency> -->
+		<!-- <groupId>org.eclipse.jetty</groupId> -->
+		<!-- <artifactId>jetty-distribution</artifactId> -->
+		<!-- <version>8.1.12.v20130726</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.eclipse.jetty</groupId> -->
+		<!-- <artifactId>jetty-client</artifactId> -->
+		<!-- <version>8.1.12.v20130726</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.eclipse.jetty</groupId> -->
+		<!-- <artifactId>jetty-plus</artifactId> -->
+		<!-- <version>8.1.12.v20130726</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.eclipse.jetty</groupId> -->
+		<!-- <artifactId>jetty-deploy</artifactId> -->
+		<!-- <version>8.1.12.v20130726</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.eclipse.jetty</groupId> -->
+		<!-- <artifactId>jetty-overlay-deployer</artifactId> -->
+		<!-- <version>8.1.12.v20130726</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.eclipse.jetty</groupId> -->
+		<!-- <artifactId>jetty-monitor</artifactId> -->
+		<!-- <version>8.1.12.v20130726</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.eclipse.jetty</groupId> -->
+		<!-- <artifactId>jetty-jaspi</artifactId> -->
+		<!-- <version>8.1.12.v20130726</version> -->
+		<!-- </dependency> -->
+	</dependencies>
+</project>
