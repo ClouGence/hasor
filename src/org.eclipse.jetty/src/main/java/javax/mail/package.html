@@ -1,0 +1,243 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<!--
+
+  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ 
+  Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ 
+  The contents of this file are subject to the terms of either the GNU
+  General Public License Version 2 only ("GPL") or the Common Development
+  and Distribution License("CDDL") (collectively, the "License").  You
+  may not use this file except in compliance with the License. You can obtain
+  a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+  or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+  language governing permissions and limitations under the License.
+ 
+  When distributing the software, include this License Header Notice in each
+  file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+  Sun designates this particular file as subject to the "Classpath" exception
+  as provided by Sun in the GPL Version 2 section of the License file that
+  accompanied this code.  If applicable, add the following below the License
+  Header, with the fields enclosed by brackets [] replaced by your own
+  identifying information: "Portions Copyrighted [year]
+  [name of copyright owner]"
+ 
+  Contributor(s):
+ 
+  If you wish your version of this file to be governed by only the CDDL or
+  only the GPL Version 2, indicate your decision by adding "[Contributor]
+  elects to include this software in this distribution under the [CDDL or GPL
+  Version 2] license."  If you don't indicate a single choice of license, a
+  recipient has the option to distribute your version of this file under
+  either the CDDL, the GPL Version 2 or to extend the choice of license to
+  its licensees as provided above.  However, if you add GPL Version 2 code
+  and therefore, elected the GPL Version 2 license, then the option applies
+  only if the new code is made subject to such option by the copyright
+  holder.
+
+  @(#)package.html	1.5 07/07/02
+
+-->
+
+</HEAD>
+<BODY BGCOLOR="white">
+
+The JavaMail<sup><font size="-2">TM</font></sup> API
+provides classes that model a mail system.
+The <code>javax.mail</code> package defines classes that are common to
+all mail systems.
+The <code>javax.mail.internet</code> package defines classes that are specific
+to mail systems based on internet standards such as MIME, SMTP, POP3, and IMAP.
+The JavaMail API includes the <code>javax.mail</code> package and subpackages.
+<P>
+For an overview of the JavaMail API, read the JavaMail specification
+<A HREF="../../../JavaMail-1.4.pdf" TARGET="_top">
+included in the download bundle</A> or
+<A HREF="http://java.sun.com/products/javamail/JavaMail-1.4.pdf" TARGET="_top">
+available on the JavaMail web site</A>.
+<P>
+The code to send a plain text message can be as simple as the following:
+<PRE>
+    Properties props = new Properties();
+    props.put("mail.smtp.host", "my-mail-server");
+    props.put("mail.from", "me@example.com");
+    Session session = Session.getInstance(props, null);
+
+    try {
+	MimeMessage msg = new MimeMessage(session);
+	msg.setFrom();
+	msg.setRecipients(Message.RecipientType.TO,
+			  "you@example.com");
+	msg.setSubject("JavaMail hello world example");
+	msg.setSentDate(new Date());
+	msg.setText("Hello, world!\n");
+	Transport.send(msg);
+    } catch (MessagingException mex) {
+	System.out.println("send failed, exception: " + mex);
+    }
+</PRE>
+The JavaMail download bundle contains many more complete examples
+in the "demo" directory.
+<P>
+Don't forget to see the
+<A HREF="http://java.sun.com/products/javamail/FAQ.html" TARGET="_top">
+JavaMail API FAQ</A>
+for answers to the most common questions.
+The <A HREF="http://java.sun.com/products/javamail/" TARGET="_top">
+JavaMail web site</A>
+contains many additional resources.
+<P>
+The JavaMail API supports the following standard properties,
+which may be set in the <code>Session</code> object, or in the
+<code>Properties</code> object used to create the <code>Session</code> object.
+The properties are always set as strings; the Type column describes
+how the string is interpreted.  For example, use
+<PRE>
+	props.put("mail.debug", "true");
+</PRE>
+to set the <code>mail.debug</code> property, which is of type boolean.
+<P>
+<TABLE BORDER>
+<TR>
+<TH>Name</TH>
+<TH>Type</TH>
+<TH>Description</TH>
+</TR>
+
+<TR>
+<TD>mail.debug</TD>
+<TD>boolean</TD>
+<TD>
+The initial debug mode.
+Default is false.
+</TD>
+</TR>
+
+<TR>
+<TD>mail.from</TD>
+<TD>String</TD>
+<TD>
+The return email address of the current user, used by the
+<code>InternetAddress</code> method <code>getLocalAddress</code>.
+</TD>
+</TR>
+
+<TR>
+<TD>mail.mime.address.strict</TD>
+<TD>boolean</TD>
+<TD>
+The MimeMessage class uses the <code>InternetAddress</code> method
+<code>parseHeader</code> to parse headers in messages.  This property
+controls the strict flag passed to the <code>parseHeader</code>
+method.  The default is true.
+</TD>
+</TR>
+
+<TR>
+<TD>mail.host</TD>
+<TD>String</TD>
+<TD>
+The default host name of the mail server for both Stores and Transports.
+Used if the <code>mail.<i>protocol</i>.host</code> property isn't set.
+</TD>
+</TR>
+
+<TR>
+<TD>mail.store.protocol</TD>
+<TD>String</TD>
+<TD>
+Specifies the default message access protocol.  The
+<code>Session</code> method <code>getStore()</code> returns a Store
+object that implements this protocol.  By default the first Store
+provider in the configuration files is returned.
+</TD>
+</TR>
+
+<TR>
+<TD>mail.transport.protocol</TD>
+<TD>String</TD>
+<TD>
+Specifies the default message access protocol.  The
+<code>Session</code> method <code>getTransport()</code> returns a Transport
+object that implements this protocol.  By default the first Transport
+provider in the configuration files is returned.
+</TD>
+</TR>
+
+<TR>
+<TD>mail.user</TD>
+<TD>String</TD>
+<TD>
+The default user name to use when connecting to the mail server.
+Used if the <code>mail.<i>protocol</i>.user</code> property isn't set.
+</TD>
+</TR>
+
+<TR>
+<TD>mail.<i>protocol</i>.class</TD>
+<TD>String</TD>
+<TD>
+Specifies the fully qualified class name of the provider for the
+specified protocol.  Used in cases where more than one provider
+for a given protocol exists; this property can be used to specify
+which provider to use by default.  The provider must still be listed
+in a configuration file.
+</TD>
+</TR>
+
+<TR>
+<TD>mail.<i>protocol</i>.host</TD>
+<TD>String</TD>
+<TD>
+The host name of the mail server for the specified protocol.
+Overrides the <code>mail.host</code> property.
+</TD>
+</TR>
+
+<TR>
+<TD>mail.<i>protocol</i>.port</TD>
+<TD>int</TD>
+<TD>
+The port number of the mail server for the specified protocol.
+If not specified the protocol's default port number is used.
+</TD>
+</TR>
+
+<TR>
+<TD>mail.<i>protocol</i>.user</TD>
+<TD>String</TD>
+<TD>
+The user name to use when connecting to mail servers
+using the specified protocol.
+Overrides the <code>mail.user</code> property.
+</TD>
+</TR>
+
+</TABLE>
+<P>
+The JavaMail API also supports several System properties;
+see the {@link javax.mail.internet} package documentation
+for details.
+
+<P>
+The JavaMail reference
+implementation from Sun includes protocol providers in subpackages of
+<code>com.sun.mail</code>.  Note that the APIs to these protocol
+providers are not part of the standard JavaMail API.  Portable
+programs will not use these APIs.
+<P>
+Nonportable programs may use the APIs of the Sun protocol providers
+by (for example) casting a returned <code>Folder</code> object to a
+<code>com.sun.mail.imap.IMAPFolder</code> object.  Similarly for
+<code>Store</code> and <code>Message</code> objects returned from the
+standard JavaMail APIs.
+<P>
+The Sun protocol providers also support properties that are specific to
+those providers.  The package documentation for the
+{@link com.sun.mail.imap IMAP}, {@link com.sun.mail.pop3 POP3},
+and {@link com.sun.mail.smtp SMTP} packages provide details.
+
+</BODY>
+</HTML>

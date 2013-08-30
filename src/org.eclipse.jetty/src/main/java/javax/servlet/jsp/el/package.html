@@ -1,0 +1,196 @@
+<!--
+
+    DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+    Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+
+    The contents of this file are subject to the terms of either the GNU
+    General Public License Version 2 only ("GPL") or the Common Development
+    and Distribution License("CDDL") (collectively, the "License").  You
+    may not use this file except in compliance with the License.  You can
+    obtain a copy of the License at
+    https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+    or packager/legal/LICENSE.txt.  See the License for the specific
+    language governing permissions and limitations under the License.
+
+    When distributing the software, include this License Header Notice in each
+    file and include the License file at packager/legal/LICENSE.txt.
+
+    GPL Classpath Exception:
+    Oracle designates this particular file as subject to the "Classpath"
+    exception as provided by Oracle in the GPL Version 2 section of the License
+    file that accompanied this code.
+
+    Modifications:
+    If applicable, add the following below the License Header, with the fields
+    enclosed by brackets [] replaced by your own identifying information:
+    "Portions Copyright [year] [name of copyright owner]"
+
+    Contributor(s):
+    If you wish your version of this file to be governed by only the CDDL or
+    only the GPL Version 2, indicate your decision by adding "[Contributor]
+    elects to include this software in this distribution under the [CDDL or GPL
+    Version 2] license."  If you don't indicate a single choice of license, a
+    recipient has the option to distribute your version of this file under
+    either the CDDL, the GPL Version 2 or to extend the choice of license to
+    its licensees as provided above.  However, if you add GPL Version 2 code
+    and therefore, elected the GPL Version 2 license, then the option applies
+    only if the new code is made subject to such option by the copyright
+    holder.
+
+
+    This file incorporates work covered by the following copyright and
+    permission notice:
+
+    Copyright 2004 The Apache Software Foundation
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+
+</head>
+<body bgcolor="white">
+
+
+Provides the <code>ELResolver</code> classes that define the
+object resolution rules that must be supported by a JSP container 
+with the new unified Expression Language.
+<p>
+The package also defines programmatic access to the old Expression Language 
+evaluator (pre JSP 2.1).
+<p>
+<b>Please note
+that as of JSP 2.1, all classes and interfaces that were in package
+<code>javax.servlet.jsp.el</code> have been deprecated in favor of the new unified
+Expression Language APIs (<code>javax.el</code>). See the Expression Language
+specification document for more details.</b> 
+</p>
+<p>
+<b>While a JSP container must still support the deprecated APIs defined
+in <code>javax.servlet.jsp.el</code>, developers should only rely on the 
+new <code>javax.el</code> APIs
+for new development work.</b>
+</p>
+<p>
+Two ELResolver classes have been added in JSP 2.1 to implement
+object resolution rules that must be supported by a JSP container 
+with the new unified Expression Language: 
+{@link javax.servlet.jsp.el.ImplicitObjectELResolver} and 
+{@link javax.servlet.jsp.el.ScopedAttributeELResolver}. 
+</p>
+
+<h2>Documentation on the old and deprecated API</h2>
+
+<p>
+The JavaServer Pages(tm) (JSP) 2.0 specification provides a portable
+API for evaluating "EL Expressions".  As of JSP 2.0, EL expressions can
+be placed directly in the template text of JSP pages and tag files.
+<p>
+This package contains a number of classes and interfaces that describe 
+and define programmatic access to the Expression Language evaluator. 
+This API can also be used by an implementation of JSP to evaluate the 
+expressions, but other implementations, like open-coding into Java 
+bytecodes, are allowed.  This package is intended to have no dependencies 
+on other portions of the JSP 2.0 specification. 
+
+<h3>Expression Evaluator</h3>
+
+Programmatic access to the EL Expression Evaluator is provided
+through the following types:
+
+<ul>
+  <li><code>ExpressionEvaluator</code></li>
+  <li><code>Expression</code></li>
+  <li><code>FunctionMapper</code></li>
+  <li><code>VariableResolver</code></li>
+</ul>
+
+<p> An <code>ExpressionEvaluator</code> object can be obtained from a
+JspContext object through the <code>getExpressionEvaluator</code>
+method.  An ExpressionEvaluator encapsulates the EL processor.  An EL
+expression provided as a String can then be evaluated directly, or it
+can be parsed first into an <code>Expression</code> object.  The parse
+step, can be used to factor out the cost of parsing the expression, or
+even the cost of optimizing the implementation.</p>
+
+<p>The parsing of an expression string is done against a target type,
+a default prefix (that applies when a function has no prefix), and
+a <code>FunctionMapper</code>.  The <code>FunctionMapper</code> object
+maps a prefix and a local name part into a
+<code>java.lang.reflect.Method</code> object.</p>
+
+<p>The interpretation or evaluation of a parsed expression is done
+using a <code>VariableResolver</code> object. This object resolves
+top level object names into Objects.  A <code>VariableResolver</code>
+can be obtained from a <code>JspContext</code> object through the
+<code>getVariableResolver</code> method.</p>
+
+<h3>Exceptions</h3>
+
+<p>
+The <code>ELException</code> exception is used by the expression
+language to denote any exception that may arise during the parsing or
+evaluation of an expression.
+The <code>ELParseException</code> exception is a subclass of
+<code>ELException</code> that corresponds to parsing errors</p>
+
+<p>Parsing errors are conveyed as exceptions to simplify the API.  It
+is expected that many JSP containers will use additional mechanisms to
+parse EL expressions and report their errors - a run-time API cannot
+provide accurate line-error numbers without additional machinery.</p>
+
+<h3>Code Fragment</h3>
+
+<p>
+Below is a non-normative code fragment outlining how the APIs can be used.</p>
+
+<pre>
+// Get an instance of an ExpressionEvaluator
+
+
+ExpressionEvaluator ee = myJspContext.getExpressionEvaluator();
+VariableResolver vr = myJspContext.getVariableResolver();
+
+FunctionMapper fm; // we don't have a portable implementation yet
+
+// Example of compiling an expression.  See [ISSUE-2]
+// Errors detected this way may have higher quality than those
+// found with a simple validate() invocation.
+
+ExpressionCompilation ce;
+
+try {
+  ce = ee.prepareExpression(expr,
+			    targetClass,
+			    fm,
+			    null // no prefixes
+			    );
+} catch (ELParseException e) {
+	log (e.getMessage());
+}
+
+try {
+  ce.evaluate(vr);
+} catch (ElException e) {
+	log (e);
+}
+</pre>
+
+</body>
+</html>
+
+

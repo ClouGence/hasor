@@ -1,0 +1,1460 @@
+<!--
+
+    DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+    Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+
+    The contents of this file are subject to the terms of either the GNU
+    General Public License Version 2 only ("GPL") or the Common Development
+    and Distribution License("CDDL") (collectively, the "License").  You
+    may not use this file except in compliance with the License.  You can
+    obtain a copy of the License at
+    https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+    or packager/legal/LICENSE.txt.  See the License for the specific
+    language governing permissions and limitations under the License.
+
+    When distributing the software, include this License Header Notice in each
+    file and include the License file at packager/legal/LICENSE.txt.
+
+    GPL Classpath Exception:
+    Oracle designates this particular file as subject to the "Classpath"
+    exception as provided by Oracle in the GPL Version 2 section of the License
+    file that accompanied this code.
+
+    Modifications:
+    If applicable, add the following below the License Header, with the fields
+    enclosed by brackets [] replaced by your own identifying information:
+    "Portions Copyright [year] [name of copyright owner]"
+
+    Contributor(s):
+    If you wish your version of this file to be governed by only the CDDL or
+    only the GPL Version 2, indicate your decision by adding "[Contributor]
+    elects to include this software in this distribution under the [CDDL or GPL
+    Version 2] license."  If you don't indicate a single choice of license, a
+    recipient has the option to distribute your version of this file under
+    either the CDDL, the GPL Version 2 or to extend the choice of license to
+    its licensees as provided above.  However, if you add GPL Version 2 code
+    and therefore, elected the GPL Version 2 license, then the option applies
+    only if the new code is made subject to such option by the copyright
+    holder.
+
+
+    This file incorporates work covered by the following copyright and
+    permission notice:
+
+    Copyright 2004 The Apache Software Foundation
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+</head>
+<body bgcolor="white">
+
+Classes and interfaces for the definition of JavaServer Pages Tag Libraries.
+
+<p> Custom actions can be used by JSP authors and authoring tools to
+simplify writing JSP pages. A custom action can be either an empty
+or a non-empty action.
+
+<p>
+An empty tag has no body.  There are two equivalent syntaxes, one
+with separate start and end tags, and one where the start and
+end tags are combined. The two following examples are identical:
+</p>
+<blockquote>
+<code>
+<pre>
+&lt;x:foo att="myObject"&gt;&lt/foo&gt;
+&lt;x:foo att="myObject"/&gt;
+</pre>
+</code>
+</blockquote>
+
+<p>
+A non-empty tag has a start tag, a body, and an end tag.  A
+prototypical example is of the form:
+</p>
+<blockquote>
+<code>
+<pre>
+&lt;x:foo att="myObject" &gt;
+  BODY
+&lt;/x:foo/&gt;
+</pre>
+</code>
+</blockquote>
+
+
+<p>
+The JavaServer Pages(tm) (JSP) specification provides a portable
+mechanism for the description of tag libraries.
+<p>
+A JSP tag library contains
+<ul>
+<li>A Tag Library Descriptor</li>
+<li>A number of Tag Files or Tag handler classes defining 
+    request-time behavior</li>
+<li>Additional classes and resources used at runtime</li>
+<li>Possibly some additional classes to provide extra translation 
+    information</li>
+</ul>
+
+<p> This API is described in the following sections:
+<ol>
+  <li><a href="#classic">Classic Tag Handlers</a></li>
+  <li><a href="#bodycontent">Tag Handlers that want to access their Body Content</a></li>
+  <li><a href="#dynamic">Dynamic Attributes</a></li>
+  <li><a href="#thmgmt">Annotated Tag Handler Management Example</a></li>
+  <li><a href="#coop">Cooperating Actions</a></li>
+  <li><a href="#simple">Simple Tag Handlers</a></li>
+  <li><a href="#fragment">JSP Fragments</a></li>
+  <li><a href="#sths">Example Simple Tag Handler Scenario</a></li>
+  <li><a href="#translation">Translation-time Classes</a></li>
+</ol>
+
+<a name="classic">
+<h2>1. Classic Tag Handlers</h2>
+</a>
+This section introduces the notion of a tag handler and describes the
+classic types of tag handler.
+
+<p> JSP 2.0 introduces a new type of Tag Handler called a Simple 
+Tag Handler, which is described in a later section.  
+The protocol for Simple Tag handlers is much more straightforward.
+
+<h3>Tag Handler</h3>
+
+<p> A tag handler is a run-time, container-managed object that
+evaluates custom actions during the execution of a JSP page.  A tag
+handler supports a protocol that allows the JSP container to provide
+good integration of the server-side actions within a JSP page.
+
+<p> A tag handler is created initially using a zero argument
+constructor on its corresponding class; the method
+<code>java.beans.Beans.instantiate()</code> is not used.
+
+<p> A tag handler has some properties that are exposed to the page as
+attributes on an action; these properties are managed by the JSP
+container (via generated code).  The setter methods used to set
+the properties are discovered using the JavaBeans introspector
+machinery.
+
+<p> The protocol supported by a tag handler provides for passing of
+parameters, the evaluation and reevaluation of the body of the action,
+and for getting access to objects and other tag handlers in the
+JSP page.
+
+<p> A tag handler instance is responsible for processing one request
+at a time.  It is the responsability of the JSP container to enforce
+this.
+
+<p> Additional translation time information associated with the action
+indicates the name of any scripting variables it may introduce, their
+types and their scope. At specific moments, the JSP container will
+automatically synchronize the {@link javax.servlet.jsp.PageContext}
+ information with variables
+in the scripting language so they can be made available directly
+through the scripting elements.
+
+
+<h3>Properties</h3>
+
+
+<p> A tag handler has some properties.  All tag handlers have a
+<em>pageContext</em> property for the JSP page where the tag is
+located, and a <em>parent</em> property for the tag handler to the
+closest enclosing action. Specific tag handler classes may have
+additional properties.
+
+<p> All attributes of a custom action must be JavaBeans component
+properties, although some properties may not be exposed as attributes.
+The attributes that are visible to the JSP translator are exactly
+those listed in the Tag Library Descriptor (TLD).
+
+<p> All properties of a tag handler instance exposed as attributes
+will be initialized by the container using the appropriate setter
+methods before the instance can be used to perform the action methods.
+It is the responsibility of the JSP container to invoke the
+appropriate setter methods to initialize these properties.  It is the
+responsability of user code, be it scriptlets, JavaBeans code, or code
+inside custom tags, to not invoke these setter methods, as doing
+otherwise would interfere with the container knowledge.
+
+<p> The setter methods that should be used when assigning a value to
+an attribute of a custom action are determined by using the JavaBeans
+introspector on the tag handler class, then use the setter method
+associated with the property that has the same name as the attribute
+in question. An implication (unclear in the JavaBeans specification)
+is that there is only one setter per property.
+
+<p> Unspecified attributes/properties should not be set (using a
+setter method).
+
+<p> Once properly set, all properties are expected to be persistent,
+so that if the JSP container ascertains that a property has already
+been set on a given tag handler instance, it must not set it
+again.  
+
+<p> The JSP container may reuse classic tag handler instances for multiple
+occurrences of the corresponding custom action, in the same page or in
+different pages, but only if the same set of attributes are used for all
+occurrences.  If a tag handler is used for more than one occurence, the
+container must reset all attributes where the values differ between the
+custom action occurrences.  Attributes with the same value in all
+occurrences must not be reset.  If an attribute value is set as a
+request-time attribute value (using a scripting or an EL expression),
+the container must reset the attribute between all reuses of the tag
+handler instance.  To prevent confusion, a tag handler with an empty body
+must not reuse any previous tag handler with a non-empty body.
+
+<p> User code can access property information and access and modify
+tag handler internal state starting with the first action method (doStartTag)
+up until the last action method (doEndTag or doFinally for tag handlers
+implementing TryCatchFinally).
+
+
+<h3>Tag Handler as a Container-Managed Object</h3>
+
+<p> Since a tag handler is a container managed object, the container
+needs to maintain its references; specifically, user code should not
+keep references to a tag handler except between the start of the first
+action method (doStartTag()) and the end of the last action method
+(doEndTag() or doFinally() for those tags that implement TryCatchFinally).
+
+<p> The restrictions on references to tag handler objects and
+on modifying attribute properties gives the JSP container substantial
+freedom in effectively managing tag handler objects to achieve different
+goals.  For example, a container may implementing different pooling strategies
+to minimize creation cost, or may hoist setting of properties to reduce
+cost when a tag handler is inside another iterative tag. 
+
+
+<h3>Conversions</h3>
+
+<p>A tag handler implements an action; the JSP container must follow
+the type conversions described in Section 2.13.2 when assigning values
+to the attributes of an action.
+
+<h3>Empty and Non-Empty Actions</h3>
+
+An empty action has no body; it may use one of two syntaxes: either
+&lt;foo/&gt; or &lt;foo&gt;&lt;/foo&gt;.  Since empty actions have no
+body the methods related to body manipulation are not invoked.
+There is a mechanism in the Tag Library Descriptor to indicate
+that a tag can only be used to write empty actions; when used,
+non-empty actions using that tag will produce a translation error.
+
+<p>
+A non-empty action has a body.  
+
+<a name="tag interface">
+<h3>The Tag Interface</h3>
+</a>   
+
+<p> A Tag handler that does not want to process its body can implement
+just the Tag interface.  A tag handler may not want to process its
+body because it is an empty tag or because the body is just to
+be "passed through".
+
+<p> The Tag interface includes methods to provide page context
+information to the Tag Handler instance, methods to handle the
+life-cycle of tag handlers, and two main methods for performing
+actions on a tag: <code>doStartTag()</code> and
+<code>doEndTag()</code>.  The method <code>doStartTag()</code> is
+invoked when encountering the start tag and its return value indicates
+whether the body (if there is any) should be skipped, or evaluated and
+passed through to the current response stream.  The method
+<code>doEndTag()</code> is invoked when encountering the end tag; its
+return value indicates whether the rest of the page should continue to
+be evaluated or not.
+
+<p> If an exception is encountered during the evaluation of the
+body of a tag, its doEndTag method will not be evaluated.  See the
+TryCatchFinally tag for methods that are guaranteed to be evaluated.
+
+<a name="iterationtag interface">
+<h3>The IterationTag Interface</h3>
+</a>   
+
+<p> The IterationTag interface is used to repeatedly reevaluate
+the body of a custom action.  The interface has one method:
+<code>doAfterBody()</code> which is invoked after each evaluation
+of the body to determine whether to reevaluate or not.
+
+<p> Reevaluation is requested with the value 2, which in JSP 1.1 is
+defined to be BodyTag.EVAL_BODY_TAG.  That constant value is still
+kept in JSP 1.2 (for full backwards compatibility) but, to improve
+clarity, a new name is also available: IterationTag.EVAL_BODY_AGAIN.
+To stop iterating, the returned value should be 0, which is
+Tag.SKIP_BODY.
+
+<h3>The JspIdConsumer Interface</h3>
+This interface indicates to the container that a tag handler wishes 
+to be provided with a compiler generated ID that is unique
+within the page.
+
+<h3>The TagSupport Base Class</h3>
+
+<p> The TagSupport class is a base class that can be used when
+implementing the Tag or IterationTag interfaces.
+
+
+<a name="bodycontent">
+<h2>2. Tag Handlers that want Access to their Body Content</h2>
+</a>
+
+<p>The evaluation of a body is delivered into a <code>BodyContent</code>
+object.  This is then made available to tag handlers that implement
+the <code>BodyTag</code> interface.  The <code>BodyTagSupport</code>
+class provides a useful base class to simplify writing these handlers.
+
+
+<p> If a Tag handler wants to have access to the content of its body
+then it must implement the <code>BodyTag</code> interface.
+
+This interface extends IterationTag, provides two additional methods
+<code>setBodyContent(BodyContent)</code> and
+<code>doInitBody()</code>
+and refers to an object of type BodyContent.
+
+<p> A BodyContent is a subclass of <code>JspWriter</code> that has a
+few additional methods to convert its contents into a String, insert
+the contents into another JspWriter, to get a Reader into its
+contents, and to clear the contents.  Its semantics also assure that
+buffer size will never be exceeded.
+
+<p> The JSP page implementation will create a BodyContent if the
+doStartTag() method returns a EVAL_BODY_BUFFERED.  This object will be
+passed to doInitBody(); then the body of the tag will be evaluated,
+and <em>during that evaluation <b>out</b> will be bound to the
+BodyContent just passed to the BodyTag handler</em>.  Then
+doAfterBody() will be evaluated.  If that method returns SKIP_BODY, no
+more evaluations of the body will be done; if the method returns
+EVAL_BODY_AGAIN, then the body will be evaluated, and doAfterBody() will
+be invoked again.
+
+<p> The content of a BodyContent instance remains available until after
+the invocation of its associated doEndTag() method.
+
+<p> A common use of the BodyContent is to extract its contents into a
+String and then use the String as a value for some operation.  Another
+common use is to take its contents and push it into the out Stream
+that was valid when the start tag was encountered (that is available
+from the PageContext object passed to the handler in setPageContext).
+
+
+<a name="dynamic">
+<h2>3. Dynamic Attributes</h2>
+</a>
+
+<p>Any tag handler can optionally extend the <code>DynamicAttributes</code>
+interface to indicate that it supports dynamic attributes.  In addition 
+to implementing the <code>DynamicAttributes</code> interface, tag 
+handlers that support dynamic attributes must declare that they do so in 
+the Tag Library Descriptor.</p>
+
+<p>The TLD is what ultimately determines whether a tag handler accepts 
+dynamic attributes or not. If a tag handler declares that it supports 
+dynamic attributes in the TLD but it does not implement the 
+<code>DynamicAttributes</code> interface, the tag handler must be 
+considered invalid by the container.</p>
+
+<p>If the dynamic-attributes element for a tag being invoked contains 
+the value "true", the following requirements apply:</p>
+
+<ul>
+  <li>For each attribute specified in the tag invocation that does not 
+  have a corresponding attribute element in the TLD for this tag, 
+  a call must be made to <code>setDynamicAttribute()</code>, 
+  passing in the namespace of the attribute (or null if the attribute
+  does not have a namespace or prefix), the name of the attribute without 
+  the namespace prefix, and the final value of the attribute.</li>
+
+  <li>Dynamic attributes must be considered to accept request-time
+  expression values as well as deferred expressions.</li>
+
+  <li>Dynamic attributes must be treated as though they were of type
+  <code>java.lang.Object</code>. If a <code>ValueExpression</code> 
+  is passed as a dynamic attribute, the default value for the expected 
+  return type is assumed to be <code>java.lang.Object</code>.  If a 
+  <code>MethodExpression</code> is passed as a dynamic
+  attribute, the default method signature is assumed to be <code>void
+  method()</code>.</li>
+  
+  <li>Note that passing a String literal as a dynamic attribute will never
+  be considered as a deferred expression.</li>
+
+  <li>The JSP container must recognize dynamic attributes that are 
+  passed to the tag handler using the &lt;jsp:attribute&gt; standard 
+  action.</li>
+
+  <li>If the <code>setDynamicAttribute()</code> method throws
+  <code>JspException</code>, the <code>doStartTag()</code> or 
+  <code>doTag()</code> method is not invoked for this tag, and the
+  exception must be treated in the same manner as if it came from 
+  a regular attribute setter method.</li>
+
+  <li>For a JSP document in either standard or XML syntax, If a
+  dynamic attribute has a prefix that doesn't map to a
+  namespace, a translation error must occur.  In standard
+  syntax, only namespaces defined using taglib directives are
+  recognized.</li>
+
+</ul>
+
+<p>In the following example, assume attributes a and b are declared 
+using the attribute element in the TLD, attributes d1 and d2 are not 
+declared, and the dynamic-attributes element is set to "true". 
+The attributes are set using the calls:
+<ul>
+  <li><code>setA( "1" )</code>, </li>
+  <li><code>setDynamicAttribute( null, "d1", "2" )</code>, </li>
+  <li><code>setDynamicAttribute( "http://www.foo.com/jsp/taglib/mytag.tld", "d2", "3" )</code>, </li>
+  <li><code>setB( "4" )</code>, </li>
+  <li><code>setDynamicAttribute( null, "d3", "5" )</code>, and</li>
+  <li><code>setDynamicAttribute( "http://www.foo.com/jsp/taglib/mytag.tld", "d4", "6" )</code>.</li>
+</ul>
+
+<pre>
+&lt;jsp:root xmlns:mytag="http://www.foo.com/jsp/taglib/mytag.tld" version="2.0"&gt;
+  &lt;mytag:invokeDynamic a="1" d1="2" mytag:d2="3"&gt;
+    &lt;jsp:attribute name="b"&gt;4&lt;/jsp:attribute&gt;
+    &lt;jsp:attribute name="d3"&gt;5&lt;/jsp:attribute&gt;
+    &lt;jsp:attribute name="mytag:d4"&gt;6&lt;/jsp:attribute&gt;
+  &lt;/mytag:invokeDynamic&gt;
+&lt;/jsp:root&gt;
+</pre>
+
+<a name="thmgmt">
+<h2>4. Annotated Tag Handler Management Example</h2>
+</a>
+
+Below is a somewhat complete example of the way one JSP container
+could choose to do some tag handler management.  There are many
+other strategies that could be followed, with different pay offs.
+
+<p>In this example, we are assuming that
+x:iterate is an iterative tag, while x:doit and x:foobar are simple
+tag.  We will also assume that x:iterate and x:foobar implement the
+TryCatchFinally interface, while x:doit does not.
+
+<pre>
+&lt;x:iterate src="foo"&gt;
+  &lt;x:doit att1="one" att2="&lt;%= 1 + 1 %&gt;" /&gt;
+  &lt;x:foobar /&gt;
+  &lt;x:doit att1="one" att2="&lt;%= 2 + 2 %&gt;" /&gt;
+&lt;/x:iterate&gt;
+&lt;x:doit att1="one" att2="&lt;%= 3 + 3 %&gt;" /&gt;
+</pre>
+
+<p> The particular code shown below assumes there is some pool of tag
+handlers that are managed (details not described, although pool
+managing is simpler when there are no optional attributes), and
+attemps to reuse tag handlers if possible.  The code also "hoists" 
+setting of properties to reduce the cost when appropriate, e.g. inside
+an iteration.
+
+<pre>
+
+boolean b1, b2;
+IterationTag i; // for x:iterate
+Tag d; // for x:doit
+Tag d; // for x:foobar
+
+page: // label to end of page...
+
+
+// initialize iteration tag
+i = get tag from pool or new();
+
+i.setPageContext(pc);
+i.setParent(null);
+i.setSrc("foo");
+
+// x:iterate implements TryCatchFinally
+try {
+    if ((b1 = i.doStartTag()) == EVAL_BODY_INCLUDE) {
+
+        // initialize doit tag
+        // code has been moved out of the loop for show
+        d = get tag from pool or new();
+
+        d.setPageContext(pc);
+        d.setParent(i);
+        d.setAtt1("one");
+
+    loop:
+        while (1) do {
+            // I'm ignoring newlines...
+
+            // two invocations, fused together
+
+            // first invocation of x:doit
+            d.setAtt2(1+1);
+            if ((b2 = d.doStartTag()) == EVAL_BODY_INCLUDE) {
+                // nothing
+            } else if (b2 != SKIP_BODY) {
+                // Q? protocol error ...
+            }
+            if ((b2 = d.doEndTag()) == SKIP_PAGE) {
+                break page;  // be done with it.
+            } else if (b2 != EVAL_PAGE) {
+                // Q? protocol error
+            }
+
+	    // x:foobar invocation
+            f = get tag from pool or new();
+            f.setPageContext(pc);
+            f.setParent(i);
+
+            // x:foobar implements TryCatchFinally
+            try {
+        
+                if ((b2 = f.doStartTag()) == EVAL_BODY_INCLUDE) {
+                    // nothing
+                } else if (b2 != SKIP_BODY) {
+                    // Q? protocol error
+                }
+                if ((b2 = f.doEndTag()) == SKIP_PAGE) {
+                    break page;  // be done with it.
+                } else if (b2 != EVAL_PAGE) {
+                    // Q? protocol error
+                }
+            } catch (Throwable t) {
+                f.doCatch(t); // caught, may been rethrown!
+            } finally {
+                f.doFinally();
+            }
+
+            // put f back to pool
+        
+            // second invocation of x:doit
+            d.setAtt2(2+2);
+            if ((b2 = d.doStartTag()) == EVAL_BODY_INCLUDE) {
+                // nothing
+            } else if (b2 != SKIP_BODY) {
+                // Q? protocol error
+            }
+            if ((b2 = d.doEndTag()) == SKIP_PAGE) {
+                break page;  // be done with it.
+            } else if (b2 != EVAL_PAGE) {
+                // Q? protocol error
+            }
+
+            if ((b2 = i.doAfterBody()) == EVAL_BODY_AGAIN) {
+                break loop;
+            } else if (b2 != SKIP_BODY) {
+                // Q? protocol error
+            }
+        // loop
+        }
+
+    } else if (b1 != SKIP_BODY) {
+        // Q? protocol error
+    }
+
+    // tail end of the IteratorTag ...
+
+    if ((b1 = i.doEndTag()) == SKIP_PAGE) {
+        break page;   // be done with it.
+    } else if (b1 != EVAL_PAGE) {
+        // Q? protocol error
+    }
+    
+    // third invocation
+    // this tag handler could be reused from the previous ones.
+    d = get tag from pool or new();
+
+    d.setPageContext(pc);
+    d.setParent(null);
+    d.setAtt1("one");
+    d.setAtt2(3+3);
+
+    if ((b1 = d.doStartTag()) == EVAL_BODY_INCLUDE) {
+        // nothing
+    } else if (b1 != SKIP_BODY) {
+        // Q? protocol error
+    }
+    if ((b1 = d.doEndTag()) == SKIP_PAGE) {
+        break page;  // be done with it.
+    } else if (b1 != EVAL_PAGE) {
+        // Q? protocol error
+    }
+
+} catch (Throwable t) {
+    i.doCatch(t); // caught, may been rethrown!
+} finally {
+    i.doFinally();
+}
+</pre>
+
+<a name="coop">
+<h2>5. Cooperating Actions</h2>
+</a>
+
+Actions can cooperate with other actions and with scripting code
+in a number of ways.
+
+<h3>PageContext</h3>
+<p>
+
+Often two actions in a JSP page will want to cooperate,
+perhaps by one action creating some server-side object that
+needs to be accessed by another.
+One mechanism for doing this is by giving the object a name
+within the JSP page; the first action will create the object
+and associate the name to it while the second action
+will use the name to retrieve the object.
+
+<p>
+For example, in the following JSP segment the <code>foo</code>
+action might create a server-side object and give it the
+name "myObject". 
+Then the <code>bar</code>
+action might access that server-side object and take some action.
+
+<blockquote>
+<code>
+<pre>
+&lt;x:foo id="myObject" /&gt;
+&lt;x:bar ref="myObjet" /&gt;
+</pre>
+</code>
+</blockquote>
+
+<p>
+
+In a JSP implementation, the mapping "name"->value is kept by the
+implicit object
+<code>pageContext</code>.
+
+This object is passed around through the Tag handler instances
+so it can be used to communicate information: all it is needed
+is to know the name under which the information is stored into
+the pageContext.
+
+<h3>The Runtime Stack</h3>
+<p>
+
+An alternative to explicit communication of information through
+a named object is implicit coordination based on syntactic scoping.
+
+<p>
+For example, in the following JSP segment the <code>foo</code>
+action might create a server-side object;
+later the nested <code>bar</code> action might access that server-side object.
+The object is not named within the <code>pageContext</code>:
+it is found because the specific <code>foo</code> element is the
+closest enclosing instance of a known element type.
+
+<blockquote>
+<code>
+<pre>
+&lt;foo&gt;
+   &lt;bar/&gt;
+&lt;/foo&gt;
+</pre>
+</code>
+</blockquote>
+
+<p>
+This functionality is supported through the
+<code>TagSupport.findAncestorWithClass(Tag, Class)</code>,
+which uses a reference to parent tag kept by each Tag instance,
+which effectively provides a run-time execution stack.
+
+<a name="simple">
+<h2>6. Simple Tag Handlers</h2>
+</a>
+
+<p> This section presents the API to implement Simple Tag Handlers.  
+Simple Tag Handlers present a much simpler invocation 
+protocol than do Classic Tag Handlers.</p>
+
+<p>The Tag Library Descriptor maps tag library declarations to their 
+physical underlying implementations. A Simple Tag Handler is 
+represented in Java by a class which implements the 
+<code>SimpleTag</code> interface.</p>
+
+<p>Unlike classic tag handlers, the <code>SimpleTag</code> interface does not 
+extend Tag. Instead of supporting <code>doStartTag()</code> and 
+<code>doEndTag()</code>, the <code>SimpleTag</code> interface provides 
+a simple <code>doTag()</code> method, which is called once and only once 
+for any given tag invocation. All tag logic, iteration, body 
+evaluations, etc. are to be performed in this single method. Thus, 
+simple tag handlers have the equivalent power of <code>BodyTag</code>, 
+but with a much simpler lifecycle and interface.</p>
+
+<p>To support body content, the <code>setJspBody()</code> 
+method is provided. The container invokes the <code>setJspBody()</code> 
+method with a <code>JspFragment</code> object encapsulating the body 
+of the tag. The tag handler implementation can call 
+<code>invoke()</code> on that fragment to evaluate the body.  The
+<code>SimpleTagSupport</code> convenience class provides 
+<code>getJspBody()</code> and other useful methods to make this even 
+easier.</p>
+
+<h3>Lifecycle of Simple Tag Handlers</h3>
+<p>This section describes the lifecycle of simple tag handlers, from 
+creation to invocation. For all semantics left unspecified by this 
+section, the semantics default to that of a classic tag handler.</p>
+
+<p>When a simple tag handler is invoked, the following steps occur 
+(in order):</p>
+
+<ol>
+  <li>Simple tag handlers are created initially using a zero 
+  argument constructor on the corresponding implementation class. 
+  Unlike classic tag handlers, this instance must never be pooled by 
+  the container. A new instance must be created for each tag invocation.</li>
+
+  <li>The <code>setJspContext()</code> and <code>setParent()</code> 
+  methods are invoked on the tag handler.  The <code>setParent()</code>
+  method need not be called if the value being passed in is 
+  <code>null</code>.  In the case of tag files, a <code>JspContext</code> 
+  wrapper is created so that the tag file can appear to have its own page 
+  scope.  Calling <code>getJspContext()</code> must return the wrapped 
+  <code>JspContext</code>.</li>
+
+  <li>The attributes specified as XML element attributes (if any) 
+  are evaluated next, in the order in which they are declared, according 
+  to the following rules (referred to as "evaluating an XML element 
+  attribute" below).  The appropriate bean property setter is invoked 
+  for each.  If no setter is defined for the specified attribute but 
+  the tag accepts dynamic attributes, the <code>setDynamicAttribute()</code> 
+  method is invoked as the setter.
+    <ul>
+      <li>If the attribute is a scripting expression (e.g. "&lt;%= 1+1 %&gt;"
+      in JSP syntax, or "%= 1+1 %" in XML syntax), the expression is 
+      evaluated, and the result is converted as per the rules in 
+      "Type Conversions", and passed to the setter.</li>
+
+      <li>Otherwise, if the attribute contains any Expression Language 
+      expressions (e.g. "Hello ${name}"), the expression is evaluated, and 
+      the result is converted and passed to the setter.</li>
+
+      <li>Otherwise, the attribute value is taken verbatim, converted, 
+      and passed to the setter.</li>
+    </ul>
+  </li>
+
+  <li>The value for each &lt;jsp:attribute&gt; element is evaluated, 
+  and the corresponding bean property setter methods are invoked for 
+  each, in the order in which they appear in the body of the tag. If no
+  setter is defined for the specified attribute but the tag 
+  accepts dynamic attributes, the <code>setDynamicAttribute()</code> 
+  method is invoked as the setter.
+    <ul>
+      <li>Otherwise, if the attribute is not of type 
+      <code>JspFragment</code>, the container evaluates the body of 
+      the &lt;jsp:attribute&gt; element. This evaluation can be done 
+      in a container-specific manner. Container implementors should 
+      note that in the process of evaluating this body, other custom 
+      actions may be invoked.</li>
+
+      <li>Otherwise, if the attribute is of type <code>JspFragment</code>,
+      an instance of a <code>JspFragment</code> object is created and
+      passed in.</li>
+    </ul>
+  </li>
+
+  <li>The value for the body of the tag is determined, and if
+  a body exists the <code>setJspBody()</code> method is called on the 
+  tag handler. 
+    <ul>
+      <li>If the tag is declared to have a <code>body-content</code> 
+      of "<code>empty</code>" or no body or an empty body is passed 
+      for this invocation, then <code>setJspBody()</code> is not 
+      called.</li>
+
+      <li>Otherwise, the body of the tag is either the body of 
+      the &lt;jsp:body&gt; element, or the body of the custom action 
+      invocation if no &lt;jsp:body&gt; or &lt;jsp:attribute&gt; 
+      elements are present.  In this case, an instance of a
+      <code>JspFragment</code> object is created as per the lifecycle
+      described in the JSP Fragments section and it is passed to the
+      setter.  If the tag is declared to have a <code>body-content</code>
+      of "<code>tagdependent</code>" the <code>JspFragment</code> must
+      echo the body's contents verbatim.  Otherwise, if the tag is
+      declared to have a <code>body-content</code> of type
+      "<code>scriptless</code>", the <code>JspFragment</code> must
+      evaluate the body's contents as a JSP scriptless body.</li>
+    </ul>
+  </li>
+
+  <li>The <code>doTag()</code> method is invoked.</li>
+
+  <li>The implementation of <code>doTag()</code> performs its 
+  function, potentially calling other tag handlers (if the tag
+  handler is implemented as a tag file) and invoking fragments.</li>
+
+  <li>The <code>doTag()</code> method returns, and the tag handler 
+  instance is discarded. If <code>SkipPageException</code> is thrown,
+  the rest of the page is not evaluated and the request is completed.
+  If this request was forwarded or included from another page (or Servlet),
+  only the current page evaluation stops.</li>
+
+  <li>For each tag scripting variable declared with scopes 
+  <code>AT_BEGIN</code> or <code>AT_END</code>, the appropriate 
+  scripting variables and scoped attributes are declared, as with 
+  classic tag handlers.</li>
+</ol>
+
+<a name="fragment">
+<h2>7. JSP Fragments</h2>
+</a>
+
+<p>JSP Fragments are represented in Java by an instance of the 
+<code>javax.servlet.jsp.tagext.JspFragment abstract class</code>.
+Pieces of JSP code are translated into JSP fragments in the context 
+of a tag invocation. JSP Fragments are created when providing the body of a 
+&lt;jsp:attribute&gt; standard action for an attribute that is defined
+as a fragment or of type JspFragment, or when providing the body of a 
+tag invocation handled by a Simple Tag Handler.</p>
+
+<p>Before being passed to a tag handler, the <code>JspFragment</code> 
+instance is associated with the <code>JspContext</code> of the 
+surrounding page in an implementation-dependent manner.  In addition, 
+
+it is associated with the parent <code>Tag</code> or <code>SimpleTag</code> 
+instance for collaboration purposes, so that when a custom action is 
+invoked from within the fragment, <code>setParent()</code> can be called 
+with the appropriate value. The fragment implementation must keep 
+these associations for the duration of the tag invocation in which it 
+is used.</p>
+
+<p>The <code>invoke()</code> method executes the body and directs 
+all output to either the passed in <code>java.io.Writer</code> or 
+the <code>JspWriter</code> returned by the <code>getOut()</code> method 
+of the <code>JspContext</code> associated with the fragment.</p>
+
+<p>The implementation of each method can optionally throw a 
+<code>JspException</code>, which must be handled by the invoker. Note 
+that tag library developers and page authors should not generate
+<code>JspFragment</code> implementations manually.</p>
+
+<p>The following sections specify the creation and invocation 
+lifecycles of a JSP Fragment in detail, from the JSP Container's 
+perspective.</p>
+
+
+<h3>Creation of a JSP Fragment</h3>
+
+<p>When a JSP fragment is created, the following steps occur (in order):
+
+<ol>
+  <li>An instance of a class implementing the <code>JspFragment</code> 
+  abstract class is obtained (may either be created or can optionally be cached)
+  each time the tag is invoked. This instance must be configured to 
+  produce the contents of the body of the fragment when invoked.  If the 
+  fragment is defining the body of a &lt;jsp:attribute&gt;, the fragment 
+  must evaluate the body each time it is invoked.  Otherwise, if the 
+  fragment is defining the body of a simple tag, the behavior of the 
+  fragment when invoked varies depending on the <code>body-content</code>
+  declared for the tag:
+    <ul>
+      <li>If the <code>body-content</code> is "<code>tagdependent</code>", 
+      then the fragment must echo the contents of the body verbatim 
+      when invoked.</li>
+
+      <li>If the <code>body-content</code> is "<code>scriptless</code>", 
+      then the fragment must evaluate the body each time it is invoked.</li>
+    </ul>
+  </li>
+
+  <li>The <code>JspFragment</code> instance is passed a reference to 
+  the current <code>JspContext</code>. Whenever the fragment invokes 
+  a tag handler, it must use this value when calling 
+  <code>setJspContext()</code>.</li>
+
+  <li>The <code>JspFragment</code> instance is associated with an 
+  instance of the tag handler of the nearest enclosing tag 
+  invocation, or with <code>null</code> if there is no enclosing tag. 
+  Whenever the fragment invokes a tag handler, the fragment must 
+  use this value when calling <code>setParent()</code>.</li>
+</ol>
+
+
+<h3>Invocation of a JSP Fragment</h3>
+
+<p>After a JSP fragment is created, it is passed to a tag handler for 
+later invocation. JSP fragments can be invoked either programmatically 
+from a tag handler written in Java, or from a tag file using the 
+&lt;jsp:invoke&gt; or &lt;jsp:doBody&gt; standard action.</p>
+
+<p>JSP fragments are passed to tag handlers using a bean property 
+of type <code>JspFragment</code>. These fragments can be invoked by 
+calling the <code>invoke()</code> method in the <code>JspFragment</code> 
+abstract class.  Note that it is legal (and possible) for a fragment to 
+recursively invoke itself, indirectly.</p>
+
+<p>The following steps are followed when invoking a JSP fragment:</p>
+
+<ol>
+  <li>The tag handler invoking the fragment is responsible for 
+  setting the values of all declared <code>AT_BEGIN</code> and 
+  <code>NESTED</code> variables in the <code>JspContext</code> of the 
+  calling page/tag, before invoking the fragment.  Note that this is 
+  not always the same as the <code>JspContext</code> of the fragment
+  being invoked, as fragments can be passed from one tag to another.  
+  In the case of tag files, for each variable declared 
+  in scope <code>AT_BEGIN</code> or <code>NESTED</code>, if a page 
+  scoped attribute exists with the provided name in the tag file, the
+  JSP container must generate code to create/update the page scoped 
+  attribute of the provided name in the calling page/tag.  If a page 
+  scoped attribute with the provided name does not exist in the tag
+  file, and a page scoped attribute of the provided name is present in 
+  the calling page, the scoped attribute is removed from the calling 
+  page's page scope.  See the chapter on Tag Files for details.</li>
+  
+  <li>If &lt;jsp:invoke&gt; or &lt;jsp:doBody&gt; is being used to 
+  invoke a fragment, if the <code>var</code> attribute is specified,
+  a custom <code>java.io.Writer</code> is created that can expose
+  the result of the invocation as a <code>java.lang.String</code>
+  object.  If the <code>varReader</code> attribute is 
+  specified, a custom <code>java.io.Writer</code> object is created 
+  that can expose the resulting invocation as a 
+  <code>java.io.Reader</code> object.</li>
+
+  <li>The <code>invoke()</code> method of the fragment is invoked, 
+  passing in an optional <code>Writer</code>.</li>
+
+  <li>Before executing the body of the fragment, if a non-null value
+  is provided for the writer parameter, then the value of 
+  <code>JspContext.getOut()</code> and the implicit "out" object must 
+  be updated to send output to that writer.  To accomplish 
+  this, the container must call <code>pushBody( writer )</code> on the
+  current <code>JspContext</code>, where <code>writer</code> is the 
+  instance of <code>java.io.Writer</code> passed to the fragment upon 
+  invocation.</li>
+
+  <li>The body of the fragment is then evaluated by executing 
+  the generated code. The body of the fragment may execute other standard 
+  or custom actions. If a classic Custom Tag Handler is invoked and 
+  returns <code>SKIP_PAGE</code>, or if a Simple Tag Handler is invoked 
+  and throws <code>SkipPageException</code>, the 
+  <code>JspFragment</code> must throw <code>SkipPageException</code> to
+  signal that the calling page is to be skipped.</li>
+
+  <li>Once the fragment has completed its evaluation, even if an exception 
+  is thrown, the value of <code>JspContext.getOut()</code> must be 
+  restored via a call to <code>popBody()</code> on the current 
+  <code>JspContext</code>.</li>
+
+  <li>The fragment returns from invoke()</li>
+
+  <li>If &lt;jsp:invoke&gt; or &lt;jsp:doBody&gt; is being used to 
+  invoke a fragment, if the <code>var</code> or <code>varReader</code> 
+  attribute is specified, a scoped variable with a name equal to the 
+  value of the <code>var</code> or <code>varReader</code> attribute 
+  is created (or modified) in the page scope, and the value is set 
+  to a <code>java.lang.String</code> or <code>java.io.Reader</code> 
+  respectively that can produce the results of the fragment 
+  invocation.</li>
+
+  <li>The <code>invoke()</code> method can be called again, zero or more
+  times.  When the tag invocation defining the fragment is complete,
+  the tag must discard the fragment instance since it might be reused
+  by the container.</li>
+
+</ol>
+
+<a name="sths">
+<h2>8. Example Simple Tag Handler Scenario</h2>
+</a>
+
+<p>The following non-normative example is intended to help solidify 
+some of the concepts relating to Tag Files, JSP Fragments and Simple
+Tag Handlers.  In the first section, two sample input files are 
+presented, a JSP (my.jsp), and a simple tag handler implemented using 
+a tag file (simpletag.tag). One possible output of the translation 
+process is presented in the second section.</p>
+
+<p>Although short, the example shows all concepts, including 
+the variable directive. In practice most uses of tags will be much simpler, 
+but probably longer.</p>
+
+<p>The sample generated code is annotated with comments that point 
+to lifecycle steps presented in various sections. The notation is as 
+follows:</p>
+
+<ul>
+  <li>"Step T.x" = Annotated step x from "Lifecycle of Simple Tag 
+  Handlers" earlier in this Chapter.</li>
+  <li>"Step C.x" = Annotated step x from "Creation of a JSP Fragment" 
+  earlier in this Chapter.</li>
+  <li>"Step F.x" = Annotated step x from "Invocation of a JSP Fragment"
+  earlier in this Chapter.</li>
+</ul>
+
+
+<h3>Sample Source Files</h3>
+
+<p>This section presents the sample source files in this scenario, 
+from which the output files are generated.</p>
+
+<h4>Original JSP (my.jsp)</h4>
+<pre>
+&lt;%@ taglib prefix="my" tagdir="/WEB-INF/tags" %&gt;
+
+&lt;my:simpleTag x="10"&gt;
+    &lt;jsp:attribute name="y"&gt;20&lt;/jsp:attribute&gt;
+    &lt;jsp:attribute name="nonfragment"&gt;
+        Nonfragment Template Text
+    &lt;/jsp:attribute&gt;
+    &lt;jsp:attribute name="frag"&gt;
+        Fragment Template Text ${var1}
+    &lt;/jsp:attribute&gt;
+    &lt;jsp:body&gt;
+        Body of tag that defines an AT_BEGIN
+        scripting variable ${var1}.
+    &lt;/jsp:body&gt;
+&lt;/my:simpleTag&gt;
+</pre>
+
+<h4>Original Tag File (/WEB-INF/tags/simpletag.tag)</h4>
+<pre>
+&lt;%-- /WEB-INF/tags/simpletag.tag --%&gt;
+&lt;%@ attribute name="x" %&gt;
+&lt;%@ attribute name="y" %&gt;
+&lt;%@ attribute name="nonfragment" %&gt;
+&lt;%@ attribute name="frag" fragment="true" %&gt;
+&lt;%@ variable name-given="var1" scope="AT_BEGIN" %&gt;
+&lt;%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %&gt;
+
+Some template text.
+&lt;c:set var="var1" value="${x+y}"/&gt;
+&lt;jsp:invoke fragment="frag" varReader="var1"/&gt;
+
+Invoke the body:
+&lt;jsp:doBody/&gt;
+</pre>
+
+
+<h3>Sample Generated Files</h3>
+<p>This section presents sample output files that might be generated 
+by a JSP compiler, from the source files presented in the 
+previous section.</p>
+
+<h4>Helper class for JspFragment (JspFragmentBase.java)</h4>
+<pre>
+public abstract class JspFragmentBase
+    implements javax.servlet.jsp.tagext.JspFragment
+{
+    protected javax.servlet.jsp.JspContext jspContext;
+    protected javax.servlet.jsp.tagext.JspTag parentTag;
+    public void JspFragmentBase(
+        javax.servlet.jsp.JspContext jspContext,
+        javax.servlet.jsp.tagext.JspTag parentTag )
+    {
+        this.jspContext = jspContext;
+        this.parentTag = parentTag;
+    }
+}
+</pre>
+<h4>Relevant Portion of JSP Service Method</h4>
+<pre>
+// Step T.1 - Initial creation
+MySimpleTag _jsp_mySimpleTag = new MySimpleTag();
+// Step T.2 - Set page context and parent (since parent is null,
+// no need to call setParent() in this case)
+_jsp_mySimpleTag.setJspContext( jspContext );
+// Step T.3 - XML element attributes evaluated and set
+_jsp.mySimpleTag.setX( "10" );
+// Step T.4 - &lt;jsp:attribute&gt; elements evaluated and set
+//   - parameter y
+// (using PageContext.pushBody() is one possible implementation - 
+// one limitation is that this code will only work for Servlet-based code).
+out = ((PageContext)jspContext).pushBody();
+out.write( "20" );
+_jsp_mySimpleTag.setY( 
+    ((javax.servlet.jsp.tagext.BodyContent)out).getString() );
+out = jspContext.popBody();
+//   - parameter nonfragment
+// (using PageContext.pushBody() is one possible implementation - 
+// one limitation is that this code will only work for Servlet-based code).
+// Note that trim is enabled by default, else we would have "\n    Non..."
+out = ((PageContext)jspContext).pushBody();
+out.write( "Nonfragment Template Text" );
+_jsp_mySimpleTag.setNonfragment( 
+    ((javax.servlet.jsp.tagext.BodyContent)out).getString() );
+out = jspContext.popBody();
+//   - parameter frag
+_jsp_mySimpleTag.setFrag(
+    // Step C.1 - New instance of fragment created
+    // Step C.2 - Store jspContext
+    // Step C.3 - Association with nearest enclosing Tag instance
+    new JspFragmentBase( jspContext, _jsp_mySimpleTag ) {
+        public void invoke( java.io.Writer writer ) {
+	    javax.servlet.jsp.JspWriter out;
+            // Step F.1-F.3 done in tag file (see following example)
+	    // Step F.4 - If writer provided, push body:
+	    if( out == null ) {
+		out = this.jspContext.getOut();
+	    }
+	    else {
+		out = this.jspContext.pushBody( writer );
+	    }
+	    // Step F.5 - Evaluate body of fragment:
+            try {
+                out.write( "Fragment Template Text " );
+                out.write( jspContext.getExpressionEvaluator().evaluate(
+		    "${var1}",
+		    java.lang.String.class,
+		    vResolver, fMapper, "my" ) );
+            }
+            finally {
+                // Step F.6 - Restore value of JspContext.getOut()
+		if( writer != null ) {
+		    this.jspContext.popBody();
+		}
+            }
+
+            // Step F.7-F.9 done in tag file (see following example)
+        }
+    } );
+// Step T.5 - Determine and set body of the tag
+// - body of tag
+_jsp_mySimpleTag.setJspBody(
+    // Step C.1 - New instance of fragment created
+    // Step C.2 - Store jspContext
+    // Step C.3 - Association with nearest enclosing Tag instance
+    new JspFragmentBase( jspContext, _jsp_mySimpleTag ) {
+        public void invoke( java.io.Writer writer ) {
+	    javax.servlet.jsp.JspWriter out;
+            // Step F.1-F.3 done in tag file (see following example)
+	    // Step F.4 - If writer provided, push body:
+	    if( writer == null ) {
+		out = this.jspContext.getOut();
+	    }
+	    else {
+		out = this.jspContext.pushBody( writer );
+	    }
+	    // Step F.5 - Evaluate body of fragment:
+            try {
+                out.write(
+                    "Body of tag that defines an AT_BEGIN\n" +
+                    " scripting variable " );
+                out.write( jspContext.getExpressionEvaluator().evaluate(
+		    "${var1}",
+		    java.lang.String.class,
+		    vResolver, fMapper, "my" ) );
+                out.write( ".\n" );
+            }
+            finally {
+                // Step F.6 - Restore value of JspContext.getOut()
+		if( writer != null ) {
+		    this.jspContext.popBody();
+		}
+            }
+
+            // Step F.7-F.9 done in tag file (see following example)
+        }
+    } );
+// Step T.6 - Inovke doTag
+// Step T.7 occurs in the tag file (see following example)
+// Step T.8 - doTag returns - page will catch SkipPageException.
+_jsp_mySimpleTag.doTag();
+// Step T.9 - Declare AT_BEGIN and AT_END scripting variables
+String var1 = (String)jspContext.findAttribute( "var1" );
+</pre>
+
+<h4>Generated Simple Tag Handler (MySimpleTag.java)</h4>
+<pre>
+public class MySimpleTag
+    extends javax.servlet.jsp.tagext.SimpleTagSupport
+{
+    // Attributes:
+    private String x;
+    private String y;
+    private String nonfragment;
+    private javax.servlet.jsp.tagext.JspFragment frag;
+    // Setters and getters for attributes:
+    public void setX( Stirng x ) {
+        this.x = x; 
+    }
+    public String getX() {
+        return this.x; 
+    }
+    public void setY( String y ) { 
+        this.y = y; 
+    }
+    public String getY() { 
+        return this.y; 
+    }
+    public void setNonfragment( String nonfragment ) {
+        this.nonfragment = nonfragment; 
+    }
+    public String getNonfragment() {
+        return this.nonfragment;
+    }
+    public void setFrag( javax.servlet.jsp.tagext.JspFragment frag ) {
+        this.frag = frag;
+    }
+    public javax.servlet.jsp.tagext.JspFragment getFrag() {
+        return this.frag;
+    }
+
+    protected JspContext jspContext;
+    public void setJspContext( JspContext ctx ) {
+	super.setJspContext( ctx );
+	// Step T.2 - A JspContext wrapper is created.
+	// (Implementation of wrapper not shown).
+	this.jspContext = new utils.JspContextWrapper( ctx );
+    }
+    public JspContext getJspContext() {
+	// Step T.2 - Calling getJspContext() must return the 
+	// wrapped JspContext.
+	return this.jspContext;
+    }
+
+    public void doTag() throws JspException {
+	java.lang.Object jspValue;
+	JspContext jspContext = getJspContext();
+	JspContext _jsp_parentContext = 
+	    SimpleTagSupport.this.getJspContext();
+	try {
+	    javax.servlet.jsp.JspWriter out = jspContext.getOut();
+
+	    // Create page-scope attributes for each tag attribute:
+	    this.jspContext.setAttribute( "x", getX() );
+	    this.jspContext.setAttribute( "y", getY() );
+	    this.jspContext.setAttribute( "nonfragment", getNonfragment() );
+	    this.jspContext.setAttribute( "frag", getFrag() );
+
+	    // Synchronize AT_BEGIN variables from calling page
+	    if( (jspValue = _jsp_parentContext.getAttribute( 
+		    "var1" )) != null ) 
+	    {
+		jspContext.setAttribute( "var1", value );
+	    }
+	    else {
+		jspContext.removeAttribute( "var1", 
+		    JspContext.PAGE_SCOPE );
+	    }
+
+	    // Tag template text:
+	    out.write( "\n\n\n\n\n\n\n\nSome template text.\n" );
+
+	    // Invoke c:set - recognized tag handler from JSTL:
+	    jspContext.setAttribute( "var1", 
+		jspContext.getExpressionEvaluator().evaluate(
+		    "${x+y}",
+		    java.lang.String.class,
+		    jspContext,
+		    prefixMap, functionMap, "my" ) );
+
+	    // Invoke the "frag" fragment:
+	    // Step F.1 - Set values of AT_BEGIN and NESTED variables
+	    //     in calling page context.
+	    if( (jspValue = jspContext.getAttribute( "var1" )) != null ) {
+		_jsp_parentContext.setAttribute( "var1", value );
+	    }
+	    else {
+		_jsp_parentContext.removeAttribute( "var1", 
+		    JspContext.PAGE_SCOPE );
+	    }
+
+	    // Step F.2 - varReader is specified, generate a writer.
+	    java.io.Writer _jsp_sout = new java.io.StringWriter();
+
+	    // Step F.3 - Invoke fragment with writer
+	    getFrag().invoke( _jsp_sout );
+
+	    // Step F.4 - F.6 occur in the fragment (see above)
+	    // Step F.7 - fragment returns
+
+	    // Step F.8 - varReader specified, so save to var
+	    jspContext.setAttribute(
+		"var1", new StringReader( _jsp_sout.toString() ) );
+
+	    // Step F.9 - Done!
+
+
+	    out.write( "\n\nInvoke the body:\n" );
+
+	    // Invoke the body of the tag:
+	    // Step F.1 - Set values of AT_BEGIN and NESTED variables
+	    //     in calling page context.
+	    if( (jspValue = jspContext.getAttribute( "var1" )) != null ) {
+		_jsp_parentContext.setAttribute( "var1", value );
+	    }
+	    else {
+		_jsp_parentContext.removeAttribute( "var1", 
+		    JspContext.PAGE_SCOPE);
+	    }
+
+	    // Step F.2 - varReader is not specified - does not apply.
+
+	    try {
+		// Step F.3 - Invoke body, passing optional writer
+		getJspBody().invoke( null );
+	    }
+	    finally {
+		// Steps F.4 - F.6 occur in the fragment (see above)
+		// Step F.7 - fragment returns
+	    }
+
+	    // Step F.8 does not apply.
+	    // Step F.9 - Done!
+	}
+	finally {
+	    // Tag handlers generate code to synchronize AT_BEGIN with
+	    // calling page, regardless of whether an error occurs.
+	    if( (jspValue = jspContext.getAttribute( "var1" )) != null ) {
+		_jsp_parentContext.setAttribute( "var1", value );
+	    }
+	    else {
+		_jsp_parentContext.removeAttribute( "var1", 
+		    JspContext.PAGE_SCOPE );
+	    }
+	}
+    }
+}
+
+</pre>
+
+<a name="translation">
+<h2>9. Translation-time Classes</h2>
+</a>
+
+The following classes are used at translation time.
+
+<h3>Tag mapping, Tag name</h3>
+
+<p> A taglib directive introduces a tag library and associates a
+prefix to it.  The TLD associated with the library associates Tag
+handler classes (plus other information) with tag names.  This
+information is used to associate a Tag class, a prefix, and a name
+with each custom action element appearing in a JSP page.
+
+<p> At execution time the implementation of a JSP page will use an
+available Tag instance with the appropriate property settings and then
+follow the protocol described by the interfaces Tag, IterationTag,
+BodyTag, SimpleTag, and TryCatchFinally.  The implementation guarantees
+that all tag handler instances are initialized and all are released,
+but the implementation can assume that previous settings are preserved
+by a tag handler, to reduce run-time costs.
+
+
+<h3>Scripting Variables</h3>
+
+<p> JSP supports scripting variables that can be declared within a
+scriptlet and can be used in another.  JSP actions also can be used to
+define scripting variables so they can used in scripting elements, or
+in other actions.  This is very useful in some cases; for example, the
+<code>jsp:useBean</code> standard action may define an object which
+can later be used through a scripting variable.
+
+<p> In some cases the information on scripting variables can be
+described directly into the TLD using elements.  A special case is typical
+interpretation of the &quot;id&quot; attribute.
+In other cases the logic that decides whether an action instance
+will define a scripting variable may be quite complex and the name of
+a <code>TagExtraInfo</code> class is instead given in the TLD.  The
+<code>getVariableInfo</code> method of this class is used at
+translation time to obtain information on each variable that will be
+created at request time when this action is executed.  The method is
+passed a <code>TagData</code> instance that contains the
+translation-time attribute values.
+
+<h3>Validation</h3>
+
+<p> The TLD file contains several pieces of information that is used
+to do syntactic validation at translation-time.  It also contains two
+extensible validation mechanisms: a <code>TagLibraryValidator</code>
+class can be used to validate a complete JSP page, and a
+<code>TagExtraInfo</code> class can be used to validate a specific
+action. In some cases, additional request-time validation will be done
+dynamically within the methods in the Tag instance.  If an error is
+discovered, an instance of <code>JspTagException</code> can be thrown.
+If uncaught, this object will invoke the errorpage mechanism of JSP.
+
+<p> The TagLibraryValidator is an addition to the JSP 1.2
+specification and is very open ended, being strictly more powerful
+than the TagExtraInfo mechanism.  A JSP page is presented via the
+<code>PageData</code> object, which abstracts the XML view of the JSP
+page. 
+
+<p> A PageData instance will provides an InputStream (read-only) on the
+page.  Later specifications may add other views on the page (DOM, SAX,
+JDOM are all candidates), for now these views can be generated from
+the InputStream and perhaps can be cached for improved performance
+(recall the view of the page is just read-only).
+
+<p> As of JSP 2.0, the JSP container must support a jsp:id attribute to
+provide higher quality validation errors.  The
+container will track the JSP pages as passed to the container, and
+will assign to each element a unique "id", which is passed as the
+value of the jsp:id attribute.  Each XML element in the XML view
+will be extended with this attribute.  The
+TagLibraryValidator can use the attribute in one or more
+ValidationMessage objects.  The container then, in turn, can use these
+values to provide more precise information on the location of an
+error.
+
+<p>The prefix for the <code>id</code> attribute need not be "<code>jsp</code>"
+but it must map to the namespace <code>http://java.sun.com/JSP/Page</code>.
+In the case where the user has redefined the <code>jsp</code> prefix, an 
+alternative prefix must be used by the container.
+
+
+<h4>Validation Details</h4>
+
+<p> In detail, validation is done as follows:
+
+<p> <b>First</b>, the JSP page is parsed using the information in the TLD.
+At this stage valid mandatory and optional attributes are checked.
+
+<p> <b>Second</b>, for each unique tag library in the page as determined
+by the tag library URI, and in the lexical order in which they appear,
+their associated validator class (if any) is invoked.  This involves 
+several substeps.
+
+<p> The first substep is to obtain an initialized validator instance by
+either:
+
+<ul>
+<li> construct a new instance and invoke setInitParameters() on it, or
+<li> obtain an existing instance that is not being used, invoke release() on it, and then invoke setInitParameters() on it, or
+<li> locate an existing instance that is not being used on which the desired setInitParameters() has already been invoked
+</ul>
+
+<p> The class name is as indicated in the &lt;validator-class&gt; element,
+and the Map passed through setInitParameters() is as described in the
+&lt;init-params&gt; element.
+All TagLibraryValidator classes are supposed to keep their initParameters
+until new ones are set, or until release() is invoked on them.
+
+<p> The second substep is to perform the actual validation.  This is done
+by invoking the validate() method with a prefix, uri, and PageData that
+correspond to the taglib directive instance being validated and the
+PageData representing the page.  In the case where a single URI is mapped
+to more than one prefix, the prefix of the first URI must be used.
+
+<p> The last substep is to invoke the release() method on the validator tag
+when it is no longer needed.  This method releases all resources.
+
+<p> <b>Finally</b>, after checking all the tag library validator classes, the
+TagExtraInfo classes for all tags will be consulted by invoking their
+<code>validate</code> method.  The order of invocation of this methods
+is undefined.
+
+
+
+</body>
+</html>

@@ -1,0 +1,391 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<!--
+
+  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ 
+  Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ 
+  The contents of this file are subject to the terms of either the GNU
+  General Public License Version 2 only ("GPL") or the Common Development
+  and Distribution License("CDDL") (collectively, the "License").  You
+  may not use this file except in compliance with the License. You can obtain
+  a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+  or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+  language governing permissions and limitations under the License.
+ 
+  When distributing the software, include this License Header Notice in each
+  file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+  Sun designates this particular file as subject to the "Classpath" exception
+  as provided by Sun in the GPL Version 2 section of the License file that
+  accompanied this code.  If applicable, add the following below the License
+  Header, with the fields enclosed by brackets [] replaced by your own
+  identifying information: "Portions Copyrighted [year]
+  [name of copyright owner]"
+ 
+  Contributor(s):
+ 
+  If you wish your version of this file to be governed by only the CDDL or
+  only the GPL Version 2, indicate your decision by adding "[Contributor]
+  elects to include this software in this distribution under the [CDDL or GPL
+  Version 2] license."  If you don't indicate a single choice of license, a
+  recipient has the option to distribute your version of this file under
+  either the CDDL, the GPL Version 2 or to extend the choice of license to
+  its licensees as provided above.  However, if you add GPL Version 2 code
+  and therefore, elected the GPL Version 2 license, then the option applies
+  only if the new code is made subject to such option by the copyright
+  holder.
+
+  @(#)package.html	1.18 07/07/02
+
+-->
+
+</HEAD>
+<BODY BGCOLOR="white">
+
+An IMAP protocol provider for the JavaMail API
+that provides access to an IMAP message store.
+Both the IMAP4 and IMAP4rev1 protocols are supported.
+Refer to <A HREF="http://www.ietf.org/rfc/rfc2060.txt" TARGET="_top">
+RFC 2060</A>
+for more information.
+<P>
+The IMAP protocol provider can use SASL
+(<A HREF="http://www.ietf.org/rfc/rfc2222.txt" TARGET="_top">RFC 2222</A>)
+authentication mechanisms on systems that support the
+<CODE>javax.security.sasl</CODE> APIs, such as J2SE 5.0.
+In addition to the SASL mechanisms that are built into 
+the SASL implementation, users can also provide additional
+SASL mechanisms of their own design to support custom authentication
+schemes.  See the
+<A HREF="http://java.sun.com/j2se/1.5.0/docs/guide/security/sasl/sasl-refguide.html" TARGET="_top">
+Java SASL API Programming and Deployment Guide</A> for details.
+Note that the current implementation doesn't support SASL mechanisms
+that provide their own integrity or confidentiality layer.
+<P>
+A connected IMAPStore maintains a pool of IMAP protocol objects for
+use in communicating with the IMAP server. The IMAPStore will create
+the initial AUTHENTICATED connection and seed the pool with this
+connection. As folders are opened and new IMAP protocol objects are
+needed, the IMAPStore will provide them from the connection pool,
+or create them if none are available. When a folder is closed,
+its IMAP protocol object is returned to the connection pool if the
+pool is not over capacity.
+<P>
+A mechanism is provided for timing out idle connection pool IMAP
+protocol objects. Timed out connections are closed and removed (pruned)
+from the connection pool.
+<P>
+The connected IMAPStore object may or may not maintain a separate IMAP
+protocol object that provides the store a dedicated connection to the
+IMAP server. This is provided mainly for compatibility with previous
+implementations of the IMAP protocol provider.
+<P>
+The IMAP protocol provider supports the following properties,
+which may be set in the JavaMail <code>Session</code> object.
+The properties are always set as strings; the Type column describes
+how the string is interpreted.  For example, use
+<PRE>
+	props.put("mail.imap.port", "888");
+</PRE>
+to set the <CODE>mail.imap.port</CODE> property, which is of type int.
+<P>
+<TABLE BORDER>
+<TR>
+<TH>Name</TH>
+<TH>Type</TH>
+<TH>Description</TH>
+</TR>
+
+<TR>
+<TD>mail.imap.user</TD>
+<TD>String</TD>
+<TD>Default user name for IMAP.</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.host</TD>
+<TD>String</TD>
+<TD>The IMAP server to connect to.</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.port</TD>
+<TD>int</TD>
+<TD>The IMAP server port to connect to, if the connect() method doesn't
+explicitly specify one. Defaults to 143.</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.partialfetch</TD>
+<TD>boolean</TD>
+<TD>Controls whether the IMAP partial-fetch capability should be used.
+Defaults to true.</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.fetchsize</TD>
+<TD>int</TD>
+<TD>Partial fetch size in bytes. Defaults to 16K.</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.connectiontimeout</TD>
+<TD>int</TD>
+<TD>Socket connection timeout value in milliseconds.
+Default is infinite timeout.</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.timeout</TD>
+<TD>int</TD>
+<TD>Socket I/O timeout value in milliseconds.  Default is infinite timeout.</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.statuscachetimeout</TD>
+<TD>int</TD>
+<TD>Timeout value in milliseconds for cache of STATUS command response.
+Default is 1000 (1 second).  Zero disables cache.</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.appendbuffersize</TD>
+<TD>int</TD>
+<TD>
+Maximum size of a message to buffer in memory when appending to an IMAP
+folder.  If not set, or set to -1, there is no maximum and all messages
+are buffered.  If set to 0, no messages are buffered.  If set to (e.g.)
+8192, messages of 8K bytes or less are buffered, larger messages are
+not buffered.  Buffering saves cpu time at the expense of short term
+memory usage.  If you commonly append very large messages to IMAP
+mailboxes you might want to set this to a moderate value (1M or less).
+</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.connectionpoolsize</TD>
+<TD>int</TD>
+<TD>Maximum number of available connections in the connection pool.
+Default is 1.</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.connectionpooltimeout</TD>
+<TD>int</TD>
+<TD>Timeout value in milliseconds for connection pool connections.  Default
+is 45000 (45 seconds).</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.separatestoreconnection</TD>
+<TD>boolean</TD>
+<TD>Flag to indicate whether to use a dedicated store connection for store
+commands.  Default is false.</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.allowreadonlyselect</TD>
+<TD>boolean</TD>
+<TD>If false, attempts to open a folder read/write will fail
+if the SELECT command succeeds but indicates that the folder is READ-ONLY.
+This sometimes indicates that the folder contents can'tbe changed, but
+the flags are per-user and can be changed, such as might be the case for
+public shared folders.  If true, such open attempts will succeed, allowing
+the flags to be changed.  The <code>getMode</code> method on the
+<code>Folder</code> object will return <code>Folder.READ_ONLY</code>
+in this case even though the <code>open</code> method specified
+<code>Folder.READ_WRITE</code>.  Default is false.</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.auth.login.disable</TD>
+<TD>boolean</TD>
+<TD>If true, prevents use of the non-standard <code>AUTHENTICATE LOGIN</code>
+command, instead using the plain <code>LOGIN</code> command.
+Default is false.</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.auth.plain.disable</TD>
+<TD>boolean</TD>
+<TD>If true, prevents use of the <code>AUTHENTICATE PLAIN</code> command.
+Default is false.</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.proxyauth.user</TD>
+<TD>String</TD>
+<TD>If the server supports the PROXYAUTH extension, this property
+specifies the name of the user to act as.  Authenticate to the
+server using the administrator's credentials.  After authentication,
+the IMAP provider will issue the <code>PROXYAUTH</code> command with
+the user name specified in this property.
+</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.starttls.enable</TD>
+<TD>boolean</TD>
+<TD>If true, enables the use of the <code>STARTTLS</code> command (if
+supported by the server) to switch the connection to a TLS-protected
+connection before issuing any login commands.  Note that an appropriate
+trust store must configured so that the client will trust the server's
+certificate.  This feature only works on J2SE 1.4 and newer systems.
+Default is false.</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.localaddress</TD>
+<TD>String</TD>
+<TD>
+Local address (host name) to bind to when creating the IMAP socket.
+Defaults to the address picked by the Socket class.
+Should not normally need to be set, but useful with multi-homed hosts
+where it's important to pick a particular local address to bind to.
+</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.localport</TD>
+<TD>int</TD>
+<TD>
+Local port number to bind to when creating the IMAP socket.
+Defaults to the port number picked by the Socket class.
+</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.sasl.enable</TD>
+<TD>boolean</TD>
+<TD>
+If set to true, attempt to use the javax.security.sasl package to
+choose an authentication mechanism for login.
+Defaults to false.
+</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.sasl.mechanisms</TD>
+<TD>String</TD>
+<TD>
+A space or comma separated list of SASL mechanism names to try
+to use.
+</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.sasl.authorizationid</TD>
+<TD>String</TD>
+<TD>
+The authorization ID to use in the SASL authentication.
+If not set, the authentication ID (user name) is used.
+</TD>
+</TR>
+
+<TR>
+<TD>mail.smtp.sasl.realm</TD>
+<TD>String</TD>
+<TD>The realm to use with SASL authentication mechanisms that
+require a realm, such as DIGEST-MD5.</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.socketFactory.class</TD>
+<TD>String</TD>
+<TD>
+If set, specifies the name of a class that implements the
+<code>javax.net.SocketFactory</code> interface.  This class
+will be used to create IMAP sockets.
+</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.socketFactory.fallback</TD>
+<TD>boolean</TD>
+<TD>
+If set to true, failure to create a socket using the specified
+socket factory class will cause the socket to be created using
+the <code>java.net.Socket</code> class.
+Defaults to true.
+</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.socketFactory.port</TD>
+<TD>int</TD>
+<TD>
+Specifies the port to connect to when using the specified socket
+factory.
+If not set, the default port will be used.
+</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.ssl.protocols</TD>
+<TD>string</TD>
+<TD>
+Specifies the SSL protocols that will be enabled for SSL connections.
+The property value is a whitespace separated list of tokens acceptable
+to the <code>javax.net.ssl.SSLSocket.setEnabledProtocols</code> method.
+</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.ssl.ciphersuites</TD>
+<TD>string</TD>
+<TD>
+Specifies the SSL cipher suites that will be enabled for SSL connections.
+The property value is a whitespace separated list of tokens acceptable
+to the <code>javax.net.ssl.SSLSocket.setEnabledCipherSuites</code> method.
+</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.minidletime</TD>
+<TD>int</TD>
+<TD>
+Applications typically call the idle method in a loop.  If another
+thread termiantes the IDLE command, it needs a chance to do its
+work before another IDLE command is issued.  The idle method enforces
+a delay to prevent thrashing between the IDLE command and regular
+commands.  This property sets the delay in milliseconds.  If not
+set, the default is 10 milliseconds.
+</TD>
+</TR>
+
+<TR>
+<TD>mail.imap.enableimapevents</TD>
+<TD>boolean</TD>
+<TD>
+Enable special IMAP-specific events to be delivered to the Store's
+<code>ConnectionListener</code>.  If true, unsolicited responses
+received during the Store's <code>idle</code> method will be sent
+as <code>ConnectionEvent</code>s with a type of
+<code>IMAPStore.RESPONSE</code>.  The event's message will be the
+raw IMAP response string.
+By default, these events are not sent.
+NOTE: This capability is highly experimental and likely will change
+in future releases.
+</TD>
+</TR>
+
+</TABLE>
+<P>
+In general, applications should not need to use the classes in this
+package directly.  Instead, they should use the APIs defined by
+<code>javax.mail</code> package (and subpackages).  Applications should
+never construct instances of <code>IMAPStore</code> or
+<code>IMAPFolder</code> directly.  Instead, they should use the
+<code>Session</code> method <code>getStore</code> to acquire an
+appropriate <code>Store</code> object, and from that acquire
+<code>Folder</code> objects.
+<P>
+<strong>WARNING:</strong> The APIs unique to this package should be
+considered <strong>EXPERIMENTAL</strong>.  They may be changed in the
+future in ways that are incompatible with applications using the
+current APIs.
+
+</BODY>
+</HTML>

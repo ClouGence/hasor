@@ -1,0 +1,8 @@
+#
+# @(#)mailcap	1.2 04/05/13
+#
+# JavaMail content-handlers:
+#
+multipart/report;;	x-java-content-handler=com.sun.mail.dsn.multipart_report
+message/delivery-status;; x-java-content-handler=com.sun.mail.dsn.message_deliverystatus
+text/rfc822-headers;;	x-java-content-handler=com.sun.mail.dsn.text_rfc822headers
