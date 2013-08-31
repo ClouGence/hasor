@@ -19,3 +19,7 @@
 5) hasor-core-0.0.1.zip  Hasor-Core的jar包，包含了jar,sources,javadoc
 
 6) hasor-mvc-0.0.1.zip  Hasor-MVC的jar包，包含了jar,sources,javadoc
+
+7) example-project.zip  例子工程（不包含依赖库）
+        1.加入log4j 和 master
+        2.加入hasor-core库（Web工程在此基础上加入hasor-mvc库）
