@@ -185,7 +185,7 @@ public abstract class SimpleNode extends ELSupport implements Node {
         throw new UnsupportedOperationException();
     }
 
-    @Override
+    
     public boolean equals(Object node) {
         if (! (node instanceof SimpleNode)) {
             return false;
@@ -221,12 +221,12 @@ public abstract class SimpleNode extends ELSupport implements Node {
         return true;
     }
 
-    @Override
+    
     public boolean isParametersProvided() {
         return false;
     }
 
-    @Override
+    
     public int hashCode() {
         if (this.children == null || this.children.length == 0) {
             if (this.image != null) {

@@ -785,62 +785,62 @@ public class JspCServletContext implements ServletContext {
             this.errorOnUndeclaredNamespace = errorOnUndeclaredNamespace;
         }
 
-        @Override
+        
         public Collection<String> getUrlPatterns() {
             return urlPatterns;
         }
 
-        @Override
+        
         public String getElIgnored() {
             return elIgnored;
         }
 
-        @Override
+        
         public String getPageEncoding() {
             return pageEncoding;
         }
 
-        @Override
+        
         public String getScriptingInvalid() {
             return scriptingInvalid;
         }
 
-        @Override
+        
         public String getIsXml() {
             return isXml;
         }
 
-        @Override
+        
         public Collection<String> getIncludePreludes() {
             return includePrelude;
         }
 
-        @Override
+        
         public Collection<String> getIncludeCodas() {
             return includeCoda;
         }
 
-        @Override
+        
         public String getDeferredSyntaxAllowedAsLiteral() {
             return poundAllowed;
         }
 
-        @Override
+        
         public String getTrimDirectiveWhitespaces() {
             return trimSpaces;
         }
 
-        @Override
+        
         public String getDefaultContentType() {
             return defaultContentType;
         }
 
-        @Override
+        
         public String getBuffer() {
             return buffer;
         }
 
-        @Override
+        
         public String getErrorOnUndeclaredNamespace() {
             return errorOnUndeclaredNamespace;
         }

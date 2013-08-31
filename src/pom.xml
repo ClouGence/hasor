@@ -1,9 +1,20 @@
 ﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 	<groupId>org.hasor</groupId>
-	<artifactId>org.hasor.parent</artifactId>
-	<version>1.0</version>
+	<artifactId>hasor-parent</artifactId>
+	<version>0.0.1</version>
 	<packaging>pom</packaging>
+
+	<!-- 项目信息 -->
+	<name>Hasor</name>
+	<description>master POM</description>
+	<url>http://www.hasor.net/</url>
+	<inceptionYear>2013</inceptionYear>
 
 	<!-- 授权协议 -->
 	<licenses>
@@ -13,26 +24,19 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	<developers>
-		<developer>
-			<name>赵永春</name>
-			<email>zyc@hasor.net</email>
-		</developer>
-	</developers>
+
+	<scm>
+		<connection>scm:git:git@github.com:zycgit/hasor.git</connection>
+		<developerConnection>scm:git:git@github.com:zycgit/hasor.git</developerConnection>
+		<url>git@github.com:zycgit/hasor.git</url>
+	</scm>
 
 	<!-- 包含的模块 -->
 	<modules>
 		<module>org.eclipse.jetty</module>
+		<module>org.hasor.freemarker</module>
 		<module>org.hasor.core</module>
 		<module>org.hasor.mvc</module>
-		<module>org.hasor.freemarker</module>
-		<!-- <module>org.hasor.icache</module> -->
-		<!-- <module>org.hasor.security</module> -->
-		<!-- <module>org.hasor.web-ui</module> -->
-		<!-- <module>org.hasor.web-updown</module> -->
-		<!-- <module>org.hasor.demo</module> -->
-		<!-- <module>org.hasor.ds</module> -->
-		<!-- <module>org.hasor.remote</module> -->
 	</modules>
 
 	<!-- 构建描述 -->
@@ -42,18 +46,10 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.5</source>
+					<target>1.5</target>
 					<encoding>GBK</encoding>
-					<!-- <compilerId>eclipse</compilerId> -->
 				</configuration>
-				<dependencies>
-					<!-- <dependency> -->
-					<!-- <groupId>org.codehaus.plexus</groupId> -->
-					<!-- <artifactId>plexus-compiler-eclipse</artifactId> -->
-					<!-- <version>1.8.4</version> -->
-					<!-- </dependency> -->
-				</dependencies>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -63,40 +59,23 @@
 				</configuration>
 			</plugin>
 			<!-- package sources to jar -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.1.2</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 			<!-- <plugin> -->
-			<!-- <artifactId>maven-assembly-plugin</artifactId> -->
-			<!-- <configuration> -->
-			<!-- <appendAssemblyId>false</appendAssemblyId> -->
-			<!-- <descriptors> -->
-			<!-- <descriptor>assembly.xml</descriptor> -->
-			<!-- </descriptors> -->
-			<!-- </configuration> -->
+			<!-- <groupId>org.apache.maven.plugins</groupId> -->
+			<!-- <artifactId>maven-source-plugin</artifactId> -->
+			<!-- <version>2.1.2</version> -->
 			<!-- <executions> -->
 			<!-- <execution> -->
-			<!-- <id>pack</id> -->
-			<!-- <phase>package</phase> -->
+			<!-- <id>attach-sources</id> -->
+			<!-- <phase>verify</phase> -->
 			<!-- <goals> -->
-			<!-- <goal>single</goal> -->
+			<!-- <goal>jar-no-fork</goal> -->
 			<!-- </goals> -->
 			<!-- </execution> -->
 			<!-- </executions> -->
 			<!-- </plugin> -->
 		</plugins>
 	</build>
+
 	<!-- 引用依赖 -->
 	<dependencies>
 		<dependency>

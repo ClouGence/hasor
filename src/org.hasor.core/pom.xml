@@ -2,23 +2,26 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.hasor</groupId>
-		<artifactId>org.hasor.parent</artifactId>
-		<version>1.0</version>
+		<artifactId>hasor-parent</artifactId>
+		<version>0.0.1</version>
 	</parent>
 
-	<!-- Project Info -->
+	<!-- Maven Info -->
 	<groupId>org.hasor</groupId>
-	<artifactId>org.hasor.core</artifactId>
+	<artifactId>hasor-core</artifactId>
 	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
-	<!-- Project description -->
-	<name>Hasor-Core Project</name>
-	<description>The Hasor main core project.</description>
-	<url>http://www.hasor.net/</url>
-	<scm>
-		<url>http://svn.apache.org/viewcvs.cgi/maven</url>
-	</scm>
+	<!-- Project Info -->
+	<name>Hasor-Core</name>
+	<description>the hasor core project.</description>
+
+	<developers>
+		<developer>
+			<name>赵永春</name>
+			<email>zyc@hasor.net</email>
+		</developer>
+	</developers>
 
 	<!-- 引用依赖 -->
 	<dependencies>
@@ -34,6 +37,8 @@
 			<artifactId>guice</artifactId>
 			<version>3.0</version>
 		</dependency>
+
+
 		<!-- J2EE -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -41,12 +46,21 @@
 			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- JSR-173 for JDK 1.5 -->
+		<dependency>
+			<groupId>stax</groupId>
+			<artifactId>stax</artifactId>
+			<version>1.2.0</version>
+			<scope>provided</scope>
+		</dependency>
+
 
 		<!-- Jetty Test -->
 		<dependency>
 			<groupId>org.hasor</groupId>
-			<artifactId>org.eclipse.jetty</artifactId>
+			<artifactId>jetty-all</artifactId>
 			<version>0.0.1</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

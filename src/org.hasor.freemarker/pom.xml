@@ -2,30 +2,33 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.hasor</groupId>
-		<artifactId>org.hasor.parent</artifactId>
-		<version>1.0</version>
+		<artifactId>hasor-parent</artifactId>
+		<version>0.0.1</version>
 	</parent>
 
-	<!-- Project Info -->
+	<!-- Maven Info -->
 	<groupId>org.hasor</groupId>
-	<artifactId>org.hasor.freemarker</artifactId>
+	<artifactId>hasor-freemarker</artifactId>
 	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
-	<!-- Project description -->
-	<name>Hasor-MVC Project</name>
-	<description>The Hasor main core project.</description>
-	<url>http://www.hasor.net/</url>
-	<scm>
-		<url>http://svn.apache.org/viewcvs.cgi/maven</url>
-	</scm>
+	<!-- Project Info -->
+	<name>Hasor-Freemarker</name>
+	<description>the Hasor freemarker module.</description>
+
+	<developers>
+		<developer>
+			<name>赵永春</name>
+			<email>zyc@hasor.net</email>
+		</developer>
+	</developers>
 
 	<!-- 引用依赖 -->
 	<dependencies>
 		<!-- Hasor-Core -->
 		<dependency>
 			<groupId>org.hasor</groupId>
-			<artifactId>org.hasor.core</artifactId>
+			<artifactId>hasor-core</artifactId>
 			<version>0.0.1</version>
 		</dependency>
 		<!-- Freemarker -->
@@ -34,6 +37,8 @@
 			<artifactId>freemarker</artifactId>
 			<version>2.3.19</version>
 		</dependency>
+
+
 		<!-- J2EE -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -42,11 +47,13 @@
 			<scope>provided</scope>
 		</dependency>
 
+
 		<!-- Jetty Test -->
 		<dependency>
 			<groupId>org.hasor</groupId>
-			<artifactId>org.eclipse.jetty</artifactId>
+			<artifactId>jetty-all</artifactId>
 			<version>0.0.1</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

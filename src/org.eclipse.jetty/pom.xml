@@ -2,13 +2,29 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.hasor</groupId>
-		<artifactId>org.hasor.parent</artifactId>
-		<version>1.0</version>
+		<artifactId>hasor-parent</artifactId>
+		<version>0.0.1</version>
 	</parent>
 	<groupId>org.hasor</groupId>
-	<artifactId>org.eclipse.jetty</artifactId>
+	<artifactId>jetty-all</artifactId>
 	<version>0.0.1</version>
 	<packaging>jar</packaging>
+
+	<!-- 构建描述 -->
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<encoding>GBK</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 	<!-- 引用依赖 -->
 	<dependencies>
 		<!-- Log -->
@@ -21,7 +37,9 @@
 			<groupId>org.apache.ant</groupId>
 			<artifactId>ant</artifactId>
 			<version>1.7.0</version>
+			<scope>provided</scope>
 		</dependency>
+
 
 		<!-- <dependency> -->
 		<!-- <groupId>org.eclipse.jetty</groupId> -->
@@ -31,20 +49,6 @@
 		<!-- <dependency> -->
 		<!-- <groupId>org.eclipse.jetty</groupId> -->
 		<!-- <artifactId>jetty-jsp</artifactId> -->
-		<!-- <version>8.1.12.v20130726</version> -->
-		<!-- </dependency> -->
-
-
-
-
-		<!-- <dependency> -->
-		<!-- <groupId>org.eclipse.jetty</groupId> -->
-		<!-- <artifactId>jetty-websocket</artifactId> -->
-		<!-- <version>8.1.12.v20130726</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.eclipse.jetty</groupId> -->
-		<!-- <artifactId>jetty-jndi</artifactId> -->
 		<!-- <version>8.1.12.v20130726</version> -->
 		<!-- </dependency> -->
 		<!-- <dependency> -->
@@ -59,26 +63,6 @@
 		<!-- </dependency> -->
 		<!-- <dependency> -->
 		<!-- <groupId>org.eclipse.jetty</groupId> -->
-		<!-- <artifactId>jetty-ajp</artifactId> -->
-		<!-- <version>8.1.12.v20130726</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.eclipse.jetty</groupId> -->
-		<!-- <artifactId>jetty-rewrite</artifactId> -->
-		<!-- <version>8.1.12.v20130726</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.eclipse.jetty</groupId> -->
-		<!-- <artifactId>jetty-nested</artifactId> -->
-		<!-- <version>8.1.12.v20130726</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.eclipse.jetty</groupId> -->
-		<!-- <artifactId>jetty-start</artifactId> -->
-		<!-- <version>8.1.12.v20130726</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.eclipse.jetty</groupId> -->
 		<!-- <artifactId>jetty-http-spi</artifactId> -->
 		<!-- <version>8.1.12.v20130726</version> -->
 		<!-- </dependency> -->
@@ -87,23 +71,9 @@
 		<!-- <artifactId>jetty-ajp</artifactId> -->
 		<!-- <version>8.1.12.v20130726</version> -->
 		<!-- </dependency> -->
-
-
-
-
 		<!-- <dependency> -->
 		<!-- <groupId>org.eclipse.jetty</groupId> -->
 		<!-- <artifactId>jetty-distribution</artifactId> -->
-		<!-- <version>8.1.12.v20130726</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.eclipse.jetty</groupId> -->
-		<!-- <artifactId>jetty-client</artifactId> -->
-		<!-- <version>8.1.12.v20130726</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.eclipse.jetty</groupId> -->
-		<!-- <artifactId>jetty-plus</artifactId> -->
 		<!-- <version>8.1.12.v20130726</version> -->
 		<!-- </dependency> -->
 		<!-- <dependency> -->
