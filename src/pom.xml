@@ -33,7 +33,7 @@
 
 	<!-- 包含的模块 -->
 	<modules>
-		<module>org.eclipse.jetty</module>
+		<module>jetty-all</module>
 		<module>org.hasor.freemarker</module>
 		<module>org.hasor.core</module>
 		<module>org.hasor.mvc</module>

@@ -448,11 +448,11 @@ public class AbstractController {
     //        return toLong(getPara(), null);
     //    }
     /** Get model from AppContext. */
-    protected <T> T getModel(Class<T> modelClass) {
+    protected Object getModel(Class<?> modelClass) {
         return this.getAppContext().getInstance(modelClass);
     }
     /** Get model from AppContext. */
-    protected <T> T getModel(String modelName) {
+    protected Object getModel(String modelName) {
         return this.getAppContext().getBean(modelName);
     }
     // --------

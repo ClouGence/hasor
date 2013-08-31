@@ -52,7 +52,7 @@ import org.eclipse.jetty.util.URIUtil;
  * separators, unless configured differently by calling the static
  * method @see PathMap#setPathSpecSeparators(String)
  * <P>
- * Special characters within paths such as '?� and ';' are not treated specially
+ * Special characters within paths such as ' and ';' are not treated specially
  * as it is assumed they would have been either encoded in the original URL or
  * stripped from the path.
  * <P>

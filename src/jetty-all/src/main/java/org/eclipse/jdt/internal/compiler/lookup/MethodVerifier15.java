@@ -926,7 +926,7 @@ boolean isSubstituteParameterSubsignature(MethodBinding method, MethodBinding su
 boolean isUnsafeReturnTypeOverride(MethodBinding currentMethod, MethodBinding inheritedMethod) {
 	// called when currentMethod's return type is NOT compatible with inheritedMethod's return type
 
-	// JLS 3 §8.4.5: more are accepted, with an unchecked conversion
+	// JLS 3 .4.5: more are accepted, with an unchecked conversion
 	if (currentMethod.returnType == inheritedMethod.returnType.erasure()) {
 		TypeBinding[] currentParams = currentMethod.parameters;
 		TypeBinding[] inheritedParams = inheritedMethod.parameters;
