@@ -2,12 +2,15 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="lib/hasor-core-0.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/hasor-freemarker-0.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/hasor-mvc-0.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/jetty-all-0.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/aopalliance-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/guice-3.0.jar" sourcepath="D:/app/apache-maven-3.0.3/repository/com/google/inject/guice/3.0/guice-3.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/guice-3.0.jar"/>
 	<classpathentry kind="lib" path="lib/javax.inject-1.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.7.2.jar"/>
-	<classpathentry kind="lib" path="lib/org.hasor.core-0.0.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

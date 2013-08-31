@@ -15,3 +15,7 @@
 	log4j.xml		（配置文件）
 	log4j-1.2.17.jar	（log4j核心包）
 	slf4j-log4j12-1.7.2.jar	（slf4j的log4j适配）
+
+5) hasor-core-0.0.1.zip  Hasor-Core的jar包，包含了jar,sources,javadoc
+
+6) hasor-mvc-0.0.1.zip  Hasor-MVC的jar包，包含了jar,sources,javadoc
