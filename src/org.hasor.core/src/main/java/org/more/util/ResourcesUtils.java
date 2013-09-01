@@ -275,30 +275,7 @@ public abstract class ResourcesUtils {
         String _wild = wild.substring(0, index);
         if (_wild.charAt(_wild.length() - 1) == '/')
             _wild = _wild.substring(0, _wild.length() - 1);
-        ClassLoader loader = getCurrentLoader();
-        Enumeration<URL> urls = null;
-        if (loader instanceof URLClassLoader == false)
-            urls = loader.getResources(_wild);
-        else {
-            URLClassLoader urlLoader = (URLClassLoader) loader;
-            /*
-             * Jetty 使用getResources、Tomcat 使用findResources
-             * 在Jetty中WebappsClassLoader只实现了没有重写findResources
-             * 在Tomcat中WebappsClassLoader只实现了没有重写getResources
-             * 
-             * TODO : 该处逻辑为：首先判断findResources方法是否被重写，如果被重写则调用它否则调用getResources
-             */
-            try {
-                Class<?> loaderType = urlLoader.getClass();
-                Method m = loaderType.getMethod("findResources", String.class);
-                if (m.getDeclaringClass() == loaderType)
-                    urls = urlLoader.findResources(_wild);
-                else
-                    urls = urlLoader.getResources(_wild);
-            } catch (Exception e) {
-                urls = urlLoader.findResources(_wild);//Default
-            }
-        }
+        Enumeration<URL> urls = findAllClassPath(_wild);
         List<URL> dirs = rootDir();
         //
         while (urls.hasMoreElements() == true) {
@@ -320,10 +297,38 @@ public abstract class ResourcesUtils {
         return null;
     }
     private static List<URL> rootDir() throws IOException {
-        Enumeration<URL> roote = getCurrentLoader().getResources("");
+        Enumeration<URL> roote = findAllClassPath("");
         ArrayList<URL> rootList = new ArrayList<URL>();
         while (roote.hasMoreElements() == true)
             rootList.add(roote.nextElement());
         return rootList;
     };
+    /**获取所有ClassPath条目*/
+    public static Enumeration<URL> findAllClassPath(String name) throws IOException {
+        ClassLoader loader = getCurrentLoader();
+        Enumeration<URL> urls = null;
+        if (loader instanceof URLClassLoader == false)
+            urls = loader.getResources(name);
+        else {
+            URLClassLoader urlLoader = (URLClassLoader) loader;
+            /*
+             * Jetty 使用getResources、Tomcat 使用findResources
+             * 在Jetty中WebappsClassLoader只实现了没有重写findResources
+             * 在Tomcat中WebappsClassLoader只实现了没有重写getResources
+             * 
+             * TODO : 该处逻辑为：首先判断findResources方法是否被重写，如果被重写则调用它否则调用getResources
+             */
+            try {
+                Class<?> loaderType = urlLoader.getClass();
+                Method m = loaderType.getMethod("findResources", String.class);
+                if (m.getDeclaringClass() == loaderType)
+                    urls = urlLoader.findResources(name);
+                else
+                    urls = urlLoader.getResources(name);
+            } catch (Exception e) {
+                urls = urlLoader.findResources(name);//Default
+            }
+        }
+        return urls;
+    }
 }
