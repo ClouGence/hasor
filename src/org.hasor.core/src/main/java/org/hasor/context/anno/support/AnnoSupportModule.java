@@ -26,7 +26,7 @@ import org.hasor.context.LifeCycle.LifeCycleEnum;
 import org.hasor.context.ModuleSettings;
 import org.hasor.context.anno.Bean;
 import org.hasor.context.anno.EventListener;
-import org.hasor.context.anno.Module;
+import org.hasor.context.anno.DefineModule;
 import org.hasor.context.anno.SettingsListener;
 import org.hasor.context.module.AbstractHasorModule;
 import org.more.util.ArrayUtils;
@@ -36,7 +36,7 @@ import org.more.util.StringUtils;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
-@Module(description = "org.hasor.annotation软件包功能支持。")
+@DefineModule(description = "org.hasor.annotation软件包功能支持。")
 public class AnnoSupportModule extends AbstractHasorModule implements GetContext {
     public void configuration(ModuleSettings info) {}
     //

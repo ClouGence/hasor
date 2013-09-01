@@ -22,7 +22,7 @@ import org.hasor.Hasor;
 import org.hasor.context.ApiBinder;
 import org.hasor.context.AppContext;
 import org.hasor.context.ModuleSettings;
-import org.hasor.context.anno.Module;
+import org.hasor.context.anno.DefineModule;
 import org.hasor.context.anno.support.AnnoSupportModule;
 import org.hasor.context.module.AbstractHasorModule;
 import org.hasor.freemarker.ConfigurationFactory;
@@ -37,7 +37,7 @@ import org.hasor.freemarker.Tag;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@Module(description = "org.hasor.freemarker软件包功能支持。")
+@DefineModule(description = "org.hasor.freemarker软件包功能支持。")
 public class FreemarkerSupportModule extends AbstractHasorModule {
     public void configuration(ModuleSettings info) {
         info.beforeMe(AnnoSupportModule.class);

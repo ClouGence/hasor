@@ -13,32 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test.dependency.test2;
+package org.hasor.context.module;
+import org.hasor.Hasor;
 import org.hasor.context.ApiBinder;
-import org.hasor.context.AppContext;
 import org.hasor.context.ModuleSettings;
-import org.hasor.context.anno.DefineModule;
-import org.hasor.context.module.AbstractHasorModule;
+import org.hasor.context.anno.support.AnnoSupportModule;
+import com.google.inject.Module;
 /**
  * 
- * @version : 2013-7-27
+ * @version : 2013-7-16
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-@DefineModule()
-public class Mode3 extends AbstractHasorModule {
+public class GuiceModulePropxy extends AbstractHasorModule {
+    private Module guiceModule = null;
+    //
+    public GuiceModulePropxy(Module guiceModule) {
+        Hasor.assertIsNotNull(guiceModule);
+        this.guiceModule = guiceModule;
+    }
+    //
     public void configuration(ModuleSettings info) {
-        throw new RuntimeException();
+        info.beforeMe(AnnoSupportModule.class);
     }
+    //
     public void init(ApiBinder apiBinder) {
-        System.out.println("Mode3  init!");
-    }
-    public void start(AppContext appContext) {
-        super.start(appContext);
-    }
-    public void stop(AppContext appContext) {
-        super.stop(appContext);
-    }
-    public void destroy(AppContext appContext) {
-        super.destroy(appContext);
+        apiBinder.getGuiceBinder().install(this.guiceModule);
     }
 }

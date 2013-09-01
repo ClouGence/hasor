@@ -15,7 +15,7 @@
  */
 package org.hasor.mvc.controller.plugins.validation;
 import org.hasor.context.ModuleSettings;
-import org.hasor.context.anno.Module;
+import org.hasor.context.anno.DefineModule;
 import org.hasor.mvc.controller.support.ServletControllerSupportModule;
 import org.hasor.servlet.AbstractWebHasorModule;
 import org.hasor.servlet.WebApiBinder;
@@ -24,7 +24,7 @@ import org.hasor.servlet.WebApiBinder;
  * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
-@Module(description = "org.hasor.mvc.controller.plugins.validation软件包功能支持。")
+@DefineModule(description = "org.hasor.mvc.controller.plugins.validation软件包功能支持。")
 public class ControllerPluginValidationSupportModule extends AbstractWebHasorModule {
     public void configuration(ModuleSettings info) {
         info.followTarget(ServletControllerSupportModule.class);

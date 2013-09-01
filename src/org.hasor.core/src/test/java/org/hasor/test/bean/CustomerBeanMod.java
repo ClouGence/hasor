@@ -16,7 +16,7 @@
 package org.hasor.test.bean;
 import org.hasor.context.ApiBinder;
 import org.hasor.context.ModuleSettings;
-import org.hasor.context.anno.Module;
+import org.hasor.context.anno.DefineModule;
 import org.hasor.context.module.AbstractHasorModule;
 import org.hasor.test.bean.beans.CustomerBean;
 /**
@@ -24,7 +24,7 @@ import org.hasor.test.bean.beans.CustomerBean;
  * @version : 2013-8-11
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-@Module
+@DefineModule
 public class CustomerBeanMod extends AbstractHasorModule {
     public void configuration(ModuleSettings info) {
         // TODO Auto-generated method stub

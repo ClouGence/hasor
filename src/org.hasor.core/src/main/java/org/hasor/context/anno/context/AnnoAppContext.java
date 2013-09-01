@@ -15,16 +15,16 @@
  */
 package org.hasor.context.anno.context;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import org.hasor.Hasor;
 import org.hasor.context.HasorModule;
 import org.hasor.context.ModuleInfo;
 import org.hasor.context.ModuleSettings;
-import org.hasor.context.anno.Module;
+import org.hasor.context.anno.DefineModule;
 import org.hasor.context.core.DefaultAppContext;
+import org.hasor.context.module.GuiceModulePropxy;
 import org.more.util.StringUtils;
+import com.google.inject.Module;
 /**
  * 
  * @version : 2013-7-16
@@ -48,37 +48,36 @@ public class AnnoAppContext extends DefaultAppContext {
     /**装载模块*/
     protected void loadModule() {
         //1.扫描classpath包
-        Set<Class<?>> initHookSet = this.getClassSet(Module.class);
+        Set<Class<?>> initHookSet = this.getClassSet(DefineModule.class);
+        Hasor.info("find Module : " + Hasor.logString(initHookSet));
         //2.过滤未实现HasorModule接口的类
-        List<Class<? extends HasorModule>> initHookList = new ArrayList<Class<? extends HasorModule>>();
-        for (Class<?> cls : initHookSet) {
-            if (HasorModule.class.isAssignableFrom(cls) == false) {
-                Hasor.warning("not implemented HasorModule :%s", cls);
-            } else {
-                initHookList.add((Class<? extends HasorModule>) cls);
-            }
-        }
-        Hasor.info("find HasorModule : " + Hasor.logString(initHookList));
-        //4.扫描所有ContextListener。
-        Hasor.info("create HasorModule...");
-        for (Class<?> modClass : initHookList) {
-            HasorModule modObject = this.createModule(modClass);
-            if (modObject != null) {
-                ModuleInfo info = this.addModule(modObject);
-                if (info instanceof ModuleSettings) {
-                    ModuleSettings infoCfg = (ModuleSettings) info;
-                    Module modAnno = modClass.getAnnotation(Module.class);
-                    String dispName = StringUtils.isBlank(modAnno.displayName()) ? info.getModuleObject().getClass().getSimpleName() : modAnno.displayName();
-                    infoCfg.setDisplayName(dispName);
-                    infoCfg.setDescription(modAnno.description());
-                }
+        for (Class<?> modClass : initHookSet) {
+            HasorModule modObject = null;
+            ModuleInfo moduleInfo = null;
+            if (HasorModule.class.isAssignableFrom(modClass) == true) {
+                /*Hasor 模块*/
+                modObject = this.createModule(modClass);
+                moduleInfo = this.addModule(modObject);
+            } else if (Module.class.isAssignableFrom(modClass) == true) {
+                /*Guice 模块*/
+                Module guiceObject = this.createModule(modClass);
+                moduleInfo = this.addModule(new GuiceModulePropxy(guiceObject));
+            } else
+                /*错误*/
+                Hasor.warning("not implemented HasorModule or Module :%s", moduleInfo);
+            //
+            if (moduleInfo instanceof ModuleSettings) {
+                ModuleSettings infoCfg = (ModuleSettings) moduleInfo;
+                DefineModule modAnno = modClass.getAnnotation(DefineModule.class);
+                String dispName = StringUtils.isBlank(modAnno.displayName()) ? moduleInfo.getModuleObject().getClass().getSimpleName() : modAnno.displayName();
+                infoCfg.setDisplayName(dispName);
+                infoCfg.setDescription(modAnno.description());
             }
         }
     }
-    /**创建{@link HasorModule}接口对象。*/
-    protected HasorModule createModule(Class<?> listenerClass) {
+    private <T> T createModule(Class<?> listenerClass) {
         try {
-            return (HasorModule) listenerClass.newInstance();
+            return (T) listenerClass.newInstance();
         } catch (Exception e) {
             Hasor.error("create %s an error!%s", listenerClass, e);
             return null;

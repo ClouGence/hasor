@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
 import org.hasor.Hasor;
 import org.hasor.context.ModuleSettings;
-import org.hasor.context.anno.Module;
+import org.hasor.context.anno.DefineModule;
 import org.hasor.context.anno.support.AnnoSupportModule;
 import org.hasor.servlet.AbstractWebHasorModule;
 import org.hasor.servlet.WebApiBinder;
@@ -44,7 +44,7 @@ import org.more.util.StringUtils;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
-@Module(description = "org.hasor.servlet软件包注解版支持。")
+@DefineModule(description = "org.hasor.servlet软件包注解版支持。")
 public class ServletAnnoSupportModule extends AbstractWebHasorModule {
     public void configuration(ModuleSettings info) {
         info.followTarget(AnnoSupportModule.class);

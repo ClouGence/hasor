@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test.dependency.test2;
-import org.hasor.context.ApiBinder;
-import org.hasor.context.ModuleSettings;
+package org.hasor.test.guice;
 import org.hasor.context.anno.DefineModule;
-import org.hasor.context.module.AbstractHasorModule;
-/**
- * 
- * @version : 2013-7-27
- * @author ’‘”¿¥∫ (zyc@hasor.net)
- */
-@DefineModule()
-public class Mode2 extends AbstractHasorModule {
-    public void configuration(ModuleSettings info) {
-        info.beforeMe(Mode3.class);//∑««ø÷∆“¿¿µ
-    }
-    public void init(ApiBinder apiBinder) {
-        System.out.println("Mode2  init!");
+import com.google.inject.Binder;
+import com.google.inject.Module;
+@DefineModule
+public class GuiceMod implements Module {
+    public void configure(Binder binder) {
+        System.out.println();
     }
 }

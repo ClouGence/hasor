@@ -16,14 +16,14 @@
 package org.hasor.test.dependency.test1;
 import org.hasor.context.ApiBinder;
 import org.hasor.context.ModuleSettings;
-import org.hasor.context.anno.Module;
+import org.hasor.context.anno.DefineModule;
 import org.hasor.context.module.AbstractHasorModule;
 /**
  * 
  * @version : 2013-7-27
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-@Module()
+@DefineModule()
 public class Mode2 extends AbstractHasorModule {
     public void configuration(ModuleSettings info) {
         info.beforeMe(Mode4.class);

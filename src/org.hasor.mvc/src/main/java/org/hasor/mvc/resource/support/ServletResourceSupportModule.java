@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 import org.hasor.Hasor;
 import org.hasor.context.ModuleSettings;
-import org.hasor.context.anno.Module;
+import org.hasor.context.anno.DefineModule;
 import org.hasor.mvc.resource.ResourceLoaderCreator;
 import org.hasor.mvc.resource.ResourceLoaderDefine;
 import org.hasor.servlet.AbstractWebHasorModule;
@@ -30,7 +30,7 @@ import org.hasor.servlet.anno.support.ServletAnnoSupportModule;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
-@Module(description = "org.hasor.web.resource软件包功能支持。")
+@DefineModule(description = "org.hasor.web.resource软件包功能支持。")
 public class ServletResourceSupportModule extends AbstractWebHasorModule {
     public void configuration(ModuleSettings info) {
         info.beforeMe(ServletAnnoSupportModule.class);

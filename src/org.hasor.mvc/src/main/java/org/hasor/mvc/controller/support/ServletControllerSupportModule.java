@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Set;
 import org.hasor.context.AppContext;
 import org.hasor.context.ModuleSettings;
-import org.hasor.context.anno.Module;
+import org.hasor.context.anno.DefineModule;
 import org.hasor.mvc.controller.ActionBinder.ActionBindingBuilder;
 import org.hasor.mvc.controller.ActionBinder.NameSpaceBindingBuilder;
 import org.hasor.mvc.controller.Controller;
@@ -39,7 +39,7 @@ import com.google.inject.Binder;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
-@Module(description = "org.hasor.web.controller软件包功能支持。")
+@DefineModule(description = "org.hasor.web.controller软件包功能支持。")
 public class ServletControllerSupportModule extends AbstractWebHasorModule {
     private ActionSettings settings      = null;
     private ActionManager  actionManager = null;
