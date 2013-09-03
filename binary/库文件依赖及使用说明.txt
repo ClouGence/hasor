@@ -23,3 +23,5 @@
 7) example-project.zip  例子工程（不包含依赖库）
         1.加入log4j 和 master
         2.加入hasor-core库（Web工程在此基础上加入hasor-mvc库）
+
+8) jsp-tag  当Web项目工程需要使用JSP标签相关功能时候加入这个目录中的类库
