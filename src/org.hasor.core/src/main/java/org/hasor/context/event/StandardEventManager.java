@@ -17,7 +17,6 @@ package org.hasor.context.event;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -39,7 +38,6 @@ import org.more.util.StringUtils;
  * @author ÕÔÓÀ´º (zyc@hasor.net)
  */
 public class StandardEventManager implements EventManager {
-    private static final HasorEventListener[]           EmptyEventListener = new HasorEventListener[0];
     private static final EmptyAsyncCallBackHook         EmptyAsyncCallBack = new EmptyAsyncCallBackHook();
     //
     private Settings                                    settings           = null;
@@ -109,11 +107,11 @@ public class StandardEventManager implements EventManager {
         //
         this.listenerRWLock.writeLock().unlock();//½âËø(Ğ´)
     }
-    public void removeAllEventListener(String eventType) {
-        this.listenerRWLock.writeLock().lock();//¼ÓËø(Ğ´)
-        this.listenerMap.remove(eventType);
-        this.listenerRWLock.writeLock().unlock();//½âËø(Ğ´)
-    }
+    //    public void removeAllEventListener(String eventType) {
+    //        this.listenerRWLock.writeLock().lock();//¼ÓËø(Ğ´)
+    //        this.listenerMap.remove(eventType);
+    //        this.listenerRWLock.writeLock().unlock();//½âËø(Ğ´)
+    //    }
     public void removeEventListener(String eventType, HasorEventListener hasorEventListener) {
         this.listenerRWLock.writeLock().lock();//¼ÓËø(Ğ´)
         //
@@ -128,29 +126,29 @@ public class StandardEventManager implements EventManager {
         //
         this.listenerRWLock.writeLock().unlock();//½âËø(Ğ´)
     }
-    public HasorEventListener[] getEventListener(String eventType) {
-        this.listenerRWLock.readLock().lock();//¼ÓËø(¶Á)
-        //
-        HasorEventListener[] eventListenerArray = this.listenerMap.get(eventType);
-        if (eventListenerArray != null) {
-            HasorEventListener[] array = new HasorEventListener[eventListenerArray.length];
-            System.arraycopy(eventListenerArray, 0, array, 0, eventListenerArray.length);
-            eventListenerArray = array;
-        } else
-            eventListenerArray = EmptyEventListener;
-        //
-        this.listenerRWLock.readLock().unlock();//½âËø(¶Á)
-        return eventListenerArray;
-    }
-    public String[] getEventTypes() {
-        this.listenerRWLock.readLock().lock();//¼ÓËø(¶Á)
-        //
-        Set<String> eventTypes = this.listenerMap.keySet();
-        String[] eventTypeNames = eventTypes.toArray(new String[eventTypes.size()]);
-        //
-        this.listenerRWLock.readLock().unlock();//½âËø(¶Á)
-        return eventTypeNames;
-    }
+    //    public HasorEventListener[] getEventListener(String eventType) {
+    //        this.listenerRWLock.readLock().lock();//¼ÓËø(¶Á)
+    //        //
+    //        HasorEventListener[] eventListenerArray = this.listenerMap.get(eventType);
+    //        if (eventListenerArray != null) {
+    //            HasorEventListener[] array = new HasorEventListener[eventListenerArray.length];
+    //            System.arraycopy(eventListenerArray, 0, array, 0, eventListenerArray.length);
+    //            eventListenerArray = array;
+    //        } else
+    //            eventListenerArray = EmptyEventListener;
+    //        //
+    //        this.listenerRWLock.readLock().unlock();//½âËø(¶Á)
+    //        return eventListenerArray;
+    //    }
+    //    public String[] getEventTypes() {
+    //        this.listenerRWLock.readLock().lock();//¼ÓËø(¶Á)
+    //        //
+    //        Set<String> eventTypes = this.listenerMap.keySet();
+    //        String[] eventTypeNames = eventTypes.toArray(new String[eventTypes.size()]);
+    //        //
+    //        this.listenerRWLock.readLock().unlock();//½âËø(¶Á)
+    //        return eventTypeNames;
+    //    }
     //
     //
     //

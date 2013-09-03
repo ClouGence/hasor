@@ -10,19 +10,14 @@
 		<!-- （该配置在重载配置文件之后不会影响已有结果） -->
 		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
 		<loadPackages>org.hasor.context.*,org.hasor.servlet.*</loadPackages>
-		<!-- 启用注解功能支持 -->
-		<annotation>true</annotation>
 		<!-- 执行事件的线程池大小，注意：已经被安排Timer执行的事件，是不受生效之后的池大小限制的 -->
 		<eventThreadPoolSize>20</eventThreadPoolSize>
-		<!-- （该配置在重载配置文件之后不会影响已有结果） -->
-		<!-- Timer定时器执行配置,单位毫秒。可选的配置：FixedDelay(固定间隔)、FixedRate(固定周期) -->
-		<timerEvent type="FixedDelay">1000</timerEvent>
 		<!-- 是否强迫所有模块都必须正常启动 -->
 		<forceModule>false</forceModule>
 		<!-- （仅在启动时生效）Web部分的配置 -->
 		<httpServlet>
 			<!-- Web请求遇到异常后轮询errorHook的次数。 -->
-			<errorCaseCount>5</errorCaseCount>
+			<errorCaseCount>1</errorCaseCount>
 			<!-- 请求响应编码设置 -->
 			<requestEncoding requestEncoding="utf-8" responseEncoding="utf-8" />
 		</httpServlet>

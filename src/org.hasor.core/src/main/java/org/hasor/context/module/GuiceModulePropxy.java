@@ -20,7 +20,7 @@ import org.hasor.context.ModuleSettings;
 import org.hasor.context.anno.support.AnnoSupportModule;
 import com.google.inject.Module;
 /**
- * 
+ * Guice模块代理成AbstractHasorModule类型的工具
  * @version : 2013-7-16
  * @author 赵永春 (zyc@hasor.net)
  */

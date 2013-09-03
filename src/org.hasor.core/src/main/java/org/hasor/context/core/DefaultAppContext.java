@@ -43,9 +43,19 @@ import com.google.inject.Provider;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class DefaultAppContext extends AbstractAppContext {
-    private boolean  running;
-    private Injector guice;
-    private boolean  forceModule;
+    /**容器事件：ContextEvent_Init*/
+    public static final String ContextEvent_Init    = "ContextEvent_Init";
+    /**容器事件：ContextEvent_Start*/
+    public static final String ContextEvent_Start   = "ContextEvent_Start";
+    /**容器事件：ContextEvent_Stop*/
+    public static final String ContextEvent_Stop    = "ContextEvent_Stop";
+    /**容器事件：ContextEvent_Destroy*/
+    public static final String ContextEvent_Destroy = "ContextEvent_Destroy";
+    //
+    private boolean            running;
+    private Injector           guice;
+    private boolean            forceModule;
+    //
     //
     //
     //
@@ -129,7 +139,7 @@ public class DefaultAppContext extends AbstractAppContext {
             infoList.addAll(result);
         }
         /*创建guice并且触发init过程*/
-        this.getEventManager().doSyncEventIgnoreThrow(LifeCycleEnum.PhaseEvent_Init.getValue(), (InitContext) this);//发送阶段事件
+        this.getEventManager().doSyncEventIgnoreThrow(ContextEvent_Init, (InitContext) this);//发送阶段事件
         this.guice = this.createInjector(null);
         Hasor.assertIsNotNull(this.guice, "can not be create Injector.");
     }
@@ -142,7 +152,7 @@ public class DefaultAppContext extends AbstractAppContext {
         /*发送完成初始化信号*/
         this.running = true;
         Hasor.info("send start sign.");
-        this.getEventManager().doSyncEventIgnoreThrow(LifeCycleEnum.PhaseEvent_Start.getValue(), (AppContext) this);//发送阶段事件
+        this.getEventManager().doSyncEventIgnoreThrow(ContextEvent_Start, (AppContext) this);//发送阶段事件
         ModuleInfo[] hasorModules = this.getModules();
         for (ModuleInfo mod : hasorModules) {
             if (mod == null)
@@ -159,7 +169,7 @@ public class DefaultAppContext extends AbstractAppContext {
         /*发送停止信号*/
         this.running = false;
         Hasor.info("send stop sign.");
-        this.getEventManager().doSyncEventIgnoreThrow(LifeCycleEnum.PhaseEvent_Stop.getValue(), (AppContext) this);//发送阶段事件
+        this.getEventManager().doSyncEventIgnoreThrow(ContextEvent_Stop, (AppContext) this);//发送阶段事件
         this.getEventManager().clean();
         //
         ModuleInfo[] hasorModules = this.getModules();
@@ -172,7 +182,7 @@ public class DefaultAppContext extends AbstractAppContext {
     }
     public synchronized void destroy() {
         Hasor.info("send destroy sign.");
-        this.getEventManager().doSyncEventIgnoreThrow(LifeCycleEnum.PhaseEvent_Destroy.getValue(), (AppContext) this);//发送阶段事件
+        this.getEventManager().doSyncEventIgnoreThrow(ContextEvent_Destroy, (AppContext) this);//发送阶段事件
         this.getEventManager().clean();
         this.stop();
         ModuleInfo[] hasorModules = this.getModules();

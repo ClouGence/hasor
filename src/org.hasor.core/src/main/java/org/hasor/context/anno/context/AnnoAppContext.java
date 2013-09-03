@@ -17,6 +17,7 @@ package org.hasor.context.anno.context;
 import java.io.IOException;
 import java.util.Set;
 import org.hasor.Hasor;
+import org.hasor.context.AppContext;
 import org.hasor.context.HasorModule;
 import org.hasor.context.ModuleInfo;
 import org.hasor.context.ModuleSettings;
@@ -31,6 +32,13 @@ import com.google.inject.Module;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AnnoAppContext extends DefaultAppContext {
+    /**容器事件：ContextEvent_LoadModule*/
+    public static final String ContextEvent_LoadModule = "ContextEvent_LoadModule";
+    //
+    //
+    //
+    //
+    //
     public AnnoAppContext() throws IOException {
         super();
     }
@@ -47,6 +55,7 @@ public class AnnoAppContext extends DefaultAppContext {
     //
     /**装载模块*/
     protected void loadModule() {
+        this.getEventManager().doSyncEventIgnoreThrow(ContextEvent_LoadModule, (AppContext) this);//发送阶段事件
         //1.扫描classpath包
         Set<Class<?>> initHookSet = this.getClassSet(DefineModule.class);
         Hasor.info("find Module : " + Hasor.logString(initHookSet));

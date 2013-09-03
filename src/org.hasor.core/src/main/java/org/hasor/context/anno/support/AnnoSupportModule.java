@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.context.anno.support;
+import static org.hasor.context.core.DefaultAppContext.ContextEvent_Start;
 import java.util.Set;
 import org.hasor.Hasor;
 import org.hasor.context.ApiBinder;
@@ -22,11 +23,10 @@ import org.hasor.context.AppContext;
 import org.hasor.context.EventManager;
 import org.hasor.context.HasorEventListener;
 import org.hasor.context.HasorSettingListener;
-import org.hasor.context.LifeCycle.LifeCycleEnum;
 import org.hasor.context.ModuleSettings;
 import org.hasor.context.anno.Bean;
-import org.hasor.context.anno.EventListener;
 import org.hasor.context.anno.DefineModule;
+import org.hasor.context.anno.EventListener;
 import org.hasor.context.anno.SettingsListener;
 import org.hasor.context.module.AbstractHasorModule;
 import org.more.util.ArrayUtils;
@@ -47,10 +47,6 @@ public class AnnoSupportModule extends AbstractHasorModule implements GetContext
     //
     /**≥ı ºªØ.*/
     public void init(ApiBinder apiBinder) {
-        if (apiBinder.getInitContext().getSettings().getBoolean("hasor.annotation") == false) {
-            Hasor.warning("init Annotation false!");
-            return;
-        }
         //1.Bean
         this.loadBean(apiBinder);
         //2.Settings
@@ -121,7 +117,7 @@ public class AnnoSupportModule extends AbstractHasorModule implements GetContext
         for (final Class<?> settingClass : settingSet) {
             apiBinder.getGuiceBinder().bind(settingClass).asEagerSingleton();
             Hasor.info("%s bind SettingsListener.", settingClass);
-            eventManager.pushEventListener(LifeCycleEnum.PhaseEvent_Start.getValue(), new HasorEventListener() {
+            eventManager.pushEventListener(ContextEvent_Start, new HasorEventListener() {
                 public void onEvent(String event, Object[] params) {
                     AppContext appContext = (AppContext) params[0];
                     HasorSettingListener settingObj = (HasorSettingListener) appContext.getInstance(settingClass);
