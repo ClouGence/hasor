@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.hasor.test.environment;
-import org.hasor.context.AppContext;
-import org.hasor.context.Environment;
+import net.hasor.context.AppContext;
+import net.hasor.context.Environment;
 import org.hasor.test.AbstractTestContext;
 import org.junit.Test;
 /**

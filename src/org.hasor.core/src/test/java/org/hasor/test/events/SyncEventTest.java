@@ -15,9 +15,9 @@
  */
 package org.hasor.test.events;
 import java.io.IOException;
-import org.hasor.Hasor;
-import org.hasor.context.AppContext;
-import org.hasor.context.HasorEventListener;
+import net.hasor.Hasor;
+import net.hasor.context.AppContext;
+import net.hasor.context.HasorEventListener;
 import org.hasor.test.AbstractTestContext;
 import org.junit.Test;
 /**

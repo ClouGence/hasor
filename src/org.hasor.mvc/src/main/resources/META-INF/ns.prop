@@ -15,4 +15,4 @@
 #
 #
 #
-http\://project.hasor.net/hasor/schema/hasor-servlet=org.hasor.context.setting.xml.ModuleSettingsHasorXmlParser
+http\://project.hasor.net/hasor/schema/hasor-servlet=net.hasor.context.setting.xml.ModuleSettingsHasorXmlParser

@@ -30,6 +30,7 @@ Hasor-0.0.2.<...>-M2
         03.)删除Timer残余的类。
         04.)删除EventManager接口中获取事件对象的一些方法，事件管理器不在提供这类功能。
         05.)LifeCycle枚举中定义的阶段事件转而在DefaultAppContext类中定义。
+        06.)所有包都被移动到net.hasor下。
     新增：
         01.)增加jetty-all项目，该项目包含了jetty-8.1.12中所有代码。并且支持jsp，使用jetty-all可以简化Web开发环境。
         02.)支持使用@FmTag注解声明一个自定义标签(Tag/Tag2)，模板引擎使用Freemarker。

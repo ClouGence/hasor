@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.test.aop;
-import org.hasor.context.AppContext;
+import net.hasor.context.AppContext;
 import org.hasor.test.AbstractTestContext;
 import org.junit.Test;
 /**

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package org.hasor.test.bean;
-import org.hasor.context.ApiBinder;
-import org.hasor.context.ModuleSettings;
-import org.hasor.context.anno.DefineModule;
-import org.hasor.context.module.AbstractHasorModule;
+import net.hasor.context.ApiBinder;
+import net.hasor.context.ModuleSettings;
+import net.hasor.context.anno.DefineModule;
+import net.hasor.context.module.AbstractHasorModule;
 import org.hasor.test.bean.beans.CustomerBean;
 /**
  * ´úÂë·½Ê½×¢²áBean

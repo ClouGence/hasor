@@ -3,7 +3,7 @@
 	<!-- 框架配置 -->
 	<hasor>
 		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
-		<loadPackages>org.hasor.mvc.*</loadPackages>
+		<loadPackages>net.hasor.mvc.*</loadPackages>
 	</hasor>
 	<environmentVar>
 		<!-- 资源缓存路径 -->

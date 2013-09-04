@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.test.guice;
-import org.hasor.context.anno.DefineModule;
+import net.hasor.context.anno.DefineModule;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 @DefineModule

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.test.bean;
-import org.hasor.context.AppContext;
+import net.hasor.context.AppContext;
 import org.hasor.test.AbstractTestContext;
 import org.hasor.test.bean.beans.BaseTestBean;
 import org.hasor.test.bean.beans.CustomerBean;

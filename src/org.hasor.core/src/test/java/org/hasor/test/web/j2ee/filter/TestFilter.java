@@ -21,7 +21,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import org.hasor.servlet.anno.WebFilter;
+import net.hasor.servlet.anno.WebFilter;
 /**
  * 
  * @version : 2013-8-11

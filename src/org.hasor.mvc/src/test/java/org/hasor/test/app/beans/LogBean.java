@@ -1,7 +1,7 @@
 package org.hasor.test.app.beans;
 import java.io.IOException;
-import org.hasor.context.anno.Bean;
-import org.hasor.context.anno.context.AnnoAppContext;
+import net.hasor.context.anno.Bean;
+import net.hasor.context.anno.context.AnnoAppContext;
 import org.hasor.test.plugin.log.OutLog;
 /**
  * 

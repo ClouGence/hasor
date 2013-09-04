@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package org.hasor.test.dependency.test1;
-import org.hasor.context.ApiBinder;
-import org.hasor.context.ModuleSettings;
-import org.hasor.context.anno.DefineModule;
-import org.hasor.context.module.AbstractHasorModule;
+import net.hasor.context.ApiBinder;
+import net.hasor.context.ModuleSettings;
+import net.hasor.context.anno.DefineModule;
+import net.hasor.context.module.AbstractHasorModule;
 /**
  * 
  * @version : 2013-7-27

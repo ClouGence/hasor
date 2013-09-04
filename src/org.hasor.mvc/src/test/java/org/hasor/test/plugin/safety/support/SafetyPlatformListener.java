@@ -1,11 +1,11 @@
 package org.hasor.test.plugin.safety.support;
 import java.lang.reflect.Method;
+import net.hasor.context.ApiBinder;
+import net.hasor.context.ModuleSettings;
+import net.hasor.context.anno.DefineModule;
+import net.hasor.context.module.AbstractHasorModule;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.hasor.context.ApiBinder;
-import org.hasor.context.ModuleSettings;
-import org.hasor.context.anno.DefineModule;
-import org.hasor.context.module.AbstractHasorModule;
 import org.hasor.test.plugin.safety.Power;
 import org.hasor.test.plugin.safety.SafetyContext;
 import com.google.inject.matcher.AbstractMatcher;

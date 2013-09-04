@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.hasor.test.events.listener;
-import org.hasor.Hasor;
-import org.hasor.context.HasorEventListener;
-import org.hasor.context.anno.EventListener;
+import net.hasor.Hasor;
+import net.hasor.context.HasorEventListener;
+import net.hasor.context.anno.EventListener;
 /**ÊÂ¼ş¼àÌıÆ÷B*/
 @EventListener("EventType_A")
 public class Type_A_EventListener implements HasorEventListener {
