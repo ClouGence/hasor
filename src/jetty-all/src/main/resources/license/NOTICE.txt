@@ -1,0 +1,220 @@
+                            The Hasor Jetty-ALL Project
+                            =================
+
+Please visit the Hasor web site for more information:
+
+  * http://www.hasor.net
+
+Copyright 2013 by ’‘”¿¥∫(zyc@hasor.net).
+
+this product to you under the Apache License, version 2.0 (the "License");
+you may not use this product except in compliance with the License.
+You may obtain a copy of the License at:
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed
+under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+CONDITIONS OF ANY KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations under the License.
+
+Also, please refer to each LICENSE.<component>.txt file, which is located in
+the 'license' directory of the distribution file, for the license terms of the
+components that this product depends on.
+
+-------------------------------------------------------------------------------
+	jetty-ajp-8.1.12.v20130726
+	jetty-client-8.1.12.v20130726
+	jetty-continuation-8.1.12.v20130726
+	jetty-http-8.1.12.v20130726
+	jetty-io-8.1.12.v20130726
+	jetty-jmx-8.1.12.v20130726
+	jetty-jndi-8.1.12.v20130726
+	jetty-jsp-8.1.12.v20130726
+	jetty-nested-8.1.12.v20130726
+	jetty-plus-8.1.12.v20130726
+	jetty-rewrite-8.1.12.v20130726
+	jetty-security-8.1.12.v20130726
+	jetty-server-8.1.12.v20130726
+	jetty-servlet-8.1.12.v20130726
+	jetty-start-8.1.12.v20130726
+	jetty-util-8.1.12.v20130726
+	jetty-webapp-8.1.12.v20130726
+	jetty-websocket-8.1.12.v20130726
+	jetty-xml-8.1.12.v20130726
+
+
+  * LICENSE:
+    * license/LICENSE.jetty-8.1.12.txt (Public Domain)
+  * HOMEPAGE:
+    * http://www.eclipse.org/jetty/
+
+
+This product includes the jetty-client-8.1.12.v20130726 source :
+
+  * LICENSE:
+    * license/LICENSE.jsr166y.txt (Public Domain)
+  * HOMEPAGE:
+    * http://gee.cs.oswego.edu/cgi-bin/viewcvs.cgi/jsr166/
+    * http://viewvc.jboss.org/cgi-bin/viewvc.cgi/jbosscache/experimental/jsr166/
+
+
+This product includes the jetty-continuation-8.1.12.v20130726 source :
+
+  * LICENSE:
+    * license/LICENSE.jsr166y.txt (Public Domain)
+  * HOMEPAGE:
+    * http://gee.cs.oswego.edu/cgi-bin/viewcvs.cgi/jsr166/
+    * http://viewvc.jboss.org/cgi-bin/viewvc.cgi/jbosscache/experimental/jsr166/
+
+
+This product includes the jetty-http-8.1.12.v20130726 source :
+
+  * LICENSE:
+    * license/LICENSE.jsr166y.txt (Public Domain)
+  * HOMEPAGE:
+    * http://gee.cs.oswego.edu/cgi-bin/viewcvs.cgi/jsr166/
+    * http://viewvc.jboss.org/cgi-bin/viewvc.cgi/jbosscache/experimental/jsr166/
+
+
+This product includes the jetty-io-8.1.12.v20130726 source :
+
+  * LICENSE:
+    * license/LICENSE.jsr166y.txt (Public Domain)
+  * HOMEPAGE:
+    * http://gee.cs.oswego.edu/cgi-bin/viewcvs.cgi/jsr166/
+    * http://viewvc.jboss.org/cgi-bin/viewvc.cgi/jbosscache/experimental/jsr166/
+
+
+This product includes the jetty-jmx-8.1.12.v20130726 source :
+
+  * LICENSE:
+    * license/LICENSE.jsr166y.txt (Public Domain)
+  * HOMEPAGE:
+    * http://gee.cs.oswego.edu/cgi-bin/viewcvs.cgi/jsr166/
+    * http://viewvc.jboss.org/cgi-bin/viewvc.cgi/jbosscache/experimental/jsr166/
+
+
+This product includes the jetty-jndi-8.1.12.v20130726 source :
+
+  * LICENSE:
+    * license/LICENSE.jsr166y.txt (Public Domain)
+  * HOMEPAGE:
+    * http://gee.cs.oswego.edu/cgi-bin/viewcvs.cgi/jsr166/
+    * http://viewvc.jboss.org/cgi-bin/viewvc.cgi/jbosscache/experimental/jsr166/
+
+
+This product includes the jetty-jsp-8.1.12.v20130726 source :
+
+  * LICENSE:
+    * license/LICENSE.jsr166y.txt (Public Domain)
+  * HOMEPAGE:
+    * http://gee.cs.oswego.edu/cgi-bin/viewcvs.cgi/jsr166/
+    * http://viewvc.jboss.org/cgi-bin/viewvc.cgi/jbosscache/experimental/jsr166/
+
+
+This product includes the jetty-nested-8.1.12.v20130726 source :
+
+  * LICENSE:
+    * license/LICENSE.jsr166y.txt (Public Domain)
+  * HOMEPAGE:
+    * http://gee.cs.oswego.edu/cgi-bin/viewcvs.cgi/jsr166/
+    * http://viewvc.jboss.org/cgi-bin/viewvc.cgi/jbosscache/experimental/jsr166/
+
+
+This product includes the jetty-nested-8.1.12.v20130726 source :
+
+  * LICENSE:
+    * license/LICENSE.jsr166y.txt (Public Domain)
+  * HOMEPAGE:
+    * http://gee.cs.oswego.edu/cgi-bin/viewcvs.cgi/jsr166/
+    * http://viewvc.jboss.org/cgi-bin/viewvc.cgi/jbosscache/experimental/jsr166/
+
+
+
+
+jetty-plus-8.1.12.v20130726-sources
+jetty-rewrite-8.1.12.v20130726-sources
+jetty-security-8.1.12.v20130726-sources
+jetty-server-8.1.12.v20130726-sources
+jetty-servlet-8.1.12.v20130726-sources
+jetty-start-8.1.12.v20130726-sources
+jetty-util-8.1.12.v20130726-sources
+jetty-webapp-8.1.12.v20130726-sources
+jetty-websocket-8.1.12.v20130726-sources
+jetty-xml-8.1.12.v20130726-sources
+
+
+
+com.sun.el-2.2.0.v201108011116-sources
+javax.el-2.2.0.v201108011116-sources
+javax.servlet-3.0.0.v201112011016-sources
+javax.servlet.jsp-2.2.0.v201112011158-sources
+org.apache.jasper.glassfish-2.2.2.v201112011158-sources
+org.eclipse.jdt.core-3.7.1-sources
+
+
+
+This product contains a modified version of Robert Harder's Public Domain
+Base64 Encoder and Decoder, which can be obtained at:
+
+  * LICENSE:
+    * license/LICENSE.base64.txt (Public Domain)
+  * HOMEPAGE:
+    * http://iharder.sourceforge.net/current/java/base64/
+
+This product contains a modified version of 'JZlib', a re-implementation of
+zlib in pure Java, which can be obtained at:
+
+  * LICENSE:
+    * license/LICENSE.jzlib.txt (BSD Style License)
+  * HOMEPAGE:
+    * http://www.jcraft.com/jzlib/
+
+This product optionally depends on 'Protocol Buffers', Google's data
+interchange format, which can be obtained at:
+
+  * LICENSE:
+    * license/LICENSE.protobuf.txt (New BSD License)
+  * HOMEPAGE:
+    * http://code.google.com/p/protobuf/
+
+This product optionally depends on 'SLF4J', a simple logging facade for Java,
+which can be obtained at:
+
+  * LICENSE:
+    * license/LICENSE.slf4j.txt (MIT License)
+  * HOMEPAGE:
+    * http://www.slf4j.org/
+
+This product optionally depends on 'Apache Commons Logging', a logging
+framework, which can be obtained at:
+
+  * LICENSE:
+    * license/LICENSE.commons-logging.txt (Apache License 2.0)
+  * HOMEPAGE:
+    * http://commons.apache.org/logging/
+
+This product optionally depends on 'Apache Log4J', a logging framework,
+which can be obtained at:
+
+  * LICENSE:
+    * license/LICENSE.log4j.txt (Apache License 2.0)
+  * HOMEPAGE:
+    * http://logging.apache.org/log4j/
+
+This product optionally depends on 'JBoss Logging', a logging framework,
+which can be obtained at:
+
+  * LICENSE:
+    * license/LICENSE.jboss-logging.txt (GNU LGPL 2.1)
+  * HOMEPAGE:
+    * http://anonsvn.jboss.org/repos/common/common-logging-spi/
+
+This product optionally depends on 'Apache Felix', an open source OSGi
+framework implementation, which can be obtained at:
+
+  * LICENSE:
+    * license/LICENSE.felix.txt (Apache License 2.0)
+  * HOMEPAGE:
+    * http://felix.apache.org/

@@ -20,33 +20,25 @@
 		<delete dir="${output}" failonerror="no" />
 		<mkdir dir="${output}" />
 
-		<javac srcdir="${basedir}" destdir="${output}"
-				debuglevel="lines,source"
-				source="1.3"
-				target="1.2"
-			excludes="org/eclipse/jdt/internal/compiler/tool/*,**/apt/**">
-			<compilerarg line="-Xlint:none"/>
+		<javac srcdir="${basedir}" destdir="${output}" debuglevel="lines,source" source="1.3" target="1.2" excludes="org/eclipse/jdt/internal/compiler/tool/*,**/apt/**">
+			<compilerarg line="-Xlint:none" />
 		</javac>
 
-		<javac destdir="${output}"
-				debuglevel="lines,source"
-				source="1.6"
-				target="1.6"
-				includes="org/eclipse/jdt/internal/compiler/tool/*">
-			<src path="${basedir}"/>
-			<include name="org/eclipse/jdt/internal/compiler/tool/*"/>
-			<include name="**/apt/**"/>
-			<compilerarg line="-Xlint:none"/>
+		<javac destdir="${output}" debuglevel="lines,source" source="1.6" target="1.6" includes="org/eclipse/jdt/internal/compiler/tool/*">
+			<src path="${basedir}" />
+			<include name="org/eclipse/jdt/internal/compiler/tool/*" />
+			<include name="**/apt/**" />
+			<compilerarg line="-Xlint:none" />
 		</javac>
 
 		<zip destfile="${basedir}/${jar_file}">
 			<fileset dir="${output}" />
 			<fileset dir="${basedir}">
-				<include name="about.html"/>
-				<include name="**/*.rsc"/>
-				<include name="META-INF/**"/>
-				<include name="**/*.properties"/>
-				<exclude name="META-INF/eclipse.inf"/>
+				<include name="about.html" />
+				<include name="**/*.rsc" />
+				<include name="META-INF/**" />
+				<include name="**/*.properties" />
+				<exclude name="META-INF/eclipse.inf" />
 			</fileset>
 		</zip>
 		<delete dir="${output}" />
