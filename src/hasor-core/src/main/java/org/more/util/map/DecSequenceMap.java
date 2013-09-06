@@ -18,24 +18,46 @@ import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.more.util.MergeUtils;
 /**
- * 按照顺序合并多个Map的工具，可以用来进行读写操作。
+ * 可以将多个Map合并成一个Map对象给予操作。
  * @version : 2012-2-23
  * @author 赵永春 (zyc@hasor.net)
  */
 public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
     private SimpleSet<K, T> entrySet = null;
-    /** 创建一个基本属性对象。 */
-    public DecSequenceMap() {}
-    /** 创建一个基本属性对象，如果构造该参数为空则 */
-    public DecSequenceMap(Map<K, T> entryMap) {
+    /**
+     * 创建DecSequenceMap对象。
+     * @param entryMap 如果传入一个不为空的参数则使用这个传入的Map作为第一个成员。如果传入值为空参考参数initMap的配置。
+     * @param initMap 当entryMap传入参数为空时生效。该值为true表示自动加入一个Map作为第一个元素，否则DecSequenceMap中没有任何成员。
+     */
+    public DecSequenceMap(Map<K, T> entryMap, boolean initMap) {
         if (entryMap != null)
             this.entrySet().addMap(entryMap);
+        else {
+            if (initMap)
+                this.entrySet().addMap(new HashMap<K, T>());
+        }
     }
+    /**
+     * 创建DecSequenceMap对象。
+     * @param initMap 该值为true表示自动加入一个Map作为第一个元素，否则DecSequenceMap中没有任何成员。
+     */
+    public DecSequenceMap(boolean initMap) {
+        if (initMap)
+            this.entrySet().addMap(new HashMap<K, T>());
+    }
+    /**
+     * 创建DecSequenceMap对象。initMap值为true；
+     */
+    public DecSequenceMap() {
+        this(true);
+    }
+    //
     public final SimpleSet<K, T> entrySet() {
         if (this.entrySet == null)
             this.entrySet = this.createSet();
@@ -66,12 +88,28 @@ public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
         if (entrySet().isEmpty() == false)
             entrySet().clear();
     }
-    public List<Map<K, T>> getMapList() {
+    public List<Map<K, T>> elementMapList() {
         return Collections.unmodifiableList(this.entrySet().mapList);
     };
+    /**确认K所在的Map*/
+    public Map<K, T> keyAt(K key) {
+        for (Map<K, T> e : this.elementMapList())
+            if (e.containsKey(key))
+                return e;
+        return null;
+    }
+    /**确认T所在的Map*/
+    public Map<K, T> valueAt(T value) {
+        for (Map<K, T> e : this.elementMapList())
+            if (e.containsValue(value))
+                return e;
+        return null;
+    }
+    @Override
     public T put(K key, T value) {
         return this.entrySet().mapList.get(0).put(key, value);
     }
+    @Override
     public T remove(Object key) {
         return this.entrySet().mapList.get(0).remove(key);
     }
@@ -90,12 +128,14 @@ public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
         public void removeMap(Map<K, T> newMap) {
             this.mapList.remove(newMap);
         }
+        @Override
         public Iterator<java.util.Map.Entry<K, T>> iterator() {
             Iterator<java.util.Map.Entry<K, T>> seqIter = null;
             for (Map<K, T> mapItem : this.mapList)
                 seqIter = MergeUtils.mergeIterator(seqIter, mapItem.entrySet().iterator());
             return seqIter;
         }
+        @Override
         public int size() {
             int count = 0;
             for (Map<K, T> map : mapList)

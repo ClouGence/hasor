@@ -22,23 +22,27 @@ import org.more.util.MergeUtils;
 /**
  * 提供一种栈结构的操作Map序列属性对象，利用该属性装饰器可以在属性集上增加另一个属性栈。
  * @version 2010-9-11
- * @author 赵永春 (zyc@hasor.net)
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class DecStackMap<K, T> extends DecSequenceMap<K, T> {
     /** 创建一个基本属性对象。 */
     public DecStackMap() {
-        this(null);
+        /*创建一个默认的成员*/
+        super(true);
     };
     /** 创建一个基本属性对象，参数是第一个栈对象。 */
     public DecStackMap(Map<K, T> entryMap) {
-        super(entryMap);
+        super(entryMap, true);
     };
+    @Override
     public T put(K key, T value) {
-        return this.getMapList().get(0).put(key, value);
+        return this.elementMapList().get(0).put(key, value);
     }
+    @Override
     public T remove(Object key) {
-        return this.getMapList().get(0).remove(key);
+        return this.elementMapList().get(0).remove(key);
     }
+    @Override
     protected StackSimpleSet<K, T> createSet() {
         return new StackSimpleSet<K, T>();
     };
@@ -68,12 +72,14 @@ public class DecStackMap<K, T> extends DecSequenceMap<K, T> {
         public void removeFirst() {
             this.mapList.removeFirst();
         }
+        @Override
         public Iterator<java.util.Map.Entry<K, T>> iterator() {
             Iterator<java.util.Map.Entry<K, T>> seqIter = null;
             for (Map<K, T> mapItem : this.mapList)
                 seqIter = MergeUtils.mergeIterator(seqIter, mapItem.entrySet().iterator());
             return seqIter;
         }
+        @Override
         public int size() {
             int count = 0;
             for (Map<K, T> map : mapList)
