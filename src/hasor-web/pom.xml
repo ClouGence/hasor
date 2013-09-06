@@ -8,13 +8,13 @@
 
 	<!-- Maven Info -->
 	<groupId>org.hasor</groupId>
-	<artifactId>hasor-mvc</artifactId>
+	<artifactId>hasor-web</artifactId>
 	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
 	<!-- Project Info -->
-	<name>Hasor-MVC</name>
-	<description>the Hasor Web MVC project.</description>
+	<name>Hasor-Web</name>
+	<description>the Hasor Web project.</description>
 
 	<developers>
 		<developer>

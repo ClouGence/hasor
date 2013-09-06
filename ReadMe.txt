@@ -34,6 +34,8 @@ Hasor-0.0.2.<...>-M2
         07.)整理License文件
         08.)所有Demo程序都汇总到demo-project项目中。
         09.)DecSequenceMap.java、DecStackMap.java两个类文件增加一些有用的方法。
+        10.)Hasor-Core中删除所有与Web相关的支持，这部分功能全部移动到Hasor-Web（Hasor-MVC更名而来）。
+
 
     新增：
         01.)增加jetty-all项目，该项目包含了jetty-8.1.12中所有代码。并且支持jsp，使用jetty-all可以简化Web开发环境。

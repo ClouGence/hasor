@@ -56,10 +56,6 @@ public class DefaultAppContext extends AbstractAppContext {
     private Injector           guice;
     private boolean            forceModule;
     //
-    //
-    //
-    //
-    //
     public DefaultAppContext() throws IOException {
         super();
     }

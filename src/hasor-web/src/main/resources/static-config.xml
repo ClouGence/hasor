@@ -3,7 +3,14 @@
 	<!-- 框架配置 -->
 	<hasor>
 		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
-		<loadPackages>net.hasor.mvc.*</loadPackages>
+		<loadPackages>net.hasor.mvc.*,net.hasor.servlet.*</loadPackages>
+		<!-- （仅在启动时生效）Web部分的配置 -->
+		<httpServlet>
+			<!-- Web请求遇到异常后轮询errorHook的次数。 -->
+			<errorCaseCount>1</errorCaseCount>
+			<!-- 请求响应编码设置 -->
+			<requestEncoding requestEncoding="utf-8" responseEncoding="utf-8" />
+		</httpServlet>
 	</hasor>
 	<environmentVar>
 		<!-- 资源缓存路径 -->
