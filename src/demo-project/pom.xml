@@ -94,11 +94,11 @@
 		</dependency>
 
 		<!-- Jetty Test -->
-		<dependency>
-			<groupId>org.hasor</groupId>
-			<artifactId>jetty-all</artifactId>
-			<version>0.0.1</version>
-		</dependency>
+<dependency>
+	<groupId>org.eclipse.jetty</groupId>
+	<artifactId>jetty-webapp</artifactId>
+	<version>8.1.12.v20130726</version>
+</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
