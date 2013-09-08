@@ -30,32 +30,47 @@ import org.more.util.MergeUtils;
  */
 public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
     private SimpleSet<K, T> entrySet = null;
+    //
+    //
+    /** 创建DecSequenceMap对象，根据{@link #DecSequenceMap(boolean) DecSequenceMap(true)}规则进行初始化。*/
+    public DecSequenceMap() {
+        this(true);
+    }
     /**
-     * 创建DecSequenceMap对象。
-     * @param entryMap 如果传入一个不为空的参数则使用这个传入的Map作为第一个成员。如果传入值为空参考参数initMap的配置。
-     * @param initMap 当entryMap传入参数为空时生效。该值为true表示自动加入一个Map作为第一个元素，否则DecSequenceMap中没有任何成员。
+     * 创建DecSequenceMap对象。initMap参数表示是否为序列添加一个默认的初始Map。
+     * @param initMap true表示自动加入一个初始Map作为第一个元素，否则DecSequenceMap中没有任何成员。
+     *      初始Map的创建是通过受保护的方法{@link #initMap()}方法创建。
      */
-    public DecSequenceMap(Map<K, T> entryMap, boolean initMap) {
-        if (entryMap != null)
-            this.entrySet().addMap(entryMap);
-        else {
-            if (initMap)
-                this.entrySet().addMap(new HashMap<K, T>());
+    public DecSequenceMap(boolean initMap) {
+        if (initMap) {
+            Map<K, T> initializationMap = this.initMap();
+            if (initializationMap == null)
+                throw new NullPointerException("initMap has null.");
+            this.entrySet().addMap(initializationMap);
         }
     }
     /**
      * 创建DecSequenceMap对象。
-     * @param initMap 该值为true表示自动加入一个Map作为第一个元素，否则DecSequenceMap中没有任何成员。
+     * @param entryMap 参数表示在初始化时候，将参数表示的Map对象作为默认初始Map。
+     *      如果参数为空则根据{@link #DecSequenceMap(boolean) DecSequenceMap(true)}规则进行初始化。
      */
-    public DecSequenceMap(boolean initMap) {
-        if (initMap)
-            this.entrySet().addMap(new HashMap<K, T>());
+    public DecSequenceMap(Map<K, T> entryMap) {
+        this(entryMap, true);
     }
     /**
-     * 创建DecSequenceMap对象。initMap值为true；
+     * 创建DecSequenceMap对象。使用entryMap、initMap参数同时作用初始化。
+     * @param entryMap 参数表示在初始化时候，将参数表示的Map对象作为默认初始第一个元素。
+     *      如果参数为空则根据initMap参数值来决定初始化规则。
+     * @param initMap 该值为true表示使用{@link #initMap()}方法创建一个Map作为第一个元素，否则DecSequenceMap中没有任何成员。
      */
-    public DecSequenceMap() {
-        this(true);
+    public DecSequenceMap(Map<K, T> entryMap, boolean initMap) {
+        this(initMap);
+        if (entryMap != null)
+            this.entrySet().addMap(entryMap);
+    }
+    /***/
+    protected Map<K, T> initMap() {
+        return new HashMap<K, T>();
     }
     //
     public final SimpleSet<K, T> entrySet() {
@@ -83,7 +98,7 @@ public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
     public void removeMap(Map<K, T> newMap) {
         entrySet().removeMap(newMap);
     }
-    /**删除一个map*/
+    /**删除所有已经添加的map*/
     public void removeAllMap() {
         if (entrySet().isEmpty() == false)
             entrySet().clear();

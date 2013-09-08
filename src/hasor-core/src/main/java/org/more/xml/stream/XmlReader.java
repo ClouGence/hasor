@@ -15,12 +15,13 @@
  */
 package org.more.xml.stream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import javax.xml.namespace.QName;
 import javax.xml.stream.StreamFilter;
 import javax.xml.stream.XMLInputFactory;
@@ -28,7 +29,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import org.more.util.MatchUtils;
-import org.more.util.io.input.ReaderInputStream;
 import org.more.xml.stream.TextEvent.Type;
 /**
  * <b>Level 1</b>：数据访问策略。该类的功能是将xml数据流转换成为xml事件流。并且可以在扫描xml时执行xml的忽略策略。
@@ -36,31 +36,35 @@ import org.more.xml.stream.TextEvent.Type;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class XmlReader {
-    /**默认使用编码*/
-    public final static String DefaultEncoding = "utf-8";
-    private InputStream        xmlStrema       = null;   //读取Xml数据的输入流。
-    private boolean            ignoreComment   = true;   //是否忽略Xml中的所有注释节点。
-    private boolean            ignoreSpace     = true;   //是否忽略Xml中可忽略的空格。
+    private Reader  xmlReader     = null; //读取Xml数据的输入流。
+    private boolean ignoreComment = true; //是否忽略Xml中的所有注释节点。
+    private boolean ignoreSpace   = true; //是否忽略Xml中可忽略的空格。
     //--------------------------------------------------------------------
     /**创建一个XmlReader对象用于阅读fileName参数所表述的Xml文件。*/
     public XmlReader(String fileName) throws FileNotFoundException {
-        this.xmlStrema = new FileInputStream(fileName);
+        this.xmlReader = new FileReader(fileName);
     }
     /**创建一个XmlReader对象用于阅读file参数所表述的Xml文件。*/
     public XmlReader(File file) throws FileNotFoundException {
-        this.xmlStrema = new FileInputStream(file);
+        this.xmlReader = new FileReader(file);
     }
     /**创建一个XmlReader对象用于阅读xmlStrema参数所表述的Xml文件流。*/
-    public XmlReader(InputStream xmlStrema) {
+    public XmlReader(InputStream xmlStrema) throws UnsupportedEncodingException {
         if (xmlStrema == null)
             throw new NullPointerException("InputStream类型参数为空。");
-        this.xmlStrema = xmlStrema;
+        this.xmlReader = new InputStreamReader(xmlStrema);
+    }
+    /**创建一个XmlReader对象用于阅读xmlStrema参数所表述的Xml文件流。*/
+    public XmlReader(InputStream xmlStrema, String encoding) throws UnsupportedEncodingException {
+        if (xmlStrema == null)
+            throw new NullPointerException("InputStream类型参数为空。");
+        this.xmlReader = new InputStreamReader(xmlStrema, encoding);
     }
     /**创建一个XmlReader对象用于阅读xmlStrema参数所表述的Xml文件流。*/
     public XmlReader(Reader xmlReader) {
         if (xmlReader == null)
-            throw new NullPointerException("InputStream类型参数为空。");
-        this.xmlStrema = new ReaderInputStream(xmlReader);
+            throw new NullPointerException("Reader类型参数为空。");
+        this.xmlReader = xmlReader;
     }
     //--------------------------------------------------------------------
     /**返回一个boolean值，该值表示了是否忽略在读取XML期间发现的描述节点。返回true表示忽略，false表示不忽略。*/
@@ -104,23 +108,12 @@ public class XmlReader {
      * @throws IOException 
      */
     public synchronized void reader(XmlAccept accept, String ignoreXPath) throws XMLStreamException, IOException {
-        this.reader(accept, DefaultEncoding, ignoreXPath);
-    }
-    /**
-     * 执行解析Xml文件，并且形成xml事件流。这些事件流被输入到{@link XmlAccept}类型对象中。
-     * 如果配置了ignoreXPath参数则在形成事件流时XmlReader不会发送属于这个xpath的xml事件流。
-     * @param accept 指定事件流接收对象。
-     * @param ignoreXPath 指定要忽略的XPath路径。
-     * @throws IOException 
-     */
-    public synchronized void reader(XmlAccept accept, String encoding, String ignoreXPath) throws XMLStreamException, IOException {
         if (accept == null)
             return;
         accept.beginAccept();
         //1.准备扫描的引擎。
         XMLInputFactory factory = XMLInputFactory.newInstance();
-        Reader textReader = new InputStreamReader(this.xmlStrema, encoding);
-        XMLStreamReader reader = factory.createXMLStreamReader(textReader);
+        XMLStreamReader reader = factory.createXMLStreamReader(this.xmlReader);
         StreamFilter filter = new NullStreamFilter(this, this.getXmlStreamFilter());
         reader = factory.createFilteredReader(reader, filter);
         //2.准备数据
