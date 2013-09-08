@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 import net.hasor.Hasor;
 import net.hasor.context.Environment;
 import net.hasor.context.HasorSettingListener;
+import net.hasor.context.InitContext;
 import net.hasor.context.Settings;
 import net.hasor.context.XmlProperty;
 import org.more.util.StringUtils;
@@ -45,12 +46,11 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
     /*用户通过Api添加的环境变量Map*/
     private Map<String, String> userEnvMap;
     //
-    //
-    //
-    public StandardEnvironment(Settings settings) {
-        this.settings = Hasor.assertIsNotNull(settings, "Settings type parameter is empty!");
+    public StandardEnvironment(InitContext initContext) {
+        initContext = Hasor.assertIsNotNull(initContext, "InitContext type parameter is empty!");
+        this.settings = initContext.getSettings();
         this.userEnvMap = new HashMap<String, String>();
-        settings.addSettingsListener(this);
+        initContext.addSettingsListener(this);
     }
     public Settings getSettings() {
         return this.settings;

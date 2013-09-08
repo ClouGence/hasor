@@ -29,6 +29,7 @@ import net.hasor.context.AsyncCallBackHook;
 import net.hasor.context.EventManager;
 import net.hasor.context.HasorEventListener;
 import net.hasor.context.HasorSettingListener;
+import net.hasor.context.InitContext;
 import net.hasor.context.Settings;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
@@ -47,10 +48,11 @@ public class StandardEventManager implements EventManager {
     private Map<String, LinkedList<HasorEventListener>> onceListenerMap    = new HashMap<String, LinkedList<HasorEventListener>>();
     private Lock                                        onceListenerLock   = new ReentrantLock();
     //
-    public StandardEventManager(Settings settings) {
-        this.settings = settings;
+    public StandardEventManager(InitContext initContext) {
+        initContext = Hasor.assertIsNotNull(initContext, "InitContext type parameter is empty!");
+        this.settings = initContext.getSettings();
         this.executorService = Executors.newScheduledThreadPool(1);
-        settings.addSettingsListener(new HasorSettingListener() {
+        initContext.addSettingsListener(new HasorSettingListener() {
             public void onLoadConfig(Settings newConfig) {
                 update();
             }

@@ -36,6 +36,8 @@ public interface AppContext extends InitContext, LifeCycle {
     public <T> T getInstance(Class<T> beanType);
     /**获得Guice环境。*/
     public Injector getGuice();
+    /**事件管理器。*/
+    public EventManager getEventManager();
     /**获得所有模块*/
     public ModuleInfo[] getModules();
     /**是否完成初始化工作*/

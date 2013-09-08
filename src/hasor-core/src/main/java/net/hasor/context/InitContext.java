@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.context;
+import java.net.URI;
 import java.util.Set;
 /**
  * 初始化使其的应用程序上下文
@@ -25,12 +26,19 @@ public interface InitContext {
     public Object getContext();
     /**获取系统启动时间*/
     public long getAppStartTime();
+    /**获取配置文件URI*/
+    public URI getSettingURI();
     /**获取应用程序配置。*/
     public Settings getSettings();
     /**获取环境变量操作接口。*/
     public Environment getEnvironment();
-    /**同步方式抛出事件。当方法返回时已经全部处理完成事件分发。*/
-    public EventManager getEventManager();
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
     public Set<Class<?>> getClassSet(Class<?> featureType);
+    //
+    /**添加配置文件改变事件监听器。*/
+    public void addSettingsListener(HasorSettingListener listener);
+    /**删除配置文件改变事件监听器。*/
+    public void removeSettingsListener(HasorSettingListener listener);
+    /**获得所有配置文件改变事件监听器。*/
+    public HasorSettingListener[] getSettingListeners();
 }
