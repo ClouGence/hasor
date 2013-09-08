@@ -14,22 +14,28 @@
  * limitations under the License.
  */
 package net.hasor.context.core;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 import net.hasor.Hasor;
 import net.hasor.context.Environment;
 import net.hasor.context.EventManager;
+import net.hasor.context.HasorSettingListener;
 import net.hasor.context.InitContext;
-import net.hasor.context.LifeCycle;
 import net.hasor.context.Settings;
 import net.hasor.context.environment.StandardEnvironment;
 import net.hasor.context.event.StandardEventManager;
-import net.hasor.context.setting.HasorSettings;
+import org.more.util.ResourceWatch;
+import org.more.util.ResourcesUtils;
 import org.more.util.ScanClassPath;
 import org.more.util.StringUtils;
 /**
@@ -38,33 +44,95 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class StandardInitContext implements InitContext {
-    private long                startTime;   //系统启动时间
-    private String              mainConfig;
-    private String[]            spanPackage;
-    private Settings            settings;
-    private Environment         environment;
-    private EventManager        eventManager;
-    private Map<String, Object> attributeMap;
-    private Object              context;
-    //
-    public StandardInitContext() throws IOException {
-        this("hasor-config.xml");
+    private long         startTime;   //系统启动时间
+    private Object       context;
+    private String[]     spanPackage;
+    private Settings     settings;
+    private Environment  environment;
+    private EventManager eventManager;
+    //---------------------------------------------------------------------------------Basic Method
+    public StandardInitContext() throws IOException, URISyntaxException {
+        this("hasor-config.xml", null);
     }
-    public StandardInitContext(String mainConfig) throws IOException {
-        this(mainConfig, null);
+    public StandardInitContext(String resourceSettings) throws IOException, URISyntaxException {
+        this(resourceSettings, null);
     }
-    public StandardInitContext(String mainConfig, Object context) throws IOException {
-        this.mainConfig = mainConfig;
-        this.setContext(context);
+    public StandardInitContext(String resourceSettings, Object context) throws IOException, URISyntaxException {
+        this(ResourcesUtils.getResourceAsStream(resourceSettings), context);
+        this.mainConfig = new URI(resourceSettings);
+    }
+    public StandardInitContext(InputStream inStream) throws IOException {
+        this(inStream, null);
+    }
+    public StandardInitContext(InputStream inStream, Object context) throws IOException {
+        //TODO
+        //        this.mainConfig = mainConfig;
+        //        this.setContext(context);
+        //        this.initContext();
+    }
+    public StandardInitContext(Reader reader) throws IOException {
+        this(reader, null);
+    }
+    public StandardInitContext(Reader reader, Object context) throws IOException {
+        //TODO 
+        //        this.mainConfig = mainConfig;
+        //        this.setContext(context);
+    }
+    public StandardInitContext(File fileSettings) throws IOException {
+        this(new FileInputStream(fileSettings), null);
+        this.mainConfig = fileSettings.toURI();
         this.initContext();
     }
+    public StandardInitContext(File fileSettings, Object context) throws IOException {
+        this(new FileInputStream(fileSettings), context);
+        this.mainConfig = fileSettings.toURI();
+        this.initContext();
+    }
+    //---------------------------------------------------------------------------------Basic Method
+    public long getAppStartTime() {
+        return this.startTime;
+    }
+    public Object getContext() {
+        return context;
+    }
+    /**设置上下文*/
+    public void setContext(Object context) {
+        this.context = context;
+    }
+    public Set<Class<?>> getClassSet(Class<?> featureType) {
+        return ScanClassPath.getClassSet(this.spanPackage, featureType);
+    }
+    //
+    /**创建{@link Settings}接口对象*/
+    protected Settings createSettings() throws IOException {
+        return new HasorSettings(this.getMainConfig());
+    }
+    /**创建{@link Environment}接口对象*/
+    protected Environment createEnvironment() {
+        return new StandardEnvironment(this);
+    }
+    /**创建{@link EventManager}接口对象*/
+    protected EventManager createEventManager() {
+        return new StandardEventManager(this);
+    }
+    //
+    public Settings getSettings() {
+        return this.settings;
+    }
+    public Environment getEnvironment() {
+        return this.environment;
+    }
+    public EventManager getEventManager() {
+        return this.eventManager;
+    }
+    //
     /**初始化方法*/
     protected void initContext() throws IOException {
         this.startTime = System.currentTimeMillis();
-        this.attributeMap = this.createAttributeMap();
         this.settings = this.createSettings();
         this.environment = this.createEnvironment();
         this.eventManager = this.createEventManager();
+        this.settingListenerList = new ArrayList<HasorSettingListener>();
         //
         String[] spanPackages = this.getSettings().getStringArray("hasor.loadPackages");
         ArrayList<String> allPack = new ArrayList<String>();
@@ -87,57 +155,81 @@ public class StandardInitContext implements InitContext {
         this.spanPackage = allPack.toArray(new String[allPack.size()]);
         Hasor.info("loadPackages : " + Hasor.logString(this.spanPackage));
         //
-        ((LifeCycle) this.settings).start();
+        this.mainConfigWatch = new InitContextResourceWatch(this);
+        this.loadSettings();
+        this.mainConfigWatch.start();
     }
-    /**创建{@link Settings}接口对象*/
-    protected Settings createSettings() throws IOException {
-        return new HasorSettings(this.getMainConfig());
+    //-------------------------------------------------------------------------HasorSettingListener
+    private InitContextResourceWatch   mainConfigWatch     = null;
+    private List<HasorSettingListener> settingListenerList = null;
+    /**触发配置文件重载事件。*/
+    protected void onSettingChangeEvent() {
+        for (HasorSettingListener listener : this.settingListenerList)
+            listener.onLoadConfig(this.getSettings());
     }
-    /**创建{@link Environment}接口对象*/
-    protected Environment createEnvironment() {
-        return new StandardEnvironment(this.getSettings());
+    /**添加配置文件变更监听器。*/
+    public void addSettingsListener(HasorSettingListener settingsListener) {
+        if (this.settingListenerList.contains(settingsListener) == false)
+            this.settingListenerList.add(settingsListener);
     }
-    /**创建{@link EventManager}接口对象*/
-    protected EventManager createEventManager() {
-        return new StandardEventManager(this.getSettings());
+    /**删除配置文件监听器。*/
+    public void removeSettingsListener(HasorSettingListener settingsListener) {
+        if (this.settingListenerList.contains(settingsListener) == true)
+            this.settingListenerList.remove(settingsListener);
     }
-    /**创建属性容器*/
-    protected Map<String, Object> createAttributeMap() {
-        return new HashMap<String, Object>();
+    public HasorSettingListener[] getSettingListeners() {
+        return this.settingListenerList.toArray(new HasorSettingListener[this.settingListenerList.size()]);
     }
-    //
-    public long getAppStartTime() {
-        return this.startTime;
-    }
-    public Object getContext() {
-        return context;
-    }
+    //--------------------------------------------------------------------------------Config Loader
+    private URI mainConfig;
     /**获取主配置文件*/
-    public String getMainConfig() {
+    public URI getSettingURI() {
         return mainConfig;
     }
-    /**设置上下文*/
-    public void setContext(Object context) {
-        this.context = context;
+    private void loadSettings() {
+        // TODO Auto-generated method stub
+        s
     }
-    public Settings getSettings() {
-        return this.settings;
-    }
-    public Environment getEnvironment() {
-        return this.environment;
-    }
-    public EventManager getEventManager() {
-        return this.eventManager;
-    }
-    /**获取属性接口*/
-    public Map<String, Object> getAttributeMap() {
-        return attributeMap;
-    }
-    public Set<Class<?>> getClassSet(Class<?> featureType) {
-        return ScanClassPath.getClassSet(this.spanPackage, featureType);
-    }
-    protected void finalize() throws Throwable {
-        ((LifeCycle) this.settings).stop();
+    public void destroy() throws Throwable {
+        this.mainConfigWatch.stop();
         super.finalize();
+    }
+}
+class InitContextResourceWatch extends ResourceWatch {
+    private StandardInitContext initContext = null;
+    //
+    public InitContextResourceWatch(StandardInitContext initContext) {
+        this.initContext = initContext;
+    }
+    public void firstStart(URI resourceURI) throws IOException {}
+    /**当配置文件被检测到有修改迹象时，调用刷新进行重载。*/
+    public final void onChange(URI resourceURI) throws IOException {
+        this.initContext.getSettings().refresh();
+        this.initContext.onSettingChangeEvent();
+    }
+    /**检测主配置文件是否被修改*/
+    public long lastModify(URI resourceURI) throws IOException {
+        if ("file".equals(resourceURI.getScheme()) == true)
+            return new File(resourceURI).lastModified();
+        return 0;
+    }
+    @Override
+    public synchronized void start() {
+        this.setName("MasterConfiguration-Watch");
+        Hasor.warning("settings Watch started thread name is %s.", this.getName());
+        this.setDaemon(true);
+        URI mainConfig = this.initContext.getSettingURI();
+        //2.启动监听器
+        try {
+            if (mainConfig == null) {
+                Hasor.warning("do not loading master settings file.");
+                return;
+            }
+            this.setResourceURI(this.initContext.getSettingURI());
+        } catch (Exception e) {
+            Hasor.error("settings Watch start error, on : %s Settings file !%s", mainConfig, e);
+        }
+        //
+        super.start();
     }
 }

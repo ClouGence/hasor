@@ -109,7 +109,7 @@ public class InputStreamSettings extends AbstractIOSettings {
     protected Map<String, Map<String, Object>> getNamespaceSettingMap() {
         return namespaceSettingsMap;
     }
-    protected Map<String, Object> getSettingsMap() {
+    protected DecSequenceMap<String, Object> getSettingsMap() {
         return mergeSettingsMap;
     }
     protected synchronized XmlParserKitManager getXmlParserKitManager(Map<String, Map<String, Object>> loadTo) throws IOException {
