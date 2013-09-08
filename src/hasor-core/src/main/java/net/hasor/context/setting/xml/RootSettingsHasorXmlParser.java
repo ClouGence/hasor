@@ -24,7 +24,7 @@ import java.util.Map.Entry;
 import javax.xml.stream.XMLStreamException;
 import net.hasor.context.Settings;
 import net.hasor.context.XmlProperty;
-import net.hasor.context.setting.HasorXmlParser;
+import net.hasor.context.setting.SettingsXmlParser;
 import org.more.xml.XmlStackDecorator;
 import org.more.xml.stream.AttributeEvent;
 import org.more.xml.stream.EndElementEvent;
@@ -36,7 +36,7 @@ import org.more.xml.stream.XmlStreamEvent;
  * @version : 2013-4-22
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-public class RootSettingsHasorXmlParser implements HasorXmlParser {
+public class RootSettingsHasorXmlParser implements SettingsXmlParser {
     private StringBuffer    xmlText           = null;
     private XmlPropertyImpl currentXmlPropert = null;
     //

@@ -15,8 +15,10 @@
  */
 package net.hasor.context.setting;
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Array;
+import java.text.DateFormat;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
@@ -31,13 +33,11 @@ import org.more.util.StringUtils;
  * @version : 2013-4-2
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class AbstractHasorSettings implements Settings {
-    /**获取配置项Map*/
-    protected abstract Map<String, Object> getSettingMap();
+public abstract class AbstractSettings implements Settings {
+    //
+    protected abstract Map<String, Object> getSettingsMap();
     /**获取指在某个特定命名空间下的Settings接口对象。*/
-    public abstract AbstractHasorSettings getNamespace(String namespace);
-    /**将指定的配置文件作为主配置文件载入。*/
-    public abstract void load(String mainConfig) throws IOException;
+    public abstract AbstractSettings getNamespace(String namespace);
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类）*/
     public Set<Class<?>> getClassSet(Class<?> featureType, String[] loadPackages) {
         if (featureType == null)
@@ -56,7 +56,7 @@ public abstract class AbstractHasorSettings implements Settings {
     }
     /**解析全局配置参数，并且返回toType参数指定的类型。*/
     public final <T> T getToType(String name, Class<T> toType, T defaultValue) {
-        Object oriObject = this.getSettingMap().get(StringUtils.isBlank(name) ? "" : name.toLowerCase());
+        Object oriObject = this.getSettingsMap().get(StringUtils.isBlank(name) ? "" : name.toLowerCase());
         if (oriObject == null)
             return defaultValue;
         //
@@ -222,14 +222,77 @@ public abstract class AbstractHasorSettings implements Settings {
     public Date getDate(String name, long defaultValue) {
         return this.getToType(name, Date.class, new Date(defaultValue));
     };
+    /**解析全局配置参数，并且返回其{@link Date}形式对象。*/
+    public Date getDate(String name, String format) {
+        return this.getDate(name, format, null);
+    };
+    /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
+    public Date getDate(String name, String format, Date defaultValue) {
+        String oriData = this.getToType(name, String.class);
+        if (oriData == null || oriData.length() == 0)
+            return defaultValue;
+        //
+        DateFormat dateFormat = new SimpleDateFormat(format);
+        ParsePosition pos = new ParsePosition(0);
+        dateFormat.setLenient(false);
+        Date parsedDate = dateFormat.parse(oriData, pos); // ignore the result (use the Calendar)
+        if (pos.getErrorIndex() >= 0 || pos.getIndex() != oriData.length() || parsedDate == null)
+            return defaultValue;
+        else
+            return parsedDate;
+    };
+    /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
+    public Date getDate(String name, String format, long defaultValue) {
+        return this.getDate(name, format, new Date(defaultValue));
+    };
     public Date[] getDateArray(String name) {
-        return this.getToTypeArray(name, Date.class);
+        return this.getDateArray(name, null, (Date) null);
     }
     public Date[] getDateArray(String name, Date defaultValue) {
-        return this.getToTypeArray(name, Date.class, defaultValue);
+        if (defaultValue == null)
+            return this.getDateArray(name, null, (Date) null);
+        else
+            return this.getDateArray(name, null, defaultValue);
     }
     public Date[] getDateArray(String name, long defaultValue) {
-        return this.getToTypeArray(name, Date.class, new Date(defaultValue));
+        return this.getDateArray(name, null, defaultValue);
+    }
+    public Date[] getDateArray(String name, String format) {
+        return this.getDateArray(name, format, null);
+    }
+    public Date[] getDateArray(String name, String format, Date defaultValue) {
+        String[] oriDataArray = this.getToTypeArray(name, String.class);
+        if (oriDataArray == null || oriDataArray.length == 0)
+            return null;
+        //
+        DateFormat dateFormat = new SimpleDateFormat(format);
+        dateFormat.setLenient(false);
+        Date[] parsedDate = new Date[oriDataArray.length];
+        for (int i = 0; i < oriDataArray.length; i++) {
+            String oriData = oriDataArray[i];
+            ParsePosition pos = new ParsePosition(0);
+            parsedDate[i] = dateFormat.parse(oriData, pos); // ignore the result (use the Calendar)
+            if (pos.getErrorIndex() >= 0 || pos.getIndex() != oriData.length() || parsedDate[i] == null)
+                parsedDate[i] = (defaultValue == null) ? null : new Date(defaultValue.getTime());
+        }
+        return parsedDate;
+    }
+    public Date[] getDateArray(String name, String format, long defaultValue) {
+        String[] oriDataArray = this.getToTypeArray(name, String.class);
+        if (oriDataArray == null || oriDataArray.length == 0)
+            return null;
+        //
+        DateFormat dateFormat = new SimpleDateFormat(format);
+        dateFormat.setLenient(false);
+        Date[] parsedDate = new Date[oriDataArray.length];
+        for (int i = 0; i < oriDataArray.length; i++) {
+            String oriData = oriDataArray[i];
+            ParsePosition pos = new ParsePosition(0);
+            parsedDate[i] = dateFormat.parse(oriData, pos); // ignore the result (use the Calendar)
+            if (pos.getErrorIndex() >= 0 || pos.getIndex() != oriData.length() || parsedDate[i] == null)
+                parsedDate[i] = new Date(defaultValue);
+        }
+        return parsedDate;
     }
     /**解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。*/
     public <T extends Enum<?>> T getEnum(String name, Class<T> enmType) {

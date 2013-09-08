@@ -32,14 +32,9 @@ public interface Settings {
     public String[] getNamespaceArray();
     /**获取指在某个特定命名空间下的Settings接口对象。*/
     public Settings getNamespace(String namespace);
-    /**强制重新装载配置文件，该方法会引发配置文件重载事件。*/
+    /**强制重新装载配置文件。*/
     public void refresh() throws IOException;
-    /**添加配置文件改变事件监听器。*/
-    public void addSettingsListener(HasorSettingListener listener);
-    /**删除配置文件改变事件监听器。*/
-    public void removeSettingsListener(HasorSettingListener listener);
-    /**获得所有配置文件改变事件监听器。*/
-    public HasorSettingListener[] getSettingListeners();
+    //
     /**解析全局配置参数，并且返回其{@link Character}形式对象。*/
     public Character getChar(String name);
     /**解析全局配置参数，并且返回其{@link Character}形式对象。第二个参数为默认值。*/
@@ -78,6 +73,12 @@ public interface Settings {
     public Date getDate(String name, Date defaultValue);
     /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
     public Date getDate(String name, long defaultValue);
+    /**解析全局配置参数，并且返回其{@link Date}形式对象。*/
+    public Date getDate(String name, String format);
+    /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
+    public Date getDate(String name, String format, Date defaultValue);
+    /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
+    public Date getDate(String name, String format, long defaultValue);
     /**解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。*/
     public <T extends Enum<?>> T getEnum(String name, Class<T> enmType);
     /**解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。*/
@@ -131,6 +132,12 @@ public interface Settings {
     public Date[] getDateArray(String name, Date defaultValue);
     /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
     public Date[] getDateArray(String name, long defaultValue);
+    /**解析全局配置参数，并且返回其{@link Date}形式对象。*/
+    public Date[] getDateArray(String name, String format);
+    /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
+    public Date[] getDateArray(String name, String format, Date defaultValue);
+    /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
+    public Date[] getDateArray(String name, String format, long defaultValue);
     /**解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。*/
     public <T extends Enum<?>> T[] getEnumArray(String name, Class<T> enmType);
     /**解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。*/

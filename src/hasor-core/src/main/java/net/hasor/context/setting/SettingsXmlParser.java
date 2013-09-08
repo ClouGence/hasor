@@ -25,7 +25,7 @@ import org.more.xml.stream.XmlStreamEvent;
  * @version : 2013-7-13
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface HasorXmlParser {
+public interface SettingsXmlParser {
     /**每当开始解析一个Xml文件时调用。*/
     public void beginAccept(Settings context, Map<String, Object> dataContainer);
     /**当xml文件解析完毕时调用。*/
