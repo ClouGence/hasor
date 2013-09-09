@@ -18,7 +18,7 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import net.hasor.context.AppContext;
+import net.hasor.core.AppContext;
 import net.hasor.servlet.WebErrorHook;
 import com.google.inject.Key;
 import com.google.inject.Provider;

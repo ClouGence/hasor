@@ -16,7 +16,7 @@
 package net.hasor.servlet.binder;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSessionListener;
-import net.hasor.context.AppContext;
+import net.hasor.core.AppContext;
 /**
  * 
  * @version : 2013-4-17

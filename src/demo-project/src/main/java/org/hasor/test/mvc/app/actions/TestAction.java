@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.test.mvc.app.actions;
-import net.hasor.context.AppContext;
+import net.hasor.core.AppContext;
 import net.hasor.mvc.controller.Controller;
 import net.hasor.mvc.controller.HeaderParam;
 import net.hasor.mvc.controller.InjectParam;

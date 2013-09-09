@@ -19,7 +19,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.hasor.context.AppContext;
+import net.hasor.core.AppContext;
 /**
  * An internal dispatcher for guice-servlet registered servlets and filters.
  * By default, we assume a Guice 1.0 style servlet module is in play. In other

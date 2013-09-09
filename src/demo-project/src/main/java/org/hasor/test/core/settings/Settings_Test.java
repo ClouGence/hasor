@@ -21,11 +21,11 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import javax.xml.stream.XMLStreamException;
 import net.hasor.Hasor;
-import net.hasor.context.setting.FileSettings;
-import net.hasor.context.setting.InitContextSettings;
-import net.hasor.context.setting.InputStreamSettings;
-import net.hasor.context.setting.MappingInitContextSettings;
-import net.hasor.context.setting.ReaderSettings;
+import net.hasor.core.setting.FileSettings;
+import net.hasor.core.setting.InitContextSettings;
+import net.hasor.core.setting.InputStreamSettings;
+import net.hasor.core.setting.MappingInitContextSettings;
+import net.hasor.core.setting.ReaderSettings;
 import org.junit.Test;
 import org.more.util.ResourcesUtils;
 /**

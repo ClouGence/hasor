@@ -16,8 +16,8 @@
 package net.hasor.mvc.resource.support;
 import java.util.ArrayList;
 import java.util.HashSet;
-import net.hasor.context.Settings;
-import net.hasor.context.XmlProperty;
+import net.hasor.core.Settings;
+import net.hasor.core.XmlProperty;
 import org.more.util.StringUtils;
 /**
  * ≈‰÷√–≈œ¢

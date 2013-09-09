@@ -16,7 +16,7 @@
 package net.hasor.mvc.controller.support;
 import java.util.ArrayList;
 import java.util.List;
-import net.hasor.context.AppContext;
+import net.hasor.core.AppContext;
 import com.google.inject.Binding;
 import com.google.inject.TypeLiteral;
 /** 

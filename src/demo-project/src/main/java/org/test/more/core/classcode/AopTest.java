@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.test.more.core.classcode;
-import java.io.FileOutputStream;
 import java.lang.annotation.Annotation;
 import org.junit.Test;
 import org.more.classcode.AopBeforeListener;

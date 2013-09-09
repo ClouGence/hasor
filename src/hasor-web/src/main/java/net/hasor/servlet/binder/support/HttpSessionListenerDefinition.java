@@ -16,7 +16,7 @@
 package net.hasor.servlet.binder.support;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-import net.hasor.context.AppContext;
+import net.hasor.core.AppContext;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;

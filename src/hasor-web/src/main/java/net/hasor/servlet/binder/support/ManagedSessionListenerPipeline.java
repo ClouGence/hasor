@@ -19,7 +19,7 @@ import java.util.List;
 import javax.inject.Singleton;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpSessionEvent;
-import net.hasor.context.AppContext;
+import net.hasor.core.AppContext;
 import net.hasor.servlet.binder.SessionListenerPipeline;
 import com.google.inject.Binding;
 import com.google.inject.Injector;

@@ -25,7 +25,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.Hasor;
-import net.hasor.context.AppContext;
+import net.hasor.core.AppContext;
 import net.hasor.servlet.binder.FilterPipeline;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

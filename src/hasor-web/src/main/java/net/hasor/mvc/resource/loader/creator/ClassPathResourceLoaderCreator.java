@@ -16,8 +16,8 @@
 package net.hasor.mvc.resource.loader.creator;
 import java.io.IOException;
 import net.hasor.Hasor;
-import net.hasor.context.AppContext;
-import net.hasor.context.XmlProperty;
+import net.hasor.core.AppContext;
+import net.hasor.core.XmlProperty;
 import net.hasor.mvc.resource.ResourceLoader;
 import net.hasor.mvc.resource.ResourceLoaderCreator;
 import net.hasor.mvc.resource.ResourceLoaderDefine;

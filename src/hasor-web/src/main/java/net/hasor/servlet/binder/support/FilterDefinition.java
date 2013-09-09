@@ -25,7 +25,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import net.hasor.context.AppContext;
+import net.hasor.core.AppContext;
 import org.more.util.Iterators;
 import com.google.inject.Key;
 import com.google.inject.Provider;

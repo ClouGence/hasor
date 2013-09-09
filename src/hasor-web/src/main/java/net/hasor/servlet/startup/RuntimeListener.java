@@ -21,8 +21,8 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import net.hasor.Hasor;
-import net.hasor.context.AppContext;
-import net.hasor.context.core.AbstractAppContext;
+import net.hasor.core.AppContext;
+import net.hasor.core.context.app.AbstractAppContext;
 import net.hasor.servlet.binder.SessionListenerPipeline;
 import net.hasor.servlet.context.AnnoWebAppContext;
 /**

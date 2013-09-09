@@ -28,7 +28,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
-import net.hasor.context.AppContext;
+import net.hasor.core.AppContext;
 import net.hasor.mvc.controller.support.ActionSettings.ActionWorkMode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

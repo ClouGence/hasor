@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.servlet;
-import net.hasor.context.ApiBinder;
-import net.hasor.context.module.AbstractHasorModule;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.module.AbstractHasorModule;
 /**
  * 
  * @version : 2013-7-16

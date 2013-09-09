@@ -77,15 +77,15 @@
 		<!-- MVC -->
 		<dependency>
 			<groupId>org.hasor</groupId>
-			<artifactId>hasor-mvc</artifactId>
+			<artifactId>hasor-web</artifactId>
 			<version>0.0.1</version>
 		</dependency>
 		<!-- Freemarker -->
-		<dependency>
-			<groupId>org.hasor</groupId>
-			<artifactId>hasor-freemarker</artifactId>
-			<version>0.0.1</version>
-		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.hasor</groupId> -->
+		<!-- <artifactId>hasor-freemarker</artifactId> -->
+		<!-- <version>0.0.1</version> -->
+		<!-- </dependency> -->
 		<!-- Log -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -94,11 +94,11 @@
 		</dependency>
 
 		<!-- Jetty Test -->
-<dependency>
-	<groupId>org.eclipse.jetty</groupId>
-	<artifactId>jetty-webapp</artifactId>
-	<version>8.1.12.v20130726</version>
-</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>8.1.12.v20130726</version>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

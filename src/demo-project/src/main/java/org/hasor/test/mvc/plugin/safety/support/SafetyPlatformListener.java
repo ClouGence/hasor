@@ -1,9 +1,9 @@
 package org.hasor.test.mvc.plugin.safety.support;
 import java.lang.reflect.Method;
-import net.hasor.context.ApiBinder;
-import net.hasor.context.ModuleSettings;
-import net.hasor.context.anno.DefineModule;
-import net.hasor.context.module.AbstractHasorModule;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.ModuleSettings;
+import net.hasor.core.anno.DefineModule;
+import net.hasor.core.module.AbstractHasorModule;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.hasor.test.mvc.plugin.safety.Power;

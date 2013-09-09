@@ -16,11 +16,11 @@
 package org.hasor.test.core.settings;
 import java.io.IOException;
 import javax.inject.Inject;
-import net.hasor.context.AppContext;
-import net.hasor.context.HasorEventListener;
-import net.hasor.context.HasorSettingListener;
-import net.hasor.context.Settings;
-import net.hasor.context.anno.SettingsListener;
+import net.hasor.core.AppContext;
+import net.hasor.core.HasorEventListener;
+import net.hasor.core.HasorSettingListener;
+import net.hasor.core.Settings;
+import net.hasor.core.anno.SettingsListener;
 import org.hasor.test.AbstractTestContext;
 import org.junit.Test;
 /**

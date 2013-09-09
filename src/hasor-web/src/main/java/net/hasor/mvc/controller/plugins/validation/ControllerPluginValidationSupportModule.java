@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.mvc.controller.plugins.validation;
-import net.hasor.context.ModuleSettings;
-import net.hasor.context.anno.DefineModule;
+import net.hasor.core.ModuleSettings;
+import net.hasor.core.anno.DefineModule;
 import net.hasor.mvc.controller.support.ServletControllerSupportModule;
 import net.hasor.servlet.AbstractWebHasorModule;
 import net.hasor.servlet.WebApiBinder;

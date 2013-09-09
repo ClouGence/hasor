@@ -16,7 +16,7 @@
 package net.hasor.mvc.controller.support;
 import java.util.ArrayList;
 import java.util.List;
-import net.hasor.context.Settings;
+import net.hasor.core.Settings;
 import org.more.util.StringUtils;
 /**
  * 

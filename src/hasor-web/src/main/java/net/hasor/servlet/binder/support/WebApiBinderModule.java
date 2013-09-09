@@ -16,9 +16,9 @@
 package net.hasor.servlet.binder.support;
 import java.util.ArrayList;
 import java.util.List;
-import net.hasor.context.InitContext;
-import net.hasor.context.ModuleInfo;
-import net.hasor.context.binder.ApiBinderModule;
+import net.hasor.core.InitContext;
+import net.hasor.core.ModuleInfo;
+import net.hasor.core.binder.ApiBinderModule;
 import net.hasor.servlet.WebApiBinder;
 import com.google.inject.Binder;
 /**

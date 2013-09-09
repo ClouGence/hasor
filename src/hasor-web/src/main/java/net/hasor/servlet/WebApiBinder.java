@@ -19,7 +19,7 @@ import javax.servlet.Filter;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
-import net.hasor.context.ApiBinder;
+import net.hasor.core.ApiBinder;
 import com.google.inject.Binder;
 import com.google.inject.Key;
 /**

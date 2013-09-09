@@ -19,7 +19,7 @@ import java.lang.annotation.Annotation;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.hasor.context.AppContext;
+import net.hasor.core.AppContext;
 import net.hasor.mvc.controller.plugins.result.ControllerResultProcess;
 /**
  * 

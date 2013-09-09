@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.hasor.context.AppContext;
+import net.hasor.core.AppContext;
 /** 
  * 命名空间管理器。相同的action命名空间下的action方法，可以定义在不同的控制器下。
  * @version : 2013-4-20

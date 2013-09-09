@@ -15,7 +15,7 @@
  */
 package net.hasor.mvc.controller;
 import java.lang.reflect.Method;
-import net.hasor.context.AppContext;
+import net.hasor.core.AppContext;
 /**
  * Action∂®“Â
  * @version : 2013-8-12

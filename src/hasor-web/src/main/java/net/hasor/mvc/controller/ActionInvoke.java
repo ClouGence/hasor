@@ -17,7 +17,7 @@ package net.hasor.mvc.controller;
 import java.lang.reflect.InvocationTargetException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.hasor.context.AppContext;
+import net.hasor.core.AppContext;
 /**
  * 用于调用Action的接口
  * @version : 2013-8-12

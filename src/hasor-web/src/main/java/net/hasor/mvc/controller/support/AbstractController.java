@@ -20,7 +20,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import net.hasor.context.AppContext;
+import net.hasor.core.AppContext;
 /**
  * 
  * @version : 2013-8-14

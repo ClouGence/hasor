@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.mvc.resource.support;
-import net.hasor.context.AppContext;
+import net.hasor.core.AppContext;
 import net.hasor.mvc.resource.ResourceLoaderCreator;
 import com.google.inject.Provider;
 /**

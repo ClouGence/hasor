@@ -28,7 +28,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import net.hasor.context.AppContext;
+import net.hasor.core.AppContext;
 import com.google.inject.Inject;
 /**
  * action功能的入口。

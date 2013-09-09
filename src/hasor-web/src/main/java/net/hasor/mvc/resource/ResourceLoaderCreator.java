@@ -15,8 +15,8 @@
  */
 package net.hasor.mvc.resource;
 import java.io.IOException;
-import net.hasor.context.AppContext;
-import net.hasor.context.XmlProperty;
+import net.hasor.core.AppContext;
+import net.hasor.core.XmlProperty;
 /**
  * 
  * @version : 2013-5-22

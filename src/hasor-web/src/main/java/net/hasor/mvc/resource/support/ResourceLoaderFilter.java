@@ -37,7 +37,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import net.hasor.Hasor;
-import net.hasor.context.AppContext;
+import net.hasor.core.AppContext;
 import net.hasor.mvc.resource.ResourceLoader;
 import net.hasor.mvc.resource.ResourceLoaderCreator;
 import net.hasor.mvc.resource.support.ResourceSettings.LoaderConfig;
