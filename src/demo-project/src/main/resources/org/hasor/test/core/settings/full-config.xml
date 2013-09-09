@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://project.hasor.net/hasor/schema/main">
+	<!-- 框架配置 -->
+	<hasor>
+		<!-- （该配置在重载配置文件之后不会影响已有结果） -->
+		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
+		<loadPackages>net.hasor.context.*,net.hasor.mvc.*,net.hasor.servlet.*</loadPackages>
+		<!-- 执行事件的线程池大小，注意：已经被安排Timer执行的事件，是不受生效之后的池大小限制的 -->
+		<eventThreadPoolSize>20</eventThreadPoolSize>
+		<!-- 是否强迫所有模块都必须正常启动 -->
+		<forceModule>false</forceModule>
+	</hasor>
+	<!-- 工作空间设置 -->
+	<environmentVar>
+		<!-- 程序工作空间基础目录 -->
+		<HASOR_WORK_HOME>./work</HASOR_WORK_HOME>
+		<!-- 临时文件位置 -->
+		<HASOR_TEMP_PATH>%HASOR_WORK_HOME%/temp</HASOR_TEMP_PATH>
+		<!-- 日志存放位置 -->
+		<HASOR_LOG_PATH>%HASOR_WORK_HOME%/cache</HASOR_LOG_PATH>
+		<!-- 插件目录 -->
+		<HASOR_PLUGIN_PATH>%HASOR_WORK_HOME%/plugins</HASOR_PLUGIN_PATH>
+		<!-- 模块配置目录 -->
+		<HASOR_PLUGIN_SETTINGS>%HASOR_WORK_HOME%/settings</HASOR_PLUGIN_SETTINGS>
+		<!-- 资源缓存路径 -->
+		<HTTP_CACHE_PATH>%HASOR_WORK_HOME%/cache/httpservlet.resourceloader.classpath</HTTP_CACHE_PATH>
+	</environmentVar>
+
+	<!-- Hasor MVC，不支持跟随配置文件动态更新配置。 -->
+	<hasor-mvc>
+		<!-- （仅在启动时生效）Web部分的配置 -->
+		<httpServlet>
+			<!-- Web请求遇到异常后轮询errorHook的次数。 -->
+			<errorCaseCount>2</errorCaseCount>
+			<!-- 请求响应编码设置 -->
+			<requestEncoding requestEncoding="utf-8" responseEncoding="utf-8" />
+		</httpServlet>
+		<!-- Action配置，defaultProduces 默认响应类型 ;模式：mode:RestOnly（rest风格）、ServletOnly（中央servlet）、Both（两者同时使用） -->
+		<actionServlet workMode="Both" intercept="*.do" defaultProduces="*/*">
+			<!-- 方法忽略的方法（逗号分割多组方法名），注意：在这里配置的忽略会应用到所有action上（支持重复配置共同生效） -->
+			<ignoreMethod>equals,hashCode,toString,getClass,wait,notify,notifyAll</ignoreMethod>
+		</actionServlet>
+		<!-- 资源装载器 -->
+		<resourceLoader enable="false" contentTypes="js,css,gif,ico,jpg,jpeg,png,swf,swc,flv,mp3,wav,avi">
+			<!-- <zipLoader>{HASOR_WEBROOT}/pic.zip</zipLoader> -->
+			<!-- **需要配置，否则会导致资源装载器反复尝试从loader中装载** -->
+			<pathLoader>%HASOR_WEBROOT%/</pathLoader>
+			<classpathLoader>/META-INF/webapp</classpathLoader>
+		</resourceLoader>
+	</hasor-mvc>
+</config>

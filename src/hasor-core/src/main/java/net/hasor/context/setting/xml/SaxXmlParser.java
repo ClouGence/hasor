@@ -29,12 +29,12 @@ import org.xml.sax.helpers.DefaultHandler;
  * @version : 2013-7-13
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-class NoeXmlParser extends DefaultHandler {
+public class SaxXmlParser extends DefaultHandler {
     private Map<String, Map<String, Object>> dataContainer     = null;
     private Map<String, StringBuffer>        xmlText           = new HashMap<String, StringBuffer>();
     private Map<String, DefaultXmlProperty>  currentXmlPropert = new HashMap<String, DefaultXmlProperty>();
     //
-    public NoeXmlParser(Map<String, Map<String, Object>> dataContainer) {
+    public SaxXmlParser(Map<String, Map<String, Object>> dataContainer) {
         this.dataContainer = dataContainer;
     }
     private StringBuffer getText(String xmlns) {

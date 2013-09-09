@@ -147,6 +147,17 @@ public abstract class AbstractIOSettings extends AbstractSettings implements IOS
     }
     /**分别保存每个命名空间下的配置信息Map*/
     protected abstract Map<String, Map<String, Object>> getNamespaceSettingMap();
+    //    /**loadConfig装载配置*/
+    //    private void loadConfig(URI configURI, Map<String, Map<String, Object>> loadTo) throws IOException, ParserConfigurationException, SAXException {
+    //        InputStream xmlStream = ResourcesUtils.getResourceAsStream(configURI);
+    //        SAXParserFactory factory = SAXParserFactory.newInstance();
+    //        factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+    //        factory.setFeature("http://xml.org/sax/features/namespaces", true);
+    //        SAXParser parser = factory.newSAXParser();
+    //        SaxXmlParser handler = new SaxXmlParser(loadTo);
+    //        parser.parse(xmlStream, handler);
+    //        xmlStream.close();
+    //    }
 }
 /***/
 class InternalHasorXmlParserPropxy implements XmlNamespaceParser {
