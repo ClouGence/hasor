@@ -27,15 +27,17 @@ Hasor-0.0.2.<...>-M2
     调整：
         01.)ResourcesUtils工具类中，类扫描代码优化。
         02.)@Module注解，更名为@DefineModule。注解可以标记在com.google.inject.Module接口上以定义一个Guice模块。
-        03.)删除Timer残余的类。
-        04.)删除EventManager接口中获取事件对象的一些方法，事件管理器不在提供这类功能。
-        05.)LifeCycle枚举中定义的阶段事件转而在DefaultAppContext类中定义。
-        06.)所有包都被移动到net.hasor下。
-        07.)整理License文件
-        08.)所有Demo程序都汇总到demo-project项目中。
-        09.)DecSequenceMap.java、DecStackMap.java两个类文件增加一些有用的方法。
-        10.)Hasor-Core中删除所有与Web相关的支持，这部分功能全部移动到Hasor-Web（Hasor-MVC更名而来）。
-
+        03.)EventManager接口以及实现类优化，删除Timer残余的类。
+        04.)包空间整理，所有包都被移动到net.hasor下。
+        05.)整理License文件
+        06.)所有Demo程序都汇总到demo-project项目中。
+        07.)DecSequenceMap.java、DecStackMap.java两个类文件增加一些有用的方法。
+        08.)重构Settings部分先设InputStreamSettings、FileSettings、ReaderSettings、InitContextSettings、MappingInitContextSettings可用的类。
+        	config-mapping.properties属性文件的解析不在是必须的。
+        09.)Hasor-Core中删除所有与Web相关的支持，这部分功能全部移动到Hasor-Web（Hasor-MVC更名而来）。
+        
+        
+        04.)LifeCycle枚举中定义的阶段事件转而在DefaultAppContext类中定义。
 
     新增：
         01.)增加jetty-all项目，该项目包含了jetty-8.1.12中所有代码。并且支持jsp，使用jetty-all可以简化Web开发环境。
