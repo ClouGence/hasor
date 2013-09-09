@@ -37,7 +37,7 @@ import org.more.xml.stream.XmlStreamEvent;
  * @version : 2013-9-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractIOSettings extends AbstractSettings {
+public abstract class AbstractIOSettings extends AbstractSettings implements IOSettings {
     public AbstractIOSettings() throws IOException {
         this.loadNsProp();
     }
@@ -145,7 +145,7 @@ public abstract class AbstractIOSettings extends AbstractSettings {
             }
         };
     }
-    /*分别保存每个命名空间下的配置信息Map*/
+    /**分别保存每个命名空间下的配置信息Map*/
     protected abstract Map<String, Map<String, Object>> getNamespaceSettingMap();
 }
 /***/

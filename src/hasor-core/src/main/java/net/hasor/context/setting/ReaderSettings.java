@@ -32,6 +32,11 @@ import org.more.xml.stream.XmlReader;
 public class ReaderSettings extends AbstractIOSettings {
     private LinkedList<Reader> pendingReader = new LinkedList<Reader>();
     //
+    //
+    /**创建{@link ReaderSettings}对象。*/
+    public ReaderSettings() throws IOException, XMLStreamException {
+        this(new Reader[0]);
+    }
     /**创建{@link ReaderSettings}对象。*/
     public ReaderSettings(Reader inReader) throws IOException, XMLStreamException {
         this(new Reader[] { inReader });
@@ -44,7 +49,7 @@ public class ReaderSettings extends AbstractIOSettings {
             Hasor.assertIsNotNull(ins);
             this.addReader(ins);
         }
-        this.loadReaders();
+        this.loadSettings();
     }
     /**将一个输入流添加到待加载处理列表，使用load方法加载待处理列表中的流。
      * 注意：待处理列表中的流一旦装载完毕将会从待处理列表中清除出去。*/
@@ -54,7 +59,7 @@ public class ReaderSettings extends AbstractIOSettings {
                 this.pendingReader.add(reader);
     }
     /**load装载所有待处理的流，如果没有待处理流则直接return。*/
-    public final synchronized void loadReaders() throws IOException, XMLStreamException {
+    public synchronized void loadSettings() throws IOException, XMLStreamException {
         if (this.pendingReader.isEmpty() == true)
             return;
         //构建装载环境

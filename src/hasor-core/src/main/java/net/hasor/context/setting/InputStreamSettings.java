@@ -35,6 +35,10 @@ public class InputStreamSettings extends AbstractIOSettings {
     private LinkedList<InputStream> pendingStream   = new LinkedList<InputStream>();
     //
     /**创建{@link InputStreamSettings}对象。*/
+    public InputStreamSettings() throws IOException, XMLStreamException {
+        this(new InputStream[0], null);
+    }
+    /**创建{@link InputStreamSettings}对象。*/
     public InputStreamSettings(InputStream inStream) throws IOException, XMLStreamException {
         this(inStream, null);
     }
@@ -56,7 +60,7 @@ public class InputStreamSettings extends AbstractIOSettings {
         }
         if (StringUtils.isBlank(encoding) == false)
             this.setSettingEncoding(encoding);
-        this.loadStreams();
+        this.loadSettings();
     }
     //
     //
@@ -76,7 +80,7 @@ public class InputStreamSettings extends AbstractIOSettings {
                 this.pendingStream.add(stream);
     }
     /**load装载所有待处理的流，如果没有待处理流则直接return。*/
-    public final synchronized void loadStreams() throws IOException, XMLStreamException {
+    public synchronized void loadSettings() throws IOException, XMLStreamException {
         if (this.pendingStream.isEmpty() == true)
             return;
         //构建装载环境

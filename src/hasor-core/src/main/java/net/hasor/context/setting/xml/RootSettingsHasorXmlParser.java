@@ -37,25 +37,25 @@ import org.more.xml.stream.XmlStreamEvent;
  * @author ÕÔÓÀ´º (zyc@hasor.net)
  */
 public class RootSettingsHasorXmlParser implements SettingsXmlParser {
-    private StringBuffer    xmlText           = null;
-    private XmlPropertyImpl currentXmlPropert = null;
+    private StringBuffer       xmlText           = null;
+    private DefaultXmlProperty currentXmlPropert = null;
     //
     public void beginAccept(Settings context, Map<String, Object> dataContainer) {
-        this.currentXmlPropert = new XmlPropertyImpl(null, "root");
+        this.currentXmlPropert = new DefaultXmlProperty(null, "root");
         this.xmlText = new StringBuffer("");
     }
     public void sendEvent(XmlStackDecorator<Object> context, String xpath, XmlStreamEvent event) throws IOException, XMLStreamException {
         if (event instanceof StartElementEvent) {
             //
             String localPart = ((StartElementEvent) event).getName().getLocalPart();
-            XmlPropertyImpl xmlProperty = new XmlPropertyImpl(this.currentXmlPropert, localPart);
+            DefaultXmlProperty xmlProperty = new DefaultXmlProperty(this.currentXmlPropert, localPart);
             this.currentXmlPropert.addChildren(xmlProperty);
             this.currentXmlPropert = xmlProperty;
         } else if (event instanceof EndElementEvent) {
             //
             this.currentXmlPropert.setText(this.xmlText.toString().trim());
             this.xmlText = new StringBuffer("");
-            this.currentXmlPropert = (XmlPropertyImpl) this.currentXmlPropert.getParent();
+            this.currentXmlPropert = (DefaultXmlProperty) this.currentXmlPropert.getParent();
         } else if (event instanceof AttributeEvent) {
             //
             String attName = ((AttributeEvent) event).getName().getLocalPart();
@@ -86,10 +86,10 @@ public class RootSettingsHasorXmlParser implements SettingsXmlParser {
             if ($varConflict != null && $varConflict instanceof XmlProperty && $var instanceof XmlProperty) {
                 XmlProperty $new = (XmlProperty) $var;
                 XmlProperty $old = (XmlProperty) $varConflict;
-                XmlProperty $final = ((XmlPropertyImpl) $old).clone();
+                XmlProperty $final = ((DefaultXmlProperty) $old).clone();
                 /*¸²¸Ç²ßÂÔ*/
                 $final.getAttributeMap().putAll($new.getAttributeMap());
-                ((XmlPropertyImpl) $final).setText($new.getText());
+                ((DefaultXmlProperty) $final).setText($new.getText());
                 /*×·¼Ó²ßÂÔ*/
                 List<XmlProperty> $newChildren = new ArrayList<XmlProperty>($new.getChildren());
                 List<XmlProperty> $oldChildren = new ArrayList<XmlProperty>($old.getChildren());
@@ -108,7 +108,7 @@ public class RootSettingsHasorXmlParser implements SettingsXmlParser {
     protected void convertType(Map<String, Object> returnData, List<XmlProperty> xmlPropertyList, String parentAttName) {
         if (xmlPropertyList != null)
             for (XmlProperty xmlProperty : xmlPropertyList) {
-                XmlPropertyImpl impl = (XmlPropertyImpl) xmlProperty;
+                DefaultXmlProperty impl = (DefaultXmlProperty) xmlProperty;
                 //1.put±¾¼¶
                 String key = ("".equals(parentAttName)) ? impl.getName() : (parentAttName + "." + impl.getName());
                 returnData.put(key, impl);

@@ -27,7 +27,7 @@ import org.more.convert.ConverterUtils;
  * @version : 2013-4-22
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-class XmlPropertyImpl implements XmlProperty, GlobalProperty {
+class DefaultXmlProperty implements XmlProperty, GlobalProperty {
     private String                  elementName       = null;
     private String                  textString        = null;
     private HashMap<String, String> arrMap            = new HashMap<String, String>();
@@ -35,14 +35,14 @@ class XmlPropertyImpl implements XmlProperty, GlobalProperty {
     private XmlProperty             parentXmlProperty = null;
     //
     //
-    public XmlPropertyImpl(XmlProperty parentXmlProperty, String elementName) {
+    public DefaultXmlProperty(XmlProperty parentXmlProperty, String elementName) {
         this.parentXmlProperty = parentXmlProperty;
         this.elementName = elementName;
     }
     public void addAttribute(String attName, String attValue) {
         arrMap.put(attName, attValue);
     }
-    public void addChildren(XmlPropertyImpl xmlProperty) {
+    public void addChildren(DefaultXmlProperty xmlProperty) {
         this.children.add(xmlProperty);
     }
     public void setText(String textString) {
@@ -93,13 +93,13 @@ class XmlPropertyImpl implements XmlProperty, GlobalProperty {
     public String toString() {
         return this.getXmlText();
     }
-    public XmlPropertyImpl clone() {
-        XmlPropertyImpl newData = new XmlPropertyImpl(this.parentXmlProperty, this.elementName);
+    public DefaultXmlProperty clone() {
+        DefaultXmlProperty newData = new DefaultXmlProperty(this.parentXmlProperty, this.elementName);
         newData.arrMap.putAll(this.arrMap);
         newData.textString = this.textString;
         if (children != null)
             for (XmlProperty xmlProp : this.children) {
-                XmlPropertyImpl newClone = ((XmlPropertyImpl) xmlProp).clone();
+                DefaultXmlProperty newClone = ((DefaultXmlProperty) xmlProp).clone();
                 newClone.setParent(newData);
                 newData.children.add(newClone);
             }
