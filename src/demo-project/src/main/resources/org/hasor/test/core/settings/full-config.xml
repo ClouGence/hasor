@@ -9,6 +9,8 @@
 		<eventThreadPoolSize>20</eventThreadPoolSize>
 		<!-- 是否强迫所有模块都必须正常启动 -->
 		<forceModule>false</forceModule>
+		<!-- 配置文件改变监视线程检查时间间隔 -->
+		<settingsMonitor interval="1000" />
 	</hasor>
 	<!-- 工作空间设置 -->
 	<environmentVar>

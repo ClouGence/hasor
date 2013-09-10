@@ -36,9 +36,9 @@ public interface InitContext {
     public Set<Class<?>> getClassSet(Class<?> featureType);
     //
     /**添加配置文件改变事件监听器。*/
-    public void addSettingsListener(HasorSettingListener listener);
+    public void addSettingsListener(SettingsListener listener);
     /**删除配置文件改变事件监听器。*/
-    public void removeSettingsListener(HasorSettingListener listener);
+    public void removeSettingsListener(SettingsListener listener);
     /**获得所有配置文件改变事件监听器。*/
-    public HasorSettingListener[] getSettingListeners();
+    public SettingsListener[] getSettingListeners();
 }

@@ -22,7 +22,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.stream.XMLStreamException;
 import net.hasor.Hasor;
 import net.hasor.core.XmlNode;
 import org.more.util.ResourcesUtils;
@@ -39,19 +38,19 @@ public class MappingInitContextSettings extends InitContextSettings {
     //
     //
     /**创建{@link MappingInitContextSettings}类型对象。*/
-    public MappingInitContextSettings() throws IOException, XMLStreamException {
+    public MappingInitContextSettings() throws IOException {
         super();
     }
     /**创建{@link MappingInitContextSettings}类型对象。*/
-    public MappingInitContextSettings(String mainConfig) throws IOException, XMLStreamException {
+    public MappingInitContextSettings(String mainConfig) throws IOException {
         super(mainConfig);
     }
     /**创建{@link MappingInitContextSettings}类型对象。*/
-    public MappingInitContextSettings(File mainConfig) throws IOException, XMLStreamException {
+    public MappingInitContextSettings(File mainConfig) throws IOException {
         super(mainConfig);
     }
     /**创建{@link MappingInitContextSettings}类型对象。*/
-    public MappingInitContextSettings(URI mainConfig) throws IOException, XMLStreamException {
+    public MappingInitContextSettings(URI mainConfig) throws IOException {
         super(mainConfig);
     }
     //

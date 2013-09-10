@@ -18,9 +18,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
-import javax.xml.stream.XMLStreamException;
 import net.hasor.Hasor;
 import org.more.util.ResourcesUtils;
 /**
@@ -39,25 +39,28 @@ public class InitContextSettings extends FileSettings {
     //
     //
     /**创建{@link InitContextSettings}类型对象。*/
-    public InitContextSettings() throws IOException, XMLStreamException {
+    public InitContextSettings() throws IOException {
         this(MainSettingName);
     }
     /**创建{@link InitContextSettings}类型对象。*/
-    public InitContextSettings(String settingFile) throws IOException, XMLStreamException {
+    public InitContextSettings(String settingResource) throws IOException {
         super();
-        Hasor.assertIsNotNull(settingFile);
-        File configFile = new File(settingFile);
-        if (configFile.exists() == false || configFile.canRead() == false || configFile.isDirectory() == true)
-            return;
-        this.settingURI = configFile.toURI();
+        Hasor.assertIsNotNull(settingResource);
+        URL url = ResourcesUtils.getResource(settingResource);
+        try {
+            if (url != null)
+                this.settingURI = url.toURI();
+        } catch (URISyntaxException e) {
+            throw new IOException(e);
+        }
         this.refresh();
     }
     /**创建{@link InitContextSettings}类型对象。*/
-    public InitContextSettings(File settingFile) throws IOException, XMLStreamException {
+    public InitContextSettings(File settingFile) throws IOException {
         this((settingFile == null) ? null : settingFile.toURI());
     }
     /**创建{@link InitContextSettings}类型对象。*/
-    public InitContextSettings(URI settingURI) throws IOException, XMLStreamException {
+    public InitContextSettings(URI settingURI) throws IOException {
         super();
         Hasor.assertIsNotNull(settingURI);
         this.settingURI = settingURI;
