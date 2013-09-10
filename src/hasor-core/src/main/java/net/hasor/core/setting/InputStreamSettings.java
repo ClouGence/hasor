@@ -19,59 +19,38 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import javax.xml.stream.XMLStreamException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import net.hasor.Hasor;
-import org.more.util.StringUtils;
-import org.more.util.map.DecSequenceMap;
-import org.more.xml.XmlParserKitManager;
-import org.more.xml.stream.XmlReader;
+import net.hasor.core.setting.xml.SaxXmlParser;
 /***
  * 传入InputStream的方式获取Settings接口的支持。
  * @version : 2013-9-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public class InputStreamSettings extends AbstractIOSettings {
-    private String                  settingEncoding = "utf-8";
-    private LinkedList<InputStream> pendingStream   = new LinkedList<InputStream>();
+public class InputStreamSettings extends AbstractBaseSettings implements IOSettings {
+    private LinkedList<InputStream> pendingStream = new LinkedList<InputStream>();
     //
     /**创建{@link InputStreamSettings}对象。*/
-    public InputStreamSettings() throws IOException, XMLStreamException {
-        this(new InputStream[0], null);
+    public InputStreamSettings() throws IOException {
+        this(new InputStream[0]);
     }
     /**创建{@link InputStreamSettings}对象。*/
-    public InputStreamSettings(InputStream inStream) throws IOException, XMLStreamException {
-        this(inStream, null);
+    public InputStreamSettings(InputStream inStream) throws IOException {
+        this(new InputStream[] { inStream });
     }
     /**创建{@link InputStreamSettings}对象。*/
-    public InputStreamSettings(InputStream[] inStreams) throws IOException, XMLStreamException {
-        this(inStreams, null);
-    }
-    /**创建{@link InputStreamSettings}对象。*/
-    public InputStreamSettings(InputStream inStream, String encoding) throws IOException, XMLStreamException {
-        this(new InputStream[] { inStream }, encoding);
-    }
-    /**创建{@link InputStreamSettings}对象。*/
-    public InputStreamSettings(InputStream[] inStreams, String encoding) throws IOException, XMLStreamException {
+    public InputStreamSettings(InputStream[] inStreams) throws IOException {
         super();
         Hasor.assertIsNotNull(inStreams);
         for (InputStream ins : inStreams) {
             Hasor.assertIsNotNull(ins);
             this.addStream(ins);
         }
-        if (StringUtils.isBlank(encoding) == false)
-            this.setSettingEncoding(encoding);
         this.loadSettings();
     }
     //
     //
-    /**获取解析配置文件时使用的字符编码。*/
-    public String getSettingEncoding() {
-        return this.settingEncoding;
-    }
-    /**设置解析配置文件时使用的字符编码。*/
-    public void setSettingEncoding(String encoding) {
-        this.settingEncoding = encoding;
-    }
     /**将一个输入流添加到待加载处理列表，使用load方法加载待处理列表中的流。
      * 注意：待处理列表中的流一旦装载完毕将会从待处理列表中清除出去。*/
     public void addStream(InputStream stream) {
@@ -79,23 +58,35 @@ public class InputStreamSettings extends AbstractIOSettings {
             if (this.pendingStream.contains(stream) == false)
                 this.pendingStream.add(stream);
     }
+    //
     /**load装载所有待处理的流，如果没有待处理流则直接return。*/
-    public synchronized void loadSettings() throws IOException, XMLStreamException {
+    public synchronized void loadSettings() throws IOException {
         this.readyLoad();//准备装载
         {
             if (this.pendingStream.isEmpty() == true)
                 return;
             //构建装载环境
-            Map<String, Map<String, Object>> loadTo = this.getNamespaceSettingMap();
-            XmlParserKitManager xmlParserKit = this.getXmlParserKitManager(loadTo);
-            xmlParserKit.setContext(this);
-            String encoding = this.getSettingEncoding();
+            Map<String, Map<String, Object>> loadTo = new HashMap<String, Map<String, Object>>();
             InputStream inStream = null;
             //
-            while ((inStream = this.pendingStream.pollFirst()) != null) {
-                new XmlReader(inStream, encoding).reader(xmlParserKit, null);
-                inStream.close();
+            try {
+                SAXParserFactory factory = SAXParserFactory.newInstance();
+                factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+                factory.setFeature("http://xml.org/sax/features/namespaces", true);
+                SAXParser parser = factory.newSAXParser();
+                SaxXmlParser handler = new SaxXmlParser(loadTo);
+                while ((inStream = this.pendingStream.pollFirst()) != null) {
+                    parser.parse(inStream, handler);
+                    inStream.close();
+                }
+            } catch (Exception e) {
+                throw new IOException(e);
             }
+            //
+            this.cleanData();
+            this.getNamespaceSettingMap().putAll(loadTo);
+            for (Map<String, Object> ent : loadTo.values())
+                this.getSettingsMap().addMap(ent);
         }
         this.loadFinish();//完成装载
     }
@@ -103,25 +94,6 @@ public class InputStreamSettings extends AbstractIOSettings {
     protected void readyLoad() throws IOException {}
     /**完成装载*/
     protected void loadFinish() throws IOException {}
-    /**{@link InputStreamSettings}类型不支持该方法，如果调用该方法会得到一个{@link UnsupportedOperationException}类型异常。*/
-    public void refresh() throws IOException {
-        throw new UnsupportedOperationException();
-    }
-    //
-    private DecSequenceMap<String, Object>   mergeSettingsMap     = new DecSequenceMap<String, Object>();
-    private Map<String, Map<String, Object>> namespaceSettingsMap = new HashMap<String, Map<String, Object>>();
-    //
-    protected Map<String, Map<String, Object>> getNamespaceSettingMap() {
-        return namespaceSettingsMap;
-    }
-    protected DecSequenceMap<String, Object> getSettingsMap() {
-        return mergeSettingsMap;
-    }
-    protected synchronized XmlParserKitManager getXmlParserKitManager(Map<String, Map<String, Object>> loadTo) throws IOException {
-        XmlParserKitManager kitManager = super.getXmlParserKitManager(loadTo);
-        this.mergeSettingsMap.removeAllMap();
-        for (Map<String, Object> ent : loadTo.values())
-            this.mergeSettingsMap.addMap(ent);
-        return kitManager;
-    }
+    /**{@link InputStreamSettings}类型不支持该方法，调用该方法不会起到任何作用。*/
+    public void refresh() throws IOException {}
 }

@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 import net.hasor.core.Settings;
-import net.hasor.core.XmlProperty;
+import net.hasor.core.XmlNode;
 import org.more.convert.ConverterUtils;
 import org.more.util.ScanClassPath;
 import org.more.util.StringUtils;
@@ -34,7 +34,6 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractSettings implements Settings {
-    //
     protected abstract Map<String, Object> getSettingsMap();
     /**获取指在某个特定命名空间下的Settings接口对象。*/
     public abstract AbstractSettings getNamespace(String namespace);
@@ -376,11 +375,11 @@ public abstract class AbstractSettings implements Settings {
         }
         return directoryPaths.toArray(new String[directoryPaths.size()]);
     }
-    /**解析全局配置参数，并且返回其{@link XmlProperty}形式对象。*/
-    public XmlProperty getXmlProperty(String name) {
-        return this.getToType(name, XmlProperty.class, null);
+    /**解析全局配置参数，并且返回其{@link XmlNode}形式对象。*/
+    public XmlNode getXmlProperty(String name) {
+        return this.getToType(name, XmlNode.class, null);
     }
-    public XmlProperty[] getXmlPropertyArray(String name) {
-        return this.getToTypeArray(name, XmlProperty.class, null);
+    public XmlNode[] getXmlPropertyArray(String name) {
+        return this.getToTypeArray(name, XmlNode.class, null);
     }
 }

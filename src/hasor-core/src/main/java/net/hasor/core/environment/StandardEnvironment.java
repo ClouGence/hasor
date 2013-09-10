@@ -27,10 +27,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.hasor.Hasor;
 import net.hasor.core.Environment;
-import net.hasor.core.HasorSettingListener;
+import net.hasor.core.SettingsListener;
 import net.hasor.core.InitContext;
 import net.hasor.core.Settings;
-import net.hasor.core.XmlProperty;
+import net.hasor.core.XmlNode;
 import org.more.util.StringUtils;
 import org.more.util.map.DecSequenceMap;
 /**
@@ -38,7 +38,7 @@ import org.more.util.map.DecSequenceMap;
  * @version : 2013-5-23
  * @author 赵永春 (zyc@hasor.net)
  */
-public class StandardEnvironment implements Environment, HasorSettingListener {
+public class StandardEnvironment implements Environment, SettingsListener {
     /*所属的Settings*/
     private Settings            settings;
     /*最终使用的环境变量Map*/
@@ -90,10 +90,10 @@ public class StandardEnvironment implements Environment, HasorSettingListener {
     /**特殊配置的环境变量*/
     protected Map<String, String> configEnvironment() {
         Settings settings = this.getSettings();
-        XmlProperty[] xmlPropArray = settings.getXmlPropertyArray("environmentVar");
+        XmlNode[] xmlPropArray = settings.getXmlPropertyArray("environmentVar");
         List<String> envNames = new ArrayList<String>();//用于收集环境变量名称
-        for (XmlProperty xmlProp : xmlPropArray) {
-            for (XmlProperty envItem : xmlProp.getChildren())
+        for (XmlNode xmlProp : xmlPropArray) {
+            for (XmlNode envItem : xmlProp.getChildren())
                 envNames.add(envItem.getName().toUpperCase());
         }
         Map<String, String> hasorEnv = new HashMap<String, String>();

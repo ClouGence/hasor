@@ -17,15 +17,12 @@ package org.hasor.test.core.settings;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import javax.xml.stream.XMLStreamException;
 import net.hasor.Hasor;
 import net.hasor.core.setting.FileSettings;
 import net.hasor.core.setting.InitContextSettings;
 import net.hasor.core.setting.InputStreamSettings;
 import net.hasor.core.setting.MappingInitContextSettings;
-import net.hasor.core.setting.ReaderSettings;
 import org.junit.Test;
 import org.more.util.ResourcesUtils;
 /**
@@ -35,14 +32,8 @@ import org.more.util.ResourcesUtils;
  */
 public class Settings_Test {
     @Test
-    public void testReader() throws IOException, XMLStreamException {
-        Reader inReader = new InputStreamReader(ResourcesUtils.getResourceAsStream("/org/hasor/test/core/settings/full-config.xml"), "utf-8");
-        ReaderSettings settings = new ReaderSettings(inReader);
-        //
-        System.out.println(settings.getString("hasor-mvc.httpServlet.errorCaseCount"));
-    }
-    @Test
     public void testStream() throws IOException, XMLStreamException {
+        System.out.println("--->>testStream<<--");
         InputStream inStream = ResourcesUtils.getResourceAsStream("/org/hasor/test/core/settings/full-config.xml");
         InputStreamSettings settings = new InputStreamSettings(inStream);
         //
@@ -50,6 +41,7 @@ public class Settings_Test {
     }
     @Test
     public void testFileSettings_1() throws IOException, XMLStreamException {
+        System.out.println("--->>testFileSettings_1<<--");
         File inFile = new File("src/main/resources/org/hasor/test/core/settings/test-settings-a-config.xml");
         FileSettings settings = new FileSettings(inFile);
         //
@@ -59,6 +51,7 @@ public class Settings_Test {
     }
     @Test
     public void testFileSettings_2() throws IOException, XMLStreamException {
+        System.out.println("--->>testFileSettings_2<<--");
         File inFile1 = new File("src/main/resources/org/hasor/test/core/settings/test-settings-a-config.xml");
         File inFile2 = new File("src/main/resources/org/hasor/test/core/settings/test-settings-b-config.xml");
         FileSettings settings = new FileSettings();
@@ -73,9 +66,11 @@ public class Settings_Test {
         System.out.println(settings.getString("custom.wwwSource.url"));
         System.out.println(settings.getString("custom.dbSource.url"));
         System.out.println(settings.getString("custom.id"));
+        //
     }
     @Test
     public void testInitContextSettings() throws IOException, XMLStreamException {
+        System.out.println("--->>testInitContextSettings<<--");
         InitContextSettings settings = new InitContextSettings();
         //
         System.out.println(Hasor.logString(settings.getStringArray("hasor.loadPackages")));
@@ -83,6 +78,7 @@ public class Settings_Test {
     }
     @Test
     public void testMappingInitContextSettings() throws IOException, XMLStreamException {
+        System.out.println("--->>testMappingInitContextSettings<<--");
         MappingInitContextSettings settings = new MappingInitContextSettings();
         //
         System.out.println(Hasor.logString(settings.getString("work")));//不存在这个配置内容

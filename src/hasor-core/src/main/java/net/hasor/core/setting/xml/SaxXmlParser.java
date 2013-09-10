@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import net.hasor.core.XmlProperty;
+import net.hasor.core.XmlNode;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -116,16 +116,16 @@ public class SaxXmlParser extends DefaultHandler {
                 Object $var = dataMap.get(key);
                 Object $varConflict = null;
                 $varConflict = dataContainer.get(currentXmlns).get($key);
-                if ($varConflict != null && $varConflict instanceof XmlProperty && $var instanceof XmlProperty) {
-                    XmlProperty $new = (XmlProperty) $var;
-                    XmlProperty $old = (XmlProperty) $varConflict;
-                    XmlProperty $final = ((DefaultXmlProperty) $old).clone();
+                if ($varConflict != null && $varConflict instanceof XmlNode && $var instanceof XmlNode) {
+                    XmlNode $new = (XmlNode) $var;
+                    XmlNode $old = (XmlNode) $varConflict;
+                    XmlNode $final = ((DefaultXmlProperty) $old).clone();
                     /*覆盖策略*/
                     $final.getAttributeMap().putAll($new.getAttributeMap());
                     ((DefaultXmlProperty) $final).setText($new.getText());
                     /*追加策略*/
-                    List<XmlProperty> $newChildren = new ArrayList<XmlProperty>($new.getChildren());
-                    List<XmlProperty> $oldChildren = new ArrayList<XmlProperty>($old.getChildren());
+                    List<XmlNode> $newChildren = new ArrayList<XmlNode>($new.getChildren());
+                    List<XmlNode> $oldChildren = new ArrayList<XmlNode>($old.getChildren());
                     Collections.reverse($newChildren);
                     Collections.reverse($oldChildren);
                     $final.getChildren().clear();
@@ -139,10 +139,10 @@ public class SaxXmlParser extends DefaultHandler {
         }
     }
     /**转换成Key Value形式*/
-    protected void convertType(Map<String, Object> returnData, List<XmlProperty> xmlPropertyList, String parentAttName) {
+    protected void convertType(Map<String, Object> returnData, List<XmlNode> xmlPropertyList, String parentAttName) {
         if (xmlPropertyList != null)
-            for (XmlProperty xmlProperty : xmlPropertyList) {
-                DefaultXmlProperty impl = (DefaultXmlProperty) xmlProperty;
+            for (XmlNode xmlNode : xmlPropertyList) {
+                DefaultXmlProperty impl = (DefaultXmlProperty) xmlNode;
                 //1.put本级
                 String key = ("".equals(parentAttName)) ? impl.getName() : (parentAttName + "." + impl.getName());
                 returnData.put(key, impl);
@@ -150,7 +150,7 @@ public class SaxXmlParser extends DefaultHandler {
                 for (Entry<String, String> ent : impl.getAttributeMap().entrySet())
                     returnData.put(key + "." + ent.getKey(), ent.getValue());
                 //3.put孩子
-                this.convertType(returnData, xmlProperty.getChildren(), key);
+                this.convertType(returnData, xmlNode.getChildren(), key);
             }
     }
 }

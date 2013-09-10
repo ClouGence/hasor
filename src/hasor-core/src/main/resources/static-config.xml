@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<root:config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-core">
+<config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-core">
 	<!-- http://project.hasor.net/hasor/schema/main命名空间默认配置 -->
-	<root:hasor>
-		<root:loadPackages>net.*,org.*,com.*</root:loadPackages>
-	</root:hasor>
+	<root:config>
+		<root:hasor.loadPackages>net.*,org.*,com.*</root:hasor.loadPackages>
+	</root:config>
 	<!-- ========================================================================= -->
 	<!-- 框架配置 -->
 	<hasor>
@@ -28,4 +28,4 @@
 		<!-- 模块配置目录 -->
 		<HASOR_PLUGIN_SETTINGS>%HASOR_WORK_HOME%/settings</HASOR_PLUGIN_SETTINGS>
 	</environmentVar>
-</root:config>
+</config>

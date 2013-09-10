@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import net.hasor.core.XmlProperty;
+import net.hasor.core.XmlNode;
 import net.hasor.core.setting.GlobalProperty;
 import org.more.convert.ConverterUtils;
 /**
@@ -27,15 +27,15 @@ import org.more.convert.ConverterUtils;
  * @version : 2013-4-22
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-class DefaultXmlProperty implements XmlProperty, GlobalProperty {
+class DefaultXmlProperty implements XmlNode, GlobalProperty {
     private String                  elementName       = null;
     private String                  textString        = null;
     private HashMap<String, String> arrMap            = new HashMap<String, String>();
-    private List<XmlProperty>       children          = new ArrayList<XmlProperty>();
-    private XmlProperty             parentXmlProperty = null;
+    private List<XmlNode>           children          = new ArrayList<XmlNode>();
+    private XmlNode                 parentXmlProperty = null;
     //
     //
-    public DefaultXmlProperty(XmlProperty parentXmlProperty, String elementName) {
+    public DefaultXmlProperty(XmlNode parentXmlProperty, String elementName) {
         this.parentXmlProperty = parentXmlProperty;
         this.elementName = elementName;
     }
@@ -54,7 +54,7 @@ class DefaultXmlProperty implements XmlProperty, GlobalProperty {
     public String getText() {
         return textString;
     }
-    public List<XmlProperty> getChildren() {
+    public List<XmlNode> getChildren() {
         return children;
     }
     public String getXmlText() {
@@ -76,7 +76,7 @@ class DefaultXmlProperty implements XmlProperty, GlobalProperty {
         }
         strBuilder.append(">");
         //
-        for (XmlProperty xmlEnt : this.children) {
+        for (XmlNode xmlEnt : this.children) {
             String xmlText = new String(xmlEnt.getXmlText());
             xmlText.replace("<", "&lt;");
             xmlText.replace(">", "&gt;");
@@ -98,7 +98,7 @@ class DefaultXmlProperty implements XmlProperty, GlobalProperty {
         newData.arrMap.putAll(this.arrMap);
         newData.textString = this.textString;
         if (children != null)
-            for (XmlProperty xmlProp : this.children) {
+            for (XmlNode xmlProp : this.children) {
                 DefaultXmlProperty newClone = ((DefaultXmlProperty) xmlProp).clone();
                 newClone.setParent(newData);
                 newData.children.add(newClone);
@@ -106,7 +106,7 @@ class DefaultXmlProperty implements XmlProperty, GlobalProperty {
         return newData;
     }
     public <T> T getValue(Class<T> toType, T defaultValue) {
-        if (XmlProperty.class.isAssignableFrom(toType) == true)
+        if (XmlNode.class.isAssignableFrom(toType) == true)
             return (T) this;
         if (GlobalProperty.class.isAssignableFrom(toType) == true)
             return (T) this;
@@ -120,10 +120,10 @@ class DefaultXmlProperty implements XmlProperty, GlobalProperty {
     public Map<String, String> getAttributeMap() {
         return this.arrMap;
     }
-    public XmlProperty getParent() {
+    public XmlNode getParent() {
         return parentXmlProperty;
     }
-    public void setParent(XmlProperty parentXmlProperty) {
+    public void setParent(XmlNode parentXmlProperty) {
         this.parentXmlProperty = parentXmlProperty;
     }
 }

@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.xml.stream.XMLStreamException;
 import net.hasor.Hasor;
 /***
  * 传入File的方式获取Settings接口的支持。
@@ -30,18 +29,18 @@ import net.hasor.Hasor;
  */
 public class FileSettings extends InputStreamSettings {
     /**创建{@link FileSettings}对象。*/
-    public FileSettings() throws IOException, XMLStreamException {
+    public FileSettings() throws IOException {
         super();
     }
     /**创建{@link FileSettings}对象。*/
-    public FileSettings(String fileName) throws IOException, XMLStreamException {
+    public FileSettings(String fileName) throws IOException {
         this();
         Hasor.assertIsNotNull(fileName);
         this.addFile(fileName);
         this.refresh();
     }
     /**创建{@link FileSettings}对象。*/
-    public FileSettings(String[] fileNames) throws IOException, XMLStreamException {
+    public FileSettings(String[] fileNames) throws IOException {
         this();
         Hasor.assertIsNotNull(fileNames);
         for (String fileName : fileNames) {
@@ -51,14 +50,14 @@ public class FileSettings extends InputStreamSettings {
         this.refresh();
     }
     /**创建{@link FileSettings}对象。*/
-    public FileSettings(File settingsFile) throws IOException, XMLStreamException {
+    public FileSettings(File settingsFile) throws IOException {
         this();
         Hasor.assertIsNotNull(settingsFile);
         this.addFile(settingsFile);
         this.refresh();
     }
     /**创建{@link FileSettings}对象。*/
-    public FileSettings(File[] settingsFiles) throws IOException, XMLStreamException {
+    public FileSettings(File[] settingsFiles) throws IOException {
         this();
         Hasor.assertIsNotNull(settingsFiles);
         for (File settingsFile : settingsFiles) {

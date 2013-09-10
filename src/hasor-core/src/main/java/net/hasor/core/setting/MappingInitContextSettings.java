@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import net.hasor.Hasor;
-import net.hasor.core.XmlProperty;
+import net.hasor.core.XmlNode;
 import org.more.util.ResourcesUtils;
 import org.more.util.map.DecSequenceMap;
 import org.more.util.map.Properties;
@@ -78,7 +78,7 @@ public class MappingInitContextSettings extends InitContextSettings {
                     Hasor.warning("%s mapping to %s value is null.", $propxyKey, $key);
                     continue;
                 }
-                value = (value instanceof XmlProperty) ? ((XmlProperty) value).getText() : value;
+                value = (value instanceof XmlNode) ? ((XmlNode) value).getText() : value;
                 /*ºöÂÔ³åÍ»µÄÓ³Éä*/
                 if (referConfig.containsKey($propxyKey) == true) {
                     Hasor.error("mapping conflict! %s has this key.", $propxyKey);
