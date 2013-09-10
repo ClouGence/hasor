@@ -32,8 +32,12 @@ Hasor-0.0.2.<...>-M2
         05.)整理License文件
         06.)所有Demo程序都汇总到demo-project项目中。
         07.)DecSequenceMap.java、DecStackMap.java两个类文件增加一些有用的方法。
-        08.)重构Settings部分先设InputStreamSettings、FileSettings、ReaderSettings、InitContextSettings、MappingInitContextSettings可用的类。
+        08.)重构Settings部分现设InputStreamSettings、FileSettings、ReaderSettings、InitContextSettings、MappingInitContextSettings可用的类。
         	config-mapping.properties属性文件的解析不在是必须的。
+        09.)重构InitContext部分现设DefaultInitContext、StandardInitContext、MappingInitContext可用的类。
+        	如需要解析config-mapping.properties属性文件，请使用MappingInitContext类。
+
+
         09.)Hasor-Core中删除所有与Web相关的支持，这部分功能全部移动到Hasor-Web（Hasor-MVC更名而来）。
         
         

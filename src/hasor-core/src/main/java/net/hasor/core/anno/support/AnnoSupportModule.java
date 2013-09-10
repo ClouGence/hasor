@@ -21,7 +21,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventManager;
 import net.hasor.core.HasorEventListener;
-import net.hasor.core.HasorSettingListener;
+import net.hasor.core.SettingsListener;
 import net.hasor.core.ModuleSettings;
 import net.hasor.core.ApiBinder.BeanBindingBuilder;
 import net.hasor.core.anno.Bean;
@@ -121,7 +121,7 @@ public class AnnoSupportModule extends AbstractHasorModule implements GetContext
             eventManager.pushEventListener(ContextEvent_Start, new HasorEventListener() {
                 public void onEvent(String event, Object[] params) {
                     AppContext appContext = (AppContext) params[0];
-                    HasorSettingListener settingObj = (HasorSettingListener) appContext.getInstance(settingClass);
+                    SettingsListener settingObj = (SettingsListener) appContext.getInstance(settingClass);
                     appContext.getSettings().addSettingsListener(settingObj);
                     settingObj.onLoadConfig(appContext.getSettings());
                     Hasor.info("%s SettingsListener created.", settingObj);

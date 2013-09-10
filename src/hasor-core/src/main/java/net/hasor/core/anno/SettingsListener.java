@@ -18,9 +18,9 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import net.hasor.core.HasorSettingListener;
+import net.hasor.core.SettingsListener;
 /**
- * 声明一个配置文件改变监听器，标记了该接口的类必须要求实现{@link HasorSettingListener}接口。
+ * 声明一个配置文件改变监听器，标记了该接口的类必须要求实现{@link SettingsListener}接口。
  * @version : 2013-3-12
  * @author 赵永春 (zyc@hasor.net)
  */

@@ -21,7 +21,7 @@ import java.util.Map.Entry;
 import net.hasor.Hasor;
 import net.hasor.core.AppContext;
 import net.hasor.core.BeanInfo;
-import net.hasor.core.context.init.StandardInitContext;
+import net.hasor.core.context.init.AbstractInitContext;
 import org.more.UndefinedException;
 import com.google.inject.Binding;
 import com.google.inject.TypeLiteral;
@@ -30,7 +30,7 @@ import com.google.inject.TypeLiteral;
  * @version : 2013-4-9
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-public abstract class AbstractAppContext extends StandardInitContext implements AppContext {
+public abstract class AbstractAppContext extends AbstractInitContext implements AppContext {
     public AbstractAppContext() throws IOException {
         this("hasor-config.xml");
     }
