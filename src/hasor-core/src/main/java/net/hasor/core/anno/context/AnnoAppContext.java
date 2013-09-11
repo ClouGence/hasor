@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.Set;
 import net.hasor.Hasor;
 import net.hasor.core.AppContext;
-import net.hasor.core.HasorModule;
+import net.hasor.core.Module;
 import net.hasor.core.ModuleInfo;
 import net.hasor.core.ModuleSettings;
 import net.hasor.core.anno.DefineModule;
@@ -61,9 +61,9 @@ public class AnnoAppContext extends DefaultAppContext {
         Hasor.info("find Module : " + Hasor.logString(initHookSet));
         //2.过滤未实现HasorModule接口的类
         for (Class<?> modClass : initHookSet) {
-            HasorModule modObject = null;
+            Module modObject = null;
             ModuleInfo moduleInfo = null;
-            if (HasorModule.class.isAssignableFrom(modClass) == true) {
+            if (Module.class.isAssignableFrom(modClass) == true) {
                 /*Hasor 模块*/
                 modObject = this.createModule(modClass);
                 moduleInfo = this.addModule(modObject);

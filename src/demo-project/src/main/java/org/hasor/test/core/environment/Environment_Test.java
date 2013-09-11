@@ -28,7 +28,7 @@ import org.more.util.ResourcesUtils;
  * @version : 2013-8-11
  * @author ÕÔÓÀ´º (zyc@hasor.net)
  */
-public class EnvironmentTest {
+public class Environment_Test {
     @Test
     public void testDefaultEnvironment() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testDefaultEnvironment<<--");
@@ -57,21 +57,20 @@ public class EnvironmentTest {
     //        //
     //        appContext.getEnvironment().addEnvVar("notepad", "%windir%/notepad.exe");
     //    }
-    //    @Test
-    //    public void test() throws Exception {
-    //        System.out.println();
-    //        System.out.println();
-    //        System.out.println();
-    //        Environment env = this.getAppContext().getEnvironment();
-    //        //JAVA_HOME
-    //        System.out.println(env.getEnvVar("JAVA_HOME"));
-    //        //HASOR_WORK_HOME
-    //        System.out.println(env.getEnvVar("HASOR_WORK_HOME"));
-    //        //javac.exe
-    //        System.out.println(env.evalString("%JAVA_HOME%/bin/javac.exe"));
-    //        //notepad
-    //        System.out.println(env.evalEnvVar("notepad"));
-    //    }
+    @Test
+    public void testStandardEnvironmentVar() throws Exception {
+        System.out.println("--->>testStandardEnvironmentVar<<--");
+        StandardEnvironment env = new StandardEnvironment();
+        //
+        //JAVA_HOME
+        System.out.println(env.getEnvVar("JAVA_HOME"));
+        //HASOR_WORK_HOME
+        System.out.println(env.getEnvVar("HASOR_WORK_HOME"));
+        //javac.exe
+        System.out.println(env.evalString("%JAVA_HOME%/bin/javac.exe"));
+        //notepad
+        System.out.println(env.evalEnvVar("notepad"));
+    }
 }
 class TestSetting implements SettingsListener {
     public void onLoadConfig(Settings newConfig) {

@@ -68,13 +68,13 @@ public interface ApiBinder {
     /** 该接口可以配置模块信息 */
     public interface ModuleSettings {
         /**要求目标模块的启动排在该模块之后。*/
-        public void afterMe(Class<? extends HasorModule> targetModule);
+        public void afterMe(Class<? extends Module> targetModule);
         /**要求目标模块的启动在当前模块之前进行启动。<br/>
          * 注意：该方法仅仅要求在目标模块之后启动。但目标模块是否启动并无强制要求。*/
-        public void beforeMe(Class<? extends HasorModule> targetModule);
+        public void beforeMe(Class<? extends Module> targetModule);
         /**跟随目标模块启动而启动。<br/> 
          * 注意：该方法要求在目标模块启动之后在启动。*/
-        public void followTarget(Class<? extends HasorModule> targetModule);
+        public void followTarget(Class<? extends Module> targetModule);
         /**绑定配置文件命名空间*/
         public void bindingSettingsNamespace(String settingsNamespace);
         /**设置显示名称*/

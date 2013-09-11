@@ -14,21 +14,44 @@
  * limitations under the License.
  */
 package net.hasor.core.context;
+import java.net.URI;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
-import com.google.inject.Injector;
 /**
  * {@link AppContext}接口默认实现。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
 public class DefaultAppContext extends AbstractAppContext {
+    public DefaultAppContext() {
+        this(null, null);
+    }
+    public DefaultAppContext(URI mainSettings) {
+        this(mainSettings, null);
+    }
+    public DefaultAppContext(URI mainSettings, Object context) {
+        if (context != null)
+            this.setContext(context);
+        if (mainSettings != null)
+            this.settingURI = mainSettings;
+        this.initEnvironment();
+    }
+    @Override
+    protected void initContext() {
+        
+        super.initContext();
+    }
+    //
+    //
+    //
+    private URI         mainSettings = null;
+    private Environment environment  = null;
+    //
     public Environment getEnvironment() {
         // TODO Auto-generated method stub
         return null;
     }
-    public Injector getGuice() {
-        // TODO Auto-generated method stub
-        return null;
+    public void setContext(Object context) {
+        this.
     }
 }

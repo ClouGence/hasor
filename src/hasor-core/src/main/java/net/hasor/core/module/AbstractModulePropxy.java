@@ -21,7 +21,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.ApiBinder.ModuleSettings;
 import net.hasor.core.AppContext;
 import net.hasor.core.Dependency;
-import net.hasor.core.HasorModule;
+import net.hasor.core.Module;
 import net.hasor.core.ModuleInfo;
 import org.more.UnhandledException;
 import org.more.util.exception.ExceptionUtils;
@@ -30,17 +30,17 @@ import org.more.util.exception.ExceptionUtils;
  * @version : 2013-7-26
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信息*/, ModuleSettings, HasorModule {
+public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信息*/, ModuleSettings, Module {
     private String           displayName;
     private String           description;
-    private HasorModule      targetModule;
+    private Module      targetModule;
     private String           namespace;
     private AppContext       appContext;
     private List<Dependency> dependency;
     private boolean          isReady;
     private boolean          isStart;
     //
-    public AbstractModulePropxy(HasorModule targetModule, AppContext appContext) {
+    public AbstractModulePropxy(Module targetModule, AppContext appContext) {
         this.targetModule = Hasor.assertIsNotNull(targetModule);
         this.appContext = Hasor.assertIsNotNull(appContext);
         //
@@ -73,7 +73,7 @@ public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信
     public String getDescription() {
         return this.description;
     }
-    public HasorModule getTarget() {
+    public Module getTarget() {
         return this.targetModule;
     }
     public List<Dependency> getDependency() {
@@ -102,16 +102,16 @@ public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信
     //
     //----------------------------------------------------------------------------Dependency Method
     /**尝试从容器中获取模块的代理对象*/
-    protected abstract AbstractModulePropxy getInfo(Class<? extends HasorModule> targetModule, AppContext appContext);
+    protected abstract AbstractModulePropxy getInfo(Class<? extends Module> targetModule, AppContext appContext);
     //
-    public void afterMe(Class<? extends HasorModule> targetModule) {
+    public void afterMe(Class<? extends Module> targetModule) {
         if (isReady())
             /*模块已经准备好，只有当模块在准备期才可以使用该方法*/
             throw new IllegalStateException("Module is ready, only can use this method in run-up.");
         AbstractModulePropxy moduleInfo = this.getInfo(targetModule, this.appContext);
         moduleInfo.beforeMe(this.getTarget().getClass());
     }
-    public void beforeMe(Class<? extends HasorModule> targetModule) {
+    public void beforeMe(Class<? extends Module> targetModule) {
         if (isReady())
             /*模块已经准备好，只有当模块在准备期才可以使用该方法*/
             throw new IllegalStateException("Module is ready, only can use this method in run-up.");
@@ -124,7 +124,7 @@ public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信
         Dependency dep = new DependencyBean(moduleInfo, true);
         this.dependency.add(dep);
     }
-    public void followTarget(Class<? extends HasorModule> targetModule) {
+    public void followTarget(Class<? extends Module> targetModule) {
         if (isReady())
             /*模块已经准备好，只有当模块在准备期才可以使用该方法*/
             throw new IllegalStateException("Module is ready, only can use this method in run-up.");
@@ -157,7 +157,7 @@ public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信
     }
     public final void init(ApiBinder apiBinder) {
         try {
-            HasorModule forModule = this.getTarget();
+            Module forModule = this.getTarget();
             this.onInit(forModule, apiBinder);
             Hasor.info("init Event on : %s", forModule.getClass());
             this.isReady = true;
@@ -173,7 +173,7 @@ public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信
             return;
         //
         try {
-            HasorModule forModule = this.getTarget();
+            Module forModule = this.getTarget();
             this.onStart(forModule, appContext);
             Hasor.info("start Event on : %s", forModule.getClass());
             this.isStart = true;
@@ -188,7 +188,7 @@ public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信
         if (this.isStart() == false/*已经处于停止状态*/)
             return;
         //
-        HasorModule forModule = this.getTarget();
+        Module forModule = this.getTarget();
         try {
             this.onStop(forModule, appContext);
             Hasor.info("stop Event on : %s", forModule.getClass());
@@ -201,15 +201,15 @@ public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信
     //
     //
     /**模块的 init 生命周期调用*/
-    protected void onInit(HasorModule forModule, ApiBinder apiBinder) {
+    protected void onInit(Module forModule, ApiBinder apiBinder) {
         forModule.init(apiBinder);
     }
     /**发送模块启动信号*/
-    protected void onStart(HasorModule forModule, AppContext appContext) {
+    protected void onStart(Module forModule, AppContext appContext) {
         forModule.start(appContext);
     }
     /**发送模块停止信号*/
-    protected void onStop(HasorModule forModule, AppContext appContext) {
+    protected void onStop(Module forModule, AppContext appContext) {
         forModule.stop(appContext);
     }
 }

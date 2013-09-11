@@ -253,6 +253,7 @@ public abstract class AbstractEnvironment implements Environment {
             this.env = Hasor.assertIsNotNull(env, "InitContext type parameter is empty!");
             this.userEnvMap = new HashMap<String, String>();
             this.env.addSettingsListener(this);
+            this.onLoadConfig(this.env.getSettings());
         }
         public void addEnvVar(String envName, String envValue) {
             if (StringUtils.isBlank(envName)) {

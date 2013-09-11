@@ -19,7 +19,7 @@ package net.hasor.core;
  * @version : 2013-3-20
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface HasorModule {
+public interface Module {
     /**初始化过程。*/
     public void init(ApiBinder apiBinder);
     /**启动信号*/

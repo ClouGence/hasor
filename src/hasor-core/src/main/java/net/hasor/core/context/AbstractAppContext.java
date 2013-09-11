@@ -24,7 +24,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.EventManager;
-import net.hasor.core.HasorModule;
+import net.hasor.core.Module;
 import net.hasor.core.ModuleInfo;
 import net.hasor.core.Settings;
 import net.hasor.core.binder.ApiBinderModule;
@@ -36,7 +36,6 @@ import com.google.inject.Binder;
 import com.google.inject.Binding;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.TypeLiteral;
 /**
@@ -73,6 +72,7 @@ public abstract class AbstractAppContext implements AppContext {
     //
     //-----------------------------------------------------------------------------------------Bean
     private Map<String, BeanInfo> beanInfoMap;
+    private Injector              injector = null;
     /**通过名获取Bean的类型。*/
     public <T> Class<T> getBeanType(String name) {
         Hasor.assertIsNotNull(name, "bean name is null.");
@@ -122,6 +122,10 @@ public abstract class AbstractAppContext implements AppContext {
             throw new UndefinedException("bean ‘" + name + "’ is undefined.");
         return (T) this.getGuice().getInstance(beanInfo.getBeanType());
     };
+    /**获得Guice环境。*/
+    public Injector getGuice() {
+        return this.injector;
+    }
     //
     //
     //----------------------------------------------------------------------------------Core Method
@@ -159,14 +163,14 @@ public abstract class AbstractAppContext implements AppContext {
     //
     //---------------------------------------------------------------------------------------Module
     /**选取或者生成指定模块的代理类型。*/
-    protected AbstractModulePropxy generateModulePropxy(HasorModule hasorModule) {
+    protected AbstractModulePropxy generateModulePropxy(Module hasorModule) {
         for (AbstractModulePropxy info : this.getModulePropxyList())
             if (info.getTarget() == hasorModule)
                 return info;
         return new ContextModulePropxy(hasorModule, this);
     }
     /**添加模块，如果容器已经初始化那么会引发{@link IllegalStateException}异常。*/
-    public synchronized ModuleInfo addModule(HasorModule hasorModule) {
+    public synchronized ModuleInfo addModule(Module hasorModule) {
         if (this.isReady())
             throw new IllegalStateException("context is inited.");
         AbstractModulePropxy propxy = this.generateModulePropxy(hasorModule);
@@ -176,7 +180,7 @@ public abstract class AbstractAppContext implements AppContext {
         return propxy;
     }
     /**删除模块，如果容器已经初始化那么会引发{@link IllegalStateException}异常。*/
-    public synchronized boolean removeModule(HasorModule hasorModule) {
+    public synchronized boolean removeModule(Module hasorModule) {
         if (this.isReady())
             throw new IllegalStateException("context is inited.");
         AbstractModulePropxy targetInfo = null;
@@ -220,13 +224,13 @@ public abstract class AbstractAppContext implements AppContext {
         };
     }
     /**通过guice创建{@link Injector}，该方法会促使调用模块init生命周期*/
-    protected Injector createInjector(Module[] guiceModules) {
-        ArrayList<Module> guiceModuleSet = new ArrayList<Module>();
+    protected Injector createInjector(com.google.inject.Module[] guiceModules) {
+        ArrayList<com.google.inject.Module> guiceModuleSet = new ArrayList<com.google.inject.Module>();
         guiceModuleSet.add(new MasterModule(this));
         if (guiceModules != null)
-            for (Module mod : guiceModules)
+            for (com.google.inject.Module mod : guiceModules)
                 guiceModuleSet.add(mod);
-        return Guice.createInjector(guiceModuleSet.toArray(new Module[guiceModuleSet.size()]));
+        return Guice.createInjector(guiceModuleSet.toArray(new com.google.inject.Module[guiceModuleSet.size()]));
     }
     /**打印模块状态*/
     protected void printModState() {
@@ -314,7 +318,7 @@ public abstract class AbstractAppContext implements AppContext {
     }
 }
 /**该类负责处理模块在Guice.configure期间的初始化任务。*/
-class MasterModule implements Module {
+class MasterModule implements com.google.inject.Module {
     private AbstractAppContext appContet;
     public MasterModule(AbstractAppContext appContet) {
         this.appContet = appContet;
@@ -333,11 +337,11 @@ class MasterModule implements Module {
 }
 /***/
 class ContextModulePropxy extends AbstractModulePropxy {
-    public ContextModulePropxy(HasorModule targetModule, AbstractAppContext appContext) {
+    public ContextModulePropxy(Module targetModule, AbstractAppContext appContext) {
         super(targetModule, appContext);
     }
     @Override
-    protected AbstractModulePropxy getInfo(Class<? extends HasorModule> targetModule, AppContext appContext) {
+    protected AbstractModulePropxy getInfo(Class<? extends Module> targetModule, AppContext appContext) {
         List<AbstractModulePropxy> modulePropxyList = ((AbstractAppContext) appContext).getModulePropxyList();
         for (AbstractModulePropxy modulePropxy : modulePropxyList)
             if (targetModule == modulePropxy.getTarget().getClass())

@@ -28,7 +28,7 @@ public interface ModuleInfo {
     /**获取描述信息*/
     public String getDescription();
     /**获取模块信息所表述的模块对象*/
-    public HasorModule getTarget();
+    public Module getTarget();
     /**获取模块的依赖模块*/
     public List<Dependency> getDependency();
     //
