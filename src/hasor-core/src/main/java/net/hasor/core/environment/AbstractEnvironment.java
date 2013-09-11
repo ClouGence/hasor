@@ -196,10 +196,10 @@ public abstract class AbstractEnvironment implements Environment {
     }
     //--------------------------------------------------------------------------------ResourceWatch
     /**释放环境所占用的资源*/
-    public void release() throws Throwable {
+    public void release() {
         if (this.settingWatch != null)
             this.settingWatch.stop();
-        super.finalize();
+        this.eventManager.release();
     }
     /** 该类负责主配置文件的监听工作，以及引发配置文件重载事件。*/
     protected abstract static class SettingWatch extends ResourceWatch {

@@ -15,11 +15,11 @@
  */
 package org.hasor.test.core.events.listener;
 import net.hasor.Hasor;
-import net.hasor.core.HasorEventListener;
+import net.hasor.core.EventListener;
 import net.hasor.core.anno.EventListener;
 /**ÊÂ¼ş¼àÌıÆ÷B*/
 @EventListener("EventType_A")
-public class Type_A_EventListener implements HasorEventListener {
+public class Type_A_EventListener implements EventListener {
     public void onEvent(String event, Object[] params) {
         System.out.println("Type_A onEvent :" + event + " \t" + Hasor.logString(params));
         try {

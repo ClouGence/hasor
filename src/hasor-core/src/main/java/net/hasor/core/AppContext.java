@@ -52,4 +52,11 @@ public interface AppContext {
     public Environment getEnvironment();
     /**获得所有模块*/
     public ModuleInfo[] getModules();
+    //
+    /**启动*/
+    public void start();
+    /**停止*/
+    public void stop();
+    /**判断容器是否处于运行状态*/
+    public boolean isStart();
 }

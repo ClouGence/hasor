@@ -42,4 +42,6 @@ public interface EventManager {
     //
     /**清空未完成的事件等待执行队列*/
     public void clean();
+    /**释放所有占用的资源，并且释放所有事件监听器*/
+    public void release();
 }

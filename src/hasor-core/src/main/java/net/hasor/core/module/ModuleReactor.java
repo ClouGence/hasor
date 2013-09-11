@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.reactor;
+package net.hasor.core.module;
 import java.util.ArrayList;
 import java.util.List;
 import net.hasor.Hasor;
@@ -33,21 +33,21 @@ public class ModuleReactor {
     //
     /**检查模块的依赖是否正确。*/
     public void checkModule(ModuleInfo info) {
-        ModuleInfoBean infoBean = (ModuleInfoBean) info;
+        AbstractModulePropxy infoBean = (AbstractModulePropxy) info;
         List<ReactorModuleInfoElement> stackArray = new ArrayList<ReactorModuleInfoElement>();
         try {
             //放到栈顶
             stackArray.add(new ReactorModuleInfoElement(0, infoBean, "[OK]    "));
-            this.checkModuleInDependency(infoBean, 1, infoBean.getInternalDependency(), new ArrayList<ModuleInfo>(), stackArray);
+            this.checkModuleInDependency(infoBean, 1, infoBean.getDependency(), new ArrayList<ModuleInfo>(), stackArray);
         } catch (RuntimeException e) {
             String treeInfo = getTreeInfo(stackArray, "[Other] ......");
             Hasor.error("%s module depend on the loop.\n%s", infoBean.getDisplayName(), treeInfo);
             throw e;
         }
     }
-    private void checkModuleInDependency(ModuleInfoBean info, int depth, List<Dependency> depList, List<ModuleInfo> depArray, List<ReactorModuleInfoElement> stackArray) {
+    private void checkModuleInDependency(AbstractModulePropxy info, int depth, List<Dependency> depList, List<ModuleInfo> depArray, List<ReactorModuleInfoElement> stackArray) {
         for (Dependency dep : depList) {
-            ModuleInfoBean depInfo = (ModuleInfoBean) dep.getModuleInfo();
+            AbstractModulePropxy depInfo = (AbstractModulePropxy) dep.getModuleInfo();
             ReactorModuleInfoElement infoLog = new ReactorModuleInfoElement(depth, depInfo);
             depArray.add(depInfo);
             stackArray.add(infoLog);
@@ -58,7 +58,7 @@ public class ModuleReactor {
                 throw new RuntimeException(depInfo.getDisplayName() + " modules depend on the loop.");
             } else {
                 infoLog.setMark("[OK]    ");
-                this.checkModuleInDependency(info, depth + 1, depInfo.getInternalDependency(), depArray, stackArray);
+                this.checkModuleInDependency(info, depth + 1, depInfo.getDependency(), depArray, stackArray);
             }
         }
     }
@@ -72,8 +72,8 @@ public class ModuleReactor {
         /*2.构建ModuleInfo对象中的依赖树*/
         Hasor.info("build dependency tree for ModuleInfo.");
         for (ModuleInfo info : this.modules) {
-            ModuleInfoBean depInfo = (ModuleInfoBean) info;
-            for (Dependency dep : depInfo.getInternalDependency())
+            AbstractModulePropxy depInfo = (AbstractModulePropxy) info;
+            for (Dependency dep : depInfo.getDependency())
                 this.updateModuleDependency(dep);
         }
         /*3.模块依赖树*/
@@ -93,7 +93,7 @@ public class ModuleReactor {
             sb.append("-->");
             sb.append(info.getDisplayName());
             sb.append(" (");
-            sb.append(info.getModuleObject().getClass());
+            sb.append(info.getTarget().getClass());
             sb.append(")\n");
         }
         if (sb.length() > 1)
@@ -107,8 +107,8 @@ public class ModuleReactor {
         ArrayList<ModuleInfo> allModule = new ArrayList<ModuleInfo>(this.modules);//克隆一个
         /*去掉所有被依赖的项目*/
         for (ModuleInfo info : this.modules) {
-            ModuleInfoBean depInfo = (ModuleInfoBean) info;
-            for (Dependency dep : depInfo.getInternalDependency())
+            AbstractModulePropxy depInfo = (AbstractModulePropxy) info;
+            for (Dependency dep : depInfo.getDependency())
                 allModule.remove(dep.getModuleInfo());
         }
         for (ModuleInfo info : allModule)
@@ -116,8 +116,8 @@ public class ModuleReactor {
     }
     private void getDependenceTree(int depth, ModuleInfo info, List<ReactorModuleInfoElement> infoList) {
         infoList.add(new ReactorModuleInfoElement(depth, info));
-        ModuleInfoBean depInfo = (ModuleInfoBean) info;
-        for (Dependency dep : depInfo.getInternalDependency())
+        AbstractModulePropxy depInfo = (AbstractModulePropxy) info;
+        for (Dependency dep : depInfo.getDependency())
             getDependenceTree(depth + 1, dep.getModuleInfo(), infoList);
     }
     private String getTreeInfo(List<ReactorModuleInfoElement> stackArray, String extInfo) {
@@ -132,7 +132,7 @@ public class ModuleReactor {
             sb.append(StringUtils.fixedString(' ', (element.getDepth() + 1) * 2));
             sb.append(element.getInfo().getDisplayName());
             sb.append(" (");
-            sb.append(element.getInfo().getModuleObject().getClass());
+            sb.append(element.getInfo().getTarget().getClass());
             sb.append(")\n");
         }
         if (extInfo != null)
@@ -157,8 +157,8 @@ public class ModuleReactor {
         return finalList;
     }
     private void loadDependence(ModuleInfo e, List<ModuleInfo> finalList) {
-        ModuleInfoBean depInfo = (ModuleInfoBean) e;
-        for (Dependency dep : depInfo.getInternalDependency()) {
+        AbstractModulePropxy depInfo = (AbstractModulePropxy) e;
+        for (Dependency dep : depInfo.getDependency()) {
             ModuleInfo infoItem = dep.getModuleInfo();
             this.loadDependence(infoItem, finalList);
             if (finalList.contains(infoItem) == false)
@@ -169,7 +169,7 @@ public class ModuleReactor {
     /**更新ModuleInfo对象中的依赖树*/
     private void updateModuleDependency(Dependency dep) {
         DependencyBean depBean = (DependencyBean) dep;
-        List<Dependency> refDep = ((ModuleInfoBean) depBean.getModuleInfo()).getInternalDependency();
+        List<Dependency> refDep = ((AbstractModulePropxy) depBean.getModuleInfo()).getDependency();
         depBean.updateDependency(new ArrayList<Dependency>(refDep));
         for (Dependency e : refDep)
             this.updateModuleDependency(e);

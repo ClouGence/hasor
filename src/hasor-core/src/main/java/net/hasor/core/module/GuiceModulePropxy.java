@@ -16,15 +16,15 @@
 package net.hasor.core.module;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.ModuleSettings;
-import net.hasor.core.anno.support.AnnoSupportModule;
+import net.hasor.core.AppContext;
+import net.hasor.core.HasorModule;
 import com.google.inject.Module;
 /**
  * Guice模块代理成AbstractHasorModule类型的工具
  * @version : 2013-7-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class GuiceModulePropxy extends AbstractHasorModule {
+public class GuiceModulePropxy implements HasorModule {
     private Module guiceModule = null;
     //
     public GuiceModulePropxy(Module guiceModule) {
@@ -32,11 +32,9 @@ public class GuiceModulePropxy extends AbstractHasorModule {
         this.guiceModule = guiceModule;
     }
     //
-    public void configuration(ModuleSettings info) {
-        info.beforeMe(AnnoSupportModule.class);
-    }
-    //
     public void init(ApiBinder apiBinder) {
         apiBinder.getGuiceBinder().install(this.guiceModule);
     }
+    public void start(AppContext appContext) {}
+    public void stop(AppContext appContext) {}
 }

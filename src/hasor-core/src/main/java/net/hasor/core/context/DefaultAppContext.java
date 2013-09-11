@@ -13,17 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
+package net.hasor.core.context;
+import net.hasor.core.AppContext;
+import net.hasor.core.Environment;
+import com.google.inject.Injector;
 /**
- * Bean的注册信息。
- * @version : 2013-5-6
+ * {@link AppContext}接口默认实现。
+ * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface BeanInfo {
-    /**获取bean的名称*/
-    public String getName();
-    /**获取bean的别名称*/
-    public String[] getAliasName();
-    /**获取bean的类型*/
-    public Class<?> getBeanType();
+public class DefaultAppContext extends AbstractAppContext {
+    public Environment getEnvironment() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    public Injector getGuice() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

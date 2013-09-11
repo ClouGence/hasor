@@ -17,7 +17,7 @@ package org.hasor.test.core.events;
 import java.io.IOException;
 import net.hasor.Hasor;
 import net.hasor.core.AppContext;
-import net.hasor.core.HasorEventListener;
+import net.hasor.core.EventListener;
 import org.hasor.test.AbstractTestContext;
 import org.junit.Test;
 /**
@@ -41,7 +41,7 @@ public class AsynEventTest extends AbstractTestContext {
         System.in.read();
     }
     /**事件监听器A*/
-    private static class Test_EventListener implements HasorEventListener {
+    private static class Test_EventListener implements EventListener {
         private int sleep = 0;
         public Test_EventListener(int sleep) {
             this.sleep = sleep;
@@ -59,7 +59,7 @@ public class AsynEventTest extends AbstractTestContext {
 //
 //
 /**事件监听器*/
-class ThrowEvent_EventListener implements HasorEventListener {
+class ThrowEvent_EventListener implements EventListener {
     private int sleep = 0;
     public ThrowEvent_EventListener(int sleep) {
         this.sleep = sleep;

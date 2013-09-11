@@ -17,7 +17,7 @@ package org.hasor.test.core.events;
 import java.io.IOException;
 import net.hasor.Hasor;
 import net.hasor.core.AppContext;
-import net.hasor.core.HasorEventListener;
+import net.hasor.core.EventListener;
 import org.hasor.test.AbstractTestContext;
 import org.junit.Test;
 /**
@@ -38,7 +38,7 @@ public class SyncEventTest extends AbstractTestContext {
             this.getAppContext().getEventManager().doSyncEventIgnoreThrow(EventType.Type_A, i);
     }
     /**ÊÂ¼þ¼àÌýÆ÷A*/
-    private static class Test_EventListener implements HasorEventListener {
+    private static class Test_EventListener implements EventListener {
         private int sleep = 0;
         public Test_EventListener(int sleep) {
             this.sleep = sleep;

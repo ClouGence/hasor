@@ -251,4 +251,10 @@ public class StandardEventManager implements EventManager {
         this.executorService = Executors.newScheduledThreadPool(1);
         this.update();
     }
+    public void release() {
+        this.clean();
+        this.listenerRWLock.writeLock().lock();//¼ÓËø
+        this.listenerMap.clear();
+        this.listenerRWLock.writeLock().unlock();//½âËø
+    }
 }

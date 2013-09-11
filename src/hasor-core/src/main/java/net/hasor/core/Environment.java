@@ -38,7 +38,7 @@ public interface Environment {
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
     public Set<Class<?>> getClassSet(Class<?> featureType);
     /**释放环境所占用的资源*/
-    public void release() throws Throwable;
+    public void release();
     //
     //
     //
