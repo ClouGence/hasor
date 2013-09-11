@@ -20,7 +20,7 @@ import java.util.List;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.anno.Before;
-import net.hasor.core.matcher.AopMatchers;
+import net.hasor.core.anno.guice.AopMatchers;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import com.google.inject.matcher.Matcher;

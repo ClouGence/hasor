@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.core.anno.support;
-import static net.hasor.core.context.app.DefaultAppContext.ContextEvent_Start;
+import static net.hasor.core.context.DefaultAppContext.ContextEvent_Start;
 import java.util.Set;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventManager;
-import net.hasor.core.HasorEventListener;
+import net.hasor.core.EventListener;
 import net.hasor.core.SettingsListener;
 import net.hasor.core.ModuleSettings;
 import net.hasor.core.ApiBinder.BeanBindingBuilder;
@@ -90,14 +90,14 @@ public class AnnoSupportModule extends AbstractHasorModule implements GetContext
         EventManager eventManager = appContext.getEventManager();
         //2.过滤未实现HasorModule接口的类
         for (Class<?> cls : eventSet) {
-            if (HasorEventListener.class.isAssignableFrom(cls) == false) {
+            if (EventListener.class.isAssignableFrom(cls) == false) {
                 Hasor.warning("not implemented HasorEventListener :%s", cls);
             } else {
                 EventListener eventType = cls.getAnnotation(EventListener.class);
                 String[] var = eventType.value();
                 if (ArrayUtils.isEmpty(var))
                     continue;
-                HasorEventListener e = (HasorEventListener) appContext.getInstance(cls);
+                EventListener e = (EventListener) appContext.getInstance(cls);
                 for (String v : var)
                     if (!StringUtils.isBlank(v)) {
                         eventManager.addEventListener(v, e);
@@ -118,7 +118,7 @@ public class AnnoSupportModule extends AbstractHasorModule implements GetContext
             apiBinder.getGuiceBinder().bind(settingClass).asEagerSingleton();
             Hasor.info("%s bind SettingsListener.", settingClass);
             //当ContextEvent_Start事件到来时注册所有配置文件监听器。
-            eventManager.pushEventListener(ContextEvent_Start, new HasorEventListener() {
+            eventManager.pushEventListener(ContextEvent_Start, new EventListener() {
                 public void onEvent(String event, Object[] params) {
                     AppContext appContext = (AppContext) params[0];
                     SettingsListener settingObj = (SettingsListener) appContext.getInstance(settingClass);

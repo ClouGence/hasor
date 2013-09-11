@@ -22,7 +22,7 @@ import net.hasor.core.HasorModule;
 import net.hasor.core.ModuleInfo;
 import net.hasor.core.ModuleSettings;
 import net.hasor.core.anno.DefineModule;
-import net.hasor.core.context.app.DefaultAppContext;
+import net.hasor.core.context.DefaultAppContext;
 import net.hasor.core.module.GuiceModulePropxy;
 import org.more.util.StringUtils;
 import com.google.inject.Module;
