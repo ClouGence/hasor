@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import net.hasor.core.BeanInfo;
 import com.google.inject.Provider;
 /**
  * 

@@ -28,21 +28,14 @@ public interface ModuleInfo {
     /**获取描述信息*/
     public String getDescription();
     /**获取模块信息所表述的模块对象*/
-    public HasorModule getModuleObject();
+    public HasorModule getTarget();
     /**获取模块的依赖模块*/
     public List<Dependency> getDependency();
-    /**当模块没有通过configuration方法时false，否则为true.*/
+    //
+    /**当模块是否准备好，当模块经过了init过程视为准备好.*/
     public boolean isReady();
-    /**当模块刚刚经过start阶段，该方法返回值为true。否则返回值为false.*/
-    public boolean isRunning();
-    /**当模块没有通过init阶段返回值为false，否则为true.*/
-    public boolean isInit();
-    /**判断依赖的模块是否已经就绪。如果依赖为一个可选依赖，则被依赖项目即使没有ready也会被判定为ready。*/
+    /**当模块是否准备好，当模块经过了init过程视为准备好.*/
     public boolean isDependencyReady();
-    /**判断依赖的模块是否已经启动。如果依赖为一个可选依赖，则被依赖项目即使没有Running也会被判定为Running。*/
-    public boolean isDependencyRunning();
-    /**判断依赖的模块是否都通过了isInit。如果依赖为一个可选依赖，则被依赖项目即使没有init也会被判定为init。*/
-    public boolean isDependencyInit();
-    /**获取初始化上下文*/
-    public InitContext getInitContext();
+    /**模块是否启动.*/
+    public boolean isStart();
 }

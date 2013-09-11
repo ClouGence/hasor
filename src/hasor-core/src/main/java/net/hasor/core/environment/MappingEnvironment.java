@@ -26,19 +26,19 @@ import net.hasor.core.setting.MappingInitContextSettings;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public class MappingEnvironment extends DefaultEnvironment {
-    public MappingEnvironment() throws IOException {
+    public MappingEnvironment() {
         super();
     }
-    public MappingEnvironment(URI mainSettings) throws IOException {
+    public MappingEnvironment(URI mainSettings) {
         super(mainSettings);
     }
-    public MappingEnvironment(URI mainSettings, Object context) throws IOException {
+    public MappingEnvironment(URI mainSettings, Object context) {
         super(mainSettings, context);
     }
-    public MappingEnvironment(File mainSettings) throws IOException {
+    public MappingEnvironment(File mainSettings) {
         super((mainSettings == null) ? null : mainSettings.toURI());
     }
-    public MappingEnvironment(File mainSettings, Object context) throws IOException {
+    public MappingEnvironment(File mainSettings, Object context) {
         super((mainSettings == null) ? null : mainSettings.toURI(), context);
     }
     //---------------------------------------------------------------------------------Basic Method

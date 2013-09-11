@@ -26,19 +26,19 @@ import net.hasor.core.setting.InitContextSettings;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public class StandardEnvironment extends DefaultEnvironment {
-    public StandardEnvironment() throws IOException {
+    public StandardEnvironment() {
         super();
     }
-    public StandardEnvironment(URI mainSettings) throws IOException {
+    public StandardEnvironment(URI mainSettings) {
         super(mainSettings);
     }
-    public StandardEnvironment(URI mainSettings, Object context) throws IOException {
+    public StandardEnvironment(URI mainSettings, Object context) {
         super(mainSettings, context);
     }
-    public StandardEnvironment(File mainSettings) throws IOException {
+    public StandardEnvironment(File mainSettings) {
         super((mainSettings == null) ? null : mainSettings.toURI());
     }
-    public StandardEnvironment(File mainSettings, Object context) throws IOException {
+    public StandardEnvironment(File mainSettings, Object context) {
         super((mainSettings == null) ? null : mainSettings.toURI(), context);
     }
     //---------------------------------------------------------------------------------Basic Method

@@ -34,6 +34,7 @@ import net.hasor.core.EventManager;
 import net.hasor.core.Settings;
 import net.hasor.core.SettingsListener;
 import net.hasor.core.XmlNode;
+import org.more.UnhandledException;
 import org.more.util.ResourceWatch;
 import org.more.util.ScanClassPath;
 import org.more.util.StringUtils;
@@ -90,11 +91,17 @@ public abstract class AbstractEnvironment implements Environment {
     }
     //
     /**初始化方法*/
-    protected void initEnvironment() throws IOException {
+    protected void initEnvironment() {
+        Hasor.info("initEnvironment.");
+        //
         this.startTime = System.currentTimeMillis();
         this.settingListenerList = new ArrayList<SettingsListener>();
-        this.settings = this.createSettings(this.getSettingURI());
-        this.settings.refresh();
+        try {
+            this.settings = this.createSettings(this.getSettingURI());
+            this.settings.refresh();
+        } catch (Exception e) {
+            throw new UnhandledException(e);
+        }
         this.envVars = this.createEnvVars();
         this.eventManager = this.createEventManager();
         //

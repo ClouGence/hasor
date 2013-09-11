@@ -16,7 +16,6 @@
 package net.hasor.core.binder;
 import java.util.ArrayList;
 import java.util.List;
-import net.hasor.core.BeanInfo;
 import net.hasor.core.ApiBinder.BeanBindingBuilder;
 import com.google.inject.Binder;
 import com.google.inject.Module;

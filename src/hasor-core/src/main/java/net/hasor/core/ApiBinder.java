@@ -53,6 +53,9 @@ public interface ApiBinder {
     public <T> void bindingType(Class<T> type, Key<? extends T> targetKey);
     //
     //
+    //
+    /**配置模块名称以及依赖信息。*/
+    public ModuleSettings moduleSettings();
     /**注册一个bean。*/
     public BeanBindingBuilder newBean(String beanName);
     /**负责注册Bean*/
@@ -61,5 +64,22 @@ public interface ApiBinder {
         public BeanBindingBuilder aliasName(String aliasName);
         /**bean绑定的类型。*/
         public <T> LinkedBindingBuilder<T> bindType(Class<T> beanClass);
+    }
+    /** 该接口可以配置模块信息 */
+    public interface ModuleSettings {
+        /**要求目标模块的启动排在该模块之后。*/
+        public void afterMe(Class<? extends HasorModule> targetModule);
+        /**要求目标模块的启动在当前模块之前进行启动。<br/>
+         * 注意：该方法仅仅要求在目标模块之后启动。但目标模块是否启动并无强制要求。*/
+        public void beforeMe(Class<? extends HasorModule> targetModule);
+        /**跟随目标模块启动而启动。<br/> 
+         * 注意：该方法要求在目标模块启动之后在启动。*/
+        public void followTarget(Class<? extends HasorModule> targetModule);
+        /**绑定配置文件命名空间*/
+        public void bindingSettingsNamespace(String settingsNamespace);
+        /**设置显示名称*/
+        public void setDisplayName(String displayName);
+        /**设置描述信息*/
+        public void setDescription(String description);
     }
 }

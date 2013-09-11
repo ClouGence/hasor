@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.core;
-/**
+/** 
  * 异步事件回调接口。
- * @version : 2013-4-12
- * @author 赵永春 (zyc@hasor.net)
+ * @version : 2013-9-11
+ * @author 赵永春(zyc@hasor.net)
  */
 public interface AsyncCallBackHook {
     /**在执行事件监听器发生异常时调用该方法。*/

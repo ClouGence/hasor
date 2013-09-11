@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
+package net.hasor.core.binder;
 /**
- * Hasor模块，该方法中定义了模块生命周期。
- * @version : 2013-3-20
+ * Bean的注册信息。
+ * @version : 2013-5-6
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface HasorModule {
-    /**初始化过程。*/
-    public void init(ApiBinder apiBinder);
-    /**启动信号*/
-    public void start(AppContext appContext);
-    /**停止信号*/
-    public void stop(AppContext appContext);
+public interface BeanInfo {
+    /**获取bean的名称*/
+    public String getName();
+    /**获取bean的别名称*/
+    public String[] getAliasName();
+    /**获取bean的类型*/
+    public Class<?> getBeanType();
 }

@@ -16,30 +16,40 @@
 package net.hasor.core;
 import org.more.UndefinedException;
 import com.google.inject.Injector;
+import com.google.inject.Provider;
 /**
  * 应用程序上下文
  * @version : 2013-3-26
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface AppContext extends InitContext, LifeCycle {
+public interface AppContext {
     /**通过名获取Bean的类型。*/
     public <T> Class<T> getBeanType(String name);
     /**如果存在目标类型的Bean则返回Bean的名称。*/
     public String getBeanName(Class<?> targetClass);
     /**获取已经注册的Bean名称。*/
     public String[] getBeanNames();
-    /**获取bean信息。*/
-    public BeanInfo getBeanInfo(String name);
     /**通过名称创建bean实例，使用guice，如果获取的bean不存在则会引发{@link UndefinedException}类型异常。*/
     public <T> T getBean(String name);
     /**通过类型创建该类实例，使用guice*/
     public <T> T getInstance(Class<T> beanType);
     /**获得Guice环境。*/
     public Injector getGuice();
-    /**事件管理器。*/
-    public EventManager getEventManager();
+    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    public <T> Object[] getInstanceByBindingType(Class<T> bindingType);
+    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    public <T> Provider<T>[] getProviderByBindingType(Class<T> bindingType);
+    //
+    /**获取上下文*/
+    public Object getContext();
+    /**获取系统启动时间*/
+    public long getStartTime();
+    /**表示AppContext是否准备好。*/
+    public boolean isReady();
+    /**获取应用程序配置。*/
+    public Settings getSettings();
+    /**获取环境接口。*/
+    public Environment getEnvironment();
     /**获得所有模块*/
     public ModuleInfo[] getModules();
-    /**是否完成初始化工作*/
-    public boolean isInit();
 }
