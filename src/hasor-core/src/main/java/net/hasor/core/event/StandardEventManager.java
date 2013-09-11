@@ -26,11 +26,11 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import net.hasor.Hasor;
 import net.hasor.core.AsyncCallBackHook;
+import net.hasor.core.Environment;
+import net.hasor.core.EventListener;
 import net.hasor.core.EventManager;
-import net.hasor.core.HasorEventListener;
-import net.hasor.core.SettingsListener;
-import net.hasor.core.InitContext;
 import net.hasor.core.Settings;
+import net.hasor.core.SettingsListener;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 /**
@@ -39,20 +39,20 @@ import org.more.util.StringUtils;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public class StandardEventManager implements EventManager {
-    private static final EmptyAsyncCallBackHook         EmptyAsyncCallBack = new EmptyAsyncCallBackHook();
+    private static final EmptyAsyncCallBackHook    EmptyAsyncCallBack = new EmptyAsyncCallBackHook();
     //
-    private Settings                                    settings           = null;
-    private ScheduledExecutorService                    executorService    = null;
-    private Map<String, HasorEventListener[]>           listenerMap        = new HashMap<String, HasorEventListener[]>();
-    private ReadWriteLock                               listenerRWLock     = new ReentrantReadWriteLock();
-    private Map<String, LinkedList<HasorEventListener>> onceListenerMap    = new HashMap<String, LinkedList<HasorEventListener>>();
-    private Lock                                        onceListenerLock   = new ReentrantLock();
+    private Settings                               settings           = null;
+    private ScheduledExecutorService               executorService    = null;
+    private Map<String, EventListener[]>           listenerMap        = new HashMap<String, EventListener[]>();
+    private ReadWriteLock                          listenerRWLock     = new ReentrantReadWriteLock();
+    private Map<String, LinkedList<EventListener>> onceListenerMap    = new HashMap<String, LinkedList<EventListener>>();
+    private Lock                                   onceListenerLock   = new ReentrantLock();
     //
-    public StandardEventManager(InitContext initContext) {
-        initContext = Hasor.assertIsNotNull(initContext, "InitContext type parameter is empty!");
-        this.settings = initContext.getSettings();
+    public StandardEventManager(Environment env) {
+        env = Hasor.assertIsNotNull(env, "Environment type parameter is empty!");
+        this.settings = env.getSettings();
         this.executorService = Executors.newScheduledThreadPool(1);
-        initContext.addSettingsListener(new SettingsListener() {
+        env.addSettingsListener(new SettingsListener() {
             public void onLoadConfig(Settings newConfig) {
                 update();
             }
@@ -79,30 +79,30 @@ public class StandardEventManager implements EventManager {
     //
     //
     //
-    public void pushEventListener(String eventType, HasorEventListener hasorEventListener) {
-        if (StringUtils.isBlank(eventType) || hasorEventListener == null)
+    public void pushEventListener(String eventType, EventListener eventListener) {
+        if (StringUtils.isBlank(eventType) || eventListener == null)
             return;
         this.onceListenerLock.lock();//º”À¯
-        LinkedList<HasorEventListener> eventList = this.onceListenerMap.get(eventType);
+        LinkedList<EventListener> eventList = this.onceListenerMap.get(eventType);
         if (eventList == null) {
-            eventList = new LinkedList<HasorEventListener>();
+            eventList = new LinkedList<EventListener>();
             this.onceListenerMap.put(eventType, eventList);
         }
-        if (eventList.contains(hasorEventListener) == false)
-            eventList.push(hasorEventListener);
+        if (eventList.contains(eventListener) == false)
+            eventList.push(eventListener);
         this.onceListenerLock.unlock();//Ω‚À¯
     }
-    public void addEventListener(String eventType, HasorEventListener hasorEventListener) {
+    public void addEventListener(String eventType, EventListener eventListener) {
         this.listenerRWLock.writeLock().lock();//º”À¯(–¥)
         //
-        Hasor.assertIsNotNull(hasorEventListener, "add EventListener object is null.");
-        HasorEventListener[] eventListenerArray = this.listenerMap.get(eventType);
+        Hasor.assertIsNotNull(eventListener, "add EventListener object is null.");
+        EventListener[] eventListenerArray = this.listenerMap.get(eventType);
         if (eventListenerArray == null) {
-            eventListenerArray = new HasorEventListener[] { hasorEventListener };
+            eventListenerArray = new EventListener[] { eventListener };
             this.listenerMap.put(eventType, eventListenerArray);
         } else {
-            if (ArrayUtils.contains(eventListenerArray, hasorEventListener) == false) {
-                eventListenerArray = (HasorEventListener[]) ArrayUtils.add(eventListenerArray, hasorEventListener);
+            if (ArrayUtils.contains(eventListenerArray, eventListener) == false) {
+                eventListenerArray = (EventListener[]) ArrayUtils.add(eventListenerArray, eventListener);
                 this.listenerMap.put(eventType, eventListenerArray);
             }
         }
@@ -114,15 +114,15 @@ public class StandardEventManager implements EventManager {
     //        this.listenerMap.remove(eventType);
     //        this.listenerRWLock.writeLock().unlock();//Ω‚À¯(–¥)
     //    }
-    public void removeEventListener(String eventType, HasorEventListener hasorEventListener) {
+    public void removeEventListener(String eventType, EventListener eventListener) {
         this.listenerRWLock.writeLock().lock();//º”À¯(–¥)
         //
         Hasor.assertIsNotNull(eventType, "remove eventType is null.");
-        Hasor.assertIsNotNull(hasorEventListener, "remove EventListener object is null.");
-        HasorEventListener[] eventListenerArray = this.listenerMap.get(eventType);
+        Hasor.assertIsNotNull(eventListener, "remove EventListener object is null.");
+        EventListener[] eventListenerArray = this.listenerMap.get(eventType);
         if (!ArrayUtils.isEmpty(eventListenerArray)) {
-            int index = ArrayUtils.indexOf(eventListenerArray, hasorEventListener);
-            eventListenerArray = (HasorEventListener[]) ((index == ArrayUtils.INDEX_NOT_FOUND) ? eventListenerArray : ArrayUtils.remove(eventListenerArray, index));
+            int index = ArrayUtils.indexOf(eventListenerArray, eventListener);
+            eventListenerArray = (EventListener[]) ((index == ArrayUtils.INDEX_NOT_FOUND) ? eventListenerArray : ArrayUtils.remove(eventListenerArray, index));
             this.listenerMap.put(eventType, eventListenerArray);
         }
         //
@@ -176,11 +176,11 @@ public class StandardEventManager implements EventManager {
         if (StringUtils.isBlank(eventType) == true)
             return;
         this.listenerRWLock.readLock().lock();//º”À¯(∂¡)
-        HasorEventListener[] eventListenerArray = this.listenerMap.get(eventType);
+        EventListener[] eventListenerArray = this.listenerMap.get(eventType);
         this.listenerRWLock.readLock().unlock();//Ω‚À¯(∂¡)
         //
         if (eventListenerArray != null) {
-            for (HasorEventListener event : eventListenerArray)
+            for (EventListener event : eventListenerArray)
                 try {
                     event.onEvent(eventType, objects);
                 } catch (Throwable e) {
@@ -198,12 +198,12 @@ public class StandardEventManager implements EventManager {
             return;
         final AsyncCallBackHook callBack = (hook != null) ? hook : EmptyAsyncCallBack;
         this.listenerRWLock.readLock().lock();//º”À¯(∂¡)
-        final HasorEventListener[] eventListenerArray = this.listenerMap.get(eventType);
+        final EventListener[] eventListenerArray = this.listenerMap.get(eventType);
         this.listenerRWLock.readLock().unlock();//Ω‚À¯(∂¡)
         this.executorService.submit(new Runnable() {
             public void run() {
                 if (eventListenerArray != null) {
-                    for (HasorEventListener event : eventListenerArray)
+                    for (EventListener event : eventListenerArray)
                         try {
                             event.onEvent(eventType, objects);
                         } catch (Throwable e) {
@@ -221,9 +221,9 @@ public class StandardEventManager implements EventManager {
     }
     private void processOnceListener(boolean ignore, String eventType, AsyncCallBackHook callBack, Object... objects) {
         this.onceListenerLock.lock();//º”À¯
-        LinkedList<HasorEventListener> eventList = this.onceListenerMap.get(eventType);
+        LinkedList<EventListener> eventList = this.onceListenerMap.get(eventType);
         if (eventList != null) {
-            HasorEventListener listener = null;
+            EventListener listener = null;
             while ((listener = eventList.pollLast()) != null) {
                 try {
                     listener.onEvent(eventType, objects);

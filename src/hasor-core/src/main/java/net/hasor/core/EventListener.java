@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import java.util.EventListener;
 /**
  * 应用程序事件监听器
  * @version : 2013-7-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface HasorEventListener extends EventListener {
+public interface EventListener extends java.util.EventListener {
     /**处理事件的处理方法，参数是要处理的事件。*/
     public void onEvent(String event, Object[] params) throws Throwable;
 };

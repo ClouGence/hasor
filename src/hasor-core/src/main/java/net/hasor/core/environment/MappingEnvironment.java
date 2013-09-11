@@ -13,32 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context.init;
+package net.hasor.core.environment;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import net.hasor.core.InitContext;
+import net.hasor.core.Environment;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.MappingInitContextSettings;
 /**
- * {@link InitContext}接口实现类。
+ * {@link Environment}接口实现类。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MappingInitContext extends DefaultInitContext {
-    public MappingInitContext() throws IOException {
+public class MappingEnvironment extends DefaultEnvironment {
+    public MappingEnvironment() throws IOException {
         super();
     }
-    public MappingInitContext(URI mainSettings) throws IOException {
+    public MappingEnvironment(URI mainSettings) throws IOException {
         super(mainSettings);
     }
-    public MappingInitContext(URI mainSettings, Object context) throws IOException {
+    public MappingEnvironment(URI mainSettings, Object context) throws IOException {
         super(mainSettings, context);
     }
-    public MappingInitContext(File mainSettings) throws IOException {
+    public MappingEnvironment(File mainSettings) throws IOException {
         super((mainSettings == null) ? null : mainSettings.toURI());
     }
-    public MappingInitContext(File mainSettings, Object context) throws IOException {
+    public MappingEnvironment(File mainSettings, Object context) throws IOException {
         super((mainSettings == null) ? null : mainSettings.toURI(), context);
     }
     //---------------------------------------------------------------------------------Basic Method

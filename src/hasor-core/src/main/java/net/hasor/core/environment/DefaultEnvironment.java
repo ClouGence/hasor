@@ -13,44 +13,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context.init;
+package net.hasor.core.environment;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import net.hasor.core.Environment;
 import net.hasor.core.EventManager;
-import net.hasor.core.InitContext;
 import net.hasor.core.Settings;
-import net.hasor.core.environment.StandardEnvironment;
+import net.hasor.core.SettingsListener;
 import net.hasor.core.event.StandardEventManager;
 import net.hasor.core.setting.FileSettings;
 /**
- * {@link InitContext}接口实现类。
- * @version : 2013-4-9
- * @author 赵永春 (zyc@hasor.net)
+ * {@link Environment}接口实现类。
+ * @version : 2013-9-11
+ * @author 赵永春(zyc@hasor.net)
  */
-public class DefaultInitContext extends AbstractInitContext {
-    public DefaultInitContext() throws IOException {
+public class DefaultEnvironment extends AbstractEnvironment {
+    public DefaultEnvironment() throws IOException {
         this(null, null);
     }
-    public DefaultInitContext(URI mainSettings) throws IOException {
+    public DefaultEnvironment(URI mainSettings) throws IOException {
         this(mainSettings, null);
     }
-    public DefaultInitContext(URI mainSettings, Object context) throws IOException {
+    public DefaultEnvironment(URI mainSettings, Object context) throws IOException {
         if (context != null)
             this.setContext(context);
         if (mainSettings != null)
             this.settingURI = mainSettings;
-        this.initContext();
+        this.initEnvironment();
     }
     //---------------------------------------------------------------------------------Basic Method
     protected URI settingURI = null;
     public URI getSettingURI() {
         return this.settingURI;
     }
-    //
-    protected Environment createEnvironment() {
-        return new StandardEnvironment(this);
+    protected SettingWatch createSettingWatch(URI settingURI) {
+        final SettingWatch settingWatch = new SettingWatch(this) {};
+        /*设置监听器检测间隔*/
+        long interval = this.getSettings().getLong("hasor.settingsMonitor.interval", 15000L);
+        settingWatch.setCheckSeepTime(interval);
+        /*注册一个配置文件监听器，当配置文件更新时通知监听器更新检测间隔*/
+        this.addSettingsListener(new SettingsListener() {
+            public void onLoadConfig(Settings newConfig) {
+                long interval = newConfig.getLong("hasor.settingsMonitor.interval", 15000L);
+                settingWatch.setCheckSeepTime(interval);
+            }
+        });
+        return settingWatch;
+    }
+    protected EnvVars createEnvVars() {
+        return new EnvVars(this) {};
     }
     protected EventManager createEventManager() {
         return new StandardEventManager(this);
