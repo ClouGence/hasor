@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.net.URI;
 import net.hasor.core.Environment;
 import net.hasor.core.Settings;
-import net.hasor.core.setting.InitContextSettings;
+import net.hasor.core.setting.DefaultContextSettings;
 /**
  * {@link Environment}接口实现类。
  * @version : 2013-4-9
@@ -32,22 +32,16 @@ public class StandardEnvironment extends DefaultEnvironment {
     public StandardEnvironment(URI mainSettings) {
         super(mainSettings);
     }
-    public StandardEnvironment(URI mainSettings, Object context) {
-        super(mainSettings, context);
-    }
     public StandardEnvironment(File mainSettings) {
         super((mainSettings == null) ? null : mainSettings.toURI());
     }
-    public StandardEnvironment(File mainSettings, Object context) {
-        super((mainSettings == null) ? null : mainSettings.toURI(), context);
-    }
     //---------------------------------------------------------------------------------Basic Method
     protected Settings createSettings(URI settingURI) throws IOException {
-        InitContextSettings settings = null;
+        DefaultContextSettings settings = null;
         if (settingURI == null)
-            settings = new InitContextSettings();
+            settings = new DefaultContextSettings();
         else
-            settings = new InitContextSettings(settingURI);
+            settings = new DefaultContextSettings(settingURI);
         this.settingURI = settings.getSettingURI();
         return settings;
     }

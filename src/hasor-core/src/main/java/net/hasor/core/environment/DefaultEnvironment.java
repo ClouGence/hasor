@@ -31,14 +31,9 @@ import net.hasor.core.setting.FileSettings;
  */
 public class DefaultEnvironment extends AbstractEnvironment {
     public DefaultEnvironment() {
-        this(null, null);
+        this(null);
     }
     public DefaultEnvironment(URI mainSettings) {
-        this(mainSettings, null);
-    }
-    public DefaultEnvironment(URI mainSettings, Object context) {
-        if (context != null)
-            this.setContext(context);
         if (mainSettings != null)
             this.settingURI = mainSettings;
         this.initEnvironment();

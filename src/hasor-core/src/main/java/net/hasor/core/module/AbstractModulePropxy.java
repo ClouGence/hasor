@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.module;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import net.hasor.Hasor;
@@ -33,7 +34,7 @@ import org.more.util.exception.ExceptionUtils;
 public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信息*/, ModuleSettings, Module {
     private String           displayName;
     private String           description;
-    private Module      targetModule;
+    private Module           targetModule;
     private String           namespace;
     private AppContext       appContext;
     private List<Dependency> dependency;
@@ -46,6 +47,7 @@ public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信
         //
         this.description = targetModule.getClass().getName();
         this.displayName = targetModule.getClass().getSimpleName();
+        this.dependency = new ArrayList<Dependency>();
         this.isReady = false;
     }
     //
@@ -108,8 +110,14 @@ public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信
         if (isReady())
             /*模块已经准备好，只有当模块在准备期才可以使用该方法*/
             throw new IllegalStateException("Module is ready, only can use this method in run-up.");
+        //
         AbstractModulePropxy moduleInfo = this.getInfo(targetModule, this.appContext);
-        moduleInfo.beforeMe(this.getTarget().getClass());
+        for (Dependency dep : this.dependency)
+            if (dep.getModuleInfo() == moduleInfo)
+                throw new IllegalStateException("dependence is included.");
+        //
+        Dependency dep = new DependencyBean(moduleInfo, true);
+        this.dependency.add(dep);
     }
     public void beforeMe(Class<? extends Module> targetModule) {
         if (isReady())
@@ -117,12 +125,7 @@ public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信
             throw new IllegalStateException("Module is ready, only can use this method in run-up.");
         //
         AbstractModulePropxy moduleInfo = this.getInfo(targetModule, this.appContext);
-        for (Dependency dep : this.dependency)
-            if (dep.getModuleInfo() == moduleInfo)
-                throw new IllegalStateException("before dependence is included.");
-        //
-        Dependency dep = new DependencyBean(moduleInfo, true);
-        this.dependency.add(dep);
+        moduleInfo.afterMe(this.getTarget().getClass());
     }
     public void followTarget(Class<? extends Module> targetModule) {
         if (isReady())

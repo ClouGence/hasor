@@ -32,25 +32,25 @@ import org.more.util.map.Properties;
  * @version : 2013-9-9
  * @author 赵永春(zyc@hasor.net)
  */
-public class MappingInitContextSettings extends InitContextSettings {
+public class MappingContextSettings extends DefaultContextSettings {
     /**映射配置文件*/
     public static final String MappingConfigName = "config-mapping.properties";
     //
     //
-    /**创建{@link MappingInitContextSettings}类型对象。*/
-    public MappingInitContextSettings() throws IOException {
+    /**创建{@link MappingContextSettings}类型对象。*/
+    public MappingContextSettings() throws IOException {
         super();
     }
-    /**创建{@link MappingInitContextSettings}类型对象。*/
-    public MappingInitContextSettings(String mainConfig) throws IOException {
+    /**创建{@link MappingContextSettings}类型对象。*/
+    public MappingContextSettings(String mainConfig) throws IOException {
         super(mainConfig);
     }
-    /**创建{@link MappingInitContextSettings}类型对象。*/
-    public MappingInitContextSettings(File mainConfig) throws IOException {
+    /**创建{@link MappingContextSettings}类型对象。*/
+    public MappingContextSettings(File mainConfig) throws IOException {
         super(mainConfig);
     }
-    /**创建{@link MappingInitContextSettings}类型对象。*/
-    public MappingInitContextSettings(URI mainConfig) throws IOException {
+    /**创建{@link MappingContextSettings}类型对象。*/
+    public MappingContextSettings(URI mainConfig) throws IOException {
         super(mainConfig);
     }
     //

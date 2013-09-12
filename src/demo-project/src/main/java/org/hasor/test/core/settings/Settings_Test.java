@@ -19,9 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import net.hasor.Hasor;
 import net.hasor.core.setting.FileSettings;
-import net.hasor.core.setting.InitContextSettings;
+import net.hasor.core.setting.DefaultContextSettings;
 import net.hasor.core.setting.InputStreamSettings;
-import net.hasor.core.setting.MappingInitContextSettings;
+import net.hasor.core.setting.MappingContextSettings;
 import org.junit.Test;
 import org.more.util.ResourcesUtils;
 /**
@@ -70,7 +70,7 @@ public class Settings_Test {
     @Test
     public void testInitContextSettings() throws IOException {
         System.out.println("--->>testInitContextSettings<<--");
-        InitContextSettings settings = new InitContextSettings();
+        DefaultContextSettings settings = new DefaultContextSettings();
         //
         System.out.println(Hasor.logString(settings.getStringArray("hasor.loadPackages")));
         System.out.println(Hasor.logString(settings.getStringArray("environmentVar.HASOR_WORK_HOME")));//不存在这个配置内容
@@ -78,7 +78,7 @@ public class Settings_Test {
     @Test
     public void testMappingInitContextSettings() throws IOException {
         System.out.println("--->>testMappingInitContextSettings<<--");
-        MappingInitContextSettings settings = new MappingInitContextSettings();
+        MappingContextSettings settings = new MappingContextSettings();
         //
         System.out.println(Hasor.logString(settings.getString("work")));//不存在这个配置内容
     }

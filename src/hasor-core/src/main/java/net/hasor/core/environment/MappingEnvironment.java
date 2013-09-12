@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.net.URI;
 import net.hasor.core.Environment;
 import net.hasor.core.Settings;
-import net.hasor.core.setting.MappingInitContextSettings;
+import net.hasor.core.setting.MappingContextSettings;
 /**
  * {@link Environment}接口实现类。
  * @version : 2013-4-9
@@ -32,22 +32,16 @@ public class MappingEnvironment extends DefaultEnvironment {
     public MappingEnvironment(URI mainSettings) {
         super(mainSettings);
     }
-    public MappingEnvironment(URI mainSettings, Object context) {
-        super(mainSettings, context);
-    }
     public MappingEnvironment(File mainSettings) {
         super((mainSettings == null) ? null : mainSettings.toURI());
     }
-    public MappingEnvironment(File mainSettings, Object context) {
-        super((mainSettings == null) ? null : mainSettings.toURI(), context);
-    }
     //---------------------------------------------------------------------------------Basic Method
     protected Settings createSettings(URI settingURI) throws IOException {
-        MappingInitContextSettings settings = null;
+        MappingContextSettings settings = null;
         if (settingURI == null)
-            settings = new MappingInitContextSettings();
+            settings = new MappingContextSettings();
         else
-            settings = new MappingInitContextSettings(settingURI);
+            settings = new MappingContextSettings(settingURI);
         this.settingURI = settings.getSettingURI();
         return settings;
     }

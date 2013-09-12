@@ -41,8 +41,9 @@ public class InputStreamSettings extends AbstractBaseSettings implements IOSetti
     }
     /**创建{@link InputStreamSettings}对象。*/
     public InputStreamSettings(InputStream[] inStreams) throws IOException {
-        super();
         Hasor.assertIsNotNull(inStreams);
+        if (inStreams.length == 0)
+            return;
         for (InputStream ins : inStreams) {
             Hasor.assertIsNotNull(ins);
             this.addStream(ins);

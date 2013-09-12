@@ -46,7 +46,6 @@ import org.more.util.map.DecSequenceMap;
  */
 public abstract class AbstractEnvironment implements Environment {
     private long         startTime;   //系统启动时间
-    private Object       context;
     private String[]     spanPackage;
     private Settings     settings;
     private EventManager eventManager;
@@ -54,13 +53,6 @@ public abstract class AbstractEnvironment implements Environment {
     //---------------------------------------------------------------------------------Basic Method
     public long getStartTime() {
         return this.startTime;
-    }
-    public Object getContext() {
-        return this.context;
-    }
-    /**设置上下文*/
-    public void setContext(Object context) {
-        this.context = context;
     }
     public Set<Class<?>> getClassSet(Class<?> featureType) {
         return ScanClassPath.getClassSet(this.spanPackage, featureType);

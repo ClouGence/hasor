@@ -25,8 +25,6 @@ import java.util.Set;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface Environment {
-    /**获取上下文*/
-    public Object getContext();
     /**获取系统启动时间*/
     public long getStartTime();
     /**获取配置文件URI*/

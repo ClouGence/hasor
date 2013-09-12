@@ -29,7 +29,7 @@ import org.more.util.ResourcesUtils;
  * @version : 2013-9-9
  * @author 赵永春(zyc@hasor.net)
  */
-public class InitContextSettings extends FileSettings {
+public class DefaultContextSettings extends FileSettings {
     /**默认主配置文件名称*/
     public static final String MainSettingName   = "hasor-config.xml";
     /**默认静态配置文件名称*/
@@ -39,11 +39,11 @@ public class InitContextSettings extends FileSettings {
     //
     //
     /**创建{@link DefaultContextSettings}类型对象。*/
-    public InitContextSettings() throws IOException {
+    public DefaultContextSettings() throws IOException {
         this(MainSettingName);
     }
     /**创建{@link DefaultContextSettings}类型对象。*/
-    public InitContextSettings(String settingResource) throws IOException {
+    public DefaultContextSettings(String settingResource) throws IOException {
         super();
         Hasor.assertIsNotNull(settingResource);
         URL url = ResourcesUtils.getResource(settingResource);
@@ -56,11 +56,11 @@ public class InitContextSettings extends FileSettings {
         this.refresh();
     }
     /**创建{@link DefaultContextSettings}类型对象。*/
-    public InitContextSettings(File settingFile) throws IOException {
+    public DefaultContextSettings(File settingFile) throws IOException {
         this((settingFile == null) ? null : settingFile.toURI());
     }
     /**创建{@link DefaultContextSettings}类型对象。*/
-    public InitContextSettings(URI settingURI) throws IOException {
+    public DefaultContextSettings(URI settingURI) throws IOException {
         super();
         Hasor.assertIsNotNull(settingURI);
         this.settingURI = settingURI;

@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import net.hasor.Hasor;
-import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.EventManager;
@@ -52,10 +51,15 @@ public abstract class AbstractAppContext implements AppContext {
     public static final String ContextEvent_Stop  = "ContextEvent_Stop";
     //
     //
+    private Object             context;
     /**获取上下文*/
     public Object getContext() {
-        return this.getEnvironment().getContext();
-    };
+        return this.context;
+    }
+    /**设置上下文*/
+    public void setContext(Object context) {
+        this.context = context;
+    }
     /**获取系统启动时间*/
     public long getStartTime() {
         return this.getEnvironment().getStartTime();
@@ -110,6 +114,8 @@ public abstract class AbstractAppContext implements AppContext {
     private void collectBeanInfos() {
         this.beanInfoMap = new HashMap<String, BeanInfo>();
         Provider<BeanInfo>[] beanInfoProviderArray = this.getProviderByBindingType(BeanInfo.class);
+        if (beanInfoProviderArray == null)
+            return;
         for (Provider<BeanInfo> entry : beanInfoProviderArray) {
             BeanInfo beanInfo = entry.get();
             this.beanInfoMap.put(beanInfo.getName(), beanInfo);
@@ -213,7 +219,7 @@ public abstract class AbstractAppContext implements AppContext {
     }
     //
     /**为模块创建ApiBinder*/
-    protected ApiBinder newApiBinder(final AbstractModulePropxy forModule, final Binder binder) {
+    protected ApiBinderModule newApiBinder(final AbstractModulePropxy forModule, final Binder binder) {
         return new ApiBinderModule(this.getEnvironment(), forModule) {
             public Binder getGuiceBinder() {
                 return binder;
@@ -257,21 +263,27 @@ public abstract class AbstractAppContext implements AppContext {
     //
     //
     //---------------------------------------------------------------------------------------Module
-    private Injector guice;
-    private boolean  isStart;
+    private boolean     isStart;
+    private Environment environment;
+    //
+    /**获取环境接口。*/
+    public Environment getEnvironment() {
+        return this.environment;
+    }
     /**判断容器是否处于运行状态*/
     public boolean isStart() {
         return this.isStart;
     }
     /**初始化容器，请注意容器只能被初始化一次。*/
     protected void initContext() {
-        if (this.guice != null)
+        if (this.injector != null)
             return;
         /*触发ContextEvent_Init事件，并且创建创建guice*/
         Hasor.info("send init sign.");
+        this.environment = this.createEnvironment();
         this.getEnvironment().getEventManager().doSyncEventIgnoreThrow(ContextEvent_Init, this);
-        this.guice = this.createInjector(null);
-        Hasor.assertIsNotNull(this.guice, "can not be create Injector.");
+        this.injector = this.createInjector(null);
+        Hasor.assertIsNotNull(this.injector, "can not be create Injector.");
         /*使用反应堆对模块进行循环检查和排序*/
         List<ModuleInfo> readOnlyModules = new ArrayList<ModuleInfo>();
         for (AbstractModulePropxy amp : this.getModulePropxyList())
@@ -286,6 +298,8 @@ public abstract class AbstractAppContext implements AppContext {
         // 
         Hasor.info("the init is completed!");
     }
+    /**创建环境对象*/
+    protected abstract Environment createEnvironment();
     /**启动*/
     public synchronized void start() {
         this.initContext();
@@ -314,7 +328,7 @@ public abstract class AbstractAppContext implements AppContext {
     public synchronized void destroy() {
         this.stop();
         this.getEnvironment().release();
-        this.guice = null;
+        this.injector = null;
     }
 }
 /**该类负责处理模块在Guice.configure期间的初始化任务。*/
@@ -328,8 +342,9 @@ class MasterModule implements com.google.inject.Module {
         List<AbstractModulePropxy> modulePropxyList = this.appContet.getModulePropxyList();
         /*引发模块init生命周期*/
         for (AbstractModulePropxy forModule : modulePropxyList) {
-            ApiBinder apiBinder = this.appContet.newApiBinder(forModule, binder);
+            ApiBinderModule apiBinder = this.appContet.newApiBinder(forModule, binder);
             forModule.init(apiBinder);//触发生命周期 
+            apiBinder.configure(binder);
         }
         Hasor.info("init modules finish.");
         ExtBind.doBind(binder, appContet);
