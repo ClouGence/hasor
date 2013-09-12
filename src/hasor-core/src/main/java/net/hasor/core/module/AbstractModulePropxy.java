@@ -146,7 +146,7 @@ public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信
     //
     //--------------------------------------------------------------------------------Lifety Method
     private boolean isFullStart() {
-        return this.appContext.getSettings().getBoolean("hasor.fullStart");
+        return this.appContext.getSettings().getBoolean("hasor.fullStart", false);
     }
     /*解封异常*/
     private void proForceModule(Throwable e) {

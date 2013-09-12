@@ -17,7 +17,7 @@ package net.hasor.core.context;
 import java.net.URI;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
-import net.hasor.core.environment.StandardEnvironment;
+import net.hasor.core.environment.DefaultEnvironment;
 /**
  * {@link AppContext}接口默认实现。
  * @version : 2013-4-9
@@ -40,8 +40,8 @@ public class DefaultAppContext extends AbstractAppContext {
     private URI mainSettings = null;
     protected Environment createEnvironment() {
         if (mainSettings != null)
-            return new StandardEnvironment(this.mainSettings);
+            return new DefaultEnvironment(this.mainSettings);
         else
-            return new StandardEnvironment();
+            return new DefaultEnvironment();
     }
 }

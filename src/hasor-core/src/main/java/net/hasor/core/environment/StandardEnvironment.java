@@ -27,7 +27,7 @@ import net.hasor.core.setting.DefaultContextSettings;
  */
 public class StandardEnvironment extends DefaultEnvironment {
     public StandardEnvironment() {
-        super();
+        super(null);
     }
     public StandardEnvironment(URI mainSettings) {
         super(mainSettings);

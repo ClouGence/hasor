@@ -25,7 +25,7 @@ import net.hasor.core.setting.MappingContextSettings;
  * @version : 2013-4-9
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-public class MappingEnvironment extends DefaultEnvironment {
+public class MappingEnvironment extends StandardEnvironment {
     public MappingEnvironment() {
         super();
     }
