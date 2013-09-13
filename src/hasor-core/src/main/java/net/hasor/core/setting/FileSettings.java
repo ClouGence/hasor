@@ -29,19 +29,15 @@ import net.hasor.Hasor;
  */
 public class FileSettings extends InputStreamSettings {
     /**创建{@link FileSettings}对象。*/
-    public FileSettings() throws IOException {
-        super();
-    }
+    public FileSettings() throws IOException {}
     /**创建{@link FileSettings}对象。*/
     public FileSettings(String fileName) throws IOException {
-        this();
         Hasor.assertIsNotNull(fileName);
         this.addFile(fileName);
         this.refresh();
     }
     /**创建{@link FileSettings}对象。*/
     public FileSettings(String[] fileNames) throws IOException {
-        this();
         Hasor.assertIsNotNull(fileNames);
         for (String fileName : fileNames) {
             Hasor.assertIsNotNull(fileName);
@@ -51,14 +47,12 @@ public class FileSettings extends InputStreamSettings {
     }
     /**创建{@link FileSettings}对象。*/
     public FileSettings(File settingsFile) throws IOException {
-        this();
         Hasor.assertIsNotNull(settingsFile);
         this.addFile(settingsFile);
         this.refresh();
     }
     /**创建{@link FileSettings}对象。*/
     public FileSettings(File[] settingsFiles) throws IOException {
-        this();
         Hasor.assertIsNotNull(settingsFiles);
         for (File settingsFile : settingsFiles) {
             Hasor.assertIsNotNull(settingsFile);
@@ -85,7 +79,7 @@ public class FileSettings extends InputStreamSettings {
     public void addFile(File settingsFile) throws IOException {
         Hasor.assertIsNotNull(settingsFile);
         if (settingsFile.exists() == false || settingsFile.canRead() == false || settingsFile.isDirectory() == true)
-            throw new IOException("file can not  read , not exists or is directory.");
+            throw new IOException("‘" + settingsFile.getAbsolutePath() + "’ can not read or not exists or is directory.");
         //
         FileEntity fe = new FileEntity();
         fe.hashID = settingsFile.getAbsolutePath().hashCode();
@@ -100,8 +94,7 @@ public class FileSettings extends InputStreamSettings {
     /**重新装载所有配置文件。*/
     public synchronized void refresh() throws IOException {
         Hasor.info("reload configuration.");
-        this.getNamespaceSettingMap().clear();
-        this.getSettingsMap().removeAllMap();
+        this.cleanData();
         //
         for (FileEntity feItem : this.fileList) {
             Hasor.info("addStream FileEntity ID is %s file is %s.", feItem.hashID, feItem.entity);

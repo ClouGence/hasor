@@ -27,17 +27,25 @@ Hasor-0.0.2.<...>-M2
     调整：
         01.)ResourcesUtils工具类中，类扫描代码优化。
         02.)@Module注解，更名为@DefineModule。注解可以标记在com.google.inject.Module接口上以定义一个Guice模块。
-        03.)EventManager接口以及实现类优化，删除Timer残余的类。
-        04.)包空间整理，所有包都被移动到net.hasor下。
-        05.)整理License文件
-        06.)所有Demo程序都汇总到demo-project项目中。
-        07.)DecSequenceMap.java、DecStackMap.java两个类文件增加一些有用的方法。
-        08.)重构Settings部分现设InputStreamSettings、FileSettings、ReaderSettings、InitContextSettings、MappingInitContextSettings可用的类。
-        	config-mapping.properties属性文件的解析不在是必须的。
-        09.)重构InitContext部分现设DefaultInitContext、StandardInitContext、MappingInitContext可用的类。
-        	如需要解析config-mapping.properties属性文件，请使用MappingInitContext类。
+        03.)所有核心接口都经过了重构。
+        	1.InitContext接口功能合并到Environment接口中
+        	2.ApiBinder接口增加模块依赖管理同时合并onReady阶段和onInit阶段。
+        	3.HasorEventListener接口更名为EventListener。
+        	4.XmlProperty接口更名为XmlNode。
+		05.)config-mapping.properties属性文件的解析不在是必须的。
+        06.)DecSequenceMap.java、DecStackMap.java两个类文件增加一些有用的方法。
+        07.)重构Settings实现：目前提供InputStreamSettings、FileSettings、StandardContextSettings、MappingInitContextSettings可用的类。
+        	Xml解析方式不在依赖ns.prop属性文件，实现方式改为Sax。如需要解析config-mapping.properties属性文件，请使用MappingInitContextSettings类。
+        08.)InitContext接口功能合并到Environment接口中，目前提供SimpleEnvironment、FileEnvironment、StandardEnvironment、MappingEnvironment类可用。
+        	如需要解析config-mapping.properties属性文件，请使用MappingEnvironment类。
+        09.)重构AppContext实现：目前提供DefaultAppContext、FileAppContext、StandardAppContext、MappingAppContext可用的类。
+        	如需要解析config-mapping.properties属性文件，请使用MappingEnvironment类。
+        10.)包空间整理，所有包都被移动到net.hasor下，整理License文件。删除残余的类，无用的类。
+        11.)所有Demo程序都汇总到demo-project项目中。
 
 
+
+2.ApiBinder增加方法
         09.)Hasor-Core中删除所有与Web相关的支持，这部分功能全部移动到Hasor-Web（Hasor-MVC更名而来）。
         
         

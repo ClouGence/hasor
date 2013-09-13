@@ -25,7 +25,7 @@ import org.junit.Test;
 public class AopTest extends AbstractTestContext {
     protected void initContext(AppContext appContext) {}
     @Test
-    public void aopTest() {
+    public void aopTest() {x
         /*获取Bean的三种方式*/
         AopBean bean = this.getAppContext().getInstance(AopBean.class);
         System.out.println(bean.fooA("p1"));

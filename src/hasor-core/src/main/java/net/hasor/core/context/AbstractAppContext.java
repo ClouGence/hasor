@@ -50,7 +50,6 @@ public abstract class AbstractAppContext implements AppContext {
     /**容器事件：ContextEvent_Stop*/
     public static final String ContextEvent_Stop  = "ContextEvent_Stop";
     //
-    //
     private Object             context;
     /**获取上下文*/
     public Object getContext() {
@@ -268,8 +267,12 @@ public abstract class AbstractAppContext implements AppContext {
     //
     /**获取环境接口。*/
     public Environment getEnvironment() {
+        if (this.environment == null)
+            this.environment = this.createEnvironment();
         return this.environment;
     }
+    /**创建环境对象*/
+    protected abstract Environment createEnvironment();
     /**判断容器是否处于运行状态*/
     public boolean isStart() {
         return this.isStart;
@@ -280,7 +283,6 @@ public abstract class AbstractAppContext implements AppContext {
             return;
         /*触发ContextEvent_Init事件，并且创建创建guice*/
         Hasor.info("send init sign.");
-        this.environment = this.createEnvironment();
         this.getEnvironment().getEventManager().doSyncEventIgnoreThrow(ContextEvent_Init, this);
         this.injector = this.createInjector(null);
         Hasor.assertIsNotNull(this.injector, "can not be create Injector.");
@@ -298,10 +300,10 @@ public abstract class AbstractAppContext implements AppContext {
         // 
         Hasor.info("the init is completed!");
     }
-    /**创建环境对象*/
-    protected abstract Environment createEnvironment();
-    /**启动*/
+    /**启动。向所有模块发送启动信号，并将容器的状态置为Start。（该方法会尝试init所有模块）*/
     public synchronized void start() {
+        if (this.isStart == true)
+            return;
         this.initContext();
         Hasor.info("send start sign.");
         this.getEnvironment().getEventManager().doSyncEventIgnoreThrow(ContextEvent_Start, this);
@@ -313,7 +315,10 @@ public abstract class AbstractAppContext implements AppContext {
         this.printModState();
         Hasor.info("hasor started!");
     }
+    /**停止。向所有模块发送停止信号，并将容器的状态置为Stop。*/
     public synchronized void stop() {
+        if (this.isStart == false)
+            return;
         Hasor.info("send stop sign.");
         this.getEnvironment().getEventManager().doSyncEventIgnoreThrow(ContextEvent_Stop, this);
         List<AbstractModulePropxy> modulePropxyList = this.getModulePropxyList();
@@ -324,11 +329,20 @@ public abstract class AbstractAppContext implements AppContext {
         this.printModState();
         Hasor.info("hasor stoped!");
     }
-    /**模块的 destroy 生命周期调用。*/
-    public synchronized void destroy() {
+    /**重新初始化并启动容器，强迫所有模块都重新初始化(Init)并启动(Start)*/
+    public synchronized void reboot() {
         this.stop();
         this.getEnvironment().release();
+        this.environment = null;
         this.injector = null;
+        this.beanInfoMap = null;
+        this.haosrModuleSet = null;
+        this.start();
+    }
+    /**调用停止执行，而后调用start指令。*/
+    public synchronized void restart() {
+        this.stop();
+        this.start();
     }
 }
 /**该类负责处理模块在Guice.configure期间的初始化任务。*/
@@ -355,7 +369,6 @@ class ContextModulePropxy extends AbstractModulePropxy {
     public ContextModulePropxy(Module targetModule, AbstractAppContext appContext) {
         super(targetModule, appContext);
     }
-    @Override
     protected AbstractModulePropxy getInfo(Class<? extends Module> targetModule, AppContext appContext) {
         List<AbstractModulePropxy> modulePropxyList = ((AbstractAppContext) appContext).getModulePropxyList();
         for (AbstractModulePropxy modulePropxy : modulePropxyList)

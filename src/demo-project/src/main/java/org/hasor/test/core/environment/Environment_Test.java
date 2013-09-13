@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 package org.hasor.test.core.environment;
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import net.hasor.core.Settings;
 import net.hasor.core.SettingsListener;
-import net.hasor.core.environment.DefaultEnvironment;
+import net.hasor.core.environment.SimpleEnvironment;
+import net.hasor.core.environment.FileEnvironment;
 import net.hasor.core.environment.StandardEnvironment;
 import org.junit.Test;
-import org.more.util.ResourcesUtils;
 /**
  * 环境变量操作演示
  * @version : 2013-8-11
@@ -30,10 +30,19 @@ import org.more.util.ResourcesUtils;
  */
 public class Environment_Test {
     @Test
-    public void testDefaultEnvironment() throws IOException, URISyntaxException, InterruptedException {
-        System.out.println("--->>testDefaultEnvironment<<--");
-        URL settingsURI = ResourcesUtils.getResource("/org/hasor/test/core/settings/full-config.xml");
-        DefaultEnvironment env = new DefaultEnvironment(settingsURI.toURI());
+    public void testSimpleEnvironment() throws IOException, URISyntaxException, InterruptedException {
+        System.out.println("--->>testSimpleEnvironment<<--");
+        SimpleEnvironment env = new SimpleEnvironment();
+        //
+        System.out.println(env.getSettings().getString("hasor.forceModule"));
+        //HASOR_WORK_HOME
+        System.out.println(env.getEnvVar("HASOR_WORK_HOME"));
+    }
+    @Test
+    public void testFileEnvironment() throws IOException, URISyntaxException, InterruptedException {
+        System.out.println("--->>testFileEnvironment<<--");
+        File settingsFile = new File("src/main/resources/org/hasor/test/core/environment/full-config.xml");
+        FileEnvironment env = new FileEnvironment(settingsFile);
         //
         System.out.println(env.getSettings().getString("hasor.forceModule"));
         //

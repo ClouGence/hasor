@@ -14,23 +14,43 @@
  * limitations under the License.
  */
 package net.hasor.core.context;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
-import net.hasor.core.environment.SimpleEnvironment;
+import net.hasor.core.environment.MappingEnvironment;
 /**
  * {@link AppContext}接口默认实现。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
-public class DefaultAppContext extends AbstractAppContext {
+public class MappingAppContext extends StandardAppContext {
     /***/
-    public DefaultAppContext() {}
-    /***/
-    public DefaultAppContext(Object context) {
-        this.setContext(context);
+    public MappingAppContext() {
+        super();
     }
-    /**创建环境对象*/
+    /***/
+    public MappingAppContext(String mainSettings) throws IOException, URISyntaxException {
+        super(mainSettings);
+    }
+    /***/
+    public MappingAppContext(File mainSettings) {
+        super(mainSettings);
+    }
+    /***/
+    public MappingAppContext(URI mainSettings) {
+        super(mainSettings);
+    }
+    //
     protected Environment createEnvironment() {
-        return new SimpleEnvironment();
+        Environment env = null;
+        if (this.mainSettings == null) {
+            env = new MappingEnvironment();
+            this.mainSettings = env.getSettingURI();
+        } else
+            env = new MappingEnvironment(this.mainSettings);
+        return env;
     }
 }

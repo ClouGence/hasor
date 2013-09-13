@@ -18,47 +18,37 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import net.hasor.core.Environment;
 import net.hasor.core.Settings;
-import net.hasor.core.setting.StandardContextSettings;
-import org.more.util.ResourcesUtils;
+import net.hasor.core.setting.FileSettings;
 /**
  * {@link Environment}接口实现类。
  * @version : 2013-9-11
  * @author 赵永春(zyc@hasor.net)
  */
-public class StandardEnvironment extends AbstractEnvironment {
-    public StandardEnvironment() {
-        this((URI) null);
-    }
-    public StandardEnvironment(String mainSettings) throws IOException, URISyntaxException {
-        URL resURL = ResourcesUtils.getResource(mainSettings);
-        if (resURL == null)
-            return;
-        this.settingURI = resURL.toURI();
+public class FileEnvironment extends AbstractEnvironment {
+    public FileEnvironment(String mainSettings) throws IOException, URISyntaxException {
+        if (mainSettings != null)
+            this.settingFile = new File(mainSettings);
         this.initEnvironment();
     }
-    public StandardEnvironment(File mainSettings) {
-        this((mainSettings == null) ? null : mainSettings.toURI());
-    }
-    public StandardEnvironment(URI mainSettings) {
+    public FileEnvironment(File mainSettings) {
         if (mainSettings != null)
-            this.settingURI = mainSettings;
+            this.settingFile = mainSettings;
         this.initEnvironment();
     }
     //---------------------------------------------------------------------------------Basic Method
-    protected URI settingURI = null;
-    public URI getSettingURI() {
-        return this.settingURI;
+    private File settingFile;
+    public final URI getSettingURI() {
+        if (this.settingFile != null)
+            return this.settingFile.toURI();
+        return null;
+    }
+    /**获取配置文件*/
+    protected final File getSettingFile() {
+        return this.settingFile;
     }
     protected Settings createSettings() throws IOException {
-        StandardContextSettings settings = null;
-        if (this.settingURI == null) {
-            settings = new StandardContextSettings();
-            this.settingURI = settings.getSettingURI();
-        } else
-            settings = new StandardContextSettings(this.settingURI);
-        return settings;
+        return new FileSettings(this.settingFile);
     }
 }

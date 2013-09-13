@@ -21,5 +21,5 @@ import com.google.inject.Module;
 public class GuiceMod implements Module {
     public void configure(Binder binder) {
         System.out.println();
-    }
+    }s
 }

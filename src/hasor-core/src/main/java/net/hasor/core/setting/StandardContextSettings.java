@@ -29,7 +29,7 @@ import org.more.util.ResourcesUtils;
  * @version : 2013-9-9
  * @author 赵永春(zyc@hasor.net)
  */
-public class DefaultContextSettings extends FileSettings {
+public class StandardContextSettings extends InputStreamSettings {
     /**默认主配置文件名称*/
     public static final String MainSettingName   = "hasor-config.xml";
     /**默认静态配置文件名称*/
@@ -38,12 +38,12 @@ public class DefaultContextSettings extends FileSettings {
     private URI                settingURI;
     //
     //
-    /**创建{@link DefaultContextSettings}类型对象。*/
-    public DefaultContextSettings() throws IOException {
+    /**创建{@link StandardContextSettings}类型对象。*/
+    public StandardContextSettings() throws IOException {
         this(MainSettingName);
     }
-    /**创建{@link DefaultContextSettings}类型对象。*/
-    public DefaultContextSettings(String settingResource) throws IOException {
+    /**创建{@link StandardContextSettings}类型对象。*/
+    public StandardContextSettings(String settingResource) throws IOException {
         super();
         Hasor.assertIsNotNull(settingResource);
         URL url = ResourcesUtils.getResource(settingResource);
@@ -55,12 +55,12 @@ public class DefaultContextSettings extends FileSettings {
         }
         this.refresh();
     }
-    /**创建{@link DefaultContextSettings}类型对象。*/
-    public DefaultContextSettings(File settingFile) throws IOException {
+    /**创建{@link StandardContextSettings}类型对象。*/
+    public StandardContextSettings(File settingFile) throws IOException {
         this((settingFile == null) ? null : settingFile.toURI());
     }
-    /**创建{@link DefaultContextSettings}类型对象。*/
-    public DefaultContextSettings(URI settingURI) throws IOException {
+    /**创建{@link StandardContextSettings}类型对象。*/
+    public StandardContextSettings(URI settingURI) throws IOException {
         super();
         Hasor.assertIsNotNull(settingURI);
         this.settingURI = settingURI;
@@ -86,12 +86,23 @@ public class DefaultContextSettings extends FileSettings {
                 this.addStream(stream);
             }
         }
-        //2.装载所有static-config.xml
+        //2.装载hasor-config.xml
         if (this.settingURI != null) {
             InputStream stream = ResourcesUtils.getResourceAsStream(this.settingURI);
             Hasor.info("load ‘%s’", this.settingURI);
             this.addStream(stream);
         } else
             Hasor.warning("cannot load the root configuration file ‘%s’", MainSettingName);
+    }
+    @Override
+    public void refresh() throws IOException {
+        Hasor.info("reload configuration.");
+        this.cleanData();
+        //
+        try {
+            this.loadSettings();
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
     }
 }

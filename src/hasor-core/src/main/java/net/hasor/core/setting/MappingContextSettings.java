@@ -32,7 +32,7 @@ import org.more.util.map.Properties;
  * @version : 2013-9-9
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-public class MappingContextSettings extends DefaultContextSettings {
+public class MappingContextSettings extends StandardContextSettings {
     /**”≥…‰≈‰÷√Œƒº˛*/
     public static final String MappingConfigName = "config-mapping.properties";
     //

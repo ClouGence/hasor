@@ -53,9 +53,9 @@ public interface AppContext {
     /**获得所有模块*/
     public ModuleInfo[] getModules();
     //
-    /**启动*/
+    /**启动。向所有模块发送启动信号，并将容器的状态置为Start。（该方法会尝试init所有模块）*/
     public void start();
-    /**停止*/
+    /**停止。向所有模块发送停止信号，并将容器的状态置为Stop。*/
     public void stop();
     /**判断容器是否处于运行状态*/
     public boolean isStart();

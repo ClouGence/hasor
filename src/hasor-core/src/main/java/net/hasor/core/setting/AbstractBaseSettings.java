@@ -68,4 +68,5 @@ public abstract class AbstractBaseSettings extends AbstractSettings {
             }
         };
     }
+    public void refresh() throws IOException {}
 }

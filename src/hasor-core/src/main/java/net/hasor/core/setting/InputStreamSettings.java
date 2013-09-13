@@ -32,9 +32,7 @@ public class InputStreamSettings extends AbstractBaseSettings implements IOSetti
     private LinkedList<InputStream> pendingStream = new LinkedList<InputStream>();
     //
     /**创建{@link InputStreamSettings}对象。*/
-    public InputStreamSettings() throws IOException {
-        this(new InputStream[0]);
-    }
+    public InputStreamSettings() {}
     /**创建{@link InputStreamSettings}对象。*/
     public InputStreamSettings(InputStream inStream) throws IOException {
         this(new InputStream[] { inStream });
