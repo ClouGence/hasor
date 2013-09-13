@@ -24,10 +24,12 @@ import net.hasor.core.EventListener;
 import net.hasor.core.SettingsListener;
 import net.hasor.core.ModuleSettings;
 import net.hasor.core.ApiBinder.BeanBindingBuilder;
-import net.hasor.core.anno.Bean;
 import net.hasor.core.anno.DefineModule;
 import net.hasor.core.anno.EventListener;
 import net.hasor.core.anno.SettingsListener;
+import net.hasor.core.gift.bean.Bean;
+import net.hasor.core.gift.before.BeforeSupport;
+import net.hasor.core.gift.before.GetContext;
 import net.hasor.core.module.AbstractHasorModule;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
@@ -62,26 +64,7 @@ public class AnnoSupportModule extends AbstractHasorModule implements GetContext
     }
     //
     /**装载Bean*/
-    protected void loadBean(ApiBinder apiBinder) {
-        Set<Class<?>> beanSet = apiBinder.getClassSet(Bean.class);
-        if (beanSet == null)
-            return;
-        for (Class<?> beanClass : beanSet) {
-            Bean annoBean = beanClass.getAnnotation(Bean.class);
-            String[] names = annoBean.value();
-            if (ArrayUtils.isEmpty(names)) {
-                Hasor.warning("missing Bean name %s", beanClass);
-                continue;
-            }
-            if (StringUtils.isBlank(names[0]))
-                continue;
-            BeanBindingBuilder beanBuilder = apiBinder.newBean(names[0]);
-            Hasor.info("loadBean %s bind %s", names, beanClass);
-            for (int i = 1; i < names.length; i++)
-                beanBuilder.aliasName(names[i]);
-            beanBuilder.bindType(beanClass);
-        }
-    }
+    protected void loadBean(ApiBinder apiBinder) {}
     //
     /**装载事件*/
     protected void loadEvent(AppContext appContext) {

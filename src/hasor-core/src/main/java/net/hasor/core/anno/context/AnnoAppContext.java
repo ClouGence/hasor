@@ -17,21 +17,20 @@ package net.hasor.core.anno.context;
 import java.io.IOException;
 import java.util.Set;
 import net.hasor.Hasor;
+import net.hasor.core.ApiBinder.ModuleSettings;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 import net.hasor.core.ModuleInfo;
-import net.hasor.core.ModuleSettings;
 import net.hasor.core.anno.DefineModule;
-import net.hasor.core.context.DefaultAppContext;
+import net.hasor.core.context.StandardAppContext;
 import net.hasor.core.module.GuiceModulePropxy;
 import org.more.util.StringUtils;
-import com.google.inject.Module;
 /**
  * 
  * @version : 2013-7-16
  * @author ÕÔÓÀ´º (zyc@hasor.net)
  */
-public class AnnoAppContext extends DefaultAppContext {
+public class AnnoAppContext extends StandardAppContext {
     /**ÈÝÆ÷ÊÂ¼þ£ºContextEvent_LoadModule*/
     public static final String ContextEvent_LoadModule = "ContextEvent_LoadModule";
     //

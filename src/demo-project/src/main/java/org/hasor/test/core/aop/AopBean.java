@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.test.core.aop;
-import net.hasor.core.anno.Before;
+import net.hasor.core.gift.before.Before;
 /**
  * 
  * @version : 2013-8-11

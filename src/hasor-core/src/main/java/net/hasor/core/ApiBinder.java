@@ -53,7 +53,6 @@ public interface ApiBinder {
     public <T> void bindingType(Class<T> type, Key<? extends T> targetKey);
     //
     //
-    //
     /**配置模块名称以及依赖信息。*/
     public ModuleSettings moduleSettings();
     /**注册一个bean。*/
