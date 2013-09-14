@@ -3,13 +3,13 @@
 	<parent>
 		<groupId>org.hasor</groupId>
 		<artifactId>hasor-parent</artifactId>
-		<version>0.1-SNAPSHOT</version>
+		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
 	<!-- Maven Info -->
 	<groupId>org.hasor</groupId>
 	<artifactId>hasor-core</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<!-- Project Info -->

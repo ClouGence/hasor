@@ -3,7 +3,7 @@
 	<!-- parent> <groupId>org.sonatype.oss</groupId> <artifactId>oss-parent</artifactId> <version>7</version> </parent -->
 	<groupId>org.hasor</groupId>
 	<artifactId>hasor-parent</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<!-- 项目信息 -->
@@ -28,8 +28,7 @@
 	</scm>
 
 	<!-- 包含的模块 -->
-	<modules>
-	</modules>
+	<modules></modules>
 
 	<!-- 构建描述 -->
 	<build>
