@@ -16,12 +16,12 @@
 package net.hasor.mvc.resource;
 import java.io.IOException;
 import net.hasor.core.AppContext;
-import net.hasor.core.XmlProperty;
+import net.hasor.core.XmlNode;
 /**
  * 
  * @version : 2013-5-22
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public interface ResourceLoaderCreator {
-    public ResourceLoader newInstance(AppContext appContext, XmlProperty xmlConfig) throws IOException;
+    public ResourceLoader newInstance(AppContext appContext, XmlNode xmlConfig) throws IOException;
 }

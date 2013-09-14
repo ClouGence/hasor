@@ -35,7 +35,7 @@ public class AnnoAppContext extends StandardAppContext {
         super();
     }
     /***/
-    public AnnoAppContext(String mainSettings) throws IOException, URISyntaxException {
+    public AnnoAppContext(String mainSettings) throws IOException {
         super(mainSettings);
     }
     /***/
@@ -45,6 +45,18 @@ public class AnnoAppContext extends StandardAppContext {
     /***/
     public AnnoAppContext(URI mainSettings) {
         super(mainSettings);
+    }
+    /***/
+    public AnnoAppContext(String mainSettings, Object context) throws IOException {
+        super(mainSettings, context);
+    }
+    /***/
+    public AnnoAppContext(File mainSettings, Object context) {
+        super(mainSettings, context);
+    }
+    /***/
+    public AnnoAppContext(URI mainSettings, Object context) {
+        super(mainSettings, context);
     }
     //
     protected void initContext() {

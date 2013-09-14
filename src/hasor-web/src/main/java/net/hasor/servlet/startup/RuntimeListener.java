@@ -22,7 +22,7 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import net.hasor.Hasor;
 import net.hasor.core.AppContext;
-import net.hasor.core.context.app.AbstractAppContext;
+import net.hasor.core.context.AbstractAppContext;
 import net.hasor.servlet.binder.SessionListenerPipeline;
 import net.hasor.servlet.context.AnnoWebAppContext;
 /**
@@ -61,7 +61,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     }
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         this.sessionListenerPipeline.contextDestroyed(servletContextEvent);
-        this.appContext.destroy();
+        this.appContext.stop();
     }
     public void sessionCreated(HttpSessionEvent se) {
         this.sessionListenerPipeline.sessionCreated(se);

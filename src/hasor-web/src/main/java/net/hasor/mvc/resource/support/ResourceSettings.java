@@ -17,17 +17,18 @@ package net.hasor.mvc.resource.support;
 import java.util.ArrayList;
 import java.util.HashSet;
 import net.hasor.core.Settings;
-import net.hasor.core.XmlProperty;
+import net.hasor.core.SettingsListener;
+import net.hasor.core.XmlNode;
 import org.more.util.StringUtils;
 /**
  * ≈‰÷√–≈œ¢
  * @version : 2013-4-23
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-public class ResourceSettings /*implements HasorSettingListener*/{
+public class ResourceSettings implements SettingsListener {
     public static class LoaderConfig {
-        public String      loaderType = null;
-        public XmlProperty config     = null;
+        public String  loaderType = null;
+        public XmlNode config     = null;
     }
     private boolean        enable       = false;
     private String[]       contentTypes = null;
@@ -64,9 +65,9 @@ public class ResourceSettings /*implements HasorSettingListener*/{
         }
         this.contentTypes = typesArray.toArray(new String[typesArray.size()]);
         //2.∂¡»°loader≈‰÷√
-        XmlProperty loaderRoot = newConfig.getXmlProperty("hasor-mvc.resourceLoader");
+        XmlNode loaderRoot = newConfig.getXmlProperty("hasor-mvc.resourceLoader");
         ArrayList<LoaderConfig> loaderArray = new ArrayList<LoaderConfig>();
-        for (XmlProperty c : loaderRoot.getChildren()) {
+        for (XmlNode c : loaderRoot.getChildren()) {
             LoaderConfig lc = new LoaderConfig();
             lc.loaderType = c.getName();
             lc.config = c;

@@ -16,14 +16,15 @@
 package net.hasor.servlet.context;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Map;
 import javax.servlet.ServletContext;
 import net.hasor.core.Environment;
-import net.hasor.core.ModuleInfo;
-import net.hasor.core.Settings;
-import net.hasor.core.anno.context.AnnoAppContext;
+import net.hasor.core.binder.ApiBinderModule;
+import net.hasor.core.context.AnnoAppContext;
 import net.hasor.core.environment.StandardEnvironment;
+import net.hasor.core.module.AbstractModulePropxy;
 import net.hasor.servlet.binder.FilterPipeline;
 import net.hasor.servlet.binder.SessionListenerPipeline;
 import net.hasor.servlet.binder.support.ManagedErrorPipeline;
@@ -41,13 +42,38 @@ import com.google.inject.Provider;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AnnoWebAppContext extends AnnoAppContext {
-    //
+    /***/
+    public AnnoWebAppContext() {
+        super();
+    }
     public AnnoWebAppContext(ServletContext servletContext) throws IOException {
-        super("hasor-config.xml", servletContext);
+        this((String) null, servletContext);
     }
-    public AnnoWebAppContext(String mainConfig, ServletContext servletContext) throws IOException {
-        super(mainConfig, servletContext);
+    /***/
+    public AnnoWebAppContext(String mainSettings) throws IOException {
+        super(mainSettings);
     }
+    /***/
+    public AnnoWebAppContext(File mainSettings) {
+        super(mainSettings);
+    }
+    /***/
+    public AnnoWebAppContext(URI mainSettings) {
+        super(mainSettings);
+    }
+    /***/
+    public AnnoWebAppContext(String mainSettings, ServletContext servletContext) throws IOException {
+        super(mainSettings, servletContext);
+    }
+    /***/
+    public AnnoWebAppContext(File mainSettings, ServletContext servletContext) {
+        super(mainSettings, servletContext);
+    }
+    /***/
+    public AnnoWebAppContext(URI mainSettings, ServletContext servletContext) {
+        super(mainSettings, servletContext);
+    }
+    //
     /**获取{@link ServletContext}*/
     public ServletContext getServletContext() {
         if (this.getContext() instanceof ServletContext)
@@ -56,7 +82,13 @@ public class AnnoWebAppContext extends AnnoAppContext {
             return null;
     }
     protected Environment createEnvironment() {
-        return new WebStandardEnvironment(this.getSettings(), this.getServletContext());
+        Environment env = null;
+        if (this.mainSettings == null) {
+            env = new WebStandardEnvironment(this.getServletContext());
+            this.mainSettings = env.getSettingURI();
+        } else
+            env = new WebStandardEnvironment(this.mainSettings, this.getServletContext());
+        return env;
     }
     protected Injector createInjector(Module[] guiceModules) {
         Module webModule = new Module() {
@@ -82,10 +114,13 @@ public class AnnoWebAppContext extends AnnoAppContext {
                 guiceModuleSet.add(mod);
         return super.createInjector(guiceModuleSet.toArray(new Module[guiceModuleSet.size()]));
     }
-    protected WebApiBinderModule newApiBinder(final ModuleInfo forModule, final Binder binder) {
-        return new WebApiBinderModule(this, forModule) {
+    protected ApiBinderModule newApiBinder(final AbstractModulePropxy forModule, final Binder binder) {
+        return new WebApiBinderModule(this.getEnvironment(), forModule) {
             public Binder getGuiceBinder() {
                 return binder;
+            }
+            public ModuleSettings moduleSettings() {
+                return forModule;
             }
         };
     }
@@ -97,20 +132,29 @@ public class AnnoWebAppContext extends AnnoAppContext {
  */
 class WebStandardEnvironment extends StandardEnvironment {
     private ServletContext servletContext;
-    public WebStandardEnvironment(Settings settings, ServletContext servletContext) {
-        super(settings);
+    public WebStandardEnvironment(ServletContext servletContext) {
+        super();
         this.servletContext = servletContext;
     }
-    protected Map<String, String> configEnvironment() {
-        Map<String, String> hasorEnv = super.configEnvironment();
-        String webContextDir = servletContext.getRealPath("/");
-        hasorEnv.put("HASOR_WEBROOT", webContextDir);
-        //
-        /*单独处理work_home*/
-        String workDir = this.getSettings().getString("environmentVar.HASOR_WORK_HOME", "./");
-        workDir = workDir.replace("/", File.separator);
-        if (workDir.startsWith("." + File.separatorChar))
-            hasorEnv.put("HASOR_WORK_HOME", new File(webContextDir, workDir.substring(2)).getAbsolutePath());
-        return hasorEnv;
+    public WebStandardEnvironment(URI settingURI, ServletContext servletContext) {
+        super(settingURI);
+        this.servletContext = servletContext;
+    }
+    protected EnvVars createEnvVars() {
+        final WebStandardEnvironment $this = this;
+        return new EnvVars(this) {
+            protected Map<String, String> configEnvironment() {
+                Map<String, String> hasorEnv = super.configEnvironment();
+                String webContextDir = servletContext.getRealPath("/");
+                hasorEnv.put("HASOR_WEBROOT", webContextDir);
+                //
+                /*单独处理work_home*/
+                String workDir = $this.getSettings().getString("environmentVar.HASOR_WORK_HOME", "./");
+                workDir = workDir.replace("/", File.separator);
+                if (workDir.startsWith("." + File.separatorChar))
+                    hasorEnv.put("HASOR_WORK_HOME", new File(webContextDir, workDir.substring(2)).getAbsolutePath());
+                return hasorEnv;
+            }
+        };
     }
 }

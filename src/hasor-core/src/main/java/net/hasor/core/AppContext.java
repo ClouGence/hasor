@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core;
+import java.util.Set;
 import org.more.UndefinedException;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
@@ -25,6 +26,8 @@ import com.google.inject.Provider;
 public interface AppContext {
     /**通过名获取Bean的类型。*/
     public <T> Class<T> getBeanType(String name);
+    /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
+    public Set<Class<?>> getClassSet(Class<?> featureType);
     /**如果存在目标类型的Bean则返回Bean的名称。*/
     public String getBeanName(Class<?> targetClass);
     /**获取已经注册的Bean名称。*/

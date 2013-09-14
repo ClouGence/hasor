@@ -49,10 +49,6 @@ class ActionNameSpace {
         for (ActionDefineImpl invoke : this.actionInvokeMap.values())
             invoke.initInvoke(appContext);
     }
-    /**Ïú»ÙNameSpace*/
-    public void destroyNameSpace(AppContext appContext) {
-        this.actionInvokeMap.clear();
-    }
     /**Ìí¼ÓAction*/
     public void putActionDefine(ActionDefineImpl define) {
         if (define == null)

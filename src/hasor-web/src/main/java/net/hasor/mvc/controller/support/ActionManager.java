@@ -39,12 +39,6 @@ class ActionManager {
             space.initNameSpace(appContext);
     }
     //
-    /**销毁缓存服务*/
-    public void destroyManager(AppContext appContext) {
-        for (ActionNameSpace space : nameSpaceList)
-            space.destroyNameSpace(appContext);
-    }
-    //
     /**根据请求地址查找符合的Action命名空间。返回的map中key是action名。*/
     public ActionNameSpace findNameSpace(String actionNS) {
         ActionNameSpace findSpace = null;

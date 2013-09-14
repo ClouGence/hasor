@@ -18,7 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import net.hasor.Hasor;
 import net.hasor.core.AppContext;
-import net.hasor.core.XmlProperty;
+import net.hasor.core.XmlNode;
 import net.hasor.mvc.resource.ResourceLoader;
 import net.hasor.mvc.resource.ResourceLoaderCreator;
 import net.hasor.mvc.resource.ResourceLoaderDefine;
@@ -31,7 +31,7 @@ import org.more.util.StringUtils;
  */
 @ResourceLoaderDefine(configElement = "ZipLoader")
 public class ZipResourceLoaderCreator implements ResourceLoaderCreator {
-    public ResourceLoader newInstance(AppContext appContext, XmlProperty xmlConfig) throws IOException {
+    public ResourceLoader newInstance(AppContext appContext, XmlNode xmlConfig) throws IOException {
         String body = xmlConfig.getText();
         body = StringUtils.isBlank(body) ? "" : body;
         body = appContext.getEnvironment().evalString(body);

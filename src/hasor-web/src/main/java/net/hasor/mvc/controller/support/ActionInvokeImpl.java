@@ -115,7 +115,7 @@ class ActionInvokeImpl implements ActionInvoke {
         //
         Object returnData = null;
         try {
-            EventManager eventManager = this.getAppContext().getEventManager();
+            EventManager eventManager = this.getAppContext().getEnvironment().getEventManager();
             eventManager.doSyncEvent(ActionDefineImpl.Event_BeforeInvoke, this, invokeParams);/*引发事件*/
             returnData = targetMethod.invoke(this.targetObject, invokeParams);
             eventManager.doSyncEvent(ActionDefineImpl.Event_AfterInvoke, this, invokeParams, returnData); /*引发事件*/

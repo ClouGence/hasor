@@ -18,11 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import net.hasor.Hasor;
-import net.hasor.core.ModuleSettings;
-import net.hasor.core.anno.DefineModule;
+import net.hasor.core.AppContext;
+import net.hasor.core.SettingsListener;
+import net.hasor.core.context.AnnoModule;
 import net.hasor.mvc.resource.ResourceLoaderCreator;
 import net.hasor.mvc.resource.ResourceLoaderDefine;
-import net.hasor.servlet.AbstractWebHasorModule;
+import net.hasor.servlet.AbstractWebModule;
 import net.hasor.servlet.WebApiBinder;
 import net.hasor.servlet.anno.support.ServletAnnoSupportModule;
 /**
@@ -30,29 +31,27 @@ import net.hasor.servlet.anno.support.ServletAnnoSupportModule;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
-@DefineModule(description = "org.hasor.web.resource软件包功能支持。")
-public class ServletResourceSupportModule extends AbstractWebHasorModule {
-    public void configuration(ModuleSettings info) {
-        info.beforeMe(ServletAnnoSupportModule.class);
-    }
+@AnnoModule(description = "org.hasor.web.resource软件包功能支持。")
+public class ServletResourceSupportModule extends AbstractWebModule {
     public void init(WebApiBinder apiBinder) {
+        apiBinder.moduleSettings().beforeMe(ServletAnnoSupportModule.class);
         /*绑定Settings，但是不支持重载更新*/
         ResourceSettings settings = new ResourceSettings();
-        settings.onLoadConfig(apiBinder.getInitContext().getSettings());
-        //
+        settings.onLoadConfig(apiBinder.getEnvironment().getSettings());
         if (settings.isEnable() == false)
             return;
         //
-        apiBinder.getGuiceBinder().bind(ResourceSettings.class).toInstance(settings);
-        //
+        apiBinder.bindingType(SettingsListener.class, settings);
         this.loadResourceLoader(apiBinder);
         apiBinder.filter("*").through(ResourceLoaderFilter.class);
     }
+    public void start(AppContext appContext) {}
+    public void stop(AppContext appContext) {}
     //
     /**装载TemplateLoader*/
-    protected void loadResourceLoader(WebApiBinder event) {
+    protected void loadResourceLoader(WebApiBinder apiBinder) {
         //1.获取
-        Set<Class<?>> resourceLoaderCreatorSet = event.getClassSet(ResourceLoaderDefine.class);
+        Set<Class<?>> resourceLoaderCreatorSet = apiBinder.getEnvironment().getClassSet(ResourceLoaderDefine.class);
         if (resourceLoaderCreatorSet == null)
             return;
         List<Class<ResourceLoaderCreator>> resourceLoaderCreatorList = new ArrayList<Class<ResourceLoaderCreator>>();
@@ -71,6 +70,6 @@ public class ServletResourceSupportModule extends AbstractWebHasorModule {
             loaderBinder.bindLoaderCreator(defineName, creatorType);
             Hasor.info("loadResourceLoader %s at %s.", defineName, creatorType);
         }
-        loaderBinder.configure(event.getGuiceBinder());
+        loaderBinder.configure(apiBinder.getGuiceBinder());
     }
 }

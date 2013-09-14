@@ -25,7 +25,7 @@ import javax.inject.Singleton;
 import javax.servlet.ServletException;
 import net.hasor.Hasor;
 import net.hasor.core.AppContext;
-import net.hasor.core.HasorEventListener;
+import net.hasor.core.EventListener;
 import net.hasor.mvc.controller.ActionInvoke;
 import net.hasor.mvc.controller.plugins.result.ControllerResultDefine;
 import net.hasor.mvc.controller.plugins.result.ControllerResultProcess;
@@ -35,7 +35,7 @@ import net.hasor.mvc.controller.plugins.result.ControllerResultProcess;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 @Singleton
-class Caller implements HasorEventListener {
+class Caller implements EventListener {
     @Inject
     private AppContext                                            appContext = null;
     private Map<Class<? extends Annotation>, ResultProcessPropxy> defineMap  = null;

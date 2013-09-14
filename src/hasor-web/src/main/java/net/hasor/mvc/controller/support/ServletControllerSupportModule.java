@@ -18,16 +18,17 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.ApiBinder.ModuleSettings;
 import net.hasor.core.AppContext;
-import net.hasor.core.ModuleSettings;
-import net.hasor.core.anno.DefineModule;
+import net.hasor.core.Module;
+import net.hasor.core.context.AnnoModule;
+import net.hasor.mvc.controller.ActionBinder.ActionBindingBuilder;
+import net.hasor.mvc.controller.ActionBinder.NameSpaceBindingBuilder;
 import net.hasor.mvc.controller.Controller;
 import net.hasor.mvc.controller.HttpMethod;
 import net.hasor.mvc.controller.Path;
 import net.hasor.mvc.controller.Produces;
-import net.hasor.mvc.controller.ActionBinder.ActionBindingBuilder;
-import net.hasor.mvc.controller.ActionBinder.NameSpaceBindingBuilder;
-import net.hasor.servlet.AbstractWebHasorModule;
 import net.hasor.servlet.WebApiBinder;
 import net.hasor.servlet.anno.support.ServletAnnoSupportModule;
 import org.more.util.ArrayUtils;
@@ -39,8 +40,8 @@ import com.google.inject.Binder;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
-@DefineModule(description = "org.hasor.web.controller软件包功能支持。")
-public class ServletControllerSupportModule extends AbstractWebHasorModule {
+@AnnoModule(description = "org.hasor.web.controller软件包功能支持。")
+public class ServletControllerSupportModule implements Module {
     private ActionSettings settings      = null;
     private ActionManager  actionManager = null;
     public void configuration(ModuleSettings info) {
@@ -50,7 +51,7 @@ public class ServletControllerSupportModule extends AbstractWebHasorModule {
         Binder binder = apiBinder.getGuiceBinder();
         apiBinder.filter("*").through(MergedController.class);
         this.settings = new ActionSettings();
-        this.settings.onLoadConfig(apiBinder.getInitContext().getSettings());
+        this.settings.onLoadConfig(apiBinder.getEnvironment().getSettings());
         apiBinder.getGuiceBinder().bind(ActionSettings.class).toInstance(this.settings);
         /*配置*/
         binder.bind(ActionManager.class).asEagerSingleton();
@@ -60,11 +61,13 @@ public class ServletControllerSupportModule extends AbstractWebHasorModule {
         /*构造*/
         actionBinder.buildManager(binder);
     }
+    public void init(ApiBinder apiBinder) {}
+    public void stop(AppContext appContext) {}
     //
     /**装载Controller*/
-    protected void loadController(WebApiBinder event, ActionManagerBuilder actionBinder) {
+    protected void loadController(WebApiBinder apiBinder, ActionManagerBuilder actionBinder) {
         //1.获取
-        Set<Class<?>> controllerSet = event.getClassSet(Controller.class);
+        Set<Class<?>> controllerSet = apiBinder.getClassSet(Controller.class);
         if (controllerSet == null)
             return;
         //3.注册服务
@@ -111,8 +114,5 @@ public class ServletControllerSupportModule extends AbstractWebHasorModule {
     public void start(AppContext appContext) {
         this.actionManager = appContext.getInstance(ActionManager.class);
         this.actionManager.initManager(appContext);
-    }
-    public void destroy(AppContext appContext) {
-        this.actionManager.destroyManager(appContext);
     }
 }

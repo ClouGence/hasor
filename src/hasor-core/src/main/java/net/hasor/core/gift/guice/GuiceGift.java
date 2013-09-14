@@ -28,7 +28,7 @@ import com.google.inject.Module;
 @Gift
 public class GuiceGift implements GiftFace {
     public void loadGift(ApiBinder apiBinder) {
-        Set<Class<?>> guiceModuleSet = apiBinder.getEnvironment().getClassSet(GuiceModule.class);
+        Set<Class<?>> guiceModuleSet = apiBinder.getClassSet(GuiceModule.class);
         if (guiceModuleSet == null || guiceModuleSet.isEmpty())
             return;
         Hasor.info("find Module : " + Hasor.logString(guiceModuleSet));

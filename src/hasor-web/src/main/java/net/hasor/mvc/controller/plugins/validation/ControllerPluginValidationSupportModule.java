@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 package net.hasor.mvc.controller.plugins.validation;
-import net.hasor.core.ModuleSettings;
-import net.hasor.core.anno.DefineModule;
+import net.hasor.core.AppContext;
+import net.hasor.core.context.AnnoModule;
 import net.hasor.mvc.controller.support.ServletControllerSupportModule;
-import net.hasor.servlet.AbstractWebHasorModule;
+import net.hasor.servlet.AbstractWebModule;
 import net.hasor.servlet.WebApiBinder;
 /**
  * 负责处理请求验证。
  * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
-@DefineModule(description = "org.hasor.mvc.controller.plugins.validation软件包功能支持。")
-public class ControllerPluginValidationSupportModule extends AbstractWebHasorModule {
-    public void configuration(ModuleSettings info) {
-        info.followTarget(ServletControllerSupportModule.class);
+@AnnoModule(description = "org.hasor.mvc.controller.plugins.validation软件包功能支持。")
+public class ControllerPluginValidationSupportModule extends AbstractWebModule {
+    public void init(WebApiBinder apiBinder) {
+        apiBinder.moduleSettings().followTarget(ServletControllerSupportModule.class);
     }
-    public void init(WebApiBinder apiBinder) {}
+    public void start(AppContext appContext) {}
+    public void stop(AppContext appContext) {}
 }

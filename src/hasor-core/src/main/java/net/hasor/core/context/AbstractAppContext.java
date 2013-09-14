@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import net.hasor.Hasor;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
@@ -85,6 +86,10 @@ public abstract class AbstractAppContext implements AppContext {
         if (info != null)
             return (Class<T>) info.getBeanType();
         throw null;
+    }
+    /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
+    public Set<Class<?>> getClassSet(Class<?> featureType) {
+        return this.getEnvironment().getClassSet(featureType);
     }
     /**如果存在目标类型的Bean则返回Bean的名称。*/
     public String getBeanName(Class<?> targetClass) {

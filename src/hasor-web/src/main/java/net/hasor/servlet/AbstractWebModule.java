@@ -15,13 +15,13 @@
  */
 package net.hasor.servlet;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.module.AbstractHasorModule;
+import net.hasor.core.Module;
 /**
  * 
  * @version : 2013-7-16
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-public abstract class AbstractWebHasorModule extends AbstractHasorModule {
+public abstract class AbstractWebModule implements Module {
     public final void init(ApiBinder apiBinder) {
         if (apiBinder instanceof WebApiBinder)
             this.init((WebApiBinder) apiBinder);

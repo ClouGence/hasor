@@ -32,24 +32,43 @@ import org.more.util.ResourcesUtils;
 public class StandardAppContext extends DefaultAppContext {
     /***/
     public StandardAppContext() {
-        this((URI) null);
+        this((URI) null, null);
     }
     /***/
-    public StandardAppContext(String mainSettings) throws IOException, URISyntaxException {
+    public StandardAppContext(String mainSettings) throws IOException {
+        this(mainSettings, null);
+    }
+    /***/
+    public StandardAppContext(File mainSettings) {
+        this(mainSettings, null);
+    }
+    /***/
+    public StandardAppContext(URI mainSettings) {
+        this(mainSettings, null);
+    }
+    /***/
+    public StandardAppContext(String mainSettings, Object context) throws IOException {
         mainSettings = Hasor.assertIsNotNull(mainSettings);
         URL resURL = ResourcesUtils.getResource(mainSettings);
         if (resURL == null)
             return;
-        this.mainSettings = resURL.toURI();
+        this.setContext(context);
+        try {
+            this.mainSettings = resURL.toURI();
+        } catch (URISyntaxException e) {
+            throw new IOException(e);
+        }
     }
     /***/
-    public StandardAppContext(File mainSettings) {
+    public StandardAppContext(File mainSettings, Object context) {
         mainSettings = Hasor.assertIsNotNull(mainSettings);
         this.mainSettings = mainSettings.toURI();
+        this.setContext(context);
     }
     /***/
-    public StandardAppContext(URI mainSettings) {
+    public StandardAppContext(URI mainSettings, Object context) {
         this.mainSettings = Hasor.assertIsNotNull(mainSettings);
+        this.setContext(context);
     }
     //
     //

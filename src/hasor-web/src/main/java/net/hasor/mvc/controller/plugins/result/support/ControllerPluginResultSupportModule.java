@@ -15,31 +15,28 @@
  */
 package net.hasor.mvc.controller.plugins.result.support;
 import net.hasor.core.AppContext;
-import net.hasor.core.ModuleSettings;
-import net.hasor.core.anno.DefineModule;
+import net.hasor.core.context.AnnoModule;
 import net.hasor.mvc.controller.ActionDefine;
 import net.hasor.mvc.controller.support.ServletControllerSupportModule;
-import net.hasor.servlet.AbstractWebHasorModule;
+import net.hasor.servlet.AbstractWebModule;
 import net.hasor.servlet.WebApiBinder;
 /**
  * 负责处理Action调用之后返回值的处理。
  * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
-@DefineModule(description = "org.hasor.mvc.controller.plugins.result软件包功能支持。")
-public class ControllerPluginResultSupportModule extends AbstractWebHasorModule {
-    public void configuration(ModuleSettings info) {
-        info.followTarget(ServletControllerSupportModule.class);
-    }
+@AnnoModule(description = "org.hasor.mvc.controller.plugins.result软件包功能支持。")
+public class ControllerPluginResultSupportModule extends AbstractWebModule {
     public void init(WebApiBinder apiBinder) {
+        apiBinder.moduleSettings().followTarget(ServletControllerSupportModule.class);
         apiBinder.getGuiceBinder().bind(Caller.class);
     }
     public void start(AppContext appContext) {
         Caller caller = appContext.getInstance(Caller.class);
-        appContext.getEventManager().addEventListener(ActionDefine.Event_AfterInvoke, caller);
+        appContext.getEnvironment().getEventManager().addEventListener(ActionDefine.Event_AfterInvoke, caller);
     }
     public void stop(AppContext appContext) {
         Caller caller = appContext.getInstance(Caller.class);
-        appContext.getEventManager().removeEventListener(ActionDefine.Event_AfterInvoke, caller);;
+        appContext.getEnvironment().getEventManager().removeEventListener(ActionDefine.Event_AfterInvoke, caller);;
     }
 }

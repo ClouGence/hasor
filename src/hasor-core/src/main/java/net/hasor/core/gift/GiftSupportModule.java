@@ -34,7 +34,7 @@ public class GiftSupportModule implements Module {
             Hasor.warning("gift is disable.");
             return;
         }
-        Set<Class<?>> giftSet = apiBinder.getEnvironment().getClassSet(Gift.class);
+        Set<Class<?>> giftSet = apiBinder.getClassSet(Gift.class);
         if (giftSet == null)
             return;
         Hasor.info("find Gift : " + Hasor.logString(giftSet));

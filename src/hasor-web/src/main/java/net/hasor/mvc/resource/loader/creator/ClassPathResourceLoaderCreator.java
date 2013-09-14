@@ -17,7 +17,7 @@ package net.hasor.mvc.resource.loader.creator;
 import java.io.IOException;
 import net.hasor.Hasor;
 import net.hasor.core.AppContext;
-import net.hasor.core.XmlProperty;
+import net.hasor.core.XmlNode;
 import net.hasor.mvc.resource.ResourceLoader;
 import net.hasor.mvc.resource.ResourceLoaderCreator;
 import net.hasor.mvc.resource.ResourceLoaderDefine;
@@ -30,7 +30,7 @@ import org.more.util.StringUtils;
  */
 @ResourceLoaderDefine(configElement = "ClasspathLoader")
 public class ClassPathResourceLoaderCreator implements ResourceLoaderCreator {
-    public ResourceLoader newInstance(AppContext appContext, XmlProperty xmlConfig) throws IOException {
+    public ResourceLoader newInstance(AppContext appContext, XmlNode xmlConfig) throws IOException {
         String config = xmlConfig.getText();
         config = StringUtils.isBlank(config) ? "/" : config;
         Hasor.info("loadClassPath %s", config);

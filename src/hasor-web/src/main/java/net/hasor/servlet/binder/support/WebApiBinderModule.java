@@ -16,7 +16,7 @@
 package net.hasor.servlet.binder.support;
 import java.util.ArrayList;
 import java.util.List;
-import net.hasor.core.InitContext;
+import net.hasor.core.Environment;
 import net.hasor.core.ModuleInfo;
 import net.hasor.core.binder.ApiBinderModule;
 import net.hasor.servlet.WebApiBinder;
@@ -27,14 +27,14 @@ import com.google.inject.Binder;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public abstract class WebApiBinderModule extends ApiBinderModule implements WebApiBinder {
-    private FiltersModuleBuilder         filterModuleBinder     = new FiltersModuleBuilder();        /*Filters*/
-    private ServletsModuleBuilder        servletModuleBinder    = new ServletsModuleBuilder();       /*Servlets*/
-    private ErrorsModuleBuilder          errorsModuleBuilder    = new ErrorsModuleBuilder();         /*Errors*/
-    private HttpSessionListenerBindingBuilder       httpSessionListenerBindingBuilder = new HttpSessionListenerBindingBuilder();      /*Listener*/
-    private ContextListenerBindingBuilder contextListenerBuilder = new ContextListenerBindingBuilder(); /*Listener*/
+    private FiltersModuleBuilder              filterModuleBinder                = new FiltersModuleBuilder();             /*Filters*/
+    private ServletsModuleBuilder             servletModuleBinder               = new ServletsModuleBuilder();            /*Servlets*/
+    private ErrorsModuleBuilder               errorsModuleBuilder               = new ErrorsModuleBuilder();              /*Errors*/
+    private HttpSessionListenerBindingBuilder httpSessionListenerBindingBuilder = new HttpSessionListenerBindingBuilder(); /*Listener*/
+    private ContextListenerBindingBuilder     contextListenerBuilder            = new ContextListenerBindingBuilder();    /*Listener*/
     //
-    protected WebApiBinderModule(InitContext initContext, ModuleInfo forModule) {
-        super(initContext, forModule);
+    protected WebApiBinderModule(Environment envContext, ModuleInfo forModule) {
+        super(envContext, forModule);
     }
     /***/
     private static List<String> newArrayList(String[] arr, String object) {

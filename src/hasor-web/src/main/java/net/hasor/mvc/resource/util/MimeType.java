@@ -31,7 +31,7 @@ import org.more.xml.stream.XmlStreamEvent;
  */
 public class MimeType extends HashMap<String, String> {
     private static final long serialVersionUID = 1L;
-    public void loadStream(InputStream inStream, String encoding) throws XMLStreamException, IOException {
+    public void loadStream(InputStream inStream) throws XMLStreamException, IOException {
         new XmlReader(inStream).reader(new XmlAccept() {
             private StringBuffer stringBuffer = new StringBuffer();
             private String       extension    = null;
@@ -58,6 +58,6 @@ public class MimeType extends HashMap<String, String> {
                 }
             }
             public void endAccept() throws XMLStreamException {}
-        }, encoding, null);
+        }, null);
     }
 }

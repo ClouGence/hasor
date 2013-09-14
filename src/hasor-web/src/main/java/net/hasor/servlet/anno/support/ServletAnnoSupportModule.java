@@ -26,10 +26,10 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
 import net.hasor.Hasor;
-import net.hasor.core.ModuleSettings;
-import net.hasor.core.anno.DefineModule;
-import net.hasor.core.anno.support.AnnoSupportModule;
-import net.hasor.servlet.AbstractWebHasorModule;
+import net.hasor.core.AppContext;
+import net.hasor.core.context.AnnoModule;
+import net.hasor.core.gift.GiftSupportModule;
+import net.hasor.servlet.AbstractWebModule;
 import net.hasor.servlet.WebApiBinder;
 import net.hasor.servlet.WebErrorHook;
 import net.hasor.servlet.anno.WebContextListener;
@@ -44,13 +44,11 @@ import org.more.util.StringUtils;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
-@DefineModule(description = "org.hasor.servlet软件包注解版支持。")
-public class ServletAnnoSupportModule extends AbstractWebHasorModule {
-    public void configuration(ModuleSettings info) {
-        info.followTarget(AnnoSupportModule.class);
-    }
+@AnnoModule(description = "org.hasor.servlet软件包注解版支持。")
+public class ServletAnnoSupportModule extends AbstractWebModule {
     /**初始化.*/
     public void init(WebApiBinder apiBinder) {
+        apiBinder.moduleSettings().followTarget(GiftSupportModule.class);
         //1.LoadFilter.
         this.loadFilter(apiBinder);
         //2.LoadServlet.
@@ -62,6 +60,8 @@ public class ServletAnnoSupportModule extends AbstractWebHasorModule {
         //5.ServletContextListener
         this.loadServletContextListener(apiBinder);
     }
+    public void start(AppContext appContext) {}
+    public void stop(AppContext appContext) {}
     //
     /**装载Filter*/
     protected void loadFilter(WebApiBinder apiBinder) {

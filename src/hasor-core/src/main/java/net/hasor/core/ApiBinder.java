@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core;
+import java.util.Set;
 import com.google.inject.Binder;
 import com.google.inject.Key;
 import com.google.inject.Provider;
@@ -52,6 +53,8 @@ public interface ApiBinder {
     /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
      * @see ApiBinder#bindingType(Class); */
     public <T> ScopedBindingBuilder bindingType(Class<T> type, Key<? extends T> targetKey);
+    /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
+    public Set<Class<?>> getClassSet(Class<?> featureType);
     //
     //
     /**配置模块名称以及依赖信息。*/

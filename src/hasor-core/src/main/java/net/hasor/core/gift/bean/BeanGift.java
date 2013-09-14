@@ -30,7 +30,7 @@ import org.more.util.StringUtils;
 @Gift
 public class BeanGift implements GiftFace {
     public void loadGift(ApiBinder apiBinder) {
-        Set<Class<?>> beanSet = apiBinder.getEnvironment().getClassSet(Bean.class);
+        Set<Class<?>> beanSet = apiBinder.getClassSet(Bean.class);
         if (beanSet == null || beanSet.isEmpty())
             return;
         for (Class<?> beanClass : beanSet) {

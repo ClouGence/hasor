@@ -137,7 +137,7 @@ public class ResourceLoaderFilter implements Filter {
             for (URL resourceURL : listURL)
                 try {
                     InputStream inStream = ResourcesUtils.getResourceAsStream(resourceURL);
-                    this.mimeType.loadStream(inStream, "utf-8");
+                    this.mimeType.loadStream(inStream);
                 } catch (Exception e) {
                     Hasor.warning("loadMimeType error at %s", resourceURL);
                 }
