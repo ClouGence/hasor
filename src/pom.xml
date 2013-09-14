@@ -1,7 +1,12 @@
 ﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<!-- parent> <groupId>org.sonatype.oss</groupId> <artifactId>oss-parent</artifactId> <version>7</version> </parent -->
-	<groupId>org.hasor</groupId>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
+	<groupId>net.hasor</groupId>
 	<artifactId>hasor-parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
@@ -28,7 +33,11 @@
 	</scm>
 
 	<!-- 包含的模块 -->
-	<modules></modules>
+	<modules>
+		<module>hasor-core</module>
+		<!-- <module>hasor-web</module> -->
+		<!-- <module>demo-project</module> -->
+	</modules>
 
 	<!-- 构建描述 -->
 	<build>
@@ -97,16 +106,21 @@
 		</dependency>
 	</dependencies>
 
-	<distributionManagement>
-		<snapshotRepository>
-			<id>sonatype-nexus-snapshots</id>
-			<name>Sonatype Nexus Snapshots</name>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-		<repository>
-			<id>sonatype-nexus-staging</id>
-			<name>Sonatype Nexus Staging</name>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-		</repository>
-	</distributionManagement>
+	<!-- <distributionManagement> -->
+	<!-- <snapshotRepository> -->
+	<!-- <id>sonatype-nexus-snapshots</id> -->
+	<!-- <name>Sonatype Nexus Snapshots</name> -->
+	<!-- <url>https://oss.sonatype.org/content/repositories/snapshots/</url> -->
+	<!-- </snapshotRepository> -->
+	<!-- <repository> -->
+	<!-- <id>sonatype-nexus-snapshots</id> -->
+	<!-- <name>Sonatype Nexus Snapshots</name> -->
+	<!-- <url>https://oss.sonatype.org/content/repositories/snapshots/</url> -->
+	<!-- </repository> -->
+	<!-- <repository> -->
+	<!-- <id>sonatype-nexus-staging</id> -->
+	<!-- <name>Sonatype Nexus Staging</name> -->
+	<!-- <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url> -->
+	<!-- </repository> -->
+	<!-- </distributionManagement> -->
 </project>
