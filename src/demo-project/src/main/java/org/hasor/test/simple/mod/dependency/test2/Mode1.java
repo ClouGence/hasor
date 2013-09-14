@@ -18,7 +18,6 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 import net.hasor.core.context.AnnoModule;
-import org.hasor.test.simple.mod.dependency.test1.Mode3;
 /**
  * 
  * @version : 2013-7-27
@@ -27,8 +26,8 @@ import org.hasor.test.simple.mod.dependency.test1.Mode3;
 @AnnoModule()
 public class Mode1 implements Module {
     public void init(ApiBinder apiBinder) {
-        apiBinder.moduleSettings().beforeMe(Mode2.class);//非强制依赖
-        apiBinder.moduleSettings().followTarget(Mode3.class);
+        apiBinder.dependency().weak(Mode2.class);//非强制依赖
+        apiBinder.dependency().forced(Mode3.class);
         System.out.println("Mode1 init!");
     }
     public void start(AppContext appContext) {}

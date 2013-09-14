@@ -41,7 +41,7 @@ public class Mod_Test {
          *         Mode1 **
          *   Mode9
          */
-        AnnoAppContext appContext = new AnnoAppContext("org/hasor/test/core/mod/dependency/dep1-config.xml");
+        AnnoAppContext appContext = new AnnoAppContext("org/hasor/test/simple/mod/dependency/dep1-config.xml");
         //
         appContext.start();
     }
@@ -54,7 +54,7 @@ public class Mod_Test {
          *     Mode3  F
          *   Mode3    F
          */
-        AnnoAppContext appContext = new AnnoAppContext("org/hasor/test/core/mod/dependency/dep2-config.xml");
+        AnnoAppContext appContext = new AnnoAppContext("org/hasor/test/simple/mod/dependency/dep2-config.xml");
         //
         appContext.start();
     }

@@ -17,10 +17,8 @@ package net.hasor.core.context;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Set;
 import net.hasor.Hasor;
-import net.hasor.core.ApiBinder.ModuleSettings;
 import net.hasor.core.Module;
 import net.hasor.core.ModuleInfo;
 import org.more.util.StringUtils;
@@ -78,13 +76,10 @@ public class AnnoAppContext extends StandardAppContext {
             Module modObject = this.createModule(modClass);
             ModuleInfo moduleInfo = this.addModule(modObject);
             //
-            if (moduleInfo instanceof ModuleSettings) {
-                ModuleSettings infoCfg = (ModuleSettings) moduleInfo;
-                AnnoModule modAnno = modClass.getAnnotation(AnnoModule.class);
-                String dispName = StringUtils.isBlank(modAnno.displayName()) ? modClass.getSimpleName() : modAnno.displayName();
-                infoCfg.setDisplayName(dispName);
-                infoCfg.setDescription(modAnno.description());
-            }
+            AnnoModule modAnno = modClass.getAnnotation(AnnoModule.class);
+            String dispName = StringUtils.isBlank(modAnno.displayName()) ? modClass.getSimpleName() : modAnno.displayName();
+            moduleInfo.setDisplayName(dispName);
+            moduleInfo.setDescription(modAnno.description());
         }
     }
     private <T> T createModule(Class<?> listenerClass) {

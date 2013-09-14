@@ -27,6 +27,10 @@ public interface ModuleInfo {
     public String getDisplayName();
     /**获取描述信息*/
     public String getDescription();
+    /**设置显示名称*/
+    public void setDisplayName(String displayName);
+    /**设置描述信息*/
+    public void setDescription(String description);
     /**获取模块信息所表述的模块对象*/
     public Module getTarget();
     /**获取模块的依赖模块*/

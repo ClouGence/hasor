@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.ApiBinder.ModuleSettings;
+import net.hasor.core.ApiBinder.DependencySettings;
 import net.hasor.core.AppContext;
 import net.hasor.core.Dependency;
 import net.hasor.core.Module;
@@ -31,7 +31,7 @@ import org.more.util.exception.ExceptionUtils;
  * @version : 2013-7-26
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信息*/, ModuleSettings, Module {
+public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信息*/, DependencySettings, Module {
     private String           displayName;
     private String           description;
     private Module           targetModule;
@@ -106,28 +106,21 @@ public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信
     /**尝试从容器中获取模块的代理对象*/
     protected abstract AbstractModulePropxy getInfo(Class<? extends Module> targetModule, AppContext appContext);
     //
-    public void afterMe(Class<? extends Module> targetModule) {
+    public void reverse(Class<? extends Module> targetModule) {
         if (isReady())
             /*模块已经准备好，只有当模块在准备期才可以使用该方法*/
             throw new IllegalStateException("Module is ready, only can use this method in run-up.");
         //
         AbstractModulePropxy moduleInfo = this.getInfo(targetModule, this.appContext);
-        for (Dependency dep : this.dependency)
-            if (dep.getModuleInfo() == moduleInfo)
-                throw new IllegalStateException("dependence is included.");
-        //
-        Dependency dep = new DependencyBean(moduleInfo, true);
-        this.dependency.add(dep);
+        moduleInfo.weak(targetModule);
     }
-    public void beforeMe(Class<? extends Module> targetModule) {
-        if (isReady())
-            /*模块已经准备好，只有当模块在准备期才可以使用该方法*/
-            throw new IllegalStateException("Module is ready, only can use this method in run-up.");
-        //
-        AbstractModulePropxy moduleInfo = this.getInfo(targetModule, this.appContext);
-        moduleInfo.afterMe(this.getTarget().getClass());
+    public void weak(Class<? extends Module> targetModule) {
+        this._addDep(targetModule, true);
     }
-    public void followTarget(Class<? extends Module> targetModule) {
+    public void forced(Class<? extends Module> targetModule) {
+        this._addDep(targetModule, false);
+    }
+    private void _addDep(Class<? extends Module> targetModule, boolean forced) {
         if (isReady())
             /*模块已经准备好，只有当模块在准备期才可以使用该方法*/
             throw new IllegalStateException("Module is ready, only can use this method in run-up.");
@@ -137,7 +130,7 @@ public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信
             if (dep.getModuleInfo() == moduleInfo)
                 throw new IllegalStateException("before dependence is included.");
         //
-        Dependency dep = new DependencyBean(moduleInfo, false);
+        Dependency dep = new DependencyBean(moduleInfo, forced);
         this.dependency.add(dep);
     }
     //

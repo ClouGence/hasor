@@ -232,7 +232,7 @@ public abstract class AbstractAppContext implements AppContext {
             public Binder getGuiceBinder() {
                 return binder;
             }
-            public ModuleSettings moduleSettings() {
+            public DependencySettings dependency() {
                 return forModule;
             }
         };

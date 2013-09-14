@@ -26,8 +26,8 @@ import net.hasor.core.context.AnnoModule;
 @AnnoModule()
 public class Mode3 implements Module {
     public void init(ApiBinder apiBinder) {
-        apiBinder.moduleSettings().beforeMe(Mode4.class);
-        apiBinder.moduleSettings().beforeMe(Mode6.class);
+        apiBinder.dependency().weak(Mode4.class);
+        apiBinder.dependency().weak(Mode6.class);
         System.out.println("Mode3  init!");
     }
     public void start(AppContext appContext) {}

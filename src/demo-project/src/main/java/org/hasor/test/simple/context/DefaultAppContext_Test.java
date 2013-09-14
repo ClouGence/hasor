@@ -16,9 +16,6 @@
 package org.hasor.test.simple.context;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
-import net.hasor.core.Module;
 import net.hasor.core.context.AnnoAppContext;
 import net.hasor.core.context.DefaultAppContext;
 import net.hasor.core.context.StandardAppContext;
@@ -34,9 +31,9 @@ public class DefaultAppContext_Test {
         System.out.println("--->>testDefaultAppContext<<--");
         DefaultAppContext appContext = new DefaultAppContext();
         //
-        appContext.addModule(new TestMode_2());
-        appContext.addModule(new TestMode_3());
-        appContext.addModule(new TestMode_1());
+        appContext.addModule(new AnnoTestMod_2());
+        appContext.addModule(new AnnoTestMod_3());
+        appContext.addModule(new AnnoTestMod_1());
         //
         appContext.start();
     }
@@ -45,9 +42,9 @@ public class DefaultAppContext_Test {
         System.out.println("--->>testStandardAppContext<<--");
         StandardAppContext appContext = new StandardAppContext("org/hasor/test/simple/context/hasor-config.xml");
         //
-        appContext.addModule(new TestMode_2());
-        appContext.addModule(new TestMode_3());
-        appContext.addModule(new TestMode_1());
+        appContext.addModule(new AnnoTestMod_2());
+        appContext.addModule(new AnnoTestMod_3());
+        appContext.addModule(new AnnoTestMod_1());
         //
         appContext.start();
     }
@@ -57,46 +54,5 @@ public class DefaultAppContext_Test {
         AnnoAppContext appContext = new AnnoAppContext("org/hasor/test/simple/context/hasor-config.xml");
         //
         appContext.start();
-    }
-}
-class TestMode_1 implements Module {
-    public void init(ApiBinder apiBinder) {
-        System.out.println("testMode_1");
-        /*注册一个Integet对象，名称为theTime*/
-        apiBinder.newBean("theTime").bindType(Integer.class).toInstance(456);
-    }
-    public void start(AppContext appContext) {
-        System.out.println("start->testMode_1");
-    }
-    public void stop(AppContext appContext) {
-        // TODO Auto-generated method stub
-    }
-}
-class TestMode_2 implements Module {
-    public void init(ApiBinder apiBinder) {
-        apiBinder.moduleSettings().afterMe(TestMode_1.class);
-        //
-        System.out.println("testMode_2");
-    }
-    public void start(AppContext appContext) {
-        System.out.println("start->testMode_2");
-        /*获取，Module1注册的Integet对象，名称为theTime*/
-        System.out.println(appContext.getBean("theTime"));
-    }
-    public void stop(AppContext appContext) {
-        // TODO Auto-generated method stub
-    }
-}
-class TestMode_3 implements Module {
-    public void init(ApiBinder apiBinder) {
-        apiBinder.moduleSettings().afterMe(TestMode_2.class);
-        //
-        System.out.println("testMode_3");
-    }
-    public void start(AppContext appContext) {
-        System.out.println("start->testMode_2");
-    }
-    public void stop(AppContext appContext) {
-        // TODO Auto-generated method stub
     }
 }

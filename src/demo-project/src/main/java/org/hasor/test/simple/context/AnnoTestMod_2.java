@@ -26,7 +26,7 @@ import net.hasor.core.context.AnnoModule;
 @AnnoModule
 public class AnnoTestMod_2 implements Module {
     public void init(ApiBinder apiBinder) {
-        apiBinder.moduleSettings().afterMe(AnnoTestMod_1.class);
+        apiBinder.dependency().weak(AnnoTestMod_1.class);
         //
         System.out.println("AnnoTestMod_2");
     }
