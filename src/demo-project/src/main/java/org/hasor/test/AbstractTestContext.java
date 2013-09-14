@@ -16,7 +16,7 @@
 package org.hasor.test;
 import java.io.IOException;
 import net.hasor.core.AppContext;
-import net.hasor.core.anno.context.AnnoAppContext;
+import net.hasor.core.context.AnnoAppContext;
 import org.junit.Before;
 /**
  * 

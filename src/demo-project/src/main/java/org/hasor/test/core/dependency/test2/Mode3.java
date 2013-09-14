@@ -17,14 +17,14 @@ package org.hasor.test.core.dependency.test2;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.ModuleSettings;
-import net.hasor.core.anno.DefineModule;
+import net.hasor.core.context.AnnoModule;
 import net.hasor.core.module.AbstractHasorModule;
 /**
  * 
  * @version : 2013-7-27
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-@DefineModule()
+@AnnoModule()
 public class Mode3 extends AbstractHasorModule {
     public void configuration(ModuleSettings info) {
         throw new RuntimeException();

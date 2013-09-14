@@ -3,7 +3,7 @@ import java.lang.reflect.Method;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.ModuleSettings;
-import net.hasor.core.anno.DefineModule;
+import net.hasor.core.context.AnnoModule;
 import net.hasor.core.module.AbstractHasorModule;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -14,7 +14,7 @@ import com.google.inject.matcher.AbstractMatcher;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
-@DefineModule(displayName = "LogPlatformListener", description = "org.test.plugin.log软件包功能支持。")
+@AnnoModule(displayName = "LogPlatformListener", description = "org.test.plugin.log软件包功能支持。")
 public class LogPlatformListener extends AbstractHasorModule {
     public void configuration(ModuleSettings info) {}
     public void init(ApiBinder apiBinder) {

@@ -3,7 +3,7 @@
 	<!-- parent> <groupId>org.sonatype.oss</groupId> <artifactId>oss-parent</artifactId> <version>7</version> </parent -->
 	<groupId>org.hasor</groupId>
 	<artifactId>hasor-parent</artifactId>
-	<version>0.0.1</version>
+	<version>0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<!-- 项目信息 -->
@@ -29,10 +29,6 @@
 
 	<!-- 包含的模块 -->
 	<modules>
-		<module>hasor-core</module>
-		<module>hasor-web</module>
-
-		<module>demo-project</module>
 	</modules>
 
 	<!-- 构建描述 -->
@@ -103,14 +99,15 @@
 	</dependencies>
 
 	<distributionManagement>
-		<site>
-			<id>github</id>
-			<url>git@github.com:zycgit/hasor.git</url>
-		</site>
-		<repository>
+		<snapshotRepository>
 			<id>sonatype-nexus-snapshots</id>
 			<name>Sonatype Nexus Snapshots</name>
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>sonatype-nexus-staging</id>
+			<name>Sonatype Nexus Staging</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
 		</repository>
 	</distributionManagement>
 </project>

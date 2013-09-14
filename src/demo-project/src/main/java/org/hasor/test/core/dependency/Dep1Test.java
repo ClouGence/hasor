@@ -15,7 +15,7 @@
  */
 package org.hasor.test.core.dependency;
 import java.io.IOException;
-import net.hasor.core.anno.context.AnnoAppContext;
+import net.hasor.core.context.AnnoAppContext;
 public class Dep1Test {
     /**
      * @param args

@@ -2,7 +2,7 @@ package org.hasor.test.mvc.plugin.safety.support;
 import java.lang.reflect.Method;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.ModuleSettings;
-import net.hasor.core.anno.DefineModule;
+import net.hasor.core.context.AnnoModule;
 import net.hasor.core.module.AbstractHasorModule;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -14,7 +14,7 @@ import com.google.inject.matcher.AbstractMatcher;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
-@DefineModule(displayName = "SafetyPlatformListener", description = "org.test.plugin.safety软件包功能支持。")
+@AnnoModule(displayName = "SafetyPlatformListener", description = "org.test.plugin.safety软件包功能支持。")
 public class SafetyPlatformListener extends AbstractHasorModule {
     private SafetyContext safetyContext = null;
     public void configuration(ModuleSettings info) {}
