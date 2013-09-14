@@ -101,4 +101,16 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<distributionManagement>
+		<site>
+			<id>github</id>
+			<url>git@github.com:zycgit/hasor.git</url>
+		</site>
+		<repository>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</repository>
+	</distributionManagement>
 </project>
