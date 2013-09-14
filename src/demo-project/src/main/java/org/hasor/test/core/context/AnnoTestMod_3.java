@@ -13,13 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.gift;
+package org.hasor.test.core.context;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
+import net.hasor.core.Module;
+import net.hasor.core.context.AnnoModule;
 /**
  * 
- * @version : 2013-9-13
+ * @version : 2013-9-14
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public interface InitGift extends Gift<ApiBinder> {
-    public void loadGift(ApiBinder apiBinder);
+@AnnoModule
+public class AnnoTestMod_3 implements Module {
+    public void init(ApiBinder apiBinder) {
+        apiBinder.moduleSettings().afterMe(AnnoTestMod_2.class);
+        //
+        System.out.println("AnnoTestMod_3");
+    }
+    public void start(AppContext appContext) {
+        System.out.println("start->AnnoTestMod_3");
+    }
+    public void stop(AppContext appContext) {
+        // TODO Auto-generated method stub
+    }
 }

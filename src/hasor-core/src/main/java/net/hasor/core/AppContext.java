@@ -36,7 +36,7 @@ public interface AppContext {
     /**获得Guice环境。*/
     public Injector getGuice();
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> Object[] getInstanceByBindingType(Class<T> bindingType);
+    public <T> T[] getInstanceByBindingType(Class<T> bindingType);
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
     public <T> Provider<T>[] getProviderByBindingType(Class<T> bindingType);
     //

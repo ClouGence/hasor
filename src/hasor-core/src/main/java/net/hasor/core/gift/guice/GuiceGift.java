@@ -13,40 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.gift.bean;
+package net.hasor.core.gift.guice;
 import java.util.Set;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.ApiBinder.BeanBindingBuilder;
 import net.hasor.core.gift.Gift;
 import net.hasor.core.gift.GiftFace;
-import org.more.util.ArrayUtils;
-import org.more.util.StringUtils;
+import com.google.inject.Module;
 /**
  * 
  * @version : 2013-9-13
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Gift
-public class BeanGift implements GiftFace {
+public class GuiceGift implements GiftFace {
     public void loadGift(ApiBinder apiBinder) {
-        Set<Class<?>> beanSet = apiBinder.getEnvironment().getClassSet(Bean.class);
-        if (beanSet == null || beanSet.isEmpty())
+        Set<Class<?>> guiceModuleSet = apiBinder.getEnvironment().getClassSet(GuiceModule.class);
+        if (guiceModuleSet == null || guiceModuleSet.isEmpty())
             return;
-        for (Class<?> beanClass : beanSet) {
-            Bean annoBean = beanClass.getAnnotation(Bean.class);
-            String[] names = annoBean.value();
-            if (ArrayUtils.isEmpty(names)) {
-                Hasor.warning("missing Bean name %s", beanClass);
+        Hasor.info("find Module : " + Hasor.logString(guiceModuleSet));
+        for (Class<?> moduleClass : guiceModuleSet) {
+            if (com.google.inject.Module.class.isAssignableFrom(moduleClass) == false) {
+                /*¥ÌŒÛ*/
+                Hasor.warning("not implemented com.google.inject.Module :%s", moduleClass);
                 continue;
             }
-            if (StringUtils.isBlank(names[0]))
-                continue;
-            BeanBindingBuilder beanBuilder = apiBinder.newBean(names[0]);
-            Hasor.info("loadBean %s bind %s", names, beanClass);
-            for (int i = 1; i < names.length; i++)
-                beanBuilder.aliasName(names[i]);
-            beanBuilder.bindType(beanClass);
+            try {
+                apiBinder.getGuiceBinder().install((Module) moduleClass.newInstance());
+                Hasor.info("install com.google.inject.Module %s.", moduleClass);
+            } catch (Exception e) {
+                Hasor.error("install com.google.inject.Module %s.%s", moduleClass, e);
+            }
         }
     }
 }

@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.anno;
+package net.hasor.core.context;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import net.hasor.core.EventListener;
+import net.hasor.core.Module;
 /**
- * 声明一个事件监听器，标记了该接口的类必须要求实现{@link EventListener}接口。
- * @version : 2013-3-12
+ * 标志该类注册到系统初始化过程，该类在标记注解时必须实现{@link Module}接口。
+ * @version : 2013-3-20
  * @author 赵永春 (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
-public @interface EventListener {
-    /**要监听的事件名，同名注册会被覆盖。*/
-    public String[] value();
+public @interface AnnoModule {
+    /**默认名称，该名称在系统控制台用于管理显示用途。*/
+    public String displayName() default "";
+    /**对该类的描述信息。*/
+    public String description() default "";
 }

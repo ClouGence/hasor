@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.module;
-import net.hasor.Hasor;
+package org.hasor.test.core.context;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
+import net.hasor.core.context.AnnoModule;
 /**
- * Guice模块代理成AbstractHasorModule类型的工具
- * @version : 2013-7-16
- * @author 赵永春 (zyc@hasor.net)
+ * 
+ * @version : 2013-9-14
+ * @author 赵永春 (zyc@byshell.org)
  */
-public class GuiceModulePropxy implements Module {
-    private com.google.inject.Module guiceModule = null;
-    //
-    public GuiceModulePropxy(com.google.inject.Module guiceModule) {
-        Hasor.assertIsNotNull(guiceModule);
-        this.guiceModule = guiceModule;
-    }
-    //
+@AnnoModule
+public class AnnoTestMod_2 implements Module {
     public void init(ApiBinder apiBinder) {
-        apiBinder.getGuiceBinder().install(this.guiceModule);
+        apiBinder.moduleSettings().afterMe(AnnoTestMod_1.class);
+        //
+        System.out.println("AnnoTestMod_2");
     }
-    public void start(AppContext appContext) {}
-    public void stop(AppContext appContext) {}
+    public void start(AppContext appContext) {
+        System.out.println("start->AnnoTestMod_2");
+        /*获取，Module1注册的Integet对象，名称为theTime*/
+        System.out.println(appContext.getBean("theTime"));
+    }
+    public void stop(AppContext appContext) {
+        // TODO Auto-generated method stub
+    }
 }

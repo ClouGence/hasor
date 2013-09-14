@@ -13,22 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.anno;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import net.hasor.core.Module;
+package net.hasor.core.gift.aop;
+import net.hasor.core.AppContext;
 /**
- * 标志该类注册到系统初始化过程，该类在标记注解时必须实现{@link Module}接口。
- * @version : 2013-3-20
+ * 
+ * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
-public @interface DefineModule {
-    /**默认名称，该名称在系统控制台用于管理显示用途。*/
-    public String displayName() default "";
-    /**对该类的描述信息。*/
-    public String description() default "";
+interface GetContext {
+    public AppContext getAppContext();
 }

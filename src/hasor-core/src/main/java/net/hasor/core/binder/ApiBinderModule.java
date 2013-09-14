@@ -25,6 +25,7 @@ import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.binder.LinkedBindingBuilder;
+import com.google.inject.binder.ScopedBindingBuilder;
 import com.google.inject.internal.UniqueAnnotations;
 /**
  * 
@@ -70,13 +71,13 @@ public abstract class ApiBinderModule implements ApiBinder, Module {
     public <T> void bindingType(Class<T> type, T instance) {
         this.bindingType(type).toInstance(instance);
     }
-    public <T> void bindingType(Class<T> type, Class<? extends T> implementation) {
-        this.bindingType(type).to(implementation);
+    public <T> ScopedBindingBuilder bindingType(Class<T> type, Class<? extends T> implementation) {
+        return this.bindingType(type).to(implementation);
     }
-    public <T> void bindingType(Class<T> type, Provider<? extends T> provider) {
-        this.bindingType(type).toProvider(provider);
+    public <T> ScopedBindingBuilder bindingType(Class<T> type, Provider<? extends T> provider) {
+        return this.bindingType(type).toProvider(provider);
     }
-    public <T> void bindingType(Class<T> type, Key<? extends T> targetKey) {
-        this.bindingType(type).to(targetKey);
+    public <T> ScopedBindingBuilder bindingType(Class<T> type, Key<? extends T> targetKey) {
+        return this.bindingType(type).to(targetKey);
     }
 }

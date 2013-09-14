@@ -98,7 +98,7 @@ public abstract class AbstractEnvironment implements Environment {
         this.envVars = this.createEnvVars();
         this.eventManager = this.createEventManager();
         //
-        String[] spanPackages = this.getSettings().getStringArray("hasor.loadPackages", "net.*,org.*,com.*");
+        String[] spanPackages = this.getSettings().getStringArray("hasor.loadPackages", "net.hasor.core.*");
         ArrayList<String> allPack = new ArrayList<String>();
         for (String packs : spanPackages) {
             if (StringUtils.isBlank(packs) == true)

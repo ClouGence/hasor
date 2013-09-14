@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.gift.before;
-import net.hasor.core.AppContext;
+package net.hasor.core.gift.guice;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import com.google.inject.Module;
 /**
- * 
- * @version : 2013-8-11
- * @author 赵永春 (zyc@hasor.net)
- */
-interface GetContext {
-    public AppContext getAppContext();
-}
+* 标志该类注册到系统初始化过程，该类在标记注解时必须实现{@link Module}接口。
+* @version : 2013-3-20
+* @author 赵永春 (zyc@hasor.net)
+*/
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface GuiceModule {}

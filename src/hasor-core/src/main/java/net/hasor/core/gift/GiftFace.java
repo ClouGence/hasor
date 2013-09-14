@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.gift.before;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import org.aopalliance.intercept.MethodInterceptor;
+package net.hasor.core.gift;
+import net.hasor.core.ApiBinder;
 /**
- * ±Íº«“ª∏ˆBean°£
- * @version : 2013-3-20
- * @author ’‘”¿¥∫ (zyc@hasor.net)
+ * 
+ * @version : 2013-9-13
+ * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
-public @interface Before {
-    public Class<? extends MethodInterceptor>[] value();
+public interface GiftFace {
+    public void loadGift(ApiBinder apiBinder);
 }

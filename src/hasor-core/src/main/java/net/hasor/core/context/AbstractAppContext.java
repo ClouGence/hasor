@@ -139,7 +139,7 @@ public abstract class AbstractAppContext implements AppContext {
         return this.getGuice().getInstance(beanType);
     }
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> Object[] getInstanceByBindingType(Class<T> bindingType) {
+    public <T> T[] getInstanceByBindingType(Class<T> bindingType) {
         ArrayList<T> providerList = new ArrayList<T>();
         TypeLiteral<T> BindingType_DEFS = TypeLiteral.get(bindingType);
         for (Binding<T> entry : this.getGuice().findBindingsByType(BindingType_DEFS)) {
@@ -149,7 +149,7 @@ public abstract class AbstractAppContext implements AppContext {
         //
         if (providerList.isEmpty())
             return null;
-        return providerList.toArray();
+        return (T[]) providerList.toArray();
     }
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
     public <T> Provider<T>[] getProviderByBindingType(Class<T> bindingType) {

@@ -18,6 +18,7 @@ import com.google.inject.Binder;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.binder.LinkedBindingBuilder;
+import com.google.inject.binder.ScopedBindingBuilder;
 /**
  * ApiBinder
  * @version : 2013-4-10
@@ -44,13 +45,13 @@ public interface ApiBinder {
     public <T> void bindingType(Class<T> type, T instance);
     /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
      * @see ApiBinder#bindingType(Class); */
-    public <T> void bindingType(Class<T> type, Class<? extends T> implementation);
+    public <T> ScopedBindingBuilder bindingType(Class<T> type, Class<? extends T> implementation);
     /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
      * @see ApiBinder#bindingType(Class); */
-    public <T> void bindingType(Class<T> type, Provider<? extends T> provider);
+    public <T> ScopedBindingBuilder bindingType(Class<T> type, Provider<? extends T> provider);
     /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
      * @see ApiBinder#bindingType(Class); */
-    public <T> void bindingType(Class<T> type, Key<? extends T> targetKey);
+    public <T> ScopedBindingBuilder bindingType(Class<T> type, Key<? extends T> targetKey);
     //
     //
     /**配置模块名称以及依赖信息。*/

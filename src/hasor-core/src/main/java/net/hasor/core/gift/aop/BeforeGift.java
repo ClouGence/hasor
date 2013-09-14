@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.gift.before;
+package net.hasor.core.gift.aop;
 import static net.hasor.core.context.AbstractAppContext.ContextEvent_Start;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
-import net.hasor.core.anno.guice.AopMatchers;
-import net.hasor.core.gift.InitGift;
+import net.hasor.core.gift.Gift;
+import net.hasor.core.gift.GiftFace;
+import net.hasor.core.gift.aop.matchers.AopMatchers;
 import com.google.inject.matcher.Matcher;
 /**
  * 
  * @version : 2013-9-13
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class BeforeGift implements InitGift, GetContext, EventListener {
+@Gift
+public class BeforeGift implements GiftFace, GetContext, EventListener {
     private AppContext appContext = null;
-    //
     //
     public void loadGift(ApiBinder apiBinder) {
         Matcher<Object> matcher = AopMatchers.annotatedWith(Before.class);//
@@ -36,10 +37,10 @@ public class BeforeGift implements InitGift, GetContext, EventListener {
         apiBinder.getEnvironment().getEventManager().pushEventListener(ContextEvent_Start, this);
     }
     //
-    public void onEvent(String event, Object[] params) throws Throwable {
-        this.appContext = (AppContext) params[0];
-    }
     public AppContext getAppContext() {
         return this.appContext;
+    }
+    public void onEvent(String event, Object[] params) throws Throwable {
+        this.appContext = (AppContext) params[0];
     }
 }
