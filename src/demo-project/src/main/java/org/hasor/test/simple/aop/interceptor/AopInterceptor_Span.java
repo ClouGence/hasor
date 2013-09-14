@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test.simple.aop;
+package org.hasor.test.simple.aop.interceptor;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 /**
- * ÃÌº”Font±Í«©
+ * ÃÌº”span±Í«©
  * @version : 2013-8-11
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-public class AopInterceptor_Font implements MethodInterceptor {
+public class AopInterceptor_Span implements MethodInterceptor {
     public Object invoke(MethodInvocation invocation) throws Throwable {
-        //System.out.println("before Font");
+        //System.out.println("before Span");
         Object returnData = invocation.proceed();
-        //System.out.println("after Font");
-        return "<font>" + returnData + "</font>";
+        //System.out.println("after Span");
+        return "<span>" + returnData + "</span>";
     }
 }

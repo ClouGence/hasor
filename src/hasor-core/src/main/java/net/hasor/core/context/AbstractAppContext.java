@@ -72,6 +72,10 @@ public abstract class AbstractAppContext implements AppContext {
     public Settings getSettings() {
         return this.getEnvironment().getSettings();
     };
+    /**获取事件操作接口。*/
+    public EventManager getEventManager() {
+        return this.getEnvironment().getEventManager();
+    }
     //
     //
     //-----------------------------------------------------------------------------------------Bean

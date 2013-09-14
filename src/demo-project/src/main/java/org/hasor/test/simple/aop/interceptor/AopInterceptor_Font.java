@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test.simple.aop;
-import net.hasor.core.AppContext;
-import org.hasor.test.AbstractTestContext;
-import org.junit.Test;
+package org.hasor.test.simple.aop.interceptor;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
 /**
- * 环境变量操作演示
+ * 添加Font标签
  * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
-public class AopTest extends AbstractTestContext {
-    protected void initContext(AppContext appContext) {}
-    @Test
-    public void aopTest() {x
-        /*获取Bean的三种方式*/
-        AopBean bean = this.getAppContext().getInstance(AopBean.class);
-        System.out.println(bean.fooA("p1"));
-        System.out.println(bean.fooB("p2"));
+public class AopInterceptor_Font implements MethodInterceptor {
+    public Object invoke(MethodInvocation invocation) throws Throwable {
+        //System.out.println("before Font");
+        Object returnData = invocation.proceed();
+        //System.out.println("after Font");
+        return "<font>" + returnData + "</font>";
     }
 }

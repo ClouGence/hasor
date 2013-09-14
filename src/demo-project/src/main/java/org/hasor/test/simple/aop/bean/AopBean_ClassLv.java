@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test.simple.aop;
+package org.hasor.test.simple.aop.bean;
 import net.hasor.core.gift.aop.Before;
+import org.hasor.test.simple.aop.interceptor.AopInterceptor_A;
 /**
  * 
  * @version : 2013-8-11
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 @Before(AopInterceptor_A.class)
-public class AopBean {
-    @Before({ AopInterceptor_Span.class, AopInterceptor_Font.class })
-    public Object fooA(String param1) {
+public class AopBean_ClassLv {
+    public String fooA(String param1) {
         System.out.println("invoke fooA");
         return "fooA";
     }
-    public Object fooB(String param1) {
+    public String fooB(String param1) {
         System.out.println("invoke fooB");
         return "fooB";
     }

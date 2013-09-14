@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test.simple.events.listener;
-import net.hasor.Hasor;
-import net.hasor.core.EventListener;
-import net.hasor.core.gift.event.Listener;
-/**ÊÂ¼þ¼àÌýÆ÷A*/
-@Listener("EventType_A")
-public class Type_A_EventListener implements EventListener {
-    public void onEvent(String event, Object[] params) {
-        System.out.println("Type_A onEvent :" + event + " \t" + Hasor.logString(params));
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {}
+package org.hasor.test.simple.aop.interceptor;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
+/**
+ * Ìí¼Ó³¬Á´½Ó
+ * @version : 2013-8-11
+ * @author ÕÔÓÀ´º (zyc@hasor.net)
+ */
+public class AopInterceptor_A implements MethodInterceptor {
+    public Object invoke(MethodInvocation invocation) throws Throwable {
+        //System.out.println("before A");
+        Object returnData = invocation.proceed();
+        //System.out.println("after A");
+        return "<a href='alert();'>" + returnData + "</a>";
     }
-};
+}

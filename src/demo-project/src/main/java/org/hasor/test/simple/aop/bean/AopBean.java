@@ -13,19 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test.simple.aop;
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
+package org.hasor.test.simple.aop.bean;
+import net.hasor.core.gift.aop.Before;
+import org.hasor.test.simple.aop.interceptor.AopInterceptor_A;
+import org.hasor.test.simple.aop.interceptor.AopInterceptor_Font;
+import org.hasor.test.simple.aop.interceptor.AopInterceptor_Span;
 /**
- * ÃÌº”≥¨¡¥Ω”
+ * 
  * @version : 2013-8-11
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-public class AopInterceptor_A implements MethodInterceptor {
-    public Object invoke(MethodInvocation invocation) throws Throwable {
-        //System.out.println("before A");
-        Object returnData = invocation.proceed();
-        //System.out.println("after A");
-        return "<a href='alert();'>" + returnData + "</a>";
+@Before(AopInterceptor_A.class)
+public class AopBean {
+    @Before({ AopInterceptor_Span.class, AopInterceptor_Font.class })
+    public String fooA(String param1) {
+        System.out.println("invoke fooA");
+        return "fooA";
+    }
+    public String fooB(String param1) {
+        System.out.println("invoke fooB");
+        return "fooB";
     }
 }

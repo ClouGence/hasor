@@ -53,6 +53,8 @@ public interface AppContext {
     public Settings getSettings();
     /**获取环境接口。*/
     public Environment getEnvironment();
+    /**获取事件操作接口。*/
+    public EventManager getEventManager();
     /**获得所有模块*/
     public ModuleInfo[] getModules();
     //

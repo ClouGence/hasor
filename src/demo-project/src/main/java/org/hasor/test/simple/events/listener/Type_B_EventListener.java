@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test.simple.events;
-/**
- * 
- * @version : 2013-8-11
- * @author ÕÔÓÀ´º (zyc@hasor.net)
- */
-public interface EventType {
-    public static String Type_A = "EventType_A";
-    public static String Type_B = "EventType_B";
-}
+package org.hasor.test.simple.events.listener;
+import net.hasor.Hasor;
+import net.hasor.core.EventListener;
+import net.hasor.core.gift.event.Listener;
+/**ÊÂ¼ş¼àÌıÆ÷B*/
+@Listener("EventType_B")
+public class Type_B_EventListener implements EventListener {
+    public void onEvent(String event, Object[] params) {
+        System.out.println("Type_B onEvent :" + event + " \t" + Hasor.logString(params));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {}
+    }
+};

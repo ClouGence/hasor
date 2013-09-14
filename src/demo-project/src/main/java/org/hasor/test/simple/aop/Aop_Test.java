@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test.simple.beans;
+package org.hasor.test.simple.aop;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.context.AnnoAppContext;
-import org.hasor.test.simple.beans.beans.NamesBean;
-import org.hasor.test.simple.beans.beans.SingletonBean;
+import org.hasor.test.simple.aop.bean.AopBean_ClassLv;
+import org.hasor.test.simple.aop.bean.AopBean_MethodLv;
 import org.hasor.test.simple.beans.customer.CustomerBean;
 import org.junit.Test;
 /**
@@ -26,36 +26,35 @@ import org.junit.Test;
  * @version : 2013-8-11
  * @author ÕÔÓÀ´º (zyc@hasor.net)
  */
-public class Beans_Test {
+public class Aop_Test {
     @Test
-    public void testNamesBean() throws IOException, URISyntaxException, InterruptedException {
-        System.out.println("--->>testNamesBean<<--");
+    public void testAopBeanClassLv() throws IOException, URISyntaxException, InterruptedException {
+        System.out.println("--->>testAopBeanClassLv<<--");
         AnnoAppContext appContext = new AnnoAppContext("org/hasor/test/simple/beans/bean-config.xml");
         appContext.start();
         //
-        NamesBean b1 = appContext.getBean("name1");
-        NamesBean b2 = appContext.getBean("name2");
-        b1.foo();
-        b2.foo();
+        AopBean_ClassLv bean = appContext.getInstance(AopBean_ClassLv.class);
+        System.out.println(bean.fooA("fooA"));
+        System.out.println(bean.fooB("fooB"));
     }
     @Test
-    public void testSingletonBean() throws IOException, URISyntaxException, InterruptedException {
-        System.out.println("--->>testSingletonBean<<--");
+    public void testAopBeanMethodLv() throws IOException, URISyntaxException, InterruptedException {
+        System.out.println("--->>testAopBeanMethodLv<<--");
         AnnoAppContext appContext = new AnnoAppContext("org/hasor/test/simple/beans/bean-config.xml");
         appContext.start();
         //
-        SingletonBean b1 = appContext.getBean("singletonBean");
-        SingletonBean b2 = appContext.getBean("singletonBean");
-        b1.foo();
-        b2.foo();
+        AopBean_MethodLv bean = appContext.getInstance(AopBean_MethodLv.class);
+        System.out.println(bean.fooA("fooA"));
+        System.out.println(bean.fooB("fooB"));
     }
     @Test
-    public void testCustomerBean() throws IOException, URISyntaxException, InterruptedException {
-        System.out.println("--->>testCustomerBean<<--");
-        AnnoAppContext appContext = new AnnoAppContext("org/hasor/test/simple/beans/bean-config.xml");
+    public void testAopBeanGlobalLv() throws IOException, URISyntaxException, InterruptedException {
+        System.out.println("--->>testAopBeanGlobalLv<<--");
+        AnnoAppContext appContext = new AnnoAppContext("org/hasor/test/simple/aop/global-config.xml");
         appContext.start();
         //
-        CustomerBean b1 = appContext.getBean("Customer");
-        b1.foo();
+        AopBean_MethodLv bean = appContext.getInstance(AopBean_MethodLv.class);
+        System.out.println(bean.fooA("fooA"));
+        System.out.println(bean.fooB("fooB"));
     }
 }
