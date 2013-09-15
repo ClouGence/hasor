@@ -24,33 +24,29 @@ Hasor-0.0.1.20130831-M1
 
 
 Hasor-0.0.2.<...>-M2
-    调整：
-        01.)ResourcesUtils工具类中，类扫描代码优化。
-        02.)@Module注解，更名为@DefineModule。注解可以标记在com.google.inject.Module接口上以定义一个Guice模块。
-        03.)所有核心接口都经过了重构。
-        	1.InitContext接口功能合并到Environment接口中
-        	2.ApiBinder接口增加模块依赖管理同时合并onReady阶段和onInit阶段。
-        	3.HasorEventListener接口更名为EventListener。
-        	4.XmlProperty接口更名为XmlNode。
-		05.)config-mapping.properties属性文件的解析不在是必须的。
-        06.)DecSequenceMap.java、DecStackMap.java两个类文件增加一些有用的方法。
-        07.)重构Settings实现：目前提供InputStreamSettings、FileSettings、StandardContextSettings、MappingInitContextSettings可用的类。
-        	Xml解析方式不在依赖ns.prop属性文件，实现方式改为Sax。如需要解析config-mapping.properties属性文件，请使用MappingInitContextSettings类。
-        08.)InitContext接口功能合并到Environment接口中，目前提供SimpleEnvironment、FileEnvironment、StandardEnvironment、MappingEnvironment类可用。
-        	如需要解析config-mapping.properties属性文件，请使用MappingEnvironment类。
-        09.)重构AppContext实现：目前提供DefaultAppContext、FileAppContext、StandardAppContext、MappingAppContext可用的类。
-        	如需要解析config-mapping.properties属性文件，请使用MappingEnvironment类。
-        10.)包空间整理，所有包都被移动到net.hasor下，整理License文件。删除残余的类，无用的类。
-        11.)所有Demo程序都汇总到demo-project项目中。
+    01.)Hasor-Core：80%以上代码重构，重构主要涉及内容的是结构性重构。重构之后将会使Hasor核心层的逻辑更加清晰，更便于扩展核心层功能。
+        1.InitContext接口功能合并到Environment接口中。
+        2.ApiBinder接口增加模块依赖管理。
+        3.HasorModule接口更名为Module。
+        4.HasorEventListener接口更名为EventListener。
+        5.XmlProperty接口更名为XmlNode。
+        6.config-mapping.properties属性文件的解析不在是必须的。
+        7.重构Settings实现。Xml解析方式不在依赖ns.prop属性文件，实现方式改为Sax。
+        8.@Module注解，更名为@AnnoModule。
+        9.增加@GuiceModule注解，可以标记在com.google.inject.Module接口上，可以将Guice模块引入到Hasor中。
+        A.重构AppContext实现。
+        B.包空间整理，所有包都被移动到net.hasor下，整理License文件。删除残余的、无用的类。
+        C.删除所有与Web相关的支持，这部分功能全部移动到Hasor-Web（Hasor-MVC更名而来）。
+        D.生命周期：合并onReady和onInit两个生命周期阶段方法，删除销毁过程。
+    02.)工具包修订：
+        1.ResourcesUtils工具类中，类扫描代码优化。
+        2.DecSequenceMap.java、DecStackMap.java两个类文件增加一些有用的方法。
+
+    03.)所有Demo程序都汇总到demo-project项目中。
 
 
 
 2.ApiBinder增加方法
-        09.)Hasor-Core中删除所有与Web相关的支持，这部分功能全部移动到Hasor-Web（Hasor-MVC更名而来）。
-        
-        
-        04.)LifeCycle枚举中定义的阶段事件转而在DefaultAppContext类中定义。
-
     新增：
         01.)增加jetty-all项目，该项目包含了jetty-8.1.12中所有代码。并且支持jsp，使用jetty-all可以简化Web开发环境。
         02.)支持使用@FmTag注解声明一个自定义标签(Tag/Tag2)，模板引擎使用Freemarker。
@@ -58,9 +54,3 @@ Hasor-0.0.2.<...>-M2
         04.)支持自定义TemplateLoader
         05.)支持Web环境下使用Freemarker作为模板显示引擎。
         06.)支持通过配置文件设置模板路径为(ClassPath/Zip/Jar/任意目录)中的任意一个或组合配置。
-
-
-
-
-
-
