@@ -15,6 +15,7 @@
  */
 package org.hasor.test.simple.mod.dependency.test2;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.ApiBinder.DependencySettings;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 import net.hasor.core.context.AnnoModule;
@@ -26,10 +27,21 @@ import net.hasor.core.context.AnnoModule;
 @AnnoModule()
 public class Mode1 implements Module {
     public void init(ApiBinder apiBinder) {
-        apiBinder.dependency().weak(Mode2.class);//非强制依赖
-        apiBinder.dependency().forced(Mode3.class);
-        System.out.println("Mode1 init!");
+        DependencySettings dep = apiBinder.dependency();
+        /*弱依赖，目标模块即使没有成功启动也不影响当前模块*/
+        dep.weak(Mode2.class);
+        /*强依赖，当前模块的启动必须依靠目标模块*/
+        dep.forced(Mode3.class);
+        //
     }
-    public void start(AppContext appContext) {}
-    public void stop(AppContext appContext) {}
+    public void start(AppContext appContext) {
+        //
+        //        appContext.registerServices(....);
+        //        appContext.registerServices(....);
+    }
+    public void stop(AppContext appContext) {
+        //
+        //        appContext.unRegisterServices(....);
+        //        appContext.unRegisterServices(....);
+    }
 }
