@@ -3,7 +3,7 @@
 	<!-- 框架配置 -->
 	<hasor>
 		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
-		<loadPackages>org.hasor.test.*</loadPackages>
+		<loadPackages>org.hasor.test.mvc.*,org.hasor.test.web.*</loadPackages>
 		<!-- 执行事件的线程池大小 -->
 		<eventThreadPoolSize>5</eventThreadPoolSize>
 		<!-- 是否强迫所有模块都必须正常启动 -->

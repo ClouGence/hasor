@@ -23,6 +23,5 @@ public class LogBean {
         LogBean logBean = (LogBean) aac.getBean("LogBean");
         logBean.print();
         //
-        aac.destroy();
     }
 }

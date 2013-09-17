@@ -39,6 +39,5 @@ public class SafeBean {
             e.printStackTrace();
         }
         //
-        aac.destroy();
     }
 }

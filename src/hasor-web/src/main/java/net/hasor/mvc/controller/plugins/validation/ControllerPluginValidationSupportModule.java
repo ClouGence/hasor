@@ -27,7 +27,7 @@ import net.hasor.servlet.WebApiBinder;
 @AnnoModule(description = "org.hasor.mvc.controller.plugins.validation软件包功能支持。")
 public class ControllerPluginValidationSupportModule extends AbstractWebModule {
     public void init(WebApiBinder apiBinder) {
-        apiBinder.moduleSettings().followTarget(ServletControllerSupportModule.class);
+        apiBinder.dependency().forced(ServletControllerSupportModule.class);
     }
     public void start(AppContext appContext) {}
     public void stop(AppContext appContext) {}

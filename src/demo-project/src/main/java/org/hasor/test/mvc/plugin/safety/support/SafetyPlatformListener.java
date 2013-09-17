@@ -1,9 +1,9 @@
 package org.hasor.test.mvc.plugin.safety.support;
 import java.lang.reflect.Method;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.ModuleSettings;
+import net.hasor.core.AppContext;
+import net.hasor.core.Module;
 import net.hasor.core.context.AnnoModule;
-import net.hasor.core.module.AbstractHasorModule;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.hasor.test.mvc.plugin.safety.Power;
@@ -15,9 +15,8 @@ import com.google.inject.matcher.AbstractMatcher;
  * @author 赵永春 (zyc@hasor.net)
  */
 @AnnoModule(displayName = "SafetyPlatformListener", description = "org.test.plugin.safety软件包功能支持。")
-public class SafetyPlatformListener extends AbstractHasorModule {
+public class SafetyPlatformListener implements Module {
     private SafetyContext safetyContext = null;
-    public void configuration(ModuleSettings info) {}
     public void init(ApiBinder apiBinder) {
         //1.挂载Aop
         apiBinder.getGuiceBinder().bindInterceptor(new ClassPowerMatcher(), new MethodPowerMatcher(), new PowerInterceptor());
@@ -69,4 +68,6 @@ public class SafetyPlatformListener extends AbstractHasorModule {
             return invocation.proceed();
         }
     }
+    public void start(AppContext appContext) {}
+    public void stop(AppContext appContext) {}
 }

@@ -19,7 +19,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.ApiBinder.ModuleSettings;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 import net.hasor.core.context.AnnoModule;
@@ -44,10 +43,10 @@ import com.google.inject.Binder;
 public class ServletControllerSupportModule implements Module {
     private ActionSettings settings      = null;
     private ActionManager  actionManager = null;
-    public void configuration(ModuleSettings info) {
-        info.beforeMe(ServletAnnoSupportModule.class);
-    }
     public void init(WebApiBinder apiBinder) {
+        //
+        apiBinder.dependency().weak(ServletAnnoSupportModule.class);
+        //
         Binder binder = apiBinder.getGuiceBinder();
         apiBinder.filter("*").through(MergedController.class);
         this.settings = new ActionSettings();
