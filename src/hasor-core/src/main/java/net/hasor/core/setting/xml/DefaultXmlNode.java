@@ -22,12 +22,13 @@ import java.util.Map.Entry;
 import net.hasor.core.XmlNode;
 import net.hasor.core.setting.GlobalProperty;
 import org.more.convert.ConverterUtils;
+import org.more.util.StringUtils;
 /**
  * XmlProperty, GlobalProperty接口实现类。
  * @version : 2013-4-22
  * @author 赵永春 (zyc@hasor.net)
  */
-class DefaultXmlProperty implements XmlNode, GlobalProperty {
+class DefaultXmlNode implements XmlNode, GlobalProperty {
     private String                  elementName       = null;
     private String                  textString        = null;
     private HashMap<String, String> arrMap            = new HashMap<String, String>();
@@ -35,14 +36,14 @@ class DefaultXmlProperty implements XmlNode, GlobalProperty {
     private XmlNode                 parentXmlProperty = null;
     //
     //
-    public DefaultXmlProperty(XmlNode parentXmlProperty, String elementName) {
+    public DefaultXmlNode(XmlNode parentXmlProperty, String elementName) {
         this.parentXmlProperty = parentXmlProperty;
         this.elementName = elementName;
     }
     public void addAttribute(String attName, String attValue) {
         arrMap.put(attName, attValue);
     }
-    public void addChildren(DefaultXmlProperty xmlProperty) {
+    public void addChildren(DefaultXmlNode xmlProperty) {
         this.children.add(xmlProperty);
     }
     public void setText(String textString) {
@@ -56,6 +57,18 @@ class DefaultXmlProperty implements XmlNode, GlobalProperty {
     }
     public List<XmlNode> getChildren() {
         return children;
+    }
+    public List<XmlNode> getChildren(String elementName) {
+        List<XmlNode> children = new ArrayList<XmlNode>();
+        for (XmlNode xmlItem : this.children) {
+            if (StringUtils.equalsIgnoreCase(xmlItem.getName(), elementName))
+                children.add(xmlItem);
+        }
+        return children;
+    }
+    public XmlNode getXmlNode(String elementName) {
+        List<XmlNode> subItems = this.getChildren(elementName);
+        return subItems.isEmpty() ? null : subItems.get(0);
     }
     public String getXmlText() {
         StringBuilder strBuilder = new StringBuilder();
@@ -93,13 +106,13 @@ class DefaultXmlProperty implements XmlNode, GlobalProperty {
     public String toString() {
         return this.getXmlText();
     }
-    public DefaultXmlProperty clone() {
-        DefaultXmlProperty newData = new DefaultXmlProperty(this.parentXmlProperty, this.elementName);
+    public DefaultXmlNode clone() {
+        DefaultXmlNode newData = new DefaultXmlNode(this.parentXmlProperty, this.elementName);
         newData.arrMap.putAll(this.arrMap);
         newData.textString = this.textString;
         if (children != null)
             for (XmlNode xmlProp : this.children) {
-                DefaultXmlProperty newClone = ((DefaultXmlProperty) xmlProp).clone();
+                DefaultXmlNode newClone = ((DefaultXmlNode) xmlProp).clone();
                 newClone.setParent(newData);
                 newData.children.add(newClone);
             }
@@ -119,6 +132,9 @@ class DefaultXmlProperty implements XmlNode, GlobalProperty {
     }
     public Map<String, String> getAttributeMap() {
         return this.arrMap;
+    }
+    public String getAttribute(String attName) {
+        return this.getAttributeMap().get(attName);
     }
     public XmlNode getParent() {
         return parentXmlProperty;

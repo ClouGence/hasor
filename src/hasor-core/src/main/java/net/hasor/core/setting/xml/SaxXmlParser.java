@@ -32,7 +32,7 @@ import org.xml.sax.helpers.DefaultHandler;
 public class SaxXmlParser extends DefaultHandler {
     private Map<String, Map<String, Object>> dataContainer     = null;
     private Map<String, StringBuffer>        xmlText           = new HashMap<String, StringBuffer>();
-    private Map<String, DefaultXmlProperty>  currentXmlPropert = new HashMap<String, DefaultXmlProperty>();
+    private Map<String, DefaultXmlNode>  currentXmlPropert = new HashMap<String, DefaultXmlNode>();
     //
     public SaxXmlParser(Map<String, Map<String, Object>> dataContainer) {
         this.dataContainer = dataContainer;
@@ -45,10 +45,10 @@ public class SaxXmlParser extends DefaultHandler {
     private void cleanText(String xmlns) {
         xmlText.remove(xmlns);
     }
-    private DefaultXmlProperty getCurrentXmlPropert(String xmlns) {
+    private DefaultXmlNode getCurrentXmlPropert(String xmlns) {
         return currentXmlPropert.get(xmlns);
     }
-    private void setCurrentXmlPropert(String xmlns, DefaultXmlProperty xmlProperty) {
+    private void setCurrentXmlPropert(String xmlns, DefaultXmlNode xmlProperty) {
         currentXmlPropert.put(xmlns, xmlProperty);
     }
     //
@@ -57,12 +57,12 @@ public class SaxXmlParser extends DefaultHandler {
     private String curXmlns = null;
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        DefaultXmlProperty xmlProperty = this.getCurrentXmlPropert(uri);
+        DefaultXmlNode xmlProperty = this.getCurrentXmlPropert(uri);
         if (xmlProperty == null) {
-            xmlProperty = new DefaultXmlProperty(null, "root");
+            xmlProperty = new DefaultXmlNode(null, "root");
             this.setCurrentXmlPropert(uri, xmlProperty);
         }
-        DefaultXmlProperty thisXmlNode = new DefaultXmlProperty(xmlProperty, localName);
+        DefaultXmlNode thisXmlNode = new DefaultXmlNode(xmlProperty, localName);
         xmlProperty.addChildren(thisXmlNode);
         this.setCurrentXmlPropert(uri, thisXmlNode);
         //
@@ -77,9 +77,9 @@ public class SaxXmlParser extends DefaultHandler {
     public void endElement(String uri, String localName, String qName) throws SAXException {
         StringBuffer strBuffer = this.getText(uri);
         //
-        DefaultXmlProperty currentNode = this.getCurrentXmlPropert(uri);
+        DefaultXmlNode currentNode = this.getCurrentXmlPropert(uri);
         currentNode.setText(strBuffer.toString().trim());
-        this.setCurrentXmlPropert(uri, (DefaultXmlProperty) currentNode.getParent());
+        this.setCurrentXmlPropert(uri, (DefaultXmlNode) currentNode.getParent());
         //
         this.cleanText(uri);
         this.curXmlns = uri;
@@ -94,9 +94,9 @@ public class SaxXmlParser extends DefaultHandler {
     }
     @Override
     public void endDocument() throws SAXException {
-        for (Entry<String, DefaultXmlProperty> ent : this.currentXmlPropert.entrySet()) {
+        for (Entry<String, DefaultXmlNode> ent : this.currentXmlPropert.entrySet()) {
             String currentXmlns = ent.getKey();
-            DefaultXmlProperty currentXml = ent.getValue();
+            DefaultXmlNode currentXml = ent.getValue();
             if (dataContainer.get(currentXmlns) == null)
                 dataContainer.put(currentXmlns, new HashMap<String, Object>());
             //1.将XmlTree转换为map映射
@@ -119,10 +119,10 @@ public class SaxXmlParser extends DefaultHandler {
                 if ($varConflict != null && $varConflict instanceof XmlNode && $var instanceof XmlNode) {
                     XmlNode $new = (XmlNode) $var;
                     XmlNode $old = (XmlNode) $varConflict;
-                    XmlNode $final = ((DefaultXmlProperty) $old).clone();
+                    XmlNode $final = ((DefaultXmlNode) $old).clone();
                     /*覆盖策略*/
                     $final.getAttributeMap().putAll($new.getAttributeMap());
-                    ((DefaultXmlProperty) $final).setText($new.getText());
+                    ((DefaultXmlNode) $final).setText($new.getText());
                     /*追加策略*/
                     List<XmlNode> $newChildren = new ArrayList<XmlNode>($new.getChildren());
                     List<XmlNode> $oldChildren = new ArrayList<XmlNode>($old.getChildren());
@@ -142,7 +142,7 @@ public class SaxXmlParser extends DefaultHandler {
     protected void convertType(Map<String, Object> returnData, List<XmlNode> xmlPropertyList, String parentAttName) {
         if (xmlPropertyList != null)
             for (XmlNode xmlNode : xmlPropertyList) {
-                DefaultXmlProperty impl = (DefaultXmlProperty) xmlNode;
+                DefaultXmlNode impl = (DefaultXmlNode) xmlNode;
                 //1.put本级
                 String key = ("".equals(parentAttName)) ? impl.getName() : (parentAttName + "." + impl.getName());
                 returnData.put(key, impl);
