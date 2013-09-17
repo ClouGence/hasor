@@ -31,9 +31,7 @@ import org.more.util.ResourcesUtils;
  */
 public class StandardAppContext extends DefaultAppContext {
     /***/
-    public StandardAppContext() {
-        this((URI) null, null);
-    }
+    public StandardAppContext() {}
     /***/
     public StandardAppContext(String mainSettings) throws IOException {
         this(mainSettings, null);
