@@ -1,4 +1,4 @@
-package org.hasor.test.mvc.app.actions;
+package org.hasor.test.web.app.actions;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.inject.Inject;
@@ -7,8 +7,8 @@ import net.hasor.mvc.controller.Controller;
 import net.hasor.mvc.controller.Get;
 import net.hasor.mvc.controller.Path;
 import net.hasor.mvc.controller.support.AbstractController;
-import org.hasor.test.mvc.plugin.log.OutLog;
-import org.hasor.test.mvc.plugin.safety.SafetyContext;
+import org.hasor.test.web.plugin.log.OutLog;
+import org.hasor.test.web.plugin.safety.SafetyContext;
 import org.more.util.StringUtils;
 /**
  * 

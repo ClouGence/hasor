@@ -1,4 +1,4 @@
-package org.hasor.test.mvc.plugin.log.support;
+package org.hasor.test.web.plugin.log.support;
 import java.lang.reflect.Method;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
@@ -6,7 +6,7 @@ import net.hasor.core.Module;
 import net.hasor.core.context.AnnoModule;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.hasor.test.mvc.plugin.log.OutLog;
+import org.hasor.test.web.plugin.log.OutLog;
 import com.google.inject.matcher.AbstractMatcher;
 /**
  * 日志服务。

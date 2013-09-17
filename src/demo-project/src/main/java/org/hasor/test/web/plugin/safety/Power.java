@@ -1,4 +1,4 @@
-package org.hasor.test.mvc.plugin.log;
+package org.hasor.test.web.plugin.safety;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -10,4 +10,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })
-public @interface OutLog {}
+public @interface Power {
+    public String value();
+}

@@ -1,4 +1,4 @@
-package org.hasor.test.mvc.plugin.safety;
+package org.hasor.test.web.plugin.safety;
 import java.util.ArrayList;
 import java.util.List;
 /**

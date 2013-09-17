@@ -19,7 +19,7 @@ public class HasorCore_WebServer {
         WebAppContext context = new WebAppContext();
         context.setContextPath("/");
         //context.setDescriptor("web/WEB-INF/web.xml");
-        context.setResourceBase("src/test/resources/webapps");
+        context.setResourceBase("src/main/resources/webapps");
         context.setConfigurationDiscovered(true);
         server.setHandler(context);
         server.start();

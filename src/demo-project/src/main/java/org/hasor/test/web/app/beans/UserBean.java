@@ -1,4 +1,4 @@
-package org.hasor.test.mvc.app.beans;
+package org.hasor.test.web.app.beans;
 import javax.inject.Singleton;
 import net.hasor.core.gift.bean.Bean;
 /**

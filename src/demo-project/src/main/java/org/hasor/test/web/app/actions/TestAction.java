@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test.mvc.app.actions;
+package org.hasor.test.web.app.actions;
 import net.hasor.core.AppContext;
 import net.hasor.mvc.controller.Controller;
 import net.hasor.mvc.controller.HeaderParam;

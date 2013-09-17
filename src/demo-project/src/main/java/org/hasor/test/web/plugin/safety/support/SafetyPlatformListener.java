@@ -1,4 +1,4 @@
-package org.hasor.test.mvc.plugin.safety.support;
+package org.hasor.test.web.plugin.safety.support;
 import java.lang.reflect.Method;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
@@ -6,8 +6,8 @@ import net.hasor.core.Module;
 import net.hasor.core.context.AnnoModule;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.hasor.test.mvc.plugin.safety.Power;
-import org.hasor.test.mvc.plugin.safety.SafetyContext;
+import org.hasor.test.web.plugin.safety.Power;
+import org.hasor.test.web.plugin.safety.SafetyContext;
 import com.google.inject.matcher.AbstractMatcher;
 /**
  * 权限服务。

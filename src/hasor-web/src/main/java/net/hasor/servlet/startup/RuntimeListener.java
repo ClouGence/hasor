@@ -36,7 +36,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     private SessionListenerPipeline sessionListenerPipeline = null;
     /*----------------------------------------------------------------------------------------------------*/
     protected AbstractAppContext createAppContext(ServletContext sc) throws IOException {
-        AnnoWebAppContext webContext = new AnnoWebAppContext(sc);
+        AnnoWebAppContext webContext = new AnnoWebAppContext("hasor-config.xml", sc);
         return webContext;
     }
     public void contextInitialized(ServletContextEvent servletContextEvent) {

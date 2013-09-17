@@ -1,10 +1,10 @@
-package org.hasor.test.mvc.app.beans;
+package org.hasor.test.web.app.beans;
 import java.io.IOException;
 import net.hasor.core.context.AnnoAppContext;
 import net.hasor.core.gift.bean.Bean;
-import org.hasor.test.mvc.plugin.log.OutLog;
-import org.hasor.test.mvc.plugin.safety.Power;
-import org.hasor.test.mvc.plugin.safety.SafetyContext;
+import org.hasor.test.web.plugin.log.OutLog;
+import org.hasor.test.web.plugin.safety.Power;
+import org.hasor.test.web.plugin.safety.SafetyContext;
 /**
  * 
  * @version : 2013-7-25
