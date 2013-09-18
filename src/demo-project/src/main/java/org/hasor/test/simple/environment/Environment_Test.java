@@ -53,7 +53,7 @@ public class Environment_Test {
     @Test
     public void testStandardEnvironment() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testStandardEnvironment<<--");
-        StandardEnvironment env = new StandardEnvironment();
+        StandardEnvironment env = new StandardEnvironment("org/hasor/test/simple/environment/full-config.xml");
         //
         System.out.println(env.getSettings().getString("hasor.forceModule"));
         //
@@ -69,7 +69,7 @@ public class Environment_Test {
     @Test
     public void testStandardEnvironmentVar() throws Exception {
         System.out.println("--->>testStandardEnvironmentVar<<--");
-        StandardEnvironment env = new StandardEnvironment();
+        StandardEnvironment env = new StandardEnvironment("org/hasor/test/simple/environment/full-config.xml");
         //
         //JAVA_HOME
         System.out.println(env.getEnvVar("JAVA_HOME"));

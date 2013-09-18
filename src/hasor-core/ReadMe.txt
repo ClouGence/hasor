@@ -36,10 +36,9 @@ Hasor-Core v0.0.1.Release
 
 
 Hasor-Core v0.0.2.Release
-    1.DefaultXmlProperty类更名为DefaultXmlNode
-    2.XmlNode增加几个常用方法。
-    3.解决StandardAppContext调用无参构造方法引发异常的问题。
-    
+    1.DefaultXmlProperty类更名为DefaultXmlNode，并且XmlNode增加几个常用方法。
+    2.解决StandardAppContext调用无参构造方法引发异常的问题，同时修改几个核心类的构造方法。
+	3.删除所有Mapping部分支持，相关代码移到demo作为例子程序。
     
     
     

@@ -16,8 +16,6 @@
 package org.hasor.test.simple.context;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import net.hasor.core.context.AnnoAppContext;
-import net.hasor.core.context.DefaultAppContext;
 import net.hasor.core.context.StandardAppContext;
 import org.junit.Test;
 /**

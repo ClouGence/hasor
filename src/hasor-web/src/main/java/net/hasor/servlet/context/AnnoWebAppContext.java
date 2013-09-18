@@ -22,7 +22,7 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 import net.hasor.core.Environment;
 import net.hasor.core.binder.ApiBinderModule;
-import net.hasor.core.context.AnnoAppContext;
+import net.hasor.core.context.AnnoStandardAppContext;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.module.AbstractModulePropxy;
 import net.hasor.servlet.binder.FilterPipeline;
@@ -41,9 +41,9 @@ import com.google.inject.Provider;
  * @version : 2013-7-16
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-public class AnnoWebAppContext extends AnnoAppContext {
+public class AnnoWebAppContext extends AnnoStandardAppContext {
     /***/
-    public AnnoWebAppContext() {
+    public AnnoWebAppContext() throws IOException {
         super();
     }
     public AnnoWebAppContext(ServletContext servletContext) throws IOException {
@@ -82,13 +82,7 @@ public class AnnoWebAppContext extends AnnoAppContext {
             return null;
     }
     protected Environment createEnvironment() {
-        Environment env = null;
-        if (this.mainSettings == null) {
-            env = new WebStandardEnvironment(this.getServletContext());
-            this.mainSettings = env.getSettingURI();
-        } else
-            env = new WebStandardEnvironment(this.mainSettings, this.getServletContext());
-        return env;
+        return new WebStandardEnvironment(this.getMainSettings(), this.getServletContext());
     }
     protected Injector createInjector(Module[] guiceModules) {
         Module webModule = new Module() {
