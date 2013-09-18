@@ -30,48 +30,36 @@ import org.more.util.ResourcesUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class StandardContextSettings extends InputStreamSettings {
-    /**默认主配置文件名称*/
-    public static final String MainSettingName   = "hasor-config.xml";
     /**默认静态配置文件名称*/
     public static final String StaticSettingName = "static-config.xml";
-    //
     private URI                settingURI;
     //
-    //
     /**创建{@link StandardContextSettings}类型对象。*/
-    public StandardContextSettings() throws IOException {
-        this(MainSettingName);
-    }
-    /**创建{@link StandardContextSettings}类型对象。*/
-    public StandardContextSettings(String settingResource) throws IOException {
-        super();
-        Hasor.assertIsNotNull(settingResource);
-        URL url = ResourcesUtils.getResource(settingResource);
+    public StandardContextSettings(String mainSettings) throws IOException {
+        URL url = ResourcesUtils.getResource(mainSettings);
+        url = Hasor.assertIsNotNull(url);
         try {
-            if (url != null)
-                this.settingURI = url.toURI();
+            this.settingURI = url.toURI();
         } catch (URISyntaxException e) {
             throw new IOException(e);
         }
         this.refresh();
     }
     /**创建{@link StandardContextSettings}类型对象。*/
-    public StandardContextSettings(File settingFile) throws IOException {
-        this((settingFile == null) ? null : settingFile.toURI());
+    public StandardContextSettings(File mainSettings) throws IOException {
+        mainSettings = Hasor.assertIsNotNull(mainSettings);
+        this.settingURI = mainSettings.toURI();
+        this.refresh();
     }
     /**创建{@link StandardContextSettings}类型对象。*/
-    public StandardContextSettings(URI settingURI) throws IOException {
-        super();
-        Hasor.assertIsNotNull(settingURI);
-        this.settingURI = settingURI;
+    public StandardContextSettings(URI mainSettings) throws IOException {
+        Hasor.assertIsNotNull(mainSettings);
+        this.settingURI = mainSettings;
         this.refresh();
     }
     /**获取配置文件URI*/
     public URI getSettingURI() {
         return settingURI;
-    }
-    public void setSettingURI(URI settingURI) {
-        this.settingURI = settingURI;
     }
     //
     @Override
@@ -92,7 +80,7 @@ public class StandardContextSettings extends InputStreamSettings {
             Hasor.info("load ‘%s’", this.settingURI);
             this.addStream(stream);
         } else
-            Hasor.warning("cannot load the root configuration file ‘%s’", MainSettingName);
+            Hasor.warning("cannot load the root configuration file ‘%s’", this.settingURI);
     }
     @Override
     public void refresh() throws IOException {

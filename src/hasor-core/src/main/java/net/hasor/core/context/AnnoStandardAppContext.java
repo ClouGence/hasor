@@ -27,33 +27,33 @@ import org.more.util.StringUtils;
  * @version : 2013-7-16
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-public class AnnoAppContext extends StandardAppContext {
+public class AnnoStandardAppContext extends StandardAppContext {
     /***/
-    public AnnoAppContext() {
+    public AnnoStandardAppContext() throws IOException {
         super();
     }
     /***/
-    public AnnoAppContext(String mainSettings) throws IOException {
+    public AnnoStandardAppContext(String mainSettings) throws IOException {
         super(mainSettings);
     }
     /***/
-    public AnnoAppContext(File mainSettings) {
+    public AnnoStandardAppContext(File mainSettings) {
         super(mainSettings);
     }
     /***/
-    public AnnoAppContext(URI mainSettings) {
+    public AnnoStandardAppContext(URI mainSettings) {
         super(mainSettings);
     }
     /***/
-    public AnnoAppContext(String mainSettings, Object context) throws IOException {
+    public AnnoStandardAppContext(String mainSettings, Object context) throws IOException {
         super(mainSettings, context);
     }
     /***/
-    public AnnoAppContext(File mainSettings, Object context) {
+    public AnnoStandardAppContext(File mainSettings, Object context) {
         super(mainSettings, context);
     }
     /***/
-    public AnnoAppContext(URI mainSettings, Object context) {
+    public AnnoStandardAppContext(URI mainSettings, Object context) {
         super(mainSettings, context);
     }
     //

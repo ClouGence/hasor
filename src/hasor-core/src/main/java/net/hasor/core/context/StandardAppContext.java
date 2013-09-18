@@ -29,9 +29,12 @@ import org.more.util.ResourcesUtils;
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
-public class StandardAppContext extends DefaultAppContext {
+public class StandardAppContext extends SimpleAppContext {
+    public static final String DefaultSettings = "hasor-config.xml";
     /***/
-    public StandardAppContext() {}
+    public StandardAppContext() throws IOException {
+        this(DefaultSettings, null);
+    }
     /***/
     public StandardAppContext(String mainSettings) throws IOException {
         this(mainSettings, null);
@@ -46,16 +49,15 @@ public class StandardAppContext extends DefaultAppContext {
     }
     /***/
     public StandardAppContext(String mainSettings, Object context) throws IOException {
-        mainSettings = Hasor.assertIsNotNull(mainSettings);
         URL resURL = ResourcesUtils.getResource(mainSettings);
-        if (resURL == null)
-            return;
-        this.setContext(context);
+        resURL = Hasor.assertIsNotNull(resURL);
         try {
             this.mainSettings = resURL.toURI();
         } catch (URISyntaxException e) {
             throw new IOException(e);
         }
+        //
+        this.setContext(context);
     }
     /***/
     public StandardAppContext(File mainSettings, Object context) {
@@ -70,18 +72,12 @@ public class StandardAppContext extends DefaultAppContext {
     }
     //
     //
-    protected URI mainSettings = null;
+    private URI mainSettings = null;
     /**获取设置的主配置文件*/
     public final URI getMainSettings() {
         return mainSettings;
     }
     protected Environment createEnvironment() {
-        Environment env = null;
-        if (this.mainSettings == null) {
-            env = new StandardEnvironment();
-            this.mainSettings = env.getSettingURI();
-        } else
-            env = new StandardEnvironment(this.mainSettings);
-        return env;
+        return new StandardEnvironment(this.mainSettings);
     }
 }

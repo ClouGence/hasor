@@ -26,7 +26,7 @@ import org.more.UnhandledException;
  * @version : 2013-4-9
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-public class FileAppContext extends DefaultAppContext {
+public class FileAppContext extends SimpleAppContext {
     /***/
     public FileAppContext(String mainSettings) {
         mainSettings = Hasor.assertIsNotNull(mainSettings);

@@ -30,9 +30,9 @@ import net.hasor.core.setting.xml.SaxXmlParser;
  */
 public class InputStreamSettings extends AbstractBaseSettings implements IOSettings {
     private LinkedList<InputStream> pendingStream = new LinkedList<InputStream>();
+    /**子类决定如何添加资源*/
+    protected InputStreamSettings() {}
     //
-    /**创建{@link InputStreamSettings}对象。*/
-    public InputStreamSettings() {}
     /**创建{@link InputStreamSettings}对象。*/
     public InputStreamSettings(InputStream inStream) throws IOException {
         this(new InputStream[] { inStream });

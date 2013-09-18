@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import net.hasor.Hasor;
 import net.hasor.core.Environment;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
@@ -29,22 +30,24 @@ import org.more.util.ResourcesUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class StandardEnvironment extends AbstractEnvironment {
-    public StandardEnvironment() {
-        this((URI) null);
-    }
+    //子类需要自己调用initEnvironment方法初始化。
+    protected StandardEnvironment() {}
+    //
     public StandardEnvironment(String mainSettings) throws IOException, URISyntaxException {
         URL resURL = ResourcesUtils.getResource(mainSettings);
-        if (resURL == null)
-            return;
+        //
+        resURL = Hasor.assertIsNotNull(resURL);
         this.settingURI = resURL.toURI();
         this.initEnvironment();
     }
     public StandardEnvironment(File mainSettings) {
-        this((mainSettings == null) ? null : mainSettings.toURI());
+        mainSettings = Hasor.assertIsNotNull(mainSettings);
+        this.settingURI = mainSettings.toURI();
+        this.initEnvironment();
     }
     public StandardEnvironment(URI mainSettings) {
-        if (mainSettings != null)
-            this.settingURI = mainSettings;
+        mainSettings = Hasor.assertIsNotNull(mainSettings);
+        this.settingURI = mainSettings;
         this.initEnvironment();
     }
     //---------------------------------------------------------------------------------Basic Method
@@ -53,12 +56,6 @@ public class StandardEnvironment extends AbstractEnvironment {
         return this.settingURI;
     }
     protected Settings createSettings() throws IOException {
-        StandardContextSettings settings = null;
-        if (this.settingURI == null) {
-            settings = new StandardContextSettings();
-            this.settingURI = settings.getSettingURI();
-        } else
-            settings = new StandardContextSettings(this.settingURI);
-        return settings;
+        return new StandardContextSettings(this.getSettingURI());
     }
 }
