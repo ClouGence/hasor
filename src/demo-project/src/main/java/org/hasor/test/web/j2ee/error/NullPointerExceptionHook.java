@@ -17,8 +17,8 @@ package org.hasor.test.web.j2ee.error;
 import java.io.Writer;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import net.hasor.servlet.WebErrorHook;
-import net.hasor.servlet.anno.WebError;
+import net.hasor.web.servlet.WebErrorHook;
+import net.hasor.web.servlet.anno.WebError;
 /**
  * 该类处理servlet在调用过程中抛出的空指针异常
  * @version : 2013-8-11

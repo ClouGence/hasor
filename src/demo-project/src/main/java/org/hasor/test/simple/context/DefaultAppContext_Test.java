@@ -16,6 +16,8 @@
 package org.hasor.test.simple.context;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import net.hasor.core.context.AnnoStandardAppContext;
+import net.hasor.core.context.SimpleAppContext;
 import net.hasor.core.context.StandardAppContext;
 import org.junit.Test;
 /**
@@ -27,7 +29,7 @@ public class DefaultAppContext_Test {
     @Test
     public void testDefaultAppContext() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testDefaultAppContext<<--");
-        DefaultAppContext appContext = new DefaultAppContext();
+        SimpleAppContext appContext = new SimpleAppContext();
         //
         appContext.addModule(new AnnoTestMod_2());
         appContext.addModule(new AnnoTestMod_3());
@@ -49,7 +51,7 @@ public class DefaultAppContext_Test {
     @Test
     public void testAnnoAppContext() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testAnnoAppContext<<--");
-        AnnoAppContext appContext = new AnnoAppContext("org/hasor/test/simple/context/hasor-config.xml");
+        AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/simple/context/hasor-config.xml");
         //
         appContext.start();
     }

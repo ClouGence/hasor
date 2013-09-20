@@ -15,14 +15,14 @@
  */
 package org.hasor.test.web.app.actions;
 import net.hasor.core.AppContext;
-import net.hasor.mvc.controller.Controller;
-import net.hasor.mvc.controller.HeaderParam;
-import net.hasor.mvc.controller.InjectParam;
-import net.hasor.mvc.controller.Path;
-import net.hasor.mvc.controller.PathParam;
-import net.hasor.mvc.controller.QueryParam;
-import net.hasor.mvc.controller.plugins.result.core.Json;
-import net.hasor.mvc.controller.plugins.result.core.Redirect;
+import net.hasor.web.controller.Controller;
+import net.hasor.web.controller.HeaderParam;
+import net.hasor.web.controller.InjectParam;
+import net.hasor.web.controller.Path;
+import net.hasor.web.controller.PathParam;
+import net.hasor.web.controller.QueryParam;
+import net.hasor.web.controller.plugins.result.core.Json;
+import net.hasor.web.controller.plugins.result.core.Redirect;
 /**
  * 
  * @version : 2013-7-23
