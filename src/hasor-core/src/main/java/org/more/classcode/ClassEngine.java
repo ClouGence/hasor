@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.more.asm.ClassAdapter;
+import org.more.asm.ClassVisitor;
 import org.more.asm.ClassWriter;
 import org.more.classcode.objects.DefaultAopStrategy;
 import org.more.classcode.objects.DefaultClassNameStrategy;
@@ -477,7 +477,7 @@ public class ClassEngine {
     protected ClassBuilder createBuilder(BuilderMode builderMode) {
         /*ø’ µœ÷*/
         return new ClassBuilder() {
-            protected ClassAdapter acceptClass(ClassWriter classVisitor) {
+            protected ClassVisitor acceptClass(ClassWriter classVisitor) {
                 return null;
             }
             protected void init(ClassEngine classEngine) {}

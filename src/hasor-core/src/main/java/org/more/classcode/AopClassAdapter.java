@@ -18,7 +18,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.more.asm.ClassAdapter;
 import org.more.asm.ClassVisitor;
 import org.more.asm.FieldVisitor;
 import org.more.asm.Label;
@@ -29,7 +28,7 @@ import org.more.asm.Opcodes;
  * @version 2010-9-2
  * @author 赵永春 (zyc@hasor.net)
  */
-class AopClassAdapter extends ClassAdapter implements Opcodes {
+class AopClassAdapter extends ClassVisitor implements Opcodes {
     private ClassBuilder        classBuilder        = null;
     private String              asmClassName        = null;
     //
@@ -45,7 +44,7 @@ class AopClassAdapter extends ClassAdapter implements Opcodes {
     private ArrayList<String>   renderAopMethodList = new ArrayList<String>();
     //==================================================================================Constructor
     public AopClassAdapter(ClassVisitor visitor, ClassBuilder classBuilder) {
-        super(visitor);
+        super(ASM4, visitor);
         this.classBuilder = classBuilder;
     }
     /**获取具有aop特性的方法集合。*/

@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.more.asm.ClassAdapter;
 import org.more.asm.ClassReader;
 import org.more.asm.ClassVisitor;
 import org.more.asm.ClassWriter;
@@ -45,7 +44,7 @@ import org.more.asm.Opcodes;
  * @version 2010-8-12
  * @author 赵永春 (zyc@hasor.net)
  */
-class BuilderClassAdapter extends ClassAdapter implements Opcodes {
+class BuilderClassAdapter extends ClassVisitor implements Opcodes {
     //1.ClassAdapter使用的类对象。
     private ClassBuilder        classBuilder              = null;
     private ClassEngine         classEngine               = null;
@@ -69,7 +68,7 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
     public final static String  ConfigMarkName            = "$configMark";
     //
     public BuilderClassAdapter(ClassVisitor cv, ClassBuilder classBuilder) {
-        super(cv);
+        super(ASM4, cv);
         this.classBuilder = classBuilder;
         this.classEngine = classBuilder.getClassEngine();
         this.localMethodList = new ArrayList<String>();
@@ -276,7 +275,7 @@ class BuilderClassAdapter extends ClassAdapter implements Opcodes {
                     ClassReader reader = new ClassReader(EngineToos.getClassInputStream(type));//创建ClassReader
                     final BuilderClassAdapter adapter = this;
                     //扫描附加接口方法
-                    reader.accept(new ClassAdapter(new ClassWriter(ClassWriter.COMPUTE_MAXS)) {
+                    reader.accept(new ClassVisitor(Opcodes.ASM4, new ClassWriter(ClassWriter.COMPUTE_MAXS)) {
                         private int methodIndex = 0;
                         public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
                             if (adapter.localMethodList.contains(name + desc) == true)

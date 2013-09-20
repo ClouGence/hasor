@@ -16,8 +16,8 @@
 package org.more.classcode;
 import java.io.IOException;
 import java.util.ArrayList;
-import org.more.asm.ClassAdapter;
 import org.more.asm.ClassReader;
+import org.more.asm.ClassVisitor;
 import org.more.asm.ClassWriter;
 /**
  * 类生成器，可以通过继承该类重写acceptClass方法来使用classcode基于asm3.2的高级功能。<br/>
@@ -149,7 +149,7 @@ public abstract class ClassBuilder {
         //------第一环，写入
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         //------第二环，用户扩展
-        ClassAdapter visitor = this.acceptClass(writer);
+        ClassVisitor visitor = this.acceptClass(writer);
         //------第三环，Aop
         AopClassAdapter aopAdapter = null;
         if (this.isRenderAop() == true) {
@@ -176,7 +176,7 @@ public abstract class ClassBuilder {
      * 写入的visitor。注意使用该扩展方式必须要熟悉ASM3.2框架。visitor环的层次关系是这样的：<br/>
      * <b>第一环</b>，ASM Write；<b>第二环</b>，用户扩展；<b>第三环</b>，Aop；<b>第四环</b>，ASM Read
      */
-    protected abstract ClassAdapter acceptClass(final ClassWriter classVisitor);
+    protected abstract ClassVisitor acceptClass(final ClassWriter classVisitor);
     /**
      * 当{@link ClassBuilder#initBuilder(ClassEngine)}方法被ClassEngine调用之后，在结束方法之前该方法会调用
      * {@link ClassBuilder#init(ClassEngine)}方法。这时子类可以通过重写该方法来初始化自己的相关数据。
