@@ -59,9 +59,15 @@ and conditions of the following licenses.
 	jetty-webapp-8.1.12.v20130726
 	jetty-websocket-8.1.12.v20130726
 	jetty-xml-8.1.12.v20130726
-	
+	jetty-deploy-8.1.12.v20130726-sources
+	jetty-http-spi-8.1.12.v20130726-sources
+	jetty-monitor-8.1.12.v20130726-sources
+	jetty-overlay-deployer-8.1.12.v20130726-sources
+	jetty-policy-8.1.12.v20130726-sources
+	jetty-servlets-8.1.12.v20130726-sources
 	
 	com.sun.el-2.2.0.v201108011116-sources
+	javax.mail.glassfish-1.4.1.v201005082020-sources
 	javax.el-2.2.0.v201108011116-sources
 	javax.servlet-3.0.0.v201112011016-sources
 	javax.servlet.jsp-2.2.0.v201112011158-sources
