@@ -66,7 +66,9 @@ and conditions of the following licenses.
 	jetty-policy-8.1.12.v20130726-sources
 	jetty-servlets-8.1.12.v20130726-sources
 	jetty-annotations-8.1.12.v20130726-sources
-
+	jetty-jaspi-8.1.12.v20130726-sources
+	
+	javax.security.auth.message-1.0.0.v201108011116-sources
 	org.objectweb.asm-3.1.0.v200803061910-sources	
 	javax.annotation-1.1.0.v201108011116-sources
 	com.sun.el-2.2.0.v201108011116-sources
