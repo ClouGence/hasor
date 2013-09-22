@@ -16,10 +16,9 @@
 package org.hasor.test.simple.aop;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import net.hasor.core.context.AnnoAppContext;
+import net.hasor.core.context.AnnoStandardAppContext;
 import org.hasor.test.simple.aop.bean.AopBean_ClassLv;
 import org.hasor.test.simple.aop.bean.AopBean_MethodLv;
-import org.hasor.test.simple.beans.customer.CustomerBean;
 import org.junit.Test;
 /**
  * 环境变量操作演示
@@ -30,7 +29,7 @@ public class Aop_Test {
     @Test
     public void testAopBeanClassLv() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testAopBeanClassLv<<--");
-        AnnoAppContext appContext = new AnnoAppContext("org/hasor/test/simple/beans/bean-config.xml");
+        AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/simple/beans/bean-config.xml");
         appContext.start();
         //
         AopBean_ClassLv bean = appContext.getInstance(AopBean_ClassLv.class);
@@ -40,7 +39,7 @@ public class Aop_Test {
     @Test
     public void testAopBeanMethodLv() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testAopBeanMethodLv<<--");
-        AnnoAppContext appContext = new AnnoAppContext("org/hasor/test/simple/beans/bean-config.xml");
+        AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/simple/beans/bean-config.xml");
         appContext.start();
         //
         AopBean_MethodLv bean = appContext.getInstance(AopBean_MethodLv.class);
@@ -50,7 +49,7 @@ public class Aop_Test {
     @Test
     public void testAopBeanGlobalLv() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testAopBeanGlobalLv<<--");
-        AnnoAppContext appContext = new AnnoAppContext("org/hasor/test/simple/aop/global-config.xml");
+        AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/simple/aop/global-config.xml");
         appContext.start();
         //
         AopBean_MethodLv bean = appContext.getInstance(AopBean_MethodLv.class);

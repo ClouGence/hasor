@@ -16,7 +16,7 @@
 package org.hasor.test.simple.beans;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import net.hasor.core.context.AnnoAppContext;
+import net.hasor.core.context.AnnoStandardAppContext;
 import org.hasor.test.simple.beans.beans.NamesBean;
 import org.hasor.test.simple.beans.beans.SingletonBean;
 import org.hasor.test.simple.beans.customer.CustomerBean;
@@ -30,7 +30,7 @@ public class Beans_Test {
     @Test
     public void testNamesBean() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testNamesBean<<--");
-        AnnoAppContext appContext = new AnnoAppContext("org/hasor/test/simple/beans/bean-config.xml");
+        AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/simple/beans/bean-config.xml");
         appContext.start();
         //
         NamesBean b1 = appContext.getBean("name1");
@@ -41,7 +41,7 @@ public class Beans_Test {
     @Test
     public void testSingletonBean() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testSingletonBean<<--");
-        AnnoAppContext appContext = new AnnoAppContext("org/hasor/test/simple/beans/bean-config.xml");
+        AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/simple/beans/bean-config.xml");
         appContext.start();
         //
         SingletonBean b1 = appContext.getBean("singletonBean");
@@ -52,7 +52,7 @@ public class Beans_Test {
     @Test
     public void testCustomerBean() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testCustomerBean<<--");
-        AnnoAppContext appContext = new AnnoAppContext("org/hasor/test/simple/beans/bean-config.xml");
+        AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/simple/beans/bean-config.xml");
         appContext.start();
         //
         CustomerBean b1 = appContext.getBean("Customer");

@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.Settings;
 import net.hasor.core.SettingsListener;
-import net.hasor.core.context.AnnoAppContext;
+import net.hasor.core.context.AnnoStandardAppContext;
 import org.junit.Test;
 /**
  * 环境变量操作演示
@@ -32,7 +32,7 @@ public class Event_Test {
     @Test
     public void testAsyncEvent() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testAsyncEvent<<--");
-        AnnoAppContext appContext = new AnnoAppContext("org/hasor/test/simple/events/event-config.xml");
+        AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/simple/events/event-config.xml");
         appContext.start();
         //
         for (int i = 0; i < 10; i++)
@@ -45,7 +45,7 @@ public class Event_Test {
     @Test
     public void testSyncEvent() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testSyncEvent<<--");
-        AnnoAppContext appContext = new AnnoAppContext("org/hasor/test/simple/events/event-config.xml");
+        AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/simple/events/event-config.xml");
         appContext.start();
         //
         for (int i = 0; i < 10; i++)

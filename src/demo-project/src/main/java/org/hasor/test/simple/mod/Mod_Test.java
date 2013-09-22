@@ -16,7 +16,7 @@
 package org.hasor.test.simple.mod;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import net.hasor.core.context.AnnoAppContext;
+import net.hasor.core.context.AnnoStandardAppContext;
 import org.junit.Test;
 /**
  * 环境变量操作演示
@@ -41,7 +41,7 @@ public class Mod_Test {
          *         Mode1 **
          *   Mode9
          */
-        AnnoAppContext appContext = new AnnoAppContext("org/hasor/test/simple/mod/dependency/dep1-config.xml");
+        AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/simple/mod/dependency/dep1-config.xml");
         //
         appContext.start();
     }
@@ -54,14 +54,14 @@ public class Mod_Test {
          *     Mode3  F
          *   Mode3    F
          */
-        AnnoAppContext appContext = new AnnoAppContext("org/hasor/test/simple/mod/dependency/dep2-config.xml");
+        AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/simple/mod/dependency/dep2-config.xml");
         //
         appContext.start();
     }
     @Test
     public void testGuice() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testGuice<<--");
-        AnnoAppContext appContext = new AnnoAppContext("org/hasor/test/simple/mod/guice/gucie-config.xml");
+        AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/simple/mod/guice/gucie-config.xml");
         //
         appContext.start();
     }

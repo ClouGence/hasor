@@ -7,8 +7,8 @@ import net.hasor.web.controller.Controller;
 import net.hasor.web.controller.Get;
 import net.hasor.web.controller.Path;
 import net.hasor.web.controller.support.AbstractController;
-import org.hasor.test.web.plugin.log.OutLog;
-import org.hasor.test.web.plugin.safety.SafetyContext;
+import org.hasor.test.plugins.log.OutLog;
+import org.hasor.test.plugins.safety.SafetyContext;
 import org.more.util.StringUtils;
 /**
  * 
