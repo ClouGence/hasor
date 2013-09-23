@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.test.asm;
+package org.more.test.asm.simple;
 /**
  * 
  * @version : 2013-9-20

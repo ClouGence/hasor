@@ -13,17 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.test.asm;
+package org.more.test.asm.returns;
+import java.util.List;
+import net.hasor.core.gift.bean.Bean;
 /**
  * 
  * @version : 2013-9-20
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-public class AopInterceptor {
-    public static void beforeInvoke() {
-        System.out.println("before");
-    };
-    public static void afterInvoke() {
-        System.out.println("after");
-    };
+@Bean({ "" })
+@TestAnno
+public class TestBean {
+    public <T> String halloAop(T abc, int aaa) throws Throwable,Exception {
+        return null;
+    }
+    public int returnInteger() {
+        int val = 45;
+        return val;
+    }
+    public void returnLong() {
+        System.out.println("Hello Aop");
+    }
+    public void returnDouble() {
+        System.out.println("Hello Aop");
+    }
 }

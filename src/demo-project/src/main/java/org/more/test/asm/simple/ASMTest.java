@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.test.asm;
+package org.more.test.asm.simple;
 import java.io.InputStream;
 import org.more.asm.ClassReader;
 import org.more.asm.ClassVisitor;
@@ -28,7 +28,7 @@ import org.more.asm.Opcodes;
 public class ASMTest implements Opcodes {
     public static void main(String[] args) throws Exception {
         AopClassLoader aopLoader = new AopClassLoader(Thread.currentThread().getContextClassLoader());
-        Class<?> testBean = aopLoader.loadClass("org.more.test.asm.TestBean_Tmp");
+        Class<?> testBean = aopLoader.loadClass("org.more.test.asm.simple.TestBean_Tmp");
         TestBean bean = (TestBean) testBean.newInstance();
         bean.halloAop();
     }
@@ -43,7 +43,7 @@ class AopClassLoader extends ClassLoader implements Opcodes {
         try {
             ClassWriter cw = new ClassWriter(0);
             //
-            InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("org/more/test/asm/TestBean.class");
+            InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("org/more/test/asm/simple/TestBean.class");
             ClassReader reader = new ClassReader(is);
             reader.accept(new AopClassAdapter(ASM4, cw), ClassReader.SKIP_DEBUG);
             //
@@ -65,6 +65,7 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
     }
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         //更改类名，并使新类继承原有的类。
+        // 
         super.visit(version, access, name + "_Tmp", signature, name, interfaces);
         {
             MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
@@ -92,11 +93,11 @@ class AopMethod extends MethodVisitor implements Opcodes {
     }
     public void visitCode() {
         super.visitCode();
-        this.visitMethodInsn(INVOKESTATIC, "org/more/test/asm/AopInterceptor", "beforeInvoke", "()V");
+        this.visitMethodInsn(INVOKESTATIC, "org/more/test/asm/simple/AopInterceptor", "beforeInvoke", "()V");
     }
     public void visitInsn(int opcode) {
         if (opcode == RETURN) {
-            mv.visitMethodInsn(INVOKESTATIC, "org/more/test/asm/AopInterceptor", "afterInvoke", "()V");
+            mv.visitMethodInsn(INVOKESTATIC, "org/more/test/asm/simple/AopInterceptor", "afterInvoke", "()V");
         }
         super.visitInsn(opcode);
     }
