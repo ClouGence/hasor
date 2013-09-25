@@ -17,7 +17,7 @@ package net.hasor.web.controller.plugins.validation;
 import net.hasor.core.AppContext;
 import net.hasor.core.context.AnnoModule;
 import net.hasor.web.controller.support.ServletControllerSupportModule;
-import net.hasor.web.servlet.AbstractWebModule;
+import net.hasor.web.servlet.WebModule;
 import net.hasor.web.servlet.WebApiBinder;
 /**
  * 负责处理请求验证。
@@ -25,7 +25,7 @@ import net.hasor.web.servlet.WebApiBinder;
  * @author 赵永春 (zyc@hasor.net)
  */
 @AnnoModule(description = "org.hasor.mvc.controller.plugins.validation软件包功能支持。")
-public class ControllerPluginValidationSupportModule extends AbstractWebModule {
+public class ControllerPluginValidationSupportModule extends WebModule {
     public void init(WebApiBinder apiBinder) {
         apiBinder.dependency().forced(ServletControllerSupportModule.class);
     }

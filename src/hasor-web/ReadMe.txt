@@ -11,16 +11,8 @@ Hasor-Web v0.0.1.Release
     1.基于Hasor-Core v0.0.1.Release
     2.包含了所有v0.0.1.20130831-M1版本中Hasor-Core的Web相关功能代码
     3.Hasor-Web（Hasor-MVC更名而来）
+	4.在 Servlet 关键支持中删除注解的支持，注解部分转移到 Gift 中实现。 
 
 
-Hasor-Web v0.0.2.Release
-    1.DefaultXmlProperty类更名为DefaultXmlNode
-    2.XmlNode增加几个常用方法。
-    3.解决StandardAppContext调用无参构造方法引发异常的问题。
-    
-    
-    
-    
-    
-    
+
     

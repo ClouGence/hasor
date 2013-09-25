@@ -21,18 +21,18 @@ import net.hasor.Hasor;
 import net.hasor.core.AppContext;
 import net.hasor.core.SettingsListener;
 import net.hasor.core.context.AnnoModule;
+import net.hasor.web.gift.support.ServletAnnoSupportModule;
 import net.hasor.web.resource.ResourceLoaderCreator;
 import net.hasor.web.resource.ResourceLoaderDefine;
-import net.hasor.web.servlet.AbstractWebModule;
+import net.hasor.web.servlet.WebModule;
 import net.hasor.web.servlet.WebApiBinder;
-import net.hasor.web.servlet.anno.support.ServletAnnoSupportModule;
 /**
  * 负责装载jar包中的资源。启动级别：Lv_1
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
 @AnnoModule(description = "org.hasor.web.resource软件包功能支持。")
-public class ServletResourceSupportModule extends AbstractWebModule {
+public class ServletResourceSupportModule extends WebModule {
     public void init(WebApiBinder apiBinder) {
         apiBinder.dependency().weak(ServletAnnoSupportModule.class);
         /*绑定Settings，但是不支持重载更新*/
