@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.hasor.Hasor;
 import net.hasor.core.AppContext;
 import net.hasor.web.servlet.binder.FilterPipeline;
+import org.more.util.ContextClassLoaderLocal;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 /**
@@ -46,12 +47,15 @@ public class RuntimeFilter implements Filter {
     //
     /**初始化过滤器，初始化会同时初始化FilterPipeline*/
     public void init(FilterConfig filterConfig) throws ServletException {
-        if (appContext == null) {
+        if (this.appContext == null) {
             ServletContext servletContext = filterConfig.getServletContext();
             this.appContext = (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
             Hasor.assertIsNotNull(this.appContext, "AppContext is null.");
             this.filterPipeline = this.appContext.getInstance(FilterPipeline.class);
         }
+        //
+        LocalServletContext.set(filterConfig.getServletContext());
+        LocalAppContext.set(this.appContext);
         /*获取请求响应编码*/
         this.requestEncoding = this.appContext.getSettings().getString("hasor-web.encoding.requestEncoding");
         this.responseEncoding = this.appContext.getSettings().getString("hasor-web.encoding.responseEncoding");
@@ -100,12 +104,45 @@ public class RuntimeFilter implements Filter {
     //
     /**获取{@link AppContext}接口。*/
     protected final AppContext getAppContext() {
-        return appContext;
+        return this.appContext;
     }
     //
     /**在filter请求处理之前，该方法负责通知HttpRequestProvider、HttpResponseProvider、HttpSessionProvider更新对象。*/
-    protected void beforeRequest(AppContext appContext, HttpServletRequest httpReq, HttpServletResponse httpRes) {}
+    protected void beforeRequest(AppContext appContext, HttpServletRequest httpReq, HttpServletResponse httpRes) {
+        LocalRequest.set(httpReq);
+        LocalResponse.set(httpRes);
+    }
     //
     /**在filter请求处理之后，该方法负责通知HttpRequestProvider、HttpResponseProvider、HttpSessionProvider重置对象。*/
-    protected void afterResponse(AppContext appContext, HttpServletRequest httpReq, HttpServletResponse httpRes) {}
+    protected void afterResponse(AppContext appContext, HttpServletRequest httpReq, HttpServletResponse httpRes) {
+        LocalRequest.remove();
+        LocalResponse.remove();
+    }
+    //
+    //
+    //
+    private static ContextClassLoaderLocal          LocalServletContext = new ContextClassLoaderLocal();
+    private static ContextClassLoaderLocal          LocalAppContext     = new ContextClassLoaderLocal();
+    private static ThreadLocal<HttpServletRequest>  LocalRequest        = new ThreadLocal<HttpServletRequest>();
+    private static ThreadLocal<HttpServletResponse> LocalResponse       = new ThreadLocal<HttpServletResponse>();
+    //
+    /**获取{@link HttpServletRequest}*/
+    public static HttpServletRequest getLocalRequest() {
+        return LocalRequest.get();
+    }
+    //
+    /**获取{@link HttpServletResponse}*/
+    public static HttpServletResponse getLocalResponse() {
+        return LocalResponse.get();
+    }
+    //
+    /**获取{@link ServletContext}*/
+    public static ServletContext getLocalServletContext() {
+        return (ServletContext) LocalServletContext.get();
+    }
+    //
+    /**获取{@link AppContext}*/
+    public static AppContext getLocalAppContext() {
+        return (AppContext) LocalAppContext.get();
+    }
 }

@@ -39,16 +39,14 @@ import com.google.inject.TypeLiteral;
 @Singleton
 public class ManagedFilterPipeline implements FilterPipeline {
     private final ManagedServletPipeline servletPipeline;
-    private final ManagedErrorPipeline   errorPipeline;
     private FilterDefinition[]           filterDefinitions;
     private volatile boolean             initialized = false;
     private AppContext                   appContext  = null;
     //
     //
     @Inject
-    public ManagedFilterPipeline(ManagedServletPipeline servletPipeline, ManagedErrorPipeline errorPipeline) {
+    public ManagedFilterPipeline(ManagedServletPipeline servletPipeline) {
         this.servletPipeline = servletPipeline;
-        this.errorPipeline = errorPipeline;
     }
     //
     public synchronized void initPipeline(AppContext appContext) throws ServletException {
@@ -61,7 +59,6 @@ public class ManagedFilterPipeline implements FilterPipeline {
         }
         //next, initialize servlets...
         this.servletPipeline.initPipeline(appContext);
-        this.errorPipeline.initPipeline(appContext);
         //everything was ok...
         this.initialized = true;
     }
@@ -78,19 +75,13 @@ public class ManagedFilterPipeline implements FilterPipeline {
         if (!initialized) {
             initPipeline(this.appContext);
         }
-        try {
-            /*执行过滤器链*/
-            ServletRequest dispatcherRequest = withDispatcher(request, this.servletPipeline);
-            new FilterChainInvocation(this.filterDefinitions, this.servletPipeline, defaultFilterChain).doFilter(dispatcherRequest, response);
-        } catch (Exception e) {
-            /*出现错误交给错误处理程序处理.*/
-            this.errorPipeline.dispatch(request, response, e);
-        }
+        /*执行过滤器链*/
+        ServletRequest dispatcherRequest = withDispatcher(request, this.servletPipeline);
+        new FilterChainInvocation(this.filterDefinitions, this.servletPipeline, defaultFilterChain).doFilter(dispatcherRequest, response);
     }
     public void destroyPipeline(AppContext appContext) {
         //destroy servlets first
         this.servletPipeline.destroyPipeline(appContext);
-        this.errorPipeline.destroyPipeline(appContext);
         //go down chain and destroy all our filters
         for (FilterDefinition filterDefinition : filterDefinitions) {
             filterDefinition.destroy(appContext);

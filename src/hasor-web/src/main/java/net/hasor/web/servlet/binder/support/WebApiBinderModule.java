@@ -29,7 +29,6 @@ import com.google.inject.Binder;
 public abstract class WebApiBinderModule extends ApiBinderModule implements WebApiBinder {
     private FiltersModuleBuilder              filterModuleBinder                = new FiltersModuleBuilder();             /*Filters*/
     private ServletsModuleBuilder             servletModuleBinder               = new ServletsModuleBuilder();            /*Servlets*/
-    private ErrorsModuleBuilder               errorsModuleBuilder               = new ErrorsModuleBuilder();              /*Errors*/
     private HttpSessionListenerBindingBuilder httpSessionListenerBindingBuilder = new HttpSessionListenerBindingBuilder(); /*Listener*/
     private ContextListenerBindingBuilder     contextListenerBuilder            = new ContextListenerBindingBuilder();    /*Listener*/
     //
@@ -58,11 +57,6 @@ public abstract class WebApiBinderModule extends ApiBinderModule implements WebA
     public ServletBindingBuilder serveRegex(String regex, String... regexes) {
         return this.servletModuleBinder.filterRegex(newArrayList(regexes, regex));
     };
-    public ErrorBindingBuilder error(Class<? extends Throwable> error) {
-        ArrayList<Class<? extends Throwable>> errorList = new ArrayList<Class<? extends Throwable>>();
-        errorList.add(error);
-        return this.errorsModuleBuilder.errorTypes(errorList);
-    }
     public SessionListenerBindingBuilder sessionListener() {
         return this.httpSessionListenerBindingBuilder.sessionListener();
     }
@@ -73,7 +67,6 @@ public abstract class WebApiBinderModule extends ApiBinderModule implements WebA
         super.configure(binder);
         binder.install(this.filterModuleBinder);
         binder.install(this.servletModuleBinder);
-        binder.install(this.errorsModuleBuilder);
         binder.install(this.httpSessionListenerBindingBuilder);
         binder.install(this.contextListenerBuilder);
     }

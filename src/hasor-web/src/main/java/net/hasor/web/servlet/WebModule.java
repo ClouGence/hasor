@@ -13,23 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.servlet.anno;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.hasor.web.servlet;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.Module;
 /**
  * 
- * @version : 2013-3-12
+ * @version : 2013-7-16
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.ANNOTATION_TYPE })
-public @interface WebInitParam {
-    /** Name of the initialization parameter */
-    public String name();
-    /** Value of the initialization parameter */
-    public String value();
-    /** Description of the initialization parameter */
-    public String description() default "";
+public abstract class WebModule implements Module {
+    public final void init(ApiBinder apiBinder) {
+        if (apiBinder instanceof WebApiBinder)
+            this.init((WebApiBinder) apiBinder);
+        else
+            throw new UnsupportedOperationException("Hasor context does not support the web module.");
+    }
+    public abstract void init(WebApiBinder apiBinder);
 }

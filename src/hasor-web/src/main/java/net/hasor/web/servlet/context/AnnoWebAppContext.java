@@ -27,7 +27,6 @@ import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.module.AbstractModulePropxy;
 import net.hasor.web.servlet.binder.FilterPipeline;
 import net.hasor.web.servlet.binder.SessionListenerPipeline;
-import net.hasor.web.servlet.binder.support.ManagedErrorPipeline;
 import net.hasor.web.servlet.binder.support.ManagedFilterPipeline;
 import net.hasor.web.servlet.binder.support.ManagedServletPipeline;
 import net.hasor.web.servlet.binder.support.ManagedSessionListenerPipeline;
@@ -88,7 +87,6 @@ public class AnnoWebAppContext extends AnnoStandardAppContext {
         Module webModule = new Module() {
             public void configure(Binder binder) {
                 /*Bind*/
-                binder.bind(ManagedErrorPipeline.class);
                 binder.bind(ManagedServletPipeline.class);
                 binder.bind(FilterPipeline.class).to(ManagedFilterPipeline.class);
                 binder.bind(SessionListenerPipeline.class).to(ManagedSessionListenerPipeline.class);
