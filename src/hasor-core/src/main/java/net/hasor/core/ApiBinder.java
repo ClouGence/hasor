@@ -42,20 +42,19 @@ public interface ApiBinder {
      * */
     public <T> LinkedBindingBuilder<T> bindingType(Class<T> type);
     /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
-     * @see ApiBinder#bindingType(Class); */
+     * @see ApiBinder#bindingType(Class) */
     public <T> void bindingType(Class<T> type, T instance);
     /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
-     * @see ApiBinder#bindingType(Class); */
+     * @see ApiBinder#bindingType(Class) */
     public <T> ScopedBindingBuilder bindingType(Class<T> type, Class<? extends T> implementation);
     /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
-     * @see ApiBinder#bindingType(Class); */
+     * @see ApiBinder#bindingType(Class) */
     public <T> ScopedBindingBuilder bindingType(Class<T> type, Provider<? extends T> provider);
     /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
-     * @see ApiBinder#bindingType(Class); */
+     * @see ApiBinder#bindingType(Class) */
     public <T> ScopedBindingBuilder bindingType(Class<T> type, Key<? extends T> targetKey);
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
     public Set<Class<?>> getClassSet(Class<?> featureType);
-    //
     //
     /**配置模块依赖关系。*/
     public DependencySettings dependency();

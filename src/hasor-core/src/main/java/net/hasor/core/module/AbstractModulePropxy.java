@@ -24,6 +24,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Dependency;
 import net.hasor.core.Module;
 import net.hasor.core.ModuleInfo;
+import net.hasor.core.context.AbstractAppContext;
 import org.more.UnhandledException;
 import org.more.util.exception.ExceptionUtils;
 /**
@@ -198,14 +199,26 @@ public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信
     //
     /**模块的 init 生命周期调用*/
     protected void onInit(Module forModule, ApiBinder apiBinder) {
+        String eventName = forModule.getClass().getName();
+        String phase = AbstractAppContext.ContextEvent_Init;
+        apiBinder.getEnvironment().getEventManager().doSyncEventIgnoreThrow(eventName, phase, forModule);
+        //
         forModule.init(apiBinder);
     }
     /**发送模块启动信号*/
     protected void onStart(Module forModule, AppContext appContext) {
+        String eventName = forModule.getClass().getName();
+        String phase = AbstractAppContext.ContextEvent_Start;
+        appContext.getEventManager().doSyncEventIgnoreThrow(eventName, phase, forModule);
+        //
         forModule.start(appContext);
     }
     /**发送模块停止信号*/
     protected void onStop(Module forModule, AppContext appContext) {
+        String eventName = forModule.getClass().getName();
+        String phase = AbstractAppContext.ContextEvent_Stop;
+        appContext.getEventManager().doSyncEventIgnoreThrow(eventName, phase, forModule);
+        //
         forModule.stop(appContext);
     }
 }
