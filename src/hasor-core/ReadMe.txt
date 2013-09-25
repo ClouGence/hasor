@@ -39,7 +39,9 @@ Hasor-Core v0.0.2.Release
     1.DefaultXmlProperty类更名为DefaultXmlNode，并且XmlNode增加几个常用方法。
     2.解决StandardAppContext调用无参构造方法引发异常的问题，同时修改几个核心类的构造方法。
 	3.删除所有Mapping部分支持，相关代码移到demo作为例子程序。
-    
+    4.AbstractAppContext类中有关事件的声明移动到 AppContext 接口中。
+    5.ASM升级为4.0、ClassCode连带升级。
+    6.以模块类名为事件名，当执行 Init\Start\Stop时候，抛出对应事件。
     
     
     

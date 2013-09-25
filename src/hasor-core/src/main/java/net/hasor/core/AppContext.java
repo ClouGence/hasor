@@ -24,6 +24,14 @@ import com.google.inject.Provider;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface AppContext {
+    /**容器事件：ContextEvent_Init*/
+    public static final String ContextEvent_Init  = "ContextEvent_Init";
+    /**容器事件：ContextEvent_Start*/
+    public static final String ContextEvent_Start = "ContextEvent_Start";
+    /**容器事件：ContextEvent_Stop*/
+    public static final String ContextEvent_Stop  = "ContextEvent_Stop";
+    //
+    //
     /**通过名获取Bean的类型。*/
     public <T> Class<T> getBeanType(String name);
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/

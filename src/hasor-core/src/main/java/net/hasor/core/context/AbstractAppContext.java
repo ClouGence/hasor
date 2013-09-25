@@ -44,14 +44,7 @@ import com.google.inject.TypeLiteral;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractAppContext implements AppContext {
-    /**容器事件：ContextEvent_Init*/
-    public static final String ContextEvent_Init  = "ContextEvent_Init";
-    /**容器事件：ContextEvent_Start*/
-    public static final String ContextEvent_Start = "ContextEvent_Start";
-    /**容器事件：ContextEvent_Stop*/
-    public static final String ContextEvent_Stop  = "ContextEvent_Stop";
-    //
-    private Object             context;
+    private Object context;
     /**获取上下文*/
     public Object getContext() {
         return this.context;

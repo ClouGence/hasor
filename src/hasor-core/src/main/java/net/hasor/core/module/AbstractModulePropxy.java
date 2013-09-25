@@ -201,7 +201,7 @@ public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信
     protected void onInit(Module forModule, ApiBinder apiBinder) {
         String eventName = forModule.getClass().getName();
         String phase = AbstractAppContext.ContextEvent_Init;
-        apiBinder.getEnvironment().getEventManager().doSyncEventIgnoreThrow(eventName, phase, forModule);
+        apiBinder.getEnvironment().getEventManager().doSyncEventIgnoreThrow(eventName, phase, forModule, apiBinder);
         //
         forModule.init(apiBinder);
     }
@@ -209,7 +209,7 @@ public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信
     protected void onStart(Module forModule, AppContext appContext) {
         String eventName = forModule.getClass().getName();
         String phase = AbstractAppContext.ContextEvent_Start;
-        appContext.getEventManager().doSyncEventIgnoreThrow(eventName, phase, forModule);
+        appContext.getEventManager().doSyncEventIgnoreThrow(eventName, phase, forModule, appContext);
         //
         forModule.start(appContext);
     }
@@ -217,7 +217,7 @@ public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信
     protected void onStop(Module forModule, AppContext appContext) {
         String eventName = forModule.getClass().getName();
         String phase = AbstractAppContext.ContextEvent_Stop;
-        appContext.getEventManager().doSyncEventIgnoreThrow(eventName, phase, forModule);
+        appContext.getEventManager().doSyncEventIgnoreThrow(eventName, phase, forModule, appContext);
         //
         forModule.stop(appContext);
     }
