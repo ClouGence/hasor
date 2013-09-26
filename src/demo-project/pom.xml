@@ -95,9 +95,9 @@
 
 		<!-- Jetty Test -->
 		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-webapp</artifactId>
-			<version>8.1.12.v20130726</version>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-jetty</artifactId>
+			<version>0.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
