@@ -26,6 +26,6 @@ import org.aopalliance.intercept.MethodInterceptor;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })
-public @interface Before {
+public @interface Aop {
     public Class<? extends MethodInterceptor>[] value();
 }

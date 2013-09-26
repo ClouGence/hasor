@@ -25,10 +25,10 @@ import org.aopalliance.intercept.MethodInvocation;
  * @version : 2013-9-13
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-class BeforeInterceptor implements MethodInterceptor {
+class AopInterceptor implements MethodInterceptor {
     private GetContext getContext = null;
     //
-    public BeforeInterceptor(GetContext getContext) {
+    public AopInterceptor(GetContext getContext) {
         this.getContext = getContext;
     }
     //
@@ -36,13 +36,13 @@ class BeforeInterceptor implements MethodInterceptor {
         List<Class<? extends MethodInterceptor>> list = new ArrayList<Class<? extends MethodInterceptor>>();
         Method targetMethod = invocation.getMethod();
         //
-        Before beforeAnno = targetMethod.getDeclaringClass().getAnnotation(Before.class);
+        Aop beforeAnno = targetMethod.getDeclaringClass().getAnnotation(Aop.class);
         if (beforeAnno != null) {
             for (Class<? extends MethodInterceptor> interType : beforeAnno.value())
                 if (interType != null)
                     list.add(interType);
         }
-        beforeAnno = targetMethod.getAnnotation(Before.class);
+        beforeAnno = targetMethod.getAnnotation(Aop.class);
         if (beforeAnno != null) {
             for (Class<? extends MethodInterceptor> interType : beforeAnno.value())
                 if (interType != null)
@@ -50,6 +50,6 @@ class BeforeInterceptor implements MethodInterceptor {
         }
         //2.ªÒ»°¿πΩÿ∆˜
         AppContext appContext = getContext.getAppContext();
-        return new BeforeChainInvocation(appContext, list, invocation).invoke(invocation);
+        return new AopChainInvocation(appContext, list, invocation).invoke(invocation);
     }
 }

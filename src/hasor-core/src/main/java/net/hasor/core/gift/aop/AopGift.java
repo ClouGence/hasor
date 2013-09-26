@@ -28,12 +28,12 @@ import com.google.inject.matcher.Matcher;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Gift
-public class BeforeGift implements GiftFace, GetContext, EventListener {
+public class AopGift implements GiftFace, GetContext, EventListener {
     private AppContext appContext = null;
     //
     public void loadGift(ApiBinder apiBinder) {
-        Matcher<Object> matcher = AopMatchers.annotatedWith(Before.class);//
-        apiBinder.getGuiceBinder().bindInterceptor(matcher, matcher, new BeforeInterceptor(this));
+        Matcher<Object> matcher = AopMatchers.annotatedWith(Aop.class);//
+        apiBinder.getGuiceBinder().bindInterceptor(matcher, matcher, new AopInterceptor(this));
         apiBinder.getEnvironment().getEventManager().pushEventListener(ContextEvent_Start, this);
     }
     //

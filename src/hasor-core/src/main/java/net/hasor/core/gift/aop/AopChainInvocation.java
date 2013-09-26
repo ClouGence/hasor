@@ -26,12 +26,12 @@ import org.aopalliance.intercept.MethodInvocation;
  * @version : 2013-4-13
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-class BeforeChainInvocation implements MethodInvocation {
+class AopChainInvocation implements MethodInvocation {
     private MethodInterceptor[] beforeInterceptor = null;
     private MethodInvocation    invocation        = null;
     private int                 index             = -1;
     //
-    public BeforeChainInvocation(AppContext appContext, List<Class<? extends MethodInterceptor>> interTypeList, MethodInvocation invocation) {
+    public AopChainInvocation(AppContext appContext, List<Class<? extends MethodInterceptor>> interTypeList, MethodInvocation invocation) {
         List<MethodInterceptor> beforeList = new ArrayList<MethodInterceptor>();
         for (Class<? extends MethodInterceptor> interType : interTypeList) {
             if (interType != null)
