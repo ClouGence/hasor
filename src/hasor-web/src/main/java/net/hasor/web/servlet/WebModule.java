@@ -15,6 +15,7 @@
  */
 package net.hasor.web.servlet;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 /**
  * 
@@ -28,5 +29,10 @@ public abstract class WebModule implements Module {
         else
             throw new UnsupportedOperationException("Hasor context does not support the web module.");
     }
+    /**初始化过程。*/
     public abstract void init(WebApiBinder apiBinder);
+    /**启动信号*/
+    public abstract void start(AppContext appContext);
+    /**停止信号*/
+    public abstract void stop(AppContext appContext);
 }

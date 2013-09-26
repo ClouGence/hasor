@@ -127,10 +127,13 @@ class WebStandardEnvironment extends StandardEnvironment {
     public WebStandardEnvironment(ServletContext servletContext) {
         super();
         this.servletContext = servletContext;
+        this.initEnvironment();
     }
     public WebStandardEnvironment(URI settingURI, ServletContext servletContext) {
-        super(settingURI);
+        super();
+        this.settingURI = settingURI;
         this.servletContext = servletContext;
+        this.initEnvironment();
     }
     protected EnvVars createEnvVars() {
         final WebStandardEnvironment $this = this;
