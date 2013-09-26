@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.gift;
+package net.hasor.web.gift.listeners;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * 注册一个SessionListener处理接口。
+ * 注册一个ServletContextListener处理接口。
  * @version : 2013-3-20
  * @author 赵永春 (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
-public @interface WebSessionListener {
+public @interface WebContextListener {
     //    /**对服务的描述信息。
     //     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
     //    public String description() default "";

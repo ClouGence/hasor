@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.gift.support;
+package net.hasor.web.gift.servlet3;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,42 +22,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.servlet.Filter;
-import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpSessionListener;
 import net.hasor.Hasor;
-import net.hasor.core.AppContext;
-import net.hasor.core.context.AnnoModule;
-import net.hasor.core.gift.GiftSupportModule;
-import net.hasor.web.gift.WebContextListener;
-import net.hasor.web.gift.WebFilter;
-import net.hasor.web.gift.WebInitParam;
-import net.hasor.web.gift.WebServlet;
-import net.hasor.web.gift.WebSessionListener;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.gift.Gift;
+import net.hasor.core.gift.GiftFace;
 import net.hasor.web.servlet.WebApiBinder;
-import net.hasor.web.servlet.WebModule;
 import org.more.util.StringUtils;
 /**
- * 支持Bean、WebError、WebFilter、WebServlet注解功能。
- * @version : 2013-4-8
- * @author 赵永春 (zyc@hasor.net)
+ * 
+ * @version : 2013-9-26
+ * @author 赵永春(zyc@hasor.net)
  */
-@AnnoModule(description = "org.hasor.servlet软件包注解版支持。")
-public class ServletAnnoSupportModule extends WebModule {
-    /**初始化.*/
-    public void init(WebApiBinder apiBinder) {
-        apiBinder.dependency().forced(GiftSupportModule.class);
+@Gift
+public class Servlet3Gift implements GiftFace {
+    public void loadGift(ApiBinder apiBinder) {
+        if (apiBinder instanceof WebApiBinder == false)
+            return;
+        WebApiBinder webBinder = (WebApiBinder) apiBinder;
         //1.LoadFilter.
-        this.loadFilter(apiBinder);
+        this.loadFilter(webBinder);
         //2.LoadServlet.
-        this.loadServlet(apiBinder);
-        //4.WebSessionListener
-        this.loadSessionListener(apiBinder);
-        //5.ServletContextListener
-        this.loadServletContextListener(apiBinder);
+        this.loadServlet(webBinder);
     }
-    public void start(AppContext appContext) {}
-    public void stop(AppContext appContext) {}
     //
     /**装载Filter*/
     protected void loadFilter(WebApiBinder apiBinder) {
@@ -127,75 +114,6 @@ public class ServletAnnoSupportModule extends WebModule {
             String servletName = StringUtils.isBlank(servletAnno.servletName()) ? servletType.getSimpleName() : servletAnno.servletName();
             int sortInt = servletAnno.loadOnStartup();
             Hasor.info("loadServlet %s[%s] bind %s on %s.", servletName, getIndexStr(sortInt), servletType, servletAnno.value());
-        }
-    }
-    //
-    //
-    /**装载HttpSessionListener*/
-    protected void loadSessionListener(WebApiBinder apiBinder) {
-        //1.获取
-        Set<Class<?>> sessionListenerSet = apiBinder.getClassSet(WebSessionListener.class);
-        if (sessionListenerSet == null)
-            return;
-        List<Class<? extends HttpSessionListener>> sessionListenerList = new ArrayList<Class<? extends HttpSessionListener>>();
-        for (Class<?> cls : sessionListenerSet) {
-            if (HttpSessionListener.class.isAssignableFrom(cls) == false) {
-                Hasor.warning("not implemented HttpSessionListener :%s", cls);
-            } else {
-                sessionListenerList.add((Class<? extends HttpSessionListener>) cls);
-            }
-        }
-        //2.排序
-        Collections.sort(sessionListenerList, new Comparator<Class<?>>() {
-            public int compare(Class<?> o1, Class<?> o2) {
-                WebSessionListener o1Anno = o1.getAnnotation(WebSessionListener.class);
-                WebSessionListener o2Anno = o2.getAnnotation(WebSessionListener.class);
-                int o1AnnoIndex = o1Anno.sort();
-                int o2AnnoIndex = o2Anno.sort();
-                return (o1AnnoIndex < o2AnnoIndex ? -1 : (o1AnnoIndex == o2AnnoIndex ? 0 : 1));
-            }
-        });
-        //3.注册
-        for (Class<? extends HttpSessionListener> sessionListener : sessionListenerList) {
-            apiBinder.sessionListener().bind(sessionListener);
-            //
-            WebSessionListener anno = sessionListener.getAnnotation(WebSessionListener.class);
-            int sortInt = anno.sort();
-            Hasor.info("loadSessionListener [%s] bind %s.", getIndexStr(sortInt), sessionListener);
-        }
-    }
-    //
-    /**装载ServletContextListener*/
-    protected void loadServletContextListener(WebApiBinder apiBinder) {
-        //1.获取
-        Set<Class<?>> contextListenerSet = apiBinder.getClassSet(WebContextListener.class);
-        if (contextListenerSet == null)
-            return;
-        List<Class<? extends ServletContextListener>> contextListenerList = new ArrayList<Class<? extends ServletContextListener>>();
-        for (Class<?> cls : contextListenerSet) {
-            if (ServletContextListener.class.isAssignableFrom(cls) == false) {
-                Hasor.warning("not implemented ServletContextListener :%s", cls);
-            } else {
-                contextListenerList.add((Class<? extends ServletContextListener>) cls);
-            }
-        }
-        //2.排序
-        Collections.sort(contextListenerList, new Comparator<Class<?>>() {
-            public int compare(Class<?> o1, Class<?> o2) {
-                WebContextListener o1Anno = o1.getAnnotation(WebContextListener.class);
-                WebContextListener o2Anno = o2.getAnnotation(WebContextListener.class);
-                int o1AnnoIndex = o1Anno.sort();
-                int o2AnnoIndex = o2Anno.sort();
-                return (o1AnnoIndex < o2AnnoIndex ? -1 : (o1AnnoIndex == o2AnnoIndex ? 0 : 1));
-            }
-        });
-        //3.注册
-        for (Class<? extends ServletContextListener> sessionListener : contextListenerList) {
-            apiBinder.contextListener().bind(sessionListener);
-            //
-            WebContextListener anno = sessionListener.getAnnotation(WebContextListener.class);
-            int sortInt = anno.sort();
-            Hasor.info("loadServletContextListener [%s] bind %s.", getIndexStr(sortInt), sessionListener);
         }
     }
     //
