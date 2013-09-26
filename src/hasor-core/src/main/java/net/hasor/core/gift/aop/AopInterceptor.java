@@ -16,7 +16,9 @@
 package net.hasor.core.gift.aop;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import net.hasor.core.AppContext;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -26,29 +28,34 @@ import org.aopalliance.intercept.MethodInvocation;
  * @author 赵永春 (zyc@byshell.org)
  */
 class AopInterceptor implements MethodInterceptor {
-    private GetContext getContext = null;
+    private GetContext                                            getContext           = null;
+    private Map<Method, List<Class<? extends MethodInterceptor>>> methodInterceptorMap = new HashMap<Method, List<Class<? extends MethodInterceptor>>>();
     //
     public AopInterceptor(GetContext getContext) {
         this.getContext = getContext;
     }
     //
     public Object invoke(MethodInvocation invocation) throws Throwable {
-        List<Class<? extends MethodInterceptor>> list = new ArrayList<Class<? extends MethodInterceptor>>();
         Method targetMethod = invocation.getMethod();
-        //
-        Aop beforeAnno = targetMethod.getDeclaringClass().getAnnotation(Aop.class);
-        if (beforeAnno != null) {
-            for (Class<? extends MethodInterceptor> interType : beforeAnno.value())
-                if (interType != null)
-                    list.add(interType);
+        List<Class<? extends MethodInterceptor>> list = this.methodInterceptorMap.get(targetMethod);
+        //1.取得拦截器
+        if (list == null) {
+            list = new ArrayList<Class<? extends MethodInterceptor>>();
+            Aop beforeAnno = targetMethod.getDeclaringClass().getAnnotation(Aop.class);
+            if (beforeAnno != null) {
+                for (Class<? extends MethodInterceptor> interType : beforeAnno.value())
+                    if (interType != null)
+                        list.add(interType);
+            }
+            beforeAnno = targetMethod.getAnnotation(Aop.class);
+            if (beforeAnno != null) {
+                for (Class<? extends MethodInterceptor> interType : beforeAnno.value())
+                    if (interType != null)
+                        list.add(interType);
+            }
+            this.methodInterceptorMap.put(targetMethod, list);
         }
-        beforeAnno = targetMethod.getAnnotation(Aop.class);
-        if (beforeAnno != null) {
-            for (Class<? extends MethodInterceptor> interType : beforeAnno.value())
-                if (interType != null)
-                    list.add(interType);
-        }
-        //2.获取拦截器
+        //2.创建对象
         AppContext appContext = getContext.getAppContext();
         return new AopChainInvocation(appContext, list, invocation).invoke(invocation);
     }

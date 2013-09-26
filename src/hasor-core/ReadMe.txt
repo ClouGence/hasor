@@ -42,6 +42,7 @@ Hasor-Core v0.0.2.Release
     4.AbstractAppContext类中有关事件的声明移动到 AppContext 接口中。
     5.ASM升级为4.0、ClassCode连带升级。
     6.以模块类名为事件名，当执行 Init\Start\Stop时候，抛出对应事件。
+    7.@Before 更名为 @Aop，性能进行了优化。
     
     
     
