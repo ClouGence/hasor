@@ -16,6 +16,11 @@
 package net.hasor.web.controller.support;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -25,10 +30,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
-import net.hasor.Hasor;
 import net.hasor.core.AppContext;
 import net.hasor.web.controller.ActionException;
-import org.more.util.MatchUtils;
+import net.hasor.web.controller.Controller;
+import org.more.UnhandledException;
+import org.more.util.ArrayUtils;
+import org.more.util.BeanUtils;
+import org.more.util.StringUtils;
 import com.google.inject.Inject;
 /**
  * action功能的入口。
@@ -36,56 +44,30 @@ import com.google.inject.Inject;
  * @author 赵永春 (zyc@hasor.net)
  */
 class ActionController extends HttpServlet {
-    private static final long serialVersionUID = -2579757349905408506L;
-    @Inject
-    private AppContext        appContext       = null;
-    private ActionManager     actionManager    = null;
-    private ActionSettings    actionSettings   = null;
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        this.actionManager = appContext.getInstance(ActionManager.class);
-        this.actionManager.initManager(appContext);
-        this.actionSettings = appContext.getInstance(ActionSettings.class);
-        Hasor.info("ActionController intercept %s.", actionSettings.getIntercept());
-    }
-    public boolean testURL(HttpServletRequest request) {
-        String requestPath = request.getRequestURI().substring(request.getContextPath().length());
-        if (MatchUtils.matchWild(actionSettings.getIntercept(), requestPath) == false)
-            return false;
-        return true;
-    }
-    //
+    private static final long serialVersionUID = -8402094243884745631L;
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String requestPath = request.getRequestURI().substring(request.getContextPath().length());
-        if (MatchUtils.matchWild(actionSettings.getIntercept(), requestPath) == false)
-            return;
         //
         //1.拆分请求字符串
-        ActionDefineImpl define = getActionDefine(requestPath, request.getMethod());
-        if (define == null) {
+        ActionInvoke invoke = getActionInvoke(requestPath, request.getMethod());
+        if (invoke == null) {
             String logInfo = String.format("%s action is not defined.", requestPath);
             throw new ActionException(logInfo);
         }
         //3.执行调用
-        doInvoke(define, request, response);
+        doInvoke(invoke, request, response);
     }
-    private ActionDefineImpl getActionDefine(String requestPath, String httpMethod) {
-        //1.拆分请求字符串
-        String actionNS = requestPath.substring(0, requestPath.lastIndexOf("/") + 1);
-        String actionInvoke = requestPath.substring(requestPath.lastIndexOf("/") + 1);
-        String actionMethod = actionInvoke.split("\\.")[0];
-        //2.获取 ActionInvoke
-        ActionNameSpace nameSpace = actionManager.findNameSpace(actionNS);
-        if (nameSpace != null)
-            return nameSpace.getActionByName(actionMethod);
-        return null;
-    }
-    //
-    private void doInvoke(ActionDefineImpl define, ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+    private void doInvoke(ActionInvoke invoke, ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
         try {
-            define.createInvoke(servletRequest, servletResponse).invoke();
-        } catch (InvocationTargetException e) {
-            Throwable target = e.getTargetException();//拆开异常
+            invoke.invoke((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);
+        } catch (Throwable e) {
+            //1.尝试拆开异常
+            Throwable target = e;
+            if (target instanceof UnhandledException)
+                target = target.getCause();
+            if (target instanceof InvocationTargetException)
+                target = ((InvocationTargetException) target).getTargetException();
+            //2.判定异常类型
             if (target instanceof ServletException)
                 throw (ServletException) target;
             if (target instanceof IOException)
@@ -99,6 +81,50 @@ class ActionController extends HttpServlet {
     //
     //
     //
+    @Inject
+    private AppContext            appContext = null;
+    private ControllerNameSpace[] spaceMap   = null;
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        ActionSettings settings = this.appContext.getInstance(ActionSettings.class);
+        Set<Class<?>> controllerSet = this.appContext.getClassSet(Controller.class);
+        if (controllerSet == null)
+            return;
+        //2.注册服务
+        Object[] ignoreMethods = settings.getIgnoreMethod().toArray();//忽略
+        Map<String, ControllerNameSpace> nsMap = new HashMap<String, ControllerNameSpace>();
+        for (Class<?> controllerType : controllerSet) {
+            Controller controllerAnno = controllerType.getAnnotation(Controller.class);
+            String namespace = controllerAnno.value();
+            namespace = (namespace.charAt(namespace.length()) == '/') ? namespace : (namespace + "/");
+            //
+            ControllerNameSpace nameSpace = nsMap.get(namespace);
+            List<Method> actionMethods = BeanUtils.getMethods(controllerType);
+            for (Method targetMethod : actionMethods) {
+                if (ArrayUtils.contains(ignoreMethods, targetMethod.getName()) == true)
+                    continue;/*执行忽略*/
+                nameSpace.addAction(targetMethod, this.appContext);
+            }
+            /**/
+        }
+        //3.
+        this.spaceMap = nsMap.values().toArray(new ControllerNameSpace[nsMap.size()]);
+    }
+    private ActionInvoke getActionInvoke(String requestPath, String httpMethod) {
+        //1.拆分请求字符串
+        String actionNS = requestPath.substring(0, requestPath.lastIndexOf("/") + 1);
+        String actionInvoke = requestPath.substring(requestPath.lastIndexOf("/") + 1);
+        String actionMethod = actionInvoke.split("\\.")[0];
+        //2.获取 ActionInvoke
+        for (ControllerNameSpace ns : this.spaceMap) {
+            if (!StringUtils.equalsIgnoreCase(ns.getNameSpace(), actionNS))
+                continue;
+            return ns.getActionByName(actionMethod);
+        }
+        return null;
+    }
+    //
+    //
     //
     //
     //
@@ -108,7 +134,7 @@ class ActionController extends HttpServlet {
         // TODO 需要检查下面代码是否符合Servlet规范（带request参数情况下也需要检查）
         final String newRequestUri = path;
         //1.拆分请求字符串
-        final ActionDefineImpl define = getActionDefine(path, httpMethod);
+        final ActionInvoke define = getActionInvoke(path, httpMethod);
         if (define == null)
             return null;
         else

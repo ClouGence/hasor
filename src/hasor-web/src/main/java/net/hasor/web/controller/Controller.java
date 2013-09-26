@@ -26,19 +26,13 @@ import java.lang.annotation.Target;
  * HTTP: /user/add/account/password
  * HTTP: /user/add.do?account=aa&password=pwd
  * @Controller("/user")
- *     @RestfulMapping("/user/{acc}/{pwd}")
- *     public String add( @Var("acc") String acc, @Var("pwd") String pwd);
- *     @RestfulMapping("/user/{acc}/{pwd}")
- *     public String add(HttpRequest,HttpResponse,Map params);
+ *     public String add();
  * 
  * Example 2:
  * HTTP: /user/list/2010-02-13/2013-02-22/zyc/all
  * HTTP: /user/list.do?start=2010-02-13&end=2013-02-22&name=zyc&type=all
  * @Controller("/user") 
- *     @RestfulMapping("/user/{s}/{e}/{acc}/{type}")
- *     public String list( @Var("s") String start, @Var("e") String end, @Var("acc") String account, @Var("type") String type);
- *     @RestfulMapping("/user/{s}/{e}/{acc}/{type}")
- *     public String list(HttpRequest,HttpResponse,Map params);
+ *     public String list();
  * </PRE>
  * @version : 2013-3-26
  * @author 赵永春 (zyc@hasor.net)
@@ -48,5 +42,5 @@ import java.lang.annotation.Target;
 @Target({ ElementType.TYPE })
 public @interface Controller {
     /**action地址空间，默认值为“/”*/
-    public String[] value() default "/";
+    public String value() default "/";
 }

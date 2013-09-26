@@ -13,22 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.controller.plugins.validation;
+package net.hasor.web.controller.support;
+import net.hasor.Hasor;
 import net.hasor.core.AppContext;
-import net.hasor.core.context.AnnoModule;
-import net.hasor.web.controller.support.WebControllerModule;
+import net.hasor.core.Settings;
 import net.hasor.web.servlet.WebApiBinder;
 import net.hasor.web.servlet.WebModule;
 /**
- * 负责处理请求验证。
- * @version : 2013-8-11
- * @author 赵永春 (zyc@hasor.net)
+ * 
+ * @version : 2013-9-26
+ * @author 赵永春(zyc@hasor.net)
  */
-@AnnoModule(description = "org.hasor.mvc.controller.plugins.validation软件包功能支持。")
-public class ControllerPluginValidationSupportModule extends WebModule {
+public class WebControllerModule extends WebModule {
     public void init(WebApiBinder apiBinder) {
-        apiBinder.dependency().forced(WebControllerModule.class);
+        Settings settings = apiBinder.getEnvironment().getSettings();
+        ActionSettings acSettings = new ActionSettings(settings);
+        Hasor.info("ActionController intercept %s.", acSettings.getIntercept());
+        //
+        apiBinder.getGuiceBinder().bind(ActionSettings.class).toInstance(acSettings);
+        apiBinder.serve(acSettings.getIntercept()).with(ActionController.class);
     }
-    public void start(AppContext appContext) {}
-    public void stop(AppContext appContext) {}
+    public void start(AppContext appContext) {
+        //
+    }
+    public void stop(AppContext appContext) {
+        //
+    }
 }

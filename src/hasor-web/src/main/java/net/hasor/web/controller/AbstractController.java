@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.controller.support;
+package net.hasor.web.controller;
 import java.util.Enumeration;
 import java.util.Map;
 import javax.servlet.http.Cookie;
@@ -21,44 +21,43 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import net.hasor.core.AppContext;
+import net.hasor.web.servlet.startup.RuntimeFilter;
 /**
  * 
  * @version : 2013-8-14
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-public class AbstractController {
-    private HttpServletRequest  request    = null;
-    private HttpServletResponse response   = null;
-    private AppContext          appContext = null;
+public abstract class AbstractController {
+    private HttpServletRequest  httpRequest  = null;
+    private HttpServletResponse httpResponse = null;
     //
-    public void initController(AppContext appContext, HttpServletRequest request, HttpServletResponse response) {
-        this.request = request;
-        this.response = response;
-        this.appContext = appContext;
+    public void initController(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+        this.httpRequest = httpRequest;
+        this.httpResponse = httpResponse;
     }
-    // --------
+    //
     /** Return HttpServletRequest. Do not use HttpServletRequest Object in constructor of Controller */
     public HttpServletRequest getRequest() {
-        return request;
+        return this.httpRequest;
     }
     /** Return HttpServletResponse. Do not use HttpServletResponse Object in constructor of Controller */
     public HttpServletResponse getResponse() {
-        return response;
-    }
-    /** Return HttpSession. */
-    public HttpSession getSession() {
-        return request.getSession();
+        return this.httpResponse;
     }
     /** Return AppContext. */
     public AppContext getAppContext() {
-        return appContext;
+        return RuntimeFilter.getLocalAppContext();
+    }
+    /** Return HttpSession. */
+    public HttpSession getSession() {
+        return getRequest().getSession();
     }
     /**
      * Return HttpSession.
      * @param create a boolean specifying create HttpSession if it not exists
      */
     public HttpSession getSession(boolean create) {
-        return request.getSession(create);
+        return getRequest().getSession(create);
     }
     // --------
     /**…Ë÷√{@link HttpServletRequest} Ù–‘*/
@@ -373,7 +372,7 @@ public class AbstractController {
             cookie.setDomain(domain);
         cookie.setMaxAge(maxAgeInSeconds);
         cookie.setPath(path);
-        response.addCookie(cookie);
+        this.getResponse().addCookie(cookie);
         return this;
     }
     /** Set Cookie with path = "/". */

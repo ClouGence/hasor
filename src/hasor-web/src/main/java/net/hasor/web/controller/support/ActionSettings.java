@@ -23,37 +23,19 @@ import org.more.util.StringUtils;
  * @version : 2013-5-11
  * @author 赵永春 (zyc@hasor.net)
  */
-class ActionSettings /*implements HasorSettingListener*/{
-    /**模式：mode:RestOnly（rest风格）、ServletOnly（中央servlet）、Both（两者同时使用）*/
-    public static final String ActionServlet_Mode            = "hasor-web.controller.workMode";
+class ActionSettings {
     /**action拦截器.*/
-    public static final String ActionServlet_Intercept       = "hasor-web.controller.intercept";
-    /**默认产生的Mime-Type类型.*/
-    public static final String ActionServlet_DefaultProduces = "hasor-web.controller.defaultProduces";
+    public static final String ActionServlet_Intercept    = "hasor-web.controller.intercept";
     /**方法忽略的方法（逗号分割多组方法名），注意：在这里配置的忽略会应用到所有action上.*/
-    public static final String ActionServlet_IgnoreMethod    = "hasor-web.controller.ignoreMethod";
+    public static final String ActionServlet_GlobalIgnore = "hasor-web.controller.globalIgnore";
     //
+    private String             intercept                  = null;                               //action拦截器.
+    private List<String>       ignoreMethod               = null;                               //忽略的方法
     //
-    /**Action功能的工作模式。*/
-    public static enum ActionWorkMode {
-        /**仅工作在rest风格下*/
-        RestOnly,
-        /**通过中央servlet转发*.do的请求。*/
-        ServletOnly,
-        /**同时工作在RestOnly、ServletOnly两个模式下。其中ServletOnly模式优先。*/
-        Both
-    }
-    private String         intercept       = null; //action拦截器.
-    private String         defaultProduces = null; //默认响应类型
-    private ActionWorkMode mode            = null; //工作模式
-    private List<String>   ignoreMethod    = null; //忽略的方法
-    //
-    public void onLoadConfig(Settings newConfig) {
-        this.intercept = newConfig.getString(ActionServlet_Intercept, "*.do");
-        this.defaultProduces = newConfig.getString(ActionServlet_DefaultProduces, null);
-        this.mode = newConfig.getEnum(ActionServlet_Mode, ActionWorkMode.class, ActionWorkMode.ServletOnly);
+    public ActionSettings(Settings settings) {
+        this.intercept = settings.getString(ActionServlet_Intercept, "*.do");
         this.ignoreMethod = new ArrayList<String>();
-        String[] ignoreStrArray = newConfig.getStringArray(ActionServlet_IgnoreMethod);
+        String[] ignoreStrArray = settings.getStringArray(ActionServlet_GlobalIgnore);
         if (ignoreStrArray != null) {
             for (String ignoreStr : ignoreStrArray) {
                 if (StringUtils.isBlank(ignoreStr))
@@ -67,14 +49,8 @@ class ActionSettings /*implements HasorSettingListener*/{
             }
         }
     }
-    public String getDefaultProduces() {
-        return defaultProduces;
-    }
     public String getIntercept() {
         return intercept;
-    }
-    public ActionWorkMode getMode() {
-        return mode;
     }
     public List<String> getIgnoreMethod() {
         return ignoreMethod;

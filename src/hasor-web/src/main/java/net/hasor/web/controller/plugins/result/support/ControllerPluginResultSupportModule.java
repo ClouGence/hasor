@@ -16,10 +16,10 @@
 package net.hasor.web.controller.plugins.result.support;
 import net.hasor.core.AppContext;
 import net.hasor.core.context.AnnoModule;
-import net.hasor.web.controller.ActionDefine;
-import net.hasor.web.controller.support.ServletControllerSupportModule;
-import net.hasor.web.servlet.WebModule;
+import net.hasor.web.controller.support.WebControllerModule;
+import net.hasor.web.restful.ActionDefine;
 import net.hasor.web.servlet.WebApiBinder;
+import net.hasor.web.servlet.WebModule;
 /**
  * 负责处理Action调用之后返回值的处理。
  * @version : 2013-8-11
@@ -28,7 +28,7 @@ import net.hasor.web.servlet.WebApiBinder;
 @AnnoModule(description = "org.hasor.mvc.controller.plugins.result软件包功能支持。")
 public class ControllerPluginResultSupportModule extends WebModule {
     public void init(WebApiBinder apiBinder) {
-        apiBinder.dependency().forced(ServletControllerSupportModule.class);
+        apiBinder.dependency().forced(WebControllerModule.class);
         apiBinder.getGuiceBinder().bind(Caller.class);
     }
     public void start(AppContext appContext) {

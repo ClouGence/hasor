@@ -26,7 +26,6 @@ import javax.servlet.ServletException;
 import net.hasor.Hasor;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
-import net.hasor.web.controller.ActionInvoke;
 import net.hasor.web.controller.plugins.result.ControllerResultDefine;
 import net.hasor.web.controller.plugins.result.ControllerResultProcess;
 /**
