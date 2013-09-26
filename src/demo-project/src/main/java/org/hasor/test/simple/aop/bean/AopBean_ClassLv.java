@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package org.hasor.test.simple.aop.bean;
-import net.hasor.core.gift.aop.Before;
+import net.hasor.gift.aop.Aop;
 import org.hasor.test.simple.aop.interceptor.AopInterceptor_A;
 /**
  * 
  * @version : 2013-8-11
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-@Before(AopInterceptor_A.class)
+@Aop(AopInterceptor_A.class)
 public class AopBean_ClassLv {
     public String fooA(String param1) {
         System.out.println("invoke fooA");

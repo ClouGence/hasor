@@ -15,7 +15,7 @@
  */
 package org.hasor.test.simple.beans.beans;
 import javax.inject.Singleton;
-import net.hasor.core.gift.bean.Bean;
+import net.hasor.gift.bean.Bean;
 /**
  * 
  * @version : 2013-8-11

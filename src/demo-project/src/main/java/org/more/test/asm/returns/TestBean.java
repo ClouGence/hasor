@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 package org.more.test.asm.returns;
-import java.util.List;
-import net.hasor.core.gift.bean.Bean;
+import net.hasor.gift.bean.Bean;
 /**
  * 
  * @version : 2013-9-20
@@ -24,7 +23,7 @@ import net.hasor.core.gift.bean.Bean;
 @Bean({ "" })
 @TestAnno
 public class TestBean {
-    public <T> String halloAop(T abc, int aaa) throws Throwable,Exception {
+    public <T> String halloAop(T abc, int aaa) throws Throwable, Exception {
         return null;
     }
     public int returnInteger() {

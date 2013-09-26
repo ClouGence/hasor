@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.test.simple.aop.bean;
-import net.hasor.core.gift.aop.Before;
+import net.hasor.gift.aop.Aop;
 import org.hasor.test.simple.aop.interceptor.AopInterceptor_Font;
 import org.hasor.test.simple.aop.interceptor.AopInterceptor_Span;
 /**
@@ -23,12 +23,12 @@ import org.hasor.test.simple.aop.interceptor.AopInterceptor_Span;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public class AopBean_MethodLv {
-    @Before({ AopInterceptor_Span.class, AopInterceptor_Font.class })
+    @Aop({ AopInterceptor_Span.class, AopInterceptor_Font.class })
     public String fooA(String param1) {
         System.out.println("invoke fooA");
         return "fooA";
     }
-    @Before({ AopInterceptor_Font.class })
+    @Aop({ AopInterceptor_Font.class })
     public String fooB(String param1) {
         System.out.println("invoke fooB");
         return "fooB";

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.test.simple.beans.beans;
-import net.hasor.core.gift.bean.Bean;
+import net.hasor.gift.bean.Bean;
 /**
  * AnnoServiceA 具有两个名称 name1 和 name2
  * @version : 2013-8-11

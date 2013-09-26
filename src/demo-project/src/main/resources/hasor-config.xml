@@ -11,17 +11,6 @@
 		<!-- 配置文件改变监视线程检查时间间隔 -->
 		<settingsMonitor interval="1000" />
 	</hasor>
-	<hasor-freemarker>
-		<!-- （仅当启动时生效）模板配置，onError当模板处理发生异常时的处理方式。模式：ThrowError（抛出异常）、PrintOnConsole（打印到控制台或日志）、Warning（忽略，仅仅产生一条警告消息）PrintOnPage（打印到页面） -->
-		<servlet enable="true" onError="ThrowError" suffixSet="*.html,*.htm" />
-	</hasor-freemarker>
-	<!-- Web部分的配置 -->
-	<hasor-mvc>
-		<!-- 资源装载器 -->
-		<resourceLoader enable="true">
-			<zipLoader>%HASOR_WEBROOT%/pic.zip</zipLoader>
-		</resourceLoader>
-	</hasor-mvc>
 	<environmentVar>
 		<!-- 程序工作空间基础目录（绝对地址） -->
 		<HASOR_WORK_HOME>./test-work</HASOR_WORK_HOME>

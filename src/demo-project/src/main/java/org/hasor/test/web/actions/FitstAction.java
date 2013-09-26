@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test.web.beans;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
+package org.hasor.test.web.actions;
+import net.hasor.controller.AbstractController;
+import net.hasor.controller.Controller;
+import net.hasor.gift.aop.Aop;
+import org.hasor.test.web.interceptor.TestControllerInterceptor;
 /**
  * 
- * @version : 2013-8-11
+ * @version : 2013-7-23
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-public class ShowInfoBean {
-    @Inject
-    private HttpServletRequest request;
-    //
-    public void showInfo() {
-        System.out.println(this.request.getParameter("name"));
+@Controller("/action")
+public class FitstAction extends AbstractController {
+    @Aop(TestControllerInterceptor.class)
+    public void sayHallo() {
+        System.out.println("Hallo Word form First Action.");
     }
 }

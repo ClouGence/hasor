@@ -16,7 +16,7 @@
 package org.hasor.test.simple.events.listener;
 import net.hasor.Hasor;
 import net.hasor.core.EventListener;
-import net.hasor.core.gift.event.Listener;
+import net.hasor.gift.event.Listener;
 /**ÊÂ¼ş¼àÌıÆ÷A*/
 @Listener("EventType_A")
 public class Type_A_EventListener implements EventListener {

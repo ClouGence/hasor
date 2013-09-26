@@ -21,8 +21,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
-import net.hasor.web.servlet.anno.WebServlet;
-import org.hasor.test.web.beans.ShowInfoBean;
+import net.hasor.gift.servlet3.WebServlet;
+import org.hasor.test.simple.beans.customer.CustomerBean;
 /**
  * 
  * @version : 2013-8-11
@@ -33,8 +33,8 @@ public class HelloWordServlet extends HttpServlet {
     @Inject
     private AppContext appContext = null;
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ShowInfoBean infoBean = this.appContext.getInstance(ShowInfoBean.class);
-        infoBean.showInfo();//´òÓ¡name²ÎÊý
+        CustomerBean infoBean = this.appContext.getInstance(CustomerBean.class);
+        infoBean.foo();
         //
         super.service(req, resp);
     }
