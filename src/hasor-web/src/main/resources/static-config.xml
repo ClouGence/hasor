@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<root:config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-servlet">
+<config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-web">
+	<!-- http://project.hasor.net/hasor/schema/main命名空间默认配置 -->
+	<!-- <root:config> -->
+	<!-- <root:hasor.loadPackages></root:hasor.loadPackages> -->
+	<!-- </root:config> -->
+	<!-- ========================================================================= -->
 	<!-- 框架配置 -->
 	<hasor>
 		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
@@ -13,13 +18,16 @@
 	<hasor-web>
 		<!-- 请求响应编码设置 -->
 		<encoding requestEncoding="utf-8" responseEncoding="utf-8" />
-
-
-		<!-- Controller配置，defaultProduces 默认响应类型 ;模式：mode:RestOnly（rest风格）、ServletOnly（中央servlet）、Both（两者同时使用） -->
-		<controller workMode="Both" intercept="*.do" defaultProduces="*/*">
+		<!-- Controller配置，defaultProduces 默认响应类型 ; -->
+		<controller intercept="*.do">
 			<!-- 方法忽略的方法（逗号分割多组方法名），注意：在这里配置的忽略会应用到所有action上（支持重复配置共同生效） -->
-			<ignoreMethod>equals,hashCode,toString,getClass,wait,notify,notifyAll</ignoreMethod>
+			<globalIgnore>equals,hashCode,toString,getClass,wait,notify,notifyAll</globalIgnore>
 		</controller>
+
+
+
+
+
 		<!-- 资源装载器 -->
 		<resourceLoader enable="false" contentTypes="js,css,gif,ico,jpg,jpeg,png,swf,swc,flv,mp3,wav,avi">
 			<!-- <zipLoader>{HASOR_WEBROOT}/pic.zip</zipLoader> -->
@@ -28,4 +36,4 @@
 			<classpathLoader>/META-INF/webapp</classpathLoader>
 		</resourceLoader>
 	</hasor-web>
-</root:config>
+</config>

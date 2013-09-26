@@ -8,11 +8,7 @@ Hasor-MVC v0.0.1.20130831-M1
 
 
 Hasor-Web v0.0.1.Release
-    1.基于Hasor-Core v0.0.1.Release
-    2.包含了所有v0.0.1.20130831-M1版本中Hasor-Core的Web相关功能代码
-    3.Hasor-Web（Hasor-MVC更名而来）
-	4.在 Servlet 关键支持中删除注解的支持，注解部分转移到 Gift 中实现。 
-
-
-
-    
+	1.重构：基于Hasor-Core v0.0.1.Release，包含了所有v0.0.1.20130831-M1版本中Hasor-Core的Web相关功能。同时包含了全部 Hasor-MVC 功能。
+	2.修改：在 Servlet 支持中删除注解的支持，相关功能以 Gift 方式实现。 
+	3.修改：重构 Controller 控制器设计和实现，并将Restful部分功能从 控制器中剥离出来。
+	4.新增：强制要求 Action 必须继承自 AbstractController 抽象类。

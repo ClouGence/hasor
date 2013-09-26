@@ -21,7 +21,7 @@ import net.hasor.Hasor;
 import net.hasor.core.AppContext;
 import net.hasor.core.SettingsListener;
 import net.hasor.core.context.AnnoModule;
-import net.hasor.web.gift.support.ServletAnnoSupportModule;
+import net.hasor.web.gift.listeners.ListenersGift;
 import net.hasor.web.resource.ResourceLoaderCreator;
 import net.hasor.web.resource.ResourceLoaderDefine;
 import net.hasor.web.servlet.WebModule;
@@ -34,7 +34,7 @@ import net.hasor.web.servlet.WebApiBinder;
 @AnnoModule(description = "org.hasor.web.resource软件包功能支持。")
 public class ServletResourceSupportModule extends WebModule {
     public void init(WebApiBinder apiBinder) {
-        apiBinder.dependency().weak(ServletAnnoSupportModule.class);
+        apiBinder.dependency().weak(ListenersGift.class);
         /*绑定Settings，但是不支持重载更新*/
         ResourceSettings settings = new ResourceSettings();
         settings.onLoadConfig(apiBinder.getEnvironment().getSettings());
