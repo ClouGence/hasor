@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.controller.interceptor;
+import java.lang.reflect.Method;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.controller.AbstractController;
@@ -24,7 +25,7 @@ import org.aopalliance.intercept.MethodInvocation;
  * @version : 2013-9-26
  * @author 赵永春(zyc@hasor.net)
  */
-public class ControllerInvocation {
+public final class ControllerInvocation {
     private AbstractController controller;
     private MethodInvocation   invocation;
     //
@@ -47,6 +48,10 @@ public class ControllerInvocation {
     /**获取ActionInvoke*/
     public AbstractController getController() {
         return controller;
+    };
+    /**获取ActionInvoke*/
+    public Method getControllerMethod() {
+        return this.invocation.getMethod();
     };
     /**调用目标*/
     public Object proceed() throws Throwable {

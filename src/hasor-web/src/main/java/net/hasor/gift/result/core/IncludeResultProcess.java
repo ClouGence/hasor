@@ -20,15 +20,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.Hasor;
-import net.hasor.gift.result.ControllerResultDefine;
-import net.hasor.gift.result.ControllerResultProcess;
+import net.hasor.gift.result.ResultDefine;
+import net.hasor.gift.result.ResultProcess;
 /**
  * 
  * @version : 2013-6-5
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-@ControllerResultDefine(Include.class)
-public class IncludeResultProcess implements ControllerResultProcess {
+@ResultDefine(Include.class)
+public class IncludeResultProcess implements ResultProcess {
     public void process(HttpServletRequest request, HttpServletResponse response, Annotation annoData, Object result) throws ServletException, IOException {
         Hasor.debug("include %s.", result);
         request.getRequestDispatcher(result.toString()).include(request, response);

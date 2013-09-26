@@ -13,24 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.gift.result.core;
-import java.io.IOException;
+package net.hasor.gift.result;
 import java.lang.annotation.Annotation;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import net.hasor.Hasor;
-import net.hasor.gift.result.ResultDefine;
-import net.hasor.gift.result.ResultProcess;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 
- * @version : 2013-6-5
+ * 负责处理Action调用之后的返回值。
+ * @version : 2013-5-10
  * @author 赵永春 (zyc@hasor.net)
  */
-@ResultDefine(Redirect.class)
-public class RedirectResultProcess implements ResultProcess {
-    public void process(HttpServletRequest request, HttpServletResponse response, Annotation annoData, Object result) throws ServletException, IOException {
-        Hasor.debug("redirect to %s.", result);
-        response.sendRedirect(result.toString());
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface ResultDefine {
+    public Class<? extends Annotation> value();
 }

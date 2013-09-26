@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
  * @version : 2013-5-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface ControllerResultProcess {
+public interface ResultProcess {
     /**执行方法调用。*/
     public void process(HttpServletRequest request, HttpServletResponse response, Annotation annoData, Object result) throws ServletException, IOException;
 }

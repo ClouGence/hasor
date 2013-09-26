@@ -20,16 +20,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.Hasor;
-import net.hasor.gift.result.ControllerResultDefine;
-import net.hasor.gift.result.ControllerResultProcess;
+import net.hasor.gift.result.ResultDefine;
+import net.hasor.gift.result.ResultProcess;
 import org.more.json.JSON;
 /**
  * 
  * @version : 2013-6-5
  * @author ÕÔÓÀ´º (zyc@hasor.net)
  */
-@ControllerResultDefine(Json.class)
-public class JsonResultProcess implements ControllerResultProcess {
+@ResultDefine(Json.class)
+public class JsonResultProcess implements ResultProcess {
     public void process(HttpServletRequest request, HttpServletResponse response, Annotation annoData, Object result) throws ServletException, IOException {
         String jsonData = JSON.toString(result);
         Hasor.debug("write json %s.", jsonData.length() > 300 ? jsonData.substring(0, 300) : jsonData);

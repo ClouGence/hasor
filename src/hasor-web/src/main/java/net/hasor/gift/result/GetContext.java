@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.gift.result;
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import net.hasor.core.AppContext;
 /**
- * 负责处理Action调用之后的返回值。
- * @version : 2013-5-10
+ * 
+ * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface ControllerResultDefine {
-    public Class<? extends Annotation> value();
+interface GetContext {
+    public AppContext getAppContext();
 }
