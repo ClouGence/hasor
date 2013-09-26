@@ -23,7 +23,7 @@ import org.more.util.StringUtils;
  * @version : 2013-5-11
  * @author 赵永春 (zyc@hasor.net)
  */
-class ActionSettings {
+class ControllerSettings {
     /**action拦截器.*/
     public static final String ActionServlet_Intercept    = "hasor-web.controller.intercept";
     /**方法忽略的方法（逗号分割多组方法名），注意：在这里配置的忽略会应用到所有action上.*/
@@ -32,7 +32,7 @@ class ActionSettings {
     private String             intercept                  = null;                               //action拦截器.
     private List<String>       ignoreMethod               = null;                               //忽略的方法
     //
-    public ActionSettings(Settings settings) {
+    public ControllerSettings(Settings settings) {
         this.intercept = settings.getString(ActionServlet_Intercept, "*.do");
         this.ignoreMethod = new ArrayList<String>();
         String[] ignoreStrArray = settings.getStringArray(ActionServlet_GlobalIgnore);

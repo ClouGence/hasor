@@ -20,9 +20,9 @@ import javax.servlet.ServletException;
  * @version : 2013-5-29
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-public class ActionException extends ServletException {
+public class ControllerException extends ServletException {
     private static final long serialVersionUID = -3906162254138766480L;
-    public ActionException(String message) {
+    public ControllerException(String message) {
         super(message);
     }
 }

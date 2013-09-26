@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import net.hasor.core.AppContext;
+import net.hasor.web.controller.ControllerInvoke;
 /** 
  * 命名空间管理器。相同的action命名空间下的action方法，可以定义在不同的控制器下。
  * @version : 2013-4-20
@@ -25,11 +26,11 @@ import net.hasor.core.AppContext;
  */
 class ControllerNameSpace {
     private String                    namespace;
-    private Map<String, ActionInvoke> actionInvokeMap;
+    private Map<String, ControllerInvoke> actionInvokeMap;
     //
     public ControllerNameSpace(String namespace) {
         this.namespace = namespace;
-        this.actionInvokeMap = new HashMap<String, ActionInvoke>();
+        this.actionInvokeMap = new HashMap<String, ControllerInvoke>();
     }
     //
     public String getNameSpace() {
@@ -37,10 +38,10 @@ class ControllerNameSpace {
     }
     //
     public void addAction(Method targetMethod, AppContext appContext) {
-        this.actionInvokeMap.put(targetMethod.getName(), new ActionInvoke(targetMethod, appContext));
+        this.actionInvokeMap.put(targetMethod.getName(), new ControllerInvoke(targetMethod, appContext));
     }
     //
-    public ActionInvoke getActionByName(String actionMethodName) {
+    public ControllerInvoke getActionByName(String actionMethodName) {
         return actionInvokeMap.get(actionMethodName);
     }
 }

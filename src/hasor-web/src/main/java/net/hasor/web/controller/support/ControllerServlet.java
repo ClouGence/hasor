@@ -31,8 +31,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
-import net.hasor.web.controller.ActionException;
+import net.hasor.web.controller.AbstractController;
 import net.hasor.web.controller.Controller;
+import net.hasor.web.controller.ControllerException;
+import net.hasor.web.controller.ControllerInvoke;
 import org.more.UnhandledException;
 import org.more.util.ArrayUtils;
 import org.more.util.BeanUtils;
@@ -43,21 +45,21 @@ import com.google.inject.Inject;
  * @version : 2013-5-11
  * @author 赵永春 (zyc@hasor.net)
  */
-class ActionController extends HttpServlet {
+class ControllerServlet extends HttpServlet {
     private static final long serialVersionUID = -8402094243884745631L;
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String requestPath = request.getRequestURI().substring(request.getContextPath().length());
         //
         //1.拆分请求字符串
-        ActionInvoke invoke = getActionInvoke(requestPath, request.getMethod());
+        ControllerInvoke invoke = getActionInvoke(requestPath, request.getMethod());
         if (invoke == null) {
             String logInfo = String.format("%s action is not defined.", requestPath);
-            throw new ActionException(logInfo);
+            throw new ControllerException(logInfo);
         }
         //3.执行调用
         doInvoke(invoke, request, response);
     }
-    private void doInvoke(ActionInvoke invoke, ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+    private void doInvoke(ControllerInvoke invoke, ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
         try {
             invoke.invoke((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);
         } catch (Throwable e) {
@@ -86,7 +88,7 @@ class ActionController extends HttpServlet {
     private ControllerNameSpace[] spaceMap   = null;
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        ActionSettings settings = this.appContext.getInstance(ActionSettings.class);
+        ControllerSettings settings = this.appContext.getInstance(ControllerSettings.class);
         Set<Class<?>> controllerSet = this.appContext.getClassSet(Controller.class);
         if (controllerSet == null)
             return;
@@ -94,11 +96,18 @@ class ActionController extends HttpServlet {
         Object[] ignoreMethods = settings.getIgnoreMethod().toArray();//忽略
         Map<String, ControllerNameSpace> nsMap = new HashMap<String, ControllerNameSpace>();
         for (Class<?> controllerType : controllerSet) {
+            if (!AbstractController.class.isAssignableFrom(controllerType))
+                continue;
+            //
             Controller controllerAnno = controllerType.getAnnotation(Controller.class);
             String namespace = controllerAnno.value();
-            namespace = (namespace.charAt(namespace.length()) == '/') ? namespace : (namespace + "/");
+            namespace = StringUtils.isBlank(namespace) ? "/" : (namespace.charAt(namespace.length() - 1) == '/') ? namespace : (namespace + "/");
             //
             ControllerNameSpace nameSpace = nsMap.get(namespace);
+            if (nameSpace == null) {
+                nameSpace = new ControllerNameSpace(namespace);
+                nsMap.put(namespace, nameSpace);
+            }
             List<Method> actionMethods = BeanUtils.getMethods(controllerType);
             for (Method targetMethod : actionMethods) {
                 if (ArrayUtils.contains(ignoreMethods, targetMethod.getName()) == true)
@@ -110,7 +119,7 @@ class ActionController extends HttpServlet {
         //3.
         this.spaceMap = nsMap.values().toArray(new ControllerNameSpace[nsMap.size()]);
     }
-    private ActionInvoke getActionInvoke(String requestPath, String httpMethod) {
+    private ControllerInvoke getActionInvoke(String requestPath, String httpMethod) {
         //1.拆分请求字符串
         String actionNS = requestPath.substring(0, requestPath.lastIndexOf("/") + 1);
         String actionInvoke = requestPath.substring(requestPath.lastIndexOf("/") + 1);
@@ -134,7 +143,7 @@ class ActionController extends HttpServlet {
         // TODO 需要检查下面代码是否符合Servlet规范（带request参数情况下也需要检查）
         final String newRequestUri = path;
         //1.拆分请求字符串
-        final ActionInvoke define = getActionInvoke(path, httpMethod);
+        final ControllerInvoke define = getActionInvoke(path, httpMethod);
         if (define == null)
             return null;
         else

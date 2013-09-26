@@ -13,30 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.controller.plugins.result.support;
+package net.hasor.web.controller.support;
+import net.hasor.Hasor;
 import net.hasor.core.AppContext;
+import net.hasor.core.Settings;
 import net.hasor.core.context.AnnoModule;
-import net.hasor.web.controller.support.WebControllerModule;
-import net.hasor.web.restful.ActionDefine;
 import net.hasor.web.servlet.WebApiBinder;
 import net.hasor.web.servlet.WebModule;
 /**
- * 负责处理Action调用之后返回值的处理。
- * @version : 2013-8-11
- * @author 赵永春 (zyc@hasor.net)
+ * 
+ * @version : 2013-9-26
+ * @author 赵永春(zyc@hasor.net)
  */
-@AnnoModule(description = "org.hasor.mvc.controller.plugins.result软件包功能支持。")
-public class ControllerPluginResultSupportModule extends WebModule {
+@AnnoModule
+public class ControllerModule extends WebModule {
     public void init(WebApiBinder apiBinder) {
-        apiBinder.dependency().forced(WebControllerModule.class);
-        apiBinder.getGuiceBinder().bind(Caller.class);
+        Settings settings = apiBinder.getEnvironment().getSettings();
+        ControllerSettings acSettings = new ControllerSettings(settings);
+        Hasor.info("ActionController intercept %s.", acSettings.getIntercept());
+        //
+        apiBinder.getGuiceBinder().bind(ControllerSettings.class).toInstance(acSettings);
+        apiBinder.serve(acSettings.getIntercept()).with(ControllerServlet.class);
     }
     public void start(AppContext appContext) {
-        Caller caller = appContext.getInstance(Caller.class);
-        appContext.getEnvironment().getEventManager().addEventListener(ActionDefine.Event_AfterInvoke, caller);
+        //
     }
     public void stop(AppContext appContext) {
-        Caller caller = appContext.getInstance(Caller.class);
-        appContext.getEnvironment().getEventManager().removeEventListener(ActionDefine.Event_AfterInvoke, caller);;
+        //
     }
 }

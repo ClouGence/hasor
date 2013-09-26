@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.controller.support;
+package net.hasor.web.controller;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
-import net.hasor.web.controller.AbstractController;
 import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
 /**
@@ -29,33 +28,27 @@ import org.more.util.BeanUtils;
  * @version : 2013-6-5
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-public class ActionInvoke {
-    private Class<?>            targetClass;
-    private Method              targetMethod;
-    private AppContext          appContext;
+public class ControllerInvoke {
+    private Class<?>   targetClass;
+    private Method     targetMethod;
+    private AppContext appContext;
     //
-    private ThreadLocal<Object> targetObject;
-    //
-    //
-    public ActionInvoke(Method targetMethod, AppContext appContext) {
+    public ControllerInvoke(Method targetMethod, AppContext appContext) {
         this.targetMethod = targetMethod;
         this.targetMethod.setAccessible(false);
         this.targetClass = targetMethod.getDeclaringClass();
         this.appContext = appContext;
-        this.targetObject = new ThreadLocal<Object>();
     }
-    private Object getTargetObject() {
-        //
-        return null;
+    public AbstractController getTargetObject() {
+        Object targetObject = this.appContext.getInstance(this.targetClass);
+        return (AbstractController) targetObject;
     }
-    public void invoke(HttpServletRequest servletRequest, HttpServletResponse servletResponse) throws InvocationTargetException {
-        Object targetObject = this.getTargetObject();
-        if (targetObject instanceof AbstractController)
-            ((AbstractController) targetObject).initController(servletRequest, servletResponse);
-        //
+    public Object invoke(HttpServletRequest servletRequest, HttpServletResponse servletResponse) throws InvocationTargetException {
         try {
+            AbstractController targetObject = this.getTargetObject();
             Object[] paramArrays = this.getParams(servletRequest, servletResponse);
-            Object returnData = this.targetMethod.invoke(targetObject, paramArrays);
+            targetObject.initController(servletRequest, servletResponse);
+            return this.targetMethod.invoke(targetObject, paramArrays);
         } catch (Throwable e) {
             if (e instanceof InvocationTargetException)
                 throw (InvocationTargetException) e;
