@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.gift.aop;
+package net.hasor.gift.aop;
 import static net.hasor.core.context.AbstractAppContext.ContextEvent_Start;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.gift.Gift;
 import net.hasor.core.gift.GiftFace;
-import net.hasor.core.gift.aop.matchers.AopMatchers;
+import net.hasor.gift.aop.matchers.AopMatchers;
 import com.google.inject.matcher.Matcher;
 /**
  * 

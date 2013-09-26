@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.gift.setting;
+package net.hasor.gift.setting;
 import static net.hasor.core.context.AbstractAppContext.ContextEvent_Start;
 import java.util.Set;
 import net.hasor.Hasor;

@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.gift.bean;
+package net.hasor.gift.event;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.hasor.core.EventListener;
 /**
- * 标记一个Bean。
- * @version : 2013-3-20
+ * 声明一个事件监听器，标记了该接口的类必须要求实现{@link EventListener}接口。
+ * @version : 2013-3-12
  * @author 赵永春 (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
-public @interface Bean {
-    /** Bean名称。*/
+public @interface Listener {
+    /**要监听的事件名，同名注册会被覆盖。*/
     public String[] value();
 }

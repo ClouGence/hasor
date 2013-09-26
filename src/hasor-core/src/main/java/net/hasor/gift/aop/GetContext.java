@@ -13,17 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.gift.setting;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import net.hasor.core.SettingsListener;
+package net.hasor.gift.aop;
+import net.hasor.core.AppContext;
 /**
- * 声明一个配置文件改变监听器，标记了该接口的类必须要求实现{@link SettingsListener}接口。
- * @version : 2013-3-12
+ * 
+ * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface Settings {}
+interface GetContext {
+    public AppContext getAppContext();
+}

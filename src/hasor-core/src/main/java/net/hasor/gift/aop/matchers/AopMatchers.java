@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.gift.aop.matchers;
+package net.hasor.gift.aop.matchers;
 import java.lang.annotation.Annotation;
 import com.google.inject.matcher.Matcher;
 import com.google.inject.matcher.Matchers;
