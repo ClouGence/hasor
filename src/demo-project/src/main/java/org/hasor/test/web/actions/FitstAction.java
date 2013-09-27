@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.hasor.test.web.actions;
-import net.hasor.controller.AbstractController;
-import net.hasor.controller.Controller;
 import net.hasor.gift.aop.Aop;
+import net.hasor.web.controller.AbstractController;
+import net.hasor.web.controller.Controller;
 import org.hasor.test.web.interceptor.TestControllerInterceptor;
 /**
  * 
