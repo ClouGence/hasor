@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.gift.result.core;
+package net.hasor.gift.result.ext;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import javax.servlet.ServletException;
@@ -27,10 +27,10 @@ import net.hasor.gift.result.ResultProcess;
  * @version : 2013-6-5
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-@ResultDefine(Redirect.class)
-public class RedirectResultProcess implements ResultProcess {
+@ResultDefine(Include.class)
+public class IncludeResultProcess implements ResultProcess {
     public void process(HttpServletRequest request, HttpServletResponse response, Annotation annoData, Object result) throws ServletException, IOException {
-        Hasor.debug("redirect to %s.", result);
-        response.sendRedirect(result.toString());
+        Hasor.debug("include %s.", result);
+        request.getRequestDispatcher(result.toString()).include(request, response);
     }
 }

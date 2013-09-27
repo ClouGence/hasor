@@ -21,6 +21,7 @@ import net.hasor.Hasor;
 import net.hasor.controller.AbstractController;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
+import net.hasor.core.EventListener;
 import net.hasor.core.gift.Gift;
 import net.hasor.core.gift.GiftFace;
 import net.hasor.gift.aop.matchers.AopMatchers;
@@ -30,7 +31,7 @@ import net.hasor.gift.aop.matchers.AopMatchers;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Gift
-public class ResultGift implements GiftFace, GetContext {
+public class ResultGift implements GiftFace, GetContext, EventListener {
     public void loadGift(ApiBinder apiBinder) {
         Map<Class<?>, Class<ResultProcess>> defineMap = new HashMap<Class<?>, Class<ResultProcess>>();
         //1.ªÒ»°
@@ -52,10 +53,14 @@ public class ResultGift implements GiftFace, GetContext {
         //
         ResultCaller caller = new ResultCaller(this, defineMap);
         apiBinder.getGuiceBinder().bindInterceptor(AopMatchers.subclassesOf(AbstractController.class), AopMatchers.any(), caller);
-        apiBinder.getEnvironment().getEventManager().
+        apiBinder.getEnvironment().getEventManager().pushEventListener(AppContext.ContextEvent_Start, this);
     }
+    //
+    private AppContext appContext = null;
     public AppContext getAppContext() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.appContext;
+    }
+    public void onEvent(String event, Object[] params) throws Throwable {
+        this.appContext = (AppContext) params[0];
     }
 }

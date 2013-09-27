@@ -44,8 +44,8 @@ public class ControllerInvoke {
         return (AbstractController) targetObject;
     }
     public Object invoke(HttpServletRequest servletRequest, HttpServletResponse servletResponse) throws InvocationTargetException {
+        AbstractController targetObject = this.getTargetObject();
         try {
-            AbstractController targetObject = this.getTargetObject();
             Object[] paramArrays = this.getParams(servletRequest, servletResponse);
             targetObject.initController(servletRequest, servletResponse);
             return this.targetMethod.invoke(targetObject, paramArrays);
@@ -53,6 +53,8 @@ public class ControllerInvoke {
             if (e instanceof InvocationTargetException)
                 throw (InvocationTargetException) e;
             throw new InvocationTargetException(e);//将异常包装为InvocationTargetException类型Controller会拆开该异常。
+        } finally {
+            targetObject.resetController();
         }
     }
     /***/

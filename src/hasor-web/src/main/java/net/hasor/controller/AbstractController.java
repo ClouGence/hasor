@@ -28,21 +28,29 @@ import net.hasor.servlet.startup.RuntimeFilter;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractController {
-    private HttpServletRequest  httpRequest  = null;
-    private HttpServletResponse httpResponse = null;
+    //无论是单例还是多例,利用ThreadLocal进行线程隔离，都会保证 AbstractController 是线程安全的。
+    private ThreadLocal<HttpServletRequest>  httpRequest  = new ThreadLocal<HttpServletRequest>();
+    private ThreadLocal<HttpServletResponse> httpResponse = new ThreadLocal<HttpServletResponse>();
     //
     public void initController(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
-        this.httpRequest = httpRequest;
-        this.httpResponse = httpResponse;
+        this.resetController();
+        this.httpRequest.set(httpRequest);
+        this.httpResponse.set(httpResponse);
+    }
+    public void resetController() {
+        if (this.httpRequest.get() != null)
+            this.httpRequest.remove();
+        if (this.httpResponse.get() != null)
+            this.httpResponse.remove();
     }
     //
     /** Return HttpServletRequest. Do not use HttpServletRequest Object in constructor of Controller */
     public HttpServletRequest getRequest() {
-        return this.httpRequest;
+        return this.httpRequest.get();
     }
     /** Return HttpServletResponse. Do not use HttpServletResponse Object in constructor of Controller */
     public HttpServletResponse getResponse() {
-        return this.httpResponse;
+        return this.httpResponse.get();
     }
     /** Return AppContext. */
     public AppContext getAppContext() {
