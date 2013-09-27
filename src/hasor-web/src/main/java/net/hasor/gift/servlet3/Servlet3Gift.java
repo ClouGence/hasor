@@ -27,7 +27,7 @@ import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.gift.Gift;
 import net.hasor.core.gift.GiftFace;
-import net.hasor.servlet.WebApiBinder;
+import net.hasor.web.servlet.WebApiBinder;
 import org.more.util.StringUtils;
 /**
  * 

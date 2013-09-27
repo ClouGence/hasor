@@ -17,8 +17,8 @@ package net.hasor.gift.result;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Map;
-import net.hasor.controller.interceptor.ControllerInterceptor;
-import net.hasor.controller.interceptor.ControllerInvocation;
+import net.hasor.web.controller.interceptor.ControllerInterceptor;
+import net.hasor.web.controller.interceptor.ControllerInvocation;
 /**
  * 
  * @version : 2013-8-11

@@ -1,3 +1,4 @@
+package net.hasor.web.restful;
 ///*
 // * Copyright 2008-2009 the original утсю╢╨(zyc@hasor.net).
 // *

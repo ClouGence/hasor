@@ -8,7 +8,7 @@
 	<!-- 框架配置 -->
 	<hasor>
 		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
-		<loadPackages>net.hasor.web.*</loadPackages>
+		<loadPackages>net.hasor.web.*,net.hasor.gift.*</loadPackages>
 	</hasor>
 	<environmentVar>
 		<!-- 资源缓存路径 -->
@@ -23,11 +23,6 @@
 			<!-- 方法忽略的方法（逗号分割多组方法名），注意：在这里配置的忽略会应用到所有action上（支持重复配置共同生效） -->
 			<globalIgnore>equals,hashCode,toString,getClass,wait,notify,notifyAll</globalIgnore>
 		</controller>
-
-
-
-
-
 		<!-- 资源装载器 -->
 		<resourceLoader enable="false" contentTypes="js,css,gif,ico,jpg,jpeg,png,swf,swc,flv,mp3,wav,avi">
 			<!-- <zipLoader>{HASOR_WEBROOT}/pic.zip</zipLoader> -->
