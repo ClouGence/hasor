@@ -33,15 +33,11 @@ import net.hasor.Hasor;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventManager;
 import net.hasor.web.controller.AbstractController;
-import net.hasor.web.controller.ActionInvoke;
-import net.hasor.web.restful.ActionDefine;
 import net.hasor.web.restful.AttributeParam;
 import net.hasor.web.restful.CookieParam;
 import net.hasor.web.restful.HeaderParam;
-import net.hasor.web.restful.InjectParam;
 import net.hasor.web.restful.PathParam;
 import net.hasor.web.restful.QueryParam;
-import net.hasor.web.restful.support.ActionDefineImpl;
 import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
@@ -50,15 +46,18 @@ import org.more.util.StringUtils;
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-class ActionInvokeDefine implements ActionInvoke {
-    private ActionDefine        actionDefine = null;
-    private AppContext          appContext   = null;
-    private Object              targetObject = null;
-    private HttpServletRequest  request      = null;
-    private HttpServletResponse response     = null;
-    private String              actionPath   = null;
+class RestfulInvoke {
+    private Method     targetMethod;
+    private String[]   httpMethod;
+    private String     restfulMapping;
+    private String     restfulMappingMatches;
+    private AppContext appContext = null;
+    private String     mimeType;
     //
-    public ActionInvokeDefine(ActionDefine actionDefine, Object targetObject, HttpServletRequest request, HttpServletResponse response) {
+    //
+    //
+    //
+    public RestfulInvoke(ActionDefine actionDefine, Object targetObject, HttpServletRequest request, HttpServletResponse response) {
         this.actionDefine = actionDefine;
         this.targetObject = targetObject;
         this.request = request;
@@ -66,14 +65,13 @@ class ActionInvokeDefine implements ActionInvoke {
         this.appContext = this.getActionDefine().getAppContext();
         this.actionPath = request.getRequestURI().substring(request.getContextPath().length());
     }
-    public ActionInvokeDefine(AppContext appContext, Method targetMethod) {
+    public RestfulInvoke(AppContext appContext, Method targetMethod) {
         // TODO Auto-generated constructor stub
     }
-    //
-    /**获取ActionDefine*/
-    public ActionDefine getActionDefine() {
-        return this.actionDefine;
-    }
+    //  /**获取映射字符串*/
+    //  public String getRestfulMapping() {
+    //      return this.restfulMapping;
+    //  }
     //
     /**获取AppContext*/
     public AppContext getAppContext() {
@@ -83,6 +81,36 @@ class ActionInvokeDefine implements ActionInvoke {
     /**获取调用的目标对象*/
     public Object getTargetObject() {
         return targetObject;
+    }
+    //
+    //
+    //
+    public HttpServletRequest getRequest() {
+        return this.request;
+    }
+    public HttpServletResponse getResponse() {
+        return this.response;
+    }
+    //
+    /**获取映射字符串用于匹配的表达式字符串*/
+    public String getRestfulMappingMatches() {
+        if (this.restfulMappingMatches == null) {
+            String mapping = this.getRestfulMapping();
+            this.restfulMappingMatches = mapping.replaceAll("\\{\\w{1,}\\}", "([^/]{1,})");
+        }
+        return this.restfulMappingMatches;
+    }
+    //
+    //
+    //
+    /**判断Restful实例是否支持这个 请求方法。*/
+    public boolean matchingMethod(String httpMethod) {
+        for (String m : this.httpMethod)
+            if (StringUtils.equalsIgnoreCase(httpMethod, m))
+                return true;
+            else if (StringUtils.equalsIgnoreCase(m, "ANY"))
+                return true;
+        return false;
     }
     //
     /**执行调用*/
@@ -145,17 +173,9 @@ class ActionInvokeDefine implements ActionInvoke {
                 return this.getQueryParam(paramClass, (QueryParam) pAnno);
             else if (pAnno instanceof PathParam)
                 return this.getPathParam(paramClass, (PathParam) pAnno);
-            else if (pAnno instanceof InjectParam)
-                return this.getInjectParam(paramClass, (InjectParam) pAnno);
         }
         return BeanUtils.getDefaultValue(paramClass);
     }
-    //
-    //
-    //
-    //
-    //
-    //
     //
     //
     //
@@ -174,12 +194,14 @@ class ActionInvokeDefine implements ActionInvoke {
         String paramName = pAnno.value();
         if (StringUtils.isBlank(paramName))
             return null;
-        Enumeration e = this.request.getHeaderNames();
+        //
+        HttpServletRequest httpRequest = this.getRequest();
+        Enumeration<?> e = httpRequest.getHeaderNames();
         while (e.hasMoreElements()) {
             String name = e.nextElement().toString();
             if (StringUtils.equalsIgnoreCase(name, paramName)) {
                 ArrayList<Object> headerList = new ArrayList<Object>();
-                Enumeration v = this.request.getHeaders(paramName);
+                Enumeration<?> v = httpRequest.getHeaders(paramName);
                 while (v.hasMoreElements())
                     headerList.add(v.nextElement());
                 return headerList;
@@ -193,7 +215,8 @@ class ActionInvokeDefine implements ActionInvoke {
         if (StringUtils.isBlank(paramName))
             return null;
         //
-        Cookie[] cookies = this.request.getCookies();
+        HttpServletRequest httpRequest = this.getRequest();
+        Cookie[] cookies = httpRequest.getCookies();
         ArrayList<String> cookieList = new ArrayList<String>();
         if (cookies != null)
             for (Cookie cookie : cookies)
@@ -206,28 +229,24 @@ class ActionInvokeDefine implements ActionInvoke {
         String paramName = pAnno.value();
         if (StringUtils.isBlank(paramName))
             return null;
-        Enumeration e = this.request.getAttributeNames();
+        HttpServletRequest httpRequest = this.getRequest();
+        Enumeration<?> e = httpRequest.getAttributeNames();
         while (e.hasMoreElements()) {
             String name = e.nextElement().toString();
             if (StringUtils.equalsIgnoreCase(name, paramName))
-                return this.request.getAttribute(paramName);
+                return httpRequest.getAttribute(paramName);
         }
         return null;
     }
     /**/
-    private Object getInjectParam(Class<?> paramClass, InjectParam injectParam) {
-        if (StringUtils.isBlank(injectParam.value()))
-            return this.appContext.getInstance(paramClass);
-        else
-            return this.appContext.getBean(injectParam.value());
-    }
-    /**/
-    private Map<String, List<String>> queryParam = null;
+    private ThreadLocal<Map<String, List<String>>> queryParamLocal = new ThreadLocal<Map<String, List<String>>>();
     private Map<String, List<String>> getQueryParamMap() {
-        if (this.queryParam != null)
-            return this.queryParam;
+        Map<String, List<String>> queryParam = this.queryParamLocal.get();
+        if (queryParam != null)
+            return queryParam;
         //
-        String queryString = this.request.getQueryString();
+        HttpServletRequest httpRequest = getRequest();
+        String queryString = httpRequest.getQueryString();
         if (StringUtils.isBlank(queryString))
             return null;
         //
@@ -235,7 +254,7 @@ class ActionInvokeDefine implements ActionInvoke {
         String[] params = queryString.split("&");
         for (String pData : params) {
             String oriData = null;
-            String encoding = this.request.getCharacterEncoding();
+            String encoding = httpRequest.getCharacterEncoding();
             try {
                 oriData = URLDecoder.decode(pData, encoding);
             } catch (Exception e) {
@@ -254,19 +273,22 @@ class ActionInvokeDefine implements ActionInvoke {
                 pArray.add(v);
             uriParams.put(k, pArray);
         }
-        this.queryParam = uriParams;
-        return this.queryParam;
+        this.queryParamLocal.set(queryParam);
+        return queryParam;
     }
     /**/
-    private Map<String, Object> pathParams = null;
+    private ThreadLocal<Map<String, Object>> pathParamsLocal = new ThreadLocal<Map<String, Object>>();
     private Map<String, Object> getPathParamMap() {
-        if (this.pathParams != null || this.actionDefine.isRESTful() == false)
-            return this.pathParams;
+        Map<String, Object> pathParams = pathParamsLocal.get();
+        if (pathParams != null)
+            return pathParams;
         //
-        String matchVar = this.actionDefine.getRestfulMappingMatches();
+        HttpServletRequest httpRequest = getRequest();
+        String requestPath = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
+        String matchVar = this.restfulMappingMatches;
         String matchKey = "(?:\\{(\\w+)\\}){1,}";//  (?:\{(\w+)\}){1,}
-        Matcher keyM = Pattern.compile(matchKey).matcher(this.actionDefine.getRestfulMapping());
-        Matcher varM = Pattern.compile(matchVar).matcher(actionPath);
+        Matcher keyM = Pattern.compile(matchKey).matcher(this.restfulMapping);
+        Matcher varM = Pattern.compile(matchVar).matcher(requestPath);
         ArrayList<String> keyArray = new ArrayList<String>();
         ArrayList<String> varArray = new ArrayList<String>();
         while (keyM.find())
@@ -285,20 +307,72 @@ class ActionInvokeDefine implements ActionInvoke {
                 pArray.add(v);
             uriParams.put(k, pArray);
         }
-        HashMap<String, Object> pathParams = new HashMap<String, Object>();
-        pathParams.putAll(request.getParameterMap());
+        pathParams = new HashMap<String, Object>();
+        //        pathParams.putAll(request.getParameterMap());
         for (Entry<String, List<String>> ent : uriParams.entrySet()) {
             String k = ent.getKey();
             List<String> v = ent.getValue();
-            pathParams.put(k.toUpperCase(), v.toArray(new String[v.size()]));
+            pathParams.put(k, v.toArray(new String[v.size()]));
         }
-        this.pathParams = pathParams;
-        return this.pathParams;
-    }
-    public HttpServletRequest getRequest() {
-        return this.request;
-    }
-    public HttpServletResponse getResponse() {
-        return this.response;
+        this.pathParamsLocal.set(pathParams);
+        return pathParams;
     }
 }
+//class RestfulDefine {
+//    private AppContext appContext;
+//    //
+//    public RestfulDefine(Method targetMethod, String[] httpMethod, String mimeType, String restfulMapping) {
+//        this.targetMethod = targetMethod;
+//        this.httpMethod = httpMethod;
+//        this.mimeType = mimeType;
+//        this.restfulMapping = restfulMapping;
+//    }
+//    //
+//    //
+//    /**获取Action可以接收的方法*/
+//    public String[] getHttpMethod() {
+//        return this.httpMethod;
+//    }
+//    //
+//    /**获取目标方法。*/
+//    public Method getTargetMethod() {
+//        return this.targetMethod;
+//    }
+//    //
+//    //
+//    /**获取响应类型*/
+//    public String getMimeType() {
+//        return mimeType;
+//    }
+//    //
+//    /**获取AppContext*/
+//    public AppContext getAppContext() {
+//        return appContext;
+//    }
+//    //
+//    /**初始化*/
+//    public void initInvoke(AppContext appContext) {
+//        this.appContext = appContext;
+//    }
+//    /**创建一个ActionInvoke*/
+//    public ActionInvokeDefine createInvoke(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException {
+//        Object target = this.targetObject;
+//        Method targetMethod = this.getTargetMethod();
+//        //
+//        if (target == null) {
+//            Class<?> targetClass = targetMethod.getDeclaringClass();
+//            String beanName = this.getAppContext().getBeanName(targetClass);
+//            if (StringUtils.isBlank(beanName) == false)
+//                target = this.getAppContext().getBean(beanName);
+//            else
+//                target = this.getAppContext().getInstance(targetClass);
+//        }
+//        //
+//        if (target == null)
+//            throw new ServletException("create invokeObject on " + targetMethod.toString() + " return null.");
+//        return new ActionInvokeDefine(this, target, (HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);
+//    }
+//    public boolean isRESTful() {
+//        return !StringUtils.isBlank(restfulMapping);
+//    }
+//}

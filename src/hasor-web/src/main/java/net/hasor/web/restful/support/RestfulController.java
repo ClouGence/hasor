@@ -29,8 +29,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import net.hasor.core.AppContext;
-import net.hasor.web.controller.support.ActionManager;
-import net.hasor.web.controller.support.ControllerNameSpace;
 import com.google.inject.Inject;
 /**
  * action功能的入口。
@@ -39,8 +37,8 @@ import com.google.inject.Inject;
  */
 class RestfulController implements Filter {
     @Inject
-    private AppContext         appContext  = null;
-    private ActionDefineImpl[] defineArray = null;
+    private AppContext      appContext  = null;
+    private RestfulInvoke[] invokeArray = null;
     //
     public void init(FilterConfig filterConfig) throws ServletException {
         ActionManager actionManager = appContext.getInstance(ActionManager.class);
