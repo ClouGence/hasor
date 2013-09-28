@@ -31,13 +31,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.Hasor;
 import net.hasor.core.AppContext;
-import net.hasor.core.EventManager;
-import net.hasor.web.controller.AbstractController;
 import net.hasor.web.restful.AttributeParam;
 import net.hasor.web.restful.CookieParam;
 import net.hasor.web.restful.HeaderParam;
 import net.hasor.web.restful.PathParam;
 import net.hasor.web.restful.QueryParam;
+import org.more.UnhandledException;
 import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
@@ -51,8 +50,7 @@ class RestfulInvoke {
     private String[]   httpMethod;
     private String     restfulMapping;
     private String     restfulMappingMatches;
-    private AppContext appContext = null;
-    private String     mimeType;
+    private AppContext appContext;
     //
     //
     //
@@ -77,14 +75,13 @@ class RestfulInvoke {
     public AppContext getAppContext() {
         return this.appContext;
     }
-    //
     /**获取调用的目标对象*/
     public Object getTargetObject() {
         return targetObject;
     }
-    //
-    //
-    //
+    public Method getTargetMethod() {
+        return targetMethod;
+    }
     public HttpServletRequest getRequest() {
         return this.request;
     }
@@ -92,15 +89,17 @@ class RestfulInvoke {
         return this.response;
     }
     //
+    //
+    //
+    //
+    //
+    //
     /**获取映射字符串用于匹配的表达式字符串*/
     public String getRestfulMappingMatches() {
-        if (this.restfulMappingMatches == null) {
-            String mapping = this.getRestfulMapping();
-            this.restfulMappingMatches = mapping.replaceAll("\\{\\w{1,}\\}", "([^/]{1,})");
-        }
+        if (this.restfulMappingMatches == null)
+            this.restfulMappingMatches = this.restfulMapping.replaceAll("\\{\\w{1,}\\}", "([^/]{1,})");
         return this.restfulMappingMatches;
     }
-    //
     //
     //
     /**判断Restful实例是否支持这个 请求方法。*/
@@ -112,10 +111,9 @@ class RestfulInvoke {
                 return true;
         return false;
     }
-    //
     /**执行调用*/
-    public Object invoke() throws InvocationTargetException {
-        Method targetMethod = this.getActionDefine().getTargetMethod();
+    public Object invoke() {
+        Method targetMethod = this.getTargetMethod();
         Class<?>[] targetParamClass = targetMethod.getParameterTypes();
         Annotation[][] targetParamAnno = targetMethod.getParameterAnnotations();
         targetParamClass = (targetParamClass == null) ? new Class<?>[0] : targetParamClass;
@@ -133,33 +131,22 @@ class RestfulInvoke {
             paramsArray.add(paramObject);
         }
         Object[] invokeParams = paramsArray.toArray();
-        /*设置返回ContentType*/
-        String mimeType = this.getActionDefine().getMimeType();
-        if (!StringUtils.isBlank(mimeType))
-            response.setContentType(mimeType);
         /*执行调用*/
         return this.call(targetMethod, invokeParams);
     }
-    //
     /**执行调用，并引发事件*/
-    private Object call(Method targetMethod, Object[] invokeParams) throws InvocationTargetException {
-        if (this.targetObject instanceof AbstractController)
-            ((AbstractController) this.targetObject).initController(this.appContext, this.request, this.response);
-        //
+    private Object call(Method targetMethod, Object[] invokeParams) {
+        Object targetObject = this.getTargetObject();
         Object returnData = null;
         try {
-            EventManager eventManager = this.getAppContext().getEnvironment().getEventManager();
-            eventManager.doSyncEvent(ActionDefineImpl.Event_BeforeInvoke, this, invokeParams);/*引发事件*/
-            returnData = targetMethod.invoke(this.targetObject, invokeParams);
-            eventManager.doSyncEvent(ActionDefineImpl.Event_AfterInvoke, this, invokeParams, returnData); /*引发事件*/
+            returnData = targetMethod.invoke(targetObject, invokeParams);
         } catch (Throwable e) {
             if (e instanceof InvocationTargetException)
-                throw (InvocationTargetException) e;
-            throw new InvocationTargetException(e);//将异常包装为InvocationTargetException类型Controller会拆开该异常。
+                throw new UnhandledException(((InvocationTargetException) e).getTargetException());
+            throw new UnhandledException(e);
         }
         return returnData;
     }
-    //
     /**获得参数项*/
     private Object getIvnokeParams(Class<?> paramClass, Annotation[] paramAnno) {
         for (Annotation pAnno : paramAnno) {
@@ -176,7 +163,6 @@ class RestfulInvoke {
         }
         return BeanUtils.getDefaultValue(paramClass);
     }
-    //
     //
     //
     /**/
@@ -318,61 +304,3 @@ class RestfulInvoke {
         return pathParams;
     }
 }
-//class RestfulDefine {
-//    private AppContext appContext;
-//    //
-//    public RestfulDefine(Method targetMethod, String[] httpMethod, String mimeType, String restfulMapping) {
-//        this.targetMethod = targetMethod;
-//        this.httpMethod = httpMethod;
-//        this.mimeType = mimeType;
-//        this.restfulMapping = restfulMapping;
-//    }
-//    //
-//    //
-//    /**获取Action可以接收的方法*/
-//    public String[] getHttpMethod() {
-//        return this.httpMethod;
-//    }
-//    //
-//    /**获取目标方法。*/
-//    public Method getTargetMethod() {
-//        return this.targetMethod;
-//    }
-//    //
-//    //
-//    /**获取响应类型*/
-//    public String getMimeType() {
-//        return mimeType;
-//    }
-//    //
-//    /**获取AppContext*/
-//    public AppContext getAppContext() {
-//        return appContext;
-//    }
-//    //
-//    /**初始化*/
-//    public void initInvoke(AppContext appContext) {
-//        this.appContext = appContext;
-//    }
-//    /**创建一个ActionInvoke*/
-//    public ActionInvokeDefine createInvoke(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException {
-//        Object target = this.targetObject;
-//        Method targetMethod = this.getTargetMethod();
-//        //
-//        if (target == null) {
-//            Class<?> targetClass = targetMethod.getDeclaringClass();
-//            String beanName = this.getAppContext().getBeanName(targetClass);
-//            if (StringUtils.isBlank(beanName) == false)
-//                target = this.getAppContext().getBean(beanName);
-//            else
-//                target = this.getAppContext().getInstance(targetClass);
-//        }
-//        //
-//        if (target == null)
-//            throw new ServletException("create invokeObject on " + targetMethod.toString() + " return null.");
-//        return new ActionInvokeDefine(this, target, (HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);
-//    }
-//    public boolean isRESTful() {
-//        return !StringUtils.isBlank(restfulMapping);
-//    }
-//}
