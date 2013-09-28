@@ -24,15 +24,19 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 class ControllerSettings {
+    /**action启用禁用.*/
+    public static final String ActionServlet_Enable       = "hasor-web.controller.enable";
     /**action拦截器.*/
     public static final String ActionServlet_Intercept    = "hasor-web.controller.intercept";
     /**方法忽略的方法（逗号分割多组方法名），注意：在这里配置的忽略会应用到所有action上.*/
     public static final String ActionServlet_GlobalIgnore = "hasor-web.controller.globalIgnore";
     //
-    private String             intercept                  = null;                               //action拦截器.
-    private List<String>       ignoreMethod               = null;                               //忽略的方法
+    private boolean            enable;
+    private String             intercept;                                                       //action拦截器.
+    private List<String>       ignoreMethod;                                                    //忽略的方法
     //
     public ControllerSettings(Settings settings) {
+        this.enable = settings.getBoolean(ActionServlet_Enable, true);
         this.intercept = settings.getString(ActionServlet_Intercept, "*.do");
         this.ignoreMethod = new ArrayList<String>();
         String[] ignoreStrArray = settings.getStringArray(ActionServlet_GlobalIgnore);
@@ -48,6 +52,9 @@ class ControllerSettings {
                 }
             }
         }
+    }
+    public boolean isEnable() {
+        return enable;
     }
     public String getIntercept() {
         return intercept;

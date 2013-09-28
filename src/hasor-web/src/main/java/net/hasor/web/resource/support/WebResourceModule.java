@@ -31,8 +31,8 @@ import net.hasor.web.servlet.WebModule;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
-@AnnoModule(description = "org.hasor.web.resource软件包功能支持。")
-public class ServletResourceSupportModule extends WebModule {
+@AnnoModule()
+public class WebResourceModule extends WebModule {
     public void init(WebApiBinder apiBinder) {
         apiBinder.dependency().weak(GiftSupportModule.class);
         /*绑定Settings，但是不支持重载更新*/

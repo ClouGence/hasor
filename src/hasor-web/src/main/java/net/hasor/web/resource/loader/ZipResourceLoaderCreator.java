@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.resource.loader.creator;
+package net.hasor.web.resource.loader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import net.hasor.Hasor;
 import net.hasor.core.AppContext;
 import net.hasor.core.XmlNode;
 import net.hasor.web.resource.ResourceLoader;
 import net.hasor.web.resource.ResourceLoaderCreator;
 import net.hasor.web.resource.ResourceLoaderDefine;
-import net.hasor.web.resource.loader.ZipResourceLoader;
 import org.more.util.StringUtils;
 /**
  * 用于创建一个可以从zip中获取资源的ResourceLoader。
@@ -41,5 +43,32 @@ public class ZipResourceLoaderCreator implements ResourceLoaderCreator {
         Hasor.info("loadZip %s -> %s", xmlConfig.getText(), fileBody);
         ZipResourceLoader dirTemplateLoader = new ZipResourceLoader(fileBody.getAbsolutePath());
         return dirTemplateLoader;
+    }
+}
+/**
+ * 用于创建一个可以从classpath中获取资源的ResourceLoader。
+ * @version : 2013-6-6
+ * @author 赵永春 (zyc@hasor.net)
+ */
+class ZipResourceLoader implements ResourceLoader {
+    private File zipFile = null;
+    public ZipResourceLoader(String zipFile) throws IOException {
+        this.zipFile = new File(zipFile);
+    }
+    /**获取资源获取的包路径。*/
+    public String getZipFile() {
+        return this.zipFile.getAbsolutePath();
+    }
+    public InputStream getResourceAsStream(String name) throws IOException {
+        if (this.zipFile.isDirectory() == true || this.zipFile.exists() == false)
+            return null;
+        //
+        if (name.charAt(0) == '/')
+            name = name.substring(1);
+        ZipFile zipFileObj = new ZipFile(this.zipFile);
+        ZipEntry entry = zipFileObj.getEntry(name);
+        if (entry == null)
+            return null;
+        return zipFileObj.getInputStream(entry);
     }
 }

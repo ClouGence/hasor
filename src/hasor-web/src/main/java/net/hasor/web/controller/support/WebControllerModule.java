@@ -18,6 +18,7 @@ import net.hasor.Hasor;
 import net.hasor.core.AppContext;
 import net.hasor.core.Settings;
 import net.hasor.core.context.AnnoModule;
+import net.hasor.core.gift.GiftSupportModule;
 import net.hasor.web.servlet.WebApiBinder;
 import net.hasor.web.servlet.WebModule;
 /**
@@ -26,8 +27,10 @@ import net.hasor.web.servlet.WebModule;
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
 @AnnoModule
-public class ControllerModule extends WebModule {
+public class WebControllerModule extends WebModule {
     public void init(WebApiBinder apiBinder) {
+        apiBinder.dependency().weak(GiftSupportModule.class);
+        //
         Settings settings = apiBinder.getEnvironment().getSettings();
         ControllerSettings acSettings = new ControllerSettings(settings);
         Hasor.info("ActionController intercept %s.", acSettings.getIntercept());
