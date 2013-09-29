@@ -37,7 +37,7 @@ Hasor-Core v0.0.1.Release
 
 Hasor-Core v0.0.2.Release
     1.修改：DefaultXmlProperty类更名为DefaultXmlNode，并且XmlNode增加几个常用方法。
-	2.修改：删除所有Mapping部分支持，相关代码移到demo作为例子程序。
+    2.修改：删除所有Mapping部分支持，相关代码移到demo作为例子程序。
     3.修改：AbstractAppContext类中有关事件的声明移动到 AppContext 接口中。
     4.修改：@Before 更名为 @Aop，性能进行了优化。
     5.升级：ASM升级为4.0、ClassCode连带升级。
