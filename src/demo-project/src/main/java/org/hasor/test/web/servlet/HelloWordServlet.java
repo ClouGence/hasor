@@ -28,7 +28,7 @@ import org.hasor.test.simple.beans.customer.CustomerBean;
  * @version : 2013-8-11
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-@WebServlet("/showname.c")
+@WebServlet("showname.c")
 public class HelloWordServlet extends HttpServlet {
     @Inject
     private AppContext appContext = null;

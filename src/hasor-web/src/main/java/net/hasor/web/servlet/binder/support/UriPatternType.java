@@ -40,7 +40,7 @@ enum UriPatternType {
         private final String pattern;
         private final Kind   patternKind;
         private static enum Kind {
-            PREFIX, SUFFIX, LITERAL,
+            PREFIX, SUFFIX, LITERAL, WITHROOT,
         }
         public ServletStyleUriPatternMatcher(String pattern) {
             if (pattern.startsWith("*")) {
@@ -49,6 +49,9 @@ enum UriPatternType {
             } else if (pattern.endsWith("*")) {
                 this.pattern = pattern.substring(0, pattern.length() - 1);
                 this.patternKind = Kind.SUFFIX;
+            } else if (pattern.startsWith("/")) {
+                this.pattern = pattern;
+                this.patternKind = Kind.WITHROOT;
             } else {
                 this.pattern = pattern;
                 this.patternKind = Kind.LITERAL;
@@ -62,9 +65,11 @@ enum UriPatternType {
                 return uri.endsWith(pattern);
             } else if (patternKind == Kind.SUFFIX) {
                 return uri.startsWith(pattern);
+            } else if (patternKind == Kind.WITHROOT) {
+                return pattern.equals(uri);
             }
             //else treat as a literal
-            return pattern.equals(uri);
+            return pattern.equals(uri.substring(1));
         }
         public String extractPath(String path) {
             if (patternKind == Kind.PREFIX) {

@@ -14,7 +14,7 @@ Hasor-Core v0.0.1.20130831-M1
     12.)J2EE各组件的注解化开发(@Filter/@HttpServlet/@WebSessionListener/@WebContextListener)
 
 
-Hasor-Core v0.0.1.Release
+Hasor-Core v0.0.1
     01.)Hasor-Core：80%以上代码重构，重构主要涉及内容的是结构性重构。重构之后将会使Hasor核心层的逻辑更加清晰，更便于扩展核心层功能。
         1.InitContext接口功能合并到Environment接口中。
         2.ApiBinder接口增加模块依赖管理。
@@ -35,7 +35,7 @@ Hasor-Core v0.0.1.Release
     03.)所有Demo程序都汇总到demo-project项目中。
 
 
-Hasor-Core v0.0.2.Release
+Hasor-Core v0.0.2
     1.修改：DefaultXmlProperty类更名为DefaultXmlNode，并且XmlNode增加几个常用方法。
     2.修改：删除所有Mapping部分支持，相关代码移到demo作为例子程序。
     3.修改：AbstractAppContext类中有关事件的声明移动到 AppContext 接口中。
@@ -45,5 +45,6 @@ Hasor-Core v0.0.2.Release
     7.增加：增加 Gift 体系用于扩展非模块类小工具。
     8.修复：StandardAppContext调用无参构造方法引发异常的问题，同时修改几个核心类的构造方法。
 
+Hasor-Core v0.0.3
 
 
