@@ -24,7 +24,7 @@
 		<!-- 资源装载器 -->
 		<resourceLoader enable="false" contentTypes="js,css,gif,ico,jpg,jpeg,png,swf,swc,flv,mp3,wav,avi">
 			<!-- <zipLoader>{HASOR_WEBROOT}/pic.zip</zipLoader> -->
-			<!-- **需要配置，否则会导致资源装载器反复尝试从loader中装载** -->
+			<!-- 需要配置，默认装载位置 -->
 			<pathLoader>%HASOR_WEBROOT%/</pathLoader>
 			<classpathLoader>/META-INF/webapp</classpathLoader>
 		</resourceLoader>

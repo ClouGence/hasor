@@ -37,6 +37,7 @@ import net.hasor.web.resource.ResourceLoader;
 import org.more.util.ContextClassLoaderLocal;
 import org.more.util.IOUtils;
 import org.more.util.StringUtils;
+import com.google.inject.Provider;
 /**
  * 负责装载jar包或zip包中的资源
  * @version : 2013-6-5
@@ -54,12 +55,14 @@ public class ResourceHttpServlet extends HttpServlet {
         ResourceLoader[] resLoaderArray = LoaderList.get();
         if (resLoaderArray != null)
             return;
-        ResourceLoaderProvider[] provider = appContext.getInstanceByBindingType(ResourceLoaderProvider.class);
+        Provider<ResourceLoaderProvider>[] provider = appContext.getProviderByBindingType(ResourceLoaderProvider.class);
         resLoaderArray = new ResourceLoader[provider.length];
         for (int i = 0; i < provider.length; i++) {
-            provider[i].setAppContext(this.appContext);
-            resLoaderArray[i] = provider[i].get();
+            ResourceLoaderProvider plProvider = provider[i].get();
+            plProvider.setAppContext(this.appContext);
+            resLoaderArray[i] = plProvider.get();
         }
+        LoaderList.set(resLoaderArray);
     }
     public synchronized static void initCacheDir(File cacheDir) {
         CacheDir.set(cacheDir);

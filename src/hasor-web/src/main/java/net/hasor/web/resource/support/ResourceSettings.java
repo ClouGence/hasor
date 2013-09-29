@@ -47,14 +47,15 @@ class ResourceSettings {
         }
         this.contentTypes = typesArray.toArray(new String[typesArray.size()]);
         //2.∂¡»°loader≈‰÷√
-        XmlNode loaderRoot = settings.getXmlProperty("hasor-web.resourceLoader");
+        XmlNode[] loaderRootArray = settings.getXmlPropertyArray("hasor-web.resourceLoader");
         ArrayList<LoaderConfig> loaderArray = new ArrayList<LoaderConfig>();
-        for (XmlNode c : loaderRoot.getChildren()) {
-            LoaderConfig lc = new LoaderConfig();
-            lc.loaderType = c.getName();
-            lc.config = c;
-            loaderArray.add(lc);
-        }
+        for (XmlNode loaderRoot : loaderRootArray)
+            for (XmlNode c : loaderRoot.getChildren()) {
+                LoaderConfig lc = new LoaderConfig();
+                lc.loaderType = c.getName();
+                lc.config = c;
+                loaderArray.add(lc);
+            }
         this.loaders = loaderArray.toArray(new LoaderConfig[loaderArray.size()]);
     }
     //

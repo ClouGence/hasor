@@ -52,8 +52,10 @@ public class WebResourceModule extends WebModule {
         initServlet(apiBinder);
         //4.°ó¶¨ Servlet
         String[] types = resSettings.getContentTypes();
-        for (String t : types)
-            apiBinder.serve(t).with(ResourceHttpServlet.class);
+        for (String t : types) {
+            Hasor.info("*.%s use ResourceHttpServlet.", t);
+            apiBinder.serve("*." + t).with(ResourceHttpServlet.class);
+        }
     }
     //
     public void start(AppContext appContext) {
