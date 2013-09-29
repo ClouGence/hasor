@@ -15,7 +15,6 @@
  */
 package net.hasor.web.controller.support;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -35,10 +34,10 @@ import net.hasor.web.controller.AbstractController;
 import net.hasor.web.controller.Controller;
 import net.hasor.web.controller.ControllerException;
 import net.hasor.web.controller.ControllerInvoke;
-import org.more.UnhandledException;
 import org.more.util.ArrayUtils;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
+import org.more.util.exception.ExceptionUtils;
 import com.google.inject.Inject;
 /**
  * action功能的入口。
@@ -64,11 +63,11 @@ class ControllerServlet extends HttpServlet {
             invoke.invoke((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);
         } catch (Throwable e) {
             //1.尝试拆开异常
-            Throwable target = e;
-            if (target instanceof UnhandledException)
-                target = target.getCause();
-            if (target instanceof InvocationTargetException)
-                target = ((InvocationTargetException) target).getTargetException();
+            Throwable target = ExceptionUtils.getCause(e);
+            //            if (target instanceof UnhandledException)
+            //                target = target.getCause();
+            //            if (target instanceof InvocationTargetException)
+            //                target = ((InvocationTargetException) target).getTargetException();
             //2.判定异常类型
             if (target instanceof ServletException)
                 throw (ServletException) target;

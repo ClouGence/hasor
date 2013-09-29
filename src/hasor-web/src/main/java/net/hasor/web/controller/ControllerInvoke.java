@@ -29,19 +29,25 @@ import org.more.util.BeanUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ControllerInvoke {
-    private Class<?>   targetClass;
-    private Method     targetMethod;
-    private AppContext appContext;
+    private Class<?>                        targetClass;
+    private Method                          targetMethod;
+    private AppContext                      appContext;
+    private ThreadLocal<AbstractController> localObject;
     //
     public ControllerInvoke(Method targetMethod, AppContext appContext) {
         this.targetMethod = targetMethod;
         this.targetMethod.setAccessible(false);
         this.targetClass = targetMethod.getDeclaringClass();
         this.appContext = appContext;
+        this.localObject = new ThreadLocal<AbstractController>();//使用ThreadLocal 确保每个线程在执行 Action 过滤器期间不会创建多个 Controller
     }
     public AbstractController getTargetObject() {
-        Object targetObject = this.appContext.getInstance(this.targetClass);
-        return (AbstractController) targetObject;
+        AbstractController targetObject = this.localObject.get();
+        if (targetObject != null)
+            return targetObject;
+        targetObject = (AbstractController) this.appContext.getInstance(this.targetClass);
+        this.localObject.set(targetObject);
+        return targetObject;
     }
     public Object invoke(HttpServletRequest servletRequest, HttpServletResponse servletResponse) throws InvocationTargetException {
         AbstractController targetObject = this.getTargetObject();
@@ -55,6 +61,7 @@ public class ControllerInvoke {
             throw new InvocationTargetException(e);//将异常包装为InvocationTargetException类型Controller会拆开该异常。
         } finally {
             targetObject.resetController();
+            this.localObject.remove();
         }
     }
     /***/

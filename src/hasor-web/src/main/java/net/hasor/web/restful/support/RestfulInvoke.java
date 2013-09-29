@@ -15,7 +15,6 @@
  */
 package net.hasor.web.restful.support;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -34,9 +33,13 @@ import net.hasor.core.AppContext;
 import net.hasor.web.restful.AttributeParam;
 import net.hasor.web.restful.CookieParam;
 import net.hasor.web.restful.HeaderParam;
+import net.hasor.web.restful.HttpMethod;
+import net.hasor.web.restful.Path;
 import net.hasor.web.restful.PathParam;
+import net.hasor.web.restful.Produces;
 import net.hasor.web.restful.QueryParam;
-import org.more.UnhandledException;
+import org.more.UndefinedException;
+import org.more.classcode.FormatException;
 import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
@@ -46,30 +49,56 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 class RestfulInvoke {
-    private Method     targetMethod;
-    private String[]   httpMethod;
-    private String     restfulMapping;
-    private String     restfulMappingMatches;
-    private AppContext appContext;
+    private String[]                         httpMethod;
+    private String                           restfulMapping;
+    private String                           restfulMappingMatches;
+    private String                           produces;
+    private Method                           targetMethod;
+    private Class<?>                         targetClass;
+    private AppContext                       appContext;
+    private ThreadLocal<HttpServletRequest>  requestLocal;
+    private ThreadLocal<HttpServletResponse> responseLocal;
+    private ThreadLocal<Object>              localObject;
     //
-    //
-    //
-    //
-    public RestfulInvoke(ActionDefine actionDefine, Object targetObject, HttpServletRequest request, HttpServletResponse response) {
-        this.actionDefine = actionDefine;
-        this.targetObject = targetObject;
-        this.request = request;
-        this.response = response;
-        this.appContext = this.getActionDefine().getAppContext();
-        this.actionPath = request.getRequestURI().substring(request.getContextPath().length());
-    }
     public RestfulInvoke(AppContext appContext, Method targetMethod) {
-        // TODO Auto-generated constructor stub
+        Path pathAnno = targetMethod.getAnnotation(Path.class);
+        if (pathAnno == null)
+            throw new UndefinedException("is not a valid Restful Service.");
+        String servicePath = pathAnno.value();
+        if (StringUtils.isBlank(servicePath))
+            throw new NullPointerException("Service path is empty.");
+        if (!servicePath.matches("/.+"))
+            throw new FormatException("Service path format error");
+        /*HttpMethod*/
+        Annotation[] annos = targetMethod.getAnnotations();
+        ArrayList<String> allHttpMethod = new ArrayList<String>();
+        if (annos != null) {
+            for (Annotation anno : annos) {
+                HttpMethod httpMethodAnno = anno.annotationType().getAnnotation(HttpMethod.class);
+                if (httpMethodAnno != null) {
+                    String bindMethod = httpMethodAnno.value();
+                    if (StringUtils.isBlank(bindMethod) == false)
+                        allHttpMethod.add(bindMethod);
+                }
+            }
+        }
+        if (allHttpMethod.isEmpty())
+            allHttpMethod.add("ANY");
+        this.httpMethod = allHttpMethod.toArray(new String[allHttpMethod.size()]);
+        //
+        Produces produces = targetMethod.getAnnotation(Produces.class);
+        if (produces != null)
+            this.produces = produces.value();
+        //
+        this.restfulMapping = servicePath;
+        this.targetMethod = targetMethod;
+        this.targetClass = targetMethod.getDeclaringClass();
+        this.appContext = appContext;
+        this.requestLocal = new ThreadLocal<HttpServletRequest>();
+        this.responseLocal = new ThreadLocal<HttpServletResponse>();
+        this.localObject = new ThreadLocal<Object>();
     }
-    //  /**获取映射字符串*/
-    //  public String getRestfulMapping() {
-    //      return this.restfulMapping;
-    //  }
+    //
     //
     /**获取AppContext*/
     public AppContext getAppContext() {
@@ -77,30 +106,39 @@ class RestfulInvoke {
     }
     /**获取调用的目标对象*/
     public Object getTargetObject() {
+        Object targetObject = this.localObject.get();
+        if (targetObject != null)
+            return targetObject;
+        targetObject = this.appContext.getInstance(this.targetClass);
+        this.localObject.set(targetObject);
         return targetObject;
     }
+    /**获取目标方法*/
     public Method getTargetMethod() {
-        return targetMethod;
+        return this.targetMethod;
     }
+    /**获取目标类*/
+    public Class<?> getTargetClass() {
+        return targetClass;
+    }
+    /**获取request*/
     public HttpServletRequest getRequest() {
-        return this.request;
+        return this.requestLocal.get();
     }
+    /**获取response*/
     public HttpServletResponse getResponse() {
-        return this.response;
+        return this.responseLocal.get();
     }
-    //
-    //
-    //
-    //
-    //
-    //
+    /**获取映射字符串*/
+    public String getRestfulMapping() {
+        return this.restfulMapping;
+    }
     /**获取映射字符串用于匹配的表达式字符串*/
     public String getRestfulMappingMatches() {
         if (this.restfulMappingMatches == null)
             this.restfulMappingMatches = this.restfulMapping.replaceAll("\\{\\w{1,}\\}", "([^/]{1,})");
         return this.restfulMappingMatches;
     }
-    //
     //
     /**判断Restful实例是否支持这个 请求方法。*/
     public boolean matchingMethod(String httpMethod) {
@@ -112,7 +150,7 @@ class RestfulInvoke {
         return false;
     }
     /**执行调用*/
-    public Object invoke() {
+    public Object invoke(HttpServletRequest servletRequest, HttpServletResponse servletResponse) throws Throwable {
         Method targetMethod = this.getTargetMethod();
         Class<?>[] targetParamClass = targetMethod.getParameterTypes();
         Annotation[][] targetParamAnno = targetMethod.getParameterAnnotations();
@@ -132,20 +170,20 @@ class RestfulInvoke {
         }
         Object[] invokeParams = paramsArray.toArray();
         /*执行调用*/
-        return this.call(targetMethod, invokeParams);
+        try {
+            this.requestLocal.set(servletRequest);
+            this.responseLocal.set(servletResponse);
+            servletResponse.setContentType(this.produces);
+            return this.call(targetMethod, invokeParams);
+        } finally {
+            this.requestLocal.remove();
+            this.responseLocal.remove();
+        }
     }
     /**执行调用，并引发事件*/
-    private Object call(Method targetMethod, Object[] invokeParams) {
+    private Object call(Method targetMethod, Object[] invokeParams) throws Throwable {
         Object targetObject = this.getTargetObject();
-        Object returnData = null;
-        try {
-            returnData = targetMethod.invoke(targetObject, invokeParams);
-        } catch (Throwable e) {
-            if (e instanceof InvocationTargetException)
-                throw new UnhandledException(((InvocationTargetException) e).getTargetException());
-            throw new UnhandledException(e);
-        }
-        return returnData;
+        return targetMethod.invoke(targetObject, invokeParams);
     }
     /**获得参数项*/
     private Object getIvnokeParams(Class<?> paramClass, Annotation[] paramAnno) {
@@ -163,7 +201,6 @@ class RestfulInvoke {
         }
         return BeanUtils.getDefaultValue(paramClass);
     }
-    //
     //
     /**/
     private Object getPathParam(Class<?> paramClass, PathParam pAnno) {

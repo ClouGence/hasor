@@ -10,10 +10,6 @@
 		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
 		<loadPackages>net.hasor.web.*,net.hasor.gift.*</loadPackages>
 	</hasor>
-	<environmentVar>
-		<!-- 资源缓存路径 -->
-		<HTTP_CACHE_PATH>%HASOR_WORK_HOME%/cache/httpservlet.resourceloader.classpath</HTTP_CACHE_PATH>
-	</environmentVar>
 	<!-- Hasor Web，不支持跟随配置文件动态更新配置。 -->
 	<hasor-web>
 		<!-- 请求响应编码设置 -->
@@ -23,6 +19,8 @@
 			<!-- 方法忽略的方法（逗号分割多组方法名），注意：在这里配置的忽略会应用到所有action上（支持重复配置共同生效） -->
 			<globalIgnore>equals,hashCode,toString,getClass,wait,notify,notifyAll</globalIgnore>
 		</controller>
+		<!-- restful 服务配置，onPath是服务基础路径 -->
+		<restfulServices enable="true" onPath="*" />
 		<!-- 资源装载器 -->
 		<resourceLoader enable="false" contentTypes="js,css,gif,ico,jpg,jpeg,png,swf,swc,flv,mp3,wav,avi">
 			<!-- <zipLoader>{HASOR_WEBROOT}/pic.zip</zipLoader> -->

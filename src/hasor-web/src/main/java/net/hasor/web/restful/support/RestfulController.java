@@ -15,10 +15,13 @@
  */
 package net.hasor.web.restful.support;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import javax.inject.Singleton;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -28,41 +31,54 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
+import net.hasor.web.restful.Path;
+import net.hasor.web.restful.RestfulService;
+import org.more.util.BeanUtils;
+import org.more.util.exception.ExceptionUtils;
 import com.google.inject.Inject;
 /**
  * action功能的入口。
  * @version : 2013-5-11
  * @author 赵永春 (zyc@hasor.net)
  */
+@Singleton
 class RestfulController implements Filter {
     @Inject
     private AppContext      appContext  = null;
     private RestfulInvoke[] invokeArray = null;
     //
     public void init(FilterConfig filterConfig) throws ServletException {
-        ActionManager actionManager = appContext.getInstance(ActionManager.class);
-        ArrayList<ActionDefineImpl> restfulList = new ArrayList<ActionDefineImpl>();
-        //
-        for (ControllerNameSpace ns : actionManager.getNameSpaceList()) {
-            for (ActionDefineImpl define : ns.getActions())
-                if (define.getRestfulMapping() != null)
-                    restfulList.add(define);
+        Set<Class<?>> controllerSet = this.appContext.getClassSet(RestfulService.class);
+        if (controllerSet == null)
+            return;
+        //1.注册服务
+        ArrayList<RestfulInvoke> restfulList = new ArrayList<RestfulInvoke>();
+        for (Class<?> controllerType : controllerSet) {
+            List<Method> actionMethods = BeanUtils.getMethods(controllerType);
+            for (Method targetMethod : actionMethods) {
+                if (targetMethod.getAnnotation(Path.class) == null)
+                    continue;
+                restfulList.add(new RestfulInvoke(this.appContext, targetMethod));
+            }
         }
-        //
-        Collections.sort(restfulList, new Comparator<ActionDefineImpl>() {
-            public int compare(ActionDefineImpl o1, ActionDefineImpl o2) {
+        Collections.sort(restfulList, new Comparator<RestfulInvoke>() {
+            public int compare(RestfulInvoke o1, RestfulInvoke o2) {
                 return o1.getRestfulMapping().compareToIgnoreCase(o2.getRestfulMapping());
             }
         });
-        this.defineArray = restfulList.toArray(new ActionDefineImpl[restfulList.size()]);
+        this.invokeArray = restfulList.toArray(new RestfulInvoke[restfulList.size()]);
     }
     public void destroy() {}
+    //
+    //
+    //
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         String actionPath = request.getRequestURI().substring(request.getContextPath().length());
         //1.获取 ActionInvoke
-        ActionDefineImpl define = this.getActionDefine(request.getMethod(), actionPath);
+        RestfulInvoke define = this.getRestfulInvoke(request.getMethod(), actionPath);
         if (define == null) {
             chain.doFilter(request, resp);
             return;
@@ -70,8 +86,8 @@ class RestfulController implements Filter {
         //3.执行调用
         this.doInvoke(define, request, resp);
     }
-    private ActionDefineImpl getActionDefine(String httpMethod, String requestPath) {
-        for (ActionDefineImpl restAction : this.defineArray) {
+    private RestfulInvoke getRestfulInvoke(String httpMethod, String requestPath) {
+        for (RestfulInvoke restAction : this.invokeArray) {
             if (requestPath.matches(restAction.getRestfulMappingMatches()) == true) {
                 if (restAction.matchingMethod(httpMethod))
                     return restAction;
@@ -79,12 +95,17 @@ class RestfulController implements Filter {
         }
         return null;
     }
-    //
-    private void doInvoke(ActionDefineImpl define, ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+    private void doInvoke(RestfulInvoke define, ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
         try {
-            define.createInvoke(servletRequest, servletResponse).invoke();
-        } catch (InvocationTargetException e) {
-            Throwable target = e.getTargetException();
+            define.invoke((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);
+        } catch (Throwable e) {
+            //1.尝试拆开异常
+            Throwable target = ExceptionUtils.getCause(e);
+            //            if (target instanceof UnhandledException)
+            //                target = target.getCause();
+            //            if (target instanceof InvocationTargetException)
+            //                target = ((InvocationTargetException) target).getTargetException();
+            //2.判定异常类型
             if (target instanceof ServletException)
                 throw (ServletException) target;
             if (target instanceof IOException)
@@ -95,18 +116,11 @@ class RestfulController implements Filter {
     //
     //
     //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
     /** 为转发提供支持 */
     public RequestDispatcher getRequestDispatcher(final String newRequestUri, final HttpServletRequest request) {
         // TODO 需要检查下面代码是否符合Servlet规范（带request参数情况下也需要检查）
         //1.拆分请求字符串
-        final ActionDefineImpl define = getActionDefine(request.getMethod(), newRequestUri);
+        final RestfulInvoke define = getRestfulInvoke(request.getMethod(), newRequestUri);
         if (define == null)
             return null;
         //
@@ -135,7 +149,7 @@ class RestfulController implements Filter {
                 /*执行转发*/
                 servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
                 try {
-                    doInvoke(define, requestToProcess, servletResponse);
+                    doInvoke(define, servletRequest, servletResponse);
                 } finally {
                     servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
                 }

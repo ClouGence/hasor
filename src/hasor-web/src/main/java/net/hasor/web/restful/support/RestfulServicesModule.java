@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.controller.support;
+package net.hasor.web.restful.support;
 import net.hasor.Hasor;
 import net.hasor.core.AppContext;
 import net.hasor.core.Settings;
@@ -22,26 +22,24 @@ import net.hasor.core.gift.GiftSupportModule;
 import net.hasor.web.servlet.WebApiBinder;
 import net.hasor.web.servlet.WebModule;
 /**
- * 
- * @version : 2013-9-26
- * @author ’‘”¿¥∫(zyc@hasor.net)
+ * Restful∑˛ŒÒ∆Ù∂Ø¿‡.
+ * @version : 2013-4-8
+ * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-@AnnoModule
-public class WebControllerModule extends WebModule {
+@AnnoModule()
+public class RestfulServicesModule extends WebModule {
     public void init(WebApiBinder apiBinder) {
         apiBinder.dependency().weak(GiftSupportModule.class);
         //
         Settings settings = apiBinder.getEnvironment().getSettings();
-        ControllerSettings acSettings = new ControllerSettings(settings);
-        //
-        if (acSettings.isEnable() == false) {
-            Hasor.info("WebController Module is disable.");
+        boolean enable = settings.getBoolean("hasor-web.restfulServices.enable");
+        if (enable == false) {
+            Hasor.info("RestfulServices Module is disable.");
             return;
         }
-        //
-        Hasor.info("WebController intercept %s.", acSettings.getIntercept());
-        apiBinder.getGuiceBinder().bind(ControllerSettings.class).toInstance(acSettings);
-        apiBinder.serve(acSettings.getIntercept()).with(ControllerServlet.class);
+        String onPath = settings.getString("hasor-web.restfulServices.onPath");
+        Hasor.info("RestfulServices base path on %s.", onPath);
+        apiBinder.filter(onPath).through(RestfulController.class);
     }
     public void start(AppContext appContext) {
         //
