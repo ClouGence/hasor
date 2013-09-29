@@ -17,7 +17,6 @@ package net.hasor.web.resource.support;
 import java.util.ArrayList;
 import java.util.HashSet;
 import net.hasor.core.Settings;
-import net.hasor.core.SettingsListener;
 import net.hasor.core.XmlNode;
 import org.more.util.StringUtils;
 /**
@@ -25,7 +24,7 @@ import org.more.util.StringUtils;
  * @version : 2013-4-23
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-public class ResourceSettings implements SettingsListener {
+class ResourceSettings {
     public static class LoaderConfig {
         public String  loaderType = null;
         public XmlNode config     = null;
@@ -34,27 +33,10 @@ public class ResourceSettings implements SettingsListener {
     private String[]       contentTypes = null;
     private LoaderConfig[] loaders      = null;
     //
-    public boolean isEnable() {
-        return enable;
-    }
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-    }
-    public String[] getContentTypes() {
-        return contentTypes.clone();
-    }
-    public void setContentTypes(String[] contentTypes) {
-        this.contentTypes = contentTypes;
-    }
-    public LoaderConfig[] getLoaders() {
-        return loaders.clone();
-    }
-    public void setLoaders(LoaderConfig[] loaders) {
-        this.loaders = loaders;
-    }
-    public void onLoadConfig(Settings newConfig) {
-        this.enable = newConfig.getBoolean("hasor-web.resourceLoader.enable");
-        String typesRoot = newConfig.getString("hasor-web.resourceLoader.contentTypes");
+    //
+    public ResourceSettings(Settings settings) {
+        this.enable = settings.getBoolean("hasor-web.resourceLoader.enable");
+        String typesRoot = settings.getString("hasor-web.resourceLoader.contentTypes");
         typesRoot = typesRoot == null ? "" : typesRoot;
         //1.∂¡»°types≈‰÷√
         HashSet<String> typesArray = new HashSet<String>();
@@ -65,7 +47,7 @@ public class ResourceSettings implements SettingsListener {
         }
         this.contentTypes = typesArray.toArray(new String[typesArray.size()]);
         //2.∂¡»°loader≈‰÷√
-        XmlNode loaderRoot = newConfig.getXmlProperty("hasor-web.resourceLoader");
+        XmlNode loaderRoot = settings.getXmlProperty("hasor-web.resourceLoader");
         ArrayList<LoaderConfig> loaderArray = new ArrayList<LoaderConfig>();
         for (XmlNode c : loaderRoot.getChildren()) {
             LoaderConfig lc = new LoaderConfig();
@@ -74,5 +56,16 @@ public class ResourceSettings implements SettingsListener {
             loaderArray.add(lc);
         }
         this.loaders = loaderArray.toArray(new LoaderConfig[loaderArray.size()]);
+    }
+    //
+    //
+    public boolean isEnable() {
+        return enable;
+    }
+    public String[] getContentTypes() {
+        return contentTypes;
+    }
+    public LoaderConfig[] getLoaders() {
+        return loaders.clone();
     }
 }
