@@ -16,8 +16,9 @@
  */
 package org.more.convert.convert;
 import java.net.URI;
+import org.more.convert.Converter;
 /**
- * {@link org.apache.commons.beanutils.Converter} implementaion that handles conversion
+ * {@link Converter} implementaion that handles conversion
  * to and from <b>java.net.URL</b> objects.
  * <p>
  * Can be configured to either return a <i>default value</i> or throw a

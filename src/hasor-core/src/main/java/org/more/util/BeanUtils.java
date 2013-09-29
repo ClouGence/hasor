@@ -206,7 +206,7 @@ public abstract class BeanUtils {
             return;
         findALLFields(superType, fList);
     }
-    /**{@link #findALLFields(Class))}方法返回值的无重复版本。*/
+    /**{@link #findALLFields(Class)}方法返回值的无重复版本。*/
     public static List<Field> findALLFieldsNoRepeat(Class<?> target) {
         if (target == null)
             return null;
@@ -250,7 +250,7 @@ public abstract class BeanUtils {
             return;
         findALLMethods(superType, mList);
     }
-    /**{@link #findALLMethods(Class))}方法返回值的无重复版本。*/
+    /**{@link #findALLMethods(Class)}方法返回值的无重复版本。*/
     public static List<Method> findALLMethodsNoRepeat(Class<?> target) {
         if (target == null)
             return null;

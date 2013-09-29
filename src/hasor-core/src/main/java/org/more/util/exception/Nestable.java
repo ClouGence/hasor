@@ -152,7 +152,7 @@ public interface Nestable {
     /**
      * Prints the stack trace for this exception only--root cause not
      * included--using the provided writer.  Used by
-     * {@link org.apache.commons.lang.exception.NestableDelegate} to write
+     * {@link NestableDelegate} to write
      * individual stack traces to a buffer.  The implementation of
      * this method should call
      * <code>super.printStackTrace(out);</code> in most cases.

@@ -25,8 +25,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import org.more.convert.ConversionException;
+import org.more.convert.Converter;
 /**
- * {@link org.apache.commons.beanutils.Converter} implementaion that handles conversion
+ * {@link Converter} implementaion that handles conversion
  * to and from <b>java.lang.Number</b> objects.
  * <p>
  * This implementation handles conversion for the following

@@ -91,7 +91,7 @@ public class XmlReader {
     /**
      * 该方法是用于决定两个XPath是否是一个包含的关系，该方法的返回值决定了解析器是否忽略这个xml条目。其子类可以重写它以完成更多的控制。
      * @param currentXPath 当前解析器扫描到的XPath。
-     * @param testXPath 表示打算忽略的XPath。
+     * @param testWild 表示打算忽略的XPath。
      * @return 返回一个boolean值，该值决定了是否忽略当前XPath条目。
      */
     protected boolean ignoreXPath(String currentXPath, String testWild) {

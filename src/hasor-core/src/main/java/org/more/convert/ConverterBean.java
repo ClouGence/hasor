@@ -85,9 +85,9 @@ import org.more.util.ContextClassLoaderLocal;
  * <pre>
  *   // No-args constructor gets the version that throws exceptions
  *   Converter myConverter =
- *    new org.apache.commons.beanutils.converter.IntegerConverter();
- *   ConvertUtils.register(myConverter, Integer.TYPE);    // Native type
- *   ConvertUtils.register(myConverter, Integer.class);   // Wrapper class
+ *    new org.more.convert.convert.IntegerConverter();
+ *   ConverterUtils.register(myConverter, Integer.TYPE);    // Native type
+ *   ConverterUtils.register(myConverter, Integer.class);   // Wrapper class
  * </pre>
  * 
  * <p>
@@ -122,14 +122,13 @@ import org.more.util.ContextClassLoaderLocal;
  * @version $Revision: 745079 $ $Date: 2009-02-17 14:04:10 +0000 (Tue, 17 Feb 2009) $
  * @since 1.7
  */
-@SuppressWarnings("rawtypes")
 public class ConverterBean {
-    private static final Integer                 ZERO                 = new Integer(0);
-    private static final Character               SPACE                = new Character(' ');
-    /** Contains <code>BeanUtilsBean</code> instances indexed by context classloader. */
-    private static final ContextClassLoaderLocal BEANS_BY_CLASSLOADER = new ConverterBeanContextClassLoaderLocal();
-    private static class ConverterBeanContextClassLoaderLocal extends ContextClassLoaderLocal {
-        protected Object initialValue() {
+    private static final Integer                              ZERO                 = new Integer(0);
+    private static final Character                            SPACE                = new Character(' ');
+    /** Contains <code>ConverterBean</code> instances indexed by context classloader. */
+    private static final ConverterBeanContextClassLoaderLocal BEANS_BY_CLASSLOADER = new ConverterBeanContextClassLoaderLocal();
+    private static class ConverterBeanContextClassLoaderLocal extends ContextClassLoaderLocal<ConverterBean> {
+        protected ConverterBean initialValue() {
             return new ConverterBean();
         }
     }
@@ -195,7 +194,7 @@ public class ConverterBean {
      *
      * @exception ConversionException if thrown by an underlying Converter
      */
-    public Object convert(String value, Class clazz) {
+    public Object convert(String value, Class<?> clazz) {
         Converter converter = lookup(clazz);
         if (converter == null)
             converter = lookup(String.class);
@@ -214,8 +213,8 @@ public class ConverterBean {
      *
      * @exception ConversionException if thrown by an underlying Converter
      */
-    public Object convert(String[] values, Class clazz) {
-        Class type = clazz;
+    public Object convert(String[] values, Class<?> clazz) {
+        Class<?> type = clazz;
         if (clazz.isArray())
             type = clazz.getComponentType();
         Converter converter = lookup(type);
@@ -236,8 +235,8 @@ public class ConverterBean {
      *
      * @exception ConversionException if thrown by an underlying Converter
      */
-    public Object convert(Object value, Class targetType) {
-        Class sourceType = value == null ? null : value.getClass();
+    public Object convert(Object value, Class<?> targetType) {
+        Class<?> sourceType = value == null ? null : value.getClass();
         Object converted = value;
         Converter converter = lookup(sourceType, targetType);
         if (converter != null) {
@@ -447,8 +446,8 @@ public class ConverterBean {
      * value used in the event of a conversion error
      * @param defaultArraySize The size of the default array
      */
-    private void registerArrayConverter(Class componentType, Converter componentConverter, boolean throwException, int defaultArraySize) {
-        Class arrayType = Array.newInstance(componentType, 0).getClass();
+    private void registerArrayConverter(Class<?> componentType, Converter componentConverter, boolean throwException, int defaultArraySize) {
+        Class<?> arrayType = Array.newInstance(componentType, 0).getClass();
         Converter arrayConverter = null;
         if (throwException) {
             arrayConverter = new ArrayConverter(arrayType, componentConverter);
@@ -458,7 +457,7 @@ public class ConverterBean {
         register(arrayType, arrayConverter);
     }
     /** strictly for convenience since it has same parameter order as Map.put */
-    private void register(Class clazz, Converter converter) {
+    private void register(Class<?> clazz, Converter converter) {
         register(new ConverterFacade(converter), clazz);
     }
     /**
@@ -467,7 +466,7 @@ public class ConverterBean {
      *
      * @param clazz Class for which to remove a registered Converter
      */
-    public void deregister(Class clazz) {
+    public void deregister(Class<?> clazz) {
         converters.remove(clazz);
     }
     /**
@@ -478,12 +477,12 @@ public class ConverterBean {
      * @param clazz Class for which to return a registered Converter
      * @return The registered {@link Converter} or <code>null</code> if not found
      */
-    public Converter lookup(Class clazz) {
+    public Converter lookup(Class<?> clazz) {
         Converter conv = ((Converter) converters.get(clazz));
         if (conv != null)
             return conv;
         for (Object regType : converters.keySet()) {
-            if (((Class) regType).isAssignableFrom(clazz))
+            if (((Class<?>) regType).isAssignableFrom(clazz))
                 return ((Converter) converters.get(regType));
         }
         return null;
@@ -497,7 +496,7 @@ public class ConverterBean {
      * @param targetType Class of the value to be converted to
      * @return The registered {@link Converter} or <code>null</code> if not found
      */
-    public Converter lookup(Class sourceType, Class targetType) {
+    public Converter lookup(Class<?> sourceType, Class<?> targetType) {
         if (targetType == null) {
             throw new IllegalArgumentException("Target type is missing");
         }
@@ -536,7 +535,7 @@ public class ConverterBean {
      * @param clazz Destination class for conversions performed by this
      *  Converter
      */
-    public void register(Converter converter, Class clazz) {
+    public void register(Converter converter, Class<?> clazz) {
         converters.put(clazz, converter);
     }
 }

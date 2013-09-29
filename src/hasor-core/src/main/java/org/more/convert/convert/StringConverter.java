@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 package org.more.convert.convert;
+import org.more.convert.Converter;
 /**
- * {@link org.apache.commons.beanutils.Converter}
- * implementation that converts an incoming
+ * {@link Converter} implementation that converts an incoming
  * object into a <code>java.lang.String</code> object.
  * <p>
  * Note that ConvertUtils really is designed to do string->object conversions,

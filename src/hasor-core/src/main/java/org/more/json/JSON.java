@@ -66,7 +66,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>
  * The interface {@link JSON.Convertor} may be implemented to provide static
  * convertors for objects that may be registered with
- * {@link #registerConvertor(Class, org.eclipse.jetty.util.ajax.JSON.Convertor)}
+ * {@link #registerConvertor(Class, JSON.Convertor)}
  * . These convertors are looked up by class, interface and super class by
  * {@link #getConvertor(Class)}.
  * </p>
@@ -1123,7 +1123,7 @@ public class JSON {
      * <p>
      * may be implemented to provide static convertors for objects that may be
      * registered with
-     * {@link JSON#registerConvertor(Class, org.eclipse.jetty.util.ajax.JSON.Convertor)}
+     * {@link JSON#registerConvertor(Class, JSON.Convertor)}
      * . These convertors are looked up by class, interface and super class by
      * {@link JSON#getConvertor(Class)}. Convertors should be used when the
      * classes to be converted cannot implement {@link Convertible} or

@@ -19,14 +19,14 @@ package org.more.convert;
  * <p>Utility methods for converting String scalar values to objects of the
  * specified Class, String arrays to arrays of the specified Class.</p>
  *
- * <p>For more details, see <code>ConvertUtilsBean</code> which provides the
+ * <p>For more details, see <code>ConverterBean</code> which provides the
  * implementations for these methods.</p>
  *
  * @author Craig R. McClanahan
  * @author Ralph Schaer
  * @author Chris Audley
  * @version $Revision: 556229 $ $Date: 2007-07-14 07:11:19 +0100 (Sat, 14 Jul 2007) $
- * @see ConvertUtilsBean
+ * @see ConverterBean
  */
 @SuppressWarnings("rawtypes")
 public class ConverterUtils {
@@ -34,12 +34,11 @@ public class ConverterUtils {
     /**
      * <p>Convert the specified value into a String.</p>
      *
-     * <p>For more details see <code>ConvertUtilsBean</code>.</p>
+     * <p>For more details see <code>ConverterBean</code>.</p>
      *
      * @param value Value to be converted (may be null)
      * @return The converted String value
-     *
-     * @see ConvertUtilsBean#convert(Object)
+     * @see ConverterBean#convert(Object)
      */
     public static String convert(Object value) {
         return ConverterBean.getInstance().convert(value);
@@ -48,13 +47,12 @@ public class ConverterUtils {
      * <p>Convert the specified value to an object of the specified class (if
      * possible).  Otherwise, return a String representation of the value.</p>
      *
-     * <p>For more details see <code>ConvertUtilsBean</code>.</p>
+     * <p>For more details see <code>ConverterBean</code>.</p>
      *
      * @param value Value to be converted (may be null)
      * @param clazz Java class to be converted to
      * @return The converted value
-     *
-     * @see ConvertUtilsBean#convert(String, Class)
+     * @see ConverterBean#convert(String, Class)
      */
     public static Object convert(String value, Class clazz) {
         return ConverterBean.getInstance().convert(value, clazz);
@@ -63,13 +61,12 @@ public class ConverterUtils {
      * <p>Convert an array of specified values to an array of objects of the
      * specified class (if possible).</p>
      *
-     * <p>For more details see <code>ConvertUtilsBean</code>.</p>
+     * <p>For more details see <code>ConverterBean</code>.</p>
      *
      * @param values Array of values to be converted
      * @param clazz Java array or element class to be converted to
      * @return The converted value
-     *
-     * @see ConvertUtilsBean#convert(String[], Class)
+     * @see ConverterBean#convert(String[], Class)
      */
     public static Object convert(String[] values, Class clazz) {
         return ConverterBean.getInstance().convert(values, clazz);
@@ -81,7 +78,6 @@ public class ConverterUtils {
      * @param value Value to be converted (may be null)
      * @param targetType Class of the value to be converted to
      * @return The converted value
-     *
      * @exception ConversionException if thrown by an underlying Converter
      */
     public static Object convert(Class<?> targetType, Object value) {
@@ -91,9 +87,9 @@ public class ConverterUtils {
      * <p>Remove all registered {@link Converter}s, and re-establish the
      * standard Converters.</p>
      *
-     * <p>For more details see <code>ConvertUtilsBean</code>.</p>
+     * <p>For more details see <code>ConverterBean</code>.</p>
      *
-     * @see ConvertUtilsBean#deregister()
+     * @see ConverterBean#deregister()
      */
     public static void deregister() {
         ConverterBean.getInstance().deregister();
@@ -102,10 +98,10 @@ public class ConverterUtils {
      * <p>Remove any registered {@link Converter} for the specified destination
      * <code>Class</code>.</p>
      *
-     * <p>For more details see <code>ConvertUtilsBean</code>.</p>
+     * <p>For more details see <code>ConverterBean</code>.</p>
      *
      * @param clazz Class for which to remove a registered Converter
-     * @see ConvertUtilsBean#deregister(Class)
+     * @see ConverterBean#deregister(Class)
      */
     public static void deregister(Class clazz) {
         ConverterBean.getInstance().deregister(clazz);
@@ -115,11 +111,11 @@ public class ConverterUtils {
      * destination class; if there is no registered Converter, return
      * <code>null</code>.</p>
      *
-     * <p>For more details see <code>ConvertUtilsBean</code>.</p>
+     * <p>For more details see <code>ConverterBean</code>.</p>
      *
      * @param clazz Class for which to return a registered Converter
      * @return The registered {@link Converter} or <code>null</code> if not found
-     * @see ConvertUtilsBean#lookup(Class)
+     * @see ConverterBean#lookup(Class)
      */
     public static Converter lookup(Class clazz) {
         return ConverterBean.getInstance().lookup(clazz);
@@ -140,12 +136,11 @@ public class ConverterUtils {
      * <p>Register a custom {@link Converter} for the specified destination
      * <code>Class</code>, replacing any previously registered Converter.</p>
      *
-     * <p>For more details see <code>ConvertUtilsBean</code>.</p>
+     * <p>For more details see <code>ConverterBean</code>.</p>
      *
      * @param converter Converter to be registered
-     * @param clazz Destination class for conversions performed by this
-     *  Converter
-     * @see ConvertUtilsBean#register(Converter, Class)
+     * @param clazz Destination class for conversions performed by this Converter
+     * @see ConverterBean#register(Converter, Class)
      */
     public static void register(Converter converter, Class clazz) {
         ConverterBean.getInstance().register(converter, clazz);

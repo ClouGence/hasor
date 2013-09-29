@@ -16,10 +16,11 @@
  */
 package org.more.convert.convert;
 import org.more.convert.ConversionException;
+import org.more.convert.Converter;
 /**
- * {@link org.apache.commons.beanutils.Converter} implementaion that handles conversion
+ * {@link Converter} implementaion that handles conversion
  * to and from <b>Boolean</b> objects.
- * {@link org.apache.commons.beanutils.Converter} implementaion that
+ * {@link Converter} implementaion that
  * handles conversion to and from <b>java.lang.Boolean</b> objects.
  * <p>
  * Can be configured to either return a <i>default value</i> or throw a
@@ -54,7 +55,7 @@ import org.more.convert.ConversionException;
 public final class BooleanConverter extends AbstractConverter {
     // ----------------------------------------------------------- Constructors
     /**
-     * Create a {@link org.apache.commons.beanutils.Converter} that will throw a {@link ConversionException}
+     * Create a {@link org.more.convert.Converter} that will throw a {@link ConversionException}
      * if a conversion error occurs, ie the string value being converted is
      * not one of the known true strings, nor one of the known false strings.
      */
@@ -62,7 +63,7 @@ public final class BooleanConverter extends AbstractConverter {
         super();
     }
     /**
-     * Create a {@link org.apache.commons.beanutils.Converter} that will return the specified default value
+     * Create a {@link org.more.convert.Converter} that will return the specified default value
      * if a conversion error occurs, ie the string value being converted is
      * not one of the known true strings, nor one of the known false strings.
      *
@@ -78,7 +79,7 @@ public final class BooleanConverter extends AbstractConverter {
         setDefaultValue(defaultValue);
     }
     /**
-     * Create a {@link org.apache.commons.beanutils.Converter} that will throw a {@link ConversionException}
+     * Create a {@link org.more.convert.Converter} that will throw a {@link ConversionException}
      * if a conversion error occurs, ie the string value being converted is
      * not one of the known true strings, nor one of the known false strings.
      * <p>
@@ -100,7 +101,7 @@ public final class BooleanConverter extends AbstractConverter {
         this.falseStrings = copyStrings(falseStrings);
     }
     /**
-     * Create a {@link org.apache.commons.beanutils.Converter} that will return
+     * Create a {@link org.more.convert.Converter} that will return
      * the specified default value if a conversion error occurs.
      * <p>
      * The provided string arrays are copied, so that changes to the elements

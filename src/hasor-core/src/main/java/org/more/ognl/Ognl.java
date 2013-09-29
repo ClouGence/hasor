@@ -51,7 +51,7 @@ import java.util.Map;
  * <P>This will parse the expression given and evaluate it against the root object
  * given, returning the result.  If there is an error in the expression, such
  * as the property is not found, the exception is encapsulated into an
- * {@link ognl.OgnlException OgnlException}.</P>
+ * {@link OgnlException OgnlException}.</P>
  *
  * <P>Other more sophisticated uses of Ognl can pre-parse expressions.  This
  * provides two advantages: in the case of user-supplied expressions it

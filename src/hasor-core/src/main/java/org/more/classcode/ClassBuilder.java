@@ -26,7 +26,7 @@ import org.more.asm.ClassWriter;
  * 当{@link ClassBuilder#initBuilder(ClassEngine)}方法被ClassEngine调用之后，在结束方法之前该方法会调用
  * {@link ClassBuilder#init(ClassEngine)}方法。这时扩展类可以初始化自己的相关数据代码。<br/>
  * <b>扩展点二</b>、<br/>
- * 当{@link ClassBuilder#builderClass()}方法被ClassEngine调用之后，在结束方法返回{@link ClassConfiguration}
+ * 当{@link ClassBuilder#builderClass()}方法被ClassEngine调用之后，在结束方法返回{@link CreatedConfiguration}
  * 之前该方法会调用{@link ClassBuilder#builder(byte[], ClassEngine)}方法。这时扩展类可以构造其它class或者改写原有字节码。
  * 处于性能上的考虑我优先推荐下面这种扩展方式，因为下面的这种改写字节码的扩展方式是参与在字节码构造层次中的。<br/>
  * <b>扩展点三</b>、<br/>
@@ -183,7 +183,7 @@ public abstract class ClassBuilder {
      */
     protected abstract void init(final ClassEngine classEngine);
     /**
-     * 当{@link ClassBuilder#builderClass()}方法被ClassEngine调用之后，在结束方法返回{@link ClassConfiguration}
+     * 当{@link ClassBuilder#builderClass()}方法被ClassEngine调用之后，在结束方法返回{@link CreatedConfiguration}
      * 之前该方法会调用{@link ClassBuilder#builder(byte[], ClassEngine)}方法。这时子类可以通过重写该方法来构造其它class或者改写原有字节码。
      * @param classEngine 使用的字节码引擎对象。
      */

@@ -148,8 +148,8 @@ public abstract class AbstractEnvironment implements Environment {
     };
     /**
     * 生成路径算法生成一个Path
-    * @param target 目标
-    * @param dirSize 每个目录下可以拥有的子目录或文件数目。
+    * @param number 参考数字
+    * @param size 每个目录下可以拥有的子目录或文件数目。
     */
     public String genPath(long number, int size) {
         StringBuffer buffer = new StringBuffer();

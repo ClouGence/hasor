@@ -41,7 +41,6 @@ public class ScanClassPath {
     }
     /**
      * 扫描jar包中凡是匹配compareType参数的类均被返回。（对执行结果不缓存）
-     * @param packagePath 要扫描的包名。
      * @param compareType 要查找的特征。
      * @return 返回扫描结果。
      */

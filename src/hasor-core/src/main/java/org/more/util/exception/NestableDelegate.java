@@ -28,9 +28,9 @@ import java.util.List;
  * <p>A shared implementation of the nestable exception functionality.</p>
  * <p>
  * The code is shared between 
- * {@link org.apache.commons.lang.exception.NestableError NestableError},
- * {@link org.apache.commons.lang.exception.NestableException NestableException} and
- * {@link org.apache.commons.lang.exception.NestableRuntimeException NestableRuntimeException}.
+ * {@link NestableError NestableError},
+ * {@link NestableException NestableException} and
+ * {@link NestableRuntimeException NestableRuntimeException}.
  * </p>
  * 
  * @author Apache Software Foundation
@@ -55,8 +55,7 @@ public class NestableDelegate implements Serializable {
     private transient static final String MUST_BE_THROWABLE = "The Nestable implementation passed to the NestableDelegate(Nestable) " + "constructor must extend java.lang.Throwable";
     /**
      * Holds the reference to the exception or error that we're
-     * wrapping (which must be a {@link
-     * org.apache.commons.lang.exception.Nestable} implementation).
+     * wrapping (which must be a {@link org.more.util.exception.Nestable} implementation).
      */
     private Throwable                     nestable          = null;
     /**

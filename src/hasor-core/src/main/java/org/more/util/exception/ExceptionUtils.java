@@ -222,7 +222,7 @@ public class ExceptionUtils {
      * <p>The method searches for methods with specific names that return a 
      * <code>Throwable</code> object. This will pick up most wrapping exceptions,
      * including those from JDK 1.4, and
-     * {@link org.apache.commons.lang.exception.NestableException NestableException}.
+     * {@link NestableException NestableException}.
      * The method names can be added to using {@link #addCauseMethodName(String)}.</p>
      *
      * <p>The default list searched for are:</p>

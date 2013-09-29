@@ -97,10 +97,10 @@ import java.util.WeakHashMap;
  * @see java.lang.Thread#getContextClassLoader  
  * @author Eric Pabst
  */
-public class ContextClassLoaderLocal {
-    private Map     valueByClassLoader     = new WeakHashMap();
-    private boolean globalValueInitialized = false;
-    private Object  globalValue;
+public class ContextClassLoaderLocal<T> {
+    private Map<ClassLoader, T> valueByClassLoader     = new WeakHashMap<ClassLoader, T>();
+    private boolean             globalValueInitialized = false;
+    private T                   globalValue;
     /**
      * Construct a context classloader instance
      */
@@ -120,7 +120,7 @@ public class ContextClassLoaderLocal {
      *
      * @return a new Object to be used as an initial value for this ContextClassLoaderLocal
      */
-    protected Object initialValue() {
+    protected T initialValue() {
         return null;
     }
     /** 
@@ -129,7 +129,7 @@ public class ContextClassLoaderLocal {
      * This mechanism provides isolation for web apps deployed in the same container. 
      * @return the object currently associated with the context-classloader of the current thread. 
      */
-    public synchronized Object get() {
+    public synchronized T get() {
         // synchronizing the whole method is a bit slower 
         // but guarantees no subtle threading problems, and there's no 
         // need to synchronize valueByClassLoader
@@ -138,7 +138,7 @@ public class ContextClassLoaderLocal {
         try {
             ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
             if (contextClassLoader != null) {
-                Object value = valueByClassLoader.get(contextClassLoader);
+                T value = valueByClassLoader.get(contextClassLoader);
                 if ((value == null) && !valueByClassLoader.containsKey(contextClassLoader)) {
                     value = initialValue();
                     valueByClassLoader.put(contextClassLoader, value);
@@ -159,7 +159,7 @@ public class ContextClassLoaderLocal {
      * 
      * @param value the object to be associated with the entrant thread's context classloader
      */
-    public synchronized void set(Object value) {
+    public synchronized void set(T value) {
         // synchronizing the whole method is a bit slower 
         // but guarentees no subtle threading problems
         // make sure that the map is given a change to purge itself
