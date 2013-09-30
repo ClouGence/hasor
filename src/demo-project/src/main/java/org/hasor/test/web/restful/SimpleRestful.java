@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test.web.controller;
-import net.hasor.gift.aop.Aop;
-import net.hasor.web.controller.AbstractController;
-import net.hasor.web.controller.Controller;
-import org.hasor.test.web.controller.interceptor.TestControllerInterceptor;
+package org.hasor.test.web.restful;
+import net.hasor.web.restful.Path;
+import net.hasor.web.restful.PathParam;
+import net.hasor.web.restful.RestfulService;
 /**
  * 
  * @version : 2013-7-23
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-@Controller("/action")
-public class FitstAction extends AbstractController {
-    @Aop(TestControllerInterceptor.class)
-    public void sayHallo() {
-        System.out.println("Hallo Word form First Action.");
+@RestfulService
+public class SimpleRestful {
+    @Path("/restful/{name}")
+    public void sayName(@PathParam("name") String name) {
+        System.out.println("Hallo Word form :" + name);
     }
 }

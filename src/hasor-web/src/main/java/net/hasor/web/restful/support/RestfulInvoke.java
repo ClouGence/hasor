@@ -151,28 +151,29 @@ class RestfulInvoke {
     }
     /**执行调用*/
     public Object invoke(HttpServletRequest servletRequest, HttpServletResponse servletResponse) throws Throwable {
-        Method targetMethod = this.getTargetMethod();
-        Class<?>[] targetParamClass = targetMethod.getParameterTypes();
-        Annotation[][] targetParamAnno = targetMethod.getParameterAnnotations();
-        targetParamClass = (targetParamClass == null) ? new Class<?>[0] : targetParamClass;
-        targetParamAnno = (targetParamAnno == null) ? new Annotation[0][0] : targetParamAnno;
-        ArrayList<Object> paramsArray = new ArrayList<Object>();
-        /*准备参数*/
-        for (int i = 0; i < targetParamClass.length; i++) {
-            Class<?> paramClass = targetParamClass[i];
-            Object paramObject = this.getIvnokeParams(paramClass, targetParamAnno[i]);//获取参数
-            /*获取到的参数需要做一个类型转换，以防止method.invoke时发生异常。*/
-            if (paramObject == null)
-                paramObject = BeanUtils.getDefaultValue(paramClass);
-            else
-                paramObject = ConverterUtils.convert(paramClass, paramObject);
-            paramsArray.add(paramObject);
-        }
-        Object[] invokeParams = paramsArray.toArray();
-        /*执行调用*/
         try {
             this.requestLocal.set(servletRequest);
             this.responseLocal.set(servletResponse);
+            //
+            Method targetMethod = this.getTargetMethod();
+            Class<?>[] targetParamClass = targetMethod.getParameterTypes();
+            Annotation[][] targetParamAnno = targetMethod.getParameterAnnotations();
+            targetParamClass = (targetParamClass == null) ? new Class<?>[0] : targetParamClass;
+            targetParamAnno = (targetParamAnno == null) ? new Annotation[0][0] : targetParamAnno;
+            ArrayList<Object> paramsArray = new ArrayList<Object>();
+            /*准备参数*/
+            for (int i = 0; i < targetParamClass.length; i++) {
+                Class<?> paramClass = targetParamClass[i];
+                Object paramObject = this.getIvnokeParams(paramClass, targetParamAnno[i]);//获取参数
+                /*获取到的参数需要做一个类型转换，以防止method.invoke时发生异常。*/
+                if (paramObject == null)
+                    paramObject = BeanUtils.getDefaultValue(paramClass);
+                else
+                    paramObject = ConverterUtils.convert(paramClass, paramObject);
+                paramsArray.add(paramObject);
+            }
+            Object[] invokeParams = paramsArray.toArray();
+            /*执行调用*/
             servletResponse.setContentType(this.produces);
             return this.call(targetMethod, invokeParams);
         } finally {
@@ -205,12 +206,12 @@ class RestfulInvoke {
     /**/
     private Object getPathParam(Class<?> paramClass, PathParam pAnno) {
         String paramName = pAnno.value();
-        return StringUtils.isBlank(paramName) ? null : this.getPathParamMap().get(paramName.toUpperCase());
+        return StringUtils.isBlank(paramName) ? null : this.getPathParamMap().get(paramName);
     }
     /**/
     private Object getQueryParam(Class<?> paramClass, QueryParam pAnno) {
         String paramName = pAnno.value();
-        return StringUtils.isBlank(paramName) ? null : this.getQueryParamMap().get(paramName.toUpperCase());
+        return StringUtils.isBlank(paramName) ? null : this.getQueryParamMap().get(paramName);
     }
     /**/
     private Object getHeaderParam(Class<?> paramClass, HeaderParam pAnno) {

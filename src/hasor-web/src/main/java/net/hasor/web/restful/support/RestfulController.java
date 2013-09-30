@@ -99,17 +99,15 @@ class RestfulController implements Filter {
         try {
             define.invoke((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);
         } catch (Throwable e) {
-            //1.尝试拆开异常
             Throwable target = ExceptionUtils.getCause(e);
-            //            if (target instanceof UnhandledException)
-            //                target = target.getCause();
-            //            if (target instanceof InvocationTargetException)
-            //                target = ((InvocationTargetException) target).getTargetException();
-            //2.判定异常类型
+            target = (target == null) ? e : target;
+            //
             if (target instanceof ServletException)
                 throw (ServletException) target;
             if (target instanceof IOException)
-                throw (IOException) target;
+                throw (ServletException) target;
+            if (target instanceof RuntimeException)
+                throw (RuntimeException) target;
             throw new ServletException(target);
         }
     }

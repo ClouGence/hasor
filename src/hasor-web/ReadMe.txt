@@ -15,3 +15,5 @@ Hasor-Web v0.0.1
 	5.新增：AbstractController 类被设计用在 单例 或 多例 的情况下。
 
 Hasor-Web v0.0.2
+	1.修复#5314 Hasor-Web v0.0.1- Restful 服务无法正常发布的问题。
+	2.优化抛出的异常。

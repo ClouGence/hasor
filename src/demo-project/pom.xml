@@ -78,7 +78,7 @@
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-web</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
 		</dependency>
 		<!-- Freemarker -->
 		<!-- <dependency> -->
@@ -92,7 +92,6 @@
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.2</version>
 		</dependency>
-
 		<!-- Jetty Test -->
 		<dependency>
 			<groupId>net.hasor</groupId>

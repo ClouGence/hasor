@@ -15,14 +15,15 @@
  */
 package net.hasor.web.controller;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
+import org.more.UnhandledException;
 import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
+import org.more.util.exception.ExceptionUtils;
 /**
  * 线程安全
  * @version : 2013-6-5
@@ -49,16 +50,17 @@ public class ControllerInvoke {
         this.localObject.set(targetObject);
         return targetObject;
     }
-    public Object invoke(HttpServletRequest servletRequest, HttpServletResponse servletResponse) throws InvocationTargetException {
+    public Object invoke(HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
         AbstractController targetObject = this.getTargetObject();
         try {
             Object[] paramArrays = this.getParams(servletRequest, servletResponse);
             targetObject.initController(servletRequest, servletResponse);
             return this.targetMethod.invoke(targetObject, paramArrays);
         } catch (Throwable e) {
-            if (e instanceof InvocationTargetException)
-                throw (InvocationTargetException) e;
-            throw new InvocationTargetException(e);//将异常包装为InvocationTargetException类型Controller会拆开该异常。
+            //传送异常
+            Throwable target = ExceptionUtils.getCause(e);
+            target = (target == null) ? e : target;
+            throw new UnhandledException(target);
         } finally {
             targetObject.resetController();
             this.localObject.remove();

@@ -36,6 +36,7 @@ public class HelloWordServlet extends HttpServlet {
         CustomerBean infoBean = this.appContext.getInstance(CustomerBean.class);
         infoBean.foo();
         //
+        resp.getWriter().write("Call Servlet showname.c");
         super.service(req, resp);
     }
 }
