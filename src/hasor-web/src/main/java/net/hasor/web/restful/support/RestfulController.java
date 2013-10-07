@@ -65,7 +65,7 @@ class RestfulController implements Filter {
         }
         Collections.sort(restfulList, new Comparator<RestfulInvokeDefine>() {
             public int compare(RestfulInvokeDefine o1, RestfulInvokeDefine o2) {
-                return o1.getRestfulMapping().compareToIgnoreCase(o2.getRestfulMapping());
+                return o1.getRestfulMapping().compareToIgnoreCase(o2.getRestfulMapping()) * -1;
             }
         });
         this.invokeArray = restfulList.toArray(new RestfulInvokeDefine[restfulList.size()]);

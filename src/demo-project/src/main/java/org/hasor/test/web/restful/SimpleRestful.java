@@ -30,7 +30,7 @@ public class SimpleRestful {
     public void sayName(@PathParam("name") String name) {
         System.out.println("sayName form :" + name);
     }
-    @Path("/restful/age/{name}")
+    @Path("/restful/age/{age}")
     @Aop(TestRestfulInterceptor.class)
     public void sayAge(@PathParam("age") String age) {
         System.out.println("sayAge form :" + age);
