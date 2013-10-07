@@ -21,6 +21,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import net.hasor.gift.servlet3.WebFilter;
 /**
  * 
@@ -31,9 +32,9 @@ import net.hasor.gift.servlet3.WebFilter;
 public class TestFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {}
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        System.out.println("before Servlet. from " + getClass());
+        System.out.println("before Servlet. from " + getClass() + " at " + ((HttpServletRequest) request).getRequestURI());
         chain.doFilter(request, response);
-        System.out.println("after Servlet.  from " + getClass());
+        System.out.println("after Servlet.  from " + getClass() + " at " + ((HttpServletRequest) request).getRequestURI());
     }
     public void destroy() {}
 }

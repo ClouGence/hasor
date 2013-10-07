@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 package org.hasor.test.web.restful;
+import net.hasor.gift.aop.Aop;
 import net.hasor.web.restful.Path;
 import net.hasor.web.restful.PathParam;
 import net.hasor.web.restful.RestfulService;
+import org.hasor.test.web.restful.interceptor.TestRestfulInterceptor;
 /**
  * 
  * @version : 2013-7-23
@@ -26,6 +28,11 @@ import net.hasor.web.restful.RestfulService;
 public class SimpleRestful {
     @Path("/restful/{name}")
     public void sayName(@PathParam("name") String name) {
-        System.out.println("Hallo Word form :" + name);
+        System.out.println("sayName form :" + name);
+    }
+    @Path("/restful/age/{name}")
+    @Aop(TestRestfulInterceptor.class)
+    public void sayAge(@PathParam("age") String age) {
+        System.out.println("sayAge form :" + age);
     }
 }
