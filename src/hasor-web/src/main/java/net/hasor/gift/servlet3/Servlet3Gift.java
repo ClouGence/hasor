@@ -15,8 +15,6 @@
  */
 package net.hasor.gift.servlet3;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,21 +58,11 @@ public class Servlet3Gift implements GiftFace {
                 webFilterList.add((Class<? extends Filter>) cls);
             }
         }
-        //2.≈≈–Ú
-        Collections.sort(webFilterList, new Comparator<Class<?>>() {
-            public int compare(Class<?> o1, Class<?> o2) {
-                WebFilter o1Anno = o1.getAnnotation(WebFilter.class);
-                WebFilter o2Anno = o2.getAnnotation(WebFilter.class);
-                int o1AnnoIndex = o1Anno.sort();
-                int o2AnnoIndex = o2Anno.sort();
-                return (o1AnnoIndex < o2AnnoIndex ? -1 : (o1AnnoIndex == o2AnnoIndex ? 0 : 1));
-            }
-        });
-        //3.◊¢≤·
+        //2.◊¢≤·
         for (Class<? extends Filter> filterType : webFilterList) {
             WebFilter filterAnno = filterType.getAnnotation(WebFilter.class);
             Map<String, String> initMap = this.toMap(filterAnno.initParams());
-            apiBinder.filter(null, filterAnno.value()).through(filterType, initMap);
+            apiBinder.filter(null, filterAnno.value()).through(filterAnno.sort(), filterType, initMap);
             //
             String filterName = StringUtils.isBlank(filterAnno.filterName()) ? filterType.getSimpleName() : filterAnno.filterName();
             Hasor.info("loadFilter %s[%s] bind %s on %s.", filterName, getIndexStr(filterAnno.sort()), filterType, filterAnno.value());
@@ -95,24 +83,14 @@ public class Servlet3Gift implements GiftFace {
                 webServletList.add((Class<? extends HttpServlet>) cls);
             }
         }
-        //2.≈≈–Ú
-        Collections.sort(webServletList, new Comparator<Class<?>>() {
-            public int compare(Class<?> o1, Class<?> o2) {
-                WebServlet o1Anno = o1.getAnnotation(WebServlet.class);
-                WebServlet o2Anno = o2.getAnnotation(WebServlet.class);
-                int o1AnnoIndex = o1Anno.loadOnStartup();
-                int o2AnnoIndex = o2Anno.loadOnStartup();
-                return (o1AnnoIndex < o2AnnoIndex ? -1 : (o1AnnoIndex == o2AnnoIndex ? 0 : 1));
-            }
-        });
-        //3.◊¢≤·
+        //2.◊¢≤·
         for (Class<? extends HttpServlet> servletType : webServletList) {
             WebServlet servletAnno = servletType.getAnnotation(WebServlet.class);
             Map<String, String> initMap = this.toMap(servletAnno.initParams());
-            apiBinder.serve(null, servletAnno.value()).with(servletType, initMap);
-            //
             String servletName = StringUtils.isBlank(servletAnno.servletName()) ? servletType.getSimpleName() : servletAnno.servletName();
             int sortInt = servletAnno.loadOnStartup();
+            //
+            apiBinder.serve(null, servletAnno.value()).with(sortInt, servletType, initMap);
             Hasor.info("loadServlet %s[%s] bind %s on %s.", servletName, getIndexStr(sortInt), servletType, servletAnno.value());
         }
     }

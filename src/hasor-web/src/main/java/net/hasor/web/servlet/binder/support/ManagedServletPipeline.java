@@ -16,6 +16,8 @@
 package net.hasor.web.servlet.binder.support;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.inject.Singleton;
 import javax.servlet.RequestDispatcher;
@@ -54,6 +56,13 @@ public class ManagedServletPipeline {
         for (Binding<ServletDefinition> entry : injector.findBindingsByType(SERVLET_DEFS)) {
             servletDefinitions.add(entry.getProvider().get());
         }
+        Collections.sort(servletDefinitions, new Comparator<ServletDefinition>() {
+            public int compare(ServletDefinition o1, ServletDefinition o2) {
+                int o1Index = o1.getIndex();
+                int o2Index = o2.getIndex();
+                return (o1Index < o2Index ? -1 : (o1Index == o2Index ? 0 : 1));
+            }
+        });
         // Convert to a fixed size array for speed.
         return servletDefinitions.toArray(new ServletDefinition[servletDefinitions.size()]);
     }

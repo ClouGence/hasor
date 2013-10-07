@@ -32,11 +32,13 @@ public abstract class AbstractController {
     private ThreadLocal<HttpServletRequest>  httpRequest  = new ThreadLocal<HttpServletRequest>();
     private ThreadLocal<HttpServletResponse> httpResponse = new ThreadLocal<HttpServletResponse>();
     //
+    @ControllerIgnore
     public void initController(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         this.resetController();
         this.httpRequest.set(httpRequest);
         this.httpResponse.set(httpResponse);
     }
+    @ControllerIgnore
     public void resetController() {
         if (this.httpRequest.get() != null)
             this.httpRequest.remove();
@@ -45,18 +47,22 @@ public abstract class AbstractController {
     }
     //
     /** Return HttpServletRequest. Do not use HttpServletRequest Object in constructor of Controller */
+    @ControllerIgnore
     public HttpServletRequest getRequest() {
         return this.httpRequest.get();
     }
     /** Return HttpServletResponse. Do not use HttpServletResponse Object in constructor of Controller */
+    @ControllerIgnore
     public HttpServletResponse getResponse() {
         return this.httpResponse.get();
     }
     /** Return AppContext. */
+    @ControllerIgnore
     public AppContext getAppContext() {
         return RuntimeFilter.getLocalAppContext();
     }
     /** Return HttpSession. */
+    @ControllerIgnore
     public HttpSession getSession() {
         return getRequest().getSession();
     }
@@ -64,21 +70,25 @@ public abstract class AbstractController {
      * Return HttpSession.
      * @param create a boolean specifying create HttpSession if it not exists
      */
+    @ControllerIgnore
     public HttpSession getSession(boolean create) {
         return getRequest().getSession(create);
     }
     // --------
     /**设置{@link HttpServletRequest}属性*/
+    @ControllerIgnore
     public AbstractController putAtt(String attKey, Object attValue) {
         this.getRequest().setAttribute(attKey, attValue);
         return this;
     }
     /**设置{@link HttpServletResponse}Header属性*/
+    @ControllerIgnore
     public AbstractController setHeader(String key, String value) {
         this.getResponse().setHeader(key, value);
         return this;
     }
     /**设置{@link HttpServletResponse}Header属性*/
+    @ControllerIgnore
     public AbstractController addHeader(String key, String value) {
         this.getResponse().addHeader(key, value);
         return this;
@@ -88,6 +98,7 @@ public abstract class AbstractController {
      * @param name a String specifying the name of the attribute
      * @param value the Object to be stored
      */
+    @ControllerIgnore
     public AbstractController setAttr(String name, Object value) {
         this.getRequest().setAttribute(name, value);
         return this;
@@ -96,6 +107,7 @@ public abstract class AbstractController {
      * Removes an attribute from this request
      * @param name a String specifying the name of the attribute to remove
      */
+    @ControllerIgnore
     public AbstractController removeAttr(String name) {
         this.getRequest().removeAttribute(name);
         return this;
@@ -104,6 +116,7 @@ public abstract class AbstractController {
      * Stores attributes in this request, key of the map as attribute name and value of the map as attribute value
      * @param attrMap key and value as attribute of the map to be stored
      */
+    @ControllerIgnore
     public AbstractController setAttrs(Map<String, Object> attrMap) {
         for (Map.Entry<String, Object> entry : attrMap.entrySet())
             this.getRequest().setAttribute(entry.getKey(), entry.getValue());
@@ -120,6 +133,7 @@ public abstract class AbstractController {
      * @param name a String specifying the name of the parameter
      * @return a String representing the single value of the parameter
      */
+    @ControllerIgnore
     public String getPara(String name) {
         return this.getRequest().getParameter(name);
     }
@@ -129,6 +143,7 @@ public abstract class AbstractController {
      * @param defaultValue a String value be returned when the value of parameter is null
      * @return a String representing the single value of the parameter
      */
+    @ControllerIgnore
     public String getPara(String name, String defaultValue) {
         String result = this.getRequest().getParameter(name);
         return result != null && !"".equals(result) ? result : defaultValue;
@@ -137,6 +152,7 @@ public abstract class AbstractController {
      * Returns the values of the request parameters as a Map.
      * @return a Map contains all the parameters name and value
      */
+    @ControllerIgnore
     public Map<String, String[]> getParaMap() {
         return this.getRequest().getParameterMap();
     }
@@ -147,6 +163,7 @@ public abstract class AbstractController {
      * @return an Enumeration of String objects, each String containing the name of 
      *          a request parameter; or an empty Enumeration if the request has no parameters
      */
+    @ControllerIgnore
     public Enumeration<String> getParaNames() {
         return this.getRequest().getParameterNames();
     }
@@ -157,6 +174,7 @@ public abstract class AbstractController {
      * @param name a String containing the name of the parameter whose value is requested
      * @return an array of String objects containing the parameter's values
      */
+    @ControllerIgnore
     public String[] getParaValues(String name) {
         return this.getRequest().getParameterValues(name);
     }
@@ -167,6 +185,7 @@ public abstract class AbstractController {
      * @param name a String containing the name of the parameter whose value is requested
      * @return an array of Integer objects containing the parameter's values
      */
+    @ControllerIgnore
     public Integer[] getParaValuesToInt(String name) {
         String[] values = this.getRequest().getParameterValues(name);
         if (values == null)
@@ -181,6 +200,7 @@ public abstract class AbstractController {
      * This method returns an empty Enumeration if the request has no attributes available to it. 
      * @return an Enumeration of strings containing the names of the request's attributes
      */
+    @ControllerIgnore
     public Enumeration<String> getAttrNames() {
         return this.getRequest().getAttributeNames();
     }
@@ -189,6 +209,7 @@ public abstract class AbstractController {
      * @param name a String specifying the name of the attribute
      * @return an Object containing the value of the attribute, or null if the attribute does not exist
      */
+    @ControllerIgnore
     public <T> T getAttr(String name) {
         return (T) this.getRequest().getAttribute(name);
     }
@@ -197,6 +218,7 @@ public abstract class AbstractController {
      * @param name a String specifying the name of the attribute
      * @return an String Object containing the value of the attribute, or null if the attribute does not exist
      */
+    @ControllerIgnore
     public String getAttrForStr(String name) {
         return (String) this.getRequest().getAttribute(name);
     }
@@ -205,9 +227,11 @@ public abstract class AbstractController {
      * @param name a String specifying the name of the attribute
      * @return an Integer Object containing the value of the attribute, or null if the attribute does not exist
      */
+    @ControllerIgnore
     public Integer getAttrForInt(String name) {
         return (Integer) this.getRequest().getAttribute(name);
     }
+    @ControllerIgnore
     public Integer toInt(String value, Integer defaultValue) {
         if (value == null)
             return defaultValue;
@@ -220,6 +244,7 @@ public abstract class AbstractController {
      * @param name a String specifying the name of the parameter
      * @return a Integer representing the single value of the parameter
      */
+    @ControllerIgnore
     public Integer getParaToInt(String name) {
         return toInt(this.getRequest().getParameter(name), null);
     }
@@ -228,9 +253,11 @@ public abstract class AbstractController {
      * @param name a String specifying the name of the parameter
      * @return a Integer representing the single value of the parameter
      */
+    @ControllerIgnore
     public Integer getParaToInt(String name, Integer defaultValue) {
         return toInt(this.getRequest().getParameter(name), defaultValue);
     }
+    @ControllerIgnore
     public Long toLong(String value, Long defaultValue) {
         if (value == null)
             return defaultValue;
@@ -243,6 +270,7 @@ public abstract class AbstractController {
      * @param name a String specifying the name of the parameter
      * @return a Integer representing the single value of the parameter
      */
+    @ControllerIgnore
     public Long getParaToLong(String name) {
         return toLong(this.getRequest().getParameter(name), null);
     }
@@ -251,6 +279,7 @@ public abstract class AbstractController {
      * @param name a String specifying the name of the parameter
      * @return a Integer representing the single value of the parameter
      */
+    @ControllerIgnore
     public Long getParaToLong(String name, Long defaultValue) {
         return toLong(this.getRequest().getParameter(name), defaultValue);
     }
@@ -259,6 +288,7 @@ public abstract class AbstractController {
      * @param name a String specifying the name of the parameter
      * @return false if the value of the parameter is "false" or "0", true if it is "true" or "1", null if parameter is not exists
      */
+    @ControllerIgnore
     public Boolean getParaToBoolean(String name) {
         String result = this.getRequest().getParameter(name);
         if (result != null) {
@@ -276,6 +306,7 @@ public abstract class AbstractController {
      * @param name a String specifying the name of the parameter
      * @return false if the value of the parameter is "false" or "0", true if it is "true" or "1", default value if it is null
      */
+    @ControllerIgnore
     public Boolean getParaToBoolean(String name, Boolean defaultValue) {
         Boolean result = getParaToBoolean(name);
         return result != null ? result : defaultValue;
@@ -284,6 +315,7 @@ public abstract class AbstractController {
      * Return a Object from session.
      * @param key a String specifying the key of the Object stored in session
      */
+    @ControllerIgnore
     public <T> T getSessionAttr(String key) {
         HttpSession session = this.getRequest().getSession(false);
         return session != null ? (T) session.getAttribute(key) : null;
@@ -293,6 +325,7 @@ public abstract class AbstractController {
      * @param key a String specifying the key of the Object stored in session
      * @param value a Object specifying the value stored in session
      */
+    @ControllerIgnore
     public AbstractController setSessionAttr(String key, Object value) {
         this.getRequest().getSession(true).setAttribute(key, value);
         return this;
@@ -301,6 +334,7 @@ public abstract class AbstractController {
      * Remove Object in session.
      * @param key a String specifying the key of the Object stored in session
      */
+    @ControllerIgnore
     public AbstractController removeSessionAttr(String key) {
         HttpSession session = this.getRequest().getSession(false);
         if (session != null)
@@ -308,35 +342,42 @@ public abstract class AbstractController {
         return this;
     }
     /** Get cookie value by cookie name. */
+    @ControllerIgnore
     public String getCookie(String name, String defaultValue) {
         Cookie cookie = getCookieObject(name);
         return cookie != null ? cookie.getValue() : defaultValue;
     }
     /** Get cookie value by cookie name. */
+    @ControllerIgnore
     public String getCookie(String name) {
         return getCookie(name, null);
     }
     /** Get cookie value by cookie name and convert to Integer. */
+    @ControllerIgnore
     public Integer getCookieToInt(String name) {
         String result = getCookie(name);
         return result != null ? Integer.parseInt(result) : null;
     }
     /** Get cookie value by cookie name and convert to Integer. */
+    @ControllerIgnore
     public Integer getCookieToInt(String name, Integer defaultValue) {
         String result = getCookie(name);
         return result != null ? Integer.parseInt(result) : defaultValue;
     }
     /** Get cookie value by cookie name and convert to Long. */
+    @ControllerIgnore
     public Long getCookieToLong(String name) {
         String result = getCookie(name);
         return result != null ? Long.parseLong(result) : null;
     }
     /** Get cookie value by cookie name and convert to Long. */
+    @ControllerIgnore
     public Long getCookieToLong(String name, Long defaultValue) {
         String result = getCookie(name);
         return result != null ? Long.parseLong(result) : defaultValue;
     }
     /** Get cookie object by cookie name. */
+    @ControllerIgnore
     public Cookie getCookieObject(String name) {
         Cookie[] cookies = this.getRequest().getCookies();
         if (cookies != null)
@@ -346,11 +387,13 @@ public abstract class AbstractController {
         return null;
     }
     /** Get all cookie objects. */
+    @ControllerIgnore
     public Cookie[] getCookieObjects() {
         Cookie[] result = this.getRequest().getCookies();
         return result != null ? result : new Cookie[0];
     }
     /** Set Cookie to response. */
+    @ControllerIgnore
     public AbstractController setCookie(Cookie cookie) {
         this.getResponse().addCookie(cookie);
         return this;
@@ -362,6 +405,7 @@ public abstract class AbstractController {
      * @param maxAgeInSeconds -1: clear cookie when close browser. 0: clear cookie immediately.  n>0 : max age in n seconds.
      * @param path see Cookie.setPath(String)
      */
+    @ControllerIgnore
     public AbstractController setCookie(String name, String value, int maxAgeInSeconds, String path) {
         setCookie(name, value, maxAgeInSeconds, path, null);
         return this;
@@ -374,6 +418,7 @@ public abstract class AbstractController {
      * @param path see Cookie.setPath(String)
      * @param domain the domain name within which this cookie is visible; form is according to RFC 2109
      */
+    @ControllerIgnore
     public AbstractController setCookie(String name, String value, int maxAgeInSeconds, String path, String domain) {
         Cookie cookie = new Cookie(name, value);
         if (domain != null)
@@ -384,21 +429,25 @@ public abstract class AbstractController {
         return this;
     }
     /** Set Cookie with path = "/". */
+    @ControllerIgnore
     public AbstractController setCookie(String name, String value, int maxAgeInSeconds) {
         setCookie(name, value, maxAgeInSeconds, "/", null);
         return this;
     }
     /** Remove Cookie with path = "/". */
+    @ControllerIgnore
     public AbstractController removeCookie(String name) {
         setCookie(name, null, 0, "/", null);
         return this;
     }
     /** Remove Cookie. */
+    @ControllerIgnore
     public AbstractController removeCookie(String name, String path) {
         setCookie(name, null, 0, path, null);
         return this;
     }
     /** Remove Cookie. */
+    @ControllerIgnore
     public AbstractController removeCookie(String name, String path, String domain) {
         setCookie(name, null, 0, path, domain);
         return this;
@@ -455,10 +504,12 @@ public abstract class AbstractController {
     //        return toLong(getPara(), null);
     //    }
     /** Get model from AppContext. */
+    @ControllerIgnore
     protected Object getModel(Class<?> modelClass) {
         return this.getAppContext().getInstance(modelClass);
     }
     /** Get model from AppContext. */
+    @ControllerIgnore
     protected Object getModel(String modelName) {
         return this.getAppContext().getBean(modelName);
     }

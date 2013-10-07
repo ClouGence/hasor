@@ -48,6 +48,13 @@ public interface WebApiBinder extends ApiBinder {
         public void through(Class<? extends Filter> filterKey, Map<String, String> initParams);
         public void through(Key<? extends Filter> filterKey, Map<String, String> initParams);
         public void through(Filter filter, Map<String, String> initParams);
+        //
+        public void through(int index, Class<? extends Filter> filterKey);
+        public void through(int index, Key<? extends Filter> filterKey);
+        public void through(int index, Filter filter);
+        public void through(int index, Class<? extends Filter> filterKey, Map<String, String> initParams);
+        public void through(int index, Key<? extends Filter> filterKey, Map<String, String> initParams);
+        public void through(int index, Filter filter, Map<String, String> initParams);
     }
     /**负责配置Servlet，参考Guice 3.0接口设计。*/
     public static interface ServletBindingBuilder {
@@ -57,6 +64,13 @@ public interface WebApiBinder extends ApiBinder {
         public void with(Class<? extends HttpServlet> servletKey, Map<String, String> initParams);
         public void with(Key<? extends HttpServlet> servletKey, Map<String, String> initParams);
         public void with(HttpServlet servlet, Map<String, String> initParams);
+        //
+        public void with(int index, Class<? extends HttpServlet> servletKey);
+        public void with(int index, Key<? extends HttpServlet> servletKey);
+        public void with(int index, HttpServlet servlet);
+        public void with(int index, Class<? extends HttpServlet> servletKey, Map<String, String> initParams);
+        public void with(int index, Key<? extends HttpServlet> servletKey, Map<String, String> initParams);
+        public void with(int index, HttpServlet servlet, Map<String, String> initParams);
     }
     /**负责配置SessionListener。*/
     public static interface SessionListenerBindingBuilder {

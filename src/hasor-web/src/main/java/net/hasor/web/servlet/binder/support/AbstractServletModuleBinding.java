@@ -21,13 +21,18 @@ import java.util.Map;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 class AbstractServletModuleBinding {
+    private int                       index = 0;
     private final Map<String, String> initParams;
     private final String              pattern;
     private final UriPatternMatcher   patternMatcher;
-    public AbstractServletModuleBinding(Map<String, String> initParams, String pattern, UriPatternMatcher patternMatcher) {
+    public AbstractServletModuleBinding(int index, Map<String, String> initParams, String pattern, UriPatternMatcher patternMatcher) {
+        this.index = index;
         this.initParams = initParams;
         this.pattern = pattern;
         this.patternMatcher = patternMatcher;
+    }
+    public int getIndex() {
+        return index;
     }
     /** Returns any context params supplied when creating the binding. */
     public Map<String, String> getInitParams() {

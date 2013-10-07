@@ -29,10 +29,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
+import net.hasor.Hasor;
 import net.hasor.core.AppContext;
 import net.hasor.web.controller.AbstractController;
 import net.hasor.web.controller.Controller;
 import net.hasor.web.controller.ControllerException;
+import net.hasor.web.controller.ControllerIgnore;
 import net.hasor.web.controller.ControllerInvoke;
 import org.more.util.ArrayUtils;
 import org.more.util.BeanUtils;
@@ -109,11 +111,16 @@ class ControllerServlet extends HttpServlet {
             for (Method targetMethod : actionMethods) {
                 if (ArrayUtils.contains(ignoreMethods, targetMethod.getName()) == true)
                     continue;/*Ö´ÐÐºöÂÔ*/
+                if (targetMethod.getAnnotation(ControllerIgnore.class) != null)
+                    continue;
+                //
                 nameSpace.addAction(targetMethod, this.appContext);
             }
             /**/
         }
         //3.
+        for (ControllerNameSpace nsItem : nsMap.values())
+            Hasor.info("found ControllerNameSpace %s.", nsItem.toString());
         this.spaceMap = nsMap.values().toArray(new ControllerNameSpace[nsMap.size()]);
     }
     private ControllerInvoke getActionInvoke(String requestPath, String httpMethod) {

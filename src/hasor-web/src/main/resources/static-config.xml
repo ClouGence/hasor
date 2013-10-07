@@ -20,7 +20,7 @@
 			<globalIgnore>equals,hashCode,toString,getClass,wait,notify,notifyAll</globalIgnore>
 		</controller>
 		<!-- restful 服务配置，onPath是服务基础路径 -->
-		<restfulServices enable="true" onPath="*" />
+		<restfulServices enable="true" onPath="/*" sortBy="10000" />
 		<!-- 资源装载器 -->
 		<resourceLoader enable="false" contentTypes="js,css,gif,ico,jpg,jpeg,png,swf,swc,flv,mp3,wav,avi">
 			<!-- <zipLoader>{HASOR_WEBROOT}/pic.zip</zipLoader> -->

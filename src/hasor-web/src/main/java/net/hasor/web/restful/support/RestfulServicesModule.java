@@ -38,8 +38,9 @@ public class RestfulServicesModule extends WebModule {
             return;
         }
         String onPath = settings.getString("hasor-web.restfulServices.onPath");
-        Hasor.info("RestfulServices base path on %s.", onPath);
-        apiBinder.filter(onPath).through(RestfulController.class);
+        int sortBy = settings.getInteger("hasor-web.restfulServices.sortBy", 0);
+        Hasor.info("%s Bind to RestfulServices, filter sort is %s.", onPath, sortBy);
+        apiBinder.filter(onPath).through(sortBy, RestfulController.class);
     }
     public void start(AppContext appContext) {
         //

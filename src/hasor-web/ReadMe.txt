@@ -17,3 +17,6 @@ Hasor-Web v0.0.1
 Hasor-Web v0.0.2
 	1.修复#5314 Hasor-Web v0.0.1- Restful 服务无法正常发布的问题。
 	2.优化抛出的异常。
+	3.接口WebApiBinder新增方法，可以通过代码形式注册 Servlet/Filter时指定顺序。
+	4.修复#5501 从 WebApiBinder 接口中注册的 Filter 启动顺序不可控的问题。
+	5.新增 Restful 拦截器的支持。

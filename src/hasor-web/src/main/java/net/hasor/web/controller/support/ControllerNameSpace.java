@@ -44,4 +44,7 @@ class ControllerNameSpace {
     public ControllerInvoke getActionByName(String actionMethodName) {
         return actionInvokeMap.get(actionMethodName);
     }
+    public String toString() {
+        return String.format("¡®%s¡¯ includes %s", this.namespace, this.actionInvokeMap.keySet());
+    }
 }

@@ -55,28 +55,48 @@ class FiltersModuleBuilder implements Module {
             this.uriPatterns = uriPatterns;
         }
         public void through(Class<? extends Filter> filterKey) {
-            through(Key.get(filterKey));
+            through(0, Key.get(filterKey));
         }
         public void through(Key<? extends Filter> filterKey) {
-            through(filterKey, new HashMap<String, String>());
+            through(0, filterKey, new HashMap<String, String>());
         }
         public void through(Filter filter) {
-            through(filter, new HashMap<String, String>());
+            through(0, filter, new HashMap<String, String>());
         }
         public void through(Class<? extends Filter> filterKey, Map<String, String> initParams) {
             // Careful you don't accidentally make this method recursive, thank you IntelliJ IDEA!
-            through(Key.get(filterKey), initParams);
+            through(0, Key.get(filterKey), initParams);
         }
         public void through(Key<? extends Filter> filterKey, Map<String, String> initParams) {
-            through(filterKey, initParams, null);
+            through(0, filterKey, initParams, null);
         }
         public void through(Filter filter, Map<String, String> initParams) {
             Key<Filter> filterKey = Key.get(Filter.class, UniqueAnnotations.create());
-            through(filterKey, initParams, filter);
+            through(0, filterKey, initParams, filter);
         }
-        private void through(Key<? extends Filter> filterKey, Map<String, String> initParams, Filter filterInstance) {
+        public void through(int index, Class<? extends Filter> filterKey) {
+            through(index, Key.get(filterKey));
+        }
+        public void through(int index, Key<? extends Filter> filterKey) {
+            through(index, filterKey, new HashMap<String, String>());
+        }
+        public void through(int index, Filter filter) {
+            through(index, filter, new HashMap<String, String>());
+        }
+        public void through(int index, Class<? extends Filter> filterKey, Map<String, String> initParams) {
+            // Careful you don't accidentally make this method recursive, thank you IntelliJ IDEA!
+            through(index, Key.get(filterKey), initParams);
+        }
+        public void through(int index, Key<? extends Filter> filterKey, Map<String, String> initParams) {
+            through(index, filterKey, initParams, null);
+        }
+        public void through(int index, Filter filter, Map<String, String> initParams) {
+            Key<Filter> filterKey = Key.get(Filter.class, UniqueAnnotations.create());
+            through(index, filterKey, initParams, filter);
+        }
+        private void through(int index, Key<? extends Filter> filterKey, Map<String, String> initParams, Filter filterInstance) {
             for (String pattern : uriPatterns)
-                filterDefinitions.add(new FilterDefinition(pattern, filterKey, UriPatternType.get(uriPatternType, pattern), initParams, filterInstance));
+                filterDefinitions.add(new FilterDefinition(index, pattern, filterKey, UriPatternType.get(uriPatternType, pattern), initParams, filterInstance));
         }
     }
     /*--*/

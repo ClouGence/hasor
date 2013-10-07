@@ -39,8 +39,8 @@ class FilterDefinition extends AbstractServletModuleBinding implements Provider<
     private Filter                filterInstance = null;
     private AppContext            appContext     = null;
     //
-    public FilterDefinition(String pattern, Key<? extends Filter> filterKey, UriPatternMatcher uriPatternMatcher, Map<String, String> initParams, Filter filterInstance) {
-        super(initParams, pattern, uriPatternMatcher);
+    public FilterDefinition(int index, String pattern, Key<? extends Filter> filterKey, UriPatternMatcher uriPatternMatcher, Map<String, String> initParams, Filter filterInstance) {
+        super(index, initParams, pattern, uriPatternMatcher);
         this.filterKey = filterKey;
         this.filterInstance = filterInstance;
     }

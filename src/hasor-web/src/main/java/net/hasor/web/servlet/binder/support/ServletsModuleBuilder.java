@@ -53,27 +53,47 @@ class ServletsModuleBuilder implements Module {
             this.uriPatternType = uriPatternType;
         }
         public void with(Class<? extends HttpServlet> servletKey) {
-            with(Key.get(servletKey));
+            with(0, Key.get(servletKey));
         }
         public void with(Key<? extends HttpServlet> servletKey) {
-            with(servletKey, new HashMap<String, String>());
+            with(0, servletKey, new HashMap<String, String>());
         }
         public void with(HttpServlet servlet) {
-            with(servlet, new HashMap<String, String>());
+            with(0, servlet, new HashMap<String, String>());
         }
         public void with(Class<? extends HttpServlet> servletKey, Map<String, String> initParams) {
-            with(Key.get(servletKey), initParams);
+            with(0, Key.get(servletKey), initParams);
         }
         public void with(Key<? extends HttpServlet> servletKey, Map<String, String> initParams) {
-            with(servletKey, initParams, null);
+            with(0, servletKey, initParams, null);
         }
         public void with(HttpServlet servlet, Map<String, String> initParams) {
             Key<HttpServlet> servletKey = Key.get(HttpServlet.class, UniqueAnnotations.create());
-            with(servletKey, initParams, servlet);
+            with(0, servletKey, initParams, servlet);
         }
-        private void with(Key<? extends HttpServlet> servletKey, Map<String, String> initParams, HttpServlet servletInstance) {
+        //
+        public void with(int index, Class<? extends HttpServlet> servletKey) {
+            with(index, Key.get(servletKey));
+        }
+        public void with(int index, Key<? extends HttpServlet> servletKey) {
+            with(index, servletKey, new HashMap<String, String>());
+        }
+        public void with(int index, HttpServlet servlet) {
+            with(index, servlet, new HashMap<String, String>());
+        }
+        public void with(int index, Class<? extends HttpServlet> servletKey, Map<String, String> initParams) {
+            with(index, Key.get(servletKey), initParams);
+        }
+        public void with(int index, Key<? extends HttpServlet> servletKey, Map<String, String> initParams) {
+            with(index, servletKey, initParams, null);
+        }
+        public void with(int index, HttpServlet servlet, Map<String, String> initParams) {
+            Key<HttpServlet> servletKey = Key.get(HttpServlet.class, UniqueAnnotations.create());
+            with(index, servletKey, initParams, servlet);
+        }
+        private void with(int index, Key<? extends HttpServlet> servletKey, Map<String, String> initParams, HttpServlet servletInstance) {
             for (String pattern : uriPatterns)
-                servletDefinitions.add(new ServletDefinition(pattern, servletKey, UriPatternType.get(uriPatternType, pattern), initParams, servletInstance));
+                servletDefinitions.add(new ServletDefinition(index, pattern, servletKey, UriPatternType.get(uriPatternType, pattern), initParams, servletInstance));
         }
     }
     /*--*/

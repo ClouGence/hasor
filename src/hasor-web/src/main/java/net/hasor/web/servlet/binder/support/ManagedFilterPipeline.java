@@ -16,6 +16,8 @@
 package net.hasor.web.servlet.binder.support;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.inject.Singleton;
 import javax.servlet.FilterChain;
@@ -68,6 +70,13 @@ public class ManagedFilterPipeline implements FilterPipeline {
         for (Binding<FilterDefinition> entry : injector.findBindingsByType(FILTER_DEFS)) {
             filterDefinitions.add(entry.getProvider().get());
         }
+        Collections.sort(filterDefinitions, new Comparator<FilterDefinition>() {
+            public int compare(FilterDefinition o1, FilterDefinition o2) {
+                int o1Index = o1.getIndex();
+                int o2Index = o2.getIndex();
+                return (o1Index < o2Index ? -1 : (o1Index == o2Index ? 0 : 1));
+            }
+        });
         // Convert to a fixed size array for speed.
         return filterDefinitions.toArray(new FilterDefinition[filterDefinitions.size()]);
     }

@@ -41,8 +41,8 @@ class ServletDefinition extends AbstractServletModuleBinding implements Provider
     private UriPatternMatcher          patternMatcher  = null;
     private AppContext                 appContext      = null;
     //
-    public ServletDefinition(String pattern, Key<? extends HttpServlet> servletKey, UriPatternMatcher uriPatternMatcher, Map<String, String> initParams, HttpServlet servletInstance) {
-        super(initParams, pattern, uriPatternMatcher);
+    public ServletDefinition(int index, String pattern, Key<? extends HttpServlet> servletKey, UriPatternMatcher uriPatternMatcher, Map<String, String> initParams, HttpServlet servletInstance) {
+        super(index, initParams, pattern, uriPatternMatcher);
         this.servletKey = servletKey;
         this.servletInstance = servletInstance;
         this.patternMatcher = uriPatternMatcher;

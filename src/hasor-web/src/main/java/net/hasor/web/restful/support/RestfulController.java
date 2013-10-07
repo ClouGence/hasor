@@ -46,29 +46,29 @@ import com.google.inject.Inject;
 @Singleton
 class RestfulController implements Filter {
     @Inject
-    private AppContext      appContext  = null;
-    private RestfulInvoke[] invokeArray = null;
+    private AppContext            appContext  = null;
+    private RestfulInvokeDefine[] invokeArray = null;
     //
     public void init(FilterConfig filterConfig) throws ServletException {
         Set<Class<?>> controllerSet = this.appContext.getClassSet(RestfulService.class);
         if (controllerSet == null)
             return;
         //1.注册服务
-        ArrayList<RestfulInvoke> restfulList = new ArrayList<RestfulInvoke>();
+        ArrayList<RestfulInvokeDefine> restfulList = new ArrayList<RestfulInvokeDefine>();
         for (Class<?> controllerType : controllerSet) {
             List<Method> actionMethods = BeanUtils.getMethods(controllerType);
             for (Method targetMethod : actionMethods) {
                 if (targetMethod.getAnnotation(Path.class) == null)
                     continue;
-                restfulList.add(new RestfulInvoke(this.appContext, targetMethod));
+                restfulList.add(new RestfulInvokeDefine(this.appContext, targetMethod));
             }
         }
-        Collections.sort(restfulList, new Comparator<RestfulInvoke>() {
-            public int compare(RestfulInvoke o1, RestfulInvoke o2) {
+        Collections.sort(restfulList, new Comparator<RestfulInvokeDefine>() {
+            public int compare(RestfulInvokeDefine o1, RestfulInvokeDefine o2) {
                 return o1.getRestfulMapping().compareToIgnoreCase(o2.getRestfulMapping());
             }
         });
-        this.invokeArray = restfulList.toArray(new RestfulInvoke[restfulList.size()]);
+        this.invokeArray = restfulList.toArray(new RestfulInvokeDefine[restfulList.size()]);
     }
     public void destroy() {}
     //
@@ -78,7 +78,7 @@ class RestfulController implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         String actionPath = request.getRequestURI().substring(request.getContextPath().length());
         //1.获取 ActionInvoke
-        RestfulInvoke define = this.getRestfulInvoke(request.getMethod(), actionPath);
+        RestfulInvokeDefine define = this.getRestfulInvoke(request.getMethod(), actionPath);
         if (define == null) {
             chain.doFilter(request, resp);
             return;
@@ -86,8 +86,8 @@ class RestfulController implements Filter {
         //3.执行调用
         this.doInvoke(define, request, resp);
     }
-    private RestfulInvoke getRestfulInvoke(String httpMethod, String requestPath) {
-        for (RestfulInvoke restAction : this.invokeArray) {
+    private RestfulInvokeDefine getRestfulInvoke(String httpMethod, String requestPath) {
+        for (RestfulInvokeDefine restAction : this.invokeArray) {
             if (requestPath.matches(restAction.getRestfulMappingMatches()) == true) {
                 if (restAction.matchingMethod(httpMethod))
                     return restAction;
@@ -95,9 +95,11 @@ class RestfulController implements Filter {
         }
         return null;
     }
-    private void doInvoke(RestfulInvoke define, ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+    private void doInvoke(RestfulInvokeDefine define, ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
         try {
-            define.invoke((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);
+            RestfulInvoke invoke = define.createIvnoke();
+            invoke.initHttp((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);//初始化
+            invoke.invoke();
         } catch (Throwable e) {
             Throwable target = ExceptionUtils.getCause(e);
             target = (target == null) ? e : target;
@@ -118,7 +120,7 @@ class RestfulController implements Filter {
     public RequestDispatcher getRequestDispatcher(final String newRequestUri, final HttpServletRequest request) {
         // TODO 需要检查下面代码是否符合Servlet规范（带request参数情况下也需要检查）
         //1.拆分请求字符串
-        final RestfulInvoke define = getRestfulInvoke(request.getMethod(), newRequestUri);
+        final RestfulInvokeDefine define = getRestfulInvoke(request.getMethod(), newRequestUri);
         if (define == null)
             return null;
         //
@@ -147,7 +149,7 @@ class RestfulController implements Filter {
                 /*执行转发*/
                 servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
                 try {
-                    doInvoke(define, servletRequest, servletResponse);
+                    doInvoke(define, requestToProcess, servletResponse);
                 } finally {
                     servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
                 }
