@@ -20,4 +20,3 @@ Hasor-Web v0.0.2
 	4.修复#5501 从 WebApiBinder 接口中注册的 Filter 启动顺序不可控的问题。
 	5.新增 Restful 拦截器的支持。
 	6.修改：根POM改为 0.0.2 该版本可以处理 GBK 编码下 Javadocs 生成。
-	
