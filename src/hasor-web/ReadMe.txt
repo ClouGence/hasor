@@ -12,12 +12,14 @@ Hasor-Web v0.0.1
 	3.修改：重构 Controller 控制器设计和实现，并将Restful部分功能从 控制器中剥离出来。
 	4.新增：强制要求 Action 必须继承自 AbstractController 抽象类。
 	5.新增：AbstractController 类被设计用在 单例 或 多例 的情况下。
+	6.新增：Controller 可以使用 @Forword、@Include、@Json、@Redirect 注解。
 
 Hasor-Web v0.0.2
 	1.修复#5314 Hasor-Web v0.0.1- Restful 服务无法正常发布的问题。
-	2.优化抛出的异常。
-	3.接口WebApiBinder新增方法，可以通过代码形式注册 Servlet/Filter时指定顺序。
-	4.修复#5501 从 WebApiBinder 接口中注册的 Filter 启动顺序不可控的问题。
-	5.新增 Restful 拦截器的支持。
-	6.修改：根POM改为 0.0.2 该版本可以处理 GBK 编码下 Javadocs 生成。
-	7.去掉 mime 相关代码。
+	2.修复#5501 从 WebApiBinder 接口中注册的 Filter 启动顺序不可控的问题。
+	3.优化：抛出的异常。
+	4.新增：接口WebApiBinder新增方法，可以通过代码形式注册 Servlet/Filter时指定顺序。
+	5.新增：Restful 拦截器的支持。
+	6.新增：Restful 服务可以使用 @Forword、@Include、@Json、@Redirect 注解。
+	7.修改：根POM改为 0.0.2 该版本可以处理 GBK 编码下 Javadocs 生成。
+	8.删除：mime 相关代码。

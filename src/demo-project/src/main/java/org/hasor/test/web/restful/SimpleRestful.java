@@ -15,6 +15,7 @@
  */
 package org.hasor.test.web.restful;
 import net.hasor.gift.aop.Aop;
+import net.hasor.gift.result.ext.Redirect;
 import net.hasor.web.restful.Path;
 import net.hasor.web.restful.PathParam;
 import net.hasor.web.restful.RestfulService;
@@ -34,5 +35,21 @@ public class SimpleRestful {
     @Aop(TestRestfulInterceptor.class)
     public void sayAge(@PathParam("age") String age) {
         System.out.println("sayAge form :" + age);
+    }
+    //
+    //
+    @Redirect
+    @Path("/restful/to/{target}")
+    public String to(@PathParam("target") String target) {
+        if (target.equals("sayName")) {
+            //
+            System.out.println("跳转到:toSayName");
+            return "/restful/toSayName";
+        } else if (target.equals("sayAge")) {
+            //
+            System.out.println("跳转到:age=108");
+            return "/restful/age/108";
+        }
+        return "/index.htm";
     }
 }

@@ -25,6 +25,9 @@ import net.hasor.core.gift.Gift;
 import net.hasor.core.gift.GiftFace;
 import net.hasor.gift.aop.matchers.AopMatchers;
 import net.hasor.web.controller.AbstractController;
+import net.hasor.web.controller.Controller;
+import net.hasor.web.restful.RestfulService;
+import com.google.inject.matcher.Matcher;
 /**
  * 
  * @version : 2013-9-26
@@ -50,10 +53,14 @@ public class ResultGift implements GiftFace, GetContext, EventListener {
             Hasor.info("loadResultDefine annoType is %s toInstance %s", resultType, resultDefineType);
             defineMap.put(resultType, defineType);
         }
-        //
-        ResultCaller caller = new ResultCaller(this, defineMap);
-        apiBinder.getGuiceBinder().bindInterceptor(AopMatchers.subclassesOf(AbstractController.class), AopMatchers.any(), caller);
         apiBinder.getEnvironment().getEventManager().pushEventListener(AppContext.ContextEvent_Start, this);
+        /*所有继承 AbstractController 并且标记了 @Controller 注解的类都是控制器*/
+        Matcher<Class> matcherController = AopMatchers.subclassesOf(AbstractController.class).and(AopMatchers.annotatedWith(Controller.class));
+        ResultCaller_Controller caller_1 = new ResultCaller_Controller(this, defineMap);
+        apiBinder.getGuiceBinder().bindInterceptor(matcherController, AopMatchers.any(), caller_1);
+        /*所有标记了 @RestfulService 注解的类都是Restful服务*/
+        ResultCaller_Restful caller_2 = new ResultCaller_Restful(this, defineMap);
+        apiBinder.getGuiceBinder().bindInterceptor(AopMatchers.annotatedWith(RestfulService.class), AopMatchers.any(), caller_2);
     }
     //
     private AppContext appContext = null;

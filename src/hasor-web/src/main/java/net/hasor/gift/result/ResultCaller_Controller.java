@@ -24,11 +24,11 @@ import net.hasor.web.controller.interceptor.ControllerInvocation;
  * @version : 2013-8-11
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-class ResultCaller extends ControllerInterceptor {
+class ResultCaller_Controller extends ControllerInterceptor {
     private GetContext                          context   = null;
     private Map<Class<?>, Class<ResultProcess>> defineMap = null;
     //
-    public ResultCaller(GetContext context, Map<Class<?>, Class<ResultProcess>> defineMap) {
+    public ResultCaller_Controller(GetContext context, Map<Class<?>, Class<ResultProcess>> defineMap) {
         this.defineMap = defineMap;
         this.context = context;
     }
