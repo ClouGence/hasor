@@ -6,7 +6,6 @@ Hasor-MVC v0.0.1.20130831-M1
     5.)支持JSON格式数据响应。
     6.)自定义Action返回值处理器。
 
-
 Hasor-Web v0.0.1
 	1.重构：基于Hasor-Core v0.0.1.Release，包含了所有v0.0.1.20130831-M1版本中Hasor-Core的Web相关功能。同时包含了全部 Hasor-MVC 功能。
 	2.修改：在 Servlet 支持中删除注解的支持，相关功能以 Gift 方式实现。 
@@ -20,3 +19,5 @@ Hasor-Web v0.0.2
 	3.接口WebApiBinder新增方法，可以通过代码形式注册 Servlet/Filter时指定顺序。
 	4.修复#5501 从 WebApiBinder 接口中注册的 Filter 启动顺序不可控的问题。
 	5.新增 Restful 拦截器的支持。
+	6.修改：根POM改为 0.0.2 该版本可以处理 GBK 编码下 Javadocs 生成。
+	

@@ -46,5 +46,4 @@ Hasor-Core v0.0.2
     8.修复：StandardAppContext调用无参构造方法引发异常的问题，同时修改几个核心类的构造方法。
 
 Hasor-Core v0.0.3
-
-
+	1.修改：根POM改为 0.0.2 该版本可以处理 GBK 编码下 Javadocs 生成。
