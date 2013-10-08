@@ -91,9 +91,9 @@
 				<version>2.8</version>
 				<configuration>
 					<aggregate>true</aggregate>
-					<charset>GBK</charset>
+					<!-- <charset>UTF-8</charset> -->
 					<encoding>GBK</encoding>
-					<docencoding>UTF-8</docencoding>
+					<!-- <docencoding>UTF-8</docencoding> -->
 				</configuration>
 				<executions>
 					<execution>

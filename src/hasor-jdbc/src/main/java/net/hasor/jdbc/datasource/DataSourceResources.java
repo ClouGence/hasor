@@ -13,21 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.gift.bean;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import net.hasor.core.AppContext;
+package net.hasor.jdbc.datasource;
+import javax.sql.DataSource;
+import net.hasor.core.XmlNode;
 /**
- * 标记当前类为一个 注册Bean，必须为该Bean起一个名字。
- * 当容器启动之后可以通过{@link AppContext#getBean(String)}方法取得该类的实例。
- * @version : 2013-3-20
- * @author 赵永春 (zyc@hasor.net)
+ * 
+ * @version : 2013-10-8
+ * @author 赵永春(zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface Bean {
-    /** Bean名称。*/
-    public String[] value();
+public interface DataSourceResources {
+    public DataSource getDataSource(XmlNode config) throws Throwable;
 }

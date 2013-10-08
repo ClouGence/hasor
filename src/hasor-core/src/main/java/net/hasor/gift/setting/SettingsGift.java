@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.gift.setting;
-import static net.hasor.core.context.AbstractAppContext.ContextEvent_Start;
+import static net.hasor.core.AppContext.ContextEvent_Start;
 import java.util.Set;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
@@ -27,7 +27,7 @@ import net.hasor.core.gift.Gift;
 import net.hasor.core.gift.GiftFace;
 import com.google.inject.Provider;
 /**
- * 
+ * 提供 <code>@Settings</code>注解 功能支持。
  * @version : 2013-9-13
  * @author 赵永春 (zyc@byshell.org)
  */

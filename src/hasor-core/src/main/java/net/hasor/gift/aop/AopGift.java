@@ -23,7 +23,7 @@ import net.hasor.core.gift.GiftFace;
 import net.hasor.gift.aop.matchers.AopMatchers;
 import com.google.inject.matcher.Matcher;
 /**
- * 
+ * 提供 <code>@Aop</code>注解 功能支持。
  * @version : 2013-9-13
  * @author 赵永春 (zyc@byshell.org)
  */

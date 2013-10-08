@@ -21,7 +21,7 @@ import net.hasor.core.gift.Gift;
 import net.hasor.core.gift.GiftFace;
 import com.google.inject.Module;
 /**
- * 
+ * 提供 <code>@GuiceModule</code>注解 功能支持。
  * @version : 2013-9-13
  * @author 赵永春 (zyc@byshell.org)
  */

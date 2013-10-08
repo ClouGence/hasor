@@ -17,14 +17,14 @@ package net.hasor.jdbc.datasource.pool;
 import javax.sql.DataSource;
 import net.hasor.Hasor;
 import net.hasor.core.XmlNode;
-import net.hasor.jdbc.datasource.DataSourceFactory;
+import net.hasor.jdbc.datasource.DataSourceResources;
 import org.apache.commons.dbcp.BasicDataSource;
 /**
  * 
  * @version : 2013-9-16
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-public class DBCP_DataSourceFactory implements DataSourceFactory {
+public class DBCP_DataSourceFactory implements DataSourceResources {
     //
     public DataSource getDataSource(XmlNode config) {
         BasicDataSource dataSource = new BasicDataSource();

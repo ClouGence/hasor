@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.datasource;
+package net.hasor.jdbc.datasource.support;
 import java.util.List;
 import javax.sql.DataSource;
 import net.hasor.core.ApiBinder;
@@ -21,6 +21,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
+import net.hasor.jdbc.datasource.DataSourceResources;
 import net.hasor.jdbc.datasource.pool.C3p0_DataSourceFactory;
 import net.hasor.jdbc.datasource.pool.DBCP_DataSourceFactory;
 import net.hasor.jdbc.datasource.pool.Druid_DataSourceFactory;
@@ -44,7 +45,7 @@ public class DataSourceModule implements Module {
             for (XmlNode ds : dataSource) {
                 //1.DataSources
                 String name = ds.getAttribute("name");
-                DataSourceFactory dsFactory = null;
+                DataSourceResources dsFactory = null;
                 String poolType = ds.getAttribute("poolType");
                 DataSource dataSourceObject = null;
                 //2.´´½¨DataSourceFactory

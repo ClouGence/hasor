@@ -17,14 +17,14 @@ package net.hasor.jdbc.datasource.pool;
 import javax.sql.DataSource;
 import net.hasor.Hasor;
 import net.hasor.core.XmlNode;
-import net.hasor.jdbc.datasource.DataSourceFactory;
+import net.hasor.jdbc.datasource.DataSourceResources;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 /**
  * 
  * @version : 2013-9-16
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-public class C3p0_DataSourceFactory implements DataSourceFactory {
+public class C3p0_DataSourceFactory implements DataSourceResources {
     //
     public DataSource getDataSource(XmlNode config) throws Throwable {
         ComboPooledDataSource dataSource = new ComboPooledDataSource();

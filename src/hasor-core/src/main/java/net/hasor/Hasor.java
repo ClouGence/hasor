@@ -26,7 +26,7 @@ import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
- * 
+ * Hasor 基础工具包。
  * @version : 2013-4-3
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -58,38 +58,7 @@ public abstract class Hasor {
             return Hasor.class;
         }
     }
-    //
-    //
-    /***/
-    public static void debug(String string, Object... params) {
-        Logger log = LoggerFactory.getLogger(callerClass());
-        Object[] paramsStr = getStringArray(params);
-        log.debug(callerInfo() + " ->> " + String.format(string, paramsStr));
-    }
-    //
-    /***/
-    public static void error(String string, Object... params) {
-        Logger log = LoggerFactory.getLogger(callerClass());
-        Object[] paramsStr = getStringArray(params);
-        log.error(callerErr() + " ->> " + String.format(string, paramsStr));
-    }
-    //
-    /***/
-    public static void warning(String string, Object... params) {
-        Logger log = LoggerFactory.getLogger(callerClass());
-        Object[] paramsStr = getStringArray(params);
-        log.warn(callerWarn() + " ->> " + String.format(string, paramsStr));
-    }
-    //
-    /***/
-    public static void info(String string, Object... params) {
-        Logger log = LoggerFactory.getLogger(callerClass());
-        Object[] paramsStr = getStringArray(params);
-        log.info(callerInfo() + " ->> " + String.format(string, paramsStr));
-    }
-    //
-    /***/
-    public static String[] getStringArray(Object... objects) {
+    private static String[] getStringArray(Object... objects) {
         ArrayList<String> returnData = new ArrayList<String>();
         for (Object obj : objects) {
             if (obj == null)
@@ -99,8 +68,50 @@ public abstract class Hasor {
         }
         return returnData.toArray(new String[returnData.size()]);
     }
-    //
-    /***/
+    /**
+     * 输出 <i><b>调试</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
+     * @param string 要输出的日志信息，或将要输出的格式化日志信息。
+     * @param params 需要被格式化的内容。
+     */
+    public static void debug(String string, Object... params) {
+        Logger log = LoggerFactory.getLogger(callerClass());
+        Object[] paramsStr = getStringArray(params);
+        log.debug(callerInfo() + " ->> " + String.format(string, paramsStr));
+    }
+    /**
+     * 输出 <i><b>错误</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
+     * @param string 要输出的日志信息，或将要输出的格式化日志信息。
+     * @param params 需要被格式化的内容。
+     */
+    public static void error(String string, Object... params) {
+        Logger log = LoggerFactory.getLogger(callerClass());
+        Object[] paramsStr = getStringArray(params);
+        log.error(callerErr() + " ->> " + String.format(string, paramsStr));
+    }
+    /**
+     * 输出 <i><b>警告</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
+     * @param string 要输出的日志信息，或将要输出的格式化日志信息。
+     * @param params 需要被格式化的内容。
+     */
+    public static void warning(String string, Object... params) {
+        Logger log = LoggerFactory.getLogger(callerClass());
+        Object[] paramsStr = getStringArray(params);
+        log.warn(callerWarn() + " ->> " + String.format(string, paramsStr));
+    }
+    /**
+     * 输出 <i><b>消息</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
+     * @param string 要输出的日志信息，或将要输出的格式化日志信息。
+     * @param params 需要被格式化的内容。
+     */
+    public static void info(String string, Object... params) {
+        Logger log = LoggerFactory.getLogger(callerClass());
+        Object[] paramsStr = getStringArray(params);
+        log.info(callerInfo() + " ->> " + String.format(string, paramsStr));
+    }
+    /**
+     * 转换对象为字符串内容，用以打印目的。
+     * @param object 将参数对象转换为可以作为日志输出的字符串内容。
+     */
     public static String logString(Object object) {
         if (object == null)
             return "null";
@@ -153,29 +164,12 @@ public abstract class Hasor {
         }
         return logString.toString();
     }
-    /*
-    * 
-    * 
-    * 
-    * 
-    * 
-    * 
-    * 
-    * 
-    * 
-    * 
-    * 
-    * 
-    * 
-    * 
-    */
     /** Asserts that an argument is legal. If the given boolean is
      * not <code>true</code>, an <code>IllegalArgumentException</code>
      * is thrown.
      *
      * @param expression the outcome of the check
-     * @return <code>true</code> if the check passes (does not return
-     *    if the check fails)
+     * @return <code>true</code> if the check passes (does not return if the check fails)
      * @exception IllegalArgumentException if the legality test failed
      */
     public static boolean assertIsLegal(boolean expression) {
@@ -188,8 +182,7 @@ public abstract class Hasor {
      *
      * @param expression the outcome of the check
      * @param message the message to include in the exception
-     * @return <code>true</code> if the check passes (does not return
-     *    if the check fails)
+     * @return <code>true</code> if the check passes (does not return if the check fails)
      * @exception IllegalArgumentException if the legality test failed
      */
     public static boolean assertIsLegal(boolean expression, String message) {

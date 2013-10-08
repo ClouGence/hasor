@@ -17,14 +17,14 @@ package net.hasor.jdbc.datasource.pool;
 import javax.sql.DataSource;
 import net.hasor.Hasor;
 import net.hasor.core.XmlNode;
-import net.hasor.jdbc.datasource.DataSourceFactory;
+import net.hasor.jdbc.datasource.DataSourceResources;
 import com.alibaba.druid.pool.DruidDataSource;
 /**
  * 
  * @version : 2013-10-8
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-public class Druid_DataSourceFactory implements DataSourceFactory {
+public class Druid_DataSourceFactory implements DataSourceResources {
     //
     public DataSource getDataSource(XmlNode config) throws Throwable {
         DruidDataSource dataSource = new DruidDataSource();

@@ -20,7 +20,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.aopalliance.intercept.MethodInterceptor;
 /**
- * 标记一个Bean。
+ * 标记在类或方法上，为类或方法指定拦截器。
  * @version : 2013-3-20
  * @author 赵永春 (zyc@hasor.net)
  */

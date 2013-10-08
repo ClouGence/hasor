@@ -30,7 +30,7 @@ public interface ApiBinder {
     public Environment getEnvironment();
     /**获取用于初始化Guice的Binder。*/
     public Binder getGuiceBinder();
-    /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
+    /**将后面的对象绑定前一个类型上。可以通过 {@link AppContext} 使用绑定的类型重新获取绑定的对象。
      * 使用下面的方法即可重新获取绑定的类型。
      * <pre>
      * AppContext :
@@ -67,7 +67,7 @@ public interface ApiBinder {
         /**bean绑定的类型。*/
         public <T> LinkedBindingBuilder<T> bindType(Class<T> beanClass);
     }
-    /** 该接口可以配置模块信息 */
+    /**该接口可以配置模块信息 */
     public interface DependencySettings {
         /**依赖反制：强制目标模块依赖当前模块(弱依赖)。*/
         public void reverse(Class<? extends Module> targetModule);
