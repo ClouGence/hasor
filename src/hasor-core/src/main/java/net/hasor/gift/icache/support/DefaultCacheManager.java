@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.icache.support;
-import org.hasor.Hasor;
-import org.hasor.context.AppContext;
-import org.hasor.icache.Cache;
-import org.hasor.icache.CacheManager;
-import org.hasor.icache.KeyBuilder;
+package net.hasor.gift.icache.support;
+import net.hasor.Hasor;
+import net.hasor.core.AppContext;
+import net.hasor.gift.icache.Cache;
+import net.hasor.gift.icache.CacheManager;
+import net.hasor.gift.icache.KeyBuilder;
 import com.google.inject.Singleton;
 /**
  * 缓存使用入口，缓存的实现由系统自行提供。
@@ -32,7 +32,6 @@ class DefaultCacheManager implements CacheManager {
     private AppContext               appContext        = null;
     private Cache<Object>            defaultCache      = null;
     private KeyBuilder               defaultKeyBuilder = null;
-    @Override
     public void initManager(AppContext appContext) {
         this.appContext = appContext;
         //
@@ -45,17 +44,9 @@ class DefaultCacheManager implements CacheManager {
         this.defaultKeyBuilder = appContext.getGuice().getInstance(KeyBuilder.class);
         Hasor.info("CacheManager initialized.");
     }
-    @Override
-    public void destroyManager(AppContext appContext) {
-        Hasor.info("destroy CacheManager...");
-        this.cacheManager.destroyManager(this.appContext);
-        this.keyBuilderManager.destroyManager(this.appContext);
-    }
-    @Override
     public Cache<Object> getDefaultCache() {
         return this.defaultCache;
     }
-    @Override
     public Cache<Object> getCache(String cacheName) {
         Cache<Object> icache = this.cacheManager.getCache(cacheName, this.appContext);
         if (icache == null) {
@@ -64,7 +55,6 @@ class DefaultCacheManager implements CacheManager {
         }
         return icache;
     }
-    @Override
     public KeyBuilder getKeyBuilder(Class<?> sampleType) {
         KeyBuilder keyBuilder = this.keyBuilderManager.getKeyBuilder(sampleType, this.appContext);
         if (keyBuilder == null) {

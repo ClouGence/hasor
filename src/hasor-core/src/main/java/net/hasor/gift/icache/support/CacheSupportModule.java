@@ -13,32 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.icache.support;
+package net.hasor.gift.icache.support;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import net.hasor.Hasor;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
+import net.hasor.core.Module;
+import net.hasor.core.context.AnnoModule;
+import net.hasor.gift.icache.Cache;
+import net.hasor.gift.icache.CacheDefine;
+import net.hasor.gift.icache.CacheManager;
+import net.hasor.gift.icache.KeyBuilder;
+import net.hasor.gift.icache.KeyBuilderDefine;
+import net.hasor.gift.icache.NeedCache;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.hasor.Hasor;
-import org.hasor.context.ApiBinder;
-import org.hasor.context.AppContext;
-import org.hasor.context.ModuleSettings;
-import org.hasor.context.anno.Module;
-import org.hasor.context.anno.support.AnnoSupportModule;
-import org.hasor.context.reactor.AbstractHasorModule;
-import org.hasor.icache.Cache;
-import org.hasor.icache.CacheDefine;
-import org.hasor.icache.CacheManager;
-import org.hasor.icache.DefaultCache;
-import org.hasor.icache.DefaultKeyBuilder;
-import org.hasor.icache.KeyBuilder;
-import org.hasor.icache.KeyBuilderDefine;
-import org.hasor.icache.NeedCache;
 import org.more.util.StringUtils;
 import com.google.inject.Binder;
 import com.google.inject.Key;
@@ -50,15 +44,10 @@ import com.google.inject.name.Names;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@byshell.org)
  */
-@Module(description = "org.hasor.icache软件包功能支持。")
-public class CacheSupportModule extends AbstractHasorModule {
+@AnnoModule()
+public class CacheSupportModule implements Module {
     private CacheManager cacheManager = null;
-    @Override
-    public void configuration(ModuleSettings info) {
-        info.followTarget(AnnoSupportModule.class);
-    }
     /**初始化.*/
-    @Override
     public void init(ApiBinder apiBinder) {
         //1.挂载Aop
         apiBinder.getGuiceBinder().bindInterceptor(new ClassNeedCacheMatcher(), new MethodPowerMatcher(), new CacheInterceptor());
@@ -68,14 +57,9 @@ public class CacheSupportModule extends AbstractHasorModule {
         //3.注册Manager
         apiBinder.getGuiceBinder().bind(CacheManager.class).to(DefaultCacheManager.class).asEagerSingleton();
     }
-    @Override
     public void start(AppContext appContext) {
         this.cacheManager = appContext.getInstance(CacheManager.class);
         this.cacheManager.initManager(appContext);
-    }
-    @Override
-    public void destroy(AppContext appContext) {
-        this.cacheManager.destroyManager(appContext);
     }
     //
     /*装载KeyBuilder*/
@@ -91,17 +75,6 @@ public class CacheSupportModule extends AbstractHasorModule {
             } else
                 iKeyBuilderList.add((Class<? extends KeyBuilder>) cls);
         }
-        //2.排序
-        Collections.sort(iKeyBuilderList, new Comparator<Class<?>>() {
-            @Override
-            public int compare(Class<?> o1, Class<?> o2) {
-                KeyBuilderDefine o1Anno = o1.getAnnotation(KeyBuilderDefine.class);
-                KeyBuilderDefine o2Anno = o2.getAnnotation(KeyBuilderDefine.class);
-                int o1AnnoIndex = o1Anno.sort();
-                int o2AnnoIndex = o2Anno.sort();
-                return (o1AnnoIndex < o2AnnoIndex ? -1 : (o1AnnoIndex == o2AnnoIndex ? 0 : 1));
-            }
-        });
         //3.注册服务
         long defaultKeyBuilderIndex = Long.MAX_VALUE;
         Binder binder = event.getGuiceBinder();
@@ -111,15 +84,15 @@ public class CacheSupportModule extends AbstractHasorModule {
             KeyBuilderDefinition keyBuilderDefine = new KeyBuilderDefinition(keyBuilderAnno.value(), keyBuilderKey);
             binder.bind(KeyBuilderDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(keyBuilderDefine);
             Hasor.info("KeyBuilder type:" + Hasor.logString(keyBuildertype) + " mapping " + Hasor.logString(keyBuilderAnno.value()));
-            //确定是否为defaut
-            if (keyBuildertype.isAnnotationPresent(DefaultKeyBuilder.class) == true) {
-                Hasor.warning("KeyBuilder type:" + Hasor.logString(keyBuildertype) + " is DefaultKeyBuilder on " + Hasor.logString(keyBuilderAnno.value()));
-                DefaultKeyBuilder defaultKeyBuilder = keyBuildertype.getAnnotation(DefaultKeyBuilder.class);
-                if (defaultKeyBuilder.value() <= defaultKeyBuilderIndex/*数越小越优先*/) {
-                    defaultKeyBuilderIndex = defaultKeyBuilder.value();
-                    binder.bind(KeyBuilder.class).toProvider(keyBuilderDefine);
-                }
-            }
+            //            //确定是否为defaut
+            //            if (keyBuildertype.isAnnotationPresent(DefaultKeyBuilder.class) == true) {
+            //                Hasor.warning("KeyBuilder type:" + Hasor.logString(keyBuildertype) + " is DefaultKeyBuilder on " + Hasor.logString(keyBuilderAnno.value()));
+            //                DefaultKeyBuilder defaultKeyBuilder = keyBuildertype.getAnnotation(DefaultKeyBuilder.class);
+            //                if (defaultKeyBuilder.value() <= defaultKeyBuilderIndex/*数越小越优先*/) {
+            //                    defaultKeyBuilderIndex = defaultKeyBuilder.value();
+            //                    binder.bind(KeyBuilder.class).toProvider(keyBuilderDefine);
+            //                }
+            //            }
         }
     }
     //
@@ -147,29 +120,28 @@ public class CacheSupportModule extends AbstractHasorModule {
                 Hasor.info(cacheName + " at Cache of type " + Hasor.logString(cacheType));
                 //
                 int maxIndex = (cacheIndex.containsKey(cacheName) == false) ? Integer.MAX_VALUE : cacheIndex.get(cacheName);
-                if (cacheAnno.sort() <= maxIndex/*数越小越优先*/) {
-                    cacheIndex.put(cacheName, cacheAnno.sort());
-                    //
-                    CacheDefinition cacheDefine = new CacheDefinition(cacheName, cacheType);
-                    binder.bind(CacheDefinition.class).annotatedWith(Names.named(cacheName)).toInstance(cacheDefine);
-                    binder.bind(Cache.class).annotatedWith(Names.named(cacheName)).toProvider(cacheDefine);
-                    //确定是否为defaut
-                    if (cacheType.isAnnotationPresent(DefaultCache.class) == true) {
-                        Hasor.warning(cacheName + " is DefaultCache!");
-                        DefaultCache defaultCache = cacheType.getAnnotation(DefaultCache.class);
-                        if (defaultCache.value() <= defaultCacheIndex/*数越小越优先*/) {
-                            defaultCacheIndex = defaultCache.value();
-                            binder.bind(Cache.class).toProvider(cacheDefine);
-                        }
-                    }
-                }
+                // if (cacheAnno.sort() <= maxIndex/*数越小越优先*/) {
+                // cacheIndex.put(cacheName, cacheAnno.sort());
+                //
+                CacheDefinition cacheDefine = new CacheDefinition(cacheName, cacheType);
+                binder.bind(CacheDefinition.class).annotatedWith(Names.named(cacheName)).toInstance(cacheDefine);
+                binder.bind(Cache.class).annotatedWith(Names.named(cacheName)).toProvider(cacheDefine);
+                //                    //确定是否为defaut
+                //                    if (cacheType.isAnnotationPresent(DefaultCache.class) == true) {
+                //                        Hasor.warning(cacheName + " is DefaultCache!");
+                //                        DefaultCache defaultCache = cacheType.getAnnotation(DefaultCache.class);
+                //                        if (defaultCache.value() <= defaultCacheIndex/*数越小越优先*/) {
+                //                            defaultCacheIndex = defaultCache.value();
+                //                            binder.bind(Cache.class).toProvider(cacheDefine);
+                //                        }
+                //                    }
+                //   }
             }
         }
     }
     /*-------------------------------------------------------------------------------------*/
     /*负责检测类是否匹配。规则：只要类型或方法上标记了@NeedCache。*/
     private class ClassNeedCacheMatcher extends AbstractMatcher<Class<?>> {
-        @Override
         public boolean matches(Class<?> matcherType) {
             if (matcherType.isAnnotationPresent(NeedCache.class) == true)
                 return true;
@@ -188,7 +160,6 @@ public class CacheSupportModule extends AbstractHasorModule {
     }
     /*负责检测方法是否匹配。规则：方法或方法所处类上标记了@NeedCache。*/
     private class MethodPowerMatcher extends AbstractMatcher<Method> {
-        @Override
         public boolean matches(Method matcherType) {
             if (matcherType.isAnnotationPresent(NeedCache.class) == true)
                 return true;
@@ -199,7 +170,6 @@ public class CacheSupportModule extends AbstractHasorModule {
     }
     /*拦截器*/
     private class CacheInterceptor implements MethodInterceptor {
-        @Override
         public Object invoke(MethodInvocation invocation) throws Throwable {
             //1.获取缓存数据
             Method targetMethod = invocation.getMethod();

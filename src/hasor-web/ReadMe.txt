@@ -1,18 +1,19 @@
-Hasor-MVC v0.0.1.20130831-M1
-    1.)WebMVC开发框架
-    2.)Action拦截器
-    3.)RESTful使用接口简单，JSR-311标准的部分实现。
-    4.)支持从（Zip\Jar\ClassPath\任意目录）中加载Web静态资源文件，为资源文件管理提供支持。
-    5.)支持JSON格式数据响应。
-    6.)自定义Action返回值处理器。
-
 Hasor-Web v0.0.1
-	1.重构：基于Hasor-Core v0.0.1.Release，包含了所有v0.0.1.20130831-M1版本中Hasor-Core的Web相关功能。同时包含了全部 Hasor-MVC 功能。
-	2.修改：在 Servlet 支持中删除注解的支持，相关功能以 Gift 方式实现。 
-	3.修改：重构 Controller 控制器设计和实现，并将Restful部分功能从 控制器中剥离出来。
-	4.新增：强制要求 Action 必须继承自 AbstractController 抽象类。
-	5.新增：AbstractController 类被设计用在 单例 或 多例 的情况下。
-	6.新增：Controller 可以使用 @Forword、@Include、@Json、@Redirect 注解。
+    01.支持 @WebServlet 注解定义 HttpServlet。
+    02.支持 @WebFilter 注解定义 Filter
+    03.支持 @Controller 注解定义 Web MVC 模式下的控制器（Action）。
+    04.支持 通过 @Aop 注解声明 ControllerInterceptor 类型的 Controller 拦截器。
+    05.支持 Controller 拦截器不同级别：方法级、类级、全局
+    06.支持 Controller 控制器工作在 “单实例” 或 “多实例” 模式下。
+    07.支持 通过 @ResultDefine 扩展 Controller 控制器返回值处理，已有的控制器返回值处理器如下： 
+        @Forword、@Include、@Json、@Redirect
+    08.支持 @RestfulService 注解定义 Restful 服务。
+    09.支持 Restful 服务类工作在 “单实例” 或 “多实例” 模式下。
+    10.采用类似 JSR-311 Restful Api 的注解声明：
+        @Any @AttributeParam @CookieParam @Get @Head @HeaderParam @Put
+        @HttpMethod @Options @Path @PathParam @Post @Produces @QueryParam
+    11.支持 Xml 配置文件配置 Web 资源加载路径。目前已经支持：
+        Jar\Zip\文件目录\ClassPath
 
 Hasor-Web v0.0.2
 	1.修复#5314 Hasor-Web v0.0.1- Restful 服务无法正常发布的问题。

@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.icache.key;
-import java.util.Date;
-import org.hasor.icache.KeyBuilderDefine;
+package net.hasor.gift.icache;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 
- * @version : 2013-4-27
+ * 声明该方法或者该类的所有方法在被调用时增加缓存支持。
+ * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-@KeyBuilderDefine(value = Date.class)
-public class DateKeyBuilder extends AbstractKeyBuilder {
-    /**获取参数的序列化标识码。*/
-    public String serializeKey(Object arg) {
-        Date date = (Date) arg;
-        return String.valueOf(date.getTime());
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE, ElementType.METHOD })
+public @interface NeedCache {
+    /**使用的缓存名。*/
+    public String cacheName() default "";
+    /**缓存超时时间，默认值0。*/
+    public long timeout() default 0;
 }

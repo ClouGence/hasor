@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.icache.support;
+package net.hasor.gift.icache.support;
 import java.util.ArrayList;
-import org.hasor.Hasor;
-import org.hasor.context.AppContext;
-import org.hasor.icache.KeyBuilder;
+import net.hasor.Hasor;
+import net.hasor.core.AppContext;
+import net.hasor.gift.icache.KeyBuilder;
 import com.google.inject.Binding;
 import com.google.inject.Injector;
 import com.google.inject.TypeLiteral;
@@ -45,12 +45,6 @@ class ManagedKeyBuilderManager {
         }
         // Convert to a fixed size array for speed.
         return keyBuilderDefinitionList.toArray(new KeyBuilderDefinition[keyBuilderDefinitionList.size()]);
-    }
-    public void destroyManager(AppContext appContext) {
-        Hasor.info("destroy ManagedKeyBuilderManager...");
-        for (KeyBuilderDefinition cacheDefinition : keyBuilderDefinitionSet) {
-            cacheDefinition.destroy(appContext);
-        }
     }
     public KeyBuilder getKeyBuilder(Class<?> sampleType, AppContext appContext) {
         for (KeyBuilderDefinition def : this.keyBuilderDefinitionSet) {

@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.icache.mapcache;
-import org.hasor.context.HasorSettingListener;
-import org.hasor.context.Settings;
-import org.hasor.context.anno.SettingsListener;
+package net.hasor.gift.icache.mapcache;
+import net.hasor.core.SettingsListener;
+import net.hasor.gift.setting.Settings;
 /**
  * ≈‰÷√–≈œ¢
  * @version : 2013-4-23
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@SettingsListener
-public class MapCacheSettings implements HasorSettingListener {
+@Settings
+public class MapCacheSettings implements SettingsListener {
     private long    defaultTimeout = 10;
     private boolean eternal        = false;
     private boolean autoRenewal    = false;
@@ -56,8 +55,7 @@ public class MapCacheSettings implements HasorSettingListener {
     protected String getMapCacheSettingElementName() {
         return "cacheSettings.mapCache";
     }
-    @Override
-    public void onLoadConfig(Settings newConfig) {
+    public void onLoadConfig(net.hasor.core.Settings newConfig) {
         this.defaultTimeout = newConfig.getLong(getMapCacheSettingElementName() + ".timeout");
         this.eternal = newConfig.getBoolean(getMapCacheSettingElementName() + ".eternal");
         this.autoRenewal = newConfig.getBoolean(getMapCacheSettingElementName() + ".autoRenewal");

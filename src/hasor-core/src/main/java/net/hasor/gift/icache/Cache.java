@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.icache;
-import org.hasor.context.AppContext;
+package net.hasor.gift.icache;
+import net.hasor.core.AppContext;
 /**
  * 缓存使用入口，缓存的默认使用HashMap作为实现。
  * @version : 2013-4-20

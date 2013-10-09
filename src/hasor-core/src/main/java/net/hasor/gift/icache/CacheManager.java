@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.icache.key;
-import org.hasor.context.AppContext;
-import org.hasor.icache.KeyBuilder;
-/**
- * 
- * @version : 2013-4-23
+package net.hasor.gift.icache;
+import net.hasor.core.AppContext;
+/** 
+ * 缓存使用入口，缓存的实现由系统自行提供。
+ * @version : 2013-4-20
  * @author 赵永春 (zyc@byshell.org)
  */
-abstract class AbstractKeyBuilder implements KeyBuilder {
-    @Override
-    public void initKeyBuilder(AppContext appContext) {}
-    @Override
-    public void destroy(AppContext appContext) {}
+public interface CacheManager {
+    /**获取默认缓存*/
+    public <T> Cache<T> getDefaultCache();
+    /**获取缓存*/
+    public <T> Cache<T> getCache(String cacheName);
+    /**根据样本类型获取该类型的Key生成器。*/
+    public KeyBuilder getKeyBuilder(Class<?> sampleType);
+    /**初始化启动缓存服务。*/
+    public void initManager(AppContext appContext);
 }

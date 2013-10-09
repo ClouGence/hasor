@@ -1,2 +1,2 @@
-Hasor-Jdbc v0.0.1.Release
+Hasor-Jdbc v0.0.1
 	1.

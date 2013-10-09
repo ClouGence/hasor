@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.icache.support;
-import org.hasor.Hasor;
-import org.hasor.context.AppContext;
-import org.hasor.icache.Cache;
+package net.hasor.gift.icache.support;
+import net.hasor.Hasor;
+import net.hasor.core.AppContext;
+import net.hasor.gift.icache.Cache;
 import com.google.inject.Provider;
 /**
  * 声明一个Cache，该Cache需要实现{@link Cache}接口。
@@ -44,7 +44,6 @@ class CacheDefinition implements Provider<Cache<?>> {
         if (this.cacheObject != null)
             this.cacheObject.destroy(appContext);
     }
-    @Override
     public Cache<?> get() {
         return this.cacheObject;
     }

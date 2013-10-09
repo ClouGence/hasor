@@ -1,0 +1,10 @@
+<!-- 缓存配置 -->
+<cacheSettings>
+	<!-- MapCache 配置 -->
+	<!-- timeout=设置的超时时间10分钟超时 -->
+	<!-- eternal=缓存是否永远不销毁 -->
+	<!-- autoRenewal=每当访问缓存对象时是否自动对其续约（续约时间同加入时缓存超时时间） -->
+	<!-- threadSeep=缓存回收线程工作的时间频率(毫秒) -->
+	<mapCache timeout="600000" eternal="false" autoRenewal="true" threadSeep="5000" />
+	<!-- !!!这里可以放置其他缓存程序的Xml配置，然后通过XmlProperty类型读取到这段Xml!!! -->
+</cacheSettings>

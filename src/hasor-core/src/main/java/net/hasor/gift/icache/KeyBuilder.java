@@ -13,19 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.icache;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.hasor.gift.icache;
 /**
- * 当任何类型的KeyBuilder都匹配不到时使用该KeyBuilder，该注解必须和KeyBuilder注解同时使用。
- * @version : 2013-3-12
+ * cache在执行方法缓存时Key的生成器。
+ * @version : 2013-4-21
  * @author 赵永春 (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface DefaultKeyBuilder {
-    /**当配置了多个默认缓存时依照该值进行排序。（越小越优先）*/
-    public int value() default Integer.MAX_VALUE;
+public interface KeyBuilder {
+    /**获取参数的序列化标识码，调用的参数不会为空。*/
+    public String serializeKey(Object arg);
 }

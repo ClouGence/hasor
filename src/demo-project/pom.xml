@@ -14,15 +14,7 @@
 					<source>1.6</source>
 					<target>1.6</target>
 					<encoding>GBK</encoding>
-					<!-- <compilerId>eclipse</compilerId> -->
 				</configuration>
-				<dependencies>
-					<!-- <dependency> -->
-					<!-- <groupId>org.codehaus.plexus</groupId> -->
-					<!-- <artifactId>plexus-compiler-eclipse</artifactId> -->
-					<!-- <version>1.8.4</version> -->
-					<!-- </dependency> -->
-				</dependencies>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -46,24 +38,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- <plugin> -->
-			<!-- <artifactId>maven-assembly-plugin</artifactId> -->
-			<!-- <configuration> -->
-			<!-- <appendAssemblyId>false</appendAssemblyId> -->
-			<!-- <descriptors> -->
-			<!-- <descriptor>assembly.xml</descriptor> -->
-			<!-- </descriptors> -->
-			<!-- </configuration> -->
-			<!-- <executions> -->
-			<!-- <execution> -->
-			<!-- <id>pack</id> -->
-			<!-- <phase>package</phase> -->
-			<!-- <goals> -->
-			<!-- <goal>single</goal> -->
-			<!-- </goals> -->
-			<!-- </execution> -->
-			<!-- </executions> -->
-			<!-- </plugin> -->
 		</plugins>
 	</build>
 	<!-- 引用依赖 -->

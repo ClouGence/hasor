@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.icache.support;
-import org.hasor.Hasor;
-import org.hasor.context.AppContext;
-import org.hasor.icache.KeyBuilder;
+package net.hasor.gift.icache.support;
+import net.hasor.Hasor;
+import net.hasor.core.AppContext;
+import net.hasor.gift.icache.KeyBuilder;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 /**
@@ -39,19 +39,13 @@ class KeyBuilderDefinition implements Provider<KeyBuilder> {
     public void initKeyBuilder(final AppContext appContext) {
         Hasor.info("initKeyBuilder %s mappingTo %s.", type, keyBuilderKey);
         this.keyBuilderObject = appContext.getGuice().getInstance(this.keyBuilderKey);
-        this.keyBuilderObject.initKeyBuilder(appContext);
     }
     public boolean canSupport(Class<?> targetType) {
         if (targetType == null)
             return false;
         return this.type.isAssignableFrom(targetType);
     }
-    @Override
     public KeyBuilder get() {
         return this.keyBuilderObject;
-    }
-    public void destroy(AppContext appContext) {
-        if (this.keyBuilderObject != null)
-            this.keyBuilderObject.destroy(appContext);
     }
 }

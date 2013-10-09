@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.icache;
-import org.hasor.context.AppContext;
+package net.hasor.gift.icache.key;
+import java.util.Date;
+import net.hasor.gift.icache.KeyBuilder;
+import net.hasor.gift.icache.KeyBuilderDefine;
 /**
- * cache在执行方法缓存时Key的生成器。
- * @version : 2013-4-21
+ * 
+ * @version : 2013-4-27
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface KeyBuilder {
-    /**初始化IKeyBuilder*/
-    public void initKeyBuilder(AppContext appContext);
-    /**销毁*/
-    public void destroy(AppContext appContext);
-    /**获取参数的序列化标识码，调用的参数不会为空。*/
-    public String serializeKey(Object arg);
+@KeyBuilderDefine(value = Date.class)
+public class DateKeyBuilder implements KeyBuilder {
+    /**获取参数的序列化标识码。*/
+    public String serializeKey(Object arg) {
+        Date date = (Date) arg;
+        return String.valueOf(date.getTime());
+    }
 }

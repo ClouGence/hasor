@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.icache;
+package net.hasor.gift.icache;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -26,12 +26,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface CacheDefine {
-    /**对服务的描述信息。*/
-    public String description() default "";
-    /**在管理控制台显示服务时使用displayName属性。*/
-    public String displayName() default "";
-    /**缓存名称，同名注册会被覆盖。*/
+    /**缓存名称，不允许出现同名。*/
     public String[] value();
-    /**排序顺序（越小越优先）*/
-    public int sort() default Integer.MAX_VALUE;
 }

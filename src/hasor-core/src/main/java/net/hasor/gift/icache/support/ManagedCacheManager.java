@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.icache.support;
+package net.hasor.gift.icache.support;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.hasor.Hasor;
-import org.hasor.context.AppContext;
-import org.hasor.icache.Cache;
+import net.hasor.Hasor;
+import net.hasor.core.AppContext;
+import net.hasor.gift.icache.Cache;
 import com.google.inject.Binding;
 import com.google.inject.Injector;
 import com.google.inject.TypeLiteral;
