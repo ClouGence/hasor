@@ -43,29 +43,38 @@
 	<!-- 引用依赖 -->
 	<dependencies>
 		<!-- Core -->
-		<!-- <dependency> -->
-		<!-- <groupId>net.hasor</groupId> -->
-		<!-- <artifactId>hasor-core</artifactId> -->
-		<!-- <version>0.0.3</version> -->
-		<!-- </dependency> -->
-		<!-- MVC -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-core</artifactId>
+			<version>0.0.3</version>
+		</dependency>
+		<!-- Web -->
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-web</artifactId>
 			<version>0.0.2</version>
 		</dependency>
-		<!-- Freemarker -->
-		<!-- <dependency> -->
-		<!-- <groupId>net.hasor</groupId> -->
-		<!-- <artifactId>hasor-freemarker</artifactId> -->
-		<!-- <version>0.0.1</version> -->
-		<!-- </dependency> -->
+		<!-- JDBC -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-jdbc</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<!-- Log -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.2</version>
 		</dependency>
+
+
+		<!-- Freemarker -->
+		<!-- <dependency> -->
+		<!-- <groupId>net.hasor</groupId> -->
+		<!-- <artifactId>hasor-freemarker</artifactId> -->
+		<!-- <version>0.0.1</version> -->
+		<!-- </dependency> -->
+
 		<!-- Jetty Test -->
 		<dependency>
 			<groupId>net.hasor</groupId>

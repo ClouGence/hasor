@@ -1,0 +1,44 @@
+Hasor-Core v0.0.4
+* New:
+	1.新增：ICache 缓存服务，使用 @NeedCache在方法上声明方法结果缓存。
+
+Hasor-Core v0.0.3
+* Improvement:
+	1.修改根POM改为 0.0.2 该版本可以处理 GBK 编码下 Javadocs 生成。
+	2.改进JavaDoc内容的质量。
+
+Hasor-Core v0.0.2
+* Bug:
+    1.修复：StandardAppContext调用无参构造方法引发异常的问题，同时修改几个核心类的构造方法。
+* Improvement:
+    1.DefaultXmlProperty类更名为DefaultXmlNode，并且XmlNode增加几个常用方法。
+    2.删除所有Mapping部分支持，相关代码移到demo作为例子程序。
+    3.AbstractAppContext类中有关事件的声明移动到 AppContext 接口中。
+    4.@Before 更名为 @Aop，性能进行了优化。
+    5.ASM升级为4.0、ClassCode连带升级。
+* New:
+    1.新增以模块类名为事件名，当执行 Init\Start\Stop时候，抛出对应事件。
+    2.增加 Gift 体系用于扩展非模块类小工具。
+
+
+Hasor-Core v0.0.1
+* Improvement:
+    01.Hasor-Core：80%以上代码重构，重构主要涉及内容的是结构性重构。
+    		重构之后将会使Hasor核心层的逻辑更加清晰，更便于扩展核心层功能。
+    02.InitContext接口功能合并到Environment接口中。
+    03.ApiBinder接口增加模块依赖管理。
+    04.HasorModule接口更名为Module。
+    05.HasorEventListener接口更名为EventListener。
+    06.XmlProperty接口更名为XmlNode。
+    07.config-mapping.properties属性文件的解析不在是必须的。
+    08.重构Settings实现。Xml解析方式不在依赖ns.prop属性文件，实现方式改为Sax。
+    09.@Module注解，更名为@AnnoModule。
+    10.重构AppContext实现。
+    11.包空间整理，所有包都被移动到net.hasor下，整理License文件。删除残余的、无用的类。
+    12.删除所有与Web相关的支持，这部分功能全部移动到Hasor-Web（Hasor-MVC更名而来）。
+    13.生命周期：合并onReady和onInit两个生命周期阶段方法，删除销毁过程。
+    14.工具包修订：ResourcesUtils工具类中，类扫描代码优化。
+    15.工具包修订：DecSequenceMap.java、DecStackMap.java两个类文件增加一些有用的方法。
+    16.所有Demo程序都汇总到demo-project项目中。
+* New:
+    01.增加@GuiceModule注解，可以标记在com.google.inject.Module接口上，可以将Guice模块引入到Hasor中。
