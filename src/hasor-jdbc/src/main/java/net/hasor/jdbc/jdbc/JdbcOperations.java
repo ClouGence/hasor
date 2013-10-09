@@ -75,48 +75,11 @@ public interface JdbcOperations {
      *    if the query does not return exactly one row, or does not return exactly one column in that row.
      */
     public int queryForInt(String sql) throws DataAccessException;
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Execute a query for a result list, given static SQL.
-     * <p>Uses a JDBC Statement, not a PreparedStatement. If you want to
-     * execute a static query with a PreparedStatement, use the overloaded
-     * <code>queryForList</code> method with <code>null</code> as argument array.
-     * <p>The results will be mapped to a List (one entry for each row) of
-     * result objects, each of them matching the specified element type.
-     * @param sql SQL query to execute
-     * @param elementType the required type of element in the result list
-     * (for example, <code>Integer.class</code>)
-     * @return a List of objects that match the specified element type
-     * @throws DataAccessException if there is any problem executing the query
-     * @see #queryForList(String, Object[], Class)
-     * @see SingleColumnRowMapper
-     */
+    /**执行一个静态 SQL 语句，结果将被映射到一个列表(一个条目为每一行)的对象，
+     * 列表中每一条记录都是<code>elementType</code>参数指定的类型对象。*/
     public <T> List<T> queryForList(String sql, Class<T> elementType) throws DataAccessException;
-    /**
-     * Execute a query for a result list, given static SQL.
-     * <p>Uses a JDBC Statement, not a PreparedStatement. If you want to
-     * execute a static query with a PreparedStatement, use the overloaded
-     * <code>queryForList</code> method with <code>null</code> as argument array.
-     * <p>The results will be mapped to a List (one entry for each row) of
-     * Maps (one entry for each column using the column name as the key).
-     * Each element in the list will be of the form returned by this interface's
-     * queryForMap() methods.
-     * @param sql SQL query to execute
-     * @return an List that contains a Map per row
-     * @throws DataAccessException if there is any problem executing the query
-     * @see #queryForList(String, Object[])
-     */
+    /**执行一个静态 SQL 语句，结果将被映射到一个列表(一个条目为每一行)的对象，
+     * 列表中每一条记录都是<code>Map</code>类型对象。*/
     public List<Map<String, Object>> queryForList(String sql) throws DataAccessException;
     /**
      * Execute a query for a SqlRowSet, given static SQL.
@@ -157,6 +120,15 @@ public interface JdbcOperations {
     //-------------------------------------------------------------------------
     // Methods dealing with prepared statements
     //-------------------------------------------------------------------------
+    
+    
+    
+    
+    
+    
+    
+    
+    
     /**
      * Execute a JDBC data access operation, implemented as callback action
      * working on a JDBC PreparedStatement. This allows for implementing arbitrary
