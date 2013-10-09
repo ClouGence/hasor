@@ -9,7 +9,7 @@
 	<!-- Maven Info -->
 	<groupId>net.hasor</groupId>
 	<artifactId>hasor-web</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.2</version>
 	<packaging>jar</packaging>
 
 	<!-- Project Info -->
@@ -29,10 +29,8 @@
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-core</artifactId>
-			<version>0.0.2</version>
+			<version>0.0.3</version>
 		</dependency>
-
-
 		<!-- J2EE -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
