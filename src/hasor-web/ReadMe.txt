@@ -23,3 +23,6 @@ Hasor-Web v0.0.2
 	6.新增：Restful 服务可以使用 @Forword、@Include、@Json、@Redirect 注解。
 	7.修改：根POM改为 0.0.2 该版本可以处理 GBK 编码下 Javadocs 生成。
 	8.删除：mime 相关代码。
+
+Hasor-Web v0.0.3
+	1.

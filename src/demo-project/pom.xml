@@ -69,16 +69,16 @@
 	<!-- 引用依赖 -->
 	<dependencies>
 		<!-- Core -->
-		<dependency>
-			<groupId>net.hasor</groupId>
-			<artifactId>hasor-core</artifactId>
-			<version>0.0.2</version>
-		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>net.hasor</groupId> -->
+		<!-- <artifactId>hasor-core</artifactId> -->
+		<!-- <version>0.0.3</version> -->
+		<!-- </dependency> -->
 		<!-- MVC -->
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-web</artifactId>
-			<version>0.0.1</version>
+			<version>0.0.2</version>
 		</dependency>
 		<!-- Freemarker -->
 		<!-- <dependency> -->
