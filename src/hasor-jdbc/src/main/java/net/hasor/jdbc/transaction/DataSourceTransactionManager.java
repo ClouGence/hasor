@@ -1,3 +1,4 @@
+package net.hasor.jdbc.transaction;
 ///*
 // * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
 // *
@@ -13,7 +14,7 @@
 // * See the License for the specific language governing permissions and
 // * limitations under the License.
 // */
-//package org.hasor.db.jdbc;
+//package org.hasor.db.transaction;
 //import java.io.Reader;
 //import java.util.List;
 //import java.util.Map;

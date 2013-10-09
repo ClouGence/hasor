@@ -20,6 +20,8 @@ import net.hasor.jdbc.dao.DataAccessException;
 /** 
  * 回调接口，用于 JDBC 结果集转换。
  * @version : 2013-10-9
+ * @author Thomas Risberg
+ * @author Juergen Hoeller
  * @author 赵永春(zyc@hasor.net)
  */
 public interface ResultSetExtractor<T> {

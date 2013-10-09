@@ -21,6 +21,8 @@ import net.hasor.jdbc.dao.DataAccessException;
  * 通用的回调接口。用来执行基于 JDBC {@link Connection}
  * 上的任意数量任意类型数据库操作。
  * @version : 2013-10-9
+ * @author Thomas Risberg
+ * @author Juergen Hoeller
  * @author 赵永春(zyc@hasor.net)
  */
 public interface ConnectionCallback<T> {

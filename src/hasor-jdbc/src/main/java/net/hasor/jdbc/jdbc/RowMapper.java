@@ -19,6 +19,8 @@ import java.sql.SQLException;
 /**
  * 这个接口用来映射 JDBC 结果集中一行数据。
  * @version : 2013-10-9
+ * @author Thomas Risberg
+ * @author Juergen Hoeller
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RowMapper<T> {

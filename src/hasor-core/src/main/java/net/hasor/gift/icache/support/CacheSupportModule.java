@@ -61,6 +61,9 @@ public class CacheSupportModule implements Module {
         this.cacheManager = appContext.getInstance(CacheManager.class);
         this.cacheManager.initManager(appContext);
     }
+    public void stop(AppContext appContext) {
+        // TODO Auto-generated method stub
+    }
     //
     /*×°ÔØKeyBuilder*/
     protected void loadKeyBuilder(ApiBinder event) {

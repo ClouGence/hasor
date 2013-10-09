@@ -19,6 +19,8 @@ import java.sql.SQLException;
 /** 
  * JDBC 结果集行数据处理器。
  * @version : 2013-10-9
+ * @author Thomas Risberg
+ * @author Juergen Hoeller
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RowCallbackHandler {
