@@ -17,7 +17,6 @@ package net.hasor.jdbc.jdbc;
 import java.util.List;
 import java.util.Map;
 import net.hasor.jdbc.dao.DataAccessException;
-import net.hasor.jdbc.dao.IncorrectResultSizeDataAccessException;
 import net.hasor.jdbc.jdbc.parameter.SqlParameter;
 import net.hasor.jdbc.jdbc.rowset.SqlRowSet;
 /**
@@ -41,38 +40,28 @@ public interface JdbcOperations {
     /**执行一个静态 SQL 语句，并使用 RowMapper 处理结果集。*/
     public <T> List<T> query(String sql, RowMapper<T> rowMapper) throws DataAccessException;
     /**执行一个静态 SQL 语句，并使用 RowMapper 处理结果集。
-     * 预计该方法只会处理一条数据，如果查询结果存在多条数据会引发 {@link IncorrectResultSizeDataAccessException} 异常。
+     * 预计该方法只会处理一条数据，如果查询结果存在多条数据会引发异常。
      * @return 当不存在记录时返回<code>null</code>。
-     * @throws IncorrectResultSizeDataAccessException 
-     *    if the query does not return exactly one row.
      */
     public <T> T queryForObject(String sql, RowMapper<T> rowMapper) throws DataAccessException;
     /**执行一个静态 SQL 语句，并将结果集数据转换成<code>requiredType</code>参数指定的类型对象。
-     * 预计该方法只会处理一条数据，如果查询结果存在多条数据会引发 {@link IncorrectResultSizeDataAccessException} 异常。
+     * 预计该方法只会处理一条数据，如果查询结果存在多条数据会引发异常。
      * @return 当不存在记录时返回<code>null</code>。
-     * @throws IncorrectResultSizeDataAccessException 
-     *    if the query does not return exactly one row.
      */
     public <T> T queryForObject(String sql, Class<T> requiredType) throws DataAccessException;
     /**执行一个静态 SQL 语句，并将结果集数据转换成<code>Map</code>。
-     * 预计该方法只会处理一条数据，如果查询结果存在多条数据会引发 {@link IncorrectResultSizeDataAccessException} 异常。
+     * 预计该方法只会处理一条数据，如果查询结果存在多条数据会引发异常。
      * @return 当不存在记录时返回<code>null</code>。
-     * @throws IncorrectResultSizeDataAccessException 
-     *    if the query does not return exactly one row.
      */
     public Map<String, Object> queryForMap(String sql) throws DataAccessException;
     /**执行一个静态 SQL 语句，并取得 long 类型数据。
-     * 预计该方法只会处理一条数据，如果查询结果存在多条数据或者存在多列内容会引发 {@link IncorrectResultSizeDataAccessException} 异常。
+     * 预计该方法只会处理一条数据，如果查询结果存在多条数据或者存在多列内容会引发异常。
      * @return the long value, or 0 in case of SQL NULL
-     * @throws IncorrectResultSizeDataAccessException 
-     *    if the query does not return exactly one row, or does not return exactly one column in that row.
      */
     public long queryForLong(String sql) throws DataAccessException;
     /**执行一个静态 SQL 语句，并取得 int 类型数据。
-     * 预计该方法只会处理一条数据，如果查询结果存在多条数据或者存在多列内容会引发 {@link IncorrectResultSizeDataAccessException} 异常。
+     * 预计该方法只会处理一条数据，如果查询结果存在多条数据或者存在多列内容会引发异常。
      * @return the int value, or 0 in case of SQL NULL
-     * @throws IncorrectResultSizeDataAccessException 
-     *    if the query does not return exactly one row, or does not return exactly one column in that row.
      */
     public int queryForInt(String sql) throws DataAccessException;
     /**执行一个静态 SQL 语句，结果将被映射到一个列表(一个条目为每一行)的对象，
@@ -148,85 +137,73 @@ public interface JdbcOperations {
     public <T> List<T> query(String sql, RowMapper<T> rowMapper, Object... args) throws DataAccessException;
     /**
      * 查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果将通过 RowMapper 映射转换并返回。
-     * <p>请确保查询结果只有一条记录，否则会引发{@link IncorrectResultSizeDataAccessException}异常。
-     * @throws IncorrectResultSizeDataAccessException if the query does not return exactly one row
+     * <p>请确保查询结果只有一条记录，否则会引发异常。
      * @throws DataAccessException if the query fails
      */
     public <T> T queryForObject(String sql, Object[] args, int[] argTypes, RowMapper<T> rowMapper) throws DataAccessException;
     /**
      * 查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果将通过 RowMapper 映射转换并返回。
-     * <p>请确保查询结果只有一条记录，否则会引发{@link IncorrectResultSizeDataAccessException}异常。
-     * @throws IncorrectResultSizeDataAccessException if the query does not return exactly one row
+     * <p>请确保查询结果只有一条记录，否则会引发异常。
      * @throws DataAccessException if the query fails
      */
     public <T> T queryForObject(String sql, Object[] args, RowMapper<T> rowMapper) throws DataAccessException;
     /**
      * 查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果将通过 RowMapper 映射转换并返回。
-     * <p>请确保查询结果只有一条记录，否则会引发{@link IncorrectResultSizeDataAccessException}异常。
-     * @throws IncorrectResultSizeDataAccessException if the query does not return exactly one row
+     * <p>请确保查询结果只有一条记录，否则会引发异常。
      * @throws DataAccessException if the query fails
      */
     public <T> T queryForObject(String sql, RowMapper<T> rowMapper, Object... args) throws DataAccessException;
     /**
      * 查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果将通过 requiredType 参数所表示的类型封装。
-     * <p>请确保查询结果只有一条记录，否则会引发{@link IncorrectResultSizeDataAccessException}异常。
-     * @throws IncorrectResultSizeDataAccessException if the query does not return exactly one row
+     * <p>请确保查询结果只有一条记录，否则会引发异常。
      * @throws DataAccessException if the query fails
      * @see java.sql.Types*/
     public <T> T queryForObject(String sql, Object[] args, int[] argTypes, Class<T> requiredType) throws DataAccessException;
     /**
      * 查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果将通过 requiredType 参数所表示的类型封装。
-     * <p>请确保查询结果只有一条记录，否则会引发{@link IncorrectResultSizeDataAccessException}异常。
-     * @throws IncorrectResultSizeDataAccessException if the query does not return exactly one row
+     * <p>请确保查询结果只有一条记录，否则会引发异常。
      * @throws DataAccessException if the query fails
      */
     public <T> T queryForObject(String sql, Object[] args, Class<T> requiredType) throws DataAccessException;
     /**
      * 查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果将通过 requiredType 参数所表示的类型封装。
-     * <p>请确保查询结果只有一条记录，否则会引发{@link IncorrectResultSizeDataAccessException}异常。
-     * @throws IncorrectResultSizeDataAccessException if the query does not return exactly one row
+     * <p>请确保查询结果只有一条记录，否则会引发异常。
      * @throws DataAccessException if the query fails
      */
     public <T> T queryForObject(String sql, Class<T> requiredType, Object... args) throws DataAccessException;
     /**
      * 查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果将使用 Map 封装。
-     * <p>请确保查询结果只有一条记录，否则会引发{@link IncorrectResultSizeDataAccessException}异常。
-     * @throws IncorrectResultSizeDataAccessException if the query does not return exactly one row
+     * <p>请确保查询结果只有一条记录，否则会引发异常。
      * @throws DataAccessException if the query fails
      * @see java.sql.Types*/
     public Map<String, Object> queryForMap(String sql, Object[] args, int[] argTypes) throws DataAccessException;
     /**
      * 查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果将使用 Map 封装。
-     * <p>请确保查询结果只有一条记录，否则会引发{@link IncorrectResultSizeDataAccessException}异常。
-     * @throws IncorrectResultSizeDataAccessException if the query does not return exactly one row
+     * <p>请确保查询结果只有一条记录，否则会引发异常。
      * @throws DataAccessException if the query fails
      */
     public Map<String, Object> queryForMap(String sql, Object... args) throws DataAccessException;
     /**
      * 查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果将转换成 long 类型。
      * 所以需要保证查询的结果只有一行一列，否则执行会引发异常。
-     * @throws IncorrectResultSizeDataAccessException if the query does not return exactly one row
      * @throws DataAccessException if the query fails
      * @see java.sql.Types*/
     public long queryForLong(String sql, Object[] args, int[] argTypes) throws DataAccessException;
     /**
      * 查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果将转换成 long 类型。
      * 所以需要保证查询的结果只有一行一列，否则执行会引发异常。
-     * @throws IncorrectResultSizeDataAccessException if the query does not return exactly one row
      * @throws DataAccessException if the query fails
      */
     public long queryForLong(String sql, Object... args) throws DataAccessException;
     /**
      * 查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果将转换成 int 类型。
      * 所以需要保证查询的结果只有一行一列，否则执行会引发异常。
-     * @throws IncorrectResultSizeDataAccessException if the query does not return exactly one row
      * @throws DataAccessException if the query fails
      * @see java.sql.Types*/
     public int queryForInt(String sql, Object[] args, int[] argTypes) throws DataAccessException;
     /**
      * 查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果将转换成 long 类型。
      * 所以需要保证查询的结果只有一行一列，否则执行会引发异常。
-     * @throws IncorrectResultSizeDataAccessException if the query does not return exactly one row
      * @throws DataAccessException if the query fails
      */
     public int queryForInt(String sql, Object... args) throws DataAccessException;

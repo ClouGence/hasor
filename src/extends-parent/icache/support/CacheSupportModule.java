@@ -24,7 +24,6 @@ import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
-import net.hasor.core.context.AnnoModule;
 import net.hasor.gift.icache.Cache;
 import net.hasor.gift.icache.CacheDefine;
 import net.hasor.gift.icache.CacheManager;
@@ -44,7 +43,7 @@ import com.google.inject.name.Names;
  * @version : 2013-4-8
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@AnnoModule()
+//@AnnoModule()
 public class CacheSupportModule implements Module {
     private CacheManager cacheManager = null;
     /**≥ı ºªØ.*/

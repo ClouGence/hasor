@@ -1,7 +1,6 @@
 Hasor-Core v0.0.4
 * New:
-	1.新增：ICache 缓存服务，使用 @NeedCache在方法上声明方法结果缓存。
-	2.Environment 接口新增 isDebug 方法，用于表示应用程序启动是否为 debug 模式。
+	1.Environment 接口新增 isDebug 方法，用于表示应用程序启动是否为 debug 模式。
 
 Hasor-Core v0.0.3
 * Improvement:

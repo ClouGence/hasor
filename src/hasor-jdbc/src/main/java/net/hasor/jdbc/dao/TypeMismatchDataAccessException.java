@@ -15,26 +15,27 @@
  */
 package net.hasor.jdbc.dao;
 /**
- * Root for exceptions thrown when we use a data access resource incorrectly.
- * Thrown for example on specifying bad SQL when using a RDBMS.
- * Resource-specific subclasses are supplied by concrete data access packages.
+ * Exception thrown on mismatch between Java type and database type:
+ * for example on an attempt to set an object of the wrong type
+ * in an RDBMS column.
  *
  * @author Rod Johnson
  */
-public class InvalidDataAccessResourceUsageException extends NonTransientDataAccessException {
+public class TypeMismatchDataAccessException extends InvalidDataAccessException {
+    private static final long serialVersionUID = 4695034796999007489L;
     /**
-     * Constructor for InvalidDataAccessResourceUsageException.
+     * Constructor for TypeMismatchDataAccessException.
      * @param msg the detail message
      */
-    public InvalidDataAccessResourceUsageException(String msg) {
+    public TypeMismatchDataAccessException(String msg) {
         super(msg);
     }
     /**
-     * Constructor for InvalidDataAccessResourceUsageException.
+     * Constructor for TypeMismatchDataAccessException.
      * @param msg the detail message
      * @param cause the root cause from the data access API in use
      */
-    public InvalidDataAccessResourceUsageException(String msg, Throwable cause) {
+    public TypeMismatchDataAccessException(String msg, Throwable cause) {
         super(msg, cause);
     }
 }
