@@ -40,27 +40,27 @@ public interface JdbcOperations {
     /**执行一个静态 SQL 语句，并使用 RowMapper 处理结果集。*/
     public <T> List<T> query(String sql, RowMapper<T> rowMapper) throws DataAccessException;
     /**执行一个静态 SQL 语句，并使用 RowMapper 处理结果集。
-     * 预计该方法只会处理一条数据，如果查询结果存在多条数据会引发异常。
+     * 预计该方法只会处理一条数据，如果查询结果存在多条数据将取第一条记录作为结果。
      * @return 当不存在记录时返回<code>null</code>。
      */
     public <T> T queryForObject(String sql, RowMapper<T> rowMapper) throws DataAccessException;
     /**执行一个静态 SQL 语句，并将结果集数据转换成<code>requiredType</code>参数指定的类型对象。
-     * 预计该方法只会处理一条数据，如果查询结果存在多条数据会引发异常。
+     * 预计该方法只会处理一条数据，如果查询结果存在多条数据将取第一条记录作为结果。
      * @return 当不存在记录时返回<code>null</code>。
      */
     public <T> T queryForObject(String sql, Class<T> requiredType) throws DataAccessException;
     /**执行一个静态 SQL 语句，并将结果集数据转换成<code>Map</code>。
-     * 预计该方法只会处理一条数据，如果查询结果存在多条数据会引发异常。
+     * 预计该方法只会处理一条数据，如果查询结果存在多条数据将取第一条记录作为结果。
      * @return 当不存在记录时返回<code>null</code>。
      */
     public Map<String, Object> queryForMap(String sql) throws DataAccessException;
     /**执行一个静态 SQL 语句，并取得 long 类型数据。
-     * 预计该方法只会处理一条数据，如果查询结果存在多条数据或者存在多列内容会引发异常。
+     * 预计该方法只会处理一条数据，如果查询结果存在多条数据或者多列将会引发异常。
      * @return the long value, or 0 in case of SQL NULL
      */
     public long queryForLong(String sql) throws DataAccessException;
     /**执行一个静态 SQL 语句，并取得 int 类型数据。
-     * 预计该方法只会处理一条数据，如果查询结果存在多条数据或者存在多列内容会引发异常。
+     * 预计该方法只会处理一条数据，如果查询结果存在多条数据或者多列将会引发异常。
      * @return the int value, or 0 in case of SQL NULL
      */
     public int queryForInt(String sql) throws DataAccessException;
@@ -137,49 +137,49 @@ public interface JdbcOperations {
     public <T> List<T> query(String sql, RowMapper<T> rowMapper, Object... args) throws DataAccessException;
     /**
      * 查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果将通过 RowMapper 映射转换并返回。
-     * <p>请确保查询结果只有一条记录，否则会引发异常。
+     * <p>预计该方法只会处理一条数据，如果查询结果存在多条数据将会取得第一条数据作为结果。
      * @throws DataAccessException if the query fails
      */
     public <T> T queryForObject(String sql, Object[] args, int[] argTypes, RowMapper<T> rowMapper) throws DataAccessException;
     /**
      * 查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果将通过 RowMapper 映射转换并返回。
-     * <p>请确保查询结果只有一条记录，否则会引发异常。
+     * <p>预计该方法只会处理一条数据，如果查询结果存在多条数据将会取得第一条数据作为结果。
      * @throws DataAccessException if the query fails
      */
     public <T> T queryForObject(String sql, Object[] args, RowMapper<T> rowMapper) throws DataAccessException;
     /**
      * 查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果将通过 RowMapper 映射转换并返回。
-     * <p>请确保查询结果只有一条记录，否则会引发异常。
+     * <p>预计该方法只会处理一条数据，如果查询结果存在多条数据将会取得第一条数据作为结果。
      * @throws DataAccessException if the query fails
      */
     public <T> T queryForObject(String sql, RowMapper<T> rowMapper, Object... args) throws DataAccessException;
     /**
      * 查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果将通过 requiredType 参数所表示的类型封装。
-     * <p>请确保查询结果只有一条记录，否则会引发异常。
+     * <p>预计该方法只会处理一条数据，如果查询结果存在多条数据将会取得第一条数据作为结果。
      * @throws DataAccessException if the query fails
      * @see java.sql.Types*/
     public <T> T queryForObject(String sql, Object[] args, int[] argTypes, Class<T> requiredType) throws DataAccessException;
     /**
      * 查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果将通过 requiredType 参数所表示的类型封装。
-     * <p>请确保查询结果只有一条记录，否则会引发异常。
+     * <p>预计该方法只会处理一条数据，如果查询结果存在多条数据将会取得第一条数据作为结果。
      * @throws DataAccessException if the query fails
      */
     public <T> T queryForObject(String sql, Object[] args, Class<T> requiredType) throws DataAccessException;
     /**
      * 查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果将通过 requiredType 参数所表示的类型封装。
-     * <p>请确保查询结果只有一条记录，否则会引发异常。
+     * <p>预计该方法只会处理一条数据，如果查询结果存在多条数据将会取得第一条数据作为结果。
      * @throws DataAccessException if the query fails
      */
     public <T> T queryForObject(String sql, Class<T> requiredType, Object... args) throws DataAccessException;
     /**
      * 查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果将使用 Map 封装。
-     * <p>请确保查询结果只有一条记录，否则会引发异常。
+     * <p>预计该方法只会处理一条数据，如果查询结果存在多条数据将会取得第一条数据作为结果。
      * @throws DataAccessException if the query fails
      * @see java.sql.Types*/
     public Map<String, Object> queryForMap(String sql, Object[] args, int[] argTypes) throws DataAccessException;
     /**
      * 查询一个 SQL 语句，使用这个查询将会使用 PreparedStatement 接口操作。查询结果将使用 Map 封装。
-     * <p>请确保查询结果只有一条记录，否则会引发异常。
+     * <p>预计该方法只会处理一条数据，如果查询结果存在多条数据将会取得第一条数据作为结果。
      * @throws DataAccessException if the query fails
      */
     public Map<String, Object> queryForMap(String sql, Object... args) throws DataAccessException;
