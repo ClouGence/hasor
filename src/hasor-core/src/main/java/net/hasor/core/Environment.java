@@ -37,6 +37,8 @@ public interface Environment {
     public Set<Class<?>> getClassSet(Class<?> featureType);
     /**释放环境所占用的资源*/
     public void release();
+    /**判断是否为调试模式。*/
+    public boolean isDebug();
     //
     //
     //

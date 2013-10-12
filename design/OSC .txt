@@ -1,0 +1,30 @@
+important	重要
+  bug		BUG
+  critical	关键
+  confirmed	确认
+
+warning		警告
+  documentation	文档
+  support	支持
+
+neutral		中性
+  discussion	讨论
+  suggestion	建议
+
+positive	积极
+  feature	特性
+  enhancement	增强
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -35,6 +35,7 @@ import net.hasor.Hasor;
 import net.hasor.core.AppContext;
 import net.hasor.web.resource.ResourceLoader;
 import org.more.util.ContextClassLoaderLocal;
+import org.more.util.FileUtils;
 import org.more.util.IOUtils;
 import org.more.util.StringUtils;
 import com.google.inject.Provider;
@@ -50,8 +51,11 @@ public class ResourceHttpServlet extends HttpServlet {
     private Map<String, ReadWriteLock>                       cachingRes       = new HashMap<String, ReadWriteLock>();
     @Inject
     private AppContext                                       appContext;
+    private boolean                                          isDebug;
     //
     public synchronized void init(ServletConfig config) throws ServletException {
+        this.isDebug = this.appContext.getEnvironment().isDebug();
+        //
         ResourceLoader[] resLoaderArray = LoaderList.get();
         if (resLoaderArray != null)
             return;
@@ -65,6 +69,8 @@ public class ResourceHttpServlet extends HttpServlet {
         LoaderList.set(resLoaderArray);
     }
     public synchronized static void initCacheDir(File cacheDir) {
+        FileUtils.deleteDir(cacheDir);
+        cacheDir.mkdirs();
         CacheDir.set(cacheDir);
         Hasor.info("use cacheDir %s", cacheDir);
     }
@@ -117,8 +123,8 @@ public class ResourceHttpServlet extends HttpServlet {
         } catch (Exception e) {}
         //2.检查缓存路径中是否存在
         File cacheFile = new File(CacheDir.get(), requestURI);
-        if (cacheFile.exists()) {
-            this.forwardTo(cacheFile, request, response);
+        if (!this.isDebug && cacheFile.exists()) {
+            this.forwardTo(cacheFile, request, response);//在非debug模式下并且内容已经被缓存时
             return;
         }
         //3.创建锁-A
@@ -130,7 +136,8 @@ public class ResourceHttpServlet extends HttpServlet {
             /*升级锁*/
             cacheRWLock.readLock().unlock();
             cacheRWLock.writeLock().lock();
-            if (!cacheFile.exists()) {
+            /*在debug模式下，或者尚未缓存时*/
+            if (this.isDebug || !cacheFile.exists()) {
                 forwardType = this.cacheRes(cacheFile, requestURI, request, response);//当缓存失败时返回false
             }
             cacheRWLock.readLock().lock();

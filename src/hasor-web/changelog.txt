@@ -1,5 +1,7 @@
 Hasor-Web v0.0.3
-	1.
+* Bug:
+	1.修复 #5871 新增：Resources每次启动都会清理之前的缓存文件。
+	2.修复 #5871 在Debug 模式下 Resources 在处理 Classpath 中资源时每次请求处理都会重新加载。 
 
 Hasor-Web v0.0.2
 * Bug:

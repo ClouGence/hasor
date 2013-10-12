@@ -55,6 +55,9 @@ public abstract class AbstractEnvironment implements Environment {
     public long getStartTime() {
         return this.startTime;
     }
+    public boolean isDebug() {
+        return this.settings.getBoolean("hasor.debug", false);
+    }
     public Set<Class<?>> getClassSet(Class<?> featureType) {
         return ScanClassPath.getClassSet(this.spanPackage, featureType);
     }
