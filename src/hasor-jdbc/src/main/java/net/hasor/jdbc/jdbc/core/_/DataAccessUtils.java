@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.jdbc.support;
+package net.hasor.jdbc.jdbc.core._;
 import java.util.Collection;
 import net.hasor.jdbc.dao.InvalidDataAccessException;
 /**
@@ -21,7 +21,7 @@ import net.hasor.jdbc.dao.InvalidDataAccessException;
  * @version : 2013-10-12
  * @author 赵永春(zyc@hasor.net)
  */
-public class DataAccessUtils {
+class DataAccessUtils {
     /**至返回结果集中的一条数据。*/
     public static <T> T requiredSingleResult(Collection<T> results) throws InvalidDataAccessException {
         int size = (results != null ? results.size() : 0);
@@ -31,4 +31,4 @@ public class DataAccessUtils {
             throw new InvalidDataAccessException("Incorrect column count: expected " + 1 + ", actual " + size);
         return results.iterator().next();
     }
-}
+}s

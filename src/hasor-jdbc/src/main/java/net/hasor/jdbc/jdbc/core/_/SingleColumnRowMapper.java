@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.jdbc.support;
+package net.hasor.jdbc.jdbc.core._;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import net.hasor.jdbc.dao.InvalidDataAccessException;
 import net.hasor.jdbc.dao.TypeMismatchDataAccessException;
-import net.hasor.jdbc.jdbc.JdbcTemplate;
 import net.hasor.jdbc.jdbc.RowMapper;
+import net.hasor.jdbc.jdbc.core.JdbcTemplate;
 /**
  * {@link RowMapper} implementation that converts a single column into a single
  * result value per row. Expects to operate on a <code>java.sql.ResultSet</code>
@@ -157,3 +157,4 @@ public class SingleColumnRowMapper<T> implements RowMapper<T> {
         }
     }
 }
+s

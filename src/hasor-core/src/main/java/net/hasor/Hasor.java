@@ -75,6 +75,8 @@ public abstract class Hasor {
      */
     public static void debug(String string, Object... params) {
         Logger log = LoggerFactory.getLogger(callerClass());
+        if (!log.isDebugEnabled())
+            return;
         Object[] paramsStr = getStringArray(params);
         log.debug(callerInfo() + " ->> " + String.format(string, paramsStr));
     }
@@ -85,6 +87,8 @@ public abstract class Hasor {
      */
     public static void error(String string, Object... params) {
         Logger log = LoggerFactory.getLogger(callerClass());
+        if (!log.isErrorEnabled())
+            return;
         Object[] paramsStr = getStringArray(params);
         log.error(callerErr() + " ->> " + String.format(string, paramsStr));
     }
@@ -95,6 +99,8 @@ public abstract class Hasor {
      */
     public static void warning(String string, Object... params) {
         Logger log = LoggerFactory.getLogger(callerClass());
+        if (!log.isWarnEnabled())
+            return;
         Object[] paramsStr = getStringArray(params);
         log.warn(callerWarn() + " ->> " + String.format(string, paramsStr));
     }
@@ -105,6 +111,8 @@ public abstract class Hasor {
      */
     public static void info(String string, Object... params) {
         Logger log = LoggerFactory.getLogger(callerClass());
+        if (!log.isInfoEnabled())
+            return;
         Object[] paramsStr = getStringArray(params);
         log.info(callerInfo() + " ->> " + String.format(string, paramsStr));
     }
@@ -164,6 +172,29 @@ public abstract class Hasor {
         }
         return logString.toString();
     }
+    //
+    /**是否输出 Debug 级日志。*/
+    public static boolean isDebugLogger() {
+        Logger log = LoggerFactory.getLogger(callerClass());
+        return log.isDebugEnabled();
+    }
+    /**是否输出 Error 级日志。*/
+    public static boolean isErrorLogger() {
+        Logger log = LoggerFactory.getLogger(callerClass());
+        return log.isErrorEnabled();
+    }
+    /**是否输出 Warning 级日志。*/
+    public static boolean isWarningLogger() {
+        Logger log = LoggerFactory.getLogger(callerClass());
+        return log.isWarnEnabled();
+    }
+    /**是否输出 Info 级日志。*/
+    public static boolean isInfoLogger() {
+        Logger log = LoggerFactory.getLogger(callerClass());
+        return log.isInfoEnabled();
+    }
+    //
+    //
     /** Asserts that an argument is legal. If the given boolean is
      * not <code>true</code>, an <code>IllegalArgumentException</code>
      * is thrown.

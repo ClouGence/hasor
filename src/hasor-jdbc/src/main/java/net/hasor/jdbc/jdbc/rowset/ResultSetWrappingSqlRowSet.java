@@ -23,6 +23,8 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 import net.hasor.jdbc.dao.InvalidDataAccessException;
+import net.hasor.jdbc.jdbc.SqlRowSet;
+import net.hasor.jdbc.jdbc.SqlRowSetMetaData;
 /**
  * Default implementation of Spring's {@link SqlRowSet} interface.
  *

@@ -17,8 +17,6 @@ package net.hasor.jdbc.jdbc;
 import java.util.List;
 import java.util.Map;
 import net.hasor.jdbc.dao.DataAccessException;
-import net.hasor.jdbc.jdbc.parameter.SqlParameter;
-import net.hasor.jdbc.jdbc.rowset.SqlRowSet;
 /**
  * 该接口声明了一些 JDBC 基本操作。
  * @version : 2013-10-9

@@ -13,28 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.jdbc.support;
+package net.hasor.jdbc.jdbc.core;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.sql.rowset.CachedRowSet;
-import net.hasor.jdbc.jdbc.JdbcTemplate;
 import net.hasor.jdbc.jdbc.ResultSetExtractor;
+import net.hasor.jdbc.jdbc.SqlRowSet;
 import net.hasor.jdbc.jdbc.rowset.ResultSetWrappingSqlRowSet;
-import net.hasor.jdbc.jdbc.rowset.SqlRowSet;
 import com.sun.rowset.CachedRowSetImpl;
 /**
- * ResultSetExtractor implementation that returns a Spring SqlRowSet
- * representation for each given ResultSet.
- *
- * <p>The default implementation uses a standard JDBC CachedRowSet underneath.
- * This means that JDBC RowSet support needs to be available at runtime:
- * by default, Sun's <code>com.sun.rowset.CachedRowSetImpl</code> class.
+ * 接口 {@link ResultSetExtractor} 实现类，返回一个 SqlRowSet 数据集对象。
+ * 
+ * <p>默认实现使用 JDBC 标准  CachedRowSet.需要保证在运行时
+ * <code>com.sun.rowset.CachedRowSetImpl</code> 类是可用的。
  *
  * @author Juergen Hoeller
  * @since 1.2
  * @see #newCachedRowSet
- * @see org.noe.platform.modules.db.jdbcorm.jdbc.support.rowset.SqlRowSet
- * @see JdbcTemplate#queryForRowSet(String)
  * @see javax.sql.rowset.CachedRowSet
  */
 public class SqlRowSetResultSetExtractor implements ResultSetExtractor<SqlRowSet> {

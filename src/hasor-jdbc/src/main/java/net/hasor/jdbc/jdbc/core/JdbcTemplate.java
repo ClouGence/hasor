@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.jdbc;
+package net.hasor.jdbc.jdbc.core;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -35,12 +35,22 @@ import javax.sql.DataSource;
 import net.hasor.Hasor;
 import net.hasor.jdbc.dao.DataAccessException;
 import net.hasor.jdbc.dao.SQLWarningException;
-import net.hasor.jdbc.jdbc.parameter.SqlParameter;
-import net.hasor.jdbc.jdbc.rowset.SqlRowSet;
-import net.hasor.jdbc.jdbc.support.DataAccessUtils;
-import net.hasor.jdbc.jdbc.support.LinkedCaseInsensitiveMap;
-import net.hasor.jdbc.jdbc.support.RowMapperResultSetExtractor;
-import net.hasor.jdbc.jdbc.support.SqlRowSetResultSetExtractor;
+import net.hasor.jdbc.jdbc.BatchPreparedStatementSetter;
+import net.hasor.jdbc.jdbc.CallableStatementCallback;
+import net.hasor.jdbc.jdbc.CallableStatementCreator;
+import net.hasor.jdbc.jdbc.ConnectionCallback;
+import net.hasor.jdbc.jdbc.JdbcOperations;
+import net.hasor.jdbc.jdbc.PreparedStatementCallback;
+import net.hasor.jdbc.jdbc.PreparedStatementCreator;
+import net.hasor.jdbc.jdbc.PreparedStatementSetter;
+import net.hasor.jdbc.jdbc.ResultSetExtractor;
+import net.hasor.jdbc.jdbc.RowCallbackHandler;
+import net.hasor.jdbc.jdbc.RowMapper;
+import net.hasor.jdbc.jdbc.SqlRowSet;
+import net.hasor.jdbc.jdbc.StatementCallback;
+import net.hasor.jdbc.jdbc.core._.DataAccessUtils;
+import net.hasor.jdbc.jdbc.core.util.LinkedCaseInsensitiveMap;
+import net.hasor.jdbc.jdbc.parameter.SqlInputParameter;
 /**
  * <b>This is the central class in the JDBC core package.</b>
  * It simplifies the use of JDBC and helps to avoid common errors.
@@ -780,11 +790,11 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     public <T> T execute(String callString, CallableStatementCallback<T> action) throws DataAccessException {
         return execute(new SimpleCallableStatementCreator(callString), action);
     }
-    public Map<String, Object> call(CallableStatementCreator csc, List<SqlParameter> declaredParameters) throws DataAccessException {
-        final List<SqlParameter> updateCountParameters = new ArrayList<SqlParameter>();
-        final List<SqlParameter> resultSetParameters = new ArrayList<SqlParameter>();
-        final List<SqlParameter> callParameters = new ArrayList<SqlParameter>();
-        for (SqlParameter parameter : declaredParameters) {
+    public Map<String, Object> call(CallableStatementCreator csc, List<SqlInputParameter> declaredParameters) throws DataAccessException {
+        final List<SqlInputParameter> updateCountParameters = new ArrayList<SqlInputParameter>();
+        final List<SqlInputParameter> resultSetParameters = new ArrayList<SqlInputParameter>();
+        final List<SqlInputParameter> callParameters = new ArrayList<SqlInputParameter>();
+        for (SqlInputParameter parameter : declaredParameters) {
             if (parameter.isResultsParameter()) {
                 if (parameter instanceof SqlReturnResultSet) {
                     resultSetParameters.add(parameter);

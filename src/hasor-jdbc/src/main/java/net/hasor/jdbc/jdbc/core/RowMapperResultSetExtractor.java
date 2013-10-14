@@ -13,27 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.jdbc.support;
+package net.hasor.jdbc.jdbc.core;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import net.hasor.Hasor;
-import net.hasor.jdbc.jdbc.JdbcTemplate;
 import net.hasor.jdbc.jdbc.ResultSetExtractor;
 import net.hasor.jdbc.jdbc.RowMapper;
 /**
- * Adapter implementation of the ResultSetExtractor interface that delegates
- * to a RowMapper which is supposed to create an object for each row.
- * Each object is added to the results List of this ResultSetExtractor.
+ * {@link ResultSetExtractor} 接口实现类，该类会将结果集中的每一行进行处理，并返回一个 List 用以封装处理结果集。
  *
- * <p>Useful for the typical case of one object per row in the database table.
- * The number of entries in the results list will match the number of rows.
- *
- * <p>Note that a RowMapper object is typically stateless and thus reusable;
- * just the RowMapperResultSetExtractor adapter is stateful.
- *
- * <p>A usage example with JdbcTemplate:
+ * <p>注意：{@link RowMapper} 应当是无状态的，否则该接口在处理每一行数据时才可以重用行处理器。
+ * <p>例：
  *
  * <pre class="code">JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);  // reusable object
  * RowMapper rowMapper = new UserRowMapper();  // reusable object
@@ -45,32 +37,25 @@ import net.hasor.jdbc.jdbc.RowMapper;
  * User user = (User) jdbcTemplate.queryForObject(
  *     "select * from user where id=?", new Object[] {id},
  *     new RowMapperResultSetExtractor(rowMapper, 1));</pre>
- *
- * <p>Alternatively, consider subclassing MappingSqlQuery from the <code>jdbc.object</code>
- * package: Instead of working with separate JdbcTemplate and RowMapper objects,
- * you can have executable query objects (containing row-mapping logic) there.
- *
+ * 
  * @author Juergen Hoeller
- * @since 1.0.2
+ * @author 赵永春 (zyc@byshell.org)
  * @see RowMapper
- * @see JdbcTemplate
- * @see org.noe.platform.modules.db.jdbcorm.jdbc.object.MappingSqlQuery
  */
 public class RowMapperResultSetExtractor<T> implements ResultSetExtractor<List<T>> {
     private final RowMapper<T> rowMapper;
     private final int          rowsExpected;
     /**
-     * Create a new RowMapperResultSetExtractor.
-     * @param rowMapper the RowMapper which creates an object for each row
+     * 创建 {@link RowMapperResultSetExtractor} 对象
+     * @param rowMapper 行映射器。
      */
     public RowMapperResultSetExtractor(RowMapper<T> rowMapper) {
         this(rowMapper, 0);
     }
     /**
-     * Create a new RowMapperResultSetExtractor.
-     * @param rowMapper the RowMapper which creates an object for each row
-     * @param rowsExpected the number of expected rows
-     * (just used for optimized collection handling)
+     * 创建 {@link RowMapperResultSetExtractor} 对象
+     * @param rowMapper 行映射器。
+     * @param rowsExpected 预期结果集大小（实际得到的结果集条目不受此参数限制）。
      */
     public RowMapperResultSetExtractor(RowMapper<T> rowMapper, int rowsExpected) {
         Hasor.assertIsNotNull(rowMapper, "RowMapper is required");

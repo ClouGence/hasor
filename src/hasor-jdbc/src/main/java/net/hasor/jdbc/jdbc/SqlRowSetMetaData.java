@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.jdbc.rowset;
+package net.hasor.jdbc.jdbc;
 import net.hasor.jdbc.dao.InvalidDataAccessException;
 /**
- * 元数据接口，接口功能类似于javax.sql.ResultSetMetaData<code>javax.sql.ResultSetMetaData</code>
+ * 元数据接口，接口功能类似于 <code>javax.sql.ResultSetMetaData</code>
  * @author Thomas Risberg
  * @see SqlRowSet#getMetaData
  * @see java.sql.ResultSetMetaData

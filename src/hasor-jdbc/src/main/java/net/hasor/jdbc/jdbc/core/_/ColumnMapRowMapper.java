@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.jdbc.support;
+package net.hasor.jdbc.jdbc.core._;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Map;
-import net.hasor.jdbc.jdbc.JdbcTemplate;
 import net.hasor.jdbc.jdbc.RowMapper;
+import net.hasor.jdbc.jdbc.core.JdbcTemplate;
+import net.hasor.jdbc.jdbc.util.LinkedCaseInsensitiveMap;
 /**
  * {@link RowMapper} implementation that creates a <code>java.util.Map</code>
  * for each row, representing all columns as key-value pairs: one
@@ -88,3 +89,4 @@ public class ColumnMapRowMapper implements RowMapper<Map<String, Object>> {
         return JdbcUtils.getResultSetValue(rs, index);
     }
 }
+s

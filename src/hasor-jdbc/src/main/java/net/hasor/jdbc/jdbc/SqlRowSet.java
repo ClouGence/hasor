@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.jdbc.rowset;
+package net.hasor.jdbc.jdbc;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -23,8 +23,7 @@ import java.util.Calendar;
 import java.util.Map;
 import net.hasor.jdbc.dao.InvalidDataAccessException;
 /**
- * 该接口是对 <code>javax.sql.RowSet</code>接口的一个包装，当断开连接之后
- * 通过 SqlRowSet 接口仍然可以取得数据。
+ * 该接口是对 <code>javax.sql.RowSet</code>接口的一个包装，当断开连接之后通过 SqlRowSet 接口仍然可以取得数据。
  * @author Thomas Risberg
  * @author Juergen Hoeller
  * @author 赵永春(zyc@hasor.net)
@@ -94,7 +93,7 @@ public interface SqlRowSet extends Serializable {
      * @return a byte representing the column value
      * @see java.sql.ResultSet#getByte(java.lang.String)
      */
-    byte getByte(String columnName) throws InvalidDataAccessException;
+    public byte getByte(String columnName) throws InvalidDataAccessException;
     /**
      * Retrieves the value of the indicated column in the current row as
      * a Date object.
