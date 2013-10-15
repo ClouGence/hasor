@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.jdbc.operations.core;
-
 import net.hasor.jdbc.operations.CallableStatementCreator;
 import net.hasor.jdbc.operations.PreparedStatementCreator;
 import net.hasor.jdbc.operations.StatementCallback;
-
 /**
  * Interface to be implemented by objects that can provide SQL strings.
  *

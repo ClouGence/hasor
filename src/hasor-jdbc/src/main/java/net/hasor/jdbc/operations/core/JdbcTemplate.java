@@ -57,7 +57,7 @@ import org.more.util.ArrayUtils;
  * @version : 2013-10-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public class JdbcTemplate2 implements JdbcOperations {
+public class JdbcTemplate implements JdbcOperations {
     /*是否忽略出现的 SQL 警告*/
     private boolean ignoreWarnings            = true;
     /*JDBC查询和从结果集里面每次取设置行数，循环去取，直到取完。合理设置该参数可以避免内存异常。
@@ -493,9 +493,8 @@ public class JdbcTemplate2 implements JdbcOperations {
                             rowsAffected.add(ps.executeUpdate());
                         }
                         int[] rowsAffectedArray = new int[rowsAffected.size()];
-                        for (int i = 0; i < rowsAffectedArray.length; i++) {
+                        for (int i = 0; i < rowsAffectedArray.length; i++)
                             rowsAffectedArray[i] = rowsAffected.get(i);
-                        }
                         return rowsAffectedArray;
                     }
                 } finally {
@@ -560,16 +559,14 @@ public class JdbcTemplate2 implements JdbcOperations {
         return execute(psc, new PreparedStatementCallback<Integer>() {
             public Integer doInPreparedStatement(PreparedStatement ps) throws SQLException {
                 try {
-                    if (pss != null) {
+                    if (pss != null)
                         pss.setValues(ps);
-                    }
                     int rows = ps.executeUpdate();
                     Hasor.debug("SQL update affected " + rows + " rows");
                     return rows;
                 } finally {
-                    if (pss instanceof ParameterDisposer) {
+                    if (pss instanceof ParameterDisposer)
                         ((ParameterDisposer) pss).cleanupParameters();
-                    }
                 }
             }
         });
@@ -582,27 +579,18 @@ public class JdbcTemplate2 implements JdbcOperations {
             public T doInPreparedStatement(PreparedStatement ps) throws SQLException {
                 ResultSet rs = null;
                 try {
-                    if (pss != null) {
+                    if (pss != null)
                         pss.setValues(ps);
-                    }
                     rs = ps.executeQuery();
                     return rse.extractData(rs);
                 } finally {
                     rs.close();
-                    if (pss instanceof ParameterDisposer) {
+                    if (pss instanceof ParameterDisposer)
                         ((ParameterDisposer) pss).cleanupParameters();
-                    }
                 }
             }
         });
     }
-    //
-    //
-    //
-    //
-    //
-    //
-    //
     //
     //
     //
@@ -615,15 +603,13 @@ public class JdbcTemplate2 implements JdbcOperations {
         return new SingleColumnRowMapper<T>(requiredType);
     }
     protected PreparedStatementSetter newArgPreparedStatementSetter(Object[] args) {
-        // TODO Auto-generated method stub
-        return null;// new ArgPreparedStatementSetter(args);
+        return new ArgPreparedStatementSetter(args);
     }
     /**Create a new ArgTypePreparedStatementSetter using the args and argTypes passed in.
      * This method allows the creation to be overridden by sub-classes.
      */
     protected PreparedStatementSetter newArgTypePreparedStatementSetter(Object[] args, int[] argTypes) {
-        // TODO Auto-generated method stub
-        return null;// new ArgTypePreparedStatementSetter(args, argTypes);
+        return new ArgTypePreparedStatementSetter(args, argTypes);
     }
     /**获取一个数据库连接，JDBC 框架会从 DataSource 接口尝试获取一个新的连接资源给开发者。开发者需要自己维护连接的事务，并且要保证该资源可以被正常释放。*/
     protected Connection getConnection(DataSource source) {
@@ -635,26 +621,6 @@ public class JdbcTemplate2 implements JdbcOperations {
         // TODO Auto-generated method stub
         return null;
     }
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
     /**创建用于保存结果集的数据Map。*/
     protected Map<String, Object> createResultsMap() {
         if (!isResultsMapCaseInsensitive())

@@ -26,6 +26,7 @@ import java.sql.SQLException;
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
 public class JdbcUtils {
+    public static final int TYPE_UNKNOWN = Integer.MIN_VALUE;
     /**
      * Determine the column name to use. The column name is determined based on a
      * lookup using ResultSetMetaData.
