@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2007 the original author or authors.
+ * Copyright 2002-2006 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,18 @@
  */
 package net.hasor.jdbc.jdbc.parameter;
 /**
- * 输入输出双向参数（不支持结果集）
+ * 值类型输出参数（非结果集）。
  * @version : 2013-10-15
  * @author 赵永春(zyc@hasor.net)
  */
-public class SqlInOutParameter extends SqlOutVarParameter {
+public class SqlOutVarParameter extends SqlOutParameter {
+    private SqlReturnType sqlReturnType;
     /**
      * Create a new SqlOutParameter.
      * @param name name of the parameter, as used in input and output maps
      * @param sqlType SQL type of the parameter according to java.sql.Types
      */
-    public SqlInOutParameter(String name, int sqlType) {
+    public SqlOutVarParameter(String name, int sqlType) {
         super(name, sqlType);
     }
     /**
@@ -35,10 +36,16 @@ public class SqlInOutParameter extends SqlOutVarParameter {
      * @param typeName the type name of the parameter (optional)
      * @param sqlReturnType custom value handler for complex type (optional)
      */
-    public SqlInOutParameter(String name, int sqlType, SqlReturnType sqlReturnType) {
-        super(name, sqlType, sqlReturnType);
+    public SqlOutVarParameter(String name, int sqlType, SqlReturnType sqlReturnType) {
+        super(name, sqlType);
+        this.sqlReturnType = sqlReturnType;
     }
-    public boolean isInput() {
-        return true;
+    /**Return the custom return type, if any.*/
+    public SqlReturnType getSqlReturnType() {
+        return this.sqlReturnType;
+    }
+    /**Return whether this parameter holds a custom return type.*/
+    public boolean isReturnTypeSupported() {
+        return (this.sqlReturnType != null);
     }
 }

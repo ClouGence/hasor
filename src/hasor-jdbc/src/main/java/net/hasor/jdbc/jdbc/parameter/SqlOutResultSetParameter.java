@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2007 the original author or authors.
+ * Copyright 2002-2006 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,40 +18,22 @@ import net.hasor.jdbc.jdbc.ResultSetExtractor;
 import net.hasor.jdbc.jdbc.RowCallbackHandler;
 import net.hasor.jdbc.jdbc.RowMapper;
 /**
- * 基础类型 SQL 参数，该类型的子类有{@link SqlOutParameter} 和 {@link SqlReturnResultSet}.
- * 它不是一个传入参数。
- * @author Juergen Hoeller
- * @since 1.0.2
+ * 结果集类型输出参数（非值类型）。
+ * @version : 2013-10-15
+ * @author 赵永春(zyc@hasor.net)
  */
-public abstract class ResultSetSupportingSqlParameter extends SqlInputParameter {
-    private ResultSetExtractor resultSetExtractor;
-    private RowCallbackHandler rowCallbackHandler;
-    private RowMapper          rowMapper;
-    /**
-     * Create a new ResultSetSupportingSqlParameter.
-     * @param name name of the parameter, as used in input and output maps
-     * @param sqlType SQL type of the parameter according to java.sql.Types
-     */
-    public ResultSetSupportingSqlParameter(String name, int sqlType) {
-        super(name, sqlType);
-    }
-    /**
-     * Create a new ResultSetSupportingSqlParameter.
-     * @param name name of the parameter, as used in input and output maps
-     * @param sqlType SQL type of the parameter according to java.sql.Types
-     * @param typeName the type name of the parameter (optional)
-     */
-    public ResultSetSupportingSqlParameter(String name, int sqlType, String typeName) {
-        super(name, sqlType, typeName);
-    }
+public class SqlOutResultSetParameter extends SqlOutParameter {
+    private ResultSetExtractor<?> resultSetExtractor;
+    private RowCallbackHandler    rowCallbackHandler;
+    private RowMapper<?>          rowMapper;
     /**
      * Create a new ResultSetSupportingSqlParameter.
      * @param name name of the parameter, as used in input and output maps
      * @param sqlType SQL type of the parameter according to java.sql.Types
      * @param rse ResultSetExtractor to use for parsing the ResultSet
      */
-    public ResultSetSupportingSqlParameter(String name, int sqlType, ResultSetExtractor rse) {
-        super(name, sqlType);
+    public SqlOutResultSetParameter(String name, ResultSetExtractor<?> rse) {
+        super(name, 0);
         this.resultSetExtractor = rse;
     }
     /**
@@ -60,8 +42,8 @@ public abstract class ResultSetSupportingSqlParameter extends SqlInputParameter 
      * @param sqlType SQL type of the parameter according to java.sql.Types
      * @param rch RowCallbackHandler to use for parsing the ResultSet
      */
-    public ResultSetSupportingSqlParameter(String name, int sqlType, RowCallbackHandler rch) {
-        super(name, sqlType);
+    public SqlOutResultSetParameter(String name, RowCallbackHandler rch) {
+        super(name, 0);
         this.rowCallbackHandler = rch;
     }
     /**
@@ -70,8 +52,8 @@ public abstract class ResultSetSupportingSqlParameter extends SqlInputParameter 
      * @param sqlType SQL type of the parameter according to java.sql.Types
      * @param rm RowMapper to use for parsing the ResultSet
      */
-    public ResultSetSupportingSqlParameter(String name, int sqlType, RowMapper rm) {
-        super(name, sqlType);
+    public SqlOutResultSetParameter(String name, RowMapper<?> rm) {
+        super(name, 0);
         this.rowMapper = rm;
     }
     /**
@@ -82,7 +64,7 @@ public abstract class ResultSetSupportingSqlParameter extends SqlInputParameter 
         return (this.resultSetExtractor != null || this.rowCallbackHandler != null || this.rowMapper != null);
     }
     /**Return the ResultSetExtractor held by this parameter, if any.*/
-    public ResultSetExtractor getResultSetExtractor() {
+    public ResultSetExtractor<?> getResultSetExtractor() {
         return this.resultSetExtractor;
     }
     /**Return the RowCallbackHandler held by this parameter, if any.*/
@@ -90,11 +72,7 @@ public abstract class ResultSetSupportingSqlParameter extends SqlInputParameter 
         return this.rowCallbackHandler;
     }
     /**Return the RowMapper held by this parameter, if any.*/
-    public RowMapper getRowMapper() {
+    public RowMapper<?> getRowMapper() {
         return this.rowMapper;
-    }
-    /**非传入参数。*/
-    public boolean isInputParameter() {
-        return false;
     }
 }

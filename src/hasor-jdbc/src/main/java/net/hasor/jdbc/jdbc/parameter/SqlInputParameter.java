@@ -16,7 +16,7 @@
 package net.hasor.jdbc.jdbc.parameter;
 import net.hasor.jdbc.jdbc.SqlParameter;
 /**
- * 代表传入参数。
+ * SqlParameter 的子类，用于表示传入参数的基础类。
  * @see java.sql.Types
  * @version : 2013-10-14
  * @author 赵永春(zyc@hasor.net)

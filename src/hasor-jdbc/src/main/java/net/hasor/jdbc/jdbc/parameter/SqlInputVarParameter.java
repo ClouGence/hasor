@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.jdbc.jdbc.parameter;
+import net.hasor.jdbc.jdbc.SqlParameter;
 /**
- * 带有值的输入参数。
+ * SqlParameter 的子类，用于表示带有值的输入参数。
  * @see java.sql.Types
  * @version : 2013-10-14
  * @author 赵永春(zyc@hasor.net)
@@ -37,7 +38,7 @@ public class SqlInputVarParameter extends SqlInputParameter {
      * @param declaredParam the declared SqlParameter to define a value for
      * @param value the value object
      */
-    public SqlInputVarParameter(SqlInputParameter declaredParam, Object value) {
+    public SqlInputVarParameter(SqlParameter declaredParam, Object value) {
         super(declaredParam);
         this.value = value;
     }
