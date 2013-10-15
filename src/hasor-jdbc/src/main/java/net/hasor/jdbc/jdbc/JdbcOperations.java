@@ -246,10 +246,10 @@ public interface JdbcOperations {
     //-------------------------------------------------------------------------
     // Methods dealing with callable statements
     //-------------------------------------------------------------------------
-    /**执行 JDBC（存储过程、函数）数据访问操作。*/
+    /**执行 JDBC（存储过程、函数）数据访问操作。
+     * <p>CallableStatementCreator 接口或者 CallableStatementCallback 接口 对象需要对存储过程的传入参数进行设置。*/
     public <T> T execute(CallableStatementCreator csc, CallableStatementCallback<T> action) throws DataAccessException;
-    /**执行 JDBC（存储过程、函数）数据访问操作。*/
+    /**执行 JDBC（存储过程、函数）数据访问操作。
+     * <p>CallableStatementCallback 接口 对象需要对存储过程的传入参数进行设置。*/
     public <T> T execute(String callString, CallableStatementCallback<T> action) throws DataAccessException;
-    /**执行 JDBC（存储过程、函数）数据访问操作。*/
-    public Map<String, Object> call(CallableStatementCreator csc, List<SqlParameter> declaredParameters) throws DataAccessException;
 }

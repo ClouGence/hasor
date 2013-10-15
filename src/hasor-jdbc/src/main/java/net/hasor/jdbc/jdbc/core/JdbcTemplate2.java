@@ -28,8 +28,6 @@ import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,13 +50,7 @@ import net.hasor.jdbc.jdbc.RowCallbackHandler;
 import net.hasor.jdbc.jdbc.RowMapper;
 import net.hasor.jdbc.jdbc.SqlRowSet;
 import net.hasor.jdbc.jdbc.StatementCallback;
-import net.hasor.jdbc.jdbc.core._.ColumnMapRowMapper;
 import net.hasor.jdbc.jdbc.core.util.LinkedCaseInsensitiveMap;
-import net.hasor.jdbc.jdbc.parameter.ResultSetSupportingSqlParameter;
-import net.hasor.jdbc.jdbc.parameter.SqlOutParameter;
-import net.hasor.jdbc.jdbc.parameter.SqlOutUpdateCountParameter;
-import net.hasor.jdbc.jdbc.parameter.SqlInputParameter;
-import net.hasor.jdbc.jdbc.parameter.SqlReturnResultSet;
 import org.more.util.ArrayUtils;
 /**
  * 
@@ -80,21 +72,6 @@ public class JdbcTemplate2 implements JdbcOperations {
     /*当JDBC 结果集中如出现相同的列名仅仅大小写不同时。是否保留大小写列名敏感。
      * 如果为 true 表示敏感，并且结果集Map中保留两个记录。如果为 false 则表示不敏感，如出现冲突列名后者将会覆盖前者。*/
     private boolean resultsMapCaseInsensitive = false;
-    //
-    /**
-     * If this variable is set to true then all results checking will be bypassed for any
-     * callable statement processing.  This can be used to avoid a bug in some older Oracle
-     * JDBC drivers like 10.1.0.2.
-     */
-    private boolean skipResultsProcessing     = false;
-    /**
-     * If this variable is set to true then all results from a stored procedure call
-     * that don't have a corresponding SqlOutParameter declaration will be bypassed.
-     * All other results processng will be take place unless the variable 
-     * <code>skipResultsProcessing</code> is set to <code>true</code> 
-     */
-    private boolean skipUndeclaredResults     = false;
-    //
     //
     //
     //
@@ -522,9 +499,8 @@ public class JdbcTemplate2 implements JdbcOperations {
                         return rowsAffectedArray;
                     }
                 } finally {
-                    if (pss instanceof ParameterDisposer) {
+                    if (pss instanceof ParameterDisposer)
                         ((ParameterDisposer) pss).cleanupParameters();
-                    }
                 }
             }
         });
@@ -578,161 +554,7 @@ public class JdbcTemplate2 implements JdbcOperations {
     public <T> T execute(String callString, CallableStatementCallback<T> action) throws DataAccessException {
         return execute(new SimpleCallableStatementCreator(callString), action);
     }
-    public Map<String, Object> call(CallableStatementCreator csc, List<SqlInputParameter> declaredParameters) throws DataAccessException {
-        final List<SqlInputParameter> updateCountParameters = new ArrayList<SqlInputParameter>();
-        final List<SqlInputParameter> resultSetParameters = new ArrayList<SqlInputParameter>();
-        final List<SqlInputParameter> callParameters = new ArrayList<SqlInputParameter>();
-        //1.对传入参数分类
-        for (SqlInputParameter parameter : declaredParameters) {
-            if (parameter.isOutputParameter()) {
-                /*传出参数*/
-                if (parameter instanceof SqlReturnResultSet) {
-                    resultSetParameters.add(parameter);
-                } else {
-                    updateCountParameters.add(parameter);
-                }
-            } else {
-                /*传入参数*/
-                callParameters.add(parameter);
-            }
-        }
-        //2.执行存储过程
-        return execute(csc, new CallableStatementCallback<Map<String, Object>>() {
-            public Map<String, Object> doInCallableStatement(CallableStatement cs) throws SQLException {
-                boolean retVal = cs.execute();
-                int updateCount = cs.getUpdateCount();
-                Hasor.debug("CallableStatement.execute() returned '%s'.", retVal);
-                Hasor.debug("CallableStatement.getUpdateCount() returned %s.", updateCount);
-                //
-                Map<String, Object> returnedResults = createResultsMap();
-                if (retVal || updateCount != -1)
-                    returnedResults.putAll(extractReturnedResults(cs, updateCountParameters, resultSetParameters, updateCount));
-                returnedResults.putAll(extractOutputParameters(cs, callParameters));
-                return returnedResults;
-            }
-        });
-    }
-    private static final String RETURN_RESULT_SET_PREFIX   = "#result-set-";
-    private static final String RETURN_UPDATE_COUNT_PREFIX = "#update-count-";
-    /**从存储过程的返回结果集中提取数据。*/
-    private Map<String, Object> extractReturnedResults(CallableStatement cs, List updateCountParameters, List resultSetParameters, int updateCount) throws SQLException {
-        Map<String, Object> returnedResults = new HashMap<String, Object>();
-        int rsIndex = 0;
-        int updateIndex = 0;
-        boolean moreResults;
-        if (!skipResultsProcessing) {
-            do {
-                if (updateCount == -1) {
-                    if (resultSetParameters != null && resultSetParameters.size() > rsIndex) {
-                        SqlReturnResultSet declaredRsParam = (SqlReturnResultSet) resultSetParameters.get(rsIndex);
-                        returnedResults.putAll(processResultSet(cs.getResultSet(), declaredRsParam));
-                        rsIndex++;
-                    } else {
-                        if (!skipUndeclaredResults) {
-                            String rsName = RETURN_RESULT_SET_PREFIX + (rsIndex + 1);
-                            SqlReturnResultSet undeclaredRsParam = new SqlReturnResultSet(rsName, new ColumnMapRowMapper());
-                            Hasor.info("Added default SqlReturnResultSet parameter named " + rsName);
-                            returnedResults.putAll(processResultSet(cs.getResultSet(), undeclaredRsParam));
-                            rsIndex++;
-                        }
-                    }
-                } else {
-                    if (updateCountParameters != null && updateCountParameters.size() > updateIndex) {
-                        SqlOutUpdateCountParameter ucParam = (SqlOutUpdateCountParameter) updateCountParameters.get(updateIndex);
-                        String declaredUcName = ucParam.getName();
-                        returnedResults.put(declaredUcName, updateCount);
-                        updateIndex++;
-                    } else {
-                        if (!skipUndeclaredResults) {
-                            String undeclaredUcName = RETURN_UPDATE_COUNT_PREFIX + (updateIndex + 1);
-                            Hasor.info("Added default SqlReturnUpdateCount parameter named " + undeclaredUcName);
-                            returnedResults.put(undeclaredUcName, updateCount);
-                            updateIndex++;
-                        }
-                    }
-                }
-                moreResults = cs.getMoreResults();
-                updateCount = cs.getUpdateCount();
-                Hasor.debug("CallableStatement.getUpdateCount() returned %s.", updateCount);
-            } while (moreResults || updateCount != -1);
-        }
-        return returnedResults;
-    }
-    /**提取存储过程的输出参数。*/
-    private Map<String, Object> extractOutputParameters(CallableStatement cs, List<SqlInputParameter> parameters) throws SQLException {
-        Map<String, Object> returnedResults = new HashMap<String, Object>();
-        int sqlColIndex = 1;
-        for (SqlInputParameter param : parameters) {
-            if (param instanceof SqlOutParameter) {
-                SqlOutParameter outParam = (SqlOutParameter) param;
-                if (outParam.isReturnTypeSupported()) {
-                    Object out = outParam.getSqlReturnType().getTypeValue(cs, sqlColIndex, outParam.getSqlType(), outParam.getTypeName());
-                    returnedResults.put(outParam.getName(), out);
-                } else {
-                    Object out = cs.getObject(sqlColIndex);
-                    if (out instanceof ResultSet) {
-                        if (outParam.isResultSetSupported()) {
-                            returnedResults.putAll(processResultSet((ResultSet) out, outParam));
-                        } else {
-                            String rsName = outParam.getName();
-                            SqlReturnResultSet rsParam = new SqlReturnResultSet(rsName, new ColumnMapRowMapper());
-                            returnedResults.putAll(processResultSet(cs.getResultSet(), rsParam));
-                            Hasor.info("Added default SqlReturnResultSet parameter named " + rsName);
-                        }
-                    } else {
-                        returnedResults.put(outParam.getName(), out);
-                    }
-                }
-            }
-            if (!(param.isOutputParameter())) {
-                sqlColIndex++;
-            }
-        }
-        return returnedResults;
-    }
-    /**从存储过程中取得记录.*/
-    private Map<String, Object> processResultSet(ResultSet rs, ResultSetSupportingSqlParameter param) throws SQLException {
-        if (rs == null)
-            return Collections.emptyMap();
-        Map<String, Object> returnedResults = new HashMap<String, Object>();
-        try {
-            if (param.getRowMapper() != null) {
-                RowMapper rowMapper = param.getRowMapper();
-                Object result = (new RowMapperResultSetExtractor(rowMapper)).extractData(rs);
-                returnedResults.put(param.getName(), result);
-            } else if (param.getRowCallbackHandler() != null) {
-                RowCallbackHandler rch = param.getRowCallbackHandler();
-                (new RowCallbackHandlerResultSetExtractor(rch)).extractData(rs);
-                returnedResults.put(param.getName(), "ResultSet returned from stored procedure was processed");
-            } else if (param.getResultSetExtractor() != null) {
-                Object result = param.getResultSetExtractor().extractData(rs);
-                returnedResults.put(param.getName(), result);
-            }
-        } finally {
-            rs.close();
-        }
-        return returnedResults;
-    }
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
+    /***/
     public int update(final PreparedStatementCreator psc, final PreparedStatementSetter pss) throws DataAccessException {
         Hasor.debug("Executing prepared SQL update");
         return execute(psc, new PreparedStatementCallback<Integer>() {
@@ -752,6 +574,7 @@ public class JdbcTemplate2 implements JdbcOperations {
             }
         });
     }
+    /***/
     public <T> T query(PreparedStatementCreator psc, final PreparedStatementSetter pss, final ResultSetExtractor<T> rse) throws DataAccessException {
         Hasor.assertIsNotNull(rse, "ResultSetExtractor must not be null");
         Hasor.debug("Executing prepared SQL query");
@@ -773,15 +596,23 @@ public class JdbcTemplate2 implements JdbcOperations {
             }
         });
     }
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
     /** Create a new RowMapper for reading columns as key-value pairs. */
     protected RowMapper<Map<String, Object>> getColumnMapRowMapper() {
-        // TODO Auto-generated method stub
-        return null;//new ColumnMapRowMapper();
+        return new ColumnMapRowMapper();
     }
     /** Create a new RowMapper for reading result objects from a single column.*/
     protected <T> RowMapper<T> getSingleColumnRowMapper(Class<T> requiredType) {
-        // TODO Auto-generated method stub
-        return null;//new SingleColumnRowMapper<T>(requiredType);
+        return new SingleColumnRowMapper<T>(requiredType);
     }
     protected PreparedStatementSetter newArgPreparedStatementSetter(Object[] args) {
         // TODO Auto-generated method stub

@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.jdbc.core._;
+package net.hasor.jdbc.jdbc.core;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import net.hasor.jdbc.dao.InvalidDataAccessException;
 import net.hasor.jdbc.dao.TypeMismatchDataAccessException;
 import net.hasor.jdbc.jdbc.RowMapper;
-import net.hasor.jdbc.jdbc.core.JdbcTemplate;
+import net.hasor.jdbc.jdbc.core.util.JdbcUtils;
+import net.hasor.jdbc.jdbc.core.util.NumberUtils;
 /**
  * {@link RowMapper} implementation that converts a single column into a single
  * result value per row. Expects to operate on a <code>java.sql.ResultSet</code>
@@ -99,7 +100,7 @@ public class SingleColumnRowMapper<T> implements RowMapper<T> {
      * (or <code>null</code> if none specified)
      * @return the Object value
      * @throws SQLException in case of extraction failure
-     * @see net.hasor.jdbc.jdbc.support.noe.platform.modules.db.jdbcorm.jdbc.support.JdbcUtils#getResultSetValue(java.sql.ResultSet, int, Class)
+     * @see net.hasor.jdbc.jdbc.core.util.support.noe.platform.modules.db.jdbcorm.jdbc.support.JdbcUtils#getResultSetValue(java.sql.ResultSet, int, Class)
      * @see #getColumnValue(java.sql.ResultSet, int)
      */
     protected Object getColumnValue(ResultSet rs, int index, Class requiredType) throws SQLException {
@@ -122,7 +123,7 @@ public class SingleColumnRowMapper<T> implements RowMapper<T> {
      * @param index is the column index
      * @return the Object value
      * @throws SQLException in case of extraction failure
-     * @see net.hasor.jdbc.jdbc.support.noe.platform.modules.db.jdbcorm.jdbc.support.JdbcUtils#getResultSetValue(java.sql.ResultSet, int)
+     * @see net.hasor.jdbc.jdbc.core.util.support.noe.platform.modules.db.jdbcorm.jdbc.support.JdbcUtils#getResultSetValue(java.sql.ResultSet, int)
      */
     protected Object getColumnValue(ResultSet rs, int index) throws SQLException {
         return JdbcUtils.getResultSetValue(rs, index);
@@ -157,4 +158,3 @@ public class SingleColumnRowMapper<T> implements RowMapper<T> {
         }
     }
 }
-s

@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.jdbc.jdbc.core;
-
 import net.hasor.jdbc.jdbc.BatchPreparedStatementSetter;
-
 /**
  * 扩展 BatchPreparedStatementSetter 接口，提供了一个方法可以中断某一个批操作。
  * @version : 2013-10-14

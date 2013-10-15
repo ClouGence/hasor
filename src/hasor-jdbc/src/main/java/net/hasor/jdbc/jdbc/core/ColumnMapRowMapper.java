@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.jdbc.core._;
+package net.hasor.jdbc.jdbc.core;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Map;
 import net.hasor.jdbc.jdbc.RowMapper;
-import net.hasor.jdbc.jdbc.core.JdbcTemplate;
-import net.hasor.jdbc.jdbc.util.LinkedCaseInsensitiveMap;
+import net.hasor.jdbc.jdbc.core.util.JdbcUtils;
+import net.hasor.jdbc.jdbc.core.util.LinkedCaseInsensitiveMap;
 /**
  * {@link RowMapper} implementation that creates a <code>java.util.Map</code>
  * for each row, representing all columns as key-value pairs: one
@@ -62,7 +62,6 @@ public class ColumnMapRowMapper implements RowMapper<Map<String, Object>> {
      * @return the new Map instance
      * @see org.noe.platform.modules.db.jdbcorm.util.LinkedCaseInsensitiveMap
      */
-    @SuppressWarnings("unchecked")
     protected Map<String, Object> createColumnMap(int columnCount) {
         return new LinkedCaseInsensitiveMap<Object>(columnCount);
     }
@@ -83,10 +82,9 @@ public class ColumnMapRowMapper implements RowMapper<Map<String, Object>> {
      * @param rs is the ResultSet holding the data
      * @param index is the column index
      * @return the Object returned
-     * @see net.hasor.jdbc.jdbc.support.noe.platform.modules.db.jdbcorm.jdbc.support.JdbcUtils#getResultSetValue
+     * @see net.hasor.jdbc.jdbc.core.util.support.noe.platform.modules.db.jdbcorm.jdbc.support.JdbcUtils#getResultSetValue
      */
     protected Object getColumnValue(ResultSet rs, int index) throws SQLException {
         return JdbcUtils.getResultSetValue(rs, index);
     }
 }
-s
