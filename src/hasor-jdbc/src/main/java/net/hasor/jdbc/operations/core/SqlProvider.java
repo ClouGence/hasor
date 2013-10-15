@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.jdbc.core;
+package net.hasor.jdbc.operations.core;
 
-import net.hasor.jdbc.jdbc.CallableStatementCreator;
-import net.hasor.jdbc.jdbc.PreparedStatementCreator;
-import net.hasor.jdbc.jdbc.StatementCallback;
+import net.hasor.jdbc.operations.CallableStatementCreator;
+import net.hasor.jdbc.operations.PreparedStatementCreator;
+import net.hasor.jdbc.operations.StatementCallback;
 
 /**
  * Interface to be implemented by objects that can provide SQL strings.

@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.jdbc.core;
+package net.hasor.jdbc.operations.core;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.sql.rowset.CachedRowSet;
-import net.hasor.jdbc.jdbc.ResultSetExtractor;
-import net.hasor.jdbc.jdbc.SqlRowSet;
-import net.hasor.jdbc.jdbc.rowset.ResultSetWrappingSqlRowSet;
+import net.hasor.jdbc.operations.ResultSetExtractor;
+import net.hasor.jdbc.operations.SqlRowSet;
+import net.hasor.jdbc.operations.rowset.ResultSetWrappingSqlRowSet;
 import com.sun.rowset.CachedRowSetImpl;
 /**
  * 接口 {@link ResultSetExtractor} 实现类，返回一个 SqlRowSet 数据集对象。

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
+ * Copyright 2002-2007 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.jdbc;
-import java.sql.Connection;
+package net.hasor.jdbc.operations;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import net.hasor.jdbc.dao.DataAccessException;
 /**
- * 通用的回调接口。用来执行基于 JDBC {@link Connection}
- * 上的任意数量任意类型数据库操作。
+ * 这个接口用来映射 JDBC 结果集中一行数据。
  * @version : 2013-10-9
  * @author Thomas Risberg
  * @author Juergen Hoeller
  * @author 赵永春(zyc@hasor.net)
  */
-public interface ConnectionCallback<T> {
-    /**
-     * 执行一个 JDBC 操作。开发者不需要关心数据库连接的状态和事务。
-     * @param con 一个可用的 JDBC 数据库连接
-     * @return 返回操作执行的最终结果。
-     */
-    public T doInConnection(Connection con) throws SQLException, DataAccessException;
+public interface RowMapper<T> {
+    /**实现这个方法为结果集的一行记录进行转换，并将最终转换结果返回。
+     * 如果返回为 null 等同于忽略该行。需要注意，不要调用结果集的 next() 方法。*/
+    public T mapRow(ResultSet rs, int rowNum) throws SQLException;
 }

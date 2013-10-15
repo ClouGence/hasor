@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.jdbc;
-import java.sql.ResultSet;
+package net.hasor.jdbc.operations;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 /**
- * 这个接口用来映射 JDBC 结果集中一行数据。
+ * 用于处理 PreparedStatement 接口的动态参数设置。
  * @version : 2013-10-9
  * @author Thomas Risberg
  * @author Juergen Hoeller
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RowMapper<T> {
-    /**实现这个方法为结果集的一行记录进行转换，并将最终转换结果返回。
-     * 如果返回为 null 等同于忽略该行。需要注意，不要调用结果集的 next() 方法。*/
-    public T mapRow(ResultSet rs, int rowNum) throws SQLException;
+public interface PreparedStatementSetter {
+    /** 
+     * Set parameter values on the given PreparedStatement.
+     * @param ps the PreparedStatement to invoke setter methods on
+     * @throws SQLException if a SQLException is encountered (i.e. there is no need to catch SQLException)
+     */
+    public void setValues(PreparedStatement ps) throws SQLException;
 }

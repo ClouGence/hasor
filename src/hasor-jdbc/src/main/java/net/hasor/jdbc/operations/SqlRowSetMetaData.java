@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.jdbc;
+package net.hasor.jdbc.operations;
 import net.hasor.jdbc.dao.InvalidDataAccessException;
 /**
  * 元数据接口，接口功能类似于 <code>javax.sql.ResultSetMetaData</code>

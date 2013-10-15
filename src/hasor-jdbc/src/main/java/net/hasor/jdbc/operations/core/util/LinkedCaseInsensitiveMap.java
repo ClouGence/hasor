@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.jdbc.core.util;
+package net.hasor.jdbc.operations.core.util;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;

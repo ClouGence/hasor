@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.jdbc.core;
+package net.hasor.jdbc.operations.core;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -37,20 +37,20 @@ import net.hasor.jdbc.dao.DataAccessException;
 import net.hasor.jdbc.dao.InvalidDataAccessException;
 import net.hasor.jdbc.dao.SQLWarningException;
 import net.hasor.jdbc.datasource.ConnectionProxy;
-import net.hasor.jdbc.jdbc.BatchPreparedStatementSetter;
-import net.hasor.jdbc.jdbc.CallableStatementCallback;
-import net.hasor.jdbc.jdbc.CallableStatementCreator;
-import net.hasor.jdbc.jdbc.ConnectionCallback;
-import net.hasor.jdbc.jdbc.JdbcOperations;
-import net.hasor.jdbc.jdbc.PreparedStatementCallback;
-import net.hasor.jdbc.jdbc.PreparedStatementCreator;
-import net.hasor.jdbc.jdbc.PreparedStatementSetter;
-import net.hasor.jdbc.jdbc.ResultSetExtractor;
-import net.hasor.jdbc.jdbc.RowCallbackHandler;
-import net.hasor.jdbc.jdbc.RowMapper;
-import net.hasor.jdbc.jdbc.SqlRowSet;
-import net.hasor.jdbc.jdbc.StatementCallback;
-import net.hasor.jdbc.jdbc.core.util.LinkedCaseInsensitiveMap;
+import net.hasor.jdbc.operations.BatchPreparedStatementSetter;
+import net.hasor.jdbc.operations.CallableStatementCallback;
+import net.hasor.jdbc.operations.CallableStatementCreator;
+import net.hasor.jdbc.operations.ConnectionCallback;
+import net.hasor.jdbc.operations.JdbcOperations;
+import net.hasor.jdbc.operations.PreparedStatementCallback;
+import net.hasor.jdbc.operations.PreparedStatementCreator;
+import net.hasor.jdbc.operations.PreparedStatementSetter;
+import net.hasor.jdbc.operations.ResultSetExtractor;
+import net.hasor.jdbc.operations.RowCallbackHandler;
+import net.hasor.jdbc.operations.RowMapper;
+import net.hasor.jdbc.operations.SqlRowSet;
+import net.hasor.jdbc.operations.StatementCallback;
+import net.hasor.jdbc.operations.core.util.LinkedCaseInsensitiveMap;
 import org.more.util.ArrayUtils;
 /**
  * 

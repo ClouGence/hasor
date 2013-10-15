@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.jdbc;
-import java.sql.PreparedStatement;
+package net.hasor.jdbc.operations;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-/**
- * 用于处理 PreparedStatement 接口的动态参数设置。
+/** 
+ * JDBC 结果集行数据处理器。
  * @version : 2013-10-9
  * @author Thomas Risberg
  * @author Juergen Hoeller
  * @author 赵永春(zyc@hasor.net)
  */
-public interface PreparedStatementSetter {
-    /** 
-     * Set parameter values on the given PreparedStatement.
-     * @param ps the PreparedStatement to invoke setter methods on
-     * @throws SQLException if a SQLException is encountered (i.e. there is no need to catch SQLException)
-     */
-    public void setValues(PreparedStatement ps) throws SQLException;
+public interface RowCallbackHandler {
+    /**实现这个方法用于处理结果集的一行记录。
+     * 注意：不要调用结果集的 next() 方法。*/
+    void processRow(ResultSet rs) throws SQLException;
 }

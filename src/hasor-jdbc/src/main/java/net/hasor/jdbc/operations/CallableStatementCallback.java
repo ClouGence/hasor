@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.jdbc;
+package net.hasor.jdbc.operations;
+import java.sql.CallableStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import net.hasor.jdbc.dao.DataAccessException;
 /**
- * 通用的回调接口。用来执行基于 JDBC {@link Statement}
- * 上的任意数量任意类型数据库操作。
+ * 通用的回调接口。用来执行基于 {@link CallableStatement}上的任意数量任意类型数据库操作。
  * @version : 2013-10-9
  * @author Thomas Risberg
  * @author Juergen Hoeller
  * @author 赵永春(zyc@hasor.net)
  */
-public interface StatementCallback<T> {
+public interface CallableStatementCallback<T> {
     /**
      * 执行一个 JDBC 操作。开发者不需要关心数据库连接的状态和事务。
-     * @param stmt 一个可用的 Statement 对象连接
+     * @param con 一个可用的 JDBC 数据库连接
      * @return 返回操作执行的最终结果。
      */
-    public T doInStatement(Statement stmt) throws SQLException, DataAccessException;
+    public T doInCallableStatement(CallableStatement cs) throws SQLException, DataAccessException;
 }

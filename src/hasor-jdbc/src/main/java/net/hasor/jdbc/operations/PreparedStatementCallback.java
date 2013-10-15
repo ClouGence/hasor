@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2007 the original author or authors.
+ * Copyright 2002-2008 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.jdbc;
+package net.hasor.jdbc.operations;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import net.hasor.jdbc.dao.DataAccessException;
 /**
- * 批量更新时动态参数设置接口。
+ * 通用的回调接口。用来执行基于 {@link PreparedStatement} 上的任意数量任意类型数据库操作。
  * @version : 2013-10-9
  * @author Thomas Risberg
  * @author Juergen Hoeller
  * @author 赵永春(zyc@hasor.net)
  */
-public interface BatchPreparedStatementSetter {
-    /** 
-     * Set parameter values on the given PreparedStatement.
-     * @param ps the PreparedStatement to invoke setter methods on
-     * @param i index of the statement we're issuing in the batch, starting from 0
-     * @throws SQLException if a SQLException is encountered (i.e. there is no need to catch SQLException)
+public interface PreparedStatementCallback<T> {
+    /**
+     * 执行一个 JDBC 操作。开发者不需要关心数据库连接的状态和事务。
+     * @param stmt 一个可用的 PreparedStatement 对象连接
+     * @return 返回操作执行的最终结果。
      */
-    public void setValues(PreparedStatement ps, int i) throws SQLException;
-    /** 
-     * Return the size of the batch.
-     * @return the number of statements in the batch
-     */
-    public int getBatchSize();
+    public T doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException;
 }

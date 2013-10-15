@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.jdbc.rowset;
+package net.hasor.jdbc.operations.rowset;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -23,8 +23,8 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 import net.hasor.jdbc.dao.InvalidDataAccessException;
-import net.hasor.jdbc.jdbc.SqlRowSet;
-import net.hasor.jdbc.jdbc.SqlRowSetMetaData;
+import net.hasor.jdbc.operations.SqlRowSet;
+import net.hasor.jdbc.operations.SqlRowSetMetaData;
 /**
  * Default implementation of Spring's {@link SqlRowSet} interface.
  *
