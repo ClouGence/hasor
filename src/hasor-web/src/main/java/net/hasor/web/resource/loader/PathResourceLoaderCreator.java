@@ -25,7 +25,6 @@ import net.hasor.web.resource.ResourceLoader;
 import net.hasor.web.resource.ResourceLoaderCreator;
 import net.hasor.web.resource.ResourceLoaderDefine;
 import org.more.util.StringUtils;
-import org.more.util.io.AutoCloseInputStream;
 /**
  * 用于创建一个可以从classpath中获取资源的ResourceLoader。
  * @version : 2013-6-6
@@ -56,14 +55,32 @@ class PathResourceLoader implements ResourceLoader {
     public PathResourceLoader(String dirPath) {
         this.dirPath = dirPath;
     }
+    private String formatResourcePath(String resourcePath) {
+        String $resourcePath = this.dirPath + "/" + resourcePath;
+        $resourcePath = $resourcePath.replaceAll("/{2}", "/");
+        return $resourcePath;
+    }
     public InputStream getResourceAsStream(String resourcePath) {
-        String $name = this.dirPath + "/" + resourcePath;
-        $name = $name.replaceAll("/{2}", "/");
-        File file = new File($name);
+        resourcePath = formatResourcePath(resourcePath);
+        File file = new File(resourcePath);
         try {
             if (file.exists() && file.isFile())
-                return new AutoCloseInputStream(new FileInputStream(file));
+                return new FileInputStream(file);
         } catch (Exception e) {}
         return null;
+    }
+    public boolean canModify(String resourcePath) throws IOException {
+        return true;
+    }
+    public boolean exist(String resourcePath) throws IOException {
+        resourcePath = formatResourcePath(resourcePath);
+        File file = new File(resourcePath);
+        return (file.exists() && file.isFile()) ? true : false;
+    }
+    public void close(Object resource) throws IOException {
+        if (resource == null)
+            return;
+        if (resource instanceof InputStream)
+            ((InputStream) resource).close();
     }
 }

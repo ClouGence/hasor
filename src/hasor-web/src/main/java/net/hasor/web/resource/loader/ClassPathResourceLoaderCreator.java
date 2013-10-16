@@ -16,6 +16,7 @@
 package net.hasor.web.resource.loader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import net.hasor.Hasor;
 import net.hasor.core.AppContext;
 import net.hasor.core.XmlNode;
@@ -60,13 +61,36 @@ class ClassPathResourceLoader implements ResourceLoader {
     public ClassLoader getClassLoader() {
         return this.classLoader;
     }
-    public InputStream getResourceAsStream(String name) {
-        if (StringUtils.isBlank(name))
+    private String formatResourcePath(String resourcePath) {
+        String $resourcePath = this.packageName + (resourcePath.charAt(0) == '/' ? resourcePath : "/" + resourcePath);
+        $resourcePath = $resourcePath.replaceAll("/{2}", "/");
+        if ($resourcePath.charAt(0) == '/')
+            $resourcePath = $resourcePath.substring(1);
+        return $resourcePath;
+    }
+    public InputStream getResourceAsStream(String resourcePath) {
+        if (StringUtils.isBlank(resourcePath))
             return null;
-        String $name = this.packageName + (name.charAt(0) == '/' ? name : "/" + name);
-        $name = $name.replaceAll("/{2}", "/");
-        if ($name.charAt(0) == '/')
-            $name = $name.substring(1);
-        return this.classLoader.getResourceAsStream($name);
+        return this.classLoader.getResourceAsStream(formatResourcePath(resourcePath));
+    }
+    public boolean canModify(String resourcePath) throws IOException {
+        if (StringUtils.isBlank(resourcePath))
+            return false;
+        URL url = this.classLoader.getResource(formatResourcePath(resourcePath));
+        if (url.getProtocol().contains("file"))
+            return true;
+        return false;
+    }
+    public boolean exist(String resourcePath) throws IOException {
+        if (StringUtils.isBlank(resourcePath))
+            return false;
+        URL url = this.classLoader.getResource(formatResourcePath(resourcePath));
+        return !(url == null);
+    }
+    public void close(Object resource) throws IOException {
+        if (resource == null)
+            return;
+        if (resource instanceof InputStream)
+            ((InputStream) resource).close();
     }
 }

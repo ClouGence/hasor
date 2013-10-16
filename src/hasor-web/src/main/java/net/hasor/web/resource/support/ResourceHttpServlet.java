@@ -31,6 +31,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import net.hasor.Hasor;
 import net.hasor.core.AppContext;
 import net.hasor.web.resource.ResourceLoader;
@@ -123,8 +124,12 @@ public class ResourceHttpServlet extends HttpServlet {
         } catch (Exception e) {}
         //2.检查缓存路径中是否存在
         File cacheFile = new File(CacheDir.get(), requestURI);
-        if (!this.isDebug && cacheFile.exists()) {
-            this.forwardTo(cacheFile, request, response);//在非debug模式下并且内容已经被缓存时
+        if (this.isDebug) {
+            boolean mark = this.cacheRes(cacheFile, requestURI, request, response);
+            if (mark)
+                this.forwardTo(cacheFile, request, response);
+            else
+                ((HttpServletResponse) response).sendError(404, "not exist :" + requestURI);
             return;
         }
         //3.创建锁-A
@@ -147,15 +152,26 @@ public class ResourceHttpServlet extends HttpServlet {
         //5.缓存完毕
         if (forwardType)
             this.forwardTo(cacheFile, request, response);
+        else
+            ((HttpServletResponse) response).sendError(404, "not exist this resource ‘" + requestURI + "’");
         //6.释放锁-A
         this.releaseReadWriteLock(requestURI);
     }
     /*资源缓存*/
     private boolean cacheRes(File cacheFile, String requestURI, ServletRequest request, ServletResponse response) throws IOException, ServletException {
         //3.尝试载入资源 
+        ResourceLoader inLoader = null;
         InputStream inStream = null;
         ResourceLoader[] loaderList = LoaderList.get();
         for (ResourceLoader loader : loaderList) {
+            if (loader.exist(requestURI) == false)
+                continue;
+            if (this.isDebug) {
+                if (!loader.canModify(requestURI) && cacheFile.exists())
+                    return true;
+            }
+            //
+            inLoader = loader;
             inStream = loader.getResourceAsStream(requestURI);
             if (inStream != null)
                 break;
@@ -166,7 +182,7 @@ public class ResourceHttpServlet extends HttpServlet {
         cacheFile.getParentFile().mkdirs();
         FileOutputStream out = new FileOutputStream(cacheFile);
         IOUtils.copy(inStream, out);
-        inStream.close();
+        inLoader.close(inStream);
         out.flush();
         out.close();
         return true;

@@ -17,6 +17,9 @@ package net.hasor.web.resource.loader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import net.hasor.Hasor;
@@ -51,24 +54,89 @@ public class ZipResourceLoaderCreator implements ResourceLoaderCreator {
  * @author 赵永春 (zyc@hasor.net)
  */
 class ZipResourceLoader implements ResourceLoader {
-    private File zipFile = null;
+    private File        zipFile     = null;
+    private Set<String> zipEntrySet = new HashSet<String>();
     public ZipResourceLoader(String zipFile) throws IOException {
         this.zipFile = new File(zipFile);
+        ZipFile zipFileObj = new ZipFile(this.zipFile);
+        Enumeration<? extends ZipEntry> entEnum = zipFileObj.entries();
+        while (entEnum.hasMoreElements())
+            this.zipEntrySet.add(entEnum.nextElement().getName());
+        zipFileObj.close();
     }
     /**获取资源获取的包路径。*/
     public String getZipFile() {
         return this.zipFile.getAbsolutePath();
     }
-    public InputStream getResourceAsStream(String name) throws IOException {
+    private String formatResourcePath(String resourcePath) {
+        if (resourcePath.charAt(0) == '/')
+            resourcePath = resourcePath.substring(1);
+        resourcePath = resourcePath.replaceAll("/{2}", "/");
+        return resourcePath;
+    }
+    public InputStream getResourceAsStream(String resourcePath) throws IOException {
         if (this.zipFile.isDirectory() == true || this.zipFile.exists() == false)
             return null;
         //
-        if (name.charAt(0) == '/')
-            name = name.substring(1);
+        resourcePath = formatResourcePath(resourcePath);
+        if (!this.zipEntrySet.contains(resourcePath))
+            return null;
+        //
         ZipFile zipFileObj = new ZipFile(this.zipFile);
-        ZipEntry entry = zipFileObj.getEntry(name);
+        ZipEntry entry = zipFileObj.getEntry(resourcePath);
         if (entry == null)
             return null;
-        return zipFileObj.getInputStream(entry);
+        return new ZipEntryInputStream(zipFileObj, zipFileObj.getInputStream(entry));
+    }
+    public boolean canModify(String resourcePath) throws IOException {
+        return false;
+    }
+    public boolean exist(String resourcePath) throws IOException {
+        resourcePath = formatResourcePath(resourcePath);
+        return this.zipEntrySet.contains(resourcePath);
+    }
+    public void close(Object resource) throws IOException {
+        if (resource == null)
+            return;
+        if (resource instanceof InputStream)
+            ((InputStream) resource).close();
+    }
+    private class ZipEntryInputStream extends InputStream {
+        private InputStream targetInput;
+        private ZipFile     zipFileObj;
+        //
+        public ZipEntryInputStream(ZipFile zipFileObj, InputStream targetInput) {
+            this.zipFileObj = zipFileObj;
+            this.targetInput = targetInput;
+        }
+        //
+        public int read(byte[] b) throws IOException {
+            return this.targetInput.read(b);
+        }
+        public int read(byte[] b, int off, int len) throws IOException {
+            return this.targetInput.read(b, off, len);
+        }
+        public long skip(long n) throws IOException {
+            return this.targetInput.skip(n);
+        }
+        public int available() throws IOException {
+            return this.targetInput.available();
+        }
+        public void close() throws IOException {
+            this.targetInput.close();
+            this.zipFileObj.close();
+        }
+        public synchronized void mark(int readlimit) {
+            this.targetInput.mark(readlimit);
+        }
+        public synchronized void reset() throws IOException {
+            this.targetInput.reset();
+        }
+        public boolean markSupported() {
+            return this.targetInput.markSupported();
+        }
+        public int read() throws IOException {
+            return this.targetInput.read();
+        }
     }
 }
