@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.dao;
+package net.hasor.jdbc;
 /**
  * 无效的数据异常
  * @version : 2013-10-12

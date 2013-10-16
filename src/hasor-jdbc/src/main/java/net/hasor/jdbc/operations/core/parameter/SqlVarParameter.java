@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2008 the original author or authors.
+ * Copyright 2002-2007 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,29 +15,34 @@
  */
 package net.hasor.jdbc.operations.core.parameter;
 /**
- * SqlParameter 的子类，用于表示传入参数的基础类。
+ * SqlParameter 的子类，用于表示带有值的输入参数。
  * @see java.sql.Types
  * @version : 2013-10-14
  * @author 赵永春(zyc@hasor.net)
  */
-public class SqlInputParameter extends SqlParameter {
+public class SqlVarParameter extends SqlParameter {
+    private final Object value;
     /**创建一个匿名的 SQL 参数.*/
-    public SqlInputParameter(int sqlType) {
+    public SqlVarParameter(int sqlType, Object value) {
         super(sqlType);
+        this.value = value;
     }
     /**根据参数名 和参数类型创建一个 SqlParameter.*/
-    public SqlInputParameter(String name, int sqlType) {
+    public SqlVarParameter(String name, int sqlType, Object value) {
         super(name, sqlType);
+        this.value = value;
     }
-    /**根据一个 SqlParameter 拷贝创建一个新的 SqlParameter.*/
-    public SqlInputParameter(SqlParameter otherParam) {
-        super(otherParam);
+    /**
+     * Create a new SqlParameterValue based on the given SqlParameter declaration.
+     * @param declaredParam the declared SqlParameter to define a value for
+     * @param value the value object
+     */
+    public SqlVarParameter(SqlParameter declaredParam, Object value) {
+        super(declaredParam);
+        this.value = value;
     }
-    //
-    public boolean isInput() {
-        return true;
-    }
-    public boolean isOutput() {
-        return false;
+    /**参数值.*/
+    public Object getValue() {
+        return this.value;
     }
 }

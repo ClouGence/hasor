@@ -21,7 +21,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
-import net.hasor.jdbc.dao.InvalidDataAccessException;
+import net.hasor.jdbc.InvalidDataAccessException;
 /**
  * 该接口是对 <code>javax.sql.RowSet</code>接口的一个包装，当断开连接之后通过 SqlRowSet 接口仍然可以取得数据。
  * @author Thomas Risberg

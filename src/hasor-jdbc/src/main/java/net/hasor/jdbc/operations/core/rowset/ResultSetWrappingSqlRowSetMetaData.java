@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.operations.rowset;
+package net.hasor.jdbc.operations.core.rowset;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import net.hasor.jdbc.dao.InvalidDataAccessException;
+import net.hasor.jdbc.InvalidDataAccessException;
 import net.hasor.jdbc.operations.SqlRowSetMetaData;
 /**
  * Default implementation of Spring's SqlRowSetMetaData interface.

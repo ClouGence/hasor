@@ -17,7 +17,8 @@ package net.hasor.jdbc.operations.core;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import net.hasor.jdbc.operations.PreparedStatementSetter;
-import net.hasor.jdbc.operations.core.util.StatementCreatorUtils;
+import net.hasor.jdbc.operations.core.parameter.SqlVarParameter;
+import net.hasor.jdbc.operations.core.util.StatementSetterUtils;
 import net.hasor.jdbc.operations.core.value.SqlTypeValue;
 /**
  * Simple adapter for PreparedStatementSetter that applies a given array of arguments.
@@ -25,10 +26,7 @@ import net.hasor.jdbc.operations.core.value.SqlTypeValue;
  */
 class ArgPreparedStatementSetter implements PreparedStatementSetter, ParameterDisposer {
     private final Object[] args;
-    /**
-     * Create a new ArgPreparedStatementSetter for the given arguments.
-     * @param args the arguments to set
-     */
+    /**Create a new ArgPreparedStatementSetter for the given arguments.*/
     public ArgPreparedStatementSetter(Object[] args) {
         this.args = args;
     }
@@ -49,14 +47,14 @@ class ArgPreparedStatementSetter implements PreparedStatementSetter, ParameterDi
      * @throws SQLException
      */
     protected void doSetValue(PreparedStatement ps, int parameterPosition, Object argValue) throws SQLException {
-        if (argValue instanceof SqlParameterValue) {
-            SqlParameterValue paramValue = (SqlParameterValue) argValue;
-            StatementCreatorUtils.setParameterValue(ps, parameterPosition, paramValue, paramValue.getValue());
+        if (argValue instanceof SqlVarParameter) {
+            SqlVarParameter paramValue = (SqlVarParameter) argValue;
+            StatementSetterUtils.setParameterValue(ps, parameterPosition, paramValue, paramValue.getValue());
         } else {
-            StatementCreatorUtils.setParameterValue(ps, parameterPosition, SqlTypeValue.TYPE_UNKNOWN, argValue);
+            StatementSetterUtils.setParameterValue(ps, parameterPosition, SqlTypeValue.TYPE_UNKNOWN, argValue);
         }
     }
     public void cleanupParameters() {
-        StatementCreatorUtils.cleanupParameters(this.args);
+        StatementSetterUtils.cleanupParameters(this.args);
     }
 }

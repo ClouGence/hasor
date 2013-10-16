@@ -27,8 +27,6 @@ import java.sql.SQLException;
  *
  * @author Juergen Hoeller
  * @since 2.5.6
- * @see org.noe.platform.modules.db.jdbcorm.jdbc.core.SqlTypeValue
- * @see org.noe.platform.modules.db.jdbcorm.jdbc.core.DisposableSqlTypeValue
  */
 public interface SqlValue {
     /**
@@ -37,9 +35,7 @@ public interface SqlValue {
      * @param paramIndex the index of the parameter for which we need to set the value
      * @throws SQLException if a SQLException is encountered while setting parameter values
      */
-    void setValue(PreparedStatement ps, int paramIndex) throws SQLException;
-    /**
-     * Clean up resources held by this value object.
-     */
-    void cleanup();
+    public void setValue(PreparedStatement ps, int paramIndex) throws SQLException;
+    /**Clean up resources held by this value object.*/
+    public void cleanup();
 }

@@ -16,7 +16,7 @@
 package net.hasor.jdbc.operations;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import net.hasor.jdbc.dao.DataAccessException;
+import net.hasor.jdbc.DataAccessException;
 /** 
  * 回调接口，用于 JDBC 结果集转换。
  * @version : 2013-10-9

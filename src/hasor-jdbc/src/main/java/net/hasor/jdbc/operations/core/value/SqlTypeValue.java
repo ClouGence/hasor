@@ -45,7 +45,7 @@ public interface SqlTypeValue {
      * @see java.sql.Types
      * @see JdbcOperations#update(String, Object[])
      */
-    int TYPE_UNKNOWN = JdbcUtils.TYPE_UNKNOWN;
+    public int TYPE_UNKNOWN = JdbcUtils.TYPE_UNKNOWN;
     /**
      * Set the type value on the given PreparedStatement.
      * @param ps the PreparedStatement to work on
@@ -56,5 +56,5 @@ public interface SqlTypeValue {
      * @see java.sql.Types
      * @see java.sql.PreparedStatement#setObject
      */
-    void setTypeValue(PreparedStatement ps, int paramIndex, int sqlType, String typeName) throws SQLException;
+    public void setTypeValue(PreparedStatement ps, int paramIndex, int sqlType) throws SQLException;
 }

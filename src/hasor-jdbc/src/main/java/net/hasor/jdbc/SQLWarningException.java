@@ -13,27 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.dao;
+package net.hasor.jdbc;
 /**
- * 数据库事务性异常的根，子类将会确定具体事务方面原因。
+ * SQL 警告。
  * @version : 2013-10-12
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class TransactionDataAccessException extends DataAccessException {
-    private static final long serialVersionUID = -5338007128104634937L;
-    /**
-    * 数据库事务性异常的根，子类将会确定具体事务方面原因。
-     * @param msg the detail message
-     */
-    public TransactionDataAccessException(String msg) {
+public class SQLWarningException extends UncategorizedDataAccessException {
+    private static final long serialVersionUID = 447732094361475241L;
+    /**SQL 警告。*/
+    public SQLWarningException(String msg) {
         super(msg);
     }
-    /**
-    * 数据库事务性异常的根，子类将会确定具体事务方面原因。
-     * @param msg the detail message
-     * @param cause the root cause from the data access API in use
-     */
-    public TransactionDataAccessException(String msg, Throwable cause) {
+    /**SQL 警告。*/
+    public SQLWarningException(String msg, Throwable cause) {
         super(msg, cause);
     }
 }

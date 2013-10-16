@@ -38,5 +38,5 @@ public interface ConnectionProxy extends Connection {
      * or a wrapper from a connection pool.
      * @return the underlying Connection (never <code>null</code>)
      */
-    Connection getTargetConnection();
+    public Connection getTargetConnection();
 }

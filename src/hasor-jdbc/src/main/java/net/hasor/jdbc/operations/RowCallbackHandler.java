@@ -26,5 +26,5 @@ import java.sql.SQLException;
 public interface RowCallbackHandler {
     /**实现这个方法用于处理结果集的一行记录。
      * 注意：不要调用结果集的 next() 方法。*/
-    void processRow(ResultSet rs) throws SQLException;
+    public void processRow(ResultSet rs) throws SQLException;
 }

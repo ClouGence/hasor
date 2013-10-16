@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.dao;
+package net.hasor.jdbc;
 /**
  * Exception thrown on mismatch between Java type and database type:
  * for example on an attempt to set an object of the wrong type

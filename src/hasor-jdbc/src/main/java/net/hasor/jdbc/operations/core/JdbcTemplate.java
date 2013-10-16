@@ -33,10 +33,12 @@ import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
 import net.hasor.Hasor;
-import net.hasor.jdbc.dao.DataAccessException;
-import net.hasor.jdbc.dao.InvalidDataAccessException;
-import net.hasor.jdbc.dao.SQLWarningException;
+import net.hasor.jdbc.DataAccessException;
+import net.hasor.jdbc.InvalidDataAccessException;
+import net.hasor.jdbc.SQLWarningException;
+import net.hasor.jdbc.datasource.ConnectionHelper;
 import net.hasor.jdbc.datasource.ConnectionProxy;
+import net.hasor.jdbc.datasource.JdbcAccessor;
 import net.hasor.jdbc.operations.BatchPreparedStatementSetter;
 import net.hasor.jdbc.operations.CallableStatementCallback;
 import net.hasor.jdbc.operations.CallableStatementCreator;
@@ -50,14 +52,14 @@ import net.hasor.jdbc.operations.RowCallbackHandler;
 import net.hasor.jdbc.operations.RowMapper;
 import net.hasor.jdbc.operations.SqlRowSet;
 import net.hasor.jdbc.operations.StatementCallback;
-import net.hasor.jdbc.operations.core.util.LinkedCaseInsensitiveMap;
+import net.hasor.jdbc.operations.core.util.JdbcUtils;
 import org.more.util.ArrayUtils;
 /**
  * 
  * @version : 2013-10-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public class JdbcTemplate implements JdbcOperations {
+public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     /*是否忽略出现的 SQL 警告*/
     private boolean ignoreWarnings            = true;
     /*JDBC查询和从结果集里面每次取设置行数，循环去取，直到取完。合理设置该参数可以避免内存异常。
@@ -73,6 +75,21 @@ public class JdbcTemplate implements JdbcOperations {
      * 如果为 true 表示敏感，并且结果集Map中保留两个记录。如果为 false 则表示不敏感，如出现冲突列名后者将会覆盖前者。*/
     private boolean resultsMapCaseInsensitive = false;
     //
+    //
+    /**
+     * Construct a new JdbcTemplate for bean usage.
+     * <p>Note: The DataSource has to be set before using the instance.
+     * @see #setDataSource
+     */
+    public JdbcTemplate() {}
+    /**
+     * Construct a new JdbcTemplate, given a DataSource to obtain connections from.
+     * <p>Note: This will not trigger initialization of the exception translator.
+     * @param dataSource the JDBC DataSource to obtain connections from
+     */
+    public JdbcTemplate(DataSource dataSource) {
+        setDataSource(dataSource);
+    }
     //
     //
     public boolean isIgnoreWarnings() {
@@ -105,81 +122,37 @@ public class JdbcTemplate implements JdbcOperations {
     public void setResultsMapCaseInsensitive(boolean resultsMapCaseInsensitive) {
         this.resultsMapCaseInsensitive = resultsMapCaseInsensitive;
     }
-    //    /**
-    //     * Construct a new JdbcTemplate for bean usage.
-    //     * <p>Note: The DataSource has to be set before using the instance.
-    //     * @see #setDataSource
-    //     */
-    //    public JdbcTemplate2() {}
-    //    /**
-    //     * Construct a new JdbcTemplate, given a DataSource to obtain connections from.
-    //     * <p>Note: This will not trigger initialization of the exception translator.
-    //     * @param dataSource the JDBC DataSource to obtain connections from
-    //     */
-    //    public JdbcTemplate2(DataSource dataSource) {
-    //        setDataSource(dataSource);
-    //        afterPropertiesSet();
-    //    }
-    //
     //
     //
     public <T> T execute(ConnectionCallback<T> action) throws DataAccessException {
-        //        Hasor.assertIsNotNull(action, "Callback object must not be null");
-        //        Connection con = DataSourceUtils.getConnection(getDataSource());
-        //        try {
-        //            Connection conToUse = con;
-        //            if (this.nativeJdbcExtractor != null) {
-        //                // Extract native JDBC Connection, castable to OracleConnection or the like.
-        //                conToUse = this.nativeJdbcExtractor.getNativeConnection(con);
-        //            } else {
-        //                // Create close-suppressing Connection proxy, also preparing returned Statements.
-        //                conToUse = createConnectionProxy(con);
-        //            }
-        //            return action.doInConnection(conToUse);
-        //        } catch (SQLException ex) {
-        //            // Release Connection early, to avoid potential connection pool deadlock
-        //            // in the case when the exception translator hasn't been initialized yet.
-        //            DataSourceUtils.releaseConnection(con, getDataSource());
-        //            con = null;
-        //            throw getExceptionTranslator().translate("ConnectionCallback", getSql(action), ex);
-        //        } finally {
-        //            DataSourceUtils.releaseConnection(con, getDataSource());
-        //        }
-        // TODO Auto-generated method stub
-        return null;
+        Hasor.assertIsNotNull(action, "Callback object must not be null");
+        Connection con = this.getLocalConnection();//申请本地连接（和当前线程绑定的连接）
+        try {
+            return action.doInConnection(con);
+        } catch (SQLException ex) {
+            throw new DataAccessException("ConnectionCallback SQL :" + getSql(action), ex);
+        } finally {
+            JdbcUtils.closeConnection(con);//关闭或释放连接
+        }
     }
     public <T> T execute(StatementCallback<T> action) throws DataAccessException {
-        //        Assert.notNull(action, "Callback object must not be null");
-        //        Connection con = DataSourceUtils.getConnection(getDataSource());
-        //        Statement stmt = null;
-        //        try {
-        //            Connection conToUse = con;
-        //            if (this.nativeJdbcExtractor != null && this.nativeJdbcExtractor.isNativeConnectionNecessaryForNativeStatements()) {
-        //                conToUse = this.nativeJdbcExtractor.getNativeConnection(con);
-        //            }
-        //            stmt = conToUse.createStatement();
-        //            applyStatementSettings(stmt);
-        //            Statement stmtToUse = stmt;
-        //            if (this.nativeJdbcExtractor != null) {
-        //                stmtToUse = this.nativeJdbcExtractor.getNativeStatement(stmt);
-        //            }
-        //            T result = action.doInStatement(stmtToUse);
-        //            handleWarnings(stmt);
-        //            return result;
-        //        } catch (SQLException ex) {
-        //            // Release Connection early, to avoid potential connection pool deadlock
-        //            // in the case when the exception translator hasn't been initialized yet.
-        //            JdbcUtils.closeStatement(stmt);
-        //            stmt = null;
-        //            DataSourceUtils.releaseConnection(con, getDataSource());
-        //            con = null;
-        //            throw getExceptionTranslator().translate("StatementCallback", getSql(action), ex);
-        //        } finally {
-        //            JdbcUtils.closeStatement(stmt);
-        //            DataSourceUtils.releaseConnection(con, getDataSource());
-        //        }
-        // TODO Auto-generated method stub
-        return null;
+        Hasor.assertIsNotNull(action, "Callback object must not be null");
+        Connection con = this.getLocalConnection();//申请本地连接（和当前线程绑定的连接）
+        Statement stmt = null;
+        try {
+            stmt = con.createStatement();
+            applyStatementSettings(stmt);
+            T result = action.doInStatement(stmt);
+            handleWarnings(stmt);
+            return result;
+        } catch (SQLException ex) {
+            throw new DataAccessException("StatementCallback SQL :" + getSql(action), ex);
+        } finally {
+            JdbcUtils.closeStatement(stmt);
+            JdbcUtils.closeConnection(con);//关闭或释放连接
+            stmt = null;
+            con = null;
+        }
     }
     public void execute(final String sql) throws DataAccessException {
         Hasor.debug("Executing SQL statement [%s].", sql);
@@ -205,7 +178,8 @@ public class JdbcTemplate implements JdbcOperations {
                     rs = stmt.executeQuery(sql);
                     return rse.extractData(rs);
                 } finally {
-                    rs.close();
+                    JdbcUtils.closeResultSet(rs);
+                    rs = null;
                 }
             }
             public String getSql() {
@@ -299,50 +273,30 @@ public class JdbcTemplate implements JdbcOperations {
         return execute(new BatchUpdateStatementCallback());
     }
     public <T> T execute(PreparedStatementCreator psc, PreparedStatementCallback<T> action) throws DataAccessException {
-        //        Hasor.assertIsNotNull(psc, "PreparedStatementCreator must not be null");
-        //        Hasor.assertIsNotNull(action, "Callback object must not be null");
-        //        if (logger.isDebugEnabled()) {
-        //            String sql = getSql(psc);
-        //            Hasor.debug("Executing prepared SQL statement" + (sql != null ? " [" + sql + "]" : ""));
-        //        }
-        //        Connection con = DataSourceUtils.getConnection(getDataSource());
-        //        PreparedStatement ps = null;
-        //        try {
-        //            Connection conToUse = con;
-        //            if (this.nativeJdbcExtractor != null && this.nativeJdbcExtractor.isNativeConnectionNecessaryForNativePreparedStatements()) {
-        //                conToUse = this.nativeJdbcExtractor.getNativeConnection(con);
-        //            }
-        //            ps = psc.createPreparedStatement(conToUse);
-        //            applyStatementSettings(ps);
-        //            PreparedStatement psToUse = ps;
-        //            if (this.nativeJdbcExtractor != null) {
-        //                psToUse = this.nativeJdbcExtractor.getNativePreparedStatement(ps);
-        //            }
-        //            T result = action.doInPreparedStatement(psToUse);
-        //            handleWarnings(ps);
-        //            return result;
-        //        } catch (SQLException ex) {
-        //            // Release Connection early, to avoid potential connection pool deadlock
-        //            // in the case when the exception translator hasn't been initialized yet.
-        //            if (psc instanceof ParameterDisposer) {
-        //                ((ParameterDisposer) psc).cleanupParameters();
-        //            }
-        //            String sql = getSql(psc);
-        //            psc = null;
-        //            JdbcUtils.closeStatement(ps);
-        //            ps = null;
-        //            DataSourceUtils.releaseConnection(con, getDataSource());
-        //            con = null;
-        //            throw getExceptionTranslator().translate("PreparedStatementCallback", sql, ex);
-        //        } finally {
-        //            if (psc instanceof ParameterDisposer) {
-        //                ((ParameterDisposer) psc).cleanupParameters();
-        //            }
-        //            JdbcUtils.closeStatement(ps);
-        //            DataSourceUtils.releaseConnection(con, getDataSource());
-        //        }
-        // TODO Auto-generated method stub
-        return null;
+        Hasor.assertIsNotNull(psc, "PreparedStatementCreator must not be null");
+        Hasor.assertIsNotNull(action, "Callback object must not be null");
+        if (Hasor.isDebugLogger()) {
+            String sql = getSql(psc);
+            Hasor.debug("Executing prepared SQL statement " + (sql != null ? " [" + sql + "]" : ""));
+        }
+        Connection con = this.getLocalConnection();//申请本地连接（和当前线程绑定的连接）
+        PreparedStatement ps = null;
+        try {
+            ps = psc.createPreparedStatement(con);
+            applyStatementSettings(ps);
+            T result = action.doInPreparedStatement(ps);
+            handleWarnings(ps);
+            return result;
+        } catch (SQLException ex) {
+            throw new DataAccessException("PreparedStatementCallback SQL :" + getSql(psc), ex);
+        } finally {
+            if (psc instanceof ParameterDisposer)
+                ((ParameterDisposer) psc).cleanupParameters();
+            JdbcUtils.closeStatement(ps);
+            JdbcUtils.closeConnection(con);//关闭或释放连接
+            ps = null;
+            con = null;
+        }
     }
     public <T> T execute(String sql, PreparedStatementCallback<T> action) throws DataAccessException {
         return execute(new SimplePreparedStatementCreator(sql), action);
@@ -505,50 +459,28 @@ public class JdbcTemplate implements JdbcOperations {
         });
     }
     public <T> T execute(CallableStatementCreator csc, CallableStatementCallback<T> action) throws DataAccessException {
-        //        Hasor.assertIsNotNull(csc, "CallableStatementCreator must not be null");
-        //        Hasor.assertIsNotNull(action, "Callback object must not be null");
-        //        if (logger.isDebugEnabled()) {
-        //            String sql = getSql(csc);
-        //            Hasor.debug("Calling stored procedure" + (sql != null ? " [" + sql + "]" : ""));
-        //        }
-        //        Connection con = DataSourceUtils.getConnection(getDataSource());
-        //        CallableStatement cs = null;
-        //        try {
-        //            Connection conToUse = con;
-        //            if (this.nativeJdbcExtractor != null) {
-        //                conToUse = this.nativeJdbcExtractor.getNativeConnection(con);
-        //            }
-        //            cs = csc.createCallableStatement(conToUse);
-        //            applyStatementSettings(cs);
-        //            CallableStatement csToUse = cs;
-        //            if (this.nativeJdbcExtractor != null) {
-        //                csToUse = this.nativeJdbcExtractor.getNativeCallableStatement(cs);
-        //            }
-        //            T result = action.doInCallableStatement(csToUse);
-        //            handleWarnings(cs);
-        //            return result;
-        //        } catch (SQLException ex) {
-        //            // Release Connection early, to avoid potential connection pool deadlock
-        //            // in the case when the exception translator hasn't been initialized yet.
-        //            if (csc instanceof ParameterDisposer) {
-        //                ((ParameterDisposer) csc).cleanupParameters();
-        //            }
-        //            String sql = getSql(csc);
-        //            csc = null;
-        //            JdbcUtils.closeStatement(cs);
-        //            cs = null;
-        //            DataSourceUtils.releaseConnection(con, getDataSource());
-        //            con = null;
-        //            throw getExceptionTranslator().translate("CallableStatementCallback", sql, ex);
-        //        } finally {
-        //            if (csc instanceof ParameterDisposer) {
-        //                ((ParameterDisposer) csc).cleanupParameters();
-        //            }
-        //            JdbcUtils.closeStatement(cs);
-        //            DataSourceUtils.releaseConnection(con, getDataSource());
-        //        }
-        // TODO Auto-generated method stub
-        return null;
+        Hasor.assertIsNotNull(csc, "CallableStatementCreator must not be null");
+        Hasor.assertIsNotNull(action, "Callback object must not be null");
+        if (Hasor.isDebugLogger()) {
+            String sql = getSql(csc);
+            Hasor.debug("Calling stored procedure" + (sql != null ? " [" + sql + "]" : ""));
+        }
+        Connection con = this.getLocalConnection();//申请本地连接（和当前线程绑定的连接）
+        CallableStatement cs = null;
+        try {
+            cs = csc.createCallableStatement(con);
+            applyStatementSettings(cs);
+            T result = action.doInCallableStatement(cs);
+            handleWarnings(cs);
+            return result;
+        } catch (SQLException ex) {
+            throw new DataAccessException("CallableStatementCallback SQL :" + getSql(action), ex);
+        } finally {
+            if (csc instanceof ParameterDisposer)
+                ((ParameterDisposer) csc).cleanupParameters();
+            JdbcUtils.closeStatement(cs);
+            JdbcUtils.closeConnection(con);
+        }
     }
     public <T> T execute(String callString, CallableStatementCallback<T> action) throws DataAccessException {
         return execute(new SimpleCallableStatementCreator(callString), action);
@@ -611,16 +543,6 @@ public class JdbcTemplate implements JdbcOperations {
     protected PreparedStatementSetter newArgTypePreparedStatementSetter(Object[] args, int[] argTypes) {
         return new ArgTypePreparedStatementSetter(args, argTypes);
     }
-    /**获取一个数据库连接，JDBC 框架会从 DataSource 接口尝试获取一个新的连接资源给开发者。开发者需要自己维护连接的事务，并且要保证该资源可以被正常释放。*/
-    protected Connection getConnection(DataSource source) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    /**获取与本地线程绑定的数据库连接，JDBC 框架会维护这个连接的事务。开发者不必关心该连接的事务管理，以及资源释放操作。*/
-    protected Connection getLocalConnection() {
-        // TODO Auto-generated method stub
-        return null;
-    }
     /**创建用于保存结果集的数据Map。*/
     protected Map<String, Object> createResultsMap() {
         if (!isResultsMapCaseInsensitive())
@@ -658,10 +580,6 @@ public class JdbcTemplate implements JdbcOperations {
                 throw new SQLWarningException("Warning not ignored", warning);
         }
     }
-    /***/
-    private Connection createConnectionProxy(Connection con) {
-        return (Connection) Proxy.newProxyInstance(ConnectionProxy.class.getClassLoader(), new Class[] { ConnectionProxy.class }, new CloseSuppressingInvocationHandler(con));
-    }
     /**至返回结果集中的一条数据。*/
     private static <T> T requiredSingleResult(Collection<T> results) throws InvalidDataAccessException {
         int size = (results != null ? results.size() : 0);
@@ -671,8 +589,18 @@ public class JdbcTemplate implements JdbcOperations {
             throw new InvalidDataAccessException("Incorrect column count: expected " + 1 + ", actual " + size);
         return results.iterator().next();
     }
-    //
-    //
+    private static String getSql(Object sqlProvider) {
+        if (sqlProvider instanceof SqlProvider)
+            return ((SqlProvider) sqlProvider).getSql();
+        else
+            return null;
+    }
+    /**获取与本地线程绑定的数据库连接，JDBC 框架会维护这个连接的事务。开发者不必关心该连接的事务管理，以及资源释放操作。*/
+    protected Connection getLocalConnection() {
+        Connection conn = ConnectionHelper.getConnection(this.getDataSource());
+        CloseSuppressingInvocationHandler handler = new CloseSuppressingInvocationHandler(conn);
+        return (Connection) Proxy.newProxyInstance(ConnectionProxy.class.getClassLoader(), new Class[] { ConnectionProxy.class }, handler);
+    }
     /**Connection 接口代理，目的是为了控制一些方法的调用。同时进行一些特殊类型的处理。*/
     private class CloseSuppressingInvocationHandler implements InvocationHandler {
         private final Connection target;
@@ -691,7 +619,7 @@ public class JdbcTemplate implements JdbcOperations {
                 // Use hashCode of PersistenceManager proxy.
                 return System.identityHashCode(proxy);
             } else if (method.getName().equals("close")) {
-                // Handle close method: suppress, not valid.
+                ConnectionHelper.releaseConnection(this.target);//
                 return null;
             }
             // Invoke method on target Connection.

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.operations.rowset;
+package net.hasor.jdbc.operations.core.rowset;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -22,7 +22,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
-import net.hasor.jdbc.dao.InvalidDataAccessException;
+import net.hasor.jdbc.InvalidDataAccessException;
 import net.hasor.jdbc.operations.SqlRowSet;
 import net.hasor.jdbc.operations.SqlRowSetMetaData;
 /**

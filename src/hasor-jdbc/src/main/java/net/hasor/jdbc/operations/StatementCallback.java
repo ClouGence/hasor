@@ -16,7 +16,7 @@
 package net.hasor.jdbc.operations;
 import java.sql.SQLException;
 import java.sql.Statement;
-import net.hasor.jdbc.dao.DataAccessException;
+import net.hasor.jdbc.DataAccessException;
 /**
  * 通用的回调接口。用来执行基于 JDBC {@link Statement}
  * 上的任意数量任意类型数据库操作。

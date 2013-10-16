@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2006 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.dao;
+package net.hasor.jdbc.datasource;
+import java.sql.Connection;
+import javax.sql.DataSource;
 /**
- * 不明原因的底层 SQL 异常。
- * @version : 2013-10-12
+ * 
+ * @version : 2013-10-16
  * @author 赵永春(zyc@hasor.net)
  */
-public class UncategorizedDataAccessException extends DataAccessException {
-    private static final long serialVersionUID = 447732094361475241L;
-    /**不明原因的底层 SQL 异常。*/
-    public UncategorizedDataAccessException(String msg) {
-        super(msg);
+public class ConnectionHelper {
+    public static void releaseConnection(Connection target) {
+        // TODO Auto-generated method stub
     }
-    /**不明原因的底层 SQL 异常。*/
-    public UncategorizedDataAccessException(String msg, Throwable cause) {
-        super(msg, cause);
+    public static Connection getConnection(DataSource dataSource) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

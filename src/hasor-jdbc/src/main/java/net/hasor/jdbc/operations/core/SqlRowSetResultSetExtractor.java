@@ -19,7 +19,7 @@ import java.sql.SQLException;
 import javax.sql.rowset.CachedRowSet;
 import net.hasor.jdbc.operations.ResultSetExtractor;
 import net.hasor.jdbc.operations.SqlRowSet;
-import net.hasor.jdbc.operations.rowset.ResultSetWrappingSqlRowSet;
+import net.hasor.jdbc.operations.core.rowset.ResultSetWrappingSqlRowSet;
 import com.sun.rowset.CachedRowSetImpl;
 /**
  * 接口 {@link ResultSetExtractor} 实现类，返回一个 SqlRowSet 数据集对象。

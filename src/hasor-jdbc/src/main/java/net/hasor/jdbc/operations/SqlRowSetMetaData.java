@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.jdbc.operations;
-import net.hasor.jdbc.dao.InvalidDataAccessException;
+import net.hasor.jdbc.InvalidDataAccessException;
 /**
  * 元数据接口，接口功能类似于 <code>javax.sql.ResultSetMetaData</code>
  * @author Thomas Risberg

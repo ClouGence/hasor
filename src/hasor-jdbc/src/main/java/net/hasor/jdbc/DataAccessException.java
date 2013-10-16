@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.dao;
+package net.hasor.jdbc;
+import org.more.util.exception.NestableRuntimeException;
 /**
- * SQL 警告。
+ * JDBC 异常根
  * @version : 2013-10-12
  * @author 赵永春(zyc@hasor.net)
  */
-public class SQLWarningException extends UncategorizedDataAccessException {
-    private static final long serialVersionUID = 447732094361475241L;
-    /**SQL 警告。*/
-    public SQLWarningException(String msg) {
+public class DataAccessException extends NestableRuntimeException {
+    private static final long serialVersionUID = -476436113710224961L;
+    /**JDBC 异常根*/
+    public DataAccessException(String msg) {
         super(msg);
     }
-    /**SQL 警告。*/
-    public SQLWarningException(String msg, Throwable cause) {
+    /**JDBC 异常根*/
+    public DataAccessException(String msg, Throwable cause) {
         super(msg, cause);
     }
 }

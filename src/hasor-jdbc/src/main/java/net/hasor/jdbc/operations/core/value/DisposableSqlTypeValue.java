@@ -21,14 +21,8 @@ package net.hasor.jdbc.operations.core.value;
  *
  * @author Juergen Hoeller
  * @since 1.1
- * @see org.noe.platform.modules.db.jdbcorm.jdbc.core.support.SqlLobValue
  */
 public interface DisposableSqlTypeValue extends SqlTypeValue {
-    /**
-     * Clean up resources held by this type value,
-     * for example the LobCreator in case of a SqlLobValue.
-     * @see org.noe.platform.modules.db.jdbcorm.jdbc.core.support.SqlLobValue#cleanup()
-     * @see org.noe.platform.modules.db.jdbcorm.jdbc.support.SqlValue#cleanup()
-     */
-    void cleanup();
+    /**Clean up resources held by this type value, for example the LobCreator in case of a SqlLobValue.*/
+    public void cleanup();
 }

@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.dao;
-import org.more.util.exception.NestableRuntimeException;
+package net.hasor.jdbc;
 /**
- * JDBC 异常根
+ * 不明原因的底层 SQL 异常。
  * @version : 2013-10-12
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class DataAccessException extends NestableRuntimeException {
-    private static final long serialVersionUID = -476436113710224961L;
-    /**JDBC 异常根*/
-    public DataAccessException(String msg) {
+public class UncategorizedDataAccessException extends DataAccessException {
+    private static final long serialVersionUID = 447732094361475241L;
+    /**不明原因的底层 SQL 异常。*/
+    public UncategorizedDataAccessException(String msg) {
         super(msg);
     }
-    /**JDBC 异常根*/
-    public DataAccessException(String msg, Throwable cause) {
+    /**不明原因的底层 SQL 异常。*/
+    public UncategorizedDataAccessException(String msg, Throwable cause) {
         super(msg, cause);
     }
 }

@@ -18,16 +18,16 @@ import javax.sql.DataSource;
 import net.hasor.Hasor;
 import net.hasor.core.XmlNode;
 import net.hasor.jdbc.datasource.DataSourceResources;
-import com.alibaba.druid.pool.DruidDataSource;
+import org.apache.commons.dbcp.BasicDataSource;
 /**
  * 
- * @version : 2013-10-8
+ * @version : 2013-9-16
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-public class Druid_DataSourceFactory implements DataSourceResources {
+public class DBCPDataSourceAdapter implements DataSourceResources {
     //
-    public DataSource getDataSource(XmlNode config) throws Throwable {
-        DruidDataSource dataSource = new DruidDataSource();
+    public DataSource getDataSource(XmlNode config) {
+        BasicDataSource dataSource = new BasicDataSource();
         //
         String driverString = config.getXmlNode("driver").getText();//<driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
         String urlString = config.getXmlNode("url").getText();//<url>jdbc:sqlserver://10.200.15.100;DatabaseName=NOE_ESTUDY</url>
@@ -35,27 +35,15 @@ public class Druid_DataSourceFactory implements DataSourceResources {
         String pwdString = config.getXmlNode("password").getText();//<password>abc123!@#</password>
         int poolMaxSize = 200;
         //
-        Hasor.info("Druid Pool Info maxSize is °Æ%s°Ø driver is °Æ%s°Ø jdbcUrl is°Æ%s°Ø", poolMaxSize, driverString, urlString);
-        //
+        Hasor.info("DBCP Pool Info maxSize is °Æ%s°Ø driver is °Æ%s°Ø jdbcUrl is°Æ%s°Ø", poolMaxSize, driverString, urlString);
         dataSource.setDriverClassName(driverString);
         dataSource.setUrl(urlString);
         dataSource.setUsername(userString);
         dataSource.setPassword(pwdString);
-        dataSource.setFilters("stat");
         dataSource.setMaxActive(poolMaxSize);
         dataSource.setInitialSize(1);
-        dataSource.setMaxWait(60000);
-        dataSource.setMinIdle(1);
-        dataSource.setTimeBetweenEvictionRunsMillis(3000);
-        dataSource.setMinEvictableIdleTimeMillis(300000);
-        dataSource.setValidationQuery("SELECT 'x'");
-        dataSource.setTestWhileIdle(true);
-        dataSource.setTestOnBorrow(false);
-        dataSource.setTestOnReturn(false);
-        dataSource.setPoolPreparedStatements(true);
-        dataSource.setMaxPoolPreparedStatementPerConnectionSize(20);
-        //
-        dataSource.init();
+        dataSource.setTestOnBorrow(true);
+        dataSource.setValidationQuery("select 'ok' as msg");
         return dataSource;
     }
 }

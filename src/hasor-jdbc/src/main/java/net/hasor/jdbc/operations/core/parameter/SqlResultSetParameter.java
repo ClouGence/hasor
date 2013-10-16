@@ -18,11 +18,11 @@ import net.hasor.jdbc.operations.ResultSetExtractor;
 import net.hasor.jdbc.operations.RowCallbackHandler;
 import net.hasor.jdbc.operations.RowMapper;
 /**
- * 结果集类型输出参数（非值类型）。
+ * 支持结果集的SQL参数。
  * @version : 2013-10-15
  * @author 赵永春(zyc@hasor.net)
  */
-public class SqlOutResultSetParameter extends SqlOutParameter {
+public class SqlResultSetParameter extends SqlParameter {
     private ResultSetExtractor<?> resultSetExtractor;
     private RowCallbackHandler    rowCallbackHandler;
     private RowMapper<?>          rowMapper;
@@ -32,7 +32,7 @@ public class SqlOutResultSetParameter extends SqlOutParameter {
      * @param sqlType SQL type of the parameter according to java.sql.Types
      * @param rse ResultSetExtractor to use for parsing the ResultSet
      */
-    public SqlOutResultSetParameter(String name, ResultSetExtractor<?> rse) {
+    public SqlResultSetParameter(String name, ResultSetExtractor<?> rse) {
         super(name, 0);
         this.resultSetExtractor = rse;
     }
@@ -42,7 +42,7 @@ public class SqlOutResultSetParameter extends SqlOutParameter {
      * @param sqlType SQL type of the parameter according to java.sql.Types
      * @param rch RowCallbackHandler to use for parsing the ResultSet
      */
-    public SqlOutResultSetParameter(String name, RowCallbackHandler rch) {
+    public SqlResultSetParameter(String name, RowCallbackHandler rch) {
         super(name, 0);
         this.rowCallbackHandler = rch;
     }
@@ -52,7 +52,7 @@ public class SqlOutResultSetParameter extends SqlOutParameter {
      * @param sqlType SQL type of the parameter according to java.sql.Types
      * @param rm RowMapper to use for parsing the ResultSet
      */
-    public SqlOutResultSetParameter(String name, RowMapper<?> rm) {
+    public SqlResultSetParameter(String name, RowMapper<?> rm) {
         super(name, 0);
         this.rowMapper = rm;
     }

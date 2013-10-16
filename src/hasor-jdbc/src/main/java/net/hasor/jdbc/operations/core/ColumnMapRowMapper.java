@@ -20,7 +20,6 @@ import java.sql.SQLException;
 import java.util.Map;
 import net.hasor.jdbc.operations.RowMapper;
 import net.hasor.jdbc.operations.core.util.JdbcUtils;
-import net.hasor.jdbc.operations.core.util.LinkedCaseInsensitiveMap;
 /**
  * {@link RowMapper} implementation that creates a <code>java.util.Map</code>
  * for each row, representing all columns as key-value pairs: one

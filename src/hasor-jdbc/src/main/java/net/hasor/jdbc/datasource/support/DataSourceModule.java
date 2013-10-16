@@ -22,9 +22,9 @@ import net.hasor.core.Module;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 import net.hasor.jdbc.datasource.DataSourceResources;
-import net.hasor.jdbc.datasource.pool.C3p0_DataSourceFactory;
-import net.hasor.jdbc.datasource.pool.DBCP_DataSourceFactory;
-import net.hasor.jdbc.datasource.pool.Druid_DataSourceFactory;
+import net.hasor.jdbc.datasource.pool.C3p0DataSourceAdapter;
+import net.hasor.jdbc.datasource.pool.DBCPDataSourceAdapter;
+import net.hasor.jdbc.datasource.pool.DruidDataSourceAdapter;
 import org.more.util.StringUtils;
 /**
  * 
@@ -50,13 +50,13 @@ public class DataSourceModule implements Module {
                 DataSource dataSourceObject = null;
                 //2.´´½¨DataSourceFactory
                 if (StringUtils.equalsIgnoreCase(poolType, "c3p0"))
-                    dsFactory = new C3p0_DataSourceFactory();
+                    dsFactory = new C3p0DataSourceAdapter();
                 else if (StringUtils.equalsIgnoreCase(poolType, "dbcp"))
-                    dsFactory = new DBCP_DataSourceFactory();
+                    dsFactory = new DBCPDataSourceAdapter();
                 else if (StringUtils.equalsIgnoreCase(poolType, "druid"))
-                    dsFactory = new Druid_DataSourceFactory();
+                    dsFactory = new DruidDataSourceAdapter();
                 else
-                    dsFactory = new Druid_DataSourceFactory();
+                    dsFactory = new DruidDataSourceAdapter();
                 //3.×¢²á
                 try {
                     dataSourceObject = dsFactory.getDataSource(ds);

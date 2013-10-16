@@ -24,7 +24,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
  * @version : 2013-9-16
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-public class C3p0_DataSourceFactory implements DataSourceResources {
+public class C3p0DataSourceAdapter implements DataSourceResources {
     //
     public DataSource getDataSource(XmlNode config) throws Throwable {
         ComboPooledDataSource dataSource = new ComboPooledDataSource();

@@ -21,28 +21,40 @@ import net.hasor.Hasor;
  * @version : 2013-10-14
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class SqlParameter {
+public class SqlParameter {
     /*参数名*/
     private String    name;
     /*参数类型,详见：java.sql.Types*/
     private final int sqlType;
-    //
-    //
+    /*应用到数字类型的 scale 参数*/
+    private Integer   scale;
     //
     /**创建一个匿名的 SQL 参数.*/
     public SqlParameter(int sqlType) {
         this.sqlType = sqlType;
+    }
+    /**创建一个匿名的 SQL 参数.*/
+    public SqlParameter(int sqlType, Integer scale) {
+        this.sqlType = sqlType;
+        this.scale = scale;
     }
     /**根据参数名 和参数类型创建一个 SqlParameter.*/
     public SqlParameter(String name, int sqlType) {
         this.name = name;
         this.sqlType = sqlType;
     }
+    /**根据参数名 和参数类型创建一个 SqlParameter.*/
+    public SqlParameter(String name, int sqlType, Integer scale) {
+        this.name = name;
+        this.sqlType = sqlType;
+        this.scale = scale;
+    }
     /**根据一个 SqlParameter 拷贝创建一个新的 SqlParameter.*/
     public SqlParameter(SqlParameter otherParam) {
         Hasor.assertIsNotNull(otherParam, "SqlParameter object must not be null");
         this.name = otherParam.name;
         this.sqlType = otherParam.sqlType;
+        this.scale = otherParam.scale;
     }
     //
     /**参数名。*/
@@ -53,10 +65,10 @@ public abstract class SqlParameter {
     public int getSqlType() {
         return this.sqlType;
     }
-    /**是否为传入参数。*/
-    public abstract boolean isInput();
-    /**是否为传出参数。*/
-    public abstract boolean isOutput();
+    /**应用到数字类型的 scale 参数*/
+    public Integer getScale() {
+        return this.scale;
+    }
     //    /**将 <code>java.sql.Types</code> 类型定义转换成为 SqlParameter 列表。*/
     //    public static List<SqlParameter> sqlTypesToAnonymousParameterList(int[] types) {
     //        List<SqlParameter> result = new LinkedList<SqlParameter>();
