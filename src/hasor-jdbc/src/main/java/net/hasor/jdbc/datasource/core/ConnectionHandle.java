@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
+ * Copyright 2002-2005 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.datasource;
+package net.hasor.jdbc.datasource.core;
 import java.sql.Connection;
-import javax.sql.DataSource;
 /**
- * 
- * @version : 2013-10-16
- * @author ’‘”¿¥∫(zyc@hasor.net)
+ * Simple interface to be implemented by handles for a JDBC Connection.
+ * Used by JdoDialect, for example.
+ *
+ * @author Juergen Hoeller
+ * @since 1.1
  */
-public class ConnectionHelper {
-    public static void releaseConnection(Connection target) {
-        // TODO Auto-generated method stub
-    }
-    public static Connection getConnection(DataSource dataSource) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+public interface ConnectionHandle {
+    /**Fetch the JDBC Connection that this handle refers to.*/
+    public Connection getConnection();
+    /**Release the JDBC Connection that this handle refers to.*/
+    public void releaseConnection(Connection con);
 }
