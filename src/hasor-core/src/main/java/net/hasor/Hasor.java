@@ -31,6 +31,12 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class Hasor {
+    private static String callerTrace() {
+        StackTraceElement[] stackElements = new Exception().getStackTrace();
+        StackTraceElement onCode = stackElements[2];
+        String callerClass = onCode.getClassName();
+        return callerClass.substring(callerClass.lastIndexOf(".") + 1) + ":" + onCode.getMethodName();
+    }
     private static String callerInfo() {
         StackTraceElement[] stackElements = new Exception().getStackTrace();
         StackTraceElement onCode = stackElements[2];
@@ -117,6 +123,18 @@ public abstract class Hasor {
         log.info(callerInfo() + " ->> " + String.format(string, paramsStr));
     }
     /**
+     * 输出 <i><b>Trace</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
+     * @param string 要输出的日志信息，或将要输出的格式化日志信息。
+     * @param params 需要被格式化的内容。
+     */
+    public static void trace(String string, Object... params) {
+        Logger log = LoggerFactory.getLogger(callerClass());
+        if (!log.isTraceEnabled())
+            return;
+        Object[] paramsStr = getStringArray(params);
+        log.info(callerTrace() + " ->> " + String.format(string, paramsStr));
+    }
+    /**
      * 转换对象为字符串内容，用以打印目的。
      * @param object 将参数对象转换为可以作为日志输出的字符串内容。
      */
@@ -173,6 +191,11 @@ public abstract class Hasor {
         return logString.toString();
     }
     //
+    /**是否输出 Trace 级日志。*/
+    public static boolean isTraceLogger() {
+        Logger log = LoggerFactory.getLogger(callerClass());
+        return log.isTraceEnabled();
+    }
     /**是否输出 Debug 级日志。*/
     public static boolean isDebugLogger() {
         Logger log = LoggerFactory.getLogger(callerClass());

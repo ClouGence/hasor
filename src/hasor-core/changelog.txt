@@ -3,6 +3,7 @@ Hasor-Core v0.0.4
 	1.Environment 接口新增 isDebug 方法，用于表示应用程序启动是否为 debug 模式。
 	2.Hasor 类新增 isDebugLogger、isErrorLogger、isWarningLogger、isInfoLogger 方法用于判断日志是否支持该级别的输出。
 	3.原有 Hasor 类中 debug、error、warning、info 日志输出方法会判断响应级别的日志输出是否支持。
+	4.增加 Hasor 类中 trace、isTraceLogger 方法，用于处理 Trace 日志级别。
 
 Hasor-Core v0.0.3
 * Improvement:
