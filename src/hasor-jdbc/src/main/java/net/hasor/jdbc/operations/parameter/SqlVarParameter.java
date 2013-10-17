@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.operations.core.parameter;
+package net.hasor.jdbc.operations.parameter;
 /**
  * SqlParameter 的子类，用于表示带有值的输入参数。
  * @see java.sql.Types

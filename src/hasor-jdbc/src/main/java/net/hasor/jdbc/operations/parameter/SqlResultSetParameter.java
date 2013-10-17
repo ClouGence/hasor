@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.operations.core.parameter;
+package net.hasor.jdbc.operations.parameter;
 import net.hasor.jdbc.operations.ResultSetExtractor;
 import net.hasor.jdbc.operations.RowCallbackHandler;
 import net.hasor.jdbc.operations.RowMapper;

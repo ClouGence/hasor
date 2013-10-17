@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.operations.core.parameter;
+package net.hasor.jdbc.operations.parameter;
+import java.util.LinkedList;
+import java.util.List;
 import net.hasor.Hasor;
 /**
  * 代表SQL参数，其子类决定参数的输出方向。
@@ -69,12 +71,12 @@ public class SqlParameter {
     public Integer getScale() {
         return this.scale;
     }
-    //    /**将 <code>java.sql.Types</code> 类型定义转换成为 SqlParameter 列表。*/
-    //    public static List<SqlParameter> sqlTypesToAnonymousParameterList(int[] types) {
-    //        List<SqlParameter> result = new LinkedList<SqlParameter>();
-    //        if (types != null)
-    //            for (int type : types)
-    //                result.add(new SqlParameter(type));
-    //        return result;
-    //    }
+    /**将 <code>java.sql.Types</code> 类型定义转换成为 SqlParameter 列表。*/
+    public static List<SqlParameter> sqlTypesToAnonymousParameterList(int[] types) {
+        List<SqlParameter> result = new LinkedList<SqlParameter>();
+        if (types != null)
+            for (int type : types)
+                result.add(new SqlParameter(type));
+        return result;
+    }
 }

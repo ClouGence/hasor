@@ -29,11 +29,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import net.hasor.Hasor;
-import net.hasor.jdbc.operations.core.parameter.SqlParameter;
-import net.hasor.jdbc.operations.core.parameter.SqlVarParameter;
 import net.hasor.jdbc.operations.core.value.DisposableSqlTypeValue;
 import net.hasor.jdbc.operations.core.value.SqlTypeValue;
 import net.hasor.jdbc.operations.core.value.SqlValue;
+import net.hasor.jdbc.operations.parameter.SqlParameter;
+import net.hasor.jdbc.operations.parameter.SqlVarParameter;
 /**
  * 
  * @version : 2013-10-15

@@ -17,9 +17,9 @@ package net.hasor.jdbc.operations.core;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import net.hasor.jdbc.operations.PreparedStatementSetter;
-import net.hasor.jdbc.operations.core.parameter.SqlVarParameter;
 import net.hasor.jdbc.operations.core.util.StatementSetterUtils;
 import net.hasor.jdbc.operations.core.value.SqlTypeValue;
+import net.hasor.jdbc.operations.parameter.SqlVarParameter;
 /**
  * Simple adapter for PreparedStatementSetter that applies a given array of arguments.
  * @author Juergen Hoeller

@@ -13,18 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.datasource.core;
+package net.hasor.jdbc.datasource.connection;
 import java.sql.Connection;
+import javax.sql.DataSource;
 /**
- * Simple interface to be implemented by handles for a JDBC Connection.
- * Used by JdoDialect, for example.
- *
- * @author Juergen Hoeller
- * @since 1.1
+ * 
+ * @version : 2013-10-17
+ * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-public interface ConnectionHandle {
-    /**Fetch the JDBC Connection that this handle refers to.*/
-    public Connection getConnection();
-    /**Release the JDBC Connection that this handle refers to.*/
-    public void releaseConnection(Connection con);
+public class ConnectionHandle {
+    private int        retainCount;
+    private Connection connection;
+    private DataSource useDataSource;
+    //
+    //
+    public Connection getConnection() {
+        retainCount++;
+        return this.connection;
+    };
+    public void releaseConnection() {
+        retainCount--;
+    };
 }
