@@ -126,18 +126,20 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     //
     public <T> T execute(ConnectionCallback<T> action) throws DataAccessException {
         Hasor.assertIsNotNull(action, "Callback object must not be null");
-        Connection con = this.getLocalConnection();//申请本地连接（和当前线程绑定的连接）
+        Connection con = ConnectionHelper.getConnection(this.getDataSource());
+        con = this.newProxyConnection(con);//申请本地连接（和当前线程绑定的连接）
         try {
             return action.doInConnection(con);
         } catch (SQLException ex) {
             throw new DataAccessException("ConnectionCallback SQL :" + getSql(action), ex);
         } finally {
-            JdbcUtils.closeConnection(con);//关闭或释放连接
+            ConnectionHelper.releaseConnection(con, this.getDataSource());//关闭或释放连接
         }
     }
     public <T> T execute(StatementCallback<T> action) throws DataAccessException {
         Hasor.assertIsNotNull(action, "Callback object must not be null");
-        Connection con = this.getLocalConnection();//申请本地连接（和当前线程绑定的连接）
+        Connection con = ConnectionHelper.getConnection(this.getDataSource());
+        con = this.newProxyConnection(con);//申请本地连接（和当前线程绑定的连接）
         Statement stmt = null;
         try {
             stmt = con.createStatement();
@@ -149,7 +151,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             throw new DataAccessException("StatementCallback SQL :" + getSql(action), ex);
         } finally {
             JdbcUtils.closeStatement(stmt);
-            JdbcUtils.closeConnection(con);//关闭或释放连接
+            ConnectionHelper.releaseConnection(con, this.getDataSource());//关闭或释放连接
             stmt = null;
             con = null;
         }
@@ -279,7 +281,8 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             String sql = getSql(psc);
             Hasor.debug("Executing prepared SQL statement " + (sql != null ? " [" + sql + "]" : ""));
         }
-        Connection con = this.getLocalConnection();//申请本地连接（和当前线程绑定的连接）
+        Connection con = ConnectionHelper.getConnection(this.getDataSource());
+        con = this.newProxyConnection(con);//申请本地连接（和当前线程绑定的连接）
         PreparedStatement ps = null;
         try {
             ps = psc.createPreparedStatement(con);
@@ -293,7 +296,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             if (psc instanceof ParameterDisposer)
                 ((ParameterDisposer) psc).cleanupParameters();
             JdbcUtils.closeStatement(ps);
-            JdbcUtils.closeConnection(con);//关闭或释放连接
+            ConnectionHelper.releaseConnection(con, this.getDataSource());//关闭或释放连接
             ps = null;
             con = null;
         }
@@ -465,7 +468,8 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             String sql = getSql(csc);
             Hasor.debug("Calling stored procedure" + (sql != null ? " [" + sql + "]" : ""));
         }
-        Connection con = this.getLocalConnection();//申请本地连接（和当前线程绑定的连接）
+        Connection con = ConnectionHelper.getConnection(this.getDataSource());
+        con = this.newProxyConnection(con);//申请本地连接（和当前线程绑定的连接）
         CallableStatement cs = null;
         try {
             cs = csc.createCallableStatement(con);
@@ -479,7 +483,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             if (csc instanceof ParameterDisposer)
                 ((ParameterDisposer) csc).cleanupParameters();
             JdbcUtils.closeStatement(cs);
-            JdbcUtils.closeConnection(con);
+            ConnectionHelper.releaseConnection(con, this.getDataSource());//关闭或释放连接
         }
     }
     public <T> T execute(String callString, CallableStatementCallback<T> action) throws DataAccessException {
@@ -596,8 +600,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             return null;
     }
     /**获取与本地线程绑定的数据库连接，JDBC 框架会维护这个连接的事务。开发者不必关心该连接的事务管理，以及资源释放操作。*/
-    protected Connection getLocalConnection() {
-        Connection conn = ConnectionHelper.getConnection(this.getDataSource());
+    private Connection newProxyConnection(Connection conn) {
         CloseSuppressingInvocationHandler handler = new CloseSuppressingInvocationHandler(conn);
         return (Connection) Proxy.newProxyInstance(ConnectionProxy.class.getClassLoader(), new Class[] { ConnectionProxy.class }, handler);
     }
@@ -619,7 +622,6 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
                 // Use hashCode of PersistenceManager proxy.
                 return System.identityHashCode(proxy);
             } else if (method.getName().equals("close")) {
-                ConnectionHelper.releaseConnection(this.target);//
                 return null;
             }
             // Invoke method on target Connection.

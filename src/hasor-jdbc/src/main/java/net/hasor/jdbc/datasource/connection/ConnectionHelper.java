@@ -15,6 +15,7 @@
  */
 package net.hasor.jdbc.datasource.connection;
 import java.sql.Connection;
+import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
 /**
@@ -25,11 +26,25 @@ import javax.sql.DataSource;
 public class ConnectionHelper {
     private static final ThreadLocal<Map<DataSource, ConnectionHandle>> ResourcesLocal = new ThreadLocal<Map<DataSource, ConnectionHandle>>();
     //
-    public static void releaseConnection(Connection target) {
-        // TODO Auto-generated method stub
+    public static void releaseConnection(Connection target, DataSource dataSource) {
+        Map<DataSource, ConnectionHandle> dsMap = ResourcesLocal.get();
+        if (dsMap == null)
+            return;
+        ConnectionHandle connHandle = dsMap.get(dataSource);
+        if (connHandle == null)
+            return;
+        connHandle.releaseConnection();
     }
     public static Connection getConnection(DataSource dataSource) {
-        // TODO Auto-generated method stub
-        return null;
+        ConnectionHandle connHandle = null;
+        Map<DataSource, ConnectionHandle> dsMap = ResourcesLocal.get();
+        if (dsMap == null) {
+            dsMap = new HashMap<DataSource, ConnectionHandle>();
+            ResourcesLocal.set(dsMap);
+        }
+        connHandle = dsMap.get(dataSource);
+        if (connHandle == null)
+            connHandle = new ConnectionHandle(dataSource);
+        return connHandle.getConnection();
     }
 }

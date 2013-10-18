@@ -25,13 +25,25 @@ public class ConnectionHandle {
     private int        retainCount;
     private Connection connection;
     private DataSource useDataSource;
+    private boolean    transactionActive = false;
+    private Boolean    savepointsSupported;
     //
+    public ConnectionHandle(DataSource dataSource) {
+        this.useDataSource = useDataSource;
+        // TODO Auto-generated constructor stub
+    }
     //
     public Connection getConnection() {
         retainCount++;
+        //
         return this.connection;
     };
     public void releaseConnection() {
         retainCount--;
+        //
+        if (retainCount == 0) {
+            this.connection.close();
+            this.connection = null;
+        }
     };
 }

@@ -1,4 +1,3 @@
-package net.hasor.jdbc.transaction;
 ///*
 // * Copyright 2008-2009 the original утсю╢╨(zyc@hasor.net).
 // *
