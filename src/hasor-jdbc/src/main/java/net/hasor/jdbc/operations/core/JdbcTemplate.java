@@ -37,8 +37,6 @@ import net.hasor.jdbc.DataAccessException;
 import net.hasor.jdbc.InvalidDataAccessException;
 import net.hasor.jdbc.SQLWarningException;
 import net.hasor.jdbc.datasource.JdbcAccessor;
-import net.hasor.jdbc.datasource.connection.ConnectionHelper;
-import net.hasor.jdbc.datasource.connection.ConnectionProxy;
 import net.hasor.jdbc.operations.BatchPreparedStatementSetter;
 import net.hasor.jdbc.operations.CallableStatementCallback;
 import net.hasor.jdbc.operations.CallableStatementCreator;
@@ -53,6 +51,8 @@ import net.hasor.jdbc.operations.RowMapper;
 import net.hasor.jdbc.operations.SqlRowSet;
 import net.hasor.jdbc.operations.StatementCallback;
 import net.hasor.jdbc.operations.core.util.JdbcUtils;
+import net.hasor.jdbc.transaction.connection.ConnectionHelper;
+import net.hasor.jdbc.transaction.connection.ConnectionProxy;
 import org.more.util.ArrayUtils;
 /**
  * 

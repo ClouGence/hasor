@@ -9,6 +9,7 @@ Hasor-Web v0.0.3
     1.ResourceLoader 接口新增 exist、canModify、close 方法。用于判断资源是否存在以及是否可能被更改。
         ClassPathResourceLoader、PathResourceLoader、ZipResourceLoader 分别实现了它们。
     2.新增了 Resources 模块在每次启动时都会清理之前的缓存文件。
+* Improvement:
 
     
 

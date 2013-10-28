@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.datasource.connection;
+package net.hasor.jdbc.transaction.connection;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +26,9 @@ import javax.sql.DataSource;
 public class ConnectionHelper {
     private static final ThreadLocal<Map<DataSource, ConnectionHandle>> ResourcesLocal = new ThreadLocal<Map<DataSource, ConnectionHandle>>();
     //
+    //
+    //
+    /**释放连接*/
     public static void releaseConnection(Connection target, DataSource dataSource) {
         Map<DataSource, ConnectionHandle> dsMap = ResourcesLocal.get();
         if (dsMap == null)
@@ -35,6 +38,7 @@ public class ConnectionHelper {
             return;
         connHandle.releaseConnection();
     }
+    /**申请连接*/
     public static Connection getConnection(DataSource dataSource) {
         ConnectionHandle connHandle = null;
         Map<DataSource, ConnectionHandle> dsMap = ResourcesLocal.get();
