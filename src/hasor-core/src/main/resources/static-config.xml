@@ -32,4 +32,8 @@
 		<!-- 模块配置目录 -->
 		<HASOR_PLUGIN_SETTINGS>%HASOR_WORK_HOME%/settings</HASOR_PLUGIN_SETTINGS>
 	</environmentVar>
+	<!-- 使用类似 Spring 的方式用配置文件注册Bean -->
+	<beans>
+		<!-- <bean name="" class="" singleton="true|false" /> -->
+	</beans>
 </config>
