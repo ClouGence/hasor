@@ -15,6 +15,8 @@
  */
 package net.hasor.jdbc.transaction.connection;
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Savepoint;
 import javax.sql.DataSource;
 /**
  * 
@@ -22,28 +24,62 @@ import javax.sql.DataSource;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ConnectionHandle {
-    private int        retainCount;
     private Connection connection;
     private DataSource useDataSource;
-    private boolean    transactionActive = false;
-    private Boolean    savepointsSupported;
+    //
+    private boolean    transactionActive;
+    private int        referenceCount;
     //
     public ConnectionHandle(DataSource dataSource) {
         this.useDataSource = useDataSource;
-        // TODO Auto-generated constructor stub
     }
     //
-    public Connection getConnection() {
-        retainCount++;
-        //
-        return this.connection;
-    };
-    public void releaseConnection() {
-        retainCount--;
-        //
-        if (retainCount == 0) {
+    //
+    //
+    /**增加引用计数,一个因为持有人已被请求。*/
+    public void requested() {
+        this.referenceCount++;
+    }
+    /**减少引用计数,一个因为持有人已被释放。*/
+    public void released() {
+        this.referenceCount--;
+        if (!isOpen() && this.connection != null) {
             this.connection.close();
             this.connection = null;
         }
+    }
+    /**当引用计数大于 0 时，返回 true。*/
+    public boolean isOpen() {
+        return (this.referenceCount > 0);
+    }
+    //
+    //
+    //
+    public static final String SAVEPOINT_NAME_PREFIX = "SAVEPOINT_";
+    private Boolean            savepointsSupported;
+    private int                savepointCounter      = 0;
+    /**返回 JDBC 驱动是否支持保存点。*/
+    public boolean supportsSavepoints() throws SQLException {
+        if (this.savepointsSupported == null)
+            this.savepointsSupported = getConnection().getMetaData().supportsSavepoints();
+        return this.savepointsSupported;
+    }
+    /**使用一个全新的名称创建一个保存点。*/
+    public Savepoint createSavepoint() throws SQLException {
+        this.savepointCounter++;
+        return getConnection().setSavepoint(SAVEPOINT_NAME_PREFIX + this.savepointCounter);
+    }
+    //
+    //
+    //
+    /***/
+    public Connection getConnection() {
+        if (this.connection == null)
+            this.connection = this.useDataSource.getConnection();
+        return this.connection;
+    };
+    /**当前连接的事务是否被激活。*/
+    public boolean isTransactionActive() {
+        return transactionActive;
     };
 }

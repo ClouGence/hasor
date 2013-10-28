@@ -26,7 +26,23 @@ import javax.sql.DataSource;
 public class ConnectionHelper {
     private static final ThreadLocal<Map<DataSource, ConnectionHandle>> ResourcesLocal = new ThreadLocal<Map<DataSource, ConnectionHandle>>();
     //
+    /**当前操作的数据源中是否激活了事务。*/
+    public static boolean hasTransactionActive() {
+        Map<DataSource, ConnectionHandle> mapDS = ResourcesLocal.get();
+        if (mapDS == null || mapDS.isEmpty())
+            return false;
+        for (ConnectionHandle ch : mapDS.values())
+            if (ch.isTransactionActive())
+                return true;
+        return false;
+    };
     //
+    /**指定的数据源在当前线程中是否激活了事务。*/
+    public static boolean hasTransactionActive(DataSource dataSource) {
+        Map<DataSource, ConnectionHandle> mapDS = ResourcesLocal.get();
+        ConnectionHandle ch = mapDS.get(dataSource);
+        return (ch == null) ? false : ch.isTransactionActive();
+    };
     //
     /**释放连接*/
     public static void releaseConnection(Connection target, DataSource dataSource) {
@@ -36,8 +52,10 @@ public class ConnectionHelper {
         ConnectionHandle connHandle = dsMap.get(dataSource);
         if (connHandle == null)
             return;
-        connHandle.releaseConnection();
+        //
+        connHandle.released();
     }
+    //
     /**申请连接*/
     public static Connection getConnection(DataSource dataSource) {
         ConnectionHandle connHandle = null;
@@ -49,6 +67,9 @@ public class ConnectionHelper {
         connHandle = dsMap.get(dataSource);
         if (connHandle == null)
             connHandle = new ConnectionHandle(dataSource);
-        return connHandle.getConnection();
+        //
+        Connection conn = connHandle.getConnection();
+        connHandle.requested();
+        return conn;
     }
 }
