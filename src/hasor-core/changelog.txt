@@ -1,15 +1,21 @@
 Hasor-Core v0.0.4
 * New:
-	1.Environment 接口新增 isDebug 方法，用于表示应用程序启动是否为 debug 模式。
-	2.Hasor 类新增 isDebugLogger、isErrorLogger、isWarningLogger、isInfoLogger 方法用于判断日志是否支持该级别的输出。
-	3.原有 Hasor 类中 debug、error、warning、info 日志输出方法会判断响应级别的日志输出是否支持。
-	4.增加 Hasor 类中 trace、isTraceLogger 方法，用于处理 Trace 日志级别。
-	5.增加 Register BeanGift，这个小部件可以通过解析 beans 配置文件动态的从配置文件装入 Bean 的定义而非通过  @Bean 标签。
+    1.Environment 接口新增 isDebug 方法，用于表示应用程序启动是否为 debug 模式。
+    2.Hasor 类新增 isDebugLogger、isErrorLogger、isWarningLogger、isInfoLogger 方法用于判断日志是否支持该级别的输出。
+    3.原有 Hasor 类中 debug、error、warning、info 日志输出方法会判断响应级别的日志输出是否支持。
+    4.增加 Hasor 类中 trace、isTraceLogger 方法，用于处理 Trace 日志级别。
+    5.增加 Register BeanGift，这个小部件可以通过解析 beans 配置文件动态的从配置文件装入 Bean 的定义而非通过  @Bean 标签。
+    6.增加服务注册机制，详见 ServicesRegisterHandler 接口用法。
+    7.增加 ModuleEvent_Start、ModuleEvent_Stoped事件。
+* Improvement:
+    1.变更 ContextEvent_Stop 事件为 ContextEvent_Stoped。
+
 
 Hasor-Core v0.0.3
 * Improvement:
-	1.修改根POM改为 0.0.2 该版本可以处理 GBK 编码下 Javadocs 生成。
-	2.改进JavaDoc内容的质量。
+    1.修改根POM改为 0.0.2 该版本可以处理 GBK 编码下 Javadocs 生成。
+    2.改进JavaDoc内容的质量。
+
 
 Hasor-Core v0.0.2
 * Bug:
@@ -28,7 +34,7 @@ Hasor-Core v0.0.2
 Hasor-Core v0.0.1
 * Improvement:
     01.Hasor-Core：80%以上代码重构，重构主要涉及内容的是结构性重构。
-    		重构之后将会使Hasor核心层的逻辑更加清晰，更便于扩展核心层功能。
+            重构之后将会使Hasor核心层的逻辑更加清晰，更便于扩展核心层功能。
     02.InitContext接口功能合并到Environment接口中。
     03.ApiBinder接口增加模块依赖管理。
     04.HasorModule接口更名为Module。

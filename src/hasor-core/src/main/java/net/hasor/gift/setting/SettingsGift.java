@@ -15,6 +15,7 @@
  */
 package net.hasor.gift.setting;
 import static net.hasor.core.AppContext.ContextEvent_Start;
+import java.util.List;
 import java.util.Set;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
@@ -41,7 +42,7 @@ public class SettingsGift implements GiftFace {
         eventManager.pushEventListener(ContextEvent_Start, new EventListener() {
             public void onEvent(String event, Object[] params) {
                 AppContext appContext = (AppContext) params[0];
-                Provider<SettingsListener>[] settingProvider = appContext.getProviderByBindingType(SettingsListener.class);
+                List<Provider<SettingsListener>> settingProvider = appContext.getProviderByBindingType(SettingsListener.class);
                 if (settingProvider == null)
                     return;
                 for (Provider<SettingsListener> provider : settingProvider) {

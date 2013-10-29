@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.core.module;
+import static net.hasor.core.AppContext.ModuleEvent_Start;
+import static net.hasor.core.AppContext.ModuleEvent_Stoped;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.ApiBinder.DependencySettings;
@@ -24,7 +28,6 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Dependency;
 import net.hasor.core.Module;
 import net.hasor.core.ModuleInfo;
-import net.hasor.core.context.AbstractAppContext;
 import org.more.UnhandledException;
 import org.more.util.exception.ExceptionUtils;
 /**
@@ -32,7 +35,7 @@ import org.more.util.exception.ExceptionUtils;
  * @version : 2013-7-26
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信息*/, DependencySettings, Module {
+public abstract class ModulePropxy implements ModuleInfo/*提供模块基本信息*/, DependencySettings, Module {
     private String           displayName;
     private String           description;
     private Module           targetModule;
@@ -42,7 +45,7 @@ public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信
     private boolean          isReady;
     private boolean          isStart;
     //
-    public AbstractModulePropxy(Module targetModule, AppContext appContext) {
+    public ModulePropxy(Module targetModule, AppContext appContext) {
         this.targetModule = Hasor.assertIsNotNull(targetModule);
         this.appContext = Hasor.assertIsNotNull(appContext);
         //
@@ -105,14 +108,14 @@ public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信
     //
     //----------------------------------------------------------------------------Dependency Method
     /**尝试从容器中获取模块的代理对象*/
-    protected abstract AbstractModulePropxy getInfo(Class<? extends Module> targetModule, AppContext appContext);
+    protected abstract ModulePropxy getInfo(Class<? extends Module> targetModule, AppContext appContext);
     //
     public void reverse(Class<? extends Module> targetModule) {
         if (isReady())
             /*模块已经准备好，只有当模块在准备期才可以使用该方法*/
             throw new IllegalStateException("Module is ready, only can use this method in run-up.");
         //
-        AbstractModulePropxy moduleInfo = this.getInfo(targetModule, this.appContext);
+        ModulePropxy moduleInfo = this.getInfo(targetModule, this.appContext);
         moduleInfo.weak(targetModule);
     }
     public void weak(Class<? extends Module> targetModule) {
@@ -126,7 +129,7 @@ public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信
             /*模块已经准备好，只有当模块在准备期才可以使用该方法*/
             throw new IllegalStateException("Module is ready, only can use this method in run-up.");
         //
-        AbstractModulePropxy moduleInfo = this.getInfo(targetModule, this.appContext);
+        ModulePropxy moduleInfo = this.getInfo(targetModule, this.appContext);
         for (Dependency dep : this.dependency)
             if (dep.getModuleInfo() == moduleInfo)
                 throw new IllegalStateException("before dependence is included.");
@@ -194,31 +197,29 @@ public abstract class AbstractModulePropxy implements ModuleInfo/*提供模块基本信
             Hasor.error("%s in the stop phase encounters an error.\n%s", this.getDisplayName(), e);
         }
     }
-    //
-    //
-    //
+    /*利用 AppContext 作 KEY 可以保证在不同环境下静态字段内容的正确性*/
+    private static Map<AppContext, ModuleInfo> loacalModuleInfo = new HashMap<AppContext, ModuleInfo>();
+    /**根据 AppContext 容器获取当前 ModuleInfo。<p>
+     * 注意：只有当 ModuleInfo 位于 start stop 过程内，该方法才会返回相对应的ModuleInfo。否则返回值为空。*/
+    public static ModuleInfo getLocalModuleInfo(AppContext appContext) {
+        return (appContext != null) ? loacalModuleInfo.get(appContext) : null;
+    }
     /**模块的 init 生命周期调用*/
     protected void onInit(Module forModule, ApiBinder apiBinder) {
-        String eventName = forModule.getClass().getName();
-        String phase = AbstractAppContext.ContextEvent_Init;
-        apiBinder.getEnvironment().getEventManager().doSyncEventIgnoreThrow(eventName, phase, forModule, apiBinder);
-        //
         forModule.init(apiBinder);
     }
     /**发送模块启动信号*/
     protected void onStart(Module forModule, AppContext appContext) {
-        String eventName = forModule.getClass().getName();
-        String phase = AbstractAppContext.ContextEvent_Start;
-        appContext.getEventManager().doSyncEventIgnoreThrow(eventName, phase, forModule, appContext);
-        //
+        loacalModuleInfo.put(this.appContext, this);
+        appContext.getEventManager().doSyncEventIgnoreThrow(ModuleEvent_Start, forModule, appContext);
         forModule.start(appContext);
+        loacalModuleInfo.remove(this.appContext);
     }
     /**发送模块停止信号*/
     protected void onStop(Module forModule, AppContext appContext) {
-        String eventName = forModule.getClass().getName();
-        String phase = AbstractAppContext.ContextEvent_Stop;
-        appContext.getEventManager().doSyncEventIgnoreThrow(eventName, phase, forModule, appContext);
-        //
+        loacalModuleInfo.put(this.appContext, this);
         forModule.stop(appContext);
+        appContext.getEventManager().doSyncEventIgnoreThrow(ModuleEvent_Stoped, forModule, appContext);
+        loacalModuleInfo.remove(this.appContext);
     }
 }

@@ -29,13 +29,15 @@ import net.hasor.core.ModuleInfo;
 import net.hasor.core.Settings;
 import net.hasor.core.binder.ApiBinderModule;
 import net.hasor.core.binder.BeanInfo;
-import net.hasor.core.module.AbstractModulePropxy;
+import net.hasor.core.module.ModulePropxy;
 import net.hasor.core.module.ModuleReactor;
+import net.hasor.core.services.HandlerHub;
 import org.more.UndefinedException;
 import com.google.inject.Binder;
 import com.google.inject.Binding;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.TypeLiteral;
 /**
@@ -70,6 +72,25 @@ public abstract class AbstractAppContext implements AppContext {
         return this.getEnvironment().getEventManager();
     }
     //
+    private HandlerHub handlerHub;
+    public <T> void registerService(Class<T> type, T serviceBean, Object... objects) {
+        this.handlerHub.registerServiceObject(type, serviceBean, objects);
+    }
+    public <T> void registerService(Class<T> type, Class<? extends T> serviceType, Object... objects) {
+        this.handlerHub.registerService(type, serviceType, objects);
+    }
+    public <T> void registerService(Class<T> type, Key<? extends T> serviceKey, Object... objects) {
+        this.handlerHub.registerService(type, serviceKey, objects);
+    }
+    public <T> void unRegisterService(Class<T> type, T serviceBean) {
+        this.handlerHub.unRegisterServiceObject(type, serviceBean);
+    }
+    public <T> void unRegisterService(Class<T> type, Class<? extends T> serviceType) {
+        this.handlerHub.unRegisterService(type, serviceType);
+    }
+    public <T> void unRegisterService(Class<T> type, Key<? extends T> serviceKey) {
+        this.handlerHub.unRegisterService(type, serviceKey);
+    }
     //
     //-----------------------------------------------------------------------------------------Bean
     private Map<String, BeanInfo> beanInfoMap;
@@ -114,7 +135,7 @@ public abstract class AbstractAppContext implements AppContext {
     //
     private void collectBeanInfos() {
         this.beanInfoMap = new HashMap<String, BeanInfo>();
-        Provider<BeanInfo>[] beanInfoProviderArray = this.getProviderByBindingType(BeanInfo.class);
+        List<Provider<BeanInfo>> beanInfoProviderArray = this.getProviderByBindingType(BeanInfo.class);
         if (beanInfoProviderArray == null)
             return;
         for (Provider<BeanInfo> entry : beanInfoProviderArray) {
@@ -141,7 +162,7 @@ public abstract class AbstractAppContext implements AppContext {
         return this.getGuice().getInstance(beanType);
     }
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> T[] getInstanceByBindingType(Class<T> bindingType) {
+    public <T> List<T> getInstanceByBindingType(Class<T> bindingType) {
         ArrayList<T> providerList = new ArrayList<T>();
         TypeLiteral<T> BindingType_DEFS = TypeLiteral.get(bindingType);
         for (Binding<T> entry : this.getGuice().findBindingsByType(BindingType_DEFS)) {
@@ -151,10 +172,10 @@ public abstract class AbstractAppContext implements AppContext {
         //
         if (providerList.isEmpty())
             return null;
-        return (T[]) providerList.toArray();
+        return providerList;
     }
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> Provider<T>[] getProviderByBindingType(Class<T> bindingType) {
+    public <T> List<Provider<T>> getProviderByBindingType(Class<T> bindingType) {
         ArrayList<Provider<T>> providerList = new ArrayList<Provider<T>>();
         TypeLiteral<T> BindingType_DEFS = TypeLiteral.get(bindingType);
         for (Binding<T> entry : this.getGuice().findBindingsByType(BindingType_DEFS)) {
@@ -164,14 +185,14 @@ public abstract class AbstractAppContext implements AppContext {
         //
         if (providerList.isEmpty())
             return null;
-        return providerList.toArray(new Provider[providerList.size()]);
+        return providerList;
     }
     //
     //
     //---------------------------------------------------------------------------------------Module
     /**选取或者生成指定模块的代理类型。*/
-    protected AbstractModulePropxy generateModulePropxy(Module hasorModule) {
-        for (AbstractModulePropxy info : this.getModulePropxyList())
+    protected ModulePropxy generateModulePropxy(Module hasorModule) {
+        for (ModulePropxy info : this.getModulePropxyList())
             if (info.getTarget() == hasorModule)
                 return info;
         return new ContextModulePropxy(hasorModule, this);
@@ -180,8 +201,8 @@ public abstract class AbstractAppContext implements AppContext {
     public synchronized ModuleInfo addModule(Module hasorModule) {
         if (this.isReady())
             throw new IllegalStateException("context is inited.");
-        AbstractModulePropxy propxy = this.generateModulePropxy(hasorModule);
-        List<AbstractModulePropxy> propxyList = this.getModulePropxyList();
+        ModulePropxy propxy = this.generateModulePropxy(hasorModule);
+        List<ModulePropxy> propxyList = this.getModulePropxyList();
         if (propxyList.contains(propxy) == false)
             propxyList.add(propxy);
         return propxy;
@@ -190,8 +211,8 @@ public abstract class AbstractAppContext implements AppContext {
     public synchronized boolean removeModule(Module hasorModule) {
         if (this.isReady())
             throw new IllegalStateException("context is inited.");
-        AbstractModulePropxy targetInfo = null;
-        for (AbstractModulePropxy info : this.getModulePropxyList())
+        ModulePropxy targetInfo = null;
+        for (ModulePropxy info : this.getModulePropxyList())
             if (info.getTarget() == hasorModule) {
                 targetInfo = info;
                 break;
@@ -204,23 +225,23 @@ public abstract class AbstractAppContext implements AppContext {
     }
     /**获得所有模块*/
     public ModuleInfo[] getModules() {
-        List<AbstractModulePropxy> haosrModuleList = this.getModulePropxyList();
+        List<ModulePropxy> haosrModuleList = this.getModulePropxyList();
         ModuleInfo[] infoArray = new ModuleInfo[haosrModuleList.size()];
         for (int i = 0; i < haosrModuleList.size(); i++)
             infoArray[i] = haosrModuleList.get(i);
         return infoArray;
     }
     //
-    private List<AbstractModulePropxy> haosrModuleSet;
+    private List<ModulePropxy> haosrModuleSet;
     /**创建或者获得用于存放所有ModuleInfo的集合对象*/
-    protected List<AbstractModulePropxy> getModulePropxyList() {
+    protected List<ModulePropxy> getModulePropxyList() {
         if (this.haosrModuleSet == null)
-            this.haosrModuleSet = new ArrayList<AbstractModulePropxy>();
+            this.haosrModuleSet = new ArrayList<ModulePropxy>();
         return haosrModuleSet;
     }
     //
     /**为模块创建ApiBinder*/
-    protected ApiBinderModule newApiBinder(final AbstractModulePropxy forModule, final Binder binder) {
+    protected ApiBinderModule newApiBinder(final ModulePropxy forModule, final Binder binder) {
         return new ApiBinderModule(this.getEnvironment(), forModule) {
             public Binder getGuiceBinder() {
                 return binder;
@@ -241,7 +262,7 @@ public abstract class AbstractAppContext implements AppContext {
     }
     /**打印模块状态*/
     protected void printModState() {
-        List<AbstractModulePropxy> modList = this.getModulePropxyList();
+        List<ModulePropxy> modList = this.getModulePropxyList();
         StringBuilder sb = new StringBuilder("");
         int size = String.valueOf(modList.size() - 1).length();
         for (int i = 0; i < modList.size(); i++) {
@@ -290,16 +311,17 @@ public abstract class AbstractAppContext implements AppContext {
         Hasor.assertIsNotNull(this.injector, "can not be create Injector.");
         /*使用反应堆对模块进行循环检查和排序*/
         List<ModuleInfo> readOnlyModules = new ArrayList<ModuleInfo>();
-        for (AbstractModulePropxy amp : this.getModulePropxyList())
+        for (ModulePropxy amp : this.getModulePropxyList())
             readOnlyModules.add(amp);
         //
         ModuleReactor reactor = new ModuleReactor(readOnlyModules);
         List<ModuleInfo> result = reactor.process();
-        List<AbstractModulePropxy> propxyList = this.getModulePropxyList();
+        List<ModulePropxy> propxyList = this.getModulePropxyList();
         propxyList.clear();
         for (ModuleInfo info : result)
-            propxyList.add((AbstractModulePropxy) info);
-        // 
+            propxyList.add((ModulePropxy) info);
+        //
+        this.handlerHub = new HandlerHub(this);
         Hasor.info("the init is completed!");
     }
     /**启动。向所有模块发送启动信号，并将容器的状态置为Start。（该方法会尝试init所有模块）*/
@@ -309,8 +331,8 @@ public abstract class AbstractAppContext implements AppContext {
         this.initContext();
         Hasor.info("send start sign.");
         this.getEnvironment().getEventManager().doSyncEventIgnoreThrow(ContextEvent_Start, this);
-        List<AbstractModulePropxy> modulePropxyList = this.getModulePropxyList();
-        for (AbstractModulePropxy mod : modulePropxyList)
+        List<ModulePropxy> modulePropxyList = this.getModulePropxyList();
+        for (ModulePropxy mod : modulePropxyList)
             mod.start(this);
         this.isStart = true;
         /*打印模块状态*/
@@ -322,10 +344,10 @@ public abstract class AbstractAppContext implements AppContext {
         if (this.isStart == false)
             return;
         Hasor.info("send stop sign.");
-        this.getEnvironment().getEventManager().doSyncEventIgnoreThrow(ContextEvent_Stop, this);
-        List<AbstractModulePropxy> modulePropxyList = this.getModulePropxyList();
-        for (AbstractModulePropxy mod : modulePropxyList)
+        List<ModulePropxy> modulePropxyList = this.getModulePropxyList();
+        for (ModulePropxy mod : modulePropxyList)
             mod.stop(this);
+        this.getEnvironment().getEventManager().doSyncEventIgnoreThrow(ContextEvent_Stoped, this);
         this.isStart = false;
         /*打印模块状态*/
         this.printModState();
@@ -355,9 +377,9 @@ class MasterModule implements com.google.inject.Module {
     }
     public void configure(Binder binder) {
         Hasor.info("send init sign...");
-        List<AbstractModulePropxy> modulePropxyList = this.appContet.getModulePropxyList();
+        List<ModulePropxy> modulePropxyList = this.appContet.getModulePropxyList();
         /*引发模块init生命周期*/
-        for (AbstractModulePropxy forModule : modulePropxyList) {
+        for (ModulePropxy forModule : modulePropxyList) {
             ApiBinderModule apiBinder = this.appContet.newApiBinder(forModule, binder);
             forModule.init(apiBinder);//触发生命周期 
             apiBinder.configure(binder);
@@ -367,13 +389,13 @@ class MasterModule implements com.google.inject.Module {
     }
 }
 /***/
-class ContextModulePropxy extends AbstractModulePropxy {
+class ContextModulePropxy extends ModulePropxy {
     public ContextModulePropxy(Module targetModule, AbstractAppContext appContext) {
         super(targetModule, appContext);
     }
-    protected AbstractModulePropxy getInfo(Class<? extends Module> targetModule, AppContext appContext) {
-        List<AbstractModulePropxy> modulePropxyList = ((AbstractAppContext) appContext).getModulePropxyList();
-        for (AbstractModulePropxy modulePropxy : modulePropxyList)
+    protected ModulePropxy getInfo(Class<? extends Module> targetModule, AppContext appContext) {
+        List<ModulePropxy> modulePropxyList = ((AbstractAppContext) appContext).getModulePropxyList();
+        for (ModulePropxy modulePropxy : modulePropxyList)
             if (targetModule == modulePropxy.getTarget().getClass())
                 return modulePropxy;
         throw new UndefinedException(targetModule.getName() + " module is Undefined!");

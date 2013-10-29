@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.core;
+import java.util.List;
 import java.util.Set;
 import org.more.UndefinedException;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.google.inject.Provider;
 /**
  * 应用程序上下文
@@ -24,13 +26,40 @@ import com.google.inject.Provider;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface AppContext {
-    /**容器事件：ContextEvent_Init*/
-    public static final String ContextEvent_Init  = "ContextEvent_Init";
-    /**容器事件：ContextEvent_Start*/
-    public static final String ContextEvent_Start = "ContextEvent_Start";
-    /**容器事件：ContextEvent_Stop*/
-    public static final String ContextEvent_Stop  = "ContextEvent_Stop";
+    /**容器事件，在所有模块 init 阶段之前引发。
+     * @see net.hasor.core.context.AbstractAppContext*/
+    public static final String ContextEvent_Init   = "ContextEvent_Init";
+    /**容器事件，在所有模块 start 阶段之前引发。
+     * @see net.hasor.core.context.AbstractAppContext*/
+    public static final String ContextEvent_Start  = "ContextEvent_Start";
+    /**容器事件，在所有模块处理完 stop 阶段之后引发。
+     * @see net.hasor.core.context.AbstractAppContext*/
+    public static final String ContextEvent_Stoped = "ContextEvent_Stoped";
+    /**模块事件。当模块收到 start 调用信号之后引发。
+     * @see net.hasor.core.module.ModulePropxy*/
+    public static final String ModuleEvent_Start   = "ModuleEvent_Start";
+    /**模块事件。当模块处理完 stop 调用信号之后引发。
+     * @see net.hasor.core.module.ModulePropxy*/
+    public static final String ModuleEvent_Stoped  = "ModuleEvent_Stoped";
     //
+    /**注册服务。
+     * @see net.hasor.core.services.ServicesRegisterHandler*/
+    public <T> void registerService(Class<T> type, T serviceBean, Object... objects);
+    /**注册服务。
+     * @see net.hasor.core.services.ServicesRegisterHandler*/
+    public <T> void registerService(Class<T> type, Class<? extends T> serviceType, Object... objects);
+    /**注册服务。
+     * @see net.hasor.core.services.ServicesRegisterHandler*/
+    public <T> void registerService(Class<T> type, Key<? extends T> serviceKey, Object... objects);
+    /**解除注册服务。
+     * @see net.hasor.core.services.ServicesRegisterHandler*/
+    public <T> void unRegisterService(Class<T> type, T serviceBean);
+    /**解除注册服务。
+     * @see net.hasor.core.services.ServicesRegisterHandler*/
+    public <T> void unRegisterService(Class<T> type, Class<? extends T> serviceType);
+    /**解除注册服务。
+     * @see net.hasor.core.services.ServicesRegisterHandler*/
+    public <T> void unRegisterService(Class<T> type, Key<? extends T> serviceKey);
     //
     /**通过名获取Bean的类型。*/
     public <T> Class<T> getBeanType(String name);
@@ -47,9 +76,9 @@ public interface AppContext {
     /**获得Guice环境。*/
     public Injector getGuice();
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> T[] getInstanceByBindingType(Class<T> bindingType);
+    public <T> List<T> getInstanceByBindingType(Class<T> bindingType);
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> Provider<T>[] getProviderByBindingType(Class<T> bindingType);
+    public <T> List<Provider<T>> getProviderByBindingType(Class<T> bindingType);
     //
     /**获取上下文*/
     public Object getContext();

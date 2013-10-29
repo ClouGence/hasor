@@ -19,6 +19,8 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.Environment;
 import net.hasor.core.ModuleInfo;
 import net.hasor.core.Settings;
+import net.hasor.core.services.ServicesRegisterHandler;
+import net.hasor.core.services.ServicesRegisterHandlerDefine;
 import org.more.util.StringUtils;
 import com.google.inject.Binder;
 import com.google.inject.Key;
@@ -46,6 +48,9 @@ public abstract class ApiBinderModule implements ApiBinder, Module {
     }
     public Environment getEnvironment() {
         return this.environment;
+    }
+    public <T> void registerServicesHandler(Class<T> serviceType, ServicesRegisterHandler<T> handler) {
+        this.bindingType(ServicesRegisterHandlerDefine.class, new ServicesRegisterHandlerDefine<T>(serviceType, handler));
     }
     public Settings getModuleSettings() {
         Settings globalSetting = this.getEnvironment().getSettings();

@@ -15,6 +15,7 @@
  */
 package net.hasor.core;
 import java.util.Set;
+import net.hasor.core.services.ServicesRegisterHandler;
 import com.google.inject.Binder;
 import com.google.inject.Key;
 import com.google.inject.Provider;
@@ -56,6 +57,8 @@ public interface ApiBinder {
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
     public Set<Class<?>> getClassSet(Class<?> featureType);
     //
+    /**注册{@link ServicesRegisterHandler}*/
+    public <T> void registerServicesHandler(Class<T> serviceType, ServicesRegisterHandler<T> handler);
     /**配置模块依赖关系。*/
     public DependencySettings dependency();
     /**注册一个bean。*/
