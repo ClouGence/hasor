@@ -29,7 +29,7 @@ public class ConnectionHandle {
     //
     private boolean    transactionActive;
     private int        referenceCount;
-    //
+    // 
     public ConnectionHandle(DataSource dataSource) {
         this.useDataSource = useDataSource;
     }

@@ -13,14 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.freemarker;
-import freemarker.cache.TemplateLoader;
+package net.hasor.jdbc.transaction;
 /**
- * 
- * @version : 2012-5-15
- * @author 赵永春 (zyc@byshell.org)
+ * 表示一个事务
+ * @version : 2013-10-29
+ * @author 赵永春(zyc@hasor.net)
  */
-public interface FmTemplateLoader extends TemplateLoader {
-    /**获取类型*/
-    public String getType();
-}
+public class TransactionDefine {}
