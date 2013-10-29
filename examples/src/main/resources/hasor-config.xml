@@ -15,11 +15,5 @@
 		<!-- 程序工作空间基础目录（绝对地址） -->
 		<HASOR_WORK_HOME>./test-work</HASOR_WORK_HOME>
 	</environmentVar>
-	<!-- Hasor Web，不支持跟随配置文件动态更新配置。 -->
-	<hasor-web>
-		<!-- 资源装载器 -->
-		<resourceLoader enable="true">
-			<zipLoader>%HASOR_WEBROOT%/pic.zip</zipLoader>
-		</resourceLoader>
-	</hasor-web>
+
 </config>
