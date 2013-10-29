@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.web.resource;
+import net.hasor.core.AppContext;
 /**
- * 定义一个{@link ResourceLoader}映射类型。
- * @version : 2013-3-12
- * @author 赵永春 (zyc@hasor.net)
+ * 
+ * @version : 2013-10-29
+ * @author 赵永春(zyc@hasor.net)
  */
-public interface ResourceBinder {
-    /***/
-    public void bindLoaderCreator(String name, Class<ResourceLoaderCreator> resourceLoaderCreatorType);
+public interface ResourceLoaderFactory {
+    public ResourceLoader[] loaderArray(AppContext appContext);
 }

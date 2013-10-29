@@ -24,7 +24,7 @@ import net.hasor.core.Environment;
 import net.hasor.core.binder.ApiBinderModule;
 import net.hasor.core.context.AnnoStandardAppContext;
 import net.hasor.core.environment.StandardEnvironment;
-import net.hasor.core.module.AbstractModulePropxy;
+import net.hasor.core.module.ModulePropxy;
 import net.hasor.web.servlet.binder.FilterPipeline;
 import net.hasor.web.servlet.binder.SessionListenerPipeline;
 import net.hasor.web.servlet.binder.support.ManagedFilterPipeline;
@@ -106,7 +106,7 @@ public class AnnoWebAppContext extends AnnoStandardAppContext {
                 guiceModuleSet.add(mod);
         return super.createInjector(guiceModuleSet.toArray(new Module[guiceModuleSet.size()]));
     }
-    protected ApiBinderModule newApiBinder(final AbstractModulePropxy forModule, final Binder binder) {
+    protected ApiBinderModule newApiBinder(final ModulePropxy forModule, final Binder binder) {
         return new WebApiBinderModule(this.getEnvironment(), forModule) {
             public Binder getGuiceBinder() {
                 return binder;

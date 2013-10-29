@@ -35,11 +35,11 @@ import javax.servlet.http.HttpServletResponse;
 import net.hasor.Hasor;
 import net.hasor.core.AppContext;
 import net.hasor.web.resource.ResourceLoader;
+import net.hasor.web.resource.ResourceLoaderFactory;
 import org.more.util.ContextClassLoaderLocal;
 import org.more.util.FileUtils;
 import org.more.util.IOUtils;
 import org.more.util.StringUtils;
-import com.google.inject.Provider;
 /**
  * 负责装载jar包或zip包中的资源
  * @version : 2013-6-5
@@ -60,14 +60,10 @@ public class ResourceHttpServlet extends HttpServlet {
         ResourceLoader[] resLoaderArray = LoaderList.get();
         if (resLoaderArray != null)
             return;
-        Provider<ResourceLoaderProvider>[] provider = appContext.getProviderByBindingType(ResourceLoaderProvider.class);
-        resLoaderArray = new ResourceLoader[provider.length];
-        for (int i = 0; i < provider.length; i++) {
-            ResourceLoaderProvider plProvider = provider[i].get();
-            plProvider.setAppContext(this.appContext);
-            resLoaderArray[i] = plProvider.get();
-        }
-        LoaderList.set(resLoaderArray);
+        ResourceLoaderFactory factory = appContext.getInstance(ResourceLoaderFactory.class);
+        resLoaderArray = factory.loaderArray(this.appContext);
+        if (resLoaderArray != null && resLoaderArray.length != 0)
+            LoaderList.set(resLoaderArray);
     }
     public synchronized static void initCacheDir(File cacheDir) {
         FileUtils.deleteDir(cacheDir);
@@ -163,6 +159,9 @@ public class ResourceHttpServlet extends HttpServlet {
         ResourceLoader inLoader = null;
         InputStream inStream = null;
         ResourceLoader[] loaderList = LoaderList.get();
+        if (loaderList == null || loaderList.length == 0)
+            return false;
+        //
         for (ResourceLoader loader : loaderList) {
             if (loader.exist(requestURI) == false)
                 continue;

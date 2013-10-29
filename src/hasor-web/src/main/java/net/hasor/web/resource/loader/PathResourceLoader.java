@@ -18,39 +18,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import net.hasor.Hasor;
-import net.hasor.core.AppContext;
-import net.hasor.core.XmlNode;
 import net.hasor.web.resource.ResourceLoader;
-import net.hasor.web.resource.ResourceLoaderCreator;
-import net.hasor.web.resource.ResourceLoaderDefine;
-import org.more.util.StringUtils;
-/**
- * 用于创建一个可以从classpath中获取资源的ResourceLoader。
- * @version : 2013-6-6
- * @author 赵永春 (zyc@hasor.net)
- */
-@ResourceLoaderDefine(configElement = "PathLoader")
-public class PathResourceLoaderCreator implements ResourceLoaderCreator {
-    public ResourceLoader newInstance(AppContext appContext, XmlNode xmlConfig) throws IOException {
-        String body = xmlConfig.getText();
-        body = StringUtils.isBlank(body) ? "" : body;
-        body = appContext.getEnvironment().evalString(body);
-        File fileBody = new File(body);
-        if (fileBody.exists() == false)
-            if (fileBody.mkdirs() == false)
-                return null;
-        Hasor.info("loadPath %s -> %s", xmlConfig.getText(), fileBody);
-        PathResourceLoader dirTemplateLoader = new PathResourceLoader(fileBody.getAbsolutePath());
-        return dirTemplateLoader;
-    }
-}
 /**
  * 将一个File对象所代表的路径作为根路径，资源获取相对于该路径下。
  * @version : 2011-9-17
  * @author 赵永春 (zyc@hasor.net)
  */
-class PathResourceLoader implements ResourceLoader {
+public class PathResourceLoader implements ResourceLoader {
     private String dirPath = null;
     public PathResourceLoader(String dirPath) {
         this.dirPath = dirPath;

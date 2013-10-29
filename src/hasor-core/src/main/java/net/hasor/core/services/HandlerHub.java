@@ -46,6 +46,8 @@ public class HandlerHub implements EventListener {
         eventMsg.pushEventListener(ContextEvent_Start, new EventListener() {
             public void onEvent(String event, Object[] params) throws Throwable {
                 List<ServicesRegisterHandlerDefine> defineList = appContext.getInstanceByBindingType(ServicesRegisterHandlerDefine.class);
+                if (defineList == null)
+                    return;
                 for (ServicesRegisterHandlerDefine handler : defineList)
                     handlerDefine.put(handler.getServiceType(), handler);
             }

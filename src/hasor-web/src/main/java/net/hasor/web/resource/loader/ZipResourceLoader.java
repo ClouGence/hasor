@@ -22,38 +22,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import net.hasor.Hasor;
-import net.hasor.core.AppContext;
-import net.hasor.core.XmlNode;
 import net.hasor.web.resource.ResourceLoader;
-import net.hasor.web.resource.ResourceLoaderCreator;
-import net.hasor.web.resource.ResourceLoaderDefine;
-import org.more.util.StringUtils;
-/**
- * 用于创建一个可以从zip中获取资源的ResourceLoader。
- * @version : 2013-6-6
- * @author 赵永春 (zyc@hasor.net)
- */
-@ResourceLoaderDefine(configElement = "ZipLoader")
-public class ZipResourceLoaderCreator implements ResourceLoaderCreator {
-    public ResourceLoader newInstance(AppContext appContext, XmlNode xmlConfig) throws IOException {
-        String body = xmlConfig.getText();
-        body = StringUtils.isBlank(body) ? "" : body;
-        body = appContext.getEnvironment().evalString(body);
-        File fileBody = new File(body);
-        if (fileBody.exists() == false || fileBody.isDirectory())
-            return null;
-        Hasor.info("loadZip %s -> %s", xmlConfig.getText(), fileBody);
-        ZipResourceLoader dirTemplateLoader = new ZipResourceLoader(fileBody.getAbsolutePath());
-        return dirTemplateLoader;
-    }
-}
 /**
  * 用于创建一个可以从classpath中获取资源的ResourceLoader。
  * @version : 2013-6-6
  * @author 赵永春 (zyc@hasor.net)
  */
-class ZipResourceLoader implements ResourceLoader {
+public class ZipResourceLoader implements ResourceLoader {
     private File        zipFile     = null;
     private Set<String> zipEntrySet = new HashSet<String>();
     public ZipResourceLoader(String zipFile) throws IOException {
