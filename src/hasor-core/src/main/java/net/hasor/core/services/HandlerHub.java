@@ -25,6 +25,7 @@ import net.hasor.Hasor;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.EventManager;
+import net.hasor.core.module.ModulePropxy;
 import com.google.inject.Key;
 /**
  * 
@@ -69,13 +70,15 @@ public class HandlerHub implements EventListener {
     //
     //
     private static class MappingItem {
-        public Class<?> type;
-        public Object   target;
+        public Class<?> type   = null; //服务类型
+        public Object   target = null; //服务
+        public Object   source = null; //来源
     }
-    private static MappingItem createMappingItem(Class<?> type, Object target) {
+    private MappingItem createMappingItem(Class<?> type, Object target) {
         MappingItem e = new MappingItem();
         e.type = type;
         e.target = target;
+        e.source = ModulePropxy.getLocalModuleInfo(this.appContext);
         return e;
     }
     private Map<Object, MappingItem> serviceBeanMapping = new HashMap<Object, MappingItem>();

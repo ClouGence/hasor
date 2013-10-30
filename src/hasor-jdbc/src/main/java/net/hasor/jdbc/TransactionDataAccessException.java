@@ -19,7 +19,7 @@ package net.hasor.jdbc;
  * @version : 2013-10-12
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class TransactionDataAccessException extends DataAccessException {
+public class TransactionDataAccessException extends DataAccessException {
     private static final long serialVersionUID = -5338007128104634937L;
     /**
     * 数据库事务性异常的根，子类将会确定具体事务方面原因。

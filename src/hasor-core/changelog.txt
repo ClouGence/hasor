@@ -4,9 +4,8 @@ Hasor-Core v0.0.4
     2.Hasor 类新增 isDebugLogger、isErrorLogger、isWarningLogger、isInfoLogger 方法用于判断日志是否支持该级别的输出。
     3.原有 Hasor 类中 debug、error、warning、info 日志输出方法会判断响应级别的日志输出是否支持。
     4.增加 Hasor 类中 trace、isTraceLogger 方法，用于处理 Trace 日志级别。
-    5.增加 Register BeanGift，这个小部件可以通过解析 beans 配置文件动态的从配置文件装入 Bean 的定义而非通过  @Bean 标签。
-    6.增加服务注册机制，详见 ServicesRegisterHandler 接口用法。
-    7.增加 ModuleEvent_Start、ModuleEvent_Stoped事件。
+    5.增加服务注册机制，详见 ServicesRegisterHandler 接口用法。
+    6.增加 ModuleEvent_Start、ModuleEvent_Stoped事件。
 * Improvement:
     1.变更 ContextEvent_Stop 事件为 ContextEvent_Stoped。
 

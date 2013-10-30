@@ -16,7 +16,7 @@
 package net.hasor.jdbc.dao;
 import java.sql.Connection;
 import javax.sql.DataSource;
-import net.hasor.jdbc.operations.core.JdbcTemplate;
+import net.hasor.jdbc.opface.core.JdbcTemplate;
 /**
  * Convenient super class for JDBC-based data access objects.
  *
@@ -81,7 +81,7 @@ public abstract class JdbcDaoSupport extends AbstractDao {
      * Get a JDBC Connection, either from the current transaction or a new one.
      * @return the JDBC Connection
      * @throws CannotGetJdbcConnectionException if the attempt to get a Connection failed
-     * @see org.noe.platform.modules.db.jdbcorm.jdbc.datasource.DataSourceUtils#getConnection(javax.sql.DataSource)
+     * @see net.hasor.jdbc.transaction.connection.noe.platform.modules.db.jdbcorm.jdbc.datasource.DataSourceUtils#getConnection(javax.sql.DataSource)
      */
     protected final Connection getConnection() throws CannotGetJdbcConnectionException {
         return DataSourceUtils.getConnection(getDataSource());
@@ -90,7 +90,7 @@ public abstract class JdbcDaoSupport extends AbstractDao {
      * Close the given JDBC Connection, created via this DAO's DataSource,
      * if it isn't bound to the thread.
      * @param con Connection to close
-     * @see org.noe.platform.modules.db.jdbcorm.jdbc.datasource.DataSourceUtils#releaseConnection
+     * @see net.hasor.jdbc.transaction.connection.noe.platform.modules.db.jdbcorm.jdbc.datasource.DataSourceUtils#releaseConnection
      */
     protected final void releaseConnection(Connection con) {
         DataSourceUtils.releaseConnection(con, getDataSource());
