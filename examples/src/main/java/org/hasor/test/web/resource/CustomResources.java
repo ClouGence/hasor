@@ -17,11 +17,11 @@ package org.hasor.test.web.resource;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.context.AnnoModule;
-import net.hasor.web.resource.ResourceLoader;
-import net.hasor.web.resource.ResourceLoaderFactory;
-import net.hasor.web.resource.loader.ClassPathResourceLoader;
-import net.hasor.web.resource.loader.ZipResourceLoader;
-import net.hasor.web.resource.support.ResourceHttpServlet;
+import net.hasor.gift.resource.ResourceLoader;
+import net.hasor.gift.resource.ResourceLoaderFactory;
+import net.hasor.gift.resource.loader.ClassPathResourceLoader;
+import net.hasor.gift.resource.loader.ZipResourceLoader;
+import net.hasor.gift.resource.support.ResourceHttpServlet;
 import net.hasor.web.servlet.WebApiBinder;
 import net.hasor.web.servlet.WebModule;
 /**

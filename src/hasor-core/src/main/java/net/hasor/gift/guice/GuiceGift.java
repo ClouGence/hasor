@@ -17,8 +17,8 @@ package net.hasor.gift.guice;
 import java.util.Set;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.gift.Gift;
-import net.hasor.core.gift.GiftFace;
+import net.hasor.gift.Gift;
+import net.hasor.gift.GiftFace;
 import com.google.inject.Module;
 /**
  * 提供 <code>@GuiceModule</code>注解 功能支持。

@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test.simple.service.define;
-import net.hasor.core.ApiBinder;
-import net.hasor.gift.Gift;
-import net.hasor.gift.GiftFace;
+package net.hasor.gift;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
  * 
- * @version : 2013-9-14
+ * @version : 2013-9-13
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@Gift
-public class ServiceGift implements GiftFace {
-    public void loadGift(ApiBinder apiBinder) {
-        apiBinder.registerServicesHandler(AbstractService.class, new ServiceHandler());
-    }
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface Gift {}

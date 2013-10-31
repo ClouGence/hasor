@@ -24,8 +24,8 @@ import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
 import net.hasor.core.EventManager;
 import net.hasor.core.SettingsListener;
-import net.hasor.core.gift.Gift;
-import net.hasor.core.gift.GiftFace;
+import net.hasor.gift.Gift;
+import net.hasor.gift.GiftFace;
 import com.google.inject.Provider;
 /**
  * 提供 <code>@Settings</code>注解 功能支持。

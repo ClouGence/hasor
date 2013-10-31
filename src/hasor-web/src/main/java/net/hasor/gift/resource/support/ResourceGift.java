@@ -13,36 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.resource.support;
+package net.hasor.gift.resource.support;
 import java.io.File;
-import net.hasor.core.AppContext;
+import net.hasor.core.ApiBinder;
 import net.hasor.core.Environment;
-import net.hasor.core.context.AnnoModule;
-import net.hasor.core.gift.GiftSupportModule;
-import net.hasor.web.servlet.WebApiBinder;
-import net.hasor.web.servlet.WebModule;
+import net.hasor.gift.Gift;
+import net.hasor.gift.GiftFace;
 /**
- * 负责装载jar包中的资源。启动级别：Lv_1
+ * 负责装载jar包中的资源。
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
-@AnnoModule()
-public class WebResourceModule extends WebModule {
-    public void init(WebApiBinder apiBinder) {
-        //1.依赖关系
-        apiBinder.dependency().weak(GiftSupportModule.class);
-        //2.loadLoader
-        initServlet(apiBinder);
-    }
-    //
-    public void start(AppContext appContext) {
-        //
-    }
-    public void stop(AppContext appContext) {
-        //
-    }
-    /***/
-    private static void initServlet(WebApiBinder apiBinder) {
+@Gift()
+public class ResourceGift implements GiftFace {
+    public void loadGift(ApiBinder apiBinder) {
         //1.准备参数
         Environment env = apiBinder.getEnvironment();
         //3.缓存路径

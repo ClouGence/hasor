@@ -8,6 +8,7 @@ Hasor-Core v0.0.4
     6.增加 ModuleEvent_Start、ModuleEvent_Stoped事件。
 * Improvement:
     1.变更 ContextEvent_Stop 事件为 ContextEvent_Stoped。
+    2.Gift 支持软件包位置变更。
 
 
 Hasor-Core v0.0.3

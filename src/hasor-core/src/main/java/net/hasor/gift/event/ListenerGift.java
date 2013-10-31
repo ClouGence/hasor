@@ -22,8 +22,8 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
 import net.hasor.core.EventManager;
-import net.hasor.core.gift.Gift;
-import net.hasor.core.gift.GiftFace;
+import net.hasor.gift.Gift;
+import net.hasor.gift.GiftFace;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 /**

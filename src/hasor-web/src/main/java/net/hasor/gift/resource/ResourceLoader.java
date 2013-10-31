@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test.simple.beans.customer;
-import net.hasor.core.ApiBinder;
-import net.hasor.gift.Gift;
-import net.hasor.gift.GiftFace;
+package net.hasor.gift.resource;
+import java.io.IOException;
+import java.io.InputStream;
 /**
- * 代码方式注册Bean
- * @version : 2013-8-11
+ * 
+ * @version : 2013-6-6
  * @author 赵永春 (zyc@hasor.net)
  */
-@Gift
-public class CustomerBeanMod implements GiftFace {
-    public void loadGift(ApiBinder apiBinder) {
-        /*代码方式注册Bean*/
-        apiBinder.newBean("Customer").bindType(CustomerBean.class);
-        /*代码方式注册Bean，单态*/
-        //apiBinder.newBean("Customer").bindType(CustomerBean.class).asEagerSingleton();
-    }
+public interface ResourceLoader {
+    /**装载指定资源。*/
+    public InputStream getResourceAsStream(String resourcePath) throws IOException;
+    /**装载指定资源。*/
+    public void close(Object resource) throws IOException;
+    /**测试资源是否可能被改变。*/
+    public boolean canModify(String resourcePath) throws IOException;
+    /**测试资源是否存在。*/
+    public boolean exist(String resourcePath) throws IOException;
 }

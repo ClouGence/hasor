@@ -18,7 +18,7 @@ import net.hasor.Hasor;
 import net.hasor.core.AppContext;
 import net.hasor.core.Settings;
 import net.hasor.core.context.AnnoModule;
-import net.hasor.core.gift.GiftSupportModule;
+import net.hasor.gift.GiftSupportModule;
 import net.hasor.web.servlet.WebApiBinder;
 import net.hasor.web.servlet.WebModule;
 /**

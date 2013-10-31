@@ -22,6 +22,9 @@ package net.hasor.jdbc.transaction;
 public interface TransactionStatus {
     /**获取事务使用的传播行为*/
     public TransactionBehavior getTransactionBehavior();
+    /**获取事务的隔离级别*/
+    public TransactionLevel getIsolationLevel();
+    //
     /**事务是否已经完成。
      * <p>当事务已经递交或者被回滚就标志着已完成。*/
     public boolean isCompleted();
@@ -33,8 +36,8 @@ public interface TransactionStatus {
     /**表示事务是否携带了一个保存点，嵌套事务通常会创建一个保存点作为嵌套事务与上一层事务的分界点。
      * <p>注意：如果事务中包含保存点，则在递交事务时只处理这个保存点。*/
     public boolean hasSavepoint();
-    /**是否为只读模式。*/
-    public boolean isReadOnly();
-    /**返回是否目前的事务是新的。(参与到一个已经存在的事务、独立的事务、位于事务队列的顶端)*/
+    //    /**是否为只读模式。*/
+    //    public boolean isReadOnly();
+    /**返回是否目前的事务是新的。(独立的事务 或 位于事务队列的顶端)*/
     public boolean isNew();
 }

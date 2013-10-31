@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.resource.loader;
+package net.hasor.gift.resource.loader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import net.hasor.web.resource.ResourceLoader;
+import net.hasor.gift.resource.ResourceLoader;
 /**
  * 用于创建一个可以从classpath中获取资源的ResourceLoader。
  * @version : 2013-6-6

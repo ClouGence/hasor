@@ -13,13 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.transaction._;
+package net.hasor.jdbc.transaction;
+import javax.sql.DataSource;
 /**
  * 
  * @version : 2013-6-14
  * @author 赵永春 (zyc@byshell.org)
  */
 public class TransactionSynchronizationManager {
+    /**为某个数据源创建一个事务管理器。*/
+    public static TransactionManager getTransactionManager(DataSource dataSource) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //    public static ConnectionHolder getConnectionHolder(DataSource dataSource) {
+    //        // TODO Auto-generated method stub
+    //        return null;
+    //    }
     //
     //
     //    public static ConnectionHolder getConnectionHolder(DataSource dataSource) {
@@ -35,7 +54,7 @@ public class TransactionSynchronizationManager {
     //            if (ch.isTransactionActive())
     //                return true;
     //        return false;
-    //    };
+    //    }; 
     //    //
     //    /**指定的数据源在当前线程中是否激活了事务。*/
     //    public static boolean hasTransactionActive(DataSource dataSource) {
@@ -43,7 +62,4 @@ public class TransactionSynchronizationManager {
     //        ConnectionHandle ch = mapDS.get(dataSource);
     //        return (ch == null) ? false : ch.isTransactionActive();
     //    };
-    public static void clear() {
-        // TODO Auto-generated method stub
-    }
 }

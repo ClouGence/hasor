@@ -13,13 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.resource;
-import net.hasor.core.AppContext;
+package net.hasor.jdbc.transaction.core;
+import net.hasor.jdbc.transaction._.ConnectionHolder;
 /**
  * 
- * @version : 2013-10-29
+ * @version : 2013-10-31
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-public interface ResourceLoaderFactory {
-    public ResourceLoader[] loaderArray(AppContext appContext);
+public class DataSourceTransactionObject {
+    private ConnectionHolder connectionHolder;
+    public DataSourceTransactionObject(ConnectionHolder connHolder) {
+        this.connectionHolder = connHolder;
+    }
+    public ConnectionHolder getConnectionHolder() {
+        return connectionHolder;
+    }
+    public void setConnectionHolder(ConnectionHolder holder, boolean isNewHolder) {
+        // TODO Auto-generated method stub
+    }
 }

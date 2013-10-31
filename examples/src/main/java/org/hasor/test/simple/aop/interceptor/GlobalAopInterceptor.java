@@ -15,8 +15,8 @@
  */
 package org.hasor.test.simple.aop.interceptor;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.gift.Gift;
-import net.hasor.core.gift.GiftFace;
+import net.hasor.gift.Gift;
+import net.hasor.gift.GiftFace;
 import org.aopalliance.intercept.MethodInterceptor;
 import com.google.inject.matcher.Matcher;
 import com.google.inject.matcher.Matchers;

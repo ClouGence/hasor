@@ -23,8 +23,8 @@ import javax.servlet.Filter;
 import javax.servlet.http.HttpServlet;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.gift.Gift;
-import net.hasor.core.gift.GiftFace;
+import net.hasor.gift.Gift;
+import net.hasor.gift.GiftFace;
 import net.hasor.web.servlet.WebApiBinder;
 import org.more.util.StringUtils;
 /**

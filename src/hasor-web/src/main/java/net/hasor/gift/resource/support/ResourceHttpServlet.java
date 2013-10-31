@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.resource.support;
+package net.hasor.gift.resource.support;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -34,8 +34,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.Hasor;
 import net.hasor.core.AppContext;
-import net.hasor.web.resource.ResourceLoader;
-import net.hasor.web.resource.ResourceLoaderFactory;
+import net.hasor.gift.resource.ResourceLoader;
+import net.hasor.gift.resource.ResourceLoaderFactory;
 import org.more.util.ContextClassLoaderLocal;
 import org.more.util.FileUtils;
 import org.more.util.IOUtils;

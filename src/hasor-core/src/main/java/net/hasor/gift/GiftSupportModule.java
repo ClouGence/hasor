@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.gift;
+package net.hasor.gift;
 import java.util.Set;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
@@ -25,7 +25,7 @@ import net.hasor.core.context.AnnoModule;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
-@AnnoModule(description = "net.hasor.core.gift软件包功能支持。")
+@AnnoModule()
 public class GiftSupportModule implements Module {
     /**初始化.*/
     public void init(ApiBinder apiBinder) {

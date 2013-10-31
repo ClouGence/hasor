@@ -18,8 +18,8 @@ import java.util.Set;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.ApiBinder.BeanBindingBuilder;
-import net.hasor.core.gift.Gift;
-import net.hasor.core.gift.GiftFace;
+import net.hasor.gift.Gift;
+import net.hasor.gift.GiftFace;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 /**

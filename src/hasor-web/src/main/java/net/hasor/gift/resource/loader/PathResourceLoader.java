@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.resource.loader;
+package net.hasor.gift.resource.loader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import net.hasor.web.resource.ResourceLoader;
+import net.hasor.gift.resource.ResourceLoader;
 /**
  * 将一个File对象所代表的路径作为根路径，资源获取相对于该路径下。
  * @version : 2011-9-17
