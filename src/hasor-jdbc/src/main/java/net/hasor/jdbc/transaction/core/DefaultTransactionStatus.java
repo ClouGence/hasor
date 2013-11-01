@@ -16,6 +16,7 @@
 package net.hasor.jdbc.transaction.core;
 import net.hasor.jdbc.IllegalTransactionStateException;
 import net.hasor.jdbc.transaction.TransactionBehavior;
+import net.hasor.jdbc.transaction.TransactionLevel;
 import net.hasor.jdbc.transaction.TransactionStatus;
 /**
  * 表示一个用于管理事务的状态点
@@ -26,11 +27,13 @@ public class DefaultTransactionStatus implements TransactionStatus {
     private Object              savepoint;
     private Object              suspendHolder;
     private TransactionBehavior behavior;
+    private TransactionLevel    level;
     private boolean             completed    = false;
     private boolean             rollbackOnly = false;
     //
-    public DefaultTransactionStatus(TransactionBehavior behavior, Object transaction) {
+    public DefaultTransactionStatus(TransactionBehavior behavior, TransactionLevel level, Object transaction) {
         this.behavior = behavior;
+        this.level = level;
     }
     /**设定一个数据库事务保存点。*/
     public void markHeldSavepoint() {
@@ -61,6 +64,9 @@ public class DefaultTransactionStatus implements TransactionStatus {
     public TransactionBehavior getTransactionBehavior() {
         return this.behavior;
     }
+    public TransactionLevel getIsolationLevel() {
+        return this.level;
+    }
     public boolean isCompleted() {
         return this.completed;
     }
@@ -75,11 +81,7 @@ public class DefaultTransactionStatus implements TransactionStatus {
     }
     //
     protected abstract SavepointManager getSavepointManager();
-    //    public boolean isReadOnly() {
-    //        // TODO Auto-generated method stub
-    //        return false;
-    //    }
-    public boolean isNew() {
+    public boolean isNewConnection() {
         // TODO Auto-generated method stub
         return false;
     }

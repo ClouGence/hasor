@@ -38,6 +38,6 @@ public interface TransactionStatus {
     public boolean hasSavepoint();
     //    /**是否为只读模式。*/
     //    public boolean isReadOnly();
-    /**返回是否目前的事务是新的。(独立的事务 或 位于事务队列的顶端)*/
-    public boolean isNew();
+    /**是否使用了一个全新的数据库连接开启事务*/
+    public boolean isNewConnection();
 }

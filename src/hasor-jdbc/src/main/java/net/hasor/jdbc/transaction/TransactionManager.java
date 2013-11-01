@@ -21,9 +21,13 @@ import net.hasor.jdbc.TransactionDataAccessException;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface TransactionManager {
-    /**开启事务，使用默认事务隔离级别*/
+    /**开启事务，使用默认事务隔离级别。
+     * @see net.hasor.jdbc.transaction.TransactionBehavior
+     * @see net.hasor.jdbc.transaction.TransactionManager#getTransaction(TransactionBehavior, TransactionLevel)*/
     public TransactionStatus getTransaction(TransactionBehavior behavior) throws TransactionDataAccessException;
-    /**开启事务，使用指定的事务隔离级别*/
+    /**开启事务
+     * @see net.hasor.jdbc.transaction.TransactionBehavior
+     * @see java.sql.Connection#setTransactionIsolation(int)*/
     public TransactionStatus getTransaction(TransactionBehavior behavior, TransactionLevel level) throws TransactionDataAccessException;
     /**递交事务
      * <p>如果递交的事务并不处于事务堆栈顶端，会同时递交该事务的后面其它事务。*/
@@ -31,14 +35,8 @@ public interface TransactionManager {
     /**回滚事务*/
     public void rollBack(TransactionStatus status) throws TransactionDataAccessException;
     //
-    //
-    //
     /**是否存在未处理完的事务（包括被挂起的事务）。*/
     public boolean hasTransaction();
-    /**事务管理器中事务堆栈大小。
-     * <p>当使用 <code>getTransaction</code> 方法创建了事务之后，事务就会被压入堆栈。
-     * 每次创建的新事务都会被压入堆栈，事务的处理会按照事务堆栈先进后出顺序进行。*/
-    public int getTransactionStackSize();
-    /**获取事务管理器当前的事务堆栈。*/
-    public TransactionStatus[] getTransactionStatusStack();
+    /**测试事务状态是否位于栈顶。*/
+    public boolean isTopTransaction(TransactionStatus status);
 }
