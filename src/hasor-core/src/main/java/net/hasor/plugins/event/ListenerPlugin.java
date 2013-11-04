@@ -22,8 +22,8 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
 import net.hasor.core.EventManager;
-import net.hasor.plugins.AbstractPluginFace;
-import net.hasor.plugins.Plugin;
+import net.hasor.core.plugin.AbstractPluginFace;
+import net.hasor.core.plugin.Plugin;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 /**

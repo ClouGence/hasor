@@ -17,8 +17,8 @@ package net.hasor.plugins.guice;
 import java.util.Set;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
-import net.hasor.plugins.AbstractPluginFace;
-import net.hasor.plugins.Plugin;
+import net.hasor.core.plugin.AbstractPluginFace;
+import net.hasor.core.plugin.Plugin;
 import com.google.inject.Module;
 /**
  * 提供 <code>@GuiceModule</code>注解 功能支持。

@@ -3,7 +3,7 @@
 	<!-- 框架配置 -->
 	<hasor>
 		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
-		<loadPackages>net.hasor.web.*,net.hasor.gift.*</loadPackages>
+		<loadPackages>net.hasor.web.*,net.hasor.plugins.*</loadPackages>
 	</hasor>
 	<!-- Hasor Web，不支持跟随配置文件动态更新配置。 -->
 	<hasor-web>

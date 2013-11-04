@@ -32,7 +32,7 @@ import org.xml.sax.helpers.DefaultHandler;
 public class SaxXmlParser extends DefaultHandler {
     private Map<String, Map<String, Object>> dataContainer     = null;
     private Map<String, StringBuffer>        xmlText           = new HashMap<String, StringBuffer>();
-    private Map<String, DefaultXmlNode>  currentXmlPropert = new HashMap<String, DefaultXmlNode>();
+    private Map<String, DefaultXmlNode>      currentXmlPropert = new HashMap<String, DefaultXmlNode>();
     //
     public SaxXmlParser(Map<String, Map<String, Object>> dataContainer) {
         this.dataContainer = dataContainer;

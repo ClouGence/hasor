@@ -18,8 +18,8 @@ import static net.hasor.core.AppContext.ContextEvent_Start;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
-import net.hasor.plugins.AbstractPluginFace;
-import net.hasor.plugins.Plugin;
+import net.hasor.core.plugin.AbstractPluginFace;
+import net.hasor.core.plugin.Plugin;
 import net.hasor.plugins.aop.matchers.AopMatchers;
 import com.google.inject.matcher.Matcher;
 /**

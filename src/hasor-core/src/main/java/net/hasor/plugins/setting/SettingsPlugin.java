@@ -24,8 +24,8 @@ import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
 import net.hasor.core.EventManager;
 import net.hasor.core.SettingsListener;
-import net.hasor.plugins.AbstractPluginFace;
-import net.hasor.plugins.Plugin;
+import net.hasor.core.plugin.AbstractPluginFace;
+import net.hasor.core.plugin.Plugin;
 import com.google.inject.Provider;
 /**
  * 提供 <code>@Settings</code>注解 功能支持。

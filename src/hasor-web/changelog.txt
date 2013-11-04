@@ -9,9 +9,10 @@ Hasor-Web v0.0.3
     1.ResourceLoader 接口新增 exist、canModify、close 方法。用于判断资源是否存在以及是否可能被更改。
         ClassPathResourceLoader、PathResourceLoader、ZipResourceLoader 分别实现了它们。
     2.新增了 Resources 模块在每次启动时都会清理之前的缓存文件。
+    3.新增 WebEnvironment 接口，该接口可以在启动时通过 WebApiBinder 接口获取到。
+    4.WebApiBinder 接口中新增  getServletContext 方法用以获取 ServletContext 对象。
 * Improvement:
     1.Resource 组建的使用不在通过配置文件，而改为需要通过代码进行少量配置。这样以减少学习成本，增加灵活性。
-    2.Resource 部件从 WebModule 降级为 Gift。
     
 
 Hasor-Web v0.0.2

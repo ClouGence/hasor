@@ -18,8 +18,8 @@ import java.util.Set;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.ApiBinder.BeanBindingBuilder;
-import net.hasor.plugins.AbstractPluginFace;
-import net.hasor.plugins.Plugin;
+import net.hasor.core.plugin.AbstractPluginFace;
+import net.hasor.core.plugin.Plugin;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 /**
