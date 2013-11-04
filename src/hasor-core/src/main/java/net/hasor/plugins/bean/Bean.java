@@ -13,27 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.gift.guice;
-import net.hasor.Hasor;
-import net.hasor.core.ApiBinder;
+package net.hasor.plugins.bean;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import net.hasor.core.AppContext;
-import net.hasor.core.Module;
 /**
- * Guice模块代理成AbstractHasorModule类型的工具
- * @version : 2013-7-16
+ * 标记当前类为一个 注册Bean，必须为该Bean起一个名字。
+ * 当容器启动之后可以通过{@link AppContext#getBean(String)}方法取得该类的实例。
+ * @version : 2013-3-20
  * @author 赵永春 (zyc@hasor.net)
  */
-public class GuiceModulePropxy implements Module {
-    private com.google.inject.Module guiceModule = null;
-    //
-    public GuiceModulePropxy(com.google.inject.Module guiceModule) {
-        Hasor.assertIsNotNull(guiceModule);
-        this.guiceModule = guiceModule;
-    }
-    //
-    public void init(ApiBinder apiBinder) {
-        apiBinder.getGuiceBinder().install(this.guiceModule);
-    }
-    public void start(AppContext appContext) {}
-    public void stop(AppContext appContext) {}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface Bean {
+    /** Bean名称。*/
+    public String[] value();
 }

@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.gift.bean;
+package net.hasor.plugins.bean;
 import java.util.Set;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.ApiBinder.BeanBindingBuilder;
-import net.hasor.gift.Gift;
-import net.hasor.gift.GiftFace;
+import net.hasor.plugins.AbstractPluginFace;
+import net.hasor.plugins.Plugin;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 /**
@@ -27,9 +27,9 @@ import org.more.util.StringUtils;
  * @version : 2013-9-13
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@Gift
-public class BeanGift implements GiftFace {
-    public void loadGift(ApiBinder apiBinder) {
+@Plugin
+public class BeanPlugin extends AbstractPluginFace {
+    public void loadPlugin(ApiBinder apiBinder) {
         Set<Class<?>> beanSet = apiBinder.getClassSet(Bean.class);
         if (beanSet == null || beanSet.isEmpty())
             return;

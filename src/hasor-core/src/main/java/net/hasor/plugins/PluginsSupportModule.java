@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.gift;
+package net.hasor.plugins;
 import java.util.Set;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
@@ -21,34 +21,29 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 import net.hasor.core.context.AnnoModule;
 /**
- * 支持Bean注解功能。
+ * 插件体系支持
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
 @AnnoModule()
-public class GiftSupportModule implements Module {
+public class PluginsSupportModule implements Module {
     /**初始化.*/
     public void init(ApiBinder apiBinder) {
-        boolean giftEnable = apiBinder.getEnvironment().getSettings().getBoolean("hasor.giftSupport", true);
-        if (giftEnable == false) {
-            Hasor.warning("gift is disable.");
+        Set<Class<?>> pluginSet = apiBinder.getClassSet(Plugin.class);
+        if (pluginSet == null)
             return;
-        }
-        Set<Class<?>> giftSet = apiBinder.getClassSet(Gift.class);
-        if (giftSet == null)
-            return;
-        Hasor.info("find Gift : " + Hasor.logString(giftSet));
-        for (Class<?> giftClass : giftSet) {
-            if (GiftFace.class.isAssignableFrom(giftClass) == false) {
-                Hasor.warning("not implemented GiftFace :%s", giftClass);
+        Hasor.info("find Plugin : " + Hasor.logString(pluginSet));
+        for (Class<?> pluginClass : pluginSet) {
+            if (PluginFace.class.isAssignableFrom(pluginClass) == false) {
+                Hasor.warning("not implemented PluginFace :%s", pluginClass);
                 continue;
             }
             try {
-                GiftFace giftFace = (GiftFace) giftClass.newInstance();
-                Hasor.info("loadGift %s.", giftClass);
-                giftFace.loadGift(apiBinder);
+                PluginFace pluginFace = (PluginFace) pluginClass.newInstance();
+                Hasor.info("loadPlugin %s.", pluginClass);
+                pluginFace.loadPlugin(apiBinder);
             } catch (Throwable e) {
-                Hasor.error("config Gift error at %s.%s", giftClass, e);
+                Hasor.error("config Plugin error at %s.%s", pluginClass, e);
             }
         }
     }

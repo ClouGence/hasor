@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.gift.guice;
+package net.hasor.plugins.guice;
 import java.util.Set;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
-import net.hasor.gift.Gift;
-import net.hasor.gift.GiftFace;
+import net.hasor.plugins.AbstractPluginFace;
+import net.hasor.plugins.Plugin;
 import com.google.inject.Module;
 /**
  * 提供 <code>@GuiceModule</code>注解 功能支持。
  * @version : 2013-9-13
  * @author 赵永春 (zyc@byshell.org)
  */
-@Gift
-public class GuiceGift implements GiftFace {
-    public void loadGift(ApiBinder apiBinder) {
+@Plugin
+public class GuicePlugin extends AbstractPluginFace {
+    public void loadPlugin(ApiBinder apiBinder) {
         Set<Class<?>> guiceModuleSet = apiBinder.getClassSet(GuiceModule.class);
         if (guiceModuleSet == null || guiceModuleSet.isEmpty())
             return;

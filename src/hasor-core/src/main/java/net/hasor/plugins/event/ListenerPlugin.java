@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.gift.event;
-import static net.hasor.core.context.AbstractAppContext.ContextEvent_Start;
+package net.hasor.plugins.event;
+import static net.hasor.core.AppContext.ContextEvent_Start;
 import java.util.Set;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
@@ -22,8 +22,8 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
 import net.hasor.core.EventManager;
-import net.hasor.gift.Gift;
-import net.hasor.gift.GiftFace;
+import net.hasor.plugins.AbstractPluginFace;
+import net.hasor.plugins.Plugin;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 /**
@@ -31,9 +31,9 @@ import org.more.util.StringUtils;
  * @version : 2013-9-13
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-@Gift
-public class ListenerGift implements GiftFace {
-    public void loadGift(ApiBinder apiBinder) {
+@Plugin
+public class ListenerPlugin extends AbstractPluginFace {
+    public void loadPlugin(ApiBinder apiBinder) {
         final Environment env = apiBinder.getEnvironment();
         final EventManager eventManager = env.getEventManager();
         Set<Class<?>> eventSet = env.getClassSet(Listener.class);

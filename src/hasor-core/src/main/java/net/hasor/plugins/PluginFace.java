@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.gift.setting;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import net.hasor.core.SettingsListener;
+package net.hasor.plugins;
+import net.hasor.core.ApiBinder;
 /**
- * 声明一个配置文件改变监听器，标记了该接口的类必须要求实现{@link SettingsListener}接口。
- * @version : 2013-3-12
- * @author 赵永春 (zyc@hasor.net)
+ * 
+ * @version : 2013-11-4
+ * @author 赵永春(zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface Settings {}
+public interface PluginFace {
+    public void loadPlugin(ApiBinder apiBinder);
+}

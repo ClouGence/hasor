@@ -13,13 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.gift.aop;
+package net.hasor.plugins.guice;
+import net.hasor.Hasor;
+import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
+import net.hasor.core.Module;
 /**
- * 
- * @version : 2013-8-11
+ * Guice模块代理成AbstractHasorModule类型的工具
+ * @version : 2013-7-16
  * @author 赵永春 (zyc@hasor.net)
  */
-interface GetContext {
-    public AppContext getAppContext();
+public class GuiceModulePropxy implements Module {
+    private com.google.inject.Module guiceModule = null;
+    //
+    public GuiceModulePropxy(com.google.inject.Module guiceModule) {
+        Hasor.assertIsNotNull(guiceModule);
+        this.guiceModule = guiceModule;
+    }
+    //
+    public void init(ApiBinder apiBinder) {
+        apiBinder.getGuiceBinder().install(this.guiceModule);
+    }
+    public void start(AppContext appContext) {}
+    public void stop(AppContext appContext) {}
 }

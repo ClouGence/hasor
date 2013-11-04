@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.gift.aop;
-import static net.hasor.core.context.AbstractAppContext.ContextEvent_Start;
+package net.hasor.plugins.aop;
+import static net.hasor.core.AppContext.ContextEvent_Start;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
-import net.hasor.gift.Gift;
-import net.hasor.gift.GiftFace;
-import net.hasor.gift.aop.matchers.AopMatchers;
+import net.hasor.plugins.AbstractPluginFace;
+import net.hasor.plugins.Plugin;
+import net.hasor.plugins.aop.matchers.AopMatchers;
 import com.google.inject.matcher.Matcher;
 /**
  * 提供 <code>@Aop</code>注解 功能支持。
  * @version : 2013-9-13
  * @author 赵永春 (zyc@byshell.org)
  */
-@Gift
-public class AopGift implements GiftFace, GetContext, EventListener {
-    public void loadGift(ApiBinder apiBinder) {
+@Plugin
+public class AopPlugin extends AbstractPluginFace implements GetContext, EventListener {
+    public void loadPlugin(ApiBinder apiBinder) {
         Matcher<Object> matcher = AopMatchers.annotatedWith(Aop.class);//
         apiBinder.getGuiceBinder().bindInterceptor(matcher, matcher, new AopInterceptor(this));
         apiBinder.getEnvironment().getEventManager().pushEventListener(ContextEvent_Start, this);

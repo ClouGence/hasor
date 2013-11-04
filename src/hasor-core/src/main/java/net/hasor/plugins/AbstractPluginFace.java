@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.gift;
-import net.hasor.core.ApiBinder;
+package net.hasor.plugins;
 /**
  * 
- * @version : 2013-9-13
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @version : 2013-11-4
+ * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-public interface GiftFace {
-    public void loadGift(ApiBinder apiBinder);
-}
+public abstract class AbstractPluginFace implements PluginFace {}

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.gift.setting;
+package net.hasor.plugins.setting;
 import static net.hasor.core.AppContext.ContextEvent_Start;
 import java.util.List;
 import java.util.Set;
@@ -24,17 +24,17 @@ import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
 import net.hasor.core.EventManager;
 import net.hasor.core.SettingsListener;
-import net.hasor.gift.Gift;
-import net.hasor.gift.GiftFace;
+import net.hasor.plugins.AbstractPluginFace;
+import net.hasor.plugins.Plugin;
 import com.google.inject.Provider;
 /**
  * 提供 <code>@Settings</code>注解 功能支持。
  * @version : 2013-9-13
  * @author 赵永春 (zyc@byshell.org)
  */
-@Gift
-public class SettingsGift implements GiftFace {
-    public void loadGift(ApiBinder apiBinder) {
+@Plugin
+public class SettingsPlugin extends AbstractPluginFace {
+    public void loadPlugin(ApiBinder apiBinder) {
         this.loadAnnoSettings(apiBinder);
         //
         final Environment env = apiBinder.getEnvironment();
