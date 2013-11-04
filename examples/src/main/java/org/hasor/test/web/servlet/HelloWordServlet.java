@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
-import net.hasor.gift.servlet3.WebServlet;
+import net.hasor.plugins.servlet3.WebServlet;
 import org.hasor.test.simple.beans.customer.CustomerBean;
 /**
  * 

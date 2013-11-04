@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package org.hasor.test.web.restful;
-import net.hasor.gift.aop.Aop;
-import net.hasor.gift.result.ext.Redirect;
-import net.hasor.web.restful.Path;
-import net.hasor.web.restful.PathParam;
-import net.hasor.web.restful.RestfulService;
+import net.hasor.plugins.aop.Aop;
+import net.hasor.plugins.restful.Path;
+import net.hasor.plugins.restful.PathParam;
+import net.hasor.plugins.restful.RestfulService;
+import net.hasor.plugins.result.ext.Redirect;
 import org.hasor.test.web.restful.interceptor.TestRestfulInterceptor;
 /**
  * 

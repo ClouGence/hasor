@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.test.simple.mod.guice;
-import net.hasor.gift.guice.GuiceModule;
+import net.hasor.plugins.guice.GuiceModule;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 @GuiceModule

@@ -17,12 +17,12 @@ package org.hasor.test.web.controller;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import net.hasor.gift.aop.Aop;
-import net.hasor.gift.result.ext.Forword;
-import net.hasor.gift.result.ext.Json;
-import net.hasor.gift.result.ext.Redirect;
-import net.hasor.web.controller.AbstractController;
-import net.hasor.web.controller.Controller;
+import net.hasor.plugins.aop.Aop;
+import net.hasor.plugins.controller.AbstractController;
+import net.hasor.plugins.controller.Controller;
+import net.hasor.plugins.result.ext.Forword;
+import net.hasor.plugins.result.ext.Json;
+import net.hasor.plugins.result.ext.Redirect;
 import org.hasor.test.web.controller.interceptor.TestControllerInterceptor;
 /**
  * 

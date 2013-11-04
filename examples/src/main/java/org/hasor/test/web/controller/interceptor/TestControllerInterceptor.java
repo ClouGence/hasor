@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.hasor.test.web.controller.interceptor;
-import net.hasor.web.controller.interceptor.ControllerInterceptor;
-import net.hasor.web.controller.interceptor.ControllerInvocation;
+import net.hasor.plugins.controller.interceptor.ControllerInterceptor;
+import net.hasor.plugins.controller.interceptor.ControllerInvocation;
 /**
  * 
  * @version : 2013-9-26

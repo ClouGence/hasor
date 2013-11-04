@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.more.test.asm.returns;
-import net.hasor.gift.bean.Bean;
+import net.hasor.plugins.bean.Bean;
 /**
  * 
  * @version : 2013-9-20

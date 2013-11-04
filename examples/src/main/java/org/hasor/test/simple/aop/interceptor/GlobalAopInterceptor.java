@@ -15,14 +15,14 @@
  */
 package org.hasor.test.simple.aop.interceptor;
 import net.hasor.core.ApiBinder;
-import net.hasor.gift.Gift;
-import net.hasor.gift.GiftFace;
+import net.hasor.core.plugin.Plugin;
+import net.hasor.core.plugin.PluginFace;
 import org.aopalliance.intercept.MethodInterceptor;
 import com.google.inject.matcher.Matcher;
 import com.google.inject.matcher.Matchers;
-@Gift
-public class GlobalAopInterceptor implements GiftFace {
-    public void loadGift(ApiBinder apiBinder) {
+@Plugin
+public class GlobalAopInterceptor implements PluginFace {
+    public void loadPlugin(ApiBinder apiBinder) {
         boolean global = apiBinder.getEnvironment().getSettings().getBoolean("testApp.globalAop", false);
         if (global == false)
             return;

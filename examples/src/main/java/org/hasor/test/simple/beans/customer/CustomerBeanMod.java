@@ -15,16 +15,16 @@
  */
 package org.hasor.test.simple.beans.customer;
 import net.hasor.core.ApiBinder;
-import net.hasor.gift.Gift;
-import net.hasor.gift.GiftFace;
+import net.hasor.core.plugin.Plugin;
+import net.hasor.core.plugin.PluginFace;
 /**
  * 代码方式注册Bean
  * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
-@Gift
-public class CustomerBeanMod implements GiftFace {
-    public void loadGift(ApiBinder apiBinder) {
+@Plugin
+public class CustomerBeanMod implements PluginFace {
+    public void loadPlugin(ApiBinder apiBinder) {
         /*代码方式注册Bean*/
         apiBinder.newBean("Customer").bindType(CustomerBean.class);
         /*代码方式注册Bean，单态*/

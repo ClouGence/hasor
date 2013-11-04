@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.hasor.test.web.restful.interceptor;
-import net.hasor.web.restful.interceptor.RestfulInterceptor;
-import net.hasor.web.restful.interceptor.RestfulInvocation;
+import net.hasor.plugins.restful.interceptor.RestfulInterceptor;
+import net.hasor.plugins.restful.interceptor.RestfulInvocation;
 /**
  * 
  * @version : 2013-9-26
