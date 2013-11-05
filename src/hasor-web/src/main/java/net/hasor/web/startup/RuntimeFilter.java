@@ -31,7 +31,7 @@ import org.more.util.ContextClassLoaderLocal;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 /**
- * 入口Filter
+ * 入口Filter，同一个应用程序只能实例化一个 RuntimeFilter 对象。
  * @version : 2013-3-25
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -46,7 +46,12 @@ public class RuntimeFilter implements Filter {
     //
     //
     /**初始化过滤器，初始化会同时初始化FilterPipeline*/
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public synchronized void init(FilterConfig filterConfig) throws ServletException {
+        if (LocalServletContext.get() != null || LocalAppContext.get() != null) {
+            Hasor.error("PlatformFilter is started.");
+            throw new IllegalStateException("PlatformFilter is started.");
+        }
+        //
         if (this.appContext == null) {
             ServletContext servletContext = filterConfig.getServletContext();
             this.appContext = (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
@@ -121,10 +126,10 @@ public class RuntimeFilter implements Filter {
     //
     //
     //
-    private static ContextClassLoaderLocal          LocalServletContext = new ContextClassLoaderLocal();
-    private static ContextClassLoaderLocal          LocalAppContext     = new ContextClassLoaderLocal();
-    private static ThreadLocal<HttpServletRequest>  LocalRequest        = new ThreadLocal<HttpServletRequest>();
-    private static ThreadLocal<HttpServletResponse> LocalResponse       = new ThreadLocal<HttpServletResponse>();
+    private static ContextClassLoaderLocal<ServletContext> LocalServletContext = new ContextClassLoaderLocal<ServletContext>();
+    private static ContextClassLoaderLocal<AppContext>     LocalAppContext     = new ContextClassLoaderLocal<AppContext>();
+    private static ThreadLocal<HttpServletRequest>         LocalRequest        = new ThreadLocal<HttpServletRequest>();
+    private static ThreadLocal<HttpServletResponse>        LocalResponse       = new ThreadLocal<HttpServletResponse>();
     //
     /**获取{@link HttpServletRequest}*/
     public static HttpServletRequest getLocalRequest() {
@@ -138,11 +143,11 @@ public class RuntimeFilter implements Filter {
     //
     /**获取{@link ServletContext}*/
     public static ServletContext getLocalServletContext() {
-        return (ServletContext) LocalServletContext.get();
+        return LocalServletContext.get();
     }
     //
     /**获取{@link AppContext}*/
     public static AppContext getLocalAppContext() {
-        return (AppContext) LocalAppContext.get();
+        return LocalAppContext.get();
     }
 }

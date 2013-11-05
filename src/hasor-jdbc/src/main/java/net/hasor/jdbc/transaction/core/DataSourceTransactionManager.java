@@ -48,11 +48,9 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
     }
     protected void doSuspend(Object transaction, DefaultTransactionStatus defStatus) throws SQLException {
         // TODO Auto-generated method stub
-        super.doSuspend(transaction, defStatus);
     }
     protected void doResume(Object resumeTransaction, DefaultTransactionStatus defStatus) throws SQLException {
         // TODO Auto-generated method stub
-        super.doResume(resumeTransaction, defStatus);
     }
     //    protected Object doGetTransaction() {
     //        ConnectionHolder connHolder = TransactionSynchronizationManager.getConnectionHolder(this.dataSource);

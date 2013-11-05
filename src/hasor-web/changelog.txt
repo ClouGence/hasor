@@ -13,6 +13,7 @@ Hasor-Web v0.0.3
     4.WebApiBinder 接口中新增  getServletContext 方法用以获取 ServletContext 对象。
 * Improvement:
     1.Resource 组建的使用不在通过配置文件，而改为需要通过代码进行少量配置。这样以减少学习成本，增加灵活性。
+    2.RuntimeFilter 同一个应用程序只能实例化一个 RuntimeFilter 对象。
     
 
 Hasor-Web v0.0.2

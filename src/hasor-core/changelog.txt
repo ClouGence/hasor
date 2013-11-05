@@ -6,11 +6,11 @@ Hasor-Core v0.0.4
     4.增加 Hasor 类中 trace、isTraceLogger 方法，用于处理 Trace 日志级别。
     5.增加服务注册机制，详见 ServicesRegisterHandler 接口用法。
     6.增加 ModuleEvent_Start、ModuleEvent_Stoped事件。
-    7.Gift 体系更改为 Plugin，原本 Gift 是作为模块的一个补充，目前改为框架功能插件体系。
+    7.ApiBinder、AppContext 接口中新增一些有关 BindingType 的工具方法。
 * Improvement:
     1.变更 ContextEvent_Stop 事件为 ContextEvent_Stoped。
-    2.Gift 支持软件包位置变更。
-    3.删除 giftSupport 属性的配置，Gift 扩展方式不在通过配置文件形式启用。
+    2.删除 giftSupport 属性的配置，Gift 扩展方式不在通过配置文件形式启用。
+    3.Gift 体系更改为 Plugin，原本 Gift 是作为模块的一个补充，目前改为框架功能插件体系。
 
 
 Hasor-Core v0.0.3

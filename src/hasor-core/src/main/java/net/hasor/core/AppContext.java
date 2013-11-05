@@ -79,6 +79,10 @@ public interface AppContext {
     public <T> List<T> getInstanceByBindingType(Class<T> bindingType);
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
     public <T> List<Provider<T>> getProviderByBindingType(Class<T> bindingType);
+    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    public <T> T getInstanceByBindingType(String withName, Class<T> bindingType);
+    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    public <T> Provider<T> getProviderByBindingType(String withName, Class<T> bindingType);
     //
     /**获取上下文*/
     public Object getContext();

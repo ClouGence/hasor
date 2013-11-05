@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.context;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +41,8 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.TypeLiteral;
+import com.google.inject.name.Named;
+import com.google.inject.name.Names;
 /**
  * {@link AppContext}接口的抽象实现类。
  * @version : 2013-4-9
@@ -186,6 +189,27 @@ public abstract class AbstractAppContext implements AppContext {
         if (providerList.isEmpty())
             return null;
         return providerList;
+    }
+    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    public <T> T getInstanceByBindingType(String withName, Class<T> bindingType) {
+        Provider<T> provider = getProviderByBindingType(withName, bindingType);
+        if (provider == null)
+            return null;
+        return provider.get();
+    }
+    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    public <T> Provider<T> getProviderByBindingType(String withName, Class<T> bindingType) {
+        TypeLiteral<T> BindingType_DEFS = TypeLiteral.get(bindingType);
+        Named named = Names.named(withName);
+        //
+        for (Binding<T> entry : this.getGuice().findBindingsByType(BindingType_DEFS)) {
+            Provider<T> bindingTypeProvider = entry.getProvider();
+            Annotation nameAnno = entry.getKey().getAnnotation();
+            if (!named.equals(nameAnno))/*参见 Names.named。*/
+                continue;
+            return bindingTypeProvider;
+        }
+        return null;
     }
     //
     //

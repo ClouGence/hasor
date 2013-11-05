@@ -29,6 +29,7 @@ import com.google.inject.Provider;
 import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.binder.ScopedBindingBuilder;
 import com.google.inject.internal.UniqueAnnotations;
+import com.google.inject.name.Names;
 /**
  * 
  * @version : 2013-4-12
@@ -84,5 +85,21 @@ public abstract class ApiBinderModule implements ApiBinder, Module {
     }
     public <T> ScopedBindingBuilder bindingType(Class<T> type, Key<? extends T> targetKey) {
         return this.bindingType(type).to(targetKey);
+    }
+    //
+    public <T> LinkedBindingBuilder<T> bindingType(String withName, Class<T> type) {
+        return this.getGuiceBinder().bind(type).annotatedWith(Names.named(withName));
+    }
+    public <T> void bindingType(String withName, Class<T> type, T instance) {
+        this.bindingType(withName, type).toInstance(instance);
+    }
+    public <T> ScopedBindingBuilder bindingType(String withName, Class<T> type, Class<? extends T> implementation) {
+        return this.bindingType(withName, type).to(implementation);
+    }
+    public <T> ScopedBindingBuilder bindingType(String withName, Class<T> type, Provider<? extends T> provider) {
+        return this.bindingType(withName, type).toProvider(provider);
+    }
+    public <T> ScopedBindingBuilder bindingType(String withName, Class<T> type, Key<? extends T> targetKey) {
+        return this.bindingType(withName, type).to(targetKey);
     }
 }

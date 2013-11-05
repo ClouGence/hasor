@@ -23,6 +23,37 @@ import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.binder.ScopedBindingBuilder;
 /**
  * ApiBinder
+ * 
+ * 
+ * <p><b>BindingType</b>
+ * <p>BindingType 可以将同一个类型的不同子类或实现类之间建立一种关系，并注册到 Guice 中。
+ * 然后可以通过捆绑的类型获取它们，或者通过 Guice 创建这些类的实例对象。
+ * 类型绑定这一功能是依据 Guice {@link Binder}的接口构建出来的，学习或理解它或许会有一些难度。
+ * 建议通过下面几个简单的例子来理解 BindingType 使用方式。
+ * 
+ * <p><i>绑定</i>（将 USerA、USerB 对象绑定到其 User 类型上）
+ * 
+ * <pre>
+ *   ApiBinder.bindingType(User.class , new User());//UserA
+ *   ApiBinder.bindingType(User.class , new User());//UserB</pre>
+ * 被绑定的对象可以通过绑定的类型进行检索，通过这种方式可以很方便的收集注册在 Guice 上的某一接口实现。
+ * 
+ * <pre>
+ *   AppContext.getInstanceByBindingType(User.class); // or 
+ *   AppContext.getProviderByBindingType(User.class);</pre>
+ * 
+ * <p><b>NameBindingType</b>
+ * <p>是一种为绑定对象携带名称的行为，区别 BindingType 的是同一个类型上相同名称的绑定只能有一个有效。
+ * 
+ * <pre>
+ *   ApiBinder.bindingType("u1" , User.class , new User());//UserA
+ *   ApiBinder.bindingType("u2" , User.class , new User());//UserB</pre>
+ * 被绑定的对象可以通过绑定的类型进行检索，通过这种方式可以很方便的收集注册在 Guice 上的某一接口实现。
+ * 
+ * <pre>
+ *   AppContext.getInstanceByBindingType(User.class); // or 
+ *   AppContext.getProviderByBindingType(User.class);</pre>
+ * 
  * @version : 2013-4-10
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -31,7 +62,9 @@ public interface ApiBinder {
     public Environment getEnvironment();
     /**获取用于初始化Guice的Binder。*/
     public Binder getGuiceBinder();
-    /**将后面的对象绑定前一个类型上。可以通过 {@link AppContext} 使用绑定的类型重新获取绑定的对象。
+    /**
+     * See the EDSL examples at {@link Binder}.
+     * 将后面的对象绑定前一个类型上。可以通过 {@link AppContext} 使用绑定的类型重新获取绑定的对象。
      * 使用下面的方法即可重新获取绑定的类型。
      * <pre>
      * AppContext :
@@ -54,6 +87,22 @@ public interface ApiBinder {
     /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
      * @see ApiBinder#bindingType(Class) */
     public <T> ScopedBindingBuilder bindingType(Class<T> type, Key<? extends T> targetKey);
+    /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
+     * @see net.hasor.core.ApiBinder#bindingType(Class)*/
+    public <T> LinkedBindingBuilder<T> bindingType(String withName, Class<T> type);
+    /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
+     * @see net.hasor.core.ApiBinder#bindingType(String, Class)*/
+    public <T> void bindingType(String withName, Class<T> type, T instance);
+    /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
+     * @see net.hasor.core.ApiBinder#bindingType(String, Class)*/
+    public <T> ScopedBindingBuilder bindingType(String withName, Class<T> type, Class<? extends T> implementation);
+    /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
+     * @see net.hasor.core.ApiBinder#bindingType(String, Class)*/
+    public <T> ScopedBindingBuilder bindingType(String withName, Class<T> type, Provider<? extends T> provider);
+    /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
+     * @see net.hasor.core.ApiBinder#bindingType(String, Class)*/
+    public <T> ScopedBindingBuilder bindingType(String withName, Class<T> type, Key<? extends T> targetKey);
+    //
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
     public Set<Class<?>> getClassSet(Class<?> featureType);
     //
