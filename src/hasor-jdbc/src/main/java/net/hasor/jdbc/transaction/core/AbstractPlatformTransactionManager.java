@@ -131,7 +131,7 @@ public abstract class AbstractPlatformTransactionManager implements TransactionM
     }
     /**判断当前事务对象是否已经处于事务中。该方法会用于评估事务传播属性的处理方式。*/
     protected abstract boolean isExistingTransaction(Object transaction);
-    /**开启一个全新的事务*/
+    /**在当前连接上开启一个全新的事务*/
     protected abstract void doBegin(Object transaction, DefaultTransactionStatus defStatus) throws SQLException;
     //
     //

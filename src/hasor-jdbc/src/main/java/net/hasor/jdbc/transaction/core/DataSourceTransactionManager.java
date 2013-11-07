@@ -16,6 +16,7 @@
 package net.hasor.jdbc.transaction.core;
 import java.sql.SQLException;
 import javax.sql.DataSource;
+import net.hasor.jdbc.transaction._.ConnectionHandle;
 /**
  * 某一个数据源的事务管理器
  * @version : 2013-10-30
@@ -29,41 +30,6 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
     //
     //
     //
-    protected Object doGetTransaction() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    protected boolean isExistingTransaction(Object transaction) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-    protected void doBegin(Object transaction, DefaultTransactionStatus defStatus) throws SQLException {
-        // TODO Auto-generated method stub
-    }
-    protected void doCommit(Object transaction, DefaultTransactionStatus defStatus) throws SQLException {
-        // TODO Auto-generated method stub
-    }
-    protected void doRollback(Object transaction, DefaultTransactionStatus defStatus) throws SQLException {
-        // TODO Auto-generated method stub
-    }
-    protected void doSuspend(Object transaction, DefaultTransactionStatus defStatus) throws SQLException {
-        // TODO Auto-generated method stub
-    }
-    protected void doResume(Object resumeTransaction, DefaultTransactionStatus defStatus) throws SQLException {
-        // TODO Auto-generated method stub
-    }
-    //    protected Object doGetTransaction() {
-    //        ConnectionHolder connHolder = TransactionSynchronizationManager.getConnectionHolder(this.dataSource);
-    //        DataSourceTransactionObject dtObject = new DataSourceTransactionObject(connHolder);
-    //        return dtObject;
-    //    }
-    //    protected boolean isExistingTransaction(Object transaction) {
-    //        DataSourceTransactionObject dtObject = (DataSourceTransactionObject) transaction;
-    //        return dtObject.getConnectionHolder().hasTransaction();
-    //    }
-    //    //
-    //    //
-    //    //
     //    protected void doBegin(Object transaction, DefaultTransactionStatus status) throws SQLException {
     //        DataSourceTransactionObject txObject = (DataSourceTransactionObject) transaction;
     //        /*当前线程绑定的ConnectionHolder*/
@@ -80,4 +46,32 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
     //        Integer previousIsolationLevel = DataSourceUtils.prepareConnectionForTransaction(con, definition);
     //        txObject.setPreviousIsolationLevel(previousIsolationLevel);
     //    }
+    protected Object doGetTransaction() {
+        // TODO Auto-generated method stub
+        return new ConnectionHandle();
+    }
+    protected boolean isExistingTransaction(Object transaction) {
+        ConnectionHandle connHandle = (ConnectionHandle) transaction;
+        return connHandle.isTransactionActive();
+    }
+    protected void doBegin(Object transaction, DefaultTransactionStatus defStatus) throws SQLException {
+        ConnectionHandle connHandle = (ConnectionHandle) transaction;
+        connHandle.getConnection().setAutoCommit(false);
+    }
+    protected void doCommit(Object transaction, DefaultTransactionStatus defStatus) throws SQLException {
+        ConnectionHandle connHandle = (ConnectionHandle) transaction;
+        connHandle.getConnection().commit();
+        connHandle.getConnection().setAutoCommit(true);
+    }
+    protected void doRollback(Object transaction, DefaultTransactionStatus defStatus) throws SQLException {
+        ConnectionHandle connHandle = (ConnectionHandle) transaction;
+        connHandle.getConnection().rollback();
+        connHandle.getConnection().setAutoCommit(true);
+    }
+    protected void doSuspend(Object transaction, DefaultTransactionStatus defStatus) throws SQLException {
+        //清空当前线程的 ConnectionHandle
+    }
+    protected void doResume(Object resumeTransaction, DefaultTransactionStatus defStatus) throws SQLException {
+        //恢复当前线程的 ConnectionHandle
+    }
 }
