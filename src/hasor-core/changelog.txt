@@ -1,14 +1,15 @@
 Hasor-Core v0.0.4
 * New:
-    1.Environment 接口新增 isDebug 方法，用于表示应用程序启动是否为 debug 模式。
-    2.Hasor 类新增 isDebugLogger、isErrorLogger、isWarningLogger、isInfoLogger 方法用于判断日志是否支持该级别的输出。
-    3.原有 Hasor 类中 debug、error、warning、info 日志输出方法会判断响应级别的日志输出是否支持。
-    4.增加 Hasor 类中 trace、isTraceLogger 方法，用于处理 Trace 日志级别。
-    5.增加服务注册机制，详见 ServicesRegisterHandler 接口用法。
-    6.增加 ModuleEvent_Start、ModuleEvent_Stoped事件。
-    7.ApiBinder、AppContext 接口中新增一些有关 BindingType 的工具方法。
-    8.新增 Cache 插件。
-    9.新增 Aware 插件，该插件提供给不方便通过 @Inject 注解注入 AppContext 接口的类，使其在 AppContext 在 Start 的第一时间得到注入。
+    01.Environment 接口新增 isDebug 方法，用于表示应用程序启动是否为 debug 模式。
+    02.Hasor 类新增 isDebugLogger、isErrorLogger、isWarningLogger、isInfoLogger 方法用于判断日志是否支持该级别的输出。
+    03.原有 Hasor 类中 debug、error、warning、info 日志输出方法会判断响应级别的日志输出是否支持。
+    04.增加 Hasor 类中 trace、isTraceLogger 方法，用于处理 Trace 日志级别。
+    05.增加服务注册机制，详见 ServicesRegisterHandler 接口用法。
+    06.增加 ModuleEvent_Start、ModuleEvent_Stoped事件。
+    07.ApiBinder、AppContext 接口中新增一些有关 BindingType 的工具方法。
+    08.新增 Cache 插件。
+    09.新增 Aware 插件，该插件提供给不方便通过 @Inject 注解注入 AppContext 接口的类，使其在 AppContext 在 Start 的第一时间得到注入。
+    10.新增 日志输出，可以看到插件列表，并且展示了插件是否加载成功。
 * Improvement:
     1.变更 ContextEvent_Stop 事件为 ContextEvent_Stoped。
     2.删除 giftSupport 属性的配置，Gift 扩展方式不在通过配置文件形式启用。

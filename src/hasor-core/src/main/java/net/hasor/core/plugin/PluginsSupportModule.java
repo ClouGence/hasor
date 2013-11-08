@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core.plugin;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
@@ -32,7 +35,8 @@ public class PluginsSupportModule implements Module {
         Set<Class<?>> pluginSet = apiBinder.getClassSet(Plugin.class);
         if (pluginSet == null)
             return;
-        Hasor.logInfo("find Plugin : " + Hasor.logString(pluginSet));
+        //
+        Map<Class<?>, String> loadState = new HashMap<Class<?>, String>();
         for (Class<?> pluginClass : pluginSet) {
             if (PluginFace.class.isAssignableFrom(pluginClass) == false) {
                 Hasor.logWarn("not implemented PluginFace :%s", pluginClass);
@@ -42,9 +46,21 @@ public class PluginsSupportModule implements Module {
                 PluginFace pluginFace = (PluginFace) pluginClass.newInstance();
                 Hasor.logInfo("loadPlugin %s.", pluginClass);
                 pluginFace.loadPlugin(apiBinder);
+                loadState.put(pluginClass, "<-- OK.");
             } catch (Throwable e) {
+                loadState.put(pluginClass, "<-- Error.");
                 Hasor.logError("config Plugin error at %s.%s", pluginClass, e);
             }
+        }
+        //
+        if (Hasor.isInfoLogger()) {
+            StringBuffer sb = new StringBuffer();
+            for (Entry<Class<?>, String> e : loadState.entrySet()) {
+                sb.append("\n  " + e.getKey().getName());
+                sb.append(e.getValue());
+            }
+            String outData = (sb.length() == 0 ? "nothing." : sb.toString());
+            Hasor.logInfo("find Plugin : " + outData);
         }
     }
     /***/

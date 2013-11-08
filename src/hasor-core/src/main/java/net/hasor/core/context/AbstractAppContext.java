@@ -308,7 +308,7 @@ public abstract class AbstractAppContext implements AppContext {
             sb.append('.');
             sb.append("-->[");
             //Running:运行中(start)、Failed:准备失败、Stopped:停止(stop)
-            sb.append(!info.isReady() ? "Failed" : info.isStart() ? "Running" : "Stopped");
+            sb.append(!info.isReady() ? "Failed " : info.isStart() ? "Running" : "Stopped");
             sb.append("] ");
             sb.append(info.getDisplayName());
             sb.append(" (");

@@ -163,7 +163,7 @@ public abstract class ModulePropxy implements ModuleInfo/*提供模块基本信息*/, De
             this.isReady = true;
         } catch (Throwable e) {
             this.isReady = false;
-            Hasor.logError("%s is not init! %s", this.getDisplayName(), e.getMessage());
+            Hasor.logError("%s is not init! %s", this.getDisplayName(), e);
             if (isFullStart())
                 this.proForceModule(e);
         }

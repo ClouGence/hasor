@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -101,8 +101,8 @@ public abstract class AbstractEnvironment implements Environment {
         this.envVars = this.createEnvVars();
         this.eventManager = this.createEventManager();
         //
-        String[] spanPackages = this.getSettings().getStringArray("hasor.loadPackages", "net.hasor.core.*");
-        ArrayList<String> allPack = new ArrayList<String>();
+        String[] spanPackages = this.getSettings().getStringArray("hasor.loadPackages", "net.hasor.core.*,net.hasor.plugins.*");
+        Set<String> allPack = new HashSet<String>();
         for (String packs : spanPackages) {
             if (StringUtils.isBlank(packs) == true)
                 continue;
@@ -113,12 +113,6 @@ public abstract class AbstractEnvironment implements Environment {
                 allPack.add(pack.trim());
             }
         }
-        //排序的目的是避免类似“org”，“com”，“net”这样的包声明排在首位。
-        Collections.sort(allPack, new Comparator<String>() {
-            public int compare(String o1, String o2) {
-                return -o1.compareToIgnoreCase(o2);
-            }
-        });
         this.spanPackage = allPack.toArray(new String[allPack.size()]);
         Hasor.logInfo("loadPackages : " + Hasor.logString(this.spanPackage));
         //
@@ -361,21 +355,31 @@ public abstract class AbstractEnvironment implements Environment {
             this.finalEnvMap = finalMap;
             //
             /*日志输出*/
-            int keyMaxSize = 0;
-            for (String key : finalMap.keySet())
-                keyMaxSize = (key.length() >= keyMaxSize) ? key.length() : keyMaxSize;
-            keyMaxSize = keyMaxSize + 2;
-            StringBuffer sb = new StringBuffer();
-            sb.append("onLoadConfig Environment \n");
-            sb.append(StringUtils.fixedString('-', 100) + "\n");
-            sb.append(formatMap4log(keyMaxSize, systemEnv) + "\n");
-            sb.append(StringUtils.fixedString('-', 100) + "\n");
-            sb.append(formatMap4log(keyMaxSize, javaProp) + "\n");
-            sb.append(StringUtils.fixedString('-', 100) + "\n");
-            sb.append(formatMap4log(keyMaxSize, hasorEnv) + "\n");
-            sb.append(StringUtils.fixedString('-', 100) + "\n");
-            sb.append(formatMap4log(keyMaxSize, userEnvMap));
-            Hasor.logInfo(sb.toString());
+            if (Hasor.isInfoLogger()) {
+                int keyMaxSize = 0;
+                for (String key : finalMap.keySet())
+                    keyMaxSize = (key.length() >= keyMaxSize) ? key.length() : keyMaxSize;
+                keyMaxSize = keyMaxSize + 2;
+                StringBuffer sb = new StringBuffer();
+                sb.append("EnvVars:");
+                if (!systemEnv.isEmpty()) {
+                    sb.append("\n" + StringUtils.fixedString('-', 100));
+                    sb.append("\n" + formatMap4log(keyMaxSize, systemEnv));
+                }
+                if (!javaProp.isEmpty()) {
+                    sb.append("\n" + StringUtils.fixedString('-', 100));
+                    sb.append("\n" + formatMap4log(keyMaxSize, javaProp));
+                }
+                if (!hasorEnv.isEmpty()) {
+                    sb.append("\n" + StringUtils.fixedString('-', 100));
+                    sb.append("\n" + formatMap4log(keyMaxSize, hasorEnv));
+                }
+                if (!userEnvMap.isEmpty()) {
+                    sb.append("\n" + StringUtils.fixedString('-', 100));
+                    sb.append("\n" + formatMap4log(keyMaxSize, userEnvMap));
+                }
+                Hasor.logInfo(sb.toString());
+            }
         }
         private static String formatMap4log(int colWidth, Map<String, String> mapData) {
             /*输出系统环境变量日志*/

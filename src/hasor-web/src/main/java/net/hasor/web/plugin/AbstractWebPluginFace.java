@@ -25,9 +25,12 @@ import net.hasor.web.WebApiBinder;
  */
 public abstract class AbstractWebPluginFace extends AbstractPluginFace {
     public final void loadPlugin(ApiBinder apiBinder) {
-        if (apiBinder instanceof WebApiBinder)
-            this.loadPlugin((WebApiBinder) apiBinder);
-        Hasor.logWarn("Hasor context does not support the web Plugin.");
+        if (apiBinder instanceof WebApiBinder == false) {
+            Hasor.logWarn("does not support ¡®%s¡¯ Web plug-in.", this.getClass());
+            return;
+        }
+        this.loadPlugin((WebApiBinder) apiBinder);
+        Hasor.logInfo("¡®%s¡¯ Plug-in loaded successfully", this.getClass());
     }
     public abstract void loadPlugin(WebApiBinder apiBinder);
 }

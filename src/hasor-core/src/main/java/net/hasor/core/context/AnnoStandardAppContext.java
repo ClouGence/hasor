@@ -65,7 +65,13 @@ public class AnnoStandardAppContext extends StandardAppContext {
     protected void loadModule() {
         //1.扫描classpath包
         Set<Class<?>> initHookSet = this.getEnvironment().getClassSet(AnnoModule.class);
-        Hasor.logInfo("find Module : " + Hasor.logString(initHookSet));
+        if (Hasor.isInfoLogger()) {
+            StringBuffer sb = new StringBuffer();
+            for (Class<?> e : initHookSet)
+                sb.append("\n  " + e.getName());
+            String outData = (sb.length() == 0 ? "nothing." : sb.toString());
+            Hasor.logInfo("find Module : " + outData);
+        }
         //2.过滤未实现HasorModule接口的类
         for (Class<?> modClass : initHookSet) {
             if (!Module.class.isAssignableFrom(modClass)) {

@@ -40,7 +40,7 @@ public abstract class WebApiBinderModule extends ApiBinderModule implements WebA
         return this.getEnvironment().getServletContext();
     }
     public WebEnvironment getEnvironment() {
-        return (WebEnvironment) this.getEnvironment();
+        return (WebEnvironment) super.getEnvironment();
     }
     /***/
     private static List<String> newArrayList(String[] arr, String object) {
