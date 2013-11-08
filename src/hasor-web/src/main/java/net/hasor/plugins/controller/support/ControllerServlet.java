@@ -120,7 +120,7 @@ class ControllerServlet extends HttpServlet {
         }
         //3.
         for (ControllerNameSpace nsItem : nsMap.values())
-            Hasor.info("found ControllerNameSpace %s.", nsItem.toString());
+            Hasor.logInfo("found ControllerNameSpace %s.", nsItem.toString());
         this.spaceMap = nsMap.values().toArray(new ControllerNameSpace[nsMap.size()]);
     }
     private ControllerInvoke getActionInvoke(String requestPath, String httpMethod) {

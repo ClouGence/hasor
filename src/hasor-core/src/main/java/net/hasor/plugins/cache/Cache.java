@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.servlet3;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.hasor.plugins.cache;
 /**
- * 
- * @version : 2013-3-12
- * @author 赵永春 (zyc@hasor.net)
+ * 缓存接口。
+ * @version : 2013-4-20
+ * @author 赵永春 (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.ANNOTATION_TYPE })
-public @interface WebInitParam {
-    /** Name of the initialization parameter */
-    public String name();
-    /** Value of the initialization parameter */
-    public String value();
-    /** Description of the initialization parameter */
-    public String description() default "";
+public interface Cache {
+    /**将一个对象放入缓存。*/
+    public boolean toCache(String key, Object value, long timeout);
+    /**根据key从缓存中获取缓存对象。*/
+    public Object fromCache(String key);
+    /**判断缓存中是否有要求的对象。*/
+    public boolean hasCache(String key);
+    /**删除某个缓存的内容*/
+    public boolean remove(String key);
+    /**清空缓存*/
+    public boolean clear();
+    //
+    /**关闭并停用缓存*/
+    public void close();
 }

@@ -45,7 +45,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
             this.appContext = this.createAppContext(servletContextEvent.getServletContext());
             this.appContext.start();
         } catch (Exception e) {
-            Hasor.error("createAppContext error.\n%s", e);
+            Hasor.logError("createAppContext error.\n%s", e);
             if (e instanceof RuntimeException)
                 throw (RuntimeException) e;
             throw new RuntimeException(e);
@@ -53,9 +53,9 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         //2.获取SessionListenerPipeline
         this.sessionListenerPipeline = this.appContext.getInstance(SessionListenerPipeline.class);
         this.sessionListenerPipeline.init(this.appContext);
-        Hasor.info("sessionListenerPipeline created.");
+        Hasor.logInfo("sessionListenerPipeline created.");
         //3.放入ServletContext环境。
-        Hasor.info("ServletContext Attribut : " + AppContextName + " -->> " + Hasor.logString(this.appContext));
+        Hasor.logInfo("ServletContext Attribut : " + AppContextName + " -->> " + Hasor.logString(this.appContext));
         servletContextEvent.getServletContext().setAttribute(AppContextName, this.appContext);
         this.sessionListenerPipeline.contextInitialized(servletContextEvent);
     }

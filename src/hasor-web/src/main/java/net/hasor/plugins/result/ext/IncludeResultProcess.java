@@ -30,7 +30,7 @@ import net.hasor.plugins.result.ResultProcess;
 @ResultDefine(Include.class)
 public class IncludeResultProcess implements ResultProcess {
     public void process(HttpServletRequest request, HttpServletResponse response, Annotation annoData, Object result) throws ServletException, IOException {
-        Hasor.debug("include %s.", result);
+        Hasor.logDebug("include %s.", result);
         request.getRequestDispatcher(result.toString()).include(request, response);
     }
 }

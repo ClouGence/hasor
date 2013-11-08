@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.plugins.aop;
-import static net.hasor.core.AppContext.ContextEvent_Start;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
-import net.hasor.core.EventListener;
 import net.hasor.core.plugin.AbstractPluginFace;
 import net.hasor.core.plugin.Plugin;
 import net.hasor.plugins.aop.matchers.AopMatchers;
@@ -28,18 +25,9 @@ import com.google.inject.matcher.Matcher;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Plugin
-public class AopPlugin extends AbstractPluginFace implements GetContext, EventListener {
+public class AopPlugin extends AbstractPluginFace {
     public void loadPlugin(ApiBinder apiBinder) {
         Matcher<Object> matcher = AopMatchers.annotatedWith(Aop.class);//
-        apiBinder.getGuiceBinder().bindInterceptor(matcher, matcher, new AopInterceptor(this));
-        apiBinder.getEnvironment().getEventManager().pushEventListener(ContextEvent_Start, this);
-    }
-    //
-    private AppContext appContext = null;
-    public AppContext getAppContext() {
-        return this.appContext;
-    }
-    public void onEvent(String event, Object[] params) throws Throwable {
-        this.appContext = (AppContext) params[0];
+        apiBinder.getGuiceBinder().bindInterceptor(matcher, matcher, new AopInterceptor());
     }
 }

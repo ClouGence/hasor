@@ -34,7 +34,7 @@ import com.google.inject.matcher.Matcher;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Plugin
-public class ResultGift extends AbstractWebPluginFace implements GetContext, EventListener {
+public class ResultPlugin extends AbstractWebPluginFace implements GetContext, EventListener {
     public void loadPlugin(WebApiBinder apiBinder) {
         Map<Class<?>, Class<ResultProcess>> defineMap = new HashMap<Class<?>, Class<ResultProcess>>();
         //1.获取
@@ -44,13 +44,13 @@ public class ResultGift extends AbstractWebPluginFace implements GetContext, Eve
         //2.注册服务
         for (Class<?> resultDefineType : resultDefineSet) {
             if (ResultProcess.class.isAssignableFrom(resultDefineType) == false) {
-                Hasor.warning("loadResultDefine : not implemented ResultProcess. class=%s", resultDefineType);
+                Hasor.logWarn("loadResultDefine : not implemented ResultProcess. class=%s", resultDefineType);
                 continue;
             }
             ResultDefine resultDefineAnno = resultDefineType.getAnnotation(ResultDefine.class);
             Class<ResultProcess> defineType = (Class<ResultProcess>) resultDefineType;
             Class<?> resultType = resultDefineAnno.value();
-            Hasor.info("loadResultDefine annoType is %s toInstance %s", resultType, resultDefineType);
+            Hasor.logInfo("loadResultDefine annoType is %s toInstance %s", resultType, resultDefineType);
             defineMap.put(resultType, defineType);
         }
         apiBinder.getEnvironment().getEventManager().pushEventListener(AppContext.ContextEvent_Start, this);

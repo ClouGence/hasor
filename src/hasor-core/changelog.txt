@@ -7,10 +7,13 @@ Hasor-Core v0.0.4
     5.增加服务注册机制，详见 ServicesRegisterHandler 接口用法。
     6.增加 ModuleEvent_Start、ModuleEvent_Stoped事件。
     7.ApiBinder、AppContext 接口中新增一些有关 BindingType 的工具方法。
+    8.新增 Cache 插件。
+    9.新增 Aware 插件，该插件提供给不方便通过 @Inject 注解注入 AppContext 接口的类，使其在 AppContext 在 Start 的第一时间得到注入。
 * Improvement:
     1.变更 ContextEvent_Stop 事件为 ContextEvent_Stoped。
     2.删除 giftSupport 属性的配置，Gift 扩展方式不在通过配置文件形式启用。
     3.Gift 体系更改为 Plugin，原本 Gift 是作为模块的一个补充，目前改为框架功能插件体系。
+    4.代码大面积优化。
 
 
 Hasor-Core v0.0.3

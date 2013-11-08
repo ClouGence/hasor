@@ -37,13 +37,13 @@ public class BeanPlugin extends AbstractPluginFace {
             Bean annoBean = beanClass.getAnnotation(Bean.class);
             String[] names = annoBean.value();
             if (ArrayUtils.isEmpty(names)) {
-                Hasor.warning("missing Bean name %s", beanClass);
+                Hasor.logWarn("missing Bean name %s", beanClass);
                 continue;
             }
             if (StringUtils.isBlank(names[0]))
                 continue;
             BeanBindingBuilder beanBuilder = apiBinder.newBean(names[0]);
-            Hasor.info("loadBean %s bind %s", names, beanClass);
+            Hasor.logInfo("loadBean %s bind %s", names, beanClass);
             for (int i = 1; i < names.length; i++)
                 beanBuilder.aliasName(names[i]);
             beanBuilder.bindType(beanClass);

@@ -93,11 +93,11 @@ public class FileSettings extends InputStreamSettings {
     }
     /**重新装载所有配置文件。*/
     public synchronized void refresh() throws IOException {
-        Hasor.info("reload configuration.");
+        Hasor.logInfo("reload configuration.");
         this.cleanData();
         //
         for (FileEntity feItem : this.fileList) {
-            Hasor.info("addStream FileEntity ID is %s file is %s.", feItem.hashID, feItem.entity);
+            Hasor.logInfo("addStream FileEntity ID is %s file is %s.", feItem.hashID, feItem.entity);
             this.addStream(new FileInputStream(feItem.entity));
         }
         //

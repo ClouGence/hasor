@@ -15,6 +15,7 @@
  */
 package net.hasor.core.binder;
 import java.util.Set;
+import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Environment;
 import net.hasor.core.ModuleInfo;
@@ -51,6 +52,7 @@ public abstract class ApiBinderModule implements ApiBinder, Module {
         return this.environment;
     }
     public <T> void registerServicesHandler(Class<T> serviceType, ServicesRegisterHandler<T> handler) {
+        Hasor.logInfo("registerServices %s.", serviceType);
         this.bindingType(ServicesRegisterHandlerDefine.class, new ServicesRegisterHandlerDefine<T>(serviceType, handler));
     }
     public Settings getModuleSettings() {

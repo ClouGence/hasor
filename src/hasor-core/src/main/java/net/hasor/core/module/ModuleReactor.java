@@ -41,7 +41,7 @@ public class ModuleReactor {
             this.checkModuleInDependency(infoBean, 1, infoBean.getDependency(), new ArrayList<ModuleInfo>(), stackArray);
         } catch (RuntimeException e) {
             String treeInfo = getTreeInfo(stackArray, "[Other] ......");
-            Hasor.error("%s module depend on the loop.\n%s", infoBean.getDisplayName(), treeInfo);
+            Hasor.logError("%s module depend on the loop.\n%s", infoBean.getDisplayName(), treeInfo);
             throw e;
         }
     }
@@ -66,11 +66,11 @@ public class ModuleReactor {
     /**按照明确的模块启动顺序对模块进行排序，该方法同时还进行了循环检测。*/
     public List<ModuleInfo> process() {
         /*1.进行循环检查，确保模块的稳定依赖*/
-        Hasor.info("begin cycle check...mods %s.", this.modules);
+        Hasor.logInfo("begin cycle check...mods %s.", this.modules);
         for (ModuleInfo info : this.modules)
             this.checkModule(info);
         /*2.构建ModuleInfo对象中的依赖树*/
-        Hasor.info("build dependency tree for ModuleInfo.");
+        Hasor.logInfo("build dependency tree for ModuleInfo.");
         for (ModuleInfo info : this.modules) {
             ModulePropxy depInfo = (ModulePropxy) info;
             for (Dependency dep : depInfo.getDependency())
@@ -80,7 +80,7 @@ public class ModuleReactor {
         List<ReactorModuleInfoElement> tree = new ArrayList<ReactorModuleInfoElement>();
         this.getDependenceTree(tree);
         String treeInfo = getTreeInfo(tree, null);
-        Hasor.info("dependence Tree\n%s", treeInfo);
+        Hasor.logInfo("dependence Tree\n%s", treeInfo);
         /*4.确定启动顺序*/
         List<ModuleInfo> finalList = this.getStartModule(tree);
         //
@@ -98,7 +98,7 @@ public class ModuleReactor {
         }
         if (sb.length() > 1)
             sb.deleteCharAt(sb.length() - 1);
-        Hasor.info("startup sequence.\n%s", sb);
+        Hasor.logInfo("startup sequence.\n%s", sb);
         return finalList;
     }
     //

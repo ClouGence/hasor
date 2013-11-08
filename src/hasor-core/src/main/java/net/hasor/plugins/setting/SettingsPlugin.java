@@ -42,14 +42,14 @@ public class SettingsPlugin extends AbstractPluginFace {
         eventManager.pushEventListener(ContextEvent_Start, new EventListener() {
             public void onEvent(String event, Object[] params) {
                 AppContext appContext = (AppContext) params[0];
-                List<Provider<SettingsListener>> settingProvider = appContext.getProviderByBindingType(SettingsListener.class);
+                List<Provider<SettingsListener>> settingProvider = appContext.findProviderByType(SettingsListener.class);
                 if (settingProvider == null)
                     return;
                 for (Provider<SettingsListener> provider : settingProvider) {
                     SettingsListener target = provider.get();
                     target.onLoadConfig(appContext.getSettings());
                     env.addSettingsListener(target);
-                    Hasor.info("%s SettingsListener created.", target);
+                    Hasor.logInfo("%s SettingsListener created.", target);
                 }
             }
         });
@@ -62,11 +62,11 @@ public class SettingsPlugin extends AbstractPluginFace {
             return;
         for (Class<?> settingClass : settingSet) {
             if (SettingsListener.class.isAssignableFrom(settingClass) == false) {
-                Hasor.warning("not implemented SettingsListener :%s", settingClass);
+                Hasor.logWarn("not implemented SettingsListener :%s", settingClass);
                 continue;
             }
             apiBinder.bindingType(SettingsListener.class, (Class<SettingsListener>) settingClass).asEagerSingleton();
-            Hasor.info("%s bind SettingsListener.", settingClass);
+            Hasor.logInfo("%s bind SettingsListener.", settingClass);
         }
     }
 }

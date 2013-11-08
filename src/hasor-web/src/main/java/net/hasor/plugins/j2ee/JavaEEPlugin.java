@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.servlet3;
+package net.hasor.plugins.j2ee;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +32,7 @@ import org.more.util.StringUtils;
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
 @Plugin
-public class Servlet3Gift extends AbstractWebPluginFace {
+public class JavaEEPlugin extends AbstractWebPluginFace {
     public void loadPlugin(WebApiBinder apiBinder) {
         if (apiBinder instanceof WebApiBinder == false)
             return;
@@ -52,7 +52,7 @@ public class Servlet3Gift extends AbstractWebPluginFace {
         List<Class<? extends Filter>> webFilterList = new ArrayList<Class<? extends Filter>>();
         for (Class<?> cls : webFilterSet) {
             if (Filter.class.isAssignableFrom(cls) == false) {
-                Hasor.warning("not implemented Filter :%s", cls);
+                Hasor.logWarn("not implemented Filter :%s", cls);
             } else {
                 webFilterList.add((Class<? extends Filter>) cls);
             }
@@ -64,7 +64,7 @@ public class Servlet3Gift extends AbstractWebPluginFace {
             apiBinder.filter(null, filterAnno.value()).through(filterAnno.sort(), filterType, initMap);
             //
             String filterName = StringUtils.isBlank(filterAnno.filterName()) ? filterType.getSimpleName() : filterAnno.filterName();
-            Hasor.info("loadFilter %s[%s] bind %s on %s.", filterName, getIndexStr(filterAnno.sort()), filterType, filterAnno.value());
+            Hasor.logInfo("loadFilter %s[%s] bind %s on %s.", filterName, getIndexStr(filterAnno.sort()), filterType, filterAnno.value());
         }
     }
     //
@@ -77,7 +77,7 @@ public class Servlet3Gift extends AbstractWebPluginFace {
         List<Class<? extends HttpServlet>> webServletList = new ArrayList<Class<? extends HttpServlet>>();
         for (Class<?> cls : webServletSet) {
             if (HttpServlet.class.isAssignableFrom(cls) == false) {
-                Hasor.warning("not implemented HttpServlet :%s", cls);
+                Hasor.logWarn("not implemented HttpServlet :%s", cls);
             } else {
                 webServletList.add((Class<? extends HttpServlet>) cls);
             }
@@ -90,7 +90,7 @@ public class Servlet3Gift extends AbstractWebPluginFace {
             int sortInt = servletAnno.loadOnStartup();
             //
             apiBinder.serve(null, servletAnno.value()).with(sortInt, servletType, initMap);
-            Hasor.info("loadServlet %s[%s] bind %s on %s.", servletName, getIndexStr(sortInt), servletType, servletAnno.value());
+            Hasor.logInfo("loadServlet %s[%s] bind %s on %s.", servletName, getIndexStr(sortInt), servletType, servletAnno.value());
         }
     }
     //

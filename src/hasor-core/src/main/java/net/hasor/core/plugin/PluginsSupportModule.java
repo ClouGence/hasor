@@ -32,18 +32,18 @@ public class PluginsSupportModule implements Module {
         Set<Class<?>> pluginSet = apiBinder.getClassSet(Plugin.class);
         if (pluginSet == null)
             return;
-        Hasor.info("find Plugin : " + Hasor.logString(pluginSet));
+        Hasor.logInfo("find Plugin : " + Hasor.logString(pluginSet));
         for (Class<?> pluginClass : pluginSet) {
             if (PluginFace.class.isAssignableFrom(pluginClass) == false) {
-                Hasor.warning("not implemented PluginFace :%s", pluginClass);
+                Hasor.logWarn("not implemented PluginFace :%s", pluginClass);
                 continue;
             }
             try {
                 PluginFace pluginFace = (PluginFace) pluginClass.newInstance();
-                Hasor.info("loadPlugin %s.", pluginClass);
+                Hasor.logInfo("loadPlugin %s.", pluginClass);
                 pluginFace.loadPlugin(apiBinder);
             } catch (Throwable e) {
-                Hasor.error("config Plugin error at %s.%s", pluginClass, e);
+                Hasor.logError("config Plugin error at %s.%s", pluginClass, e);
             }
         }
     }

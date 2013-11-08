@@ -30,7 +30,7 @@ import net.hasor.plugins.result.ResultProcess;
 @ResultDefine(Redirect.class)
 public class RedirectResultProcess implements ResultProcess {
     public void process(HttpServletRequest request, HttpServletResponse response, Annotation annoData, Object result) throws ServletException, IOException {
-        Hasor.debug("redirect to %s.", result);
+        Hasor.logDebug("redirect to %s.", result);
         response.sendRedirect(result.toString());
     }
 }

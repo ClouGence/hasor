@@ -159,11 +159,11 @@ public abstract class ModulePropxy implements ModuleInfo/*提供模块基本信息*/, De
         try {
             Module forModule = this.getTarget();
             this.onInit(forModule, apiBinder);
-            Hasor.info("init Event on : %s", forModule.getClass());
+            Hasor.logInfo("init Event on : %s", forModule.getClass());
             this.isReady = true;
         } catch (Throwable e) {
             this.isReady = false;
-            Hasor.error("%s is not init! %s", this.getDisplayName(), e.getMessage());
+            Hasor.logError("%s is not init! %s", this.getDisplayName(), e.getMessage());
             if (isFullStart())
                 this.proForceModule(e);
         }
@@ -175,11 +175,11 @@ public abstract class ModulePropxy implements ModuleInfo/*提供模块基本信息*/, De
         try {
             Module forModule = this.getTarget();
             this.onStart(forModule, appContext);
-            Hasor.info("start Event on : %s", forModule.getClass());
+            Hasor.logInfo("start Event on : %s", forModule.getClass());
             this.isStart = true;
         } catch (Throwable e) {
             this.isStart = false;
-            Hasor.error("%s in the start phase encounters an error.\n%s", this.getDisplayName(), e);
+            Hasor.logError("%s in the start phase encounters an error.\n%s", this.getDisplayName(), e);
             if (isFullStart())
                 this.proForceModule(e);
         }
@@ -191,10 +191,10 @@ public abstract class ModulePropxy implements ModuleInfo/*提供模块基本信息*/, De
         Module forModule = this.getTarget();
         try {
             this.onStop(forModule, appContext);
-            Hasor.info("stop Event on : %s", forModule.getClass());
+            Hasor.logInfo("stop Event on : %s", forModule.getClass());
             this.isStart = false;
         } catch (Throwable e) {
-            Hasor.error("%s in the stop phase encounters an error.\n%s", this.getDisplayName(), e);
+            Hasor.logError("%s in the stop phase encounters an error.\n%s", this.getDisplayName(), e);
         }
     }
     /*利用 AppContext 作 KEY 可以保证在不同环境下静态字段内容的正确性*/

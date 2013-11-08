@@ -32,11 +32,11 @@ import com.google.inject.Key;
  * @version : 2013-10-29
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-public class HandlerHub implements EventListener {
+public class ServicesRegisterManager implements EventListener {
     private AppContext                                           appContext;
     private Map<Class<?>, ServicesRegisterHandlerDefine<Object>> handlerDefine;
     //
-    public HandlerHub(final AppContext appContext) {
+    public ServicesRegisterManager(final AppContext appContext) {
         this.appContext = appContext;
         this.handlerDefine = new HashMap<Class<?>, ServicesRegisterHandlerDefine<Object>>();
         EventManager eventMsg = this.appContext.getEventManager();
@@ -46,7 +46,7 @@ public class HandlerHub implements EventListener {
         eventMsg.addEventListener(ModuleEvent_Stoped, this);
         eventMsg.pushEventListener(ContextEvent_Start, new EventListener() {
             public void onEvent(String event, Object[] params) throws Throwable {
-                List<ServicesRegisterHandlerDefine> defineList = appContext.getInstanceByBindingType(ServicesRegisterHandlerDefine.class);
+                List<ServicesRegisterHandlerDefine> defineList = appContext.findBeanByType(ServicesRegisterHandlerDefine.class);
                 if (defineList == null)
                     return;
                 for (ServicesRegisterHandlerDefine handler : defineList)

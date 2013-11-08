@@ -88,7 +88,7 @@ public abstract class AbstractEnvironment implements Environment {
     //
     /**初始化方法*/
     protected void initEnvironment() {
-        Hasor.info("initEnvironment.");
+        Hasor.logInfo("initEnvironment.");
         //
         this.startTime = System.currentTimeMillis();
         this.settingListenerList = new ArrayList<SettingsListener>();
@@ -120,7 +120,7 @@ public abstract class AbstractEnvironment implements Environment {
             }
         });
         this.spanPackage = allPack.toArray(new String[allPack.size()]);
-        Hasor.info("loadPackages : " + Hasor.logString(this.spanPackage));
+        Hasor.logInfo("loadPackages : " + Hasor.logString(this.spanPackage));
         //
         //
         this.settingWatch = this.createSettingWatch();
@@ -146,7 +146,7 @@ public abstract class AbstractEnvironment implements Environment {
         File tmpFile = new File(evalEnvVar(TempPath), fileName);
         tmpFile.getParentFile().mkdirs();
         tmpFile.createNewFile();
-        Hasor.debug("create Temp File at %s.", tmpFile);
+        Hasor.logDebug("create Temp File at %s.", tmpFile);
         return tmpFile;
     };
     /**
@@ -177,7 +177,7 @@ public abstract class AbstractEnvironment implements Environment {
             public void onLoadConfig(Settings newConfig) {
                 long interval = newConfig.getLong("hasor.settingsMonitor.interval", 15000L);
                 if (interval != settingWatch.getCheckSeepTime()) {
-                    Hasor.info("SettingWatch to monitor configuration updates, set interval new Value is %s", interval);
+                    Hasor.logInfo("SettingWatch to monitor configuration updates, set interval new Value is %s", interval);
                     settingWatch.setCheckSeepTime(interval);
                 }
             }
@@ -236,18 +236,18 @@ public abstract class AbstractEnvironment implements Environment {
         }
         public synchronized void start() {
             this.setName("MasterConfiguration-Watch");
-            Hasor.warning("settings Watch started thread name is %s.", this.getName());
+            Hasor.logWarn("settings Watch started thread name is %s.", this.getName());
             this.setDaemon(true);
             URI mainConfig = this.env.getSettingURI();
             //2.启动监听器
             try {
                 if (mainConfig == null) {
-                    Hasor.warning("do not loading master settings file.");
+                    Hasor.logWarn("do not loading master settings file.");
                     return;
                 }
                 this.setResourceURI(this.env.getSettingURI());
             } catch (Exception e) {
-                Hasor.error("settings Watch start error, on : %s Settings file !%s", mainConfig, e);
+                Hasor.logError("settings Watch start error, on : %s Settings file !%s", mainConfig, e);
             }
             //
             super.start();
@@ -271,24 +271,24 @@ public abstract class AbstractEnvironment implements Environment {
         }
         public void addEnvVar(String envName, String envValue) {
             if (StringUtils.isBlank(envName)) {
-                Hasor.warning("%s env, name is empty.", envName);
+                Hasor.logWarn("%s env, name is empty.", envName);
                 return;
             }
             //
             if (StringUtils.isBlank(envValue))
-                Hasor.warning("%s env, value is empty.", envName);
+                Hasor.logWarn("%s env, value is empty.", envName);
             else
-                Hasor.info("%s = %s.", envName, envValue);
+                Hasor.logInfo("%s = %s.", envName, envValue);
             //
             this.userEnvMap.put(envName, StringUtils.isBlank(envValue) ? "" : envValue);
         }
         public void remoteEnvVar(String varName) {
             if (StringUtils.isBlank(varName)) {
-                Hasor.warning("%s env, name is empty.");
+                Hasor.logWarn("%s env, name is empty.");
                 return;
             }
             this.userEnvMap.remove(varName);
-            Hasor.info("%s env removed.", varName);
+            Hasor.logInfo("%s env removed.", varName);
         }
         public String getEnvVar(String envName) {
             return this.getEnv().get(envName);
@@ -375,7 +375,7 @@ public abstract class AbstractEnvironment implements Environment {
             sb.append(formatMap4log(keyMaxSize, hasorEnv) + "\n");
             sb.append(StringUtils.fixedString('-', 100) + "\n");
             sb.append(formatMap4log(keyMaxSize, userEnvMap));
-            Hasor.info(sb.toString());
+            Hasor.logInfo(sb.toString());
         }
         private static String formatMap4log(int colWidth, Map<String, String> mapData) {
             /*输出系统环境变量日志*/
@@ -433,7 +433,7 @@ public abstract class AbstractEnvironment implements Environment {
                     sb.append(data.get(i));
             }
             String returnData = sb.toString();
-            Hasor.debug("evalString '%s' eval to '%s'.", evalString, returnData);
+            Hasor.logDebug("evalString '%s' eval to '%s'.", evalString, returnData);
             return returnData;
         }
     }

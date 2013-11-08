@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.plugin;
-import net.hasor.Hasor;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.plugin.AbstractPluginFace;
-import net.hasor.web.WebApiBinder;
+package net.hasor.plugins.cache;
+import net.hasor.core.AppContext;
 /**
- * 
- * @version : 2013-11-4
- * @author 赵永春(zyc@hasor.net)
+ * 用于创建指定名称的缓存器。
+ * @version : 2013-3-12
+ * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractWebPluginFace extends AbstractPluginFace {
-    public final void loadPlugin(ApiBinder apiBinder) {
-        if (apiBinder instanceof WebApiBinder)
-            this.loadPlugin((WebApiBinder) apiBinder);
-        Hasor.logWarn("Hasor context does not support the web Plugin.");
-    }
-    public abstract void loadPlugin(WebApiBinder apiBinder);
+public interface CacheCreator {
+    /**
+     * 根据名称创建或返回一个缓存器
+     * @param appContext 应用程序环境
+     * @param groupName 缓存器
+     */
+    public Cache getCacheByName(AppContext appContext, String groupName);
 }

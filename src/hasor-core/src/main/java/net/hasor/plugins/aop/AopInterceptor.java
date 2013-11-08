@@ -20,19 +20,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.hasor.core.AppContext;
+import net.hasor.plugins.aware.AppContextAware;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 /**
- * ¿πΩÿ∆˜
- * @version : 2013-9-13
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * Aop¿πΩÿ∆˜
+ * @version : 2013-11-8
+ * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-class AopInterceptor implements MethodInterceptor {
-    private GetContext                                            getContext           = null;
+class AopInterceptor implements MethodInterceptor, AppContextAware {
+    private AppContext                                            appContext           = null;
     private Map<Method, List<Class<? extends MethodInterceptor>>> methodInterceptorMap = new HashMap<Method, List<Class<? extends MethodInterceptor>>>();
     //
-    public AopInterceptor(GetContext getContext) {
-        this.getContext = getContext;
+    public AopInterceptor() {
+        AwareUtil.registerAppContextAware(this);
+    }
+    //
+    public void setAppContext(AppContext appContext) {
+        this.appContext = appContext;
     }
     //
     public Object invoke(MethodInvocation invocation) throws Throwable {
@@ -56,7 +61,6 @@ class AopInterceptor implements MethodInterceptor {
             this.methodInterceptorMap.put(targetMethod, list);
         }
         //2.¥¥Ω®∂‘œÛ
-        AppContext appContext = getContext.getAppContext();
         return new AopChainInvocation(appContext, list, invocation).invoke(invocation);
     }
 }

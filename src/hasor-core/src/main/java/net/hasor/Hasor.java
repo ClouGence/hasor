@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class Hasor {
+    //
     private static String callerTrace() {
         StackTraceElement[] stackElements = new Exception().getStackTrace();
         StackTraceElement onCode = stackElements[2];
@@ -79,7 +80,7 @@ public abstract class Hasor {
      * @param string 要输出的日志信息，或将要输出的格式化日志信息。
      * @param params 需要被格式化的内容。
      */
-    public static void debug(String string, Object... params) {
+    public static void logDebug(String string, Object... params) {
         Logger log = LoggerFactory.getLogger(callerClass());
         if (!log.isDebugEnabled())
             return;
@@ -91,7 +92,7 @@ public abstract class Hasor {
      * @param string 要输出的日志信息，或将要输出的格式化日志信息。
      * @param params 需要被格式化的内容。
      */
-    public static void error(String string, Object... params) {
+    public static void logError(String string, Object... params) {
         Logger log = LoggerFactory.getLogger(callerClass());
         if (!log.isErrorEnabled())
             return;
@@ -103,7 +104,7 @@ public abstract class Hasor {
      * @param string 要输出的日志信息，或将要输出的格式化日志信息。
      * @param params 需要被格式化的内容。
      */
-    public static void warning(String string, Object... params) {
+    public static void logWarn(String string, Object... params) {
         Logger log = LoggerFactory.getLogger(callerClass());
         if (!log.isWarnEnabled())
             return;
@@ -115,7 +116,7 @@ public abstract class Hasor {
      * @param string 要输出的日志信息，或将要输出的格式化日志信息。
      * @param params 需要被格式化的内容。
      */
-    public static void info(String string, Object... params) {
+    public static void logInfo(String string, Object... params) {
         Logger log = LoggerFactory.getLogger(callerClass());
         if (!log.isInfoEnabled())
             return;
@@ -127,12 +128,17 @@ public abstract class Hasor {
      * @param string 要输出的日志信息，或将要输出的格式化日志信息。
      * @param params 需要被格式化的内容。
      */
-    public static void trace(String string, Object... params) {
+    public static void logTrace(String string, Object... params) {
         Logger log = LoggerFactory.getLogger(callerClass());
         if (!log.isTraceEnabled())
             return;
         Object[] paramsStr = getStringArray(params);
         log.info(callerTrace() + " ->> " + String.format(string, paramsStr));
+    }
+    /**使用日志的方式格式化。*/
+    public static String formatString(String formatString, Object... args) {
+        Object[] paramsStr = getStringArray(args);
+        return String.format(formatString, paramsStr);
     }
     /**
      * 转换对象为字符串内容，用以打印目的。

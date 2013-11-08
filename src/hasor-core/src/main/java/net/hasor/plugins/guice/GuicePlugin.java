@@ -31,18 +31,18 @@ public class GuicePlugin extends AbstractPluginFace {
         Set<Class<?>> guiceModuleSet = apiBinder.getClassSet(GuiceModule.class);
         if (guiceModuleSet == null || guiceModuleSet.isEmpty())
             return;
-        Hasor.info("find Module : " + Hasor.logString(guiceModuleSet));
+        Hasor.logInfo("find Module : " + Hasor.logString(guiceModuleSet));
         for (Class<?> moduleClass : guiceModuleSet) {
             if (com.google.inject.Module.class.isAssignableFrom(moduleClass) == false) {
                 /*´íÎó*/
-                Hasor.warning("not implemented com.google.inject.Module :%s", moduleClass);
+                Hasor.logWarn("not implemented com.google.inject.Module :%s", moduleClass);
                 continue;
             }
             try {
                 apiBinder.getGuiceBinder().install((Module) moduleClass.newInstance());
-                Hasor.info("install com.google.inject.Module %s.", moduleClass);
+                Hasor.logInfo("install com.google.inject.Module %s.", moduleClass);
             } catch (Exception e) {
-                Hasor.error("install com.google.inject.Module %s.%s", moduleClass, e);
+                Hasor.logError("install com.google.inject.Module %s.%s", moduleClass, e);
             }
         }
     }

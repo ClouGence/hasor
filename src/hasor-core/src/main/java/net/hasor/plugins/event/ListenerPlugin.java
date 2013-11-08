@@ -41,7 +41,7 @@ public class ListenerPlugin extends AbstractPluginFace {
             return;
         for (final Class<?> eventClass : eventSet) {
             if (EventListener.class.isAssignableFrom(eventClass) == false) {
-                Hasor.warning("not implemented EventListener :%s", eventClass);
+                Hasor.logWarn("not implemented EventListener :%s", eventClass);
                 continue;
             }
             //当ContextEvent_Start事件到来时注册所有配置文件监听器。
@@ -58,11 +58,11 @@ public class ListenerPlugin extends AbstractPluginFace {
                     for (String v : var)
                         if (!StringUtils.isBlank(v)) {
                             eventManager.addEventListener(v, e);
-                            Hasor.info("event ‘%s’ binding to ‘%s’", v, e);
+                            Hasor.logInfo("event ‘%s’ binding to ‘%s’", v, e);
                         }
                 }
             });
-            Hasor.info("event binding finish.");
+            Hasor.logInfo("event binding finish.");
         }
     }
 }

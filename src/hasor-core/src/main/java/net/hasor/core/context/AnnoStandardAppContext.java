@@ -65,11 +65,11 @@ public class AnnoStandardAppContext extends StandardAppContext {
     protected void loadModule() {
         //1.扫描classpath包
         Set<Class<?>> initHookSet = this.getEnvironment().getClassSet(AnnoModule.class);
-        Hasor.info("find Module : " + Hasor.logString(initHookSet));
+        Hasor.logInfo("find Module : " + Hasor.logString(initHookSet));
         //2.过滤未实现HasorModule接口的类
         for (Class<?> modClass : initHookSet) {
             if (!Module.class.isAssignableFrom(modClass)) {
-                Hasor.warning("not implemented HasorModule or Module :%s", modClass);
+                Hasor.logWarn("not implemented net.hasor.core.Module :%s", modClass);
                 continue;/*错误*/
             }
             /*Hasor 模块*/
@@ -86,7 +86,7 @@ public class AnnoStandardAppContext extends StandardAppContext {
         try {
             return (T) listenerClass.newInstance();
         } catch (Exception e) {
-            Hasor.error("create %s an error!%s", listenerClass, e);
+            Hasor.logError("create %s an error!%s", listenerClass, e);
             return null;
         }
     }

@@ -31,11 +31,11 @@ public class WebControllerPlugin extends AbstractWebPluginFace {
         ControllerSettings acSettings = new ControllerSettings(settings);
         //
         if (acSettings.isEnable() == false) {
-            Hasor.info("WebController Module is disable.");
+            Hasor.logInfo("WebController Module is disable.");
             return;
         }
         //
-        Hasor.info("WebController intercept %s.", acSettings.getIntercept());
+        Hasor.logInfo("WebController intercept %s.", acSettings.getIntercept());
         apiBinder.getGuiceBinder().bind(ControllerSettings.class).toInstance(acSettings);
         apiBinder.serve(acSettings.getIntercept()).with(ControllerServlet.class);
     }

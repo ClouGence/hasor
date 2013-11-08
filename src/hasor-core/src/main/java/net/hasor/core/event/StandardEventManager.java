@@ -185,7 +185,7 @@ public class StandardEventManager implements EventManager {
                     event.onEvent(eventType, objects);
                 } catch (Throwable e) {
                     if (ignore)
-                        Hasor.warning("During the execution of SyncEvent ¡®%s¡¯ throw an error.%s", event.getClass(), e);
+                        Hasor.logWarn("During the execution of SyncEvent ¡®%s¡¯ throw an error.%s", event.getClass(), e);
                     else
                         throw e;
                 }
@@ -208,7 +208,7 @@ public class StandardEventManager implements EventManager {
                             event.onEvent(eventType, objects);
                         } catch (Throwable e) {
                             if (ignore)
-                                Hasor.warning("During the execution of AsynEvent ¡®%s¡¯ throw an error.%s", event.getClass(), e);
+                                Hasor.logWarn("During the execution of AsynEvent ¡®%s¡¯ throw an error.%s", event.getClass(), e);
                             else
                                 callBack.handleException(eventType, objects, e);
                         }
@@ -229,7 +229,7 @@ public class StandardEventManager implements EventManager {
                     listener.onEvent(eventType, objects);
                 } catch (Throwable e) {
                     if (ignore)
-                        Hasor.warning("During the execution of OnceListener ¡®%s¡¯ throw an error.%s", listener.getClass(), e);
+                        Hasor.logWarn("During the execution of OnceListener ¡®%s¡¯ throw an error.%s", listener.getClass(), e);
                     else
                         callBack.handleException(eventType, objects, e);
                 }

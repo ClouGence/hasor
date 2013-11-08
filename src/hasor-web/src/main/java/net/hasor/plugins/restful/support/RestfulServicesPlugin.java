@@ -25,17 +25,17 @@ import net.hasor.web.plugin.AbstractWebPluginFace;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 @Plugin()
-public class RestfulServicesModule extends AbstractWebPluginFace {
+public class RestfulServicesPlugin extends AbstractWebPluginFace {
     public void loadPlugin(WebApiBinder apiBinder) {
         Settings settings = apiBinder.getEnvironment().getSettings();
         boolean enable = settings.getBoolean("hasor-web.restfulServices.enable");
         if (enable == false) {
-            Hasor.info("RestfulServices Module is disable.");
+            Hasor.logInfo("RestfulServices Module is disable.");
             return;
         }
         String onPath = settings.getString("hasor-web.restfulServices.onPath");
         int sortBy = settings.getInteger("hasor-web.restfulServices.sortBy", 0);
-        Hasor.info("%s Bind to RestfulServices, filter sort is %s.", onPath, sortBy);
+        Hasor.logInfo("%s Bind to RestfulServices, filter sort is %s.", onPath, sortBy);
         apiBinder.filter(onPath).through(sortBy, RestfulController.class);
     }
 }

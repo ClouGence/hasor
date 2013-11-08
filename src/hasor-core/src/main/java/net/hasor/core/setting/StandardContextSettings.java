@@ -70,21 +70,21 @@ public class StandardContextSettings extends InputStreamSettings {
         if (streamList != null) {
             for (URL resURL : streamList) {
                 InputStream stream = ResourcesUtils.getResourceAsStream(resURL);
-                Hasor.info("load ¡®%s¡¯", resURL);
+                Hasor.logInfo("load ¡®%s¡¯", resURL);
                 this.addStream(stream);
             }
         }
         //2.×°ÔØhasor-config.xml
         if (this.settingURI != null) {
             InputStream stream = ResourcesUtils.getResourceAsStream(this.settingURI);
-            Hasor.info("load ¡®%s¡¯", this.settingURI);
+            Hasor.logInfo("load ¡®%s¡¯", this.settingURI);
             this.addStream(stream);
         } else
-            Hasor.warning("cannot load the root configuration file ¡®%s¡¯", this.settingURI);
+            Hasor.logWarn("cannot load the root configuration file ¡®%s¡¯", this.settingURI);
     }
     @Override
     public void refresh() throws IOException {
-        Hasor.info("reload configuration.");
+        Hasor.logInfo("reload configuration.");
         this.cleanData();
         //
         try {

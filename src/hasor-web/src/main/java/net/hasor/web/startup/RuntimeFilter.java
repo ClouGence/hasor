@@ -48,7 +48,7 @@ public class RuntimeFilter implements Filter {
     /**初始化过滤器，初始化会同时初始化FilterPipeline*/
     public synchronized void init(FilterConfig filterConfig) throws ServletException {
         if (LocalServletContext.get() != null || LocalAppContext.get() != null) {
-            Hasor.error("PlatformFilter is started.");
+            Hasor.logError("PlatformFilter is started.");
             throw new IllegalStateException("PlatformFilter is started.");
         }
         //
@@ -66,12 +66,12 @@ public class RuntimeFilter implements Filter {
         this.responseEncoding = this.appContext.getSettings().getString("hasor-web.encoding.responseEncoding");
         /*1.初始化执行周期管理器。*/
         this.filterPipeline.initPipeline(this.appContext);
-        Hasor.info("PlatformFilter started.");
+        Hasor.logInfo("PlatformFilter started.");
     }
     //
     /** 销毁 */
     public void destroy() {
-        Hasor.info("executeCycle destroyCycle.");
+        Hasor.logInfo("executeCycle destroyCycle.");
         if (this.filterPipeline != null)
             this.filterPipeline.destroyPipeline(this.appContext);
     }
@@ -85,17 +85,17 @@ public class RuntimeFilter implements Filter {
         if (this.requestEncoding != null)
             httpRes.setCharacterEncoding(this.responseEncoding);
         //
-        Hasor.debug("at http(%s/%s) request : %s", this.requestEncoding, this.responseEncoding, httpReq.getRequestURI());
+        Hasor.logDebug("at http(%s/%s) request : %s", this.requestEncoding, this.responseEncoding, httpReq.getRequestURI());
         //
         try {
             //执行.
             this.beforeRequest(appContext, httpReq, httpRes);
             this.processFilterPipeline(httpReq, httpRes, chain);
         } catch (IOException e) {
-            Hasor.warning("execFilterPipeline IOException %s.", e);
+            Hasor.logWarn("execFilterPipeline IOException %s.", e);
             throw e;
         } catch (ServletException e) {
-            Hasor.warning("execFilterPipeline ServletException %s.", e.getCause());
+            Hasor.logWarn("execFilterPipeline ServletException %s.", e.getCause());
             throw e;
         } finally {
             this.afterResponse(appContext, httpReq, httpRes);

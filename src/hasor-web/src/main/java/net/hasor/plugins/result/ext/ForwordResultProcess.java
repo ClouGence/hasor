@@ -30,7 +30,7 @@ import net.hasor.plugins.result.ResultProcess;
 @ResultDefine(Forword.class)
 public class ForwordResultProcess implements ResultProcess {
     public void process(HttpServletRequest request, HttpServletResponse response, Annotation annoData, Object result) throws ServletException, IOException {
-        Hasor.debug("forword to %s.", result);
+        Hasor.logDebug("forword to %s.", result);
         request.getRequestDispatcher(result.toString()).forward(request, response);
     }
 }

@@ -69,7 +69,7 @@ public class ResourceHttpServlet extends HttpServlet {
         FileUtils.deleteDir(cacheDir);
         cacheDir.mkdirs();
         CacheDir.set(cacheDir);
-        Hasor.info("use cacheDir %s", cacheDir);
+        Hasor.logInfo("use cacheDir %s", cacheDir);
     }
     //
     //
@@ -84,7 +84,7 @@ public class ResourceHttpServlet extends HttpServlet {
         String fileExt = requestURI.substring(requestURI.lastIndexOf("."));
         String typeMimeType = req.getSession(true).getServletContext().getMimeType(fileExt);
         if (StringUtils.isBlank(typeMimeType))
-            Hasor.error("%s not mapping MimeType!", requestURI); //typeMimeType = this.getMimeType().get(fileExt.substring(1).toLowerCase());
+            Hasor.logError("%s not mapping MimeType!", requestURI); //typeMimeType = this.getMimeType().get(fileExt.substring(1).toLowerCase());
         //
         if (typeMimeType != null)
             response.setContentType(typeMimeType);

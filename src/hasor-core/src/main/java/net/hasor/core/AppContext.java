@@ -26,22 +26,27 @@ import com.google.inject.Provider;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface AppContext {
-    /**容器事件，在所有模块 init 阶段之前引发。
+    //----------------------------------------------------------------------------------Event
+    /**容器事件，在所有模块初始化之前引发。
      * @see net.hasor.core.context.AbstractAppContext*/
-    public static final String ContextEvent_Init   = "ContextEvent_Init";
+    public static final String ContextEvent_Initialize  = "ContextEvent_Initialize";
+    /**容器事件，在所有模块初始化之后引发。
+     * @see net.hasor.core.context.AbstractAppContext*/
+    public static final String ContextEvent_Initialized = "ContextEvent_Initialized";
     /**容器事件，在所有模块 start 阶段之前引发。
      * @see net.hasor.core.context.AbstractAppContext*/
-    public static final String ContextEvent_Start  = "ContextEvent_Start";
+    public static final String ContextEvent_Start       = "ContextEvent_Start";
     /**容器事件，在所有模块处理完 stop 阶段之后引发。
      * @see net.hasor.core.context.AbstractAppContext*/
-    public static final String ContextEvent_Stoped = "ContextEvent_Stoped";
+    public static final String ContextEvent_Stoped      = "ContextEvent_Stoped";
     /**模块事件。当模块收到 start 调用信号之后引发。
      * @see net.hasor.core.module.ModulePropxy*/
-    public static final String ModuleEvent_Start   = "ModuleEvent_Start";
+    public static final String ModuleEvent_Start        = "ModuleEvent_Start";
     /**模块事件。当模块处理完 stop 调用信号之后引发。
      * @see net.hasor.core.module.ModulePropxy*/
-    public static final String ModuleEvent_Stoped  = "ModuleEvent_Stoped";
+    public static final String ModuleEvent_Stoped       = "ModuleEvent_Stoped";
     //
+    //----------------------------------------------------------------------------------ServicesRegister
     /**注册服务。
      * @see net.hasor.core.services.ServicesRegisterHandler*/
     public <T> void registerService(Class<T> type, T serviceBean, Object... objects);
@@ -61,10 +66,9 @@ public interface AppContext {
      * @see net.hasor.core.services.ServicesRegisterHandler*/
     public <T> void unRegisterService(Class<T> type, Key<? extends T> serviceKey);
     //
+    //----------------------------------------------------------------------------------Bean
     /**通过名获取Bean的类型。*/
     public <T> Class<T> getBeanType(String name);
-    /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
-    public Set<Class<?>> getClassSet(Class<?> featureType);
     /**如果存在目标类型的Bean则返回Bean的名称。*/
     public String getBeanName(Class<?> targetClass);
     /**获取已经注册的Bean名称。*/
@@ -73,17 +77,18 @@ public interface AppContext {
     public <T> T getBean(String name);
     /**通过类型创建该类实例，使用guice*/
     public <T> T getInstance(Class<T> beanType);
+    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    public <T> List<T> findBeanByType(Class<T> bindingType);
+    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    public <T> List<Provider<T>> findProviderByType(Class<T> bindingType);
+    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    public <T> T findBeanByType(String withName, Class<T> bindingType);
+    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    public <T> Provider<T> findProviderByType(String withName, Class<T> bindingType);
+    //
+    //----------------------------------------------------------------------------------Context
     /**获得Guice环境。*/
     public Injector getGuice();
-    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> List<T> getInstanceByBindingType(Class<T> bindingType);
-    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> List<Provider<T>> getProviderByBindingType(Class<T> bindingType);
-    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> T getInstanceByBindingType(String withName, Class<T> bindingType);
-    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> Provider<T> getProviderByBindingType(String withName, Class<T> bindingType);
-    //
     /**获取上下文*/
     public Object getContext();
     /**获取系统启动时间*/
@@ -98,7 +103,10 @@ public interface AppContext {
     public EventManager getEventManager();
     /**获得所有模块*/
     public ModuleInfo[] getModules();
+    /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
+    public Set<Class<?>> getClassSet(Class<?> featureType);
     //
+    //----------------------------------------------------------------------------------Life
     /**启动。向所有模块发送启动信号，并将容器的状态置为Start。（该方法会尝试init所有模块）*/
     public void start();
     /**停止。向所有模块发送停止信号，并将容器的状态置为Stop。*/

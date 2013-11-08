@@ -248,7 +248,7 @@ public class RestfulInvoke {
             try {
                 oriData = URLDecoder.decode(pData, encoding);
             } catch (Exception e) {
-                Hasor.warning("use ¡®%s¡¯ decode ¡®%s¡¯ error.", encoding, pData);
+                Hasor.logWarn("use ¡®%s¡¯ decode ¡®%s¡¯ error.", encoding, pData);
                 continue;
             }
             String[] kv = oriData.split("=");
