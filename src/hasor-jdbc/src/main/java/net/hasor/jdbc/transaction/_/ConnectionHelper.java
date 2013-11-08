@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
+import net.hasor.jdbc.transaction.core.ds.ConnectionHandle;
 /**
  * 
  * @version : 2013-10-16

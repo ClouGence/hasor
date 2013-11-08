@@ -187,10 +187,10 @@ public class JdbcUtils {
             try {
                 stmt.close();
             } catch (SQLException ex) {
-                Hasor.trace("Could not close JDBC Statement", ex);
+                Hasor.logTrace("Could not close JDBC Statement", ex);
             } catch (Throwable ex) {
                 // We don't trust the JDBC driver: It might throw RuntimeException or Error.
-                Hasor.trace("Unexpected exception on closing JDBC Statement", ex);
+                Hasor.logTrace("Unexpected exception on closing JDBC Statement", ex);
             }
         }
     }
@@ -204,10 +204,10 @@ public class JdbcUtils {
             try {
                 rs.close();
             } catch (SQLException ex) {
-                Hasor.trace("Could not close JDBC ResultSet", ex);
+                Hasor.logTrace("Could not close JDBC ResultSet", ex);
             } catch (Throwable ex) {
                 // We don't trust the JDBC driver: It might throw RuntimeException or Error.
-                Hasor.trace("Unexpected exception on closing JDBC ResultSet", ex);
+                Hasor.logTrace("Unexpected exception on closing JDBC ResultSet", ex);
             }
         }
     }

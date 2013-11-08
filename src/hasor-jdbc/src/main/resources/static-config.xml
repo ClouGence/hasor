@@ -3,7 +3,19 @@
 	<!-- 框架配置 -->
 	<hasor>
 		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
-		<loadPackages>org.hasor.jdbc.*,net.hasor.gift.*</loadPackages>
+		<loadPackages>net.hasor.jdbc.*,net.hasor.gift.*</loadPackages>
 	</hasor>
-	<hasor-jdbc></hasor-jdbc>
+	<hasor-jdbc>
+		<dataSourceSet default="">
+			<!-- <dataSource name="" dsFactory="net.hasor.jdbc.datasource.factory.C3p0Factory"> -->
+			<!-- <driver>...</driver> -->
+			<!-- <url>...</url> -->
+			<!-- <user>...</user> -->
+			<!-- <password>...</password> -->
+			<!-- </dataSource> -->
+			<!-- <dataSource name="" dsFactory="net.hasor.jdbc.datasource.factory.JndiFactory"> -->
+			<!-- <jndi>java:comp/env/jdbc/DBPool</jndi> -->
+			<!-- </dataSource> -->
+		</dataSourceSet>
+	</hasor-jdbc>
 </config>

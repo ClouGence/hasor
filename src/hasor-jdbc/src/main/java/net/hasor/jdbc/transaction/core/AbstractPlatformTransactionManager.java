@@ -146,7 +146,7 @@ public abstract class AbstractPlatformTransactionManager implements TransactionM
         /*回滚情况*/
         if (defStatus.isRollbackOnly()) {
             if (Hasor.isDebugLogger())
-                Hasor.debug("Transactional code has requested rollback");
+                Hasor.logDebug("Transactional code has requested rollback");
             rollBack(defStatus);
             return;
         }
@@ -304,7 +304,7 @@ public abstract class AbstractPlatformTransactionManager implements TransactionM
         /*恢复挂起的事务*/
         if (defStatus.getSuspendedTransactionHolder() != null) {
             if (Hasor.isDebugLogger())
-                Hasor.debug("Resuming suspended transaction after completion of inner transaction");
+                Hasor.logDebug("Resuming suspended transaction after completion of inner transaction");
             resume(defStatus.getSuspendedTransactionHolder(), defStatus);
         }
     }

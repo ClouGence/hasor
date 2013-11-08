@@ -13,29 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.datasource.pool;
+package net.hasor.jdbc.datasource.factory;
 import javax.sql.DataSource;
 import net.hasor.Hasor;
+import net.hasor.core.Environment;
 import net.hasor.core.XmlNode;
-import net.hasor.jdbc.datasource.DataSourceResources;
+import net.hasor.jdbc.datasource.DataSourceFactory;
 import org.apache.commons.dbcp.BasicDataSource;
 /**
  * 
  * @version : 2013-9-16
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-public class DBCPDataSourceAdapter implements DataSourceResources {
-    //
-    public DataSource getDataSource(XmlNode config) {
+public class DbcpFactory implements DataSourceFactory {
+    public DataSource createDataSource(Environment env, XmlNode configElement) throws Throwable {
         BasicDataSource dataSource = new BasicDataSource();
         //
-        String driverString = config.getXmlNode("driver").getText();//<driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
-        String urlString = config.getXmlNode("url").getText();//<url>jdbc:sqlserver://10.200.15.100;DatabaseName=NOE_ESTUDY</url>
-        String userString = config.getXmlNode("user").getText();//<user>sa</user>
-        String pwdString = config.getXmlNode("password").getText();//<password>abc123!@#</password>
+        String driverString = configElement.getXmlNode("driver").getText();//<driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
+        String urlString = configElement.getXmlNode("url").getText();//<url>jdbc:sqlserver://10.200.15.100;DatabaseName=NOE_ESTUDY</url>
+        String userString = configElement.getXmlNode("user").getText();//<user>sa</user>
+        String pwdString = configElement.getXmlNode("password").getText();//<password>abc123!@#</password>
         int poolMaxSize = 200;
         //
-        Hasor.info("DBCP Pool Info maxSize is °Æ%s°Ø driver is °Æ%s°Ø jdbcUrl is°Æ%s°Ø", poolMaxSize, driverString, urlString);
+        Hasor.logInfo("DBCP Pool Info maxSize is °Æ%s°Ø driver is °Æ%s°Ø jdbcUrl is°Æ%s°Ø", poolMaxSize, driverString, urlString);
+        //
         dataSource.setDriverClassName(driverString);
         dataSource.setUrl(urlString);
         dataSource.setUsername(userString);

@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.transaction._;
+package net.hasor.jdbc.transaction.core.ds;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import javax.sql.DataSource;
+import net.hasor.jdbc.transaction.core.SavepointManager;
 /**
  * 
  * @version : 2013-10-17
  * @author 赵永春(zyc@hasor.net)
  */
-public class ConnectionHandle {
+public class ConnectionHandle implements SavepointManager {
     private Connection connection;
     private DataSource useDataSource;
     //
@@ -53,11 +54,10 @@ public class ConnectionHandle {
         return (this.referenceCount > 0);
     }
     //
-    //
-    //
+    //---------------------------------------------------------------------------Savepoint
     public static final String SAVEPOINT_NAME_PREFIX = "SAVEPOINT_";
-    private Boolean            savepointsSupported;
     private int                savepointCounter      = 0;
+    private Boolean            savepointsSupported;
     /**返回 JDBC 驱动是否支持保存点。*/
     public boolean supportsSavepoints() throws SQLException {
         if (this.savepointsSupported == null)
@@ -69,10 +69,14 @@ public class ConnectionHandle {
         this.savepointCounter++;
         return getConnection().setSavepoint(SAVEPOINT_NAME_PREFIX + this.savepointCounter);
     }
+    public void rollbackToSavepoint(Savepoint savepoint) throws SQLException {
+        getConnection().rollback(savepoint);
+    }
+    public void releaseSavepoint(Savepoint savepoint) throws SQLException {
+        getConnection().releaseSavepoint(savepoint);
+    };
     //
-    //
-    //
-    /***/
+    //---------------------------------------------------------------------------Savepoint
     public Connection getConnection() {
         if (this.connection == null)
             this.connection = this.useDataSource.getConnection();
@@ -81,5 +85,5 @@ public class ConnectionHandle {
     /**当前连接的事务是否被激活。*/
     public boolean isTransactionActive() {
         return transactionActive;
-    };
+    }
 }

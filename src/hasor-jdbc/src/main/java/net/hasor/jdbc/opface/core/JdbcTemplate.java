@@ -156,7 +156,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         }
     }
     public void execute(final String sql) throws DataAccessException {
-        Hasor.debug("Executing SQL statement [%s].", sql);
+        Hasor.logDebug("Executing SQL statement [%s].", sql);
         class ExecuteStatementCallback implements StatementCallback<Object>, SqlProvider {
             public Object doInStatement(Statement stmt) throws SQLException {
                 stmt.execute(sql);
@@ -171,7 +171,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     public <T> T query(final String sql, final ResultSetExtractor<T> rse) throws DataAccessException {
         Hasor.assertIsNotNull(sql, "SQL must not be null");
         Hasor.assertIsNotNull(rse, "ResultSetExtractor must not be null");
-        Hasor.debug("Executing SQL query [%s].", sql);
+        Hasor.logDebug("Executing SQL query [%s].", sql);
         class QueryStatementCallback implements StatementCallback<T>, SqlProvider {
             public T doInStatement(Statement stmt) throws SQLException {
                 ResultSet rs = null;
@@ -224,12 +224,12 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     public int update(final String sql) throws DataAccessException {
         Hasor.assertIsNotNull(sql, "SQL must not be null");
-        Hasor.debug("Executing SQL update [%s]", sql);
+        Hasor.logDebug("Executing SQL update [%s]", sql);
         //
         class UpdateStatementCallback implements StatementCallback<Integer>, SqlProvider {
             public Integer doInStatement(Statement stmt) throws SQLException {
                 int rows = stmt.executeUpdate(sql);
-                Hasor.debug("SQL update affected %s rows.", rows);
+                Hasor.logDebug("SQL update affected %s rows.", rows);
                 return rows;
             }
             public String getSql() {
@@ -241,7 +241,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     public int[] batchUpdate(final String[] sql) throws DataAccessException {
         if (ArrayUtils.isEmpty(sql))
             throw new NullPointerException(sql + "SQL array must not be empty");
-        Hasor.debug("Executing SQL batch update of %s statements", sql.length);
+        Hasor.logDebug("Executing SQL batch update of %s statements", sql.length);
         //
         class BatchUpdateStatementCallback implements StatementCallback<int[]>, SqlProvider {
             private String currSql;
@@ -278,7 +278,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         Hasor.assertIsNotNull(action, "Callback object must not be null");
         if (Hasor.isDebugLogger()) {
             String sql = getSql(psc);
-            Hasor.debug("Executing prepared SQL statement " + (sql != null ? " [" + sql + "]" : ""));
+            Hasor.logDebug("Executing prepared SQL statement " + (sql != null ? " [" + sql + "]" : ""));
         }
         Connection con = DataSourceUtils.getConnection(this.getDataSource());
         con = this.newProxyConnection(con);//申请本地连接（和当前线程绑定的连接）
@@ -425,7 +425,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         return update(sql, newArgPreparedStatementSetter(args));
     }
     public int[] batchUpdate(String sql, final BatchPreparedStatementSetter pss) throws DataAccessException {
-        Hasor.debug("Executing SQL batch update [%s].", sql);
+        Hasor.logDebug("Executing SQL batch update [%s].", sql);
         return execute(sql, new PreparedStatementCallback<int[]>() {
             public int[] doInPreparedStatement(PreparedStatement ps) throws SQLException {
                 try {
@@ -465,7 +465,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         Hasor.assertIsNotNull(action, "Callback object must not be null");
         if (Hasor.isDebugLogger()) {
             String sql = getSql(csc);
-            Hasor.debug("Calling stored procedure" + (sql != null ? " [" + sql + "]" : ""));
+            Hasor.logDebug("Calling stored procedure" + (sql != null ? " [" + sql + "]" : ""));
         }
         Connection con = DataSourceUtils.getConnection(this.getDataSource());
         con = this.newProxyConnection(con);//申请本地连接（和当前线程绑定的连接）
@@ -490,14 +490,14 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     /***/
     public int update(final PreparedStatementCreator psc, final PreparedStatementSetter pss) throws DataAccessException {
-        Hasor.debug("Executing prepared SQL update");
+        Hasor.logDebug("Executing prepared SQL update");
         return execute(psc, new PreparedStatementCallback<Integer>() {
             public Integer doInPreparedStatement(PreparedStatement ps) throws SQLException {
                 try {
                     if (pss != null)
                         pss.setValues(ps);
                     int rows = ps.executeUpdate();
-                    Hasor.debug("SQL update affected " + rows + " rows");
+                    Hasor.logDebug("SQL update affected " + rows + " rows");
                     return rows;
                 } finally {
                     if (pss instanceof ParameterDisposer)
@@ -509,7 +509,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     /***/
     public <T> T query(PreparedStatementCreator psc, final PreparedStatementSetter pss, final ResultSetExtractor<T> rse) throws DataAccessException {
         Hasor.assertIsNotNull(rse, "ResultSetExtractor must not be null");
-        Hasor.debug("Executing prepared SQL query");
+        Hasor.logDebug("Executing prepared SQL query");
         return execute(psc, new PreparedStatementCallback<T>() {
             public T doInPreparedStatement(PreparedStatement ps) throws SQLException {
                 ResultSet rs = null;
@@ -573,7 +573,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             if (Hasor.isDebugLogger()) {
                 SQLWarning warningToLog = stmt.getWarnings();
                 while (warningToLog != null) {
-                    Hasor.debug("SQLWarning ignored: SQL state '%s', error code '%s', message [%s].", warningToLog.getSQLState(), warningToLog.getErrorCode(), warningToLog.getMessage());
+                    Hasor.logDebug("SQLWarning ignored: SQL state '%s', error code '%s', message [%s].", warningToLog.getSQLState(), warningToLog.getErrorCode(), warningToLog.getMessage());
                     warningToLog = warningToLog.getNextWarning();
                 }
             }

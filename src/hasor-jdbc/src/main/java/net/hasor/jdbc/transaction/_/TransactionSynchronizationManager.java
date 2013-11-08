@@ -13,19 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.transaction;
+package net.hasor.jdbc.transaction._;
 import javax.sql.DataSource;
+import net.hasor.jdbc.transaction.TransactionManager;
+import net.hasor.jdbc.transaction.core.ds.ConnectionHandle;
 /**
  * 
  * @version : 2013-6-14
  * @author 赵永春 (zyc@byshell.org)
  */
 public class TransactionSynchronizationManager {
+    //
     /**为某个数据源创建一个事务管理器。*/
     public static TransactionManager getTransactionManager(DataSource dataSource) {
         // TODO Auto-generated method stub
         return null;
-    }s
+    }
+    //
+    //
+    public static ConnectionHandle getConnectionHandle() {
+        return null;
+    }
     //
     //
     //

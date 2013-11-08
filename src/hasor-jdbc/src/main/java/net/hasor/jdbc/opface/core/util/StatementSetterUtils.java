@@ -202,7 +202,7 @@ public class StatementSetterUtils {
                     sqlType = Types.VARCHAR;
                 }
             } catch (Throwable ex) {
-                Hasor.debug("Could not check database or driver name", ex);
+                Hasor.logDebug("Could not check database or driver name", ex);
             }
             if (useSetObject) {
                 ps.setObject(paramIndex, null);

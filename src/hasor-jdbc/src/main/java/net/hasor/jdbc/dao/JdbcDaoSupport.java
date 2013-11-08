@@ -17,6 +17,7 @@ package net.hasor.jdbc.dao;
 import java.sql.Connection;
 import javax.sql.DataSource;
 import net.hasor.jdbc.opface.core.JdbcTemplate;
+import net.hasor.jdbc.transaction._.DataSourceUtils;
 /**
  * Convenient super class for JDBC-based data access objects.
  *

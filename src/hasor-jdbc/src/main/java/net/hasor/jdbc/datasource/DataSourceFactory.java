@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.jdbc.datasource;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import javax.sql.DataSource;
+import net.hasor.core.Environment;
+import net.hasor.core.XmlNode;
 /**
- * 标记在类或方法上，为类或方法指定拦截器。
- * @version : 2013-3-20
- * @author 赵永春 (zyc@hasor.net)
+ * 
+ * @version : 2013-10-8
+ * @author 赵永春(zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
-public @interface Resources {}
+public interface DataSourceFactory {
+    public DataSource createDataSource(Environment env, XmlNode configElement) throws Throwable;
+}

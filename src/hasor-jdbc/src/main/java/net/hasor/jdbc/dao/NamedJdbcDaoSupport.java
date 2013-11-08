@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.jdbc.dao;
-import org.noe.platform.modules.db.jdbcorm.jdbc.core.support.JdbcDaoSupport;
+import net.hasor.jdbc.opface.named.NamedParameterJdbcTemplate;
 /**
  * Extension of JdbcDaoSupport that exposes a NamedParameterJdbcTemplate as well.
  * 
