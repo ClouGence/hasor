@@ -29,10 +29,10 @@ import net.hasor.core.Module;
 import net.hasor.core.ModuleInfo;
 import net.hasor.core.Settings;
 import net.hasor.core.binder.ApiBinderModule;
-import net.hasor.core.binder.BeanInfo;
+import net.hasor.core.binder.BeanMetaData;
 import net.hasor.core.module.ModulePropxy;
 import net.hasor.core.module.ModuleReactor;
-import net.hasor.core.services.ServicesRegisterManager;
+import net.hasor.core.register.ServicesRegisterManager;
 import org.more.UndefinedException;
 import com.google.inject.Binder;
 import com.google.inject.Binding;
@@ -44,12 +44,12 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 /**
- * {@link AppContext}接口的抽象实现类。
+ * 抽象类 AbstractAppContext 是 {@link AppContext} 接口的基础实现。
+ * <p>它包装了大量细节代码，可以方便的通过子类来创建独特的上下文支持。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractAppContext implements AppContext {
-    //
     //-----------------------------------------------------------------------------------------ServicesRegister
     private ServicesRegisterManager servicesRegisterManager;
     public <T> void registerService(Class<T> type, T serviceBean, Object... objects) {
@@ -72,15 +72,15 @@ public abstract class AbstractAppContext implements AppContext {
     }
     //
     //-----------------------------------------------------------------------------------------Bean
-    private Map<String, BeanInfo> beanInfoMap;
+    private Map<String, BeanMetaData> beanInfoMap;
     private void collectBeanInfos() {
-        this.beanInfoMap = new HashMap<String, BeanInfo>();
-        List<Provider<BeanInfo>> beanInfoProviderArray = this.findProviderByType(BeanInfo.class);
+        this.beanInfoMap = new HashMap<String, BeanMetaData>();
+        List<Provider<BeanMetaData>> beanInfoProviderArray = this.findProviderByType(BeanMetaData.class);
         if (beanInfoProviderArray == null)
             return;
-        for (Provider<BeanInfo> entry : beanInfoProviderArray) {
-            BeanInfo beanInfo = entry.get();
-            this.beanInfoMap.put(beanInfo.getName(), beanInfo);
+        for (Provider<BeanMetaData> entry : beanInfoProviderArray) {
+            BeanMetaData beanMetaData = entry.get();
+            this.beanInfoMap.put(beanMetaData.getName(), beanMetaData);
         }
     }
     /**通过名获取Bean的类型。*/
@@ -88,7 +88,7 @@ public abstract class AbstractAppContext implements AppContext {
         Hasor.assertIsNotNull(name, "bean name is null.");
         if (this.beanInfoMap == null)
             this.collectBeanInfos();
-        BeanInfo info = this.beanInfoMap.get(name);
+        BeanMetaData info = this.beanInfoMap.get(name);
         if (info != null)
             return (Class<T>) info.getBeanType();
         throw null;
@@ -98,7 +98,7 @@ public abstract class AbstractAppContext implements AppContext {
         Hasor.assertIsNotNull(targetClass, "targetClass is null.");
         if (this.beanInfoMap == null)
             this.collectBeanInfos();
-        for (Entry<String, BeanInfo> ent : this.beanInfoMap.entrySet()) {
+        for (Entry<String, BeanMetaData> ent : this.beanInfoMap.entrySet()) {
             if (ent.getValue().getBeanType() == targetClass)
                 return ent.getKey();
         }
@@ -112,17 +112,17 @@ public abstract class AbstractAppContext implements AppContext {
     }
     /**通过名称创建bean实例，使用guice，如果获取的bean不存在则会引发{@link UndefinedException}类型异常。*/
     public <T> T getBean(String name) {
-        BeanInfo beanInfo = this.getBeanInfo(name);
-        if (beanInfo == null)
+        BeanMetaData beanMetaData = this.getBeanInfo(name);
+        if (beanMetaData == null)
             throw new UndefinedException("bean ‘" + name + "’ is undefined.");
-        return (T) this.getGuice().getInstance(beanInfo.getBeanType());
+        return (T) this.getGuice().getInstance(beanMetaData.getBeanType());
     };
     /**通过类型创建该类实例，使用guice*/
     public <T> T getInstance(Class<T> beanType) {
         return this.getGuice().getInstance(beanType);
     }
     /**获取 Bean 的描述接口。*/
-    public BeanInfo getBeanInfo(String name) {
+    public BeanMetaData getBeanInfo(String name) {
         if (this.beanInfoMap == null)
             this.collectBeanInfos();
         return this.beanInfoMap.get(name);
@@ -278,11 +278,8 @@ public abstract class AbstractAppContext implements AppContext {
         return this.isStart;
     }
     /**为模块创建ApiBinder*/
-    protected ApiBinderModule newApiBinder(final ModulePropxy forModule, final Binder binder) {
-        return new ApiBinderModule(this.getEnvironment(), forModule) {
-            public Binder getGuiceBinder() {
-                return binder;
-            }
+    protected ApiBinderModule newApiBinder(final ModulePropxy forModule, Binder binder) {
+        return new ApiBinderModule(binder, this.getEnvironment(), forModule) {
             public DependencySettings dependency() {
                 return forModule;
             }
@@ -415,38 +412,39 @@ public abstract class AbstractAppContext implements AppContext {
             }
         });
     }
-}
-/**负责处理 Init 阶段的入口类。*/
-class RootInitializeModule implements com.google.inject.Module {
-    private AbstractAppContext appContet;
-    public RootInitializeModule(AbstractAppContext appContet) {
-        this.appContet = appContet;
-    }
-    public void configure(Binder binder) {
-        Hasor.logInfo("send init sign...");
-        this.appContet.getEventManager().doSyncEventIgnoreThrow(AppContext.ContextEvent_Initialize, appContet.getEnvironment(), binder);
-        List<ModulePropxy> modulePropxyList = this.appContet.getModulePropxyList();
-        /*引发模块init生命周期*/
-        for (ModulePropxy forModule : modulePropxyList) {
-            ApiBinderModule apiBinder = this.appContet.newApiBinder(forModule, binder);
-            forModule.init(apiBinder);//触发生命周期 
-            apiBinder.configure(binder);
+    //---------------------------------------------------------------------------------------Class
+    /**负责处理 Init 阶段的入口类。*/
+    private class RootInitializeModule implements com.google.inject.Module {
+        private AbstractAppContext appContet;
+        public RootInitializeModule(AbstractAppContext appContet) {
+            this.appContet = appContet;
         }
-        this.appContet.getEventManager().doSyncEventIgnoreThrow(AppContext.ContextEvent_Initialized, appContet.getEnvironment(), binder);
-        this.appContet.doBind(binder);
-        Hasor.logInfo("init modules finish.");
+        public void configure(Binder binder) {
+            Hasor.logInfo("send init sign...");
+            this.appContet.getEventManager().doSyncEventIgnoreThrow(AppContext.ContextEvent_Initialize, appContet.getEnvironment(), binder);
+            List<ModulePropxy> modulePropxyList = this.appContet.getModulePropxyList();
+            /*引发模块init生命周期*/
+            for (ModulePropxy forModule : modulePropxyList) {
+                ApiBinderModule apiBinder = this.appContet.newApiBinder(forModule, binder);
+                forModule.init(apiBinder);//触发生命周期 
+                apiBinder.configure(binder);
+            }
+            this.appContet.getEventManager().doSyncEventIgnoreThrow(AppContext.ContextEvent_Initialized, appContet.getEnvironment(), binder);
+            this.appContet.doBind(binder);
+            Hasor.logInfo("init modules finish.");
+        }
     }
-}
-/**位于容器中 ModulePropxy 抽象类的实现*/
-class ContextModulePropxy extends ModulePropxy {
-    public ContextModulePropxy(Module targetModule, AbstractAppContext appContext) {
-        super(targetModule, appContext);
-    }
-    protected ModulePropxy getInfo(Class<? extends Module> targetModule, AppContext appContext) {
-        List<ModulePropxy> modulePropxyList = ((AbstractAppContext) appContext).getModulePropxyList();
-        for (ModulePropxy modulePropxy : modulePropxyList)
-            if (targetModule == modulePropxy.getTarget().getClass())
-                return modulePropxy;
-        throw new UndefinedException(targetModule.getName() + " module is Undefined!");
+    /**位于容器中 ModulePropxy 抽象类的实现*/
+    private class ContextModulePropxy extends ModulePropxy {
+        public ContextModulePropxy(Module targetModule, AbstractAppContext appContext) {
+            super(targetModule, appContext);
+        }
+        protected ModulePropxy getInfo(Class<? extends Module> targetModule, AppContext appContext) {
+            List<ModulePropxy> modulePropxyList = ((AbstractAppContext) appContext).getModulePropxyList();
+            for (ModulePropxy modulePropxy : modulePropxyList)
+                if (targetModule == modulePropxy.getTarget().getClass())
+                    return modulePropxy;
+            throw new UndefinedException(targetModule.getName() + " module is Undefined!");
+        }
     }
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.services;
+package net.hasor.core.register;
 import static net.hasor.core.AppContext.ContextEvent_Start;
 import static net.hasor.core.AppContext.ContextEvent_Stoped;
 import static net.hasor.core.AppContext.ModuleEvent_Start;

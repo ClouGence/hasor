@@ -13,15 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.services;
+package net.hasor.core.register;
 /**
  * 
  * @version : 2013-10-29
  * @author 赵永春(zyc@hasor.net)
  */
-public interface ServicesRegisterHandler<T> {
-    /**服务对象要求被注册*/
-    public void registerService(T serviceBean);
-    /**服务对象要求被解除已有的注册*/
-    public void unRegisterService(T serviceBean);
+public class ServicesRegisterHandlerDefine<T> {
+    private Class<T>                   serviceType;
+    private ServicesRegisterHandler<T> handler;
+    // 
+    public ServicesRegisterHandlerDefine(Class<T> serviceType, ServicesRegisterHandler<T> handler) {
+        this.serviceType = serviceType;
+        this.handler = handler;
+    }
+    public Class<?> getServiceType() {
+        return this.serviceType;
+    }
+    public void registerService(T targetService) {
+        this.handler.registerService(targetService);
+    }
+    public void unRegisterService(T targetService) {
+        this.handler.unRegisterService(targetService);
+    }
 }

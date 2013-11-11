@@ -24,8 +24,6 @@ public interface Module {
     public void init(ApiBinder apiBinder);
     /**启动信号*/
     public void start(AppContext appContext);
-    /**停止信号
-     * <p><i>提示</i>：在 stop 过程中调用 {@link AppContext#unRegisterService(Class)} 方法，
-     * 将只会影响到由本模块 start 过程中注册的服务。其它模块注册的同类型模块不受影响。*/
+    /**停止信号*/
     public void stop(AppContext appContext);
 }

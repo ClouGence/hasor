@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Environment;
 import net.hasor.core.ModuleInfo;
 import net.hasor.core.Settings;
-import net.hasor.core.services.ServicesRegisterHandler;
-import net.hasor.core.services.ServicesRegisterHandlerDefine;
+import net.hasor.core.module.ModulePropxy;
+import net.hasor.core.register.ServicesRegisterHandler;
+import net.hasor.core.register.ServicesRegisterHandlerDefine;
 import org.more.util.StringUtils;
 import com.google.inject.Binder;
 import com.google.inject.Key;
@@ -32,7 +35,11 @@ import com.google.inject.binder.ScopedBindingBuilder;
 import com.google.inject.internal.UniqueAnnotations;
 import com.google.inject.name.Names;
 /**
- * 
+ * 标准的 {@link ApiBinder} 接口实现，Hasor 在初始化模块时会为每个模块独立分配一个 ApiBinder 接口实例。
+ * <p>抽象方法 {@link #dependency()} ,会返回一个接口( {@link net.hasor.core.ApiBinder.DependencySettings DependencySettings} )
+ * 用于配置当前模块依赖情况。
+ * <p><b><i>提示：</i></b>模块代理类 {@link ModulePropxy} 可以为 {@link #dependency()} 方法提供支持。
+ * @see net.hasor.core.module.ModulePropxy
  * @version : 2013-4-12
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -40,8 +47,9 @@ public abstract class ApiBinderModule implements ApiBinder, Module {
     private Environment           environment = null;
     private BeanInfoModuleBuilder beanBuilder = new BeanInfoModuleBuilder(); /*Beans*/
     private ModuleInfo            forModule   = null;
+    public Binder                 guiceBinder = null;
     //
-    protected ApiBinderModule(Environment envContext, ModuleInfo forModule) {
+    protected ApiBinderModule(Binder guiceBinder, Environment envContext, ModuleInfo forModule) {
         this.environment = envContext;
         this.forModule = forModule;
     }
@@ -50,6 +58,9 @@ public abstract class ApiBinderModule implements ApiBinder, Module {
     }
     public Environment getEnvironment() {
         return this.environment;
+    }
+    public Binder getGuiceBinder() {
+        return this.guiceBinder;
     }
     public <T> void registerServicesHandler(Class<T> serviceType, ServicesRegisterHandler<T> handler) {
         Hasor.logInfo("registerServices %s.", serviceType);
@@ -103,5 +114,43 @@ public abstract class ApiBinderModule implements ApiBinder, Module {
     }
     public <T> ScopedBindingBuilder bindingType(String withName, Class<T> type, Key<? extends T> targetKey) {
         return this.bindingType(withName, type).to(targetKey);
+    }
+    /**用于提供 Hasor 的 Bean 注册支持 */
+    private class BeanInfoModuleBuilder implements Module {
+        /*BeanInfo 定义*/
+        private final List<BeanMetaData> beanMetaDataList = new ArrayList<BeanMetaData>();
+        //
+        public BeanBindingBuilder newBeanDefine(Binder binder) {
+            return new BeanBindingBuilderImpl(binder);
+        }
+        public void configure(Binder binder) {
+            /*将BeanInfo绑定到Guice身上，在正式使用时利用findBindingsByType方法将其找回来。*/
+            for (BeanMetaData define : this.beanMetaDataList)
+                binder.bind(BeanMetaData.class).annotatedWith(UniqueAnnotations.create()).toInstance(define);
+        }
+        /*-----------------------------------------------------------------------------------------*/
+        /** LinkedBindingBuilder接口的代理实现 */
+        private class BeanBindingBuilderImpl implements BeanBindingBuilder {
+            private Binder            binder = null;
+            private ArrayList<String> names  = new ArrayList<String>();
+            public BeanBindingBuilderImpl(Binder binder) {
+                this.binder = binder;
+            }
+            public BeanBindingBuilder aliasName(String aliasName) {
+                this.names.add(aliasName);
+                return this;
+            }
+            public <T> LinkedBindingBuilder<T> bindType(Class<T> beanClass) {
+                if (this.names.isEmpty() == true)
+                    throw new UnsupportedOperationException("the bean name is undefined!");
+                LinkedBindingBuilder<T> beanBuilder = binder.bind(beanClass);
+                String[] aliasNames = this.names.toArray(new String[this.names.size()]);
+                for (String nameItem : this.names) {
+                    BeanMetaData beanInfo = new BeanMetaData(nameItem, aliasNames, beanClass);
+                    beanMetaDataList.add(beanInfo);
+                }
+                return beanBuilder;
+            }
+        }
     }
 }

@@ -14,30 +14,29 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import com.google.inject.Provider;
 /**
- * 
- * @version : 2013-4-11
+ * 注册到 Hasor 中 Bean 的元信息。
+ * @version : 2013-5-6
  * @author 赵永春 (zyc@hasor.net)
  */
-class BeanInfoDefinition implements BeanInfo, Provider<BeanInfo> {
+public class BeanMetaData {
     private String   beanName   = null;
     private String[] aliasNames = null;
     private Class<?> beanClass  = null;
-    public BeanInfoDefinition(String beanName, String[] aliasNames, Class<?> beanClass) {
+    public BeanMetaData(String beanName, String[] aliasNames, Class<?> beanClass) {
         this.beanName = beanName;
         this.aliasNames = aliasNames;
         this.beanClass = beanClass;
     }
-    public BeanInfo get() {
-        return this;
-    }
+    /**获取bean的名称*/
     public String getName() {
         return this.beanName;
     }
+    /**获取bean的别名称*/
     public String[] getAliasName() {
         return this.aliasNames;
     }
+    /**获取bean的类型*/
     public Class<?> getBeanType() {
         return this.beanClass;
     }

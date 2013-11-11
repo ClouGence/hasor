@@ -15,7 +15,7 @@
  */
 package net.hasor.core;
 import java.util.Set;
-import net.hasor.core.services.ServicesRegisterHandler;
+import net.hasor.core.register.ServicesRegisterHandler;
 import com.google.inject.Binder;
 import com.google.inject.Key;
 import com.google.inject.Provider;

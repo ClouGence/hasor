@@ -48,22 +48,22 @@ public interface AppContext {
     //
     //----------------------------------------------------------------------------------ServicesRegister
     /**注册服务。
-     * @see net.hasor.core.services.ServicesRegisterHandler*/
+     * @see net.hasor.core.register.ServicesRegisterHandler*/
     public <T> void registerService(Class<T> type, T serviceBean, Object... objects);
     /**注册服务。
-     * @see net.hasor.core.services.ServicesRegisterHandler*/
+     * @see net.hasor.core.register.ServicesRegisterHandler*/
     public <T> void registerService(Class<T> type, Class<? extends T> serviceType, Object... objects);
     /**注册服务。
-     * @see net.hasor.core.services.ServicesRegisterHandler*/
+     * @see net.hasor.core.register.ServicesRegisterHandler*/
     public <T> void registerService(Class<T> type, Key<? extends T> serviceKey, Object... objects);
     /**解除注册服务。
-     * @see net.hasor.core.services.ServicesRegisterHandler*/
+     * @see net.hasor.core.register.ServicesRegisterHandler*/
     public <T> void unRegisterService(Class<T> type, T serviceBean);
     /**解除注册服务。
-     * @see net.hasor.core.services.ServicesRegisterHandler*/
+     * @see net.hasor.core.register.ServicesRegisterHandler*/
     public <T> void unRegisterService(Class<T> type, Class<? extends T> serviceType);
     /**解除注册服务。
-     * @see net.hasor.core.services.ServicesRegisterHandler*/
+     * @see net.hasor.core.register.ServicesRegisterHandler*/
     public <T> void unRegisterService(Class<T> type, Key<? extends T> serviceKey);
     //
     //----------------------------------------------------------------------------------Bean
