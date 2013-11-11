@@ -18,6 +18,5 @@
 
 		<!-- restful 服务配置，onPath是服务基础路径，这个Filter的排序很低 -->
 		<restfulServices enable="true" onPath="/*" sortBy="10000" />
-
 	</hasor-web>
 </config>

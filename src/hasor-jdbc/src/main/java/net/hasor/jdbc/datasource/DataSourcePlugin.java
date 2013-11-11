@@ -21,8 +21,8 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.Environment;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
+import net.hasor.core.plugin.AbstractHasorPlugin;
 import net.hasor.core.plugin.Plugin;
-import net.hasor.core.plugin.PluginFace;
 import org.more.util.StringUtils;
 /**
  * 
@@ -30,7 +30,7 @@ import org.more.util.StringUtils;
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
 @Plugin
-public class DataSourcePlugin implements PluginFace {
+public class DataSourcePlugin extends AbstractHasorPlugin {
     public void loadPlugin(ApiBinder apiBinder) {
         Environment env = apiBinder.getEnvironment();
         Settings settings = env.getSettings();

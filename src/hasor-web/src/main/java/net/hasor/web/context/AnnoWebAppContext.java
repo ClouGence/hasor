@@ -22,6 +22,7 @@ import javax.servlet.ServletContext;
 import net.hasor.core.binder.ApiBinderModule;
 import net.hasor.core.context.AnnoStandardAppContext;
 import net.hasor.core.module.ModulePropxy;
+import net.hasor.web.WebAppContext;
 import net.hasor.web.WebEnvironment;
 import net.hasor.web.binder.FilterPipeline;
 import net.hasor.web.binder.SessionListenerPipeline;
@@ -39,7 +40,7 @@ import com.google.inject.Provider;
  * @version : 2013-7-16
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-public class AnnoWebAppContext extends AnnoStandardAppContext {
+public class AnnoWebAppContext extends AnnoStandardAppContext implements WebAppContext {
     public AnnoWebAppContext(ServletContext servletContext) throws IOException {
         this((String) null, servletContext);
     }
@@ -86,11 +87,8 @@ public class AnnoWebAppContext extends AnnoStandardAppContext {
     protected WebEnvironment createEnvironment() {
         return new WebStandardEnvironment(this.getMainSettings(), (ServletContext) this.getContext());
     }
-    protected ApiBinderModule newApiBinder(final ModulePropxy forModule, final Binder binder) {
-        return new WebApiBinderModule((WebEnvironment) this.getEnvironment(), forModule) {
-            public Binder getGuiceBinder() {
-                return binder;
-            }
+    protected ApiBinderModule newApiBinder(final ModulePropxy forModule, Binder binder) {
+        return new WebApiBinderModule(binder, (WebEnvironment) this.getEnvironment(), forModule) {
             public DependencySettings dependency() {
                 return forModule;
             }

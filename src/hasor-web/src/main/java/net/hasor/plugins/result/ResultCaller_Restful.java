@@ -17,6 +17,8 @@ package net.hasor.plugins.result;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Map;
+import net.hasor.core.AppContext;
+import net.hasor.plugins.aware.AppContextAware;
 import net.hasor.plugins.restful.interceptor.RestfulInterceptor;
 import net.hasor.plugins.restful.interceptor.RestfulInvocation;
 /**
@@ -24,13 +26,16 @@ import net.hasor.plugins.restful.interceptor.RestfulInvocation;
  * @version : 2013-8-11
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-class ResultCaller_Restful extends RestfulInterceptor {
-    private GetContext                          context   = null;
-    private Map<Class<?>, Class<ResultProcess>> defineMap = null;
+class ResultCaller_Restful extends RestfulInterceptor implements AppContextAware {
+    private AppContext                          appContext = null;
+    private Map<Class<?>, Class<ResultProcess>> defineMap  = null;
     //
-    public ResultCaller_Restful(GetContext context, Map<Class<?>, Class<ResultProcess>> defineMap) {
+    public ResultCaller_Restful(Map<Class<?>, Class<ResultProcess>> defineMap) {
         this.defineMap = defineMap;
-        this.context = context;
+        AwareUtil.registerAppContextAware(this);
+    }
+    public void setAppContext(AppContext appContext) {
+        this.appContext = appContext;
     }
     /***/
     public Object invoke(RestfulInvocation invocation) throws Throwable {
@@ -45,7 +50,7 @@ class ResultCaller_Restful extends RestfulInterceptor {
                 Class<ResultProcess> processType = this.defineMap.get(resultType);
                 if (processType != null) {
                     Object returnData = invocation.proceed();
-                    ResultProcess process = this.context.getAppContext().getInstance(processType);
+                    ResultProcess process = this.appContext.getInstance(processType);
                     process.process(invocation.getRequest(), invocation.getResponse(), anno, returnData);
                     return returnData;
                 }

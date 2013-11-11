@@ -22,7 +22,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
 import net.hasor.core.EventManager;
-import net.hasor.core.plugin.AbstractPluginFace;
+import net.hasor.core.plugin.AbstractHasorPlugin;
 import net.hasor.core.plugin.Plugin;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
@@ -32,7 +32,7 @@ import org.more.util.StringUtils;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Plugin
-public class ListenerPlugin extends AbstractPluginFace {
+public class ListenerPlugin extends AbstractHasorPlugin {
     public void loadPlugin(ApiBinder apiBinder) {
         final Environment env = apiBinder.getEnvironment();
         final EventManager eventManager = env.getEventManager();

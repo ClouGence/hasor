@@ -19,4 +19,4 @@ package net.hasor.core.plugin;
  * @version : 2013-11-4
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-public abstract class AbstractPluginFace implements PluginFace {}
+public abstract class AbstractHasorPlugin implements HasorPlugin {}

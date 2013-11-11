@@ -23,8 +23,8 @@ import javax.servlet.Filter;
 import javax.servlet.http.HttpServlet;
 import net.hasor.Hasor;
 import net.hasor.core.plugin.Plugin;
+import net.hasor.web.AbstractWebHasorPlugin;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.plugin.AbstractWebPluginFace;
 import org.more.util.StringUtils;
 /**
  * 
@@ -32,7 +32,7 @@ import org.more.util.StringUtils;
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
 @Plugin
-public class JavaEEPlugin extends AbstractWebPluginFace {
+public class JavaEEPlugin extends AbstractWebHasorPlugin {
     public void loadPlugin(WebApiBinder apiBinder) {
         if (apiBinder instanceof WebApiBinder == false)
             return;

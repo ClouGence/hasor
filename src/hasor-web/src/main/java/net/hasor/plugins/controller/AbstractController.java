@@ -452,57 +452,6 @@ public abstract class AbstractController {
         setCookie(name, null, 0, path, domain);
         return this;
     }
-    // --------
-    //    /** Get all para with separator char from url */
-    //    public String getPara() {
-    //        if ("".equals(urlPara)) // urlPara maybe is "" see ActionMapping.getAction(String)
-    //            urlPara = null;
-    //        return urlPara;
-    //    }
-    //    /** Get para from url. The index of first url para is 0. */
-    //    public String getPara(int index) {
-    //        if (index < 0)
-    //            return getPara();
-    //        if (urlParaArray == null) {
-    //            if (urlPara == null || "".equals(urlPara)) // urlPara maybe is "" see ActionMapping.getAction(String)
-    //                urlParaArray = NULL_URL_PARA_ARRAY;
-    //            else
-    //                urlParaArray = urlPara.split(URL_PARA_SEPARATOR);
-    //            for (int i = 0; i < urlParaArray.length; i++)
-    //                if ("".equals(urlParaArray[i]))
-    //                    urlParaArray[i] = null;
-    //        }
-    //        return urlParaArray.length > index ? urlParaArray[index] : null;
-    //    }
-    //    /** Get para from url with default value if it is null or "". */
-    //    public String getPara(int index, String defaultValue) {
-    //        String result = getPara(index);
-    //        return result != null && !"".equals(result) ? result : defaultValue;
-    //    }
-    //    /** Get para from url and conver to Integer. The first index is 0 */
-    //    public Integer getParaToInt(int index) {
-    //        return toInt(getPara(index), null);
-    //    }
-    //    /** Get para from url and conver to Integer with default value if it is null. */
-    //    public Integer getParaToInt(int index, Integer defaultValue) {
-    //        return toInt(getPara(index), defaultValue);
-    //    }
-    //    /** Get para from url and conver to Long. */
-    //    public Long getParaToLong(int index) {
-    //        return toLong(getPara(index), null);
-    //    }
-    //    /** Get para from url and conver to Long with default value if it is null. */
-    //    public Long getParaToLong(int index, Long defaultValue) {
-    //        return toLong(getPara(index), defaultValue);
-    //    }
-    //    /** Get all para from url and convert to Integer */
-    //    public Integer getParaToInt() {
-    //        return toInt(getPara(), null);
-    //    }
-    //    /** Get all para from url and convert to Long */
-    //    public Long getParaToLong() {
-    //        return toLong(getPara(), null);
-    //    }
     /** Get model from AppContext. */
     @ControllerIgnore
     protected Object getModel(Class<?> modelClass) {

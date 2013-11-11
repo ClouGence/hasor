@@ -38,14 +38,14 @@ public class PluginsSupportModule implements Module {
         //
         Map<Class<?>, String> loadState = new HashMap<Class<?>, String>();
         for (Class<?> pluginClass : pluginSet) {
-            if (PluginFace.class.isAssignableFrom(pluginClass) == false) {
+            if (HasorPlugin.class.isAssignableFrom(pluginClass) == false) {
                 Hasor.logWarn("not implemented PluginFace :%s", pluginClass);
                 continue;
             }
             try {
-                PluginFace pluginFace = (PluginFace) pluginClass.newInstance();
+                HasorPlugin hasorPlugin = (HasorPlugin) pluginClass.newInstance();
                 Hasor.logInfo("loadPlugin %s.", pluginClass);
-                pluginFace.loadPlugin(apiBinder);
+                hasorPlugin.loadPlugin(apiBinder);
                 loadState.put(pluginClass, "<-- OK.");
             } catch (Throwable e) {
                 loadState.put(pluginClass, "<-- Error.");

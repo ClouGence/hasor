@@ -17,15 +17,15 @@ package net.hasor.plugins.restful.support;
 import net.hasor.Hasor;
 import net.hasor.core.Settings;
 import net.hasor.core.plugin.Plugin;
+import net.hasor.web.AbstractWebHasorPlugin;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.plugin.AbstractWebPluginFace;
 /**
  * Restful服务启动类.
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
 @Plugin()
-public class RestfulServicesPlugin extends AbstractWebPluginFace {
+public class RestfulServicesPlugin extends AbstractWebHasorPlugin {
     public void loadPlugin(WebApiBinder apiBinder) {
         Settings settings = apiBinder.getEnvironment().getSettings();
         boolean enable = settings.getBoolean("hasor-web.restfulServices.enable");

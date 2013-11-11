@@ -17,7 +17,7 @@ package net.hasor.plugins.guice;
 import java.util.Set;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.plugin.AbstractPluginFace;
+import net.hasor.core.plugin.AbstractHasorPlugin;
 import net.hasor.core.plugin.Plugin;
 import com.google.inject.Module;
 /**
@@ -26,7 +26,7 @@ import com.google.inject.Module;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Plugin
-public class GuicePlugin extends AbstractPluginFace {
+public class GuicePlugin extends AbstractHasorPlugin {
     public void loadPlugin(ApiBinder apiBinder) {
         Set<Class<?>> guiceModuleSet = apiBinder.getClassSet(GuiceModule.class);
         if (guiceModuleSet == null || guiceModuleSet.isEmpty())

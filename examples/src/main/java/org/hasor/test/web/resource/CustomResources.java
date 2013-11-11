@@ -16,22 +16,22 @@
 package org.hasor.test.web.resource;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
-import net.hasor.core.context.AnnoModule;
+import net.hasor.core.plugin.Plugin;
+import net.hasor.plugins.resource.ResourceHttpServlet;
 import net.hasor.plugins.resource.ResourceLoader;
 import net.hasor.plugins.resource.ResourceLoaderFactory;
 import net.hasor.plugins.resource.loader.ClassPathResourceLoader;
 import net.hasor.plugins.resource.loader.ZipResourceLoader;
-import net.hasor.plugins.resource.support.ResourceHttpServlet;
+import net.hasor.web.AbstractWebHasorPlugin;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.WebModule;
 /**
  * 
  * @version : 2013-10-29
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-@AnnoModule
-public class CustomResources extends WebModule {
-    public void init(WebApiBinder apiBinder) {
+@Plugin
+public class CustomResources extends AbstractWebHasorPlugin {
+    public void loadPlugin(WebApiBinder apiBinder) {
         //
         //js,css,gif,ico,jpg,jpeg,png,swf,swc,flv,mp3,wav,avi
         apiBinder.serve("*.js").with(ResourceHttpServlet.class);
@@ -49,12 +49,6 @@ public class CustomResources extends WebModule {
         apiBinder.serve("*.avi").with(ResourceHttpServlet.class);
         //
         apiBinder.getGuiceBinder().bind(ResourceLoaderFactory.class).toInstance(new CustomResourceLoaderFactory());
-    }
-    public void start(AppContext appContext) {
-        // TODO Auto-generated method stub
-    }
-    public void stop(AppContext appContext) {
-        // TODO Auto-generated method stub
     }
 }
 /**/

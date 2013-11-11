@@ -18,7 +18,7 @@ import java.util.Set;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.ApiBinder.BeanBindingBuilder;
-import net.hasor.core.plugin.AbstractPluginFace;
+import net.hasor.core.plugin.AbstractHasorPlugin;
 import net.hasor.core.plugin.Plugin;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
@@ -28,7 +28,7 @@ import org.more.util.StringUtils;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Plugin
-public class BeanPlugin extends AbstractPluginFace {
+public class BeanPlugin extends AbstractHasorPlugin {
     public void loadPlugin(ApiBinder apiBinder) {
         Set<Class<?>> beanSet = apiBinder.getClassSet(Bean.class);
         if (beanSet == null || beanSet.isEmpty())

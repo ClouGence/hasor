@@ -17,15 +17,15 @@ package net.hasor.plugins.controller.support;
 import net.hasor.Hasor;
 import net.hasor.core.Settings;
 import net.hasor.core.plugin.Plugin;
+import net.hasor.web.AbstractWebHasorPlugin;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.plugin.AbstractWebPluginFace;
 /**
  * 
  * @version : 2013-9-26
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
 @Plugin
-public class WebControllerPlugin extends AbstractWebPluginFace {
+public class WebControllerPlugin extends AbstractWebHasorPlugin {
     public void loadPlugin(WebApiBinder apiBinder) {
         Settings settings = apiBinder.getEnvironment().getSettings();
         ControllerSettings acSettings = new ControllerSettings(settings);

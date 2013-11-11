@@ -15,7 +15,7 @@
  */
 package net.hasor.plugins.aop;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.plugin.AbstractPluginFace;
+import net.hasor.core.plugin.AbstractHasorPlugin;
 import net.hasor.core.plugin.Plugin;
 import net.hasor.plugins.aop.matchers.AopMatchers;
 import com.google.inject.matcher.Matcher;
@@ -25,7 +25,7 @@ import com.google.inject.matcher.Matcher;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Plugin
-public class AopPlugin extends AbstractPluginFace {
+public class AopPlugin extends AbstractHasorPlugin {
     public void loadPlugin(ApiBinder apiBinder) {
         Matcher<Object> matcher = AopMatchers.annotatedWith(Aop.class);//
         apiBinder.getGuiceBinder().bindInterceptor(matcher, matcher, new AopInterceptor());

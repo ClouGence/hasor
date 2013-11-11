@@ -24,7 +24,7 @@ import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
 import net.hasor.core.EventManager;
 import net.hasor.core.SettingsListener;
-import net.hasor.core.plugin.AbstractPluginFace;
+import net.hasor.core.plugin.AbstractHasorPlugin;
 import net.hasor.core.plugin.Plugin;
 import com.google.inject.Provider;
 /**
@@ -33,7 +33,7 @@ import com.google.inject.Provider;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Plugin
-public class SettingsPlugin extends AbstractPluginFace {
+public class SettingsPlugin extends AbstractHasorPlugin {
     public void loadPlugin(ApiBinder apiBinder) {
         this.loadAnnoSettings(apiBinder);
         //

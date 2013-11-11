@@ -29,10 +29,24 @@ public abstract class WebModule implements Module {
         else
             throw new UnsupportedOperationException("Hasor context does not support the web module.");
     }
+    public final void start(AppContext appContext) {
+        if (appContext instanceof WebAppContext)
+            this.start((WebAppContext) appContext);
+        else
+            throw new UnsupportedOperationException("Hasor context does not support the web module.");
+    }
+    public final void stop(AppContext appContext) {
+        if (appContext instanceof WebAppContext)
+            this.stop((WebAppContext) appContext);
+        else
+            throw new UnsupportedOperationException("Hasor context does not support the web module.");
+    }
+    //
+    //
     /**初始化过程。*/
     public abstract void init(WebApiBinder apiBinder);
     /**启动信号*/
-    public abstract void start(AppContext appContext);
+    public abstract void start(WebAppContext appContext);
     /**停止信号*/
-    public abstract void stop(AppContext appContext);
+    public abstract void stop(WebAppContext appContext);
 }

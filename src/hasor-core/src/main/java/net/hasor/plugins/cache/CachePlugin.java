@@ -17,8 +17,8 @@ package net.hasor.plugins.cache;
 import java.util.Set;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.plugin.AbstractHasorPlugin;
 import net.hasor.core.plugin.Plugin;
-import net.hasor.core.plugin.PluginFace;
 import net.hasor.plugins.aop.matchers.AopMatchers;
 import org.more.RepeateException;
 import com.google.inject.matcher.Matcher;
@@ -28,7 +28,7 @@ import com.google.inject.matcher.Matcher;
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Plugin()
-public class CachePlugin implements PluginFace {
+public class CachePlugin extends AbstractHasorPlugin {
     /**≥ı ºªØ.*/
     public void loadPlugin(ApiBinder apiBinder) {
         //1.π“‘ÿAop

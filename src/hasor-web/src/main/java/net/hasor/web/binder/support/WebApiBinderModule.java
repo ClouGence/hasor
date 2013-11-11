@@ -33,8 +33,8 @@ public abstract class WebApiBinderModule extends ApiBinderModule implements WebA
     private HttpSessionListenerBindingBuilder httpSessionListenerBindingBuilder = new HttpSessionListenerBindingBuilder(); /*Listener*/
     private ContextListenerBindingBuilder     contextListenerBuilder            = new ContextListenerBindingBuilder();    /*Listener*/
     //
-    protected WebApiBinderModule(WebEnvironment envContext, ModuleInfo forModule) {
-        super(envContext, forModule);
+    protected WebApiBinderModule(Binder guiceBinder, WebEnvironment envContext, ModuleInfo forModule) {
+        super(guiceBinder, envContext, forModule);
     }
     public ServletContext getServletContext() {
         return this.getEnvironment().getServletContext();

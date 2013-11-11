@@ -16,14 +16,14 @@
 package org.hasor.test.simple.service.define;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.plugin.Plugin;
-import net.hasor.core.plugin.PluginFace;
+import net.hasor.core.plugin.HasorPlugin;
 /**
  * 
  * @version : 2013-9-14
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
 @Plugin
-public class ServiceGift implements PluginFace {
+public class ServiceGift implements HasorPlugin {
     public void loadPlugin(ApiBinder apiBinder) {
         apiBinder.registerServicesHandler(AbstractService.class, new ServiceHandler());
     }

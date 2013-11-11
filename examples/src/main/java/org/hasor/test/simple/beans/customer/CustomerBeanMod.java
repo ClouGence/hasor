@@ -16,14 +16,14 @@
 package org.hasor.test.simple.beans.customer;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.plugin.Plugin;
-import net.hasor.core.plugin.PluginFace;
+import net.hasor.core.plugin.HasorPlugin;
 /**
  * 代码方式注册Bean
  * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
 @Plugin
-public class CustomerBeanMod implements PluginFace {
+public class CustomerBeanMod implements HasorPlugin {
     public void loadPlugin(ApiBinder apiBinder) {
         /*代码方式注册Bean*/
         apiBinder.newBean("Customer").bindType(CustomerBean.class);

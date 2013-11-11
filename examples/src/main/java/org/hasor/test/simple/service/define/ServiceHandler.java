@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.test.simple.service.define;
-import net.hasor.core.services.ServicesRegisterHandler;
+import net.hasor.core.register.ServicesRegisterHandler;
 /**
  * 
  * @version : 2013-10-29

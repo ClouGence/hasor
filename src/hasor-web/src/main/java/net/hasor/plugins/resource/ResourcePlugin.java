@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.resource.support;
+package net.hasor.plugins.resource;
 import java.io.File;
 import net.hasor.core.Environment;
 import net.hasor.core.plugin.Plugin;
+import net.hasor.web.AbstractWebHasorPlugin;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.plugin.AbstractWebPluginFace;
 /**
  * 负责装载jar包中的资源。
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
 @Plugin()
-public class ResourcePlugin extends AbstractWebPluginFace {
+public class ResourcePlugin extends AbstractWebHasorPlugin {
     public void loadPlugin(WebApiBinder apiBinder) {
         //1.准备参数
         Environment env = apiBinder.getEnvironment();

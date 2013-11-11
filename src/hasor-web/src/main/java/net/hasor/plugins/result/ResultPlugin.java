@@ -18,15 +18,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import net.hasor.Hasor;
-import net.hasor.core.AppContext;
-import net.hasor.core.EventListener;
 import net.hasor.core.plugin.Plugin;
 import net.hasor.plugins.aop.matchers.AopMatchers;
 import net.hasor.plugins.controller.AbstractController;
 import net.hasor.plugins.controller.Controller;
 import net.hasor.plugins.restful.RestfulService;
+import net.hasor.web.AbstractWebHasorPlugin;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.plugin.AbstractWebPluginFace;
 import com.google.inject.matcher.Matcher;
 /**
  * 
@@ -34,7 +32,7 @@ import com.google.inject.matcher.Matcher;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Plugin
-public class ResultPlugin extends AbstractWebPluginFace implements GetContext, EventListener {
+public class ResultPlugin extends AbstractWebHasorPlugin {
     public void loadPlugin(WebApiBinder apiBinder) {
         Map<Class<?>, Class<ResultProcess>> defineMap = new HashMap<Class<?>, Class<ResultProcess>>();
         //1.获取
@@ -53,25 +51,16 @@ public class ResultPlugin extends AbstractWebPluginFace implements GetContext, E
             Hasor.logInfo("loadResultDefine annoType is %s toInstance %s", resultType, resultDefineType);
             defineMap.put(resultType, defineType);
         }
-        apiBinder.getEnvironment().getEventManager().pushEventListener(AppContext.ContextEvent_Start, this);
         {
             /*所有继承 AbstractController 并且标记了 @Controller 注解的类都是控制器*/
             Matcher<Class> matcherController = AopMatchers.subclassesOf(AbstractController.class).and(AopMatchers.annotatedWith(Controller.class));
-            ResultCaller_Controller caller_1 = new ResultCaller_Controller(this, defineMap);
+            ResultCaller_Controller caller_1 = new ResultCaller_Controller(defineMap);
             apiBinder.getGuiceBinder().bindInterceptor(matcherController, AopMatchers.any(), caller_1);
         }
         {
             /*所有标记了 @RestfulService 注解的类都是Restful服务*/
-            ResultCaller_Restful caller_2 = new ResultCaller_Restful(this, defineMap);
+            ResultCaller_Restful caller_2 = new ResultCaller_Restful(defineMap);
             apiBinder.getGuiceBinder().bindInterceptor(AopMatchers.annotatedWith(RestfulService.class), AopMatchers.any(), caller_2);
         }
-    }
-    //
-    private AppContext appContext = null;
-    public AppContext getAppContext() {
-        return this.appContext;
-    }
-    public void onEvent(String event, Object[] params) throws Throwable {
-        this.appContext = (AppContext) params[0];
     }
 }

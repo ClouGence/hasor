@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.result;
-import net.hasor.core.AppContext;
+package net.hasor.core.plugin;
+import net.hasor.core.ApiBinder;
 /**
  * 
- * @version : 2013-8-11
- * @author ’‘”¿¥∫ (zyc@hasor.net)
+ * @version : 2013-11-4
+ * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-interface GetContext {
-    public AppContext getAppContext();
+public interface HasorPlugin {
+    public void loadPlugin(ApiBinder apiBinder);
 }
