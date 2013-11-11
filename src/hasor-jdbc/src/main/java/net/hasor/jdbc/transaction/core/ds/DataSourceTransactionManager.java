@@ -17,7 +17,7 @@ package net.hasor.jdbc.transaction.core.ds;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import net.hasor.jdbc.transaction.core.AbstractPlatformTransactionManager;
-import net.hasor.jdbc.transaction.core.DefaultTransactionStatus;
+import net.hasor.jdbc.transaction.core.AbstractTransactionStatus;
 /**
  * 某一个数据源的事务管理器
  * @version : 2013-10-30
@@ -55,24 +55,24 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
         ConnectionHandle connHandle = (ConnectionHandle) transaction;
         return connHandle.isTransactionActive();
     }
-    protected void doBegin(Object transaction, DefaultTransactionStatus defStatus) throws SQLException {
+    protected void doBegin(Object transaction, AbstractTransactionStatus defStatus) throws SQLException {
         ConnectionHandle connHandle = (ConnectionHandle) transaction;
         connHandle.getConnection().setAutoCommit(false);
     }
-    protected void doCommit(Object transaction, DefaultTransactionStatus defStatus) throws SQLException {
+    protected void doCommit(Object transaction, AbstractTransactionStatus defStatus) throws SQLException {
         ConnectionHandle connHandle = (ConnectionHandle) transaction;
         connHandle.getConnection().commit();
         connHandle.getConnection().setAutoCommit(true);
     }
-    protected void doRollback(Object transaction, DefaultTransactionStatus defStatus) throws SQLException {
+    protected void doRollback(Object transaction, AbstractTransactionStatus defStatus) throws SQLException {
         ConnectionHandle connHandle = (ConnectionHandle) transaction;
         connHandle.getConnection().rollback();
         connHandle.getConnection().setAutoCommit(true);
     }
-    protected void doSuspend(Object transaction, DefaultTransactionStatus defStatus) throws SQLException {
+    protected void doSuspend(Object transaction, AbstractTransactionStatus defStatus) throws SQLException {
         //清空当前线程的 ConnectionHandle
     }
-    protected void doResume(Object resumeTransaction, DefaultTransactionStatus defStatus) throws SQLException {
+    protected void doResume(Object resumeTransaction, AbstractTransactionStatus defStatus) throws SQLException {
         //恢复当前线程的 ConnectionHandle
     }
 }

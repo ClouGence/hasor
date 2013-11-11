@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.jdbc.transaction.core;
+import java.sql.Savepoint;
 import net.hasor.jdbc.IllegalTransactionStateException;
 import net.hasor.jdbc.transaction.TransactionBehavior;
 import net.hasor.jdbc.transaction.TransactionLevel;
@@ -23,15 +24,15 @@ import net.hasor.jdbc.transaction.TransactionStatus;
  * @version : 2013-10-30
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-public class DefaultTransactionStatus implements TransactionStatus {
-    private Object              savepoint;
+public abstract class AbstractTransactionStatus implements TransactionStatus {
+    private Savepoint           savepoint;
     private Object              suspendHolder;
     private TransactionBehavior behavior;
     private TransactionLevel    level;
     private boolean             completed    = false;
     private boolean             rollbackOnly = false;
     //
-    public DefaultTransactionStatus(TransactionBehavior behavior, TransactionLevel level, Object transaction) {
+    public AbstractTransactionStatus(TransactionBehavior behavior, TransactionLevel level, Object transaction) {
         this.behavior = behavior;
         this.level = level;
     }
@@ -81,8 +82,5 @@ public class DefaultTransactionStatus implements TransactionStatus {
     }
     //
     protected abstract SavepointManager getSavepointManager();
-    public boolean isNewConnection() {
-        // TODO Auto-generated method stub
-        return false;
-    }
+    public abstract boolean isNewConnection();
 }
