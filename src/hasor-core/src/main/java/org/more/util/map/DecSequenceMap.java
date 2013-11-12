@@ -29,7 +29,7 @@ import org.more.util.MergeUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
-    private SimpleSet<K, T> entrySet = null;
+    private volatile SimpleSet<K, T> entrySet = null;
     //
     //
     /** 创建DecSequenceMap对象，根据{@link #DecSequenceMap(boolean) DecSequenceMap(true)}规则进行初始化。*/
@@ -142,6 +142,9 @@ public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
         }
         public void removeMap(Map<K, T> newMap) {
             this.mapList.remove(newMap);
+        }
+        public void clear() {
+            this.mapList.clear();
         }
         @Override
         public Iterator<java.util.Map.Entry<K, T>> iterator() {

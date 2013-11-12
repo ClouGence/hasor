@@ -1,3 +1,9 @@
+Hasor-Core v0.0.5
+* Improvement:
+	01.修复 DecSequenceMap 工具类，removeAllMap 方法引发 ConcurrentModificationException 异常的问题。
+
+
+
 Hasor-Core v0.0.4
 * New:
     01.Environment 接口新增 isDebug 方法，用于表示应用程序启动是否为 debug 模式。
