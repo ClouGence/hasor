@@ -287,12 +287,7 @@ public abstract class AbstractAppContext implements AppContext {
     }
     /**通过guice创建{@link Injector}，该方法会促使调用模块init生命周期*/
     protected Injector createInjector(com.google.inject.Module[] guiceModules) {
-        ArrayList<com.google.inject.Module> guiceModuleSet = new ArrayList<com.google.inject.Module>();
-        guiceModuleSet.add(new RootInitializeModule(this));
-        if (guiceModules != null)
-            for (com.google.inject.Module mod : guiceModules)
-                guiceModuleSet.add(mod);
-        return Guice.createInjector(guiceModuleSet.toArray(new com.google.inject.Module[guiceModuleSet.size()]));
+        return Guice.createInjector(guiceModules);
     }
     /**打印模块状态*/
     protected void printModState() {
@@ -322,7 +317,7 @@ public abstract class AbstractAppContext implements AppContext {
             return;
         /*触发ContextEvent_Init事件，并且创建创建guice*/
         Hasor.logInfo("send init sign.");
-        this.injector = this.createInjector(null);
+        this.injector = this.createInjector(new com.google.inject.Module[] { new RootInitializeModule(this) });
         Hasor.assertIsNotNull(this.injector, "can not be create Injector.");
         /*使用反应堆对模块进行循环检查和排序*/
         List<ModuleInfo> readOnlyModules = new ArrayList<ModuleInfo>();
