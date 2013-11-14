@@ -52,6 +52,7 @@ public abstract class ApiBinderModule implements ApiBinder, Module {
     protected ApiBinderModule(Binder guiceBinder, Environment envContext, ModuleInfo forModule) {
         this.environment = envContext;
         this.forModule = forModule;
+        this.guiceBinder = guiceBinder;
     }
     public void configure(Binder binder) {
         binder.install(this.beanBuilder);
