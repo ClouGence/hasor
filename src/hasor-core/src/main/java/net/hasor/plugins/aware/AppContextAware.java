@@ -15,8 +15,8 @@
  */
 package net.hasor.plugins.aware;
 import net.hasor.core.AppContext;
-import org.more.ref.WeakArrayList;
 import org.more.util.ContextClassLoaderLocal;
+import org.more.util.ref.WeakArrayList;
 /**
  * 
  * @version : 2013-11-8

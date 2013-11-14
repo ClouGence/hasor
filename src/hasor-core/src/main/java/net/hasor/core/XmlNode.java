@@ -36,7 +36,7 @@ public interface XmlNode {
     /**获取Xml子节点。*/
     public List<XmlNode> getChildren(String elementName);
     /**获取Xml子节点，如果有多个返回第一条。*/
-    public XmlNode getXmlNode(String elementName);
+    public XmlNode getOneChildren(String elementName);
     /**获取Xml节点上的属性。*/
     public String getAttribute(String attName);
 }

@@ -24,16 +24,16 @@ import net.hasor.core.setting.GlobalProperty;
 import org.more.convert.ConverterUtils;
 import org.more.util.StringUtils;
 /**
- * XmlProperty, GlobalProperty接口实现类。
+ * XmlNode, GlobalProperty 接口实现类。
  * @version : 2013-4-22
  * @author 赵永春 (zyc@hasor.net)
  */
-class DefaultXmlNode implements XmlNode, GlobalProperty {
-    private String                  elementName       = null;
-    private String                  textString        = null;
-    private HashMap<String, String> arrMap            = new HashMap<String, String>();
-    private List<XmlNode>           children          = new ArrayList<XmlNode>();
-    private XmlNode                 parentXmlProperty = null;
+public class DefaultXmlNode implements XmlNode, GlobalProperty {
+    private String              elementName       = null;
+    private String              textString        = null;
+    private Map<String, String> arrMap            = new HashMap<String, String>();
+    private List<XmlNode>       children          = new ArrayList<XmlNode>();
+    private XmlNode             parentXmlProperty = null;
     //
     //
     public DefaultXmlNode(XmlNode parentXmlProperty, String elementName) {
@@ -66,9 +66,48 @@ class DefaultXmlNode implements XmlNode, GlobalProperty {
         }
         return children;
     }
-    public XmlNode getXmlNode(String elementName) {
+    public Map<String, String> getAttributeMap() {
+        return this.arrMap;
+    }
+    public String getAttribute(String attName) {
+        return this.getAttributeMap().get(attName);
+    }
+    public XmlNode getParent() {
+        return parentXmlProperty;
+    }
+    public void setParent(XmlNode parentXmlProperty) {
+        this.parentXmlProperty = parentXmlProperty;
+    }
+    public XmlNode getOneChildren(String elementName) {
         List<XmlNode> subItems = this.getChildren(elementName);
         return subItems.isEmpty() ? null : subItems.get(0);
+    }
+    public String toString() {
+        return this.getXmlText();
+    }
+    public DefaultXmlNode clone() {
+        DefaultXmlNode newData = new DefaultXmlNode(this.parentXmlProperty, this.elementName);
+        newData.arrMap.putAll(this.arrMap);
+        newData.textString = this.textString;
+        if (children != null)
+            for (XmlNode xmlProp : this.children) {
+                DefaultXmlNode newClone = ((DefaultXmlNode) xmlProp).clone();
+                newClone.setParent(newData);
+                newData.children.add(newClone);
+            }
+        return newData;
+    }
+    public <T> T getValue(Class<T> toType, T defaultValue) {
+        if (XmlNode.class.isAssignableFrom(toType) == true)
+            return (T) this;
+        if (GlobalProperty.class.isAssignableFrom(toType) == true)
+            return (T) this;
+        try {
+            T returnData = (T) ConverterUtils.convert(toType, this.getText());
+            return returnData == null ? defaultValue : returnData;
+        } catch (Exception e) {
+            return defaultValue;
+        }
     }
     public String getXmlText() {
         StringBuilder strBuilder = new StringBuilder();
@@ -102,44 +141,5 @@ class DefaultXmlNode implements XmlNode, GlobalProperty {
         //
         strBuilder.append("</" + this.elementName + ">");
         return strBuilder.toString();
-    }
-    public String toString() {
-        return this.getXmlText();
-    }
-    public DefaultXmlNode clone() {
-        DefaultXmlNode newData = new DefaultXmlNode(this.parentXmlProperty, this.elementName);
-        newData.arrMap.putAll(this.arrMap);
-        newData.textString = this.textString;
-        if (children != null)
-            for (XmlNode xmlProp : this.children) {
-                DefaultXmlNode newClone = ((DefaultXmlNode) xmlProp).clone();
-                newClone.setParent(newData);
-                newData.children.add(newClone);
-            }
-        return newData;
-    }
-    public <T> T getValue(Class<T> toType, T defaultValue) {
-        if (XmlNode.class.isAssignableFrom(toType) == true)
-            return (T) this;
-        if (GlobalProperty.class.isAssignableFrom(toType) == true)
-            return (T) this;
-        try {
-            T returnData = (T) ConverterUtils.convert(toType, this.getText());
-            return returnData == null ? defaultValue : returnData;
-        } catch (Exception e) {
-            return defaultValue;
-        }
-    }
-    public Map<String, String> getAttributeMap() {
-        return this.arrMap;
-    }
-    public String getAttribute(String attName) {
-        return this.getAttributeMap().get(attName);
-    }
-    public XmlNode getParent() {
-        return parentXmlProperty;
-    }
-    public void setParent(XmlNode parentXmlProperty) {
-        this.parentXmlProperty = parentXmlProperty;
     }
 }

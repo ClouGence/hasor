@@ -1,7 +1,8 @@
 Hasor-Core v0.0.5
+* New:
+    01.新增 DomXmlAccept 工具类，将 Xml 文件转换为  XmlNode 接口形式的 Dom 树。
 * Improvement:
-	01.修复 DecSequenceMap 工具类，removeAllMap 方法引发 ConcurrentModificationException 异常的问题。
-
+    01.修复 DecSequenceMap 工具类，removeAllMap 方法引发 ConcurrentModificationException 异常的问题。
 
 
 Hasor-Core v0.0.4

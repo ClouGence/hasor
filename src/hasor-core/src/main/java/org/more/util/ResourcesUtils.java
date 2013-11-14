@@ -147,7 +147,7 @@ public abstract class ResourcesUtils {
         }
         return urls;
     }
-    /**获取classpath中可能存在的资源，以流的形式返回。*/
+    /**获取可能存在的资源，以流的形式返回。*/
     public static InputStream getResourceAsStream(File resourceFile) throws IOException {
         return getResourceAsStream(resourceFile.toURI().toURL());
     }
