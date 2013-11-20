@@ -6,6 +6,8 @@ Hasor-Core v0.0.5
     02.修复 ApiBinderModule 类构造方法没有处理 Binder 参数导致插件加载失败的问题。
     03.修改 AbstractAppContext 类的 Guice 创建方法 createInjector。
             将 Hasor 核心启动模块从 createInjector方法中拿出来，这样避免扩展该方法时对 Hasor 造成致命伤害。
+    04.Cache 接口方法有关 key 参数从 String 类型更换为 Serializable。并增加了一些方法。
+    05.修改 StandardContextSettings 类，确保位于jar包中的“static-config.xml”资源在合并时优先级低于file。
 
 
 Hasor-Core v0.0.4

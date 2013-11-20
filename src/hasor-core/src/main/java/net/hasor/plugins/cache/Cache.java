@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.plugins.cache;
+import java.io.Serializable;
+import java.util.Set;
 /**
  * 缓存接口。
  * @version : 2013-4-20
@@ -21,16 +23,19 @@ package net.hasor.plugins.cache;
  */
 public interface Cache {
     /**将一个对象放入缓存。*/
-    public boolean toCache(String key, Object value, long timeout);
+    public boolean toCache(Serializable key, Object value);
     /**根据key从缓存中获取缓存对象。*/
-    public Object fromCache(String key);
+    public Object fromCache(Serializable key);
     /**判断缓存中是否有要求的对象。*/
-    public boolean hasCache(String key);
-    /**删除某个缓存的内容*/
-    public boolean remove(String key);
-    /**清空缓存*/
+    public boolean hasCache(Serializable key);
+    /**删除某个缓存的内容。*/
+    public boolean remove(Serializable key);
+    /**清空缓存。*/
     public boolean clear();
-    //
+    /**目前缓存大小。*/
+    public int size();
+    /**获取缓存中Keys。*/
+    public Set<Serializable> keys();
     /**关闭并停用缓存*/
     public void close();
 }

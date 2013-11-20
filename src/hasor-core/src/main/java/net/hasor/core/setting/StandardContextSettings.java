@@ -20,6 +20,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import net.hasor.Hasor;
 import org.more.util.ResourcesUtils;
@@ -67,6 +69,21 @@ public class StandardContextSettings extends InputStreamSettings {
         super.readyLoad();
         //1.装载所有static-config.xml
         List<URL> streamList = ResourcesUtils.getResources(StaticSettingName);
+        //2.排序，确保位于jar包中的资源排序优先级靠后。
+        //因为覆盖加载是顺序的，因此先加载位于jar中的资源。然后覆盖它们。
+        Collections.sort(streamList, new Comparator<URL>() {
+            public int compare(URL o1, URL o2) {
+                String o1p = o1.getProtocol();
+                String o2p = o2.getProtocol();
+                if (o1p.equals(o2p))
+                    return 0;
+                if (o1p.equals("jar"))
+                    return -1;
+                if (o2p.equals("jar"))
+                    return 1;
+                return 0;
+            }
+        });
         if (streamList != null) {
             for (URL resURL : streamList) {
                 InputStream stream = ResourcesUtils.getResourceAsStream(resURL);

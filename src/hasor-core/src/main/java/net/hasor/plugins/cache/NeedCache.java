@@ -30,6 +30,4 @@ public @interface NeedCache {
     public static final String DefaultGroupName = "Default";
     /**使用的缓存器名称。*/
     public String groupName() default "";
-    /**缓存超时时间，默认值0。*/
-    public long timeout() default 0;
 }

@@ -82,7 +82,7 @@ class CacheInterceptor implements MethodInterceptor, AppContextAware {
         } else {
             Hasor.logDebug("set data to Cache key :" + key);
             returnData = invocation.proceed();
-            cache.toCache(key, returnData, cacheAnno.timeout());
+            cache.toCache(key, returnData);
         }
         return returnData;
     }
