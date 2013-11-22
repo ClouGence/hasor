@@ -29,10 +29,10 @@ public class DbcpFactory implements DataSourceFactory {
     public DataSource createDataSource(Environment env, XmlNode configElement) throws Throwable {
         BasicDataSource dataSource = new BasicDataSource();
         //
-        String driverString = configElement.getXmlNode("driver").getText();//<driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
-        String urlString = configElement.getXmlNode("url").getText();//<url>jdbc:sqlserver://10.200.15.100;DatabaseName=NOE_ESTUDY</url>
-        String userString = configElement.getXmlNode("user").getText();//<user>sa</user>
-        String pwdString = configElement.getXmlNode("password").getText();//<password>abc123!@#</password>
+        String driverString = configElement.getOneChildren("driver").getText();//<driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
+        String urlString = configElement.getOneChildren("url").getText();//<url>jdbc:sqlserver://10.200.15.100;DatabaseName=NOE_ESTUDY</url>
+        String userString = configElement.getOneChildren("user").getText();//<user>sa</user>
+        String pwdString = configElement.getOneChildren("password").getText();//<password>abc123!@#</password>
         int poolMaxSize = 200;
         //
         Hasor.logInfo("DBCP Pool Info maxSize is ¡®%s¡¯ driver is ¡®%s¡¯ jdbcUrl is¡®%s¡¯", poolMaxSize, driverString, urlString);

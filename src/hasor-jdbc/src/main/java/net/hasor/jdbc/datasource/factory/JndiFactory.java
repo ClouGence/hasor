@@ -29,7 +29,7 @@ import org.more.util.StringUtils;
  */
 public class JndiFactory implements DataSourceFactory {
     public DataSource createDataSource(Environment env, XmlNode configElement) throws Throwable {
-        String jndi = configElement.getXmlNode("jndi").getText();
+        String jndi = configElement.getOneChildren("jndi").getText();
         if (StringUtils.isBlank(jndi))
             return null;
         //

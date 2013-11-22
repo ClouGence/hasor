@@ -25,7 +25,7 @@ import org.junit.Test;
  * @version : 2013-8-11
  * @author ÕÔÓÀ´º (zyc@hasor.net)
  */
-public class Aop_Test {
+public class LinkeAop_Test {
     @Test
     public void testAopBeanClassLv() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testAopBeanClassLv<<--");

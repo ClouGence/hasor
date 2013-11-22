@@ -17,7 +17,11 @@ package net.hasor.plugins.aop.matchers;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import com.google.inject.matcher.AbstractMatcher;
-/*负责检测匹配。规则：只要类型或方法上标记了@Before。*/
+/**
+ * 负责检测匹配。规则：只要类型或方法上标记了某个注解。
+ * @version : 2013-11-22
+ * @author 赵永春(zyc@hasor.net)
+ */
 class MatcherAnnotationType extends AbstractMatcher<Object> {
     private Class<? extends Annotation> annotationType = null;
     public MatcherAnnotationType(Class<? extends Annotation> annotationType) {
