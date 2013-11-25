@@ -1,3 +1,7 @@
+Hasor-Core v0.0.6
+* New:
+
+
 Hasor-Core v0.0.5
 * New:
     01.新增 DomXmlAccept 工具类，将 Xml 文件转换为  XmlNode 接口形式的 Dom 树。

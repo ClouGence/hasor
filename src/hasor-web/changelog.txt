@@ -1,3 +1,7 @@
+Hasor-Web v0.0.4
+* Bug:
+
+
 Hasor-Web v0.0.3
 * Bug:
     1.修复 #4 在 debug 模式下 Resources 模块在处理位于 Classpath 中资源时会反复的覆盖缓存结果。
