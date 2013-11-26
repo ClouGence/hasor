@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import javax.inject.Singleton;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -35,7 +34,6 @@ import com.google.inject.TypeLiteral;
  * @version : 2013-4-12
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-@Singleton
 public class ManagedServletPipeline {
     private ServletDefinition[] servletDefinitions;
     private volatile boolean    initialized = false;

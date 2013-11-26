@@ -16,8 +16,9 @@
 package net.hasor.jdbc.dao;
 import java.sql.Connection;
 import javax.sql.DataSource;
+import net.hasor.jdbc.datasource.services.DataSourceUtils;
 import net.hasor.jdbc.opface.core.JdbcTemplate;
-import net.hasor.jdbc.transaction._.DataSourceUtils;
+import net.hasor.jdbc.opface.named.NamedParameterJdbcTemplate;
 /**
  * Convenient super class for JDBC-based data access objects.
  *
@@ -35,8 +36,30 @@ import net.hasor.jdbc.transaction._.DataSourceUtils;
  * @see #getJdbcTemplate
  * @see org.noe.platform.modules.db.jdbcorm.jdbc.core.JdbcTemplate
  */
-public abstract class JdbcDaoSupport extends AbstractDao {
-    private JdbcTemplate jdbcTemplate;
+public abstract class JdbcDaoSupport {
+    private JdbcTemplate               jdbcTemplate;
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    //
+    //
+    //
+    /**Return a NamedParameterJdbcTemplate wrapping the configured JdbcTemplate.*/
+    public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
+        if (this.namedParameterJdbcTemplate == null)
+            this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(getJdbcTemplate());
+        return namedParameterJdbcTemplate;
+    }
+    /**Set the JdbcTemplate for this DAO explicitly, as an alternative to specifying a DataSource.*/
+    public final void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+        initTemplateConfig();
+    }
+    /**Return the JdbcTemplate for this DAO, pre-initialized with the DataSource or set explicitly.*/
+    public final JdbcTemplate getJdbcTemplate() {
+        return this.jdbcTemplate;
+    }
+    //
+    //
+    //
     /**Set the JDBC DataSource to be used by this DAO.*/
     public final void setDataSource(DataSource dataSource) {
         if (this.jdbcTemplate == null || dataSource != this.jdbcTemplate.getDataSource()) {
@@ -60,15 +83,6 @@ public abstract class JdbcDaoSupport extends AbstractDao {
     public final DataSource getDataSource() {
         return (this.jdbcTemplate != null ? this.jdbcTemplate.getDataSource() : null);
     }
-    /**Set the JdbcTemplate for this DAO explicitly, as an alternative to specifying a DataSource.*/
-    public final void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-        initTemplateConfig();
-    }
-    /**Return the JdbcTemplate for this DAO, pre-initialized with the DataSource or set explicitly.*/
-    public final JdbcTemplate getJdbcTemplate() {
-        return this.jdbcTemplate;
-    }
     /**
      * Initialize the template-based configuration of this DAO.
      * Called after a new JdbcTemplate has been set, either directly
@@ -82,16 +96,16 @@ public abstract class JdbcDaoSupport extends AbstractDao {
      * Get a JDBC Connection, either from the current transaction or a new one.
      * @return the JDBC Connection
      * @throws CannotGetJdbcConnectionException if the attempt to get a Connection failed
-     * @see net.hasor.jdbc.transaction._.noe.platform.modules.db.jdbcorm.jdbc.datasource.DataSourceUtils#getConnection(javax.sql.DataSource)
+     * @see net.hasor.jdbc.datasource.services.noe.platform.modules.db.jdbcorm.jdbc.datasource.DataSourceUtils#getConnection(javax.sql.DataSource)
      */
-    protected final Connection getConnection() throws CannotGetJdbcConnectionException {
+    protected final Connection getConnection() {
         return DataSourceUtils.getConnection(getDataSource());
     }
     /**
      * Close the given JDBC Connection, created via this DAO's DataSource,
      * if it isn't bound to the thread.
      * @param con Connection to close
-     * @see net.hasor.jdbc.transaction._.noe.platform.modules.db.jdbcorm.jdbc.datasource.DataSourceUtils#releaseConnection
+     * @see net.hasor.jdbc.datasource.services.noe.platform.modules.db.jdbcorm.jdbc.datasource.DataSourceUtils#releaseConnection
      */
     protected final void releaseConnection(Connection con) {
         DataSourceUtils.releaseConnection(con, getDataSource());

@@ -1,6 +1,14 @@
 Hasor-Jdbc v0.0.1
-* New:
+* 新增:
 	1.通过 operations 软件包为 Java 应用程序提供了一个轻量化 JDBC 操作接口。
 	    -它有 98% 的代码来自于 Spring JDBC。
 	2.软件包 datasource 为 Java 应用程序提供了数据源服务。
 	3.软件包 transaction 提供了一套 多数据源的事务管理，它不同于 JTA。
+
+
+
+
+1.需要解决 net.hasor.jdbc.datasource 与 net.hasor.jdbc.opface、net.hasor.jdbc.transaction 直接耦合服务关系。
+2.
+
+

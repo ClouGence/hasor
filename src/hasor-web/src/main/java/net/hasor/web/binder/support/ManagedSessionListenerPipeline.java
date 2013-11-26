@@ -16,7 +16,6 @@
 package net.hasor.web.binder.support;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Singleton;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpSessionEvent;
 import net.hasor.core.AppContext;
@@ -29,7 +28,6 @@ import com.google.inject.TypeLiteral;
  * @version : 2013-4-12
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-@Singleton
 public class ManagedSessionListenerPipeline implements SessionListenerPipeline {
     private HttpSessionListenerDefinition[] sessionListeners = null;
     private ContextListenerDefinition[]     contextListeners = null;

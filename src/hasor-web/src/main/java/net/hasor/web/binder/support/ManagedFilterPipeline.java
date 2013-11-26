@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import javax.inject.Singleton;
 import javax.servlet.FilterChain;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -38,7 +37,6 @@ import com.google.inject.TypeLiteral;
  * @version : 2013-4-12
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-@Singleton
 public class ManagedFilterPipeline implements FilterPipeline {
     private final ManagedServletPipeline servletPipeline;
     private FilterDefinition[]           filterDefinitions;

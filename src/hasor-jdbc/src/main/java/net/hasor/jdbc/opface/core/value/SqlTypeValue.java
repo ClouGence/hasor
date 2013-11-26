@@ -21,7 +21,7 @@ import net.hasor.jdbc.opface.core.util.JdbcUtils;
 /**
  * Interface to be implemented for setting values for more complex database-specific
  * types not supported by the standard <code>setObject</code> method. This is
- * effectively an extended variant of {@link org.noe.platform.modules.db.jdbcorm.jdbc.support.SqlValue}.
+ * effectively an extended variant of {@link net.hasor.jdbc.opface.core.value.SqlValue}.
  *
  * <p>Implementations perform the actual work of setting the actual values. They must
  * implement the callback method <code>setTypeValue</code> which can throw SQLExceptions
@@ -35,7 +35,7 @@ import net.hasor.jdbc.opface.core.util.JdbcUtils;
  * @see java.sql.Types
  * @see java.sql.PreparedStatement#setObject
  * @see JdbcOperations#update(String, Object[], int[])
- * @see org.noe.platform.modules.db.jdbcorm.jdbc.support.SqlValue
+ * @see net.hasor.jdbc.opface.core.value.SqlValue
  */
 public interface SqlTypeValue {
     /**

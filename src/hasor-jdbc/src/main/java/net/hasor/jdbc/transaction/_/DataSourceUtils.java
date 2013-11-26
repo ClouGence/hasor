@@ -17,6 +17,8 @@ package net.hasor.jdbc.transaction._;
 import java.sql.Connection;
 import javax.sql.DataSource;
 import net.hasor.Hasor;
+import net.hasor.jdbc.transaction._.ConnectionHolder;
+import net.hasor.jdbc.transaction._.TransactionSynchronizationManager;
 /**
  * 
  * @version : 2013-10-30

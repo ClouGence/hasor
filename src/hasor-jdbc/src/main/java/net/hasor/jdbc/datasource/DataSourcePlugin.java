@@ -69,6 +69,5 @@ public class DataSourcePlugin extends AbstractHasorPlugin {
                 }
             }
         }
-        //
     }
 }

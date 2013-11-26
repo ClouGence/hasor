@@ -1,5 +1,6 @@
 Hasor-Web v0.0.4
-* Bug:
+* 改进:
+    1.少量代码优化。
 
 
 Hasor-Web v0.0.3
@@ -7,15 +8,15 @@ Hasor-Web v0.0.3
     1.修复 #4 在 debug 模式下 Resources 模块在处理位于 Classpath 中资源时会反复的覆盖缓存结果。
         -这样设计的目的是为了方便开发调试应用程序。
     2.修复 #9 在负责加载资源的 HttpServlet 中增加了 404 情况的响应。
-    3.修复 #6 ZipResourceLoader 在构造方法中新增一个 Set 用于存放压缩文件中的名称集合。
+    3.修复 #6 ZipResourceLoader 在构造方法中 new 一个 Set 用于存放压缩文件中的名称集合。
         Set 中存放的内容用于减少 Zip 压缩包打开的次数。
-* New:
+* 新增:
     1.ResourceLoader 接口新增 exist、canModify、close 方法。用于判断资源是否存在以及是否可能被更改。
         ClassPathResourceLoader、PathResourceLoader、ZipResourceLoader 分别实现了它们。
     2.新增了 Resources 模块在每次启动时都会清理之前的缓存文件。
     3.新增 WebEnvironment 接口，该接口可以在启动时通过 WebApiBinder 接口获取到。
     4.WebApiBinder 接口中新增  getServletContext 方法用以获取 ServletContext 对象。
-* Improvement:
+* 改进:
     1.Resource 组建的使用不在通过配置文件，而改为需要通过代码进行少量配置。这样以减少学习成本，增加灵活性。
     2.RuntimeFilter 同一个应用程序只能实例化一个 RuntimeFilter 对象。
     3.代码大面积优化。
@@ -26,18 +27,18 @@ Hasor-Web v0.0.2
 * Bug:
     1.修复#1 Hasor-Web v0.0.1- Restful 服务无法正常发布的问题。
     2.修复#2 从 WebApiBinder 接口中注册的 Filter 启动顺序不可控的问题。
-* Improvement:
+* 改进:
     1.优化：抛出的异常。
     2.修改：根POM改为 0.0.2 该版本可以处理 GBK 编码下 Javadocs 生成。
     3.删除：mime 相关代码。
-* New:
-    1.新增接口WebApiBinder新增方法，可以通过代码形式注册 Servlet/Filter时指定顺序。
+* 新增:
+    1.接口WebApiBinder新增方法，可以通过代码形式注册 Servlet/Filter时指定顺序。
     2.新增 Restful 拦截器的支持。
     3.新增 Restful 服务可以使用 @Forword、@Include、@Json、@Redirect 注解。
 
 
 Hasor-Web v0.0.1
-* New:
+* 新增:
     01.支持 @WebServlet 注解定义 HttpServlet。
     02.支持 @WebFilter 注解定义 Filter
     03.支持 @Controller 注解定义 Web MVC 模式下的控制器（Action）。

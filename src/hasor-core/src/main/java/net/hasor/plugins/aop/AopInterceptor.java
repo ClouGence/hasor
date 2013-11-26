@@ -16,9 +16,8 @@
 package net.hasor.plugins.aop;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.WeakHashMap;
 import net.hasor.core.AppContext;
 import net.hasor.plugins.aware.AppContextAware;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -29,8 +28,8 @@ import org.aopalliance.intercept.MethodInvocation;
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
 class AopInterceptor implements MethodInterceptor, AppContextAware {
-    private AppContext                                            appContext           = null;
-    private Map<Method, List<Class<? extends MethodInterceptor>>> methodInterceptorMap = new HashMap<Method, List<Class<? extends MethodInterceptor>>>();
+    private AppContext                                                    appContext           = null;
+    private WeakHashMap<Method, List<Class<? extends MethodInterceptor>>> methodInterceptorMap = new WeakHashMap<Method, List<Class<? extends MethodInterceptor>>>();
     //
     public AopInterceptor() {
         AwareUtil.registerAppContextAware(this);

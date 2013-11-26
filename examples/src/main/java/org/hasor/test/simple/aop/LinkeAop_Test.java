@@ -34,6 +34,11 @@ public class LinkeAop_Test {
         //
         AopBean_ClassLv bean = appContext.getInstance(AopBean_ClassLv.class);
         System.out.println(bean.fooA("fooA"));
+        System.out.println(bean.fooA("fooA"));
+        System.out.println(bean.fooA("fooA"));
+        System.out.println(bean.fooA("fooA"));
+        System.out.println(bean.fooA("fooA"));
+        System.out.println(bean.fooA("fooA"));
         System.out.println(bean.fooB("fooB"));
     }
     @Test

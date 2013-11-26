@@ -36,6 +36,7 @@ import net.hasor.Hasor;
 import net.hasor.jdbc.DataAccessException;
 import net.hasor.jdbc.InvalidDataAccessException;
 import net.hasor.jdbc.SQLWarningException;
+import net.hasor.jdbc.datasource.services.DataSourceUtils;
 import net.hasor.jdbc.opface.BatchPreparedStatementSetter;
 import net.hasor.jdbc.opface.CallableStatementCallback;
 import net.hasor.jdbc.opface.CallableStatementCreator;
@@ -51,10 +52,9 @@ import net.hasor.jdbc.opface.SqlRowSet;
 import net.hasor.jdbc.opface.StatementCallback;
 import net.hasor.jdbc.opface.core.util.JdbcUtils;
 import net.hasor.jdbc.transaction._.ConnectionProxy;
-import net.hasor.jdbc.transaction._.DataSourceUtils;
 import org.more.util.ArrayUtils;
 /**
- * 
+ * 数据库操作模板方法。
  * @version : 2013-10-12
  * @author 赵永春 (zyc@byshell.org)
  */

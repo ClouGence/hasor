@@ -31,34 +31,33 @@ import org.slf4j.LoggerFactory;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public abstract class Hasor {
-    //
+    private static StackTraceElement onTrace() {
+        StackTraceElement[] stackElements = Thread.currentThread().getStackTrace();
+        StackTraceElement onCode = stackElements[4];
+        return onCode;
+    }
     private static String callerTrace() {
-        StackTraceElement[] stackElements = new Exception().getStackTrace();
-        StackTraceElement onCode = stackElements[2];
+        StackTraceElement onCode = onTrace();
         String callerClass = onCode.getClassName();
         return callerClass.substring(callerClass.lastIndexOf(".") + 1) + ":" + onCode.getMethodName();
     }
     private static String callerInfo() {
-        StackTraceElement[] stackElements = new Exception().getStackTrace();
-        StackTraceElement onCode = stackElements[2];
+        StackTraceElement onCode = onTrace();
         String callerClass = onCode.getClassName();
         return callerClass.substring(callerClass.lastIndexOf(".") + 1) + ":" + onCode.getMethodName();
     }
     private static String callerWarn() {
-        StackTraceElement[] stackElements = new Exception().getStackTrace();
-        StackTraceElement onCode = stackElements[2];
+        StackTraceElement onCode = onTrace();
         String callerClass = onCode.getClassName();
         return callerClass.substring(callerClass.lastIndexOf(".") + 1) + ":" + onCode.getMethodName();
     }
     private static String callerErr() {
-        StackTraceElement[] stackElements = new Exception().getStackTrace();
-        StackTraceElement onCode = stackElements[2];
+        StackTraceElement onCode = onTrace();
         //String callerClass = onCode.getClassName();
         return onCode.getFileName() + ":" + onCode.getLineNumber() + " - " + onCode.getMethodName();
     }
     private static Class<?> callerClass() {
-        StackTraceElement[] stackElements = new Exception().getStackTrace();
-        StackTraceElement onCode = stackElements[2];
+        StackTraceElement onCode = onTrace();
         try {
             return Class.forName(onCode.getClassName());
         } catch (Exception e) {

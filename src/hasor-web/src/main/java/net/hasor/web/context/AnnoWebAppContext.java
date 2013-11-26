@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.servlet.ServletContext;
 import net.hasor.core.binder.ApiBinderModule;
 import net.hasor.core.context.AnnoStandardAppContext;
@@ -65,9 +66,9 @@ public class AnnoWebAppContext extends AnnoStandardAppContext implements WebAppC
         Module webModule = new Module() {
             public void configure(Binder binder) {
                 /*Bind*/
-                binder.bind(ManagedServletPipeline.class);
-                binder.bind(FilterPipeline.class).to(ManagedFilterPipeline.class);
-                binder.bind(SessionListenerPipeline.class).to(ManagedSessionListenerPipeline.class);
+                binder.bind(ManagedServletPipeline.class).asEagerSingleton();
+                binder.bind(FilterPipeline.class).to(ManagedFilterPipeline.class).asEagerSingleton();
+                binder.bind(SessionListenerPipeline.class).to(ManagedSessionListenerPipeline.class).asEagerSingleton();
                 /*绑定ServletContext对象的Provider*/
                 binder.bind(ServletContext.class).toProvider(new Provider<ServletContext>() {
                     public ServletContext get() {
@@ -76,12 +77,12 @@ public class AnnoWebAppContext extends AnnoStandardAppContext implements WebAppC
                 });
             }
         };
-        //2.
+        //2.追加Guice Module
         ArrayList<Module> guiceModuleSet = new ArrayList<Module>();
-        guiceModuleSet.add(webModule);
         if (guiceModules != null)
-            for (Module mod : guiceModules)
-                guiceModuleSet.add(mod);
+            guiceModuleSet.addAll(Arrays.asList(guiceModules));
+        guiceModuleSet.add(webModule);
+        //3.创建Guice
         return super.createInjector(guiceModuleSet.toArray(new Module[guiceModuleSet.size()]));
     }
     protected WebEnvironment createEnvironment() {
