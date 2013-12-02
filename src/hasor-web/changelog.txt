@@ -24,7 +24,6 @@ Hasor-Web v0.0.3
     3.代码大面积优化。
 
 
-
 Hasor-Web v0.0.2
 * Bug:
     1.修复#1 Hasor-Web v0.0.1- Restful 服务无法正常发布的问题。

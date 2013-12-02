@@ -36,7 +36,7 @@ import net.hasor.Hasor;
 import net.hasor.jdbc.DataAccessException;
 import net.hasor.jdbc.InvalidDataAccessException;
 import net.hasor.jdbc.SQLWarningException;
-import net.hasor.jdbc.datasource.services.DataSourceUtils;
+import net.hasor.jdbc.datasource.connection.DataSourceUtils;
 import net.hasor.jdbc.opface.BatchPreparedStatementSetter;
 import net.hasor.jdbc.opface.CallableStatementCallback;
 import net.hasor.jdbc.opface.CallableStatementCreator;

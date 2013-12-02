@@ -13,23 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.datasource.services;
+package net.hasor.jdbc.datasource;
 import java.sql.Connection;
+import java.sql.SQLException;
 import javax.sql.DataSource;
 /**
  * 
- * @version : 2013-10-30
+ * @version : 2013-12-2
  * @author 赵永春(zyc@hasor.net)
  */
-public class DataSourceUtils {
-    
-    //
+public interface DataSourceUtilService {
     /**申请连接*/
-    public static Connection getConnection(DataSource dataSource) {
-        // TODO Auto-generated method stub
-    }
+    public Connection getConnection(DataSource dataSource) throws SQLException;
     /**释放连接*/
-    public static void releaseConnection(Connection con, DataSource dataSource) {
-        // TODO Auto-generated method stub
-    }
+    public void releaseConnection(Connection con, DataSource dataSource) throws SQLException;
 }

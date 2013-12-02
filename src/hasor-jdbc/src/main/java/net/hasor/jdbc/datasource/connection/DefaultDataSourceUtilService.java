@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2006 the original author or authors.
+ * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.datasource;
+package net.hasor.jdbc.datasource.connection;
+import java.sql.Connection;
+import java.sql.SQLException;
 import javax.sql.DataSource;
-import net.hasor.core.Environment;
-import net.hasor.core.XmlNode;
+import net.hasor.jdbc.datasource.DataSourceUtilService;
 /**
  * 
- * @version : 2013-10-8
+ * @version : 2013-12-2
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-public interface DataSourceFactory {
-    public DataSource createDataSource(Environment env, XmlNode configElement) throws Throwable;
+class DefaultDataSourceUtilService implements DataSourceUtilService {
+    /**…Í«Î¡¨Ω”*/
+    public Connection getConnection(DataSource dataSource) throws SQLException {
+        return dataSource.getConnection();
+    };
+    /** Õ∑≈¡¨Ω”*/
+    public void releaseConnection(Connection con, DataSource dataSource) throws SQLException {
+        con.close();
+    };
 }
