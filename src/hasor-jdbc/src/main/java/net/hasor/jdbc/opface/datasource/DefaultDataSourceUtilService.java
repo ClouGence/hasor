@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.datasource.connection;
+package net.hasor.jdbc.opface.datasource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;

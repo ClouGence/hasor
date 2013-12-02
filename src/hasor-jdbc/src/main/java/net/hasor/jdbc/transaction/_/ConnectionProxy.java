@@ -15,7 +15,7 @@
  */
 package net.hasor.jdbc.transaction._;
 import java.sql.Connection;
-import net.hasor.jdbc.datasource.connection.DataSourceUtils;
+import net.hasor.jdbc.opface.datasource.DataSourceUtils;
 /**
  * Subinterface of {@link java.sql.Connection} to be implemented by
  * Connection proxies. Allows access to the underlying target Connection.

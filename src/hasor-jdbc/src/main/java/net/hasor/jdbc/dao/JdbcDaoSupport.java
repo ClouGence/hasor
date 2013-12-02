@@ -18,8 +18,8 @@ import java.sql.Connection;
 import java.util.Map;
 import java.util.UUID;
 import javax.sql.DataSource;
-import net.hasor.jdbc.datasource.connection.DataSourceUtils;
 import net.hasor.jdbc.opface.core.JdbcTemplate;
+import net.hasor.jdbc.opface.datasource.DataSourceUtils;
 /**
  * Convenient super class for JDBC-based data access objects.
  * @author Juergen Hoeller (by 28.07.2003)
@@ -71,7 +71,7 @@ public abstract class JdbcDaoSupport {
      * 从当前事务中获取一个新的数据库连接。
      * @return the JDBC Connection
      * @throws CannotGetJdbcConnectionException if the attempt to get a Connection failed
-     * @see net.hasor.jdbc.datasource.connection.DataSourceUtils#getConnection(javax.sql.DataSource)
+     * @see net.hasor.jdbc.opface.datasource.DataSourceUtils#getConnection(javax.sql.DataSource)
      */
     protected final Connection getConnection() {
         return DataSourceUtils.getConnection(getDataSource());
@@ -79,7 +79,7 @@ public abstract class JdbcDaoSupport {
     /**
      * Close the given JDBC Connection, created via this DAO's DataSource, if it isn't bound to the thread.
      * @param con Connection to close
-     * @see net.hasor.jdbc.datasource.connection.DataSourceUtils#releaseConnection(Connection, DataSource)
+     * @see net.hasor.jdbc.opface.datasource.DataSourceUtils#releaseConnection(Connection, DataSource)
      */
     protected final void releaseConnection(Connection con) {
         DataSourceUtils.releaseConnection(con, getDataSource());
