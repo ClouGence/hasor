@@ -49,11 +49,11 @@ public class ServicesRegisterHandlerDefine implements AppContextAware {
     public Class<?> getServiceType() {
         return this.serviceType;
     }
-    public void registerService(Object targetService) {
-        this.handler.registerService(targetService);
+    public boolean registerService(Object targetService) {
+        return this.handler.registerService(targetService);
     }
-    public void unRegisterService(Object targetService) {
-        this.handler.unRegisterService(targetService);
+    public boolean unRegisterService(Object targetService) {
+        return this.handler.unRegisterService(targetService);
     }
     public ServicesRegisterHandler getHandler() {
         return this.handler;

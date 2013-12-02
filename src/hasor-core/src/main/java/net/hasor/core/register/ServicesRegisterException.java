@@ -14,14 +14,22 @@
  * limitations under the License.
  */
 package net.hasor.core.register;
+import org.more.util.exception.NestableRuntimeException;
 /**
  * 
- * @version : 2013-10-29
+ * @version : 2013-12-2
  * @author 赵永春(zyc@hasor.net)
  */
-public interface ServicesRegisterHandler {
-    /**服务对象要求被注册*/
-    public boolean registerService(Object targetService);
-    /**服务对象要求被解除已有的注册*/
-    public boolean unRegisterService(Object serviceBean);
+public class ServicesRegisterException extends NestableRuntimeException {
+    private static final long serialVersionUID = -4593623135152184808L;
+    //
+    public ServicesRegisterException(String message) {
+        super(message);
+    }
+    public ServicesRegisterException(Throwable cause) {
+        super(cause);
+    }
+    public ServicesRegisterException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

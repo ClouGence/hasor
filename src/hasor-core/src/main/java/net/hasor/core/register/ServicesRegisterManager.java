@@ -97,80 +97,92 @@ public class ServicesRegisterManager implements EventListener {
     }
     private Map<Object, MappingItem> serviceBeanMapping = new HashMap<Object, MappingItem>();
     /*注册服务。*/
-    public synchronized void registerService(Class<?> type, Class<?> serviceType, Object... objects) {
+    public synchronized boolean registerService(Class<?> type, Class<?> serviceType, Object... objects) {
         Hasor.assertIsNotNull(type, "the binding type of Service is null.");
         Hasor.assertIsNotNull(serviceType, "serviceType is null.");
         Hasor.assertIsLegal(!serviceBeanMapping.containsKey(serviceType), "Repeat service registry at : " + serviceType);
         //
         Object serviceBean = this.appContext.getInstance(serviceType);
         MappingItem regItem = createMappingItem(type, serviceBean);
-        this.serviceBeanMapping.put(serviceType, regItem);
-        this._registerServiceObject(type, regItem, objects);
+        boolean res = this._registerServiceObject(type, regItem, objects);
+        if (res)
+            this.serviceBeanMapping.put(serviceType, regItem);
+        return res;
     };
     /*注册服务。*/
-    public synchronized void registerService(Class<?> type, Key<?> serviceKey, Object... objects) {
+    public synchronized boolean registerService(Class<?> type, Key<?> serviceKey, Object... objects) {
         Hasor.assertIsNotNull(type, "the binding type of Service is null.");
         Hasor.assertIsNotNull(serviceKey, "serviceKey is null.");
         Hasor.assertIsLegal(!serviceBeanMapping.containsKey(serviceKey), "Repeat service registry at : " + serviceKey);
         //
         Object serviceBean = this.appContext.getGuice().getInstance(serviceKey);
         MappingItem regItem = createMappingItem(type, serviceBean);
-        this.serviceBeanMapping.put(serviceKey, regItem);
-        this._registerServiceObject(type, regItem, objects);
+        boolean res = this._registerServiceObject(type, regItem, objects);
+        if (res)
+            this.serviceBeanMapping.put(serviceKey, regItem);
+        return res;
     };
     /*注册服务。*/
-    public synchronized void registerServiceObject(Class<?> type, Object serviceBean, Object... objects) {
+    public synchronized boolean registerServiceObject(Class<?> type, Object serviceBean, Object... objects) {
         Hasor.assertIsNotNull(type, "the binding type of Service is null.");
         Hasor.assertIsNotNull(serviceBean, "serviceBean is null.");
         Hasor.assertIsLegal(!serviceBeanMapping.containsKey(serviceBean), "Repeat service registry at : " + serviceBean);
         //
         MappingItem regItem = createMappingItem(type, serviceBean);
-        this.serviceBeanMapping.put(serviceBean, regItem);
-        this._registerServiceObject(type, regItem, objects);
+        boolean res = this._registerServiceObject(type, regItem, objects);
+        if (res)
+            this.serviceBeanMapping.put(serviceBean, regItem);
+        return res;
     };
     /*解除注册服务。*/
-    public synchronized void unRegisterService(Class<?> type, Class<?> serviceType) {
+    public synchronized boolean unRegisterService(Class<?> type, Class<?> serviceType) {
         Hasor.assertIsNotNull(type, "the binding type of Service is null.");
         Hasor.assertIsNotNull(serviceType, "serviceType is null.");
         //
         if (!serviceBeanMapping.containsKey(serviceType))
-            return;
-        this._unRegisterServiceObject(type, serviceBeanMapping.get(serviceType));
-        serviceBeanMapping.remove(serviceType);
+            return false;
+        boolean res = this._unRegisterServiceObject(type, serviceBeanMapping.get(serviceType));
+        if (res)
+            serviceBeanMapping.remove(serviceType);
+        return res;
     };
     /*解除注册服务。*/
-    public synchronized void unRegisterService(Class<?> type, Key<?> serviceKey) {
+    public synchronized boolean unRegisterService(Class<?> type, Key<?> serviceKey) {
         Hasor.assertIsNotNull(type, "the binding type of Service is null.");
         Hasor.assertIsNotNull(serviceKey, "serviceKey is null.");
         //
         if (!serviceBeanMapping.containsKey(serviceKey))
-            return;
-        this._unRegisterServiceObject(type, serviceBeanMapping.get(serviceKey));
-        serviceBeanMapping.remove(serviceKey);
+            return false;
+        boolean res = this._unRegisterServiceObject(type, serviceBeanMapping.get(serviceKey));
+        if (res)
+            serviceBeanMapping.remove(serviceKey);
+        return res;
     };
     /*解除注册服务。*/
-    public synchronized void unRegisterServiceObject(Class<?> type, Object serviceBean) {
+    public synchronized boolean unRegisterServiceObject(Class<?> type, Object serviceBean) {
         Hasor.assertIsNotNull(type, "the binding type of Service is null.");
         Hasor.assertIsNotNull(serviceBean, "serviceBean is null.");
         //
         if (!serviceBeanMapping.containsKey(serviceBean))
-            return;
-        this._unRegisterServiceObject(type, serviceBeanMapping.get(serviceBean));
-        serviceBeanMapping.remove(serviceBean);
+            return false;
+        boolean res = this._unRegisterServiceObject(type, serviceBeanMapping.get(serviceBean));
+        if (res)
+            serviceBeanMapping.remove(serviceBean);
+        return res;
     };
     /*注册服务。*/
-    private void _registerServiceObject(Class<?> type, MappingItem serviceBean, Object... objects) {
-        ServicesRegisterHandlerDefine define = this.handlerDefine.get(type);
+    private boolean _registerServiceObject(Class<?> serviceType, MappingItem serviceBean, Object... objects) throws ServicesRegisterException {
+        ServicesRegisterHandlerDefine define = this.handlerDefine.get(serviceType);
         if (define == null)
-            return;
-        define.registerService(serviceBean.target);
+            throw new ServicesRegisterException("undefined ServicesRegisterHandler of type " + serviceType.getName());
+        return define.registerService(serviceBean.target);
     };
     /*解除注册服务。*/
-    private void _unRegisterServiceObject(Class<?> type, MappingItem serviceBean) {
-        ServicesRegisterHandlerDefine define = this.handlerDefine.get(type);
+    private boolean _unRegisterServiceObject(Class<?> serviceType, MappingItem serviceBean) throws ServicesRegisterException {
+        ServicesRegisterHandlerDefine define = this.handlerDefine.get(serviceType);
         if (define == null)
-            return;
-        define.unRegisterService(serviceBean.target);
+            throw new ServicesRegisterException("undefined ServicesRegisterHandler of type " + serviceType.getName());
+        return define.unRegisterService(serviceBean.target);
     }
     public ServicesRegisterHandler lookUpRegisterService(Class<?> type) {
         ServicesRegisterHandlerDefine define = this.handlerDefine.get(type);

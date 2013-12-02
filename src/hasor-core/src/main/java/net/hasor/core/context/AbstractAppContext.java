@@ -53,23 +53,23 @@ import com.google.inject.name.Names;
 public abstract class AbstractAppContext implements AppContext {
     //-----------------------------------------------------------------------------------------ServicesRegister
     private ServicesRegisterManager servicesRegisterManager;
-    public <T> void registerService(Class<T> type, T serviceBean, Object... objects) {
-        this.servicesRegisterManager.registerServiceObject(type, serviceBean, objects);
+    public <T> boolean registerService(Class<T> type, T serviceBean, Object... objects) {
+        return this.servicesRegisterManager.registerServiceObject(type, serviceBean, objects);
     }
-    public <T> void registerService(Class<T> type, Class<? extends T> serviceType, Object... objects) {
-        this.servicesRegisterManager.registerService(type, serviceType, objects);
+    public <T> boolean registerService(Class<T> type, Class<? extends T> serviceType, Object... objects) {
+        return this.servicesRegisterManager.registerService(type, serviceType, objects);
     }
-    public <T> void registerService(Class<T> type, Key<? extends T> serviceKey, Object... objects) {
-        this.servicesRegisterManager.registerService(type, serviceKey, objects);
+    public <T> boolean registerService(Class<T> type, Key<? extends T> serviceKey, Object... objects) {
+        return this.servicesRegisterManager.registerService(type, serviceKey, objects);
     }
-    public <T> void unRegisterService(Class<T> type, T serviceBean) {
-        this.servicesRegisterManager.unRegisterServiceObject(type, serviceBean);
+    public <T> boolean unRegisterService(Class<T> type, T serviceBean) {
+        return this.servicesRegisterManager.unRegisterServiceObject(type, serviceBean);
     }
-    public <T> void unRegisterService(Class<T> type, Class<? extends T> serviceType) {
-        this.servicesRegisterManager.unRegisterService(type, serviceType);
+    public <T> boolean unRegisterService(Class<T> type, Class<? extends T> serviceType) {
+        return this.servicesRegisterManager.unRegisterService(type, serviceType);
     }
-    public <T> void unRegisterService(Class<T> type, Key<? extends T> serviceKey) {
-        this.servicesRegisterManager.unRegisterService(type, serviceKey);
+    public <T> boolean unRegisterService(Class<T> type, Key<? extends T> serviceKey) {
+        return this.servicesRegisterManager.unRegisterService(type, serviceKey);
     }
     public ServicesRegisterHandler lookUpRegisterService(Class<?> type) {
         return this.servicesRegisterManager.lookUpRegisterService(type);
