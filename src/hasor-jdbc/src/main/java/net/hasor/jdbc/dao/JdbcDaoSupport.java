@@ -15,38 +15,74 @@
  */
 package net.hasor.jdbc.dao;
 import java.sql.Connection;
+import java.util.Map;
+import java.util.UUID;
 import javax.sql.DataSource;
-import net.hasor.jdbc.datasource.services.DataSourceUtils;
+import net.hasor.jdbc.datasource.connection.DataSourceUtils;
 import net.hasor.jdbc.opface.core.JdbcTemplate;
-import net.hasor.jdbc.opface.named.NamedParameterJdbcTemplate;
 /**
  * Convenient super class for JDBC-based data access objects.
- *
- * <p>Requires a {@link javax.sql.DataSource} to be set, providing a
- * {@link org.noe.platform.modules.db.jdbcorm.jdbc.core.JdbcTemplate} based on it to
- * subclasses through the {@link #getJdbcTemplate()} method.
- *
- * <p>This base class is mainly intended for JdbcTemplate usage but can
- * also be used when working with a Connection directly or when using
- * <code>org.springframework.jdbc.object</code> operation objects.
- *
- * @author Juergen Hoeller
- * @since 28.07.2003
- * @see #setDataSource
- * @see #getJdbcTemplate
- * @see org.noe.platform.modules.db.jdbcorm.jdbc.core.JdbcTemplate
+ * @author Juergen Hoeller (by 28.07.2003)
+ * @author 赵永春(zyc@hasor.net)
+ * @version : 2013-10-8
  */
 public abstract class JdbcDaoSupport {
-    private JdbcTemplate               jdbcTemplate;
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private Class<?>     entityType   = null;
+    private JdbcTemplate jdbcTemplate = null;
+    //
+    public final Class<?> getEntityType() {
+        return entityType;
+    };
+    public final void setEntityType(Class<?> entityType) {
+        this.entityType = entityType;
+    }
+    protected void initDao() {
+        if (this.entityType == null)
+            this.entityType = this.confirmEntityType();
+    }
+    protected abstract Class<?> confirmEntityType();
+    //
+    public static String newUUID() {
+        return UUID.randomUUID().toString().replace("-", "");
+    }
     //
     //
-    //
-    /**Return a NamedParameterJdbcTemplate wrapping the configured JdbcTemplate.*/
-    public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
-        if (this.namedParameterJdbcTemplate == null)
-            this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(getJdbcTemplate());
-        return namedParameterJdbcTemplate;
+    public QueryState createQuery() {
+        return new QueryState(this.getJdbcTemplate(), this.getEntityType());
+    }
+    public void insertByMap(Map<String, Object> schemaData) {
+        String tableName = EntityHelper.getTableName(getEntityType());
+        this.getJdbcTemplate().insertMap(tableName, schemaData);
+    }
+    public void deleteByMap(Map<String, Object> schemaData) {
+        QueryState query = this.createQuery();
+        for (String key : schemaData.keySet()) {
+            Object valueOri = schemaData.get(key);
+            if (valueOri.getClass().isArray()) {
+                Object[] values = (Object[]) valueOri;
+                query.addConditions(key, values, ConditionPatternEnum.EQ);
+            } else {
+                query.addCondition(key, valueOri, ConditionPatternEnum.EQ);
+            }
+        }
+        query.doDelete();
+    }
+    /**
+     * 从当前事务中获取一个新的数据库连接。
+     * @return the JDBC Connection
+     * @throws CannotGetJdbcConnectionException if the attempt to get a Connection failed
+     * @see net.hasor.jdbc.datasource.connection.DataSourceUtils#getConnection(javax.sql.DataSource)
+     */
+    protected final Connection getConnection() {
+        return DataSourceUtils.getConnection(getDataSource());
+    }
+    /**
+     * Close the given JDBC Connection, created via this DAO's DataSource, if it isn't bound to the thread.
+     * @param con Connection to close
+     * @see net.hasor.jdbc.datasource.connection.DataSourceUtils#releaseConnection(Connection, DataSource)
+     */
+    protected final void releaseConnection(Connection con) {
+        DataSourceUtils.releaseConnection(con, getDataSource());
     }
     /**Set the JdbcTemplate for this DAO explicitly, as an alternative to specifying a DataSource.*/
     public final void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
@@ -57,9 +93,6 @@ public abstract class JdbcDaoSupport {
     public final JdbcTemplate getJdbcTemplate() {
         return this.jdbcTemplate;
     }
-    //
-    //
-    //
     /**Set the JDBC DataSource to be used by this DAO.*/
     public final void setDataSource(DataSource dataSource) {
         if (this.jdbcTemplate == null || dataSource != this.jdbcTemplate.getDataSource()) {
@@ -67,11 +100,13 @@ public abstract class JdbcDaoSupport {
             initTemplateConfig();
         }
     }
+    /**Return the JDBC DataSource used by this DAO.*/
+    public final DataSource getDataSource() {
+        return (this.jdbcTemplate != null ? this.jdbcTemplate.getDataSource() : null);
+    }
     /**
-     * Create a JdbcTemplate for the given DataSource.
-     * Only invoked if populating the DAO with a DataSource reference!
-     * <p>Can be overridden in subclasses to provide a JdbcTemplate instance
-     * with different configuration, or a custom JdbcTemplate subclass.
+     * Create a JdbcTemplate for the given DataSource. Only invoked if populating the DAO with a DataSource reference!
+     * <p>Can be overridden in subclasses to provide a JdbcTemplate instance with different configuration, or a custom JdbcTemplate subclass.
      * @param dataSource the JDBC DataSource to create a JdbcTemplate for
      * @return the new JdbcTemplate instance
      * @see #setDataSource
@@ -79,35 +114,11 @@ public abstract class JdbcDaoSupport {
     protected JdbcTemplate createJdbcTemplate(DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
-    /**Return the JDBC DataSource used by this DAO.*/
-    public final DataSource getDataSource() {
-        return (this.jdbcTemplate != null ? this.jdbcTemplate.getDataSource() : null);
-    }
     /**
      * Initialize the template-based configuration of this DAO.
-     * Called after a new JdbcTemplate has been set, either directly
-     * or through a DataSource.
-     * <p>This implementation is empty. Subclasses may override this
-     * to configure further objects based on the JdbcTemplate.
+     * Called after a new JdbcTemplate has been set, either directly or through a DataSource.
+     * <p>This implementation is empty. Subclasses may override this to configure further objects based on the JdbcTemplate.
      * @see #getJdbcTemplate()
      */
     protected void initTemplateConfig() {}
-    /**
-     * Get a JDBC Connection, either from the current transaction or a new one.
-     * @return the JDBC Connection
-     * @throws CannotGetJdbcConnectionException if the attempt to get a Connection failed
-     * @see net.hasor.jdbc.datasource.services.noe.platform.modules.db.jdbcorm.jdbc.datasource.DataSourceUtils#getConnection(javax.sql.DataSource)
-     */
-    protected final Connection getConnection() {
-        return DataSourceUtils.getConnection(getDataSource());
-    }
-    /**
-     * Close the given JDBC Connection, created via this DAO's DataSource,
-     * if it isn't bound to the thread.
-     * @param con Connection to close
-     * @see net.hasor.jdbc.datasource.services.noe.platform.modules.db.jdbcorm.jdbc.datasource.DataSourceUtils#releaseConnection
-     */
-    protected final void releaseConnection(Connection con) {
-        DataSourceUtils.releaseConnection(con, getDataSource());
-    }
 }
