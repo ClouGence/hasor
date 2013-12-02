@@ -14,26 +14,48 @@
  * limitations under the License.
  */
 package net.hasor.core.register;
+import net.hasor.Hasor;
+import net.hasor.core.AppContext;
+import net.hasor.plugins.aware.AppContextAware;
 /**
  * 
  * @version : 2013-10-29
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-public class ServicesRegisterHandlerDefine<T> {
-    private Class<T>                   serviceType;
-    private ServicesRegisterHandler<T> handler;
+public class ServicesRegisterHandlerDefine implements AppContextAware {
+    private Class<?>                serviceType;
+    private Class<?>                handlerType;
+    private ServicesRegisterHandler handler;
     // 
-    public ServicesRegisterHandlerDefine(Class<T> serviceType, ServicesRegisterHandler<T> handler) {
+    public ServicesRegisterHandlerDefine(Class<?> serviceType, ServicesRegisterHandler handler) {
+        Hasor.assertIsNotNull(serviceType, "serviceType is null.");
+        Hasor.assertIsNotNull(handler, "ServicesRegisterHandler is null.");
+        AwareUtil.registerAppContextAware(this);
         this.serviceType = serviceType;
+        this.handlerType = handler.getClass();
         this.handler = handler;
+    }
+    public ServicesRegisterHandlerDefine(Class<?> serviceType, Class<ServicesRegisterHandler> handlerType) {
+        Hasor.assertIsNotNull(serviceType, "serviceType is null.");
+        Hasor.assertIsNotNull(handler, "ServicesRegisterHandler Type is null.");
+        AwareUtil.registerAppContextAware(this);
+        this.serviceType = serviceType;
+        this.handlerType = handlerType;
+    }
+    public void setAppContext(AppContext appContext) {
+        if (handler == null)
+            this.handler = (ServicesRegisterHandler) appContext.getInstance(this.handlerType);
     }
     public Class<?> getServiceType() {
         return this.serviceType;
     }
-    public void registerService(T targetService) {
+    public void registerService(Object targetService) {
         this.handler.registerService(targetService);
     }
-    public void unRegisterService(T targetService) {
+    public void unRegisterService(Object targetService) {
         this.handler.unRegisterService(targetService);
+    }
+    public ServicesRegisterHandler getHandler() {
+        return this.handler;
     }
 }

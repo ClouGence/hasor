@@ -33,12 +33,12 @@ import com.google.inject.Key;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ServicesRegisterManager implements EventListener {
-    private AppContext                                           appContext;
-    private Map<Class<?>, ServicesRegisterHandlerDefine<Object>> handlerDefine;
+    private AppContext                                   appContext;
+    private Map<Class<?>, ServicesRegisterHandlerDefine> handlerDefine;
     //
     public ServicesRegisterManager(final AppContext appContext) {
         this.appContext = appContext;
-        this.handlerDefine = new HashMap<Class<?>, ServicesRegisterHandlerDefine<Object>>();
+        this.handlerDefine = new HashMap<Class<?>, ServicesRegisterHandlerDefine>();
         EventManager eventMsg = this.appContext.getEventManager();
         eventMsg.addEventListener(ContextEvent_Start, this);
         eventMsg.addEventListener(ContextEvent_Stoped, this);
@@ -67,6 +67,20 @@ public class ServicesRegisterManager implements EventListener {
         }
     }
     //
+    //    private Map<Object, List<MappingItem>> serviceGroup = new HashMap<Object, List<MappingItem>>();
+    //    private List<MappingItem> getServiceList(Object groupBy) {
+    //        List<MappingItem> serviceList = this.serviceGroup.get(groupBy);
+    //        if (serviceList == null) {
+    //            serviceList = new ArrayList<MappingItem>();
+    //            this.serviceGroup.put(groupBy, serviceList);
+    //        }
+    //        return serviceList;
+    //    }
+    //    private Object getCurrentGroupKey() {
+    //        Object currentModule = ModulePropxy.getLocalModuleInfo(appContext);
+    //        currentModule = (currentModule == null) ? appContext : currentModule;
+    //        return currentModule;
+    //    }
     //
     //
     private static class MappingItem {
@@ -84,6 +98,8 @@ public class ServicesRegisterManager implements EventListener {
     private Map<Object, MappingItem> serviceBeanMapping = new HashMap<Object, MappingItem>();
     /*注册服务。*/
     public synchronized void registerService(Class<?> type, Class<?> serviceType, Object... objects) {
+        Hasor.assertIsNotNull(type, "the binding type of Service is null.");
+        Hasor.assertIsNotNull(serviceType, "serviceType is null.");
         Hasor.assertIsLegal(!serviceBeanMapping.containsKey(serviceType), "Repeat service registry at : " + serviceType);
         //
         Object serviceBean = this.appContext.getInstance(serviceType);
@@ -93,6 +109,8 @@ public class ServicesRegisterManager implements EventListener {
     };
     /*注册服务。*/
     public synchronized void registerService(Class<?> type, Key<?> serviceKey, Object... objects) {
+        Hasor.assertIsNotNull(type, "the binding type of Service is null.");
+        Hasor.assertIsNotNull(serviceKey, "serviceKey is null.");
         Hasor.assertIsLegal(!serviceBeanMapping.containsKey(serviceKey), "Repeat service registry at : " + serviceKey);
         //
         Object serviceBean = this.appContext.getGuice().getInstance(serviceKey);
@@ -102,6 +120,8 @@ public class ServicesRegisterManager implements EventListener {
     };
     /*注册服务。*/
     public synchronized void registerServiceObject(Class<?> type, Object serviceBean, Object... objects) {
+        Hasor.assertIsNotNull(type, "the binding type of Service is null.");
+        Hasor.assertIsNotNull(serviceBean, "serviceBean is null.");
         Hasor.assertIsLegal(!serviceBeanMapping.containsKey(serviceBean), "Repeat service registry at : " + serviceBean);
         //
         MappingItem regItem = createMappingItem(type, serviceBean);
@@ -110,6 +130,9 @@ public class ServicesRegisterManager implements EventListener {
     };
     /*解除注册服务。*/
     public synchronized void unRegisterService(Class<?> type, Class<?> serviceType) {
+        Hasor.assertIsNotNull(type, "the binding type of Service is null.");
+        Hasor.assertIsNotNull(serviceType, "serviceType is null.");
+        //
         if (!serviceBeanMapping.containsKey(serviceType))
             return;
         this._unRegisterServiceObject(type, serviceBeanMapping.get(serviceType));
@@ -117,6 +140,9 @@ public class ServicesRegisterManager implements EventListener {
     };
     /*解除注册服务。*/
     public synchronized void unRegisterService(Class<?> type, Key<?> serviceKey) {
+        Hasor.assertIsNotNull(type, "the binding type of Service is null.");
+        Hasor.assertIsNotNull(serviceKey, "serviceKey is null.");
+        //
         if (!serviceBeanMapping.containsKey(serviceKey))
             return;
         this._unRegisterServiceObject(type, serviceBeanMapping.get(serviceKey));
@@ -124,6 +150,9 @@ public class ServicesRegisterManager implements EventListener {
     };
     /*解除注册服务。*/
     public synchronized void unRegisterServiceObject(Class<?> type, Object serviceBean) {
+        Hasor.assertIsNotNull(type, "the binding type of Service is null.");
+        Hasor.assertIsNotNull(serviceBean, "serviceBean is null.");
+        //
         if (!serviceBeanMapping.containsKey(serviceBean))
             return;
         this._unRegisterServiceObject(type, serviceBeanMapping.get(serviceBean));
@@ -142,20 +171,11 @@ public class ServicesRegisterManager implements EventListener {
         if (define == null)
             return;
         define.unRegisterService(serviceBean.target);
+    }
+    public ServicesRegisterHandler lookUpRegisterService(Class<?> type) {
+        ServicesRegisterHandlerDefine define = this.handlerDefine.get(type);
+        if (define != null)
+            return define.getHandler();
+        return null;
     };
-    //
-    //    private Map<Object, List<MappingItem>> serviceGroup = new HashMap<Object, List<MappingItem>>();
-    //    private List<MappingItem> getServiceList(Object groupBy) {
-    //        List<MappingItem> serviceList = this.serviceGroup.get(groupBy);
-    //        if (serviceList == null) {
-    //            serviceList = new ArrayList<MappingItem>();
-    //            this.serviceGroup.put(groupBy, serviceList);
-    //        }
-    //        return serviceList;
-    //    }
-    //    private Object getCurrentGroupKey() {
-    //        Object currentModule = ModulePropxy.getLocalModuleInfo(appContext);
-    //        currentModule = (currentModule == null) ? appContext : currentModule;
-    //        return currentModule;
-    //    }
 }

@@ -107,7 +107,9 @@ public interface ApiBinder {
     public Set<Class<?>> getClassSet(Class<?> featureType);
     //
     /**×¢²á{@link ServicesRegisterHandler}*/
-    public <T> void registerServicesHandler(Class<T> serviceType, ServicesRegisterHandler<T> handler);
+    public <T> void registerServicesHandler(Class<T> serviceType, Class<ServicesRegisterHandler> handlerType);
+    /**×¢²á{@link ServicesRegisterHandler}*/
+    public <T> void registerServicesHandler(Class<T> serviceType, ServicesRegisterHandler handler);
     /**ÅäÖÃÄ£¿éÒÀÀµ¹ØÏµ¡£*/
     public DependencySettings dependency();
     /**×¢²áÒ»¸öbean¡£*/

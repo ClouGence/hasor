@@ -63,9 +63,13 @@ public abstract class ApiBinderModule implements ApiBinder, Module {
     public Binder getGuiceBinder() {
         return this.guiceBinder;
     }
-    public <T> void registerServicesHandler(Class<T> serviceType, ServicesRegisterHandler<T> handler) {
+    public <T> void registerServicesHandler(Class<T> serviceType, Class<ServicesRegisterHandler> handlerType) {
         Hasor.logInfo("registerServices %s.", serviceType);
-        this.bindingType(ServicesRegisterHandlerDefine.class, new ServicesRegisterHandlerDefine<T>(serviceType, handler));
+        this.bindingType(ServicesRegisterHandlerDefine.class, new ServicesRegisterHandlerDefine(serviceType, handlerType));
+    }
+    public <T> void registerServicesHandler(Class<T> serviceType, ServicesRegisterHandler handler) {
+        Hasor.logInfo("registerServices %s.", serviceType);
+        this.bindingType(ServicesRegisterHandlerDefine.class, new ServicesRegisterHandlerDefine(serviceType, handler));
     }
     public Settings getModuleSettings() {
         Settings globalSetting = this.getEnvironment().getSettings();

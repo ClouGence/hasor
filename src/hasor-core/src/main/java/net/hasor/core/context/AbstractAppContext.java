@@ -32,6 +32,7 @@ import net.hasor.core.binder.ApiBinderModule;
 import net.hasor.core.binder.BeanMetaData;
 import net.hasor.core.module.ModulePropxy;
 import net.hasor.core.module.ModuleReactor;
+import net.hasor.core.register.ServicesRegisterHandler;
 import net.hasor.core.register.ServicesRegisterManager;
 import org.more.UndefinedException;
 import com.google.inject.Binder;
@@ -69,6 +70,9 @@ public abstract class AbstractAppContext implements AppContext {
     }
     public <T> void unRegisterService(Class<T> type, Key<? extends T> serviceKey) {
         this.servicesRegisterManager.unRegisterService(type, serviceKey);
+    }
+    public ServicesRegisterHandler lookUpRegisterService(Class<?> type) {
+        return this.servicesRegisterManager.lookUpRegisterService(type);
     }
     //
     //-----------------------------------------------------------------------------------------Bean

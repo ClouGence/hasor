@@ -16,6 +16,7 @@
 package net.hasor.core;
 import java.util.List;
 import java.util.Set;
+import net.hasor.core.register.ServicesRegisterHandler;
 import org.more.UndefinedException;
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -65,6 +66,9 @@ public interface AppContext {
     /**解除注册服务。
      * @see net.hasor.core.register.ServicesRegisterHandler*/
     public <T> void unRegisterService(Class<T> type, Key<? extends T> serviceKey);
+    /**解除注册服务。
+     * @see net.hasor.core.register.ServicesRegisterHandler*/
+    public ServicesRegisterHandler lookUpRegisterService(Class<?> type);
     //
     //----------------------------------------------------------------------------------Bean
     /**通过名获取Bean的类型。*/

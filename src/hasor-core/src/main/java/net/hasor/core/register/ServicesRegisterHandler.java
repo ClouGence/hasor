@@ -19,9 +19,9 @@ package net.hasor.core.register;
  * @version : 2013-10-29
  * @author 赵永春(zyc@hasor.net)
  */
-public interface ServicesRegisterHandler<T> {
+public interface ServicesRegisterHandler {
     /**服务对象要求被注册*/
-    public void registerService(T serviceBean);
+    public void registerService(Object targetService);
     /**服务对象要求被解除已有的注册*/
-    public void unRegisterService(T serviceBean);
+    public void unRegisterService(Object serviceBean);
 }
