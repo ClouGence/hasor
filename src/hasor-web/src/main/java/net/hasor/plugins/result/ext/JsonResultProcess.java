@@ -23,6 +23,7 @@ import net.hasor.Hasor;
 import net.hasor.plugins.result.ResultDefine;
 import net.hasor.plugins.result.ResultProcess;
 import org.more.json.JSON;
+import org.more.json.JSONPojoConvertor;
 /**
  * 
  * @version : 2013-6-5
@@ -30,10 +31,19 @@ import org.more.json.JSON;
  */
 @ResultDefine(Json.class)
 public class JsonResultProcess implements ResultProcess {
+    private JSON jsonToos = null;
+    public JsonResultProcess() {
+        this.jsonToos = new JSON() {
+            protected Convertor getConvertor(Class forClass) {
+                Convertor con = super.getConvertor(forClass);
+                return con != null ? con : new JSONPojoConvertor(forClass, true);
+            }
+        };
+    }
     public void process(HttpServletRequest request, HttpServletResponse response, Annotation annoData, Object result) throws ServletException, IOException {
-        String jsonData = JSON.toString(result);
+        String jsonData = this.jsonToos.toJSON(result);
         Hasor.logDebug("write json %s.", jsonData.length() > 300 ? jsonData.substring(0, 300) : jsonData);
         if (response.isCommitted() == false)
-            response.getWriter().write(jsonData);
+            response.getWriter().write("(" + jsonData + ")");
     }
 }

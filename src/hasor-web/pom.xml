@@ -38,12 +38,5 @@
 			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- JSR-173 for JDK 1.5 -->
-		<dependency>
-			<groupId>stax</groupId>
-			<artifactId>stax</artifactId>
-			<version>1.2.0</version>
-			<scope>provided</scope>
-		</dependency>
 	</dependencies>
 </project>
