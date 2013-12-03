@@ -20,13 +20,17 @@ import net.hasor.core.register.ServicesRegisterHandler;
  * @version : 2013-10-29
  * @author ÕÔÓÀ´º(zyc@hasor.net)
  */
-public class ServiceHandler implements ServicesRegisterHandler<AbstractService> {
-    public void registerService(AbstractService serviceBean) {
+public class ServiceHandler implements ServicesRegisterHandler {
+    public boolean registerService(Object service) {
         //×¢²á·þÎñ
+        AbstractService serviceBean = (AbstractService) service;
         System.out.println("add Service :" + serviceBean.say());
+        return true;
     }
-    public void unRegisterService(AbstractService serviceBean) {
+    public boolean unRegisterService(Object service) {
         //½â³ý×¢²á
+        AbstractService serviceBean = (AbstractService) service;
         System.out.println("remove Service :" + serviceBean.say());
+        return true;
     }
 }

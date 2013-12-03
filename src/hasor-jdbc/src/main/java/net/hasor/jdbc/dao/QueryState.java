@@ -23,11 +23,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import net.hasor.jdbc.opface.RowMapper;
+import net.hasor.jdbc.opface.core.JdbcTemplate;
 import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
-import net.hasor.jdbc.opface.RowMapper;
-import net.hasor.jdbc.opface.core.JdbcTemplate;
 /**
  * 
  * @version : 2013-11-25
@@ -35,16 +35,17 @@ import net.hasor.jdbc.opface.core.JdbcTemplate;
  */
 public class QueryState {
     private JdbcTemplate          jdbcTemplate;
-    private Class<?>              entityType;
+    private String                tableName;
     private int                   pageSize;
     private int                   pageStart;
     private String                sortName;
     private SortEnum              sortType;
     private LinkedList<Condition> conditionList = new LinkedList<Condition>();
+    private LinkedList<Where>     whereList     = new LinkedList<Where>();
     //
-    public QueryState(JdbcTemplate jdbcTemplate, Class<?> entityType) {
+    public QueryState(JdbcTemplate jdbcTemplate, String tableName) {
         this.jdbcTemplate = jdbcTemplate;
-        this.entityType = entityType;
+        this.tableName = tableName;
     }
     /**清除排序标志*/
     public void clearSort() {
@@ -55,6 +56,15 @@ public class QueryState {
     public void clearPage() {
         this.pageSize = Integer.MIN_VALUE;
         this.pageStart = Integer.MIN_VALUE;
+    }
+    /**清除分页标志*/
+    public void clearWhere() {
+        this.whereList.clear();
+    }
+    public void addWhere(String whereString, Object... params) {
+        if (whereString == null)
+            return;
+        this.whereList.add(new Where(whereString, params));
     }
     public void addSort(String sortName, SortEnum sortType) {
         this.sortName = sortName;
@@ -208,7 +218,19 @@ public class QueryState {
                     params.add(obj);
             }
         }
-        if (this.conditionList.isEmpty() == false)
+        if (this.conditionList.isEmpty() && this.whereList.isEmpty() == false)
+            queryBuilder.append("where ");
+        for (Where where : this.whereList) {
+            queryBuilder.append(" (");
+            queryBuilder.append(where.getWhereString());
+            queryBuilder.append(") and");
+            Object[] objs = where.getParams();
+            if (objs != null) {
+                for (Object obj : objs)
+                    params.add(obj);
+            }
+        }
+        if (!this.conditionList.isEmpty() || !this.whereList.isEmpty())
             queryBuilder.delete(queryBuilder.length() - 4, queryBuilder.length());
         //
         QueryData data = new QueryData();
@@ -221,6 +243,8 @@ public class QueryState {
         ArrayList<Object> params = new ArrayList<Object>();
         final EntityInfo entityInfo = EntityHelper.getEntityInfo(this.entityType);
         //1. where
+        if (this.conditionList.isEmpty() == false)
+            queryBuilder.append("where ");
         for (Condition cond : this.conditionList) {
             queryBuilder.append(cond.toWereString());
             queryBuilder.append(" and");
@@ -230,10 +254,20 @@ public class QueryState {
                     params.add(obj);
             }
         }
-        if (queryBuilder.length() > 4) {
-            queryBuilder.insert(0, "where ");
-            queryBuilder.delete(queryBuilder.length() - 4, queryBuilder.length());
+        if (this.conditionList.isEmpty() && this.whereList.isEmpty() == false)
+            queryBuilder.append("where ");
+        for (Where where : this.whereList) {
+            queryBuilder.append(" (");
+            queryBuilder.append(where.getWhereString());
+            queryBuilder.append(") and");
+            Object[] objs = where.getParams();
+            if (objs != null) {
+                for (Object obj : objs)
+                    params.add(obj);
+            }
         }
+        if (!this.conditionList.isEmpty() || !this.whereList.isEmpty())
+            queryBuilder.delete(queryBuilder.length() - 4, queryBuilder.length());
         //3. select * from ....
         queryBuilder.insert(0, "delete from " + entityInfo.getTableName() + " ");
         //
@@ -249,17 +283,27 @@ public class QueryState {
         final String[] columnNames = entityInfo.getColumnNames();
         //1. where
         for (Condition cond : this.conditionList) {
+            queryBuilder.append(" and ");
             queryBuilder.append(cond.toWereString());
-            queryBuilder.append(" and");
             Object[] vars = cond.getValues();
             if (vars != null && vars.length != 0) {
                 for (Object obj : vars)
                     params.add(obj);
             }
         }
+        for (Where where : this.whereList) {
+            queryBuilder.append(" and (");
+            queryBuilder.append(where.getWhereString());
+            queryBuilder.append(")");
+            Object[] objs = where.getParams();
+            if (objs != null) {
+                for (Object obj : objs)
+                    params.add(obj);
+            }
+        }
         if (queryBuilder.length() > 4) {
-            queryBuilder.insert(0, "where ");
-            queryBuilder.delete(queryBuilder.length() - 4, queryBuilder.length());
+            queryBuilder.delete(0, 4);
+            queryBuilder.insert(0, " where");
         }
         //2. order by
         String orderBy = "";
