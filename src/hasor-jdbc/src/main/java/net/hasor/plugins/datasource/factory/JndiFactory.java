@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.datasource.factory;
+package net.hasor.plugins.datasource.factory;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import net.hasor.Hasor;
 import net.hasor.core.Environment;
 import net.hasor.core.XmlNode;
-import net.hasor.jdbc.datasource.DataSourceFactory;
+import net.hasor.plugins.datasource.DataSourceFactory;
 import org.more.util.StringUtils;
 /**
  * 

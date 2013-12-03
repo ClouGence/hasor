@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.transaction.core;
+package net.hasor.plugins.transaction.core;
 import java.sql.Savepoint;
 import net.hasor.jdbc.IllegalTransactionStateException;
 /**

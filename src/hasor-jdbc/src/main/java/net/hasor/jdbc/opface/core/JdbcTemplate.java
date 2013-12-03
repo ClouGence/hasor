@@ -50,8 +50,8 @@ import net.hasor.jdbc.opface.RowMapper;
 import net.hasor.jdbc.opface.SqlRowSet;
 import net.hasor.jdbc.opface.StatementCallback;
 import net.hasor.jdbc.opface.core.util.JdbcUtils;
+import net.hasor.jdbc.opface.datasource.ConnectionProxy;
 import net.hasor.jdbc.opface.datasource.DataSourceUtils;
-import net.hasor.jdbc.transaction._.ConnectionProxy;
 import org.more.util.ArrayUtils;
 /**
  * 数据库操作模板方法。

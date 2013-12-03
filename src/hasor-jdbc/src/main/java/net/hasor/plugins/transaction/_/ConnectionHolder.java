@@ -13,18 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.datasource;
+package net.hasor.plugins.transaction._;
 import java.sql.Connection;
-import java.sql.SQLException;
-import javax.sql.DataSource;
 /**
  * 
- * @version : 2013-12-2
+ * @version : 2013-10-30
  * @author 赵永春(zyc@hasor.net)
  */
-public interface DataSourceUtilService {
-    /**申请连接*/
-    public Connection getConnection(DataSource dataSource) throws SQLException;
-    /**释放连接*/
-    public void releaseConnection(Connection con, DataSource dataSource) throws SQLException;
+public interface ConnectionHolder {
+    /**是否开启了事务*/
+    public boolean hasTransaction();
+    /**是否包含一个有效的连接*/
+    public boolean hasConnection();
+    //
+    //
+    //
+    /**引用计数加一*/
+    public void requested();
+    /**获取连接*/
+    public Connection getConnection();
 }

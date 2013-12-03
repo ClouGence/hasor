@@ -13,30 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.transaction._;
+package net.hasor.jdbc.opface.datasource;
 import java.sql.Connection;
-import net.hasor.jdbc.opface.datasource.DataSourceUtils;
 /**
- * Subinterface of {@link java.sql.Connection} to be implemented by
- * Connection proxies. Allows access to the underlying target Connection.
- *
- * <p>This interface can be checked when there is a need to cast to a
- * native JDBC Connection such as Oracle's OracleConnection. Spring's
- * {@link org.noe.platform.modules.db.jdbcorm.jdbc.support.nativejdbc.NativeJdbcExtractorAdapter}
- * automatically detects such proxies before delegating to the actual
- * unwrapping for a specific connection pool.
- *
- * @author Juergen Hoeller
- * @since 1.1
- * @see TransactionAwareDataSourceProxy
- * @see LazyConnectionDataSourceProxy
- * @see DataSourceUtils#getTargetConnection(java.sql.Connection)
+ * Connection 连接代理。
+ * @version : 2013-12-3
+ * @author 赵永春(zyc@hasor.net)
  */
 public interface ConnectionProxy extends Connection {
     /**
      * Return the target Connection of this proxy.
-     * <p>This will typically be the native driver Connection
-     * or a wrapper from a connection pool.
+     * <p>This will typically be the native driver Connection or a wrapper from a connection pool.
      * @return the underlying Connection (never <code>null</code>)
      */
     public Connection getTargetConnection();

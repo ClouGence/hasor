@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.transaction.core;
-import static net.hasor.jdbc.transaction.TransactionBehavior.PROPAGATION_MANDATORY;
-import static net.hasor.jdbc.transaction.TransactionBehavior.PROPAGATION_NESTED;
-import static net.hasor.jdbc.transaction.TransactionBehavior.PROPAGATION_NEVER;
-import static net.hasor.jdbc.transaction.TransactionBehavior.PROPAGATION_NOT_SUPPORTED;
-import static net.hasor.jdbc.transaction.TransactionBehavior.PROPAGATION_REQUIRED;
-import static net.hasor.jdbc.transaction.TransactionBehavior.RROPAGATION_REQUIRES_NEW;
+package net.hasor.plugins.transaction.core;
+import static net.hasor.plugins.transaction.TransactionBehavior.PROPAGATION_MANDATORY;
+import static net.hasor.plugins.transaction.TransactionBehavior.PROPAGATION_NESTED;
+import static net.hasor.plugins.transaction.TransactionBehavior.PROPAGATION_NEVER;
+import static net.hasor.plugins.transaction.TransactionBehavior.PROPAGATION_NOT_SUPPORTED;
+import static net.hasor.plugins.transaction.TransactionBehavior.PROPAGATION_REQUIRED;
+import static net.hasor.plugins.transaction.TransactionBehavior.RROPAGATION_REQUIRES_NEW;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import net.hasor.Hasor;
 import net.hasor.jdbc.IllegalTransactionStateException;
 import net.hasor.jdbc.TransactionDataAccessException;
 import net.hasor.jdbc.TransactionSuspensionNotSupportedException;
-import net.hasor.jdbc.transaction.TransactionBehavior;
-import net.hasor.jdbc.transaction.TransactionLevel;
-import net.hasor.jdbc.transaction.TransactionManager;
-import net.hasor.jdbc.transaction.TransactionStatus;
+import net.hasor.plugins.transaction.TransactionBehavior;
+import net.hasor.plugins.transaction.TransactionLevel;
+import net.hasor.plugins.transaction.TransactionManager;
+import net.hasor.plugins.transaction.TransactionStatus;
 /**
  * 某一个数据源的事务管理器
  * 

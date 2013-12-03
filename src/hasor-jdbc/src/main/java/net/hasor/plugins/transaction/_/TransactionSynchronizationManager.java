@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.transaction._;
+package net.hasor.plugins.transaction._;
 import javax.sql.DataSource;
-import net.hasor.jdbc.transaction.TransactionManager;
-import net.hasor.jdbc.transaction.core.ds.ConnectionHandle;
+import net.hasor.plugins.transaction.TransactionManager;
+import net.hasor.plugins.transaction.core.ds.ConnectionHandle;
 /**
  * 
  * @version : 2013-6-14

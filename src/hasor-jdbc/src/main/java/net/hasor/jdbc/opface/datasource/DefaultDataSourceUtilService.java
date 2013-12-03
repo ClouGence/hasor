@@ -17,7 +17,6 @@ package net.hasor.jdbc.opface.datasource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;
-import net.hasor.jdbc.datasource.DataSourceUtilService;
 /**
  * 
  * @version : 2013-12-2

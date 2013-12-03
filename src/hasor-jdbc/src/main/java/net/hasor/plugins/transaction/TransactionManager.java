@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.transaction;
+package net.hasor.plugins.transaction;
 import net.hasor.jdbc.TransactionDataAccessException;
 /**
  * 数据源的事务管理器。
@@ -22,11 +22,11 @@ import net.hasor.jdbc.TransactionDataAccessException;
  */
 public interface TransactionManager {
     /**开启事务，使用默认事务隔离级别。
-     * @see net.hasor.jdbc.transaction.TransactionBehavior
-     * @see net.hasor.jdbc.transaction.TransactionManager#getTransaction(TransactionBehavior, TransactionLevel)*/
+     * @see net.hasor.plugins.transaction.TransactionBehavior
+     * @see net.hasor.plugins.transaction.TransactionManager#getTransaction(TransactionBehavior, TransactionLevel)*/
     public TransactionStatus getTransaction(TransactionBehavior behavior) throws TransactionDataAccessException;
     /**开启事务
-     * @see net.hasor.jdbc.transaction.TransactionBehavior
+     * @see net.hasor.plugins.transaction.TransactionBehavior
      * @see java.sql.Connection#setTransactionIsolation(int)*/
     public TransactionStatus getTransaction(TransactionBehavior behavior, TransactionLevel level) throws TransactionDataAccessException;
     /**递交事务

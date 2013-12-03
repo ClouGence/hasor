@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.transaction.core.ds;
+package net.hasor.plugins.transaction.core.ds;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import javax.sql.DataSource;
-import net.hasor.jdbc.transaction.core.SavepointManager;
+import net.hasor.plugins.transaction.core.SavepointManager;
 /**
  * 
  * @version : 2013-10-17

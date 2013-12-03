@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.transaction._;
+package net.hasor.plugins.transaction._;
 import java.sql.Connection;
 import javax.sql.DataSource;
 import net.hasor.Hasor;
-import net.hasor.jdbc.transaction._.ConnectionHolder;
-import net.hasor.jdbc.transaction._.TransactionSynchronizationManager;
+import net.hasor.plugins.transaction._.ConnectionHolder;
+import net.hasor.plugins.transaction._.TransactionSynchronizationManager;
 /**
  * 
  * @version : 2013-10-30

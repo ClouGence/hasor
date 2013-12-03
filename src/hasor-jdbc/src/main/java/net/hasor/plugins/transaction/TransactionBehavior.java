@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.transaction;
+package net.hasor.plugins.transaction;
 /**
  * 事务传播属性
  * @version : 2013-10-30

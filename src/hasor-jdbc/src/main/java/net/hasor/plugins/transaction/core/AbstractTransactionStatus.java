@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.transaction.core;
+package net.hasor.plugins.transaction.core;
 import java.sql.Savepoint;
 import net.hasor.jdbc.IllegalTransactionStateException;
-import net.hasor.jdbc.transaction.TransactionBehavior;
-import net.hasor.jdbc.transaction.TransactionLevel;
-import net.hasor.jdbc.transaction.TransactionStatus;
+import net.hasor.plugins.transaction.TransactionBehavior;
+import net.hasor.plugins.transaction.TransactionLevel;
+import net.hasor.plugins.transaction.TransactionStatus;
 /**
  * 表示一个用于管理事务的状态点
  * @version : 2013-10-30
