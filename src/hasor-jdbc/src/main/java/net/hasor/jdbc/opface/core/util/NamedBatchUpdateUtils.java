@@ -1,10 +1,10 @@
-package net.hasor.jdbc.opface.named;
+package net.hasor.jdbc.opface.core.util;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import net.hasor.jdbc.opface.BatchPreparedStatementSetter;
 import net.hasor.jdbc.opface.JdbcOperations;
-import net.hasor.jdbc.opface.core.util.StatementSetterUtils;
+import net.hasor.jdbc.opface.SqlParameterSource;
 import net.hasor.jdbc.opface.core.value.SqlTypeValue;
 import net.hasor.jdbc.opface.parameter.SqlVarParameter;
 /**
@@ -13,7 +13,7 @@ import net.hasor.jdbc.opface.parameter.SqlVarParameter;
  *
  * @author Thomas Risberg
  */
-class NamedParameterBatchUpdateUtils {
+public class NamedBatchUpdateUtils {
     public static int[] executeBatchUpdate(String sql, final List<Object[]> batchValues, final int[] columnTypes, JdbcOperations jdbcOperations) {
         return jdbcOperations.batchUpdate(sql, new BatchPreparedStatementSetter() {
             public void setValues(PreparedStatement ps, int i) throws SQLException {

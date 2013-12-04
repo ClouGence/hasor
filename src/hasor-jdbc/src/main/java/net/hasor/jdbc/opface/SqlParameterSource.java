@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.opface.named;
+package net.hasor.jdbc.opface;
+import net.hasor.jdbc.opface.core.JdbcTemplate;
 import net.hasor.jdbc.opface.core.util.JdbcUtils;
-import net.hasor.jdbc.opface.named.source.MapSqlParameterSource;
 /**
  * Interface that defines common functionality for objects that can
  * offer parameter values for named SQL parameters, serving as argument
- * for {@link NamedParameterJdbcTemplate} operations.
+ * for {@link JdbcTemplate} operations.
  *
  * <p>This interface allows for the specification of SQL type in addition
  * to parameter values. All parameter values and types are identified by
@@ -31,9 +31,7 @@ import net.hasor.jdbc.opface.named.source.MapSqlParameterSource;
  * @author Thomas Risberg
  * @author Juergen Hoeller
  * @since 2.0
- * @see NamedParameterJdbcOperations
- * @see NamedParameterJdbcTemplate
- * @see MapSqlParameterSource
+ * @see JdbcTemplate
  */
 public interface SqlParameterSource {
     /**

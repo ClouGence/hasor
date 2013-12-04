@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.opface.named;
+package net.hasor.jdbc.opface.core.util;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,7 +32,6 @@ import net.hasor.jdbc.opface.PreparedStatementCreator;
 import net.hasor.jdbc.opface.PreparedStatementSetter;
 import net.hasor.jdbc.opface.core.ParameterDisposer;
 import net.hasor.jdbc.opface.core.SqlProvider;
-import net.hasor.jdbc.opface.core.util.StatementSetterUtils;
 import net.hasor.jdbc.opface.parameter.SqlParameter;
 import net.hasor.jdbc.opface.parameter.SqlVarParameter;
 /**
@@ -44,7 +43,7 @@ import net.hasor.jdbc.opface.parameter.SqlVarParameter;
  * @author Thomas Risberg
  * @author Juergen Hoeller
  */
-class PreparedStatementCreatorFactory {
+public class PreparedStatementCreatorFactory {
     /** The SQL, which won't change when the parameters change */
     private final String             sql;
     /** List of SqlParameter objects. May not be <code>null</code>. */

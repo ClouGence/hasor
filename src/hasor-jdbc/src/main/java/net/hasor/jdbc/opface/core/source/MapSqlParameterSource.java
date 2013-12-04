@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.opface.named.source;
+package net.hasor.jdbc.opface.core.source;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import net.hasor.Hasor;
-import net.hasor.jdbc.opface.named.NamedParameterJdbcTemplate;
-import net.hasor.jdbc.opface.named.SqlParameterSource;
+import net.hasor.jdbc.opface.SqlParameterSource;
 import net.hasor.jdbc.opface.parameter.SqlVarParameter;
 /**
  * {@link SqlParameterSource} implementation that holds a given Map of parameters.
  *
  * <p>This class is intended for passing in a simple Map of parameter values
- * to the methods of the {@link NamedParameterJdbcTemplate} class.
+ * to the methods of the {@link NamedJdbcTemplate} class.
  *
  * <p>The <code>addValue</code> methods on this class will make adding several
  * values easier. The methods return a reference to the {@link MapSqlParameterSource}
@@ -37,7 +36,7 @@ import net.hasor.jdbc.opface.parameter.SqlVarParameter;
  * @see #addValue(String, Object)
  * @see #addValue(String, Object, int)
  * @see #registerSqlType
- * @see NamedParameterJdbcTemplate
+ * @see NamedJdbcTemplate
  */
 public class MapSqlParameterSource extends AbstractSqlParameterSource {
     private final Map<String, Object> values = new HashMap<String, Object>();

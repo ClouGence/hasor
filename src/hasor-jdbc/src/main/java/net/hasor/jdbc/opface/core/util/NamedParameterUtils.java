@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.opface.named;
+package net.hasor.jdbc.opface.core.util;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,30 +22,22 @@ import java.util.Map;
 import java.util.Set;
 import net.hasor.Hasor;
 import net.hasor.jdbc.InvalidDataAccessException;
-import net.hasor.jdbc.opface.named.source.MapSqlParameterSource;
+import net.hasor.jdbc.opface.SqlParameterSource;
+import net.hasor.jdbc.opface.core.source.MapSqlParameterSource;
 import net.hasor.jdbc.opface.parameter.SqlParameter;
 import net.hasor.jdbc.opface.parameter.SqlVarParameter;
 /**
- * Helper methods for named parameter parsing.
- * Only intended for internal use within Spring's JDBC framework.
- *
+ * Helper methods for named parameter parsing. Only intended for internal use within Spring's JDBC framework.
  * @author Thomas Risberg
  * @author Juergen Hoeller
  * @since 2.0
  */
-abstract class NamedParameterUtils {
-    /**
-     * Set of characters that qualify as parameter separators,
-     * indicating that a parameter name in a SQL String has ended.
-     */
+public abstract class NamedParameterUtils {
+    /**Set of characters that qualify as parameter separators, indicating that a parameter name in a SQL String has ended. */
     private static final char[]   PARAMETER_SEPARATORS = new char[] { '"', '\'', ':', '&', ',', ';', '(', ')', '|', '=', '+', '-', '*', '%', '/', '\\', '<', '>', '^' };
-    /**
-     * Set of characters that qualify as comment or quotes starting characters.
-     */
+    /** Set of characters that qualify as comment or quotes starting characters.*/
     private static final String[] START_SKIP           = new String[] { "'", "\"", "--", "/*" };
-    /**
-     * Set of characters that at are the corresponding comment or quotes ending characters.
-     */
+    /**Set of characters that at are the corresponding comment or quotes ending characters. */
     private static final String[] STOP_SKIP            = new String[] { "'", "\"", "\n", "*/" };
     //-------------------------------------------------------------------------
     // Core methods used by NamedParameterJdbcTemplate and SqlQuery/SqlUpdate
