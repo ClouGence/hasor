@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.plugins.controller.support;
-import net.hasor.Hasor;
+import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
 import net.hasor.core.plugin.Plugin;
 import net.hasor.web.AbstractWebHasorPlugin;

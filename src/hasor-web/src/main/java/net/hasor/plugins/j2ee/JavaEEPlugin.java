@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.servlet.Filter;
 import javax.servlet.http.HttpServlet;
-import net.hasor.Hasor;
+import net.hasor.core.Hasor;
 import net.hasor.core.plugin.Plugin;
 import net.hasor.web.AbstractWebHasorPlugin;
 import net.hasor.web.WebApiBinder;

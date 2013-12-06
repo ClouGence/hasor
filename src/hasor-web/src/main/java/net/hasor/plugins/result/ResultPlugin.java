@@ -17,7 +17,7 @@ package net.hasor.plugins.result;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import net.hasor.Hasor;
+import net.hasor.core.Hasor;
 import net.hasor.core.plugin.Plugin;
 import net.hasor.plugins.aop.matchers.AopMatchers;
 import net.hasor.plugins.controller.AbstractController;

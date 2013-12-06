@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.hasor.Hasor;
+import net.hasor.core.Hasor;
 import net.hasor.plugins.restful.AttributeParam;
 import net.hasor.plugins.restful.CookieParam;
 import net.hasor.plugins.restful.HeaderParam;
