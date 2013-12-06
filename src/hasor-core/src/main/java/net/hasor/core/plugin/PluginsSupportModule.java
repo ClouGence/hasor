@@ -18,9 +18,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.context.AnnoModule;
 /**

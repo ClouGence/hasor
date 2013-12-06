@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor;
+package net.hasor.core;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -31,6 +31,8 @@ import org.slf4j.LoggerFactory;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public abstract class Hasor {
+    //
+    //
     private static StackTraceElement onTrace() {
         StackTraceElement[] stackElements = Thread.currentThread().getStackTrace();
         StackTraceElement onCode = stackElements[4];

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.core.register;
-import net.hasor.Hasor;
 import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
 import net.hasor.plugins.aware.AppContextAware;
 /**
  * 

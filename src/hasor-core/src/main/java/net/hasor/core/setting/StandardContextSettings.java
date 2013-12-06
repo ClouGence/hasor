@@ -23,7 +23,7 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import net.hasor.Hasor;
+import net.hasor.core.Hasor;
 import org.more.util.ResourcesUtils;
 /**
  * 继承自FileSettings父类，该类自动装载Classpath中所有静态配置文件。

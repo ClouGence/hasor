@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.plugins.guice;
-import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 /**
  * Guice模块代理成AbstractHasorModule类型的工具

@@ -21,7 +21,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import net.hasor.Hasor;
+import net.hasor.core.Hasor;
 import net.hasor.core.setting.xml.SaxXmlParser;
 /***
  * 传入InputStream的方式获取Settings接口的支持。

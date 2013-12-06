@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import net.hasor.Hasor;
+import net.hasor.core.Hasor;
 /***
  * 传入File的方式获取Settings接口的支持。
  * @version : 2013-9-8

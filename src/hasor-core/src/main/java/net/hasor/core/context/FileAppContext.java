@@ -16,9 +16,9 @@
 package net.hasor.core.context;
 import java.io.File;
 import java.io.IOException;
-import net.hasor.Hasor;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
+import net.hasor.core.Hasor;
 import net.hasor.core.environment.FileEnvironment;
 import org.more.UnhandledException;
 /**

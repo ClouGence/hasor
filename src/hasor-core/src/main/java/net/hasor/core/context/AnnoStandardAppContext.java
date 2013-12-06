@@ -18,7 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Set;
-import net.hasor.Hasor;
+import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.ModuleInfo;
 import org.more.util.StringUtils;

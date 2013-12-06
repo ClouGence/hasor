@@ -15,8 +15,8 @@
  */
 package net.hasor.plugins.bean;
 import java.util.Set;
-import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.Hasor;
 import net.hasor.core.ApiBinder.BeanBindingBuilder;
 import net.hasor.core.plugin.AbstractHasorPlugin;
 import net.hasor.core.plugin.Plugin;

@@ -21,10 +21,10 @@ import static net.hasor.core.AppContext.ModuleEvent_Stoped;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.hasor.Hasor;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.EventManager;
+import net.hasor.core.Hasor;
 import net.hasor.core.module.ModulePropxy;
 import com.google.inject.Key;
 /**

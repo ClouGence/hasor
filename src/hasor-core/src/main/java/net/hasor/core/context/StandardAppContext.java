@@ -19,9 +19,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import net.hasor.Hasor;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
+import net.hasor.core.Hasor;
 import net.hasor.core.environment.StandardEnvironment;
 import org.more.util.ResourcesUtils;
 /**

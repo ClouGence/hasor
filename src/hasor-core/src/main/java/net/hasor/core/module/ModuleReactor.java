@@ -16,8 +16,8 @@
 package net.hasor.core.module;
 import java.util.ArrayList;
 import java.util.List;
-import net.hasor.Hasor;
 import net.hasor.core.Dependency;
+import net.hasor.core.Hasor;
 import net.hasor.core.ModuleInfo;
 import org.more.util.StringUtils;
 /**

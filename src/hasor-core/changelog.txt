@@ -6,6 +6,7 @@ Hasor-Core v0.0.6
     01.改进 Hasor 类使其输出日志时不在必须通过 new Exception 来确定方法调用位置，从而提升日志输出性能。
     02.改进 AopInterceptor 类中用于缓存作用的 methodInterceptorMap 属性，将其从 HashMap 类型改为 WeakHashMap。避免产生内存泄漏问题。
     03.改进 AppContext 当处理 ServicesRegisterHandler 的注册和解除注册时新增 boolean 返回值。
+    04.Hasor 类，归为 core 软件包。
 
 
 Hasor-Core v0.0.5

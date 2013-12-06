@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.plugins.aop.matchers;
-import net.hasor.Hasor;
+import net.hasor.core.Hasor;
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matcher;
 /**
