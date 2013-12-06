@@ -20,7 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.hasor.Hasor;
+import net.hasor.core.Hasor;
 import net.hasor.jdbc.InvalidDataAccessException;
 import net.hasor.jdbc.opface.SqlParameterSource;
 import net.hasor.jdbc.opface.core.source.MapSqlParameterSource;

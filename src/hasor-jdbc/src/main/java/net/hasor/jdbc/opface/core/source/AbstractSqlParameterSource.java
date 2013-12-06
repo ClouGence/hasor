@@ -16,7 +16,7 @@
 package net.hasor.jdbc.opface.core.source;
 import java.util.HashMap;
 import java.util.Map;
-import net.hasor.Hasor;
+import net.hasor.core.Hasor;
 import net.hasor.jdbc.opface.SqlParameterSource;
 /**
  * Abstract base class for {@link SqlParameterSource} implementations.

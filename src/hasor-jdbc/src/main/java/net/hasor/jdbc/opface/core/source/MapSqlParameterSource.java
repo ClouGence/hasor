@@ -17,7 +17,7 @@ package net.hasor.jdbc.opface.core.source;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import net.hasor.Hasor;
+import net.hasor.core.Hasor;
 import net.hasor.jdbc.opface.SqlParameterSource;
 import net.hasor.jdbc.opface.parameter.SqlVarParameter;
 /**

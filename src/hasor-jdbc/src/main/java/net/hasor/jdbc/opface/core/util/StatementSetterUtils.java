@@ -28,7 +28,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import net.hasor.Hasor;
+import net.hasor.core.Hasor;
 import net.hasor.jdbc.opface.core.value.DisposableSqlTypeValue;
 import net.hasor.jdbc.opface.core.value.SqlTypeValue;
 import net.hasor.jdbc.opface.core.value.SqlValue;

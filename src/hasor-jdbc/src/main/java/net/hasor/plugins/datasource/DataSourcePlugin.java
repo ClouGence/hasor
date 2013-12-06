@@ -16,9 +16,9 @@
 package net.hasor.plugins.datasource;
 import java.util.List;
 import javax.sql.DataSource;
-import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Environment;
+import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 import net.hasor.core.plugin.AbstractHasorPlugin;

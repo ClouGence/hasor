@@ -15,6 +15,7 @@
  */
 package net.hasor.jdbc.dao;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -43,7 +44,7 @@ public class QueryState {
     private LinkedList<Condition> conditionList = new LinkedList<Condition>();
     private LinkedList<Where>     whereList     = new LinkedList<Where>();
     //
-    public QueryState(JdbcTemplate jdbcTemplate, String tableName) {
+    public QueryState(String tableName, JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.tableName = tableName;
     }
@@ -76,13 +77,13 @@ public class QueryState {
     public void setPageStart(int pageStart) {
         this.pageStart = pageStart;
     }
-    public void addConditions(String fieldName, Object[] values, ConditionPatternEnum pattern) {
+    public void addConditions(String fieldName, Object[] values, ConditionEnum pattern) {
         if (values == null)
             return;
         for (Object value : values)
             this.addCondition(fieldName, value, pattern);
     }
-    public void addCondition(String fieldName, Object value, ConditionPatternEnum pattern) {
+    public void addCondition(String fieldName, Object value, ConditionEnum pattern) {
         for (Condition cond : this.conditionList) {
             if (!fieldName.equalsIgnoreCase(cond.getFieldName()))
                 continue;
@@ -110,21 +111,23 @@ public class QueryState {
             }
         });
     }
-    public List<?> queryListForObject() {
-        final EntityInfo entityInfo = EntityHelper.getEntityInfo(this.entityType);
-        return queryList(new RowMapper<Object>() {
-            public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
-                Object obj = null;
+    public <T> List<T> queryListForObject(final Class<T> type) {
+        return queryList(new RowMapper<T>() {
+            public T mapRow(ResultSet rs, int rowNum) throws SQLException {
+                T obj = null;
                 try {
-                    obj = entityType.newInstance();
+                    obj = type.newInstance();
                     ResultSetMetaData rsmd = rs.getMetaData();
                     int colCount = rsmd.getColumnCount();
                     for (int i = 1; i <= colCount; i++) {
                         String colName = rsmd.getColumnName(i);
-                        if (!entityInfo.getColumns().containsKey(colName))
+                        Method writeMethod = BeanUtils.getWriteMethod(colName, type);
+                        if (writeMethod==null)
                             continue;
-                        Field field = entityInfo.getColumns().get(colName);
-                        Object val = ConverterUtils.convert(field.getType(), rs.getObject(i));
+                        
+                        
+                        Class<?> toType=writeMethod.getParameterTypes()[0];
+                        Object val = ConverterUtils.convert(toType, rs.getObject(i));
                         BeanUtils.writePropertyOrField(obj, field.getName(), val);
                     }
                 } catch (Exception e) {

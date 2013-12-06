@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import net.hasor.Hasor;
+import net.hasor.core.Hasor;
 import net.hasor.jdbc.InvalidDataAccessException;
 import net.hasor.jdbc.opface.PreparedStatementCreator;
 import net.hasor.jdbc.opface.PreparedStatementSetter;

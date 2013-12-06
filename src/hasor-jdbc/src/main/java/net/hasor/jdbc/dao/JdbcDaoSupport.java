@@ -16,7 +16,6 @@
 package net.hasor.jdbc.dao;
 import java.sql.Connection;
 import java.util.Map;
-import java.util.UUID;
 import javax.sql.DataSource;
 import net.hasor.jdbc.opface.core.JdbcTemplate;
 import net.hasor.jdbc.opface.datasource.DataSourceUtils;
@@ -27,46 +26,7 @@ import net.hasor.jdbc.opface.datasource.DataSourceUtils;
  * @version : 2013-10-8
  */
 public abstract class JdbcDaoSupport {
-    private Class<?>     entityType   = null;
     private JdbcTemplate jdbcTemplate = null;
-    //
-    public final Class<?> getEntityType() {
-        return entityType;
-    };
-    public final void setEntityType(Class<?> entityType) {
-        this.entityType = entityType;
-    }
-    protected void initDao() {
-        if (this.entityType == null)
-            this.entityType = this.confirmEntityType();
-    }
-    protected abstract Class<?> confirmEntityType();
-    //
-    public static String newUUID() {
-        return UUID.randomUUID().toString().replace("-", "");
-    }
-    //
-    //
-    public QueryState createQuery() {
-        return new QueryState(this.getJdbcTemplate(), this.getEntityType());
-    }
-    public void insertByMap(Map<String, Object> schemaData) {
-        String tableName = EntityHelper.getTableName(getEntityType());
-        this.getJdbcTemplate().insertMap(tableName, schemaData);
-    }
-    public void deleteByMap(Map<String, Object> schemaData) {
-        QueryState query = this.createQuery();
-        for (String key : schemaData.keySet()) {
-            Object valueOri = schemaData.get(key);
-            if (valueOri.getClass().isArray()) {
-                Object[] values = (Object[]) valueOri;
-                query.addConditions(key, values, ConditionPatternEnum.EQ);
-            } else {
-                query.addCondition(key, valueOri, ConditionPatternEnum.EQ);
-            }
-        }
-        query.doDelete();
-    }
     /**
      * 从当前事务中获取一个新的数据库连接。
      * @return the JDBC Connection
@@ -115,10 +75,31 @@ public abstract class JdbcDaoSupport {
         return new JdbcTemplate(dataSource);
     }
     /**
-     * Initialize the template-based configuration of this DAO.
-     * Called after a new JdbcTemplate has been set, either directly or through a DataSource.
+     * Initialize the template-based configuration of this DAO. Called after a new JdbcTemplate has been set, either directly or through a DataSource.
      * <p>This implementation is empty. Subclasses may override this to configure further objects based on the JdbcTemplate.
      * @see #getJdbcTemplate()
      */
     protected void initTemplateConfig() {}
+    //
+    /**依照表名创建一个查询。*/
+    public QueryState createQueryState(String tableName) {
+        return new QueryState(tableName, this.getJdbcTemplate());
+    }
+    //    public void insertByMap(String tableName, Map<String, Object> schemaData) {
+    //        this.getJdbcTemplate().insertMap(tableName, schemaData);
+    //    }
+    /**依据 Map 内容作为条件参数删除数据*/
+    public int deleteByMap(String tableName, Map<String, Object> whereData) {
+        QueryState query = this.createQueryState(tableName);
+        for (String key : whereData.keySet()) {
+            Object valueOri = whereData.get(key);
+            if (valueOri.getClass().isArray()) {
+                Object[] values = (Object[]) valueOri;
+                query.addConditions(key, values, ConditionEnum.EQ);
+            } else {
+                query.addCondition(key, valueOri, ConditionEnum.EQ);
+            }
+        }
+        return query.doDelete();
+    }
 }

@@ -17,7 +17,7 @@ package org.hasor.test.simple.settings;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import net.hasor.Hasor;
+import net.hasor.core.Hasor;
 import net.hasor.core.setting.FileSettings;
 import net.hasor.core.setting.InputStreamSettings;
 import net.hasor.core.setting.StandardContextSettings;

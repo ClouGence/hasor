@@ -22,7 +22,7 @@ import static net.hasor.plugins.transaction.TransactionBehavior.PROPAGATION_REQU
 import static net.hasor.plugins.transaction.TransactionBehavior.RROPAGATION_REQUIRES_NEW;
 import java.sql.SQLException;
 import java.util.LinkedList;
-import net.hasor.Hasor;
+import net.hasor.core.Hasor;
 import net.hasor.jdbc.IllegalTransactionStateException;
 import net.hasor.jdbc.TransactionDataAccessException;
 import net.hasor.jdbc.TransactionSuspensionNotSupportedException;

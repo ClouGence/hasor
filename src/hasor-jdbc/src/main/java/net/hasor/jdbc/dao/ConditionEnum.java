@@ -19,7 +19,7 @@ package net.hasor.jdbc.dao;
  * @version : 2013-11-26
  * @author 赵永春(zyc@hasor.net)
  */
-public enum ConditionPatternEnum {
+public enum ConditionEnum {
     /**等于*/
     EQ("="),
     /**不等于*/
@@ -38,7 +38,7 @@ public enum ConditionPatternEnum {
     public String getVal() {
         return val;
     }
-    private ConditionPatternEnum(String val) {
+    private ConditionEnum(String val) {
         this.val = val;
     }
 }

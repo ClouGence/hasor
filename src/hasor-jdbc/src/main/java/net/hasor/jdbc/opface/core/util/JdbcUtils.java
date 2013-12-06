@@ -21,7 +21,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import net.hasor.Hasor;
+import net.hasor.core.Hasor;
 /**
  * 
  * @version : 2013-10-12

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.hasor.test.simple.events.listener;
-import net.hasor.Hasor;
 import net.hasor.core.EventListener;
+import net.hasor.core.Hasor;
 import net.hasor.plugins.event.Listener;
 /**ÊÂ¼ş¼àÌıÆ÷A*/
 @Listener("EventType_A")

@@ -14,26 +14,24 @@
  * limitations under the License.
  */
 package net.hasor.jdbc.dao;
-import java.util.HashMap;
-import java.util.Map;
 import org.more.util.ArrayUtils;
 /**
  * 
  * @version : 2013-12-2
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-public class Condition {
+class Condition {
     private String               fieldName;
     private Object[]             values;
-    private ConditionPatternEnum pattern;
+    private ConditionEnum pattern;
     //
     public Condition() {}
     //
-    public Condition(String fieldName, Object value, ConditionPatternEnum pattern) {
+    public Condition(String fieldName, Object value, ConditionEnum pattern) {
         this(fieldName, new Object[] { value }, pattern);
     }
     //
-    public Condition(String fieldName, Object[] values, ConditionPatternEnum pattern) {
+    public Condition(String fieldName, Object[] values, ConditionEnum pattern) {
         this.fieldName = fieldName;
         this.values = values;
         this.pattern = pattern;
@@ -45,10 +43,10 @@ public class Condition {
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
-    public ConditionPatternEnum getPattern() {
+    public ConditionEnum getPattern() {
         return pattern;
     }
-    public void setPattern(ConditionPatternEnum pattern) {
+    public void setPattern(ConditionEnum pattern) {
         this.pattern = pattern;
     }
     public Object[] getValues() {
@@ -58,22 +56,6 @@ public class Condition {
         this.values = values;
     }
     //
-    public String toJson() {
-        HashMap<String, Object> jsonMap = new HashMap<String, Object>();
-        jsonMap.put("field", fieldName);
-        jsonMap.put("pattern", pattern.getVal());
-        jsonMap.put("values", values);
-        return JSON.toString(jsonMap);
-    }
-    public void applyJson(String jsonData) {
-        Map<String, Object> jsonMap = (Map<String, Object>) JSON.parse(jsonData);
-        if (jsonMap.containsKey("field"))
-            fieldName = (String) jsonMap.get("field");
-        if (jsonMap.containsKey("pattern"))
-            pattern = ConditionPatternEnum.valueOf((String) jsonMap.get("pattern"));
-        if (jsonMap.containsKey("values"))
-            values = (Object[]) jsonMap.get("values");
-    }
     public String toWereString() {
         StringBuilder queryBuilder = new StringBuilder();
         String fName = getFieldName();

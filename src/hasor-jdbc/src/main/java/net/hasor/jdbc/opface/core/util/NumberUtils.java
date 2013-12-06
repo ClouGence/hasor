@@ -19,7 +19,7 @@ import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import net.hasor.Hasor;
+import net.hasor.core.Hasor;
 /**
  * Miscellaneous utility methods for number conversion and parsing.
  * Mainly for internal use within the framework; consider Jakarta's

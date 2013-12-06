@@ -32,7 +32,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
-import net.hasor.Hasor;
+import net.hasor.core.Hasor;
 import net.hasor.jdbc.DataAccessException;
 import net.hasor.jdbc.InvalidDataAccessException;
 import net.hasor.jdbc.SQLWarningException;

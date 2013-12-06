@@ -16,7 +16,7 @@
 package net.hasor.jdbc.opface.parameter;
 import java.util.LinkedList;
 import java.util.List;
-import net.hasor.Hasor;
+import net.hasor.core.Hasor;
 /**
  * 代表SQL参数，其子类决定参数的输出方向。
  * @see java.sql.Types

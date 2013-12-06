@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.jdbc.dao;
-import java.util.HashMap;
-import java.util.Map;
 /**
  * 
  * @version : 2013-12-3
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-public class Where {
+class Where {
     private String   whereString;
     private Object[] params;
     //
@@ -40,19 +38,5 @@ public class Where {
     }
     public void setParams(Object[] params) {
         this.params = params;
-    }
-    //
-    public String toJson() {
-        HashMap<String, Object> jsonMap = new HashMap<String, Object>();
-        jsonMap.put("whereString", whereString);
-        jsonMap.put("values", params);
-        return JSON.toString(jsonMap);
-    }
-    public void applyJson(String jsonData) {
-        Map<String, Object> jsonMap = (Map<String, Object>) JSON.parse(jsonData);
-        if (jsonMap.containsKey("whereString"))
-            whereString = (String) jsonMap.get("whereString");
-        if (jsonMap.containsKey("pattern"))
-            params = (String[]) jsonMap.get("values");
     }
 }
