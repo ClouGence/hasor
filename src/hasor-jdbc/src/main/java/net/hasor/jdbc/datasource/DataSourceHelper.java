@@ -22,7 +22,7 @@ import javax.sql.DataSource;
  * @version : 2013-12-2
  * @author 赵永春(zyc@hasor.net)
  */
-public interface DataSourceUtilService {
+public interface DataSourceHelper {
     /**申请连接*/
     public Connection getConnection(DataSource dataSource) throws SQLException;
     /**释放连接*/

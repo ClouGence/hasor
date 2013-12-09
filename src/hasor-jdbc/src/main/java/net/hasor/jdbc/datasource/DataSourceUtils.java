@@ -25,12 +25,12 @@ import org.more.util.ContextClassLoaderLocal;
  * @author 赵永春(zyc@hasor.net)
  */
 public class DataSourceUtils {
-    private static DefaultDataSourceUtilService                          defaultUtilService = new DefaultDataSourceUtilService();
-    private static ContextClassLoaderLocal<DefaultDataSourceUtilService> utilServiceLocal   = new ContextClassLoaderLocal<DefaultDataSourceUtilService>();
+    private static DataSourceHelper                          defaultUtilService = new DefaultDataSourceHelper();
+    private static ContextClassLoaderLocal<DataSourceHelper> utilServiceLocal   = new ContextClassLoaderLocal<DataSourceHelper>();
     //
     /**申请连接*/
     public static Connection getConnection(DataSource dataSource) throws DataAccessException {
-        DefaultDataSourceUtilService utilService = utilServiceLocal.get();
+        DataSourceHelper utilService = utilServiceLocal.get();
         utilService = (utilService == null) ? defaultUtilService : utilService;
         try {
             return utilService.getConnection(dataSource);
@@ -40,7 +40,7 @@ public class DataSourceUtils {
     };
     /**释放连接*/
     public static void releaseConnection(Connection con, DataSource dataSource) throws DataAccessException {
-        DefaultDataSourceUtilService utilService = utilServiceLocal.get();
+        DataSourceHelper utilService = utilServiceLocal.get();
         utilService = (utilService == null) ? defaultUtilService : utilService;
         try {
             utilService.releaseConnection(con, dataSource);
@@ -48,7 +48,7 @@ public class DataSourceUtils {
             throw new DataAccessException("releaseConnection.", e);
         }
     };
-    protected static void changeDataSourceUtilService(DefaultDataSourceUtilService utilService) {
+    protected static void changeDataSourceUtilService(DataSourceHelper utilService) {
         utilServiceLocal.set(utilService);
     }
 }
