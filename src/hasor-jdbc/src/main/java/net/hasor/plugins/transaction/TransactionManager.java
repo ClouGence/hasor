@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.plugins.transaction;
-import net.hasor.jdbc.TransactionDataAccessException;
+import net.hasor.jdbc.exceptions.TransactionDataAccessException;
 /**
  * 数据源的事务管理器。
  * @version : 2013-10-30

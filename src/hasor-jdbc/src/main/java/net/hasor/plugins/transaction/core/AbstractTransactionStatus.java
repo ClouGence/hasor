@@ -15,7 +15,7 @@
  */
 package net.hasor.plugins.transaction.core;
 import java.sql.Savepoint;
-import net.hasor.jdbc.IllegalTransactionStateException;
+import net.hasor.jdbc.exceptions.IllegalTransactionStateException;
 import net.hasor.plugins.transaction.TransactionBehavior;
 import net.hasor.plugins.transaction.TransactionLevel;
 import net.hasor.plugins.transaction.TransactionStatus;

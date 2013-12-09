@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
+import org.more.NullArgumentException;
 import org.more.classcode.RootClassLoader;
 import org.more.convert.ConverterUtils;
 /**
@@ -511,5 +512,32 @@ public abstract class BeanUtils {
         if (hasField(attName, defineType) == true)
             return readField(object, attName);//Ö§³Ö×Ö¶Î¶ÁÈ¡
         return null;
+    }
+    /***/
+    public static void copyProperties(Object dest, Object orig) {
+        if (dest == null)
+            throw new NullArgumentException("dest");
+        if (orig == null)
+            throw new NullArgumentException("orig");
+        //
+        List<String> propNames = BeanUtils.getPropertys(orig.getClass());
+        for (String prop : propNames)
+            copyProperty(dest, orig, prop);
+    }
+    /***/
+    public static void copyProperty(Object dest, Object orig, String propertyName) {
+        if (dest == null)
+            throw new NullArgumentException("dest");
+        if (orig == null)
+            throw new NullArgumentException("orig");
+        if (StringUtils.isBlank(propertyName))
+            throw new NullArgumentException("propertyName");
+        //
+        if (!canReadPropertyOrField(propertyName, orig.getClass()))
+            return;
+        if (!canWritePropertyOrField(propertyName, dest.getClass()))
+            return;
+        Object val = BeanUtils.readPropertyOrField(orig, propertyName);
+        BeanUtils.writePropertyOrField(dest, propertyName, val);
     }
 };

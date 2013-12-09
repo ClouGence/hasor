@@ -1,12 +1,16 @@
 Hasor-Core v0.0.6
+* Bug:
+    01.改进 当使用 JSON 将（List、Map、基本类型）类之外的类型尝试序列化时会得到一个异常。修复这个问题，当遇到这种情况工具将使用 JSONPojoConvertor 对其进行序列化。
 * 新增:
     01.新增在注册 ServicesRegisterHandler 时使用 Class 类型。注册的 Handler 支持 依赖注入。
-    02.AppContext 接口新增 lookUpRegisterService 方法。可以通过该方法取得  注册的 ServicesRegisterHandler 对象。
+    02.AppContext 接口新增 lookUpRegisterService 方法。可以通过该方法取得注册的 ServicesRegisterHandler 对象。
+    03.BeanUtils 工具类新增 copyProperty 用于做属性拷贝的方法。
 * 改进:
     01.改进 Hasor 类使其输出日志时不在必须通过 new Exception 来确定方法调用位置，从而提升日志输出性能。
     02.改进 AopInterceptor 类中用于缓存作用的 methodInterceptorMap 属性，将其从 HashMap 类型改为 WeakHashMap。避免产生内存泄漏问题。
     03.改进 AppContext 当处理 ServicesRegisterHandler 的注册和解除注册时新增 boolean 返回值。
     04.Hasor 类，归为 core 软件包。
+    05.改进 ConverterUtils 当使用“ConverterUtils.convert(Date.class, null);”转换时间日期时出现异常。其实 null 本可以转换为 “(Date)null”。
 
 
 Hasor-Core v0.0.5

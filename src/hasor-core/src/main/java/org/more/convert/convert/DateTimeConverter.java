@@ -188,6 +188,11 @@ public abstract class DateTimeConverter extends AbstractConverter {
         }
         setUseLocaleFormat(true);
     }
+    public Object convert(Class type, Object value) {
+        if (value == null)
+            return null;
+        return super.convert(type, value);
+    }
     // ------------------------------------------------------ Protected Methods
     /**
      * Convert an input Date/Calendar object into a String.

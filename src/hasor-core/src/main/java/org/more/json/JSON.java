@@ -430,6 +430,8 @@ public class JSON {
                 convertor = _convertors.get(cls.getName());
             }
         }
+        if (convertor == null)
+            return new JSONPojoConvertor(forClass);
         return convertor;
     }
     /* ------------------------------------------------------------ */

@@ -1,7 +1,7 @@
 Hasor-Jdbc v0.0.1
 * 新增:
-	1.通过 net.hasor.jdbc.opface 软件包为 Java 应用程序提供了一个轻量化 JDBC 操作接口。
-	    -它的 98% 的代码是从 Spring JDBC 源码中精简得来。
+	1.通过 net.hasor.jdbc 软件包为 Java 应用程序提供了一个轻量化 JDBC 操作接口。
+	    -它的 70% 的代码是从 Spring JDBC 源码中精简得来。
 	2.软件包 net.hasor.jdbc.dao 为 Java 应用程序开发中提供了一个友好的 Dao 数据访问层基类。
 	3.软件包 net.hasor.plugins.datasource 为 Java 应用程序提供了数据源服务。
 	4.软件包 net.hasor.plugins.transaction 提供了一套 多数据源的事务管理，它不同于 JTA。其思想来源于 Spring JDBC。
