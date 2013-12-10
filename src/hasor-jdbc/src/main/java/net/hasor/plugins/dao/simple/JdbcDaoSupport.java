@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.dao;
+package net.hasor.plugins.dao.simple;
 import java.sql.Connection;
 import javax.sql.DataSource;
 import net.hasor.jdbc.core.JdbcTemplate;

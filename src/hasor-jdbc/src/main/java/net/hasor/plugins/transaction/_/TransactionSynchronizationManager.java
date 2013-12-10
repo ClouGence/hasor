@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.plugins.transaction._;
+import java.sql.Connection;
+import java.sql.SQLException;
 import javax.sql.DataSource;
+import net.hasor.jdbc.datasource.local.DefaultDataSourceHelper;
 import net.hasor.plugins.transaction.TransactionManager;
 import net.hasor.plugins.transaction.core.ds.ConnectionHandle;
 /**
@@ -22,7 +25,15 @@ import net.hasor.plugins.transaction.core.ds.ConnectionHandle;
  * @version : 2013-6-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public class TransactionSynchronizationManager {
+public class TransactionSynchronizationManager extends DefaultDataSourceHelper {
+    public Connection getConnection(DataSource dataSource) throws SQLException {
+        // TODO Auto-generated method stub
+        return super.getConnection(dataSource);
+    }
+    public void releaseConnection(Connection con, DataSource dataSource) throws SQLException {
+        // TODO Auto-generated method stub
+        super.releaseConnection(con, dataSource);
+    }
     //
     /**为某个数据源创建一个事务管理器。*/
     public static TransactionManager getTransactionManager(DataSource dataSource) {
