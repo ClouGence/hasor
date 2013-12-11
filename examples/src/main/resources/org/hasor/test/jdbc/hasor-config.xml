@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://project.hasor.net/hasor/schema/main">
+	<!-- 框架配置 -->
+	<hasor>
+		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
+		<loadPackages>org.hasor.test.jdbc.*</loadPackages>
+		<!-- 执行事件的线程池大小 -->
+		<eventThreadPoolSize>5</eventThreadPoolSize>
+		<!-- 是否强迫所有模块都必须正常启动 -->
+		<forceModule>false</forceModule>
+		<!-- 配置文件改变监视线程检查时间间隔 -->
+		<settingsMonitor interval="1000" />
+	</hasor>
+	<environmentVar>
+		<!-- 程序工作空间基础目录（绝对地址） -->
+		<HASOR_WORK_HOME>./test-work</HASOR_WORK_HOME>
+	</environmentVar>
+	<hasor-jdbc>
+		<dataSourceSet default="localDB">
+			<dataSource name="localDB" dsFactory="net.hasor.plugins.datasource.factory.C3p0Factory">
+				<driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
+				<url>jdbc:sqlserver://10.200.15.100;DatabaseName=POP_JC_SYS_DEV</url>
+				<user>sa</user>
+				<password>abc123!@#</password>
+			</dataSource>
+		</dataSourceSet>
+	</hasor-jdbc>
+</config>
