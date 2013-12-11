@@ -17,8 +17,9 @@ package net.hasor.plugins.result;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Map;
+import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
-import net.hasor.plugins.aware.AppContextAware;
+import net.hasor.core.AppContextAware;
 import net.hasor.plugins.controller.interceptor.ControllerInterceptor;
 import net.hasor.plugins.controller.interceptor.ControllerInvocation;
 /**
@@ -30,9 +31,9 @@ class ResultCaller_Controller extends ControllerInterceptor implements AppContex
     private AppContext                          appContext = null;
     private Map<Class<?>, Class<ResultProcess>> defineMap  = null;
     //
-    public ResultCaller_Controller(Map<Class<?>, Class<ResultProcess>> defineMap) {
+    public ResultCaller_Controller(ApiBinder apiBinder, Map<Class<?>, Class<ResultProcess>> defineMap) {
         this.defineMap = defineMap;
-        AwareUtil.registerAppContextAware(this);
+        apiBinder.registerAware(this);
     }
     public void setAppContext(AppContext appContext) {
         this.appContext = appContext;

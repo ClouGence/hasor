@@ -28,6 +28,6 @@ import com.google.inject.matcher.Matcher;
 public class AopPlugin extends AbstractHasorPlugin {
     public void loadPlugin(ApiBinder apiBinder) {
         Matcher<Object> matcher = AopMatchers.annotatedWith(Aop.class);//
-        apiBinder.getGuiceBinder().bindInterceptor(matcher, matcher, new AopInterceptor());
+        apiBinder.getGuiceBinder().bindInterceptor(matcher, matcher, new AopInterceptor(apiBinder));
     }
 }

@@ -54,12 +54,12 @@ public class ResultPlugin extends AbstractWebHasorPlugin {
         {
             /*所有继承 AbstractController 并且标记了 @Controller 注解的类都是控制器*/
             Matcher<Class> matcherController = AopMatchers.subclassesOf(AbstractController.class).and(AopMatchers.annotatedWith(Controller.class));
-            ResultCaller_Controller caller_1 = new ResultCaller_Controller(defineMap);
+            ResultCaller_Controller caller_1 = new ResultCaller_Controller(apiBinder, defineMap);
             apiBinder.getGuiceBinder().bindInterceptor(matcherController, AopMatchers.any(), caller_1);
         }
         {
             /*所有标记了 @RestfulService 注解的类都是Restful服务*/
-            ResultCaller_Restful caller_2 = new ResultCaller_Restful(defineMap);
+            ResultCaller_Restful caller_2 = new ResultCaller_Restful(apiBinder, defineMap);
             apiBinder.getGuiceBinder().bindInterceptor(AopMatchers.annotatedWith(RestfulService.class), AopMatchers.any(), caller_2);
         }
     }

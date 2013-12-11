@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class Hasor {
     //
-    //
     private static StackTraceElement onTrace() {
         StackTraceElement[] stackElements = Thread.currentThread().getStackTrace();
         StackTraceElement onCode = stackElements[4];

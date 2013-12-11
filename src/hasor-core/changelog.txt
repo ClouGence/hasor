@@ -11,6 +11,11 @@ Hasor-Core v0.0.6
     03.改进 AppContext 当处理 ServicesRegisterHandler 的注册和解除注册时新增 boolean 返回值。
     04.Hasor 类，归为 core 软件包。
     05.改进 ConverterUtils 当使用“ConverterUtils.convert(Date.class, null);”转换时间日期时出现异常。其实 null 本可以转换为 “(Date)null”。
+    06.删除 Aware 插件，该插件的 AppContextAware 接口将由 “net.hasor.core” 直接支持。
+        -这是由于一下几个方面:
+          1.net.hasor.core 软件包已经开始依赖它了。
+          2.当应用程序中创建了多个 AppContext 之后 “AwareUtil”类的插件处理方式会导致注入混乱。
+    07.从 “net.hasor.core” 中剔除鸡肋的 ServicesRegisterHandler 功能。该功能于 v0.0.4 版本加入。
 
 
 Hasor-Core v0.0.5

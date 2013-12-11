@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.register;
+package net.hasor.core;
 /**
  * 
- * @version : 2013-10-29
+ * @version : 2013-11-8
  * @author 赵永春(zyc@hasor.net)
  */
-public interface ServicesRegisterHandler {
-    /**服务对象要求被注册*/
-    public boolean registerService(Object targetService);
-    /**服务对象要求被解除已有的注册*/
-    public boolean unRegisterService(Object serviceBean);
+public interface AppContextAware {
+    public void setAppContext(AppContext appContext);
 }

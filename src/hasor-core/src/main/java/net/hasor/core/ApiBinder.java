@@ -15,7 +15,6 @@
  */
 package net.hasor.core;
 import java.util.Set;
-import net.hasor.core.register.ServicesRegisterHandler;
 import com.google.inject.Binder;
 import com.google.inject.Key;
 import com.google.inject.Provider;
@@ -105,11 +104,6 @@ public interface ApiBinder {
     //
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
     public Set<Class<?>> getClassSet(Class<?> featureType);
-    //
-    /**注册{@link ServicesRegisterHandler}*/
-    public <T> void registerServicesHandler(Class<T> serviceType, Class<ServicesRegisterHandler> handlerType);
-    /**注册{@link ServicesRegisterHandler}*/
-    public <T> void registerServicesHandler(Class<T> serviceType, ServicesRegisterHandler handler);
     /**配置模块依赖关系。*/
     public DependencySettings dependency();
     /**注册一个bean。*/
@@ -132,4 +126,6 @@ public interface ApiBinder {
          * 注意：该方法仅仅要求在目标模块之后启动。但目标模块是否启动并无强制要求。*/
         public void weak(Class<? extends Module> targetModule);
     }
+    /**注册一个需要 AppContextAware 的类。该接口会在 AppContext 启动后第一时间注入 AppContext。*/
+    public void registerAware(AppContextAware aware);
 }

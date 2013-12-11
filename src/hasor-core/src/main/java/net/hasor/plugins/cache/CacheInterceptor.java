@@ -16,9 +16,10 @@
 package net.hasor.plugins.cache;
 import java.lang.reflect.Method;
 import java.util.List;
+import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
+import net.hasor.core.AppContextAware;
 import net.hasor.core.Hasor;
-import net.hasor.plugins.aware.AppContextAware;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.more.json.JSON;
@@ -29,9 +30,9 @@ import org.more.json.JSON;
  */
 class CacheInterceptor implements MethodInterceptor, AppContextAware {
     private AppContext appContext = null;
-    public CacheInterceptor() {
+    public CacheInterceptor(ApiBinder apiBinder) {
         /* 注册 AppContextAware 接口，以便获取到 AppContext 接口类型。*/
-        AwareUtil.registerAppContextAware(this);
+        apiBinder.registerAware(this);
     }
     public void setAppContext(AppContext appContext) {
         this.appContext = appContext;

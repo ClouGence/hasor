@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import net.hasor.core.AppContext;
+import net.hasor.core.AppContextAware;
 import net.hasor.core.Environment;
 import net.hasor.core.EventManager;
 import net.hasor.core.Hasor;
@@ -32,14 +33,11 @@ import net.hasor.core.binder.ApiBinderModule;
 import net.hasor.core.binder.BeanMetaData;
 import net.hasor.core.module.ModulePropxy;
 import net.hasor.core.module.ModuleReactor;
-import net.hasor.core.register.ServicesRegisterHandler;
-import net.hasor.core.register.ServicesRegisterManager;
 import org.more.UndefinedException;
 import com.google.inject.Binder;
 import com.google.inject.Binding;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Named;
@@ -51,29 +49,6 @@ import com.google.inject.name.Names;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractAppContext implements AppContext {
-    //-----------------------------------------------------------------------------------------ServicesRegister
-    private ServicesRegisterManager servicesRegisterManager;
-    public <T> boolean registerService(Class<T> type, T serviceBean, Object... objects) {
-        return this.servicesRegisterManager.registerServiceObject(type, serviceBean, objects);
-    }
-    public <T> boolean registerService(Class<T> type, Class<? extends T> serviceType, Object... objects) {
-        return this.servicesRegisterManager.registerService(type, serviceType, objects);
-    }
-    public <T> boolean registerService(Class<T> type, Key<? extends T> serviceKey, Object... objects) {
-        return this.servicesRegisterManager.registerService(type, serviceKey, objects);
-    }
-    public <T> boolean unRegisterService(Class<T> type, T serviceBean) {
-        return this.servicesRegisterManager.unRegisterServiceObject(type, serviceBean);
-    }
-    public <T> boolean unRegisterService(Class<T> type, Class<? extends T> serviceType) {
-        return this.servicesRegisterManager.unRegisterService(type, serviceType);
-    }
-    public <T> boolean unRegisterService(Class<T> type, Key<? extends T> serviceKey) {
-        return this.servicesRegisterManager.unRegisterService(type, serviceKey);
-    }
-    public ServicesRegisterHandler lookUpRegisterService(Class<?> type) {
-        return this.servicesRegisterManager.lookUpRegisterService(type);
-    }
     //
     //-----------------------------------------------------------------------------------------Bean
     private Map<String, BeanMetaData> beanInfoMap;
@@ -327,24 +302,29 @@ public abstract class AbstractAppContext implements AppContext {
         List<ModuleInfo> readOnlyModules = new ArrayList<ModuleInfo>();
         for (ModulePropxy amp : this.getModulePropxyList())
             readOnlyModules.add(amp);
-        //
-        ModuleReactor reactor = new ModuleReactor(readOnlyModules);
+        ModuleReactor reactor = new ModuleReactor(readOnlyModules);//创建反应器
         List<ModuleInfo> result = reactor.process();
         List<ModulePropxy> propxyList = this.getModulePropxyList();
         propxyList.clear();
         for (ModuleInfo info : result)
             propxyList.add((ModulePropxy) info);
-        //
-        this.servicesRegisterManager = new ServicesRegisterManager(this);
+        /*执行Aware通知*/
+        List<AppContextAware> awareList = this.findBeanByType(AppContextAware.class);
+        if (awareList == null)
+            return;
+        for (AppContextAware weak : awareList)
+            weak.setAppContext(this);
+        /**/
         Hasor.logInfo("the init is completed!");
     }
     /**启动。向所有模块发送启动信号，并将容器的状态置为Start。（该方法会尝试init所有模块）*/
     public synchronized void start() {
         if (this.isStart() == true)
             return;
+        /*初始化，并启动容器*/
         this.initContext();
         Hasor.logInfo("send start sign.");
-        //
+        /*发送启动事件*/
         this.getEnvironment().getEventManager().doSyncEventIgnoreThrow(ContextEvent_Start, this);
         List<ModulePropxy> modulePropxyList = this.getModulePropxyList();
         for (ModulePropxy mod : modulePropxyList)
@@ -358,6 +338,7 @@ public abstract class AbstractAppContext implements AppContext {
     public synchronized void stop() {
         if (this.isStart() == false)
             return;
+        /*发送停止事件*/
         Hasor.logInfo("send stop sign.");
         List<ModulePropxy> modulePropxyList = this.getModulePropxyList();
         for (ModulePropxy mod : modulePropxyList)
