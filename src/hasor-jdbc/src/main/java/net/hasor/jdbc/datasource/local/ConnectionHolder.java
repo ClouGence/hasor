@@ -48,7 +48,7 @@ public class ConnectionHolder {
         }
     }
     public boolean isOpen() {
-        if (referenceCount == 0 || this.connection == null)
+        if (referenceCount == 0)
             return false;
         return true;
     }

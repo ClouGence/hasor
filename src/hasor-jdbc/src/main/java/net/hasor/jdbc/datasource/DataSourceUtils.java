@@ -34,7 +34,10 @@ public class DataSourceUtils {
         DataSourceHelper utilService = utilServiceLocal.get();
         utilService = (utilService == null) ? defaultUtilService : utilService;
         try {
-            return utilService.getConnection(dataSource);
+            Connection conn = utilService.getConnection(dataSource);
+            if (conn == null)
+                throw new DataAccessException("getConnection. return null.");
+            return conn;
         } catch (SQLException e) {
             throw new DataAccessException("getConnection.", e);
         }

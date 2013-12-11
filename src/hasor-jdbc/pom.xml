@@ -50,11 +50,5 @@
 			<version>0.2.25</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.jolbox</groupId>
-			<artifactId>bonecp</artifactId>
-			<version>0.7.1.RELEASE</version>
-			<scope>provided</scope>
-		</dependency>
 	</dependencies>
 </project>

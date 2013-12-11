@@ -796,6 +796,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     /**获取与本地线程绑定的数据库连接，JDBC 框架会维护这个连接的事务。开发者不必关心该连接的事务管理，以及资源释放操作。*/
     private Connection newProxyConnection(Connection conn) {
+        Hasor.assertIsNotNull(conn, "Connection is null.");
         CloseSuppressingInvocationHandler handler = new CloseSuppressingInvocationHandler(conn);
         return (Connection) Proxy.newProxyInstance(ConnectionProxy.class.getClassLoader(), new Class[] { ConnectionProxy.class }, handler);
     }
