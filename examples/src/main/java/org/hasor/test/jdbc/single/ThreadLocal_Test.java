@@ -30,7 +30,7 @@ import org.junit.Test;
  * @version : 2013-12-10
  * @author ÕÔÓÀ´º(zyc@hasor.net)
  */
-public class ThreadLocalTest {
+public class ThreadLocal_Test {
     @Test
     public void threadLocalTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>threadLocalTest<<--");
