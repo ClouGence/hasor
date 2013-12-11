@@ -35,6 +35,7 @@ public class TemplatePlugin extends AbstractHasorPlugin implements AppContextAwa
     }
     public void loadPlugin(ApiBinder apiBinder) {
         apiBinder.registerAware(this);
+        /*JdbcTemplate*/
         apiBinder.getGuiceBinder().bind(JdbcTemplate.class).toProvider(new Provider<JdbcTemplate>() {
             public JdbcTemplate get() {
                 DataSource dataSource = appContext.getInstance(DataSource.class);
