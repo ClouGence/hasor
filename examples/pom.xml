@@ -67,25 +67,18 @@
 			<version>1.7.2</version>
 		</dependency>
 
-
+		<!-- HSQL & JDBC Driver -->
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>2.3.1</version>
+		</dependency>
 		<dependency>
 			<groupId>c3p0</groupId>
 			<artifactId>c3p0</artifactId>
 			<version>0.9.1.2</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- JDBC Driver -->
-		<dependency>
-			<groupId>org.noe.lib</groupId>
-			<artifactId>sqljdbc</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<!-- Freemarker -->
-		<!-- <dependency> -->
-		<!-- <groupId>net.hasor</groupId> -->
-		<!-- <artifactId>hasor-freemarker</artifactId> -->
-		<!-- <version>0.0.1</version> -->
-		<!-- </dependency> -->
 
 		<!-- Jetty Test -->
 		<dependency>
@@ -93,6 +86,7 @@
 			<artifactId>hasor-jetty</artifactId>
 			<version>0.0.1</version>
 		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

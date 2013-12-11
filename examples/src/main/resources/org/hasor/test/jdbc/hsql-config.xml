@@ -18,10 +18,10 @@
 	<hasor-jdbc>
 		<dataSourceSet default="localDB">
 			<dataSource name="localDB" dsFactory="net.hasor.plugins.datasource.factory.C3p0Factory">
-				<driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
-				<url>jdbc:sqlserver://10.200.15.100;DatabaseName=POP_JC_SYS_DEV</url>
+				<driver>org.hsqldb.jdbcDriver</driver>
+				<url>jdbc:hsqldb:mem:aname</url>
 				<user>sa</user>
-				<password>abc123!@#</password>
+				<password></password>
 			</dataSource>
 		</dataSourceSet>
 	</hasor-jdbc>

@@ -34,7 +34,7 @@ public class ThreadLocal_Test {
     @Test
     public void threadLocalTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>threadLocalTest<<--");
-        AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/jdbc/hasor-config.xml");
+        AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/jdbc/hsql-config.xml");
         appContext.start();
         //
         /*测试 Connection 是否为线程唯一，如果线程内不唯一则有问题。 */
@@ -54,6 +54,15 @@ public class ThreadLocal_Test {
                 return null;
             }
         });
+        //
+        //
+        jdbc.execute("create table SYS_TB_User (userUUID nvarchar(36) not null , userName nvarchar(20) null);");
+        jdbc.execute("insert into SYS_TB_User (userUUID,userName) values('AA','测试用户a');");
+        jdbc.execute("insert into SYS_TB_User (userUUID,userName) values('BB','测试用户b');");
+        jdbc.execute("insert into SYS_TB_User (userUUID,userName) values('CC','测试用户c');");
+        jdbc.execute("insert into SYS_TB_User (userUUID,userName) values('DD','测试用户d');");
+        //
+        //
         System.out.println(jdbc.queryForInt("select count(*) from SYS_TB_User"));
         //
         DataSourceUtils.releaseConnection(localConn, jdbc.getDataSource());

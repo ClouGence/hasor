@@ -16,14 +16,8 @@
 package org.hasor.test.jdbc.single;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Types;
 import net.hasor.core.context.AnnoStandardAppContext;
-import net.hasor.jdbc.ConnectionCallback;
 import net.hasor.jdbc.core.JdbcTemplate;
-import net.hasor.jdbc.exceptions.DataAccessException;
 import org.junit.Test;
 /**
  * 
@@ -40,18 +34,18 @@ public class Callable_Test {
         /*测试 调用存储过程。 */
         JdbcTemplate jdbc = appContext.getInstance(JdbcTemplate.class);
         //
-        int flowID = jdbc.execute(new ConnectionCallback<Integer>() {
-            public Integer doInConnection(Connection con) throws SQLException, DataAccessException {
-                String callSQL = "exec PR_BuildFlowTID ?,?";
-                CallableStatement callState = con.prepareCall(callSQL);
-                callState.setString(1, "TT");
-                callState.registerOutParameter(2, Types.INTEGER);
-                boolean res = callState.execute();
-                int resData = callState.getInt(2);
-                return resData;
-            }
-        });
-        System.out.println(flowID);
+        //        int flowID = jdbc.execute(new ConnectionCallback<Integer>() {
+        //            public Integer doInConnection(Connection con) throws SQLException, DataAccessException {
+        //                String callSQL = "exec PR_BuildFlowTID ?,?";
+        //                CallableStatement callState = con.prepareCall(callSQL);
+        //                callState.setString(1, "TT");
+        //                callState.registerOutParameter(2, Types.INTEGER);
+        //                boolean res = callState.execute();
+        //                int resData = callState.getInt(2);
+        //                return resData;
+        //            }
+        //        });
+        //System.out.println(flowID);
         //
     }
 }
