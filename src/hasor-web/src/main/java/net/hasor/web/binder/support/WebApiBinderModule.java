@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletContext;
 import net.hasor.core.ModuleInfo;
-import net.hasor.core.binder.ApiBinderModule;
+import net.hasor.core.binder.AbstractApiBinder;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebEnvironment;
 import com.google.inject.Binder;
@@ -27,7 +27,7 @@ import com.google.inject.Binder;
  * @version : 2013-4-10
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-public abstract class WebApiBinderModule extends ApiBinderModule implements WebApiBinder {
+public abstract class WebApiBinderModule extends AbstractApiBinder implements WebApiBinder {
     private FiltersModuleBuilder              filterModuleBinder                = new FiltersModuleBuilder();             /*Filters*/
     private ServletsModuleBuilder             servletModuleBinder               = new ServletsModuleBuilder();            /*Servlets*/
     private HttpSessionListenerBindingBuilder httpSessionListenerBindingBuilder = new HttpSessionListenerBindingBuilder(); /*Listener*/

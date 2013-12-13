@@ -29,7 +29,7 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.ModuleInfo;
 import net.hasor.core.Settings;
-import net.hasor.core.binder.ApiBinderModule;
+import net.hasor.core.binder.AbstractApiBinder;
 import net.hasor.core.binder.BeanMetaData;
 import net.hasor.core.module.ModulePropxy;
 import net.hasor.core.module.ModuleReactor;
@@ -154,7 +154,7 @@ public abstract class AbstractAppContext implements AppContext {
         return null;
     }
     //
-    //----------------------------------------------------------------------------------Context
+    //--------------------------------------------------------------------------------------Context
     private Injector injector = null;
     private Object   context;
     /**获得Guice环境。*/
@@ -198,21 +198,25 @@ public abstract class AbstractAppContext implements AppContext {
     public Set<Class<?>> getClassSet(Class<?> featureType) {
         return this.getEnvironment().getClassSet(featureType);
     }
-    //
     //---------------------------------------------------------------------------------------Module
-    /**选取或者生成指定模块的代理类型。*/
-    protected ModulePropxy generateModulePropxy(Module hasorModule) {
-        for (ModulePropxy info : this.getModulePropxyList())
-            if (info.getTarget() == hasorModule)
-                return info;
-        return new ContextModulePropxy(hasorModule, this);
+    private List<ModulePropxy> moduleSet;
+    /**创建或者获得用于存放所有ModuleInfo的集合对象*/
+    protected List<ModulePropxy> getModuleList() {
+        if (this.moduleSet == null)
+            this.moduleSet = new ArrayList<ModulePropxy>();
+        return moduleSet;
     }
     /**添加模块，如果容器已经初始化那么会引发{@link IllegalStateException}异常。*/
     public synchronized ModuleInfo addModule(Module hasorModule) {
         if (this.isReady())
             throw new IllegalStateException("context is inited.");
-        ModulePropxy propxy = this.generateModulePropxy(hasorModule);
-        List<ModulePropxy> propxyList = this.getModulePropxyList();
+        /*防止重复添加*/
+        for (ModulePropxy info : this.getModuleList())
+            if (info.getTarget() == hasorModule)
+                return info;
+        /*添加模块*/
+        ModulePropxy propxy = new ContextModulePropxy(hasorModule, this);
+        List<ModulePropxy> propxyList = this.getModuleList();
         if (propxyList.contains(propxy) == false)
             propxyList.add(propxy);
         return propxy;
@@ -222,43 +226,34 @@ public abstract class AbstractAppContext implements AppContext {
         if (this.isReady())
             throw new IllegalStateException("context is inited.");
         ModulePropxy targetInfo = null;
-        for (ModulePropxy info : this.getModulePropxyList())
+        for (ModulePropxy info : this.getModuleList())
             if (info.getTarget() == hasorModule) {
                 targetInfo = info;
                 break;
             }
         if (targetInfo != null) {
-            this.getModulePropxyList().remove(targetInfo);
+            this.getModuleList().remove(targetInfo);
             return true;
         }
         return false;
     }
     /**获得所有模块*/
     public ModuleInfo[] getModules() {
-        List<ModulePropxy> haosrModuleList = this.getModulePropxyList();
+        List<ModulePropxy> haosrModuleList = this.getModuleList();
         ModuleInfo[] infoArray = new ModuleInfo[haosrModuleList.size()];
         for (int i = 0; i < haosrModuleList.size(); i++)
             infoArray[i] = haosrModuleList.get(i);
         return infoArray;
     }
-    //
-    private List<ModulePropxy> haosrModuleSet;
-    /**创建或者获得用于存放所有ModuleInfo的集合对象*/
-    protected List<ModulePropxy> getModulePropxyList() {
-        if (this.haosrModuleSet == null)
-            this.haosrModuleSet = new ArrayList<ModulePropxy>();
-        return haosrModuleSet;
-    }
-    //
-    //---------------------------------------------------------------------------------------Life
+    //----------------------------------------------------------------------------------------Utils
     private boolean isStart;
     /**判断容器是否处于运行状态*/
     public boolean isStart() {
         return this.isStart;
     }
     /**为模块创建ApiBinder*/
-    protected ApiBinderModule newApiBinder(final ModulePropxy forModule, Binder binder) {
-        return new ApiBinderModule(binder, this.getEnvironment(), forModule) {
+    protected AbstractApiBinder newApiBinder(final ModulePropxy forModule, Binder binder) {
+        return new AbstractApiBinder(binder, this.getEnvironment(), forModule) {
             public DependencySettings dependency() {
                 return forModule;
             }
@@ -269,8 +264,8 @@ public abstract class AbstractAppContext implements AppContext {
         return Guice.createInjector(guiceModules);
     }
     /**打印模块状态*/
-    protected void printModState() {
-        List<ModulePropxy> modList = this.getModulePropxyList();
+    protected static void printModState(AbstractAppContext appContext) {
+        List<ModulePropxy> modList = appContext.getModuleList();
         StringBuilder sb = new StringBuilder("");
         int size = String.valueOf(modList.size() - 1).length();
         for (int i = 0; i < modList.size(); i++) {
@@ -290,64 +285,34 @@ public abstract class AbstractAppContext implements AppContext {
             sb.deleteCharAt(sb.length() - 1);
         Hasor.logInfo("Modules State List:\n%s", sb);
     }
-    /**初始化容器，请注意容器只能被初始化一次。*/
+    //-----------------------------------------------------------------------------------------Life
+    /**初始化容器，请注意容器只能被初始化一次。该方法在创建 Guice 过程中会引发 doInitialize 方法的调用。*/
     protected void initContext() {
         if (this.injector != null)
             return;
-        /*触发ContextEvent_Init事件，并且创建创建guice*/
-        Hasor.logInfo("send init sign.");
+        /*1.创建创建guice*/
+        Hasor.logInfo("createInjector...");
         this.injector = this.createInjector(new com.google.inject.Module[] { new RootInitializeModule(this) });
         Hasor.assertIsNotNull(this.injector, "can not be create Injector.");
-        /*使用反应堆对模块进行循环检查和排序*/
-        List<ModuleInfo> readOnlyModules = new ArrayList<ModuleInfo>();
-        for (ModulePropxy amp : this.getModulePropxyList())
-            readOnlyModules.add(amp);
-        ModuleReactor reactor = new ModuleReactor(readOnlyModules);//创建反应器
-        List<ModuleInfo> result = reactor.process();
-        List<ModulePropxy> propxyList = this.getModulePropxyList();
-        propxyList.clear();
-        for (ModuleInfo info : result)
-            propxyList.add((ModulePropxy) info);
-        /*执行Aware通知*/
-        List<AppContextAware> awareList = this.findBeanByType(AppContextAware.class);
-        if (awareList == null)
-            return;
-        for (AppContextAware weak : awareList)
-            weak.setAppContext(this);
-        /**/
+        /*2.使用反应堆对模块进行循环检查和排序*/
+        this.doReactor();
+        /*3.完成init*/
         Hasor.logInfo("the init is completed!");
     }
     /**启动。向所有模块发送启动信号，并将容器的状态置为Start。（该方法会尝试init所有模块）*/
     public synchronized void start() {
         if (this.isStart() == true)
             return;
-        /*初始化，并启动容器*/
+        /*1.初始化*/
         this.initContext();
-        Hasor.logInfo("send start sign.");
-        /*发送启动事件*/
-        this.getEnvironment().getEventManager().doSyncEventIgnoreThrow(ContextEvent_Start, this);
-        List<ModulePropxy> modulePropxyList = this.getModulePropxyList();
-        for (ModulePropxy mod : modulePropxyList)
-            mod.start(this);
-        this.isStart = true;
-        /*打印模块状态*/
-        this.printModState();
-        Hasor.logInfo("hasor started!");
+        /*2.启动*/
+        this.doStart();
     }
     /**停止。向所有模块发送停止信号，并将容器的状态置为Stop。*/
     public synchronized void stop() {
         if (this.isStart() == false)
             return;
-        /*发送停止事件*/
-        Hasor.logInfo("send stop sign.");
-        List<ModulePropxy> modulePropxyList = this.getModulePropxyList();
-        for (ModulePropxy mod : modulePropxyList)
-            mod.stop(this);
-        this.getEnvironment().getEventManager().doSyncEventIgnoreThrow(ContextEvent_Stoped, this);
-        this.isStart = false;
-        /*打印模块状态*/
-        this.printModState();
-        Hasor.logInfo("hasor stoped!");
+        doStop();
     }
     /**重新初始化并启动容器，强迫所有模块都重新初始化(Init)并启动(Start)*/
     public synchronized void reboot() {
@@ -356,13 +321,75 @@ public abstract class AbstractAppContext implements AppContext {
         this.environment = null;
         this.injector = null;
         this.beanInfoMap = null;
-        this.haosrModuleSet = null;
+        this.moduleSet.clear();
         this.start();
     }
     /**调用停止执行，而后调用start指令。*/
     public synchronized void restart() {
         this.stop();
         this.start();
+    }
+    //--------------------------------------------------------------------------------------Process
+    /**执行 Initialize 过程。*/
+    protected void doInitialize(Binder binder) {
+        Hasor.logInfo("send init sign...");
+        this.getEventManager().doSyncEventIgnoreThrow(ContextEvent_Initialize, getEnvironment(), binder);
+        //
+        List<ModulePropxy> modulePropxyList = this.getModuleList();
+        /*引发模块init生命周期*/
+        for (ModulePropxy forModule : modulePropxyList) {
+            AbstractApiBinder apiBinder = this.newApiBinder(forModule, binder);
+            forModule.init(apiBinder);//触发生命周期 
+            apiBinder.configure(binder);
+        }
+        this.doBind(binder);
+        //
+        this.getEventManager().doSyncEventIgnoreThrow(ContextEvent_Initialized, getEnvironment(), binder);
+        Hasor.logInfo("init modules finish.");
+    }
+    /**使用反应堆对模块进行循环检查和排序*/
+    private void doReactor() {
+        List<ModuleInfo> readOnlyModules = new ArrayList<ModuleInfo>();
+        for (ModulePropxy amp : this.getModuleList())
+            readOnlyModules.add(amp);
+        ModuleReactor reactor = new ModuleReactor(readOnlyModules);//创建反应器
+        List<ModuleInfo> result = reactor.process();
+        List<ModulePropxy> propxyList = this.getModuleList();
+        propxyList.clear();
+        for (ModuleInfo info : result)
+            propxyList.add((ModulePropxy) info);
+    }
+    /**启动。向所有模块发送启动信号，并将容器的状态置为Start。（该方法会尝试init所有模块）*/
+    protected void doStart() {
+        Hasor.logInfo("send start sign.");
+        /*1.执行Aware通知*/
+        List<AppContextAware> awareList = this.findBeanByType(AppContextAware.class);
+        if (awareList == null)
+            return;
+        for (AppContextAware weak : awareList)
+            weak.setAppContext(this);
+        /*2.发送启动事件*/
+        this.getEnvironment().getEventManager().doSyncEventIgnoreThrow(ContextEvent_Start, this);
+        List<ModulePropxy> modulePropxyList = this.getModuleList();
+        for (ModulePropxy mod : modulePropxyList)
+            mod.start(this);
+        this.isStart = true;
+        /*3.打印模块状态*/
+        printModState(this);
+        Hasor.logInfo("hasor started!");
+    }
+    /**执行 Stop 过程。*/
+    protected void doStop() {
+        /*1.发送停止事件*/
+        Hasor.logInfo("send stop sign.");
+        List<ModulePropxy> modulePropxyList = this.getModuleList();
+        for (ModulePropxy mod : modulePropxyList)
+            mod.stop(this);
+        this.getEnvironment().getEventManager().doSyncEventIgnoreThrow(ContextEvent_Stoped, this);
+        this.isStart = false;
+        /*2.打印模块状态*/
+        printModState(this);
+        Hasor.logInfo("hasor stoped!");
     }
     /**当完成所有初始化过程之后调用，负责向 Guice 绑定一些预先定义的类型。*/
     protected void doBind(Binder binder) {
@@ -392,7 +419,6 @@ public abstract class AbstractAppContext implements AppContext {
             }
         });
     }
-    //---------------------------------------------------------------------------------------Class
     /**负责处理 Init 阶段的入口类。*/
     private class RootInitializeModule implements com.google.inject.Module {
         private AbstractAppContext appContet;
@@ -400,18 +426,7 @@ public abstract class AbstractAppContext implements AppContext {
             this.appContet = appContet;
         }
         public void configure(Binder binder) {
-            Hasor.logInfo("send init sign...");
-            this.appContet.getEventManager().doSyncEventIgnoreThrow(AppContext.ContextEvent_Initialize, appContet.getEnvironment(), binder);
-            List<ModulePropxy> modulePropxyList = this.appContet.getModulePropxyList();
-            /*引发模块init生命周期*/
-            for (ModulePropxy forModule : modulePropxyList) {
-                ApiBinderModule apiBinder = this.appContet.newApiBinder(forModule, binder);
-                forModule.init(apiBinder);//触发生命周期 
-                apiBinder.configure(binder);
-            }
-            this.appContet.getEventManager().doSyncEventIgnoreThrow(AppContext.ContextEvent_Initialized, appContet.getEnvironment(), binder);
-            this.appContet.doBind(binder);
-            Hasor.logInfo("init modules finish.");
+            this.appContet.doInitialize(binder);
         }
     }
     /**位于容器中 ModulePropxy 抽象类的实现*/
@@ -420,7 +435,7 @@ public abstract class AbstractAppContext implements AppContext {
             super(targetModule, appContext);
         }
         protected ModulePropxy getInfo(Class<? extends Module> targetModule, AppContext appContext) {
-            List<ModulePropxy> modulePropxyList = ((AbstractAppContext) appContext).getModulePropxyList();
+            List<ModulePropxy> modulePropxyList = ((AbstractAppContext) appContext).getModuleList();
             for (ModulePropxy modulePropxy : modulePropxyList)
                 if (targetModule == modulePropxy.getTarget().getClass())
                     return modulePropxy;

@@ -21,7 +21,6 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.Environment;
 import net.hasor.core.ModuleInfo;
-import net.hasor.core.Settings;
 import org.more.util.StringUtils;
 import com.google.inject.Binder;
 import com.google.inject.Key;
@@ -40,13 +39,13 @@ import com.google.inject.name.Names;
  * @version : 2013-4-12
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class ApiBinderModule implements ApiBinder, Module {
+public abstract class AbstractApiBinder implements ApiBinder, Module {
     private Environment           environment = null;
     private BeanInfoModuleBuilder beanBuilder = new BeanInfoModuleBuilder(); /*Beans*/
     private ModuleInfo            forModule   = null;
     public Binder                 guiceBinder = null;
     //
-    protected ApiBinderModule(Binder guiceBinder, Environment envContext, ModuleInfo forModule) {
+    protected AbstractApiBinder(Binder guiceBinder, Environment envContext, ModuleInfo forModule) {
         this.environment = envContext;
         this.forModule = forModule;
         this.guiceBinder = guiceBinder;
@@ -60,12 +59,9 @@ public abstract class ApiBinderModule implements ApiBinder, Module {
     public Binder getGuiceBinder() {
         return this.guiceBinder;
     }
-    public Settings getModuleSettings() {
-        Settings globalSetting = this.getEnvironment().getSettings();
-        Settings modeuleSetting = globalSetting.getNamespace(this.forModule.getSettingsNamespace());
-        if (modeuleSetting != null)
-            return modeuleSetting;
-        return globalSetting;
+    /**获取所属模块*/
+    public ModuleInfo getModuleInfo() {
+        return this.forModule;
     }
     public Set<Class<?>> getClassSet(Class<?> featureType) {
         if (featureType == null)

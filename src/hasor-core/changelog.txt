@@ -16,6 +16,7 @@ Hasor-Core v0.0.6
           1.net.hasor.core 软件包已经开始依赖它了。
           2.当应用程序中创建了多个 AppContext 之后 “AwareUtil”类的插件处理方式会导致注入混乱。
     07.从 “net.hasor.core” 中剔除鸡肋的 ServicesRegisterHandler 功能。该功能于 v0.0.4 版本加入。
+    08.AbstractAppContext 梳理内部方法调用过程，通过受保护的方法暴露一些内部执行过程。
 
 
 Hasor-Core v0.0.5

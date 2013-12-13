@@ -20,7 +20,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.servlet.ServletContext;
-import net.hasor.core.binder.ApiBinderModule;
+import net.hasor.core.binder.AbstractApiBinder;
 import net.hasor.core.context.AnnoStandardAppContext;
 import net.hasor.core.module.ModulePropxy;
 import net.hasor.web.WebAppContext;
@@ -88,7 +88,7 @@ public class AnnoWebAppContext extends AnnoStandardAppContext implements WebAppC
     protected WebEnvironment createEnvironment() {
         return new WebStandardEnvironment(this.getMainSettings(), (ServletContext) this.getContext());
     }
-    protected ApiBinderModule newApiBinder(final ModulePropxy forModule, Binder binder) {
+    protected AbstractApiBinder newApiBinder(final ModulePropxy forModule, Binder binder) {
         return new WebApiBinderModule(binder, (WebEnvironment) this.getEnvironment(), forModule) {
             public DependencySettings dependency() {
                 return forModule;
