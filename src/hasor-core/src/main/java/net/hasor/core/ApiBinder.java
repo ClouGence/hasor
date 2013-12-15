@@ -59,6 +59,8 @@ import com.google.inject.binder.ScopedBindingBuilder;
 public interface ApiBinder {
     /**获取初始化环境*/
     public Environment getEnvironment();
+    /**获取事件管理器*/
+    public EventManager getEventManager();
     /**获取用于初始化Guice的Binder。*/
     public Binder getGuiceBinder();
     /**

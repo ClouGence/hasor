@@ -26,21 +26,18 @@ import com.google.inject.Provider;
  */
 public interface AppContext {
     //----------------------------------------------------------------------------------Event
-    /**容器事件，在所有模块初始化之前引发。
-     * @see net.hasor.core.context.AbstractAppContext*/
-    public static final String ContextEvent_Initialize  = "ContextEvent_Initialize";
     /**容器事件，在所有模块初始化之后引发。
      * @see net.hasor.core.context.AbstractAppContext*/
     public static final String ContextEvent_Initialized = "ContextEvent_Initialized";
-    /**容器事件，在所有模块 start 阶段之前引发。
+    /**容器事件，在所有模块 start 阶段之后引发。
      * @see net.hasor.core.context.AbstractAppContext*/
-    public static final String ContextEvent_Start       = "ContextEvent_Start";
+    public static final String ContextEvent_Started     = "ContextEvent_Started";
     /**容器事件，在所有模块处理完 stop 阶段之后引发。
      * @see net.hasor.core.context.AbstractAppContext*/
     public static final String ContextEvent_Stoped      = "ContextEvent_Stoped";
     /**模块事件。当模块收到 start 调用信号之后引发。
      * @see net.hasor.core.module.ModulePropxy*/
-    public static final String ModuleEvent_Start        = "ModuleEvent_Start";
+    public static final String ModuleEvent_Started      = "ModuleEvent_Started";
     /**模块事件。当模块处理完 stop 调用信号之后引发。
      * @see net.hasor.core.module.ModulePropxy*/
     public static final String ModuleEvent_Stoped       = "ModuleEvent_Stoped";

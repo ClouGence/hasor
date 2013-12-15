@@ -89,7 +89,7 @@ public class AnnoWebAppContext extends AnnoStandardAppContext implements WebAppC
         return new WebStandardEnvironment(this.getMainSettings(), (ServletContext) this.getContext());
     }
     protected AbstractApiBinder newApiBinder(final ModulePropxy forModule, Binder binder) {
-        return new WebApiBinderModule(binder, (WebEnvironment) this.getEnvironment(), forModule) {
+        return new WebApiBinderModule(binder, (WebEnvironment) this.getEnvironment()) {
             public DependencySettings dependency() {
                 return forModule;
             }

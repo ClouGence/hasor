@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 package net.hasor.plugins.template;
+import java.util.ArrayList;
+import java.util.List;
 import javax.sql.DataSource;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
+import net.hasor.core.EventListener;
+import net.hasor.core.Settings;
+import net.hasor.core.XmlNode;
 import net.hasor.core.plugin.AbstractHasorPlugin;
 import net.hasor.core.plugin.Plugin;
 import net.hasor.jdbc.core.JdbcTemplate;
+import org.more.util.StringUtils;
 import com.google.inject.Provider;
 /**
  * 
@@ -28,19 +34,72 @@ import com.google.inject.Provider;
  * @author 赵永春(zyc@hasor.net)
  */
 @Plugin
-public class TemplatePlugin extends AbstractHasorPlugin implements AppContextAware {
-    private AppContext appContext;
-    public void setAppContext(AppContext appContext) {
-        this.appContext = appContext;
-    }
+public class TemplatePlugin extends AbstractHasorPlugin {
     public void loadPlugin(ApiBinder apiBinder) {
-        apiBinder.registerAware(this);
         /*JdbcTemplate*/
-        apiBinder.getGuiceBinder().bind(JdbcTemplate.class).toProvider(new Provider<JdbcTemplate>() {
-            public JdbcTemplate get() {
-                DataSource dataSource = appContext.getInstance(DataSource.class);
-                return new JdbcTemplate(dataSource);
+        apiBinder.getGuiceBinder().bind(JdbcTemplate.class).toProvider(new DefaultJdbcTemplateProvider(apiBinder));
+        /*带有名称的 JdbcTemplate*/
+        Settings settings = apiBinder.getEnvironment().getSettings();
+        XmlNode[] dataSourceSet = settings.getXmlPropertyArray("hasor-jdbc.dataSourceSet");
+        if (dataSourceSet == null)
+            return;
+        ArrayList<String> dataSourceNames = new ArrayList<String>();
+        for (XmlNode dsSet : dataSourceSet) {
+            List<XmlNode> dataSource = dsSet.getChildren("dataSource");
+            for (XmlNode dsConfig : dataSource) {
+                String name = dsConfig.getAttribute("name");
+                if (!StringUtils.isBlank(name))
+                    dataSourceNames.add(name);
             }
-        });
+        }
+        apiBinder.getEventManager().pushEventListener(AppContext.ContextEvent_Initialized, new InitializedEventListener(dataSourceNames));
+    }
+    /**/
+    private static class InitializedEventListener implements EventListener {
+        private List<String> dataSourceNames;
+        public InitializedEventListener(List<String> dataSourceNames) {
+            this.dataSourceNames = dataSourceNames;
+        }
+        public void onEvent(String event, Object[] params) throws Throwable {
+            if (dataSourceNames == null || dataSourceNames.isEmpty())
+                return;
+            ApiBinder apiBinder = (ApiBinder) params[0];
+            for (String name : dataSourceNames) {
+                JdbcTemplateProvider jdbcProvider = new JdbcTemplateProvider(name, apiBinder);
+                apiBinder.bindingType(name, JdbcTemplate.class).toProvider(jdbcProvider);
+            }
+        }
+    }
+    /**/
+    private static class DefaultJdbcTemplateProvider implements Provider<JdbcTemplate>, AppContextAware {
+        private AppContext appContext;
+        public void setAppContext(AppContext appContext) {
+            this.appContext = appContext;
+        }
+        public DefaultJdbcTemplateProvider(ApiBinder apiBinder) {
+            apiBinder.registerAware(this);
+        }
+        public JdbcTemplate get() {
+            DataSource dataSource = appContext.getInstance(DataSource.class);
+            return new JdbcTemplate(dataSource);
+        }
+    }
+    /**/
+    private static class JdbcTemplateProvider implements Provider<JdbcTemplate>, AppContextAware {
+        private String     name;
+        private AppContext appContext;
+        public void setAppContext(AppContext appContext) {
+            this.appContext = appContext;
+        }
+        public JdbcTemplateProvider(String name, ApiBinder apiBinder) {
+            this.name = name;
+            apiBinder.registerAware(this);
+        }
+        public JdbcTemplate get() {
+            DataSource dataSource = appContext.findBeanByType(name, DataSource.class);
+            if (dataSource == null)
+                throw new NullPointerException(name + " DataSource is not define.");
+            return new JdbcTemplate(dataSource);
+        }
     }
 }

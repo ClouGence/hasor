@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.plugins.setting;
-import static net.hasor.core.AppContext.ContextEvent_Start;
+import static net.hasor.core.AppContext.ContextEvent_Started;
 import java.util.List;
 import java.util.Set;
 import net.hasor.core.ApiBinder;
@@ -39,7 +39,7 @@ public class SettingsPlugin extends AbstractHasorPlugin {
         //
         final Environment env = apiBinder.getEnvironment();
         EventManager eventManager = env.getEventManager();
-        eventManager.pushEventListener(ContextEvent_Start, new EventListener() {
+        eventManager.pushEventListener(ContextEvent_Started, new EventListener() {
             public void onEvent(String event, Object[] params) {
                 AppContext appContext = (AppContext) params[0];
                 List<Provider<SettingsListener>> settingProvider = appContext.findProviderByType(SettingsListener.class);

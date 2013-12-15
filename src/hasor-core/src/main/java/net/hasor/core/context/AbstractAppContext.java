@@ -253,7 +253,7 @@ public abstract class AbstractAppContext implements AppContext {
     }
     /**为模块创建ApiBinder*/
     protected AbstractApiBinder newApiBinder(final ModulePropxy forModule, Binder binder) {
-        return new AbstractApiBinder(binder, this.getEnvironment(), forModule) {
+        return new AbstractApiBinder(binder, this.getEnvironment()) {
             public DependencySettings dependency() {
                 return forModule;
             }
@@ -333,8 +333,6 @@ public abstract class AbstractAppContext implements AppContext {
     /**执行 Initialize 过程。*/
     protected void doInitialize(Binder binder) {
         Hasor.logInfo("send init sign...");
-        this.getEventManager().doSyncEventIgnoreThrow(ContextEvent_Initialize, getEnvironment(), binder);
-        //
         List<ModulePropxy> modulePropxyList = this.getModuleList();
         /*引发模块init生命周期*/
         for (ModulePropxy forModule : modulePropxyList) {
@@ -343,8 +341,13 @@ public abstract class AbstractAppContext implements AppContext {
             apiBinder.configure(binder);
         }
         this.doBind(binder);
-        //
-        this.getEventManager().doSyncEventIgnoreThrow(ContextEvent_Initialized, getEnvironment(), binder);
+        /*引发事件*/
+        AbstractApiBinder apiBinder = new AbstractApiBinder(binder, this.getEnvironment()) {
+            public DependencySettings dependency() {
+                return null;
+            }
+        };
+        this.getEventManager().doSyncEventIgnoreThrow(ContextEvent_Initialized, apiBinder);
         Hasor.logInfo("init modules finish.");
     }
     /**使用反应堆对模块进行循环检查和排序*/
@@ -368,25 +371,27 @@ public abstract class AbstractAppContext implements AppContext {
             return;
         for (AppContextAware weak : awareList)
             weak.setAppContext(this);
-        /*2.发送启动事件*/
-        this.getEnvironment().getEventManager().doSyncEventIgnoreThrow(ContextEvent_Start, this);
+        /*2.逐一启动模块*/
         List<ModulePropxy> modulePropxyList = this.getModuleList();
         for (ModulePropxy mod : modulePropxyList)
             mod.start(this);
         this.isStart = true;
-        /*3.打印模块状态*/
+        /*3.发送启动事件*/
+        this.getEnvironment().getEventManager().doSyncEventIgnoreThrow(ContextEvent_Started, this);
+        /*4.打印模块状态*/
         printModState(this);
         Hasor.logInfo("hasor started!");
     }
     /**执行 Stop 过程。*/
     protected void doStop() {
-        /*1.发送停止事件*/
+        this.isStart = false;
+        /*1.逐一停止模块*/
         Hasor.logInfo("send stop sign.");
         List<ModulePropxy> modulePropxyList = this.getModuleList();
         for (ModulePropxy mod : modulePropxyList)
             mod.stop(this);
+        /*2.发送停止事件*/
         this.getEnvironment().getEventManager().doSyncEventIgnoreThrow(ContextEvent_Stoped, this);
-        this.isStart = false;
         /*2.打印模块状态*/
         printModState(this);
         Hasor.logInfo("hasor stoped!");

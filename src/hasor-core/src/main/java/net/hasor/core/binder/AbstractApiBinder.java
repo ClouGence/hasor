@@ -20,7 +20,7 @@ import java.util.Set;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.Environment;
-import net.hasor.core.ModuleInfo;
+import net.hasor.core.EventManager;
 import org.more.util.StringUtils;
 import com.google.inject.Binder;
 import com.google.inject.Key;
@@ -42,12 +42,10 @@ import com.google.inject.name.Names;
 public abstract class AbstractApiBinder implements ApiBinder, Module {
     private Environment           environment = null;
     private BeanInfoModuleBuilder beanBuilder = new BeanInfoModuleBuilder(); /*Beans*/
-    private ModuleInfo            forModule   = null;
     public Binder                 guiceBinder = null;
     //
-    protected AbstractApiBinder(Binder guiceBinder, Environment envContext, ModuleInfo forModule) {
+    protected AbstractApiBinder(Binder guiceBinder, Environment envContext) {
         this.environment = envContext;
-        this.forModule = forModule;
         this.guiceBinder = guiceBinder;
     }
     public void configure(Binder binder) {
@@ -56,13 +54,16 @@ public abstract class AbstractApiBinder implements ApiBinder, Module {
     public Environment getEnvironment() {
         return this.environment;
     }
+    public EventManager getEventManager() {
+        return this.getEnvironment().getEventManager();
+    }
     public Binder getGuiceBinder() {
         return this.guiceBinder;
     }
-    /**获取所属模块*/
-    public ModuleInfo getModuleInfo() {
-        return this.forModule;
-    }
+    //    /**获取所属模块*/
+    //    public ModuleInfo getModuleInfo() {
+    //        return this.forModule;
+    //    }
     public Set<Class<?>> getClassSet(Class<?> featureType) {
         if (featureType == null)
             return null;

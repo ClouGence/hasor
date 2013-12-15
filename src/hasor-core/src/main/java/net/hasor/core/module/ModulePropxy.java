@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.module;
-import static net.hasor.core.AppContext.ModuleEvent_Start;
+import static net.hasor.core.AppContext.ModuleEvent_Started;
 import static net.hasor.core.AppContext.ModuleEvent_Stoped;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -211,15 +211,19 @@ public abstract class ModulePropxy implements ModuleInfo/*提供模块基本信息*/, De
     /**发送模块启动信号*/
     protected void onStart(Module forModule, AppContext appContext) {
         loacalModuleInfo.put(this.appContext, this);
-        appContext.getEventManager().doSyncEventIgnoreThrow(ModuleEvent_Start, forModule, appContext);
-        forModule.start(appContext);
+        {
+            forModule.start(appContext);
+            appContext.getEventManager().doSyncEventIgnoreThrow(ModuleEvent_Started, forModule, appContext);
+        }
         loacalModuleInfo.remove(this.appContext);
     }
     /**发送模块停止信号*/
     protected void onStop(Module forModule, AppContext appContext) {
         loacalModuleInfo.put(this.appContext, this);
-        forModule.stop(appContext);
-        appContext.getEventManager().doSyncEventIgnoreThrow(ModuleEvent_Stoped, forModule, appContext);
+        {
+            forModule.stop(appContext);
+            appContext.getEventManager().doSyncEventIgnoreThrow(ModuleEvent_Stoped, forModule, appContext);
+        }
         loacalModuleInfo.remove(this.appContext);
     }
 }

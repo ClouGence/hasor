@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.plugins.event;
-import static net.hasor.core.AppContext.ContextEvent_Start;
+import static net.hasor.core.AppContext.ContextEvent_Started;
 import java.util.Set;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
@@ -45,7 +45,7 @@ public class ListenerPlugin extends AbstractHasorPlugin {
                 continue;
             }
             //当ContextEvent_Start事件到来时注册所有配置文件监听器。
-            eventManager.pushEventListener(ContextEvent_Start, new EventListener() {
+            eventManager.pushEventListener(ContextEvent_Started, new EventListener() {
                 public void onEvent(String event, Object[] params) {
                     //
                     AppContext appContext = (AppContext) params[0];

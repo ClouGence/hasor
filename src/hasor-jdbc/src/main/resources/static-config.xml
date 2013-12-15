@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-web">
+<config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-jdbc">
 	<!-- 框架配置 -->
 	<hasor>
 		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
 		<loadPackages>net.hasor.jdbc.*,net.hasor.plugins.*</loadPackages>
 	</hasor>
+	<!-- http://project.hasor.net/hasor/schema/hasor-jdbc 命名空间的配置，不支持跟随配置文件动态更新配置。 -->
 	<hasor-jdbc>
 		<dataSourceSet default="">
 			<!-- <dataSource name="" dsFactory="net.hasor.jdbc.datasource.factory.C3p0Factory"> -->

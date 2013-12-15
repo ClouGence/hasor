@@ -17,6 +17,10 @@ Hasor-Core v0.0.6
           2.当应用程序中创建了多个 AppContext 之后 “AwareUtil”类的插件处理方式会导致注入混乱。
     07.从 “net.hasor.core” 中剔除鸡肋的 ServicesRegisterHandler 功能。该功能于 v0.0.4 版本加入。
     08.AbstractAppContext 梳理内部方法调用过程，通过受保护的方法暴露一些内部执行过程。
+    09.所有容器事件发送都改为 “当完成某个阶段的任务之后在引发阶段事件” 例如：
+        --ContextEvent_Initialized 当完成所有初始化任务之后。
+        --ContextEvent_Started     当所有模块都 Start 之后（确保了每个模块都会尝试 start 之后）。
+        --ContextEvent_Stoped      当所有模块都 Stop 之后（确保了每个模块都会尝试 stop 之后）。
 
 
 Hasor-Core v0.0.5

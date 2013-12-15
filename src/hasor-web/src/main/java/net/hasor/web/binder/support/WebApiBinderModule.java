@@ -17,7 +17,6 @@ package net.hasor.web.binder.support;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletContext;
-import net.hasor.core.ModuleInfo;
 import net.hasor.core.binder.AbstractApiBinder;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebEnvironment;
@@ -33,8 +32,8 @@ public abstract class WebApiBinderModule extends AbstractApiBinder implements We
     private HttpSessionListenerBindingBuilder httpSessionListenerBindingBuilder = new HttpSessionListenerBindingBuilder(); /*Listener*/
     private ContextListenerBindingBuilder     contextListenerBuilder            = new ContextListenerBindingBuilder();    /*Listener*/
     //
-    protected WebApiBinderModule(Binder guiceBinder, WebEnvironment envContext, ModuleInfo forModule) {
-        super(guiceBinder, envContext, forModule);
+    protected WebApiBinderModule(Binder guiceBinder, WebEnvironment envContext) {
+        super(guiceBinder, envContext);
     }
     public ServletContext getServletContext() {
         return this.getEnvironment().getServletContext();

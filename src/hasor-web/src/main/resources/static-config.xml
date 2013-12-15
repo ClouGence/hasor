@@ -5,7 +5,7 @@
 		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
 		<loadPackages>net.hasor.web.*,net.hasor.plugins.*</loadPackages>
 	</hasor>
-	<!-- Hasor Web，不支持跟随配置文件动态更新配置。 -->
+	<!-- http://project.hasor.net/hasor/schema/hasor-web 命名空间的配置，不支持跟随配置文件动态更新配置。 -->
 	<hasor-web>
 		<!-- 请求响应编码设置 -->
 		<encoding requestEncoding="utf-8" responseEncoding="utf-8" />
