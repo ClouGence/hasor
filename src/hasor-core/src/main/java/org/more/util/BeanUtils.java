@@ -554,7 +554,7 @@ public abstract class BeanUtils {
         else
             val = ((Map) orig).get(propertyName);
         //
-        if (orig instanceof Map == false)
+        if (dest instanceof Map == false)
             BeanUtils.writePropertyOrField(dest, propertyName, val);
         else
             ((Map) orig).put(propertyName, val);
