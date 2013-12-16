@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.more.NullArgumentException;
 import org.more.classcode.RootClassLoader;
 import org.more.convert.ConverterUtils;
@@ -520,9 +521,16 @@ public abstract class BeanUtils {
         if (orig == null)
             throw new NullArgumentException("orig");
         //
-        List<String> propNames = BeanUtils.getPropertys(orig.getClass());
-        for (String prop : propNames)
+        List<String> propNames = new ArrayList<String>();
+        if (orig instanceof Map) {
+            for (Object key : ((Map) orig).keySet())
+                propNames.add(key.toString());
+        } else {
+            propNames = BeanUtils.getPropertys(orig.getClass());
+        }
+        for (String prop : propNames) {
             copyProperty(dest, orig, prop);
+        }
     }
     /***/
     public static void copyProperty(Object dest, Object orig, String propertyName) {
@@ -533,11 +541,22 @@ public abstract class BeanUtils {
         if (StringUtils.isBlank(propertyName))
             throw new NullArgumentException("propertyName");
         //
-        if (!canReadPropertyOrField(propertyName, orig.getClass()))
-            return;
-        if (!canWritePropertyOrField(propertyName, dest.getClass()))
-            return;
-        Object val = BeanUtils.readPropertyOrField(orig, propertyName);
-        BeanUtils.writePropertyOrField(dest, propertyName, val);
+        if (orig instanceof Map == false)
+            if (!canReadPropertyOrField(propertyName, orig.getClass()))
+                return;
+        if (dest instanceof Map == false)
+            if (!canWritePropertyOrField(propertyName, dest.getClass()))
+                return;
+        //
+        Object val = null;
+        if (orig instanceof Map == false)
+            val = BeanUtils.readPropertyOrField(orig, propertyName);
+        else
+            val = ((Map) orig).get(propertyName);
+        //
+        if (orig instanceof Map == false)
+            BeanUtils.writePropertyOrField(dest, propertyName, val);
+        else
+            ((Map) orig).put(propertyName, val);
     }
 };
