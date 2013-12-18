@@ -224,50 +224,42 @@ public abstract class Hasor {
     }
     //
     //
-    /** Asserts that an argument is legal. If the given boolean is
-     * not <code>true</code>, an <code>IllegalArgumentException</code>
-     * is thrown.
-     *
-     * @param expression the outcome of the check
-     * @return <code>true</code> if the check passes (does not return if the check fails)
-     * @exception IllegalArgumentException if the legality test failed
-     */
-    public static boolean assertIsLegal(boolean expression) {
-        return assertIsLegal(expression, ""); //$NON-NLS-1$
-    }
-    /** Asserts that an argument is legal. If the given boolean is
-     * not <code>true</code>, an <code>IllegalArgumentException</code>
-     * is thrown.
-     * The given message is included in that exception, to aid debugging.
-     *
-     * @param expression the outcome of the check
-     * @param message the message to include in the exception
-     * @return <code>true</code> if the check passes (does not return if the check fails)
-     * @exception IllegalArgumentException if the legality test failed
-     */
-    public static boolean assertIsLegal(boolean expression, String message) {
-        if (!expression)
-            throw new IllegalArgumentException(message);
-        return expression;
-    }
-    /** Asserts that the given object is not <code>null</code>. If this
-     * is not the case, some kind of unchecked exception is thrown.
-     * 
-     * @param object the value to test
-     */
+    /**如果参数为空会抛出 NullPointerException 异常。*/
     public static <T> T assertIsNotNull(T object) {
         return assertIsNotNull(object, ""); //$NON-NLS-1$
     }
-    /** Asserts that the given object is not <code>null</code>. If this
-     * is not the case, some kind of unchecked exception is thrown.
-     * The given message is included in that exception, to aid debugging.
-     *
-     * @param object the value to test
-     * @param message the message to include in the exception
-     */
+    /**如果参数为空会抛出 NullPointerException 异常。*/
     public static <T> T assertIsNotNull(T object, String message) {
         if (object == null)
             throw new NullPointerException("null argument:" + message); //$NON-NLS-1$
         return object;
     }
+    //    //
+    //    //
+    //    /** Asserts that an argument is legal. If the given boolean is
+    //     * not <code>true</code>, an <code>IllegalArgumentException</code>
+    //     * is thrown.
+    //     *
+    //     * @param expression the outcome of the check
+    //     * @return <code>true</code> if the check passes (does not return if the check fails)
+    //     * @exception IllegalArgumentException if the legality test failed
+    //     */
+    //    public static boolean assertIsLegal(boolean expression) {
+    //        return assertIsLegal(expression, ""); //$NON-NLS-1$
+    //    }
+    //    /** Asserts that an argument is legal. If the given boolean is
+    //     * not <code>true</code>, an <code>IllegalArgumentException</code>
+    //     * is thrown.
+    //     * The given message is included in that exception, to aid debugging.
+    //     *
+    //     * @param expression the outcome of the check
+    //     * @param message the message to include in the exception
+    //     * @return <code>true</code> if the check passes (does not return if the check fails)
+    //     * @exception IllegalArgumentException if the legality test failed
+    //     */
+    //    public static boolean assertIsLegal(boolean expression, String message) {
+    //        if (!expression)
+    //            throw new IllegalArgumentException(message);
+    //        return expression;
+    //    }
 }

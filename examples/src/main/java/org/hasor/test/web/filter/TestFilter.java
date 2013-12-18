@@ -22,7 +22,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import net.hasor.plugins.j2ee.WebFilter;
+import net.hasor.plugins.servlet3.WebFilter;
 /**
  * 
  * @version : 2013-8-11

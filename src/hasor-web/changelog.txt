@@ -4,6 +4,7 @@ Hasor-Web v0.0.4
     2.修复 @Json 无法处理除（List、Map、基本类型）意外其它类型数据序列化的问题。
     3.处理 @Json 注解时在返回的 json 数据前后增加 一对圆括号。
     4.处理 Hasor Core 0.0.6 版本上变动。
+    5.j2ee 软件包 更名为 servlet3
 
 
 Hasor-Web v0.0.3

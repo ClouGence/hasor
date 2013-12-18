@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.jdbc.core;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -47,6 +51,9 @@ import net.hasor.jdbc.RowMapper;
 import net.hasor.jdbc.SqlParameterSource;
 import net.hasor.jdbc.SqlRowSet;
 import net.hasor.jdbc.StatementCallback;
+import net.hasor.jdbc.core.mapper.BeanPropertyRowMapper;
+import net.hasor.jdbc.core.mapper.ColumnMapRowMapper;
+import net.hasor.jdbc.core.mapper.SingleColumnRowMapper;
 import net.hasor.jdbc.core.source.MapSqlParameterSource;
 import net.hasor.jdbc.core.util.JdbcUtils;
 import net.hasor.jdbc.core.util.NamedBatchUpdateUtils;
@@ -59,6 +66,8 @@ import net.hasor.jdbc.exceptions.DataAccessException;
 import net.hasor.jdbc.exceptions.InvalidDataAccessException;
 import net.hasor.jdbc.exceptions.SQLWarningException;
 import org.more.util.ArrayUtils;
+import org.more.util.IOUtils;
+import org.more.util.ResourcesUtils;
 /**
  * 数据库操作模板方法。
  * @version : 2013-10-12
@@ -152,6 +161,20 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         return this.cacheLimit;
     }
     //
+    //
+    public void loadSQL(String sqlResource) throws IOException {
+        InputStream inStream = ResourcesUtils.getResourceAsStream(sqlResource);
+        if (inStream == null)
+            throw new IOException("can't find :" + sqlResource);
+        StringWriter outWriter = new StringWriter();
+        IOUtils.copy(inStream, outWriter);
+        this.execute(outWriter.toString());
+    }
+    public void loadSQL(Reader sqlReader) throws IOException {
+        StringWriter outWriter = new StringWriter();
+        IOUtils.copy(sqlReader, outWriter);
+        this.execute(outWriter.toString());
+    }
     //
     //
     public <T> T execute(ConnectionCallback<T> action) throws DataAccessException {
@@ -710,7 +733,14 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     /** Create a new RowMapper for reading result objects from a single column.*/
     protected <T> RowMapper<T> getSingleColumnRowMapper(Class<T> requiredType) {
-        return new SingleColumnRowMapper<T>(requiredType);
+        Hasor.assertIsNotNull(requiredType != null, "requiredType is null.");
+        if (Map.class.isAssignableFrom(requiredType))
+            return (RowMapper<T>) getColumnMapRowMapper();
+        //
+        if (requiredType.isPrimitive() || Number.class.isAssignableFrom(requiredType) || String.class.isAssignableFrom(requiredType))
+            return new SingleColumnRowMapper<T>(requiredType);
+        //
+        return new BeanPropertyRowMapper(requiredType);
     }
     /** Create a new PreparedStatementSetter.*/
     protected PreparedStatementSetter newArgPreparedStatementSetter(Object[] args) {

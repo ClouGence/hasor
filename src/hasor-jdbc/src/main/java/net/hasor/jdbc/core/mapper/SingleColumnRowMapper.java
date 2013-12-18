@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.core;
+package net.hasor.jdbc.core.mapper;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import net.hasor.jdbc.RowMapper;
+import net.hasor.jdbc.core.JdbcTemplate;
 import net.hasor.jdbc.core.util.JdbcUtils;
 import net.hasor.jdbc.core.util.NumberUtils;
 import net.hasor.jdbc.exceptions.InvalidDataAccessException;
@@ -72,7 +73,7 @@ public class SingleColumnRowMapper<T> implements RowMapper<T> {
         ResultSetMetaData rsmd = rs.getMetaData();
         int nrOfColumns = rsmd.getColumnCount();
         if (nrOfColumns != 1) {
-            throw new InvalidDataAccessException("Incorrect column count: expected " + 1 + ", actual " + nrOfColumns);
+            throw new InvalidDataAccessException("Incorrect column count: expected 1, actual " + nrOfColumns);
         }
         // Extract column value from JDBC ResultSet.
         Object result = getColumnValue(rs, 1, this.requiredType);

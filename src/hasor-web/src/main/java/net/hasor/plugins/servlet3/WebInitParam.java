@@ -13,30 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.j2ee;
+package net.hasor.plugins.servlet3;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import javax.servlet.http.HttpServlet;
 /**
- * 声明一个Servlet，该Servlet需要继承{@link HttpServlet}类。
+ * 
  * @version : 2013-3-12
  * @author 赵永春 (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface WebServlet {
-    /**Servlet在过滤器链上的顺序。默认：0，数字越大启动越延迟。
-     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
-    public int loadOnStartup() default 0;
-    /** 服务的启动参数。
-     * <br/><b>注：</b><i>该值可以通过管理控制台中重新设置。</i>*/
-    public WebInitParam[] initParams() default {};
-    /**URL匹配规则。*/
-    public String[] value();
-    /**URL规则是否使用正则表达式格式书写的*/
-    public boolean regex() default false;
-    /**Servlet名称*/
-    public String servletName() default "";
+@Target({ ElementType.ANNOTATION_TYPE })
+public @interface WebInitParam {
+    /** Name of the initialization parameter */
+    public String name();
+    /** Value of the initialization parameter */
+    public String value();
+    /** Description of the initialization parameter */
+    public String description() default "";
 }

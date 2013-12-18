@@ -50,7 +50,7 @@ public class StandardAppContext extends SimpleAppContext {
     /***/
     public StandardAppContext(String mainSettings, Object context) throws IOException {
         URL resURL = ResourcesUtils.getResource(mainSettings);
-        resURL = Hasor.assertIsNotNull(resURL);
+        resURL = Hasor.assertIsNotNull(resURL, "can't find :" + mainSettings);
         try {
             this.mainSettings = resURL.toURI();
         } catch (URISyntaxException e) {

@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.core;
+package net.hasor.jdbc.core.mapper;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Map;
 import net.hasor.jdbc.RowMapper;
+import net.hasor.jdbc.core.JdbcTemplate;
+import net.hasor.jdbc.core.LinkedCaseInsensitiveMap;
 import net.hasor.jdbc.core.util.JdbcUtils;
 /**
  * {@link RowMapper} implementation that creates a <code>java.util.Map</code>

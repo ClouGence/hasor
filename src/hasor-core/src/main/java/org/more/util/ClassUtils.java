@@ -35,6 +35,7 @@ import org.more.util.text.StrBuilder;
  * non-canonical method variants work with the JVM names, such as
  * <code>[I</code>. </p>
  *
+ * @author 赵永春
  * @author Apache Software Foundation
  * @author Gary Gregory
  * @author Norm Deane
@@ -977,5 +978,18 @@ public class ClassUtils {
                 return canonicalClassNameBuffer.toString();
             }
         }
+    }
+    /**判断某个类是否为一个lang包的类。*/
+    public static boolean isLangClass(Class<?> target) {
+        return target.getName().startsWith("java.lang.");
+    };
+    /**获取方法的标识代码，在不考虑其所属类的情况下。*/
+    public static String getCodeWithoutClass(Method method) {
+        //public void addChild(org.noe.safety.services.SYS_TB_MenuTree)
+        StringBuffer str = new StringBuffer(method.toString());
+        String declaringClass = method.getDeclaringClass().getName();
+        int indexStart = str.indexOf(declaringClass);
+        str.delete(indexStart, indexStart + declaringClass.length() + 1);
+        return str.toString();
     }
 }

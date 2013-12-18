@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 package org.more.util;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.more.NullArgumentException;
-import org.more.classcode.RootClassLoader;
 import org.more.convert.ConverterUtils;
 /**
  * 
@@ -33,48 +30,6 @@ import org.more.convert.ConverterUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class BeanUtils {
-    /**通过位运算决定data是否在modifiers里。*/
-    public static boolean checkModifiers(int modifiers, int data) {
-        int a = modifiers | data;
-        return a == data;
-    };
-    /**获取一个类对象字节码的读取流。*/
-    public static InputStream getClassInputStream(Class<?> target) {
-        ClassLoader loader = target.getClassLoader();
-        if (loader instanceof RootClassLoader) {
-            byte[] data = ((RootClassLoader) loader).toBytes(target);
-            return new ByteArrayInputStream(data);
-        }
-        String classResourceName = target.getName().replace(".", "/") + ".class";
-        if (loader != null)
-            return loader.getResourceAsStream(classResourceName);
-        else
-            return Thread.currentThread().getContextClassLoader().getResourceAsStream(classResourceName);
-    };
-    /**检查类型是否为一个基本类型或其包装类型，基本类型包括了boolean, byte, char, short, int, long, float, 和 double*/
-    public static boolean isBaseType(Class<?> target) {
-        /*判断是否为基本类型*/
-        if (target.isPrimitive() == true)
-            return true;
-        /*判断各种包装类型*/
-        if (target == Boolean.class)
-            return true;
-        if (target == Byte.class)
-            return true;
-        if (target == Character.class)
-            return true;
-        if (target == Short.class)
-            return true;
-        if (target == Integer.class)
-            return true;
-        if (target == Long.class)
-            return true;
-        if (target == Float.class)
-            return true;
-        if (target == Double.class)
-            return true;
-        return false;
-    }
     /**获取指定类型的默认值。*/
     public static Object getDefaultValue(Class<?> returnType) {
         if (returnType == null)
@@ -102,45 +57,6 @@ public abstract class BeanUtils {
         else
             return null;
     };
-    /**检测类名是否合法。*/
-    public static boolean checkClassName(String className) {
-        if (className == null || className.equals(""))
-            return false;
-        String item[] = { "..", "!", "@", "#", "%", "^", "&", "*", "(", ")", "-", "=", "+", "{", "}", ";", ";", "\"", "'", "<", ">", ",", "?", "/", "`", "~", " ", "\\", "|" };
-        for (int i = 0; i <= item.length - 1; i++)
-            if (className.indexOf(item[i]) >= 0)
-                return false;
-        if (className.indexOf(".") == 0)
-            return false;
-        if (className.indexOf(".", className.length()) == className.length())
-            return false;
-        return true;
-    }
-    /**判断某个类是否为一个lang包的类。*/
-    public static boolean isLangClass(Class<?> target) {
-        return target.getName().startsWith("java.lang.");
-    };
-    /**获取类完整限定名的类名部分。*/
-    public static String getSimpleAtFull(String fullName) {
-        String[] ns = fullName.split("\\.");
-        return ns[ns.length - 1];
-    }
-    /**获取类完整限定名的包名部分。*/
-    public static String getPackageAtFull(String fullName) {
-        if (fullName.lastIndexOf(".") > 0)
-            return fullName.substring(0, fullName.lastIndexOf("."));
-        else
-            return fullName;
-    }
-    /**获取方法的标识代码，在不考虑其所属类的情况下。*/
-    public static String getCodeWithoutClass(Method method) {
-        //public void addChild(org.noe.safety.services.SYS_TB_MenuTree)
-        StringBuffer str = new StringBuffer(method.toString());
-        String declaringClass = method.getDeclaringClass().getName();
-        int indexStart = str.indexOf(declaringClass);
-        str.delete(indexStart, indexStart + declaringClass.length() + 1);
-        return str.toString();
-    }
     /**
      * 该方法的作用是反射的形式调用目标的方法。
      * @param target 被调用的对象
@@ -208,28 +124,6 @@ public abstract class BeanUtils {
             return;
         findALLFields(superType, fList);
     }
-    /**{@link #findALLFields(Class)}方法返回值的无重复版本。*/
-    public static List<Field> findALLFieldsNoRepeat(Class<?> target) {
-        if (target == null)
-            return null;
-        LinkedHashMap<String, Field> fMap = new LinkedHashMap<String, Field>();
-        findALLFieldsNoRepeat(target, fMap);
-        return new ArrayList<Field>(fMap.values());
-    }
-    private static void findALLFieldsNoRepeat(Class<?> target, LinkedHashMap<String, Field> fMap) {
-        if (target == null)
-            return;
-        for (Field field : target.getDeclaredFields())
-            if (fMap.containsKey(field.getName()) == false)
-                fMap.put(field.getName(), field);
-        for (Field field : target.getFields())
-            if (fMap.containsKey(field.getName()) == false)
-                fMap.put(field.getName(), field);
-        Class<?> superType = target.getDeclaringClass();
-        if (superType == null || superType == target)
-            return;
-        findALLFieldsNoRepeat(superType, fMap);
-    }
     /**获取类定义的方法和继承父类中定义的方法以及父类的父类（子类的重写方法也会被返回）。*/
     public static List<Method> findALLMethods(Class<?> target) {
         if (target == null)
@@ -251,32 +145,6 @@ public abstract class BeanUtils {
         if (superType == null || superType == target)
             return;
         findALLMethods(superType, mList);
-    }
-    /**{@link #findALLMethods(Class)}方法返回值的无重复版本。*/
-    public static List<Method> findALLMethodsNoRepeat(Class<?> target) {
-        if (target == null)
-            return null;
-        LinkedHashMap<String, Method> mMap = new LinkedHashMap<String, Method>();
-        findALLMethodsNoRepeat(target, mMap);
-        return new ArrayList<Method>(mMap.values());
-    }
-    private static void findALLMethodsNoRepeat(Class<?> target, LinkedHashMap<String, Method> mMap) {
-        if (target == null)
-            return;
-        for (Method method : target.getDeclaredMethods()) {
-            String fullDesc = getCodeWithoutClass(method);
-            if (mMap.containsKey(fullDesc) == false)
-                mMap.put(fullDesc, method);
-        }
-        for (Method method : target.getMethods()) {
-            String fullDesc = getCodeWithoutClass(method);
-            if (mMap.containsKey(fullDesc) == false)
-                mMap.put(fullDesc, method);
-        }
-        Class<?> superType = target.getDeclaringClass();
-        if (superType == null || superType == target)
-            return;
-        findALLMethodsNoRepeat(superType, mMap);
     }
     /*----------------------------------------------------------------------------------------*/
     /**查找一个可操作的字段列表。*/
@@ -338,6 +206,17 @@ public abstract class BeanUtils {
             }
         }
         return mnames;
+    }
+    /**获取属性名集合，被包含的属性可能有些只是只读属性，有些是只写属性。也有读写属性。*/
+    public static PropertyDescriptor[] getPropertyDescriptors(Class<?> defineType) {
+        List<PropertyDescriptor> mnames = new ArrayList<PropertyDescriptor>();
+        List<String> ms = getPropertys(defineType);
+        for (String m : ms) {
+            try {
+                mnames.add(new PropertyDescriptor(m, defineType));
+            } catch (Exception e) {}
+        }
+        return mnames.toArray(new PropertyDescriptor[mnames.size()]);
     }
     /**获取一个属性的读取方法。*/
     public static Method getReadMethod(String property, Class<?> target) {
@@ -514,6 +393,34 @@ public abstract class BeanUtils {
             return readField(object, attName);//支持字段读取
         return null;
     }
+    /***/
+    public static Class<?> getPropertyType(Class<?> defineType, String attName) {
+        try {
+            PropertyDescriptor pd = new PropertyDescriptor(attName, defineType);
+            return pd.getPropertyType();
+        } catch (Exception e) {
+            return null;
+        }
+    };
+    /***/
+    public static Class<?> getFieldType(Class<?> defineType, String attName) {
+        Field readField = getField(attName, defineType);
+        if (readField != null)
+            return readField.getType();
+        return null;
+    };
+    /***/
+    public static Class<?> getPropertyOrFieldType(Class<?> defineType, String attName) {
+        Class<?> propType = null;
+        //
+        propType = getPropertyType(defineType, attName);
+        if (propType != null)
+            return propType;
+        propType = getFieldType(defineType, attName);
+        if (propType != null)
+            return propType;
+        return null;
+    };
     /***/
     public static void copyProperties(Object dest, Object orig) {
         if (dest == null)
