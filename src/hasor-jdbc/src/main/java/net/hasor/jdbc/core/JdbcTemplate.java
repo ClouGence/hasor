@@ -75,23 +75,23 @@ import org.more.util.ResourcesUtils;
  */
 public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     /** 默认模板最大缓存 SQL语句条数 : 256 */
-    public static final int        DEFAULT_CACHE_LIMIT       = 256;
+    public static final int        DEFAULT_CACHE_LIMIT    = 256;
     /*是否忽略出现的 SQL 警告*/
-    private boolean                ignoreWarnings            = true;
+    private boolean                ignoreWarnings         = true;
     /*JDBC查询和从结果集里面每次取设置行数，循环去取，直到取完。合理设置该参数可以避免内存异常。
      * 如果这个变量被设置为非零值,它将被用于设置 statements 的 fetchSize 属性。*/
-    private int                    fetchSize                 = 0;
+    private int                    fetchSize              = 0;
     /*从 JDBC 中可以查询的最大行数。
      * 如果这个变量被设置为非零值,它将被用于设置 statements 的 maxRows 属性。*/
-    private int                    maxRows                   = 0;
+    private int                    maxRows                = 0;
     /*从 JDBC 中可以查询的最大行数。
      * 如果这个变量被设置为非零值,它将被用于设置 statements 的 queryTimeout 属性。*/
-    private int                    queryTimeout              = 0;
+    private int                    queryTimeout           = 0;
     /*当JDBC 结果集中如出现相同的列名仅仅大小写不同时。是否保留大小写列名敏感。
      * 如果为 true 表示敏感，并且结果集Map中保留两个记录。如果为 false 则表示不敏感，如出现冲突列名后者将会覆盖前者。*/
-    private boolean                resultsMapCaseInsensitive = false;
+    private boolean                resultsCaseInsensitive = false;
     /*ParsedSql SQL 缓存大小*/
-    private volatile int           cacheLimit                = DEFAULT_CACHE_LIMIT;
+    private volatile int           cacheLimit             = DEFAULT_CACHE_LIMIT;
     /*缓存因 ParsedSql 产生的SQL语句 */
     private Map<String, ParsedSql> parsedSqlCache;
     //
@@ -146,11 +146,11 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     public void setQueryTimeout(int queryTimeout) {
         this.queryTimeout = queryTimeout;
     }
-    public boolean isResultsMapCaseInsensitive() {
-        return resultsMapCaseInsensitive;
+    public boolean isResultsCaseInsensitive() {
+        return resultsCaseInsensitive;
     }
-    public void setResultsMapCaseInsensitive(boolean resultsMapCaseInsensitive) {
-        this.resultsMapCaseInsensitive = resultsMapCaseInsensitive;
+    public void setResultsCaseInsensitive(boolean resultsCaseInsensitive) {
+        this.resultsCaseInsensitive = resultsCaseInsensitive;
     }
     /**Specify the maximum number of entries for this template's SQL cache. Default is 256.*/
     public void setCacheLimit(int cacheLimit) {
@@ -412,19 +412,19 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     //
     //
     public <T> List<T> queryForList(String sql, Class<T> elementType) throws DataAccessException {
-        return query(sql, getSingleColumnRowMapper(elementType));
+        return query(sql, getBeanPropertyRowMapper(elementType));
     }
     public <T> List<T> queryForList(String sql, Class<T> elementType, Object... args) throws DataAccessException {
-        return query(sql, args, getSingleColumnRowMapper(elementType));
+        return query(sql, args, getBeanPropertyRowMapper(elementType));
     }
     public <T> List<T> queryForList(String sql, Object[] args, Class<T> elementType) throws DataAccessException {
-        return query(sql, args, getSingleColumnRowMapper(elementType));
+        return query(sql, args, getBeanPropertyRowMapper(elementType));
     }
     public <T> List<T> queryForList(String sql, Object[] args, int[] argTypes, Class<T> elementType) throws DataAccessException {
-        return query(sql, args, argTypes, getSingleColumnRowMapper(elementType));
+        return query(sql, args, argTypes, getBeanPropertyRowMapper(elementType));
     }
     public <T> List<T> queryForList(String sql, SqlParameterSource paramSource, Class<T> elementType) throws DataAccessException {
-        return query(sql, paramSource, getSingleColumnRowMapper(elementType));
+        return query(sql, paramSource, getBeanPropertyRowMapper(elementType));
     }
     public <T> List<T> queryForList(String sql, Map<String, ?> paramMap, Class<T> elementType) throws DataAccessException {
         return queryForList(sql, new MapSqlParameterSource(paramMap), elementType);
@@ -456,22 +456,63 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         return queryForObject(sql, new MapSqlParameterSource(paramMap), rowMapper);
     }
     public <T> T queryForObject(String sql, Class<T> requiredType) throws DataAccessException {
-        return queryForObject(sql, getSingleColumnRowMapper(requiredType));
+        return queryForObject(sql, getBeanPropertyRowMapper(requiredType));
     }
     public <T> T queryForObject(String sql, Class<T> requiredType, Object... args) throws DataAccessException {
-        return queryForObject(sql, args, getSingleColumnRowMapper(requiredType));
+        return queryForObject(sql, args, getBeanPropertyRowMapper(requiredType));
     }
     public <T> T queryForObject(String sql, Object[] args, Class<T> requiredType) throws DataAccessException {
-        return queryForObject(sql, args, getSingleColumnRowMapper(requiredType));
+        return queryForObject(sql, args, getBeanPropertyRowMapper(requiredType));
     }
     public <T> T queryForObject(String sql, Object[] args, int[] argTypes, Class<T> requiredType) throws DataAccessException {
-        return queryForObject(sql, args, argTypes, getSingleColumnRowMapper(requiredType));
+        return queryForObject(sql, args, argTypes, getBeanPropertyRowMapper(requiredType));
     }
     public <T> T queryForObject(String sql, SqlParameterSource paramSource, Class<T> requiredType) throws DataAccessException {
-        return queryForObject(sql, paramSource, getSingleColumnRowMapper(requiredType));
+        return queryForObject(sql, paramSource, getBeanPropertyRowMapper(requiredType));
     }
     public <T> T queryForObject(String sql, Map<String, ?> paramMap, Class<T> requiredType) throws DataAccessException {
-        return queryForObject(sql, paramMap, getSingleColumnRowMapper(requiredType));
+        return queryForObject(sql, paramMap, getBeanPropertyRowMapper(requiredType));
+    }
+    //
+    //
+    //
+    public long queryForLong(String sql) throws DataAccessException {
+        Number number = queryForObject(sql, getSingleColumnRowMapper(Long.class));
+        return (number != null ? number.longValue() : 0);
+    }
+    public long queryForLong(String sql, Object... args) throws DataAccessException {
+        Number number = queryForObject(sql, args, getSingleColumnRowMapper(Long.class));
+        return (number != null ? number.longValue() : 0);
+    }
+    public long queryForLong(String sql, Object[] args, int[] argTypes) throws DataAccessException {
+        Number number = queryForObject(sql, args, argTypes, getSingleColumnRowMapper(Long.class));
+        return (number != null ? number.longValue() : 0);
+    }
+    public long queryForLong(String sql, SqlParameterSource paramSource) throws DataAccessException {
+        Number number = queryForObject(sql, paramSource, getSingleColumnRowMapper(Number.class));
+        return (number != null ? number.longValue() : 0);
+    }
+    public long queryForLong(String sql, Map<String, ?> paramMap) throws DataAccessException {
+        return queryForLong(sql, new MapSqlParameterSource(paramMap));
+    }
+    public int queryForInt(String sql) throws DataAccessException {
+        Number number = queryForObject(sql, getSingleColumnRowMapper(Integer.class));
+        return (number != null ? number.intValue() : 0);
+    }
+    public int queryForInt(String sql, Object... args) throws DataAccessException {
+        Number number = queryForObject(sql, args, getSingleColumnRowMapper(Integer.class));
+        return (number != null ? number.intValue() : 0);
+    }
+    public int queryForInt(String sql, Object[] args, int[] argTypes) throws DataAccessException {
+        Number number = queryForObject(sql, args, argTypes, getSingleColumnRowMapper(Integer.class));
+        return (number != null ? number.intValue() : 0);
+    }
+    public int queryForInt(String sql, SqlParameterSource paramSource) throws DataAccessException {
+        Number number = queryForObject(sql, paramSource, getSingleColumnRowMapper(Number.class));
+        return (number != null ? number.intValue() : 0);
+    }
+    public int queryForInt(String sql, Map<String, ?> paramMap) throws DataAccessException {
+        return queryForInt(sql, new MapSqlParameterSource(paramMap));
     }
     //
     //
@@ -491,53 +532,6 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     public Map<String, Object> queryForMap(String sql, Map<String, ?> paramMap) throws DataAccessException {
         return queryForObject(sql, paramMap, getColumnMapRowMapper());
     }
-    //
-    //
-    //
-    public long queryForLong(String sql) throws DataAccessException {
-        Number number = queryForObject(sql, Long.class);
-        return (number != null ? number.longValue() : 0);
-    }
-    public long queryForLong(String sql, Object... args) throws DataAccessException {
-        Number number = queryForObject(sql, args, Long.class);
-        return (number != null ? number.longValue() : 0);
-    }
-    public long queryForLong(String sql, Object[] args, int[] argTypes) throws DataAccessException {
-        Number number = queryForObject(sql, args, argTypes, Long.class);
-        return (number != null ? number.longValue() : 0);
-    }
-    public long queryForLong(String sql, SqlParameterSource paramSource) throws DataAccessException {
-        Number number = queryForObject(sql, paramSource, Number.class);
-        return (number != null ? number.longValue() : 0);
-    }
-    public long queryForLong(String sql, Map<String, ?> paramMap) throws DataAccessException {
-        return queryForLong(sql, new MapSqlParameterSource(paramMap));
-    }
-    //
-    //
-    //
-    public int queryForInt(String sql) throws DataAccessException {
-        Number number = queryForObject(sql, Integer.class);
-        return (number != null ? number.intValue() : 0);
-    }
-    public int queryForInt(String sql, Object... args) throws DataAccessException {
-        Number number = queryForObject(sql, args, Integer.class);
-        return (number != null ? number.intValue() : 0);
-    }
-    public int queryForInt(String sql, Object[] args, int[] argTypes) throws DataAccessException {
-        Number number = queryForObject(sql, args, argTypes, Integer.class);
-        return (number != null ? number.intValue() : 0);
-    }
-    public int queryForInt(String sql, SqlParameterSource paramSource) throws DataAccessException {
-        Number number = queryForObject(sql, paramSource, Number.class);
-        return (number != null ? number.intValue() : 0);
-    }
-    public int queryForInt(String sql, Map<String, ?> paramMap) throws DataAccessException {
-        return queryForInt(sql, new MapSqlParameterSource(paramMap));
-    }
-    //
-    //
-    //
     public List<Map<String, Object>> queryForList(String sql) throws DataAccessException {
         return query(sql, getColumnMapRowMapper());
     }
@@ -716,13 +710,6 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     //
     //
     //
-    /**创建用于保存结果集的数据Map。*/
-    protected Map<String, Object> createResultsMap() {
-        if (!isResultsMapCaseInsensitive())
-            return new LinkedCaseInsensitiveMap<Object>();
-        else
-            return new LinkedHashMap<String, Object>();
-    }
     /** Create a new RowMapper for reading columns as key-value pairs. */
     protected RowMapper<Map<String, Object>> getColumnMapRowMapper() {
         return new ColumnMapRowMapper() {
@@ -731,16 +718,34 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             }
         };
     }
-    /** Create a new RowMapper for reading result objects from a single column.*/
-    protected <T> RowMapper<T> getSingleColumnRowMapper(Class<T> requiredType) {
+    /** Create a new RowMapper for reading columns as Bean pairs. */
+    protected <T> RowMapper<T> getBeanPropertyRowMapper(Class<T> requiredType) {
         Hasor.assertIsNotNull(requiredType != null, "requiredType is null.");
         if (Map.class.isAssignableFrom(requiredType))
             return (RowMapper<T>) getColumnMapRowMapper();
         //
         if (requiredType.isPrimitive() || Number.class.isAssignableFrom(requiredType) || String.class.isAssignableFrom(requiredType))
-            return new SingleColumnRowMapper<T>(requiredType);
+            return getSingleColumnRowMapper(requiredType);
         //
-        return new BeanPropertyRowMapper(requiredType);
+        return new BeanPropertyRowMapper<T>(requiredType) {
+            public boolean isCaseInsensitive() {
+                return isResultsCaseInsensitive();
+            }
+        };
+    }
+    /** Create a new RowMapper for reading result objects from a single column.*/
+    protected <T> RowMapper<T> getSingleColumnRowMapper(Class<T> requiredType) {
+        return new SingleColumnRowMapper<T>(requiredType);
+    }
+    //
+    //
+    //
+    /**创建用于保存结果集的数据Map。*/
+    protected Map<String, Object> createResultsMap() {
+        if (!isResultsCaseInsensitive())
+            return new LinkedCaseInsensitiveMap<Object>();
+        else
+            return new LinkedHashMap<String, Object>();
     }
     /** Create a new PreparedStatementSetter.*/
     protected PreparedStatementSetter newArgPreparedStatementSetter(Object[] args) {

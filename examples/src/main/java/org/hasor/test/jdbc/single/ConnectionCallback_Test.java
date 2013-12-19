@@ -30,15 +30,25 @@ import org.junit.Test;
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */
-public class ThreadLocal_Test {
-    @Test
-    public void threadLocalTest() throws IOException, URISyntaxException, InterruptedException {
-        System.out.println("--->>threadLocalTest<<--");
+public class ConnectionCallback_Test {
+    protected JdbcTemplate returnJdbcTemplate() throws IOException {
         AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/jdbc/hsql-config.xml");
         appContext.start();
         //
-        /*测试 Connection 是否为线程唯一，如果线程内不唯一则有问题。 */
+        /*测试 调用存储过程 */
         JdbcTemplate jdbc = appContext.getInstance(JdbcTemplate.class);
+        /*装载 SQL 脚本文件*/
+        jdbc.loadSQL("org/hasor/test/jdbc/sql/TB_User.sql");
+        jdbc.loadSQL("org/hasor/test/jdbc/sql/TB_User_Data.sql");
+        //
+        return jdbc;
+    }
+    @Test
+    public void test_ConnectionThreadLocal() throws IOException, URISyntaxException, InterruptedException {
+        System.out.println("--->>test_queryList_4_Object<<--");
+        JdbcTemplate jdbc = returnJdbcTemplate();
+        //
+        /*测试 Connection 是否为线程唯一，如果线程内不唯一则有问题。 */
         final Connection localConn = DataSourceUtils.getConnection(jdbc.getDataSource());
         //
         jdbc.execute(new ConnectionCallback<Object>() {
@@ -54,14 +64,6 @@ public class ThreadLocal_Test {
                 return null;
             }
         });
-        //
-        //
-        jdbc.execute("create table SYS_TB_User (userUUID nvarchar(36) not null , userName nvarchar(20) null);");
-        jdbc.execute("insert into SYS_TB_User (userUUID,userName) values('AA','测试用户a');");
-        jdbc.execute("insert into SYS_TB_User (userUUID,userName) values('BB','测试用户b');");
-        jdbc.execute("insert into SYS_TB_User (userUUID,userName) values('CC','测试用户c');");
-        jdbc.execute("insert into SYS_TB_User (userUUID,userName) values('DD','测试用户d');");
-        //
         //
         System.out.println(jdbc.queryForInt("select count(*) from SYS_TB_User"));
         //

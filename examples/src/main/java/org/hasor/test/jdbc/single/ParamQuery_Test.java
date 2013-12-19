@@ -17,6 +17,7 @@ package org.hasor.test.jdbc.single;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.hasor.core.Hasor;
@@ -29,7 +30,7 @@ import org.junit.Test;
  * @version : 2013-12-10
  * @author ÕÔÓÀ´º(zyc@hasor.net)
  */
-public class QueryList_Test {
+public class ParamQuery_Test {
     protected JdbcTemplate returnJdbcTemplate() throws IOException {
         AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/jdbc/hsql-config.xml");
         appContext.start();
@@ -47,39 +48,11 @@ public class QueryList_Test {
         System.out.println("--->>test_queryList_4_Object<<--");
         JdbcTemplate jdbc = returnJdbcTemplate();
         //
-        List<TB_User> userList = jdbc.queryForList("select * from TB_User", TB_User.class);
+        Map<String, String> paramMap = new HashMap<String, String>();
+        paramMap.put("id", "76%");
+        List<TB_User> userList = jdbc.queryForList("select * from TB_User where userUUID like :id", paramMap, TB_User.class);
         for (TB_User user : userList)
             Hasor.logInfo("user :%s.", user.name);
-    }
-    @Test
-    public void test_queryList_4_Map() throws IOException, URISyntaxException, InterruptedException {
-        System.out.println("--->>test_queryList_4_Map<<--");
-        JdbcTemplate jdbc = returnJdbcTemplate();
-        //
-        List<Map> mapList = jdbc.queryForList("select * from TB_User", Map.class);
-        for (Map user : mapList)
-            Hasor.logInfo("user :%s.", user.get("userUUID"));
-    }
-    @Test
-    public void test_queryList_4_String() throws IOException, URISyntaxException, InterruptedException {
-        System.out.println("--->>test_queryList_4_String<<--");
-        JdbcTemplate jdbc = returnJdbcTemplate();
-        //
-        List<String> mapList = jdbc.queryForList("select userUUID from TB_User", String.class);
-        for (String user : mapList)
-            Hasor.logInfo("user :%s.", user);
-    }
-    @Test
-    public void test_queryList_4_RowSet() throws IOException, URISyntaxException, InterruptedException {
-        System.out.println("--->>test_queryList_4_RowSet<<--");
-        JdbcTemplate jdbc = returnJdbcTemplate();
-        //
-        SqlRowSet rowSet = jdbc.queryForRowSet("select * from TB_User");
-        rowSet.beforeFirst();
-        while (rowSet.isLast() == false) {
-            rowSet.next();
-            Hasor.logInfo("user :%s.", rowSet.getString(1));
-        }
     }
     // 
     //

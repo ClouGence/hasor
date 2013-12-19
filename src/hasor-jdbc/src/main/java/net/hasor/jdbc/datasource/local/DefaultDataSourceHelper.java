@@ -32,11 +32,7 @@ public class DefaultDataSourceHelper implements DataSourceHelper {
     }
     /**…Í«Î¡¨Ω”*/
     public Connection getConnection(DataSource dataSource) throws SQLException {
-        ConnectionHolder holder = ResourcesLocal.get().get(dataSource);
-        if (holder == null) {
-            holder = this.createConnectionHolder(dataSource);
-            ResourcesLocal.get().put(dataSource, holder);
-        }
+        ConnectionHolder holder = getConnectionHolder(dataSource);
         holder.requested();
         return holder.getConnection();
     };
@@ -49,6 +45,14 @@ public class DefaultDataSourceHelper implements DataSourceHelper {
         if (!holder.isOpen())
             ResourcesLocal.get().remove(dataSource);
     };
+    protected ConnectionHolder getConnectionHolder(DataSource dataSource) {
+        ConnectionHolder holder = ResourcesLocal.get().get(dataSource);
+        if (holder == null) {
+            holder = this.createConnectionHolder(dataSource);
+            ResourcesLocal.get().put(dataSource, holder);
+        }
+        return holder;
+    }
     protected ConnectionHolder createConnectionHolder(DataSource dataSource) {
         return new ConnectionHolder(dataSource);
     }
