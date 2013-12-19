@@ -36,7 +36,7 @@ public class Event_Test {
         appContext.start();
         //
         for (int i = 0; i < 10; i++)
-            /*发送同步事件*/
+            /*发送异步事件*/
             appContext.getEventManager().doAsynEventIgnoreThrow(Type_B, i);
         System.out.println("after Event do sth...");
         /*由于event-config.xml中配置了5个事件线程池，因此异步事件将以5个一组执行。*/
