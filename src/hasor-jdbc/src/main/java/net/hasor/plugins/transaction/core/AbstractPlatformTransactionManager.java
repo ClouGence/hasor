@@ -65,7 +65,7 @@ public abstract class AbstractPlatformTransactionManager implements TransactionM
         Hasor.assertIsNotNull(behavior);
         Hasor.assertIsNotNull(level);
         Object transaction = doGetTransaction();//获取目前事务对象
-        AbstractTransactionStatus defStatus = new AbstractTransactionStatus(behavior, level, transaction);
+        AbstractTransactionStatus defStatus = null;//TODO new AbstractTransactionStatus(behavior, level, transaction);
         /*-------------------------------------------------------------
         |                      环境已经存在事务
         |
