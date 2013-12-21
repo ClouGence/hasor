@@ -4,12 +4,6 @@
 	<hasor>
 		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
 		<loadPackages>org.hasor.test.jdbc.*</loadPackages>
-		<!-- 执行事件的线程池大小 -->
-		<eventThreadPoolSize>5</eventThreadPoolSize>
-		<!-- 是否强迫所有模块都必须正常启动 -->
-		<forceModule>false</forceModule>
-		<!-- 配置文件改变监视线程检查时间间隔 -->
-		<settingsMonitor interval="1000" />
 	</hasor>
 	<environmentVar>
 		<!-- 程序工作空间基础目录（绝对地址） -->

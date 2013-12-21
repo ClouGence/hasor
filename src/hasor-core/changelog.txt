@@ -1,3 +1,7 @@
+Hasor-Core v0.0.7
+
+
+
 Hasor-Core v0.0.6
 * Bug:
     01.改进 当使用 JSON 将（List、Map、基本类型）类之外的类型尝试序列化时会得到一个异常。修复这个问题，当遇到这种情况工具将使用 JSONPojoConvertor 对其进行序列化。
