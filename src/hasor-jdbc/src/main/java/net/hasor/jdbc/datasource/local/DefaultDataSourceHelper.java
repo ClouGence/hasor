@@ -27,8 +27,9 @@ import net.hasor.jdbc.datasource.DataSourceHelper;
  */
 public class DefaultDataSourceHelper implements DataSourceHelper {
     private static final ThreadLocal<Map<DataSource, ConnectionHolder>> ResourcesLocal = new ThreadLocal<Map<DataSource, ConnectionHolder>>();
-    static {
-        ResourcesLocal.set(new HashMap<DataSource, ConnectionHolder>());
+    private static void initLocal() {
+        if (ResourcesLocal.get() == null)
+            ResourcesLocal.set(new HashMap<DataSource, ConnectionHolder>());
     }
     /**申请连接*/
     public Connection getConnection(DataSource dataSource) throws SQLException {
@@ -38,6 +39,7 @@ public class DefaultDataSourceHelper implements DataSourceHelper {
     };
     /**释放连接*/
     public void releaseConnection(Connection con, DataSource dataSource) throws SQLException {
+        initLocal();
         ConnectionHolder holder = ResourcesLocal.get().get(dataSource);
         if (holder == null)
             return;
@@ -46,6 +48,7 @@ public class DefaultDataSourceHelper implements DataSourceHelper {
             ResourcesLocal.get().remove(dataSource);
     };
     protected ConnectionHolder getConnectionHolder(DataSource dataSource) {
+        initLocal();
         ConnectionHolder holder = ResourcesLocal.get().get(dataSource);
         if (holder == null) {
             holder = this.createConnectionHolder(dataSource);

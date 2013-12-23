@@ -33,10 +33,9 @@ import org.more.util.StringUtils;
  */
 @Plugin
 public class JavaEEPlugin extends AbstractWebHasorPlugin {
-    public void loadPlugin(WebApiBinder apiBinder) {
-        if (apiBinder instanceof WebApiBinder == false)
+    public void loadPlugin(WebApiBinder webBinder) {
+        if (webBinder instanceof WebApiBinder == false)
             return;
-        WebApiBinder webBinder = (WebApiBinder) apiBinder;
         //1.LoadFilter.
         this.loadFilter(webBinder);
         //2.LoadServlet.

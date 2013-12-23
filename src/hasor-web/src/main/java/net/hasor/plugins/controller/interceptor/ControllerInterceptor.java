@@ -15,6 +15,7 @@
  */
 package net.hasor.plugins.controller.interceptor;
 import net.hasor.plugins.controller.AbstractController;
+import net.hasor.plugins.controller.ControllerIgnore;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 /**
@@ -26,6 +27,8 @@ public abstract class ControllerInterceptor implements MethodInterceptor {
     public final Object invoke(MethodInvocation invocation) throws Throwable {
         Object controllerObject = invocation.getThis();
         if (controllerObject instanceof AbstractController == false)
+            return invocation.proceed();
+        if (invocation.getMethod().isAnnotationPresent(ControllerIgnore.class))
             return invocation.proceed();
         //
         AbstractController controller = (AbstractController) controllerObject;

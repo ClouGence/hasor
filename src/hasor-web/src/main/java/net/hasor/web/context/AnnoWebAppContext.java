@@ -20,6 +20,11 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import net.hasor.core.binder.AbstractApiBinder;
 import net.hasor.core.context.AnnoStandardAppContext;
 import net.hasor.core.module.ModulePropxy;
@@ -32,6 +37,7 @@ import net.hasor.web.binder.support.ManagedServletPipeline;
 import net.hasor.web.binder.support.ManagedSessionListenerPipeline;
 import net.hasor.web.binder.support.WebApiBinderModule;
 import net.hasor.web.env.WebStandardEnvironment;
+import net.hasor.web.startup.RuntimeFilter;
 import com.google.inject.Binder;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -69,12 +75,6 @@ public class AnnoWebAppContext extends AnnoStandardAppContext implements WebAppC
                 binder.bind(ManagedServletPipeline.class).asEagerSingleton();
                 binder.bind(FilterPipeline.class).to(ManagedFilterPipeline.class).asEagerSingleton();
                 binder.bind(SessionListenerPipeline.class).to(ManagedSessionListenerPipeline.class).asEagerSingleton();
-                /*绑定ServletContext对象的Provider*/
-                binder.bind(ServletContext.class).toProvider(new Provider<ServletContext>() {
-                    public ServletContext get() {
-                        return getServletContext();
-                    }
-                });
             }
         };
         //2.追加Guice Module
@@ -94,5 +94,45 @@ public class AnnoWebAppContext extends AnnoStandardAppContext implements WebAppC
                 return forModule;
             }
         };
+    }
+    protected void doBind(Binder binder) {
+        super.doBind(binder);
+        /*绑定ServletRequest对象的Provider*/
+        binder.bind(ServletRequest.class).toProvider(new Provider<ServletRequest>() {
+            public ServletRequest get() {
+                return RuntimeFilter.getLocalRequest();
+            }
+        });
+        /*绑定HttpServletRequest对象的Provider*/
+        binder.bind(HttpServletRequest.class).toProvider(new Provider<HttpServletRequest>() {
+            public HttpServletRequest get() {
+                return RuntimeFilter.getLocalRequest();
+            }
+        });
+        /*绑定ServletResponse对象的Provider*/
+        binder.bind(ServletResponse.class).toProvider(new Provider<ServletResponse>() {
+            public ServletResponse get() {
+                return RuntimeFilter.getLocalResponse();
+            }
+        });
+        /*绑定HttpServletResponse对象的Provider*/
+        binder.bind(HttpServletResponse.class).toProvider(new Provider<HttpServletResponse>() {
+            public HttpServletResponse get() {
+                return RuntimeFilter.getLocalResponse();
+            }
+        });
+        /*绑定HttpSession对象的Provider*/
+        binder.bind(HttpSession.class).toProvider(new Provider<HttpSession>() {
+            public HttpSession get() {
+                HttpServletRequest req = RuntimeFilter.getLocalRequest();
+                return (req != null) ? req.getSession(true) : null;
+            }
+        });
+        /*绑定ServletContext对象的Provider*/
+        binder.bind(ServletContext.class).toProvider(new Provider<ServletContext>() {
+            public ServletContext get() {
+                return getServletContext();
+            }
+        });
     }
 }

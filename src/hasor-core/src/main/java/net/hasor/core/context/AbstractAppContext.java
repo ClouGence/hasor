@@ -367,10 +367,10 @@ public abstract class AbstractAppContext implements AppContext {
         Hasor.logInfo("send start sign.");
         /*1.执行Aware通知*/
         List<AppContextAware> awareList = this.findBeanByType(AppContextAware.class);
-        if (awareList == null)
-            return;
-        for (AppContextAware weak : awareList)
-            weak.setAppContext(this);
+        if (awareList != null) {
+            for (AppContextAware weak : awareList)
+                weak.setAppContext(this);
+        }
         /*2.逐一启动模块*/
         List<ModulePropxy> modulePropxyList = this.getModuleList();
         for (ModulePropxy mod : modulePropxyList)

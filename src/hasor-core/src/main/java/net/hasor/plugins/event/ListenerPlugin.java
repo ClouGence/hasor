@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.plugins.event;
-import static net.hasor.core.AppContext.ContextEvent_Started;
 import java.util.Set;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
+import net.hasor.core.AppContextAware;
 import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
 import net.hasor.core.EventManager;
 import net.hasor.core.Hasor;
 import net.hasor.core.plugin.AbstractHasorPlugin;
 import net.hasor.core.plugin.Plugin;
-import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 /**
  * 提供 <code>@Listener</code>注解 功能支持。
@@ -36,33 +35,53 @@ public class ListenerPlugin extends AbstractHasorPlugin {
     public void loadPlugin(ApiBinder apiBinder) {
         final Environment env = apiBinder.getEnvironment();
         final EventManager eventManager = env.getEventManager();
-        Set<Class<?>> eventSet = env.getClassSet(Listener.class);
+        final Set<Class<?>> eventSet = env.getClassSet(Listener.class);
         if (eventSet == null || eventSet.isEmpty())
             return;
         for (final Class<?> eventClass : eventSet) {
+            /*排除没有实现 EventListener 接口的类。*/
             if (EventListener.class.isAssignableFrom(eventClass) == false) {
                 Hasor.logWarn("not implemented EventListener :%s", eventClass);
                 continue;
             }
+            Listener eventAnno = eventClass.getAnnotation(Listener.class);
+            String[] eventVar = eventAnno.value();
+            for (String eventName : eventVar) {
+                if (StringUtils.isBlank(eventName))
+                    continue;
+                //
+                EventListenerPropxy listener = new EventListenerPropxy(eventClass);
+                apiBinder.registerAware(listener);/*注册AppContextAware*/
+                eventManager.addEventListener(eventName, listener);
+                Hasor.logInfo("event ‘%s’ binding to ‘%s’", eventName, eventClass);
+            }
             //当ContextEvent_Start事件到来时注册所有配置文件监听器。
-            eventManager.pushEventListener(ContextEvent_Started, new EventListener() {
-                public void onEvent(String event, Object[] params) {
-                    //
-                    AppContext appContext = (AppContext) params[0];
-                    Listener eventType = eventClass.getAnnotation(Listener.class);
-                    String[] var = eventType.value();
-                    if (ArrayUtils.isEmpty(var))
-                        return;
-                    //
-                    EventListener e = (EventListener) appContext.getInstance(eventClass);
-                    for (String v : var)
-                        if (!StringUtils.isBlank(v)) {
-                            eventManager.addEventListener(v, e);
-                            Hasor.logInfo("event ‘%s’ binding to ‘%s’", v, e);
-                        }
-                }
-            });
             Hasor.logInfo("event binding finish.");
+        }
+    }
+    //
+    //
+    //
+    private static class EventListenerPropxy implements EventListener, AppContextAware {
+        private AppContext    appContext  = null;
+        private Class<?>      eventClass  = null;
+        private EventListener eventTarget = null;
+        //
+        public EventListenerPropxy(Class<?> eventClass) {
+            this.eventClass = eventClass;
+        }
+        public void setAppContext(AppContext appContext) {
+            this.appContext = appContext;
+        }
+        //
+        public void onEvent(String event, Object[] params) throws Throwable {
+            if (this.eventTarget == null) {
+                if (appContext != null)
+                    this.eventTarget = (EventListener) this.appContext.getInstance(this.eventClass);
+                else
+                    this.eventTarget = (EventListener) this.eventClass.newInstance();
+            }
+            this.eventTarget.onEvent(event, params);
         }
     }
 }

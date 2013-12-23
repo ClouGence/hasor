@@ -1,8 +1,11 @@
-Hasor-Core v0.0.7
+===== Hasor-Core v0.0.7
+* Bug:
+    01.修复 AbstractAppContext 类处理 AppContextAware 接口方面的代码。
+        --当类扫描器扫描不到 AppContextAware 接口实现类时能引发整个doStart阶段的退出。
+    02.修复当使用 @Listener 注解注册容器事件时，导致ContextEvent_Initialized、ContextEvent_Started 两个事件无法正确调用的问题。
 
 
-
-Hasor-Core v0.0.6
+===== Hasor-Core v0.0.6
 * Bug:
     01.改进 当使用 JSON 将（List、Map、基本类型）类之外的类型尝试序列化时会得到一个异常。修复这个问题，当遇到这种情况工具将使用 JSONPojoConvertor 对其进行序列化。
 * 新增:
@@ -26,8 +29,7 @@ Hasor-Core v0.0.6
         --ContextEvent_Started     当所有模块都 Start 之后（确保了每个模块都会尝试 start 之后）。
         --ContextEvent_Stoped      当所有模块都 Stop 之后（确保了每个模块都会尝试 stop 之后）。
 
-
-Hasor-Core v0.0.5
+===== Hasor-Core v0.0.5
 * 新增:
     01.新增 DomXmlAccept 工具类，将 Xml 文件转换为  XmlNode 接口形式的 Dom 树。
 * 改进:
@@ -38,8 +40,7 @@ Hasor-Core v0.0.5
     04.Cache 接口方法有关 key 参数从 String 类型更换为 Serializable。并增加了一些方法。
     05.修改 StandardContextSettings 类，确保位于jar包中的“static-config.xml”资源在合并时优先级低于file。
 
-
-Hasor-Core v0.0.4
+===== Hasor-Core v0.0.4
 * 新增:
     01.Environment 接口新增 isDebug 方法，用于表示应用程序启动是否为 debug 模式。
     02.Hasor 类新增 isDebugLogger、isErrorLogger、isWarningLogger、isInfoLogger 方法用于判断日志是否支持该级别的输出。
@@ -57,14 +58,12 @@ Hasor-Core v0.0.4
     3.Gift 体系更改为 Plugin，原本 Gift 是作为模块的一个补充，目前改为框架功能插件体系。
     4.代码大面积优化。
 
-
-Hasor-Core v0.0.3
+===== Hasor-Core v0.0.3
 * 改进:
     1.修改根POM改为 0.0.2 该版本可以处理 GBK 编码下 Javadocs 生成。
     2.改进JavaDoc内容的质量。
 
-
-Hasor-Core v0.0.2
+===== Hasor-Core v0.0.2
 * Bug:
     1.修复：StandardAppContext调用无参构造方法引发异常的问题，同时修改几个核心类的构造方法。
 * 新增:
@@ -77,7 +76,7 @@ Hasor-Core v0.0.2
     4.@Before 更名为 @Aop，性能进行了优化。
     5.ASM升级为4.0、ClassCode连带升级。
 
-Hasor-Core v0.0.1
+===== Hasor-Core v0.0.1
 * 新增:
     01.增加@GuiceModule注解，可以标记在com.google.inject.Module接口上，可以将Guice模块引入到Hasor中。
 * 改进:
