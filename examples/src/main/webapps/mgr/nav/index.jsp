@@ -20,5 +20,6 @@
 	<%}%>
   </ul>
 </div>
+loadPackages：${beans.cfg.string("hasor.loadPackages")}
 </body>
 </html>
