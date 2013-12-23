@@ -4,10 +4,12 @@
 	<hasor>
 		<loadPackages>net.project.test.*</loadPackages>
 	</hasor>
+
 	<!-- 工作目录 & 环境变量 -->
 	<environmentVar>
 		<HASOR_WORK_HOME>./test-work</HASOR_WORK_HOME>
 	</environmentVar>
+
 	<!-- 数据源配置 -->
 	<hasor-jdbc>
 		<dataSourceSet default="localDB">
@@ -20,4 +22,13 @@
 			</dataSource>
 		</dataSourceSet>
 	</hasor-jdbc>
+
+
+	<demoProject>
+		<menus>
+			<menu code="FunA" name="功能演示A" url="/funa" />
+			<menu code="FunB" name="功能演示B" url="/funb" />
+			<menu code="UserMgr" name="用户管理" url="/mgr/user/userList.do" />
+		</menus>
+	</demoProject>
 </config>

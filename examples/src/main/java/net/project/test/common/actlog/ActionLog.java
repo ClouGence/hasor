@@ -24,7 +24,7 @@ import net.hasor.plugins.controller.Controller;
 import net.hasor.plugins.controller.interceptor.ControllerInterceptor;
 import net.hasor.plugins.controller.interceptor.ControllerInvocation;
 /**
- * 
+ * 全局 Action 调用日志记录 
  * @version : 2013-12-23
  * @author 赵永春(zyc@hasor.net)
  */
@@ -39,7 +39,7 @@ class ActionLogInterceptor extends ControllerInterceptor {
     public Object invoke(ControllerInvocation invocation) throws Throwable {
         try {
             HttpServletRequest reqest = invocation.getRequest();
-            Hasor.logInfo("req:%s.", reqest.getRequestURI());
+            Hasor.logInfo("调用 Action :%s.", reqest.getRequestURI());
             return invocation.proceed();
         } catch (Exception e) {
             throw e;

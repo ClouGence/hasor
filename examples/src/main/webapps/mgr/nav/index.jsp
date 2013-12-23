@@ -12,28 +12,13 @@
 </head>
 <body>
 <div class="panel panel-default">
-  <div class="panel-heading">用户列表</div>
-  <%List userList= (List)request.getAttribute("userList"); %>
-  <table class="table">
-    <thead>
-      <tr>
-        <td width="290px;">ID</td>
-        <td width="120px;">姓名</td>
-        <td width="290px;">帐号</td>
-        <td>邮箱</td>
-	  </tr>
-    </thead>
-    <tbody>
-      <%for (Object user : userList){ %><%request.setAttribute("user", user); %>
-      <tr>
-        <td>${user.userUUID}</td>
-        <td>${user.name}</td>
-        <td>${user.loginName}</td>
-        <td>${user.email}</td>
-	  </tr>
-	  <%}%>
-    </tbody>
-  </table>
+  <div class="panel-heading">导航按钮，下面按钮会以 restful 门面模式这种方式跳转到对应的页面</div>
+  <%List menuList= (List)request.getAttribute("menuList"); %>
+  <ul class="nav nav-pills">
+    <%for (Object menu : menuList){ %><%request.setAttribute("menu", menu); %>
+    <li><a href="/mgr/menus/${menu.code}">${menu.name}</a></li>
+	<%}%>
+  </ul>
 </div>
 </body>
 </html>

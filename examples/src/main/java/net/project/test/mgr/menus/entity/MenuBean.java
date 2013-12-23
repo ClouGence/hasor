@@ -13,21 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.restful;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.project.test.mgr.menus.entity;
 /**
- * 路径中的值
- * @version : 2013-5-9
- * @author 赵永春 (zyc@hasor.net)
+ * 菜单实体
+ * @version : 2013-12-23
+ * @author 赵永春(zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.PARAMETER })
-@Documented
-public @interface PathParam {
-    /**参数名称。*/
-    public String value();
+public class MenuBean {
+    private String code = null;
+    private String name = null;
+    private String url  = null;
+    public String getCode() {
+        return code;
+    }
+    public void setCode(String code) {
+        this.code = code;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getUrl() {
+        return url;
+    }
+    public void setUrl(String url) {
+        this.url = url;
+    }
 }

@@ -13,28 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.project.test.mgr.user.actions;
+package net.project.test.mgr.nav.actions;
 import java.util.List;
-import javax.inject.Inject;
-import net.hasor.jdbc.core.JdbcTemplate;
 import net.hasor.plugins.controller.AbstractController;
 import net.hasor.plugins.controller.Controller;
 import net.hasor.plugins.result.ext.Forword;
-import net.project.test.mgr.user.entity.UserBean;
+import net.project.test.mgr.menus.entity.MenuBean;
+import net.project.test.mgr.menus.services.MenuServices;
+import com.google.inject.Inject;
 /**
- * 
+ * 菜单 RestFul
  * @version : 2013-12-23
  * @author 赵永春(zyc@hasor.net)
  */
-@Controller("/mgr/user")
-public class UserAction extends AbstractController {
+@Controller("/mgr/nav")
+public class NavAction extends AbstractController {
     @Inject
-    private JdbcTemplate jdbcTemplate;
-    /*获取用户列表，转发到‘/mgr/user/userList.jsp’*/
+    private MenuServices menuServices;
+    /*获取用户列表，转发到‘/mgr/menus/menuList.jsp’*/
     @Forword
-    public String userList() {
-        List<UserBean> userList = jdbcTemplate.queryForList("select * from TB_User", UserBean.class);
-        this.setAttr("userList", userList);
-        return "/mgr/user/userList.jsp";
+    public String index() {
+        List<MenuBean> menuList = menuServices.getMenuList();
+        this.setAttr("menuList", menuList);
+        return "/mgr/nav/index.jsp";
     }
 }

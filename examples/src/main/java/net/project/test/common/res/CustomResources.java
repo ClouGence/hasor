@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test.web.resource;
+package net.project.test.common.res;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.plugin.Plugin;
@@ -54,16 +54,8 @@ public class CustomResources extends AbstractWebHasorPlugin {
 /**/
 class CustomResourceLoaderFactory implements ResourceLoaderFactory {
     public ResourceLoader[] loaderArray(AppContext appContext) {
-        Environment env = appContext.getEnvironment();
-        ResourceLoader[] loader = new ResourceLoader[2];
+        ResourceLoader classLoader = new ClassPathResourceLoader("/META-INF/webapp");
         //
-        try {
-            loader[0] = new ZipResourceLoader(env.evalString("%HASOR_WEBROOT%/pic.zip"));
-            loader[1] = new ClassPathResourceLoader("/META-INF/webapp");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //
-        return loader;
+        return new ResourceLoader[] { classLoader };
     }
 }
