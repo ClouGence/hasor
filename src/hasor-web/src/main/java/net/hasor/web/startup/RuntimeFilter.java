@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.web.binder.FilterPipeline;
-import org.more.util.ContextClassLoaderLocal;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 /**
@@ -47,25 +46,17 @@ public class RuntimeFilter implements Filter {
     //
     /**初始化过滤器，初始化会同时初始化FilterPipeline*/
     public synchronized void init(FilterConfig filterConfig) throws ServletException {
-        if (LocalServletContext.get() != null || LocalAppContext.get() != null) {
-            Hasor.logError("PlatformFilter is started.");
-            throw new IllegalStateException("PlatformFilter is started.");
-        }
-        //
-        if (this.appContext == null) {
+        if (appContext == null) {
             ServletContext servletContext = filterConfig.getServletContext();
-            this.appContext = (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
-            Hasor.assertIsNotNull(this.appContext, "AppContext is null.");
-            this.filterPipeline = this.appContext.getInstance(FilterPipeline.class);
+            appContext = (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
+            Hasor.assertIsNotNull(appContext, "AppContext is null.");
+            this.filterPipeline = appContext.getInstance(FilterPipeline.class);
         }
-        //
-        LocalServletContext.set(filterConfig.getServletContext());
-        LocalAppContext.set(this.appContext);
         /*获取请求响应编码*/
-        this.requestEncoding = this.appContext.getSettings().getString("hasor-web.encoding.requestEncoding");
-        this.responseEncoding = this.appContext.getSettings().getString("hasor-web.encoding.responseEncoding");
+        this.requestEncoding = appContext.getSettings().getString("hasor-web.encoding.requestEncoding");
+        this.responseEncoding = appContext.getSettings().getString("hasor-web.encoding.responseEncoding");
         /*1.初始化执行周期管理器。*/
-        this.filterPipeline.initPipeline(this.appContext);
+        this.filterPipeline.initPipeline(appContext);
         Hasor.logInfo("PlatformFilter started.");
     }
     //
@@ -73,7 +64,7 @@ public class RuntimeFilter implements Filter {
     public void destroy() {
         Hasor.logInfo("executeCycle destroyCycle.");
         if (this.filterPipeline != null)
-            this.filterPipeline.destroyPipeline(this.appContext);
+            this.filterPipeline.destroyPipeline(appContext);
     }
     //
     /** 处理request，响应response */
@@ -109,7 +100,7 @@ public class RuntimeFilter implements Filter {
     //
     /**获取{@link AppContext}接口。*/
     protected final AppContext getAppContext() {
-        return this.appContext;
+        return RuntimeListener.getLocalAppContext();
     }
     //
     /**在filter请求处理之前，该方法负责通知HttpRequestProvider、HttpResponseProvider、HttpSessionProvider更新对象。*/
@@ -126,10 +117,8 @@ public class RuntimeFilter implements Filter {
     //
     //
     //
-    private static ContextClassLoaderLocal<ServletContext> LocalServletContext = new ContextClassLoaderLocal<ServletContext>();
-    private static ContextClassLoaderLocal<AppContext>     LocalAppContext     = new ContextClassLoaderLocal<AppContext>();
-    private static ThreadLocal<HttpServletRequest>         LocalRequest        = new ThreadLocal<HttpServletRequest>();
-    private static ThreadLocal<HttpServletResponse>        LocalResponse       = new ThreadLocal<HttpServletResponse>();
+    private static ThreadLocal<HttpServletRequest>  LocalRequest  = new ThreadLocal<HttpServletRequest>();
+    private static ThreadLocal<HttpServletResponse> LocalResponse = new ThreadLocal<HttpServletResponse>();
     //
     /**获取{@link HttpServletRequest}*/
     public static HttpServletRequest getLocalRequest() {
@@ -143,11 +132,11 @@ public class RuntimeFilter implements Filter {
     //
     /**获取{@link ServletContext}*/
     public static ServletContext getLocalServletContext() {
-        return LocalServletContext.get();
+        return RuntimeListener.getLocalServletContext();
     }
     //
     /**获取{@link AppContext}*/
     public static AppContext getLocalAppContext() {
-        return LocalAppContext.get();
+        return RuntimeListener.getLocalAppContext();
     }
 }

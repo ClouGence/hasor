@@ -46,19 +46,19 @@
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-core</artifactId>
-			<version>0.0.6</version>
+			<version>0.0.7-SNAPSHOT</version>
 		</dependency>
 		<!-- Web -->
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-web</artifactId>
-			<version>0.0.4</version>
+			<version>0.0.5-SNAPSHOT</version>
 		</dependency>
 		<!-- JDBC -->
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-jdbc</artifactId>
-			<version>0.0.1</version>
+			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 		<!-- Log -->
 		<dependency>
@@ -85,6 +85,16 @@
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-jetty</artifactId>
 			<version>0.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>jstl</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+			<version>1.1.2</version>
 		</dependency>
 
 		<dependency>

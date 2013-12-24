@@ -19,6 +19,7 @@ import java.util.List;
 import net.hasor.core.AppContext;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
+import net.hasor.plugins.bean.Bean;
 import net.project.test.mgr.menus.entity.MenuBean;
 import org.more.util.StringUtils;
 import com.google.inject.Inject;
@@ -28,6 +29,7 @@ import com.google.inject.Singleton;
  * @version : 2013-12-23
  * @author 赵永春(zyc@hasor.net)
  */
+@Bean("MenuServices")
 @Singleton
 public class MenuServices {
     /*从构造方法中注入 AppContext 接口对象*/

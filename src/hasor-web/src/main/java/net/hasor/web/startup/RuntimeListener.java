@@ -25,15 +25,18 @@ import net.hasor.core.Hasor;
 import net.hasor.core.context.AbstractAppContext;
 import net.hasor.web.binder.SessionListenerPipeline;
 import net.hasor.web.context.AnnoWebAppContext;
+import org.more.util.ContextClassLoaderLocal;
 /**
  * 
  * @version : 2013-3-25
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RuntimeListener implements ServletContextListener, HttpSessionListener {
-    public static final String      AppContextName          = AppContext.class.getName();
-    private AbstractAppContext      appContext              = null;
-    private SessionListenerPipeline sessionListenerPipeline = null;
+    public static final String                             AppContextName          = AppContext.class.getName();
+    private AbstractAppContext                             appContext              = null;
+    private SessionListenerPipeline                        sessionListenerPipeline = null;
+    private static ContextClassLoaderLocal<ServletContext> LocalServletContext     = new ContextClassLoaderLocal<ServletContext>();
+    private static ContextClassLoaderLocal<AppContext>     LocalAppContext         = new ContextClassLoaderLocal<AppContext>();
     /*----------------------------------------------------------------------------------------------------*/
     protected AbstractAppContext createAppContext(ServletContext sc) throws IOException {
         AnnoWebAppContext webContext = new AnnoWebAppContext("hasor-config.xml", sc);
@@ -44,6 +47,8 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         try {
             this.appContext = this.createAppContext(servletContextEvent.getServletContext());
             this.appContext.start();
+            LocalServletContext.set(servletContextEvent.getServletContext());
+            LocalAppContext.set(this.appContext);
         } catch (Exception e) {
             Hasor.logError("createAppContext error.\n%s", e);
             if (e instanceof RuntimeException)
@@ -68,5 +73,15 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     }
     public void sessionDestroyed(HttpSessionEvent se) {
         this.sessionListenerPipeline.sessionDestroyed(se);
+    }
+    //
+    /**获取{@link ServletContext}*/
+    public static ServletContext getLocalServletContext() {
+        return LocalServletContext.get();
+    }
+    //
+    /**获取{@link AppContext}*/
+    public static AppContext getLocalAppContext() {
+        return LocalAppContext.get();
     }
 }

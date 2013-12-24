@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.beans;
+package net.hasor.web.jstl;
 import java.util.AbstractMap;
 import java.util.HashSet;
 import java.util.Set;

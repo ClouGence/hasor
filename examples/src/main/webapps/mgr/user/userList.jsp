@@ -1,4 +1,5 @@
-<%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" import="java.util.*"%>
+<%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -13,7 +14,7 @@
 <body>
 <div class="panel panel-default">
   <div class="panel-heading">用户列表</div>
-  <%List userList= (List)request.getAttribute("userList"); %>
+  
   <table class="table">
     <thead>
       <tr>
@@ -24,14 +25,14 @@
 	  </tr>
     </thead>
     <tbody>
-      <%for (Object user : userList){ %><%request.setAttribute("user", user); %>
+      <c:forEach var="user" items="${userList}">
       <tr>
         <td>${user.userUUID}</td>
         <td>${user.name}</td>
         <td>${user.loginName}</td>
         <td>${user.email}</td>
 	  </tr>
-	  <%}%>
+	  </c:forEach>
     </tbody>
   </table>
 </div>

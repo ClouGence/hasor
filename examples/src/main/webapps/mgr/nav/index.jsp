@@ -1,4 +1,6 @@
-<%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" import="java.util.*"%>
+<%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="hs" uri="http://project.hasor.net/hasor/schema/jstl" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -13,13 +15,12 @@
 <body>
 <div class="panel panel-default">
   <div class="panel-heading">导航按钮，下面按钮会以 restful 门面模式这种方式跳转到对应的页面</div>
-  <%List menuList= (List)request.getAttribute("menuList"); %>
+  <hs:defineBean bean="MenuServices" var="menuServices"/>
   <ul class="nav nav-pills">
-    <%for (Object menu : menuList){ %><%request.setAttribute("menu", menu); %>
+  <c:forEach var="menu" items="${menuServices.getMenuList()}">
     <li><a href="/mgr/menus/${menu.code}">${menu.name}</a></li>
-	<%}%>
+  </c:forEach>
   </ul>
 </div>
-loadPackages：${beans.cfg.string("hasor.loadPackages")}
 </body>
 </html>
