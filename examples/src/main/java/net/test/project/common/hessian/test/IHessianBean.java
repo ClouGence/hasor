@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
+package net.test.project.common.hessian.test;
+import net.test.project.common.hessian.HessianClient;
 /**
- * Hasor模块，该方法中定义了模块生命周期。
- * @version : 2013-3-20
- * @author 赵永春 (zyc@hasor.net)
+ * 
+ * @version : 2013-12-25
+ * @author 赵永春(zyc@hasor.net)
  */
-public interface Module {
-    /**初始化过程，注意：apiBinder 参数只能在 init 阶段中使用。*/
-    public void init(ApiBinder apiBinder);
-    /**启动信号*/
-    public void start(AppContext appContext);
-    /**停止信号*/
-    public void stop(AppContext appContext);
+@HessianClient("http://127.0.0.1:8082/testBean")
+public interface IHessianBean {
+    public long sayHello();
 }
