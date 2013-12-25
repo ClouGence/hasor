@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package org.hasor.test.simple.aop.bean;
-import net.hasor.plugins.aop.Aop;
 import org.hasor.test.simple.aop.interceptor.AopInterceptor_A;
 import org.hasor.test.simple.aop.interceptor.AopInterceptor_Font;
 import org.hasor.test.simple.aop.interceptor.AopInterceptor_Span;
+import net.hasor.plugins.aop.Aop;
 /**
  * 
  * @version : 2013-8-11

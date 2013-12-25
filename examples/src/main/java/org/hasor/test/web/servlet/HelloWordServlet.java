@@ -20,9 +20,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.hasor.test.simple.beans.customer.CustomerBean;
 import net.hasor.core.AppContext;
 import net.hasor.plugins.servlet3.WebServlet;
-import org.hasor.test.simple.beans.customer.CustomerBean;
 /**
  * 
  * @version : 2013-8-11

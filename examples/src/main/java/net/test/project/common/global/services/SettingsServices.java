@@ -13,22 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test.simple.aop.bean;
-import org.hasor.test.simple.aop.interceptor.AopInterceptor_A;
-import net.hasor.plugins.aop.Aop;
+package net.test.project.common.global.services;
+import net.hasor.core.Settings;
+import net.hasor.plugins.bean.Bean;
+import com.google.inject.Inject;
 /**
  * 
- * @version : 2013-8-11
- * @author ’‘”¿¥∫ (zyc@hasor.net)
+ * @version : 2013-12-23
+ * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-@Aop(AopInterceptor_A.class)
-public class AopBean_ClassLv {
-    public String fooA(String param1) {
-        System.out.println("invoke fooA");
-        return "fooA";
-    }
-    public String fooB(String param1) {
-        System.out.println("invoke fooB");
-        return "fooB";
+@Bean("cfg")
+public class SettingsServices {
+    @Inject
+    private Settings settings;
+    public String string(String strVal) {
+        return this.settings.getString(strVal);
     }
 }

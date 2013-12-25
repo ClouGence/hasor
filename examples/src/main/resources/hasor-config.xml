@@ -2,7 +2,7 @@
 <config xmlns="http://project.hasor.net/hasor/schema/main">
 	<!-- Demo 项目源码所处包 -->
 	<hasor>
-		<loadPackages>net.project.test.*</loadPackages>
+		<loadPackages>net.test.project.*</loadPackages>
 	</hasor>
 
 	<!-- 工作目录 & 环境变量 -->

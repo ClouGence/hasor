@@ -13,22 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test.simple.aop.bean;
-import org.hasor.test.simple.aop.interceptor.AopInterceptor_A;
-import net.hasor.plugins.aop.Aop;
+package net.test.project.mgr.user.service;
+import java.util.List;
+import javax.inject.Inject;
+import net.hasor.jdbc.core.JdbcTemplate;
+import net.hasor.plugins.bean.Bean;
+import net.test.project.mgr.user.entity.UserBean;
 /**
  * 
- * @version : 2013-8-11
- * @author 赵永春 (zyc@hasor.net)
+ * @version : 2013-12-25
+ * @author 赵永春(zyc@hasor.net)
  */
-@Aop(AopInterceptor_A.class)
-public class AopBean_ClassLv {
-    public String fooA(String param1) {
-        System.out.println("invoke fooA");
-        return "fooA";
-    }
-    public String fooB(String param1) {
-        System.out.println("invoke fooB");
-        return "fooB";
+@Bean("UserService")
+public class UserService {
+    @Inject
+    private JdbcTemplate jdbcTemplate;
+    //
+    /*取得用户列表*/
+    public List<UserBean> getUserList() {
+        List<UserBean> userList = jdbcTemplate.queryForList("select * from TB_User", UserBean.class);
+        return userList;
     }
 }
