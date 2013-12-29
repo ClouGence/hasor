@@ -47,7 +47,8 @@ public class DefaultDataSourceHelper implements DataSourceHelper {
         if (!holder.isOpen())
             ResourcesLocal.get().remove(dataSource);
     };
-    protected ConnectionHolder getConnectionHolder(DataSource dataSource) {
+    /**ªÒ»°ConnectionHolder*/
+    public ConnectionHolder getConnectionHolder(DataSource dataSource) {
         initLocal();
         ConnectionHolder holder = ResourcesLocal.get().get(dataSource);
         if (holder == null) {

@@ -16,14 +16,16 @@
 package net.hasor.jdbc.datasource.local;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import javax.sql.DataSource;
+import net.hasor.jdbc.datasource.SavepointManager;
 import net.hasor.jdbc.exceptions.DataAccessException;
 /**
  * 
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */
-public class ConnectionHolder {
+public class ConnectionHolder implements SavepointManager {
     private int        referenceCount;
     private DataSource dataSource;
     private Connection connection;
@@ -39,6 +41,8 @@ public class ConnectionHolder {
         this.referenceCount--;
         if (!isOpen() && this.connection != null) {
             try {
+                this.savepointCounter = 0;
+                this.savepointsSupported = null;
                 this.connection.close();
             } catch (SQLException e) {
                 throw new DataAccessException("cant not close connection.", e);
@@ -60,5 +64,45 @@ public class ConnectionHolder {
             this.connection = this.dataSource.getConnection();
         }
         return this.connection;
+    }
+    //
+    //
+    //
+    //---------------------------------------------------------------------------Savepoint
+    private void checkConn(Connection conn) throws SQLException {
+        if (conn == null)
+            throw new SQLException("Connection is null.");
+    }
+    public static final String SAVEPOINT_NAME_PREFIX = "SAVEPOINT_";
+    private int                savepointCounter      = 0;
+    private Boolean            savepointsSupported;
+    /**返回 JDBC 驱动是否支持保存点。*/
+    public boolean supportsSavepoints() throws SQLException {
+        Connection conn = this.getConnection();
+        checkConn(conn);
+        //
+        if (this.savepointsSupported == null)
+            this.savepointsSupported = conn.getMetaData().supportsSavepoints();
+        return this.savepointsSupported;
+    }
+    /**使用一个全新的名称创建一个保存点。*/
+    public Savepoint createSavepoint() throws SQLException {
+        Connection conn = this.getConnection();
+        checkConn(conn);
+        //
+        this.savepointCounter++;
+        return conn.setSavepoint(SAVEPOINT_NAME_PREFIX + this.savepointCounter);
+    }
+    public void rollbackToSavepoint(Savepoint savepoint) throws SQLException {
+        Connection conn = this.getConnection();
+        checkConn(conn);
+        //
+        conn.rollback(savepoint);
+    }
+    public void releaseSavepoint(Savepoint savepoint) throws SQLException {
+        Connection conn = this.getConnection();
+        checkConn(conn);
+        //
+        conn.releaseSavepoint(savepoint);
     };
 }

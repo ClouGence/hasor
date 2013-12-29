@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.transaction.core;
+package net.hasor.jdbc.datasource;
+import java.sql.SQLException;
 import java.sql.Savepoint;
-import net.hasor.jdbc.exceptions.IllegalTransactionStateException;
 /**
  * 
  * @version : 2013-10-30
@@ -23,9 +23,9 @@ import net.hasor.jdbc.exceptions.IllegalTransactionStateException;
  */
 public interface SavepointManager {
     /**创建事务的保存点，通过<code>releaseSavepoint</code>方法释放这个保存点。SQLException */
-    public Savepoint createSavepoint() throws IllegalTransactionStateException;
+    public Savepoint createSavepoint() throws SQLException;
     /**回滚事务到一个指定的保存点。*/
-    public void rollbackToSavepoint(Savepoint savepoint) throws IllegalTransactionStateException;
+    public void rollbackToSavepoint(Savepoint savepoint) throws SQLException;
     /**释放某个事务的保存点*/
-    public void releaseSavepoint(Savepoint savepoint) throws IllegalTransactionStateException;
+    public void releaseSavepoint(Savepoint savepoint) throws SQLException;
 }

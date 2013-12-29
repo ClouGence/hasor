@@ -26,13 +26,16 @@ import org.more.util.ContextClassLoaderLocal;
  * @author 赵永春(zyc@hasor.net)
  */
 public class DataSourceUtils {
-    private static DataSourceHelper                          defaultUtilService = new DefaultDataSourceHelper();
-    private static ContextClassLoaderLocal<DataSourceHelper> utilServiceLocal   = new ContextClassLoaderLocal<DataSourceHelper>();
+    private static class ServiceLocal extends ContextClassLoaderLocal<DataSourceHelper> {
+        protected DataSourceHelper initialValue() {
+            return new DefaultDataSourceHelper();
+        }
+    }
+    private static ServiceLocal utilServiceLocal = new ServiceLocal();
     //
     /**申请连接*/
     public static Connection getConnection(DataSource dataSource) throws DataAccessException {
         DataSourceHelper utilService = utilServiceLocal.get();
-        utilService = (utilService == null) ? defaultUtilService : utilService;
         try {
             Connection conn = utilService.getConnection(dataSource);
             if (conn == null)
@@ -45,13 +48,17 @@ public class DataSourceUtils {
     /**释放连接*/
     public static void releaseConnection(Connection con, DataSource dataSource) throws DataAccessException {
         DataSourceHelper utilService = utilServiceLocal.get();
-        utilService = (utilService == null) ? defaultUtilService : utilService;
         try {
             utilService.releaseConnection(con, dataSource);
         } catch (SQLException e) {
             throw new DataAccessException("releaseConnection.", e);
         }
     };
+    /**获取DataSourceHelper*/
+    public static DataSourceHelper getDataSourceHelper() {
+        return utilServiceLocal.get();
+    }
+    /**更换默认DataSourceHelper*/
     protected static void changeDataSourceUtilService(DataSourceHelper utilService) {
         utilServiceLocal.set(utilService);
     }
