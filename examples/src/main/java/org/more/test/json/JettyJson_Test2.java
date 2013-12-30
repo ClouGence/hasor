@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test.simple.aop.interceptor;
-import net.hasor.plugins.aop.GlobalAop;
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
-/**
- * ÃÌº”≥¨¡¥Ω”
- * @version : 2013-8-11
- * @author ’‘”¿¥∫ (zyc@hasor.net)
- */
-@GlobalAop("*")
-public class AopInterceptor_A implements MethodInterceptor {
-    public Object invoke(MethodInvocation invocation) throws Throwable {
-        //System.out.println("before A");
-        Object returnData = invocation.proceed();
-        //System.out.println("after A");
-        return "<a href='alert();'>" + returnData + "</a>";
+package org.more.test.json;
+import java.io.IOException;
+import java.util.Map;
+import org.more.json.JSON;
+public class JettyJson_Test2 {
+    /**
+     * @param args
+     * @throws IOException 
+     */
+    public static void main(String[] args) throws IOException {
+        Map<String, String> data = (Map<String, String>) JSON.parse("{'attr':'attValue','attr2':'attValue'}");
+        System.out.println(data.get("attr"));
+        System.out.println(data.get("attr2"));
     }
 }

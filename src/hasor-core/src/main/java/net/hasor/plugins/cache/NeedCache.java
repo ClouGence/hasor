@@ -29,5 +29,5 @@ public @interface NeedCache {
     /**默认缓存器名称*/
     public static final String DefaultGroupName = "Default";
     /**使用的缓存器名称。*/
-    public String groupName() default "";
+    public String groupName() default DefaultGroupName;
 }

@@ -15,8 +15,12 @@
  */
 package net.hasor.plugins.aop;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.Hasor;
 import net.hasor.core.plugin.AbstractHasorPlugin;
 import net.hasor.core.plugin.Plugin;
 import net.hasor.plugins.aop.matchers.AopMatchers;
@@ -31,14 +35,38 @@ import com.google.inject.matcher.Matcher;
 public class AopPlugin extends AbstractHasorPlugin {
     public void loadPlugin(ApiBinder apiBinder) {
         //1.@GlobalAop全局拦截器
-        Matcher<Object> matcherGlobal = AopMatchers.annotatedWith(GlobalAop.class);//
-        List<Class<? extends MethodInterceptor>> globalMethod = new ArrayList<Class<? extends MethodInterceptor>>();
-        
-        
-        
-        
+        List<Class<? extends MethodInterceptor>> globalInterceptorList = new ArrayList<Class<? extends MethodInterceptor>>();
+        Set<Class<?>> globalAopSet = apiBinder.getClassSet(GlobalAop.class);//
+        if (globalAopSet == null || globalAopSet.isEmpty()) {
+            Hasor.logInfo("no Global Aop.");
+        } else {
+            //A.循环 globalAopSet 将合格的 GlobalAop 添加到  globalInterceptor。
+            for (Class<?> globalAop : globalAopSet) {
+                if (MethodInterceptor.class.isAssignableFrom(globalAop) == false) {
+                    Hasor.logWarn("class %s not implement MethodInterceptor.", globalAop);
+                    continue;
+                }
+                Hasor.logInfo("add Global Aop : %s.", globalAop);
+                globalInterceptorList.add((Class<? extends MethodInterceptor>) globalAop);
+            }
+            //B.如果存在两个以上 Global Aop 为它们建立顺序。
+            if (globalInterceptorList.size() > 1) {
+                Collections.sort(globalInterceptorList, new Comparator<Class<? extends MethodInterceptor>>() {
+                    public int compare(Class<? extends MethodInterceptor> o1, Class<? extends MethodInterceptor> o2) {
+                        GlobalAop annoO1 = o1.getAnnotation(GlobalAop.class);
+                        GlobalAop annoO2 = o2.getAnnotation(GlobalAop.class);
+                        if (annoO1.index() > annoO2.index())
+                            return 1;
+                        else if (annoO1.index() == annoO2.index())
+                            return 0;
+                        else
+                            return -1;
+                    }
+                });
+            }
+        }
         //2.@Aop拦截器
         Matcher<Object> matcherAop = AopMatchers.annotatedWith(Aop.class);//
-        apiBinder.getGuiceBinder().bindInterceptor(matcherAop, matcherAop, new AopInterceptor(apiBinder));
+        apiBinder.getGuiceBinder().bindInterceptor(matcherAop, matcherAop, new AopInterceptor(globalInterceptorList, apiBinder));
     }
 }

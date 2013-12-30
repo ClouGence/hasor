@@ -29,7 +29,7 @@ public class LinkeAop_Test {
     @Test
     public void testAopBeanClassLv() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testAopBeanClassLv<<--");
-        AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/simple/beans/bean-config.xml");
+        AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/simple/aop/aop-config.xml");
         appContext.start();
         //
         AopBean_ClassLv bean = appContext.getInstance(AopBean_ClassLv.class);
@@ -44,7 +44,7 @@ public class LinkeAop_Test {
     @Test
     public void testAopBeanMethodLv() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testAopBeanMethodLv<<--");
-        AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/simple/beans/bean-config.xml");
+        AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/simple/aop/aop-config.xml");
         appContext.start();
         //
         AopBean_MethodLv bean = appContext.getInstance(AopBean_MethodLv.class);
@@ -54,7 +54,7 @@ public class LinkeAop_Test {
     @Test
     public void testAopBeanGlobalLv() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testAopBeanGlobalLv<<--");
-        AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/simple/aop/global-config.xml");
+        AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/simple/aop/aop-config.xml");
         appContext.start();
         //
         AopBean_MethodLv bean = appContext.getInstance(AopBean_MethodLv.class);

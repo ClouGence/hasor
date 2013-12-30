@@ -26,6 +26,18 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface GlobalAop {
-    /**正则表达式*/
+    /**表达式*/
     public String value();
+    /**表达式类型，默认是通配符*/
+    public RegType regType() default RegType.Wildcard;
+    /**该拦截器在所有全局拦截器链中的位置。*/
+    public int index() default 0;
+    //
+    /**表达式类型*/
+    public static enum RegType {
+        /**正则表达式*/
+        Regexp(),
+        /**通配符*/
+        Wildcard()
+    }
 }
