@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.plugins.aop;
+import java.util.ArrayList;
+import java.util.List;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.plugin.AbstractHasorPlugin;
 import net.hasor.core.plugin.Plugin;
 import net.hasor.plugins.aop.matchers.AopMatchers;
+import org.aopalliance.intercept.MethodInterceptor;
 import com.google.inject.matcher.Matcher;
 /**
  * 提供 <code>@Aop</code>注解 功能支持。
@@ -27,7 +30,15 @@ import com.google.inject.matcher.Matcher;
 @Plugin
 public class AopPlugin extends AbstractHasorPlugin {
     public void loadPlugin(ApiBinder apiBinder) {
-        Matcher<Object> matcher = AopMatchers.annotatedWith(Aop.class);//
-        apiBinder.getGuiceBinder().bindInterceptor(matcher, matcher, new AopInterceptor(apiBinder));
+        //1.@GlobalAop全局拦截器
+        Matcher<Object> matcherGlobal = AopMatchers.annotatedWith(GlobalAop.class);//
+        List<Class<? extends MethodInterceptor>> globalMethod = new ArrayList<Class<? extends MethodInterceptor>>();
+        
+        
+        
+        
+        //2.@Aop拦截器
+        Matcher<Object> matcherAop = AopMatchers.annotatedWith(Aop.class);//
+        apiBinder.getGuiceBinder().bindInterceptor(matcherAop, matcherAop, new AopInterceptor(apiBinder));
     }
 }

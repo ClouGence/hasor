@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.hasor.test.simple.beans.beans;
+import com.google.inject.Inject;
 import net.hasor.plugins.bean.Bean;
 /**
  * AnnoServiceA 具有两个名称 name1 和 name2
@@ -22,7 +23,11 @@ import net.hasor.plugins.bean.Bean;
  */
 @Bean(value = { "name1", "name2" })
 public class NamesBean {
+    @Inject
+    private SingletonBean bean;
+    
     public void foo() {
+        System.out.println(bean);
         System.out.println("this bean is name1 or name2 type:" + this);
     }
 }

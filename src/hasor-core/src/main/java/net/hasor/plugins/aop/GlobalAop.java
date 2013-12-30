@@ -13,23 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hasor.test.simple.beans.beans;
-import javax.inject.Singleton;
-import com.google.inject.Inject;
-import net.hasor.plugins.bean.Bean;
+package net.hasor.plugins.aop;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 
- * @version : 2013-8-11
+ * 标记该类为全局Aop拦截器，该类需要实现 MethodInterceptor 接口。
+ * @version : 2013-3-20
  * @author 赵永春 (zyc@hasor.net)
  */
-@Singleton
-@Bean("singletonBean")
-public class SingletonBean {
-    @Inject
-    private NamesBean bean;
-    
-    public void foo() {
-        System.out.println(bean);
-        System.out.println("this bean is Singleton type:" + this);
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface GlobalAop {
+    /**正则表达式*/
+    public String value();
 }
