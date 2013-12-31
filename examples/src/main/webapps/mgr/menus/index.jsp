@@ -18,7 +18,7 @@
   <hs:defineBean bean="MenuServices" var="menuServices"/>
   <ul class="nav nav-pills">
   <c:forEach var="menu" items="${menuServices.getMenuList()}">
-    <li><a href="/mgr/menus/nav${menu.code}">${menu.name}</a></li>
+    <li><a href="/mgr/menus/nav/${menu.code}">${menu.name}</a></li>
   </c:forEach>
   </ul>
 </div>
