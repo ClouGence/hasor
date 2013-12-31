@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.project.common.hessian;
+package net.test.project.common.plugins.hessian;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;

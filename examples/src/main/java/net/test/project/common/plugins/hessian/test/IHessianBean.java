@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.project.common.hessian.test;
-import java.net.MalformedURLException;
-import net.test.project.common.hessian.HessianPlugin;
+package net.test.project.common.plugins.hessian.test;
+import net.test.project.common.plugins.hessian.HessianClient;
 /**
  * 
  * @version : 2013-12-25
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-public class HessianTest {
-    public static void main(String[] args) throws MalformedURLException {
-        IHessianBean bean = (IHessianBean) HessianPlugin.getPropxy(IHessianBean.class);
-        System.out.println(bean.sayHello());
-    }
+@HessianClient("http://127.0.0.1:8082/testBean")
+public interface IHessianBean {
+    public long sayHello();
 }

@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.project.common.hessian;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.test.project.common.plugins.hessian.test;
+import java.net.MalformedURLException;
+import net.test.project.common.plugins.hessian.HessianPlugin;
 /**
  * 
  * @version : 2013-12-25
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface HessianClient {
-    public String value();
+public class HessianTest {
+    public static void main(String[] args) throws MalformedURLException {
+        IHessianBean bean = (IHessianBean) HessianPlugin.getPropxy(IHessianBean.class);
+        System.out.println(bean.sayHello());
+    }
 }

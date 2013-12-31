@@ -13,14 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.project.common.hessian.test;
-import net.test.project.common.hessian.HessianClient;
+package net.test.project.common.plugins.hessian;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
  * 
  * @version : 2013-12-25
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-@HessianClient("http://127.0.0.1:8082/testBean")
-public interface IHessianBean {
-    public long sayHello();
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface HessianService {
+    public String value();
 }

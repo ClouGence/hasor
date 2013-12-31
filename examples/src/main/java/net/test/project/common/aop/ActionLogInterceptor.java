@@ -15,27 +15,17 @@
  */
 package net.test.project.common.aop;
 import javax.servlet.http.HttpServletRequest;
-import net.hasor.core.ApiBinder;
 import net.hasor.core.Hasor;
-import net.hasor.core.plugin.HasorPlugin;
-import net.hasor.core.plugin.Plugin;
-import net.hasor.plugins.aop.matchers.AopMatchers;
-import net.hasor.plugins.controller.Controller;
+import net.hasor.plugins.aop.GlobalAop;
 import net.hasor.plugins.controller.interceptor.ControllerInterceptor;
 import net.hasor.plugins.controller.interceptor.ControllerInvocation;
 /**
- * 全局 Action 调用日志记录 
+ * 全局Aop，负责拦截所有 Controller 调用，并输出  Action 调用日志记录 
  * @version : 2013-12-23
  * @author 赵永春(zyc@hasor.net)
  */
-@Plugin
-public class ActionLogInterceptor implements HasorPlugin {
-    public void loadPlugin(ApiBinder apiBinder) {
-        apiBinder.getGuiceBinder().bindInterceptor(AopMatchers.annotatedWith(Controller.class),//
-                AopMatchers.any(), new AL_Interceptor());
-    }
-}
-class AL_Interceptor extends ControllerInterceptor {
+@GlobalAop("*")
+public class ActionLogInterceptor extends ControllerInterceptor {
     public Object invoke(ControllerInvocation invocation) throws Throwable {
         try {
             HttpServletRequest reqest = invocation.getRequest();
