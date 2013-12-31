@@ -1,5 +1,5 @@
 ===== Hasor-Web v0.0.5
-* Bug:
+* 修复:
     1.修复 ControllerInterceptor 拦截器在调用标记了 @ControllerIgnore 方法时引发递归死循环问题。
 * 改进:
     1.AnnoWebAppContext 类中增加，下面几个接口的绑定。
@@ -17,7 +17,7 @@
     5.j2ee 软件包 更名为 servlet3
 
 ===== Hasor-Web v0.0.3
-* Bug:
+* 修复:
     1.修复 #4 在 debug 模式下 Resources 模块在处理位于 Classpath 中资源时会反复的覆盖缓存结果。
         -这样设计的目的是为了方便开发调试应用程序。
     2.修复 #9 在负责加载资源的 HttpServlet 中增加了 404 情况的响应。
@@ -35,7 +35,7 @@
     3.代码大面积优化。
 
 ===== Hasor-Web v0.0.2
-* Bug:
+* 修复:
     1.修复#1 Hasor-Web v0.0.1- Restful 服务无法正常发布的问题。
     2.修复#2 从 WebApiBinder 接口中注册的 Filter 启动顺序不可控的问题。
 * 改进:

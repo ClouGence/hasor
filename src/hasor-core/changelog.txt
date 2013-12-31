@@ -1,12 +1,12 @@
 ===== Hasor-Core v0.0.7
-* Bug:
+* 修复:
     01.修复 AbstractAppContext 类处理 AppContextAware 接口方面的代码。
         --当类扫描器扫描不到 AppContextAware 接口实现类时能引发整个doStart阶段的退出。
     02.修复当使用 @Listener 注解注册容器事件时，导致ContextEvent_Initialized、ContextEvent_Started 两个事件无法正确调用的问题。
 
 
 ===== Hasor-Core v0.0.6
-* Bug:
+* 修复:
     01.改进 当使用 JSON 将（List、Map、基本类型）类之外的类型尝试序列化时会得到一个异常。修复这个问题，当遇到这种情况工具将使用 JSONPojoConvertor 对其进行序列化。
 * 新增:
     01.新增在注册 ServicesRegisterHandler 时使用 Class 类型。注册的 Handler 支持 依赖注入。
@@ -64,7 +64,7 @@
     2.改进JavaDoc内容的质量。
 
 ===== Hasor-Core v0.0.2
-* Bug:
+* 修复:
     1.修复：StandardAppContext调用无参构造方法引发异常的问题，同时修改几个核心类的构造方法。
 * 新增:
     1.新增以模块类名为事件名，当执行 Init\Start\Stop时候，抛出对应事件。
