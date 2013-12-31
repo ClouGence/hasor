@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import net.hasor.core.Hasor;
+import net.hasor.core.Settings;
 import net.hasor.core.setting.FileSettings;
 import net.hasor.core.setting.InputStreamSettings;
 import net.hasor.core.setting.StandardContextSettings;
@@ -73,6 +74,34 @@ public class Settings_Test {
         //
         System.out.println(Hasor.logString(settings.getStringArray("hasor.loadPackages")));
         System.out.println(Hasor.logString(settings.getStringArray("environmentVar.HASOR_WORK_HOME")));//不存在这个配置内容
+    }
+    @Test
+    public void testNSSettings() throws IOException {
+        System.out.println("--->>testNSSettings<<--");
+        File inFile = new File("src/main/resources/org/hasor/test/simple/settings/ns-config.xml");
+        FileSettings settings = new FileSettings(inFile);
+        //
+        //Mode1
+        Settings mod1 = settings.getSetting("http://mode1.myProject.net");
+        Settings mod2 = settings.getSetting("http://mode2.myProject.net");
+        System.out.println(mod1.getString("appSettings.serverLocal.url"));
+        System.out.println(mod2.getString("appSettings.serverLocal.url"));
+    }
+    @Test
+    public void testNS2Settings() throws IOException {
+        System.out.println("--->>testNS2Settings<<--");
+        File inFile1 = new File("src/main/resources/org/hasor/test/simple/settings/ns1-config.xml");
+        File inFile2 = new File("src/main/resources/org/hasor/test/simple/settings/ns2-config.xml");
+        FileSettings settings = new FileSettings();
+        settings.addFile(inFile1);
+        settings.addFile(inFile2);
+        settings.refresh();
+        //
+        //Mode1
+        Settings mod1 = settings.getSetting("http://mode1.myProject.net");
+        Settings mod2 = settings.getSetting("http://mode2.myProject.net");
+        System.out.println(mod1.getString("appSettings.serverLocal.url"));
+        System.out.println(mod2.getString("appSettings.serverLocal.url"));
     }
     //    @Test
     //    public void testMappingInitContextSettings() throws IOException {

@@ -42,13 +42,13 @@ public abstract class AbstractBaseSettings extends AbstractSettings {
     }
     //
     /**获取指在某个特定命名空间下的Settings接口对象。*/
-    public String[] getNamespaceArray() {
+    public String[] getSettingArray() {
         Set<String> nsSet = this.getNamespaceSettingMap().keySet();
         return nsSet.toArray(new String[nsSet.size()]);
     }
     //
     /**获取指在某个特定命名空间下的Settings接口对象。*/
-    public final AbstractSettings getNamespace(String namespace) {
+    public final AbstractSettings getSetting(String namespace) {
         final AbstractSettings setting = this;
         final Map<String, Object> data = this.getNamespaceSettingMap().get(namespace);
         if (data == null)
@@ -57,11 +57,11 @@ public abstract class AbstractBaseSettings extends AbstractSettings {
             public void refresh() throws IOException {
                 throw new UnsupportedOperationException();
             }
-            public AbstractSettings getNamespace(String namespace) {
-                return setting.getNamespace(namespace);
+            public AbstractSettings getSetting(String namespace) {
+                return setting.getSetting(namespace);
             }
-            public String[] getNamespaceArray() {
-                return setting.getNamespaceArray();
+            public String[] getSettingArray() {
+                return setting.getSettingArray();
             }
             public Map<String, Object> getSettingsMap() {
                 return data;

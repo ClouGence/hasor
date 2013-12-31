@@ -3,7 +3,12 @@
     01.修复 AbstractAppContext 类处理 AppContextAware 接口方面的代码。
         --当类扫描器扫描不到 AppContextAware 接口实现类时能引发整个doStart阶段的退出。
     02.修复当使用 @Listener 注解注册容器事件时，导致ContextEvent_Initialized、ContextEvent_Started 两个事件无法正确调用的问题。
-
+    03.修复当配置文件中，根节点下第一层节点名称如果与根节点同名，导致的数据混乱问题。
+* 新增:
+    01.Settings 通过映射 key "." 可以取得根节点。
+* 改进:
+    01.Settings接口的 getNameSpace 方法改名为 getSetting。
+    
 
 ===== Hasor-Core v0.0.6
 * 修复:
