@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.aop.interceptor;
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
+package net.test.simple._02_beans.inject;
+import net.test.simple._02_beans.pojo.PojoBean;
+import com.google.inject.Inject;
 /**
- * 添加span标签
- * @version : 2013-8-11
- * @author 赵永春 (zyc@hasor.net)
+ * 构造方法注入
+ * @version : 2014-1-3
+ * @author 赵永春(zyc@hasor.net)
  */
-public class AopInterceptor_Span implements MethodInterceptor {
-    public Object invoke(MethodInvocation invocation) throws Throwable {
-        //System.out.println("before Span");
-        Object returnData = invocation.proceed();
-        //System.out.println("after Span");
-        return "<span>" + returnData + "</span>";
+public class ConstructorInject {
+    private PojoBean userBean;
+    @Inject
+    public ConstructorInject(PojoBean userBean) {
+        this.userBean = userBean;
+    }
+    //
+    public String getUserName() {
+        return this.userBean.getName();
     }
 }

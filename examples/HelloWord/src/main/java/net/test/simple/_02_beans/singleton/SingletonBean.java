@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.beans.beans;
+package net.test.simple._02_beans.singleton;
 import javax.inject.Singleton;
-import com.google.inject.Inject;
-import net.hasor.plugins.bean.Bean;
 /**
- * 
+ * µ•¿˝
  * @version : 2013-8-11
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 @Singleton
-@Bean("singletonBean")
 public class SingletonBean {
-    @Inject
-    private NamesBean bean;
-    
+    private long time = 0;
+    //
+    public SingletonBean() {
+        time = System.currentTimeMillis();
+    }
+    //
     public void foo() {
-        System.out.println(bean);
-        System.out.println("this bean is Singleton type:" + this);
+        System.out.println("create at time:" + time);
     }
 }

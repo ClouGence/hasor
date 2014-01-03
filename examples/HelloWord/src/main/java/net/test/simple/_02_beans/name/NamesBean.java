@@ -13,21 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.aop.interceptor;
-import net.hasor.plugins.aop.GlobalAop;
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
+package net.test.simple._02_beans.name;
+import net.hasor.plugins.bean.Bean;
+import net.test.simple._02_beans.pojo.PojoBean;
 /**
- * 添加超链接
- * @version : 2013-8-11
- * @author 赵永春 (zyc@hasor.net)
+ * 继承 PojoBean 并起个名字，同时拥有多个名字
+ * @version : 2014-1-3
+ * @author 赵永春(zyc@hasor.net)
  */
-@GlobalAop("*")
-public class AopInterceptor_A implements MethodInterceptor {
-    public Object invoke(MethodInvocation invocation) throws Throwable {
-        //System.out.println("before A");
-        Object returnData = invocation.proceed();
-        //System.out.println("after A");
-        return "<a href='alert();'>" + returnData + "</a>";
-    }
-}
+@Bean({ "NameBean1", "NameBean2" })
+public class NamesBean extends PojoBean {}

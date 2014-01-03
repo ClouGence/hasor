@@ -6,6 +6,7 @@
     03.修复当配置文件中，根节点下第一层节点名称如果与根节点同名，导致的数据混乱问题。
 * 新增:
     01.Settings 通过映射 key "." 可以取得根节点。
+    02.新增 @GlobalAop 配置全局拦截器。
 * 改进:
     01.Settings接口的 getNameSpace 方法改名为 getSetting。
     

@@ -13,24 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.aop.bean;
+package net.test.simple._03_aop.class_lv;
 import net.hasor.plugins.aop.Aop;
-import net.test.simple.aop.interceptor.AopInterceptor_Font;
-import net.test.simple.aop.interceptor.AopInterceptor_Span;
+import net.test.simple._03_aop.global_lv.WildcardGlobalInterceptor;
 /**
- * 
- * @version : 2013-8-11
- * @author ’‘”¿¥∫ (zyc@hasor.net)
+ * “ª∏ˆBean
+ * @version : 2014-1-3
+ * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-public class AopBean_MethodLv {
-    @Aop({ AopInterceptor_Span.class, AopInterceptor_Font.class })
-    public String fooA(String param1) {
-        System.out.println("invoke fooA");
-        return "fooA";
-    }
-    @Aop({ AopInterceptor_Font.class })
-    public String fooB(String param1) {
-        System.out.println("invoke fooB");
-        return "fooB";
+@Aop(WildcardGlobalInterceptor.class)
+public class ClassLv_FooBean {
+    public void fooCall() {
+        System.out.println("FooBean.fooCall");
     }
 }

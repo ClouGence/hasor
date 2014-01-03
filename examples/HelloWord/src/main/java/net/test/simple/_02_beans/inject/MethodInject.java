@@ -13,25 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.aop.bean;
-import net.hasor.plugins.aop.Aop;
-import net.test.simple.aop.interceptor.AopInterceptor_A;
-import net.test.simple.aop.interceptor.AopInterceptor_Font;
-import net.test.simple.aop.interceptor.AopInterceptor_Span;
+package net.test.simple._02_beans.inject;
+import net.test.simple._02_beans.pojo.PojoBean;
+import com.google.inject.Inject;
 /**
- * 
- * @version : 2013-8-11
- * @author ’‘”¿¥∫ (zyc@hasor.net)
+ * ∑Ω∑®◊¢»Î
+ * @version : 2014-1-3
+ * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-@Aop(AopInterceptor_A.class)
-public class AopBean {
-    @Aop({ AopInterceptor_Span.class, AopInterceptor_Font.class })
-    public String fooA(String param1) {
-        System.out.println("invoke fooA");
-        return "fooA";
+public class MethodInject {
+    private PojoBean userBean;
+    @Inject
+    public void setUserBean(PojoBean userBean) {
+        this.userBean = userBean;
     }
-    public String fooB(String param1) {
-        System.out.println("invoke fooB");
-        return "fooB";
+    //
+    public String getUserName() {
+        return this.userBean.getName();
     }
 }

@@ -13,21 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.beans.beans;
+package net.test.simple._02_beans.inject;
+import net.test.simple._02_beans.pojo.PojoBean;
 import com.google.inject.Inject;
-import net.hasor.plugins.bean.Bean;
 /**
- * AnnoServiceA 具有两个名称 name1 和 name2
- * @version : 2013-8-11
- * @author 赵永春 (zyc@hasor.net)
+ * 字段注入
+ * @version : 2014-1-3
+ * @author 赵永春(zyc@hasor.net)
  */
-@Bean(value = { "name1", "name2" })
-public class NamesBean {
+public class FieldInject {
     @Inject
-    private SingletonBean bean;
-    
-    public void foo() {
-        System.out.println(bean);
-        System.out.println("this bean is name1 or name2 type:" + this);
+    private PojoBean userBean;
+    //
+    public String getUserName() {
+        return this.userBean.getName();
     }
 }

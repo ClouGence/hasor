@@ -20,11 +20,11 @@ import net.hasor.plugins.aop.GlobalAop;
 import net.hasor.plugins.controller.interceptor.ControllerInterceptor;
 import net.hasor.plugins.controller.interceptor.ControllerInvocation;
 /**
- * 全局 Action 调用日志记录
+ * 全局 Action 调用日志记录，拦截项目中所有的类。
  * @version : 2013-12-23
  * @author 赵永春(zyc@hasor.net)
  */
-@GlobalAop("*")
+@GlobalAop("*net.test.project.*")
 public class ActionLogInterceptor extends ControllerInterceptor {
     /* 
      * 1.@GlobalAop 注解生命该拦截器为全局拦截器，并且拦截所有类的所有方法

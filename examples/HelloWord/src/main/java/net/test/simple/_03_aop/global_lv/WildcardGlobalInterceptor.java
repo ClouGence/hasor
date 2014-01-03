@@ -13,19 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.aop.interceptor;
+package net.test.simple._03_aop.global_lv;
+import net.hasor.plugins.aop.GlobalAop;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 /**
- * 添加Font标签
+ * 使用通配符描述范围的全局拦截器。
  * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
-public class AopInterceptor_Font implements MethodInterceptor {
+@GlobalAop("*net.test.simple._03_aop.beans*")
+public class WildcardGlobalInterceptor implements MethodInterceptor {
     public Object invoke(MethodInvocation invocation) throws Throwable {
-        //System.out.println("before Font");
-        Object returnData = invocation.proceed();
-        //System.out.println("after Font");
-        return "<font>" + returnData + "</font>";
+        try {
+            System.out.println("before WildcardGlobalInterceptor...");
+            Object returnData = invocation.proceed();
+            System.out.println("after WildcardGlobalInterceptor...");
+            return returnData;
+        } catch (Exception e) {
+            System.out.println("after WildcardGlobalInterceptor...");
+            throw e;
+        }
     }
 }

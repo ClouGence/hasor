@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.beans.customer;
+package net.test.simple._02_beans.name;
+import net.hasor.plugins.bean.Bean;
+import net.test.simple._02_beans.pojo.PojoBean;
 /**
- * 
- * @version : 2013-8-11
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * ¼Ì³Ğ PojoBean ²¢Æğ¸öÃû×Ö
+ * @version : 2014-1-3
+ * @author ÕÔÓÀ´º(zyc@hasor.net)
  */
-public class CustomerBean {
-    public void foo() {
-        System.out.println("this bean is CustomerBean :" + this);
-    }
-}
+@Bean("NameBean")
+public class NameBean extends PojoBean {}

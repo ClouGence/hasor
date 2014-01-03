@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.aop;
+package net.test.simple._03_aop;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.context.AnnoStandardAppContext;
-import net.test.simple.aop.bean.AopBean_ClassLv;
-import net.test.simple.aop.bean.AopBean_MethodLv;
+import net.test.simple._03_aop.global_lv.AopBean_ClassLv;
+import net.test.simple._03_aop.global_lv.AopBean_MethodLv;
 import org.junit.Test;
 /**
  * 环境变量操作演示

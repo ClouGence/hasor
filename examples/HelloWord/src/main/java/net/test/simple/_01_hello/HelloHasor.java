@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.beans.customer;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.plugin.Plugin;
-import net.hasor.core.plugin.HasorPlugin;
+package net.test.simple._01_hello;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import net.hasor.core.context.AnnoStandardAppContext;
+import org.junit.Test;
 /**
- * 代码方式注册Bean
+ * 创建 Hasor 环境
  * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
-@Plugin
-public class CustomerBeanMod implements HasorPlugin {
-    public void loadPlugin(ApiBinder apiBinder) {
-        /*代码方式注册Bean*/
-        apiBinder.newBean("Customer").bindType(CustomerBean.class);
-        /*代码方式注册Bean，单态*/
-        //apiBinder.newBean("Customer").bindType(CustomerBean.class).asEagerSingleton();
+public class HelloHasor {
+    @Test
+    public void testStartHasor() throws IOException, URISyntaxException, InterruptedException {
+        System.out.println("--->>testStartHasor<<--");
+        AnnoStandardAppContext appContext = new AnnoStandardAppContext();
+        appContext.start();
+        //
     }
 }
