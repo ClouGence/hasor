@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://mode1.myProject.net">
-	<!-- mode1 配置 -->
-	<appSettings>
-		<serverLocal url="www.126.com" />
-	</appSettings>
-</config>
