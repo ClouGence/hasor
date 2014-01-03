@@ -90,7 +90,6 @@ public abstract class AbstractApiBinder implements ApiBinder, Module {
     public <T> ScopedBindingBuilder bindingType(Class<T> type, Key<? extends T> targetKey) {
         return this.bindingType(type).to(targetKey);
     }
-    //
     public <T> LinkedBindingBuilder<T> bindingType(String withName, Class<T> type) {
         return this.getGuiceBinder().bind(type).annotatedWith(Names.named(withName));
     }
