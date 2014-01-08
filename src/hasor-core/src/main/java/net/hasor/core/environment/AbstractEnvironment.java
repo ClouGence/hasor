@@ -37,7 +37,6 @@ import net.hasor.core.XmlNode;
 import net.hasor.core.event.StandardEventManager;
 import org.more.UnhandledException;
 import org.more.util.ResourceWatch;
-import org.more.util.ScanClassPath;
 import org.more.util.StringUtils;
 import org.more.util.map.DecSequenceMap;
 /**
@@ -59,7 +58,7 @@ public abstract class AbstractEnvironment implements Environment {
         return this.settings.getBoolean("hasor.debug", false);
     }
     public Set<Class<?>> getClassSet(Class<?> featureType) {
-        return ScanClassPath.getClassSet(this.spanPackage, featureType);
+        return this.getSettings().getClassSet(featureType, this.spanPackage);
     }
     public Settings getSettings() {
         return this.settings;

@@ -9,6 +9,7 @@
     02.新增 @GlobalAop 配置全局拦截器。
 * 改进:
     01.Settings接口的 getNameSpace 方法改名为 getSetting。
+    02.改造 Hasor 的类扫描机制，从 Class.forName 改为字节码解析。
     
 
 ===== Hasor-Core v0.0.6
