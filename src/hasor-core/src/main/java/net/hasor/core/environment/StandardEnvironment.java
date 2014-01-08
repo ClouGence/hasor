@@ -20,7 +20,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import net.hasor.core.Environment;
-import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
 import org.more.util.ResourcesUtils;
@@ -35,18 +34,14 @@ public class StandardEnvironment extends AbstractEnvironment {
     //
     public StandardEnvironment(String mainSettings) throws IOException, URISyntaxException {
         URL resURL = ResourcesUtils.getResource(mainSettings);
-        //
-        resURL = Hasor.assertIsNotNull(resURL);
         this.settingURI = resURL.toURI();
         this.initEnvironment();
     }
     public StandardEnvironment(File mainSettings) {
-        mainSettings = Hasor.assertIsNotNull(mainSettings);
         this.settingURI = mainSettings.toURI();
         this.initEnvironment();
     }
     public StandardEnvironment(URI mainSettings) {
-        mainSettings = Hasor.assertIsNotNull(mainSettings);
         this.settingURI = mainSettings;
         this.initEnvironment();
     }

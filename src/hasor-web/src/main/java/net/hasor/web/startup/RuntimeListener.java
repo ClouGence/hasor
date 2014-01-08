@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.web.startup;
-import java.io.IOException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -38,9 +37,8 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     private static ContextClassLoaderLocal<ServletContext> LocalServletContext     = new ContextClassLoaderLocal<ServletContext>();
     private static ContextClassLoaderLocal<AppContext>     LocalAppContext         = new ContextClassLoaderLocal<AppContext>();
     /*----------------------------------------------------------------------------------------------------*/
-    protected AbstractAppContext createAppContext(ServletContext sc) throws IOException {
-        AnnoWebAppContext webContext = new AnnoWebAppContext("hasor-config.xml", sc);
-        return webContext;
+    protected AbstractAppContext createAppContext(ServletContext sc) throws Throwable {
+        return new AnnoWebAppContext("hasor-config.xml", sc);
     }
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         //1.´´½¨AppContext
@@ -49,7 +47,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
             this.appContext.start();
             LocalServletContext.set(servletContextEvent.getServletContext());
             LocalAppContext.set(this.appContext);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Hasor.logError("createAppContext error.\n%s", e);
             if (e instanceof RuntimeException)
                 throw (RuntimeException) e;

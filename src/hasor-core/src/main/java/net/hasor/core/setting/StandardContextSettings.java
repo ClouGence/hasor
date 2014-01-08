@@ -37,25 +37,18 @@ public class StandardContextSettings extends InputStreamSettings {
     private URI                settingURI;
     //
     /**创建{@link StandardContextSettings}类型对象。*/
-    public StandardContextSettings(String mainSettings) throws IOException {
+    public StandardContextSettings(String mainSettings) throws IOException, URISyntaxException {
         URL url = ResourcesUtils.getResource(mainSettings);
-        url = Hasor.assertIsNotNull(url);
-        try {
-            this.settingURI = url.toURI();
-        } catch (URISyntaxException e) {
-            throw new IOException(e);
-        }
+        this.settingURI = url.toURI();
         this.refresh();
     }
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings(File mainSettings) throws IOException {
-        mainSettings = Hasor.assertIsNotNull(mainSettings);
         this.settingURI = mainSettings.toURI();
         this.refresh();
     }
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings(URI mainSettings) throws IOException {
-        Hasor.assertIsNotNull(mainSettings);
         this.settingURI = mainSettings;
         this.refresh();
     }
@@ -96,8 +89,7 @@ public class StandardContextSettings extends InputStreamSettings {
             InputStream stream = ResourcesUtils.getResourceAsStream(this.settingURI);
             Hasor.logInfo("load ‘%s’", this.settingURI);
             this.addStream(stream);
-        } else
-            Hasor.logWarn("cannot load the root configuration file ‘%s’", this.settingURI);
+        }
     }
     @Override
     public void refresh() throws IOException {

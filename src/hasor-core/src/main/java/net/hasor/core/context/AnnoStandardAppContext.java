@@ -17,6 +17,7 @@ package net.hasor.core.context;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Set;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
@@ -29,11 +30,11 @@ import org.more.util.StringUtils;
  */
 public class AnnoStandardAppContext extends StandardAppContext {
     /***/
-    public AnnoStandardAppContext() throws IOException {
+    public AnnoStandardAppContext() throws IOException, URISyntaxException {
         super();
     }
     /***/
-    public AnnoStandardAppContext(String mainSettings) throws IOException {
+    public AnnoStandardAppContext(String mainSettings) throws IOException, URISyntaxException {
         super(mainSettings);
     }
     /***/
@@ -45,7 +46,7 @@ public class AnnoStandardAppContext extends StandardAppContext {
         super(mainSettings);
     }
     /***/
-    public AnnoStandardAppContext(String mainSettings, Object context) throws IOException {
+    public AnnoStandardAppContext(String mainSettings, Object context) throws IOException, URISyntaxException {
         super(mainSettings, context);
     }
     /***/

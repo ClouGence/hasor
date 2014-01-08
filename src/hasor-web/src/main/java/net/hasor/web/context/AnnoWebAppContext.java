@@ -17,6 +17,7 @@ package net.hasor.web.context;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.servlet.ServletContext;
@@ -48,11 +49,11 @@ import com.google.inject.Provider;
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 public class AnnoWebAppContext extends AnnoStandardAppContext implements WebAppContext {
-    public AnnoWebAppContext(ServletContext servletContext) throws IOException {
+    public AnnoWebAppContext(ServletContext servletContext) throws IOException, URISyntaxException {
         this((String) null, servletContext);
     }
     /***/
-    public AnnoWebAppContext(String mainSettings, ServletContext servletContext) throws IOException {
+    public AnnoWebAppContext(String mainSettings, ServletContext servletContext) throws IOException, URISyntaxException {
         super(mainSettings, servletContext);
     }
     /***/

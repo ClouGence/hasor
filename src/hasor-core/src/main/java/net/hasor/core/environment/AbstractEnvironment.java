@@ -229,13 +229,13 @@ public abstract class AbstractEnvironment implements Environment {
         }
         public synchronized void start() {
             this.setName("MasterConfiguration-Watch");
-            Hasor.logWarn("settings Watch started thread name is %s.", this.getName());
+            Hasor.logInfo("settings Watch started thread name is %s.", this.getName());
             this.setDaemon(true);
             URI mainConfig = this.env.getSettingURI();
             //2.Æô¶¯¼àÌýÆ÷
             try {
                 if (mainConfig == null) {
-                    Hasor.logWarn("do not loading master settings file.");
+                    Hasor.logWarn("ignore the master setting file, Watch Thread exit.");
                     return;
                 }
                 this.setResourceURI(this.env.getSettingURI());

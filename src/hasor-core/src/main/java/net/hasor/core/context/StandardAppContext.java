@@ -32,11 +32,11 @@ import org.more.util.ResourcesUtils;
 public class StandardAppContext extends SimpleAppContext {
     public static final String DefaultSettings = "hasor-config.xml";
     /***/
-    public StandardAppContext() throws IOException {
+    public StandardAppContext() throws IOException, URISyntaxException {
         this(DefaultSettings, null);
     }
     /***/
-    public StandardAppContext(String mainSettings) throws IOException {
+    public StandardAppContext(String mainSettings) throws IOException, URISyntaxException {
         this(mainSettings, null);
     }
     /***/
@@ -48,13 +48,12 @@ public class StandardAppContext extends SimpleAppContext {
         this(mainSettings, null);
     }
     /***/
-    public StandardAppContext(String mainSettings, Object context) throws IOException {
+    public StandardAppContext(String mainSettings, Object context) throws IOException, URISyntaxException {
         URL resURL = ResourcesUtils.getResource(mainSettings);
-        resURL = Hasor.assertIsNotNull(resURL, "can't find :" + mainSettings);
-        try {
+        if (resURL == null) {
+            Hasor.logWarn("can't find %s.", mainSettings);
+        } else {
             this.mainSettings = resURL.toURI();
-        } catch (URISyntaxException e) {
-            throw new IOException(e);
         }
         //
         this.setContext(context);
