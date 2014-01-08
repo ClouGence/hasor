@@ -22,16 +22,16 @@ import org.aopalliance.intercept.MethodInvocation;
  * @version : 2013-8-11
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-@GlobalAop("*net.test.simple._03_aop.beans*")
-public class WildcardGlobalInterceptor implements MethodInterceptor {
+@GlobalAop("*net.test.simple._03_aop.global_lv.*")
+public class GlobalInterceptor implements MethodInterceptor {
     public Object invoke(MethodInvocation invocation) throws Throwable {
         try {
-            System.out.println("before WildcardGlobalInterceptor...");
+            System.out.println("before GlobalAop...");
             Object returnData = invocation.proceed();
-            System.out.println("after WildcardGlobalInterceptor...");
+            System.out.println("after GlobalAop...");
             return returnData;
         } catch (Exception e) {
-            System.out.println("after WildcardGlobalInterceptor...");
+            System.out.println("throw GlobalAop...");
             throw e;
         }
     }

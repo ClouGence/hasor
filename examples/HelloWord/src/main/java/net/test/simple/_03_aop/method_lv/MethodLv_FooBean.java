@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple._03_aop.class_lv;
+package net.test.simple._03_aop.method_lv;
 import net.hasor.plugins.aop.Aop;
 import net.test.simple._03_aop.SimpleInterceptor;
 /**
@@ -21,9 +21,9 @@ import net.test.simple._03_aop.SimpleInterceptor;
  * @version : 2014-1-3
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-@Aop(SimpleInterceptor.class)
-public class ClassLv_FooBean {
+public class MethodLv_FooBean {
+    @Aop(SimpleInterceptor.class)
     public void fooCall() {
-        System.out.println("ClassLv_FooBean.fooCall");
+        System.out.println("MethodLv_FooBean.fooCall");
     }
 }

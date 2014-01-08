@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.settings;
+package net.test.simple._04_settings;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

@@ -13,33 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple._03_aop.beans;
-import java.util.UUID;
+package net.test.simple._03_aop.global_lv;
 /**
  * 一个Bean
  * @version : 2014-1-3
  * @author 赵永春(zyc@hasor.net)
  */
-public class PojoBean {
-    private String uuid    = UUID.randomUUID().toString();
-    private String name    = "马三";
-    private String address = "北京马连洼街道办...";
-    public String getUuid() {
-        return uuid;
-    }
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getAddress() {
-        return address;
-    }
-    public void setAddress(String address) {
-        this.address = address;
+public class GlobalLv_FooBean {
+    public void fooCall() {
+        System.out.println("GlobalLv_FooBean.fooCall");
     }
 }
