@@ -20,6 +20,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 import net.hasor.plugins.bean.Bean;
+import net.hasor.plugins.cache.NeedCache;
 import net.test.project.mgr.menus.entity.MenuBean;
 import org.more.util.StringUtils;
 import com.google.inject.Inject;
@@ -53,6 +54,7 @@ public class MenuServices {
     //
     //
     private List<MenuBean> menuList;
+    @NeedCache
     public MenuBean findMenuByCode(String code) {
         for (MenuBean menu : menuList) {
             /*忽略大小写判断是否相等*/

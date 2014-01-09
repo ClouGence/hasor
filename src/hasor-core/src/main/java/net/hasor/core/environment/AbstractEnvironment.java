@@ -297,7 +297,7 @@ public abstract class AbstractEnvironment implements Environment {
         /**特殊配置的环境变量*/
         protected Map<String, String> configEnvironment() {
             Settings settings = this.env.getSettings();
-            XmlNode[] xmlPropArray = settings.getXmlPropertyArray("environmentVar");
+            XmlNode[] xmlPropArray = settings.getXmlPropertyArray("hasor.environmentVar");
             List<String> envNames = new ArrayList<String>();//用于收集环境变量名称
             for (XmlNode xmlProp : xmlPropArray) {
                 for (XmlNode envItem : xmlProp.getChildren())
@@ -305,9 +305,9 @@ public abstract class AbstractEnvironment implements Environment {
             }
             Map<String, String> hasorEnv = new HashMap<String, String>();
             for (String envItem : envNames)
-                hasorEnv.put(envItem, settings.getString("environmentVar." + envItem));
+                hasorEnv.put(envItem, settings.getString("hasor.environmentVar." + envItem));
             /*单独处理work_home*/
-            String workDir = settings.getString("environmentVar.HASOR_WORK_HOME", "./");
+            String workDir = settings.getString("hasor.environmentVar.HASOR_WORK_HOME", "./");
             workDir = workDir.replace("/", File.separator);
             if (workDir.startsWith("." + File.separatorChar))
                 hasorEnv.put("HASOR_WORK_HOME", new File(System.getProperty("user.dir"), workDir.substring(2)).getAbsolutePath());

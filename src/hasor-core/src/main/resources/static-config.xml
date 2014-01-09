@@ -8,7 +8,7 @@
 	<!-- 框架配置 -->
 	<hasor debug="false">
 		<!-- （该配置在重载配置文件之后不会影响已有结果） -->
-		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
+		<!-- 包扫描覆盖范围，逗号间隔（重复配置共同生效） -->
 		<loadPackages>net.hasor.core.*,net.hasor.plugins.*</loadPackages>
 		<!-- 执行事件的线程池大小，注意：已经被安排Timer执行的事件，是不受生效之后的池大小限制的 -->
 		<eventThreadPoolSize>20</eventThreadPoolSize>
@@ -16,18 +16,18 @@
 		<fullStart>false</fullStart>
 		<!-- 配置文件改变监视线程检查时间间隔 -->
 		<settingsMonitor interval="15000" />
+		<!-- 工作空间设置 -->
+		<environmentVar>
+			<!-- 程序工作空间基础目录 -->
+			<HASOR_WORK_HOME>./work</HASOR_WORK_HOME>
+			<!-- 临时文件位置 -->
+			<HASOR_TEMP_PATH>%HASOR_WORK_HOME%/temp</HASOR_TEMP_PATH>
+			<!-- 日志存放位置 -->
+			<HASOR_LOG_PATH>%HASOR_WORK_HOME%/log</HASOR_LOG_PATH>
+			<!-- 插件目录 -->
+			<HASOR_PLUGIN_PATH>%HASOR_WORK_HOME%/plugins</HASOR_PLUGIN_PATH>
+			<!-- 模块配置目录 -->
+			<HASOR_PLUGIN_SETTINGS>%HASOR_WORK_HOME%/settings</HASOR_PLUGIN_SETTINGS>
+		</environmentVar>
 	</hasor>
-	<!-- 工作空间设置 -->
-	<environmentVar>
-		<!-- 程序工作空间基础目录 -->
-		<HASOR_WORK_HOME>./work</HASOR_WORK_HOME>
-		<!-- 临时文件位置 -->
-		<HASOR_TEMP_PATH>%HASOR_WORK_HOME%/temp</HASOR_TEMP_PATH>
-		<!-- 日志存放位置 -->
-		<HASOR_LOG_PATH>%HASOR_WORK_HOME%/log</HASOR_LOG_PATH>
-		<!-- 插件目录 -->
-		<HASOR_PLUGIN_PATH>%HASOR_WORK_HOME%/plugins</HASOR_PLUGIN_PATH>
-		<!-- 模块配置目录 -->
-		<HASOR_PLUGIN_SETTINGS>%HASOR_WORK_HOME%/settings</HASOR_PLUGIN_SETTINGS>
-	</environmentVar>
 </config>

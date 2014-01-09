@@ -39,7 +39,7 @@ class CacheInterceptor implements MethodInterceptor, AppContextAware {
     }
     //
     public Object invoke(MethodInvocation invocation) throws Throwable {
-        /*准备必要的参数*/
+        /*1.准备必要的参数*/
         Method targetMethod = invocation.getMethod();
         NeedCache cacheAnno = targetMethod.getAnnotation(NeedCache.class);/*方法上的NeedCache*/
         if (cacheAnno == null)
@@ -47,19 +47,18 @@ class CacheInterceptor implements MethodInterceptor, AppContextAware {
         if (cacheAnno == null)
             return invocation.proceed();
         List<CacheCreator> creatorList = appContext.findBeanByType(CacheCreator.class);/*查找 CacheCreator 实现类*/
-        if (creatorList.isEmpty()) {
+        if (creatorList == null || creatorList.isEmpty()) {
             Hasor.logWarn("does not define the CacheCreator.");
             return invocation.proceed();
         }
+        //2.获取缓存
         CacheCreator cacheCreator = creatorList.get(0);
         Cache cache = cacheCreator.getCacheByName(appContext, cacheAnno.groupName());
         if (cache == null) {
             Hasor.logWarn("Cache %s is not Defile. at Method %s.", cacheAnno.groupName(), targetMethod);
             return invocation.proceed();
         }
-        //
-        //
-        //2.获取Key
+        //3.获取Key
         StringBuilder cacheKey = new StringBuilder(targetMethod.toString());
         Object[] args = invocation.getArguments();
         if (args != null)
@@ -73,7 +72,6 @@ class CacheInterceptor implements MethodInterceptor, AppContextAware {
             }
         Hasor.logDebug("MethodInterceptor Method : %s", targetMethod);
         Hasor.logDebug("MethodInterceptor Cache key :%s", cacheKey.toString());
-        //3.获取缓存
         //4.操作缓存
         String key = cacheKey.toString();
         Object returnData = null;

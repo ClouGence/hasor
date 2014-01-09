@@ -12,6 +12,7 @@
     01.Settings接口的 getNameSpace 方法改名为 getSetting。
     02.改造 Hasor 的类扫描机制，从 Class.forName 改为字节码解析。
     03.部分接口方法名称更换。
+    04.修改 Cache 接口的 clean 方法名为 cleanCache，以避免和 Map 接口冲突。
 
 
 ===== Hasor-Core v0.0.6
