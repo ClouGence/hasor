@@ -57,8 +57,8 @@ public abstract class AbstractEnvironment implements Environment {
     public boolean isDebug() {
         return this.settings.getBoolean("hasor.debug", false);
     }
-    public Set<Class<?>> getClassSet(Class<?> featureType) {
-        return this.getSettings().getClassSet(featureType, this.spanPackage);
+    public Set<Class<?>> findClass(Class<?> featureType) {
+        return this.getSettings().findClass(featureType, this.spanPackage);
     }
     public Settings getSettings() {
         return this.settings;
@@ -167,7 +167,7 @@ public abstract class AbstractEnvironment implements Environment {
         settingWatch.setCheckSeepTime(interval);
         /*注册一个配置文件监听器，当配置文件更新时通知监听器更新检测间隔*/
         this.addSettingsListener(new SettingsListener() {
-            public void onLoadConfig(Settings newConfig) {
+            public void reload(Settings newConfig) {
                 long interval = newConfig.getLong("hasor.settingsMonitor.interval", 15000L);
                 if (interval != settingWatch.getCheckSeepTime()) {
                     Hasor.logInfo("SettingWatch to monitor configuration updates, set interval new Value is %s", interval);
@@ -185,7 +185,7 @@ public abstract class AbstractEnvironment implements Environment {
     /**触发配置文件重载事件。*/
     protected void onSettingChangeEvent() {
         for (SettingsListener listener : this.settingListenerList)
-            listener.onLoadConfig(this.getSettings());
+            listener.reload(this.getSettings());
     }
     /**添加配置文件变更监听器。*/
     public void addSettingsListener(SettingsListener settingsListener) {
@@ -260,7 +260,7 @@ public abstract class AbstractEnvironment implements Environment {
             this.env = Hasor.assertIsNotNull(env, "InitContext type parameter is empty!");
             this.userEnvMap = new HashMap<String, String>();
             this.env.addSettingsListener(this);
-            this.onLoadConfig(this.env.getSettings());
+            this.reload(this.env.getSettings());
         }
         public void addEnvVar(String envName, String envValue) {
             if (StringUtils.isBlank(envName)) {
@@ -319,7 +319,7 @@ public abstract class AbstractEnvironment implements Environment {
          * SettingListener 接口实现
          *   实现该接口的目的是，通过注册SettingListener动态更新环境变量相关信息。
          */
-        public void onLoadConfig(Settings newConfig) {
+        public void reload(Settings newConfig) {
             //1.系统环境变量 & Java系统属性
             Map<String, String> systemEnv = new HashMap<String, String>();
             systemEnv.putAll(System.getenv());

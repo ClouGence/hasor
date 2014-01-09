@@ -11,6 +11,7 @@
 * 改进:
     01.Settings接口的 getNameSpace 方法改名为 getSetting。
     02.改造 Hasor 的类扫描机制，从 Class.forName 改为字节码解析。
+    03.部分接口方法名称更换。
     
 
 ===== Hasor-Core v0.0.6

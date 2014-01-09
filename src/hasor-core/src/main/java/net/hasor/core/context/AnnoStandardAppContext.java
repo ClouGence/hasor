@@ -65,7 +65,7 @@ public class AnnoStandardAppContext extends StandardAppContext {
     /**×°ÔØÄ£¿é*/
     protected void loadModule() {
         //1.É¨Ãèclasspath°ü
-        Set<Class<?>> initHookSet = this.getEnvironment().getClassSet(AnnoModule.class);
+        Set<Class<?>> initHookSet = this.getEnvironment().findClass(AnnoModule.class);
         if (Hasor.isInfoLogger()) {
             StringBuffer sb = new StringBuffer();
             for (Class<?> e : initHookSet)

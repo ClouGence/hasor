@@ -20,8 +20,8 @@ import net.hasor.plugins.resource.ResourceHttpServlet;
 import net.hasor.plugins.resource.ResourceLoader;
 import net.hasor.plugins.resource.ResourceLoaderFactory;
 import net.hasor.plugins.resource.loader.ClassPathResourceLoader;
-import net.hasor.web.AbstractWebHasorPlugin;
 import net.hasor.web.WebApiBinder;
+import net.hasor.web.plugin.AbstractWebHasorPlugin;
 /**
  * 
  * @version : 2013-10-29

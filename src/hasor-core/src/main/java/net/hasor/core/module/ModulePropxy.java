@@ -213,7 +213,7 @@ public abstract class ModulePropxy implements ModuleInfo/*提供模块基本信息*/, De
         loacalModuleInfo.put(this.appContext, this);
         {
             forModule.start(appContext);
-            appContext.getEventManager().doSyncEventIgnoreThrow(ModuleEvent_Started, forModule, appContext);
+            appContext.getEventManager().doSync(ModuleEvent_Started, forModule, appContext);
         }
         loacalModuleInfo.remove(this.appContext);
     }
@@ -222,7 +222,7 @@ public abstract class ModulePropxy implements ModuleInfo/*提供模块基本信息*/, De
         loacalModuleInfo.put(this.appContext, this);
         {
             forModule.stop(appContext);
-            appContext.getEventManager().doSyncEventIgnoreThrow(ModuleEvent_Stoped, forModule, appContext);
+            appContext.getEventManager().doSync(ModuleEvent_Stoped, forModule, appContext);
         }
         loacalModuleInfo.remove(this.appContext);
     }

@@ -36,7 +36,7 @@ public class AopPlugin extends AbstractHasorPlugin {
     public void loadPlugin(ApiBinder apiBinder) {
         //1.@GlobalAopÈ«¾ÖÀ¹½ØÆ÷
         List<Class<? extends MethodInterceptor>> globalInterceptorList = new ArrayList<Class<? extends MethodInterceptor>>();
-        Set<Class<?>> globalAopSet = apiBinder.getClassSet(GlobalAop.class);//
+        Set<Class<?>> globalAopSet = apiBinder.findClass(GlobalAop.class);//
         if (globalAopSet == null || globalAopSet.isEmpty()) {
             Hasor.logInfo("no Global Aop.");
         } else {

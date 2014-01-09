@@ -19,13 +19,14 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
-import net.hasor.jdbc.datasource.DataSourceHelper;
+import net.hasor.jdbc.datasource.SavepointDataSourceHelper;
+import net.hasor.jdbc.datasource.SavepointManager;
 /**
  * 
  * @version : 2013-12-2
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-public class DefaultDataSourceHelper implements DataSourceHelper {
+public class DefaultDataSourceHelper implements SavepointDataSourceHelper {
     private static final ThreadLocal<Map<DataSource, ConnectionHolder>> ResourcesLocal = new ThreadLocal<Map<DataSource, ConnectionHolder>>();
     private static void initLocal() {
         if (ResourcesLocal.get() == null)
@@ -47,8 +48,15 @@ public class DefaultDataSourceHelper implements DataSourceHelper {
         if (!holder.isOpen())
             ResourcesLocal.get().remove(dataSource);
     };
+    public Connection currentConnection(DataSource dataSource) throws SQLException {
+        ConnectionHolder holder = getConnectionHolder(dataSource);
+        return holder.getConnection();
+    }
+    public SavepointManager getSavepointManager(DataSource dataSource) throws SQLException {
+        return getConnectionHolder(dataSource);
+    }
     /**ªÒ»°ConnectionHolder*/
-    public ConnectionHolder getConnectionHolder(DataSource dataSource) {
+    protected ConnectionHolder getConnectionHolder(DataSource dataSource) {
         initLocal();
         ConnectionHolder holder = ResourcesLocal.get().get(dataSource);
         if (holder == null) {

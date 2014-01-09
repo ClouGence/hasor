@@ -32,8 +32,8 @@ public abstract class WebApiBinderModule extends AbstractApiBinder implements We
     private HttpSessionListenerBindingBuilder httpSessionListenerBindingBuilder = new HttpSessionListenerBindingBuilder(); /*Listener*/
     private ContextListenerBindingBuilder     contextListenerBuilder            = new ContextListenerBindingBuilder();    /*Listener*/
     //
-    protected WebApiBinderModule(Binder guiceBinder, WebEnvironment envContext) {
-        super(guiceBinder, envContext);
+    protected WebApiBinderModule(WebEnvironment envContext) {
+        super(envContext);
     }
     public ServletContext getServletContext() {
         return this.getEnvironment().getServletContext();
@@ -69,11 +69,11 @@ public abstract class WebApiBinderModule extends AbstractApiBinder implements We
     public ServletContextListenerBindingBuilder contextListener() {
         return this.contextListenerBuilder.contextListener();
     }
-    public void configure(Binder binder) {
-        super.configure(binder);
-        binder.install(this.filterModuleBinder);
-        binder.install(this.servletModuleBinder);
-        binder.install(this.httpSessionListenerBindingBuilder);
-        binder.install(this.contextListenerBuilder);
+    public void configure(Binder guiceBinder) {
+        super.configure(guiceBinder);
+        guiceBinder.install(this.filterModuleBinder);
+        guiceBinder.install(this.servletModuleBinder);
+        guiceBinder.install(this.httpSessionListenerBindingBuilder);
+        guiceBinder.install(this.contextListenerBuilder);
     }
 }

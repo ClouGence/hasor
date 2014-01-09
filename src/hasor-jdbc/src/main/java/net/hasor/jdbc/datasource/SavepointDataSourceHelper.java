@@ -13,23 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.Hasor;
-import net.hasor.core.plugin.AbstractHasorPlugin;
+package net.hasor.jdbc.datasource;
+import java.sql.SQLException;
+import javax.sql.DataSource;
 /**
  * 
- * @version : 2013-11-4
+ * @version : 2013-12-2
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
-public abstract class AbstractWebHasorPlugin extends AbstractHasorPlugin {
-    public final void loadPlugin(ApiBinder apiBinder) {
-        if (apiBinder instanceof WebApiBinder == false) {
-            Hasor.logWarn("does not support °Æ%s°Ø Web plug-in.", this.getClass());
-            return;
-        }
-        this.loadPlugin((WebApiBinder) apiBinder);
-        Hasor.logInfo("°Æ%s°Ø Plug-in loaded successfully", this.getClass());
-    }
-    public abstract void loadPlugin(WebApiBinder apiBinder);
+public interface SavepointDataSourceHelper extends DataSourceHelper {
+    /**ªÒ»°SavepointManager*/
+    public SavepointManager getSavepointManager(DataSource dataSource) throws SQLException;
 }

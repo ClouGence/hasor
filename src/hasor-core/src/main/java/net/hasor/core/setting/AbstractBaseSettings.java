@@ -48,7 +48,7 @@ public abstract class AbstractBaseSettings extends AbstractSettings {
     }
     //
     /**获取指在某个特定命名空间下的Settings接口对象。*/
-    public final AbstractSettings getSetting(String namespace) {
+    public final AbstractSettings getSettings(String namespace) {
         final AbstractSettings setting = this;
         final Map<String, Object> data = this.getNamespaceSettingMap().get(namespace);
         if (data == null)
@@ -57,8 +57,8 @@ public abstract class AbstractBaseSettings extends AbstractSettings {
             public void refresh() throws IOException {
                 throw new UnsupportedOperationException();
             }
-            public AbstractSettings getSetting(String namespace) {
-                return setting.getSetting(namespace);
+            public AbstractSettings getSettings(String namespace) {
+                return setting.getSettings(namespace);
             }
             public String[] getSettingArray() {
                 return setting.getSettingArray();

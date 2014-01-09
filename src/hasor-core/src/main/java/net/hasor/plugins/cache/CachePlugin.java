@@ -35,7 +35,7 @@ public class CachePlugin extends AbstractHasorPlugin {
         Matcher<Object> matcher = AopMatchers.annotatedWith(NeedCache.class);//
         apiBinder.getGuiceBinder().bindInterceptor(matcher, matcher, new CacheInterceptor(apiBinder));
         //2.ее╢М
-        Set<Class<?>> cacheSet = apiBinder.getClassSet(Creator.class);
+        Set<Class<?>> cacheSet = apiBinder.findClass(Creator.class);
         if (cacheSet == null || cacheSet.isEmpty())
             return;
         if (cacheSet.size() > 1)

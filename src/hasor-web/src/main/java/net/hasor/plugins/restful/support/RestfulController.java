@@ -50,7 +50,7 @@ class RestfulController implements Filter {
     private RestfulInvokeDefine[] invokeArray = null;
     //
     public void init(FilterConfig filterConfig) throws ServletException {
-        Set<Class<?>> controllerSet = this.appContext.getClassSet(RestfulService.class);
+        Set<Class<?>> controllerSet = this.appContext.findClass(RestfulService.class);
         if (controllerSet == null)
             return;
         //1.×¢²á·þÎñ

@@ -32,7 +32,7 @@ import net.hasor.core.context.AnnoModule;
 public class PluginsSupportModule implements Module {
     /**≥ı ºªØ.*/
     public void init(ApiBinder apiBinder) {
-        Set<Class<?>> pluginSet = apiBinder.getClassSet(Plugin.class);
+        Set<Class<?>> pluginSet = apiBinder.findClass(Plugin.class);
         if (pluginSet == null)
             return;
         //

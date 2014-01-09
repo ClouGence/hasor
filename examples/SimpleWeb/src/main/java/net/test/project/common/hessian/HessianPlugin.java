@@ -22,8 +22,8 @@ import java.util.Set;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.plugin.Plugin;
-import net.hasor.web.AbstractWebHasorPlugin;
 import net.hasor.web.WebApiBinder;
+import net.hasor.web.plugin.AbstractWebHasorPlugin;
 import org.more.util.StringUtils;
 import com.caucho.hessian.client.HessianProxyFactory;
 import com.caucho.hessian.server.HessianServlet;
@@ -35,7 +35,7 @@ import com.caucho.hessian.server.HessianServlet;
 @Plugin
 public class HessianPlugin extends AbstractWebHasorPlugin {
     public void loadPlugin(WebApiBinder apiBinder) {
-        Set<Class<?>> servicesSet = apiBinder.getClassSet(HessianService.class);
+        Set<Class<?>> servicesSet = apiBinder.findClass(HessianService.class);
         /*1.зЂВс*/
         final Map<Class<?>, HessianServlet> serviceMap = new HashMap<Class<?>, HessianServlet>();
         for (Class<?> serviceType : servicesSet) {

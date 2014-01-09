@@ -105,17 +105,17 @@ public interface ApiBinder {
     public <T> ScopedBindingBuilder bindingType(String withName, Class<T> type, Key<? extends T> targetKey);
     //
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
-    public Set<Class<?>> getClassSet(Class<?> featureType);
+    public Set<Class<?>> findClass(Class<?> featureType);
     /**配置模块依赖关系。*/
     public DependencySettings dependency();
     /**注册一个bean。*/
-    public BeanBindingBuilder newBean(String beanName);
+    public BeanBindingBuilder defineBean(String beanName);
     /**负责注册Bean*/
     public static interface BeanBindingBuilder {
         /**别名*/
         public BeanBindingBuilder aliasName(String aliasName);
         /**bean绑定的类型。*/
-        public <T> LinkedBindingBuilder<T> bindType(Class<T> beanClass);
+        public <T> LinkedBindingBuilder<T> bindType(Class<T> beanType);
     }
     /**该接口可以配置模块信息 */
     public interface DependencySettings {

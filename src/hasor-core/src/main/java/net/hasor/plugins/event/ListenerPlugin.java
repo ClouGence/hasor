@@ -35,7 +35,7 @@ public class ListenerPlugin extends AbstractHasorPlugin {
     public void loadPlugin(ApiBinder apiBinder) {
         final Environment env = apiBinder.getEnvironment();
         final EventManager eventManager = env.getEventManager();
-        final Set<Class<?>> eventSet = env.getClassSet(Listener.class);
+        final Set<Class<?>> eventSet = env.findClass(Listener.class);
         if (eventSet == null || eventSet.isEmpty())
             return;
         for (final Class<?> eventClass : eventSet) {
@@ -52,7 +52,7 @@ public class ListenerPlugin extends AbstractHasorPlugin {
                 //
                 EventListenerPropxy listener = new EventListenerPropxy(eventClass);
                 apiBinder.registerAware(listener);/*注册AppContextAware*/
-                eventManager.addEventListener(eventName, listener);
+                eventManager.addListener(eventName, listener);
                 Hasor.logInfo("event ‘%s’ binding to ‘%s’", eventName, eventClass);
             }
             //当ContextEvent_Start事件到来时注册所有配置文件监听器。

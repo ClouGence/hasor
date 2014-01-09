@@ -23,8 +23,8 @@ import net.hasor.plugins.aop.matchers.AopMatchers;
 import net.hasor.plugins.controller.AbstractController;
 import net.hasor.plugins.controller.Controller;
 import net.hasor.plugins.restful.RestfulService;
-import net.hasor.web.AbstractWebHasorPlugin;
 import net.hasor.web.WebApiBinder;
+import net.hasor.web.plugin.AbstractWebHasorPlugin;
 import com.google.inject.matcher.Matcher;
 /**
  * 
@@ -36,7 +36,7 @@ public class ResultPlugin extends AbstractWebHasorPlugin {
     public void loadPlugin(WebApiBinder apiBinder) {
         Map<Class<?>, Class<ResultProcess>> defineMap = new HashMap<Class<?>, Class<ResultProcess>>();
         //1.获取
-        Set<Class<?>> resultDefineSet = apiBinder.getClassSet(ResultDefine.class);
+        Set<Class<?>> resultDefineSet = apiBinder.findClass(ResultDefine.class);
         if (resultDefineSet == null)
             return;
         //2.注册服务

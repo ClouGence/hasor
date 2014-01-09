@@ -30,7 +30,7 @@ import org.more.util.StringUtils;
 @Plugin
 public class BeanPlugin extends AbstractHasorPlugin {
     public void loadPlugin(ApiBinder apiBinder) {
-        Set<Class<?>> beanSet = apiBinder.getClassSet(Bean.class);
+        Set<Class<?>> beanSet = apiBinder.findClass(Bean.class);
         if (beanSet == null || beanSet.isEmpty())
             return;
         for (Class<?> beanClass : beanSet) {
@@ -42,7 +42,7 @@ public class BeanPlugin extends AbstractHasorPlugin {
             }
             if (StringUtils.isBlank(names[0]))
                 continue;
-            BeanBindingBuilder beanBuilder = apiBinder.newBean(names[0]);
+            BeanBindingBuilder beanBuilder = apiBinder.defineBean(names[0]);
             Hasor.logInfo("loadBean %s bind %s", names, beanClass);
             for (int i = 1; i < names.length; i++)
                 beanBuilder.aliasName(names[i]);

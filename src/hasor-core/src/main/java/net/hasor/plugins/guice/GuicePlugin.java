@@ -28,7 +28,7 @@ import com.google.inject.Module;
 @Plugin
 public class GuicePlugin extends AbstractHasorPlugin {
     public void loadPlugin(ApiBinder apiBinder) {
-        Set<Class<?>> guiceModuleSet = apiBinder.getClassSet(GuiceModule.class);
+        Set<Class<?>> guiceModuleSet = apiBinder.findClass(GuiceModule.class);
         if (guiceModuleSet == null || guiceModuleSet.isEmpty())
             return;
         Hasor.logInfo("find Module : " + Hasor.logString(guiceModuleSet));

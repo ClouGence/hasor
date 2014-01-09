@@ -97,8 +97,8 @@ public abstract class AbstractAppContext implements AppContext {
         return (T) this.getGuice().getInstance(beanMetaData.getBeanType());
     };
     /**通过类型创建该类实例，使用guice*/
-    public <T> T getInstance(Class<T> beanType) {
-        return this.getGuice().getInstance(beanType);
+    public <T> T getInstance(Class<T> targetClass) {
+        return this.getGuice().getInstance(targetClass);
     }
     /**获取 Bean 的描述接口。*/
     public BeanMetaData getBeanInfo(String name) {
@@ -173,10 +173,6 @@ public abstract class AbstractAppContext implements AppContext {
     public long getStartTime() {
         return this.getEnvironment().getStartTime();
     };
-    /**表示AppContext是否准备好。*/
-    public boolean isReady() {
-        return this.getGuice() != null;
-    }
     /**获取应用程序配置。*/
     public Settings getSettings() {
         return this.getEnvironment().getSettings();
@@ -195,8 +191,8 @@ public abstract class AbstractAppContext implements AppContext {
         return this.getEnvironment().getEventManager();
     }
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
-    public Set<Class<?>> getClassSet(Class<?> featureType) {
-        return this.getEnvironment().getClassSet(featureType);
+    public Set<Class<?>> findClass(Class<?> featureType) {
+        return this.getEnvironment().findClass(featureType);
     }
     //---------------------------------------------------------------------------------------Module
     private List<ModulePropxy> moduleSet;
@@ -251,11 +247,18 @@ public abstract class AbstractAppContext implements AppContext {
     public boolean isStart() {
         return this.isStart;
     }
+    /**表示AppContext是否准备好。*/
+    public boolean isReady() {
+        return this.getGuice() != null;
+    }
     /**为模块创建ApiBinder*/
-    protected AbstractApiBinder newApiBinder(final ModulePropxy forModule, Binder binder) {
-        return new AbstractApiBinder(binder, this.getEnvironment()) {
+    protected AbstractApiBinder newApiBinder(final ModulePropxy forModule, final Binder guiceBinder) {
+        return new AbstractApiBinder(this.getEnvironment()) {
             public DependencySettings dependency() {
                 return forModule;
+            }
+            public Binder getGuiceBinder() {
+                return guiceBinder;
             }
         };
     }
@@ -331,23 +334,26 @@ public abstract class AbstractAppContext implements AppContext {
     }
     //--------------------------------------------------------------------------------------Process
     /**执行 Initialize 过程。*/
-    protected void doInitialize(Binder binder) {
+    protected void doInitialize(final Binder guiceBinder) {
         Hasor.logInfo("send init sign...");
         List<ModulePropxy> modulePropxyList = this.getModuleList();
         /*引发模块init生命周期*/
         for (ModulePropxy forModule : modulePropxyList) {
-            AbstractApiBinder apiBinder = this.newApiBinder(forModule, binder);
+            AbstractApiBinder apiBinder = this.newApiBinder(forModule, guiceBinder);
             forModule.init(apiBinder);//触发生命周期 
-            apiBinder.configure(binder);
+            apiBinder.configure(guiceBinder);
         }
-        this.doBind(binder);
+        this.doBind(guiceBinder);
         /*引发事件*/
-        AbstractApiBinder apiBinder = new AbstractApiBinder(binder, this.getEnvironment()) {
+        AbstractApiBinder apiBinder = new AbstractApiBinder(this.getEnvironment()) {
             public DependencySettings dependency() {
                 return null;
             }
+            public Binder getGuiceBinder() {
+                return guiceBinder;
+            }
         };
-        this.getEventManager().doSyncEventIgnoreThrow(ContextEvent_Initialized, apiBinder);
+        this.getEventManager().doSync(ContextEvent_Initialized, apiBinder);
         Hasor.logInfo("init modules finish.");
     }
     /**使用反应堆对模块进行循环检查和排序*/
@@ -377,7 +383,7 @@ public abstract class AbstractAppContext implements AppContext {
             mod.start(this);
         this.isStart = true;
         /*3.发送启动事件*/
-        this.getEnvironment().getEventManager().doSyncEventIgnoreThrow(ContextEvent_Started, this);
+        this.getEnvironment().getEventManager().doSync(ContextEvent_Started, this);
         /*4.打印模块状态*/
         printModState(this);
         Hasor.logInfo("hasor started!");
@@ -391,34 +397,34 @@ public abstract class AbstractAppContext implements AppContext {
         for (ModulePropxy mod : modulePropxyList)
             mod.stop(this);
         /*2.发送停止事件*/
-        this.getEnvironment().getEventManager().doSyncEventIgnoreThrow(ContextEvent_Stoped, this);
+        this.getEnvironment().getEventManager().doSync(ContextEvent_Stoped, this);
         /*2.打印模块状态*/
         printModState(this);
         Hasor.logInfo("hasor stoped!");
     }
     /**当完成所有初始化过程之后调用，负责向 Guice 绑定一些预先定义的类型。*/
-    protected void doBind(Binder binder) {
+    protected void doBind(Binder guiceBinder) {
         final AbstractAppContext appContet = this;
         /*绑定Environment对象的Provider*/
-        binder.bind(Environment.class).toProvider(new Provider<Environment>() {
+        guiceBinder.bind(Environment.class).toProvider(new Provider<Environment>() {
             public Environment get() {
                 return appContet.getEnvironment();
             }
         });
         /*绑定EventManager对象的Provider*/
-        binder.bind(EventManager.class).toProvider(new Provider<EventManager>() {
+        guiceBinder.bind(EventManager.class).toProvider(new Provider<EventManager>() {
             public EventManager get() {
                 return appContet.getEnvironment().getEventManager();
             }
         });
         /*绑定Settings对象的Provider*/
-        binder.bind(Settings.class).toProvider(new Provider<Settings>() {
+        guiceBinder.bind(Settings.class).toProvider(new Provider<Settings>() {
             public Settings get() {
                 return appContet.getSettings();
             }
         });
         /*绑定AppContext对象的Provider*/
-        binder.bind(AppContext.class).toProvider(new Provider<AppContext>() {
+        guiceBinder.bind(AppContext.class).toProvider(new Provider<AppContext>() {
             public AppContext get() {
                 return appContet;
             }
@@ -430,8 +436,8 @@ public abstract class AbstractAppContext implements AppContext {
         public RootInitializeModule(AbstractAppContext appContet) {
             this.appContet = appContet;
         }
-        public void configure(Binder binder) {
-            this.appContet.doInitialize(binder);
+        public void configure(Binder guiceBinder) {
+            this.appContet.doInitialize(guiceBinder);
         }
     }
     /**位于容器中 ModulePropxy 抽象类的实现*/

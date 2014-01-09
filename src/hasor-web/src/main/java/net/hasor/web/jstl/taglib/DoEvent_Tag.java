@@ -52,8 +52,6 @@ public class DoEvent_Tag extends AbstractHasorTag {
         this.throwErr = throwErr;
     }
     //
-    //
-    //
     public void release() {
         this.event = null;
         this.async = false;
@@ -64,12 +62,12 @@ public class DoEvent_Tag extends AbstractHasorTag {
         try {
             EventManager em = getAppContext().getEventManager();
             if (async == true) {
-                em.doAsynEventIgnoreThrow(event, params);
+                em.doAsync(event, params);
             } else {
                 if (throwErr == true)
-                    em.doSyncEvent(event, params);
+                    em.doSyncHoldThrow(event, params);
                 else
-                    em.doSyncEventIgnoreThrow(event, params);
+                    em.doSync(event, params);
             }
             return SKIP_BODY;
         } catch (Throwable e) {

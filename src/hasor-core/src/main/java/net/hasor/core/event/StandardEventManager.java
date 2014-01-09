@@ -53,7 +53,7 @@ public class StandardEventManager implements EventManager {
         this.settings = env.getSettings();
         this.executorService = Executors.newScheduledThreadPool(1);
         env.addSettingsListener(new SettingsListener() {
-            public void onLoadConfig(Settings newConfig) {
+            public void reload(Settings newConfig) {
                 update();
             }
         });
@@ -79,7 +79,7 @@ public class StandardEventManager implements EventManager {
     //
     //
     //
-    public void pushEventListener(String eventType, EventListener eventListener) {
+    public void pushListener(String eventType, EventListener eventListener) {
         if (StringUtils.isBlank(eventType) || eventListener == null)
             return;
         this.onceListenerLock.lock();//加锁
@@ -92,7 +92,7 @@ public class StandardEventManager implements EventManager {
             eventList.push(eventListener);
         this.onceListenerLock.unlock();//解锁
     }
-    public void addEventListener(String eventType, EventListener eventListener) {
+    public void addListener(String eventType, EventListener eventListener) {
         this.listenerRWLock.writeLock().lock();//加锁(写)
         //
         Hasor.assertIsNotNull(eventListener, "add EventListener object is null.");
@@ -114,7 +114,7 @@ public class StandardEventManager implements EventManager {
     //        this.listenerMap.remove(eventType);
     //        this.listenerRWLock.writeLock().unlock();//解锁(写)
     //    }
-    public void removeEventListener(String eventType, EventListener eventListener) {
+    public void removeListener(String eventType, EventListener eventListener) {
         this.listenerRWLock.writeLock().lock();//加锁(写)
         //
         Hasor.assertIsNotNull(eventType, "remove eventType is null.");
@@ -156,22 +156,23 @@ public class StandardEventManager implements EventManager {
     //
     //
     //
-    public void doSyncEvent(String eventType, Object... objects) throws Throwable {
+    public void doSyncHoldThrow(String eventType, Object... objects) throws Throwable {
         this._doSyncEvent(false, eventType, objects);
     }
-    public void doSyncEventIgnoreThrow(String eventType, Object... objects) {
+    public void doSync(String eventType, Object... objects) {
         try {
             this._doSyncEvent(true, eventType, objects);
         } catch (Throwable e) {
             throw new RuntimeException(e);//由于ignore参数为true不会抛出事件的异常。这里可以再次抛出异常原因是确保不会吞掉潜在的异常信息。
         }
     }
-    public void doAsynEvent(String eventType, AsyncCallBackHook callBack, Object... objects) {
+    public void doAsync(String eventType, AsyncCallBackHook callBack, Object... objects) {
         _doAsynEvent(false, eventType, callBack, objects);
     }
-    public void doAsynEventIgnoreThrow(final String eventType, final Object... objects) {
+    public void doAsync(final String eventType, final Object... objects) {
         _doAsynEvent(true, eventType, null, objects);
     }
+    //
     private void _doSyncEvent(boolean ignore, String eventType, Object... objects) throws Throwable {
         if (StringUtils.isBlank(eventType) == true)
             return;

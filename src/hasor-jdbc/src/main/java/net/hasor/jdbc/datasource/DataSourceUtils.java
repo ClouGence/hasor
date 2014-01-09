@@ -54,6 +54,15 @@ public class DataSourceUtils {
             throw new DataAccessException("releaseConnection.", e);
         }
     };
+    /**获得某个数据源的当前连接*/
+    public static Connection currentConnection(DataSource dataSource) throws DataAccessException {
+        try {
+            DataSourceHelper utilService = utilServiceLocal.get();
+            return utilService.currentConnection(dataSource);
+        } catch (SQLException e) {
+            throw new DataAccessException("currentConnection.", e);
+        }
+    };
     /**获取DataSourceHelper*/
     public static DataSourceHelper getDataSourceHelper() {
         return utilServiceLocal.get();

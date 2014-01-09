@@ -27,4 +27,6 @@ public interface DataSourceHelper {
     public Connection getConnection(DataSource dataSource) throws SQLException;
     /**释放连接*/
     public void releaseConnection(Connection con, DataSource dataSource) throws SQLException;
+    /**当前连接*/
+    public Connection currentConnection(DataSource dataSource) throws SQLException;
 }
