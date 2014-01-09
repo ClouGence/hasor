@@ -21,4 +21,6 @@ Git@OSC£ºhttp://git.oschina.net/zycgit/hasor
 
 Github£ºhttps://github.com/zycgit/hasor
 
-ÏµÁÐ²©ÎÄ£ºhttp://my.oschina.net/u/1166271/blog/161439
+Blog£ºhttp://my.oschina.net/u/1166271/blog/161439
+
+Email£ºcontact@hasor.net or zyc@byshell.org
