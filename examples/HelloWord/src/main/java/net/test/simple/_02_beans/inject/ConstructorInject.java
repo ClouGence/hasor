@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 package net.test.simple._02_beans.inject;
+import javax.inject.Inject;
 import net.test.simple._02_beans.pojo.PojoBean;
-import com.google.inject.Inject;
 /**
- * 构造方法注入
- * @version : 2014-1-3
- * @author 赵永春(zyc@hasor.net)
- */
+* 该例子演示了如何通过 JSR-330 标准进行构造方法依赖注入（构造函数注入）。
+* @version : 2014-1-3
+* @author 赵永春(zyc@hasor.net)
+*/
 public class ConstructorInject {
-    private PojoBean userBean;
+    private PojoBean userBean; //被注入的类型
+    //依赖注入
     @Inject
     public ConstructorInject(PojoBean userBean) {
         this.userBean = userBean;
     }
-    //
+    /**返回注入 Bean 的 userName 属性。*/
     public String getUserName() {
         return this.userBean.getName();
     }

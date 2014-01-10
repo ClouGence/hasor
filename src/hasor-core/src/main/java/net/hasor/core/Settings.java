@@ -35,6 +35,9 @@ public interface Settings {
     /**强制重新装载配置文件。*/
     public void refresh() throws IOException;
     //
+    /**设置参数。*/
+    public void setSettings(String key, Object value, String namespace);
+    //
     /**解析全局配置参数，并且返回其{@link Character}形式对象。*/
     public Character getChar(String name);
     /**解析全局配置参数，并且返回其{@link Character}形式对象。第二个参数为默认值。*/

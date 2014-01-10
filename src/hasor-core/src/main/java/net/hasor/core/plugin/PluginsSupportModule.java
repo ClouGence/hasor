@@ -47,6 +47,7 @@ public class PluginsSupportModule implements Module {
                 Hasor.logInfo("loadPlugin %s.", pluginClass);
                 hasorPlugin.loadPlugin(apiBinder);
                 loadState.put(pluginClass, "<-- OK.");
+                apiBinder.bindingType(HasorPlugin.class).toInstance(hasorPlugin);
             } catch (Throwable e) {
                 loadState.put(pluginClass, "<-- Error.");
                 Hasor.logError("config Plugin error at %s.%s", pluginClass, e);

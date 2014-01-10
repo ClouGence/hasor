@@ -107,7 +107,7 @@ public interface ApiBinder {
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
     public Set<Class<?>> findClass(Class<?> featureType);
     /**配置模块依赖关系。*/
-    public DependencySettings dependency();
+    public ModuleSettings configModule();
     /**注册一个bean。*/
     public BeanBindingBuilder defineBean(String beanName);
     /**负责注册Bean*/
@@ -118,7 +118,7 @@ public interface ApiBinder {
         public <T> LinkedBindingBuilder<T> bindType(Class<T> beanType);
     }
     /**该接口可以配置模块信息 */
-    public interface DependencySettings {
+    public interface ModuleSettings extends ModuleInfo {
         /**依赖反制：强制目标模块依赖当前模块(弱依赖)。*/
         public void reverse(Class<? extends Module> targetModule);
         /**强制依赖：跟随目标模块启动而启动。如果依赖的模块没有成功启动，则该模块不会启动。<br/> 

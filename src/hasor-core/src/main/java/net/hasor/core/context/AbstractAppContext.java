@@ -254,7 +254,7 @@ public abstract class AbstractAppContext implements AppContext {
     /**为模块创建ApiBinder*/
     protected AbstractApiBinder newApiBinder(final ModulePropxy forModule, final Binder guiceBinder) {
         return new AbstractApiBinder(this.getEnvironment()) {
-            public DependencySettings dependency() {
+            public ModuleSettings configModule() {
                 return forModule;
             }
             public Binder getGuiceBinder() {
@@ -281,7 +281,7 @@ public abstract class AbstractAppContext implements AppContext {
             sb.append("] ");
             sb.append(info.getDisplayName());
             sb.append(" (");
-            sb.append(info.getTarget().getClass());
+            sb.append(info.getDescription());
             sb.append(")\n");
         }
         if (sb.length() > 1)
@@ -346,7 +346,7 @@ public abstract class AbstractAppContext implements AppContext {
         this.doBind(guiceBinder);
         /*引发事件*/
         AbstractApiBinder apiBinder = new AbstractApiBinder(this.getEnvironment()) {
-            public DependencySettings dependency() {
+            public ModuleSettings configModule() {
                 return null;
             }
             public Binder getGuiceBinder() {

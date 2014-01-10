@@ -13,23 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple._01_hello;
+package net.test.simple._05_kernel;
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.AppContext;
-import net.hasor.core.context.AnnoStandardAppContext;
+import net.hasor.core.context.FileAppContext;
 import org.junit.Test;
 /**
- * 本示列演示如何启动 Hasor 框架。
- * @version : 2013-8-11
- * @author 赵永春 (zyc@hasor.net)
+ * Hasor 内核启动测试
+ * @version : 2014-1-10
+ * @author 赵永春(zyc@hasor.net)
  */
-public class HelloHasor {
+public class FileKernel_Test {
     @Test
-    public void testStartHasor() throws IOException, URISyntaxException, InterruptedException {
-        System.out.println("--->>testStartHasor<<--");
-        //1.创建一个标准的 Hasor 容器。
-        AppContext appContext = new AnnoStandardAppContext();
-        appContext.start();//启动 Hasor 容器，启动过程会初始化所有模块和插件。
+    public void testFileKernel() throws IOException, URISyntaxException {
+        //Hasor 仅加载一个配置文件的容器
+        //---该容器不具备解析 @AnnoModule 注解功能，也不会加载“hasor-config.xml”、“static-config.xml”配置文件。
+        //---不同于 SimpleAppContext 的是 FileAppContext 通过 File 的形式传入需要加载的配置文件。
+        File configFile = new File("src/main/resources/net/test/simple/_05_kernel/hasor-config.xml");
+        AppContext kernel = new FileAppContext(configFile);
+        kernel.start();
     }
 }

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import net.hasor.core.Hasor;
 import org.more.util.map.DecSequenceMap;
 /***
  * 基本支持。
@@ -46,9 +47,22 @@ public abstract class AbstractBaseSettings extends AbstractSettings {
         Set<String> nsSet = this.getNamespaceSettingMap().keySet();
         return nsSet.toArray(new String[nsSet.size()]);
     }
+    /**设置参数。*/
+    public void setSettings(String key, Object value, String namespace) {
+        Map<String, Map<String, Object>> nsMap = this.getNamespaceSettingMap();//所有命名空间的数据
+        Map<String, Object> atMap = nsMap.get(namespace);//要 put 的命名空间数据
+        //
+        if (atMap == null) {
+            atMap = new HashMap<String, Object>();
+            nsMap.put(namespace, atMap);
+        }
+        String putKey = key.toLowerCase();
+        Hasor.logInfo("set Setting %s = %s.", putKey, value);
+        atMap.put(putKey, value);
+    }
     //
     /**获取指在某个特定命名空间下的Settings接口对象。*/
-    public final AbstractSettings getSettings(String namespace) {
+    public final AbstractSettings getSettings(final String namespace) {
         final AbstractSettings setting = this;
         final Map<String, Object> data = this.getNamespaceSettingMap().get(namespace);
         if (data == null)
@@ -65,6 +79,11 @@ public abstract class AbstractBaseSettings extends AbstractSettings {
             }
             public Map<String, Object> getSettingsMap() {
                 return data;
+            }
+            public void setSettings(String key, Object value, String namespace2) {
+                if (namespace.equals(namespace2) == false)
+                    throw new UnsupportedOperationException();
+                data.put(key, value);
             }
         };
     }

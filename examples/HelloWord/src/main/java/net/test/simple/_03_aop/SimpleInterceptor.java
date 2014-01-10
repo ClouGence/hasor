@@ -17,7 +17,7 @@ package net.test.simple._03_aop;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 /**
- * À¹½ØÆ÷
+ * Ò»¸ö Aop À¹½ØÆ÷
  * @version : 2013-8-11
  * @author ÕÔÓÀ´º (zyc@hasor.net)
  */

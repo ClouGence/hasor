@@ -91,7 +91,7 @@ public class AnnoWebAppContext extends AnnoStandardAppContext implements WebAppC
     }
     protected AbstractApiBinder newApiBinder(final ModulePropxy forModule, final Binder guiceBinder) {
         return new WebApiBinderModule((WebEnvironment) this.getEnvironment()) {
-            public DependencySettings dependency() {
+            public ModuleSettings configModule() {
                 return forModule;
             }
             public Binder getGuiceBinder() {

@@ -22,11 +22,12 @@ import net.test.simple._03_aop.global_lv.GlobalLv_FooBean;
 import net.test.simple._03_aop.method_lv.MethodLv_FooBean;
 import org.junit.Test;
 /**
- * »·¾³±äÁ¿²Ù×÷ÑÝÊ¾
+ * ²âÊÔ Aop
  * @version : 2013-8-11
  * @author ÕÔÓÀ´º (zyc@hasor.net)
  */
 public class TestAop {
+    /*·½·¨¼¶£¬À¹½ØÆ÷²âÊÔ*/
     @Test
     public void testMethodAop() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testMethodAop<<--");
@@ -36,6 +37,7 @@ public class TestAop {
         MethodLv_FooBean fooBean = appContext.getInstance(MethodLv_FooBean.class);
         fooBean.fooCall();
     }
+    /*Àà¼¶±ð£¬À¹½ØÆ÷²âÊÔ*/
     @Test
     public void testClassAop() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testClassAop<<--");
@@ -45,6 +47,7 @@ public class TestAop {
         ClassLv_FooBean fooBean = appContext.getInstance(ClassLv_FooBean.class);
         fooBean.fooCall();
     }
+    /*È«¾Ö£¬À¹½ØÆ÷²âÊÔ*/
     @Test
     public void testGlobalAop() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testGlobalAop<<--");

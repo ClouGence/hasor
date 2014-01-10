@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 package net.test.simple._02_beans.inject;
+import javax.inject.Inject;
 import net.test.simple._02_beans.pojo.PojoBean;
-import com.google.inject.Inject;
 /**
- * 字段注入
- * @version : 2014-1-3
- * @author 赵永春(zyc@hasor.net)
- */
+* 该例子演示了如何通过 JSR-330 标准给予字段依赖注入（字段注入）。
+* 被注入的字段不需要生成其 get/set 方法。
+* @version : 2014-1-3
+* @author 赵永春(zyc@hasor.net)
+*/
 public class FieldInject {
     @Inject
-    private PojoBean userBean;
+    private PojoBean userBean; //被注入的字段
     //
     public String getUserName() {
         return this.userBean.getName();

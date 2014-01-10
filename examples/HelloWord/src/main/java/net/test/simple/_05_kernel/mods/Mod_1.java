@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.context;
+package net.test.simple._05_kernel.mods;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
@@ -24,16 +24,12 @@ import net.hasor.core.context.AnnoModule;
  * @author 赵永春 (zyc@byshell.org)
  */
 @AnnoModule
-public class AnnoTestMod_2 implements Module {
+public class Mod_1 implements Module {
     public void init(ApiBinder apiBinder) {
-        apiBinder.dependency().weak(AnnoTestMod_1.class);
-        //
-        System.out.println("AnnoTestMod_2");
+        // TODO Auto-generated method stub
     }
     public void start(AppContext appContext) {
-        System.out.println("start->AnnoTestMod_2");
-        /*获取，Module1注册的Integet对象，名称为theTime*/
-        System.out.println(appContext.getBean("theTime"));
+        System.out.println("start->Mod_1");
     }
     public void stop(AppContext appContext) {
         // TODO Auto-generated method stub

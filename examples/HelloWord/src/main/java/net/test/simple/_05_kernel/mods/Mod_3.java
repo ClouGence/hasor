@@ -13,25 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.context;
+package net.test.simple._05_kernel.mods;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 import net.hasor.core.context.AnnoModule;
 /**
- * 
+ * 模块3，依赖模块2，模块2，依赖模块1
  * @version : 2013-9-14
  * @author 赵永春 (zyc@byshell.org)
  */
 @AnnoModule
-public class AnnoTestMod_3 implements Module {
+public class Mod_3 implements Module {
     public void init(ApiBinder apiBinder) {
-        apiBinder.dependency().weak(AnnoTestMod_2.class);
-        //
-        System.out.println("AnnoTestMod_3");
+        /*弱依赖，即使依赖的模块没有正常启动，模块3依然启动。*/
+        apiBinder.configModule().weak(Mod_2.class);
     }
     public void start(AppContext appContext) {
-        System.out.println("start->AnnoTestMod_3");
+        System.out.println("start->Mod_3");
     }
     public void stop(AppContext appContext) {
         // TODO Auto-generated method stub

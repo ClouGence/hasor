@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.ApiBinder.DependencySettings;
+import net.hasor.core.ApiBinder.ModuleSettings;
 import net.hasor.core.AppContext;
 import net.hasor.core.Dependency;
 import net.hasor.core.Hasor;
@@ -35,7 +35,7 @@ import org.more.util.exception.ExceptionUtils;
  * @version : 2013-7-26
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class ModulePropxy implements ModuleInfo/*提供模块基本信息*/, DependencySettings, Module {
+public abstract class ModulePropxy implements ModuleInfo/*提供模块基本信息*/, ModuleSettings, Module {
     private String           displayName;
     private String           description;
     private Module           targetModule;
@@ -68,7 +68,7 @@ public abstract class ModulePropxy implements ModuleInfo/*提供模块基本信息*/, De
         this.namespace = settingsNamespace;
     }
     public void setDisplayName(String displayName) {
-        this.description = displayName;
+        this.displayName = displayName;
     }
     public void setDescription(String description) {
         this.description = description;
@@ -159,7 +159,7 @@ public abstract class ModulePropxy implements ModuleInfo/*提供模块基本信息*/, De
         try {
             Module forModule = this.getTarget();
             this.onInit(forModule, apiBinder);
-            Hasor.logInfo("init Event on : %s", forModule.getClass());
+            Hasor.logInfo("init Event on : %s", this.getDisplayName());
             this.isReady = true;
         } catch (Throwable e) {
             this.isReady = false;
@@ -175,7 +175,7 @@ public abstract class ModulePropxy implements ModuleInfo/*提供模块基本信息*/, De
         try {
             Module forModule = this.getTarget();
             this.onStart(forModule, appContext);
-            Hasor.logInfo("start Event on : %s", forModule.getClass());
+            Hasor.logInfo("start Event on : %s", this.getDisplayName());
             this.isStart = true;
         } catch (Throwable e) {
             this.isStart = false;
@@ -191,7 +191,7 @@ public abstract class ModulePropxy implements ModuleInfo/*提供模块基本信息*/, De
         Module forModule = this.getTarget();
         try {
             this.onStop(forModule, appContext);
-            Hasor.logInfo("stop Event on : %s", forModule.getClass());
+            Hasor.logInfo("stop Event on : %s", this.getDisplayName());
             this.isStart = false;
         } catch (Throwable e) {
             Hasor.logError("%s in the stop phase encounters an error.\n%s", this.getDisplayName(), e);
@@ -205,25 +205,31 @@ public abstract class ModulePropxy implements ModuleInfo/*提供模块基本信息*/, De
         return (appContext != null) ? loacalModuleInfo.get(appContext) : null;
     }
     /**模块的 init 生命周期调用*/
-    protected void onInit(Module forModule, ApiBinder apiBinder) {
+    protected void onInit(Module forModule, ApiBinder apiBinder) throws Throwable {
         forModule.init(apiBinder);
     }
     /**发送模块启动信号*/
-    protected void onStart(Module forModule, AppContext appContext) {
-        loacalModuleInfo.put(this.appContext, this);
-        {
+    protected void onStart(Module forModule, AppContext appContext) throws Throwable {
+        try {
+            loacalModuleInfo.put(this.appContext, this);
             forModule.start(appContext);
             appContext.getEventManager().doSync(ModuleEvent_Started, forModule, appContext);
+        } catch (Throwable e) {
+            throw e;
+        } finally {
+            loacalModuleInfo.remove(this.appContext);
         }
-        loacalModuleInfo.remove(this.appContext);
     }
     /**发送模块停止信号*/
-    protected void onStop(Module forModule, AppContext appContext) {
-        loacalModuleInfo.put(this.appContext, this);
-        {
+    protected void onStop(Module forModule, AppContext appContext) throws Throwable {
+        try {
+            loacalModuleInfo.put(this.appContext, this);
             forModule.stop(appContext);
             appContext.getEventManager().doSync(ModuleEvent_Stoped, forModule, appContext);
+        } catch (Throwable e) {
+            throw e;
+        } finally {
+            loacalModuleInfo.remove(this.appContext);
         }
-        loacalModuleInfo.remove(this.appContext);
     }
 }

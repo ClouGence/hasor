@@ -57,6 +57,13 @@ public abstract class AbstractEnvironment implements Environment {
     public boolean isDebug() {
         return this.settings.getBoolean("hasor.debug", false);
     }
+    /**设置扫描路径*/
+    public void setSpanPackage(String[] spanPackage) {
+        this.spanPackage = spanPackage;
+    }
+    public String[] getSpanPackage() {
+        return spanPackage;
+    }
     public Set<Class<?>> findClass(Class<?> featureType) {
         return this.getSettings().findClass(featureType, this.spanPackage);
     }
@@ -248,7 +255,7 @@ public abstract class AbstractEnvironment implements Environment {
     }
     //-------------------------------------------------------------------------------------Env Vars
     /** 该类负责处理环境变量相关操作*/
-    protected static class EnvVars implements SettingsListener {
+    protected class EnvVars implements SettingsListener {
         /*所属的Environment*/
         private AbstractEnvironment env;
         /*最终使用的环境变量Map*/
@@ -361,26 +368,28 @@ public abstract class AbstractEnvironment implements Environment {
                 keyMaxSize = keyMaxSize + 2;
                 StringBuffer sb = new StringBuffer();
                 sb.append("EnvVars:");
-                if (!systemEnv.isEmpty()) {
-                    sb.append("\n" + StringUtils.fixedString('-', 100));
-                    sb.append("\n" + formatMap4log(keyMaxSize, systemEnv));
-                }
-                if (!javaProp.isEmpty()) {
-                    sb.append("\n" + StringUtils.fixedString('-', 100));
-                    sb.append("\n" + formatMap4log(keyMaxSize, javaProp));
+                if (isDebug()) {
+                    if (!systemEnv.isEmpty()) {
+                        sb.append("\n" + formatMap4log(keyMaxSize, systemEnv));
+                        sb.append("\n" + StringUtils.fixedString('-', 50));
+                    }
+                    if (!javaProp.isEmpty()) {
+                        sb.append("\n" + formatMap4log(keyMaxSize, javaProp));
+                        sb.append("\n" + StringUtils.fixedString('-', 50));
+                    }
                 }
                 if (!hasorEnv.isEmpty()) {
-                    sb.append("\n" + StringUtils.fixedString('-', 100));
                     sb.append("\n" + formatMap4log(keyMaxSize, hasorEnv));
+                    sb.append("\n" + StringUtils.fixedString('-', 50));
                 }
                 if (!userEnvMap.isEmpty()) {
-                    sb.append("\n" + StringUtils.fixedString('-', 100));
                     sb.append("\n" + formatMap4log(keyMaxSize, userEnvMap));
+                    sb.append("\n" + StringUtils.fixedString('-', 50));
                 }
                 Hasor.logInfo(sb.toString());
             }
         }
-        private static String formatMap4log(int colWidth, Map<String, String> mapData) {
+        private String formatMap4log(int colWidth, Map<String, String> mapData) {
             /*输出系统环境变量日志*/
             StringBuffer outLog = new StringBuffer("");
             for (String key : mapData.keySet()) {

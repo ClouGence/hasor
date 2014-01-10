@@ -83,6 +83,9 @@ public abstract class AbstractSettings implements Settings {
             //
             targetObjects.add(targetObject);
         }
+        if (targetObjects.isEmpty() && defaultValue != null) {
+            targetObjects.add(defaultValue);
+        }
         return targetObjects.toArray((T[]) Array.newInstance(toType, targetObjects.size()));
     }
     /**解析全局配置参数，并且返回toType参数指定的类型。*/

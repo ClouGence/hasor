@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 package net.test.simple._02_beans.inject;
+import javax.inject.Inject;
 import net.test.simple._02_beans.pojo.PojoBean;
-import com.google.inject.Inject;
 /**
- * 方法注入
- * @version : 2014-1-3
- * @author 赵永春(zyc@hasor.net)
- */
+* 该例子演示了如何通过 JSR-330 标准通过方法进行依赖注入（方法注入）。
+* @version : 2014-1-3
+* @author 赵永春(zyc@hasor.net)
+*/
 public class MethodInject {
-    private PojoBean userBean;
+    private PojoBean userBean; //被注入的 Bean
+    //
     @Inject
     public void setUserBean(PojoBean userBean) {
+        //该方法会被注入
         this.userBean = userBean;
     }
     //

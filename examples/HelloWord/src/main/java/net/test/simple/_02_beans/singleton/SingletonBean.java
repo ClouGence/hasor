@@ -16,7 +16,7 @@
 package net.test.simple._02_beans.singleton;
 import javax.inject.Singleton;
 /**
- * 单例
+ * 该例子演示了如何通过 JSR-330 标准声明一个 Bean 的单实例状态（单例）。
  * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */

@@ -17,7 +17,7 @@ package net.test.simple._03_aop.class_lv;
 import net.hasor.plugins.aop.Aop;
 import net.test.simple._03_aop.SimpleInterceptor;
 /**
- * 一个Bean
+ * 该例子演示了如何通过 {@code @Aop} 注解为某个 Bean 添加类级别的拦截器。 
  * @version : 2014-1-3
  * @author 赵永春(zyc@hasor.net)
  */
