@@ -85,8 +85,9 @@ public class AnnoStandardAppContext extends StandardAppContext {
             //
             AnnoModule modAnno = modClass.getAnnotation(AnnoModule.class);
             String dispName = StringUtils.isBlank(modAnno.displayName()) ? modClass.getSimpleName() : modAnno.displayName();
+            String description = StringUtils.isBlank(modAnno.description()) ? modClass.getName() : modAnno.description();
             moduleInfo.setDisplayName(dispName);
-            moduleInfo.setDescription(modAnno.description());
+            moduleInfo.setDescription(description);
         }
     }
     private <T> T createModule(Class<?> listenerClass) {

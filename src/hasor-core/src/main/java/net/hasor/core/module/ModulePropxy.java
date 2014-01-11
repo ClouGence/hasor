@@ -95,7 +95,7 @@ public abstract class ModulePropxy implements ModuleInfo/*提供模块基本信息*/, Mo
     public boolean isReady() {
         if (isDependencyReady() == false)
             return false;
-        return this.isReady;
+        return this.isReady && this.appContext.isReady();
     }
     public boolean isStart() {
         return this.isStart;
@@ -116,7 +116,7 @@ public abstract class ModulePropxy implements ModuleInfo/*提供模块基本信息*/, Mo
             throw new IllegalStateException("Module is ready, only can use this method in run-up.");
         //
         ModulePropxy moduleInfo = this.getInfo(targetModule, this.appContext);
-        moduleInfo.weak(targetModule);
+        moduleInfo.weak(this.targetModule.getClass());
     }
     public void weak(Class<? extends Module> targetModule) {
         this._addDep(targetModule, true);

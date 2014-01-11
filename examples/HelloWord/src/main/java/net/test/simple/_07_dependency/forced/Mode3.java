@@ -30,9 +30,9 @@ import net.hasor.core.context.AnnoModule;
  */
 @AnnoModule()
 public class Mode3 implements Module {
-    public void init(ApiBinder apiBinder) throws Exception {
-        System.out.println("Mode3  init!");
+    public void init(ApiBinder apiBinder) throws Exception {}
+    public void start(AppContext appContext) {
+        System.out.println("Mode3 start!");
     }
-    public void start(AppContext appContext) {}
     public void stop(AppContext appContext) {}
 }

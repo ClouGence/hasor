@@ -12,6 +12,7 @@
     03.新增 PluginHelper 工具类，可以将一个插件转换成为 Hasor 的 Module。
     04.Settings 接口新增可以设置新值的功能。
     05.Environment 接口新增可以设置包扫描范围的方法。
+    06.AbstractAppContext 类新增 addGuiceModule 方法可以直接将 Guice 模块加入到 Hasor 中。
 * 改进:
     01.Settings接口的 getNameSpace 方法改名为 getSetting。
     02.改造 Hasor 的类扫描机制，从 Class.forName 改为字节码解析。

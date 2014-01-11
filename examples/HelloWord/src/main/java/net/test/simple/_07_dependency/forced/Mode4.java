@@ -33,9 +33,10 @@ public class Mode4 implements Module {
     public void init(ApiBinder apiBinder) throws Exception {
         /*强依赖，当前模块的启动必须依靠目标模块*/
         apiBinder.configModule().forced(Mode3.class);
-        System.out.println("Mode4  init!");
         throw new Exception();
     }
-    public void start(AppContext appContext) {}
+    public void start(AppContext appContext) {
+        System.out.println("Mode4 start!");
+    }
     public void stop(AppContext appContext) {}
 }

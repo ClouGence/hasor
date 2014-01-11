@@ -28,9 +28,9 @@ import net.hasor.core.context.AnnoModule;
  */
 @AnnoModule()
 public class Mode2 implements Module {
-    public void init(ApiBinder apiBinder) {
-        System.out.println("Mode2  init!");
+    public void init(ApiBinder apiBinder) {}
+    public void start(AppContext appContext) {
+        System.out.println("Mode2 start!");
     }
-    public void start(AppContext appContext) {}
     public void stop(AppContext appContext) {}
 }

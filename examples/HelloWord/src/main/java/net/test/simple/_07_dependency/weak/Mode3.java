@@ -33,6 +33,8 @@ public class Mode3 implements Module {
     public void init(ApiBinder apiBinder) throws Exception {
         throw new Exception();
     }
-    public void start(AppContext appContext) {}
+    public void start(AppContext appContext) {
+        System.out.println("Mode3 start!");
+    }
     public void stop(AppContext appContext) {}
 }

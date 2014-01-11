@@ -32,8 +32,9 @@ public class Mode3 implements Module {
         //在不修改 Module1 和 Module2 代码的前提下让它们依赖 Moule 3。
         apiBinder.configModule().reverse(Mode1.class);
         apiBinder.configModule().reverse(Mode2.class);
-        System.out.println("Mode3  init!");
     }
-    public void start(AppContext appContext) {}
+    public void start(AppContext appContext) {
+        System.out.println("Mode3 start!");
+    }
     public void stop(AppContext appContext) {}
 }

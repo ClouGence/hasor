@@ -34,8 +34,9 @@ public class Mode1 implements Module {
         //弱依赖是指，强调顺序但不强调因果关系
         apiBinder.configModule().weak(Mode2.class);//弱依赖，模块2.
         apiBinder.configModule().weak(Mode3.class);//弱依赖，模块3.
-        System.out.println("Mode1  init!");
     }
-    public void start(AppContext appContext) {}
+    public void start(AppContext appContext) {
+        System.out.println("Mode1 start!");
+    }
     public void stop(AppContext appContext) {}
 }
