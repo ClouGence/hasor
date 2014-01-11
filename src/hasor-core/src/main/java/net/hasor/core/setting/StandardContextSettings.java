@@ -32,32 +32,34 @@ import org.more.util.ResourcesUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class StandardContextSettings extends InputStreamSettings {
+    /**主配置文件名称*/
+    public static final String MainSettingName   = "hasor-config.xml";
     /**默认静态配置文件名称*/
     public static final String StaticSettingName = "static-config.xml";
     private URI                settingURI;
     //
     /**创建{@link StandardContextSettings}类型对象。*/
+    public StandardContextSettings() throws IOException, URISyntaxException {
+        this(MainSettingName);
+    }
+    /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings(String mainSettings) throws IOException, URISyntaxException {
         URL url = ResourcesUtils.getResource(mainSettings);
         this.settingURI = url.toURI();
-        this.refresh();
     }
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings(File mainSettings) throws IOException {
         this.settingURI = mainSettings.toURI();
-        this.refresh();
     }
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings(URI mainSettings) throws IOException {
         this.settingURI = mainSettings;
-        this.refresh();
     }
     /**获取配置文件URI*/
     public URI getSettingURI() {
         return settingURI;
     }
     //
-    @Override
     protected void readyLoad() throws IOException {
         super.readyLoad();
         //1.装载所有static-config.xml
@@ -91,15 +93,9 @@ public class StandardContextSettings extends InputStreamSettings {
             this.addStream(stream);
         }
     }
-    @Override
     public void refresh() throws IOException {
         Hasor.logInfo("reload configuration.");
         this.cleanData();
-        //
-        try {
-            this.loadSettings();
-        } catch (Exception e) {
-            throw new IOException(e);
-        }
+        this.loadSettings();
     }
 }

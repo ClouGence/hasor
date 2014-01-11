@@ -37,6 +37,7 @@ public abstract class AbstractSettings implements Settings {
     protected abstract Map<String, Object> getSettingsMap();
     /**获取指在某个特定命名空间下的Settings接口对象。*/
     public abstract AbstractSettings getSettings(String namespace);
+    //
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类）*/
     public Set<Class<?>> findClass(Class<?> featureType, String[] loadPackages) {
         if (featureType == null)

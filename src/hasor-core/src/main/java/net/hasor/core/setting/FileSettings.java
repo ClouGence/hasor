@@ -29,12 +29,11 @@ import net.hasor.core.Hasor;
  */
 public class FileSettings extends InputStreamSettings {
     /**创建{@link FileSettings}对象。*/
-    public FileSettings() throws IOException {}
+    public FileSettings() {}
     /**创建{@link FileSettings}对象。*/
     public FileSettings(String fileName) throws IOException {
         Hasor.assertIsNotNull(fileName);
         this.addFile(fileName);
-        this.refresh();
     }
     /**创建{@link FileSettings}对象。*/
     public FileSettings(String[] fileNames) throws IOException {
@@ -43,13 +42,11 @@ public class FileSettings extends InputStreamSettings {
             Hasor.assertIsNotNull(fileName);
             this.addFile(fileName);
         }
-        this.refresh();
     }
     /**创建{@link FileSettings}对象。*/
     public FileSettings(File settingsFile) throws IOException {
         Hasor.assertIsNotNull(settingsFile);
         this.addFile(settingsFile);
-        this.refresh();
     }
     /**创建{@link FileSettings}对象。*/
     public FileSettings(File[] settingsFiles) throws IOException {
@@ -58,7 +55,6 @@ public class FileSettings extends InputStreamSettings {
             Hasor.assertIsNotNull(settingsFile);
             this.addFile(settingsFile);
         }
-        this.refresh();
     }
     //
     //

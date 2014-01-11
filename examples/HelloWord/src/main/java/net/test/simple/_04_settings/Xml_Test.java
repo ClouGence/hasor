@@ -33,6 +33,7 @@ public class Xml_Test {
         System.out.println("--->>test_ProcessXml<<--");
         InputStream inStream = ResourcesUtils.getResourceAsStream("net/test/simple/_04_settings/xml-data.xml");
         InputStreamSettings settings = new InputStreamSettings(inStream);
+        settings.loadSettings();//×°ÔØÅäÖÃÎÄ¼þ
         //
         //
         XmlNode xmlNoe = settings.getXmlProperty("demoProject.menus");

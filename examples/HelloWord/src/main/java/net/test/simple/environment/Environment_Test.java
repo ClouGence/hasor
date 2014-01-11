@@ -17,10 +17,8 @@ package net.test.simple.environment;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import net.hasor.core.Settings;
-import net.hasor.core.SettingsListener;
-import net.hasor.core.environment.SimpleEnvironment;
 import net.hasor.core.environment.FileEnvironment;
+import net.hasor.core.environment.SimpleEnvironment;
 import net.hasor.core.environment.StandardEnvironment;
 import org.junit.Test;
 /**
@@ -46,7 +44,6 @@ public class Environment_Test {
         //
         System.out.println(env.getSettings().getString("hasor.forceModule"));
         //
-        env.addSettingsListener(new TestSetting());
         //
         Thread.sleep(10000);
     }
@@ -57,7 +54,6 @@ public class Environment_Test {
         //
         System.out.println(env.getSettings().getString("hasor.forceModule"));
         //
-        env.addSettingsListener(new TestSetting());
         //
         Thread.sleep(10000);
     }
@@ -79,10 +75,5 @@ public class Environment_Test {
         System.out.println(env.evalString("%JAVA_HOME%/bin/javac.exe"));
         //notepad
         System.out.println(env.evalEnvVar("notepad"));
-    }
-}
-class TestSetting implements SettingsListener {
-    public void onLoadConfig(Settings newConfig) {
-        System.out.println(newConfig.getString("hasor.forceModule"));
     }
 }

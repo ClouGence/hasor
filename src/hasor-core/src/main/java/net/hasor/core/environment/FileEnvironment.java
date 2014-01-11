@@ -49,8 +49,8 @@ public class FileEnvironment extends AbstractEnvironment {
         return this.settingFile;
     }
     protected Settings createSettings() throws IOException {
-        FileSettings settings = new FileSettings();
-        settings.addFile(this.settingFile);
-        return settings;
+        FileSettings fileSettings = new FileSettings();
+        fileSettings.addFile(this.settingFile);
+        return fileSettings;
     }
 }

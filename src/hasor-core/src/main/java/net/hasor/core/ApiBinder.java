@@ -117,7 +117,7 @@ public interface ApiBinder {
         /**bean绑定的类型。*/
         public <T> LinkedBindingBuilder<T> bindType(Class<T> beanType);
     }
-    /**该接口可以配置模块信息 */
+    /**该接口可以配置模块信息。*/
     public interface ModuleSettings extends ModuleInfo {
         /**依赖反制：强制目标模块依赖当前模块(弱依赖)。*/
         public void reverse(Class<? extends Module> targetModule);

@@ -68,9 +68,7 @@ public abstract class AbstractBaseSettings extends AbstractSettings {
         if (data == null)
             return null;
         return new AbstractSettings() {
-            public void refresh() throws IOException {
-                throw new UnsupportedOperationException();
-            }
+            public void refresh() throws IOException {/**/}
             public AbstractSettings getSettings(String namespace) {
                 return setting.getSettings(namespace);
             }

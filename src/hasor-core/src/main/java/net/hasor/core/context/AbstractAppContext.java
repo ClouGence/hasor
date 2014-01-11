@@ -31,6 +31,7 @@ import net.hasor.core.ModuleInfo;
 import net.hasor.core.Settings;
 import net.hasor.core.binder.AbstractApiBinder;
 import net.hasor.core.binder.BeanMetaData;
+import net.hasor.core.module.GuiceModule;
 import net.hasor.core.module.ModulePropxy;
 import net.hasor.core.module.ModuleReactor;
 import org.more.UndefinedException;
@@ -201,6 +202,12 @@ public abstract class AbstractAppContext implements AppContext {
         if (this.moduleSet == null)
             this.moduleSet = new ArrayList<ModulePropxy>();
         return moduleSet;
+    }
+    /**添加一个 Guice 模块*/
+    public void addGuiceModule(com.google.inject.Module guiceModule) {
+        if (this.isReady())
+            throw new IllegalStateException("context is inited.");
+        this.addModule(new GuiceModule(guiceModule));
     }
     /**添加模块，如果容器已经初始化那么会引发{@link IllegalStateException}异常。*/
     public synchronized ModuleInfo addModule(Module hasorModule) {

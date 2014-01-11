@@ -35,6 +35,7 @@ public class Simple_Test {
         System.out.println("--->>test_Simple<<--");
         InputStream inStream = ResourcesUtils.getResourceAsStream("net/test/simple/_04_settings/simple-config.xml");
         InputStreamSettings settings = new InputStreamSettings(inStream);
+        settings.loadSettings();//装载配置文件
         //
         String myName = settings.getString("mySelf.myName");
         Hasor.logInfo("my Name is %s.", myName);
@@ -57,6 +58,7 @@ public class Simple_Test {
         System.out.println("--->>test_all_in_one<<--");
         InputStream inStream = ResourcesUtils.getResourceAsStream("net/test/simple/_04_settings/ns-all-in-one-config.xml");
         InputStreamSettings settings = new InputStreamSettings(inStream);
+        settings.loadSettings();//装载配置文件
         //
         Settings ns1_settings = settings.getSettings("http://mode1.myProject.net");
         Settings ns2_settings = settings.getSettings("http://mode2.myProject.net");
@@ -76,6 +78,7 @@ public class Simple_Test {
         InputStream ns1_inStream = ResourcesUtils.getResourceAsStream("net/test/simple/_04_settings/ns1-config.xml");
         InputStream ns2_inStream = ResourcesUtils.getResourceAsStream("net/test/simple/_04_settings/ns2-config.xml");
         InputStreamSettings settings = new InputStreamSettings(new InputStream[] { ns1_inStream, ns2_inStream });
+        settings.loadSettings();//装载配置文件
         //
         Settings ns1_settings = settings.getSettings("http://mode1.myProject.net");
         Settings ns2_settings = settings.getSettings("http://mode2.myProject.net");
