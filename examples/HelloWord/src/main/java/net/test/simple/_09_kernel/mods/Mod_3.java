@@ -17,7 +17,7 @@ package net.test.simple._09_kernel.mods;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
-import net.hasor.core.context.AnnoModule;
+import net.hasor.core.module.AnnoModule;
 /**
  * 模块3，依赖模块2，模块2，依赖模块1
  * @version : 2013-9-14

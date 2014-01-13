@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://project.hasor.net/hasor/schema/main">
+	<!-- Demo 项目源码所处包 -->
+	<hasor>
+		<loadPackages>net.test.simple._10_jdbc.*</loadPackages>
+	</hasor>
+	<!-- 数据源配置 -->
+	<hasor-jdbc>
+		<dataSourceSet default="localDB">
+			<!-- 名称为 localDB 的内存数据库，数据库引擎使用 HSQL -->
+			<dataSource name="localDB" dsFactory="net.hasor.plugins.datasource.factory.C3p0Factory">
+				<driver>org.hsqldb.jdbcDriver</driver>
+				<url>jdbc:hsqldb:mem:aname</url>
+				<user>sa</user>
+				<password></password>
+			</dataSource>
+		</dataSourceSet>
+	</hasor-jdbc>
+</config>

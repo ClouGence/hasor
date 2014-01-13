@@ -13,29 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple._07_dependency.loop;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
+package net.hasor.core.module;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import net.hasor.core.Module;
-import net.hasor.core.module.AnnoModule;
 /**
- * 循环依赖检查演示，依赖关系：
- * Mode1
- *    Mode2
- *       Mode3
- *          Mode4
- *             Mode1
- * @version : 2013-7-27
+ * 标志该类注册到系统初始化过程，该类在标记注解时必须实现{@link Module}接口。
+ * @version : 2013-3-20
  * @author 赵永春 (zyc@hasor.net)
  */
-@AnnoModule()
-public class Mode1 implements Module {
-    public void init(ApiBinder apiBinder) {
-        /*强依赖，当前模块的启动必须依靠目标模块*/
-        apiBinder.configModule().forced(Mode2.class);//强依赖，模块2.
-    }
-    public void start(AppContext appContext) {
-        System.out.println("Mode1 start!");
-    }
-    public void stop(AppContext appContext) {}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface AnnoModule {
+    /**默认名称，该名称在系统控制台用于管理显示用途。*/
+    public String displayName() default "";
+    /**对该类的描述信息。*/
+    public String description() default "";
 }

@@ -22,6 +22,7 @@ import java.util.Set;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.ModuleInfo;
+import net.hasor.core.module.AnnoModule;
 import org.more.util.StringUtils;
 /**
  * 

@@ -17,7 +17,7 @@ package net.test.simple._07_dependency.loop;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
-import net.hasor.core.context.AnnoModule;
+import net.hasor.core.module.AnnoModule;
 /**
  * 循环依赖检查演示，依赖关系：
  * Mode1
