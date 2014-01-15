@@ -14,29 +14,25 @@
  * limitations under the License.
  */
 package net.test.project.common.aop;
-import javax.servlet.http.HttpServletRequest;
-import net.hasor.core.Hasor;
 import net.hasor.plugins.aop.GlobalAop;
-import net.hasor.plugins.controller.interceptor.ControllerInterceptor;
-import net.hasor.plugins.controller.interceptor.ControllerInvocation;
+import net.hasor.plugins.restful.interceptor.RestfulInterceptor;
+import net.hasor.plugins.restful.interceptor.RestfulInvocation;
 /**
- * 全局 Action 调用日志记录，拦截项目中所有的类。
- * @version : 2013-12-23
+ * 
+ * @version : 2013-9-26
  * @author 赵永春(zyc@hasor.net)
  */
 @GlobalAop("*net.test.project.*")
-public class ActionLogInterceptor extends ControllerInterceptor {
-    /* 
-     * 1.@GlobalAop 注解生命该拦截器为全局拦截器，并且拦截所有类的所有方法
-     * 2.ControllerInterceptor 类型的拦截器，只会拦截 Controller 的 Action 方法。
-     */
-    public Object invoke(ControllerInvocation invocation) throws Throwable {
+public class TestRestfulInterceptor extends RestfulInterceptor {
+    public Object invoke(RestfulInvocation invocation) throws Throwable {
         try {
-            HttpServletRequest reqest = invocation.getRequest();
-            Hasor.logInfo("调用 Action :%s.", reqest.getRequestURI());
+            System.out.println("before Restful");
             return invocation.proceed();
         } catch (Exception e) {
+            System.out.println("error Restful");
             throw e;
+        } finally {
+            System.out.println("after Restful");
         }
     }
 }

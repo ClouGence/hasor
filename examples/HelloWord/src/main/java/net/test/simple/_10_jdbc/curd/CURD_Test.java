@@ -28,9 +28,13 @@ public class CURD_Test extends AbstractJDBCTest {
     public void insert() throws Exception {
         /*获取 JDBC 操作接口。*/
         JdbcTemplate jdbc = getJdbcTemplate();
+        //
+        System.out.println(jdbc.queryForInt("select count(*) from TB_User where userUUID='deb4f4c8-5ba1-4f76-8b4a-c2be028bf57b'"));
+        //
         String insertUser = "insert into TB_User values('deb4f4c8-5ba1-4f76-8b4a-c2be028bf57b','安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
         jdbc.execute(insertUser);//执行插入语句
         //
+        System.out.println(jdbc.queryForInt("select count(*) from TB_User where userUUID='deb4f4c8-5ba1-4f76-8b4a-c2be028bf57b'"));
     }
     /*使用 update 更新数据*/
     @Test

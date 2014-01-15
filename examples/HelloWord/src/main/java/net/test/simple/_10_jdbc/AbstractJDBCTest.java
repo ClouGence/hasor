@@ -16,23 +16,34 @@
 package net.test.simple._10_jdbc;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import net.hasor.core.AppContext;
 import net.hasor.core.context.AnnoStandardAppContext;
 import net.hasor.jdbc.core.JdbcTemplate;
+import org.junit.After;
+import org.junit.Before;
 /***
  * 基本增删改查测试
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
 public class AbstractJDBCTest {
-    private static String config = "net/test/simple/_10_jdbc/jdbc-config.xml";
-    protected JdbcTemplate getJdbcTemplate() throws IOException, URISyntaxException {
-        AnnoStandardAppContext appContext = new AnnoStandardAppContext(config);
+    private static String config     = "net/test/simple/_10_jdbc/jdbc-config.xml";
+    private AppContext    appContext = null;
+    @Before
+    public void initContext() throws IOException, URISyntaxException {
+        appContext = new AnnoStandardAppContext(config);
         appContext.start();
-        /*测试 调用存储过程 */
-        JdbcTemplate jdbc = appContext.getInstance(JdbcTemplate.class);
         /*装载 SQL 脚本文件*/
+        JdbcTemplate jdbc = appContext.getInstance(JdbcTemplate.class);
         jdbc.loadSQL("net/test/simple/_10_jdbc/TB_User.sql");
         jdbc.loadSQL("net/test/simple/_10_jdbc/TB_User_Data.sql");
+    }
+    protected JdbcTemplate getJdbcTemplate() throws IOException, URISyntaxException {
+        JdbcTemplate jdbc = appContext.getInstance(JdbcTemplate.class);
         return jdbc;
+    }
+    @After
+    public void stopInit() {
+        appContext.stop();
     }
 }

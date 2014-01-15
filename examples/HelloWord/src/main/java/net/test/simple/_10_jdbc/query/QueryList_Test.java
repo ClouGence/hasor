@@ -20,32 +20,20 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import net.hasor.core.Hasor;
-import net.hasor.core.context.AnnoStandardAppContext;
 import net.hasor.jdbc.SqlRowSet;
 import net.hasor.jdbc.core.JdbcTemplate;
+import net.test.simple._10_jdbc.AbstractJDBCTest;
 import org.junit.Test;
 /**
  * 
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */
-public class QueryList_Test {
-    protected JdbcTemplate returnJdbcTemplate() throws IOException {
-        AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/jdbc/hsql-config.xml");
-        appContext.start();
-        //
-        /*测试 调用存储过程 */
-        JdbcTemplate jdbc = appContext.getInstance(JdbcTemplate.class);
-        /*装载 SQL 脚本文件*/
-        jdbc.loadSQL("org/hasor/test/jdbc/sql/TB_User.sql");
-        jdbc.loadSQL("org/hasor/test/jdbc/sql/TB_User_Data.sql");
-        //
-        return jdbc;
-    }
+public class QueryList_Test extends AbstractJDBCTest {
     @Test
     public void test_queryList_4_Object() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>test_queryList_4_Object<<--");
-        JdbcTemplate jdbc = returnJdbcTemplate();
+        JdbcTemplate jdbc = getJdbcTemplate();
         //
         List<TB_User> userList = jdbc.queryForList("select * from TB_User", TB_User.class);
         for (TB_User user : userList)
@@ -54,7 +42,7 @@ public class QueryList_Test {
     @Test
     public void test_queryList_4_Map() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>test_queryList_4_Map<<--");
-        JdbcTemplate jdbc = returnJdbcTemplate();
+        JdbcTemplate jdbc = getJdbcTemplate();
         //
         List<Map> mapList = jdbc.queryForList("select * from TB_User", Map.class);
         for (Map user : mapList)
@@ -63,7 +51,7 @@ public class QueryList_Test {
     @Test
     public void test_queryList_4_String() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>test_queryList_4_String<<--");
-        JdbcTemplate jdbc = returnJdbcTemplate();
+        JdbcTemplate jdbc = getJdbcTemplate();
         //
         List<String> mapList = jdbc.queryForList("select userUUID from TB_User", String.class);
         for (String user : mapList)
@@ -72,7 +60,7 @@ public class QueryList_Test {
     @Test
     public void test_queryList_4_RowSet() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>test_queryList_4_RowSet<<--");
-        JdbcTemplate jdbc = returnJdbcTemplate();
+        JdbcTemplate jdbc = getJdbcTemplate();
         //
         SqlRowSet rowSet = jdbc.queryForRowSet("select * from TB_User");
         rowSet.beforeFirst();

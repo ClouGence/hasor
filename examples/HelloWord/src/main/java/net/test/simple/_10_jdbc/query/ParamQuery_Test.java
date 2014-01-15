@@ -21,31 +21,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.hasor.core.Hasor;
-import net.hasor.core.context.AnnoStandardAppContext;
 import net.hasor.jdbc.core.JdbcTemplate;
+import net.test.simple._10_jdbc.AbstractJDBCTest;
 import org.junit.Test;
 /**
  * 
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */
-public class ParamQuery_Test {
-    protected JdbcTemplate returnJdbcTemplate() throws IOException {
-        AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/jdbc/hsql-config.xml");
-        appContext.start();
-        //
-        /*测试 调用存储过程 */
-        JdbcTemplate jdbc = appContext.getInstance(JdbcTemplate.class);
-        /*装载 SQL 脚本文件*/
-        jdbc.loadSQL("org/hasor/test/jdbc/sql/TB_User.sql");
-        jdbc.loadSQL("org/hasor/test/jdbc/sql/TB_User_Data.sql");
-        //
-        return jdbc;
-    }
+public class ParamQuery_Test extends AbstractJDBCTest {
     @Test
     public void test_queryList_4_Object() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>test_queryList_4_Object<<--");
-        JdbcTemplate jdbc = returnJdbcTemplate();
+        JdbcTemplate jdbc = getJdbcTemplate();
         //
         Map<String, String> paramMap = new HashMap<String, String>();
         paramMap.put("id", "76%");

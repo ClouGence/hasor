@@ -32,7 +32,7 @@ public class Callable_Test extends AbstractJDBCTest {
         for (int i = 0; i < 100; i++)
             System.out.println(UUID.randomUUID().toString());
         DatabaseManagerSwing.main(args);
-    }d
+    }
     @Test
     public void testCallable() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testCallable<<--");
