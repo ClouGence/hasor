@@ -19,7 +19,7 @@ package net.hasor.core.setting;
  * @version : 2011-9-30
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-public interface GlobalProperty {
+public interface FieldProperty {
     /** ∂¡»° Ù–‘*/
     public <T> T getValue(Class<T> toType, T defaultValue);
 }

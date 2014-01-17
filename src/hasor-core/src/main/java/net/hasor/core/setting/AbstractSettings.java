@@ -64,9 +64,9 @@ public abstract class AbstractSettings implements Settings {
         if (oriObject instanceof String)
             //原始数据是字符串经过Eval过程
             var = (T) ConverterUtils.convert(toType, oriObject);
-        else if (oriObject instanceof GlobalProperty)
+        else if (oriObject instanceof FieldProperty)
             //原始数据是GlobalProperty直接get
-            var = ((GlobalProperty) oriObject).getValue(toType, defaultValue);
+            var = ((FieldProperty) oriObject).getValue(toType, defaultValue);
         else
             //其他类型不予处理（数据就是要的值）
             var = (T) oriObject;
