@@ -22,7 +22,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.hasor.core.context.AnnoModule;
+import net.hasor.core.module.AnnoModule;
 /**
  * 插件体系支持
  * @version : 2013-4-8
@@ -32,7 +32,7 @@ import net.hasor.core.context.AnnoModule;
 public class PluginsSupportModule implements Module {
     /**初始化.*/
     public void init(ApiBinder apiBinder) {
-        Set<Class<?>> pluginSet = apiBinder.getClassSet(Plugin.class);
+        Set<Class<?>> pluginSet = apiBinder.findClass(Plugin.class);
         if (pluginSet == null)
             return;
         //
@@ -47,6 +47,7 @@ public class PluginsSupportModule implements Module {
                 Hasor.logInfo("loadPlugin %s.", pluginClass);
                 hasorPlugin.loadPlugin(apiBinder);
                 loadState.put(pluginClass, "<-- OK.");
+                apiBinder.bindingType(HasorPlugin.class).toInstance(hasorPlugin);
             } catch (Throwable e) {
                 loadState.put(pluginClass, "<-- Error.");
                 Hasor.logError("config Plugin error at %s.%s", pluginClass, e);

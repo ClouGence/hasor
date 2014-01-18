@@ -46,7 +46,6 @@ public class InputStreamSettings extends AbstractBaseSettings implements IOSetti
             Hasor.assertIsNotNull(ins);
             this.addStream(ins);
         }
-        this.loadSettings();
     }
     //
     //

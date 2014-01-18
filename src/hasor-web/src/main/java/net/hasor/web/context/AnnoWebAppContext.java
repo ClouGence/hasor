@@ -17,6 +17,7 @@ package net.hasor.web.context;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.servlet.ServletContext;
@@ -48,11 +49,11 @@ import com.google.inject.Provider;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AnnoWebAppContext extends AnnoStandardAppContext implements WebAppContext {
-    public AnnoWebAppContext(ServletContext servletContext) throws IOException {
+    public AnnoWebAppContext(ServletContext servletContext) throws IOException, URISyntaxException {
         this((String) null, servletContext);
     }
     /***/
-    public AnnoWebAppContext(String mainSettings, ServletContext servletContext) throws IOException {
+    public AnnoWebAppContext(String mainSettings, ServletContext servletContext) throws IOException, URISyntaxException {
         super(mainSettings, servletContext);
     }
     /***/
@@ -70,11 +71,11 @@ public class AnnoWebAppContext extends AnnoStandardAppContext implements WebAppC
     }
     protected Injector createInjector(Module[] guiceModules) {
         Module webModule = new Module() {
-            public void configure(Binder binder) {
+            public void configure(Binder guiceBinder) {
                 /*Bind*/
-                binder.bind(ManagedServletPipeline.class).asEagerSingleton();
-                binder.bind(FilterPipeline.class).to(ManagedFilterPipeline.class).asEagerSingleton();
-                binder.bind(SessionListenerPipeline.class).to(ManagedSessionListenerPipeline.class).asEagerSingleton();
+                guiceBinder.bind(ManagedServletPipeline.class).asEagerSingleton();
+                guiceBinder.bind(FilterPipeline.class).to(ManagedFilterPipeline.class).asEagerSingleton();
+                guiceBinder.bind(SessionListenerPipeline.class).to(ManagedSessionListenerPipeline.class).asEagerSingleton();
             }
         };
         //2.追加Guice Module
@@ -88,48 +89,51 @@ public class AnnoWebAppContext extends AnnoStandardAppContext implements WebAppC
     protected WebEnvironment createEnvironment() {
         return new WebStandardEnvironment(this.getMainSettings(), (ServletContext) this.getContext());
     }
-    protected AbstractApiBinder newApiBinder(final ModulePropxy forModule, Binder binder) {
-        return new WebApiBinderModule(binder, (WebEnvironment) this.getEnvironment()) {
-            public DependencySettings dependency() {
+    protected AbstractApiBinder newApiBinder(final ModulePropxy forModule, final Binder guiceBinder) {
+        return new WebApiBinderModule((WebEnvironment) this.getEnvironment()) {
+            public ModuleSettings configModule() {
                 return forModule;
+            }
+            public Binder getGuiceBinder() {
+                return guiceBinder;
             }
         };
     }
-    protected void doBind(Binder binder) {
-        super.doBind(binder);
+    protected void doBind(Binder guiceBinder) {
+        super.doBind(guiceBinder);
         /*绑定ServletRequest对象的Provider*/
-        binder.bind(ServletRequest.class).toProvider(new Provider<ServletRequest>() {
+        guiceBinder.bind(ServletRequest.class).toProvider(new Provider<ServletRequest>() {
             public ServletRequest get() {
                 return RuntimeFilter.getLocalRequest();
             }
         });
         /*绑定HttpServletRequest对象的Provider*/
-        binder.bind(HttpServletRequest.class).toProvider(new Provider<HttpServletRequest>() {
+        guiceBinder.bind(HttpServletRequest.class).toProvider(new Provider<HttpServletRequest>() {
             public HttpServletRequest get() {
                 return RuntimeFilter.getLocalRequest();
             }
         });
         /*绑定ServletResponse对象的Provider*/
-        binder.bind(ServletResponse.class).toProvider(new Provider<ServletResponse>() {
+        guiceBinder.bind(ServletResponse.class).toProvider(new Provider<ServletResponse>() {
             public ServletResponse get() {
                 return RuntimeFilter.getLocalResponse();
             }
         });
         /*绑定HttpServletResponse对象的Provider*/
-        binder.bind(HttpServletResponse.class).toProvider(new Provider<HttpServletResponse>() {
+        guiceBinder.bind(HttpServletResponse.class).toProvider(new Provider<HttpServletResponse>() {
             public HttpServletResponse get() {
                 return RuntimeFilter.getLocalResponse();
             }
         });
         /*绑定HttpSession对象的Provider*/
-        binder.bind(HttpSession.class).toProvider(new Provider<HttpSession>() {
+        guiceBinder.bind(HttpSession.class).toProvider(new Provider<HttpSession>() {
             public HttpSession get() {
                 HttpServletRequest req = RuntimeFilter.getLocalRequest();
                 return (req != null) ? req.getSession(true) : null;
             }
         });
         /*绑定ServletContext对象的Provider*/
-        binder.bind(ServletContext.class).toProvider(new Provider<ServletContext>() {
+        guiceBinder.bind(ServletContext.class).toProvider(new Provider<ServletContext>() {
             public ServletContext get() {
                 return getServletContext();
             }

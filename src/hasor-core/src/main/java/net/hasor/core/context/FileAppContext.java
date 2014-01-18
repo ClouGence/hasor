@@ -29,22 +29,22 @@ import org.more.UnhandledException;
 public class FileAppContext extends SimpleAppContext {
     /***/
     public FileAppContext(String mainSettings) {
-        mainSettings = Hasor.assertIsNotNull(mainSettings);
+        Hasor.assertIsNotNull(mainSettings);
         this.mainSettings = new File(mainSettings);
     }
     /***/
     public FileAppContext(File mainSettings) {
-        mainSettings = Hasor.assertIsNotNull(mainSettings);
+        Hasor.assertIsNotNull(mainSettings);
         this.mainSettings = mainSettings;
     }
     /***/
     public FileAppContext(String mainSettings, Object context) {
-        mainSettings = Hasor.assertIsNotNull(mainSettings);
+        Hasor.assertIsNotNull(mainSettings);
         this.mainSettings = new File(mainSettings);
         this.setContext(context);
     }
     public FileAppContext(File mainSettings, Object context) {
-        mainSettings = Hasor.assertIsNotNull(mainSettings);
+        Hasor.assertIsNotNull(mainSettings);
         this.mainSettings = mainSettings;
         this.setContext(context);
     }

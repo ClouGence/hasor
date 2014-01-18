@@ -37,7 +37,6 @@ import net.hasor.core.XmlNode;
 import net.hasor.core.event.StandardEventManager;
 import org.more.UnhandledException;
 import org.more.util.ResourceWatch;
-import org.more.util.ScanClassPath;
 import org.more.util.StringUtils;
 import org.more.util.map.DecSequenceMap;
 /**
@@ -58,8 +57,15 @@ public abstract class AbstractEnvironment implements Environment {
     public boolean isDebug() {
         return this.settings.getBoolean("hasor.debug", false);
     }
-    public Set<Class<?>> getClassSet(Class<?> featureType) {
-        return ScanClassPath.getClassSet(this.spanPackage, featureType);
+    /**设置扫描路径*/
+    public void setSpanPackage(String[] spanPackage) {
+        this.spanPackage = spanPackage;
+    }
+    public String[] getSpanPackage() {
+        return spanPackage;
+    }
+    public Set<Class<?>> findClass(Class<?> featureType) {
+        return this.getSettings().findClass(featureType, this.spanPackage);
     }
     public Settings getSettings() {
         return this.settings;
@@ -168,7 +174,7 @@ public abstract class AbstractEnvironment implements Environment {
         settingWatch.setCheckSeepTime(interval);
         /*注册一个配置文件监听器，当配置文件更新时通知监听器更新检测间隔*/
         this.addSettingsListener(new SettingsListener() {
-            public void onLoadConfig(Settings newConfig) {
+            public void reload(Settings newConfig) {
                 long interval = newConfig.getLong("hasor.settingsMonitor.interval", 15000L);
                 if (interval != settingWatch.getCheckSeepTime()) {
                     Hasor.logInfo("SettingWatch to monitor configuration updates, set interval new Value is %s", interval);
@@ -186,7 +192,7 @@ public abstract class AbstractEnvironment implements Environment {
     /**触发配置文件重载事件。*/
     protected void onSettingChangeEvent() {
         for (SettingsListener listener : this.settingListenerList)
-            listener.onLoadConfig(this.getSettings());
+            listener.reload(this.getSettings());
     }
     /**添加配置文件变更监听器。*/
     public void addSettingsListener(SettingsListener settingsListener) {
@@ -230,13 +236,13 @@ public abstract class AbstractEnvironment implements Environment {
         }
         public synchronized void start() {
             this.setName("MasterConfiguration-Watch");
-            Hasor.logWarn("settings Watch started thread name is %s.", this.getName());
+            Hasor.logInfo("settings Watch started thread name is %s.", this.getName());
             this.setDaemon(true);
             URI mainConfig = this.env.getSettingURI();
             //2.启动监听器
             try {
                 if (mainConfig == null) {
-                    Hasor.logWarn("do not loading master settings file.");
+                    Hasor.logWarn("ignore the master setting file, Watch Thread exit.");
                     return;
                 }
                 this.setResourceURI(this.env.getSettingURI());
@@ -249,7 +255,7 @@ public abstract class AbstractEnvironment implements Environment {
     }
     //-------------------------------------------------------------------------------------Env Vars
     /** 该类负责处理环境变量相关操作*/
-    protected static class EnvVars implements SettingsListener {
+    protected class EnvVars implements SettingsListener {
         /*所属的Environment*/
         private AbstractEnvironment env;
         /*最终使用的环境变量Map*/
@@ -261,7 +267,7 @@ public abstract class AbstractEnvironment implements Environment {
             this.env = Hasor.assertIsNotNull(env, "InitContext type parameter is empty!");
             this.userEnvMap = new HashMap<String, String>();
             this.env.addSettingsListener(this);
-            this.onLoadConfig(this.env.getSettings());
+            this.reload(this.env.getSettings());
         }
         public void addEnvVar(String envName, String envValue) {
             if (StringUtils.isBlank(envName)) {
@@ -298,7 +304,7 @@ public abstract class AbstractEnvironment implements Environment {
         /**特殊配置的环境变量*/
         protected Map<String, String> configEnvironment() {
             Settings settings = this.env.getSettings();
-            XmlNode[] xmlPropArray = settings.getXmlPropertyArray("environmentVar");
+            XmlNode[] xmlPropArray = settings.getXmlPropertyArray("hasor.environmentVar");
             List<String> envNames = new ArrayList<String>();//用于收集环境变量名称
             for (XmlNode xmlProp : xmlPropArray) {
                 for (XmlNode envItem : xmlProp.getChildren())
@@ -306,9 +312,9 @@ public abstract class AbstractEnvironment implements Environment {
             }
             Map<String, String> hasorEnv = new HashMap<String, String>();
             for (String envItem : envNames)
-                hasorEnv.put(envItem, settings.getString("environmentVar." + envItem));
+                hasorEnv.put(envItem, settings.getString("hasor.environmentVar." + envItem));
             /*单独处理work_home*/
-            String workDir = settings.getString("environmentVar.HASOR_WORK_HOME", "./");
+            String workDir = settings.getString("hasor.environmentVar.HASOR_WORK_HOME", "./");
             workDir = workDir.replace("/", File.separator);
             if (workDir.startsWith("." + File.separatorChar))
                 hasorEnv.put("HASOR_WORK_HOME", new File(System.getProperty("user.dir"), workDir.substring(2)).getAbsolutePath());
@@ -320,7 +326,7 @@ public abstract class AbstractEnvironment implements Environment {
          * SettingListener 接口实现
          *   实现该接口的目的是，通过注册SettingListener动态更新环境变量相关信息。
          */
-        public void onLoadConfig(Settings newConfig) {
+        public void reload(Settings newConfig) {
             //1.系统环境变量 & Java系统属性
             Map<String, String> systemEnv = new HashMap<String, String>();
             systemEnv.putAll(System.getenv());
@@ -362,26 +368,28 @@ public abstract class AbstractEnvironment implements Environment {
                 keyMaxSize = keyMaxSize + 2;
                 StringBuffer sb = new StringBuffer();
                 sb.append("EnvVars:");
-                if (!systemEnv.isEmpty()) {
-                    sb.append("\n" + StringUtils.fixedString('-', 100));
-                    sb.append("\n" + formatMap4log(keyMaxSize, systemEnv));
-                }
-                if (!javaProp.isEmpty()) {
-                    sb.append("\n" + StringUtils.fixedString('-', 100));
-                    sb.append("\n" + formatMap4log(keyMaxSize, javaProp));
+                if (isDebug()) {
+                    if (!systemEnv.isEmpty()) {
+                        sb.append("\n" + formatMap4log(keyMaxSize, systemEnv));
+                        sb.append("\n" + StringUtils.fixedString('-', 50));
+                    }
+                    if (!javaProp.isEmpty()) {
+                        sb.append("\n" + formatMap4log(keyMaxSize, javaProp));
+                        sb.append("\n" + StringUtils.fixedString('-', 50));
+                    }
                 }
                 if (!hasorEnv.isEmpty()) {
-                    sb.append("\n" + StringUtils.fixedString('-', 100));
                     sb.append("\n" + formatMap4log(keyMaxSize, hasorEnv));
+                    sb.append("\n" + StringUtils.fixedString('-', 50));
                 }
                 if (!userEnvMap.isEmpty()) {
-                    sb.append("\n" + StringUtils.fixedString('-', 100));
                     sb.append("\n" + formatMap4log(keyMaxSize, userEnvMap));
+                    sb.append("\n" + StringUtils.fixedString('-', 50));
                 }
                 Hasor.logInfo(sb.toString());
             }
         }
-        private static String formatMap4log(int colWidth, Map<String, String> mapData) {
+        private String formatMap4log(int colWidth, Map<String, String> mapData) {
             /*输出系统环境变量日志*/
             StringBuffer outLog = new StringBuffer("");
             for (String key : mapData.keySet()) {

@@ -17,8 +17,8 @@ package net.hasor.plugins.controller.support;
 import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
 import net.hasor.core.plugin.Plugin;
-import net.hasor.web.AbstractWebHasorPlugin;
 import net.hasor.web.WebApiBinder;
+import net.hasor.web.plugin.AbstractWebHasorPlugin;
 /**
  * 
  * @version : 2013-9-26

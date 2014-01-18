@@ -25,6 +25,7 @@ import com.google.inject.Provider;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface AppContext {
+    //
     //----------------------------------------------------------------------------------Event
     /**容器事件，在所有模块初始化之后引发。
      * @see net.hasor.core.context.AbstractAppContext*/
@@ -52,7 +53,8 @@ public interface AppContext {
     /**通过名称创建bean实例，使用guice，如果获取的bean不存在则会引发{@link UndefinedException}类型异常。*/
     public <T> T getBean(String name);
     /**通过类型创建该类实例，使用guice*/
-    public <T> T getInstance(Class<T> beanType);
+    public <T> T getInstance(Class<T> targetClass);
+    //
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
     public <T> List<T> findBeanByType(Class<T> bindingType);
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
@@ -69,8 +71,6 @@ public interface AppContext {
     public Object getContext();
     /**获取系统启动时间*/
     public long getStartTime();
-    /**表示AppContext是否准备好。*/
-    public boolean isReady();
     /**获取应用程序配置。*/
     public Settings getSettings();
     /**获取环境接口。*/
@@ -80,9 +80,11 @@ public interface AppContext {
     /**获得所有模块*/
     public ModuleInfo[] getModules();
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
-    public Set<Class<?>> getClassSet(Class<?> featureType);
+    public Set<Class<?>> findClass(Class<?> featureType);
     //
     //----------------------------------------------------------------------------------Life
+    /**表示AppContext是否准备好。*/
+    public boolean isReady();
     /**启动。向所有模块发送启动信号，并将容器的状态置为Start。（该方法会尝试init所有模块）*/
     public void start();
     /**停止。向所有模块发送停止信号，并将容器的状态置为Stop。*/

@@ -65,6 +65,7 @@ public class DataSourcePlugin extends AbstractHasorPlugin {
                         Hasor.logInfo("¡®%s¡¯ dataSource is default.", name);
                     }
                 } catch (Throwable e) {
+                    apiBinder.getGuiceBinder().addError(e);
                     Hasor.logError(" %s dataSource error.%s", name, e);
                 }
             }

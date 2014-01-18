@@ -42,11 +42,9 @@ import com.google.inject.name.Names;
 public abstract class AbstractApiBinder implements ApiBinder, Module {
     private Environment           environment = null;
     private BeanInfoModuleBuilder beanBuilder = new BeanInfoModuleBuilder(); /*Beans*/
-    public Binder                 guiceBinder = null;
     //
-    protected AbstractApiBinder(Binder guiceBinder, Environment envContext) {
+    protected AbstractApiBinder(Environment envContext) {
         this.environment = envContext;
-        this.guiceBinder = guiceBinder;
     }
     public void configure(Binder binder) {
         binder.install(this.beanBuilder);
@@ -57,19 +55,17 @@ public abstract class AbstractApiBinder implements ApiBinder, Module {
     public EventManager getEventManager() {
         return this.getEnvironment().getEventManager();
     }
-    public Binder getGuiceBinder() {
-        return this.guiceBinder;
-    }
+    public abstract Binder getGuiceBinder();
     //    /**获取所属模块*/
     //    public ModuleInfo getModuleInfo() {
     //        return this.forModule;
     //    }
-    public Set<Class<?>> getClassSet(Class<?> featureType) {
+    public Set<Class<?>> findClass(Class<?> featureType) {
         if (featureType == null)
             return null;
-        return this.getEnvironment().getClassSet(featureType);
+        return this.getEnvironment().findClass(featureType);
     }
-    public BeanBindingBuilder newBean(String beanName) {
+    public BeanBindingBuilder defineBean(String beanName) {
         if (StringUtils.isBlank(beanName) == true)
             throw new NullPointerException(beanName);
         return this.beanBuilder.newBeanDefine(this.getGuiceBinder()).aliasName(beanName);
@@ -90,7 +86,6 @@ public abstract class AbstractApiBinder implements ApiBinder, Module {
     public <T> ScopedBindingBuilder bindingType(Class<T> type, Key<? extends T> targetKey) {
         return this.bindingType(type).to(targetKey);
     }
-    //
     public <T> LinkedBindingBuilder<T> bindingType(String withName, Class<T> type) {
         return this.getGuiceBinder().bind(type).annotatedWith(Names.named(withName));
     }
@@ -111,33 +106,33 @@ public abstract class AbstractApiBinder implements ApiBinder, Module {
         /*BeanInfo 定义*/
         private final List<BeanMetaData> beanMetaDataList = new ArrayList<BeanMetaData>();
         //
-        public BeanBindingBuilder newBeanDefine(Binder binder) {
-            return new BeanBindingBuilderImpl(binder);
+        public BeanBindingBuilder newBeanDefine(Binder guiceBinder) {
+            return new BeanBindingBuilderImpl(guiceBinder);
         }
-        public void configure(Binder binder) {
+        public void configure(Binder guiceBinder) {
             /*将BeanInfo绑定到Guice身上，在正式使用时利用findBindingsByType方法将其找回来。*/
             for (BeanMetaData define : this.beanMetaDataList)
-                binder.bind(BeanMetaData.class).annotatedWith(UniqueAnnotations.create()).toInstance(define);
+                guiceBinder.bind(BeanMetaData.class).annotatedWith(UniqueAnnotations.create()).toInstance(define);
         }
         /*-----------------------------------------------------------------------------------------*/
         /** LinkedBindingBuilder接口的代理实现 */
         private class BeanBindingBuilderImpl implements BeanBindingBuilder {
-            private Binder            binder = null;
-            private ArrayList<String> names  = new ArrayList<String>();
-            public BeanBindingBuilderImpl(Binder binder) {
-                this.binder = binder;
+            private Binder            guiceBinder = null;
+            private ArrayList<String> names       = new ArrayList<String>();
+            public BeanBindingBuilderImpl(Binder guiceBinder) {
+                this.guiceBinder = guiceBinder;
             }
             public BeanBindingBuilder aliasName(String aliasName) {
                 this.names.add(aliasName);
                 return this;
             }
-            public <T> LinkedBindingBuilder<T> bindType(Class<T> beanClass) {
+            public <T> LinkedBindingBuilder<T> bindType(Class<T> beanType) {
                 if (this.names.isEmpty() == true)
                     throw new UnsupportedOperationException("the bean name is undefined!");
-                LinkedBindingBuilder<T> beanBuilder = binder.bind(beanClass);
+                LinkedBindingBuilder<T> beanBuilder = this.guiceBinder.bind(beanType);
                 String[] aliasNames = this.names.toArray(new String[this.names.size()]);
                 for (String nameItem : this.names) {
-                    BeanMetaData beanInfo = new BeanMetaData(nameItem, aliasNames, beanClass);
+                    BeanMetaData beanInfo = new BeanMetaData(nameItem, aliasNames, beanType);
                     beanMetaDataList.add(beanInfo);
                 }
                 return beanBuilder;

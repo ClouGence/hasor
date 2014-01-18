@@ -23,8 +23,8 @@ import javax.servlet.Filter;
 import javax.servlet.http.HttpServlet;
 import net.hasor.core.Hasor;
 import net.hasor.core.plugin.Plugin;
-import net.hasor.web.AbstractWebHasorPlugin;
 import net.hasor.web.WebApiBinder;
+import net.hasor.web.plugin.AbstractWebHasorPlugin;
 import org.more.util.StringUtils;
 /**
  * 
@@ -45,7 +45,7 @@ public class JavaEEPlugin extends AbstractWebHasorPlugin {
     /**装载Filter*/
     protected void loadFilter(WebApiBinder apiBinder) {
         //1.获取
-        Set<Class<?>> webFilterSet = apiBinder.getClassSet(WebFilter.class);
+        Set<Class<?>> webFilterSet = apiBinder.findClass(WebFilter.class);
         if (webFilterSet == null)
             return;
         List<Class<? extends Filter>> webFilterList = new ArrayList<Class<? extends Filter>>();
@@ -70,7 +70,7 @@ public class JavaEEPlugin extends AbstractWebHasorPlugin {
     /**装载Servlet*/
     protected void loadServlet(WebApiBinder apiBinder) {
         //1.获取
-        Set<Class<?>> webServletSet = apiBinder.getClassSet(WebServlet.class);
+        Set<Class<?>> webServletSet = apiBinder.findClass(WebServlet.class);
         if (webServletSet == null)
             return;
         List<Class<? extends HttpServlet>> webServletList = new ArrayList<Class<? extends HttpServlet>>();

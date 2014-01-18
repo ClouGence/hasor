@@ -3,6 +3,22 @@
     01.修复 AbstractAppContext 类处理 AppContextAware 接口方面的代码。
         --当类扫描器扫描不到 AppContextAware 接口实现类时能引发整个doStart阶段的退出。
     02.修复当使用 @Listener 注解注册容器事件时，导致ContextEvent_Initialized、ContextEvent_Started 两个事件无法正确调用的问题。
+    03.修复当配置文件中，根节点下第一层节点名称如果与根节点同名，导致的数据混乱问题。
+    04.修复 new AnnoStandardAppContext() 引发的Bug。
+    05.修复 FileEnvironment 在创建 FileSettings 时候导致重复加载配置文件的问题。
+* 新增:
+    01.Settings 通过映射 key "." 可以取得根节点。
+    02.新增 @GlobalAop 配置全局拦截器。
+    03.新增 PluginHelper 工具类，可以将一个插件转换成为 Hasor 的 Module。
+    04.Settings 接口新增可以设置新值的功能。
+    05.Environment 接口新增可以设置包扫描范围的方法。
+    06.AbstractAppContext 类新增 addGuiceModule 方法可以直接将 Guice 模块加入到 Hasor 中。
+* 改进:
+    01.Settings接口的 getNameSpace 方法改名为 getSetting。
+    02.改造 Hasor 的类扫描机制，从 Class.forName 改为字节码解析（性能上仍需要进一步优化）。
+    03.部分接口方法名称更换。
+    04.修改 Cache 接口的 clean 方法名为 cleanCache，以避免和 Map 接口冲突。
+    05.GlobalProperty接口更名为FieldProperty
 
 
 ===== Hasor-Core v0.0.6

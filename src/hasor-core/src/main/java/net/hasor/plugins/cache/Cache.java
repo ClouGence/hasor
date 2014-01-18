@@ -31,7 +31,7 @@ public interface Cache {
     /**删除某个缓存的内容。*/
     public boolean remove(Serializable key);
     /**清空缓存。*/
-    public boolean clear();
+    public boolean clearCache();
     /**目前缓存大小。*/
     public int size();
     /**获取缓存中Keys。*/

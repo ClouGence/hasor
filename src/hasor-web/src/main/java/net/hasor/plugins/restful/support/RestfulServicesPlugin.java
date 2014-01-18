@@ -17,8 +17,8 @@ package net.hasor.plugins.restful.support;
 import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
 import net.hasor.core.plugin.Plugin;
-import net.hasor.web.AbstractWebHasorPlugin;
 import net.hasor.web.WebApiBinder;
+import net.hasor.web.plugin.AbstractWebHasorPlugin;
 /**
  * Restful服务启动类.
  * @version : 2013-4-8

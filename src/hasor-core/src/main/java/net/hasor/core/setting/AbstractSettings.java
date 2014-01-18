@@ -36,9 +36,10 @@ import org.more.util.StringUtils;
 public abstract class AbstractSettings implements Settings {
     protected abstract Map<String, Object> getSettingsMap();
     /**获取指在某个特定命名空间下的Settings接口对象。*/
-    public abstract AbstractSettings getNamespace(String namespace);
+    public abstract AbstractSettings getSettings(String namespace);
+    //
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类）*/
-    public Set<Class<?>> getClassSet(Class<?> featureType, String[] loadPackages) {
+    public Set<Class<?>> findClass(Class<?> featureType, String[] loadPackages) {
         if (featureType == null)
             return null;
         if (loadPackages == null)
@@ -46,12 +47,12 @@ public abstract class AbstractSettings implements Settings {
         return ScanClassPath.getClassSet(loadPackages, featureType);
     }
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类）*/
-    public Set<Class<?>> getClassSet(Class<?> featureType, String loadPackages) {
+    public Set<Class<?>> findClass(Class<?> featureType, String loadPackages) {
         if (featureType == null)
             return null;
         loadPackages = (loadPackages == null) ? "" : loadPackages;
         String[] spanPackage = loadPackages.split(",");
-        return this.getClassSet(featureType, spanPackage);
+        return this.findClass(featureType, spanPackage);
     }
     /**解析全局配置参数，并且返回toType参数指定的类型。*/
     public final <T> T getToType(String name, Class<T> toType, T defaultValue) {
@@ -63,9 +64,9 @@ public abstract class AbstractSettings implements Settings {
         if (oriObject instanceof String)
             //原始数据是字符串经过Eval过程
             var = (T) ConverterUtils.convert(toType, oriObject);
-        else if (oriObject instanceof GlobalProperty)
+        else if (oriObject instanceof FieldProperty)
             //原始数据是GlobalProperty直接get
-            var = ((GlobalProperty) oriObject).getValue(toType, defaultValue);
+            var = ((FieldProperty) oriObject).getValue(toType, defaultValue);
         else
             //其他类型不予处理（数据就是要的值）
             var = (T) oriObject;
@@ -76,12 +77,15 @@ public abstract class AbstractSettings implements Settings {
     }
     public <T> T[] getToTypeArray(String name, Class<T> toType, T defaultValue) {
         ArrayList<T> targetObjects = new ArrayList<T>();
-        for (String url : this.getNamespaceArray()) {
-            T targetObject = this.getNamespace(url).getToType(name, toType, defaultValue);
+        for (String url : this.getSettingArray()) {
+            T targetObject = this.getSettings(url).getToType(name, toType, defaultValue);
             if (targetObject == null)
                 continue;//空
             //
             targetObjects.add(targetObject);
+        }
+        if (targetObjects.isEmpty() && defaultValue != null) {
+            targetObjects.add(defaultValue);
         }
         return targetObjects.toArray((T[]) Array.newInstance(toType, targetObjects.size()));
     }
@@ -328,8 +332,8 @@ public abstract class AbstractSettings implements Settings {
     }
     public String[] getFilePathArray(String name, String defaultValue) {
         ArrayList<String> filePaths = new ArrayList<String>();
-        for (String url : this.getNamespaceArray()) {
-            String filePath = this.getNamespace(url).getFilePath(name, defaultValue);
+        for (String url : this.getSettingArray()) {
+            String filePath = this.getSettings(url).getFilePath(name, defaultValue);
             if (filePath == null || filePath.length() == 0)
                 continue;//空
             //
@@ -362,8 +366,8 @@ public abstract class AbstractSettings implements Settings {
     }
     public String[] getDirectoryPathArray(String name, String defaultValue) {
         ArrayList<String> directoryPaths = new ArrayList<String>();
-        for (String url : this.getNamespaceArray()) {
-            String filePath = this.getNamespace(url).getDirectoryPath(name, defaultValue);
+        for (String url : this.getSettingArray()) {
+            String filePath = this.getSettings(url).getDirectoryPath(name, defaultValue);
             if (filePath == null || filePath.length() == 0)
                 continue;//空
             //

@@ -22,5 +22,5 @@ import java.util.EventListener;
  */
 public interface SettingsListener extends EventListener {
     /**当接收到配置文件重载事件时触发该方法。*/
-    public void onLoadConfig(Settings newConfig);
+    public void reload(Settings newConfig);
 }

@@ -25,15 +25,18 @@ import java.util.Set;
  */
 public interface Settings {
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类）*/
-    public Set<Class<?>> getClassSet(Class<?> featureType, String[] loadPackages);
+    public Set<Class<?>> findClass(Class<?> featureType, String[] loadPackages);
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类）*/
-    public Set<Class<?>> getClassSet(Class<?> featureType, String loadPackages);
+    public Set<Class<?>> findClass(Class<?> featureType, String loadPackages);
     /**获取指在某个特定命名空间下的Settings接口对象。*/
-    public String[] getNamespaceArray();
+    public String[] getSettingArray();
     /**获取指在某个特定命名空间下的Settings接口对象。*/
-    public Settings getNamespace(String namespace);
+    public Settings getSettings(String namespace);
     /**强制重新装载配置文件。*/
     public void refresh() throws IOException;
+    //
+    /**设置参数。*/
+    public void setSettings(String key, Object value, String namespace);
     //
     /**解析全局配置参数，并且返回其{@link Character}形式对象。*/
     public Character getChar(String name);

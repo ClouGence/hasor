@@ -8,7 +8,7 @@
 
 	<groupId>net.hasor</groupId>
 	<artifactId>hasor-parent</artifactId>
-	<version>0.0.2</version>
+	<version>0.0.3</version>
 	<packaging>pom</packaging>
 
 	<!-- 项目信息 -->
@@ -50,13 +50,13 @@
 					<skip>true</skip>
 				</configuration>
 			</plugin>
-			<!-- compiler use JDK 1.5 -->
+			<!-- compiler use JDK 1.6 -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
+					<source>1.6</source>
+					<target>1.6</target>
 					<encoding>GBK</encoding>
 				</configuration>
 			</plugin>

@@ -21,5 +21,5 @@ import net.hasor.core.ApiBinder;
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
 public interface HasorPlugin {
-    public void loadPlugin(ApiBinder apiBinder);
+    public void loadPlugin(ApiBinder apiBinder) throws Throwable;
 }

@@ -91,7 +91,7 @@ public abstract class ResourcesUtils {
          * @param event 找到资源事件。
          * @param isInJar 找到的资源是否处在jar文件里。
          */
-        public void found(ScanEvent event, boolean isInJar);
+        public void found(ScanEvent event, boolean isInJar) throws IOException;
     };
     /*------------------------------------------------------------------------------*/
     private static String formatResource(String resourcePath) {
@@ -207,7 +207,7 @@ public abstract class ResourcesUtils {
     }
     /*------------------------------------------------------------------------------*/
     /**对某一个目录执行扫描。*/
-    private static void scanDir(File dirFile, String wild, ScanItem item, File contextDir) {
+    private static void scanDir(File dirFile, String wild, ScanItem item, File contextDir) throws IOException {
         String contextPath = contextDir.getAbsolutePath().replace("\\", "/");
         //1.如果进来的就是一个文件。
         if (dirFile.isDirectory() == false) {

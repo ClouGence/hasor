@@ -21,9 +21,9 @@ package net.hasor.core;
  */
 public interface Module {
     /**初始化过程，注意：apiBinder 参数只能在 init 阶段中使用。*/
-    public void init(ApiBinder apiBinder);
+    public void init(ApiBinder apiBinder) throws Throwable;
     /**启动信号*/
-    public void start(AppContext appContext);
+    public void start(AppContext appContext) throws Throwable;
     /**停止信号*/
-    public void stop(AppContext appContext);
+    public void stop(AppContext appContext) throws Throwable;
 }

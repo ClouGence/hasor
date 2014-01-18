@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import net.hasor.core.Hasor;
 import org.more.util.map.DecSequenceMap;
 /***
  * 基本支持。
@@ -42,29 +43,45 @@ public abstract class AbstractBaseSettings extends AbstractSettings {
     }
     //
     /**获取指在某个特定命名空间下的Settings接口对象。*/
-    public String[] getNamespaceArray() {
+    public String[] getSettingArray() {
         Set<String> nsSet = this.getNamespaceSettingMap().keySet();
         return nsSet.toArray(new String[nsSet.size()]);
     }
+    /**设置参数。*/
+    public void setSettings(String key, Object value, String namespace) {
+        Map<String, Map<String, Object>> nsMap = this.getNamespaceSettingMap();//所有命名空间的数据
+        Map<String, Object> atMap = nsMap.get(namespace);//要 put 的命名空间数据
+        //
+        if (atMap == null) {
+            atMap = new HashMap<String, Object>();
+            nsMap.put(namespace, atMap);
+        }
+        String putKey = key.toLowerCase();
+        Hasor.logInfo("set Setting %s = %s.", putKey, value);
+        atMap.put(putKey, value);
+    }
     //
     /**获取指在某个特定命名空间下的Settings接口对象。*/
-    public final AbstractSettings getNamespace(String namespace) {
+    public final AbstractSettings getSettings(final String namespace) {
         final AbstractSettings setting = this;
         final Map<String, Object> data = this.getNamespaceSettingMap().get(namespace);
         if (data == null)
             return null;
         return new AbstractSettings() {
-            public void refresh() throws IOException {
-                throw new UnsupportedOperationException();
+            public void refresh() throws IOException {/**/}
+            public AbstractSettings getSettings(String namespace) {
+                return setting.getSettings(namespace);
             }
-            public AbstractSettings getNamespace(String namespace) {
-                return setting.getNamespace(namespace);
-            }
-            public String[] getNamespaceArray() {
-                return setting.getNamespaceArray();
+            public String[] getSettingArray() {
+                return setting.getSettingArray();
             }
             public Map<String, Object> getSettingsMap() {
                 return data;
+            }
+            public void setSettings(String key, Object value, String namespace2) {
+                if (namespace.equals(namespace2) == false)
+                    throw new UnsupportedOperationException();
+                data.put(key, value);
             }
         };
     }

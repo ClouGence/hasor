@@ -106,11 +106,17 @@ public class SaxXmlParser extends DefaultHandler {
             HashMap<String, Object> finalReturnData = new HashMap<String, Object>();
             for (Entry<String, Object> data : dataMap.entrySet()) {
                 String keyStr = data.getKey();
-                keyStr = keyStr.substring(keyStr.indexOf(".") + 1);
-                finalReturnData.put(keyStr.toLowerCase(), data.getValue());
+                Object valStr = data.getValue();
+                //
+                if (keyStr.indexOf(".") > 0) {
+                    keyStr = keyStr.substring(keyStr.indexOf(".") + 1);
+                    finalReturnData.put(keyStr.toLowerCase(), valStr);
+                } else {
+                    finalReturnData.put(".", valStr);
+                }
             }
             dataMap = finalReturnData;
-            //3.处理多值合并问题（采用覆盖和追加的策略）
+            //3.输出映射结果，并处理多值合并问题（采用覆盖和追加的策略）
             for (String key : dataMap.keySet()) {
                 String $key = key.toLowerCase();
                 Object $var = dataMap.get(key);
@@ -133,8 +139,11 @@ public class SaxXmlParser extends DefaultHandler {
                     $final.getChildren().addAll($newChildren);
                     Collections.reverse($final.getChildren());
                     dataContainer.get(currentXmlns).put($key, $final);
-                } else
+                } else {
                     dataContainer.get(currentXmlns).put($key, $var);
+                }
+                //
+                //
             }
         }
     }

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import net.hasor.core.XmlNode;
-import net.hasor.core.setting.GlobalProperty;
+import net.hasor.core.setting.FieldProperty;
 import org.more.convert.ConverterUtils;
 import org.more.util.StringUtils;
 /**
@@ -28,7 +28,7 @@ import org.more.util.StringUtils;
  * @version : 2013-4-22
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-public class DefaultXmlNode implements XmlNode, GlobalProperty {
+public class DefaultXmlNode implements XmlNode, FieldProperty {
     private String              elementName       = null;
     private String              textString        = null;
     private Map<String, String> arrMap            = new HashMap<String, String>();
@@ -100,7 +100,7 @@ public class DefaultXmlNode implements XmlNode, GlobalProperty {
     public <T> T getValue(Class<T> toType, T defaultValue) {
         if (XmlNode.class.isAssignableFrom(toType) == true)
             return (T) this;
-        if (GlobalProperty.class.isAssignableFrom(toType) == true)
+        if (FieldProperty.class.isAssignableFrom(toType) == true)
             return (T) this;
         try {
             T returnData = (T) ConverterUtils.convert(toType, this.getText());

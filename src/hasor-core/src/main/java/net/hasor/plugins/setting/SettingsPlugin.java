@@ -39,7 +39,7 @@ public class SettingsPlugin extends AbstractHasorPlugin {
         //
         final Environment env = apiBinder.getEnvironment();
         EventManager eventManager = env.getEventManager();
-        eventManager.pushEventListener(ContextEvent_Started, new EventListener() {
+        eventManager.pushListener(ContextEvent_Started, new EventListener() {
             public void onEvent(String event, Object[] params) {
                 AppContext appContext = (AppContext) params[0];
                 List<Provider<SettingsListener>> settingProvider = appContext.findProviderByType(SettingsListener.class);
@@ -47,7 +47,7 @@ public class SettingsPlugin extends AbstractHasorPlugin {
                     return;
                 for (Provider<SettingsListener> provider : settingProvider) {
                     SettingsListener target = provider.get();
-                    target.onLoadConfig(appContext.getSettings());
+                    target.reload(appContext.getSettings());
                     env.addSettingsListener(target);
                     Hasor.logInfo("%s SettingsListener created.", target);
                 }
@@ -57,7 +57,7 @@ public class SettingsPlugin extends AbstractHasorPlugin {
     /**装载注解形式的SettingsListener*/
     private void loadAnnoSettings(ApiBinder apiBinder) {
         final Environment env = apiBinder.getEnvironment();
-        Set<Class<?>> settingSet = env.getClassSet(Settings.class);
+        Set<Class<?>> settingSet = env.findClass(Settings.class);
         if (settingSet == null || settingSet.isEmpty())
             return;
         for (Class<?> settingClass : settingSet) {

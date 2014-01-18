@@ -93,7 +93,7 @@ public class ModuleReactor {
             sb.append("-->");
             sb.append(info.getDisplayName());
             sb.append(" (");
-            sb.append(info.getTarget().getClass());
+            sb.append(info.getDescription());
             sb.append(")\n");
         }
         if (sb.length() > 1)
@@ -132,7 +132,7 @@ public class ModuleReactor {
             sb.append(StringUtils.fixedString(' ', (element.getDepth() + 1) * 2));
             sb.append(element.getInfo().getDisplayName());
             sb.append(" (");
-            sb.append(element.getInfo().getTarget().getClass());
+            sb.append(element.getInfo().getDescription());
             sb.append(")\n");
         }
         if (extInfo != null)

@@ -18,7 +18,7 @@ import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 import net.hasor.core.Settings;
 /**
- * 
+ * 需要经过解析读取配置文件资源的Settings
  * @version : 2013-9-9
  * @author 赵永春(zyc@hasor.net)
  */

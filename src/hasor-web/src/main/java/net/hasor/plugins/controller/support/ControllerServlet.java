@@ -88,7 +88,7 @@ class ControllerServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         ControllerSettings settings = this.appContext.getInstance(ControllerSettings.class);
-        Set<Class<?>> controllerSet = this.appContext.getClassSet(Controller.class);
+        Set<Class<?>> controllerSet = this.appContext.findClass(Controller.class);
         if (controllerSet == null)
             return;
         //2.×¢²á·þÎñ

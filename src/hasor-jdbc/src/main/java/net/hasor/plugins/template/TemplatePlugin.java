@@ -52,7 +52,7 @@ public class TemplatePlugin extends AbstractHasorPlugin {
                     dataSourceNames.add(name);
             }
         }
-        apiBinder.getEventManager().pushEventListener(AppContext.ContextEvent_Initialized, new InitializedEventListener(dataSourceNames));
+        apiBinder.getEventManager().pushListener(AppContext.ContextEvent_Initialized, new InitializedEventListener(dataSourceNames));
     }
     /**/
     private static class InitializedEventListener implements EventListener {

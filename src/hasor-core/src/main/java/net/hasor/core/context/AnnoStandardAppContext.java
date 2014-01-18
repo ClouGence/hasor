@@ -17,10 +17,12 @@ package net.hasor.core.context;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Set;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.ModuleInfo;
+import net.hasor.core.module.AnnoModule;
 import org.more.util.StringUtils;
 /**
  * 
@@ -29,11 +31,11 @@ import org.more.util.StringUtils;
  */
 public class AnnoStandardAppContext extends StandardAppContext {
     /***/
-    public AnnoStandardAppContext() throws IOException {
+    public AnnoStandardAppContext() throws IOException, URISyntaxException {
         super();
     }
     /***/
-    public AnnoStandardAppContext(String mainSettings) throws IOException {
+    public AnnoStandardAppContext(String mainSettings) throws IOException, URISyntaxException {
         super(mainSettings);
     }
     /***/
@@ -45,7 +47,7 @@ public class AnnoStandardAppContext extends StandardAppContext {
         super(mainSettings);
     }
     /***/
-    public AnnoStandardAppContext(String mainSettings, Object context) throws IOException {
+    public AnnoStandardAppContext(String mainSettings, Object context) throws IOException, URISyntaxException {
         super(mainSettings, context);
     }
     /***/
@@ -64,7 +66,7 @@ public class AnnoStandardAppContext extends StandardAppContext {
     /**×°ÔØÄ£¿é*/
     protected void loadModule() {
         //1.É¨Ãèclasspath°ü
-        Set<Class<?>> initHookSet = this.getEnvironment().getClassSet(AnnoModule.class);
+        Set<Class<?>> initHookSet = this.getEnvironment().findClass(AnnoModule.class);
         if (Hasor.isInfoLogger()) {
             StringBuffer sb = new StringBuffer();
             for (Class<?> e : initHookSet)
@@ -84,8 +86,9 @@ public class AnnoStandardAppContext extends StandardAppContext {
             //
             AnnoModule modAnno = modClass.getAnnotation(AnnoModule.class);
             String dispName = StringUtils.isBlank(modAnno.displayName()) ? modClass.getSimpleName() : modAnno.displayName();
+            String description = StringUtils.isBlank(modAnno.description()) ? modClass.getName() : modAnno.description();
             moduleInfo.setDisplayName(dispName);
-            moduleInfo.setDescription(modAnno.description());
+            moduleInfo.setDescription(description);
         }
     }
     private <T> T createModule(Class<?> listenerClass) {

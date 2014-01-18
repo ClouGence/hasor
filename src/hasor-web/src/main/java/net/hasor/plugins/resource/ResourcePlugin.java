@@ -17,8 +17,8 @@ package net.hasor.plugins.resource;
 import java.io.File;
 import net.hasor.core.Environment;
 import net.hasor.core.plugin.Plugin;
-import net.hasor.web.AbstractWebHasorPlugin;
 import net.hasor.web.WebApiBinder;
+import net.hasor.web.plugin.AbstractWebHasorPlugin;
 /**
  * 负责装载jar包中的资源。
  * @version : 2013-4-8

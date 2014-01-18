@@ -33,8 +33,12 @@ public interface Environment {
     public Settings getSettings();
     /**获取事件操作接口。*/
     public EventManager getEventManager();
+    /**设置扫描路径*/
+    public void setSpanPackage(String[] spanPackage);
+    /**获取扫描路径*/
+    public String[] getSpanPackage();
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
-    public Set<Class<?>> getClassSet(Class<?> featureType);
+    public Set<Class<?>> findClass(Class<?> featureType);
     /**释放环境所占用的资源*/
     public void release();
     /**判断是否为调试模式。*/
