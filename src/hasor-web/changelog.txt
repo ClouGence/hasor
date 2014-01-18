@@ -1,3 +1,7 @@
+===== Hasor-Web v0.0.6
+
+
+
 ===== Hasor-Web v0.0.5
 * 修复:
     1.修复 ControllerInterceptor 拦截器在调用标记了 @ControllerIgnore 方法时引发递归死循环问题。
@@ -6,7 +10,6 @@
         ServletRequest、HttpServletRequest、ServletResponse、HttpServletResponse、HttpSession、ServletContext
 * 新增:
     1.新增 JSP Tag 标签库，通过 Hasor JSP 标签库可以方便基于 jsp 的 Hasor 开发。
-
 
 ===== Hasor-Web v0.0.4
 * 改进:

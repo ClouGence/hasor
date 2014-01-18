@@ -1,6 +1,6 @@
 ===== Hasor-Jetty v0.0.2
 * 改进:
-	1.修改根POM改为 0.0.2 该版本可以处理 GBK 编码下 Javadocs 生成。
+	1.修改根POM改为 0.0.3 该版本可以处理 GBK 编码下 Javadocs 生成。
 
 ===== Hasor-Jetty v0.0.1
 * 新增:

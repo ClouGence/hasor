@@ -1,3 +1,7 @@
+===== Hasor-Core v0.0.8
+
+
+
 ===== Hasor-Core v0.0.7
 * 修复:
     01.修复 AbstractAppContext 类处理 AppContextAware 接口方面的代码。
@@ -19,7 +23,6 @@
     03.部分接口方法名称更换。
     04.修改 Cache 接口的 clean 方法名为 cleanCache，以避免和 Map 接口冲突。
     05.GlobalProperty接口更名为FieldProperty
-
 
 ===== Hasor-Core v0.0.6
 * 修复:

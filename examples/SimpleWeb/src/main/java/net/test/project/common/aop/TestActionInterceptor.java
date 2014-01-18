@@ -20,15 +20,7 @@ import net.hasor.plugins.aop.GlobalAop;
 import net.hasor.plugins.controller.interceptor.ControllerInterceptor;
 import net.hasor.plugins.controller.interceptor.ControllerInvocation;
 /**
-<<<<<<< HEAD:examples/src/main/java/net/test/project/common/aop/ActionLogInterceptor.java
  * 全局Aop，负责拦截所有 Controller 调用，并输出  Action 调用日志记录 
- * @version : 2013-12-23
- * @author 赵永春(zyc@hasor.net)
- */
-@GlobalAop("*")
-public class ActionLogInterceptor extends ControllerInterceptor {
-=======
- * 全局 Action 调用日志记录，拦截项目中所有的类。
  * @version : 2013-12-23
  * @author 赵永春(zyc@hasor.net)
  */
@@ -38,7 +30,6 @@ public class TestActionInterceptor extends ControllerInterceptor {
      * 1.@GlobalAop 注解生命该拦截器为全局拦截器，并且拦截所有类的所有方法
      * 2.ControllerInterceptor 类型的拦截器，只会拦截 Controller 的 Action 方法。
      */
->>>>>>> remotes/origin_local/master:examples/SimpleWeb/src/main/java/net/test/project/common/aop/TestActionInterceptor.java
     public Object invoke(ControllerInvocation invocation) throws Throwable {
         try {
             HttpServletRequest reqest = invocation.getRequest();

@@ -1,8 +1,13 @@
+===== Hasor-Jdbc v0.0.3
+
+
+
 ===== Hasor-Jdbc v0.0.2
 * 修复:
     01.解决 DefaultDataSourceHelper 类工作在多线程模式下无法正确初始化 ThreadLocal 的问题。该问题导致整个 JDBC 插件不可用。
-    02.新增 SavepointDataSourceHelper 接口，并且 DefaultDataSourceHelper 类支持该接口。
-    03.新增可以通过 DataSourceUtils 获取当前连接的方法。
+* 新增:
+    01.新增 SavepointDataSourceHelper 接口，并且 DefaultDataSourceHelper 类支持该接口。
+    02.新增可以通过 DataSourceUtils 获取当前连接的方法。
 
 ===== Hasor-Jdbc v0.0.1
 * 新增:
