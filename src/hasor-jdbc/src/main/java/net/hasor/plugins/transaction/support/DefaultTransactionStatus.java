@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.transaction.core;
+package net.hasor.plugins.transaction.support;
 import java.sql.Savepoint;
 import net.hasor.jdbc.datasource.SavepointManager;
 import net.hasor.jdbc.exceptions.IllegalTransactionStateException;
+import net.hasor.jdbc.exceptions.TransactionSuspensionNotSupportedException;
 import net.hasor.plugins.transaction.TransactionBehavior;
 import net.hasor.plugins.transaction.TransactionLevel;
 import net.hasor.plugins.transaction.TransactionStatus;
@@ -41,17 +42,26 @@ public class DefaultTransactionStatus implements TransactionStatus {
     public void markHeldSavepoint() {
         if (this.hasSavepoint())
             throw new IllegalTransactionStateException("TransactionStatus has Savepoint");
+        if (this.getSavepointManager().supportSavepoint() == false)
+            throw new TransactionSuspensionNotSupportedException("SavepointManager does not support Savepoint.");
+        //
         this.savepoint = this.getSavepointManager().createSavepoint();
     }
     /***/
     public void releaseHeldSavepoint() {
         if (this.hasSavepoint() == false)
             throw new IllegalTransactionStateException("TransactionStatus has not Savepoint");
+        if (this.getSavepointManager().supportSavepoint() == false)
+            throw new TransactionSuspensionNotSupportedException("SavepointManager does not support Savepoint.");
+        //
         this.getSavepointManager().releaseSavepoint(this.savepoint);
     }
     public void rollbackToHeldSavepoint() {
         if (this.hasSavepoint() == false)
             throw new IllegalTransactionStateException("TransactionStatus has not Savepoint");
+        if (this.getSavepointManager().supportSavepoint() == false)
+            throw new TransactionSuspensionNotSupportedException("SavepointManager does not support Savepoint.");
+        //
         this.getSavepointManager().rollbackToSavepoint(this.savepoint);
     }
     public void setSuspendHolder(Object suspendHolder) {

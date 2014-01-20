@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.transaction.core;
+package net.hasor.plugins.transaction.support;
 import net.hasor.jdbc.datasource.local.ConnectionHolder;
 /**
  * 

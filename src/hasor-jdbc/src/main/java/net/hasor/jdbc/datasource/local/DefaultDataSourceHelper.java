@@ -32,7 +32,7 @@ public class DefaultDataSourceHelper implements SavepointDataSourceHelper {
         if (ResourcesLocal.get() == null)
             ResourcesLocal.set(new HashMap<DataSource, ConnectionHolder>());
     }
-    /**申请连接*/
+    /**申请连接，如果当前连接存在则返回当前连接*/
     public Connection getConnection(DataSource dataSource) throws SQLException {
         ConnectionHolder holder = getConnectionHolder(dataSource);
         holder.requested();
@@ -65,6 +65,7 @@ public class DefaultDataSourceHelper implements SavepointDataSourceHelper {
         }
         return holder;
     }
+    /**创建ConnectionHolder对象*/
     protected ConnectionHolder createConnectionHolder(DataSource dataSource) {
         return new ConnectionHolder(dataSource);
     }

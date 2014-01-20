@@ -22,6 +22,8 @@ import java.sql.Savepoint;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface SavepointManager {
+    /**是否支持保存点 */
+    public boolean supportSavepoint() throws SQLException;
     /**创建事务的保存点，通过<code>releaseSavepoint</code>方法释放这个保存点。SQLException */
     public Savepoint createSavepoint() throws SQLException;
     /**回滚事务到一个指定的保存点。*/

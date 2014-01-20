@@ -13,23 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.transaction.core;
+package net.hasor.plugins.transaction.support;
 import java.sql.Connection;
 import java.sql.SQLException;
+import javax.sql.DataSource;
+import net.hasor.jdbc.datasource.DataSourceUtils;
+import net.hasor.jdbc.exceptions.TransactionDataAccessException;
+import net.hasor.plugins.transaction.datasource.TransactionDataSourceHelper;
 /**
  * 
  * @version : 2014-1-18
  * @author 赵永春 (zyc@byshell.org)
  */
 public class DefaultPlatformTransactionManager extends AbstractPlatformTransactionManager {
+    public DataSource getDataSource() {
+        // TODO Auto-generated method stub
+        return null;
+    }
     protected boolean isExistingTransaction(Object transaction) {
-        TransactionObject tranObject = (TransactionObject) transaction;
-        boolean autoMark = tranObject.getConnectionHolder().getConnection().getAutoCommit();
-        /*当autoCommit为true时表示已经开启了一个事务*/
-        if (autoMark == true)
-            return false;
-        else
-            return true;
+        try {
+            TransactionObject tranObject = (TransactionObject) transaction;
+            boolean autoMark = tranObject.getConnectionHolder().hasTransaction();
+            return autoMark;
+        } catch (Exception e) {
+            throw new TransactionDataAccessException("isExistingTransaction .", e);
+        }
     }
     protected void doBegin(Object transaction) throws SQLException {
         TransactionObject tranObject = (TransactionObject) transaction;
@@ -49,6 +57,8 @@ public class DefaultPlatformTransactionManager extends AbstractPlatformTransacti
         conn.rollback();
     }
     protected TransactionObject doGetTransaction() {
+        TransactionDataSourceHelper helper = (TransactionDataSourceHelper) DataSourceUtils.getDataSourceHelper();
+        
         // TODO Auto-generated method stub
         return null;
     }

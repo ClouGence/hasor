@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.transaction.core;
+package net.hasor.plugins.transaction.support;
 import static net.hasor.plugins.transaction.TransactionBehavior.PROPAGATION_MANDATORY;
 import static net.hasor.plugins.transaction.TransactionBehavior.PROPAGATION_NESTED;
 import static net.hasor.plugins.transaction.TransactionBehavior.PROPAGATION_NEVER;
@@ -22,6 +22,7 @@ import static net.hasor.plugins.transaction.TransactionBehavior.PROPAGATION_REQU
 import static net.hasor.plugins.transaction.TransactionBehavior.RROPAGATION_REQUIRES_NEW;
 import java.sql.SQLException;
 import java.util.LinkedList;
+import javax.sql.DataSource;
 import net.hasor.core.Hasor;
 import net.hasor.jdbc.exceptions.IllegalTransactionStateException;
 import net.hasor.jdbc.exceptions.TransactionDataAccessException;
@@ -305,4 +306,6 @@ public abstract class AbstractPlatformTransactionManager implements TransactionM
     }
     /**获取当前事务管理器中存在的事务对象。*/
     protected abstract Object doGetTransaction();
+    /**获取当前事务管理器管理的数据源对象。*/
+    public abstract DataSource getDataSource();
 }

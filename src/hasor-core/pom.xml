@@ -43,12 +43,5 @@
 			<artifactId>guice</artifactId>
 			<version>3.0</version>
 		</dependency>
-		<!-- JSR-173 for JDK 1.5 -->
-		<dependency>
-			<groupId>stax</groupId>
-			<artifactId>stax</artifactId>
-			<version>1.2.0</version>
-			<scope>provided</scope>
-		</dependency>
 	</dependencies>
 </project>
