@@ -92,6 +92,8 @@ public class DefaultTransactionStatus implements TransactionStatus {
         return this.rollbackOnly;
     }
     //
-    protected abstract SavepointManager getSavepointManager();
+    protected SavepointManager getSavepointManager() {
+        return ((TransactionObject) this.suspendHolder).getConnectionHolder();
+    }
     public abstract boolean isNewConnection();
 }
