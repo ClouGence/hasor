@@ -1,11 +1,26 @@
-package org.noe.platform.modules.freemarker.support;
+/*
+ * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package net.test.project.common.plugins.freemarker.support;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
-import org.noe.platform.Noe;
-import org.noe.platform.modules.freemarker.Tag;
-import org.noe.platform.modules.freemarker.TemplateBody;
+import net.hasor.core.Hasor;
+import net.test.project.common.plugins.freemarker.Tag;
+import net.test.project.common.plugins.freemarker.TemplateBody;
 import freemarker.core.Environment;
 import freemarker.template.TemplateDirectiveBody;
 import freemarker.template.TemplateDirectiveModel;
@@ -21,7 +36,7 @@ public class InternalTagObject implements TemplateDirectiveModel {
     private Tag tagBody = null;
     public InternalTagObject(Tag tagBody) {
         this.tagBody = tagBody;
-        Noe.assertIsNotNull(tagBody, "tag Object is null.");
+        Hasor.assertIsNotNull(tagBody, "tag Object is null.");
     }
     @Override
     public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body) throws TemplateException, IOException {

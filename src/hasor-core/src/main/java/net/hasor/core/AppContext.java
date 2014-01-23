@@ -20,7 +20,7 @@ import org.more.UndefinedException;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
 /**
- * 应用程序上下文
+ * Hasor的核心接口，它为应用程序提供了一个统一的配置界面和运行环境。
  * @version : 2013-3-26
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -56,13 +56,13 @@ public interface AppContext {
     public <T> T getInstance(Class<T> targetClass);
     //
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> List<T> findBeanByType(Class<T> bindingType);
+    public <T> List<T> findBindingBean(Class<T> bindingType);
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> List<Provider<T>> findProviderByType(Class<T> bindingType);
+    public <T> List<Provider<T>> findBindingProvider(Class<T> bindingType);
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> T findBeanByType(String withName, Class<T> bindingType);
+    public <T> T findBindingBean(String withName, Class<T> bindingType);
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> Provider<T> findProviderByType(String withName, Class<T> bindingType);
+    public <T> Provider<T> findBindingProvider(String withName, Class<T> bindingType);
     //
     //----------------------------------------------------------------------------------Context
     /**获得Guice环境。*/
@@ -75,7 +75,7 @@ public interface AppContext {
     public Settings getSettings();
     /**获取环境接口。*/
     public Environment getEnvironment();
-    /**获取事件操作接口。*/
+    /**获取事件管理器*/
     public EventManager getEventManager();
     /**获得所有模块*/
     public ModuleInfo[] getModules();

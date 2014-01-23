@@ -25,7 +25,7 @@ import net.hasor.core.ModuleInfo;
 import net.hasor.core.module.AnnoModule;
 import org.more.util.StringUtils;
 /**
- * 
+ * 支持通过 @AnnoModule 注解来增加 Hasor Module。
  * @version : 2013-7-16
  * @author 赵永春 (zyc@hasor.net)
  */

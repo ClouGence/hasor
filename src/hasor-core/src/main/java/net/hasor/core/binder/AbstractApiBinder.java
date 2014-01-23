@@ -32,9 +32,9 @@ import com.google.inject.internal.UniqueAnnotations;
 import com.google.inject.name.Names;
 /**
  * 标准的 {@link ApiBinder} 接口实现，Hasor 在初始化模块时会为每个模块独立分配一个 ApiBinder 接口实例。
- * <p>抽象方法 {@link #dependency()} ,会返回一个接口( {@link net.hasor.core.ApiBinder.DependencySettings DependencySettings} )
+ * <p>抽象方法 {@link #configModule()} ,会返回一个接口( {@link net.hasor.core.ApiBinder.ModuleSettings ModuleSettings} )
  * 用于配置当前模块依赖情况。
- * <p><b><i>提示：</i></b>模块代理类 {@link net.hasor.core.module.ModulePropxy} 可以为 {@link #dependency()} 方法提供支持。
+ * <p><b><i>提示：</i></b>模块代理类 {@link net.hasor.core.module.ModulePropxy} 可以为 {@link #configModule()} 方法提供支持。
  * @see net.hasor.core.module.ModulePropxy
  * @version : 2013-4-12
  * @author 赵永春 (zyc@hasor.net)

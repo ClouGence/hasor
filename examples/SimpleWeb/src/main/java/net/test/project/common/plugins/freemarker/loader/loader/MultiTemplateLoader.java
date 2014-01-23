@@ -49,7 +49,7 @@
  * information on the Visigoth Software Society, please see
  * http://www.visigoths.org/
  */
-package org.noe.platform.modules.freemarker.loader.loader;
+package net.test.project.common.plugins.freemarker.loader.loader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -58,9 +58,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.noe.platform.modules.freemarker.loader.FmTemplateLoader;
-import org.noe.platform.modules.freemarker.loader.IResourceLoader;
-import org.noe.platform.modules.freemarker.loader.resource.MultiResourceLoader;
+import net.test.project.common.plugins.freemarker.loader.FmTemplateLoader;
+import net.test.project.common.plugins.freemarker.loader.IResourceLoader;
+import net.test.project.common.plugins.freemarker.loader.resource.MultiResourceLoader;
 import freemarker.cache.StatefulTemplateLoader;
 import freemarker.cache.TemplateCache;
 import freemarker.cache.TemplateLoader;

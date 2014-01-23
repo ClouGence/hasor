@@ -1,4 +1,19 @@
-package org.noe.platform.modules.freemarker.support;
+/*
+ * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package net.test.project.common.plugins.freemarker.support;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -6,10 +21,10 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
-import org.noe.platform.context.AppContext;
-import org.noe.platform.modules.freemarker.FreemarkerService;
-import org.noe.platform.modules.freemarker.loader.loader.StringTemplateLoader;
-import org.noe.platform.util.CommonCodeUtils;
+import net.hasor.core.AppContext;
+import net.test.project.common.plugins.freemarker.FreemarkerService;
+import net.test.project.common.plugins.freemarker.loader.loader.StringTemplateLoader;
+import org.more.util.CommonCodeUtils;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -27,11 +42,9 @@ public class FmService implements FreemarkerService {
     private Map<String, Template> templateMap  = new HashMap<String, Template>();
     //
     //
-    @Override
     public Configuration getFreemarker() {
         return this.configuration;
     }
-    @Override
     public Template getTemplate(String templateName) throws TemplateException, IOException {
         boolean bool = appContext.getSettings().getBoolean("framework.debug");
         if (bool == true)
@@ -46,28 +59,23 @@ public class FmService implements FreemarkerService {
     }
     //
     //
-    @Override
     public void processTemplate(String templateName) throws TemplateException, IOException {
         this.processTemplate(templateName, null, null);
     }
-    @Override
     public void processTemplate(String templateName, Object rootMap) throws TemplateException, IOException {
         this.processTemplate(templateName, rootMap, null);
     }
-    @Override
     public void processTemplate(String templateName, Object rootMap, Writer writer) throws TemplateException, IOException {
         Writer writerTo = (writer == null) ? new InternalNoneWriter() : writer;
         this.getTemplate(templateName).process(rootMap, writerTo);
     }
     //
     //
-    @Override
     public String processString(String templateString) throws TemplateException, IOException {
         StringWriter stringWriter = new StringWriter();
         this.processString(templateString, null, stringWriter);
         return stringWriter.toString();
     }
-    @Override
     public String processString(String templateString, Object rootMap) throws TemplateException, IOException {
         StringWriter stringWriter = new StringWriter();
         this.processString(templateString, rootMap, stringWriter);
@@ -75,11 +83,9 @@ public class FmService implements FreemarkerService {
     }
     //
     //
-    @Override
     public void processString(String templateString, Writer writer) throws TemplateException, IOException {
         this.processString(templateString, null, writer);
     }
-    @Override
     public void processString(String templateString, Object rootMap, Writer writer) throws TemplateException, IOException {
         //A.»°µ√÷∏Œ∆
         String hashStr = null;

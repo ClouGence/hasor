@@ -45,7 +45,9 @@ import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 /**
  * 抽象类 AbstractAppContext 是 {@link AppContext} 接口的基础实现。
- * <p>它包装了大量细节代码，可以方便的通过子类来创建独特的上下文支持。
+ * <p>它包装了大量细节代码，可以方便的通过子类来创建独特的上下文支持。<p>
+ * 
+ * 提示：initContext 方法是整个 AbstractAppContext 的入口方法。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -55,7 +57,7 @@ public abstract class AbstractAppContext implements AppContext {
     private Map<String, BeanMetaData> beanInfoMap;
     private void collectBeanInfos() {
         this.beanInfoMap = new HashMap<String, BeanMetaData>();
-        List<Provider<BeanMetaData>> beanInfoProviderArray = this.findProviderByType(BeanMetaData.class);
+        List<Provider<BeanMetaData>> beanInfoProviderArray = this.findBindingProvider(BeanMetaData.class);
         if (beanInfoProviderArray == null)
             return;
         for (Provider<BeanMetaData> entry : beanInfoProviderArray) {
@@ -108,7 +110,7 @@ public abstract class AbstractAppContext implements AppContext {
         return this.beanInfoMap.get(name);
     }
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> List<T> findBeanByType(Class<T> bindingType) {
+    public <T> List<T> findBindingBean(Class<T> bindingType) {
         ArrayList<T> providerList = new ArrayList<T>();
         TypeLiteral<T> BindingType_DEFS = TypeLiteral.get(bindingType);
         for (Binding<T> entry : this.getGuice().findBindingsByType(BindingType_DEFS)) {
@@ -121,7 +123,7 @@ public abstract class AbstractAppContext implements AppContext {
         return providerList;
     }
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> List<Provider<T>> findProviderByType(Class<T> bindingType) {
+    public <T> List<Provider<T>> findBindingProvider(Class<T> bindingType) {
         ArrayList<Provider<T>> providerList = new ArrayList<Provider<T>>();
         TypeLiteral<T> BindingType_DEFS = TypeLiteral.get(bindingType);
         for (Binding<T> entry : this.getGuice().findBindingsByType(BindingType_DEFS)) {
@@ -134,14 +136,14 @@ public abstract class AbstractAppContext implements AppContext {
         return providerList;
     }
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> T findBeanByType(String withName, Class<T> bindingType) {
-        Provider<T> provider = findProviderByType(withName, bindingType);
+    public <T> T findBindingBean(String withName, Class<T> bindingType) {
+        Provider<T> provider = findBindingProvider(withName, bindingType);
         if (provider == null)
             return null;
         return provider.get();
     }
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> Provider<T> findProviderByType(String withName, Class<T> bindingType) {
+    public <T> Provider<T> findBindingProvider(String withName, Class<T> bindingType) {
         TypeLiteral<T> BindingType_DEFS = TypeLiteral.get(bindingType);
         Named named = Names.named(withName);
         //
@@ -379,7 +381,7 @@ public abstract class AbstractAppContext implements AppContext {
     protected void doStart() {
         Hasor.logInfo("send start sign.");
         /*1.执行Aware通知*/
-        List<AppContextAware> awareList = this.findBeanByType(AppContextAware.class);
+        List<AppContextAware> awareList = this.findBindingBean(AppContextAware.class);
         if (awareList != null) {
             for (AppContextAware weak : awareList)
                 weak.setAppContext(this);

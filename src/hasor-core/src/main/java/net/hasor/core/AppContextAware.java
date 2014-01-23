@@ -15,10 +15,15 @@
  */
 package net.hasor.core;
 /**
+ * 当 AppContext 启动的第一时间。容器会通知这个接口的实现类，将AppContext注入进来。<p>
  * 
+ * 使用它，需要实现这个接口并通过{@link ApiBinder#registerAware(AppContextAware)}方法注册。
+ * 
+ * @see ApiBinder#registerAware(AppContextAware)
  * @version : 2013-11-8
  * @author 赵永春(zyc@hasor.net)
  */
 public interface AppContextAware {
+    /**注入AppContext*/
     public void setAppContext(AppContext appContext);
 }

@@ -42,7 +42,7 @@ public class SettingsPlugin extends AbstractHasorPlugin {
         eventManager.pushListener(ContextEvent_Started, new EventListener() {
             public void onEvent(String event, Object[] params) {
                 AppContext appContext = (AppContext) params[0];
-                List<Provider<SettingsListener>> settingProvider = appContext.findProviderByType(SettingsListener.class);
+                List<Provider<SettingsListener>> settingProvider = appContext.findBindingProvider(SettingsListener.class);
                 if (settingProvider == null)
                     return;
                 for (Provider<SettingsListener> provider : settingProvider) {

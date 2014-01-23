@@ -46,7 +46,7 @@ class CacheInterceptor implements MethodInterceptor, AppContextAware {
             cacheAnno = targetMethod.getDeclaringClass().getAnnotation(NeedCache.class);/*方法所处类上的NeedCache*/
         if (cacheAnno == null)
             return invocation.proceed();
-        List<CacheCreator> creatorList = appContext.findBeanByType(CacheCreator.class);/*查找 CacheCreator 实现类*/
+        List<CacheCreator> creatorList = appContext.findBindingBean(CacheCreator.class);/*查找 CacheCreator 实现类*/
         if (creatorList == null || creatorList.isEmpty()) {
             Hasor.logWarn("does not define the CacheCreator.");
             return invocation.proceed();

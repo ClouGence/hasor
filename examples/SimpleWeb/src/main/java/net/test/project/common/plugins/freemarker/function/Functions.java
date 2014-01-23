@@ -1,13 +1,27 @@
-package org.noe.biz.common.ftl;
+/*
+ * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package net.test.project.common.plugins.freemarker.function;
 import javax.inject.Inject;
-import org.noe.biz.common.startup.PlatformFilter;
-import org.noe.platform.context.AppContext;
-import org.noe.platform.modules.freemarker.FmMethod;
-import org.noe.platform.modules.freemarker.FreemarkerService;
+import net.hasor.core.AppContext;
+import net.test.project.common.plugins.freemarker.FmMethod;
+import net.test.project.common.plugins.freemarker.FreemarkerService;
 /**
- * Freemarker æ¨¡æ¿ä¸­é€šç”¨å‡½æ•°
+ * Freemarker Ä£°åÖĞÍ¨ÓÃº¯Êı
  * @version : 2013-9-24
- * @author èµµæ°¸æ˜¥(zyc@hasor.net)
+ * @author ÕÔÓÀ´º(zyc@hasor.net)
  */
 public class Functions {
     @Inject
@@ -17,14 +31,14 @@ public class Functions {
     /*-----------------------------------------------------------------*/
     //
     //
-    /**è·å–å®¹å™¨è·¯å¾„*/
+    /**»ñÈ¡ÈİÆ÷Â·¾¶*/
     @FmMethod("ctxPath")
     public String ctxPath() {
         return PlatformFilter.getLocalServletContext().getContextPath();
     };
     //
     //
-    //    /**è§£ææ¨¡æ¿è·å–å¸ƒå°”é…ç½®*/
+    //    /**½âÎöÄ£°å»ñÈ¡²¼¶ûÅäÖÃ*/
     //    @FmMethod("loadFtl")
     //    public String loadFtl(String templateName) {
     //        StringWriter sw = new StringWriter();
@@ -32,12 +46,12 @@ public class Functions {
     //    };
     //
     //
-    /**è·å–å­—ç¬¦ä¸²é…ç½®*/
+    /**»ñÈ¡×Ö·û´®ÅäÖÃ*/
     @FmMethod("str_settings")
     public String str_settings(String settingName, String defaultValue) {
         return this.appContext.getSettings().getString(settingName, defaultValue);
     };
-    /**è·å–å¸ƒå°”é…ç½®*/
+    /**»ñÈ¡²¼¶ûÅäÖÃ*/
     @FmMethod("bool_settings")
     public Boolean bool_settings(String settingName, Boolean defaultValue) {
         return this.appContext.getSettings().getBoolean(settingName, defaultValue);

@@ -19,7 +19,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * 
+ * 标记该类为一个插件。
  * @version : 2013-9-13
  * @author 赵永春 (zyc@byshell.org)
  */
