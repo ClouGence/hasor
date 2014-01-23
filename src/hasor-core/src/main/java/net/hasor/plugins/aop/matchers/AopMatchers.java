@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.plugins.aop.matchers;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import net.hasor.core.Hasor;
+import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matcher;
 import com.google.inject.matcher.Matchers;
 /**
@@ -24,17 +27,18 @@ import com.google.inject.matcher.Matchers;
  */
 public class AopMatchers {
     private AopMatchers() {}
-    /** 匹配任意输入（类型或方法）*/
+    //
+    /** 匹配任意输入*/
     public static Matcher<Object> any() {
         return Matchers.any();
     }
     /** 在（类型、方法）中匹配注解 */
-    public static Matcher<Object> annotatedWith(final Class<? extends Annotation> annotationType) {
+    public static Matcher<Object> annotatedWith(Class<? extends Annotation> annotationType) {
         return new MatcherAnnotationType(annotationType);
     }
-    /** Returns a matcher which matches subclasses of the given type (as well as the given type). */
-    public static Matcher<Class> subclassesOf(final Class<?> superclass) {
-        return Matchers.subclassesOf(superclass);
+    /** 返回一个匹配器，匹配给定类型的子类（或实现了的接口） */
+    public static Matcher<Class<?>> subClassesOf(Class<?> superclass) {
+        return new SubclassesOf(superclass);
     }
     //
     //
@@ -89,4 +93,23 @@ public class AopMatchers {
     //    public static Matcher<Method> returns(final Matcher<? super Class<?>> returnType) {
     //        return Matchers.returns(returnType);
     //    }
+    private static class SubclassesOf extends AbstractMatcher<Class<?>> implements Serializable {
+        private static final long serialVersionUID = 0;
+        private final Class<?>    superclass;
+        public SubclassesOf(Class<?> superclass) {
+            this.superclass = Hasor.assertIsNotNull(superclass, "superclass");
+        }
+        public boolean matches(Class<?> subclass) {
+            return superclass.isAssignableFrom(subclass);
+        }
+        public boolean equals(Object other) {
+            return other instanceof SubclassesOf && ((SubclassesOf) other).superclass.equals(superclass);
+        }
+        public int hashCode() {
+            return 37 * superclass.hashCode();
+        }
+        public String toString() {
+            return "subclassesOf(" + superclass.getSimpleName() + ".class)";
+        }
+    }
 }

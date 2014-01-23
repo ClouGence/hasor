@@ -1,5 +1,10 @@
 ===== Hasor-Core v0.0.8
-
+* 新增:
+    01.AopMatchers类型新增subClassesOf方法。匹配给定类型的子类（或实现了的接口）。
+* 改进:
+    01.Settings接口的 getNameSpace 方法改名为 getSetting。
+    02.AppContext接口的 findBean、findProvider 方法更名 findBindingBean、findBindingProvider
+        --使其接近ApiBinder接口中bindingType方法的命名以便于开发者理解。
 
 
 ===== Hasor-Core v0.0.7
