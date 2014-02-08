@@ -27,6 +27,10 @@ public class DataAccessException extends NestableRuntimeException {
         super(msg);
     }
     /**JDBC 异常根*/
+    public DataAccessException(Throwable cause) {
+        super(cause);
+    }
+    /**JDBC 异常根*/
     public DataAccessException(String msg, Throwable cause) {
         super(msg, cause);
     }

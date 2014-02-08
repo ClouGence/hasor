@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.jdbc.core;
-import java.sql.Connection;
-import java.sql.SQLException;
 import javax.sql.DataSource;
 /**
  * 
@@ -31,10 +29,5 @@ public class JdbcAccessor {
     /**Return the DataSource used by this template.*/
     public DataSource getDataSource() {
         return this.dataSource;
-    }
-    /**获取一个数据库连接，JDBC 框架会从 DataSource 接口尝试获取一个新的连接资源给开发者。
-     * 开发者需要自己维护连接的事务，并且要保证该资源可以被正常释放。*/
-    protected Connection getConnection() throws SQLException {
-        return this.dataSource.getConnection();
     }
 }

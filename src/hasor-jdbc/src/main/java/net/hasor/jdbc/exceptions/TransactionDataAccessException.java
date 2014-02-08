@@ -30,6 +30,13 @@ public class TransactionDataAccessException extends DataAccessException {
     }
     /**
     * 数据库事务性异常的根，子类将会确定具体事务方面原因。
+     * @param cause the root cause from the data access API in use
+     */
+    public TransactionDataAccessException(Throwable cause) {
+        super(cause);
+    }
+    /**
+    * 数据库事务性异常的根，子类将会确定具体事务方面原因。
      * @param msg the detail message
      * @param cause the root cause from the data access API in use
      */

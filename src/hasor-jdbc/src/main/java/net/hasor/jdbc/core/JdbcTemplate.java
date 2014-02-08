@@ -179,8 +179,11 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     //
     public <T> T execute(ConnectionCallback<T> action) throws DataAccessException {
         Hasor.assertIsNotNull(action, "Callback object must not be null");
-        Connection con = DataSourceUtils.getConnection(this.getDataSource());
-        con = this.newProxyConnection(con);//申请本地连接（和当前线程绑定的连接）
+        //
+        DataSource ds = this.getDataSource();//获取数据源
+        Connection con = DataSourceUtils.getConnection(ds);//申请本地连接（和当前线程绑定的连接）
+        con = this.newProxyConnection(con, ds);//代理连接
+        //
         try {
             return action.doInConnection(con);
         } catch (SQLException ex) {
@@ -191,8 +194,11 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     public <T> T execute(StatementCallback<T> action) throws DataAccessException {
         Hasor.assertIsNotNull(action, "Callback object must not be null");
-        Connection con = DataSourceUtils.getConnection(this.getDataSource());
-        con = this.newProxyConnection(con);//申请本地连接（和当前线程绑定的连接）
+        //
+        DataSource ds = this.getDataSource();//获取数据源
+        Connection con = DataSourceUtils.getConnection(ds);//申请本地连接（和当前线程绑定的连接）
+        con = this.newProxyConnection(con, ds);//代理连接
+        //
         Statement stmt = null;
         try {
             stmt = con.createStatement();
@@ -216,8 +222,11 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             String sql = getSql(psc);
             Hasor.logDebug("Executing prepared SQL statement " + (sql != null ? " [" + sql + "]" : ""));
         }
-        Connection con = DataSourceUtils.getConnection(this.getDataSource());
-        con = this.newProxyConnection(con);//申请本地连接（和当前线程绑定的连接）
+        //
+        DataSource ds = this.getDataSource();//获取数据源
+        Connection con = DataSourceUtils.getConnection(ds);//申请本地连接（和当前线程绑定的连接）
+        con = this.newProxyConnection(con, ds);//代理连接
+        //
         PreparedStatement ps = null;
         try {
             ps = psc.createPreparedStatement(con);
@@ -243,8 +252,11 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             String sql = getSql(csc);
             Hasor.logDebug("Calling stored procedure" + (sql != null ? " [" + sql + "]" : ""));
         }
-        Connection con = DataSourceUtils.getConnection(this.getDataSource());
-        con = this.newProxyConnection(con);//申请本地连接（和当前线程绑定的连接）
+        //
+        DataSource ds = this.getDataSource();//获取数据源
+        Connection con = DataSourceUtils.getConnection(ds);//申请本地连接（和当前线程绑定的连接）
+        con = this.newProxyConnection(con, ds);//代理连接
+        //
         CallableStatement cs = null;
         try {
             cs = csc.createCallableStatement(con);
@@ -830,22 +842,27 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         return results.iterator().next();
     }
     /**获取与本地线程绑定的数据库连接，JDBC 框架会维护这个连接的事务。开发者不必关心该连接的事务管理，以及资源释放操作。*/
-    private Connection newProxyConnection(Connection conn) {
-        Hasor.assertIsNotNull(conn, "Connection is null.");
-        CloseSuppressingInvocationHandler handler = new CloseSuppressingInvocationHandler(conn);
+    private Connection newProxyConnection(Connection target, DataSource targetSource) {
+        Hasor.assertIsNotNull(target, "Connection is null.");
+        CloseSuppressingInvocationHandler handler = new CloseSuppressingInvocationHandler(target, targetSource);
         return (Connection) Proxy.newProxyInstance(ConnectionProxy.class.getClassLoader(), new Class[] { ConnectionProxy.class }, handler);
     }
     /**Connection 接口代理，目的是为了控制一些方法的调用。同时进行一些特殊类型的处理。*/
     private class CloseSuppressingInvocationHandler implements InvocationHandler {
         private final Connection target;
-        public CloseSuppressingInvocationHandler(Connection target) {
+        private final DataSource targetSource;
+        public CloseSuppressingInvocationHandler(Connection target, DataSource targetSource) {
             this.target = target;
+            this.targetSource = targetSource;
         }
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             // Invocation on ConnectionProxy interface coming in...
             if (method.getName().equals("getTargetConnection")) {
                 // Handle getTargetConnection method: return underlying Connection.
                 return this.target;
+            } else if (method.getName().equals("getTargetSource")) {
+                // Handle getTargetConnection method: return underlying DataSource.
+                return this.targetSource;
             } else if (method.getName().equals("equals")) {
                 // Only consider equal when proxies are identical.
                 return (proxy == args[0]);

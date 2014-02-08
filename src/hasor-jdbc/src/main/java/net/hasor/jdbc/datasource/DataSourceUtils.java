@@ -17,7 +17,7 @@ package net.hasor.jdbc.datasource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;
-import net.hasor.jdbc.datasource.local.DefaultDataSourceHelper;
+import net.hasor.jdbc.datasource.local.LocalDataSourceHelper;
 import net.hasor.jdbc.exceptions.DataAccessException;
 import org.more.util.ContextClassLoaderLocal;
 /**
@@ -28,7 +28,7 @@ import org.more.util.ContextClassLoaderLocal;
 public class DataSourceUtils {
     private static class ServiceLocal extends ContextClassLoaderLocal<DataSourceHelper> {
         protected DataSourceHelper initialValue() {
-            return new DefaultDataSourceHelper();
+            return new LocalDataSourceHelper();
         }
     }
     private static ServiceLocal utilServiceLocal = new ServiceLocal();

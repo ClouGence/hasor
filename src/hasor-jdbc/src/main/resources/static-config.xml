@@ -3,7 +3,7 @@
 	<!-- 框架配置 -->
 	<hasor>
 		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
-		<loadPackages>net.hasor.jdbc.*,net.hasor.plugins.*</loadPackages>
+		<loadPackages>net.hasor.jdbc.*,net.hasor.datasource.*,net.hasor.plugins.*</loadPackages>
 	</hasor>
 	<!-- http://project.hasor.net/hasor/schema/hasor-jdbc 命名空间的配置，不支持跟随配置文件动态更新配置。 -->
 	<hasor-jdbc>

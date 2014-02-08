@@ -24,9 +24,11 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import javax.sql.DataSource;
 import net.hasor.core.Hasor;
+import net.hasor.jdbc.datasource.DataSourceUtils;
+import net.hasor.jdbc.datasource.local.ConnectionSequence;
+import net.hasor.jdbc.datasource.local.LocalDataSourceHelper;
 import net.hasor.jdbc.exceptions.IllegalTransactionStateException;
 import net.hasor.jdbc.exceptions.TransactionDataAccessException;
-import net.hasor.jdbc.exceptions.TransactionSuspensionNotSupportedException;
 import net.hasor.plugins.transaction.TransactionBehavior;
 import net.hasor.plugins.transaction.TransactionLevel;
 import net.hasor.plugins.transaction.TransactionManager;
@@ -42,13 +44,25 @@ import net.hasor.plugins.transaction.TransactionStatus;
  * @version : 2013-10-30
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstractPlatformTransactionManager implements TransactionManager {
-    private int                           defaultTimeout = -1;
-    private LinkedList<TransactionStatus> tStatusStack   = new LinkedList<TransactionStatus>();
+public abstract class DefaultTransactionManager implements TransactionManager {
+    private int                                  defaultTimeout = -1;
+    private LinkedList<DefaultTransactionStatus> tStatusStack   = new LinkedList<DefaultTransactionStatus>();
+    private DataSource                           dataSource     = null;
+    public DefaultTransactionManager(DataSource dataSource) {
+        Hasor.assertIsNotNull(dataSource);
+        this.dataSource = dataSource;
+    }
     //
+    //
+    /**获取当前事务管理器管理的数据源对象。*/
+    public DataSource getDataSource() {
+        return this.dataSource;
+    };
+    /**是否存在未处理完的事务（包括被挂起的事务）。*/
     public boolean hasTransaction() {
         return !tStatusStack.isEmpty();
     }
+    /**测试事务状态是否位于栈顶。*/
     public boolean isTopTransaction(TransactionStatus status) {
         if (tStatusStack.isEmpty())
             return false;
@@ -56,17 +70,17 @@ public abstract class AbstractPlatformTransactionManager implements TransactionM
     }
     //
     //
-    //
     /**开启事务*/
     public final TransactionStatus getTransaction(TransactionBehavior behavior) throws TransactionDataAccessException {
-        Hasor.assertIsNotNull(behavior);
         return getTransaction(behavior, TransactionLevel.ISOLATION_DEFAULT);
     };
+    /**开启事务*/
     public final TransactionStatus getTransaction(TransactionBehavior behavior, TransactionLevel level) throws TransactionDataAccessException {
         Hasor.assertIsNotNull(behavior);
         Hasor.assertIsNotNull(level);
-        Object transaction = doGetTransaction();//获取目前事务对象
-        DefaultTransactionStatus defStatus = new DefaultTransactionStatus(behavior, level, transaction);
+        //
+        TransactionObject tranConn = doGetConnection();/*获取新的连接（线程绑定的）*/
+        DefaultTransactionStatus defStatus = new DefaultTransactionStatus(behavior, level, tranConn);
         /*-------------------------------------------------------------
         |                      环境已经存在事务
         |
@@ -78,11 +92,13 @@ public abstract class AbstractPlatformTransactionManager implements TransactionM
         | PROPAGATION_NEVER        ：排除事务（异常）
         | PROPAGATION_MANDATORY    ：强制要求事务（不处理）
         ===============================================================*/
-        if (this.isExistingTransaction(transaction) == true) {
+        if (this.isExistingTransaction(tranConn) == true) {
             /*RROPAGATION_REQUIRES_NEW：独立事务*/
             if (behavior == RROPAGATION_REQUIRES_NEW) {
-                this.suspend(transaction, defStatus);/*挂起当前事务*/
-                this.processBegin(transaction, defStatus);/*开启一个新的事务*/
+                this.suspend(defStatus);/*挂起事务*/
+                tranConn = doGetConnection();/*重新申请连接*/
+                defStatus.setTranConn(tranConn);
+                this.doBegin(defStatus);/*开启新事务*/
             }
             /*PROPAGATION_NESTED：嵌套事务*/
             if (behavior == PROPAGATION_NESTED) {
@@ -90,7 +106,7 @@ public abstract class AbstractPlatformTransactionManager implements TransactionM
             }
             /*PROPAGATION_NOT_SUPPORTED：非事务方式*/
             if (behavior == PROPAGATION_NOT_SUPPORTED) {
-                this.suspend(transaction, defStatus);/*挂起当前事务*/
+                this.suspend(defStatus);/*挂起事务*/
             }
             /*PROPAGATION_NEVER：排除事务*/
             if (behavior == PROPAGATION_NEVER)
@@ -114,32 +130,37 @@ public abstract class AbstractPlatformTransactionManager implements TransactionM
         behavior == RROPAGATION_REQUIRES_NEW ||
         /*PROPAGATION_NESTED：嵌套事务*/
         behavior == PROPAGATION_NESTED) {
-            this.processBegin(transaction, defStatus);/*开启事务*/
+            this.doBegin(defStatus);/*开启新事务*/
         }
         /*PROPAGATION_MANDATORY：强制要求事务*/
         if (behavior == PROPAGATION_MANDATORY)
             throw new IllegalTransactionStateException("No existing transaction found for transaction marked with propagation 'mandatory'");
         return defStatus;
     }
-    /**使用一个新的连接开启一个新的事务作为当前事务。请确保在调用该方法时候当前不存在事务。*/
-    private void processBegin(Object transaction, DefaultTransactionStatus defStatus) {
+    /**使用defStatus中的连接开启一个全新的事务。*/
+    protected void doBegin(DefaultTransactionStatus defStatus) {
         try {
-            doBegin(transaction);
+            TransactionObject tranConn = defStatus.getTranConn();
+            tranConn.beginTransaction();
+            defStatus.markNewConnection();/*新事物，新连接*/
             this.tStatusStack.push(defStatus);/*入栈*/
-        } catch (SQLException ex) {
-            throw new TransactionDataAccessException("SQL Exception :", ex);
+            //
+        } catch (Throwable ex) {
+            throw new TransactionDataAccessException(ex);
         }
     }
-    /**判断当前事务对象是否已经处于事务中。该方法会用于评估事务传播属性的处理方式。*/
-    protected abstract boolean isExistingTransaction(Object transaction);
-    /**在当前连接上开启一个全新的事务*/
-    protected abstract void doBegin(Object transaction) throws SQLException;
-    //
+    /**判断连接对象是否处于事务中，该方法会用于评估事务传播属性的处理方式。 */
+    private boolean isExistingTransaction(TransactionObject tranConn) throws TransactionDataAccessException {
+        try {
+            return tranConn.hasTransaction();
+        } catch (Throwable e) {
+            throw new TransactionDataAccessException(e);
+        }
+    };
     //
     //
     /**递交事务*/
     public final void commit(TransactionStatus status) throws TransactionDataAccessException {
-        Object transaction = doGetTransaction();//获取底层维护的当前事务对象
         DefaultTransactionStatus defStatus = (DefaultTransactionStatus) status;
         /*已完毕，不需要处理*/
         if (defStatus.isCompleted())
@@ -162,11 +183,11 @@ public abstract class AbstractPlatformTransactionManager implements TransactionM
             if (defStatus.hasSavepoint())
                 defStatus.releaseHeldSavepoint();
             else if (defStatus.isNewConnection())
-                doCommit(transaction);
+                doCommit(defStatus);
             //
-        } catch (SQLException ex) {
+        } catch (Throwable ex) {
             rollBack(defStatus);/*递交失败，回滚*/
-            throw new TransactionDataAccessException("SQL Exception :", ex);
+            throw new TransactionDataAccessException(ex);
         } finally {
             cleanupAfterCompletion(defStatus);
         }
@@ -193,13 +214,14 @@ public abstract class AbstractPlatformTransactionManager implements TransactionM
             this.commit(inStackStatus);
     }
     /**处理当前底层数据库连接的事务递交操作。*/
-    protected abstract void doCommit(Object transaction) throws SQLException;
-    //
+    protected void doCommit(DefaultTransactionStatus defStatus) throws SQLException {
+        TransactionObject tranObject = defStatus.getTranConn();
+        tranObject.commit();
+    };
     //
     //
     /**回滚事务*/
     public final void rollBack(TransactionStatus status) throws TransactionDataAccessException {
-        Object transaction = doGetTransaction();//获取目前事务对象
         DefaultTransactionStatus defStatus = (DefaultTransactionStatus) status;
         /*已完毕，不需要处理*/
         if (defStatus.isCompleted())
@@ -215,9 +237,9 @@ public abstract class AbstractPlatformTransactionManager implements TransactionM
             if (defStatus.hasSavepoint())
                 defStatus.rollbackToHeldSavepoint();
             else if (defStatus.isNewConnection())
-                doRollback(transaction);
+                doRollback(defStatus);
             //
-        } catch (SQLException ex) {
+        } catch (Throwable ex) {
             throw new TransactionDataAccessException("SQL Exception :", ex);
         } finally {
             cleanupAfterCompletion(defStatus);
@@ -245,45 +267,42 @@ public abstract class AbstractPlatformTransactionManager implements TransactionM
             this.rollBack(inStackStatus);
     }
     /**处理当前底层数据库连接的事务回滚操作。*/
-    protected abstract void doRollback(Object transaction) throws SQLException;
+    protected void doRollback(DefaultTransactionStatus defStatus) throws SQLException {
+        TransactionObject tranObject = defStatus.getTranConn();
+        tranObject.rollback();
+    };
     //
     //
-    //
-    /**挂起当前事务*/
-    protected final void suspend(Object transaction, DefaultTransactionStatus defStatus) {
-        try {
-            /*检查事务是否为栈顶事务*/
-            prepareCheckStack(defStatus);
-            /*创建 SuspendedTransactionHolder 对象，用于保存当前底层数据库连接以及事务对象*/
-            doSuspend(transaction);
-            defStatus.setSuspendHolder(transaction);/*挂起的事务对象（来自于底层）*/
-            //
-        } catch (SQLException ex) {
-            throw new TransactionDataAccessException("SQL Exception :", ex);
+    /**挂起事务。*/
+    protected final void suspend(DefaultTransactionStatus defStatus) {
+        /*检查事务是否为栈顶事务*/
+        prepareCheckStack(defStatus);
+        /*挂起事务*/
+        if (defStatus.isSuspend() == false) {
+            defStatus.setSuspendConn(defStatus.getTranConn());
+            defStatus.setTranConn(null);
+            //暂时储藏当前线程的数据库连接
+            SyncTransactionManager.inStack(this.getDataSource());
         }
     }
-    /**挂起事务，子类需要重写该方法挂起transaction事务，并同时清空底层当前数据库连接，*/
-    protected void doSuspend(Object transaction) throws SQLException {
-        throw new TransactionSuspensionNotSupportedException("Transaction manager [" + getClass().getName() + "] does not support transaction suspension");
-    }
-    /**恢复被挂起的事务，恢复挂起的事务时必须是当前事务请妥善处理当前事务之后在恢复挂起的事务*/
-    protected final void resume(Object transaction, DefaultTransactionStatus defStatus) {
+    /**恢复被挂起的事务。*/
+    protected final void resume(DefaultTransactionStatus defStatus) {
         if (defStatus.isCompleted() == false)
             throw new IllegalTransactionStateException("the Transaction has not completed.");
-        try {
-            /*检查事务是否为栈顶事务*/
-            prepareCheckStack(defStatus);
-            Object resumeTransaction = defStatus.getSuspendedTransactionHolder();
-            doResume(resumeTransaction);
-        } catch (SQLException ex) {
-            throw new TransactionDataAccessException("SQL Exception :", ex);
+        if (defStatus.isSuspend() == false)
+            throw new IllegalTransactionStateException("the Transaction has not Suspend.");
+        //
+        /*检查事务是否为栈顶事务*/
+        prepareCheckStack(defStatus);
+        /*恢复挂起的事务*/
+        if (defStatus.isSuspend() == true) {
+            TransactionObject tranConn = defStatus.getSuspendConn();
+            defStatus.setTranConn(tranConn);
+            defStatus.setSuspendConn(null);
+            //恢复储藏的数据库连接
+            SyncTransactionManager.outStack(this.getDataSource());
         }
     }
-    /**恢复事务，恢复原本挂起的事务（第一个参数），并使用挂起的状态恢复当前数据库连接。*/
-    protected void doResume(Object resumeTransaction) throws SQLException {
-        throw new TransactionSuspensionNotSupportedException("Transaction manager [" + getClass().getName() + "] does not support transaction suspension");
-    }
-    //
     //
     //
     /**检查正在处理的事务状态是否位于栈顶，否则抛出异常*/
@@ -297,15 +316,48 @@ public abstract class AbstractPlatformTransactionManager implements TransactionM
         prepareCheckStack(defStatus);
         /*标记完成*/
         defStatus.setCompleted();
+        /*出栈*/
+        this.tStatusStack.pop();
         /*恢复挂起的事务*/
-        if (defStatus.getSuspendedTransactionHolder() != null) {
-            if (Hasor.isDebugLogger())
-                Hasor.logDebug("Resuming suspended transaction after completion of inner transaction");
-            resume(defStatus.getSuspendedTransactionHolder(), defStatus);
+        if (defStatus.isSuspend())
+            this.resume(defStatus);
+        /*释放资源*/
+        if (defStatus.isNewConnection())
+            this.doReleaseConnection(defStatus.getTranConn());
+        /*清理defStatus*/
+        defStatus.setTranConn(null);
+        defStatus.setSuspendConn(null);
+    }
+    //
+    //
+    /**获取连接（线程绑定的）*/
+    protected TransactionObject doGetConnection() {
+        return SyncTransactionManager.getTransaction(getDataSource());
+    };
+    /**获取连接（线程绑定的）*/
+    protected void doReleaseConnection(TransactionObject tranObject) {
+        return SyncTransactionManager.getTransaction(getDataSource());
+    };
+}
+/** */
+class SyncTransactionManager {
+    /**储藏*/
+    public static void inStack(DataSource dataSource) {
+        try {
+            LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DataSourceUtils.getDataSourceHelper();
+            localHelper.getConnectionSequence(dataSource).push(null);/*清除线程上的事务，将事务挂起到*/
+            //2.重新取得当前连接
+            localHelper.getConnection(dataSource);
+        } catch (SQLException e) {
+            throw new TransactionDataAccessException(e);
         }
     }
-    /**获取当前事务管理器中存在的事务对象。*/
-    protected abstract Object doGetTransaction();
-    /**获取当前事务管理器管理的数据源对象。*/
-    public abstract DataSource getDataSource();
+    /**恢复*/
+    public static void outStack(DataSource dataSource) {
+        //
+        LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DataSourceUtils.getDataSourceHelper();
+        ConnectionSequence connSeq = localHelper.getConnectionSequence(dataSource);
+        connSeq.pop();/*1.*/
+        connSeq.pop();/*2.*/
+    }
 }

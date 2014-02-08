@@ -28,16 +28,22 @@ public interface TransactionStatus {
     /**事务是否已经完成。
      * <p>当事务已经递交或者被回滚就标志着已完成。*/
     public boolean isCompleted();
-    /**设置事务状态为回滚，作为替代抛出异常进而触发回滚操作。
-     * 事务管理器将会处置事务回滚。*/
-    public void setRollbackOnly();
     /**返回事务是否已被标记为回滚。*/
     public boolean isRollbackOnly();
+    /**是否为只读模式。*/
+    public boolean isReadOnly();
+    /**是否使用了一个全新的数据库连接开启事务*/
+    public boolean isNewConnection();
+    /**测试该事务是否被挂起*/
+    public boolean isSuspend();
     /**表示事务是否携带了一个保存点，嵌套事务通常会创建一个保存点作为嵌套事务与上一层事务的分界点。
      * <p>注意：如果事务中包含保存点，则在递交事务时只处理这个保存点。*/
     public boolean hasSavepoint();
-    //    /**是否为只读模式。*/
-    //    public boolean isReadOnly();
-    /**是否使用了一个全新的数据库连接开启事务*/
-    public boolean isNewConnection();
+    //
+    /**设置事务状态为回滚，作为替代抛出异常进而触发回滚操作。
+     * <p>只有当isCompleted 为 false 时设置该方法才会有效。*/
+    public void setRollbackOnly();
+    /**设置事务状态为只读。
+     * <p>只有当isCompleted 为 false 时设置该方法才会有效。*/
+    public void setReadOnly();
 }

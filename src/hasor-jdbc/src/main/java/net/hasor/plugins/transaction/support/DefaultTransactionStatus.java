@@ -15,7 +15,6 @@
  */
 package net.hasor.plugins.transaction.support;
 import java.sql.Savepoint;
-import net.hasor.jdbc.datasource.SavepointManager;
 import net.hasor.jdbc.exceptions.IllegalTransactionStateException;
 import net.hasor.jdbc.exceptions.TransactionSuspensionNotSupportedException;
 import net.hasor.plugins.transaction.TransactionBehavior;
@@ -27,18 +26,24 @@ import net.hasor.plugins.transaction.TransactionStatus;
  * @author 赵永春(zyc@hasor.net)
  */
 public class DefaultTransactionStatus implements TransactionStatus {
-    private Savepoint           savepoint;
-    private Object              suspendHolder;
-    private TransactionBehavior behavior;
-    private TransactionLevel    level;
-    private boolean             completed    = false;
-    private boolean             rollbackOnly = false;
+    private Savepoint           savepoint     = null; //事务保存点
+    private TransactionObject   tranConn      = null; //当前事务使用的数据库连接
+    private TransactionObject   suspendConn   = null; //当前事务之前挂起的上一个数据库事务
+    private TransactionBehavior behavior      = null; //传播属性
+    private TransactionLevel    level         = null; //隔离级别
+    private boolean             completed     = false; //完成（true表示完成）
+    private boolean             rollbackOnly  = false; //要求回滚（true表示回滚）
+    private boolean             newConnection = false; //是否使用了一个全新的数据库连接开启事务（true表示新连接）
+    private boolean             readOnly      = false; //只读模式（true表示只读）
     //
-    public DefaultTransactionStatus(TransactionBehavior behavior, TransactionLevel level, Object transaction) {
+    public DefaultTransactionStatus(TransactionBehavior behavior, TransactionLevel level, TransactionObject tranConn) {
         this.behavior = behavior;
         this.level = level;
+        this.tranConn = tranConn;
     }
-    /**设定一个数据库事务保存点。*/
+    //
+    //
+    //
     public void markHeldSavepoint() {
         if (this.hasSavepoint())
             throw new IllegalTransactionStateException("TransactionStatus has Savepoint");
@@ -47,7 +52,6 @@ public class DefaultTransactionStatus implements TransactionStatus {
         //
         this.savepoint = this.getSavepointManager().createSavepoint();
     }
-    /***/
     public void releaseHeldSavepoint() {
         if (this.hasSavepoint() == false)
             throw new IllegalTransactionStateException("TransactionStatus has not Savepoint");
@@ -64,15 +68,29 @@ public class DefaultTransactionStatus implements TransactionStatus {
         //
         this.getSavepointManager().rollbackToSavepoint(this.savepoint);
     }
-    public void setSuspendHolder(Object suspendHolder) {
-        this.suspendHolder = suspendHolder;
-    }
-    public Object getSuspendedTransactionHolder() {
-        return this.suspendHolder;
-    }
-    public void setCompleted() {
+    /*设置完成状态*/
+    void setCompleted() {
         this.completed = true;
     }
+    /*标记使用的是全新连接*/
+    void markNewConnection() {
+        this.newConnection = true;
+    }
+    TransactionObject getTranConn() {
+        return tranConn;
+    }
+    void setTranConn(TransactionObject tranConn) {
+        this.tranConn = tranConn;
+    }
+    TransactionObject getSuspendConn() {
+        return suspendConn;
+    }
+    void setSuspendConn(TransactionObject suspendConn) {
+        this.suspendConn = suspendConn;
+    }
+    //
+    //
+    //
     public TransactionBehavior getTransactionBehavior() {
         return this.behavior;
     }
@@ -82,18 +100,29 @@ public class DefaultTransactionStatus implements TransactionStatus {
     public boolean isCompleted() {
         return this.completed;
     }
-    public boolean hasSavepoint() {
-        return this.savepoint != null;
-    }
-    public void setRollbackOnly() {
-        this.rollbackOnly = true;
-    }
     public boolean isRollbackOnly() {
         return this.rollbackOnly;
     }
-    //
-    protected SavepointManager getSavepointManager() {
-        return ((TransactionObject) this.suspendHolder).getConnectionHolder();
+    public boolean isReadOnly() {
+        return this.readOnly;
     }
-    public abstract boolean isNewConnection();
+    public boolean isNewConnection() {
+        return this.newConnection;
+    }
+    public boolean isSuspend() {
+        return (this.suspendConn != null) ? true : false;
+    }
+    public boolean hasSavepoint() {
+        return (this.savepoint != null) ? true : false;
+    }
+    public void setRollbackOnly() {
+        if (this.isCompleted())
+            throw new IllegalTransactionStateException("Transaction is already completed.");
+        this.rollbackOnly = true;
+    }
+    public void setReadOnly() {
+        if (this.isCompleted())
+            throw new IllegalTransactionStateException("Transaction is already completed.");
+        this.readOnly = true;
+    }
 }
