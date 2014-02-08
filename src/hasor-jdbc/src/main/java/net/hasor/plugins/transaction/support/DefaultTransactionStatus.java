@@ -15,6 +15,7 @@
  */
 package net.hasor.plugins.transaction.support;
 import java.sql.Savepoint;
+import net.hasor.jdbc.datasource.SavepointManager;
 import net.hasor.jdbc.exceptions.IllegalTransactionStateException;
 import net.hasor.jdbc.exceptions.TransactionSuspensionNotSupportedException;
 import net.hasor.plugins.transaction.TransactionBehavior;
@@ -44,6 +45,9 @@ public class DefaultTransactionStatus implements TransactionStatus {
     //
     //
     //
+    private SavepointManager getSavepointManager() {
+        return this.tranConn.getSavepointManager();
+    }
     public void markHeldSavepoint() {
         if (this.hasSavepoint())
             throw new IllegalTransactionStateException("TransactionStatus has Savepoint");

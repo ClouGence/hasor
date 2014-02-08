@@ -332,6 +332,7 @@ public abstract class DefaultTransactionManager implements TransactionManager {
     //
     /**获取连接（线程绑定的）*/
     protected TransactionObject doGetConnection() {
+        LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DataSourceUtils.getDataSourceHelper();
         return SyncTransactionManager.getTransaction(getDataSource());
     };
     /**获取连接（线程绑定的）*/
