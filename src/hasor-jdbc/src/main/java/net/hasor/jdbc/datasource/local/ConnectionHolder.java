@@ -19,7 +19,7 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import javax.sql.DataSource;
 import net.hasor.jdbc.datasource.SavepointManager;
-import net.hasor.jdbc.exceptions.DataAccessException;
+import net.hasor.jdbc.template.exceptions.DataAccessException;
 /**
  * 
  * @version : 2013-12-10

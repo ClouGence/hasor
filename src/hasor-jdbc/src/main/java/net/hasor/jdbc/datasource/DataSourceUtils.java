@@ -18,7 +18,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import net.hasor.jdbc.datasource.local.LocalDataSourceHelper;
-import net.hasor.jdbc.exceptions.DataAccessException;
+import net.hasor.jdbc.template.exceptions.DataAccessException;
 import org.more.util.ContextClassLoaderLocal;
 /**
  * 

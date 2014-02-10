@@ -25,7 +25,7 @@ import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 import net.hasor.core.plugin.AbstractHasorPlugin;
 import net.hasor.core.plugin.Plugin;
-import net.hasor.jdbc.core.JdbcTemplate;
+import net.hasor.jdbc.template.core.JdbcTemplate;
 import org.more.util.StringUtils;
 import com.google.inject.Provider;
 /**
