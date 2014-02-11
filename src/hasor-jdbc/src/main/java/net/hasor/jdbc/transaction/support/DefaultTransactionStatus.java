@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.jdbc.transaction.support;
+import java.sql.SQLException;
 import java.sql.Savepoint;
 import net.hasor.jdbc.datasource.SavepointManager;
 import net.hasor.jdbc.template.exceptions.IllegalTransactionStateException;
@@ -47,7 +48,7 @@ public class DefaultTransactionStatus implements TransactionStatus {
     private SavepointManager getSavepointManager() {
         return this.tranConn.getSavepointManager();
     }
-    public void markHeldSavepoint() {
+    public void markHeldSavepoint() throws SQLException {
         if (this.hasSavepoint())
             throw new IllegalTransactionStateException("TransactionStatus has Savepoint");
         if (this.getSavepointManager().supportSavepoint() == false)
@@ -55,7 +56,7 @@ public class DefaultTransactionStatus implements TransactionStatus {
         //
         this.savepoint = this.getSavepointManager().createSavepoint();
     }
-    public void releaseHeldSavepoint() {
+    public void releaseHeldSavepoint() throws SQLException {
         if (this.hasSavepoint() == false)
             throw new IllegalTransactionStateException("TransactionStatus has not Savepoint");
         if (this.getSavepointManager().supportSavepoint() == false)
@@ -63,7 +64,7 @@ public class DefaultTransactionStatus implements TransactionStatus {
         //
         this.getSavepointManager().releaseSavepoint(this.savepoint);
     }
-    public void rollbackToHeldSavepoint() {
+    public void rollbackToHeldSavepoint() throws SQLException {
         if (this.hasSavepoint() == false)
             throw new IllegalTransactionStateException("TransactionStatus has not Savepoint");
         if (this.getSavepointManager().supportSavepoint() == false)

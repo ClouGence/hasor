@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.jdbc.transaction;
-import net.hasor.jdbc.template.exceptions.TransactionDataAccessException;
+import java.sql.SQLException;
 /**
  * 数据源的事务管理器。
  * @version : 2013-10-30
@@ -24,16 +24,16 @@ public interface TransactionManager {
     /**开启事务，使用默认事务隔离级别。
      * @see net.hasor.jdbc.transaction.TransactionBehavior
      * @see net.hasor.jdbc.transaction.TransactionManager#getTransaction(TransactionBehavior, TransactionLevel)*/
-    public TransactionStatus getTransaction(TransactionBehavior behavior) throws TransactionDataAccessException;
+    public TransactionStatus getTransaction(TransactionBehavior behavior) throws SQLException;
     /**开启事务
      * @see net.hasor.jdbc.transaction.TransactionBehavior
      * @see java.sql.Connection#setTransactionIsolation(int)*/
-    public TransactionStatus getTransaction(TransactionBehavior behavior, TransactionLevel level) throws TransactionDataAccessException;
+    public TransactionStatus getTransaction(TransactionBehavior behavior, TransactionLevel level) throws SQLException;
     /**递交事务
      * <p>如果递交的事务并不处于事务堆栈顶端，会同时递交该事务的后面其它事务。*/
-    public void commit(TransactionStatus status) throws TransactionDataAccessException;
+    public void commit(TransactionStatus status) throws SQLException;
     /**回滚事务*/
-    public void rollBack(TransactionStatus status) throws TransactionDataAccessException;
+    public void rollBack(TransactionStatus status) throws SQLException;
     //
     /**是否存在未处理完的事务（包括被挂起的事务）。*/
     public boolean hasTransaction();

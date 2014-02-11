@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.jdbc.transaction.support;
+import java.sql.Connection;
+import java.sql.SQLException;
+import javax.sql.DataSource;
 import net.hasor.jdbc.datasource.SavepointManager;
 import net.hasor.jdbc.datasource.local.ConnectionHolder;
 /**
@@ -22,31 +25,34 @@ import net.hasor.jdbc.datasource.local.ConnectionHolder;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class TransactionObject {
-    public TransactionObject(ConnectionHolder holder) {
-        // TODO Auto-generated constructor stub
+    private ConnectionHolder holder     = null;
+    private DataSource       dataSource = null;
+    public TransactionObject(ConnectionHolder holder, DataSource dataSource) {
+        this.holder = holder;
+        this.dataSource = dataSource;
     }
     public ConnectionHolder getHolder() {
-        return null;
+        return this.holder;
+    }
+    public DataSource getDataSource() {
+        return dataSource;
     }
     public SavepointManager getSavepointManager() {
         return this.getHolder();
     };
-    public void rollback() {
-        // TODO Auto-generated method stub
+    public void rollback() throws SQLException {
+        this.holder.getConnection().rollback();
     }
-    public void commit() {
-        // TODO Auto-generated method stub
+    public void commit() throws SQLException {
+        this.holder.getConnection().commit();
     }
-    public boolean hasTransaction() {
-        //AutoCommit被标记为 false 表示开启了事务。
-        //        return conn.getAutoCommit() == false ? true : false;
-        return false;
+    public boolean hasTransaction() throws SQLException {
+        return this.holder.hasTransaction();
     };
-    public void begin() {
-        //        if (autoMark == true)
-        //            conn.setAutoCommit(false);//将连接autoCommit设置为false，意义为手动递交事务。
-    }
-    public void requested() {
-        // TODO Auto-generated method stub
+    public void begin() throws SQLException {
+        Connection conn = this.holder.getConnection();
+        boolean autoMark = conn.getAutoCommit();
+        if (autoMark == true)
+            conn.setAutoCommit(false);//将连接autoCommit设置为false，意义为手动递交事务。
     }
 }

@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.AppContext;
 import net.hasor.core.context.AnnoStandardAppContext;
-import net.hasor.jdbc.core.JdbcTemplate;
+import net.hasor.jdbc.template.core.JdbcTemplate;
 import org.junit.After;
 import org.junit.Before;
 /***

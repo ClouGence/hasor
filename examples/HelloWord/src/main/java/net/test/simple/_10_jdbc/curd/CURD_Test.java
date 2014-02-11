@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.test.simple._10_jdbc.curd;
-import net.hasor.jdbc.core.JdbcTemplate;
+import net.hasor.jdbc.template.core.JdbcTemplate;
 import net.test.simple._10_jdbc.AbstractJDBCTest;
 import org.junit.Test;
 /***

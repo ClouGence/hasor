@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.UUID;
 import net.hasor.core.context.AnnoStandardAppContext;
-import net.hasor.jdbc.core.JdbcTemplate;
+import net.hasor.jdbc.template.core.JdbcTemplate;
 import net.test.simple._10_jdbc.AbstractJDBCTest;
 import org.hsqldb.util.DatabaseManagerSwing;
 import org.junit.Test;

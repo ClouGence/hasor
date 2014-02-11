@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.hasor.core.Hasor;
-import net.hasor.jdbc.core.JdbcTemplate;
+import net.hasor.jdbc.template.core.JdbcTemplate;
 import net.test.simple._10_jdbc.AbstractJDBCTest;
 import org.junit.Test;
 /**

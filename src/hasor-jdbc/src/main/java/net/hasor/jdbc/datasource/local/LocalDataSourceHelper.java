@@ -58,7 +58,7 @@ public class LocalDataSourceHelper implements DataSourceHelper {
         ConnectionSequence conSeq = ResourcesLocal.get().get(dataSource);
         /*构建序列*/
         if (conSeq == null) {
-            conSeq = new ConnectionSequence();
+            conSeq = createConnectionSequence();
             ResourcesLocal.get().put(dataSource, conSeq);
         }
         /*新建ConnectionHolder*/
@@ -66,6 +66,10 @@ public class LocalDataSourceHelper implements DataSourceHelper {
             conSeq.push(this.createConnectionHolder(dataSource));
         }
         return conSeq;
+    }
+    /**创建ConnectionSequence对象*/
+    protected ConnectionSequence createConnectionSequence() {
+        return new ConnectionSequence();
     }
     /**创建ConnectionHolder对象*/
     protected ConnectionHolder createConnectionHolder(DataSource dataSource) {

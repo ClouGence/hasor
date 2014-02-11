@@ -29,7 +29,6 @@ import net.hasor.jdbc.datasource.local.ConnectionHolder;
 import net.hasor.jdbc.datasource.local.ConnectionSequence;
 import net.hasor.jdbc.datasource.local.LocalDataSourceHelper;
 import net.hasor.jdbc.template.exceptions.IllegalTransactionStateException;
-import net.hasor.jdbc.template.exceptions.TransactionDataAccessException;
 import net.hasor.jdbc.transaction.TransactionBehavior;
 import net.hasor.jdbc.transaction.TransactionLevel;
 import net.hasor.jdbc.transaction.TransactionManager;
@@ -45,7 +44,7 @@ import net.hasor.jdbc.transaction.TransactionStatus;
  * @version : 2013-10-30
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class DefaultTransactionManager implements TransactionManager {
+public class DefaultTransactionManager implements TransactionManager {
     private int                                  defaultTimeout = -1;
     private LinkedList<DefaultTransactionStatus> tStatusStack   = new LinkedList<DefaultTransactionStatus>();
     private DataSource                           dataSource     = null;
@@ -72,16 +71,16 @@ public abstract class DefaultTransactionManager implements TransactionManager {
     //
     //
     /**开启事务*/
-    public final TransactionStatus getTransaction(TransactionBehavior behavior) throws TransactionDataAccessException {
+    public final TransactionStatus getTransaction(TransactionBehavior behavior) throws SQLException {
         return getTransaction(behavior, TransactionLevel.ISOLATION_DEFAULT);
     };
     /**开启事务*/
-    public final TransactionStatus getTransaction(TransactionBehavior behavior, TransactionLevel level) throws TransactionDataAccessException {
+    public final TransactionStatus getTransaction(TransactionBehavior behavior, TransactionLevel level) throws SQLException {
         Hasor.assertIsNotNull(behavior);
         Hasor.assertIsNotNull(level);
         //
         DefaultTransactionStatus defStatus = new DefaultTransactionStatus(behavior, level);
-        doGetConnection(defStatus);
+        defStatus.setTranConn(doGetConnection(defStatus));
         this.tStatusStack.push(defStatus);/*入栈*/
         /*-------------------------------------------------------------
         |                      环境已经存在事务
@@ -138,33 +137,22 @@ public abstract class DefaultTransactionManager implements TransactionManager {
         return defStatus;
     }
     /**判断连接对象是否处于事务中，该方法会用于评估事务传播属性的处理方式。 */
-    private boolean isExistingTransaction(DefaultTransactionStatus defStatus) throws TransactionDataAccessException {
-        try {
-            return defStatus.getTranConn().hasTransaction();
-        } catch (Throwable e) {
-            throw new TransactionDataAccessException(e);
-        }
+    private boolean isExistingTransaction(DefaultTransactionStatus defStatus) throws SQLException {
+        return defStatus.getTranConn().hasTransaction();
     };
     /**初始化一个新的连接，并开启事务。*/
-    protected void doBegin(DefaultTransactionStatus defStatus) {
+    protected void doBegin(DefaultTransactionStatus defStatus) throws SQLException {
         TransactionObject tranConn = defStatus.getTranConn();
         tranConn.begin();
     }
     //
     //
     /**递交事务*/
-    public final void commit(TransactionStatus status) throws TransactionDataAccessException {
+    public final void commit(TransactionStatus status) throws SQLException {
         DefaultTransactionStatus defStatus = (DefaultTransactionStatus) status;
         /*已完毕，不需要处理*/
         if (defStatus.isCompleted())
             throw new IllegalTransactionStateException("Transaction is already completed - do not call commit or rollback more than once per transaction");
-        /*回滚情况*/
-        if (defStatus.isRollbackOnly()) {
-            if (Hasor.isDebugLogger())
-                Hasor.logDebug("Transactional code has requested rollback");
-            rollBack(defStatus);
-            return;
-        }
         /*-------------------------------------------------------------
         | 1.无论何种传播形式，递交事务操作都会将 isCompleted 属性置为 true。
         | 2.如果事务状态中包含一个未处理的保存点。仅递交保存点，而非递交整个事务。
@@ -172,21 +160,28 @@ public abstract class DefaultTransactionManager implements TransactionManager {
         ===============================================================*/
         try {
             prepareCommit(defStatus);
-            /*如果包含保存点，在递交事务时只处理保存点*/
-            if (defStatus.hasSavepoint())
-                defStatus.releaseHeldSavepoint();
-            else if (defStatus.isNewConnection())
-                doCommit(defStatus);
+            if (defStatus.isReadOnly() || defStatus.isRollbackOnly()) {
+                /*回滚情况*/
+                if (Hasor.isDebugLogger())
+                    Hasor.logDebug("Transactional code has requested rollback");
+                doRollback(defStatus);
+            } else {
+                /*如果包含保存点，在递交事务时只处理保存点*/
+                if (defStatus.hasSavepoint())
+                    defStatus.releaseHeldSavepoint();
+                else if (defStatus.isNewConnection())
+                    doCommit(defStatus);
+            }
             //
-        } catch (Throwable ex) {
-            rollBack(defStatus);/*递交失败，回滚*/
-            throw new TransactionDataAccessException(ex);
+        } catch (SQLException ex) {
+            doRollback(defStatus);/*递交失败，回滚*/
+            throw ex;
         } finally {
             cleanupAfterCompletion(defStatus);
         }
     }
     /**递交前的预处理*/
-    private void prepareCommit(DefaultTransactionStatus defStatus) {
+    private void prepareCommit(DefaultTransactionStatus defStatus) throws SQLException {
         /*首先预处理的事务必须存在于管理器的事务栈内某一位置中，否则要处理的事务并非来源于该事务管理器。*/
         if (this.tStatusStack.contains(defStatus) == false)
             throw new IllegalTransactionStateException("This transaction is not derived from this Manager.");
@@ -214,7 +209,7 @@ public abstract class DefaultTransactionManager implements TransactionManager {
     //
     //
     /**回滚事务*/
-    public final void rollBack(TransactionStatus status) throws TransactionDataAccessException {
+    public final void rollBack(TransactionStatus status) throws SQLException {
         DefaultTransactionStatus defStatus = (DefaultTransactionStatus) status;
         /*已完毕，不需要处理*/
         if (defStatus.isCompleted())
@@ -232,14 +227,14 @@ public abstract class DefaultTransactionManager implements TransactionManager {
             else if (defStatus.isNewConnection())
                 doRollback(defStatus);
             //
-        } catch (Throwable ex) {
-            throw new TransactionDataAccessException("SQL Exception :", ex);
+        } catch (SQLException ex) {
+            throw ex;
         } finally {
             cleanupAfterCompletion(defStatus);
         }
     }
     /**回滚前的预处理*/
-    private void prepareRollback(DefaultTransactionStatus defStatus) {
+    private void prepareRollback(DefaultTransactionStatus defStatus) throws SQLException {
         /*首先预处理的事务必须存在于管理器的事务栈内某一位置中，否则要处理的事务并非来源于该事务管理器。*/
         if (this.tStatusStack.contains(defStatus) == false)
             throw new IllegalTransactionStateException("This transaction is not derived from this Manager.");
@@ -274,8 +269,8 @@ public abstract class DefaultTransactionManager implements TransactionManager {
         if (defStatus.isSuspend() == false) {
             TransactionObject tranConn = defStatus.getTranConn();
             defStatus.setSuspendConn(tranConn);/*挂起*/
-            SyncTransactionManager.clearSync();/*清除线程上的同步事务*/
-            doGetConnection(defStatus);/*重新申请数据库连接*/
+            SyncTransactionManager.clearSync(this.getDataSource());/*清除线程上的同步事务*/
+            defStatus.setTranConn(doGetConnection(defStatus));/*重新申请数据库连接*/
         }
     }
     /**恢复被挂起的事务。*/
@@ -291,7 +286,7 @@ public abstract class DefaultTransactionManager implements TransactionManager {
         if (defStatus.isSuspend() == true) {
             TransactionObject tranConn = defStatus.getTranConn();
             this.doReleaseConnection(tranConn);/*释放这个连接*/
-            SyncTransactionManager.clearSync();/*清除线程上的同步事务*/
+            SyncTransactionManager.clearSync(this.getDataSource());/*清除线程上的同步事务*/
             //
             tranConn = defStatus.getSuspendConn();/*取得挂起的数据库连接*/
             SyncTransactionManager.setSync(tranConn);/*设置线程的数据库连接*/
@@ -314,6 +309,7 @@ public abstract class DefaultTransactionManager implements TransactionManager {
         /*标记完成*/
         defStatus.setCompleted();
         /*释放资源*/
+        defStatus.getTranConn().getHolder().released();
         if (defStatus.isNewConnection())
             this.doReleaseConnection(defStatus.getTranConn());
         /*恢复挂起的事务*/
@@ -326,6 +322,7 @@ public abstract class DefaultTransactionManager implements TransactionManager {
     }
     //
     //
+    //
     /**获取数据库连接（线程绑定的）*/
     protected TransactionObject doGetConnection(DefaultTransactionStatus defStatus) {
         LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DataSourceUtils.getDataSourceHelper();
@@ -334,7 +331,7 @@ public abstract class DefaultTransactionManager implements TransactionManager {
         if (holder.isOpen() == false)
             defStatus.markNewConnection();/*新事物，新连接*/
         holder.requested();
-        return new TransactionObject(holder);
+        return new TransactionObject(holder, getDataSource());
     };
     /**获取连接（线程绑定的）*/
     protected void doReleaseConnection(TransactionObject tranObject) {
@@ -345,9 +342,13 @@ public abstract class DefaultTransactionManager implements TransactionManager {
 /** */
 class SyncTransactionManager {
     public static void setSync(TransactionObject tranConn) {
-        s// TODO Auto-generated method stub
+        LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DataSourceUtils.getDataSourceHelper();
+        ConnectionSequence connSeq = localHelper.getConnectionSequence(tranConn.getDataSource());
+        connSeq.pop();
     }
-    public static void clearSync() {
-        s// TODO Auto-generated method stub
+    public static void clearSync(DataSource dataSource) {
+        LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DataSourceUtils.getDataSourceHelper();
+        ConnectionSequence connSeq = localHelper.getConnectionSequence(dataSource);
+        connSeq.push(null);
     }
 }
