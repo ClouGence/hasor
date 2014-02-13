@@ -78,7 +78,7 @@ public class DefaultTransactionManager implements TransactionManager {
     public final TransactionStatus getTransaction(TransactionBehavior behavior, TransactionLevel level) throws SQLException {
         Hasor.assertIsNotNull(behavior);
         Hasor.assertIsNotNull(level);
-        //
+        //1.获取连接
         DefaultTransactionStatus defStatus = new DefaultTransactionStatus(behavior, level);
         defStatus.setTranConn(doGetConnection(defStatus));
         this.tStatusStack.push(defStatus);/*入栈*/
@@ -96,7 +96,7 @@ public class DefaultTransactionManager implements TransactionManager {
         if (this.isExistingTransaction(defStatus) == true) {
             /*RROPAGATION_REQUIRES_NEW：独立事务*/
             if (behavior == RROPAGATION_REQUIRES_NEW) {
-                this.suspend(defStatus);/*挂起事务*/
+                this.suspend(defStatus);/*挂起当前事务*/
                 this.doBegin(defStatus);/*开启新事务*/
             }
             /*PROPAGATION_NESTED：嵌套事务*/
@@ -108,8 +108,10 @@ public class DefaultTransactionManager implements TransactionManager {
                 this.suspend(defStatus);/*挂起事务*/
             }
             /*PROPAGATION_NEVER：排除事务*/
-            if (behavior == PROPAGATION_NEVER)
+            if (behavior == PROPAGATION_NEVER) {
+                this.cleanupAfterCompletion(defStatus);
                 throw new IllegalTransactionStateException("Existing transaction found for transaction marked with propagation 'never'");
+            }
             return defStatus;
         }
         /*-------------------------------------------------------------
@@ -132,8 +134,10 @@ public class DefaultTransactionManager implements TransactionManager {
             this.doBegin(defStatus);/*开启新事务*/
         }
         /*PROPAGATION_MANDATORY：强制要求事务*/
-        if (behavior == PROPAGATION_MANDATORY)
+        if (behavior == PROPAGATION_MANDATORY) {
+            this.cleanupAfterCompletion(defStatus);
             throw new IllegalTransactionStateException("No existing transaction found for transaction marked with propagation 'mandatory'");
+        }
         return defStatus;
     }
     /**判断连接对象是否处于事务中，该方法会用于评估事务传播属性的处理方式。 */
@@ -228,6 +232,7 @@ public class DefaultTransactionManager implements TransactionManager {
                 doRollback(defStatus);
             //
         } catch (SQLException ex) {
+            doRollback(defStatus);
             throw ex;
         } finally {
             cleanupAfterCompletion(defStatus);
@@ -263,15 +268,17 @@ public class DefaultTransactionManager implements TransactionManager {
     //
     /**挂起事务。*/
     protected final void suspend(DefaultTransactionStatus defStatus) {
-        /*检查事务是否为栈顶事务*/
+        /*事务已经被挂起*/
+        if (defStatus.isSuspend() == true)
+            throw new IllegalTransactionStateException("the Transaction has Suspend.");
+        //
+        /*是否为栈顶事务*/
         prepareCheckStack(defStatus);
         /*挂起事务*/
-        if (defStatus.isSuspend() == false) {
-            TransactionObject tranConn = defStatus.getTranConn();
-            defStatus.setSuspendConn(tranConn);/*挂起*/
-            SyncTransactionManager.clearSync(this.getDataSource());/*清除线程上的同步事务*/
-            defStatus.setTranConn(doGetConnection(defStatus));/*重新申请数据库连接*/
-        }
+        TransactionObject tranConn = defStatus.getTranConn();
+        defStatus.setSuspendConn(tranConn);/*挂起*/
+        SyncTransactionManager.clearSync(this.getDataSource());/*清除线程上的同步事务*/
+        defStatus.setTranConn(doGetConnection(defStatus));/*重新申请数据库连接*/
     }
     /**恢复被挂起的事务。*/
     protected final void resume(DefaultTransactionStatus defStatus) {
@@ -284,13 +291,9 @@ public class DefaultTransactionManager implements TransactionManager {
         prepareCheckStack(defStatus);
         /*恢复挂起的事务*/
         if (defStatus.isSuspend() == true) {
-            TransactionObject tranConn = defStatus.getTranConn();
-            this.doReleaseConnection(tranConn);/*释放这个连接*/
             SyncTransactionManager.clearSync(this.getDataSource());/*清除线程上的同步事务*/
-            //
-            tranConn = defStatus.getSuspendConn();/*取得挂起的数据库连接*/
+            TransactionObject tranConn = defStatus.getSuspendConn();/*取得挂起的数据库连接*/
             SyncTransactionManager.setSync(tranConn);/*设置线程的数据库连接*/
-            //
             defStatus.setTranConn(tranConn);
             defStatus.setSuspendConn(null);
         }
@@ -309,9 +312,7 @@ public class DefaultTransactionManager implements TransactionManager {
         /*标记完成*/
         defStatus.setCompleted();
         /*释放资源*/
-        defStatus.getTranConn().getHolder().released();
-        if (defStatus.isNewConnection())
-            this.doReleaseConnection(defStatus.getTranConn());
+        defStatus.getTranConn().getHolder().released();//ref--
         /*恢复挂起的事务*/
         if (defStatus.isSuspend())
             this.resume(defStatus);
@@ -332,11 +333,6 @@ public class DefaultTransactionManager implements TransactionManager {
             defStatus.markNewConnection();/*新事物，新连接*/
         holder.requested();
         return new TransactionObject(holder, getDataSource());
-    };
-    /**获取连接（线程绑定的）*/
-    protected void doReleaseConnection(TransactionObject tranObject) {
-        ConnectionHolder holder = tranObject.getHolder();
-        holder.released();
     };
 }
 /** */

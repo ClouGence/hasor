@@ -28,7 +28,7 @@ public interface TransactionStatus {
     /**事务是否已经完成。
      * <p>当事务已经递交或者被回滚就标志着已完成。*/
     public boolean isCompleted();
-    /**返回事务是否已被标记为回滚。*/
+    /**是否已被标记为回滚，如果返回值为 true 则在commit 时会回滚该事务。*/
     public boolean isRollbackOnly();
     /**是否为只读模式。*/
     public boolean isReadOnly();

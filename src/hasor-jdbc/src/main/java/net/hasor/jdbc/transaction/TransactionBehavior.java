@@ -31,8 +31,7 @@ public enum TransactionBehavior {
     RROPAGATION_REQUIRES_NEW,
     /**
      * 嵌套事务
-     * <p><i><b>释意</b></i>：在当前事务中开启一个子事务。
-     * 如果事务回滚将连同上一级事务一同回滚（当主事务提交或回滚，子事务也会提交或回滚）
+     * <p><i><b>释意</b></i>：在当前事务中开启一个子事务。如果事务递交将连同上一级事务一同递交。
      * <p><i><b>注意</b></i>：需要驱动支持保存点。*/
     PROPAGATION_NESTED,
     /**
@@ -49,7 +48,7 @@ public enum TransactionBehavior {
      * <p><i><b>释意</b></i>：如果当前没有事务存在，就以非事务方式执行；如果有，就抛出异常。*/
     PROPAGATION_NEVER,
     /**
-     * 强制要求事务
+     * 要求环境中存在事务
      * <p><i><b>释意</b></i>：如果当前没有事务存在，就抛出异常；如果有，就使用当前事务。*/
     PROPAGATION_MANDATORY,
 }
