@@ -138,6 +138,7 @@ public class DefaultTransactionManager implements TransactionManager {
             this.cleanupAfterCompletion(defStatus);
             throw new IllegalTransactionStateException("No existing transaction found for transaction marked with propagation 'mandatory'");
         }
+        //
         return defStatus;
     }
     /**判断连接对象是否处于事务中，该方法会用于评估事务传播属性的处理方式。 */
@@ -147,7 +148,8 @@ public class DefaultTransactionManager implements TransactionManager {
     /**初始化一个新的连接，并开启事务。*/
     protected void doBegin(DefaultTransactionStatus defStatus) throws SQLException {
         TransactionObject tranConn = defStatus.getTranConn();
-        tranConn.begin();
+        tranConn.beginTransaction();
+        defStatus.markNewConnection();/*新事物，新连接*/
     }
     //
     //
@@ -291,7 +293,6 @@ public class DefaultTransactionManager implements TransactionManager {
         prepareCheckStack(defStatus);
         /*恢复挂起的事务*/
         if (defStatus.isSuspend() == true) {
-            SyncTransactionManager.clearSync(this.getDataSource());/*清除线程上的同步事务*/
             TransactionObject tranConn = defStatus.getSuspendConn();/*取得挂起的数据库连接*/
             SyncTransactionManager.setSync(tranConn);/*设置线程的数据库连接*/
             defStatus.setTranConn(tranConn);
@@ -311,11 +312,13 @@ public class DefaultTransactionManager implements TransactionManager {
         prepareCheckStack(defStatus);
         /*标记完成*/
         defStatus.setCompleted();
+        /*恢复挂起的事务*/
+        if (defStatus.isSuspend()) {
+            defStatus.getTranConn().getHolder().released();//ref--
+            this.resume(defStatus);
+        }
         /*释放资源*/
         defStatus.getTranConn().getHolder().released();//ref--
-        /*恢复挂起的事务*/
-        if (defStatus.isSuspend())
-            this.resume(defStatus);
         /*清理defStatus*/
         this.tStatusStack.pop();
         defStatus.setTranConn(null);
@@ -328,11 +331,9 @@ public class DefaultTransactionManager implements TransactionManager {
     protected TransactionObject doGetConnection(DefaultTransactionStatus defStatus) {
         LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DataSourceUtils.getDataSourceHelper();
         ConnectionSequence connSeq = localHelper.getConnectionSequence(getDataSource());
-        ConnectionHolder holder = connSeq.currentHolder();
-        if (holder.isOpen() == false)
-            defStatus.markNewConnection();/*新事物，新连接*/
-        holder.requested();
-        return new TransactionObject(holder, getDataSource());
+        ConnectionHolder connHolder = connSeq.currentHolder();
+        connHolder.requested();
+        return new TransactionObject(connHolder, getDataSource());
     };
 }
 /** */
@@ -340,11 +341,13 @@ class SyncTransactionManager {
     public static void setSync(TransactionObject tranConn) {
         LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DataSourceUtils.getDataSourceHelper();
         ConnectionSequence connSeq = localHelper.getConnectionSequence(tranConn.getDataSource());
-        connSeq.pop();
+        if (connSeq.currentHolder().isOpen())
+            throw new IllegalTransactionStateException("the currentHolder reference no release.");
+        connSeq.currentHolder(tranConn.getHolder());
     }
     public static void clearSync(DataSource dataSource) {
         LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DataSourceUtils.getDataSourceHelper();
         ConnectionSequence connSeq = localHelper.getConnectionSequence(dataSource);
-        connSeq.push(null);
+        connSeq.currentHolder(null);
     }
 }

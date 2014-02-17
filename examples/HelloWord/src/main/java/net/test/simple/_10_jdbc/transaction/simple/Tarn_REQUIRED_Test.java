@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple._10_jdbc.transaction;
+package net.test.simple._10_jdbc.transaction.simple;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.Connection;

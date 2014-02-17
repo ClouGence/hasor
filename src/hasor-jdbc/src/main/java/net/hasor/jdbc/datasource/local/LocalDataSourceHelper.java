@@ -63,7 +63,7 @@ public class LocalDataSourceHelper implements DataSourceHelper {
         }
         /*ÐÂ½¨ConnectionHolder*/
         if (conSeq.currentHolder() == null) {
-            conSeq.push(this.createConnectionHolder(dataSource));
+            conSeq.currentHolder(this.createConnectionHolder(dataSource));
         }
         return conSeq;
     }

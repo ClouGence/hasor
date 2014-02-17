@@ -1,7 +1,7 @@
 ===== Hasor-Jdbc v0.0.3
 * 改进:
     01.DefaultDataSourceHelper 更名为 LocalDataSourceHelper。
-    02.LocalDataSourceHelper 支持每个线程绑定多个数据库连接。
+    02.完成事务控制开发，提供 Spring 一样的事务控制策略。
 
 
 ===== Hasor-Jdbc v0.0.2
