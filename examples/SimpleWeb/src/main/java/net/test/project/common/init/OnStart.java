@@ -18,7 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
-import net.hasor.jdbc.core.JdbcTemplate;
+import net.hasor.jdbc.template.core.JdbcTemplate;
 import net.hasor.plugins.event.Listener;
 import com.google.inject.Inject;
 /**

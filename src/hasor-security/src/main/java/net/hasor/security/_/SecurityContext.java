@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.security._;
-import javax.servlet.ServletException;
+import net.hasor.core.AppContext;
 import net.hasor.plugins.secweb.SecurityDispatcher;
 import net.hasor.plugins.secweb.UriPatternMatcher;
 import net.hasor.security.Digest;
@@ -23,7 +23,6 @@ import net.hasor.security.SecurityException;
 import net.hasor.security.SecurityNode;
 import net.hasor.security.SecurityQuery;
 import net.hasor.security._.support.SecuritySettings;
-import org.hasor.context.AppContext;
 /**
  * 
  * @version : 2013-5-10

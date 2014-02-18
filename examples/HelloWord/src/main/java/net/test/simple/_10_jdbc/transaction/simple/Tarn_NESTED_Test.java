@@ -17,7 +17,9 @@ package net.test.simple._10_jdbc.transaction.simple;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.sql.DataSource;
 import net.hasor.jdbc.datasource.DataSourceUtils;
 import net.hasor.jdbc.template.core.JdbcTemplate;
 import net.hasor.jdbc.transaction.TransactionBehavior;
@@ -35,18 +37,27 @@ public class Tarn_NESTED_Test extends AbstractJDBCTest {
     /*条件：环境中没有事务。*/
     @Test
     public void noTarn_Test() throws IOException, URISyntaxException, SQLException {
-        JdbcTemplate jdbc = this.getJdbcTemplate();
-        TransactionManager tm = new DefaultTransactionManager(jdbc.getDataSource());
+        DataSource jdbcDS = this.getDataSource();
+        TransactionManager tm = new DefaultTransactionManager(jdbcDS);
         {
-            //begin
+            /*Begin，开始事务*/
             TransactionStatus status = tm.getTransaction(TransactionBehavior.PROPAGATION_NESTED);
-            jdbc.execute("insert into TB_User values('deb4f4c8','安妮.TD.雨果','belon','123','belon@hasor.net','2011-06-08 20:08:08');");//执行插入语句
-            System.out.println(jdbc.queryForInt("select count(*) from TB_User where userUUID='deb4f4c8'"));
-            //commit
-            //status.setReadOnly();//这是这个事务为只读事务（所有递交操作会被回滚）
+            /*申请连接*/
+            Connection con = DataSourceUtils.getConnection(jdbcDS);
+            //
+            //
+            con.createStatement().executeUpdate("insert into TB_User values('deb4f4c8','安妮.TD.雨果','belon','123','belon@hasor.net','2011-06-08 20:08:08');");
+            ResultSet res = con.createStatement().executeQuery("select count(*) from TB_User where userUUID='deb4f4c8'");
+            res.next();
+            System.out.println(res.getInt(1));
+            //
+            //
+            /*释放连接*/
+            DataSourceUtils.releaseConnection(con, jdbcDS);
+            /*commit，递交事务*/
             tm.commit(status);
         }
-        System.out.println(jdbc.queryForInt("select count(*) from TB_User where userUUID='deb4f4c8'"));
+        System.out.println(this.getJdbcTemplate().queryForInt("select count(*) from TB_User where userUUID='deb4f4c8'"));
     }
     /*条件：环境中存在事务。*/
     @Test

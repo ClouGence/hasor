@@ -45,9 +45,8 @@ import net.hasor.jdbc.transaction.TransactionStatus;
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
 public class DefaultTransactionManager implements TransactionManager {
-    private int                                  defaultTimeout = -1;
-    private LinkedList<DefaultTransactionStatus> tStatusStack   = new LinkedList<DefaultTransactionStatus>();
-    private DataSource                           dataSource     = null;
+    private LinkedList<DefaultTransactionStatus> tStatusStack = new LinkedList<DefaultTransactionStatus>();
+    private DataSource                           dataSource   = null;
     public DefaultTransactionManager(DataSource dataSource) {
         Hasor.assertIsNotNull(dataSource);
         this.dataSource = dataSource;

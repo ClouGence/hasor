@@ -22,6 +22,7 @@ import java.util.Set;
 import javax.servlet.ServletContext;
 import net.hasor.core.ApiBinder.ModuleSettings;
 import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
 import net.hasor.web.WebAppContext;
 import net.test.project.common.plugins.freemarker.FmMethod;
 import net.test.project.common.plugins.freemarker.FmTag;
@@ -45,7 +46,7 @@ import freemarker.template.DefaultObjectWrapper;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Module()
-public class FreemarkerMod extends AbstractWebNoeModule implements Provider<Configuration> {
+public class FreemarkerMod extends AbstractWebHasorModule implements Provider<Configuration> {
     private Configuration freemarkerConfig = new Configuration();
     @Override
     public Configuration get() {
@@ -75,13 +76,13 @@ public class FreemarkerMod extends AbstractWebNoeModule implements Provider<Conf
             return;
         for (Class<?> cls : fmTagSet) {
             if (Tag.class.isAssignableFrom(cls) == false) {
-                Noe.logWarning("loadFmTag : not implemented IFmTag or IFmTag2. class=%s", cls);
+                Hasor.logWarning("loadFmTag : not implemented IFmTag or IFmTag2. class=%s", cls);
             } else {
                 FmTag fmTagAnno = cls.getAnnotation(FmTag.class);
                 String tagName = fmTagAnno.value();
                 Tag tagBody = (Tag) appContext.getInstance(cls);
                 InternalTagObject internalTag = new InternalTagObject(tagBody);
-                Noe.logInfo("loadFmTag %s at %s.", tagName, cls);
+                Hasor.logInfo("loadFmTag %s at %s.", tagName, cls);
                 fmConfiguration.setSharedVariable(tagName, internalTag);
             }
         }
@@ -103,7 +104,7 @@ public class FreemarkerMod extends AbstractWebNoeModule implements Provider<Conf
                         if (targetMethodObject == null)
                             targetMethodObject = appContext.getInstance(fmMethodType);
                         InternalMethodObject internalMethod = new InternalMethodObject(fmMethod, targetMethodObject);
-                        Noe.logInfo("loadFmMethod %s at %s.", funName, fmMethod);
+                        Hasor.logInfo("loadFmMethod %s at %s.", funName, fmMethod);
                         fmConfiguration.setSharedVariable(funName, internalMethod);
                     }
                 }
@@ -118,12 +119,12 @@ public class FreemarkerMod extends AbstractWebNoeModule implements Provider<Conf
         String[] names = appContext.getBeanNames();
         if (names == null || names.length == 0)
             return;
-        Noe.logInfo("Registration Beans %s", new Object[] { names });
+        Hasor.logInfo("Registration Beans %s", new Object[] { names });
         for (String key : names)
             try {
                 configuration.setSharedVariable(key, appContext.getBean(key));
             } catch (Exception e) {
-                Noe.logError("%s Bean Registration failed!%s", key, e);
+                Hasor.logError("%s Bean Registration failed!%s", key, e);
             }
     }
     //
@@ -148,7 +149,7 @@ public class FreemarkerMod extends AbstractWebNoeModule implements Provider<Conf
             File fmPath = new File(appContext.getWorkSpace().getWorkDir(), "webapps");
             fmPath.mkdirs();
             tempLoaderArray.add(new DirTemplateLoader(fmPath));
-            Noe.logInfo("workSpacePath = %s", fmPath);
+            Hasor.logInfo("workSpacePath = %s", fmPath);
             //
             //this.getServletContext() <-- 方法只有在Init阶段才起作用
             File webPath = new File(((ServletContext) appContext.getContext()).getRealPath("/"));
@@ -160,10 +161,10 @@ public class FreemarkerMod extends AbstractWebNoeModule implements Provider<Conf
             //            	  
             //            	 tempLoaderArray.add(new DirTemplateLoader(devPath));	
             //            }
-            Noe.logInfo("webRoot = %s", webPath);
+            Hasor.logInfo("webRoot = %s", webPath);
             //
             tempLoaderArray.add(new ClassPathTemplateLoader("/META-INF/webapp"));
-            Noe.logInfo("classpath = %s.", "/META-INF/webapp");
+            Hasor.logInfo("classpath = %s.", "/META-INF/webapp");
             //
             FmTemplateLoader[] loaderList = tempLoaderArray.toArray(new FmTemplateLoader[tempLoaderArray.size()]);
             this.freemarkerConfig.setTemplateLoader(new MultiTemplateLoader(loaderList));

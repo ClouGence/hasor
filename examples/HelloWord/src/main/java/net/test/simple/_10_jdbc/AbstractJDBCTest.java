@@ -16,6 +16,7 @@
 package net.test.simple._10_jdbc;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import javax.sql.DataSource;
 import net.hasor.core.AppContext;
 import net.hasor.core.context.AnnoStandardAppContext;
 import net.hasor.jdbc.template.core.JdbcTemplate;
@@ -40,6 +41,10 @@ public class AbstractJDBCTest {
     }
     protected JdbcTemplate getJdbcTemplate() throws IOException, URISyntaxException {
         JdbcTemplate jdbc = appContext.getInstance(JdbcTemplate.class);
+        return jdbc;
+    }
+    protected DataSource getDataSource() throws IOException, URISyntaxException {
+        DataSource jdbc = appContext.getInstance(DataSource.class);
         return jdbc;
     }
     @After
