@@ -37,10 +37,10 @@ public interface AppContext {
      * @see net.hasor.core.context.AbstractAppContext*/
     public static final String ContextEvent_Stoped      = "ContextEvent_Stoped";
     /**模块事件。当模块收到 start 调用信号之后引发。
-     * @see net.hasor.core.module.ModulePropxy*/
+     * @see net.hasor.core.module.ModuleProxy*/
     public static final String ModuleEvent_Started      = "ModuleEvent_Started";
     /**模块事件。当模块处理完 stop 调用信号之后引发。
-     * @see net.hasor.core.module.ModulePropxy*/
+     * @see net.hasor.core.module.ModuleProxy*/
     public static final String ModuleEvent_Stoped       = "ModuleEvent_Stoped";
     //
     //----------------------------------------------------------------------------------Bean

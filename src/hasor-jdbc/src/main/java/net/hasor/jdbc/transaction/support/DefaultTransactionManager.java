@@ -67,6 +67,10 @@ public class DefaultTransactionManager implements TransactionManager {
             return false;
         return this.tStatusStack.peek() == status;
     }
+    private TransactionStatus pushStack(DefaultTransactionStatus defStatus) {
+        this.tStatusStack.push(defStatus);/*入栈*/
+        return defStatus;
+    }
     //
     //
     /**开启事务*/
@@ -80,7 +84,6 @@ public class DefaultTransactionManager implements TransactionManager {
         //1.获取连接
         DefaultTransactionStatus defStatus = new DefaultTransactionStatus(behavior, level);
         defStatus.setTranConn(doGetConnection(defStatus));
-        this.tStatusStack.push(defStatus);/*入栈*/
         /*-------------------------------------------------------------
         |                      环境已经存在事务
         |
@@ -108,10 +111,9 @@ public class DefaultTransactionManager implements TransactionManager {
             }
             /*PROPAGATION_NEVER：排除事务*/
             if (behavior == PROPAGATION_NEVER) {
-                this.cleanupAfterCompletion(defStatus);
                 throw new IllegalTransactionStateException("Existing transaction found for transaction marked with propagation 'never'");
             }
-            return defStatus;
+            return pushStack(defStatus);/*入栈*/
         }
         /*-------------------------------------------------------------
         |                      环境不经存在事务
@@ -134,11 +136,10 @@ public class DefaultTransactionManager implements TransactionManager {
         }
         /*PROPAGATION_MANDATORY：强制要求事务*/
         if (behavior == PROPAGATION_MANDATORY) {
-            this.cleanupAfterCompletion(defStatus);
             throw new IllegalTransactionStateException("No existing transaction found for transaction marked with propagation 'mandatory'");
         }
         //
-        return defStatus;
+        return pushStack(defStatus);/*入栈*/
     }
     /**判断连接对象是否处于事务中，该方法会用于评估事务传播属性的处理方式。 */
     private boolean isExistingTransaction(DefaultTransactionStatus defStatus) throws SQLException {
@@ -147,6 +148,8 @@ public class DefaultTransactionManager implements TransactionManager {
     /**初始化一个新的连接，并开启事务。*/
     protected void doBegin(DefaultTransactionStatus defStatus) throws SQLException {
         TransactionObject tranConn = defStatus.getTranConn();
+        if (tranConn.hasTransaction())
+            throw new IllegalTransactionStateException("the Connection Transaction is opening.");
         tranConn.beginTransaction();
         defStatus.markNewConnection();/*新事物，新连接*/
     }
@@ -313,17 +316,16 @@ public class DefaultTransactionManager implements TransactionManager {
         defStatus.setCompleted();
         /*恢复挂起的事务*/
         if (defStatus.isSuspend()) {
-            defStatus.getTranConn().getHolder().released();//ref--
+            releaseConnection(defStatus);//ref--
             this.resume(defStatus);
         }
         /*释放资源*/
-        defStatus.getTranConn().getHolder().released();//ref--
+        releaseConnection(defStatus);//ref--
         /*清理defStatus*/
         this.tStatusStack.pop();
         defStatus.setTranConn(null);
         defStatus.setSuspendConn(null);
     }
-    //
     //
     //
     /**获取数据库连接（线程绑定的）*/
@@ -334,6 +336,10 @@ public class DefaultTransactionManager implements TransactionManager {
         connHolder.requested();
         return new TransactionObject(connHolder, getDataSource());
     };
+    /**释放数据库连接*/
+    protected void releaseConnection(DefaultTransactionStatus defStatus) {
+        defStatus.getTranConn().getHolder().released();//ref--
+    }
 }
 /** */
 class SyncTransactionManager {

@@ -33,7 +33,7 @@ public class ModuleReactor {
     //
     /**检查模块的依赖是否正确。*/
     public void checkModule(ModuleInfo info) {
-        ModulePropxy infoBean = (ModulePropxy) info;
+        ModuleProxy infoBean = (ModuleProxy) info;
         List<ReactorModuleInfoElement> stackArray = new ArrayList<ReactorModuleInfoElement>();
         try {
             //放到栈顶
@@ -45,9 +45,9 @@ public class ModuleReactor {
             throw e;
         }
     }
-    private void checkModuleInDependency(ModulePropxy info, int depth, List<Dependency> depList, List<ModuleInfo> depArray, List<ReactorModuleInfoElement> stackArray) {
+    private void checkModuleInDependency(ModuleProxy info, int depth, List<Dependency> depList, List<ModuleInfo> depArray, List<ReactorModuleInfoElement> stackArray) {
         for (Dependency dep : depList) {
-            ModulePropxy depInfo = (ModulePropxy) dep.getModuleInfo();
+            ModuleProxy depInfo = (ModuleProxy) dep.getModuleInfo();
             ReactorModuleInfoElement infoLog = new ReactorModuleInfoElement(depth, depInfo);
             depArray.add(depInfo);
             stackArray.add(infoLog);
@@ -72,7 +72,7 @@ public class ModuleReactor {
         /*2.构建ModuleInfo对象中的依赖树*/
         Hasor.logInfo("build dependency tree for ModuleInfo.");
         for (ModuleInfo info : this.modules) {
-            ModulePropxy depInfo = (ModulePropxy) info;
+            ModuleProxy depInfo = (ModuleProxy) info;
             for (Dependency dep : depInfo.getDependency())
                 this.updateModuleDependency(dep);
         }
@@ -107,7 +107,7 @@ public class ModuleReactor {
         ArrayList<ModuleInfo> allModule = new ArrayList<ModuleInfo>(this.modules);//克隆一个
         /*去掉所有被依赖的项目*/
         for (ModuleInfo info : this.modules) {
-            ModulePropxy depInfo = (ModulePropxy) info;
+            ModuleProxy depInfo = (ModuleProxy) info;
             for (Dependency dep : depInfo.getDependency())
                 allModule.remove(dep.getModuleInfo());
         }
@@ -116,7 +116,7 @@ public class ModuleReactor {
     }
     private void getDependenceTree(int depth, ModuleInfo info, List<ReactorModuleInfoElement> infoList) {
         infoList.add(new ReactorModuleInfoElement(depth, info));
-        ModulePropxy depInfo = (ModulePropxy) info;
+        ModuleProxy depInfo = (ModuleProxy) info;
         for (Dependency dep : depInfo.getDependency())
             getDependenceTree(depth + 1, dep.getModuleInfo(), infoList);
     }
@@ -157,7 +157,7 @@ public class ModuleReactor {
         return finalList;
     }
     private void loadDependence(ModuleInfo e, List<ModuleInfo> finalList) {
-        ModulePropxy depInfo = (ModulePropxy) e;
+        ModuleProxy depInfo = (ModuleProxy) e;
         for (Dependency dep : depInfo.getDependency()) {
             ModuleInfo infoItem = dep.getModuleInfo();
             this.loadDependence(infoItem, finalList);
@@ -169,7 +169,7 @@ public class ModuleReactor {
     /**更新ModuleInfo对象中的依赖树*/
     private void updateModuleDependency(Dependency dep) {
         DependencyBean depBean = (DependencyBean) dep;
-        List<Dependency> refDep = ((ModulePropxy) depBean.getModuleInfo()).getDependency();
+        List<Dependency> refDep = ((ModuleProxy) depBean.getModuleInfo()).getDependency();
         depBean.updateDependency(new ArrayList<Dependency>(refDep));
         for (Dependency e : refDep)
             this.updateModuleDependency(e);

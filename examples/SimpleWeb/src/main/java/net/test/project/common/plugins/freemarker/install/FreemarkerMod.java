@@ -90,7 +90,7 @@ public class FreemarkerMod extends AbstractWebHasorModule implements Provider<Co
     //
     /**×°ÔØFmMethod*/
     protected void loadFmMethod(AppContext appContext, Configuration fmConfiguration) {
-        Set<Class<?>> fmMethodSet = appContext.getClassSet(Object.class);
+        Set<Class<?>> fmMethodSet = appContext.findClass(Object.class);
         if (fmMethodSet == null)
             return;
         for (Class<?> fmMethodType : fmMethodSet) {

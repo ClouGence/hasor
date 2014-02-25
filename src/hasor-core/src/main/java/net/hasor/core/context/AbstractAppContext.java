@@ -32,7 +32,7 @@ import net.hasor.core.Settings;
 import net.hasor.core.binder.AbstractApiBinder;
 import net.hasor.core.binder.BeanMetaData;
 import net.hasor.core.module.GuiceModule;
-import net.hasor.core.module.ModulePropxy;
+import net.hasor.core.module.ModuleProxy;
 import net.hasor.core.module.ModuleReactor;
 import org.more.UndefinedException;
 import com.google.inject.Binder;
@@ -198,11 +198,11 @@ public abstract class AbstractAppContext implements AppContext {
         return this.getEnvironment().findClass(featureType);
     }
     //---------------------------------------------------------------------------------------Module
-    private List<ModulePropxy> moduleSet;
+    private List<ModuleProxy> moduleSet;
     /**创建或者获得用于存放所有ModuleInfo的集合对象*/
-    protected List<ModulePropxy> getModuleList() {
+    protected List<ModuleProxy> getModuleList() {
         if (this.moduleSet == null)
-            this.moduleSet = new ArrayList<ModulePropxy>();
+            this.moduleSet = new ArrayList<ModuleProxy>();
         return moduleSet;
     }
     /**添加一个 Guice 模块*/
@@ -216,12 +216,12 @@ public abstract class AbstractAppContext implements AppContext {
         if (this.isReady())
             throw new IllegalStateException("context is inited.");
         /*防止重复添加*/
-        for (ModulePropxy info : this.getModuleList())
+        for (ModuleProxy info : this.getModuleList())
             if (info.getTarget() == hasorModule)
                 return info;
         /*添加模块*/
-        ModulePropxy propxy = new ContextModulePropxy(hasorModule, this);
-        List<ModulePropxy> propxyList = this.getModuleList();
+        ModuleProxy propxy = new ContextModulePropxy(hasorModule, this);
+        List<ModuleProxy> propxyList = this.getModuleList();
         if (propxyList.contains(propxy) == false)
             propxyList.add(propxy);
         return propxy;
@@ -230,8 +230,8 @@ public abstract class AbstractAppContext implements AppContext {
     public synchronized boolean removeModule(Module hasorModule) {
         if (this.isReady())
             throw new IllegalStateException("context is inited.");
-        ModulePropxy targetInfo = null;
-        for (ModulePropxy info : this.getModuleList())
+        ModuleProxy targetInfo = null;
+        for (ModuleProxy info : this.getModuleList())
             if (info.getTarget() == hasorModule) {
                 targetInfo = info;
                 break;
@@ -244,7 +244,7 @@ public abstract class AbstractAppContext implements AppContext {
     }
     /**获得所有模块*/
     public ModuleInfo[] getModules() {
-        List<ModulePropxy> haosrModuleList = this.getModuleList();
+        List<ModuleProxy> haosrModuleList = this.getModuleList();
         ModuleInfo[] infoArray = new ModuleInfo[haosrModuleList.size()];
         for (int i = 0; i < haosrModuleList.size(); i++)
             infoArray[i] = haosrModuleList.get(i);
@@ -261,7 +261,7 @@ public abstract class AbstractAppContext implements AppContext {
         return this.getGuice() != null;
     }
     /**为模块创建ApiBinder*/
-    protected AbstractApiBinder newApiBinder(final ModulePropxy forModule, final Binder guiceBinder) {
+    protected AbstractApiBinder newApiBinder(final ModuleProxy forModule, final Binder guiceBinder) {
         return new AbstractApiBinder(this.getEnvironment()) {
             public ModuleSettings configModule() {
                 return forModule;
@@ -277,7 +277,7 @@ public abstract class AbstractAppContext implements AppContext {
     }
     /**打印模块状态*/
     protected static void printModState(AbstractAppContext appContext) {
-        List<ModulePropxy> modList = appContext.getModuleList();
+        List<ModuleProxy> modList = appContext.getModuleList();
         StringBuilder sb = new StringBuilder("");
         int size = String.valueOf(modList.size() - 1).length();
         for (int i = 0; i < modList.size(); i++) {
@@ -345,9 +345,9 @@ public abstract class AbstractAppContext implements AppContext {
     /**执行 Initialize 过程。*/
     protected void doInitialize(final Binder guiceBinder) {
         Hasor.logInfo("send init sign...");
-        List<ModulePropxy> modulePropxyList = this.getModuleList();
+        List<ModuleProxy> modulePropxyList = this.getModuleList();
         /*引发模块init生命周期*/
-        for (ModulePropxy forModule : modulePropxyList) {
+        for (ModuleProxy forModule : modulePropxyList) {
             AbstractApiBinder apiBinder = this.newApiBinder(forModule, guiceBinder);
             forModule.init(apiBinder);//触发生命周期 
             apiBinder.configure(guiceBinder);
@@ -368,14 +368,14 @@ public abstract class AbstractAppContext implements AppContext {
     /**使用反应堆对模块进行循环检查和排序*/
     private void doReactor() {
         List<ModuleInfo> readOnlyModules = new ArrayList<ModuleInfo>();
-        for (ModulePropxy amp : this.getModuleList())
+        for (ModuleProxy amp : this.getModuleList())
             readOnlyModules.add(amp);
         ModuleReactor reactor = new ModuleReactor(readOnlyModules);//创建反应器
         List<ModuleInfo> result = reactor.process();
-        List<ModulePropxy> propxyList = this.getModuleList();
+        List<ModuleProxy> propxyList = this.getModuleList();
         propxyList.clear();
         for (ModuleInfo info : result)
-            propxyList.add((ModulePropxy) info);
+            propxyList.add((ModuleProxy) info);
     }
     /**启动。向所有模块发送启动信号，并将容器的状态置为Start。（该方法会尝试init所有模块）*/
     protected void doStart() {
@@ -387,8 +387,8 @@ public abstract class AbstractAppContext implements AppContext {
                 weak.setAppContext(this);
         }
         /*2.逐一启动模块*/
-        List<ModulePropxy> modulePropxyList = this.getModuleList();
-        for (ModulePropxy mod : modulePropxyList)
+        List<ModuleProxy> modulePropxyList = this.getModuleList();
+        for (ModuleProxy mod : modulePropxyList)
             mod.start(this);
         this.isStart = true;
         /*3.发送启动事件*/
@@ -402,8 +402,8 @@ public abstract class AbstractAppContext implements AppContext {
         this.isStart = false;
         /*1.逐一停止模块*/
         Hasor.logInfo("send stop sign.");
-        List<ModulePropxy> modulePropxyList = this.getModuleList();
-        for (ModulePropxy mod : modulePropxyList)
+        List<ModuleProxy> modulePropxyList = this.getModuleList();
+        for (ModuleProxy mod : modulePropxyList)
             mod.stop(this);
         /*2.发送停止事件*/
         this.getEnvironment().getEventManager().doSync(ContextEvent_Stoped, this);
@@ -450,15 +450,15 @@ public abstract class AbstractAppContext implements AppContext {
         }
     }
     /**位于容器中 ModulePropxy 抽象类的实现*/
-    private class ContextModulePropxy extends ModulePropxy {
+    private class ContextModulePropxy extends ModuleProxy {
         public ContextModulePropxy(Module targetModule, AbstractAppContext appContext) {
             super(targetModule, appContext);
         }
-        protected ModulePropxy getInfo(Class<? extends Module> targetModule, AppContext appContext) {
-            List<ModulePropxy> modulePropxyList = ((AbstractAppContext) appContext).getModuleList();
-            for (ModulePropxy modulePropxy : modulePropxyList)
-                if (targetModule == modulePropxy.getTarget().getClass())
-                    return modulePropxy;
+        protected ModuleProxy getInfo(Class<? extends Module> targetModule, AppContext appContext) {
+            List<ModuleProxy> modulePropxyList = ((AbstractAppContext) appContext).getModuleList();
+            for (ModuleProxy moduleProxy : modulePropxyList)
+                if (targetModule == moduleProxy.getTarget().getClass())
+                    return moduleProxy;
             throw new UndefinedException(targetModule.getName() + " module is Undefined!");
         }
     }

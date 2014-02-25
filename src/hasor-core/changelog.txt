@@ -5,6 +5,8 @@
     01.Settings接口的 getNameSpace 方法改名为 getSetting。
     02.AppContext接口的 findBean、findProvider 方法更名 findBindingBean、findBindingProvider
         --使其接近ApiBinder接口中bindingType方法的命名以便于开发者理解。
+* 修复:
+    01.更名 ModulePropxy 类名为 ModuleProxy。
 
 
 ===== Hasor-Core v0.0.7

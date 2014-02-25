@@ -35,7 +35,7 @@ import org.more.util.exception.ExceptionUtils;
  * @version : 2013-7-26
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class ModulePropxy implements ModuleInfo/*提供模块基本信息*/, ModuleSettings, Module {
+public abstract class ModuleProxy implements ModuleInfo/*提供模块基本信息*/, ModuleSettings, Module {
     private String           displayName;
     private String           description;
     private Module           targetModule;
@@ -45,7 +45,7 @@ public abstract class ModulePropxy implements ModuleInfo/*提供模块基本信息*/, Mo
     private boolean          isReady;
     private boolean          isStart;
     //
-    public ModulePropxy(Module targetModule, AppContext appContext) {
+    public ModuleProxy(Module targetModule, AppContext appContext) {
         this.targetModule = Hasor.assertIsNotNull(targetModule);
         this.appContext = Hasor.assertIsNotNull(appContext);
         //
@@ -108,14 +108,14 @@ public abstract class ModulePropxy implements ModuleInfo/*提供模块基本信息*/, Mo
     //
     //----------------------------------------------------------------------------Dependency Method
     /**尝试从容器中获取模块的代理对象*/
-    protected abstract ModulePropxy getInfo(Class<? extends Module> targetModule, AppContext appContext);
+    protected abstract ModuleProxy getInfo(Class<? extends Module> targetModule, AppContext appContext);
     //
     public void reverse(Class<? extends Module> targetModule) {
         if (isReady())
             /*模块已经准备好，只有当模块在准备期才可以使用该方法*/
             throw new IllegalStateException("Module is ready, only can use this method in run-up.");
         //
-        ModulePropxy moduleInfo = this.getInfo(targetModule, this.appContext);
+        ModuleProxy moduleInfo = this.getInfo(targetModule, this.appContext);
         moduleInfo.weak(this.targetModule.getClass());
     }
     public void weak(Class<? extends Module> targetModule) {
@@ -129,7 +129,7 @@ public abstract class ModulePropxy implements ModuleInfo/*提供模块基本信息*/, Mo
             /*模块已经准备好，只有当模块在准备期才可以使用该方法*/
             throw new IllegalStateException("Module is ready, only can use this method in run-up.");
         //
-        ModulePropxy moduleInfo = this.getInfo(targetModule, this.appContext);
+        ModuleProxy moduleInfo = this.getInfo(targetModule, this.appContext);
         for (Dependency dep : this.dependency)
             if (dep.getModuleInfo() == moduleInfo)
                 throw new IllegalStateException("before dependence is included.");
