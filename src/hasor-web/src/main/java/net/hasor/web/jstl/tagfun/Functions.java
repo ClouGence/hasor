@@ -47,7 +47,7 @@ public class Functions {
             return null;
         Class<?> defineType = Class.forName(bindingType);
         //
-        Provider<?> provider = getAppContext().findProviderByType(name, defineType);
+        Provider<?> provider = getAppContext().findBindingProvider(name, defineType);
         if (provider != null)
             return provider.get();
         return null;
@@ -66,7 +66,7 @@ public class Functions {
             return false;
         Class<?> defineType = Class.forName(className);
         //
-        Provider<?> provider = getAppContext().findProviderByType(name, defineType);
+        Provider<?> provider = getAppContext().findBindingProvider(name, defineType);
         return provider != null;
     }
 }

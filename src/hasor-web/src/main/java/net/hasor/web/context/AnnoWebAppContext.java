@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import net.hasor.core.binder.AbstractApiBinder;
 import net.hasor.core.context.AnnoStandardAppContext;
-import net.hasor.core.module.ModulePropxy;
+import net.hasor.core.module.ModuleProxy;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.WebEnvironment;
 import net.hasor.web.binder.FilterPipeline;
@@ -89,7 +89,7 @@ public class AnnoWebAppContext extends AnnoStandardAppContext implements WebAppC
     protected WebEnvironment createEnvironment() {
         return new WebStandardEnvironment(this.getMainSettings(), (ServletContext) this.getContext());
     }
-    protected AbstractApiBinder newApiBinder(final ModulePropxy forModule, final Binder guiceBinder) {
+    protected AbstractApiBinder newApiBinder(final ModuleProxy forModule, final Binder guiceBinder) {
         return new WebApiBinderModule((WebEnvironment) this.getEnvironment()) {
             public ModuleSettings configModule() {
                 return forModule;

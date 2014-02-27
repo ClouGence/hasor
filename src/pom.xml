@@ -1,4 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -32,12 +32,24 @@
 		<url>git@github.com:zycgit/hasor.git</url>
 	</scm>
 
-	<modules>
-		<!-- <module>hasor-core</module> -->
-		<!-- <module>hasor-web</module> -->
-		<!-- <module>hasor-jdbc</module> -->
-		<!-- <module>hasor-jetty</module> -->
-	</modules>
+	<!-- 便于开发的配置 -->
+	<profiles>
+		<profile>
+			<activation>
+				<property>
+					<name>HasorDeveloper</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<modules>
+				<module>hasor-core</module>
+				<module>hasor-web</module>
+				<module>hasor-jdbc</module>
+				<module>hasor-jetty</module>
+				<module>hasor-security</module>
+			</modules>
+		</profile>
+	</profiles>
 
 	<!-- 构建描述 -->
 	<build>

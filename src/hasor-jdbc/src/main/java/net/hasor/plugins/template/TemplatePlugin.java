@@ -96,7 +96,7 @@ public class TemplatePlugin extends AbstractHasorPlugin {
             apiBinder.registerAware(this);
         }
         public JdbcTemplate get() {
-            DataSource dataSource = appContext.findBeanByType(name, DataSource.class);
+            DataSource dataSource = appContext.findBindingBean(name, DataSource.class);
             if (dataSource == null)
                 throw new NullPointerException(name + " DataSource is not define.");
             return new JdbcTemplate(dataSource);
