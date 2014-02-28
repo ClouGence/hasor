@@ -51,8 +51,6 @@ public class DefaultTransactionManager implements TransactionManager {
         Hasor.assertIsNotNull(dataSource);
         this.dataSource = dataSource;
     }
-    //
-    //
     /**获取当前事务管理器管理的数据源对象。*/
     public DataSource getDataSource() {
         return this.dataSource;
