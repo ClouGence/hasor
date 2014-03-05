@@ -20,11 +20,11 @@ package net.hasor.security;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface SecurityQuery extends SecurityNode {
-    /*-*/
+    /**逻辑与*/
     public SecurityQuery and(String permissionCode);
     public SecurityQuery and(Permission permission);
     public SecurityQuery and(SecurityQuery testNode);
-    /*-*/
+    /**逻辑或*/
     public SecurityQuery or(String permissionCode);
     public SecurityQuery or(Permission permission);
     public SecurityQuery or(SecurityQuery testNode);
@@ -50,8 +50,10 @@ public interface SecurityQuery extends SecurityNode {
     public SecurityQuery orGuest();
     /**非来宾身份*/
     public SecurityQuery notGuest();
-    /**自定义检测方式。*/
+    /**自定义检测（与关系）*/
     public SecurityQuery andCustomer(SecurityNode customerTest);
+    /**自定义检测（或关系）*/
     public SecurityQuery orCustomer(SecurityNode customerTest);
+    /**自定义检测（非关系）*/
     public SecurityQuery notCustomer(SecurityNode customerTest);
 };
