@@ -21,10 +21,8 @@ import java.util.WeakHashMap;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
-import net.hasor.plugins.aop.GlobalAop.RegType;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.more.util.MatchUtils;
 /**
  * Aop拦截器
  * @version : 2013-11-8
@@ -32,11 +30,9 @@ import org.more.util.MatchUtils;
  */
 class AopInterceptor implements MethodInterceptor, AppContextAware {
     private AppContext                                                    appContext           = null;
-    private List<Class<? extends MethodInterceptor>>                      globalList           = null;
     private WeakHashMap<Method, List<Class<? extends MethodInterceptor>>> methodInterceptorMap = new WeakHashMap<Method, List<Class<? extends MethodInterceptor>>>();
     //
-    public AopInterceptor(List<Class<? extends MethodInterceptor>> globalList, ApiBinder apiBinder) {
-        this.globalList = globalList;
+    public AopInterceptor(ApiBinder apiBinder) {
         apiBinder.registerAware(this);
     }
     //
@@ -50,19 +46,6 @@ class AopInterceptor implements MethodInterceptor, AppContextAware {
         //1.取得拦截器链
         if (list == null) {
             list = new ArrayList<Class<? extends MethodInterceptor>>();
-            //a.全局拦截器
-            String fullName = targetMethod.toGenericString();
-            for (Class<? extends MethodInterceptor> global : globalList) {
-                GlobalAop gaop = global.getAnnotation(GlobalAop.class);
-                boolean match = false;
-                if (RegType.Regexp == gaop.regType())
-                    match = fullName.matches(gaop.value());//使用正则表达式
-                else if (RegType.Wildcard == gaop.regType())
-                    match = MatchUtils.matchWild(gaop.value(), fullName);//使用通配符
-                //
-                if (match)
-                    list.add(global);
-            }
             //b.类级拦截器
             Aop beforeAnno = targetMethod.getDeclaringClass().getAnnotation(Aop.class);
             if (beforeAnno != null) {
