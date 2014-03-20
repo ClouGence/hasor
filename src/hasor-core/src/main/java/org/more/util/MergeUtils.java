@@ -16,6 +16,7 @@
 package org.more.util;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -26,6 +27,22 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class MergeUtils {
+    /**合并两个迭代器*/
+    public static <T> Enumeration<T> mergeEnumeration(final Enumeration<T> enum1, final Enumeration<T> enum2) {
+        final Enumeration<T> i1 = (enum1 != null) ? enum1 : Iterators.asEnumeration(new ArrayList<T>(0).iterator());
+        final Enumeration<T> i2 = (enum2 != null) ? enum2 : Iterators.asEnumeration(new ArrayList<T>(0).iterator());
+        return new Enumeration<T>() {
+            private Enumeration<T> it = i1;
+            public boolean hasMoreElements() {
+                return (i1.hasMoreElements() || i2.hasMoreElements()) ? true : false;
+            }
+            public T nextElement() {
+                if (this.it.hasMoreElements() == false)
+                    this.it = i2;
+                return this.it.nextElement();
+            }
+        };
+    };
     /**合并两个迭代器*/
     public static <T> Iterator<T> mergeIterator(final Iterator<T> iterator1, final Iterator<T> iterator2) {
         final Iterator<T> i1 = (iterator1 != null) ? iterator1 : new ArrayList<T>(0).iterator();
