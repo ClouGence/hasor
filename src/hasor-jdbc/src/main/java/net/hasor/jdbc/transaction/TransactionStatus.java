@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.jdbc.transaction;
+import java.sql.SQLException;
 /**
  * 表示一个事务状态
  * @version : 2013-10-30
@@ -41,9 +42,9 @@ public interface TransactionStatus {
     public boolean hasSavepoint();
     //
     /**设置事务状态为回滚，作为替代抛出异常进而触发回滚操作。
-     * <p>只有当isCompleted 为 false 时设置该方法才会有效。*/
-    public void setRollbackOnly();
+     * <p>只有当isCompleted 为 false 时设置该方法才会有效。 */
+    public void setRollbackOnly() throws SQLException;
     /**设置事务状态为只读。
      * <p>只有当isCompleted 为 false 时设置该方法才会有效。*/
-    public void setReadOnly();
+    public void setReadOnly() throws SQLException;
 }

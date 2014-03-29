@@ -19,10 +19,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import net.hasor.jdbc.template.RowMapper;
 import net.hasor.jdbc.template.core.JdbcTemplate;
-import net.hasor.jdbc.template.core.util.JdbcUtils;
-import net.hasor.jdbc.template.core.util.NumberUtils;
-import net.hasor.jdbc.template.exceptions.InvalidDataAccessException;
-import net.hasor.jdbc.template.exceptions.TypeMismatchDataAccessException;
+import org.more.util.NumberUtils;
+import com.alibaba.druid.util.JdbcUtils;
 /**
  * {@link RowMapper} implementation that converts a single column into a single
  * result value per row. Expects to operate on a <code>java.sql.ResultSet</code>
@@ -73,7 +71,7 @@ public class SingleColumnRowMapper<T> implements RowMapper<T> {
         ResultSetMetaData rsmd = rs.getMetaData();
         int nrOfColumns = rsmd.getColumnCount();
         if (nrOfColumns != 1) {
-            throw new InvalidDataAccessException("Incorrect column count: expected 1, actual " + nrOfColumns);
+            throw new SQLException("Incorrect column count: expected 1, actual " + nrOfColumns);
         }
         // Extract column value from JDBC ResultSet.
         Object result = getColumnValue(rs, 1, this.requiredType);
@@ -82,7 +80,7 @@ public class SingleColumnRowMapper<T> implements RowMapper<T> {
             try {
                 return (T) convertValueToRequiredType(result, this.requiredType);
             } catch (IllegalArgumentException ex) {
-                throw new TypeMismatchDataAccessException("Type mismatch affecting row number " + rowNum + " and column type '" + rsmd.getColumnTypeName(1) + "': " + ex.getMessage());
+                throw new IllegalArgumentException("Type mismatch affecting row number " + rowNum + " and column type '" + rsmd.getColumnTypeName(1) + "': " + ex.getMessage());
             }
         }
         return (T) result;

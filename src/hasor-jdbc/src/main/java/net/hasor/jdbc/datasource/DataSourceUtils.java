@@ -18,7 +18,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import net.hasor.jdbc.datasource.local.LocalDataSourceHelper;
-import net.hasor.jdbc.template.exceptions.DataAccessException;
 import org.more.util.ContextClassLoaderLocal;
 /**
  * 
@@ -34,34 +33,22 @@ public class DataSourceUtils {
     private static ServiceLocal utilServiceLocal = new ServiceLocal();
     //
     /**申请连接*/
-    public static Connection getConnection(DataSource dataSource) throws DataAccessException {
+    public static Connection getConnection(DataSource dataSource) throws SQLException {
         DataSourceHelper utilService = utilServiceLocal.get();
-        try {
-            Connection conn = utilService.getConnection(dataSource);
-            if (conn == null)
-                throw new DataAccessException("getConnection. return null.");
-            return conn;
-        } catch (SQLException e) {
-            throw new DataAccessException("getConnection.", e);
-        }
+        Connection conn = utilService.getConnection(dataSource);
+        if (conn == null)
+            throw new SQLException("getConnection. return null.");
+        return conn;
     };
     /**释放连接*/
-    public static void releaseConnection(Connection con, DataSource dataSource) throws DataAccessException {
+    public static void releaseConnection(Connection con, DataSource dataSource) throws SQLException {
         DataSourceHelper utilService = utilServiceLocal.get();
-        try {
-            utilService.releaseConnection(con, dataSource);
-        } catch (SQLException e) {
-            throw new DataAccessException("releaseConnection.", e);
-        }
+        utilService.releaseConnection(con, dataSource);
     };
     /**获得某个数据源的当前连接*/
-    public static Connection currentConnection(DataSource dataSource) throws DataAccessException {
-        try {
-            DataSourceHelper utilService = utilServiceLocal.get();
-            return utilService.currentConnection(dataSource);
-        } catch (SQLException e) {
-            throw new DataAccessException("currentConnection.", e);
-        }
+    public static Connection currentConnection(DataSource dataSource) throws SQLException {
+        DataSourceHelper utilService = utilServiceLocal.get();
+        return utilService.currentConnection(dataSource);
     };
     /**获取DataSourceHelper*/
     public static DataSourceHelper getDataSourceHelper() {

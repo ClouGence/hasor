@@ -17,8 +17,6 @@ package net.hasor.jdbc.transaction.support;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import net.hasor.jdbc.datasource.SavepointManager;
-import net.hasor.jdbc.template.exceptions.IllegalTransactionStateException;
-import net.hasor.jdbc.template.exceptions.TransactionSuspensionNotSupportedException;
 import net.hasor.jdbc.transaction.TransactionBehavior;
 import net.hasor.jdbc.transaction.TransactionLevel;
 import net.hasor.jdbc.transaction.TransactionStatus;
@@ -50,25 +48,25 @@ public class DefaultTransactionStatus implements TransactionStatus {
     }
     public void markHeldSavepoint() throws SQLException {
         if (this.hasSavepoint())
-            throw new IllegalTransactionStateException("TransactionStatus has Savepoint");
+            throw new SQLException("TransactionStatus has Savepoint");
         if (this.getSavepointManager().supportSavepoint() == false)
-            throw new TransactionSuspensionNotSupportedException("SavepointManager does not support Savepoint.");
+            throw new SQLException("SavepointManager does not support Savepoint.");
         //
         this.savepoint = this.getSavepointManager().createSavepoint();
     }
     public void releaseHeldSavepoint() throws SQLException {
         if (this.hasSavepoint() == false)
-            throw new IllegalTransactionStateException("TransactionStatus has not Savepoint");
+            throw new SQLException("TransactionStatus has not Savepoint");
         if (this.getSavepointManager().supportSavepoint() == false)
-            throw new TransactionSuspensionNotSupportedException("SavepointManager does not support Savepoint.");
+            throw new SQLException("SavepointManager does not support Savepoint.");
         //
         this.getSavepointManager().releaseSavepoint(this.savepoint);
     }
     public void rollbackToHeldSavepoint() throws SQLException {
         if (this.hasSavepoint() == false)
-            throw new IllegalTransactionStateException("TransactionStatus has not Savepoint");
+            throw new SQLException("TransactionStatus has not Savepoint");
         if (this.getSavepointManager().supportSavepoint() == false)
-            throw new TransactionSuspensionNotSupportedException("SavepointManager does not support Savepoint.");
+            throw new SQLException("SavepointManager does not support Savepoint.");
         //
         this.getSavepointManager().rollbackToSavepoint(this.savepoint);
     }
@@ -119,14 +117,14 @@ public class DefaultTransactionStatus implements TransactionStatus {
     public boolean hasSavepoint() {
         return (this.savepoint != null) ? true : false;
     }
-    public void setRollbackOnly() {
+    public void setRollbackOnly() throws SQLException {
         if (this.isCompleted())
-            throw new IllegalTransactionStateException("Transaction is already completed.");
+            throw new SQLException("Transaction is already completed.");
         this.rollbackOnly = true;
     }
-    public void setReadOnly() {
+    public void setReadOnly() throws SQLException {
         if (this.isCompleted())
-            throw new IllegalTransactionStateException("Transaction is already completed.");
+            throw new SQLException("Transaction is already completed.");
         this.readOnly = true;
     }
 }

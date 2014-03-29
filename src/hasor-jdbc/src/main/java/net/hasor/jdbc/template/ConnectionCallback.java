@@ -16,7 +16,6 @@
 package net.hasor.jdbc.template;
 import java.sql.Connection;
 import java.sql.SQLException;
-import net.hasor.jdbc.template.exceptions.DataAccessException;
 /**
  * 通用的回调接口。用来执行基于 JDBC {@link Connection}
  * 上的任意数量任意类型数据库操作。
@@ -31,5 +30,5 @@ public interface ConnectionCallback<T> {
      * @param con 一个可用的 JDBC 数据库连接
      * @return 返回操作执行的最终结果。
      */
-    public T doInConnection(Connection con) throws SQLException, DataAccessException;
+    public T doInConnection(Connection con) throws SQLException;
 }

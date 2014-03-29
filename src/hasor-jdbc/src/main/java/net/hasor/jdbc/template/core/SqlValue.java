@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.jdbc.template.core.value;
+package net.hasor.jdbc.template.core;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 /**

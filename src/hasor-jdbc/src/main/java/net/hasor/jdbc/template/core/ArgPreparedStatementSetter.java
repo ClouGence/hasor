@@ -17,16 +17,12 @@ package net.hasor.jdbc.template.core;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import net.hasor.jdbc.template.PreparedStatementSetter;
-import net.hasor.jdbc.template.core.util.StatementSetterUtils;
-import net.hasor.jdbc.template.core.value.SqlTypeValue;
-import net.hasor.jdbc.template.parameter.SqlVarParameter;
 /**
  * Simple adapter for PreparedStatementSetter that applies a given array of arguments.
  * @author Juergen Hoeller
  */
 class ArgPreparedStatementSetter implements PreparedStatementSetter, ParameterDisposer {
     private final Object[] args;
-    /**Create a new ArgPreparedStatementSetter for the given arguments.*/
     public ArgPreparedStatementSetter(Object[] args) {
         this.args = args;
     }
@@ -38,23 +34,55 @@ class ArgPreparedStatementSetter implements PreparedStatementSetter, ParameterDi
             }
         }
     }
-    /**
-     * Set the value for prepared statements specified parameter index using the passed in value.
-     * This method can be overridden by sub-classes if needed.
-     * @param ps the PreparedStatement
-     * @param parameterPosition index of the parameter position
-     * @param argValue the value to set
-     * @throws SQLException
-     */
     protected void doSetValue(PreparedStatement ps, int parameterPosition, Object argValue) throws SQLException {
-        if (argValue instanceof SqlVarParameter) {
-            SqlVarParameter paramValue = (SqlVarParameter) argValue;
-            StatementSetterUtils.setParameterValue(ps, parameterPosition, paramValue, paramValue.getValue());
-        } else {
-            StatementSetterUtils.setParameterValue(ps, parameterPosition, SqlTypeValue.TYPE_UNKNOWN, argValue);
-        }
+        StatementSetterUtils.setParameterValue(ps, parameterPosition, argValue);
     }
     public void cleanupParameters() {
         StatementSetterUtils.cleanupParameters(this.args);
     }
 }
+//class ArgTypePreparedStatementSetter implements PreparedStatementSetter, ParameterDisposer {
+//    private final Object[] args;
+//    private final int[]    argTypes;
+//    public ArgTypePreparedStatementSetter(Object[] args, int[] argTypes) throws SQLException {
+//        if ((args != null && argTypes == null) || //
+//                (args == null && argTypes != null) || //
+//                (args != null && args.length != argTypes.length))
+//            throw new SQLException("args and argTypes parameters must match");
+//        this.args = args;
+//        this.argTypes = argTypes;
+//    }
+//    public void setValues(PreparedStatement ps) throws SQLException {
+//        int parameterPosition = 1;
+//        if (this.args != null) {
+//            for (int i = 0; i < this.args.length; i++) {
+//                Object arg = this.args[i];
+//                if (arg instanceof Collection && this.argTypes[i] != Types.ARRAY) {
+//                    Collection entries = (Collection) arg;
+//                    for (Object entry : entries) {
+//                        if (entry instanceof Object[]) {
+//                            Object[] valueArray = ((Object[]) entry);
+//                            for (int k = 0; k < valueArray.length; k++) {
+//                                Object argValue = valueArray[k];
+//                                doSetValue(ps, parameterPosition, this.argTypes[i], argValue);
+//                                parameterPosition++;
+//                            }
+//                        } else {
+//                            doSetValue(ps, parameterPosition, this.argTypes[i], entry);
+//                            parameterPosition++;
+//                        }
+//                    }
+//                } else {
+//                    doSetValue(ps, parameterPosition, this.argTypes[i], arg);
+//                    parameterPosition++;
+//                }
+//            }
+//        }
+//    }
+//    protected void doSetValue(PreparedStatement ps, int parameterPosition, int argType, Object argValue) throws SQLException {
+//        StatementSetterUtils.setValue(ps, parameterPosition, argValue);
+//    }
+//    public void cleanupParameters() {
+//        StatementSetterUtils.cleanupParameters(this.args);
+//    }
+//}

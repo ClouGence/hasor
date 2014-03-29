@@ -16,7 +16,6 @@
 package net.hasor.jdbc.template;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import net.hasor.jdbc.template.exceptions.DataAccessException;
 /** 
  * 回调接口，用于 JDBC 结果集转换。
  * @version : 2013-10-9
@@ -26,5 +25,5 @@ import net.hasor.jdbc.template.exceptions.DataAccessException;
  */
 public interface ResultSetExtractor<T> {
     /**将结果集内容转换。 */
-    public T extractData(ResultSet rs) throws SQLException, DataAccessException;
+    public T extractData(ResultSet rs) throws SQLException;
 }

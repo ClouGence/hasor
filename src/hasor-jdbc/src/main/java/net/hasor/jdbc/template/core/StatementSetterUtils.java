@@ -1,25 +1,9 @@
-/*
- * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package net.hasor.jdbc.template.core.util;
+package net.hasor.jdbc.template.core;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Blob;
 import java.sql.Clob;
-import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -28,18 +12,13 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import net.hasor.core.Hasor;
-import net.hasor.jdbc.template.core.value.DisposableSqlTypeValue;
-import net.hasor.jdbc.template.core.value.SqlTypeValue;
-import net.hasor.jdbc.template.core.value.SqlValue;
-import net.hasor.jdbc.template.parameter.SqlParameter;
-import net.hasor.jdbc.template.parameter.SqlVarParameter;
 /**
  * 
- * @version : 2013-10-15
- * @author 赵永春(zyc@hasor.net)
+ * @version : 2014-3-29
+ * @author 赵永春 (zyc@byshell.org)
  */
-public class StatementSetterUtils {
+class StatementSetterUtils {
+    public static final int               TYPE_UNKNOWN         = Integer.MIN_VALUE;
     private static Map<Class<?>, Integer> javaTypeToSqlTypeMap = new HashMap<Class<?>, Integer>(32);
     static {
         /* JDBC 3.0 only - not compatible with e.g. MySQL at present*/
@@ -78,49 +57,26 @@ public class StatementSetterUtils {
             return Types.VARCHAR;
         if (isDateValue(javaType) || Calendar.class.isAssignableFrom(javaType))
             return Types.TIMESTAMP;
-        return SqlTypeValue.TYPE_UNKNOWN;
+        return TYPE_UNKNOWN;
     }
     /***/
-    public static void setParameterValue(PreparedStatement ps, int parameterPosition, SqlParameter paramValue, Object inValue) throws SQLException {
-        setParameterValue(ps, parameterPosition, paramValue.getSqlType(), paramValue.getScale(), inValue);
+    public static void setParameterValue(PreparedStatement ps, int parameterPosition, Object inValue) throws SQLException {
+        if (inValue == null)
+            ps.setObject(parameterPosition, null);
+        else if (inValue instanceof SqlValue) {
+            ((SqlValue) inValue).setValue(ps, parameterPosition);
+        } else
+            setValue(ps, parameterPosition, inValue);
     }
-    /***/
-    public static void setParameterValue(PreparedStatement ps, int parameterPosition, int sqlType, Object inValue) throws SQLException {
-        setParameterValue(ps, parameterPosition, sqlType, null, inValue);
-    }
-    //
-    private static void setParameterValue(PreparedStatement ps, int parameterPosition, int sqlType, Integer scale, Object inValue) throws SQLException {
-        int sqlTypeToUse = sqlType;
-        Integer scaleToUse = scale;
-        Object inValueToUse = inValue;
-        // 
-        if (inValue instanceof SqlParameter) {
-            sqlTypeToUse = ((SqlParameter) inValue).getSqlType();
-            scaleToUse = ((SqlParameter) inValue).getScale();
-        }
-        if (inValue instanceof SqlVarParameter) {
-            inValueToUse = ((SqlVarParameter) inValue).getValue();
-        }
-        //
-        if (inValueToUse == null)
-            setNull(ps, parameterPosition, sqlTypeToUse);
-        else
-            setValue(ps, parameterPosition, sqlTypeToUse, scaleToUse, inValueToUse);
-    }
-    private static void setValue(PreparedStatement ps, int paramIndex, int sqlType, Integer scale, Object inValue) throws SQLException {
-        if (inValue instanceof SqlTypeValue) {
-            ((SqlTypeValue) inValue).setTypeValue(ps, paramIndex, sqlType);
-        } else if (inValue instanceof SqlValue) {
-            ((SqlValue) inValue).setValue(ps, paramIndex);
-        } else if (sqlType == Types.VARCHAR || sqlType == Types.LONGVARCHAR || (sqlType == Types.CLOB && isStringValue(inValue.getClass()))) {
+    private static void setValue(PreparedStatement ps, int paramIndex, Object inValue) throws SQLException {
+        int sqlType = javaTypeToSqlParameterType(inValue.getClass());
+        if (sqlType == Types.VARCHAR || sqlType == Types.LONGVARCHAR || (sqlType == Types.CLOB && isStringValue(inValue.getClass()))) {
             //字符
             ps.setString(paramIndex, inValue.toString());
         } else if (sqlType == Types.DECIMAL || sqlType == Types.NUMERIC) {
             //数字
             if (inValue instanceof BigDecimal)
                 ps.setBigDecimal(paramIndex, (BigDecimal) inValue);
-            else if (scale != null)
-                ps.setObject(paramIndex, inValue, sqlType, scale);
             else
                 ps.setObject(paramIndex, inValue, sqlType);
         } else if (sqlType == Types.DATE) {
@@ -171,7 +127,7 @@ public class StatementSetterUtils {
                 /*其他*/
                 ps.setObject(paramIndex, inValue, Types.TIMESTAMP);
             }
-        } else if (sqlType == SqlTypeValue.TYPE_UNKNOWN) {
+        } else if (sqlType == TYPE_UNKNOWN) {
             //不确定类型
             if (isStringValue(inValue.getClass()))
                 ps.setString(paramIndex, inValue.toString());
@@ -185,34 +141,6 @@ public class StatementSetterUtils {
         } else {
             //确定类型
             ps.setObject(paramIndex, inValue, sqlType);//通用的参数设置方法
-        }
-    }
-    /**Set the specified PreparedStatement parameter to null, respecting database-specific peculiarities.*/
-    private static void setNull(PreparedStatement ps, int paramIndex, int sqlType/*, String typeName*/) throws SQLException {
-        if (sqlType == SqlTypeValue.TYPE_UNKNOWN) {
-            boolean useSetObject = false;
-            sqlType = Types.NULL;
-            try {
-                DatabaseMetaData dbmd = ps.getConnection().getMetaData();
-                String databaseProductName = dbmd.getDatabaseProductName();
-                String jdbcDriverName = dbmd.getDriverName();
-                if (databaseProductName.startsWith("Informix") || jdbcDriverName.startsWith("Microsoft SQL Server")) {
-                    useSetObject = true;
-                } else if (databaseProductName.startsWith("DB2") || jdbcDriverName.startsWith("jConnect") || jdbcDriverName.startsWith("SQLServer") || jdbcDriverName.startsWith("Apache Derby")) {
-                    sqlType = Types.VARCHAR;
-                }
-            } catch (Throwable ex) {
-                Hasor.logDebug("Could not check database or driver name", ex);
-            }
-            if (useSetObject) {
-                ps.setObject(paramIndex, null);
-            } else {
-                ps.setNull(paramIndex, sqlType);
-            }
-        } //else if (typeName != null) {
-          //  ps.setNull(paramIndex, sqlType, typeName);
-        /*} */else {
-            ps.setNull(paramIndex, sqlType);
         }
     }
     /**
@@ -233,14 +161,11 @@ public class StatementSetterUtils {
      * @see DisposableSqlTypeValue#cleanup()
      * @see org.noe.lib.jdbcorm.jdbc.core.support.SqlLobValue#cleanup()
      */
-    public static void cleanupParameters(Collection paramValues) {
+    public static void cleanupParameters(Collection<Object> paramValues) {
         if (paramValues != null) {
             for (Object inValue : paramValues) {
-                if (inValue instanceof DisposableSqlTypeValue) {
-                    ((DisposableSqlTypeValue) inValue).cleanup();
-                } else if (inValue instanceof SqlValue) {
+                if (inValue instanceof SqlValue)
                     ((SqlValue) inValue).cleanup();
-                }
             }
         }
     }

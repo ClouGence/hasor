@@ -14,18 +14,31 @@
  * limitations under the License.
  */
 package net.hasor.jdbc.datasource.local;
+import java.util.LinkedList;
 /**
  * 
  * @version : 2013-12-10
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
 public class ConnectionSequence {
-    private ConnectionHolder currentHolder = null;
+    private ConnectionHolder             currentHolder = null;
+    private LinkedList<ConnectionHolder> holderList    = new LinkedList<ConnectionHolder>();
     //
+    public boolean isEmpty() {
+        return (currentHolder == null || holderList.isEmpty());
+    }
     public ConnectionHolder currentHolder() {
         return this.currentHolder;
     }
-    public synchronized void currentHolder(ConnectionHolder currentHolder) {
-        this.currentHolder = currentHolder;
+    /**—π»Î*/
+    public void push(ConnectionHolder newHolder) {
+        this.currentHolder = newHolder;
+        this.holderList.add(newHolder);
+    }
+    /**µØ≥ˆ*/
+    public void pop() {
+        if (this.holderList.isEmpty() == true)
+            this.currentHolder = null;
+        this.currentHolder = this.holderList.pop();
     }
 }

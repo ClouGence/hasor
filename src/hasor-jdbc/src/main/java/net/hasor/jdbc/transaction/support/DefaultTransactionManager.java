@@ -28,7 +28,6 @@ import net.hasor.jdbc.datasource.DataSourceUtils;
 import net.hasor.jdbc.datasource.local.ConnectionHolder;
 import net.hasor.jdbc.datasource.local.ConnectionSequence;
 import net.hasor.jdbc.datasource.local.LocalDataSourceHelper;
-import net.hasor.jdbc.template.exceptions.IllegalTransactionStateException;
 import net.hasor.jdbc.transaction.TransactionBehavior;
 import net.hasor.jdbc.transaction.TransactionLevel;
 import net.hasor.jdbc.transaction.TransactionManager;
@@ -51,6 +50,8 @@ public class DefaultTransactionManager implements TransactionManager {
         Hasor.assertIsNotNull(dataSource);
         this.dataSource = dataSource;
     }
+    //
+    //
     /**获取当前事务管理器管理的数据源对象。*/
     public DataSource getDataSource() {
         return this.dataSource;
@@ -65,10 +66,6 @@ public class DefaultTransactionManager implements TransactionManager {
             return false;
         return this.tStatusStack.peek() == status;
     }
-    private TransactionStatus pushStack(DefaultTransactionStatus defStatus) {
-        this.tStatusStack.push(defStatus);/*入栈*/
-        return defStatus;
-    }
     //
     //
     /**开启事务*/
@@ -82,6 +79,7 @@ public class DefaultTransactionManager implements TransactionManager {
         //1.获取连接
         DefaultTransactionStatus defStatus = new DefaultTransactionStatus(behavior, level);
         defStatus.setTranConn(doGetConnection(defStatus));
+        this.tStatusStack.push(defStatus);/*入栈*/
         /*-------------------------------------------------------------
         |                      环境已经存在事务
         |
@@ -109,9 +107,10 @@ public class DefaultTransactionManager implements TransactionManager {
             }
             /*PROPAGATION_NEVER：排除事务*/
             if (behavior == PROPAGATION_NEVER) {
-                throw new IllegalTransactionStateException("Existing transaction found for transaction marked with propagation 'never'");
+                this.cleanupAfterCompletion(defStatus);
+                throw new SQLException("Existing transaction found for transaction marked with propagation 'never'");
             }
-            return pushStack(defStatus);/*入栈*/
+            return defStatus;
         }
         /*-------------------------------------------------------------
         |                      环境不经存在事务
@@ -134,10 +133,10 @@ public class DefaultTransactionManager implements TransactionManager {
         }
         /*PROPAGATION_MANDATORY：强制要求事务*/
         if (behavior == PROPAGATION_MANDATORY) {
-            throw new IllegalTransactionStateException("No existing transaction found for transaction marked with propagation 'mandatory'");
+            this.cleanupAfterCompletion(defStatus);
+            throw new SQLException("No existing transaction found for transaction marked with propagation 'mandatory'");
         }
-        //
-        return pushStack(defStatus);/*入栈*/
+        return defStatus;
     }
     /**判断连接对象是否处于事务中，该方法会用于评估事务传播属性的处理方式。 */
     private boolean isExistingTransaction(DefaultTransactionStatus defStatus) throws SQLException {
@@ -146,10 +145,7 @@ public class DefaultTransactionManager implements TransactionManager {
     /**初始化一个新的连接，并开启事务。*/
     protected void doBegin(DefaultTransactionStatus defStatus) throws SQLException {
         TransactionObject tranConn = defStatus.getTranConn();
-        if (tranConn.hasTransaction())
-            throw new IllegalTransactionStateException("the Connection Transaction is opening.");
-        tranConn.beginTransaction();
-        defStatus.markNewConnection();/*新事物，新连接*/
+        tranConn.begin();
     }
     //
     //
@@ -158,7 +154,7 @@ public class DefaultTransactionManager implements TransactionManager {
         DefaultTransactionStatus defStatus = (DefaultTransactionStatus) status;
         /*已完毕，不需要处理*/
         if (defStatus.isCompleted())
-            throw new IllegalTransactionStateException("Transaction is already completed - do not call commit or rollback more than once per transaction");
+            throw new SQLException("Transaction is already completed - do not call commit or rollback more than once per transaction");
         /*-------------------------------------------------------------
         | 1.无论何种传播形式，递交事务操作都会将 isCompleted 属性置为 true。
         | 2.如果事务状态中包含一个未处理的保存点。仅递交保存点，而非递交整个事务。
@@ -190,7 +186,7 @@ public class DefaultTransactionManager implements TransactionManager {
     private void prepareCommit(DefaultTransactionStatus defStatus) throws SQLException {
         /*首先预处理的事务必须存在于管理器的事务栈内某一位置中，否则要处理的事务并非来源于该事务管理器。*/
         if (this.tStatusStack.contains(defStatus) == false)
-            throw new IllegalTransactionStateException("This transaction is not derived from this Manager.");
+            throw new SQLException("This transaction is not derived from this Manager.");
         /*-------------------------------------------------------------
         | 如果预处理的事务并非位于栈顶，则进行弹栈操作。
         |--------------------------\
@@ -219,7 +215,7 @@ public class DefaultTransactionManager implements TransactionManager {
         DefaultTransactionStatus defStatus = (DefaultTransactionStatus) status;
         /*已完毕，不需要处理*/
         if (defStatus.isCompleted())
-            throw new IllegalTransactionStateException("Transaction is already completed - do not call commit or rollback more than once per transaction");
+            throw new SQLException("Transaction is already completed - do not call commit or rollback more than once per transaction");
         /*-------------------------------------------------------------
         | 1.无论何种传播形式，递交事务操作都会将 isCompleted 属性置为 true。
         | 2.如果事务状态中包含一个未处理的保存点。仅回滚保存点，而非回滚整个事务。
@@ -244,7 +240,7 @@ public class DefaultTransactionManager implements TransactionManager {
     private void prepareRollback(DefaultTransactionStatus defStatus) throws SQLException {
         /*首先预处理的事务必须存在于管理器的事务栈内某一位置中，否则要处理的事务并非来源于该事务管理器。*/
         if (this.tStatusStack.contains(defStatus) == false)
-            throw new IllegalTransactionStateException("This transaction is not derived from this Manager.");
+            throw new SQLException("This transaction is not derived from this Manager.");
         /*-------------------------------------------------------------
         | 如果预处理的事务并非位于栈顶，则进行弹栈操作。
         |--------------------------\
@@ -269,10 +265,10 @@ public class DefaultTransactionManager implements TransactionManager {
     //
     //
     /**挂起事务。*/
-    protected final void suspend(DefaultTransactionStatus defStatus) {
+    protected final void suspend(DefaultTransactionStatus defStatus) throws SQLException {
         /*事务已经被挂起*/
         if (defStatus.isSuspend() == true)
-            throw new IllegalTransactionStateException("the Transaction has Suspend.");
+            throw new SQLException("the Transaction has Suspend.");
         //
         /*是否为栈顶事务*/
         prepareCheckStack(defStatus);
@@ -283,16 +279,17 @@ public class DefaultTransactionManager implements TransactionManager {
         defStatus.setTranConn(doGetConnection(defStatus));/*重新申请数据库连接*/
     }
     /**恢复被挂起的事务。*/
-    protected final void resume(DefaultTransactionStatus defStatus) {
+    protected final void resume(DefaultTransactionStatus defStatus) throws SQLException {
         if (defStatus.isCompleted() == false)
-            throw new IllegalTransactionStateException("the Transaction has not completed.");
+            throw new SQLException("the Transaction has not completed.");
         if (defStatus.isSuspend() == false)
-            throw new IllegalTransactionStateException("the Transaction has not Suspend.");
+            throw new SQLException("the Transaction has not Suspend.");
         //
         /*检查事务是否为栈顶事务*/
         prepareCheckStack(defStatus);
         /*恢复挂起的事务*/
         if (defStatus.isSuspend() == true) {
+            SyncTransactionManager.clearSync(this.getDataSource());/*清除线程上的同步事务*/
             TransactionObject tranConn = defStatus.getSuspendConn();/*取得挂起的数据库连接*/
             SyncTransactionManager.setSync(tranConn);/*设置线程的数据库连接*/
             defStatus.setTranConn(tranConn);
@@ -302,23 +299,21 @@ public class DefaultTransactionManager implements TransactionManager {
     //
     //
     /**检查正在处理的事务状态是否位于栈顶，否则抛出异常*/
-    private void prepareCheckStack(DefaultTransactionStatus defStatus) {
+    private void prepareCheckStack(DefaultTransactionStatus defStatus) throws SQLException {
         if (!this.isTopTransaction(defStatus))
-            throw new IllegalTransactionStateException("the Transaction Status is not top in stack.");
+            throw new SQLException("the Transaction Status is not top in stack.");
     }
     /**commit,rollback。之后的清理工作，同时也负责恢复事务和操作事务堆栈。*/
-    private void cleanupAfterCompletion(DefaultTransactionStatus defStatus) {
+    private void cleanupAfterCompletion(DefaultTransactionStatus defStatus) throws SQLException {
         /*清理的事务必须是位于栈顶*/
         prepareCheckStack(defStatus);
         /*标记完成*/
         defStatus.setCompleted();
-        /*恢复挂起的事务*/
-        if (defStatus.isSuspend()) {
-            releaseConnection(defStatus);//ref--
-            this.resume(defStatus);
-        }
         /*释放资源*/
-        releaseConnection(defStatus);//ref--
+        defStatus.getTranConn().getHolder().released();//ref--
+        /*恢复挂起的事务*/
+        if (defStatus.isSuspend())
+            this.resume(defStatus);
         /*清理defStatus*/
         this.tStatusStack.pop();
         defStatus.setTranConn(null);
@@ -326,31 +321,28 @@ public class DefaultTransactionManager implements TransactionManager {
     }
     //
     //
+    //
     /**获取数据库连接（线程绑定的）*/
     protected TransactionObject doGetConnection(DefaultTransactionStatus defStatus) {
         LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DataSourceUtils.getDataSourceHelper();
         ConnectionSequence connSeq = localHelper.getConnectionSequence(getDataSource());
-        ConnectionHolder connHolder = connSeq.currentHolder();
-        connHolder.requested();
-        return new TransactionObject(connHolder, getDataSource());
+        ConnectionHolder holder = connSeq.currentHolder();
+        if (holder.isOpen() == false)
+            defStatus.markNewConnection();/*新事物，新连接*/
+        holder.requested();
+        return new TransactionObject(holder, getDataSource());
     };
-    /**释放数据库连接*/
-    protected void releaseConnection(DefaultTransactionStatus defStatus) {
-        defStatus.getTranConn().getHolder().released();//ref--
-    }
 }
 /** */
 class SyncTransactionManager {
     public static void setSync(TransactionObject tranConn) {
         LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DataSourceUtils.getDataSourceHelper();
         ConnectionSequence connSeq = localHelper.getConnectionSequence(tranConn.getDataSource());
-        if (connSeq.currentHolder().isOpen())
-            throw new IllegalTransactionStateException("the currentHolder reference no release.");
-        connSeq.currentHolder(tranConn.getHolder());
+        connSeq.pop();
     }
     public static void clearSync(DataSource dataSource) {
         LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DataSourceUtils.getDataSourceHelper();
         ConnectionSequence connSeq = localHelper.getConnectionSequence(dataSource);
-        connSeq.currentHolder(null);
+        connSeq.push(null);
     }
 }

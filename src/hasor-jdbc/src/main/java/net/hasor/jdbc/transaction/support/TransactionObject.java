@@ -40,20 +40,16 @@ public class TransactionObject {
     public SavepointManager getSavepointManager() {
         return this.getHolder();
     };
-    /**回滚（回滚之后需要重新开启事务）*/
     public void rollback() throws SQLException {
         this.holder.getConnection().rollback();
-        this.holder.getConnection().setAutoCommit(true);
     }
-    /**递交（递交之后需要重新开启事务）*/
     public void commit() throws SQLException {
         this.holder.getConnection().commit();
-        this.holder.getConnection().setAutoCommit(true);
     }
     public boolean hasTransaction() throws SQLException {
         return this.holder.hasTransaction();
     };
-    public void beginTransaction() throws SQLException {
+    public void begin() throws SQLException {
         Connection conn = this.holder.getConnection();
         boolean autoMark = conn.getAutoCommit();
         if (autoMark == true)
