@@ -1,8 +1,13 @@
-package net.hasor.jdbc.template.core.mapper;
+package net.hasor.jdbc.template.core;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 import org.more.util.ClassUtils;
-public class CallableStatementGetter {
+/**
+ * 
+ * @version : 2014-3-31
+ * @author ’‘”¿¥∫(zyc@hasor.net)
+ */
+class InnerCallableStatementGetter {
     public static Object getValue(CallableStatement cs, int index, Class<?> requiredType) throws SQLException {
         Object value = null;
         boolean wasNullCheck = false;

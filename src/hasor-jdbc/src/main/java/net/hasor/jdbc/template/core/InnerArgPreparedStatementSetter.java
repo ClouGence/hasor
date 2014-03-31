@@ -21,9 +21,9 @@ import net.hasor.jdbc.template.PreparedStatementSetter;
  * Simple adapter for PreparedStatementSetter that applies a given array of arguments.
  * @author Juergen Hoeller
  */
-class ArgPreparedStatementSetter implements PreparedStatementSetter, ParameterDisposer {
+class InnerArgPreparedStatementSetter implements PreparedStatementSetter, ParameterDisposer {
     private final Object[] args;
-    public ArgPreparedStatementSetter(Object[] args) {
+    public InnerArgPreparedStatementSetter(Object[] args) {
         this.args = args;
     }
     public void setValues(PreparedStatement ps) throws SQLException {
@@ -35,10 +35,10 @@ class ArgPreparedStatementSetter implements PreparedStatementSetter, ParameterDi
         }
     }
     protected void doSetValue(PreparedStatement ps, int parameterPosition, Object argValue) throws SQLException {
-        StatementSetterUtils.setParameterValue(ps, parameterPosition, argValue);
+        InnerStatementSetterUtils.setParameterValue(ps, parameterPosition, argValue);
     }
     public void cleanupParameters() {
-        StatementSetterUtils.cleanupParameters(this.args);
+        InnerStatementSetterUtils.cleanupParameters(this.args);
     }
 }
 //class ArgTypePreparedStatementSetter implements PreparedStatementSetter, ParameterDisposer {

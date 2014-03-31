@@ -17,7 +17,7 @@ import java.util.Map;
  * @version : 2014-3-29
  * @author ’‘”¿¥∫ (zyc@byshell.org)
  */
-class StatementSetterUtils {
+class InnerStatementSetterUtils {
     public static final int               TYPE_UNKNOWN         = Integer.MIN_VALUE;
     private static Map<Class<?>, Integer> javaTypeToSqlTypeMap = new HashMap<Class<?>, Integer>(32);
     static {
