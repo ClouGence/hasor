@@ -47,6 +47,7 @@
 				<module>hasor-jdbc</module>
 				<module>hasor-jetty</module>
 				<module>hasor-security</module>
+				<module>hasor-quick</module>
 			</modules>
 		</profile>
 	</profiles>
