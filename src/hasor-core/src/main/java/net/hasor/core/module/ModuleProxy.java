@@ -15,7 +15,6 @@
  */
 package net.hasor.core.module;
 import static net.hasor.core.AppContext.ModuleEvent_Started;
-import static net.hasor.core.AppContext.ModuleEvent_Stoped;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -184,19 +183,6 @@ public abstract class ModuleProxy implements ModuleInfo/*提供模块基本信息*/, Mod
                 this.proForceModule(e);
         }
     }
-    public final void stop(AppContext appContext) {
-        if (this.isStart() == false/*已经处于停止状态*/)
-            return;
-        //
-        Module forModule = this.getTarget();
-        try {
-            this.onStop(forModule, appContext);
-            Hasor.logInfo("stop Event on : %s", this.getDisplayName());
-            this.isStart = false;
-        } catch (Throwable e) {
-            Hasor.logError("%s in the stop phase encounters an error.\n%s", this.getDisplayName(), e);
-        }
-    }
     /*利用 AppContext 作 KEY 可以保证在不同环境下静态字段内容的正确性*/
     private static Map<AppContext, ModuleInfo> loacalModuleInfo = new HashMap<AppContext, ModuleInfo>();
     /**根据 AppContext 容器获取当前 ModuleInfo。<p>
@@ -214,18 +200,6 @@ public abstract class ModuleProxy implements ModuleInfo/*提供模块基本信息*/, Mod
             loacalModuleInfo.put(this.appContext, this);
             forModule.start(appContext);
             appContext.getEventManager().doSync(ModuleEvent_Started, forModule, appContext);
-        } catch (Throwable e) {
-            throw e;
-        } finally {
-            loacalModuleInfo.remove(this.appContext);
-        }
-    }
-    /**发送模块停止信号*/
-    protected void onStop(Module forModule, AppContext appContext) throws Throwable {
-        try {
-            loacalModuleInfo.put(this.appContext, this);
-            forModule.stop(appContext);
-            appContext.getEventManager().doSync(ModuleEvent_Stoped, forModule, appContext);
         } catch (Throwable e) {
             throw e;
         } finally {

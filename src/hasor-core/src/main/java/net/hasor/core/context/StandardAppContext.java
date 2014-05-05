@@ -29,7 +29,7 @@ import org.more.util.ResourcesUtils;
  * @version : 2013-4-9
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-public class StandardAppContext extends SimpleAppContext {
+public class StandardAppContext extends AbstractAppContext {
     public static final String DefaultSettings = "hasor-config.xml";
     /***/
     public StandardAppContext() throws IOException, URISyntaxException {

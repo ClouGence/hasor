@@ -23,7 +23,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.context.AbstractAppContext;
 import net.hasor.web.binder.SessionListenerPipeline;
-import net.hasor.web.context.AnnoWebAppContext;
+import net.hasor.web.context.WebStandardAppContext;
 import org.more.util.ContextClassLoaderLocal;
 /**
  * 
@@ -38,13 +38,14 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     private static ContextClassLoaderLocal<AppContext>     LocalAppContext         = new ContextClassLoaderLocal<AppContext>();
     /*----------------------------------------------------------------------------------------------------*/
     protected AbstractAppContext createAppContext(ServletContext sc) throws Throwable {
-        return new AnnoWebAppContext("hasor-config.xml", sc);
+        return new WebStandardAppContext("hasor-config.xml", sc);
     }
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         //1.´´½¨AppContext
         try {
             this.appContext = this.createAppContext(servletContextEvent.getServletContext());
-            this.appContext.start();
+            if (this.appContext.isStart() == false)
+                this.appContext.start();
             LocalServletContext.set(servletContextEvent.getServletContext());
             LocalAppContext.set(this.appContext);
         } catch (Throwable e) {
@@ -64,7 +65,6 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     }
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         this.sessionListenerPipeline.contextDestroyed(servletContextEvent);
-        this.appContext.stop();
     }
     public void sessionCreated(HttpSessionEvent se) {
         this.sessionListenerPipeline.sessionCreated(se);

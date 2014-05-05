@@ -35,5 +35,4 @@ public class GuiceModule implements Module {
         apiBinder.getGuiceBinder().install(this.guiceModule);
     }
     public void start(AppContext appContext) {}
-    public void stop(AppContext appContext) {}
 }

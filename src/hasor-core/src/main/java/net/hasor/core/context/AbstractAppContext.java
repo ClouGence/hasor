@@ -320,27 +320,6 @@ public abstract class AbstractAppContext implements AppContext {
         /*2.启动*/
         this.doStart();
     }
-    /**停止。向所有模块发送停止信号，并将容器的状态置为Stop。*/
-    public synchronized void stop() {
-        if (this.isStart() == false)
-            return;
-        doStop();
-    }
-    /**重新初始化并启动容器，强迫所有模块都重新初始化(Init)并启动(Start)*/
-    public synchronized void reboot() {
-        this.stop();
-        this.getEnvironment().release();
-        this.environment = null;
-        this.injector = null;
-        this.beanInfoMap = null;
-        this.moduleSet.clear();
-        this.start();
-    }
-    /**调用停止执行，而后调用start指令。*/
-    public synchronized void restart() {
-        this.stop();
-        this.start();
-    }
     //--------------------------------------------------------------------------------------Process
     /**执行 Initialize 过程。*/
     protected void doInitialize(final Binder guiceBinder) {
@@ -396,20 +375,6 @@ public abstract class AbstractAppContext implements AppContext {
         /*4.打印模块状态*/
         printModState(this);
         Hasor.logInfo("hasor started!");
-    }
-    /**执行 Stop 过程。*/
-    protected void doStop() {
-        this.isStart = false;
-        /*1.逐一停止模块*/
-        Hasor.logInfo("send stop sign.");
-        List<ModuleProxy> modulePropxyList = this.getModuleList();
-        for (ModuleProxy mod : modulePropxyList)
-            mod.stop(this);
-        /*2.发送停止事件*/
-        this.getEnvironment().getEventManager().doSync(ContextEvent_Stoped, this);
-        /*2.打印模块状态*/
-        printModState(this);
-        Hasor.logInfo("hasor stoped!");
     }
     /**当完成所有初始化过程之后调用，负责向 Guice 绑定一些预先定义的类型。*/
     protected void doBind(Binder guiceBinder) {

@@ -49,6 +49,4 @@ public abstract class WebModule implements Module {
     public abstract void init(WebApiBinder apiBinder);
     /**Æô¶¯ÐÅºÅ*/
     public abstract void start(WebAppContext appContext);
-    /**Í£Ö¹ÐÅºÅ*/
-    public abstract void stop(WebAppContext appContext);
 }

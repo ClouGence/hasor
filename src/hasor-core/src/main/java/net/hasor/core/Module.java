@@ -24,6 +24,4 @@ public interface Module {
     public void init(ApiBinder apiBinder) throws Throwable;
     /**Æô¶¯ÐÅºÅ*/
     public void start(AppContext appContext) throws Throwable;
-    /**Í£Ö¹ÐÅºÅ*/
-    public void stop(AppContext appContext) throws Throwable;
 }

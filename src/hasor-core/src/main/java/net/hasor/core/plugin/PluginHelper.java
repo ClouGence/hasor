@@ -47,6 +47,5 @@ public abstract class PluginHelper {
             apiBinder.configModule().setDescription(pluginBean.getClass().getName());
         }
         public void start(AppContext appContext) {}
-        public void stop(AppContext appContext) {}
     }
 }

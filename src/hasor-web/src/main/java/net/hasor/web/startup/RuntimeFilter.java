@@ -53,8 +53,8 @@ public class RuntimeFilter implements Filter {
             this.filterPipeline = appContext.getInstance(FilterPipeline.class);
         }
         /*获取请求响应编码*/
-        this.requestEncoding = appContext.getSettings().getString("hasor-web.encoding.requestEncoding");
-        this.responseEncoding = appContext.getSettings().getString("hasor-web.encoding.responseEncoding");
+        this.requestEncoding = appContext.getSettings().getString("hasor-web.requestEncoding");
+        this.responseEncoding = appContext.getSettings().getString("hasor-web.responseEncoding");
         /*1.初始化执行周期管理器。*/
         this.filterPipeline.initPipeline(appContext);
         Hasor.logInfo("PlatformFilter started.");

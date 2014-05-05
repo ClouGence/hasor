@@ -33,15 +33,9 @@ public interface AppContext {
     /**容器事件，在所有模块 start 阶段之后引发。
      * @see net.hasor.core.context.AbstractAppContext*/
     public static final String ContextEvent_Started     = "ContextEvent_Started";
-    /**容器事件，在所有模块处理完 stop 阶段之后引发。
-     * @see net.hasor.core.context.AbstractAppContext*/
-    public static final String ContextEvent_Stoped      = "ContextEvent_Stoped";
     /**模块事件。当模块收到 start 调用信号之后引发。
      * @see net.hasor.core.module.ModuleProxy*/
     public static final String ModuleEvent_Started      = "ModuleEvent_Started";
-    /**模块事件。当模块处理完 stop 调用信号之后引发。
-     * @see net.hasor.core.module.ModuleProxy*/
-    public static final String ModuleEvent_Stoped       = "ModuleEvent_Stoped";
     //
     //----------------------------------------------------------------------------------Bean
     /**通过名获取Bean的类型。*/
@@ -87,8 +81,6 @@ public interface AppContext {
     public boolean isReady();
     /**启动。向所有模块发送启动信号，并将容器的状态置为Start。（该方法会尝试init所有模块）*/
     public void start();
-    /**停止。向所有模块发送停止信号，并将容器的状态置为Stop。*/
-    public void stop();
     /**判断容器是否处于运行状态*/
     public boolean isStart();
 }

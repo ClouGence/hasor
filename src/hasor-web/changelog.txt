@@ -1,6 +1,9 @@
 ===== Hasor-Web v0.0.6
 * 修复:
     01.因 ModulePropxy 更名为 ModuleProxy所做的连带改动。
+* 改进:
+    01.所有Plugins都移动到Hasor-Quick项目中。
+    
 
 
 ===== Hasor-Web v0.0.5
