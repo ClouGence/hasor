@@ -21,10 +21,12 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.core.Module;
 import net.hasor.core.context.AbstractAppContext;
 import net.hasor.web.binder.SessionListenerPipeline;
 import net.hasor.web.context.WebStandardAppContext;
 import org.more.util.ContextClassLoaderLocal;
+import org.more.util.StringUtils;
 /**
  * 
  * @version : 2013-3-25
@@ -44,12 +46,20 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         //1.´´½¨AppContext
         try {
             this.appContext = this.createAppContext(servletContextEvent.getServletContext());
+            String startModule = servletContextEvent.getServletContext().getInitParameter("startModule");
+            if (StringUtils.isBlank(startModule)) {
+                Hasor.logWarn("startModule is undefinition.");
+            } else {
+                Class<Module> startModuleType = (Class<Module>) Thread.currentThread().getContextClassLoader().loadClass(startModule);
+                this.appContext.addModule(startModuleType.newInstance());
+                Hasor.logInfo("startModule is %s.", startModuleType);
+            }
+            //
             if (this.appContext.isStart() == false)
                 this.appContext.start();
             LocalServletContext.set(servletContextEvent.getServletContext());
             LocalAppContext.set(this.appContext);
         } catch (Throwable e) {
-            Hasor.logError("createAppContext error.\n%s", e);
             if (e instanceof RuntimeException)
                 throw (RuntimeException) e;
             throw new RuntimeException(e);

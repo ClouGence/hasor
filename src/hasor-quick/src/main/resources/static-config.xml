@@ -6,7 +6,7 @@
 		<loadPackages>net.hasor.quick.*,net.hasor.plugins.*</loadPackages>
 	</hasor>
 	<!-- http://project.hasor.net/hasor/schema/hasor-web 命名空间的配置，不支持跟随配置文件动态更新配置。 -->
-	<hasor-web>
+	<hasor-web requestEncoding="utf-8" responseEncoding="utf-8">
 		<!-- Controller配置，defaultProduces 默认响应类型 ; -->
 		<controller enable="true" intercept="*.do">
 			<!-- 方法忽略的方法（逗号分割多组方法名），注意：在这里配置的忽略会应用到所有action上（支持重复配置共同生效） -->

@@ -82,12 +82,6 @@ public class RuntimeFilter implements Filter {
             //Ö´ÐÐ.
             this.beforeRequest(appContext, httpReq, httpRes);
             this.processFilterPipeline(httpReq, httpRes, chain);
-        } catch (IOException e) {
-            Hasor.logWarn("execFilterPipeline IOException %s.", e);
-            throw e;
-        } catch (ServletException e) {
-            Hasor.logWarn("execFilterPipeline ServletException %s.", e.getCause());
-            throw e;
         } finally {
             this.afterResponse(appContext, httpReq, httpRes);
         }
@@ -114,7 +108,6 @@ public class RuntimeFilter implements Filter {
         LocalRequest.remove();
         LocalResponse.remove();
     }
-    //
     //
     //
     private static ThreadLocal<HttpServletRequest>  LocalRequest  = new ThreadLocal<HttpServletRequest>();
