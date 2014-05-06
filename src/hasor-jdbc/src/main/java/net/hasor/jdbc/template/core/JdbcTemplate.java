@@ -824,6 +824,21 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         }
     }
     /**接口 {@link CallableStatementCreator} 的简单实现，目的是根据 SQL 语句创建 {@link CallableStatement}对象。*/
+    private static class MapPreparedStatementCreator implements PreparedStatementCreator, SqlProvider {
+        private final String sql;
+        public MapPreparedStatementCreator(String sql, SqlParameterSource paramSource) {
+            Hasor.assertIsNotNull(sql, "SQL must not be null");
+            this.sql = sql;
+        }
+        public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+            // TODO Auto-generated method stub
+            return con.prepareStatement(this.sql);s
+        }
+        public String getSql() {
+            return this.sql;
+        }
+    }
+    /**接口 {@link CallableStatementCreator} 的简单实现，目的是根据 SQL 语句创建 {@link CallableStatement}对象。*/
     private static class SimpleCallableStatementCreator implements CallableStatementCreator, SqlProvider {
         private final String callString;
         public SimpleCallableStatementCreator(String callString) {

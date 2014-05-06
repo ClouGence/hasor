@@ -3,20 +3,8 @@
 	<!-- 框架配置 -->
 	<hasor>
 		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
-		<loadPackages>net.hasor.jdbc.*,net.hasor.plugins.*</loadPackages>
+		<loadPackages>net.hasor.jdbc.*</loadPackages>
 	</hasor>
 	<!-- http://project.hasor.net/hasor/schema/hasor-jdbc 命名空间的配置，不支持跟随配置文件动态更新配置。 -->
-	<hasor-jdbc>
-		<dataSourceSet default="">
-			<!-- <dataSource name="" dsFactory="net.hasor.jdbc.datasource.factory.C3p0Factory"> -->
-			<!-- <driver>...</driver> -->
-			<!-- <url>...</url> -->
-			<!-- <user>...</user> -->
-			<!-- <password>...</password> -->
-			<!-- </dataSource> -->
-			<!-- <dataSource name="" dsFactory="net.hasor.jdbc.datasource.factory.JndiFactory"> -->
-			<!-- <jndi>java:comp/env/jdbc/DBPool</jndi> -->
-			<!-- </dataSource> -->
-		</dataSourceSet>
-	</hasor-jdbc>
+	<hasor-jdbc />
 </config>
