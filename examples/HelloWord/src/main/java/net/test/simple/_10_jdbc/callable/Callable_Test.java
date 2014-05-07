@@ -17,7 +17,6 @@ package net.test.simple._10_jdbc.callable;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.UUID;
-import net.hasor.core.context.AnnoStandardAppContext;
 import net.hasor.jdbc.template.core.JdbcTemplate;
 import net.test.simple._10_jdbc.AbstractJDBCTest;
 import org.hsqldb.util.DatabaseManagerSwing;
@@ -35,12 +34,8 @@ public class Callable_Test extends AbstractJDBCTest {
     }
     @Test
     public void testCallable() throws IOException, URISyntaxException, InterruptedException {
-        System.out.println("--->>testCallable<<--");
-        AnnoStandardAppContext appContext = new AnnoStandardAppContext("org/hasor/test/jdbc/hasor-config.xml");
-        appContext.start();
-        //
         /*测试 调用存储过程。 */
-        JdbcTemplate jdbc = appContext.getInstance(JdbcTemplate.class);
+        JdbcTemplate jdbc = getJdbcTemplate();
         //
         //        int flowID = jdbc.execute(new ConnectionCallback<Integer>() {
         //            public Integer doInConnection(Connection con) throws SQLException, DataAccessException {

@@ -32,9 +32,12 @@ import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.sql.DataSource;
 import net.hasor.core.Hasor;
 import net.hasor.jdbc.datasource.ConnectionProxy;
@@ -661,8 +664,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         return batchUpdate(sql, batchArgs);
     }
     public int[] batchUpdate(String sql, SqlParameterSource[] batchArgs) {
-        ParsedSql parsedSql = this.getParsedSql(sql);
-        return NamedBatchUpdateUtils.executeBatchUpdateWithNamedParameters(parsedSql, batchArgs, this);
+        //        ParsedSql parsedSql = this.getParsedSql(sql);
+        //        return NamedBatchUpdateUtils.executeBatchUpdateWithNamedParameters(parsedSql, batchArgs, this);
+        return null;
     }
     //
     //
@@ -769,7 +773,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     //
     //
     //
-    private interface SqlProvider {
+    protected static interface SqlProvider {
         public String getSql();
     }
     /**Connection 接口代理，目的是为了控制一些方法的调用。同时进行一些特殊类型的处理。*/
@@ -824,21 +828,6 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         }
     }
     /**接口 {@link CallableStatementCreator} 的简单实现，目的是根据 SQL 语句创建 {@link CallableStatement}对象。*/
-    private static class MapPreparedStatementCreator implements PreparedStatementCreator, SqlProvider {
-        private final String sql;
-        public MapPreparedStatementCreator(String sql, SqlParameterSource paramSource) {
-            Hasor.assertIsNotNull(sql, "SQL must not be null");
-            this.sql = sql;
-        }
-        public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-            // TODO Auto-generated method stub
-            return con.prepareStatement(this.sql);s
-        }
-        public String getSql() {
-            return this.sql;
-        }
-    }
-    /**接口 {@link CallableStatementCreator} 的简单实现，目的是根据 SQL 语句创建 {@link CallableStatement}对象。*/
     private static class SimpleCallableStatementCreator implements CallableStatementCreator, SqlProvider {
         private final String callString;
         public SimpleCallableStatementCreator(String callString) {
@@ -863,5 +852,197 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
                 this.rch.processRow(rs);
             return null;
         }
+    }
+}
+//
+//
+//
+/**接口 {@link CallableStatementCreator} 的简单实现，目的是根据 SQL 语句创建 {@link CallableStatement}对象。*/
+class MapPreparedStatementCreator implements PreparedStatementCreator, JdbcTemplate.SqlProvider {
+    private String             originalSql = null;
+    private SqlParameterSource paramSource = null;
+    //
+    public MapPreparedStatementCreator(String originalSql, SqlParameterSource paramSource) {
+        Hasor.assertIsNotNull(originalSql, "SQL must not be null");
+        this.originalSql = originalSql;
+        this.paramSource = paramSource;
+    }
+    //
+    public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+        //
+        //1.关键参数定义
+        List<String> parameterNames = new ArrayList<String>();
+        List<int[]> parameterIndexes = new ArrayList<int[]>();
+        int namedParameterCount = 0;//带有名字参数的总数
+        int unnamedParameterCount = 0;//无名字参数总数
+        int totalParameterCount = 0;//参数总数
+        //
+        //2.分析SQL，提取出SQL中参数信息
+        {
+            Hasor.assertIsNotNull(this.originalSql, "SQL must not be null");
+            Set<String> namedParameters = new HashSet<String>();
+            char[] statement = this.originalSql.toCharArray();
+            int i = 0;
+            while (i < statement.length) {
+                int skipToPosition = skipCommentsAndQuotes(statement, i);//从当前为止掠过的长度
+                if (i != skipToPosition) {
+                    if (skipToPosition >= statement.length)
+                        break;
+                    i = skipToPosition;
+                }
+                char c = statement[i];
+                if (c == ':' || c == '&') {
+                    int j = i + 1;
+                    if (j < statement.length && statement[j] == ':' && c == ':') {
+                        i = i + 2;// Postgres-style "::" casting operator - to be skipped.
+                        continue;
+                    }
+                    while (j < statement.length && !isParameterSeparator(statement[j])) {
+                        j++;
+                    }
+                    if (j - i > 1) {
+                        String parameter = this.originalSql.substring(i + 1, j);
+                        if (!namedParameters.contains(parameter)) {
+                            namedParameters.add(parameter);
+                            namedParameterCount++;
+                        }
+                        parameterNames.add(parameter);
+                        parameterIndexes.add(new int[] { i, j });//startIndex, endIndex
+                        totalParameterCount++;
+                    }
+                    i = j - 1;
+                } else {
+                    if (c == '?') {
+                        unnamedParameterCount++;
+                        totalParameterCount++;
+                    }
+                }
+                i++;
+            }
+            //this.namedParameterCount = namedParameterCount;/*带有名字参数的总数*/
+            //this.unnamedParameterCount = unnamedParameterCount;/*匿名参数的总数*/
+            //this.totalParameterCount = totalParameterCount;/*总共参数个数*/
+        }
+        //
+        //3.根据参数信息生成最终会执行的SQL语句.
+        StringBuilder sqlToUse = new StringBuilder();
+        {
+            int lastIndex = 0;
+            for (int i = 0; i < parameterNames.size(); i++) {
+                String paramName = (String) parameterNames.get(i);
+                int[] indexes = parameterIndexes.get(i);
+                int startIndex = indexes[0];
+                int endIndex = indexes[1];
+                sqlToUse.append(this.originalSql.substring(lastIndex, startIndex));
+                if (this.paramSource != null && this.paramSource.hasValue(paramName)) {
+                    Object value = this.paramSource.getValue(paramName);
+                    if (value instanceof Collection) {
+                        Iterator<?> entryIter = ((Collection<?>) value).iterator();
+                        int k = 0;
+                        while (entryIter.hasNext()) {
+                            if (k > 0)
+                                sqlToUse.append(", ");
+                            k++;
+                            Object entryItem = entryIter.next();
+                            if (entryItem instanceof Object[]) {
+                                Object[] expressionList = (Object[]) entryItem;
+                                sqlToUse.append("(");
+                                for (int m = 0; m < expressionList.length; m++) {
+                                    if (m > 0)
+                                        sqlToUse.append(", ");
+                                    sqlToUse.append("?");
+                                }
+                                sqlToUse.append(")");
+                            } else {
+                                sqlToUse.append("?");
+                            }
+                        }
+                    } else {
+                        sqlToUse.append("?");
+                    }
+                } else {
+                    sqlToUse.append("?");
+                }
+                lastIndex = endIndex;
+            }
+            sqlToUse.append(this.originalSql.substring(lastIndex, this.originalSql.length()));
+        }
+        //
+        //4.确定参数对象        
+        Object[] paramArray = new Object[totalParameterCount];
+        if (namedParameterCount > 0 && unnamedParameterCount > 0)
+            throw new SQLException("You can't mix named and traditional ? placeholders. You have " + namedParameterCount + " named parameter(s) and " + unnamedParameterCount + " traditonal placeholder(s) in [" + this.originalSql + "]");
+        for (int i = 0; i < parameterNames.size(); i++) {
+            String paramName = parameterNames.get(i);
+            paramArray[i] = this.paramSource.getValue(paramName);
+        }
+        //
+        //5.创建PreparedStatement对象，并设置参数
+        PreparedStatement statement = con.prepareStatement(sqlToUse.toString());
+        for (int i = 0; i < paramArray.length; i++)
+            InnerStatementSetterUtils.setParameterValue(statement, i + 1, paramArray[i]);
+        InnerStatementSetterUtils.cleanupParameters(paramArray);
+        return statement;
+    }
+    public String getSql() {
+        return this.originalSql;
+    }
+    //
+    //
+    //
+    /**Set of characters that qualify as parameter separators, indicating that a parameter name in a SQL String has ended. */
+    private static final char[]   PARAMETER_SEPARATORS = new char[] { '"', '\'', ':', '&', ',', ';', '(', ')', '|', '=', '+', '-', '*', '%', '/', '\\', '<', '>', '^' };
+    /** Set of characters that qualify as comment or quotes starting characters.*/
+    private static final String[] START_SKIP           = new String[] { "'", "\"", "--", "/*" };
+    /**Set of characters that at are the corresponding comment or quotes ending characters. */
+    private static final String[] STOP_SKIP            = new String[] { "'", "\"", "\n", "*/" };
+    //-------------------------------------------------------------------------
+    // Core methods used by NamedParameterJdbcTemplate and SqlQuery/SqlUpdate
+    //-------------------------------------------------------------------------
+    /** Skip over comments and quoted names present in an SQL statement */
+    private int skipCommentsAndQuotes(char[] statement, int position) {
+        for (int i = 0; i < START_SKIP.length; i++) {
+            if (statement[position] == START_SKIP[i].charAt(0)) {
+                boolean match = true;
+                for (int j = 1; j < START_SKIP[i].length(); j++) {
+                    if (!(statement[position + j] == START_SKIP[i].charAt(j))) {
+                        match = false;
+                        break;
+                    }
+                }
+                if (match) {
+                    int offset = START_SKIP[i].length();
+                    for (int m = position + offset; m < statement.length; m++) {
+                        if (statement[m] == STOP_SKIP[i].charAt(0)) {
+                            boolean endMatch = true;
+                            int endPos = m;
+                            for (int n = 1; n < STOP_SKIP[i].length(); n++) {
+                                if (m + n >= statement.length)
+                                    return statement.length;// last comment not closed properly
+                                if (!(statement[m + n] == STOP_SKIP[i].charAt(n))) {
+                                    endMatch = false;
+                                    break;
+                                }
+                                endPos = m + n;
+                            }
+                            if (endMatch)
+                                return endPos + 1;// found character sequence ending comment or quote
+                        }
+                    }
+                    // character sequence ending comment or quote not found
+                    return statement.length;
+                }
+            }
+        }
+        return position;
+    }
+    /** Determine whether a parameter name ends at the current position, that is, whether the given character qualifies as a separator. */
+    private boolean isParameterSeparator(char c) {
+        if (Character.isWhitespace(c))
+            return true;
+        for (char separator : PARAMETER_SEPARATORS)
+            if (c == separator)
+                return true;
+        return false;
     }
 }

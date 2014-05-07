@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import net.hasor.core.Hasor;
 import net.hasor.jdbc.template.RowMapper;
-import net.hasor.jdbc.template.core.util.JdbcUtils;
 import org.more.UnhandledException;
 import org.more.util.BeanUtils;
 /**

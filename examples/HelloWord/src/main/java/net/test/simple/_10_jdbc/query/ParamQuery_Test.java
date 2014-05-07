@@ -16,6 +16,7 @@
 package net.test.simple._10_jdbc.query;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +32,7 @@ import org.junit.Test;
  */
 public class ParamQuery_Test extends AbstractJDBCTest {
     @Test
-    public void test_queryList_4_Object() throws IOException, URISyntaxException, InterruptedException {
+    public void test_queryList_4_Object() throws IOException, URISyntaxException, InterruptedException, SQLException {
         System.out.println("--->>test_queryList_4_Object<<--");
         JdbcTemplate jdbc = getJdbcTemplate();
         //

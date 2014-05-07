@@ -16,7 +16,7 @@
 package net.test.simple._06_guice;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import net.hasor.core.context.AnnoStandardAppContext;
+import net.hasor.quick.anno.AnnoStandardAppContext;
 import org.junit.Test;
 /**
  * 将 Guice 模块注册到 Hasor 上演示

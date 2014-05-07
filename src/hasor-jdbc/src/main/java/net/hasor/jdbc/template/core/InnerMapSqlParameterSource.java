@@ -22,27 +22,14 @@ import net.hasor.jdbc.template.SqlParameterSource;
  * @author ’‘”¿¥∫(zyc@hasor.net)
  */
 class InnerMapSqlParameterSource implements SqlParameterSource {
+    private Map<String, ?> values;
     public InnerMapSqlParameterSource(Map<String, ?> values) {
-        // TODO Auto-generated constructor stub
+        this.values = values;
     }
-    @Override
     public boolean hasValue(String paramName) {
-        // TODO Auto-generated method stub
-        return false;
+        return this.values.containsKey(paramName);
     }
-    @Override
     public Object getValue(String paramName) throws IllegalArgumentException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public int getSqlType(String paramName) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-    @Override
-    public String getTypeName(String paramName) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.values.get(paramName);
     }
 }

@@ -15,11 +15,11 @@
  */
 package net.test.project.common.res;
 import net.hasor.core.AppContext;
-import net.hasor.core.plugin.Plugin;
 import net.hasor.plugins.resource.ResourceHttpServlet;
 import net.hasor.plugins.resource.ResourceLoader;
 import net.hasor.plugins.resource.ResourceLoaderFactory;
 import net.hasor.plugins.resource.loader.ClassPathResourceLoader;
+import net.hasor.quick.plugin.Plugin;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.plugin.AbstractWebHasorPlugin;
 /**

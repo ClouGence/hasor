@@ -21,7 +21,6 @@ import java.util.Map;
 import net.hasor.jdbc.template.RowMapper;
 import net.hasor.jdbc.template.core.JdbcTemplate;
 import net.hasor.jdbc.template.core.LinkedCaseInsensitiveMap;
-import net.hasor.jdbc.template.core.util.JdbcUtils;
 /**
  * {@link RowMapper} implementation that creates a <code>java.util.Map</code>
  * for each row, representing all columns as key-value pairs: one

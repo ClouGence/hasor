@@ -46,11 +46,4 @@ public interface SqlParameterSource {
      * @throws IllegalArgumentException if there is no value for the requested parameter
      */
     public Object getValue(String paramName) throws IllegalArgumentException;
-    /**
-     * Determine the type name for the specified named parameter.
-     * @param paramName the name of the parameter
-     * @return the type name of the specified parameter,
-     * or <code>null</code> if not known
-     */
-    public String getTypeName(String paramName);
 }

@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.EventListener;
 import net.hasor.core.EventManager;
-import net.hasor.core.context.AnnoStandardAppContext;
+import net.hasor.quick.anno.AnnoStandardAppContext;
 import org.junit.Test;
 /**
  * 仅会被执行一次的事件

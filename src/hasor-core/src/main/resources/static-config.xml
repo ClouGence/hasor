@@ -13,7 +13,7 @@
 		<!-- 执行事件的线程池大小，注意：已经被安排Timer执行的事件，是不受生效之后的池大小限制的 -->
 		<eventThreadPoolSize>20</eventThreadPoolSize>
 		<!-- 是否强迫所有模块都必须正常启动 -->
-		<fullStart>false</fullStart>
+		<fullStart>true</fullStart>
 		<!-- 配置文件改变监视线程检查时间间隔 -->
 		<settingsMonitor interval="15000" />
 		<!-- 工作空间设置 -->

@@ -16,9 +16,8 @@
 package net.test.simple._03_aop;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import net.hasor.core.context.AnnoStandardAppContext;
+import net.hasor.quick.anno.AnnoStandardAppContext;
 import net.test.simple._03_aop.class_lv.ClassLv_FooBean;
-import net.test.simple._03_aop.global_lv.GlobalLv_FooBean;
 import net.test.simple._03_aop.method_lv.MethodLv_FooBean;
 import org.junit.Test;
 /**
@@ -45,16 +44,6 @@ public class TestAop {
         appContext.start();
         //
         ClassLv_FooBean fooBean = appContext.getInstance(ClassLv_FooBean.class);
-        fooBean.fooCall();
-    }
-    /*È«¾Ö£¬À¹½ØÆ÷²âÊÔ*/
-    @Test
-    public void testGlobalAop() throws IOException, URISyntaxException, InterruptedException {
-        System.out.println("--->>testGlobalAop<<--");
-        AnnoStandardAppContext appContext = new AnnoStandardAppContext();
-        appContext.start();
-        //
-        GlobalLv_FooBean fooBean = appContext.getInstance(GlobalLv_FooBean.class);
         fooBean.fooCall();
     }
 }

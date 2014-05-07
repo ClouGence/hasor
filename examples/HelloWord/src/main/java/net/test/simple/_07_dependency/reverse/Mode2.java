@@ -17,7 +17,7 @@ package net.test.simple._07_dependency.reverse;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
-import net.hasor.core.module.AnnoModule;
+import net.hasor.quick.anno.AnnoModule;
 /**
  * 依赖反制演示，依赖关系：
  * Mode3
@@ -32,5 +32,4 @@ public class Mode2 implements Module {
     public void start(AppContext appContext) {
         System.out.println("Mode2 start!");
     }
-    public void stop(AppContext appContext) {}
 }

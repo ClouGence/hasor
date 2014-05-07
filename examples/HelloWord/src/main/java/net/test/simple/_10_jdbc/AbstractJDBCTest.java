@@ -16,11 +16,11 @@
 package net.test.simple._10_jdbc;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.sql.SQLException;
 import javax.sql.DataSource;
 import net.hasor.core.AppContext;
-import net.hasor.core.context.AnnoStandardAppContext;
 import net.hasor.jdbc.template.core.JdbcTemplate;
-import org.junit.After;
+import net.hasor.quick.anno.AnnoStandardAppContext;
 import org.junit.Before;
 /***
  * 基本增删改查测试
@@ -31,7 +31,7 @@ public class AbstractJDBCTest {
     private static String config     = "net/test/simple/_10_jdbc/jdbc-config.xml";
     private AppContext    appContext = null;
     @Before
-    public void initContext() throws IOException, URISyntaxException {
+    public void initContext() throws IOException, URISyntaxException, SQLException {
         appContext = new AnnoStandardAppContext(config);
         appContext.start();
         /*装载 SQL 脚本文件*/
@@ -46,9 +46,5 @@ public class AbstractJDBCTest {
     protected DataSource getDataSource() throws IOException, URISyntaxException {
         DataSource jdbc = appContext.getInstance(DataSource.class);
         return jdbc;
-    }
-    @After
-    public void stopInit() {
-        appContext.stop();
     }
 }

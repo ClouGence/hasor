@@ -20,7 +20,6 @@ import java.sql.SQLException;
 import net.hasor.jdbc.template.RowMapper;
 import net.hasor.jdbc.template.core.JdbcTemplate;
 import org.more.util.NumberUtils;
-import com.alibaba.druid.util.JdbcUtils;
 /**
  * {@link RowMapper} implementation that converts a single column into a single
  * result value per row. Expects to operate on a <code>java.sql.ResultSet</code>

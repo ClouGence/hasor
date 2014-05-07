@@ -17,7 +17,7 @@ package net.test.simple._01_hello;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.AppContext;
-import net.hasor.core.context.AnnoStandardAppContext;
+import net.hasor.quick.anno.AnnoStandardAppContext;
 import org.junit.Test;
 /**
  * 本示列演示如何启动 Hasor 框架。
