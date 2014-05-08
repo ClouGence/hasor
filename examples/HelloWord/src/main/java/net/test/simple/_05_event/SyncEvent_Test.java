@@ -37,7 +37,7 @@ public class SyncEvent_Test {
         //
         for (int i = 0; i < 10; i++)
             /*发送同步事件*/
-            appContext.getEventManager().doSync(Type_A, i);
+            appContext.fireSyncEvent(Type_A, i);
         System.out.println("after Event do sth...");
     }
 }

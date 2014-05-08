@@ -31,7 +31,7 @@ import org.more.util.StringUtils;
  */
 @Plugin
 public class DataSourcePlugin extends AbstractHasorPlugin {
-    public void loadPlugin(ApiBinder apiBinder) {
+    public void loadPlugin(ApiBinder apiBinder) throws Throwable {
         Environment env = apiBinder.getEnvironment();
         Settings settings = env.getSettings();
         //
@@ -46,27 +46,22 @@ public class DataSourcePlugin extends AbstractHasorPlugin {
                 //1.DataSources
                 String name = dsConfig.getAttribute("name");
                 String dsFactoryClass = dsConfig.getAttribute("dsFactory");
-                DataSource dataSourceObject = null;
-                try {
-                    Class<?> dsFactoryType = Thread.currentThread().getContextClassLoader().loadClass(dsFactoryClass);
-                    DataSourceFactory dsFactory = (DataSourceFactory) dsFactoryType.newInstance();
-                    //
-                    dataSourceObject = dsFactory.createDataSource(env, dsConfig);
-                    if (dataSourceObject == null) {
-                        Hasor.logWarn("¡®%s¡¯ dataSource is null.", name);
-                        continue;
-                    }
-                    Hasor.logInfo("¡®%s¡¯ dataSource is defined.", name);
-                    apiBinder.bindingType(name, DataSource.class).toInstance(dataSourceObject);/*Bind DataSource.*/
-                    apiBinder.bindingType(name, DataSourceFactory.class).toInstance(dsFactory);/*Bind Factory.*/
-                    //default
-                    if (StringUtils.equalsIgnoreCase(name, defaultDS)) {
-                        apiBinder.getGuiceBinder().bind(DataSource.class).toInstance(dataSourceObject);
-                        Hasor.logInfo("¡®%s¡¯ dataSource is default.", name);
-                    }
-                } catch (Throwable e) {
-                    apiBinder.getGuiceBinder().addError(e);
-                    Hasor.logError(" %s dataSource error.%s", name, e);
+                //
+                Class<?> dsFactoryType = Thread.currentThread().getContextClassLoader().loadClass(dsFactoryClass);
+                DataSourceFactory dsFactory = (DataSourceFactory) dsFactoryType.newInstance();
+                //
+                DataSource dataSourceObject = dsFactory.createDataSource(env, dsConfig);
+                if (dataSourceObject == null) {
+                    Hasor.logWarn("¡®%s¡¯ dataSource is null.", name);
+                    continue;
+                }
+                Hasor.logInfo("¡®%s¡¯ dataSource is defined.", name);
+                apiBinder.bindingType(name, DataSource.class).toInstance(dataSourceObject);/*Bind DataSource.*/
+                apiBinder.bindingType(name, DataSourceFactory.class).toInstance(dsFactory);/*Bind Factory.*/
+                //default
+                if (StringUtils.equalsIgnoreCase(name, defaultDS)) {
+                    apiBinder.bindingType(DataSource.class).toInstance(dataSourceObject);
+                    Hasor.logInfo("¡®%s¡¯ dataSource is default.", name);
                 }
             }
         }

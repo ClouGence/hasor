@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
-import java.util.EventListener;
+package net.hasor.core.event;
+import net.hasor.core.EventCallBackHook;
+import net.hasor.core.Hasor;
 /**
- * 配置文件重载事件监听器
- * @version : 2013-4-18
+ * 异步事件回调接口。
+ * @version : 2013-4-12
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface SettingsListener extends EventListener {
-    /**当接收到配置文件重载事件时触发该方法。*/
-    public void reload(Settings newConfig);
+class EmptyEventCallBackHook implements EventCallBackHook {
+    public void handleException(String eventType, Object[] objects, Throwable e) {
+        Hasor.logWarn("During the execution of Event ‘%s’ throw an error.%s", eventType, e);
+    }
+    public void handleComplete(String eventType, Object[] objects) {}
 }

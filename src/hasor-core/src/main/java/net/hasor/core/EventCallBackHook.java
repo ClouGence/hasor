@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import java.util.EventListener;
 /**
- * 配置文件重载事件监听器
- * @version : 2013-4-18
- * @author 赵永春 (zyc@hasor.net)
+ * 异步消息回调接口
+ * @version : 2014-3-19
+ * @author 赵永春(zyc@hasor.net)
  */
-public interface SettingsListener extends EventListener {
-    /**当接收到配置文件重载事件时触发该方法。*/
-    public void reload(Settings newConfig);
+public interface EventCallBackHook {
+    /**在执行事件监听器发生异常时调用该方法。*/
+    public void handleException(String eventType, Object[] objects, Throwable e);
+    /**当完成异步事件处理时回调。<p>
+     * 注意：无论在异步事件分发过程中是否发生异常，该方法都会如期的被执行。*/
+    public void handleComplete(String eventType, Object[] objects);
 }

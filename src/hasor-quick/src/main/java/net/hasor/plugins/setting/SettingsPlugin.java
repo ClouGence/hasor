@@ -17,16 +17,15 @@ package net.hasor.plugins.setting;
 import static net.hasor.core.AppContext.ContextEvent_Started;
 import java.util.List;
 import java.util.Set;
+import javax.inject.Provider;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
-import net.hasor.core.EventManager;
 import net.hasor.core.Hasor;
 import net.hasor.core.SettingsListener;
 import net.hasor.core.plugin.AbstractHasorPlugin;
 import net.hasor.quick.plugin.Plugin;
-import com.google.inject.Provider;
 /**
  * 提供 <code>@Settings</code>注解 功能支持。
  * @version : 2013-9-13
@@ -38,8 +37,7 @@ public class SettingsPlugin extends AbstractHasorPlugin {
         this.loadAnnoSettings(apiBinder);
         //
         final Environment env = apiBinder.getEnvironment();
-        EventManager eventManager = env.getEventManager();
-        eventManager.pushListener(ContextEvent_Started, new EventListener() {
+        apiBinder.pushListener(ContextEvent_Started, new EventListener() {
             public void onEvent(String event, Object[] params) {
                 AppContext appContext = (AppContext) params[0];
                 List<Provider<SettingsListener>> settingProvider = appContext.findBindingProvider(SettingsListener.class);

@@ -36,7 +36,7 @@ public class WebControllerPlugin extends AbstractWebHasorPlugin {
         }
         //
         Hasor.logInfo("WebController intercept %s.", acSettings.getIntercept());
-        apiBinder.getGuiceBinder().bind(ControllerSettings.class).toInstance(acSettings);
+        apiBinder.bindingType(ControllerSettings.class).toInstance(acSettings);
         apiBinder.serve(acSettings.getIntercept()).with(ControllerServlet.class);
     }
 }

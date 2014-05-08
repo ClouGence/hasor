@@ -54,7 +54,6 @@ public abstract class ModuleProxy implements ModuleInfo/*提供模块基本信息*/, Mod
         this.isReady = false;
     }
     //
-    //
     //----------------------------------------------------------------------------------Base Method
     public String getSettingsNamespace() {
         return this.namespace;
@@ -104,7 +103,6 @@ public abstract class ModuleProxy implements ModuleInfo/*提供模块基本信息*/, Mod
                 this.displayName, this.targetModule.getClass());
     }
     //
-    //
     //----------------------------------------------------------------------------Dependency Method
     /**尝试从容器中获取模块的代理对象*/
     protected abstract ModuleProxy getInfo(Class<? extends Module> targetModule, AppContext appContext);
@@ -136,9 +134,6 @@ public abstract class ModuleProxy implements ModuleInfo/*提供模块基本信息*/, Mod
         Dependency dep = new DependencyBean(moduleInfo, forced);
         this.dependency.add(dep);
     }
-    //
-    //
-    //
     //
     //--------------------------------------------------------------------------------Lifety Method
     private boolean isFullStart() {
@@ -199,9 +194,7 @@ public abstract class ModuleProxy implements ModuleInfo/*提供模块基本信息*/, Mod
         try {
             loacalModuleInfo.put(this.appContext, this);
             forModule.start(appContext);
-            appContext.getEventManager().doSync(ModuleEvent_Started, forModule, appContext);
-        } catch (Throwable e) {
-            throw e;
+            appContext.fireSyncEvent(ModuleEvent_Started, forModule, appContext);
         } finally {
             loacalModuleInfo.remove(this.appContext);
         }

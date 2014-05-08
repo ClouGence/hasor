@@ -14,13 +14,24 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import java.util.EventListener;
+import java.util.Map;
+import javax.inject.Provider;
 /**
- * 配置文件重载事件监听器
- * @version : 2013-4-18
- * @author 赵永春 (zyc@hasor.net)
+ * 
+ * @version : 2014-3-17
+ * @author 赵永春(zyc@hasor.net)
  */
-public interface SettingsListener extends EventListener {
-    /**当接收到配置文件重载事件时触发该方法。*/
-    public void reload(Settings newConfig);
+public interface RegisterInfo<T> {
+    /**获取注册的类型*/
+    public Class<T> getRegisterType();
+    /**获取Provider*/
+    public Provider<T> getProvider();
+    /**为类型绑定的名称。*/
+    public String getBindName();
+    /**是否为单例模式。*/
+    public boolean isSingleton();
+    /**获取所属空间。*/
+    public String getScope();
+    /**是否为容器可见。*/
+    public Map<String, Object> propertyMap();
 }

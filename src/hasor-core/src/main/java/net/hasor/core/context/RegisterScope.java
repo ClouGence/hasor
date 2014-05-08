@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
-import java.util.EventListener;
+package net.hasor.core.context;
+import java.util.Iterator;
+import net.hasor.core.RegisterInfo;
 /**
- * 配置文件重载事件监听器
- * @version : 2013-4-18
- * @author 赵永春 (zyc@hasor.net)
+ * 
+ * @version : 2014-4-4
+ * @author 赵永春(zyc@hasor.net)
  */
-public interface SettingsListener extends EventListener {
-    /**当接收到配置文件重载事件时触发该方法。*/
-    public void reload(Settings newConfig);
+public interface RegisterScope {
+    /**父级*/
+    public RegisterScope getParentScope();
+    /**获取该范围内的所有RegisterInfo注册。*/
+    public Iterator<RegisterInfo<?>> getRegisterIterator();
 }

@@ -13,26 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.module;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
-import net.hasor.core.Module;
+package net.hasor.core.binder;
+import java.util.Map;
 /**
- * Guice模块代理成AbstractHasorModule类型的工具
- * @version : 2013-7-16
+ * 注册到 Hasor 中 Bean 的元信息。
+ * @version : 2013-5-6
  * @author 赵永春 (zyc@hasor.net)
  */
-public class GuiceModule implements Module {
-    private com.google.inject.Module guiceModule = null;
-    //
-    public GuiceModule(com.google.inject.Module guiceModule) {
-        Hasor.assertIsNotNull(guiceModule);
-        this.guiceModule = guiceModule;
-    }
-    //
-    public void init(ApiBinder apiBinder) {
-        apiBinder.getGuiceBinder().install(this.guiceModule);
-    }
-    public void start(AppContext appContext) {}
+public interface BeanInfo {
+    /**获取bean的名称*/
+    public String getName();
+    /**获取bean的别名称*/
+    public String[] getAliasName();
+    /**获取bean的类型*/
+    public Class<?> getType();
+    /**是否为容器可见。*/
+    public Map<String, Object> propertyMap();
 }

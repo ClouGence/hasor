@@ -20,7 +20,6 @@ import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
-import net.hasor.core.EventManager;
 import net.hasor.core.Hasor;
 import net.hasor.core.plugin.AbstractHasorPlugin;
 import net.hasor.quick.plugin.Plugin;
@@ -34,7 +33,6 @@ import org.more.util.StringUtils;
 public class ListenerPlugin extends AbstractHasorPlugin {
     public void loadPlugin(ApiBinder apiBinder) {
         final Environment env = apiBinder.getEnvironment();
-        final EventManager eventManager = env.getEventManager();
         final Set<Class<?>> eventSet = env.findClass(Listener.class);
         if (eventSet == null || eventSet.isEmpty())
             return;
@@ -52,7 +50,7 @@ public class ListenerPlugin extends AbstractHasorPlugin {
                 //
                 EventListenerPropxy listener = new EventListenerPropxy(eventClass);
                 apiBinder.registerAware(listener);/*注册AppContextAware*/
-                eventManager.addListener(eventName, listener);
+                apiBinder.addListener(eventName, listener);
                 Hasor.logInfo("event ‘%s’ binding to ‘%s’", eventName, eventClass);
             }
             //当ContextEvent_Start事件到来时注册所有配置文件监听器。

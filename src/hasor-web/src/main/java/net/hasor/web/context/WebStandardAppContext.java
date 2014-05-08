@@ -18,30 +18,26 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import net.hasor.core.binder.AbstractApiBinder;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.binder.TypeRegister;
 import net.hasor.core.context.StandardAppContext;
 import net.hasor.core.module.ModuleProxy;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.WebEnvironment;
 import net.hasor.web.binder.FilterPipeline;
 import net.hasor.web.binder.SessionListenerPipeline;
+import net.hasor.web.binder.support.AbstractWebApiBinder;
 import net.hasor.web.binder.support.ManagedFilterPipeline;
 import net.hasor.web.binder.support.ManagedServletPipeline;
 import net.hasor.web.binder.support.ManagedSessionListenerPipeline;
-import net.hasor.web.binder.support.WebApiBinderModule;
 import net.hasor.web.env.WebStandardEnvironment;
 import net.hasor.web.startup.RuntimeFilter;
-import com.google.inject.Binder;
-import com.google.inject.Injector;
-import com.google.inject.Module;
 import com.google.inject.Provider;
 /**
  * 
@@ -69,71 +65,60 @@ public class WebStandardAppContext extends StandardAppContext implements WebAppC
     public ServletContext getServletContext() {
         return ((WebEnvironment) this.getEnvironment()).getServletContext();
     }
-    protected Injector createInjector(Module[] guiceModules) {
-        Module webModule = new Module() {
-            public void configure(Binder guiceBinder) {
-                /*Bind*/
-                guiceBinder.bind(ManagedServletPipeline.class).asEagerSingleton();
-                guiceBinder.bind(FilterPipeline.class).to(ManagedFilterPipeline.class).asEagerSingleton();
-                guiceBinder.bind(SessionListenerPipeline.class).to(ManagedSessionListenerPipeline.class).asEagerSingleton();
-            }
-        };
-        //2.追加Guice Module
-        ArrayList<Module> guiceModuleSet = new ArrayList<Module>();
-        if (guiceModules != null)
-            guiceModuleSet.addAll(Arrays.asList(guiceModules));
-        guiceModuleSet.add(webModule);
-        //3.创建Guice
-        return super.createInjector(guiceModuleSet.toArray(new Module[guiceModuleSet.size()]));
-    }
     protected WebEnvironment createEnvironment() {
         return new WebStandardEnvironment(this.getMainSettings(), (ServletContext) this.getContext());
     }
-    protected AbstractApiBinder newApiBinder(final ModuleProxy forModule, final Binder guiceBinder) {
-        return new WebApiBinderModule((WebEnvironment) this.getEnvironment()) {
+    /**为模块创建ApiBinder*/
+    protected AbstractWebApiBinder newApiBinder(final ModuleProxy forModule) {
+        return new AbstractWebApiBinder((WebEnvironment) this.getEnvironment()) {
             public ModuleSettings configModule() {
                 return forModule;
             }
-            public Binder getGuiceBinder() {
-                return guiceBinder;
+            protected <T> TypeRegister<T> registerType(Class<T> type) {
+                return WebStandardAppContext.this.registerType(type);
             }
         };
     }
-    protected void doBind(Binder guiceBinder) {
-        super.doBind(guiceBinder);
+    protected void doBind(ApiBinder apiBinder) {
+        super.doBind(apiBinder);
+        //
+        apiBinder.bindingType(ManagedServletPipeline.class).asEagerSingleton();
+        apiBinder.bindingType(FilterPipeline.class).to(ManagedFilterPipeline.class).asEagerSingleton();
+        apiBinder.bindingType(SessionListenerPipeline.class).to(ManagedSessionListenerPipeline.class).asEagerSingleton();
+        //
         /*绑定ServletRequest对象的Provider*/
-        guiceBinder.bind(ServletRequest.class).toProvider(new Provider<ServletRequest>() {
+        apiBinder.bindingType(ServletRequest.class).toProvider(new Provider<ServletRequest>() {
             public ServletRequest get() {
                 return RuntimeFilter.getLocalRequest();
             }
         });
         /*绑定HttpServletRequest对象的Provider*/
-        guiceBinder.bind(HttpServletRequest.class).toProvider(new Provider<HttpServletRequest>() {
+        apiBinder.bindingType(HttpServletRequest.class).toProvider(new Provider<HttpServletRequest>() {
             public HttpServletRequest get() {
                 return RuntimeFilter.getLocalRequest();
             }
         });
         /*绑定ServletResponse对象的Provider*/
-        guiceBinder.bind(ServletResponse.class).toProvider(new Provider<ServletResponse>() {
+        apiBinder.bindingType(ServletResponse.class).toProvider(new Provider<ServletResponse>() {
             public ServletResponse get() {
                 return RuntimeFilter.getLocalResponse();
             }
         });
         /*绑定HttpServletResponse对象的Provider*/
-        guiceBinder.bind(HttpServletResponse.class).toProvider(new Provider<HttpServletResponse>() {
+        apiBinder.bindingType(HttpServletResponse.class).toProvider(new Provider<HttpServletResponse>() {
             public HttpServletResponse get() {
                 return RuntimeFilter.getLocalResponse();
             }
         });
         /*绑定HttpSession对象的Provider*/
-        guiceBinder.bind(HttpSession.class).toProvider(new Provider<HttpSession>() {
+        apiBinder.bindingType(HttpSession.class).toProvider(new Provider<HttpSession>() {
             public HttpSession get() {
                 HttpServletRequest req = RuntimeFilter.getLocalRequest();
                 return (req != null) ? req.getSession(true) : null;
             }
         });
         /*绑定ServletContext对象的Provider*/
-        guiceBinder.bind(ServletContext.class).toProvider(new Provider<ServletContext>() {
+        apiBinder.bindingType(ServletContext.class).toProvider(new Provider<ServletContext>() {
             public ServletContext get() {
                 return getServletContext();
             }

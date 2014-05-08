@@ -17,7 +17,6 @@ package net.test.simple._05_event;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.EventListener;
-import net.hasor.core.EventManager;
 import net.hasor.quick.anno.AnnoStandardAppContext;
 import org.junit.Test;
 /**
@@ -35,19 +34,18 @@ public class OnlyOnesEvent_Test {
         AnnoStandardAppContext appContext = new AnnoStandardAppContext(config);
         appContext.start();
         //获取事件管理器
-        EventManager em = appContext.getEventManager();
         //push 一个事件监听器，该监听器在 push 之后只会生效一次。
-        em.pushListener("MyEvent", new MyEventListener());
+        appContext.pushListener("MyEvent", new MyEventListener());
         //引发4次事件，但是只有一个事件会被处理。
-        em.doSync("MyEvent");
-        em.doSync("MyEvent");
-        em.doSync("MyEvent");
-        em.doSync("MyEvent");
+        appContext.fireSyncEvent("MyEvent");
+        appContext.fireSyncEvent("MyEvent");
+        appContext.fireSyncEvent("MyEvent");
+        appContext.fireSyncEvent("MyEvent");
         //
         //再次注册 MyEvent 事件
-        em.pushListener("MyEvent", new MyEventListener());
+        appContext.pushListener("MyEvent", new MyEventListener());
         //引发事件
-        em.doSync("MyEvent");
+        appContext.fireSyncEvent("MyEvent");
     }
     private static class MyEventListener implements EventListener {
         public void onEvent(String event, Object[] params) throws Throwable {

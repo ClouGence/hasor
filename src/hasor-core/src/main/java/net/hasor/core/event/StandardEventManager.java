@@ -24,13 +24,11 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import net.hasor.core.AsyncCallBackHook;
 import net.hasor.core.Environment;
+import net.hasor.core.EventCallBackHook;
 import net.hasor.core.EventListener;
-import net.hasor.core.EventManager;
 import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
-import net.hasor.core.SettingsListener;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 /**
@@ -39,7 +37,7 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class StandardEventManager implements EventManager {
-    private static final EmptyAsyncCallBackHook    EmptyAsyncCallBack = new EmptyAsyncCallBackHook();
+    private static final EmptyEventCallBackHook    EmptyAsyncCallBack = new EmptyEventCallBackHook();
     //
     private Settings                               settings           = null;
     private ScheduledExecutorService               executorService    = null;
@@ -52,32 +50,23 @@ public class StandardEventManager implements EventManager {
         env = Hasor.assertIsNotNull(env, "Environment type parameter is empty!");
         this.settings = env.getSettings();
         this.executorService = Executors.newScheduledThreadPool(1);
-        env.addSettingsListener(new SettingsListener() {
-            public void reload(Settings newConfig) {
-                update();
-            }
-        });
-        this.update();
+        this.updateSettings();
     }
-    /**获取Setting接口对象*/
-    public Settings getSettings() {
-        return this.settings;
-    }
-    private void update() {
+    private void updateSettings() {
         //更新ThreadPoolExecutor
         int eventThreadPoolSize = this.getSettings().getInteger("hasor.eventThreadPoolSize", 20);
         ThreadPoolExecutor threadPool = (ThreadPoolExecutor) executorService;
         threadPool.setCorePoolSize(eventThreadPoolSize);
         threadPool.setMaximumPoolSize(eventThreadPoolSize);
     }
+    /**获取Setting接口对象*/
+    public Settings getSettings() {
+        return this.settings;
+    }
     /**获取执行事件使用的ScheduledExecutorService接口对象。*/
     protected ScheduledExecutorService getExecutorService() {
         return this.executorService;
     }
-    //
-    //
-    //
-    //
     //
     public void pushListener(String eventType, EventListener eventListener) {
         if (StringUtils.isBlank(eventType) || eventListener == null)
@@ -109,11 +98,6 @@ public class StandardEventManager implements EventManager {
         //
         this.listenerRWLock.writeLock().unlock();//解锁(写)
     }
-    //    public void removeAllEventListener(String eventType) {
-    //        this.listenerRWLock.writeLock().lock();//加锁(写)
-    //        this.listenerMap.remove(eventType);
-    //        this.listenerRWLock.writeLock().unlock();//解锁(写)
-    //    }
     public void removeListener(String eventType, EventListener eventListener) {
         this.listenerRWLock.writeLock().lock();//加锁(写)
         //
@@ -128,99 +112,69 @@ public class StandardEventManager implements EventManager {
         //
         this.listenerRWLock.writeLock().unlock();//解锁(写)
     }
-    //    public HasorEventListener[] getEventListener(String eventType) {
-    //        this.listenerRWLock.readLock().lock();//加锁(读)
-    //        //
-    //        HasorEventListener[] eventListenerArray = this.listenerMap.get(eventType);
-    //        if (eventListenerArray != null) {
-    //            HasorEventListener[] array = new HasorEventListener[eventListenerArray.length];
-    //            System.arraycopy(eventListenerArray, 0, array, 0, eventListenerArray.length);
-    //            eventListenerArray = array;
-    //        } else
-    //            eventListenerArray = EmptyEventListener;
-    //        //
-    //        this.listenerRWLock.readLock().unlock();//解锁(读)
-    //        return eventListenerArray;
-    //    }
-    //    public String[] getEventTypes() {
-    //        this.listenerRWLock.readLock().lock();//加锁(读)
-    //        //
-    //        Set<String> eventTypes = this.listenerMap.keySet();
-    //        String[] eventTypeNames = eventTypes.toArray(new String[eventTypes.size()]);
-    //        //
-    //        this.listenerRWLock.readLock().unlock();//解锁(读)
-    //        return eventTypeNames;
-    //    }
     //
-    //
-    //
-    //
-    //
-    public void doSyncHoldThrow(String eventType, Object... objects) throws Throwable {
-        this._doSyncEvent(false, eventType, objects);
+    public final void fireSyncEvent(String eventType, Object... objects) {
+        this.fireSyncEvent(eventType, null, objects);
     }
-    public void doSync(String eventType, Object... objects) {
-        try {
-            this._doSyncEvent(true, eventType, objects);
-        } catch (Throwable e) {
-            throw new RuntimeException(e);//由于ignore参数为true不会抛出事件的异常。这里可以再次抛出异常原因是确保不会吞掉潜在的异常信息。
+    public final void fireSyncEvent(String eventType, EventCallBackHook callBack, Object... objects) {
+        this.fireEvent(eventType, true, callBack, objects);
+    }
+    public final void fireAsyncEvent(String eventType, Object... objects) {
+        this.fireAsyncEvent(eventType, null, objects);
+    }
+    public final void fireAsyncEvent(String eventType, EventCallBackHook callBack, Object... objects) {
+        this.fireEvent(eventType, false, callBack, objects);
+    }
+    private final void fireEvent(String eventType, boolean sync, EventCallBackHook callBack, Object... objects) {
+        EventObject event = createEvent(eventType, sync);
+        event.setCallBack(callBack);
+        event.addParams(objects);
+        this.fireEvent(event);
+    }
+    /**创建事件对象*/
+    protected EventObject createEvent(String eventType, boolean sync) {
+        return new EventObject(eventType, sync);
+    };
+    /**引发事件*/
+    protected void fireEvent(final EventObject event) {
+        if (event.isSync()) {
+            //同步的
+            executeEvent(event);
+        } else {
+            //异步的
+            this.executorService.submit(new Runnable() {
+                public void run() {
+                    executeEvent(event);
+                }
+            });
         }
-    }
-    public void doAsync(String eventType, AsyncCallBackHook callBack, Object... objects) {
-        _doAsynEvent(false, eventType, callBack, objects);
-    }
-    public void doAsync(final String eventType, final Object... objects) {
-        _doAsynEvent(true, eventType, null, objects);
-    }
-    //
-    private void _doSyncEvent(boolean ignore, String eventType, Object... objects) throws Throwable {
+    };
+    /**引发事件*/
+    private void executeEvent(EventObject eventObj) {
+        String eventType = eventObj.getEventType();
+        Object[] objects = eventObj.getParams();
+        EventCallBackHook callBack = eventObj.getCallBack();
+        callBack = (callBack != null ? callBack : EmptyAsyncCallBack);
         if (StringUtils.isBlank(eventType) == true)
             return;
+        //
+        //1.引发事务.
         this.listenerRWLock.readLock().lock();//加锁(读)
         EventListener[] eventListenerArray = this.listenerMap.get(eventType);
         this.listenerRWLock.readLock().unlock();//解锁(读)
-        //
         if (eventListenerArray != null) {
-            for (EventListener event : eventListenerArray)
+            for (EventListener listener : eventListenerArray) {
                 try {
-                    event.onEvent(eventType, objects);
+                    listener.onEvent(eventType, objects);
                 } catch (Throwable e) {
-                    if (ignore)
-                        Hasor.logWarn("During the execution of SyncEvent ‘%s’ throw an error.%s", event.getClass(), e);
-                    else
-                        throw e;
+                    callBack.handleException(eventType, objects, e);
+                } finally {
+                    callBack.handleComplete(eventType, objects);
                 }
-        }
-        //处理OnceListener
-        this.processOnceListener(ignore, eventType, EmptyAsyncCallBack, objects);
-    }
-    private void _doAsynEvent(final boolean ignore, final String eventType, final AsyncCallBackHook hook, final Object... objects) {
-        if (StringUtils.isBlank(eventType) == true)
-            return;
-        final AsyncCallBackHook callBack = (hook != null) ? hook : EmptyAsyncCallBack;
-        this.listenerRWLock.readLock().lock();//加锁(读)
-        final EventListener[] eventListenerArray = this.listenerMap.get(eventType);
-        this.listenerRWLock.readLock().unlock();//解锁(读)
-        this.executorService.submit(new Runnable() {
-            public void run() {
-                if (eventListenerArray != null) {
-                    for (EventListener event : eventListenerArray)
-                        try {
-                            event.onEvent(eventType, objects);
-                        } catch (Throwable e) {
-                            if (ignore)
-                                Hasor.logWarn("During the execution of AsynEvent ‘%s’ throw an error.%s", event.getClass(), e);
-                            else
-                                callBack.handleException(eventType, objects, e);
-                        }
-                }
-                //处理OnceListener
-                processOnceListener(ignore, eventType, callBack, objects);
-                callBack.handleComplete(eventType, objects);
             }
-        });
-    }
-    private void processOnceListener(boolean ignore, String eventType, AsyncCallBackHook callBack, Object... objects) {
+        }
+        //
+        //2.处理Once事务.
         this.onceListenerLock.lock();//加锁
         LinkedList<EventListener> eventList = this.onceListenerMap.get(eventType);
         if (eventList != null) {
@@ -229,31 +183,24 @@ public class StandardEventManager implements EventManager {
                 try {
                     listener.onEvent(eventType, objects);
                 } catch (Throwable e) {
-                    if (ignore)
-                        Hasor.logWarn("During the execution of OnceListener ‘%s’ throw an error.%s", listener.getClass(), e);
-                    else
-                        callBack.handleException(eventType, objects, e);
+                    callBack.handleException(eventType, objects, e);
+                } finally {
+                    callBack.handleComplete(eventType, objects);
                 }
             }
         }
         this.onceListenerLock.unlock();//解锁
-    }
+    };
     //
-    //
-    //
-    //
-    //
-    public synchronized void clean() {
+    public void release() {
         this.onceListenerLock.lock();//加锁
         this.onceListenerMap.clear();
         this.onceListenerLock.unlock();//解锁
         //
         this.executorService.shutdownNow();
         this.executorService = Executors.newScheduledThreadPool(1);
-        this.update();
-    }
-    public void release() {
-        this.clean();
+        this.updateSettings();
+        //
         this.listenerRWLock.writeLock().lock();//加锁
         this.listenerMap.clear();
         this.listenerRWLock.writeLock().unlock();//解锁

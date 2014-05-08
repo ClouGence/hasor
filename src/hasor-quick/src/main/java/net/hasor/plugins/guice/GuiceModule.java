@@ -14,16 +14,25 @@
  * limitations under the License.
  */
 package net.hasor.plugins.guice;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import com.google.inject.Module;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
+import net.hasor.core.Module;
 /**
-* 标志该类注册到系统初始化过程，该类在标记注解时必须实现{@link Module}接口。
-* @version : 2013-3-20
-* @author 赵永春 (zyc@hasor.net)
-*/
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface GuiceModule {}
+ * Guice模块代理成AbstractHasorModule类型的工具
+ * @version : 2013-7-16
+ * @author 赵永春 (zyc@hasor.net)
+ */
+public class GuiceModule implements Module {
+    private com.google.inject.Module guiceModule = null;
+    //
+    public GuiceModule(com.google.inject.Module guiceModule) {
+        Hasor.assertIsNotNull(guiceModule);
+        this.guiceModule = guiceModule;
+    }
+    //
+    public void init(ApiBinder apiBinder) {
+        apiBinder.getGuiceBinder().install(this.guiceModule);
+    }
+    public void start(AppContext appContext) {}
+}

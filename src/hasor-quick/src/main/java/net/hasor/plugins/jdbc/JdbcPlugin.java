@@ -16,6 +16,7 @@
 package net.hasor.plugins.jdbc;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Provider;
 import javax.sql.DataSource;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
@@ -27,7 +28,6 @@ import net.hasor.core.plugin.AbstractHasorPlugin;
 import net.hasor.jdbc.template.core.JdbcTemplate;
 import net.hasor.quick.plugin.Plugin;
 import org.more.util.StringUtils;
-import com.google.inject.Provider;
 /**
  * 
  * @version : 2013-12-10
@@ -37,7 +37,7 @@ import com.google.inject.Provider;
 public class JdbcPlugin extends AbstractHasorPlugin {
     public void loadPlugin(ApiBinder apiBinder) {
         /*JdbcTemplate*/
-        apiBinder.getGuiceBinder().bind(JdbcTemplate.class).toProvider(new DefaultJdbcTemplateProvider(apiBinder));
+        apiBinder.bindingType(JdbcTemplate.class).toProvider(new DefaultJdbcTemplateProvider(apiBinder));
         /*带有名称的 JdbcTemplate*/
         Settings settings = apiBinder.getEnvironment().getSettings();
         XmlNode[] dataSourceSet = settings.getXmlPropertyArray("hasor-jdbc.dataSourceSet");
@@ -52,7 +52,7 @@ public class JdbcPlugin extends AbstractHasorPlugin {
                     dataSourceNames.add(name);
             }
         }
-        apiBinder.getEventManager().pushListener(AppContext.ContextEvent_Initialized, new InitializedEventListener(dataSourceNames));
+        apiBinder.pushListener(AppContext.ContextEvent_Initialized, new InitializedEventListener(dataSourceNames));
     }
     /**/
     private static class InitializedEventListener implements EventListener {

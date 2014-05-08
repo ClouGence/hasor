@@ -29,11 +29,13 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.hasor.core.Environment;
-import net.hasor.core.EventManager;
+import net.hasor.core.EventCallBackHook;
+import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
 import net.hasor.core.SettingsListener;
 import net.hasor.core.XmlNode;
+import net.hasor.core.event.EventManager;
 import net.hasor.core.event.StandardEventManager;
 import org.more.UnhandledException;
 import org.more.util.ResourceWatch;
@@ -45,15 +47,9 @@ import org.more.util.map.DecSequenceMap;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractEnvironment implements Environment {
-    private long         startTime;   //系统启动时间
-    private String[]     spanPackage;
-    private Settings     settings;
-    private EventManager eventManager;
-    private EnvVars      envVars;
+    private String[] spanPackage;
+    private Settings settings;
     //---------------------------------------------------------------------------------Basic Method
-    public long getStartTime() {
-        return this.startTime;
-    }
     public boolean isDebug() {
         return this.settings.getBoolean("hasor.debug", false);
     }
@@ -70,33 +66,12 @@ public abstract class AbstractEnvironment implements Environment {
     public Settings getSettings() {
         return this.settings;
     }
-    public EventManager getEventManager() {
-        return this.eventManager;
-    }
-    public String evalString(String eval) {
-        return this.envVars.evalString(eval);
-    }
-    public String evalEnvVar(String varName) {
-        return this.envVars.evalEnvVar(varName);
-    }
-    public String getEnvVar(String varName) {
-        return this.envVars.getEnvVar(varName);
-    }
-    public void addEnvVar(String varName, String value) {
-        this.envVars.addEnvVar(varName, value);
-    }
-    public void remoteEnvVar(String varName) {
-        this.envVars.remoteEnvVar(varName);
-    }
-    public Map<String, String> getEnv() {
-        return this.envVars.getEnv();
-    }
     //
+    /*----------------------------------------------------------------------------------------Env*/
     /**初始化方法*/
     protected void initEnvironment() {
         Hasor.logInfo("initEnvironment.");
         //
-        this.startTime = System.currentTimeMillis();
         this.settingListenerList = new ArrayList<SettingsListener>();
         try {
             this.settings = this.createSettings();
@@ -122,19 +97,14 @@ public abstract class AbstractEnvironment implements Environment {
         this.spanPackage = allPack.toArray(new String[allPack.size()]);
         Hasor.logInfo("loadPackages : " + Hasor.logString(this.spanPackage));
         //
-        //
         this.settingWatch = this.createSettingWatch();
-        if (this.settingWatch != null)
+        if (this.settingWatch != null) {
+            this.settingWatch.setDaemon(true);
             this.settingWatch.start();
+        }
     }
-    /**创建{@link EnvVars}接口对象*/
-    protected EnvVars createEnvVars() {
-        return new EnvVars(this);
-    }
-    /**创建{@link EventManager}接口对象*/
-    protected EventManager createEventManager() {
-        return new StandardEventManager(this);
-    }
+    /**创建{@link Settings}接口对象*/
+    protected abstract Settings createSettings() throws IOException;
     /**在缓存目录内创建一个不重名的临时文件名。 */
     public synchronized File uniqueTempFile() throws IOException {
         try {
@@ -166,27 +136,39 @@ public abstract class AbstractEnvironment implements Environment {
         } while (c > 0);
         return buffer.reverse().toString();
     }
-    /**创建{@link SettingWatch}对象，该方法可以返回null表示不需要监视器。*/
-    protected SettingWatch createSettingWatch() {
-        final SettingWatch settingWatch = new SettingWatch(this) {};
-        /*设置监听器检测间隔*/
-        long interval = this.getSettings().getLong("hasor.settingsMonitor.interval", 15000L);
-        settingWatch.setCheckSeepTime(interval);
-        /*注册一个配置文件监听器，当配置文件更新时通知监听器更新检测间隔*/
-        this.addSettingsListener(new SettingsListener() {
-            public void reload(Settings newConfig) {
-                long interval = newConfig.getLong("hasor.settingsMonitor.interval", 15000L);
-                if (interval != settingWatch.getCheckSeepTime()) {
-                    Hasor.logInfo("SettingWatch to monitor configuration updates, set interval new Value is %s", interval);
-                    settingWatch.setCheckSeepTime(interval);
-                }
-            }
-        });
-        return settingWatch;
+    //
+    /*--------------------------------------------------------------------------------------Event*/
+    private EventManager eventManager;
+    public EventManager getEventManager() {
+        return this.eventManager;
     }
-    /**创建{@link Settings}接口对象*/
-    protected abstract Settings createSettings() throws IOException;
-    //-------------------------------------------------------------------------HasorSettingListener
+    /**创建{@link EventManager}接口对象*/
+    protected EventManager createEventManager() {
+        return new StandardEventManager(this);
+    }
+    public void pushListener(String eventType, EventListener eventListener) {
+        this.getEventManager().pushListener(eventType, eventListener);
+    }
+    public void addListener(String eventType, EventListener eventListener) {
+        this.getEventManager().addListener(eventType, eventListener);
+    }
+    public void removeListener(String eventType, EventListener eventListener) {
+        this.getEventManager().removeListener(eventType, eventListener);
+    }
+    public void fireSyncEvent(String eventType, Object... objects) {
+        this.getEventManager().fireSyncEvent(eventType, objects);
+    }
+    public void fireSyncEvent(String eventType, EventCallBackHook callBack, Object... objects) {
+        this.getEventManager().fireSyncEvent(eventType, callBack, objects);
+    }
+    public void fireAsyncEvent(String eventType, Object... objects) {
+        this.getEventManager().fireAsyncEvent(eventType, objects);
+    }
+    public void fireAsyncEvent(String eventType, EventCallBackHook callBack, Object... objects) {
+        this.getEventManager().fireAsyncEvent(eventType, callBack, objects);
+    }
+    //
+    /*-----------------------------------------------------------------------HasorSettingListener*/
     private SettingWatch           settingWatch        = null;
     private List<SettingsListener> settingListenerList = null;
     /**触发配置文件重载事件。*/
@@ -208,12 +190,25 @@ public abstract class AbstractEnvironment implements Environment {
     public SettingsListener[] getSettingListeners() {
         return this.settingListenerList.toArray(new SettingsListener[this.settingListenerList.size()]);
     }
-    //--------------------------------------------------------------------------------ResourceWatch
-    /**释放环境所占用的资源*/
-    public void release() {
-        if (this.settingWatch != null)
-            this.settingWatch.stop();
-        this.eventManager.release();
+    //
+    /*------------------------------------------------------------------------------ResourceWatch*/
+    /**创建{@link SettingWatch}对象，该方法可以返回null表示不需要监视器。*/
+    protected SettingWatch createSettingWatch() {
+        final SettingWatch settingWatch = new SettingWatch(this) {};
+        /*设置监听器检测间隔*/
+        long interval = this.getSettings().getLong("hasor.settingsMonitor.interval", 15000L);
+        settingWatch.setCheckSeepTime(interval);
+        /*注册一个配置文件监听器，当配置文件更新时通知监听器更新检测间隔*/
+        this.addSettingsListener(new SettingsListener() {
+            public void reload(Settings newConfig) {
+                long interval = newConfig.getLong("hasor.settingsMonitor.interval", 15000L);
+                if (interval != settingWatch.getCheckSeepTime()) {
+                    Hasor.logInfo("SettingWatch to monitor configuration updates, set interval new Value is %s", interval);
+                    settingWatch.setCheckSeepTime(interval);
+                }
+            }
+        });
+        return settingWatch;
     }
     /** 该类负责主配置文件的监听工作，以及引发配置文件重载事件。*/
     protected abstract static class SettingWatch extends ResourceWatch {
@@ -253,7 +248,31 @@ public abstract class AbstractEnvironment implements Environment {
             super.start();
         }
     }
-    //-------------------------------------------------------------------------------------Env Vars
+    //
+    /*-----------------------------------------------------------------------------------Env Vars*/
+    private EnvVars envVars;
+    public String evalString(String eval) {
+        return this.envVars.evalString(eval);
+    }
+    public String evalEnvVar(String varName) {
+        return this.envVars.evalEnvVar(varName);
+    }
+    public String getEnvVar(String varName) {
+        return this.envVars.getEnvVar(varName);
+    }
+    public void addEnvVar(String varName, String value) {
+        this.envVars.addEnvVar(varName, value);
+    }
+    public void remoteEnvVar(String varName) {
+        this.envVars.remoteEnvVar(varName);
+    }
+    public Map<String, String> getEnv() {
+        return this.envVars.getEnv();
+    }
+    /**创建{@link EnvVars}接口对象*/
+    protected EnvVars createEnvVars() {
+        return new EnvVars(this);
+    }
     /** 该类负责处理环境变量相关操作*/
     protected class EnvVars implements SettingsListener {
         /*所属的Environment*/
@@ -298,8 +317,6 @@ public abstract class AbstractEnvironment implements Environment {
                 this.finalEnvMap = new HashMap<String, String>();
             return Collections.unmodifiableMap(this.finalEnvMap);
         }
-        //
-        //
         //
         /**特殊配置的环境变量*/
         protected Map<String, String> configEnvironment() {
