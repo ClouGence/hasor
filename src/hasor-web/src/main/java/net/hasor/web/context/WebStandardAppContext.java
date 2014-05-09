@@ -31,11 +31,11 @@ import net.hasor.core.module.ModuleProxy;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.WebEnvironment;
 import net.hasor.web.binder.FilterPipeline;
-import net.hasor.web.binder.SessionListenerPipeline;
+import net.hasor.web.binder.ListenerPipeline;
 import net.hasor.web.binder.support.AbstractWebApiBinder;
 import net.hasor.web.binder.support.ManagedFilterPipeline;
 import net.hasor.web.binder.support.ManagedServletPipeline;
-import net.hasor.web.binder.support.ManagedSessionListenerPipeline;
+import net.hasor.web.binder.support.ManagedListenerPipeline;
 import net.hasor.web.env.WebStandardEnvironment;
 import net.hasor.web.startup.RuntimeFilter;
 import com.google.inject.Provider;
@@ -84,7 +84,7 @@ public class WebStandardAppContext extends StandardAppContext implements WebAppC
         //
         apiBinder.bindingType(ManagedServletPipeline.class).asEagerSingleton();
         apiBinder.bindingType(FilterPipeline.class).to(ManagedFilterPipeline.class).asEagerSingleton();
-        apiBinder.bindingType(SessionListenerPipeline.class).to(ManagedSessionListenerPipeline.class).asEagerSingleton();
+        apiBinder.bindingType(ListenerPipeline.class).to(ManagedListenerPipeline.class).asEagerSingleton();
         //
         /*绑定ServletRequest对象的Provider*/
         apiBinder.bindingType(ServletRequest.class).toProvider(new Provider<ServletRequest>() {

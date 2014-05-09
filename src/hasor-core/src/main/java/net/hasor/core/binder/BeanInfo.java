@@ -26,7 +26,7 @@ public interface BeanInfo {
     /**获取bean的别名称*/
     public String[] getAliasName();
     /**获取bean的类型*/
-    public Class<?> getType();
+    public <T> Class<T> getType();
     /**是否为容器可见。*/
     public Map<String, Object> propertyMap();
 }

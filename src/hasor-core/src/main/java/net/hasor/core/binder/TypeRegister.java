@@ -23,17 +23,17 @@ import javax.inject.Provider;
  */
 public interface TypeRegister<T> {
     /**获取注册的类型*/
-    public Class<? extends T> getRegisterType();
+    public Class<T> getType();
     /**为类型绑定一个实现，当获取类型实例时其实获取的是实现对象。*/
     public void toImpl(Class<? extends T> implementation);
     /**为类型绑定一个实现对象。*/
     public void toInstance(T instance);
     /**为类型绑定一个Provider。*/
-    public void toProvider(Provider<? extends T> provider);
+    public void toProvider(Provider<T> provider);
     /**为类型绑定一个初始构造方法。*/
     public void toConstructor(Constructor<? extends T> constructor);
     /**为类型绑定一个名称。*/
-    public void setBindName(String name);
+    public void setName(String name);
     /**将类型发布为单例模式。*/
     public void setSingleton();
     /**将类型发布到一个固定的命名空间内。*/

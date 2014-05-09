@@ -15,6 +15,7 @@
  */
 package net.hasor.web.startup;
 import java.io.IOException;
+import javax.inject.Singleton;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -26,9 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.web.WebAppContext;
 import net.hasor.web.binder.FilterPipeline;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 /**
  * 入口Filter，同一个应用程序只能实例化一个 RuntimeFilter 对象。
  * @version : 2013-3-25
@@ -36,9 +36,7 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class RuntimeFilter implements Filter {
-    @Inject
-    private AppContext     appContext       = null;
-    @Inject
+    private WebAppContext  appContext       = null;
     private FilterPipeline filterPipeline   = null;
     private String         requestEncoding  = null;
     private String         responseEncoding = null;
@@ -48,7 +46,7 @@ public class RuntimeFilter implements Filter {
     public synchronized void init(FilterConfig filterConfig) throws ServletException {
         if (appContext == null) {
             ServletContext servletContext = filterConfig.getServletContext();
-            appContext = (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
+            appContext = (WebAppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
             Hasor.assertIsNotNull(appContext, "AppContext is null.");
             this.filterPipeline = appContext.getInstance(FilterPipeline.class);
         }

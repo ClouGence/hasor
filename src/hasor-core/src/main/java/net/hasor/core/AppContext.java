@@ -31,8 +31,6 @@ public interface AppContext {
     public Settings getSettings();
     /**获取环境接口。*/
     public Environment getEnvironment();
-    /**获得所有模块*/
-    public ModuleInfo[] getModules();
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
     public Set<Class<?>> findClass(Class<?> featureType);
     /**表示AppContext是否准备好。*/
@@ -41,6 +39,14 @@ public interface AppContext {
     public void start();
     /**判断容器是否处于运行状态*/
     public boolean isStart();
+    //
+    /*-------------------------------------------------------------------------------------Module*/
+    /**添加模块，如果容器已经初始化那么会引发{@link IllegalStateException}异常。*/
+    public ModuleInfo addModule(Module hasorModule);
+    /**删除模块，如果容器已经初始化那么会引发{@link IllegalStateException}异常。*/
+    public boolean removeModule(Module hasorModule);
+    /**获得所有模块*/
+    public ModuleInfo[] getModules();
     //
     /*--------------------------------------------------------------------------------------Event*/
     /**容器事件，在所有模块初始化之后引发。
@@ -76,7 +82,7 @@ public interface AppContext {
     /**通过名获取Bean的类型。*/
     public <T> Class<T> getBeanType(String name);
     /**如果存在目标类型的Bean则返回Bean的名称。*/
-    public String getBeanName(Class<?> targetClass);
+    public String[] getBeanNames(Class<?> targetClass);
     /**获取已经注册的Bean名称。*/
     public String[] getBeanNames();
     /**创建Bean。*/

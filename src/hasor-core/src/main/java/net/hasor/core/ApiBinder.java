@@ -81,7 +81,7 @@ public interface ApiBinder {
     public <T> ScopedBindingBuilder bindingType(Class<T> type, Class<? extends T> implementation);
     /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
      * @see #bindingType(Class) */
-    public <T> ScopedBindingBuilder bindingType(Class<T> type, Provider<? extends T> provider);
+    public <T> ScopedBindingBuilder bindingType(Class<T> type, Provider<T> provider);
     /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
      * @see #bindingType(Class)*/
     public <T> LinkedBindingBuilder<T> bindingType(String withName, Class<T> type);
@@ -93,7 +93,7 @@ public interface ApiBinder {
     public <T> ScopedBindingBuilder bindingType(String withName, Class<T> type, Class<? extends T> implementation);
     /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
      * @see #bindingType(String, Class)*/
-    public <T> ScopedBindingBuilder bindingType(String withName, Class<T> type, Provider<? extends T> provider);
+    public <T> ScopedBindingBuilder bindingType(String withName, Class<T> type, Provider<T> provider);
     //
     /*---------------------------------------------------------------------------------------Bean*/
     /**注册一个bean。*/
@@ -116,7 +116,7 @@ public interface ApiBinder {
         /**为绑定设置一个实例*/
         public ScopedBindingBuilder toInstance(T instance);
         /**为绑定设置一个Provider*/
-        public ScopedBindingBuilder toProvider(Provider<? extends T> provider);
+        public ScopedBindingBuilder toProvider(Provider<T> provider);
         /**为绑定设置一个构造方法*/
         public ScopedBindingBuilder toConstructor(Constructor<? extends T> constructor);
     }

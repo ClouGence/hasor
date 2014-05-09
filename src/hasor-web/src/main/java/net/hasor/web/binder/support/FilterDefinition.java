@@ -17,6 +17,7 @@ package net.hasor.web.binder.support;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Map;
+import javax.inject.Provider;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -26,42 +27,37 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import net.hasor.core.AppContext;
+import net.hasor.web.WebAppContext;
 import org.more.util.Iterators;
-import com.google.inject.Key;
-import com.google.inject.Provider;
 /**
  * 
  * @version : 2013-4-11
  * @author 赵永春 (zyc@hasor.net)
  */
 class FilterDefinition extends AbstractServletModuleBinding implements Provider<FilterDefinition> {
-    private Key<? extends Filter> filterKey      = null; /*Filter对象既有可能绑定在这个Key上*/
-    private Filter                filterInstance = null;
-    private AppContext            appContext     = null;
+    private Provider<Filter> filterProvider = null;
+    private Filter           filterInstance = null;
+    private WebAppContext    appContext     = null;
     //
-    public FilterDefinition(int index, String pattern, Key<? extends Filter> filterKey, UriPatternMatcher uriPatternMatcher, Map<String, String> initParams, Filter filterInstance) {
+    public FilterDefinition(int index, String pattern, UriPatternMatcher uriPatternMatcher, Provider<Filter> filterProvider, Map<String, String> initParams) {
         super(index, initParams, pattern, uriPatternMatcher);
-        this.filterKey = filterKey;
-        this.filterInstance = filterInstance;
+        this.filterProvider = filterProvider;
     }
     public FilterDefinition get() {
         return this;
     }
-    protected Filter getTarget(final AppContext appContext) throws ServletException {
+    protected Filter getTarget() throws ServletException {
         if (this.filterInstance != null)
             return this.filterInstance;
         //
         final Map<String, String> initParams = this.getInitParams();
-        this.filterInstance = appContext.getGuice().getInstance(this.filterKey);
+        this.filterInstance = this.filterProvider.get();
         this.filterInstance.init(new FilterConfig() {
             public String getFilterName() {
-                return filterKey.toString();
+                return ((filterInstance == null) ? filterProvider : filterInstance).toString();
             }
             public ServletContext getServletContext() {
-                Object context = appContext.getContext();
-                if (context instanceof ServletContext)
-                    return (ServletContext) context;
-                return null;
+                return appContext.getServletContext();
             }
             public String getInitParameter(String s) {
                 return initParams.get(s);
@@ -78,9 +74,9 @@ class FilterDefinition extends AbstractServletModuleBinding implements Provider<
     }
     /*--------------------------------------------------------------------------------------------------------*/
     /**/
-    public void init(final AppContext appContext) throws ServletException {
+    public void init(final WebAppContext appContext) throws ServletException {
         this.appContext = appContext;
-        this.getTarget(appContext);
+        this.getTarget();
     }
     /**/
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -88,8 +84,7 @@ class FilterDefinition extends AbstractServletModuleBinding implements Provider<
         String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
         boolean serve = this.matchesUri(path);
         //
-        Filter filter = this.getTarget(this.appContext);
-        //
+        Filter filter = this.getTarget();
         if (serve == true && filter != null) {
             filter.doFilter(request, response, chain);
         } else {

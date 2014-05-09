@@ -15,6 +15,7 @@
  */
 package net.hasor.core.context;
 import java.util.Iterator;
+import java.util.List;
 import net.hasor.core.RegisterInfo;
 /**
  * 
@@ -26,4 +27,9 @@ public interface RegisterScope {
     public RegisterScope getParentScope();
     /**获取该范围内的所有RegisterInfo注册。*/
     public Iterator<RegisterInfo<?>> getRegisterIterator();
+    //
+    /**查找RegisterInfo*/
+    public <T> List<RegisterInfo<T>> findRegisterInfo(Class<T> bindType);
+    /**查找RegisterInfo*/
+    public <T> RegisterInfo<T> findRegisterInfo(String withName, Class<T> bindingType);
 }

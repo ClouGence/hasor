@@ -3,8 +3,7 @@
     01.因 ModulePropxy 更名为 ModuleProxy所做的连带改动。
 * 改进:
     01.所有Plugins都移动到Hasor-Quick项目中。
-    
-
+    02.所有主要接口50%以上进行改进，改进的目的是不再强制依赖Guice。
 
 ===== Hasor-Web v0.0.5
 * 修复:

@@ -14,49 +14,44 @@
  * limitations under the License.
  */
 package net.hasor.web.binder.support;
+import javax.inject.Provider;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-import net.hasor.core.AppContext;
-import com.google.inject.Injector;
-import com.google.inject.Key;
-import com.google.inject.Provider;
 /**
  * 
  * @version : 2013-4-11
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 class HttpSessionListenerDefinition implements Provider<HttpSessionListenerDefinition> {
-    private Key<? extends HttpSessionListener> listenerKey      = null;
-    private HttpSessionListener                listenerInstance = null;
+    private Provider<HttpSessionListener> listenerProvider = null;
+    private HttpSessionListener           listenerInstance = null;
     //
-    //
-    public HttpSessionListenerDefinition(Key<? extends HttpSessionListener> listenerKey, HttpSessionListener listenerInstance) {
-        this.listenerKey = listenerKey;
-        this.listenerInstance = listenerInstance;
+    public HttpSessionListenerDefinition(Provider<HttpSessionListener> listenerProvider) {
+        this.listenerProvider = listenerProvider;
     }
     //
     public HttpSessionListenerDefinition get() {
         return this;
     }
-    protected HttpSessionListener getTarget(Injector injector) {
+    protected HttpSessionListener getTarget() {
         if (this.listenerInstance == null)
-            this.listenerInstance = injector.getInstance(this.listenerKey);
+            this.listenerInstance = listenerProvider.get();
         return this.listenerInstance;
     }
     public String toString() {
         return String.format("type %s listenerKey=%s",//
-                HttpSessionListenerDefinition.class, this.listenerKey);
+                HttpSessionListenerDefinition.class, this.listenerInstance);
     }
     /*--------------------------------------------------------------------------------------------------------*/
     /**/
-    public void sessionCreated(AppContext appContext, HttpSessionEvent event) {
-        HttpSessionListener httpSessionListener = this.getTarget(appContext.getGuice());
+    public void sessionCreated(HttpSessionEvent event) {
+        HttpSessionListener httpSessionListener = this.getTarget();
         if (httpSessionListener != null)
             httpSessionListener.sessionCreated(event);
     }
     /**/
-    public void sessionDestroyed(AppContext appContext, HttpSessionEvent event) {
-        HttpSessionListener httpSessionListener = this.getTarget(appContext.getGuice());
+    public void sessionDestroyed(HttpSessionEvent event) {
+        HttpSessionListener httpSessionListener = this.getTarget();
         if (httpSessionListener != null)
             httpSessionListener.sessionDestroyed(event);
     }

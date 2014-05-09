@@ -93,7 +93,7 @@ public abstract class AbstractBinder implements ApiBinder {
     public <T> ScopedBindingBuilder bindingType(Class<T> type, Class<? extends T> implementation) {
         return this.bindingType(type).to(implementation);
     }
-    public <T> ScopedBindingBuilder bindingType(Class<T> type, Provider<? extends T> provider) {
+    public <T> ScopedBindingBuilder bindingType(Class<T> type, Provider<T> provider) {
         return this.bindingType(type).toProvider(provider);
     }
     public <T> LinkedBindingBuilder<T> bindingType(String withName, Class<T> type) {
@@ -105,7 +105,7 @@ public abstract class AbstractBinder implements ApiBinder {
     public <T> ScopedBindingBuilder bindingType(String withName, Class<T> type, Class<? extends T> implementation) {
         return this.bindingType(type).nameWith(withName).to(implementation);
     }
-    public <T> ScopedBindingBuilder bindingType(String withName, Class<T> type, Provider<? extends T> provider) {
+    public <T> ScopedBindingBuilder bindingType(String withName, Class<T> type, Provider<T> provider) {
         return this.bindingType(type).nameWith(withName).toProvider(provider);
     }
     /*---------------------------------------------------------------------------------------Bean*/
@@ -131,7 +131,7 @@ public abstract class AbstractBinder implements ApiBinder {
             String[] aliasNames = this.names.toArray(new String[this.names.size()]);
             for (String nameItem : this.names) {
                 /*为Bean的每个名字都创建一个BeanInfo对象*/
-                BeanInfoData beanInfo = new BeanInfoData(nameItem, aliasNames, beanType, this.property);
+                BeanInfo beanInfo = new BeanInfoData(nameItem, aliasNames, beanType, this.property);
                 bindingType(BeanInfo.class).nameWith(nameItem).toInstance(beanInfo);
             }
             return bindingType(beanType);
@@ -151,7 +151,7 @@ public abstract class AbstractBinder implements ApiBinder {
             this.typeRegister.toInstance(instance);
             return this;
         }
-        public ScopedBindingBuilder toProvider(Provider<? extends T> provider) {
+        public ScopedBindingBuilder toProvider(Provider<T> provider) {
             this.typeRegister.toProvider(provider);
             return this;
         }
@@ -163,7 +163,7 @@ public abstract class AbstractBinder implements ApiBinder {
             this.typeRegister.setSingleton();
         }
         public LinkedBindingBuilder<T> nameWith(String name) {
-            this.typeRegister.setBindName(name);
+            this.typeRegister.setName(name);
             return this;
         }
         public void toScope(String scope) {

@@ -15,6 +15,7 @@
  */
 package net.hasor.core.context;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -32,9 +33,12 @@ import net.hasor.core.Settings;
 import net.hasor.core.binder.AbstractBinder;
 import net.hasor.core.binder.BeanInfo;
 import net.hasor.core.binder.TypeRegister;
+import net.hasor.core.binder.register.AbstractTypeRegister;
+import net.hasor.core.builder.BeanBuilder;
 import net.hasor.core.module.ModuleProxy;
 import org.more.UndefinedException;
 import org.more.util.ArrayUtils;
+import org.more.util.MergeUtils;
 /**
  * 抽象类 AbstractAppContext 是 {@link AppContext} 接口的基础实现。
  * <p>它包装了大量细节代码，可以方便的通过子类来创建独特的上下文支持。<p>
@@ -50,17 +54,18 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         BeanInfo info = this.findBindingBean(name, BeanInfo.class);
         return info == null ? null : (Class<T>) info.getType();
     }
-    public String getBeanName(Class<?> targetClass) {
+    public String[] getBeanNames(Class<?> targetClass) {
         Hasor.assertIsNotNull(targetClass, "targetClass is null.");
         List<BeanInfo> infoArray = this.findBindingBean(BeanInfo.class);
-        if (infoArray == null || infoArray.isEmpty())
-            return null;
+        if (infoArray == null)
+            infoArray = Collections.emptyList();
         /*查找*/
-        for (BeanInfo info : infoArray) {
-            if (info.getType().equals(targetClass))
-                return info.getName();
+        String[] names = new String[infoArray.size()];
+        for (int i = 0; i < infoArray.size(); i++) {
+            BeanInfo info = infoArray.get(i);
+            names[i] = info.getName();
         }
-        return null;
+        return names;
     }
     public String[] getBeanNames() {
         List<BeanInfo> infoArray = this.findBindingBean(BeanInfo.class);
@@ -81,62 +86,62 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         BeanInfo info = this.findBindingBean(name, BeanInfo.class);
         if (info == null)
             return null;
-        Class<?> targetType = info.getType();
-        return (T) this.getInstance(targetType);
+        return (T) this.getInstance(info.getType());
     }
-    /**创建Bean。*/
-    public abstract <T> T getInstance(Class<T> oriType);
-    /**创建Bean。*/
-    public abstract <T> T getBean(String name);
+    /**创建Bean，子类可以重写该方法用以更快的速度进行创建Bean。*/
+    public <T> T getBean(String name) {
+        RegisterInfo<T> info = (RegisterInfo<T>) this.findRegisterInfo(null, RegisterInfo.class);
+        return this.getBeanBuilder().getInstance(info);
+    };
+    /**创建Bean，子类可以重写该方法用以更快的速度进行创建Bean。*/
+    public <T> T getInstance(Class<T> oriType) {
+        RegisterInfo<T> info = this.findRegisterInfo(null, oriType);
+        return this.getBeanBuilder().getInstance(info);
+    };
+    /**获取用于创建Bean对象的BeanBuilder接口*/
+    protected abstract BeanBuilder getBeanBuilder();
     //
     /*------------------------------------------------------------------------------------Binding*/
     public <T> T findBindingBean(String withName, Class<T> bindingType) {
-        return findBindingBean(withName, bindingType, this);
-    }
-    public <T> Provider<T> findBindingProvider(String withName, Class<T> bindingType) {
-        return findBindingProvider(withName, bindingType, this);
-    }
-    public <T> List<T> findBindingBean(Class<T> bindingType) {
-        return findBindingBean(bindingType, this);
-    }
-    public <T> List<Provider<T>> findBindingProvider(Class<T> bindingType) {
-        return findBindingProvider(bindingType, this);
-    }
-    /**在RegisterScope范围内查找绑定。*/
-    protected final <T> T findBindingBean(String withName, Class<T> bindingType, RegisterScope scope) {
-        Provider<? extends T> targetProvider = this.findBindingProvider(withName, bindingType, scope);
-        return targetProvider != null ? targetProvider.get() : null;
-    }
-    /**在RegisterScope范围内查找绑定。*/
-    protected final <T> Provider<T> findBindingProvider(String withName, Class<T> bindingType, RegisterScope scope) {
         Hasor.assertIsNotNull(withName, "withName is null.");
         Hasor.assertIsNotNull(bindingType, "bindingType is null.");
-        Hasor.assertIsNotNull(scope, "scope is null.");
         //
-        List<RegisterInfo<T>> targetRegisterList = this.findBindingRegisterInfo(bindingType, scope);
+        List<RegisterInfo<T>> targetRegisterList = this.findRegisterInfo(bindingType);
         /*找到那个RegisterInfo*/
         for (RegisterInfo<T> info : targetRegisterList) {
-            String bindName = info.getBindName();
+            String bindName = info.getName();
+            boolean nameTest = withName.equals(bindName);
+            if (nameTest)
+                return info.getProvider().get();
+        }
+        return null;
+    }
+    public <T> Provider<T> findBindingProvider(String withName, Class<T> bindingType) {
+        Hasor.assertIsNotNull(withName, "withName is null.");
+        Hasor.assertIsNotNull(bindingType, "bindingType is null.");
+        //F
+        List<RegisterInfo<T>> targetRegisterList = this.findRegisterInfo(bindingType);
+        /*找到那个RegisterInfo*/
+        for (RegisterInfo<T> info : targetRegisterList) {
+            String bindName = info.getName();
             boolean nameTest = withName.equals(bindName);
             if (nameTest)
                 return info.getProvider();
         }
         return null;
     }
-    /**在RegisterScope范围内查找绑定。*/
-    protected final <T> List<T> findBindingBean(Class<T> bindingType, RegisterScope scope) {
+    public <T> List<T> findBindingBean(Class<T> bindingType) {
+        List<RegisterInfo<T>> targetInfoList = this.findRegisterInfo(bindingType);
+        /*将RegisterInfo<T>列表转换为<T>列表*/
         List<T> targetList = new ArrayList<T>();
-        List<Provider<T>> targetProviderList = this.findBindingProvider(bindingType, scope);
-        /*将Provider<T>列表转换为List<T>*/
-        for (Provider<T> pro : targetProviderList) {
-            T target = pro.get();
-            targetList.add(target);
+        for (RegisterInfo<T> info : targetInfoList) {
+            Provider<T> target = info.getProvider();
+            targetList.add(target.get());
         }
         return targetList;
     }
-    /**在RegisterScope范围内查找绑定。*/
-    protected final <T> List<Provider<T>> findBindingProvider(Class<T> bindingType, RegisterScope scope) {
-        List<RegisterInfo<T>> targetInfoList = this.findBindingRegisterInfo(bindingType, scope);
+    public <T> List<Provider<T>> findBindingProvider(Class<T> bindingType) {
+        List<RegisterInfo<T>> targetInfoList = this.findRegisterInfo(bindingType);
         /*将RegisterInfo<T>列表转换为Provider<T>列表*/
         List<Provider<T>> targetList = new ArrayList<Provider<T>>();
         for (RegisterInfo<T> info : targetInfoList) {
@@ -145,36 +150,26 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         }
         return targetList;
     }
-    /**通过一个类型获取所有绑定到该类型的上的RegisterInfo，从该处获取的RegisterInfo必然都是 public的。*/
-    protected final <T> List<RegisterInfo<T>> findBindingRegisterInfo(Class<T> bindingType, RegisterScope scope) {
-        Hasor.assertIsNotNull(bindingType, "bindingType is null.");
-        Hasor.assertIsNotNull(scope, "scope is null.");
-        //
-        List<RegisterInfo<T>> arrayList = new ArrayList<RegisterInfo<T>>();
-        findBindingRegisterInfo(bindingType, scope, arrayList);
-        return arrayList;
-    };
-    /**通过一个类型获取所有绑定到该类型的上的RegisterInfo，从该处获取的RegisterInfo必然都是 public的。*/
-    private final <T> void findBindingRegisterInfo(Class<T> bindingType, RegisterScope scope, List<RegisterInfo<T>> toList) {
-        Hasor.assertIsNotNull(bindingType, "bindingType is null.");
-        Hasor.assertIsNotNull(scope, "scope is null.");
-        /*处理Scope本层*/
-        Iterator<RegisterInfo<?>> iterator = scope.getRegisterIterator();
-        if (iterator != null) {
-            while (iterator.hasNext()) {
-                RegisterInfo<?> info = iterator.next();
-                if (info.getRegisterType() == bindingType)
-                    toList.add((RegisterInfo<T>) info);
-            }
-        }
-        /*处理Scope父层*/
-        RegisterScope parentScope = scope.getParentScope();
-        if (parentScope != null)
-            this.findBindingRegisterInfo(bindingType, parentScope, toList);
-    };
     public RegisterScope getParentScope() {
         return this.getParent();
     }
+    public final Iterator<RegisterInfo<?>> getRegisterIterator() {
+        Iterator<RegisterInfo<?>> registerIterator = this.localRegisterIterator();
+        RegisterScope scope = this.getParentScope();
+        if (scope != null) {
+            Iterator<RegisterInfo<?>> parentIterator = scope.getRegisterIterator();
+            registerIterator = MergeUtils.mergeIterator(registerIterator, parentIterator);
+        }
+        return registerIterator;
+    }
+    /**查找RegisterInfo*/
+    public abstract <T> List<RegisterInfo<T>> findRegisterInfo(Class<T> bindType);
+    /**查找RegisterInfo*/
+    public abstract <T> RegisterInfo<T> findRegisterInfo(String withName, Class<T> bindingType);
+    /**注册一个类型*/
+    protected abstract <T> AbstractTypeRegister<T> registerType(Class<T> type);
+    /**获取本地通过registerType方法注册的RegisterInfo对象。*/
+    protected abstract Iterator<RegisterInfo<?>> localRegisterIterator();
     //
     /*--------------------------------------------------------------------------------------Event*/
     public void pushListener(String eventType, EventListener eventListener) {
@@ -251,8 +246,7 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         /*添加模块*/
         ModuleProxy propxy = new ContextModulePropxy(hasorModule, this);
         List<ModuleProxy> propxyList = this.getModuleList();
-        if (propxyList.contains(propxy) == false)
-            propxyList.add(propxy);
+        propxyList.add(propxy);
         return propxy;
     }
     /**删除模块，如果容器已经初始化那么会引发{@link IllegalStateException}异常。*/
@@ -294,17 +288,17 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
             throw new UndefinedException(targetModule.getName() + " module is Undefined!");
         }
     }
-    /**初始化过程，注意：apiBinder 参数只能在 init 阶段中使用。*/
+    /**初始化过程。*/
     protected void doInit(ApiBinder apiBinder) throws Throwable {
         if (this.tempModuleSet != null) {
             for (ModuleProxy propxy : tempModuleSet) {
-                apiBinder.bindingType(ModuleInfo.class).toInstance(propxy);
+                apiBinder.bindingType(ModuleInfo.class).toInstance(propxy);/*仅仅是绑定*/
                 //apiBinder.bindingType(ModuleProxy.class).toInstance(propxy);
             }
         }
         this.doBind(apiBinder);
     };
-    /**当完成所有初始化过程之后调用，负责向 Guice 绑定一些预先定义的类型。*/
+    /**当完成所有初始化过程之后调用，负责向 Context 绑定一些预先定义的类型。*/
     protected void doBind(ApiBinder apiBinder) {
         final AbstractAppContext appContet = this;
         /*绑定Environment对象的Provider*/
@@ -328,8 +322,6 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     }
     //
     /*--------------------------------------------------------------------------------------Utils*/
-    /**注册一个类型*/
-    protected abstract <T> TypeRegister<T> registerType(Class<T> type);
     /**为模块创建ApiBinder*/
     protected ApiBinder newApiBinder(final ModuleProxy forModule) {
         return new AbstractBinder(this.getEnvironment()) {

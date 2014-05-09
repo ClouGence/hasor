@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import java.util.Map;
 import javax.inject.Provider;
 /**
  * 
@@ -23,15 +22,13 @@ import javax.inject.Provider;
  */
 public interface RegisterInfo<T> {
     /**获取注册的类型*/
-    public Class<T> getRegisterType();
+    public Class<T> getType();
     /**获取Provider*/
     public Provider<T> getProvider();
     /**为类型绑定的名称。*/
-    public String getBindName();
+    public String getName();
     /**是否为单例模式。*/
     public boolean isSingleton();
     /**获取所属空间。*/
     public String getScope();
-    /**是否为容器可见。*/
-    public Map<String, Object> propertyMap();
 }

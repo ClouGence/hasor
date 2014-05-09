@@ -15,7 +15,6 @@
  */
 package net.hasor.web.binder.support;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -26,9 +25,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import net.hasor.core.AppContext;
-import com.google.inject.Binding;
-import com.google.inject.Injector;
-import com.google.inject.TypeLiteral;
+import net.hasor.web.WebAppContext;
 /**
  * 
  * @version : 2013-4-12
@@ -38,22 +35,18 @@ public class ManagedServletPipeline {
     private ServletDefinition[] servletDefinitions;
     private volatile boolean    initialized = false;
     //
-    public synchronized void initPipeline(AppContext appContext) throws ServletException {
+    public synchronized void initPipeline(WebAppContext appContext) throws ServletException {
         if (initialized)
             return;
-        this.servletDefinitions = collectServletDefinitions(appContext.getGuice());
+        this.servletDefinitions = collectServletDefinitions(appContext);
         for (ServletDefinition servletDefinition : servletDefinitions) {
             servletDefinition.init(appContext);
         }
         //everything was ok...
         this.initialized = true;
     }
-    private ServletDefinition[] collectServletDefinitions(Injector injector) {
-        List<ServletDefinition> servletDefinitions = new ArrayList<ServletDefinition>();
-        TypeLiteral<ServletDefinition> SERVLET_DEFS = TypeLiteral.get(ServletDefinition.class);
-        for (Binding<ServletDefinition> entry : injector.findBindingsByType(SERVLET_DEFS)) {
-            servletDefinitions.add(entry.getProvider().get());
-        }
+    private ServletDefinition[] collectServletDefinitions(WebAppContext appContext) {
+        List<ServletDefinition> servletDefinitions = appContext.findBindingBean(ServletDefinition.class);
         Collections.sort(servletDefinitions, new Comparator<ServletDefinition>() {
             public int compare(ServletDefinition o1, ServletDefinition o2) {
                 int o1Index = o1.getIndex();
@@ -61,7 +54,6 @@ public class ManagedServletPipeline {
                 return (o1Index < o2Index ? -1 : (o1Index == o2Index ? 0 : 1));
             }
         });
-        // Convert to a fixed size array for speed.
         return servletDefinitions.toArray(new ServletDefinition[servletDefinitions.size()]);
     }
     public boolean hasServletsMapped() {
@@ -81,7 +73,7 @@ public class ManagedServletPipeline {
     }
     public void destroyPipeline(AppContext appContext) {
         for (ServletDefinition servletDefinition : servletDefinitions) {
-            servletDefinition.destroy(appContext);
+            servletDefinition.destroy();
         }
     }
     //

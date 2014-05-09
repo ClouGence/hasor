@@ -19,7 +19,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.hasor.core.AppContext;
+import net.hasor.web.WebAppContext;
 /**
  * An internal dispatcher for guice-servlet registered servlets and filters.
  * By default, we assume a Guice 1.0 style servlet module is in play. In other
@@ -35,9 +35,9 @@ import net.hasor.core.AppContext;
  */
 public interface FilterPipeline {
     /**初始化管道 */
-    public void initPipeline(AppContext appContext) throws ServletException;
+    public void initPipeline(WebAppContext appContext) throws ServletException;
     /**执行请求操作*/
     public void dispatch(HttpServletRequest request, HttpServletResponse response, FilterChain defaultFilterChain) throws IOException, ServletException;
     /**销毁管道*/
-    public void destroyPipeline(AppContext appContext);
+    public void destroyPipeline(WebAppContext appContext);
 }

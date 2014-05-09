@@ -22,8 +22,8 @@ import javax.servlet.http.HttpSessionListener;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.hasor.core.context.AbstractAppContext;
-import net.hasor.web.binder.SessionListenerPipeline;
+import net.hasor.web.WebAppContext;
+import net.hasor.web.binder.ListenerPipeline;
 import net.hasor.web.context.WebStandardAppContext;
 import org.more.util.ContextClassLoaderLocal;
 import org.more.util.StringUtils;
@@ -34,12 +34,12 @@ import org.more.util.StringUtils;
  */
 public class RuntimeListener implements ServletContextListener, HttpSessionListener {
     public static final String                             AppContextName          = AppContext.class.getName();
-    private AbstractAppContext                             appContext              = null;
-    private SessionListenerPipeline                        sessionListenerPipeline = null;
+    private WebAppContext                                  appContext              = null;
+    private ListenerPipeline                               sessionListenerPipeline = null;
     private static ContextClassLoaderLocal<ServletContext> LocalServletContext     = new ContextClassLoaderLocal<ServletContext>();
     private static ContextClassLoaderLocal<AppContext>     LocalAppContext         = new ContextClassLoaderLocal<AppContext>();
     /*----------------------------------------------------------------------------------------------------*/
-    protected AbstractAppContext createAppContext(ServletContext sc) throws Throwable {
+    protected WebAppContext createAppContext(ServletContext sc) throws Throwable {
         return new WebStandardAppContext("hasor-config.xml", sc);
     }
     public void contextInitialized(ServletContextEvent servletContextEvent) {
@@ -65,7 +65,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
             throw new RuntimeException(e);
         }
         //2.获取SessionListenerPipeline
-        this.sessionListenerPipeline = this.appContext.getInstance(SessionListenerPipeline.class);
+        this.sessionListenerPipeline = this.appContext.getInstance(ListenerPipeline.class);
         this.sessionListenerPipeline.init(this.appContext);
         Hasor.logInfo("sessionListenerPipeline created.");
         //3.放入ServletContext环境。
