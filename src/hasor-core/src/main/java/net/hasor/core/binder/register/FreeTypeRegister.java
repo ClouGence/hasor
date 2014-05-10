@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.builder;
-import java.util.Iterator;
-import net.hasor.core.RegisterInfo;
+package net.hasor.core.binder.register;
+import net.hasor.core.AppContext;
+import net.hasor.core.builder.BeanBuilder;
 /**
- * 
- * @version : 2014-3-17
+ * 当开发者用过 {@link AppContext#getInstance(Class)}获取的Bean尚未在Hasor中注册的时候。
+ * 该类型会被封装成{@link FreeTypeRegister}，然后在通过{@link BeanBuilder}接口创建。
+ * <p>
+ * {@link BeanBuilder}接口会根据不同的提供者来处理这种情形。如果提供者为Spring就会返回一个null。
+ * 倘若是Guice就会得到你想要的Bean。
+ * @version : 2014-3-20
  * @author 赵永春(zyc@hasor.net)
  */
-public interface BeanBuilder {
-    /**创建Bean*/
-    public <T> T getInstance(RegisterInfo<T> oriType);
-    /**获取所有注册Bean的迭代器*/
-    public Iterator<RegisterInfo<?>> getRegisterIterator();
-    /**获取制定类型注册Bean的迭代器*/
-    public <T> Iterator<RegisterInfo<T>> getRegisterIterator(Class<T> type);
+public class FreeTypeRegister<T> extends AbstractTypeRegister<T> {
+    public FreeTypeRegister(Class<T> type) {
+        super(type);
+        this.toImpl(type);
+    }
 }

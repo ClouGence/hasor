@@ -16,25 +16,36 @@
 package net.hasor.core.binder.register;
 import java.lang.reflect.Constructor;
 import javax.inject.Provider;
-import net.hasor.core.RegisterInfo;
+import net.hasor.core.Scope;
 import net.hasor.core.binder.TypeRegister;
 /**
  * 
  * @version : 2014-3-20
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstractTypeRegister<T> implements TypeRegister<T>, RegisterInfo<T> {
-    private String               name        = null;
-    private Class<T>             type        = null;
-    private String               scope       = null;
-    private boolean              isSingleton = false;
-    private volatile Provider<T> provider    = null;
+public abstract class AbstractTypeRegister<T> implements TypeRegister<T> {
+    private String                   name            = null;
+    private Class<T>                 type            = null;
+    private Scope                    scope           = null;
+    private boolean                  isSingleton     = false;
+    //
+    private Provider<T>              provider        = null;
+    private Class<? extends T>       implType        = null;
+    private Constructor<? extends T> implConstructor = null;
+    //
+    //
     //
     public AbstractTypeRegister(Class<T> type) {
         this.type = type;
     }
+    public String toString() {
+        return String.format("name = %s ,Type = %s ", name, type);
+    }
     public Class<T> getType() {
         return this.type;
+    }
+    protected void setType(Class<T> type) {
+        this.type = type;
     }
     public void toInstance(final T instance) {
         this.toProvider(new ProviderInstance(instance));
@@ -55,22 +66,28 @@ public abstract class AbstractTypeRegister<T> implements TypeRegister<T>, Regist
     public boolean isSingleton() {
         return this.isSingleton;
     }
-    public void setScope(String scope) {
+    public void setScope(Scope scope) {
         this.scope = scope;
     }
-    public String getScope() {
+    public Scope getScope() {
         return this.scope;
     }
     public Provider<T> getProvider() {
         return this.provider;
     }
-    public void toImpl(Class<? extends T> implementation) {
-        AbstractFramework factory = this.getPack().getFramework();
-        this.createProvider = new ProviderClass(implementation, factory);
+    public void toImpl(Class<? extends T> implType) {
+        this.implType = implType;
     }
-    public void toConstructor(Constructor<? extends T> constructor) {
-        AbstractFramework factory = this.getPack().getFramework();
-        this.createProvider = new ProviderConstructor(constructor, factory);
+    public void toConstructor(Constructor<? extends T> implConstructor) {
+        this.implConstructor = implConstructor;
+    }
+    /**获取实现类*/
+    public Class<? extends T> getImplType() {
+        return implType;
+    }
+    /**获取用于创建该类的构造方法*/
+    public Constructor<? extends T> getImplConstructor() {
+        return implConstructor;
     }
     //
     /***/

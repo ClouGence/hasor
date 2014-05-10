@@ -16,12 +16,14 @@
 package net.hasor.core.binder;
 import java.lang.reflect.Constructor;
 import javax.inject.Provider;
+import net.hasor.core.RegisterInfo;
+import net.hasor.core.Scope;
 /**
  * 
  * @version : 2014-3-13
  * @author 赵永春(zyc@hasor.net)
  */
-public interface TypeRegister<T> {
+public interface TypeRegister<T> extends RegisterInfo<T> {
     /**获取注册的类型*/
     public Class<T> getType();
     /**为类型绑定一个实现，当获取类型实例时其实获取的是实现对象。*/
@@ -37,5 +39,5 @@ public interface TypeRegister<T> {
     /**将类型发布为单例模式。*/
     public void setSingleton();
     /**将类型发布到一个固定的命名空间内。*/
-    public void setScope(String scope);
+    public void setScope(Scope scope);
 }

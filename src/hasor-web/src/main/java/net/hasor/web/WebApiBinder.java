@@ -44,9 +44,6 @@ public interface WebApiBinder extends ApiBinder {
     /**注册一个ServletContextListener监听器。*/
     public ServletContextListenerBindingBuilder contextListener();
     //
-    
-    
-    
     /**负责配置Filter，参考Guice 3.0接口设计。*/
     public static interface FilterBindingBuilder {
         public void through(Class<? extends Filter> filterKey);

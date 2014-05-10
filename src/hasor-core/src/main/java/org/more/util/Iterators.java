@@ -22,6 +22,24 @@ import java.util.Iterator;
  * @author 赵永春 (zyc@hasor.net)
  */
 public final class Iterators {
+    /**用于迭代器类型转换*/
+    public static interface Converter<T, O> {
+        public O converter(T target);
+    }
+    /**迭代器类型转换*/
+    public static <T, O> Iterator<O> converIterator(final Iterator<T> oriIterator, final Converter<T, O> converter) {
+        return new Iterator<O>() {
+            public void remove() {
+                oriIterator.remove();
+            }
+            public O next() {
+                return converter.converter(oriIterator.next());
+            }
+            public boolean hasNext() {
+                return oriIterator.hasNext();
+            }
+        };
+    }
     public static <T> Enumeration<T> asEnumeration(final Iterator<T> iterator) {
         return new Enumeration<T>() {
             public boolean hasMoreElements() {

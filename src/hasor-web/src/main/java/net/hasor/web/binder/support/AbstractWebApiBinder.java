@@ -72,6 +72,7 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
         private Class<? extends T> instanceType = null;
         private AppContext         appContext   = null;
         public ClassProvider(Class<? extends T> instanceType) {
+            bindingType(instanceType);/*∞Û∂®¿‡–Õ*/
             registerAware(this);/*◊¢≤·AppContextAware*/
             this.instanceType = instanceType;
         }

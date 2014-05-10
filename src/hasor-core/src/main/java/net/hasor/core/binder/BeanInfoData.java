@@ -21,24 +21,23 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 class BeanInfoData implements BeanInfo {
-    private String              beanName   = null;
-    private String[]            aliasNames = null;
-    private Class<?>            beanClass  = null;
-    private Map<String, Object> property   = null;
+    private String[]            names     = null;
+    private String              referID   = null;
+    private Class<?>            beanClass = null;
+    private Map<String, Object> property  = null;
     //
-    public BeanInfoData(String beanName, String[] aliasNames, Class<?> beanClass, Map<String, Object> property) {
-        this.beanName = beanName;
-        this.aliasNames = aliasNames;
+    public BeanInfoData(String[] names, String referID, Class<?> beanClass, Map<String, Object> property) {
+        this.names = names;
+        this.referID = referID;
         this.beanClass = beanClass;
         this.property = property;
     }
     /**获取bean的名称*/
-    public String getName() {
-        return this.beanName;
+    public String[] getNames() {
+        return this.names;
     }
-    /**获取bean的别名称*/
-    public String[] getAliasName() {
-        return this.aliasNames;
+    public String getReferID() {
+        return this.referID;
     }
     /**获取bean的类型*/
     public Class<?> getType() {

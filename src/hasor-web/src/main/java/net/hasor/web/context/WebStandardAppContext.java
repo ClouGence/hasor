@@ -34,8 +34,8 @@ import net.hasor.web.binder.FilterPipeline;
 import net.hasor.web.binder.ListenerPipeline;
 import net.hasor.web.binder.support.AbstractWebApiBinder;
 import net.hasor.web.binder.support.ManagedFilterPipeline;
-import net.hasor.web.binder.support.ManagedServletPipeline;
 import net.hasor.web.binder.support.ManagedListenerPipeline;
+import net.hasor.web.binder.support.ManagedServletPipeline;
 import net.hasor.web.env.WebStandardEnvironment;
 import net.hasor.web.startup.RuntimeFilter;
 import com.google.inject.Provider;
@@ -46,19 +46,23 @@ import com.google.inject.Provider;
  */
 public class WebStandardAppContext extends StandardAppContext implements WebAppContext {
     public WebStandardAppContext(ServletContext servletContext) throws IOException, URISyntaxException {
-        this((String) null, servletContext);
+        super();
+        this.setContext(servletContext);
     }
     /***/
     public WebStandardAppContext(String mainSettings, ServletContext servletContext) throws IOException, URISyntaxException {
-        super(mainSettings, servletContext);
+        super(mainSettings);
+        this.setContext(servletContext);
     }
     /***/
     public WebStandardAppContext(File mainSettings, ServletContext servletContext) {
-        super(mainSettings, servletContext);
+        super(mainSettings);
+        this.setContext(servletContext);
     }
     /***/
     public WebStandardAppContext(URI mainSettings, ServletContext servletContext) {
-        super(mainSettings, servletContext);
+        super(mainSettings);
+        this.setContext(servletContext);
     }
     //
     /**ªÒ»°{@link ServletContext}*/

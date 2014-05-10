@@ -124,6 +124,6 @@ public interface ApiBinder {
         /**注册为单例*/
         public void asEagerSingleton();
         /**在容器上公开这个绑定*/
-        public void toScope(String scope);
+        public void toScope(Scope scope);
     }
 }

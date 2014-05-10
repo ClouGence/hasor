@@ -13,26 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple._01_hello;
+package net.test.simple._02_beans;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
+import net.hasor.core.Module;
 import net.hasor.core.context.StandardAppContext;
+import net.test.simple._02_beans.pojo.PojoBean;
 import org.junit.Test;
 /**
  * 本示列演示如何启动 Hasor 框架。
  * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
-public class HelloHasor {
+public class BeanHasor {
     @Test
-    public void testStartHasor() throws IOException, URISyntaxException, InterruptedException {
-        System.out.println("--->>testStartHasor<<--");
+    public void testBeanHasor() throws IOException, URISyntaxException, InterruptedException {
+        System.out.println("--->>testBeanHasor<<--");
         //1.创建一个标准的 Hasor 容器。
         AppContext appContext = new StandardAppContext();
+        appContext.addModule(new Module() {
+            public void init(ApiBinder apiBinder) throws Throwable {
+                apiBinder.defineBean("myBean1").bindType(PojoBean.class);
+                PojoBean pojo = new PojoBean();
+                pojo.setName("马大帅");
+                apiBinder.defineBean("myBean2").bindType(PojoBean.class).toInstance(pojo);
+            }
+            public void start(AppContext appContext) throws Throwable {
+                // TODO Auto-generated method stub
+            }
+        });
         appContext.start();//启动 Hasor 容器，启动过程会初始化所有模块和插件。
         //
-        HelloHasor a=appContext.getInstance(HelloHasor.class);
-        System.out.println(a);
+        PojoBean myBean1 = appContext.getBean("myBean1");
+        System.out.println(myBean1.getName());
+        PojoBean myBean2 = appContext.getBean("myBean2");
+        System.out.println(myBean2.getName());
     }
 }

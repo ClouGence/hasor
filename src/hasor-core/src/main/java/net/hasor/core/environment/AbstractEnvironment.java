@@ -321,7 +321,7 @@ public abstract class AbstractEnvironment implements Environment {
         /**特殊配置的环境变量*/
         protected Map<String, String> configEnvironment() {
             Settings settings = this.env.getSettings();
-            XmlNode[] xmlPropArray = settings.getXmlPropertyArray("hasor.environmentVar");
+            XmlNode[] xmlPropArray = settings.getXmlNodeArray("hasor.environmentVar");
             List<String> envNames = new ArrayList<String>();//用于收集环境变量名称
             for (XmlNode xmlProp : xmlPropArray) {
                 for (XmlNode envItem : xmlProp.getChildren())

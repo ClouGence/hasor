@@ -3,6 +3,10 @@
 	<listener>
 		<listener-class>net.hasor.web.startup.RuntimeListener</listener-class>
 	</listener>
+	<context-param>
+		<param-name>startModule</param-name>
+		<param-value>net.test.project.StartModule</param-value>
+	</context-param>
 	<filter>
 		<filter-name>runtime</filter-name>
 		<filter-class>net.hasor.web.startup.RuntimeFilter</filter-class>

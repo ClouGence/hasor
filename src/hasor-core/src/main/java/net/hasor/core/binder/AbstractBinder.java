@@ -25,6 +25,7 @@ import net.hasor.core.AppContextAware;
 import net.hasor.core.Environment;
 import net.hasor.core.EventCallBackHook;
 import net.hasor.core.EventListener;
+import net.hasor.core.Scope;
 import net.hasor.core.Settings;
 import org.more.util.StringUtils;
 /**
@@ -84,6 +85,7 @@ public abstract class AbstractBinder implements ApiBinder {
     /**注册一个类型*/
     protected abstract <T> TypeRegister<T> registerType(Class<T> type);
     public <T> NamedBindingBuilder<T> bindingType(Class<T> type) {
+        /*在容器上注册一个类型*/
         TypeRegister<T> typeRegister = this.registerType(type);
         return new NamedBindingBuilderImpl<T>(typeRegister);
     }
@@ -109,6 +111,7 @@ public abstract class AbstractBinder implements ApiBinder {
         return this.bindingType(type).nameWith(withName).toProvider(provider);
     }
     /*---------------------------------------------------------------------------------------Bean*/
+    private static long referIndex = 0;
     public BeanBindingBuilder defineBean(String beanName) {
         return new BeanBindingBuilderImpl().aliasName(beanName);
     }
@@ -128,13 +131,17 @@ public abstract class AbstractBinder implements ApiBinder {
         public <T> LinkedBindingBuilder<T> bindType(Class<T> beanType) {
             if (this.names.isEmpty() == true)
                 throw new UnsupportedOperationException("the bean name is undefined!");
+            /*将Bean类型注册到Hasor上，并且附上随机ID,用于和BeanInfo绑定。*/
+            String referID = beanType.getName() + "#" + String.valueOf(referIndex++);
+            LinkedBindingBuilder<T> returnData = bindingType(beanType).nameWith(referID);
+            //
             String[] aliasNames = this.names.toArray(new String[this.names.size()]);
+            BeanInfoData beanInfo = new BeanInfoData(aliasNames, referID, beanType, this.property);
+            /*将名字和BeanInfo绑到一起*/
             for (String nameItem : this.names) {
-                /*为Bean的每个名字都创建一个BeanInfo对象*/
-                BeanInfo beanInfo = new BeanInfoData(nameItem, aliasNames, beanType, this.property);
                 bindingType(BeanInfo.class).nameWith(nameItem).toInstance(beanInfo);
             }
-            return bindingType(beanType);
+            return returnData;
         }
     }
     /** NamedBindingBuilder接口实现 */
@@ -166,7 +173,7 @@ public abstract class AbstractBinder implements ApiBinder {
             this.typeRegister.setName(name);
             return this;
         }
-        public void toScope(String scope) {
+        public void toScope(Scope scope) {
             this.typeRegister.setScope(scope);
         }
     }

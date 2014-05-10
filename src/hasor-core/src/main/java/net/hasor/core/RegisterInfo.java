@@ -21,14 +21,12 @@ import javax.inject.Provider;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RegisterInfo<T> {
-    /**获取注册的类型*/
-    public Class<T> getType();
-    /**获取Provider*/
-    public Provider<T> getProvider();
     /**为类型绑定的名称。*/
     public String getName();
+    /**获取注册的类型*/
+    public Class<T> getType();
     /**是否为单例模式。*/
     public boolean isSingleton();
-    /**获取所属空间。*/
-    public String getScope();
+    /**获取Provider*/
+    public Provider<T> getProvider();
 }
