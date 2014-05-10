@@ -15,8 +15,10 @@
  */
 package net.hasor.core;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.Set;
 import javax.inject.Provider;
+import org.aopalliance.intercept.MethodInterceptor;
 /**
  * Hasor的核心接口，主要用于收集绑定配置信息。<p>
  * 
@@ -34,6 +36,17 @@ public interface ApiBinder {
     public Set<Class<?>> findClass(Class<?> featureType);
     /**注册一个需要 AppContextAware 的类。该接口会在 AppContext 启动后第一时间注入 AppContext。*/
     public void registerAware(AppContextAware aware);
+    //
+    /*----------------------------------------------------------------------------------------Aop*/
+    /**配置Aop*/
+    public void bindInterceptor(String matcherExpression, MethodInterceptor interceptor);
+    /**配置Aop*/
+    public void bindInterceptor(Matcher<Class<?>> matcherClass, Matcher<Method> matcherMethod, MethodInterceptor interceptor);
+    /***/
+    public static interface Matcher<T> {
+        /**Returns {@code true} if this matches {@code t}, {@code false} otherwise.*/
+        public boolean matches(T t);
+    }
     //
     /*--------------------------------------------------------------------------------------Event*/
     /**pushPhaseEvent方法注册的时间监听器当收到一次事件之后会被自动删除。*/

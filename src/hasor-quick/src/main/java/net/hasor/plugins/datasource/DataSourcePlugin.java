@@ -36,7 +36,7 @@ public class DataSourcePlugin extends AbstractHasorPlugin {
         Settings settings = env.getSettings();
         //
         String defaultDS = settings.getString("hasor-jdbc.dataSourceSet.default");
-        XmlNode[] dataSourceSet = settings.getXmlPropertyArray("hasor-jdbc.dataSourceSet");
+        XmlNode[] dataSourceSet = settings.getXmlNodeArray("hasor-jdbc.dataSourceSet");
         if (dataSourceSet == null)
             return;
         //

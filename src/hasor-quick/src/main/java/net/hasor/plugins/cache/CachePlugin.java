@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.plugins.cache;
+import java.lang.reflect.Method;
 import java.util.Set;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.core.Hasor;
 import net.hasor.core.plugin.AbstractHasorPlugin;
 import net.hasor.plugins.aop.matchers.AopMatchers;
 import net.hasor.quick.plugin.Plugin;
 import org.more.RepeateException;
-import com.google.inject.matcher.Matcher;
 /**
  * 缓存服务。启动级别：Lv_0
  * @version : 2013-4-8
@@ -32,8 +33,9 @@ public class CachePlugin extends AbstractHasorPlugin {
     /**初始化.*/
     public void loadPlugin(ApiBinder apiBinder) {
         //1.挂载Aop
-        Matcher<Object> matcher = AopMatchers.annotatedWith(NeedCache.class);//
-        apiBinder.getGuiceBinder().bindInterceptor(matcher, matcher, new CacheInterceptor(apiBinder));
+        Matcher<Class<?>> matcherCass = AopMatchers.annotatedWithClass(NeedCache.class);//
+        Matcher<Method> matcherMethod = AopMatchers.annotatedWithMethod(NeedCache.class);//
+        apiBinder.bindInterceptor(matcherCass, matcherMethod, new CacheInterceptor(apiBinder));
         //2.排错
         Set<Class<?>> cacheSet = apiBinder.findClass(Creator.class);
         if (cacheSet == null || cacheSet.isEmpty())

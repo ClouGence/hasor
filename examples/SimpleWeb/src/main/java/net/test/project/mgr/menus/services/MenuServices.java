@@ -40,7 +40,7 @@ public class MenuServices {
         /*获取操纵配置文件的接口*/
         Settings setting = appContext.getSettings();
         /*取得‘/demoProject/menus’ Xml节点*/
-        XmlNode xmlNode = setting.getXmlProperty("demoProject.menus");
+        XmlNode xmlNode = setting.getXmlNode("demoProject.menus");
         /*使用 DOM 方式解析 Xml节点*/
         List<XmlNode> menus = xmlNode.getChildren("menu");
         for (XmlNode node : menus) {

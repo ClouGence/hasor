@@ -15,6 +15,7 @@
  */
 package net.hasor.core.binder;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +28,7 @@ import net.hasor.core.EventCallBackHook;
 import net.hasor.core.EventListener;
 import net.hasor.core.Scope;
 import net.hasor.core.Settings;
+import org.aopalliance.intercept.MethodInterceptor;
 import org.more.util.StringUtils;
 /**
  * 标准的 {@link ApiBinder} 接口实现，Hasor 在初始化模块时会为每个模块独立分配一个 ApiBinder 接口实例。
@@ -110,6 +112,7 @@ public abstract class AbstractBinder implements ApiBinder {
     public <T> ScopedBindingBuilder bindingType(String withName, Class<T> type, Provider<T> provider) {
         return this.bindingType(type).nameWith(withName).toProvider(provider);
     }
+    //
     /*---------------------------------------------------------------------------------------Bean*/
     private static long referIndex = 0;
     public BeanBindingBuilder defineBean(String beanName) {
@@ -176,5 +179,13 @@ public abstract class AbstractBinder implements ApiBinder {
         public void toScope(Scope scope) {
             this.typeRegister.setScope(scope);
         }
+    }
+    //
+    /*---------------------------------------------------------------------------------------Bean*/
+    public void bindInterceptor(String matcherExpression, MethodInterceptor interceptor) {
+        // TODO Auto-generated method stub
+    }
+    public void bindInterceptor(Matcher<Class<?>> matcherClass, Matcher<Method> matcherMethod, MethodInterceptor interceptor) {
+        // TODO Auto-generated method stub
     }
 }

@@ -46,7 +46,7 @@ public class CustomResources extends AbstractWebHasorPlugin {
         apiBinder.serve("*.wav").with(ResourceHttpServlet.class);
         apiBinder.serve("*.avi").with(ResourceHttpServlet.class);
         //
-        apiBinder.getGuiceBinder().bind(ResourceLoaderFactory.class).toInstance(new ResourceLoaderFactory() {
+        apiBinder.bindingType(ResourceLoaderFactory.class).toInstance(new ResourceLoaderFactory() {
             public ResourceLoader[] loaderArray(AppContext appContext) {
                 ResourceLoader classLoader = new ClassPathResourceLoader("/META-INF/webapp");
                 return new ResourceLoader[] { classLoader };

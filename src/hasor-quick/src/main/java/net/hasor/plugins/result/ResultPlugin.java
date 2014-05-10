@@ -17,6 +17,7 @@ package net.hasor.plugins.result;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.core.Hasor;
 import net.hasor.plugins.aop.matchers.AopMatchers;
 import net.hasor.plugins.controller.AbstractController;
@@ -25,7 +26,6 @@ import net.hasor.plugins.restful.RestfulService;
 import net.hasor.quick.plugin.Plugin;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.plugin.AbstractWebHasorPlugin;
-import com.google.inject.matcher.Matcher;
 /**
  * 
  * @version : 2013-9-26
@@ -53,14 +53,15 @@ public class ResultPlugin extends AbstractWebHasorPlugin {
         }
         {
             /*所有继承 AbstractController 并且标记了 @Controller 注解的类都是控制器*/
-            Matcher<Class<?>> matcherController = AopMatchers.subClassesOf(AbstractController.class).and(AopMatchers.annotatedWith(Controller.class));
+            Matcher<Class<?>> matcherController = AopMatchers.subClassesOf(AbstractController.class);
+            matcherController = AopMatchers.createDevice(matcherController).and(AopMatchers.annotatedWithClass(Controller.class));
             ResultCaller_Controller caller_1 = new ResultCaller_Controller(apiBinder, defineMap);
-            apiBinder.getGuiceBinder().bindInterceptor(matcherController, AopMatchers.anyMethod(), caller_1);
+            apiBinder.bindInterceptor(matcherController, AopMatchers.anyMethod(), caller_1);
         }
         {
             /*所有标记了 @RestfulService 注解的类都是Restful服务*/
             ResultCaller_Restful caller_2 = new ResultCaller_Restful(apiBinder, defineMap);
-            apiBinder.getGuiceBinder().bindInterceptor(AopMatchers.annotatedWith(RestfulService.class), AopMatchers.anyMethod(), caller_2);
+            apiBinder.bindInterceptor(AopMatchers.annotatedWithClass(RestfulService.class), AopMatchers.anyMethod(), caller_2);
         }
     }
 }

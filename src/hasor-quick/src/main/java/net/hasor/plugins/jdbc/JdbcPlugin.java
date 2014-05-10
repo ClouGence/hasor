@@ -40,7 +40,7 @@ public class JdbcPlugin extends AbstractHasorPlugin {
         apiBinder.bindingType(JdbcTemplate.class).toProvider(new DefaultJdbcTemplateProvider(apiBinder));
         /*带有名称的 JdbcTemplate*/
         Settings settings = apiBinder.getEnvironment().getSettings();
-        XmlNode[] dataSourceSet = settings.getXmlPropertyArray("hasor-jdbc.dataSourceSet");
+        XmlNode[] dataSourceSet = settings.getXmlNodeArray("hasor-jdbc.dataSourceSet");
         if (dataSourceSet == null)
             return;
         ArrayList<String> dataSourceNames = new ArrayList<String>();

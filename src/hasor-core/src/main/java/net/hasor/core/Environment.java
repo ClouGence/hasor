@@ -24,14 +24,20 @@ import java.util.Set;
 public interface Environment {
     /**获取配置文件URI*/
     public URI getSettingURI();
-    /**获取应用程序配置。*/
-    public Settings getSettings();
     /**获取扫描路径*/
     public String[] getSpanPackage();
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
     public Set<Class<?>> findClass(Class<?> featureType);
     /**判断是否为调试模式。*/
     public boolean isDebug();
+    //
+    /*-----------------------------------------------------------------------------------Settings*/
+    /**获取应用程序配置。*/
+    public Settings getSettings();
+    /**添加配置文件变更监听器。*/
+    public void addSettingsListener(SettingsListener settingsListener);
+    /**删除配置文件监听器。*/
+    public void removeSettingsListener(SettingsListener settingsListener);
     //
     /*--------------------------------------------------------------------------------------Event*/
     /**pushPhaseEvent方法注册的时间监听器当收到一次事件之后会被自动删除。*/

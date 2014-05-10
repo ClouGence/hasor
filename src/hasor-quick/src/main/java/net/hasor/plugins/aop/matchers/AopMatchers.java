@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.plugins.aop.matchers;
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.core.Hasor;
-import com.google.inject.matcher.AbstractMatcher;
-import com.google.inject.matcher.Matcher;
 /**
  * 
  * @version : 2013-8-20
@@ -28,9 +26,12 @@ import com.google.inject.matcher.Matcher;
 public class AopMatchers {
     private AopMatchers() {}
     //
+    public static <T> MatcherDevice<T> createDevice(Matcher<T> matcher) {
+        return new MatcherDevice<T>(matcher);
+    }
     /** 匹配任意类型*/
     public static Matcher<Class<?>> anyClass() {
-        return new AbstractMatcher<Class<?>>() {
+        return new Matcher<Class<?>>() {
             public boolean matches(Class<?> t) {
                 return true;
             }
@@ -38,15 +39,19 @@ public class AopMatchers {
     }
     /** 匹配任意方法*/
     public static Matcher<Method> anyMethod() {
-        return new AbstractMatcher<Method>() {
+        return new Matcher<Method>() {
             public boolean matches(Method t) {
                 return true;
             }
         };
     }
-    /** 在（类型、方法）中匹配注解 */
-    public static Matcher<Object> annotatedWith(Class<? extends Annotation> annotationType) {
-        return new MatcherAnnotationType(annotationType);
+    /** 在类型中匹配注解 */
+    public static Matcher<Class<?>> annotatedWithClass(Class<? extends Annotation> annotationType) {
+        return new ClassMatcherAnnotationType(annotationType);
+    }
+    /** 在方法中匹配注解 */
+    public static Matcher<Method> annotatedWithMethod(Class<? extends Annotation> annotationType) {
+        return new MethodMatcherAnnotationType(annotationType);
     }
     /** 返回一个匹配器，匹配给定类型的子类（或实现了的接口） */
     public static Matcher<Class<?>> subClassesOf(Class<?> superclass) {
@@ -105,9 +110,9 @@ public class AopMatchers {
     //    public static Matcher<Method> returns(final Matcher<? super Class<?>> returnType) {
     //        return Matchers.returns(returnType);
     //    }
-    private static class SubclassesOf extends AbstractMatcher<Class<?>> implements Serializable {
-        private static final long serialVersionUID = 0;
-        private final Class<?>    superclass;
+    /**匹配子类*/
+    private static class SubclassesOf implements Matcher<Class<?>> {
+        private final Class<?> superclass;
         public SubclassesOf(Class<?> superclass) {
             this.superclass = Hasor.assertIsNotNull(superclass, "superclass");
         }
@@ -122,6 +127,42 @@ public class AopMatchers {
         }
         public String toString() {
             return "subclassesOf(" + superclass.getSimpleName() + ".class)";
+        }
+    }
+    /**负责检测匹配。规则：只要类型上标记了某个注解。*/
+    private static class ClassMatcherAnnotationType implements Matcher<Class<?>> {
+        private Class<? extends Annotation> annotationType = null;
+        public ClassMatcherAnnotationType(Class<? extends Annotation> annotationType) {
+            this.annotationType = annotationType;
+        }
+        public boolean matches(Class<?> matcherType) {
+            if (matcherType.isAnnotationPresent(this.annotationType) == true)
+                return true;
+            Method[] m1s = matcherType.getMethods();
+            Method[] m2s = matcherType.getDeclaredMethods();
+            for (Method m1 : m1s) {
+                if (m1.isAnnotationPresent(this.annotationType) == true)
+                    return true;
+            }
+            for (Method m2 : m2s) {
+                if (m2.isAnnotationPresent(this.annotationType) == true)
+                    return true;
+            }
+            return false;
+        }
+    }
+    /**负责检测匹配。规则：只要方法上标记了某个注解。*/
+    private static class MethodMatcherAnnotationType implements Matcher<Method> {
+        private Class<? extends Annotation> annotationType = null;
+        public MethodMatcherAnnotationType(Class<? extends Annotation> annotationType) {
+            this.annotationType = annotationType;
+        }
+        public boolean matches(Method matcherType) {
+            if (matcherType.isAnnotationPresent(this.annotationType) == true)
+                return true;
+            if (matcherType.getDeclaringClass().isAnnotationPresent(this.annotationType) == true)
+                return true;
+            return false;
         }
     }
 }

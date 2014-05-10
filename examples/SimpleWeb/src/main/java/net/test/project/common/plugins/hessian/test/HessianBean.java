@@ -28,8 +28,8 @@ public class HessianBean {
     private AppContext appContext;
     //
     public long sayHello() {
-        long t = appContext.getStartTime();
-        System.out.println(t);
+        long t = System.currentTimeMillis();
+        System.out.println(appContext);
         return t;
     }
 }

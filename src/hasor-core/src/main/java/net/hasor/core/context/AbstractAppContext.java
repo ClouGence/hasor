@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.context;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -38,6 +39,7 @@ import net.hasor.core.binder.register.FreeTypeRegister;
 import net.hasor.core.builder.BeanBuilder;
 import net.hasor.core.module.ModuleProxy;
 import net.hasor.core.module.ModuleReactor;
+import org.aopalliance.intercept.MethodInterceptor;
 import org.more.UndefinedException;
 import org.more.util.ArrayUtils;
 import org.more.util.MergeUtils;

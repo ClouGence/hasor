@@ -48,21 +48,25 @@ public class AnnoStandardAppContext extends StandardAppContext {
     }
     /***/
     public AnnoStandardAppContext(String mainSettings, Object context) throws IOException, URISyntaxException {
-        super(mainSettings, context);
+        super(mainSettings);
+        this.setContext(context);
     }
     /***/
     public AnnoStandardAppContext(File mainSettings, Object context) {
-        super(mainSettings, context);
+        super(mainSettings);
+        this.setContext(context);
     }
     /***/
     public AnnoStandardAppContext(URI mainSettings, Object context) {
-        super(mainSettings, context);
+        super(mainSettings);
+        this.setContext(context);
+    }
+    // 
+    protected void doInitialize() {
+        this.loadModule();
+        super.doInitialize();
     }
     //
-    protected void initContext() {
-        this.loadModule();
-        super.initContext();
-    }
     /**×°ÔØÄ£¿é*/
     protected void loadModule() {
         //1.É¨Ãèclasspath°ü
