@@ -18,8 +18,8 @@
 		<settingsMonitor interval="15000" />
 		<!-- RegisterManager 接口注册 -->
 		<registerManager default="guice">
-			<creater name="Simple" class="net.hasor.core.context.rm.simple.SimpleRegisterManagerCreater" />
-			<creater name="Spring" class="net.hasor.core.context.rm.spring.SpringRegisterManagerCreater" />
+			<!-- <creater name="Simple" class="net.hasor.core.context.rm.simple.SimpleRegisterManagerCreater" /> -->
+			<!-- <creater name="Spring" class="net.hasor.core.context.rm.spring.SpringRegisterManagerCreater" /> -->
 			<creater name="Guice" class="net.hasor.core.context.rm.guice.GuiceRegisterManagerCreater" />
 		</registerManager>
 		<!-- 工作空间设置 -->
