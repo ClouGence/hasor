@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.context.rm.guice;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +22,8 @@ import net.hasor.core.Environment;
 import net.hasor.core.Provider;
 import net.hasor.core.RegisterInfo;
 import net.hasor.core.Scope;
+import net.hasor.core.binder.AopConst;
+import net.hasor.core.binder.AopMatcherRegister;
 import net.hasor.core.binder.TypeRegister;
 import net.hasor.core.binder.register.AbstractTypeRegister;
 import net.hasor.core.binder.register.FreeTypeRegister;
@@ -43,6 +46,7 @@ import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.binder.ScopedBindingBuilder;
 import com.google.inject.internal.UniqueAnnotations;
+import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.name.Names;
 /**
  * 
@@ -73,7 +77,20 @@ class GuiceRegisterManager extends AbstractRegisterManager {
                     //1.处理绑定
                     configRegister(register, binder);
                     //2.处理Aop
-                    //                    if (tempItem.getType().isAssignableFrom(AopMatcherRegister.class)) {}
+                    if (register.getType().isAssignableFrom(AopMatcherRegister.class)) {
+                        if (register.getMetaData().containsKey(AopConst.AopAssembly)) {
+                            final AopMatcherRegister amr = (AopMatcherRegister) register.getProvider().get();
+                            binder.bindInterceptor(new AbstractMatcher<Class<?>>() {
+                                public boolean matches(Class<?> targetClass) {
+                                    return amr.matcher(targetClass);
+                                }
+                            }, new AbstractMatcher<Method>() {
+                                public boolean matches(Method targetMethod) {
+                                    return amr.matcher(targetMethod);
+                                }
+                            }, amr);
+                        }
+                    }
                     //                    GuiceTypeRegister<Object> register = (GuiceTypeRegister<Object>) tempItem;
                 }
             }
